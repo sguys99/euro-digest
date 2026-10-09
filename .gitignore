@@ -1,52 +1,43 @@
-# dependencies
+# ── 의존성 ──
 /node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 
-# testing
-/coverage
-
-# next.js
+# ── Next.js 빌드 산출물 (정적 export 결과는 out/) ──
 /.next/
 /out/
+next-env.d.ts
+*.tsbuildinfo
 
-# production
-/build
+# ── 테스트 산출물 (Vitest·Playwright) ──
+/coverage
+/playwright-report/
+/test-results/
+/blob-report/
+/playwright/.cache/
 
-# misc
-.DS_Store
+# ── 비밀값: 환경변수 파일은 모두 무시하고 템플릿만 추적 (CLAUDE.md §1-8) ──
+# .env, .env.local, .env.*.local, .env.development, .env.production, .env.test 등
+.env*
+!.env.example
 *.pem
 
-# debug
+# ── 로그 ──
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+*.log
 
-# env files
-.env
-.env*.local
+# ── 개인 로컬 설정 ──
+.claude/settings.local.json
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# ── OS ──
+.DS_Store
+Thumbs.db
+Desktop.ini
 
-# IDE
+# ── IDE ──
 .idea/
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+*.swp
+*.swo
 
-# OS
-Thumbs.db
-
-# data artifacts (keep folder structure, ignore contents)
-/data/raw/*
-/data/intermediate/*
-/data/processed/*
-!/data/**/.gitkeep
+# data/는 파이프라인 산출물로 커밋 대상이므로 무시하지 않는다 (CLAUDE.md §5).
