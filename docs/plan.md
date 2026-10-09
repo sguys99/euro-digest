@@ -42,8 +42,8 @@
 
 | 단계 | 내용 | 예상 기간 | 시작 | 완료 | 상태 |
 |---|---|---|---|---|---|
-| 사전 | 사용자 준비 작업 (§3) | M0 중 | | | ⬜ |
-| **M0** | 셋업·검증 | 3~4일 | | | ⬜ |
+| 사전 | 사용자 준비 작업 (§3) | M0 중 | 2026-10-10 | | 🚧 |
+| **M0** | 셋업·검증 | 3~4일 | 2026-10-10 | | 🚧 |
 | **D0** 🎨 | 전체 디자인 콘셉트 | 2~3일 | | | ⬜ |
 | **M1** | 뉴스 MVP | 1주 | | | ⬜ |
 | **D1** 🎨 | 대회·팀 화면 | 1~2일 | | | ⬜ |
@@ -56,8 +56,8 @@
 
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
-**현재 위치**: 설계 완료 → M0 착수 전
-**다음 작업**: §3 사용자 준비 작업 + `M0-01`
+**현재 위치**: M0 셋업·검증 진행 중
+**다음 작업**: `M0-01` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -109,10 +109,10 @@
 - [X] U-04 football-data.org 가입 → Secrets `FOOTBALL_DATA_API_KEY`
 - [X] U-05 API-Football 가입 — API-SPORTS 사의 **api-football.com**(가입: `https://dashboard.api-football.com/register`)에서 **직접** 가입 → Secrets `API_FOOTBALL_KEY` (호출 주소 `https://v3.football.api-sports.io`, 인증 헤더 `x-apisports-key`). 이름이 비슷한 **apifootball.com**(다른 회사)과 **RapidAPI 경유 가입**(키·호출 주소·헤더가 달라 어댑터와 맞지 않음)은 쓰지 않는다
 - [ ] U-06 cron-job.org 계정 + fine-grained PAT(대상 저장소 한정, Actions 권한만, **만료일 기록**) — PAT는 저장소에 두지 않음
-- [ ] U-07 연락용 전용 이메일 개설 → `CONTACT_EMAIL` (User-Agent·삭제 요청용)
+- [x] U-07 연락용 전용 이메일 개설 → `CONTACT_EMAIL` (User-Agent·삭제 요청용) — 2026-10-10 사용자 결정: 전용 메일 대신 `sguys99@gmail.com` 사용
 - [ ] U-08 GoatCounter 사이트 생성 (쿠키리스 분석)
 - [ ] U-09 KIPRIS 상표 검색 — '유로 다이제스트' / 'Euro Digest'
-- [ ] U-10 (선택) 좋아하는/싫어하는 사이트·앱이 있으면 D0 전에 공유 — 시안 방향에 반영
+- [x] U-10 (선택) 좋아하는/싫어하는 사이트·앱이 있으면 D0 전에 공유 — 시안 방향에 반영 — 2026-10-10 응답: **에디토리얼 신문형 · 매거진 볼드형** 선호 + 다른 방향 제안도 원함 (D0-02에서 반영). 템플릿의 Apple 디자인 분석 문서는 `docs/design/references/apple-design-analysis.md`에 참고자료로 보존
 
 ---
 
