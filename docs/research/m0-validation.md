@@ -11,9 +11,11 @@
 | 판정 용어 | **허용**(우리 이용 방식이 약관에 명시적으로 허용됨) / **조건부**(정해진 조건을 지킬 때만 허용) / **불명확**(근거가 모호하거나 서로 충돌) / **금지**(명시적으로 금지) / **찾지 못함** |
 | 문서 규칙 | 버전은 v0.1 고정. 인용은 짧게 원문 그대로, 요약은 한국어 |
 
+> **누적 결론 (M0-23 + M0-24, 2026-10-10)** — 해외 매체·기자 채널 26개(영문 24·이탈리아어 1·스페인어 1)를 약관 기준으로 판정한 결과 **AI 요약 가능 0 · 원제목+링크 9**(BBC 4·ESPN·The Athletic·the Daily Briefing·Di Marzio·Relevo) **· 제외 17**이다. 약관상 LLM 요약이 허용되는 해외 뉴스 소스가 없으므로 FR-20을 재정의했다(PRD §15 D23·D24): 해외 뉴스는 모두 원제목+링크 + 코드 규칙 한국어 태그로 게시하고, 일일 LLM 호출 #1은 "정형 데이터 기반 한국어 브리핑"으로 바꾼다. 앞으로 `summarize:true` 소스는 없다(`Source.summarize` 필드는 유지).
+
 ## 목차
-- [M0-23 1군 영문 RSS](#m0-23-1군-영문-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록
-- [M0-24 2군 매체·기자 채널](#m0-24-2군-매체기자-채널)
+- [M0-23 1군 영문 RSS](#m0-23-1군-영문-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 6 · 제외 2)
+- [M0-24 2군 매체·기자 채널](#m0-24-2군-매체기자-채널) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 3 · 기록용 제외 5), FR-20 재정의(PRD §15 D23·D24)
 - [M0-25 국내 매체 RSS](#m0-25-국내-매체-rss)
 - [M0-26 Google News RSS](#m0-26-google-news-rss)
 - [M0-27 GDELT DOC API](#m0-27-gdelt-doc-api)
@@ -253,7 +255,263 @@
 ---
 
 ## M0-24 2군 매체·기자 채널
-(미착수)
+
+> 상태: **✅ 완료 — 사용자 결정(2026-10-10) 반영.** `configs/sources.json`에 8개 등록(원제목+링크 3 · 기록용 제외 5 → 전체 16개). 아래 "핵심 결론"~"사용자 확인 질문"은 조사 시점 기록이고, 최종 결과는 "사용자 결정 (2026-10-10)"이 단일 출처다.
+
+대상: plan M0-24의 기자 채널 6개(basic_plan §3.5.1)에 오케스트레이터 결정으로 리그 특화 2군 7개(§3.3)와 이적 집계 사이트 5개(§3.5.2)를 더한 **18개 채널**.
+판정 기준·용어는 M0-23과 같다(문서 머리 표의 판정 용어, PRD §15 D22). "명시적 허용"과 "명시적 금지 없음 + RSS 게재 허용"을 구분해 적고, 근거가 모호하면 보수적으로 판정했다.
+요청 범위: 2026-10-10 07:03~07:15 UTC(16:03~16:15 KST), 82건(200: 66 · 404: 5 · 403: 3 · 503: 3 · 연결 실패: 5). 피드·robots.txt·약관/RSS 안내 페이지와 목록 페이지(홈·섹션·작성자 페이지) 1회씩만 요청했고, 기사 본문 페이지 요청 0건, 금지 사이트 접근 0건이다. 같은 호스트 요청 간격 2~3초.
+
+### 핵심 결론 (먼저 읽기)
+1. **(조사 시점 권고) 18개 채널 모두 제외.** 약관상 AI 요약(`summarize:true`)이 가능한 소스는 **0개**이고, 원제목+링크 게재 근거가 분명한 소스도 **0개**다. → 결정: 불명확 3개는 원제목+링크로 켬(아래 "사용자 결정").
+   - 금지(명시) 11: CaughtOffside 2(Romano 작성자 피드·사이트 전체), Football Italia, Football España, Sky Sport DE, Bundesliga.com, UEFA.com, Marca English, Calciomercato.com, TEAMtalk, Football365
+   - 불명확 3: the Daily Briefing(Romano Substack), Gianluca Di Marzio, Relevo
+   - 채널 소멸·접속 불가 4: Ben Jacobs의 CBS Sports 기고(2022-08 이후 없음), Get German Football News(연결 거부), Get French Football News(Cloudflare 봇 차단), 90min 영문판(Sports Illustrated로 이전, 피드 1년 정체)
+2. **"명시적 허용"은 하나도 없었다.** M0-23의 ESPN·NYT 같은 "RSS를 웹사이트에 게재해도 된다"는 약관 조항도 없었다. AI 이용을 허용하는 쪽의 표시는 **기계 판독 신호 2건**뿐이고, 둘 다 같은 사이트의 약관 본문과 충돌한다.
+   - the Daily Briefing robots.txt `Content-Signal: search=yes, ai-input=yes, ai-train=no` — Substack 공통값으로 보이고, Substack ToS는 수집(crawl·scrape)을 금지한다. 발행사(Rocket Sports Internet)는 자기 다른 사이트에서 AI 요약을 명시적으로 금지한다.
+   - Relevo robots.txt 주석 "Crawlers de IA / LLM — acceso explícitamente permitido" — 접근 허용일 뿐이고, 이용 약관 §7은 전부·일부 복제와 수정을 서면 허가 없이 금지한다.
+3. **기자 채널이 한 회사로 모였다.** Romano·Moretto·Ben Jacobs가 지금 쓰는 곳은 모두 Rocket Sports Internet 계열(the Daily Briefing 뉴스레터 섹션, CaughtOffside 칼럼)이다. Rocket의 "Search Only Terms Contract"(robots.txt `License` 줄이 가리킴)는 AI 요약 제품을 비상업 이용에서 빼고, 검색 결과 외의 표시와 요약·새 제목 생성을 금지하며, 무허가 접근에 건당 £500 접근료를 매긴다. Plettenberg(Sky Sport DE)는 RSS가 없고 TDM 이용이 금지돼 있다.
+4. **리그 특화 영문 매체가 많이 사라졌다.** Di Marzio `/en`·Calciomercato `/en`은 404(영문판 폐지), 90min 영문판은 SI로 이전했고, GGFN·GFFN은 우리 UA로 접근할 수 없다. 남은 영문 매체(Football Italia·Football España)는 Rocket 계약 대상이다.
+5. **FR-20 재검토에 필요한 입력**: M0-23과 M0-24를 합치면 26개 채널 중 AI 요약 가능 0, 원제목+링크 가능 6(M0-23의 BBC 4·ESPN·The Athletic)이다. 영문 매체 RSS를 LLM으로 요약한다는 FR-20의 전제가 약관상 성립하지 않는다. M0-25(국내)·M0-26(Google News)·M0-27(GDELT) 판정을 받은 뒤 FR-20 범위를 다시 정해야 한다(아래 "사용자 확인 질문" 3). → 결정: 지금 재정의(PRD §15 D23·D24, 아래 "사용자 결정" 3).
+
+### 사용자 결정 (2026-10-10)
+
+| # | 항목 | 결정 | 반영 |
+|---|---|---|---|
+| 1 | 불명확 3개(the Daily Briefing·Di Marzio·Relevo) | **원제목+링크로 켬** — `enabled:true`, `summarize:false`, `terms_checked:true`. 약관이 불명확한 상태에서 원제목+링크 전용 게재를 **사용자 결정으로 수용한 위험**으로 note에 명시(BBC 선례와 같은 방식) | `configs/sources.json` |
+| 2 | 피드가 작동하는 나머지 5개(CaughtOffside 2·Football Italia·Football España·UEFA UCL) | **판정 기록용 등록** — `enabled:false`, `summarize:false`, `terms_checked:false`(M0-23 Sky·Guardian 선례). m4ow 계약 대상 4개(Rocket 계열 CaughtOffside 2·Football Italia + robots.txt가 같은 계약을 가리키는 Football España)는 **m4ow 약관 — 접근 자체를 하지 않음(검증 요청도 금지)** | `configs/sources.json` |
+| 3 | FR-20 재검토 | **지금 재정의.** 해외 뉴스는 모두 원제목+링크 + 코드 규칙 한국어 태그로 게시하고, 일일 LLM 호출 #1(뉴스 요약·분류)은 "정형 데이터 기반 한국어 브리핑"으로 교체한다. 앞으로 `summarize:true` 소스는 없다(`Source.summarize` 필드는 유지) | PRD §15 D23·D24(오케스트레이터 반영) |
+
+- 피드가 없거나 작동하지 않는 10개(Sky Sport DE·Bundesliga.com·TEAMtalk·Football365·Marca English·Calciomercato.com·Ben Jacobs CBS·GGFN·GFFN·90min)는 등록하지 않고 이 문서에만 남긴다.
+
+**등록 결과 — `configs/sources.json`** (8개 추가 → 16개, `npm run validate` 통과, 수집 대상 `enabled && terms_checked` = 9개, LLM 요약 대상 0개)
+
+| id | 피드 URL | type | lang | enabled | summarize | terms_checked | robots_checked | tier | weight | competitions | 이용 방식 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `daily-briefing` | thedailybriefing.io/feed | journalist | en | true | false | true | true | 2 | 1.5 | [] | 원제목+링크(수용한 위험) |
+| `di-marzio` | www.gianlucadimarzio.com/rss | journalist | it | true | false | true | true | 2 | 2 | [SERIEA] | 원제목+링크(수용한 위험) |
+| `relevo` | www.relevo.com/feed/ | rss | es | true | false | true | true | 2 | 1 | [LALIGA] | 원제목+링크(수용한 위험) |
+| `caughtoffside-romano` | www.caughtoffside.com/author/fabrizio-romano/feed/ | journalist | en | false | false | false | true | 1 | 2.5 | [] | 제외 — 접근 금지(m4ow) |
+| `caughtoffside` | www.caughtoffside.com/feed/ | aggregator | en | false | false | false | true | 3 | 1 | [] | 제외 — 접근 금지(m4ow) |
+| `football-italia` | football-italia.net/feed/ | rss | en | false | false | false | true | 3 | 1.5 | [SERIEA] | 제외 — 접근 금지(m4ow) |
+| `football-espana` | www.football-espana.net/feed | rss | en | false | false | false | true | 3 | 1.5 | [LALIGA] | 제외 — 접근 금지(m4ow) |
+| `uefa-ucl-news` | www.uefa.com/rss/uefachampionsleague/rss.xml | rss | en | false | false | false | true | 1 | 1.5 | [UCL] | 제외 |
+
+- `caughtoffside-romano`만 `author: "Fabrizio Romano"`(작성자 피드). 각 `note`에 확인 날짜·결정·근거 URL·짧은 인용·지킬 조건을 적었다.
+- 켠 3개의 공통 조건: 피드 제목 무수정·번역 금지(이탈리아어·스페인어 원제목 그대로), 표시 링크는 피드 URL 원문 그대로, 출처명 표기(`the Daily Briefing`·`Gianluca Di Marzio`·`Relevo`), description·`content:encoded`는 읽거나 표시하지 않음(FR-02), 중단 요구가 오면 즉시 끔.
+- **M1 구현 메모**
+  - Relevo는 전 종목 피드(15건/24시간 중 축구 10 — NFL·모터사이클·테니스·사이클 등 혼입)라 **축구 외 기사 필터가 필수**다. 링크 경로(`/futbol/…`)와 `category`로 거르는 코드 규칙을 쓴다(LLM 아님).
+  - Di Marzio는 이탈리아어, Relevo는 스페인어 원제목 카드가 된다 → D0 시안의 원제목 카드 상태에 비영어 제목 예시를 넣는다. Di Marzio 피드에는 author가 없다.
+  - the Daily Briefing 제목은 모두 "🚨"로 시작한다 — ESPN 이모지와 같이 그대로 둔다(수정 금지). 작성자는 Mark Brus·the Daily Briefing뿐이라 Romano 작성자 필터를 쓰지 않는다.
+  - m4ow 계약 대상 4개는 `enabled:false`라 수집되지 않지만, 검증 스크립트·건강도 점검(FR-11)·`/add-source` 재확인에서도 이 URL에 요청하지 않도록 한다.
+
+### 요약 표
+
+| # | 대상 | 피드 / 크롤 | 상태 (항목 · 최신 UTC · 24h/7일) | 작성자 필드 | robots (우리 UA · AI 봇) | 약관 핵심 | 판정 | 권고 |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Romano — the Daily Briefing (Substack) | RSS `thedailybriefing.io/feed` | ✅ 20 · 10-10 06:54 · 2/16 | dc:creator 20/20 — Mark Brus·the Daily Briefing만, **Romano 0/20** | 허용 · GPTBot·ClaudeBot·CCBot·Google-Extended·anthropic-ai 차단, `Content-Signal: ai-input=yes` | Substack ToS: 수집(crawl·scrape)·상당 부분 복사 금지, RSS 게재 조항 없음 | **불명확** | 제외 |
+| 2 | Romano — CaughtOffside 작성자 페이지 | RSS `…/author/fabrizio-romano/feed/` (목록 크롤링 불필요) | ⚠️ 10 · **09-11** 15:00 · 0/0 (한 달 공백) | dc:creator = Fabrizio Romano | 허용 · 모두 허용, `License: m4ow.uk/socw/2.txt` | Rocket ToS + Search Only Terms Contract: AI 요약 제품 제외·요약·새 제목 금지·검색 외 표시 금지·건당 £500 | **금지** | 제외 |
+| 3 | Gianluca Di Marzio | RSS `gianlucadimarzio.com/rss` (**이탈리아어**, `/en` 404) | ✅ 10 · 10-10 07:00 · 10/10 | 없음 | 허용 · 모두 허용 | RSS 안내: "per uso personale", 상업 이용은 편집부 문의. AI 조항 찾지 못함 | **불명확** | 제외(허가 요청 시 재검토) |
+| 4 | Plettenberg — Sky Sport DE | RSS 없음 → 목록 `sport.sky.de/transfer-news` | 목록 약 12건(제목·링크만, 날짜·작성자 없음) | 없음(필터 불가) | robots.txt 404(제한 없음) | Impressum: "Text und Data Mining im Sinne von § 44b UrhG … ist untersagt", 복제권 유보 | **금지** | 제외 |
+| 5 | Moretto — Relevo | RSS `relevo.com/feed/` (스페인어, 전 종목) | ✅ 15 · 10-10 06:02 · 15/15 | dc:creator 있음, **Moretto 0** | 허용 · AI 봇 명시 허용 | 조건 §7: 전부·일부 복제·이용 금지(서면 허가), 요약·언론 리뷰 형태 반대, 수정 금지 | **불명확** | 제외 |
+| 6 | Ben Jacobs — CBS Sports | 작성자 페이지 `cbssports.com/writers/ben-jacobs/` · RSS `…/rss/headlines/soccer/` | 작성자 글 최신 **2022-08-11** · 축구 RSS 36건에 Jacobs 0 | RSS dc:creator 있음 | 허용(GPTBot만 차단) | — (채널 비활성이라 약관 미조사) | **채널 소멸** | 제외 |
+| 7 | Football Italia | RSS `football-italia.net/feed/` | ✅ 20 · 10-09 19:07 · 20/20 | dc:creator 있음 | 허용 · 모두 허용, `License: m4ow` | Rocket 소유 — #2와 같은 계약 | **금지** | 제외 |
+| 8 | Bundesliga.com 영문 뉴스 | 뉴스 RSS 없음(라이브티커 RSS만) → 목록 `/en/bundesliga/news` | 목록 13건 + `publishedAt` | — | 허용 · AI 봇 명시 허용, 단 주석에 § 44b TDM 유보·봇 사용 금지 | 이용약관 6.2·법적 고지 2.2: 봇으로 접근·분석·다운로드 금지 | **금지** | 제외 |
+| 9 | Get German Football News | `getgermanfootballnews.com` | ❌ 연결 거부(https·http, www·non-www) | — | 확인 불가 | 확인 불가 | **접속 불가** | 제외 |
+| 10 | Marca English | RSS `marca.com/en/rss/googlenews/portada.xml` · `e00-marca.uecdn.es/rss/en/index.xml` | ❌ 503 ×3(우리 UA) · index.xml은 **2026-04-28**에 멈춤(NFL·미국 연예 위주) | dc:creator 있음 | 허용 · GPTBot·anthropic-ai·CCBot·Google-Extended 등 차단 | ToS 3.4: 전부·일부 수정·복사·재사용·추출·복제 금지, 인용 예외 반대 | **금지** | 제외 |
+| 11 | Football España | RSS `football-espana.net/feed` | ✅ 10 · 10-09 20:00 · 3/10 | dc:creator 있음 | 허용 · 모두 허용, `License: m4ow` | #2와 같은 계약 | **금지** | 제외 |
+| 12 | Get French Football News | `getfootballnewsfrance.com` | ❌ 403 Cloudflare "Just a moment…"(robots.txt·피드 모두) | — | 확인 불가(봇 차단) | 확인 불가 | **접속 불가** | 제외 |
+| 13 | UEFA.com 뉴스 | RSS `uefa.com/rss/uefachampionsleague/rss.xml` (+`/rss/insideuefa/rss.xml`) | ✅ 50 · 10-09 07:00 · 0/15 | 없음 | 허용 · 모두 허용 | 약관 6.2: 개인 열람 외 이용·표시 금지, 자동 수집 금지, AI 개발 이용 금지 | **금지** | 제외 |
+| 14 | CaughtOffside (사이트 전체) | RSS `caughtoffside.com/feed/` | ✅ 10 · 10-10 06:28 · 10/10 | dc:creator 있음 | 허용 · 모두 허용, `License: m4ow` | #2와 같은 계약 | **금지** | 제외 |
+| 15 | Calciomercato.com 영문 | `/en` **404**(영문판 폐지) · 사이트 피드는 FootballCo 이탈리아어 | 이탈리아어 피드 20건(약 3시간치) | dc:creator 6/20 | 허용 · AI 봇 차단, 피드 호스트 robots 403 | FootballCo ToS: TDM·웹 스크래핑 금지("access, obtain, copy, monitor or republish") | **금지** | 제외 |
+| 16 | TEAMtalk | RSS 없음(`/feed` 404) → 홈 목록 | 홈 링크 57개 + `datetime` | — | 허용 | Planet Sport ToS: 자동 시스템·AI로 색인·분석·재게시 금지(§6) | **금지** | 제외 |
+| 17 | Football365 | RSS 없음(`/feed` 404) → 홈 목록 | 홈 링크 38개 + `datetime` | — | 허용 | TEAMtalk과 같은 Planet Sport ToS | **금지** | 제외 |
+| 18 | 90min | RSS `90min.com/feed`·`/posts.rss` | ⚠️ 90 · **2025-09-29** · 0/0 — 홈: "We've Moved To Sports Illustrated" | author 43/90 | 허용 | Minute Media T&C: 권리 유보, AI·수집 조항 찾지 못함 | **채널 소멸** | 제외 |
+
+> 24h/7일은 각 피드 요청 시각(07:05~07:12 UTC) 기준이다. "AI 봇"은 아래 매트릭스의 8개 UA다.
+
+### robots.txt 매트릭스 (피드·목록 경로 기준)
+
+| 호스트 · 경로 | EuroDigestBot | GPTBot | ClaudeBot | Claude-User | CCBot | Google-Extended | anthropic-ai | PerplexityBot | 비고 |
+|---|---|---|---|---|---|---|---|---|---|
+| thedailybriefing.io `/feed` | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | `Content-Signal: search=yes, ai-input=yes, ai-train=no` |
+| www.caughtoffside.com `/feed/`·`/author/fabrizio-romano/feed/` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `# License https://m4ow.uk/socw/2.txt` + `tdl:` |
+| football-italia.net `/feed/` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 위와 같은 License 줄 |
+| www.football-espana.net `/feed` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 위와 같은 License 줄 |
+| www.gianlucadimarzio.com `/rss` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| sport.sky.de | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | robots.txt 404(규칙 없음) |
+| www.relevo.com `/feed/` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 주석: AI·LLM 크롤러 명시 허용 |
+| www.cbssports.com `/rss/headlines/soccer/` | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| www.bundesliga.com `/en/bundesliga/news` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 주석: § 44b UrhG TDM 유보·봇 사용 금지 |
+| www.marca.com `/en/rss/googlenews/portada.xml` | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | 우리 UA에 503 응답 |
+| e00-marca.uecdn.es `/rss/en/index.xml` | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ | |
+| www.uefa.com `/rss/uefachampionsleague/rss.xml` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| www.calciomercato.com `/en` | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | feeds.footballco.com robots.txt는 403 |
+| www.teamtalk.com `/` · www.football365.com `/` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| www.90min.com `/feed` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| www.getfootballnewsfrance.com | — | — | — | — | — | — | — | — | 403 Cloudflare 챌린지 — 판정 불가 |
+| getgermanfootballnews.com | — | — | — | — | — | — | — | — | 연결 거부 — 판정 불가 |
+
+- 판정 방법은 M0-23과 같다(RFC 9309 방식, 우리 UA는 어느 호스트에서도 별도 그룹이 없어 `*` 규칙을 따름). Crawl-delay를 둔 호스트는 없다.
+- robots.txt가 허용해도 약관이 막으면 쓰지 않는다. 이번에는 robots.txt가 열려 있고 약관이 막는 경우(Rocket 계열·Bundesliga·UEFA·Planet Sport)가 대부분이었다.
+
+### 대상별 상세
+
+#### A. 기자 채널 (basic_plan §3.5.1)
+
+**1) Fabrizio Romano — the Daily Briefing (Substack)**
+- 피드 `https://thedailybriefing.io/feed`: HTTP 200, `application/xml`, RSS 2.0, 20건(10-02~10-10), 24h 2 · 7일 16. 채널 `copyright`는 "Rocket Sports Internet"(CaughtOffside 운영사). About 페이지: "in exclusive partnership with caughtoffside.com".
+- 항목 필드: `title`(모두 "🚨"로 시작) · `description`(평문 티저 23~97자) · `link` · `guid` · `pubDate`(GMT) · `dc:creator` · `content:encoded`(무료 글 본문 — 읽지 않음, FR-02) · `enclosure`(이미지). category 없음.
+- **Romano 작성 글 0/20.** 작성자는 "Mark Brus"(단독 기사) 10건과 "the Daily Briefing"(아침 라운드업) 10건뿐이다. 사이트 메뉴의 섹션은 Ben Jacobs·Matteo Moretto·Christian Falk·Neil Jones 등이고 Romano 섹션은 메뉴에 없다 → author 필터로 Romano를 고를 수 없다.
+- 예시 제목: "🚨 EXCL: Clubs lurking as Liverpool may soon have a big decision to make on £116m star..." · "🚨 Haaland future HINT, six new clubs chasing unsettled Arsenal star, …"
+- 약관(확인 2026-10-10): 사이트 하단 Terms → Substack Terms of Use(Last Updated October 6, 2026) — https://substack.com/tos
+  - Acceptable Use: "“Crawls,” “scrapes,” or “spiders” any page, data, or portion of Substack (through use of manual or automated means)" · "Copies or stores any significant portion of the content on Substack" 금지.
+  - RSS 피드를 다른 웹사이트에 게재하는 것에 관한 조항: 찾지 못함. 발행물 자체 약관: 찾지 못함.
+  - robots.txt `Content-Signal: … ai-input=yes`: Cloudflare Content Signals Policy의 정의로 ai-input은 "inputting content into one or more AI models (e.g., retrieval augmented generation, grounding, or other real-time taking of content for generative AI search answers)"(https://blog.cloudflare.com/content-signals-policy/). 우리 요약 입력에 가까운 용도에 대한 **허용 신호**이지만, 이용 선호 표시일 뿐 재게시 라이선스가 아니고, Substack 플랫폼 공통값으로 보이며(발행사가 따로 정한 값이라는 근거 없음), ToS의 수집 금지와 충돌한다.
+- 판정: **불명확** — 요약은 신호(ai-input=yes)와 약관(수집 금지)·발행사의 다른 사이트 방침(AI 요약 금지, #2)이 충돌, 원제목 게재는 허용 근거가 없다. Romano 글도 거의 없다. → 제외 권고.
+
+**2) Fabrizio Romano — CaughtOffside 작성자 페이지**
+- 목록 페이지 `https://www.caughtoffside.com/author/fabrizio-romano/`(1회): WordPress, `<link rel="alternate">`로 **작성자 RSS** `…/author/fabrizio-romano/feed/`를 제공 → 목록 크롤링은 필요 없다.
+- 작성자 피드: HTTP 200, 10건, 최신 **2026-09-11 15:00**, 가장 오래된 항목 2026-08-18 → 최근 한 달 동안 Romano 명의 글이 없다. 필드 `dc:creator`(=Fabrizio Romano) · `category`(Exclusives 등) · `description`(HTML 약 450자) · `content:encoded`(본문 — 읽지 않음) · `media:*`(이미지).
+- 예시 제목: "Fabrizio Romano exclusive: Chelsea calm despite transfer rumours, new deal talks soon"
+- 약관(확인 2026-10-10)
+  - Rocket Sports Internet Terms of Service(Last Updated & Effective From 8th June 2026) — https://football-italia.net/terms-of-service/ (적용 대상에 caughtoffside.com·football-italia.net 등 20여 개 사이트). CaughtOffside의 `/terms-of-service/` 페이지는 본문이 비어 있다.
+  - 같은 ToS: "Our Search Only Terms Contract … governs crawling, indexing, scraping and other automated or programmatic access to the Services and Content." 자동 접근은 "except where such activity is expressly permitted as Licensed Access under the Search Only Terms Contract"만 허용.
+  - Search Only Terms Contract — https://m4ow.uk/socw/2.txt (robots.txt `# License` 줄이 가리킴)
+    - Annex A "Non-Commercial Use": "For the avoidance of doubt, this does not include free or bundled software or any other technology that features Artificial Intelligence Systems summaries or other functionality."
+    - Annex A "Search Indexing": "the Accessing Party must not alter the Website Content, this includes but is not limited to creating new titles, regenerating content or generating summaries of the Website Content"
+    - 4.1.1: "All Website Content may not be reproduced, distributed, transmitted, displayed, altered, or used in any way … without prior written permission" · 4.6.2.1: "Any rendering of the Website Content outside of Search, or of the Website is an Unlicensed Access"
+    - 4.3: 무허가 접근은 "a fee, of £500 being five hundred pounds sterling, per Product accessed" · 7.1: 검색 색인 외 목적의 수집·이용 금지
+- 판정: **금지** — AI 요약은 명시적으로 금지되고, 원제목+링크 게재도 "검색 서비스" 밖의 표시라 허용되지 않는다. → 제외. 참고: 이번 M0 확인 요청(CaughtOffside 6건·Football Italia 4건·Football España 4건, 피드·robots·약관·목록 1회씩)도 이 계약이 말하는 "접근"에 해당할 수 있으므로 이후에는 접근하지 않는다.
+
+**3) Gianluca Di Marzio**
+- `https://gianlucadimarzio.com/en` → `www.` 리다이렉트 후 **404**("Pagina non trovata") — 영문 섹션은 폐지된 것으로 보인다. 사이트 메뉴도 이탈리아어뿐이다.
+- 피드 `https://www.gianlucadimarzio.com/rss`(→ `/rss/`): HTTP 200, `application/rss+xml`, 10건(약 13시간치), 최신 2026-10-10 07:00 UTC. 필드 `title` · `description`(평문 약 170자) · `link` · `guid` · `pubDate`(+0200) · `category`(News Calcio 등) · `enclosure`(이미지). **author 없음**, `language` 없음(내용은 이탈리아어).
+- 섹션 피드: `/rss/?section=5`(News Calcio)·`6`(Interviste e Storie)·`2`(Calciomercato로 보임)·`51`(Caffè Di Marzio)·`49`(Consapevolezze) — 섹션 대응은 안내 페이지 순서로 추정(미검증).
+- 예시 제목: "Bologna, Miranda: \"Abbiamo la squadra per arrivare in alto. Tedesco? Gli auguro il meglio\""
+- 약관(확인 2026-10-10): RSS 안내 — https://www.gianlucadimarzio.com/info_rss/ : "Il servizio è gratuito e non richiede nessuna registrazione per uso personale. Per eventuali utilizzi commerciali contattare la Redazione." · "I feed RSS … comprendono il titolo, il sommario e l'indirizzo internet (url) degli ultimi 20 articoli". 별도 이용약관·AI 조항: 찾지 못함(하단 링크는 Privacy·Cookie뿐). 운영 G.D.M. Comunication S.r.l.(TMW 플랫폼).
+- 판정: **불명확** — 개인 이용(리더기 구독)만 명시하고, 비영리 공개 웹사이트 게재나 AI 요약은 허용도 금지도 적혀 있지 않다. 편집부(Redazione)에 허가를 요청할 수 있는 유일한 경로가 적혀 있다. → 제외 권고(허가를 받으면 재판정).
+
+**4) Florian Plettenberg — Sky Sport Deutschland**
+- `https://sport.sky.de/robots.txt` 404(규칙 없음). 홈·이적 페이지에 RSS `<link>` 없음, 외부 검색에서도 공식 RSS를 찾지 못함.
+- 목록 후보 `https://sport.sky.de/transfer-news`(1회): 서버 렌더링 HTML에 기사 약 12건(제목·`/transfer/news/34132/<id>/<slug>` 링크·"Transfer/Exklusiv/Analyse" 라벨)만 있고 **발행 시각과 작성자가 없다**. `/transfer`(→`/transfers`)는 JS로 불러오는 라이브블로그다.
+  - 크롤러로 만들면: 목록에서 제목·링크를 얻고 날짜는 기사별 OG(`article:published_time`) 요청이 필요 → 하루 1회·2~3초 간격이면 §6.4는 지킬 수 있지만 요청 수가 늘고, **Plettenberg 작성자 필터는 불가**(목록에 이름 없음). 난이도 중.
+- 약관(확인 2026-10-10): `/agb`는 Sky Deutschland 유료 방송 계약 AGB(PDF) 링크뿐이고 웹 이용 약관은 없다. Impressum — https://sport.sky.de/impressum "Urheberrecht": "Alle Rechte, insbesondere das Recht zur Vervielfältigung, sind vorbehalten." · "Die Nutzung sämtlicher Daten zum Zwecke des Text und Data Mining im Sinne von § 44b UrhG und des Trainings von KI-Modellen ist untersagt."
+- 판정: **금지** — TDM 목적 이용을 명시적으로 유보·금지하고 복제권을 유보했다. RSS도 없다. → 제외.
+
+**5) Matteo Moretto — Relevo**
+- 홈(1회)·`/futbol/mercado-fichajes/`(1회)에 RSS `<link>`는 없지만 WordPress 기본 경로 `https://www.relevo.com/feed/`가 작동: HTTP 200, 15건(모두 24시간 안), 스페인어, 전 종목(축구 10·NFL·모터사이클·테니스 등). 필드 `dc:creator` · `category` · `description`(HTML 약 280자) · `content:encoded`(본문 — 읽지 않음).
+- **Moretto 기사 0건**(피드 작성자: Heath Chesters·Marcos Durán·Miguel Ruiz 등). Moretto의 Substack 프로필(`matteomoretto.substack.com/feed` → `substack.com/@matteomoretto`로 리다이렉트)은 the Daily Briefing만 표시하고, the Daily Briefing에 `/s/matteo-moretto` 섹션이 있다 → 현재 주 채널은 #1(the Daily Briefing)이다.
+- 운영사: "la sociedad iGaming.com Group GmbH, con domicilio social en … Berlín"(이용 조건 서두).
+- 약관(확인 2026-10-10): Condiciones de uso — https://www.relevo.com/condiciones-uso.html §7: "Queda prohibida la reproducción total o parcial, distribución, puesta a disposición, comunicación pública y utilización, total o parcial, de los contenidos de esta web, en cualquier forma o modalidad, sin previa, expresa y escrita autorización, incluyendo, en particular, su mera reproducción y/o puesta a disposición como resúmenes, reseñas o revistas de prensa con fines comerciales o directa o indirectamente lucrativos, a la que se manifiesta oposición expresa." · "quedando prohibida cualquier alteración o modificación de los contenidos". robots.txt 주석은 AI·LLM 크롤러 접근을 명시적으로 허용한다.
+- 판정: **불명확** — 접근(robots)은 AI에 열려 있지만 이용 약관은 일부 복제(원제목 포함)와 수정을 서면 허가 없이 금지한다. 요약 반대 문구는 "상업·영리 목적"에 한정돼 비영리인 우리에게 직접 걸리지는 않지만, 그 앞의 일반 금지 조항이 남는다. Moretto 채널로서의 가치도 없다. → 제외 권고.
+
+**6) Ben Jacobs — CBS Sports 등**
+- CBS 작성자 페이지 `https://www.cbssports.com/writers/ben-jacobs/`(1회): 기사 15건, 최신 **2022-08-11** → CBS 기고는 사실상 끝났다.
+- CBS 축구 RSS `https://www.cbssports.com/rss/headlines/soccer/`: HTTP 200, 36건, `dc:creator` 36/36(James Benge·Pardeep Cattry·Chuck Booth·Francesco Porzio·Sandra Herrera) — **Ben Jacobs 0건**. (CBS 축구 RSS 자체는 이번 대상이 아니라 약관을 조사하지 않았다. 일반 소스로 쓰려면 `/add-source`로 따로 확인.)
+- 현재 기고처: CaughtOffside 칼럼니스트 목록과 the Daily Briefing `/s/ben-jacobs` 섹션(둘 다 Rocket 계열 — #1·#2 판정을 따름). 참고로 GiveMeSport(Valnet)도 확인했으나 robots.txt 주석이 "Use of any robot, crawler, or other tool to scrape, harvest, extract, or retrieve any content on this website using automated means is prohibited", 금지 용도 "(2) development or operation of artificial intelligence … including … retrieval-augmented generation"를 명시하고, 피드 10건에 Jacobs 글이 없었다.
+- 판정: **채널 소멸** → 제외. 대체 채널도 모두 금지·불명확.
+
+#### B. 리그 특화 2군 (basic_plan §3.3)
+
+**7) Football Italia** — 피드 `https://football-italia.net/feed/`: HTTP 200, 20건(약 10시간치 — 하루 수십 건), en-GB, `dc:creator`(Peter Young·Lorenzo Bettoni) · `category`(Serie A·Azzurri·Transfer Market 등) · `description`(평문 약 100자) · `content:encoded`(본문). 예시: "Juric frustrated by Italy call-up for 20-year-old Kouadio: ‘A waste of time’". 약관: Rocket ToS의 적용 사이트 목록에 football-italia.net이 들어 있고, robots.txt도 같은 `License` 줄 → #2와 같은 Search Only Terms Contract. 판정 **금지** → 제외.
+
+**8) Bundesliga.com 영문 뉴스** — 뉴스 RSS 없음(robots.txt의 `Sitemap:` 줄에 라이브티커 RSS `…/rss/en/rss-liveticker.rss`만 있음). 목록 `/en/bundesliga/news`(1회): 기사 링크 13개와 JSON `publishedAt`(UTC)이 있어 크롤러 난이도는 낮다. 그러나 robots.txt 주석과 약관이 막는다.
+- robots.txt: "Pursuant to Section 44b (3) UrhG, the rights holder expressly reserves the right to reproduce the content available on this website for the purposes of text and data mining. Any automated programmes, applets, bots or similar technologies must not be used to access, analyse or download the content distributed under this domain or any subdomain."
+- 이용약관 6.2 — https://www.bundesliga.com/en/bundesliga/info/terms-of-use-services · 법적 고지 2.2 — https://www.bundesliga.com/en/bundesliga/info/legal-notices : 같은 문구.
+- 판정 **금지** → 제외. (AI 봇 UA를 robots에서 허용하는 것은 DFL과 개별 계약한 검색·AI 업체용으로 보인다.)
+
+**9) Get German Football News** — `https://www.getgermanfootballnews.com`·`https://getgermanfootballnews.com`·`http://getgermanfootballnews.com` 모두 연결 거부(ECONNREFUSED, DNS는 85.233.160.215로 응답). 판정 **접속 불가** → 제외(사이트 상태는 M5 전에 다시 볼 수 있음).
+
+**10) Marca English**
+- 홈 `https://www.marca.com/en/`(1회)이 알리는 RSS `https://www.marca.com/en/rss/googlenews/portada.xml`과 RSS 목록 `/en/sports/rss/index.html`이 우리 UA에 **503**("En estos momentos el servicio no está disponible", 약 8분 뒤 재시도도 503). 웹 검색에 나오는 `https://e00-marca.uecdn.es/rss/en/index.xml`은 200이지만 최신 항목 **2026-04-28**에서 멈췄고, 31건 중 다수가 NFL·NCAAF·미국 연예 기사다.
+- 약관(확인 2026-10-10): Terms of Service — https://www.marca.com/en/corporate/terms-of-service.shtml 3.4 "it is prohibited to modify, copy, reuse, extract, exploit, reproduce, communicate publicly, make second or subsequent publications, … all or part of the Content included in the Website without express written authorisation" · "INFORMACIÓN DEPORTIVA expressly opposes the possibility of reproduction of its pages being considered a quote in the terms provided in Article 32, 1st paragraph, point 2, of the Spanish Intellectual Property Act."
+- 판정 **금지** → 제외(피드도 기술적으로 쓸 수 없음).
+
+**11) Football España** — 피드 `https://www.football-espana.net/feed`: HTTP 200, 10건(3일치), en-GB, `dc:creator`·`category`·`description`(HTML 약 250자)·`content:encoded`. 예시: "Modrić leaves future Real Madrid role undecided". 사이트에 ToS 링크는 없고 robots.txt가 `# License https://m4ow.uk/socw/2.txt`를 가리킨다(편집장 Ruairidh Barlow는 CaughtOffside 칼럼니스트 목록에도 있음). 판정 **금지** → 제외.
+
+**12) Get French Football News** — `https://www.getfootballnewsfrance.com/robots.txt`와 `/feed/` 모두 403 Cloudflare 챌린지("Just a moment...") → 우리 UA의 자동 접근을 막고 있어 robots·피드 모두 확인할 수 없다. 판정 **접속 불가** → 제외.
+
+**13) UEFA.com 뉴스**
+- `https://www.uefa.com/rss/uefachampionsleague/rss.xml`: HTTP 200, 50건(09-09~10-09), 7일 15건, 채널 "UEFA.com - UEFA Champions League - News", `category`는 모두 "Editorial", **author 없음**, `description` 평문 약 90자, 링크에 `?rss=…` 파라미터. 예시: "Matchday 2: Key stats on every game" · "League phase fixtures, results".
+- `https://www.uefa.com/rss/insideuefa/rss.xml`: 50건, 7일 3건, 기관 소식(About UEFA·Media Releases).
+- 약관(확인 2026-10-10): General Terms and Conditions — https://www.uefa.com/termsconditions/ 6.2 "Content provided by UEFA … may not be used, reproduced, distributed, transmitted, broadcast, displayed, sold, licensed or otherwise exploited for any other purposes than your personal access and viewing of the Content on the UEFA Platforms." · "you are prohibited from using automated tools, such as robots, spiders, or scripts, to scrape or collect Content and you must not use the Content to develop or train any software, model, algorithm, or AI tool". 6.9는 출처 표기 등 조건으로 링크를 허용. RSS 전용 약관: 찾지 못함.
+- 판정 **금지** — 피드 표시·요약 모두 "개인 열람" 밖이고 자동 수집 금지 조항에 걸린다. → 제외. 공식 일정·결과·조추첨은 football-data.org(M0-28)로 얻는다.
+
+#### C. 이적 집계 사이트 (basic_plan §3.5.2, Tier 3)
+
+**14) CaughtOffside (사이트 전체)** — 피드 `https://www.caughtoffside.com/feed/`: HTTP 200, 10건(약 13시간치), en-US, `dc:creator`(Mark Brus·Saikat)·`category`·`description`(HTML 약 500자)·`content:encoded`. 예시: "Chelsea eye signing of 19-year-old whose value has shot up from €18m to €65m in a year". 약관은 #2와 같다. 판정 **금지** → 제외.
+
+**15) Calciomercato.com 영문** — `https://www.calciomercato.com/en` **404**(영문판 폐지로 보임). 사이트 `<link>`가 가리키는 피드는 FootballCo의 `https://feeds.footballco.com/calcio/feed/g8r5n1czq4mw7v2k`(이탈리아어, 20건 약 3시간치, `dc:creator` 6/20)이고, 이 호스트의 robots.txt는 403. 약관 — https://www.calciomercato.com/about/condizioni-uso (FootballCo Media Terms of Use, Last updated: May 2026): "You shall not conduct, facilitate, authorise or permit any text or data mining or web scraping in relation to our site" · "Any \"robot\", \"bot\", \"spider\", \"scraper\" or other automated device … to access, obtain, copy, monitor or republish any portion of the site" · "an express reservation of our rights … for the purposes of Article 4(3) of Digital Copyright Directive". 판정 **금지** → 제외.
+
+**16) TEAMtalk · 17) Football365** (둘 다 Planet Sport Ltd)
+- RSS: `/feed` 404, 홈(1회씩)에 RSS `<link>` 없음. 홈 HTML에 기사 링크(TEAMtalk 57개·Football365 38개)와 `datetime` 속성이 있어 목록 크롤러 난이도는 낮다.
+- 약관(확인 2026-10-10): https://www.teamtalk.com/terms-conditions · https://www.football365.com/terms-conditions — "Use of any content in automated systems, including bots, scrapers, or artificial intelligence technologies for indexing, training, analysis, or republication, is strictly prohibited without written authorisation from the Business." · §6 "Prohibition on Automated Access and AI Scraping: You may not use automated tools, bots, scripts, or software to access, extract, download, index, or analyse content … 3. Replicating content for use on other platforms or services."
+- 판정 **금지** → 둘 다 제외.
+
+**18) 90min** — `https://www.90min.com/feed`(홈 `<link>`가 가리킴)와 `/posts.rss` 모두 같은 내용으로 **2025-09-29에 멈춤**(90건). 홈 본문: "Looking For Fresh Football Coverage? We've Moved To Sports Illustrated". Minute Media T&C(Last updated August 24, 2026, https://www.minutegroup.com/policies/terms-and-conditions): 지식재산 권리 유보, AI·수집 조항 찾지 못함. 판정 **채널 소멸** → 제외. (후속 매체 Sports Illustrated FC는 별도 `/add-source` 대상.)
+
+### 판정 요약
+
+| 구분 | 개수 | 소스 |
+|---|---|---|
+| `summarize: true` 가능 | **0** | — |
+| 원제목+링크만 | **0** | — |
+| 제외 — 금지(명시) | 11 | CaughtOffside(Romano·전체) · Football Italia · Football España · Sky Sport DE · Bundesliga.com · UEFA.com · Marca English · Calciomercato.com · TEAMtalk · Football365 |
+| 제외 — 불명확 | 3 | the Daily Briefing · Gianluca Di Marzio · Relevo |
+| 제외 — 채널 소멸·접속 불가 | 4 | Ben Jacobs(CBS) · Get German Football News · Get French Football News · 90min |
+
+- 근거 강도: **명시적 허용 0건.** "명시적 금지 없음 + RSS 게재 허용"(M0-23의 ESPN·NYT 유형)도 **0건**. AI 허용 신호는 기계 판독 신호 2건(the Daily Briefing `ai-input=yes`, Relevo robots 주석)뿐이고 둘 다 약관 본문과 충돌한다.
+- 크롤링(`type: crawl`) 후보: Sky Sport DE(목록에 날짜·작성자 없음, OG 보충 필요 — 난이도 중), Bundesliga.com(`publishedAt` JSON — 하), TEAMtalk·Football365(`datetime` — 하). 넷 다 §6.4(하루 1회·2~3초 간격·목록과 OG만)는 기술적으로 지킬 수 있지만 **약관이 봇 접근 자체를 금지**해 만들지 않는다. CaughtOffside 작성자 페이지는 RSS가 있어 크롤링이 필요 없다.
+
+### Source 권고값 (조사 시점 — 최종값은 "사용자 결정"의 등록 결과)
+
+권고안 파일: `/tmp/claude-1000/-home-sguys99-project-euro-digest/7c9f579e-56cb-4022-8cf1-1b0af43189dd/scratchpad/m0-24-sources-proposal.json` — 피드가 작동하는 8개를 **`enabled:false` · `summarize:false` · `terms_checked:false` 기록용**으로 제안한다(M0-23 Sky·Guardian 선례: 다시 조사하지 않게 하고, 허가를 받으면 바로 켤 수 있게 함). 각 `note`에 확인 날짜·판정·근거 URL·짧은 인용을 적었다.
+
+| id | type | URL | lang | tier | weight | competitions | author | robots_checked | 판정 |
+|---|---|---|---|---|---|---|---|---|---|
+| `daily-briefing` | journalist | thedailybriefing.io/feed | en | 2 | 1.5 | [] | — | true | 불명확 |
+| `caughtoffside-romano` | journalist | caughtoffside.com/author/fabrizio-romano/feed/ | en | 1 | 2.5 | [] | Fabrizio Romano | true | 금지 |
+| `caughtoffside` | aggregator | caughtoffside.com/feed/ | en | 3 | 1 | [] | — | true | 금지 |
+| `di-marzio` | journalist | gianlucadimarzio.com/rss | it | 2 | 2 | [SERIEA] | — | true | 불명확 |
+| `relevo` | rss | relevo.com/feed/ | es | 2 | 1 | [LALIGA] | — | true | 불명확 |
+| `football-italia` | rss | football-italia.net/feed/ | en | 3 | 1.5 | [SERIEA] | — | true | 금지 |
+| `football-espana` | rss | football-espana.net/feed | en | 3 | 1.5 | [LALIGA] | — | true | 금지 |
+| `uefa-ucl-news` | rss | uefa.com/rss/uefachampionsleague/rss.xml | en | 1 | 1.5 | [UCL] | — | true | 금지 |
+
+- 8개 모두 `enabled:false`, `summarize:false`, `terms_checked:false`.
+- **등록하지 않을 것을 권고(문서 기록만)**: Sky Sport DE·Bundesliga.com·TEAMtalk·Football365(RSS 없음 + 봇 금지), Marca English(피드 503·정체), Calciomercato.com(영문판 없음), Ben Jacobs CBS(비활성), GGFN·GFFN(접속 불가), 90min(이전). URL이 없거나 작동하지 않는 소스를 넣으면 FR-11 건강도 이슈만 늘어난다.
+- Tier는 basic_plan §3.8 기준: Romano 작성자 피드·UEFA 공식 = 1, Di Marzio·the Daily Briefing(Moretto·Jacobs·Falk 등 이적 기자 섹션)·Relevo = 2, CaughtOffside 전체·Football Italia·Football España(현지 보도 2차 인용 위주) = 3.
+- **스키마 검증**(`node --import tsx`, `src/lib/schema/source.ts`): 권고안 `SourceSchema.array()` **통과(8개)**, 기존 `configs/sources.json` 8개와 합친 16개 `SourcesFileSchema` **통과**(id 중복 없음). 합친 뒤에도 수집 대상(`enabled && terms_checked`)은 6개, LLM 요약 대상은 0개로 그대로다.
+
+### FR-20 재검토 입력 (M0-23 + M0-24 누적)
+
+| 범위 | 채널 | AI 요약 가능 | 원제목+링크 | 제외 |
+|---|---|---|---|---|
+| M0-23 1군 영문 RSS | 8 | 0 | 6 (BBC 4·ESPN·The Athletic) | 2 |
+| M0-24 2군·기자·집계 | 18 | 0 | 0 | 18 |
+| 합계 | 26 | **0** | 6 | 20 |
+| **결정 반영 후**(2026-10-10) | 26 | **0** | **9** (+ the Daily Briefing·Di Marzio·Relevo) | 17 |
+
+- 관찰된 경향: 이번에 확인한 영국·독일·스페인 매체 약관 대부분에 **AI 이용·자동 수집 금지 조항이 들어 있다**(Rocket의 Search Only Terms Contract, DFL·Sky DE의 § 44b UrhG 유보, Planet Sport·FootballCo·Valnet의 AI 조항). "약관 확인 + 영문 RSS LLM 요약"이라는 FR-20의 기본 경로는 2군 매체로 넓혀도 열리지 않는다.
+- 남은 판정: M0-25(국내 매체 — 원래 LLM 생략 대상), M0-26(Google News RSS), M0-27(GDELT DOC API). 이 셋은 "다른 매체 기사를 LLM에 넣는" 문제를 그대로 안고 있어 같은 기준이면 요약 가능 소스가 늘어날 가능성은 낮다.
+- 허가 요청 경로가 적혀 있는 곳: Di Marzio(편집부 "contattare la Redazione"), Rocket(4.4 waiver·서면 합의), Relevo·Marca·UEFA·Planet Sport·FootballCo(서면 허가). 비영리·광고 없음·원문 링크라는 조건으로 요청할 수 있지만 회신은 보장되지 않는다.
+
+### 사용자 확인 질문 — 2026-10-10 답변 완료
+
+> 답변: 1 → (C) 원제목+링크로 켬(수용한 위험으로 note 명시) · 2 → (A) 기록용 등록 · 3 → (B) 지금 재정의(PRD §15 D23·D24). 자세한 내용은 위 "사용자 결정 (2026-10-10)".
+
+
+1. **불명확 3개(the Daily Briefing·Di Marzio·Relevo) 처리**
+   - (A) **제외(추천)** — `terms_checked:false`. 근거가 엇갈리면 끈다는 D22 기준과 같다.
+   - (B) 제외한 뒤 Di Marzio 편집부(와 원하면 Relevo)에 비영리·원문 링크 조건으로 허가 요청 메일을 보내고, 회신을 받으면 재판정 — 비용 0, 시간이 걸리고 회신이 불확실하다.
+   - (C) BBC처럼 사용자 해석으로 원제목+링크(`summarize:false`)로 켬 — Di Marzio는 "개인 이용" 문구, Relevo는 "일부 복제 금지" 조항과 정면으로 부딪혀 위험하다.
+2. **`configs/sources.json` 기록 방식**
+   - (A) **작동 피드 8개를 `enabled:false` 기록용으로 등록(추천)** — M0-23 Sky·Guardian 선례. 다시 조사하지 않게 하고, 허가를 받으면 바로 켤 수 있다.
+   - (B) 문서에만 남기고 등록하지 않음 — `sources.json`이 수집 대상만 담아 단순해진다.
+3. **FR-20 재검토 시점** (26개 채널 중 AI 요약 가능 0)
+   - (A) **M0-25~27 판정을 마친 뒤 한 번에 재검토(추천)** — 국내 매체·Google News·GDELT 결과까지 보고 "원제목+링크 중심 + 코드 규칙 한국어 메타" 등 대안의 비용·품질을 함께 비교한다.
+   - (B) 지금 바로 재검토 — M1 설계(요약 파이프라인 범위)와 D0 시안(원제목 카드 비중)을 일찍 확정할 수 있지만 국내·검색 소스 판정 전이라 다시 바뀔 수 있다.
 
 ## M0-25 국내 매체 RSS
 (미착수)
