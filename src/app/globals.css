@@ -1,0 +1,136 @@
+/*
+ * [주의] 자리표시값 — D0 선택 후 DESIGN.md 토큰으로 교체. 여기서 디자인 값을 정하지 말 것.
+ *
+ * - 이 파일은 디자인 토큰의 단일 출처(DESIGN.md → CSS 변수·@theme) 자리만 마련한다(CLAUDE.md §3, PRD DR-12).
+ * - 아래 색은 전부 무채색 자리표시값이고, radius도 0으로 비워 둔다. 의미 있는 디자인 값이 아니다.
+ * - 새 색·폰트·간격·모션 값은 D0 게이트(시안 2~3개 → 사용자 선택 → DESIGN.md)를 거친 뒤에만 넣는다(CLAUDE.md §1-1, §4).
+ */
+
+/*
+ * 클래스 자동 탐색 기준을 src/로 한정한다(경로는 이 파일 기준, ".." = src/).
+ * 기본값(저장소 루트)이면 docs/·.claude/ 등의 마크다운·시안 HTML 속 클래스까지 CSS에 들어간다.
+ */
+@import "tailwindcss" source("..");
+
+/* 다크 모드는 <html data-theme="dark"> 속성 기반 (CLAUDE.md §7.2). 초기 인라인 테마 스크립트는 별도 작업. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ── shadcn/ui 기본 변수 (라이트) — 자리표시값 ── */
+:root {
+  --radius: 0rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0 0 0);
+  --primary: oklch(0.2 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0 0);
+  --secondary-foreground: oklch(0.2 0 0);
+  --muted: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.95 0 0);
+  --accent-foreground: oklch(0.2 0 0);
+  --destructive: oklch(0.4 0 0);
+  --border: oklch(0.9 0 0);
+  --input: oklch(0.9 0 0);
+  --ring: oklch(0.6 0 0);
+}
+
+/* ── shadcn/ui 기본 변수 (다크) — 자리표시값 ── */
+[data-theme="dark"] {
+  --background: oklch(0 0 0);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.15 0 0);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.15 0 0);
+  --popover-foreground: oklch(1 0 0);
+  --primary: oklch(0.9 0 0);
+  --primary-foreground: oklch(0.15 0 0);
+  --secondary: oklch(0.25 0 0);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.25 0 0);
+  --muted-foreground: oklch(0.7 0 0);
+  --accent: oklch(0.25 0 0);
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.7 0 0);
+  --border: oklch(0.3 0 0);
+  --input: oklch(0.3 0 0);
+  --ring: oklch(0.5 0 0);
+}
+
+/*
+ * ── 프로젝트 전용 토큰 자리 (이름만 예약 — 실제 선언은 D0에서, 라이트·다크 모두) ──
+ * 이름은 D0에서 확정하며 바뀔 수 있다. 근거: PRD DR-03·DR-04·DR-08, CLAUDE.md §4.
+ *
+ * 브랜드 액센트 1개 (DR-04)
+ *   --brand-accent, --brand-accent-foreground
+ *
+ * 대회 컬러 6종 (로고 대체)
+ *   --competition-epl, --competition-laliga, --competition-seriea,
+ *   --competition-bundesliga, --competition-ligue1, --competition-ucl
+ *   (각 *-foreground 대비색 포함)
+ *
+ * 경기 결과 — 승/무/패 (색 외 W/D/L 텍스트 병기 필수)
+ *   --result-win, --result-draw, --result-loss
+ *
+ * 순위 변동 — 상승/하락 (색 외 ▲▼ 병기 필수)
+ *   --trend-up, --trend-down
+ *
+ * 이적 단계 5종 (PRD 용어집: rumor → negotiating → agreed → official, collapsed)
+ *   --transfer-rumor, --transfer-negotiating, --transfer-agreed,
+ *   --transfer-official, --transfer-collapsed
+ *
+ * 출처 Tier 1~3
+ *   --tier-1, --tier-2, --tier-3
+ *
+ * 숫자 서체 (스코어·순위·승점, tabular-nums와 함께 사용)
+ *   --font-numeric
+ *
+ * 모션 지속시간 (150~250ms 범위, prefers-reduced-motion 시 제거)
+ *   --duration-fast, --duration-base, --duration-slow
+ */
+
+/* ── shadcn 변수 → Tailwind 유틸리티 연결 (bg-background, text-foreground, rounded-lg 등) ── */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* radius 배율은 shadcn v4 기본 관례를 따른다. 기준값(--radius)은 D0에서 정한다. */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * 배경·글자색을 변수에 연결하는 것만 둔다. 폰트·여백 등 시각 스타일은 D0 이후.
+ * base 레이어에 둬야 나중에 붙는 유틸리티 클래스(bg-*, text-*)가 이 규칙을 덮을 수 있다.
+ */
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+}
