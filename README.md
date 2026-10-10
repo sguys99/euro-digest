@@ -188,4 +188,5 @@ tests/      단위 테스트 · e2e/(Playwright)
 
 ## 라이선스
 
-라이선스는 아직 정하지 않았습니다(저장소에 LICENSE 파일 없음).
+- **코드**: [Apache License 2.0](LICENSE)
+- **콘텐츠는 제외**: 원문 기사의 저작권은 각 매체에 있습니다. `data/`의 요약 카드와 `fixtures/`의 수집 샘플은 원문을 바탕으로 한 것이라 이 라이선스로 재배포를 허락하지 않습니다. 축구 데이터는 football-data.org·API-Football 이용 약관을 따릅니다.
