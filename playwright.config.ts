@@ -1,9 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
+import { normalizeBasePath } from "./src/lib/paths";
+
 // e2e는 빌드된 정적 결과(out/)를 대상으로 한다. 먼저 `npm run build`가 필요하다.
 // scripts/serve-out.ts가 out/을 GitHub Pages처럼 basePath 아래로 서빙한다.
+// basePath 규칙은 next.config.ts와 같다(단일 출처: src/lib/paths.ts).
 const port = Number(process.env.PORT ?? 4173);
-const basePath = (process.env.BASE_PATH ?? "/euro-digest").replace(/\/+$/, "");
+const basePath = normalizeBasePath(process.env.BASE_PATH);
 const siteUrl = `http://127.0.0.1:${port}${basePath}/`;
 const isCI = Boolean(process.env.CI);
 

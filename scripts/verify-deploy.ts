@@ -3,7 +3,7 @@
  * 하나라도 실패하면 exit 1. 판정은 scripts/lib/deploy-verify.ts의 순수 함수가 맡고, 여기는 요청·출력만 한다.
  *
  * 사용법: npm run verify:deploy -- [사이트 URL] [--dir <경로>]...
- *   기본 URL: SITE_URL(기본 https://sguys99.github.io) + BASE_PATH(기본 /euro-digest) + "/"
+ *   기본 URL: SITE_URL + BASE_PATH + "/" (기본값·정규화 규칙은 src/lib/paths.ts — 운영 주소 https://sguys99.github.io/euro-digest/)
  *
  * HTML 요청(홈·404·슬래시)에는 캐시 우회 쿼리를 붙여 CDN에 남은 이전 응답 대신 방금 배포한 결과를 본다.
  * 리다이렉트는 따라가지 않는다(홈이 다른 곳으로 넘어가면 그 자체를 실패로 보고).

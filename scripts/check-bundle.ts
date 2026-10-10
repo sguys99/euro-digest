@@ -5,7 +5,7 @@
  * 먼저 `npm run build`가 필요하다. CI(.github/workflows/ci.yml)는 build 직후에 실행한다.
  *
  * 사용법: npm run check:bundle -- [--budget-kb <n>] [--out-dir <dir>]
- * 환경변수: BASE_PATH(next.config.ts와 같은 규칙, 기본 /euro-digest)
+ * 환경변수: BASE_PATH(next.config.ts와 같은 규칙 — src/lib/paths.ts)
  */
 import { statSync } from "node:fs";
 import path from "node:path";

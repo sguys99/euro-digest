@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 
+import { basePath } from "./support/site";
+
 // 경로는 baseURL(basePath 포함) 기준 상대 경로로 쓴다. "/"로 시작하면 basePath가 빠진다.
-const basePath = (process.env.BASE_PATH ?? "/euro-digest").replace(/\/+$/, "");
 
 test("홈이 200으로 열리고 서비스 이름 h1이 보인다", async ({ page }) => {
   const response = await page.goto("./");

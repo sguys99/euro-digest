@@ -9,15 +9,17 @@
  * - 없는 경로는 out/404.html을 404 상태로 준다
  * - 편의상 `/`는 `${BASE_PATH}/`로 302 리다이렉트
  *
- * 환경변수: PORT(기본 4173) · HOST(기본 127.0.0.1) · BASE_PATH(기본 /euro-digest, next.config.ts와 같은 규칙) · OUT_DIR(기본 out)
+ * 환경변수: PORT(기본 4173) · HOST(기본 127.0.0.1) · BASE_PATH(next.config.ts와 같은 규칙 — src/lib/paths.ts) · OUT_DIR(기본 out)
  */
 import { createReadStream, existsSync, statSync, type Stats } from "node:fs";
 import { createServer, type ServerResponse } from "node:http";
 import path from "node:path";
 
+import { normalizeBasePath } from "@/lib/paths";
+
 const port = Number(process.env.PORT ?? 4173);
 const host = process.env.HOST ?? "127.0.0.1";
-const basePath = (process.env.BASE_PATH ?? "/euro-digest").replace(/\/+$/, "");
+const basePath = normalizeBasePath(process.env.BASE_PATH);
 const outDir = path.resolve(process.env.OUT_DIR ?? "out");
 
 const CONTENT_TYPES: Record<string, string> = {

@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-19` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-20` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -144,7 +144,7 @@
 - [x] M0-16 zod 스키마 v0.1 구현 (`src/lib/schema/`) — **부록 A 기준**, configs·data 전부. 부록 A에 없는 스키마(competitions·names.ko·national-team·bigmatch-rules·search-queries·formations·team-colors·transfer-windows·`players/korean.json`·seen-urls·unknown-names)는 초안 작성 → ❓ 사용자 확인 후 부록 A에 추가 — 2026-10-10 완료: zod 4.6, `src/lib/schema/` + `schemaRegistry`(21개), 초안 12종·결정 10건 사용자 일괄 승인 → 부록 A 반영, `fixtures/schema/` 예시 22개·스키마 테스트 258개
 - [x] M0-17 `scripts/validate.ts` 1차: `configs/*` 스키마 검증 → CI 연결 (잘못된 설정은 CI 실패) — 2026-10-10 완료: configs·data(있으면) 스키마 + 교차 참조 3종(search-queries→sources·korean-players, 대표팀 명단→korean-players), 미등록 파일·BOM은 오류, 필수 파일 `takedowns.json`(seed `[]`), CI `::error` 주석
 - [x] M0-18 `src/lib/time.ts`: UTC 저장·KST 표시 + DST 테스트 (2026-10-25, 2027-03-28 전후 케이스) (NFR-10) — 2026-10-10 완료: `Intl`만 사용(의존성 0), KST 날짜·포맷·ISO 주차·KST 창·현지→UTC(DST 경계는 RFC 5545 `compatible`), 테스트 158개(시스템 TZ 5종 통과), 다른 파일의 시간대 API 사용 금지 가드 테스트
-- [ ] M0-19 `src/lib/paths.ts`: basePath 헬퍼(정적 자산·RSS·ics·OG) + 테스트
+- [x] M0-19 `src/lib/paths.ts`: basePath 헬퍼(정적 자산·RSS·ics·OG) + 테스트 — 2026-10-10 완료: `routes.*`(PRD §4 IA 전 경로, basePath 없음·trailing slash)·`artifacts.*`·`withBasePath`·`absoluteUrl`·`summaryErrorIssueUrl`, next.config가 같은 정규화로 `NEXT_PUBLIC_*` 인라인, `/euro-digest` 하드코딩 가드, 루트 빌드(`BASE_PATH=`)도 통과. OG 경로는 잠정(M5-01에서 확인)
 - [ ] M0-20 `scripts/lib/llm.ts`: live/mock 모드, Batches 제출·폴링, `usage` 집계 — SDK import는 이 파일에서만
 - [ ] M0-21 `scripts/lib/cost.ts`: 모델 단가 표(구현 시점 공식 단가 확인), 예상 비용 계산, 비용 기록(prod → `runs.json`, dev → `runs-dev.json`), 가드는 두 파일 합산
 - [ ] M0-22 구조화 로거 + GitHub 이슈 생성 헬퍼 (같은 원인이면 기존 이슈에 댓글)
@@ -274,7 +274,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M1-35 카드 공유(Web Share/링크 복사, 카드 앵커) + 오류 신고 링크(카드 ID 자동 입력) (FR-34, FR-36)
 - [ ] M1-36 `/about`(서비스·발행 시각·출처·저작권 정책·Tier 설명·AI 고지·데이터 출처·연락처) + 커스텀 404 (FR-140)
 - [ ] M1-37 상태 디자인 4종: 스켈레톤 · 빈 상태 · 오류(마지막 정상 데이터) · 오프라인 (DR-07)
-- [ ] M1-38 기본 SEO: 페이지별 title/description/OG 기본값, sitemap, robots.txt (FR-124)
+- [ ] M1-38 기본 SEO: 페이지별 title/description/OG 기본값, sitemap, robots.txt (FR-124) — ❓ 프로젝트 사이트라 `/euro-digest/robots.txt`는 크롤러가 읽지 않음(호스트 루트만 유효) → Search Console sitemap 제출 vs 사용자 사이트 저장소 루트에 두기 결정 (M0-19 메모)
 - [ ] M1-39 시각 검증: 375/1280 × 라이트/다크 스크린샷 ↔ D0 선택안 비교, 접근성 자동 검사, 번들 예산 확인
 
 ### M1-F 운영 리허설·실측 🆕
@@ -419,7 +419,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 
 **목표**: PRD KPI(Lighthouse·접근성·SEO·운영)를 달성하고 정식 공개.
 
-- [ ] M5-01 OG 이미지 빌드 시 생성(날짜·대회·팀) — **Playwright로 템플릿 HTML 스크린샷**(확정, 새 의존성 없음) (DR-10)
+- [ ] M5-01 OG 이미지 빌드 시 생성(날짜·대회·팀) — **Playwright로 템플릿 HTML 스크린샷**(확정, 새 의존성 없음) (DR-10) — ❓ 파일 경로는 M0-19 잠정안(`/og/default.png`·`/og/news/{date}.png`·`/og/competitions/{comp}.png`·`/og/teams/{team}.png`, `artifacts.ogImage`) — 공개 URL 구조라 착수 전 사용자 확인
 - [ ] M5-02 앱 아이콘·테마 컬러 교체
 - [ ] M5-03 SEO: canonical, 구조화 데이터(NewsArticle·SportsTeam·SportsEvent), 전체 sitemap (NFR-03)
 - [ ] M5-04 GoatCounter 연동 + 이벤트(원문 클릭·RSS/ics 클릭·PWA 설치·마이 팀 설정) (PRD §11.2)

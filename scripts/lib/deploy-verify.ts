@@ -10,6 +10,12 @@
  */
 import { parseArgs } from "node:util";
 
+import {
+  DEFAULT_BASE_PATH,
+  DEFAULT_SITE_URL,
+  normalizeSiteOrigin,
+} from "@/lib/paths";
+
 import { displayWidth } from "./bundle-budget";
 import type { ParseResult } from "./cli-args";
 import {
@@ -21,7 +27,8 @@ import {
   type ResolveOptions,
 } from "./site-refs";
 
-export const DEFAULT_SITE_ORIGIN = "https://sguys99.github.io";
+/** SITE_URL 기본값(단일 출처: src/lib/paths.ts) */
+export const DEFAULT_SITE_ORIGIN = DEFAULT_SITE_URL;
 
 /** 정적 자산으로 검사할 사이트 안 경로 접두(basePath 제외) */
 export const STATIC_ASSET_PREFIX = "/_next/static/";
@@ -39,7 +46,7 @@ export interface VerifyDeployArgs {
 
 export const VERIFY_DEPLOY_USAGE = [
   "사용법: npm run verify:deploy -- [사이트 URL] [--dir <경로>]...",
-  `  사이트 URL     기본: SITE_URL(기본 ${DEFAULT_SITE_ORIGIN}) + BASE_PATH(기본 /euro-digest) + "/"`,
+  `  사이트 URL     기본: SITE_URL(기본 ${DEFAULT_SITE_ORIGIN}) + BASE_PATH(기본 ${DEFAULT_BASE_PATH}) + "/"`,
   "  --dir <경로>   trailing slash 검사에 더할 디렉터리(basePath 기준, 예: news). 여러 번 지정 가능",
   "                 사이트 루트(basePath 자체)는 항상 검사한다",
   "  --help, -h     이 도움말",
@@ -51,13 +58,12 @@ export interface DefaultSiteEnv {
   BASE_PATH?: string;
 }
 
-/** 인자를 주지 않았을 때의 사이트 주소 — next.config.ts·deploy.yml과 같은 SITE_URL·BASE_PATH 규칙 */
+/**
+ * 인자를 주지 않았을 때의 사이트 주소 — next.config.ts·deploy.yml과 같은 SITE_URL·BASE_PATH 규칙
+ * (정규화 단일 출처: src/lib/paths.ts). 형식이 틀리면 PathInputError.
+ */
 export function defaultSiteUrl(env: DefaultSiteEnv): string {
-  const origin = (env.SITE_URL?.trim() || DEFAULT_SITE_ORIGIN).replace(
-    /\/+$/,
-    "",
-  );
-  return `${origin}${normalizeBasePath(env.BASE_PATH)}/`;
+  return `${normalizeSiteOrigin(env.SITE_URL)}${normalizeBasePath(env.BASE_PATH)}/`;
 }
 
 /** http(s) 절대 URL만 받아 쿼리·조각을 떼고 끝에 `/`를 붙인다. */
@@ -117,7 +123,16 @@ export function parseVerifyDeployArgs(
       error: `사이트 URL은 하나만 받습니다 (받은 값: ${positionals.join(", ")})`,
     };
   }
-  const site = normalizeSiteUrl(positionals[0] ?? defaultSiteUrl(env));
+  let rawSite: string;
+  try {
+    rawSite = positionals[0] ?? defaultSiteUrl(env);
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+  const site = normalizeSiteUrl(rawSite);
   if (!site.ok) return site;
 
   const dirs: string[] = [];

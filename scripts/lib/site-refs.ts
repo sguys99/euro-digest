@@ -7,9 +7,13 @@
  * (RSC 페이로드 안의 문자열을 태그로 오인하지 않도록).
  *
  * 경로 용어
- * - basePath: 사이트가 걸리는 접두 경로(기본 `/euro-digest`, 루트 배포면 "")
+ * - basePath: 사이트가 걸리는 접두 경로(기본값은 src/lib/paths.ts, 루트 배포면 "")
  * - pageUrlPath / sitePath: basePath를 뺀 사이트 안 경로. 항상 `/`로 시작한다(예: `/`, `/404.html`, `/_next/x.js`)
  */
+
+// basePath 정규화 — next.config.ts·serve-out.ts와 같은 규칙(단일 출처: src/lib/paths.ts).
+// 미지정이면 기본값, 끝의 `/`는 제거, 빈 값("")이면 루트 배포. 형식이 틀리면 PathInputError.
+export { normalizeBasePath } from "@/lib/paths";
 
 export interface HtmlTag {
   /** 소문자 태그 이름 */
@@ -173,14 +177,6 @@ export function extractRefs(html: string): HtmlRef[] {
     }
   }
   return refs;
-}
-
-/**
- * basePath 규칙을 next.config.ts·serve-out.ts와 맞춘다: 미지정이면 `/euro-digest`, 끝의 `/`는 제거,
- * 빈 값("")이면 루트 배포.
- */
-export function normalizeBasePath(raw: string | undefined): string {
-  return (raw ?? "/euro-digest").replace(/\/+$/, "");
 }
 
 /**

@@ -6,6 +6,8 @@
  */
 import { parseArgs } from "node:util";
 
+import { DEFAULT_BASE_PATH } from "@/lib/paths";
+
 import type { ParseResult } from "./cli-args";
 
 export const BYTES_PER_KB = 1024;
@@ -206,7 +208,7 @@ export const BUNDLE_CHECK_USAGE = [
   `  --budget-kb <n>  페이지당 초기 JS 예산(KB, gzip). 기본 ${DEFAULT_BUDGET_KB} (PRD DR-11)`,
   "  --out-dir <dir>  검사할 정적 export 폴더. 기본 out",
   "  --help, -h       이 도움말",
-  "환경변수 BASE_PATH: next.config.ts와 같은 규칙(기본 /euro-digest)",
+  `환경변수 BASE_PATH: next.config.ts와 같은 규칙(기본 ${DEFAULT_BASE_PATH})`,
 ].join("\n");
 
 /** `--budget-kb`(양수, 소수 허용)·`--out-dir`·`--help`를 파싱한다. */

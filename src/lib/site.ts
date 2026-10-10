@@ -12,6 +12,12 @@ export const SITE_NAME = "유로 다이제스트";
 export const SITE_TAGLINE = "매일 아침 07:00, 유럽 축구 소식을 한국어 3줄로.";
 
 /**
+ * GitHub 저장소 주소 — 푸터 저장소 링크(FR-142)·이슈 폼 링크(FR-36, src/lib/paths.ts)가 쓴다.
+ * 저장소 이름이 바뀌면(plan §14 B6) 여기와 BASE_PATH 기본값(src/lib/paths.ts)을 함께 고친다.
+ */
+export const REPO_URL = "https://github.com/sguys99/euro-digest";
+
+/**
  * 화면 표시 시간대(IANA). 저장은 UTC, 표시는 KST(CLAUDE.md §8).
  * 변환 로직은 src/lib/time.ts(M0-18)에서만 구현한다 — 이 파일에는 값만 둔다.
  */

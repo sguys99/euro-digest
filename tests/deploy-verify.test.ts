@@ -82,6 +82,18 @@ describe("parseVerifyDeployArgs", () => {
     );
   });
 
+  it("환경변수 형식이 틀리면 예외 대신 오류 결과를 돌려준다(정규화: src/lib/paths.ts)", () => {
+    const badSite = parseVerifyDeployArgs([], { SITE_URL: "https://a.dev/x" });
+    expect(badSite.ok).toBe(false);
+    expect(!badSite.ok && badSite.error).toContain("SITE_URL");
+    const badBase = parseVerifyDeployArgs([], { BASE_PATH: "euro" });
+    expect(!badBase.ok && badBase.error).toContain("BASE_PATH");
+    // 위치 인자를 주면 환경변수 기본값은 계산하지 않는다
+    expect(
+      parseVerifyDeployArgs([SITE], { SITE_URL: "https://a.dev/x" }).ok,
+    ).toBe(true);
+  });
+
   it("위치 인자 URL은 끝에 / 를 붙이고 쿼리·조각을 뗀다", () => {
     const parsed = parseVerifyDeployArgs(
       ["https://sguys99.github.io/euro-digest?x=1#top"],
