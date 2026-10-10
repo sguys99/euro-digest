@@ -28,7 +28,7 @@
 - [M0-28 football-data.org](#m0-28-football-dataorg) ⏳ 조사 완료 — 사용자 확인 대기. 6개 대회 순위·경기·득점 무료 제공 확인(경기별 득점자·폼은 미제공), 약관 조건부 허용(출처 표기 필수)·**B7 미발동**, `competitions.json` 초안은 scratchpad(저장소 미기록)
 - [M0-29 API-Football](#m0-29-api-football) ⏳ 조사 완료 — 사용자 확인 대기. 무료 플랜 2026-27 **일부 가능**(시즌 단위 막힘·경기 단위 가능 → B1 부분 발동), 경기별 득점자·라인업·선수 기록 무료, 약관 조건부 허용·B7 미발동, `configs/competitions.json` 저장소 기록(validate 통과)
 - [M0-30 Anthropic 실측](#m0-30-anthropic-실측) ⏳ 실측 완료 — 사용자 확인 대기. Haiku 5.5 단가는 M0-21 표와 같음, 요청 17건 $0.007474(`runs-dev.json` 3건), 배치 완료 1분 50초~6분 33초(겨울 실제 여유 4~5분을 넘는 표본 1개), 캐시 동작(B3 미발동), thinking 기본값이 사실성 최고(45/45줄)
-- [M0-31 서비스명·저장소명](#m0-31-서비스명저장소명)
+- [M0-31 서비스명·저장소명](#m0-31-서비스명저장소명) ⏳ 예비 조사 완료 — 사용자 KIPRIS 확인 대기(🙋 U-09). KIPRIS 자동 검색 불가(API 키 없음·웹 robots `Disallow: /`), 웹·도메인·GitHub 검색에서 같은 이름의 서비스·매체·상표 기록 0건 → 예비 판정 **충돌 가능성 낮음(잠정)**, 저장소명 문제없음. B6 대비 변경 범위·대안 이름 3개 정리
 - [M0-32 2026-27 한국 선수 명단 초안](#m0-32-2026-27-한국-선수-명단-초안)
 
 ---
@@ -1885,7 +1885,148 @@ M0-28 초안(`scratchpad/m0-28/competitions.draft.json`)에 이번에 확인한 
 - M1-20(프롬프트·출력 스키마 — 이번 임시 프롬프트·스키마 출발점), M1-21(조사 보정 포함 치환), M1-23(사실성 검사기 — 위 "M1 구현 메모"의 검증 목록), M0-34(브리핑 샘플 `brief-samples.json` 재사용), M0-36(LLM mock — 이번 실제 출력에서 정상·한자 혼입·영어 출력·순위 오해 사례를 뽑아 쓸 수 있다).
 
 ## M0-31 서비스명·저장소명
-(미착수)
+
+> 상태: **⏳ 예비 조사 완료 — 사용자 KIPRIS 확인 대기(🙋 U-09).** 웹에서 찾을 수 있는 범위에서는 "유로 다이제스트 / Euro Digest / EuroDigest"라는 이름을 쓰는 운영 중 서비스·매체·앱·상표 기록을 **찾지 못했다** → **예비 판정: 충돌 가능성 낮음(잠정).** 다만 핵심 근거인 **한국 KIPRIS 검색은 자동화할 수 없어 하지 못했다**(아래 1). 최종 판정은 사용자가 아래 "KIPRIS 확인 절차"로 직접 검색한 뒤 내린다. 이 절은 사실 수집이며 법률 자문이 아니다.
+
+조사일: 2026-10-11. 요청 범위: WebSearch 29회(미국 기준 검색 엔진 — **국내 포털 결과는 사실상 없다**), WebFetch 2건(GitHub Docs, KIPRIS 사용 안내 블로그), 직접 HTTP 요청 11건(robots.txt 9 · 도메인 홈 2 — 홈은 robots.txt 확인 후 `<title>`·description만 추출), DNS-over-HTTPS 조회 11건(`dns.google`), GitHub API 2건(`gh`). User-Agent는 문서 머리말의 `EuroDigestBot/0.1`. **금지 사이트(네이버·다음 포함) 접근 0건**, LLM 호출 0건(비용 0).
+
+### 요약 (먼저 읽기)
+1. **KIPRIS 자동 검색은 불가 → 사용자가 직접 검색한다.** 공개 API(KIPRIS Plus)는 회원가입·서비스별 활용신청 뒤 받는 **인증키가 필요한데, 이 프로젝트에는 키가 없다**(Secrets·환경변수 이름 어디에도 없음). 웹 화면은 `www.kipris.or.kr/robots.txt`가 **`User-Agent : *` / `Disallow : /`**(Googlebot·bingbot·Naver·Daum 등 검색엔진만 Allow)라 자동 수집을 하지 않았다.
+2. **같은 이름의 서비스·매체·앱은 찾지 못했다.** 영문("Euro Digest"·"EuroDigest"·+football/trademark/newsletter/app)과 한글("유로 다이제스트") 검색에서 축구·스포츠·뉴스 분야의 같은 이름은 0건이다. 걸린 것은 철자가 다른 이름(EuroDIG, EuropEval Digest, EU Digest, European Business Digest)뿐이다. `eurodigest.com`은 **매물로 나온 파킹 도메인**("EuroDigest.com is for sale … An eCorp Venture")이고, `.net`·`.eu`·`.co.kr`·`.kr`·`.io`·`euro-digest.com`은 DNS 응답이 없다(NXDOMAIN).
+3. **해외 상표 DB는 직접 조회하지 못했다.** EUIPO는 robots.txt에 `disallow: /eSearch/`가 있고, WIPO Global Brand Database는 캡차, Justia(USPTO 미러)는 Cloudflare 챌린지, TMview(tmdn.org)는 연결 리셋으로 막힌다. USPTO Trademark Search는 자동화 허용 조건을 확인하지 못해 요청하지 않았다. 웹 검색으로는 미국 상표 미러에서도 "EURO DIGEST" 기록이 0건이었다. 다만 이것으로 **"없다"가 증명되지는 않는다.** KIPRIS 해외 검색(미국·유럽 포함)으로 사용자가 보완한다.
+4. **이름의 두 요소는 모두 서술적 성격이 강하다**(사실 메모, 법률 판단 아님). UEFA가 "EURO 2024"를 미국에 출원했을 때 USPTO는 처음에 "EURO는 잘 알려진 지리적 명칭"이라는 이유로 서술적 표장으로 보고 거절했다. "Digest"는 축구 잡지 이름에도 흔하다(일본 *Soccer Digest* 1978~, *World Soccer Digest*, 미국 *Football Digest* 1947~52). → 이 조합을 독점하는 강한 선행 표장이 있을 가능성은 낮아 보인다(추정). 반대로 우리도 이 이름을 등록해 보호받기는 어렵다. 다만 등록할 계획이 없으므로 영향은 없다.
+5. **저장소명은 문제없다.** `sguys99/euro-digest`는 이미 있고(Public, 생성 2026-10-09 15:15 UTC), M0-13에서 Pages 배포까지 확인했다. GitHub 저장소명은 소유자 계정 안에서만 유일하면 되므로 다른 사람과 충돌할 수 없다.
+6. **B6에 대비해 확인한 것**: 이름(basePath)을 바꿔야 한다면 코드에서 고칠 곳은 단일 출처(`src/lib/paths.ts`)와 워크플로 env 2곳, 테스트 기대값뿐이다. 나머지는 문자열 치환이다. GitHub에서 저장소 이름을 바꾸면 **Pages 프로젝트 사이트 URL만은 자동 리다이렉트되지 않는다.** 따라서 바꾼다면 **지금(M0, U-06 cron-job.org·U-08 GoatCounter 설정 전)이 가장 싸다.**
+
+### 1. KIPRIS 자동화 가능 여부
+
+| 경로 | 확인 결과 | 판정 |
+|---|---|---|
+| KIPRIS Plus Open API (`plus.kipris.or.kr`, 공공데이터포털 연계) | 회원가입 → 서비스(특허·상표·디자인)별 활용신청 → 인증키 1개 발급. 일부 상표 API는 월 1,000회 무료라는 안내가 있다(검색 결과 요약 — 신청 화면은 직접 확인하지 않음). 이 프로젝트에는 KIPRIS 키가 없다(환경변수 이름·저장소·plan §3 Secrets 목록에 없음) | **하지 않음**(키 없음). 키 발급은 새 외부 서비스 추가라 이번 범위 밖이다 |
+| KIPRIS 웹 화면 (`www.kipris.or.kr`) | robots.txt: `User-Agent : *` → `Disallow : /`. 이어서 bingbot·Googlebot·Googlebot-Mobile·Mediapartners-Google·Daum·AdsBot-Naver·Naverbot만 `Allow:/` | **불가** — 자동 수집 금지로 판단, 검색 페이지 요청 0건 |
+| `plus.kipris.or.kr/robots.txt` | 없음(404 안내 페이지를 HTTP 200으로 반환) | 해당 없음 — API 경로라 키가 필요하다 |
+| KIPRIS 이용약관의 자동화 조항 | 검색으로 원문을 찾지 못했다(robots.txt를 존중해 약관 페이지도 요청하지 않음) | 찾지 못함 — robots.txt만으로 결론이 충분하다 |
+
+### 2. 웹 검색 결과 (이름 충돌)
+
+| 검색어 | 같은 이름(축구·스포츠·뉴스) | 비슷한 이름(참고) |
+|---|---|---|
+| "Euro Digest" football / newsletter·magazine·app·podcast / app store·Google Play | **0건** | 없음(유럽 축구 일반 기사, Eurosport·UEFA 앱) |
+| "Euro Digest" trademark · "EURO DIGEST" trademark USPTO serial | **0건** | European Business Digest, Inc.(USPTO 소유자 — 표장은 "EBD"·"REVIEW ITALY", 잡지) |
+| "EuroDigest" · eurodigest.com | **0건** | EuroDIG(유럽 인터넷 거버넌스 포럼), EuropEval Digest(유럽평가학회 뉴스레터), *European Law Digest* |
+| "유로 다이제스트" | **0건**(국내 포털 결과가 없는 검색 엔진이라는 한계가 있다) | EU Digest(ACR+ 정책 간행물), Euronews Business 뉴스레터 |
+| "Football Digest" (참고) | 해당 없음 | *Football Digest*(미국 Simons Publications 연간지 1947~52, 현재 발행 여부 미확인), *Football Stadium Digest*(미국 웹사이트), 일본 *Soccer Digest*·*World Soccer Digest*(日本スポーツ企画出版社) |
+
+도메인(2026-10-11, DNS-over-HTTPS): `eurodigest.com`은 A 레코드가 있다(Cloudflare). 홈 `<title>`은 "EuroDigest.com is for sale — Partner, Invest or Acquire | An eCorp Venture"로 **매물 파킹 페이지**이고 운영 서비스가 아니다. `eurodigest.net`·`eurodigest.eu`·`eurodigest.co.kr`·`eurodigest.kr`·`eurodigest.io`·`euro-digest.com`은 NXDOMAIN이다.
+GitHub(`gh search repos euro-digest`): 같은 이름은 이 저장소뿐이고, 비슷한 이름은 `madyanya-arch/Europharma_digest`(제약 뉴스, 무관) 1건이다.
+
+**UEFA "EURO" 관련 메모**: UEFA는 등록 표장(대회 엠블럼·트로피·마스코트·개최 도시 로고 등)의 무단 사용을 상표 침해로 본다고 밝혔다. 우리는 "UEFA"·연도(예: "EURO 2028")·트로피·로고를 쓰지 않는다(CLAUDE §1-6 로고 금지). 따라서 남는 위험은 **상표 충돌보다는 검색 노출 경쟁과 오인 가능성**이다. 이미 basic_plan §0 ④·PRD 위험표("유로 다이제스트 축구" 브랜드 키워드 일관 사용)에 대응이 있다. 사이트 소개(/about)에 "UEFA와 무관한 개인 프로젝트" 한 줄을 넣는 것을 M5 문구 작업에서 검토할 만하다(제안 — 구현하지 않음).
+
+### 3. 해외 상표 DB 접근 (자동 조회 시도 여부)
+
+| DB | robots.txt / 접근 | 이번 조사 |
+|---|---|---|
+| EUIPO eSearch | `disallow: /eSearch/`(`/eSearchCLW/`·`/sim/` 등 DB 경로 전부) | 조회 안 함 |
+| WIPO Global Brand Database (`branddb.wipo.int`) | robots.txt 요청에도 캡차(altcha) 페이지 | 조회 안 함 |
+| Justia Trademarks (USPTO 미러) | Cloudflare 관리형 챌린지(HTTP 403) | 조회 안 함(웹 검색 결과로만 확인) |
+| TMview (`tmdn.org`) | 연결 리셋 | 조회 안 함 |
+| USPTO Trademark Search (`tmsearch.uspto.gov`) | robots.txt 없음(404). JS 앱이고 자동화 허용 조건을 찾지 못함 | 조회 안 함 |
+
+→ 해외는 사용자가 **KIPRIS 해외 검색**(미국·일본·호주·캐나다·유럽)을 쓰거나, EUIPO eSearch·USPTO Trademark Search를 브라우저로 직접 확인한다(선택 — 서비스 대상이 한국이므로 우선순위는 국내).
+
+### 4. 사용자 KIPRIS 확인 절차 (U-09)
+
+> 로그인 없이 된다. 소요 약 15~20분. 메뉴 이름은 2차 출처(KIPRIS 사용 안내 블로그) 기준이라 화면과 조금 다를 수 있다. "상표 검색 화면"이면 된다.
+
+1. **진입**: `https://www.kipris.or.kr` → 상단 **[지식재산정보 상세검색] → [권리별검색] → [상표]** 탭.
+2. **기본 필터**: 검색유형 **국내** · 권리구분 **전체**(상표·서비스표·단체표장·국제등록상표 포함) · 유형 **전체** · **행정상태 전체**. 출원·공고 중인 표장과 거절·소멸 이력도 함께 본다. 등록된 것만 보면 심사 중인 선출원을 놓친다.
+3. **상표명칭(TN) 검색 — 1차(분류 없이)**: 아래 4개를 하나씩, **부분일치**로 먼저 검색하고 결과가 많으면 완전일치로 좁힌다. 자유검색의 한/영 전환은 쓰지 않는다(표기별로 따로 본다).
+   - `유로 다이제스트` · `유로다이제스트` · `EURO DIGEST` · `EURODIGEST`
+   - 보조: `EURO-DIGEST`(하이픈 표기, 결과가 0건이어도 기록). 오타 변형까지 볼 필요는 없다. 대신 **`다이제스트` + 41류**(아래 4)로 'Digest' 계열이 얼마나 붐비는지 건수만 본다.
+4. **분류 조건 추가 — 2차(1차 결과가 많을 때)**: 상표명칭 **AND** 상품분류(TC). 우선순위와 근거는 다음과 같다(Nice 분류 기준 — 정확한 지정상품 문구와 **한국 유사군코드는 이번에 검증하지 못했다** → KIPRIS "분류 입력도우미"·결과 상세의 지정상품 칸에서 확인).
+
+   | 순위 | 류 | 우리 서비스와 겹치는 지정 서비스(예) | 근거 |
+   |---|---|---|---|
+   | 1 | **41류** | 온라인 전자출판물 제공(비다운로드형), 전자출판, 스포츠 정보 제공 | 웹사이트에서 브리핑·분류 정보를 제공하는 본업 |
+   | 2 | **38류** | 뉴스 통신업(news agency services), 전자게시판, 디지털 파일 전송 | 뉴스 전달·RSS 피드 |
+   | 3 | **35류** | 뉴스 클리핑업(news clipping services), 컴퓨터 DB 정보 편집 | 여러 매체 기사 링크를 모아 분류하는 우리 방식에 가장 가까운 Nice 항목 |
+   | 4 | **9류** | 내려받기 가능한 앱·전자출판물 | FR-120 PWA(홈 화면 설치)·향후 앱 |
+   | 보조 | 16류 | 인쇄 출판물(잡지·뉴스레터) | 'Digest'가 잡지 이름에 흔하다. 출판물과 온라인 출판 서비스는 유사하다고 판단될 수 있다 |
+
+5. **해외(선택)**: 검색유형 **해외** → 미국·유럽(·일본) → `EURO DIGEST`·`EURODIGEST`.
+6. **결과 보기**: 걸린 표장마다 ① 명칭의 외관·칭호(발음)·관념 ② 행정상태(등록·공고·출원·거절·소멸·포기) ③ 지정상품의 류·유사군코드가 위 표와 겹치는지 ④ 권리자 ⑤ 존속기간을 본다. 소멸 후 1년 안의 표장은 등록 제한이 남을 수 있다는 설명이 있으니 소멸일도 적는다.
+7. **기록해서 알려 줄 것**: 검색일 · 검색어 × (분류 없음/41/38/35/9) 건수 · 걸린 표장의 출원(등록)번호·명칭·상태·류/유사군·권리자. 0건이면 "0건"만 적어도 된다. → 이 절의 "판정"과 plan §14 B6에 반영한다.
+
+**사용자 체크리스트**
+- [ ] 국내 · 행정상태 전체 · `유로 다이제스트` / `유로다이제스트` / `EURO DIGEST` / `EURODIGEST` 부분일치 검색 (4회)
+- [ ] 결과가 있으면 41·38·35·9류(보조 16류)와 AND로 좁히고 지정상품·유사군 확인
+- [ ] 같은·비슷한 칭호의 **등록·공고·출원** 표장이 41/38/35/9류에 있는가? (있으면 B6 발동 후보)
+- [ ] `다이제스트` + 41류 건수(참고 — 'Digest' 계열 밀도)
+- [ ] (선택) 해외: 미국·유럽 `EURO DIGEST`·`EURODIGEST`
+- [ ] (선택) 대안 이름을 쓸 경우 그 이름도 같은 절차로 확인
+
+**판정 기준(예비 — 법률 판단 아님, 애매하면 전문가 상담)**
+- 0건이거나, 위 4개 류와 무관한 류에서만 걸림 → **B6 미발동**, 이름 유지.
+- `유로 다이제스트`·`EURO DIGEST`와 같거나 칭호가 비슷한 표장이 41/38/35/9류에 **등록·공고·출원** 상태로 있음 → **B6 발동** ❓ → 아래 대안 중에서 사용자가 결정.
+- 'DIGEST'·'EURO'를 일부로 포함한 다른 이름(예: "○○ 다이제스트")만 다수 → 흔한 서술적 단어라 그것만으로는 충돌로 보지 않는다(잠정). 사용자 판단 대상으로 기록한다.
+
+### 5. 저장소명·basePath — B6 대비 변경 범위
+
+**GitHub에서 저장소 이름을 바꾸면 어떻게 되나**(GitHub Docs "Renaming a repository")
+- 웹·git 요청은 새 이름으로 자동 리다이렉트된다. 예외로 **"project site URLs"(GitHub Pages 프로젝트 사이트)는 리다이렉트되지 않는다** → 옛 `sguys99.github.io/euro-digest/`는 404가 된다. 주소를 유지하려면 커스텀 도메인을 써야 한다(현재 계획 없음).
+- 옛 이름을 새 저장소에 다시 쓰면 리다이렉트가 끊긴다. 이름이 바뀐 저장소에 있는 action을 호출하는 것도 리다이렉트되지 않는다. 우리 `ci.yml`은 `uses: ./.github/workflows/deploy.yml`(로컬 경로)라 영향이 없다.
+
+**저장소 안에서 고칠 곳**(2026-10-11 기준 집계, `node_modules`·`.git`·`.env*` 제외: `euro-digest` 37파일·224곳 · `유로 다이제스트` 19파일·34곳 · `Euro Digest` 5파일·7곳 · `EuroDigest` 3파일·6곳)
+
+| 구분 | 위치 | 비고 |
+|---|---|---|
+| **basePath 단일 출처** | `src/lib/paths.ts` `DEFAULT_BASE_PATH = "/euro-digest"` | `next.config.ts`는 `siteLocationFromBuildEnv`로 이 값을 읽는다 → 코드 변경 없음(주석 1줄만) |
+| 빌드 env | `.github/workflows/deploy.yml`·`collect.yml`의 `BASE_PATH: /euro-digest`, `.env.example`의 `BASE_PATH` | `deploy.yml`에는 Pages 주소 ≠ `SITE_URL+BASE_PATH`이면 배포를 멈추는 가드가 있다 → 고치지 않고 이름만 바꾸면 배포가 막힌다(안전장치) |
+| 서비스명·저장소 주소 | `src/lib/site.ts` `SITE_NAME`·`REPO_URL`, `package.json` `name` | |
+| 저장소 주소 문자열 | User-Agent `EuroDigestBot/0.1 (+https://github.com/sguys99/euro-digest; …)`(`.claude/commands/add-source.md`·`pipeline-dev` 에이전트·이 문서), 이슈 템플릿 3종·`config.yml`, `scripts/*` 주석·로컬 UA 문자열 | 문자열 치환 |
+| 내부 식별자 | `scripts/lib/github-issues.ts` 지문 마커 `euro-digest:fingerprint=`·`recurrence=` | 바꾸면 열린 이슈와의 매칭이 끊긴다 → **바꾸지 않아도 된다**(사용자에게 보이지 않음) |
+| 테스트 기대값 | `tests/paths.test.ts`(하드코딩 금지 가드 포함)·`site-refs`·`deploy-verify`·`bundle-check`·`github-issues`·`collect-guard`·`report-issue-cli` 등 | 리터럴 갱신. 가드 정규식도 새 이름으로 |
+| 문서 | `CLAUDE.md`·`README.md`·`docs/PRD.md`·`plan.md`·`basic_plan.md`·이 문서 | 서비스명·주소 |
+| 저장소 밖 | GitHub 저장소 이름(Settings) · Pages 주소 · cron-job.org dispatch URL(U-06, **미설정**) · GoatCounter 사이트 코드(U-08, **미설정**) · Actions Secrets(이름 변경과 무관, 유지) | U-06·U-08 전에 정하면 다시 설정할 일이 없다 |
+
+**바꾼다면 순서**(B6 발동 시 — 오케스트레이터 메모): 이름 확정(사용자) → GitHub 저장소 이름 변경 → `paths.ts`·워크플로 env·`.env.example`·`site.ts`·`package.json` → 테스트 기대값 → 문서 → `npm run check`·`build` → push → 배포 후 `npm run verify:deploy` → 그 다음 U-06·U-08 설정. 공개(M5) 후에 바꾸면 외부 링크·RSS 구독 URL이 깨지므로 비용이 커진다.
+
+### 6. 예비 판정
+
+**충돌 가능성: 낮음(잠정 — KIPRIS 확인 전)**
+- 근거 ① 웹 검색(영문·한글·앱스토어·상표 미러)에서 같은 이름의 운영 서비스·매체·앱·상표 기록 0건 ② 같은 이름의 도메인은 매물 파킹 1개(`eurodigest.com`)뿐이고 나머지는 미등록 ③ 두 요소("EURO" 지리 명칭, "Digest" 요약물 일반어)가 모두 서술적이라 이 조합을 독점하는 강한 선행 표장이 있을 가능성이 낮아 보임(추정).
+- 남은 불확실성: **한국 KIPRIS 미확인(가장 중요)** · 국내 포털 검색 불가(금지 사이트)로 국내 소규모 서비스·블로그 사용은 놓쳤을 수 있다 · 해외 상표 DB 직접 조회 안 함 · basic_plan §0 ③ SNS 계정명은 이번 범위 밖이다.
+- 별도 주의(상표 충돌 아님): "Euro"가 UEFA EURO와 겹쳐 검색 노출 경쟁·오인 가능성 → 기존 대응(브랜드 키워드 일관 사용, UEFA 표장·로고 미사용) 유지.
+
+### 7. 대안 이름 후보 (B6 발동 시)
+
+조건: 축구 + 아침 브리핑 콘셉트, 짧게, 한/영 병용. D26으로 발행 시각이 계절에 따라 07:00/07:30이 되어 태그라인에서 시각을 뺐으므로, **시각("7")이 들어간 이름은 제외했다.** 후보마다 웹 검색과 DNS로 **명백한** 충돌만 걸렀고, 채택하려면 같은 KIPRIS 절차를 거쳐야 한다.
+
+| 후보 | 저장소/basePath | 콘셉트 | 웹 검색(2026-10-11) | 장점 | 단점 |
+|---|---|---|---|---|---|
+| **A. 조간 풋볼 (Jogan Football)** — 추천 | `jogan-football` | 조간(朝刊) = 아침 신문. 밤사이 유럽 축구를 아침 신문처럼 | "조간 풋볼"·"조간풋볼"·"풋볼 조간" **0건**, `joganfootball.com` 미등록 | 검색 결과가 가장 깨끗하다. D0 선호 방향(에디토리얼 신문형, U-10)과 바로 이어진다. 'Euro'를 쓰지 않아 UEFA 검색 경쟁이 없다 | 영문 'Jogan'은 외국인에게 의미가 없다(대상은 한국어 사용자라 영향 작음). 한자어라 다소 예스럽다 |
+| **B. 새벽킥 (Dawnkick)** | `dawnkick` | 한국 시간 새벽에 열린 유럽 경기를 아침에 정리 | "Dawnkick"·"Dawn Kick" 브랜드 **0건**, `dawnkick.com` 미등록. 다만 '새벽킥'은 해외 축구 새벽 경기를 가리키는 **일반 속어**로 쓰이는 것으로 보인다(검색 요약, 미확인). 이름이 다른 유튜버 '새벽의 축구 전문가'가 있다 | 한국 해외축구 팬의 실제 경험(새벽 경기)을 정확히 짚는다. 짧다 | 일반어라 식별력이 약하고 검색 노출 경쟁이 생긴다. '새벽'이 '밤샘 시청'을 떠올리게 해 "아침에 3분"이라는 가치와 살짝 어긋난다 |
+| **C. 모닝휘슬 (Morning Whistle)** | `morning-whistle` | 아침 + 킥오프 휘슬 | 축구·스포츠 매체 **0건**, 한글 "모닝휘슬" 0건. 그러나 `morningwhistle.com`은 **중국 M&A 정보 플랫폼 晨哨(Morning Whistle)**로 연결된다(분야는 다르지만 정보 제공 서비스). 비슷한 이름으로 *On The Whistle*(아프리카 축구 팟캐스트·뉴스레터)이 있다 | 한/영 모두 직관적이고 소리 내어 읽기 좋다 | 같은 영문명을 쓰는 해외 정보 서비스가 있다 → **주의** |
+
+검토 후 제외(같거나 가까운 축구 매체·앱이 이미 있음): **Kickoff Brief**(HT *Kick Off* 축구 뉴스레터, "Kickoff" 축구 뉴스 앱) · **Pitch Note**(*Pitchnotes* 축구 기술 앱, 2026) · **Matchday Brief**(*Matchday +1* 뉴스레터, FA *Matchday* 앱) · **Morning Kick / KickMorning**(*Morning Kickaround* 축구 팟캐스트, Fox *OutKick The Morning*) · **Early Kick**(*The Early Kick-Off Podcast*, beIN).
+
+### 출처 (확인 2026-10-11)
+- KIPRIS robots.txt — https://www.kipris.or.kr/robots.txt · KIPRIS Plus — https://plus.kipris.or.kr (API 키 안내는 검색 결과 요약: https://www.data.go.kr/data/15075967/openapi.do)
+- KIPRIS 상표 검색 절차(2차 출처) — https://www.help-me.kr/blog/article/kipris-trademark-search-guide/
+- EUIPO robots.txt — https://euipo.europa.eu/robots.txt · WIPO Brand DB — https://branddb.wipo.int · USPTO Trademark Search — https://tmsearch.uspto.gov
+- eurodigest.com(매물 페이지) — https://eurodigest.com/ · morningwhistle.com → http://www.chinamerger.com (晨哨)
+- European Business Digest, Inc.(USPTO 소유자) — https://trademarks.justia.com/owners/european-business-digest-inc-486152
+- EuroDIG — https://en.wikipedia.org/wiki/European_Dialogue_on_Internet_Governance · EuropEval Digest — https://europeanevaluation.org/europeval-digest-online-newsletter/ · EU Digest(ACR+) — https://acrplus.org/en/news/eu-digest-unpacks-key-policy-developments-4747
+- Soccer Digest — https://en.wikipedia.org/wiki/Soccer_Digest · Football Digest(Notre Dame 소장 기록) — https://rarebooks.library.nd.edu/collections/sports/football/annuals-mag-ftbl_digest.html
+- UEFA "EURO 2024" USPTO 서술성 거절 사례 — https://legalblogs.wolterskluwer.com/trademark-blog/uefas-road-to-euro-2024-turbulences-caused-by-descriptive-elements/ · UEFA 표장 사용 입장(스코틀랜드 의회 제출) — https://www.parliament.scot/-/media/files/committees/constitution-europe-external-affairs-and-culture-committee/correspondence/2025/uefa-response-to-questions-related-to-street-trading-and-the-proposed-scottish-event-legislation.pdf
+- GitHub 저장소 이름 변경 — https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository
+- 대안 후보 근접 사례 — https://htkickoff.substack.com · https://mwm.ai/de/apps/pitchnotes-skill-library/6770428499 · https://matchdayplus.substack.com · https://hooligan-soccer.com/podcast-category/morning-kickaround/ · https://www.foxnews.com/media/outkick-morning-charly-arnolt-brings-no-holds-barred-approach-new-sports-culture-show.amp · https://www.beinsports.com/en-au/football/articles/the-early-kick-off-podcast-episode-20 · https://alasdairhoworth.substack.com/
+
+### 사용자 확인 질문
+1. **KIPRIS 검색 결과**(위 4의 체크리스트) — 결과를 알려 주면 이 절의 판정과 plan §14 B6을 확정한다.
+2. **B6가 발동하면 이름은?** (A) 조간 풋볼(추천 — 검색 결과가 가장 깨끗하고 D0 신문형 방향과 맞음) · (B) 새벽킥 · (C) 모닝휘슬 · (D) 다른 이름 제안. 바꾼다면 U-06(cron-job.org)·U-08(GoatCounter) 설정 **전에** 하는 것이 좋다.
+
+**후속 반영 대상**(오케스트레이터 — 이 작업에서는 고치지 않았다): plan §3 U-09·§4 M0-31 체크, §14 B6 상태, PRD 결정 사항 섹션 마지막 항목("남은 것은 상표·저장소명(M0-31)…") 갱신, basic_plan §0 "확정 전 확인" ①② 결과. B6가 발동하면 위 5의 "바꾼다면 순서"대로 진행한다.
 
 ## M0-32 2026-27 한국 선수 명단 초안
 (미착수)
