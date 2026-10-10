@@ -1,0 +1,106 @@
+# 검사 워크플로 (M0-12, NFR-12) — push·PR마다 정적 export 사이트 전체를 검사한다.
+# check(typecheck·lint·단위 테스트) → 서식 → 설정 검증 → 빌드 → 번들 예산·비밀값 → e2e(스모크·링크·접근성)
+# main push에서 통과하면 재사용 워크플로 deploy.yml로 배포한다 — M0-13에서 연결(파일 끝 주석 참고).
+#
+# 참고
+# - 봇의 data 커밋은 GITHUB_TOKEN으로 push되므로 이 워크플로를 다시 트리거하지 않는다(GitHub 규칙).
+#   collect.yml·weekly.yml은 스스로 빌드·검증 후 deploy.yml을 호출한다(CLAUDE.md §6.1).
+# - 06:00~07:30 KST push 금지는 사람·봇 운영 규칙이라 여기서 강제하지 않는다(CLAUDE.md §10).
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: 1
+  LLM_MODE: mock
+  CI: true
+
+jobs:
+  check:
+    name: 검사 (check · build · 번들 예산 · e2e)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Node.js 설정 (.nvmrc)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: typecheck · lint · 단위 테스트
+        run: npm run check
+
+      - name: 서식 검사 (Prettier)
+        run: npm run format:check
+
+      # 지금은 스텁(exit 0). M0-17에서 configs/* zod 검증으로 바뀌면 잘못된 설정이 여기서 실패한다.
+      - name: 설정·데이터 검증
+        run: npm run validate
+
+      - name: 정적 빌드 (next build → out/)
+        run: npm run build
+
+      - name: 번들 예산 · 비밀값 검사 (DR-11, NFR-07)
+        run: npm run check:bundle
+
+      - name: Playwright 버전 확인
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Playwright 브라우저 캐시
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      # 캐시가 맞으면 브라우저 다운로드는 건너뛰고 OS 의존성만 설치한다.
+      - name: Playwright 브라우저 설치 (chromium + OS 의존성)
+        run: npx playwright install --with-deps chromium
+
+      - name: e2e — 스모크 · 링크 · 접근성 (NFR-12)
+        id: e2e
+        run: npm run test:e2e
+
+      - name: Playwright 리포트 업로드 (e2e 실패 시)
+        if: failure() && steps.e2e.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # M0-13: main push에서 검사 통과 시 ./.github/workflows/deploy.yml 호출(needs: 이 job).
+  # deploy.yml이 생기기 전에 참조하면 워크플로 전체가 무효가 되므로 M0-13에서 주석을 푼다.
+  # 배포 job에만 Pages 권한을 준다(워크플로 기본 권한은 contents: read 유지).
+  #
+  # deploy:
+  #   name: 배포 (GitHub Pages)
+  #   needs: check
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #   permissions:
+  #     contents: read
+  #     pages: write
+  #     id-token: write
+  #   uses: ./.github/workflows/deploy.yml

@@ -10,8 +10,8 @@
 
 **M0 셋업·검증 단계입니다.** 아직 사용할 수 있는 서비스가 아닙니다.
 
-- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿
-- 아직 없는 것: 뉴스 수집·요약 파이프라인, 화면 디자인, CI·배포 워크플로, 데이터 스키마, 뉴스 소스 약관 검증
+- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사 워크플로(`ci.yml`)
+- 아직 없는 것: 뉴스 수집·요약 파이프라인, 화면 디자인, 배포 워크플로, 데이터 스키마, 뉴스 소스 약관 검증
 - 사이트 주소는 배포 워크플로(M0-13)가 연결되기 전까지 404입니다. 배포 후에도 D0 디자인 시안이 확정되기 전까지는 스타일 없는 임시 페이지만 보입니다.
 
 개발은 `M0 셋업·검증 → D0 디자인 → M1 뉴스 MVP → D1 → M2 대회·팀 → D2 → M3 한국 선수·A매치 → M4 부가 기능 → D3 → M5 다듬기·공개` 순서로 진행합니다. 진행 현황은 [docs/plan.md](docs/plan.md) §1 대시보드에서 확인할 수 있습니다.
@@ -125,14 +125,14 @@ npm run preview    # out/을 GitHub Pages처럼 basePath 아래로 서빙
 | `npm run lint` | ESLint | 사용 가능 |
 | `npm run format` / `format:check` | Prettier 적용 / 검사 | 사용 가능 |
 | `npm run test` / `test:watch` | Vitest 단위 테스트 (LLM은 항상 mock) | 사용 가능 |
-| `npm run test:e2e` | Playwright — 375px·1280px, 빌드 결과(`out/`) 대상이라 먼저 `npm run build` | 사용 가능 (스모크 테스트) |
+| `npm run test:e2e` | Playwright — 375px·1280px, 빌드 결과(`out/`) 대상이라 먼저 `npm run build` | 사용 가능 (스모크 · 내부 링크 · axe 접근성 WCAG 2.1 AA) |
 | `npm run collect` | 수집 → 정제 → 요약 → 검증 | 준비 중 (M1) — 현재 인자 파싱만 |
 | `npm run summarize` | 요약 단계만 따로 실행 | 준비 중 (M1-17~M1-23) |
 | `npm run weekly` | 팀 프로필·한국 선수 주간 리포트·운영 리포트 | 준비 중 (M2-07·M3-06~M3-08·M4-06·M5-09) |
 | `npm run ops-report` | 비용·발행 성공률·소스 건강도 리포트 | 준비 중 (M5-09) |
 | `npm run eval:prompt` | 프롬프트 회귀 평가 — 수정 전후 출력 비교 | 준비 중 (M1-24) |
 | `npm run validate` | configs·data 스키마 + 발행 검증 게이트 | 준비 중 (M0-17·M1-25) |
-| `npm run check:bundle` | 번들 크기 예산 + 비밀값 검사 | 준비 중 (M0-12·M5-08) |
+| `npm run check:bundle` | 페이지별 초기 JS 예산(gzip 160KB) + `out/` 비밀값 검사, 먼저 `npm run build` | 사용 가능 (Lighthouse CI는 M5-08) |
 
 "준비 중" 명령은 실행하면 구현 예정 작업 ID만 출력하고 정상 종료합니다. 작업 ID는 [docs/plan.md](docs/plan.md)의 체크리스트 ID입니다.
 
@@ -155,14 +155,14 @@ npm run preview    # out/을 GitHub Pages처럼 basePath 아래로 서빙
 | 스타일 | Tailwind CSS 4.3 · shadcn/ui (커스텀 — 디자인 확정 후 적용) |
 | 실행 | Node.js 24 · tsx |
 | 테스트·품질 | Vitest 5 · Testing Library · Playwright 1.64 · ESLint 9 · Prettier 3 |
-| 배포 | GitHub Actions → GitHub Pages (워크플로는 M0-12·M0-13에서 작성) |
+| 배포 | GitHub Actions → GitHub Pages (검사 `ci.yml` 완료, 배포 `deploy.yml`은 M0-13) |
 | 도입 예정 | zod (M0-16) · Anthropic Claude Haiku + `@anthropic-ai/sdk` Message Batches API (M0-20) · rss-parser (M1) · football-data.org · API-Football · Pagefind (M4-14) · GoatCounter 쿠키리스 분석 (M5-04) |
 
 ## 저장소 구조
 
 ```
 .claude/    Claude Code 설정 · 커스텀 커맨드 · 서브에이전트
-.github/    이슈 템플릿 (Actions 워크플로는 M0-12~M0-14에서 추가)
+.github/    이슈 템플릿 · Actions 워크플로 (`ci.yml` 검사, 배포·수집은 M0-13~M0-14에서 추가)
 configs/    사람이 관리하는 설정 JSON · LLM 프롬프트 (zod 검증 예정)
 data/       파이프라인 산출물 — 손 편집 금지
 docs/       PRD · 개발 계획 · 배경 조사 · 디자인 시안
