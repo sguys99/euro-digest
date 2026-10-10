@@ -15,8 +15,8 @@ export const RunLogSchema = z.object({
   finishedAt: IsoSchema,
   collected: z.number(),
   clusters: z.number(),
-  summarized: z.number(),
-  downgraded: z.number(),
+  summarized: z.number(), // LLM이 작성한 브리핑 줄 수 — 필드 이름은 옛 "요약"에서 왔고 유지한다(PRD §8.2, D24)
+  downgraded: z.number(), // 코드 템플릿으로 강등된 브리핑 줄 수 (D24)
   tokens: z.object({
     in: z.number(),
     out: z.number(),

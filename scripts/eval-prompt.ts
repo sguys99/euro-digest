@@ -7,5 +7,5 @@ import { todo } from "./lib/todo";
 todo(
   "npm run eval:prompt",
   "M1-24",
-  "fixtures/llm/golden/ 대표 기사 10건으로 이전/이후 출력 diff",
+  "fixtures/llm/golden/ 브리핑 입력 10일치로 이전/이후 출력 diff·사실성 검사 비교",
 );

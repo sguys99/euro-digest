@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "Apache-2.0",
-  "description": "매일 아침 07:00, 유럽 축구 소식을 한국어 3줄로.",
+  "description": "매일 아침 07:00 KST, 밤사이 유럽 축구를 한눈에.",
   "engines": {
     "node": ">=24"
   },

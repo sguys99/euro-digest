@@ -29,7 +29,7 @@
  *   - 하루·한 달은 **KST 기준**(src/lib/time.ts kstDate·kstMonth). 실행은 startedAt으로 귀속한다.
  *     06:30 KST 발행 실행(UTC로 전날 21:30)이 그 발행일·그 달에 잡히고, 뉴스 파일 날짜(KST)와 맞는다.
  *   - 일일 예산: prod 실행은 그날 **prod 사용분만**, dev 실행은 그날 **prod+dev 합계**로 판단한다
- *     (개발 실험이 그날 발행을 원제목으로 강등시키지 않게). 월 예산은 env와 무관하게 **항상 합산**.
+ *     (개발 실험이 그날 발행 브리핑을 코드 템플릿으로 강등시키지 않게). 월 예산은 env와 무관하게 **항상 합산**.
  *   - dev 누적이 월 예산의 50%를 넘으면 devAlert(CLAUDE.md §6.3).
  *   - mock 실행은 기록하지 않는다(비용 0, 테스트가 data/를 건드리지 않게). live 실행은 dry여도 기록한다.
  */
@@ -449,7 +449,7 @@ export interface BudgetWindow {
 }
 
 export interface BudgetCheck {
-  /** 이번 실행에서 LLM을 불러도 되는지. false면 LLM 없이 원제목+링크로 게시(FR-27) */
+  /** 이번 실행에서 LLM을 불러도 되는지. false면 LLM 없이 진행 — 일일 브리핑은 코드 템플릿 문장으로 게시(FR-27) */
   allowed: boolean;
   reason: BudgetReason;
   /** 사람용 한 줄 설명 */
@@ -549,9 +549,9 @@ export function checkBudget(input: CheckBudgetInput): BudgetCheck {
 
   const message =
     reason === "monthly_exceeded"
-      ? `월 예산 초과 예상 (${month.key} KST, prod+dev ${formatUsd(monthly.used)} + 예상 ${formatUsd(input.estimatedUsd)} > ${formatUsd(monthly.limit)}) → LLM 없이 원제목+링크로 게시`
+      ? `월 예산 초과 예상 (${month.key} KST, prod+dev ${formatUsd(monthly.used)} + 예상 ${formatUsd(input.estimatedUsd)} > ${formatUsd(monthly.limit)}) → LLM 없이 진행 (브리핑은 코드 템플릿)`
       : reason === "daily_exceeded"
-        ? `일일 예산 초과 예상 (${today.key} KST, ${dailyScope} ${formatUsd(daily.used)} + 예상 ${formatUsd(input.estimatedUsd)} > ${formatUsd(daily.limit)}) → LLM 없이 원제목+링크로 게시`
+        ? `일일 예산 초과 예상 (${today.key} KST, ${dailyScope} ${formatUsd(daily.used)} + 예상 ${formatUsd(input.estimatedUsd)} > ${formatUsd(daily.limit)}) → LLM 없이 진행 (브리핑은 코드 템플릿)`
         : `예산 안 (오늘 ${formatUsd(daily.projected)} / ${formatUsd(daily.limit)}, 이번 달 ${formatUsd(monthly.projected)} / ${formatUsd(monthly.limit)})`;
 
   return {
@@ -983,7 +983,7 @@ export function buildRunLog(input: RecordRunInput): RunLog {
     costUsd = costFromUsage(input.model, input.usage, input);
     tokens = sumTokens([input.usage.batch, input.usage.single]);
   } else {
-    // LLM을 부르지 않은 실행(예: 예산 초과로 전부 강등). 모델이 단가 표에 있는지는 확인한다.
+    // LLM을 부르지 않은 실행(예: 예산 초과로 브리핑을 템플릿으로 강등). 모델이 단가 표에 있는지는 확인한다.
     getModelPricing(input.model);
     costUsd = 0;
     tokens = sumTokens([]);

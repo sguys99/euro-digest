@@ -36,6 +36,8 @@ export const SourceSchema = z.strictObject({
    * LLM 요약 허용 여부 — 기본값 없는 필수 필드(소스마다 약관을 보고 명시적으로 고른다).
    * false면 LLM에 보내지 않고 원제목+링크(`ai:false`) 카드로만 게시한다 — 피드의 제목·URL을 수정하지 않는다
    * (번역·다듬기 금지, 표시 링크는 피드 원문 그대로). PRD FR-20·§15 D22 · plan §14 B5.
+   * D23(2026-10-10): 현재 모든 소스가 false이고 뉴스 기사는 LLM에 보내지 않는다. true로 바꿔 LLM 요약 경로를
+   * 다시 여는 것은 사용자 승인 사항이다(CLAUDE.md §1-3).
    */
   summarize: z.boolean(),
   weight: z.number().min(0).max(3),

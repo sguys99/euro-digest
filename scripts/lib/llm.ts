@@ -1,14 +1,16 @@
 /**
  * LLM 전송 계층 (M0-20) — Anthropic SDK를 import하는 유일한 파일 (CLAUDE.md §6.2, ESLint가 강제).
  *
- * 이 파일은 "보내고 받는" 일만 한다. 호출 지점(뉴스 요약·분류 / 팀 한줄평+강점·약점 / 한국 선수 주간 총평,
- * CLAUDE.md §1-3)을 늘리지 않는다. 무엇을 몇 건 보낼지, 입력 500자 절단, 출력 zod 검증과 1회 재시도·강등,
- * 06:50 폴백 결정, 비용 가드는 호출부(M1-18~M1-22)와 cost.ts(M0-21)가 맡는다.
+ * 이 파일은 "보내고 받는" 일만 한다. 호출 지점(정형 데이터 기반 일일 브리핑 / 팀 한줄평+강점·약점 / 한국 선수
+ * 주간 총평, CLAUDE.md §1-3 · PRD §15 D24)을 늘리지 않는다. 뉴스 기사(제목·설명 포함)는 어떤 호출에도 넣지 않는다(D23).
+ * 무엇을 보낼지(입력 빌더), 출력 zod 검증과 1회 재시도·템플릿 강등, 06:50 폴백 결정, 비용 가드는
+ * 호출부(M1-19~M1-23·M1-45)와 cost.ts(M0-21)가 맡는다.
  *
  * 구성
  *   - 요청 검증: customId(Batches API 제약 `^[a-zA-Z0-9_-]{1,64}$`, 배치 안에서 유일), maxTokens 필수·상한
  *   - 배치: submitBatch → pollBatch(마감 시각까지) → collectBatchResults, 한 번에 돌리는 runBatch
- *   - 단건: callSingle — 06:50 폴백(상위 10건, M1-19)용 일반 Messages API 1건
+ *   - 단건: callSingle — 일반 Messages API 1건. M0-20 당시 06:50 폴백(상위 10건 일반 API)용으로 만들었으나,
+ *     D24 이후 일일 브리핑의 06:50 폴백은 배치 취소 + 코드 템플릿이라(FR-26) 그 경로에서는 쓰지 않는다
  *   - 재시도: 429·5xx(529 overloaded 포함)만 지수 백오프. 서버가 요청을 처리하지 않은 경우라 다시 보내도
  *     중복 과금이 없다. 연결 오류·타임아웃은 쓰기 요청(메시지 생성·배치 제출)에서 재시도하지 않는다
  *     (서버가 이미 처리했을 수 있어 중복 과금 위험). 읽기(배치 조회·결과)는 연결 오류도 재시도한다.
@@ -57,19 +59,20 @@ export const DEFAULT_LLM_MODEL = "claude-haiku-5-5";
 export const CUSTOM_ID_PATTERN = /^[a-zA-Z0-9_-]{1,64}$/;
 
 /**
- * 요청 1건의 max_tokens 절대 상한(전송 계층 안전망). 호출 지점별 실제 값은 M1-18에서 정하며, 올리려면
- * 사용자 승인이 필요하다(CLAUDE.md §1-3). 10~20건 묶음(FR-25) × 건당 출력 ~150토큰 + thinking 여유를 고려했다.
+ * 요청 1건의 max_tokens 절대 상한(전송 계층 안전망). 호출 지점별 실제 값은 브리핑 M1-20·주간 M3-07·M4-05에서
+ * 정하며, 올리려면 사용자 승인이 필요하다(CLAUDE.md §1-3). 값은 M0-20 당시 뉴스 요약 묶음(10~20건 × 건당 ~150토큰)
+ * + thinking 여유로 잡았고, 브리핑(최대 5줄)·주간 호출에는 넉넉한 상한이다.
  */
 export const MAX_TOKENS_CEILING = 8192;
 
-/** 배치 1회 요청 수 상한(안전망 — API 한도는 100,000). 묶음 구성(FR-25) 기준 하루 수 건~수십 건이다. */
+/** 배치 1회 요청 수 상한(안전망 — API 한도는 100,000). 일일 브리핑은 하루 1~3요청(FR-25), 주간 팀 프로필은 20팀 묶음(M4-06). */
 export const MAX_REQUESTS_PER_BATCH = 100;
 
 /** 배치 상태 조회 간격 기본값·최솟값. 조회 자체는 무료지만 Batches API에도 요청 한도가 있다. */
 export const DEFAULT_POLL_INTERVAL_MS = 30_000;
 export const MIN_POLL_INTERVAL_MS = 5_000;
 
-/** live 모드 HTTP 요청 1회 타임아웃 (SDK 기본 10분은 06:50~07:00 폴백 창에 비해 너무 길다). */
+/** live 모드 HTTP 요청 1회 타임아웃 (SDK 기본 10분은 06:30~07:00 발행 창에 비해 너무 길다). */
 export const DEFAULT_REQUEST_TIMEOUT_MS = 60_000;
 
 export interface RetryPolicy {
@@ -279,11 +282,11 @@ function shortMessage(message: string): string {
 // ─── 요청 ────────────────────────────────────────────────────────────────
 
 /**
- * LLM 요청 1건. 입력 길이 상한(제목+요약 500자 등)은 호출부 책임이고, 여기서는 형식과 max_tokens만 강제한다.
+ * LLM 요청 1건. 입력 크기 상한(브리핑 정형 데이터의 경기 수 상한 등)은 호출부 책임이고, 여기서는 형식과 max_tokens만 강제한다.
  * temperature·top_p·top_k는 넣지 않는다 — claude-haiku-5-5는 기본값 외의 값을 400으로 거부한다.
  */
 export const LlmRequestSchema = z.strictObject({
-  /** 결과 매칭 키. 카드 ID·묶음 ID 등. Batches API 제약을 단건 호출에도 똑같이 적용한다 */
+  /** 결과 매칭 키. 브리핑 날짜·팀 묶음 ID 등. Batches API 제약을 단건 호출에도 똑같이 적용한다 */
   customId: z
     .string()
     .regex(
@@ -442,7 +445,7 @@ export function addTokenUsage(a: TokenUsage, b: TokenUsage): TokenUsage {
 
 /**
  * 실행 1회의 usage 합계. `total`은 RunLog.tokens에 그대로 기록하고, `batch`·`single`은 cost.ts(M0-21)가
- * 배치 할인(50%) 단가와 일반 단가를 나눠 적용하는 데 쓴다(06:50 폴백이 있으면 한 실행에 둘이 섞인다).
+ * 배치 할인(50%) 단가와 일반 단가를 나눠 적용하는 데 쓴다(한 실행에서 배치와 단건 호출을 함께 쓰면 둘이 섞인다).
  */
 export interface UsageSummary {
   total: TokenUsage;
@@ -1106,7 +1109,7 @@ export type RunBatchOutcome =
       /**
        * 마감 초과. 처리 중인 배치의 결과는 API가 주지 않는다(ended 이후에만) — 부분 결과가 필요하면
        * cancelBatch → pollBatch(짧은 유예) → collectBatchResults 순서로 받는다(취소 전 처리분만 과금).
-       * 취소하지 않으면 배치는 계속 처리되고 과금된다. 06:50 폴백 결정은 호출부(M1-19)가 한다.
+       * 취소하지 않으면 배치는 계속 처리되고 과금된다. 06:50 폴백 결정(배치 취소 + 템플릿 브리핑)은 호출부(M1-45)가 한다.
        */
       timedOut: true;
       batchId: string;

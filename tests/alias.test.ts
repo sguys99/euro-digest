@@ -10,7 +10,7 @@ describe("`@/*` 경로 별칭", () => {
   it("테스트에서 @/lib/site를 직접 import한다", () => {
     expect(SITE_NAME).toBe("유로 다이제스트");
     expect(SITE_TAGLINE).toBe(
-      "매일 아침 07:00, 유럽 축구 소식을 한국어 3줄로.",
+      "매일 아침 07:00 KST, 밤사이 유럽 축구를 한눈에.",
     );
   });
 

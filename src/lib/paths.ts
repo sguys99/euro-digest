@@ -467,7 +467,9 @@ export const artifacts = {
 // ─── 외부 링크 (basePath 무관) ──────────────────────────────────────────────
 
 /**
- * "요약 오류 신고" GitHub 이슈 폼 링크 (FR-36). 카드 ID·발행 날짜가 미리 채워진다.
+ * 카드 "오류 신고" GitHub 이슈 폼 링크 (FR-36). 카드 ID·발행 날짜가 미리 채워진다.
+ * 이름(`summaryError`·템플릿 `summary-error.yml`)은 옛 "요약 오류 신고"에서 왔고, 지금은 브리핑·분류 오류 신고 폼이다(D23·D24).
+ * 브리핑 신고(날짜만 채움) 링크는 M1-35에서 추가한다.
  * 필드 id(card·date)는 .github/ISSUE_TEMPLATE/summary-error.yml과 맞춘다.
  * 예) https://github.com/sguys99/euro-digest/issues/new?template=summary-error.yml&card=c_8f3a1b2c4d&date=2026-10-10
  */

@@ -2,7 +2,7 @@
  * `npm run collect` 인자 파싱 (M0-04). I/O 없는 순수 함수만 둔다 — 출력·종료는 scripts/collect.ts가 맡는다.
  *
  * 지원 인자
- *   --limit <n>  소량 실행: 요약 대상을 상위 n건으로 줄인다(양의 정수). 생략하면 MAX_ITEMS_PER_RUN을 따른다.
+ *   --limit <n>  소량 실행: 선별 카드를 상위 n건으로 줄인다(양의 정수). 생략하면 MAX_ITEMS_PER_RUN(일일 카드 선별 상한)을 따른다.
  *   --dry        data/ 산출물을 쓰지 않고 결과를 출력만 한다.
  *   --mock       LLM을 부르지 않고 fixtures/llm/ 응답을 쓴다. 환경변수 LLM_MODE=mock과 같은 의미이며,
  *                LLM_MODE 값보다 우선한다(--mock이 있으면 LLM_MODE=live여도 mock).
@@ -13,7 +13,7 @@ import { parseArgs } from "node:util";
 export type LlmMode = "live" | "mock";
 
 export interface CollectArgs {
-  /** 요약 대상 상한. null이면 지정하지 않음(MAX_ITEMS_PER_RUN 적용) */
+  /** 선별 카드 상한. null이면 지정하지 않음(MAX_ITEMS_PER_RUN 적용) */
   limit: number | null;
   dry: boolean;
   mock: boolean;
@@ -27,7 +27,7 @@ export type ParseResult<T> =
 
 export const COLLECT_USAGE = [
   "사용법: npm run collect -- [--limit <n>] [--dry] [--mock]",
-  "  --limit <n>  요약 대상을 상위 n건으로 제한 (양의 정수, 예: 5)",
+  "  --limit <n>  선별 카드를 상위 n건으로 제한 (양의 정수, 예: 5)",
   "  --dry        data/에 쓰지 않고 결과만 출력",
   "  --mock       LLM 대신 fixtures/llm/ 응답 사용 (LLM_MODE=mock과 같음)",
   "  --help, -h   이 도움말",

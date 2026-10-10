@@ -8,8 +8,11 @@
 /** 서비스 이름(한국어). 상표 확인(U-09, plan §14 B6) 결과에 따라 바뀔 수 있다. */
 export const SITE_NAME = "유로 다이제스트";
 
-/** 한 줄 소개. 메타 description 등에 쓴다. */
-export const SITE_TAGLINE = "매일 아침 07:00, 유럽 축구 소식을 한국어 3줄로.";
+/**
+ * 한 줄 소개. 메타 description 등에 쓴다.
+ * 2026-10-10 사용자 결정으로 "한국어 3줄" 문구를 바꿨다(PRD §15 D23·D24 — 뉴스 요약 없음). 최종 다듬기는 D0 브랜드 작업에서.
+ */
+export const SITE_TAGLINE = "매일 아침 07:00 KST, 밤사이 유럽 축구를 한눈에.";
 
 /**
  * GitHub 저장소 주소 — 푸터 저장소 링크(FR-142)·이슈 폼 링크(FR-36, src/lib/paths.ts)가 쓴다.

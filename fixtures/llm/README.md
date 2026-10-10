@@ -2,11 +2,13 @@
 
 LLM 응답 샘플. `LLM_MODE=mock`(또는 `--mock`)이면 `scripts/lib/llm.ts`가 실제 API 대신 여기 파일을 읽는다. 결정적이고 비용이 없다 (CLAUDE.md §6.3). Vitest는 항상 mock이다.
 
+일일 LLM 호출은 정형 경기 데이터로 쓰는 한국어 브리핑("오늘의 5줄")뿐이다(PRD §15 D24). 뉴스 기사는 LLM에 보내지 않으므로(D23) 기사 요약 응답 fixture는 두지 않는다. 주간 호출(팀 한줄평+강점·약점, 한국 선수 주간 총평)의 mock은 M3·M4에서 추가한다.
+
 ## mock/ — 요청별 응답
 
 ```
 mock/
-  by-id/<customId>.json       # 1순위: 요청의 customId(카드 ID 등)로 찾는다
+  by-id/<customId>.json       # 1순위: 요청의 customId(브리핑 날짜·팀 묶음 ID 등)로 찾는다
   by-hash/<h_해시>.json        # 2순위: system + user 내용 해시로 찾는다
 ```
 
@@ -17,7 +19,7 @@ mock/
 ## 파일 형식 (zod `MockFixtureSchema`, 키는 API 응답 이름을 따른다)
 
 ```jsonc
-// 성공 — text는 모델이 낸 원문 출력(문자열). 출력 JSON 형식은 프롬프트(M1-17)가 정한다
+// 성공 — text는 모델이 낸 원문 출력(문자열). 출력 JSON 형식은 프롬프트가 정한다(브리핑은 M1-20)
 { "type": "succeeded", "text": "...", "stop_reason": "end_turn",
   "usage": { "input_tokens": 250, "output_tokens": 150,
              "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0 } }
@@ -38,4 +40,4 @@ mock/
 | `mock/by-id/m0_sample_ok.json` | 전송 계층 테스트용 성공 응답(usage 포함) — M0-20 |
 | `mock/by-id/m0_sample_errored.json` | 전송 계층 테스트용 errored 응답 — M0-20 |
 
-실제 요약 응답 fixture는 M0-36에서, 골든셋(`golden/`, `npm run eval:prompt`)은 M1-24에서 추가한다. 기사 본문·이미지·비밀값은 넣지 않는다.
+브리핑 mock 응답(정상 · 스키마 위반 · 입력에 없는 숫자 포함 사례)은 M0-36에서, 골든셋(`golden/` — 브리핑 입력 10일치, `npm run eval:prompt`)은 M1-24에서 추가한다. 기사 텍스트(본문·제목·설명)·이미지·비밀값은 넣지 않는다.

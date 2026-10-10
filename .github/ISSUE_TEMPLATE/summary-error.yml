@@ -1,49 +1,54 @@
-# 요약 오류 신고 (FR-36, PRD §9.4)
-# 사이트 카드 메뉴의 "요약 오류 신고" 링크가 카드 ID를 채워 연다:
-#   https://github.com/sguys99/euro-digest/issues/new?template=summary-error.yml&card=c_8f3a1b2c4d&date=2026-10-10
-# 필드 id(card·date)는 URL 프리필 키이므로 바꾸면 사이트 링크도 함께 고친다.
-name: 요약 오류 신고
-description: 뉴스 카드 요약의 사실·숫자·표기·분류 오류를 알려 주세요. 주간 검수에서 모아 요약 품질 개선에 씁니다.
-title: "[요약 오류] "
+# 브리핑·분류 오류 신고 (FR-36, PRD §9.4 · §15 D23·D24)
+# 파일명·라벨 `summary-error`는 옛 "요약 오류 신고"의 이름을 유지한다(사이트 링크·라벨 집계가 참조). 의미만 새 방식으로 바꿨다:
+# "오늘의 5줄" 브리핑 문장 오류, 뉴스 카드의 한국어 분류 태그 오류, 원제목 카드의 링크·출처 오류.
+# 사이트 링크가 카드 ID(브리핑은 날짜만)를 채워 연다:
+#   카드:   https://github.com/sguys99/euro-digest/issues/new?template=summary-error.yml&card=c_8f3a1b2c4d&date=2026-10-10
+#   브리핑: https://github.com/sguys99/euro-digest/issues/new?template=summary-error.yml&date=2026-10-10
+# 필드 id(card·date)는 URL 프리필 키이므로 바꾸면 사이트 링크(src/lib/paths.ts)도 함께 고친다.
+name: 브리핑·분류 오류 신고
+description: 홈 "오늘의 5줄" 브리핑 문장, 뉴스 카드의 분류 태그, 카드의 원문 링크·출처 오류를 알려 주세요. 주간 검수에서 모아 브리핑 지시문과 분류 규칙 개선에 씁니다.
+title: "[브리핑·분류 오류] "
 labels: ["summary-error"]
 body:
   - type: markdown
     attributes:
       value: |
-        신고해 주셔서 고맙습니다. 들어온 신고는 `summary-error` 라벨로 모아 **매주 검수**하고, 확인된 오류는 요약 지시문과 고유명사 표기 사전 개선에 반영합니다. 개별 카드를 고칠지와 그 시점은 검수 결과에 따라 달라질 수 있습니다.
+        신고해 주셔서 고맙습니다. 들어온 신고는 `summary-error` 라벨로 모아 **매주 검수**하고, 확인된 오류는 브리핑 지시문(프롬프트)·분류 규칙·고유명사 표기 사전 개선에 반영합니다. 개별 카드나 브리핑을 고칠지와 그 시점은 검수 결과에 따라 달라질 수 있습니다.
 
-        - 카드 ID는 `c_` 뒤에 16진수 10자리가 붙은 형식입니다(예: `c_8f3a1b2c4d`).
-        - 카드의 **공유 → 링크 복사**로 받은 주소 끝의 `#c_…` 부분이 카드 ID입니다. 사이트 카드 메뉴의 "요약 오류 신고"로 들어오면 자동으로 채워집니다.
+        - **브리핑**: 홈 맨 위 "오늘의 5줄"은 전날 경기 데이터를 바탕으로 AI가 쓴 문장입니다. 브리핑의 "브리핑 오류 신고"로 들어오면 발행 날짜가 자동으로 채워집니다.
+        - **뉴스 카드**: 카드 제목은 매체의 원제목을 그대로 보여 주므로 번역하거나 고치지 않습니다. 대회·팀·선수·카테고리·이적 단계 같은 한국어 태그와 원문 링크·출처 표시가 신고 대상입니다. 카드 메뉴의 "오류 신고"로 들어오면 카드 ID가 자동으로 채워집니다.
+        - 카드 ID는 `c_` 뒤에 16진수 10자리가 붙은 형식입니다(예: `c_8f3a1b2c4d`). 카드의 **공유 → 링크 복사**로 받은 주소 끝의 `#c_…` 부분이 카드 ID입니다.
         - 기사 저작권자·당사자의 삭제·정정 요청은 **삭제·정정 요청** 양식을 써 주세요.
   - type: input
     id: card
     attributes:
-      label: 카드 ID 또는 카드 링크
-      description: "`c_` + 16진수 10자리, 또는 `…/news/YYYY-MM-DD/#c_…` 형식의 공유 링크"
+      label: 카드 ID 또는 카드 링크 (뉴스 카드 신고)
+      description: "`c_` + 16진수 10자리, 또는 `…/news/YYYY-MM-DD/#c_…` 형식의 공유 링크. 브리핑 신고면 비워 두세요."
       placeholder: "c_8f3a1b2c4d 또는 https://sguys99.github.io/euro-digest/news/2026-10-10/#c_8f3a1b2c4d"
-    validations:
-      required: true
   - type: input
     id: date
     attributes:
       label: 발행 날짜
-      description: 카드가 실린 날짜(한국 시간, YYYY-MM-DD). 카드 링크를 넣었다면 비워 두어도 됩니다.
+      description: 브리핑이나 카드가 실린 날짜(한국 시간, YYYY-MM-DD).
       placeholder: "2026-10-10"
+    validations:
+      required: true
   - type: dropdown
     id: error-type
     attributes:
       label: 오류 유형
       description: |
         해당하는 것을 모두 고르세요.
-        이적 상태·출처 Tier는 루머·협상·합의·공식 단계나 출처 신뢰 등급이 틀린 경우, 결과 스포일러 표시는 결과 가리기 모드에서 가려야 할 카드가 보이거나 그 반대인 경우입니다.
+        이적 단계·출처 Tier는 루머·협상·합의·공식·결렬 단계나 출처 신뢰 등급이 틀린 경우, 결과 스포일러 표시는 결과 가리기 모드에서 가려야 할 카드·브리핑 줄이 보이거나 그 반대인 경우, 링크·출처는 원문 링크가 열리지 않거나 다른 기사로 가거나 매체명이 틀린 경우입니다.
       multiple: true
       options:
-        - 사실과 다름
+        - 브리핑 사실 오류
         - 숫자·스코어 오류
         - 고유명사 표기
-        - 카테고리·대회 분류
-        - 이적 상태·출처 Tier
+        - 카테고리·대회·팀·선수 태그
+        - 이적 단계·출처 Tier
         - 결과 스포일러 표시
+        - 링크·출처
         - 기타
     validations:
       required: true
@@ -51,11 +56,11 @@ body:
     id: correction
     attributes:
       label: 올바른 내용과 근거
-      description: 어디가 어떻게 틀렸는지, 올바른 내용이 무엇인지 적고 근거가 되는 원문 기사 링크를 붙여 주세요.
+      description: 어디가 어떻게 틀렸는지(브리핑이면 해당 문장), 올바른 내용이 무엇인지 적고 근거가 되는 링크(경기 기록·원문 기사 등)를 붙여 주세요.
       placeholder: |
-        - 틀린 부분:
+        - 틀린 부분(브리핑 문장 또는 카드 태그·링크):
         - 올바른 내용:
-        - 근거(원문 링크): https://
+        - 근거 링크: https://
     validations:
       required: true
   - type: checkboxes

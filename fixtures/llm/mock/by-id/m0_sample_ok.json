@@ -1,6 +1,6 @@
 {
   "type": "succeeded",
-  "note": "M0-20 전송 계층 테스트용 최소 fixture. text는 형식 예시일 뿐이며 요약 출력 JSON 형식은 M1-17에서 확정한다.",
+  "note": "M0-20 전송 계층 테스트용 최소 fixture. text는 형식 예시일 뿐이며 브리핑 출력 JSON 형식은 M1-20에서 확정한다.",
   "text": "{\"sample\":true,\"team\":\"sample-united\"}",
   "stop_reason": "end_turn",
   "usage": {

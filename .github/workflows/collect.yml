@@ -1,4 +1,4 @@
-# 일일 수집 워크플로 (M0-14, FR-150 · FR-152) — 수집 → 정제 → 요약 → 검증 게이트 → 빌드 → data 커밋 → 배포.
+# 일일 수집 워크플로 (M0-14, FR-150 · FR-152) — 수집 → 정제·분류 → 데이터 브리핑 → 검증 게이트 → 빌드 → data 커밋 → 배포.
 # CLAUDE.md §6.1 · PRD §10 운영 흐름. 지금은 `npm run collect`가 스텁이라 변경이 없고(`npm run validate`는
 # configs·data 스키마만 검사 — M0-17), 커밋·배포 없이 성공으로 끝나는 것이 정상이다(M1에서 실제 파이프라인으로 바뀐다).
 #
@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: "소량 실행 — 요약 대상 상한(양의 정수, 예: 5). 비우면 MAX_ITEMS_PER_RUN(45)"
+        description: "소량 실행 — 선별 카드 상한(양의 정수, 예: 5). 비우면 MAX_ITEMS_PER_RUN(45)"
         type: string
         required: false
         default: ""
@@ -88,7 +88,7 @@ jobs:
     needs: guard
     if: needs.guard.outputs.run == 'true'
     runs-on: ubuntu-latest
-    # 배치 대기를 고려한 상한. 06:50 일반 API 폴백(FR-26)은 M1에서 collect 스크립트가 처리한다.
+    # 배치 대기를 고려한 상한. 06:50 브리핑 폴백(배치 취소 + 코드 템플릿, FR-26)은 M1-45에서 collect 스크립트가 처리한다.
     timeout-minutes: 30
     permissions:
       contents: write # data/·public/ 커밋 push
@@ -124,9 +124,9 @@ jobs:
       - name: 의존성 설치
         run: npm ci
 
-      # ①수집 → ②정제 → ③요약. 비밀값은 이 단계에만 넘긴다(설치·검증·빌드 단계에는 노출하지 않는다).
+      # ①수집 → ②정제·분류(코드) → ③데이터 브리핑(LLM). 비밀값은 이 단계에만 넘긴다(설치·검증·빌드 단계에는 노출하지 않는다).
       # limit 입력은 셸에 직접 펼치지 않고 env로 넘긴다(스크립트 주입 방지). 값 검증은 collect 스크립트가 한다.
-      - name: 수집 · 정제 · 요약 (npm run collect)
+      - name: 수집 · 정제·분류 · 브리핑 (npm run collect)
         timeout-minutes: 22
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

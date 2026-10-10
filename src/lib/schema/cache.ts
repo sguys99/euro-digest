@@ -33,7 +33,7 @@ export const UnknownNameSchema = z
     count: z.number().int().min(1), // 누적 등장 횟수 — `/add-name` 빈도순 정렬
     firstSeen: IsoSchema, // 처음 본 시각(UTC)
     lastSeen: IsoSchema, // 마지막으로 본 시각(UTC) — 오래 안 보인 항목 정리 기준
-    kind: NameKindSchema.optional(), // LLM 출력의 teams/players 태그에서 왔으면 team/player로 추정, 모르면 생략
+    kind: NameKindSchema.optional(), // 데이터 API의 팀·선수 필드 등 출처로 유형을 알면 team/player로 추정, 모르면 생략
     cards: z.array(CardIdSchema).max(5), // 문맥 확인용 예시 카드 ID(최근 5개까지)
   })
   .refine((n) => isNotAfter(n.firstSeen, n.lastSeen), {
@@ -44,7 +44,8 @@ export type UnknownName = z.infer<typeof UnknownNameSchema>;
 
 /**
  * `data/cache/unknown-names.json` (FR-24 — 주간 이슈·`/add-name`).
- * 키는 LLM이 출력한 영문 표기 그대로. names.ko.json에 등록되거나 ignore에 오른 이름은 다음 수집 실행이 뺀다(M1-21).
+ * 키는 데이터 API 응답·브리핑 출력(LLM은 영문 그대로 출력)의 영문 표기 그대로(FR-24, D24).
+ * names.ko.json에 등록되거나 ignore에 오른 이름은 다음 수집 실행이 뺀다(M1-21).
  */
 export const UnknownNamesFileSchema = z.object({
   updatedAt: IsoSchema,

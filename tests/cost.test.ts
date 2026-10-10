@@ -527,7 +527,7 @@ describe("checkBudget — 월은 prod+dev 합산, 일은 prod 실행=prod만 · 
     expect(b.monthly.used).toBe(2.99);
     expect(b.monthly.projected).toBe(3.01);
     expect(b.monthly.dev).toBe(2.99);
-    expect(b.message).toContain("원제목+링크");
+    expect(b.message).toContain("LLM 없이 진행");
     expect(b.devAlert).toBe(true);
   });
 
