@@ -25,7 +25,7 @@
 - [M0-25 국내 매체 RSS](#m0-25-국내-매체-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 3개 매체·피드 5 · 기록용 2 → 전체 23개), 요약문(description) 표시·저장 안 함
 - [M0-26 Google News RSS](#m0-26-google-news-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, 판정 금지(사용 불가)·plan §14 B2 발동, `configs/sources.json` 기록용 2개 등록(→ 25개), 검색 결과 매체 도메인 허용 목록 `configs/publisher-domains.json` 신설(allow 4 · feed-only 7 · deny 16)
 - [M0-27 GDELT DOC API](#m0-27-gdelt-doc-api) ✅ 완료 — 결정(2026-10-10) 반영, 판정 약관 허용(조건부)·기술 부적합 → `configs/sources.json` 기록용 `gdelt-doc` 비활성 등록(→ 26개), `configs/search-queries.json` 신설(`maxEnabled` 10 · 쿼리 9개 전부 비활성), M1 관찰 기간 소량 재측정 후 재결정
-- [M0-28 football-data.org](#m0-28-football-dataorg)
+- [M0-28 football-data.org](#m0-28-football-dataorg) ⏳ 조사 완료 — 사용자 확인 대기. 6개 대회 순위·경기·득점 무료 제공 확인(경기별 득점자·폼은 미제공), 약관 조건부 허용(출처 표기 필수)·**B7 미발동**, `competitions.json` 초안은 scratchpad(저장소 미기록)
 - [M0-29 API-Football](#m0-29-api-football)
 - [M0-30 Anthropic 실측](#m0-30-anthropic-실측)
 - [M0-31 서비스명·저장소명](#m0-31-서비스명저장소명)
@@ -1161,7 +1161,300 @@ Google 약관이 직접 밝히듯 Google News에 보이는 기사의 권리는 �
    - (C) GKG 대량 파일이나 다른 검색 API를 조사한다 — 새 데이터 경로·외부 서비스라 승인 사항이고, 허용 목록 한계가 같아 기대 효과가 작다.
 
 ## M0-28 football-data.org
-(미착수)
+
+> 상태: **⏳ 조사 완료 — 사용자 확인 대기.** 약관 판정은 **조건부 허용**(LLM 입력·재가공을 막는 조항 없음, 조건은 출처 표기 문구 등)이라 **plan §14 B7은 발동하지 않는다.** `configs/competitions.json`은 scratchpad 초안만 만들었다. 스키마 검증은 통과했지만 저장소에는 쓰지 않았다(이유는 아래 "competitions.json 초안"). 결정이 필요한 것은 아래 "사용자 확인 질문" 3개다.
+
+대상: football-data.org API v4 무료 플랜(TIER_ONE). 6개 대회 `PL`·`PD`·`SA`·`BL1`·`FL1`·`CL`의 2026-27 시즌 응답과 약관을 확인했다.
+요청 범위: 2026-10-10 12:20:31~12:28:08 UTC(21:20~21:28 KST)에 **직접 요청 30건**을 보냈고 결과는 **전부 200**이었다(403·429·5xx·네트워크 오류 0건). 다음 요청은 앞 요청의 응답이 끝나고 **6.5초 이상** 지난 뒤 보냈다. 키는 `node --env-file-if-exists=.env.local` 프로세스 환경에서만 읽어 `X-Auth-Token` 헤더로 보냈다. 키 값은 로그·파일·문서 어디에도 남기지 않았다. 약관·요금·문서·UEFA 일정은 WebFetch 18회(404 2회 포함)와 웹 검색 10회로 확인했다. 원본 응답은 scratchpad에만 저장했다(아래 "M0-35 fixtures용 원본 위치").
+
+### 요약 (먼저 읽기)
+1. **6개 대회 모두 무료 플랜으로 순위·경기·득점 순위를 받을 수 있다.** 현재 시즌은 6개 모두 2026(2026-27)이다. 리그 순위표는 20·20·20·18·18팀이고, **UCL은 리그 페이즈 36팀 단일 테이블**이다(`stage: LEAGUE_STAGE`, `group: "League phase"`). 시각은 모두 UTC `Z` 형식(524/524건)이고 `src/lib/time.ts`로 KST 변환이 맞는 것을 확인했다.
+2. **무료 플랜에는 경기별 득점자가 없다.** 경기 상세(`/v4/matches/{id}`)에 `goals`·`bookings`·`lineups` 필드가 없다. 요금표는 "Goal scorers"를 **Free + Deep Data(€29/월)부터** 제공한다고 적고 있다. 대회 득점 순위(`/scorers`)는 무료다(기본 10명, `limit`으로 늘릴 수 있음). → D24 브리핑의 "득점자" 입력은 그대로 얻을 수 없다(사용자 확인 질문 2).
+3. **순위표 `form`은 6개 대회 모두 `null`이다**(유료 "Advanced trend/form data"). 순위표 종류도 `TOTAL`뿐이다(홈·원정 표 없음). `prevPos`도 응답에 없다. → 폼·순위 변동·홈/원정 성적은 **경기 목록과 전날 데이터로 코드에서 계산**해야 한다. 계산 시험은 통과했다.
+4. **06:30 KST 수집 시점에는 경기가 아직 진행 중일 수 있다.** 순위표는 진행 중인 경기 점수까지 반영한다(실측: Arsenal–Leeds 진행 중 0:0이 순위표에 "1무"로 들어감). 유럽 겨울 시간(2026-10-25~2027-03-28)에는 현지 20:45~21:00 킥오프가 **06:30 KST에 끝나지 않는다.** UCL 리그 페이즈 144경기 중 **74경기(51%)**가 20:00Z 킥오프(05:00 KST 시작, 06:55 KST 무렵 종료)다. → "전날 경기 결과" 브리핑을 설계할 때 반영해야 한다(사용자 확인 질문 1).
+5. **약관(D24 핵심): 조건부 허용.** 약관(General Terms and Conditions, 2018-06-01 시행)에는 AI·머신러닝·가공·파생물·재배포·캐싱·상업적 이용에 관한 조항이 **하나도 없다**. 의무는 셋이다. ① 앱·웹사이트에 **"Football data provided by the Football-Data.org API"** 문구를 보이는 곳에 표기 ② API 키 1개는 애플리케이션 1개(웹은 도메인 1개)에만 사용 ③ 구독을 해지한 뒤에는 데이터를 참조하지 않는다. 로고·사진은 저작권 대상이라 따로 허가가 필요하다(우리는 쓰지 않는다). → **B7 미발동**, 일일 브리핑 LLM 입력으로 쓸 수 있다.
+6. **레이트 리밋 설계**: 하루 수집은 대회당 순위·경기·득점 3건으로 **18건**이면 된다. 요청 간격 6.5초에 응답 0.8~1.9초를 더하면 건당 약 8초, **합계 약 2.5분**이라 06:30~06:50 창에 넉넉히 들어간다. 카운터는 첫 요청부터 60초 고정 창으로 동작했다. 6.5초 간격이면 한 창에 8건 이하라 한도(10)에 닿지 않는다.
+
+### 엔드포인트별 결과 (2026-10-10 실측)
+
+**대회 정보 `/v4/competitions/{code}`** (6건, 모두 200)
+
+| 내부 ID | 코드 | football-data 대회 id | 현재 시즌 id | startDate | endDate | currentMatchday | 비고 |
+|---|---|---|---|---|---|---|---|
+| EPL | PL | 2021 | 2502 | 2026-08-21 | 2027-05-30 | 6 | 시즌 경기 목록의 첫·마지막 경기일과 일치(실측) |
+| LALIGA | PD | 2014 | 2518 | 2026-08-16 | 2027-05-30 | 8 | |
+| SERIEA | SA | 2019 | 2494 | 2026-08-23 | 2027-05-30 | 6 | |
+| BUNDESLIGA | BL1 | 2002 | 2522 | 2026-08-28 | 2027-05-22 | 5 | |
+| LIGUE1 | FL1 | 2015 | 2497 | 2026-08-22 | 2027-05-29 | 6 | 2차 출처에는 "8월 21일 개막"이라는 서술이 있다. API 값을 따른다 |
+| UCL | CL | 2001 | 2557 | 2026-09-08 | **2027-01-27** | 2 | **endDate가 리그 페이즈 마지막 날이다.** 결승(2027-06-05)이 아니다. 시즌 경기 목록도 리그 페이즈 144경기뿐이고 녹아웃 경기는 아직 없다 |
+
+- `season` 파라미터는 시작 연도(`"2026"`)를 쓴다. 응답 `filters.season`이 `"2026"`이었다(`SeasonSchema`와 같은 값). 시즌 id(2502 등)는 우리 설정에 필요 없다.
+- 순위·경기 응답에도 같은 `season` 객체(id·startDate·endDate·currentMatchday)가 들어 있다. **매일 `/competitions/{code}`를 부를 필요는 없다**(시즌 전환 `/new-season` 때만 확인).
+
+**순위 `/v4/competitions/{code}/standings`** (6건, 모두 200)
+
+| 코드 | standings 수 | stage / type / group | 행 수 | 경기 수(최소~최대) | `form` | 홈·원정 표 |
+|---|---|---|---|---|---|---|
+| PL | 1 | REGULAR_SEASON / TOTAL / "Matchday" | 20 | 5~6 | 20행 모두 null | 없음 |
+| PD | 1 | REGULAR_SEASON / TOTAL / "Matchday" | 20 | 6~8 | 모두 null | 없음 |
+| SA | 1 | REGULAR_SEASON / TOTAL / "Matchday" | 20 | 5 | 모두 null | 없음 |
+| BL1 | 1 | REGULAR_SEASON / TOTAL / "Matchday" | 18 | 4~5 | 모두 null | 없음 |
+| FL1 | 1 | REGULAR_SEASON / TOTAL / "Matchday" | 18 | 5~6 | 모두 null | 없음 |
+| CL | 1 | **LEAGUE_STAGE / TOTAL / "League phase"** | **36** | 1 | 모두 null | 없음 |
+
+- 행 필드: `position`·`team{id,name,shortName,tla,crest}`·`playedGames`·`form`·`won`·`draw`·`lost`·`points`·`goalsFor`·`goalsAgainst`·`goalDifference`.
+- 일관성 검사(6대회 132행): W+D+L = 경기 수, 승점 = 3W+D, 득실 = GF−GA가 모두 맞았다.
+- **진행 중 경기 반영**: PL 순위표를 같은 시각의 FINISHED 경기로 다시 계산해 보니 Arsenal·Leeds 두 팀만 1경기씩 차이가 났다. 요청 시점에 진행 중(`IN_PLAY` 0:0)이던 경기가 순위표에 무승부로 들어가 있었다. UCL은 차이 0이었다.
+
+**경기 `/v4/competitions/{code}/matches?dateFrom=2026-10-07&dateTo=2026-10-13`** (6건, 모두 200)
+
+| 코드 | 건수 | 실제 범위(resultSet) | status | 비고 |
+|---|---|---|---|---|
+| PL | 10 | 10-10~10-12 | IN_PLAY 1 · TIMED 9 | 10-07~09 경기 없음 |
+| PD | 10 | 10-09~10-12 | FINISHED 1 · IN_PLAY 1 · TIMED 8 | Málaga 1:1 Espanyol |
+| SA | 10 | 10-10~10-12 | TIMED 10 | |
+| BL1 | 9 | 10-09~10-11 | FINISHED 1 · TIMED 8 | Dortmund 2:2 Bremen |
+| FL1 | 9 | 10-09~10-11 | FINISHED 1 · TIMED 8 | Lens 2:1 Lyon |
+| CL | 9 | 10-13 | TIMED 9 | 리그 페이즈 MD2(10-13·14) 첫날 |
+
+- 경기 필드: `id`·`utcDate`·`status`·`matchday`·`stage`·`group`·`lastUpdated`·`homeTeam`·`awayTeam`·`score{winner,duration,fullTime,halfTime}`·`odds`·`referees`(+ `area`·`competition`·`season`). 경기 상세에만 `venue`가 더 있다(실측은 null).
+- `odds`는 `{"msg":"Activate Odds-Package in User-Panel to retrieve odds."}`이다(유료 부가 상품).
+- **진행 중 경기도 점수가 나온다**: `IN_PLAY`일 때 `score.fullTime`은 현재 점수(0:0)이고 `winner`는 `"DRAW"`다. FINISHED처럼 보이지 않도록 어댑터가 status로 걸러야 한다.
+- 시즌 전체(`/competitions/PL/matches`·`/competitions/CL/matches`, 필터 없음): PL 380경기(368KB) · CL 144경기(139KB). 본 기간에 POSTPONED·SUSPENDED·CANCELLED·AWARDED는 0건이었다. **먼 미래 경기도 `TIMED`인데 시각은 임시값이다.** PL MD13은 10경기 모두 2026-12-02T20:00Z, MD14·MD30·MD38은 모두 15:00Z다. → `TIMED`만 보고 "시각 확정"이라고 판단할 수 없다(F8·.ics는 매일 갱신값을 쓴다).
+- 상태 값 전체(문서 Lookup Tables): `SCHEDULED | TIMED | IN_PLAY | PAUSED | EXTRA_TIME | PENALTY_SHOOTOUT | FINISHED | SUSPENDED | POSTPONED | CANCELLED | AWARDED`. `score.duration`: `REGULAR | EXTRA_TIME | PENALTY_SHOOTOUT`.
+- **승부차기 경기는 `fullTime`에 승부차기 골이 포함된다**(문서 "Dealing with overtime and penalty shootout"의 예: fullTime 7:6 = regularTime 1:1 + extraTime 0:0 + penalties 6:5). 이때는 `regularTime`·`extraTime`·`penalties` 노드가 따로 붙는다.
+
+**교차 대회 `/v4/matches`** (2건, 200) — 쓰지 않기를 권고한다
+
+| 요청 | 결과 |
+|---|---|
+| `?dateFrom=2026-10-09&dateTo=2026-10-13` (대회 지정 없음) | 90경기, `filters.permission: "TIER_ONE"` — 무료 12개 대회 중 경기가 있는 9개(BSA·PPL·DED·ELC 포함)가 섞여 온다. 마지막 경기 2026-10-13T00:00Z |
+| `?competitions=PL,PD,SA,BL1,FL1,CL&dateFrom=2026-10-09&dateTo=2026-10-13` | 48경기(BL1·FL1·PD·PL·SA). **10-13의 CL 9경기가 빠졌다.** 마지막 경기 2026-10-12T19:00Z |
+
+- 같은 `dateTo`를 줘도 결과가 다르다. 대회별 엔드포인트는 **dateTo 날짜를 하루 끝까지 포함**한다(CL 10-13 19:00Z 포함). 교차 엔드포인트는 사실상 **dateTo 00:00Z까지만** 포함한다. 응답 시간도 3.3~5.2초로 대회별(0.8~1.9초)보다 길다.
+- → 어댑터는 **대회별 엔드포인트만 쓴다**(대회 단위 실패 격리와도 맞다). 교차 엔드포인트를 쓰면 dateTo를 하루 늘려야 한다.
+
+**경기 상세 `/v4/matches/564706`** (1건, 200 — Málaga 1:1 Espanyol, FINISHED)
+- 키: `area`·`competition`·`season`·`id`·`utcDate`·`status`·`venue`·`matchday`·`stage`·`group`·`lastUpdated`·`homeTeam`·`awayTeam`·`score`·`odds`·`referees`. **`goals`·`bookings`·`substitutions`·`lineups`가 없다**(무료 플랜). 403이 아니라 필드가 빠진 채 200으로 온다.
+
+**득점 순위 `/v4/competitions/{code}/scorers`** (7건, 200)
+
+| 코드 | 기본 건수 | 1위 | assists null | penalties null | 비고 |
+|---|---|---|---|---|---|
+| PL | 10 (`filters.limit: 10`) | Erling Haaland 5골 | 5/10 | 7/10 | `?limit=50` → 50명(30KB), 1골 선수까지 내려감 |
+| PD | 10 | Raphinha 12골 | 4/10 | 6/10 | |
+| SA | 10 | Donyell Malen 6골 | 8/10 | 8/10 | |
+| BL1 | 10 | Michael Olise 4골 | 5/10 | 10/10 | |
+| FL1 | 10 | Amine Gouiri 4골 | 6/10 | 4/10 | |
+| CL | 10 | Ermedin Demirovic 3골 | 8/10 | 9/10 | |
+
+- 행 필드: `player{id,name,firstName,lastName,dateOfBirth,nationality,section,position,shirtNumber,lastUpdated}`·`team{…,clubColors,venue,website,founded…}`·`playedMatches`·`goals`·`assists`·`penalties`. `playedMatches`는 null이 0건이다.
+- **assists·penalties의 `0`은 한 번도 나오지 않았다**(PL 50명 기준 assists null 30·0은 0건). null이 "0"인지 "미집계"인지 응답만으로는 가릴 수 없다. → 스키마대로 **null을 유지**하고 0으로 바꾸지 않는다(FR-22, 입력에 없는 사실 금지).
+- `limit`은 문서상 1~500이다(Lookup Tables "Filters").
+- 팀 객체의 `clubColors`(예: "Sky Blue / White")는 색 이름 텍스트라 hex 팀 컬러(`configs/team-colors.json`)에는 바로 쓸 수 없다. 참고용이다.
+
+**팀 규모 (팀 페이지 FR-50)**
+- 5대 리그 **96팀**(20+20+20+18+18, 중복 없음) + UCL 36팀 중 5대 리그 소속 21팀(PL 5·PD 5·SA 4·BL1 4·FL1 3) → **UCL 전용 15팀**(Sporting CP·AEK·Shakhtar·Fenerbahçe·PSV·Club Brugge·Slavia Praha·LASK·Galatasaray·Viking·Porto·Feyenoord·Sabah·Slovan Bratislava·Bodø/Glimt) → **고유 팀 111개**(정적 페이지 111개).
+- **TLA는 고유하지 않다**: `BRE`(Brentford·Brest), `FCB`(Barça·Bayern). Bodø/Glimt의 TLA는 `FK`(2자)다. → 팀 slug와 배지 약어(`team-colors.json` `short`)를 TLA로 자동 생성하면 안 된다. **football-data 팀 id → slug 대응**으로 관리한다.
+- 비ASCII 이름(Barça·Alavés·Málaga·1. FC Köln·Fenerbahçe·Bodø/Glimt)이 있다. slug는 NFKD 정규화 후 kebab으로 만들고(ø 별도 처리), 한 번 정하면 바꾸지 않는다.
+- 엠블럼·크레스트·국기 URL은 모두 `crests.football-data.org`다. **경계에서 버린다**(CLAUDE §1-6, 약관 9.2).
+
+### 무료 플랜 제한 (6개 대회에서 403은 0건 — 제한은 "필드 누락"으로 나타난다)
+
+| 항목 | 무료(TIER_ONE) | 근거 | 우리 대응 |
+|---|---|---|---|
+| 대상 대회 | 12개(우리 6개 포함) | 요금표 "12 competitions", 응답 `permission: TIER_ONE` | — |
+| 호출 한도 | **10회/분** | 요금표 "10 calls/minute", 문서 API policies | 6.5초 간격 |
+| 점수 | **"Scores delayed"** (지연 폭은 문서에 없음) | 요금표 | 06:30 KST 시점 status 분포를 M1 관찰 기간에 기록 |
+| 일정 | "Fixtures" · **"Schedules delayed"** | 요금표 | 매일 갱신 |
+| 순위표 | TOTAL만, `form` null | 실측 | 폼·홈/원정 코드 계산 |
+| 경기별 득점자·카드·라인업·교체 | **없음**(Free + Deep Data €29/월부터) | 요금표 "Goal scorers", "Line-ups & Subs", 실측(상세에 필드 없음) | 질문 2 |
+| 스쿼드 | 없음(Deep Data부터) | 요금표 "Squads" | 주요 선수는 득점 순위로(FR-54) |
+| 폼·트렌드 | 없음(ML Pack Light €29/월부터 "Advanced trend/form data") | 요금표 | 코드 계산 |
+| 배당 | 없음 | 응답 `odds.msg` | 버림 |
+| 득점 순위 | **있음**(기본 10, `limit` ≤ 500) | 실측·문서 | FR-41·FR-52 |
+
+### 내부 스키마 매핑 (`src/lib/schema/competition.ts`)
+
+시험 변환 스크립트(`scratchpad/m0-28/scripts/map-check.ts`)로 6개 대회 응답을 `CompetitionFileSchema`에 넣어 봤다. **6/6 통과**했다. PL·CL은 시즌 전체 경기로 폼까지 계산했고 순위표 팀과 경기·득점 팀의 slug가 모두 맞았다. 샘플 결과는 `scratchpad/m0-28/mapped-PL.sample.json`에 있다.
+
+**StandingRow**
+
+| 내부 필드 | football-data | 변환 |
+|---|---|---|
+| `pos` | `position` | 그대로 |
+| `prevPos` | **없음** | **전날 `data/competitions/{comp}.json`의 같은 팀 `pos`와 비교해 우리가 계산한다**(M2-03). 첫 수집일은 null |
+| `team` | `team.id`(+`name`) | football-data 팀 id → slug 대응표(TLA 사용 금지) |
+| `played` | `playedGames` | 그대로 |
+| `w`·`d`·`l` | `won`·`draw`·`lost` | 그대로 |
+| `gf`·`ga` | `goalsFor`·`goalsAgainst` | 그대로(`goalDifference`는 버림 — 계산 가능) |
+| `pts` | `points` | 그대로 |
+| `form` | `form` = **항상 null** | **코드 계산**: 같은 대회 FINISHED 경기 중 그 팀의 최근 5경기 W/D/L(시즌 전체 경기 목록 필요). 칩 순서(최신이 앞/뒤)는 D1에서 정한다 |
+| `zone` | 없음 | `configs/competitions.json` `zones` 규칙으로 코드 계산, 규칙 밖은 `none` |
+
+**Match**
+
+| 내부 필드 | football-data | 변환 |
+|---|---|---|
+| `id` | `id`(정수) | 문자열. 제안: `fd-560593` — API-Football 폴백(FR-45 provider 전환)과 겹치지 않게 접두어를 붙인다 |
+| `comp` | `competition.code` | PL→EPL · PD→LALIGA · SA→SERIEA · BL1→BUNDESLIGA · FL1→LIGUE1 · CL→UCL |
+| `round` | `matchday`·`stage` | 리그·UCL 리그 페이즈는 matchday 숫자, 녹아웃은 stage(PLAYOFFS·LAST_16…). 표시 문자열은 코드에서 만든다 |
+| `kickoff` | `utcDate` | 그대로(`2026-10-11T15:30:00Z` — 초 포함 `Z`, `IsoSchema` 통과 524/524) |
+| `home`·`away` | `homeTeam.id`·`awayTeam.id` | slug. 녹아웃 대진 미정 팀은 null로 올 수 있다(이번 응답에는 없음 — M2-02에서 처리 방식을 정한다) |
+| `score` | `score.fullTime{home,away}` | `finished`일 때만 값, 나머지는 null. `duration: PENALTY_SHOOTOUT`이면 fullTime에 승부차기 골이 들어 있으므로 **`regularTime + extraTime`을 쓴다.** 승부차기 스코어를 둘 자리는 스키마에 없다(UCL 녹아웃 표시 — M2·D1 확인 사항) |
+| `status` | `status` | `SCHEDULED`·`TIMED` → scheduled · `FINISHED`·`AWARDED` → finished · `POSTPONED`·`SUSPENDED`·`CANCELLED` → postponed · `IN_PLAY`·`PAUSED`·`EXTRA_TIME`·`PENALTY_SHOOTOUT` → **scheduled + score null**(진행 중 점수는 쓰지 않는다) |
+| (버림) | `odds`·`referees`·`halfTime`·crest·emblem·flag | — |
+
+**Scorer**
+
+| 내부 필드 | football-data | 변환 |
+|---|---|---|
+| `player` | `player.name` | 영문 원문 그대로(표시할 때 names.ko로 치환, FR-24) |
+| `team` | `team.id` | slug |
+| `goals` | `goals` | 그대로 |
+| `assists` | `assists` | null 유지(0으로 바꾸지 않는다) |
+| `penalties` | `penalties` | null 유지 |
+| `played` | `playedMatches` | 그대로 |
+
+**KST 표시 확인** (`src/lib/time.ts` `formatKst`·`kstDate`·`zonedParts`, 실행 결과)
+
+| 경기 | utcDate | 현지 시각 | KST 표시 |
+|---|---|---|---|
+| PL Liverpool–Man City | 2026-10-11T15:30:00Z | 런던 16:30(BST) | 10월 12일 (월) 00:30 |
+| CL Inter–Club Brugge | 2026-10-13T19:00:00Z | 로마 21:00(CEST) | 10월 14일 (수) 04:00 |
+| PD Málaga–Espanyol | 2026-10-09T19:00:00Z | 마드리드 21:00(CEST) | 10월 10일 (토) 04:00 |
+| PL Chelsea–Man United (서머타임 종료 후) | 2026-10-31T12:30:00Z | 런던 12:30(GMT) | 10월 31일 (토) 21:30 |
+
+### 06:30 KST 수집 시점의 미종료 경기 (브리핑 설계 입력)
+
+- 06:30 KST = 전날 21:30 UTC다. 경기는 킥오프부터 약 115분 걸리므로 **19:35Z 이후 킥오프는 수집 시점에 끝나지 않았을 가능성이 크다.** 여기에 무료 플랜 점수 지연("Scores delayed")이 더해진다.
+- 시즌 경기 목록 기준: PL 380경기 중 **43경기**(20:00·20:15Z 킥오프 — 겨울 금·월요일 밤·주중 라운드, 먼 라운드의 임시 시각 포함), UCL 리그 페이즈 144경기 중 **74경기**(20:00Z = 21:00 CET, MD4~MD8)가 해당한다. 라리가·세리에A·리그1의 겨울 20:45/21:00 CET 경기(19:45/20:00Z)도 같다. 서머타임 기간(~10-24, 2027-03-28~)에는 같은 현지 시각이 1시간 이르므로 대부분 끝나 있다.
+- 순위표는 진행 중 점수를 반영한다(위 실측). 수집 시점의 순위표를 "현재 순위"로 브리핑에 넣으면 **확정되지 않은 사실**이 된다.
+- 설계 권고(코드, LLM 비용 0): ① 브리핑 대상 경기는 "KST 전날 날짜"가 아니라 **"직전 브리핑 이후 `FINISHED`가 된 경기"**로 잡고, 미종료 경기는 다음 날로 넘긴다. ② 해당 대회에 `IN_PLAY`·`PAUSED` 경기가 있으면 그 대회의 순위 문장은 생략한다(대회 페이지 순위표에는 갱신 시각만 표기). → 운영 방식은 사용자 확인 질문 1.
+
+### 레이트 리밋 설계
+
+**관측한 카운터 동작**
+- 응답 헤더: `X-API-Version: v4` · `X-Authenticated-Client`(등록 계정명 — **로그에 남기지 않는다**) · `X-Requests-Available-Minute` · `X-RequestCounter-Reset`. 문서(Lookup Tables)의 헤더 이름은 `X-RequestsAvailable`이지만 실제로 받은 이름은 `X-Requests-Available-Minute`다.
+- **60초 고정 창**이다. 창의 첫 요청에서 `Reset: 60`·`Available: 9`이고, 그 뒤 Reset은 남은 초를 세고 Available은 1씩 준다(예: #1 9/60 → #8 3/7 → #9 9/60). 응답 완료 후 6.5초 간격(실제 약 7.5초 주기)이면 한 창에 **최대 8건**이라 한도 10에 닿지 않았다.
+- 응답 시간: 대회별 엔드포인트 0.8~1.9초(시즌 전체 PL 368KB도 1.5초), 교차 `/v4/matches` 3.3~5.2초.
+
+**하루 호출 수**
+
+| 단계 | 호출 | 건수 |
+|---|---|---|
+| M1-44 최소 어댑터(브리핑 입력) | 대회별 `standings` + `matches?dateFrom={D-2}&dateTo={D}`(전날 KST 창 + 이월분 여유) | 12 |
+| (질문 2에서 B를 고르면) | 대회별 `scorers?limit=200` | +6 → 18 |
+| M2-02 전체 어댑터(대회·팀 페이지) | 대회별 `standings` + `matches`(시즌 전체, 필터 없음 — 결과·일정·폼·홈/원정 계산을 한 번에) + `scorers?limit=…` | **18** |
+| 시즌 정보 | `/competitions/{code}` — `/new-season`·주 1회만 | 0(일일) |
+
+- 18건 × 약 8초 ≈ **2.4분**(최악 응답 2초 가정 시 약 2.6분). 06:30 트리거 직후 RSS 수집과 **병렬**로 돌리면(호스트가 다름) 06:33 무렵 끝난다. 06:50 배치 마감까지 여유가 15분 이상 남는다. 하루 데이터량은 약 1.5MB(시즌 전체 6개 대회)다.
+
+**요청·재시도 정책(권고 — M1-44·M2-02 구현용)**
+1. 동시 1개, **앞 응답 완료 후 6.5초 대기**. 그리고 `X-Requests-Available-Minute ≤ 1`이면 `X-RequestCounter-Reset + 1`초를 기다린다(헤더 가드).
+2. **429**: 문서는 "You exceeded your allowed requests per minute/day…"라고만 적고 본문 예시가 없다(실측에서도 일부러 만들지 않았다). `X-RequestCounter-Reset`가 있으면 그 값 + 1초, 없으면 61초를 기다린 뒤 **같은 요청을 1회만 재시도**한다. 다시 실패하면 그 대회 단계를 실패로 처리한다.
+3. **5xx·네트워크 오류·타임아웃(15초)**: 10초 후 1회 재시도.
+4. **403**(문서: 유료 전용 등 "not available for you") · **400**(필터 형식 오류): 재시도하지 않는다. `{message, errorCode}` 또는 `{error}` 본문을 상태 코드와 함께 로그에 남기고 이슈를 만든다.
+5. 대회 단위로 실패를 격리한다. M2는 전일 데이터를 유지하고 "업데이트 지연"을 표시한다(M2-02). M1-44는 그 대회를 브리핑 입력에서 뺀다(전부 실패하면 브리핑 생략 — 뉴스는 발행).
+6. football-data 단계 전체 시간 예산은 **6분**이다. 넘으면 남은 대회를 실패로 처리한다.
+7. 키는 1개라 개발 실행과 봇이 같은 분당 한도를 나눠 쓴다. **06:25~06:45 KST에는 개발 중 수동 호출을 하지 않는다.**
+8. 응답은 경계에서 zod로 파싱한다(`.passthrough` 없이 필요한 필드만 — crest·odds·referees는 스키마에 넣지 않아 자동으로 버려진다).
+
+### 약관 판정 (D24 핵심) · B7
+
+확인 날짜: 2026-10-10. 약관 원문은 별도 URL이 없고 **가입 화면과 About 페이지 하단에 같은 "General Terms and Conditions"**(12.1: 2018-06-01 시행)가 실려 있다. `https://www.football-data.org/terms`·`/documentation/policies`는 404였다.
+
+| 조항 | 인용(짧게) | 의미 |
+|---|---|---|
+| 1.1 수락 | "By signing-up for the Service, the Customer accepts these General Terms and Conditions in full" | 가입 시 동의(이미 가입함) |
+| 2.3 앱 1개 | "The API Key applies to a single Application, in its web and/or mobile form and on any platform (i.e. for the web Application: the Subscription applies to a single domain name)." | 키 1개 = 사이트 1개(`sguys99.github.io/euro-digest`). 개발 실행은 같은 애플리케이션의 개발이다 |
+| 3.1·3.3 공정 이용 | "Customers who subscribe to the Service must adhere to Service Provider's Fair Usage Policy." · "The Service Provider will monitor the Customer's usage…" | 하루 18건이면 문제없다. 별도의 Fair Usage Policy 문서는 찾지 못했다 |
+| 6.1 자격 증명 | "Developer credentials may not be stored in code repositories of open source projects." | 공개 저장소에 키 금지 → Actions Secrets(CLAUDE §1-8과 같음) |
+| **7.1 출처 표기** | "You agree to include the following attribution to Football-Data in your app or website:" "**Football data provided by the Football-Data.org API**"(이어서 푸터나 소개 섹션에 둘 수 있다는 취지) | **필수 조건.** 사이트 푸터(또는 소개 페이지) + FR-45 대회 페이지 하단에 이 문구를 그대로 둔다. 브리핑 옆 출처 표기에도 쓴다 |
+| 8.x 보증 없음 | "The Service Provider goes to great lengths to ensure the accuracy, correctness and reliability of the Services, …"(보증하지 않는다는 취지로 이어짐) | 오류 데이터 책임은 우리에게 있다 → 검증 게이트(FR-151) |
+| **9.1 해지 후** | "After cancellation of the subscription to the Service, the Customer is not permitted to reference the football data (incl. match fixtures, results, league tables, player/squad data, top scorers) obtained through the Football-Data API" … "on their own site or service." | 계정을 해지하거나 다른 소스로 옮기면 **사이트에서 football-data 출처 데이터를 내려야 한다.** 공개 저장소의 git 이력에 남은 `data/competitions/*.json`은 지울 수 없다 → 위험 메모 |
+| 9.2 이미지 | "All graphics, including team logos and profile photos, are copyrighted by their legal owner." | crest·emblem 미사용(CLAUDE §1-6)과 같다 |
+| 10.1 준거법 | 네덜란드법 | — |
+
+- **약관에 없는 단어**(WebFetch로 약관 전문에서 검색): "commercial"·"non-commercial"·"redistribut"·"resell"·"cache"·"derivative"·"modify"·"machine learning"·"artificial intelligence"·"AI"(단어)·"train"·"scrap" — 모두 **없음**. "store"는 6.1(자격 증명 저장 금지)에만 나온다.
+- 요금표·소개 페이지도 이용 목적을 제한하지 않는다("Free to use. Easy to integrate.", "Free Plan is Free Forever."). 유료 상품 이름에 "ML Pack Light"가 있어 데이터의 기계학습·분석 이용을 상정한 서비스로 보인다(허용 근거는 아니고 정황).
+
+**판정**
+
+| 쟁점 | 판정 | 근거 |
+|---|---|---|
+| 비상업·광고 없는 웹사이트에 순위·경기·득점 표시 | **허용(조건부)** | 2.3·7.1이 "app or website"에서의 이용을 전제로 한다. 조건은 7.1 문구 표기 |
+| 출처 표기 | **필수** — "Football data provided by the Football-Data.org API" | 7.1 |
+| **정형 데이터를 LLM 입력으로 써서 한국어 문장 생성(재가공)** | **조건부 허용** — 명시적 금지 없음 | 약관에 가공·파생물·AI 조항이 없고, 이용 방식은 "app or website"로만 묶여 있다. 브리핑은 그 데이터를 우리 사이트에 다른 형식(문장)으로 보여 주는 것이다. Anthropic API로 보내는 것은 처리 위탁이지 공개 재배포가 아니다. 조건은 7.1 표기·9.1(해지 후 중단). 득점·스코어 같은 사실 자체는 일반적으로 저작권 보호 대상이 아니다 |
+| 변환된 내부 스키마를 `data/*.json`으로 공개 저장소에 커밋 | **허용(조건부)** — 금지 조항 없음 | 재배포·캐싱 조항이 없다. 원본 응답이 아니라 변환·축약된 값이다. 단 9.1 때문에 해지 후에는 사이트에서 내려야 하고, git 이력 잔존은 위험으로 남는다 |
+| 원본 응답 덤프 공개 | 하지 않는다 | 필요 없음. crest URL 등이 섞인다 |
+| API 키 | 공개 저장소 금지(6.1) | Secrets만 |
+
+→ **plan §14 B7(데이터 API 약관이 LLM 입력을 막음)은 발동하지 않는다.** D24 브리핑 입력으로 football-data 정형 데이터를 쓸 수 있다. 확인 메일(`daniel@football-data.org`, 약관 페이지의 연락처)은 필수가 아니다. 보내고 싶으면 공개 전(M5)에 "비상업 사이트에서 결과·순위를 LLM으로 한국어 문장화해 표시해도 되는지"를 한 번 묻는 정도면 된다.
+
+**후속 반영 대상**(오케스트레이터 — 이 작업에서는 고치지 않았다)
+- PRD FR-45·NFR-09(출처 표기): football-data 문구 **"Football data provided by the Football-Data.org API"**(영문 그대로)를 푸터와 대회 페이지 하단에 둔다. 브리핑 영역에도 데이터 출처를 표기한다.
+- PRD §15 D24 "데이터 API 약관 확인" → football-data 판정 조건부 허용, B7 미발동(API-Football은 M0-29).
+- PRD §13 위험: "football-data 해지·이전 시 9.1에 따라 데이터 비표시 + git 이력 잔존", "무료 플랜 점수 지연 + 06:30 KST 미종료 경기".
+- plan M1-44: 경기별 득점자 없음(질문 2), 대회별 엔드포인트만 사용, 재시도 정책. M2-02·M2-03: 폼·홈/원정·순위 변동은 코드 계산. M0-35: 원본 위치(아래).
+
+### competitions.json 초안
+
+초안 파일: `/tmp/claude-1000/-home-sguys99-project-euro-digest/7c9f579e-56cb-4022-8cf1-1b0af43189dd/scratchpad/m0-28/competitions.draft.json`
+검증: `CompetitionsFileSchema`(`npm run validate`가 쓰는 레지스트리 스키마) **통과(6개)**. football-data 값 대조는 6개 중 5개가 일치하고, UCL endDate만 의도적으로 다르다(아래). **저장소(`configs/competitions.json`)에는 쓰지 않았다.**
+
+| id | nameKo / shortKo | fd 코드 | season | startDate | endDate | teamCount | zones(초안) |
+|---|---|---|---|---|---|---|---|
+| EPL | 프리미어리그 / EPL | PL | 2026 | 2026-08-21 | 2027-05-30 | 20 | 강등 18~20 |
+| LALIGA | 라리가 / 라리가 | PD | 2026 | 2026-08-16 | 2027-05-30 | 20 | 강등 18~20 |
+| SERIEA | 세리에 A / 세리에A | SA | 2026 | 2026-08-23 | 2027-05-30 | 20 | 강등 18~20 |
+| BUNDESLIGA | 분데스리가 / 분데스 | BL1 | 2026 | 2026-08-28 | 2027-05-22 | 18 | 강등 PO 16 · 강등 17~18 |
+| LIGUE1 | 리그 1 / 리그1 | FL1 | 2026 | 2026-08-22 | 2027-05-29 | 18 | 강등 PO 16 · 강등 17~18 |
+| UCL | UEFA 챔피언스리그 / UCL | CL | 2026 | 2026-09-08 | **2027-06-05** | 36 | 16강 직행 1~8 · PO 9~24 |
+
+**값의 출처와 확신도**
+- `footballDataCode`·`season`·`startDate`·`endDate`(UCL 제외)·`teamCount`: **football-data 실측**(위 표).
+- UCL `endDate` 2027-06-05: API는 리그 페이즈 끝(2027-01-27)을 준다. 스키마 정의("시즌 마지막 경기일")에 맞춰 **UEFA 공식 결승일**을 넣었다 — "concludes with the final at Estadio Metropolitano in Madrid on Saturday 5 June 2027"(https://www.uefa.com/uefachampionsleague/news/02a6-20d57cfcd03e-407c22a7f465-1000--2026-27-champions-league-teams-dates-draws-format-final/). 어댑터는 UCL의 비시즌 판단에 API endDate를 쓰면 안 된다. 참고로 `fixtures/schema/configs/competitions.json`의 UCL endDate(2027-05-29)는 형식 예시라 실제 값과 다르다.
+- UCL 구간(1~8 / 9~24 / 25~36 탈락): **UEFA 공식** — "The clubs ranked one to eight … qualify for the round of 16", "ranked nine to 24 … knockout phase play-offs", "25 to 36 are eliminated"(https://www.uefa.com/uefachampionsleague/news/0268-12157d69ce2d-9f011c70f6fa-1000--new-format-for-champions-league-post-2024-everything-you-ne/). 2026-27 안내 페이지도 "third under the league phase format"이라고 적고 있다.
+- 리그 강등 구간: 리그 규정 1차 출처(리그 공식 규정집)는 이번 작업에서 **확보하지 못했다.** 2차 출처로만 확인했다 — 분데스리가 17·18위 직강등 + 16위 2부 3위와 플레이오프, 리그1 17·18위 직강등 + 16위 바라주(2027-06-03·06 예정 — https://en.wikipedia.org/wiki/2026%E2%80%9327_Ligue_1 등), PL은 2025-26 3팀 강등·3팀 승격(https://www.nbcsportsboston.com/news/sports/soccer/premier-league-teams-2026-27/). **라리가·세리에A 2026-27 강등 팀 수는 이번 검색으로 확인하지 못했다**(관행상 3팀).
+- **챔스·유로파·컨퍼런스 진출 구간은 넣지 않았다.** 2027-28 대회 출전권은 ① 다음 주기(2027-28~) UEFA 액세스 리스트(이번 검색에서 미공개 확인), ② 2026-27 시즌 국가 계수에 따른 European Performance Spot(EPL·세리에A 등 5번째 챔스 자리), ③ 국내 컵 우승팀에 따라 순위가 밀리는 규칙에 따라 정해진다. 지금 적으면 추정이다.
+- `apiFootballLeagueId`: 스키마 **필수 필드**다(빼면 6건 오류). 초안에는 검증용으로 널리 알려진 값(39·140·135·78·61·2)을 넣었지만 **M0-29에서 확인 전**이다.
+- `nameKo`·`shortKo`: 표기 제안이다(한국 매체 관용 표기). D0 디자인·names.ko 정책과 함께 확정한다.
+- 스키마에 `note` 필드가 없다(strictObject). 근거 URL은 설정 파일에 넣을 수 없으므로 이 문서에 남긴다. note 필드를 추가하려면 스키마 변경(사용자 확인)이 필요하다.
+
+**저장소에 쓰지 않은 이유**: ① `apiFootballLeagueId`가 필수인데 M0-29 전이라 확인 안 된 값이 들어간다. ② 리그 강등 구간은 2차 출처뿐이고(라리가·세리에A는 2차 출처도 없음) 유럽 대항전 구간은 아직 정할 수 없다. 지시("zone 규칙에 추정이 섞이면 저장소에 쓰지 말 것")에 따라 보고만 한다 → 사용자 확인 질문 3.
+
+### M0-35 fixtures에 쓸 원본 위치
+
+디렉터리: `/tmp/claude-1000/-home-sguys99-project-euro-digest/7c9f579e-56cb-4022-8cf1-1b0af43189dd/scratchpad/m0-28/`(세션 scratchpad — M0-35를 같은 세션에서 하지 않으면 다시 받아야 한다. 재수집하려면 아래 요청 목록대로 30건 이내로)
+
+| 파일(`raw/`) | 내용 | 크기 |
+|---|---|---|
+| `comp-{PL,PD,SA,BL1,FL1,CL}.json` | 대회 정보·시즌 목록 | 6~23KB |
+| `standings-{…}.json` | 순위표(UCL 36팀 리그 페이즈) | 5~10KB |
+| `matches-{…}.json` | 2026-10-07~13 경기(FINISHED·IN_PLAY·TIMED 포함) | 9~10KB |
+| `season-PL.json`·`season-CL.json` | 시즌 전체 경기(PL 380·CL 144) — 폼 계산·임시 킥오프 시각 예시 | 368KB·139KB |
+| `scorers-{…}.json`·`scorers-PL-limit50.json` | 득점 순위(기본 10명·50명) | 6~31KB |
+| `match-564706.json` | 경기 상세(FINISHED, goals 없음 확인용) | 1KB |
+| `matches-all.json`·`matches-6comps.json` | 교차 `/v4/matches`(dateTo 경계 차이 증거) | 88KB·47KB |
+
+- 그 밖에 `log.jsonl`(요청 30건의 상태·헤더·소요 시간 — `X-Authenticated-Client` 계정명이 들어 있으므로 **fixtures로 복사하지 않는다**), `scripts/`(요청기 `fetch.mjs`·KST 확인 `kst-check.ts`·매핑 시험 `map-check.ts`·초안 검증 `validate-draft.ts`), `mapped-PL.sample.json`(내부 스키마 변환 샘플), `competitions.draft.json`이 있다.
+- fixtures로 옮길 때는 `crest`·`emblem`·`flag` URL과 `odds`를 지우고(CLAUDE §1-6), 경기 수를 줄여 크기를 맞춘다(예: 시즌 전체는 특정 라운드만). 키·계정명은 원본에 없다(본문에 키 반사 0건 확인).
+
+### 사용자 확인 질문
+
+1. **06:30 KST 수집 시점에 끝나지 않은 경기(겨울철 UCL의 51%)를 브리핑·순위에서 어떻게 다룰까**
+   - (A) **상태 기준 이월(추천)** — 브리핑은 "직전 브리핑 이후 FINISHED가 된 경기"를 다룬다. 05:00 KST 킥오프 UCL 경기는 다음 날 07:00 브리핑에 들어간다(하루 늦음). 진행 중 경기가 있는 대회는 순위 문장을 뺀다. 코드만 바꾸면 되고 비용·호출 수 변화가 없다.
+   - (B) (A) + **07:40 KST 데이터 전용 재수집** — LLM 없이 football-data 18건만 다시 받아 대회 페이지·순위·결과를 갱신하고 재배포한다(하루 Actions 실행 1회 추가, 커밋 1회 추가). 브리핑은 그대로 하루 늦지만 사이트 데이터는 아침에 최신이 된다. M2에서 도입해도 된다.
+   - (C) 겨울 시간 동안 발행을 08:00 KST로 늦춘다 — PRD의 07:00 약속(G1·FR-150)을 바꿔야 하고, 무료 플랜 점수 지연 폭을 모르는 점은 그대로다.
+2. **경기별 득점자(무료 미제공)를 브리핑에 어떻게 넣을까**
+   - (A) **득점자 없이 시작하고 M0-29 후 재결정(추천)** — 브리핑 입력은 결과·순위·시즌 득점 순위 상위만으로 한다. API-Football 무료 플랜이 2026-27 경기 이벤트(득점자)를 주는지(M0-29) 보고 다시 정한다. 위험이 없다.
+   - (B) **득점 순위 일간 비교로 추론** — 매일 `scorers?limit=200`을 받아 전날보다 골이 는 선수를, 그 사이 경기가 1경기뿐인 팀의 경기에 붙인다. 호출 +6건, 비용 0. 다만 추론이라 틀리면 FR-22(입력에 없는 사실 금지)를 어긴다. 자책골·같은 날 2경기·데이터 갱신 지연에 약하다.
+   - (C) Free + Deep Data 구독(€29/월) — 월 예산 $3을 크게 넘는다. 비추천.
+3. **`configs/competitions.json`을 언제·어떻게 저장소에 쓸까**
+   - (A) **M0-29 직후에 쓴다(추천)** — `apiFootballLeagueId`를 확인값으로 채우고, zones는 UCL(공식 출처)과 리그 강등 구간만 넣는다(그때 리그 규정 1차 출처를 함께 확인). 유럽 대항전 구간은 비워 두고 시즌 후반(2027-03 전후 액세스 리스트·계수 확정 시) `/new-season`과 별도로 갱신한다.
+   - (B) 지금 초안 그대로 쓴다 — 리그 강등은 관행값, `apiFootballLeagueId`는 알려진 값으로 넣고 M0-29에서 고친다. 빠르지만 확인 안 된 값이 저장소에 들어간다.
+   - (C) 유럽 대항전 구간도 지난 시즌 관행값(예: EPL 챔스 1~4·유로파 5·컨퍼런스 6)으로 넣는다 — 색 구간이 바로 보인다. 다만 시즌 말 실제 배정(EPS·컵 우승)과 다를 수 있어 FR-42 표시가 틀릴 수 있다.
 
 ## M0-29 API-Football
 (미착수)
