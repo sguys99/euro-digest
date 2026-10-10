@@ -11,7 +11,7 @@
 **M0 셋업·검증 단계입니다.** 아직 사용할 수 있는 서비스가 아닙니다.
 
 - 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사·배포 워크플로(`ci.yml`·`deploy.yml`), 데이터 스키마(zod v0.1, `src/lib/schema/`)와 설정·데이터 검증(`npm run validate`, CI에서 실패 시 중단)
-- 아직 없는 것: 뉴스 수집·분류 파이프라인과 데이터 브리핑, 화면 디자인. 소스 약관 검증은 진행 중입니다(해외 매체 판정 완료, 국내 매체·뉴스 검색·축구 데이터 API 남음)
+- 아직 없는 것: 뉴스 수집·분류 파이프라인과 데이터 브리핑, 화면 디자인. 뉴스 소스·축구 데이터 API 약관 검증은 마쳤습니다([docs/research/m0-validation.md](docs/research/m0-validation.md))
 - main에 push하면 CI 검사를 통과한 커밋이 GitHub Pages로 배포됩니다(`deploy.yml`). D0 디자인 시안이 확정되기 전까지는 스타일 없는 임시 페이지만 보입니다.
 
 개발은 `M0 셋업·검증 → D0 디자인 → M1 뉴스 MVP → D1 → M2 대회·팀 → D2 → M3 한국 선수·A매치 → M4 부가 기능 → D3 → M5 다듬기·공개` 순서로 진행합니다. 진행 현황은 [docs/plan.md](docs/plan.md) §1 대시보드에서 확인할 수 있습니다.
@@ -76,8 +76,8 @@ LLM 사용 원칙:
 | 데이터 | 출처 |
 |---|---|
 | 뉴스 | 매체 RSS(약관 판정을 통과한 피드만 — Google News RSS는 약관상 사용 안 함, GDELT는 현재 비활성) · 목록/OG 메타 (LLM 미사용 — 원제목 + 코드 분류) |
-| 순위 · 일정 · 결과 · 득점 | [football-data.org](https://www.football-data.org/) |
-| 한국 선수 기록 · 라인업 | [API-Football](https://www.api-football.com/) (보조) |
+| 순위 · 일정 · 결과 · 득점 순위 | [football-data.org](https://www.football-data.org/) — 사이트에 "Football data provided by the Football-Data.org API"를 표기합니다 |
+| 경기별 득점자 · 라인업(포메이션) · 한국 선수 경기 기록 | [API-Football](https://www.api-football.com/) — 경기 단위로 받습니다. 한국 선수 시즌 누적은 이 기록을 M1부터 쌓아 직접 집계하므로 "집계 시작일 이후" 기록입니다 |
 | 오늘의 5줄 (일일 브리핑) | 위 경기 데이터를 바탕으로 LLM이 작성 (매일) |
 | 팀 한줄평 · 주간 총평 | 위 데이터의 지표를 바탕으로 LLM이 작성 (주 1회) |
 | A매치 일정 · 한국 선수 명단 · 팀 컬러 | 직접 관리하는 설정 파일(`configs/`) |

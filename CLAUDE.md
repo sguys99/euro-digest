@@ -128,7 +128,9 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - `configs/sources.json`에서 `enabled: true` **그리고** `terms_checked: true`인 소스만 수집. 목록·OG 크롤링을 하는 소스는 `robots_checked: true`도 필요. `summarize: false` 소스는 LLM에 보내지 않고 피드 제목·URL을 그대로 쓴 원제목+링크(`ai:false`) 카드로만 게시(PRD §15 D22). 소스 URL 하드코딩 금지. 새 소스는 `/add-source` 절차로만.
 - 크롤러는 `scripts/crawlers/<site>.ts`로 분리: robots.txt 준수, User-Agent에 서비스명·연락처, 사이트당 2~3초 지연, 하루 1회, 목록(제목·링크·날짜·작성자)과 OG 메타만.
 - 소스 실패는 격리(해당 소스만 건너뛰고 이슈 생성). 3일 연속 0건이면 소스 건강도 이슈.
-- football-data.org 분당 10회 → 호출 간 지연. API-Football 하루 100회, 일일 계획 ≤ 60회.
+- football-data.org 분당 10회 → 호출 간 지연.
+- **API-Football (PRD §15 D27)**: 무료 플랜은 시즌 단위(`season=`)·`ids`·`next` 조회가 막혀 있어 **경기 단건 조회만** 쓴다 — `/fixtures?date=`(어제·오늘 UTC, 무료는 오늘 ±1일만)로 경기 id를 찾고 대상 경기(6개 대회 전 경기 + 한국 선수 소속팀의 다른 대회 경기)마다 `/fixtures?id=`(이벤트·라인업·선수 기록 한 번에). 미종료 경기 id는 `data/cache`에 두고 다음 실행에서 재조회. 오류도 **HTTP 200**으로 온다 — 상태 코드보다 본문 `errors`(정상 `[]`, 오류는 객체)를 먼저 검사하고, `errors.plan`은 재시도 없이 그 기능을 FR-65 폴백으로 강등 + 이슈. 시각은 `+00:00` 오프셋이라 경계에서 `Z`로 바꾼다(`Iso` 스키마).
+- API-Football 한도: 하루 100회·분당 10회(분당 초과는 약관상 중대한 위반 — 동시 1개, 응답 후 6.5초 간격). 일 한도는 **00:00 UTC = 09:00 KST에 리셋**되므로 09:00 KST 이후 개발 호출과 다음 날 아침 봇 수집이 같은 한도를 쓴다 → 봇 일일 계획 ≤ 60회(헤더 카운터가 일관되지 않아 우리 쪽 카운터로 지킴), **개발 호출은 하루 50건 이내**, 봇 수집 시간대(06:00~08:00 KST, §10 push 금지 시간대)에는 수동 호출 금지. 지난 날짜는 날짜 조회로 다시 받을 수 없으니 테스트는 저장한 `fixtures/`로만.
 - 외부 데이터는 어댑터(`scripts/lib/providers/*`)로 내부 스키마로 변환. 화면 코드는 외부 API 형식을 모른다.
 
 ## 7. 프론트엔드
@@ -193,7 +195,7 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - **한국 선수 이적 감지**: `/add-player` 또는 `korean-players.json` 수정. **미등록 고유명사**: `/add-name`. **시즌 전환**: `/new-season`.
 
 ## 13. 미결 사항 (M0 검증 후 이 문서·PRD 갱신)
-- API-Football 무료 플랜의 2026-27 시즌 조회 가능 여부 → 불가 시 FR-65 폴백
+- ~~API-Football 무료 플랜의 2026-27 시즌 조회 가능 여부~~ → M0-29 완료: 시즌 단위 불가·경기 단위 가능(plan §14 B1 일부 발동) → 경기 단건 조회 + 시즌 누적 자체 집계(PRD §15 D27). 경기 기록 저장 스키마는 M1 착수 때 사용자 확인(plan M1-48)
 - ~~각 RSS·기자 채널·크롤링 대상의 약관·robots.txt, Google News RSS 이용 조건~~ → M0-23~26 완료(`docs/research/m0-validation.md`, PRD §15 D22~D25). GDELT는 M0-27 판정(약관 허용·현재 비활성, M1-46 재측정)
-- football-data.org·API-Football 약관의 LLM 입력·재가공(한국어 브리핑) 허용 여부 (M0-28·M0-29, D24)
+- ~~football-data.org·API-Football 약관의 LLM 입력·재가공(한국어 브리핑) 허용 여부~~ → M0-28·M0-29 완료: 두 API 모두 조건부 허용, B7 미발동(football-data 출처 문구 필수 — PRD FR-45, D27)
 - 서비스명 상표·저장소명 확인, 연락용 이메일 개설, 2026-27 시즌 5대 리그 한국 선수 명단
