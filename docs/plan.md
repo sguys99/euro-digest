@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-11` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-12` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -132,7 +132,7 @@
 - [x] M0-08 커스텀 커맨드 6종 초안: `/add-player` `/add-source` `/add-name` `/new-season` `/takedown` `/design-concepts` (동작 완성은 해당 기능 단계에서) — 2026-10-10 완료: `.claude/commands/` 6종(목적·현재 상태·절차·확인 지점·금지·보고 형식), `/takedown`·`/new-season`은 직접 실행만 허용
 - [x] M0-09 서브에이전트 3종: `design-concepts` · `pipeline-dev` · `code-reviewer` (CLAUDE §11 경계 명시) — 2026-10-10 완료: `.claude/agents/euro-digest/` 3종 + PreToolUse 쓰기 경로 훅(design-concepts는 `docs/design/` 한정, code-reviewer는 읽기 전용), 범용 `dev/code-reviewer.md` 삭제
 - [x] M0-10 이슈 템플릿 3종: `summary-error` · `takedown` · `source-broken` (FR-36, FR-140) — 2026-10-10 완료: 이슈 폼 3종 + `config.yml`(빈 이슈 차단, 메일·/about 연락 링크), 운영 라벨 6종 생성(`summary-error`·`takedown`·`source-broken`·`source-health`·`pipeline-failure`·`ops-report`). 카드 미리 채우기 `?template=summary-error.yml&card=<id>&date=<date>`
-- [ ] M0-11 README 초안 (소개, 로컬 실행, 문서 링크, 데이터 출처)
+- [x] M0-11 README 초안 (소개, 로컬 실행, 문서 링크, 데이터 출처) — 2026-10-10 완료: 템플릿 README 교체(현재 상태·MVP 범위·동작 방식·출처 원칙·로컬 실행·명령 표·문서 링크). 라이선스는 미정(사용자 결정 대기)
 
 ### M0-B 배포·자동화 뼈대
 - [ ] M0-12 `ci.yml`: push마다 `check` + `build` + `check:bundle` + `test:e2e`(링크·접근성, NFR-12) → main에서 통과하면 `deploy.yml` 호출
