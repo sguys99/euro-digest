@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-23` ❓ (외부 검증 시작) (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-24` ❓ (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -150,7 +150,7 @@
 - [x] M0-22 구조화 로거 + GitHub 이슈 생성 헬퍼 (같은 원인이면 기존 이슈에 댓글) — 2026-10-10 완료: `scripts/lib/logger.ts`(비밀값 마스킹·Actions 주석), `scripts/lib/github-issues.ts`(fingerprint 마커로 같은 원인 → 댓글), collect.yml 실패 보고 전환 + 셸 폴백. 실실행 검증: 새 이슈 #2 → 재발 시 '2번째 발생' 댓글(테스트 이슈 닫음)
 
 ### M0-D 외부 검증 (결과는 `docs/research/m0-validation.md`에 기록)
-- [ ] M0-23 ❓ 1군 영문 RSS 8개 실작동·약관 확인 → 결과 보고·사용자 확인 후 `sources.json`에 `terms_checked`·`robots_checked` 기록, ESPN 처리 방식 결정 (CLAUDE §2·§6.4)
+- [x] M0-23 ❓ 1군 영문 RSS 8개 실작동·약관 확인 → 결과 보고·사용자 확인 후 `sources.json`에 `terms_checked`·`robots_checked` 기록, ESPN 처리 방식 결정 (CLAUDE §2·§6.4) — 2026-10-10 완료: 8개 피드 모두 정상, **약관상 AI 요약 가능 소스 0개**(B5 발생). 사용자 결정: BBC 4개·ESPN·The Athletic(축구 피드) 원제목+링크(`summarize:false`)로 수집, Sky·Guardian 제외. ESPN은 피드 URL·제목 무수정 조건. 결과 `docs/research/m0-validation.md`
 - [ ] M0-24 ❓ 2군 매체·기자 채널 확인: Romano Substack, CaughtOffside 작성자 페이지, Di Marzio, Plettenberg, Moretto, Ben Jacobs — RSS 유무·robots.txt → 사용자 확인 후 등록
 - [ ] M0-25 ❓ 국내 매체 RSS(인터풋볼·풋볼리스트·스포탈코리아·베스트일레븐) 제공 여부·이용 조건 → 사용자 확인 후 등록
 - [ ] M0-26 Google News RSS: 한/영 쿼리 5종 테스트, 이용 조건, 하루 쿼리 상한 결정
