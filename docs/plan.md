@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-07` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-08` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -128,7 +128,7 @@
 - [x] M0-04 npm scripts 골격 — CLAUDE §5의 전 명령 등록 (미구현 명령은 TODO 메시지 출력) — 2026-10-10 완료: 진입점 스텁 8종(구현 예정 작업 ID 출력), `collect` 인자 파싱(`--limit`·`--dry`·`--mock`) + 테스트, env는 `node --env-file-if-exists=.env.local --import tsx`로 로드
 - [x] M0-05 폴더 구조 생성 (CLAUDE §5), `@/*` 별칭이 `src/`와 `scripts/`(tsx) 양쪽에서 동작하는지 확인 — 2026-10-10 완료: 디렉터리 + `.gitkeep`, configs·data·fixtures 손 편집 규칙 README, `src/lib/site.ts`로 src·scripts(tsx)·Vitest 별칭 확인 (`public/`·`.github/`·`docs/design/fonts/`는 파일이 생길 때 만든다)
 - [x] M0-06 문서 이관: `basic_plan.md`·`PRD.md`·`plan.md` → `docs/`, `CLAUDE.md` → 루트, `WORK-PLAN.md` 표기를 `plan.md`로 일괄 치환 (2026-10-10, 문서 정합성 검토 때 처리)
-- [ ] M0-07 `.claude/settings.json` — `.env*` 읽기 금지, 위험 명령 확인
+- [x] M0-07 `.claude/settings.json` — `.env*` 읽기 금지, 위험 명령 확인 — 2026-10-10 완료: 비밀 파일(`.env`·`.env.local`·`.env.*.local`·`.env.{development,production,test}`) Read·Bash 출력 차단(`.env.example`은 허용), force push 변형 차단, 위험 명령 15종 ask. 한계: 스크립트 하위 프로세스는 막지 못함
 - [ ] M0-08 커스텀 커맨드 6종 초안: `/add-player` `/add-source` `/add-name` `/new-season` `/takedown` `/design-concepts` (동작 완성은 해당 기능 단계에서)
 - [ ] M0-09 서브에이전트 3종: `design-concepts` · `pipeline-dev` · `code-reviewer` (CLAUDE §11 경계 명시)
 - [ ] M0-10 이슈 템플릿 3종: `summary-error` · `takedown` · `source-broken` (FR-36, FR-140)
