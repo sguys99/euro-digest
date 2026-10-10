@@ -124,7 +124,7 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - 프롬프트 수정 시 샘플 10건 회귀 비교(`npm run eval:prompt`, 이전/이후 출력 diff)를 실행하고 `fixtures/llm/`을 갱신.
 
 ### 6.4 수집·크롤링 · 축구 데이터
-- `configs/sources.json`에서 `enabled: true` **그리고** `terms_checked: true`인 소스만 수집. 목록·OG 크롤링을 하는 소스는 `robots_checked: true`도 필요. 소스 URL 하드코딩 금지. 새 소스는 `/add-source` 절차로만.
+- `configs/sources.json`에서 `enabled: true` **그리고** `terms_checked: true`인 소스만 수집. 목록·OG 크롤링을 하는 소스는 `robots_checked: true`도 필요. `summarize: false` 소스는 LLM에 보내지 않고 피드 제목·URL을 그대로 쓴 원제목+링크(`ai:false`) 카드로만 게시(PRD §15 D22). 소스 URL 하드코딩 금지. 새 소스는 `/add-source` 절차로만.
 - 크롤러는 `scripts/crawlers/<site>.ts`로 분리: robots.txt 준수, User-Agent에 서비스명·연락처, 사이트당 2~3초 지연, 하루 1회, 목록(제목·링크·날짜·작성자)과 OG 메타만.
 - 소스 실패는 격리(해당 소스만 건너뛰고 이슈 생성). 3일 연속 0건이면 소스 건강도 이슈.
 - football-data.org 분당 10회 → 호출 간 지연. API-Football 하루 100회, 일일 계획 ≤ 60회.

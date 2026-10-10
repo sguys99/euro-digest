@@ -6,12 +6,13 @@
     "url": "https://feeds.bbci.co.uk/sport/football/rss.xml",
     "lang": "en",
     "enabled": true,
+    "summarize": false,
     "weight": 1.5,
     "tier": 2,
     "competitions": ["EPL", "UCL"],
-    "terms_checked": false,
-    "robots_checked": false,
-    "note": "스키마 예시 — 약관 확인 전(M0-23)"
+    "terms_checked": true,
+    "robots_checked": true,
+    "note": "스키마 예시 — 원제목+링크 전용(summarize:false, M0-23 결정 2026-10-10)"
   },
   {
     "id": "google-news-ko",
@@ -20,6 +21,7 @@
     "url": "https://news.google.com/rss/search",
     "lang": "ko",
     "enabled": false,
+    "summarize": false,
     "weight": 0.8,
     "tier": 3,
     "terms_checked": false,
@@ -32,6 +34,7 @@
     "url": "https://news.google.com/rss/search",
     "lang": "en",
     "enabled": false,
+    "summarize": true,
     "weight": 0.8,
     "tier": 3,
     "terms_checked": false,

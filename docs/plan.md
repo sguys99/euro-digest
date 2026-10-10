@@ -452,7 +452,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 | **B2** | Google News RSS 이용 불가 | GDELT + 국내 매체 RSS로 대체, NewsData.io 등은 ❓ 승인 후 | M1-06 |
 | **B3** | 프롬프트 캐싱 최소 길이 미달 | 캐싱 코드 제거, 묶음 크기로 비용 조정, PRD 비용표 갱신 | M1-18, M1-42 |
 | **B4** | 실측 일 비용 > $0.10 | ❓ 승인 후 순서대로: 입력 500→300자 → 묶음 확대 → `MAX_ITEMS_PER_RUN` 45→35 | M1-22 |
-| **B5** | 핵심 RSS 약관상 요약 불가 | 해당 소스는 원제목+링크만 또는 제외 | M1-02 |
+| **B5** | 핵심 RSS 약관상 요약 불가 — ⚠️ **발생(M0-23, 2026-10-10)**: 1군 8개 모두 AI 요약 불가 판정 | 해당 소스는 원제목+링크만 또는 제외 → `Source.summarize` 필드 도입, M0-24~26 판정 후 FR-20 범위 재검토 (PRD §15 D22) | M1-02 |
 | **B6** | 서비스명 상표·저장소명 충돌 | ❓ 이름 재검토 — 저장소명·basePath에 영향하므로 **M0에서 먼저** 결정 | M0-01, M0-13 |
 
 ---
@@ -542,9 +542,10 @@ const Source = z.strictObject({
   type: z.enum(["rss", "crawl", "search", "journalist", "aggregator", "analysis"]),
   url: HttpUrl, lang: z.string(),                    // "en" | "ko" | "es" …
   enabled: z.boolean(), weight: z.number().min(0).max(3), tier: Tier,
+  summarize: z.boolean(),                            // 필수(기본값 없음). false = LLM 미전송, 원제목+링크(ai:false) 카드만 — 피드 제목·URL 무수정 (PRD §15 D22)
   competitions: z.array(CompId).default([]),
   author: z.string().optional(),                     // 작성자 필터(기자 채널)
-  terms_checked: z.boolean(), robots_checked: z.boolean(),
+  terms_checked: z.boolean(), robots_checked: z.boolean(), // terms_checked = note의 이용 방식(요약/원제목+링크)이 약관상 허용됨, 금지·불명확이면 false
   note: z.string().optional(),                       // 약관 확인 메모·날짜
 });
 

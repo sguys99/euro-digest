@@ -51,6 +51,31 @@ describe("Source — configs/sources.json (부록 A, FR-01)", () => {
     ).toEqual(["robots_checked"]);
   });
 
+  it("summarize는 기본값 없는 필수 필드다 (PRD §15 D22 — 소스마다 명시)", () => {
+    expect(
+      issuePaths(SourceSchema, { ...source, summarize: undefined }),
+    ).toEqual(["summarize"]);
+    const withoutSummarize: Record<string, unknown> = { ...source };
+    delete withoutSummarize.summarize;
+    expect(issuePaths(SourceSchema, withoutSummarize)).toEqual(["summarize"]);
+    expect(issuePaths(SourceSchema, { ...source, summarize: "false" })).toEqual(
+      ["summarize"],
+    );
+  });
+
+  it.each([true, false])(
+    "summarize %s는 통과하고 값이 그대로 남는다",
+    (summarize) => {
+      const parsed = SourceSchema.safeParse({ ...source, summarize });
+      expect(parsed.success).toBe(true);
+      expect(parsed.data?.summarize).toBe(summarize);
+    },
+  );
+
+  it("fixture는 원제목+링크 전용(false)과 요약(true) 소스를 모두 담는다", () => {
+    expect(sources.map((s) => s.summarize)).toEqual([false, false, true]);
+  });
+
   it("파일 안에서 id가 겹치면 실패한다", () => {
     expect(issuePaths(SourcesFileSchema, [source, { ...source }])).toEqual([
       "1.id",

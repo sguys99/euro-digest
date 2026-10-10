@@ -26,13 +26,14 @@ argument-hint: "<소스 URL — RSS 피드 또는 사이트 주소>"
    - RSS가 없으면 `type: crawl` 후보로 보고, 목록(제목·링크·날짜·작성자)과 OG 메타만으로 충분한지 판단한다.
 4. **robots.txt** — `https://<host>/robots.txt`를 받아 `User-agent: *`와 봇별 규칙이 피드·목록 경로를 막는지 확인한다. AI·크롤러 전면 차단(예: GPTBot·ClaudeBot Disallow)이 있으면 위험으로 표시한다.
 5. **약관** — 이용약관·RSS 이용 조건 페이지를 찾아 ① 헤드라인·발췌·링크 재게시 허용 범위 ② 자동 수집 금지 조항 ③ AI 요약·가공 제한 ④ 출처 표시 요구 ⑤ 비상업 조건을 확인한다. 근거 URL과 핵심 문구(짧게 인용)를 남기고, 찾지 못하거나 모호하면 **"불명확"**으로 적는다.
-6. **등록안 작성** — `id`(kebab-case), `name`, `type`(rss/crawl/search/journalist/aggregator/analysis), `url`, `lang`, `enabled`, `weight`(0~3), `tier`(1~3), `competitions`, `author?`, `terms_checked`, `robots_checked`, `note`(예: `"2026-10-10 확인 — 약관 <URL> 헤드라인·링크 허용 / robots <URL> 피드 경로 허용"`). tier·weight는 추천 근거를 붙인다.
+6. **등록안 작성** — `id`(kebab-case), `name`, `type`(rss/crawl/search/journalist/aggregator/analysis), `url`, `lang`, `enabled`, `summarize`(필수 — 약관이 AI 요약을 허용할 때만 true, 아니면 원제목+링크 전용 false, PRD §15 D22), `weight`(0~3), `tier`(1~3), `competitions`, `author?`, `terms_checked`(note에 적은 이용 방식이 약관상 허용될 때만 true), `robots_checked`, `note`(예: `"2026-10-10 확인 — 약관 <URL> 헤드라인·링크 허용 / robots <URL> 피드 경로 허용"`). tier·weight는 추천 근거를 붙인다.
 7. **보고 → 승인** — 아래 표와 함께 '사용자 확인 지점'을 거친다. 승인 전에는 파일을 수정하지 않는다.
 8. **반영** — 승인된 내용만 `sources.json`에 쓴다. 소스 URL은 이 파일에만 두고 코드에 하드코딩하지 않는다 (§6.4). `type: crawl`이면 `scripts/crawlers/<site>.ts`가 필요하다고 후속 작업으로 보고만 한다(이 커맨드에서 만들지 않는다).
 9. **검증** — `npm run validate` (스키마 + 교차 참조 — search 소스는 `search-queries.json`의 `source`가 참조).
 
 ## 사용자 확인 지점 (AskUserQuestion — 선택지 + 추천안)
 - 등록 여부: [등록 `enabled: true`] / [근거만 기록, `enabled: false`] / [등록 안 함] — 약관 "불명확"이면 `enabled: false` 또는 등록 안 함을 추천한다.
+- 이용 방식: [AI 요약 `summarize: true`] / [원제목+링크 전용 `summarize: false`] / [제외] — 약관에 AI·머신러닝 이용 금지, 요약·제목 수정 금지 조항이 있으면 `false` 또는 제외를 추천한다 (PRD §15 D22).
 - tier·weight·competitions 값 (추천값과 근거 제시).
 - robots.txt에 AI 봇 차단 조항이 있을 때 진행 여부.
 - 외국어 소스는 요약 후보를 늘린다. 일일 요약 상한(`MAX_ITEMS_PER_RUN=45`)·비용 가드는 그대로 두며, 상한 변경이 필요하면 별도로 묻는다 (§2).
