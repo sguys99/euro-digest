@@ -11,8 +11,9 @@ export const SITE_NAME = "유로 다이제스트";
 /**
  * 한 줄 소개. 메타 description 등에 쓴다.
  * 2026-10-10 사용자 결정으로 "한국어 3줄" 문구를 바꿨다(PRD §15 D23·D24 — 뉴스 요약 없음). 최종 다듬기는 D0 브랜드 작업에서.
+ * 같은 날 발행 시각이 계절별(유럽 서머타임 07:00 · 표준시 07:30 KST)로 바뀌어(PRD §15 D26) 시각 약속("07:00 KST")을 뺐다.
  */
-export const SITE_TAGLINE = "매일 아침 07:00 KST, 밤사이 유럽 축구를 한눈에.";
+export const SITE_TAGLINE = "매일 아침, 밤사이 유럽 축구를 한눈에.";
 
 /**
  * GitHub 저장소 주소 — 푸터 저장소 링크(FR-142)·이슈 폼 링크(FR-36, src/lib/paths.ts)가 쓴다.

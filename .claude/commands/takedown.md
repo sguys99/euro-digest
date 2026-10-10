@@ -25,14 +25,14 @@ disable-model-invocation: true
 5. **확인** — 아래 '사용자 확인 지점'에서 등록안과 커밋·배포를 승인받는다.
 6. **등록** — `configs/takedowns.json`에 `{ "id", "requestedAt", "handledAt": null, "reason" }`를 추가한다. (`handledAt`을 비워 두는 방식은 M0-16 스키마 확정 시 함께 확인)
 7. **검증·빌드** — `npm run validate` → `npm run build` → `grep -rl "<card-id>" out/`가 비어야 한다(뉴스 페이지·RSS·검색 인덱스·OG 모두).
-8. **배포** — 커밋 `chore(takedown): <card-id> 비공개 처리 (FR-143)` → `git pull --rebase` → push → `ci.yml` 통과 시 `deploy.yml`이 배포한다. CI가 이 변경과 무관한 이유로 막히면 `gh workflow run deploy.yml --ref main`으로 수동 배포한다. **06:00~07:30 KST에는 push하지 않는다** (§10).
+8. **배포** — 커밋 `chore(takedown): <card-id> 비공개 처리 (FR-143)` → `git pull --rebase` → push → `ci.yml` 통과 시 `deploy.yml`이 배포한다. CI가 이 변경과 무관한 이유로 막히면 `gh workflow run deploy.yml --ref main`으로 수동 배포한다. **06:00~08:00 KST에는 push하지 않는다** (§10 — 계절별 발행 시각 D26, 계절 무관).
 9. **배포 확인** — `curl -s https://sguys99.github.io/euro-digest/news/<date>/ | grep -c "<card-id>"`가 0인지 본다(Pages 캐시로 최대 10분 지연 가능).
 10. **처리 시각 기록** — 확인한 시각을 `handledAt`에 적고 같은 방식으로 커밋·push한다. `handledAt - requestedAt`이 72시간을 넘었으면 보고서 맨 위에 적는다.
 11. **원본 정리** — `data/` 원본 카드는 다음 수집 실행이 지운다(M1-25). git 이력에는 남는다는 점을 요청자 답변 초안에 포함한다(FR-143).
 
 ## 사용자 확인 지점 (AskUserQuestion — 선택지 + 추천안)
 - 등록안(id·requestedAt·reason): [이대로 등록 (추천)] / [수정] / [취소].
-- 커밋·배포: [지금 커밋·push → ci.yml 자동 배포 (추천)] / [커밋만, push는 직접] / [deploy.yml 수동 실행] — 금지 시간대면 "07:30 이후 push"를 추천으로 바꾼다.
+- 커밋·배포: [지금 커밋·push → ci.yml 자동 배포 (추천)] / [커밋만, push는 직접] / [deploy.yml 수동 실행] — 금지 시간대면 "08:00 이후 push"를 추천으로 바꾼다.
 - 카드를 찾지 못했을 때: [선등록 (추천 — 다음 발행부터 제외)] / [ID 재확인 후 다시 실행].
 
 ## 금지 사항

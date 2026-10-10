@@ -1,6 +1,6 @@
 # CLAUDE.md — 유로 다이제스트 (Euro Digest)
 
-> 매일 아침 07:00 KST, 밤사이 유럽 축구를 한눈에.
+> 매일 아침, 밤사이 유럽 축구를 한눈에.
 > 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **설계 완료 → M0(셋업·검증) 착수 전**
 
 이 문서는 Claude Code가 이 저장소에서 **어떻게 일하는지**를 정한다. 문서끼리 충돌하면 아래 우선순위를 따르고 사용자에게 알린다.
@@ -104,7 +104,8 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 ```
 
 ## 6. 파이프라인 · LLM
-**6.1 흐름 (PRD §10)**: `06:30 KST cron-job.org → workflow_dispatch(collect.yml)` → ① 수집(뉴스 + 전날 경기 데이터) → ② 정제·분류(코드: URL 정규화·해시 중복제거·클러스터링·점수화·상위 45건 · 카테고리·태그·이적 단계·spoiler 규칙) → ③ 데이터 브리핑(Batches) → ④ 검증 게이트 → ⑤ 빌드 → ⑥ `data/` 커밋 → ⑦ 배포(`deploy.yml`). 검증이나 빌드가 실패하면 커밋하지 않는다. `weekly.yml`도 끝에서 빌드 → 커밋 → `deploy.yml`. 백업 `schedule`(06:40 KST)은 12시간 내 성공 이력이 있으면 skip, `concurrency: collect`.
+**6.1 흐름 (PRD §10)**: `cron-job.org(여름 06:30 · 겨울 07:10 KST) → workflow_dispatch(collect.yml)` → ① 수집(뉴스 + 전날 경기 데이터) → ② 정제·분류(코드: URL 정규화·해시 중복제거·클러스터링·점수화·상위 45건 · 카테고리·태그·이적 단계·spoiler 규칙) → ③ 데이터 브리핑(Batches) → ④ 검증 게이트 → ⑤ 빌드 → ⑥ `data/` 커밋 → ⑦ 배포(`deploy.yml`). 검증이나 빌드가 실패하면 커밋하지 않는다. `weekly.yml`도 끝에서 빌드 → 커밋 → `deploy.yml`. 백업 `schedule`(여름 06:40 · 겨울 07:20 KST)은 12시간 내 성공 이력이 있으면 skip, `concurrency: collect`.
+**계절별 발행 시각 (PRD §15 D26)**: 유럽 서머타임 기간(여름) 06:30 수집 → 07:00 공개, 유럽 표준시 기간(겨울) 07:10 수집 → 07:30 공개. 계절은 `src/lib/time.ts`의 `europeanSummerTimeTransitions`로 코드가 판정하고, 가드가 계절에 맞지 않는 트리거를 skip한다(성공 이력으로 세지 않음). 시각을 코드·문서에 새로 적을 때 07:00 하나로 고정하지 않는다.
 
 ### 6.2 LLM 구현
 - 모든 호출은 `scripts/lib/llm.ts` 경유, 다른 파일에서 SDK 직접 import 금지. 단가는 `scripts/lib/cost.ts` 한 곳에서 관리(구현 시점 공식 단가 확인).
@@ -114,7 +115,7 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - zod 검증 → 실패 시 1회 재시도 → 그래도 실패하면 **코드 템플릿 문장**(`ai:false`)으로 강등. 브리핑 실패가 발행을 멈추지 않는다.
 - 고유명사는 LLM이 영문 그대로 출력 → `configs/names.ko.json`으로 코드 치환(뉴스 태그도 같은 사전). 미등록 이름은 `data/cache/unknown-names.json`에 적재.
 - 비용 가드 `DAILY_BUDGET_USD=0.10`, `MONTHLY_BUDGET_USD=3`. 초과 예상 시 LLM 없이 브리핑을 코드 템플릿으로 게시.
-- 배치가 06:50까지 끝나지 않으면 배치를 취소하고 브리핑을 코드 템플릿으로 게시.
+- 배치가 브리핑 마감(**공개 목표 시각 −10분** — 여름 06:50 · 겨울 07:20, D26)까지 끝나지 않으면 배치를 취소하고 브리핑을 코드 템플릿으로 게시.
 - **프롬프트 캐싱**: 모델별 최소 캐시 프리픽스 길이 미달이면 미적용(일일 요청이 1~3개라 대개 미적용). M1 첫 실측에서 `usage.cache_read_input_tokens`가 0이면 캐싱 코드를 빼고 PRD 비용 표를 갱신.
 
 ### 6.3 개발 중 LLM 사용
@@ -168,7 +169,7 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - 커밋: Conventional Commits + 한국어 요약 + 요구사항 ID. 예: `feat(news): 동일 사건 클러스터링 (FR-05)`
 - 봇 데이터 커밋: `chore(data): YYYY-MM-DD 발행` — 변경분만, `data/`·`public/` 산출물에 한정.
 - 개발·봇 모두 `main`에 직접 커밋(무인 발행 브랜치) → **커밋 전 `npm run check`·`npm run build` 통과 필수**. `ci.yml`이 push마다 같은 검사를 돌리고, 실패하면 즉시 수정 또는 revert. main push가 검사를 통과하면 `deploy.yml`로 배포된다(`concurrency: pages`).
-- 큰 변경(스키마·파이프라인 구조)은 작은 커밋으로 나눈다. 06:00~07:30 KST에는 push 금지. push 전 항상 `git pull --rebase`.
+- 큰 변경(스키마·파이프라인 구조)은 작은 커밋으로 나눈다. **06:00~08:00 KST에는 push 금지**(계절 무관 — 여름 06:30 수집~07:15, 겨울 07:10 수집~07:45 공개 허용 범위를 한 구간으로 덮는다, D26). push 전 항상 `git pull --rebase`.
 - Secrets: `ANTHROPIC_API_KEY`, `FOOTBALL_DATA_API_KEY`, `API_FOOTBALL_KEY`는 Actions Secrets. cron-job.org용 PAT(Actions 권한만)는 저장소에 두지 않는다.
 - 환경변수 기본값: `LLM_MODEL=claude-haiku-5-5` · `LLM_MODE=live`(테스트·CI는 `mock`) · `MAX_ITEMS_PER_RUN=45`(일일 카드 선별 상한) · `DAILY_BUDGET_USD=0.10` / `MONTHLY_BUDGET_USD=3` · `SITE_URL=https://sguys99.github.io` / `BASE_PATH=/euro-digest` · `CONTACT_EMAIL`(User-Agent·삭제 요청 연락처, M0에서 개설)
 

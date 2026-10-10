@@ -9,9 +9,7 @@ import { formatTodo } from "../scripts/lib/todo";
 describe("`@/*` 경로 별칭", () => {
   it("테스트에서 @/lib/site를 직접 import한다", () => {
     expect(SITE_NAME).toBe("유로 다이제스트");
-    expect(SITE_TAGLINE).toBe(
-      "매일 아침 07:00 KST, 밤사이 유럽 축구를 한눈에.",
-    );
+    expect(SITE_TAGLINE).toBe("매일 아침, 밤사이 유럽 축구를 한눈에.");
   });
 
   it("@/lib/site를 import하는 scripts/ 모듈도 해석된다", () => {
