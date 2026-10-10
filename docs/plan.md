@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-22` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-23` ❓ (외부 검증 시작) (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -147,7 +147,7 @@
 - [x] M0-19 `src/lib/paths.ts`: basePath 헬퍼(정적 자산·RSS·ics·OG) + 테스트 — 2026-10-10 완료: `routes.*`(PRD §4 IA 전 경로, basePath 없음·trailing slash)·`artifacts.*`·`withBasePath`·`absoluteUrl`·`summaryErrorIssueUrl`, next.config가 같은 정규화로 `NEXT_PUBLIC_*` 인라인, `/euro-digest` 하드코딩 가드, 루트 빌드(`BASE_PATH=`)도 통과. OG 경로는 잠정(M5-01에서 확인)
 - [x] M0-20 `scripts/lib/llm.ts`: live/mock 모드, Batches 제출·폴링, `usage` 집계 — SDK import는 이 파일에서만 — 2026-10-10 완료: `@anthropic-ai/sdk` 0.133, `createLlmClient`(submit/poll/collect/cancel/runBatch/callSingle), 429·5xx만 재시도, mock은 `fixtures/llm/mock/by-id|by-hash`, usage → RunLog.tokens(배치·단건 구분), 테스트 77개(실호출 없음). Haiku 5.5는 thinking 기본 켜짐 → M0-30에서 `effort:low`/`thinking:disabled` 비교 실측
 - [x] M0-21 `scripts/lib/cost.ts`: 모델 단가 표(구현 시점 공식 단가 확인), 예상 비용 계산, 비용 기록(prod → `runs.json`, dev → `runs-dev.json`), 가드는 두 파일 합산 — 2026-10-10 완료: Haiku 5.5 공식 단가 확인(입력 $0.10/출력 $0.50 per MTok, 배치 50%, 캐시 읽기 0.1×·쓰기 1.25×/2×, 프롬프트 100K 초과 5×), KST 월·일 경계, 월 예산 prod+dev 합산·일일 예산은 prod 실행이면 prod만, dev 50% 알림, runs 원자적 기록·180일 보존. PRD §9.3 가정 재계산: 배치 기준 월 약 $0.10~0.24(thinking 출력 1~3배)
-- [ ] M0-22 구조화 로거 + GitHub 이슈 생성 헬퍼 (같은 원인이면 기존 이슈에 댓글)
+- [x] M0-22 구조화 로거 + GitHub 이슈 생성 헬퍼 (같은 원인이면 기존 이슈에 댓글) — 2026-10-10 완료: `scripts/lib/logger.ts`(비밀값 마스킹·Actions 주석), `scripts/lib/github-issues.ts`(fingerprint 마커로 같은 원인 → 댓글), collect.yml 실패 보고 전환 + 셸 폴백. 실실행 검증: 새 이슈 #2 → 재발 시 '2번째 발생' 댓글(테스트 이슈 닫음)
 
 ### M0-D 외부 검증 (결과는 `docs/research/m0-validation.md`에 기록)
 - [ ] M0-23 ❓ 1군 영문 RSS 8개 실작동·약관 확인 → 결과 보고·사용자 확인 후 `sources.json`에 `terms_checked`·`robots_checked` 기록, ESPN 처리 방식 결정 (CLAUDE §2·§6.4)
