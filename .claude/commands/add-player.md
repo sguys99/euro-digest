@@ -12,7 +12,7 @@ argument-hint: "<선수 이름 — 한글 또는 영문, 예: 손흥민 | Son He
 
 ## 현재 상태 (M0-08 초안)
 - 설정 파일: !`ls configs/*.json 2>/dev/null || echo "(configs/*.json 없음)"`
-- `korean-players.json`·`names.ko.json`·`search-queries.json`과 zod 스키마는 아직 없다. 스키마 M0-16(`src/lib/schema/`), configs 검증 M0-17(`npm run validate`), 검색 쿼리 어댑터 M1-06, 명단 확정 M3-01에서 구현 예정.
+- zod 스키마(M0-16, `src/lib/schema/`)·configs 검증(M0-17, `npm run validate` — `search-queries.player`·대표팀 명단 → `korean-players` 교차 참조 포함)은 완료. 명단 초안은 M0-32, 검색 쿼리 어댑터 M1-06, 명단 확정 M3-01에서 구현 예정.
 - **그 전에는** 파일을 새로 만들지 않고 1~4단계 조사 결과와 등록안(JSON)만 보고한다. 사용자가 "지금 생성"을 고른 경우에만 부록 A 형태 그대로 만들고, M0-16에서 재검증이 필요하다고 적는다.
 
 ## 절차
@@ -27,7 +27,7 @@ argument-hint: "<선수 이름 — 한글 또는 영문, 예: 손흥민 | Son He
 4. **표기·쿼리 초안** — `names.ko.json`: 영문 표기와 변형(`Heung-min Son` 등 성·이름 순서 변형)을 한글 표기로 매핑. 성만 있는 짧은 형태(`Son`)는 오매칭 위험이 있어 넣지 않는다. `search-queries.json`: 한/영 쿼리 각 1개(예: `"손흥민"`, `"Son Heung-min"`). 일일 쿼리 상한(M0-26에서 결정)을 넘으면 질문한다.
 5. **등록안 확인** — 아래 '사용자 확인 지점'을 거친다.
 6. **반영** — 세 파일에 추가하고 기존 정렬 규칙을 따른다. 스키마에 없는 필드는 추가하지 않는다(필요하면 질문 — CLAUDE §2).
-7. **검증** — `npm run validate`. M0-17 전에는 TODO만 출력되므로 `node -e "JSON.parse(require('fs').readFileSync('configs/korean-players.json','utf8'))"`로 문법만 확인하고 그 사실을 보고한다.
+7. **검증** — `npm run validate`.
 8. **연쇄 확인** — `team` slug가 `names.ko.json`·`team-colors.json`에 없으면 보고한다(M2-05 범위, 이 커맨드에서 팀 색을 지어내지 않는다).
 
 ## 사용자 확인 지점 (AskUserQuestion — 선택지 + 추천안)
@@ -49,6 +49,6 @@ argument-hint: "<선수 이름 — 한글 또는 영문, 예: 손흥민 | Son He
 | 필드 | 값 | 출처 URL |
 |---|---|---|
 변경 파일: configs/korean-players.json · names.ko.json · search-queries.json (추가/갱신/미생성)
-검증: npm run validate 통과 | M0-17 전이라 JSON 문법만 확인 | 실패(사유)
+검증: npm run validate 통과 | 실패(사유)
 미확인·후속: (예) apiFootballId null — M3 어댑터에서 확인 / 팀 slug team-colors 미등록
 ```

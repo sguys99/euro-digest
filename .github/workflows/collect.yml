@@ -1,6 +1,6 @@
 # 일일 수집 워크플로 (M0-14, FR-150 · FR-152) — 수집 → 정제 → 요약 → 검증 게이트 → 빌드 → data 커밋 → 배포.
-# CLAUDE.md §6.1 · PRD §10 운영 흐름. 지금은 `npm run collect`·`npm run validate`가 스텁이라 변경이 없고,
-# 커밋·배포 없이 성공으로 끝나는 것이 정상이다(M1에서 실제 파이프라인으로 바뀐다).
+# CLAUDE.md §6.1 · PRD §10 운영 흐름. 지금은 `npm run collect`가 스텁이라 변경이 없고(`npm run validate`는
+# configs·data 스키마만 검사 — M0-17), 커밋·배포 없이 성공으로 끝나는 것이 정상이다(M1에서 실제 파이프라인으로 바뀐다).
 #
 # 트리거
 # - 06:30 KST 주 경로: cron-job.org → workflow_dispatch (fine-grained PAT, Actions 권한만 — 저장소에 두지 않는다).
@@ -141,6 +141,7 @@ jobs:
           npm run collect -- "${args[@]}"
 
       # ④ 발행 전 검증 게이트(FR-153). 실패하면 아래 빌드·커밋으로 가지 않는다 → 전날 사이트 유지.
+      #    지금은 configs·data 스키마·교차 참조(M0-17). 카드 수 하한·링크 형식 등 발행 게이트는 M1-25에서 추가.
       - name: 검증 게이트 (npm run validate)
         timeout-minutes: 5
         run: npm run validate

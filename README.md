@@ -10,7 +10,7 @@
 
 **M0 셋업·검증 단계입니다.** 아직 사용할 수 있는 서비스가 아닙니다.
 
-- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사·배포 워크플로(`ci.yml`·`deploy.yml`), 데이터 스키마(zod v0.1, `src/lib/schema/`)
+- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사·배포 워크플로(`ci.yml`·`deploy.yml`), 데이터 스키마(zod v0.1, `src/lib/schema/`)와 설정·데이터 검증(`npm run validate`, CI에서 실패 시 중단)
 - 아직 없는 것: 뉴스 수집·요약 파이프라인, 화면 디자인, 뉴스 소스 약관 검증
 - main에 push하면 CI 검사를 통과한 커밋이 GitHub Pages로 배포됩니다(`deploy.yml`). D0 디자인 시안이 확정되기 전까지는 스타일 없는 임시 페이지만 보입니다.
 
@@ -131,7 +131,7 @@ npm run preview    # out/을 GitHub Pages처럼 basePath 아래로 서빙
 | `npm run weekly` | 팀 프로필·한국 선수 주간 리포트·운영 리포트 | 준비 중 (M2-07·M3-06~M3-08·M4-06·M5-09) |
 | `npm run ops-report` | 비용·발행 성공률·소스 건강도 리포트 | 준비 중 (M5-09) |
 | `npm run eval:prompt` | 프롬프트 회귀 평가 — 수정 전후 출력 비교 | 준비 중 (M1-24) |
-| `npm run validate` | configs·data 스키마 + 발행 검증 게이트 | 준비 중 (M0-17·M1-25) |
+| `npm run validate` | configs·data 스키마 + 발행 검증 게이트, `-- --configs-only`로 configs만 | configs·data 스키마·교차 참조 검증 사용 가능, 발행 게이트는 준비 중 (M1-25) |
 | `npm run check:bundle` | 페이지별 초기 JS 예산(gzip 160KB) + `out/` 비밀값 검사, 먼저 `npm run build` | 사용 가능 (Lighthouse CI는 M5-08) |
 
 "준비 중" 명령은 실행하면 구현 예정 작업 ID만 출력하고 정상 종료합니다. 작업 ID는 [docs/plan.md](docs/plan.md)의 체크리스트 ID입니다.

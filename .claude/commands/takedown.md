@@ -14,7 +14,7 @@ disable-model-invocation: true
 ## 현재 상태 (M0-08 초안)
 - 지금: !`date -u +%Y-%m-%dT%H:%M:%SZ` (KST !`TZ=Asia/Seoul date +"%Y-%m-%d %H:%M"`)
 - 등록 파일: !`ls configs/takedowns.json 2>/dev/null || echo "(configs/takedowns.json 없음)"`
-- 스키마 M0-16, validate M0-17, 이슈 템플릿 `takedown` M0-10, `ci.yml` M0-12, `deploy.yml` M0-13, **빌드 제외·다음 수집의 원본 삭제 M1-25**, 커맨드 완성 M1-29에서 구현 예정.
+- 완료: 스키마(M0-16, `handledAt`은 등록 시 null → 배포 확인 후 기록), validate(M0-17), 이슈 템플릿 `takedown`(M0-10), `ci.yml`(M0-12), `deploy.yml`(M0-13). 남은 것: **빌드 제외·다음 수집의 원본 삭제 M1-25**, 커맨드 완성 M1-29에서 구현 예정.
 - **M1-25 전에는** 발행된 카드가 없고 빌드가 takedowns를 읽지 않는다. 형식 검증·등록안까지만 하고 "실제 비공개 경로 미구현"으로 보고한다.
 
 ## 절차

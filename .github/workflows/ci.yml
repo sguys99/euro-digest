@@ -56,8 +56,9 @@ jobs:
       - name: 서식 검사 (Prettier)
         run: npm run format:check
 
-      # 지금은 스텁(exit 0). M0-17에서 configs/* zod 검증으로 바뀌면 잘못된 설정이 여기서 실패한다.
-      - name: 설정·데이터 검증
+      # configs/* zod 스키마·교차 참조 + data/* 스키마(M0-17). 잘못된 설정·데이터면 여기서 실패한다.
+      # 발행 검증 게이트(카드 수·링크 등)는 M1-25에서 같은 명령에 붙는다.
+      - name: 설정·데이터 검증 (configs·data 스키마)
         run: npm run validate
 
       - name: 정적 빌드 (next build → out/)

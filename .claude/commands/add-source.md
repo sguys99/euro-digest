@@ -13,7 +13,7 @@ argument-hint: "<소스 URL — RSS 피드 또는 사이트 주소>"
 ## 현재 상태 (M0-08 초안)
 - 오늘(UTC): !`date -u +%F`
 - 설정 파일: !`ls configs/sources.json 2>/dev/null || echo "(configs/sources.json 없음)"`
-- `Source` zod 스키마 M0-16, configs 검증 M0-17, 수집 로더(`enabled && terms_checked`만) M1-02, 커맨드 완성 M1-29에서 구현 예정. **그 전에는** 1~5단계 확인·보고까지 하고, 사용자가 승인하면 부록 A `Source` 형태로 `sources.json`을 만들거나 추가한다.
+- `Source` zod 스키마(M0-16)·configs 검증(M0-17, `npm run validate`)은 완료. 수집 로더(`enabled && terms_checked`만) M1-02, 커맨드 완성 M1-29에서 구현 예정. **그 전에는** 1~5단계 확인·보고까지 하고, 사용자가 승인하면 부록 A `Source` 형태로 `sources.json`을 만들거나 추가한다.
 - M0 검증 기간(M0-23~25)에는 같은 결과를 `docs/research/m0-validation.md`에도 기록한다.
 
 ## 절차
@@ -29,7 +29,7 @@ argument-hint: "<소스 URL — RSS 피드 또는 사이트 주소>"
 6. **등록안 작성** — `id`(kebab-case), `name`, `type`(rss/crawl/search/journalist/aggregator/analysis), `url`, `lang`, `enabled`, `weight`(0~3), `tier`(1~3), `competitions`, `author?`, `terms_checked`, `robots_checked`, `note`(예: `"2026-10-10 확인 — 약관 <URL> 헤드라인·링크 허용 / robots <URL> 피드 경로 허용"`). tier·weight는 추천 근거를 붙인다.
 7. **보고 → 승인** — 아래 표와 함께 '사용자 확인 지점'을 거친다. 승인 전에는 파일을 수정하지 않는다.
 8. **반영** — 승인된 내용만 `sources.json`에 쓴다. 소스 URL은 이 파일에만 두고 코드에 하드코딩하지 않는다 (§6.4). `type: crawl`이면 `scripts/crawlers/<site>.ts`가 필요하다고 후속 작업으로 보고만 한다(이 커맨드에서 만들지 않는다).
-9. **검증** — `npm run validate` (M0-17 전에는 JSON 문법만 확인하고 그 사실을 보고).
+9. **검증** — `npm run validate` (스키마 + 교차 참조 — search 소스는 `search-queries.json`의 `source`가 참조).
 
 ## 사용자 확인 지점 (AskUserQuestion — 선택지 + 추천안)
 - 등록 여부: [등록 `enabled: true`] / [근거만 기록, `enabled: false`] / [등록 안 함] — 약관 "불명확"이면 `enabled: false` 또는 등록 안 함을 추천한다.

@@ -4,8 +4,8 @@ import { formatTodo } from "../scripts/lib/todo";
 
 describe("formatTodo", () => {
   it("서비스명·명령·구현 예정 작업 ID를 한 줄로 알린다", () => {
-    expect(formatTodo("npm run validate", "M0-17")).toBe(
-      "[유로 다이제스트] [TODO] npm run validate — M0-17에서 구현",
+    expect(formatTodo("npm run ops-report", "M5-09")).toBe(
+      "[유로 다이제스트] [TODO] npm run ops-report — M5-09에서 구현",
     );
   });
 
