@@ -193,6 +193,6 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 
 ## 13. 미결 사항 (M0 검증 후 이 문서·PRD 갱신)
 - API-Football 무료 플랜의 2026-27 시즌 조회 가능 여부 → 불가 시 FR-65 폴백
-- ~~각 RSS·기자 채널·크롤링 대상의 약관·robots.txt, Google News RSS 이용 조건~~ → M0-23~26 완료(`docs/research/m0-validation.md`, PRD §15 D22~D25). GDELT 이용 조건은 M0-27
+- ~~각 RSS·기자 채널·크롤링 대상의 약관·robots.txt, Google News RSS 이용 조건~~ → M0-23~26 완료(`docs/research/m0-validation.md`, PRD §15 D22~D25). GDELT는 M0-27 판정(약관 허용·현재 비활성, M1-46 재측정)
 - football-data.org·API-Football 약관의 LLM 입력·재가공(한국어 브리핑) 허용 여부 (M0-28·M0-29, D24)
 - 서비스명 상표·저장소명 확인, 연락용 이메일 개설, 2026-27 시즌 5대 리그 한국 선수 명단

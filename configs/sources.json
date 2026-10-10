@@ -374,5 +374,20 @@
     "terms_checked": false,
     "robots_checked": false,
     "note": "2026-10-10 확인(M0-26) · 사용자 결정 2026-10-10. 결정: 제외(판정 기록용) — 금지. 검토한 이용 방식: 검색 결과(hl=en-GB&gl=GB&ceid=GB:en)를 원제목+링크로 게시. 근거 ① 피드 채널 <copyright> 고지(공개 저장소의 2026-06-06 검색 피드 수집본 https://github.com/nerevu/riko/blob/main/riko/data/news.google.com_rss_hl=en-US&gl=US&ceid=US_3Aen&q=enterprise%2Bmashup.xml): 'This XML feed is made available solely for the purpose of rendering Google News results within a personal feed reader for personal, non-commercial use. Any other use of the feed is expressly prohibited. By accessing this feed or using these results in any manner whatsoever, you agree to be bound by the foregoing restrictions.' — 공개 웹사이트 게시와 결과를 내부 신호(기사 발견·클러스터 점수)로 쓰는 것 모두 '그 밖의 이용'. ② robots.txt(https://news.google.com/robots.txt): User-agent * 그룹 'Disallow: /', 허용 목록(/topics/·/stories/·/publications/·/about 등)에 /rss/·/articles/·/_/ 없음, ClaudeBot·anthropic-ai·GPTBot 등은 전면 차단 — robots_checked:false는 '확인했으나 불허'. ③ Google 서비스 약관(Effective July 30, 2026, https://policies.google.com/terms): 'using automated means to access content from any of our services in violation of the machine-readable instructions on our web pages (for example, robots.txt files ...)' 금지, Google News 기사는 'You may not use this content without that person or organization’s permission'. Google News 서비스별 추가 약관 없음(https://policies.google.com/terms/service-specific). 링크는 news.google.com/rss/articles/<불투명 토큰>?oc=5 리다이렉트 — 원문 URL 디코딩은 robots 불허 경로(/rss/articles/·/_/…/batchexecute) 호출이 필요해 불가, 원문 URL 해시 카드 ID(CLAUDE §8)·FR-04를 지킬 수 없음. M0 확인 요청은 robots.txt 1회뿐(/rss/ 요청 0건, 쿼리 실측 없이 마감 — 사용자 결정). 결과: plan §14 B2 발동 — 뉴스 검색은 GDELT(M0-27) + 국내 매체 RSS(M0-25)로 대체. configs/publisher-domains.json에 news.google.com deny."
+  },
+  {
+    "id": "gdelt-doc",
+    "name": "GDELT DOC 2.0 API — 뉴스 검색",
+    "type": "search",
+    "url": "https://api.gdeltproject.org/api/v2/doc/doc",
+    "lang": "mul",
+    "enabled": false,
+    "summarize": false,
+    "weight": 1,
+    "tier": 3,
+    "competitions": [],
+    "terms_checked": true,
+    "robots_checked": true,
+    "note": "2026-10-10 확인(M0-27) · 결정 2026-10-10(오케스트레이터, 기존 사용자 결정 선례에 따름). 결정: 판정 기록용 비활성 — 약관 허용(조건부)·robots 제한 없음·기술 부적합(sportalkorea-all 선례: 약관 통과, 기술 부적합으로 비활성). 검토한 이용 방식: configs/search-queries.json 쿼리로 mode=ArtList&format=json 결과를 받아 configs/publisher-domains.json에서 allow인 매체 도메인의 기사만 원제목+링크(ai:false)로 게시(PRD §15 D25). 기사 내용·socialimage(이미지)는 쓰지 않는다. 약관(https://www.gdeltproject.org/about.html, Terms of Use): 'all datasets released by the GDELT Project are available for unlimited and unrestricted use for any academic, commercial, or governmental use of any kind without fee.' 조건: 'any use or redistribution of the data must include a citation to the GDELT Project and a link to this website (https://www.gdeltproject.org/).' → 켜면 사이트에 GDELT 인용·링크를 표기한다. 결과 기사 제목의 권리는 각 매체에 있으므로 매체 판정은 publisher-domains.json(D25)이 맡는다. robots.txt: https://api.gdeltproject.org/robots.txt 404(RFC 9309상 제한 없음). 429 실측(2026-10-10 09:02~09:14 UTC, DOC API 19건, 응답 완료 후 6~60초 간격): 200 6건 · 429 12건 · 네트워크 오류 1건(성공률 32%, 60초 간격 4건도 모두 429, 성공 1건당 약 58초). 429 본문: 'Please limit requests to one every 5 seconds or contact … for larger queries. All high-traffic users should switch to our ngrams dataset'. 색인: sourcelang:korean 24시간 3건, \"Champions League\" 3일 2건(축구 무관), \"Real Madrid\" transfer(영어) 3일 0건, domain:interfootball.co.kr 1개월 0건 — 결과 5건 모두 seendate 06:45Z 한 배치(요청 시각보다 2.3~2.5시간 전). 허용 목록 통과 0/5. 필드: url은 원문 기사 URL(리다이렉트 아님), title은 GDELT 정규화 흔적(구두점 앞 공백·따옴표 제거)이 있어 켜면 표시 제목은 같은 URL의 RSS 제목이나 og:title을 쓴다(FR-20 제목 무수정). 재활성 기준(M1 7일 관찰 기간에 하루 1회 소량 수동 재측정 — 쿼리 2개·직접 요청 3건 이내, 그 뒤 재결정): ① 7일 성공률 80% 이상 ② sourcelang:korean 24시간 결과 수백 건 이상·최신 seendate 지연 1시간 이하 ③ 허용 도메인 OR 쿼리(gd-ko-allow-domains) 1주 1건 이상. 모두 충족하면 gd-ko-allow-domains 1개만 먼저 켠다(사용자 결정 후)."
   }
 ]

@@ -1,0 +1,77 @@
+{
+  "maxEnabled": 10,
+  "queries": [
+    {
+      "id": "gd-ko-allow-domains",
+      "source": "gdelt-doc",
+      "q": "(domain:interfootball.co.kr OR domain:footballist.co.kr OR domain:besteleven.com OR domain:sportalkorea.com)",
+      "lang": "ko",
+      "purpose": "general",
+      "enabled": false
+    },
+    {
+      "id": "gd-ko-lee-kang-in",
+      "source": "gdelt-doc",
+      "q": "이강인",
+      "lang": "ko",
+      "purpose": "korean",
+      "enabled": false
+    },
+    {
+      "id": "gd-en-lee-kang-in",
+      "source": "gdelt-doc",
+      "q": "\"Lee Kang-in\"",
+      "lang": "en",
+      "purpose": "korean",
+      "enabled": false
+    },
+    {
+      "id": "gd-en-kim-min-jae",
+      "source": "gdelt-doc",
+      "q": "\"Kim Min-jae\"",
+      "lang": "en",
+      "purpose": "korean",
+      "enabled": false
+    },
+    {
+      "id": "gd-en-transfer-epl",
+      "source": "gdelt-doc",
+      "q": "(Arsenal OR Chelsea OR Liverpool OR \"Manchester City\" OR \"Manchester United\" OR Tottenham) transfer",
+      "lang": "en",
+      "purpose": "transfer",
+      "enabled": false
+    },
+    {
+      "id": "gd-es-transfer-laliga",
+      "source": "gdelt-doc",
+      "q": "(\"Real Madrid\" OR Barcelona OR \"Atletico Madrid\") fichaje",
+      "lang": "es",
+      "purpose": "transfer",
+      "enabled": false
+    },
+    {
+      "id": "gd-it-transfer-seriea",
+      "source": "gdelt-doc",
+      "q": "(Juventus OR Inter OR Milan OR Napoli) calciomercato",
+      "lang": "it",
+      "purpose": "transfer",
+      "enabled": false
+    },
+    {
+      "id": "gd-mul-champions-league",
+      "source": "gdelt-doc",
+      "q": "\"Champions League\"",
+      "lang": "mul",
+      "purpose": "ucl",
+      "enabled": false
+    },
+    {
+      "id": "gd-en-korea-national",
+      "source": "gdelt-doc",
+      "q": "\"South Korea\" (football OR soccer)",
+      "lang": "en",
+      "purpose": "national",
+      "enabled": false
+    }
+  ]
+}

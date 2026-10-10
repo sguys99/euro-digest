@@ -16,13 +16,15 @@
 > **국내 매체 (M0-25, 2026-10-10)** — 8개 매체 중 **원제목+링크 3개 매체(인터풋볼·풋볼리스트·베스트일레븐, 피드 5개) · 기록용 2(스포탈코리아 — 피드 부적합, 연합뉴스 — 금지) · 미등록 3(스포티비뉴스·엑스포츠뉴스·OSEN — 피드 없음)**. RSS 요약문(description)은 본문 첫 300자 절단이라 표시·저장하지 않는다 → 국내 카드도 원제목+링크(`ai:false`).
 >
 > **Google News·검색 결과 매체 (M0-26, 2026-10-10)** — Google News RSS는 피드 고지(개인 피드 리더 외 이용 금지)·robots.txt `Disallow: /`·Google 약관 때문에 **사용 불가**다 → plan §14 B2 발동(뉴스 검색은 GDELT + 국내 매체 RSS). 검색형 소스가 돌려준 기사는 **`configs/publisher-domains.json` 매체 도메인 허용 목록**으로 거른다 — `allow`만 게시, 목록에 없는 도메인은 기본 차단(allow 4 · feed-only 7 · deny 16).
+>
+> **GDELT (M0-27, 2026-10-10)** — 약관은 허용(조건부: GDELT 인용·링크)이지만 레이트 리밋(성공률 32%)·색인 희소·허용 목록 통과 0/5로 **판정 기록용 비활성**(`gdelt-doc`)이다. `configs/search-queries.json`은 쿼리 9개 모두 비활성(`maxEnabled` 10). → **현재 뉴스 검색 단계는 없고, 한국어 뉴스는 국내 매체 RSS 5개 피드뿐이다.** M1 7일 관찰 기간에 소량 재측정한 뒤 다시 결정한다.
 
 ## 목차
 - [M0-23 1군 영문 RSS](#m0-23-1군-영문-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 6 · 제외 2)
 - [M0-24 2군 매체·기자 채널](#m0-24-2군-매체기자-채널) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 3 · 기록용 제외 5), FR-20 재정의(PRD §15 D23·D24)
 - [M0-25 국내 매체 RSS](#m0-25-국내-매체-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 3개 매체·피드 5 · 기록용 2 → 전체 23개), 요약문(description) 표시·저장 안 함
 - [M0-26 Google News RSS](#m0-26-google-news-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, 판정 금지(사용 불가)·plan §14 B2 발동, `configs/sources.json` 기록용 2개 등록(→ 25개), 검색 결과 매체 도메인 허용 목록 `configs/publisher-domains.json` 신설(allow 4 · feed-only 7 · deny 16)
-- [M0-27 GDELT DOC API](#m0-27-gdelt-doc-api)
+- [M0-27 GDELT DOC API](#m0-27-gdelt-doc-api) ✅ 완료 — 결정(2026-10-10) 반영, 판정 약관 허용(조건부)·기술 부적합 → `configs/sources.json` 기록용 `gdelt-doc` 비활성 등록(→ 26개), `configs/search-queries.json` 신설(`maxEnabled` 10 · 쿼리 9개 전부 비활성), M1 관찰 기간 소량 재측정 후 재결정
 - [M0-28 football-data.org](#m0-28-football-dataorg)
 - [M0-29 API-Football](#m0-29-api-football)
 - [M0-30 Anthropic 실측](#m0-30-anthropic-실측)
@@ -933,7 +935,230 @@ Google 약관이 직접 밝히듯 Google News에 보이는 기사의 권리는 �
    - (C) 봇 UA로 5건만 실측 — **비권고.** robots.txt 위반이라 약관에 걸리고, M0-25 선례와 CLAUDE §6.4에 어긋난다.
 
 ## M0-27 GDELT DOC API
-(미착수)
+
+> 상태: **✅ 완료 — 결정(2026-10-10) 반영.** 판정 기록용 `gdelt-doc`을 `configs/sources.json`에 비활성으로 등록했고(→ 26개), `configs/search-queries.json`을 새로 만들었다(`maxEnabled` 10 · 쿼리 9개 전부 비활성). 아래 "핵심 결론"~"사용자 확인 질문"은 조사 시점 기록이고, 최종 결과는 "결정 (2026-10-10)"이 단일 출처다.
+
+대상: GDELT DOC 2.0 API(`https://api.gdeltproject.org/api/v2/doc/doc`, `mode=ArtList&format=json`). plan §14 B2에서 Google News를 대신할 검색 소스로 정한 곳이다. 과제는 쿼리 3종 실측(한국어 선수 · 영어 빅클럽 이적 · 다국어 UCL), 허용 도메인 `domain:` 조회, 한국어 매체 커버리지, 이용 조건, 하루 쿼리 상한 확정이다.
+판정 기준·용어는 M0-23~M0-26과 같다(문서 머리 표, PRD §15 D22~D25). 검색 결과에는 `src/lib/schema/publisher.ts`의 `isSearchResultAllowed`(`allow`만 true, 목록 밖은 차단)를 실제로 적용했다.
+요청 범위: 2026-10-10 09:01~09:14 UTC(18:01~18:14 KST)에 **직접 요청 20건**을 보냈다. api.gdeltproject.org robots.txt 1건(404)과 DOC API 19건(200: 6 · 429: 12 · 네트워크 오류: 1)이다. 고정 파라미터는 `mode=ArtList&format=json&maxrecords=250&sort=DateDesc`이고 `timespan`은 1d~1m을 썼다. 다음 요청은 앞 요청의 **응답이 끝난 뒤 6~60초** 간격을 두고 보냈다(GDELT 권장은 5초 이상). 결과 링크의 원문 기사 요청은 0건, 금지 사이트 접근도 0건이다. 보조 조사로 GDELT 문서 3건(DOC 2.0 소개 글, 2022 레이트 리밋 공지, About·Terms of Use)과 제3자 보고 3건을 WebFetch로 읽었고, 웹 검색을 6회 했다.
+
+### 핵심 결론 (먼저 읽기)
+1. **약관은 허용(조건부)이다.** GDELT 데이터는 상업적 이용을 포함해 무제한·무료로 쓸 수 있다. 조건은 **GDELT 인용과 https://www.gdeltproject.org/ 링크**다. api.gdeltproject.org의 robots.txt는 404라 제한이 없다. 결과 기사 제목의 권리는 각 매체에 있으므로 D25 허용 목록이 그대로 처리한다. Google News와 달리 결과 이용을 막는 고지는 없다.
+2. **레이트 리밋이 문서보다 훨씬 엄격하다.** 19건 중 6건만 성공했다(32%). 응답이 끝나고 60초를 기다렸다가 보낸 요청 4건도 모두 429였다. 429 본문은 "one every 5 seconds"를 요구하지만 간격을 늘려도 나아지지 않았다. 2026-07~10에 나온 제3자 보고 3건도 같은 현상을 적었다. 측정값으로 계산하면 **쿼리 1개를 성공시키는 데 평균 약 1분**이 든다.
+3. **측정 시점의 색인은 극히 희소했다.** `sourcelang:korean` 24시간 결과가 3건, `"Champions League"` 3일 결과가 2건(축구와 무관한 기사), `"Real Madrid" transfer`(영어) 3일 결과가 0건, `이강인`(한국어) 1주 결과가 0건, `domain:interfootball.co.kr` 1개월 결과가 0건이다. 받은 5건은 **모두 seendate 06:45:00Z 한 배치**였다. 요청 시각보다 2.3~2.5시간 전이고, 그 뒤 배치는 하나도 검색되지 않았다.
+4. **허용 목록을 통과한 결과는 0/5다.** 허용 도메인 4개(국내 엔디소프트 매체)는 결과에 한 번도 나오지 않았다. GDELT가 정상이라도 구조적 한계가 있다. 지금 허용 목록에서 게시할 수 있는 것은 이미 RSS(전체기사 피드 24.8~50시간 창, M0-25)로 받는 매체의 기사뿐이다. 영문·스페인어·이탈리아어 쿼리(선수·이적·UCL)는 해외 `allow` 도메인이 없으므로 **정의상 0건**이다.
+5. **`title`은 원제목이 아닐 수 있다.** 구두점 앞에 공백이 들어가 있고(`정부 , 18년`, `Meetings , Reaffirming`) 따옴표가 있었을 자리에 공백이 겹친다. GDELT가 제목을 정규화한 흔적으로 보인다. 원문 페이지를 열지 않았으므로 원제목과 직접 대조하지는 않았다. FR-20의 "제목 무수정"을 지키려면 같은 URL의 RSS 제목이나 og:title을 써야 한다.
+6. **권고**: `gdelt-doc`을 `type: search` **판정 기록용으로 등록하고 비활성으로 둔다**(`enabled:false` · `terms_checked:true` · `robots_checked:true`, `sportalkorea-all` 선례). `search-queries.json`은 쿼리 9개를 모두 비활성으로 두고 **`maxEnabled: 10`**으로 만든다. 당분간 하루 GDELT 쿼리는 0개다. → 결정: 권고대로(아래 "결정").
+
+### 결정 (2026-10-10)
+
+오케스트레이터가 기존 사용자 결정 선례(M0-25 스포탈코리아 — 약관 통과·기술 부적합으로 비활성, M0-26 판정 기록용 등록)에 따라 정했다.
+
+| # | 항목 | 결정 | 반영 |
+|---|---|---|---|
+| 1 | GDELT DOC API | **판정 기록용 등록·비활성** — `gdelt-doc`: `enabled:false` · `summarize:false` · `terms_checked:true` · `robots_checked:true`. `note`에 판정·약관 인용·429 실측·재활성 기준을 적는다. 뉴스 검색 단계는 당분간 쓰지 않는다 | `configs/sources.json` |
+| 2 | `configs/search-queries.json` | **지금 만든다** — `maxEnabled: 10`, 쿼리 9개 전부 `enabled:false`. 선수 쿼리 3개는 `player` 필드를 생략해 **보류**로 둔다(스키마상 선택 필드 — `korean-players.json`이 생기면 `/add-player`가 slug를 채우거나 쿼리를 바꾼다, M0-32) | `configs/search-queries.json` |
+| 3 | 재측정 | **M1 7일 발행 관찰 기간에 하루 1회 소량 수동 재측정**(쿼리 2개 — `sourcelang:korean` 1d·허용 도메인 OR 1d, 하루 직접 요청 3건 이내) 후 재결정. 켜는 기준은 아래 "판정·설계 권고" 3 | plan M1-46(오케스트레이터) |
+
+**등록 결과 — `configs/sources.json`** (1개 추가 → 26개, `npm run validate` 통과 — configs 4개 검사·교차 참조 2건 실행·오류 0건, 수집 대상 `enabled && terms_checked` 14개·LLM 요약 대상 0개 그대로)
+
+| id | url | type | lang | enabled | summarize | terms_checked | robots_checked | tier | weight | competitions | 이용 방식 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `gdelt-doc` | api.gdeltproject.org/api/v2/doc/doc | search | mul | false | false | true | true | 3 | 1 | [] | 판정 기록용 — 약관 허용(조건부)·기술 부적합 |
+
+**등록 결과 — `configs/search-queries.json`** (신규, `maxEnabled` 10 · 쿼리 9 · 활성 0, 교차 참조 "search-queries.source → sources(type search)" 통과)
+
+| id | q | lang | purpose | player | enabled |
+|---|---|---|---|---|---|
+| `gd-ko-allow-domains` | `(domain:interfootball.co.kr OR domain:footballist.co.kr OR domain:besteleven.com OR domain:sportalkorea.com)` | ko | general | — | false |
+| `gd-ko-lee-kang-in` | `이강인` | ko | korean | 보류(생략) | false |
+| `gd-en-lee-kang-in` | `"Lee Kang-in"` | en | korean | 보류(생략) | false |
+| `gd-en-kim-min-jae` | `"Kim Min-jae"` | en | korean | 보류(생략) | false |
+| `gd-en-transfer-epl` | `(Arsenal OR Chelsea OR Liverpool OR "Manchester City" OR "Manchester United" OR Tottenham) transfer` | en | transfer | — | false |
+| `gd-es-transfer-laliga` | `("Real Madrid" OR Barcelona OR "Atletico Madrid") fichaje` | es | transfer | — | false |
+| `gd-it-transfer-seriea` | `(Juventus OR Inter OR Milan OR Napoli) calciomercato` | it | transfer | — | false |
+| `gd-mul-champions-league` | `"Champions League"` | mul | ucl | — | false |
+| `gd-en-korea-national` | `"South Korea" (football OR soccer)` | en | national | — | false |
+
+- 모든 쿼리의 `source`는 `gdelt-doc`이다. `q`에는 `sourcelang:`을 넣지 않는다 — M1 어댑터가 `lang`을 GDELT 언어명으로 바꿔 붙이고 `mul`이면 언어 필터를 붙이지 않는다(아래 "판정·설계 권고" 2). `region`은 쓰지 않는다(GDELT `sourcecountry`는 FIPS 코드).
+- 선수 쿼리 3개는 M0-26 문서에 나온 이름을 쓴 예시다. 2026-27 명단(M0-32)이 확정되면 `/add-player`가 slug를 채우거나 쿼리를 바꾼다.
+- fixture `fixtures/schema/configs/search-queries.json`·`sources.json`은 바꾸지 않았다. `google-news-ko/en` id는 실제 `configs/sources.json`에도 기록용으로 남아 있어 fixture가 여전히 유효하고, 테스트(`tests/validate.test.ts` ⑤)가 그 fixture에 맞춰져 있다.
+- PRD·plan·CLAUDE 반영은 오케스트레이터 몫이다: PRD FR-02·§15 D25, plan M1-06(검색형 소스 공통)·M1-07(GDELT 어댑터 보류)·M1-46(재측정), CLAUDE §13 미결 "GDELT 이용 조건" → 해결. GDELT를 켜게 되면 NFR-09 출처 표기에 GDELT 인용·링크를 넣는다.
+
+### API 파라미터 (문서 확인 2026-10-10)
+
+출처: https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/ (소개 글). 실측으로 확인한 항목은 따로 표시했다.
+
+| 파라미터 | 내용 | 우리 용도 |
+|---|---|---|
+| `query` | `"…"` 정확한 구문 · `(A OR B)` 괄호와 대문자 OR, "Boolean OR blocks cannot be nested" · `-` 제외 · `domain:`(하위 도메인 포함)과 `domainis:`(정확히 일치) · `sourcecountry:`(공백 없는 국가명 또는 **FIPS 코드**) · `sourcelang:` · `theme:` · `near:` · `repeat:` · `tone` | 허용 도메인 매칭 규칙(하위 도메인 포함)은 `domain:`과 같다. `sourcelang:korean`이 동작함을 실측으로 확인. 도메인 4개를 OR로 묶은 쿼리는 구문 오류 없이 0건 |
+| `mode=ArtList` | 기사 목록. `maxrecords` 기본 75, 최대 250 | 250 |
+| `format` | HTML(기본) · CSV · JSON · JSONP · RSS · RSSArchive · JSONFeed | JSON |
+| `timespan` | 기본 3개월. 단위 `min`(최소 15) · `h` · `d` · `w` · `m`. 또는 `startdatetime`·`enddatetime`(`YYYYMMDDHHMMSS`, 최근 3개월 안) | 직전 성공 실행부터 지금까지(최대 36시간, FR-07) → `startdatetime`·`enddatetime` |
+| `sort` | `DateDesc` · `DateAsc` · `ToneDesc` · `ToneAsc` · `HybridRel`(기본은 관련도) | `DateDesc` |
+| 레이트 리밋 | 소개 글에는 수치가 없다. 429 본문: "Please limit requests to one every 5 seconds or contact … for larger queries. All high-traffic users should switch to our ngrams dataset". 2022 공지: "Our APIs are rate limited to protect the underlying ElasticSearch clusters"(https://blog.gdeltproject.org/ukraine-api-rate-limiting-web-ngrams-3-0/) | 아래 "레이트 리밋 실측" |
+
+**응답 필드(실측)** — 결과가 있는 응답 2건(5개 기사) 기준
+
+| 필드 | 실측 형식 | 파이프라인 영향 |
+|---|---|---|
+| `url` | **원문 기사 URL**(리다이렉트 아님). 예: `https://www.hani.co.kr/arti/politics/diplomacy/…html`. `http://` 스킴이 그대로 오기도 한다(argentinastar.com) | FR-04 정규화·해시와 카드 ID가 설계대로 동작한다. 표시 링크는 원문 그대로 둔다 |
+| `url_mobile` | 5건 모두 빈 문자열 | 쓰지 않는다 |
+| `title` | 정규화 흔적: `주우크라 대사 오전 소환 귀국 … 정부 , 18년 만의 강경 외교 조치`, 앞뒤 공백·이중 공백 | 표시 제목으로 쓰지 않는다(위 핵심 결론 5) |
+| `seendate` | `20261010T064500Z`(UTC). GDELT가 **처음 본 시각**이고 15분 배치 단위다 | 게시 시각이 아니다. `publishedAt`으로 쓴다면 그렇다는 사실을 남긴다 |
+| `socialimage` | 기사 대표 이미지 URL | **쓰지 않는다**(CLAUDE §1-6). 어댑터 경계에서 버린다 |
+| `domain` | `www.`를 뗀 호스트(`hani.co.kr`)이고 하위 도메인은 남긴다(`biz.heraldcorp.com`) | 판정은 `url` 호스트로 한다. 이 필드는 로그용 |
+| `language` | 영어 언어명(`Korean`, `English`) | lang 코드로 바꾼다 |
+| `sourcecountry` | 영어 국가명(`South Korea`, `Argentina`, `Pakistan`). 신디케이션 사이트는 사이트의 명목상 국가가 나온다 | 쓰지 않는다 |
+| 빈 결과 | HTTP 200 + `{}`(`articles` 키 없음) | 0건으로 처리한다 |
+| 429 | HTTP 429 + 일반 텍스트 본문(JSON 아님, content-type 없음) | 파싱 전에 상태 코드부터 본다 |
+
+### 쿼리별 결과 표
+
+표의 "결과"는 HTTP 200을 받은 시도 기준이다. 같은 쿼리를 여러 번 보낸 경우가 있고, 429만 받은 쿼리는 "측정 실패"로 적었다.
+
+| # | 쿼리 `query` | 목적 | timespan | 시도(200 / 429 / 오류) | 결과 | 최신 / 가장 오래된 seendate | 도메인 분포 | 중복 | 허용 목록 통과 |
+|---|---|---|---|---|---|---|---|---|---|
+| ① | `이강인 sourcelang:korean` | 한국 선수(한국어) | 3d → 1w | 3d 0/3/0 · 1w 1/0/0 | **0** (1w) | — | — | — | 0 |
+| ①b | `"Lee Kang-in"` (언어 제한 없음) | 한국 선수(영문 이름) | 3d → 1w | 3d 0/2/1 · 1w 0/1/0 | 측정 실패 | — | — | — | — |
+| ② | `"Real Madrid" transfer sourcelang:english` | 빅클럽 이적(영어) | 3d | 1/0/0 | **0** | — | — | — | 0 |
+| ②b | `"Real Madrid"` | 대조(영어권 축구 색인량) | 1d | 0/1/0 | 측정 실패 | — | — | — | — |
+| ③ | `"Champions League"` | UCL(다국어) | 3d | 1/1/0 | **2** | 2026-10-10T06:45:00Z / 같음 | argentinastar.com 1 · pakistantelegraph.com 1 | 고유 URL 2 · 고유 제목 1(같은 기사를 신디케이션 사이트 두 곳이 실음) | **0/2** |
+| ③b | `"Champions League"` | UCL(색인 기간 대조) | 2w | 0/2/0 | 측정 실패 | — | — | — | — |
+| ④ | `(domain:interfootball.co.kr OR domain:footballist.co.kr OR domain:besteleven.com OR domain:sportalkorea.com)` | 허용 도메인만 조회 | 3d | 1/0/0 | **0** | — | — | — | 0 |
+| ④b | `domain:interfootball.co.kr` | 허용 도메인 색인 여부 | 1m | 1/2/0 | **0** | — | — | — | 0 |
+| ⑤ | `sourcelang:korean` | 한국어 매체 커버리지 | 1d | 1/1/0 | **3** | 2026-10-10T06:45:00Z / 같음 | hani.co.kr 2 · biz.heraldcorp.com 1 | 없음 | **0/3** |
+
+**예시 제목**(제목만, GDELT `title` 원문 그대로. 공백도 그대로 두었다)
+- ③ `Finance Minister Guides Press Through QSNCC Ahead of 2026 IMF - World Bank Group Annual Meetings , Reaffirming Thailand Readiness on All Fronts` (2건이 같은 제목). 축구와 무관하다. "Champions League"가 페이지 주변 텍스트에서 걸린 것으로 보인다.
+- ⑤ `주우크라 대사 오전 소환 귀국 … 정부 , 18년 만의 강경 외교 조치` · `대낮 뉴욕 주택가서 ICE 요원 , 5살 아이 탄 차량에 7발 총격` · `  강호동 아들  강시후 군 … 188cm 고교생 골퍼로 성장  화제  ` (모두 축구와 무관한 종합 뉴스)
+- ①·②·④는 결과가 0건이라 예시가 없다.
+
+### 레이트 리밋 실측
+
+| 묶음 | 시각(UTC) | 간격(앞 응답 완료 후) | 요청 | 200 | 429 | 오류 |
+|---|---|---|---|---|---|---|
+| 1 | 09:02:08~09:03:46 | 7초 | 5 | 2 | 2 | 1 (`fetch failed`) |
+| 2 | 09:04:09~09:05:46 | 30초 | 3 | 1 | 2 | 0 |
+| 3 | 09:06:27~09:10:08 | 60초 | 4 | **0** | 4 | 0 |
+| 4 | 09:11:11~09:12:03 | 6초 | 3 | 2 | 1 | 0 |
+| 5 | 09:12:15~09:12:55 | 6초 | 3 | 0 | 3 | 0 |
+| 6 | 09:13:47 | 약 52초 | 1 | 1 | 0 | 0 |
+| 합계 | | | **19** | **6** | **12** | **1** |
+
+- 응답 시간은 200이 평균 16.2초(11.8~19.5초), 429가 평균 10.5초(8.4~13.1초)다. 429에도 10초가 걸리므로 서버 쪽 대기열을 거치는 것으로 보인다.
+- **간격을 늘려도 나아지지 않았다**(60초 간격 0/4). 제3자 보고도 같다.
+  - gdelt-mcp-server #44(2026-09-18 작성, 09-22 재측정): "a request sent 5.2 s after the previous one _completed_ is still rejected"이고, 30초 간격으로 보낸 3건도 모두 거부됐다. "No 429 carries `Retry-After`" — https://github.com/cyanheads/gdelt-mcp-server/issues/44
+  - errata-pulse #16(2026-10-06): "GDELT DOC API returns 429 to this server nearly always (1 ok of 14 in 30 h)". 그 뒤 GKG 15분 대량 파일로 옮겼다 — https://github.com/ikorfale/errata-pulse/issues/16
+  - APITube 이전 안내(판매사 문서, 2026-07-27 측정): 6초 간격 1/7 · 16초 4/12 · 60초 3/8 · 150초 0/3 · 300초 0/7 — https://docs.apitube.io/platform/migrations/from-gdelt
+- `Retry-After` 헤더: 우리 스크립트는 응답 헤더를 기록하지 않았다(위 #44는 없다고 보고).
+- **처리량 추정**: 시도 1회에 응답 약 12.3초(가중 평균)와 간격 6초를 더해 약 18초가 걸린다. 성공 확률이 0.32이므로 **성공 1건당 약 58초**다. 쿼리 10개면 약 10분, 20개면 약 19분이다. collect.yml은 06:30 KST에 시작하고 06:50에 배치 폴백을 하므로(20분 창) 20개는 이 창 안에 끝낼 수 없다.
+
+### 허용 목록 적용 결과
+
+`node --import tsx`로 `configs/publisher-domains.json`(27개)을 `PublisherDomainsFileSchema`로 파싱하고, 결과마다 `isSearchResultAllowed(new URL(url).hostname, domains)`를 적용했다.
+
+| 쿼리 | 결과 | allow | feed-only | deny | 목록 밖(기본 차단) | 통과 |
+|---|---|---|---|---|---|---|
+| ③ `"Champions League"` 3d | 2 | 0 | 0 | 0 | 2 (argentinastar.com · pakistantelegraph.com) | 0 |
+| ⑤ `sourcelang:korean` 1d | 3 | 0 | 0 | 0 | 3 (hani.co.kr · biz.heraldcorp.com) | 0 |
+| ① · ② · ④ · ④b | 0 | — | — | — | — | 0 |
+| **합계** | **5** | 0 | 0 | 0 | 5 | **0** |
+
+- 스모크 검사: `www.interfootball.co.kr` → true(`www.` 하위 도메인 매칭), `www.bbc.com`(feed-only) → false, `www.skysports.com`(deny) → false. GDELT `url`의 호스트 형태(`www.` 포함, `http://` 스킴)에서도 판정 함수가 의도대로 동작한다.
+- **구조적 한계**: `allow` 4개는 모두 국내 엔디소프트 매체다.
+  - 영어·스페인어·이탈리아어 쿼리는 GDELT가 정상이어도 통과 결과가 0건이다. M0-26 구성안의 "선수별 영문 쿼리 약 10개"도 게시할 수 있는 결과를 만들지 못한다.
+  - 국내 4개 매체 중 3개는 이미 RSS 5개 피드(전체기사 피드 24.8~50시간 창)로 받는다. GDELT로 더 얻을 수 있는 것은 "RSS 창 밖으로 밀린 기사"와 스포탈코리아(피드 부적합으로 비활성) 기사 정도다.
+- 실효성을 높이려면 해외 매체를 매체 단위로 하나씩 판정해 허용 목록을 넓혀야 한다(`/add-source`). M0-23·M0-24에서는 매체 단위 허용 근거가 나온 해외 매체가 0개였다.
+
+### 지연·커버리지
+
+- **수집 지연**: 받은 5건의 seendate가 모두 2026-10-10T06:45:00Z였다. 요청 시각(09:04:09Z·09:13:47Z) 기준 각각 2시간 19분·2시간 29분 전이다. 06:45Z 뒤의 배치는 하나도 검색되지 않았으므로 측정 시점의 지연은 **2.3~2.5시간 이상**이다. 소개 글에는 갱신 주기 수치가 없다. basic_plan §3의 "15분 단위 갱신"은 GDELT 2.0 전반에 대한 설명이다.
+- **최근 24시간 커버리지**: `sourcelang:korean` + `timespan=1d` 결과는 06:45Z 한 배치의 3건뿐이었다. 정상이라면 15분 배치 96개에 걸친 한국어 기사가 나와야 한다. `"Champions League"` 3일 결과도 같은 배치에서만 나왔다. 측정 시점의 DOC 색인은 사실상 최신 배치 하나만 검색되는 상태였다. 일시 장애인지 상시 상태인지는 이번 실측(약 13분)으로 가릴 수 없다.
+- **한국어 매체**: 색인에서 확인한 한국어 매체는 hani.co.kr·biz.heraldcorp.com(종합지)이다. 허용 도메인 4개는 **색인 여부를 확인하지 못했다**(interfootball.co.kr 1개월 0건, 4개 도메인 OR 3일 0건). 다만 색인 희소와 겹쳐 있어 "색인하지 않는다"고 단정할 수는 없다.
+- **한국어 키워드**: `이강인 sourcelang:korean` 1주 결과는 오류 문구 없는 200 `{}`이었다. 한글 키워드를 지원하는지도 색인 희소와 겹쳐 판단하지 못했다.
+
+### 약관 (확인 2026-10-10)
+
+- **GDELT Terms of Use** — https://www.gdeltproject.org/about.html
+  > "all datasets released by the GDELT Project are available for unlimited and unrestricted use for any academic, commercial, or governmental use of any kind without fee."
+  >
+  > "You may redistribute, rehost, republish, and mirror any of the GDELT datasets in any form."
+  >
+  > "However, any use or redistribution of the data must include a citation to the GDELT Project and a link to this website (https://www.gdeltproject.org/)."
+  - 라이선스 이름(CC 등)은 적혀 있지 않다. 매체 기사 저작권에 대한 언급도 없다.
+  - 판정: **허용(조건부)**. 조건은 GDELT 인용과 링크다. 켜게 되면 사이트(푸터·소개 페이지 또는 GDELT를 거친 카드)에 "뉴스 검색: The GDELT Project"와 https://www.gdeltproject.org/ 링크를 표기한다.
+- **robots.txt** — https://api.gdeltproject.org/robots.txt 는 **404**(`text/html`, `Server: GDELT Server`)다. RFC 9309에서 404는 제한 없음으로 보므로 `robots_checked:true`다.
+- **레이트 리밋 고지** — 429 본문의 "Please limit requests to one every 5 seconds … All high-traffic users should switch to our ngrams dataset". 우리 계획(하루 0~10쿼리)은 high-traffic이 아니다.
+- **결과 기사 제목의 권리** — GDELT 약관은 GDELT "datasets"에 대한 이용 허락이다. 기사 제목·URL이 가리키는 원 저작물의 권리까지 넘겨주지는 않는다. 그래서 제목 게시는 매체 판정을 따라야 하고, 이 부분은 **D25 허용 목록(`allow`만 게시, 목록 밖 차단)이 그대로 처리한다.** Google News(M0-26)는 피드 고지가 결과 이용 자체를 금지했지만, GDELT 단계에 남는 조건은 인용·링크 표기뿐이다.
+- **이미지** — `socialimage`는 쓰지도 저장하지도 않는다(CLAUDE §1-6).
+
+### 판정·설계 권고
+
+| 항목 | 판정 |
+|---|---|
+| GDELT 약관(원제목+링크 게시, `allow` 도메인만) | **허용(조건부)** — GDELT 인용 + 링크 |
+| robots.txt | **제한 없음**(404) |
+| 기술 안정성(레이트 리밋) | **부적합** — 성공률 32%, 간격을 늘려도 개선 없음 |
+| 데이터 품질(색인·지연) | **부적합(측정 시점)** — 한국어 24시간 3건, 지연 2.3시간 이상 |
+| 허용 목록 적용 후 실효성 | **0/5** — 구조적으로도 국내 4개 매체만 통과할 수 있고, 이 매체들은 이미 RSS로 받는다 |
+| 종합 | **판정 기록용 등록·비활성**(`enabled:false` · `terms_checked:true` · `robots_checked:true`) |
+
+**설계 권고**
+1. **Source `gdelt-doc`** — `type: search`, `url` = DOC API 엔드포인트, `lang: "mul"`, `tier: 3`, `weight: 1`, `summarize:false`, `enabled:false`. 한국어·영어 소스로 나누지 않는다. GDELT는 소스 하나에서 쿼리마다 `sourcelang`만 바꾸면 된다(Google News가 hl·gl별로 나뉘던 것과 다르다). `note`에 약관 인용, robots 404, 실측 요약, 비활성 이유, 켤 때의 조건을 적었다.
+2. **`configs/search-queries.json`** — **`maxEnabled: 10`**(M0-26 잠정 20에서 낮춤)
+   - 근거: 성공 1건당 약 58초이므로 10개(약 10분)가 06:30~06:50 창에서 감당할 수 있는 상한이다. 영문 쿼리는 허용 목록상 통과 결과가 0건이라 늘릴 이유도 없다.
+   - 초안 9개는 모두 `enabled:false`다. 허용 도메인 OR 1, 선수 3(예시, `player` slug 보류), 이적 3(영어·스페인어·이탈리아어 각 1, 빅클럽을 OR로 묶음), UCL 1(다국어), 대표팀 1(A매치 기간 ±3일만, FR-71)이다.
+   - **하루 GDELT 쿼리 수는 0**(활성 0)이다.
+   - 표기 규칙(제안): `q`에는 `sourcelang:`을 넣지 않는다. 어댑터가 `lang`(ko·en·es·it)을 GDELT 언어명(korean·english·spanish·italian)으로 바꿔 붙이고, `lang: "mul"`이면 언어 필터를 붙이지 않는다. `region`은 쓰지 않는다. GDELT `sourcecountry`는 FIPS 코드라 ISO와 다르다(한국 `KS` ≠ `KR`, 영국 `UK` ≠ `GB`).
+3. **다시 켜는 기준**(재측정 후 사용자 결정). 다음 셋을 모두 충족하면 `gd-ko-allow-domains` 1개만 먼저 켠다.
+   - ① 하루 1회 소량 재측정에서 7일 성공률 ≥ 80%
+   - ② `sourcelang:korean` 24시간 결과가 수백 건 이상이고 최신 seendate 지연이 1시간 이하
+   - ③ 허용 도메인 OR 쿼리가 1주 1건 이상
+4. **M1 어댑터 메모**(켜는 경우. 지금 plan의 M1-06·M1-07)
+   - 요청: 동시 1개, 응답 완료 후 6초 이상 간격.
+   - **429를 받으면 그 실행의 GDELT 단계를 멈춘다.** 재시도 큐로 계속 밀어 넣지 않는다(백오프해도 창이 다시 열리지 않는다는 보고). 단계 전체 시간 예산(예: 8분)을 넘겨도 멈춘다. 429 횟수는 소스 건강도(FR-11)에 기록한다.
+   - 기간은 `timespan` 대신 `startdatetime`·`enddatetime`(직전 성공 실행부터 지금까지, 최대 36시간, FR-07)으로 준다.
+   - 응답은 상태 코드부터 확인한다(429는 텍스트 본문). 200 `{}`은 0건으로 처리하고, `articles`는 zod로 파싱한다.
+   - 판정은 `url` 호스트에 `isSearchResultAllowed`를 적용한다(`domain` 필드를 쓰지 않는다). 목록 밖 도메인의 빈도는 `data/cache/`에 쌓는다.
+   - **표시 제목에 GDELT `title`을 쓰지 않는다.** 같은 정규화 URL이 RSS에 있으면 RSS 제목을 쓰고, 없으면 `allow` 도메인 기사의 og:title을 쓴다(OG 메타 경량 크롤링, 그 매체의 기사 경로 robots 확인 후).
+   - `seendate`는 "처음 본 시각"(15분 단위)이다. 게시 시각이 필요하면 og 메타의 `article:published_time`을 우선한다. `socialimage`·`url_mobile`은 경계에서 버린다.
+   - 사이트에 GDELT 인용과 링크를 표기한다(약관 조건).
+5. **실효성이 낮을 때의 대안**
+   - (a) **GDELT 없이 운영(추천)**: 뉴스 검색 단계를 생략한다. 한국어 보도는 국내 RSS 5개 피드가, 해외 소식은 원제목 소스 9개가 맡는다. 지금 허용 목록에서 GDELT가 보탤 수 있던 몫이 원래 작았으므로 잃는 것이 거의 없다.
+   - (b) `domain:` 필터 쿼리로 허용 도메인만 조회: 쿼리 1개로 4개 도메인을 덮는 가장 효율적인 설계다(초안 `gd-ko-allow-domains`). 하지만 실측이 0건(3일·1개월)이라 지금은 효과가 없다. 재측정 기준 ③으로 다시 본다.
+   - (c) GDELT 대량 파일(GKG 2.0 15분 파일·Web NGrams 3.0): 429는 없다. 대신 하루 96개 파일을 받아 로컬에서 매칭해야 해서 파이프라인 시간과 복잡도가 늘고, 새 데이터 경로라 사용자 승인 사항이다. 허용 목록 한계도 그대로라 **비권고**.
+   - (d) NewsData.io 같은 다른 검색 API: 새 외부 서비스이고 매체 약관 상속 문제가 같다. **비권고**(M0-26 B2 메모와 같은 판단).
+   - (e) 해외 매체로 허용 목록 넓히기: 실효성의 근본 병목이다. 다만 M0-23·M0-24 결과로 보아 매체 단위 허용 근거가 나올 가능성은 낮다.
+
+**권고안 검증**(`node --import tsx`, 스키마는 `src/lib/schema/*`, 교차 참조는 `scripts/lib/validate-crossref.ts`)
+- 권고안 `SourceSchema.array()` **통과(1개)**. 기존 25개와 합친 26개도 `SourcesFileSchema` **통과**(id 중복 없음).
+- `SearchQueriesFileSchema` **통과**(쿼리 9 · 활성 0 · 상한 10).
+- 교차 참조 `checkSearchQuerySources` **통과**(9개 모두 type `search` 소스 `gdelt-doc`을 가리킴). 합친 소스 기준 `checkPublisherDomainSources`도 **통과**.
+- 음성 대조: rss 소스를 가리키게 바꾸면 오류 1건, 활성 11개 > 상한 10이면 오류 1건으로 잡혔다.
+- 합친 뒤에도 수집 대상(`enabled && terms_checked`)은 14개, LLM 요약 대상은 0개 그대로다.
+
+**후속 반영 대상**(사용자 확인 후 오케스트레이터가 반영한다. 이 작업에서는 고치지 않았다)
+- `configs/sources.json`에 `gdelt-doc` 추가(→ 26개), `configs/search-queries.json` 신설. fixture `fixtures/schema/configs/search-queries.json`(`google-news-ko/en` id 사용)을 GDELT 예시로 바꿀지도 함께 정한다.
+- PRD: FR-02·§15 D25에 GDELT 실측 결과(비활성)를 반영한다. GDELT를 켜면 NFR-09 출처 표기에 GDELT 인용을 넣는다. §13 위험 표에 "GDELT 레이트 리밋·색인 희소"를 추가한다.
+- plan: M1-06·M1-07(GDELT 어댑터)을 비활성 기간에 미룰지 정한다. CLAUDE §13 미결의 "GDELT 이용 조건"은 해결로 바꾼다(약관 허용·기술 부적합).
+
+### 사용자 확인 질문 — 2026-10-10 답변 완료
+
+> 답변(오케스트레이터 결정, 기존 사용자 결정 선례): 1 → (A) 판정 기록용 등록·비활성 · 2 → (A) 지금 생성, `maxEnabled` 10·쿼리 9개 전부 비활성 · 3 → (A) M1 7일 관찰 기간에 하루 1회 소량 재측정 후 재결정. 자세한 내용은 위 "결정 (2026-10-10)".
+
+1. **GDELT 판정과 등록 방식**
+   - (A) **판정 기록용으로 등록하고 비활성으로 둔다(추천)** — `gdelt-doc`을 `enabled:false` · `terms_checked:true` · `robots_checked:true`로 등록한다(`sportalkorea-all` 선례: 약관 통과, 기술 부적합). 뉴스 검색 단계는 당분간 쓰지 않고, M1-06·M1-07 어댑터 구현은 다시 켤 때까지 미룬다.
+   - (B) 켜되 허용 도메인 OR 쿼리 1개만 돌린다 — 하루 1~3요청이라 부담은 작다. 하지만 실측 0건이고 429가 잦아 소스 건강도 이슈(3일 연속 0건, FR-11)가 거의 매일 생긴다. 얻는 것이 거의 없다.
+   - (C) 등록하지 않고 문서에만 남긴다 — 설정 파일은 단순해진다. 대신 `search-queries.json`이 가리킬 search 소스가 기록용 Google News뿐이라 초안도 만들 수 없다.
+2. **`configs/search-queries.json`과 `maxEnabled`**
+   - (A) **지금 만든다. `maxEnabled: 10`, 쿼리 9개는 모두 비활성(추천)** — 측정 처리량(성공 1건당 약 58초) 기준 상한이다. `npm run validate` 교차 참조 1번이 실제 파일로 동작한다.
+   - (B) `maxEnabled: 20`을 유지한다(M0-26 잠정) — 허용 목록이 넓어질 때를 대비한 값이다. 다만 측정 처리량으로는 06:50 창 안에 끝나지 않는다.
+   - (C) 만들지 않는다 — GDELT를 다시 켤 때 함께 만든다.
+3. **재측정**
+   - (A) **M1의 7일 발행 관찰 기간에 하루 1회 소량 재측정(추천)** — 쿼리 2개(`sourcelang:korean` 1d, 허용 도메인 OR 1d), 하루 직접 요청 3건 이내, 개발자가 수동으로 실행한다. 레이트 리밋과 색인 희소가 일시 장애인지 가리고, 위 "다시 켜는 기준"으로 다시 결정한다.
+   - (B) 재측정하지 않고 GDELT를 닫는다 — 뉴스 검색 없이 RSS만으로 운영한다. 허용 목록이 넓어지면 그때 다시 조사한다.
+   - (C) GKG 대량 파일이나 다른 검색 API를 조사한다 — 새 데이터 경로·외부 서비스라 승인 사항이고, 허용 목록 한계가 같아 기대 효과가 작다.
 
 ## M0-28 football-data.org
 (미착수)
