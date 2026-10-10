@@ -27,6 +27,7 @@ import {
   isWithinKstWindow,
   kstDate,
   kstDayRangeUtc,
+  kstMonth,
   kstParts,
   kstWindowRangeUtc,
   nowUtcIso,
@@ -183,6 +184,22 @@ describe("kstDate / kstParts — KST 날짜 경계 (UTC 15:00 = KST 자정)", ()
     });
     expect(offsetMinutes("2026-10-25T00:59:59Z", "Asia/Seoul")).toBe(540);
     expect(offsetMinutes("2027-03-28T01:00:00Z", "Asia/Seoul")).toBe(540);
+  });
+});
+
+describe("kstMonth — KST 달 경계 (월 예산 집계 단위)", () => {
+  it.each([
+    ["2026-10-31T14:59:59Z", "2026-10"],
+    ["2026-10-31T15:00:00Z", "2026-11"],
+    ["2026-10-31T23:30:00Z", "2026-11"], // UTC로는 10월, KST로는 11/01 08:30
+    ["2026-12-31T15:00:00.000Z", "2027-01"],
+    ["2027-02-28T14:59:59.999Z", "2027-02"],
+  ])("%s → KST %s", (iso, expected) => {
+    expect(kstMonth(iso)).toBe(expected);
+  });
+
+  it("잘못된 입력은 TimeInputError", () => {
+    expect(() => kstMonth("2026-10-31")).toThrow(TimeInputError);
   });
 });
 

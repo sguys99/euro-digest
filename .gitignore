@@ -41,3 +41,6 @@ Desktop.ini
 *.swo
 
 # data/는 파이프라인 산출물로 커밋 대상이므로 무시하지 않는다 (CLAUDE.md §5).
+
+# 원자적 쓰기 임시 파일 (scripts/lib/cost.ts 등이 강제 종료로 남긴 경우)
+data/**/*.tmp

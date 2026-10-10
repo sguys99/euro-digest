@@ -361,6 +361,14 @@ export function kstDate(iso: string): string {
   return ymdString(p.year, p.month, p.day);
 }
 
+/**
+ * UTC ISO → KST 달 "YYYY-MM". 월 예산(`MONTHLY_BUDGET_USD`) 집계 단위(scripts/lib/cost.ts).
+ * 예) 2026-10-31T14:59:59Z → "2026-10", 2026-10-31T15:00:00Z(= 11-01 00:00 KST) → "2026-11".
+ */
+export function kstMonth(iso: string): string {
+  return kstDate(iso).slice(0, 7);
+}
+
 /** UTC ISO → KST 표시 문자열(한국어, 24시간제). 스타일은 `KstFormatStyle` 참고. */
 export function formatKst(iso: string, style: KstFormatStyle): string {
   const p = kstParts(iso);
