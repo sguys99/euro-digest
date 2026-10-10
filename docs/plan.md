@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-09` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-10` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -130,7 +130,7 @@
 - [x] M0-06 문서 이관: `basic_plan.md`·`PRD.md`·`plan.md` → `docs/`, `CLAUDE.md` → 루트, `WORK-PLAN.md` 표기를 `plan.md`로 일괄 치환 (2026-10-10, 문서 정합성 검토 때 처리)
 - [x] M0-07 `.claude/settings.json` — `.env*` 읽기 금지, 위험 명령 확인 — 2026-10-10 완료: 비밀 파일(`.env`·`.env.local`·`.env.*.local`·`.env.{development,production,test}`) Read·Bash 출력 차단(`.env.example`은 허용), force push 변형 차단, 위험 명령 15종 ask. 한계: 스크립트 하위 프로세스는 막지 못함
 - [x] M0-08 커스텀 커맨드 6종 초안: `/add-player` `/add-source` `/add-name` `/new-season` `/takedown` `/design-concepts` (동작 완성은 해당 기능 단계에서) — 2026-10-10 완료: `.claude/commands/` 6종(목적·현재 상태·절차·확인 지점·금지·보고 형식), `/takedown`·`/new-season`은 직접 실행만 허용
-- [ ] M0-09 서브에이전트 3종: `design-concepts` · `pipeline-dev` · `code-reviewer` (CLAUDE §11 경계 명시)
+- [x] M0-09 서브에이전트 3종: `design-concepts` · `pipeline-dev` · `code-reviewer` (CLAUDE §11 경계 명시) — 2026-10-10 완료: `.claude/agents/euro-digest/` 3종 + PreToolUse 쓰기 경로 훅(design-concepts는 `docs/design/` 한정, code-reviewer는 읽기 전용), 범용 `dev/code-reviewer.md` 삭제
 - [ ] M0-10 이슈 템플릿 3종: `summary-error` · `takedown` · `source-broken` (FR-36, FR-140)
 - [ ] M0-11 README 초안 (소개, 로컬 실행, 문서 링크, 데이터 출처)
 

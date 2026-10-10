@@ -14,7 +14,7 @@ argument-hint: "<게이트 — d0 | d1 | d2 | d3>"
 - 진행 위치: !`grep -m1 '다음 작업' docs/plan.md || true`
 - fixtures: !`ls fixtures fixtures/*/ 2>/dev/null | head -30 || true`
 - 기존 시안·폰트: !`ls -R docs/design 2>/dev/null | head -30 || true`
-- `design-concepts` 서브에이전트는 M0-09, 시안용 실데이터는 M0-33~35(`fixtures/rss/`·`fixtures/news-sample.json`·`fixtures/football/`)에서 준비 예정. **에이전트가 없으면** 메인 세션이 아래 규칙대로 직접 만들고, **실데이터가 없으면 시작하지 않는다**(가짜 문구 금지).
+- 서브에이전트: `.claude/agents/euro-digest/design-concepts.md`(M0-09, 쓰기 경로 훅 포함). 시안용 실데이터: M0-33~35(`fixtures/rss/`·`fixtures/news-sample.json`·`fixtures/football/`). **실데이터가 없으면 시작하지 않는다**(가짜 문구 금지).
 
 ## 절차
 0. **선행 확인** — 게이트가 `d0|d1|d2|d3`가 아니면 묻는다. 순차 진행(PRD §15 D11): D0는 M0 완료 후, D1은 M1 코드 작업 완료 후, D2는 M2 완료 후, D3는 M4 완료 후. 조건이 안 되면 진행 여부를 묻는다.
@@ -33,7 +33,7 @@ argument-hint: "<게이트 — d0 | d1 | d2 | d3>"
 3. **스크린샷** — 시안마다 4장: `npx playwright screenshot --full-page --viewport-size=375,812 --color-scheme=light "file://$PWD/docs/design/<게이트>/concept-a.html" docs/design/<게이트>/screenshots/concept-a-375-light.png` 형식으로 375/1280 × light/dark.
 4. **자체 점검** — 아래 품질 기준을 시안별로 체크하고, 핵심 색 쌍(본문/배경, 보조 텍스트, 액센트, 대회 컬러 위 텍스트)의 대비비를 라이트·다크 각각 계산해 표에 적는다.
 5. **③ 제시·선택 요청** — 비교표 + 추천안(이유)을 보이고 '사용자 확인 지점'에서 **멈춘다**.
-6. **선택 후** — 사용자가 고르면 `docs/design/DECISIONS.md`에 날짜·선택안·이유·혼합 지시를 기록한다. 혼합 지시면 혼합안을 1회 만들어 다시 확인한다(D0-07). DESIGN.md·토큰·컴포넌트 구현은 이 커맨드 밖에서 한다.
+6. **선택 후** — 사용자가 고르면 `docs/design/DECISIONS.md`에 날짜·선택안·이유·혼합 지시를 기록한다. 혼합 지시면 혼합안 `docs/design/<게이트>/concept-mix.html`을 1회 만들어 다시 확인한다(D0-07). DESIGN.md·토큰·컴포넌트 구현은 이 커맨드 밖에서 한다.
 
 ## 품질 기준 (시안 인정 조건)
 - **Editorial, not portal** — 여백·타이포 위계로 정돈, 빽빽한 링크 목록 금지, 카드 하나 3초 스캔.
