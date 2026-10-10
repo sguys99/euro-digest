@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-15` 🙋 (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-16` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -138,7 +138,7 @@
 - [x] M0-12 `ci.yml`: push마다 `check` + `build` + `check:bundle` + `test:e2e`(링크·접근성, NFR-12) → main에서 통과하면 `deploy.yml` 호출 — 2026-10-10 완료: `check:bundle` 실구현(페이지별 초기 JS gzip ≤ 160KB + `out/` 비밀값 grep), e2e 링크·axe WCAG 2.1 AA(라이트·다크), CI green 확인. deploy 호출은 M0-13에서 연결
 - [x] M0-13 Pages 배포 — 재사용 `deploy.yml`(`workflow_call` + 롤백용 수동 `workflow_dispatch`, `concurrency: pages`) 작성. 무스타일 Hello 페이지가 `https://sguys99.github.io/euro-digest/`에서 열리고 정적 자산·404·trailing slash 정상 — 2026-10-10 완료: ci(main push) → deploy.yml 배포 성공, `npm run verify:deploy` 15개 항목 통과(홈·`_next/static`·404 본문·`/euro-digest` 301). 롤백은 deploy.yml 수동 실행(Use workflow from: main + ref 입력)
 - [x] M0-14 `collect.yml` 골격: `workflow_dispatch` + 백업 `schedule`(06:40 KST — 06:30 실행이 진행 중이면 concurrency로 대기한 뒤 12시간 가드로 skip) + 12시간 내 성공 이력 시 skip + `concurrency: collect` + 실패 시 이슈 생성 (FR-150, FR-152) — 2026-10-10 완료: 실실행 3경로 확인(정상·12시간 가드 skip·실패 이슈 생성 → 재발 시 댓글, 테스트 이슈 #1 닫음). 🆕 백업 schedule은 저장소 변수 `COLLECT_ENABLED=true`일 때만 실행(M1 전 빈 실행 방지)
-- [ ] M0-15 🙋 cron-job.org → `workflow_dispatch` 호출 테스트 (06:30 정기 실행 활성화는 M1-40 리허설 후)
+- [ ] ⏸ M0-15 🙋 cron-job.org → `workflow_dispatch` 호출 테스트 (06:30 정기 실행 활성화는 M1-40 리허설 후) (사용자 설정 대기 — 2026-10-10 설정 안내 전달: fine-grained PAT(Actions R/W, 이 저장소만) + POST `…/actions/workflows/collect.yml/dispatches` body `{"ref":"main"}`)
 
 ### M0-C 공용 기반 코드
 - [ ] M0-16 zod 스키마 v0.1 구현 (`src/lib/schema/`) — **부록 A 기준**, configs·data 전부. 부록 A에 없는 스키마(competitions·names.ko·national-team·bigmatch-rules·search-queries·formations·team-colors·transfer-windows·`players/korean.json`·seen-urls·unknown-names)는 초안 작성 → ❓ 사용자 확인 후 부록 A에 추가
