@@ -1,0 +1,338 @@
+# 일일 수집 워크플로 (M0-14, FR-150 · FR-152) — 수집 → 정제 → 요약 → 검증 게이트 → 빌드 → data 커밋 → 배포.
+# CLAUDE.md §6.1 · PRD §10 운영 흐름. 지금은 `npm run collect`·`npm run validate`가 스텁이라 변경이 없고,
+# 커밋·배포 없이 성공으로 끝나는 것이 정상이다(M1에서 실제 파이프라인으로 바뀐다).
+#
+# 트리거
+# - 06:30 KST 주 경로: cron-job.org → workflow_dispatch (fine-grained PAT, Actions 권한만 — 저장소에 두지 않는다).
+#   cron-job.org 정기 실행 활성화는 M1-40 리허설 후(M0-15는 호출 테스트만).
+# - 06:40 KST 백업: schedule. 06:30 실행이 진행 중이면 concurrency로 기다렸다가 12시간 가드로 건너뛴다.
+#   저장소 변수 COLLECT_ENABLED == 'true'일 때만 진행한다(M1-40 리허설 전에는 매일 빈 실행을 하지 않게).
+#   workflow_dispatch는 이 변수와 무관하게 진행한다.
+#
+# job 흐름: guard(판단) → collect(수집·검증·빌드·커밋) → deploy(deploy.yml 재사용) / 어느 하나라도 실패 → report-failure
+# - guard가 건너뛰기로 판단하면 collect·deploy는 skipped, 실행은 성공으로 끝난다(skip은 실패가 아니다).
+# - 12시간 가드는 "collect job이 success로 끝난 실행"만 성공 이력으로 센다. skip된 실행(collect skipped)을
+#   성공 이력으로 세면 skip이 skip을 부르는 연쇄가 생기기 때문이다 — 자세한 근거는 scripts/lib/collect-guard.ts.
+#   그래서 collect job의 name을 바꾸면 scripts/lib/collect-guard.ts의 COLLECT_JOB_NAME도 바꿔야 한다(테스트가 확인).
+# - 검증·빌드가 실패하면 커밋하지 않는다: 커밋 단계가 validate·build 뒤에 있어 앞 단계 실패 시 실행되지 않는다.
+name: Collect
+run-name: "Collect (${{ github.event_name }}${{ inputs.force && ', force' || '' }}${{ inputs.limit && format(', limit {0}', inputs.limit) || '' }})"
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "소량 실행 — 요약 대상 상한(양의 정수, 예: 5). 비우면 MAX_ITEMS_PER_RUN(45)"
+        type: string
+        required: false
+        default: ""
+      force:
+        description: "12시간 내 성공 이력이 있어도 실행 (수동 재실행용)"
+        type: boolean
+        required: false
+        default: false
+  schedule:
+    # 06:40 KST = 21:40 UTC(전날). cron은 UTC 기준이라 UTC 날짜로는 하루 전이지만 KST로는 당일 아침이다.
+    # 한국은 서머타임이 없어 연중 고정. GitHub schedule은 부하에 따라 수 분~수십 분 늦게 시작될 수 있다(백업이라 허용).
+    - cron: "40 21 * * *"
+
+# 수집 실행은 한 번에 하나만, 진행 중인 실행은 끊지 않는다(대기는 최신 1건만 남고 그 사이 대기분은 GitHub가 취소).
+# 그룹 이름은 deploy.yml의 `pages`와 겹치면 안 된다(같으면 호출 측과 서로 기다린다).
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+# 기본 권한은 없음 — job마다 필요한 권한만 준다.
+permissions: {}
+
+jobs:
+  guard:
+    name: 실행 판단 (12시간 가드)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # checkout
+      actions: read # 이 워크플로의 최근 실행·job 결과 조회
+    outputs:
+      run: ${{ steps.decide.outputs.run }}
+      reason: ${{ steps.decide.outputs.reason }}
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Node.js 설정 (.nvmrc)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      # 판단 결과를 output(run·reason)과 Step Summary에 남긴다. 건너뛰기도 exit 0(성공).
+      # 이력 조회가 실패하면 exit 1 → 수집하지 않고 report-failure가 이슈를 만든다.
+      - name: 실행 여부 판단
+        id: decide
+        timeout-minutes: 3
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COLLECT_ENABLED: ${{ vars.COLLECT_ENABLED }}
+          FORCE: ${{ inputs.force }}
+        run: node --import tsx scripts/collect-guard.ts
+
+  collect:
+    # 이 이름은 12시간 가드가 성공 이력을 찾는 기준이다 — 바꾸면 scripts/lib/collect-guard.ts의 COLLECT_JOB_NAME도 함께.
+    name: 수집 · 검증 · 빌드 · 커밋 (collect)
+    needs: guard
+    if: needs.guard.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    # 배치 대기를 고려한 상한. 06:50 일반 API 폴백(FR-26)은 M1에서 collect 스크립트가 처리한다.
+    timeout-minutes: 30
+    permissions:
+      contents: write # data/·public/ 커밋 push
+    outputs:
+      committed: ${{ steps.commit.outputs.committed }}
+      sha: ${{ steps.commit.outputs.sha }}
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+      LLM_MODE: live
+      LLM_MODEL: claude-haiku-5-5
+      MAX_ITEMS_PER_RUN: "45"
+      DAILY_BUDGET_USD: "0.10"
+      MONTHLY_BUDGET_USD: "3"
+      SITE_URL: https://sguys99.github.io
+      BASE_PATH: /euro-digest
+      CONTACT_EMAIL: sguys99@gmail.com
+    steps:
+      # 실행이 concurrency로 기다리는 동안 main이 앞서 갔을 수 있어 트리거 시점 SHA 대신 main 최신을 받는다.
+      # 쓰기 토큰(contents: write)을 .git/config에 남기지 않는다 — 설치·수집·빌드 단계에서 도는 서드파티 코드가
+      # 읽지 못하게 하고, push 단계에서만 헤더로 넘긴다.
+      - name: 저장소 체크아웃 (main)
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Node.js 설정 (.nvmrc)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      # ①수집 → ②정제 → ③요약. 비밀값은 이 단계에만 넘긴다(설치·검증·빌드 단계에는 노출하지 않는다).
+      # limit 입력은 셸에 직접 펼치지 않고 env로 넘긴다(스크립트 주입 방지). 값 검증은 collect 스크립트가 한다.
+      - name: 수집 · 정제 · 요약 (npm run collect)
+        timeout-minutes: 22
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          LIMIT: ${{ inputs.limit }}
+        run: |
+          args=()
+          if [ -n "$LIMIT" ]; then
+            args+=(--limit "$LIMIT")
+          fi
+          npm run collect -- "${args[@]}"
+
+      # ④ 발행 전 검증 게이트(FR-153). 실패하면 아래 빌드·커밋으로 가지 않는다 → 전날 사이트 유지.
+      - name: 검증 게이트 (npm run validate)
+        timeout-minutes: 5
+        run: npm run validate
+
+      # ⑤ 빌드가 깨지는 데이터는 커밋하지 않는다. 배포용 빌드는 deploy.yml이 커밋한 SHA로 다시 한다.
+      - name: 정적 빌드 (npm run build)
+        timeout-minutes: 10
+        run: npm run build
+
+      # ⑥ data/·public/ 변경분만 github-actions[bot]으로 커밋 → main 최신으로 rebase → push.
+      - name: data 커밋 · push
+        id: commit
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # 커밋 대상 경로 중 있는 것만 쓴다(public/은 아직 없을 수 있고, 없는 pathspec은 git add가 거부한다).
+          paths=()
+          for dir in data public; do
+            if [ -e "$dir" ]; then
+              paths+=("$dir")
+            fi
+          done
+
+          changes=""
+          if [ "${#paths[@]}" -gt 0 ]; then
+            changes="$(git status --porcelain --untracked-files=all -- "${paths[@]}")"
+          fi
+
+          # 산출물 경로 밖의 변경은 커밋하지 않는다. 파이프라인이 엉뚱한 곳에 쓰고 있다는 신호라 경고로 남긴다.
+          outside="$(git status --porcelain --untracked-files=all -- . ':(exclude)data' ':(exclude)public')"
+          if [ -n "$outside" ]; then
+            echo "::warning title=산출물 경로 밖 변경::data/·public/ 밖의 변경은 커밋하지 않습니다 (로그 참고)"
+            echo "$outside"
+          fi
+
+          if [ -z "$changes" ]; then
+            echo "data/·public/ 변경 없음 — 커밋·배포를 건너뜁니다."
+            {
+              echo "committed=false"
+              echo "sha="
+            } >> "$GITHUB_OUTPUT"
+            {
+              echo "## data 커밋"
+              echo ""
+              echo "변경 없음 — 커밋·배포를 건너뛰었습니다."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- "${paths[@]}"
+          # 발행일은 KST 날짜(06:30~06:40 KST 실행이면 UTC로는 전날이다).
+          publish_date="$(TZ=Asia/Seoul date +%F)"
+          git commit --quiet -m "chore(data): ${publish_date} 발행"
+
+          # 인증은 actions/checkout과 같은 방식(http extraheader)으로 이 단계의 git 명령에만 붙인다(디스크에 남기지 않음).
+          basic_auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          echo "::add-mask::${basic_auth}"
+          git_auth=(-c "http.${GITHUB_SERVER_URL}/.extraheader=AUTHORIZATION: basic ${basic_auth}")
+
+          # 실행 중 main이 앞서 갔을 수 있다(사람 push·다른 워크플로) → rebase 후 push, push 경합에 대비해 3번까지.
+          # rebase 충돌은 그대로 실패시킨다(report-failure가 이슈를 만든다). --autostash는 산출물 밖 변경 대비.
+          for attempt in 1 2 3; do
+            git "${git_auth[@]}" pull --rebase --autostash origin main
+            if git "${git_auth[@]}" push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "::error title=push 실패::3번 시도했지만 main에 push하지 못했습니다"
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+
+          sha="$(git rev-parse HEAD)"
+          {
+            echo "committed=true"
+            echo "sha=$sha"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "## data 커밋"
+            echo ""
+            echo "| 항목 | 값 |"
+            echo "|---|---|"
+            echo "| 커밋 | [\`${sha:0:7}\`]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$sha) |"
+            echo "| 메시지 | chore(data): ${publish_date} 발행 |"
+            echo "| 변경 | $(git show --shortstat --format= HEAD | sed 's/^ *//') |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # ⑦ 배포. GITHUB_TOKEN으로 push한 커밋은 ci.yml을 다시 트리거하지 않으므로(GitHub 규칙) 여기서 직접 배포한다.
+  # 호출된 워크플로는 여기서 준 권한 이하로만 쓴다: build job contents·pages read, deploy job pages write·id-token write.
+  deploy:
+    name: 배포 (GitHub Pages)
+    needs: collect
+    if: needs.collect.outputs.committed == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: ${{ needs.collect.outputs.sha }}
+
+  # FR-152 실행 실패 자동 이슈. job 수준 failure()는 needs로 이어진 job 중 하나라도 실패하면 참이다
+  # (always()를 섞으면 수동 취소에도 이슈가 생기므로 쓰지 않는다). 시간 초과도 이슈가 되도록 오래 걸리는
+  # 단계에는 step 수준 timeout-minutes를 둔다(step 시간 초과는 실패로 기록된다).
+  # 같은 원인 판단은 지금은 "열린 [collect] pipeline-failure 이슈가 있는가"로 단순화한다 — 있으면 댓글, 없으면 새 이슈.
+  # 원인별 dedupe 고도화는 M0-22 이슈 헬퍼에서 한다. 비밀값·전체 로그는 본문에 넣지 않는다(실행 링크만).
+  report-failure:
+    name: 실패 이슈 보고
+    needs: [guard, collect, deploy]
+    if: failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: 이슈 생성 또는 댓글 (pipeline-failure)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          EVENT_NAME: ${{ github.event_name }}
+          GUARD_RESULT: ${{ needs.guard.result }}
+          GUARD_REASON: ${{ needs.guard.outputs.reason }}
+          COLLECT_RESULT: ${{ needs.collect.result }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+        run: |
+          now_kst="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
+          date_kst="$(TZ=Asia/Seoul date +%F)"
+
+          failed=()
+          if [ "$GUARD_RESULT" = "failure" ]; then failed+=("guard"); fi
+          if [ "$COLLECT_RESULT" = "failure" ]; then failed+=("collect"); fi
+          if [ "$DEPLOY_RESULT" = "failure" ]; then failed+=("deploy"); fi
+          failed_jobs="${failed[*]:-알 수 없음}"
+
+          job_table() {
+            echo "| job | 결과 |"
+            echo "|---|---|"
+            echo "| 실행 판단 (guard) | ${GUARD_RESULT:-?}${GUARD_REASON:+ · $GUARD_REASON} |"
+            echo "| 수집 · 검증 · 빌드 · 커밋 (collect) | ${COLLECT_RESULT:-?} |"
+            echo "| 배포 (deploy) | ${DEPLOY_RESULT:-?} |"
+          }
+
+          body_file="$RUNNER_TEMP/pipeline-failure.md"
+          existing="$(gh issue list --state open --label pipeline-failure --limit 100 --json number,title \
+            --jq '[.[] | select(.title | startswith("[collect]"))] | sort_by(.number) | .[0].number // empty')"
+
+          if [ -n "$existing" ]; then
+            {
+              echo "### 다시 실패 — ${now_kst} KST"
+              echo ""
+              echo "- 실행: ${RUN_URL} (시도 ${RUN_ATTEMPT})"
+              echo "- 트리거: ${EVENT_NAME}"
+              echo "- 실패 job: ${failed_jobs}"
+              echo ""
+              job_table
+            } > "$body_file"
+            gh issue comment "$existing" --body-file "$body_file"
+            echo "열린 이슈 #${existing}에 댓글을 남겼습니다."
+          else
+            {
+              echo "collect.yml 일일 수집 실행이 실패했습니다."
+              echo ""
+              echo "| 항목 | 값 |"
+              echo "|---|---|"
+              echo "| 실행 | ${RUN_URL} (시도 ${RUN_ATTEMPT}) |"
+              echo "| 트리거 | ${EVENT_NAME} |"
+              echo "| 시각 (KST) | ${now_kst} |"
+              echo "| 실패 job | ${failed_jobs} |"
+              echo ""
+              job_table
+              echo ""
+              echo "- guard·collect가 실패했다면 data 커밋·배포는 일어나지 않았고 사이트는 전날 상태로 유지됩니다."
+              echo "- collect가 커밋한 뒤 deploy만 실패했다면 data는 main에 있지만 사이트에는 아직 반영되지 않았습니다."
+              echo ""
+              echo "### 다음 조치"
+              echo "- [ ] 실행 로그에서 실패한 단계와 원인 확인 (비밀값·전체 응답 본문은 이슈에 붙이지 않는다)"
+              echo "- [ ] 원인 수정 — 설정은 configs/, 코드는 scripts/ (data/는 손으로 고치지 않는다)"
+              echo "- [ ] guard·collect 실패: Actions → Collect → Run workflow로 재실행 (12시간 안 성공 이력이 있으면 force)"
+              echo "- [ ] deploy만 실패: Actions → Deploy → Run workflow (Use workflow from: main, ref: main)"
+              echo "- [ ] 정상 발행 확인 후 이 이슈 닫기"
+              echo ""
+              echo "> 이 이슈가 열려 있는 동안 collect.yml의 다음 실패는 새 이슈 대신 여기에 댓글로 쌓입니다."
+              echo "> (같은 원인 판단은 지금은 열린 [collect] 이슈 존재 여부로 단순화 — 원인별 구분은 M0-22에서)"
+            } > "$body_file"
+            gh issue create \
+              --title "[collect] 일일 수집 실패 — ${date_kst}" \
+              --label pipeline-failure \
+              --body-file "$body_file"
+          fi
