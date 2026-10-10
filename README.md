@@ -10,8 +10,8 @@
 
 **M0 셋업·검증 단계입니다.** 아직 사용할 수 있는 서비스가 아닙니다.
 
-- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사 워크플로(`ci.yml`)
-- 아직 없는 것: 뉴스 수집·요약 파이프라인, 화면 디자인, 배포 워크플로, 데이터 스키마, 뉴스 소스 약관 검증
+- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사·배포 워크플로(`ci.yml`·`deploy.yml`)
+- 아직 없는 것: 뉴스 수집·요약 파이프라인, 화면 디자인, 데이터 스키마, 뉴스 소스 약관 검증
 - main에 push하면 CI 검사를 통과한 커밋이 GitHub Pages로 배포됩니다(`deploy.yml`). D0 디자인 시안이 확정되기 전까지는 스타일 없는 임시 페이지만 보입니다.
 
 개발은 `M0 셋업·검증 → D0 디자인 → M1 뉴스 MVP → D1 → M2 대회·팀 → D2 → M3 한국 선수·A매치 → M4 부가 기능 → D3 → M5 다듬기·공개` 순서로 진행합니다. 진행 현황은 [docs/plan.md](docs/plan.md) §1 대시보드에서 확인할 수 있습니다.
