@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build && node --env-file-if-exists=.env.local --import tsx scripts/build-feeds.ts",
     "preview": "tsx scripts/serve-out.ts",
+    "verify:deploy": "tsx scripts/verify-deploy.ts",
     "collect": "node --env-file-if-exists=.env.local --import tsx scripts/collect.ts",
     "summarize": "node --env-file-if-exists=.env.local --import tsx scripts/summarize.ts",
     "weekly": "node --env-file-if-exists=.env.local --import tsx scripts/weekly.ts",

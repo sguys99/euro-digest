@@ -1,6 +1,6 @@
 # 검사 워크플로 (M0-12, NFR-12) — push·PR마다 정적 export 사이트 전체를 검사한다.
 # check(typecheck·lint·단위 테스트) → 서식 → 설정 검증 → 빌드 → 번들 예산·비밀값 → e2e(스모크·링크·접근성)
-# main push에서 통과하면 재사용 워크플로 deploy.yml로 배포한다 — M0-13에서 연결(파일 끝 주석 참고).
+# main push에서 통과하면 재사용 워크플로 deploy.yml로 배포한다(M0-13, PRD §15 D20 — 파일 끝 deploy job).
 #
 # 참고
 # - 봇의 data 커밋은 GITHUB_TOKEN으로 push되므로 이 워크플로를 다시 트리거하지 않는다(GitHub 규칙).
@@ -14,9 +14,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+# 같은 브랜치의 새 push가 오면 이전 실행을 취소한다. 단 main은 취소하지 않고 순서대로 처리한다:
+# 배포 job(deploy-pages)이 도중에 끊기지 않게 하고, 검사를 통과한 커밋이 뒤 커밋의 실패로 배포 없이
+# 사라지지 않게 하기 위해서다. 대기는 최신 1건만 남으므로(중간 대기분은 GitHub가 취소) 밀려 쌓이지 않는다.
+# 그룹 이름은 deploy.yml의 `pages`와 겹치지 않아야 한다(같으면 호출 측과 서로 기다린다).
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 permissions:
   contents: read
@@ -91,16 +95,19 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-  # M0-13: main push에서 검사 통과 시 ./.github/workflows/deploy.yml 호출(needs: 이 job).
-  # deploy.yml이 생기기 전에 참조하면 워크플로 전체가 무효가 되므로 M0-13에서 주석을 푼다.
-  # 배포 job에만 Pages 권한을 준다(워크플로 기본 권한은 contents: read 유지).
-  #
-  # deploy:
-  #   name: 배포 (GitHub Pages)
-  #   needs: check
-  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-  #   permissions:
-  #     contents: read
-  #     pages: write
-  #     id-token: write
-  #   uses: ./.github/workflows/deploy.yml
+  # main push에서 검사를 통과하면 재사용 워크플로로 배포한다(M0-13, PRD §15 D20).
+  # - workflow_dispatch(수동 검사)는 배포하지 않는다: 수동 배포·롤백은 deploy.yml 수동 실행 한 경로로 모은다(FR-154).
+  # - PR·다른 브랜치 push는 검사만 한다.
+  # - 배포에 필요한 Pages 권한은 이 job에만 준다(워크플로 기본 권한은 contents: read 유지).
+  #   호출된 워크플로는 여기서 준 권한 이하로만 쓸 수 있다: build job contents·pages read, deploy job pages write·id-token write.
+  deploy:
+    name: 배포 (GitHub Pages)
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: ${{ github.sha }}
