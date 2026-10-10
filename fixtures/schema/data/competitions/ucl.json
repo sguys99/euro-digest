@@ -1,0 +1,31 @@
+{
+  "comp": "UCL",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-09T21:36:40Z",
+  "standings": [
+    {
+      "pos": 1, "prevPos": 3, "team": "sample-united",
+      "played": 2, "w": 2, "d": 0, "l": 0, "gf": 5, "ga": 1, "pts": 6,
+      "form": ["W", "W"], "zone": "knockout"
+    },
+    {
+      "pos": 12, "prevPos": 9, "team": "example-city",
+      "played": 2, "w": 1, "d": 0, "l": 1, "gf": 2, "ga": 2, "pts": 3,
+      "form": ["L", "W"], "zone": "playoff"
+    },
+    {
+      "pos": 30, "prevPos": 28, "team": "sample-athletic",
+      "played": 2, "w": 0, "d": 1, "l": 1, "gf": 1, "ga": 3, "pts": 1,
+      "form": ["D", "L"], "zone": "none"
+    }
+  ],
+  "matches": [
+    {
+      "id": "fd-600101", "comp": "UCL", "round": "LEAGUE_STAGE_2",
+      "kickoff": "2026-09-30T19:00:00Z",
+      "home": "sample-united", "away": "sample-athletic",
+      "score": { "h": 3, "a": 0 }, "status": "finished"
+    }
+  ]
+}

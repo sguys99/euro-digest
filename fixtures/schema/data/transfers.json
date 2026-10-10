@@ -1,0 +1,16 @@
+[
+  {
+    "id": "t_sample-player",
+    "player": "Sample Player",
+    "from": "Example City",
+    "to": "Sample United FC",
+    "status": "negotiating",
+    "bestTier": 2,
+    "updated": "2026-10-09T21:40:00Z",
+    "quiet": false,
+    "history": [
+      { "at": "2026-10-02T21:40:00Z", "status": "rumor", "card": "c_1a2b3c4d5e" },
+      { "at": "2026-10-09T21:40:00Z", "status": "negotiating", "card": "c_8f3a1b2c4d" }
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "runId": "dev-2026-10-08T05-12-00Z",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-08T05:12:00Z",
+    "finishedAt": "2026-10-08T05:14:31Z",
+    "collected": 40,
+    "clusters": 22,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": { "in": 3400, "out": 1100, "cacheRead": 0, "cacheWrite": 0 },
+    "costUsd": 0.0048,
+    "apiCalls": { "footballData": 0, "apiFootball": 0 },
+    "sources": [{ "id": "bbc-football", "ok": true, "items": 40 }],
+    "status": "success"
+  }
+]

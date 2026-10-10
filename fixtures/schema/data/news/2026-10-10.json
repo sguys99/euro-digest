@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-10",
+  "generatedAt": "2026-10-09T21:52:10.482Z",
+  "runId": "2026-10-09T21-30-00Z-collect",
+  "cards": [
+    {
+      "id": "c_8f3a1b2c4d",
+      "t": "[예시] 샘플 유나이티드, 중앙 미드필더 영입 협상 시작",
+      "s": [
+        "샘플 유나이티드가 중앙 미드필더 영입 협상을 시작했다고 예시 매체가 보도했다.",
+        "구단은 이적료 규모를 공개하지 않았다.",
+        "협상은 이번 주 안에 결론이 날 것으로 알려졌다."
+      ],
+      "cat": "transfer",
+      "comp": ["EPL"],
+      "teams": ["sample-united"],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "Sample Player",
+        "from": "Example City",
+        "to": "Sample United FC",
+        "status": "negotiating",
+        "tier": 2
+      },
+      "src": [
+        { "n": "Example Sports", "u": "https://example.com/news/1001", "at": "2026-10-09T20:10:00Z", "tier": 2 },
+        { "n": "Sample Daily", "u": "https://example.org/football/2002", "at": "2026-10-09T20:45:00Z", "tier": 3 }
+      ],
+      "lang": "en",
+      "ai": true,
+      "created": "2026-10-09T21:40:00Z"
+    },
+    {
+      "id": "c_0a1b2c3d4e",
+      "t": "[예시] 홍길동, 시즌 3호 골… 팀은 2-1 승리",
+      "s": ["홍길동이 후반 교체 투입돼 시즌 3호 골을 넣었다."],
+      "cat": "result",
+      "comp": ["EPL"],
+      "teams": ["sample-united", "example-city"],
+      "players": ["hong-gil-dong"],
+      "imp": 5,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        { "n": "예시뉴스", "u": "https://example.kr/sports/3003", "at": "2026-10-09T19:00:00Z", "tier": 3 }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-09T21:40:00Z"
+    },
+    {
+      "id": "c_5f6e7d8c9b",
+      "t": "Example City confirm manager will stay until the end of the season despite poor run of results in the league",
+      "s": [],
+      "cat": "club",
+      "comp": ["EPL"],
+      "teams": ["example-city"],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        { "n": "Example Sports", "u": "https://example.com/news/1004", "at": "2026-10-09T18:30:00Z", "tier": 2 }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-09T21:40:00Z"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "maxEnabled": 30,
+  "queries": [
+    {
+      "id": "kr-hong-gil-dong-ko",
+      "source": "google-news-ko",
+      "q": "홍길동",
+      "lang": "ko",
+      "region": "KR",
+      "purpose": "korean",
+      "player": "hong-gil-dong",
+      "enabled": true
+    },
+    {
+      "id": "transfer-here-we-go",
+      "source": "google-news-en",
+      "q": "\"Here we go\" Romano",
+      "lang": "en",
+      "region": "GB",
+      "purpose": "transfer",
+      "enabled": false
+    }
+  ]
+}

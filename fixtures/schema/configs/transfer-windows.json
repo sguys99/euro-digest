@@ -1,0 +1,20 @@
+{
+  "boost": 1.5,
+  "windows": [
+    {
+      "comp": "EPL",
+      "season": 2026,
+      "kind": "winter",
+      "opensAt": "2027-01-01T00:00:00Z",
+      "closesAt": "2027-02-01T23:00:00Z"
+    },
+    {
+      "comp": "LALIGA",
+      "season": 2026,
+      "kind": "winter",
+      "opensAt": "2027-01-01T23:00:00Z",
+      "closesAt": "2027-02-01T22:59:00Z",
+      "sourceUrl": "https://example.com/laliga/transfer-window"
+    }
+  ]
+}

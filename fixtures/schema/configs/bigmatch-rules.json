@@ -1,0 +1,16 @@
+{
+  "window": { "fromKst": "18:00", "toKst": "07:00" },
+  "maxMatches": 5,
+  "minScore": 1,
+  "rules": {
+    "korean": { "weight": 5 },
+    "ucl": { "weight": 3 },
+    "topClash": { "weight": 4, "topN": 6 },
+    "derby": {
+      "weight": 4,
+      "list": [{ "name": "예시 더비", "teams": ["sample-united", "example-city"] }]
+    },
+    "closeRace": { "weight": 2, "maxPointsGap": 3 },
+    "bigClub": { "weight": 1, "teams": ["sample-united"] }
+  }
+}

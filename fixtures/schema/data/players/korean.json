@@ -1,0 +1,46 @@
+{
+  "season": 2026,
+  "generatedAt": "2026-10-09T21:50:00Z",
+  "players": [
+    {
+      "slug": "hong-gil-dong",
+      "team": "sample-united",
+      "provider": "api-football",
+      "season": [
+        { "comp": "EPL", "apps": 7, "minutes": 412, "goals": 3, "assists": 1 },
+        { "comp": "UCL", "apps": 2, "minutes": 95, "goals": 0, "assists": 0 }
+      ],
+      "recent": [
+        {
+          "matchId": "fd-500001",
+          "comp": "EPL",
+          "kickoff": "2026-10-04T14:00:00Z",
+          "opponent": { "slug": "example-city", "name": "Example City" },
+          "home": true,
+          "result": { "for": 2, "against": 1 },
+          "started": false,
+          "minutes": 32,
+          "goals": 1,
+          "assists": 0
+        }
+      ],
+      "next": {
+        "matchId": "fd-500011",
+        "comp": "EPL",
+        "kickoff": "2026-10-17T11:30:00Z",
+        "opponent": { "slug": "example-city", "name": "Example City" },
+        "home": false
+      },
+      "updatedAt": "2026-10-05T21:40:00Z"
+    },
+    {
+      "slug": "kim-cheol-su",
+      "team": "other-league-fc",
+      "provider": "fallback",
+      "season": [{ "comp": "OTHER", "apps": 3, "minutes": null, "goals": 0, "assists": null }],
+      "recent": [],
+      "next": null,
+      "updatedAt": "2026-08-31T21:40:00Z"
+    }
+  ]
+}

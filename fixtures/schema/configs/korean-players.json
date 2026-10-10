@@ -1,0 +1,24 @@
+[
+  {
+    "slug": "hong-gil-dong",
+    "nameKo": "홍길동",
+    "nameEn": "Hong Gil-dong",
+    "team": "sample-united",
+    "comp": "EPL",
+    "position": "FW",
+    "birthYear": 2000,
+    "apiFootballId": null,
+    "active": true
+  },
+  {
+    "slug": "kim-cheol-su",
+    "nameKo": "김철수",
+    "nameEn": "Kim Cheol-su",
+    "team": "other-league-fc",
+    "comp": "OTHER",
+    "position": "DF",
+    "birthYear": 1998,
+    "apiFootballId": 123456,
+    "active": false
+  }
+]

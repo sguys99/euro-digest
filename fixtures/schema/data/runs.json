@@ -1,0 +1,21 @@
+[
+  {
+    "runId": "2026-10-09T21-30-00Z-collect",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-10-09T21:30:04Z",
+    "finishedAt": "2026-10-09T21:52:40Z",
+    "collected": 412,
+    "clusters": 160,
+    "summarized": 45,
+    "downgraded": 2,
+    "tokens": { "in": 31250, "out": 9800, "cacheRead": 0, "cacheWrite": 0 },
+    "costUsd": 0.0421,
+    "apiCalls": { "footballData": 18, "apiFootball": 12 },
+    "sources": [
+      { "id": "bbc-football", "ok": true, "items": 38 },
+      { "id": "google-news-ko", "ok": false, "items": 0 }
+    ],
+    "status": "partial"
+  }
+]

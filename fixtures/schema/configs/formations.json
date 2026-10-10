@@ -1,0 +1,11 @@
+{
+  "sample-united": {
+    "shape": "4-2-3-1",
+    "updated": "2026-10-06T00:00:00Z",
+    "sourceUrl": "https://example.com/lineups/sample-united"
+  },
+  "example-city": {
+    "shape": "3-4-2-1",
+    "updated": "2026-10-06T00:00:00Z"
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "c_5f6e7d8c9b",
+    "requestedAt": "2026-10-10T03:00:00Z",
+    "handledAt": "2026-10-10T09:30:00Z",
+    "reason": "저작권자 삭제 요청 (#12)"
+  },
+  {
+    "id": "c_9e8d7c6b5a",
+    "requestedAt": "2026-10-10T11:00:00Z",
+    "handledAt": null,
+    "reason": "정정 요청 — 배포 확인 대기 (#13)"
+  }
+]

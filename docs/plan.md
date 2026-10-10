@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-16` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-17` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -141,7 +141,7 @@
 - [ ] ⏸ M0-15 🙋 cron-job.org → `workflow_dispatch` 호출 테스트 (06:30 정기 실행 활성화는 M1-40 리허설 후) (사용자 설정 대기 — 2026-10-10 설정 안내 전달: fine-grained PAT(Actions R/W, 이 저장소만) + POST `…/actions/workflows/collect.yml/dispatches` body `{"ref":"main"}`)
 
 ### M0-C 공용 기반 코드
-- [ ] M0-16 zod 스키마 v0.1 구현 (`src/lib/schema/`) — **부록 A 기준**, configs·data 전부. 부록 A에 없는 스키마(competitions·names.ko·national-team·bigmatch-rules·search-queries·formations·team-colors·transfer-windows·`players/korean.json`·seen-urls·unknown-names)는 초안 작성 → ❓ 사용자 확인 후 부록 A에 추가
+- [x] M0-16 zod 스키마 v0.1 구현 (`src/lib/schema/`) — **부록 A 기준**, configs·data 전부. 부록 A에 없는 스키마(competitions·names.ko·national-team·bigmatch-rules·search-queries·formations·team-colors·transfer-windows·`players/korean.json`·seen-urls·unknown-names)는 초안 작성 → ❓ 사용자 확인 후 부록 A에 추가 — 2026-10-10 완료: zod 4.6, `src/lib/schema/` + `schemaRegistry`(21개), 초안 12종·결정 10건 사용자 일괄 승인 → 부록 A 반영, `fixtures/schema/` 예시 22개·스키마 테스트 258개
 - [ ] M0-17 `scripts/validate.ts` 1차: `configs/*` 스키마 검증 → CI 연결 (잘못된 설정은 CI 실패)
 - [ ] M0-18 `src/lib/time.ts`: UTC 저장·KST 표시 + DST 테스트 (2026-10-25, 2027-03-28 전후 케이스) (NFR-10)
 - [ ] M0-19 `src/lib/paths.ts`: basePath 헬퍼(정적 자산·RSS·ics·OG) + 테스트
@@ -523,17 +523,24 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 
 ```ts
 // 공통
-const Iso = z.string().datetime();                 // UTC ISO 8601
+const Iso = z.iso.datetime();                      // UTC ISO 8601 — 끝이 Z, 초 필수, 오프셋(+09:00) 불허
 const CompId = z.enum(["EPL", "LALIGA", "SERIEA", "BUNDESLIGA", "LIGUE1", "UCL"]);
 const Category = z.enum(["result", "transfer", "injury", "club", "national", "ucl", "other"]);
 const TransferStatus = z.enum(["rumor", "negotiating", "agreed", "official", "collapsed"]);
 const Tier = z.union([z.literal(1), z.literal(2), z.literal(3)]);
+const HttpUrl = z.httpUrl();                       // http/https + 도메인 호스트만 — javascript:·mailto:·data:·localhost 거부 (결정 Q3)
+const IsoDate = z.iso.date();                      // "2026-10-10" — 시각이 아닌 날짜 라벨에만
+const Slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);   // kebab-case, 한 번 정하면 불변 — configs·팀·선수 데이터에만 (결정 Q7)
+const HexColor = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+const Season = z.number().int().min(2000).max(2100);           // 시즌 시작 연도(2026 = 2026-27) = 두 API의 season 파라미터
+const CardId = z.string().regex(/^c_[0-9a-f]{10}$/);           // NewsCard.id와 같은 정규식
+// configs/*.json의 객체는 모두 z.strictObject — 모르는 키(오타)는 오류. data/는 z.object 유지 (결정 Q5)
 
 // configs/sources.json
-const Source = z.object({
-  id: z.string(), name: z.string(),
+const Source = z.strictObject({
+  id: Slug, name: z.string(),
   type: z.enum(["rss", "crawl", "search", "journalist", "aggregator", "analysis"]),
-  url: z.string().url(), lang: z.string(),           // "en" | "ko" | "es" …
+  url: HttpUrl, lang: z.string(),                    // "en" | "ko" | "es" …
   enabled: z.boolean(), weight: z.number().min(0).max(3), tier: Tier,
   competitions: z.array(CompId).default([]),
   author: z.string().optional(),                     // 작성자 필터(기자 채널)
@@ -554,11 +561,11 @@ const NewsCard = z.object({
     player: z.string(), from: z.string().optional(), to: z.string().optional(),
     status: TransferStatus, tier: Tier,
   }).optional(),
-  src: z.array(z.object({ n: z.string(), u: z.string().url(), at: Iso, tier: Tier })).min(1),
+  src: z.array(z.object({ n: z.string(), u: HttpUrl, at: Iso, tier: Tier })).min(1),
   lang: z.string(),
   ai: z.boolean(),                                   // AI 요약 여부 (false = 원문/한국어 카드)
   created: Iso,
-}).refine((c) => !c.ai || c.t.length <= 80, { path: ["t"], message: "AI 제목은 80자 이내" });
+}).refine((c) => !c.ai || c.t.length <= 80, { path: ["t"], error: "AI 제목은 80자 이내" });
 
 // data/transfers.json → Transfer[]
 const Transfer = z.object({
@@ -573,7 +580,7 @@ const StandingRow = z.object({
   played: z.number(), w: z.number(), d: z.number(), l: z.number(),
   gf: z.number(), ga: z.number(), pts: z.number(),
   form: z.array(z.enum(["W", "D", "L"])).max(5),
-  zone: z.enum(["ucl", "uel", "uecl", "relegation", "none"]),
+  zone: z.enum(["ucl", "uel", "uecl", "knockout", "playoff", "relegation", "none"]), // knockout·playoff = UCL 리그 페이즈 1~8위·9~24위 (결정 Q4)
 });
 const Match = z.object({
   id: z.string(), comp: CompId, round: z.string(), kickoff: Iso,
@@ -584,9 +591,9 @@ const Match = z.object({
 
 // data/teams/{team}.json
 const Team = z.object({
-  slug: z.string(), nameKo: z.string(), nameEn: z.string(), short: z.string().max(4),
+  slug: Slug, nameKo: z.string(), nameEn: z.string(), short: z.string().max(4),
   comp: CompId, alsoIn: z.array(CompId).default([]),          // 예: ["UCL"]
-  colors: z.tuple([z.string(), z.string()]),
+  colors: z.tuple([HexColor, HexColor]),
   formation: z.object({ shape: z.string(), source: z.enum(["api", "manual"]), updated: Iso }).nullable(),
   topPlayers: z.array(z.object({ name: z.string(), goals: z.number(), assists: z.number().nullable() })).max(3),
   profile: z.object({                                          // 주 1회 LLM
@@ -594,24 +601,24 @@ const Team = z.object({
     strengths: z.array(z.string()).length(2), weaknesses: z.array(z.string()).length(2),
     generatedAt: Iso,
   }).nullable(),
-  koreanPlayers: z.array(z.string()),
-  reading: z.array(z.object({ title: z.string(), url: z.string().url(), source: z.string() })),
+  koreanPlayers: z.array(Slug),
+  reading: z.array(z.object({ title: z.string(), url: HttpUrl, source: z.string() })),
 });
 
 // configs/korean-players.json → KoreanPlayer[]
-const KoreanPlayer = z.object({
-  slug: z.string(), nameKo: z.string(), nameEn: z.string(),
-  team: z.string(), comp: CompId.or(z.literal("OTHER")),
+const KoreanPlayer = z.strictObject({
+  slug: Slug, nameKo: z.string(), nameEn: z.string(),
+  team: Slug, comp: CompId.or(z.literal("OTHER")),
   position: z.enum(["GK", "DF", "MF", "FW"]), birthYear: z.number(),
   apiFootballId: z.number().nullable(), active: z.boolean(),
 });
 
 // data/players/weekly/{yyyy-ww}.json
 const WeeklyReport = z.object({
-  week: z.string().regex(/^\d{4}-\d{2}$/), from: Iso, to: Iso,   // ISO 8601 주차(연도는 ISO week-year, 예: 2026-12-28 → "2026-53")
-  rows: z.array(z.object({ player: z.string(), apps: z.number(), minutes: z.number(),
+  week: z.string().regex(/^\d{4}-(?:0[1-9]|[1-4]\d|5[0-3])$/), from: Iso, to: Iso,   // ISO 8601 주차 01~53(연도는 ISO week-year, 예: 2026-12-28 → "2026-53")
+  rows: z.array(z.object({ player: Slug, apps: z.number(), minutes: z.number(),
                            goals: z.number(), assists: z.number() })),
-  mvp: z.string().nullable(),                        // 코드 규칙: 골×3 + 도움×2 + 출전
+  mvp: Slug.nullable(),                              // 코드 규칙: 골×3 + 도움×2 + 출전
   summary: z.string(),                               // LLM 총평 3~5문장
   generatedAt: Iso,
 });
@@ -628,10 +635,197 @@ const RunLog = z.object({
   status: z.enum(["success", "partial", "failed", "skipped"]),
 });
 
-// configs/takedowns.json → { id(카드 ID), requestedAt, handledAt, reason }[] — 빌드 시 제외, 다음 수집에서 data/ 원본 삭제
+// configs/takedowns.json → Takedown[] — 등록만으로 빌드 제외, 다음 수집에서 data/ 원본 삭제
+const Takedown = z.strictObject({
+  id: CardId,
+  requestedAt: Iso,                                  // 요청 접수 시각 = 72시간 기준점
+  handledAt: Iso.nullable(),                         // 등록 시 null → 배포 확인 후 기록(커밋 2회), 값이 있으면 ≥ requestedAt (결정 Q1)
+  reason: z.string(),                                // 요청 종류 + 이슈 번호만(요청자 개인정보 금지)
+});
+```
+
+**v0.1 추가 스키마 (2026-10-10 사용자 확인)** — 파일 래퍼·파일 단위 검사 + 부록 A에 없던 configs·data 12종.
+
+```ts
+// ── 파일 래퍼·파일 단위 검사 (항목 스키마는 위 그대로) ──
+// configs/sources.json → Source[] · configs/korean-players.json → KoreanPlayer[] · configs/takedowns.json → Takedown[]
+// data/transfers.json → Transfer[] — 각 파일 안에서 id(slug) 중복 금지
+const NewsFile = z.object({                          // data/news/YYYY-MM-DD.json
+  date: IsoDate,                                     // KST 발행일 = 파일명 (06:30 KST 실행은 UTC로 전날이므로 KST 날짜)
+  generatedAt: Iso,                                  // 마지막으로 쓴 시각 — FR-26 보충 시 갱신
+  runId: z.string().min(1),                          // RunLog.runId
+  cards: z.array(NewsCard),                          // 카드 ID 중복 금지 (FR-04)
+});
+// data/runs.json → RunLog[] (env "prod"만) · data/runs-dev.json → RunLog[] (env "dev"만)
+
+// 1. configs/competitions.json → CompetitionConfig[]  (M2-01, /new-season A) — id·footballDataCode 중복 금지
+const ZoneRule = z.strictObject({
+  zone: StandingZone.exclude(["none"]),              // StandingRow.zone 값, 규칙 밖 순위는 "none"
+  from: z.number().int().min(1), to: z.number().int().min(1),  // 순위 구간(포함), from ≤ to
+  label: z.string().min(1),                          // 텍스트 병기 라벨 "챔스"·"16강 직행"·"강등 PO" (FR-42)
+});
+const CompetitionConfig = z.strictObject({
+  id: CompId, nameKo: z.string().min(1), nameEn: z.string().min(1),   // nameEn은 검색 별칭(FR-131)
+  shortKo: z.string().min(1).max(6),                 // 탭·칩 "EPL"·"라리가"·"분데스"
+  footballDataCode: z.enum(["PL", "PD", "SA", "BL1", "FL1", "CL"]),
+  apiFootballLeagueId: z.number().int().positive(),
+  season: Season, startDate: IsoDate, endDate: IsoDate,               // 비시즌 빈 상태(DR-07) 판단, startDate ≤ endDate
+  teamCount: z.number().int().min(2).max(64),        // 20·18·36 — 구간·순위표 행 수 검사
+  zones: z.array(ZoneRule),                          // 구간 겹침 금지, to ≤ teamCount
+});
+
+// 2. configs/names.ko.json  (FR-24·FR-131, /add-name·/add-player) — 대상 1개 = 항목 1개
+const NameKind = z.enum(["player", "team", "manager", "competition", "venue", "other"]);
+const NameText = z.string().regex(/^\S(?:.*\S)?$/);  // 비어 있지 않고 앞뒤 공백 없음
+const NameEntry = z.strictObject({
+  ko: NameText,                                      // 한글 표기(치환 결과)
+  en: z.array(NameText).min(1),                      // LLM·API 영문 표기 + 변형, 첫 값이 대표
+  kind: NameKind,
+  slug: Slug.optional(),                             // 팀·선수 페이지 연결
+  note: z.string().optional(),                       // 표기 근거(확신도 + 출처 URL)
+});
+const NamesKoFile = z.strictObject({
+  entries: z.array(NameEntry),
+  ignore: z.array(NameText).default([]),             // 고유명사 아닌 반복 검출어 — unknown-names 적재 제외
+});  // 영문 표기는 사전 전체에서 1회(대소문자 무시), ignore와 겹침 금지, (kind, slug) 중복 금지
+
+// 3. configs/national-team.json  (F7 FR-70~73) — A매치 기간 = 경기일 ±3일(FR-71), 주요국은 뉴스 national
+const NationalMatch = z.strictObject({
+  id: Slug,                                          // "2026-11-14-friendly" — .ics·명단 연결, 중복 금지
+  kickoff: Iso, kickoffTbd: z.boolean().default(false),               // 시각 미정이면 true(날짜만 의미)
+  opponent: z.string().min(1), home: z.boolean(), venue: z.string().optional(),
+  competition: z.string().min(1),                    // "친선경기"·"월드컵 예선"
+  status: MatchStatus,                               // Match.status와 같은 값
+  result: z.strictObject({ kor: z.number().int().min(0), opp: z.number().int().min(0) }).nullable(), // finished ⇔ 값 있음
+  sourceUrl: HttpUrl.optional(),
+});
+const Squad = z.strictObject({
+  id: Slug, announcedAt: Iso,
+  matchIds: z.array(Slug).min(1),                    // matches[].id에 있어야 함
+  playerSlugs: z.array(Slug),                        // 소집된 등록 한국 선수 slug만 (FR-73)
+  sourceUrl: HttpUrl.optional(),
+});
+const NationalTeamFile = z.strictObject({ matches: z.array(NationalMatch), squads: z.array(Squad).default([]) });
+
+// 4. configs/bigmatch-rules.json  (F8 FR-80~84, LLM 미사용) — 해당 규칙 weight 합 → minScore 이상 상위 maxMatches
+const Weight = z.number().min(0).max(10);
+const Derby = z.strictObject({ name: z.string().min(1), teams: z.tuple([Slug, Slug]) });   // 두 팀 달라야 함, name은 이유 태그
+const BigmatchRulesFile = z.strictObject({
+  window: z.strictObject({ fromKst: z.iso.time({ precision: -1 }), toKst: z.iso.time({ precision: -1 }) }), // "18:00"~익일 "07:00"
+  maxMatches: z.number().int().min(1).max(10),       // 5
+  minScore: z.number().min(0),
+  rules: z.strictObject({
+    korean: z.strictObject({ weight: Weight }),                                                 // ① 한국 선수 소속팀
+    ucl: z.strictObject({ weight: Weight }),                                                    // ② UCL
+    topClash: z.strictObject({ weight: Weight, topN: z.number().int().min(2).max(20) }),        // ③ 상위 6위 맞대결
+    derby: z.strictObject({ weight: Weight, list: z.array(Derby) }),                            // ④ 지정 더비
+    closeRace: z.strictObject({ weight: Weight, maxPointsGap: z.number().int().min(0).max(10) }), // ⑤ 승점 차 3 이내
+    bigClub: z.strictObject({ weight: Weight, teams: z.array(Slug) }),                          // 빅클럽(FR-06 키워드와 공유 가능)
+  }),
+});
+
+// 5. configs/search-queries.json  (FR-02, M1-06·M1-07) — 활성 쿼리 수 ≤ maxEnabled, id 중복 금지
+const SearchQuery = z.strictObject({
+  id: Slug,
+  source: Slug,                                      // sources.json의 type:"search" 소스 id → 그 소스의 enabled·terms_checked를 따름
+  q: z.string().min(1), lang: z.string().min(2),     // Google News hl / GDELT sourcelang
+  region: z.string().regex(/^[A-Z]{2}$/).optional(), // Google News gl
+  purpose: z.enum(["korean", "transfer", "team", "ucl", "national", "general"]),
+  player: Slug.optional(), team: Slug.optional(),    // 대상 slug (/add-player가 한/영 1개씩)
+  enabled: z.boolean(),
+});
+const SearchQueriesFile = z.strictObject({ maxEnabled: z.number().int().min(1).max(100), queries: z.array(SearchQuery) }); // 상한 값은 M0-26
+
+// 6. configs/formations.json → Record<팀 slug, ManualFormation>  (FR-55 폴백 → Team.formation, source:"manual")
+const FormationShape = z.string().regex(/^[1-9](?:-[1-9]){2,4}$/);  // + 필드 플레이어 합 10
+const ManualFormation = z.strictObject({ shape: FormationShape, updated: Iso, sourceUrl: HttpUrl.optional() });
+const FormationsFile = z.record(Slug, ManualFormation);
+
+// 7. configs/team-colors.json → Record<팀 slug, TeamColor>  (DR-05, 로고 대체 — M2-05)
+const TeamColor = z.strictObject({
+  colors: z.tuple([HexColor, HexColor]),             // [주색, 보조색] → Team.colors, 두 색 달라야 함
+  short: z.string().regex(/^[A-Z0-9]{2,4}$/),        // → Team.short (LIV)
+});
+const TeamColorsFile = z.record(Slug, TeamColor);
+
+// 8. configs/transfer-windows.json  (FR-105) — (comp, season, kind) 중복 금지
+const TransferWindow = z.strictObject({
+  comp: CompId.exclude(["UCL"]), season: Season, kind: z.enum(["summer", "winter"]),
+  opensAt: Iso, closesAt: Iso,                       // UTC(공식 현지 시각 변환), opensAt < closesAt
+  sourceUrl: HttpUrl.optional(),
+});
+const TransferWindowsFile = z.strictObject({
+  boost: z.number().min(1).max(3),                   // 이적 창 기간 transfer 점수 배수 — 그 밖의 점수화 가중치는 코드 상수
+  windows: z.array(TransferWindow),
+});
+
+// 9. data/competitions/{comp 소문자}.json  (F4) — 경기 comp = 파일 comp, 순위표 팀·경기 id 중복 금지
+const Scorer = z.object({
+  player: z.string().min(1), team: z.string().min(1),   // 선수명은 API 원문(names.ko로 치환), 팀은 slug
+  goals: z.number().int().min(0),
+  assists: z.number().int().min(0).nullable(), penalties: z.number().int().min(0).nullable(),
+  played: z.number().int().min(0).nullable(),
+});
+const CompetitionFile = z.object({
+  comp: CompId, season: Season,
+  provider: z.enum(["football-data", "api-football"]),  // 출처 표기(FR-45)
+  updatedAt: Iso,                                    // 실패 시 전일 데이터 유지 → "업데이트 지연" 판단(M2-02)
+  standings: z.array(StandingRow), matches: z.array(Match),
+  scorers: z.array(Scorer).default([]),
+});
+
+// 10. data/players/korean.json  (F6 FR-61·62·65, M3-03) — 관련 뉴스는 빌드 시 카드 태그로 찾는다
+const PlayerComp = CompId.or(z.literal("OTHER"));    // KoreanPlayer.comp와 같은 범위
+const Opponent = z.object({ slug: Slug.nullable(), name: z.string().min(1) });   // data/teams 없는 팀은 slug null
+const PlayerSeasonStats = z.object({                 // 대회별 1행(리그·UCL 따로)
+  comp: PlayerComp, apps: z.number().int().min(0),
+  minutes: z.number().int().min(0).nullable(), goals: z.number().int().min(0),
+  assists: z.number().int().min(0).nullable(),       // 폴백(FR-65)이면 minutes·assists null
+});
+const PlayerMatchLog = z.object({
+  matchId: z.string().min(1), comp: PlayerComp, kickoff: Iso, opponent: Opponent, home: z.boolean(),
+  result: z.object({ for: z.number().int().min(0), against: z.number().int().min(0) }).nullable(),
+  started: z.boolean().nullable(), minutes: z.number().int().min(0).nullable(),   // 0 = 미출전, null = 정보 없음
+  goals: z.number().int().min(0), assists: z.number().int().min(0).nullable(),
+});
+const KoreanPlayerRecord = z.object({
+  slug: Slug,                                        // korean-players.json slug
+  team: Slug,                                        // 기록 시점 소속 — 설정과 다르면 이적 단서(FR-63)
+  provider: z.enum(["api-football", "fallback"]),
+  season: z.array(PlayerSeasonStats),                // comp 중복 금지
+  recent: z.array(PlayerMatchLog).max(5),            // 최신순
+  next: z.object({ matchId: z.string().min(1), comp: PlayerComp, kickoff: Iso, opponent: Opponent, home: z.boolean() }).nullable(),
+  updatedAt: Iso,                                    // 소속팀 경기 다음 날만 갱신, active:false면 멈춤
+});
+const KoreanPlayersDataFile = z.object({ season: Season, generatedAt: Iso, players: z.array(KoreanPlayerRecord) }); // slug 중복 금지
+
+// 11. data/cache/seen-urls.json  (FR-04, 90일) — 키 정렬 저장(diff 최소화)
+const UrlHash = z.string().regex(/^[0-9a-f]{16}$/); // 정규화 URL 해시 앞 16자(64비트) — 카드 ID와 같은 해시면 카드 ID가 접두사
+const SeenUrlsFile = z.object({ updatedAt: Iso, urls: z.record(UrlHash, Iso) });   // 해시 → 처음 본 시각
+
+// 12. data/cache/unknown-names.json  (FR-24) — 키 = LLM 영문 표기 그대로, 사전 등록·ignore 이름은 다음 수집이 제거
+const UnknownName = z.object({
+  count: z.number().int().min(1),                    // /add-name 빈도순
+  firstSeen: Iso, lastSeen: Iso,                     // firstSeen ≤ lastSeen
+  kind: NameKind.optional(),                         // teams/players 태그에서 왔으면 추정
+  cards: z.array(CardId).max(5),                     // 예시 카드(최근 5개)
+});
+const UnknownNamesFile = z.object({ updatedAt: Iso, names: z.record(NameText, UnknownName) });
 ```
 
 **PRD 초안 대비 변경점**: `src[].tier`·`spoiler`·`ai`·`transfer.player/from/to`는 PRD 그대로 확정. 추가된 필드는 `Transfer.quiet`(FR-106), `RunLog.env`·`job`·`downgraded`·`sources`(소스 건강도 FR-11), `Team.alsoIn`(UCL 외부 팀·이중 소속 표현), `KoreanPlayer.active`(FR-64). 바뀐 구조는 `RunLog.tokens.cached` → `cacheRead`·`cacheWrite`(캐시 쓰기 단가가 따로 있음), `RunLog.failedSources` → `sources[]`(실패 소스는 `ok:false`로 도출), 뉴스 파일 최상위를 카드 배열 대신 `{ date, generatedAt, runId, cards }` 객체로. 카드 ID를 16진수 6자리에서 10자리로, 제목 상한을 AI 80자 / 원제목·한국어 원문 200자로 분리(PRD §15 D15).
+
+**v0.1 확정 결정 사항 (2026-10-10 사용자 확인)** — M0-16에서 추천안 일괄 승인
+1. takedowns `handledAt`: `Iso.nullable()` — 등록 시 null, 배포 확인 후 기록(커밋 2회). 값이 있으면 ≥ requestedAt. 빌드 제외는 등록만으로 적용
+2. names.ko에 선택 필드 `ignore` — 고유명사가 아닌 반복 검출어는 unknown-names에 적재하지 않음
+3. 링크 URL은 `z.httpUrl()`(http/https + 도메인 호스트): Source.url · NewsCard.src[].u · Team.reading[].url · configs의 sourceUrl
+4. `StandingRow.zone`에 `knockout`(UCL 1~8위)·`playoff`(UCL 9~24위) 추가. 리그 강등 PO는 relegation + label
+5. configs/*.json의 객체는 `z.strictObject`(모르는 키 = 오류). data/는 `z.object` 유지
+6. names.ko는 대상별 항목 배열 `{ ko, en[], kind, slug?, note? }` — 변형 표기 묶음을 검색 별칭(FR-131)에도 사용
+7. Slug·HexColor·CardId·주차(01~53) 형식 검사는 사람이 편집하는 configs와 팀·선수 데이터에만. 뉴스 카드 태그·Transfer.history[].card는 검사하지 않음(발행 차단 방지)
+8. search-queries는 `{ maxEnabled, queries[] }` 객체, 각 쿼리는 `source`로 sources.json의 search 소스를 참조(약관 게이트 일원화)
+9. 대표팀 소집 명단은 등록된 한국 선수 slug만(`playerSlugs`). 소집 소식 전체는 뉴스로(FR-70)
+10. 점수화 가중치는 코드 상수(`scripts/lib/score.ts`), 설정은 이적 창 배수 `boost`만. M1 튜닝이 잦으면 `configs/scoring.json` 신설을 다시 제안
 
 ---
 
@@ -644,3 +838,4 @@ const RunLog = z.object({
 | 2026-10-10 | 4문서 정합성 검토 반영: CLAUDE 절 참조 수정, 빌드 후 커밋 순서, 백업 schedule 06:40, D0·D2 게이트 범위 보강, M1-23 재시도 제거, 골든셋 10건 | 문서 간 충돌 해소 |
 | 2026-10-10 | takedowns `configs/` 이관, 카드 ID 10자리·제목 상한 분리, 강등분 같은 ID 보충, 요약 출력 항목 추가, `runs-dev.json` 분리, AI 라벨 `ai:true`만, 재사용 `deploy.yml` (PRD §15 D14~D20) | 사용자 결정 |
 | 2026-10-10 | 초기 JS 예산 120KB → 160KB(gzip) 상향 (PRD §15 D21) | M0-01 실측: 프레임워크 기본 런타임만 약 138KB |
+| 2026-10-10 | 부록 A v0.1 확정: 링크 URL `z.httpUrl`, zone `knockout`·`playoff`, takedowns `handledAt` null 허용, configs strict, 형식 검사 범위, configs·data 12종 추가 (M0-16) | 사용자 결정(추천안 일괄 승인) |

@@ -1,0 +1,24 @@
+{
+  "slug": "sample-united",
+  "nameKo": "샘플 유나이티드",
+  "nameEn": "Sample United FC",
+  "short": "SMU",
+  "comp": "EPL",
+  "alsoIn": ["UCL"],
+  "colors": ["#C8102E", "#FFFFFF"],
+  "formation": { "shape": "4-2-3-1", "source": "manual", "updated": "2026-10-06T00:00:00Z" },
+  "topPlayers": [
+    { "name": "Hong Gil-dong", "goals": 3, "assists": 1 },
+    { "name": "Sample Winger", "goals": 2, "assists": null }
+  ],
+  "profile": {
+    "oneLiner": "[예시] 7경기 14골로 리그 최다 득점, 선두를 지키고 있다.",
+    "strengths": ["경기당 2골의 득점력", "홈 4전 전승"],
+    "weaknesses": ["원정 실점 증가", "후반 막판 실점"],
+    "generatedAt": "2026-10-05T23:10:00Z"
+  },
+  "koreanPlayers": ["hong-gil-dong"],
+  "reading": [
+    { "title": "[예시] 샘플 유나이티드 전술 분석", "url": "https://example.com/analysis/42", "source": "Example Analysis" }
+  ]
+}

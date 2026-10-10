@@ -10,8 +10,8 @@
 
 **M0 셋업·검증 단계입니다.** 아직 사용할 수 있는 서비스가 아닙니다.
 
-- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사·배포 워크플로(`ci.yml`·`deploy.yml`)
-- 아직 없는 것: 뉴스 수집·요약 파이프라인, 화면 디자인, 데이터 스키마, 뉴스 소스 약관 검증
+- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사·배포 워크플로(`ci.yml`·`deploy.yml`), 데이터 스키마(zod v0.1, `src/lib/schema/`)
+- 아직 없는 것: 뉴스 수집·요약 파이프라인, 화면 디자인, 뉴스 소스 약관 검증
 - main에 push하면 CI 검사를 통과한 커밋이 GitHub Pages로 배포됩니다(`deploy.yml`). D0 디자인 시안이 확정되기 전까지는 스타일 없는 임시 페이지만 보입니다.
 
 개발은 `M0 셋업·검증 → D0 디자인 → M1 뉴스 MVP → D1 → M2 대회·팀 → D2 → M3 한국 선수·A매치 → M4 부가 기능 → D3 → M5 다듬기·공개` 순서로 진행합니다. 진행 현황은 [docs/plan.md](docs/plan.md) §1 대시보드에서 확인할 수 있습니다.
@@ -154,16 +154,17 @@ npm run preview    # out/을 GitHub Pages처럼 basePath 아래로 서빙
 | 프레임워크 | Next.js 16.4 (App Router, `output: 'export'`) · React 19.3 · TypeScript 6.0 (strict) |
 | 스타일 | Tailwind CSS 4.3 · shadcn/ui (커스텀 — 디자인 확정 후 적용) |
 | 실행 | Node.js 24 · tsx |
+| 스키마 | zod 4.6 — configs·data·LLM 출력 경계 검증 (`src/lib/schema/`) |
 | 테스트·품질 | Vitest 5 · Testing Library · Playwright 1.64 · ESLint 9 · Prettier 3 |
 | 배포 | GitHub Actions → GitHub Pages (검사 `ci.yml` 완료, 배포 `deploy.yml`은 M0-13) |
-| 도입 예정 | zod (M0-16) · Anthropic Claude Haiku + `@anthropic-ai/sdk` Message Batches API (M0-20) · rss-parser (M1) · football-data.org · API-Football · Pagefind (M4-14) · GoatCounter 쿠키리스 분석 (M5-04) |
+| 도입 예정 | Anthropic Claude Haiku + `@anthropic-ai/sdk` Message Batches API (M0-20) · rss-parser (M1) · football-data.org · API-Football · Pagefind (M4-14) · GoatCounter 쿠키리스 분석 (M5-04) |
 
 ## 저장소 구조
 
 ```
 .claude/    Claude Code 설정 · 커스텀 커맨드 · 서브에이전트
 .github/    이슈 템플릿 · Actions 워크플로 (`ci.yml` 검사, 배포·수집은 M0-13~M0-14에서 추가)
-configs/    사람이 관리하는 설정 JSON · LLM 프롬프트 (zod 검증 예정)
+configs/    사람이 관리하는 설정 JSON · LLM 프롬프트 (zod 스키마 `src/lib/schema/`, 검증 명령은 M0-17)
 data/       파이프라인 산출물 — 손 편집 금지
 docs/       PRD · 개발 계획 · 배경 조사 · 디자인 시안
 fixtures/   개발·테스트·디자인 시안용 샘플 데이터

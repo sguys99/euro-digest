@@ -1,0 +1,40 @@
+[
+  {
+    "id": "bbc-football",
+    "name": "BBC Sport",
+    "type": "rss",
+    "url": "https://feeds.bbci.co.uk/sport/football/rss.xml",
+    "lang": "en",
+    "enabled": true,
+    "weight": 1.5,
+    "tier": 2,
+    "competitions": ["EPL", "UCL"],
+    "terms_checked": false,
+    "robots_checked": false,
+    "note": "스키마 예시 — 약관 확인 전(M0-23)"
+  },
+  {
+    "id": "google-news-ko",
+    "name": "Google News (한국어)",
+    "type": "search",
+    "url": "https://news.google.com/rss/search",
+    "lang": "ko",
+    "enabled": false,
+    "weight": 0.8,
+    "tier": 3,
+    "terms_checked": false,
+    "robots_checked": false
+  },
+  {
+    "id": "google-news-en",
+    "name": "Google News (English)",
+    "type": "search",
+    "url": "https://news.google.com/rss/search",
+    "lang": "en",
+    "enabled": false,
+    "weight": 0.8,
+    "tier": 3,
+    "terms_checked": false,
+    "robots_checked": false
+  }
+]

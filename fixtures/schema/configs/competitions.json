@@ -1,0 +1,36 @@
+[
+  {
+    "id": "EPL",
+    "nameKo": "프리미어리그",
+    "nameEn": "Premier League",
+    "shortKo": "EPL",
+    "footballDataCode": "PL",
+    "apiFootballLeagueId": 39,
+    "season": 2026,
+    "startDate": "2026-08-22",
+    "endDate": "2027-05-30",
+    "teamCount": 20,
+    "zones": [
+      { "zone": "ucl", "from": 1, "to": 4, "label": "챔스" },
+      { "zone": "uel", "from": 5, "to": 5, "label": "유로파" },
+      { "zone": "uecl", "from": 6, "to": 6, "label": "컨퍼런스" },
+      { "zone": "relegation", "from": 18, "to": 20, "label": "강등" }
+    ]
+  },
+  {
+    "id": "UCL",
+    "nameKo": "UEFA 챔피언스리그",
+    "nameEn": "UEFA Champions League",
+    "shortKo": "UCL",
+    "footballDataCode": "CL",
+    "apiFootballLeagueId": 2,
+    "season": 2026,
+    "startDate": "2026-09-15",
+    "endDate": "2027-05-29",
+    "teamCount": 36,
+    "zones": [
+      { "zone": "knockout", "from": 1, "to": 8, "label": "16강 직행" },
+      { "zone": "playoff", "from": 9, "to": 24, "label": "PO" }
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "updatedAt": "2026-10-09T21:52:10Z",
+  "names": {
+    "Sample Player": {
+      "count": 3,
+      "firstSeen": "2026-10-02T21:40:00Z",
+      "lastSeen": "2026-10-09T21:40:00Z",
+      "kind": "player",
+      "cards": ["c_1a2b3c4d5e", "c_8f3a1b2c4d"]
+    },
+    "Example City": {
+      "count": 1,
+      "firstSeen": "2026-10-09T21:40:00Z",
+      "lastSeen": "2026-10-09T21:40:00Z",
+      "cards": []
+    }
+  }
+}

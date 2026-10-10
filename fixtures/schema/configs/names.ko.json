@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "ko": "홍길동",
+      "en": ["Hong Gil-dong", "Gil-dong Hong"],
+      "kind": "player",
+      "slug": "hong-gil-dong",
+      "note": "스키마 예시"
+    },
+    {
+      "ko": "샘플 유나이티드",
+      "en": ["Sample United FC", "Sample United"],
+      "kind": "team",
+      "slug": "sample-united"
+    },
+    {
+      "ko": "예시 스타디움",
+      "en": ["Example Stadium"],
+      "kind": "venue"
+    }
+  ],
+  "ignore": ["VAR", "Here we go"]
+}

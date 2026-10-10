@@ -1,0 +1,36 @@
+{
+  "comp": "EPL",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-09T21:35:12Z",
+  "standings": [
+    {
+      "pos": 1, "prevPos": 2, "team": "sample-united",
+      "played": 7, "w": 5, "d": 1, "l": 1, "gf": 14, "ga": 6, "pts": 16,
+      "form": ["W", "W", "D", "W", "L"], "zone": "ucl"
+    },
+    {
+      "pos": 2, "prevPos": null, "team": "example-city",
+      "played": 7, "w": 4, "d": 3, "l": 0, "gf": 11, "ga": 4, "pts": 15,
+      "form": ["D", "W", "W"], "zone": "ucl"
+    }
+  ],
+  "matches": [
+    {
+      "id": "fd-500001", "comp": "EPL", "round": "7",
+      "kickoff": "2026-10-04T14:00:00Z",
+      "home": "sample-united", "away": "example-city",
+      "score": { "h": 2, "a": 1 }, "status": "finished"
+    },
+    {
+      "id": "fd-500011", "comp": "EPL", "round": "8",
+      "kickoff": "2026-10-17T11:30:00Z",
+      "home": "example-city", "away": "sample-united",
+      "score": null, "status": "scheduled"
+    }
+  ],
+  "scorers": [
+    { "player": "Hong Gil-dong", "team": "sample-united", "goals": 3, "assists": 1, "penalties": 0, "played": 7 },
+    { "player": "Sample Striker", "team": "example-city", "goals": 3, "assists": null, "penalties": null, "played": null }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "matches": [
+    {
+      "id": "2026-10-10-friendly",
+      "kickoff": "2026-10-10T11:00:00Z",
+      "opponent": "예시국",
+      "home": true,
+      "venue": "서울월드컵경기장",
+      "competition": "친선경기",
+      "status": "finished",
+      "result": { "kor": 2, "opp": 1 }
+    },
+    {
+      "id": "2026-11-14-friendly",
+      "kickoff": "2026-11-14T11:00:00Z",
+      "kickoffTbd": true,
+      "opponent": "샘플국",
+      "home": false,
+      "competition": "친선경기",
+      "status": "scheduled",
+      "result": null
+    }
+  ],
+  "squads": [
+    {
+      "id": "2026-10",
+      "announcedAt": "2026-09-28T01:00:00Z",
+      "matchIds": ["2026-10-10-friendly"],
+      "playerSlugs": ["hong-gil-dong"]
+    }
+  ]
+}

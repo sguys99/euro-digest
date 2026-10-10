@@ -1,0 +1,11 @@
+{
+  "week": "2026-41",
+  "from": "2026-10-04T15:00:00Z",
+  "to": "2026-10-11T15:00:00Z",
+  "rows": [
+    { "player": "hong-gil-dong", "apps": 2, "minutes": 120, "goals": 1, "assists": 1 }
+  ],
+  "mvp": "hong-gil-dong",
+  "summary": "[예시] 홍길동이 2경기에 나서 1골 1도움을 기록했다.",
+  "generatedAt": "2026-10-11T23:05:00Z"
+}
