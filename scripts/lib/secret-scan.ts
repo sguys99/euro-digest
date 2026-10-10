@@ -73,6 +73,40 @@ export function maskSecret(visiblePrefix: string): string {
   return `${visiblePrefix}****`;
 }
 
+/**
+ * 텍스트 안의 비밀값을 모두 가린다 — 로그·이슈 본문용(M0-22, scripts/lib/logger.ts·github-issues.ts).
+ * 검사용 패턴(SECRET_PATTERNS)을 그대로 쓰되, `NAME=값` 패턴은 검사 정규식이 값의 첫 글자까지만 잡으므로
+ * 값 끝(공백·따옴표 전)까지 늘려서 가린다. 결과는 `sk-ant-****`·`ghs_****`·`ANTHROPIC_API_KEY=****`.
+ */
+export function maskSecretsInText(
+  text: string,
+  patterns: readonly SecretPattern[] = SECRET_PATTERNS,
+): string {
+  let masked = text;
+  for (const pattern of patterns) {
+    const flags = pattern.regex.flags.includes("g")
+      ? pattern.regex.flags
+      : `${pattern.regex.flags}g`;
+    const source =
+      pattern.id === "env-assignment"
+        ? `${pattern.regex.source}[^\\s"'\`]*`
+        : pattern.regex.source;
+    masked = masked.replace(new RegExp(source, flags), (...args: unknown[]) => {
+      // replace 콜백 인자: (match, ...groups, offset, string) — 그룹만 골라 RegExpMatchArray 모양으로 만든다.
+      const match = args[0] as string;
+      const groups = args
+        .slice(1, -2)
+        .map((g) => (typeof g === "string" ? g : undefined));
+      const asMatch = Object.assign([match, ...groups], {
+        index: 0,
+        input: match,
+      }) as unknown as RegExpMatchArray;
+      return maskSecret(pattern.visiblePrefix(asMatch));
+    });
+  }
+  return masked;
+}
+
 function lineNumberAt(text: string, index: number): number {
   let line = 1;
   for (

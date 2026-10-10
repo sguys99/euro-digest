@@ -6,6 +6,7 @@ import {
   isEnvFileName,
   isProbablyBinary,
   maskSecret,
+  maskSecretsInText,
   scanTextForSecrets,
 } from "../scripts/lib/secret-scan";
 
@@ -142,5 +143,42 @@ describe("formatSecretReport", () => {
       "발견: .env.local — 환경변수 파일(.env*)이 배포 산출물에 포함됨",
     );
     expect(text).toContain("결과: 실패 — 비밀값 의심 2건 (값은 출력하지 않음)");
+  });
+});
+
+describe("maskSecretsInText (M0-22 — 로그·이슈 본문 안전망)", () => {
+  it("토큰 값을 접두사만 남기고 가린다(값 전체가 사라진다)", () => {
+    const text = `a ${FAKE.anthropic} b ${FAKE.ghp} c ${FAKE.ghs} d ${FAKE.pat}`;
+    const masked = maskSecretsInText(text);
+    expect(masked).toBe(
+      "a sk-ant-**** b ghp_**** c ghs_**** d github_pat_****",
+    );
+    for (const value of Object.values(FAKE)) {
+      expect(masked).not.toContain(value);
+    }
+  });
+
+  it("gho_·ghu_·ghr_ 토큰도 가린다", () => {
+    const body = "Q1w2E3r4".repeat(5);
+    for (const prefix of ["o", "u", "r"]) {
+      const token = `${"gh"}${prefix}_${body}`;
+      expect(maskSecretsInText(`x ${token} y`)).toBe(`x gh${prefix}_**** y`);
+    }
+  });
+
+  it("NAME=값 형태는 값 끝까지 가린다(첫 글자만 가리지 않는다)", () => {
+    expect(maskSecretsInText("ANTHROPIC_API_KEY=abcdef123 next")).toBe(
+      "ANTHROPIC_API_KEY=**** next",
+    );
+    expect(maskSecretsInText("export API_FOOTBALL_KEY = 'xyz789'")).toBe(
+      "export API_FOOTBALL_KEY=****'",
+    );
+    expect(maskSecretsInText("ANTHROPIC_API_KEY=")).toBe("ANTHROPIC_API_KEY=");
+  });
+
+  it("비밀값이 없으면 그대로 돌려준다", () => {
+    expect(maskSecretsInText("collect 3건 · HTTP 503")).toBe(
+      "collect 3건 · HTTP 503",
+    );
   });
 });

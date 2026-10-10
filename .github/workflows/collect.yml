@@ -250,18 +250,50 @@ jobs:
   # FR-152 실행 실패 자동 이슈. job 수준 failure()는 needs로 이어진 job 중 하나라도 실패하면 참이다
   # (always()를 섞으면 수동 취소에도 이슈가 생기므로 쓰지 않는다). 시간 초과도 이슈가 되도록 오래 걸리는
   # 단계에는 step 수준 timeout-minutes를 둔다(step 시간 초과는 실패로 기록된다).
-  # 같은 원인 판단은 지금은 "열린 [collect] pipeline-failure 이슈가 있는가"로 단순화한다 — 있으면 댓글, 없으면 새 이슈.
-  # 원인별 dedupe 고도화는 M0-22 이슈 헬퍼에서 한다. 비밀값·전체 로그는 본문에 넣지 않는다(실행 링크만).
+  #
+  # 같은 원인 판단 (M0-22): scripts/report-issue.ts → scripts/lib/github-issues.ts
+  # - 원인 키 = `collect:<실패 job>`(needs 결과에서 계산) → fingerprint 마커를 이슈 본문에 숨겨 두고,
+  #   같은 마커의 열린 pipeline-failure 이슈가 있으면 댓글(누적 횟수 포함), 없으면 새 이슈. 닫힌 이슈는 해결로 본다.
+  # - guard 실패와 deploy 실패처럼 원인이 다른 실패는 서로 다른 이슈가 된다.
+  # - 헬퍼가 쓸 수 없을 때(npm ci 실패·레지스트리 장애 등)는 마지막 단계의 셸 폴백이 예전 방식
+  #   ("열린 [collect] pipeline-failure 이슈가 있으면 댓글, 없으면 생성")으로 보고한다 — 보고 자체가 빠지지 않게.
+  # 비밀값·전체 로그는 본문에 넣지 않는다(실행 링크만). needs 출력 중 guard의 reason만 이슈에 옮긴다.
   report-failure:
     name: 실패 이슈 보고
     needs: [guard, collect, deploy]
     if: failure()
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     permissions:
+      contents: read # checkout
       issues: write
     steps:
-      - name: 이슈 생성 또는 댓글 (pipeline-failure)
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Node.js 설정 (.nvmrc)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 의존성 설치
+        timeout-minutes: 4
+        run: npm ci
+
+      # 결과(새 이슈/댓글)는 로그·notice 주석·Step Summary에 남는다. 토큰은 env로만 넘기고 출력하지 않는다.
+      - name: 이슈 생성 또는 댓글 (이슈 헬퍼)
+        timeout-minutes: 2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: node --import tsx scripts/report-issue.ts --kind pipeline-failure --workflow collect
+
+      # 위 단계 중 하나라도 실패했을 때만(헬퍼가 이미 보고했으면 건너뜀). 마커 없이 예전 규칙으로 보고한다.
+      - name: 셸 폴백 — 이슈 헬퍼를 쓸 수 없을 때
+        if: failure()
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -269,69 +301,29 @@ jobs:
           RUN_ATTEMPT: ${{ github.run_attempt }}
           EVENT_NAME: ${{ github.event_name }}
           GUARD_RESULT: ${{ needs.guard.result }}
-          GUARD_REASON: ${{ needs.guard.outputs.reason }}
           COLLECT_RESULT: ${{ needs.collect.result }}
           DEPLOY_RESULT: ${{ needs.deploy.result }}
         run: |
           now_kst="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M')"
           date_kst="$(TZ=Asia/Seoul date +%F)"
-
-          failed=()
-          if [ "$GUARD_RESULT" = "failure" ]; then failed+=("guard"); fi
-          if [ "$COLLECT_RESULT" = "failure" ]; then failed+=("collect"); fi
-          if [ "$DEPLOY_RESULT" = "failure" ]; then failed+=("deploy"); fi
-          failed_jobs="${failed[*]:-알 수 없음}"
-
-          job_table() {
-            echo "| job | 결과 |"
-            echo "|---|---|"
-            echo "| 실행 판단 (guard) | ${GUARD_RESULT:-?}${GUARD_REASON:+ · $GUARD_REASON} |"
-            echo "| 수집 · 검증 · 빌드 · 커밋 (collect) | ${COLLECT_RESULT:-?} |"
-            echo "| 배포 (deploy) | ${DEPLOY_RESULT:-?} |"
-          }
-
           body_file="$RUNNER_TEMP/pipeline-failure.md"
+          {
+            echo "collect.yml 일일 수집 실행이 실패했습니다. (이슈 헬퍼를 쓸 수 없어 셸 폴백으로 보고 — 보고 job 로그 확인)"
+            echo ""
+            echo "| 항목 | 값 |"
+            echo "|---|---|"
+            echo "| 실행 | ${RUN_URL} (시도 ${RUN_ATTEMPT}) |"
+            echo "| 트리거 | ${EVENT_NAME} |"
+            echo "| 시각 (KST) | ${now_kst} |"
+            echo "| job 결과 | guard ${GUARD_RESULT:-?} · collect ${COLLECT_RESULT:-?} · deploy ${DEPLOY_RESULT:-?} |"
+          } > "$body_file"
+
           existing="$(gh issue list --state open --label pipeline-failure --limit 100 --json number,title \
             --jq '[.[] | select(.title | startswith("[collect]"))] | sort_by(.number) | .[0].number // empty')"
-
           if [ -n "$existing" ]; then
-            {
-              echo "### 다시 실패 — ${now_kst} KST"
-              echo ""
-              echo "- 실행: ${RUN_URL} (시도 ${RUN_ATTEMPT})"
-              echo "- 트리거: ${EVENT_NAME}"
-              echo "- 실패 job: ${failed_jobs}"
-              echo ""
-              job_table
-            } > "$body_file"
             gh issue comment "$existing" --body-file "$body_file"
-            echo "열린 이슈 #${existing}에 댓글을 남겼습니다."
+            echo "열린 이슈 #${existing}에 댓글을 남겼습니다 (셸 폴백)."
           else
-            {
-              echo "collect.yml 일일 수집 실행이 실패했습니다."
-              echo ""
-              echo "| 항목 | 값 |"
-              echo "|---|---|"
-              echo "| 실행 | ${RUN_URL} (시도 ${RUN_ATTEMPT}) |"
-              echo "| 트리거 | ${EVENT_NAME} |"
-              echo "| 시각 (KST) | ${now_kst} |"
-              echo "| 실패 job | ${failed_jobs} |"
-              echo ""
-              job_table
-              echo ""
-              echo "- guard·collect가 실패했다면 data 커밋·배포는 일어나지 않았고 사이트는 전날 상태로 유지됩니다."
-              echo "- collect가 커밋한 뒤 deploy만 실패했다면 data는 main에 있지만 사이트에는 아직 반영되지 않았습니다."
-              echo ""
-              echo "### 다음 조치"
-              echo "- [ ] 실행 로그에서 실패한 단계와 원인 확인 (비밀값·전체 응답 본문은 이슈에 붙이지 않는다)"
-              echo "- [ ] 원인 수정 — 설정은 configs/, 코드는 scripts/ (data/는 손으로 고치지 않는다)"
-              echo "- [ ] guard·collect 실패: Actions → Collect → Run workflow로 재실행 (12시간 안 성공 이력이 있으면 force)"
-              echo "- [ ] deploy만 실패: Actions → Deploy → Run workflow (Use workflow from: main, ref: main)"
-              echo "- [ ] 정상 발행 확인 후 이 이슈 닫기"
-              echo ""
-              echo "> 이 이슈가 열려 있는 동안 collect.yml의 다음 실패는 새 이슈 대신 여기에 댓글로 쌓입니다."
-              echo "> (같은 원인 판단은 지금은 열린 [collect] 이슈 존재 여부로 단순화 — 원인별 구분은 M0-22에서)"
-            } > "$body_file"
             gh issue create \
               --title "[collect] 일일 수집 실패 — ${date_kst}" \
               --label pipeline-failure \

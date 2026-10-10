@@ -44,6 +44,7 @@ import { z } from "zod";
 import type { RunLog } from "@/lib/schema";
 
 import { resolveLlmMode, type LlmMode } from "./cli-args";
+import { createLogger, type Logger } from "./logger";
 
 export type { LlmMode } from "./cli-args";
 
@@ -1036,10 +1037,23 @@ export interface LlmLogEvent {
 }
 export type LlmLogger = (event: LlmLogEvent) => void;
 
-/** 기본 로거(M0-22 공용 구조화 로거가 생기면 교체) */
-const defaultLogger: LlmLogger = (event) => {
-  console.log(`[llm] ${JSON.stringify(event)}`);
-};
+/** 재시도·오류·마감 계열 단계는 warn, 나머지는 info */
+function llmLogLevel(stage: string): "info" | "warn" {
+  return /\.(?:retry|error|deadline|unexpected)$/.test(stage) ? "warn" : "info";
+}
+
+/**
+ * 공용 구조화 로거(scripts/lib/logger.ts)로 보내는 LlmLogger — createLlmClient의 기본값.
+ * 이벤트 이름은 `llm.<stage>`(예: `llm.batch.submit`), 나머지 필드는 그대로(단계·건수·소요 시간뿐).
+ * 호출부(M1 summarize)가 자기 로거로 묶고 싶으면 `createLlmLogger(log.child({ runId }))`처럼 넘긴다.
+ */
+export function createLlmLogger(
+  logger: Logger = createLogger({ scope: "llm" }),
+): LlmLogger {
+  return ({ stage, ...fields }) => {
+    logger[llmLogLevel(stage)](`llm.${stage}`, fields);
+  };
+}
 
 export interface LlmClientOptions {
   /** 생략하면 env.LLM_MODE (cli-args.ts resolveLlmMode 규칙: 빈 값·미지정 = live). --mock은 호출부가 반영해 넘긴다 */
@@ -1153,7 +1167,7 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
     mode = resolved.value;
   }
   const model = options.model?.trim() || resolveLlmModel(env);
-  const log = options.logger ?? defaultLogger;
+  const log = options.logger ?? createLlmLogger();
   const now = options.now ?? Date.now;
   const usesFixtures = mode === "mock" && !options.transport;
   const sleep = options.sleep ?? (usesFixtures ? noSleep : realSleep);

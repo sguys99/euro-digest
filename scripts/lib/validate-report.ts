@@ -15,6 +15,7 @@ import { parseArgs } from "node:util";
 import { schemaRegistry, type SchemaRegistryEntry } from "@/lib/schema";
 
 import type { ParseResult } from "./cli-args";
+import { formatAnnotation } from "./logger";
 import { pickCrossRefInput, runCrossRefChecks } from "./validate-crossref";
 import {
   checkJsonFile,
@@ -200,17 +201,6 @@ export function validationExitCode(report: ValidationReport): 0 | 1 {
   return countIssues(report, "error") > 0 ? 1 : 0;
 }
 
-/** GitHub Actions 워크플로 명령의 메시지·속성 값 이스케이프 */
-function escapeAnnotation(value: string, isProperty: boolean): string {
-  const escaped = value
-    .replace(/%/g, "%25")
-    .replace(/\r/g, "%0D")
-    .replace(/\n/g, "%0A");
-  return isProperty
-    ? escaped.replace(/:/g, "%3A").replace(/,/g, "%2C")
-    : escaped;
-}
-
 /** 이슈를 파일별로 묶는다(파일이 처음 나온 순서 유지). */
 function groupByFile(
   issues: readonly ValidationIssue[],
@@ -274,7 +264,10 @@ export function formatValidationReport(
         ? `${issue.path} — ${issue.message}`
         : issue.message;
       lines.push(
-        `::error file=${escapeAnnotation(file, true)},title=${escapeAnnotation("설정·데이터 검증", true)}::${escapeAnnotation(message, false)}`,
+        formatAnnotation("error", message, {
+          file,
+          title: "설정·데이터 검증",
+        }),
       );
     }
     const omitted = group.length - maxIssuesPerFile;
