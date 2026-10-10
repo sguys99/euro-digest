@@ -18,9 +18,9 @@
 ## 1. 절대 규칙
 1. **디자인은 시안 2~3개 → 사용자 선택 → 구현.** 선택 없이 UI 스타일 구현 금지("일단 기본 스타일로 만들고 나중에 바꾸기" 포함). (§4)
 2. **세련되고 모던한 디자인이 핵심 차별점.** 기능을 줄여도 시각 품질은 낮추지 않는다. shadcn/ui 기본 모양·템플릿 느낌은 완료로 보지 않는다.
-3. **LLM 호출 지점은 3곳뿐** — 뉴스 요약·분류(매일), 팀 한줄평+강점/약점(주 1회), 한국 선수 주간 총평(주 1회). 새 지점·횟수 증가·모델 상향은 **사용자 승인 후**에만.
+3. **LLM 호출 지점은 3곳뿐** — 정형 데이터 기반 한국어 브리핑("오늘의 5줄", 매일), 팀 한줄평+강점/약점(주 1회), 한국 선수 주간 총평(주 1회). **기사(제목·설명 포함)는 LLM에 넣지 않는다**(PRD §15 D23·D24). 새 지점·횟수 증가·모델 상향은 **사용자 승인 후**에만.
 4. **개발 중 실호출은 자유, 비용은 항상 기록** — `data/runs-dev.json`(`env: "dev"`, 봇의 `runs.json`과 분리)에 남겨 커밋하고 월 $3 예산에 합산. 자동 테스트(Vitest·CI)만 `fixtures/` mock. (§6.3)
-5. **본문 수집 금지.** 제목 + RSS 요약 + `og:description`만. 금지 사이트(Transfermarkt, FBref, WhoScored, SofaScore, FotMob, 네이버·다음, X, 유료 본문)는 어떤 이유로도 크롤러를 만들지 않는다.
+5. **본문 수집 금지.** 제목 + RSS 요약 + `og:description`만. 해외 기사는 피드 제목·URL을 그대로 게시한다(번역·요약·다듬기 금지 — D23). 금지 사이트(Transfermarkt, FBref, WhoScored, SofaScore, FotMob, 네이버·다음, X, 유료 본문)는 어떤 이유로도 크롤러를 만들지 않는다.
 6. **이미지 자산 금지** — 기사 이미지·구단/리그 로고·선수 사진을 쓰지 않는다. 팀은 팀 컬러 이니셜 배지로.
 7. **입력에 없는 사실은 쓰지 않는다**(프롬프트·후처리 모두). 루머는 보도 형식("~가 보도했다")을 유지.
 8. **비밀값을 커밋·번들에 넣지 않는다.** `.env*` 파일 읽기·출력 금지. 키는 Actions Secrets로만.
@@ -81,7 +81,7 @@
 .github/     workflows/ collect.yml(일일)·weekly.yml(월요일)·ci.yml(push 검사 → 통과 시 배포)·deploy.yml(재사용 배포)
              · ISSUE_TEMPLATE/ summary-error·takedown·source-broken
 configs/     사람이 관리, 전부 zod 검증: sources · competitions · names.ko · korean-players · national-team · bigmatch-rules
-             · search-queries · formations · team-colors · transfer-windows · takedowns (.json) · prompts/ summarize·team-profile·weekly-kr (.md)
+             · search-queries · formations · team-colors · transfer-windows · takedowns (.json) · prompts/ summarize(일일 브리핑)·team-profile·weekly-kr (.md)
 data/        파이프라인 산출물(손 편집 금지): news/YYYY-MM-DD.json · competitions/ · teams/ · players/ · transfers.json
              · runs.json(봇) · runs-dev.json(dev 실행, 개발자 커밋) · cache/ seen-urls.json·unknown-names.json
 fixtures/    개발·테스트 샘플 (RSS·API 응답·LLM 응답·뉴스 카드)       tests/  단위·스키마 (e2e는 tests/e2e)
@@ -94,7 +94,7 @@ public/      manifest, 아이콘, 폰트        루트: CLAUDE.md · DESIGN.md �
 공용 zod 스키마는 `src/lib/schema/`에 두고 `scripts/`도 `@/*` 별칭으로 같은 스키마를 import한다(tsx가 tsconfig paths 지원). 명령어는 M0에서 `package.json`에 정의:
 ```bash
 npm run dev / build                  # build = next build(export) → pagefind → OG·RSS·ics 생성
-npm run collect                      # 수집→정제→요약→검증 (실제 LLM 호출)
+npm run collect                      # 수집→정제·분류→데이터 브리핑→검증 (실제 LLM 호출)
 npm run collect -- --limit 5 --dry   # 소량 실행, data/ 산출물 대신 출력만 (--mock: LLM 없이 fixtures 응답)
 npm run weekly                       # 팀 프로필·주간 리포트·운영 리포트
 npm run eval:prompt                  # 골든셋 회귀 평가 — 프롬프트 수정 전후 출력 diff (실제 LLM 호출, 소량)
@@ -104,24 +104,24 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 ```
 
 ## 6. 파이프라인 · LLM
-**6.1 흐름 (PRD §10)**: `06:30 KST cron-job.org → workflow_dispatch(collect.yml)` → ① 수집 → ② 정제(코드: URL 정규화·해시 중복제거·클러스터링·점수화·상위 45건) → ③ 요약(Batches) → ④ 검증 게이트 → ⑤ 빌드 → ⑥ `data/` 커밋 → ⑦ 배포(`deploy.yml`). 검증이나 빌드가 실패하면 커밋하지 않는다. `weekly.yml`도 끝에서 빌드 → 커밋 → `deploy.yml`. 백업 `schedule`(06:40 KST)은 12시간 내 성공 이력이 있으면 skip, `concurrency: collect`.
+**6.1 흐름 (PRD §10)**: `06:30 KST cron-job.org → workflow_dispatch(collect.yml)` → ① 수집(뉴스 + 전날 경기 데이터) → ② 정제·분류(코드: URL 정규화·해시 중복제거·클러스터링·점수화·상위 45건 · 카테고리·태그·이적 단계·spoiler 규칙) → ③ 데이터 브리핑(Batches) → ④ 검증 게이트 → ⑤ 빌드 → ⑥ `data/` 커밋 → ⑦ 배포(`deploy.yml`). 검증이나 빌드가 실패하면 커밋하지 않는다. `weekly.yml`도 끝에서 빌드 → 커밋 → `deploy.yml`. 백업 `schedule`(06:40 KST)은 12시간 내 성공 이력이 있으면 skip, `concurrency: collect`.
 
 ### 6.2 LLM 구현
 - 모든 호출은 `scripts/lib/llm.ts` 경유, 다른 파일에서 SDK 직접 import 금지. 단가는 `scripts/lib/cost.ts` 한 곳에서 관리(구현 시점 공식 단가 확인).
-- **LLM은 글쓰기에만.** 수집·중복제거·필터링·순위·고유명사 변환·이적 상태 집계·MVP 선정은 코드로.
-- 신규 **외국어 클러스터만** 요약. 한국어 기사·정형 데이터·이미 처리한 URL(`seen-urls`)은 보내지 않는다.
-- 입력: 제목 + 요약/OG 설명 **최대 500자**. 출력: 짧은 키 JSON, `max_tokens` 상한, 요약 3줄 고정.
-- zod 검증 → 실패 시 1회 재시도 → 그래도 실패하면 원제목+링크로 강등. 한 건의 실패가 전체 실행을 멈추지 않는다.
-- 고유명사는 LLM이 영문 그대로 출력 → `configs/names.ko.json`으로 코드 치환. 미등록 이름은 `data/cache/unknown-names.json`에 적재.
-- 비용 가드 `DAILY_BUDGET_USD=0.10`, `MONTHLY_BUDGET_USD=3`. 초과 예상 시 LLM 없이 원제목+링크로 게시.
-- 배치가 06:50까지 끝나지 않으면 상위 10건만 일반 API로 폴백.
-- **프롬프트 캐싱**: 모델별 최소 캐시 프리픽스 길이 미달이면 미적용. M1 첫 실측에서 `usage.cache_read_input_tokens`가 0이면 캐싱 코드를 빼고 PRD 비용 표를 갱신.
+- **LLM은 글쓰기에만.** 수집·중복제거·필터링·**뉴스 분류(카테고리·태그·중요도·이적 단계·spoiler)**·순위·고유명사 변환·이적 상태 집계·MVP 선정은 코드로.
+- **뉴스 기사는 LLM에 보내지 않는다**(D23). 해외 카드는 원제목+링크(`ai:false`, `s:[]`), 분류는 코드 규칙(키워드·`names.ko.json`·소스 메타). `Source.summarize`는 모두 false — 요약 경로를 다시 여는 것은 §1-3 승인 사항.
+- 일일 브리핑 입력(D24): 전날(KST) 경기 결과·순위 변동·득점자·한국 선수 출전 등 데이터 API를 어댑터로 변환한 **정형 데이터만**(기사 텍스트 금지). 출력: 짧은 키 JSON, `max_tokens` 상한, 최대 5줄·줄당 60자 내외, 경기가 없으면 호출 생략.
+- zod 검증 → 실패 시 1회 재시도 → 그래도 실패하면 **코드 템플릿 문장**(`ai:false`)으로 강등. 브리핑 실패가 발행을 멈추지 않는다.
+- 고유명사는 LLM이 영문 그대로 출력 → `configs/names.ko.json`으로 코드 치환(뉴스 태그도 같은 사전). 미등록 이름은 `data/cache/unknown-names.json`에 적재.
+- 비용 가드 `DAILY_BUDGET_USD=0.10`, `MONTHLY_BUDGET_USD=3`. 초과 예상 시 LLM 없이 브리핑을 코드 템플릿으로 게시.
+- 배치가 06:50까지 끝나지 않으면 배치를 취소하고 브리핑을 코드 템플릿으로 게시.
+- **프롬프트 캐싱**: 모델별 최소 캐시 프리픽스 길이 미달이면 미적용(일일 요청이 1~3개라 대개 미적용). M1 첫 실측에서 `usage.cache_read_input_tokens`가 0이면 캐싱 코드를 빼고 PRD 비용 표를 갱신.
 
 ### 6.3 개발 중 LLM 사용
-- 반복 실험은 `--limit`(5~10건)으로 줄이고, 실행 전 예상 토큰·비용을 출력한다.
+- 반복 실험은 소량(`--limit`, 브리핑은 1~3요청)으로 줄이고, 실행 전 예상 토큰·비용을 출력한다.
 - prod 실행은 `data/runs.json`, dev 실행은 `data/runs-dev.json`(개발자가 커밋)에 `env`와 토큰·비용을 기록하고, 비용 가드는 두 파일을 합산해 판단. dev 사용이 그 달 예산의 50%를 넘으면 사용자에게 알린다.
 - 자동 테스트·CI는 `LLM_MODE=mock`으로 `fixtures/llm/` 응답 사용(결정적·무비용).
-- 프롬프트 수정 시 샘플 10건 회귀 비교(`npm run eval:prompt`, 이전/이후 출력 diff)를 실행하고 `fixtures/llm/`을 갱신.
+- 프롬프트 수정 시 샘플 10건(브리핑은 10일치 입력) 회귀 비교(`npm run eval:prompt`, 이전/이후 출력 diff)를 실행하고 `fixtures/llm/`을 갱신.
 
 ### 6.4 수집·크롤링 · 축구 데이터
 - `configs/sources.json`에서 `enabled: true` **그리고** `terms_checked: true`인 소스만 수집. 목록·OG 크롤링을 하는 소스는 `robots_checked: true`도 필요. `summarize: false` 소스는 LLM에 보내지 않고 피드 제목·URL을 그대로 쓴 원제목+링크(`ai:false`) 카드로만 게시(PRD §15 D22). 소스 URL 하드코딩 금지. 새 소스는 `/add-source` 절차로만.
@@ -141,13 +141,13 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - 서버 컴포넌트 기본, `"use client"`는 상호작용이 필요한 작은 섬에만.
 - `localStorage` 접근은 모두 try/catch, 실패해도 정상 렌더. 테마는 초기 인라인 스크립트로 `data-theme` 설정(깜빡임 없음).
 - 성능 예산: 초기 JS ≤ 160KB(gzip, 모던 브라우저 module 스크립트 합·noModule polyfill 제외 — 프레임워크 기본 약 138KB, PRD §15 D21), LCP ≤ 2.0s(모바일 4G), CLS ≤ 0.05. 새 의존성은 번들 영향 확인 후 질문.
-- 모든 데이터 화면에 상태 4종(로딩 스켈레톤·빈 상태·오류·오프라인). 모든 뉴스 카드에 출처명·원문 링크, AI가 요약한 카드(`ai:true`)에는 "AI 요약" 라벨(`ai:false` 카드에는 붙이지 않음).
+- 모든 데이터 화면에 상태 4종(로딩 스켈레톤·빈 상태·오류·오프라인). 모든 뉴스 카드에 출처명·원문 링크. LLM이 쓴 브리핑 줄(`ai:true`)에는 "AI 작성" 라벨, 뉴스 카드·템플릿 강등 줄(`ai:false`)에는 붙이지 않음(D24).
 
 ## 8. 데이터 · 시간
 - **저장은 UTC(ISO 8601), 표시는 KST.** 변환은 `src/lib/time.ts`에서만. 유럽 서머타임 전환(3·10월 마지막 일요일) 테스트 필수.
 - `data/`는 파이프라인만 쓴다. 수정은 스크립트를 고치거나 `configs/`(예: `takedowns.json`)로 반영.
 - 스키마 변경은 사용자 확인 후 zod 스키마 → 마이그레이션 스크립트 → fixtures → 테스트 순으로 함께 바꾼다.
-- 카드 ID(`c_` + 16진수 10자리)는 원문 URL 기반 결정적 해시(공유 앵커가 깨지지 않게). 배치 지연으로 강등된 카드는 다음 실행에서 같은 ID로 원래 날짜 파일을 갱신한다(FR-26).
+- 카드 ID(`c_` + 16진수 10자리)는 원문 URL 기반 결정적 해시(공유 앵커가 깨지지 않게).
 - 보존: 일별 뉴스 90일 후 월별 병합, seen-urls 90일, runs.json·runs-dev.json 180일.
 
 ## 9. 코드 품질
@@ -159,7 +159,7 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 
 ### 9.2 완료 기준 (DoD)
 - [ ] `npm run check` 통과(typecheck·lint·단위 테스트), `npm run build`(정적 export) 성공
-- [ ] PRD 수용 기준 충족 + 테스트 추가 (정규화·중복제거·클러스터링·점수화·시간대·이적 상태 집계는 필수)
+- [ ] PRD 수용 기준 충족 + 테스트 추가 (정규화·중복제거·클러스터링·점수화·분류 규칙·시간대·이적 상태 집계는 필수)
 - [ ] UI: 선택 시안과 스크린샷 비교, 접근성 검사, 번들 예산 확인
 - [ ] LLM: 실측 비용을 `runs.json`·`runs-dev.json`에서 확인·보고, 테스트는 mock으로 결정적 검증
 - [ ] plan.md 체크박스·관련 문서 갱신
@@ -170,7 +170,7 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - 개발·봇 모두 `main`에 직접 커밋(무인 발행 브랜치) → **커밋 전 `npm run check`·`npm run build` 통과 필수**. `ci.yml`이 push마다 같은 검사를 돌리고, 실패하면 즉시 수정 또는 revert. main push가 검사를 통과하면 `deploy.yml`로 배포된다(`concurrency: pages`).
 - 큰 변경(스키마·파이프라인 구조)은 작은 커밋으로 나눈다. 06:00~07:30 KST에는 push 금지. push 전 항상 `git pull --rebase`.
 - Secrets: `ANTHROPIC_API_KEY`, `FOOTBALL_DATA_API_KEY`, `API_FOOTBALL_KEY`는 Actions Secrets. cron-job.org용 PAT(Actions 권한만)는 저장소에 두지 않는다.
-- 환경변수 기본값: `LLM_MODEL=claude-haiku-5-5` · `LLM_MODE=live`(테스트·CI는 `mock`) · `MAX_ITEMS_PER_RUN=45`(일일 요약 상한) · `DAILY_BUDGET_USD=0.10` / `MONTHLY_BUDGET_USD=3` · `SITE_URL=https://sguys99.github.io` / `BASE_PATH=/euro-digest` · `CONTACT_EMAIL`(User-Agent·삭제 요청 연락처, M0에서 개설)
+- 환경변수 기본값: `LLM_MODEL=claude-haiku-5-5` · `LLM_MODE=live`(테스트·CI는 `mock`) · `MAX_ITEMS_PER_RUN=45`(일일 카드 선별 상한) · `DAILY_BUDGET_USD=0.10` / `MONTHLY_BUDGET_USD=3` · `SITE_URL=https://sguys99.github.io` / `BASE_PATH=/euro-digest` · `CONTACT_EMAIL`(User-Agent·삭제 요청 연락처, M0에서 개설)
 
 ## 11. Claude Code 보조 설정 (M0에서 생성)
 **커맨드** (`.claude/commands/`)
@@ -183,15 +183,16 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 
 **서브에이전트** (`.claude/agents/`)
 - `design-concepts` — 게이트 시안 HTML, 375/1280·라이트/다크 스크린샷. 시안만 만들고 `src/` 수정 금지
-- `pipeline-dev` — 수집·정제·요약·검증 스크립트와 단위 테스트. LLM 호출 지점 추가 금지, 비용 기록 필수
+- `pipeline-dev` — 수집·정제·분류·브리핑·검증 스크립트와 단위 테스트. LLM 호출 지점 추가 금지, 비용 기록 필수
 - `code-reviewer` — 커밋 전 리뷰(§1 절대 규칙·정적 export·비밀값·번들 예산·접근성). 읽기 전용, 문제 목록만 보고
 
 ## 12. 운영 절차
 - **잘못된 발행**: `data/` 해당 커밋 revert → `deploy.yml` 수동 실행 → 원인 이슈 기록. **검증 게이트 실패**: 배포 중단·전날 사이트 유지 → 원인 수정.
-- **삭제·정정 요청**: `/takedown <card-id>` → 재빌드 (접수 후 72시간 이내). **요약 오류 신고**: `summary-error` 이슈 집계 → 주간 검수 → 회귀 비교 후 프롬프트 개선.
+- **삭제·정정 요청**: `/takedown <card-id>` → 재빌드 (접수 후 72시간 이내). **브리핑·분류 오류 신고**: `summary-error` 이슈 집계 → 주간 검수 → 회귀 비교 후 프롬프트·분류 규칙 개선.
 - **한국 선수 이적 감지**: `/add-player` 또는 `korean-players.json` 수정. **미등록 고유명사**: `/add-name`. **시즌 전환**: `/new-season`.
 
 ## 13. 미결 사항 (M0 검증 후 이 문서·PRD 갱신)
 - API-Football 무료 플랜의 2026-27 시즌 조회 가능 여부 → 불가 시 FR-65 폴백
 - 각 RSS·기자 채널·크롤링 대상의 약관·robots.txt (`terms_checked`), Google News RSS·GDELT 이용 조건
+- football-data.org·API-Football 약관의 LLM 입력·재가공(한국어 브리핑) 허용 여부 (M0-28·M0-29, D24)
 - 서비스명 상표·저장소명 확인, 연락용 이메일 개설, 2026-27 시즌 5대 리그 한국 선수 명단
