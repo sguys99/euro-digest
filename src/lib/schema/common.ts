@@ -3,7 +3,7 @@
  *
  * 규칙 (CLAUDE.md §8·§9.1)
  * - 저장 시각은 모두 UTC ISO 8601(`Z` 접미사)이다. 오프셋(`+09:00`)이 붙은 값은 거부한다.
- *   KST 변환은 화면에서 src/lib/time.ts(M0-18)만 한다.
+ *   KST 변환(화면 표시·뉴스 파일명 등)은 src/lib/time.ts에서만 한다.
  * - 외부 입력(RSS·API·LLM·configs)은 경계에서 이 스키마들로 파싱한다.
  * - 화면(src/app)에서 import해도 되지만 **서버 컴포넌트·빌드 시점에서만** 쓴다.
  *   `"use client"` 파일에서 import하면 zod가 브라우저 번들에 들어간다(초기 JS 예산 DR-11).

@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-18` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-19` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -143,7 +143,7 @@
 ### M0-C 공용 기반 코드
 - [x] M0-16 zod 스키마 v0.1 구현 (`src/lib/schema/`) — **부록 A 기준**, configs·data 전부. 부록 A에 없는 스키마(competitions·names.ko·national-team·bigmatch-rules·search-queries·formations·team-colors·transfer-windows·`players/korean.json`·seen-urls·unknown-names)는 초안 작성 → ❓ 사용자 확인 후 부록 A에 추가 — 2026-10-10 완료: zod 4.6, `src/lib/schema/` + `schemaRegistry`(21개), 초안 12종·결정 10건 사용자 일괄 승인 → 부록 A 반영, `fixtures/schema/` 예시 22개·스키마 테스트 258개
 - [x] M0-17 `scripts/validate.ts` 1차: `configs/*` 스키마 검증 → CI 연결 (잘못된 설정은 CI 실패) — 2026-10-10 완료: configs·data(있으면) 스키마 + 교차 참조 3종(search-queries→sources·korean-players, 대표팀 명단→korean-players), 미등록 파일·BOM은 오류, 필수 파일 `takedowns.json`(seed `[]`), CI `::error` 주석
-- [ ] M0-18 `src/lib/time.ts`: UTC 저장·KST 표시 + DST 테스트 (2026-10-25, 2027-03-28 전후 케이스) (NFR-10)
+- [x] M0-18 `src/lib/time.ts`: UTC 저장·KST 표시 + DST 테스트 (2026-10-25, 2027-03-28 전후 케이스) (NFR-10) — 2026-10-10 완료: `Intl`만 사용(의존성 0), KST 날짜·포맷·ISO 주차·KST 창·현지→UTC(DST 경계는 RFC 5545 `compatible`), 테스트 158개(시스템 TZ 5종 통과), 다른 파일의 시간대 API 사용 금지 가드 테스트
 - [ ] M0-19 `src/lib/paths.ts`: basePath 헬퍼(정적 자산·RSS·ics·OG) + 테스트
 - [ ] M0-20 `scripts/lib/llm.ts`: live/mock 모드, Batches 제출·폴링, `usage` 집계 — SDK import는 이 파일에서만
 - [ ] M0-21 `scripts/lib/cost.ts`: 모델 단가 표(구현 시점 공식 단가 확인), 예상 비용 계산, 비용 기록(prod → `runs.json`, dev → `runs-dev.json`), 가드는 두 파일 합산
