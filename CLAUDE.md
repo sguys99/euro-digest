@@ -81,7 +81,7 @@
 .github/     workflows/ collect.yml(일일)·weekly.yml(월요일)·ci.yml(push 검사 → 통과 시 배포)·deploy.yml(재사용 배포)
              · ISSUE_TEMPLATE/ summary-error·takedown·source-broken
 configs/     사람이 관리, 전부 zod 검증: sources · competitions · names.ko · korean-players · national-team · bigmatch-rules
-             · search-queries · formations · team-colors · transfer-windows · takedowns (.json) · prompts/ summarize(일일 브리핑)·team-profile·weekly-kr (.md)
+             · search-queries · publisher-domains · formations · team-colors · transfer-windows · takedowns (.json) · prompts/ summarize(일일 브리핑)·team-profile·weekly-kr (.md)
 data/        파이프라인 산출물(손 편집 금지): news/YYYY-MM-DD.json · competitions/ · teams/ · players/ · transfers.json
              · runs.json(봇) · runs-dev.json(dev 실행, 개발자 커밋) · cache/ seen-urls.json·unknown-names.json
 fixtures/    개발·테스트 샘플 (RSS·API 응답·LLM 응답·뉴스 카드)       tests/  단위·스키마 (e2e는 tests/e2e)
@@ -193,6 +193,6 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 
 ## 13. 미결 사항 (M0 검증 후 이 문서·PRD 갱신)
 - API-Football 무료 플랜의 2026-27 시즌 조회 가능 여부 → 불가 시 FR-65 폴백
-- 각 RSS·기자 채널·크롤링 대상의 약관·robots.txt (`terms_checked`), Google News RSS·GDELT 이용 조건
+- ~~각 RSS·기자 채널·크롤링 대상의 약관·robots.txt, Google News RSS 이용 조건~~ → M0-23~26 완료(`docs/research/m0-validation.md`, PRD §15 D22~D25). GDELT 이용 조건은 M0-27
 - football-data.org·API-Football 약관의 LLM 입력·재가공(한국어 브리핑) 허용 여부 (M0-28·M0-29, D24)
 - 서비스명 상표·저장소명 확인, 연락용 이메일 개설, 2026-27 시즌 5대 리그 한국 선수 명단

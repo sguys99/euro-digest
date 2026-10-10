@@ -1,0 +1,261 @@
+{
+  "domains": [
+    {
+      "domain": "interfootball.co.kr",
+      "publisher": "인터풋볼",
+      "status": "allow",
+      "sourceIds": ["interfootball-world", "interfootball-all"],
+      "basis": "M0-25 · 사용자 결정 2026-10-10 — 원제목+링크 조건부(해석). 엔디소프트 공통: 자사 RSS 안내가 제3자 사이트 게재('갱신된 글의 제목, 링크, 주요 내용 등을 … 자신이 운영하는 B사이트에 올려놓을 수 있습니다')를 안내하고, 저작권보호정책 2조의 금지 대상은 저작물의 승낙 없는 복제·전송이다(짧은 제목은 저작물성이 낮고 링크는 복제가 아님). 근거가 피드에 묶이지 않은 매체 단위 해석이라 검색 결과에도 적용한다.",
+      "basisUrl": "https://www.interfootball.co.kr/rssIndex.html",
+      "checkedAt": "2026-10-10",
+      "note": "명시적 허용 조항은 아니다(해석). 조건: 제목 무수정, 원문 링크 그대로, 매체명 텍스트 표기(로고 없음), 요약문(description) 표시·저장 안 함, 중단 요청 시 즉시 끔. 저작권 담당 ask@interfootball.co.kr."
+    },
+    {
+      "domain": "footballist.co.kr",
+      "publisher": "풋볼리스트",
+      "status": "allow",
+      "sourceIds": ["footballist-football"],
+      "basis": "M0-25 · 사용자 결정 2026-10-10 — 인터풋볼과 같은 엔디소프트 공통 약관·RSS 안내(제3자 사이트 게재 안내 + 금지 대상은 저작물 복제·전송). 매체 단위 해석이라 검색 결과에도 적용한다.",
+      "basisUrl": "https://www.footballist.co.kr/rssIndex.html",
+      "checkedAt": "2026-10-10",
+      "note": "조건은 인터풋볼과 같다. K리그·[포토] 기사는 M1 코드 필터로 뺀다."
+    },
+    {
+      "domain": "besteleven.com",
+      "publisher": "베스트일레븐",
+      "status": "allow",
+      "sourceIds": ["besteleven-world", "besteleven-all"],
+      "basis": "M0-25 · 사용자 결정 2026-10-10 — 인터풋볼과 같은 엔디소프트 공통 약관·RSS 안내(제3자 사이트 게재 안내 + 금지 대상은 저작물 복제·전송). 매체 단위 해석이라 검색 결과에도 적용한다.",
+      "basisUrl": "https://www.besteleven.com/rssIndex.html",
+      "checkedAt": "2026-10-10",
+      "note": "조건은 인터풋볼과 같다."
+    },
+    {
+      "domain": "sportalkorea.com",
+      "publisher": "스포탈코리아",
+      "status": "allow",
+      "sourceIds": ["sportalkorea-all"],
+      "basis": "M0-25 · 사용자 결정 2026-10-10 — 인터풋볼과 같은 엔디소프트 공통 약관·RSS 안내. 매체 단위 해석이라 검색 결과에도 적용한다.",
+      "basisUrl": "https://www.sportalkorea.com/rssIndex.html",
+      "checkedAt": "2026-10-10",
+      "note": "소스(sportalkorea-all)는 피드 부적합(머니투데이·뉴시스발 비축구 기사 위주)이라 비활성이지만 약관 판정은 같다. 조건은 인터풋볼과 같다."
+    },
+    {
+      "domain": "bbc.co.uk",
+      "publisher": "BBC",
+      "status": "feed-only",
+      "sourceIds": [
+        "bbc-sport-football",
+        "bbc-sport-premier-league",
+        "bbc-sport-champions-league",
+        "bbc-sport-european"
+      ],
+      "basis": "M0-23 · 사용자 결정 2026-10-10 — ToU §15 a 'You can add the BBC News RSS feed to your website … Provided: You don't change the RSS feed'(비영리도 business로 보는 정의와 충돌 — 사용자 해석). 허가가 피드 게재에 묶여 있어 검색 결과로 들어온 기사는 게시하지 않는다.",
+      "basisUrl": "https://www.bbc.co.uk/usingthebbc/terms-of-use/",
+      "checkedAt": "2026-10-10",
+      "note": "www.bbc.co.uk robots.txt 주석의 요약·RAG 금지는 summarize:false로 준수. 로고 미사용."
+    },
+    {
+      "domain": "bbc.com",
+      "publisher": "BBC",
+      "status": "feed-only",
+      "sourceIds": [
+        "bbc-sport-football",
+        "bbc-sport-premier-league",
+        "bbc-sport-champions-league",
+        "bbc-sport-european"
+      ],
+      "basis": "M0-23 · 사용자 결정 2026-10-10 — bbc.co.uk와 같은 판정(BBC 국제판 도메인, 같은 Terms of Use §15 a — 피드 한정).",
+      "basisUrl": "https://www.bbc.co.uk/usingthebbc/terms-of-use/",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "espn.com",
+      "publisher": "ESPN",
+      "status": "feed-only",
+      "sourceIds": ["espn-soccer"],
+      "basis": "M0-23 · 사용자 결정 2026-10-10 — RSS Terms: 'you are only permitted to display the content that is provided in the feed, you must link to the full article on espn.com using the URLs provided in the feed' — 허가가 피드 내용에 한정된다. 제목·요약·URL 수정 금지, ESPN 표기, 광고 금지.",
+      "basisUrl": "https://www.espn.com/espn/news/story?page=rssinfo",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "nytimes.com",
+      "publisher": "The Athletic (NYT)",
+      "status": "feed-only",
+      "sourceIds": ["the-athletic-football"],
+      "basis": "M0-23 · 사용자 결정 2026-10-10 — NYT RSS 안내: 'We allow the use of NYTimes.com RSS feeds for personal use in a news reader or as part of a non-commercial blog' — 피드 한정. ToS 2.1·4.1(3)이 AI 이용(RAG·grounding 포함)을, 4.1(5)가 캐시·보관을 금지한다.",
+      "basisUrl": "https://www.nytimes.com/rss",
+      "checkedAt": "2026-10-10",
+      "note": "도메인 단위라 NYT 전체(The Athletic 외 기사 포함)에 적용된다 — RSS 조건이 NYT 전체에 같아 결과도 같다. 미해결: 4.1(5) 캐시·보관 금지와 보관 정책의 관계(M1 검토)."
+    },
+    {
+      "domain": "thedailybriefing.io",
+      "publisher": "the Daily Briefing (Rocket Sports Internet)",
+      "status": "feed-only",
+      "sourceIds": ["daily-briefing"],
+      "basis": "M0-24 · 사용자 결정 2026-10-10 — 불명확(Substack ToS가 crawl·scrape와 상당 부분 복사를 금지, robots Content-Signal ai-input=yes와 충돌)이지만 피드 원제목+링크만 위험 수용으로 켰다. 결정이 피드 게재에 한정된다.",
+      "basisUrl": "https://substack.com/tos",
+      "checkedAt": "2026-10-10",
+      "note": "발행사 Rocket Sports Internet은 다른 사이트에서 m4ow 계약(검색 밖 표시 금지)을 쓴다 — 범위를 넓히지 않는다."
+    },
+    {
+      "domain": "gianlucadimarzio.com",
+      "publisher": "Gianluca Di Marzio",
+      "status": "feed-only",
+      "sourceIds": ["di-marzio"],
+      "basis": "M0-24 · 사용자 결정 2026-10-10 — RSS 안내 'Il servizio è gratuito … per uso personale. Per eventuali utilizzi commerciali contattare la Redazione'(불명확) — 피드 원제목+링크만 위험 수용으로 켰다. 결정이 피드 게재에 한정된다.",
+      "basisUrl": "https://www.gianlucadimarzio.com/info_rss/",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "relevo.com",
+      "publisher": "Relevo",
+      "status": "feed-only",
+      "sourceIds": ["relevo"],
+      "basis": "M0-24 · 사용자 결정 2026-10-10 — 이용 조건 §7이 전부·일부 복제를 서면 허가 없이 금지(불명확, robots 주석은 AI 크롤러 허용) — 피드 원제목+링크만 위험 수용으로 켰다. 결정이 피드 게재에 한정된다.",
+      "basisUrl": "https://www.relevo.com/condiciones-uso.html",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "theguardian.com",
+      "publisher": "The Guardian",
+      "status": "deny",
+      "sourceIds": ["guardian-football"],
+      "basis": "M0-23 — Terms §3: 개인·비상업 이용만, 'with any machine learning and/or artificial intelligence technologies to generate any data or content' 금지, 자동화 도구 금지('Our robots.txt notice does not … constitute the Guardian's permission'). RSL은 ai-input을 유료 라이선스로만 허용.",
+      "basisUrl": "https://www.theguardian.com/help/terms-of-service",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "skysports.com",
+      "publisher": "Sky Sports",
+      "status": "deny",
+      "sourceIds": ["sky-sports-football"],
+      "basis": "M0-23 — sky.com T&C 2.7: 개인 비상업 홈 이용 외 복제·재게시 금지, 2.8(a): 봇·크롤러로 접근·수집·집계 금지('for any purpose'). RSS 약관 없음.",
+      "basisUrl": "https://www.sky.com/help/articles/skycom-terms-and-conditions",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "sport.sky.de",
+      "publisher": "Sky Sport Deutschland",
+      "status": "deny",
+      "basis": "M0-24 — Impressum: 'Die Nutzung sämtlicher Daten zum Zwecke des Text und Data Mining im Sinne von § 44b UrhG und des Trainings von KI-Modellen ist untersagt', 복제권 유보. RSS 없음.",
+      "basisUrl": "https://sport.sky.de/impressum",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "caughtoffside.com",
+      "publisher": "CaughtOffside (Rocket Sports Internet)",
+      "status": "deny",
+      "sourceIds": ["caughtoffside-romano", "caughtoffside"],
+      "basis": "M0-24 — Rocket ToS + Search Only Terms Contract(m4ow): 'Any rendering of the Website Content outside of Search, or of the Website is an Unlicensed Access'(4.6.2.1), 요약·새 제목 생성 금지, 무허가 접근 건당 £500(4.3).",
+      "basisUrl": "https://m4ow.uk/socw/2.txt",
+      "checkedAt": "2026-10-10",
+      "note": "접근 자체를 하지 않는다(검증·건강도 점검 요청 포함)."
+    },
+    {
+      "domain": "football-italia.net",
+      "publisher": "Football Italia (Rocket Sports Internet)",
+      "status": "deny",
+      "sourceIds": ["football-italia"],
+      "basis": "M0-24 — Rocket ToS 적용 사이트 목록에 포함, robots.txt License 줄도 같은 m4ow 계약(검색 밖 표시 금지·무허가 접근 £500).",
+      "basisUrl": "https://football-italia.net/terms-of-service/",
+      "checkedAt": "2026-10-10",
+      "note": "접근 자체를 하지 않는다(검증·건강도 점검 요청 포함)."
+    },
+    {
+      "domain": "football-espana.net",
+      "publisher": "Football España",
+      "status": "deny",
+      "sourceIds": ["football-espana"],
+      "basis": "M0-24 — 사이트에 ToS 링크가 없고 robots.txt '# License https://m4ow.uk/socw/2.txt'가 같은 m4ow 계약을 가리킨다(검색 밖 표시 금지·무허가 접근 £500).",
+      "basisUrl": "https://m4ow.uk/socw/2.txt",
+      "checkedAt": "2026-10-10",
+      "note": "접근 자체를 하지 않는다(검증·건강도 점검 요청 포함)."
+    },
+    {
+      "domain": "uefa.com",
+      "publisher": "UEFA.com",
+      "status": "deny",
+      "sourceIds": ["uefa-ucl-news"],
+      "basis": "M0-24 — General Terms 6.2: 'your personal access and viewing' 외 이용·표시 금지, 'you are prohibited from using automated tools … to scrape or collect Content', AI 개발 이용 금지.",
+      "basisUrl": "https://www.uefa.com/termsconditions/",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "bundesliga.com",
+      "publisher": "Bundesliga.com (DFL)",
+      "status": "deny",
+      "basis": "M0-24 — 이용약관 6.2·법적 고지 2.2·robots.txt 주석: § 44b (3) UrhG TDM 권리 유보, 'Any automated programmes, applets, bots or similar technologies must not be used to access, analyse or download the content'.",
+      "basisUrl": "https://www.bundesliga.com/en/bundesliga/info/terms-of-use-services",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "marca.com",
+      "publisher": "Marca",
+      "status": "deny",
+      "basis": "M0-24 — Marca English ToS 3.4: 'it is prohibited to modify, copy, reuse, extract, exploit, reproduce … all or part of the Content … without express written authorisation', 인용 예외에도 명시적으로 반대.",
+      "basisUrl": "https://www.marca.com/en/corporate/terms-of-service.shtml",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "calciomercato.com",
+      "publisher": "Calciomercato.com (FootballCo)",
+      "status": "deny",
+      "basis": "M0-24 — FootballCo Media Terms of Use: 'You shall not conduct, facilitate, authorise or permit any text or data mining or web scraping', 자동 장치로 접근·복사·재게시 금지, DSM 지침 4(3) 권리 유보.",
+      "basisUrl": "https://www.calciomercato.com/about/condizioni-uso",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "teamtalk.com",
+      "publisher": "TEAMtalk (Planet Sport)",
+      "status": "deny",
+      "basis": "M0-24 — Planet Sport T&C: 'Use of any content in automated systems, including bots, scrapers, or artificial intelligence technologies for indexing, training, analysis, or republication, is strictly prohibited', §6 자동 접근·AI 스크래핑 금지.",
+      "basisUrl": "https://www.teamtalk.com/terms-conditions",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "football365.com",
+      "publisher": "Football365 (Planet Sport)",
+      "status": "deny",
+      "basis": "M0-24 — TEAMtalk과 같은 Planet Sport T&C(자동 시스템·AI로 색인·분석·재게시 금지, §6 자동 접근 금지).",
+      "basisUrl": "https://www.football365.com/terms-conditions",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "givemesport.com",
+      "publisher": "GiveMeSport (Valnet)",
+      "status": "deny",
+      "basis": "M0-24 참고 조사 — robots.txt 주석: 'Use of any robot, crawler, or other tool to scrape, harvest, extract, or retrieve any content on this website using automated means is prohibited', 금지 용도에 AI 개발·운영(RAG 포함).",
+      "basisUrl": "https://www.givemesport.com/robots.txt",
+      "checkedAt": "2026-10-10",
+      "note": "Ben Jacobs 대체 채널로 확인한 참고 조사 — 약관 본문은 따로 보지 않았다."
+    },
+    {
+      "domain": "yna.co.kr",
+      "publisher": "연합뉴스",
+      "status": "deny",
+      "sourceIds": ["yna-sports"],
+      "basis": "M0-25 — 저작권규약 5: '사전 서면 허가 없이 연합뉴스 자료를 이용해 영리 목적의 정보 재판매 서비스나 비영리 목적의 정보서비스를 할 수 없습니다', 4: 전자 저장·배포 금지, 피드 채널 'AI 학습 및 활용 금지'.",
+      "basisUrl": "https://www.yna.co.kr/policy/copyright",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "osen.co.kr",
+      "publisher": "OSEN",
+      "status": "deny",
+      "basis": "M0-25 — 저작권 규약 4: 허가 없이 '인터넷 및 데이터 베이스를 비롯한 각종 정보서비스 등에 사용하는 것을 금지', 1: 전자매체 복사·재사용 저장 불허. RSS 없음.",
+      "basisUrl": "https://www.osen.co.kr/pages/copyright",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "news.google.com",
+      "publisher": "Google News",
+      "status": "deny",
+      "sourceIds": ["google-news-ko", "google-news-en"],
+      "basis": "M0-26 · 사용자 결정 2026-10-10 — 피드 고지 'This XML feed is made available solely for the purpose of rendering Google News results within a personal feed reader for personal, non-commercial use. Any other use of the feed is expressly prohibited', robots.txt User-agent * 'Disallow: /'(/rss/ 불허), Google 약관의 robots 위반 자동 접근 금지.",
+      "basisUrl": "https://news.google.com/robots.txt",
+      "checkedAt": "2026-10-10",
+      "note": "plan §14 B2 발동 — 뉴스 검색은 GDELT(M0-27) + 국내 매체 RSS로 대체."
+    }
+  ]
+}

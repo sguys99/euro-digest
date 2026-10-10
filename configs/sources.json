@@ -344,5 +344,35 @@
     "terms_checked": false,
     "robots_checked": true,
     "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 결정: 제외(판정 기록용). RSS 안내(https://www.yna.co.kr/rss/index) '비상업적 블로그와 개인적인 용도로만 연합뉴스 RSS 피드를 사용하는 것을 허용'하지만, 저작권규약(https://www.yna.co.kr/policy/copyright) 4 '사전 서면 허가 없이 연합뉴스 정보를 전자장치를 이용하여 저장 또는 배포할 수 없습니다', 5 '사전 서면 허가 없이 연합뉴스 자료를 이용해 영리 목적의 정보 재판매 서비스나 비영리 목적의 정보서비스를 할 수 없습니다' → 비영리 뉴스 다이제스트는 5에 정면으로 해당. 피드 채널 copyright '무단 전재-재배포, AI 학습 및 활용 금지'. 피드는 정상(120건 ≈ 55시간, 전 종목, 해외축구 약 3/120, description 83자 절단, RFC 822 +0900). robots: 우리 UA 허용, ClaudeBot·anthropic-ai·GPTBot 등 AI 봇 30여 종 차단. 허가 문의: 콘텐츠사업부."
+  },
+  {
+    "id": "google-news-ko",
+    "name": "Google News 검색 — 한국어",
+    "type": "search",
+    "url": "https://news.google.com/rss/search",
+    "lang": "ko",
+    "enabled": false,
+    "summarize": false,
+    "weight": 1,
+    "tier": 3,
+    "competitions": [],
+    "terms_checked": false,
+    "robots_checked": false,
+    "note": "2026-10-10 확인(M0-26) · 사용자 결정 2026-10-10. 결정: 제외(판정 기록용) — 금지. 검토한 이용 방식: 검색 결과(hl=ko&gl=KR&ceid=KR:ko)를 원제목+링크로 게시. 근거 ① 피드 채널 <copyright> 고지(공개 저장소의 2026-06-06 검색 피드 수집본 https://github.com/nerevu/riko/blob/main/riko/data/news.google.com_rss_hl=en-US&gl=US&ceid=US_3Aen&q=enterprise%2Bmashup.xml): 'This XML feed is made available solely for the purpose of rendering Google News results within a personal feed reader for personal, non-commercial use. Any other use of the feed is expressly prohibited. By accessing this feed or using these results in any manner whatsoever, you agree to be bound by the foregoing restrictions.' — 공개 웹사이트 게시와 결과를 내부 신호(기사 발견·클러스터 점수)로 쓰는 것 모두 '그 밖의 이용'. ② robots.txt(https://news.google.com/robots.txt): User-agent * 그룹 'Disallow: /', 허용 목록(/topics/·/stories/·/publications/·/about 등)에 /rss/·/articles/·/_/ 없음, ClaudeBot·anthropic-ai·GPTBot 등은 전면 차단 — robots_checked:false는 '확인했으나 불허'. ③ Google 서비스 약관(Effective July 30, 2026, https://policies.google.com/terms): 'using automated means to access content from any of our services in violation of the machine-readable instructions on our web pages (for example, robots.txt files ...)' 금지, Google News 기사는 'You may not use this content without that person or organization’s permission'. Google News 서비스별 추가 약관 없음(https://policies.google.com/terms/service-specific). 링크는 news.google.com/rss/articles/<불투명 토큰>?oc=5 리다이렉트 — 원문 URL 디코딩은 robots 불허 경로(/rss/articles/·/_/…/batchexecute) 호출이 필요해 불가, 원문 URL 해시 카드 ID(CLAUDE §8)·FR-04를 지킬 수 없음. M0 확인 요청은 robots.txt 1회뿐(/rss/ 요청 0건, 쿼리 실측 없이 마감 — 사용자 결정). 결과: plan §14 B2 발동 — 뉴스 검색은 GDELT(M0-27) + 국내 매체 RSS(M0-25)로 대체. configs/publisher-domains.json에 news.google.com deny."
+  },
+  {
+    "id": "google-news-en",
+    "name": "Google News 검색 — 영어",
+    "type": "search",
+    "url": "https://news.google.com/rss/search",
+    "lang": "en",
+    "enabled": false,
+    "summarize": false,
+    "weight": 1,
+    "tier": 3,
+    "competitions": [],
+    "terms_checked": false,
+    "robots_checked": false,
+    "note": "2026-10-10 확인(M0-26) · 사용자 결정 2026-10-10. 결정: 제외(판정 기록용) — 금지. 검토한 이용 방식: 검색 결과(hl=en-GB&gl=GB&ceid=GB:en)를 원제목+링크로 게시. 근거 ① 피드 채널 <copyright> 고지(공개 저장소의 2026-06-06 검색 피드 수집본 https://github.com/nerevu/riko/blob/main/riko/data/news.google.com_rss_hl=en-US&gl=US&ceid=US_3Aen&q=enterprise%2Bmashup.xml): 'This XML feed is made available solely for the purpose of rendering Google News results within a personal feed reader for personal, non-commercial use. Any other use of the feed is expressly prohibited. By accessing this feed or using these results in any manner whatsoever, you agree to be bound by the foregoing restrictions.' — 공개 웹사이트 게시와 결과를 내부 신호(기사 발견·클러스터 점수)로 쓰는 것 모두 '그 밖의 이용'. ② robots.txt(https://news.google.com/robots.txt): User-agent * 그룹 'Disallow: /', 허용 목록(/topics/·/stories/·/publications/·/about 등)에 /rss/·/articles/·/_/ 없음, ClaudeBot·anthropic-ai·GPTBot 등은 전면 차단 — robots_checked:false는 '확인했으나 불허'. ③ Google 서비스 약관(Effective July 30, 2026, https://policies.google.com/terms): 'using automated means to access content from any of our services in violation of the machine-readable instructions on our web pages (for example, robots.txt files ...)' 금지, Google News 기사는 'You may not use this content without that person or organization’s permission'. Google News 서비스별 추가 약관 없음(https://policies.google.com/terms/service-specific). 링크는 news.google.com/rss/articles/<불투명 토큰>?oc=5 리다이렉트 — 원문 URL 디코딩은 robots 불허 경로(/rss/articles/·/_/…/batchexecute) 호출이 필요해 불가, 원문 URL 해시 카드 ID(CLAUDE §8)·FR-04를 지킬 수 없음. M0 확인 요청은 robots.txt 1회뿐(/rss/ 요청 0건, 쿼리 실측 없이 마감 — 사용자 결정). 결과: plan §14 B2 발동 — 뉴스 검색은 GDELT(M0-27) + 국내 매체 RSS(M0-25)로 대체. configs/publisher-domains.json에 news.google.com deny."
   }
 ]

@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-26` ❓ (§3 남은 사용자 작업: U-06·M0-15 · U-08 · U-09)
+**다음 작업**: `M0-27` (§3 남은 사용자 작업: U-06·M0-15 · U-08 · U-09)
 
 ---
 
@@ -153,7 +153,7 @@
 - [x] M0-23 ❓ 1군 영문 RSS 8개 실작동·약관 확인 → 결과 보고·사용자 확인 후 `sources.json`에 `terms_checked`·`robots_checked` 기록, ESPN 처리 방식 결정 (CLAUDE §2·§6.4) — 2026-10-10 완료: 8개 피드 모두 정상, **약관상 AI 요약 가능 소스 0개**(B5 발생). 사용자 결정: BBC 4개·ESPN·The Athletic(축구 피드) 원제목+링크(`summarize:false`)로 수집, Sky·Guardian 제외. ESPN은 피드 URL·제목 무수정 조건. 결과 `docs/research/m0-validation.md`
 - [x] M0-24 ❓ 2군 매체·기자 채널 확인: Romano Substack, CaughtOffside 작성자 페이지, Di Marzio, Plettenberg, Moretto, Ben Jacobs — RSS 유무·robots.txt → 사용자 확인 후 등록 — 2026-10-10 완료: 18개 채널 판정(AI 요약 0·금지 11·불명확 3·소멸 4). 사용자 결정: the Daily Briefing·Di Marzio·Relevo 원제목+링크(위험 수용), 5곳 기록용 비활성(m4ow 계약 대상은 접근 금지). 누적 결론으로 FR-20 재정의(PRD §15 D23·D24)
 - [x] M0-25 ❓ 국내 매체 RSS(인터풋볼·풋볼리스트·스포탈코리아·베스트일레븐) 제공 여부·이용 조건 → 사용자 확인 후 등록 — 2026-10-10 완료: 8곳 판정 → 인터풋볼·풋볼리스트·베스트일레븐 원제목+링크(섹션+전체기사 피드 5개, 해석 근거), RSS 요약문은 표시·저장 안 함, 스포탈코리아·연합뉴스 기록용 비활성, OSEN·스포티비뉴스·엑스포츠뉴스 제외
-- [ ] M0-26 Google News RSS: 한/영 쿼리 5종 테스트, 이용 조건, 하루 쿼리 상한 결정
+- [x] M0-26 Google News RSS: 한/영 쿼리 5종 테스트, 이용 조건, 하루 쿼리 상한 결정 — 2026-10-10 완료: **사용 불가**(robots `Disallow: /`·피드 약관 개인 리더 전용·링크 리다이렉트) → 실측 요청 없이 마감, B2 발동(GDELT + 국내 매체 RSS). 사용자 결정: `google-news-ko/en` 기록용 비활성, 검색 결과는 `configs/publisher-domains.json` 허용 목록(allow 4·feed-only 7·deny 16, 목록 밖 기본 차단)으로 제한 (PRD §15 D25)
 - [ ] M0-27 GDELT DOC API: 다국어 쿼리 3종 테스트
 - [ ] M0-28 football-data.org: 6개 대회 2026-27 순위·경기·득점 응답 확인, 분당 10회 지연 설계 + **약관: 응답 데이터의 LLM 입력·재가공(한국어 브리핑) 허용 여부, 무료 티어의 경기 득점자 제공 범위** (§14 B7, PRD §15 D24)
 - [ ] M0-29 API-Football: **2026-27 시즌 무료 조회 가능 여부** → 분기 결정 기록 (§14 B1) + 약관: LLM 입력·재가공 허용 여부 (D24)
@@ -186,7 +186,7 @@
 - [ ] D0-01 시안 범위 확정
   - 화면: **홈**(오늘의 5줄 = 데이터 브리핑 — "AI 작성" 라벨, 템플릿 강등 줄, 줄이 5개보다 적은 날 상태 포함 · 한국 선수 칩 자리 · 오늘 밤 경기 자리 · 주요 뉴스 피드), 헤더·모바일 하단 탭(2~5개 가변 — 미완성 섹션은 숨김)·데스크톱 3단, 테마 토글 (D24)
   - 상태 화면 기본형: 스켈레톤 · 빈 상태 · 오류 · 오프라인 (텍스트·도형 기반, 일러스트는 D3) 🆕
-  - 뉴스 카드 변형 6종 (D23): **기본 = 원제목 카드**(영문·이탈리아어·스페인어 원제목 그대로 + 한국어 태그) / 다출처 클러스터(+N곳) / 이적(단계 + Tier 배지) / 한국 선수 관련 / 경기 결과(결과 가리기 켠 상태) / 한국어 보도 카드(국내 매체·Google News 한국어 — M0-25·M0-26 판정 결과). 강등 카드는 기본 카드와 같아져 한국어 보도 카드로 대체
+  - 뉴스 카드 변형 6종 (D23): **기본 = 원제목 카드**(영문·이탈리아어·스페인어 원제목 그대로 + 한국어 태그) / 다출처 클러스터(+N곳) / 이적(단계 + Tier 배지) / 한국 선수 관련 / 경기 결과(결과 가리기 켠 상태) / 한국어 보도 카드(국내 매체 RSS 원제목 — M0-25 판정, Google News는 사용 불가 M0-26). 강등 카드는 기본 카드와 같아져 한국어 보도 카드로 대체
   - 브랜드: 워드마크(텍스트 로고), 컬러·타이포 토큰, 대회 컬러 6종 시범 적용
 - [ ] D0-02 ❓ U-10 응답이 있으면 반영할 키워드 확인 (없으면 생략)
 
@@ -236,7 +236,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M1-03 RSS 어댑터 (타임아웃·재시도, 소스별 실패 격리)
 - [ ] M1-04 기자 채널 RSS: the Daily Briefing(Substack)·Di Marzio — 작성자 필터는 현재 대상 없음(M0-23·M0-24: Guardian 제외, The Athletic은 축구 피드 전체를 원제목으로 수집), `author` 필드 지원만
 - [ ] M1-05 목록 크롤러 `scripts/crawlers/<site>.ts` — M0에서 허용 확인된 사이트만 (robots.txt, User-Agent, 2~3초 지연, 하루 1회)
-- [ ] M1-06 Google News RSS 검색 어댑터 + `configs/search-queries.json`
+- [ ] M1-06 GDELT 검색 어댑터 + `configs/search-queries.json` + 매체 도메인 허용 목록(`configs/publisher-domains.json`, `allow`만 게시) 필터 — Google News RSS는 사용 불가(M0-26, PRD §15 D25)
 - [ ] M1-07 GDELT 어댑터
 - [ ] M1-08 OG 메타 경량 수집기 — 요약 없는 항목만, `<head>`만 파싱, 최대 500자. 해외 원제목 소스는 OG 보충 안 함(M0-23·D23), 국내 소스는 M0-25 판정에 따름
 - [ ] M1-09 공통 형식 정규화 + zod 검증 (FR-03), "본문 필드 없음" 테스트 (FR-02)
@@ -454,7 +454,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 | ID | 상황 | 대응 | 영향 작업 |
 |---|---|---|---|
 | **B1** | API-Football 무료로 2026-27 시즌 조회 불가 | 한국 선수는 경기 결과 + 득점 순위 + 뉴스 기반 "출전·득점 소식"(FR-65), 포메이션은 `formations.json` 수동(빅클럽 우선) 또는 미표시 | M2-07, M3-02 |
-| **B2** | Google News RSS 이용 불가 | GDELT + 국내 매체 RSS로 대체, NewsData.io 등은 ❓ 승인 후 | M1-06 |
+| **B2** | Google News RSS 이용 불가 — ⚠️ **발생(M0-26, 2026-10-10)**: robots `Disallow: /`·피드 약관 개인 리더 전용 | GDELT + 국내 매체 RSS로 대체, 검색 결과는 `publisher-domains.json` 허용 목록으로 제한(PRD §15 D25), NewsData.io 등은 ❓ 승인 후 | M1-06 |
 | **B3** | 프롬프트 캐싱 최소 길이 미달 | 캐싱 코드 제거(일일 브리핑은 하루 1~3요청이라 대개 해당), PRD 비용표 갱신 (D24) | M1-45, M1-42 |
 | **B4** | 실측 일 비용 > $0.10 | ❓ 승인 후 순서대로: 브리핑 입력 축소(경기 수 상한·필드) → `effort`/thinking 조정 → (주간) 팀 프로필 묶음 확대. PRD §9.3 추정(하루 $0.001 미만)상 발생 가능성은 낮다 (D24) | M1-19, M1-22 |
 | **B5** | 핵심 RSS 약관상 요약 불가 — ⚠️ **발생(M0-23, 2026-10-10)**: 1군 8개 모두 AI 요약 불가 판정 | 해당 소스는 원제목+링크만 또는 제외 → `Source.summarize` 필드 도입 (PRD §15 D22). M0-24까지 누적 26채널 AI 요약 가능 0 → **FR-20 재정의(PRD §15 D23·D24)**: 해외 카드는 모두 원제목+링크 + 코드 분류, LLM 호출 #1은 정형 데이터 브리핑 | M1-02, M1-15, M1-17~M1-24, M1-44, M1-45, D0-01, M0-30·M0-34·M0-36 |
@@ -735,13 +735,29 @@ const BigmatchRulesFile = z.strictObject({
 const SearchQuery = z.strictObject({
   id: Slug,
   source: Slug,                                      // sources.json의 type:"search" 소스 id → 그 소스의 enabled·terms_checked를 따름
-  q: z.string().min(1), lang: z.string().min(2),     // Google News hl / GDELT sourcelang
-  region: z.string().regex(/^[A-Z]{2}$/).optional(), // Google News gl
+  q: z.string().min(1), lang: z.string().min(2),     // GDELT sourcelang (Google News는 사용 불가 — D25)
+  region: z.string().regex(/^[A-Z]{2}$/).optional(), // GDELT sourcecountry 등 (Google News gl 용도는 폐기 — D25)
   purpose: z.enum(["korean", "transfer", "team", "ucl", "national", "general"]),
   player: Slug.optional(), team: Slug.optional(),    // 대상 slug (/add-player가 한/영 1개씩)
   enabled: z.boolean(),
 });
 const SearchQueriesFile = z.strictObject({ maxEnabled: z.number().int().min(1).max(100), queries: z.array(SearchQuery) }); // 상한 값은 M0-26
+
+// 5-1. configs/publisher-domains.json  (FR-02·NFR-09, M0-26) — 검색형 소스 결과의 매체 도메인 허용 목록, 목록 밖 = 기본 차단
+//   매칭: 호스트 === domain 또는 "." + domain으로 끝남(하위 도메인 포함), 여러 개면 가장 긴 domain 우선. 경로 단위 구분 없음
+//   교차 참조(validate): sourceIds ∈ sources.json id · allow/feed-only ↔ 근거 소스 terms_checked:true, deny ↔ false · 수집 대상 소스 호스트 ∉ deny
+const PublisherHost = z.string()
+  .regex(/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-z]{2,63}|xn--[a-z0-9-]{1,59})$/)
+  .refine((d) => !d.startsWith("www."));                  // 소문자 호스트 — 스킴·포트·경로·끝 점·www. 없음
+const PublisherDomain = z.strictObject({
+  domain: PublisherHost,
+  publisher: z.string().min(1),                           // 매체명
+  status: z.enum(["allow", "feed-only", "deny"]),         // allow = 검색 결과로도 원제목+링크 / feed-only = 자기 피드로만 / deny = 게시 안 함
+  sourceIds: z.array(Slug).default([]),                   // 판정 근거가 된 sources.json 소스 id
+  basis: z.string().min(1), basisUrl: HttpUrl,            // 짧은 근거(조사 ID·조항 요지·결정) + 대표 근거 URL
+  checkedAt: IsoDate, note: z.string().optional(),
+}).refine((d) => d.status !== "feed-only" || d.sourceIds.length > 0); // feed-only는 근거 피드 소스 1개 이상
+const PublisherDomainsFile = z.strictObject({ domains: z.array(PublisherDomain) }); // domain 중복 금지
 
 // 6. configs/formations.json → Record<팀 slug, ManualFormation>  (FR-55 폴백 → Team.formation, source:"manual")
 const FormationShape = z.string().regex(/^[1-9](?:-[1-9]){2,4}$/);  // + 필드 플레이어 합 10
@@ -847,3 +863,4 @@ const UnknownNamesFile = z.object({ updatedAt: Iso, names: z.record(NameText, Un
 | 2026-10-10 | 초기 JS 예산 120KB → 160KB(gzip) 상향 (PRD §15 D21) | M0-01 실측: 프레임워크 기본 런타임만 약 138KB |
 | 2026-10-10 | 부록 A v0.1 확정: 링크 URL `z.httpUrl`, zone `knockout`·`playoff`, takedowns `handledAt` null 허용, configs strict, 형식 검사 범위, configs·data 12종 추가 (M0-16) | 사용자 결정(추천안 일괄 승인) |
 | 2026-10-10 | 해외 뉴스 카드를 원제목+링크·코드 분류로 재정의, LLM 호출 #1을 정형 데이터 기반 한국어 브리핑으로 교체 (PRD §15 D23·D24): M0-28~30·M0-34·M0-36, D0-01·D0-03, M1 재구성(M1-15·M1-17~M1-24 내용 교체, M1-44·M1-45 추가), M2-02·M2-03·M3-03·M4-02·M4-15, §14 B3~B5·B7 추가, 부록 A 주석(스키마 변경 없음) | 사용자 결정 — M0-23·M0-24 누적 해외 26채널 중 약관상 AI 요약 가능 0 |
+| 2026-10-10 | M0-23~26 약관 판정 반영: `Source.summarize`(D22), 해외 카드 원제목+링크·LLM #1 데이터 브리핑(D23·D24), Google News 사용 불가·B2 발동·`publisher-domains.json`(D25), 태그라인 교체 | 사용자 결정 |

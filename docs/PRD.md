@@ -160,7 +160,7 @@
 | ID | 요구사항 | 수용 기준 |
 |---|---|---|
 | FR-01 | `configs/sources.json`에 등록된 소스만 수집. 필드: `id, name, type(rss/crawl/search/journalist/aggregator/analysis), url, lang, enabled, weight, tier, competitions, terms_checked, robots_checked` | `enabled:false` 또는 `terms_checked:false` 소스는 수집하지 않음. 목록·OG 크롤링을 하는 소스는 `robots_checked:false`여도 수집하지 않음 |
-| FR-02 | 수집 우선순위: 공식 RSS → 기자·블로그(Substack RSS·목록 크롤링) → 뉴스 검색(Google News RSS·GDELT) → OG 메타 경량 크롤링. **본문 크롤링 금지** | 수집 결과에 본문 필드가 존재하지 않음 |
+| FR-02 | 수집 우선순위: 공식 RSS → 기자·블로그(Substack RSS·목록 크롤링) → 뉴스 검색(GDELT — Google News RSS는 약관·robots상 사용 불가, §15 D25) → OG 메타 경량 크롤링. 검색 결과는 `configs/publisher-domains.json`에서 `allow`인 매체 도메인만 게시(목록에 없으면 차단). **본문 크롤링 금지** | 수집 결과에 본문 필드가 존재하지 않음 |
 | FR-03 | 모든 수집 결과를 공통 형식으로 정규화: `title, url, publishedAt(UTC), summary(≤500자), source, author?, lang` | 스키마 검증(zod) 통과 |
 | FR-04 | URL 정규화(utm·트래킹 파라미터 제거, AMP→원본) 후 해시로 중복 제거. `data/cache/seen-urls.json`(90일 보관)으로 과거 처리분 제외 | 같은 URL이 두 번 카드화되지 않음 |
 | FR-05 | 제목 유사도 기반 **동일 사건 클러스터링** — 여러 매체의 같은 소식은 1개 클러스터, 출처 링크 여러 개 | 일일 중복 카드 0건 (샘플 검수) |
@@ -404,7 +404,7 @@
 ### 8.1 데이터 소스 요약
 | 데이터 | 소스 | 주기 | LLM |
 |---|---|---|---|
-| 뉴스 | RSS·기자 채널·크롤링·Google News RSS·GDELT | 매일 | ❌ (원제목+코드 분류, D23) |
+| 뉴스 | RSS·기자 채널·크롤링·GDELT(매체 도메인 허용 목록 적용) | 매일 | ❌ (원제목+코드 분류, D23) |
 | 일일 브리핑("오늘의 5줄") | 전날 경기 결과·순위 변동·득점자·한국 선수 기록(정형 데이터) → LLM | 매일 | ✅ (D24) |
 | 순위·일정·결과·득점 | football-data.org | 매일 | ❌ |
 | 한국 선수 기록·라인업 | API-Football (보조) | 경기 다음 날 / 주 1회 | ❌ |
@@ -572,7 +572,7 @@
 |---|---|---|
 | API-Football 무료로 현재 시즌 조회 불가 | 한국 선수 상세 기록·포메이션 약화 | FR-65 폴백, 포메이션 수동 입력 또는 미표시 |
 | RSS 피드 폐지·구조 변경 | 수집량 감소 | 소스 건강도 모니터링(FR-11), 대체 소스 후보 유지 |
-| Google News RSS 차단·조건 변경 | 한국 선수 국내 보도 누락 | GDELT·국내 매체 RSS로 대체, NewsData.io 등 후보 |
+| Google News RSS 사용 불가 — **발생(M0-26, 2026-10-10)**: robots `Disallow: /`·피드 약관 개인 피드 리더 전용 | 한국 선수 국내 보도 누락 | GDELT·국내 매체 RSS로 대체(B2), 검색 결과는 매체 도메인 허용 목록으로 제한(D25), NewsData.io 등은 ❓ 승인 후 |
 | LLM 환각(없는 사실 생성) | 신뢰도 하락 | 사실성 규칙, 정형 데이터만 입력, 코드 사실성 검사(숫자·이름 대조), 주간 검수, 오류 신고 (D24) |
 | 저작권·약관 이의 제기 | 서비스 중단 위험 | 해외 기사 AI 요약·번역 안 함(원제목+링크만 — D23), `terms_checked` 이중 잠금, 사용자 해석으로 켠 소스(BBC·the Daily Briefing·Di Marzio·Relevo 등)는 근거를 `note`에 기록하고 이의 제기 시 즉시 비활성, 72시간 삭제 처리 |
 | 원제목(영문·이탈리아어·스페인어) 카드 비중이 큼 🆕 | 한국어 서비스 체감 품질 하락 | 한국어 태그·데이터 브리핑·국내 보도로 보강, D0 시안의 기본 카드를 원제목 카드로 (D23) |
@@ -646,6 +646,7 @@
 | D22 | 약관상 AI 요약 제한 소스 | **약관 준수** — `Source.summarize`(필수 필드) false 소스는 LLM 미전송, 원제목+링크(`ai:false`) 카드로만. `terms_checked`는 note에 적은 이용 방식이 약관상 허용됨을 뜻함. M0-23 판정: BBC 4개·ESPN·The Athletic(축구 피드) 원제목+링크, Sky·Guardian 제외(약관상 AI 이용·봇 수집 금지). M0-24~26 판정 후 요약 가능한 소스가 부족하면 FR-20 범위 재검토 (2026-10-10) → M0-24 판정 후 D23·D24로 재정의 | FR-01·FR-20·NFR-09, plan §14 B5·부록 A |
 | D23 | 해외 뉴스 카드 재정의 (FR-20 범위) | **해외 기사는 LLM에 보내지 않는다.** M0-23·M0-24에서 해외 매체·기자 채널 26개를 판정한 결과 AI 요약 가능 0 · 원제목+링크 9(BBC 4·ESPN·The Athletic·the Daily Briefing·Di Marzio·Relevo — 일부는 사용자 결정으로 위험 수용) · 제외 17. 모든 해외 뉴스 카드는 **원제목+링크(`ai:false`)** — 피드 제목·URL을 수정하지 않음(번역 제목·요약 줄 없음, `s:[]`). 카테고리·대회·팀·선수·중요도·한국 선수 관련·이적 단계·spoiler는 **코드 규칙**(키워드·`configs/names.ko.json`·소스 메타·클러스터 크기 등)으로 붙이고 화면에는 한국어 태그로 표시. 같은 사건 클러스터링·+N곳·출처 Tier는 유지. `Source.summarize` 필드는 유지(현재 모든 소스 false). 한국어 콘텐츠는 국내 매체 RSS·Google News 한국어(M0-25·M0-26 판정 결과)로 보강. 이에 따라 D16은 적용 대상 없음, D17은 코드 규칙으로 대체 (2026-10-10) | §1.2·§1.3·§2·§3·FR-20·FR-21·FR-24·FR-30·FR-36·FR-37·FR-100~103·NFR-09·§8·§13, CLAUDE §1·§6.2, plan §5 D0-01·§6 M1·§14 B5 |
 | D24 | LLM 호출 지점 #1 교체 | "뉴스 요약·분류(매일)" → **"정형 데이터 기반 한국어 브리핑(매일)"**. 입력 = 전날(KST) 경기 결과·순위 변동·득점자·한국 선수 출전·기록 등 **정형 데이터만**(football-data.org·API-Football, 기사 텍스트 미포함). 출력 = 홈 "오늘의 5줄"(뉴스체 한국어 문장)과 필요하면 경기 결과 카드의 한 줄 설명. Batches API, 하루 소수 요청. 사실성 규칙(입력에 없는 사실 금지) 유지, 출력은 zod 검증 → 1회 재시도 → 실패 시 코드 템플릿 문장으로 강등. LLM이 쓴 줄에는 "AI 작성" 라벨(`ai:true`). 호출 지점은 여전히 3곳(일일 브리핑 / 팀 한줄평+강점·약점 주 1회 / 한국 선수 주간 총평 주 1회). 데이터 API 약관(LLM 입력·재가공 허용 여부)은 M0-28·M0-29에서 확인 (2026-10-10) | §4.2·FR-22~29·FR-35·FR-37·FR-151·§8·§9·§10·§11.1·§13·§14.1, CLAUDE §1-3·§6, plan M0-28~30·M0-34·M0-36·§6 M1-C |
+| D25 | 검색형 소스와 매체 약관 | **Google News RSS 사용 안 함**(robots `Disallow: /` — `/rss/` 미허용, 피드 약관 "personal feed reader … personal, non-commercial use", 링크가 Google 리다이렉트라 원문 URL·카드 ID 불가) → plan §14 **B2 발동**: GDELT(M0-27) + 국내 매체 RSS로 대체. 검색 결과(GDELT 등)는 여러 매체 기사가 섞이므로 **`configs/publisher-domains.json` 매체 도메인 허용 목록**을 두고 `allow` 도메인만 원제목+링크로 게시, 목록에 없는 도메인은 기본 차단. 피드에 묶인 허가(BBC·ESPN·The Athletic·the Daily Briefing·Di Marzio·Relevo)는 `feed-only`라 검색 결과로는 게시하지 않음. `google-news-ko/en`은 판정 기록용 비활성 등록 (2026-10-10) | FR-02·§8.1·§13, plan §14 B2·M1-06·부록 A |
 
 ### 15.1 남은 확인 사항 (M0에서 검증)
 basic_plan §12의 외부 확인 항목(상표·저장소명, API-Football 현재 시즌 무료 조회, RSS·크롤링 약관, Google News RSS·GDELT 조건, 2026-27 한국 선수 명단)과 데이터 API 약관의 LLM 입력·재가공 허용 여부(D24 — M0-28·M0-29)는 M0 검증 결과로 확정하며, 결과에 따라 PRD 해당 항목을 갱신한다.

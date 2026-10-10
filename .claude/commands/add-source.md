@@ -28,7 +28,7 @@ argument-hint: "<소스 URL — RSS 피드 또는 사이트 주소>"
 5. **약관** — 이용약관·RSS 이용 조건 페이지를 찾아 ① 헤드라인·발췌·링크 재게시 허용 범위 ② 자동 수집 금지 조항 ③ AI 요약·가공 제한 ④ 출처 표시 요구 ⑤ 비상업 조건을 확인한다. 근거 URL과 핵심 문구(짧게 인용)를 남기고, 찾지 못하거나 모호하면 **"불명확"**으로 적는다.
 6. **등록안 작성** — `id`(kebab-case), `name`, `type`(rss/crawl/search/journalist/aggregator/analysis), `url`, `lang`, `enabled`, `summarize`(필수 — 기본 `false` = 원제목+링크 전용(PRD §15 D22·D23). `true`는 약관이 AI 요약을 허용하고 사용자가 LLM 요약 경로를 다시 열기로 승인했을 때만, CLAUDE §1-3), `weight`(0~3), `tier`(1~3), `competitions`, `author?`, `terms_checked`(note에 적은 이용 방식이 약관상 허용될 때만 true), `robots_checked`, `note`(예: `"2026-10-10 확인 — 약관 <URL> 헤드라인·링크 허용 / robots <URL> 피드 경로 허용"`). tier·weight는 추천 근거를 붙인다.
 7. **보고 → 승인** — 아래 표와 함께 '사용자 확인 지점'을 거친다. 승인 전에는 파일을 수정하지 않는다.
-8. **반영** — 승인된 내용만 `sources.json`에 쓴다. 소스 URL은 이 파일에만 두고 코드에 하드코딩하지 않는다 (§6.4). `type: crawl`이면 `scripts/crawlers/<site>.ts`가 필요하다고 후속 작업으로 보고만 한다(이 커맨드에서 만들지 않는다).
+8. **반영** — 승인된 내용만 `sources.json`에 쓰고, 같은 판정을 매체 도메인 단위로 `configs/publisher-domains.json`에도 반영한다(검색 결과 게시 가능 = `allow`, 자기 피드로만 = `feed-only`, 금지 = `deny` — PRD §15 D25, 교차 참조는 validate가 검사). 소스 URL은 이 파일에만 두고 코드에 하드코딩하지 않는다 (§6.4). `type: crawl`이면 `scripts/crawlers/<site>.ts`가 필요하다고 후속 작업으로 보고만 한다(이 커맨드에서 만들지 않는다).
 9. **검증** — `npm run validate` (스키마 + 교차 참조 — search 소스는 `search-queries.json`의 `source`가 참조).
 
 ## 사용자 확인 지점 (AskUserQuestion — 선택지 + 추천안)

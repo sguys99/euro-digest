@@ -14,12 +14,14 @@
 > **누적 결론 (M0-23 + M0-24, 2026-10-10)** — 해외 매체·기자 채널 26개(영문 24·이탈리아어 1·스페인어 1)를 약관 기준으로 판정한 결과 **AI 요약 가능 0 · 원제목+링크 9**(BBC 4·ESPN·The Athletic·the Daily Briefing·Di Marzio·Relevo) **· 제외 17**이다. 약관상 LLM 요약이 허용되는 해외 뉴스 소스가 없으므로 FR-20을 재정의했다(PRD §15 D23·D24): 해외 뉴스는 모두 원제목+링크 + 코드 규칙 한국어 태그로 게시하고, 일일 LLM 호출 #1은 "정형 데이터 기반 한국어 브리핑"으로 바꾼다. 앞으로 `summarize:true` 소스는 없다(`Source.summarize` 필드는 유지).
 >
 > **국내 매체 (M0-25, 2026-10-10)** — 8개 매체 중 **원제목+링크 3개 매체(인터풋볼·풋볼리스트·베스트일레븐, 피드 5개) · 기록용 2(스포탈코리아 — 피드 부적합, 연합뉴스 — 금지) · 미등록 3(스포티비뉴스·엑스포츠뉴스·OSEN — 피드 없음)**. RSS 요약문(description)은 본문 첫 300자 절단이라 표시·저장하지 않는다 → 국내 카드도 원제목+링크(`ai:false`).
+>
+> **Google News·검색 결과 매체 (M0-26, 2026-10-10)** — Google News RSS는 피드 고지(개인 피드 리더 외 이용 금지)·robots.txt `Disallow: /`·Google 약관 때문에 **사용 불가**다 → plan §14 B2 발동(뉴스 검색은 GDELT + 국내 매체 RSS). 검색형 소스가 돌려준 기사는 **`configs/publisher-domains.json` 매체 도메인 허용 목록**으로 거른다 — `allow`만 게시, 목록에 없는 도메인은 기본 차단(allow 4 · feed-only 7 · deny 16).
 
 ## 목차
 - [M0-23 1군 영문 RSS](#m0-23-1군-영문-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 6 · 제외 2)
 - [M0-24 2군 매체·기자 채널](#m0-24-2군-매체기자-채널) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 3 · 기록용 제외 5), FR-20 재정의(PRD §15 D23·D24)
 - [M0-25 국내 매체 RSS](#m0-25-국내-매체-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, `configs/sources.json` 등록(원제목+링크 3개 매체·피드 5 · 기록용 2 → 전체 23개), 요약문(description) 표시·저장 안 함
-- [M0-26 Google News RSS](#m0-26-google-news-rss)
+- [M0-26 Google News RSS](#m0-26-google-news-rss) ✅ 완료 — 사용자 결정(2026-10-10) 반영, 판정 금지(사용 불가)·plan §14 B2 발동, `configs/sources.json` 기록용 2개 등록(→ 25개), 검색 결과 매체 도메인 허용 목록 `configs/publisher-domains.json` 신설(allow 4 · feed-only 7 · deny 16)
 - [M0-27 GDELT DOC API](#m0-27-gdelt-doc-api)
 - [M0-28 football-data.org](#m0-28-football-dataorg)
 - [M0-29 API-Football](#m0-29-api-football)
@@ -729,7 +731,206 @@
    - (C) 섹션 피드만 + 하루 2회 수집(예: 18:30 KST 보조 실행에서 RSS 원자료만 `data/cache/`에 쌓고 06:30 실행이 합침) — 누락이 가장 적지만 `collect.yml`·캐시 구조를 바꿔야 한다.
 
 ## M0-26 Google News RSS
-(미착수)
+
+> 상태: **✅ 완료 — 사용자 결정(2026-10-10) 반영.** 판정 금지(사용 불가), plan §14 B2 발동. `configs/sources.json`에 판정 기록용 2개 등록(→ 25개), 검색 결과 매체 도메인 허용 목록 `configs/publisher-domains.json`과 스키마를 새로 만들었다. `configs/search-queries.json`은 M0-27에서 만든다. 아래 "핵심 결론"~"사용자 확인 질문"은 조사 시점 기록이고, 최종 결과는 "사용자 결정 (2026-10-10)"이 단일 출처다.
+
+대상: basic_plan §3.4·§3.6의 Google News RSS 검색(`https://news.google.com/rss/search?q=…&hl=…&gl=…&ceid=…`). 한국어 2종·영어 3종 쿼리 테스트, 이용 조건 확인, 하루 쿼리 상한 결정이 과제다.
+판정 기준·용어는 M0-23~M0-25와 같다(문서 머리 표, PRD §15 D22~D24). 검색 결과에는 여러 매체의 기사가 섞여 나오므로 Google의 조건과 함께 **결과 매체의 약관이 따라오는지(상속)**도 봤다.
+요청 범위: 2026-10-10 08:34~08:37 UTC(17:34~17:37 KST)에 직접 요청 5건을 보냈다. news.google.com robots.txt 1, policies.google.com robots.txt 1(404), support.google.com robots.txt 1, Google 서비스 약관 1, 서비스별 추가 약관 목록 1이다. **news.google.com의 `/rss/`·`/articles/` 경로 요청은 0건이다.** 보조 조사로 웹 검색 5회, 제3자 안내 문서 3건(WebFetch), GitHub 공개 저장소에 커밋된 Google News 피드 수집본 2건(`gh api`)을 확인했다. 금지 사이트 접근은 0건이다.
+
+### 핵심 결론 (먼저 읽기)
+1. **쿼리 5종 실측은 하지 않았다.** news.google.com robots.txt는 `User-agent: *`에 `Disallow: /`를 걸었고, 허용 목록(`/topics/`·`/stories/`·`/publications/`·`/about` 등)에 `/rss/`가 없다. ClaudeBot·anthropic-ai·GPTBot 같은 AI 봇은 별도 그룹으로 전면 차단한다. Google 서비스 약관은 robots.txt를 어기는 자동 접근을 금지하므로, 우리 봇 UA로 피드를 받는 것부터 약관 위반이 된다. M0-25 선례(엑스포츠뉴스 `/company/`는 robots Disallow라 요청하지 않음)와 CLAUDE §6.4에 따라 요청을 보내지 않았다. 판정은 실측 수치와 상관없이 정해진다(아래 4).
+2. **피드 스스로 공개 게시를 금지한다.** Google News RSS 채널의 `<copyright>`는 "personal feed reader for personal, non-commercial use"만 허용하고 "Any other use of the feed is expressly prohibited"라고 적었다. 공개 수집본 두 건(2025-01 토픽 피드, 2026-06 검색 피드)에서 같은 문구를 확인했다. 비영리여도 공개 웹사이트는 "개인 피드 리더"가 아니다. 결과를 게시하지 않고 내부 신호(기사 발견·클러스터 점수)로만 쓰는 것도 "using these results in any manner whatsoever"에 걸린다.
+3. **링크만으로는 원문 URL을 알 수 없다.** item `link`는 `news.google.com/rss/articles/<불투명 토큰>?oc=5` 형태의 리다이렉트이고, 2024년 형식 변경 뒤로는 토큰을 오프라인으로 풀 수 없다. 디코딩하려면 robots가 막은 경로(`/rss/articles/`·`/_/…/batchexecute`)를 기사마다 호출해야 한다. 따라서 원문 URL 해시로 만드는 카드 ID와 FR-04 중복 제거를 설계대로 쓸 수 없다.
+4. **판정: 금지(사용 불가).** 근거는 세 겹이다. 피드 고지의 명시적 금지, robots.txt 불허, 서비스 약관의 자동 접근·타사 콘텐츠 조항. 근거가 엇갈렸던 BBC·Di Marzio("불명확")와 달리 세 근거가 모두 같은 방향이라, 사용자 결정으로 위험을 받아들일 사안도 아니다. → **plan §14 B2가 일어났다.** Google News RSS 대신 GDELT(M0-27)와 국내 매체 RSS(M0-25에서 켠 5개 피드)를 쓴다.
+5. **매체 약관 상속 문제는 GDELT에서도 똑같이 생긴다.** 검색 결과에는 M0-23~25에서 금지·불명확으로 판정한 매체가 섞인다. 검색형 소스에는 매체 도메인 허용 목록(allowlist)이 필요하고, 이 규칙은 M0-27 판정 전에 정해 두기를 권고한다(아래 "사용자 확인 질문" 2).
+
+### 사용자 결정 (2026-10-10)
+
+| # | 항목 | 결정 | 반영 |
+|---|---|---|---|
+| 1 | Google News RSS | **금지 판정 수용 · 판정 기록용 등록 · 실측 없이 마감.** `google-news-ko`·`google-news-en`을 `enabled`·`summarize`·`terms_checked`·`robots_checked` 모두 `false`로 등록한다. **plan §14 B2 발동** — 뉴스 검색은 GDELT(M0-27) + 국내 매체 RSS(M0-25)로 대체 | `configs/sources.json` |
+| 2 | 검색형 소스의 매체 약관 상속 | **별도 도메인 허용 목록 `configs/publisher-domains.json` — 목록에 없는 도메인은 기본 차단.** 새 스키마 승인 | `src/lib/schema/publisher.ts`·`registry.ts`, `scripts/lib/validate-crossref.ts`, `fixtures/schema/configs/publisher-domains.json`, 테스트, `configs/publisher-domains.json` |
+| 3 | `configs/search-queries.json` | **지금 만들지 않는다.** M0-27(GDELT)에서 쿼리와 함께 만들고 `maxEnabled`도 그때 정한다(조사 시점 권고는 20 잠정) | — |
+
+**스키마 요지** — `PublisherDomainsFileSchema = { domains: PublisherDomain[] }` (configs라 strictObject, 도메인 중복 금지)
+- `domain`: 소문자 호스트 이름(스킴·포트·경로·끝 점·`www.` 없음). 호스트가 domain과 같거나 `"." + domain`으로 끝나면 매칭(하위 도메인 포함)하고, 여러 항목이 맞으면 가장 긴 domain이 이긴다. 경로 단위 구분은 하지 않는다.
+- `status`: `allow`(검색 결과로도 원제목+링크 게시) · `feed-only`(자기 피드로만 — `sourceIds` 1개 이상 필수) · `deny`(어떤 경로로도 게시 안 함). 목록 밖은 판정이 아니라 기본 차단이다.
+- 그 밖의 필드: `publisher` · `sourceIds`(기본 `[]`) · `basis` · `basisUrl`(필수) · `checkedAt`(YYYY-MM-DD) · `note?`.
+- 판정 함수: `findPublisherDomain(host, domains)`·`isSearchResultAllowed(host, domains)` — `allow`만 true, 목록 밖은 false. M1-07 GDELT 어댑터가 쓴다.
+- 교차 참조(`npm run validate` 4번 검사): ① `sourceIds`가 sources.json에 있는지 ② 판정이 소스의 약관 확인과 맞는지(`allow`·`feed-only` → `terms_checked:true`, `deny` → `terms_checked:false`) ③ 수집 대상 소스(`enabled && terms_checked`)의 피드 호스트가 `deny` 도메인에 속하지 않는지.
+- 오케스트레이터 초안에서 조정한 점: `basisUrl`을 필수로 추가(configs 공통 원칙 "근거 URL을 남긴다"), `feed-only`는 근거 피드 소스가 있어야 한다는 규칙, 교차 참조 ②·③ 추가(두 파일의 판정이 엇갈리지 않게 하는 이중 잠금).
+
+**등록 결과 — `configs/publisher-domains.json`** (27개 도메인, `npm run validate` 통과 — 교차 참조 오류 0건)
+
+| status | 개수 | 도메인 |
+|---|---|---|
+| allow | 4 | interfootball.co.kr · footballist.co.kr · besteleven.com · sportalkorea.com |
+| feed-only | 7 | bbc.co.uk · bbc.com · espn.com · nytimes.com · thedailybriefing.io · gianlucadimarzio.com · relevo.com |
+| deny | 16 | theguardian.com · skysports.com · sport.sky.de · caughtoffside.com · football-italia.net · football-espana.net · uefa.com · bundesliga.com · marca.com · calciomercato.com · teamtalk.com · football365.com · givemesport.com · yna.co.kr · osen.co.kr · news.google.com |
+
+- 각 항목의 `basis`에 조사 항목 ID(M0-23~26)·조항 요지·결정을, `basisUrl`에 대표 근거 URL을 적었다.
+- BBC는 기사 도메인 2개(bbc.co.uk·bbc.com)를 같은 판정으로 둔다. 피드 호스트 feeds.bbci.co.uk는 기사 도메인이 아니라 넣지 않았다.
+- nytimes.com은 도메인 단위라 NYT 전체가 `feed-only`다(RSS 조건이 NYT 전체에 같다).
+- givemesport.com은 M0-24 참고 조사(robots.txt 주석)만으로 넣었다(note에 명시).
+- 판정하지 않았거나 판정할 수 없던 곳(CBS Sports·90min·스포티비뉴스·엑스포츠뉴스·Get German/French Football News 등)은 넣지 않았다 → 기본 차단.
+
+**등록 결과 — `configs/sources.json`** (2개 추가 → 25개, `npm run validate` 통과, 수집 대상 `enabled && terms_checked` 14개·LLM 요약 대상 0개 그대로)
+
+| id | url | type | lang | enabled | summarize | terms_checked | robots_checked | tier | weight | 이용 방식 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `google-news-ko` | news.google.com/rss/search | search | ko | false | false | false | false | 3 | 1 | 판정 기록용 — 금지 |
+| `google-news-en` | news.google.com/rss/search | search | en | false | false | false | false | 3 | 1 | 판정 기록용 — 금지 |
+
+- 각 `note`에 판정·근거 3가지(피드 고지·robots.txt·Google 약관)·링크 구조·B2 발동을 적었다.
+- 테스트: `tests/schema/publisher.test.ts`(신규 — 도메인 형식·하위 도메인 매칭·가장 긴 항목 우선·기본 차단), `tests/validate-crossref.test.ts`(4번 검사), `tests/validate.test.ts`·`tests/schema/registry.test.ts`(개수 갱신).
+
+### 쿼리별 결과 표
+
+설계한 5종과 상태를 적는다. 최근 24시간 연산자(`when:1d`)는 붙이지 않고 테스트할 계획이었다.
+
+| # | 쿼리 `q` | hl · gl · ceid | 목적(purpose) | 상태 | 항목 수·최신/오래된 시각·매체 분포·중복·적합도 |
+|---|---|---|---|---|---|
+| 1 | `이강인` | ko · KR · KR:ko | korean | **요청 안 함** — robots.txt Disallow | 측정 안 함 |
+| 2 | `프리미어리그` | ko · KR · KR:ko | general | 요청 안 함 | 측정 안 함 |
+| 3 | `Arsenal transfer` | en-GB · GB · GB:en | transfer | 요청 안 함 | 측정 안 함 |
+| 4 | `"Champions League"` | en-GB · GB · GB:en | ucl | 요청 안 함 | 측정 안 함 |
+| 5 | `"Kim Min-jae"` | en-GB · GB · GB:en | korean | 요청 안 함 | 측정 안 함 |
+
+**피드 구조 — 실측이 아니라 공개 수집본 기준.** GitHub 공개 저장소에 커밋된 Google News 피드 원본 두 건에서 확인한 값이다. 우리 쿼리의 결과는 아니다.
+- 수집본 A: 검색 피드(`q=enterprise mashup`, `hl=en-US&gl=US&ceid=US:en`), `lastBuildDate` 2026-06-06, 63건 — https://github.com/nerevu/riko/blob/main/riko/data/news.google.com_rss_hl=en-US&gl=US&ceid=US_3Aen&q=enterprise%2Bmashup.xml
+- 수집본 B: 스포츠 토픽 피드, `lastBuildDate` 2025-01-14 — https://github.com/spragginsdesigns/web-scraper-assistant/blob/d46575d9293149f9362178cd671bdd0bcd70abf0/gnSports.md
+
+| 필드 | 형식 | 우리 파이프라인에 미치는 영향 |
+|---|---|---|
+| channel `generator`·`copyright` | `NFE/5.0` · 아래 "약관"의 고지문(A·B 같은 문구, 연도만 다름) | 이용 조건이 피드 안에 들어 있다 |
+| item `title` | `기사 제목 - 매체명` (Google이 " - 매체명"을 덧붙임) | 원제목으로 쓰려면 꼬리를 잘라야 해서 FR-20의 "피드 제목 무수정"과 부딪힌다 |
+| item `link` | `https://news.google.com/rss/articles/CBMi…?oc=5` | 원문 URL이 아니다(아래 "링크 구조") |
+| item `guid` | `isPermaLink="false"`, link의 토큰과 같은 값(`?oc=5` 없음) | Google 토큰끼리의 중복 판정에만 쓸 수 있다 |
+| item `pubDate` | RFC 822 GMT | 파싱이 쉽다 |
+| item `description` | HTML `<a href="(Google 링크)">제목</a>&nbsp;&nbsp;<font color="#6f6f6f">매체명</font>`. 토픽 피드는 같은 사건의 관련 기사를 `<ol><li>`로 나열 | 본문 발췌가 없다(제목·매체명뿐) |
+| item `source` | `<source url="https://solutionsreview.com">Solutions Review</source>` — 매체 **홈** URL(스킴+호스트) | 매체 도메인을 알 수 있는 유일한 필드라 허용 목록 대조에 쓸 수 있다 |
+| 항목 수 | 검색 피드 최대 약 100건, 관련도순(시간순 아님), `when:1d`로 기간 제한 | 제3자 안내 https://feeder.co/knowledge-base/rss-feed-creation/google-news-rss-feeds/ |
+
+- 레이트 리밋(429)은 요청을 보내지 않아 관찰하지 못했다. 공개 디코더 문서에 "does not avoid rate-limiting or CAPTCHAs presented by Google"(https://readme.hex.pm/google_news_decoder/0.1.0)이라는 문구가 있고, 다른 공개 명세 문서는 리다이렉트 링크가 "often triggering CAPTCHAs or 429s for bots"라고 적었다(https://github.com/JoaoCarabetta/arquivo-da-violencia 의 `docs/google news spec.md`). 봇 요청은 차단될 수 있다는 참고로만 둔다.
+
+### 링크 구조와 카드 ID·중복 제거 영향
+
+| 카드 링크 후보 | 방법 | 약관 | 기술 안정성 | 카드 ID(CLAUDE §8)·FR-04 영향 | 평가 |
+|---|---|---|---|---|---|
+| ① Google 링크 그대로 | item `link` 원문을 표시 링크로 쓴다 | 피드 이용 자체가 금지(고지). "표시 링크는 피드 원문"(FR-20) 규칙과는 맞는다 | 토큰 형식이 2024년에 한 번 바뀌었다 | ID를 Google 토큰 해시로 만들면 토큰이 같은 동안은 결정적이다. 형식이 바뀌면 ID가 한꺼번에 바뀌고 공유 앵커가 깨진다. 직접 RSS(BBC 등)로 들어온 같은 기사와는 URL 해시로 합칠 수 없어, `source` 도메인 + 꼬리를 뗀 제목으로 보조 키를 만들어야 한다(오탐·누락 위험). 독자의 클릭이 Google을 거친다(우리 사이트의 쿠키리스 방침과 결이 다름) | 쓸 수 있다면 유일한 후보 |
+| ② `source` url(매체 홈) | 매체 홈만 링크한다 | 링크 자체는 문제없음 | 안정 | **원문 링크 요건(FR-30)을 채우지 못한다.** 같은 매체 기사가 모두 같은 URL이 돼 ID가 충돌하고 FR-04 판정도 불가능하다 | 불가 |
+| ③ 디코딩 | 기사 페이지(`/rss/articles/…`)에서 서명(`data-n-a-sg`)·시각(`data-n-a-ts`)을 읽어 내부 `batchexecute` 엔드포인트에 POST(공개 디코더들의 방식) | robots가 막은 경로(`/rss/articles/`·`/_/`)를 자동으로 호출한다 → 약관의 robots 위반 자동 접근 금지, "bypassing our systems or protective measures" 조항에 걸린다 | 비공개 내부 API다. 2024년 변경 때 기존 방식이 깨졌다. 기사마다 1~2요청(45건이면 하루 45~90요청)이고 429·CAPTCHA 위험이 있다 | 원문 URL을 얻으면 ID·FR-04가 설계대로 동작한다 | **불가**(약관) |
+
+- 결론: Google News 결과로는 **"원문 URL 기반 결정적 해시"라는 카드 ID 규칙(CLAUDE §8, PRD §15 D15)을 지킬 수 없다.** 이론상 ①만 남지만 피드 이용 자체가 금지라 의미가 없다.
+- B2 대체재인 GDELT DOC API는 기사 원문 URL을 직접 돌려준다. FR-04 정규화·해시·카드 ID가 설계대로 동작한다는 점이 장점이다(M0-27에서 확인).
+
+### 약관 (확인 2026-10-10)
+
+- **피드 고지(RSS 전용 조건)** — 채널 `<copyright>`. RSS 이용 조건을 따로 적은 Google 웹 문서는 찾지 못했다(Google News 도움말을 검색하면 게시자용 Publisher Center 문서만 나온다). 수집본 A(2026-06-06) 원문:
+  > "Copyright © 2026 Google. All rights reserved. This XML feed is made available solely for the purpose of rendering Google News results within a personal feed reader for personal, non-commercial use. Any other use of the feed is expressly prohibited. By accessing this feed or using these results in any manner whatsoever, you agree to be bound by the foregoing restrictions."
+  - 수집본 B(2025-01-14)는 연도만 다르고 문구가 같다. 제3자 안내(feeder.co, 위 링크)도 "Each feed limits its use to a personal feed reader for personal, non-commercial use"라고 설명한다.
+  - 우리가 직접 피드를 받지 않았으므로 오늘(2026-10-10) 날짜의 문구는 확인하지 못했다. 다만 1년 넘게 같은 문구가 유지됐고, 문구가 바뀌었더라도 아래 robots·약관 판정은 그대로다.
+- **robots.txt** — https://news.google.com/robots.txt (200 `text/plain`, 33줄)
+  - `User-agent: *` 그룹: `Disallow: /`와 `Allow: /$`·`/?`·`/home$`·`/home?`·`/home/`·`/nwshp$`·`/topics/`·`/publications/`·`/stories/`·`/swg/`·`/about$`·`/about?`·`/about/`. RFC 9309 방식(가장 긴 경로 규칙)으로 보면 `/rss/search?q=…`는 `Disallow: /`에만 걸려 **불허**다. `/rss/articles/…`·`/articles/…`·`/_/…`도 불허다.
+  - `User-agent: CCBot · GPTBot · ChatGPT-User · PerplexityBot · anthropic-ai · ClaudeBot · Claude-Web` 그룹: `Disallow: /`(전면 차단).
+  - 사용자가 직접 구독하는 RSS 리더 요청은 robots.txt 적용 대상이 아니라는 해석도 있다. 하지만 우리 파이프라인은 정해진 시각에 스스로 돌고 결과를 공개 게시하는 봇이라 이 해석에 기댈 수 없다.
+- **Google 서비스 약관** — https://policies.google.com/terms (Effective July 30, 2026)
+  - "Don't abuse our services": "using automated means to access content from any of our services in violation of the machine-readable instructions on our web pages (for example, robots.txt files that disallow crawling, training, or other activities)" · "spamming, hacking, or bypassing our systems or protective measures" · "using our services (including the content they provide) to violate anyone’s legal rights, such as intellectual property or privacy rights"
+  - "Content in Google services": "some of our services give you access to content that belongs to other people or organizations — for example, … a newspaper article displayed in Google News. You may not use this content without that person or organization’s permission, or as otherwise allowed by law."
+  - 서비스 이용 중단 사유의 예: "scraping content that doesn’t belong to you".
+- **서비스별 추가 약관** — https://policies.google.com/terms/service-specific : "News" 항목에는 "Terms of Service" 1건만 있다. **Google News 전용 추가 약관은 없다.**
+- **요약** — ① 원제목+링크 게시: **금지.** 피드 고지가 개인 피드 리더 밖의 이용을 명시적으로 막고, 비영리·광고 없음은 예외가 되지 않는다. ② 자동 수집: **금지.** robots.txt가 불허하고 약관이 robots 위반 자동 접근을 금지한다. ③ 결과를 내부 신호로만 쓰기: **금지.** 고지가 "using these results in any manner whatsoever"까지 묶는다. ④ 결과 기사의 권리는 Google이 아니라 각 매체에 있다(약관 "Content in Google services").
+
+### 매체 약관 상속
+
+Google 약관이 직접 밝히듯 Google News에 보이는 기사의 권리는 각 매체에 있다. 그러니 Google News를 쓸 수 있었더라도 결과 기사마다 그 매체의 판정을 따라야 했다. GDELT(M0-27)도 수많은 매체의 기사 URL·제목을 돌려주므로 **같은 문제가 그대로 생긴다.** 그래서 이 절은 검색형 소스 전체에 대한 제안으로 쓴다.
+
+1. **금지·불명확 매체 도메인은 반드시 걸러야 한다.** 우리가 제외한 매체의 기사를 검색 경로로 게시하면 판정을 우회하는 것과 같다.
+   - `sources.json`의 `terms_checked:false` 소스: skysports.com · theguardian.com · caughtoffside.com · football-italia.net · football-espana.net · uefa.com · yna.co.kr
+   - 문서에만 남긴 금지 판정: sport.sky.de · bundesliga.com · marca.com · calciomercato.com · teamtalk.com · football365.com · osen.co.kr, 그리고 M0-24 참고 조사에서 자동 수집·AI 이용 금지 문구를 확인한 givemesport.com
+   - m4ow 계약(Rocket 계열)은 "검색 서비스 밖의 표시"를 금지하고 무허가 접근에 건당 £500을 매긴다. 검색 결과를 거쳐 게시해도 그대로 걸린다.
+2. **차단 목록(denylist)만으로는 부족하고 허용 목록(allowlist)이 필요하다.** 검색 결과의 대부분은 우리가 판정하지 않은 매체다. "근거가 모호하면 보수적으로"(D22)를 따르면 미판정 매체를 기본 게시로 둘 수 없다.
+3. **`sources.json`의 판정을 그대로 가져다 쓸 수는 없다.** 허가 범위가 피드에 묶인 매체가 있기 때문이다.
+
+| 구분 | 매체 | 판정 근거의 범위 | 검색 결과 게시 |
+|---|---|---|---|
+| 피드 한정 허가 | ESPN(RSS Terms "content that is provided in the feed", "URLs provided in the feed") · The Athletic(NYT RSS "use of NYTimes.com RSS feeds … as part of a non-commercial blog") · BBC(ToU §15 a "add the BBC News RSS feed to your website") | 피드에 실린 항목의 게시만 허가 | **불가.** 검색으로만 찾은 기사는 피드 밖이다. 피드에 실린 기사라면 이미 피드로 받는다 |
+| 사용자 결정(위험 수용) | the Daily Briefing · Di Marzio · Relevo | 피드 게시에 대한 결정 | **불가**(결정 범위 밖). 넓히려면 새 결정이 필요하다 |
+| 매체 단위 해석 근거 | 인터풋볼 · 풋볼리스트 · 베스트일레븐 · 스포탈코리아 | RSS 안내(제3자 사이트 게재)에, "금지 대상은 저작물의 복제·전송이고 짧은 제목은 저작물성이 낮으며 링크는 복제가 아니다"라는 매체 단위 해석이 더해짐 | **조건부 가능.** 제목 무수정·원문 링크·매체명 표기 |
+| 금지·불명확 | 위 1의 도메인 | — | **불가**(차단) |
+| 미판정 | 그 밖의 모든 매체 | — | **보류.** 게시하지 않고 빈도만 집계한 뒤 `/add-source`로 매체를 판정한다 |
+
+4. **권고 규칙(검색형 소스 공통, M1-07에서 구현)**
+   - 결과마다 매체 도메인을 얻는다(GDELT는 기사 URL의 호스트, Google News라면 `source` url). `www.`를 떼고 eTLD+1로 맞추되, 한 도메인 안에서 경로로 매체가 갈리는 곳(nytimes.com/athletic)은 경로 접두사까지 본다.
+   - 매체 도메인 판정표에서 "검색 결과 게시 = 허용"인 도메인만 게시한다. 차단 도메인은 버리고, 미판정 도메인은 게시하지 않은 채 `data/cache/`에 도메인별 빈도를 쌓아 주간 이슈로 올린다(`/add-source` 후보).
+   - 판정표를 어디에 둘지는 스키마 변경이라 사용자 결정 사항이다(아래 질문 2). 후보는 (a) 새 설정 `configs/publisher-domains.json`(도메인 → 판정·근거 URL·검색 게시 허용·연결 소스 id)과 (b) `Source`에 `domains[]`·검색 게시 플래그를 더하는 방식이다. `sources.json`은 "피드" 단위라서 피드 없는 금지 매체(OSEN·Marca 등)를 담기 어렵다. 그래서 (a)를 권고한다.
+   - 지금 판정만으로 허용할 수 있는 도메인은 국내 4개뿐이다. 해외 매체는 하나씩 판정하기 전까지 검색형 소스에서 얻을 기사가 거의 없다.
+
+### 하루 쿼리 상한 권고
+
+- **Google News: 0개.** 사용할 수 없으므로 활성 쿼리를 두지 않는다.
+- **`configs/search-queries.json` `maxEnabled`: 20(잠정).** B2에 따라 검색 쿼리는 GDELT 전용이 되고, 최종값은 M0-27의 GDELT 실측(요청 간격·쿼리당 결과 수·허용 매체 비율)으로 정한다. basic_plan의 20~30에서 하한을 고른 이유는 두 가지다. ① 허용 목록을 적용하면 쿼리당 게시할 수 있는 결과가 적어, 쿼리를 늘려도 얻는 기사가 비례해서 늘지 않는다. ② 요청 예절상 요청은 적을수록 좋다.
+- **쿼리 구성 원칙(GDELT 기준 제안)**
+  1. 한국 선수: 1명당 영문 이름 쿼리 1개(약 10개). 한국어 보도는 국내 매체 RSS 5개 피드가 맡는다(인터풋볼 해외축구 피드는 제목의 50%가 한국 선수, M0-25). 한국어 쿼리는 M0-27에서 GDELT의 한국어 매체 범위를 확인한 뒤 정한다.
+  2. 이적: 클럽마다 쿼리를 두지 않고 빅클럽을 묶은 쿼리 3~5개(OR 연산자).
+  3. UCL 1개, 대표팀 1개(A매치 기간 ±3일에만 `enabled`, FR-71), 여유 2~3개.
+  4. 쿼리마다 시간 창(직전 성공 실행 ~ 현재, 최대 36시간 — FR-07)과 결과 상한을 고정하고, `purpose`는 점수화 힌트로만 쓴다(FR-06).
+  5. 쿼리는 `/add-player`(선수)와 수동 편집으로만 추가하고, 상한은 `npm run validate`가 검사한다.
+- 기존 fixture(`fixtures/schema/configs/search-queries.json`)가 `google-news-ko`·`google-news-en` id를 쓴다. 판정 기록용으로 등록하면 같은 id가 생기지만 `enabled:false`라 실행되지 않는다. fixture를 GDELT 예시로 바꿀지는 M0-27 결과와 함께 정한다.
+
+### Source 권고값 (판정 기록용)
+
+권고안 파일: `/tmp/claude-1000/-home-sguys99-project-euro-digest/7c9f579e-56cb-4022-8cf1-1b0af43189dd/scratchpad/m0-26-proposal.json` — `sources` 2개와 `searchQueries` 초안. 각 `note`에 확인 날짜·근거 URL·짧은 인용을 적었다.
+
+| id | type | url | lang | enabled | summarize | terms_checked | robots_checked | tier | weight | competitions | 이용 방식 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `google-news-ko` | search | news.google.com/rss/search | ko | false | false | false | false | 3 | 1 | [] | 판정 기록용 — 금지 |
+| `google-news-en` | search | news.google.com/rss/search | en | false | false | false | false | 3 | 1 | [] | 판정 기록용 — 금지 |
+
+- 한/영 두 소스로 나눈 것은 기존 fixture의 id 관례를 따른 것이다. hl·gl은 쿼리의 `lang`·`region`으로 정한다.
+- `robots_checked:false`는 "확인했으나 불허"라는 뜻이다. 지금까지 등록한 23개는 모두 허용이라 `true`였다. `terms_checked`와 함께 이중 잠금이 모두 `false`다.
+- `searchQueries` 초안에는 `maxEnabled: 20`과 설계한 5종(`gn-ko-lee-kang-in`·`gn-ko-premier-league`·`gn-en-arsenal-transfer`·`gn-en-champions-league`·`gn-en-kim-min-jae`)을 모두 `enabled:false`로 넣었다. **`player` slug는 비워 두었다.** `korean-players.json`이 아직 없기 때문이다(M0-32). 나중에 `/add-player`가 채운다.
+- **스키마 검증**(`node --import tsx`): 권고안 `SourceSchema.array()` **통과(2개)**, 기존 23개와 합친 25개 `SourcesFileSchema` **통과**(id 중복 없음), `SearchQueriesFileSchema` **통과**(쿼리 5 · 활성 0 · 상한 20), 교차 참조 `checkSearchQuerySources`(`scripts/lib/validate-crossref.ts`) **통과**(5개 모두 type `search` 소스를 가리킴). rss 소스를 가리키게 바꾼 음성 대조는 오류 1건으로 잡혔다. 합친 뒤에도 수집 대상(`enabled && terms_checked`)은 14개, LLM 요약 대상은 0개 그대로다.
+
+### 판정·B2 분기
+
+| 항목 | 판정 |
+|---|---|
+| 원제목+링크 게시(`type: search`) | **금지** — 피드 고지가 "personal feed reader" 밖의 이용을 명시적으로 금지 |
+| 자동 수집 | **금지** — robots.txt `Disallow: /`(`/rss/` 불허) + 약관의 robots 위반 자동 접근 금지 |
+| 원문 URL 디코딩 | **불가** — robots 불허 경로·비공개 내부 API |
+| 내부 신호로만 사용 | **금지** — "using these results in any manner whatsoever" |
+| 종합 | **사용 불가** → plan §14 **B2 발생** |
+
+**B2 분기 결론**: Google News RSS는 쓰지 않는다. 뉴스 검색은 **GDELT(M0-27) + 국내 매체 RSS(M0-25, 5개 피드)**로 대체한다. NewsData.io 같은 다른 API는 plan대로 사용자 승인 후에만 검토하고, 지금은 권고하지 않는다(새 외부 서비스이고, 결과 매체 약관 상속 문제가 똑같이 생긴다).
+
+**잃는 것과 남는 것**
+- 잃는 것: 한국 선수별 국내 보도의 폭(basic_plan §3.4의 "선수 10명 × 1쿼리"). 다만 허용 목록을 적용했다면 Google News 한국어 결과에서 게시할 수 있는 것은 국내 4개 매체 기사뿐이었다. 이 매체들은 이미 RSS로 받고 있으므로 실제 손실은 "RSS 20건 창 밖으로 밀려난 같은 매체 기사" 정도로 작다.
+- 남는 것: 국내 RSS 5개 피드, 해외 원제목 소스 9개, GDELT(원문 URL 제공 — 허용 목록 규칙 적용).
+
+**후속 반영 대상**(사용자 확인 후 오케스트레이터가 반영 — 이 작업에서는 고치지 않았다)
+- PRD: FR-02 수집 우선순위의 "뉴스 검색(Google News RSS·GDELT)" → GDELT, §15 D23의 "한국어 콘텐츠는 국내 매체 RSS·Google News 한국어로 보강" → 국내 매체 RSS, §13 위험 표의 "Google News RSS 차단·조건 변경" → 발생, NFR-09에 검색 결과 매체 약관 상속 규칙 추가 여부.
+- plan: M1-06(Google News 어댑터) → 취소하거나 `search-queries` 처리를 M1-07 GDELT 어댑터로 통합, D0 뉴스 카드 변형의 "한국어 보도 카드(국내 매체·Google News 한국어)" → 국내 매체만, M0-34의 "국내 카드는 M0-25·M0-26 판정 통과분" → M0-25 통과분만.
+- CLAUDE §13 미결의 "Google News RSS·GDELT 이용 조건" → Google News는 해결(사용 불가), GDELT는 M0-27.
+- M0-27(GDELT): 이 절의 "매체 약관 상속" 규칙을 같은 기준으로 적용한다.
+
+### 사용자 확인 질문 — 2026-10-10 답변 완료
+
+> 답변: 1 → (A) 기록용 등록·B2 발동 · 2 → (A) 별도 도메인 허용 목록 `configs/publisher-domains.json`(목록 밖 기본 차단) · 3 → (A) 실측 없이 마감, `search-queries.json`은 M0-27에서 만든다. 자세한 내용은 위 "사용자 결정 (2026-10-10)".
+
+1. **Google News RSS 판정과 B2 발동**
+   - (A) **금지 판정을 받아들여 B2를 발동하고, 판정 기록용 2개를 등록(추천)** — `google-news-ko`·`google-news-en`을 `enabled:false`·`terms_checked:false`·`robots_checked:false`로 등록한다(M0-23 Sky·Guardian, M0-25 연합뉴스 선례). fixture의 id 관례와 맞고, 같은 조사를 다시 하지 않게 막는다.
+   - (B) 판정·B2 발동은 같고 `sources.json`에는 등록하지 않는다 — 설정 파일이 단순해지는 대신 검색 쿼리 초안(GN 5종)도 함께 뺀다.
+   - (C) 사용자 해석으로 켬 — **비권고.** BBC·Di Marzio처럼 근거가 엇갈리는 경우가 아니다. 명시적 금지 문구·robots 불허·약관 조항이 모두 같은 방향이고, 차단(IP·계정) 위험도 있다.
+2. **검색형 소스(GDELT 포함)의 매체 약관 상속 규칙** — M0-27 전에 정하면 GDELT를 같은 기준으로 판정할 수 있다.
+   - (A) **매체 도메인 허용 목록을 새 설정 `configs/publisher-domains.json`에 둔다(추천).** 도메인마다 판정·근거 URL·검색 게시 허용 여부·연결 소스 id를 적고, 미판정 도메인은 게시하지 않은 채 빈도만 집계해 주간 이슈로 올린다. 새 zod 스키마·fixture·테스트가 필요하다(CLAUDE §8 순서). 처음 허용되는 도메인은 국내 4개뿐이고, 해외 매체는 하나씩 판정해 늘린다.
+   - (B) `Source`에 `domains: string[]`와 검색 게시 플래그를 더해 `sources.json`을 재사용한다 — 파일은 하나로 유지된다. 대신 피드 없는 금지 매체(OSEN·Marca 등)도 소스로 등록해야 하고, "피드 한정 허가"와 "매체 단위 허가"를 가르는 플래그가 필요하다.
+   - (C) 차단 목록만 둔다(금지 판정 도메인만 막고 나머지는 게시) — **비권고.** 미판정 매체가 대부분이라 D22의 보수 원칙과 맞지 않는다.
+3. **쿼리 5종 실측을 하지 않은 것의 처리**
+   - (A) **실측 없이 이대로 마감(추천)** — 판정은 robots·피드 고지·약관만으로 확정되고, 매체 분포 같은 수치는 판정을 바꾸지 않는다. `maxEnabled`는 20 잠정으로 두고 M0-27에서 확정한다.
+   - (B) 사용자가 개인 브라우저로 5개 URL을 직접 열어 결과 매체 분포만 기록 — 피드 고지의 "개인 열람"으로 볼 여지는 있지만, 결과를 공개 저장소 문서에 남기는 것도 "그 밖의 이용"으로 볼 수 있어 얻는 것이 적다.
+   - (C) 봇 UA로 5건만 실측 — **비권고.** robots.txt 위반이라 약관에 걸리고, M0-25 선례와 CLAUDE §6.4에 어긋난다.
 
 ## M0-27 GDELT DOC API
 (미착수)
