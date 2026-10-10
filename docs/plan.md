@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-03` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-04` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -124,7 +124,7 @@
 ### M0-A 저장소·개발 환경
 - [x] M0-01 Next.js(App Router) + TypeScript strict 생성, `next.config`: `output:'export'`, `basePath:'/euro-digest'`, `trailingSlash:true`, `images.unoptimized:true` (CLAUDE §3) — 2026-10-10 완료: next 16.4.0 · react 19.3.0 · TypeScript 6.0.3(typescript-eslint 호환 범위) · Node 24(`.nvmrc`도 여기서 생성)
 - [x] M0-02 Tailwind CSS v4 + shadcn/ui 초기화 — **스타일 작업 금지**, `globals.css`에 토큰 자리만 둔다 — 2026-10-10 완료: tailwindcss 4.3.3, components.json 직접 작성(style·iconLibrary는 D0-12에서 확정), lucide·tw-animate-css 미설치, 클래스 탐색 범위 `src/` 한정
-- [ ] M0-03 ESLint · Prettier(+tailwind 플러그인) · Vitest · Testing Library · Playwright 설정, `.nvmrc`(Node LTS)
+- [x] M0-03 ESLint · Prettier(+tailwind 플러그인) · Vitest · Testing Library · Playwright 설정, `.nvmrc`(Node LTS) — 2026-10-10 완료: ESLint 9(next 16.4 호환)·SDK import 제한 규칙, Vitest 5(node/happy-dom 분리, `LLM_MODE=mock` 강제), Playwright 1.64(375·1280), `scripts/serve-out.ts`(basePath 정적 서버)
 - [ ] M0-04 npm scripts 골격 — CLAUDE §5의 전 명령 등록 (미구현 명령은 TODO 메시지 출력)
 - [ ] M0-05 폴더 구조 생성 (CLAUDE §5), `@/*` 별칭이 `src/`와 `scripts/`(tsx) 양쪽에서 동작하는지 확인
 - [x] M0-06 문서 이관: `basic_plan.md`·`PRD.md`·`plan.md` → `docs/`, `CLAUDE.md` → 루트, `WORK-PLAN.md` 표기를 `plan.md`로 일괄 치환 (2026-10-10, 문서 정합성 검토 때 처리)

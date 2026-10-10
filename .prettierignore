@@ -1,0 +1,24 @@
+# Prettier 3은 .gitignore도 함께 읽는다. 아래는 커밋되지만 서식을 건드리면 안 되는 파일.
+
+# 문서: 한국어 마크다운 표 정렬이 깨지지 않게 모든 마크다운은 제외
+*.md
+docs/
+.claude/
+
+# 파이프라인 산출물(손 편집 금지)·개발 샘플(원본 응답 그대로 보존)
+data/
+fixtures/
+
+# 도구가 생성·관리하는 파일
+package-lock.json
+skills-lock.json
+.mcp.json
+next-env.d.ts
+
+# 빌드·테스트 산출물 (.gitignore와 중복이지만 명시)
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+blob-report/
