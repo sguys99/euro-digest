@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-05` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-07` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -126,7 +126,7 @@
 - [x] M0-02 Tailwind CSS v4 + shadcn/ui 초기화 — **스타일 작업 금지**, `globals.css`에 토큰 자리만 둔다 — 2026-10-10 완료: tailwindcss 4.3.3, components.json 직접 작성(style·iconLibrary는 D0-12에서 확정), lucide·tw-animate-css 미설치, 클래스 탐색 범위 `src/` 한정
 - [x] M0-03 ESLint · Prettier(+tailwind 플러그인) · Vitest · Testing Library · Playwright 설정, `.nvmrc`(Node LTS) — 2026-10-10 완료: ESLint 9(next 16.4 호환)·SDK import 제한 규칙, Vitest 5(node/happy-dom 분리, `LLM_MODE=mock` 강제), Playwright 1.64(375·1280), `scripts/serve-out.ts`(basePath 정적 서버)
 - [x] M0-04 npm scripts 골격 — CLAUDE §5의 전 명령 등록 (미구현 명령은 TODO 메시지 출력) — 2026-10-10 완료: 진입점 스텁 8종(구현 예정 작업 ID 출력), `collect` 인자 파싱(`--limit`·`--dry`·`--mock`) + 테스트, env는 `node --env-file-if-exists=.env.local --import tsx`로 로드
-- [ ] M0-05 폴더 구조 생성 (CLAUDE §5), `@/*` 별칭이 `src/`와 `scripts/`(tsx) 양쪽에서 동작하는지 확인
+- [x] M0-05 폴더 구조 생성 (CLAUDE §5), `@/*` 별칭이 `src/`와 `scripts/`(tsx) 양쪽에서 동작하는지 확인 — 2026-10-10 완료: 디렉터리 + `.gitkeep`, configs·data·fixtures 손 편집 규칙 README, `src/lib/site.ts`로 src·scripts(tsx)·Vitest 별칭 확인 (`public/`·`.github/`·`docs/design/fonts/`는 파일이 생길 때 만든다)
 - [x] M0-06 문서 이관: `basic_plan.md`·`PRD.md`·`plan.md` → `docs/`, `CLAUDE.md` → 루트, `WORK-PLAN.md` 표기를 `plan.md`로 일괄 치환 (2026-10-10, 문서 정합성 검토 때 처리)
 - [ ] M0-07 `.claude/settings.json` — `.env*` 읽기 금지, 위험 명령 확인
 - [ ] M0-08 커스텀 커맨드 6종 초안: `/add-player` `/add-source` `/add-name` `/new-season` `/takedown` `/design-concepts` (동작 완성은 해당 기능 단계에서)
