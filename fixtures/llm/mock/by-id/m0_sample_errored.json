@@ -1,0 +1,8 @@
+{
+  "type": "errored",
+  "note": "M0-20 전송 계층 테스트용 — 배치 결과 errored(과금 없음) / 단건 호출 시 400 오류를 흉내 낸다.",
+  "error": {
+    "type": "invalid_request_error",
+    "message": "sample invalid request"
+  }
+}

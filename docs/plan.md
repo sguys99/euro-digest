@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-20` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-21` (M0-15는 사용자 설정 대기) (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -145,7 +145,7 @@
 - [x] M0-17 `scripts/validate.ts` 1차: `configs/*` 스키마 검증 → CI 연결 (잘못된 설정은 CI 실패) — 2026-10-10 완료: configs·data(있으면) 스키마 + 교차 참조 3종(search-queries→sources·korean-players, 대표팀 명단→korean-players), 미등록 파일·BOM은 오류, 필수 파일 `takedowns.json`(seed `[]`), CI `::error` 주석
 - [x] M0-18 `src/lib/time.ts`: UTC 저장·KST 표시 + DST 테스트 (2026-10-25, 2027-03-28 전후 케이스) (NFR-10) — 2026-10-10 완료: `Intl`만 사용(의존성 0), KST 날짜·포맷·ISO 주차·KST 창·현지→UTC(DST 경계는 RFC 5545 `compatible`), 테스트 158개(시스템 TZ 5종 통과), 다른 파일의 시간대 API 사용 금지 가드 테스트
 - [x] M0-19 `src/lib/paths.ts`: basePath 헬퍼(정적 자산·RSS·ics·OG) + 테스트 — 2026-10-10 완료: `routes.*`(PRD §4 IA 전 경로, basePath 없음·trailing slash)·`artifacts.*`·`withBasePath`·`absoluteUrl`·`summaryErrorIssueUrl`, next.config가 같은 정규화로 `NEXT_PUBLIC_*` 인라인, `/euro-digest` 하드코딩 가드, 루트 빌드(`BASE_PATH=`)도 통과. OG 경로는 잠정(M5-01에서 확인)
-- [ ] M0-20 `scripts/lib/llm.ts`: live/mock 모드, Batches 제출·폴링, `usage` 집계 — SDK import는 이 파일에서만
+- [x] M0-20 `scripts/lib/llm.ts`: live/mock 모드, Batches 제출·폴링, `usage` 집계 — SDK import는 이 파일에서만 — 2026-10-10 완료: `@anthropic-ai/sdk` 0.133, `createLlmClient`(submit/poll/collect/cancel/runBatch/callSingle), 429·5xx만 재시도, mock은 `fixtures/llm/mock/by-id|by-hash`, usage → RunLog.tokens(배치·단건 구분), 테스트 77개(실호출 없음). Haiku 5.5는 thinking 기본 켜짐 → M0-30에서 `effort:low`/`thinking:disabled` 비교 실측
 - [ ] M0-21 `scripts/lib/cost.ts`: 모델 단가 표(구현 시점 공식 단가 확인), 예상 비용 계산, 비용 기록(prod → `runs.json`, dev → `runs-dev.json`), 가드는 두 파일 합산
 - [ ] M0-22 구조화 로거 + GitHub 이슈 생성 헬퍼 (같은 원인이면 기존 이슈에 댓글)
 
