@@ -1,0 +1,57 @@
+# 소스 고장 (FR-08, FR-11)
+# 사람은 이 양식으로, 파이프라인은 API로 같은 `### <라벨>` 헤딩 구조의 본문을 만들어 연다
+# (자동 생성 시 라벨: source-broken + source-health).
+name: 소스 고장
+description: 뉴스 소스의 수집 이상(0건·피드 오류·파싱 실패 등)을 알립니다. 사람이 직접 열거나 파이프라인이 자동으로 엽니다.
+title: "[소스 고장] "
+labels: ["source-broken"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        이 양식은 두 경우에 씁니다.
+
+        - **자동** — 수집 파이프라인이 같은 소스에서 3일 연속 0건을 감지하면 같은 항목으로 이슈를 만들고 `source-health` 라벨을 함께 붙입니다.
+        - **직접** — 특정 매체 소식이 끊겼거나, 깨진 카드·스팸이 반복되면 열어 주세요. 소스 ID를 모르면 매체 이름이나 피드 주소를 적어도 됩니다.
+
+        API 키 같은 비밀값이나 응답 본문 전체는 붙이지 마세요.
+  - type: input
+    id: source-id
+    attributes:
+      label: 소스 ID
+      description: "`configs/sources.json`의 `id` 값. 모르면 매체 이름이나 피드 URL을 적어 주세요."
+      placeholder: "예: guardian-football"
+    validations:
+      required: true
+  - type: dropdown
+    id: symptom
+    attributes:
+      label: 증상
+      description: 해당하는 것을 모두 고르세요.
+      multiple: true
+      options:
+        - 0건 수집
+        - 피드 URL 오류(4xx·5xx)
+        - 파싱 실패
+        - 중복·스팸
+        - 약관·robots 변경
+        - 기타
+    validations:
+      required: true
+  - type: input
+    id: first-seen
+    attributes:
+      label: 처음 발생 날짜
+      description: 이상을 처음 확인한 날짜(한국 시간, YYYY-MM-DD)
+      placeholder: "2026-10-10"
+  - type: input
+    id: run-log
+    attributes:
+      label: 관련 실행 로그 링크
+      description: GitHub Actions 실행 URL 또는 `data/runs.json`의 해당 실행 ID
+      placeholder: "https://github.com/sguys99/euro-digest/actions/runs/…"
+  - type: textarea
+    id: notes
+    attributes:
+      label: 메모
+      description: 오류 메시지, HTTP 상태 코드, 최근 7일 수집 건수, 대체 소스 후보 등을 적어 주세요.

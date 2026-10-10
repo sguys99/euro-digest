@@ -1,0 +1,72 @@
+# 삭제·정정 요청 (FR-140, FR-143, PRD §15 D8·D14)
+# 처리: CLAUDE.md §12 → `/takedown <card-id>` → configs/takedowns.json 등록 → 재빌드·배포 (접수 후 72시간 이내)
+# 비공개 연락은 이메일(sguys99@gmail.com)로 받는다. 이 양식은 공개 이슈다.
+name: 삭제·정정 요청
+description: 저작권자·매체나 기사 당사자가 카드의 삭제·정정을 요청합니다. 접수 후 72시간 이내에 처리합니다.
+title: "[삭제·정정] "
+labels: ["takedown"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        유로 다이제스트는 기사 제목·RSS 요약·OG 설명만으로 짧은 한국어 요약을 만들고, 모든 카드에 출처와 원문 링크를 붙입니다. 카드를 내리거나 바로잡아야 한다면 아래 양식을 채워 주세요.
+
+        **처리 기준** — 삭제·정정 요청 모두 **접수(이슈 생성) 후 72시간 이내**에 해당 카드를 사이트에서 비공개 처리합니다. 비공개 처리한 카드는 다음 수집 실행 때 사이트 데이터 원본에서도 지웁니다. 다만 공개 저장소의 git 이력에는 남을 수 있습니다.
+
+        **이 이슈는 공개됩니다** — 누구나 내용을 볼 수 있습니다. 신원 확인이나 비공개 연락이 필요하면 이 양식 대신 이메일 [sguys99@gmail.com](mailto:sguys99@gmail.com)로 보내 주세요. 이메일도 같은 기준(접수 후 72시간 이내)으로 처리합니다.
+
+        카드 ID는 `c_` 뒤에 16진수 10자리가 붙은 형식입니다(예: `c_8f3a1b2c4d`). 카드의 **공유 → 링크 복사**로 받은 주소 끝의 `#c_…` 부분입니다.
+  - type: dropdown
+    id: requester
+    attributes:
+      label: 요청자 유형
+      options:
+        - 저작권자·매체
+        - 기사 당사자
+        - 기타
+    validations:
+      required: true
+  - type: input
+    id: card
+    attributes:
+      label: 카드 ID 또는 카드 링크
+      description: "`c_` + 16진수 10자리, 또는 `…/news/YYYY-MM-DD/#c_…` 형식의 공유 링크. 여러 장이면 쉼표로 구분해 주세요."
+      placeholder: "c_8f3a1b2c4d 또는 https://sguys99.github.io/euro-digest/news/2026-10-10/#c_8f3a1b2c4d"
+    validations:
+      required: true
+  - type: input
+    id: source-url
+    attributes:
+      label: 원문 기사 URL
+      description: 카드가 인용한 원문 기사 주소. 카드를 찾는 데 도움이 됩니다.
+      placeholder: "https://"
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: 요청 종류
+      options:
+        - 삭제
+        - 정정
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: 사유
+      description: 삭제·정정이 필요한 이유를 적어 주세요. 정정 요청이면 바로잡을 내용도 함께 적어 주세요.
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: 회신 연락처 (선택)
+      description: 공개 이슈라 여기에 적은 이메일·전화번호는 누구나 볼 수 있습니다. 이 이슈의 GitHub 알림으로 회신하므로 비워 두어도 됩니다. 비공개 연락은 sguys99@gmail.com 메일로 해 주세요.
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: 확인
+      options:
+        - label: 이 이슈가 공개되며, 비공개 연락은 이메일로 해야 한다는 점을 확인했습니다.
+          required: true
+        - label: 접수 후 72시간 이내 비공개 처리 기준과, 공개 저장소의 git 이력에는 남을 수 있다는 점을 확인했습니다.
+          required: true

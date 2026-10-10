@@ -1,0 +1,68 @@
+# 요약 오류 신고 (FR-36, PRD §9.4)
+# 사이트 카드 메뉴의 "요약 오류 신고" 링크가 카드 ID를 채워 연다:
+#   https://github.com/sguys99/euro-digest/issues/new?template=summary-error.yml&card=c_8f3a1b2c4d&date=2026-10-10
+# 필드 id(card·date)는 URL 프리필 키이므로 바꾸면 사이트 링크도 함께 고친다.
+name: 요약 오류 신고
+description: 뉴스 카드 요약의 사실·숫자·표기·분류 오류를 알려 주세요. 주간 검수에서 모아 요약 품질 개선에 씁니다.
+title: "[요약 오류] "
+labels: ["summary-error"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        신고해 주셔서 고맙습니다. 들어온 신고는 `summary-error` 라벨로 모아 **매주 검수**하고, 확인된 오류는 요약 지시문과 고유명사 표기 사전 개선에 반영합니다. 개별 카드를 고칠지와 그 시점은 검수 결과에 따라 달라질 수 있습니다.
+
+        - 카드 ID는 `c_` 뒤에 16진수 10자리가 붙은 형식입니다(예: `c_8f3a1b2c4d`).
+        - 카드의 **공유 → 링크 복사**로 받은 주소 끝의 `#c_…` 부분이 카드 ID입니다. 사이트 카드 메뉴의 "요약 오류 신고"로 들어오면 자동으로 채워집니다.
+        - 기사 저작권자·당사자의 삭제·정정 요청은 **삭제·정정 요청** 양식을 써 주세요.
+  - type: input
+    id: card
+    attributes:
+      label: 카드 ID 또는 카드 링크
+      description: "`c_` + 16진수 10자리, 또는 `…/news/YYYY-MM-DD/#c_…` 형식의 공유 링크"
+      placeholder: "c_8f3a1b2c4d 또는 https://sguys99.github.io/euro-digest/news/2026-10-10/#c_8f3a1b2c4d"
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: 발행 날짜
+      description: 카드가 실린 날짜(한국 시간, YYYY-MM-DD). 카드 링크를 넣었다면 비워 두어도 됩니다.
+      placeholder: "2026-10-10"
+  - type: dropdown
+    id: error-type
+    attributes:
+      label: 오류 유형
+      description: |
+        해당하는 것을 모두 고르세요.
+        이적 상태·출처 Tier는 루머·협상·합의·공식 단계나 출처 신뢰 등급이 틀린 경우, 결과 스포일러 표시는 결과 가리기 모드에서 가려야 할 카드가 보이거나 그 반대인 경우입니다.
+      multiple: true
+      options:
+        - 사실과 다름
+        - 숫자·스코어 오류
+        - 고유명사 표기
+        - 카테고리·대회 분류
+        - 이적 상태·출처 Tier
+        - 결과 스포일러 표시
+        - 기타
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: 올바른 내용과 근거
+      description: 어디가 어떻게 틀렸는지, 올바른 내용이 무엇인지 적고 근거가 되는 원문 기사 링크를 붙여 주세요.
+      placeholder: |
+        - 틀린 부분:
+        - 올바른 내용:
+        - 근거(원문 링크): https://
+    validations:
+      required: true
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: 확인
+      description: 이 저장소는 공개되어 있어 이슈 내용을 누구나 볼 수 있습니다.
+      options:
+        - label: 이름·이메일·전화번호 같은 개인정보를 적지 않았습니다.
+          required: true
