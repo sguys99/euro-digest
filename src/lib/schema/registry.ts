@@ -30,6 +30,7 @@ import {
   KoreanPlayersFileSchema,
   WeeklyReportSchema,
 } from "./player";
+import { PublisherDomainsFileSchema } from "./publisher";
 import { RunsDevFileSchema, RunsFileSchema } from "./run";
 import { SourcesFileSchema } from "./source";
 import { TakedownsFileSchema } from "./takedown";
@@ -77,6 +78,14 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
     status: "confirmed",
     schema: SourcesFileSchema,
     description: "뉴스 소스 (FR-01)",
+  }),
+  entry({
+    pattern: "configs/publisher-domains.json",
+    kind: "config",
+    status: "confirmed",
+    schema: PublisherDomainsFileSchema,
+    description:
+      "검색 결과 매체 도메인 허용 목록 — 목록 밖은 기본 차단 (FR-02·NFR-09, M0-26)",
   }),
   entry({
     pattern: "configs/korean-players.json",

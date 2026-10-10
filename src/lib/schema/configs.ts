@@ -3,7 +3,8 @@
  * 사람이 관리하는 설정 파일 스키마 (PRD §8.3) 7종:
  *   configs/competitions.json · national-team.json · bigmatch-rules.json · search-queries.json
  *   · formations.json · team-colors.json · transfer-windows.json
- * (sources·korean-players·takedowns → source.ts·player.ts·takedown.ts, names.ko → names.ts)
+ * (sources·korean-players·takedowns → source.ts·player.ts·takedown.ts, names.ko → names.ts,
+ *  publisher-domains → publisher.ts)
  *
  * 공통 원칙
  * - 손으로 고치는 파일이라 모든 객체를 strictObject로 둔다 — 오타 키는 무시되지 않고 오류(결정 Q5).

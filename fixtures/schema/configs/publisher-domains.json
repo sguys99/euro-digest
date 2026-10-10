@@ -1,0 +1,39 @@
+{
+  "domains": [
+    {
+      "domain": "interfootball.co.kr",
+      "publisher": "인터풋볼",
+      "status": "allow",
+      "basis": "예시 — 자사 RSS 안내가 제3자 사이트 게재를 안내, 금지 대상은 저작물 복제·전송(해석 근거)",
+      "basisUrl": "https://www.interfootball.co.kr/rssIndex.html",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "bbc.co.uk",
+      "publisher": "BBC",
+      "status": "feed-only",
+      "sourceIds": ["bbc-football"],
+      "basis": "예시 — RSS 피드를 바꾸지 않고 개인 웹사이트에 게재하는 것만 허용(피드 한정)",
+      "basisUrl": "https://www.bbc.co.uk/usingthebbc/terms-of-use/",
+      "checkedAt": "2026-10-10",
+      "note": "검색 결과로 들어온 BBC 기사는 게시하지 않는다"
+    },
+    {
+      "domain": "news.google.com",
+      "publisher": "Google News",
+      "status": "deny",
+      "sourceIds": ["google-news-ko", "google-news-en"],
+      "basis": "예시 — 피드 고지: 개인 피드 리더 외 이용 금지, robots.txt Disallow",
+      "basisUrl": "https://news.google.com/robots.txt",
+      "checkedAt": "2026-10-10"
+    },
+    {
+      "domain": "marca.com",
+      "publisher": "Marca",
+      "status": "deny",
+      "basis": "예시 — 약관이 전부·일부 복제·재사용 금지(피드 소스 없음)",
+      "basisUrl": "https://www.marca.com/en/corporate/terms-of-service.shtml",
+      "checkedAt": "2026-10-10"
+    }
+  ]
+}

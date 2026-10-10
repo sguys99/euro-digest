@@ -81,8 +81,8 @@ describe("① 전부 유효", () => {
     expect(exitCode).toBe(0);
     expect(errors).toEqual([]);
     expect(report.counts).toEqual({ configs: 1, data: 0, prompts: 0 });
-    // 레지스트리 config 11종 중 takedowns를 뺀 10종 + 프롬프트 3종
-    expect(infos).toHaveLength(13);
+    // 레지스트리 config 12종 중 takedowns를 뺀 11종 + 프롬프트 3종
+    expect(infos).toHaveLength(14);
     expect(infos).toContain(
       "configs/sources.json — 아직 없음 · 뉴스 소스 (FR-01)",
     );
@@ -90,18 +90,18 @@ describe("① 전부 유효", () => {
       "configs/prompts/summarize.md — 아직 없음 · 해당 LLM 기능 단계에서 추가",
     );
     expect(lines.at(-1)).toBe(
-      "[validate] 검증 통과 — configs 1개 · data 0개 · 정보 13건",
+      "[validate] 검증 통과 — configs 1개 · data 0개 · 정보 14건",
     );
   });
 
-  it("fixtures/schema/configs를 그대로 복사하면 통과하고 교차 참조 3종을 모두 실행한다", () => {
+  it("fixtures/schema/configs를 그대로 복사하면 통과하고 교차 참조 4종을 모두 실행한다", () => {
     copyFixtures("configs");
     const { exitCode, errors, infos, report } = run();
 
     expect(errors).toEqual([]);
     expect(exitCode).toBe(0);
-    expect(report.counts.configs).toBe(11);
-    expect(report.crossRef.checked).toHaveLength(3);
+    expect(report.counts.configs).toBe(12);
+    expect(report.crossRef.checked).toHaveLength(4);
     expect(report.crossRef.skipped).toEqual([]);
     expect(infos.every((i) => i.startsWith("configs/prompts/"))).toBe(true);
   });
@@ -172,7 +172,7 @@ describe("③ 스키마 오류 — `파일:zod 경로 — 메시지`", () => {
       "[validate] 오류 configs/takedowns.json:[1].id — 카드 ID는 c_ + 16진수 소문자 10자리",
     );
     expect(lines.at(-1)).toBe(
-      "[validate] 검증 실패 — 오류 1건 (파일 1개) · configs 1개 · data 0개 · 정보 13건",
+      "[validate] 검증 실패 — 오류 1건 (파일 1개) · configs 1개 · data 0개 · 정보 14건",
     );
   });
 
@@ -293,7 +293,7 @@ describe("⑤ 교차 참조 실패", () => {
       'configs/national-team.json:squads[0].playerSlugs[1] — korean-players.json에 없는 선수 slug "ghost"',
     ]);
     expect(lines).toContain(
-      "[validate] 교차 참조: 3건 실행 · 건너뜀 0건(관련 파일 없음) · 오류 4건",
+      "[validate] 교차 참조: 4건 실행 · 건너뜀 0건(관련 파일 없음) · 오류 4건",
     );
   });
 
@@ -304,6 +304,7 @@ describe("⑤ 교차 참조 실패", () => {
 
     expect(report.crossRef.skipped).toEqual([
       "search-queries.source → sources(type search)",
+      "publisher-domains.sourceIds → sources",
     ]);
     expect(errors.every((e) => e.startsWith("configs/sources.json:"))).toBe(
       true,

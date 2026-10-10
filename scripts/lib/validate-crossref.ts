@@ -7,14 +7,18 @@
  *   1. search-queries.json `queries[].source` → sources.json에 같은 id이면서 type "search"인 소스
  *   2. search-queries.json `queries[].player` → korean-players.json slug (`/add-player`가 함께 추가)
  *   3. national-team.json `squads[].playerSlugs[]` → korean-players.json slug (FR-73 선수 링크)
+ *   4. publisher-domains.json `domains[].sourceIds[]` → sources.json id(판정이 소스의 terms_checked와 맞는지 포함),
+ *      그리고 수집 대상 소스(`enabled && terms_checked`)의 피드 호스트가 "deny" 도메인에 속하지 않는지 (M0-26)
  *
  * formations.json·team-colors.json의 키 형식(slug)은 스키마(`z.record(SlugSchema, …)`)가 이미 검사한다.
  */
-import type {
-  KoreanPlayersFile,
-  NationalTeamFile,
-  SearchQueriesFile,
-  SourcesFile,
+import {
+  findPublisherDomain,
+  type KoreanPlayersFile,
+  type NationalTeamFile,
+  type PublisherDomainsFile,
+  type SearchQueriesFile,
+  type SourcesFile,
 } from "@/lib/schema";
 
 import { formatIssuePath, type ValidationIssue } from "./validate-schema";
@@ -25,6 +29,7 @@ export const CROSSREF_FILES = {
   searchQueries: "configs/search-queries.json",
   koreanPlayers: "configs/korean-players.json",
   nationalTeam: "configs/national-team.json",
+  publisherDomains: "configs/publisher-domains.json",
 } as const;
 
 type CrossRefKey = keyof typeof CROSSREF_FILES;
@@ -35,6 +40,7 @@ export interface CrossRefInput {
   searchQueries?: SearchQueriesFile;
   koreanPlayers?: KoreanPlayersFile;
   nationalTeam?: NationalTeamFile;
+  publisherDomains?: PublisherDomainsFile;
 }
 
 export interface CrossRefResult {
@@ -134,6 +140,62 @@ export function checkSquadPlayers(
   return issues;
 }
 
+/**
+ * 4. 매체 도메인 ↔ 소스
+ * - sourceIds의 각 id가 sources.json에 있어야 한다.
+ * - 판정이 소스의 약관 확인과 맞아야 한다: "allow"·"feed-only"의 근거 소스는 `terms_checked:true`,
+ *   "deny"의 근거 소스는 `terms_checked:false`(한쪽만 바꾸면 두 파일의 판정이 엇갈린다).
+ * - 수집 대상 소스(`enabled && terms_checked`)의 피드 호스트가 "deny" 도메인에 속하면 오류(이중 잠금 보강).
+ */
+export function checkPublisherDomainSources(
+  publisherDomains: PublisherDomainsFile,
+  sources: SourcesFile,
+): ValidationIssue[] {
+  const byId = new Map(sources.map((s) => [s.id, s]));
+  const issues: ValidationIssue[] = [];
+  publisherDomains.domains.forEach((entry, i) => {
+    entry.sourceIds.forEach((id, j) => {
+      const path = ["domains", i, "sourceIds", j];
+      const source = byId.get(id);
+      if (!source) {
+        issues.push(
+          crossRefError(
+            CROSSREF_FILES.publisherDomains,
+            path,
+            `sources.json에 없는 소스 id "${id}"`,
+          ),
+        );
+        return;
+      }
+      const expected = entry.status !== "deny";
+      if (source.terms_checked !== expected) {
+        issues.push(
+          crossRefError(
+            CROSSREF_FILES.publisherDomains,
+            path,
+            `"${entry.status}" 도메인 "${entry.domain}"의 근거 소스 "${id}"가 terms_checked:${String(source.terms_checked)} — 판정이 엇갈림`,
+          ),
+        );
+      }
+    });
+  });
+  sources.forEach((source, i) => {
+    if (!source.enabled || !source.terms_checked) return;
+    const host = new URL(source.url).hostname;
+    const match = findPublisherDomain(host, publisherDomains.domains);
+    if (match?.status === "deny") {
+      issues.push(
+        crossRefError(
+          CROSSREF_FILES.sources,
+          [i, "url"],
+          `수집 대상 소스 "${source.id}"의 호스트 ${host}가 publisher-domains.json의 deny 도메인 "${match.domain}"에 속함`,
+        ),
+      );
+    }
+  });
+  return issues;
+}
+
 interface CrossRefCheck {
   name: string;
   /** 필요한 파일이 모두 있으면 이슈 목록, 하나라도 없으면 null(건너뜀) */
@@ -160,6 +222,13 @@ const CHECKS: readonly CrossRefCheck[] = [
     run: ({ nationalTeam, koreanPlayers }) =>
       nationalTeam && koreanPlayers
         ? checkSquadPlayers(nationalTeam, koreanPlayers)
+        : null,
+  },
+  {
+    name: "publisher-domains.sourceIds → sources",
+    run: ({ publisherDomains, sources }) =>
+      publisherDomains && sources
+        ? checkPublisherDomainSources(publisherDomains, sources)
         : null,
   },
 ];
@@ -196,5 +265,6 @@ export function pickCrossRefInput(
   pick("searchQueries");
   pick("koreanPlayers");
   pick("nationalTeam");
+  pick("publisherDomains");
   return input;
 }

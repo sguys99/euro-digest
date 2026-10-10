@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   KoreanPlayersFileSchema,
   NationalTeamFileSchema,
+  PublisherDomainsFileSchema,
   SearchQueriesFileSchema,
   SourcesFileSchema,
   schemaRegistry,
@@ -11,6 +12,7 @@ import {
 
 import {
   CROSSREF_FILES,
+  checkPublisherDomainSources,
   checkSearchQueryPlayers,
   checkSearchQuerySources,
   checkSquadPlayers,
@@ -32,6 +34,10 @@ const koreanPlayers = validFixture(
 const nationalTeam = validFixture(
   NationalTeamFileSchema,
   "configs/national-team.json",
+);
+const publisherDomains = validFixture(
+  PublisherDomainsFileSchema,
+  "configs/publisher-domains.json",
 );
 const query = at(searchQueries.queries, 0);
 const squad = at(nationalTeam.squads, 0);
@@ -133,11 +139,90 @@ describe("checkSquadPlayers — squads[].playerSlugs → korean-players slug", (
   });
 });
 
+describe("checkPublisherDomainSources — domains[].sourceIds → sources, 판정 일치", () => {
+  const allowEntry = at(publisherDomains.domains, 0);
+  const feedOnlyEntry = at(publisherDomains.domains, 1);
+  const denyEntry = at(publisherDomains.domains, 2);
+
+  it("fixture는 통과(sourceIds가 없는 allow·deny 항목도 유효)", () => {
+    expect(allowEntry.sourceIds).toEqual([]);
+    expect(checkPublisherDomainSources(publisherDomains, sources)).toEqual([]);
+  });
+
+  it("없는 소스 id", () => {
+    const issues = checkPublisherDomainSources(
+      {
+        domains: [{ ...feedOnlyEntry, sourceIds: ["bbc-football", "ghost"] }],
+      },
+      sources,
+    );
+    expect(issues).toEqual([
+      {
+        severity: "error",
+        stage: "crossref",
+        file: "configs/publisher-domains.json",
+        path: "domains[0].sourceIds[1]",
+        message: 'sources.json에 없는 소스 id "ghost"',
+      },
+    ]);
+  });
+
+  it("판정이 소스의 terms_checked와 엇갈리면 오류", () => {
+    const issues = checkPublisherDomainSources(
+      {
+        domains: [
+          { ...feedOnlyEntry, sourceIds: ["google-news-ko"] }, // terms_checked:false인데 feed-only
+          { ...denyEntry, sourceIds: ["bbc-football"] }, // terms_checked:true인데 deny
+        ],
+      },
+      sources,
+    );
+    expect(issues.map((i) => [i.path, i.message])).toEqual([
+      [
+        "domains[0].sourceIds[0]",
+        '"feed-only" 도메인 "bbc.co.uk"의 근거 소스 "google-news-ko"가 terms_checked:false — 판정이 엇갈림',
+      ],
+      [
+        "domains[1].sourceIds[0]",
+        '"deny" 도메인 "news.google.com"의 근거 소스 "bbc-football"가 terms_checked:true — 판정이 엇갈림',
+      ],
+    ]);
+  });
+
+  it("수집 대상 소스의 피드 호스트가 deny 도메인에 속하면 오류(하위 도메인 포함)", () => {
+    const issues = checkPublisherDomainSources(
+      {
+        domains: [
+          {
+            ...denyEntry,
+            domain: "bbci.co.uk",
+            publisher: "BBC (가정)",
+            sourceIds: [],
+          },
+        ],
+      },
+      sources,
+    );
+    expect(issues.map((i) => `${i.file}:${i.path} — ${i.message}`)).toEqual([
+      'configs/sources.json:[0].url — 수집 대상 소스 "bbc-football"의 호스트 feeds.bbci.co.uk가 publisher-domains.json의 deny 도메인 "bbci.co.uk"에 속함',
+    ]);
+  });
+
+  it("꺼진 소스(enabled:false)의 호스트는 deny 도메인이어도 통과", () => {
+    expect(
+      sources
+        .filter((s) => s.url.startsWith("https://news.google.com/"))
+        .every((s) => !s.enabled),
+    ).toBe(true);
+    expect(checkPublisherDomainSources(publisherDomains, sources)).toEqual([]);
+  });
+});
+
 describe("runCrossRefChecks — 관련 파일이 모두 있을 때만 실행", () => {
-  it("아무 파일도 없으면 3건 모두 건너뛴다", () => {
+  it("아무 파일도 없으면 4건 모두 건너뛴다", () => {
     const result = runCrossRefChecks({});
     expect(result.checked).toEqual([]);
-    expect(result.skipped).toHaveLength(3);
+    expect(result.skipped).toHaveLength(4);
     expect(result.issues).toEqual([]);
   });
 
@@ -149,19 +234,21 @@ describe("runCrossRefChecks — 관련 파일이 모두 있을 때만 실행", (
     expect(result.skipped).toEqual([
       "search-queries.player → korean-players",
       "national-team.squads.playerSlugs → korean-players",
+      "publisher-domains.sourceIds → sources",
     ]);
   });
 
-  it("전부 있으면 3건 실행, 이슈를 모은다", () => {
+  it("전부 있으면 4건 실행, 이슈를 모은다", () => {
     const result = runCrossRefChecks({
       sources: [],
       searchQueries,
       koreanPlayers: [],
       nationalTeam,
+      publisherDomains,
     });
-    expect(result.checked).toHaveLength(3);
-    // 쿼리 2개 source 없음 + 쿼리 1개 player 없음 + 명단 1명 없음
-    expect(result.issues).toHaveLength(4);
+    expect(result.checked).toHaveLength(4);
+    // 쿼리 2개 source 없음 + 쿼리 1개 player 없음 + 명단 1명 없음 + 도메인 sourceIds 3개 없음
+    expect(result.issues).toHaveLength(7);
   });
 });
 
@@ -171,10 +258,15 @@ describe("pickCrossRefInput", () => {
       new Map<string, unknown>([
         ["configs/sources.json", sources],
         ["configs/korean-players.json", koreanPlayers],
+        ["configs/publisher-domains.json", publisherDomains],
         ["configs/takedowns.json", []],
       ]),
     );
-    expect(Object.keys(input).sort()).toEqual(["koreanPlayers", "sources"]);
+    expect(Object.keys(input).sort()).toEqual([
+      "koreanPlayers",
+      "publisherDomains",
+      "sources",
+    ]);
     expect(input.sources).toBe(sources);
   });
 

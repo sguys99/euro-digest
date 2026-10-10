@@ -70,7 +70,7 @@ describe("schemaRegistry ↔ fixtures/schema", () => {
       .filter((e) => e.status === "draft")
       .map((e) => e.pattern);
     expect(drafts).toEqual([]);
-    expect(schemaRegistry).toHaveLength(21);
+    expect(schemaRegistry).toHaveLength(22);
   });
 
   it("configs/ 항목은 알 수 없는 키를 거부하고 data/ 항목은 버린다 (결정 Q5)", () => {

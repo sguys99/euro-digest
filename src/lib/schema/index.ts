@@ -14,6 +14,7 @@ export * from "./configs";
 export * from "./names";
 export * from "./news";
 export * from "./player";
+export * from "./publisher";
 export * from "./registry";
 export * from "./run";
 export * from "./source";
