@@ -47,7 +47,7 @@ frontmatter 훅이 위의 금지 Bash 명령을 막는다. 훅은 그물망일 �
 |---|---|---|
 | 1 | 시안 선택 전 UI 스타일 구현 금지 | `src/` 스타일·컴포넌트가 바뀌었다면 `docs/design/DECISIONS.md`에 해당 게이트 선택이 기록돼 있는지 |
 | 2 | shadcn 기본 모양·템플릿 느낌 금지 | `src/components/ui/`가 shadcn 원본 그대로인지(기본 zinc 톤, `rounded-lg border bg-card shadow-sm`) — **중요** |
-| 3 | LLM 호출 지점 3곳 | `@anthropic-ai/sdk`를 `scripts/lib/llm.ts` 밖에서 import하는지, llm.ts 함수의 새 호출처, 모델 문자열·`LLM_MODEL` 기본값 변경, 건별 호출이나 재시도 2회 이상 |
+| 3 | LLM 호출 지점 3곳 | `@anthropic-ai/sdk`를 `scripts/lib/llm.ts` 밖에서 import하는지, llm.ts 함수의 새 호출처, 모델 문자열·`LLM_MODEL` 기본값 변경, 건별 호출(카드·경기·팀마다 1요청)이나 재시도 2회 이상. 일일 브리핑의 단건 1~3요청은 허용(PRD §15 D28) |
 | 4 | dev 비용 기록 | 실호출 경로가 `scripts/lib/cost.ts`의 `runs-dev.json` 기록을 거치는지, 테스트가 `LLM_MODE=mock`인지 |
 | 5 | 본문 수집·금지 사이트 | 기사 본문(`content:encoded`, `<article>`·`<p>` 텍스트) 파싱·저장, 금지 도메인(transfermarkt·fbref·whoscored·sofascore·fotmob·naver·daum·x.com·twitter.com) 등장 |
 | 6 | 이미지 자산 금지 | `<img`·`next/image`·`og:image`·enclosure 저장, `public/`의 로고·사진, 외부 이미지 URL |
@@ -66,7 +66,7 @@ frontmatter 훅이 위의 금지 Bash 명령을 막는다. 훅은 그물망일 �
 ### C. LLM·파이프라인 (CLAUDE §6) — **차단/중요**
 - 뉴스 기사(제목·설명·본문)를 LLM 입력에 넣거나 `Source.summarize: true` 경로를 여는 코드 — **차단**(PRD §15 D23, CLAUDE §1-3)
 - 뉴스 카드: 해외 원제목·링크 무수정(엔티티 디코딩·앞뒤 공백 정리만, 200자 초과는 건너뜀), `s:[]`·`ai:false`, RSS 요약문(description)을 카드에 표시·저장하지 않음(M0-25), 분류는 코드 규칙(FR-21), `MAX_ITEMS_PER_RUN` 준수
-- 브리핑: 입력은 정형 데이터만, 출력 zod 검증 → 1회 재시도 → 코드 템플릿 강등(`ai:false`), 브리핑 마감(공개 목표 −10분 — 여름 06:50 · 겨울 07:20, D26) 미완료 시 배치 취소 + 템플릿, 마감·발행 시각을 07:00/06:50 고정값으로 쓰지 않고 계절 판정으로 계산, 브리핑 실패가 발행을 막지 않음 (D24)
+- 브리핑: 입력은 정형 데이터만, 검증 순서 zod → 코드 검증 → 1회 재시도 → 코드 템플릿 강등(`ai:false`, 줄 단위 불일치는 그 줄만 템플릿), 브리핑 마감(공개 목표 −10분 — 여름 06:50 · 겨울 07:20, D26)까지 성공하지 못하면 템플릿, 타임아웃·재시도 대기가 마감을 넘지 않음, 호출 방식(일반 Messages API 단건)·thinking(적응형 + `effort:"medium"`)·`max_tokens` 4,096이 승인 기록 없이 바뀌면 **차단**(PRD §15 D28, CLAUDE §2), 마감·발행 시각을 07:00/06:50 고정값으로 쓰지 않고 계절 판정으로 계산, 브리핑 실패가 발행을 막지 않음 (D24·D28)
 - 비용 가드(일 $0.10·월 $3, runs+runs-dev 합산), 단가가 `cost.ts`에만 있는지
 - 고유명사는 `names.ko.json`으로 코드 치환, 소스는 `enabled && terms_checked`(+`robots_checked`), 소스 URL 하드코딩 금지
 - 크롤러 예절: robots.txt, User-Agent(서비스명·연락처), 사이트당 2~3초 지연

@@ -44,7 +44,7 @@ MVP 범위 ([PRD](docs/PRD.md) §5 요약. P0 = MVP 필수, P1 = MVP 포함 목�
 여름 06:30 KST · 겨울 07:10 KST  cron-job.org → GitHub Actions(collect.yml)
  ① 수집   매체 RSS(약관상 허용된 피드만) · 목록/OG 메타 크롤링 + 전날 경기 데이터
  ② 정제   URL 정규화 · 중복 제거 · 같은 사건 묶기 · 중요도 점수 · 상위 45건 · 한국어 태그 분류   ← 코드
- ③ 브리핑 전날 경기 결과 · 순위 · 득점자 데이터만 Claude Haiku(Message Batches API)에 넣어 "오늘의 5줄" 작성
+ ③ 브리핑 전날 경기 결과 · 순위 · 득점자 데이터만 Claude Haiku(Messages API)에 넣어 "오늘의 5줄" 작성
  ④ 검증   스키마·발행 검증 게이트 — 실패하면 발행하지 않고 전날 사이트를 유지
  ⑤ 빌드   Next.js 정적 export → 검색 인덱스 · RSS · 캘린더
  ⑥ 발행   data/ 커밋 → GitHub Pages 배포 (여름 07:00 · 겨울 07:30 KST 목표)
@@ -161,7 +161,7 @@ npm run preview    # out/을 GitHub Pages처럼 basePath 아래로 서빙
 | 스키마 | zod 4.6 — configs·data·LLM 출력 경계 검증 (`src/lib/schema/`) |
 | 테스트·품질 | Vitest 5 · Testing Library · Playwright 1.64 · ESLint 9 · Prettier 3 |
 | 배포 | GitHub Actions → GitHub Pages (검사 `ci.yml` 완료, 배포 `deploy.yml`은 M0-13) |
-| 도입 예정 | Anthropic Claude Haiku + `@anthropic-ai/sdk` Message Batches API (M0-20) · rss-parser (M1) · football-data.org · API-Football · Pagefind (M4-14) · GoatCounter 쿠키리스 분석 (M5-04) |
+| 도입 예정 | Anthropic Claude Haiku + `@anthropic-ai/sdk` — 일일 브리핑은 Messages API, 주간 작업은 Message Batches API (M0-20) · rss-parser (M1) · football-data.org · API-Football · Pagefind (M4-14) · GoatCounter 쿠키리스 분석 (M5-04) |
 
 ## 저장소 구조
 

@@ -45,7 +45,7 @@
 - **프레임워크**: Next.js(App Router, 최신 안정판) + React + TypeScript strict — `output: 'export'`, `basePath: '/euro-digest'`, `images.unoptimized: true`, `trailingSlash: true`
 - **스타일**: Tailwind CSS v4 + shadcn/ui(커스텀). 토큰은 DESIGN.md → `src/app/globals.css`의 CSS 변수·`@theme` 단일 출처
 - **스키마·실행**: zod(데이터·설정·LLM 출력 모두 경계에서 검증), tsx(`scripts/*.ts`), Node.js LTS(`.nvmrc` 고정), 패키지 매니저 **npm**
-- **LLM**: `@anthropic-ai/sdk` Message Batches API, 기본 `LLM_MODEL=claude-haiku-5-5`. 호출은 `scripts/lib/llm.ts`에서만
+- **LLM**: `@anthropic-ai/sdk` — 일일 브리핑은 Messages API 단건, 주간 2곳은 Message Batches API(PRD §15 D28). 기본 `LLM_MODEL=claude-haiku-5-5`. 호출은 `scripts/lib/llm.ts`에서만
 - **수집·데이터**: rss-parser, 경량 HTML 파서(목록·OG 메타만) / football-data.org(주), API-Football(보조), 어댑터 구조
 - **검색·분석**: Pagefind(빌드 후 인덱싱) / GoatCounter(쿠키리스, 허용되는 유일한 서드파티 스크립트)
 - **테스트·품질**: Vitest(+Testing Library), Playwright(스크린샷·링크·접근성) / ESLint, Prettier(+tailwind 플러그인)
@@ -104,7 +104,7 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 ```
 
 ## 6. 파이프라인 · LLM
-**6.1 흐름 (PRD §10)**: `cron-job.org(여름 06:30 · 겨울 07:10 KST) → workflow_dispatch(collect.yml)` → ① 수집(뉴스 + 전날 경기 데이터) → ② 정제·분류(코드: URL 정규화·해시 중복제거·클러스터링·점수화·상위 45건 · 카테고리·태그·이적 단계·spoiler 규칙) → ③ 데이터 브리핑(Batches) → ④ 검증 게이트 → ⑤ 빌드 → ⑥ `data/` 커밋 → ⑦ 배포(`deploy.yml`). 검증이나 빌드가 실패하면 커밋하지 않는다. `weekly.yml`도 끝에서 빌드 → 커밋 → `deploy.yml`. 백업 `schedule`(여름 06:40 · 겨울 07:20 KST)은 12시간 내 성공 이력이 있으면 skip, `concurrency: collect`.
+**6.1 흐름 (PRD §10)**: `cron-job.org(여름 06:30 · 겨울 07:10 KST) → workflow_dispatch(collect.yml)` → ① 수집(뉴스 + 전날 경기 데이터) → ② 정제·분류(코드: URL 정규화·해시 중복제거·클러스터링·점수화·상위 45건 · 카테고리·태그·이적 단계·spoiler 규칙) → ③ 데이터 브리핑(단건 Messages API — D28) → ④ 검증 게이트 → ⑤ 빌드 → ⑥ `data/` 커밋 → ⑦ 배포(`deploy.yml`). 검증이나 빌드가 실패하면 커밋하지 않는다. `weekly.yml`도 끝에서 빌드 → 커밋 → `deploy.yml`. 백업 `schedule`(여름 06:40 · 겨울 07:20 KST)은 12시간 내 성공 이력이 있으면 skip, `concurrency: collect`.
 **계절별 발행 시각 (PRD §15 D26)**: 유럽 서머타임 기간(여름) 06:30 수집 → 07:00 공개, 유럽 표준시 기간(겨울) 07:10 수집 → 07:30 공개. 계절은 `src/lib/time.ts`의 `europeanSummerTimeTransitions`로 코드가 판정하고, 가드가 계절에 맞지 않는 트리거를 skip한다(성공 이력으로 세지 않음). 시각을 코드·문서에 새로 적을 때 07:00 하나로 고정하지 않는다.
 
 ### 6.2 LLM 구현
@@ -112,11 +112,12 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - **LLM은 글쓰기에만.** 수집·중복제거·필터링·**뉴스 분류(카테고리·태그·중요도·이적 단계·spoiler)**·순위·고유명사 변환·이적 상태 집계·MVP 선정은 코드로.
 - **뉴스 기사는 LLM에 보내지 않는다**(D23). 해외 카드는 원제목+링크(`ai:false`, `s:[]`), 분류는 코드 규칙(키워드·`names.ko.json`·소스 메타). `Source.summarize`는 모두 false — 요약 경로를 다시 여는 것은 §1-3 승인 사항.
 - 일일 브리핑 입력(D24): 전날(KST) 경기 결과·순위 변동·득점자·한국 선수 출전 등 데이터 API를 어댑터로 변환한 **정형 데이터만**(기사 텍스트 금지). 출력: 짧은 키 JSON, `max_tokens` 상한, 최대 5줄·줄당 60자 내외, 경기가 없으면 호출 생략.
-- zod 검증 → 실패 시 1회 재시도 → 그래도 실패하면 **코드 템플릿 문장**(`ai:false`)으로 강등. 브리핑 실패가 발행을 멈추지 않는다.
-- 고유명사는 LLM이 영문 그대로 출력 → `configs/names.ko.json`으로 코드 치환(뉴스 태그도 같은 사전). 미등록 이름은 `data/cache/unknown-names.json`에 적재.
+- **호출 방식 (PRD §15 D28)**: 일일 브리핑은 일반 Messages API **단건**(하루 1~3요청, 배치 아님), 주간 2곳(팀 한줄평+강점/약점·한국 선수 주간 총평)은 Message Batches API. 브리핑 설정은 thinking 적응형 기본 + `effort:"medium"` 명시, `max_tokens` 4,096이다(M0-30: thinking을 끄면 사실성 75%, `effort:"low"`는 영어 출력 사례). 호출 방식·thinking·effort·`max_tokens`를 바꾸는 것은 §1-3 승인 사항.
+- 검증 순서(FR-29): zod → **코드 검증**(한국어 비율·한자 혼입·영문 토큰 허용 목록·스코어 대조·순위 서술 — zod만으로는 품질을 거를 수 없다, M0-30) → 출력 전체가 실패하면 1회 재시도(zod 실패와 합쳐 1회) → 그래도 실패하면 **코드 템플릿 문장**(`ai:false`)으로 강등. 줄 단위 불일치는 재시도 없이 그 줄만 템플릿으로 바꾼다. 브리핑 실패가 발행을 멈추지 않는다.
+- 고유명사는 LLM이 영문 그대로 출력 → `configs/names.ko.json`으로 코드 치환(뉴스 태그도 같은 사전), 치환 뒤 조사(이/가·은/는 등)를 받침 기준으로 보정. 미등록 이름은 `data/cache/unknown-names.json`에 적재.
 - 비용 가드 `DAILY_BUDGET_USD=0.10`, `MONTHLY_BUDGET_USD=3`. 초과 예상 시 LLM 없이 브리핑을 코드 템플릿으로 게시.
-- 배치가 브리핑 마감(**공개 목표 시각 −10분** — 여름 06:50 · 겨울 07:20, D26)까지 끝나지 않으면 배치를 취소하고 브리핑을 코드 템플릿으로 게시.
-- **프롬프트 캐싱**: 모델별 최소 캐시 프리픽스 길이 미달이면 미적용(일일 요청이 1~3개라 대개 미적용). M1 첫 실측에서 `usage.cache_read_input_tokens`가 0이면 캐싱 코드를 빼고 PRD 비용 표를 갱신.
+- 브리핑 단건 호출은 브리핑 마감(**공개 목표 시각 −10분** — 여름 06:50 · 겨울 07:20, D26)까지만 시도한다. 요청 타임아웃과 재시도(429·5xx만 — `llm.ts` 정책, 연결 오류·타임아웃은 중복 과금 위험으로 재시도하지 않음)를 마감 안으로 제한하고, 마감까지 성공하지 못하면 브리핑을 코드 템플릿으로 게시(D28).
+- **프롬프트 캐싱**(plan B3 미발동 — M0-30): `cacheSystem` 코드는 유지하고 호출 지점별로 켠다. 일일 브리핑은 같은 지시문으로 요청 2개 이상 보낼 때만 켜고(1요청이면 쓰기 할증만 붙는다), 주간 팀 프로필은 켠다. 모델 최소 프리픽스(Haiku 5.5 512토큰)에 못 미치는 프롬프트는 캐싱 효과가 없다 (D28).
 
 ### 6.3 개발 중 LLM 사용
 - 반복 실험은 소량(`--limit`, 브리핑은 1~3요청)으로 줄이고, 실행 전 예상 토큰·비용을 출력한다.

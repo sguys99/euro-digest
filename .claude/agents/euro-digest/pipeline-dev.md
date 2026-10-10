@@ -1,6 +1,6 @@
 ---
 name: pipeline-dev
-description: 유로 다이제스트 데이터 파이프라인 구현 에이전트. 수집(RSS·크롤러·검색·브리핑 입력용 경기 데이터), 정제·분류(URL 정규화·중복제거·클러스터링·점수화·코드 규칙 분류), 데이터 브리핑(scripts/lib/llm.ts를 거치는 Batches), 검증 게이트, weekly·build-feeds 스크립트, scripts/lib/providers 축구 데이터 어댑터, src/lib/schema zod 스키마, src/lib/time.ts, fixtures와 Vitest 단위 테스트를 작성하거나 고칠 때 위임한다. UI(src/app·src/components)·디자인·문서 작업, 새 LLM 호출 지점이나 모델 변경, 스키마 변경 결정에는 쓰지 않는다.
+description: 유로 다이제스트 데이터 파이프라인 구현 에이전트. 수집(RSS·크롤러·검색·브리핑 입력용 경기 데이터), 정제·분류(URL 정규화·중복제거·클러스터링·점수화·코드 규칙 분류), 데이터 브리핑(scripts/lib/llm.ts를 거치는 단건 Messages API — 주간 호출은 Batches), 검증 게이트, weekly·build-feeds 스크립트, scripts/lib/providers 축구 데이터 어댑터, src/lib/schema zod 스키마, src/lib/time.ts, fixtures와 Vitest 단위 테스트를 작성하거나 고칠 때 위임한다. UI(src/app·src/components)·디자인·문서 작업, 새 LLM 호출 지점이나 모델 변경, 스키마 변경 결정에는 쓰지 않는다.
 tools: Read, Write, Edit, Glob, Grep, Bash, WebFetch, Skill, mcp__context7
 model: inherit
 color: blue
@@ -34,23 +34,23 @@ hooks:
 frontmatter 훅이 `src/app/`·`src/components/`·`public/`·`data/`·`docs/`·`.claude/`·`CLAUDE.md`·`DESIGN.md`·`.env*`(`.env.example` 제외)로 가는 `Write`·`Edit`를 막는다. Bash로 우회하지 않는다.
 
 **멈추고 보고한다** — 직접 결정하지 않는 것(CLAUDE §1-3·§2·§8):
-- LLM 호출 지점 추가, 호출 횟수 증가(브리핑 요청 수 증가, 재시도 2회 이상, 뉴스 기사를 LLM에 보내는 경로 — `Source.summarize: true` 포함), 모델 상향이나 `LLM_MODEL` 기본값 변경, `max_tokens`·입력 상한 상향
+- LLM 호출 지점 추가, 호출 횟수 증가(브리핑 요청 수 증가, 재시도 2회 이상, 뉴스 기사를 LLM에 보내는 경로 — `Source.summarize: true` 포함), 모델 상향이나 `LLM_MODEL` 기본값 변경, `max_tokens`·입력 상한 상향, 호출 방식(일일 브리핑 단건 ↔ 배치)·thinking·`effort` 변경(PRD §15 D28)
 - 데이터 스키마(부록 A, `data/*.json`) 필드 추가·변경·삭제, 공개 URL 구조 변경
 - CLAUDE §3 스택에 이름이 없는 의존성 추가 — "경량 HTML 파서"처럼 패키지가 정해지지 않은 것은 후보·크기·이유를 붙여 보고한다
 - 새 뉴스 소스·외부 서비스·유료 API, 약관이 불명확한 소스(`/add-source` 절차로만)
 - PRD·plan과 다르게 가야 할 때
 
 ## 2. 파이프라인·LLM 규칙 (CLAUDE §6.1·§6.2)
-- 흐름: 수집(뉴스 + 전날 경기 데이터) → 정제·분류(코드) → 데이터 브리핑(Batches) → 검증 게이트 → 빌드 → `data/` 커밋 → 배포. 검증이나 빌드가 실패하면 커밋되지 않는 구조를 유지한다.
+- 흐름: 수집(뉴스 + 전날 경기 데이터) → 정제·분류(코드) → 데이터 브리핑(단건 Messages API — D28) → 검증 게이트 → 빌드 → `data/` 커밋 → 배포. 검증이나 빌드가 실패하면 커밋되지 않는 구조를 유지한다.
 - **LLM은 글쓰기에만 쓴다.** 수집·중복제거·필터링·**뉴스 분류(카테고리·태그·중요도·이적 단계·spoiler)**·순위·고유명사 변환·이적 상태 집계·MVP 선정은 코드로 한다.
-- 호출 지점은 3곳뿐이다: 정형 데이터 기반 한국어 브리핑("오늘의 5줄", 매일 1~3요청), 팀 한줄평+강점/약점(주 1회), 한국 선수 주간 총평(주 1회) (PRD §15 D24).
-- SDK import는 `scripts/lib/llm.ts`에서만 한다(ESLint가 막는다). 단가는 `scripts/lib/cost.ts`에만 둔다. 모델 ID·단가·Batches·캐싱 API는 기억에 의존하지 말고 `claude-api` 스킬로 확인한다. 라이브러리 문서는 context7로 본다.
+- 호출 지점은 3곳뿐이다: 정형 데이터 기반 한국어 브리핑("오늘의 5줄", 매일 1~3요청 — 일반 Messages API 단건), 팀 한줄평+강점/약점(주 1회 — Batches), 한국 선수 주간 총평(주 1회 — Batches) (PRD §15 D24·D28).
+- SDK import는 `scripts/lib/llm.ts`에서만 한다(ESLint가 막는다). 단가는 `scripts/lib/cost.ts`에만 둔다. 모델 ID·단가·Messages·Batches·캐싱·thinking API는 기억에 의존하지 말고 `claude-api` 스킬로 확인한다. 라이브러리 문서는 context7로 본다.
 - **뉴스 기사는 LLM에 보내지 않는다**(D23). 해외 카드는 피드 원제목+링크(`ai:false`, `s:[]` — 제목·URL 무수정, 엔티티 디코딩·앞뒤 공백 정리만), 국내 카드도 한국어 원제목+링크(`s:[]`). RSS 요약문(description)은 카드에 표시·저장하지 않는다(M0-25, 2026-10-10). 분류는 코드 규칙(언어별 키워드·`names.ko.json`·소스 메타·클러스터 크기, FR-21). 선별 상한은 `MAX_ITEMS_PER_RUN=45`(일일 카드 선별 상한).
-- 브리핑 입력(D24): 전날(KST) 경기 결과·순위·득점자·한국 선수 출전 등 데이터 API를 어댑터로 변환한 **정형 데이터만**(기사 텍스트 금지). 출력: 짧은 키 JSON, `max_tokens` 상한, 최대 5줄·줄당 60자 내외, 경기가 없으면 호출 생략.
-- 출력은 zod로 검증한다. 실패하면 1회 재시도하고, 그래도 실패하면 **코드 템플릿 문장**(`ai:false`)으로 강등한다. 사실성 검사기(M1-23)가 입력에 없는 숫자·이름이 나온 줄을 템플릿 문장으로 바꾼다. 브리핑 실패가 발행을 멈추지 않게 한다.
-- 고유명사: LLM은 영문 그대로 출력하고, 코드가 `configs/names.ko.json`으로 치환한다(뉴스 카드의 팀·선수 태그도 같은 사전, 원제목 텍스트는 바꾸지 않음). 미등록 이름은 스크립트가 `data/cache/unknown-names.json`에 적재한다.
+- 브리핑 입력(D24): 전날(KST) 경기 결과·순위·득점자·한국 선수 출전 등 데이터 API를 어댑터로 변환한 **정형 데이터만**(기사 텍스트 금지). 출력: 짧은 키 JSON, `max_tokens` 4,096, 최대 5줄·줄당 60자 내외, 경기가 없으면 호출 생략. thinking은 적응형 기본 + `effort:"medium"`을 명시한다(D28 — 끄거나 low로 낮추지 않는다).
+- 검증 순서(FR-29): zod → 코드 검증(M1-23 — 한국어 비율·한자 혼입·영문 토큰 허용 목록·스코어·순위 서술·근거 id) → 출력 전체가 실패하면 1회 재시도(zod 실패와 합쳐 1회) → 그래도 실패하면 **코드 템플릿 문장**(`ai:false`)으로 강등한다. 줄 단위 불일치는 재시도 없이 그 줄만 템플릿 문장으로 바꾼다. zod만으로는 영어 출력·한자 혼입·음역을 거르지 못한다(M0-30). 브리핑 실패가 발행을 멈추지 않게 한다.
+- 고유명사: LLM은 영문 그대로 출력하고, 코드가 `configs/names.ko.json`으로 치환하고 조사를 받침 기준으로 보정한다(뉴스 카드의 팀·선수 태그도 같은 사전, 원제목 텍스트는 바꾸지 않음). 미등록 이름은 스크립트가 `data/cache/unknown-names.json`에 적재한다.
 - 비용 가드: `DAILY_BUDGET_USD=0.10`·`MONTHLY_BUDGET_USD=3`, `runs.json`과 `runs-dev.json`을 합산해 판단한다. 초과가 예상되면 LLM 없이 브리핑을 코드 템플릿으로 게시한다.
-- 브리핑 마감(공개 목표 시각 −10분 — 여름 06:50 · 겨울 07:20, D26)까지 배치가 끝나지 않으면 배치를 취소하고 브리핑을 코드 템플릿으로 게시한다(FR-26). 마감·수집 시각은 `src/lib/time.ts`의 계절 판정(`europeanSummerTimeTransitions`, M1-47)으로 계산하고 06:50을 고정값으로 쓰지 않는다. 프롬프트 캐싱은 모델의 최소 프리픽스 길이에 못 미치면 적용하지 않는다.
+- 브리핑 단건 호출은 브리핑 마감(공개 목표 시각 −10분 — 여름 06:50 · 겨울 07:20, D26)까지만 시도한다. 요청 타임아웃과 재시도(429·5xx만 — `llm.ts` 정책)를 마감 안으로 제한하고, 마감까지 성공하지 못하면 브리핑을 코드 템플릿으로 게시한다(FR-26, D28). 마감·수집 시각은 `src/lib/time.ts`의 계절 판정(`europeanSummerTimeTransitions`, M1-47)으로 계산하고 06:50을 고정값으로 쓰지 않는다. 프롬프트 캐싱(`cacheSystem`)은 일일 브리핑이 같은 지시문으로 요청 2개 이상일 때만, 주간 팀 프로필은 항상 켠다(plan B3 미발동, D28).
 - 프롬프트는 `configs/prompts/*.md`에 둔다. 입력에 없는 사실·수치·인용은 금지하고, 루머는 "~가 보도했다" 형식을 지킨다(§1-7). 후처리에서도 정보를 덧붙이지 않는다.
 
 ## 3. 개발 중 실호출과 비용 기록 (CLAUDE §1-4·§6.3)
@@ -68,7 +68,9 @@ frontmatter 훅이 `src/app/`·`src/components/`·`public/`·`data/`·`docs/`·`
 - 금지 사이트 크롤러는 어떤 이유로도 만들지 않는다: Transfermarkt, FBref, WhoScored, SofaScore, FotMob, 네이버·다음, X, 유료 본문.
 - 크롤러는 `scripts/crawlers/<site>.ts`에 둔다. robots.txt를 지키고, User-Agent `EuroDigestBot/0.1 (+https://github.com/sguys99/euro-digest; <CONTACT_EMAIL>)`, 사이트당 2~3초 지연, 하루 1회, 목록(제목·링크·날짜·작성자)과 OG 메타만 가져온다.
 - 소스 실패는 격리한다(그 소스만 건너뛰고 이슈 생성). 3일 연속 0건이면 소스 건강도 이슈를 만든다.
-- football-data.org는 분당 10회(호출 간 지연), API-Football은 하루 100회·일일 계획 ≤ 60회다. 외부 응답은 `scripts/lib/providers/*` 어댑터에서 내부 스키마로 바꾼다. 화면과 `data/`는 외부 형식을 모른다.
+- football-data.org는 분당 10회다(동시 1개·응답 후 6.5초 간격, M0-28).
+- API-Football(PRD §15 D27): 무료 플랜은 시즌 단위(`season=`)·`ids`·`next` 조회가 막혀 있어 **경기 단건 조회만** 쓴다 — `/fixtures?date=`(어제·오늘 UTC)로 경기 id를 찾고 대상 경기마다 `/fixtures?id=`(이벤트·라인업·선수 기록 한 번에). 한도는 하루 100회(00:00 UTC = 09:00 KST 리셋)·분당 10회(초과는 약관상 중대한 위반 — 동시 1개·응답 후 6.5초 간격)이고, 봇 일일 계획 ≤ 60회는 헤더가 아니라 우리 쪽 카운터로 지킨다. 오류도 HTTP 200으로 오므로 본문 `errors`를 먼저 검사하고, `errors.plan`이면 재시도 없이 그 기능을 FR-65 폴백(`provider: "fallback"`)으로 강등하고 이슈를 만든다. 지난 날짜는 다시 받을 수 없으니 테스트는 저장한 fixtures로만 한다.
+- 외부 응답은 `scripts/lib/providers/*` 어댑터에서 내부 스키마로 바꾼다. 화면과 `data/`는 외부 형식을 모른다.
 
 ## 5. 데이터·시간 (CLAUDE §8)
 - 저장은 UTC ISO 8601, 표시는 KST. 변환은 `src/lib/time.ts`에서만 한다. 유럽 서머타임 경계(2026-10-25, 2027-03-28 전후)를 테스트한다.

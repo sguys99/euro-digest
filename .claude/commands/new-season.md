@@ -18,18 +18,19 @@ disable-model-invocation: true
 
 ## 진행 방식
 - 섹션(A~H)마다 ① 현재 값 ② 공식 출처로 확인한 새 값 ③ 변경안을 표로 만들고, 섹션 단위로 승인받은 뒤 반영한다.
-- 외부 API 한도: football-data.org 분당 10회(호출 간 6초 이상), API-Football 하루 100회 (CLAUDE §6.4).
+- 외부 API 한도: football-data.org 분당 10회, API-Football 하루 100회(00:00 UTC 리셋)·분당 10회 — 둘 다 동시 1개·응답 후 6.5초 간격, API-Football 개발 호출은 하루 50건 이내 (CLAUDE §6.4).
 - 응답 원문은 남기지 않고, 필요한 값만 근거 URL과 함께 표에 적는다.
 
 ## 체크리스트
 **A. 대회·시즌 ID** — `configs/competitions.json`
 - [ ] 6개 대회(EPL·LALIGA·SERIEA·BUNDESLIGA·LIGUE1·UCL)의 football-data.org 대회 코드·새 시즌 연도·시작/종료일
-- [ ] API-Football `season` 파라미터 갱신 + 무료 플랜의 새 시즌 조회 가능 여부 재확인 → 불가 시 FR-65 폴백 유지 (CLAUDE §13)
+- [ ] API-Football: 6개 대회 `apiFootballLeagueId`가 그대로이고 새 시즌이 `current: true`인지(`/leagues?id=`), 무료 플랜의 경기 단건 경로(`/fixtures?date=` → `/fixtures?id=` — 시즌 단위 `season=` 조회는 무료 불가, PRD §15 D27)가 새 시즌 경기에도 열리는지 재확인 → 막히면(`errors.plan`) FR-65 폴백. 한국 선수 시즌 누적의 시즌 경계·집계 시작일 처리도 확인(M1-48 저장 스키마)
+- [ ] `zones`: 리그 강등 구간은 리그 공식 규정(1차 출처)으로 재확인. 유럽 대항전 진출 구간은 그 시즌의 UEFA 액세스 리스트·국가 계수가 확정되기 전에는 넣지 않는다(관행값 금지 — M0-29, plan M2-01)
 - [ ] UCL 리그 페이즈 36팀 확정(8월 말 추첨) 전에는 임시 상태로 표시
 
 **B. 승강 팀** — 리그 공식 사이트 기준
 - [ ] 리그별 승격·강등 팀 목록과 출처
-- [ ] 승격 팀: `names.ko.json` 팀명 · `team-colors.json` 2색 + 영문 약어(DR-05, 로고 사용 금지) · `formations.json` 폴백 포메이션
+- [ ] 승격 팀: `names.ko.json` 팀명 · `team-colors.json` 2색 + 영문 약어(DR-05, 로고 사용 금지) · 필요하면 `formations.json` 보조 포메이션(라인업 최빈값이 아직 없을 때만 — FR-55, D27)
 - [ ] 강등 팀: 항목을 지우지 않는다(과거 카드·아카이브가 slug를 참조). 대회 소속만 바꾼다
 - [ ] 팀 수가 바뀌어 주간 팀 한줄평 호출 수가 늘면 비용 영향을 보고하고 질문한다 (§1-3)
 
