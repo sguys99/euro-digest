@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0-13` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
+**다음 작업**: `M0-14` (§3 남은 사용자 작업: U-06 · U-08 · U-09)
 
 ---
 
@@ -136,7 +136,7 @@
 
 ### M0-B 배포·자동화 뼈대
 - [x] M0-12 `ci.yml`: push마다 `check` + `build` + `check:bundle` + `test:e2e`(링크·접근성, NFR-12) → main에서 통과하면 `deploy.yml` 호출 — 2026-10-10 완료: `check:bundle` 실구현(페이지별 초기 JS gzip ≤ 160KB + `out/` 비밀값 grep), e2e 링크·axe WCAG 2.1 AA(라이트·다크), CI green 확인. deploy 호출은 M0-13에서 연결
-- [ ] M0-13 Pages 배포 — 재사용 `deploy.yml`(`workflow_call` + 롤백용 수동 `workflow_dispatch`, `concurrency: pages`) 작성. 무스타일 Hello 페이지가 `https://sguys99.github.io/euro-digest/`에서 열리고 정적 자산·404·trailing slash 정상
+- [x] M0-13 Pages 배포 — 재사용 `deploy.yml`(`workflow_call` + 롤백용 수동 `workflow_dispatch`, `concurrency: pages`) 작성. 무스타일 Hello 페이지가 `https://sguys99.github.io/euro-digest/`에서 열리고 정적 자산·404·trailing slash 정상 — 2026-10-10 완료: ci(main push) → deploy.yml 배포 성공, `npm run verify:deploy` 15개 항목 통과(홈·`_next/static`·404 본문·`/euro-digest` 301). 롤백은 deploy.yml 수동 실행(Use workflow from: main + ref 입력)
 - [ ] M0-14 `collect.yml` 골격: `workflow_dispatch` + 백업 `schedule`(06:40 KST — 06:30 실행이 진행 중이면 concurrency로 대기한 뒤 12시간 가드로 skip) + 12시간 내 성공 이력 시 skip + `concurrency: collect` + 실패 시 이슈 생성 (FR-150, FR-152)
 - [ ] M0-15 🙋 cron-job.org → `workflow_dispatch` 호출 테스트 (06:30 정기 실행 활성화는 M1-40 리허설 후)
 
