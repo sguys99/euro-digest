@@ -140,7 +140,7 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 ### 7.2 컴포넌트
 - 서버 컴포넌트 기본, `"use client"`는 상호작용이 필요한 작은 섬에만.
 - `localStorage` 접근은 모두 try/catch, 실패해도 정상 렌더. 테마는 초기 인라인 스크립트로 `data-theme` 설정(깜빡임 없음).
-- 성능 예산: 초기 JS ≤ 120KB(gzip), LCP ≤ 2.0s(모바일 4G), CLS ≤ 0.05. 새 의존성은 번들 영향 확인 후 질문.
+- 성능 예산: 초기 JS ≤ 160KB(gzip, 모던 브라우저 module 스크립트 합·noModule polyfill 제외 — 프레임워크 기본 약 138KB, PRD §15 D21), LCP ≤ 2.0s(모바일 4G), CLS ≤ 0.05. 새 의존성은 번들 영향 확인 후 질문.
 - 모든 데이터 화면에 상태 4종(로딩 스켈레톤·빈 상태·오류·오프라인). 모든 뉴스 카드에 출처명·원문 링크, AI가 요약한 카드(`ai:true`)에는 "AI 요약" 라벨(`ai:false` 카드에는 붙이지 않음).
 
 ## 8. 데이터 · 시간

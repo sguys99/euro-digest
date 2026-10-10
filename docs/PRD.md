@@ -365,7 +365,7 @@
 | DR-08 | 모션: 카드 진입 페이드·필터 전환·탭 전환 150~250ms, 순위 변동 하이라이트. reduced-motion 시 모두 제거 |
 | DR-09 | 접근성: WCAG AA 대비(다크 모드 포함), 터치 타겟 44px, 키보드 포커스 링, 색 외 텍스트·기호 병기 |
 | DR-10 | 공유 OG 이미지 🆕: 날짜별·대회별·팀별 OG 이미지를 **빌드 시** 생성(정적 export 제약 대응), 브랜드 템플릿 사용. 생성 방식은 Playwright 템플릿 HTML 스크린샷(새 의존성 없음, §15 D13) |
-| DR-11 | 성능 예산: 초기 JS ≤ 120KB(gzip), LCP ≤ 2.0s(모바일 4G), CLS ≤ 0.05, 웹폰트 ≤ 2개 패밀리 |
+| DR-11 | 성능 예산: 초기 JS ≤ 160KB(gzip — 모던 브라우저 module 스크립트 합, noModule polyfill 제외), LCP ≤ 2.0s(모바일 4G), CLS ≤ 0.05, 웹폰트 ≤ 2개 패밀리 |
 | DR-12 | 디자인 토큰은 DESIGN.md에서 단일 관리 → Tailwind 설정과 CSS 변수로 생성 |
 
 ---
@@ -619,6 +619,7 @@
 | D18 | 개발 비용 기록 | **`data/runs-dev.json` 분리**, 비용 가드는 prod와 합산 | FR-27, CLAUDE §6.3 |
 | D19 | AI 라벨 | **`ai:true` 카드에만** 표시 | FR-35 |
 | D20 | 배포 경로 | **재사용 `deploy.yml`** — collect·weekly·ci(main push)가 호출, 수동 실행으로 롤백 재배포 | §10, FR-154 |
+| D21 | 초기 JS 예산 | **120KB → 160KB(gzip)** 상향. M0-01 실측에서 Next 16 + React 19 기본 런타임만 약 138KB(모던 브라우저 기준, noModule polyfill 제외)라 120KB는 달성 불가 (2026-10-10) | DR-11, CLAUDE §7.2 |
 
 ### 15.1 남은 확인 사항 (M0에서 검증)
 basic_plan §12의 외부 확인 항목(상표·저장소명, API-Football 현재 시즌 무료 조회, RSS·크롤링 약관, Google News RSS·GDELT 조건, 2026-27 한국 선수 명단)은 M0 검증 결과로 확정하며, 결과에 따라 PRD 해당 항목을 갱신한다.
