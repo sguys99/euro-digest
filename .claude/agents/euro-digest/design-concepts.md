@@ -50,7 +50,7 @@ frontmatter 훅이 `docs/design/d0~d3/`·`docs/design/fonts/`(와 `/tmp`) 밖으
 | 이적 | `transfer` 있음 | 상태 진행(rumor→negotiating→agreed→official, collapsed) + Tier 1~3 배지, 단계 텍스트 병기 |
 | 한국 선수 관련 | `kr:true` | 선수 강조 — 색 외 표식 병기 |
 | 경기 결과 | `cat:"result"` + `spoiler:true` | 결과 가리기 켬: 원제목(스코어가 제목에 있음)과 스코어를 가림 + 펼치기 버튼(44px) |
-| 한국어 보도 카드 | `lang:"ko"` (국내 매체·Google News 한국어 — M0-25·M0-26 판정 통과분) | 한국어 원문 제목 + 태그 + 출처·시각, 요약 줄 없음 |
+| 한국어 보도 카드 | `lang:"ko"` (국내 매체 RSS — M0-25 판정 통과분, Google News는 M0-26 사용 불가 D25) | 한국어 원문 제목 + 태그 + 출처·시각, 요약 줄 없음 |
 
 조건에 맞는 카드가 없으면 그 변형은 비워 두고 보고에 적는다. 모든 카드에 출처명과 원문 링크를 넣고, 시각은 KST로 표시한다(저장값은 UTC).
 
