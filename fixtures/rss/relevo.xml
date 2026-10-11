@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	xmlns:media="http://search.yahoo.com/mrss/"
+>
+
+<channel>
+	<title>Relevo</title>
+	<atom:link href="https://www.relevo.com/feed/" rel="self" type="application/rss+xml" />
+	<link>https://www.relevo.com</link>
+	<lastBuildDate>Sun, 11 Oct 2026 06:03:28 +0000</lastBuildDate>
+	<language>es</language>
+	<sy:updatePeriod>
+	hourly	</sy:updatePeriod>
+	<sy:updateFrequency>
+	1	</sy:updateFrequency>
+	<generator>https://wordpress.org/?v=6.9.10</generator>
+		<item>
+		<title>Eagles-Jaguars en Tottenham: la NFL vuelve a Londres y Jacksonville estrena dos partidos seguidos como local fuera de casa</title>
+		<link>https://www.relevo.com/nfl/nfl-londres-eagles-jaguars-tottenham-horario-espana.html</link>
+		
+		<dc:creator><![CDATA[Heath Chesters]]></dc:creator>
+		<pubDate>Sat, 10 Oct 2026 06:02:42 +0000</pubDate>
+				<category><![CDATA[NFL]]></category>
+		<guid isPermaLink="false">https://www.relevo.com/nfl/nfl-londres-eagles-jaguars-tottenham-horario-espana.html</guid>
+	</item>
+		<item>
+		<title>Julián Álvarez deja a Hidalgo y busca nuevo agente: Pastore, favorito, pero un tapado gana enteros</title>
+		<link>https://www.relevo.com/futbol/liga-primera/julian-alvarez-nuevo-agente-barquero.html</link>
+		
+		<dc:creator><![CDATA[Marcos Durán]]></dc:creator>
+		<pubDate>Fri, 09 Oct 2026 14:10:17 +0000</pubDate>
+				<category><![CDATA[Atlético de Madrid]]></category>
+		<category><![CDATA[Julián Álvarez]]></category>
+		<category><![CDATA[Liga Primera]]></category>
+		<guid isPermaLink="false">https://www.relevo.com/futbol/liga-primera/julian-alvarez-nuevo-agente-barquero.html</guid>
+	</item>
+		<item>
+		<title>Flick pierde a Raphinha, Bordalás elogia al Barça antes del duelo en el Camp Nou</title>
+		<link>https://www.relevo.com/futbol/flick-pierde-a-raphinha-bordalas-elogia-al-barca-antes-del-duelo-en-el-camp-nou.html</link>
+		
+		<dc:creator><![CDATA[Heath Chesters]]></dc:creator>
+		<pubDate>Fri, 09 Oct 2026 12:07:58 +0000</pubDate>
+				<category><![CDATA[F.C. Barcelona]]></category>
+		<category><![CDATA[Fútbol]]></category>
+		<guid isPermaLink="false">https://www.relevo.com/futbol/flick-pierde-a-raphinha-bordalas-elogia-al-barca-antes-del-duelo-en-el-camp-nou.html</guid>
+	</item>
+		<item>
+		<title>Mourinho entierra el ruido mediático sobre Mbappé: «Es ridículo»</title>
+		<link>https://www.relevo.com/futbol/mourinho-entierra-el-ruido-mediatico-sobre-mbappe-es-ridiculo.html</link>
+		
+		<dc:creator><![CDATA[Heath Chesters]]></dc:creator>
+		<pubDate>Fri, 09 Oct 2026 10:24:37 +0000</pubDate>
+				<category><![CDATA[Fútbol]]></category>
+		<category><![CDATA[Real Madrid CF]]></category>
+		<guid isPermaLink="false">https://www.relevo.com/futbol/mourinho-entierra-el-ruido-mediatico-sobre-mbappe-es-ridiculo.html</guid>
+	</item>
+		<item>
+		<title>Shai Gilgeous-Alexander, nuevo accionista del Atlético, amplía la creciente lista NBA en el fútbol</title>
+		<link>https://www.relevo.com/futbol/shai-gilgeous-alexander-nuevo-accionista-del-atletico-amplia-la-creciente-lista-nba-en-el-futbol.html</link>
+		
+		<dc:creator><![CDATA[Heath Chesters]]></dc:creator>
+		<pubDate>Fri, 09 Oct 2026 09:31:14 +0000</pubDate>
+				<category><![CDATA[Atlético de Madrid]]></category>
+		<category><![CDATA[Baloncesto]]></category>
+		<category><![CDATA[Fútbol]]></category>
+		<category><![CDATA[NBA]]></category>
+		<guid isPermaLink="false">https://www.relevo.com/futbol/shai-gilgeous-alexander-nuevo-accionista-del-atletico-amplia-la-creciente-lista-nba-en-el-futbol.html</guid>
+	</item>
+	</channel>
+</rss>

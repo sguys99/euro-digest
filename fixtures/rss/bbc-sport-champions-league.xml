@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/">
+    <channel>
+        <title><![CDATA[BBC Sport]]></title>
+        <link>https://www.bbc.co.uk/sport/football/champions-league</link>
+        <generator>RSS for Node</generator>
+        <lastBuildDate>Sun, 11 Oct 2026 06:17:20 GMT</lastBuildDate>
+        <atom:link href="https://feeds.bbci.co.uk/sport/football/champions-league/rss.xml" rel="self" type="application/rss+xml"/>
+        <copyright><![CDATA[Copyright: (C) British Broadcasting Corporation, see https://www.bbc.co.uk/usingthebbc/terms-of-use/#15metadataandrssfeeds for terms and conditions of reuse.]]></copyright>
+        <language><![CDATA[en-gb]]></language>
+        <ttl>15</ttl>
+        <item>
+            <title><![CDATA[Guardiola set to attend Man City v PSG next week]]></title>
+            <link>https://www.bbc.co.uk/sport/football/articles/ckrey77jq1n7o?at_medium=RSS&amp;at_campaign=rss</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/sport/football/articles/ckrey77jq1n7o#0</guid>
+            <pubDate>Wed, 07 Oct 2026 20:14:24 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Mourinho on emotional Inter Milan farewell]]></title>
+            <link>https://www.bbc.co.uk/sport/football/videos/cwyn044pl7eo?at_medium=RSS&amp;at_campaign=rss</link>
+            <guid isPermaLink="false">https://www.bbc.co.uk/sport/football/videos/cwyn044pl7eo#3</guid>
+            <pubDate>Wed, 30 Apr 2025 05:13:54 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

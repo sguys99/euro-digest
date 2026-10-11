@@ -1,0 +1,1702 @@
+{
+  "task": "M0-33",
+  "description": "configs/sources.json 수집 대상(enabled && terms_checked) RSS 실제 수집 샘플. 기사 본문·요약문·이미지는 제거했고, 남긴 요소는 원본 문자열 그대로다. 사람이 읽는 설명은 README.md.",
+  "collectedAt": "2026-10-11T06:17:17.669Z",
+  "collector": {
+    "userAgent": "EuroDigestBot/0.1 (+https://github.com/sguys99/euro-digest; sguys99@gmail.com)",
+    "politeness": "피드당 GET 1회(실패 시 1회 재시도 — 이번 수집은 재시도 0건), 요청 간 3.2초, 동시 요청 없음, 다른 호스트로의 리다이렉트 미추적"
+  },
+  "selection": "원본 피드에서 최근 항목을 우선하되 커버리지(언어 4종·같은 사건 여러 소스·이적·한국 선수·경기 결과·파서 경계 사례)를 기준으로 소스당 2~8건을 골랐다. 파일 안 순서는 원래 피드 순서를 유지한다. 섹션 피드 ⊂ 전체기사 피드 관계(인터풋볼·베스트일레븐)는 fixture에서도 유지한다(섹션 피드에서 고른 항목은 전체기사 피드에도 있다).",
+  "kept": {
+    "channel": [
+      "atom:link",
+      "copyright",
+      "generator",
+      "language",
+      "lastBuildDate",
+      "link",
+      "pubDate",
+      "sy:updateFrequency",
+      "sy:updatePeriod",
+      "title",
+      "ttl"
+    ],
+    "item": [
+      "author",
+      "category",
+      "dc:creator",
+      "guid",
+      "link",
+      "pubDate",
+      "title"
+    ]
+  },
+  "removed": {
+    "rule": "description · content:encoded · summary · content · media:* · enclosure · 이미지 URL(채널 image·itunes:image 등)과 그 밖의 비허용 요소는 채널·항목 모두에서 제거. 고르지 않은 항목은 통째로 제거.",
+    "elements": [
+      "comments",
+      "content:encoded",
+      "description",
+      "enclosure",
+      "googleplay:author",
+      "googleplay:email",
+      "googleplay:owner",
+      "image",
+      "itunes:author",
+      "itunes:block",
+      "itunes:owner",
+      "media:content",
+      "media:description",
+      "media:thumbnail",
+      "slash:comments",
+      "webMaster",
+      "wfw:commentRss"
+    ]
+  },
+  "tagLegend": {
+    "lang:<en|it|es|ko>": "소스 언어(sources.json lang)",
+    "cluster:<키>": "같은 사건을 다룬 항목(손으로 판정). 키 설명은 coverage.clusters",
+    "related:<키>": "같은 사건의 다른 갈래(클러스터 경계 판단용 — 묶이지 않아도 됨)",
+    "transfer:<rumor|negotiating|agreed|official|collapsed>": "이적 관련 — 손으로 붙인 단계 메모(TransferStatusSchema 어휘). M1-17 기대값이 아니라 참고용",
+    "contract-renewal": "재계약(이적 아님)",
+    "korean-player:<slug>": "제목에 configs/korean-players.json 등록 선수가 나옴",
+    "korean-unregistered:<slug>": "제목에 등록되지 않은 한국 선수가 나옴(오탐·미탐 확인용)",
+    "korea-related": "한국 관련이지만 등록 선수 없음",
+    "match-result": "제목만 보고 경기 결과를 알 수 있음(spoiler 후보)",
+    "score": "제목에 숫자 스코어가 있음(1-1 · Arsenal 2 Leeds 1 등)",
+    "score-lookalike": "스코어처럼 보이지만 스코어가 아닌 숫자 패턴(10-man · 8/10) — spoiler 오탐 확인용",
+    "match-event": "경기 중 사건(퇴장·실수)은 드러나지만 최종 결과는 제목에 없음",
+    "national-team": "대표팀 관련",
+    "non-european": "유럽 클럽 축구가 아님(미국 대표팀 등)",
+    "non-football": "축구 기사가 아님(전 종목 피드 혼입) — 필터 확인용",
+    "k-league": "K리그 기사(국내 전체기사·축구 피드 혼입) — 필터 확인용",
+    "stale": "오래된 항목(1년 이상) — 최신성 필터 확인용",
+    "older-than-36h": "수집 시각보다 36시간 넘게 이전(자동, 국내 피드는 KST로 해석) — FR-07 최대 수집 창 밖. 시간 창 필터 테스트용, M0-34 카드 샘플에서는 제외 권장",
+    "preview": "경기 전 예상 라인업 등",
+    "roundup": "여러 소식을 묶은 제목",
+    "title-cdata · title-entity · title-edge-space · emoji": "제목 원문 표기(자동) — CDATA, XML 엔티티(&quot; 등), 앞뒤 공백, 이모지",
+    "link-cdata · link-entity · tracking-params · http-link · video": "링크 원문 표기(자동) — CDATA, &amp;, 추적 파라미터(at_medium 등), http://, 영상·iPlayer 경로",
+    "dup-link · in-feed-dup": "같은 링크가 fixture 안에 2번 이상(자동) — 피드 간 또는 같은 피드 안 중복. 중복제거 테스트 입력"
+  },
+  "sources": [
+    {
+      "id": "bbc-sport-football",
+      "url": "https://feeds.bbci.co.uk/sport/football/rss.xml",
+      "lang": "en",
+      "fetchedAt": "2026-10-11T06:17:17.669Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "text/xml; charset=utf-8",
+      "format": "rss-2.0",
+      "itemsOriginal": 83,
+      "itemsKept": 7,
+      "error": null,
+      "timeFormat": "RFC 822, 'GMT' 표기 (예: Sat, 10 Oct 2026 19:24:23 GMT)",
+      "removedElements": {
+        "channel": [
+          "description",
+          "image"
+        ],
+        "item": [
+          "description",
+          "media:thumbnail"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 0,
+          "title": "Solanke scores in added time as 10-man Spurs draw with Man Utd",
+          "titleLength": 62,
+          "link": "https://www.bbc.co.uk/sport/football/videos/crz9zdl0g04zo?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 19:24:23 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:mun-tot-result",
+            "match-result",
+            "score-lookalike",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "video",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 9,
+          "title": "'I kissed Rodrigo and said thanks' - De Zerbi 'liked' Spurs red card",
+          "titleLength": 68,
+          "link": "https://www.bbc.co.uk/sport/football/articles/cqn73g3pvezdo?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 20:58:39 GMT",
+          "tags": [
+            "lang:en",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 11,
+          "title": "AC Milan keen on Scott - Sunday's gossip",
+          "titleLength": 40,
+          "link": "https://www.bbc.co.uk/sport/football/articles/cmy0rp2r516po?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 22:01:20 GMT",
+          "tags": [
+            "lang:en",
+            "transfer:rumor",
+            "title-cdata",
+            "link-entity",
+            "tracking-params"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 14,
+          "title": "'Reminds me of Muller' - Naderi proving worth in Rangers revival",
+          "titleLength": 64,
+          "link": "https://www.bbc.co.uk/sport/football/articles/cqzjx3z4ljr0o?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 20:03:56 GMT",
+          "tags": [
+            "lang:en",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "dup-link",
+            "in-feed-dup"
+          ]
+        },
+        {
+          "pos": 4,
+          "feedPos": 35,
+          "title": "Bayern strike late to avoid shock defeat at Augsburg ",
+          "titleLength": 53,
+          "link": "https://www.bbc.co.uk/sport/football/videos/c674peklk5kno?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 18:15:25 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:augsburg-bayern",
+            "match-result",
+            "title-cdata",
+            "title-edge-space",
+            "link-entity",
+            "tracking-params",
+            "video"
+          ]
+        },
+        {
+          "pos": 5,
+          "feedPos": 38,
+          "title": "Highlights: Albania 0-1 Wales",
+          "titleLength": 29,
+          "link": "https://www.bbc.co.uk/sport/football/videos/crlyk7w4zp5xo?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Fri, 09 Oct 2026 18:20:41 GMT",
+          "tags": [
+            "lang:en",
+            "match-result",
+            "score",
+            "national-team",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "video"
+          ]
+        },
+        {
+          "pos": 6,
+          "feedPos": 69,
+          "title": "'Reminds me of Muller' - Naderi proving worth in Rangers revival",
+          "titleLength": 64,
+          "link": "https://www.bbc.co.uk/sport/football/articles/cqzjx3z4ljr0o?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 20:03:56 GMT",
+          "tags": [
+            "lang:en",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "dup-link",
+            "in-feed-dup"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bbc-sport-premier-league",
+      "url": "https://feeds.bbci.co.uk/sport/football/premier-league/rss.xml",
+      "lang": "en",
+      "fetchedAt": "2026-10-11T06:17:21.332Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "text/xml; charset=utf-8",
+      "format": "rss-2.0",
+      "itemsOriginal": 47,
+      "itemsKept": 5,
+      "error": null,
+      "timeFormat": "RFC 822, 'GMT' 표기 (예: Sat, 10 Oct 2026 19:24:23 GMT)",
+      "removedElements": {
+        "channel": [
+          "description",
+          "image"
+        ],
+        "item": [
+          "description",
+          "media:thumbnail"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 1,
+          "title": "'I kissed Rodrigo and said thanks' - De Zerbi 'liked' Spurs red card",
+          "titleLength": 68,
+          "link": "https://www.bbc.co.uk/sport/football/articles/cqn73g3pvezdo?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 20:58:39 GMT",
+          "tags": [
+            "lang:en",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 8,
+          "title": "Palmer signs new Chelsea contract until 2034",
+          "titleLength": 44,
+          "link": "https://www.bbc.co.uk/sport/football/articles/cwe9lngxzjpno?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 09:51:09 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:palmer-contract",
+            "contract-renewal",
+            "title-cdata",
+            "link-entity",
+            "tracking-params"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 9,
+          "title": "Arteta's conscience clear over Man City charges",
+          "titleLength": 47,
+          "link": "https://www.bbc.co.uk/sport/football/articles/c6d93ql8jvdko?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Fri, 09 Oct 2026 21:30:52 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:arteta-conscience",
+            "title-cdata",
+            "link-entity",
+            "tracking-params"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 10,
+          "title": "Solanke scores in added time as 10-man Spurs draw with Man Utd",
+          "titleLength": 62,
+          "link": "https://www.bbc.co.uk/sport/football/videos/crz9zdl0g04zo?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 19:24:23 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:mun-tot-result",
+            "match-result",
+            "score-lookalike",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "video",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 4,
+          "feedPos": 12,
+          "title": "Brilliant Guimaraes goal helps Arsenal fight back to beat Leeds ",
+          "titleLength": 64,
+          "link": "https://www.bbc.co.uk/sport/football/videos/c6y4z9lnkz30o?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 19:00:08 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:arsenal-leeds",
+            "match-result",
+            "title-cdata",
+            "title-edge-space",
+            "link-entity",
+            "tracking-params",
+            "video"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bbc-sport-champions-league",
+      "url": "https://feeds.bbci.co.uk/sport/football/champions-league/rss.xml",
+      "lang": "en",
+      "fetchedAt": "2026-10-11T06:17:24.947Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "text/xml; charset=utf-8",
+      "format": "rss-2.0",
+      "itemsOriginal": 14,
+      "itemsKept": 2,
+      "error": null,
+      "timeFormat": "RFC 822, 'GMT' 표기 (예: Sat, 10 Oct 2026 19:24:23 GMT)",
+      "removedElements": {
+        "channel": [
+          "description",
+          "image"
+        ],
+        "item": [
+          "description",
+          "media:thumbnail"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 0,
+          "title": "Guardiola set to attend Man City v PSG next week",
+          "titleLength": 48,
+          "link": "https://www.bbc.co.uk/sport/football/articles/ckrey77jq1n7o?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Wed, 07 Oct 2026 20:14:24 GMT",
+          "tags": [
+            "lang:en",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "older-than-36h",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 9,
+          "title": "Mourinho on emotional Inter Milan farewell",
+          "titleLength": 42,
+          "link": "https://www.bbc.co.uk/sport/football/videos/cwyn044pl7eo?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Wed, 30 Apr 2025 05:13:54 GMT",
+          "tags": [
+            "lang:en",
+            "stale",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "video",
+            "older-than-36h"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bbc-sport-european",
+      "url": "https://feeds.bbci.co.uk/sport/football/european/rss.xml",
+      "lang": "en",
+      "fetchedAt": "2026-10-11T06:17:28.505Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "text/xml; charset=utf-8",
+      "format": "rss-2.0",
+      "itemsOriginal": 26,
+      "itemsKept": 4,
+      "error": null,
+      "timeFormat": "RFC 822, 'GMT' 표기 (예: Sat, 10 Oct 2026 19:24:23 GMT)",
+      "removedElements": {
+        "channel": [
+          "description",
+          "image"
+        ],
+        "item": [
+          "description",
+          "media:thumbnail"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 2,
+          "title": "Everton agree £40m fee for Monaco striker Balogun",
+          "titleLength": 49,
+          "link": "https://www.bbc.co.uk/sport/football/articles/c780wzlzl45o?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Mon, 31 Aug 2026 20:21:22 GMT",
+          "tags": [
+            "lang:en",
+            "transfer:agreed",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "older-than-36h"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 4,
+          "title": "Raphinha's brilliant Barcelona start interrupted by injury concerns",
+          "titleLength": 67,
+          "link": "https://www.bbc.co.uk/sport/football/articles/ckz65plq04nqo?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Sat, 10 Oct 2026 08:27:28 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:raphinha-injury",
+            "title-cdata",
+            "link-entity",
+            "tracking-params"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 5,
+          "title": "Mourinho calls criticism of Mbappe 'ridiculous'",
+          "titleLength": 47,
+          "link": "https://www.bbc.co.uk/sport/football/articles/crvg6lx2yj29o?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Fri, 09 Oct 2026 09:57:48 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:mourinho-mbappe",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "older-than-36h"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 17,
+          "title": "Guardiola set to attend Man City v PSG next week",
+          "titleLength": 48,
+          "link": "https://www.bbc.co.uk/sport/football/articles/ckrey77jq1n7o?at_medium=RSS&at_campaign=rss",
+          "pubDate": "Wed, 07 Oct 2026 20:14:24 GMT",
+          "tags": [
+            "lang:en",
+            "title-cdata",
+            "link-entity",
+            "tracking-params",
+            "older-than-36h",
+            "dup-link"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "the-athletic-football",
+      "url": "https://www.nytimes.com/athletic/rss/football/",
+      "lang": "en",
+      "fetchedAt": "2026-10-11T06:17:32.511Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/xml",
+      "format": "rss-2.0",
+      "itemsOriginal": 100,
+      "itemsKept": 5,
+      "error": null,
+      "timeFormat": "RFC 822, 'GMT' 표기",
+      "removedElements": {
+        "channel": [
+          "description",
+          "image"
+        ],
+        "item": [
+          "description",
+          "media:content",
+          "media:description"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 2,
+          "title": "Ten-man Tottenham rescue late draw at Man United. Did Spurs deserve more?",
+          "titleLength": 73,
+          "link": "https://www.nytimes.com/athletic/7667943/2026/10/10/manc-utd-tottenham-result-analysis/",
+          "pubDate": "Sat, 10 Oct 2026 18:46:18 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:mun-tot-result",
+            "match-result",
+            "title-cdata"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 3,
+          "title": "Arsenal 2 Leeds 1: Guimaraes clinches comeback win over superb visitors, champions' depth tells",
+          "titleLength": 95,
+          "link": "https://www.nytimes.com/athletic/7667941/2026/10/10/arsenal-2-leeds-1-bruno-guimaraes-calafiori-justin/",
+          "pubDate": "Sat, 10 Oct 2026 13:32:39 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:arsenal-leeds",
+            "match-result",
+            "score",
+            "title-cdata"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 4,
+          "title": "Portugal FA opens 'urgent' proceedings against Cristiano Ronaldo after national team camp exit",
+          "titleLength": 94,
+          "link": "https://www.nytimes.com/athletic/7668007/2026/10/10/cristiano-ronaldo-portugal-dispute-update/",
+          "pubDate": "Sat, 10 Oct 2026 12:56:35 GMT",
+          "tags": [
+            "lang:en",
+            "cluster:ronaldo-suspension",
+            "national-team",
+            "title-cdata"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 14,
+          "title": "Enzo Maresca insists he 'trusts' Manchester City bosses: 'The moment to speak is when we win the appeal'",
+          "titleLength": 104,
+          "link": "https://www.nytimes.com/athletic/7674279/2026/10/09/enzo-maresca-manchester-city-judgment/",
+          "pubDate": "Fri, 09 Oct 2026 10:33:40 GMT",
+          "tags": [
+            "lang:en",
+            "title-cdata",
+            "older-than-36h"
+          ]
+        },
+        {
+          "pos": 4,
+          "feedPos": 21,
+          "title": "South Korean sports stars gloated about missing military service. Now comes the backlash",
+          "titleLength": 88,
+          "link": "https://www.nytimes.com/athletic/7672158/2026/10/09/south-korea-military-service-sport-exemption-rules/",
+          "pubDate": "Fri, 09 Oct 2026 04:12:49 GMT",
+          "tags": [
+            "lang:en",
+            "korea-related",
+            "title-cdata",
+            "older-than-36h"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "espn-soccer",
+      "url": "https://www.espn.com/espn/rss/soccer/news",
+      "lang": "en",
+      "fetchedAt": "2026-10-11T06:17:36.664Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "text/xml;charset=UTF-8",
+      "format": "rss-2.0",
+      "itemsOriginal": 19,
+      "itemsKept": 6,
+      "error": null,
+      "timeFormat": "RFC 822, 'EST' 약어 고정(서머타임 기간에도 EST) · 한 자리 일(Fri, 9 Oct 2026) 혼재 · 일괄 갱신으로 같은 시각 다수",
+      "removedElements": {
+        "channel": [
+          "description",
+          "image"
+        ],
+        "item": [
+          "description"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 1,
+          "title": "USWNT player ratings: Wilson's 8/10 a bright spot in Americans' loss",
+          "titleLength": 68,
+          "link": "https://www.espn.com/soccer/story/_/id/50150673/uswnt-player-ratings-sophia-wilsons-80-bright-spot-americans-frantic-loss-spain",
+          "pubDate": "Sat, 10 Oct 2026 20:02:16 EST",
+          "tags": [
+            "lang:en",
+            "non-european",
+            "national-team",
+            "score-lookalike",
+            "title-cdata",
+            "link-cdata"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 4,
+          "title": "Man United held by Spurs, fall to worst start in 40 years",
+          "titleLength": 57,
+          "link": "https://www.espn.com/soccer/story/_/id/50149326/man-united-tottenham-dominic-solanke-bryan-mbeumo-premier-league-result",
+          "pubDate": "Sat, 10 Oct 2026 21:43:46 EST",
+          "tags": [
+            "lang:en",
+            "cluster:mun-tot-result",
+            "match-result",
+            "title-cdata",
+            "link-cdata"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 5,
+          "title": "Vini Jr. 'sorry' after red card for hair pull; Mourinho skips presser",
+          "titleLength": 69,
+          "link": "https://www.espn.com/soccer/story/_/id/50150534/vinicius-junior-red-card-real-madrid-villarreal",
+          "pubDate": "Sat, 10 Oct 2026 21:43:46 EST",
+          "tags": [
+            "lang:en",
+            "cluster:vinicius-red-card",
+            "match-event",
+            "title-cdata",
+            "link-cdata"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 6,
+          "title": "Ronaldo suspended by Portugal as disciplinary case opens",
+          "titleLength": 56,
+          "link": "https://www.espn.com/soccer/story/_/id/50146841/cristiano-ronaldo-suspended-portugal-national-team-walkout-jorge-jesus-disciplinary",
+          "pubDate": "Sat, 10 Oct 2026 21:43:46 EST",
+          "tags": [
+            "lang:en",
+            "cluster:ronaldo-suspension",
+            "national-team",
+            "title-cdata",
+            "link-cdata"
+          ]
+        },
+        {
+          "pos": 4,
+          "feedPos": 8,
+          "title": "Neuer error leads to fastest-ever Bundesliga goal",
+          "titleLength": 49,
+          "link": "https://www.espn.com/soccer/story/_/id/50147624/bayern-munich-manuel-neuer-augsburg-robin-fellhauer-scores-fastest-goal-bundesliga-history",
+          "pubDate": "Sat, 10 Oct 2026 21:43:46 EST",
+          "tags": [
+            "lang:en",
+            "cluster:augsburg-bayern",
+            "match-event",
+            "title-cdata",
+            "link-cdata"
+          ]
+        },
+        {
+          "pos": 5,
+          "feedPos": 16,
+          "title": "Pochettino's youngsters shine, but lineup questions linger",
+          "titleLength": 58,
+          "link": "https://www.espn.com/soccer/story/_/id/50127389/usmnt-takeaways-mauricio-pochettinos-youngsters-shine-lineup-questions-linger",
+          "pubDate": "Fri, 9 Oct 2026 08:23:59 EST",
+          "tags": [
+            "lang:en",
+            "non-european",
+            "national-team",
+            "title-cdata",
+            "link-cdata",
+            "older-than-36h"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daily-briefing",
+      "url": "https://thedailybriefing.io/feed",
+      "lang": "en",
+      "fetchedAt": "2026-10-11T06:17:42.228Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/xml; charset=utf-8",
+      "format": "rss-2.0",
+      "itemsOriginal": 20,
+      "itemsKept": 3,
+      "error": null,
+      "timeFormat": "RFC 822, 'GMT' 표기",
+      "removedElements": {
+        "channel": [
+          "description",
+          "googleplay:author",
+          "googleplay:email",
+          "googleplay:owner",
+          "image",
+          "itunes:author",
+          "itunes:block",
+          "itunes:owner",
+          "webMaster"
+        ],
+        "item": [
+          "content:encoded",
+          "description",
+          "enclosure"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 0,
+          "title": "🚨 Maresca on Man City charges, SHOCK Liverpool exit, update on Kane’s Bayern future, Arsenal eye €60m star, Man Utd injury crisis, & more",
+          "titleLength": 137,
+          "link": "https://thedailybriefing.io/p/maresca-on-man-city-charges-shock",
+          "pubDate": "Sat, 10 Oct 2026 07:25:02 GMT",
+          "tags": [
+            "lang:en",
+            "transfer:rumor",
+            "roundup",
+            "title-cdata",
+            "emoji"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 1,
+          "title": "🚨 EXCL: Clubs lurking as Liverpool may soon have a big decision to make on £116m star...",
+          "titleLength": 88,
+          "link": "https://thedailybriefing.io/p/florian-wirtz-transfer-bayern-barcelona-real-madrid",
+          "pubDate": "Sat, 10 Oct 2026 06:54:46 GMT",
+          "tags": [
+            "lang:en",
+            "transfer:rumor",
+            "title-cdata",
+            "emoji"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 12,
+          "title": "🚨 Haaland to Arsenal update, Liverpool want PL winger, Man United want ex-midfielder, Chelsea lead race for England star, Tottenham plotting €130m move for attacker & more. ",
+          "titleLength": 173,
+          "link": "https://thedailybriefing.io/p/haaland-to-arsenal-update-liverpool",
+          "pubDate": "Tue, 06 Oct 2026 07:08:48 GMT",
+          "tags": [
+            "lang:en",
+            "transfer:rumor",
+            "roundup",
+            "title-cdata",
+            "title-edge-space",
+            "emoji",
+            "older-than-36h"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "di-marzio",
+      "url": "https://www.gianlucadimarzio.com/rss",
+      "lang": "it",
+      "fetchedAt": "2026-10-11T06:17:45.750Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/rss+xml; charset=UTF-8",
+      "format": "rss-2.0",
+      "itemsOriginal": 10,
+      "itemsKept": 4,
+      "error": null,
+      "timeFormat": "RFC 822, 숫자 오프셋 '+0200'(CEST)",
+      "removedElements": {
+        "channel": [
+          "description",
+          "image"
+        ],
+        "item": [
+          "description",
+          "enclosure"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 0,
+          "title": "Milan, la probabile formazione contro il Sassuolo: Pulisic dietro a Ramos",
+          "titleLength": 73,
+          "link": "https://www.gianlucadimarzio.com/news-calcio/milan-probabile-formazione-sassuolo-serie-a-news-498062",
+          "pubDate": "Sun, 11 Oct 2026 00:03:00 +0200",
+          "tags": [
+            "lang:it",
+            "preview"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 3,
+          "title": "De Bruyne raddoppia, il Maradona ritrova McTominay: il Napoli riparte con un tris",
+          "titleLength": 81,
+          "link": "https://www.gianlucadimarzio.com/interviste-e-storie/de-bruyne-raddoppia-maradona-ritrova-mctominay-napoli-riparte-tris-498149",
+          "pubDate": "Sat, 10 Oct 2026 23:30:25 +0200",
+          "tags": [
+            "lang:it",
+            "match-result"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 4,
+          "title": "Napoli, Allegri: \"Mi è piaciuta l'aggressione alla partita. De Bruyne? Se fa il play può allungarsi la carriera\"",
+          "titleLength": 112,
+          "link": "https://www.gianlucadimarzio.com/news-calcio/napoli-allegri-frosinone-conferenza-stamp-intervista-498150",
+          "pubDate": "Sat, 10 Oct 2026 23:20:00 +0200",
+          "tags": [
+            "lang:it"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 5,
+          "title": "Follia di Vinicius: gol, espulsione e Real Madrid in dieci. Il brasiliano può saltare il Clasico",
+          "titleLength": 96,
+          "link": "https://www.gianlucadimarzio.com/news-calcio/follia-vinicius-gol-espulsione-real-madrid-dieci-brasiliano-saltare-clasico-498148",
+          "pubDate": "Sat, 10 Oct 2026 22:43:56 +0200",
+          "tags": [
+            "lang:it",
+            "cluster:vinicius-red-card",
+            "match-event"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relevo",
+      "url": "https://www.relevo.com/feed/",
+      "lang": "es",
+      "fetchedAt": "2026-10-11T06:17:51.382Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/rss+xml; charset=UTF-8",
+      "format": "rss-2.0",
+      "itemsOriginal": 15,
+      "itemsKept": 5,
+      "error": null,
+      "timeFormat": "RFC 822, 숫자 오프셋 '+0000'",
+      "removedElements": {
+        "channel": [
+          "description"
+        ],
+        "item": [
+          "comments",
+          "content:encoded",
+          "description",
+          "media:content",
+          "slash:comments",
+          "wfw:commentRss"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 3,
+          "title": "Eagles-Jaguars en Tottenham: la NFL vuelve a Londres y Jacksonville estrena dos partidos seguidos como local fuera de casa",
+          "titleLength": 122,
+          "link": "https://www.relevo.com/nfl/nfl-londres-eagles-jaguars-tottenham-horario-espana.html",
+          "pubDate": "Sat, 10 Oct 2026 06:02:42 +0000",
+          "tags": [
+            "lang:es",
+            "non-football"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 5,
+          "title": "Julián Álvarez deja a Hidalgo y busca nuevo agente: Pastore, favorito, pero un tapado gana enteros",
+          "titleLength": 98,
+          "link": "https://www.relevo.com/futbol/liga-primera/julian-alvarez-nuevo-agente-barquero.html",
+          "pubDate": "Fri, 09 Oct 2026 14:10:17 +0000",
+          "tags": [
+            "lang:es",
+            "cluster:alvarez-agent",
+            "older-than-36h"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 9,
+          "title": "Flick pierde a Raphinha, Bordalás elogia al Barça antes del duelo en el Camp Nou",
+          "titleLength": 80,
+          "link": "https://www.relevo.com/futbol/flick-pierde-a-raphinha-bordalas-elogia-al-barca-antes-del-duelo-en-el-camp-nou.html",
+          "pubDate": "Fri, 09 Oct 2026 12:07:58 +0000",
+          "tags": [
+            "lang:es",
+            "cluster:raphinha-injury",
+            "older-than-36h"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 10,
+          "title": "Mourinho entierra el ruido mediático sobre Mbappé: «Es ridículo»",
+          "titleLength": 64,
+          "link": "https://www.relevo.com/futbol/mourinho-entierra-el-ruido-mediatico-sobre-mbappe-es-ridiculo.html",
+          "pubDate": "Fri, 09 Oct 2026 10:24:37 +0000",
+          "tags": [
+            "lang:es",
+            "cluster:mourinho-mbappe",
+            "older-than-36h"
+          ]
+        },
+        {
+          "pos": 4,
+          "feedPos": 11,
+          "title": "Shai Gilgeous-Alexander, nuevo accionista del Atlético, amplía la creciente lista NBA en el fútbol",
+          "titleLength": 98,
+          "link": "https://www.relevo.com/futbol/shai-gilgeous-alexander-nuevo-accionista-del-atletico-amplia-la-creciente-lista-nba-en-el-futbol.html",
+          "pubDate": "Fri, 09 Oct 2026 09:31:14 +0000",
+          "tags": [
+            "lang:es",
+            "cluster:sga-atletico",
+            "older-than-36h"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interfootball-world",
+      "url": "https://www.interfootball.co.kr/rss/S1N1.xml",
+      "lang": "ko",
+      "fetchedAt": "2026-10-11T06:17:56.642Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/xml",
+      "format": "rss-2.0",
+      "itemsOriginal": 20,
+      "itemsKept": 4,
+      "error": null,
+      "timeFormat": "'YYYY-MM-DD HH:mm:ss' 오프셋 없음 — KST로 해석해 UTC 저장(sources.json note)",
+      "removedElements": {
+        "channel": [
+          "description"
+        ],
+        "item": [
+          "description"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 1,
+          "title": "‘친정팀’ 맨시티에 단호하게 선그은 아르테타...\"양심에 거리낄 것 없다\"",
+          "titleLength": 41,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696174",
+          "pubDate": "2026-10-11 13:55:17",
+          "tags": [
+            "lang:ko",
+            "cluster:arteta-conscience",
+            "title-entity",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 12,
+          "title": "이강인이 대체 뭘 잘못했길래…레알 마드리드, 승리하고도 또 분노 폭발 “비니시우스에게는 레드카드가 나오지만 이강인에게는 나오지 않는다”",
+          "titleLength": 75,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696160",
+          "pubDate": "2026-10-11 08:10:00",
+          "tags": [
+            "lang:ko",
+            "korean-player:lee-kang-in",
+            "related:vinicius-red-card",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 13,
+          "title": "[오피셜] “나는 평범한 선수가 아니다, 주장이라는 사실은 오히려 가중 요인”…호날두, 감독과 충돌 후 대표팀 이탈→징계 절차 개시",
+          "titleLength": 73,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696159",
+          "pubDate": "2026-10-11 07:30:00",
+          "tags": [
+            "lang:ko",
+            "cluster:ronaldo-suspension",
+            "national-team",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 18,
+          "title": "[PL REVIEW] '손흥민 보기 부끄럽다' 벤탄쿠르 박치기 퇴장...토트넘, 솔란케 극장골로 맨유와 간신히 1-1 무! 최하위 탈출",
+          "titleLength": 75,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696156",
+          "pubDate": "2026-10-11 03:10:35",
+          "tags": [
+            "lang:ko",
+            "cluster:mun-tot-result",
+            "match-result",
+            "score",
+            "korean-unregistered:son-heung-min",
+            "dup-link"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interfootball-all",
+      "url": "https://www.interfootball.co.kr/rss/allArticle.xml",
+      "lang": "ko",
+      "fetchedAt": "2026-10-11T06:17:59.872Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/xml",
+      "format": "rss-2.0",
+      "itemsOriginal": 50,
+      "itemsKept": 8,
+      "error": null,
+      "timeFormat": "'YYYY-MM-DD HH:mm:ss' 오프셋 없음 — KST로 해석해 UTC 저장(sources.json note)",
+      "removedElements": {
+        "channel": [
+          "description"
+        ],
+        "item": [
+          "description"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 1,
+          "title": "‘친정팀’ 맨시티에 단호하게 선그은 아르테타...\"양심에 거리낄 것 없다\"",
+          "titleLength": 41,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696174",
+          "pubDate": "2026-10-11 13:55:17",
+          "tags": [
+            "lang:ko",
+            "cluster:arteta-conscience",
+            "title-entity",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 14,
+          "title": "이강인이 대체 뭘 잘못했길래…레알 마드리드, 승리하고도 또 분노 폭발 “비니시우스에게는 레드카드가 나오지만 이강인에게는 나오지 않는다”",
+          "titleLength": 75,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696160",
+          "pubDate": "2026-10-11 08:10:00",
+          "tags": [
+            "lang:ko",
+            "korean-player:lee-kang-in",
+            "related:vinicius-red-card",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 15,
+          "title": "[오피셜] “나는 평범한 선수가 아니다, 주장이라는 사실은 오히려 가중 요인”…호날두, 감독과 충돌 후 대표팀 이탈→징계 절차 개시",
+          "titleLength": 73,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696159",
+          "pubDate": "2026-10-11 07:30:00",
+          "tags": [
+            "lang:ko",
+            "cluster:ronaldo-suspension",
+            "national-team",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 20,
+          "title": "[PL REVIEW] '손흥민 보기 부끄럽다' 벤탄쿠르 박치기 퇴장...토트넘, 솔란케 극장골로 맨유와 간신히 1-1 무! 최하위 탈출",
+          "titleLength": 75,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696156",
+          "pubDate": "2026-10-11 03:10:35",
+          "tags": [
+            "lang:ko",
+            "cluster:mun-tot-result",
+            "match-result",
+            "score",
+            "korean-unregistered:son-heung-min",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 4,
+          "feedPos": 23,
+          "title": "[라리가 REVIEW] '발목 부상' 이강인, 벤치 시작→후반 교체...아틀레티코는 로메로 결승골로 알라베스 2-1 제압! 4연승 질주",
+          "titleLength": 75,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696151",
+          "pubDate": "2026-10-11 01:11:36",
+          "tags": [
+            "lang:ko",
+            "cluster:atletico-alaves",
+            "korean-player:lee-kang-in",
+            "match-result",
+            "score"
+          ]
+        },
+        {
+          "pos": 5,
+          "feedPos": 24,
+          "title": "[분데스 REVIEW] 김민재는 결장! 설영우는 선발 데뷔→조기교체...뮌헨, 40살 노이어 부진 속 아우크스부르크와 2-2 무",
+          "titleLength": 71,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696150",
+          "pubDate": "2026-10-11 00:24:41",
+          "tags": [
+            "lang:ko",
+            "cluster:augsburg-bayern",
+            "korean-player:kim-min-jae",
+            "korean-player:seol-young-woo",
+            "match-result",
+            "score"
+          ]
+        },
+        {
+          "pos": 6,
+          "feedPos": 26,
+          "title": "[오피셜] 맨유에서 6년 반 뛴 로호, 아직 은퇴 안 했다...36살에 친정 복귀! 개인 통산 3번째 입단",
+          "titleLength": 59,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696147",
+          "pubDate": "2026-10-11 00:00:00",
+          "tags": [
+            "lang:ko",
+            "transfer:official"
+          ]
+        },
+        {
+          "pos": 7,
+          "feedPos": 43,
+          "title": "‘바르셀로나 보내준다더니 결국 물거품’…이강인 공격 파트너 알바레스, 이적 약속 불발에 신뢰 와르르→오랜 에이전트와 결별",
+          "titleLength": 67,
+          "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696130",
+          "pubDate": "2026-10-10 16:45:00",
+          "tags": [
+            "lang:ko",
+            "cluster:alvarez-agent",
+            "transfer:collapsed",
+            "korean-player:lee-kang-in"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "footballist-football",
+      "url": "https://www.footballist.co.kr/rss/S1N1.xml",
+      "lang": "ko",
+      "fetchedAt": "2026-10-11T06:18:03.111Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/xml",
+      "format": "rss-2.0",
+      "itemsOriginal": 20,
+      "itemsKept": 4,
+      "error": null,
+      "timeFormat": "'YYYY-MM-DD HH:mm:ss' 오프셋 없음 — KST로 해석해 UTC 저장(sources.json note)",
+      "removedElements": {
+        "channel": [
+          "description"
+        ],
+        "item": [
+          "description"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 3,
+          "title": "‘후반 용병술’은 증명, 11월에는 ‘이강인·손흥민 활용’ 플랜 A까지 증명해야 [모레노호 1기 결산]",
+          "titleLength": 57,
+          "link": "http://www.footballist.co.kr/news/articleView.html?idxno=215736",
+          "pubDate": "2026-10-11 06:00:00",
+          "tags": [
+            "lang:ko",
+            "korean-player:lee-kang-in",
+            "korean-unregistered:son-heung-min",
+            "national-team",
+            "http-link"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 5,
+          "title": "‘이강인 컴백’ 아틀레티코, 극적인 승리로 알라베스 잡고 2위 질주 계속! ‘로메로 결승골’ [라리가 리뷰]",
+          "titleLength": 60,
+          "link": "http://www.footballist.co.kr/news/articleView.html?idxno=215738",
+          "pubDate": "2026-10-11 01:19:02",
+          "tags": [
+            "lang:ko",
+            "cluster:atletico-alaves",
+            "korean-player:lee-kang-in",
+            "match-result",
+            "http-link"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 8,
+          "title": "‘설영우 선발’ 아우크스부르크, 바이에른 상대로 무승부 따내는 쾌거! [분데스 리뷰]",
+          "titleLength": 47,
+          "link": "http://www.footballist.co.kr/news/articleView.html?idxno=215733",
+          "pubDate": "2026-10-11 00:33:44",
+          "tags": [
+            "lang:ko",
+            "cluster:augsburg-bayern",
+            "korean-player:seol-young-woo",
+            "match-result",
+            "http-link"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 14,
+          "title": "'윌리안 결승골' 천안, 13경기 무승 탈출! 경남 발목 잡고 '234일 만에 승전고'  [케리뷰]",
+          "titleLength": 55,
+          "link": "http://www.footballist.co.kr/news/articleView.html?idxno=215724",
+          "pubDate": "2026-10-10 18:28:02",
+          "tags": [
+            "lang:ko",
+            "k-league",
+            "match-result",
+            "http-link"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "besteleven-world",
+      "url": "https://www.besteleven.com/rss/S1N2.xml",
+      "lang": "ko",
+      "fetchedAt": "2026-10-11T06:18:06.365Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/xml",
+      "format": "rss-2.0",
+      "itemsOriginal": 20,
+      "itemsKept": 5,
+      "error": null,
+      "timeFormat": "'YYYY-MM-DD HH:mm:ss' 오프셋 없음 — KST로 해석해 UTC 저장(sources.json note)",
+      "removedElements": {
+        "channel": [
+          "description"
+        ],
+        "item": [
+          "description"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 0,
+          "title": "‘경악스러운 파울’ 골 취소에 상대 머리채 잡아 퇴장까지… ‘라리가 통산 250경기’ 비니시우스 사과 “팀과 팬들께 죄송”",
+          "titleLength": 68,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313024",
+          "pubDate": "2026-10-11 08:00:00",
+          "tags": [
+            "lang:ko",
+            "cluster:vinicius-red-card",
+            "match-event",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 6,
+          "title": "‘캐릭도, 데 제르비도 웃지 못했다’… 수적 열세에도 극장골 터뜨린 토트넘, 솔란케 후반 추가시간 동점 헤더골… 맨유와 1-1",
+          "titleLength": 70,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313017",
+          "pubDate": "2026-10-11 03:45:24",
+          "tags": [
+            "lang:ko",
+            "cluster:mun-tot-result",
+            "match-result",
+            "score",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 7,
+          "title": "“내 멍청한 실수였다”… 노이어, ‘8.4초’ 분데스리가 역대 최단 시간 실점 빌미→ 바이에른 뮌헨은 설영우 선발 출전한 아우크스부르크에 2-2 무승부",
+          "titleLength": 84,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313015",
+          "pubDate": "2026-10-11 02:56:57",
+          "tags": [
+            "lang:ko",
+            "cluster:augsburg-bayern",
+            "korean-player:seol-young-woo",
+            "match-result",
+            "score",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 10,
+          "title": "‘이강인 33분 소화’… 상대 퇴장 1명으로 ‘수적 우위’ 아틀레티코 마드리드, 로메로 데뷔 결승골로 알라베스 2-1 제압",
+          "titleLength": 68,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313012",
+          "pubDate": "2026-10-11 01:14:40",
+          "tags": [
+            "lang:ko",
+            "cluster:atletico-alaves",
+            "korean-player:lee-kang-in",
+            "match-result",
+            "score",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 4,
+          "feedPos": 13,
+          "title": "[오피셜] “트로피를 꾸준히 들어올리고 싶다”… ‘138경기 91 공격 포인트’ 팔머, 첼시와 2034년까지 재계약",
+          "titleLength": 64,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313007",
+          "pubDate": "2026-10-10 22:40:00",
+          "tags": [
+            "lang:ko",
+            "cluster:palmer-contract",
+            "contract-renewal",
+            "dup-link"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "besteleven-all",
+      "url": "https://www.besteleven.com/rss/allArticle.xml",
+      "lang": "ko",
+      "fetchedAt": "2026-10-11T06:18:09.605Z",
+      "attempts": 1,
+      "httpStatus": 200,
+      "contentType": "application/xml",
+      "format": "rss-2.0",
+      "itemsOriginal": 50,
+      "itemsKept": 7,
+      "error": null,
+      "timeFormat": "'YYYY-MM-DD HH:mm:ss' 오프셋 없음 — KST로 해석해 UTC 저장(sources.json note)",
+      "removedElements": {
+        "channel": [
+          "description"
+        ],
+        "item": [
+          "description"
+        ]
+      },
+      "items": [
+        {
+          "pos": 0,
+          "feedPos": 2,
+          "title": "‘시즌 첫 3연승’ 충북청주, 성남 3-1 제압… 가르시아 14골·반데이라 8도움, 나란히 구단 새 역사",
+          "titleLength": 58,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313025",
+          "pubDate": "2026-10-11 09:00:00",
+          "tags": [
+            "lang:ko",
+            "k-league",
+            "match-result",
+            "score"
+          ]
+        },
+        {
+          "pos": 1,
+          "feedPos": 4,
+          "title": "‘경악스러운 파울’ 골 취소에 상대 머리채 잡아 퇴장까지… ‘라리가 통산 250경기’ 비니시우스 사과 “팀과 팬들께 죄송”",
+          "titleLength": 68,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313024",
+          "pubDate": "2026-10-11 08:00:00",
+          "tags": [
+            "lang:ko",
+            "cluster:vinicius-red-card",
+            "match-event",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 2,
+          "feedPos": 10,
+          "title": "‘캐릭도, 데 제르비도 웃지 못했다’… 수적 열세에도 극장골 터뜨린 토트넘, 솔란케 후반 추가시간 동점 헤더골… 맨유와 1-1",
+          "titleLength": 70,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313017",
+          "pubDate": "2026-10-11 03:45:24",
+          "tags": [
+            "lang:ko",
+            "cluster:mun-tot-result",
+            "match-result",
+            "score",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 3,
+          "feedPos": 11,
+          "title": "“내 멍청한 실수였다”… 노이어, ‘8.4초’ 분데스리가 역대 최단 시간 실점 빌미→ 바이에른 뮌헨은 설영우 선발 출전한 아우크스부르크에 2-2 무승부",
+          "titleLength": 84,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313015",
+          "pubDate": "2026-10-11 02:56:57",
+          "tags": [
+            "lang:ko",
+            "cluster:augsburg-bayern",
+            "korean-player:seol-young-woo",
+            "match-result",
+            "score",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 4,
+          "feedPos": 14,
+          "title": "‘이강인 33분 소화’… 상대 퇴장 1명으로 ‘수적 우위’ 아틀레티코 마드리드, 로메로 데뷔 결승골로 알라베스 2-1 제압",
+          "titleLength": 68,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313012",
+          "pubDate": "2026-10-11 01:14:40",
+          "tags": [
+            "lang:ko",
+            "cluster:atletico-alaves",
+            "korean-player:lee-kang-in",
+            "match-result",
+            "score",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 5,
+          "feedPos": 17,
+          "title": "[오피셜] “트로피를 꾸준히 들어올리고 싶다”… ‘138경기 91 공격 포인트’ 팔머, 첼시와 2034년까지 재계약",
+          "titleLength": 64,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=313007",
+          "pubDate": "2026-10-10 22:40:00",
+          "tags": [
+            "lang:ko",
+            "cluster:palmer-contract",
+            "contract-renewal",
+            "dup-link"
+          ]
+        },
+        {
+          "pos": 6,
+          "feedPos": 41,
+          "title": "[오피셜] NBA 슈퍼스타가 이강인 팀의 ‘구단주 그룹’에 합류한다… 2년 연속 MVP 길저스 알렉산더, ATM과 파트너십 체결",
+          "titleLength": 71,
+          "link": "https://www.besteleven.com/news/articleView.html?idxno=312978",
+          "pubDate": "2026-10-10 10:27:47",
+          "tags": [
+            "lang:ko",
+            "cluster:sga-atletico",
+            "korean-player:lee-kang-in"
+          ]
+        }
+      ]
+    }
+  ],
+  "duplicateLinks": [
+    {
+      "link": "https://www.bbc.co.uk/sport/football/videos/crz9zdl0g04zo?at_medium=RSS&at_campaign=rss",
+      "refs": [
+        "bbc-sport-football#0",
+        "bbc-sport-premier-league#3"
+      ]
+    },
+    {
+      "link": "https://www.bbc.co.uk/sport/football/articles/cqn73g3pvezdo?at_medium=RSS&at_campaign=rss",
+      "refs": [
+        "bbc-sport-football#1",
+        "bbc-sport-premier-league#0"
+      ]
+    },
+    {
+      "link": "https://www.bbc.co.uk/sport/football/articles/cqzjx3z4ljr0o?at_medium=RSS&at_campaign=rss",
+      "refs": [
+        "bbc-sport-football#3",
+        "bbc-sport-football#6"
+      ]
+    },
+    {
+      "link": "https://www.bbc.co.uk/sport/football/articles/ckrey77jq1n7o?at_medium=RSS&at_campaign=rss",
+      "refs": [
+        "bbc-sport-champions-league#0",
+        "bbc-sport-european#3"
+      ]
+    },
+    {
+      "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696174",
+      "refs": [
+        "interfootball-world#0",
+        "interfootball-all#0"
+      ]
+    },
+    {
+      "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696160",
+      "refs": [
+        "interfootball-world#1",
+        "interfootball-all#1"
+      ]
+    },
+    {
+      "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696159",
+      "refs": [
+        "interfootball-world#2",
+        "interfootball-all#2"
+      ]
+    },
+    {
+      "link": "https://www.interfootball.co.kr/news/articleView.html?idxno=696156",
+      "refs": [
+        "interfootball-world#3",
+        "interfootball-all#3"
+      ]
+    },
+    {
+      "link": "https://www.besteleven.com/news/articleView.html?idxno=313024",
+      "refs": [
+        "besteleven-world#0",
+        "besteleven-all#1"
+      ]
+    },
+    {
+      "link": "https://www.besteleven.com/news/articleView.html?idxno=313017",
+      "refs": [
+        "besteleven-world#1",
+        "besteleven-all#2"
+      ]
+    },
+    {
+      "link": "https://www.besteleven.com/news/articleView.html?idxno=313015",
+      "refs": [
+        "besteleven-world#2",
+        "besteleven-all#3"
+      ]
+    },
+    {
+      "link": "https://www.besteleven.com/news/articleView.html?idxno=313012",
+      "refs": [
+        "besteleven-world#3",
+        "besteleven-all#4"
+      ]
+    },
+    {
+      "link": "https://www.besteleven.com/news/articleView.html?idxno=313007",
+      "refs": [
+        "besteleven-world#4",
+        "besteleven-all#5"
+      ]
+    }
+  ],
+  "coverage": {
+    "itemsTotal": 69,
+    "uniqueLinks": 56,
+    "byLang": {
+      "en": 32,
+      "it": 4,
+      "es": 5,
+      "ko": 28
+    },
+    "counts": {
+      "transfer": 7,
+      "contractRenewal": 3,
+      "koreanPlayer": 13,
+      "matchResult": 23,
+      "score": 13
+    },
+    "clusters": {
+      "mun-tot-result": {
+        "note": "맨유 1-1 토트넘(2026-10-10, 솔란케 추가시간 동점골·10명 토트넘) 경기 결과 보도",
+        "refs": [
+          "bbc-sport-football#0",
+          "bbc-sport-premier-league#3",
+          "the-athletic-football#0",
+          "espn-soccer#1",
+          "interfootball-world#3",
+          "interfootball-all#3",
+          "besteleven-world#1",
+          "besteleven-all#2"
+        ],
+        "relatedRefs": []
+      },
+      "augsburg-bayern": {
+        "note": "아우크스부르크 2-2 바이에른(노이어 실수 8.4초 실점, 설영우 첫 선발·김민재 결장)",
+        "refs": [
+          "bbc-sport-football#4",
+          "espn-soccer#4",
+          "interfootball-all#5",
+          "footballist-football#2",
+          "besteleven-world#2",
+          "besteleven-all#3"
+        ],
+        "relatedRefs": []
+      },
+      "palmer-contract": {
+        "note": "팔머 첼시 재계약(2034년까지)",
+        "refs": [
+          "bbc-sport-premier-league#1",
+          "besteleven-world#4",
+          "besteleven-all#5"
+        ],
+        "relatedRefs": []
+      },
+      "arteta-conscience": {
+        "note": "아르테타 '맨시티 혐의에 양심에 거리낄 것 없다'",
+        "refs": [
+          "bbc-sport-premier-league#2",
+          "interfootball-world#0",
+          "interfootball-all#0"
+        ],
+        "relatedRefs": []
+      },
+      "arsenal-leeds": {
+        "note": "아스널 2-1 리즈(기마랑이스 역전골)",
+        "refs": [
+          "bbc-sport-premier-league#4",
+          "the-athletic-football#1"
+        ],
+        "relatedRefs": []
+      },
+      "raphinha-injury": {
+        "note": "하피냐 부상 이탈(바르셀로나)",
+        "refs": [
+          "bbc-sport-european#1",
+          "relevo#2"
+        ],
+        "relatedRefs": []
+      },
+      "mourinho-mbappe": {
+        "note": "무리뉴 '음바페 비판은 터무니없다'",
+        "refs": [
+          "bbc-sport-european#2",
+          "relevo#3"
+        ],
+        "relatedRefs": []
+      },
+      "ronaldo-suspension": {
+        "note": "포르투갈축구협회의 호날두 징계 절차·예비 출전 정지",
+        "refs": [
+          "the-athletic-football#2",
+          "espn-soccer#3",
+          "interfootball-world#2",
+          "interfootball-all#2"
+        ],
+        "relatedRefs": []
+      },
+      "vinicius-red-card": {
+        "note": "비니시우스 머리채 파울 퇴장·사과(레알 마드리드)",
+        "refs": [
+          "espn-soccer#2",
+          "di-marzio#3",
+          "besteleven-world#0",
+          "besteleven-all#1"
+        ],
+        "relatedRefs": [
+          "interfootball-world#1",
+          "interfootball-all#1"
+        ]
+      },
+      "alvarez-agent": {
+        "note": "훌리안 알바레스 에이전트 결별(바르셀로나 이적 약속 불발)",
+        "refs": [
+          "relevo#1",
+          "interfootball-all#7"
+        ],
+        "relatedRefs": []
+      },
+      "sga-atletico": {
+        "note": "샤이 길저스알렉산더 아틀레티코 주주 합류",
+        "refs": [
+          "relevo#4",
+          "besteleven-all#6"
+        ],
+        "relatedRefs": []
+      },
+      "atletico-alaves": {
+        "note": "아틀레티코 2-1 알라베스(로메로 결승골, 이강인 교체 출전) — 국내 매체만",
+        "refs": [
+          "interfootball-all#4",
+          "footballist-football#1",
+          "besteleven-world#3",
+          "besteleven-all#4"
+        ],
+        "relatedRefs": []
+      }
+    }
+  }
+}
