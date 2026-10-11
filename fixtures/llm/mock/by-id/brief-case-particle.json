@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "조사 오류 + 축약 이름 — M0-30 실제 출력(배치·짧은 판·thinking 끔). L1 'Bayern가'(보정 대상), L2 'Olise'. 기대: downgrade-line:2(L5 대회 이름 한글 표기 판정은 미정). 원천: M0-30 m030-b-off-short-A — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0. 배치 실측 usage 그대로(thinking 0토큰 포함 — mock usage에는 thinking 칸이 없다, 원래 배치 요청이지만 mock은 단건 결과로 돌려준다). 출력 형식은 M0-30 임시 스키마({l:[{t,r}]})다 — M1-20에서 프롬프트·출력 스키마가 확정되면 이 파일을 다시 만든다. 기대 판정 전체는 fixtures/llm/brief-cases.json.",
+  "text": "{\"l\":[{\"t\":\"Bayern가 Union Berlin을 7-0으로 대파했다.\",\"r\":[\"m1575167\"]},{\"t\":\"Olise가 3골 1도움으로 Bayern의 대승을 주도했다.\",\"r\":[\"m1575167\"]},{\"t\":\"Kim Min-jae는 후반 46분 교체 투입되어 45분을 소화했고, Jeong Woo-yeong은 60분 뛰고 교체 아웃됐다.\",\"r\":[\"k2897\",\"k512\"]},{\"t\":\"Brentford가 Chelsea를 3-0으로 꺾고 순위를 3위로 끌어올렸다.\",\"r\":[\"m560591\",\"sPL\"]},{\"t\":\"Arsenal이 승점 12로 프리미어리그 선두를 지켰다.\",\"r\":[\"sPL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 1462,
+    "output_tokens": 280,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

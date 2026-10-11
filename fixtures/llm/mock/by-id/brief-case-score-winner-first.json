@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "이긴 팀 점수 먼저 쓴 스코어 — M0-30 실제 출력(배치·긴 판·지시문 캐시 읽기·thinking 기본, 같은 입력의 단건 출력이 brief-2026-09-21). 기대: ok. 원천: M0-30 m030-c-def-long-D — scratchpad m0-30/results/cache-20261010T164123Z.json, data/runs-dev.json runId collect-dev-20261010T163429Z-6027. 배치 실측 usage 그대로(thinking 1029토큰 포함 — mock usage에는 thinking 칸이 없다, 원래 배치 요청이지만 mock은 단건 결과로 돌려준다). 출력 형식은 M0-30 임시 스키마({l:[{t,r}]})다 — M1-20에서 프롬프트·출력 스키마가 확정되면 이 파일을 다시 만든다. 기대 판정 전체는 fixtures/llm/brief-cases.json.",
+  "text": "{\"l\":[{\"t\":\"Man City가 홈에서 Sunderland를 5-3으로 꺾었다.\",\"r\":[\"m560590\"]},{\"t\":\"Liverpool이 Bournemouth 원정에서 1-0으로 이겼다.\",\"r\":[\"m560582\"]},{\"t\":\"Leeds United와 Crystal Palace는 0-0으로 비겼다.\",\"r\":[\"m560585\"]},{\"t\":\"Fulham과 Man United는 1-1로 비겼다.\",\"r\":[\"m560583\"]},{\"t\":\"Liverpool은 10위에서 6위로 올랐고 Man United는 13위에서 12위로 올랐다.\",\"r\":[\"sPL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 755,
+    "output_tokens": 1260,
+    "cache_read_input_tokens": 2034,
+    "cache_creation_input_tokens": 0
+  }
+}

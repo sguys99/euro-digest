@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "영문 일반어 잔존 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L1 'Matchday 5 경기는'. 기대: downgrade-line:1(L5 파생 숫자 '3점 앞섰다' 판정은 미정). 원천: M0-30 m030-b-def-short-C — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0. 배치 실측 usage 그대로(thinking 1208토큰 포함 — mock usage에는 thinking 칸이 없다, 원래 배치 요청이지만 mock은 단건 결과로 돌려준다). 출력 형식은 M0-30 임시 스키마({l:[{t,r}]})다 — M1-20에서 프롬프트·출력 스키마가 확정되면 이 파일을 다시 만든다. 기대 판정 전체는 fixtures/llm/brief-cases.json.",
+  "text": "{\"l\":[{\"t\":\"Dortmund과 Bremen의 Matchday 5 경기는 2-2 무승부로 끝났다.\",\"r\":[\"m565820\"]},{\"t\":\"Bremen은 88분과 90+2분에 연속 득점해 경기를 원점으로 돌렸다.\",\"r\":[\"m565820\"]},{\"t\":\"RC Lens는 Olympique Lyon을 2-1로 꺾었다.\",\"r\":[\"m559669\"]},{\"t\":\"Málaga와 Espanyol은 1-1로 비겼다.\",\"r\":[\"m564706\"]},{\"t\":\"Bundesliga 선두 Dortmund은 승점 13으로 2위 Bayern(10점)보다 3점 앞섰다.\",\"r\":[\"sBL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 1413,
+    "output_tokens": 1466,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

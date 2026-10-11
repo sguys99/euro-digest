@@ -1,0 +1,8 @@
+{
+  "type": "errored",
+  "note": "합성 — 연결 오류·요청 타임아웃(HTTP 응답 없음). llm.ts callSingle은 서버가 이미 처리했을 수 있어(중복 과금) 재시도하지 않는다(1회 시도). 단, 실패 결과의 retryable 힌트는 true다(배치 결과 수거 같은 읽기 맥락의 힌트) — M1-45는 이 힌트로 브리핑을 다시 보내면 안 된다. 기대(FR-26): downgrade-all. 출력 형식은 M0-30 임시 스키마({l:[{t,r}]})다 — M1-20에서 프롬프트·출력 스키마가 확정되면 이 파일을 다시 만든다. 기대 판정 전체는 fixtures/llm/brief-cases.json.",
+  "error": {
+    "type": "connection_error",
+    "message": "요청 시간 초과"
+  }
+}

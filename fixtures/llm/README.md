@@ -4,17 +4,30 @@ LLM 응답 샘플. `LLM_MODE=mock`(또는 `--mock`)이면 `scripts/lib/llm.ts`�
 
 일일 LLM 호출은 정형 경기 데이터로 쓰는 한국어 브리핑("오늘의 5줄")뿐이다(PRD §15 D24). 뉴스 기사는 LLM에 보내지 않으므로(D23) 기사 요약 응답 fixture는 두지 않는다. 주간 호출(팀 한줄평+강점·약점, 한국 선수 주간 총평)의 mock은 M3·M4에서 추가한다.
 
+> **M1-20 재생성 주의** — 브리핑 mock의 `text`는 **M0-30 임시 프롬프트·임시 출력 스키마**로 나온 모델 원문이다. M1-20에서 `configs/prompts/summarize.md`와 출력 zod 스키마가 확정되면 형식이 바뀌므로 `mock/by-id/brief-*.json`·`brief-cases.json`을 다시 만든다(실제 출력이 필요하면 `npm run eval:prompt` 소량 실행, 비용은 `data/runs-dev.json`에 기록). 그때까지 판정 기대값은 이 임시 형식 기준이다.
+
 ## mock/ — 요청별 응답
 
 ```
 mock/
   by-id/<customId>.json       # 1순위: 요청의 customId(브리핑 날짜·팀 묶음 ID 등)로 찾는다
-  by-hash/<h_해시>.json        # 2순위: system + user 내용 해시로 찾는다
+  by-hash/<h_해시>.json        # 2순위: system + user 내용 해시로 찾는다 (지금은 비어 있음 — M1-20 이후)
 ```
 
 - 조회 순서는 `by-id` → `by-hash`. 둘 다 없으면 `LlmMockFixtureError`가 나고, 오류 메시지에 만들어야 할 파일 경로가 나온다.
 - 해시 키는 `mockRequestKey({ system, user })` = `h_` + sha256(`system` + `\0` + `user`) 앞 16자리. 모델·max_tokens는 키에 들어가지 않는다. 프롬프트(`configs/prompts/*.md`)를 바꾸면 해시도 바뀐다.
 - 배치는 제출 즉시 끝난(ended) 상태가 된다. 단건 호출(`callSingle`)에는 `succeeded`·`errored`만 쓸 수 있다.
+- 같은 customId에는 언제나 같은 응답이 온다. 그래서 같은 id로 다시 부르는 재시도는 같은 결과가 된다.
+
+### customId 규칙 (브리핑)
+
+| 형식 | 뜻 |
+|---|---|
+| `brief-YYYY-MM-DD` | **발행일(KST) 정상 응답** — 그날 입력 `brief-inputs/YYYY-MM-DD.json`(briefDate)에 대한 실제 모델 출력. M1-45가 발행일로 customId를 만들면 mock 실행이 이 파일을 찾는다. 날짜 형식 id는 이 용도로만 쓴다(실패 사례에 날짜를 넣지 않는다). |
+| `brief-YYYY-MM-DD-r1` | 예약(아직 없음) — 재시도 응답. M1-45가 재시도 customId를 이렇게 정하면 "재시도 뒤 성공" 경로를 fixture로 시험할 수 있다. |
+| `brief-case-<유형>` | 실패·경계 사례. 날짜가 없어 발행일 id와 겹치지 않는다. 같은 유형의 두 번째는 `-2`. |
+
+단건 호출의 customId는 API로 보내지 않는다(mock 조회·로그에만 쓰인다). 형식 제약은 배치와 같은 `^[a-zA-Z0-9_-]{1,64}$`.
 
 ## 파일 형식 (zod `MockFixtureSchema`, 키는 API 응답 이름을 따른다)
 
@@ -23,15 +36,29 @@ mock/
 { "type": "succeeded", "text": "...", "stop_reason": "end_turn",
   "usage": { "input_tokens": 250, "output_tokens": 150,
              "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0 } }
-// stop_reason 생략 시 end_turn. "max_tokens"·"refusal"이면 실패 결과(과금됨)로 처리된다
-// usage 생략 시 0 — 비용 계산 테스트에 쓰려면 기록한다
+// stop_reason 생략 시 end_turn. "max_tokens"·"refusal"이면 실패 결과(과금됨)로 처리되고 text는 버려진다
+// usage 생략 시 0 — 비용 계산 테스트에 쓰려면 기록한다. thinking 토큰 칸은 없다(output_tokens에 포함)
 
 { "type": "errored", "error": { "type": "invalid_request_error", "message": "..." } }
+// error.type은 API 오류 type(rate_limit_error·overloaded_error 등) 또는 connection_error(연결 오류·타임아웃 흉내)
 { "type": "expired" }
 { "type": "canceled" }
 ```
 
 모든 형식에 사람용 메모 `note`(문자열)를 붙일 수 있다.
+
+### llm.ts가 이 fixture를 처리하는 방식 (단건 `callSingle`, 2026-10-11 확인)
+
+| fixture | 결과 | 재시도 | usage |
+|---|---|---|---|
+| `succeeded` + `end_turn` | `ok:true`, `text` | — | 기록값 |
+| `succeeded` + `max_tokens` | `ok:false`, `errorType:"max_tokens"`, `retryable:false` | 없음 | 기록값(과금) |
+| `succeeded` + `refusal` | `ok:false`, `errorType:"refusal"`, `retryable:false` | 없음 | 기록값(과금) |
+| `errored` 429·5xx 성격(`rate_limit_error`·`api_error`·`timeout_error`·`overloaded_error`) | `ok:false`, `retryable:true` | 최대 2회 더(마감을 넘기는 대기는 안 함) | 0 |
+| `errored` 4xx 성격(`invalid_request_error` 등) | `ok:false`, `retryable:false` | 없음 | 0 |
+| `errored` `connection_error` | `ok:false`, **`retryable:true`(힌트)** | **없음**(중복 과금 위험) | 0 |
+
+`retryable`은 호출부용 힌트다. 연결 오류는 llm.ts가 단건에서 재시도하지 않는데도 힌트가 true다(배치 결과 수거 같은 읽기 맥락 기준). 브리핑 호출부(M1-45)는 이 힌트만 보고 다시 보내지 않는다.
 
 ## 지금 있는 파일
 
@@ -39,5 +66,124 @@ mock/
 |---|---|
 | `mock/by-id/m0_sample_ok.json` | 전송 계층 테스트용 성공 응답(usage 포함) — M0-20 |
 | `mock/by-id/m0_sample_errored.json` | 전송 계층 테스트용 errored 응답 — M0-20 |
+| `mock/by-id/brief-*.json` (31개) | 일일 브리핑 mock — 발행일 정상 응답 5개 + 실패·경계 사례 26개 (M0-36, 아래 표) |
+| `brief-cases.json` | 브리핑 mock 기대 판정 표 — 케이스별 원천 입력·단계·FR-29 판정·줄별 근거 (M0-36) |
+| `brief-inputs/` | 브리핑 정형 입력 6일치(M0-30 A~D · M0-34 E·F) + E 메타 + 임시 프롬프트 2개 + 임시 고유명사 사전 (M0-36, M1-24 골든셋 씨앗) |
 
-브리핑 mock 응답(정상 · 스키마 위반 · 입력에 없는 숫자 포함 사례)은 M0-36에서, 골든셋(`golden/` — 브리핑 입력 10일치, `npm run eval:prompt`)은 M1-24에서 추가한다. 기사 텍스트(본문·제목·설명)·이미지·비밀값은 넣지 않는다.
+골든셋(`golden/` — 브리핑 입력 10일치, `npm run eval:prompt`)은 M1-24에서 추가한다(`brief-inputs/`가 출발점). 기사 텍스트(본문·제목·설명)·이미지·비밀값은 넣지 않는다.
+
+## 브리핑 mock 케이스 (M0-36)
+
+실제 = M0-30(2026-10-11 01:30 KST 실측 17건 전부)·M0-34(2026-10-11 실측 1건) 모델 원문 그대로, usage도 실측값(thinking 포함, `data/runs-dev.json` 4개 runId). 합성 = 실제 사례가 없는 유형만, 실제 출력을 최소 변형했다(각 파일 `note`에 "합성 — 무엇을 어떻게").
+
+| id | 유형 | 실제·합성 | 입력 | 기대 판정 |
+|---|---|---|---|---|
+| `brief-2026-09-11` | 정상 | 실제 | B | ok (L5 순위 동사 미정) |
+| `brief-2026-09-19` | 정상 · 한국 선수 | 실제 | A | ok |
+| `brief-2026-09-21` | 정상 | 실제 | D | ok |
+| `brief-2026-10-10` | 정상 · 한 줄 두 문장 | 실제 | C | downgrade-line:1 |
+| `brief-2026-10-11` | 정상 · 사실 오류 1줄('2골' — 입력 3골) | 실제 | E | downgrade-line:5 |
+| `brief-case-han` | 한자 혼입('出场') | 실제 | A | retry |
+| `brief-case-english` | 영어 출력(effort low) | 실제 | A | retry |
+| `brief-case-translit` | 모델 음역(고유명사 전부 한글) | 실제 | A | downgrade-line:1~5 |
+| `brief-case-rank-direction` | 순위 변동 방향 오류('7위에 머물렀다' — 6→7) | 실제 | A | downgrade-line:3,4 |
+| `brief-case-rank-tie` | 공동 순위 오해('공동 1위' — 1·2위) | 실제 | B | downgrade-line:5 |
+| `brief-case-rank-no-prev` | prev 없이 '선두를 유지' | 실제 | C | downgrade-line:5 |
+| `brief-case-translit-rank` | 음역 + 근거 없는 순위 서술 | 실제 | C | downgrade-line:1~5 |
+| `brief-case-short-name-player` | 축약 선수 이름('Olise') | 실제 | A | downgrade-line:4 |
+| `brief-case-short-name-team` | 축약 팀 이름('Lens') | 실제 | B | downgrade-line:4 |
+| `brief-case-short-name-team-2` | 축약 팀 이름(effort low) | 실제 | B | downgrade-line:4 (L5 미정) |
+| `brief-case-leftover-word` | 영문 일반어('Matchday') | 실제 | C | downgrade-line:1 (L5 파생 숫자 미정) |
+| `brief-case-particle` | 조사 오류('Bayern가' — 보정 대상) + 축약 이름 | 실제 | A | downgrade-line:2 (L5 미정) |
+| `brief-case-score-winner-first` | 이긴 팀 점수 먼저('1-0으로 이겼다' — ft 0-1) | 실제 | D | ok |
+| `brief-case-json-invalid` | JSON 파싱 불가 | 합성 | A | retry |
+| `brief-case-json-fenced` | 코드블록으로 감싼 JSON | 합성 | A | 미정(ok 또는 retry — M1-20) |
+| `brief-case-missing-key` | 필수 키(r) 누락 | 합성 | A | retry |
+| `brief-case-too-many-lines` | 6줄 | 합성 | A | retry |
+| `brief-case-line-over-schema` | 한 줄 150자 초과 | 합성 | A | retry |
+| `brief-case-score-mismatch` | 입력에 없는 스코어(3-1) | 합성 | A | downgrade-line:4 |
+| `brief-case-score-reversed` | 스코어 순서 뒤집힘(0-3으로 꺾었다) | 합성 | A | downgrade-line:4 |
+| `brief-case-winner-swap` | 승자 뒤바뀜(스코어는 그대로) | 합성 | A | downgrade-line:4 |
+| `brief-case-bad-ref` | 입력에 없는 근거 id | 합성 | A | downgrade-line:4 |
+| `brief-case-max-tokens` | `stop_reason: max_tokens`(잘린 JSON) | 합성 | A | 미정(retry 또는 downgrade-all — M1-45) |
+| `brief-case-refusal` | `stop_reason: refusal` | 합성 | A | 미정(downgrade-all 또는 retry — M1-45) |
+| `brief-case-errored-overloaded` | 529 과부하 — llm.ts 재시도 대상 | 합성 | A | downgrade-all |
+| `brief-case-errored-timeout` | 연결 오류·타임아웃 — 재시도 안 함 | 합성 | A | downgrade-all |
+
+발행일 5개는 `fixtures/brief-sample.json`(D0 시안 입력)과 같은 날·같은 출력이다(가드 테스트가 확인). 단 brief-sample은 표시용이라 2026-10-10 L1(두 문장)을 강등하지 않았다.
+
+### brief-cases.json
+
+FR-29 순서(zod → 출력 전체 코드 검증 → 1회 재시도 → 템플릿, 줄 단위 불일치는 재시도 없이 그 줄만 템플릿)에 맞춘 기대값이다. M1-23·M1-45 테스트가 그대로 읽는다.
+
+- `stage` — 처음 걸리는 단계: `none` · `transport`(llm.ts 실패) · `zod` · `whole`(한국어 비율·한자) · `line`
+- `expected` — `ok` · `retry`(같은 응답이 다시 오면 `downgrade-all`) · `downgrade-line:<n>[,<n>]` · `downgrade-all`
+- 판정 기준이 아직 없으면 `expected` 대신 `candidates`(케이스 전체) 또는 `undecidedLines`(일부 줄)에 둔다. 테스트는 미정 항목을 단정하지 않는다
+- `llm` — `callSingle` 결과 기대(ok·errorType·retryable·시도 횟수)
+- `lines[]` — 눈여겨볼 줄: `code`(`pass` = 오탐하면 안 되는 함정 · `downgrade` · `whole` · `fix` = 조사 보정 대상 · `undecided`), `human`(사람 검토 판정), `why`
+- `review` — 실제 출력의 사람 검토 수(M0-30 review·M0-34 판정): ok·error(틀린 사실)·unsupported(입력에 근거 없음)
+- `traps` — 검사기 구현 함정(이름 속 숫자 'Como 1907', 한국어 비율은 이름을 지운 뒤 비교, 숫자 대조는 근거 id 범위, 스코어 두 순서, 순위 동사 등)
+
+## brief-inputs/ — 브리핑 정형 입력 (임시 형식, M1-19에서 확정)
+
+그날 순위표 등은 다시 받을 수 없어(API 날짜 창·현재 순위만 제공) M0-30·M0-34 scratchpad 원본을 바이트 그대로 옮겼다. 요청의 user 메시지 = 파일 내용 `.trim()`.
+
+| 파일 | 키 | 발행일(KST) | 내용 | LLM 출력 |
+|---|---|---|---|---|
+| `2026-09-11.json` | B | 2026-09-11 | 09-10 UTC UCL 리그 페이즈 1차전 6경기(득점 없음) + UCL 순위 상위 5(prev 없음). **korean 키 없음**(Bayern 경기가 있어도 김민재를 언급하면 안 되는 시험) | M0-30 |
+| `2026-09-18.json` | F | 2026-09-18 | 09-17 UTC 라리가 2경기(득점 없음), 순위 없음, korean 없음 | 없음 — 템플릿만 게시한 날 시연(M1-19 템플릿 테스트용) |
+| `2026-09-19.json` | A | 2026-09-19 | 09-18 UTC 5경기 중 **2개만**(측정용 부분 입력): EPL 1(득점 없음) + 분데스 1(득점 7개, API-Football) + EPL 순위 5행(prev 있음) + **한국 선수 2명** | M0-30 |
+| `2026-09-21.json` | D | 2026-09-21 | 09-20 UTC 20경기 중 **EPL 4개만** + EPL 순위 11행(prev 있음) | M0-30 |
+| `2026-10-10.json` | C | 2026-10-10 | 10-09 UTC 3경기 전부(득점 1경기) + 분데스·리그1 순위(prev 없음, 라리가 순위는 진행 중 경기 반영이라 제외) | M0-30 |
+| `2026-10-11.json` | E | 2026-10-11 | 10-10 UTC 종료 23경기 전부(취소 1 제외, 득점은 API-Football로 조회한 13경기) + 5대 리그 순위 상위 4(prev 없음) + **한국 선수 5명** | M0-34 |
+| `2026-10-11.meta.json` | — | — | E의 입력 창·취소 경기·API-Football↔football-data 경기 id 대응 | — |
+
+- **입력 창(임시)**: 발행일 D의 입력 = UTC 하루 D-1에 시작한 종료 경기 = KST [D-1 09:00, D 09:00) — `time.ts` `kstWindowRangeUtc(D-1, {fromKst:"09:00", toKst:"09:00"})`와 같다(E meta로 확인). PRD는 "전날(KST)"이라 M1-19에서 창을 확정한다. A·D는 측정용 부분 입력이라 그날 경기 전부가 아니다.
+- **필드**
+  - `briefDate` — 발행일(KST, YYYY-MM-DD)
+  - `matches[]` — `id`(`m` + football-data 경기 id, 예외: A의 `m1575167`은 API-Football 경기 id) · `comp`(대회 표시명) · `round` · `home` · `away` · `ft`·`ht`(**홈-원정** 순서 `"h-a"`) · `goals`(`null` = 득점 데이터 없음 / `[{ min("90+2"), team(골이 기록된 팀), player, assist?, type?("penalty"·"own_goal") }]`)
+  - `standings[]` — `id`(`s` + 대회 약칭: sPL·sLL·sSA·sBL·sL1·sUCL) · `comp` · `note?`(순위표 범위) · `rows[{ pos, team, played, pts, gd, prev?(직전 순위 — 시즌 경기 목록에서 코드 계산, A·D만) }]`
+  - `korean[]?` — `id`(`k` + API-Football 선수 id) · `player` · `team` · `match`(matches id) · `started`(선발 = 라인업 startXI) · `minutes` · `goals` · `assists` · `subOn?` · `subOff?`. 키가 없으면 한국 선수를 언급하지 않는다
+- **표기 차이(M1-19에서 통일)**: 한국 선수 이름이 A는 성-이름("Kim Min-jae"), E는 이름-성("Kang-in Lee"), 득점 선수가 A는 API-Football 축약("M. Olise"), C·E는 전체 이름이다. 모두 `configs/names.ko.json` 별칭에 있거나 임시 사전에 있다.
+- 로고·사진 URL·배당(odds)·평점은 옮기지 않았다. 기사 텍스트는 없다.
+
+### 임시 프롬프트 (M1-20 출발점, mock 재현 근거)
+
+`docs/research/m0-validation.md` M0-30 절에는 요약만 있어 전문을 보관한다. system = 파일 내용 `.trim()`.
+
+| 파일 | 크기 | 쓴 출력 |
+|---|---|---|
+| `prompt-m0-30-short.md` | 694자 · 685토큰 | M0-30 배치 9건·단건 3건(`brief-case-*` 실제 사례 대부분) |
+| `prompt-m0-30-long.md` | 2,119자 · 2,034토큰 | M0-30 캐시 실험 5건(발행일 2026-09-11·09-19·09-21·10-10, `brief-case-score-winner-first`) + M0-34 1건(2026-10-11) |
+
+요청 설정: M0-30 "기본" = 모델 기본값(적응형 thinking, effort medium — 명시하지 않음), "effort low", "thinking 끔" 세 가지. M0-34는 thinking 적응형 + `effort:"medium"` 명시. 모두 `max_tokens` 4,096. 케이스별 값은 `brief-cases.json` `request`.
+
+### 임시 출력 스키마 (M0-30 `common.ts`, M1-20에서 확정)
+
+```ts
+z.strictObject({                       // 모르는 키 거부
+  l: z.array(z.strictObject({
+    t: z.string().min(5).max(150),      // 브리핑 문장 1개 — 팀·선수·대회 이름은 입력 영문 그대로
+    r: z.array(z.string().min(1)).min(1).max(6),  // 근거 입력 항목 id(m…·s…·k…)
+  })).min(1).max(5),                    // 최대 5줄
+})
+```
+
+M0-30은 엄격 `JSON.parse`가 실패하면 첫 `{`~마지막 `}`를 잘라 다시 파싱하는 관대한 경로도 쟀다(18건 모두 엄격 JSON이라 쓰이지 않음). 관대한 파싱 허용 여부는 M1-20에서 정한다(`brief-case-json-fenced`).
+
+### 임시 고유명사 사전 `names-ko.tmp.json`
+
+**확정 아님 — M1-21 초기 사전 후보이고 `configs/names.ko.json`이 우선한다.** M0-30 임시 사전(55개)과 M0-34 추가분(75개)을 합쳤다(`teams`·`players`·`comps`, 영문 → 한글). 두 파일에 함께 있던 키(RB Leipzig·Bournemouth·Roma)는 값이 같았다. `/add-name` 절차로 확정한다.
+
+`configs/names.ko.json`과 겹치는 항목(2026-10-11 기준)
+
+| 영문 | 임시 사전 | configs/names.ko.json | 비고 |
+|---|---|---|---|
+| Brentford | 브렌트퍼드 | **브렌트포드** | 다름 — configs 우선(brief-sample도 브렌트포드로 맞춤) |
+| Bayern | 바이에른 | (키 없음) 같은 팀이 **바이에른 뮌헨**(FC Bayern München·Bayern München·Bayern Munich) | 입력은 football-data 짧은 이름 "Bayern" — M1-21에서 별칭 추가 시 표기(짧게 쓸지) 결정 필요 |
+| Union Berlin | 우니온 베를린 | 우니온 베를린 | 같음 |
+| Atleti | 아틀레티코 마드리드 | 아틀레티코 마드리드 | 같음 |
+| Augsburg | 아우크스부르크 | 아우크스부르크 | 같음 |
+| Mainz | 마인츠 | 마인츠 | 같음 |
+| Kim Min-jae | 김민재 | 김민재 | 같음 |
+| Jeong Woo-yeong | 정우영 | 정우영 | 같음 |

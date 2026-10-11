@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "축약 선수 이름 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L4 'Olise가 … 해트트릭'(입력 'M. Olise'). 기대: downgrade-line:4. 원천: M0-30 m030-b-def-short-A — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0. 배치 실측 usage 그대로(thinking 1521토큰 포함 — mock usage에는 thinking 칸이 없다, 원래 배치 요청이지만 mock은 단건 결과로 돌려준다). 출력 형식은 M0-30 임시 스키마({l:[{t,r}]})다 — M1-20에서 프롬프트·출력 스키마가 확정되면 이 파일을 다시 만든다. 기대 판정 전체는 fixtures/llm/brief-cases.json.",
+  "text": "{\"l\":[{\"t\":\"Kim Min-jae는 Bayern의 Union Berlin전에서 교체 투입돼 45분을 뛰었다.\",\"r\":[\"k2897\",\"m1575167\"]},{\"t\":\"Jeong Woo-yeong은 Union Berlin 선발로 출전해 60분을 뛰고 교체됐으며 무득점에 그쳤다.\",\"r\":[\"k512\",\"m1575167\"]},{\"t\":\"Bayern이 Union Berlin을 7-0으로 꺾었고, 전반 3-0 뒤 후반에도 득점을 이어갔다.\",\"r\":[\"m1575167\"]},{\"t\":\"Olise가 43분, 73분, 76분에 득점해 해트트릭을 기록했다.\",\"r\":[\"m1575167\"]},{\"t\":\"Brentford가 Chelsea를 3-0으로 꺾고 순위를 7위에서 3위로 끌어올렸다.\",\"r\":[\"m560591\",\"sPL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 1463,
+    "output_tokens": 1850,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

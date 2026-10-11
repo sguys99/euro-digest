@@ -1,0 +1,1133 @@
+{
+  "_note": "브리핑 LLM mock 기대 판정 표(M0-36). 케이스 id = customId = mock/by-id/<id>.json. M1-23(코드 검증)·M1-45(브리핑 실행) 테스트 입력. 출력 형식은 M0-30 임시 스키마 { l: [{ t, r }] } — M1-20에서 프롬프트·출력 스키마가 확정되면 mock과 함께 다시 만든다. 판정 기준이 아직 없는 줄은 undecidedLines, 케이스 전체가 미정이면 expected 대신 candidates로 둔다(테스트는 미정 항목을 단정하지 않는다).",
+  "task": "M0-36",
+  "flow": "FR-29 — zod → 코드 검증(출력 전체: 한국어 비율·한자) → 실패하면 1회 재시도(zod 실패와 합쳐 1회) → 그래도 실패하면 템플릿. 줄 단위 불일치(스코어·이름·순위 서술·근거 id·1줄 1문장)는 재시도 없이 그 줄만 템플릿(FR-22). transport 실패는 llm.ts 재시도(429·5xx만) 뒤 FR-26 템플릿.",
+  "verdicts": {
+    "ok": "모든 줄 통과 → 그대로 게시(ai:true)",
+    "downgrade-line:<n>[,<n>…]": "줄 단위 검증 불일치 → 그 줄만 템플릿 문장(ai:false), 재시도 없음. 1부터 센다",
+    "retry": "zod 실패 또는 출력 전체 코드 검증 실패 → 1회 재시도. 재시도도 실패하면 downgrade-all. mock은 같은 customId에 같은 응답을 주므로 같은 id로 재시도하면 downgrade-all이 된다",
+    "downgrade-all": "재시도 없이(또는 llm.ts 재시도 소진 뒤) 전체를 템플릿으로 게시"
+  },
+  "stages": {
+    "none": "모든 검사 통과",
+    "transport": "llm.ts 결과가 실패(ok:false) — max_tokens·refusal·errored",
+    "zod": "JSON 파싱 또는 임시 스키마 실패",
+    "whole": "출력 전체 코드 검증 실패(한국어 비율·한자)",
+    "line": "줄 단위 코드 검증 실패"
+  },
+  "lineCodes": {
+    "pass": "통과해야 한다(오탐 함정)",
+    "downgrade": "그 줄만 템플릿",
+    "whole": "출력 전체 실패의 원인 줄",
+    "fix": "강등이 아니라 치환 뒤 조사 보정(M1-21) 대상",
+    "undecided": "판정 기준 미정 — 테스트에서 단정하지 않는다"
+  },
+  "traps": [
+    "한국어 비율: 원문은 영문 고유명사가 많아 정상 출력도 한글 < 영문이다(예: brief-2026-09-21 한글 45자·영문 92자). 입력 이름을 지운 뒤(또는 치환 뒤) 비교해야 한다.",
+    "숫자 대조 전에 입력 이름을 지운다 — 'Como 1907'·'Ligue 1' 속 숫자(brief-2026-09-11·brief-2026-10-10).",
+    "숫자 대조 범위는 줄의 근거 id(r)다 — brief-2026-10-11 L5 '2골'은 입력 전체 범위로 대조하면 다른 경기 스코어의 2 때문에 통과한다.",
+    "스코어 순서: 홈-원정 순서와 '주어 팀 점수 먼저'(M1-20)를 모두 인정하되(brief-case-score-winner-first·brief-2026-09-21 L2) 둘 다 아닌 뒤집힘은 잡는다(brief-case-score-reversed). 스코어가 맞아도 승패 동사의 주어가 틀리면 잡아야 한다(brief-case-winner-swap).",
+    "순위 동사: '1위에 올라 있다'(상태)는 prev 없는 표에서도 통과해야 하고(brief-2026-10-10 L2), '머물렀다·유지·지켰다'는 prev가 있고 pos와 같을 때만, '공동 n위'는 pos가 같을 때만 쓴다. '상위 5위에 올랐다'류는 미정.",
+    "파생 숫자(합계·차이): '3점 앞섰다'(13−10)·'4골'(득점 합산) — 허용 여부 미정(brief-case-leftover-word L5·brief-case-translit-rank L1).",
+    "조사 오류('Bayern가'·'Dortmund은')는 강등이 아니라 치환 뒤 받침 기준 보정(M1-21).",
+    "mock 재시도: 같은 customId는 같은 응답을 준다. 재시도 성공 경로는 다른 customId(예약: brief-<날짜>-r1)나 주입 transport로 시험한다."
+  ],
+  "inputs": {
+    "A": {
+      "file": "brief-inputs/2026-09-19.json",
+      "briefDate": "2026-09-19",
+      "origin": "M0-30"
+    },
+    "B": {
+      "file": "brief-inputs/2026-09-11.json",
+      "briefDate": "2026-09-11",
+      "origin": "M0-30"
+    },
+    "C": {
+      "file": "brief-inputs/2026-10-10.json",
+      "briefDate": "2026-10-10",
+      "origin": "M0-30"
+    },
+    "D": {
+      "file": "brief-inputs/2026-09-21.json",
+      "briefDate": "2026-09-21",
+      "origin": "M0-30"
+    },
+    "E": {
+      "file": "brief-inputs/2026-10-11.json",
+      "briefDate": "2026-10-11",
+      "origin": "M0-34"
+    },
+    "F": {
+      "file": "brief-inputs/2026-09-18.json",
+      "briefDate": "2026-09-18",
+      "origin": "M0-34"
+    }
+  },
+  "prompts": {
+    "m0-30-short": "brief-inputs/prompt-m0-30-short.md",
+    "m0-30-long": "brief-inputs/prompt-m0-30-long.md"
+  },
+  "cases": [
+    {
+      "id": "brief-2026-09-11",
+      "input": "B",
+      "origin": "real",
+      "source": "M0-30 m030-c-def-long-B — scratchpad m0-30/results/cache-20261010T164123Z.json, data/runs-dev.json runId collect-dev-20261010T163429Z-6027",
+      "request": {
+        "prompt": "m0-30-long",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": true,
+        "maxTokens": 4096
+      },
+      "types": [
+        "normal"
+      ],
+      "stage": "none",
+      "expected": "ok",
+      "undecidedLines": [
+        5
+      ],
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 3,
+          "code": "pass",
+          "why": "팀 이름 속 숫자(Como 1907) — 숫자 대조 전에 입력 이름을 지워야 오탐하지 않는다"
+        },
+        {
+          "n": 4,
+          "code": "pass",
+          "why": "원정 승을 홈-원정 순서로 '2-3으로 이겼다' — 두 순서 모두 인정(M1-20)"
+        },
+        {
+          "n": 5,
+          "code": "undecided",
+          "why": "'상위 5위에 올랐다' — sUCL에 prev 없음. 상태 서술인지 순위 상승 서술인지 M1-23에서 정한다(사람 검토는 일치). Como 1907 숫자 함정도 있다"
+        }
+      ],
+      "note": "정상(발행일 2026-09-11, 입력 B) — M0-30 실제 출력(배치·긴 판·지시문 캐시 쓰기·thinking 기본). fixtures/brief-sample.json 2026-09-11과 같은 출력. 기대: ok(L5 순위 동사 판정은 미정)."
+    },
+    {
+      "id": "brief-2026-09-19",
+      "input": "A",
+      "origin": "real",
+      "source": "M0-30 m030-c1-def-long-A — scratchpad m0-30/results/cache-20261010T164123Z.json, data/runs-dev.json runId collect-dev-20261010T163429Z-6027",
+      "request": {
+        "prompt": "m0-30-long",
+        "mode": "single",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": true,
+        "maxTokens": 4096
+      },
+      "types": [
+        "normal",
+        "korean-player"
+      ],
+      "stage": "none",
+      "expected": "ok",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 3,
+          "code": "pass",
+          "why": "'M. Olise' 입력 표기 그대로 — 영문 토큰 허용 목록 통과(축약 'Olise'와 대비)"
+        }
+      ],
+      "note": "정상(발행일 2026-09-19, 입력 A) — M0-30 실제 출력(단건·긴 판·지시문 캐시 쓰기·thinking 기본). 한국 선수 2줄 포함. fixtures/brief-sample.json 2026-09-19와 같은 출력. 기대: ok. 합성 사례 대부분이 이 원문을 변형한다."
+    },
+    {
+      "id": "brief-2026-09-21",
+      "input": "D",
+      "origin": "real",
+      "source": "M0-30 m030-c2-def-long-D — scratchpad m0-30/results/cache-20261010T164123Z.json, data/runs-dev.json runId collect-dev-20261010T163429Z-6027",
+      "request": {
+        "prompt": "m0-30-long",
+        "mode": "single",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": true,
+        "maxTokens": 4096
+      },
+      "types": [
+        "normal"
+      ],
+      "stage": "none",
+      "expected": "ok",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 2,
+          "code": "pass",
+          "why": "원정 승 '0-1로 이겼다'(홈-원정 순서) — 두 순서 모두 인정(M1-20)"
+        },
+        {
+          "n": 3,
+          "code": "pass",
+          "why": "'Man City는 선두를 지켰다' — prev 1·pos 1이라 유지 서술 허용"
+        }
+      ],
+      "note": "정상(발행일 2026-09-21, 입력 D) — M0-30 실제 출력(단건·긴 판·지시문 캐시 읽기·thinking 기본). fixtures/brief-sample.json 2026-09-21과 같은 출력. 기대: ok."
+    },
+    {
+      "id": "brief-2026-10-10",
+      "input": "C",
+      "origin": "real",
+      "source": "M0-30 m030-c-def-long-C — scratchpad m0-30/results/cache-20261010T164123Z.json, data/runs-dev.json runId collect-dev-20261010T163429Z-6027",
+      "request": {
+        "prompt": "m0-30-long",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": true,
+        "maxTokens": 4096
+      },
+      "types": [
+        "normal",
+        "two-sentences"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:1",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 1,
+          "human": "ok",
+          "code": "downgrade",
+          "why": "한 줄 두 문장(1줄 1문장 위반), 치환 뒤 66자 — 사실은 입력과 일치"
+        },
+        {
+          "n": 2,
+          "code": "pass",
+          "why": "'1위에 올라 있다'는 상태 서술 — sBL에 prev가 없어도 순위 변동 규칙에 걸리면 안 된다"
+        },
+        {
+          "n": 5,
+          "code": "pass",
+          "why": "대회 이름 속 숫자(Ligue 1)"
+        }
+      ],
+      "note": "정상(발행일 2026-10-10, 입력 C) — M0-30 실제 출력(배치·긴 판·지시문 캐시 읽기·thinking 기본). fixtures/brief-sample.json 2026-10-10과 같은 출력. 기대: downgrade-line:1(한 줄 두 문장). brief-sample은 D0 표시용이라 이 줄을 ai:true로 두었다."
+    },
+    {
+      "id": "brief-2026-10-11",
+      "input": "E",
+      "origin": "real",
+      "source": "M0-34 m034-e-a — scratchpad m0-34/results/e-20261011T065414Z.json, data/runs-dev.json runId collect-dev-20261011T065401Z-0df9",
+      "request": {
+        "prompt": "m0-30-long",
+        "mode": "single",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "normal",
+        "korean-player",
+        "fact-number"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:5",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 4,
+        "error": 1,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "pass",
+          "why": "원정 승 '1-2로 이겼다'(홈-원정 순서) + 한국 선수(k927 subOn 57·minutes 33)"
+        },
+        {
+          "n": 5,
+          "human": "error",
+          "code": "downgrade",
+          "why": "'Christopher Nkunku는 2골' — m565815 득점은 5·41·44분 3골. 숫자 대조는 줄의 근거 id(r) 범위로 해야 잡힌다(입력 전체 범위면 2가 다른 경기 스코어에 있어 통과)"
+        }
+      ],
+      "note": "정상 + 사실 오류 1줄(발행일 2026-10-11, 입력 E) — M0-34 실제 출력(단건·긴 판·thinking 적응형·effort medium 명시·max_tokens 4096·캐시 없음, thinking 2,842토큰). L1~L4 한국 선수 줄은 입력과 일치, L5 'Christopher Nkunku는 2골'은 입력상 3골(실제 강등 사례). fixtures/brief-sample.json 2026-10-11과 같은 출력(L5는 그 파일의 _downgrade). 기대: downgrade-line:5."
+    },
+    {
+      "id": "brief-case-han",
+      "input": "A",
+      "origin": "real",
+      "source": "M0-30 m030-s-def-short-A — scratchpad m0-30/results/single3-20261010T163232Z.json, data/runs-dev.json runId collect-dev-20261010T163217Z-9add",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "single",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "han"
+      ],
+      "stage": "whole",
+      "expected": "retry",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 2,
+          "code": "whole",
+          "why": "'出场' CJK 한자 — 출력 전체 검사 실패(FR-29 재시도 대상). 그 줄만 바꾸고 끝내면 안 된다"
+        }
+      ],
+      "note": "한자 혼입 — M0-30 실제 출력(단건·짧은 판·thinking 기본). L2 '선발로 出场해'. 사실 5줄은 모두 입력과 일치. 기대: 출력 전체 검사 실패 → retry(같은 응답이 다시 오면 downgrade-all)."
+    },
+    {
+      "id": "brief-case-english",
+      "input": "A",
+      "origin": "real",
+      "source": "M0-30 m030-s-low-short-A — scratchpad m0-30/results/single3-20261010T163232Z.json, data/runs-dev.json runId collect-dev-20261010T163217Z-9add",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "single",
+        "thinking": "adaptive",
+        "effort": "low",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "english"
+      ],
+      "stage": "whole",
+      "expected": "retry",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "note": "영어 출력 — M0-30 실제 출력(단건·짧은 판·effort low, thinking 960토큰). 5줄 모두 영어 문장(한글 0자). 사실은 입력과 일치. zod는 통과했다. 기대: 한국어 비율 실패 → retry(같은 응답이 다시 오면 downgrade-all)."
+    },
+    {
+      "id": "brief-case-translit",
+      "input": "A",
+      "origin": "real",
+      "source": "M0-30 m030-b-low-short-A — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "low",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "translit"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:1,2,3,4,5",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "downgrade",
+          "why": "'바이에른 뮌헨'·'유니온 베를린' — 입력 영문(Bayern·Union Berlin) 없이 한글 음역('유니온'은 사전 '우니온'과도 다름)"
+        },
+        {
+          "n": 2,
+          "code": "downgrade",
+          "why": "'올리세' 음역(입력 'M. Olise'). 43분 골을 빼고 '멀티골'이라 썼다(틀린 사실은 아님)"
+        },
+        {
+          "n": 3,
+          "code": "downgrade",
+          "why": "'김민재' — 사전 표기와 같지만 원문에 입력 영문 이름이 없다(엄격 기준)"
+        },
+        {
+          "n": 4,
+          "code": "downgrade",
+          "why": "'정우영' — L3과 같다"
+        },
+        {
+          "n": 5,
+          "code": "downgrade",
+          "why": "'브렌트포드'·'첼시'·'프리미어리그' 음역"
+        }
+      ],
+      "note": "모델 음역 — M0-30 실제 출력(배치·짧은 판·effort low, thinking 0). 고유명사를 모두 한글로 썼다(영문 0자라 한국어 비율 검사는 통과). M0-34 시험판 검사기는 아무것도 잡지 못했다. 기대: 줄 단위 음역 탐지 → downgrade-line:1,2,3,4,5(재시도 없음). 사전 한글 표기와 같은 음역(김민재·정우영)을 허용하는 완화 기준을 택하면 L3·L4가 바뀐다."
+    },
+    {
+      "id": "brief-case-rank-direction",
+      "input": "A",
+      "origin": "real",
+      "source": "M0-30 m030-s-off-short-A — scratchpad m0-30/results/single3-20261010T163232Z.json, data/runs-dev.json runId collect-dev-20261010T163217Z-9add",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "single",
+        "thinking": "disabled",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "rank-direction",
+        "two-sentences",
+        "short-name"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:3,4",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 4,
+        "error": 1,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 2,
+          "code": "pass",
+          "why": "'7위에서 3위로 올랐다' — prev 7·pos 3"
+        },
+        {
+          "n": 3,
+          "human": "error",
+          "code": "downgrade",
+          "why": "'Chelsea는 7위에 머물렀다' — 입력은 prev 6 → pos 7(하락). M0-34 시험판은 못 잡았다 → 순위 서술 규칙 필요"
+        },
+        {
+          "n": 4,
+          "code": "downgrade",
+          "why": "한 줄 두 문장 + 축약 이름 'Olise'·'Kane'(입력 'M. Olise'·'H. Kane'), 치환 뒤 65자"
+        }
+      ],
+      "note": "순위 변동 방향 오류 — M0-30 실제 출력(단건·짧은 판·thinking 끔). L3 'Chelsea는 7위에 머물렀다'(입력 prev 6 → pos 7, 하락). 기대: downgrade-line:3,4(L4는 두 문장·축약 이름)."
+    },
+    {
+      "id": "brief-case-rank-tie",
+      "input": "B",
+      "origin": "real",
+      "source": "M0-30 m030-b-off-short-B — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "disabled",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "rank-tie",
+        "leftover-word",
+        "score-winner-first"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:5",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 4,
+        "error": 1,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 3,
+          "code": "pass",
+          "why": "팀 이름 속 숫자(Como 1907)"
+        },
+        {
+          "n": 4,
+          "code": "pass",
+          "why": "원정 승 '3-2로 이겼다'(이긴 팀 점수 먼저, 입력 ft 2-3) — 두 순서 모두 인정(M1-20). M0-34 시험판은 옛 규칙(홈-원정 고정)으로 '순서 뒤집힘'을 냈다"
+        },
+        {
+          "n": 5,
+          "human": "error",
+          "code": "downgrade",
+          "why": "'PSG와 Bayern … 공동 1위' — sUCL은 PSG pos 1·Bayern pos 2. 'UCL'도 입력에 없는 영문, 치환 뒤 61자"
+        }
+      ],
+      "note": "공동 순위 오해 — M0-30 실제 출력(배치·짧은 판·thinking 끔). L5 'PSG와 Bayern이 … 공동 1위다'(입력 pos 1·2). L4는 이긴 팀 점수 먼저 쓴 스코어로 통과해야 한다. 기대: downgrade-line:5."
+    },
+    {
+      "id": "brief-case-rank-no-prev",
+      "input": "C",
+      "origin": "real",
+      "source": "M0-30 m030-b-low-short-C — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "low",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "rank-no-prev",
+        "particle"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:5",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 4,
+        "error": 0,
+        "unsupported": 1
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "fix",
+          "why": "'Dortmund은' 조사 — 치환 뒤 받침 기준 보정(M1-21) 대상, 강등 아님"
+        },
+        {
+          "n": 5,
+          "human": "unsupported",
+          "code": "downgrade",
+          "why": "'선두를 유지했다' — sBL에 prev 없음(현실과는 맞지만 입력 근거 없음)"
+        }
+      ],
+      "note": "전일 순위 없이 순위 유지 서술 — M0-30 실제 출력(배치·짧은 판·effort low). L5 'Dortmund은 … 선두를 유지했다'(sBL에 prev 없음). 기대: downgrade-line:5."
+    },
+    {
+      "id": "brief-case-translit-rank",
+      "input": "C",
+      "origin": "real",
+      "source": "M0-30 m030-b-off-short-C — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "disabled",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "translit",
+        "rank-no-prev",
+        "two-sentences",
+        "leftover-word"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:1,2,3,4,5",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 2,
+        "error": 0,
+        "unsupported": 3
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "downgrade",
+          "why": "음역(도르트문트·브레멘) + 두 문장. '후반 막판 4골'은 득점 4개 합산(파생 숫자 — 사람 검토는 일치), '브레멘을 비겼다' 문법 오류"
+        },
+        {
+          "n": 2,
+          "human": "unsupported",
+          "code": "downgrade",
+          "why": "음역 + '선두를 지켰다' — prev 없음"
+        },
+        {
+          "n": 3,
+          "human": "unsupported",
+          "code": "downgrade",
+          "why": "음역 + '4위에 머물렀다' — prev 없음"
+        },
+        {
+          "n": 4,
+          "human": "unsupported",
+          "code": "downgrade",
+          "why": "음역(랑스·리옹) + 'RC' 잔존 + 두 문장 + '리옹은 리그 2위를 유지' — prev 없음"
+        },
+        {
+          "n": 5,
+          "code": "downgrade",
+          "why": "음역(말라가·에스파뇰) — 사실은 일치"
+        }
+      ],
+      "note": "음역 + 근거 없는 순위 서술 — M0-30 실제 출력(배치·짧은 판·thinking 끔). 고유명사 한글 음역, '선두를 지켰다'·'4위에 머물렀다'·'2위를 유지'(prev 없음), 두 문장 줄 2개. 기대: downgrade-line:1,2,3,4,5."
+    },
+    {
+      "id": "brief-case-short-name-player",
+      "input": "A",
+      "origin": "real",
+      "source": "M0-30 m030-b-def-short-A — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "short-name"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:4",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 2,
+          "code": "pass",
+          "why": "'무득점에 그쳤다' 약한 평가 표현(사람 검토 일치) — 코드 검사 대상 아님"
+        },
+        {
+          "n": 3,
+          "code": "pass",
+          "why": "'전반 3-0' — ht 대조"
+        },
+        {
+          "n": 4,
+          "code": "downgrade",
+          "why": "축약 이름 'Olise'(입력 'M. Olise') — 영문 토큰 허용 목록 밖. 사실(43·73·76분 해트트릭)은 일치"
+        }
+      ],
+      "note": "축약 선수 이름 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L4 'Olise가 … 해트트릭'(입력 'M. Olise'). 기대: downgrade-line:4."
+    },
+    {
+      "id": "brief-case-short-name-team",
+      "input": "B",
+      "origin": "real",
+      "source": "M0-30 m030-b-def-short-B — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "short-name"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:4",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 3,
+          "code": "pass",
+          "why": "팀 이름 속 숫자(Como 1907)"
+        },
+        {
+          "n": 4,
+          "code": "downgrade",
+          "why": "축약 이름 'Lens'(입력 'RC Lens') — 'RC Lens'를 지운 뒤 남는 영문 토큰"
+        },
+        {
+          "n": 5,
+          "code": "pass",
+          "why": "한 줄에 두 경기(근거 2개, 한 문장) — 짧은 판 규칙 위반 아님"
+        }
+      ],
+      "note": "축약 팀 이름 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L4 '… 2-3으로 Lens가 이겼다'(입력 'RC Lens'). 기대: downgrade-line:4."
+    },
+    {
+      "id": "brief-case-short-name-team-2",
+      "input": "B",
+      "origin": "real",
+      "source": "M0-30 m030-b-low-short-B — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "low",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "short-name"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:4",
+      "undecidedLines": [
+        5
+      ],
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 4,
+          "code": "downgrade",
+          "why": "축약 이름 'Lens'(입력 'RC Lens')"
+        },
+        {
+          "n": 5,
+          "code": "undecided",
+          "why": "'리그 페이즈 상위권에 올랐다' — prev 없는 '올랐다'(상태 서술인지 M1-23에서 정한다), Como 1907 숫자 함정"
+        }
+      ],
+      "note": "축약 팀 이름(두 번째) — M0-30 실제 출력(배치·짧은 판·effort low). L4 'Lens'. 기대: downgrade-line:4(L5 순위 동사 판정은 미정)."
+    },
+    {
+      "id": "brief-case-leftover-word",
+      "input": "C",
+      "origin": "real",
+      "source": "M0-30 m030-b-def-short-C — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "leftover-word",
+        "derived-number",
+        "particle"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:1",
+      "undecidedLines": [
+        5
+      ],
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "downgrade",
+          "why": "'Matchday' — 입력 round 값의 일부지만 허용 목록(팀·선수·대회 이름) 밖. 'Dortmund과'는 조사 보정 대상"
+        },
+        {
+          "n": 5,
+          "code": "undecided",
+          "why": "'2위 Bayern(10점)보다 3점 앞섰다' — 13−10 계산값(입력에 없는 파생 숫자, 사람 검토는 맞음). 3이 sBL pos 3으로 근거 숫자에 우연히 있어 숫자 대조로는 통과한다 — 파생 수치 허용 여부를 M1-20·M1-23에서 정한다"
+        }
+      ],
+      "note": "영문 일반어 잔존 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L1 'Matchday 5 경기는'. 기대: downgrade-line:1(L5 파생 숫자 '3점 앞섰다' 판정은 미정)."
+    },
+    {
+      "id": "brief-case-particle",
+      "input": "A",
+      "origin": "real",
+      "source": "M0-30 m030-b-off-short-A — scratchpad m0-30/results/batch3-20261010T163245Z.json, data/runs-dev.json runId collect-dev-20261010T163045Z-40b0",
+      "request": {
+        "prompt": "m0-30-short",
+        "mode": "batch",
+        "thinking": "disabled",
+        "effort": "medium",
+        "cacheSystem": false,
+        "maxTokens": 4096
+      },
+      "types": [
+        "particle",
+        "short-name"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:2",
+      "undecidedLines": [
+        5
+      ],
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 1,
+          "code": "fix",
+          "why": "'Bayern가' — 치환 뒤 '바이에른이'로 보정(M1-21). 'Bayern'은 configs/names.ko.json 키에 없고 임시 사전에만 있다"
+        },
+        {
+          "n": 2,
+          "code": "downgrade",
+          "why": "축약 이름 'Olise' + '대승을 주도했다' 평가 표현"
+        },
+        {
+          "n": 3,
+          "code": "pass",
+          "why": "두 선수를 쉼표로 이은 한 문장, 원문 71자 → 치환 뒤 51자"
+        },
+        {
+          "n": 5,
+          "code": "undecided",
+          "why": "'프리미어리그' — 대회 이름을 한글로 썼다(입력 'Premier League'). 사람 검토는 사실 일치('선두를 지켰다' prev 1·pos 1)라 표시하지 않았다. 대회 이름을 음역 규칙에 넣을지 M1-23에서 정한다"
+        }
+      ],
+      "note": "조사 오류 + 축약 이름 — M0-30 실제 출력(배치·짧은 판·thinking 끔). L1 'Bayern가'(보정 대상), L2 'Olise'. 기대: downgrade-line:2(L5 대회 이름 한글 표기 판정은 미정)."
+    },
+    {
+      "id": "brief-case-score-winner-first",
+      "input": "D",
+      "origin": "real",
+      "source": "M0-30 m030-c-def-long-D — scratchpad m0-30/results/cache-20261010T164123Z.json, data/runs-dev.json runId collect-dev-20261010T163429Z-6027",
+      "request": {
+        "prompt": "m0-30-long",
+        "mode": "batch",
+        "thinking": "adaptive",
+        "effort": "medium",
+        "cacheSystem": true,
+        "maxTokens": 4096
+      },
+      "types": [
+        "score-winner-first"
+      ],
+      "stage": "none",
+      "expected": "ok",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "review": {
+        "ok": 5,
+        "error": 0,
+        "unsupported": 0
+      },
+      "lines": [
+        {
+          "n": 2,
+          "code": "pass",
+          "why": "'Liverpool이 Bournemouth 원정에서 1-0으로 이겼다' — 입력 ft 0-1, 이긴 팀 점수 먼저(M1-20이 지시문에 넣을 순서). M0-34 시험판(홈-원정 고정)은 '순서 뒤집힘'으로 잡았다 → M1-23은 통과시켜야 한다"
+        },
+        {
+          "n": 5,
+          "code": "pass",
+          "why": "prev 있는 순위 변동 2개(10→6, 13→12)"
+        }
+      ],
+      "note": "이긴 팀 점수 먼저 쓴 스코어 — M0-30 실제 출력(배치·긴 판·지시문 캐시 읽기·thinking 기본, 같은 입력의 단건 출력이 brief-2026-09-21). 기대: ok."
+    },
+    {
+      "id": "brief-case-json-invalid",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "json-invalid"
+      ],
+      "stage": "zod",
+      "expected": "retry",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문 끝의 '}' 한 글자를 지웠다. 엄격 JSON.parse도, 첫 '{'~마지막 '}' 추출 파싱도 실패한다. M0-30·M0-34 18건은 모두 엄격 JSON이라 실제 사례가 없다. 기대: zod 단계 실패 → retry."
+    },
+    {
+      "id": "brief-case-json-fenced",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "json-fenced"
+      ],
+      "stage": "zod",
+      "candidates": [
+        "ok",
+        "retry"
+      ],
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문을 ```json 코드블록으로 감쌌다. 엄격 JSON.parse는 실패하고, 코드블록 제거·중괄호 추출이면 5줄 모두 통과한다. 지시문은 코드블록을 금지한다. 판정 미정: 관대한 파싱을 허용할지 M1-20에서 정한다(허용하면 ok, 아니면 retry)."
+    },
+    {
+      "id": "brief-case-missing-key",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "missing-key"
+      ],
+      "stage": "zod",
+      "expected": "retry",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문 3번째 줄의 r(근거 id)를 지웠다. 임시 스키마는 r 필수. 기대: zod 실패 → retry."
+    },
+    {
+      "id": "brief-case-too-many-lines",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "too-many-lines"
+      ],
+      "stage": "zod",
+      "expected": "retry",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문에 6번째 줄 'Arsenal은 승점 12로 Premier League 1위다.'(근거 sPL — 입력 A Arsenal pos 1·pts 12, 사실은 맞음)를 덧붙였다. 임시 스키마 l 최대 5 → zod 실패. 기대: retry. M1-20이 '앞 5줄만 쓰기(절단)'를 택하면 판정이 바뀐다."
+    },
+    {
+      "id": "brief-case-line-over-schema",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "line-too-long"
+      ],
+      "stage": "zod",
+      "expected": "retry",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문 1~3번째 줄을 쉼표로 이어 한 줄(근거 3개)로 만들었다(150자 초과, 문장은 원문 그대로). 임시 스키마 t 최대 150자 → zod 실패. 기대: retry. 60자 안팎(FR-23)을 넘지만 150자 이하인 줄의 처리(절단·강등)는 아직 정하지 않았다 — 실제 사례 brief-2026-10-10 L1(치환 뒤 66자)·brief-case-rank-tie L5(61자)·brief-case-rank-direction L4(65자)."
+    },
+    {
+      "id": "brief-case-score-mismatch",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "score-mismatch",
+        "fact-number"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:4",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문 4번째 줄 '3-0으로'를 '3-1로'로 바꿨다(입력 m560591 ft 3-0·ht 0-0). 어느 순서로도 입력에 없는 스코어. 기대: downgrade-line:4."
+    },
+    {
+      "id": "brief-case-score-reversed",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "score-reversed"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:4",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문 4번째 줄 '3-0으로'를 '0-3으로'로 뒤집었다. 홈 팀 Brentford가 이겼으므로 홈-원정 순서도 이긴 팀 먼저도 3-0이다. 순서 뒤집힘을 무조건 허용하는 대조로는 통과하므로, 뒤집힌 순서는 '주어 팀 점수 먼저'와 맞을 때만 인정해야 한다. 기대: downgrade-line:4."
+    },
+    {
+      "id": "brief-case-winner-swap",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "winner-swap"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:4",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문 4번째 줄의 두 팀 이름을 맞바꿨다('Chelsea가 홈에서 Brentford를 3-0으로 꺾었다.'). 스코어 3-0은 ft 그대로라 스코어 대조만으로는 통과한다. 승패 동사(꺾었다·이겼다·졌다)의 주어가 실제 승자·패자인지 보는 검사가 필요하다 — M1-23 규칙 목록에는 아직 없다. 기대(FR-22): downgrade-line:4."
+    },
+    {
+      "id": "brief-case-bad-ref",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "bad-ref"
+      ],
+      "stage": "line",
+      "expected": "downgrade-line:4",
+      "llm": {
+        "ok": true,
+        "attempts": 1
+      },
+      "note": "합성 — brief-2026-09-19 원문 4번째 줄 근거 id를 m560591 → m560592(입력 A에 없는 경기, 입력 E의 Sunderland-Brighton Hove)로 바꿨다. 기대: 근거 id 존재 검사 → downgrade-line:4."
+    },
+    {
+      "id": "brief-case-max-tokens",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "max-tokens"
+      ],
+      "stage": "transport",
+      "candidates": [
+        "retry",
+        "downgrade-all"
+      ],
+      "llm": {
+        "ok": false,
+        "errorType": "max_tokens",
+        "retryable": false,
+        "attempts": 1
+      },
+      "note": "합성 — stop_reason max_tokens(출력 잘림). text는 brief-2026-09-19 원문을 2번째 줄 중간에서 자른 것이다. usage는 같은 요청을 캐시 없이 보냈을 때의 입력(778 + 지시문 2,034토큰)과 max_tokens 4,096을 다 쓴 출력으로 가정했다. M0-30·M0-34 18건 중 실제 사례 0건(실측 최대 출력 3,231). llm.ts는 이 결과를 실패(errorType max_tokens, retryable false, 과금됨)로 돌려주고 text를 버린다. 판정 미정: FR-29 '출력 전체 실패'로 보고 1회 재시도할지, 바로 템플릿으로 갈지 M1-45에서 정한다."
+    },
+    {
+      "id": "brief-case-refusal",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "refusal"
+      ],
+      "stage": "transport",
+      "candidates": [
+        "downgrade-all",
+        "retry"
+      ],
+      "llm": {
+        "ok": false,
+        "errorType": "refusal",
+        "retryable": false,
+        "attempts": 1
+      },
+      "note": "합성 — stop_reason refusal(빈 출력). 입력 토큰은 brief-case-max-tokens와 같은 가정. M0-30·M0-34 18건 중 실제 사례 0건이고 정형 경기 데이터에서 거절은 드물 것으로 본다. llm.ts는 실패(errorType refusal, retryable false, 입력 토큰 과금)로 돌려준다. 판정 미정: 같은 입력은 다시 거절될 가능성이 커서 바로 템플릿(downgrade-all)이 후보, FR-29 재시도로 묶을지는 M1-45에서 정한다."
+    },
+    {
+      "id": "brief-case-errored-overloaded",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "errored-retryable"
+      ],
+      "stage": "transport",
+      "expected": "downgrade-all",
+      "llm": {
+        "ok": false,
+        "errorType": "overloaded_error",
+        "retryable": true,
+        "attempts": 3
+      },
+      "note": "합성 — API 과부하(529 overloaded_error). llm.ts callSingle은 429·5xx만 재시도한다(기본 maxRetries 2 → 최대 3회 시도, 브리핑 마감을 넘기는 대기는 하지 않음). mock은 매번 같은 응답이라 재시도가 모두 실패하고 실패 결과(retryable true, 과금 0)가 돌아온다. 기대(FR-26): 재시도 소진 → downgrade-all."
+    },
+    {
+      "id": "brief-case-errored-timeout",
+      "input": "A",
+      "origin": "synthetic",
+      "source": "합성 — brief-2026-09-19 변형",
+      "base": "brief-2026-09-19",
+      "types": [
+        "errored-connection"
+      ],
+      "stage": "transport",
+      "expected": "downgrade-all",
+      "llm": {
+        "ok": false,
+        "errorType": "connection_error",
+        "retryable": true,
+        "attempts": 1
+      },
+      "note": "합성 — 연결 오류·요청 타임아웃(HTTP 응답 없음). llm.ts callSingle은 서버가 이미 처리했을 수 있어(중복 과금) 재시도하지 않는다(1회 시도). 단, 실패 결과의 retryable 힌트는 true다(배치 결과 수거 같은 읽기 맥락의 힌트) — M1-45는 이 힌트로 브리핑을 다시 보내면 안 된다. 기대(FR-26): downgrade-all."
+    }
+  ]
+}

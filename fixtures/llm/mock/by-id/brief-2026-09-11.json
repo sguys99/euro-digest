@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "정상(발행일 2026-09-11, 입력 B) — M0-30 실제 출력(배치·긴 판·지시문 캐시 쓰기·thinking 기본). fixtures/brief-sample.json 2026-09-11과 같은 출력. 기대: ok(L5 순위 동사 판정은 미정). 원천: M0-30 m030-c-def-long-B — scratchpad m0-30/results/cache-20261010T164123Z.json, data/runs-dev.json runId collect-dev-20261010T163429Z-6027. 배치 실측 usage 그대로(thinking 1279토큰 포함 — mock usage에는 thinking 칸이 없다, 원래 배치 요청이지만 mock은 단건 결과로 돌려준다). 출력 형식은 M0-30 임시 스키마({l:[{t,r}]})다 — M1-20에서 프롬프트·출력 스키마가 확정되면 이 파일을 다시 만든다. 기대 판정 전체는 fixtures/llm/brief-cases.json.",
+  "text": "{\"l\":[{\"t\":\"Bayern이 홈에서 Bodø/Glimt를 5-0으로 꺾었다.\",\"r\":[\"m575337\"]},{\"t\":\"Man United가 Sabah FK를 4-0으로 이겼다.\",\"r\":[\"m575338\"]},{\"t\":\"Como 1907이 RB Leipzig을 4-1로 꺾었다.\",\"r\":[\"m575339\"]},{\"t\":\"RC Lens가 Slavia Praha 원정에서 2-3으로 이겼다.\",\"r\":[\"m575340\"]},{\"t\":\"1라운드 후 PSG, Bayern, Barça, Man United, Como 1907이 승점 3으로 상위 5위에 올랐다.\",\"r\":[\"sUCL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 650,
+    "output_tokens": 1530,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2034
+  }
+}

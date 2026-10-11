@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "합성 — brief-2026-09-19 원문 1~3번째 줄을 쉼표로 이어 한 줄(근거 3개)로 만들었다(150자 초과, 문장은 원문 그대로). 임시 스키마 t 최대 150자 → zod 실패. 기대: retry. 60자 안팎(FR-23)을 넘지만 150자 이하인 줄의 처리(절단·강등)는 아직 정하지 않았다 — 실제 사례 brief-2026-10-10 L1(치환 뒤 66자)·brief-case-rank-tie L5(61자)·brief-case-rank-direction L4(65자). usage는 기준 출력의 실측값 그대로다(합성 출력이라 실제 과금 기록은 아니다). 출력 형식은 M0-30 임시 스키마({l:[{t,r}]})다 — M1-20에서 프롬프트·출력 스키마가 확정되면 이 파일을 다시 만든다. 기대 판정 전체는 fixtures/llm/brief-cases.json.",
+  "text": "{\"l\":[{\"t\":\"Kim Min-jae는 Bayern의 Union Berlin전에서 후반 46분 교체 투입돼 45분을 뛰었고, Jeong Woo-yeong은 Union Berlin 선발로 출전해 60분을 뛰고 교체 아웃됐으며 득점은 없었고, Bayern이 홈에서 Union Berlin을 7-0으로 꺾었고 M. Olise가 3골을 넣었다.\",\"r\":[\"k2897\",\"m1575167\",\"k512\"]},{\"t\":\"Brentford가 홈에서 Chelsea를 3-0으로 꺾었다.\",\"r\":[\"m560591\"]},{\"t\":\"Brentford는 7위에서 3위로 올랐고 Chelsea는 6위에서 7위로 내려갔다.\",\"r\":[\"sPL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 778,
+    "output_tokens": 2040,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 2034
+  }
+}
