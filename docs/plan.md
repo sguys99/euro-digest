@@ -42,8 +42,8 @@
 
 | 단계 | 내용 | 예상 기간 | 시작 | 완료 | 상태 |
 |---|---|---|---|---|---|
-| 사전 | 사용자 준비 작업 (§3) | M0 중 | 2026-10-10 | | ⏸ U-08 → M5-04 전(나머지 완료) |
-| **M0** | 셋업·검증 | 3~4일 | 2026-10-10 | 2026-10-11 | ✅ (이월: U-08 → M5-04 전) |
+| 사전 | 사용자 준비 작업 (§3) | M0 중 | 2026-10-10 | 2026-10-11 | ✅ |
+| **M0** | 셋업·검증 | 3~4일 | 2026-10-10 | 2026-10-11 | ✅ |
 | **D0** 🎨 | 전체 디자인 콘셉트 | 2~3일 | 2026-10-11 | | 🚧 |
 | **M1** | 뉴스 MVP | 1주 | | | ⬜ |
 | **D1** 🎨 | 대회·팀 화면 | 1~2일 | | | ⬜ |
@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: D0 전체 디자인 콘셉트 진행 중 — D0-01 범위 확정 완료(2026-10-11)
-**다음 작업**: `D0-02` 시안 방향 키워드·조합 확정 · 이월된 사용자 작업: U-08(M5-04 전)
+**다음 작업**: `D0-02` 시안 방향 키워드·조합 확정
 
 ---
 
@@ -110,7 +110,7 @@
 - [X] U-05 API-Football 가입 — API-SPORTS 사의 **api-football.com**(가입: `https://dashboard.api-football.com/register`)에서 **직접** 가입 → Secrets `API_FOOTBALL_KEY` (호출 주소 `https://v3.football.api-sports.io`, 인증 헤더 `x-apisports-key`). 이름이 비슷한 **apifootball.com**(다른 회사)과 **RapidAPI 경유 가입**(키·호출 주소·헤더가 달라 어댑터와 맞지 않음)은 쓰지 않는다
 - [x] U-06 cron-job.org 계정 + fine-grained PAT(대상 저장소 한정, Actions 권한만, **만료일 기록**) — PAT는 저장소에 두지 않음 — 2026-10-11 완료(M0-15 Test run으로 확인). **PAT 만료일: 없음**(2026-10-11 사용자 결정 — 만료일 대신 매월 1일 점검에서 유효 여부 확인, §16)
 - [x] U-07 연락용 전용 이메일 개설 → `CONTACT_EMAIL` (User-Agent·삭제 요청용) — 2026-10-10 사용자 결정: 전용 메일 대신 `sguys99@gmail.com` 사용
-- [ ] ⏸ U-08 GoatCounter 사이트 생성 (쿠키리스 분석) — 2026-10-11 사용자 결정: **M5-04 전으로 이월**(사이트 코드는 연동 때 기록)
+- [x] U-08 GoatCounter 사이트 생성 (쿠키리스 분석) — 2026-10-11 완료: 계정 `euro-digest` → `https://euro-digest.goatcounter.com`(Site domain `sguys99.github.io`, 기본 설정·스크립트 미삽입 — 연동은 M5-04). 계정명은 비밀값 아님
 - [x] U-09 KIPRIS 상표 검색 — '유로 다이제스트' / 'Euro Digest' — 2026-10-11 사용자 확인: 충돌 없음
 - [x] U-10 (선택) 좋아하는/싫어하는 사이트·앱이 있으면 D0 전에 공유 — 시안 방향에 반영 — 2026-10-10 응답: **에디토리얼 신문형 · 매거진 볼드형** 선호 + 다른 방향 제안도 원함 (D0-02에서 반영). 템플릿의 Apple 디자인 분석 문서는 `docs/design/references/apple-design-analysis.md`에 참고자료로 보존
 
@@ -174,7 +174,7 @@
 - [x] `sources.json`의 모든 소스에 `terms_checked`·`robots_checked` 값이 채워짐 — 26개 전부(수집 14)
 - [x] API-Football 분기(B1)·캐싱 여부(B3)·데이터 API의 LLM 입력 허용 여부(B7, D24) 결정이 기록됨 — B1 일부 발동(D27)·B3 미발동(D28)·B7 미발동(M0-28·M0-29)
 - [x] 실측 단가로 PRD §9.3 가정을 확인 (차이가 크면 사용자에게 보고) — M0-21 단가·M0-30 실측·M0-34 실측(바쁜 날 $0.0023)으로 갱신, 월 약 $0.05~0.09(상한 $3의 3% 안팎) — 큰 차이 없음
-- [ ] ⏸ §3 사용자 준비 작업 완료 — **U-08만 미충족(이월)**: U-01~07·U-09·U-10과 M0-15 완료(cron-job.org Test run 확인 — 2026-10-11 19:51 KST), U-08(GoatCounter)은 M5-04 전으로 이월. 사용자 결정(2026-10-11)으로 이 항목만 예외로 두고 M0를 완료 처리
+- [x] §3 사용자 준비 작업 완료 — 2026-10-11: U-01~10 전부 완료(U-06·M0-15 cron-job.org Test run 확인 — workflow_dispatch run 38133463178, 19:51 KST · U-08 GoatCounter `euro-digest` 생성 확인)
 
 ---
 
@@ -432,7 +432,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M5-01 OG 이미지 빌드 시 생성(날짜·대회·팀) — **Playwright로 템플릿 HTML 스크린샷**(확정, 새 의존성 없음) (DR-10) — ❓ 파일 경로는 M0-19 잠정안(`/og/default.png`·`/og/news/{date}.png`·`/og/competitions/{comp}.png`·`/og/teams/{team}.png`, `artifacts.ogImage`) — 공개 URL 구조라 착수 전 사용자 확인
 - [ ] M5-02 앱 아이콘·테마 컬러 교체
 - [ ] M5-03 SEO: canonical, 구조화 데이터(NewsArticle·SportsTeam·SportsEvent), 전체 sitemap (NFR-03)
-- [ ] M5-04 🙋 선행: U-08 GoatCounter 사이트 생성(M0에서 이월) → GoatCounter 연동 + 이벤트(원문 클릭·RSS/ics 클릭·PWA 설치·마이 팀 설정) (PRD §11.2)
+- [ ] M5-04 GoatCounter 연동(계정 `euro-digest` — U-08) + 이벤트(원문 클릭·RSS/ics 클릭·PWA 설치·마이 팀 설정) (PRD §11.2)
 - [ ] M5-05 `/privacy` (FR-141)
 - [ ] M5-06 접근성 감사: WCAG AA(다크 포함)·키보드·스크린리더 라벨 → Lighthouse 접근성 ≥ 90 (NFR-02)
 - [ ] M5-07 성능 최적화 → Lighthouse 모바일 성능 ≥ 95, LCP ≤ 2.0s, CLS ≤ 0.05 (NFR-01, DR-11)
@@ -876,3 +876,4 @@ const UnknownNamesFile = z.object({ updatedAt: Iso, names: z.record(NameText, Un
 | 2026-10-11 | 일일 브리핑 호출 방식(PRD §15 D28): 일일 브리핑은 일반 Messages API 단건(주간 2곳은 배치 유지), thinking 적응형 + `effort:"medium"`·`max_tokens` 4,096, §14 B3 미발동으로 닫음(캐싱은 호출 지점별), 검증 순서 zod → 코드 검증 → 1회 재시도 → 템플릿. M1-20·M1-21·M1-23·M1-42·M1-45·M3-07·M4-06·§14 B3·B4 갱신. 함께 정리: M2-01(유럽 대항전 구간만 남음 — §16에 시즌 후반 갱신 추가), 부록 A `formations.json` 주석(보조), §14 B7 미발생 표기 | 사용자 결정 — M0-30 실측: 배치 완료 최대 6분 33초로 겨울 마감 여유 4~5분 초과, 단건 2~8.5초 |
 | 2026-10-11 | M0 완료: U-06·M0-15(cron-job.org)를 M1-40 선행으로, U-08(GoatCounter)을 M5-04 선행으로 이월 · M0-33~36 발견 사항을 M1-02(The Athletic 보관 조항 ❓)·M1-17·M1-20(스코어 표기 순서)·M1-21·M1-23(승패 동사·스코어 순서·미정 판정 ❓)·M1-45(요청 타임아웃·연결 오류 retryable 힌트·max_tokens/refusal ❓·실행 기록 순서)·M1-48(보강 호출 3회·`apiFootballId` null 알림)에 반영 | 사용자 결정(이월) · M0-32~36 서브에이전트 보고 |
 | 2026-10-11 | U-06·M0-15 완료(cron-job.org Test run → workflow_dispatch run 38133463178 확인, 19:51 KST) — M1-40 선행 이월 해제. U-08만 M5-04 전 이월 유지 · PAT 만료일 없음 → U-06·§16 월간 점검을 "만료일 확인"에서 "유효 여부 확인"으로 | 사용자 확인 · 사용자 결정(PAT 만료 없음) |
+| 2026-10-11 | U-08 완료(GoatCounter `euro-digest`) — M5-04 선행 이월 해제, §3 사용자 준비 작업 전부 완료 → M0 완료 기준 6개 모두 충족 | 사용자 확인 |
