@@ -1,9 +1,27 @@
 /*
- * [주의] 자리표시값 — D0 선택 후 DESIGN.md 토큰으로 교체. 여기서 디자인 값을 정하지 말 것.
+ * 디자인 토큰 — DESIGN.md(단일 출처, PRD DR-12)를 CSS 변수와 Tailwind 테마로 옮긴 것 (D0-10, DR-02)
  *
- * - 이 파일은 디자인 토큰의 단일 출처(DESIGN.md → CSS 변수·@theme) 자리만 마련한다(CLAUDE.md §3, PRD DR-12).
- * - 아래 색은 전부 무채색 자리표시값이고, radius도 0으로 비워 둔다. 의미 있는 디자인 값이 아니다.
- * - 새 색·폰트·간격·모션 값은 D0 게이트(시안 2~3개 → 사용자 선택 → DESIGN.md)를 거친 뒤에만 넣는다(CLAUDE.md §1-1, §4).
+ * 값을 바꿀 때는 DESIGN.md를 먼저 고친다(DESIGN §0.2). tests/design-tokens.test.ts가 DESIGN.md 토큰 표와
+ * 이 파일의 값(라이트·다크·시스템 다크·1024 이상)을 하나씩 대조하고, 대비 하한과 하드코딩 색을 검사한다.
+ *
+ * 구조
+ * 1. Tailwind 가져오기(탐색 범위) · dark 변형
+ * 2. Tailwind 기본 테마 정리 — DESIGN이 금지한 기본값(팔레트 색·둥근 모서리·블러 그림자·곡선·반복 애니메이션) 제거
+ * 3. 런타임 토큰
+ *    - :root                         라이트 + 375(1단) 값 + 테마·폭과 무관한 값
+ *    - @media (width >= 64rem) :root 1024 이상(lg — 2단·3단 공통) 값. xl(1280)에서 바뀌는 토큰은 없다
+ *    - [data-theme="dark"]           다크(사용자가 고름)
+ *    - @media (prefers-color-scheme: dark) :root:not([data-theme="light"])
+ *                                    다크(시스템 설정, JS 없이도) — 값은 바로 위 블록과 똑같다
+ *    - @theme static                 이름이 Tailwind 테마 키와 같은 토큰(폰트 3 · 인쇄 그림자 2)은 :root 대신 여기에 한 번만
+ *                                    선언한다. :root와 @theme에 같은 이름을 두면 자기 참조(--x: var(--x))가 된다(DESIGN §11.2).
+ *                                    Tailwind가 @layer theme의 :root에 그대로 내보내므로 런타임 변수로도 쓸 수 있다
+ * 4. @theme inline — 런타임 토큰을 Tailwind 유틸리티에 잇는다(값은 var()만, 새 값 없음)
+ * 5. base — body·한글 규칙·포커스 링·숫자·모션 줄이기
+ *
+ * 테마 속성은 layout.tsx <head>의 초기 인라인 스크립트(src/lib/theme.ts)가 첫 페인트 전에 단다:
+ * 시스템 = 속성 없음, 라이트 = data-theme="light", 다크 = data-theme="dark" (DESIGN §8).
+ * 테마 속성은 <html>에만 단다 — shadcn 의미 변수(--background 등)의 var() 별칭은 :root에서 한 번 풀린다.
  */
 
 /*
@@ -12,89 +30,353 @@
  */
 @import "tailwindcss" source("..");
 
-/* 다크 모드는 <html data-theme="dark"> 속성 기반 (CLAUDE.md §7.2). 초기 인라인 테마 스크립트는 별도 작업. */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-
-/* ── shadcn/ui 기본 변수 (라이트) — 자리표시값 ── */
-:root {
-  --radius: 0rem;
-
-  --background: oklch(1 0 0);
-  --foreground: oklch(0 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0.2 0 0);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0 0);
-  --secondary-foreground: oklch(0.2 0 0);
-  --muted: oklch(0.95 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.95 0 0);
-  --accent-foreground: oklch(0.2 0 0);
-  --destructive: oklch(0.4 0 0);
-  --border: oklch(0.9 0 0);
-  --input: oklch(0.9 0 0);
-  --ring: oklch(0.6 0 0);
-}
-
-/* ── shadcn/ui 기본 변수 (다크) — 자리표시값 ── */
-[data-theme="dark"] {
-  --background: oklch(0 0 0);
-  --foreground: oklch(1 0 0);
-  --card: oklch(0.15 0 0);
-  --card-foreground: oklch(1 0 0);
-  --popover: oklch(0.15 0 0);
-  --popover-foreground: oklch(1 0 0);
-  --primary: oklch(0.9 0 0);
-  --primary-foreground: oklch(0.15 0 0);
-  --secondary: oklch(0.25 0 0);
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.25 0 0);
-  --muted-foreground: oklch(0.7 0 0);
-  --accent: oklch(0.25 0 0);
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.7 0 0);
-  --border: oklch(0.3 0 0);
-  --input: oklch(0.3 0 0);
-  --ring: oklch(0.5 0 0);
-}
+/*
+ * cn 병합 설정(src/lib/utils.ts)은 유틸리티 키 목록일 뿐 클래스를 쓰지 않는다. 색 이름 border·ring처럼
+ * 단독으로도 유틸리티인 문자열이 CSS를 만들지 않도록 탐색에서 뺀다(DESIGN §11.2).
+ */
+@source not "../lib/utils.ts";
 
 /*
- * ── 프로젝트 전용 토큰 자리 (이름만 예약 — 실제 선언은 D0에서, 라이트·다크 모두) ──
- * 이름은 D0에서 확정하며 바뀔 수 있다. 근거: PRD DR-03·DR-04·DR-08, CLAUDE.md §4.
- *
- * 브랜드 액센트 1개 (DR-04)
- *   --brand-accent, --brand-accent-foreground
- *
- * 대회 컬러 6종 (로고 대체)
- *   --competition-epl, --competition-laliga, --competition-seriea,
- *   --competition-bundesliga, --competition-ligue1, --competition-ucl
- *   (각 *-foreground 대비색 포함)
- *
- * 경기 결과 — 승/무/패 (색 외 W/D/L 텍스트 병기 필수)
- *   --result-win, --result-draw, --result-loss
- *
- * 순위 변동 — 상승/하락 (색 외 ▲▼ 병기 필수)
- *   --trend-up, --trend-down
- *
- * 이적 단계 5종 (PRD 용어집: rumor → negotiating → agreed → official, collapsed)
- *   --transfer-rumor, --transfer-negotiating, --transfer-agreed,
- *   --transfer-official, --transfer-collapsed
- *
- * 출처 Tier 1~3
- *   --tier-1, --tier-2, --tier-3
- *
- * 숫자 서체 (스코어·순위·승점, tabular-nums와 함께 사용)
- *   --font-numeric
- *
- * 모션 지속시간 (150~250ms 범위, prefers-reduced-motion 시 제거)
- *   --duration-fast, --duration-base, --duration-slow
+ * dark: 변형 — 테마 3상태와 같은 조건으로 켠다(사용자 다크 + 속성 없는 시스템 다크).
+ * 컴포넌트는 dark:로 색을 따로 고르지 않고 토큰만 쓴다(DESIGN §2·§8). 이 변형은 shadcn 원본 클래스 호환용이다.
  */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(
+      :root:not([data-theme="light"]),
+      :root:not([data-theme="light"]) *
+    ) {
+      @slot;
+    }
+  }
+}
 
-/* ── shadcn 변수 → Tailwind 유틸리티 연결 (bg-background, text-foreground, rounded-lg 등) ── */
+/* ── 2. Tailwind 기본 테마 정리 ───────────────────────────────────────────────
+ * 색: 토큰 색만(기본 팔레트·black·white 없음 — transparent·current는 그대로)
+ * 모서리: 아래 shadcn 배율만(전부 0 — DESIGN §5.1). rounded-full·rounded-none은 그대로
+ * 그림자: 상자 그림자는 인쇄 오프셋만(블러 shadow-xs·sm·md 등 없음), 안쪽·드롭·글자 그림자는 기본 크기를 모두 지운다
+ *   (전부 블러 — DESIGN §5.2 블러 그림자·글로우 금지). 각 그림자의 none은 그대로
+ * 곡선: --ease 하나(DESIGN §6.1) · 애니메이션: 기본 spin·ping·pulse·bounce 없음(DESIGN §6.2 무한 반복·스켈레톤 반짝임 금지)
+ */
+@theme {
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --text-shadow-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+}
+
+/* ── 3. 런타임 토큰 ─────────────────────────────────────────────────────────── */
+
+/* 테마·폭과 무관하고, 이름이 Tailwind 키와 같은 토큰 — font-sans·font-numeric·font-latin, shadow-print·shadow-print-accent */
+@theme static {
+  /* DESIGN §3.1 — font-sans는 Tailwind 기본 스택을 덮는다(의도). @font-face는 D0-11 */
+  --font-sans:
+    "EuroDigest Sans", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Malgun Gothic", "Noto Sans KR", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Noto Color Emoji";
+  --font-numeric:
+    "Barlow Condensed", "EuroDigest Sans", -apple-system, "Apple SD Gothic Neo",
+    "Malgun Gothic", sans-serif;
+  --font-latin:
+    "Barlow Condensed", "EuroDigest Sans", -apple-system, "Apple SD Gothic Neo",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+
+  /* DESIGN §5.2 — 블러 없는 인쇄 오프셋. var()는 <html>에서 풀려 테마를 따른다 */
+  --shadow-print: 4px 4px 0 var(--ink);
+  --shadow-print-accent: 4px 4px 0 var(--brand-accent);
+}
+
+/* 라이트 + 375(1단) + 테마·폭 무관 */
+:root {
+  color-scheme: light;
+
+  /* §2.1 중립 — 지면·잉크 */
+  --paper: #f3f0ea;
+  --paper-2: #e8e4db;
+  --ink: #14213d;
+  --ink-2: #4a5670;
+  --ink-3: #727886;
+  --ink-disabled: #727886;
+  --rule: #cfcfce;
+
+  /* §2.2 브랜드 — 스팟 레드·티켓·뒤표지 */
+  --brand-accent: #b32f25;
+  --brand-accent-text: #a92b22;
+  --brand-accent-foreground: #f3f0ea;
+  --ticket: #14213d;
+  --ticket-fg: #f3f0ea;
+  --ticket-fg-2: #c2c2c4;
+  --colophon: #14213d;
+  --colophon-fg: #f3f0ea;
+  --colophon-fg-2: #c2c2c4;
+
+  /* §2.3 shadcn 의미 변수 — 원천 토큰 별칭(다크 블록에는 다시 쓰지 않는다: <html>의 원천 토큰이 바뀌면 같이 바뀐다) */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--paper-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-2);
+  --muted-foreground: var(--ink-2);
+  --accent: var(--paper-2);
+  --accent-foreground: var(--ink);
+  --destructive: var(--brand-accent-text);
+  --border: var(--rule);
+  --input: var(--ink-2);
+  --ring: #a92b22;
+
+  /* §2.4 대회 6색 — 면 + 면 위 약칭 */
+  --competition-epl: #3d1e5c;
+  --competition-epl-foreground: #f3f0ea;
+  --competition-laliga: #7f5300;
+  --competition-laliga-foreground: #f3f0ea;
+  --competition-seriea: #0a6390;
+  --competition-seriea-foreground: #f3f0ea;
+  --competition-bundesliga: #a8122b;
+  --competition-bundesliga-foreground: #f3f0ea;
+  --competition-ligue1: #2a7035;
+  --competition-ligue1-foreground: #f3f0ea;
+  --competition-ucl: #4a5263;
+  --competition-ucl-foreground: #f3f0ea;
+
+  /* §2.5 경기 결과 · §2.6 순위 변동 — 항상 W/D/L·▲▼ 글자와 함께 */
+  --result-win: #1f6b45;
+  --result-draw: #4a5670;
+  --result-loss: #a92b22;
+  --trend-up: #1f6b45;
+  --trend-down: #a92b22;
+
+  /* §2.7 이적 단계 · §2.8 출처 Tier */
+  --transfer-rumor: #14213d;
+  --transfer-negotiating: #14213d;
+  --transfer-agreed: #14213d;
+  --transfer-official: #b32f25;
+  --transfer-collapsed: #4a5670;
+  --transfer-progress: var(--transfer-agreed);
+  --tier-1: #14213d;
+  --tier-2: #14213d;
+  --tier-3: #4a5670;
+
+  /* §2.9 상태 */
+  --paper-3: #e1dfdc;
+  --hatch: #dfddda;
+
+  /* §3.3 타입 스케일(375) — 크기 --text-X · 행간 --lh-X, 숫자 --num-X(행간은 컴포넌트 규칙) */
+  --text-wordmark: 30px;
+  --lh-wordmark: 1.1;
+  --text-h2: 21px;
+  --lh-h2: 1.3;
+  --text-brief: 17px;
+  --lh-brief: 1.62;
+  --text-card: 16.5px;
+  --lh-card: 1.45;
+  --text-card-latin: 21px;
+  --lh-card-latin: 1.14;
+  --text-lead: 16.5px;
+  --lh-lead: 1.45;
+  --text-lead-latin: 21px;
+  --lh-lead-latin: 1.14;
+  --text-tag: 13px;
+  --lh-tag: 1.35;
+  --text-stamp: 11.5px;
+  --lh-stamp: 1.3;
+  --text-meta: 13px;
+  --lh-meta: 1.3;
+  --text-rh: 12.5px;
+  --lh-rh: 1;
+  --num-issue: 40px;
+  --num-brief-no: 40px;
+  --num-score: 30px;
+  --num-card-no: 14px;
+  --num-meta: 14.5px;
+
+  /* §4.1 간격 — Tailwind 간격 1·2·3·4·6·8·12·16과 같은 값(--spacing 0.25rem)이라 유틸리티는 숫자 간격을 쓴다 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* §4.2 레이아웃(375) */
+  --edge: 16px;
+  --gutter: 40px;
+  --tab-w: 18px;
+  --col-contents: 232px;
+  --col-facing: 296px;
+  --container: 1280px;
+
+  /* §5.1 모서리 · §5.2 그림자(인쇄 오프셋 2종은 위 @theme static) */
+  --radius: 0px;
+  --notch: 10px;
+  --perf: 3.2px;
+  --shadow-none: none;
+
+  /* §6.1 모션 */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* 1024 이상(lg — 2단·3단 공통). DESIGN §3.3·§4.2의 1280 열. 375와 같은 값은 다시 쓰지 않는다 */
+@media (width >= 64rem) {
+  :root {
+    --text-wordmark: 52px;
+    --text-h2: 24px;
+    --text-brief: 19px;
+    --lh-brief: 1.6;
+    --text-card: 18px;
+    --text-card-latin: 23px;
+    --lh-card-latin: 1.13;
+    --text-lead: 30px;
+    --lh-lead: 1.3;
+    --text-lead-latin: 42px;
+    --lh-lead-latin: 1.04;
+    --num-issue: 88px;
+    --num-brief-no: 54px;
+    --num-score: 34px;
+    --num-card-no: 15px;
+
+    --edge: 32px;
+    --gutter: 64px;
+    --tab-w: 22px;
+  }
+}
+
+/* 다크 — 사용자가 고름. 아래 시스템 다크 블록과 값이 똑같아야 한다(테스트가 검사) */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #0e1626;
+  --paper-2: #16213a;
+  --ink: #f2efe8;
+  --ink-2: #aba698;
+  --ink-3: #75787d;
+  --ink-disabled: #75787d;
+  --rule: #323945;
+
+  --brand-accent: #ff7a6e;
+  --brand-accent-text: #ff7a6e;
+  --brand-accent-foreground: #0e1626;
+  --ticket: #9e2f28;
+  --ticket-fg: #f2efe8;
+  --ticket-fg-2: #eadcd5;
+  --colophon: #16213a;
+  --colophon-fg: #f2efe8;
+  --colophon-fg-2: #aba698;
+
+  --ring: #ff7a6e;
+
+  --competition-epl: #c7a8f2;
+  --competition-epl-foreground: #0e1626;
+  --competition-laliga: #f2c14e;
+  --competition-laliga-foreground: #0e1626;
+  --competition-seriea: #6cc6f2;
+  --competition-seriea-foreground: #0e1626;
+  --competition-bundesliga: #f45d7d;
+  --competition-bundesliga-foreground: #0e1626;
+  --competition-ligue1: #8fd18a;
+  --competition-ligue1-foreground: #0e1626;
+  --competition-ucl: #c5cbd8;
+  --competition-ucl-foreground: #0e1626;
+
+  --result-win: #7fd3a4;
+  --result-draw: #aba698;
+  --result-loss: #ff7a6e;
+  --trend-up: #7fd3a4;
+  --trend-down: #ff7a6e;
+
+  --transfer-rumor: #f2efe8;
+  --transfer-negotiating: #f2efe8;
+  --transfer-agreed: #f2efe8;
+  --transfer-official: #ff7a6e;
+  --transfer-collapsed: #aba698;
+  --tier-1: #f2efe8;
+  --tier-2: #f2efe8;
+  --tier-3: #aba698;
+
+  --paper-3: #232a37;
+  --hatch: #202736;
+}
+
+/* 다크 — 시스템 설정(속성 없음 또는 dark). JS가 꺼져 있어도 동작한다. 값은 [data-theme="dark"]와 똑같이 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --paper: #0e1626;
+    --paper-2: #16213a;
+    --ink: #f2efe8;
+    --ink-2: #aba698;
+    --ink-3: #75787d;
+    --ink-disabled: #75787d;
+    --rule: #323945;
+
+    --brand-accent: #ff7a6e;
+    --brand-accent-text: #ff7a6e;
+    --brand-accent-foreground: #0e1626;
+    --ticket: #9e2f28;
+    --ticket-fg: #f2efe8;
+    --ticket-fg-2: #eadcd5;
+    --colophon: #16213a;
+    --colophon-fg: #f2efe8;
+    --colophon-fg-2: #aba698;
+
+    --ring: #ff7a6e;
+
+    --competition-epl: #c7a8f2;
+    --competition-epl-foreground: #0e1626;
+    --competition-laliga: #f2c14e;
+    --competition-laliga-foreground: #0e1626;
+    --competition-seriea: #6cc6f2;
+    --competition-seriea-foreground: #0e1626;
+    --competition-bundesliga: #f45d7d;
+    --competition-bundesliga-foreground: #0e1626;
+    --competition-ligue1: #8fd18a;
+    --competition-ligue1-foreground: #0e1626;
+    --competition-ucl: #c5cbd8;
+    --competition-ucl-foreground: #0e1626;
+
+    --result-win: #7fd3a4;
+    --result-draw: #aba698;
+    --result-loss: #ff7a6e;
+    --trend-up: #7fd3a4;
+    --trend-down: #ff7a6e;
+
+    --transfer-rumor: #f2efe8;
+    --transfer-negotiating: #f2efe8;
+    --transfer-agreed: #f2efe8;
+    --transfer-official: #ff7a6e;
+    --transfer-collapsed: #aba698;
+    --tier-1: #f2efe8;
+    --tier-2: #f2efe8;
+    --tier-3: #aba698;
+
+    --paper-3: #232a37;
+    --hatch: #202736;
+  }
+}
+
+/* ── 4. 런타임 토큰 → Tailwind 유틸리티 ───────────────────────────────────────
+ * 값은 var() 참조만 둔다(새 값 금지). :root 토큰과 같은 이름의 키는 쓰지 않는다(자기 참조 방지).
+ */
 @theme inline {
+  /* 색 — shadcn 의미 변수 18개(bg-background, text-foreground, border-input, ring-ring …) */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -114,7 +396,97 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* radius 배율은 shadcn v4 기본 관례를 따른다. 기준값(--radius)은 D0에서 정한다. */
+  /* 색 — 프로젝트 토큰은 이름 그대로(bg-paper, text-ink-2, bg-competition-epl, text-result-win …) */
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-disabled: var(--ink-disabled);
+  --color-rule: var(--rule);
+  --color-hatch: var(--hatch);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-text: var(--brand-accent-text);
+  --color-brand-accent-foreground: var(--brand-accent-foreground);
+  --color-ticket: var(--ticket);
+  --color-ticket-fg: var(--ticket-fg);
+  --color-ticket-fg-2: var(--ticket-fg-2);
+  --color-colophon: var(--colophon);
+  --color-colophon-fg: var(--colophon-fg);
+  --color-colophon-fg-2: var(--colophon-fg-2);
+  --color-competition-epl: var(--competition-epl);
+  --color-competition-epl-foreground: var(--competition-epl-foreground);
+  --color-competition-laliga: var(--competition-laliga);
+  --color-competition-laliga-foreground: var(--competition-laliga-foreground);
+  --color-competition-seriea: var(--competition-seriea);
+  --color-competition-seriea-foreground: var(--competition-seriea-foreground);
+  --color-competition-bundesliga: var(--competition-bundesliga);
+  --color-competition-bundesliga-foreground: var(
+    --competition-bundesliga-foreground
+  );
+  --color-competition-ligue1: var(--competition-ligue1);
+  --color-competition-ligue1-foreground: var(--competition-ligue1-foreground);
+  --color-competition-ucl: var(--competition-ucl);
+  --color-competition-ucl-foreground: var(--competition-ucl-foreground);
+  --color-result-win: var(--result-win);
+  --color-result-draw: var(--result-draw);
+  --color-result-loss: var(--result-loss);
+  --color-trend-up: var(--trend-up);
+  --color-trend-down: var(--trend-down);
+  --color-transfer-rumor: var(--transfer-rumor);
+  --color-transfer-negotiating: var(--transfer-negotiating);
+  --color-transfer-agreed: var(--transfer-agreed);
+  --color-transfer-official: var(--transfer-official);
+  --color-transfer-collapsed: var(--transfer-collapsed);
+  --color-transfer-progress: var(--transfer-progress);
+  --color-tier-1: var(--tier-1);
+  --color-tier-2: var(--tier-2);
+  --color-tier-3: var(--tier-3);
+
+  /*
+   * 타입 스케일 — --text-X는 Tailwind 키 --text-type-X(유틸리티 text-type-X: 크기 + 행간),
+   * --num-X는 --text-num-X(text-num-X: 크기만). --text-card를 그대로 올리면 --color-card 때문에
+   * text-card가 색 유틸리티로만 만들어진다(DESIGN §11.2 실측). 굵기·자간은 컴포넌트 규칙(DESIGN §3.3).
+   * 1024 이상 값은 :root 변수가 바뀌므로 lg: 변형이 필요 없다.
+   */
+  --text-type-wordmark: var(--text-wordmark);
+  --text-type-wordmark--line-height: var(--lh-wordmark);
+  --text-type-h2: var(--text-h2);
+  --text-type-h2--line-height: var(--lh-h2);
+  --text-type-brief: var(--text-brief);
+  --text-type-brief--line-height: var(--lh-brief);
+  --text-type-card: var(--text-card);
+  --text-type-card--line-height: var(--lh-card);
+  --text-type-card-latin: var(--text-card-latin);
+  --text-type-card-latin--line-height: var(--lh-card-latin);
+  --text-type-lead: var(--text-lead);
+  --text-type-lead--line-height: var(--lh-lead);
+  --text-type-lead-latin: var(--text-lead-latin);
+  --text-type-lead-latin--line-height: var(--lh-lead-latin);
+  --text-type-tag: var(--text-tag);
+  --text-type-tag--line-height: var(--lh-tag);
+  --text-type-stamp: var(--text-stamp);
+  --text-type-stamp--line-height: var(--lh-stamp);
+  --text-type-meta: var(--text-meta);
+  --text-type-meta--line-height: var(--lh-meta);
+  --text-type-rh: var(--text-rh);
+  --text-type-rh--line-height: var(--lh-rh);
+  --text-num-issue: var(--num-issue);
+  --text-num-brief-no: var(--num-brief-no);
+  --text-num-score: var(--num-score);
+  --text-num-card-no: var(--num-card-no);
+  --text-num-meta: var(--num-meta);
+
+  /* 레이아웃 — px-edge, w-gutter, w-tab-w, w-col-contents, w-col-facing, max-w-page */
+  --spacing-edge: var(--edge);
+  --spacing-gutter: var(--gutter);
+  --spacing-tab-w: var(--tab-w);
+  --spacing-col-contents: var(--col-contents);
+  --spacing-col-facing: var(--col-facing);
+  --container-page: var(--container);
+
+  /* 모서리 — shadcn v4 배율 그대로. --radius가 0이라 전부 0(DESIGN §5.1) */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -122,15 +494,61 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* 모션 — duration-fast·base·slow, ease-print. transition-* 유틸리티 기본값도 토큰으로(피드백 = fast) */
+  --transition-duration-fast: var(--duration-fast);
+  --transition-duration-base: var(--duration-base);
+  --transition-duration-slow: var(--duration-slow);
+  --ease-print: var(--ease);
+  --default-transition-duration: var(--duration-fast);
+  --default-transition-timing-function: var(--ease);
 }
 
-/*
- * 배경·글자색을 변수에 연결하는 것만 둔다. 폰트·여백 등 시각 스타일은 D0 이후.
- * base 레이어에 둬야 나중에 붙는 유틸리티 클래스(bg-*, text-*)가 이 규칙을 덮을 수 있다.
+/* ── 5. base ─────────────────────────────────────────────────────────────────
+ * base 레이어에 둬야 나중에 붙는 유틸리티 클래스가 이 규칙을 덮을 수 있다.
  */
 @layer base {
+  html {
+    text-size-adjust: 100%;
+  }
+
+  /* DESIGN §3.2·§3.4·§3.6 — 본문 기본 16px/1.55, 한글 어절 줄바꿈, 합성 굵기 금지 · §8 잉크 전환(테마 바꿀 때만 — 첫 렌더는 전환 없음) */
   body {
     background-color: var(--background);
     color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition:
+      background-color var(--duration-base) var(--ease),
+      color var(--duration-base) var(--ease);
+  }
+
+  /* DESIGN §3.5 — 시각은 모두 표 숫자 */
+  time {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* DESIGN §9.1 — 포커스 링 3px 실선 · 2px 띄움(투명도 없음). 색 면 안에서는 컴포넌트가 --ring을 그 면의 글자색으로 바꾼다 */
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* DESIGN §6.3 — 모션 줄이기: 모든 애니메이션·전환 0. base 레이어의 !important라 유틸리티의 !important보다도 우선한다 */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0s !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

@@ -56,8 +56,8 @@
 
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
-**현재 위치**: D0 전체 디자인 콘셉트 진행 중 — D0-01~D0-09 완료(2026-10-12, 혼합안 확정)
-**다음 작업**: `D0-10` 토큰 → `globals.css` CSS 변수 + `@theme`, 다크 모드 + 초기 테마 스크립트
+**현재 위치**: D0 전체 디자인 콘셉트 진행 중 — D0-01~D0-10 완료(2026-10-12, 혼합안 확정·토큰 이식)
+**다음 작업**: `D0-11` 웹폰트 2종 서브셋·self-host, `font-display: swap`
 
 ---
 
@@ -200,7 +200,7 @@
 ### D0-C 확정·토큰화
 - [x] D0-08 `docs/design/DECISIONS.md`에 선택안·이유·혼합 지시 기록 (날짜 포함) — 2026-10-12 완료: D0 절(결정 요약·기준 스크린샷 8장, D0-01~07 타임라인, 선택 이유와 기각 안, 혼합 지시 확정본 — 실제 색 값 변경 포함, 화면·문구 결정 13건, 폰트·라이선스 메모, D0-09~12 구현 메모 10건, 시안 파일 목록), D1~D3 자리. 정리: scope.md 점수화 작업 ID(M1-16 → M1-14), D0-03 ▲▼ 글리프 메모 정정
 - [x] D0-09 `DESIGN.md` v0.1 작성: 컬러(중립·액센트·대회 6·상태: 승/무/패·상승/하락·이적 단계·Tier), 타이포 스케일(본문 + 숫자 폰트, tabular nums), 간격·radius·그림자·모션 토큰, 브레이크포인트, 컴포넌트 규칙 (DR-04, DR-12) — 2026-10-12 완료: 저장소 루트 `DESIGN.md`(§0 기계 판독 표 규칙 — `| 토큰 | 라이트 | 다크 | 용도 |`·`| 토큰 | 375 | 1280 | 용도 |`·`| 토큰 | 값 | 용도 |`, §1 원칙, §2 컬러 62(중립·브랜드·shadcn 매핑 18·대회 12·결과·변동·이적·Tier·상태), §3 타이포(EuroDigest Sans·Barlow Condensed, 스케일 16), §4 간격·레이아웃, §5 radius 0·그림자·괘선, §6 모션, §7 브레이크포인트, §8 테마(`ed-theme`·`ed-spoiler`), §9 컴포넌트(기초 6종 5상태 + 도메인 약 30종), §10 접근성, §11 구현 메모). 토큰 값은 `concept-mix.html`에서 스크립트로 추출해 대조(불일치 0). 작성 중 DR-01 차이 발견 → 사용자 결정 D31: 1023 이하 1단·1024~1279 2단·1280 이상 3단, 첫 로드 모션 없음 → 혼합안에 2단 구간 반영(1024 fold 2장 추가, 견본 넘침 수정, 16조합 QA 통과). D0-10 메모: `--text-card` 같은 이름은 `--color-card`와 충돌 → 타입 토큰은 다른 키로, 다크 값은 `[data-theme="dark"]`·`prefers-color-scheme` 두 곳, 컴포넌트는 `dark:` 대신 토큰만
-- [ ] D0-10 토큰 → `globals.css` CSS 변수 + `@theme`, 다크 모드 + 깜빡임 없는 초기 테마 스크립트 (DR-02)
+- [x] D0-10 토큰 → `globals.css` CSS 변수 + `@theme`, 다크 모드 + 깜빡임 없는 초기 테마 스크립트 (DR-02) — 2026-10-12 완료: `src/app/globals.css` 자리표시값 제거 → DESIGN.md 토큰 105개(컬러 62·반응형 19·고정 24) — `:root`(라이트·375)·`@media (width >= 64rem)`(lg 1280 열)·`[data-theme="dark"]`·`prefers-color-scheme` 다크(같은 값), 이름이 Tailwind 키와 같은 폰트 3·인쇄 그림자 2는 `@theme static`, 유틸리티 연결은 `@theme inline`(컬러 `--color-<토큰>`, 타입 `--text-X`→`text-type-X`·`--num-X`→`text-num-X` — `--color-card` 충돌 회피), Tailwind 기본 팔레트·radius·블러 그림자·곡선·애니메이션 제거, `dark:` 변형은 사용자·시스템 다크 둘 다, base(body·keep-all·포커스 링·모션 줄이기). 초기 스크립트 `src/lib/theme.ts`(DESIGN §8 원문 + 같은 로직 순수 함수·토글 함수) → `layout.tsx` `<head>` 인라인, `suppressHydrationWarning`, viewport `color-scheme`·`theme-color`(--paper). 테스트: `tests/design-tokens.test.ts`(표 대조·대비 하한·하드코딩 색·Tailwind 컴파일 결과) · `tests/theme.test.ts`(스크립트 vm 실행 × 저장값·시스템 다크) · `tests/e2e/theme.spec.ts`(속성이 `<body>` 전에 달림·계산 색·반응형 토큰). 초기 JS 135.7KB 변화 없음. 커밋 전 리뷰 반영: cn 병합 설정(extendTailwindMerge), 블러 그림자 기본값 제거, 테스트 보강
 - [ ] D0-11 웹폰트 2종 서브셋·self-host, `font-display: swap` (DR-03)
 - [ ] D0-12 기초 컴포넌트 토큰 적용: Chip · Card · Button · Tabs · Skeleton · Toast — shadcn 기본 모양 탈피
 

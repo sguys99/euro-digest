@@ -598,7 +598,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 토글 | 티켓 도구 영역의 아이콘 버튼(44×44, 반쯤 채운 원 아이콘). `aria-label` "테마: {시스템 설정\|라이트\|다크} (눌러서 바꾸기)", 바꾸면 토스트 "테마: 라이트" |
 | 전환 | 잉크 전환(§6.2, base). 첫 렌더에는 전환이 없다(초기 스크립트가 CSS보다 먼저 속성을 단다) |
 
-깜빡임 없는 초기 인라인 스크립트(혼합안 원문). `<head>` 맨 앞, 스타일시트보다 먼저 동기 실행한다. D0-10에서 구현한다.
+깜빡임 없는 초기 인라인 스크립트(혼합안 원문). `<head>` 안의 **동기 인라인 스크립트**로 `<body>` 파싱 전(첫 페인트 전)에 실행한다 — Next 16·React 19는 스타일시트 링크를 head 자식보다 먼저 내보내므로 "스타일시트보다 앞"은 보장되지 않지만 동기 실행이라 깜빡임은 없다(D0-10 e2e로 확인). 구현: `src/lib/theme.ts` `THEME_INIT_SCRIPT`.
 
 ```html
 <script>(function(){var d=document.documentElement,t,s;try{t=localStorage.getItem('ed-theme');s=localStorage.getItem('ed-spoiler')}catch(e){}if(t==='light'||t==='dark')d.setAttribute('data-theme',t);if(s==='on')d.setAttribute('data-spoiler','on')})();</script>
@@ -606,7 +606,8 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 
 - 저장값은 `light`·`dark`·`on`만 받아들이고 나머지는 무시한다.
 - React가 하이드레이션 전에 바뀐 속성을 경고하지 않도록 `<html suppressHydrationWarning>`을 둔다.
-- globals.css의 `@custom-variant dark`는 지금 `[data-theme="dark"]`만 잡는다. 시스템 다크(속성 없음)에서는 `dark:` 유틸리티가 켜지지 않으므로, 컴포넌트는 `dark:`를 쓰지 않고 토큰만 쓴다. `dark:`가 꼭 필요하면 D0-10에서 변형에 미디어 쿼리 조건을 더한다.
+- globals.css의 `@custom-variant dark`는 다크 토큰 블록과 같은 두 조건에서 켜진다: 사용자 다크 `[data-theme="dark"]`와 시스템 다크 `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }`(속성 없음). 이 변형은 shadcn 원본 클래스 호환용이다. 컴포넌트는 여전히 `dark:`로 색을 따로 고르지 않고 토큰만 쓴다(§2).
+- `<meta name="theme-color">`(브라우저 UI 색)는 시스템 설정 기준이라, 저장한 테마가 시스템과 다르면 재방문 때 지면 색과 어긋난다. 보정은 D0-12 할 일이다(§11.4).
 
 ---
 
@@ -801,8 +802,10 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - 그 밖의 매핑 후보: `--font-numeric`·`--font-latin` → 그대로 `font-numeric`·`font-latin`. `--shadow-print*` → `shadow-print`. 모션은 Tailwind 키가 `--transition-duration-*`·`--ease-*`라서 `--transition-duration-fast: var(--duration-fast)`, `--ease-print: var(--ease)`처럼 잇는다. `--edge`·`--gutter` 등 간격은 `--spacing-edge: var(--edge)`로 이으면 `px-edge`가 된다. 브레이크포인트는 Tailwind 기본 `lg`(64rem)·`xl`(80rem)을 그대로 쓰고 `@theme`에 선언하지 않는다(§7.1). 커스텀 `--breakpoint-desktop`은 만들지 않는다.
 - `--font-sans`는 Tailwind 기본값을 덮는다(의도한 것). 기본 sans 스택이 남지 않는지 빌드 결과로 확인한다.
 - **토큰 대조 테스트**: 이 문서의 토큰 표(§0.3 세 형식)를 파싱해 globals.css 선언과 비교한다. `var()` 참조는 풀어서 비교하고, 다크 두 블록이 같은지, 모든 컬러 토큰이 두 테마에 있는지, 대비 하한을 지키는지 함께 본다.
-- 테마 초기 스크립트(§8)는 `layout.tsx` `<head>` 맨 앞 인라인 스크립트로 넣고 `<html suppressHydrationWarning>`. `localStorage`는 try/catch(CLAUDE §7.2).
-- `@custom-variant dark` 조건은 §8 마지막 항목 참고.
+- 테마 초기 스크립트(§8)는 `layout.tsx` `<head>` 안 동기 인라인 스크립트로 넣고 `<html suppressHydrationWarning>`(D0-10 구현 완료). `localStorage`는 try/catch(CLAUDE §7.2).
+- `@custom-variant dark`는 사용자 다크 + 시스템 다크 두 조건으로 켠다(D0-10 구현 완료, §8).
+- **지운 Tailwind 기본값**: 팔레트 색, 둥근 모서리, 곡선, 반복 애니메이션, 블러 그림자 4종(상자 `--shadow-*`·안쪽 `--inset-shadow-*`·드롭 `--drop-shadow-*`·글자 `--text-shadow-*`)을 `initial`로 지운다(§5.2). 각 그림자의 `-none` 유틸리티는 남는다.
+- **클래스 병합(`cn`)**: tailwind-merge는 CSS를 읽지 않아서 등록하지 않은 커스텀 유틸리티를 잘못 분류한다(실측: `text-type-card text-ink`에서 크기가 지워지고, `px-edge px-4`는 덮어쓰지 못한다). 그래서 `src/lib/utils.ts`의 `extendTailwindMerge` 설정에 `@theme` 키를 등록한다. 색은 기본값("아무 이름이나 색")을 실제 토큰 이름 + `inherit`·`current`·`transparent`로 바꾸고, 글자 크기 `type-*`·`num-*`, 폰트, 간격, 최대 폭 `page`, 모서리, 그림자 `print*`, 곡선 `print`, 전환 시간 `fast`·`base`·`slow`는 기본값에 더한다. `tests/utils.test.ts`가 globals.css `@theme` 키 목록과 대조하므로 `@theme`에 키를 더하면 `utils.ts`에도 더한다. 색 이름 `border`·`ring`은 단독으로도 유틸리티라서, CSS를 만들지 않도록 `utils.ts`를 클래스 탐색에서 뺀다(`@source not`).
 
 ### 11.3 D0-11 (웹폰트)
 
@@ -816,6 +819,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 ### 11.4 D0-12 (기초 컴포넌트)
 
 - §9.1 탈피 규칙 + §9.2 상태표대로 구현하고, 시안 매트릭스와 375/1024/1280 × 라이트/다크 스크린샷(§0.1)을 비교한다.
+- **theme-color 재방문 어긋남**: `layout.tsx`의 `<meta name="theme-color">`는 `prefers-color-scheme` 미디어 2개(라이트 `--paper` · 다크 `--paper`)라 시스템 설정을 따른다. 사용자가 시스템과 다른 테마를 저장하고 다시 오면 브라우저 UI 색과 지면 색이 어긋난다(예: 시스템 라이트 + 저장 다크 → 주소창은 라이트 지면 색, 지면은 다크). 테마 토글을 만들 때 ① 토글하면 meta 보정 ② 재방문 첫 페인트부터 맞추려면 초기 스크립트에서도 보정할지를 정한다. 초기 스크립트는 §8 원문 = `src/lib/theme.ts` `THEME_INIT_SCRIPT`(`tests/theme.test.ts`가 글자 하나까지 대조하고 vm으로 실행 검사)라서, 바꾸면 §8 원문·`theme.ts`(같은 로직의 순수 함수 포함)·테스트를 함께 고친다.
 - 토스트 라이브러리(sonner 등)나 아이콘 라이브러리는 새 런타임 의존성이다. 번들 영향(초기 JS 160KB 중 여유 약 22KB)을 확인한 뒤 사용자에게 묻는다(CLAUDE §2). 혼합안 토스트·필터·테마 토글은 인라인 JS gzip 약 4.0KB로 동작했다.
 - 컴포넌트 보조 크기(§3.4)는 컴포넌트 안에서만 쓴다. 두 컴포넌트가 같은 역할로 쓰게 되면 §3.3 토큰으로 올린다.
 - **반응형은 `lg:`·`xl:` 변형으로만** 쓴다(§7.1). 예: 홈 그리드 `lg:grid lg:grid-cols-[var(--col-contents)_minmax(0,1fr)] xl:grid-cols-[var(--col-contents)_minmax(0,1fr)_var(--col-facing)]`, 목차 `hidden lg:block lg:sticky lg:top-4`, 마주 보는 면 `hidden xl:block`, 지면 안 위젯 `xl:hidden`, 분류 칩 줄 `lg:hidden`, 하단 탭 `lg:hidden`, 상단 내비 `hidden lg:flex`, 머리기사 크기 `lg:` 쪽. `md:`·`sm:`·`2xl:`·`max-*:` 변형과 임의 미디어 쿼리(`min-[…]:`)는 쓰지 않는다.
@@ -830,3 +834,4 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 |---|---|---|
 | 2026-10-12 | 최초 작성(D0-09). `concept-mix.html` 토큰·컴포넌트 값 추출, globals.css 예약 이름으로 매핑(`--competition-*-foreground` 6개 분리, shadcn 변수 18개 매핑), 대비 요약, DR-01 차이 기록 | PRD DR-04·DR-12, D29·D30, DECISIONS D0 |
 | 2026-10-12 | 브레이크포인트 3구간 반영(D31): 1023 이하 1단 · 1024~1279 `lg` 2단(목차 + 지면, 우측 위젯 자리는 지면 안 1단 순서) · 1280 이상 `xl` 3단, `--breakpoint-desktop` 삭제 · Tailwind `lg`/`xl` 사용. 첫 로드 진입 모션 없음(찍힘 = 필터 결과 진입). 혼합안 수정(2단·3단 규칙 분리, M1 축소 견본 넘침 수정, 3구간 축소 견본·브레이크포인트 견본, 한글 줄 길이 46em 전 폭), 기준 스크린샷에 1024 첫 화면 2장 추가. 토큰 값 변경 없음 | PRD DR-01·DR-08, D31 |
+| 2026-10-12 | D0-10 구현에 맞춰 문구 갱신: §8 `dark:` 변형(사용자 다크 + 시스템 다크), §11.2 지운 기본값(블러 그림자 4종)·`cn` 병합 설정(`extendTailwindMerge`), §8·§11.4 theme-color 재방문 어긋남을 D0-12 할 일로. 토큰 값 변경 없음 | PRD DR-02, D0-10 |
