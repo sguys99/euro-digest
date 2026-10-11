@@ -169,11 +169,11 @@
 - [x] M0-36 테스트용 브리핑 LLM mock 응답(정상 · 스키마 위반 · 입력에 없는 숫자 포함 사례) → `fixtures/llm/` (D24) + 🆕 M0-30·M0-34 브리핑 정형 입력(A~F, scratchpad에만 있음 — 그날 순위 등은 재수집 불가)을 `fixtures/llm/`에 보관(M1-24 골든셋 씨앗) — 2026-10-11 완료(LLM 호출 0): 브리핑 mock **31개**(`mock/by-id/brief-*` — 실제 출력 18건: M0-30 17건 전부 + M0-34 1건 / 합성 13건: 스키마 위반 5·스코어 3·근거 id·max_tokens·refusal·errored 2) + 기대 판정 표 `fixtures/llm/brief-cases.json`(FR-29 단계별 기대값, 미정 판정은 note) + 정형 입력 6일치·임시 프롬프트 2종·임시 고유명사 사전(130개, 확정 아님)을 `fixtures/llm/brief-inputs/`에 보관. 가드 테스트 `tests/fixtures-llm-brief.test.ts`(llm.ts `callSingle` mock 통합 포함)
 
 ### ✅ M0 완료 기준
-- [ ] 빈 사이트가 Pages에 배포되고 basePath·404 정상
-- [ ] CI green (`check` · `build` · `check:bundle` · `test:e2e`), main push 시 `deploy.yml` 배포 확인
-- [ ] `sources.json`의 모든 소스에 `terms_checked`·`robots_checked` 값이 채워짐
-- [ ] API-Football 분기(B1)·캐싱 여부(B3)·데이터 API의 LLM 입력 허용 여부(B7, D24) 결정이 기록됨
-- [ ] 실측 단가로 PRD §9.3 가정을 확인 (차이가 크면 사용자에게 보고)
+- [x] 빈 사이트가 Pages에 배포되고 basePath·404 정상 — 2026-10-11 `npm run verify:deploy` 15개 항목 통과(홈·자산·404 본문 홈 링크·슬래시 301)
+- [x] CI green (`check` · `build` · `check:bundle` · `test:e2e`), main push 시 `deploy.yml` 배포 확인 — 2026-10-11 M0-32~36 push 모두 CI 성공·배포
+- [x] `sources.json`의 모든 소스에 `terms_checked`·`robots_checked` 값이 채워짐 — 26개 전부(수집 14)
+- [x] API-Football 분기(B1)·캐싱 여부(B3)·데이터 API의 LLM 입력 허용 여부(B7, D24) 결정이 기록됨 — B1 일부 발동(D27)·B3 미발동(D28)·B7 미발동(M0-28·M0-29)
+- [x] 실측 단가로 PRD §9.3 가정을 확인 (차이가 크면 사용자에게 보고) — M0-21 단가·M0-30 실측·M0-34 실측(바쁜 날 $0.0023)으로 갱신, 월 약 $0.05~0.09(상한 $3의 3% 안팎) — 큰 차이 없음
 - [ ] §3 사용자 준비 작업 완료
 
 ---
