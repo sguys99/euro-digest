@@ -199,4 +199,4 @@ npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린�
 - ~~API-Football 무료 플랜의 2026-27 시즌 조회 가능 여부~~ → M0-29 완료: 시즌 단위 불가·경기 단위 가능(plan §14 B1 일부 발동) → 경기 단건 조회 + 시즌 누적 자체 집계(PRD §15 D27). 경기 기록 저장 스키마는 M1 착수 때 사용자 확인(plan M1-48)
 - ~~각 RSS·기자 채널·크롤링 대상의 약관·robots.txt, Google News RSS 이용 조건~~ → M0-23~26 완료(`docs/research/m0-validation.md`, PRD §15 D22~D25). GDELT는 M0-27 판정(약관 허용·현재 비활성, M1-46 재측정)
 - ~~football-data.org·API-Football 약관의 LLM 입력·재가공(한국어 브리핑) 허용 여부~~ → M0-28·M0-29 완료: 두 API 모두 조건부 허용, B7 미발동(football-data 출처 문구 필수 — PRD FR-45, D27)
-- 서비스명 상표·저장소명 확인, 연락용 이메일 개설, 2026-27 시즌 5대 리그 한국 선수 명단
+- ~~서비스명 상표·저장소명 확인, 연락용 이메일 개설, 2026-27 시즌 5대 리그 한국 선수 명단~~ → M0-31 KIPRIS 충돌 없음(B6 미발동) · U-07 `sguys99@gmail.com` · M0-32 초안 9명을 `configs/korean-players.json`에 등록(확정은 M3-01)

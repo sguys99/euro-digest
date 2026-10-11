@@ -15,6 +15,7 @@
       "q": "이강인",
       "lang": "ko",
       "purpose": "korean",
+      "player": "lee-kang-in",
       "enabled": false
     },
     {
@@ -23,6 +24,7 @@
       "q": "\"Lee Kang-in\"",
       "lang": "en",
       "purpose": "korean",
+      "player": "lee-kang-in",
       "enabled": false
     },
     {
@@ -31,6 +33,7 @@
       "q": "\"Kim Min-jae\"",
       "lang": "en",
       "purpose": "korean",
+      "player": "kim-min-jae",
       "enabled": false
     },
     {

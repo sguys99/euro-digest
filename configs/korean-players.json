@@ -1,0 +1,101 @@
+[
+  {
+    "slug": "kim-ji-soo",
+    "nameKo": "김지수",
+    "nameEn": "Ji-soo Kim",
+    "team": "brentford",
+    "comp": "EPL",
+    "position": "DF",
+    "birthYear": 2004,
+    "apiFootballId": null,
+    "active": true
+  },
+  {
+    "slug": "lee-kang-in",
+    "nameKo": "이강인",
+    "nameEn": "Kang-in Lee",
+    "team": "atletico-de-madrid",
+    "comp": "LALIGA",
+    "position": "MF",
+    "birthYear": 2001,
+    "apiFootballId": 927,
+    "active": true
+  },
+  {
+    "slug": "kim-min-jae",
+    "nameKo": "김민재",
+    "nameEn": "Min-jae Kim",
+    "team": "bayern-munchen",
+    "comp": "BUNDESLIGA",
+    "position": "DF",
+    "birthYear": 1996,
+    "apiFootballId": 2897,
+    "active": true
+  },
+  {
+    "slug": "jeong-woo-yeong",
+    "nameKo": "정우영",
+    "nameEn": "Woo-yeong Jeong",
+    "team": "union-berlin",
+    "comp": "BUNDESLIGA",
+    "position": "MF",
+    "birthYear": 1999,
+    "apiFootballId": 512,
+    "active": true
+  },
+  {
+    "slug": "lee-jae-sung",
+    "nameKo": "이재성",
+    "nameEn": "Jae-sung Lee",
+    "team": "mainz-05",
+    "comp": "BUNDESLIGA",
+    "position": "MF",
+    "birthYear": 1992,
+    "apiFootballId": 2906,
+    "active": true
+  },
+  {
+    "slug": "jens-castrop",
+    "nameKo": "옌스 카스트로프",
+    "nameEn": "Jens Castrop",
+    "team": "borussia-monchengladbach",
+    "comp": "BUNDESLIGA",
+    "position": "MF",
+    "birthYear": 2003,
+    "apiFootballId": 280358,
+    "active": true
+  },
+  {
+    "slug": "seol-young-woo",
+    "nameKo": "설영우",
+    "nameEn": "Young-woo Seol",
+    "team": "augsburg",
+    "comp": "BUNDESLIGA",
+    "position": "DF",
+    "birthYear": 1998,
+    "apiFootballId": 197985,
+    "active": true
+  },
+  {
+    "slug": "hwang-hee-chan",
+    "nameKo": "황희찬",
+    "nameEn": "Hee-chan Hwang",
+    "team": "schalke-04",
+    "comp": "BUNDESLIGA",
+    "position": "FW",
+    "birthYear": 1996,
+    "apiFootballId": 24888,
+    "active": true
+  },
+  {
+    "slug": "hong-hyun-seok",
+    "nameKo": "홍현석",
+    "nameEn": "Hyun-seok Hong",
+    "team": "midtjylland",
+    "comp": "OTHER",
+    "position": "MF",
+    "birthYear": 1999,
+    "apiFootballId": null,
+    "active": false
+  }
+]

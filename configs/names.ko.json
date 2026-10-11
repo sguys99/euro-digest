@@ -1,0 +1,142 @@
+{
+  "entries": [
+    {
+      "ko": "김지수",
+      "en": ["Ji-soo Kim", "Kim Ji-soo"],
+      "kind": "player",
+      "slug": "kim-ji-soo",
+      "note": "확실 — KFA 2026-09-15 아시안게임 기사 '김지수(브렌트포드FC·잉글랜드)' https://www.kfa.or.kr/live/live.php?act=news_tv_detail&idx=28286&div_code=news · 영문: brentfordfc.com 'Ji-soo Kim', premierleague.com 'Kim Ji-Soo'"
+    },
+    {
+      "ko": "이강인",
+      "en": ["Kang-in Lee", "Lee Kang-in", "Kangin Lee"],
+      "kind": "player",
+      "slug": "lee-kang-in",
+      "note": "확실 — KFA 2026-09-14 소집 명단(idx 28281) · 영문: laliga.com·psg.fr 'Kang-In Lee', bundesliga.com 'Kangin Lee', API-Football 'Lee Kang-In'"
+    },
+    {
+      "ko": "김민재",
+      "en": ["Min-jae Kim", "Kim Min-jae", "Minjae Kim"],
+      "kind": "player",
+      "slug": "kim-min-jae",
+      "note": "확실 — KFA 2026-09-14 소집 명단 https://www.kfa.or.kr/live/live.php?act=news_tv_detail&idx=28281&div_code=news · 영문: bundesliga.com 'Minjae Kim', API-Football 'Kim Min-Jae'"
+    },
+    {
+      "ko": "정우영",
+      "en": ["Woo-yeong Jeong", "Jeong Woo-yeong"],
+      "kind": "player",
+      "slug": "jeong-woo-yeong",
+      "note": "확실(본명) — KFA 원문 표기는 이번에 미확인, 동명이인(1989년생 정우영) 주의 · 영문: bundesliga.com 'Woo-yeong Jeong' https://www.bundesliga.com/en/player/woo-yeong-jeong, API-Football 'Woo-Yeong Jeong'"
+    },
+    {
+      "ko": "이재성",
+      "en": ["Jae-sung Lee", "Lee Jae-sung", "Jaesung Lee"],
+      "kind": "player",
+      "slug": "lee-jae-sung",
+      "note": "확실 — KFA 2026-09-14 소집 명단(idx 28281) · 영문: bundesliga.com 'Jaesung Lee', API-Football 'Lee Jae-Sung'"
+    },
+    {
+      "ko": "옌스 카스트로프",
+      "en": ["Jens Castrop", "J. Castrop"],
+      "kind": "player",
+      "slug": "jens-castrop",
+      "note": "확실 — KFA 2026-03-17 소집 명단 https://www.kfa.or.kr/live/live.php?act=news_tv_detail&idx=27813&div_code=news · FIFA 한국어 월드컵 명단 기사 · 영문: bundesliga.com 'Jens Castrop', API-Football 'J. Castrop'"
+    },
+    {
+      "ko": "설영우",
+      "en": ["Young-woo Seol", "Seol Young-woo", "Youngwoo Seol"],
+      "kind": "player",
+      "slug": "seol-young-woo",
+      "note": "확실 — KFA 2026-09-14 소집 명단(idx 28281) · 영문: bundesliga.com 'Youngwoo Seol', API-Football 'Seol Young-Woo'"
+    },
+    {
+      "ko": "황희찬",
+      "en": ["Hee-chan Hwang", "Hwang Hee-chan", "Hee Chan Hwang"],
+      "kind": "player",
+      "slug": "hwang-hee-chan",
+      "note": "확실 — KFA 2026-09-14 소집 명단(idx 28281) · 영문: schalke04.de 'Hwang Hee-chan', bundesliga.com·wolves.co.uk 'Hee Chan Hwang', API-Football 'Hwang Hee-Chan'"
+    },
+    {
+      "ko": "홍현석",
+      "en": ["Hyun-seok Hong", "Hong Hyun-seok"],
+      "kind": "player",
+      "slug": "hong-hyun-seok",
+      "note": "확실 — KFA 2026-03-17 소집 명단 '홍현석(KAA 헨트)'(idx 27813) · 영문: fcm.dk 'Hyun-seok Hong' https://www.fcm.dk/truppen/hyun-seok-hong/"
+    },
+    {
+      "ko": "브렌트포드",
+      "en": ["Brentford FC", "Brentford"],
+      "kind": "team",
+      "slug": "brentford",
+      "note": "확실 — KFA 2026-09-15 '브렌트포드FC'(idx 28286) · 영문: football-data 'Brentford FC', API-Football 'Brentford'"
+    },
+    {
+      "ko": "아틀레티코 마드리드",
+      "en": [
+        "Club Atlético de Madrid",
+        "Atletico Madrid",
+        "Atlético de Madrid",
+        "Atlético Madrid",
+        "Atleti"
+      ],
+      "kind": "team",
+      "slug": "atletico-de-madrid",
+      "note": "확실 — KFA 2026-09-14 '아틀레티코 마드리드'(idx 28281) · 영문: football-data 'Club Atlético de Madrid'·short 'Atleti', API-Football 'Atletico Madrid', laliga.com 'Atlético de Madrid'"
+    },
+    {
+      "ko": "바이에른 뮌헨",
+      "en": ["FC Bayern München", "Bayern München", "Bayern Munich"],
+      "kind": "team",
+      "slug": "bayern-munchen",
+      "note": "확실 — KFA 2026-03-17 '바이에른 뮌헨'(2026-09-14 기사는 붙여 씀 '바이에른뮌헨') · 영문: football-data 'FC Bayern München', API-Football 'Bayern München', bundesliga.com 'Bayern Munich'"
+    },
+    {
+      "ko": "우니온 베를린",
+      "en": ["1. FC Union Berlin", "Union Berlin"],
+      "kind": "team",
+      "slug": "union-berlin",
+      "note": "관용 — KFA·구단 한국어 표기 출처 이번에 미확인('우니온'/'유니온' 혼용 가능) · 영문: football-data '1. FC Union Berlin', API-Football 'Union Berlin'"
+    },
+    {
+      "ko": "마인츠",
+      "en": ["1. FSV Mainz 05", "FSV Mainz 05", "Mainz 05", "Mainz"],
+      "kind": "team",
+      "slug": "mainz-05",
+      "note": "확실 — KFA 2026-09-14 '마인츠'(idx 28281) · 영문: football-data '1. FSV Mainz 05'·short 'Mainz', API-Football 'FSV Mainz 05'"
+    },
+    {
+      "ko": "묀헨글라트바흐",
+      "en": [
+        "Borussia Mönchengladbach",
+        "M'gladbach",
+        "Borussia Monchengladbach",
+        "Gladbach"
+      ],
+      "kind": "team",
+      "slug": "borussia-monchengladbach",
+      "note": "확실 — KFA 2026-03-17 '묀헨글라트바흐'(idx 27813), FIFA 한국어 기사는 '보루시아 묀헨글라트바흐' · 영문: football-data 'Borussia Mönchengladbach'·short \"M'gladbach\", API-Football 같은 이름"
+    },
+    {
+      "ko": "아우크스부르크",
+      "en": ["FC Augsburg", "Augsburg"],
+      "kind": "team",
+      "slug": "augsburg",
+      "note": "확실 — KFA 2026-09-14 '아우크스부르크'(idx 28281) · 영문: football-data·API-Football 'FC Augsburg'"
+    },
+    {
+      "ko": "샬케04",
+      "en": ["FC Schalke 04", "Schalke 04", "Schalke"],
+      "kind": "team",
+      "slug": "schalke-04",
+      "note": "확실 — KFA 2026-09-14 '샬케04'(idx 28281, 붙여 씀 — 띄어 쓸지는 사용자 결정) · 영문: football-data·API-Football 'FC Schalke 04'"
+    },
+    {
+      "ko": "미트윌란",
+      "en": ["FC Midtjylland", "Midtjylland"],
+      "kind": "team",
+      "slug": "midtjylland",
+      "note": "확실 — KFA 2026-09-14 '조규성(미트윌란, 덴마크)'(idx 28281) · 영문: fcm.dk 'FC Midtjylland'"
+    }
+  ],
+  "ignore": []
+}
