@@ -56,8 +56,8 @@
 
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
-**현재 위치**: D0 전체 디자인 콘셉트 진행 중 — D0-01 범위 확정 완료(2026-10-11)
-**다음 작업**: `D0-02` 시안 방향 키워드·조합 확정
+**현재 위치**: D0 전체 디자인 콘셉트 진행 중 — D0-01·D0-02 완료(2026-10-11)
+**다음 작업**: `D0-03` 시안 3개 제작 (A Broadsheet · B Cover · C Programme — D29)
 
 ---
 
@@ -188,7 +188,7 @@
   - 상태 화면 기본형: 스켈레톤 · 빈 상태 · 오류 · 오프라인 (텍스트·도형 기반, 일러스트는 D3) 🆕
   - 뉴스 카드 변형 6종 (D23): **기본 = 원제목 카드**(영문·이탈리아어·스페인어 원제목 그대로 + 한국어 태그) / 다출처 클러스터(+N곳) / 이적(단계 + Tier 배지) / 한국 선수 관련 / 경기 결과(결과 가리기 켠 상태) / 한국어 보도 카드(국내 매체 RSS 원제목 — M0-25 판정, Google News는 사용 불가 M0-26). 강등 카드는 기본 카드와 같아져 한국어 보도 카드로 대체
   - 브랜드: 워드마크(텍스트 로고), 컬러·타이포 토큰, 대회 컬러 6종 시범 적용
-- [ ] D0-02 ❓ U-10 응답이 있으면 반영할 키워드 확인 (없으면 생략)
+- [x] D0-02 ❓ U-10 응답이 있으면 반영할 키워드 확인 (없으면 생략) — 2026-10-11 완료: `docs/design/d0/directions.md`(방향 후보 5개 A Broadsheet·M Cover·B Floodlight·C Matchsheet·P Programme(새 제안), 10쌍 축 매트릭스, 폰트 서브셋 실측 — SUIT·IBM Plex Sans KR·나눔명조는 악센트 글자 없음, Noto Serif KR 등 tnum 없음 → 제외). 사용자 확정(PRD §15 D29): **A Broadsheet + M Cover + P Programme**, 한글 웹폰트 KS X 1001 단일 서브셋·굵기 ≤ 2, 마스트헤드 날짜 기반 "제 N호"(§14.1), 대회 컬러 강도는 시안 재량(카드 배경 전체 칠하기·약칭 없는 색 표식 금지)
 
 ### D0-B 시안 제작 (`/design-concepts d0`, `design-concepts` 에이전트)
 - [ ] D0-03 시안 2~3개: `docs/design/d0/concept-{a,b,c}.html` — 외부 의존 없는 단일 HTML, `fixtures/news-sample.json`(원제목 카드)·`fixtures/brief-sample.json`(데이터 브리핑) 실데이터 사용 (M0-34)
@@ -877,3 +877,4 @@ const UnknownNamesFile = z.object({ updatedAt: Iso, names: z.record(NameText, Un
 | 2026-10-11 | M0 완료: U-06·M0-15(cron-job.org)를 M1-40 선행으로, U-08(GoatCounter)을 M5-04 선행으로 이월 · M0-33~36 발견 사항을 M1-02(The Athletic 보관 조항 ❓)·M1-17·M1-20(스코어 표기 순서)·M1-21·M1-23(승패 동사·스코어 순서·미정 판정 ❓)·M1-45(요청 타임아웃·연결 오류 retryable 힌트·max_tokens/refusal ❓·실행 기록 순서)·M1-48(보강 호출 3회·`apiFootballId` null 알림)에 반영 | 사용자 결정(이월) · M0-32~36 서브에이전트 보고 |
 | 2026-10-11 | U-06·M0-15 완료(cron-job.org Test run → workflow_dispatch run 38133463178 확인, 19:51 KST) — M1-40 선행 이월 해제. U-08만 M5-04 전 이월 유지 · PAT 만료일 없음 → U-06·§16 월간 점검을 "만료일 확인"에서 "유효 여부 확인"으로 | 사용자 확인 · 사용자 결정(PAT 만료 없음) |
 | 2026-10-11 | U-08 완료(GoatCounter `euro-digest`) — M5-04 선행 이월 해제, §3 사용자 준비 작업 전부 완료 → M0 완료 기준 6개 모두 충족 | 사용자 확인 |
+| 2026-10-11 | D0 시안 방향·폰트·마스트헤드(PRD §15 D29): 시안 조합 A Broadsheet + M Cover + P Programme, 한글 웹폰트 KS X 1001 단일 서브셋·굵기 ≤ 2, 날짜 기반 "제 N호" 마스트헤드(PRD §14.1), 대회 컬러 강도 시안 재량. D0-01 범위(`docs/design/d0/scope.md`)·D0-02 방향(`directions.md`) 기록 | 사용자 결정 |
