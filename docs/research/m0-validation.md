@@ -29,7 +29,7 @@
 - [M0-29 API-Football](#m0-29-api-football) ⏳ 조사 완료 — 사용자 확인 대기. 무료 플랜 2026-27 **일부 가능**(시즌 단위 막힘·경기 단위 가능 → B1 부분 발동), 경기별 득점자·라인업·선수 기록 무료, 약관 조건부 허용·B7 미발동, `configs/competitions.json` 저장소 기록(validate 통과)
 - [M0-30 Anthropic 실측](#m0-30-anthropic-실측) ⏳ 실측 완료 — 사용자 확인 대기. Haiku 5.5 단가는 M0-21 표와 같음, 요청 17건 $0.007474(`runs-dev.json` 3건), 배치 완료 1분 50초~6분 33초(겨울 실제 여유 4~5분을 넘는 표본 1개), 캐시 동작(B3 미발동), thinking 기본값이 사실성 최고(45/45줄)
 - [M0-31 서비스명·저장소명](#m0-31-서비스명저장소명) ⏳ 예비 조사 완료 — 사용자 KIPRIS 확인 대기(🙋 U-09). KIPRIS 자동 검색 불가(API 키 없음·웹 robots `Disallow: /`), 웹·도메인·GitHub 검색에서 같은 이름의 서비스·매체·상표 기록 0건 → 예비 판정 **충돌 가능성 낮음(잠정)**, 저장소명 문제없음. B6 대비 변경 범위·대안 이름 3개 정리
-- [M0-32 2026-27 한국 선수 명단 초안](#m0-32-2026-27-한국-선수-명단-초안)
+- [M0-32 2026-27 한국 선수 명단 초안](#m0-32-2026-27-한국-선수-명단-초안) ✅ 완료 — 사용자 결정(2026-10-11) 반영, `configs/korean-players.json`(9명 — 5대 리그 8: 분데스리가 6·라리가 1·EPL 1 + OTHER 1) · `configs/names.ko.json`(신규 — 선수 9·팀 9) 등록, `search-queries.json` 선수 쿼리 3개 `player` 연결(계속 비활성), `npm run validate` 통과. `apiFootballId` 7명 확인(김지수 null — 라인업 첫 등장 때 채움)
 
 ---
 
@@ -2029,4 +2029,150 @@ GitHub(`gh search repos euro-digest`): 같은 이름은 이 저장소뿐이고, 
 **후속 반영 대상**(오케스트레이터 — 이 작업에서는 고치지 않았다): plan §3 U-09·§4 M0-31 체크, §14 B6 상태, PRD 결정 사항 섹션 마지막 항목("남은 것은 상표·저장소명(M0-31)…") 갱신, basic_plan §0 "확정 전 확인" ①② 결과. B6가 발동하면 위 5의 "바꾼다면 순서"대로 진행한다.
 
 ## M0-32 2026-27 한국 선수 명단 초안
-(미착수)
+
+> 상태: **✅ 완료 — 사용자 결정(2026-10-11) 반영.** 아래 "사용자 결정 (2026-10-11)"대로 `configs/korean-players.json`·`configs/names.ko.json`에 등록했다(조사 당시 문구는 기록용으로 그대로 둔다). 2026-27 시즌 5대 리그 1군 한국 국적 선수는 **8명**이다(분데스리가 6 · 라리가 1 · EPL 1 · 세리에A 0 · 리그1 0). 8명 모두 리그·구단 공식 페이지로 소속을 확인했다. `apiFootballId`는 **7명 확인, 김지수 1명 미확인(null)**이다. 2025-26에 5대 리그에서 뛰다 빠진 선수는 **홍현석 1명**이다(`comp: "OTHER"` 후보). 제안 파일 2개는 scratchpad에만 두었고 스키마 검증을 통과했다. **`configs/`에는 쓰지 않았다.** 결정할 것은 아래 "사용자 확인 질문" 4개다(특히 1번, configs 등록 시점).
+
+조사일: 2026-10-10 17:11~18:05 UTC(2026-10-11 02:11~03:05 KST). 기준은 "2026-27 시즌 1군 스쿼드에 오른 한국 국적 선수"(FR-60)다. 요청 범위는 다음과 같다. WebSearch 16회(금지 사이트 도메인을 차단 목록에 넣고 검색), 직접 HTTP 요청 약 180건(robots.txt·사이트맵·선수/스쿼드 페이지·구단 공식 발표, User-Agent는 문서 머리말의 `EuroDigestBot/0.1`, 같은 호스트 간격 2.5초 이상), 헤드리스 렌더 약 65페이지(같은 UA, 3초 간격, 이미지·폰트 차단 — ligue1.com·premierleague.com·fifa.com처럼 클라이언트 렌더링하는 공식 사이트만), API-Football 8건(아래). **금지 사이트(Transfermarkt·FBref·WhoScored·SofaScore·FotMob·네이버·다음·X) 접근 0건, 위키백과 본문 요청 0건**(검색 결과 요약으로만 보았고 근거로 쓰지 않음), LLM 호출 0건(비용 0). robots.txt 예외는 2건이다. laliga.com은 `Crawl-delay: 30`이라 30초 간격을 지켰다. taegukwarriors.com(2차 출처, 근거 미사용)은 `Crawl-delay: 10`인데 robots.txt 요청 2.5초 뒤 본문 1건을 요청해 **1회 지키지 못했다.** 원본은 scratchpad `m0-32/`(`web/` 페이지 원문·렌더 텍스트, `raw/` API 응답, `log.jsonl`, `scripts/`)에 있다.
+
+### 사용자 결정 (2026-10-11)
+
+| # | 항목 | 결정 | 반영 |
+|---|---|---|---|
+| 1 | configs 등록 시점 (M1-48 ⑤) | **(A) 지금 등록.** M1-48이 첫날부터 소속팀의 다른 대회 경기 기록을 쌓게 한다(백필 불가 — D27). M3-01은 확정·검토만 한다 | `configs/korean-players.json`·`configs/names.ko.json` 신규 |
+| 2 | OTHER 후보 | **(A) 홍현석 포함 — `comp:"OTHER"`, `active:false`.** 기록은 수집하지 않고 목록에 "기타 리그"로만 둔다(FR-64), 이적 감지(FR-63) 대상 | `korean-players.json` 9번째 항목 |
+| 3 | 표기·분류 기준 | **포지션 = 소속 리그 공식 표기**(카스트로프 MF·황희찬 FW) · **`nameEn` = 서양식 순서 + 하이픈 이름**("Min-jae Kim" 형식, 출처별 변형은 names.ko `en[]`) · **팀 slug = football-data 팀 이름 기반 kebab 규칙**(위 "팀 slug 제안 규칙" — 지금 적용, M2-04에서 확정) · **팀 한글 = KFA 표기**("샬케04"·"묀헨글라트바흐"·"브렌트포드") | 두 파일 전체 |
+| 4 | 김지수 `apiFootballId` | **(A) null로 등록.** 브렌트포드 경기 라인업에 처음 나올 때 사람이 id를 확인해 채운다 | `kim-ji-soo.apiFootballId: null` |
+
+**등록 결과** (`npm run validate` 통과 — configs 7개·교차 참조 3건 오류 0)
+- `configs/korean-players.json` — 9명, 대회 순서(EPL → LALIGA → BUNDESLIGA → OTHER) 정렬: `kim-ji-soo`(EPL, `brentford`, id null) · `lee-kang-in`(LALIGA, `atletico-de-madrid`, 927) · `kim-min-jae`(`bayern-munchen`, 2897) · `jeong-woo-yeong`(`union-berlin`, 512) · `lee-jae-sung`(`mainz-05`, 2906) · `jens-castrop`(`borussia-monchengladbach`, 280358) · `seol-young-woo`(`augsburg`, 197985) · `hwang-hee-chan`(`schalke-04`, 24888) — 이상 BUNDESLIGA · `hong-hyun-seok`(OTHER, `midtjylland`, null, `active:false`). 값은 위 "선수 표"·"OTHER 후보"와 같다.
+- `configs/names.ko.json` — **신규**, 선수 9 + 팀 9 = 18항목(`ignore: []`). 각 항목 `note`에 확신도(확실/관용)와 근거 URL. 성만 있는 짧은 형태(예: "Kim")는 넣지 않았다(`/add-player` 4단계). "관용" 표기는 `우니온 베를린` 1건(KFA 출처 미확인 — M3-01·`/add-name`에서 확정).
+- `configs/search-queries.json` — 보류 중이던 선수 쿼리 3개에 `player` 연결: `gd-ko-lee-kang-in`·`gd-en-lee-kang-in` → `lee-kang-in`, `gd-en-kim-min-jae` → `kim-min-jae`. **`enabled:false` 그대로**(M0-27 결정 — M1 관찰 기간 재측정 후 재결정). 다른 선수의 한/영 쿼리는 추가하지 않았다(검색 소스가 비활성이라 지금 만들어도 쓰이지 않음 — M1 재결정 때 함께).
+- 남은 후속: M1-48에 "소속팀 경기 라인업에 `apiFootballId`가 null인 등록 선수가 있으면 운영 리포트 알림"(제안, 미구현) · M3-01 체크 항목(아래 "M1-48 · M3-01 연결") · 팀 컬러(`team-colors.json`)는 M2-05 범위라 이번에 만들지 않았다.
+
+### 요약 (먼저 읽기)
+1. **8명 확정 후보** — 김민재(바이에른 뮌헨)·정우영(우니온 베를린)·이재성(마인츠)·옌스 카스트로프(묀헨글라트바흐)·설영우(아우크스부르크)·황희찬(샬케04, 울버햄튼에서 임대)·이강인(아틀레티코 마드리드)·김지수(브렌트포드). 2025-26과 비교해 **이적·변동은 3건**이다. 이강인은 PSG에서 아틀레티코로 완전 이적했다(리그1 → 라리가). 황희찬은 울버햄튼 강등 후 샬케로 임대됐다(EPL → 분데스리가). 설영우는 츠르베나 즈베즈다에서 아우크스부르크로 이적해 새로 들어왔다. 김지수는 카이저슬라우테른 임대를 마치고 브렌트포드 1군으로 복귀했다.
+2. **리그별 전수 확인**: 이번에는 이름을 아는 선수만 찾지 않고 리그 공식 사이트의 2026-27 스쿼드를 리그별로 훑었다.
+   - EPL: premierleague.com 20개 구단 스쿼드 페이지에서 국적 "South Korea"는 1명(김지수)이었다.
+   - 리그1: ligue1.com 18개 구단 스쿼드 국적 코드에서 0명이었다(리그2 18개 구단도 0명).
+   - 세리에A: legaseriea.it 19개 구단 스쿼드 국적 코드에서 KOR은 0명이었다. 라치오 페이지는 오류라 확인하지 못했다.
+   - 분데스리가: bundesliga.com 선수 사이트맵 3,980명을 한국식 이름 패턴으로 거른 뒤 선수 페이지의 국적 KOR과 2026/2027 기록으로 6명을 확인했다.
+   - 라리가: laliga.com 선수 사이트맵(en-GB 1,935명)을 이름 패턴으로 거른 결과 현역 스쿼드는 1명이다.
+
+   한계도 있다. 분데스리가·라리가는 **이름 패턴**으로 1차 필터를 했으므로 비한국식 이름의 한국 국적 선수는 놓칠 수 있다. EPL·리그1·세리에A는 국적 필드로 직접 확인했다.
+3. **EPL은 김지수 1명뿐이고, 1군 출전 여부는 확인하지 못했다.** 김지수는 브렌트포드 1군 페이지(#36, 임대 목록 아님)와 premierleague.com 스쿼드에 있지만, 2026-27 리그 출전 기록은 이번에 확인하지 않았다(9월에는 아시안게임 대표로 차출됨 — KFA 2026-09-15). 국내 보도도 "프리미어리그 한국 선수 21년 만에 사실상 0명"이라고 했다(파이낸셜뉴스 영문판 2026-09-03 — 등록 선수는 박승수(U21)와 김지수 2명이라고 적음).
+4. **API-Football id**: 이번에 `/players/squads` 6건으로 이재성 2906·카스트로프 280358·설영우 197985·황희찬 24888·이강인 927을 얻었다. 김민재 2897·정우영 512는 M0-29에서 확인한 값이다. **김지수는 브렌트포드(55)·카이저슬라우테른(745) 스쿼드 응답 어디에도 없어 null로 두었다.** 추측하지 않았다.
+5. **표기**: 한글 이름은 KFA 공식 발표 기사로 확인했다(정우영만 이번에 KFA 원문을 찾지 못함 — 아래 미확인). 영문(`nameEn`)은 출처마다 순서·하이픈이 달라("Minjae Kim"·"Kim Min-Jae"·"Hee Chan Hwang"·"Hwang Hee-chan") **서양식 순서 + 하이픈 이름("Min-jae Kim")으로 통일하는 안**을 제안한다. 출처별 변형은 모두 names.ko `en[]`에 넣었다.
+
+### 선수 표 (2026-27, 확인 2026-10-10 UTC)
+
+| # | 한글 | `nameEn`(제안) | `slug` | 소속(`team` 제안) | `comp` | 포지션 | 출생 | `apiFootballId` | 소속 근거(1차) | 출처 유형 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 김민재 | Min-jae Kim | `kim-min-jae` | FC Bayern München (`bayern-munchen`) | BUNDESLIGA | DF | 1996 (11-15) | **2897** — M0-29(squads team=157, 경력 2026 Bayern) | bundesliga.com 선수 페이지(수비수 #3, 2026/27 3경기) · KFA 2026-09-14 명단 | 리그 공식 · KFA |
+| 2 | 정우영 | Woo-yeong Jeong | `jeong-woo-yeong` | 1. FC Union Berlin (`union-berlin`) | BUNDESLIGA | MF | 1999 (09-20) | **512** — M0-29(2026-09-18 경기 라인업 선발) | bundesliga.com(미드필더 #11, 2026/27 4경기) | 리그 공식 |
+| 3 | 이재성 | Jae-sung Lee | `lee-jae-sung` | 1. FSV Mainz 05 (`mainz-05`) | BUNDESLIGA | MF | 1992 (08-10) | **2906** — squads team=164 "Lee Jae-Sung" #7 | bundesliga.com(미드필더 #7, 4경기) · KFA 2026-09-14 | 리그 공식 · KFA |
+| 4 | 옌스 카스트로프 | Jens Castrop | `jens-castrop` | Borussia Mönchengladbach (`borussia-monchengladbach`) | BUNDESLIGA | MF ※1 | 2003 (07-29) | **280358** — squads team=163 "J. Castrop" #17 | bundesliga.com(국적 KOR·DEU, 미드필더 #17, 2026/27 0경기) · KFA 2026-03-17 | 리그 공식 · KFA |
+| 5 | 설영우 | Young-woo Seol | `seol-young-woo` | FC Augsburg (`augsburg`) | BUNDESLIGA | DF | 1998 (12-05) | **197985** — squads team=170 "Seol Young-Woo" #7 | bundesliga.com 선수 페이지(수비수 #7, 4경기)·이적 기사(2026-08-27, 츠르베나 즈베즈다에서) · KFA 2026-09-14 | 리그 공식 · KFA |
+| 6 | 황희찬 | Hee-chan Hwang | `hwang-hee-chan` | FC Schalke 04 (`schalke-04`) | BUNDESLIGA | FW ※2 | 1996 (01-26) | **24888** — squads team=174 "Hwang Hee-Chan" #7 | schalke04.de 2026-09-01(울버햄튼에서 **2027-06-30까지 임대**) · wolves.co.uk(완전 이적 옵션 포함) · bundesliga.com(공격수 #7, 2경기) · KFA 2026-09-14 | 구단 공식 ×2 · 리그 공식 · KFA |
+| 7 | 이강인 | Kang-in Lee | `lee-kang-in` | Club Atlético de Madrid (`atletico-de-madrid`) | LALIGA | MF | 2001 (02-19) | **927** — squads team=530 "Lee Kang-In" #7 | psg.fr 2026-07-25(**완전 이적**) · laliga.com 선수 페이지(미드필더 #7, 2026 시즌 스쿼드) · KFA 2026-09-14 | 구단 공식 · 리그 공식 · KFA |
+| 8 | 김지수 | Ji-soo Kim | `kim-ji-soo` | Brentford FC (`brentford`) | EPL | DF | 2004 (12-24) | **null — 미확인** | brentfordfc.com 1군 페이지(수비수 #36, "On loan" 목록 아님, 생년월일 24 Dec '04) · premierleague.com Brentford 스쿼드(2026/27, "South Korea") · KFA 2026-09-15 | 구단 공식 · 리그 공식 · KFA |
+
+- ※1 카스트로프: 리그·구단 데이터(bundesliga.com·API-Football)는 **미드필더**, KFA(2026-03-17)·FIFA 월드컵 명단은 **수비수(측면)**로 분류한다. 표는 "포지션 = 소속 리그 공식 표기" 원칙으로 MF를 넣었다(질문 3).
+- ※2 황희찬: bundesliga.com "Striker"·API-Football "Attacker"는 **FW**, KFA 2026-09-14 명단은 **MF**다. 같은 원칙으로 FW를 넣었다.
+- 출생은 `birthYear`만 쓴다. 괄호 안 월-일은 근거 확인용이다(출처: bundesliga.com·laliga.com·brentfordfc.com 선수 페이지).
+- `active`는 8명 모두 `true`다.
+- **팀 slug 제안 규칙**(최종은 M2-04 "slug 규칙 확정"): football-data 팀 이름(`team.name`)을 기준으로 한다. ① 악센트를 없앤다(ü→u, é→e, ö→o). ② 법인·형태 토큰(`FC`·`AFC`·`CF`·`SC`·`SV`·`FSV`·`1.`·`Club`)을 앞뒤에서 뗀다. ③ 나머지를 소문자 kebab으로 만든다. 예: "FC Bayern München" → `bayern-munchen`, "1. FSV Mainz 05" → `mainz-05`, "Club Atlético de Madrid" → `atletico-de-madrid`, "Brentford FC" → `brentford`. 숫자(05·04)는 구단 정체성이라 남긴다. M2-04에서 규칙이 바뀌면 `korean-players.json`의 `team` 값만 바꾸면 된다. **선수 `slug`는 URL이라 처음 정한 값을 유지한다.**
+- 선수 `slug`는 한국식 순서(성-이름, `kim-min-jae`)를 쓴다. 저장소 fixtures(`kim-cheol-su`·`hong-gil-dong`)와 같은 방식이다. 카스트로프만 독일식 이름 그대로 `jens-castrop`이다.
+
+### OTHER 후보 (2025-26에 5대 리그 → 2026-27 밖, FR-64)
+
+| 한글 | `nameEn` | `slug` | 2026-27 소속(`team`) | `comp` | 포지션 | 출생 | `apiFootballId` | `active` | 근거 |
+|---|---|---|---|---|---|---|---|---|---|
+| 홍현석 | Hyun-seok Hong | `hong-hyun-seok` | FC Midtjylland(덴마크, `midtjylland`) — 마인츠에서 임대 | OTHER | MF | 1999 (06-16) | null(미확인 — 덴마크 리그라 기록 수집 대상 아님) | **false** | fcm.dk 선수 페이지: #20, 공격형 미드필더, 이력에 "2025-2026 (udlånt) FC Nantes 6경기 → 2026 (udlånt) KAA Gent 19경기 → 2026-2027 (udlånt) FC Midtjylland". 이력 표 첫 줄이 "2027 - ? 1. FSV Mainz 05"라 임대 후 마인츠 복귀 예정이다. 2025-26 전반기에 리그1(낭트)에서 뛰었다. 낭트는 2026-27에 리그2다(ligue1.com 렌더 확인) |
+
+- 넣을 이유: 마인츠(분데스리가) 계약 선수라 복귀 가능성이 있다. 목록에 있으면 FR-63 이적 감지가 이름을 잡는다. 뺄 이유: FR-60 범위("2026-27 5대 리그 소속")를 벗어난다(질문 2).
+
+**검토했지만 대상이 아닌 선수**(2025-26에도 5대 리그 1군 출전 기록이 없거나 이미 떠남)
+
+| 선수 | 2026-27 상황 | 근거 | 제외 이유 |
+|---|---|---|---|
+| 박승수 | 뉴캐슬 U21 | newcastleunited.com — U21 팀 페이지에만 있고 1군(mens-team) 페이지에는 없음. 2026-07-09 기사 "지난 시즌 U21 24경기" | 1군이 아님. PL U21 선수는 25인 명단 없이도 뛸 수 있다 → **1군 데뷔하면 추가 후보**(M3-01 재확인) |
+| 양민혁 | 토트넘 소속 — 2026-27 벨기에 베스테를로 임대 **보도**(구단 발표는 미확인) | tottenhamhotspur.com 2026-01-06 "Coventry loan for Yang after Pompey recall"(포츠머스 임대 조기 복귀 → 코번트리(챔피언십) 임대) | 2025-26 내내 2부 임대라 5대 리그 출전 없음 |
+| 김민수 | 레인저스(스코틀랜드) | KFA 2026-09-14 명단 "김민수(레인저스, 스코틀랜드)" | 2025-26은 안도라(스페인 2부) 임대 — 2차 출처 |
+| 윤도영 · 이청현 | 1. FC 마그데부르크(2. 분데스리가) | bundesliga.com 선수 페이지(대회 "Bundesliga 2", 2026/2027) | 5대 리그 밖. 2025-26 소속은 이번에 확인하지 않았다 |
+| 손흥민 | LAFC | KFA 2026-09-14 명단 | 2025-26 시즌 시작 전에 이적 |
+| (참고) 이호재·권혁규 | 다름슈타트·카를스루에(2. 분데스리가) | bundesliga.com | 5대 리그 밖 |
+
+### 출처 (모두 2026-10-10 UTC 확인)
+
+| 구분 | URL | 확인 내용 |
+|---|---|---|
+| 리그 공식 | https://www.bundesliga.com/en/player/minjae-kim · `/woo-yeong-jeong` · `/jaesung-lee` · `/jens-castrop` · `/youngwoo-seol` · `/hee-chan-hwang` | 소속·등번호·포지션·국적·생년월일·2026/2027 분데스리가 기록 |
+| 리그 공식 | https://www.bundesliga.com/en/bundesliga/news/augsburg-sign-seol-young-woo-red-star-belgrade-38811 | 설영우 이적 완료(2026-08-27) |
+| 리그 공식 | https://www.laliga.com/en-GB/player/kang-in | 이강인 — 아틀레티코 #7 미드필더, 국적 KR, 2026 시즌 스쿼드(`squad/2026/` 경로) |
+| 리그 공식 | https://www.premierleague.com/en/clubs/94/brentford/squad (+ 19개 구단 `/squad`) | 2026/27 스쿼드 국적 — 한국 1명(김지수) |
+| 리그 공식 | https://www.legaseriea.it/team/{club}/squad (19개 구단) | 국적 코드 KOR 0 |
+| 리그 공식 | https://ligue1.com/fr/club-sheet/l1_championship_club_2026_{id}/squad (36개 구단) | 리그1·리그2 국적 코드에 한국 0 |
+| 구단 공식 | https://www.psg.fr/en/content/kang-in-lee-joins-atletico-madrid-psg-paris-saint-germain-2026-2027 | 이강인 아틀레티코 완전 이적(2026-07-25) |
+| 구단 공식 | https://schalke04.de/en/team/hwang-loan-2627/ · https://www.wolves.co.uk/news/mens-first-team/20260901-hwang-makes-deadline-day-move/ | 황희찬 임대(2027-06-30까지)·완전 이적 옵션 |
+| 구단 공식 | https://www.brentfordfc.com/en/teams/mens · https://www.brentfordfc.com/en/teams/mens/ji-soo-kim | 김지수 1군 #36·생년월일 |
+| 구단 공식 | https://www.fcm.dk/truppen/hyun-seok-hong/ | 홍현석 미트윌란 임대·이력 |
+| 구단 공식 | https://www.newcastleunited.com/en/teams/U21 · `/en/teams/mens-team` · `/en/news/seung-soo-park-named-in-south-korea-asian-games-squad` | 박승수 U21 |
+| KFA | https://www.kfa.or.kr/live/live.php?act=news_tv_detail&idx=28281&div_code=news | 2026-09-14 A대표 9·10월 소집 명단(김민재·이재성·설영우·황희찬·이강인 소속·한글 표기) |
+| KFA | `…idx=27813…` (2026-03-17 3월 명단) · `…idx=28286…`(2026-09-15 아시안게임) | 카스트로프·홍현석 / 김지수(브렌트포드FC) 한글 표기 |
+| 2차(참고) | goal.com 2026-09-07 아시아 선수 목록 · en.fnnews.com 2026-09-03 · fifa.com/ko 월드컵 명단 기사 | 교차 확인용 — 단독 근거로 쓰지 않음 |
+
+### API-Football 보조 확인 (2026-10-10 17:57~17:59 UTC)
+
+- **8건**(상한 15)을 보냈다. 시작 전 오늘(UTC) 사용량은 23건이었으므로 이번 작업 후 **우리 쪽 집계로 31건**이다. 요청 간격은 7초 이상, 분당 최대 4건이었다.
+- 요청 내역: `/players/squads?team=` 164(마인츠)·163(묀헨글라트바흐)·170(아우크스부르크)·174(샬케)·530(아틀레티코)·55(브렌트포드)·745(카이저슬라우테른), `/players/profiles?search=Kim` 1건. 마지막 1건은 **입력 오류** "The Search field must be at least 4 characters in length."로 돌아왔다(HTTP 200, `errors.search`).
+- 응답 헤더의 일 잔여량은 84→83→82→81→84→83→78→80으로 **단조 감소하지 않았다**(M0-29와 같은 현상). 우리 쪽 카운터를 기준으로 삼는다. 분 잔여량은 9~6이었다.
+- 팀 id(응답의 `team.id·name`으로 확인): Bayern München 157(M0-29)·Union Berlin 182(M0-29)·FSV Mainz 05 164·Borussia Mönchengladbach 163·FC Augsburg 170·FC Schalke 04 174·Atletico Madrid 530·Brentford 55. → M1-44·M1-48의 "API-Football 팀 id → 팀 slug 대응표" 초기값으로 쓸 수 있다.
+- squads 응답의 `age`는 갱신이 늦다(이재성 33·이강인 24 등 생일이 지나도 그대로). 반면 소속(황희찬 샬케·설영우 아우크스부르크·이강인 아틀레티코)은 여름 이적이 반영돼 있었다. **브렌트포드 응답(31명)에는 김지수가 없다.**
+- 키는 프로세스 환경에서만 읽었다. scratchpad `m0-32/` 전체 245개 파일에서 키 문자열은 0건이다(확인 스크립트로 검사). 계정 정보 요청(`/status`)은 하지 않았다.
+
+### 미확인 항목
+
+| 항목 | 상태 | 해소 방법 |
+|---|---|---|
+| 김지수 `apiFootballId` | squads(브렌트포드·카이저슬라우테른)에 없음. 이름 검색은 4자 이상·하이픈 금지라 "Kim"·"Ji-Soo"로 찾을 수 없음 | 브렌트포드 경기 라인업(`/fixtures?id=`)에 처음 나올 때 id를 사람이 확인해 `/add-player`로 채운다. 또는 다음 날 한도에서 `search=` 변형 1~3건(질문 4) |
+| 홍현석 `apiFootballId` | 미트윌란 팀 id를 몰라 요청하지 않음 | `active:false`라 지금은 필요 없음 |
+| 정우영 한글 표기의 KFA 원문 | 이번 조사의 KFA 기사(2026-03·09)에는 없다. "정우영"은 본명 표기라 다른 표기 가능성은 낮다. 다만 동명이인(1989년생 정우영)이 있어 검색 쿼리를 만들 때 주의해야 한다 | M3-01에서 KFA 과거 소집 기사나 구단 한국어 자료로 확인 |
+| 우니온 베를린 한글 표기 | KFA·구단 한국어 출처를 찾지 못했다(국내 매체는 '우니온'·'유니온'을 섞어 씀 — 이번에 확인 안 함) | names.ko `note`에 "관용"으로 표시. `/add-name` 때 확정 |
+| 김지수의 PL 25인 명단 등록 여부 | 2004-12 생이라 2026-27 U21 예외 대상이 아니다. 구단 1군 페이지와 premierleague.com 스쿼드에는 있지만, PL 공식 25인 명단 문서는 확인하지 못했다 | M3-01에서 PL 스쿼드 명단 발표(시즌 초·1월) 확인 |
+| 카스트로프 2026/27 0경기 | bundesliga.com 기록이 0경기이고, 9월 A대표에도 빠졌다. 이유는 확인하지 못했다(부상 여부 등 추측하지 않음) | 목록 등록에는 영향 없음 |
+| 라치오 스쿼드 | legaseriea.it 페이지가 "Lista Squadre" 기본 페이지로 돌아와 국적을 확인하지 못했다 | 한국 선수 보도는 없음(2차). M3-01에서 재확인 |
+| 라리가·분데스리가 전수 확인의 한계 | 이름 패턴 1차 필터 — 비한국식 이름의 한국 국적 선수(혼혈 등)는 놓칠 수 있다(카스트로프는 KFA 명단으로 잡았다) | KFA 해외파 소집 명단과 교차 확인을 M3-01 체크리스트에 넣는다 |
+
+### M1-48 · M3-01 연결
+
+- **M1-48 ① 대상 경기 필터** — "6개 대회 `apiFootballLeagueId` ∪ 한국 선수 소속팀". 소속팀 8개는 모두 5대 리그 구단이라 **리그 경기는 이미 6개 대회 필터에 들어간다.** `korean-players.json`이 추가로 넓혀 주는 것은 **같은 팀의 다른 대회 경기**다(DFB 포칼·코파 델 레이·FA컵·카라바오컵·UEL/UECL 등). 이 경기의 한국 선수 기록(FR-61 "다른 대회")은 등록 전에 지나가면 **백필할 수 없다**(D27). 2026-27은 이미 리그 6라운드 안팎이 지났다.
+- **M1-48 ② 한국 선수 매칭** — `apiFootballId`로만 매칭한다(이름 매칭 금지 — FR-60·D27). 7명은 바로 매칭된다. 김지수는 null이라 id를 채우기 전까지 기록이 쌓이지 않는다. 현재 출전이 없어 손실은 작다.
+- **M1-44/M1-48 팀 id 대응표 ❓** — 위 API-Football 팀 id 8개와 football-data id(M0-28 standings: Bayern 5·Union 28·Mainz 15·Gladbach 18·Augsburg 16·Schalke 6·Atlético 78·Brentford 402)를 초기값으로 쓸 수 있다.
+- **검색 쿼리(M0-26·M0-27)** — `configs/search-queries.json`에서 보류 중인 선수 쿼리 3개(`gd-ko-lee-kang-in`·`gd-en-lee-kang-in`·`gd-en-kim-min-jae`)의 `player`에 `lee-kang-in`·`kim-min-jae`를 넣을 수 있다(`/add-player`가 처리).
+- **names.ko** — `configs/names.ko.json`은 아직 파일이 없다(스키마·registry는 `confirmed`). 등록하면 새 파일을 만든다. 제안 18항목(선수 9·팀 9)은 API·리그·구단 표기 변형을 `en[]`에 모았다(M0-29 "브리핑 득점자 이름은 API 표기 기준" 반영).
+- **M3-01**(확정·검토)에 남길 체크: 1월 이적시장 후 소속 재확인, 박승수 1군 데뷔 여부, 김지수 PL 25인 명단, 정우영·우니온 베를린 한글 표기, 라치오 스쿼드, KFA 해외파 명단 교차 확인, 홍현석 복귀 여부.
+
+**제안 파일** (scratchpad — 조사 당시. 2026-10-11 결정으로 `configs/`에 등록, 위 "사용자 결정")
+- `m0-32/korean-players.proposal.json` — KoreanPlayer 9명(5대 리그 8 + OTHER 1)
+- `m0-32/names-ko.proposal.json` — 선수 9·팀 9 항목, `ignore: []`
+- 검증: `node --import tsx m0-32/scripts/validate-proposals.ts …` 결과는 `KoreanPlayersFileSchema` OK(9명), `NamesKoFileSchema` OK(18항목)다. 교차 검사(선수 slug·팀 slug가 names.ko에 모두 있음)도 통과했다. 대회별 분포는 BUNDESLIGA 6·LALIGA 1·EPL 1·OTHER 1, active 8이다.
+
+### 사용자 확인 질문 — 2026-10-11 답변 완료 (4개 모두 추천안 — 위 "사용자 결정")
+
+1. **`configs/korean-players.json`(+ `names.ko.json`)을 언제 등록할까** (plan M1-48 ⑤ ❓)
+   - (A) **지금 — 이 초안 승인 즉시 `/add-player`로 등록하고, M3-01은 확정·검토만 한다(추천).** M1-48이 첫날부터 컵·유럽 대항전의 한국 선수 기록을 쌓는다. 누적은 백필할 수 없으므로 등록이 늦을수록 그 기간 기록이 영구히 빠진다. names.ko도 브리핑 득점자 한글 치환(FR-24)에 바로 쓰인다. 비용은 API 호출 증가뿐이다(소속팀의 다른 대회 경기 수만큼 — M0-29 하루 계획 최대 약 35건·상한 60 안에서 처리).
+   - (B) M1-48 착수 때 다시 확인하고 등록한다 — 그 사이 이적은 없지만(여름 창 마감) 결정을 한 번 더 미룬다.
+   - (C) M3-01까지 미룬다 — M1-48은 6개 대회 경기만 받고, 그 사이 한국 선수의 다른 대회 경기 기록은 남지 않는다.
+2. **OTHER 후보 홍현석을 목록에 넣을까**
+   - (A) **넣는다 — `comp:"OTHER"`, `active:false`(추천).** 기록은 수집하지 않고 목록에 "기타 리그"로만 보인다(FR-64). 마인츠 복귀나 5대 리그 이적이 생기면 FR-63 이적 감지가 잡는다.
+   - (B) 뺀다 — FR-60 범위("2026-27 5대 리그")만 유지하고, 돌아오면 그때 `/add-player`로 넣는다.
+3. **표기·분류 기준**(한 번에 정해 두면 `/add-player`가 그대로 따른다)
+   - 포지션: (A) **소속 리그 공식 표기(추천 — 카스트로프 MF·황희찬 FW)** / (B) KFA 대표팀 표기(카스트로프 DF·황희찬 MF)
+   - `nameEn`: (A) **서양식 순서 + 하이픈 이름으로 통일("Min-jae Kim", 추천 — 변형은 names.ko `en[]`로 매칭)** / (B) 구단 표기 그대로(출처마다 순서가 섞임 — "Minjae Kim"·"Hwang Hee-chan")
+   - 팀 slug: (A) **위 "팀 slug 제안 규칙"을 지금 쓰고 M2-04에서 그대로 확정(추천)** / (B) 임시값으로 두고 M2-04 규칙이 정해지면 일괄 교체
+   - 팀 한글 표기: (A) **KFA 표기 그대로("샬케04"·"묀헨글라트바흐"·"브렌트포드", 추천)** / (B) 띄어쓰기·전체 이름("샬케 04"·"보루시아 묀헨글라트바흐")
+4. **김지수 `apiFootballId`를 어떻게 채울까**
+   - (A) **null로 등록하고, 브렌트포드 경기 라인업에 처음 나올 때 사람이 id를 확인해 채운다(추천).** 추가 호출 0건이고 지금은 출전이 없어 손실이 거의 없다. M1-48에 "소속팀 경기 라인업에 `apiFootballId`가 null인 등록 선수가 있으면 운영 리포트에 알림"을 넣을 수 있다(제안 — 구현하지 않음).
+   - (B) 내일(UTC 00:00 리셋 이후, 봇 수집 시간대 밖) `search=` 변형 1~3건으로 찾는다.
+
+**후속 반영 대상**(오케스트레이터 — 이 작업에서는 고치지 않았다): plan §4 M0-32 체크, M1-48 ⑤ ❓ 답(질문 1), M3-01 체크 항목(위 "M3-01에 남길 체크"), CLAUDE §13 미결 사항("2026-27 시즌 5대 리그 한국 선수 명단")의 상태. 질문 1 (A)에 따라 `configs/korean-players.json`·`configs/names.ko.json`(신규)·`configs/search-queries.json` `player` 3건을 등록했고 `npm run validate`를 통과했다(2026-10-11).
