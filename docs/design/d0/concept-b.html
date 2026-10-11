@@ -59,11 +59,16 @@ html.theme-anim,html.theme-anim *{transition:background-color var(--dur-base) va
 
 /* ── 시안 메타 띠 ── */
 .specmeta{background:var(--surface);color:var(--fg-2);font-size:12.5px;line-height:1.55;border-bottom:1px solid var(--hair)}
-.specmeta .wrap{padding-top:14px;padding-bottom:16px}
-.sm-title{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;color:var(--fg)}
+.specmeta summary{display:flex;align-items:baseline;gap:4px 16px;min-height:44px;padding-top:12px;padding-bottom:12px;cursor:pointer;list-style:none}
+.specmeta summary::-webkit-details-marker{display:none}
+.specmeta .sm-body{padding-bottom:16px}
+.sm-title{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;color:var(--fg)}
+.sm-more{flex:none;font-weight:850;color:var(--fg);text-decoration:underline;text-underline-offset:3px}
+.sm-more::before{content:"펼치기"}
+[data-meta][open] .sm-more::before{content:"접기"}
 .sm-title b{font-size:15px;font-weight:900;letter-spacing:-.02em}
-.sm-title span{font-weight:600}
-.specmeta dl{display:grid;grid-template-columns:1fr;gap:8px 28px;margin-top:10px}
+.sm-title span{font-weight:600;text-wrap:pretty}
+.specmeta dl{display:grid;grid-template-columns:1fr;gap:8px 28px;margin-top:0}
 .specmeta dt{font-weight:850;color:var(--fg);font-size:12px}
 .specmeta dd{margin:1px 0 0}
 .specmeta ol{list-style:decimal;padding-left:1.2em}
@@ -387,7 +392,7 @@ html.theme-anim,html.theme-anim *{transition:background-color var(--dur-base) va
 
 /* ── 하단 탭 ── */
 .tabbar{position:relative;z-index:20;background:var(--bg);border-top:2px solid var(--rule)}
-.tabbar.is-stuck{position:sticky;bottom:0}
+.home>.tabbar{position:sticky;bottom:0}
 .tabbar ul{display:grid;grid-template-columns:repeat(var(--n,5),1fr)}
 .tabbar a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;font-size:11.5px;font-weight:850;letter-spacing:-.02em;text-decoration:none;color:var(--fg-2)}
 .tabbar a svg{width:22px;height:22px}
@@ -512,8 +517,9 @@ html.theme-anim,html.theme-anim *{transition:background-color var(--dur-base) va
 <body>
 <a class="skip" href="#main">본문 바로가기</a>
 <aside class="specmeta" aria-label="시안 정보">
-  <div class="wrap">
-    <p class="sm-title"><b>시안 B · Cover — 매거진 커버</b><span>잡지 표지처럼 거대한 숫자 '5'와 극굵은 고딕 커버 라인으로 아침 한 호를 열고, 피드는 표지 뒤 본문 페이지처럼 차분하게 넘긴다.</span></p>
+<details data-meta>
+  <summary class="wrap"><span class="sm-title"><b>시안 B · Cover — 매거진 커버</b><span>잡지 표지처럼 거대한 숫자 '5'와 극굵은 고딕 커버 라인으로 아침 한 호를 열고, 피드는 표지 뒤 본문 페이지처럼 차분하게 넘긴다.</span></span><span class="sm-more" aria-hidden="true"></span></summary>
+  <div class="wrap sm-body">
     <dl>
       <div class="sm-wide"><dt>다른 축</dt><dd>레이아웃: 비대칭 표지 스프레드 + 풀블리드 색 면(표지 볼트 · 띠 잉크) / 타이포: 극굵은 한글 고딕(원티드 산스 900~1000) + 초압축 숫자(Archivo wdth 62) / 색: 흑백 고대비 + 볼트 면 1색(다크에선 볼트가 면에서 숫자로 이동) / 밀도: 표지 낮음 → 피드 중간 / 모션: 블록 와이프(가림 해제 250ms · 출처 펼침 200ms · 필터 200ms)</dd></div>
       <div><dt>장점</dt><dd><ol><li>첫인상이 가장 강하다 — 표지 한 장에서 &quot;세련된 차별점&quot;이 바로 보인다</li><li>숫자를 그래픽으로 쓴다 — 줄 수·스코어·분·건수가 화면의 주인공이고 모두 실데이터다</li><li>볼트 = 한국 독자에게 중요한 것(5줄 · 한국 선수)이라는 규칙 하나로 강조를 통제해 토큰으로 옮기기 쉽다</li></ol></dd></div>
@@ -522,6 +528,7 @@ html.theme-anim,html.theme-anim *{transition:background-color var(--dur-base) va
       <div class="sm-wide"><dt>가정</dt><dd>창간일 가정 2026-10-11 = 제 1호 · 기준 시각 15:54 KST(fixture 생성 시각) · 이 날 발행 07:00 KST(유럽 서머타임 기간 — 10-26 발행부터 07:30, D26) · 대회 6색과 팀 배지 색은 시안 출발값(팀 배지 = 임시 팀 컬러)</dd></div>
     </dl>
   </div>
+</details>
 </aside>
 <div class="home" id="home">
 <header class="masthead on-cover">
@@ -1420,7 +1427,7 @@ html.theme-anim,html.theme-anim *{transition:background-color var(--dur-base) va
   <header class="spec-head"><p class="spec-k">견본 · 내비 상태</p><h2 id="spec-nav-h">탭은 2개에서 5개로</h2><p class="spec-d">현재 탭은 잉크 면 반전(색 외 표식) + aria-current. M1에는 홈·뉴스 2탭으로 공개하고 미완성 섹션은 숨긴다.</p></header>
   <div class="spec-grid">
     <figure class="ex "><figcaption class="ex-cap"><b>375 · M1</b> 하단 탭 2개(홈 · 뉴스)</figcaption><nav class="tabbar tabbar--static" aria-label="하단 탭 (M1)" style="--n:2"><ul><li><a href="#" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M3.5 10.5L12 4l8.5 6.5V20h-5.5v-5.5h-6V20H3.5z"/></svg><span>홈</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 4.5h16v15H4z"/><path d="M7.5 8.5h9M7.5 12h9M7.5 15.5h5"/></svg><span>뉴스</span></a></li></ul></nav></figure>
-    <figure class="ex "><figcaption class="ex-cap"><b>375 · 최종</b> 하단 탭 5개</figcaption><nav class="tabbar tabbar--static" aria-label="하단 탭" style="--n:5"><ul><li><a href="#" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M3.5 10.5L12 4l8.5 6.5V20h-5.5v-5.5h-6V20H3.5z"/></svg><span>홈</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 4.5h16v15H4z"/><path d="M7.5 8.5h9M7.5 12h9M7.5 15.5h5"/></svg><span>뉴스</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 5h16v14H4z"/><path d="M4 9.75h16M4 14.25h16M9 5v14"/></svg><span>리그</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="8" r="3.75"/><path d="M4.5 20.5c.8-4.2 3.8-6.25 7.5-6.25s6.7 2.05 7.5 6.25"/></svg><span>한국 선수</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 3.5h12v17l-6-4.75-6 4.75z"/></svg><span>마이</span></a></li></ul></nav><p class="ex-note">실제 구현은 처음부터 화면 하단 고정. 이 시안 HTML은 전체 페이지 캡처에서 표지를 덮지 않도록 마스트헤드가 지나간 뒤 고정한다</p></figure>
+    <figure class="ex "><figcaption class="ex-cap"><b>375 · 최종</b> 하단 탭 5개</figcaption><nav class="tabbar tabbar--static" aria-label="하단 탭" style="--n:5"><ul><li><a href="#" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M3.5 10.5L12 4l8.5 6.5V20h-5.5v-5.5h-6V20H3.5z"/></svg><span>홈</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 4.5h16v15H4z"/><path d="M7.5 8.5h9M7.5 12h9M7.5 15.5h5"/></svg><span>뉴스</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 5h16v14H4z"/><path d="M4 9.75h16M4 14.25h16M9 5v14"/></svg><span>리그</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="8" r="3.75"/><path d="M4.5 20.5c.8-4.2 3.8-6.25 7.5-6.25s6.7 2.05 7.5 6.25"/></svg><span>한국 선수</span></a></li><li><a href="#"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 3.5h12v17l-6-4.75-6 4.75z"/></svg><span>마이</span></a></li></ul></nav><p class="ex-note">375에서는 처음부터 화면 하단에 고정한다(sticky)</p></figure>
     <figure class="ex "><figcaption class="ex-cap"><b>1280 · 최종</b> 3단</figcaption><div class="schem" aria-hidden="true">
   <div class="sc-cover">표지 · 마스트헤드 + 오늘의 5줄 (풀블리드 볼트)</div>
   <div class="sc-row" style="grid-template-columns:18% 1fr 23%">
@@ -1602,8 +1609,8 @@ $$('[data-f-comp]').forEach(function(b){b.addEventListener('click',function(){st
 $$('[data-f-kr]').forEach(function(b){if(!b.closest('.kr-m,.rail'))return;b.addEventListener('click',function(){st.kr=!st.kr;render()})});
 var clr=$('[data-clear]');if(clr)clr.addEventListener('click',function(){st={cat:'all',comp:null,kr:false};render()});
 $$('.rf').forEach(function(b){var c=b.querySelector('.c');if(c&&c.textContent==='0')b.classList.add('is-zero')});$$('.chips .chip').forEach(function(b){var c=b.querySelector('.c');if(c&&c.textContent==='0')b.classList.add('is-zero')});
-/* 하단 탭: 마스트헤드가 화면 밖으로 나가면 하단 고정(전체 페이지 캡처에서 표지를 덮지 않게) */
-var tb=$('.home > .tabbar'),mh=$('.masthead');if(tb&&mh&&'IntersectionObserver' in window){new IntersectionObserver(function(es){tb.classList.toggle('is-stuck',!es[0].isIntersecting)}).observe(mh)}
+/* 메타 띠: 1024 이상에서만 처음부터 펼침(375는 접힘, 펼치기로 연다) */
+var sm=$('[data-meta]');if(sm&&window.matchMedia&&matchMedia('(min-width: 1024px)').matches)sm.open=true;
 /* 단축키 / ⌘K */
 document.addEventListener('keydown',function(e){var t=e.target;if(t&&(t.isContentEditable||/INPUT|TEXTAREA|SELECT/.test(t.tagName)))return;if(e.key==='/'||(e.key.toLowerCase()==='k'&&(e.metaKey||e.ctrlKey))){e.preventDefault();toast('검색은 M4에서 열려요')}});
 })();</script>
