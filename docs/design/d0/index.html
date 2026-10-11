@@ -1,0 +1,426 @@
+<!doctype html>
+<!--
+  유로 다이제스트 · D0 시안 비교판 (D0-05) · v0.1 · 2026-10-11
+  세 시안(A Broadsheet · B Cover · C Programme)의 첫 화면 스크린샷을 나란히 보고, comparison.md의 요약·추천을 함께 읽는 페이지.
+  중립 스타일: 시스템 글꼴만, 웹폰트 0, 외부 의존 0(CSS·JS 인라인). 이미지는 screenshots/ 상대 경로뿐.
+  결정은 사용자(D0-06). 이 페이지는 어느 시안 스타일도 따르지 않는다.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>D0 시안 비교 · 유로 다이제스트</title>
+<script>(function(){var d=document.documentElement;try{var t=localStorage.getItem('ed-compare-theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t)}catch(e){}})();</script>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF;--surface:#F5F5F5;--surface-2:#EBEBEB;--fg:#151515;--fg-2:#4F4F4F;--fg-3:#666666;
+  --line:#E0E0E0;--line-strong:#151515;--ring:#151515;--shot-edge:#D4D4D4;
+  --font:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",system-ui,sans-serif;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;
+  --page:1360px;--gutter:20px;--tap:44px;--dur:200ms;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --bg:#121212;--surface:#1B1B1B;--surface-2:#262626;--fg:#ECECEC;--fg-2:#B4B4B4;--fg-3:#9A9A9A;
+  --line:#2F2F2F;--line-strong:#ECECEC;--ring:#ECECEC;--shot-edge:#3A3A3A}}
+:root[data-theme="dark"]{color-scheme:dark;
+  --bg:#121212;--surface:#1B1B1B;--surface-2:#262626;--fg:#ECECEC;--fg-2:#B4B4B4;--fg-3:#9A9A9A;
+  --line:#2F2F2F;--line-strong:#ECECEC;--ring:#ECECEC;--shot-edge:#3A3A3A}
+@media (min-width:900px){:root{--gutter:40px}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.6;
+  word-break:keep-all;overflow-wrap:anywhere;-webkit-font-smoothing:antialiased;
+  transition:background-color var(--dur) ease,color var(--dur) ease}
+h1,h2,h3,p,figure,ol,ul,dl,dd{margin:0}
+ol,ul{padding:0;list-style:none}
+a{color:inherit;text-underline-offset:.2em;text-decoration-thickness:1px}
+a:hover{text-decoration-thickness:2px}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+img{display:block;max-width:100%;height:auto}
+:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.nw{white-space:nowrap}
+.skip{position:absolute;left:8px;top:-60px;z-index:10;background:var(--fg);color:var(--bg);padding:10px 14px;font-weight:600}
+.skip:focus{top:8px}
+.wrap{max-width:var(--page);margin:0 auto;padding:0 var(--gutter)}
+
+/* 머리 */
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--s4) var(--s6);padding-top:var(--s6);padding-bottom:var(--s5)}
+.eyebrow{font-size:13px;color:var(--fg-3)}
+h1{font-size:28px;line-height:1.25;font-weight:700;letter-spacing:-.01em;margin-top:var(--s2)}
+.lede{margin-top:var(--s2);color:var(--fg-2);max-width:62ch}
+.btn{display:inline-flex;align-items:center;gap:var(--s2);min-height:var(--tap);padding:0 var(--s4);border:1px solid var(--line-strong);font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--surface)}
+.btn svg{width:16px;height:16px}
+
+/* 섹션 */
+section{padding:var(--s7) 0 0}
+.sec-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--s2) var(--s4);padding-bottom:var(--s3);border-bottom:2px solid var(--line-strong)}
+h2{font-size:20px;line-height:1.3;font-weight:700}
+.sec-note{font-size:13px;color:var(--fg-3)}
+.sec-body{padding-top:var(--s5)}
+
+/* 시안 열 */
+.cols{display:grid;grid-template-columns:1fr;gap:var(--s7) var(--s5)}
+@media (min-width:1000px){.cols{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.col-h{display:grid;grid-template-columns:auto 1fr;gap:var(--s1) var(--s3);align-items:start;min-height:0}
+.letter{grid-row:span 2;display:inline-grid;place-items:center;width:32px;height:32px;border:1px solid var(--line-strong);font-weight:700;font-size:15px}
+.col-h h3{font-size:17px;line-height:1.35;font-weight:700}
+.col-h .one{font-size:14px;color:var(--fg-2)}
+.col-meta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s2) var(--s3);margin-top:var(--s4);padding:var(--s2) 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:13px;color:var(--fg-2)}
+.col-meta b{color:var(--fg);font-weight:700}
+.col-meta a{display:inline-flex;align-items:center;min-height:var(--tap);font-weight:600;color:var(--fg)}
+.badge{display:inline-block;padding:1px 8px;border:1px solid var(--line-strong);font-size:12px;font-weight:700;color:var(--fg)}
+.badge.inv{background:var(--fg);color:var(--bg)}
+.shots{display:grid;gap:var(--s5);margin-top:var(--s5)}
+.cap{display:flex;justify-content:space-between;gap:var(--s2);font-size:12px;color:var(--fg-3);margin-bottom:var(--s2)}
+.cap b{color:var(--fg-2);font-weight:600}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+.shot{display:block;border:1px solid var(--shot-edge);background:var(--surface)}
+.shot:hover{border-color:var(--line-strong)}
+.shot img{width:100%}
+.mobile-pair{max-width:420px}
+.crop{position:relative;overflow:hidden;aspect-ratio:var(--w)/var(--h);border:1px solid var(--shot-edge);background:var(--surface)}
+.crop img{position:absolute;left:0;top:calc(var(--y) / var(--h) * -100%);width:100%;max-width:none}
+details.more{margin-top:var(--s6);border-top:1px solid var(--line)}
+details.more>summary{display:flex;align-items:center;gap:var(--s2);min-height:var(--tap);padding:var(--s3) 0;cursor:pointer;font-weight:600;list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform var(--dur) ease;margin:0 4px}
+details.more[open]>summary::before{transform:rotate(45deg)}
+details.more .sec-note{margin-bottom:var(--s4)}
+
+/* 표 */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-top:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.55}
+th,td{padding:var(--s3) var(--s3);border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+thead th{font-size:13px;font-weight:700;color:var(--fg);border-bottom:1px solid var(--line-strong);white-space:nowrap}
+tbody th{font-weight:600;color:var(--fg-2);white-space:nowrap;font-size:13px}
+.t-sum{min-width:860px}
+.t-sum td{width:31%}
+.t-score{min-width:720px;table-layout:fixed}
+.t-score col.c-k{width:15%}.t-score col.c-s{width:4%}.t-score col.c-w{width:24.33%}
+@media (max-width:640px){.t-score{min-width:0}.t-score col.c-w{width:0}.t-score col.c-k{width:52%}.t-score col.c-s{width:16%}.t-score td.why{padding:0;font-size:0;line-height:0;overflow:hidden}.t-score thead th.grp{text-align:right}}
+.t-score td.sc{width:5ch;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;padding-right:var(--s1)}
+.t-score td.why{color:var(--fg-2);font-size:13px}
+.t-score tfoot td,.t-score tfoot th{border-top:1px solid var(--line-strong);border-bottom:0;font-weight:700;color:var(--fg)}
+.t-con{min-width:640px}
+.t-con td{font-variant-numeric:tabular-nums}
+
+/* 추천 */
+.rec{border:1px solid var(--line-strong);padding:var(--s5)}
+.rec-h{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s3)}
+.rec-h h3{font-size:19px;line-height:1.4;font-weight:700}
+.rec ol{margin-top:var(--s4);padding-left:1.4em;list-style:decimal;display:grid;gap:var(--s2);color:var(--fg-2);max-width:88ch}
+.rec .who{margin-top:var(--s4);font-size:14px;font-weight:600}
+.mix{margin-top:var(--s5)}
+.mix h4{font-size:15px;font-weight:700;margin:0 0 var(--s2)}
+.mix .tbl-wrap table{min-width:600px}
+
+/* 결정 항목 */
+.qs{display:grid;gap:0;border-top:1px solid var(--line)}
+.q{display:grid;grid-template-columns:3.2em 1fr;gap:var(--s1) var(--s3);padding:var(--s4) 0;border-bottom:1px solid var(--line)}
+.q .qn{font-weight:700;font-variant-numeric:tabular-nums;color:var(--fg-3)}
+.q .qt{font-weight:600}
+.q .qo{grid-column:2;font-size:14px;color:var(--fg-2)}
+.q .qo b{color:var(--fg)}
+@media (min-width:900px){.q{grid-template-columns:3.2em 15em minmax(0,1fr)}.q .qo{grid-column:auto}}
+
+footer{margin-top:var(--s8);border-top:1px solid var(--line);padding:var(--s5) 0 var(--s7);font-size:13px;color:var(--fg-3)}
+footer ul{display:grid;gap:var(--s1);margin-top:var(--s2)}
+footer code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--fg-2)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">유로 다이제스트 · D0 전체 디자인 · 비교판 v0.1 · 2026-10-11</p>
+      <h1>D0 시안 3개 비교</h1>
+      <p class="lede">세 시안의 첫 화면을 같은 조건(<span class="nw">DPR 1</span> · <span class="nw">reduced-motion</span>)으로 나란히 놓았다. 무엇을 고를지는 <span class="nw">D0-06</span>에서 사용자가 정하고, 고르기 전에는 구현하지 않는다. 자세한 근거는 <a href="comparison.md">comparison.md</a>에 있다.</p>
+    </div>
+    <button class="btn" type="button" data-theme-toggle aria-label="이 페이지 테마: 시스템 설정, 눌러서 바꾸기">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg>
+      <span data-theme-label>테마 · 시스템</span>
+    </button>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+<section aria-labelledby="h-shots">
+  <div class="sec-h">
+    <h2 id="h-shots">첫 화면 나란히</h2>
+    <p class="sec-note">이미지를 누르면 원본 크기로 열린다 · 1280 fold 윗부분은 시안 설명용 메타 띠(제품에는 없음)</p>
+  </div>
+  <div class="sec-body cols">
+
+    <article class="col" aria-labelledby="h-a">
+      <div class="col-h">
+        <span class="letter" aria-hidden="true">A</span>
+        <h3 id="h-a">Broadsheet · 조간 1면</h3>
+        <p class="one">아침 신문 1면처럼 괘선·명조·단 조판으로 밤사이 소식을 지면에 앉힌다.</p>
+      </div>
+      <div class="col-meta">
+        <span>평가 <b class="num">40</b> / 50 · 폰트 <span class="num">403.2</span>KB</span>
+        <a href="concept-a.html">시안 A 열기 →</a>
+      </div>
+      <div class="shots">
+        <figure>
+          <figcaption class="cap"><b>375 · 라이트 / 다크</b><span>5줄 중 3줄 노출</span></figcaption>
+          <div class="pair mobile-pair">
+            <a class="shot" href="screenshots/concept-a-375-light-fold.png"><img src="screenshots/concept-a-375-light-fold.png" width="375" height="812" alt="시안 A 375px 라이트 첫 화면: 명조 워드마크와 이중 괘선 아래 오늘의 5줄 1·2번 줄"></a>
+            <a class="shot" href="screenshots/concept-a-375-dark-fold.png"><img src="screenshots/concept-a-375-dark-fold.png" width="375" height="812" alt="시안 A 375px 다크 첫 화면"></a>
+          </div>
+        </figure>
+        <figure>
+          <figcaption class="cap"><b>1280 · 라이트</b><span>메타 띠 펼침 상태</span></figcaption>
+          <a class="shot" href="screenshots/concept-a-1280-light-fold.png"><img src="screenshots/concept-a-1280-light-fold.png" width="1280" height="800" loading="lazy" alt="시안 A 1280px 라이트 첫 화면: 메타 띠 아래 가운데 정렬 명조 워드마크와 3단 지면"></a>
+        </figure>
+        <figure>
+          <figcaption class="cap"><b>1280 · 다크</b><span>메타 띠 펼침 상태</span></figcaption>
+          <a class="shot" href="screenshots/concept-a-1280-dark-fold.png"><img src="screenshots/concept-a-1280-dark-fold.png" width="1280" height="800" loading="lazy" alt="시안 A 1280px 다크 첫 화면"></a>
+        </figure>
+      </div>
+    </article>
+
+    <article class="col" aria-labelledby="h-b">
+      <div class="col-h">
+        <span class="letter" aria-hidden="true">B</span>
+        <h3 id="h-b">Cover · 매거진 커버</h3>
+        <p class="one">잡지 표지처럼 거대한 숫자 '5'와 극굵은 고딕 커버 라인으로 아침 한 호를 연다.</p>
+      </div>
+      <div class="col-meta">
+        <span>평가 <b class="num">35</b> / 50 · 폰트 <span class="num">387.6</span>KB</span>
+        <a href="concept-b.html">시안 B 열기 →</a>
+      </div>
+      <div class="shots">
+        <figure>
+          <figcaption class="cap"><b>375 · 라이트 / 다크</b><span>5줄 중 2줄 노출</span></figcaption>
+          <div class="pair mobile-pair">
+            <a class="shot" href="screenshots/concept-b-375-light-fold.png"><img src="screenshots/concept-b-375-light-fold.png" width="375" height="812" alt="시안 B 375px 라이트 첫 화면: 볼트 표지 위 거대 숫자 5와 첫 커버 라인"></a>
+            <a class="shot" href="screenshots/concept-b-375-dark-fold.png"><img src="screenshots/concept-b-375-dark-fold.png" width="375" height="812" alt="시안 B 375px 다크 첫 화면: 어두운 표지 위 볼트색 숫자 5"></a>
+          </div>
+        </figure>
+        <figure>
+          <figcaption class="cap"><b>1280 · 라이트</b><span>메타 띠 펼침 상태</span></figcaption>
+          <a class="shot" href="screenshots/concept-b-1280-light-fold.png"><img src="screenshots/concept-b-1280-light-fold.png" width="1280" height="800" loading="lazy" alt="시안 B 1280px 라이트 첫 화면: 메타 띠 아래 볼트 표지와 거대 워드마크"></a>
+        </figure>
+        <figure>
+          <figcaption class="cap"><b>1280 · 다크</b><span>메타 띠 펼침 상태</span></figcaption>
+          <a class="shot" href="screenshots/concept-b-1280-dark-fold.png"><img src="screenshots/concept-b-1280-dark-fold.png" width="1280" height="800" loading="lazy" alt="시안 B 1280px 다크 첫 화면"></a>
+        </figure>
+      </div>
+    </article>
+
+    <article class="col" aria-labelledby="h-c">
+      <div class="col-h">
+        <span class="letter" aria-hidden="true">C</span>
+        <h3 id="h-c">Programme · 매치데이 프로그램</h3>
+        <p class="one">경기장 프로그램북처럼 아침 한 호를 등번호 매긴 소책자로 엮는다.</p>
+      </div>
+      <div class="col-meta">
+        <span>평가 <b class="num">42</b> / 50 · 폰트 <span class="num">417.8</span>KB</span>
+        <a href="concept-c.html">시안 C 열기 →</a>
+      </div>
+      <div class="shots">
+        <figure>
+          <figcaption class="cap"><b>375 · 라이트 / 다크</b><span>5줄 중 4줄 노출</span></figcaption>
+          <div class="pair mobile-pair">
+            <a class="shot" href="screenshots/concept-c-375-light-fold.png"><img src="screenshots/concept-c-375-light-fold.png" width="375" height="812" alt="시안 C 375px 라이트 첫 화면: 네이비 티켓 마스트헤드와 등번호 매긴 오늘의 5줄"></a>
+            <a class="shot" href="screenshots/concept-c-375-dark-fold.png"><img src="screenshots/concept-c-375-dark-fold.png" width="375" height="812" alt="시안 C 375px 다크 첫 화면: 벽돌색 티켓과 네이비 지면"></a>
+          </div>
+        </figure>
+        <figure>
+          <figcaption class="cap"><b>1280 · 라이트</b><span>메타 띠 펼침 상태</span></figcaption>
+          <a class="shot" href="screenshots/concept-c-1280-light-fold.png"><img src="screenshots/concept-c-1280-light-fold.png" width="1280" height="800" loading="lazy" alt="시안 C 1280px 라이트 첫 화면: 메타 띠 아래 호수 스텁이 달린 티켓 마스트헤드"></a>
+        </figure>
+        <figure>
+          <figcaption class="cap"><b>1280 · 다크</b><span>메타 띠 펼침 상태</span></figcaption>
+          <a class="shot" href="screenshots/concept-c-1280-dark-fold.png"><img src="screenshots/concept-c-1280-dark-fold.png" width="1280" height="800" loading="lazy" alt="시안 C 1280px 다크 첫 화면"></a>
+        </figure>
+      </div>
+    </article>
+  </div>
+
+  <details class="more" open>
+    <summary>1280 첫 화면 — 메타 띠를 뺀 제품 부분만 보기</summary>
+    <p class="sec-note">전체 페이지 스크린샷에서 헤더 위끝(A 359px · B 352px · C 449px)부터 800px을 잘라 보여 준다. 전체 페이지 이미지 6장을 쓰므로 무거우면 접어 둔다.</p>
+    <div class="cols">
+      <div class="shots">
+        <figure><figcaption class="cap"><b>A · 라이트</b><span>5줄 모두</span></figcaption>
+          <div class="crop" style="--w:1280;--h:800;--y:359"><img src="screenshots/concept-a-1280-light.png" width="1280" height="15527" loading="lazy" alt="시안 A 1280px 라이트, 메타 띠를 뺀 첫 화면"></div></figure>
+        <figure><figcaption class="cap"><b>A · 다크</b><span></span></figcaption>
+          <div class="crop" style="--w:1280;--h:800;--y:359"><img src="screenshots/concept-a-1280-dark.png" width="1280" height="15527" loading="lazy" alt="시안 A 1280px 다크, 메타 띠를 뺀 첫 화면"></div></figure>
+      </div>
+      <div class="shots">
+        <figure><figcaption class="cap"><b>B · 라이트</b><span>5줄 모두</span></figcaption>
+          <div class="crop" style="--w:1280;--h:800;--y:352"><img src="screenshots/concept-b-1280-light.png" width="1280" height="18701" loading="lazy" alt="시안 B 1280px 라이트, 메타 띠를 뺀 첫 화면"></div></figure>
+        <figure><figcaption class="cap"><b>B · 다크</b><span></span></figcaption>
+          <div class="crop" style="--w:1280;--h:800;--y:352"><img src="screenshots/concept-b-1280-dark.png" width="1280" height="18701" loading="lazy" alt="시안 B 1280px 다크, 메타 띠를 뺀 첫 화면"></div></figure>
+      </div>
+      <div class="shots">
+        <figure><figcaption class="cap"><b>C · 라이트</b><span>4줄 + 5번째 7px 잘림</span></figcaption>
+          <div class="crop" style="--w:1280;--h:800;--y:449"><img src="screenshots/concept-c-1280-light.png" width="1280" height="14694" loading="lazy" alt="시안 C 1280px 라이트, 메타 띠를 뺀 첫 화면"></div></figure>
+        <figure><figcaption class="cap"><b>C · 다크</b><span></span></figcaption>
+          <div class="crop" style="--w:1280;--h:800;--y:449"><img src="screenshots/concept-c-1280-dark.png" width="1280" height="14694" loading="lazy" alt="시안 C 1280px 다크, 메타 띠를 뺀 첫 화면"></div></figure>
+      </div>
+    </div>
+  </details>
+</section>
+
+<section aria-labelledby="h-rec">
+  <div class="sec-h">
+    <h2 id="h-rec">추천안</h2>
+    <p class="sec-note">결정은 사용자 몫이다(<span class="nw">D0-06</span>) · 고르기 전에는 구현하지 않는다</p>
+  </div>
+  <div class="sec-body">
+    <div class="rec">
+      <div class="rec-h">
+        <span class="badge inv">추천</span>
+        <h3>C Programme을 기반으로 A Broadsheet의 1280 지면 위계를 섞는다</h3>
+      </div>
+      <ol>
+        <li>매일 아침 모바일로 23~45장을 훑는 제품이다. C는 375 첫 화면(5줄 중 4줄 노출), 카드 스캔(평균 181px, 요소 위치 고정), 데이터 변동(높이 편차 최소)에서 가장 강하고, 5줄이 적은 날도 번호 거터로 버틴다.</li>
+        <li>등번호·팀시트·리그표 은유가 D1(순위표·포메이션), D2(선수·이적), D3(티켓 OG·아이콘)로 새 언어 없이 이어진다.</li>
+        <li>C의 약점(1280이 균일한 목록이라 포털에 가까워지고, M1 1280에서 5줄 위치가 애매함)은 A의 지면 위계로 메운다. B는 첫인상이 가장 강하지만 피드 피로와 375 첫 화면, 습관형 운영에서 치르는 비용이 크다.</li>
+        <li>차점은 A(40점)다. U-10의 신문형 선호를 앞세운다면 A 단일안도 합리적이다.</li>
+      </ol>
+      <p class="who">혼합을 고르면 혼합안 <code>concept-mix.html</code>을 한 번 만들어 다시 확인한다(<span class="nw">D0-07</span>).</p>
+      <div class="mix">
+        <h4>혼합 지시 초안 (C + A)</h4>
+        <div class="tbl-wrap" tabindex="0" role="region" aria-label="혼합 지시 초안 표">
+          <table>
+            <thead><tr><th scope="col">출처</th><th scope="col">지시</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">C 유지</th><td>티켓 마스트헤드(호수·날짜·발행 시각), 5줄 등번호 1~5, 대회 인덱스 탭, 도장형 칩, 2도 팔레트(라이트·다크), Pretendard 400·800 + Barlow Condensed, 상태 화면·S3·S4</td></tr>
+              <tr><th scope="row">A → C</th><td>1280 피드에서 imp가 가장 높은 카드 1장을 머리기사로(가로 전폭, 제목 한 단계 크게). 나머지와 375는 C 그대로</td></tr>
+              <tr><th scope="row">A → C</th><td>1280 M1 상태에서 우측 열이 비면 중앙 열을 넓히고, 5줄은 중앙 최상단에 둔다(D2). C의 '5줄 우측 sticky'는 쓰지 않는다</td></tr>
+              <tr><th scope="row">A → C (선택)</th><td>같은 사건의 국내·해외 카드 연결 줄. 태그 일치로 코드가 만들 수 있을 때만(추정)</td></tr>
+              <tr><th scope="row">조정</th><td>게재 번호를 작게·보조색으로, 중요도 빈 칸 테두리 3:1 이상, 액센트 면 대비 5 이상, 크림 지면 채도 조금 낮춤</td></tr>
+              <tr><th scope="row">B → C (선택)</th><td>대회 필터를 고르면 피드 헤더 탭을 그 대회 색 면으로 바꾼다</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-sum">
+  <div class="sec-h">
+    <h2 id="h-sum">요약 비교표</h2>
+    <p class="sec-note">좁은 화면에서는 표를 옆으로 밀어 본다</p>
+  </div>
+  <div class="sec-body tbl-wrap" tabindex="0" role="region" aria-labelledby="h-sum">
+    <table class="t-sum">
+      <thead><tr><th scope="col"></th><th scope="col">A Broadsheet</th><th scope="col">B Cover</th><th scope="col">C Programme</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">레이아웃</th><td>컬럼 그리드 + 괘선, 중요도별 머리기사·2단</td><td>비대칭 표지 스프레드 + 풀블리드 면, 피드 1단</td><td>번호 리스트(팀시트) + 티켓 스텁 + 인덱스 탭, 1단</td></tr>
+        <tr><th scope="row">타이포</th><td>함렛 400·600 + Newsreader</td><td>원티드 산스 가변 + Archivo(초압축 숫자)</td><td>Pretendard 400·800 + Barlow Condensed</td></tr>
+        <tr><th scope="row">색</th><td>종이 모노톤 + 주홍(선 위주)</td><td>흑백 고대비 + 볼트 면 1색</td><td>2도 인쇄(크림·네이비 + 레드)</td></tr>
+        <tr><th scope="row">밀도 · 모션</th><td>낮음~중간 · 정적</td><td>표지 낮음 → 피드 중간 · 블록 와이프</td><td>중간~높음 · 인쇄형</td></tr>
+        <tr><th scope="row">장점</th><td>외국어 원제목이 세리프로 가장 품위 있게 읽힘. 이미지 없이 괘선만으로 완성. 매일 봐도 차분함</td><td>첫인상·브랜드 각인 최강. 숫자가 그래픽의 주인공. 다크가 특히 좋음</td><td>축구 고유 정체성. 375 첫 화면 4줄, 카드 가장 짧고 고름. D1·D2로 은유가 그대로 이어짐</td></tr>
+        <tr><th scope="row">단점</th><td>375에서는 1단 목록. 에너지 약함. 한글 명조는 OS마다 폴백이 다름</td><td>375 첫 화면을 표지가 차지(2줄). 피드 강조 과다. 라이트 볼트 전면이 눈부심</td><td>레트로·키치 위험. 게재 번호를 순위로 오해할 수 있음. 크림 지면. 흔한 서체</td></tr>
+        <tr><th scope="row">구현 난이도</th><td>중</td><td>중상</td><td>중</td></tr>
+        <tr><th scope="row">폰트 · JS</th><td class="num">403.2KB · 요청 3 · JS gzip 3.0KB</td><td class="num">387.6KB · 요청 2 · JS 2.9KB</td><td class="num">417.8KB · 요청 4 · JS 2.9KB · RFN 이름 변경</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="h-score">
+  <div class="sec-h">
+    <h2 id="h-score">평가 매트릭스</h2>
+    <p class="sec-note">5점 만점, 높을수록 좋다(구현 난이도는 쉬울수록 높다) · 좁은 화면에서는 점수만 · 근거 전문은 comparison.md §2</p>
+  </div>
+  <div class="sec-body tbl-wrap" tabindex="0" role="region" aria-labelledby="h-score">
+    <table class="t-score">
+      <colgroup><col class="c-k"><col class="c-s"><col class="c-w"><col class="c-s"><col class="c-w"><col class="c-s"><col class="c-w"></colgroup>
+      <thead><tr><th scope="col">기준</th><th scope="col" colspan="2" class="grp">A</th><th scope="col" colspan="2" class="grp">B</th><th scope="col" colspan="2" class="grp">C</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">세련됨·차별성</th><td class="sc">4</td><td class="why">가장 정제, 모던함은 덜함</td><td class="sc">5</td><td class="why">첫인상 최강, 유행색 위험</td><td class="sc">4</td><td class="why">축구 인쇄물 정체성, 키치 위험</td></tr>
+        <tr><th scope="row">3초 스캔·피로도</th><td class="sc">4</td><td class="why">키커 → 세리프 제목, 조용</td><td class="sc">3</td><td class="why">카드당 블록 2~3개, 극굵은 제목</td><td class="sc">5</td><td class="why">위치 고정, 181px / 149px</td></tr>
+        <tr><th scope="row">첫 화면 375 / 1280</th><td class="sc">4</td><td class="why">3줄 / 5줄</td><td class="sc">3</td><td class="why">2줄 / 5줄</td><td class="sc">5</td><td class="why">4줄 / 4줄</td></tr>
+        <tr><th scope="row">다크 모드</th><td class="sc">4</td><td class="why">조정된 야간판, 반전 수준</td><td class="sc">5</td><td class="why">볼트가 숫자로, 라이트보다 좋음</td><td class="sc">4</td><td class="why">독자적, 티켓 색이 테마마다 바뀜</td></tr>
+        <tr><th scope="row">접근성·대비</th><td class="sc">4</td><td class="why">30쌍 통과, axe 1종(opacity)</td><td class="sc">5</td><td class="why">37쌍, axe 0</td><td class="sc">4</td><td class="why">axe 0, 최저 4.54(여유 적음)</td></tr>
+        <tr><th scope="row">M1 상태·적은 데이터</th><td class="sc">5</td><td class="why">본문 3단 확장, 휴간 은유</td><td class="sc">3</td><td class="why">거대 2·0이 브랜드와 충돌</td><td class="sc">4</td><td class="why">거터는 강함, M1 1280 조정 필요</td></tr>
+        <tr><th scope="row">확장성 D1~D3</th><td class="sc">4</td><td class="why">표·칼럼은 자연스러움</td><td class="sc">4</td><td class="why">팀 표지·OG 강함, 표에선 약함</td><td class="sc">5</td><td class="why">리그표·팀시트·포메이션이 원래 구성요소</td></tr>
+        <tr><th scope="row">구현 난이도</th><td class="sc">3</td><td class="why">중요도별 지면 그리드</td><td class="sc">2</td><td class="why">표지 375·1280 별도, 숫자 연동</td><td class="sc">4</td><td class="why">1단 리스트 + CSS 도형</td></tr>
+        <tr><th scope="row">번들·폰트·CLS</th><td class="sc">3</td><td class="why">3파일, 명조 폴백 OS 차이</td><td class="sc">3</td><td class="why">총량 최소, 극굵기 CLS 위험</td><td class="sc">3</td><td class="why">총량 최대, RFN, 한글 CLS 최소</td></tr>
+        <tr><th scope="row">장기 운영</th><td class="sc">5</td><td class="why">차분, 긴 제목·태그 변동 흡수</td><td class="sc">2</td><td class="why">매일 같은 표지, 포스터 피로</td><td class="sc">4</td><td class="why">리스트 리듬, 높이 편차 최소</td></tr>
+      </tbody>
+      <tfoot><tr><th scope="row">합계 (50)</th><td class="sc num">40</td><td></td><td class="sc num">35</td><td></td><td class="sc num">42</td><td></td></tr></tfoot>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="h-con">
+  <div class="sec-h">
+    <h2 id="h-con">대비비 — 시안별 최저값</h2>
+    <p class="sec-note">WCAG 2.x 재계산 + axe-core(375·1280 × 라이트·다크 12조합)</p>
+  </div>
+  <div class="sec-body tbl-wrap" tabindex="0" role="region" aria-labelledby="h-con">
+    <table class="t-con">
+      <thead><tr><th scope="col">시안</th><th scope="col">라이트 텍스트</th><th scope="col">다크 텍스트</th><th scope="col">비텍스트</th><th scope="col">메모</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">A</th><td>4.80 메타 / 박스 바탕</td><td>5.72 같은 쌍</td><td>3.47 / 3.67 UI 경계</td><td>오류 견본에서 흐리게 처리한 키커 4.47~4.49(axe)</td></tr>
+        <tr><th scope="row">B</th><td>4.86 상승 ▲ / 배경</td><td>5.9 메타 / 표면</td><td>헤어라인 1.37(장식)</td><td>볼트를 글자로 쓰지 않는 규칙(1.13)</td></tr>
+        <tr><th scope="row">C</th><td>4.54 한국 표식 / 액센트 면</td><td>4.95 티켓 보조 글자</td><td>2.50 / 3.44 중요도 빈 칸</td><td>여유가 가장 적음 → DESIGN.md에서 보정</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="h-q">
+  <div class="sec-h">
+    <h2 id="h-q">D0-06에서 함께 정할 항목</h2>
+    <p class="sec-note">굵게 표시한 것이 추천 · 전체 선택지와 영향은 comparison.md §6</p>
+  </div>
+  <div class="sec-body">
+    <ol class="qs">
+      <li class="q"><span class="qn">Q1</span><span class="qt">시안 선택</span><span class="qo"><b>C 기반 + A의 1280 지면 위계 혼합</b> · C 단일안 · A Broadsheet · B Cover</span></li>
+      <li class="q"><span class="qn">Q2</span><span class="qt">브리핑 스코어 순서</span><span class="qo"><b>주어 팀 득점을 먼저</b>("원정에서 2-1로 이겼고") · 홈-원정 순서 유지 · 스코어를 문장에서 분리</span></li>
+      <li class="q"><span class="qn">Q3</span><span class="qt">대회 한글 표기</span><span class="qo"><b>EPL·라리가·세리에A·분데스·리그1·UCL 확정</b> · 한글 약칭(…챔스) · 영문 약칭 통일</span></li>
+      <li class="q"><span class="qn">Q4</span><span class="qt">경기 없는 날(S4)</span><span class="qo"><b>블록 유지 + 높이 축소 + "오늘은 5줄을 쉽니다"</b> · 거대 숫자 0 · 블록 숨김(D2 충돌)</span></li>
+      <li class="q"><span class="qn">Q5</span><span class="qt">태그라인</span><span class="qo"><b>"매일 아침, 밤사이 유럽 축구를 한눈에."</b> · "밤사이 유럽 축구, 아침 한 호로." · "유럽 축구의 밤을 아침 5줄로."</span></li>
+      <li class="q"><span class="qn">Q6</span><span class="qt">OG에 5줄 첫 줄</span><span class="qo"><b>워드마크·날짜·호수만</b> · 첫 줄 포함(스포일러) · 결과 아닌 줄만</span></li>
+      <li class="q"><span class="qn">Q7</span><span class="qt">(C·혼합) 게재 번호</span><span class="qo"><b>작게·보조색으로 유지</b> · 현행대로 크게 · 피드에서 빼기</span></li>
+      <li class="q"><span class="qn">Q8</span><span class="qt">(C 단일) 1280 M1 우측 열</span><span class="qo"><b>중앙 열 확장, 5줄 중앙 최상단</b> · 5줄을 우측 sticky로</span></li>
+      <li class="q"><span class="qn">Q9</span><span class="qt">(A 계열) 한글 명조 굵기</span><span class="qo"><b>600</b> · 900(약 30KB 가볍지만 카드 제목이 지나치게 검음)</span></li>
+      <li class="q"><span class="qn">Q10</span><span class="qt">(B 계열) 거대 숫자</span><span class="qo"><b>그날 실제 줄 수(5/2/0)</b> · 항상 5 + "5줄 중 2줄" · 호수</span></li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>측정: Playwright(DPR 1 · reduced-motion) · axe-core WCAG 2.1 AA · 폰트는 <code>docs/design/fonts/</code> woff2 실측 · 기준 발행일 2026-10-11(제 1호 가정) · 기준 시각 15:54 KST</p>
+    <ul>
+      <li>비교 문서 <a href="comparison.md"><code>docs/design/d0/comparison.md</code></a> · 범위 <a href="scope.md"><code>scope.md</code></a> · 방향 <a href="directions.md"><code>directions.md</code></a></li>
+      <li>시안 <a href="concept-a.html"><code>concept-a.html</code></a> · <a href="concept-b.html"><code>concept-b.html</code></a> · <a href="concept-c.html"><code>concept-c.html</code></a> · 스크린샷 <code>screenshots/concept-{a,b,c}-{375,1280}-{light,dark}[-fold].png</code></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var d=document.documentElement,btns=document.querySelectorAll('[data-theme-toggle]');
+  var LBL={system:'시스템',light:'라이트',dark:'다크'};
+  function cur(){return d.getAttribute('data-theme')||'system'}
+  function paint(){var t=cur();btns.forEach(function(b){b.setAttribute('aria-label','이 페이지 테마: '+LBL[t]+', 눌러서 바꾸기');var s=b.querySelector('[data-theme-label]');if(s)s.textContent='테마 · '+LBL[t]})}
+  btns.forEach(function(b){b.addEventListener('click',function(){var o=['system','light','dark'],n=o[(o.indexOf(cur())+1)%3];if(n==='system')d.removeAttribute('data-theme');else d.setAttribute('data-theme',n);try{if(n==='system')localStorage.removeItem('ed-compare-theme');else localStorage.setItem('ed-compare-theme',n)}catch(e){}paint()})});
+  paint();
+})();
+</script>
+</body>
+</html>
