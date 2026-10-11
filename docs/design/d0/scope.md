@@ -14,7 +14,7 @@
 | 기준 발행일 | **2026-10-11 (일)** — `news-sample.json` `date`와 `brief-sample.json` `days[0]`이 같은 날 | M0-34 |
 | 계절 | 유럽 서머타임 기간 → 이 날 공개 목표 07:00 KST. 2026-10-26(월) 발행부터 07:30 | D26 |
 | 기준 시각(now) | `2026-10-11T06:54:14Z` = **15:54 KST**(두 fixture 중 늦은 `generatedAt`) — 상대 시간·"마지막 업데이트" 계산용 (§11 Q3 확정) | fixtures |
-| 카드 순서 | fixture 순서 그대로(임시 점수 순 = imp 내림차순, M1-16 점수화 전) | PRD §4.2-6, meta `notes` |
+| 카드 순서 | fixture 순서 그대로(임시 점수 순 = imp 내림차순, M1-14 점수화 전) | PRD §4.2-6, meta `notes` |
 | 카드 시각 | 대표 출처 `src[0].at` → KST (추정 — `src[]`는 Tier → weight → 최신 순 정렬이라 시각 순이 아님) | meta `notes` |
 | 표시 필드 | 카드: `t`·`cat`·`comp`·`teams`·`players`·`imp`·`kr`·`spoiler`·`transfer`·`src[]`·`lang` / 브리핑: `text`·`ai`만. **`textRaw`·`lenKo`·`_note`·`_downgrade`·`refs`는 표시하지 않는다** | fixtures |
 | 한글 라벨 | slug → `news-sample.meta.json` `labels`(`provisional` = 임시 표기, M1-21 확정 전) | meta |
