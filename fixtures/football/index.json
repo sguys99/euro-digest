@@ -1,0 +1,1053 @@
+{
+  "task": "M0-35",
+  "_note": "축구 데이터 API 원본 응답 샘플(어댑터·브리핑 입력 빌더 단위 테스트 입력, M1-44·M1-48·M1-19·M1-24·M2-02·M2-07·M3-02·M3-03). 응답 구조(키·중첩·null·시각 표기)는 그대로 두고 이미지 URL·odds·요금제 필드만 지웠다. 재수집 불가 — 지우지 말 것. cases.tag는 사람이 붙인 메모이고 어댑터 출력의 정답이 아니다(태그 뜻은 tagLegend).",
+  "placeholder": "https://example.invalid/stripped.png",
+  "imageKeys": ["crest", "emblem", "flag", "logo", "photo"],
+  "apis": {
+    "football-data": {
+      "base": "https://api.football-data.org",
+      "version": "v4",
+      "plan": "무료",
+      "attribution": "Football data provided by the Football-Data.org API"
+    },
+    "api-football": { "base": "https://v3.football.api-sports.io", "version": "v3", "plan": "무료", "attribution": "API-Football (표기 의무 없음 — 병기 권장)" }
+  },
+  "files": [
+    {
+      "path": "football-data/competition-cl.json",
+      "api": "football-data",
+      "kind": "fd-competition",
+      "endpoint": "/v4/competitions/CL",
+      "fetchedAt": "2026-10-10T12:21:08.141Z",
+      "asOf": "2026-10-10",
+      "comp": "UCL",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        {
+          "tag": "ucl-enddate-league-phase",
+          "ids": [2001],
+          "note": "currentSeason.endDate 2027-01-27 = 리그 페이즈 마지막 날(결승 2027-06-05 아님). configs/competitions.json UCL endDate는 UEFA 결승일을 쓴다(M0-28)"
+        }
+      ],
+      "removed": { "imageUrls": 6 },
+      "bytes": 5935
+    },
+    {
+      "path": "football-data/competition-fl1.json",
+      "api": "football-data",
+      "kind": "fd-competition",
+      "endpoint": "/v4/competitions/FL1",
+      "fetchedAt": "2026-10-10T12:21:00.751Z",
+      "asOf": "2026-10-10",
+      "comp": "LIGUE1",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        {
+          "tag": "season-structure",
+          "ids": [2015],
+          "note": "currentSeason + 과거 seasons[] 목록(시즌 id·startDate·endDate·currentMatchday·winner) — /new-season 확인용"
+        }
+      ],
+      "removed": { "imageUrls": 3 },
+      "bytes": 8541
+    },
+    {
+      "path": "football-data/standings-pl-2026-10-11.json",
+      "api": "football-data",
+      "kind": "fd-standings",
+      "endpoint": "/v4/competitions/PL/standings",
+      "fetchedAt": "2026-10-11T06:45:51.643Z",
+      "asOf": "2026-10-11",
+      "comp": "EPL",
+      "origin": "M0-34",
+      "trimmed": null,
+      "cases": [
+        { "tag": "next-snapshot", "ids": [], "note": "standings-pl-2026-10-10.json의 다음 스냅숏 — 순위 변동(prevPos) 계산 입력(M2-03)" },
+        { "tag": "logo-key-kept", "ids": [], "note": "이미지 키를 지우지 않고 값만 자리값 https://example.invalid/stripped.png로 바꿨다 — 어댑터의 로고·사진 URL 버림 테스트용" }
+      ],
+      "removed": { "imageUrls": 22 },
+      "bytes": 5589
+    },
+    {
+      "path": "football-data/standings-pd-2026-10-11.json",
+      "api": "football-data",
+      "kind": "fd-standings",
+      "endpoint": "/v4/competitions/PD/standings",
+      "fetchedAt": "2026-10-11T06:46:01.222Z",
+      "asOf": "2026-10-11",
+      "comp": "LALIGA",
+      "origin": "M0-34",
+      "trimmed": null,
+      "cases": [
+        {
+          "tag": "standings-after-cancel",
+          "ids": [87, 77],
+          "note": "라요 바예카노(87)·아틀레틱(77): 전날 스냅숏(standings-pd-2026-10-10)에 들어 있던 진행 중 무승부가 경기 취소(564698 CANCELLED) 뒤 빠졌다 — 경기 수 8→7·7→6"
+        },
+        { "tag": "next-snapshot", "ids": [], "note": "standings-pd-2026-10-10.json의 다음 스냅숏 — 순위 변동(prevPos) 계산 입력(M2-03)" }
+      ],
+      "removed": { "imageUrls": 22 },
+      "bytes": 4840
+    },
+    {
+      "path": "football-data/standings-sa-2026-10-11.json",
+      "api": "football-data",
+      "kind": "fd-standings",
+      "endpoint": "/v4/competitions/SA/standings",
+      "fetchedAt": "2026-10-11T06:46:08.545Z",
+      "asOf": "2026-10-11",
+      "comp": "SERIEA",
+      "origin": "M0-34",
+      "trimmed": null,
+      "cases": [],
+      "removed": { "imageUrls": 22 },
+      "bytes": 4722
+    },
+    {
+      "path": "football-data/standings-bl1-2026-10-11.json",
+      "api": "football-data",
+      "kind": "fd-standings",
+      "endpoint": "/v4/competitions/BL1/standings",
+      "fetchedAt": "2026-10-11T06:46:16.110Z",
+      "asOf": "2026-10-11",
+      "comp": "BUNDESLIGA",
+      "origin": "M0-34",
+      "trimmed": null,
+      "cases": [],
+      "removed": { "imageUrls": 20 },
+      "bytes": 4365
+    },
+    {
+      "path": "football-data/standings-fl1-2026-10-11.json",
+      "api": "football-data",
+      "kind": "fd-standings",
+      "endpoint": "/v4/competitions/FL1/standings",
+      "fetchedAt": "2026-10-11T06:46:23.390Z",
+      "asOf": "2026-10-11",
+      "comp": "LIGUE1",
+      "origin": "M0-34",
+      "trimmed": null,
+      "cases": [],
+      "removed": { "imageUrls": 20 },
+      "bytes": 4336
+    },
+    {
+      "path": "football-data/standings-cl-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-standings",
+      "endpoint": "/v4/competitions/CL/standings",
+      "fetchedAt": "2026-10-10T12:21:53.446Z",
+      "asOf": "2026-10-10",
+      "comp": "UCL",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        {
+          "tag": "ucl-league-phase-36",
+          "ids": [],
+          "note": "standings 1개 — stage LEAGUE_STAGE·type TOTAL·group \"League phase\"·36행 단일 테이블(MD1 뒤, 리그 페이즈 2라운드 전)"
+        }
+      ],
+      "removed": { "imageUrls": 38 },
+      "bytes": 8307
+    },
+    {
+      "path": "football-data/standings-pl-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-standings",
+      "endpoint": "/v4/competitions/PL/standings",
+      "fetchedAt": "2026-10-10T12:21:15.843Z",
+      "asOf": "2026-10-10",
+      "comp": "EPL",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        {
+          "tag": "standings-counts-in-play",
+          "ids": [57, 341],
+          "note": "아스널(57)·리즈(341): 요청 시각에 진행 중(IN_PLAY 0:0)이던 560593을 순위표가 무승부로 반영했다(M0-28 실측). 같은 시각 경기 목록은 matches-pl-2026-10-07-to-13"
+        },
+        {
+          "tag": "prev-snapshot",
+          "ids": [],
+          "note": "standings-pl-2026-10-11.json의 전날 스냅숏 — 순위 변동(prevPos) 계산 입력(M2-03). football-data는 prevPos를 주지 않는다"
+        }
+      ],
+      "removed": { "imageUrls": 22 },
+      "bytes": 4837
+    },
+    {
+      "path": "football-data/standings-pd-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-standings",
+      "endpoint": "/v4/competitions/PD/standings",
+      "fetchedAt": "2026-10-10T12:21:23.458Z",
+      "asOf": "2026-10-10",
+      "comp": "LALIGA",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        {
+          "tag": "standings-counts-in-play",
+          "ids": [87, 77],
+          "note": "라요 바예카노(87)·아틀레틱(77): 진행 중이던 564698을 무승부로 반영 — 이 경기는 다음 날 CANCELLED가 됐다(standings-pd-2026-10-11에서는 빠짐)"
+        },
+        {
+          "tag": "prev-snapshot",
+          "ids": [],
+          "note": "standings-pd-2026-10-11.json의 전날 스냅숏 — 순위 변동(prevPos) 계산 입력(M2-03). football-data는 prevPos를 주지 않는다"
+        }
+      ],
+      "removed": { "imageUrls": 22 },
+      "bytes": 4838
+    },
+    {
+      "path": "football-data/scorers-pl-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-scorers",
+      "endpoint": "/v4/competitions/PL/scorers",
+      "fetchedAt": "2026-10-10T12:22:28.849Z",
+      "asOf": "2026-10-10",
+      "comp": "EPL",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        { "tag": "assists-null", "ids": [38101, 6486, 99813], "note": "assists null(0이 아님 — 미집계와 구분 불가, null 유지)" },
+        { "tag": "penalties-null", "ids": [38101, 6486, 6396], "note": "penalties null 유지" }
+      ],
+      "removed": { "imageUrls": 11 },
+      "bytes": 5957
+    },
+    {
+      "path": "football-data/scorers-pd-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-scorers",
+      "endpoint": "/v4/competitions/PD/scorers",
+      "fetchedAt": "2026-10-10T12:22:37.081Z",
+      "asOf": "2026-10-10",
+      "comp": "LALIGA",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        { "tag": "assists-null", "ids": [180218, 265516, 2237], "note": "assists null(0이 아님 — 미집계와 구분 불가, null 유지)" },
+        { "tag": "penalties-null", "ids": [115175, 180218, 265516], "note": "penalties null 유지" }
+      ],
+      "removed": { "imageUrls": 11 },
+      "bytes": 6192
+    },
+    {
+      "path": "football-data/scorers-sa-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-scorers",
+      "endpoint": "/v4/competitions/SA/scorers",
+      "fetchedAt": "2026-10-10T12:22:45.230Z",
+      "asOf": "2026-10-10",
+      "comp": "SERIEA",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        { "tag": "assists-null", "ids": [7457, 252836, 169216], "note": "assists null(0이 아님 — 미집계와 구분 불가, null 유지)" },
+        { "tag": "penalties-null", "ids": [7457, 169216, 3220], "note": "penalties null 유지" }
+      ],
+      "removed": { "imageUrls": 11 },
+      "bytes": 6104
+    },
+    {
+      "path": "football-data/scorers-bl1-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-scorers",
+      "endpoint": "/v4/competitions/BL1/scorers",
+      "fetchedAt": "2026-10-10T12:22:52.984Z",
+      "asOf": "2026-10-10",
+      "comp": "BUNDESLIGA",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        { "tag": "assists-null", "ids": [145293, 304, 45593], "note": "assists null(0이 아님 — 미집계와 구분 불가, null 유지)" },
+        { "tag": "penalties-null", "ids": [113765, 192207, 1826], "note": "penalties null 유지" }
+      ],
+      "removed": { "imageUrls": 11 },
+      "bytes": 6092
+    },
+    {
+      "path": "football-data/scorers-fl1-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-scorers",
+      "endpoint": "/v4/competitions/FL1/scorers",
+      "fetchedAt": "2026-10-10T12:23:00.590Z",
+      "asOf": "2026-10-10",
+      "comp": "LIGUE1",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        { "tag": "assists-null", "ids": [33154, 244696, 124178], "note": "assists null(0이 아님 — 미집계와 구분 불가, null 유지)" },
+        { "tag": "penalties-null", "ids": [33154, 244696, 3225], "note": "penalties null 유지" }
+      ],
+      "removed": { "imageUrls": 11 },
+      "bytes": 6063
+    },
+    {
+      "path": "football-data/scorers-cl-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-scorers",
+      "endpoint": "/v4/competitions/CL/scorers",
+      "fetchedAt": "2026-10-10T12:23:09.003Z",
+      "asOf": "2026-10-10",
+      "comp": "UCL",
+      "origin": "M0-28",
+      "trimmed": null,
+      "cases": [
+        { "tag": "assists-null", "ids": [33242, 33154, 38101], "note": "assists null(0이 아님 — 미집계와 구분 불가, null 유지)" },
+        { "tag": "penalties-null", "ids": [33242, 33154, 38101], "note": "penalties null 유지" }
+      ],
+      "removed": { "imageUrls": 11 },
+      "bytes": 6016
+    },
+    {
+      "path": "football-data/matches-6comps-2026-10-10.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/matches?competitions=PL,PD,SA,BL1,FL1,CL&dateFrom=2026-10-10&dateTo=2026-10-11",
+      "fetchedAt": "2026-10-11T06:45:43.448Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10",
+      "comp": null,
+      "origin": "M0-34",
+      "trimmed": null,
+      "matchIds": [560593, 564698, 558588, 565818, 565812, 565813, 565817, 565819, 560592, 560595, 560599, 560601, 564699, 559674, 558582, 565815, 560600, 564700, 559673, 558586, 559668, 559666, 559672, 564702],
+      "cases": [
+        {
+          "tag": "status:CANCELLED",
+          "ids": [564698],
+          "note": "라요 바예카노–아틀레틱. 취소인데도 score.fullTime 0:0·winner DRAW가 온다 → status로 거른다. 전날 per-comp 응답(matches-pd-2026-10-07-to-13)에서는 IN_PLAY, 같은 경기 API-Football 1570410은 INT"
+        },
+        {
+          "tag": "cross-endpoint-dateto-exclusive",
+          "ids": [],
+          "note": "dateTo=2026-10-11로 요청했지만 resultSet.last 2026-10-10 — 교차 엔드포인트 /v4/matches는 dateTo 당일을 빼고 준다(M0-28). 어댑터는 대회별 엔드포인트를 쓴다"
+        },
+        {
+          "tag": "brief:2026-10-11",
+          "ids": [560593, 558588, 565818, 565812, 565813, 565817, 565819, 560592, 560595, 560599, 560601, 564699, 559674, 558582, 565815, 560600, 564700, 559673, 558586, 559668, 559666, 559672, 564702],
+          "note": "fixtures/brief-sample.json 2026-10-11 입력의 경기 원천(종료 23경기, 취소 1경기 제외)"
+        },
+        {
+          "tag": "korean-team",
+          "ids": [565819, 565812, 565817, 560601, 564699],
+          "note": "한국 선수 소속팀 경기 — API-Football 상세는 api-football/fixtures-id-*.json(teamIdPairs·matchIdPairs 참고)"
+        },
+        { "tag": "multi-goal", "ids": [565815], "note": "라이프치히 6-0 프랑크푸르트 — brief-sample 2026-10-11 강등 줄 근거(API-Football 1575177)" }
+      ],
+      "removed": { "odds": 24, "filters.permission": 1, "imageUrls": 96 },
+      "bytes": 19435
+    },
+    {
+      "path": "football-data/matches-6comps-2026-09-17-18-20.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/matches?competitions=PL,PD,SA,BL1,FL1,CL&dateFrom=2026-09-11&dateTo=2026-09-21",
+      "fetchedAt": "2026-10-11T06:46:32.605Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-09-17, 2026-09-18, 2026-09-20 (UTC)",
+      "comp": null,
+      "origin": "M0-34",
+      "trimmed": {
+        "rule": "utcDate가 2026-09-17·18·20인 경기만(brief-sample 과거 날짜 입력 F·A·D의 날). resultSet은 남긴 경기 기준으로 다시 셌다",
+        "kept": 27,
+        "original": {
+          "resultSet": { "count": 104, "competitions": "BL1,SA,FL1,PD,PL", "first": "2026-09-11", "last": "2026-09-20", "played": 104 }
+        }
+      },
+      "matchIds": [564686, 564683, 565804, 558596, 559682, 564692, 560591, 558591, 564697, 560582, 560590, 558590, 558592, 560585, 559676, 565807, 564688, 559678, 565805, 560583, 558595, 564696, 564695, 565803, 559675, 558597, 564689],
+      "cases": [
+        { "tag": "brief:2026-09-21", "ids": [560590, 560582, 560583, 560585], "note": "brief-sample 2026-09-21 입력 D — 09-20 경기 20개 중 프리미어리그 4개" },
+        {
+          "tag": "brief:2026-09-19",
+          "ids": [560591, 565804],
+          "note": "brief-sample 2026-09-19 입력 A — 09-18 경기 5개 중 2개. 565804 = API-Football 1575167"
+        },
+        { "tag": "brief:2026-09-18", "ids": [564686, 564683], "note": "brief-sample 2026-09-18 입력 F — 09-17 경기 2개(템플릿만 게시한 날)" }
+      ],
+      "removed": { "odds": 27, "filters.permission": 1, "imageUrls": 108 },
+      "bytes": 21818
+    },
+    {
+      "path": "football-data/matches-pl-2026-10-07-to-13.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/PL/matches?dateFrom=2026-10-07&dateTo=2026-10-13",
+      "fetchedAt": "2026-10-10T12:23:16.876Z",
+      "asOf": "2026-10-10",
+      "covers": "2026-10-07 ~ 2026-10-13 (대회별 엔드포인트 — dateTo 당일 포함)",
+      "comp": "EPL",
+      "origin": "M0-28",
+      "trimmed": null,
+      "matchIds": [560593, 560592, 560595, 560599, 560601, 560600, 560594, 560596, 560598, 560597],
+      "cases": [
+        {
+          "tag": "status:IN_PLAY",
+          "ids": [560593],
+          "note": "아스널–리즈 진행 중 — score.fullTime 0:0·winner DRAW가 채워져 온다(완료처럼 보이지 않게 status로 거름). 같은 시각 standings-pl-2026-10-10에 무승부로 반영"
+        },
+        { "tag": "status:TIMED", "ids": [560592, 560595, 560599, 560601, 560600, 560594, 560596, 560598, 560597], "note": "다가오는 일정(요청 시각 기준)" }
+      ],
+      "removed": { "odds": 10, "imageUrls": 41 },
+      "bytes": 7926
+    },
+    {
+      "path": "football-data/matches-pd-2026-10-07-to-13.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/PD/matches?dateFrom=2026-10-07&dateTo=2026-10-13",
+      "fetchedAt": "2026-10-10T12:23:24.666Z",
+      "asOf": "2026-10-10",
+      "covers": "2026-10-07 ~ 2026-10-13 (대회별 엔드포인트 — dateTo 당일 포함)",
+      "comp": "LALIGA",
+      "origin": "M0-28",
+      "trimmed": null,
+      "matchIds": [564706, 564698, 564699, 564700, 564702, 564703, 564707, 564701, 564705, 564704],
+      "cases": [
+        { "tag": "status:IN_PLAY", "ids": [564698], "note": "라요 바예카노–아틀레틱 진행 중 0:0" },
+        {
+          "tag": "status-transition",
+          "ids": [564698],
+          "note": "IN_PLAY(2026-10-10 12:23Z) → CANCELLED(2026-10-11 06:45Z, matches-6comps-2026-10-10). API-Football 1570410은 INT"
+        },
+        { "tag": "brief:2026-10-10", "ids": [564706], "note": "brief-sample 2026-10-10 입력 C — 말라가 1-1 에스파뇰(상세는 match-564706)" },
+        { "tag": "status:TIMED", "ids": [564699, 564700, 564702, 564703, 564707, 564701, 564705, 564704], "note": "다가오는 일정(요청 시각 기준)" }
+      ],
+      "removed": { "odds": 10, "imageUrls": 41 },
+      "bytes": 7793
+    },
+    {
+      "path": "football-data/matches-bl1-2026-10-07-to-13.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/BL1/matches?dateFrom=2026-10-07&dateTo=2026-10-13",
+      "fetchedAt": "2026-10-10T12:23:39.625Z",
+      "asOf": "2026-10-10",
+      "covers": "2026-10-07 ~ 2026-10-13 (대회별 엔드포인트 — dateTo 당일 포함)",
+      "comp": "BUNDESLIGA",
+      "origin": "M0-28",
+      "trimmed": null,
+      "matchIds": [565820, 565812, 565813, 565817, 565818, 565819, 565815, 565814, 565816],
+      "cases": [
+        { "tag": "brief:2026-10-10", "ids": [565820], "note": "brief-sample 2026-10-10 입력 C — 도르트문트 2-2 브레멘" },
+        {
+          "tag": "korean-team",
+          "ids": [565819, 565812, 565817, 565814, 565816],
+          "note": "요청 시각에는 TIMED — 10-10 결과는 matches-6comps-2026-10-10, 565814·565816(10-11)은 API-Football 날짜 응답 fixtures-date-2026-10-11의 1575183·1575179"
+        },
+        { "tag": "status:TIMED", "ids": [565812, 565813, 565817, 565818, 565819, 565815, 565814, 565816], "note": "다가오는 일정(요청 시각 기준)" }
+      ],
+      "removed": { "odds": 9, "imageUrls": 37 },
+      "bytes": 7200
+    },
+    {
+      "path": "football-data/matches-fl1-2026-10-07-to-13.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/FL1/matches?dateFrom=2026-10-07&dateTo=2026-10-13",
+      "fetchedAt": "2026-10-10T12:23:47.064Z",
+      "asOf": "2026-10-10",
+      "covers": "2026-10-07 ~ 2026-10-13 (대회별 엔드포인트 — dateTo 당일 포함)",
+      "comp": "LIGUE1",
+      "origin": "M0-28",
+      "trimmed": null,
+      "matchIds": [559669, 559674, 559666, 559668, 559672, 559673, 559670, 559667, 559671],
+      "cases": [
+        { "tag": "brief:2026-10-10", "ids": [559669], "note": "brief-sample 2026-10-10 입력 C — 랑스 2-1 리옹" },
+        { "tag": "status:TIMED", "ids": [559674, 559666, 559668, 559672, 559673, 559670, 559667, 559671], "note": "다가오는 일정(요청 시각 기준)" }
+      ],
+      "removed": { "odds": 9, "imageUrls": 37 },
+      "bytes": 6766
+    },
+    {
+      "path": "football-data/matches-cl-2026-10-07-to-13.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/CL/matches?dateFrom=2026-10-07&dateTo=2026-10-13",
+      "fetchedAt": "2026-10-10T12:23:54.441Z",
+      "asOf": "2026-10-10",
+      "covers": "2026-10-07 ~ 2026-10-13 (대회별 엔드포인트 — dateTo 당일 포함)",
+      "comp": "UCL",
+      "origin": "M0-28",
+      "trimmed": null,
+      "matchIds": [575341, 575342, 575343, 575344, 575345, 575346, 575347, 575348, 575349],
+      "cases": [
+        { "tag": "ucl-league-phase", "ids": [], "note": "리그 페이즈 MD2 첫날 9경기 — stage LEAGUE_STAGE·group null" },
+        { "tag": "status:TIMED", "ids": [575341, 575342, 575343, 575344, 575345, 575346, 575347, 575348, 575349], "note": "다가오는 일정(요청 시각 기준)" }
+      ],
+      "removed": { "odds": 9, "imageUrls": 37 },
+      "bytes": 6782
+    },
+    {
+      "path": "football-data/season-cl-md1.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/CL/matches",
+      "fetchedAt": "2026-10-10T12:24:59.850Z",
+      "asOf": "2026-10-10",
+      "covers": "UCL 리그 페이즈 MD1 (2026-09-08~09-10)",
+      "comp": "UCL",
+      "origin": "M0-28",
+      "trimmed": {
+        "rule": "시즌 전체 144경기 중 matchday 1(종료 18경기)만. resultSet은 남긴 경기 기준으로 다시 셌다",
+        "kept": 18,
+        "original": {
+          "resultSet": { "count": 144, "first": "2026-09-08", "last": "2027-01-27", "played": 18 }
+        }
+      },
+      "matchIds": [575323, 575324, 575325, 575326, 575327, 575328, 575329, 575330, 575331, 575332, 575333, 575334, 575335, 575336, 575337, 575338, 575339, 575340],
+      "cases": [
+        { "tag": "brief:2026-09-11", "ids": [575337, 575338, 575339, 575340], "note": "brief-sample 2026-09-11 입력 B — 09-10 UCL 경기" },
+        { "tag": "ucl-league-phase", "ids": [], "note": "stage LEAGUE_STAGE·group null" }
+      ],
+      "removed": { "odds": 18, "imageUrls": 73 },
+      "bytes": 14709
+    },
+    {
+      "path": "football-data/season-pl-md13.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/PL/matches",
+      "fetchedAt": "2026-10-10T12:25:07.779Z",
+      "asOf": "2026-10-10",
+      "covers": "EPL MD13 (2026-12-02 예정)",
+      "comp": "EPL",
+      "origin": "M0-28",
+      "trimmed": {
+        "rule": "시즌 전체 380경기 중 matchday 13(10경기)만. resultSet은 남긴 경기 기준으로 다시 셌다",
+        "kept": 10,
+        "original": {
+          "resultSet": { "count": 380, "first": "2026-08-21", "last": "2027-05-30", "played": 50 }
+        }
+      },
+      "matchIds": [560662, 560663, 560664, 560665, 560666, 560667, 560668, 560669, 560670, 560671],
+      "cases": [
+        {
+          "tag": "placeholder-kickoff",
+          "ids": [560662, 560663, 560664, 560665, 560666, 560667, 560668, 560669, 560670, 560671],
+          "note": "10경기 모두 TIMED·2026-12-02T20:00:00Z — 먼 라운드 시각은 임시값이라 TIMED만 보고 시각 확정으로 판단하지 않는다(M0-28)"
+        }
+      ],
+      "removed": { "odds": 10, "imageUrls": 41 },
+      "bytes": 7562
+    },
+    {
+      "path": "football-data/match-564706.json",
+      "api": "football-data",
+      "kind": "fd-match",
+      "endpoint": "/v4/matches/564706",
+      "fetchedAt": "2026-10-10T12:24:44.287Z",
+      "asOf": "2026-10-10",
+      "covers": "2026-10-09",
+      "comp": "LALIGA",
+      "origin": "M0-28",
+      "trimmed": null,
+      "matchIds": [564706],
+      "cases": [
+        {
+          "tag": "no-goals-lineups",
+          "ids": [564706],
+          "note": "무료 플랜 경기 상세 — goals·bookings·substitutions·lineups 키가 없다(403 아님, 필드 누락 200). 득점자는 API-Football이 맡는다(D27)"
+        },
+        { "tag": "brief:2026-10-10", "ids": [564706], "note": "말라가 1-1 에스파뇰" }
+      ],
+      "removed": { "odds": 1, "imageUrls": 4 },
+      "bytes": 827
+    },
+    {
+      "path": "api-football/fixtures-date-2026-10-10.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?date=2026-10-10",
+      "fetchedAt": "2026-10-11T06:47:08.868Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10 (UTC)",
+      "comp": null,
+      "origin": "M0-34",
+      "trimmed": {
+        "rule": "6개 대회(league.id 39·140·135·78·61·2) 경기 전부 + 필터·상태 시험용 대상 밖 경기 12개. results는 남긴 항목 수로 바꿨다",
+        "kept": 36,
+        "original": { "results": 1489 }
+      },
+      "matchIds": [1640026, 1639860, 1561409, 1565495, 1576190, 1557417, 1563181, 1570410, 1621360, 1550140, 1645406, 1575178, 1575180, 1575181, 1575182, 1575184, 1557418, 1557419, 1557423, 1557426, 1570403, 1561938, 1611427, 1645311, 1552776, 1550141, 1557425, 1570404, 1575177, 1550144, 1552774, 1552777, 1552778, 1552780, 1570411, 1492409],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: [] (오류는 객체)" },
+        {
+          "tag": "target-league",
+          "ids": [1557417, 1570410, 1550140, 1575178, 1575180, 1575181, 1575182, 1575184, 1557418, 1557419, 1557423, 1557426, 1570403, 1552776, 1550141, 1557425, 1570404, 1575177, 1550144, 1552774, 1552777, 1552778, 1552780, 1570411],
+          "note": "6개 대회 경기 24개 — 대회 필터 결과의 정답"
+        },
+        {
+          "tag": "status:FT",
+          "ids": [1557417, 1550140, 1575178, 1575180, 1575181, 1575182, 1575184, 1557418, 1557419, 1557423, 1557426, 1570403, 1552776, 1550141, 1557425, 1570404, 1575177, 1550144, 1552774, 1552777, 1552778, 1552780, 1570411],
+          "note": "대상 대회 종료 경기"
+        },
+        {
+          "tag": "status:INT",
+          "ids": [1570410],
+          "note": "라요 바예카노–아틀레틱 중단 — football-data 564698(IN_PLAY → CANCELLED). id 단건 재조회 응답은 없다(missing 참고)"
+        },
+        { "tag": "korean-team", "ids": [1575180, 1575181, 1575182, 1557418, 1570403], "note": "한국 선수 소속팀 경기 — 상세는 fixtures-id-*.json" },
+        {
+          "tag": "name-trap",
+          "ids": [1561409, 1565495, 1561938, 1492409, 1611427],
+          "note": "대회 이름이 같은 다른 나라 리그(Premier League 러시아·우크라이나, Bundesliga 오스트리아, Serie A 브라질, Ligue 1 알제리) — 이름이 아니라 league.id로 거른다"
+        },
+        { "tag": "near-miss", "ids": [1576190, 1563181], "note": "2. Bundesliga(79)·Championship(40) — 대상 아님" },
+        { "tag": "status:PEN", "ids": [1639860], "note": "Australia Cup 승부차기 종료(elapsed 120)" },
+        {
+          "tag": "penalty-shootout",
+          "ids": [1639860],
+          "note": "승부차기 점수는 score.penalty(4-3)에 따로 오고 goals(1-1)에는 없다. 이 응답에서는 score.fulltime 0-0·extratime 1-1이다(1건 관찰 — 문서로 확인 안 함)"
+        },
+        { "tag": "extra-time", "ids": [1639860], "note": "연장 후 승부차기 — score.extratime 채워짐" },
+        { "tag": "status:ABD", "ids": [1565495], "note": "중단(abandoned)인데 goals 1-0이 채워져 있다" },
+        { "tag": "status:PST", "ids": [1611427], "note": "연기 — goals null" },
+        { "tag": "status:CANC", "ids": [1621360], "note": "취소 — goals null" },
+        { "tag": "status:AWD", "ids": [1645406], "note": "기권승 처리(technical loss) — goals null" },
+        { "tag": "status:WO", "ids": [1645311], "note": "부전승(walkover) — goals 0-0" },
+        { "tag": "status:NS", "ids": [1640026], "note": "시작 전" }
+      ],
+      "removed": { "imageUrls": 142 },
+      "bytes": 27603
+    },
+    {
+      "path": "api-football/fixtures-date-2026-10-11.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?date=2026-10-11",
+      "fetchedAt": "2026-10-11T06:47:16.653Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-11 (UTC) — 요청 시각 06:47Z라 대상 경기는 모두 시작 전",
+      "comp": null,
+      "origin": "M0-34",
+      "trimmed": {
+        "rule": "6개 대회 경기 전부(17, 모두 NS) + 진행 중·중단 상태 시험용 대상 밖 경기 6개. results는 남긴 항목 수로 바꿨다",
+        "kept": 23,
+        "original": { "results": 1159 }
+      },
+      "matchIds": [1492408, 1507081, 1556089, 1519655, 1550139, 1643234, 1570406, 1550142, 1550143, 1552779, 1557421, 1557422, 1575183, 1570412, 1552781, 1557424, 1575179, 1550145, 1559666, 1570405, 1550138, 1552782, 1570409],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        {
+          "tag": "target-league",
+          "ids": [1550139, 1570406, 1550142, 1550143, 1552779, 1557421, 1557422, 1575183, 1570412, 1552781, 1557424, 1575179, 1550145, 1570405, 1550138, 1552782, 1570409],
+          "note": "6개 대회 경기 17개 — 전부 NS(상세 조회 대상 아님 → 미종료 이월)"
+        },
+        {
+          "tag": "status:NS",
+          "ids": [1550139, 1570406, 1550142, 1550143, 1552779, 1557421, 1557422, 1575183, 1570412, 1552781, 1557424, 1575179, 1550145, 1570405, 1550138, 1552782, 1570409],
+          "note": "시작 전 — goals null"
+        },
+        { "tag": "korean-team", "ids": [1575183, 1575179], "note": "1575183 쾰른–묀헨글라트바흐(카스트로프), 1575179 프라이부르크–샬케(황희찬) — 상세 없음" },
+        { "tag": "status:2H", "ids": [1507081], "note": "후반 진행 중(K리그1) — goals 4-2가 채워져 있다" },
+        { "tag": "status:1H", "ids": [1556089], "note": "전반 진행 중" },
+        { "tag": "status:SUSP", "ids": [1559666], "note": "일시 중지 — goals 1-0, status.extra 16" },
+        { "tag": "status:AWD", "ids": [1519655], "note": "기권승 처리 — goals 0-0" },
+        { "tag": "status:CANC", "ids": [1643234], "note": "취소" },
+        { "tag": "name-trap", "ids": [1492408], "note": "Serie A(브라질, league 71) 종료 경기" }
+      ],
+      "removed": { "imageUrls": 91 },
+      "bytes": 17931
+    },
+    {
+      "path": "api-football/fixtures-id-1575167.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1575167",
+      "fetchedAt": "2026-10-10T12:48:05.394Z",
+      "asOf": "2026-10-10",
+      "covers": "2026-09-18",
+      "comp": "BUNDESLIGA",
+      "origin": "M0-29",
+      "trimmed": null,
+      "matchIds": [1575167],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "korean-player:kim-min-jae:sub", "ids": [1575167], "note": "김민재(2897) 후반 교체 투입 45분 — 이 응답은 games.substitute true" },
+        { "tag": "korean-player:jeong-woo-yeong:start", "ids": [1575167], "note": "정우영(512) 선발 60분" },
+        { "tag": "goals-total-null", "ids": [1575167], "note": "players[].statistics[0].goals.total이 0 대신 null(득점자는 3·2·1) — 골·도움은 events에서 센다" },
+        {
+          "tag": "games-substitute-true",
+          "ids": [1575167],
+          "note": "교체 투입 선수 games.substitute true(18명) — 2026-10-11 수집 응답들은 전원 false라 믿을 수 없다. 선발은 lineups[].startXI"
+        },
+        { "tag": "penalty-goal", "ids": [1575167], "note": "39분 케인 Goal/Penalty" },
+        { "tag": "multi-goal", "ids": [1575167], "note": "바이에른 7-0 우니온 베를린(올리세 3골 — brief-sample 2026-09-19)" },
+        { "tag": "outside-date-window", "ids": [1575167], "note": "2026-09-18 경기를 2026-10-10에 id로 조회 — id 단건은 날짜 창(오늘 ±1일) 밖도 열린다" },
+        { "tag": "brief:2026-09-19", "ids": [1575167], "note": "brief-sample 2026-09-19 근거 m1575167 = football-data 565804" }
+      ],
+      "removed": { "imageUrls": 73 },
+      "bytes": 35676
+    },
+    {
+      "path": "api-football/fixtures-id-1575180.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1575180",
+      "fetchedAt": "2026-10-11T06:47:47.989Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10",
+      "comp": "BUNDESLIGA",
+      "origin": "M0-34",
+      "trimmed": null,
+      "matchIds": [1575180],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "korean-player:seol-young-woo:start", "ids": [1575180], "note": "설영우(197985) 선발 62분" },
+        { "tag": "korean-player:kim-min-jae:bench", "ids": [1575180], "note": "김민재(2897) 교체 명단에만 있고 출전 없음(minutes 0)" },
+        { "tag": "var-goal-cancelled", "ids": [1575180], "note": "51분 Var/Goal cancelled(루이스 디아스)" },
+        { "tag": "goals-total-zero", "ids": [1575180], "note": "goals.total 0(1575167의 null과 대비)" },
+        { "tag": "games-substitute-all-false", "ids": [1575180], "note": "교체 투입 선수도 games.substitute false" },
+        { "tag": "brief:2026-10-11", "ids": [1575180], "note": "brief-sample 2026-10-11 설영우 줄" },
+        { "tag": "logo-key-kept", "ids": [], "note": "이미지 키를 지우지 않고 값만 자리값 https://example.invalid/stripped.png로 바꿨다 — 어댑터의 로고·사진 URL 버림 테스트용" }
+      ],
+      "removed": { "imageUrls": 68 },
+      "bytes": 35444
+    },
+    {
+      "path": "api-football/fixtures-id-1570403.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1570403",
+      "fetchedAt": "2026-10-11T06:47:40.995Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10",
+      "comp": "LALIGA",
+      "origin": "M0-34",
+      "trimmed": null,
+      "matchIds": [1570403],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "korean-player:lee-kang-in:sub", "ids": [1570403], "note": "이강인(927) 교체 투입 33분" },
+        { "tag": "penalty-goal", "ids": [1570403], "note": "45+6분 Goal/Penalty(알라베스)" },
+        { "tag": "added-time", "ids": [1570403], "note": "time.extra 6 — 분 표기는 elapsed + extra" },
+        { "tag": "red-card", "ids": [1570403], "note": "Card/Red Card" },
+        { "tag": "var-card-upgrade", "ids": [1570403], "note": "Var/Card upgrade confirmed" },
+        { "tag": "brief:2026-10-11", "ids": [1570403], "note": "brief-sample 2026-10-11 이강인 줄" }
+      ],
+      "removed": { "imageUrls": 76 },
+      "bytes": 37649
+    },
+    {
+      "path": "api-football/fixtures-id-1575181.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1575181",
+      "fetchedAt": "2026-10-11T06:47:54.892Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10",
+      "comp": "BUNDESLIGA",
+      "origin": "M0-34",
+      "trimmed": null,
+      "matchIds": [1575181],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "korean-player:lee-jae-sung:sub", "ids": [1575181], "note": "이재성(2906) 교체 투입 20분" },
+        { "tag": "added-time", "ids": [1575181], "note": "90+2분 골" },
+        { "tag": "brief:2026-10-11", "ids": [1575181], "note": "brief-sample 2026-10-11 이재성 줄" }
+      ],
+      "removed": { "imageUrls": 73 },
+      "bytes": 34299
+    },
+    {
+      "path": "api-football/fixtures-id-1575182.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1575182",
+      "fetchedAt": "2026-10-11T06:48:02.201Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10",
+      "comp": "BUNDESLIGA",
+      "origin": "M0-34",
+      "trimmed": null,
+      "matchIds": [1575182],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "korean-player:jeong-woo-yeong:start", "ids": [1575182], "note": "정우영(512) 선발 78분 뒤 교체 아웃" },
+        { "tag": "brief:2026-10-11", "ids": [1575182], "note": "brief-sample 2026-10-11 정우영 줄" }
+      ],
+      "removed": { "imageUrls": 65 },
+      "bytes": 32775
+    },
+    {
+      "path": "api-football/fixtures-id-1557418.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1557418",
+      "fetchedAt": "2026-10-11T06:48:11.540Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10",
+      "comp": "EPL",
+      "origin": "M0-34",
+      "trimmed": null,
+      "matchIds": [1557418],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        {
+          "tag": "korean-player:kim-ji-soo:absent",
+          "ids": [1557418],
+          "note": "김지수(브렌트포드, apiFootballId null) — 라인업·선수 기록 어디에도 없다. id가 없어 매칭 불가 경로(M1-48 ⑤) 시험용"
+        }
+      ],
+      "removed": { "imageUrls": 73 },
+      "bytes": 34215
+    },
+    {
+      "path": "api-football/fixtures-id-1575177.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1575177",
+      "fetchedAt": "2026-10-11T06:48:55.180Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10",
+      "comp": "BUNDESLIGA",
+      "origin": "M0-34",
+      "trimmed": null,
+      "matchIds": [1575177],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "multi-goal", "ids": [1575177], "note": "라이프치히 6-0 프랑크푸르트" },
+        { "tag": "hat-trick", "ids": [1575177], "note": "은쿤쿠 3골(5·41·44분) — brief-sample 2026-10-11 강등 줄(LLM '2골' → 코드 검사로 템플릿 강등)의 근거" },
+        { "tag": "brief:2026-10-11", "ids": [1575177], "note": "brief-sample 2026-10-11 템플릿 줄" }
+      ],
+      "removed": { "imageUrls": 71 },
+      "bytes": 33909
+    },
+    {
+      "path": "api-football/fixtures-id-1552780.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1552780",
+      "fetchedAt": "2026-10-11T06:49:11.378Z",
+      "asOf": "2026-10-11",
+      "covers": "2026-10-10",
+      "comp": "LIGUE1",
+      "origin": "M0-34",
+      "trimmed": null,
+      "matchIds": [1552780],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "penalty-goal", "ids": [1552780], "note": "19분 Goal/Penalty" },
+        { "tag": "missed-penalty", "ids": [1552780], "note": "90+3분 Goal/Missed Penalty — 골로 세지 않는다" },
+        { "tag": "var-penalty-confirmed", "ids": [1552780], "note": "Var/Penalty confirmed" },
+        { "tag": "var-penalty-cancelled", "ids": [1552780], "note": "Var/Penalty cancelled" },
+        { "tag": "var-goal-confirmed", "ids": [1552780], "note": "Var/Goal confirmed" },
+        { "tag": "added-time", "ids": [1552780], "note": "90+3·90+5" }
+      ],
+      "removed": { "imageUrls": 75 },
+      "bytes": 34749
+    },
+    {
+      "path": "api-football/errors-plan-season.json",
+      "api": "api-football",
+      "kind": "af-error",
+      "endpoint": "/fixtures?league=39&season=2026&date=2026-09-20",
+      "fetchedAt": "2026-10-10T12:44:51.348Z",
+      "asOf": "2026-10-10",
+      "covers": null,
+      "comp": null,
+      "origin": "M0-29",
+      "trimmed": null,
+      "matchIds": [],
+      "cases": [
+        {
+          "tag": "errors.plan",
+          "ids": [],
+          "note": "시즌 단위 조회 차단 — \"Free plans do not have access to this season, try from 2022 to 2024.\" 재시도 없이 그 기능을 FR-65 폴백으로 강등 + 이슈. 같은 차단의 standings·players(season=2026) 응답은 넣지 않았다"
+        }
+      ],
+      "removed": {},
+      "bytes": 232
+    },
+    {
+      "path": "api-football/errors-plan-date.json",
+      "api": "api-football",
+      "kind": "af-error",
+      "endpoint": "/fixtures?date=2026-09-09",
+      "fetchedAt": "2026-10-10T12:46:42.520Z",
+      "asOf": "2026-10-10",
+      "covers": null,
+      "comp": null,
+      "origin": "M0-29",
+      "trimmed": null,
+      "matchIds": [],
+      "cases": [
+        { "tag": "errors.plan", "ids": [], "note": "날짜 창(오늘 UTC ±1일) 밖 날짜 조회 차단 — 지난 날짜는 다시 받을 수 없다" }
+      ],
+      "removed": {},
+      "bytes": 212
+    },
+    {
+      "path": "api-football/errors-search.json",
+      "api": "api-football",
+      "kind": "af-error",
+      "endpoint": "/players/profiles?search=Kang-In",
+      "fetchedAt": "2026-10-10T12:47:42.307Z",
+      "asOf": "2026-10-10",
+      "covers": null,
+      "comp": null,
+      "origin": "M0-29",
+      "trimmed": null,
+      "matchIds": [],
+      "cases": [
+        { "tag": "errors.other", "ids": [], "note": "plan이 아닌 오류 객체(입력 검증 errors.search) — errors 타입은 [] 또는 문자열 레코드" }
+      ],
+      "removed": {},
+      "bytes": 213
+    }
+  ],
+  "matchIdPairs": {
+    "_note": "같은 경기(대회·킥오프 UTC·팀 이름, 종료 경기는 스코어까지 일치)를 두 API에서 찾은 쌍 — M1-44·M1-48 대응표 설계 참고용이며 확정 대응표가 아니다",
+    "pairs": [
+      { "fd": 560593, "af": 1557417, "kickoff": "2026-10-10T11:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 564698, "af": 1570410, "kickoff": "2026-10-10T12:00:00Z", "fdStatus": "CANCELLED", "afStatus": "INT" },
+      { "fd": 558588, "af": 1550140, "kickoff": "2026-10-10T13:00:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 565818, "af": 1575178, "kickoff": "2026-10-10T13:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 565812, "af": 1575181, "kickoff": "2026-10-10T13:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 565813, "af": 1575184, "kickoff": "2026-10-10T13:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 565817, "af": 1575182, "kickoff": "2026-10-10T13:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 565819, "af": 1575180, "kickoff": "2026-10-10T13:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 560592, "af": 1557426, "kickoff": "2026-10-10T14:00:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 560595, "af": 1557419, "kickoff": "2026-10-10T14:00:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 560599, "af": 1557423, "kickoff": "2026-10-10T14:00:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 560601, "af": 1557418, "kickoff": "2026-10-10T14:00:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 564699, "af": 1570403, "kickoff": "2026-10-10T14:15:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 559674, "af": 1552776, "kickoff": "2026-10-10T15:15:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 558582, "af": 1550141, "kickoff": "2026-10-10T16:00:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 565815, "af": 1575177, "kickoff": "2026-10-10T16:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 560600, "af": 1557425, "kickoff": "2026-10-10T16:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 564700, "af": 1570404, "kickoff": "2026-10-10T16:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 559673, "af": 1552778, "kickoff": "2026-10-10T18:45:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 558586, "af": 1550144, "kickoff": "2026-10-10T18:45:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 559668, "af": 1552777, "kickoff": "2026-10-10T18:45:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 559666, "af": 1552774, "kickoff": "2026-10-10T18:45:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 559672, "af": 1552780, "kickoff": "2026-10-10T18:45:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 564702, "af": 1570411, "kickoff": "2026-10-10T19:00:00Z", "fdStatus": "FINISHED", "afStatus": "FT" },
+      { "fd": 565814, "af": 1575183, "kickoff": "2026-10-11T13:30:00Z", "fdStatus": "TIMED", "afStatus": "NS" },
+      { "fd": 565816, "af": 1575179, "kickoff": "2026-10-11T15:30:00Z", "fdStatus": "TIMED", "afStatus": "NS" },
+      { "fd": 565804, "af": 1575167, "kickoff": "2026-09-18T18:30:00Z", "fdStatus": "FINISHED", "afStatus": "FT" }
+    ]
+  },
+  "teamIdPairs": {
+    "_note": "matchIdPairs에서 뽑은 팀 id 쌍(football-data ↔ API-Football). 참고용 — 확정 대응표 아님. 두 API의 숫자 id는 같은 값이 다른 팀을 가리키기도 한다(idCollisions)",
+    "pairs": [
+      { "fd": 57, "af": 42, "fdName": "Arsenal", "afName": "Arsenal", "evidence": "560593↔1557417" },
+      { "fd": 341, "af": 63, "fdName": "Leeds United", "afName": "Leeds", "evidence": "560593↔1557417" },
+      { "fd": 87, "af": 728, "fdName": "Rayo Vallecano", "afName": "Rayo Vallecano", "evidence": "564698↔1570410" },
+      { "fd": 77, "af": 531, "fdName": "Athletic", "afName": "Athletic Club", "evidence": "564698↔1570410" },
+      { "fd": 107, "af": 495, "fdName": "Genoa", "afName": "Genoa", "evidence": "558588↔1550140" },
+      { "fd": 99, "af": 502, "fdName": "Fiorentina", "afName": "Fiorentina", "evidence": "558588↔1550140" },
+      { "fd": 2, "af": 167, "fdName": "Hoffenheim", "afName": "1899 Hoffenheim", "evidence": "565818↔1575178" },
+      { "fd": 7, "af": 175, "fdName": "HSV", "afName": "Hamburger SV", "evidence": "565818↔1575178" },
+      { "fd": 15, "af": 164, "fdName": "Mainz", "afName": "FSV Mainz 05", "evidence": "565812↔1575181" },
+      { "fd": 3, "af": 168, "fdName": "Leverkusen", "afName": "Bayer Leverkusen", "evidence": "565812↔1575181" },
+      { "fd": 29, "af": 185, "fdName": "SC Paderborn", "afName": "SC Paderborn 07", "evidence": "565813↔1575184" },
+      { "fd": 10, "af": 172, "fdName": "Stuttgart", "afName": "VfB Stuttgart", "evidence": "565813↔1575184" },
+      { "fd": 28, "af": 182, "fdName": "Union Berlin", "afName": "Union Berlin", "evidence": "565817↔1575182" },
+      { "fd": 719, "af": 1660, "fdName": "Elversberg", "afName": "SV Elversberg", "evidence": "565817↔1575182" },
+      { "fd": 16, "af": 170, "fdName": "Augsburg", "afName": "FC Augsburg", "evidence": "565819↔1575180" },
+      { "fd": 5, "af": 157, "fdName": "Bayern", "afName": "Bayern München", "evidence": "565819↔1575180" },
+      { "fd": 71, "af": 746, "fdName": "Sunderland", "afName": "Sunderland", "evidence": "560592↔1557426" },
+      { "fd": 397, "af": 51, "fdName": "Brighton Hove", "afName": "Brighton", "evidence": "560592↔1557426" },
+      { "fd": 61, "af": 49, "fdName": "Chelsea", "afName": "Chelsea", "evidence": "560595↔1557419" },
+      { "fd": 1044, "af": 35, "fdName": "Bournemouth", "afName": "Bournemouth", "evidence": "560595↔1557419" },
+      { "fd": 349, "af": 57, "fdName": "Ipswich Town", "afName": "Ipswich", "evidence": "560599↔1557423" },
+      { "fd": 63, "af": 36, "fdName": "Fulham", "afName": "Fulham", "evidence": "560599↔1557423" },
+      { "fd": 58, "af": 66, "fdName": "Aston Villa", "afName": "Aston Villa", "evidence": "560601↔1557418" },
+      { "fd": 402, "af": 55, "fdName": "Brentford", "afName": "Brentford", "evidence": "560601↔1557418" },
+      { "fd": 263, "af": 542, "fdName": "Alavés", "afName": "Alaves", "evidence": "564699↔1570403" },
+      { "fd": 78, "af": 530, "fdName": "Atleti", "afName": "Atletico Madrid", "evidence": "564699↔1570403" },
+      { "fd": 521, "af": 79, "fdName": "Lille", "afName": "Lille", "evidence": "559674↔1552776" },
+      { "fd": 533, "af": 111, "fdName": "Le Havre", "afName": "Le Havre", "evidence": "559674↔1552776" },
+      { "fd": 108, "af": 505, "fdName": "Inter", "afName": "Inter", "evidence": "558582↔1550141" },
+      { "fd": 112, "af": 523, "fdName": "Parma", "afName": "Parma", "evidence": "558582↔1550141" },
+      { "fd": 721, "af": 173, "fdName": "RB Leipzig", "afName": "RB Leipzig", "evidence": "565815↔1575177" },
+      { "fd": 19, "af": 169, "fdName": "Frankfurt", "afName": "Eintracht Frankfurt", "evidence": "565815↔1575177" },
+      { "fd": 66, "af": 33, "fdName": "Man United", "afName": "Manchester United", "evidence": "560600↔1557425" },
+      { "fd": 73, "af": 47, "fdName": "Tottenham", "afName": "Tottenham", "evidence": "560600↔1557425" },
+      { "fd": 81, "af": 529, "fdName": "Barça", "afName": "Barcelona", "evidence": "564700↔1570404" },
+      { "fd": 82, "af": 546, "fdName": "Getafe", "afName": "Getafe", "evidence": "564700↔1570404" },
+      { "fd": 548, "af": 91, "fdName": "Monaco", "afName": "Monaco", "evidence": "559673↔1552778" },
+      { "fd": 511, "af": 96, "fdName": "Toulouse", "afName": "Toulouse", "evidence": "559673↔1552778" },
+      { "fd": 113, "af": 492, "fdName": "Napoli", "afName": "Napoli", "evidence": "558586↔1550144" },
+      { "fd": 470, "af": 512, "fdName": "Frosinone", "afName": "Frosinone", "evidence": "558586↔1550144" },
+      { "fd": 525, "af": 97, "fdName": "Lorient", "afName": "Lorient", "evidence": "559668↔1552777" },
+      { "fd": 1045, "af": 114, "fdName": "Paris FC", "afName": "Paris FC", "evidence": "559668↔1552777" },
+      { "fd": 512, "af": 106, "fdName": "Brest", "afName": "Stade Brestois 29", "evidence": "559666↔1552774" },
+      { "fd": 532, "af": 77, "fdName": "Angers SCO", "afName": "Angers", "evidence": "559666↔1552774" },
+      { "fd": 524, "af": 85, "fdName": "PSG", "afName": "Paris Saint Germain", "evidence": "559672↔1552780" },
+      { "fd": 535, "af": 1298, "fdName": "Le Mans", "afName": "Le Mans", "evidence": "559672↔1552780" },
+      { "fd": 86, "af": 541, "fdName": "Real Madrid", "afName": "Real Madrid", "evidence": "564702↔1570411" },
+      { "fd": 94, "af": 533, "fdName": "Villarreal", "afName": "Villarreal", "evidence": "564702↔1570411" },
+      { "fd": 1, "af": 192, "fdName": "1. FC Köln", "afName": "1. FC Köln", "evidence": "565814↔1575183" },
+      { "fd": 18, "af": 163, "fdName": "M'gladbach", "afName": "Borussia Mönchengladbach", "evidence": "565814↔1575183" },
+      { "fd": 17, "af": 160, "fdName": "Freiburg", "afName": "SC Freiburg", "evidence": "565816↔1575179" },
+      { "fd": 6, "af": 174, "fdName": "Schalke", "afName": "FC Schalke 04", "evidence": "565816↔1575179" }
+    ],
+    "idCollisions": [
+      { "id": 57, "fdTeam": "Arsenal", "afTeam": "Ipswich" },
+      { "id": 63, "fdTeam": "Fulham", "afTeam": "Leeds" },
+      { "id": 66, "fdTeam": "Man United", "afTeam": "Aston Villa" },
+      { "id": 77, "fdTeam": "Athletic", "afTeam": "Angers" },
+      { "id": 512, "fdTeam": "Brest", "afTeam": "Frosinone" },
+      { "id": 533, "fdTeam": "Le Havre", "afTeam": "Villarreal" }
+    ]
+  },
+  "missing": [
+    { "case": "own-goal", "note": "자책골 없음 — 받아 둔 경기 단건 14건(이 폴더 8건 포함) 모두 자책골 이벤트가 없다. 자책골의 팀·선수 귀속은 M1-48 실데이터 누적 때 보강" },
+    {
+      "case": "penalty-shootout-events",
+      "note": "승부차기 경기의 id 단건 응답(events 모양) 없음 — 날짜 응답의 1639860(이 폴더)·1640286(2026-10-09, 미포함)만 있다. id 단건은 날짜 창 밖도 열리므로 필요하면 /fixtures?id=1639860 1회로 보강",
+      "fixtureIds": [1639860]
+    },
+    {
+      "case": "unfinished-requery",
+      "note": "미종료 경기 id 재조회 응답 없음 — 1570410(INT)의 날짜 응답 상태만 있다. 필요하면 /fixtures?id=1570410 1회",
+      "fixtureIds": [1570410]
+    },
+    { "case": "af-aet", "note": "연장 종료(AET) 경기 없음(1639860은 연장 후 PEN)" },
+    {
+      "case": "fd-extra-time-penalty-shootout",
+      "note": "football-data score.duration EXTRA_TIME·PENALTY_SHOOTOUT(regularTime·extraTime·penalties 노드) 없음 — 리그·UCL 리그 페이즈뿐. UCL 녹아웃(2027-02~) 또는 M2-02 실데이터에서 보강. 규칙은 M0-28 문서 예시"
+    },
+    { "case": "fd-postponed-suspended-awarded", "note": "football-data POSTPONED·SUSPENDED·AWARDED 없음(CANCELLED 1건만)" },
+    { "case": "af-ucl", "note": "API-Football UCL(league 2) 경기 없음 — 2026-10-09~11에 UCL 경기가 없었다" },
+    { "case": "af-korean-other-competition", "note": "한국 선수 소속팀의 다른 대회(컵·UEL 등) 경기 없음" },
+    { "case": "korean-castrop-hwang", "note": "카스트로프·황희찬 경기 상세 없음 — 2026-10-11 경기라 수집 시각에 NS(fixtures-date-2026-10-11의 1575183·1575179)" },
+    { "case": "knockout-tbd-team", "note": "녹아웃 대진 미정(homeTeam·awayTeam null) 경기 없음" }
+  ],
+  "tagLegend": {
+    "korean-player:<slug>:<start|sub|bench|absent>": "한국 선수(configs/korean-players.json slug) 출전 상태 — start = lineups[].startXI, sub = substitutes에 있고 출전 시간 > 0, bench = substitutes에 있고 출전 없음, absent = 라인업에 없음",
+    "status:<값>": "그 파일 API의 경기 상태 값(football-data status / API-Football fixture.status.short)",
+    "status-transition": "같은 경기의 상태가 수집 시각에 따라 바뀐 사례",
+    "brief:<YYYY-MM-DD>": "fixtures/brief-sample.json 그 날짜 항목의 입력·근거 경기",
+    "korean-team": "한국 선수 소속팀 경기",
+    "target-league": "configs/competitions.json 6개 대회 경기(대회 필터 정답)",
+    "name-trap / near-miss": "대상 대회와 이름이 같거나 비슷한 다른 대회 — 필터 오탐 시험",
+    "penalty-shootout / extra-time": "승부차기·연장",
+    "penalty-goal / missed-penalty / own-goal": "이벤트 detail Penalty / Missed Penalty / Own Goal",
+    "var-goal-cancelled / var-goal-confirmed / var-penalty-confirmed / var-penalty-cancelled / var-card-upgrade": "type Var 이벤트(detail 값)",
+    "red-card": "Card/Red Card 이벤트",
+    "added-time": "time.extra가 있는 이벤트",
+    "multi-goal / hat-trick": "다득점 경기 / 한 선수 3골",
+    "goals-total-null / goals-total-zero": "players[].statistics[0].goals.total이 null / 0",
+    "games-substitute-true / games-substitute-all-false": "games.substitute 값이 응답마다 다름",
+    "errors-empty-array / errors.plan / errors.other": "정상 errors [] / 플랜 제한 오류 / 그 밖의 오류 객체",
+    "logo-key-kept": "이미지 키를 남기고 값을 자리값으로 둔 파일(나머지 파일은 값 null)",
+    "standings-counts-in-play / standings-after-cancel": "순위표가 진행 중 경기를 반영 / 취소 뒤 되돌림",
+    "prev-snapshot / next-snapshot": "같은 리그 순위표 전날·다음 날 스냅숏 쌍",
+    "placeholder-kickoff": "먼 라운드의 임시 킥오프 시각",
+    "cross-endpoint-dateto-exclusive": "football-data 교차 엔드포인트의 dateTo 경계",
+    "no-goals-lineups": "football-data 무료 경기 상세의 필드 누락",
+    "assists-null / penalties-null": "football-data 득점 순위 null 값",
+    "ucl-league-phase / ucl-league-phase-36 / ucl-enddate-league-phase": "UCL 리그 페이즈 경기 / 36팀 단일 순위표 / 대회 메타 endDate",
+    "season-structure": "대회 메타의 시즌 목록 구조",
+    "outside-date-window": "날짜 창 밖 경기를 id 단건으로 받은 사례"
+  }
+}
