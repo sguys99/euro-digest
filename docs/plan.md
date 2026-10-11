@@ -42,8 +42,8 @@
 
 | 단계 | 내용 | 예상 기간 | 시작 | 완료 | 상태 |
 |---|---|---|---|---|---|
-| 사전 | 사용자 준비 작업 (§3) | M0 중 | 2026-10-10 | | 🚧 |
-| **M0** | 셋업·검증 | 3~4일 | 2026-10-10 | | 🚧 |
+| 사전 | 사용자 준비 작업 (§3) | M0 중 | 2026-10-10 | | ⏸ U-06 → M1-40 전 · U-08 → M5-04 전 |
+| **M0** | 셋업·검증 | 3~4일 | 2026-10-10 | 2026-10-11 | ✅ (이월: U-06·M0-15 → M1-40 전, U-08 → M5-04 전) |
 | **D0** 🎨 | 전체 디자인 콘셉트 | 2~3일 | | | ⬜ |
 | **M1** | 뉴스 MVP | 1주 | | | ⬜ |
 | **D1** 🎨 | 대회·팀 화면 | 1~2일 | | | ⬜ |
@@ -56,8 +56,8 @@
 
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
-**현재 위치**: M0 셋업·검증 진행 중
-**다음 작업**: `M0 완료 기준 점검` (§3 남은 사용자 작업: U-06·M0-15 · U-08)
+**현재 위치**: M0 셋업·검증 완료(2026-10-11) → D0 전체 디자인 콘셉트 착수 전
+**다음 작업**: `D0-01` 시안 범위 확정 (`/design-concepts d0`) · 이월된 사용자 작업: U-06·M0-15(M1-40 전) · U-08(M5-04 전)
 
 ---
 
@@ -108,9 +108,9 @@
 - [X] U-03 🆕 Anthropic Console에서 **월 지출 한도 설정**(예: $5) — 코드 비용 가드(월 $3)가 고장 나도 막는 2차 안전장치
 - [X] U-04 football-data.org 가입 → Secrets `FOOTBALL_DATA_API_KEY`
 - [X] U-05 API-Football 가입 — API-SPORTS 사의 **api-football.com**(가입: `https://dashboard.api-football.com/register`)에서 **직접** 가입 → Secrets `API_FOOTBALL_KEY` (호출 주소 `https://v3.football.api-sports.io`, 인증 헤더 `x-apisports-key`). 이름이 비슷한 **apifootball.com**(다른 회사)과 **RapidAPI 경유 가입**(키·호출 주소·헤더가 달라 어댑터와 맞지 않음)은 쓰지 않는다
-- [ ] U-06 cron-job.org 계정 + fine-grained PAT(대상 저장소 한정, Actions 권한만, **만료일 기록**) — PAT는 저장소에 두지 않음
+- [ ] ⏸ U-06 cron-job.org 계정 + fine-grained PAT(대상 저장소 한정, Actions 권한만, **만료일 기록**) — PAT는 저장소에 두지 않음 — 2026-10-11 사용자 결정: **M1-40 전으로 이월**(Test run 미확인 — 2026-10-11 workflow_dispatch 실행 0건)
 - [x] U-07 연락용 전용 이메일 개설 → `CONTACT_EMAIL` (User-Agent·삭제 요청용) — 2026-10-10 사용자 결정: 전용 메일 대신 `sguys99@gmail.com` 사용
-- [ ] U-08 GoatCounter 사이트 생성 (쿠키리스 분석)
+- [ ] ⏸ U-08 GoatCounter 사이트 생성 (쿠키리스 분석) — 2026-10-11 사용자 결정: **M5-04 전으로 이월**(사이트 코드는 연동 때 기록)
 - [x] U-09 KIPRIS 상표 검색 — '유로 다이제스트' / 'Euro Digest' — 2026-10-11 사용자 확인: 충돌 없음
 - [x] U-10 (선택) 좋아하는/싫어하는 사이트·앱이 있으면 D0 전에 공유 — 시안 방향에 반영 — 2026-10-10 응답: **에디토리얼 신문형 · 매거진 볼드형** 선호 + 다른 방향 제안도 원함 (D0-02에서 반영). 템플릿의 Apple 디자인 분석 문서는 `docs/design/references/apple-design-analysis.md`에 참고자료로 보존
 
@@ -138,7 +138,7 @@
 - [x] M0-12 `ci.yml`: push마다 `check` + `build` + `check:bundle` + `test:e2e`(링크·접근성, NFR-12) → main에서 통과하면 `deploy.yml` 호출 — 2026-10-10 완료: `check:bundle` 실구현(페이지별 초기 JS gzip ≤ 160KB + `out/` 비밀값 grep), e2e 링크·axe WCAG 2.1 AA(라이트·다크), CI green 확인. deploy 호출은 M0-13에서 연결
 - [x] M0-13 Pages 배포 — 재사용 `deploy.yml`(`workflow_call` + 롤백용 수동 `workflow_dispatch`, `concurrency: pages`) 작성. 무스타일 Hello 페이지가 `https://sguys99.github.io/euro-digest/`에서 열리고 정적 자산·404·trailing slash 정상 — 2026-10-10 완료: ci(main push) → deploy.yml 배포 성공, `npm run verify:deploy` 15개 항목 통과(홈·`_next/static`·404 본문·`/euro-digest` 301). 롤백은 deploy.yml 수동 실행(Use workflow from: main + ref 입력)
 - [x] M0-14 `collect.yml` 골격: `workflow_dispatch` + 백업 `schedule`(06:40 KST — 06:30 실행이 진행 중이면 concurrency로 대기한 뒤 12시간 가드로 skip) + 12시간 내 성공 이력 시 skip + `concurrency: collect` + 실패 시 이슈 생성 (FR-150, FR-152) — 2026-10-10 완료: 실실행 3경로 확인(정상·12시간 가드 skip·실패 이슈 생성 → 재발 시 댓글, 테스트 이슈 #1 닫음). 🆕 백업 schedule은 저장소 변수 `COLLECT_ENABLED=true`일 때만 실행(M1 전 빈 실행 방지)
-- [ ] ⏸ M0-15 🙋 cron-job.org → `workflow_dispatch` 호출 테스트 — **작업 2개(06:30·07:10 KST, 시간대 Asia/Seoul — D26)를 만들어 둘 다 비활성으로 저장**하고 하나를 수동 실행해 호출만 확인 (정기 실행 활성화는 M1-40 리허설 후) (사용자 설정 대기 — 2026-10-10 설정 안내 전달: fine-grained PAT(Actions R/W, 이 저장소만) + POST `…/actions/workflows/collect.yml/dispatches` body `{"ref":"main"}`. 계절 슬롯 입력이 필요하면 M1-47에서 정하고 M1-40 활성화 때 본문을 갱신)
+- [ ] ⏸ M0-15 🙋 **(2026-10-11 사용자 결정: M1-40 전으로 이월)** cron-job.org → `workflow_dispatch` 호출 테스트 — **작업 2개(06:30·07:10 KST, 시간대 Asia/Seoul — D26)를 만들어 둘 다 비활성으로 저장**하고 하나를 수동 실행해 호출만 확인 (정기 실행 활성화는 M1-40 리허설 후) (사용자 설정 대기 — 2026-10-10 설정 안내 전달: fine-grained PAT(Actions R/W, 이 저장소만) + POST `…/actions/workflows/collect.yml/dispatches` body `{"ref":"main"}`. 계절 슬롯 입력이 필요하면 M1-47에서 정하고 M1-40 활성화 때 본문을 갱신)
 
 ### M0-C 공용 기반 코드
 - [x] M0-16 zod 스키마 v0.1 구현 (`src/lib/schema/`) — **부록 A 기준**, configs·data 전부. 부록 A에 없는 스키마(competitions·names.ko·national-team·bigmatch-rules·search-queries·formations·team-colors·transfer-windows·`players/korean.json`·seen-urls·unknown-names)는 초안 작성 → ❓ 사용자 확인 후 부록 A에 추가 — 2026-10-10 완료: zod 4.6, `src/lib/schema/` + `schemaRegistry`(21개), 초안 12종·결정 10건 사용자 일괄 승인 → 부록 A 반영, `fixtures/schema/` 예시 22개·스키마 테스트 258개
@@ -174,7 +174,7 @@
 - [x] `sources.json`의 모든 소스에 `terms_checked`·`robots_checked` 값이 채워짐 — 26개 전부(수집 14)
 - [x] API-Football 분기(B1)·캐싱 여부(B3)·데이터 API의 LLM 입력 허용 여부(B7, D24) 결정이 기록됨 — B1 일부 발동(D27)·B3 미발동(D28)·B7 미발동(M0-28·M0-29)
 - [x] 실측 단가로 PRD §9.3 가정을 확인 (차이가 크면 사용자에게 보고) — M0-21 단가·M0-30 실측·M0-34 실측(바쁜 날 $0.0023)으로 갱신, 월 약 $0.05~0.09(상한 $3의 3% 안팎) — 큰 차이 없음
-- [ ] §3 사용자 준비 작업 완료
+- [x] §3 사용자 준비 작업 완료 — 2026-10-11: U-01~05·U-07·U-09·U-10 완료, **U-06·M0-15는 M1-40 전, U-08은 M5-04 전으로 이월**(사용자 결정 — 실제 쓰는 시점 직전에 설정·검증)
 
 ---
 
@@ -287,7 +287,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M1-39 시각 검증: 375/1280 × 라이트/다크 스크린샷 ↔ D0 선택안 비교, 접근성 자동 검사, 번들 예산 확인
 
 ### M1-F 운영 리허설·실측 🆕
-- [ ] M1-40 수동 dispatch 3회 연속 성공 → cron-job.org **작업 2개(06:30·07:10 KST) 정기 실행 활성화**(D26 — M1-47 가드가 계절에 맞지 않는 쪽을 skip, 필요하면 dispatch 본문에 계절 슬롯 입력 추가) + 저장소 변수 `COLLECT_ENABLED=true`(백업 schedule 2개 활성화, M0-14·M1-47)
+- [ ] M1-40 🙋 선행: U-06·M0-15(M0에서 이월 — PAT 발급·작업 2개 비활성 저장·Test run 204 + Actions dispatch 실행 확인) → 수동 dispatch 3회 연속 성공 → cron-job.org **작업 2개(06:30·07:10 KST) 정기 실행 활성화**(D26 — M1-47 가드가 계절에 맞지 않는 쪽을 skip, 필요하면 dispatch 본문에 계절 슬롯 입력 추가) + 저장소 변수 `COLLECT_ENABLED=true`(백업 schedule 2개 활성화, M0-14·M1-47)
 - [ ] M1-41 7일 연속 정시 발행 관찰 — 그날 계절의 목표 시각(유럽 서머타임 07:00 · 표준시 07:30 KST) ±15분 기준 (D26). 계절에 맞지 않는 트리거가 skip되는지 확인하고, 관찰 기간이 서머타임 전환일과 겹치면 전환 다음 날 발행 시각 변경과 경기 시각 KST 표시도 확인. 수집 시점의 경기 상태 분포(미종료·점수 지연)를 기록(M0-28)
 - [ ] M1-42 💰 첫 주 실측 비용(단건 브리핑, thinking 포함) 확인 → PRD §9.3 비용표 갱신. 캐싱 코드는 유지(B3 미발동 — D28)하고 요청 2개 이상인 날의 캐시 적중만 확인
 - [ ] M1-46 🆕 GDELT 소량 재측정 — 7일 관찰 기간(M1-41)에 하루 1회, 쿼리 2개·요청 3건 이내. 재활성 기준: 7일 성공률 ≥ 80% · 한국어 24시간 결과 수백 건 · seendate 지연 ≤ 1시간 · 허용 도메인 결과 주 1건 이상 → 충족 시 허용 도메인 OR 쿼리 1개만 켬 ❓ (M0-27)
@@ -432,7 +432,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M5-01 OG 이미지 빌드 시 생성(날짜·대회·팀) — **Playwright로 템플릿 HTML 스크린샷**(확정, 새 의존성 없음) (DR-10) — ❓ 파일 경로는 M0-19 잠정안(`/og/default.png`·`/og/news/{date}.png`·`/og/competitions/{comp}.png`·`/og/teams/{team}.png`, `artifacts.ogImage`) — 공개 URL 구조라 착수 전 사용자 확인
 - [ ] M5-02 앱 아이콘·테마 컬러 교체
 - [ ] M5-03 SEO: canonical, 구조화 데이터(NewsArticle·SportsTeam·SportsEvent), 전체 sitemap (NFR-03)
-- [ ] M5-04 GoatCounter 연동 + 이벤트(원문 클릭·RSS/ics 클릭·PWA 설치·마이 팀 설정) (PRD §11.2)
+- [ ] M5-04 🙋 선행: U-08 GoatCounter 사이트 생성(M0에서 이월) → GoatCounter 연동 + 이벤트(원문 클릭·RSS/ics 클릭·PWA 설치·마이 팀 설정) (PRD §11.2)
 - [ ] M5-05 `/privacy` (FR-141)
 - [ ] M5-06 접근성 감사: WCAG AA(다크 포함)·키보드·스크린리더 라벨 → Lighthouse 접근성 ≥ 90 (NFR-02)
 - [ ] M5-07 성능 최적화 → Lighthouse 모바일 성능 ≥ 95, LCP ≤ 2.0s, CLS ≤ 0.05 (NFR-01, DR-11)
@@ -874,3 +874,4 @@ const UnknownNamesFile = z.object({ updatedAt: Iso, names: z.record(NameText, Un
 | 2026-10-10 | 계절별 발행 시각(PRD §15 D26): 유럽 표준시 기간 07:10 수집 → 07:30 공개, cron-job.org·백업 schedule 계절별 2개, 브리핑 마감 "공개 목표 −10분", push 금지 06:00~08:00 KST. M1-47 추가, M0-15·M1-40·M1-41·M1-45·M1 목표·완료 기준·§2.3·§16 문구 갱신, 태그라인에서 시각 약속 제거 | 사용자 결정 — M0-28 실측: 겨울철 06:30 수집 시 UCL 리그 페이즈 51% 미종료 |
 | 2026-10-10 | API-Football 사용 범위·시즌 누적(PRD §15 D27): §14 B1 일부 발생, M1-48 추가(경기 단건 어댑터 + 경기 기록 누적, 저장 스키마 ❓), M1-44(득점자 → M1-48)·M1-19·M2-07(포메이션 = 라인업 누적)·M3-02·M3-03·M3-07(누적 집계 기반)·M1 관련 요구사항 문구 갱신 | 사용자 결정 — M0-29 실측: 무료 플랜 시즌 단위 조회 불가·경기 단건 조회 가능 |
 | 2026-10-11 | 일일 브리핑 호출 방식(PRD §15 D28): 일일 브리핑은 일반 Messages API 단건(주간 2곳은 배치 유지), thinking 적응형 + `effort:"medium"`·`max_tokens` 4,096, §14 B3 미발동으로 닫음(캐싱은 호출 지점별), 검증 순서 zod → 코드 검증 → 1회 재시도 → 템플릿. M1-20·M1-21·M1-23·M1-42·M1-45·M3-07·M4-06·§14 B3·B4 갱신. 함께 정리: M2-01(유럽 대항전 구간만 남음 — §16에 시즌 후반 갱신 추가), 부록 A `formations.json` 주석(보조), §14 B7 미발생 표기 | 사용자 결정 — M0-30 실측: 배치 완료 최대 6분 33초로 겨울 마감 여유 4~5분 초과, 단건 2~8.5초 |
+| 2026-10-11 | M0 완료: U-06·M0-15(cron-job.org)를 M1-40 선행으로, U-08(GoatCounter)을 M5-04 선행으로 이월 · M0-33~36 발견 사항을 M1-02(The Athletic 보관 조항 ❓)·M1-17·M1-20(스코어 표기 순서)·M1-21·M1-23(승패 동사·스코어 순서·미정 판정 ❓)·M1-45(요청 타임아웃·연결 오류 retryable 힌트·max_tokens/refusal ❓·실행 기록 순서)·M1-48(보강 호출 3회·`apiFootballId` null 알림)에 반영 | 사용자 결정(이월) · M0-32~36 서브에이전트 보고 |

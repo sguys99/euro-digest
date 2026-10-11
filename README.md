@@ -8,9 +8,9 @@
 
 ## 현재 상태
 
-**M0 셋업·검증 단계입니다.** 아직 사용할 수 있는 서비스가 아닙니다.
+**M0 셋업·검증을 마치고(2026-10-11) D0 디자인 시안 단계로 넘어갑니다.** 아직 사용할 수 있는 서비스가 아닙니다.
 
-- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사·배포 워크플로(`ci.yml`·`deploy.yml`), 데이터 스키마(zod v0.1, `src/lib/schema/`)와 설정·데이터 검증(`npm run validate`, CI에서 실패 시 중단)
+- 마련된 것: Next.js 정적 export 뼈대, 개발 도구(ESLint·Prettier·Vitest·Playwright), npm 명령 골격, 폴더 구조, 이슈 템플릿, CI 검사·배포 워크플로(`ci.yml`·`deploy.yml`), 데이터 스키마(zod v0.1, `src/lib/schema/`)와 설정·데이터 검증(`npm run validate`, CI에서 실패 시 중단), LLM 호출·비용 기록 모듈, 2026-27 한국 선수 명단 초안, 실데이터 fixtures(RSS 69건·원제목 카드 23장·데이터 브리핑 6일치·축구 API 응답 39개·브리핑 mock 31개 — `fixtures/`)
 - 아직 없는 것: 뉴스 수집·분류 파이프라인과 데이터 브리핑, 화면 디자인. 뉴스 소스·축구 데이터 API 약관 검증은 마쳤습니다([docs/research/m0-validation.md](docs/research/m0-validation.md))
 - main에 push하면 CI 검사를 통과한 커밋이 GitHub Pages로 배포됩니다(`deploy.yml`). D0 디자인 시안이 확정되기 전까지는 스타일 없는 임시 페이지만 보입니다.
 
@@ -159,9 +159,10 @@ npm run preview    # out/을 GitHub Pages처럼 basePath 아래로 서빙
 | 스타일 | Tailwind CSS 4.3 · shadcn/ui (커스텀 — 디자인 확정 후 적용) |
 | 실행 | Node.js 24 · tsx |
 | 스키마 | zod 4.6 — configs·data·LLM 출력 경계 검증 (`src/lib/schema/`) |
+| LLM | Anthropic Claude Haiku 5.5 + `@anthropic-ai/sdk` — 일일 브리핑은 Messages API 단건, 주간 작업은 Message Batches API, 호출은 `scripts/lib/llm.ts`에서만 |
 | 테스트·품질 | Vitest 5 · Testing Library · Playwright 1.64 · ESLint 9 · Prettier 3 |
-| 배포 | GitHub Actions → GitHub Pages (검사 `ci.yml` 완료, 배포 `deploy.yml`은 M0-13) |
-| 도입 예정 | Anthropic Claude Haiku + `@anthropic-ai/sdk` — 일일 브리핑은 Messages API, 주간 작업은 Message Batches API (M0-20) · rss-parser (M1) · football-data.org · API-Football · Pagefind (M4-14) · GoatCounter 쿠키리스 분석 (M5-04) |
+| 배포 | GitHub Actions → GitHub Pages (검사 `ci.yml` → 배포 `deploy.yml`) |
+| 도입 예정 | rss-parser (M1) · football-data.org · API-Football · Pagefind (M4-14) · GoatCounter 쿠키리스 분석 (M5-04) |
 
 ## 저장소 구조
 
