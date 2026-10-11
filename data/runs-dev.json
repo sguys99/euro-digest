@@ -70,5 +70,29 @@
     },
     "sources": [],
     "status": "success"
+  },
+  {
+    "runId": "collect-dev-20261011T065401Z-0df9",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-11T06:54:01.069Z",
+    "finishedAt": "2026-10-11T06:54:14.659Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 6590,
+      "out": 3231,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.002275,
+    "apiCalls": {
+      "footballData": 7,
+      "apiFootball": 15
+    },
+    "sources": [],
+    "status": "success"
   }
 ]
