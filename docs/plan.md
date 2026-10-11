@@ -56,8 +56,8 @@
 
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
-**현재 위치**: D0 전체 디자인 콘셉트 진행 중 — D0-01·D0-02 완료(2026-10-11)
-**다음 작업**: `D0-03` 시안 3개 제작 (A Broadsheet · B Cover · C Programme — D29)
+**현재 위치**: D0 전체 디자인 콘셉트 진행 중 — D0-01~D0-03 완료(2026-10-11)
+**다음 작업**: `D0-04` 시안 스크린샷 375/1280 × 라이트/다크 정리
 
 ---
 
@@ -191,7 +191,7 @@
 - [x] D0-02 ❓ U-10 응답이 있으면 반영할 키워드 확인 (없으면 생략) — 2026-10-11 완료: `docs/design/d0/directions.md`(방향 후보 5개 A Broadsheet·M Cover·B Floodlight·C Matchsheet·P Programme(새 제안), 10쌍 축 매트릭스, 폰트 서브셋 실측 — SUIT·IBM Plex Sans KR·나눔명조는 악센트 글자 없음, Noto Serif KR 등 tnum 없음 → 제외). 사용자 확정(PRD §15 D29): **A Broadsheet + M Cover + P Programme**, 한글 웹폰트 KS X 1001 단일 서브셋·굵기 ≤ 2, 마스트헤드 날짜 기반 "제 N호"(§14.1), 대회 컬러 강도는 시안 재량(카드 배경 전체 칠하기·약칭 없는 색 표식 금지)
 
 ### D0-B 시안 제작 (`/design-concepts d0`, `design-concepts` 에이전트)
-- [ ] D0-03 시안 2~3개: `docs/design/d0/concept-{a,b,c}.html` — 외부 의존 없는 단일 HTML, `fixtures/news-sample.json`(원제목 카드)·`fixtures/brief-sample.json`(데이터 브리핑) 실데이터 사용 (M0-34)
+- [x] D0-03 시안 2~3개: `docs/design/d0/concept-{a,b,c}.html` — 외부 의존 없는 단일 HTML, `fixtures/news-sample.json`(원제목 카드)·`fixtures/brief-sample.json`(데이터 브리핑) 실데이터 사용 (M0-34) — 2026-10-11 완료: **A Broadsheet**(조간 1면 — 괘선 위계·명조·단 조판, 함렛 400·600 + Newsreader 가변 403KB) · **B Cover**(매거진 커버 — 거대 숫자 "5"·볼트 표지·극굵은 고딕, 원티드 산스 가변 + Archivo 가변 388KB) · **C Programme**(매치데이 프로그램 — 등번호 거터·티켓 스텁·인덱스 탭·2도 인쇄, Pretendard 400·800 + Barlow Condensed 418KB). 3개 모두 scope.md 7개 영역(홈·5줄 상태 S1~S4·카드 변형 6종·상태 4종·내비·컴포넌트/토큰 견본·OG 축소 견본), 원제목 23장 무수정, 외부 참조 0, 375 가로 넘침 0, 대비비 AA 미달 0(라이트·다크), 인라인 JS 7.7~8.3KB. 폰트는 `docs/design/fonts/`(OFL 원문 동봉). D0-11로 넘길 발견: ① 마루부리는 공식 라이선스 원문 미확인 → 함렛(OFL)으로 대체 ② **Pretendard는 OFL 예약 글꼴명(RFN)** — 직접 서브셋은 이름 변경 필요(시안은 "EuroDigest Sans"로 바꿈), 대안은 공식 subset 파일(굵기당 267KB) ③ Barlow Condensed는 힌팅 제거 서브셋에서 자간이 깨짐(힌팅 유지 +9KB/굵기) — 다른 TrueType 라틴 서체도 확인 ④ ▲▼·⌘·🚨는 서브셋 밖 → CSS/SVG·시스템 폴백
 - [ ] D0-04 Playwright 스크린샷: 시안별 375px·1280px × 라이트·다크 (4장씩)
 - [ ] D0-05 비교표: 콘셉트명 · 한 줄 설명 · 장점 · 단점 · 구현 난이도 · 번들/폰트 영향 + 추천안(이유)
 - [ ] D0-06 🙋 사용자 선택 또는 혼합 지시
