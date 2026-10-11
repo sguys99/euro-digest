@@ -4,6 +4,7 @@
   세 시안(A Broadsheet · B Cover · C Programme)의 첫 화면 스크린샷을 나란히 보고, comparison.md의 요약·추천을 함께 읽는 페이지.
   중립 스타일: 시스템 글꼴만, 웹폰트 0, 외부 의존 0(CSS·JS 인라인). 이미지는 screenshots/ 상대 경로뿐.
   결정은 사용자(D0-06). 이 페이지는 어느 시안 스타일도 따르지 않는다.
+  D0-07: 맨 위에 '선택안(혼합)' 영역(concept-mix.html 링크 + 첫 화면 4장)을 더했다. 아래 세 시안 비교는 D0-05 그대로.
 -->
 <html lang="ko">
 <head>
@@ -93,6 +94,14 @@ details.more>summary::before{content:"";width:8px;height:8px;border-right:2px so
 details.more[open]>summary::before{transform:rotate(45deg)}
 details.more .sec-note{margin-bottom:var(--s4)}
 
+/* 선택안(혼합) */
+.mix-sec .sec-h{border-bottom-width:3px}
+.mix-grid{display:grid;gap:var(--s6) var(--s6)}
+@media (min-width:1000px){.mix-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}}
+.mix-points{margin-top:var(--s4);padding-left:1.4em;list-style:decimal;display:grid;gap:var(--s2);font-size:14px;color:var(--fg-2)}
+.mix-points b{color:var(--fg);font-weight:700}
+.mix-status{margin-top:var(--s4);font-size:13px;color:var(--fg-2)}
+
 /* 표 */
 .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-top:1px solid var(--line)}
 table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.55}
@@ -154,6 +163,53 @@ footer code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fon
 </header>
 
 <main id="main" class="wrap">
+
+<section class="mix-sec" aria-labelledby="h-mix">
+  <div class="sec-h">
+    <h2 id="h-mix">선택안(혼합) — D0-07 재확인</h2>
+    <p class="sec-note">D0-06 사용자 결정(PRD §15 D30) 반영 · 확인 전에는 구현하지 않는다 · 아래 기존 비교는 그대로 둔다</p>
+  </div>
+  <div class="sec-body mix-grid">
+    <div>
+      <div class="col-h">
+        <span class="letter" aria-hidden="true">M</span>
+        <h3>혼합안 — C Programme 기반 + A 1280 위계 + A 연결 줄 + B 필터 색 면</h3>
+        <p class="one">C의 매치데이 프로그램(티켓 마스트헤드·등번호·인덱스 탭·2도 인쇄)을 그대로 두고, 1280 지면 위계·M1 중앙 확장·같은 사건 연결 줄은 A에서, 대회 필터 색 면은 B에서 가져왔다.</p>
+      </div>
+      <div class="col-meta">
+        <span>폰트 <span class="num">417.8</span>KB(C와 같은 파일) · 인라인 JS gzip <span class="num">4.0</span>KB · 텍스트 대비 최저 <span class="num">5.32</span> / <span class="num">5.43</span></span>
+        <a href="concept-mix.html">혼합안 열기 →</a>
+      </div>
+      <ol class="mix-points">
+        <li><b>1280 머리기사</b> — imp가 가장 높은 카드 1장을 가운데 단 전폭, 라틴 제목 23 → 42px, 인덱스 탭을 카드 높이만큼. 375는 C 그대로</li>
+        <li><b>1280 M1 상태</b> — 우측 열이 비면 232px + 1fr로 중앙을 넓히고 5줄은 중앙 최상단(D2). 혼합안 홈의 "M1 공개 상태로 보기" 토글로 실제 크기 확인</li>
+        <li><b>같은 사건 연결 줄</b> — "같은 소식 국내 보도 ···· 14 인터풋볼 ↓". 게재 번호로 교차 참조, 코드가 클러스터 일치로 만들 수 있을 때만</li>
+        <li><b>대회 필터 색 면</b> — 목차에서 대회를 고르면 피드 머리가 그 대회 색 면 + 약칭 + 해제 버튼(라이트 5.32 · 다크 5.78 이상)</li>
+        <li><b>조정</b> — 게재 번호 14/15px 보조색 · 크림 채도↓ · 스팟 레드 면 위 글자 5.51 · 중요도 빈 칸 3.89 / 4.08 · opacity 글자 0 · S4 블록 유지 · OG는 워드마크·날짜·호수만</li>
+      </ol>
+      <div class="shots">
+        <figure>
+          <figcaption class="cap"><b>375 · 라이트 / 다크</b><span>헤더 기준 5줄 중 4줄 노출(C와 같음)</span></figcaption>
+          <div class="pair mobile-pair">
+            <a class="shot" href="screenshots/concept-mix-375-light-fold.png"><img src="screenshots/concept-mix-375-light-fold.png" width="375" height="812" alt="혼합안 375px 라이트 첫 화면: 접힌 메타 띠 아래 네이비 티켓 마스트헤드와 등번호 매긴 오늘의 5줄"></a>
+            <a class="shot" href="screenshots/concept-mix-375-dark-fold.png"><img src="screenshots/concept-mix-375-dark-fold.png" width="375" height="812" alt="혼합안 375px 다크 첫 화면: 벽돌색 티켓과 네이비 지면 위 오늘의 5줄"></a>
+          </div>
+        </figure>
+      </div>
+      <p class="mix-status">상태: <b>사용자 재확인 대기</b> — 확인되면 D0-08 <code>DECISIONS.md</code> 기록 → D0-09 <code>DESIGN.md</code>. 전체 페이지는 <code>screenshots/concept-mix-{375,1280}-{light,dark}.png</code></p>
+    </div>
+    <div class="shots" style="margin-top:0">
+      <figure>
+        <figcaption class="cap"><b>1280 · 라이트</b><span>헤더 위끝부터 800px 안에 5줄 모두(C는 4줄) — 이 이미지는 위 메타·구분 띠 121px 포함</span></figcaption>
+        <a class="shot" href="screenshots/concept-mix-1280-light-fold.png"><img src="screenshots/concept-mix-1280-light-fold.png" width="1280" height="800" alt="혼합안 1280px 라이트 첫 화면: 호수 스텁 티켓 마스트헤드, 왼쪽 목차와 가운데 오늘의 5줄, 오른쪽 자리 열"></a>
+      </figure>
+      <figure>
+        <figcaption class="cap"><b>1280 · 다크</b><span>메타 띠 접힘</span></figcaption>
+        <a class="shot" href="screenshots/concept-mix-1280-dark-fold.png"><img src="screenshots/concept-mix-1280-dark-fold.png" width="1280" height="800" loading="lazy" alt="혼합안 1280px 다크 첫 화면: 벽돌색 티켓 마스트헤드와 네이비 지면의 3단"></a>
+      </figure>
+    </div>
+  </div>
+</section>
 
 <section aria-labelledby="h-shots">
   <div class="sec-h">
@@ -408,6 +464,7 @@ footer code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fon
     <ul>
       <li>비교 문서 <a href="comparison.md"><code>docs/design/d0/comparison.md</code></a> · 범위 <a href="scope.md"><code>scope.md</code></a> · 방향 <a href="directions.md"><code>directions.md</code></a></li>
       <li>시안 <a href="concept-a.html"><code>concept-a.html</code></a> · <a href="concept-b.html"><code>concept-b.html</code></a> · <a href="concept-c.html"><code>concept-c.html</code></a> · 스크린샷 <code>screenshots/concept-{a,b,c}-{375,1280}-{light,dark}[-fold].png</code></li>
+      <li>혼합안(D0-07) <a href="concept-mix.html"><code>concept-mix.html</code></a> · 스크린샷 <code>screenshots/concept-mix-{375,1280}-{light,dark}[-fold].png</code></li>
     </ul>
   </div>
 </footer>
