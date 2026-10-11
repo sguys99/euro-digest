@@ -1,0 +1,934 @@
+{
+  "_note": "fixtures/news-sample.json 보조 정보(시안 표시용, 스키마 밖 — NewsFileSchema가 읽지 않는다). M0-34 생성 스크립트는 저장소 밖(scratchpad)에 있다.",
+  "sample": "fixtures/news-sample.json",
+  "generatedFrom": {
+    "fixtures": "fixtures/rss/*.xml (M0-33)",
+    "collectedAt": "2026-10-11T06:17:17.669Z",
+    "window": {
+      "start": "2026-10-09T18:17:17.669Z",
+      "end": "2026-10-11T06:17:17.669Z",
+      "rule": "수집 시각 기준 36시간(FR-07 최대 창)"
+    }
+  },
+  "labels": {
+    "teams": {
+      "tottenham-hotspur": {
+        "ko": "토트넘",
+        "source": "provisional"
+      },
+      "manchester-united": {
+        "ko": "맨유",
+        "source": "provisional"
+      },
+      "bayern-munchen": {
+        "ko": "바이에른 뮌헨",
+        "source": "names.ko"
+      },
+      "augsburg": {
+        "ko": "아우크스부르크",
+        "source": "names.ko"
+      },
+      "arsenal": {
+        "ko": "아스널",
+        "source": "provisional"
+      },
+      "leeds-united": {
+        "ko": "리즈",
+        "source": "provisional"
+      },
+      "atletico-de-madrid": {
+        "ko": "아틀레티코 마드리드",
+        "source": "names.ko"
+      },
+      "deportivo-alaves": {
+        "ko": "알라베스",
+        "source": "provisional"
+      },
+      "real-madrid": {
+        "ko": "레알 마드리드",
+        "source": "provisional"
+      },
+      "barcelona": {
+        "ko": "바르셀로나",
+        "source": "provisional"
+      },
+      "milan": {
+        "ko": "AC 밀란",
+        "source": "provisional"
+      },
+      "napoli": {
+        "ko": "나폴리",
+        "source": "provisional"
+      },
+      "chelsea": {
+        "ko": "첼시",
+        "source": "provisional"
+      },
+      "sassuolo": {
+        "ko": "사수올로",
+        "source": "provisional"
+      },
+      "manchester-city": {
+        "ko": "맨시티",
+        "source": "provisional"
+      },
+      "liverpool": {
+        "ko": "리버풀",
+        "source": "provisional"
+      }
+    },
+    "players": {
+      "dominic-solanke": {
+        "ko": "솔란케",
+        "source": "provisional"
+      },
+      "manuel-neuer": {
+        "ko": "노이어",
+        "source": "provisional"
+      },
+      "bruno-guimaraes": {
+        "ko": "기마랑이스",
+        "source": "provisional"
+      },
+      "seol-young-woo": {
+        "ko": "설영우",
+        "source": "names.ko"
+      },
+      "kim-min-jae": {
+        "ko": "김민재",
+        "source": "names.ko"
+      },
+      "lee-kang-in": {
+        "ko": "이강인",
+        "source": "names.ko"
+      },
+      "vinicius-junior": {
+        "ko": "비니시우스",
+        "source": "provisional"
+      },
+      "cristiano-ronaldo": {
+        "ko": "호날두",
+        "source": "provisional"
+      },
+      "rodrigo-bentancur": {
+        "ko": "벤탄쿠르",
+        "source": "provisional"
+      },
+      "julian-alvarez": {
+        "ko": "훌리안 알바레스",
+        "source": "provisional"
+      },
+      "kevin-de-bruyne": {
+        "ko": "더브라위너",
+        "source": "provisional"
+      },
+      "scott-mctominay": {
+        "ko": "맥토미니",
+        "source": "provisional"
+      },
+      "cole-palmer": {
+        "ko": "팔머",
+        "source": "provisional"
+      },
+      "christian-pulisic": {
+        "ko": "풀리식",
+        "source": "provisional"
+      },
+      "marcos-rojo": {
+        "ko": "마르코스 로호",
+        "source": "provisional"
+      },
+      "raphinha": {
+        "ko": "하피냐",
+        "source": "provisional"
+      },
+      "harry-kane": {
+        "ko": "케인",
+        "source": "provisional"
+      }
+    },
+    "comps": {
+      "EPL": {
+        "ko": "프리미어리그",
+        "short": "EPL",
+        "source": "competitions"
+      },
+      "BUNDESLIGA": {
+        "ko": "분데스리가",
+        "short": "분데스",
+        "source": "competitions"
+      },
+      "LALIGA": {
+        "ko": "라리가",
+        "short": "라리가",
+        "source": "competitions"
+      },
+      "SERIEA": {
+        "ko": "세리에 A",
+        "short": "세리에A",
+        "source": "competitions"
+      }
+    }
+  },
+  "variants": {
+    "_note": "D0 카드 변형 6종 → 카드 id. 한 카드가 여러 변형에 들 수 있다.",
+    "basic": [
+      "c_c2061f1944",
+      "c_d8ecc21d28",
+      "c_7ea11d06e5",
+      "c_92935e72fe",
+      "c_0110371250",
+      "c_f95d6f890f",
+      "c_b24a3b9263",
+      "c_4d28dc0b8f"
+    ],
+    "cluster": [
+      "c_f598c95798",
+      "c_6fa142d217",
+      "c_14fe97f9ae",
+      "c_d8eac2777b",
+      "c_cd33b9b380",
+      "c_114856ecfb",
+      "c_f97bda2884",
+      "c_744396ca78"
+    ],
+    "transfer": [
+      "c_c19e60220d",
+      "c_c4f20b673e"
+    ],
+    "korean": [
+      "c_d8eac2777b",
+      "c_cd33b9b380",
+      "c_431b1523c4",
+      "c_c19e60220d",
+      "c_f3f9c66a6d"
+    ],
+    "result": [
+      "c_f598c95798",
+      "c_6fa142d217",
+      "c_14fe97f9ae",
+      "c_d8eac2777b",
+      "c_cd33b9b380",
+      "c_114856ecfb",
+      "c_431b1523c4",
+      "c_744396ca78",
+      "c_4dd831532a",
+      "c_4d28dc0b8f"
+    ],
+    "domestic": [
+      "c_d8eac2777b",
+      "c_cd33b9b380",
+      "c_431b1523c4",
+      "c_744396ca78",
+      "c_c19e60220d",
+      "c_f3f9c66a6d",
+      "c_c4f20b673e",
+      "c_fcf6ac5c90",
+      "c_329c1cd794"
+    ]
+  },
+  "variantDescriptions": {
+    "basic": "1. 기본 원제목 카드 — 해외 단일 출처(en·it·es), 이적·한국 선수·결과 아님",
+    "cluster": "2. 다출처 클러스터(+N곳) — src 2개 이상, 언어군(해외/국내) 안에서만 묶음",
+    "transfer": "3. 이적 단계 + Tier — transfer.status·tier(+ 확인된 player)",
+    "korean": "4. 한국 선수 관련 — kr:true, players에 korean-players.json 등록 slug",
+    "result": "5. 경기 결과 — spoiler:true(결과 카테고리·스코어·승패 키워드·경기 중 사건 중 하나라도)",
+    "domestic": "6. 한국어 보도 카드(국내 매체)"
+  },
+  "origin": {
+    "c_f598c95798": {
+      "rep": "bbc-sport-football#0",
+      "cluster": "overseas:mun-tot-result",
+      "members": [
+        {
+          "ref": "bbc-sport-football#0",
+          "alsoIn": [
+            "bbc-sport-premier-league#3"
+          ],
+          "source": "bbc-sport-football",
+          "tier": 2,
+          "weight": 3
+        },
+        {
+          "ref": "the-athletic-football#0",
+          "alsoIn": [],
+          "source": "the-athletic-football",
+          "tier": 2,
+          "weight": 1.5
+        },
+        {
+          "ref": "espn-soccer#1",
+          "alsoIn": [],
+          "source": "espn-soccer",
+          "tier": 2,
+          "weight": 1
+        }
+      ],
+      "tempScore": 13,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_6fa142d217": {
+      "rep": "bbc-sport-football#4",
+      "cluster": "overseas:augsburg-bayern",
+      "members": [
+        {
+          "ref": "bbc-sport-football#4",
+          "alsoIn": [],
+          "source": "bbc-sport-football",
+          "tier": 2,
+          "weight": 3
+        },
+        {
+          "ref": "espn-soccer#4",
+          "alsoIn": [],
+          "source": "espn-soccer",
+          "tier": 2,
+          "weight": 1
+        }
+      ],
+      "tempScore": 10,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_14fe97f9ae": {
+      "rep": "bbc-sport-premier-league#4",
+      "cluster": "overseas:arsenal-leeds",
+      "members": [
+        {
+          "ref": "bbc-sport-premier-league#4",
+          "alsoIn": [],
+          "source": "bbc-sport-premier-league",
+          "tier": 2,
+          "weight": 2
+        },
+        {
+          "ref": "the-athletic-football#1",
+          "alsoIn": [],
+          "source": "the-athletic-football",
+          "tier": 2,
+          "weight": 1.5
+        }
+      ],
+      "tempScore": 10,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_d8eac2777b": {
+      "rep": "besteleven-world#2",
+      "cluster": "domestic:augsburg-bayern",
+      "members": [
+        {
+          "ref": "besteleven-world#2",
+          "alsoIn": [
+            "besteleven-all#3"
+          ],
+          "source": "besteleven-world",
+          "tier": 3,
+          "weight": 1
+        },
+        {
+          "ref": "interfootball-all#5",
+          "alsoIn": [],
+          "source": "interfootball-all",
+          "tier": 3,
+          "weight": 1
+        },
+        {
+          "ref": "footballist-football#2",
+          "alsoIn": [],
+          "source": "footballist-football",
+          "tier": 3,
+          "weight": 0.5
+        }
+      ],
+      "tempScore": 15,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": true
+      }
+    },
+    "c_cd33b9b380": {
+      "rep": "besteleven-world#3",
+      "cluster": "domestic:atletico-alaves",
+      "members": [
+        {
+          "ref": "besteleven-world#3",
+          "alsoIn": [
+            "besteleven-all#4"
+          ],
+          "source": "besteleven-world",
+          "tier": 3,
+          "weight": 1
+        },
+        {
+          "ref": "interfootball-all#4",
+          "alsoIn": [],
+          "source": "interfootball-all",
+          "tier": 3,
+          "weight": 1
+        },
+        {
+          "ref": "footballist-football#1",
+          "alsoIn": [],
+          "source": "footballist-football",
+          "tier": 3,
+          "weight": 0.5
+        }
+      ],
+      "tempScore": 15,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": true
+      }
+    },
+    "c_114856ecfb": {
+      "rep": "di-marzio#3",
+      "cluster": "overseas:vinicius-red-card",
+      "members": [
+        {
+          "ref": "di-marzio#3",
+          "alsoIn": [],
+          "source": "di-marzio",
+          "tier": 2,
+          "weight": 2
+        },
+        {
+          "ref": "espn-soccer#2",
+          "alsoIn": [],
+          "source": "espn-soccer",
+          "tier": 2,
+          "weight": 1
+        }
+      ],
+      "tempScore": 8,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_f97bda2884": {
+      "rep": "the-athletic-football#2",
+      "cluster": "overseas:ronaldo-suspension",
+      "members": [
+        {
+          "ref": "the-athletic-football#2",
+          "alsoIn": [],
+          "source": "the-athletic-football",
+          "tier": 2,
+          "weight": 1.5
+        },
+        {
+          "ref": "espn-soccer#3",
+          "alsoIn": [],
+          "source": "espn-soccer",
+          "tier": 2,
+          "weight": 1
+        }
+      ],
+      "tempScore": 8,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_431b1523c4": {
+      "rep": "interfootball-world#1",
+      "cluster": "domestic:solo:https://www.interfootball.co.kr/news/articleView.html?idxno=696160",
+      "members": [
+        {
+          "ref": "interfootball-world#1",
+          "alsoIn": [
+            "interfootball-all#1"
+          ],
+          "source": "interfootball-world",
+          "tier": 3,
+          "weight": 1.5
+        }
+      ],
+      "tempScore": 9,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_744396ca78": {
+      "rep": "interfootball-world#3",
+      "cluster": "domestic:mun-tot-result",
+      "members": [
+        {
+          "ref": "interfootball-world#3",
+          "alsoIn": [
+            "interfootball-all#3"
+          ],
+          "source": "interfootball-world",
+          "tier": 3,
+          "weight": 1.5
+        },
+        {
+          "ref": "besteleven-world#1",
+          "alsoIn": [
+            "besteleven-all#2"
+          ],
+          "source": "besteleven-world",
+          "tier": 3,
+          "weight": 1
+        }
+      ],
+      "tempScore": 9,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": true
+      }
+    },
+    "c_c19e60220d": {
+      "rep": "interfootball-all#7",
+      "cluster": "domestic:alvarez-agent",
+      "members": [
+        {
+          "ref": "interfootball-all#7",
+          "alsoIn": [],
+          "source": "interfootball-all",
+          "tier": 3,
+          "weight": 1
+        }
+      ],
+      "tempScore": 8,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false,
+        "transferStatus": {
+          "rawStatus": "collapsed",
+          "capped": false,
+          "bestTier": 3,
+          "publishers": 1
+        }
+      }
+    },
+    "c_c2061f1944": {
+      "rep": "bbc-sport-football#2",
+      "cluster": "overseas:solo:https://www.bbc.co.uk/sport/football/articles/cmy0rp2r516po?at_medium=RSS&at_campaign=rss",
+      "members": [
+        {
+          "ref": "bbc-sport-football#2",
+          "alsoIn": [],
+          "source": "bbc-sport-football",
+          "tier": 2,
+          "weight": 3
+        }
+      ],
+      "tempScore": 6,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false,
+        "transferStatus": {
+          "rawStatus": "rumor",
+          "capped": false,
+          "bestTier": 2,
+          "publishers": 1
+        }
+      }
+    },
+    "c_4dd831532a": {
+      "rep": "di-marzio#1",
+      "cluster": "overseas:solo:https://www.gianlucadimarzio.com/interviste-e-storie/de-bruyne-raddoppia-maradona-ritrova-mctominay-napoli-riparte-tris-498149",
+      "members": [
+        {
+          "ref": "di-marzio#1",
+          "alsoIn": [],
+          "source": "di-marzio",
+          "tier": 2,
+          "weight": 2
+        }
+      ],
+      "tempScore": 7,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_f3f9c66a6d": {
+      "rep": "footballist-football#0",
+      "cluster": "domestic:solo:http://www.footballist.co.kr/news/articleView.html?idxno=215736",
+      "members": [
+        {
+          "ref": "footballist-football#0",
+          "alsoIn": [],
+          "source": "footballist-football",
+          "tier": 3,
+          "weight": 0.5
+        }
+      ],
+      "tempScore": 7,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_d8ecc21d28": {
+      "rep": "bbc-sport-premier-league#1",
+      "cluster": "overseas:palmer-contract",
+      "members": [
+        {
+          "ref": "bbc-sport-premier-league#1",
+          "alsoIn": [],
+          "source": "bbc-sport-premier-league",
+          "tier": 2,
+          "weight": 2
+        }
+      ],
+      "tempScore": 6,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_7ea11d06e5": {
+      "rep": "di-marzio#0",
+      "cluster": "overseas:solo:https://www.gianlucadimarzio.com/news-calcio/milan-probabile-formazione-sassuolo-serie-a-news-498062",
+      "members": [
+        {
+          "ref": "di-marzio#0",
+          "alsoIn": [],
+          "source": "di-marzio",
+          "tier": 2,
+          "weight": 2
+        }
+      ],
+      "tempScore": 5,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_c4f20b673e": {
+      "rep": "interfootball-all#6",
+      "cluster": "domestic:solo:https://www.interfootball.co.kr/news/articleView.html?idxno=696147",
+      "members": [
+        {
+          "ref": "interfootball-all#6",
+          "alsoIn": [],
+          "source": "interfootball-all",
+          "tier": 3,
+          "weight": 1
+        }
+      ],
+      "tempScore": 5,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false,
+        "transferStatus": {
+          "rawStatus": "official",
+          "capped": true,
+          "bestTier": 3,
+          "publishers": 1
+        }
+      }
+    },
+    "c_92935e72fe": {
+      "rep": "bbc-sport-european#1",
+      "cluster": "overseas:raphinha-injury",
+      "members": [
+        {
+          "ref": "bbc-sport-european#1",
+          "alsoIn": [],
+          "source": "bbc-sport-european",
+          "tier": 2,
+          "weight": 2.5
+        }
+      ],
+      "tempScore": 6,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_0110371250": {
+      "rep": "bbc-sport-premier-league#2",
+      "cluster": "overseas:arteta-conscience",
+      "members": [
+        {
+          "ref": "bbc-sport-premier-league#2",
+          "alsoIn": [],
+          "source": "bbc-sport-premier-league",
+          "tier": 2,
+          "weight": 2
+        }
+      ],
+      "tempScore": 6,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_f95d6f890f": {
+      "rep": "relevo#1",
+      "cluster": "overseas:alvarez-agent",
+      "members": [
+        {
+          "ref": "relevo#1",
+          "alsoIn": [],
+          "source": "relevo",
+          "tier": 2,
+          "weight": 1
+        }
+      ],
+      "tempScore": 6,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_fcf6ac5c90": {
+      "rep": "interfootball-world#2",
+      "cluster": "domestic:ronaldo-suspension",
+      "members": [
+        {
+          "ref": "interfootball-world#2",
+          "alsoIn": [
+            "interfootball-all#2"
+          ],
+          "source": "interfootball-world",
+          "tier": 3,
+          "weight": 1.5
+        }
+      ],
+      "tempScore": 4,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_329c1cd794": {
+      "rep": "besteleven-world#4",
+      "cluster": "domestic:palmer-contract",
+      "members": [
+        {
+          "ref": "besteleven-world#4",
+          "alsoIn": [
+            "besteleven-all#5"
+          ],
+          "source": "besteleven-world",
+          "tier": 3,
+          "weight": 1
+        }
+      ],
+      "tempScore": 5,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": false
+      }
+    },
+    "c_b24a3b9263": {
+      "rep": "daily-briefing#0",
+      "cluster": "overseas:solo:https://thedailybriefing.io/p/maresca-on-man-city-charges-shock",
+      "members": [
+        {
+          "ref": "daily-briefing#0",
+          "alsoIn": [],
+          "source": "daily-briefing",
+          "tier": 2,
+          "weight": 1.5
+        }
+      ],
+      "tempScore": 5,
+      "ruleTrace": {
+        "isRoundup": true,
+        "hasScore": false
+      }
+    },
+    "c_4d28dc0b8f": {
+      "rep": "bbc-sport-football#5",
+      "cluster": "overseas:solo:https://www.bbc.co.uk/sport/football/videos/crlyk7w4zp5xo?at_medium=RSS&at_campaign=rss",
+      "members": [
+        {
+          "ref": "bbc-sport-football#5",
+          "alsoIn": [],
+          "source": "bbc-sport-football",
+          "tier": 2,
+          "weight": 3
+        }
+      ],
+      "tempScore": 5,
+      "ruleTrace": {
+        "isRoundup": false,
+        "hasScore": true
+      }
+    }
+  },
+  "manualFixes": [
+    {
+      "card": "c_f95d6f890f",
+      "rep": "relevo#1",
+      "field": "cat",
+      "rule": "result",
+      "fixed": "other",
+      "reason": "스페인어 결과 키워드 'gana'가 'un tapado gana enteros'(다크호스가 유력해지다)에 걸린 오탐 — 에이전트 교체 기사라 경기 결과가 아니다(M1-17 키워드 표 검토 사례)"
+    },
+    {
+      "card": "c_f95d6f890f",
+      "rep": "relevo#1",
+      "field": "spoiler",
+      "rule": true,
+      "fixed": false,
+      "reason": "같은 'gana' 오탐 — 제목에 경기·결과가 없다"
+    },
+    {
+      "card": "c_431b1523c4",
+      "rep": "interfootball-world#1",
+      "field": "cat",
+      "rule": "result",
+      "fixed": "club",
+      "reason": "'승리하고도'가 결과 키워드에 걸렸지만 기사 중심은 판정에 대한 레알 마드리드 구단의 반발(감독·구단) — spoiler는 승리 사실이 드러나므로 true 유지"
+    },
+    {
+      "card": "c_c4f20b673e",
+      "rep": "interfootball-all#6",
+      "field": "transfer.status",
+      "rule": "negotiating",
+      "fixed": "official",
+      "reason": "Tier 3 단일 매체라 agreed 이상 상한(PRD §5.10 D23 한계)에 걸려 negotiating이 됐으나 제목이 '[오피셜] … 입단'으로 공식 발표 — M1-18에서 국내 매체 [오피셜] 말머리 처리 검토 사례"
+    }
+  ],
+  "sourceNames": {
+    "bbc-sport-european": "BBC Sport",
+    "bbc-sport-football": "BBC Sport",
+    "bbc-sport-premier-league": "BBC Sport",
+    "besteleven-all": "베스트일레븐",
+    "besteleven-world": "베스트일레븐",
+    "daily-briefing": "the Daily Briefing",
+    "di-marzio": "Gianluca Di Marzio",
+    "espn-soccer": "ESPN",
+    "footballist-football": "풋볼리스트",
+    "interfootball-all": "인터풋볼",
+    "interfootball-world": "인터풋볼",
+    "relevo": "Relevo",
+    "the-athletic-football": "The Athletic"
+  },
+  "excluded": [
+    {
+      "ref": "bbc-sport-champions-league#0",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "bbc-sport-champions-league#1",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "bbc-sport-european#0",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "bbc-sport-european#2",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "bbc-sport-european#3",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "besteleven-all#0",
+      "reason": "K리그(국내 피드 혼입)"
+    },
+    {
+      "ref": "daily-briefing#2",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "espn-soccer#0",
+      "reason": "유럽 클럽 축구 아님(미국 대표팀·타 종목)"
+    },
+    {
+      "ref": "espn-soccer#5",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "footballist-football#3",
+      "reason": "K리그(국내 피드 혼입)"
+    },
+    {
+      "ref": "relevo#0",
+      "reason": "축구 외(링크 경로 /futbol/ 아님 — Relevo 전 종목 피드)"
+    },
+    {
+      "ref": "relevo#2",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "relevo#3",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "relevo#4",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "the-athletic-football#3",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    },
+    {
+      "ref": "the-athletic-football#4",
+      "reason": "수집 시각 36시간 전(2026-10-09T18:17:17.669Z) 이전 — FR-07"
+    }
+  ],
+  "notSelected": {
+    "_note": "필터는 통과했지만 시안 샘플 크기(15~25장)·변형 균형 때문에 넣지 않은 클러스터. 실제 홈은 점수 상위 45건이라 모두 들어간다(FR-06).",
+    "items": [
+      {
+        "key": "overseas:solo:https://www.bbc.co.uk/sport/football/articles/cqn73g3pvezdo?at_medium=RSS&at_campaign=rss",
+        "rep": "bbc-sport-football#1",
+        "title": "'I kissed Rodrigo and said thanks' - De Zerbi 'liked' Spurs red card"
+      },
+      {
+        "key": "overseas:solo:https://www.bbc.co.uk/sport/football/articles/cqzjx3z4ljr0o?at_medium=RSS&at_campaign=rss",
+        "rep": "bbc-sport-football#3",
+        "title": "'Reminds me of Muller' - Naderi proving worth in Rangers revival"
+      },
+      {
+        "key": "domestic:vinicius-red-card",
+        "rep": "besteleven-world#0",
+        "title": "‘경악스러운 파울’ 골 취소에 상대 머리채 잡아 퇴장까지… ‘라리가 통산 250경기’ 비니시우스 사과 “팀과 팬들께 죄송”"
+      },
+      {
+        "key": "domestic:sga-atletico",
+        "rep": "besteleven-all#6",
+        "title": "[오피셜] NBA 슈퍼스타가 이강인 팀의 ‘구단주 그룹’에 합류한다… 2년 연속 MVP 길저스 알렉산더, ATM과 파트너십 체결"
+      },
+      {
+        "key": "overseas:solo:https://thedailybriefing.io/p/florian-wirtz-transfer-bayern-barcelona-real-madrid",
+        "rep": "daily-briefing#1",
+        "title": "🚨 EXCL: Clubs lurking as Liverpool may soon have a big decision to make on £116m star..."
+      },
+      {
+        "key": "overseas:solo:https://www.gianlucadimarzio.com/news-calcio/napoli-allegri-frosinone-conferenza-stamp-intervista-498150",
+        "rep": "di-marzio#2",
+        "title": "Napoli, Allegri: \"Mi è piaciuta l'aggressione alla partita. De Bruyne? Se fa il play può allungarsi la carriera\""
+      },
+      {
+        "key": "domestic:arteta-conscience",
+        "rep": "interfootball-world#0",
+        "title": "‘친정팀’ 맨시티에 단호하게 선그은 아르테타...\"양심에 거리낄 것 없다\""
+      }
+    ]
+  },
+  "notes": [
+    "분류는 FR-21 임시 규칙 초안(언어별 키워드·names.ko 영문 표기·korean-players·소스 meta competitions/tier·클러스터 크기)이다. 대회 태그 = 팀 사전의 대회 ∪ 제목 대회 키워드, 둘 다 없을 때만 대회가 하나인 소스의 meta competitions(Di Marzio=SERIEA 소스의 레알 마드리드 기사 오탐 방지). M1-17(분류)·M1-18(이적) 확정 규칙이 아니며, 사람이 틀렸다고 본 것만 manualFixes로 고쳤다.",
+    "카드 id = 'c_' + sha256(대표 링크 원문 — 엔티티 해제한 피드 link 그대로, 추적 파라미터 포함) 앞 16진수 10자리. 임시 규칙이다 — M1-12 URL 정규화(FR-04)가 확정되면 정규화 URL 해시로 다시 만든다(공유 앵커가 바뀐다).",
+    "created = 대표 항목 소스의 수집 시각(index.json sources[].fetchedAt), generatedAt = M0-33 마지막 소스 수집 시각, src[].at = 피드 pubDate → UTC(EST는 -05:00 그대로, 국내 피드의 오프셋 없는 시각은 KST로 해석).",
+    "클러스터 = M0-33 index.json의 cluster 태그(사람 판정)를 언어군 안에서만 적용(해외 en·it·es = 원제목 카드 경로, 국내 ko = 한국어 카드 경로 — M1-15). 같은 사건이 해외 카드와 국내 카드로 따로 나온다(맨유-토트넘·아우크스부르크-바이에른·호날두·팔머). 같은 링크가 여러 피드에 있으면 1건으로 합치고 가중치가 높은 피드로 표기(origin.members[].alsoIn).",
+    "대표 항목 = 출처 Tier → 소스 weight → 최신 순. src도 같은 순서(대표가 첫 번째). '+N곳'은 src 수 - 1.",
+    "imp = 임시 점수(출처 수×3 + Tier + 한국 선수 3 + 빅클럽 1 + 결과 1 − 기타·라운드업 1 + 이적 공식 1) 순위의 5분위 — 시안용 고른 분포. M1-16 점수화(FR-06)로 대체.",
+    "36시간 창 예외 1건: relevo#1(Julián Álvarez, pubDate 2026-10-09T14:10Z — 수집 시각 40.1시간 전). Relevo 축구 항목 4건이 모두 36시간 밖(창 안은 NFL 1건뿐)이라 '스페인어 원제목 카드' 변형을 채우려고 가장 최근 항목 1건만 넣었다. 실제 06:30 KST 실행(2026-10-10T21:30Z) 기준 36시간 창이었다면 창 안이다.",
+    "라벨: names.ko.json에 있는 slug는 그 표기(source 'names.ko'), 없으면 통용 표기(source 'provisional' — KFA·국내 언론 관용, 확정 아님 — 초기 사전은 M1-21). names.ko.json 자체는 고치지 않았다. names.ko 등록 팀에 붙인 임시 제목 별칭: bayern-munchen ← 'Bayern'·'뮌헨'·'바이에른', atletico-de-madrid ← '아틀레티코'·'ATM'(사전에는 없음 — M1-21 판단).",
+    "팀 slug = football-data 팀 이름 kebab(FC·CF·AC·SSC 등 접두·접미 제외, 발음 기호 제거 — M0-32와 같은 방식). 국가대표팀은 팀 태그를 붙이지 않았다(comp도 []). 사람(감독·구단주)은 태그 대상이 아니다.",
+    "선수 태그는 제목에 사전 표기가 있을 때만. 손흥민(korean-unregistered)은 korean-players.json 미등록이라 태그·kr 모두 없음(FR-60). '이강인 공격 파트너 알바레스'처럼 이름이 수식어로만 나와도 규칙상 kr:true — M1-17 검토 사례로 그대로 뒀다.",
+    "이적 정보: 사전에 있는 선수만(names.ko 미등록 선수는 provisional 사전 기준 — 실제 M1 규칙이라면 사전 등록 전에는 transfer 필드가 생략된다). 출발·행선지는 제목에 팀 2개 + 방향 표현이 있을 때만 — 이번 샘플에는 해당 카드가 없어 모두 생략. 'AC Milan keen on Scott'·the Daily Briefing 라운드업은 선수를 특정할 수 없어 cat:transfer만 있고 transfer 필드는 없다.",
+    "제목·링크는 피드 원문(엔티티·CDATA 해제 + 앞뒤 공백 정리만, FR-20). 이모지(🚨)·추적 파라미터(?at_medium=RSS&at_campaign=rss)·http:// 링크도 그대로다."
+  ]
+}

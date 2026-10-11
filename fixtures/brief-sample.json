@@ -1,0 +1,310 @@
+{
+  "_note": "초안 형식 — M1-19 확정 시 갱신. 데이터 브리핑(\"오늘의 5줄\") 샘플(D0 시안 입력, M0-34). 날짜별 { date, generatedAt, runId, lines: [{ text, ai, refs }] }는 PRD §8.2 초안을 하루 단위로 쓴 것이고 zod 스키마·레지스트리는 아직 없다(M1-19 ❓ 사용자 확인 전). 보조 필드: textRaw = 치환 전 LLM 출력(템플릿 줄은 영문 입력 표기), lenKo = 치환 뒤 글자 수, _note·_downgrade = 설명(스키마 밖). refs = 근거 id(m<football-data 경기 id — 예외: 2026-09-19의 m1575167은 API-Football 경기 id> · s<대회> 순위표 · k<API-Football 선수 id>). ai:true = LLM 작성(\"AI 작성\" 라벨), ai:false = 코드 템플릿(라벨 없음). 고유명사 치환: configs/names.ko.json → M0-30 임시 사전 → M0-34 임시 사전(scratchpad, 확정 아님) 순서 + 조사 보정 시험판.",
+  "templateFormats": {
+    "match": "{홈} {홈점수}-{원정점수} {원정}",
+    "standing": "{팀}, 승점 {n}(으)로 {리그} {r}위",
+    "koreanStarted": "{선수}, {팀} 선발 출전 {m}분",
+    "koreanSub": "{선수}, {팀} 교체 출전 {m}분",
+    "koreanBench": "{선수}, {팀} 경기 출전 없음",
+    "_note": "M0-34 임시 템플릿(정형 입력만으로 결정적, LLM 없음). 정식 구현은 M1-19. 팀·선수 이름은 위 치환 순서로 한글 표기. (으)로는 숫자 받침 기준."
+  },
+  "days": [
+    {
+      "date": "2026-10-11",
+      "generatedAt": "2026-10-11T06:54:14.659Z",
+      "runId": "collect-dev-20261011T065401Z-0df9",
+      "_note": "실측 1회(M0-34, claude-haiku-5-5 단건·thinking 적응형·effort medium·max_tokens 4096) — 입력 E: 2026-10-10 UTC(KST 10-10 09:00~10-11 09:00) 6개 대회 종료 경기 23개(취소 1개 제외, 득점은 API-Football로 조회한 13경기만) + 리그별 현재 순위 상위 4 + 한국 선수 5명. 코드 검증에서 걸린 줄은 템플릿으로 강등(실제 강등 사례).",
+      "lines": [
+        {
+          "text": "아틀레티코 마드리드가 알라베스 원정에서 1-2로 이겼고 이강인은 후반 57분 교체 투입돼 33분을 뛰었다.",
+          "ai": true,
+          "refs": [
+            "m564699",
+            "k927"
+          ],
+          "textRaw": "Atleti가 Alavés 원정에서 1-2로 이겼고 Kang-in Lee는 후반 57분 교체 투입돼 33분을 뛰었다.",
+          "lenKo": 59
+        },
+        {
+          "text": "마인츠가 레버쿠젠에 3-4로 졌고 이재성은 후반 70분 교체 투입돼 20분을 뛰었다.",
+          "ai": true,
+          "refs": [
+            "m565812",
+            "k2906"
+          ],
+          "textRaw": "Mainz가 Leverkusen에 3-4로 졌고 Jae-sung Lee는 후반 70분 교체 투입돼 20분을 뛰었다.",
+          "lenKo": 47
+        },
+        {
+          "text": "우니온 베를린이 엘버스베르크를 1-0으로 꺾었고 정우영은 선발로 나와 78분을 뛰고 교체 아웃됐다.",
+          "ai": true,
+          "refs": [
+            "m565817",
+            "k512"
+          ],
+          "textRaw": "Union Berlin이 Elversberg를 1-0으로 꺾었고 Woo-yeong Jeong은 선발로 나와 78분을 뛰고 교체 아웃됐다.",
+          "lenKo": 55
+        },
+        {
+          "text": "아우크스부르크와 바이에른이 2-2로 비겼고 설영우는 선발로 나와 62분을 뛰고 교체 아웃됐다.",
+          "ai": true,
+          "refs": [
+            "m565819",
+            "k197985"
+          ],
+          "textRaw": "Augsburg와 Bayern이 2-2로 비겼고 Young-woo Seol은 선발로 나와 62분을 뛰고 교체 아웃됐다.",
+          "lenKo": 52
+        },
+        {
+          "text": "라이프치히 6-0 프랑크푸르트",
+          "ai": false,
+          "refs": [
+            "m565815"
+          ],
+          "lenKo": 16,
+          "_downgrade": "LLM 줄 \"RB Leipzig이 Frankfurt를 6-0으로 완파했고 Christopher Nkunku는 2골을 넣었다.\" — 근거에 없는 숫자 2"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "generatedAt": "2026-10-10T16:41:23.508Z",
+      "runId": "collect-dev-20261010T163429Z-6027",
+      "_note": "M0-30 샘플(입력 C) — 2026-10-09 UTC 6개 대회 경기 3개 전부(M0-34 조회로 확인). text는 M0-30 textRaw를 names.ko 우선 치환으로 다시 만들었다(사실 동일, 표기만 names.ko에 맞춤).",
+      "lines": [
+        {
+          "text": "도르트문트가 브레멘과 2-2로 비겼다. 브레멘은 레이스(88분)와 퓔크루크(90+2분)의 골로 막판에 동점을 만들었다.",
+          "ai": true,
+          "refs": [
+            "m565820"
+          ],
+          "textRaw": "Dortmund가 Bremen과 2-2로 비겼다. Bremen은 Ludovit Reis(88분)와 Niclas Füllkrug(90+2분)의 골로 막판에 동점을 만들었다.",
+          "lenKo": 66
+        },
+        {
+          "text": "도르트문트는 승점 13으로 분데스리가 1위에 올라 있다.",
+          "ai": true,
+          "refs": [
+            "sBL"
+          ],
+          "textRaw": "Dortmund는 승점 13으로 Bundesliga 1위에 올라 있다.",
+          "lenKo": 31
+        },
+        {
+          "text": "랑스가 홈에서 리옹을 2-1로 꺾었다.",
+          "ai": true,
+          "refs": [
+            "m559669"
+          ],
+          "textRaw": "RC Lens가 홈에서 Olympique Lyon을 2-1로 꺾었다.",
+          "lenKo": 21
+        },
+        {
+          "text": "말라가와 에스파뇰은 1-1로 비겼다.",
+          "ai": true,
+          "refs": [
+            "m564706"
+          ],
+          "textRaw": "Málaga와 Espanyol은 1-1로 비겼다.",
+          "lenKo": 20
+        },
+        {
+          "text": "모나코는 승점 13으로 리그1 1위다.",
+          "ai": true,
+          "refs": [
+            "sL1"
+          ],
+          "textRaw": "Monaco는 승점 13으로 Ligue 1 1위다.",
+          "lenKo": 21
+        }
+      ]
+    },
+    {
+      "date": "2026-09-21",
+      "generatedAt": "2026-10-10T16:41:23.508Z",
+      "runId": "collect-dev-20261010T163429Z-6027",
+      "_note": "M0-30 샘플(입력 D) — 2026-09-20 UTC 6개 대회 경기 20개 중 프리미어리그 4개만 입력에 넣은 측정용 입력. text는 M0-30 textRaw를 names.ko 우선 치환으로 다시 만들었다(사실 동일, 표기만 names.ko에 맞춤).",
+      "lines": [
+        {
+          "text": "맨시티가 선덜랜드를 5-3으로 꺾었다.",
+          "ai": true,
+          "refs": [
+            "m560590"
+          ],
+          "textRaw": "Man City가 Sunderland를 5-3으로 꺾었다.",
+          "lenKo": 21
+        },
+        {
+          "text": "리버풀이 본머스 원정에서 0-1로 이겼다.",
+          "ai": true,
+          "refs": [
+            "m560582"
+          ],
+          "textRaw": "Liverpool이 Bournemouth 원정에서 0-1로 이겼다.",
+          "lenKo": 23
+        },
+        {
+          "text": "리버풀은 10위에서 6위로 올랐고 맨시티는 선두를 지켰다.",
+          "ai": true,
+          "refs": [
+            "sPL"
+          ],
+          "textRaw": "Liverpool은 10위에서 6위로 올랐고 Man City는 선두를 지켰다.",
+          "lenKo": 32
+        },
+        {
+          "text": "풀럼과 맨유는 1-1로 비겼다.",
+          "ai": true,
+          "refs": [
+            "m560583"
+          ],
+          "textRaw": "Fulham과 Man United는 1-1로 비겼다.",
+          "lenKo": 17
+        },
+        {
+          "text": "리즈와 크리스털 팰리스는 0-0으로 비겼다.",
+          "ai": true,
+          "refs": [
+            "m560585"
+          ],
+          "textRaw": "Leeds United와 Crystal Palace는 0-0으로 비겼다.",
+          "lenKo": 24
+        }
+      ]
+    },
+    {
+      "date": "2026-09-19",
+      "generatedAt": "2026-10-10T16:41:23.508Z",
+      "runId": "collect-dev-20261010T163429Z-6027",
+      "_note": "M0-30 샘플(입력 A) — 2026-09-18 UTC 6개 대회 경기 5개 중 2개(브렌트포드-첼시·바이에른-우니온 베를린)만 입력에 넣은 측정용 입력이라 나머지 3경기는 없다(M0-34 football-data 조회로 확인). 근거 id m1575167은 API-Football 경기 id다(입력 A 그대로 — football-data id는 565804). text는 M0-30 textRaw를 names.ko 우선 치환으로 다시 만들었다(사실 동일, 표기만 names.ko에 맞춤).",
+      "lines": [
+        {
+          "text": "김민재는 바이에른의 우니온 베를린전에서 후반 46분 교체 투입돼 45분을 뛰었다.",
+          "ai": true,
+          "refs": [
+            "k2897",
+            "m1575167"
+          ],
+          "textRaw": "Kim Min-jae는 Bayern의 Union Berlin전에서 후반 46분 교체 투입돼 45분을 뛰었다.",
+          "lenKo": 45
+        },
+        {
+          "text": "정우영은 우니온 베를린 선발로 출전해 60분을 뛰고 교체 아웃됐으며 득점은 없었다.",
+          "ai": true,
+          "refs": [
+            "k512",
+            "m1575167"
+          ],
+          "textRaw": "Jeong Woo-yeong은 Union Berlin 선발로 출전해 60분을 뛰고 교체 아웃됐으며 득점은 없었다.",
+          "lenKo": 46
+        },
+        {
+          "text": "바이에른이 홈에서 우니온 베를린을 7-0으로 꺾었고 올리세가 3골을 넣었다.",
+          "ai": true,
+          "refs": [
+            "m1575167"
+          ],
+          "textRaw": "Bayern이 홈에서 Union Berlin을 7-0으로 꺾었고 M. Olise가 3골을 넣었다.",
+          "lenKo": 42
+        },
+        {
+          "text": "브렌트포드가 홈에서 첼시를 3-0으로 꺾었다.",
+          "ai": true,
+          "refs": [
+            "m560591"
+          ],
+          "textRaw": "Brentford가 홈에서 Chelsea를 3-0으로 꺾었다.",
+          "lenKo": 25
+        },
+        {
+          "text": "브렌트포드는 7위에서 3위로 올랐고 첼시는 6위에서 7위로 내려갔다.",
+          "ai": true,
+          "refs": [
+            "sPL"
+          ],
+          "textRaw": "Brentford는 7위에서 3위로 올랐고 Chelsea는 6위에서 7위로 내려갔다.",
+          "lenKo": 38
+        }
+      ]
+    },
+    {
+      "date": "2026-09-18",
+      "generatedAt": "2026-10-11T06:55:55.320Z",
+      "runId": "fixture-m0-34",
+      "_note": "경기 수가 적은 날 + LLM 없이 템플릿만 게시한 상태 시연(예산 초과·LLM 실패 시 FR-26·FR-27 경로). 입력 F: 2026-09-17 UTC 6개 대회 실제 종료 경기 2개(라리가 주중 6라운드, M0-34 football-data 조회) — 지난 날짜라 그날 순위표는 없어 순위 줄 없음.",
+      "lines": [
+        {
+          "text": "레알 베티스 1-0 헤타페",
+          "ai": false,
+          "refs": [
+            "m564686"
+          ],
+          "textRaw": "Real Betis 1-0 Getafe",
+          "lenKo": 14
+        },
+        {
+          "text": "말라가 1-3 비야레알",
+          "ai": false,
+          "refs": [
+            "m564683"
+          ],
+          "textRaw": "Málaga 1-3 Villarreal",
+          "lenKo": 12
+        }
+      ]
+    },
+    {
+      "date": "2026-09-11",
+      "generatedAt": "2026-10-10T16:41:23.508Z",
+      "runId": "collect-dev-20261010T163429Z-6027",
+      "_note": "M0-30 샘플(입력 B) — 2026-09-10 UTC UCL 리그 페이즈 1차전 6경기, 득점자·한국 선수 데이터 없음. text는 M0-30 textRaw를 names.ko 우선 치환으로 다시 만들었다(사실 동일, 표기만 names.ko에 맞춤).",
+      "lines": [
+        {
+          "text": "바이에른이 홈에서 보되/글림트를 5-0으로 꺾었다.",
+          "ai": true,
+          "refs": [
+            "m575337"
+          ],
+          "textRaw": "Bayern이 홈에서 Bodø/Glimt를 5-0으로 꺾었다.",
+          "lenKo": 28
+        },
+        {
+          "text": "맨유가 사바흐를 4-0으로 이겼다.",
+          "ai": true,
+          "refs": [
+            "m575338"
+          ],
+          "textRaw": "Man United가 Sabah FK를 4-0으로 이겼다.",
+          "lenKo": 19
+        },
+        {
+          "text": "코모가 라이프치히를 4-1로 꺾었다.",
+          "ai": true,
+          "refs": [
+            "m575339"
+          ],
+          "textRaw": "Como 1907이 RB Leipzig을 4-1로 꺾었다.",
+          "lenKo": 20
+        },
+        {
+          "text": "랑스가 슬라비아 프라하 원정에서 2-3으로 이겼다.",
+          "ai": true,
+          "refs": [
+            "m575340"
+          ],
+          "textRaw": "RC Lens가 Slavia Praha 원정에서 2-3으로 이겼다.",
+          "lenKo": 28
+        },
+        {
+          "text": "1라운드 후 파리 생제르맹, 바이에른, 바르셀로나, 맨유, 코모가 승점 3으로 상위 5위에 올랐다.",
+          "ai": true,
+          "refs": [
+            "sUCL"
+          ],
+          "textRaw": "1라운드 후 PSG, Bayern, Barça, Man United, Como 1907이 승점 3으로 상위 5위에 올랐다.",
+          "lenKo": 55
+        }
+      ]
+    }
+  ]
+}
