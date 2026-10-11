@@ -98,6 +98,7 @@
 | 한글·UI | Pretendard 1.3.9 400·800. 시안 파일은 `eurodigest-sans-{400,800}.ksx.woff2`(177.1 + 186.1KB, 2,777 코드포인트) | OFL 1.1. **RFN 'Pretendard'**(LICENSE.txt에는 'Source'·'Inter'·'M PLUS 1'도 RFN). 직접 서브셋한 파일은 수정판이라 이름을 바꾸고 FONTLOG를 둬야 한다. 시안은 내부 이름을 **"EuroDigest Sans"**로 바꿨다. 대안은 공식 subset 파일(굵기당 약 267KB)을 수정 없이 쓰는 것으로, 이름 변경이 필요 없지만 약 +180KB(추정)다. D0-11에서 고른다 |
 | 숫자·라틴 원제목 | Barlow Condensed 600·800 라틴 서브셋(27.2 + 27.4KB) | OFL 1.1. **힌팅을 유지한다.** 힌팅을 뺀 서브셋에서는 자간이 깨졌다(유지 비용 약 +9KB/굵기). 다른 TrueType 라틴 서체도 같은 확인이 필요하다 |
 | 합계 | **2패밀리 · 4파일 · 417.8KB · 요청 4** | 첫 화면 preload 후보는 한글 400 + Barlow 800. `font-family`는 라틴 서체를 먼저 둬서 원제목 라틴은 Barlow, 한글은 Pretendard로 갈린다 |
+| D0-11 구현 결정 (2026-10-12, 오케스트레이터·서브에이전트 판단 — 사용자 승인 사항 아님) | 직접 서브셋 파일을 그대로 self-host(`public/fonts/` — 시안 파일과 같은 바이트), 수동 `@font-face`를 `<head>` 인라인 `<style>`로(basePath), React `preload()`로 한글 400 + Barlow 800만, `font-display: swap`. `next/font/local` 기각(해시 패밀리 이름·패밀리 단위 preload·Arial 기준 폴백 메트릭). 폰트 스택에 메트릭 폴백 3패밀리(맑은 고딕·Noto CJK KR·Arial Bold 계열 — `size-adjust`·override) 추가 → 지연 CLS 375px 0.36 → 약 0 | 실기기(Apple·Android) 폴백 메트릭과 실제 홈 지연 CLS는 M1-39 |
 
 제외: 마루부리는 공식 배포처의 라이선스 원문을 확인하지 못해 A 시안에서 함렛(OFL)으로 바꿨다. 함렛·Newsreader는 A 시안에만, 원티드 산스·Archivo는 B 시안에만 쓰였고 최종안에는 없다.
 

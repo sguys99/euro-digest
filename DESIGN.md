@@ -301,21 +301,38 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 
 | 토큰 | 값 | 용도 |
 |---|---|---|
-| `--font-sans` | `"EuroDigest Sans",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji"` | 한글·UI·본문, 한국어 원제목. EuroDigest Sans = Pretendard 1.3.9 KS X 1001 서브셋(OFL 예약 글꼴명 때문에 이름을 바꿈) |
-| `--font-numeric` | `"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif` | 숫자 전용(호수·등번호·스코어·시각·개수·Tier), 러닝 헤드·영문 워드마크 |
-| `--font-latin` | `"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji"` | 라틴 원제목(en·it·es 카드). 혼합안 이름 그대로(예약 이름 없음) |
+| `--font-sans` | `"EuroDigest Sans","EuroDigest Sans Fallback Malgun","EuroDigest Sans Fallback Noto",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji"` | 한글·UI·본문, 한국어 원제목. EuroDigest Sans = Pretendard 1.3.9 KS X 1001 서브셋(OFL 예약 글꼴명 때문에 이름을 바꿈). "… Fallback …" 두 패밀리는 웹폰트가 오기 전 한글 폭을 맞춘 시스템 글꼴(§3.1 폴백 표) |
+| `--font-numeric` | `"Barlow Condensed","Barlow Condensed Fallback","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif` | 숫자 전용(호수·등번호·스코어·시각·개수·Tier), 러닝 헤드·영문 워드마크 |
+| `--font-latin` | `"Barlow Condensed","Barlow Condensed Fallback","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji"` | 라틴 원제목(en·it·es 카드). 혼합안 이름 그대로(예약 이름 없음) |
 
-- 웹폰트는 **2패밀리·4파일**(DR-11): EuroDigest Sans 400·800, Barlow Condensed 600·800. D0-11에서 Pretendard 공식 subset 파일(이름 변경 불필요, 굵기당 약 267KB)을 고르면 패밀리 이름이 바뀐다. 그때 이 표를 먼저 고친다.
-- 폴백 순서는 시스템 한글 고딕 → 이모지 폰트다. Barlow 서브셋에 없는 글자(한글·이모지)는 다음 폰트로 넘어간다.
+- 웹폰트는 **2패밀리·4파일**(DR-11): EuroDigest Sans 400·800, Barlow Condensed 600·800. 직접 서브셋(이름 변경)을 쓴다 — Pretendard 공식 subset 파일(이름 변경 불필요)은 굵기당 약 267KB라 한글 2면이 약 +180KB다(D0-11 확정).
+- 폴백 순서는 메트릭 폴백 → 시스템 한글 고딕 → 이모지 폰트다. Barlow 서브셋에 없는 글자(한글·이모지)는 다음 폰트로 넘어간다.
+- self-host 방식은 §11.3(D0-11): `@font-face`는 `src/lib/fonts.ts`가 만들어 `layout.tsx` `<head>` 인라인 `<style>`로 내보내고, 파일은 `public/fonts/`에서 `<basePath>/fonts/…`로 서빙한다. 모두 `font-display: swap`.
 
-| 패밀리 | 굵기 | 시안 파일 | 크기 |
-|---|---|---|---|
-| EuroDigest Sans | 400 | `docs/design/fonts/pretendard/eurodigest-sans-400.ksx.woff2` | 181,376 B (177.1KB) |
-| EuroDigest Sans | 800 | `docs/design/fonts/pretendard/eurodigest-sans-800.ksx.woff2` | 190,580 B (186.1KB) |
-| Barlow Condensed | 600 | `docs/design/fonts/barlow-condensed/BarlowCondensed-SemiBold.latin.woff2` | 27,892 B (27.2KB) |
-| Barlow Condensed | 800 | `docs/design/fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2` | 28,048 B (27.4KB) |
+| 패밀리 | 굵기 | 사이트 파일 (`public/` 기준) | 크기 | preload |
+|---|---|---|---|---|
+| EuroDigest Sans | 400 | `fonts/eurodigest-sans/eurodigest-sans-400.ksx.woff2` | 181,376 B (177.1KB) | O |
+| EuroDigest Sans | 800 | `fonts/eurodigest-sans/eurodigest-sans-800.ksx.woff2` | 190,580 B (186.1KB) | – |
+| Barlow Condensed | 600 | `fonts/barlow-condensed/BarlowCondensed-SemiBold.latin.woff2` | 27,892 B (27.2KB) | – |
+| Barlow Condensed | 800 | `fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2` | 28,048 B (27.4KB) | O |
 
-합계 427,896바이트(약 417.9KB, DECISIONS의 417.8KB는 파일별 반올림 값의 합). 라이선스는 모두 OFL 1.1이고 원문은 같은 폴더(`LICENSE.txt`·`FONTLOG.txt`·`OFL.txt`)에 있다.
+합계 427,896바이트(약 417.9KB, DECISIONS의 417.8KB는 파일별 반올림 값의 합), preload 2파일 209,424바이트(약 204.5KB). 시안 파일(`docs/design/fonts/pretendard/`·`barlow-condensed/`)과 바이트 단위로 같다. 라이선스는 모두 OFL 1.1이고 원문은 같은 폴더(`LICENSE.txt`·`FONTLOG.txt`·`OFL.txt`)에 있다.
+
+**메트릭 폴백** — 웹폰트가 오기 전(swap 기간) 시스템 글꼴의 폭·세로 메트릭을 웹폰트에 맞춰 줄 바뀜(CLS)을 줄인다. 값은 `src/lib/fonts.ts`가 실측 메트릭으로 계산한다(size-adjust = 웹폰트 폭 ÷ 폴백 폭, 세로 override = 웹폰트 값 ÷ size-adjust — override도 size-adjust만큼 커진다). 같은 시스템 글꼴을 글자 범위별 면으로 나눠 범위마다 따로 맞춘다(한 패밀리·굵기 안에서 범위는 겹치지 않는다). 세로 override는 모두 웹폰트 값(EuroDigest Sans 0.952/0.241/0, Barlow 1.0/0.2/0)이 되게 계산한다.
+
+| 폴백 패밀리 | `local()` 글꼴 | 면(범위) | 맞추는 폭 | size-adjust 400(600) · 800 |
+|---|---|---|---|---|
+| EuroDigest Sans Fallback Malgun | 맑은 고딕 Regular·Bold (Windows) | 한글 음절 `U+AC00-D7A3` | 한글 0.864 ÷ 1em | 86.43% · 86.43% |
+| 〃 | 〃 | 공백 `U+0020,U+00A0` | 공백 0.251·0.224 ÷ 0.352em | 71.39% · 63.61% |
+| EuroDigest Sans Fallback Noto | Noto Sans CJK KR·Noto Sans KR Regular·Bold (Android·Linux·ChromeOS) | 한글 음절 | 한글 0.864 ÷ 0.92em | 93.94% · 93.94% |
+| 〃 | 〃 | 공백 | 공백 ÷ 0.28em(한국어 문서의 locl 공백) | 89.63% · 79.87% |
+| Barlow Condensed Fallback | Arial·Helvetica·Liberation Sans Bold(폭 호환), Roboto Bold | 숫자 `U+0030-0039` | 표 숫자 0.475·0.52 ÷ 0.556em | 85.41% · 93.50% |
+| 〃 | 〃 | 하이픈 `U+002D` | 0.325·0.337 ÷ 0.333em | 97.60% · 101.20% |
+| 〃 | 〃 | 나머지(Barlow 서브셋 범위 − 숫자·하이픈) | 라틴 표본 평균 | 73.99% · 77.62% |
+
+- 공백 면이 U+0020을 가지므로 swap 동안 폴백 패밀리가 줄 높이를 정하는 기본 글꼴(first available font)이 되고, 세로 override가 웹폰트 값이라 줄 상자·기준선도 바뀌지 않는다. 맑은 고딕 공백(0.352em)은 Pretendard(0.251em)보다 40% 넓어 한글 폭 다음으로 큰 줄 바뀜 원인이었다.
+- Barlow 숫자는 모두 표 숫자(§3.5)라 표 숫자 폭으로 맞춘다(문자 표본 비율과 10% 넘게 다르다). 스코어 하이픈은 두 글꼴 폭이 거의 같아 따로 둔다.
+- 맞추지 않는 것: 한글 문장 속 라틴(±4%)·숫자·문장부호(글자마다 −14~+6%, 한 값으로 못 맞춤). Apple SD Gothic Neo(macOS·iOS)는 메트릭을 재지 못해 폴백 패밀리가 없다(스택의 `"Apple SD Gothic Neo"`가 그대로 쓰인다). Roboto Bold는 Arial Bold보다 약 6% 좁아 Android에서는 완전히 맞지 않는다(§11.3 남은 일).
 
 ### 3.2 굵기 · 합성 금지
 
@@ -401,7 +418,9 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 
 - ▲▼는 Barlow Condensed에 없다 → CSS/SVG 도형으로 그린다(색과 함께 숫자 병기).
 - ⌘·🚨는 어느 서브셋에도 없다 → 시스템 폴백에 맡긴다(캡처 환경에서 🚨가 빈칸으로 나온 사례가 있다). 원제목의 이모지는 지우지 않는다.
-- fixtures의 비한글·비ASCII 글자 `“ ” … ‘ ’ → ò · á Á €`는 서브셋에 들어 있다. 새 소스가 들어오면 D0-11 서브셋 스크립트로 글자 커버리지를 다시 확인한다.
+- fixtures의 비한글·비ASCII 글자 `“ ” … ‘ ’ → ò · á Á €`는 서브셋에 들어 있다.
+- **커버리지 테스트**(`tests/fonts-coverage.test.ts`, D0-11): KS X 1001 한글 2,350자, fixtures 3파일·`configs/*.json`의 표시 문자열(메모 필드 `note`·`notes`·`_*` 제외), `src/` 화면 문구(문자열 리터럴·JSX 텍스트), 라틴 원제목(Barlow 600·800)을 서브셋 cmap과 대조한다. 서브셋 밖은 이모지·⌘만 허용하고, 지금 fixtures에 나오는 예외는 🚨 하나다. 새 소스·문구로 테스트가 깨지면 서브셋을 다시 만들고 §3.1 크기 표·`FONTLOG.txt`를 함께 고친다(예외를 늘리려면 이 절을 먼저 고친다).
+- KS X 1001 밖 한글 음절(예: 똠·뷁·햏)은 서브셋에 없다. 국내 매체 원제목에 나오면 한글 폴백 면(맑은 고딕·Noto — 폭을 맞춘 면)이나 시스템 한글 글꼴로 그려진다.
 
 ---
 
@@ -807,14 +826,17 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - **지운 Tailwind 기본값**: 팔레트 색, 둥근 모서리, 곡선, 반복 애니메이션, 블러 그림자 4종(상자 `--shadow-*`·안쪽 `--inset-shadow-*`·드롭 `--drop-shadow-*`·글자 `--text-shadow-*`)을 `initial`로 지운다(§5.2). 각 그림자의 `-none` 유틸리티는 남는다.
 - **클래스 병합(`cn`)**: tailwind-merge는 CSS를 읽지 않아서 등록하지 않은 커스텀 유틸리티를 잘못 분류한다(실측: `text-type-card text-ink`에서 크기가 지워지고, `px-edge px-4`는 덮어쓰지 못한다). 그래서 `src/lib/utils.ts`의 `extendTailwindMerge` 설정에 `@theme` 키를 등록한다. 색은 기본값("아무 이름이나 색")을 실제 토큰 이름 + `inherit`·`current`·`transparent`로 바꾸고, 글자 크기 `type-*`·`num-*`, 폰트, 간격, 최대 폭 `page`, 모서리, 그림자 `print*`, 곡선 `print`, 전환 시간 `fast`·`base`·`slow`는 기본값에 더한다. `tests/utils.test.ts`가 globals.css `@theme` 키 목록과 대조하므로 `@theme`에 키를 더하면 `utils.ts`에도 더한다. 색 이름 `border`·`ring`은 단독으로도 유틸리티라서, CSS를 만들지 않도록 `utils.ts`를 클래스 탐색에서 뺀다(`@source not`).
 
-### 11.3 D0-11 (웹폰트)
+### 11.3 D0-11 (웹폰트) — 구현 완료
 
-- 시안 파일: `docs/design/fonts/pretendard/eurodigest-sans-{400,800}.ksx.woff2`, `docs/design/fonts/barlow-condensed/BarlowCondensed-{SemiBold,ExtraBold}.latin.woff2`(§3.1 표). 라이선스 원문(`LICENSE.txt`·`FONTLOG.txt`·`OFL.txt`)을 함께 옮긴다.
-- **Pretendard 예약 글꼴명(RFN)**: 직접 서브셋은 수정판이라 이름을 바꾸고(시안 "EuroDigest Sans") FONTLOG를 둔다. 대안은 공식 subset 파일을 수정 없이 쓰는 것(이름 변경 불필요, 굵기당 약 267KB — 약 +180KB 추정). 어느 쪽인지 D0-11에서 정하고 §3.1을 먼저 고친다.
-- Barlow Condensed는 **힌팅을 유지**한다(뺀 서브셋에서 자간이 깨졌다, +9KB/굵기).
-- **basePath 주의**: `public/fonts/`로 옮기면 Next.js가 `/euro-digest/fonts/…`로 서빙하지만, CSS `url("/fonts/…")`에는 basePath가 자동으로 붙지 않는다. `@font-face` 경로는 번들러가 처리하는 상대 경로(파일을 `src/` 아래 두고 해시된 `_next/static/media`로 내보냄)나 `next/font/local` 중에서 고르고, `<link rel="preload">` href는 `src/lib/paths.ts`의 `withBasePath`(또는 번들러가 만든 URL)로 만든다. `/`로 시작하는 경로를 손으로 쓰지 않는다(CLAUDE §7.1).
-- **preload 대상**: 첫 화면용 한글 400(`eurodigest-sans-400`) + Barlow 800(`BarlowCondensed-ExtraBold`) 두 파일(`as="font" type="font/woff2" crossorigin`). 폴백 폰트에 `size-adjust`를 맞춰 CLS를 줄인다(D29). `next/font/local`의 폴백 메트릭 조정으로도 얻을 수 있어 D0-11에서 비교한다.
-- `font-display: swap`, 웹폰트 2패밀리 이내(DR-03·DR-11).
+- **방식: 손으로 쓴 `@font-face` + `public/fonts/` self-host**(`next/font/local` 기각). 단일 출처는 `src/lib/fonts.ts`이고 `layout.tsx`가 `<head>`에 인라인 `<style>`(웹폰트 4면 + 메트릭 폴백 14면)과 React `preload()`(→ `<link rel="preload" as="font" type="font/woff2" crossorigin>`)를 넣는다. 경로는 모두 `withBasePath`(`/euro-digest/fonts/…`, 루트 배포면 `/fonts/…`)라 preload와 실제 요청이 같은 URL·같은 CORS 모드로 한 번만 받는다.
+  - `next/font/local`을 고르지 않은 이유: ① 패밀리 이름이 해시(`__x_abc123`)가 되어 §3.1 스택·토큰 테스트를 CSS 변수 참조로 바꿔야 한다 ② preload가 호출(패밀리) 단위라 한 패밀리의 한 굵기만 preload할 수 없다(굵기를 호출로 나누면 패밀리가 갈라져 `font-synthesis: none`에서 800 글자가 400으로 그려진다) ③ `adjustFontFallback`은 Arial·Times New Roman 기준이라 한글 폴백(맑은 고딕 한글 폭 1em, Noto 0.92em vs Pretendard 0.864em)을 맞추지 못한다.
+  - `@font-face`를 globals.css에 두지 않은 이유: CSS 파일의 `url("/fonts/…")`에는 basePath가 붙지 않고, 상대 경로는 번들러가 해시 파일로 바꿔 preload href를 알 수 없다. 인라인 `<style>`(6,456B, `@font-face` 18면)은 HTML에 두 번 들어간다 — `<style>` 한 번 + RSC 페이로드(`self.__next_f.push`) 한 번 → HTML 한 장에 원본 +13.1KB, gzip +1.08KB(index.html gzip 3.2KB 중), RSC `.txt`에도 약 6.7KB. 별도 `fonts.css`(렌더 차단 요청 +1, GitHub Pages `max-age=600`이라 캐시 이득 작음)보다 낫다고 판단해 유지(D0-11 리뷰).
+  - 초기 JS 변화 없음(135.7KB / 160KB). `preload()`는 서버 렌더에서만 쓰여 클라이언트 번들에 들어가지 않는다.
+- **배치**: `public/fonts/eurodigest-sans/`(400·800 + `LICENSE.txt`·`FONTLOG.txt`), `public/fonts/barlow-condensed/`(600·800 + `OFL.txt`). 시안 폴더 `docs/design/fonts/`는 그대로 둔다(시안 HTML이 참조). Pretendard 공식 subset 파일 대신 직접 서브셋(이름 변경)을 유지한다(한글 2면 약 −180KB).
+- **preload**: 첫 화면용 한글 400(`eurodigest-sans-400`) + Barlow 800(`BarlowCondensed-ExtraBold`) 2파일 204.5KB(D29). 나머지 2면(한글 800 186KB · Barlow 600 27KB)은 쓰일 때 받고 swap. 지금 자리표시 홈은 Barlow를 쓰지 않아 Chrome 콘솔에 "preload했지만 쓰지 않음" 경고가 나온다(M1 홈에서 사라진다).
+- **메트릭 폴백**: §3.1 표. 실측(스크래치 하네스 — 빌드된 홈에 fixtures 5줄 6일치 × 카드 12장을 폰트 도착 전에 넣고 폰트 응답을 1.2~1.5초 늦춰 layout-shift 합을 잼, Chromium, 폭 360·375·390·414, 글꼴 환경 2종을 fontconfig로 구성): Noto CJK KR 환경 CLS 평균 0.102 → **0.0001**(최대 0.36 → 0.0016, 24/24 ≤ 0.05), 맑은 고딕 환경 평균 0.168 → **0.0085**(최대 0.37 → 0.20, 23/24 ≤ 0.05 — 남은 1건은 괄호 4개의 폭 차이로 한 줄이 넘어간 경우). 1280은 폴백 없이도 0.006~0.021, 폴백으로 0.0006. 실제 홈(자리표시)은 375·1280 모두 CLS 0, FCP 0.16~0.24초 < 폰트 도착 1.5초(swap 확인).
+- **검증 테스트**: `tests/fonts.test.ts`(woff2를 직접 읽어 패밀리·굵기·OFL 예약 글꼴명·라이선스 동봉·크기 상한·메트릭 기록값·폴백 계산·범위 겹침·CSS·preload·§3.1 스택 정합), `tests/fonts-coverage.test.ts`(§3.7), `tests/e2e/fonts.spec.ts`(폰트 요청 basePath 아래 200·한 번씩·외부 요청 0, 4면 `display: swap`·`document.fonts.check`, preload 2파일, 폰트 1.5초 지연 시 FCP < 폰트 도착·CLS ≤ 0.05). woff2 읽기는 Node 내장 brotli로 하는 `tests/support/woff2.ts`(새 의존성 없음).
+- **남은 일**: ① macOS·iOS 실기기에서 Apple SD Gothic Neo 한글·공백 폭을 재고 폴백 패밀리를 더할지 정한다 ② Android 실기기(삼성 기본 한글 글꼴이 Noto가 아닐 수 있음)·Roboto Bold 6% 차이 확인 ③ M1 실제 홈(5줄·카드·2단/3단)에서 같은 지연 CLS를 다시 잰다(M1-39) — CI 러너에는 맑은 고딕·Noto CJK KR이 없어(playwright `--with-deps`가 까는 한글 글꼴은 WenQuanYi Zen Hei로 보임 — 확인 필요) 폴백 패밀리가 맞지 않으므로, 실제 콘텐츠가 생긴 뒤 e2e CLS가 흔들리면 CI에 `fonts-noto-cjk`를 깔지 정한다 ④ 문장부호·숫자(한글 문장 속) 폭은 맞추지 않았다 — 실측에서 문제가 되면 면을 더 나눈다.
 
 ### 11.4 D0-12 (기초 컴포넌트)
 
@@ -835,3 +857,4 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 2026-10-12 | 최초 작성(D0-09). `concept-mix.html` 토큰·컴포넌트 값 추출, globals.css 예약 이름으로 매핑(`--competition-*-foreground` 6개 분리, shadcn 변수 18개 매핑), 대비 요약, DR-01 차이 기록 | PRD DR-04·DR-12, D29·D30, DECISIONS D0 |
 | 2026-10-12 | 브레이크포인트 3구간 반영(D31): 1023 이하 1단 · 1024~1279 `lg` 2단(목차 + 지면, 우측 위젯 자리는 지면 안 1단 순서) · 1280 이상 `xl` 3단, `--breakpoint-desktop` 삭제 · Tailwind `lg`/`xl` 사용. 첫 로드 진입 모션 없음(찍힘 = 필터 결과 진입). 혼합안 수정(2단·3단 규칙 분리, M1 축소 견본 넘침 수정, 3구간 축소 견본·브레이크포인트 견본, 한글 줄 길이 46em 전 폭), 기준 스크린샷에 1024 첫 화면 2장 추가. 토큰 값 변경 없음 | PRD DR-01·DR-08, D31 |
 | 2026-10-12 | D0-10 구현에 맞춰 문구 갱신: §8 `dark:` 변형(사용자 다크 + 시스템 다크), §11.2 지운 기본값(블러 그림자 4종)·`cn` 병합 설정(`extendTailwindMerge`), §8·§11.4 theme-color 재방문 어긋남을 D0-12 할 일로. 토큰 값 변경 없음 | PRD DR-02, D0-10 |
+| 2026-10-12 | D0-11 웹폰트 self-host: §3.1 폰트 스택에 메트릭 폴백 패밀리 3개 추가(`--font-sans` 뒤 "EuroDigest Sans Fallback Malgun"·"… Noto", `--font-numeric`·`--font-latin` 뒤 "Barlow Condensed Fallback"), 파일 표를 `public/fonts/` 경로·preload 열로, 메트릭 폴백 표 신설. §3.7 커버리지 테스트, §11.3 방식(손으로 쓴 `@font-face` + 인라인 `<style>`, `next/font` 기각 이유)·실측·남은 일. 다른 토큰 값 변경 없음 | PRD DR-03·DR-11, D29, D0-11 |
