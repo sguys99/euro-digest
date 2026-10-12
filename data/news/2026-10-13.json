@@ -1,0 +1,124 @@
+{
+  "date": "2026-10-13",
+  "generatedAt": "2026-10-12T15:28:55.802Z",
+  "runId": "collect-prod-20261012T152850Z-759e",
+  "cards": [
+    {
+      "id": "c_7727631b86",
+      "t": "Ex-Port Vale & Gillingham captain Loft dies at 39",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmkgq1dz5keko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-12T15:12:32.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T15:28:50.693Z"
+    },
+    {
+      "id": "c_3dd956f042",
+      "t": "Las penalizaciones por motor en la F1 de 2026: cuántas piezas se pueden usar",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Relevo",
+          "u": "https://www.relevo.com/formula1/penalizaciones-motor-formula-1-2026-parrilla.html",
+          "at": "2026-10-12T15:05:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "es",
+      "ai": false,
+      "created": "2026-10-12T15:28:50.693Z"
+    },
+    {
+      "id": "c_628e8429f6",
+      "t": "Alcohol allowed at seats for Scotland's World Cup play-off",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c50mew3yw79no?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-12T15:01:24.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T15:28:50.693Z"
+    },
+    {
+      "id": "c_357cf65c33",
+      "t": "린가드, 한국 떠나서 망하더니 충격 경고까지 받았다…'맨유 옛 동료' 안데르송 “못하면 자동차를 부수거나 직접 찾아갈 수도 있다”",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696262",
+          "at": "2026-10-12T15:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-12T15:28:50.693Z"
+    },
+    {
+      "id": "c_fb2dd57b4a",
+      "t": "Police officer hurt after Liverpool-Man City game",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/c8x23ekvp3ywo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-12T14:53:50.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T15:28:50.693Z"
+    }
+  ]
+}
