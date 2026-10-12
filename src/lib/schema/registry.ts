@@ -21,6 +21,7 @@ import {
   NationalTeamFileSchema,
   SearchQueriesFileSchema,
   TeamColorsFileSchema,
+  TeamIdsFileSchema,
   TransferWindowsFileSchema,
 } from "./configs";
 import { NamesKoFileSchema } from "./names";
@@ -149,6 +150,14 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
     status: "confirmed",
     schema: TeamColorsFileSchema,
     description: "팀 컬러 이니셜 배지 (DR-05)",
+  }),
+  entry({
+    pattern: "configs/team-ids.json",
+    kind: "config",
+    status: "confirmed",
+    schema: TeamIdsFileSchema,
+    description:
+      "팀 slug → football-data·API-Football 팀 id 대응표 (PRD §15 D33, M1-44)",
   }),
   entry({
     pattern: "configs/transfer-windows.json",

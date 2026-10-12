@@ -29,6 +29,7 @@ argument-hint: "<선수 이름 — 한글 또는 영문, 예: 손흥민 | Son He
 6. **반영** — 세 파일에 추가하고 기존 정렬 규칙을 따른다. 스키마에 없는 필드는 추가하지 않는다(필요하면 질문 — CLAUDE §2).
 7. **검증** — `npm run validate`.
 8. **연쇄 확인** — `team` slug가 `names.ko.json`·`team-colors.json`에 없으면 보고한다(M2-05 범위, 이 커맨드에서 팀 색을 지어내지 않는다).
+9. **팀 id 대응표 확인 (PRD §15 D33, M1-44)** — 활성 선수의 `team`은 `configs/team-ids.json`에 있고 `af`(API-Football 팀 id)가 있어야 한다(`npm run validate` 교차 검사 **오류** — 없으면 그 선수의 다른 대회 경기를 고르지 못해 기록이 조용히 빠지고 백필도 안 된다). 팀이 없으면 API-Football `/players/squads` 등 공식 응답으로 af id를, football-data 응답으로 fd id를 확인해 등록안에 함께 넣고 사용자 확인을 받는다(id를 추측하지 않는다).
 
 ## 사용자 확인 지점 (AskUserQuestion — 선택지 + 추천안)
 - 대상 특정: 동명이인·후보가 여럿일 때 후보 목록(소속·포지션·생년) 제시.

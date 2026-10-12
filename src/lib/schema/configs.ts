@@ -1,8 +1,8 @@
 /**
  * v0.1 — 2026-10-10 사용자 확인
- * 사람이 관리하는 설정 파일 스키마 (PRD §8.3) 7종:
+ * 사람이 관리하는 설정 파일 스키마 (PRD §8.3) 7종 + team-ids.json(PRD §15 D33, 2026-10-12 사용자 결정):
  *   configs/competitions.json · national-team.json · bigmatch-rules.json · search-queries.json
- *   · formations.json · team-colors.json · transfer-windows.json
+ *   · formations.json · team-colors.json · team-ids.json · transfer-windows.json
  * (sources·korean-players·takedowns → source.ts·player.ts·takedown.ts, names.ko → names.ts,
  *  publisher-domains → publisher.ts)
  *
@@ -305,6 +305,54 @@ export type TeamColor = z.infer<typeof TeamColorSchema>;
 /** `configs/team-colors.json` — 팀 slug → 배지 색·약어 (M2-05). */
 export const TeamColorsFileSchema = z.record(SlugSchema, TeamColorSchema);
 export type TeamColorsFile = z.infer<typeof TeamColorsFileSchema>;
+
+// ─── configs/team-ids.json ──────────────────────────────────────────────────
+
+/** 데이터 API 팀 id — 양의 정수, 모르면 null */
+const ProviderTeamIdSchema = z.number().int().positive().nullable();
+
+/**
+ * 팀 1개의 두 데이터 API id (PRD §15 D33 ⑤). football-data와 API-Football은 팀 id 체계가 달라 같은 숫자가 다른 팀을
+ * 가리키기도 한다(M0 실측 6건 — 57은 football-data 아스널, API-Football 입스위치). 그래서 키 이름으로 체계를 구분한다.
+ */
+export const TeamIdEntrySchema = z
+  .strictObject({
+    fd: ProviderTeamIdSchema, // football-data.org 팀 id(순위·경기 결과 — 브리핑·대회 페이지)
+    af: ProviderTeamIdSchema, // API-Football 팀 id(경기 단건 — 득점자·라인업·한국 선수 기록, D27)
+    note: z.string().min(1).optional(), // 근거(짝을 찾은 경기 id 등)·확인 메모
+  })
+  .refine((e) => e.fd !== null || e.af !== null, {
+    error: "fd·af가 둘 다 null — 둘 중 하나는 있어야 함",
+  });
+export type TeamIdEntry = z.infer<typeof TeamIdEntrySchema>;
+
+/**
+ * `configs/team-ids.json` — 팀 slug → `{ fd, af }` (D33). 파일 안에서 fd·af 각각 중복 금지(null은 제외).
+ * 초안은 scripts/build-team-ids.ts가 M0 fixtures의 경기 쌍과 한국 선수 소속팀으로 만들고 사람이 확인해 커밋한다.
+ * 나머지 팀은 실행 때 짝짓기 후보(scripts/lib/team-ids.ts)를 운영 리포트로 받아 사람이 더한다.
+ */
+export const TeamIdsFileSchema = z
+  .record(SlugSchema, TeamIdEntrySchema)
+  .superRefine((file, ctx) => {
+    for (const key of ["fd", "af"] as const) {
+      const firstSlug = new Map<number, string>();
+      for (const [slug, entry] of Object.entries(file)) {
+        const id = entry[key];
+        if (id === null) continue;
+        const first = firstSlug.get(id);
+        if (first === undefined) {
+          firstSlug.set(id, slug);
+          continue;
+        }
+        ctx.addIssue({
+          code: "custom",
+          path: [slug, key],
+          message: `${key} id ${id} 중복 ("${first}"와 같음)`,
+        });
+      }
+    }
+  });
+export type TeamIdsFile = z.infer<typeof TeamIdsFileSchema>;
 
 // ─── configs/transfer-windows.json ──────────────────────────────────────────
 

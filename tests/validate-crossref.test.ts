@@ -7,11 +7,13 @@ import {
   PublisherDomainsFileSchema,
   SearchQueriesFileSchema,
   SourcesFileSchema,
+  TeamIdsFileSchema,
   schemaRegistry,
 } from "@/lib/schema";
 
 import {
   CROSSREF_FILES,
+  checkKoreanPlayerTeamIds,
   checkPublisherDomainSources,
   checkSearchQueryPlayers,
   checkSearchQuerySources,
@@ -39,6 +41,7 @@ const publisherDomains = validFixture(
   PublisherDomainsFileSchema,
   "configs/publisher-domains.json",
 );
+const teamIds = validFixture(TeamIdsFileSchema, "configs/team-ids.json");
 const query = at(searchQueries.queries, 0);
 const squad = at(nationalTeam.squads, 0);
 
@@ -218,11 +221,69 @@ describe("checkPublisherDomainSources — domains[].sourceIds → sources, 판�
   });
 });
 
+describe("checkKoreanPlayerTeamIds — 활성 선수 소속팀 → team-ids(af) (D33)", () => {
+  const active = at(koreanPlayers, 0); // hong-gil-dong — sample-united, 활성
+  const inactive = at(koreanPlayers, 1); // kim-cheol-su — other-league-fc, 비활성
+
+  it("fixture는 통과(비활성 선수의 팀은 대응표에 없어도 된다)", () => {
+    expect(active.active).toBe(true);
+    expect(inactive.active).toBe(false);
+    expect(Object.hasOwn(teamIds, inactive.team)).toBe(false);
+    expect(checkKoreanPlayerTeamIds(koreanPlayers, teamIds)).toEqual([]);
+  });
+
+  it("활성 선수의 팀이 대응표에 없으면 오류", () => {
+    expect(
+      checkKoreanPlayerTeamIds(
+        [{ ...active, team: "no-such-team" }, inactive],
+        teamIds,
+      ),
+    ).toEqual([
+      {
+        severity: "error",
+        stage: "crossref",
+        file: "configs/korean-players.json",
+        path: "[0].team",
+        message:
+          '활성 선수 "hong-gil-dong"의 팀 "no-such-team"가 team-ids.json에 없음 — API-Football 팀 id(af)를 함께 등록할 것',
+      },
+    ]);
+  });
+
+  it("활성 선수의 팀 af가 null이면 오류(fd만 있어도 소속팀 경기 기록을 고르지 못함)", () => {
+    const issues = checkKoreanPlayerTeamIds(
+      [{ ...active, team: "example-city" }],
+      teamIds,
+    );
+    expect(issues).toHaveLength(1);
+    expect(issues[0]).toMatchObject({
+      severity: "error",
+      path: "[0].team",
+    });
+    expect(issues[0]!.message).toContain("af(API-Football 팀 id)가 null");
+  });
+
+  it("비활성이 되면 같은 팀이어도 검사하지 않는다", () => {
+    expect(
+      checkKoreanPlayerTeamIds(
+        [{ ...active, team: "no-such-team", active: false }],
+        teamIds,
+      ),
+    ).toEqual([]);
+  });
+
+  it("객체 기본 키(toString 등)를 팀 slug로 착각하지 않는다", () => {
+    expect(
+      checkKoreanPlayerTeamIds([{ ...active, team: "constructor" }], teamIds),
+    ).toHaveLength(1);
+  });
+});
+
 describe("runCrossRefChecks — 관련 파일이 모두 있을 때만 실행", () => {
-  it("아무 파일도 없으면 4건 모두 건너뛴다", () => {
+  it("아무 파일도 없으면 5건 모두 건너뛴다", () => {
     const result = runCrossRefChecks({});
     expect(result.checked).toEqual([]);
-    expect(result.skipped).toHaveLength(4);
+    expect(result.skipped).toHaveLength(5);
     expect(result.issues).toEqual([]);
   });
 
@@ -235,6 +296,7 @@ describe("runCrossRefChecks — 관련 파일이 모두 있을 때만 실행", (
       "search-queries.player → korean-players",
       "national-team.squads.playerSlugs → korean-players",
       "publisher-domains.sourceIds → sources",
+      "korean-players.team(활성) → team-ids(af)",
     ]);
   });
 
@@ -259,6 +321,7 @@ describe("pickCrossRefInput", () => {
         ["configs/sources.json", sources],
         ["configs/korean-players.json", koreanPlayers],
         ["configs/publisher-domains.json", publisherDomains],
+        ["configs/team-ids.json", teamIds],
         ["configs/takedowns.json", []],
       ]),
     );
@@ -266,6 +329,7 @@ describe("pickCrossRefInput", () => {
       "koreanPlayers",
       "publisherDomains",
       "sources",
+      "teamIds",
     ]);
     expect(input.sources).toBe(sources);
   });

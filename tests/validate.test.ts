@@ -81,8 +81,8 @@ describe("① 전부 유효", () => {
     expect(exitCode).toBe(0);
     expect(errors).toEqual([]);
     expect(report.counts).toEqual({ configs: 1, data: 0, prompts: 0 });
-    // 레지스트리 config 12종 중 takedowns를 뺀 11종 + 프롬프트 3종
-    expect(infos).toHaveLength(14);
+    // 레지스트리 config 13종 중 takedowns를 뺀 12종 + 프롬프트 3종
+    expect(infos).toHaveLength(15);
     expect(infos).toContain(
       "configs/sources.json — 아직 없음 · 뉴스 소스 (FR-01)",
     );
@@ -90,18 +90,18 @@ describe("① 전부 유효", () => {
       "configs/prompts/summarize.md — 아직 없음 · 해당 LLM 기능 단계에서 추가",
     );
     expect(lines.at(-1)).toBe(
-      "[validate] 검증 통과 — configs 1개 · data 0개 · 정보 14건",
+      "[validate] 검증 통과 — configs 1개 · data 0개 · 정보 15건",
     );
   });
 
-  it("fixtures/schema/configs를 그대로 복사하면 통과하고 교차 참조 4종을 모두 실행한다", () => {
+  it("fixtures/schema/configs를 그대로 복사하면 통과하고 교차 참조 5종을 모두 실행한다", () => {
     copyFixtures("configs");
     const { exitCode, errors, infos, report } = run();
 
     expect(errors).toEqual([]);
     expect(exitCode).toBe(0);
-    expect(report.counts.configs).toBe(12);
-    expect(report.crossRef.checked).toHaveLength(4);
+    expect(report.counts.configs).toBe(13);
+    expect(report.crossRef.checked).toHaveLength(5);
     expect(report.crossRef.skipped).toEqual([]);
     expect(infos.every((i) => i.startsWith("configs/prompts/"))).toBe(true);
   });
@@ -172,7 +172,7 @@ describe("③ 스키마 오류 — `파일:zod 경로 — 메시지`", () => {
       "[validate] 오류 configs/takedowns.json:[1].id — 카드 ID는 c_ + 16진수 소문자 10자리",
     );
     expect(lines.at(-1)).toBe(
-      "[validate] 검증 실패 — 오류 1건 (파일 1개) · configs 1개 · data 0개 · 정보 14건",
+      "[validate] 검증 실패 — 오류 1건 (파일 1개) · configs 1개 · data 0개 · 정보 15건",
     );
   });
 
@@ -293,8 +293,36 @@ describe("⑤ 교차 참조 실패", () => {
       'configs/national-team.json:squads[0].playerSlugs[1] — korean-players.json에 없는 선수 slug "ghost"',
     ]);
     expect(lines).toContain(
-      "[validate] 교차 참조: 4건 실행 · 건너뜀 0건(관련 파일 없음) · 오류 4건",
+      "[validate] 교차 참조: 5건 실행 · 건너뜀 0건(관련 파일 없음) · 오류 4건",
     );
+  });
+
+  it("활성 한국 선수의 소속팀이 team-ids.json에 없거나 af가 null이면 오류 (D33)", () => {
+    copyFixtures("configs");
+    write("configs/team-ids.json", {
+      "sample-united": { fd: 9001, af: null },
+    });
+    const { exitCode, errors } = run();
+
+    expect(exitCode).toBe(1);
+    expect(errors).toEqual([
+      'configs/korean-players.json:[0].team — 활성 선수 "hong-gil-dong"의 팀 "sample-united"의 af(API-Football 팀 id)가 null — 소속팀 경기 기록을 수집하지 못함',
+    ]);
+  });
+
+  it("team-ids.json의 fd·af 중복은 스키마 오류다(두 API는 같은 숫자가 다른 팀일 수 있어 키별로 따로 본다)", () => {
+    copyFixtures("configs");
+    write("configs/team-ids.json", {
+      "sample-united": { fd: 57, af: 42 },
+      "example-city": { fd: 349, af: 57 }, // fd 57 ≠ af 57 — 중복 아님
+      "other-town": { fd: 57, af: 63 },
+    });
+    const { exitCode, errors } = run();
+
+    expect(exitCode).toBe(1);
+    expect(errors).toEqual([
+      'configs/team-ids.json:other-town.fd — fd id 57 중복 ("sample-united"와 같음)',
+    ]);
   });
 
   it("한쪽 파일이 스키마 오류면 교차 참조는 건너뛴다(스키마 오류만 보고)", () => {

@@ -9,6 +9,10 @@
  *   3. national-team.json `squads[].playerSlugs[]` → korean-players.json slug (FR-73 선수 링크)
  *   4. publisher-domains.json `domains[].sourceIds[]` → sources.json id(판정이 소스의 terms_checked와 맞는지 포함),
  *      그리고 수집 대상 소스(`enabled && terms_checked`)의 피드 호스트가 "deny" 도메인에 속하지 않는지 (M0-26)
+ *   5. korean-players.json 활성 선수의 `team` → team-ids.json에 있고 `af`(API-Football 팀 id)가 있어야 한다 (D33·D27).
+ *      **오류로 둔다**: af가 없으면 M1-48이 그 팀의 다른 대회 경기(컵·UCL 등)를 날짜 응답에서 고르지 못해 그 선수의 경기 기록이
+ *      조용히 빠지고, 지난 날짜는 다시 받을 수 없다(백필 불가 — D27). 이 오류는 사람이 configs를 고친 push의 CI에서만 나므로
+ *      아침 무인 발행을 막지 않는다(`/add-player`가 team-ids 항목도 함께 확인한다).
  *
  * formations.json·team-colors.json의 키 형식(slug)은 스키마(`z.record(SlugSchema, …)`)가 이미 검사한다.
  */
@@ -19,6 +23,7 @@ import {
   type PublisherDomainsFile,
   type SearchQueriesFile,
   type SourcesFile,
+  type TeamIdsFile,
 } from "@/lib/schema";
 
 import { formatIssuePath, type ValidationIssue } from "./validate-schema";
@@ -30,6 +35,7 @@ export const CROSSREF_FILES = {
   koreanPlayers: "configs/korean-players.json",
   nationalTeam: "configs/national-team.json",
   publisherDomains: "configs/publisher-domains.json",
+  teamIds: "configs/team-ids.json",
 } as const;
 
 type CrossRefKey = keyof typeof CROSSREF_FILES;
@@ -41,6 +47,7 @@ export interface CrossRefInput {
   koreanPlayers?: KoreanPlayersFile;
   nationalTeam?: NationalTeamFile;
   publisherDomains?: PublisherDomainsFile;
+  teamIds?: TeamIdsFile;
 }
 
 export interface CrossRefResult {
@@ -196,6 +203,42 @@ export function checkPublisherDomainSources(
   return issues;
 }
 
+/**
+ * 5. 활성 한국 선수의 소속팀이 team-ids.json에 있고 API-Football 팀 id(af)가 있는지 (D33).
+ * 비활성 선수(기타 리그 이적 등 — 기록 수집 중단, FR-64)는 보지 않는다.
+ */
+export function checkKoreanPlayerTeamIds(
+  koreanPlayers: KoreanPlayersFile,
+  teamIds: TeamIdsFile,
+): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  koreanPlayers.forEach((player, i) => {
+    if (!player.active) return;
+    const entry = Object.hasOwn(teamIds, player.team)
+      ? teamIds[player.team]
+      : undefined;
+    const path = [i, "team"];
+    if (!entry) {
+      issues.push(
+        crossRefError(
+          CROSSREF_FILES.koreanPlayers,
+          path,
+          `활성 선수 "${player.slug}"의 팀 "${player.team}"가 team-ids.json에 없음 — API-Football 팀 id(af)를 함께 등록할 것`,
+        ),
+      );
+    } else if (entry.af === null) {
+      issues.push(
+        crossRefError(
+          CROSSREF_FILES.koreanPlayers,
+          path,
+          `활성 선수 "${player.slug}"의 팀 "${player.team}"의 af(API-Football 팀 id)가 null — 소속팀 경기 기록을 수집하지 못함`,
+        ),
+      );
+    }
+  });
+  return issues;
+}
+
 interface CrossRefCheck {
   name: string;
   /** 필요한 파일이 모두 있으면 이슈 목록, 하나라도 없으면 null(건너뜀) */
@@ -229,6 +272,13 @@ const CHECKS: readonly CrossRefCheck[] = [
     run: ({ publisherDomains, sources }) =>
       publisherDomains && sources
         ? checkPublisherDomainSources(publisherDomains, sources)
+        : null,
+  },
+  {
+    name: "korean-players.team(활성) → team-ids(af)",
+    run: ({ koreanPlayers, teamIds }) =>
+      koreanPlayers && teamIds
+        ? checkKoreanPlayerTeamIds(koreanPlayers, teamIds)
         : null,
   },
 ];
@@ -266,5 +316,6 @@ export function pickCrossRefInput(
   pick("koreanPlayers");
   pick("nationalTeam");
   pick("publisherDomains");
+  pick("teamIds");
   return input;
 }

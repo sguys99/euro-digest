@@ -1,0 +1,8 @@
+{
+  "sample-united": {
+    "fd": 9001,
+    "af": 9001,
+    "note": "형식 예시 — 같은 숫자라도 fd·af는 다른 체계(실제 값 아님)"
+  },
+  "example-city": { "fd": 9002, "af": null }
+}
