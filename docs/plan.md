@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M1 뉴스 MVP 진행 중 — M1-01 수직 슬라이스 완료(2026-10-12, Actions 수집 → 커밋 → Pages 배포 성공)
-**다음 작업**: `M1-06` 검색형 소스 공통(쿼리 로더·매체 도메인 허용 목록 필터 — M1-05는 ⏸ D32) → M1-A 순서대로
+**다음 작업**: `M1-09` 공통 형식 정규화 + zod 검증 + `Source.tz`(D34 — M1-07·M1-08은 ⏸ D32) → M1-A 순서대로
 
 ---
 
@@ -241,7 +241,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 🆕 M1-03 이월 메모: **M1-11** PRD §10 "수집 일부 실패 → 해당 소스 건너뜀, 이슈 생성"·FR-152(같은 원인은 댓글)에 따라 **소스 실패 이슈를 건강도 이슈와 함께 M1-11에서 구현**(fingerprint `source:<id>`, `source-broken`) · runs.json `sources[]`가 `{id, ok, items}`뿐이라 예산 초과(`budget`)와 실제 장애가 구별되지 않고 `items`는 피드 원문 항목 수(쓸 수 있는 건수 아님) → M1-11 착수 때 ❓ `sources[]` 선택 필드(오류 종류·쓸 수 있는 건수) 추가 여부 사용자 확인 · **M1-44** football-data 단건 응답 약 12초(타임아웃 15초에 근접) → 타임아웃 여유 재검토
 - [x] M1-04 기자 채널 RSS: the Daily Briefing(Substack)·Di Marzio — 작성자 필터는 현재 대상 없음(M0-23·M0-24: Guardian 제외, The Athletic은 축구 피드 전체를 원제목으로 수집), `author` 필드 지원만 — 2026-10-12 완료: 작성자 목록 파싱(RSS `author`·여러 `dc:creator`·Atom `author/name`, email 버림), `Source.author` 필터(대소문자·공백·NFC 무시, 공동 기명 조각 비교, 작성자 없는 항목 제외, `skipped.author`), 빈 `author` validate 경고. 실측: Daily Briefing `dc:creator` 1개('the Daily Briefing'·'Mark Brus'), Di Marzio·BBC·Athletic 작성자 없음, 국내는 '○○○ 기자' 형식(국내 기자 필터를 쓰게 되면 접미사 규칙 필요)
 - [ ] ⏸ M1-05 목록 크롤러 `scripts/crawlers/<site>.ts` — M0에서 허용 확인된 사이트만 (robots.txt, User-Agent, 2~3초 지연, 하루 1회) (보류 — 2026-10-12 사용자 결정, PRD §15 D32: M0-23~25 판정에서 크롤링을 허용한 사이트가 0곳(후보 Sky Sport DE·Bundesliga.com·TEAMtalk·Football365 모두 약관상 봇 접근 금지)이라 만들 대상이 없다. `/add-source`로 `type: crawl` + `robots_checked` 소스가 승인되면 그때 착수)
-- [ ] M1-06 검색형 소스 공통: `configs/search-queries.json` 로더 + 매체 도메인 허용 목록 필터(`configs/publisher-domains.json`, `allow`만 게시, `isSearchResultAllowed`) — Google News RSS는 사용 불가(M0-26, PRD §15 D25)
+- [x] M1-06 검색형 소스 공통: `configs/search-queries.json` 로더 + 매체 도메인 허용 목록 필터(`configs/publisher-domains.json`, `allow`만 게시, `isSearchResultAllowed`) — Google News RSS는 사용 불가(M0-26, PRD §15 D25) — 2026-10-12 완료(D32 범위 — 로더·필터만, 검색 요청 코드 없음): 활성 쿼리 = `enabled` + 수집 가능한 검색형 소스(현재 0개 → `collect.search.skip`), 허용 목록 필터는 `allow`만 통과(`feed-only`·`deny`·`not-listed`·`invalid-url` 집계, 위장 호스트 차단), 검색 제목·시각은 `titleFromSearch`·`timeFromSearch` 타입으로만 받아 카드에 바로 쓸 수 없게 막음(M0-27). `SearchAdapter`는 인터페이스만
+  - 🆕 M1-06 이월 메모(M1-07·M1-08 보류 해제 시): 어댑터를 `runSearchStage`의 `no-adapter` 자리에 등록, 허용 판정은 수집 단계가 결과 전체에 적용, 제목·시각을 RSS 제목·og:title·`article:published_time`으로 바꾸지 못한 항목은 게시 안 함 · 지금 `allow` 4도메인은 모두 RSS로 받는 국내 매체라 검색 실익이 작음(M1-12 중복 제거에서 RSS 쪽이 남음) · 쿼리별 결과를 runs에 남기려면 스키마 확인 필요, 검색 실패를 `partial`로 볼지 결정 · validate 경고 후보: 켠 쿼리의 소스가 비활성이라 조용히 실행되지 않는 경우
 - [ ] ⏸ M1-07 GDELT 어댑터 — ⏸ M0-27 판정: 약관 허용·**현재 비활성**(429 다발·허용 목록 통과 0건). M1-46 재측정 결과로 착수 여부 결정 ❓. 제목은 GDELT가 손본 흔적이 있어 RSS 제목·og:title로 교체 필요 (보류 유지 — 2026-10-12 사용자 결정 D32: M1-46 재측정을 통과하면 M1-08과 함께 착수)
 - [ ] ⏸ M1-08 OG 메타 경량 수집기 — 요약 없는 항목만, `<head>`만 파싱, 최대 500자. 해외 원제목 소스는 OG 보충 안 함(M0-23·D23), 국내 소스는 M0-25 판정에 따름 (보류 — 2026-10-12 사용자 결정 D32: RSS 요약문·OG 설명을 표시·저장하지 않으므로(M0-25) 지금 소비처가 없고, 유일한 소비처는 GDELT 결과의 og:title·`article:published_time` 교체(M0-27)다 → M1-07과 함께 착수. 그때 CLAUDE §3의 "경량 HTML 파서" 패키지를 후보·크기와 함께 사용자 승인)
 - [ ] M1-09 공통 형식 정규화 + zod 검증 (FR-03), "본문 필드 없음" 테스트 (FR-02) · 🆕 2026-10-12 사용자 결정(PRD §15 D34): `Source`에 선택 필드 `tz`(IANA, 예: `Asia/Seoul`) 추가 — 피드 날짜에 시간대가 없을 때만 이 값으로 해석(시간대가 있으면 그대로), 국내 5피드에 `Asia/Seoul`. 지금은 국내 5피드 약 160건/일이 `no-date`로 버려짐(M1-01·M1-02 실측)
