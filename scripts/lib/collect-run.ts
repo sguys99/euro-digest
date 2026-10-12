@@ -2,7 +2,8 @@
  * `npm run collect` 파이프라인 본체 (M1-01 얇은 수직 슬라이스, PRD §10, D23·D24·D28).
  *
  *   ① 뉴스: configs/sources.json의 일일 수집 대상 피드 전부(M1-02 로더 — enabled && terms_checked, rss·journalist·aggregator)
- *      → 소스별 격리 수집 → 합쳐서 링크 중복 제거·최신순 상위 N건 → 원제목 카드(최소 분류) → data/news/<KST 발행일>.json
+ *      → 소스별 격리 수집 → 수집 시간 창(M1-10, FR-07 — 직전 성공 실행 − 3시간 ~ 현재, 최대 51시간, 미래 시각 가드)
+ *      → 합쳐서 링크 중복 제거·최신순 상위 N건 → 원제목 카드(최소 분류) → data/news/<KST 발행일>.json
  *      검색형 소스(M1-06): configs/search-queries.json의 활성 쿼리만 계획한다. 어댑터(M1-07)가 보류라 실행하지 않는다 —
  *      활성 쿼리 0개면 `collect.search.skip` 한 줄, 있으면 소스마다 경고 후 건너뛴다. 검색 설정 오류도 피드 수집을 멈추지 않는다.
  *   ② 브리핑: football-data 6개 대회 전날 종료 경기 → 정형 입력 → `callSingle` 1요청 → **출력은 로그만**(저장 M1-19)
@@ -18,7 +19,8 @@
  *
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
- * 다음 작업이 갈아끼울 자리: 소스 건강도 이슈(M1-11) · 수집 시간 창~점수화(M1-10~14) ·
+ * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
+ * 다음 작업이 갈아끼울 자리: 소스 건강도 이슈(M1-11) · 중복 제거~점수화(M1-12~14) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
  * 계절별 마감(M1-47) · football-data 어댑터(M1-44).
  */
@@ -49,11 +51,22 @@ import { cardIdFor } from "./card-id";
 import type { LlmMode } from "./cli-args";
 import { readConfigFile } from "./config-files";
 import {
+  applyCollectWindow,
+  ceilMinutes,
+  planCollectWindow,
+  windowLogFields,
+  type CollectWindow,
+  type RunsReadResult,
+  type WindowStats,
+} from "./collect-window";
+import {
   checkBudgetFromFiles,
   formatEstimate,
   formatUsd,
   makeRunId,
+  readRuns,
   recordRun,
+  runsPathFor,
   type Budgets,
 } from "./cost";
 import {
@@ -241,6 +254,10 @@ export interface NewsOutcome {
   excluded: SourceExclusion[];
   /** 검색형 소스 단계 결과 — 소스 설정을 읽지 못했으면 null */
   search: SearchStageOutcome | null;
+  /** 수집 시간 창(M1-10) — 소스 설정을 읽지 못했거나 수집 대상이 없으면 null */
+  window: CollectWindow | null;
+  /** 창 적용 집계(창 밖·미래 낮춤·미래 제외) — 피드를 받지 않았으면 null */
+  windowStats: WindowStats | null;
   error?: string;
 }
 
@@ -365,6 +382,77 @@ async function runSearchStage(
   return outcome;
 }
 
+/**
+ * 창 계산용 prod runs.json(dev 실행도 prod 기록을 본다). 파일이 없으면 [](첫 실행).
+ * JSON·스키마 오류는 던지지 않고 값으로 돌려준다 — 창은 51시간(상한)으로 넓히고 경고한다(collect-window.ts).
+ */
+async function readProdRunsForWindow(dataDir: string): Promise<RunsReadResult> {
+  try {
+    return { ok: true, runs: await readRuns(runsPathFor("prod", dataDir)) };
+  } catch (error) {
+    return { ok: false, error: errorText(error) };
+  }
+}
+
+/** 창 계획 로그 — 시작·끝(UTC·KST)·근거. runs.json 오류·미래 기록은 warn */
+function logWindowPlan(log: Logger, window: CollectWindow): void {
+  if (window.runsError !== null) {
+    log.warn("collect.window.runs-unreadable", {
+      file: "runs.json",
+      error: window.runsError,
+      fallbackHours: windowLogFields(window).maxHours,
+    });
+  }
+  if (window.ignoredFutureRuns > 0) {
+    // 현재보다 미래에 시작한 발행 기록 — 시계 오류. 그 기록으로 창을 열면 비어 버려 무시한다.
+    log.warn("collect.window.future-runs", {
+      file: "runs.json",
+      count: window.ignoredFutureRuns,
+      now: window.now,
+    });
+  }
+  log.info("collect.window.plan", windowLogFields(window));
+}
+
+/** 창 적용 로그 — 합계 + 소스별(미래 낮춤 info · 미래 제외 warn — 시간대 설정 확인) */
+function logWindowApply(log: Logger, stats: WindowStats): void {
+  for (const [source, per] of Object.entries(stats.bySource)) {
+    const aheadMaxMin =
+      per.maxAheadMs === null ? null : ceilMinutes(per.maxAheadMs);
+    if (per.futureClamped > 0) {
+      log.info("collect.item.clamp", {
+        source,
+        reason: "future-clamped",
+        count: per.futureClamped,
+        aheadMaxMin,
+      });
+    }
+    if (per.future > 0) {
+      log.warn("collect.item.skip", {
+        source,
+        reason: "future",
+        count: per.future,
+        kept: per.inWindow,
+        aheadMaxMin,
+      });
+    }
+  }
+  log.info("collect.window.apply", {
+    items: stats.total,
+    inWindow: stats.inWindow,
+    outOfWindow: stats.outOfWindow,
+    futureClamped: stats.futureClamped,
+    future: stats.future,
+    // 소스별 창 안 건수 — 피드는 받았는데 창 안이 0건이면 갱신이 멈춘 피드일 수 있다(건강도 판단은 M1-11)
+    inWindowBySource: Object.fromEntries(
+      Object.entries(stats.bySource).map(([source, per]) => [
+        source,
+        per.inWindow,
+      ]),
+    ),
+  });
+}
+
 async function runNewsStage(
   deps: CollectDeps,
   ctx: { runId: string; publishDate: string; startedAt: string },
@@ -380,6 +468,8 @@ async function runNewsStage(
     sources: [],
     excluded: [],
     search: null,
+    window: null,
+    windowStats: null,
   };
 
   // 소스 설정 → 일일 수집 계획. 설정 오류(소스·피드 수집 정책)·수집 대상 0개는 뉴스 단계 실패(exit 1 — 커밋하지 않고 이슈).
@@ -411,6 +501,14 @@ async function runNewsStage(
     };
   }
 
+  // 수집 시간 창(M1-10, FR-07) — prod runs.json의 직전 성공 실행 기준. dev·dry도 같은 규칙. 읽기 실패는 51시간 + 경고.
+  const window = planCollectWindow({
+    now: ctx.startedAt,
+    runs: await readProdRunsForWindow(deps.dataDir),
+    sourceIds: plan.feeds.map((s) => s.id),
+  });
+  logWindowPlan(log, window);
+
   // 소스별 수집 — 다른 호스트는 동시에, 같은 호스트는 순서대로(간격), 단계 시간 예산 안에서(feed-collect.ts).
   // 결과·항목은 설정 순서 — 완료 순서와 무관하게 같은 응답이면 선별 결과가 같다. 한 소스의 실패가 다른 소스를 막지 않는다.
   const sourceById = new Map(plan.feeds.map((s) => [s.id, s] as const));
@@ -422,7 +520,12 @@ async function runNewsStage(
     clock: deps.feedClock,
   });
   const outcomes: SourceOutcome[] = collected.outcomes;
-  const allItems = collected.items;
+  // 창 적용: 창 밖·3시간 넘는 미래는 빼고, 5분~3시간 미래는 수집 시각으로 낮춘다(카드 src.at도 낮춘 값).
+  // TODO(M1-12): 겹침(직전 실행 − 3시간) 구간의 항목은 어제 파일에 이미 있을 수 있다 — 날짜 간 중복은 seen-urls.json이
+  // 막는다. 같은 날짜 파일 안의 중복은 지금도 mergeCards(카드 ID)가 막는다.
+  const windowed = applyCollectWindow(collected.items, window);
+  logWindowApply(log, windowed.stats);
+  const allItems = windowed.items;
   const sources: RunLog["sources"] = outcomes.map((o) => ({
     id: o.id,
     ok: o.ok,
@@ -435,6 +538,8 @@ async function runNewsStage(
     sources: outcomes,
     excluded: plan.excluded,
     search,
+    window,
+    windowStats: windowed.stats,
   };
   if (failed.length === outcomes.length) {
     const error = `모든 피드 소스 수집 실패(${failed.length}개)`;
@@ -452,7 +557,8 @@ async function runNewsStage(
     return source ? [buildCard(item, source, ctx.startedAt)] : [];
   });
   log.info("collect.select.done", {
-    usable: allItems.length,
+    usable: collected.items.length,
+    inWindow: allItems.length,
     unique: uniqueLinks.size,
     duplicateLinks: allItems.length - uniqueLinks.size,
     selected: cards.length,
@@ -863,6 +969,8 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     collected: news.feedItems,
     clusters: news.selected,
     added: news.added,
+    windowBasis: news.window?.basis ?? null,
+    inWindow: news.windowStats?.inWindow ?? 0,
     sourcesOk: news.sources.filter((s) => s.ok).length,
     sourcesFailed: news.sources.filter((s) => !s.ok).length,
     brief: brief.state === "done" ? "done" : `${brief.state}:${brief.reason}`,

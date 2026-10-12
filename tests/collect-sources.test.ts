@@ -11,6 +11,8 @@
  * 시간 계산 자체는 tests/feed-collect.test.ts(가짜 타이머).
  * M1-09(D34): 국내 5피드는 시간대 없는 pubDate를 소스 `tz`(Asia/Seoul)로 해석해 모든 항목을 쓴다(공통 형식·시간대 세부는
  * tests/feed-item.test.ts). 섹션 피드 ⊂ 전체기사 피드라 국내 같은 링크 9쌍이 더해진다.
+ * M1-10(FR-07): 수집 시간 창이 소스를 합치기 전에 적용된다 — 시각은 피드 스냅샷 직후(NOW 주석), 창 계산·미래 가드는
+ * tests/collect-window.test.ts.
  */
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import os from "node:os";
@@ -75,8 +77,13 @@ const FD_MATCHES_1010 = read(
   "fixtures/football/football-data/matches-6comps-2026-10-10.json",
 );
 
-/** 06:30 KST 2026-10-11 = 2026-10-10T21:30Z — 발행일 2026-10-11(mock 브리핑 fixture가 있는 날) */
-const NOW = new Date("2026-10-10T21:30:00.000Z");
+/**
+ * 피드 fixture 스냅샷(fixtures/rss/index.json `collectedAt` 2026-10-11T06:17:17Z) 직후 = 15:20 KST 2026-10-11 —
+ * 발행일 2026-10-11(mock 브리핑 fixture가 있는 날). 수집 시간 창(M1-10)이 생겨 시계가 스냅샷보다 이르면 스냅샷 항목이
+ * "미래"가 된다 — 이 파일은 스냅샷과 같은 시점의 수집을 재현한다. runs.json이 없으므로 창은 51시간(첫 실행, D36):
+ * [2026-10-09T03:20Z, 현재 + 5분] → 쓸 수 있는 69건 중 5건(10-07 이전)이 창 밖. 창 자체는 tests/collect-window.test.ts.
+ */
+const NOW = new Date("2026-10-11T06:20:00.000Z");
 
 const KOREAN_FEEDS = [
   "interfootball-world",
@@ -375,7 +382,7 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
     expect(outcome.news.excluded).toEqual(PLAN.excluded);
   });
 
-  it("카드 상한 45(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 고유 링크 56건 → 최신순 45장", async () => {
+  it("카드 상한 45(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 창 안 64건(M1-10) → 고유 링크 52건 → 최신순 45장", async () => {
     const { deps, records } = makeDeps();
     const outcome = await runCollect(deps);
     const file = readNews("2026-10-11");
@@ -385,8 +392,9 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
       records.find((r) => r.event === "collect.select.done"),
     ).toMatchObject({
       usable: 69,
-      unique: 56,
-      duplicateLinks: 13,
+      inWindow: 64,
+      unique: 52,
+      duplicateLinks: 12,
       selected: 45,
       limit: 45,
     });
@@ -400,18 +408,19 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
     const outcome = await runCollect(deps);
     const file = readNews("2026-10-11");
     const links = file.cards.map((c) => c.src[0]!.u);
-    // 쓸 수 있는 69건 중 같은 링크 13쌍(BBC 피드 사이 3쌍 + BBC 피드 안 1쌍 + 국내 섹션 ⊂ 전체기사 9쌍) → 56장
-    expect(file.cards).toHaveLength(56);
+    // 창 안 64건 중 같은 링크 12쌍(BBC 피드 사이 2쌍 + BBC 피드 안 1쌍 + 국내 섹션 ⊂ 전체기사 9쌍) → 52장
+    expect(file.cards).toHaveLength(52);
     expect(new Set(links).size).toBe(file.cards.length);
     expect(new Set(file.cards.map((c) => c.id)).size).toBe(file.cards.length);
-    expect(outcome.news.selected).toBe(56);
+    expect(outcome.news.selected).toBe(52);
     expect(
       records.find((r) => r.event === "collect.select.done"),
     ).toMatchObject({
       usable: 69,
-      unique: 56,
-      duplicateLinks: 13,
-      selected: 56,
+      inWindow: 64,
+      unique: 52,
+      duplicateLinks: 12,
+      selected: 52,
     });
 
     // 원제목·링크 무수정(엔티티 디코딩·앞뒤 공백 정리만) — 원문 항목은 fixture index에서 찾는다
@@ -432,11 +441,17 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
       c.src[0]!.u.includes("/articles/cqn73g3pvezdo"),
     )!;
     expect(shared.comp).toEqual([]);
-    // Champions League(UCL)와 European(4개 리그)에 함께 있는 링크 → Champions League 카드
-    const ucl = file.cards.find((c) =>
-      c.src[0]!.u.includes("/articles/ckrey77jq1n7o"),
-    )!;
-    expect(ucl.comp).toEqual(["UCL"]);
+    // Champions League(UCL)와 European(4개 리그)에 함께 있는 링크는 10-07 기사라 51시간 창 밖 — 카드 없음(M1-10)
+    expect(
+      file.cards.some((c) => c.src[0]!.u.includes("/articles/ckrey77jq1n7o")),
+    ).toBe(false);
+    expect(outcome.news.windowStats).toMatchObject({
+      total: 69,
+      inWindow: 64,
+      outOfWindow: 5,
+      futureClamped: 0,
+      future: 0,
+    });
 
     // 국내: 섹션 피드(설정 앞)와 전체기사 피드에 함께 있는 링크 → 섹션 피드 카드(출처명은 매체명), 발행 시각은 KST → UTC
     const interfootball = file.cards.find(
