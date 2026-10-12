@@ -26,6 +26,7 @@ import {
   isUtcIso,
   isWithinKstWindow,
   kstDate,
+  utcDate,
   kstDayRangeUtc,
   kstMonth,
   kstParts,
@@ -145,6 +146,22 @@ describe("parseUtcIso / isUtcIso — Z로 끝나는 UTC ISO만", () => {
 });
 
 // ─── UTC → KST ─────────────────────────────────────────────────────────────
+
+describe("utcDate — UTC 날짜(API-Football 일 한도 리셋 00:00 UTC = 09:00 KST, M1-48)", () => {
+  it.each([
+    ["2026-10-12T23:59:59.999Z", "2026-10-12"],
+    ["2026-10-13T00:00:00Z", "2026-10-13"],
+    ["2026-10-10T21:30:00.000Z", "2026-10-10"], // 06:30 KST 실행 — KST로는 다음 날
+    ["2026-10-25T01:00:00Z", "2026-10-25"], // 유럽 서머타임 종료 순간 — UTC 날짜는 시간대와 무관
+  ])("%s → %s", (iso, expected) => {
+    expect(utcDate(iso)).toBe(expected);
+  });
+
+  it("Z가 아닌 값은 거부한다", () => {
+    expect(() => utcDate("2026-10-13T09:00:00+09:00")).toThrow(TimeInputError);
+    expect(() => utcDate("2026-10-13")).toThrow(TimeInputError);
+  });
+});
 
 describe("kstDate / kstParts — KST 날짜 경계 (UTC 15:00 = KST 자정)", () => {
   it.each([

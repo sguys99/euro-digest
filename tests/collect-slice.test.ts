@@ -97,6 +97,7 @@ import {
   validationExitCode,
 } from "../scripts/lib/validate-report";
 
+import { cancelGate } from "./support/cancel-gate";
 import { fdFixtureResponse, standingsCode } from "./support/football-data-fake";
 
 // ─── fixtures ────────────────────────────────────────────────────────────
@@ -908,12 +909,17 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
     expect(readFileSync(filePath, "utf8")).toBe("{ broken");
   });
 
-  it("피드 실패: 뉴스 실패(exitCode 1)면 브리핑(LLM·football-data)을 부르지 않는다 — 커밋되지 않는 실행의 비용 기록 유실 방지", async () => {
+  it("피드 실패: 뉴스 실패(exitCode 1)면 브리핑(LLM)을 부르지 않고 경기 데이터는 취소한다 — 커밋되지 않는 실행의 비용 기록 유실 방지", async () => {
     const fetcher = fakeFetch({
       feed: new Response("busy", { status: 503 }),
       fd: FD_MATCHES_1010,
     });
-    const { deps, records, llmCreated } = makeDeps({ fetch: fetcher.fetch });
+    const gate = cancelGate();
+    const { deps, records, llmCreated } = makeDeps({
+      fetch: fetcher.fetch,
+      footballDataSleep: gate.sleep,
+    });
+    deps.logger = gate.logger(records);
     const outcome = await runCollect(deps);
     expect(outcome.exitCode).toBe(1);
     expect(outcome.status).toBe("failed");
@@ -925,9 +931,15 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
       inputMatches: 0,
     });
     expect(llmCreated()).toBe(0);
+    // 경기 데이터는 피드 수집과 병렬로 시작했다가 뉴스 실패로 취소된다(M1-48) — 첫 요청(경기) 이하, 순위는 요청하지 않는다
+    const fdCalls = fetcher.calls.filter((c) =>
+      c.url.startsWith(FOOTBALL_DATA_BASE_URL),
+    );
+    expect(fdCalls.length).toBeLessThanOrEqual(1);
+    expect(fdCalls.some((c) => c.url.includes("/standings"))).toBe(false);
     expect(
-      fetcher.calls.some((c) => c.url.startsWith(FOOTBALL_DATA_BASE_URL)),
-    ).toBe(false);
+      records.find((r) => r.event === "collect.matchdata.cancel"),
+    ).toMatchObject({ reason: "news-failed" });
     expect(
       records.find((r) => r.event === "collect.source.fail"),
     ).toMatchObject({
@@ -962,10 +974,12 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
       "/competitions/FL1/standings",
     ]);
     expect(outcome.matchData?.footballData).toMatchObject({ state: "done" });
+    // API_FOOTBALL_KEY가 없으면 API-Football은 건너뛰고 브리핑은 그대로 간다(M1-48 — 연결은 tests/collect-matchdata.test.ts)
     expect(outcome.matchData?.apiFootball).toMatchObject({
       state: "skipped",
-      reason: "no-adapter",
+      reason: "no-api-key",
     });
+    expect(outcome.status).toBe("success");
     expect(
       (fdCalls[0]!.init!.headers as Record<string, string>)["X-Auth-Token"],
     ).toBe("test-football-data-key");
@@ -992,9 +1006,15 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
 
     const out = printed.find((p) => p.startsWith("── 브리핑 출력"));
     expect(out?.split("\n")).toHaveLength(6);
-    // 브리핑 저장 파일·runs 기록(mock)은 만들지 않는다
-    expect(readdirSync(dataDir).sort()).toEqual(["news"]);
-    expect(outcome.run).toBeNull();
+    // 브리핑 저장 파일은 만들지 않는다. 데이터 API를 불렀으므로 mock이어도 runs-dev.json에 호출 수를 비용 0으로 남긴다(M1-48)
+    expect(readdirSync(dataDir).sort()).toEqual(["news", "runs-dev.json"]);
+    expect(outcome.run).toMatchObject({
+      env: "dev",
+      costUsd: 0,
+      tokens: { in: 0, out: 0, cacheRead: 0, cacheWrite: 0 },
+      summarized: 0, // mock 줄은 LLM이 쓴 줄이 아니다
+      apiCalls: { footballData: 6, apiFootball: 0 },
+    });
     expect(outcome.status).toBe("success");
   });
 
@@ -1220,7 +1240,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     ]);
   });
 
-  it("prod는 LLM을 부르지 않은 실행도 기록한다(경기 없음), dev는 기록하지 않는다", async () => {
+  it("prod는 LLM을 부르지 않은 실행도 기록한다(경기 없음), dev도 데이터 API를 불렀으면 비용 0으로 기록한다(M1-48 카운터)", async () => {
     const quiet = {
       fetch: fakeFetch({ feed: BBC_XML, fd: '{"matches":[]}' }).fetch,
     };
@@ -1237,6 +1257,21 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
 
     rmSync(path.join(dataDir, "runs.json"));
     const dev = liveDeps({ env: "dev", ...quiet });
+    await runCollect(dev.deps);
+    const devRuns = RunsDevFileSchema.parse(
+      JSON.parse(readFileSync(path.join(dataDir, "runs-dev.json"), "utf8")),
+    );
+    expect(devRuns).toEqual([
+      expect.objectContaining({
+        env: "dev",
+        costUsd: 0,
+        apiCalls: { footballData: 1, apiFootball: 0 },
+      }),
+    ]);
+  });
+
+  it("dev에서 데이터 API도 LLM도 부르지 않은 실행(키 없음)은 기록하지 않는다", async () => {
+    const dev = liveDeps({ env: "dev", footballDataApiKey: undefined });
     await runCollect(dev.deps);
     expect(readdirSync(dataDir)).toEqual(["news"]);
   });
@@ -1271,6 +1306,32 @@ describe("collect-run.ts — 설정 해석", () => {
     expect(resolveMaxItems("30")).toBe(30);
     expect(() => resolveMaxItems("0")).toThrow();
     expect(() => resolveMaxItems("abc")).toThrow();
+  });
+
+  it("기록 여부: 데이터 API 호출이 있으면 mock·dry·dev도 기록(M1-48 일일 카운터)", () => {
+    for (const apiCalls of [
+      { footballData: 1, apiFootball: 0 },
+      { footballData: 0, apiFootball: 12 },
+    ]) {
+      expect(
+        shouldRecordRun({
+          llmMode: "mock",
+          env: "dev",
+          dry: true,
+          llmCalls: 0,
+          apiCalls,
+        }),
+      ).toBe(true);
+    }
+    expect(
+      shouldRecordRun({
+        llmMode: "mock",
+        env: "dev",
+        dry: true,
+        llmCalls: 1,
+        apiCalls: { footballData: 0, apiFootball: 0 },
+      }),
+    ).toBe(false);
   });
 
   it("기록 여부: mock 안 함 · live LLM 호출 시 dry여도 기록 · prod 비dry는 항상", () => {

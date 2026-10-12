@@ -9,6 +9,11 @@
  * 이미 아는 대응은 후보를 고르는 데(같은 시각·같은 스코어 경기가 여럿일 때) 쓰고, 어긋나면 충돌로 따로 보고한다.
  * 후보는 사람이 확인해 team-ids.json에 넣는다(운영 리포트) — 이 모듈은 파일을 쓰지 않는다. 대응표에 없는 팀이 있어도
  * 실행은 계속되고, 그 경기는 득점자 없이 진행한다(D33).
+ *
+ * `linkMatchDetails`(M1-48): football-data 종료 경기(브리핑 입력의 결과·순위)와 API-Football 경기 상세(득점자·라인업)를 잇는다.
+ * 경기 쌍은 `suggestTeamIdPairs`로 찾되, **두 팀 모두 대응표로 확인된 쌍만** 득점자를 붙일 연결(`links`)로 쓰고, 대응표에 없는
+ * 팀이 낀 쌍은 `unconfirmed`로 따로 둔다(D33 "대응표에 없는 경기는 득점자 없이 진행"). 후보는 실행 로그로 남기고 운영 리포트
+ * (M5-09)가 모아 보여 준다. 브리핑 입력에 득점자를 넣는 것은 M1-19·M1-48b.
  */
 import {
   TeamIdsFileSchema,
@@ -18,7 +23,8 @@ import {
 } from "@/lib/schema";
 
 import { readConfigFile } from "./config-files";
-import type { Score } from "./match-data";
+import type { FinishedMatch, MatchDetail, Score } from "./match-data";
+import { matchDetailToPairing } from "./providers/api-football";
 
 // ─── 대응표 ──────────────────────────────────────────────────────────────
 
@@ -312,4 +318,70 @@ export function suggestTeamIdPairs(
   report.candidates.sort(byEvidence);
   report.conflicts.sort(byEvidence);
   return report;
+}
+
+// ─── 경기 상세 연결 (M1-48) ─────────────────────────────────────────────
+
+export interface MatchLink {
+  fd: FinishedMatch;
+  af: MatchDetail;
+}
+
+export interface MatchLinkResult {
+  /** 두 팀 모두 대응표로 확인된 경기 쌍(fd 킥오프 순) — 득점자를 붙여도 된다 */
+  links: MatchLink[];
+  /** 대회·킥오프·스코어는 맞지만 대응표에 없는 팀이 낀 쌍 — 득점자를 붙이지 않는다(D33), 후보는 report.candidates */
+  unconfirmed: MatchPairEvidence[];
+  /** 짝짓기 보고(후보·충돌·모호·짝 없음) */
+  report: PairingReport;
+}
+
+/** 경기 쌍의 두 팀이 대응표로 확인되는가(fd·af 둘 다 같은 slug) */
+function confirmedByTable(
+  fd: Pick<FinishedMatch, "home" | "away">,
+  af: Pick<MatchDetail, "home" | "away">,
+  index: TeamIdIndex,
+): boolean {
+  const same = (fdId: number, afId: number) => {
+    const slug = index.byFd.get(fdId);
+    return slug !== undefined && slug === index.byAf.get(afId);
+  };
+  return same(fd.home.id, af.home.id) && same(fd.away.id, af.away.id);
+}
+
+/**
+ * football-data 종료 경기 ↔ API-Football 경기 상세 연결(순수 함수). 6개 대회 상세만 짝짓기에 들어간다
+ * (한국 선수 소속팀 기타 대회는 football-data에 없다).
+ */
+export function linkMatchDetails(
+  fdResults: readonly FinishedMatch[],
+  afDetails: readonly MatchDetail[],
+  index: TeamIdIndex = EMPTY_TEAM_ID_INDEX,
+  options: PairingOptions = {},
+): MatchLinkResult {
+  const fdPairing: PairingMatch[] = fdResults.map((r) => ({
+    matchId: r.matchId,
+    comp: r.comp,
+    kickoff: r.kickoff,
+    home: { id: r.home.id, name: r.home.name },
+    away: { id: r.away.id, name: r.away.name },
+    ft: r.score.ft,
+  }));
+  const afPairing = afDetails.flatMap((d) => {
+    const p = matchDetailToPairing(d);
+    return p ? [p] : [];
+  });
+  const report = suggestTeamIdPairs(fdPairing, afPairing, index, options);
+  const fdById = new Map(fdResults.map((r) => [r.matchId, r] as const));
+  const afById = new Map(afDetails.map((d) => [d.matchId, d] as const));
+  const links: MatchLink[] = [];
+  const unconfirmed: MatchPairEvidence[] = [];
+  for (const pair of report.matchPairs) {
+    const fd = fdById.get(pair.fdMatchId);
+    const af = afById.get(pair.afMatchId);
+    if (!fd || !af) continue;
+    if (confirmedByTable(fd, af, index)) links.push({ fd, af });
+    else unconfirmed.push(pair);
+  }
+  return { links, unconfirmed, report };
 }

@@ -8,6 +8,7 @@
  * - index.json의 파일 목록·크기·경기 id·경계 사례 태그가 실제 파일과 일치한다.
  * - 6개 대회 순위표의 팀 수가 configs/competitions.json teamCount와 같다(UCL 36팀 단일 테이블).
  * - API-Football 정상 응답은 errors가 [], 오류 샘플은 errors 객체다(M1-48 강등 경로 입력).
+ * - API-Football `/status`(M1-48 보강)는 계정(account)·요금제(subscription)를 키째 지우고 요청 수(requests)만 남겼다.
  * - 한국 선수 출전 태그(start·sub·bench·absent)가 라인업·출전 시간과 맞다.
  *
  * 어댑터는 M1-44·M1-48에서 만든다. 여기서는 fixture 자체만 검사하고 필요한 필드만 zod로 읽는다.
@@ -43,6 +44,7 @@ const KindSchema = z.enum([
   "fd-match",
   "af-fixtures",
   "af-error",
+  "af-status",
 ]);
 const IndexFileSchema = z.object({
   path: z.string().regex(/^(football-data|api-football)\/[a-z0-9-]+\.json$/),
@@ -138,6 +140,15 @@ const AfEnvelopeSchema = z.object({
   results: Id,
   response: z.array(z.unknown()),
 });
+/** `/status`(M1-48) — 계정·요금제는 지우고 요청 수만 남긴다(strict — 다른 키가 다시 들어오면 실패) */
+const AfStatusSchema = z.object({
+  get: z.literal("status"),
+  errors: z.tuple([]),
+  results: Id, // /status는 results 0으로 온다(M1-48 실측)
+  response: z.strictObject({
+    requests: z.strictObject({ current: Id, limit_day: Id }),
+  }),
+});
 const LineupPlayersSchema = z.array(
   z.object({ player: z.object({ id: Id.nullable() }) }),
 );
@@ -218,6 +229,7 @@ function idsInFile(f: IndexFile): number[] {
     case "af-fixtures":
       return afFixtures(f.path).map((r) => r.fixture.id);
     case "af-error":
+    case "af-status":
       return [];
   }
 }
@@ -293,7 +305,9 @@ describe("fixtures/football — index.json과 실제 파일", () => {
   it("트리밍한 파일은 남긴 건수와 results·resultSet.count가 맞다", () => {
     for (const f of index.files) {
       const data = readJson(path.join(DIR, f.path));
-      if (f.api === "api-football") {
+      if (f.kind === "af-status") {
+        expect(f.trimmed, f.path).toBeNull();
+      } else if (f.api === "api-football") {
         const env = AfEnvelopeSchema.parse(data);
         expect(env.results, f.path).toBe(env.response.length);
         if (f.trimmed) expect(env.response.length).toBe(f.trimmed.kept);
@@ -446,6 +460,13 @@ describe("fixtures/football — 6개 대회 순위·득점 순위", () => {
 describe("fixtures/football — API-Football errors·시각 표기", () => {
   it("정상 응답은 errors가 [], 오류 샘플은 errors 객체·빈 response다", () => {
     for (const f of index.files.filter((x) => x.api === "api-football")) {
+      if (f.kind === "af-status") {
+        // 요청 수만 남았다(account·subscription 제거) — strict 스키마
+        const status = AfStatusSchema.parse(readJson(path.join(DIR, f.path)));
+        expect(status.response.requests.limit_day).toBe(100);
+        expect(f.removed).toMatchObject({ account: 1, subscription: 1 });
+        continue;
+      }
       const env = AfEnvelopeSchema.parse(readJson(path.join(DIR, f.path)));
       if (f.kind === "af-fixtures") {
         expect(env.errors, f.path).toEqual([]);
@@ -576,9 +597,19 @@ describe("fixtures/football — 경계 사례 커버리지", () => {
     expect(allTags.has(tag)).toBe(true);
   });
 
-  it("없는 경계 사례(자책골 등)는 missing에 적혀 있다", () => {
+  it("없는 경계 사례는 missing에 적혀 있다 — M1-48 보강분(자책골·승부차기 이벤트·미종료 재조회·카스트로프·황희찬)은 태그로 옮겼다", () => {
     const missing = index.missing.map((m) => m.case);
-    expect(missing).toContain("own-goal");
+    expect(missing).toContain("af-aet");
+    for (const tag of [
+      "own-goal",
+      "shootout-events",
+      "unfinished-requery",
+      "korean-player:jens-castrop:absent",
+      "korean-player:hwang-hee-chan:sub",
+    ]) {
+      expect(allTags.has(tag), tag).toBe(true);
+      expect(missing).not.toContain(tag);
+    }
     for (const m of missing) expect(allTags.has(m), m).toBe(false);
   });
 

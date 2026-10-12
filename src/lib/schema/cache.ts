@@ -1,11 +1,18 @@
 /**
  * v0.1 — 2026-10-10 사용자 확인
- * 파이프라인 캐시 — `data/cache/seen-urls.json`(FR-04), `data/cache/unknown-names.json`(FR-24).
+ * 파이프라인 캐시 — `data/cache/seen-urls.json`(FR-04), `data/cache/unknown-names.json`(FR-24),
+ * `data/cache/af-pending.json`(M1-48, PRD §15 D27·D33 — 2026-10-13 신설).
  * 수집 실행만 쓴다(손 편집 금지, CLAUDE.md §8). 키를 정렬해 저장하면 커밋 diff가 작아진다.
  */
 import { z } from "zod";
 
-import { CardIdSchema, IsoSchema, isNotAfter } from "./common";
+import {
+  CardIdSchema,
+  CompIdSchema,
+  IsoSchema,
+  isNotAfter,
+  uniqueBy,
+} from "./common";
 import { NameKindSchema, NameTextSchema } from "./names";
 
 // ─── seen-urls ──────────────────────────────────────────────────────────────
@@ -52,3 +59,41 @@ export const UnknownNamesFileSchema = z.object({
   names: z.record(NameTextSchema, UnknownNameSchema),
 });
 export type UnknownNamesFile = z.infer<typeof UnknownNamesFileSchema>;
+
+// ─── af-pending ─────────────────────────────────────────────────────────────
+
+/**
+ * API-Football 경기 상세를 아직 받지 못한 대상 경기 1건 (M1-48, D27 "미종료 경기 id는 캐시해 다음 실행에서 재조회").
+ * 대상 = 6개 대회 경기 + 한국 선수 소속팀의 다른 대회 경기(클럽 친선 제외). 들어오는 경우:
+ *   - 수집 시점에 끝나지 않았다(NS·진행 중·INT·SUSP …)
+ *   - 끝났지만 이번 실행에서 받지 못했다(단계 시간 예산·일일 호출 상한 초과·요청 실패) — status는 마지막으로 본 FT·AET·PEN
+ * 다음 실행은 날짜 조회(`/fixtures?date=` D-1·D) 응답에 이 경기가 있으면 그 상태를 쓰고, 없으면(날짜 창 밖) id 단건으로
+ * 재조회한다(id 단건은 날짜 창 밖도 열린다 — M0-29). 상세를 받거나 정리 규칙에 걸리면 빠진다:
+ *   - 상태가 경기 없음으로 끝남(PST 연기·CANC 취소·ABD 중단·AWD 몰수·WO 부전승) — 일정이 다시 잡히면 그날 날짜 조회로 다시 들어온다
+ *   - 킥오프 후 3일(AF_PENDING_MAX_AGE_MS)이 지났다 · 재조회가 3회(AF_PENDING_MAX_REQUERIES)를 넘었다
+ *   (상수는 scripts/lib/api-football-plan.ts — 데이터 파일 형식이 아니라 수집 정책이다)
+ */
+export const AfPendingEntrySchema = z.object({
+  id: z.number().int().positive(), // API-Football 경기(fixture) id — 원장 키 `af-<id>`(D33)와 같은 숫자
+  comp: CompIdSchema.nullable(), // 6개 대회면 대회 ID, 한국 선수 소속팀의 기타 대회면 null
+  leagueId: z.number().int().positive(), // API-Football league id(기타 대회 구별·로그)
+  kickoff: IsoSchema, // 킥오프(UTC, `Z`)
+  status: z.string().regex(/^[A-Z0-9]{1,6}$/, {
+    error: "API-Football 상태 약어(NS·1H·FT …)",
+  }), // 마지막으로 본 상태(fixture.status.short)
+  firstSeen: IsoSchema, // 처음 이 목록에 넣은 시각(UTC)
+  requeries: z.number().int().min(0), // 상세를 얻지 못한 id 단건 조회 수(미종료·요청 실패) — 상한 넘으면 정리
+});
+export type AfPendingEntry = z.infer<typeof AfPendingEntrySchema>;
+
+/**
+ * `data/cache/af-pending.json` — 수집 실행만 쓴다(dry는 쓰지 않음). 항목은 킥오프·id 순으로 저장해 커밋 diff를 줄인다.
+ * 이미 상세를 받은 경기는 원장(`data/matches/`, M1-48b)이 기준이라 이 파일에 두지 않는다.
+ */
+export const AfPendingFileSchema = z.object({
+  updatedAt: IsoSchema, // 마지막으로 쓴 시각
+  fixtures: z
+    .array(AfPendingEntrySchema)
+    .superRefine(uniqueBy((e) => String(e.id), "id", "경기 id")),
+});
+export type AfPendingFile = z.infer<typeof AfPendingFileSchema>;

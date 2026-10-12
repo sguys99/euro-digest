@@ -565,6 +565,15 @@ export function kstDate(iso: string): string {
 }
 
 /**
+ * UTC ISO → UTC 날짜 "YYYY-MM-DD"(시간대 변환 없음). 외부 API의 UTC 날짜 단위에 쓴다 — API-Football 일 한도 리셋(00:00 UTC)·
+ * 날짜 조회(`/fixtures?date=`, UTC). 예) 2026-10-12T23:59:59Z → "2026-10-12", 2026-10-13T00:00:00Z(= 09:00 KST) → "2026-10-13".
+ * `Z`가 아닌 값은 TimeInputError(`parseUtcIso`와 같은 형식만).
+ */
+export function utcDate(iso: string): string {
+  return toIso(parseUtcIsoMs(iso)).slice(0, 10);
+}
+
+/**
  * UTC ISO → KST 달 "YYYY-MM". 월 예산(`MONTHLY_BUDGET_USD`) 집계 단위(scripts/lib/cost.ts).
  * 예) 2026-10-31T14:59:59Z → "2026-10", 2026-10-31T15:00:00Z(= 11-01 00:00 KST) → "2026-11".
  */

@@ -6,10 +6,21 @@
  *      → 합쳐서 링크 중복 제거·최신순 상위 N건 → 원제목 카드(최소 분류) → data/news/<KST 발행일>.json
  *      검색형 소스(M1-06): configs/search-queries.json의 활성 쿼리만 계획한다. 어댑터(M1-07)가 보류라 실행하지 않는다 —
  *      활성 쿼리 0개면 `collect.search.skip` 한 줄, 있으면 소스마다 경고 후 건너뛴다. 검색 설정 오류도 피드 수집을 멈추지 않는다.
- *   ② 경기 데이터(M1-44): 프로바이더별 단계를 **병렬**로 돌리고(호스트가 달라 분당 한도가 따로) 각자 실패를 격리한다
- *      (scripts/lib/match-data.ts `isolateProvider`). football-data = 전날(KST 창) 6개 대회 종료 경기 + 그 경기가 있는 대회의
- *      현재 순위(최대 7요청, 단계 예산 150초 — providers/football-data.ts). API-Football 경기 단건(M1-48)은 자리만 있다.
- *   ③ 브리핑: football-data 종료 경기 → 정형 입력 → `callSingle` 1요청 → **출력은 로그만**(저장 M1-19).
+ *   ② 경기 데이터(M1-44·M1-48): **뉴스와 병렬로 실행 시작 직후** 시작한다. 프로바이더별 단계도 병렬(호스트가 달라 분당
+ *      한도가 따로)이고 각자 실패를 격리한다(scripts/lib/match-data.ts `isolateProvider`).
+ *      - football-data = 전날(KST 창) 6개 대회 종료 경기 + 그 경기가 있는 대회의 현재 순위(최대 7요청, 단계 예산 150초 —
+ *        providers/football-data.ts).
+ *      - API-Football = 날짜 조회 D-1·D(UTC) → 대상 경기(6개 대회 + 한국 선수 소속팀 기타 대회) 상세를 브리핑 경기 먼저
+ *        (단계 예산 6분, 브리핑 컷오프 4분, 하루 ≤ 60회 우리 쪽 카운터 — api-football-stage.ts·api-football-plan.ts).
+ *        미종료·미수신 경기는 data/cache/af-pending.json으로 이월한다(dry는 쓰지 않음). errors.plan·일 한도·그 밖의 errors는
+ *        소스 이슈 사건(`source:api-football`)으로 사건 파일에 더한다(이슈는 collect.yml 다음 단계가 만든다).
+ *      병렬 근거: 뉴스(예산 90초)·football-data·API-Football은 호스트가 모두 달라 서로의 한도를 쓰지 않고, 겨울(07:10 수집 →
+ *      07:20 브리핑 마감)에 뉴스 시간만큼 브리핑 경기를 더 받을 수 있다. 뉴스가 실패하면 취소 신호로 경기 데이터의 새 요청을
+ *      멈추고(보내는 중인 요청 1건까지) 브리핑(LLM)은 부르지 않는다 — 커밋되지 않는 실행의 LLM 비용·API-Football 한도 낭비를
+ *      최소로 한다(낭비 상한 = 뉴스가 끝날 때까지 보낸 요청, 최대 약 12건).
+ *   ③ 브리핑: football-data 종료 경기 → 정형 입력 → `callSingle` 1요청 → **출력은 로그만**(저장 M1-19). 브리핑은
+ *      football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층 — 득점자 연결은 M1-48b·M1-19)을 기다린 뒤 시작하고,
+ *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
  *      football-data 단계가 실패하면 그날 브리핑만 생략하고 뉴스는 발행한다(D24). 순위 실패는 그 대회 순위만 빠진다(partial).
  *   ④ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
  *
@@ -24,21 +35,22 @@
  * 경기 데이터·브리핑 단계(프로바이더·브리핑 설정·예산·LLM·출력 형식)의 어떤 실패도 뉴스 발행을 멈추지 않는다(FR-26 정신).
  * 뉴스 단계가 통째로 실패하면(소스 설정 오류·수집 대상 0개·모든 소스 실패·기존 파일 손상) exitCode 1 — Actions가
  * 커밋하지 않고 이슈를 만든다.
- * 이때는 경기 데이터·브리핑(LLM 호출)도 하지 않는다 — 커밋되지 않는 실행의 LLM 비용 기록이 사라지지 않게(M1-27까지).
- * 경기 데이터의 소비처가 지금은 브리핑뿐이고, M1-48 원장도 커밋되지 않으면 사라져 API-Football 일 한도만 쓰게 된다.
+ * 이때는 브리핑(LLM 호출)을 하지 않는다 — 커밋되지 않는 실행의 LLM 비용 기록이 사라지지 않게(M1-27까지). 병렬로 시작한
+ * 경기 데이터는 취소 신호로 새 요청을 멈춘다(원장·이월 파일도 커밋되지 않으므로 API-Football 일 한도만 쓰게 된다).
  *
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
  * 다음 작업이 갈아끼울 자리: 중복 제거~점수화(M1-12~14) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
- * 계절별 마감(M1-47) · API-Football 경기 단건(M1-48 — `runApiFootballProvider` 자리).
+ * 계절별 마감(M1-47 — 브리핑 컷오프 상수) · 경기 원장·한국 선수 행·브리핑 득점자(M1-48b).
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
   CompetitionsFileSchema,
+  KoreanPlayersFileSchema,
   type CompetitionsFile,
   type NewsFile,
   type RunEnv,
@@ -46,7 +58,32 @@ import {
   type SearchQueriesFile,
   type Source,
 } from "@/lib/schema";
-import { kstDate, nowUtcIso } from "@/lib/time";
+import { kstDate, nowUtcIso, utcDate } from "@/lib/time";
+
+import {
+  afPendingPath,
+  afQueryDates,
+  API_FOOTBALL_DEV_QUIET_HOURS,
+  apiFootballCallAllowance,
+  buildAfPendingFile,
+  buildAfTargetConfig,
+  isDevQuietHours,
+  readAfPending,
+  resolveApiFootballMaxCalls,
+  sameAfPending,
+  serializeAfPending,
+  writeAfPending,
+  type AfCallAllowance,
+  type AfTargetBuild,
+} from "./api-football-plan";
+import {
+  API_FOOTBALL_BRIEF_CUTOFF_MS,
+  API_FOOTBALL_STAGE_BUDGET_MS,
+  apiFootballIssuePayloads,
+  runApiFootballStage,
+  type AfBriefSnapshot,
+  type AfStageResult,
+} from "./api-football-stage";
 
 import {
   briefInputWindow,
@@ -110,6 +147,10 @@ import {
   writeNewsFile,
 } from "./news-file";
 import {
+  createApiFootballClient,
+  type AfRateHeaders,
+} from "./providers/api-football";
+import {
   createFootballDataClient,
   fetchBriefFootballData,
   FOOTBALL_DATA_STAGE_BUDGET_MS,
@@ -131,6 +172,12 @@ import {
   healthLogFields,
   type SourceHealth,
 } from "./source-health";
+import {
+  buildTeamIdIndex,
+  linkMatchDetails,
+  loadTeamIds,
+  type MatchLinkResult,
+} from "./team-ids";
 import {
   loadSources,
   planDailySources,
@@ -214,6 +261,14 @@ export interface CollectDeps {
   footballDataSleep?: (ms: number) => Promise<void>;
   /** football-data 시계(ms) — 간격·단계 예산 계산(테스트 주입용). 기본 Date.now */
   footballDataNow?: () => number;
+  /** API_FOOTBALL_KEY — 없으면 API-Football 단계를 건너뛴다(브리핑은 득점자 없이 — M1-48b) */
+  apiFootballApiKey?: string;
+  /** API_FOOTBALL_MAX_CALLS 원문(선택, 실행당 호출 상한 — dry·개발 실측용). 형식이 틀리면 API-Football 단계만 실패 */
+  apiFootballMaxCalls?: string;
+  /** API-Football 호출 간격·재시도 대기(테스트 주입용) — 기본 setTimeout */
+  apiFootballSleep?: (ms: number) => Promise<void>;
+  /** API-Football 시계(ms) — 간격·단계 예산·브리핑 컷오프 계산(테스트 주입용). 기본 Date.now */
+  apiFootballNow?: () => number;
   /**
    * 브리핑 전용 설정(LLM_MODEL·DAILY_BUDGET_USD·MONTHLY_BUDGET_USD) 해석 — 브리핑 단계 안에서 부른다.
    * 값이 잘못돼 던져도 브리핑만 실패(partial)하고 뉴스 발행은 계속된다.
@@ -254,16 +309,48 @@ export type BriefOutcome =
 
 export type { SourceErrorType, SourceOutcome } from "./feed-collect";
 
+/** API-Football 단계 결과 (M1-48) */
+export interface ApiFootballData {
+  stage: AfStageResult;
+  /** 이번 실행의 호출 허용량(우리 쪽 카운터) */
+  allowance: AfCallAllowance;
+  /** 보낸 요청 수(재시도·실패 포함) — runs.json apiCalls.apiFootball */
+  calls: number;
+  retries: number;
+  /** 마지막 응답의 레이트 리밋 헤더(참고 — 일 남은 수는 일관되지 않다) */
+  rate: AfRateHeaders;
+  /** 활성 한국 선수 소속팀인데 team-ids.json `af`가 없는 팀 */
+  unmappedTeams: string[];
+  pendingFile: {
+    /** 읽기·형식 오류(빈 목록으로 진행) */
+    readError: string | null;
+    /** 내용이 바뀌었는가 */
+    changed: boolean;
+    /** 쓴 경로(dry·변화 없음·취소면 null) */
+    written: string | null;
+  };
+}
+
 /**
- * 경기 데이터 단계 결과 — 프로바이더별(호스트가 달라 병렬, 각자 실패 격리). 뉴스 단계가 실패하면 돌리지 않는다(null).
+ * 경기 데이터 단계 결과 — 프로바이더별(호스트가 달라 병렬, 각자 실패 격리). 뉴스와 병렬로 시작하고, 뉴스가 실패하면 취소된다.
  */
 export interface MatchDataOutcome {
   footballData: ProviderOutcome<FootballDataBriefData>;
-  /** API-Football 경기 단건(M1-48) 자리 — 지금은 항상 skipped(no-adapter) */
-  apiFootball: ProviderOutcome<never>;
+  /** API-Football 경기 단건(M1-48) — 최종 결과(브리핑 뒤에 끝난 몫 포함) */
+  apiFootball: ProviderOutcome<ApiFootballData>;
+  /** 브리핑이 기다린 API-Football 몫(컷오프 시점) — 건너뛰거나 실패했으면 null */
+  apiFootballBrief: AfBriefSnapshot | null;
+  /** football-data 종료 경기 ↔ API-Football 상세 연결 — 둘 다 끝났을 때만(득점자 붙이기는 M1-48b·M1-19) */
+  pairing: MatchLinkResult | null;
   /** 단계 전체(병렬) 소요 시간 */
   elapsedMs: number;
 }
+
+/** 브리핑 단계가 받는 경기 데이터 — football-data 결과 + API-Football 브리핑 몫 */
+export type MatchDataBriefView = Pick<
+  MatchDataOutcome,
+  "footballData" | "apiFootballBrief"
+>;
 
 /** 검색형 소스 단계 결과(M1-06) — 지금은 계획만 하고 실행하지 않는다(어댑터 M1-07 보류, D32) */
 export interface SearchStageOutcome {
@@ -324,7 +411,10 @@ export interface CollectOutcome {
   news: NewsOutcome;
   /** 소스 건강도 — 수집을 시도한 소스가 없거나(설정 오류) 단계가 실패했으면 null */
   health: HealthOutcome | null;
-  /** 경기 데이터 — 뉴스 단계가 실패해 돌리지 않았으면 null */
+  /**
+   * 경기 데이터 — 뉴스 피드 수집과 병렬로 돌고 뉴스가 실패하면 취소된다(그 결과도 담는다). 뉴스 설정 오류·수집 대상 0개로
+   * 시작하지 않았거나 예상 밖 오류로 끝나지 않았으면 null
+   */
   matchData: MatchDataOutcome | null;
   brief: BriefOutcome;
   /** 기록한 실행 로그(기록하지 않았으면 null) */
@@ -548,6 +638,10 @@ export function runSourceEntries(
 async function runNewsStage(
   deps: CollectDeps,
   ctx: { runId: string; publishDate: string; startedAt: string },
+  hooks: {
+    /** 수집 대상이 정해져 피드를 받기 직전 — 경기 데이터 단계를 여기서 병렬로 시작한다(설정 오류면 부르지 않는다) */
+    onFeedsPlanned?: () => void;
+  } = {},
 ): Promise<NewsStageResult> {
   const log = deps.logger;
   const empty: NewsOutcome = {
@@ -614,6 +708,7 @@ async function runNewsStage(
   // 소스별 수집 — 다른 호스트는 동시에, 같은 호스트는 순서대로(간격), 단계 시간 예산 안에서(feed-collect.ts).
   // 결과·항목은 설정 순서 — 완료 순서와 무관하게 같은 응답이면 선별 결과가 같다. 한 소스의 실패가 다른 소스를 막지 않는다.
   const sourceById = new Map(plan.feeds.map((s) => [s.id, s] as const));
+  hooks.onFeedsPlanned?.();
   const collected = await collectFeedSources(plan.feeds, {
     fetch: deps.fetch,
     userAgent: deps.userAgent,
@@ -727,13 +822,19 @@ async function runNewsStage(
   }
 }
 
-// ─── ② 경기 데이터 (M1-44) ────────────────────────────────────────────────
+// ─── ② 경기 데이터 (M1-44·M1-48) ──────────────────────────────────────────
+
+/** 경기 데이터 단계가 호출 수를 더하는 곳(실행 기록 apiCalls) */
+interface ApiCallSink {
+  apiCalls: { footballData: number; apiFootball: number };
+}
 
 /** football-data 단계 — 전날(KST 창) 종료 경기 + 그 경기가 있는 대회의 현재 순위. 던지지 않는다 */
 async function runFootballDataProvider(
   deps: CollectDeps,
   ctx: { publishDate: string },
-  sink: { apiCalls: { footballData: number } },
+  sink: ApiCallSink,
+  signal: AbortSignal,
 ): Promise<ProviderOutcome<FootballDataBriefData>> {
   const log = deps.logger;
   const now = deps.footballDataNow ?? Date.now;
@@ -783,6 +884,7 @@ async function runFootballDataProvider(
     sleep: deps.footballDataSleep,
     now,
     deadline: started + FOOTBALL_DATA_STAGE_BUDGET_MS,
+    signal,
     onRetry: (event) =>
       log.warn("collect.matchdata.retry", {
         provider: "football-data",
@@ -861,59 +963,423 @@ async function runFootballDataProvider(
   };
 }
 
+/** runs 파일 읽기 — 오류는 던지지 않고 빈 기록 + 오류(카운터는 기록된 만큼만 센다) */
+async function readRunsQuiet(
+  env: RunEnv,
+  dataDir: string,
+): Promise<{ runs: RunLog[]; error: string | null }> {
+  try {
+    return { runs: await readRuns(runsPathFor(env, dataDir)), error: null };
+  } catch (error) {
+    return { runs: [], error: errorText(error) };
+  }
+}
+
 /**
- * API-Football 경기 단건 단계 자리(M1-48). 지금은 어댑터가 없어 건너뛴다.
- * M1-48: `/fixtures?date=` D-1·D → 대상 경기 `/fixtures?id=`(동시 1개·응답 후 6.5초, 단계 예산 6분, 하루 ≤ 60회 우리 쪽 카운터)
- * → 원장(data/matches/YYYY-MM.json). 호스트가 football-data와 달라 이 함수는 football-data 단계와 동시에 돈다.
+ * API-Football 경기 단건 단계(M1-48) — 날짜 조회 D-1·D → 대상 경기 상세(브리핑 경기 먼저) → 이월 목록. 던지지 않는다.
+ * `onBrief`는 브리핑 몫(컷오프까지 받은 brief 계층)을 한 번 넘긴다 — 건너뛰거나 실패하면 부르지 않는다(호출부가 null로 마감).
+ * 호출 수는 `sink.apiCalls.apiFootball`에 더한다(실행 기록 → 다음 실행의 일일 카운터).
  */
 async function runApiFootballProvider(
   deps: CollectDeps,
-): Promise<ProviderOutcome<never>> {
-  deps.logger.info("collect.matchdata.skip", {
+  ctx: { publishDate: string },
+  sink: ApiCallSink,
+  signal: AbortSignal,
+  onBrief: (snapshot: AfBriefSnapshot) => void,
+): Promise<ProviderOutcome<ApiFootballData>> {
+  const log = deps.logger;
+  const now = deps.apiFootballNow ?? Date.now;
+  const started = now();
+  const elapsed = () => Math.max(0, now() - started);
+  const skip = (
+    reason: "no-api-key" | "daily-cap" | "cancelled" | "dev-quiet-hours",
+  ) =>
+    ({
+      provider: "api-football",
+      state: "skipped",
+      reason,
+      elapsedMs: elapsed(),
+    }) as const;
+  const apiKey = deps.apiFootballApiKey?.trim();
+  if (!apiKey) {
+    log.warn("collect.matchdata.skip", {
+      provider: "api-football",
+      reason: "no-api-key",
+      missing: "API_FOOTBALL_KEY",
+    });
+    return skip("no-api-key");
+  }
+  // 개발 실행은 봇 수집 시간대(06:00~08:00 KST)에 API-Football을 부르지 않는다 — 분당·일 한도를 봇과 나눠 쓴다(CLAUDE.md §6.4)
+  if (deps.env === "dev" && isDevQuietHours(nowUtcIso(deps.now()))) {
+    log.warn("collect.matchdata.skip", {
+      provider: "api-football",
+      reason: "dev-quiet-hours",
+      kst: `${API_FOOTBALL_DEV_QUIET_HOURS.fromKst}~${API_FOOTBALL_DEV_QUIET_HOURS.toKst}`,
+    });
+    return skip("dev-quiet-hours");
+  }
+
+  // 설정 — 대상(6개 대회 + 활성 한국 선수 소속팀 af)·실행당 상한. 실패하면 이 프로바이더만 실패(브리핑은 득점자 없이)
+  let target: AfTargetBuild;
+  let perRunCap: number | null;
+  try {
+    perRunCap = resolveApiFootballMaxCalls(deps.apiFootballMaxCalls);
+    const [competitions, koreanPlayers, teamIds] = await Promise.all([
+      readConfigFile(deps.rootDir, "competitions.json", CompetitionsFileSchema),
+      readConfigFile(
+        deps.rootDir,
+        "korean-players.json",
+        KoreanPlayersFileSchema,
+      ),
+      loadTeamIds(deps.rootDir),
+    ]);
+    target = buildAfTargetConfig({ competitions, koreanPlayers, teamIds });
+  } catch (error) {
+    log.error("collect.matchdata.fail", {
+      provider: "api-football",
+      stage: "setup",
+      errorType: "setup",
+      error: errorText(error),
+    });
+    return {
+      provider: "api-football",
+      state: "failed",
+      errorType: "setup",
+      error: errorText(error),
+      elapsedMs: elapsed(),
+    };
+  }
+  if (target.unmappedTeams.length > 0) {
+    // 그 팀의 기타 대회 경기를 고르지 못한다(지난 날짜는 다시 받을 수 없다) — validate 교차 검사가 커밋 전에 막는 경우
+    log.warn("collect.matchdata.korean-team-unmapped", {
+      provider: "api-football",
+      teams: target.unmappedTeams,
+      file: "configs/team-ids.json",
+    });
+  }
+
+  // 우리 쪽 일일 카운터 — runs.json·runs-dev.json apiCalls.apiFootball의 같은 UTC 날 합(API 리셋 00:00 UTC)
+  const nowIso = nowUtcIso(deps.now());
+  const [prod, dev] = await Promise.all([
+    readRunsQuiet("prod", deps.dataDir),
+    readRunsQuiet("dev", deps.dataDir),
+  ]);
+  for (const [file, read] of [
+    ["runs.json", prod],
+    ["runs-dev.json", dev],
+  ] as const) {
+    if (read.error !== null) {
+      log.warn("collect.matchdata.runs-unreadable", {
+        provider: "api-football",
+        file,
+        error: read.error,
+      });
+    }
+  }
+  // 기록을 읽지 못하면 오늘 사용량을 모른다 — fail-closed로 작은 상한(API_FOOTBALL_RUNS_UNREADABLE_CAP)을 건다
+  const allowance = apiFootballCallAllowance({
+    env: deps.env,
+    prodRuns: prod.runs,
+    devRuns: dev.runs,
+    now: nowIso,
+    perRunCap,
+    runsUnreadable: prod.error !== null || dev.error !== null,
+  });
+  log.info("collect.matchdata.quota", {
     provider: "api-football",
-    reason: "no-adapter",
+    env: deps.env,
+    utcDate: utcDate(nowIso),
+    cap: allowance.cap,
+    usedOwn: allowance.usedOwn,
+    usedTotal: allowance.usedTotal,
+    perRunCap: allowance.perRunCap,
+    remaining: allowance.remaining,
+    limitedBy: allowance.limitedBy,
+    runsUnreadable: allowance.runsUnreadable,
+  });
+  if (allowance.remaining <= 0) {
+    log.warn("collect.matchdata.skip", {
+      provider: "api-football",
+      reason: "daily-cap",
+      limitedBy: allowance.limitedBy,
+    });
+    return skip("daily-cap");
+  }
+  if (signal.aborted) return skip("cancelled");
+
+  const pendingRead = await readAfPending(deps.dataDir);
+  if (pendingRead.error !== null) {
+    // 빈 목록으로 진행 — 이번 쓰기가 새 파일로 고친다(이월 경기는 날짜 창 안이면 날짜 조회로 다시 들어온다)
+    log.warn("collect.matchdata.pending-unreadable", {
+      provider: "api-football",
+      file: "data/cache/af-pending.json",
+      error: pendingRead.error,
+    });
+  }
+  const briefWindow = briefInputWindow(ctx.publishDate);
+  const dates = afQueryDates(nowIso, briefWindow);
+  const client = createApiFootballClient({
+    apiKey,
+    fetch: deps.fetch,
+    sleep: deps.apiFootballSleep,
+    now,
+    deadline: started + API_FOOTBALL_STAGE_BUDGET_MS,
+    maxCalls: allowance.remaining,
+    signal,
+    onRetry: (event) =>
+      log.warn("collect.matchdata.retry", {
+        provider: "api-football",
+        path: event.path,
+        retry: event.retry,
+        errorType: event.error.kind,
+        status: event.error.status,
+        delayMs: event.delayMs,
+      }),
+  });
+  let stage: AfStageResult;
+  try {
+    stage = await runApiFootballStage({
+      client,
+      targets: target.targets,
+      pending: pendingRead.fixtures,
+      // TODO(M1-48b): 원장(data/matches/YYYY-MM.json)의 af-<id> — 이미 받은 경기는 다시 받지 않는다. M1-48a 범위에서는
+      // 원장이 없어 빈 집합이고, 날짜 창(D-1·D)의 종료 대상 경기를 실행마다 다시 받는다(토·일 연속이면 약 43회 — 상한 60 안,
+      // 봇은 아직 비활성). 원장이 생기면 이 집합이 중복 요청을 없앤다.
+      known: new Set<number>(),
+      briefWindow,
+      dates,
+      now: deps.now,
+      clock: now,
+      // TODO(M1-47): 브리핑 마감(계절별) − LLM 여유로 계산
+      briefCutoffAt: started + API_FOOTBALL_BRIEF_CUTOFF_MS,
+      onBriefReady: (snapshot) => {
+        log.info("collect.matchdata.brief-ready", {
+          provider: "api-football",
+          reason: snapshot.reason,
+          details: snapshot.details.length,
+          missing: snapshot.missing.length,
+          apiCalls: client.calls,
+          elapsedMs: elapsed(),
+        });
+        onBrief(snapshot);
+      },
+    });
+  } finally {
+    sink.apiCalls.apiFootball += client.calls;
+  }
+
+  for (const d of stage.dates) {
+    if (d.ok) continue;
+    log.warn("collect.matchdata.date.fail", {
+      provider: "api-football",
+      date: d.date,
+      errorType: d.errorType ?? null,
+      error: d.error ?? null,
+    });
+  }
+  if (stage.degraded) {
+    // FR-65: 재시도 없이 경기 상세(득점자·라인업·한국 선수 기록)를 폴백으로 강등 — 실행·발행은 계속
+    log.error("collect.matchdata.degraded", {
+      provider: "api-football",
+      fallback: "FR-65",
+      endpoint: stage.degraded.endpoint,
+      error: stage.degraded.message,
+    });
+  }
+  const results = stage.outcomes.reduce<Record<string, number>>((acc, o) => {
+    acc[o.result.kind] = (acc[o.result.kind] ?? 0) + 1;
+    return acc;
+  }, {});
+  for (const o of stage.outcomes) {
+    if (o.result.kind !== "failed") continue;
+    log.warn("collect.matchdata.fixture.fail", {
+      provider: "api-football",
+      fixture: o.task.id,
+      tier: o.task.tier,
+      errorType: o.result.errorType,
+    });
+  }
+
+  // 이월 목록 — dry·취소(뉴스 실패 → 커밋 안 됨)는 쓰지 않는다. 내용이 같으면 다시 쓰지 않는다(불필요한 data 커밋 방지)
+  const changed =
+    !sameAfPending(pendingRead.fixtures, stage.pending) ||
+    pendingRead.error !== null;
+  let written: string | null = null;
+  const writable =
+    !deps.dry &&
+    stage.stoppedBy !== "cancelled" &&
+    changed &&
+    (pendingRead.exists || stage.pending.length > 0);
+  if (writable) {
+    try {
+      written = await writeAfPending(
+        deps.dataDir,
+        buildAfPendingFile(stage.pending, nowUtcIso(deps.now())),
+      );
+    } catch (error) {
+      // 이월 목록을 못 쓰면 다음 실행이 날짜 창 밖 미종료 경기를 놓칠 수 있다 — 수집·발행은 계속
+      log.error("collect.matchdata.pending.fail", {
+        provider: "api-football",
+        file: afPendingPath(deps.dataDir),
+        error: errorText(error),
+      });
+    }
+  }
+  log.info("collect.matchdata.done", {
+    provider: "api-football",
+    date: ctx.publishDate,
+    dates: stage.dates.map((d) => `${d.date}:${d.ok ? d.listed : "fail"}`),
+    targets: stage.counts.targets,
+    koreanOther: stage.counts.koreanOther,
+    friendly: stage.counts.friendly,
+    planned: stage.planned,
+    results,
+    details: stage.details.length,
+    goalsIncomplete: stage.details.filter((d) => !d.goalsComplete).length,
+    brief: stage.brief.reason,
+    briefDetails: stage.brief.details.length,
+    pending: stage.pending.length,
+    dropped: stage.dropped.length,
+    pendingWritten: written !== null,
+    stoppedBy: stage.stoppedBy,
+    apiCalls: client.calls,
+    retries: client.retries,
+    // 응답 헤더의 남은 한도(참고 — 일 남은 수는 일관되지 않아 상한은 우리 쪽 카운터로 지킨다, M0-29)
+    dayRemaining: client.rate.dayRemaining,
+    minuteRemaining: client.rate.minuteRemaining,
+    elapsedMs: elapsed(),
   });
   return {
     provider: "api-football",
-    state: "skipped",
-    reason: "no-adapter",
-    elapsedMs: 0,
+    state: "done",
+    data: {
+      stage,
+      allowance,
+      calls: client.calls,
+      retries: client.retries,
+      rate: client.rate,
+      unmappedTeams: target.unmappedTeams,
+      pendingFile: { readError: pendingRead.error, changed, written },
+    },
+    elapsedMs: elapsed(),
   };
 }
 
-/** 경기 데이터 — 프로바이더별 병렬, 한 프로바이더의 실패(예상 밖 예외 포함)는 그 프로바이더만 실패로 남긴다 */
-async function runMatchDataStage(
+/** football-data 종료 경기 ↔ API-Football 상세 연결 + 대응표 후보 로그(운영 리포트 M5-09가 모은다). 던지지 않는다 */
+async function pairMatchData(
+  deps: CollectDeps,
+  fd: ProviderOutcome<FootballDataBriefData>,
+  af: ProviderOutcome<ApiFootballData>,
+): Promise<MatchLinkResult | null> {
+  if (fd.state !== "done" || af.state !== "done") return null;
+  const log = deps.logger;
+  try {
+    const index = buildTeamIdIndex(await loadTeamIds(deps.rootDir));
+    const result = linkMatchDetails(
+      fd.data.results,
+      af.data.stage.details,
+      index,
+    );
+    log.info("collect.matchdata.pairing", {
+      fdFinished: fd.data.results.length,
+      afDetails: af.data.stage.details.filter((d) => d.comp !== null).length,
+      linked: result.links.length,
+      unconfirmed: result.unconfirmed.length,
+      candidates: result.report.candidates.length,
+      conflicts: result.report.conflicts.length,
+      ambiguous: result.report.ambiguous.length,
+      unmatched: result.report.unmatched.length,
+    });
+    // 대응표에 없는 팀 — 득점자 없이 진행하고 후보만 알린다(D33, 사람이 확인해 team-ids.json에 넣는다)
+    for (const c of result.report.candidates) {
+      log.info("collect.teamids.candidate", {
+        kind: c.kind,
+        slug: c.slug,
+        fd: `${c.fd.name}(${c.fd.id})`,
+        af: `${c.af.name}(${c.af.id})`,
+        evidence: c.evidence.map((e) => `${e.fdMatchId}↔${e.afMatchId}`),
+      });
+    }
+    for (const c of result.report.conflicts) {
+      log.warn("collect.teamids.conflict", {
+        kind: c.kind,
+        fd: `${c.fd.name}(${c.fd.id})`,
+        af: `${c.af.name}(${c.af.id})`,
+        detail: c.detail,
+      });
+    }
+    return result;
+  } catch (error) {
+    log.warn("collect.matchdata.pairing.fail", { error: errorText(error) });
+    return null;
+  }
+}
+
+/** 경기 데이터 단계 핸들 — 브리핑이 기다릴 몫과 전체 완료를 따로 돌려준다 */
+interface MatchDataStage {
+  /** football-data 결과 + API-Football 브리핑 몫(컷오프 시점) */
+  briefView: Promise<MatchDataBriefView>;
+  /** 두 프로바이더가 모두 끝난 최종 결과(짝짓기 포함) */
+  done: Promise<MatchDataOutcome>;
+}
+
+/**
+ * 경기 데이터 단계 시작 — 프로바이더별 병렬, 한 프로바이더의 실패(예상 밖 예외 포함)는 그 프로바이더만 실패로 남긴다.
+ * `signal`이 켜지면(뉴스 실패) 두 프로바이더가 새 요청을 보내지 않는다. 던지지 않는다.
+ */
+function startMatchDataStage(
   deps: CollectDeps,
   ctx: { publishDate: string },
-  sink: { apiCalls: { footballData: number } },
-): Promise<MatchDataOutcome> {
+  sink: ApiCallSink,
+  signal: AbortSignal,
+): MatchDataStage {
   const now = deps.footballDataNow ?? Date.now;
   const started = now();
-  const [footballData, apiFootball] = await Promise.all([
-    isolateProvider(
-      "football-data",
-      () => runFootballDataProvider(deps, ctx, sink),
-      now,
-    ),
-    isolateProvider("api-football", () => runApiFootballProvider(deps), now),
-  ]);
-  if (
-    footballData.state === "failed" &&
-    footballData.errorType === "unexpected"
-  ) {
-    deps.logger.error("collect.matchdata.fail", {
-      provider: "football-data",
-      stage: "unexpected",
-      error: footballData.error,
-    });
-  }
-  const outcome: MatchDataOutcome = {
-    footballData,
-    apiFootball,
-    elapsedMs: Math.max(0, now() - started),
-  };
-  if (deps.dry) deps.print(formatMatchDataSummary(outcome));
-  return outcome;
+  const footballData = isolateProvider(
+    "football-data",
+    () => runFootballDataProvider(deps, ctx, sink, signal),
+    now,
+  );
+  let resolveBrief: (snapshot: AfBriefSnapshot | null) => void = () =>
+    undefined;
+  const apiFootballBrief = new Promise<AfBriefSnapshot | null>((resolve) => {
+    resolveBrief = resolve;
+  });
+  const apiFootball = isolateProvider(
+    "api-football",
+    () =>
+      runApiFootballProvider(deps, ctx, sink, signal, (s) => resolveBrief(s)),
+    deps.apiFootballNow ?? Date.now,
+  ).finally(() => resolveBrief(null)); // 건너뜀·실패·예상 밖 예외 — 브리핑은 API-Football 몫 없이 진행
+
+  // football-data가 끝나지 않았으면(실패·건너뜀) 브리핑은 생략되므로 API-Football 몫을 기다리지 않는다
+  const briefView = footballData.then(async (fd) => ({
+    footballData: fd,
+    apiFootballBrief: fd.state === "done" ? await apiFootballBrief : null,
+  }));
+  const done = Promise.all([footballData, apiFootball, apiFootballBrief]).then(
+    async ([fd, af, brief]) => {
+      for (const outcome of [fd, af]) {
+        if (outcome.state === "failed" && outcome.errorType === "unexpected") {
+          deps.logger.error("collect.matchdata.fail", {
+            provider: outcome.provider,
+            stage: "unexpected",
+            error: outcome.error,
+          });
+        }
+      }
+      const outcome: MatchDataOutcome = {
+        footballData: fd,
+        apiFootball: af,
+        apiFootballBrief: brief,
+        pairing: await pairMatchData(deps, fd, af),
+        elapsedMs: Math.max(0, now() - started),
+      };
+      if (deps.dry) deps.print(formatMatchDataSummary(outcome));
+      return outcome;
+    },
+  );
+  return { briefView, done };
 }
 
 /** 사람이 읽는 경기 데이터 요약(dry 출력) */
@@ -934,11 +1400,58 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
     lines.push(`football-data: 건너뜀(${fd.reason})`);
   }
   const af = outcome.apiFootball;
-  lines.push(
-    af.state === "skipped"
-      ? `api-football: 건너뜀(${af.reason} — M1-48)`
-      : `api-football: ${af.state}`,
-  );
+  if (af.state === "done") {
+    const { stage, allowance } = af.data;
+    const kinds = stage.outcomes.reduce<Record<string, number>>((acc, o) => {
+      acc[o.result.kind] = (acc[o.result.kind] ?? 0) + 1;
+      return acc;
+    }, {});
+    lines.push(
+      `api-football: 날짜 ${stage.dates.map((d) => `${d.date} ${d.ok ? `${d.listed}경기` : `실패(${d.errorType})`}`).join(" · ")} → 대상 ${stage.counts.targets}경기(기타 대회 ${stage.counts.koreanOther} · 친선 제외 ${stage.counts.friendly}) · 요청 계획 brief ${stage.planned.brief}/window ${stage.planned.window}/requery ${stage.planned.requery} · 결과 ${
+        Object.entries(kinds)
+          .map(([k, n]) => `${k} ${n}`)
+          .join(", ") || "없음"
+      }`,
+    );
+    lines.push(
+      `  상세 ${stage.details.length}경기(득점 불완전 ${stage.details.filter((d) => !d.goalsComplete).length}) · 브리핑 몫 ${stage.brief.reason}(${stage.brief.details.length}경기, 못 받음 ${stage.brief.missing.length}) · 이월 ${stage.pending.length}경기 · 정리 ${stage.dropped.length} · 멈춤 ${stage.stoppedBy ?? "없음"}${stage.degraded ? ` · FR-65 강등(${stage.degraded.message})` : ""}`,
+    );
+    lines.push(
+      `  호출 ${af.data.calls}회(재시도 ${af.data.retries}) · 허용 ${allowance.remaining}(오늘 ${allowance.usedOwn}/${allowance.cap}, 제약 ${allowance.limitedBy}) · 헤더 일 남은 수 ${af.data.rate.dayRemaining ?? "?"}/${af.data.rate.dayLimit ?? "?"} · ${af.elapsedMs}ms`,
+    );
+    for (const d of stage.details) {
+      const scorers = d.goals
+        .map(
+          (g) =>
+            `${g.minute}${g.extra ? `+${g.extra}` : ""}' ${g.scorer.name}${g.kind === "penalty" ? "(PK)" : g.kind === "own-goal" ? "(OG)" : ""}`,
+        )
+        .join(", ");
+      const pens = d.score.pens
+        ? ` (PK ${d.score.pens.home}-${d.score.pens.away})`
+        : "";
+      lines.push(
+        `  · af ${d.matchId} ${d.comp ?? `league ${d.leagueId}`} ${d.home.name}(${d.home.id}) ${d.score.ft.home}-${d.score.ft.away} ${d.away.name}(${d.away.id})${pens} [${d.status}] ${d.lineups.home?.formation ?? "?"}/${d.lineups.away?.formation ?? "?"}${d.goalsComplete ? "" : " [득점 불완전]"} — ${scorers || "득점 없음"}`,
+      );
+    }
+    lines.push(
+      `  [dry] data/cache/af-pending.json — 쓰지 않음${af.data.pendingFile.changed ? " (변경 있음)" : " (변경 없음)"}\n${serializeAfPending(buildAfPendingFile(stage.pending, "1970-01-01T00:00:00.000Z")).trimEnd()}`,
+    );
+  } else if (af.state === "failed") {
+    lines.push(`api-football: 실패(${af.errorType}) ${af.error}`);
+  } else {
+    lines.push(`api-football: 건너뜀(${af.reason})`);
+  }
+  const pairing = outcome.pairing;
+  if (pairing) {
+    lines.push(
+      `짝짓기: 연결 ${pairing.links.length}(대응표 확인) · 미확인 ${pairing.unconfirmed.length} · 후보 ${pairing.report.candidates.length} · 충돌 ${pairing.report.conflicts.length} · 모호 ${pairing.report.ambiguous.length} · fd 짝 없음 ${pairing.report.unmatched.length}`,
+    );
+    for (const c of pairing.report.candidates) {
+      lines.push(
+        `  후보(${c.kind}${c.slug ? ` ${c.slug}` : ""}): fd ${c.fd.name}(${c.fd.id}) ↔ af ${c.af.name}(${c.af.id}) — ${c.evidence.map((e) => `${e.fdMatchId}↔${e.afMatchId}`).join(", ")}`,
+      );
+    }
+  }
   return lines.join("\n");
 }
 
@@ -947,7 +1460,7 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
 async function runBriefStage(
   deps: CollectDeps,
   ctx: { publishDate: string },
-  matchData: MatchDataOutcome,
+  matchData: MatchDataBriefView,
   sink: {
     results: LlmResult[];
     /** 브리핑 설정을 해석했으면 그 모델(실행 기록 단가용) */
@@ -1253,16 +1766,78 @@ async function runHealthStage(
   return { sources: health, reports, file: target, historyError };
 }
 
+// ─── API-Football 이슈 사건 (M1-48) ───────────────────────────────────────
+
+/**
+ * API-Football 사건(errors.plan → FR-65 강등 · 일 한도 · 그 밖의 errors)을 소스 이슈 사건 파일에 더한다 — M1-11 경로 재사용
+ * (`source-broken`, 원인 키 `source:api-football`). 이슈 생성은 collect.yml의 다음 단계(쓰기 토큰을 받는 단계)가 한다.
+ * 건강도 단계가 이미 쓴 사건과 합쳐 다시 쓴다. dry·경로 없음(로컬)은 로그만 남긴다. 던지면 호출부가 잡는다.
+ */
+async function reportApiFootballIssues(
+  deps: CollectDeps,
+  ctx: { runId: string; health: HealthOutcome | null },
+  matchData: MatchDataOutcome | null,
+): Promise<number> {
+  const af = matchData?.apiFootball;
+  if (af?.state !== "done" || af.data.stage.issues.length === 0) return 0;
+  const payloads = apiFootballIssuePayloads(af.data.stage.issues, {
+    occurredAt: nowUtcIso(deps.now()),
+    runId: ctx.runId,
+    ...(deps.runUrl ? { runUrl: deps.runUrl } : {}),
+  });
+  for (const payload of payloads) {
+    deps.logger.warn("collect.matchdata.issue", {
+      source: payload.sourceId,
+      errorType: payload.errorType ?? null,
+      key: healthIssueKey(payload.sourceId),
+    });
+  }
+  const target = deps.healthReportPath?.trim() || null;
+  if (target === null || deps.dry) return payloads.length;
+  const all = [...(ctx.health?.reports ?? []), ...payloads];
+  await mkdir(path.dirname(target), { recursive: true });
+  await writeFile(target, `${JSON.stringify(all, null, 2)}\n`, "utf8");
+  deps.logger.info("collect.matchdata.issue.write", {
+    file: target,
+    events: payloads.length,
+    total: all.length,
+  });
+  return payloads.length;
+}
+
 // ─── 전체 ────────────────────────────────────────────────────────────────
 
 /**
- * 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음·순위 일부 실패 = partial, 그 밖 = success.
- * API-Football 자리(M1-48)는 아직 건너뛰므로(no-adapter) 상태에 넣지 않는다.
+ * API-Football 단계가 그날 데이터를 다 받지 못했는가 — 실패·일일 상한 · 날짜 조회 실패 · FR-65 강등 · 단계가 멈춤
+ * (일 한도·호출 상한·시간 예산·연속 실패) · 경기 단건 실패. 받지 못한 경기는 이월되지만 지난 날짜는 다시 받을 수 없어
+ * 실행 상태에 드러낸다. 키 없음(로컬·Secrets 미설정)은 설정 상태라, 개발 실행 금지 시간대(dev-quiet-hours)는 의도된
+ * 건너뜀이라 넣지 않는다(경고 로그 — 브리핑은 득점자 없이 그대로). 뉴스 실패로 취소된 경우는 실행이 이미 failed다.
+ */
+export function apiFootballIncomplete(
+  af: ProviderOutcome<ApiFootballData>,
+): boolean {
+  if (af.state === "failed") return true;
+  if (af.state === "skipped") return af.reason === "daily-cap";
+  const stage = af.data.stage;
+  return (
+    stage.dates.some((d) => !d.ok) ||
+    stage.degraded !== null ||
+    (stage.stoppedBy !== null && stage.stoppedBy !== "cancelled") ||
+    stage.outcomes.some((o) => o.result.kind === "failed")
+  );
+}
+
+/**
+ * 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음·순위 일부 실패·API-Football 미완(apiFootballIncomplete)
+ * = partial, 그 밖 = success. partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts).
  */
 export function runStatus(
   news: { ok: boolean; sources?: readonly { ok: boolean }[] },
   brief: BriefOutcome,
-  matchData: Pick<MatchDataOutcome, "footballData"> | null = null,
+  matchData:
+    | (Pick<MatchDataOutcome, "footballData"> &
+        Partial<Pick<MatchDataOutcome, "apiFootball">>)
+    | null = null,
 ): RunLog["status"] {
   if (!news.ok) return "failed";
   if (news.sources?.some((source) => !source.ok)) return "partial";
@@ -1274,16 +1849,33 @@ export function runStatus(
   if (brief.state === "skipped" && brief.reason === "no-api-key") {
     return "partial";
   }
+  if (matchData?.apiFootball && apiFootballIncomplete(matchData.apiFootball)) {
+    return "partial";
+  }
   return "success";
 }
 
-/** 실행 기록 여부 — mock은 기록하지 않는다. live는 LLM을 불렀으면(dry여도) 기록, prod는 dry가 아니면 항상 기록 */
+/**
+ * 실행 기록 여부 —
+ *   ① 데이터 API를 한 번이라도 불렀으면 mock·dry·env와 무관하게 기록한다(M1-48 — `apiCalls`가 다음 실행의 API-Football 일일
+ *      카운터다. 기록하지 않으면 개발 호출이 과소 집계돼 같은 UTC 날 봇이 일 한도 100을 넘길 수 있다). mock 실행은 LLM 비용 0.
+ *   ② 그 밖에는 mock은 기록하지 않고, live는 LLM을 불렀으면(dry여도) 기록, prod는 dry가 아니면 항상 기록.
+ * TODO(M1-27): prod에서 커밋되지 않는 실행(뉴스 실패 exit 1·검증·빌드 실패)은 runs.json 기록이 사라진다 — 백업 실행의 카운터가
+ * 그만큼 적게 센다(계획 상한 60 + 유실분이 100 안이라 지금은 감수). 실패한 실행의 기록 보존 경로와 함께 정한다.
+ */
 export function shouldRecordRun(input: {
   llmMode: LlmMode;
   env: RunEnv;
   dry: boolean;
   llmCalls: number;
+  apiCalls?: RunLog["apiCalls"];
 }): boolean {
+  if (
+    input.apiCalls &&
+    (input.apiCalls.footballData > 0 || input.apiCalls.apiFootball > 0)
+  ) {
+    return true;
+  }
   if (input.llmMode !== "live") return false;
   if (input.llmCalls > 0) return true;
   return input.env === "prod" && !input.dry;
@@ -1303,16 +1895,43 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     date: publishDate,
   });
 
-  const {
-    outcome: news,
-    sources,
-    runsRead,
-    sourceNames,
-  } = await runNewsStage(deps, {
-    runId,
-    publishDate,
-    startedAt,
-  });
+  // ② 경기 데이터는 뉴스 피드 수집과 병렬로 시작한다(머리 주석 "병렬 근거") — 수집 대상이 정해진 뒤(설정 오류·대상 0개면
+  // 시작하지 않는다). 뉴스가 실패하면 취소 신호로 새 요청을 멈춘다.
+  const sink = {
+    results: [] as LlmResult[],
+    apiCalls: { footballData: 0, apiFootball: 0 },
+    model: null as string | null,
+  };
+  const cancelMatchData = new AbortController();
+  // 시작 여부는 콜백이 정하므로 객체에 둔다(지역 let 좁히기가 콜백 대입을 놓치지 않게)
+  const match: { stage: MatchDataStage | null } = { stage: null };
+  const startMatchData = (): MatchDataStage => {
+    match.stage ??= startMatchDataStage(
+      deps,
+      { publishDate },
+      sink,
+      cancelMatchData.signal,
+    );
+    return match.stage;
+  };
+
+  let newsStage: NewsStageResult | null = null;
+  try {
+    newsStage = await runNewsStage(
+      deps,
+      { runId, publishDate, startedAt },
+      { onFeedsPlanned: startMatchData },
+    );
+  } finally {
+    // 뉴스가 실패했거나 예상 밖 예외로 끝났으면(던짐) 병렬로 시작한 경기 데이터의 새 요청을 멈춘다
+    if (match.stage !== null && !newsStage?.outcome.ok) {
+      cancelMatchData.abort();
+      log.warn("collect.matchdata.cancel", {
+        reason: newsStage === null ? "news-error" : "news-failed",
+      });
+    }
+  }
+  const { outcome: news, sources, runsRead, sourceNames } = newsStage;
 
   // 소스 건강도(M1-11) — 수집을 시도한 소스가 있을 때만. 뉴스 단계가 실패해도(모든 소스 실패) 판정한다.
   let health: HealthOutcome | null = null;
@@ -1335,23 +1954,19 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     }
   }
 
-  const sink = {
-    results: [] as LlmResult[],
-    apiCalls: { footballData: 0 },
-    model: null as string | null,
-  };
   let matchData: MatchDataOutcome | null = null;
   let brief: BriefOutcome;
   try {
     if (!news.ok) {
       // 뉴스가 실패하면 exit 1 → Actions가 커밋하지 않아 이번 실행의 runs.json 기록(LLM 비용)이 사라지고, 백업 실행이
-      // 그 비용을 모른 채 다시 부를 수 있다(CLAUDE.md §1-4·§6.3). 그래서 경기 데이터·브리핑(LLM 호출)을 하지 않는다.
+      // 그 비용을 모른 채 다시 부를 수 있다(CLAUDE.md §1-4·§6.3). 그래서 브리핑(LLM 호출)을 하지 않는다(경기 데이터는 취소).
       // TODO(M1-27): 실패한 실행의 runs 기록을 보존하는 경로(실패 시에도 runs.json 커밋 등)를 정한다.
       log.warn("summarize.brief.skip", { reason: "news-failed" });
       brief = { state: "skipped", reason: "news-failed", inputMatches: 0 };
     } else {
-      matchData = await runMatchDataStage(deps, { publishDate }, sink);
-      brief = await runBriefStage(deps, { publishDate }, matchData, sink);
+      // football-data 결과 + API-Football 브리핑 몫(컷오프까지)만 기다린다 — API-Football 나머지는 브리핑과 동시에 계속 받는다
+      const view = await startMatchData().briefView;
+      brief = await runBriefStage(deps, { publishDate }, view, sink);
     }
   } catch (error) {
     // 방어선 — 브리핑 단계의 예상 밖 오류도 발행을 멈추지 않는다.
@@ -1367,6 +1982,23 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     };
   }
 
+  // 경기 데이터 마무리 — API-Football 나머지·이월 파일·짝짓기. 실행 기록(호출 수 = 다음 실행의 일일 카운터) 전에 기다린다.
+  try {
+    // 뉴스 설정 오류로 시작하지 않았으면 null(경기 데이터 요청 없음)
+    matchData = match.stage === null ? null : await match.stage.done;
+  } catch (error) {
+    // 방어선 — 프로바이더는 던지지 않는다(isolateProvider). 여기 오면 짝짓기·요약 출력의 예상 밖 오류다.
+    log.error("collect.matchdata.fail", {
+      stage: "unexpected",
+      error: errorText(error),
+    });
+  }
+  try {
+    await reportApiFootballIssues(deps, { runId, health }, matchData);
+  } catch (error) {
+    log.error("collect.matchdata.issue.fail", { error: errorText(error) });
+  }
+
   const status = runStatus(news, brief, matchData);
   let exitCode = news.ok ? 0 : 1;
   let run: RunLog | null = null;
@@ -1377,8 +2009,11 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
       env: deps.env,
       dry: deps.dry,
       llmCalls: sink.results.length,
+      apiCalls: sink.apiCalls,
     })
   ) {
+    // mock LLM 응답은 실제 호출이 아니다 — 비용·작성 줄 수 0으로 남긴다(데이터 API 호출 수만 의미가 있다)
+    const live = deps.llmMode === "live";
     try {
       const recorded = await recordRun({
         env: deps.env,
@@ -1388,14 +2023,17 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
         runId,
         startedAt,
         now: deps.now(),
-        results: sink.results,
+        results: live ? sink.results : [],
         status,
         collected: news.feedItems,
         clusters: news.selected,
         // 슬라이스: 모델이 쓴(임시 스키마를 통과한) 줄 수. 아직 게시하지 않는다 — 검증·강등 뒤 기록은 M1-45.
-        summarized: brief.state === "done" ? brief.lines.length : 0,
+        summarized: live && brief.state === "done" ? brief.lines.length : 0,
         downgraded: 0,
-        apiCalls: { footballData: sink.apiCalls.footballData, apiFootball: 0 },
+        apiCalls: {
+          footballData: sink.apiCalls.footballData,
+          apiFootball: sink.apiCalls.apiFootball,
+        },
         sources,
         dataDir: deps.dataDir,
       });
@@ -1436,6 +2074,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     apiFootball: matchData?.apiFootball.state ?? null,
     matchDataMs: matchData?.elapsedMs ?? null,
     apiCalls: sink.apiCalls.footballData,
+    apiFootballCalls: sink.apiCalls.apiFootball,
     llmCalls: sink.results.length,
     healthEvents: health?.reports.length ?? null,
     exitCode,

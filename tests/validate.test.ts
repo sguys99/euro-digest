@@ -348,7 +348,7 @@ describe("⑥ data 파일 검증", () => {
 
     expect(errors).toEqual([]);
     expect(exitCode).toBe(0);
-    expect(report.counts.data).toBe(11);
+    expect(report.counts.data).toBe(12); // + data/cache/af-pending.json (M1-48)
   });
 
   it("파일명 불일치·스키마 오류·미등록 파일은 오류", () => {

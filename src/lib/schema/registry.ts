@@ -12,7 +12,11 @@
  */
 import type { z } from "zod";
 
-import { SeenUrlsFileSchema, UnknownNamesFileSchema } from "./cache";
+import {
+  AfPendingFileSchema,
+  SeenUrlsFileSchema,
+  UnknownNamesFileSchema,
+} from "./cache";
 import { CompetitionFileSchema } from "./competition";
 import {
   BigmatchRulesFileSchema,
@@ -241,6 +245,14 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
     status: "confirmed",
     schema: UnknownNamesFileSchema,
     description: "미등록 고유명사 (FR-24)",
+  }),
+  entry({
+    pattern: "data/cache/af-pending.json",
+    kind: "data",
+    status: "confirmed",
+    schema: AfPendingFileSchema,
+    description:
+      "API-Football 상세 미수신 대상 경기 — 다음 실행 재조회 (PRD §15 D27·D33, M1-48)",
   }),
 ];
 

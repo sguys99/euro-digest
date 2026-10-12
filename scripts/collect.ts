@@ -3,7 +3,9 @@
  *
  * M1-01 수직 슬라이스 + M1-02 소스 로더 + M1-03 RSS 어댑터: configs/sources.json의 일일 수집 대상 피드 전부
  * (호스트별 병렬·재시도 1회·단계 시간 예산 90초, 소스별 실패 격리 — scripts/lib/feed-collect.ts) → 원제목 카드 최신순 상위 5건(`--limit`) → data/news/<KST 발행일>.json,
- * M1-44 경기 데이터(football-data 전날 종료 경기 + 그 대회 순위, 프로바이더별 병렬·실패 격리) → 브리핑 1요청(출력은 로그만).
+ * M1-44 경기 데이터(football-data 전날 종료 경기 + 그 대회 순위, 프로바이더별 병렬·실패 격리) → 브리핑 1요청(출력은 로그만),
+ * M1-48 API-Football 경기 단건(날짜 조회 D-1·D → 대상 경기 상세, 브리핑 경기 먼저 · 이월 data/cache/af-pending.json —
+ * 뉴스와 병렬로 시작, API_FOOTBALL_MAX_CALLS로 실행당 호출 상한을 걸 수 있다).
  * 파이프라인 본체는 scripts/lib/collect-run.ts(I/O 주입).
  * 이 파일은 인자·환경변수를 읽어 의존성을 꾸리고 종료 코드만 정한다.
  *
@@ -63,6 +65,9 @@ async function main(): Promise<number> {
     fetch: (input, init) => fetch(input, init),
     userAgent: feedUserAgent(env.CONTACT_EMAIL),
     footballDataApiKey: env.FOOTBALL_DATA_API_KEY,
+    apiFootballApiKey: env.API_FOOTBALL_KEY,
+    // 실행당 API-Football 호출 상한(선택 — dry·개발 실측용). 일일 상한(봇 60·개발 50)은 실행 기록 카운터로 지킨다.
+    apiFootballMaxCalls: env.API_FOOTBALL_MAX_CALLS,
     // 브리핑 전용 설정은 브리핑 단계 안에서 해석한다(잘못된 값이면 브리핑만 실패, 뉴스는 발행).
     resolveBriefConfig: () => ({
       model: resolveLlmModel(env),

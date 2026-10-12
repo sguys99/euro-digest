@@ -1,0 +1,32 @@
+{
+  "updatedAt": "2026-10-10T21:36:40.000Z",
+  "fixtures": [
+    {
+      "id": 1570410,
+      "comp": "LALIGA",
+      "leagueId": 140,
+      "kickoff": "2026-10-10T12:00:00.000Z",
+      "status": "INT",
+      "firstSeen": "2026-10-10T21:35:12.000Z",
+      "requeries": 0
+    },
+    {
+      "id": 1575183,
+      "comp": "BUNDESLIGA",
+      "leagueId": 78,
+      "kickoff": "2026-10-11T15:30:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-10T21:35:12.000Z",
+      "requeries": 0
+    },
+    {
+      "id": 1700001,
+      "comp": null,
+      "leagueId": 81,
+      "kickoff": "2026-10-28T19:45:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-27T21:35:12.000Z",
+      "requeries": 1
+    }
+  ]
+}

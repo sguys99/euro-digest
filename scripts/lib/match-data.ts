@@ -11,7 +11,11 @@
  *     두 API의 같은 경기가 같은 `ft`를 갖게 되어 짝짓기(scripts/lib/team-ids.ts)가 스코어로 비교할 수 있다.
  *
  * 프로바이더 단계: 호스트가 달라(분당 한도가 따로) 병렬로 돌리고, 한 프로바이더의 실패가 다른 쪽을 멈추지 않게
- * `isolateProvider`로 감싼다(던지지 않고 결과를 돌려준다). 지금은 football-data만 있고 API-Football 자리(M1-48)는 비어 있다.
+ * `isolateProvider`로 감싼다(던지지 않고 결과를 돌려준다).
+ *
+ * 경기 상세(`MatchDetail`, M1-48): API-Football 경기 단건 응답(`/fixtures?id=`)을 어댑터가 바꾼 형식 — 득점(events)·라인업
+ * (포메이션·선발·교체 명단·출전 시간). 원장(data/matches, M1-48b)·브리핑 득점자(M1-19)·포메이션(M2-07)·한국 선수 기록(M3-02)이
+ * 이 형식만 읽는다. 전 선수 출전 시간은 메모리에서만 쓰고 저장하지 않는다(D33 ② — 원장은 득점·도움·포메이션 + 등록 한국 선수 행).
  */
 import type { CompId } from "@/lib/schema";
 
@@ -67,6 +71,160 @@ export interface FinishedMatch {
   score: MatchScore;
 }
 
+// ─── 경기 상세 (API-Football 경기 단건 — M1-48) ──────────────────────────
+
+/** 홈·원정 */
+export type Side = "home" | "away";
+
+/** 사람(선수) 참조 — 프로바이더 선수 id(없으면 null)와 응답 원문 이름(영문, 표기가 응답마다 다르다 — 매칭은 id로만) */
+export interface PersonRef {
+  id: number | null;
+  name: string;
+}
+
+/** 득점 종류 — 일반·페널티킥(경기 중)·자책골. 놓친 PK·승부차기 킥은 득점이 아니다 */
+export type GoalKind = "normal" | "penalty" | "own-goal";
+
+/** 득점 1건(경기 중 — 승부차기 제외). events에서 센다(선수 기록의 goals.total은 0/null이 섞여 쓰지 않는다) */
+export interface MatchGoal {
+  /** 경과 분(time.elapsed) */
+  minute: number;
+  /** 추가 시간 분(time.extra) — 없으면 null. 표기는 `minute+extra`(예: 90+3) */
+  extra: number | null;
+  /** 득점이 인정된 쪽 — 자책골은 득점한 선수의 상대 팀 */
+  side: Side;
+  kind: GoalKind;
+  /** 득점자(자책골이면 자책한 선수 — 상대 팀 소속) */
+  scorer: PersonRef;
+  /** 도움 — 없으면 null */
+  assist: PersonRef | null;
+}
+
+/** 라인업 선수 — 출전 시간은 선수 기록(statistics[0].games.minutes), 기록이 없으면 null */
+export interface LineupPlayer extends PersonRef {
+  minutes: number | null;
+}
+
+/** 팀 라인업 1개 — 선발은 `startXI`로만 판정한다(선수 기록의 `games.substitute`는 응답마다 달라 믿을 수 없다, M0-29) */
+export interface TeamLineup {
+  /** 포메이션 원문("4-2-3-1") — 없으면 null */
+  formation: string | null;
+  startXI: LineupPlayer[];
+  /** 교체 명단(출전 여부는 minutes로 — 0·null이면 벤치) */
+  substitutes: LineupPlayer[];
+}
+
+/**
+ * 종료 경기 상세 1건 (API-Football 경기 단건). `FinishedMatch`와 달리 6개 대회 밖 경기(한국 선수 소속팀의 컵·UEL 등)도
+ * 담으므로 `comp`가 null일 수 있고 대회는 `leagueId`로 구별한다.
+ */
+export interface MatchDetail {
+  provider: "api-football";
+  matchId: number;
+  /** API-Football league id(6개 대회는 configs/competitions.json apiFootballLeagueId) */
+  leagueId: number;
+  /** 대회 원문 이름(영문) */
+  leagueName: string;
+  /** 6개 대회면 id, 그 밖(한국 선수 소속팀 기타 대회)은 null */
+  comp: CompId | null;
+  /** 시즌 시작 연도 — 없으면 null */
+  season: number | null;
+  /** 라운드 원문("Regular Season - 5" · "League Stage - 1") — 없으면 null */
+  round: string | null;
+  /** 킥오프(UTC ISO, `Z` — 응답의 `+00:00`을 경계에서 바꾼다) */
+  kickoff: string;
+  /** 종료 상태 — FT 정규시간 · AET 연장 · PEN 승부차기 */
+  status: "FT" | "AET" | "PEN";
+  /** 팀(API-Football id·원문 이름 — fullName은 없어 null) */
+  home: TeamRef;
+  away: TeamRef;
+  /** 스코어 — ft = 정규시간 + 연장(승부차기 제외), 승부차기는 pens(football-data와 같은 공통 규칙) */
+  score: MatchScore;
+  /** 득점(경기 시간 순) */
+  goals: MatchGoal[];
+  /**
+   * events의 득점 수가 양 팀 모두 최종 스코어(ft)와 맞고 해석하지 못한 득점 이벤트가 없는가. false면 득점자 목록이
+   * 빠졌거나 틀릴 수 있으므로 득점자를 사실로 쓰지 않는다(브리핑 M1-19 — 입력에 없는 사실 금지, CLAUDE.md §1-7).
+   */
+  goalsComplete: boolean;
+  /** 라인업 — 응답에 없으면 null(커버리지가 없는 대회) */
+  lineups: { home: TeamLineup | null; away: TeamLineup | null };
+  /** 받은 시각(UTC ISO) */
+  fetchedAt: string;
+}
+
+/** 경기 1건에서 선수 1명의 출전 상태 — start 선발 · sub 교체 출전 · bench 교체 명단만 · out 명단 제외 · unknown 라인업 없음 */
+export type AppearanceStatus = "start" | "sub" | "bench" | "out" | "unknown";
+
+export interface PlayerAppearance {
+  /** 선수의 팀 쪽 — 라인업에서 찾았거나 소속팀 id가 이 경기 팀이면 그쪽 */
+  side: Side;
+  status: AppearanceStatus;
+  /** 출전 시간 — 기록이 없으면 null(벤치·명단 제외는 0으로 바꾸지 않는다) */
+  minutes: number | null;
+  /** 득점 — 자책골은 세지 않는다. goalsComplete가 false면 확정 값이 아니다 */
+  goals: number;
+  assists: number;
+}
+
+function findInLineup(
+  lineup: TeamLineup | null,
+  playerId: number,
+): { player: LineupPlayer; started: boolean } | null {
+  if (!lineup) return null;
+  const starter = lineup.startXI.find((p) => p.id === playerId);
+  if (starter) return { player: starter, started: true };
+  const sub = lineup.substitutes.find((p) => p.id === playerId);
+  return sub ? { player: sub, started: false } : null;
+}
+
+/**
+ * 경기 상세에서 선수 1명의 출전 기록(순수 함수) — **선수 id로만 매칭**한다(이름 표기는 응답마다 다르다 — FR-60, D27).
+ * 한국 선수는 configs/korean-players.json `apiFootballId`로 부른다(행 조립·저장은 M1-48b).
+ *   - 라인업에 있으면: startXI → start, 교체 명단 → 출전 시간 > 0이면 sub, 아니면 bench
+ *   - 라인업에 없고 `teamId`가 이 경기 팀이면: 라인업이 있으면 out(명단 제외), 없으면 unknown
+ *   - 그 밖(이 경기 선수가 아님) → null
+ */
+export function playerAppearance(
+  detail: Pick<MatchDetail, "home" | "away" | "lineups" | "goals">,
+  playerId: number,
+  teamId: number | null = null,
+): PlayerAppearance | null {
+  const count = (side: Side) => ({
+    goals: detail.goals.filter(
+      (g) => g.kind !== "own-goal" && g.scorer.id === playerId,
+    ).length,
+    assists: detail.goals.filter((g) => g.assist?.id === playerId).length,
+    side,
+  });
+  for (const side of ["home", "away"] as const) {
+    const found = findInLineup(detail.lineups[side], playerId);
+    if (!found) continue;
+    const minutes = found.player.minutes;
+    const status: AppearanceStatus = found.started
+      ? "start"
+      : (minutes ?? 0) > 0
+        ? "sub"
+        : "bench";
+    return { ...count(side), status, minutes };
+  }
+  const side: Side | null =
+    teamId === null
+      ? null
+      : teamId === detail.home.id
+        ? "home"
+        : teamId === detail.away.id
+          ? "away"
+          : null;
+  if (side === null) return null;
+  const hasLineup = detail.lineups[side] !== null;
+  return {
+    ...count(side),
+    status: hasLineup ? "out" : "unknown",
+    minutes: null,
+  };
+}
+
 // ─── 순위표 ──────────────────────────────────────────────────────────────
 
 export interface StandingsRow {
@@ -114,8 +272,12 @@ export interface CompStandings {
 export type ProviderSkipReason =
   /** 키가 없다(로컬·Secrets 미설정) */
   | "no-api-key"
-  /** 어댑터가 아직 없다(API-Football — M1-48) */
-  | "no-adapter";
+  /** 우리 쪽 일일 호출 카운터가 상한에 닿았다(API-Football — 하루 ≤ 60회, M1-48) */
+  | "daily-cap"
+  /** 뉴스 단계가 실패해 요청을 시작하기 전에 멈췄다(뉴스와 병렬 — collect-run.ts) */
+  | "cancelled"
+  /** 개발 실행이 봇 수집 시간대(06:00~08:00 KST)라 부르지 않았다(CLAUDE.md §6.4) */
+  | "dev-quiet-hours";
 
 export type ProviderOutcome<T> =
   | { provider: MatchProvider; state: "done"; data: T; elapsedMs: number }

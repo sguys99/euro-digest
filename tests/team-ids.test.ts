@@ -23,11 +23,18 @@ import {
 import {
   buildTeamIdIndex,
   EMPTY_TEAM_ID_INDEX,
+  linkMatchDetails,
   suggestTeamIdPairs,
   type PairingMatch,
 } from "../scripts/lib/team-ids";
 import {
   afFixtureToPairing,
+  toAfFixture,
+  toMatchDetail,
+} from "../scripts/lib/providers/api-football";
+import { toFinishedResults } from "../scripts/lib/providers/football-data";
+import type { MatchDetail } from "../scripts/lib/match-data";
+import {
   buildTeamIdsDraft,
   FixtureIndexSchema,
   formatDraftReview,
@@ -466,7 +473,7 @@ describe("teamSlugFromName — M0-32 규칙(정식 이름 → 악센트 제거 �
   });
 });
 
-describe("afFixtureToPairing — fixtures 전용 최소 파서", () => {
+describe("afFixtureToPairing — API-Football 어댑터 경계(M1-48)를 거친 짝짓기 입력", () => {
   const compByLeague = new Map<number, CompId>(
     COMPETITIONS.map((c) => [c.apiFootballLeagueId, c.id]),
   );
@@ -477,10 +484,14 @@ describe("afFixtureToPairing — fixtures 전용 최소 파서", () => {
       response: unknown[];
     }
   ).response;
+  const toPairing = (item: unknown) => {
+    const fixture = toAfFixture(item);
+    return fixture ? afFixtureToPairing(fixture, compByLeague) : null;
+  };
 
   it("대상 대회만(이름이 비슷한 다른 대회 제외), +00:00 → Z, 종료만 ft", () => {
     const parsed = items
-      .map((i) => afFixtureToPairing(i, compByLeague))
+      .map(toPairing)
       .filter((x): x is PairingMatch => x !== null);
     expect(parsed.length).toBeGreaterThan(0);
     expect(parsed.length).toBeLessThan(items.length);
@@ -498,8 +509,100 @@ describe("afFixtureToPairing — fixtures 전용 최소 파서", () => {
     });
     // INT(중단) 경기는 ft null
     expect(parsed.find((p) => p.matchId === 1570410)?.ft).toBeNull();
-    expect(afFixtureToPairing({ fixture: {} }, compByLeague)).toBeNull();
-    expect(afFixtureToPairing(null, compByLeague)).toBeNull();
+    expect(toPairing({ fixture: {} })).toBeNull();
+    expect(toPairing(null)).toBeNull();
+  });
+});
+
+describe("linkMatchDetails — football-data 종료 경기 ↔ API-Football 상세(M1-48, D33)", () => {
+  const TABLE = TeamIdsFileSchema.parse(readJson("configs/team-ids.json"));
+  const compByLeague = new Map<number, CompId>(
+    COMPETITIONS.map((c) => [c.apiFootballLeagueId, c.id]),
+  );
+  const fdResults = toFinishedResults(
+    (
+      readJson(
+        "fixtures/football/football-data/matches-6comps-2026-10-10.json",
+      ) as { matches: unknown[] }
+    ).matches,
+    COMPETITIONS,
+    { start: "2026-10-10T00:00:00.000Z", end: "2026-10-11T00:00:00.000Z" },
+  ).results;
+  const details: MatchDetail[] = readJsonDir(
+    "fixtures/football/api-football",
+    "fixtures-id-",
+  ).flatMap((doc) => {
+    const r = toMatchDetail((doc as { response: unknown[] }).response[0], {
+      compByLeague,
+      fetchedAt: "2026-10-11T06:50:00.000Z",
+    });
+    return r.kind === "finished" ? [r.detail] : [];
+  });
+
+  it("대응표로 두 팀이 확인된 쌍만 연결(득점자를 붙여도 됨) — 2026-10-10 상세 7경기 모두 연결", () => {
+    const result = linkMatchDetails(
+      fdResults,
+      details,
+      buildTeamIdIndex(TABLE),
+    );
+    const linked = result.links.map((l) => [l.fd.matchId, l.af.matchId]);
+    expect(linked).toHaveLength(7);
+    expect(linked).toContainEqual([565819, 1575180]);
+    for (const l of result.links) {
+      expect(l.fd.score.ft).toEqual(l.af.score.ft);
+      expect(l.fd.comp).toBe(l.af.comp);
+    }
+    expect(result.unconfirmed).toEqual([]);
+    // 상세가 없는 fd 종료 경기(16)는 짝 없음 — 득점자 없이 진행
+    expect(result.report.unmatched).toHaveLength(fdResults.length - 7);
+  });
+
+  it("대응표에 없는 팀이 낀 쌍은 연결하지 않고(unconfirmed) 후보로만 낸다", () => {
+    const { augsburg: _drop, ...rest } = TABLE;
+    void _drop;
+    const result = linkMatchDetails(fdResults, details, buildTeamIdIndex(rest));
+    expect(result.links.map((l) => l.af.matchId)).not.toContain(1575180);
+    expect(result.unconfirmed).toEqual([
+      expect.objectContaining({ fdMatchId: 565819, afMatchId: 1575180 }),
+    ]);
+    expect(result.report.candidates).toEqual([
+      expect.objectContaining({
+        kind: "new",
+        fd: expect.objectContaining({ id: 16 }),
+        af: expect.objectContaining({ id: 170 }),
+      }),
+    ]);
+  });
+
+  it("근거 약했던 쾰른·프라이부르크(M1-44 메모) — 2026-10-11 종료 경기로 대응표 쌍이 확인된다(M1-48 실데이터)", () => {
+    const fd = toFinishedResults(
+      (
+        readJson(
+          "fixtures/football/football-data/matches-bl1-2026-10-11.json",
+        ) as { matches: unknown[] }
+      ).matches,
+      COMPETITIONS,
+      { start: "2026-10-11T00:00:00.000Z", end: "2026-10-12T00:00:00.000Z" },
+    ).results;
+    const result = linkMatchDetails(
+      fd,
+      details.filter((d) => d.matchId === 1575183 || d.matchId === 1575179),
+      buildTeamIdIndex(TABLE),
+    );
+    expect(result.links.map((l) => [l.fd.matchId, l.af.matchId])).toEqual([
+      [565814, 1575183],
+      [565816, 1575179],
+    ]);
+    expect(result.unconfirmed).toEqual([]);
+    expect(result.report.conflicts).toEqual([]);
+    expect(TABLE.koln).toMatchObject({ fd: 1, af: 192 });
+    expect(TABLE.freiburg).toMatchObject({ fd: 17, af: 160 });
+  });
+
+  it("빈 대응표면 연결 0 — 모든 쌍이 후보(실행은 계속)", () => {
+    const result = linkMatchDetails(fdResults, details);
+    expect(result.links).toEqual([]);
+    expect(result.unconfirmed).toHaveLength(7);
   });
 });
 

@@ -21,8 +21,8 @@ import type {
   KoreanPlayersFile,
   TeamIdsFile,
 } from "@/lib/schema";
-import { parseFeedDate } from "@/lib/time";
 
+import { afFixtureToPairing, toAfFixture } from "./providers/api-football";
 import { toFinishedResults } from "./providers/football-data";
 import type { PairingMatch, PairingReport } from "./team-ids";
 
@@ -127,62 +127,6 @@ export function namesLookSame(
     (name) =>
       name !== null && [...significantTokens(name)].some((t) => af.has(t)),
   );
-}
-
-// ─── fixtures 전용 최소 파서 ─────────────────────────────────────────────
-
-/**
- * API-Football `/fixtures` 응답 항목 → 짝짓기 입력(**fixtures 전용** — M1-48 어댑터가 생기면 그 내부 형식으로 바꾼다).
- * 종료(FT·AET·PEN)일 때만 `goals`(승부차기 제외)를 ft로 쓰고, 대상 대회가 아니면 null.
- */
-export function afFixtureToPairing(
-  item: unknown,
-  compByLeague: ReadonlyMap<number, CompId>,
-): PairingMatch | null {
-  if (typeof item !== "object" || item === null) return null;
-  const r = item as {
-    fixture?: { id?: unknown; date?: unknown; status?: { short?: unknown } };
-    league?: { id?: unknown };
-    teams?: {
-      home?: { id?: unknown; name?: unknown };
-      away?: { id?: unknown; name?: unknown };
-    };
-    goals?: { home?: unknown; away?: unknown };
-  };
-  const id = r.fixture?.id;
-  const league = r.league?.id;
-  const kickoff =
-    typeof r.fixture?.date === "string" ? parseFeedDate(r.fixture.date) : null;
-  const home = r.teams?.home;
-  const away = r.teams?.away;
-  if (
-    typeof id !== "number" ||
-    typeof league !== "number" ||
-    kickoff === null ||
-    typeof home?.id !== "number" ||
-    typeof home.name !== "string" ||
-    typeof away?.id !== "number" ||
-    typeof away.name !== "string"
-  ) {
-    return null;
-  }
-  const comp = compByLeague.get(league);
-  if (!comp) return null;
-  const status = r.fixture?.status?.short;
-  const gh = r.goals?.home;
-  const ga = r.goals?.away;
-  const finished =
-    (status === "FT" || status === "AET" || status === "PEN") &&
-    typeof gh === "number" &&
-    typeof ga === "number";
-  return {
-    matchId: id,
-    comp,
-    kickoff,
-    home: { id: home.id, name: home.name },
-    away: { id: away.id, name: away.name },
-    ft: finished ? { home: gh, away: ga } : null,
-  };
 }
 
 // ─── fixtures 읽기 (파싱된 JSON → 짝짓기 입력·팀 정보) ─────────────────────
@@ -330,7 +274,9 @@ export function readAfFixtures(
         : null;
     if (!Array.isArray(response)) continue;
     for (const item of response) {
-      const m = afFixtureToPairing(item, compByLeague);
+      // M1-48 어댑터 경계(toAfFixture — +00:00 → Z, 로고 버림)를 거친 뒤 6개 대회만 짝짓기 입력으로
+      const fixture = toAfFixture(item);
+      const m = fixture ? afFixtureToPairing(fixture, compByLeague) : null;
       if (m && !byId.has(m.matchId)) byId.set(m.matchId, m);
     }
   }

@@ -70,7 +70,8 @@ describe("schemaRegistry ↔ fixtures/schema", () => {
       .filter((e) => e.status === "draft")
       .map((e) => e.pattern);
     expect(drafts).toEqual([]);
-    expect(schemaRegistry).toHaveLength(23); // + configs/team-ids.json (PRD §15 D33, M1-44)
+    // + configs/team-ids.json (PRD §15 D33, M1-44) · data/cache/af-pending.json (D27·D33, M1-48)
+    expect(schemaRegistry).toHaveLength(24);
   });
 
   it("configs/ 항목은 알 수 없는 키를 거부하고 data/ 항목은 버린다 (결정 Q5)", () => {

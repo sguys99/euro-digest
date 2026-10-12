@@ -97,7 +97,7 @@
   "freiburg": {
     "fd": 17,
     "af": 160,
-    "note": "확인 필요 · 근거 약함 — 경기 565816↔1575179(TIMED/NS) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · fd \"SC Freiburg\" · af \"SC Freiburg\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 2026-10-11 종료 경기 대회·킥오프·스코어 일치로 확인(M1-48a 실측, 2026-10-13) · fd \"SC Freiburg\" · af \"SC Freiburg\""
   },
   "frosinone-calcio": {
     "fd": 470,
@@ -137,7 +137,7 @@
   "koln": {
     "fd": 1,
     "af": 192,
-    "note": "확인 필요 · 근거 약함 — 경기 565814↔1575183(TIMED/NS) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · fd \"1. FC Köln\" · af \"1. FC Köln\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 2026-10-11 종료 경기 대회·킥오프·스코어 일치로 확인(M1-48a 실측, 2026-10-13) · fd \"1. FC Köln\" · af \"1. FC Köln\""
   },
   "le-havre-ac": {
     "fd": 533,

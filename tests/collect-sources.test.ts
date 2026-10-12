@@ -49,6 +49,7 @@ import {
 } from "../scripts/lib/rss";
 import { planDailySources } from "../scripts/lib/sources";
 
+import { cancelGate } from "./support/cancel-gate";
 import { fdFixtureResponse } from "./support/football-data-fake";
 
 // ─── fixtures ────────────────────────────────────────────────────────────
@@ -577,12 +578,17 @@ describe("runCollect — 소스별 실패 격리", () => {
     expect(JSON.stringify(records)).not.toContain('"busy"');
   });
 
-  it("모든 피드가 실패하면 뉴스 실패(exit 1) — 브리핑(football-data·LLM)을 부르지 않고 파일도 쓰지 않는다", async () => {
+  it("모든 피드가 실패하면 뉴스 실패(exit 1) — 브리핑(LLM)을 부르지 않고 경기 데이터는 취소, 파일도 쓰지 않는다", async () => {
     const all = Object.fromEntries(
       FEEDS.map((s) => [s.id, new Response("x", { status: 500 })] as const),
     );
     const fetcher = fakeFetch(all);
-    const { deps, llmCreated, records } = makeDeps({}, fetcher);
+    const gate = cancelGate();
+    const { deps, llmCreated, records } = makeDeps(
+      { footballDataSleep: gate.sleep },
+      fetcher,
+    );
+    deps.logger = gate.logger(records);
     const outcome = await runCollect(deps);
     expect(outcome.exitCode).toBe(1);
     expect(outcome.status).toBe("failed");
@@ -594,9 +600,13 @@ describe("runCollect — 소스별 실패 격리", () => {
       inputMatches: 0,
     });
     expect(llmCreated()).toBe(0);
-    expect(
-      fetcher.calls.some((url) => url.startsWith(FOOTBALL_DATA_BASE_URL)),
-    ).toBe(false);
+    // 경기 데이터는 피드 수집과 병렬로 시작했다가 뉴스 실패로 취소된다(M1-48) — 첫 요청(경기) 이하, 순위는 요청하지 않는다
+    const fdCalls = fetcher.calls.filter((url) =>
+      url.startsWith(FOOTBALL_DATA_BASE_URL),
+    );
+    expect(fdCalls.length).toBeLessThanOrEqual(1);
+    expect(fdCalls.some((url) => url.includes("/standings"))).toBe(false);
+    expect(outcome.matchData).not.toBeNull();
     expect(newsFiles()).toEqual([]);
     expect(records.find((r) => r.event === "collect.news.fail")).toMatchObject({
       reason: "all-sources-failed",
@@ -625,6 +635,8 @@ describe("runCollect — 소스별 실패 격리", () => {
       ["gdelt-on", "search-type"],
     ]);
     expect(fetcher.calls).toEqual([]);
+    // 수집 대상이 정해지기 전에 실패하면 경기 데이터 단계를 시작하지 않는다(M1-48 병렬 시작 지점)
+    expect(outcome.matchData).toBeNull();
   });
 
   it("소스 설정을 읽지 못하면 뉴스 실패(exit 1)", async () => {

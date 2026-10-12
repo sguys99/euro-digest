@@ -107,9 +107,10 @@ const TABLE_STAGES: ReadonlySet<string> = new Set([
  * - timeout: 요청 타임아웃(재시도 대상) · network: 연결 오류(재시도 안 함)
  * - http: HTTP 오류(429·5xx만 재시도) · format: JSON·형식 오류(재시도 안 함)
  * - budget: 단계 시간 예산 소진(요청을 시작하지 않았거나 예산 때문에 끊음)
+ * - cancelled: 호출부가 멈췄다(뉴스 단계 실패 — 경기 데이터는 뉴스와 병렬로 시작한다, M1-48)
  */
 export type FootballDataErrorKind =
-  "timeout" | "network" | "http" | "format" | "budget";
+  "timeout" | "network" | "http" | "format" | "budget" | "cancelled";
 
 /** 재시도 대상이었지만 다시 보내지 않은 이유 */
 export type FootballDataRetrySkip =
@@ -218,6 +219,8 @@ export interface FootballDataClientOptions {
   minAttemptMs?: number;
   /** 단계 마감(now 기준 ms). 이 시각을 넘는 대기·요청은 하지 않고 `budget`으로 실패한다. 없으면 제한 없음 */
   deadline?: number | null;
+  /** 이 신호가 켜지면 새 요청을 보내지 않는다(`cancelled`) — 보내는 중인 요청은 끝까지 기다린다 */
+  signal?: AbortSignal;
   baseUrl?: string;
   /** 재시도 직전에 부른다(로그용) */
   onRetry?: (event: FootballDataRetryEvent) => void;
@@ -359,9 +362,20 @@ export function createFootballDataClient(
     return rate;
   }
 
+  function checkCancelled(): void {
+    if (options.signal?.aborted) {
+      throw new FootballDataError(
+        "cancelled",
+        "football-data 요청 중단(호출부 취소)",
+      );
+    }
+  }
+
   /** 요청 1회(재시도 없음) */
   async function attempt(pathAndQuery: string): Promise<unknown> {
+    checkCancelled();
     await waitTurn();
+    checkCancelled();
     const start = now();
     let attemptTimeout = timeoutMs;
     let boundByDeadline = false;

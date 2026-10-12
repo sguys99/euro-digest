@@ -900,6 +900,153 @@
       ],
       "removed": {},
       "bytes": 213
+    },
+    {
+      "path": "api-football/status.json",
+      "api": "api-football",
+      "kind": "af-status",
+      "endpoint": "/status",
+      "fetchedAt": "2026-10-12T23:01:15.261Z",
+      "asOf": "2026-10-12",
+      "covers": null,
+      "comp": null,
+      "origin": "M1-48",
+      "trimmed": null,
+      "matchIds": [],
+      "cases": [
+        { "tag": "status-requests", "ids": [], "note": "계정(account: 이름·이메일)·요금제(subscription)를 키째 지우고 requests만 남겼다 — current 0 · limit_day 100(UTC 하루 첫 요청 시점). 이 요청의 응답 헤더 x-ratelimit-requests-remaining은 100, 다음 경기 단건 응답에서 98이었다(/status도 세는 것으로 보인다 — 우리 쪽 카운터는 보수적으로 센다). results는 0으로 온다" }
+      ],
+      "removed": { "account": 1, "subscription": 1 },
+      "bytes": 144
+    },
+    {
+      "path": "api-football/fixtures-id-1639860.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1639860",
+      "fetchedAt": "2026-10-12T23:01:22.670Z",
+      "asOf": "2026-10-12",
+      "covers": "2026-10-10",
+      "comp": null,
+      "origin": "M1-48",
+      "trimmed": null,
+      "matchIds": [1639860],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "status:PEN", "ids": [1639860], "note": "Australia Cup 결승 승부차기 종료(elapsed 120)" },
+        { "tag": "penalty-shootout", "ids": [1639860], "note": "goals 1-1 · score.fulltime 0-0 · extratime 1-1 · penalty 4-3 — 승부차기 골은 goals에 없다(football-data와 반대)" },
+        { "tag": "extra-time", "ids": [1639860], "note": "연장 득점 95'(원정)·117'(홈) — 경기 중 득점은 이 2건" },
+        { "tag": "shootout-events", "ids": [1639860], "note": "승부차기 킥도 type Goal(detail Penalty·Missed Penalty)로 오고 comments \"Penalty Shootout\" · time.elapsed 120 · time.extra 1~5(킥 순번)다 — comments로 걸러야 경기 중 득점과 섞이지 않는다" },
+        { "tag": "no-lineups", "ids": [1639860], "note": "lineups·players·statistics가 빈 배열(대회 커버리지 없음) — 라인업 없음은 득점자 판정과 무관하지만 자책골 선수 팀은 라인업으로 정한다" },
+        { "tag": "outside-date-window", "ids": [1639860], "note": "2026-10-10 경기를 2026-10-12 23:01Z(날짜 창 10-11~10-13 밖)에 id로 조회" }
+      ],
+      "removed": { "imageUrls": 34 },
+      "bytes": 7871
+    },
+    {
+      "path": "api-football/fixtures-id-1570410.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1570410",
+      "fetchedAt": "2026-10-12T23:01:30.080Z",
+      "asOf": "2026-10-12",
+      "covers": "2026-10-10",
+      "comp": "LALIGA",
+      "origin": "M1-48",
+      "trimmed": null,
+      "matchIds": [1570410],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "status:ABD", "ids": [1570410], "note": "라요 바예카노–아틀레틱 Match Abandoned — 이월 목록에서 뺀다(AF_VOID_STATUSES). goals 0-0이고 score.penalty도 null이 아니라 0-0이다" },
+        { "tag": "status-transition", "ids": [1570410], "note": "날짜 응답(fixtures-date-2026-10-10, 2026-10-11 06:47Z) INT → 이 재조회(2026-10-12 23:01Z) ABD · football-data 564698은 CANCELLED" },
+        { "tag": "unfinished-requery", "ids": [1570410], "note": "미종료로 이월한 경기를 날짜 창 밖에서 id로 재조회한 응답 — 라인업(4-3-3/4-2-3-1)·선수 기록은 있다" },
+        { "tag": "goal-event-null-player", "ids": [1570410], "note": "7분 Goal/Normal Goal 이벤트의 player가 id·name 모두 null(중단 경기) — 득점자를 알 수 없는 득점 이벤트" },
+        { "tag": "outside-date-window", "ids": [1570410], "note": "2026-10-10 경기를 날짜 창 밖에서 id로 조회" }
+      ],
+      "removed": { "imageUrls": 58 },
+      "bytes": 33585
+    },
+    {
+      "path": "api-football/fixtures-id-1552779.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1552779",
+      "fetchedAt": "2026-10-12T23:04:20.528Z",
+      "asOf": "2026-10-12",
+      "covers": "2026-10-11",
+      "comp": "LIGUE1",
+      "origin": "M1-48",
+      "trimmed": null,
+      "matchIds": [1552779],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "own-goal", "ids": [1552779], "note": "니스 2-1 스트라스부르: 45분 Goal/Own Goal P. Demba(339417) — 라인업상 스트라스부르(95) 선수, 득점은 니스(홈)" },
+        { "tag": "own-goal-event-team", "ids": [1552779], "note": "자책골 이벤트의 team은 득점이 인정된 팀(니스 84)이고 선수의 팀이 아니다(1건 관찰). 어댑터는 선수 팀을 라인업에서 찾아 그 상대 쪽 득점으로 센다" }
+      ],
+      "removed": { "imageUrls": 66 },
+      "bytes": 34096
+    },
+    {
+      "path": "api-football/fixtures-id-1575183.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1575183",
+      "fetchedAt": "2026-10-12T23:04:27.925Z",
+      "asOf": "2026-10-12",
+      "covers": "2026-10-11",
+      "comp": "BUNDESLIGA",
+      "origin": "M1-48",
+      "trimmed": null,
+      "matchIds": [1575183],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "korean-team", "ids": [1575183], "note": "쾰른 2-1 묀헨글라트바흐(카스트로프 소속)" },
+        { "tag": "korean-player:jens-castrop:absent", "ids": [1575183], "note": "카스트로프(280358) 라인업·선수 기록에 없음 — 명단 제외" },
+        { "tag": "pair-confirmed", "ids": [1575183], "note": "football-data 565814(matches-bl1-2026-10-11)와 대회·킥오프·스코어 2-1 일치 — team-ids.json koln(fd 1 ↔ af 192) 근거 약함 → 확인" }
+      ],
+      "removed": { "imageUrls": 69 },
+      "bytes": 34923
+    },
+    {
+      "path": "api-football/fixtures-id-1575179.json",
+      "api": "api-football",
+      "kind": "af-fixtures",
+      "endpoint": "/fixtures?id=1575179",
+      "fetchedAt": "2026-10-12T23:04:35.290Z",
+      "asOf": "2026-10-12",
+      "covers": "2026-10-11",
+      "comp": "BUNDESLIGA",
+      "origin": "M1-48",
+      "trimmed": null,
+      "matchIds": [1575179],
+      "cases": [
+        { "tag": "errors-empty-array", "ids": [], "note": "정상 응답 — errors: []" },
+        { "tag": "korean-team", "ids": [1575179], "note": "프라이부르크 2-1 샬케(황희찬 소속)" },
+        { "tag": "korean-player:hwang-hee-chan:sub", "ids": [1575179], "note": "황희찬(24888) 교체 투입 11분" },
+        { "tag": "pair-confirmed", "ids": [1575179], "note": "football-data 565816과 대회·킥오프·스코어 2-1 일치 — team-ids.json freiburg(fd 17 ↔ af 160) 근거 약함 → 확인" }
+      ],
+      "removed": { "imageUrls": 70 },
+      "bytes": 34976
+    },
+    {
+      "path": "football-data/matches-bl1-2026-10-11.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/BL1/matches?dateFrom=2026-10-11&dateTo=2026-10-12",
+      "fetchedAt": "2026-10-12T23:04:43.133Z",
+      "asOf": "2026-10-12",
+      "covers": "2026-10-11 ~ 2026-10-12 (대회별 엔드포인트 — 10-11 종료 2경기)",
+      "comp": "BUNDESLIGA",
+      "origin": "M1-48",
+      "trimmed": null,
+      "matchIds": [565814, 565816],
+      "cases": [
+        { "tag": "status:FINISHED", "ids": [565814, 565816], "note": "쾰른 2-1 묀헨글라트바흐 · 프라이부르크 2-1 샬케" },
+        { "tag": "korean-team", "ids": [565814, 565816], "note": "카스트로프·황희찬 소속팀 경기 — API-Football 상세는 fixtures-id-1575183·1575179" },
+        { "tag": "pair-confirmed", "ids": [565814, 565816], "note": "API-Football 1575183·1575179와 대회·킥오프·스코어 일치(linkMatchDetails 연결 2 · 미확인 0)" }
+      ],
+      "removed": { "odds": 2, "imageUrls": 9 },
+      "bytes": 1817
     }
   ],
   "matchIdPairs": {
@@ -1000,17 +1147,6 @@
     ]
   },
   "missing": [
-    { "case": "own-goal", "note": "자책골 없음 — 받아 둔 경기 단건 14건(이 폴더 8건 포함) 모두 자책골 이벤트가 없다. 자책골의 팀·선수 귀속은 M1-48 실데이터 누적 때 보강" },
-    {
-      "case": "penalty-shootout-events",
-      "note": "승부차기 경기의 id 단건 응답(events 모양) 없음 — 날짜 응답의 1639860(이 폴더)·1640286(2026-10-09, 미포함)만 있다. id 단건은 날짜 창 밖도 열리므로 필요하면 /fixtures?id=1639860 1회로 보강",
-      "fixtureIds": [1639860]
-    },
-    {
-      "case": "unfinished-requery",
-      "note": "미종료 경기 id 재조회 응답 없음 — 1570410(INT)의 날짜 응답 상태만 있다. 필요하면 /fixtures?id=1570410 1회",
-      "fixtureIds": [1570410]
-    },
     { "case": "af-aet", "note": "연장 종료(AET) 경기 없음(1639860은 연장 후 PEN)" },
     {
       "case": "fd-extra-time-penalty-shootout",
@@ -1019,10 +1155,12 @@
     { "case": "fd-postponed-suspended-awarded", "note": "football-data POSTPONED·SUSPENDED·AWARDED 없음(CANCELLED 1건만)" },
     { "case": "af-ucl", "note": "API-Football UCL(league 2) 경기 없음 — 2026-10-09~11에 UCL 경기가 없었다" },
     { "case": "af-korean-other-competition", "note": "한국 선수 소속팀의 다른 대회(컵·UEL 등) 경기 없음" },
-    { "case": "korean-castrop-hwang", "note": "카스트로프·황희찬 경기 상세 없음 — 2026-10-11 경기라 수집 시각에 NS(fixtures-date-2026-10-11의 1575183·1575179)" },
     { "case": "knockout-tbd-team", "note": "녹아웃 대진 미정(homeTeam·awayTeam null) 경기 없음" }
   ],
   "tagLegend": {
+    "status-requests": "API-Football /status 요청 수(requests.current·limit_day) — 계정·요금제는 지움",
+    "shootout-events / no-lineups / goal-event-null-player": "승부차기 킥 이벤트(comments Penalty Shootout) / 라인업·선수 기록 없는 응답 / player가 null인 득점 이벤트",
+    "unfinished-requery / own-goal-event-team / pair-confirmed": "미종료 이월 경기의 id 재조회 응답 / 자책골 이벤트 team의 뜻(득점 인정 팀) / 근거 약한 팀 id 쌍을 종료 경기로 확인",
     "korean-player:<slug>:<start|sub|bench|absent>": "한국 선수(configs/korean-players.json slug) 출전 상태 — start = lineups[].startXI, sub = substitutes에 있고 출전 시간 > 0, bench = substitutes에 있고 출전 없음, absent = 라인업에 없음",
     "status:<값>": "그 파일 API의 경기 상태 값(football-data status / API-Football fixture.status.short)",
     "status-transition": "같은 경기의 상태가 수집 시각에 따라 바뀐 사례",
