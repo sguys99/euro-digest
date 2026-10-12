@@ -161,7 +161,7 @@ export function retentionBySource(
 export interface SourceConfigWarning {
   /** sources.json 배열 인덱스 */
   index: number;
-  field: "robots_checked" | "terms_checked" | "summarize";
+  field: "robots_checked" | "terms_checked" | "summarize" | "author";
   message: string;
 }
 
@@ -170,6 +170,7 @@ export interface SourceConfigWarning {
  *   - enabled인데 terms_checked:false → 수집되지 않는다(약관 확인 전에 켰을 가능성)
  *   - type crawl + enabled인데 robots_checked:false → 수집되지 않는다
  *   - summarize:true → 무시된다. 뉴스 기사는 LLM에 보내지 않는다(D23, 경로를 다시 여는 것은 사용자 승인 사항)
+ *   - author가 빈 문자열(공백만) → 작성자 필터가 어떤 항목과도 일치하지 않아 그 소스의 항목이 전부 빠진다(M1-04)
  */
 export function sourceConfigWarnings(
   sources: readonly Source[],
@@ -195,6 +196,13 @@ export function sourceConfigWarnings(
         index,
         field: "summarize",
         message: `소스 "${source.id}"가 summarize:true — 무시된다. 뉴스 기사는 LLM에 보내지 않고 원제목+링크로만 게시한다(PRD §15 D23, 요약 경로는 사용자 승인 사항)`,
+      });
+    }
+    if (source.author !== undefined && source.author.trim() === "") {
+      warnings.push({
+        index,
+        field: "author",
+        message: `소스 "${source.id}"의 author가 비어 있다 — 작성자 필터가 어떤 항목과도 일치하지 않아 전부 제외된다(M1-04). 필터를 쓰지 않으려면 author 키를 지울 것`,
       });
     }
   });

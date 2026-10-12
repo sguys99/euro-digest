@@ -299,7 +299,7 @@ describe("rss.ts — 피드 파싱", () => {
     expect(items).toHaveLength(BBC_INDEX_ITEMS.length);
     items.forEach((item, i) => {
       expect(Object.keys(item).sort()).toEqual(
-        ["author", "link", "pubDate", "title"].sort(),
+        ["authors", "link", "pubDate", "title"].sort(),
       );
       expect(item.title).toBe(BBC_INDEX_ITEMS[i]!.title);
       expect(item.link).toBe(BBC_INDEX_ITEMS[i]!.link);
@@ -317,7 +317,7 @@ describe("rss.ts — 피드 파싱", () => {
       title: "Title",
       link: "https://example.com/a",
       pubDate: "Sat, 10 Oct 2026 19:24:23 GMT",
-      author: null,
+      authors: [],
     });
     expect(JSON.stringify(item)).not.toMatch(/요약문|본문|a\.jpg/);
   });
@@ -372,7 +372,7 @@ describe("normalize.ts — 원제목·링크 무수정(엔티티 디코딩·앞�
     title: "Title",
     link: "https://example.com/a",
     pubDate: "Sat, 10 Oct 2026 19:24:23 GMT",
-    author: null,
+    authors: [],
     ...over,
   });
 
@@ -461,6 +461,7 @@ describe("news-file.ts — 카드·선별·병합", () => {
     publishedAt,
     lang: "en",
     author: null,
+    authors: [],
   });
 
   it("출처명은 매체명만(섹션·괄호 설명 제거)", () => {

@@ -256,6 +256,19 @@ describe("sourceConfigWarnings — 오류는 아닌 설정 모순(npm run valida
     expect(warnings[0]!.message).toContain('"list"');
     expect(warnings[2]!.message).toContain("D23");
   });
+
+  it("author가 빈 문자열(공백만)이면 경고 — 작성자 필터가 전부 제외한다(M1-04), 이름이 있으면 경고 없음", () => {
+    const warnings = sourceConfigWarnings([
+      source({ id: "named", type: "journalist", author: "Mark Brus" }),
+      source({ id: "blank", type: "journalist", author: "  " }),
+      source({ id: "empty", type: "journalist", author: "" }),
+    ]);
+    expect(warnings.map((w) => [w.index, w.field])).toEqual([
+      [1, "author"],
+      [2, "author"],
+    ]);
+    expect(warnings[0]!.message).toContain('"blank"');
+  });
 });
 
 describe("loadSources — configs/sources.json 경계 검증", () => {

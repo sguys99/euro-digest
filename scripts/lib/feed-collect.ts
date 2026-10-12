@@ -25,10 +25,20 @@
  *   `{id, ok, items}`만 들어간다(호출부) — 오류 종류는 메모리 결과와 로그에만 있다. 응답 본문은 어디에도 남기지 않는다.
  *   실패 소스 이슈는 만들지 않는다(일시 실패마다 이슈를 만들면 소음이 크다) — 연속 실패·0건 이슈는 M1-11.
  *
+ * ── 작성자 필터 (M1-04) ─────────────────────────────────────────────────
+ *   소스에 `author`가 있으면 정규화 직후 작성자 일치 항목만 남긴다(scripts/lib/author-filter.ts). 뺀 건수는 `skipped.author`로
+ *   집계하고 `collect.item.skip`(reason author) 로그를 남긴다 — 쓸 수 있는 항목이 전부 빠지면 warn(피드 작성자 표기가 바뀌었을
+ *   수 있다). 지금 수집 대상 중 `author`가 있는 소스는 없다.
+ *
  * 시각·대기(`FeedClock`)와 fetch는 주입한다. 요청 타임아웃은 전역 setTimeout을 쓴다(테스트는 가짜 타이머).
  */
 import type { Source } from "@/lib/schema";
 
+import {
+  AUTHOR_SKIP_REASON,
+  filterByAuthor,
+  type AuthorSkipReason,
+} from "./author-filter";
 import type { Logger } from "./logger";
 import {
   normalizeFeedItems,
@@ -45,6 +55,7 @@ import {
   parseFeedXml,
   type FeedFetchErrorKind,
   type FetchLike,
+  type RawFeedItem,
 } from "./rss";
 
 // ─── 정책 ────────────────────────────────────────────────────────────────
@@ -361,6 +372,9 @@ export async function runByHost<T, R>(
 
 // ─── 소스 수집 ───────────────────────────────────────────────────────────
 
+/** 항목을 건너뛴 이유 — 정규화(normalize.ts SkipReason) · 작성자 필터(`author`, M1-04) */
+export type ItemSkipReason = SkipReason | AuthorSkipReason;
+
 /** 소스 실패 종류 — 받기(rss.ts FeedFetchErrorKind, 예산 소진 `budget` 포함) · 파싱(깨진 XML) · 그 밖의 예외 */
 export type SourceErrorType = FeedFetchErrorKind | "parse" | "unexpected";
 
@@ -370,10 +384,10 @@ export interface SourceOutcome {
   ok: boolean;
   /** 피드 원문 항목 수(받기·파싱 실패면 0) */
   items: number;
-  /** 정규화를 통과한 항목 수 */
+  /** 정규화·작성자 필터를 통과한 항목 수 */
   usable: number;
-  /** 정규화에서 건너뛴 이유별 건수 */
-  skipped: Partial<Record<SkipReason, number>>;
+  /** 정규화·작성자 필터에서 건너뛴 이유별 건수 */
+  skipped: Partial<Record<ItemSkipReason, number>>;
   /** 재시도 횟수(0 또는 1) */
   retries: number;
   /** 소스 처리에 걸린 시간(시작하지 않았으면 0) */
@@ -399,7 +413,7 @@ export interface FeedCollectDeps {
 export interface FeedCollectResult {
   /** 소스별 결과(입력 = 설정 순서) */
   outcomes: SourceOutcome[];
-  /** 정규화를 통과한 항목(설정 순서 → 피드 순서) */
+  /** 정규화·작성자 필터를 통과한 항목(설정 순서 → 피드 순서) */
   items: FeedItem[];
   elapsedMs: number;
 }
@@ -493,7 +507,24 @@ export async function collectFeedSources(
   return { outcomes, items, elapsedMs };
 }
 
-/** 소스 1개 — 받기(재시도) → 파싱 → 정규화. 받기·파싱 실패는 결과로, 그 밖의 예외는 던진다(runByHost가 격리). */
+/**
+ * 파싱한 항목 → 정규화 → 작성자 필터(소스에 `author`가 있을 때). 순수 함수.
+ * 건너뛴 이유별 건수는 정규화 사유 + `author`(필터로 뺀 수, 0이면 키 없음)다.
+ */
+export function prepareSourceItems(
+  raws: readonly RawFeedItem[],
+  source: Pick<Source, "id" | "lang" | "author">,
+): { items: FeedItem[]; skipped: Partial<Record<ItemSkipReason, number>> } {
+  const normalized = normalizeFeedItems(raws, source);
+  const filtered = filterByAuthor(normalized.items, source.author);
+  const skipped: Partial<Record<ItemSkipReason, number>> = {
+    ...normalized.skipped,
+  };
+  if (filtered.excluded > 0) skipped[AUTHOR_SKIP_REASON] = filtered.excluded;
+  return { items: filtered.kept, skipped };
+}
+
+/** 소스 1개 — 받기(재시도) → 파싱 → 정규화 → 작성자 필터. 받기·파싱 실패는 결과로, 그 밖의 예외는 던진다(runByHost가 격리). */
 async function collectOne(
   source: Source,
   ctx: FeedCollectDeps & {
@@ -572,7 +603,7 @@ async function collectOne(
     };
   }
 
-  const { items, skipped } = normalizeFeedItems(raws, source);
+  const { items, skipped } = prepareSourceItems(raws, source);
   const elapsedMs = clock.now() - started;
   log.info("collect.source.fetch", {
     source: source.id,
@@ -588,6 +619,19 @@ async function collectOne(
       reason: "title-too-long",
       count: skipped["title-too-long"],
     });
+  }
+  const authorSkipped = skipped[AUTHOR_SKIP_REASON];
+  if (authorSkipped) {
+    // 쓸 수 있는 항목이 전부 빠졌으면 피드의 작성자 표기가 바뀌었을 수 있다 → warn
+    const fields = {
+      source: source.id,
+      reason: AUTHOR_SKIP_REASON,
+      count: authorSkipped,
+      kept: items.length,
+      author: source.author,
+    };
+    if (items.length === 0) log.warn("collect.item.skip", fields);
+    else log.info("collect.item.skip", fields);
   }
   return {
     outcome: {

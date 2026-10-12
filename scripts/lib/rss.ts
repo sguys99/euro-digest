@@ -13,10 +13,11 @@
  * - 파싱: `parseFeedXml` — XML 문자열 → 항목의 **제목·링크·날짜·작성자 원문만**. 본문(`content:encoded`)·
  *   요약문(`description`)·이미지(`enclosure`·`media:*`)는 여기서 버린다 — 카드에 저장·표시하지 않는다(CLAUDE.md §1-5,
  *   PRD §15 D23, M0-25). 요약문을 분류 입력으로 쓰는 경로는 M1-09·M1-17에서 필요할 때 연다.
- * - 정규화(엔티티 디코딩·공백 정리·날짜 → UTC)는 scripts/lib/normalize.ts가 한다. 이 파일은 원문을 고치지 않는다.
+ *   작성자(M1-04)는 RSS `dc:creator`(Substack·WordPress)·RSS 2.0 `author`·Atom `author/name`을 **모두**(여러 개면 전부) 담는다.
+ * - 정규화(엔티티 디코딩·공백 정리·날짜 → UTC)는 scripts/lib/normalize.ts, 기자 채널 작성자 필터(`Source.author`)는
+ *   scripts/lib/author-filter.ts가 한다. 이 파일은 원문을 고치지 않는다.
  *
- * M1-04가 `author` 필터로 보강한다. Conditional GET(ETag·Last-Modified)은 하지 않는다. 소스 URL은 configs/sources.json에서만
- * 받는다(하드코딩 금지).
+ * Conditional GET(ETag·Last-Modified)은 하지 않는다. 소스 URL은 configs/sources.json에서만 받는다(하드코딩 금지).
  */
 import Parser from "rss-parser";
 
@@ -406,13 +407,55 @@ export interface RawFeedItem {
   link: string | null;
   /** RSS `pubDate`(없으면 Dublin Core `dc:date`) 원문 */
   pubDate: string | null;
-  /** `dc:creator`·`author` (M1-04 기자 채널 작성자 필터용) */
-  author: string | null;
+  /**
+   * 작성자 원문 목록(M1-04 기자 채널 작성자 필터용) — `dc:creator` 전부 → `author` 전부 순서. 없으면 [].
+   * RSS 2.0 `author`는 원문 그대로(`email (이름)` 형식이면 그 문자열 전체 — 이름 꺼내기는 author-filter.ts가 비교할 때만).
+   * Atom `author`(사람 구성 요소)는 `name`만. 빈 값·중복 정리는 normalize.ts가 한다.
+   */
+  authors: string[];
 }
+
+/**
+ * 작성자 요소를 배열로 받는 사용자 정의 필드 — rss-parser 기본 매핑은 **첫 요소만** 담는다(`creator`·`author`,
+ * Atom은 첫 `author/name`). `keepArray`로 같은 이름 요소를 모두 받는다. RSS·Atom 둘 다 이 목록을 적용한다.
+ */
+const AUTHOR_DC_CREATORS = "authorDcCreators";
+const AUTHOR_ELEMENTS = "authorElements";
+const AUTHOR_FIELDS = [
+  ["dc:creator", AUTHOR_DC_CREATORS, { keepArray: true }],
+  ["author", AUTHOR_ELEMENTS, { keepArray: true }],
+];
 
 /** 문자열만 받는다 — xml2js가 속성 붙은 요소·자식 요소를 객체로 돌려주는 경우는 값 없음으로 본다. */
 function stringOrNull(value: unknown): string | null {
   return typeof value === "string" ? value : null;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * xml2js 요소 배열 → 작성자 문자열 목록. 요소 하나는
+ *   - 문자열(텍스트·CDATA)
+ *   - `{ _: 텍스트, $: 속성 }`(속성 붙은 요소)
+ *   - `{ name: [...], email: [...] }`(Atom 사람 구성 요소 — RSS 안의 비표준 `<author><name>`도 같다) → `name`만
+ * 그 밖의 모양(빈 요소의 속성만 등)은 건너뛴다.
+ */
+function authorTexts(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  const texts: string[] = [];
+  for (const element of value) {
+    if (typeof element === "string") {
+      texts.push(element);
+    } else if (isRecord(element)) {
+      if (typeof element._ === "string") texts.push(element._);
+      else if (Array.isArray(element.name)) {
+        texts.push(...authorTexts(element.name));
+      }
+    }
+  }
+  return texts;
 }
 
 /**
@@ -420,7 +463,7 @@ function stringOrNull(value: unknown): string | null {
  * 본문·요약문·이미지 필드는 결과에 담지 않는다.
  */
 export async function parseFeedXml(xml: string): Promise<RawFeedItem[]> {
-  const parser = new Parser();
+  const parser = new Parser({ customFields: { item: AUTHOR_FIELDS } });
   let feed: Awaited<ReturnType<typeof parser.parseString>>;
   try {
     feed = await parser.parseString(xml);
@@ -430,13 +473,16 @@ export async function parseFeedXml(xml: string): Promise<RawFeedItem[]> {
     );
   }
   return (feed.items ?? []).map((item) => {
-    // rss-parser 타입에 없는 dc:date는 `date` 키로 들어온다(fields.js 매핑).
+    // rss-parser 타입에 없는 dc:date는 `date` 키로, 작성자 배열은 AUTHOR_FIELDS의 키로 들어온다.
     const record = item as Record<string, unknown>;
     return {
       title: stringOrNull(item.title),
       link: stringOrNull(item.link),
       pubDate: stringOrNull(item.pubDate) ?? stringOrNull(record.date),
-      author: stringOrNull(item.creator) ?? stringOrNull(record.author),
+      authors: [
+        ...authorTexts(record[AUTHOR_DC_CREATORS]),
+        ...authorTexts(record[AUTHOR_ELEMENTS]),
+      ],
     };
   });
 }

@@ -6,12 +6,15 @@
  *   - 링크: 앞뒤 공백 정리만. 추적 파라미터 제거 같은 URL 정규화는 중복 판정 해시에만 쓴다(M1-10·M1-16) — 표시 링크는 원문.
  *   - 날짜: 시간대가 적힌 값만 UTC로(`parseFeedDate`, src/lib/time.ts). 없으면 그 항목을 건너뛴다(추측하지 않음).
  * 제목이 200자(NewsCard.t 상한)를 넘으면 자르지 않고 그 항목을 건너뛴다(FR-20).
+ *   - 작성자(M1-04): 이름마다 엔티티 디코딩 + 앞뒤 공백 정리, 빈 값 제거, 같은 이름(비교 키 `authorKey` 기준) 중복 제거.
+ *     카드에는 저장하지 않고 기자 채널 작성자 필터(scripts/lib/author-filter.ts)·로그에만 쓴다.
  *
  * 순수 함수만 둔다. M1-09가 zod 공통 형식·"본문 필드 없음" 테스트·소스별 기본 시간대(국내 KST)로 보강한다.
  */
 import { HttpUrlSchema, type Source } from "@/lib/schema";
 import { parseFeedDate } from "@/lib/time";
 
+import { authorKey } from "./author-filter";
 import type { RawFeedItem } from "./rss";
 
 /** 원제목 상한 — NewsCardSchema `t` max(200)와 같다. 넘으면 카드화하지 않는다(FR-20). */
@@ -27,7 +30,10 @@ export interface FeedItem {
   /** 원문 발행 시각(UTC ISO) */
   publishedAt: string;
   lang: string;
+  /** 작성자(FR-03 `author?`) — `authors`를 ", "로 이은 한 줄, 없으면 null. 카드에는 저장하지 않는다. */
   author: string | null;
+  /** 작성자 이름 목록(피드 순서, 엔티티 디코딩·앞뒤 공백 정리·중복 제거) — 작성자 필터용. 없으면 []. */
+  authors: string[];
 }
 
 export type SkipReason = "no-title" | "title-too-long" | "bad-link" | "no-date";
@@ -81,6 +87,23 @@ export function cleanTitle(raw: string): string {
   return decodeEntities(raw).trim();
 }
 
+/**
+ * 작성자 원문 목록 정리 — 이름마다 엔티티 디코딩 → 앞뒤 공백 정리, 빈 값 제거, 비교 키가 같은 이름은 처음 것만.
+ * (같은 사람이 `dc:creator`와 `author`에 함께 적힌 피드가 있다.) 안쪽 글자는 바꾸지 않는다.
+ */
+export function cleanAuthors(raws: readonly string[]): string[] {
+  const seen = new Set<string>();
+  const authors: string[] = [];
+  for (const raw of raws) {
+    const name = decodeEntities(raw).trim();
+    const key = authorKey(name);
+    if (key === "" || seen.has(key)) continue;
+    seen.add(key);
+    authors.push(name);
+  }
+  return authors;
+}
+
 /** 원문 항목 1건 → FeedItem 또는 건너뛴 이유. */
 export function normalizeFeedItem(
   raw: RawFeedItem,
@@ -97,6 +120,7 @@ export function normalizeFeedItem(
   }
   const publishedAt = parseFeedDate(raw.pubDate);
   if (publishedAt === null) return { ok: false, reason: "no-date" };
+  const authors = cleanAuthors(raw.authors);
   return {
     ok: true,
     item: {
@@ -105,7 +129,8 @@ export function normalizeFeedItem(
       link,
       publishedAt,
       lang: source.lang,
-      author: raw.author?.trim() || null,
+      author: authors.length > 0 ? authors.join(", ") : null,
+      authors,
     },
   };
 }
