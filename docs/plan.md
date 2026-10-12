@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M1 뉴스 MVP 진행 중 — M1-01 수직 슬라이스 완료(2026-10-12, Actions 수집 → 커밋 → Pages 배포 성공)
-**다음 작업**: `M1-02` 소스 등록·로더(`enabled && terms_checked`, The Athletic `retentionDays` 7 — D32) → M1-A 순서대로
+**다음 작업**: `M1-03` RSS 어댑터(타임아웃·재시도·소스별 실패 격리) → M1-A 순서대로
 
 ---
 
@@ -235,7 +235,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 🆕 M1-01 이월 메모: **M1-03** `rss.ts` 리다이렉트 `manual`·크기 상한 스트리밍 검사 · **M1-09** 국내 피드는 시간대 없는 날짜(KST)라 지금 전부 `no-date`로 건너뜀 → 소스별 기본 시간대 필요 · **M1-14** 슬라이스 기본 5건(`SLICE_DEFAULT_LIMIT`)을 `MAX_ITEMS_PER_RUN`으로 되돌리고 사용법·dispatch 설명 갱신, 카드는 화면 표시 순서로 쓴다(화면은 파일 순서 그대로), 최신순만으로 뽑은 첫 발행 5건이 하부 리그·사건 기사였음 → 범위 밖 기사 감점·제외 규칙(M1-17과 함께) · **M1-16** 지금 카드 ID = 피드 원문 링크 해시 — 정규화 URL로 바꾸면 이미 나간 앵커가 바뀜(공개 전이라 피해 적음, 착수 때 결정) · **M1-20** 프롬프트를 `fixtures/llm/brief-inputs/prompt-m0-30-long.md`에서 읽음 → `configs/prompts/summarize.md`로 교체 · **M1-25** 스키마가 허용하는 뉴스 카드 `ai:true`를 게이트에서 거부(D23 — 라벨 없이 AI 제목이 나가지 않게) · **M1-27** 실패 실행(exit 1)은 커밋되지 않아 그 실행의 runs 기록이 사라짐, 브리핑 실패는 `partial`·exit 0이라 이슈가 안 생김 · **M1-31** D0-12 `CardTitle` 한글 제목 링크 높이 40~41px(44px 미달)·원제목 짧은 하이픈 단어 붙이기 미구현 · **M1-37** 홈은 빈 상태만 있음(오류 = 빌드 실패로 전날 사이트 유지, 오프라인 없음) · **M1-39** CI e2e가 빈 홈만 검사 → fixture 데이터 디렉터리로 빌드하는 옵션
 
 ### M1-A 수집 (FR-01~11)
-- [ ] M1-02 `configs/sources.json` 초기 등록(M0 검증 통과분만) + 로더(`enabled && terms_checked`만) — `summarize` 값과 무관하게 LLM 미전송 (D23). ~~❓ The Athletic ToS 4.1(5) 캐시·보관 금지와 우리 보관 정책의 관계~~ → 2026-10-12 사용자 결정(PRD §15 D32): **Athletic 카드는 7일만 보관** — `Source`에 선택 필드 `retentionDays`(부록 A) 추가, `the-athletic-football`에 7. 기간이 지난 출처의 삭제는 M1-25가 takedown 원본 삭제 경로로 처리(`fixtures/rss/` 5건은 테스트 입력이라 그대로)
+- [x] M1-02 `configs/sources.json` 초기 등록(M0 검증 통과분만) + 로더(`enabled && terms_checked`만) — `summarize` 값과 무관하게 LLM 미전송 (D23). ~~❓ The Athletic ToS 4.1(5) 캐시·보관 금지와 우리 보관 정책의 관계~~ → 2026-10-12 사용자 결정(PRD §15 D32): **Athletic 카드는 7일만 보관** — `Source`에 선택 필드 `retentionDays`(부록 A) 추가, `the-athletic-football`에 7. 기간이 지난 출처의 삭제는 M1-25가 takedown 원본 삭제 경로로 처리(`fixtures/rss/` 5건은 테스트 입력이라 그대로) — 2026-10-12 완료: 수집 대상 = `enabled && terms_checked`(crawl은 `robots_checked` + 크롤러 모듈) 중 rss·journalist·aggregator **14개 피드**(BBC 4·The Athletic·ESPN·the Daily Briefing·Di Marzio·Relevo·국내 5), search·analysis·disabled 12개 제외(사유 로그). 소스별 실패 격리(일부 실패 = `partial`·exit 0, 전부 실패 = exit 1). `Source.retentionDays` 추가 + Athletic 7, 조회 함수 `retentionBySource`. validate에 설정 모순 경고 3종. dry 실행: 491건 수신 → 쓸 수 있는 331(국내 160건 `no-date`) → 같은 링크 32 제거
+  - 🆕 M1-02 이월 메모: **M1-03** 순차 14개 × 타임아웃 15초 = 최악 210초 → 전체 시간 상한·호스트별 병렬 결정, 소스 실패 종류는 runs.json에 남지 않음(`{id, ok, items}`) · **M1-12** 같은 링크를 합칠 때 소스 메타(대회 태그)도 합칠 것(지금은 설정 순서상 먼저 나온 소스가 가져 BBC Football이 PL 피드의 EPL 태그를 잃음) · **M1-14** ESPN 일괄 갱신 시각('EST' 고정)이 최신순 상위를 차지(dry 선별 5건 중 3건) · **M1-25** 카드 `src[]`에 소스 id가 없어 보존 기간 역참조 필요 — 추천: 매체명(`publisherNameOf`)으로 찾고 같은 매체명끼리 보존 기간이 같아야 한다는 validate 규칙(스키마 변경 없음), 기간 기준(`src.at` vs `created`) 결정
 - [ ] M1-03 RSS 어댑터 (타임아웃·재시도, 소스별 실패 격리)
 - [ ] M1-04 기자 채널 RSS: the Daily Briefing(Substack)·Di Marzio — 작성자 필터는 현재 대상 없음(M0-23·M0-24: Guardian 제외, The Athletic은 축구 피드 전체를 원제목으로 수집), `author` 필드 지원만
 - [ ] ⏸ M1-05 목록 크롤러 `scripts/crawlers/<site>.ts` — M0에서 허용 확인된 사이트만 (robots.txt, User-Agent, 2~3초 지연, 하루 1회) (보류 — 2026-10-12 사용자 결정, PRD §15 D32: M0-23~25 판정에서 크롤링을 허용한 사이트가 0곳(후보 Sky Sport DE·Bundesliga.com·TEAMtalk·Football365 모두 약관상 봇 접근 금지)이라 만들 대상이 없다. `/add-source`로 `type: crawl` + `robots_checked` 소스가 승인되면 그때 착수)
