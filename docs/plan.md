@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M1 뉴스 MVP 진행 중 — M1-01 수직 슬라이스 완료(2026-10-12, Actions 수집 → 커밋 → Pages 배포 성공)
-**다음 작업**: `M1-03` RSS 어댑터(타임아웃·재시도·소스별 실패 격리) → M1-A 순서대로
+**다음 작업**: `M1-04` 기자 채널 RSS(`author` 필드 지원) → M1-A 순서대로
 
 ---
 
@@ -237,7 +237,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 ### M1-A 수집 (FR-01~11)
 - [x] M1-02 `configs/sources.json` 초기 등록(M0 검증 통과분만) + 로더(`enabled && terms_checked`만) — `summarize` 값과 무관하게 LLM 미전송 (D23). ~~❓ The Athletic ToS 4.1(5) 캐시·보관 금지와 우리 보관 정책의 관계~~ → 2026-10-12 사용자 결정(PRD §15 D32): **Athletic 카드는 7일만 보관** — `Source`에 선택 필드 `retentionDays`(부록 A) 추가, `the-athletic-football`에 7. 기간이 지난 출처의 삭제는 M1-25가 takedown 원본 삭제 경로로 처리(`fixtures/rss/` 5건은 테스트 입력이라 그대로) — 2026-10-12 완료: 수집 대상 = `enabled && terms_checked`(crawl은 `robots_checked` + 크롤러 모듈) 중 rss·journalist·aggregator **14개 피드**(BBC 4·The Athletic·ESPN·the Daily Briefing·Di Marzio·Relevo·국내 5), search·analysis·disabled 12개 제외(사유 로그). 소스별 실패 격리(일부 실패 = `partial`·exit 0, 전부 실패 = exit 1). `Source.retentionDays` 추가 + Athletic 7, 조회 함수 `retentionBySource`. validate에 설정 모순 경고 3종. dry 실행: 491건 수신 → 쓸 수 있는 331(국내 160건 `no-date`) → 같은 링크 32 제거
   - 🆕 M1-02 이월 메모: **M1-03** 순차 14개 × 타임아웃 15초 = 최악 210초 → 전체 시간 상한·호스트별 병렬 결정, 소스 실패 종류는 runs.json에 남지 않음(`{id, ok, items}`) · **M1-12** 같은 링크를 합칠 때 소스 메타(대회 태그)도 합칠 것(지금은 설정 순서상 먼저 나온 소스가 가져 BBC Football이 PL 피드의 EPL 태그를 잃음) · **M1-14** ESPN 일괄 갱신 시각('EST' 고정)이 최신순 상위를 차지(dry 선별 5건 중 3건) · **M1-25** 카드 `src[]`에 소스 id가 없어 보존 기간 역참조 필요 — 추천: 매체명(`publisherNameOf`)으로 찾고 같은 매체명끼리 보존 기간이 같아야 한다는 validate 규칙(스키마 변경 없음), 기간 기준(`src.at` vs `created`) 결정
-- [ ] M1-03 RSS 어댑터 (타임아웃·재시도, 소스별 실패 격리)
+- [x] M1-03 RSS 어댑터 (타임아웃·재시도, 소스별 실패 격리) — 2026-10-12 완료: 재시도 1회(5xx·429·네트워크·타임아웃, 대기 2초, `Retry-After` ≤10초만 존중), 소스별 30초·단계 예산 90초(초과 = `budget`), 동시 호스트 4·같은 호스트 순차 1초 간격, 결과는 설정 순서(결정적), 리다이렉트는 같은 호스트·http→https 승격만 최대 3회(다른 호스트는 요청 없이 거부), 크기 상한 5MiB(Content-Length + 스트리밍). dry 실행 14개 피드 5.1초
+  - 🆕 M1-03 이월 메모: **M1-11** PRD §10 "수집 일부 실패 → 해당 소스 건너뜀, 이슈 생성"·FR-152(같은 원인은 댓글)에 따라 **소스 실패 이슈를 건강도 이슈와 함께 M1-11에서 구현**(fingerprint `source:<id>`, `source-broken`) · runs.json `sources[]`가 `{id, ok, items}`뿐이라 예산 초과(`budget`)와 실제 장애가 구별되지 않고 `items`는 피드 원문 항목 수(쓸 수 있는 건수 아님) → M1-11 착수 때 ❓ `sources[]` 선택 필드(오류 종류·쓸 수 있는 건수) 추가 여부 사용자 확인 · **M1-44** football-data 단건 응답 약 12초(타임아웃 15초에 근접) → 타임아웃 여유 재검토
 - [ ] M1-04 기자 채널 RSS: the Daily Briefing(Substack)·Di Marzio — 작성자 필터는 현재 대상 없음(M0-23·M0-24: Guardian 제외, The Athletic은 축구 피드 전체를 원제목으로 수집), `author` 필드 지원만
 - [ ] ⏸ M1-05 목록 크롤러 `scripts/crawlers/<site>.ts` — M0에서 허용 확인된 사이트만 (robots.txt, User-Agent, 2~3초 지연, 하루 1회) (보류 — 2026-10-12 사용자 결정, PRD §15 D32: M0-23~25 판정에서 크롤링을 허용한 사이트가 0곳(후보 Sky Sport DE·Bundesliga.com·TEAMtalk·Football365 모두 약관상 봇 접근 금지)이라 만들 대상이 없다. `/add-source`로 `type: crawl` + `robots_checked` 소스가 승인되면 그때 착수)
 - [ ] M1-06 검색형 소스 공통: `configs/search-queries.json` 로더 + 매체 도메인 허용 목록 필터(`configs/publisher-domains.json`, `allow`만 게시, `isSearchResultAllowed`) — Google News RSS는 사용 불가(M0-26, PRD §15 D25)
