@@ -12,7 +12,8 @@
  *   fetch는 주입한다(테스트는 네트워크 없이 fixtures/rss/*.xml·가짜 응답을 돌려준다).
  * - 파싱: `parseFeedXml` — XML 문자열 → 항목의 **제목·링크·날짜·작성자 원문만**. 본문(`content:encoded`)·
  *   요약문(`description`)·이미지(`enclosure`·`media:*`)는 여기서 버린다 — 카드에 저장·표시하지 않는다(CLAUDE.md §1-5,
- *   PRD §15 D23, M0-25). 요약문을 분류 입력으로 쓰는 경로는 M1-09·M1-17에서 필요할 때 연다.
+ *   PRD §15 D23, M0-25). 공통 형식(M1-09)의 `summary`는 그래서 항상 null이다 — 요약문을 분류
+ *   입력으로 쓰는 경로는 M1-17 착수 때 사용자 확인 후 연다.
  *   작성자(M1-04)는 RSS `dc:creator`(Substack·WordPress)·RSS 2.0 `author`·Atom `author/name`을 **모두**(여러 개면 전부) 담는다.
  * - 정규화(엔티티 디코딩·공백 정리·날짜 → UTC)는 scripts/lib/normalize.ts, 기자 채널 작성자 필터(`Source.author`)는
  *   scripts/lib/author-filter.ts가 한다. 이 파일은 원문을 고치지 않는다.

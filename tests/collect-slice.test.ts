@@ -28,6 +28,7 @@ import {
   RunsDevFileSchema,
   RunsFileSchema,
   SourcesFileSchema,
+  type FeedItem,
   type NewsFile,
 } from "@/lib/schema";
 import { kstWindowRangeUtc } from "@/lib/time";
@@ -405,7 +406,7 @@ describe("normalize.ts — 원제목·링크 무수정(엔티티 디코딩·앞�
     ).toBe(true);
   });
 
-  it("제목 없음·잘못된 링크·시간대 없는 날짜는 건너뛴다", () => {
+  it("제목 없음·잘못된 링크·시간대 없는 날짜(소스에 tz 없음)는 건너뛴다", () => {
     expect(normalizeFeedItem(raw({ title: "  " }), source)).toEqual({
       ok: false,
       reason: "no-title",
@@ -425,7 +426,7 @@ describe("normalize.ts — 원제목·링크 무수정(엔티티 디코딩·앞�
       }),
       source,
     );
-    expect(result.ok && result.item.link).toBe(
+    expect(result.ok && result.item.url).toBe(
       "https://www.bbc.co.uk/x?at_medium=RSS&at_campaign=rss",
     );
   });
@@ -454,14 +455,15 @@ describe("card-id.ts — c_ + 16진수 10자리, 결정적", () => {
 });
 
 describe("news-file.ts — 카드·선별·병합", () => {
-  const item = (link: string, publishedAt: string, title = "T") => ({
-    sourceId: "bbc-sport-football",
+  const item = (url: string, publishedAt: string, title = "T"): FeedItem => ({
     title,
-    link,
+    url,
     publishedAt,
-    lang: "en",
+    summary: null,
+    source: "bbc-sport-football",
     author: null,
     authors: [],
+    lang: "en",
   });
 
   it("출처명은 매체명만(섹션·괄호 설명 제거)", () => {
@@ -516,7 +518,7 @@ describe("news-file.ts — 카드·선별·병합", () => {
       item("https://e.com/1", "2026-10-10T13:00:00.000Z"), // 같은 링크 — 먼저 나온 것 유지
       item("https://e.com/3", "2026-10-10T11:00:00.000Z"),
     ];
-    expect(selectLatest(items, 2).map((i) => i.link)).toEqual([
+    expect(selectLatest(items, 2).map((i) => i.url)).toEqual([
       "https://e.com/2",
       "https://e.com/3",
     ]);

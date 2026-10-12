@@ -16,8 +16,9 @@
  * 정규화 흔적이 있어 원제목이 아닐 수 있고, `seendate`는 GDELT가 처음 본 시각(15분 배치)이지 게시 시각이 아니다.
  * "제목 무수정"(FR-20·D23)을 지키려면 같은 URL의 RSS 제목 또는 og:title, 게시 시각은 RSS pubDate 또는
  * `article:published_time`으로 바꿔야 한다 — 교체 구현은 M1-07·M1-08(보류, D32).
- * 그래서 필드 이름을 `titleFromSearch`·`timeFromSearch`로 두고, 통과 결과(`AllowedSearchResult`)에 `title`·`link`·
- * `publishedAt`을 두지 않아 카드 입력(`FeedItem`, normalize.ts)으로 그대로 넘길 수 없게 했다(tests/search-results.test.ts가 타입으로 확인).
+ * 그래서 필드 이름을 `titleFromSearch`·`timeFromSearch`로 두고, 통과 결과(`AllowedSearchResult`)에 `title`·
+ * `publishedAt`을 두지 않아 카드 입력(공통 형식 `FeedItem`, @/lib/schema — M1-09)으로 그대로 넘길 수 없게 했다
+ * (tests/search-results.test.ts가 타입과 `FeedItemSchema`로 확인).
  *
  * 순수 함수만 둔다(설정 로더 `loadPublisherDomains` 제외). 본문·요약문 필드는 받지 않는다(FR-02 본문 수집 금지).
  */

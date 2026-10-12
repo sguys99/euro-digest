@@ -17,8 +17,8 @@
  * 이때는 브리핑(LLM 호출)도 하지 않는다 — 커밋되지 않는 실행의 LLM 비용 기록이 사라지지 않게(M1-27까지).
  *
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
- * 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 정규화 직후에 적용한다.
- * 다음 작업이 갈아끼울 자리: 정규화(M1-09) · 소스 건강도 이슈(M1-11) · 중복제거~점수화(M1-10~14) ·
+ * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
+ * 다음 작업이 갈아끼울 자리: 소스 건강도 이슈(M1-11) · 수집 시간 창~점수화(M1-10~14) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
  * 계절별 마감(M1-47) · football-data 어댑터(M1-44).
  */
@@ -446,9 +446,9 @@ async function runNewsStage(
   }
 
   // 선별(슬라이스): 여러 소스를 합쳐 카드 ID(링크 해시)로 중복을 빼고 최신순 상위 N건 — 같은 링크는 설정 순서상 먼저 나온 소스가 갖는다.
-  const uniqueLinks = new Set(allItems.map((item) => cardIdFor(item.link)));
+  const uniqueLinks = new Set(allItems.map((item) => cardIdFor(item.url)));
   const cards = selectLatest(allItems, deps.limit).flatMap((item) => {
-    const source = sourceById.get(item.sourceId);
+    const source = sourceById.get(item.source);
     return source ? [buildCard(item, source, ctx.startedAt)] : [];
   });
   log.info("collect.select.done", {

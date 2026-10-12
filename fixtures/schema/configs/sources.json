@@ -54,5 +54,21 @@
     "terms_checked": true,
     "robots_checked": true,
     "note": "스키마 예시 — 소스별 보존 기간 7일(retentionDays, PRD §15 D32 2026-10-12)"
+  },
+  {
+    "id": "interfootball-world",
+    "name": "인터풋볼 — 해외축구",
+    "type": "rss",
+    "url": "https://www.interfootball.co.kr/rss/S1N1.xml",
+    "lang": "ko",
+    "tz": "Asia/Seoul",
+    "enabled": true,
+    "summarize": false,
+    "weight": 1.5,
+    "tier": 3,
+    "competitions": [],
+    "terms_checked": true,
+    "robots_checked": true,
+    "note": "스키마 예시 — 피드 날짜에 시간대가 없어(YYYY-MM-DD HH:mm:ss) Asia/Seoul로 해석(tz, PRD §15 D34 2026-10-12)"
   }
 ]

@@ -16,6 +16,7 @@ import path from "node:path";
 
 import {
   NewsFileSchema,
+  type FeedItem,
   type NewsCard,
   type NewsFile,
   type Source,
@@ -23,7 +24,6 @@ import {
 
 import { cardIdFor } from "./card-id";
 import { classifyMinimal } from "./classify";
-import type { FeedItem } from "./normalize";
 
 // ─── 카드 ────────────────────────────────────────────────────────────────
 
@@ -43,14 +43,14 @@ export function buildCard(
   created: string,
 ): NewsCard {
   return {
-    id: cardIdFor(item.link),
+    id: cardIdFor(item.url),
     t: item.title,
     s: [],
     ...classifyMinimal(item, source),
     src: [
       {
         n: publisherNameOf(source),
-        u: item.link,
+        u: item.url,
         at: item.publishedAt,
         tier: source.tier,
       },
@@ -71,7 +71,7 @@ export function selectLatest(
   const seen = new Set<string>();
   const unique: Array<{ item: FeedItem; index: number }> = [];
   items.forEach((item, index) => {
-    const id = cardIdFor(item.link);
+    const id = cardIdFor(item.url);
     if (seen.has(id)) return;
     seen.add(id);
     unique.push({ item, index });

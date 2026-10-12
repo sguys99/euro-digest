@@ -247,6 +247,7 @@
     "type": "rss",
     "url": "https://www.interfootball.co.kr/rss/S1N1.xml",
     "lang": "ko",
+    "tz": "Asia/Seoul",
     "enabled": true,
     "summarize": false,
     "weight": 1.5,
@@ -254,7 +255,7 @@
     "competitions": [],
     "terms_checked": true,
     "robots_checked": true,
-    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거(명시적 허용 아님 — 해석 근거로 사용자가 켜기로 결정): 자사 RSS 안내(https://www.interfootball.co.kr/rssIndex.html) 'B사이트의 운영자는 A라는 사이트의 각종 정보(갱신된 글의 제목, 링크, 주요 내용 등)를 RSS파일을 통해 수집한 다음에 자신이 운영하는 B사이트에 올려놓을 수 있습니다' + 저작권보호정책 2조(https://www.interfootball.co.kr/com/copyright.html) '서비스 내 모든 저작물은 회사의 승낙 없이 복제, 출판, 전송, 배포, 판매, 변형, 방송 등의 행위를 금지' — 제목·링크 게재는 본문 복제가 아니라고 해석. 이용약관(https://www.interfootball.co.kr/com/service.html)에 봇·AI·RSS 조항 없음. 조건: 피드 제목 무수정(엔티티 디코딩·앞뒤 공백 정리만), 표시 링크는 피드 URL 원문 그대로(기사 식별자 idxno 쿼리 보존 — FR-04 정규화에서 지우지 않음), RSS description(본문 첫 300자 절단)은 표시·저장하지 않음(data/는 공개 저장소), 출처 '인터풋볼' 텍스트+링크, 로고 미사용, 중단 요청 시 즉시 끔(저작권 담당 ask@interfootball.co.kr). 파싱: pubDate·lastBuildDate는 오프셋 없는 'YYYY-MM-DD HH:mm:ss'(KST로 해석해 UTC 저장). 중복: interfootball-all이 이 피드 항목을 모두 포함 → 정규화 URL 해시로 합치고, 이 피드에도 있는 URL은 '해외축구' 확정 신호로 씀. 피드 20건 ≈ 10.7시간, 한국 선수 제목 10/20(유럽파 7·손흥민 3). robots: 피드 경로 모든 UA 허용."
+    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거(명시적 허용 아님 — 해석 근거로 사용자가 켜기로 결정): 자사 RSS 안내(https://www.interfootball.co.kr/rssIndex.html) 'B사이트의 운영자는 A라는 사이트의 각종 정보(갱신된 글의 제목, 링크, 주요 내용 등)를 RSS파일을 통해 수집한 다음에 자신이 운영하는 B사이트에 올려놓을 수 있습니다' + 저작권보호정책 2조(https://www.interfootball.co.kr/com/copyright.html) '서비스 내 모든 저작물은 회사의 승낙 없이 복제, 출판, 전송, 배포, 판매, 변형, 방송 등의 행위를 금지' — 제목·링크 게재는 본문 복제가 아니라고 해석. 이용약관(https://www.interfootball.co.kr/com/service.html)에 봇·AI·RSS 조항 없음. 조건: 피드 제목 무수정(엔티티 디코딩·앞뒤 공백 정리만), 표시 링크는 피드 URL 원문 그대로(기사 식별자 idxno 쿼리 보존 — FR-04 정규화에서 지우지 않음), RSS description(본문 첫 300자 절단)은 표시·저장하지 않음(data/는 공개 저장소), 출처 '인터풋볼' 텍스트+링크, 로고 미사용, 중단 요청 시 즉시 끔(저작권 담당 ask@interfootball.co.kr). 파싱: pubDate·lastBuildDate는 오프셋 없는 'YYYY-MM-DD HH:mm:ss'(KST로 해석해 UTC 저장). 중복: interfootball-all이 이 피드 항목을 모두 포함 → 정규화 URL 해시로 합치고, 이 피드에도 있는 URL은 '해외축구' 확정 신호로 씀. 피드 20건 ≈ 10.7시간, 한국 선수 제목 10/20(유럽파 7·손흥민 3). robots: 피드 경로 모든 UA 허용. 날짜 시간대 Asia/Seoul — D34(2026-10-12)."
   },
   {
     "id": "interfootball-all",
@@ -262,6 +263,7 @@
     "type": "rss",
     "url": "https://www.interfootball.co.kr/rss/allArticle.xml",
     "lang": "ko",
+    "tz": "Asia/Seoul",
     "enabled": true,
     "summarize": false,
     "weight": 1,
@@ -269,7 +271,7 @@
     "competitions": [],
     "terms_checked": true,
     "robots_checked": true,
-    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거·조건은 interfootball-world와 같음(해석 근거로 켬 · 제목 무수정 · 링크 원문·idxno 보존 · description 미표시·미저장 · pubDate KST 오프셋 없음). 용도(사용자 결정 — 섹션+전체 피드 함께 등록): 해외축구 섹션 피드(20건 ≈ 10.7시간)가 하루를 덮지 못해 전체기사(50건 ≈ 24.8시간)로 수집 창 보강. 섹션 피드 항목을 모두 포함 → 정규화 URL 해시로 중복 제거. 혼입: 국내축구·K리그(약 7/50)·연예(S1N8)·피치&걸스 → M1 코드 필터로 축구 외·K리그 기사 제외(섹션 피드에 없는 URL만 키워드 규칙 적용). robots: 피드 경로 모든 UA 허용."
+    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거·조건은 interfootball-world와 같음(해석 근거로 켬 · 제목 무수정 · 링크 원문·idxno 보존 · description 미표시·미저장 · pubDate KST 오프셋 없음). 용도(사용자 결정 — 섹션+전체 피드 함께 등록): 해외축구 섹션 피드(20건 ≈ 10.7시간)가 하루를 덮지 못해 전체기사(50건 ≈ 24.8시간)로 수집 창 보강. 섹션 피드 항목을 모두 포함 → 정규화 URL 해시로 중복 제거. 혼입: 국내축구·K리그(약 7/50)·연예(S1N8)·피치&걸스 → M1 코드 필터로 축구 외·K리그 기사 제외(섹션 피드에 없는 URL만 키워드 규칙 적용). robots: 피드 경로 모든 UA 허용. 날짜 시간대 Asia/Seoul — D34(2026-10-12)."
   },
   {
     "id": "footballist-football",
@@ -277,6 +279,7 @@
     "type": "rss",
     "url": "https://www.footballist.co.kr/rss/S1N1.xml",
     "lang": "ko",
+    "tz": "Asia/Seoul",
     "enabled": true,
     "summarize": false,
     "weight": 0.5,
@@ -284,7 +287,7 @@
     "competitions": [],
     "terms_checked": true,
     "robots_checked": true,
-    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거(명시적 허용 아님 — 해석 근거로 사용자가 켜기로 결정): 자사 RSS 안내(https://www.footballist.co.kr/rssIndex.html) 'B사이트의 운영자는 A라는 사이트의 각종 정보(갱신된 글의 제목, 링크, 주요 내용 등)를 RSS파일을 통해 수집한 다음에 자신이 운영하는 B사이트에 올려놓을 수 있습니다' + 저작권보호정책 2조(https://www.footballist.co.kr/com/copyright.html) '서비스 내 모든 저작물은 회사의 승낙 없이 복제, 출판, 전송, 배포, 판매, 변형, 방송 등의 행위를 금지' — 제목·링크 게재는 본문 복제가 아니라고 해석. 이용약관(https://www.footballist.co.kr/com/service.html)에 봇·AI·RSS 조항 없음. 푸터 '이용약관' 링크는 /com/emailno.html로 잘못 연결됨(본문은 /com/service.html). 조건: 피드 제목 무수정(엔티티 디코딩·앞뒤 공백 정리만), 표시 링크는 피드 URL 원문 그대로(기사 식별자 idxno 쿼리 보존 — FR-04 정규화에서 지우지 않음), RSS description(본문 첫 300자 절단)은 표시·저장하지 않음(data/는 공개 저장소), 출처 '풋볼리스트' 텍스트+링크, 로고 미사용, 중단 요청 시 즉시 끔(저작권 담당 cohenwise@firstdivision.co.kr). 파싱: pubDate·lastBuildDate는 오프셋 없는 'YYYY-MM-DD HH:mm:ss'(KST로 해석해 UTC 저장). item 링크가 http:// — 해시용 정규화에서만 https로 맞추고 표시 링크는 원문. 필터: 피드 20건 ≈ 23시간 중 K리그 약 17/20([케터뷰]·[케리뷰]·[포토] 연속 게시) → M1 K리그·[포토] 코드 필터 필수, 해외축구 약 2/20이라 가중치 0.5. 해외축구 하위 섹션 피드(/rss/S2N2.xml) 404, 전체기사 피드는 K리그 [포토] 위주라 미등록. robots: 피드 경로 모든 UA 허용."
+    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거(명시적 허용 아님 — 해석 근거로 사용자가 켜기로 결정): 자사 RSS 안내(https://www.footballist.co.kr/rssIndex.html) 'B사이트의 운영자는 A라는 사이트의 각종 정보(갱신된 글의 제목, 링크, 주요 내용 등)를 RSS파일을 통해 수집한 다음에 자신이 운영하는 B사이트에 올려놓을 수 있습니다' + 저작권보호정책 2조(https://www.footballist.co.kr/com/copyright.html) '서비스 내 모든 저작물은 회사의 승낙 없이 복제, 출판, 전송, 배포, 판매, 변형, 방송 등의 행위를 금지' — 제목·링크 게재는 본문 복제가 아니라고 해석. 이용약관(https://www.footballist.co.kr/com/service.html)에 봇·AI·RSS 조항 없음. 푸터 '이용약관' 링크는 /com/emailno.html로 잘못 연결됨(본문은 /com/service.html). 조건: 피드 제목 무수정(엔티티 디코딩·앞뒤 공백 정리만), 표시 링크는 피드 URL 원문 그대로(기사 식별자 idxno 쿼리 보존 — FR-04 정규화에서 지우지 않음), RSS description(본문 첫 300자 절단)은 표시·저장하지 않음(data/는 공개 저장소), 출처 '풋볼리스트' 텍스트+링크, 로고 미사용, 중단 요청 시 즉시 끔(저작권 담당 cohenwise@firstdivision.co.kr). 파싱: pubDate·lastBuildDate는 오프셋 없는 'YYYY-MM-DD HH:mm:ss'(KST로 해석해 UTC 저장). item 링크가 http:// — 해시용 정규화에서만 https로 맞추고 표시 링크는 원문. 필터: 피드 20건 ≈ 23시간 중 K리그 약 17/20([케터뷰]·[케리뷰]·[포토] 연속 게시) → M1 K리그·[포토] 코드 필터 필수, 해외축구 약 2/20이라 가중치 0.5. 해외축구 하위 섹션 피드(/rss/S2N2.xml) 404, 전체기사 피드는 K리그 [포토] 위주라 미등록. robots: 피드 경로 모든 UA 허용. 날짜 시간대 Asia/Seoul — D34(2026-10-12)."
   },
   {
     "id": "besteleven-world",
@@ -292,6 +295,7 @@
     "type": "rss",
     "url": "https://www.besteleven.com/rss/S1N2.xml",
     "lang": "ko",
+    "tz": "Asia/Seoul",
     "enabled": true,
     "summarize": false,
     "weight": 1,
@@ -299,7 +303,7 @@
     "competitions": [],
     "terms_checked": true,
     "robots_checked": true,
-    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거(명시적 허용 아님 — 해석 근거로 사용자가 켜기로 결정): 자사 RSS 안내(https://www.besteleven.com/rssIndex.html) 'B사이트의 운영자는 A라는 사이트의 각종 정보(갱신된 글의 제목, 링크, 주요 내용 등)를 RSS파일을 통해 수집한 다음에 자신이 운영하는 B사이트에 올려놓을 수 있습니다' + 저작권보호정책 2조(https://www.besteleven.com/com/copyright.html) '서비스 내 모든 저작물은 회사의 승낙 없이 복제, 출판, 전송, 배포, 판매, 변형, 방송 등의 행위를 금지' — 제목·링크 게재는 본문 복제가 아니라고 해석. 이용약관(https://www.besteleven.com/com/service.html)에 봇·AI·RSS 조항 없음. 조건: 피드 제목 무수정(엔티티 디코딩·앞뒤 공백 정리만), 표시 링크는 피드 URL 원문 그대로(기사 식별자 idxno 쿼리 보존 — FR-04 정규화에서 지우지 않음), RSS description(본문 첫 300자 절단)은 표시·저장하지 않음(data/는 공개 저장소), 출처 '베스트일레븐' 텍스트+링크, 로고 미사용, 중단 요청 시 즉시 끔(저작권 담당 coolman44@soccerbest11.co.kr). 파싱: pubDate·lastBuildDate는 오프셋 없는 'YYYY-MM-DD HH:mm:ss'(KST로 해석해 UTC 저장). description은 '<베스트일레븐> 이창현 기자…'로 시작(태그처럼 보이는 꺾쇠 — 읽지 않으므로 영향 없음). 중복: besteleven-all이 이 피드 항목을 모두 포함 → 정규화 URL 해시로 합치고, 이 피드에도 있는 URL은 '해외축구' 확정 신호. 피드 20건 ≈ 8.6시간, 유럽 리그 19/20, 한국 선수 5/20. '해외'(/rss/S2N4.xml) 피드는 2026-07-23에 멈춰 미사용. robots: 피드 경로 모든 UA 허용."
+    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거(명시적 허용 아님 — 해석 근거로 사용자가 켜기로 결정): 자사 RSS 안내(https://www.besteleven.com/rssIndex.html) 'B사이트의 운영자는 A라는 사이트의 각종 정보(갱신된 글의 제목, 링크, 주요 내용 등)를 RSS파일을 통해 수집한 다음에 자신이 운영하는 B사이트에 올려놓을 수 있습니다' + 저작권보호정책 2조(https://www.besteleven.com/com/copyright.html) '서비스 내 모든 저작물은 회사의 승낙 없이 복제, 출판, 전송, 배포, 판매, 변형, 방송 등의 행위를 금지' — 제목·링크 게재는 본문 복제가 아니라고 해석. 이용약관(https://www.besteleven.com/com/service.html)에 봇·AI·RSS 조항 없음. 조건: 피드 제목 무수정(엔티티 디코딩·앞뒤 공백 정리만), 표시 링크는 피드 URL 원문 그대로(기사 식별자 idxno 쿼리 보존 — FR-04 정규화에서 지우지 않음), RSS description(본문 첫 300자 절단)은 표시·저장하지 않음(data/는 공개 저장소), 출처 '베스트일레븐' 텍스트+링크, 로고 미사용, 중단 요청 시 즉시 끔(저작권 담당 coolman44@soccerbest11.co.kr). 파싱: pubDate·lastBuildDate는 오프셋 없는 'YYYY-MM-DD HH:mm:ss'(KST로 해석해 UTC 저장). description은 '<베스트일레븐> 이창현 기자…'로 시작(태그처럼 보이는 꺾쇠 — 읽지 않으므로 영향 없음). 중복: besteleven-all이 이 피드 항목을 모두 포함 → 정규화 URL 해시로 합치고, 이 피드에도 있는 URL은 '해외축구' 확정 신호. 피드 20건 ≈ 8.6시간, 유럽 리그 19/20, 한국 선수 5/20. '해외'(/rss/S2N4.xml) 피드는 2026-07-23에 멈춰 미사용. robots: 피드 경로 모든 UA 허용. 날짜 시간대 Asia/Seoul — D34(2026-10-12)."
   },
   {
     "id": "besteleven-all",
@@ -307,6 +311,7 @@
     "type": "rss",
     "url": "https://www.besteleven.com/rss/allArticle.xml",
     "lang": "ko",
+    "tz": "Asia/Seoul",
     "enabled": true,
     "summarize": false,
     "weight": 0.5,
@@ -314,7 +319,7 @@
     "competitions": [],
     "terms_checked": true,
     "robots_checked": true,
-    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거·조건은 besteleven-world와 같음(해석 근거로 켬 · 제목 무수정 · 링크 원문·idxno 보존 · description 미표시·미저장 · pubDate KST 오프셋 없음). 용도(사용자 결정 — 섹션+전체 피드 함께 등록): WORLD 피드(20건 ≈ 8.6시간) 수집 창 보강 — 전체기사 50건 ≈ 50시간. WORLD 항목을 모두 포함 → 정규화 URL 해시로 중복 제거. 혼입: K리그(약 3/50)·대표팀(KOREA 섹션) → M1 코드 필터로 축구 외·K리그 기사 제외. robots: 피드 경로 모든 UA 허용."
+    "note": "2026-10-10 확인(M0-25) · 사용자 결정 2026-10-10(PRD §15 D22·D23). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거·조건은 besteleven-world와 같음(해석 근거로 켬 · 제목 무수정 · 링크 원문·idxno 보존 · description 미표시·미저장 · pubDate KST 오프셋 없음). 용도(사용자 결정 — 섹션+전체 피드 함께 등록): WORLD 피드(20건 ≈ 8.6시간) 수집 창 보강 — 전체기사 50건 ≈ 50시간. WORLD 항목을 모두 포함 → 정규화 URL 해시로 중복 제거. 혼입: K리그(약 3/50)·대표팀(KOREA 섹션) → M1 코드 필터로 축구 외·K리그 기사 제외. robots: 피드 경로 모든 UA 허용. 날짜 시간대 Asia/Seoul — D34(2026-10-12)."
   },
   {
     "id": "sportalkorea-all",

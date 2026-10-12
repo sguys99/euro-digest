@@ -13,9 +13,12 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import type { PublisherDomain } from "@/lib/schema";
+import {
+  FeedItemSchema,
+  type FeedItem,
+  type PublisherDomain,
+} from "@/lib/schema";
 
-import type { FeedItem } from "../scripts/lib/normalize";
 import {
   filterSearchResults,
   loadPublisherDomains,
@@ -272,7 +275,7 @@ describe("filterSearchResults — 호스트 매칭(URL 호스트 기준)", () =>
 // ─── 검색 제목·시각은 표시용 아님 (M0-27) ────────────────────────────────
 
 describe("검색 결과 제목·시각 — 카드 입력으로 그대로 쓸 수 없다", () => {
-  it("통과 결과에는 title·link·publishedAt이 없다 — FeedItem에 대입하면 타입 오류(RSS 제목·og:title로 교체 필요)", () => {
+  it("통과 결과에는 title·publishedAt이 없다 — FeedItem에 대입하면 타입 오류이고 공통 형식 zod도 거부(RSS 제목·og:title로 교체 필요)", () => {
     const [allowed] = filterSearchResults(
       [result("https://www.interfootball.co.kr/news/articleView.html?idxno=9")],
       DOMAINS,
@@ -283,6 +286,7 @@ describe("검색 결과 제목·시각 — 카드 입력으로 그대로 쓸 수
     expect(card).not.toHaveProperty("title");
     expect(card).not.toHaveProperty("link");
     expect(card).not.toHaveProperty("publishedAt");
+    expect(FeedItemSchema.safeParse(allowed).success).toBe(false);
     expect(card).toHaveProperty("titleFromSearch");
     expect(card).toHaveProperty("timeFromSearch");
   });

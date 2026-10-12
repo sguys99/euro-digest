@@ -11,6 +11,7 @@ export * from "./cache";
 export * from "./common";
 export * from "./competition";
 export * from "./configs";
+export * from "./feed-item";
 export * from "./names";
 export * from "./news";
 export * from "./player";

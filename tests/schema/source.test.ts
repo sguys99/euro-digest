@@ -78,6 +78,7 @@ describe("Source — configs/sources.json (부록 A, FR-01)", () => {
       false,
       true,
       false,
+      false,
     ]);
   });
 
@@ -88,6 +89,7 @@ describe("Source — configs/sources.json (부록 A, FR-01)", () => {
         undefined,
         undefined,
         7,
+        undefined,
       ]);
       expect(source).not.toHaveProperty("retentionDays");
     });
@@ -113,6 +115,68 @@ describe("Source — configs/sources.json (부록 A, FR-01)", () => {
         expect(issuePaths(SourceSchema, { ...source, retentionDays })).toEqual([
           "retentionDays",
         ]);
+      },
+    );
+  });
+
+  describe("tz — 피드 날짜 기본 시간대(IANA 이름), 선택 필드 (PRD §15 D34)", () => {
+    it("fixture: 생략한 소스는 undefined, 국내 피드 예시는 Asia/Seoul이 그대로 남는다", () => {
+      expect(sources.map((s) => s.tz)).toEqual([
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        "Asia/Seoul",
+      ]);
+      expect(source).not.toHaveProperty("tz");
+    });
+
+    it.each([
+      "Asia/Seoul",
+      "Europe/Rome",
+      "Europe/London",
+      "Europe/Madrid",
+      "America/New_York",
+      "America/Argentina/Buenos_Aires", // 세 조각
+      "America/Port-au-Prince", // 하이픈
+      "Asia/Kolkata", // Node 22 ICU의 정식 목록(supportedValuesOf)에는 없지만 IANA 이름
+      "Asia/Calcutta", // 별칭도 IANA 이름
+      "UTC", // 시간대 표기 없이 UTC 시각을 쓰는 피드용
+      "Etc/UTC",
+    ])("유효한 IANA 이름 %s는 통과하고 값이 그대로 남는다", (tz) => {
+      const parsed = SourceSchema.safeParse({ ...source, tz });
+      expect(parsed.success).toBe(true);
+      expect(parsed.data?.tz).toBe(tz);
+    });
+
+    it.each([
+      "KST", // 약어 — Intl도 모른다
+      "EST", // 약어 — Intl은 America/Panama로 받아 주지만 거부
+      "GMT",
+      "CET",
+      "+09:00", // 오프셋 — Intl은 받아 주지만 거부
+      "UTC+9",
+      "Etc/GMT-9", // 부호가 반대(= UTC+9)라 실수하기 쉬움
+      "ROK", // 옛 별칭(= Asia/Seoul)
+      "US/Pacific",
+      "EST5EDT",
+      "asia/seoul", // 대소문자
+      "Asia/seoul",
+      "Asia/Seoul ", // 앞뒤 공백
+      " Asia/Seoul",
+      "Asia/Atlantis", // 없는 장소
+      "Asia",
+      "Asia/",
+      "utc",
+      "",
+    ])("IANA 이름이 아닌 %j는 실패한다", (tz) => {
+      expect(issuePaths(SourceSchema, { ...source, tz })).toEqual(["tz"]);
+    });
+
+    it.each([9, null, true, ["Asia/Seoul"]])(
+      "문자열이 아닌 값 %j는 실패한다",
+      (tz) => {
+        expect(issuePaths(SourceSchema, { ...source, tz })).toEqual(["tz"]);
       },
     );
   });

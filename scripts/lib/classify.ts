@@ -6,9 +6,7 @@
  * M1-17이 언어별 키워드·`configs/names.ko.json` 태그·이적 단계·스포일러 규칙으로, M1-14가 중요도(점수화)로 바꾼다.
  * 그때도 이 함수의 입출력 형태(FeedItem + Source → 분류 필드)는 유지한다.
  */
-import type { Category, CompId, Source } from "@/lib/schema";
-
-import type { FeedItem } from "./normalize";
+import type { Category, CompId, FeedItem, Source } from "@/lib/schema";
 
 /** 분류 규칙이 없을 때의 카테고리 */
 export const DEFAULT_CATEGORY: Category = "other";

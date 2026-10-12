@@ -9,7 +9,8 @@
  * M1-03: 호스트별 병렬(같은 호스트 하나씩·동시 상한 4) · 결과·카드는 설정 순서(완료 순서 무관) · 재시도·실패 종류 ·
  * 단계 시간 예산 초과 소스도 RunLog.sources에 `{id, ok:false, items:0}`로 남음. 시각·대기는 가상 시계(feedClock)로 주입한다 —
  * 시간 계산 자체는 tests/feed-collect.test.ts(가짜 타이머).
- * 알려진 한계(M1-09): 국내 피드는 시간대 없는 날짜라 모든 항목이 `no-date`로 건너뛴다 — 여기서는 그 사실을 고정만 한다.
+ * M1-09(D34): 국내 5피드는 시간대 없는 pubDate를 소스 `tz`(Asia/Seoul)로 해석해 모든 항목을 쓴다(공통 형식·시간대 세부는
+ * tests/feed-item.test.ts). 섹션 피드 ⊂ 전체기사 피드라 국내 같은 링크 9쌍이 더해진다.
  */
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import os from "node:os";
@@ -346,8 +347,8 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
     });
   });
 
-  it("소스별 결과 — 받은 항목·쓸 수 있는 항목, 국내 피드는 시간대 없는 날짜라 전부 no-date(M1-09 전 알려진 한계)", async () => {
-    const { deps } = makeDeps();
+  it("소스별 결과 — 받은 항목 = 쓸 수 있는 항목(국내 5피드 포함 — tz Asia/Seoul, M1-09·D34), 건너뛴 항목 없음", async () => {
+    const { deps, records } = makeDeps();
     const outcome = await runCollect(deps);
     const sources = outcome.news.sources;
     expect(sources.map((s) => s.id)).toEqual(FEEDS.map((s) => s.id));
@@ -355,37 +356,62 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
     for (const s of sources) {
       const indexed = RSS_INDEX.sources.find((x) => x.id === s.id)!;
       expect(s.items).toBe(indexed.items.length);
-      if (KOREAN_FEEDS.includes(s.id)) {
-        expect(s.usable).toBe(0);
-        expect(s.skipped).toEqual({ "no-date": s.items });
-      } else {
-        expect(s.usable).toBe(s.items);
-        expect(s.skipped).toEqual({});
-      }
+      expect(s.usable).toBe(s.items);
+      expect(s.skipped).toEqual({});
     }
+    const korean = sources.filter((s) => KOREAN_FEEDS.includes(s.id));
+    expect(korean.map((s) => [s.id, s.usable])).toEqual([
+      ["interfootball-world", 4],
+      ["interfootball-all", 8],
+      ["footballist-football", 4],
+      ["besteleven-world", 5],
+      ["besteleven-all", 7],
+    ]);
+    // 건너뛴 항목이 없으니 no-date·schema 경고도 없다
+    expect(records.filter((r) => r.event === "collect.item.skip")).toEqual([]);
     expect(outcome.news.feedItems).toBe(
       RSS_INDEX.sources.reduce((sum, s) => sum + s.items.length, 0),
     );
     expect(outcome.news.excluded).toEqual(PLAN.excluded);
   });
 
-  it("여러 소스의 같은 링크는 카드 1장 — 설정 순서상 먼저 나온 소스가 갖는다, 제목·링크는 피드 원문", async () => {
+  it("카드 상한 45(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 고유 링크 56건 → 최신순 45장", async () => {
     const { deps, records } = makeDeps();
     const outcome = await runCollect(deps);
     const file = readNews("2026-10-11");
-    const links = file.cards.map((c) => c.src[0]!.u);
-    // 쓸 수 있는 41건 중 같은 링크 4쌍(BBC 피드 사이 3쌍 + BBC 피드 안 1쌍) → 37장
-    expect(file.cards).toHaveLength(37);
-    expect(new Set(links).size).toBe(file.cards.length);
-    expect(new Set(file.cards.map((c) => c.id)).size).toBe(file.cards.length);
-    expect(outcome.news.selected).toBe(37);
+    expect(file.cards).toHaveLength(45);
+    expect(outcome.news.selected).toBe(45);
     expect(
       records.find((r) => r.event === "collect.select.done"),
     ).toMatchObject({
-      usable: 41,
-      unique: 37,
-      duplicateLinks: 4,
-      selected: 37,
+      usable: 69,
+      unique: 56,
+      duplicateLinks: 13,
+      selected: 45,
+      limit: 45,
+    });
+    const times = file.cards.map((c) => Date.parse(c.src[0]!.at));
+    expect([...times].sort((a, b) => b - a)).toEqual(times);
+  });
+
+  it("여러 소스의 같은 링크는 카드 1장 — 설정 순서상 먼저 나온 소스가 갖는다, 제목·링크는 피드 원문", async () => {
+    // 상한을 넉넉히 줘서 고유 링크 전부를 카드로 만든다(상한 적용은 위 테스트)
+    const { deps, records } = makeDeps({ limit: 100 });
+    const outcome = await runCollect(deps);
+    const file = readNews("2026-10-11");
+    const links = file.cards.map((c) => c.src[0]!.u);
+    // 쓸 수 있는 69건 중 같은 링크 13쌍(BBC 피드 사이 3쌍 + BBC 피드 안 1쌍 + 국내 섹션 ⊂ 전체기사 9쌍) → 56장
+    expect(file.cards).toHaveLength(56);
+    expect(new Set(links).size).toBe(file.cards.length);
+    expect(new Set(file.cards.map((c) => c.id)).size).toBe(file.cards.length);
+    expect(outcome.news.selected).toBe(56);
+    expect(
+      records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({
+      usable: 69,
+      unique: 56,
+      duplicateLinks: 13,
+      selected: 56,
     });
 
     // 원제목·링크 무수정(엔티티 디코딩·앞뒤 공백 정리만) — 원문 항목은 fixture index에서 찾는다
@@ -411,6 +437,26 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
       c.src[0]!.u.includes("/articles/ckrey77jq1n7o"),
     )!;
     expect(ucl.comp).toEqual(["UCL"]);
+
+    // 국내: 섹션 피드(설정 앞)와 전체기사 피드에 함께 있는 링크 → 섹션 피드 카드(출처명은 매체명), 발행 시각은 KST → UTC
+    const interfootball = file.cards.find(
+      (c) =>
+        c.src[0]!.u ===
+        "https://www.interfootball.co.kr/news/articleView.html?idxno=696174",
+    )!;
+    expect(interfootball).toMatchObject({
+      lang: "ko",
+      ai: false,
+      s: [],
+      src: [
+        {
+          n: "인터풋볼",
+          u: "https://www.interfootball.co.kr/news/articleView.html?idxno=696174",
+          at: "2026-10-11T04:55:17.000Z", // 2026-10-11 13:55:17 KST
+          tier: 3,
+        },
+      ],
+    });
   });
 
   it("카드 상한(슬라이스 기본 5)은 소스를 합친 뒤 최신순으로 적용한다", async () => {

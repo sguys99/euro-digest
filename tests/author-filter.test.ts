@@ -306,7 +306,7 @@ describe("prepareSourceItems — 정규화 → 작성자 필터 (fixtures/rss)",
       await parseFeedXml(DAILY_BRIEFING_XML),
       source,
     );
-    expect(items.map((i) => i.link)).toEqual([
+    expect(items.map((i) => i.url)).toEqual([
       "https://thedailybriefing.io/p/florian-wirtz-transfer-bayern-barcelona-real-madrid",
     ]);
     expect(items[0]!.authors).toEqual(["Mark Brus"]);
@@ -334,7 +334,7 @@ describe("prepareSourceItems — 정규화 → 작성자 필터 (fixtures/rss)",
       lang: "en",
       author: "Mark Brus",
     });
-    expect(items.map((i) => i.link)).toEqual(["https://example.com/1"]);
+    expect(items.map((i) => i.url)).toEqual(["https://example.com/1"]);
     expect(skipped).toEqual({ "no-date": 1, author: 1 });
   });
 

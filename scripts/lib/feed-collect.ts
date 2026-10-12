@@ -25,6 +25,11 @@
  *   `{id, ok, items}`만 들어간다(호출부) — 오류 종류는 메모리 결과와 로그에만 있다. 응답 본문은 어디에도 남기지 않는다.
  *   실패 소스 이슈는 만들지 않는다(일시 실패마다 이슈를 만들면 소음이 크다) — 연속 실패·0건 이슈는 M1-11.
  *
+ * ── 정규화·공통 형식 (M1-09) ─────────────────────────────────────────────
+ *   파싱한 항목은 scripts/lib/normalize.ts가 공통 형식(`FeedItemSchema`, FR-03 — 본문 필드 불가 FR-02)으로 바꾸고 항목마다
+ *   검증한다. 시간대 없는 피드 날짜는 소스 `tz`(D34)로만 해석한다. 건너뛴 항목은 이유별로 `skipped`에 세고, `title-too-long`·
+ *   `no-date`(소스 tz 포함)·`schema`(이슈 경로·코드만)는 `collect.item.skip` warn 로그를 남긴다 — 원제목·링크는 로그에 넣지 않는다.
+ *
  * ── 작성자 필터 (M1-04) ─────────────────────────────────────────────────
  *   소스에 `author`가 있으면 정규화 직후 작성자 일치 항목만 남긴다(scripts/lib/author-filter.ts). 뺀 건수는 `skipped.author`로
  *   집계하고 `collect.item.skip`(reason author) 로그를 남긴다 — 쓸 수 있는 항목이 전부 빠지면 warn(피드 작성자 표기가 바뀌었을
@@ -32,7 +37,7 @@
  *
  * 시각·대기(`FeedClock`)와 fetch는 주입한다. 요청 타임아웃은 전역 setTimeout을 쓴다(테스트는 가짜 타이머).
  */
-import type { Source } from "@/lib/schema";
+import type { FeedItem, Source } from "@/lib/schema";
 
 import {
   AUTHOR_SKIP_REASON,
@@ -42,7 +47,7 @@ import {
 import type { Logger } from "./logger";
 import {
   normalizeFeedItems,
-  type FeedItem,
+  type NormalizeSource,
   type SkipReason,
 } from "./normalize";
 import {
@@ -508,20 +513,29 @@ export async function collectFeedSources(
 }
 
 /**
- * 파싱한 항목 → 정규화 → 작성자 필터(소스에 `author`가 있을 때). 순수 함수.
- * 건너뛴 이유별 건수는 정규화 사유 + `author`(필터로 뺀 수, 0이면 키 없음)다.
+ * 파싱한 항목 → 정규화(공통 형식 zod 검증, 소스 `tz`로 시간대 없는 날짜 해석 — M1-09) → 작성자 필터(소스에 `author`가
+ * 있을 때). 순수 함수. 건너뛴 이유별 건수는 정규화 사유 + `author`(필터로 뺀 수, 0이면 키 없음)다.
+ * `schemaIssues`는 `schema` 사유로 뺀 항목의 이슈 경로·코드(로그용, 값 없음).
  */
 export function prepareSourceItems(
   raws: readonly RawFeedItem[],
-  source: Pick<Source, "id" | "lang" | "author">,
-): { items: FeedItem[]; skipped: Partial<Record<ItemSkipReason, number>> } {
+  source: NormalizeSource & Pick<Source, "author">,
+): {
+  items: FeedItem[];
+  skipped: Partial<Record<ItemSkipReason, number>>;
+  schemaIssues: string[];
+} {
   const normalized = normalizeFeedItems(raws, source);
   const filtered = filterByAuthor(normalized.items, source.author);
   const skipped: Partial<Record<ItemSkipReason, number>> = {
     ...normalized.skipped,
   };
   if (filtered.excluded > 0) skipped[AUTHOR_SKIP_REASON] = filtered.excluded;
-  return { items: filtered.kept, skipped };
+  return {
+    items: filtered.kept,
+    skipped,
+    schemaIssues: normalized.schemaIssues,
+  };
 }
 
 /** 소스 1개 — 받기(재시도) → 파싱 → 정규화 → 작성자 필터. 받기·파싱 실패는 결과로, 그 밖의 예외는 던진다(runByHost가 격리). */
@@ -603,7 +617,7 @@ async function collectOne(
     };
   }
 
-  const { items, skipped } = prepareSourceItems(raws, source);
+  const { items, skipped, schemaIssues } = prepareSourceItems(raws, source);
   const elapsedMs = clock.now() - started;
   log.info("collect.source.fetch", {
     source: source.id,
@@ -618,6 +632,25 @@ async function collectOne(
       source: source.id,
       reason: "title-too-long",
       count: skipped["title-too-long"],
+    });
+  }
+  if (skipped["no-date"]) {
+    // 날짜 없음·시간대 없는 날짜(소스에 tz 없음)·모르는 약어 — 한 소스가 통째로 빠지면 tz 설정을 확인한다(D34)
+    log.warn("collect.item.skip", {
+      source: source.id,
+      reason: "no-date",
+      count: skipped["no-date"],
+      kept: items.length,
+      tz: source.tz ?? null,
+    });
+  }
+  if (skipped.schema) {
+    // 공통 형식(FR-03) 검증 실패 — 앞 규칙을 통과했는데 걸린 방어선. 경로·코드만 남긴다(값·원문 없음)
+    log.warn("collect.item.skip", {
+      source: source.id,
+      reason: "schema",
+      count: skipped.schema,
+      issues: schemaIssues,
     });
   }
   const authorSkipped = skipped[AUTHOR_SKIP_REASON];

@@ -373,12 +373,71 @@ const RFC822_ZONES: Readonly<Record<string, number>> = {
   PDT: -7 * 60,
 };
 
-/** `[요일, ]DD Mon YYYY HH:MM[:SS] 시간대` (RFC 822/1123 — RSS `pubDate`). 요일은 확인하지 않는다(피드가 자주 틀린다). */
+/**
+ * `[요일, ]DD Mon YYYY HH:MM[:SS][ 시간대]` (RFC 822/1123 — RSS `pubDate`). 요일은 확인하지 않는다(피드가 자주 틀린다).
+ * 시간대가 빠진 값(그룹 7 없음)은 `fallbackTz`가 있을 때만 해석한다.
+ */
 const RFC822_RE =
-  /^(?:[A-Za-z]{3},?\s+)?(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+(\d{2}):(\d{2})(?::(\d{2}))?\s+([A-Za-z]{1,3}|[+-]\d{4})$/;
-/** ISO 8601 + 명시 시간대 (Atom `updated`·`dc:date`) — 초·소수 초 선택, `Z`·`±HH:MM`·`±HHMM`. */
+  /^(?:[A-Za-z]{3},?\s+)?(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+(\d{2}):(\d{2})(?::(\d{2}))?(?:\s+([A-Za-z]{1,3}|[+-]\d{4}))?$/;
+/**
+ * ISO 8601 (Atom `updated`·`dc:date`, 국내 CMS의 `YYYY-MM-DD HH:mm:ss`) — 날짜·시각 구분은 `T` 또는 공백 1칸,
+ * 초·소수 초 선택, 시간대 `Z`·`±HH:MM`·`±HHMM`은 선택(없으면 `fallbackTz`가 있을 때만 해석).
+ */
 const FEED_ISO_RE =
-  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?(Z|[+-]\d{2}:?\d{2})$/i;
+  /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?(Z|[+-]\d{2}:?\d{2})?$/i;
+
+/**
+ * `Source.tz`로 받는 IANA 시간대 이름의 지역(첫 경로 조각) — tzdb의 지리 지역 파일(africa·northamerica·…)과 같다.
+ * `Etc/`(부호가 반대인 `Etc/GMT-9` = UTC+9 같은 함정)·옛 별칭(`ROK`·`US/Pacific`)·약어(`KST`·`EST`)·오프셋(`+09:00`)은
+ * 지역에 없으므로 받지 않는다. 지역 다음 조각은 tzdb 이름처럼 대문자로 시작한다(`Asia/Seoul`, `America/Port-au-Prince`).
+ */
+const IANA_ZONE_RE =
+  /^(?:Africa|America|Antarctica|Arctic|Asia|Atlantic|Australia|Europe|Indian|Pacific)(?:\/[A-Z][A-Za-z0-9_+-]*)+$/;
+
+/** 지역 형식 밖에서 받는 이름 — 시간대 없이 UTC 시각을 쓰는 피드용(`UTC`는 tzdb에서 `Etc/UTC`의 별칭). */
+const IANA_UTC_NAMES: ReadonlySet<string> = new Set(["UTC", "Etc/UTC"]);
+
+/**
+ * `Source.tz`(PRD §15 D34)로 쓸 수 있는 IANA 시간대 이름인가 — 던지지 않는 판별.
+ * 1. `UTC`·`Etc/UTC`는 허용(시간대 표기 없이 UTC 시각을 쓰는 피드).
+ * 2. 그 밖에는 `지역/장소[/세부]` 형식(`IANA_ZONE_RE`)이고, 실행 환경의 시간대 데이터(`Intl`)가 아는 이름이어야 한다.
+ *    `Intl`은 `KST`를 모르지만 `EST`(→ America/Panama)·`ROK`·`+09:00`·소문자 `asia/seoul`도 받아 주므로 형식 검사를 먼저 한다.
+ *    `Intl.supportedValuesOf("timeZone")`는 정식 이름만 담고 ICU 버전마다 다르다(Node 22: `Asia/Kolkata`·`Europe/Kyiv`·`UTC`
+ *    없음) — 그래서 목록 대조가 아니라 포매터 생성으로 확인한다. 별칭(`Asia/Calcutta`)도 IANA 이름이라 받는다.
+ * 앞뒤 공백이 있으면 거부한다(설정 파일 오타).
+ */
+export function isIanaTimeZone(name: unknown): name is string {
+  if (typeof name !== "string") return false;
+  if (IANA_UTC_NAMES.has(name)) return true;
+  if (!IANA_ZONE_RE.test(name)) return false;
+  try {
+    formatterFor(name);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 시간대 없는 피드 날짜 필드 → UTC ISO(`fallbackTz` 벽시계로 해석). 달력에 없으면 null.
+ * 서머타임 경계는 `compatible` 규칙(`zonedToUtcIso` 기본값과 같다, `Disambiguation` 참고):
+ *   - 겹치는 시각(가을 fold — 같은 현지 시각이 두 번)은 **먼저 오는 순간**(전환 전 = 서머타임 오프셋).
+ *     예) Europe/Rome 2026-10-25 02:30 → CEST(+2) `00:30Z` (CET 쪽 `01:30Z`가 아님)
+ *   - 없는 시각(봄 gap)은 **전환 전 오프셋으로 해석해 앞으로 민다**(간격만큼 늦은 현지 시각이 된다).
+ *     예) Europe/Rome 2027-03-28 02:30 → CET(+1)로 읽은 `01:30Z` (= 03:30 CEST)
+ *   근거: RFC 5545 §3.3.5·Temporal 기본값과 같고, 올바른 형식이면 던지지 않아 한 건의 경계 시각이 수집을 멈추지 않는다.
+ *   피드 시각이 1시간 어긋나도 그 피드 안 순서·수집 창(M1-10)에 주는 영향은 작다.
+ */
+function feedLocalFieldsToIso(
+  fields: [number, number, number, number, number, number, number],
+  fallbackTz: string,
+  label: string,
+): string | null {
+  const [y, month, day, h, mi, s, ms] = fields;
+  if (!isValidYmd(y, month, day) || !isValidHms(h, mi, s)) return null;
+  const wall = fieldsToMs(y, month, day, h, mi, s);
+  return toIso(localFieldsToUtcMs(wall, fallbackTz, "compatible", label) + ms);
+}
 
 /** `+0200`·`-05:30` → 분. 형식이 틀리면 NaN. */
 function numericOffsetMinutes(zone: string): number {
@@ -404,14 +463,29 @@ function feedFieldsToIso(
 }
 
 /**
- * 피드 날짜(RSS `pubDate` RFC 822/1123, Atom ISO 8601) → 저장용 UTC ISO(`toISOString()` 형식).
- * **시간대가 적힌 값만** 받는다 — `GMT`·`UT`·`UTC`·`Z`·`±HHMM`·`±HH:MM`·RFC 822 미국 약어(EST·EDT·CST·CDT·MST·MDT·PST·PDT).
- * 시간대가 없는 값(국내 피드의 오프셋 없는 KST 등)·모르는 약어(BST 등)·달력에 없는 날짜·빈 값은 추측하지 않고 null.
- * 소스별 기본 시간대 보정(국내 피드 KST)은 M1-09 정규화에서 정한다. 앞뒤 공백은 무시한다.
+ * 피드 날짜(RSS `pubDate` RFC 822/1123, Atom ISO 8601, 국내 CMS `YYYY-MM-DD HH:mm:ss`) → 저장용 UTC ISO(`toISOString()` 형식).
+ *
+ * - **시간대가 적힌 값**은 그 시간대로 계산한다 — `GMT`·`UT`·`UTC`·`Z`·`±HHMM`·`±HH:MM`·RFC 822 미국 약어
+ *   (EST·EDT·CST·CDT·MST·MDT·PST·PDT). `fallbackTz`가 있어도 쓰지 않는다(PRD §15 D34).
+ * - **시간대가 없는 값**은 `fallbackTz`(소스의 `Source.tz`, IANA 이름)가 있을 때만 그 시간대의 현지 시각으로 해석한다.
+ *   서머타임 경계(없는 시각·겹치는 시각) 규칙은 `feedLocalFieldsToIso`. `fallbackTz`가 없으면 추측하지 않고 null.
+ * - 모르는 약어(BST·CEST·KST 등 — 시간대가 "적혀 있지만 모르는" 값)·날짜만·달력에 없는 날짜·빈 값은 `fallbackTz`와
+ *   무관하게 null. 앞뒤 공백은 무시한다.
+ * - `fallbackTz`가 IANA 이름이 아니면(`isIanaTimeZone`) 날짜와 무관하게 `TimeInputError` — 설정 오류는 조용히 넘기지 않는다
+ *   (`configs/sources.json`은 SourceSchema가 먼저 막는다).
  * 예) "Sat, 10 Oct 2026 19:24:23 GMT" → "2026-10-10T19:24:23.000Z",
- *     "Sun, 11 Oct 2026 02:43:46 +0900" → "2026-10-10T17:43:46.000Z", "Sat, 10 Oct 2026 20:00:00 BST" → null
+ *     "Sun, 11 Oct 2026 02:43:46 +0900" → "2026-10-10T17:43:46.000Z", "Sat, 10 Oct 2026 20:00:00 BST" → null,
+ *     ("2026-10-11 13:55:17", "Asia/Seoul") → "2026-10-11T04:55:17.000Z", ("2026-10-11 13:55:17") → null
  */
-export function parseFeedDate(raw: string | null | undefined): string | null {
+export function parseFeedDate(
+  raw: string | null | undefined,
+  fallbackTz?: string,
+): string | null {
+  if (fallbackTz !== undefined && !isIanaTimeZone(fallbackTz)) {
+    throw new TimeInputError(
+      `피드 날짜 기본 시간대가 IANA 이름이 아님: ${quote(fallbackTz)}`,
+    );
+  }
   if (typeof raw !== "string") return null;
   const s = raw.trim();
   if (s === "") return null;
@@ -422,43 +496,49 @@ export function parseFeedDate(raw: string | null | undefined): string | null {
       (rfc[2] ?? "").toLowerCase() as (typeof MONTHS_EN)[number],
     );
     if (monthIndex < 0) return null;
-    const zone = rfc[7] ?? "";
+    const sec = rfc[6] === undefined ? 0 : group(rfc, 6);
+    const fields: [number, number, number, number, number, number, number] = [
+      group(rfc, 3),
+      monthIndex + 1,
+      group(rfc, 1),
+      group(rfc, 4),
+      group(rfc, 5),
+      sec,
+      0,
+    ];
+    const zone = rfc[7];
+    if (zone === undefined) {
+      return fallbackTz === undefined
+        ? null
+        : feedLocalFieldsToIso(fields, fallbackTz, s);
+    }
     const offset = /^[+-]/.test(zone)
       ? numericOffsetMinutes(zone)
       : (RFC822_ZONES[zone.toUpperCase()] ?? Number.NaN);
-    const sec = rfc[6] === undefined ? 0 : group(rfc, 6);
-    return feedFieldsToIso(
-      [
-        group(rfc, 3),
-        monthIndex + 1,
-        group(rfc, 1),
-        group(rfc, 4),
-        group(rfc, 5),
-        sec,
-        0,
-      ],
-      offset,
-    );
+    return feedFieldsToIso(fields, offset);
   }
 
   const iso = FEED_ISO_RE.exec(s);
   if (iso) {
-    const zone = iso[8] ?? "";
-    const offset = zone.toUpperCase() === "Z" ? 0 : numericOffsetMinutes(zone);
     const sec = iso[6] === undefined ? 0 : group(iso, 6);
     const ms = Number((iso[7] ?? "").padEnd(3, "0").slice(0, 3));
-    return feedFieldsToIso(
-      [
-        group(iso, 1),
-        group(iso, 2),
-        group(iso, 3),
-        group(iso, 4),
-        group(iso, 5),
-        sec,
-        ms,
-      ],
-      offset,
-    );
+    const fields: [number, number, number, number, number, number, number] = [
+      group(iso, 1),
+      group(iso, 2),
+      group(iso, 3),
+      group(iso, 4),
+      group(iso, 5),
+      sec,
+      ms,
+    ];
+    const zone = iso[8];
+    if (zone === undefined) {
+      return fallbackTz === undefined
+        ? null
+        : feedLocalFieldsToIso(fields, fallbackTz, s);
+    }
+    const offset = zone.toUpperCase() === "Z" ? 0 : numericOffsetMinutes(zone);
+    return feedFieldsToIso(fields, offset);
   }
   return null;
 }
@@ -596,10 +676,28 @@ export function zonedToUtcIso(
   if (!isValidYmd(y, month, day) || !isValidHms(h, mi, sec)) {
     throw new TimeInputError(`달력에 없는 현지 시각: ${quote(localDateTime)}`);
   }
+  return toIso(
+    localFieldsToUtcMs(
+      fieldsToMs(y, month, day, h, mi, sec),
+      timeZone,
+      disambiguation,
+      localDateTime,
+    ),
+  );
+}
 
+/**
+ * 현지 벽시계(UTC로 읽은 epoch ms `t`) → 실제 순간(epoch ms). 서머타임 경계 규칙은 `Disambiguation`.
+ * 달력 검사는 호출부가 한다. `label`은 오류 메시지용 원문.
+ */
+function localFieldsToUtcMs(
+  t: number,
+  timeZone: string,
+  disambiguation: Disambiguation,
+  label: string,
+): number {
   // 벽시계를 UTC로 읽은 값 t에서 오프셋을 빼면 실제 순간 u = t − offset(u)이다.
   // 전환은 하루에 많아야 한 번이므로 t ± 1일의 오프셋이 전환 전·후 오프셋 후보를 모두 덮는다.
-  const t = fieldsToMs(y, month, day, h, mi, sec);
   const offsetBefore = offsetAt(t - DAY_MS, timeZone);
   const offsetAfter = offsetAt(t + DAY_MS, timeZone);
   const candidates = [...new Set([offsetBefore, offsetAfter])].map(
@@ -609,7 +707,7 @@ export function zonedToUtcIso(
     .filter((u) => offsetAt(u, timeZone) === t - u)
     .sort((a, b) => a - b);
 
-  if (valid.length === 1) return toIso(valid[0] as number);
+  if (valid.length === 1) return valid[0] as number;
 
   const sorted = [...candidates].sort((a, b) => a - b);
   const earliest = sorted[0] as number;
@@ -618,18 +716,18 @@ export function zonedToUtcIso(
     // gap: 시계가 앞으로 가서 이 현지 시각이 없다. 전환 전 오프셋(더 작음)으로 해석한 값이 latest.
     if (disambiguation === "reject") {
       throw new TimeInputError(
-        `서머타임 시작으로 존재하지 않는 현지 시각: ${quote(localDateTime)} (${timeZone})`,
+        `서머타임 시작으로 존재하지 않는 현지 시각: ${quote(label)} (${timeZone})`,
       );
     }
-    return toIso(disambiguation === "earlier" ? earliest : latest);
+    return disambiguation === "earlier" ? earliest : latest;
   }
   // fold: 시계가 뒤로 가서 같은 현지 시각이 두 번 있다(먼저 = 서머타임 쪽).
   if (disambiguation === "reject") {
     throw new TimeInputError(
-      `서머타임 종료로 두 번 나타나는 현지 시각: ${quote(localDateTime)} (${timeZone})`,
+      `서머타임 종료로 두 번 나타나는 현지 시각: ${quote(label)} (${timeZone})`,
     );
   }
-  return toIso(disambiguation === "later" ? latest : earliest);
+  return disambiguation === "later" ? latest : earliest;
 }
 
 // ─── 공개 API: 날짜·구간 ────────────────────────────────────────────────────
