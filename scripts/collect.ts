@@ -9,6 +9,8 @@
  * 환경변수는 package.json의 `node --env-file-if-exists=.env.local`이 로컬에서만 채운다(CI는 Actions가 주입).
  * 값은 읽기만 하고 출력하지 않는다. 실행 환경: Actions(GITHUB_ACTIONS=true) = prod → data/runs.json,
  * 로컬 = dev → data/runs-dev.json (CLAUDE.md §6.3).
+ * SOURCE_HEALTH_FILE(선택, Actions가 `$RUNNER_TEMP/source-health.json`으로 준다): 소스 건강도 사건(이슈 payload 배열)을
+ * 쓸 파일 — 이슈는 collect.yml의 다음 단계가 만든다(M1-11). 없으면(로컬) 사건을 로그로만 남긴다.
  */
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -21,6 +23,7 @@ import {
   runCollect,
 } from "./lib/collect-run";
 import { resolveBudgets } from "./lib/cost";
+import { actionsRunUrl } from "./lib/github-issues";
 import { createLlmClient, resolveLlmModel } from "./lib/llm";
 import { createLogger } from "./lib/logger";
 import { feedUserAgent } from "./lib/rss";
@@ -67,6 +70,8 @@ async function main(): Promise<number> {
     createLlm: (model) => createLlmClient({ mode: args.llmMode, model, env }),
     logger,
     print: (text) => console.log(text),
+    healthReportPath: env.SOURCE_HEALTH_FILE?.trim() || null,
+    runUrl: actionsRunUrl(env),
   });
   return outcome.exitCode;
 }

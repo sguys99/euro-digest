@@ -13,7 +13,28 @@
     "costUsd": 0.0421,
     "apiCalls": { "footballData": 18, "apiFootball": 12 },
     "sources": [
-      { "id": "bbc-football", "ok": true, "items": 38 },
+      { "id": "bbc-football", "ok": true, "items": 38, "usable": 21 },
+      { "id": "bbc-champions-league", "ok": true, "items": 20, "usable": 0 },
+      { "id": "relevo", "ok": false, "items": 0, "error": "http-5xx" },
+      { "id": "besteleven-all", "ok": false, "items": 0, "error": "budget" }
+    ],
+    "status": "partial"
+  },
+  {
+    "runId": "2026-10-08T21-30-00Z-collect",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-10-08T21:30:02Z",
+    "finishedAt": "2026-10-08T21:49:10Z",
+    "collected": 40,
+    "clusters": 22,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": { "in": 3400, "out": 1100, "cacheRead": 0, "cacheWrite": 0 },
+    "costUsd": 0.0048,
+    "apiCalls": { "footballData": 1, "apiFootball": 0 },
+    "sources": [
+      { "id": "bbc-football", "ok": true, "items": 40 },
       { "id": "google-news-ko", "ok": false, "items": 0 }
     ],
     "status": "partial"

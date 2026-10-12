@@ -16,6 +16,9 @@
 #   성공 이력으로 세면 skip이 skip을 부르는 연쇄가 생기기 때문이다 — 자세한 근거는 scripts/lib/collect-guard.ts.
 #   그래서 collect job의 name을 바꾸면 scripts/lib/collect-guard.ts의 COLLECT_JOB_NAME도 바꿔야 한다(테스트가 확인).
 # - 검증·빌드가 실패하면 커밋하지 않는다: 커밋 단계가 validate·build 뒤에 있어 앞 단계 실패 시 실행되지 않는다.
+# - 소스 이슈(M1-11, FR-11·FR-152, PRD §10·§15 D35): 수집 단계가 소스 건강도 사건(source-broken payload 배열)을
+#   $RUNNER_TEMP 파일에 쓰고, 바로 다음 단계가 그 파일로 소스별 이슈 하나(fingerprint source:<id>)를 만들거나 댓글을 단다.
+#   쓰기 토큰은 그 단계 env로만 넘긴다(env 수준 격리 — 한계는 그 단계 주석). 실행 자체의 실패 보고(report-failure)와는 별개다.
 name: Collect
 run-name: "Collect (${{ github.event_name }}${{ inputs.force && ', force' || '' }}${{ inputs.limit && format(', limit {0}', inputs.limit) || '' }})"
 
@@ -94,6 +97,7 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write # data/·public/ 커밋 push
+      issues: write # 소스 이슈 보고 단계만 env로 토큰을 받는다(M1-11 — env 수준 격리, 한계는 그 단계 주석)
     outputs:
       committed: ${{ steps.commit.outputs.committed }}
       sha: ${{ steps.commit.outputs.sha }}
@@ -128,19 +132,55 @@ jobs:
 
       # ①수집 → ②정제·분류(코드) → ③데이터 브리핑(LLM). 비밀값은 이 단계에만 넘긴다(설치·검증·빌드 단계에는 노출하지 않는다).
       # limit 입력은 셸에 직접 펼치지 않고 env로 넘긴다(스크립트 주입 방지). 값 검증은 collect 스크립트가 한다.
+      # GitHub 토큰은 env로 넘기지 않는다 — 소스 건강도 사건은 SOURCE_HEALTH_FILE(JSON)로만 내보내고 이슈는 다음 단계가 만든다.
       - name: 수집 · 정제·분류 · 브리핑 (npm run collect)
+        id: collect
         timeout-minutes: 22
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           FOOTBALL_DATA_API_KEY: ${{ secrets.FOOTBALL_DATA_API_KEY }}
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           LIMIT: ${{ inputs.limit }}
+          SOURCE_HEALTH_FILE: ${{ runner.temp }}/source-health.json
         run: |
           args=()
           if [ -n "$LIMIT" ]; then
             args+=(--limit "$LIMIT")
           fi
           npm run collect -- "${args[@]}"
+
+      # 소스 이슈 (M1-11 — FR-11·FR-152, PRD §10 "수집 일부 실패 → 이슈", §15 D35): 수집 단계가 쓴 사건 파일로 소스별 이슈
+      # 하나(라벨 source-broken, fingerprint source:<id>)를 새로 만들거나 열린 이슈에 댓글을 단다. 사건 = 이번 실행의 소스
+      # 실패(budget 제외) · 실패·빈 피드 3회 연속 · 새 기사 없음 7회 연속(판정 scripts/lib/source-health.ts).
+      # - 조건: 수집 단계가 실행됐으면 성공·실패와 상관없이 돈다(exit 1이어도 연속 사건은 남긴다 — 모든 소스가 실패한
+      #   실행은 원인이 하나라 소스별 실패 사건을 내지 않고 report-failure의 pipeline-failure 이슈 하나가 맡는다, FR-152).
+      #   수동 취소(cancelled)이거나 수집 단계가 돌지 않았으면(앞 단계 실패로 skipped) 돌지 않는다.
+      # - 사건 파일이 없거나 빈 배열(`[]`)이면 셸에서 끝낸다 — 토큰을 가진 node 프로세스를 띄우지 않는다(평소 대부분의 날).
+      # - 위치: 수집 바로 뒤 — 토큰을 받는 단계 앞에서 도는 서드파티 코드를 줄이고(검증·빌드 전), 검증·빌드·커밋의
+      #   성공 여부와 무관하게 보고한다. deploy job은 어차피 이 job 전체가 끝나기를 기다린다.
+      # - 토큰 격리는 env 수준뿐이다: 토큰(issues: write — job 권한이라 contents: write도 같은 토큰)은 이 단계 env로만
+      #   넘기지만, 같은 job의 앞 단계(npm ci·수집)에서 돈 코드가 작업 디렉터리 파일(scripts/·node_modules)을 바꾸면
+      #   이 단계가 그 코드를 토큰과 함께 실행하므로 막지 못한다. 커밋 단계의 contents: write와 같은 수준의 위험이다
+      #   (완전히 나누려면 별도 job + 새 체크아웃 + 아티팩트로 사건 파일 전달 — report-failure job과 같은 구조).
+      # - continue-on-error: 이슈 보고 실패가 검증·빌드·커밋·배포를 막거나 job 결과를 뒤집지 않게 한다. 실패는 error 주석과
+      #   로그로만 남는다(job은 성공이라 report-failure는 돌지 않는다) — 연속 사건은 다음 실행이 다시 낸다.
+      - name: 소스 이슈 보고 (실패 · 건강도)
+        if: ${{ !cancelled() && steps.collect.outcome != 'skipped' }}
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SOURCE_HEALTH_FILE: ${{ runner.temp }}/source-health.json
+        run: |
+          if [ ! -s "$SOURCE_HEALTH_FILE" ]; then
+            echo "소스 건강도 사건 파일 없음 — 수집 단계가 판정 전에 끝났거나 수집한 소스가 없습니다. 보고를 건너뜁니다."
+            exit 0
+          fi
+          if [ "$(tr -d '[:space:]' < "$SOURCE_HEALTH_FILE")" = "[]" ]; then
+            echo "보고할 소스 사건 없음(빈 배열) — 건너뜁니다."
+            exit 0
+          fi
+          node --import tsx scripts/report-issue.ts --kind source-broken --payload-file "$SOURCE_HEALTH_FILE"
 
       # ④ 발행 전 검증 게이트(FR-153). 실패하면 아래 빌드·커밋으로 가지 않는다 → 전날 사이트 유지.
       #    지금은 configs·data 스키마·교차 참조(M0-17). 카드 수 하한·링크 형식 등 발행 게이트는 M1-25에서 추가.

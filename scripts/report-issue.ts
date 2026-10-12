@@ -1,6 +1,6 @@
 /**
  * GitHub 이슈 보고 CLI (M0-22, FR-152) — 같은 원인의 열린 이슈가 있으면 댓글, 없으면 새 이슈.
- * 워크플로(collect.yml `report-failure` job)에서 쓰기 쉽게 만든 얇은 진입점이다. 판단·템플릿은
+ * 워크플로(collect.yml `report-failure` job·소스 이슈 단계)에서 쓰기 쉽게 만든 얇은 진입점이다. 판단·템플릿은
  * scripts/lib/github-issues.ts, 인자·환경변수 해석은 scripts/lib/report-issue-cli.ts(순수 함수).
  *
  * 예
@@ -10,33 +10,154 @@
  *   # 로컬 미리보기: GET만 보내고(공개 저장소는 토큰 없이) 만들 이슈·댓글을 출력
  *   GITHUB_REPOSITORY=sguys99/euro-digest NEEDS_JSON='{"collect":{"result":"failure"}}' \
  *     node --import tsx scripts/report-issue.ts --kind pipeline-failure --workflow collect --dry-run
- *   # 파일 payload
+ *   # 파일 payload (단건 객체 또는 배열 — 배열은 항목마다 따로 보고)
  *   node --import tsx scripts/report-issue.ts --kind source-broken --payload-file payload.json --dry-run
+ *   # Actions: 수집 단계가 쓴 소스 건강도 사건 파일(source-broken payload 배열, M1-11 · D35)
+ *   GITHUB_TOKEN=… node --import tsx scripts/report-issue.ts --kind source-broken --payload-file "$SOURCE_HEALTH_FILE"
  *
- * 종료 코드: 생성·댓글·dry-run 성공 0, 인자·payload·API 오류 1(워크플로는 셸 폴백으로 넘어간다).
- * 토큰·응답 본문은 출력하지 않는다.
+ * 종료 코드: 생성·댓글·dry-run 성공 0(일괄은 전부 성공 또는 빈 배열), 인자·payload·API 오류 1(일괄은 하나라도 실패 —
+ * 나머지 항목은 계속 보고한다). 토큰·응답 본문은 출력하지 않는다.
  */
 import { appendFileSync, readFileSync } from "node:fs";
 
 import {
   IssueReportError,
+  defaultIssueKey,
   previewReport,
   reportIssue,
   type IssueKind,
   type IssuePayloadInput,
+  type ReportResult,
 } from "./lib/github-issues";
 import { annotate, createLogger, sanitizeText } from "./lib/logger";
 import {
   REPORT_ISSUE_USAGE,
+  formatBatchResult,
+  formatBatchSummary,
+  formatDroppedWarning,
   formatPreview,
   formatReportResult,
   formatReportSummary,
   parseReportIssueArgs,
   readReportEnv,
   resolveReportInput,
+  type BatchTally,
+  type ReportEnv,
 } from "./lib/report-issue-cli";
 
 const TAG = "[report-issue]";
+
+/** 일괄 보고에서 항목 사이 간격 — GitHub는 생성 요청 사이에 1초 이상 두기를 권한다(2차 한도) */
+const BATCH_GAP_MS = 1_000;
+
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+function appendSummary(text: string): void {
+  const summaryFile = process.env.GITHUB_STEP_SUMMARY;
+  if (!summaryFile) return;
+  try {
+    appendFileSync(summaryFile, text);
+  } catch {
+    // 요약 기록 실패는 보고 성공을 뒤집지 않는다(폴백이 중복 이슈를 만들지 않게 exit 0 유지)
+  }
+}
+
+/** 실패 항목 표시용 원인 키 — payload가 깨졌으면 순번 */
+function labelFor(kind: IssueKind, payload: unknown, index: number): string {
+  try {
+    return defaultIssueKey(kind, payload as IssuePayloadInput<IssueKind>);
+  } catch {
+    return `#${index + 1}`;
+  }
+}
+
+async function reportBatch(
+  kind: IssueKind,
+  payloads: readonly unknown[],
+  dropped: number,
+  env: ReportEnv,
+  dryRun: boolean,
+  now: Date,
+): Promise<number> {
+  const log = createLogger({ scope: "issues" });
+  if (dropped > 0) {
+    // 상한을 넘은 뒤쪽 항목은 보고하지 않는다 — 앞 항목은 그대로 보고(전체 거부보다 덜 잃는다)
+    console.warn(`${TAG} ${formatDroppedWarning(dropped)}`);
+    annotate("warning", formatDroppedWarning(dropped), {
+      title: "이슈 일괄 보고 상한 초과",
+    });
+  }
+  if (payloads.length === 0) {
+    console.log(
+      formatBatchResult(kind, { created: 0, commented: 0, failed: 0 }),
+    );
+    if (!dryRun) appendSummary(formatBatchSummary(kind, []));
+    return 0;
+  }
+  if (!dryRun && !env.repo) {
+    console.error(`${TAG} GITHUB_REPOSITORY가 필요합니다 (owner/name)`);
+    return 1;
+  }
+
+  const tally: BatchTally = { created: 0, commented: 0, failed: 0 };
+  const items: Array<
+    | { ok: true; result: ReportResult }
+    | { ok: false; label: string; error: string }
+  > = [];
+  for (const [index, payload] of payloads.entries()) {
+    if (index > 0 && !dryRun) await sleep(BATCH_GAP_MS);
+    const label = labelFor(kind, payload, index);
+    try {
+      if (dryRun) {
+        const preview = await previewReport({
+          kind,
+          // payload 형식은 github-issues.ts가 zod로 검증한다(잘못되면 IssueReportError)
+          payload: payload as IssuePayloadInput<IssueKind>,
+          ...(env.repo ? { repo: env.repo } : {}),
+          ...(env.token ? { token: env.token } : {}),
+          ...(env.apiUrl ? { apiUrl: env.apiUrl } : {}),
+          now: () => now,
+        });
+        console.log(formatPreview(preview));
+        if (preview.action === "would-create") tally.created += 1;
+        else tally.commented += 1;
+        continue;
+      }
+      const result = await reportIssue({
+        kind,
+        payload: payload as IssuePayloadInput<IssueKind>,
+        repo: env.repo ?? "",
+        token: env.token ?? "",
+        ...(env.apiUrl ? { apiUrl: env.apiUrl } : {}),
+        now: () => now,
+        logger: log,
+      });
+      console.log(formatReportResult(result));
+      annotate(
+        "notice",
+        result.action === "created"
+          ? `새 이슈 #${result.number}: ${result.url}`
+          : `이슈 #${result.number}에 댓글: ${result.commentUrl ?? result.url}`,
+        { title: `이슈 보고 (${label})` },
+      );
+      items.push({ ok: true, result });
+      if (result.action === "created") tally.created += 1;
+      else tally.commented += 1;
+    } catch (error) {
+      if (!(error instanceof IssueReportError)) throw error;
+      // 한 항목의 실패가 나머지 보고를 막지 않는다
+      tally.failed += 1;
+      items.push({ ok: false, label, error: error.message });
+      annotate("error", error.message, { title: `이슈 보고 실패 (${label})` });
+    }
+  }
+  console.log(
+    `${formatBatchResult(kind, tally, dropped)}${dryRun ? " (dry-run — 생성·댓글 요청 없음)" : ""}`,
+  );
+  if (!dryRun) appendSummary(formatBatchSummary(kind, items, dropped));
+  return tally.failed > 0 ? 1 : 0;
+}
 
 async function main(): Promise<number> {
   const parsed = parseReportIssueArgs(process.argv.slice(2));
@@ -68,17 +189,22 @@ async function main(): Promise<number> {
     console.error(`${TAG} ${input.error}`);
     return 1;
   }
-  const { kind, key, payload } = input.value;
+  const { kind, key, payloads, batch, dropped } = input.value;
   const env = readReportEnv(process.env);
-  const log = createLogger({ scope: "issues" });
 
+  if (batch) {
+    return reportBatch(kind, payloads, dropped, env, args.dryRun, now);
+  }
+
+  const payload = payloads[0] as IssuePayloadInput<IssueKind>;
+  const log = createLogger({ scope: "issues" });
   try {
     if (args.dryRun) {
       const preview = await previewReport({
         kind,
         ...(key ? { key } : {}),
         // payload 형식은 github-issues.ts가 zod로 검증한다(잘못되면 IssueReportError)
-        payload: payload as IssuePayloadInput<IssueKind>,
+        payload,
         ...(env.repo ? { repo: env.repo } : {}),
         ...(env.token ? { token: env.token } : {}),
         ...(env.apiUrl ? { apiUrl: env.apiUrl } : {}),
@@ -95,7 +221,7 @@ async function main(): Promise<number> {
     const result = await reportIssue({
       kind,
       ...(key ? { key } : {}),
-      payload: payload as IssuePayloadInput<IssueKind>,
+      payload,
       repo: env.repo,
       token: env.token ?? "",
       ...(env.apiUrl ? { apiUrl: env.apiUrl } : {}),
@@ -110,14 +236,7 @@ async function main(): Promise<number> {
         : `이슈 #${result.number}에 댓글: ${result.commentUrl ?? result.url}`,
       { title: `이슈 보고 (${kind})` },
     );
-    const summaryFile = process.env.GITHUB_STEP_SUMMARY;
-    if (summaryFile) {
-      try {
-        appendFileSync(summaryFile, formatReportSummary(result));
-      } catch {
-        // 요약 기록 실패는 보고 성공을 뒤집지 않는다(폴백이 중복 이슈를 만들지 않게 exit 0 유지)
-      }
-    }
+    appendSummary(formatReportSummary(result));
     return 0;
   } catch (error) {
     if (error instanceof IssueReportError) {

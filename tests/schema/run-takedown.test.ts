@@ -32,6 +32,49 @@ describe("RunLog — data/runs.json · data/runs-dev.json (부록 A, FR-151)", (
     ]);
   });
 
+  it("sources[] 선택 필드 usable(창 안 새 항목 수)·error(실패 종류) — 옛 {id, ok, items} 기록도 유효 (D35)", () => {
+    const runs = validFixture(RunsFileSchema, "data/runs.json");
+    // fixture: 새 기록(usable·error 포함)과 옛 기록(선택 필드 없음)이 함께 통과한다
+    expect(at(runs, 0).sources).toContainEqual({
+      id: "bbc-football",
+      ok: true,
+      items: 38,
+      usable: 21,
+    });
+    expect(at(runs, 0).sources).toContainEqual({
+      id: "besteleven-all",
+      ok: false,
+      items: 0,
+      error: "budget",
+    });
+    expect(at(runs, 1).sources).toEqual([
+      { id: "bbc-football", ok: true, items: 40 },
+      { id: "google-news-ko", ok: false, items: 0 },
+    ]);
+    expect(at(dev.sources, 0).usable).toBe(12);
+  });
+
+  it("usable은 0 이상의 정수, error는 문자열", () => {
+    const withSource = (source: Record<string, unknown>) => ({
+      ...prod,
+      sources: [source],
+    });
+    const base = { id: "bbc-football", ok: true, items: 3 };
+    expect(passes(RunLogSchema, withSource({ ...base, usable: 0 }))).toBe(true);
+    expect(
+      issuePaths(RunLogSchema, withSource({ ...base, usable: -1 })),
+    ).toEqual(["sources.0.usable"]);
+    expect(
+      issuePaths(RunLogSchema, withSource({ ...base, usable: 1.5 })),
+    ).toEqual(["sources.0.usable"]);
+    expect(
+      issuePaths(
+        RunLogSchema,
+        withSource({ id: "x", ok: false, items: 0, error: 503 }),
+      ),
+    ).toEqual(["sources.0.error"]);
+  });
+
   it("job·status 열거값을 검사한다", () => {
     expect(issuePaths(RunLogSchema, { ...prod, job: "deploy" })).toEqual([
       "job",

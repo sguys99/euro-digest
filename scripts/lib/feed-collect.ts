@@ -21,9 +21,10 @@
  *
  * ── 실패 격리·기록 ──────────────────────────────────────────────────────
  *   소스 1개의 어떤 실패(받기·파싱·예상 밖 예외)도 그 소스 결과로만 남고 다른 소스를 막지 않는다. 결과에는 오류 종류
- *   (`errorType`)·HTTP 상태·재시도 횟수·소요 시간을 담고, 구조화 로그로 남긴다. runs.json에는 지금 스키마대로
- *   `{id, ok, items}`만 들어간다(호출부) — 오류 종류는 메모리 결과와 로그에만 있다. 응답 본문은 어디에도 남기지 않는다.
- *   실패 소스 이슈는 만들지 않는다(일시 실패마다 이슈를 만들면 소음이 크다) — 연속 실패·0건 이슈는 M1-11.
+ *   (`errorType`)·HTTP 상태·재시도 횟수·소요 시간을 담고, 구조화 로그로 남긴다. runs.json에는 호출부(collect-run.ts
+ *   `runSourceEntries`)가 `{id, ok, items}` + 성공은 `usable`(수집 창 안 건수)·실패는 `error`(= errorType)를 남긴다
+ *   (PRD §15 D35). 응답 본문·오류 메시지는 어디에도 남기지 않는다. 소스 실패·건강도 이슈는 이 모듈이 아니라
+ *   scripts/lib/source-health.ts(판정) → collect.yml 이슈 단계(보고)가 맡는다(M1-11).
  *
  * ── 정규화·공통 형식 (M1-09) ─────────────────────────────────────────────
  *   파싱한 항목은 scripts/lib/normalize.ts가 공통 형식(`FeedItemSchema`, FR-03 — 본문 필드 불가 FR-02)으로 바꾸고 항목마다
@@ -383,7 +384,7 @@ export type ItemSkipReason = SkipReason | AuthorSkipReason;
 /** 소스 실패 종류 — 받기(rss.ts FeedFetchErrorKind, 예산 소진 `budget` 포함) · 파싱(깨진 XML) · 그 밖의 예외 */
 export type SourceErrorType = FeedFetchErrorKind | "parse" | "unexpected";
 
-/** 피드 소스 1개의 수집 결과 (RunLog.sources는 이 중 id·ok·items만 기록한다) */
+/** 피드 소스 1개의 수집 결과 (RunLog.sources에는 id·ok·items + usable(창 적용 뒤)·error(= errorType)만 기록한다) */
 export interface SourceOutcome {
   id: string;
   ok: boolean;

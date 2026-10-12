@@ -10,8 +10,13 @@
  *   ③ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
  *
  * 실패 격리: 소스 하나의 실패(받기·파싱·예상 밖 오류)는 그 소스만 건너뛴다(상태 partial). 피드 받기는 scripts/lib/feed-collect.ts가
- * 호스트별 병렬·재시도(1회)·단계 시간 예산(90초)으로 하고, 결과는 설정 순서로 돌려준다(M1-03). 실패 소스 이슈는 만들지 않는다 —
- * 연속 실패·0건 이슈는 M1-11이 runs 기록의 소스별 `{id, ok, items}`로 판단한다.
+ * 호스트별 병렬·재시도(1회)·단계 시간 예산(90초)으로 하고, 결과는 설정 순서로 돌려준다(M1-03).
+ * 소스 건강도(M1-11, FR-11, D35): 실행 기록의 소스별 `{id, ok, items, usable?, error?}`와 prod runs.json 이력으로
+ * scripts/lib/source-health.ts가 연속 횟수·7일 집계·이슈로 낼 사건을 정한다. 이 파일은 소스별 한 줄 로그를 남기고, 사건 목록을
+ * `healthReportPath`(Actions: `$RUNNER_TEMP`의 JSON — 환경변수 SOURCE_HEALTH_FILE)에 쓴다. 이슈 생성은 쓰기 토큰을 받는 별도
+ * 워크플로 단계(scripts/report-issue.ts --kind source-broken)가 한다 — 이 단계(서드파티 코드가 도는 곳)에는 토큰을 env로
+ * 넘기지 않는다(env 수준 격리 — 한계는 collect.yml 이슈 단계 주석).
+ * 경로가 없으면(로컬) 파일 없이 "이슈로 낼 사건" 로그만 남긴다. 건강도 단계의 어떤 실패도 수집·발행을 멈추지 않는다.
  * 브리핑 단계(브리핑 설정·football-data·예산·LLM·출력 형식)의 어떤 실패도 뉴스 발행을 멈추지 않는다(FR-26 정신).
  * 뉴스 단계가 통째로 실패하면(소스 설정 오류·수집 대상 0개·모든 소스 실패·기존 파일 손상) exitCode 1 — Actions가
  * 커밋하지 않고 이슈를 만든다.
@@ -20,10 +25,13 @@
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
- * 다음 작업이 갈아끼울 자리: 소스 건강도 이슈(M1-11) · 중복 제거~점수화(M1-12~14) ·
+ * 다음 작업이 갈아끼울 자리: 중복 제거~점수화(M1-12~14) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
  * 계절별 마감(M1-47) · football-data 어댑터(M1-44).
  */
+import { mkdir, writeFile } from "node:fs/promises";
+import path from "node:path";
+
 import {
   CompetitionsFileSchema,
   type NewsFile,
@@ -76,6 +84,7 @@ import {
   type FeedPolicy,
   type SourceOutcome,
 } from "./feed-collect";
+import type { IssuePayloadInput } from "./github-issues";
 import {
   DEFAULT_LLM_MODEL,
   LlmMockFixtureError,
@@ -106,6 +115,13 @@ import {
   SEARCH_EXCLUSION_WARN_REASONS,
   type SearchQueryExclusion,
 } from "./search-queries";
+import {
+  assessSourceHealth,
+  healthIssueKey,
+  healthIssuePayloads,
+  healthLogFields,
+  type SourceHealth,
+} from "./source-health";
 import {
   loadSources,
   planDailySources,
@@ -197,6 +213,13 @@ export interface CollectDeps {
   logger: Logger;
   /** 사람이 읽는 출력(dry 산출물·브리핑 줄) — 구조화 로그와 분리 */
   print: (text: string) => void;
+  /**
+   * 소스 건강도 사건(이슈 payload 배열)을 쓸 파일 — Actions는 `$RUNNER_TEMP/source-health.json`(SOURCE_HEALTH_FILE).
+   * 없으면(로컬) 파일을 쓰지 않고 로그만 남긴다. dry 실행도 쓰지 않는다. (M1-11)
+   */
+  healthReportPath?: string | null;
+  /** 이번 Actions 실행 URL — 이슈 본문의 실행 링크(로컬이면 없음) */
+  runUrl?: string;
 }
 
 export type BriefOutcome =
@@ -261,10 +284,24 @@ export interface NewsOutcome {
   error?: string;
 }
 
+/** 소스 건강도 단계 결과 (M1-11) */
+export interface HealthOutcome {
+  /** 소스별 건강도(수집을 시도한 소스, 설정 순서) */
+  sources: SourceHealth[];
+  /** 이슈로 낼 사건 — `source-broken` payload(소스별 최대 1건) */
+  reports: Array<IssuePayloadInput<"source-broken">>;
+  /** 사건 파일을 쓴 경로(쓰지 않았으면 null) */
+  file: string | null;
+  /** runs.json을 읽지 못해 이번 실행만으로 판정했으면 그 오류 */
+  historyError: string | null;
+}
+
 export interface CollectOutcome {
   runId: string;
   publishDate: string;
   news: NewsOutcome;
+  /** 소스 건강도 — 수집을 시도한 소스가 없거나(설정 오류) 단계가 실패했으면 null */
+  health: HealthOutcome | null;
   brief: BriefOutcome;
   /** 기록한 실행 로그(기록하지 않았으면 null) */
   run: RunLog | null;
@@ -453,10 +490,41 @@ function logWindowApply(log: Logger, stats: WindowStats): void {
   });
 }
 
+/** 뉴스 단계 결과 + 건강도 단계에 넘길 것 */
+interface NewsStageResult {
+  outcome: NewsOutcome;
+  /** 실행 기록에 남길 소스별 결과(설정 순서) */
+  sources: RunLog["sources"];
+  /** 창 계산에 쓴 prod runs.json 읽기 결과(건강도 이력도 같은 값) — 수집 대상이 없으면 null */
+  runsRead: RunsReadResult | null;
+  /** 수집 대상 소스 id → 이름 */
+  sourceNames: Map<string, string>;
+}
+
+/**
+ * 실행 기록의 소스별 결과(D35) — 성공: `usable` = 수집 창 안 항목 수(정규화·작성자 필터·창 적용 뒤, 중복 제거 전),
+ * 실패: `error` = 실패 종류(budget 포함). 응답 본문·오류 메시지는 남기지 않는다.
+ */
+export function runSourceEntries(
+  outcomes: readonly SourceOutcome[],
+  stats: Pick<WindowStats, "bySource">,
+): RunLog["sources"] {
+  return outcomes.map((o) =>
+    o.ok
+      ? {
+          id: o.id,
+          ok: true,
+          items: o.items,
+          usable: stats.bySource[o.id]?.inWindow ?? 0,
+        }
+      : { id: o.id, ok: false, items: 0, error: o.errorType ?? "unexpected" },
+  );
+}
+
 async function runNewsStage(
   deps: CollectDeps,
   ctx: { runId: string; publishDate: string; startedAt: string },
-): Promise<{ outcome: NewsOutcome; sources: RunLog["sources"] }> {
+): Promise<NewsStageResult> {
   const log = deps.logger;
   const empty: NewsOutcome = {
     ok: false,
@@ -484,7 +552,12 @@ async function runNewsStage(
     feedPolicy = resolveFeedPolicy(deps.feedPolicy);
   } catch (error) {
     log.error("collect.source.config", { error: errorText(error) });
-    return { outcome: { ...empty, error: errorText(error) }, sources: [] };
+    return {
+      outcome: { ...empty, error: errorText(error) },
+      sources: [],
+      runsRead: null,
+      sourceNames: new Map(),
+    };
   }
   logSourcePlan(log, plan);
   const search = await runSearchStage(deps, configSources);
@@ -498,13 +571,18 @@ async function runNewsStage(
     return {
       outcome: { ...empty, excluded: plan.excluded, search, error },
       sources: [],
+      runsRead: null,
+      sourceNames: new Map(),
     };
   }
 
   // 수집 시간 창(M1-10, FR-07) — prod runs.json의 직전 성공 실행 기준. dev·dry도 같은 규칙. 읽기 실패는 51시간 + 경고.
+  // 같은 읽기 결과를 소스 건강도 이력(M1-11)에도 쓴다 — 이번 실행을 기록하기 전의 runs.json이다.
+  const runsRead = await readProdRunsForWindow(deps.dataDir);
+  const sourceNames = new Map(plan.feeds.map((s) => [s.id, s.name] as const));
   const window = planCollectWindow({
     now: ctx.startedAt,
-    runs: await readProdRunsForWindow(deps.dataDir),
+    runs: runsRead,
     sourceIds: plan.feeds.map((s) => s.id),
   });
   logWindowPlan(log, window);
@@ -526,11 +604,8 @@ async function runNewsStage(
   const windowed = applyCollectWindow(collected.items, window);
   logWindowApply(log, windowed.stats);
   const allItems = windowed.items;
-  const sources: RunLog["sources"] = outcomes.map((o) => ({
-    id: o.id,
-    ok: o.ok,
-    items: o.items,
-  }));
+  const sources = runSourceEntries(outcomes, windowed.stats);
+  const stage = { sources, runsRead, sourceNames };
   const feedItems = outcomes.reduce((sum, o) => sum + o.items, 0);
   const failed = outcomes.filter((o) => !o.ok);
   const base = {
@@ -547,7 +622,7 @@ async function runNewsStage(
       reason: "all-sources-failed",
       sources: failed.length,
     });
-    return { outcome: { ...empty, ...base, error }, sources };
+    return { outcome: { ...empty, ...base, error }, ...stage };
   }
 
   // 선별(슬라이스): 여러 소스를 합쳐 카드 ID(링크 해시)로 중복을 빼고 최신순 상위 N건 — 같은 링크는 설정 순서상 먼저 나온 소스가 갖는다.
@@ -574,7 +649,7 @@ async function runNewsStage(
     const unchanged = existing !== null && merged.added === 0;
     if (merged.cards.length === 0) {
       log.warn("collect.news.empty", { date: ctx.publishDate });
-      return { outcome: { ...empty, ...base, ok: true }, sources };
+      return { outcome: { ...empty, ...base, ok: true }, ...stage };
     }
     const file = buildNewsFile({
       date: ctx.publishDate,
@@ -609,7 +684,7 @@ async function runNewsStage(
         file: unchanged && !deps.dry ? existing : file,
         path: deps.dry || unchanged ? null : filePath,
       },
-      sources,
+      ...stage,
     };
   } catch (error) {
     log.error("collect.news.fail", {
@@ -623,7 +698,7 @@ async function runNewsStage(
         selected: cards.length,
         error: errorText(error),
       },
-      sources,
+      ...stage,
     };
   }
 }
@@ -833,6 +908,114 @@ async function runBriefStage(
   return { state: "done", inputMatches, lines };
 }
 
+// ─── 소스 건강도 (M1-11) ──────────────────────────────────────────────────
+
+/**
+ * 소스 건강도 — 소스별 한 줄 로그 + 이슈로 낼 사건 목록. 사건 파일은 `healthReportPath`가 있고 dry가 아닐 때만 쓴다
+ * (파일 내용 = `source-broken` payload 배열, scripts/report-issue.ts --kind source-broken --payload-file로 넘긴다).
+ * 판정은 scripts/lib/source-health.ts(순수). 이 단계의 실패는 수집·발행을 멈추지 않는다(호출부가 잡는다).
+ * 연속 횟수는 커밋된 실행 기록(runs.json)만 센다 — 실패해 커밋되지 않은 실행은 빠진다(TODO(M1-27)에서 보완).
+ * 전체 실패 실행(성공 소스 0개)은 소스별 `failed` 사건을 내지 않는다 — pipeline-failure 이슈 하나가 원인을 맡는다(FR-152).
+ */
+async function runHealthStage(
+  deps: CollectDeps,
+  ctx: {
+    runId: string;
+    startedAt: string;
+    sources: RunLog["sources"];
+    outcomes: readonly SourceOutcome[];
+    runsRead: RunsReadResult;
+    sourceNames: ReadonlyMap<string, string>;
+  },
+): Promise<HealthOutcome> {
+  const log = deps.logger;
+  const historyError = ctx.runsRead.ok ? null : ctx.runsRead.error;
+  if (historyError !== null) {
+    // 연속 횟수를 이번 실행만으로 센다 — 이번 실행의 실패 사건은 그대로 낸다(연속 사건은 다음 실행부터 다시 셈)
+    log.warn("collect.health.history-unavailable", {
+      file: "runs.json",
+      error: historyError,
+    });
+  }
+  const statusById = new Map(
+    ctx.outcomes.map((o) => [o.id, o.status ?? null] as const),
+  );
+  const health = assessSourceHealth({
+    run: { runId: ctx.runId, startedAt: ctx.startedAt },
+    current: ctx.sources.map((entry) => ({
+      ...entry,
+      httpStatus: statusById.get(entry.id) ?? null,
+    })),
+    history: ctx.runsRead.ok ? ctx.runsRead.runs : [],
+  });
+  // 소스별 한 줄 요약 — 사건이 있거나 뺐으면 warn
+  for (const h of health) {
+    log[h.event || h.suppressedEvent ? "warn" : "info"](
+      "collect.source.health",
+      healthLogFields(h),
+    );
+  }
+  const suppressed = health.filter((h) => h.suppressedEvent !== null);
+  if (suppressed.length > 0) {
+    // 전체 실패 — 원인이 하나라 소스별 실패 이슈 대신 pipeline-failure 이슈 하나로 보고된다(FR-152)
+    log.warn("collect.health.suppress", {
+      reason: "all-sources-failed",
+      healthEvent: "failed",
+      sources: suppressed.length,
+      kept: health.filter((h) => h.event !== null).length,
+    });
+  }
+  const reports = healthIssuePayloads(health, {
+    sourceNames: ctx.sourceNames,
+    ...(deps.runUrl ? { runUrl: deps.runUrl } : {}),
+  });
+  // 이슈로 낼 사건 — 로컬 실행에서는 이 로그가 결과의 전부다(이슈를 만들지 않는다)
+  for (const report of reports) {
+    log.warn("collect.health.issue", {
+      source: report.sourceId,
+      healthEvent: report.event ?? null,
+      streak: report.streak ?? null,
+      errorType: report.errorType ?? null,
+      key: healthIssueKey(report.sourceId),
+    });
+  }
+  const byEvent: Record<string, number> = {};
+  for (const report of reports) {
+    const key = report.event ?? "unknown";
+    byEvent[key] = (byEvent[key] ?? 0) + 1;
+  }
+  const summary = {
+    sources: health.length,
+    events: reports.length,
+    byEvent,
+    history: historyError === null ? "runs.json" : "unavailable",
+  };
+
+  const target = deps.healthReportPath?.trim() || null;
+  if (target === null || deps.dry) {
+    log.info("collect.health.done", {
+      ...summary,
+      file: null,
+      reason: target === null ? "no-report-path" : "dry",
+    });
+    return { sources: health, reports, file: null, historyError };
+  }
+  try {
+    await mkdir(path.dirname(target), { recursive: true });
+    await writeFile(target, `${JSON.stringify(reports, null, 2)}\n`, "utf8");
+  } catch (error) {
+    // 사건 파일을 못 쓰면 이번 실행의 소스 이슈만 빠진다 — 수집·발행은 계속(연속 사건은 다음 실행이 다시 낸다)
+    log.error("collect.health.fail", {
+      stage: "write",
+      file: target,
+      error: errorText(error),
+    });
+    return { sources: health, reports, file: null, historyError };
+  }
+  log.info("collect.health.done", { ...summary, file: target });
+  return { sources: health, reports, file: target, historyError };
+}
+
 // ─── 전체 ────────────────────────────────────────────────────────────────
 
 /** 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음 = partial, 그 밖 = success */
@@ -875,11 +1058,37 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     date: publishDate,
   });
 
-  const { outcome: news, sources } = await runNewsStage(deps, {
+  const {
+    outcome: news,
+    sources,
+    runsRead,
+    sourceNames,
+  } = await runNewsStage(deps, {
     runId,
     publishDate,
     startedAt,
   });
+
+  // 소스 건강도(M1-11) — 수집을 시도한 소스가 있을 때만. 뉴스 단계가 실패해도(모든 소스 실패) 판정한다.
+  let health: HealthOutcome | null = null;
+  if (runsRead !== null && sources.length > 0) {
+    try {
+      health = await runHealthStage(deps, {
+        runId,
+        startedAt,
+        sources,
+        outcomes: news.sources,
+        runsRead,
+        sourceNames,
+      });
+    } catch (error) {
+      // 방어선 — 건강도 판정의 예상 밖 오류도 수집·발행을 멈추지 않는다.
+      log.error("collect.health.fail", {
+        stage: "unexpected",
+        error: errorText(error),
+      });
+    }
+  }
 
   const sink = {
     results: [] as LlmResult[],
@@ -978,8 +1187,19 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     briefLines: brief.state === "done" ? brief.lines.length : 0,
     apiCalls: sink.apiCalls.footballData,
     llmCalls: sink.results.length,
+    healthEvents: health?.reports.length ?? null,
     exitCode,
   });
 
-  return { runId, publishDate, news, brief, run, runPath, status, exitCode };
+  return {
+    runId,
+    publishDate,
+    news,
+    health,
+    brief,
+    run,
+    runPath,
+    status,
+    exitCode,
+  };
 }

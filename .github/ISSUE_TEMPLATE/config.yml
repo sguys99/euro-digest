@@ -1,6 +1,6 @@
 # 이슈 템플릿 선택 화면 설정 (FR-140, PRD §15 D8)
 # 빈 이슈는 막는다 — 쓰기 권한자(관리자)는 "Blank issue (Maintainers only)"로 계속 열 수 있고,
-# 자동화가 API로 만드는 이슈(pipeline-failure·source-health·ops-report)에는 영향이 없다.
+# 자동화가 API로 만드는 이슈(pipeline-failure·source-broken·ops-report)에는 영향이 없다.
 blank_issues_enabled: false
 contact_links:
   - name: 서비스 소개·출처 정책

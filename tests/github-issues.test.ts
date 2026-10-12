@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import {
+  ISSUE_KINDS,
   IssuePayloadError,
   IssueReportError,
   MAX_BODY_LENGTH,
@@ -16,10 +17,13 @@ import {
   extractFingerprints,
   findMatchingIssue,
   fingerprintMarker,
+  formatSuccessRate,
+  isIssueKind,
   issueFingerprint,
   parseNextLink,
   previewReport,
   reportIssue,
+  sourceIssueKey,
   tryReportIssue,
   type FetchLike,
   type GitHubIssue,
@@ -173,9 +177,9 @@ describe("issueFingerprint", () => {
     const all = new Set([
       issueFingerprint("pipeline-failure", "collect:collect"),
       issueFingerprint("pipeline-failure", "collect:deploy"),
+      issueFingerprint("source-broken", "source:bbc-sport"),
       issueFingerprint("source-broken", "bbc-sport"),
-      issueFingerprint("source-health", "bbc-sport"),
-      issueFingerprint("source-broken", "guardian-football"),
+      issueFingerprint("source-broken", "source:guardian-football"),
     ]);
     expect(all.size).toBe(5);
   });
@@ -212,23 +216,35 @@ describe("defaultIssueKey", () => {
     );
   });
 
-  it("소스 이슈는 소스 ID, 운영 리포트는 ISO 주", () => {
+  it("소스 이슈는 source:<소스 ID>(소스별 이슈 하나 — D35 ③), 운영 리포트는 ISO 주", () => {
     expect(
       defaultIssueKey("source-broken", {
         sourceId: "bbc-sport",
         symptoms: ["파싱 실패"],
       }),
-    ).toBe("bbc-sport");
+    ).toBe("source:bbc-sport");
+    expect(sourceIssueKey("bbc-sport")).toBe("source:bbc-sport");
+    // 사건 종류가 달라도 같은 소스면 같은 원인 키(같은 이슈에 쌓인다)
     expect(
-      defaultIssueKey("source-health", {
+      defaultIssueKey("source-broken", {
         sourceId: "bbc-sport",
-        zeroDays: 3,
-        runs: [{ startedAt: OCCURRED, ok: true, items: 0 }],
+        symptoms: ["0건 수집"],
+        event: "stale-streak",
+        streak: 7,
       }),
-    ).toBe("bbc-sport");
+    ).toBe("source:bbc-sport");
     expect(defaultIssueKey("ops-report", { week: "2026-W41" })).toBe(
       "2026-W41",
     );
+  });
+
+  it("D35 ③: 별도 kind source-health는 없다 — 소스 사건은 모두 source-broken", () => {
+    expect([...ISSUE_KINDS]).toEqual([
+      "pipeline-failure",
+      "source-broken",
+      "ops-report",
+    ]);
+    expect(isIssueKind("source-health")).toBe(false);
   });
 });
 
@@ -318,46 +334,166 @@ describe("buildIssue — source-broken (이슈 폼과 같은 모양)", () => {
     expect(b.body).toContain("### 관련 실행 로그 링크\n\n_No response_\n");
     expect(b.body).toContain("- 오류: `HTTP 503 Service Unavailable`");
     expect(extractFingerprints(b.body)).toEqual([
-      issueFingerprint("source-broken", "bbc-sport"),
+      issueFingerprint("source-broken", "source:bbc-sport"),
     ]);
   });
 });
 
-describe("buildIssue — source-health (3일 연속 0건)", () => {
-  const b = buildIssue("source-health", {
-    sourceId: "bbc-sport",
-    sourceName: "BBC Sport",
-    zeroDays: 3,
-    runs: [
-      { startedAt: "2026-10-06T21:30:00Z", ok: true, items: 14 },
-      { startedAt: "2026-10-07T21:30:00Z", ok: true, items: 0 },
-      {
-        startedAt: "2026-10-08T21:30:00Z",
-        ok: true,
-        items: 0,
-        runUrl: "https://github.com/sguys99/euro-digest/actions/runs/9",
-      },
-      { startedAt: "2026-10-09T21:31:00Z", ok: false, items: 0 },
-    ],
-    occurredAt: OCCURRED,
+// ── 소스 건강도 사건 (M1-11, D35) ──
+
+const RUN_URL = "https://github.com/sguys99/euro-digest/actions/runs/123456";
+
+const stats7d = {
+  from: "2026-10-05",
+  to: "2026-10-11",
+  attempts: 6,
+  ok: 4,
+  budget: 1,
+  items: 120,
+  usable: 33,
+  usableRuns: 4,
+};
+
+const failingPayload: IssuePayloadInput<"source-broken"> = {
+  sourceId: "relevo",
+  sourceName: "Relevo",
+  symptoms: ["피드 URL 오류(4xx·5xx)", "0건 수집"],
+  firstSeen: "2026-10-09",
+  runUrl: RUN_URL,
+  runId: "collect-prod-20261010T213000Z-ab12",
+  occurredAt: OCCURRED,
+  event: "failing-streak",
+  streak: 3,
+  errorType: "http-5xx",
+  httpStatus: 503,
+  stats7d,
+  recent: [
+    { startedAt: "2026-10-07T21:30:00Z", state: "fresh", items: 20, usable: 4 },
+    { startedAt: "2026-10-08T21:30:00Z", state: "empty", items: 0, usable: 0 },
+    {
+      startedAt: "2026-10-09T21:30:00Z",
+      state: "budget",
+      items: 0,
+      error: "budget",
+    },
+    {
+      startedAt: "2026-10-09T23:10:00Z",
+      state: "failed",
+      items: 0,
+      error: "http-5xx",
+    },
+    { startedAt: OCCURRED, state: "failed", items: 0, error: "http-5xx" },
+  ],
+};
+
+describe("buildIssue — source-broken 건강도 사건 (M1-11, D35)", () => {
+  it("실패·빈 피드 연속: 제목에 사건·횟수, 라벨 source-broken 하나, 원인 키 source:<id>", () => {
+    const b = buildIssue("source-broken", failingPayload);
+    expect(b.title).toBe("[소스 고장] relevo — 실패·빈 피드 3회 연속");
+    expect(b.labels).toEqual(["source-broken"]);
+    expect(b.key).toBe("source:relevo");
+    expect(b.fingerprint).toBe(
+      issueFingerprint("source-broken", "source:relevo"),
+    );
   });
 
-  it("source-broken + source-health 라벨, 제목에 연속 일수", () => {
-    expect(b.labels).toEqual(["source-broken", "source-health"]);
-    expect(b.title).toBe("[소스 고장] bbc-sport — 3일 연속 0건");
-  });
-
-  it("같은 헤딩 구조 + 메모에 실행별 건수 표, 처음 발생 = 첫 0건 실행의 KST 날짜", () => {
+  it("본문: 이슈 폼 헤딩 + 소스·사건·연속 횟수·오류 종류·HTTP 상태·7일 성공률·수집 건수·실행 링크·최근 실행 표", () => {
+    const b = buildIssue("source-broken", failingPayload);
     const headings = [...b.body.matchAll(/^### (.+)$/gm)].map((m) => m[1]);
     expect(headings).toEqual([...SOURCE_FORM_HEADINGS]);
-    expect(b.body).toContain("### 증상\n\n0건 수집\n");
-    expect(b.body).toContain("### 처음 발생 날짜\n\n2026-10-08\n");
-    expect(b.body).toContain("BBC Sport (bbc-sport)에서 **3일 연속 0건**");
-    expect(b.body).toContain("| 10월 7일 (수) 06:30 | 성공 | 14 |");
+    expect(b.body).toContain("### 소스 ID\n\nrelevo\n");
+    expect(b.body).toContain("### 증상\n\n피드 URL 오류(4xx·5xx), 0건 수집\n");
+    expect(b.body).toContain("### 처음 발생 날짜\n\n2026-10-09\n");
+    expect(b.body).toContain(`### 관련 실행 로그 링크\n\n${RUN_URL}\n`);
     expect(b.body).toContain(
-      "| [10월 9일 (금) 06:30](https://github.com/sguys99/euro-digest/actions/runs/9) | 성공 | 0 |",
+      "**실패·빈 피드 3회 연속** — 요청 실패·빈 피드가 **3회 연속**입니다 (기준 3회, FR-11)",
     );
-    expect(b.body).toContain("| 10월 10일 (토) 06:31 | 실패 | 0 |");
+    expect(b.body).toContain("- 오류 종류: `http-5xx`");
+    expect(b.body).toContain("- HTTP 상태: 503");
+    expect(b.body).toContain("- 매체: Relevo");
+    expect(b.body).toContain(
+      "- 최근 7일(2026-10-05 ~ 2026-10-11, KST) 성공률: 4/6 (67%) · 시간 예산 초과로 건너뜀 1회(성공률에서 뺌)",
+    );
+    expect(b.body).toContain(
+      "- 최근 7일 수집 건수: 피드 원문 120건 · 수집 창 안 새 항목 33건(기록 4회)",
+    );
+    expect(b.body).toContain(
+      "| 실행 (KST) | 결과 | 원문 | 창 안 새 항목 | 오류 |",
+    );
+    expect(b.body).toContain(
+      "| 10월 8일 (목) 06:30 | 새 기사 있음 | 20 | 4 |  |",
+    );
+    expect(b.body).toContain(
+      "| 10월 10일 (토) 06:30 | 건너뜀(시간 예산) | 0 | — | `budget` |",
+    );
+    expect(b.body).toContain(
+      "| 10월 11일 (일) 06:41 | 실패 | 0 | — | `http-5xx` |",
+    );
+    expect(b.body).toContain("이 소스만 건너뛰고 나머지 수집은 계속했습니다");
+    expect(b.body).toContain("- [ ] 정상 수집 확인 후 이 이슈 닫기");
+    expect(extractFingerprints(b.body)).toEqual([b.fingerprint]);
+  });
+
+  it("이번 실행 실패(연속 < 3): 제목에 오류 종류", () => {
+    const b = buildIssue("source-broken", {
+      ...failingPayload,
+      symptoms: ["기타"],
+      event: "failed",
+      streak: 1,
+      errorType: "timeout",
+      httpStatus: undefined,
+      firstSeen: "2026-10-11",
+    });
+    expect(b.title).toBe("[소스 고장] relevo — 수집 실패 (timeout)");
+    expect(b.body).toContain(
+      "**수집 실패 (timeout)** — 이번 실행에서 이 소스를 받지 못했습니다 — 실패·빈 피드 1회 연속 (3회 연속이면 건강도 경보, FR-11)",
+    );
+    expect(b.body).not.toContain("- HTTP 상태:");
+  });
+
+  it("새 기사 없음 7회 연속: 피드는 정상 응답했다는 안내와 확인 항목", () => {
+    const b = buildIssue("source-broken", {
+      sourceId: "bbc-sport-champions-league",
+      symptoms: ["0건 수집"],
+      event: "stale-streak",
+      streak: 7,
+      stats7d: { ...stats7d, budget: 0, attempts: 7, ok: 7, usable: 0 },
+      occurredAt: OCCURRED,
+    });
+    expect(b.title).toBe(
+      "[소스 고장] bbc-sport-champions-league — 새 기사 없음 7회 연속",
+    );
+    expect(b.body).toContain("수집 창 안의 새 기사가 **7회 연속** 0건입니다");
+    expect(b.body).toContain(
+      "- 최근 7일(2026-10-05 ~ 2026-10-11, KST) 성공률: 7/7 (100%)\n",
+    );
+    expect(b.body).toContain(
+      "피드는 정상 응답해 이번 실행도 그대로 발행했습니다",
+    );
+    expect(b.body).not.toContain("이 소스만 건너뛰고");
+    expect(b.body).toContain("작성자 필터(`author`)·시간대(`tz`)");
+  });
+
+  it("응답 본문·토큰이 들어갈 자리가 없다 — 오류 종류는 형식 검사, 모르는 키는 거부", () => {
+    expect(() =>
+      buildIssue("source-broken", {
+        ...failingPayload,
+        errorType: "HTTP 503 <html>body</html>",
+      }),
+    ).toThrow(IssuePayloadError);
+    expect(() =>
+      buildIssue("source-broken", {
+        ...failingPayload,
+        responseBody: "<rss>…</rss>",
+      } as IssuePayloadInput<"source-broken">),
+    ).toThrow(IssuePayloadError);
+    const b = buildIssue("source-broken", failingPayload);
+    expect(b.body).not.toContain(TOKEN);
+  });
+
+  it("성공률: 시도가 없으면 기록 없음", () => {
+    expect(formatSuccessRate(0, 0)).toBe("기록 없음");
+    expect(formatSuccessRate(6, 7)).toBe("6/7 (86%)");
   });
 });
 
@@ -458,17 +594,41 @@ describe("buildComment", () => {
     expect(extractFingerprints(c)).toEqual([]);
   });
 
-  it("횟수를 모르면 생략, source-health는 건수 표", () => {
-    const c = buildComment("source-health", {
-      sourceId: "bbc-sport",
-      zeroDays: 4,
-      runs: [{ startedAt: OCCURRED, ok: true, items: 0 }],
-      occurredAt: OCCURRED,
+  it("건강도 연속 사건 댓글: 사건 제목·횟수·오류 종류·7일 성공률·실행 링크·최근 실행 표", () => {
+    const c = buildComment("source-broken", failingPayload, {
+      occurrence: 2,
     });
     expect(c).toContain(
-      "### 여전히 0건 — 2026년 10월 11일 (일) 06:41 KST · 4일 연속\n",
+      "### 실패·빈 피드 3회 연속 — 2026년 10월 11일 (일) 06:41 KST · 2번째\n",
     );
-    expect(c).toContain("| 10월 11일 (일) 06:41 | 성공 | 0 |");
+    expect(c).toContain("- 사건: 요청 실패·빈 피드가 **3회 연속**입니다");
+    expect(c).toContain("- 오류 종류: `http-5xx`");
+    expect(c).toContain(
+      "- 최근 7일(2026-10-05 ~ 2026-10-11, KST) 성공률: 4/6 (67%)",
+    );
+    expect(c).toContain(
+      "- 실행: [실행 123456](https://github.com/sguys99/euro-digest/actions/runs/123456)",
+    );
+    expect(c).toContain("| 10월 11일 (일) 06:41 | 실패 | 0 | — | `http-5xx` |");
+    expect(c).toContain(
+      `<!-- euro-digest:recurrence=${issueFingerprint("source-broken", "source:relevo")} -->`,
+    );
+    expect(extractFingerprints(c)).toEqual([]);
+  });
+
+  it("이번 실행 실패 댓글은 표 없이 짧게, 횟수를 모르면 생략", () => {
+    const c = buildComment("source-broken", {
+      ...failingPayload,
+      event: "failed",
+      streak: 2,
+      errorType: "timeout",
+      httpStatus: undefined,
+    });
+    expect(c).toContain(
+      "### 수집 실패 (timeout) — 2026년 10월 11일 (일) 06:41 KST\n",
+    );
+    expect(c).toContain("실패·빈 피드 2회 연속");
+    expect(c).not.toContain("| 실행 (KST) |");
   });
 
   it("source-broken 재발: 증상·오류", () => {
@@ -647,22 +807,44 @@ describe("reportIssue — 생성 vs 댓글", () => {
     expect(result).toMatchObject({ action: "created", key: "collect:deploy" });
   });
 
-  it("source-health는 source-health 라벨로 찾고 두 라벨을 붙여 만든다", async () => {
+  it("소스 사건은 source-broken 라벨로 찾고, 열린 이슈가 없으면 source-broken 라벨 하나로 만든다", async () => {
     const h = harness([json([]), created(30)]);
-    await reportIssue({
+    const result = await reportIssue({
       ...h.base,
-      kind: "source-health",
-      payload: {
-        sourceId: "bbc-sport",
-        zeroDays: 3,
-        runs: [{ startedAt: OCCURRED, ok: true, items: 0 }],
-      },
+      kind: "source-broken",
+      payload: failingPayload,
     });
-    expect(h.calls[0]?.url).toContain("labels=source-health");
+    expect(result).toMatchObject({ action: "created", key: "source:relevo" });
+    expect(h.calls[0]?.url).toContain("labels=source-broken");
     expect((h.calls[1]?.body as { labels: string[] }).labels).toEqual([
       "source-broken",
-      "source-health",
     ]);
+  });
+
+  it("같은 소스의 다른 사건(실패 → 3회 연속)은 그 소스의 열린 이슈에 댓글 — 다른 소스 이슈와는 섞이지 않는다", async () => {
+    const fp = issueFingerprint("source-broken", "source:relevo");
+    const other = issueFingerprint("source-broken", "source:espn-soccer");
+    const h = harness([
+      json([
+        issue(40, { fp: other, labels: [{ name: "source-broken" }] }),
+        issue(41, { fp, labels: [{ name: "source-broken" }] }),
+      ]),
+      commented(41),
+    ]);
+    const result = await reportIssue({
+      ...h.base,
+      kind: "source-broken",
+      payload: failingPayload,
+    });
+    expect(result).toMatchObject({
+      action: "commented",
+      number: 41,
+      occurrence: 2,
+    });
+    expect(h.calls[1]?.url).toBe(`${API}/repos/${REPO}/issues/41/comments`);
+    expect((h.calls[1]?.body as { body: string }).body).toContain(
+      "### 실패·빈 피드 3회 연속",
+    );
   });
 });
 

@@ -646,7 +646,7 @@ describe("runCollect — 소스별 실패 격리", () => {
     ).toBeDefined();
   });
 
-  it("실행 기록(live·dry): RunLog.sources에 소스마다 id·ok·items, 상태 partial", async () => {
+  it("실행 기록(live·dry): RunLog.sources에 소스마다 id·ok·items + 성공은 usable(창 안 건수)·실패는 error(종류), 상태 partial (D35)", async () => {
     const fake = fakeLiveTransport(
       JSON.stringify({
         l: [{ t: "Chelsea가 Bournemouth를 5-1로 꺾었다.", r: ["m560595"] }],
@@ -674,19 +674,37 @@ describe("runCollect — 소스별 실패 격리", () => {
     );
     expect(runs).toHaveLength(1);
     expect(runs[0]!.status).toBe("partial");
+    const inWindow = outcome.news.windowStats!.bySource;
     expect(runs[0]!.sources).toEqual(
-      outcome.news.sources.map((s) => ({ id: s.id, ok: s.ok, items: s.items })),
+      outcome.news.sources.map((s) =>
+        s.ok
+          ? {
+              id: s.id,
+              ok: true,
+              items: s.items,
+              usable: inWindow[s.id]?.inWindow ?? 0,
+            }
+          : { id: s.id, ok: false, items: 0, error: s.errorType },
+      ),
     );
     expect(runs[0]!.sources.find((s) => s.id === "relevo")).toEqual({
       id: "relevo",
       ok: false,
       items: 0,
+      error: "http-4xx",
     });
+    // usable = 정규화·창 적용 뒤(중복 제거 전) — 원문 items보다 클 수 없고, 합은 창 안 전체와 같다
+    for (const entry of runs[0]!.sources) {
+      if (entry.ok) expect(entry.usable).toBeLessThanOrEqual(entry.items);
+    }
+    expect(runs[0]!.sources.reduce((sum, s) => sum + (s.usable ?? 0), 0)).toBe(
+      outcome.news.windowStats!.inWindow,
+    );
     expect(runs[0]!.collected).toBe(outcome.news.feedItems);
     expect(newsFiles()).toEqual([]);
   });
 
-  it("단계 시간 예산을 넘으면 시작하지 못한 소스는 budget — 실행은 partial, RunLog.sources에 {id, ok:false, items:0}", async () => {
+  it("단계 시간 예산을 넘으면 시작하지 못한 소스는 budget — 실행은 partial, RunLog.sources에 {id, ok:false, items:0, error:'budget'}", async () => {
     // 첫 소스 요청 순간 가상 시계가 예산(90초)을 넘긴다 → 나머지 13개는 시작하지 않는다
     const v = virtualClock();
     const fetcher = fakeFetch();
@@ -736,11 +754,16 @@ describe("runCollect — 소스별 실패 격리", () => {
     );
     expect(runs[0]!.status).toBe("partial");
     expect(runs[0]!.sources).toEqual(
-      FEEDS.map((s, i) => ({
-        id: s.id,
-        ok: i === 0,
-        items: i === 0 ? outcome.news.sources[0]!.items : 0,
-      })),
+      FEEDS.map((s, i) =>
+        i === 0
+          ? {
+              id: s.id,
+              ok: true,
+              items: outcome.news.sources[0]!.items,
+              usable: outcome.news.windowStats!.bySource[s.id]?.inWindow ?? 0,
+            }
+          : { id: s.id, ok: false, items: 0, error: "budget" },
+      ),
     );
     expect(runs[0]!.sources[0]!.items).toBeGreaterThan(0);
     expect(

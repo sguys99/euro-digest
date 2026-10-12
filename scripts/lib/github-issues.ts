@@ -8,8 +8,10 @@
  *
  * "같은 원인" = 종류(kind) + 원인 키(key)
  *   - pipeline-failure  key `<워크플로>:<실패 job>` (예: `collect:collect`, `collect:deploy`) — job별로 다른 이슈
- *   - source-broken     key `<소스 ID>` — 피드 오류·파싱 실패 등으로 그 소스만 건너뛴 경우(FR-08)
- *   - source-health     key `<소스 ID>` — 3일 연속 0건(FR-11). source-broken과 다른 원인으로 본다
+ *   - source-broken     key `source:<소스 ID>` — **소스별 이슈 하나**(PRD §15 D35 ③, M1-11). 이번 실행의 소스 실패
+ *                       (PRD §10 "수집 일부 실패 → 이슈", FR-08), 실패·빈 피드 3회 연속(FR-11), 새 기사 없음 7회 연속이
+ *                       모두 같은 이슈에 쌓인다(새 이슈 또는 댓글, FR-152). 사건 판정은 scripts/lib/source-health.ts.
+ *                       (M0-22의 별도 kind `source-health`는 D35로 이 kind에 합쳤다 — 같은 소스에 이슈가 둘 생기지 않게)
  *   - ops-report        key `<ISO 주>` (예: `2026-W41`) — 주간 운영 리포트(FR-155, M5에서 채움)
  *   fingerprint = sha256(`v1|kind|key`) 앞 12자리. 이슈 본문 끝에 숨김 마커
  *   `<!-- euro-digest:fingerprint=… -->`로 넣고, 다음 보고 때 이 마커로 같은 원인의 열린 이슈를 찾는다.
@@ -49,7 +51,6 @@ import { createLogger, sanitizeText, type Logger } from "./logger";
 export const ISSUE_KINDS = [
   "pipeline-failure",
   "source-broken",
-  "source-health",
   "ops-report",
 ] as const;
 export type IssueKind = (typeof ISSUE_KINDS)[number];
@@ -58,11 +59,14 @@ export function isIssueKind(value: string): value is IssueKind {
   return (ISSUE_KINDS as readonly string[]).includes(value);
 }
 
-/** 새 이슈에 붙이는 라벨(M0-10에서 생성됨). source-health는 이슈 폼 규칙대로 source-broken과 함께 붙인다. */
+/**
+ * 새 이슈에 붙이는 라벨 — 저장소에 미리 만들어 둔 것만 쓴다(M0-10에서 6종 생성: summary-error·takedown·source-broken·
+ * source-health·pipeline-failure·ops-report). 소스 이슈는 D35 ③에 따라 `source-broken` 하나(`source-health` 라벨은
+ * 자동 보고에 쓰지 않는다).
+ */
 export const ISSUE_LABELS: Readonly<Record<IssueKind, readonly string[]>> = {
   "pipeline-failure": ["pipeline-failure"],
   "source-broken": ["source-broken"],
-  "source-health": ["source-broken", "source-health"],
   "ops-report": ["ops-report"],
 };
 
@@ -70,9 +74,36 @@ export const ISSUE_LABELS: Readonly<Record<IssueKind, readonly string[]>> = {
 export const SEARCH_LABEL: Readonly<Record<IssueKind, string>> = {
   "pipeline-failure": "pipeline-failure",
   "source-broken": "source-broken",
-  "source-health": "source-health",
   "ops-report": "ops-report",
 };
+
+/**
+ * 소스 건강도 사건 (M1-11, PRD §15 D35) — scripts/lib/source-health.ts가 판정한다.
+ *   - failed          이번 실행에서 소스 받기·파싱이 실패했다(시간 예산 초과 `budget`은 사건이 아니다) — PRD §10
+ *   - failing-streak  요청 실패·빈 피드가 3회 이상 연속(이번 실행 포함) — FR-11
+ *   - stale-streak    피드는 응답하지만 수집 창 안의 새 기사가 7회 이상 연속 0건(이번 실행 포함)
+ */
+export const SOURCE_EVENT_TYPES = [
+  "failed",
+  "failing-streak",
+  "stale-streak",
+] as const;
+export type SourceEventType = (typeof SOURCE_EVENT_TYPES)[number];
+
+/**
+ * 실행 1회에서 소스의 상태 (runs.json `sources[]` 한 줄을 분류한 값 — source-health.ts `classifySourceRun`).
+ *   fresh 새 기사 있음 · no-new 응답했지만 창 안 새 기사 0건 · empty 빈 피드(원문 0건) · failed 실패 ·
+ *   budget 시간 예산 초과로 건너뜀 · legacy-ok 성공했지만 `usable`이 없는 옛 기록(새 기사 수 모름)
+ */
+export const SOURCE_RUN_STATES = [
+  "fresh",
+  "no-new",
+  "empty",
+  "failed",
+  "budget",
+  "legacy-ok",
+] as const;
+export type SourceRunState = (typeof SOURCE_RUN_STATES)[number];
 
 /** `.github/ISSUE_TEMPLATE/source-broken.yml`의 증상 선택지 — 테스트가 이슈 폼과 같은지 확인한다. */
 export const SOURCE_SYMPTOMS = [
@@ -110,6 +141,8 @@ const TEXT_MAX = 300;
 const NOTE_MAX = 2_000;
 
 export const DEFAULT_API_URL = "https://api.github.com";
+/** `owner/name` 저장소 형식 */
+const REPO_PATTERN = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 const REQUEST_TIMEOUT_MS = 15_000;
 const USER_AGENT = "euro-digest-issue-reporter";
 
@@ -125,6 +158,22 @@ export const DEFAULT_ISSUE_RETRY: Readonly<IssueRetryPolicy> = Object.freeze({
   baseDelayMs: 1_000,
   maxDelayMs: 10_000,
 });
+
+/**
+ * Actions 실행 URL — `GITHUB_SERVER_URL/GITHUB_REPOSITORY/actions/runs/GITHUB_RUN_ID`(Actions 기본 변수).
+ * 하나라도 없거나 형식이 틀리면 undefined(로컬 실행). 이슈 본문의 "관련 실행 로그 링크"에 쓴다.
+ */
+export function actionsRunUrl(
+  env: Readonly<Record<string, string | undefined>>,
+): string | undefined {
+  const server = env.GITHUB_SERVER_URL?.trim() || "https://github.com";
+  const repo = env.GITHUB_REPOSITORY?.trim();
+  const runId = env.GITHUB_RUN_ID?.trim();
+  if (!repo || !REPO_PATTERN.test(repo) || !runId || !/^\d+$/.test(runId)) {
+    return undefined;
+  }
+  return `${server.replace(/\/+$/, "")}/${repo}/actions/runs/${runId}`;
+}
 
 // ─── 오류 ────────────────────────────────────────────────────────────────
 
@@ -198,6 +247,41 @@ export const PipelineFailurePayloadSchema = z.strictObject({
   note: ShortText.optional(),
 });
 
+const Count = z.number().int().min(0);
+/** 실패 종류 — runs.json `sources[].error`(예: `timeout`·`http-5xx`·`parse`) */
+const ErrorTypeSchema = z
+  .string()
+  .regex(/^[a-z0-9][a-z0-9-]*$/, "소문자·숫자·하이픈")
+  .max(40);
+
+/** 최근 7일(KST 날짜 7개) 집계 — runs.json 기록에서 계산한 값(source-health.ts `sourceStats`) */
+const SourceStatsPayloadSchema = z.strictObject({
+  /** 기간 첫 날·마지막 날(KST) */
+  from: KstDateString,
+  to: KstDateString,
+  /** 시도 횟수 — 시간 예산 초과(`budget`)로 건너뛴 실행은 빼고 센다 */
+  attempts: Count,
+  /** 받기·파싱에 성공한 횟수 */
+  ok: Count,
+  /** 시간 예산 초과로 건너뛴 횟수(성공률 계산에서 뺌) */
+  budget: Count,
+  /** 피드 원문 항목 수 합 */
+  items: Count,
+  /** 수집 창 안 새 항목 수 합(`usable`이 기록된 실행만) */
+  usable: Count,
+  /** `usable`이 기록된 실행 수 */
+  usableRuns: Count,
+});
+
+/** 최근 실행 1회의 이 소스 결과(표 한 줄) */
+const SourceRecentRunSchema = z.strictObject({
+  startedAt: IsoSchema,
+  state: z.enum(SOURCE_RUN_STATES),
+  items: Count,
+  usable: Count.optional(),
+  error: ErrorTypeSchema.optional(),
+});
+
 export const SourceBrokenPayloadSchema = z.strictObject({
   sourceId: z.string().min(1).max(100),
   sourceName: z.string().max(100).optional(),
@@ -211,27 +295,17 @@ export const SourceBrokenPayloadSchema = z.strictObject({
   httpStatus: z.number().int().min(100).max(599).optional(),
   occurredAt: IsoSchema.optional(),
   note: ShortText.optional(),
-});
-
-const SourceRunSchema = z.strictObject({
-  startedAt: IsoSchema,
-  ok: z.boolean(),
-  items: z.number().int().min(0),
-  runId: z.string().max(100).optional(),
-  runUrl: HttpsUrl.optional(),
-});
-
-export const SourceHealthPayloadSchema = z.strictObject({
-  sourceId: z.string().min(1).max(100),
-  sourceName: z.string().max(100).optional(),
-  /** 연속 0건 일수(FR-11 기준 3 이상) */
-  zeroDays: z.number().int().min(1),
-  /** 최근 실행별 이 소스의 결과(오래된 것 → 최근 순으로 넘기면 그대로 표에 쓴다) */
-  runs: z.array(SourceRunSchema).min(1).max(30),
-  firstSeen: KstDateString.optional(),
-  runUrl: HttpsUrl.optional(),
-  occurredAt: IsoSchema.optional(),
-  note: ShortText.optional(),
+  // ── 자동 건강도 보고(M1-11, D35) — 사람이 만든 보고에는 없다 ──
+  /** 사건 종류. 있으면 제목·본문이 사건 기준으로 바뀐다 */
+  event: z.enum(SOURCE_EVENT_TYPES).optional(),
+  /** 연속 횟수 — failed·failing-streak는 실패·빈 피드 연속, stale-streak는 새 기사 없음 연속(이번 실행 포함) */
+  streak: z.number().int().min(1).max(10_000).optional(),
+  /** 이번 실행의 실패 종류(runs.json `sources[].error`) */
+  errorType: ErrorTypeSchema.optional(),
+  /** 최근 7일 성공률·수집 건수 */
+  stats7d: SourceStatsPayloadSchema.optional(),
+  /** 최근 실행(오래된 → 최근, 마지막이 이번 실행) */
+  recent: z.array(SourceRecentRunSchema).max(30).optional(),
 });
 
 /** 주간 운영 리포트 — M5(FR-155)에서 비용·성공률·소스 건강도·미등록 고유명사 섹션을 채운다. 지금은 골격. */
@@ -254,7 +328,6 @@ export const OpsReportPayloadSchema = z.strictObject({
 export const ISSUE_PAYLOAD_SCHEMAS = {
   "pipeline-failure": PipelineFailurePayloadSchema,
   "source-broken": SourceBrokenPayloadSchema,
-  "source-health": SourceHealthPayloadSchema,
   "ops-report": OpsReportPayloadSchema,
 } as const satisfies Record<IssueKind, z.ZodType>;
 
@@ -329,6 +402,11 @@ export function extractFingerprints(body: string | null | undefined): string[] {
   return [...body.matchAll(FINGERPRINT_PATTERN)].map((m) => m[1] ?? "");
 }
 
+/** 소스 이슈의 원인 키 — `source:<소스 ID>` (소스별 이슈 하나, D35 ③) */
+export function sourceIssueKey(sourceId: string): string {
+  return `source:${sourceId}`;
+}
+
 /** 종류별 기본 원인 키 — reportIssue에 key를 주지 않으면 이것을 쓴다. */
 export function defaultIssueKey<K extends IssueKind>(
   kind: K,
@@ -340,9 +418,9 @@ export function defaultIssueKey<K extends IssueKind>(
       return `${p.workflow}:${p.failedJobs.length ? [...p.failedJobs].sort().join("+") : "unknown"}`;
     }
     case "source-broken":
-      return parseIssuePayload("source-broken", payload).sourceId;
-    case "source-health":
-      return parseIssuePayload("source-health", payload).sourceId;
+      return sourceIssueKey(
+        parseIssuePayload("source-broken", payload).sourceId,
+      );
     case "ops-report":
       return parseIssuePayload("ops-report", payload).week;
     default: {
@@ -539,13 +617,115 @@ function formSections(values: readonly (string | undefined)[]): string[] {
   });
 }
 
-function sourceLabel(p: {
-  sourceId: string;
-  sourceName?: string | undefined;
-}): string {
-  return p.sourceName
-    ? `${inlineText(p.sourceName, 100)} (${inlineText(p.sourceId, 100)})`
-    : inlineText(p.sourceId, 100);
+// ── 소스 건강도 사건 문구 (M1-11, D35) ──
+
+/** 사건 제목 — `수집 실패 (timeout)` · `실패·빈 피드 3회 연속` · `새 기사 없음 7회 연속` */
+function sourceEventTitle(p: IssuePayload<"source-broken">): string | null {
+  switch (p.event) {
+    case undefined:
+      return null;
+    case "failed":
+      return `수집 실패${p.errorType ? ` (${p.errorType})` : ""}`;
+    case "failing-streak":
+      return `실패·빈 피드 ${p.streak ?? "?"}회 연속`;
+    case "stale-streak":
+      return `새 기사 없음 ${p.streak ?? "?"}회 연속`;
+    default: {
+      const unknownEvent: never = p.event;
+      return String(unknownEvent);
+    }
+  }
+}
+
+/** 사건 한 줄 설명(기준 포함) */
+function sourceEventLine(p: IssuePayload<"source-broken">): string | null {
+  switch (p.event) {
+    case undefined:
+      return null;
+    case "failed":
+      return `이번 실행에서 이 소스를 받지 못했습니다 — 실패·빈 피드 ${p.streak ?? 1}회 연속 (3회 연속이면 건강도 경보, FR-11)`;
+    case "failing-streak":
+      return `요청 실패·빈 피드가 **${p.streak ?? "?"}회 연속**입니다 (기준 3회, FR-11)`;
+    case "stale-streak":
+      return `피드는 응답하지만 수집 창 안의 새 기사가 **${p.streak ?? "?"}회 연속** 0건입니다 (기준 7회 — 갱신이 드문 피드의 오탐 방지, D35)`;
+    default: {
+      const unknownEvent: never = p.event;
+      return String(unknownEvent);
+    }
+  }
+}
+
+const SOURCE_STATE_LABEL: Readonly<Record<SourceRunState, string>> = {
+  fresh: "새 기사 있음",
+  "no-new": "새 기사 없음",
+  empty: "빈 피드",
+  failed: "실패",
+  budget: "건너뜀(시간 예산)",
+  "legacy-ok": "성공(새 항목 수 미기록)",
+};
+
+/** `6/7 (86%)` — 시도가 없으면 `기록 없음` */
+export function formatSuccessRate(ok: number, attempts: number): string {
+  if (attempts <= 0) return "기록 없음";
+  return `${ok}/${attempts} (${Math.round((ok / attempts) * 100)}%)`;
+}
+
+function statsLines(stats: IssuePayload<"source-broken">["stats7d"]): string[] {
+  if (!stats) return [];
+  const budget =
+    stats.budget > 0
+      ? ` · 시간 예산 초과로 건너뜀 ${stats.budget}회(성공률에서 뺌)`
+      : "";
+  const usable =
+    stats.usableRuns > 0
+      ? `수집 창 안 새 항목 ${stats.usable}건(기록 ${stats.usableRuns}회)`
+      : "수집 창 안 새 항목 기록 없음";
+  return [
+    `- 최근 7일(${stats.from} ~ ${stats.to}, KST) 성공률: ${formatSuccessRate(stats.ok, stats.attempts)}${budget}`,
+    `- 최근 7일 수집 건수: 피드 원문 ${stats.items}건 · ${usable}`,
+  ];
+}
+
+function recentTable(
+  recent: IssuePayload<"source-broken">["recent"],
+): string[] {
+  if (!recent || recent.length === 0) return [];
+  return [
+    "| 실행 (KST) | 결과 | 원문 | 창 안 새 항목 | 오류 |",
+    "|---|---|---:|---:|---|",
+    ...recent.map((r) => {
+      const when = `${formatKst(r.startedAt, "date")} ${formatKst(r.startedAt, "time")}`;
+      return `| ${when} | ${SOURCE_STATE_LABEL[r.state]} | ${r.items} | ${r.usable ?? "—"} | ${r.error ? codeSpan(r.error, 40) : ""} |`;
+    }),
+  ];
+}
+
+/** 사건별 확인 항목 */
+function sourceEventChecklist(p: IssuePayload<"source-broken">): string[] {
+  const common = [
+    "- [ ] 원인 수정 — 피드 주소·설정은 configs/sources.json, 코드는 scripts/ (data/는 손으로 고치지 않는다)",
+    "- [ ] 대체 소스가 필요하면 `/add-source` 절차로 추가",
+    "- [ ] 정상 수집 확인 후 이 이슈 닫기 (닫힌 뒤 같은 소스에 사건이 다시 생기면 새 이슈가 열립니다)",
+  ];
+  if (p.event === "stale-streak") {
+    return [
+      "- [ ] 피드가 갱신을 멈췄는지·주소가 옮겨 옛 피드에 머무는지 확인 (매체 휴간·비시즌이면 그대로 두어도 됨)",
+      "- [ ] 작성자 필터(`author`)·시간대(`tz`) 설정 때문에 항목이 빠지는지 실행 로그(`collect.item.skip`) 확인",
+      ...common,
+    ];
+  }
+  return [
+    "- [ ] 실행 로그의 `collect.source.fail`에서 오류 종류·HTTP 상태 확인 (응답 본문·비밀값은 이슈에 붙이지 않는다)",
+    "- [ ] 피드 URL·구조 변경, 약관·robots.txt 변경 여부 확인",
+    ...common,
+  ];
+}
+
+function runRef(p: IssuePayload<"source-broken">): string | undefined {
+  return (
+    p.runUrl ??
+    (p.runId ? `runs.json 실행 ID ${inlineText(p.runId, 100)}` : undefined)
+  );
 }
 
 function buildSourceBroken(
@@ -553,65 +733,32 @@ function buildSourceBroken(
   occurredAt: string,
 ): { title: string; body: string[] } {
   const firstSeen = p.firstSeen ?? kstDate(occurredAt);
+  const eventTitle = sourceEventTitle(p);
+  const eventLine = sourceEventLine(p);
+  const table = recentTable(p.recent);
   const memo = [
+    ...(eventLine ? [`**${eventTitle}** — ${eventLine}`, ""] : []),
+    ...(p.errorType ? [`- 오류 종류: ${codeSpan(p.errorType, 40)}`] : []),
     ...(p.error ? [`- 오류: ${codeSpan(p.error)}`] : []),
     ...(p.httpStatus ? [`- HTTP 상태: ${p.httpStatus}`] : []),
     ...(p.sourceName ? [`- 매체: ${inlineText(p.sourceName, 100)}`] : []),
+    ...statsLines(p.stats7d),
     `- 발생 시각: ${kstDateTime(occurredAt)}`,
-    "- 이 소스만 건너뛰고 나머지 수집은 계속했습니다 (소스 실패 격리, FR-08).",
+    p.event === "stale-streak"
+      ? "- 피드는 정상 응답해 이번 실행도 그대로 발행했습니다."
+      : "- 이 소스만 건너뛰고 나머지 수집은 계속했습니다 (소스 실패 격리, FR-08).",
+    ...(table.length ? ["", "최근 실행:", "", ...table] : []),
+    ...(p.event ? ["", "확인할 것:", "", ...sourceEventChecklist(p)] : []),
     ...(p.note ? ["", noteText(p.note)] : []),
   ].join("\n");
   const symptom = p.symptoms[0] ?? "기타";
   return {
-    title: `[소스 고장] ${inlineText(p.sourceId, 100)} — ${symptom}`,
+    title: `[소스 고장] ${inlineText(p.sourceId, 100)} — ${eventTitle ?? symptom}`,
     body: formSections([
       inlineText(p.sourceId, 100),
       p.symptoms.join(", "),
       firstSeen,
-      p.runUrl ??
-        (p.runId ? `runs.json 실행 ID ${inlineText(p.runId, 100)}` : undefined),
-      memo,
-    ]),
-  };
-}
-
-function sourceRunsTable(
-  runs: IssuePayload<"source-health">["runs"],
-): string[] {
-  return [
-    "| 실행 (KST) | 결과 | 건수 |",
-    "|---|---|---:|",
-    ...runs.map((r) => {
-      const when = `${formatKst(r.startedAt, "date")} ${formatKst(r.startedAt, "time")}`;
-      return `| ${r.runUrl ? link(when, r.runUrl) : when} | ${r.ok ? "성공" : "실패"} | ${r.items} |`;
-    }),
-  ];
-}
-
-function buildSourceHealth(
-  p: IssuePayload<"source-health">,
-  occurredAt: string,
-): { title: string; body: string[] } {
-  const firstZero = p.runs.find((r) => r.items === 0)?.startedAt;
-  const firstSeen = p.firstSeen ?? kstDate(firstZero ?? occurredAt);
-  const memo = [
-    `${sourceLabel(p)}에서 **${p.zeroDays}일 연속 0건**이 수집됐습니다 (소스 건강도, FR-11).`,
-    "",
-    "최근 실행별 수집 건수:",
-    "",
-    ...sourceRunsTable(p.runs),
-    "",
-    "- 피드 URL·구조 변경, 약관·robots.txt 변경, 매체 휴간 여부를 확인해 주세요.",
-    "- 대체 소스가 필요하면 `/add-source` 절차로 추가합니다.",
-    ...(p.note ? ["", noteText(p.note)] : []),
-  ].join("\n");
-  return {
-    title: `[소스 고장] ${inlineText(p.sourceId, 100)} — ${p.zeroDays}일 연속 0건`,
-    body: formSections([
-      inlineText(p.sourceId, 100),
-      "0건 수집",
-      firstSeen,
-      p.runUrl,
+      runRef(p),
       memo,
     ]),
   };
@@ -678,12 +825,6 @@ export function buildIssue<K extends IssueKind>(
         occurredAt,
       );
       break;
-    case "source-health":
-      built = buildSourceHealth(
-        parsed as IssuePayload<"source-health">,
-        occurredAt,
-      );
-      break;
     case "ops-report":
       built = buildOpsReport(parsed as IssuePayload<"ops-report">, occurredAt);
       break;
@@ -741,24 +882,22 @@ export function buildComment<K extends IssueKind>(
     }
     case "source-broken": {
       const p = parsed as IssuePayload<"source-broken">;
+      const eventTitle = sourceEventTitle(p);
+      const eventLine = sourceEventLine(p);
+      const streakEvent =
+        p.event === "failing-streak" || p.event === "stale-streak";
+      const table = streakEvent ? recentTable(p.recent) : [];
       lines = [
-        `### 다시 발생 — ${kstDateTime(occurredAt)}${nth}`,
+        `### ${eventTitle ?? "다시 발생"} — ${kstDateTime(occurredAt)}${nth}`,
         "",
+        ...(eventLine ? [`- 사건: ${eventLine}`] : []),
         `- 증상: ${p.symptoms.join(", ")}`,
+        ...(p.errorType ? [`- 오류 종류: ${codeSpan(p.errorType, 40)}`] : []),
         ...(p.error ? [`- 오류: ${codeSpan(p.error)}`] : []),
         ...(p.httpStatus ? [`- HTTP 상태: ${p.httpStatus}`] : []),
+        ...statsLines(p.stats7d),
         `- 실행: ${p.runUrl ? runLink(p.runUrl) : p.runId ? `runs.json 실행 ID ${inlineText(p.runId, 100)}` : "(실행 링크 없음)"}`,
-        ...(p.note ? ["", noteText(p.note)] : []),
-      ];
-      break;
-    }
-    case "source-health": {
-      const p = parsed as IssuePayload<"source-health">;
-      lines = [
-        `### 여전히 0건 — ${kstDateTime(occurredAt)} · ${p.zeroDays}일 연속${nth}`,
-        "",
-        ...sourceRunsTable(p.runs),
-        ...(p.runUrl ? ["", `- 실행: ${runLink(p.runUrl)}`] : []),
+        ...(table.length ? ["", ...table] : []),
         ...(p.note ? ["", noteText(p.note)] : []),
       ];
       break;
@@ -873,8 +1012,6 @@ class GitHubHttpError extends Error {
     super(message);
   }
 }
-
-const REPO_PATTERN = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
 
 interface HttpContext {
   fetch: FetchLike;

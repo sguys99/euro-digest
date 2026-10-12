@@ -6,7 +6,10 @@
  *   node --import tsx scripts/report-issue.ts --kind pipeline-failure --workflow collect   # Actions 환경변수로 payload 구성
  *
  * payload 출처 (둘 중 하나)
- *   --payload-file   kind별 payload JSON(scripts/lib/github-issues.ts의 *PayloadSchema)
+ *   --payload-file   kind별 payload JSON(scripts/lib/github-issues.ts의 *PayloadSchema). **배열이면 일괄 보고** —
+ *                    항목마다 기본 원인 키로 따로 보고한다(--key 불가). 빈 배열은 보고할 것 없음(성공).
+ *                    50건(MAX_BATCH_PAYLOADS)을 넘으면 앞 50건만 보고하고 남은 건수를 경고한다.
+ *                    collect.yml은 수집 단계가 쓴 소스 건강도 사건 파일(source-broken payload 배열, M1-11)을 이렇게 넘긴다.
  *   환경변수         pipeline-failure 전용 — Actions 기본 변수 + NEEDS_JSON(`${{ toJSON(needs) }}`)
  *                    · 실패 job = needs의 result가 failure인 job, 원인 키 기본값 = `<workflow>:<실패 job>`
  *                    · 실행 URL = GITHUB_SERVER_URL/GITHUB_REPOSITORY/actions/runs/GITHUB_RUN_ID
@@ -21,6 +24,7 @@ import { z } from "zod";
 import type { ParseResult } from "./cli-args";
 import {
   ISSUE_KINDS,
+  actionsRunUrl,
   isIssueKind,
   type IssueKind,
   type IssuePayloadInput,
@@ -32,12 +36,12 @@ export const REPORT_ISSUE_USAGE = [
   "사용법: node --import tsx scripts/report-issue.ts --kind <kind> [옵션]",
   `  --kind <kind>          ${ISSUE_KINDS.join(" | ")}`,
   "  --key <원인 키>        같은 원인 판단 키 (생략하면 kind별 기본값 — pipeline-failure는 <workflow>:<실패 job>)",
-  "  --payload-file <경로>  payload JSON 파일 (생략하면 pipeline-failure만 Actions 환경변수로 구성)",
+  "  --payload-file <경로>  payload JSON 파일 — 배열이면 항목마다 따로 보고(일괄, --key 불가, 앞 50건까지). 생략하면 pipeline-failure만 Actions 환경변수로 구성",
   "  --workflow <이름>      pipeline-failure 환경변수 모드의 워크플로 이름 (예: collect)",
   "  --dry-run              만들 이슈·댓글을 출력만 (GitHub에는 GET만 — 생성·댓글 없음)",
   "  --help, -h             이 도움말",
   "환경변수: GITHUB_TOKEN(issues: write) · GITHUB_REPOSITORY · NEEDS_JSON(`${{ toJSON(needs) }}`)",
-  "종료 코드: 생성·댓글·dry-run 성공 0, 인자·payload·API 오류 1",
+  "종료 코드: 생성·댓글·dry-run 성공 0(일괄은 전부 성공 또는 빈 배열), 인자·payload·API 오류 1(일괄은 하나라도 실패)",
 ].join("\n");
 
 export interface ReportIssueArgs {
@@ -191,13 +195,7 @@ export function pipelineFailurePayloadFromEnv(
   const failedJobs = needs.value
     .filter((j) => j.result === "failure")
     .map((j) => j.job);
-  const server = env.GITHUB_SERVER_URL?.trim() || "https://github.com";
-  const repo = env.GITHUB_REPOSITORY?.trim();
-  const runId = env.GITHUB_RUN_ID?.trim();
-  const runUrl =
-    repo && runId && /^\d+$/.test(runId)
-      ? `${server.replace(/\/+$/, "")}/${repo}/actions/runs/${runId}`
-      : undefined;
+  const runUrl = actionsRunUrl(env);
   const attempt = Number(env.GITHUB_RUN_ATTEMPT);
   return {
     ok: true,
@@ -215,15 +213,26 @@ export function pipelineFailurePayloadFromEnv(
   };
 }
 
+/**
+ * 일괄 보고 상한 — 수집 대상 피드(지금 14개)보다 넉넉하게. 넘으면 앞에서부터 이만큼만 보고하고 나머지는 경고로 남긴다
+ * (실행 1회의 GitHub 생성 요청 수를 묶어 2차 한도에 걸리지 않게 — 전체를 거부하면 정상 항목까지 빠진다).
+ */
+export const MAX_BATCH_PAYLOADS = 50;
+
 export interface ReportInput {
   kind: IssueKind;
   key: string | undefined;
-  payload: unknown;
+  /** 보고할 payload(단건이면 1개, 일괄이면 최대 MAX_BATCH_PAYLOADS) */
+  payloads: unknown[];
+  /** --payload-file이 배열이었다(일괄 보고 — 빈 배열 가능) */
+  batch: boolean;
+  /** 상한을 넘어 보고하지 않는 뒤쪽 항목 수(일괄만, 보통 0) */
+  dropped: number;
 }
 
 /**
  * kind·key·payload를 정한다. payload 파일 내용(문자열)은 진입점이 읽어서 넘긴다.
- * payload 형식 검증은 github-issues.ts가 한다(여기서는 JSON 파싱만).
+ * payload 형식 검증은 github-issues.ts가 한다(여기서는 JSON 파싱과 배열 여부만).
  */
 export function resolveReportInput(
   args: ReportIssueArgs,
@@ -232,18 +241,41 @@ export function resolveReportInput(
   now: Date,
 ): ParseResult<ReportInput> {
   if (payloadText !== null) {
+    let json: unknown;
     try {
+      json = JSON.parse(payloadText);
+    } catch {
+      return { ok: false, error: "--payload-file이 올바른 JSON이 아닙니다" };
+    }
+    if (Array.isArray(json)) {
+      if (args.key) {
+        return {
+          ok: false,
+          error:
+            "payload 배열(일괄 보고)에는 --key를 줄 수 없습니다 — 항목마다 기본 원인 키를 쓴다",
+        };
+      }
       return {
         ok: true,
         value: {
           kind: args.kind,
-          key: args.key ?? undefined,
-          payload: JSON.parse(payloadText),
+          key: undefined,
+          payloads: json.slice(0, MAX_BATCH_PAYLOADS),
+          batch: true,
+          dropped: Math.max(0, json.length - MAX_BATCH_PAYLOADS),
         },
       };
-    } catch {
-      return { ok: false, error: "--payload-file이 올바른 JSON이 아닙니다" };
     }
+    return {
+      ok: true,
+      value: {
+        kind: args.kind,
+        key: args.key ?? undefined,
+        payloads: [json],
+        batch: false,
+        dropped: 0,
+      },
+    };
   }
   if (args.kind !== "pipeline-failure") {
     return {
@@ -260,7 +292,9 @@ export function resolveReportInput(
     value: {
       kind: args.kind,
       key: args.key ?? undefined,
-      payload: payload.value,
+      payloads: [payload.value],
+      batch: false,
+      dropped: 0,
     },
   };
 }
@@ -310,6 +344,59 @@ export function formatReportResult(result: ReportResult): string {
   return result.action === "created"
     ? `[report-issue] 새 이슈 #${result.number} 생성 — ${result.url}`
     : `[report-issue] 열린 이슈 #${result.number}에 댓글${nth} — ${result.commentUrl ?? result.url}`;
+}
+
+export interface BatchTally {
+  created: number;
+  commented: number;
+  failed: number;
+}
+
+/** 상한 초과 경고 문구 */
+export function formatDroppedWarning(dropped: number): string {
+  return `일괄 보고 상한(${MAX_BATCH_PAYLOADS}건)을 넘어 뒤쪽 ${dropped}건은 보고하지 않았습니다 — 사건 파일·실행 로그(collect.health.issue)를 확인하세요`;
+}
+
+/** 일괄 보고 결과 한 줄 — 상한 초과로 뺀 건수가 있으면 덧붙인다 */
+export function formatBatchResult(
+  kind: IssueKind,
+  tally: BatchTally,
+  dropped = 0,
+): string {
+  const total = tally.created + tally.commented + tally.failed;
+  const rest = dropped > 0 ? ` · 상한 초과로 보고 안 함 ${dropped}` : "";
+  if (total === 0 && dropped === 0) {
+    return `[report-issue] ${kind} 일괄 보고 — 보고할 사건 없음`;
+  }
+  return `[report-issue] ${kind} 일괄 보고 ${total}건 — 새 이슈 ${tally.created} · 댓글 ${tally.commented} · 실패 ${tally.failed}${rest}`;
+}
+
+/** 일괄 보고 Step Summary — 항목별 줄(성공은 링크, 실패는 원인 키와 짧은 사유) */
+export function formatBatchSummary(
+  kind: IssueKind,
+  items: ReadonlyArray<
+    | { ok: true; result: ReportResult }
+    | { ok: false; label: string; error: string }
+  >,
+  dropped = 0,
+): string {
+  const lines = items.map((item) => {
+    if (!item.ok) {
+      return `- 실패 \`${item.label.replace(/`/g, "")}\` — ${item.error.replace(/\s+/g, " ").slice(0, 200)}`;
+    }
+    const r = item.result;
+    const nth = r.occurrence ? ` · ${r.occurrence}번째 발생` : "";
+    return r.action === "created"
+      ? `- \`${r.key}\` 새 이슈 [#${r.number}](${r.url})`
+      : `- \`${r.key}\` 열린 이슈 [#${r.number}](${r.commentUrl ?? r.url})에 댓글${nth}`;
+  });
+  return [
+    `## 이슈 일괄 보고 (${kind})`,
+    "",
+    ...(lines.length ? lines : ["보고할 사건 없음"]),
+    ...(dropped > 0 ? [`- 경고: ${formatDroppedWarning(dropped)}`] : []),
+    "",
+  ].join("\n");
 }
 
 /** Step Summary 마크다운 */
