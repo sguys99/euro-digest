@@ -57,7 +57,7 @@
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
 **현재 위치**: M1 뉴스 MVP 진행 중 — M1-01 수직 슬라이스 완료(2026-10-12, Actions 수집 → 커밋 → Pages 배포 성공)
-**다음 작업**: `M1-09` 공통 형식 정규화 + zod 검증 + `Source.tz`(D34 — M1-07·M1-08은 ⏸ D32) → M1-A 순서대로
+**다음 작업**: `M1-10` 수집 시간 창(직전 성공 실행 ~ 현재, 최대 36시간 — FR-07) → M1-A 순서대로
 
 ---
 
@@ -245,7 +245,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 🆕 M1-06 이월 메모(M1-07·M1-08 보류 해제 시): 어댑터를 `runSearchStage`의 `no-adapter` 자리에 등록, 허용 판정은 수집 단계가 결과 전체에 적용, 제목·시각을 RSS 제목·og:title·`article:published_time`으로 바꾸지 못한 항목은 게시 안 함 · 지금 `allow` 4도메인은 모두 RSS로 받는 국내 매체라 검색 실익이 작음(M1-12 중복 제거에서 RSS 쪽이 남음) · 쿼리별 결과를 runs에 남기려면 스키마 확인 필요, 검색 실패를 `partial`로 볼지 결정 · validate 경고 후보: 켠 쿼리의 소스가 비활성이라 조용히 실행되지 않는 경우
 - [ ] ⏸ M1-07 GDELT 어댑터 — ⏸ M0-27 판정: 약관 허용·**현재 비활성**(429 다발·허용 목록 통과 0건). M1-46 재측정 결과로 착수 여부 결정 ❓. 제목은 GDELT가 손본 흔적이 있어 RSS 제목·og:title로 교체 필요 (보류 유지 — 2026-10-12 사용자 결정 D32: M1-46 재측정을 통과하면 M1-08과 함께 착수)
 - [ ] ⏸ M1-08 OG 메타 경량 수집기 — 요약 없는 항목만, `<head>`만 파싱, 최대 500자. 해외 원제목 소스는 OG 보충 안 함(M0-23·D23), 국내 소스는 M0-25 판정에 따름 (보류 — 2026-10-12 사용자 결정 D32: RSS 요약문·OG 설명을 표시·저장하지 않으므로(M0-25) 지금 소비처가 없고, 유일한 소비처는 GDELT 결과의 og:title·`article:published_time` 교체(M0-27)다 → M1-07과 함께 착수. 그때 CLAUDE §3의 "경량 HTML 파서" 패키지를 후보·크기와 함께 사용자 승인)
-- [ ] M1-09 공통 형식 정규화 + zod 검증 (FR-03), "본문 필드 없음" 테스트 (FR-02) · 🆕 2026-10-12 사용자 결정(PRD §15 D34): `Source`에 선택 필드 `tz`(IANA, 예: `Asia/Seoul`) 추가 — 피드 날짜에 시간대가 없을 때만 이 값으로 해석(시간대가 있으면 그대로), 국내 5피드에 `Asia/Seoul`. 지금은 국내 5피드 약 160건/일이 `no-date`로 버려짐(M1-01·M1-02 실측)
+- [x] M1-09 공통 형식 정규화 + zod 검증 (FR-03), "본문 필드 없음" 테스트 (FR-02) · 🆕 2026-10-12 사용자 결정(PRD §15 D34): `Source`에 선택 필드 `tz`(IANA, 예: `Asia/Seoul`) 추가 — 피드 날짜에 시간대가 없을 때만 이 값으로 해석(시간대가 있으면 그대로), 국내 5피드에 `Asia/Seoul`. 지금은 국내 5피드 약 160건/일이 `no-date`로 버려짐(M1-01·M1-02 실측) — 2026-10-12 완료: `FeedItemSchema`(`src/lib/schema/feed-item.ts`, strictObject — 본문·요약·이미지 키 거부, 부록 A) 항목별 검증, 실패 항목만 `schema`로 건너뜀. `Source.tz` + 국내 5피드 `Asia/Seoul` → dry 실행에서 국내 160건 전부 수집(no-date 0, KST→UTC 손계산 대조). `parseFeedDate(raw, fallbackTz)` — DST 겹침 = 먼저 오는 순간, 간격 = 전환 전 오프셋으로 앞으로 밂. **`summary`는 모든 소스에서 null**(오케스트레이터 결정 — the Daily Briefing note '읽지 않음'·국내 '미표시·미저장', 유일한 소비처는 M1-17)
+  - 🆕 M1-09 이월 메모: **M1-10** ESPN 'EST' 고정 표기(서머타임 기간에도)로 발행 시각이 최대 1시간 미래로 찍힘(dry 실측 +35분) → 미래 시각 가드(스키마 변경 없음 — 오케스트레이터 결정, 잘못된 tz 설정의 9시간 미래도 같은 가드가 막음) · **M1-12** `url`은 피드 원문 그대로(국내 `idxno` 보존·풋볼리스트 `http://`), 국내 섹션 피드 ⊂ 전체기사 피드라 같은 링크가 대량(dry 71건) — 합칠 때 소스 메타도 합칠 것 · **M1-17** ❓ 분류에 RSS 요약문을 쓸 소스를 사용자 확인(쓰더라도 카드·data 저장 금지), 국내 피드가 들어오며 UFC 등 축구 외 기사가 최신순 상위에 섞임(dry 실측) → 축구 외·K리그 필터
 - [ ] M1-10 수집 시간 창: 직전 성공 실행 ~ 현재, 최대 36시간 (FR-07)
 - [ ] M1-11 소스 건강도 기록 + 3일 연속 0건 이슈 (FR-11)
 - [ ] M1-44 🆕 football-data 최소 어댑터 (D24): 브리핑 입력용으로 전날(KST 창) 6개 대회 경기 결과·현재 순위만 → `scripts/lib/providers/`, 분당 10회 지연, 실패 시 그날 브리핑 생략(뉴스는 발행). 경기별 득점자는 football-data 무료 미제공(M0-28)이라 **M1-48(API-Football)이 맡는다** — 두 어댑터는 호스트가 달라 병렬로 돌린다. 두 API는 팀 id 체계가 달라 같은 경기를 맞추려면 팀 id 대응이 필요하다(M0-29) → 2026-10-12 사용자 결정(PRD §15 D33): **`configs/team-ids.json` 신설**(팀 slug → `{ fd, af }`, 각 id 중복 금지 — 같은 숫자가 두 API에서 다른 팀인 경우 6건), 초안은 `fixtures/football/index.json` `teamIdPairs` 52쌍 + 한국 선수 소속팀으로 스크립트가 만들고 사용자 확인 후 커밋, 나머지 팀은 실행 때 후보(대회·킥오프·스코어 일치 + 후보 1개)를 운영 리포트로 제안, 대응표에 없는 경기는 득점자 없이 진행 (D27). M2-02가 이 어댑터를 대회 페이지용으로 확장
@@ -562,11 +563,23 @@ const Source = z.strictObject({
   summarize: z.boolean(),                            // 필수(기본값 없음). false = LLM 미전송, 원제목+링크(ai:false) 카드만 — 피드 제목·URL 무수정 (PRD §15 D22). D23 이후 모든 소스 false
   competitions: z.array(CompId).default([]),
   author: z.string().optional(),                     // 작성자 필터(기자 채널)
-  tz: z.string().optional(),                         // 피드 날짜에 시간대가 없을 때 해석할 IANA 시간대(예: "Asia/Seoul") — 유효한 IANA 이름만. 시간대가 적힌 날짜에는 쓰지 않음 (PRD §15 D34, 2026-10-12)
+  tz: z.string().refine(isIanaTimeZone).optional(),  // 피드 날짜에 시간대가 없을 때만 해석할 IANA 이름(지역/장소 형식 + Intl 확인, UTC·Etc/UTC 허용, 약어·오프셋·Etc/GMT±N 거부). DST 겹침 = 먼저 오는 순간, 간격 = 전환 전 오프셋으로 앞으로 밂 (PRD §15 D34, 2026-10-12)
   retentionDays: z.number().int().positive().optional(), // 소스별 보존 기간(일) — 없으면 §8.4 기본(90일 → 월별 병합). 지나면 수집 실행이 data/에서 그 출처를 지운다(대표 출처면 카드 삭제, M1-25). The Athletic 7 (PRD §15 D32, 2026-10-12)
   terms_checked: z.boolean(), robots_checked: z.boolean(), // terms_checked = note의 이용 방식(요약/원제목+링크)이 약관상 허용됨, 금지·불명확이면 false
   note: z.string().optional(),                       // 약관 확인 메모·날짜
 });
+
+// 수집 결과 공통 형식 — 메모리 경계(data/ 파일 아님) src/lib/schema/feed-item.ts (FR-02·FR-03, M1-09, 2026-10-12)
+const FeedItem = z.strictObject({                  // strict: content·content:encoded·description·body·enclosure·image 등 모르는 키 = 오류(FR-02)
+  title: z.string().min(1).max(200),               // 원제목(엔티티 디코딩·앞뒤 공백 정리만) — 200자 초과는 정규화가 건너뜀
+  url: HttpUrl,                                    // 피드 원문 링크(idxno 등 쿼리 보존) — URL 정규화는 중복 해시에만(M1-12)
+  publishedAt: Iso,                                // UTC Z — 시간대 없는 피드 날짜는 Source.tz로만 해석(D34)
+  summary: z.string().max(500).nullable(),         // 현재 항상 null(RSS description 미수집 — 분류 사용 여부는 M1-17 사용자 확인)
+  source: Slug,                                    // Source.id
+  author: z.string().min(1).nullable(),            // FR-03 author? — authors를 ", "로 이은 값(카드에 저장 안 함)
+  authors: z.array(z.string().min(1)),             // 내부 필드(M1-04 작성자 필터용)
+  lang: z.string().min(1),
+}).refine((i) => i.author === (i.authors.length ? i.authors.join(", ") : null), { path: ["author"] });
 
 // data/news/YYYY-MM-DD.json  → { date, generatedAt, runId, cards: NewsCard[] }
 const NewsCard = z.object({
