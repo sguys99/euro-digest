@@ -7,7 +7,7 @@
  *   - rss·journalist·aggregator → 일일 RSS 루프(`feeds`)
  *   - crawl → 크롤러 모듈(`scripts/crawlers/<site>.ts`)이 등록된 것만 `crawls`. 지금은 등록된 크롤러가 없다
  *     (M1-05 보류 — 허용 사이트 0곳, PRD §15 D32) → 전부 "no-crawler"로 건너뛴다.
- *   - search → 일일 RSS 루프 밖(검색형 공통 M1-06·GDELT M1-07 몫)
+ *   - search → 일일 RSS 루프 밖 — 검색 쿼리 로더(scripts/lib/search-queries.ts, M1-06)가 다룬다(검색 요청 M1-07은 보류, D32)
  *   - analysis → 주 1회 수집(FR-10, M3-08) — 일일 수집에서 뺀다
  *
  * `summarize` 값은 수집 여부·경로에 영향을 주지 않는다 — 뉴스 기사는 어떤 소스든 LLM에 보내지 않고 원제목+링크
@@ -31,10 +31,15 @@ export function isCollectable(source: Source): boolean {
   return collectBlocker(source) === null;
 }
 
-/** 수집 조건을 막는 첫 사유(없으면 null) — 판정 순서: enabled → terms_checked → (crawl) robots_checked */
-function collectBlocker(
-  source: Source,
-): "disabled" | "terms-unchecked" | "robots-unchecked" | null {
+/** 수집 조건을 막는 사유 — enabled:false · terms_checked:false · (crawl) robots_checked:false */
+export type CollectBlocker =
+  "disabled" | "terms-unchecked" | "robots-unchecked";
+
+/**
+ * 수집 조건을 막는 첫 사유(없으면 null) — 판정 순서: enabled → terms_checked → (crawl) robots_checked.
+ * 검색 쿼리 로더(scripts/lib/search-queries.ts, M1-06)도 쿼리가 가리키는 검색형 소스를 이것으로 판정한다.
+ */
+export function collectBlocker(source: Source): CollectBlocker | null {
   if (!source.enabled) return "disabled";
   if (!source.terms_checked) return "terms-unchecked";
   if (source.type === "crawl" && !source.robots_checked) {
@@ -61,7 +66,7 @@ export type SourceExclusionReason =
   | "robots-unchecked"
   /** type crawl, 수집 조건은 통과했지만 크롤러 모듈 없음(M1-05 보류) */
   | "no-crawler"
-  /** type search — 검색형 수집(M1-06·M1-07)이 따로 다룬다 */
+  /** type search — 검색 쿼리 로더(search-queries.ts, M1-06)가 따로 다룬다 */
   | "search-type"
   /** type analysis — 주 1회 수집(FR-10, M3-08) */
   | "weekly-analysis";

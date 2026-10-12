@@ -731,3 +731,127 @@ describe("summarize 값과 무관하게 기사는 LLM에 보내지 않는다 (D2
     }
   });
 });
+
+// ─── 검색형 소스 (M1-06 — 계획만, 실행 없음) ─────────────────────────────
+
+describe("runCollect — 검색형 소스는 계획만 하고 요청하지 않는다 (M1-06, D32)", () => {
+  const GDELT_URL = byId("gdelt-doc").url;
+  const searchRecords = (records: LogRecord[]) =>
+    records.filter((r) => r.event.startsWith("collect.search."));
+
+  it("현재 configs — 활성 쿼리 0개면 collect.search.skip 한 줄로 끝난다", async () => {
+    const { deps, records, fetcher } = makeDeps();
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.status).toBe("success");
+    expect(searchRecords(records)).toEqual([
+      expect.objectContaining({
+        level: "info",
+        event: "collect.search.skip",
+        reason: "no-active-queries",
+        queries: 9,
+        maxEnabled: 10,
+        byReason: { "query-disabled": 9 },
+      }),
+    ]);
+    expect(outcome.news.search).toMatchObject({
+      active: 0,
+      skippedSources: [],
+    });
+    expect(outcome.news.search?.excluded).toHaveLength(9);
+    expect(fetcher.calls.some((url) => url.startsWith(GDELT_URL))).toBe(false);
+  });
+
+  it("활성 쿼리가 생겨도 어댑터가 없으면 경고만 남기고 건너뛴다 — 검색 요청 없음, 발행·상태는 그대로", async () => {
+    const sources = SOURCES.map((s) =>
+      s.id === "gdelt-doc" ? { ...s, enabled: true } : s,
+    );
+    const { deps, records, fetcher } = makeDeps(
+      {
+        loadSources: async () => sources,
+        loadSearchQueries: async () => ({
+          maxEnabled: 10,
+          queries: [
+            {
+              id: "gd-on",
+              source: "gdelt-doc",
+              q: '"Lee Kang-in"',
+              lang: "en",
+              purpose: "korean",
+              enabled: true,
+            },
+            {
+              id: "gd-off",
+              source: "gdelt-doc",
+              q: '"Kim Min-jae"',
+              lang: "en",
+              purpose: "korean",
+              enabled: false,
+            },
+            {
+              id: "wrong-source",
+              source: "bbc-sport-football",
+              q: "transfer",
+              lang: "en",
+              purpose: "transfer",
+              enabled: true,
+            },
+          ],
+        }),
+      },
+      fakeFetch({}, sources),
+    );
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.status).toBe("success");
+    expect(outcome.news.ok).toBe(true);
+    // 꺼 둔 쿼리(gd-off)는 debug라 기본 출력에 없다. 설정이 어긋난 쿼리·어댑터 없는 소스는 warn
+    expect(
+      searchRecords(records).map((r) => [
+        r.level,
+        r.event,
+        r.source,
+        r.reason,
+        r.query ?? r.queries,
+      ]),
+    ).toEqual([
+      [
+        "warn",
+        "collect.search.query.skip",
+        "bbc-sport-football",
+        "source-not-search",
+        "wrong-source",
+      ],
+      ["warn", "collect.search.skip", "gdelt-doc", "no-adapter", 1],
+    ]);
+    expect(outcome.news.search).toMatchObject({
+      active: 1,
+      skippedSources: [
+        { source: "gdelt-doc", queries: 1, reason: "no-adapter" },
+      ],
+    });
+    expect(fetcher.calls.some((url) => url.startsWith(GDELT_URL))).toBe(false);
+  });
+
+  it("검색 쿼리 설정을 읽지 못해도 피드 수집·발행은 계속된다(collect.search.fail)", async () => {
+    const { deps, records } = makeDeps({
+      loadSearchQueries: async () => {
+        throw new ConfigFileError(
+          "configs/search-queries.json 스키마 검증 실패(1건) — npm run validate로 확인할 것",
+        );
+      },
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.news.ok).toBe(true);
+    expect(outcome.news.added).toBeGreaterThan(0);
+    expect(outcome.news.search?.error).toMatch(/search-queries\.json/);
+    expect(searchRecords(records)).toEqual([
+      expect.objectContaining({
+        level: "error",
+        event: "collect.search.fail",
+        reason: "config",
+      }),
+    ]);
+  });
+});

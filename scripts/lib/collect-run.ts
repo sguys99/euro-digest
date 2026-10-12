@@ -3,6 +3,8 @@
  *
  *   ① 뉴스: configs/sources.json의 일일 수집 대상 피드 전부(M1-02 로더 — enabled && terms_checked, rss·journalist·aggregator)
  *      → 소스별 격리 수집 → 합쳐서 링크 중복 제거·최신순 상위 N건 → 원제목 카드(최소 분류) → data/news/<KST 발행일>.json
+ *      검색형 소스(M1-06): configs/search-queries.json의 활성 쿼리만 계획한다. 어댑터(M1-07)가 보류라 실행하지 않는다 —
+ *      활성 쿼리 0개면 `collect.search.skip` 한 줄, 있으면 소스마다 경고 후 건너뛴다. 검색 설정 오류도 피드 수집을 멈추지 않는다.
  *   ② 브리핑: football-data 6개 대회 전날 종료 경기 → 정형 입력 → `callSingle` 1요청 → **출력은 로그만**(저장 M1-19)
  *   ③ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
  *
@@ -25,6 +27,7 @@ import {
   type NewsFile,
   type RunEnv,
   type RunLog,
+  type SearchQueriesFile,
   type Source,
 } from "@/lib/schema";
 import { kstDate, nowUtcIso } from "@/lib/time";
@@ -83,6 +86,13 @@ import {
   toFinishedResults,
 } from "./providers/football-data";
 import type { FetchLike } from "./rss";
+import {
+  countSearchExclusions,
+  loadSearchQueries,
+  planSearchQueries,
+  SEARCH_EXCLUSION_WARN_REASONS,
+  type SearchQueryExclusion,
+} from "./search-queries";
 import {
   loadSources,
   planDailySources,
@@ -150,6 +160,8 @@ export interface CollectDeps {
    * 주입해도 수집 조건(enabled && terms_checked …)·type별 경로 판정(planDailySources)은 그대로 거친다.
    */
   loadSources?: () => Promise<Source[]>;
+  /** 검색 쿼리 설정 읽기 — 기본은 `<rootDir>/configs/search-queries.json`(loadSearchQueries). 테스트 주입용 */
+  loadSearchQueries?: () => Promise<SearchQueriesFile>;
   now: () => Date;
   /** RSS·football-data 공용 fetch */
   fetch: FetchLike;
@@ -195,6 +207,22 @@ export type BriefOutcome =
 
 export type { SourceErrorType, SourceOutcome } from "./feed-collect";
 
+/** 검색형 소스 단계 결과(M1-06) — 지금은 계획만 하고 실행하지 않는다(어댑터 M1-07 보류, D32) */
+export interface SearchStageOutcome {
+  /** 활성 쿼리 수(쿼리·소스 조건과 maxEnabled 통과) */
+  active: number;
+  /** 활성 쿼리가 있지만 실행하지 못한 소스 — 어댑터 구현이 없어 지금은 항상 "no-adapter" */
+  skippedSources: Array<{
+    source: string;
+    queries: number;
+    reason: "no-adapter";
+  }>;
+  /** 활성에서 뺀 쿼리와 이유(설정 순서) */
+  excluded: SearchQueryExclusion[];
+  /** 검색 쿼리 설정 읽기 실패(피드 수집은 계속) */
+  error?: string;
+}
+
 export interface NewsOutcome {
   ok: boolean;
   /** 피드 원문 항목 수(모든 소스 합) */
@@ -211,6 +239,8 @@ export interface NewsOutcome {
   sources: SourceOutcome[];
   /** 일일 수집에서 뺀 소스와 이유 */
   excluded: SourceExclusion[];
+  /** 검색형 소스 단계 결과 — 소스 설정을 읽지 못했으면 null */
+  search: SearchStageOutcome | null;
   error?: string;
 }
 
@@ -263,6 +293,78 @@ function logSourcePlan(log: Logger, plan: DailySourcePlan): void {
   });
 }
 
+/**
+ * 검색형 소스 단계(M1-06) — 활성 쿼리를 계획하고 로그만 남긴다. 검색 요청은 하지 않는다(M1-07 보류, D32).
+ *   - 활성 쿼리 0개 → `collect.search.skip`(info, reason "no-active-queries") 한 줄. 쿼리별 제외는 debug(기본 출력 안 함)
+ *   - 설정과 실행이 어긋난 제외(source-missing·source-not-search·over-max-enabled) → 쿼리마다 warn
+ *   - 활성 쿼리가 있는 소스 → 어댑터가 없으므로 소스마다 `collect.search.skip`(warn, reason "no-adapter")
+ * 설정 읽기 실패는 `collect.search.fail`(error)로 남기고 피드 수집을 계속한다 — `npm run validate` 게이트가 커밋 전에 잡는다.
+ */
+async function runSearchStage(
+  deps: CollectDeps,
+  sources: readonly Source[],
+): Promise<SearchStageOutcome> {
+  const log = deps.logger;
+  let file: SearchQueriesFile;
+  try {
+    file = await (
+      deps.loadSearchQueries ?? (() => loadSearchQueries(deps.rootDir))
+    )();
+  } catch (error) {
+    log.error("collect.search.fail", {
+      reason: "config",
+      error: errorText(error),
+    });
+    return {
+      active: 0,
+      skippedSources: [],
+      excluded: [],
+      error: errorText(error),
+    };
+  }
+
+  const plan = planSearchQueries(file, sources);
+  for (const ex of plan.excluded) {
+    const level = SEARCH_EXCLUSION_WARN_REASONS.has(ex.reason)
+      ? "warn"
+      : "debug";
+    log[level]("collect.search.query.skip", {
+      query: ex.id,
+      source: ex.source,
+      reason: ex.reason,
+    });
+  }
+  const outcome: SearchStageOutcome = {
+    active: plan.active,
+    skippedSources: [],
+    excluded: plan.excluded,
+  };
+  if (plan.active === 0) {
+    log.info("collect.search.skip", {
+      reason: "no-active-queries",
+      queries: file.queries.length,
+      maxEnabled: plan.maxEnabled,
+      byReason: countSearchExclusions(plan.excluded),
+    });
+    return outcome;
+  }
+  // 어댑터 구현이 없다(M1-07 보류) — 활성 쿼리를 켰다면 설정이 실행보다 앞선 것이라 warn.
+  for (const batch of plan.batches) {
+    log.warn("collect.search.skip", {
+      source: batch.source.id,
+      type: batch.source.type,
+      queries: batch.queries.length,
+      reason: "no-adapter",
+    });
+    outcome.skippedSources.push({
+      source: batch.source.id,
+      queries: batch.queries.length,
+      reason: "no-adapter",
+    });
+  }
+  return outcome;
+}
+
 async function runNewsStage(
   deps: CollectDeps,
   ctx: { runId: string; publishDate: string; startedAt: string },
@@ -277,22 +379,25 @@ async function runNewsStage(
     path: null,
     sources: [],
     excluded: [],
+    search: null,
   };
 
   // 소스 설정 → 일일 수집 계획. 설정 오류(소스·피드 수집 정책)·수집 대상 0개는 뉴스 단계 실패(exit 1 — 커밋하지 않고 이슈).
+  let configSources: Source[];
   let plan: DailySourcePlan;
   let feedPolicy: FeedPolicy;
   try {
-    const sources = await (
+    configSources = await (
       deps.loadSources ?? (() => loadSources(deps.rootDir))
     )();
-    plan = planDailySources(sources);
+    plan = planDailySources(configSources);
     feedPolicy = resolveFeedPolicy(deps.feedPolicy);
   } catch (error) {
     log.error("collect.source.config", { error: errorText(error) });
     return { outcome: { ...empty, error: errorText(error) }, sources: [] };
   }
   logSourcePlan(log, plan);
+  const search = await runSearchStage(deps, configSources);
   if (plan.feeds.length === 0) {
     const error =
       "수집 대상 피드 소스가 없다(enabled && terms_checked인 rss·journalist·aggregator 0개)";
@@ -301,7 +406,7 @@ async function runNewsStage(
       excluded: plan.excluded.length,
     });
     return {
-      outcome: { ...empty, excluded: plan.excluded, error },
+      outcome: { ...empty, excluded: plan.excluded, search, error },
       sources: [],
     };
   }
@@ -325,7 +430,12 @@ async function runNewsStage(
   }));
   const feedItems = outcomes.reduce((sum, o) => sum + o.items, 0);
   const failed = outcomes.filter((o) => !o.ok);
-  const base = { feedItems, sources: outcomes, excluded: plan.excluded };
+  const base = {
+    feedItems,
+    sources: outcomes,
+    excluded: plan.excluded,
+    search,
+  };
   if (failed.length === outcomes.length) {
     const error = `모든 피드 소스 수집 실패(${failed.length}개)`;
     log.error("collect.news.fail", {
