@@ -5,7 +5,7 @@
 # 참고
 # - 봇의 data 커밋은 GITHUB_TOKEN으로 push되므로 이 워크플로를 다시 트리거하지 않는다(GitHub 규칙).
 #   collect.yml·weekly.yml은 스스로 빌드·검증 후 deploy.yml을 호출한다(CLAUDE.md §6.1).
-# - 06:00~07:30 KST push 금지는 사람·봇 운영 규칙이라 여기서 강제하지 않는다(CLAUDE.md §10).
+# - 06:00~08:00 KST push 금지는 사람·봇 운영 규칙이라 여기서 강제하지 않는다(CLAUDE.md §10, PRD §15 D26).
 name: CI
 
 on:
@@ -90,6 +90,58 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  # 기초 컴포넌트 견본 검사(D0-12) — SPECIMEN=1 빌드(out-specimen/)를 따로 만들어 실제 브라우저에서
+  # axe·44px·포커스 링 대비·reduced-motion·탭 키보드·토스트·테마 토글·theme-color를 검사한다.
+  # M1-30에서 컴포넌트가 공개 페이지에 올라가기 전까지 이 컴포넌트들을 렌더하는 검사는 여기뿐이다.
+  # 배포 조건(deploy needs)에는 아직 넣지 않는다 — M1-30에서 공개 페이지가 쓰기 시작하면 승격한다.
+  # .next/를 일반 빌드와 같이 쓰므로 check job과 다른 러너(별도 job)에서 돌린다.
+  specimen:
+    name: 견본 검사 (기초 컴포넌트 · SPECIMEN 빌드)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Node.js 설정 (.nvmrc)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: Playwright 버전 확인
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Playwright 브라우저 캐시
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Playwright 브라우저 설치 (chromium + OS 의존성)
+        run: npx playwright install --with-deps chromium
+
+      - name: 견본 빌드 + e2e (npm run test:specimen)
+        id: specimen
+        run: npm run test:specimen
+
+      - name: 견본 리포트·스크린샷 업로드 (실패 시)
+        if: failure() && steps.specimen.outcome == 'failure'
+        uses: actions/upload-artifact@v7
+        with:
+          name: specimen-report-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             playwright-report/
             test-results/

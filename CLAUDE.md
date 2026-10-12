@@ -1,7 +1,7 @@
 # CLAUDE.md — 유로 다이제스트 (Euro Digest)
 
 > 매일 아침, 밤사이 유럽 축구를 한눈에.
-> 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **M0(셋업·검증) 완료(2026-10-11) → D0(전체 디자인 콘셉트) 착수 전**
+> 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **D0(전체 디자인 콘셉트) 완료(2026-10-12) → M1(뉴스 MVP) 착수 전**
 
 이 문서는 Claude Code가 이 저장소에서 **어떻게 일하는지**를 정한다. 문서끼리 충돌하면 아래 우선순위를 따르고 사용자에게 알린다.
 
@@ -10,7 +10,7 @@
 | 1 | `docs/PRD.md` | 요구사항 단일 출처 (FR/NFR/DR ID, 결정 사항 §15) |
 | 2 | `CLAUDE.md` | 작업 규칙·컨벤션·금지 사항 |
 | 3 | `docs/plan.md` | 개발계획·진행 체크리스트 |
-| 4 | `DESIGN.md` | 디자인 토큰·컴포넌트 규칙 (**D0 시안 선택 후** 작성) |
+| 4 | `DESIGN.md` | 디자인 토큰·컴포넌트 규칙 (D0에서 작성 — 선택안 `docs/design/d0/concept-mix.html`) |
 | 참고 | `docs/basic_plan.md`, `docs/design/DECISIONS.md` | 배경·소스 조사 / 디자인 선택 기록 |
 
 > PRD·plan의 "상위 문서" 표기는 파생 순서이며, 충돌 시에는 위 표의 우선순위를 따른다(basic_plan은 참고). 큰 문서는 통째로 읽지 않고 작업 관련 PRD 절만 읽는다(예: 수집 → PRD §5.1·§5.2·§9).
@@ -101,6 +101,7 @@ npm run eval:prompt                  # 골든셋 회귀 평가 — 프롬프트 
 npm run validate                     # configs·data 스키마 + 발행 검증 게이트
 npm run check                        # typecheck + lint + test (커밋 전 필수)
 npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린샷 / 번들 크기 예산 + 비밀값 grep
+npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) → 기초 컴포넌트 e2e (공개 빌드에는 견본 없음)
 ```
 
 ## 6. 파이프라인 · LLM
