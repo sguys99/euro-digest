@@ -1,0 +1,32 @@
+[
+  {
+    "runId": "collect-prod-20261012T112810Z-ed73",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-10-12T11:28:10.929Z",
+    "finishedAt": "2026-10-12T11:28:19.308Z",
+    "collected": 82,
+    "clusters": 5,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": {
+      "in": 3198,
+      "out": 1295,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.000967,
+    "apiCalls": {
+      "footballData": 1,
+      "apiFootball": 0
+    },
+    "sources": [
+      {
+        "id": "bbc-sport-football",
+        "ok": true,
+        "items": 82
+      }
+    ],
+    "status": "success"
+  }
+]

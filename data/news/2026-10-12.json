@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-12",
+  "generatedAt": "2026-10-12T11:28:11.166Z",
+  "runId": "collect-prod-20261012T112810Z-ed73",
+  "cards": [
+    {
+      "id": "c_fb2dd57b4a",
+      "t": "Police officer hurt after Liverpool-Man City game",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/c8x23ekvp3ywo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-12T11:05:29.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T11:28:10.929Z"
+    },
+    {
+      "id": "c_0ece511965",
+      "t": "Gateshead expect players to be paid on Tuesday",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqpvg4ez0dpno?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-12T10:51:14.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T11:28:10.929Z"
+    },
+    {
+      "id": "c_df0a4c9ba2",
+      "t": "Elite schedule 'not sustainable' amid 55-game seasons",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmp3gwz17qn7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-12T10:26:18.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T11:28:10.929Z"
+    },
+    {
+      "id": "c_87b245892e",
+      "t": "Peterborough deny making illegal approach for Savage",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cr93zn4kq0wjo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-12T10:20:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T11:28:10.929Z"
+    },
+    {
+      "id": "c_917d0d5917",
+      "t": "Women's billion-dollar boom leaves players behind, says Fifpro",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmd7qn1g0xrxo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-12T10:04:50.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T11:28:10.929Z"
+    }
+  ]
+}
