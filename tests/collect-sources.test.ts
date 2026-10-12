@@ -6,6 +6,9 @@
  *
  * 필수 항목: 수집 대상만 요청(제외 소스·검색형은 요청 없음) · 소스 1개 실패 격리 · 여러 소스의 같은 링크 중복 없음 ·
  * 모든 소스 실패 = 뉴스 실패(브리핑 생략) · RunLog.sources 기록 · `summarize` 값과 무관하게 LLM에 기사 미전송(D23).
+ * M1-03: 호스트별 병렬(같은 호스트 하나씩·동시 상한 4) · 결과·카드는 설정 순서(완료 순서 무관) · 재시도·실패 종류 ·
+ * 단계 시간 예산 초과 소스도 RunLog.sources에 `{id, ok:false, items:0}`로 남음. 시각·대기는 가상 시계(feedClock)로 주입한다 —
+ * 시간 계산 자체는 tests/feed-collect.test.ts(가짜 타이머).
  * 알려진 한계(M1-09): 국내 피드는 시간대 없는 날짜라 모든 항목이 `no-date`로 건너뛴다 — 여기서는 그 사실을 고정만 한다.
  */
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
@@ -34,6 +37,7 @@ import {
   type MessageParams,
 } from "../scripts/lib/llm";
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
+import { hostKey, type FeedClock } from "../scripts/lib/feed-collect";
 import { FOOTBALL_DATA_BASE_URL } from "../scripts/lib/providers/football-data";
 import {
   feedUserAgent,
@@ -89,19 +93,25 @@ interface FakeFetch {
   fetch: FetchLike;
   calls: string[];
   maxInFlight: () => number;
+  /** 호스트 하나에 동시에 나간 요청 수의 최댓값 */
+  maxPerHost: () => number;
 }
 
 /**
  * 수집 대상 피드 URL은 fixture XML(또는 소스 id별 덮어쓰기), football-data는 경기 fixture를 돌려준다.
- * 그 밖의 URL은 실패시킨다(제외 소스를 요청하면 테스트가 잡는다). 동시 요청 수도 잰다.
+ * 그 밖의 URL은 실패시킨다(제외 소스를 요청하면 테스트가 잡는다). 동시 요청 수(전체·호스트별)도 잰다.
+ * `delayMs`가 있으면 그 소스는 실제 시간으로 그만큼 늦게 응답한다(완료 순서 바꾸기용, 짧게).
  */
 function fakeFetch(
   overrides: Record<string, Route> = {},
   sources: readonly Source[] = SOURCES,
+  delayMs: (id: string) => number = () => 0,
 ): FakeFetch {
   const calls: string[] = [];
   let inFlight = 0;
   let max = 0;
+  const perHost = new Map<string, number>();
+  let maxPerHost = 0;
   const idByUrl = new Map(sources.map((s) => [s.url, s.id] as const));
   const respond = (route: Route): Response => {
     if (route instanceof Error) throw route;
@@ -112,10 +122,14 @@ function fakeFetch(
   return {
     calls,
     maxInFlight: () => max,
+    maxPerHost: () => maxPerHost,
     fetch: async (url) => {
       calls.push(url);
+      const host = hostKey(url);
       inFlight += 1;
       max = Math.max(max, inFlight);
+      perHost.set(host, (perHost.get(host) ?? 0) + 1);
+      maxPerHost = Math.max(maxPerHost, perHost.get(host)!);
       try {
         await Promise.resolve();
         if (url.startsWith(FOOTBALL_DATA_BASE_URL)) {
@@ -129,10 +143,31 @@ function fakeFetch(
         if (route === undefined) {
           throw new Error(`fixture가 없는 소스를 요청함: ${id}`);
         }
+        const delay = delayMs(id);
+        if (delay > 0) {
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
         return respond(route);
       } finally {
         inFlight -= 1;
+        perHost.set(host, perHost.get(host)! - 1);
       }
+    },
+  };
+}
+
+/** 가상 시계 — 대기(같은 호스트 간격·재시도 대기)는 실제로 기다리지 않고 시각만 앞으로 민다 */
+function virtualClock(): { clock: FeedClock; advance: (ms: number) => void } {
+  let t = 0;
+  return {
+    clock: {
+      now: () => t,
+      sleep: async (ms) => {
+        t += ms;
+      },
+    },
+    advance: (ms) => {
+      t += ms;
     },
   };
 }
@@ -169,6 +204,7 @@ function makeDeps(
     now: () => NOW,
     fetch: fetcher.fetch,
     userAgent: feedUserAgent("test@example.com"),
+    feedClock: virtualClock().clock,
     footballDataApiKey: "test-football-data-key",
     footballDataSleep: async () => undefined,
     createLlm: () => {
@@ -271,7 +307,7 @@ function brokenBodyResponse(): Response {
 // ─── 수집 대상 전부 ──────────────────────────────────────────────────────
 
 describe("runCollect — configs의 수집 대상 피드 전부", () => {
-  it("수집 대상 14개 피드만 설정 순서대로 하나씩 요청하고, 제외 소스·검색형은 요청하지 않는다", async () => {
+  it("수집 대상 14개 피드만 한 번씩 요청(다른 호스트 동시·같은 호스트 하나씩 설정 순서), 제외 소스·검색형은 요청하지 않는다", async () => {
     const { deps, fetcher, records } = makeDeps();
     const outcome = await runCollect(deps);
     expect(outcome.exitCode).toBe(0);
@@ -280,8 +316,17 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
     const feedCalls = fetcher.calls.filter(
       (url) => !url.startsWith(FOOTBALL_DATA_BASE_URL),
     );
-    expect(feedCalls).toEqual(FEEDS.map((s) => s.url));
-    expect(fetcher.maxInFlight()).toBe(1);
+    expect([...feedCalls].sort()).toEqual(FEEDS.map((s) => s.url).sort());
+    // 호스트별 병렬(M1-03): 동시 요청은 2~4개, 호스트 하나에는 항상 1개
+    expect(fetcher.maxInFlight()).toBeGreaterThan(1);
+    expect(fetcher.maxInFlight()).toBeLessThanOrEqual(4);
+    expect(fetcher.maxPerHost()).toBe(1);
+    // 같은 호스트(BBC 4·interfootball 2·besteleven 2)는 설정 순서대로
+    for (const host of new Set(FEEDS.map((s) => hostKey(s.url)))) {
+      expect(feedCalls.filter((url) => hostKey(url) === host)).toEqual(
+        FEEDS.filter((s) => hostKey(s.url) === host).map((s) => s.url),
+      );
+    }
     for (const ex of PLAN.excluded) {
       expect(fetcher.calls).not.toContain(byId(ex.id).url);
     }
@@ -377,6 +422,31 @@ describe("runCollect — configs의 수집 대상 피드 전부", () => {
     const times = file.cards.map((c) => Date.parse(c.src[0]!.at));
     expect([...times].sort((a, b) => b - a)).toEqual(times);
   });
+
+  it("소스 결과·카드는 응답 완료 순서와 무관하다 — 설정 앞쪽 소스가 늦게 응답해도 같은 파일", async () => {
+    const base = makeDeps();
+    const baseOutcome = await runCollect(base.deps);
+    const baseFile = readNews("2026-10-11");
+    rmSync(path.join(dataDir, "news"), { recursive: true, force: true });
+
+    // 설정 앞쪽일수록 늦게(실제 시간 수 ms) — 완료 순서가 설정 순서와 거꾸로
+    const order = FEEDS.map((s) => s.id);
+    const reversed = makeDeps(
+      {},
+      fakeFetch({}, SOURCES, (id) => (order.length - order.indexOf(id)) * 3),
+    );
+    const outcome = await runCollect(reversed.deps);
+    const completion = reversed.records
+      .filter((r) => r.event === "collect.source.fetch")
+      .map((r) => r.source);
+    expect(completion).not.toEqual(order);
+    const strip = (o: { elapsedMs: number }) => ({ ...o, elapsedMs: 0 });
+    expect(outcome.news.sources.map(strip)).toEqual(
+      baseOutcome.news.sources.map(strip),
+    );
+    // runId만 실행마다 다르다(무작위 접미사) — 카드는 순서까지 같다
+    expect(readNews("2026-10-11").cards).toEqual(baseFile.cards);
+  });
 });
 
 // ─── 실패 격리 ───────────────────────────────────────────────────────────
@@ -398,14 +468,21 @@ describe("runCollect — 소스별 실패 격리", () => {
     expect(outcome.brief.state).toBe("done");
     expect(llmRequests).toHaveLength(1);
 
+    // 503·네트워크·본문 끊김은 1회 재시도 후 실패, 파싱 실패는 재시도 없음(M1-03)
     const failed = outcome.news.sources.filter((s) => !s.ok);
     expect(
-      failed.map((s) => [s.id, s.errorType, s.status ?? null, s.items]),
+      failed.map((s) => [
+        s.id,
+        s.errorType,
+        s.status ?? null,
+        s.items,
+        s.retries,
+      ]),
     ).toEqual([
-      ["bbc-sport-premier-league", "fetch", 503, 0],
-      ["the-athletic-football", "fetch", null, 0],
-      ["espn-soccer", "parse", null, 0],
-      ["daily-briefing", "unexpected", null, 0],
+      ["bbc-sport-premier-league", "http-5xx", 503, 0, 1],
+      ["the-athletic-football", "network", null, 0, 1],
+      ["espn-soccer", "parse", null, 0, 0],
+      ["daily-briefing", "network", 200, 0, 1],
     ]);
     expect(outcome.news.sources.filter((s) => s.ok)).toHaveLength(10);
 
@@ -417,12 +494,24 @@ describe("runCollect — 소스별 실패 격리", () => {
     expect(hosts.has("www.bbc.co.uk")).toBe(true);
     expect(hosts.has("www.gianlucadimarzio.com")).toBe(true);
 
+    // 로그는 완료 순서로 나온다 — 집합으로 비교
     const fails = records.filter((r) => r.event === "collect.source.fail");
-    expect(fails.map((r) => [r.source, r.errorType])).toEqual(
-      failed.map((s) => [s.id, s.errorType]),
+    expect(fails.map((r) => [r.source, r.errorType, r.retries]).sort()).toEqual(
+      failed.map((s) => [s.id, s.errorType, s.retries]).sort(),
     );
+    expect(
+      records
+        .filter((r) => r.event === "collect.source.retry")
+        .map((r) => r.source)
+        .sort(),
+    ).toEqual([
+      "bbc-sport-premier-league",
+      "daily-briefing",
+      "the-athletic-football",
+    ]);
     // 로그에 응답 본문을 남기지 않는다
-    expect(JSON.stringify(fails)).not.toContain("not a feed");
+    expect(JSON.stringify(records)).not.toContain("not a feed");
+    expect(JSON.stringify(records)).not.toContain('"busy"');
   });
 
   it("모든 피드가 실패하면 뉴스 실패(exit 1) — 브리핑(football-data·LLM)을 부르지 않고 파일도 쓰지 않는다", async () => {
@@ -534,6 +623,68 @@ describe("runCollect — 소스별 실패 격리", () => {
     });
     expect(runs[0]!.collected).toBe(outcome.news.feedItems);
     expect(newsFiles()).toEqual([]);
+  });
+
+  it("단계 시간 예산을 넘으면 시작하지 못한 소스는 budget — 실행은 partial, RunLog.sources에 {id, ok:false, items:0}", async () => {
+    // 첫 소스 요청 순간 가상 시계가 예산(90초)을 넘긴다 → 나머지 13개는 시작하지 않는다
+    const v = virtualClock();
+    const fetcher = fakeFetch();
+    const first = FEEDS[0]!;
+    const fake = fakeLiveTransport(
+      JSON.stringify({
+        l: [{ t: "Chelsea가 Bournemouth를 5-1로 꺾었다.", r: ["m560595"] }],
+      }),
+    );
+    const { deps, records } = makeDeps(
+      {
+        llmMode: "live",
+        dry: true,
+        feedClock: v.clock,
+        fetch: (url, init) => {
+          if (url === first.url) v.advance(100_000);
+          return fetcher.fetch(url, init);
+        },
+        createLlm: () =>
+          createLlmClient({
+            mode: "live",
+            model: "claude-haiku-5-5",
+            transport: fake.transport,
+            logger: () => undefined,
+          }),
+      },
+      fetcher,
+    );
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.status).toBe("partial");
+    expect(
+      outcome.news.sources.map((s) => [s.id, s.ok, s.errorType ?? null]),
+    ).toEqual(
+      FEEDS.map((s, i) =>
+        i === 0 ? [s.id, true, null] : [s.id, false, "budget"],
+      ),
+    );
+    // 시작하지 못한 소스는 요청하지 않았다
+    const feedCalls = fetcher.calls.filter(
+      (url) => !url.startsWith(FOOTBALL_DATA_BASE_URL),
+    );
+    expect(feedCalls).toEqual([first.url]);
+
+    const runs = RunsDevFileSchema.parse(
+      JSON.parse(readFileSync(path.join(dataDir, "runs-dev.json"), "utf8")),
+    );
+    expect(runs[0]!.status).toBe("partial");
+    expect(runs[0]!.sources).toEqual(
+      FEEDS.map((s, i) => ({
+        id: s.id,
+        ok: i === 0,
+        items: i === 0 ? outcome.news.sources[0]!.items : 0,
+      })),
+    );
+    expect(runs[0]!.sources[0]!.items).toBeGreaterThan(0);
+    expect(
+      records.find((r) => r.event === "collect.feeds.budget"),
+    ).toMatchObject({ sources: FEEDS.slice(1).map((s) => s.id) });
   });
 });
 

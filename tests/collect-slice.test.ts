@@ -195,6 +195,8 @@ function makeDeps(over: Partial<CollectDeps> = {}) {
     now: () => NOW,
     fetch: fetcher.fetch,
     userAgent: feedUserAgent("test@example.com"),
+    // 피드 재시도 대기(2초)·같은 호스트 간격을 실제로 기다리지 않는다(M1-03 — 시간 계산은 tests/feed-collect.test.ts)
+    feedClock: { now: () => 0, sleep: async () => undefined },
     footballDataApiKey: "test-football-data-key",
     footballDataSleep: async () => undefined,
     createLlm: () => {
@@ -334,7 +336,7 @@ describe("rss.ts — 피드 파싱", () => {
     );
   });
 
-  it("fetchFeedXml — User-Agent·Accept를 보내고 HTTP 오류는 FeedFetchError", async () => {
+  it("fetchFeedXml — User-Agent·Accept·redirect manual을 보내고 HTTP 오류는 FeedFetchError", async () => {
     const ok = fakeFetch({ feed: BBC_XML });
     await expect(
       fetchFeedXml(BBC_SOURCE.url, { fetch: ok.fetch, userAgent: "UA/1" }),
@@ -342,11 +344,16 @@ describe("rss.ts — 피드 파싱", () => {
     const headers = ok.calls[0]!.init!.headers as Record<string, string>;
     expect(headers["User-Agent"]).toBe("UA/1");
     expect(headers.Accept).toMatch(/rss\+xml/);
+    expect(ok.calls[0]!.init!.redirect).toBe("manual");
 
     const bad = fakeFetch({ feed: new Response("x", { status: 503 }) });
     await expect(
       fetchFeedXml(BBC_SOURCE.url, { fetch: bad.fetch, userAgent: "UA/1" }),
-    ).rejects.toMatchObject({ name: "FeedFetchError", status: 503 });
+    ).rejects.toMatchObject({
+      name: "FeedFetchError",
+      kind: "http-5xx",
+      status: 503,
+    });
   });
 
   it("User-Agent는 서비스명·저장소·연락처 형식", () => {
@@ -891,6 +898,9 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
       records.find((r) => r.event === "collect.source.fail"),
     ).toMatchObject({
       source: "bbc-sport-football",
+      errorType: "http-5xx",
+      status: 503,
+      retries: 1,
     });
   });
 });
