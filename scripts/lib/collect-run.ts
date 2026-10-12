@@ -1,16 +1,19 @@
 /**
  * `npm run collect` 파이프라인 본체 (M1-01 얇은 수직 슬라이스, PRD §10, D23·D24·D28).
  *
- *   ① 뉴스: configs/sources.json의 `bbc-sport-football` 1개 → 원제목 카드 상위 N건(최소 분류) → data/news/<KST 발행일>.json
+ *   ① 뉴스: configs/sources.json의 일일 수집 대상 피드 전부(M1-02 로더 — enabled && terms_checked, rss·journalist·aggregator)
+ *      → 소스별 격리 수집 → 합쳐서 링크 중복 제거·최신순 상위 N건 → 원제목 카드(최소 분류) → data/news/<KST 발행일>.json
  *   ② 브리핑: football-data 6개 대회 전날 종료 경기 → 정형 입력 → `callSingle` 1요청 → **출력은 로그만**(저장 M1-19)
  *   ③ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
  *
- * 실패 격리: 브리핑 단계(브리핑 설정·football-data·예산·LLM·출력 형식)의 어떤 실패도 뉴스 발행을 멈추지 않는다(FR-26 정신).
- * 뉴스 단계가 통째로 실패하면(소스 설정 오류·피드 실패·기존 파일 손상) exitCode 1 — Actions가 커밋하지 않고 이슈를 만든다.
+ * 실패 격리: 소스 하나의 실패(받기·파싱·예상 밖 오류)는 그 소스만 건너뛴다(상태 partial — 이슈 생성은 M1-03).
+ * 브리핑 단계(브리핑 설정·football-data·예산·LLM·출력 형식)의 어떤 실패도 뉴스 발행을 멈추지 않는다(FR-26 정신).
+ * 뉴스 단계가 통째로 실패하면(소스 설정 오류·수집 대상 0개·모든 소스 실패·기존 파일 손상) exitCode 1 — Actions가
+ * 커밋하지 않고 이슈를 만든다.
  * 이때는 브리핑(LLM 호출)도 하지 않는다 — 커밋되지 않는 실행의 LLM 비용 기록이 사라지지 않게(M1-27까지).
  *
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
- * 다음 작업이 갈아끼울 자리: 소스 로더(M1-02) · RSS 재시도·격리 이슈(M1-03) · 정규화(M1-09) · 중복제거~점수화(M1-10~14) ·
+ * 다음 작업이 갈아끼울 자리: RSS 재시도·실패 소스 이슈(M1-03) · 기자 채널 작성자 필터(M1-04) · 정규화(M1-09) · 중복제거~점수화(M1-10~14) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
  * 계절별 마감(M1-47) · football-data 어댑터(M1-44).
  */
@@ -36,6 +39,7 @@ import {
   loadSlicePrompt,
   parseBriefOutput,
 } from "./brief";
+import { cardIdFor } from "./card-id";
 import type { LlmMode } from "./cli-args";
 import { readConfigFile } from "./config-files";
 import {
@@ -64,18 +68,30 @@ import {
   serializeNewsFile,
   writeNewsFile,
 } from "./news-file";
-import { normalizeFeedItems } from "./normalize";
+import {
+  normalizeFeedItems,
+  type FeedItem,
+  type SkipReason,
+} from "./normalize";
 import {
   createFootballDataClient,
   toFinishedResults,
 } from "./providers/football-data";
 import {
+  FeedFetchError,
+  FeedParseError,
   fetchFeedXml,
   parseFeedXml,
   type FetchLike,
   type RawFeedItem,
 } from "./rss";
-import { loadSources, pickCollectableSource, SLICE_SOURCE_ID } from "./sources";
+import {
+  loadSources,
+  planDailySources,
+  type DailySourcePlan,
+  type SourceExclusion,
+  type SourceExclusionReason,
+} from "./sources";
 
 // ─── 설정 ────────────────────────────────────────────────────────────────
 
@@ -131,8 +147,11 @@ export interface CollectDeps {
   dry: boolean;
   /** 카드 상한(resolveCardLimit) */
   limit: number;
-  /** 수집 소스 id(기본 bbc-sport-football) */
-  sourceId?: string;
+  /**
+   * 소스 설정 읽기 — 기본은 `<rootDir>/configs/sources.json`(loadSources). 테스트가 소스 목록을 주입한다.
+   * 주입해도 수집 조건(enabled && terms_checked …)·type별 경로 판정(planDailySources)은 그대로 거친다.
+   */
+  loadSources?: () => Promise<Source[]>;
   now: () => Date;
   /** RSS·football-data 공용 fetch */
   fetch: FetchLike;
@@ -172,9 +191,28 @@ export type BriefOutcome =
     }
   | { state: "done"; inputMatches: number; lines: string[] };
 
+/** 소스 실패 종류 — 받기(HTTP·타임아웃·리다이렉트·크기) · 파싱(깨진 XML) · 그 밖의 예외 */
+export type SourceErrorType = "fetch" | "parse" | "unexpected";
+
+/** 피드 소스 1개의 수집 결과 (RunLog.sources는 이 중 id·ok·items만 기록한다) */
+export interface SourceOutcome {
+  id: string;
+  ok: boolean;
+  /** 피드 원문 항목 수(받기·파싱 실패면 0) */
+  items: number;
+  /** 정규화를 통과한 항목 수 */
+  usable: number;
+  /** 정규화에서 건너뛴 이유별 건수 */
+  skipped: Partial<Record<SkipReason, number>>;
+  errorType?: SourceErrorType;
+  /** HTTP 상태(받기 실패이고 응답이 있었을 때) */
+  status?: number | null;
+  error?: string;
+}
+
 export interface NewsOutcome {
   ok: boolean;
-  /** 피드 원문 항목 수 */
+  /** 피드 원문 항목 수(모든 소스 합) */
   feedItems: number;
   /** 이번 실행이 만든 카드 수(선별 후) */
   selected: number;
@@ -184,6 +222,10 @@ export interface NewsOutcome {
   file: NewsFile | null;
   /** 실제로 쓴 경로(dry·빈 결과면 null) */
   path: string | null;
+  /** 수집을 시도한 피드 소스별 결과(설정 파일 순서) */
+  sources: SourceOutcome[];
+  /** 일일 수집에서 뺀 소스와 이유 */
+  excluded: SourceExclusion[];
   error?: string;
 }
 
@@ -207,35 +249,14 @@ function errorText(error: unknown): string {
 
 // ─── ① 뉴스 ──────────────────────────────────────────────────────────────
 
-async function runNewsStage(
-  deps: CollectDeps,
-  ctx: { runId: string; publishDate: string; startedAt: string },
-): Promise<{ outcome: NewsOutcome; sources: RunLog["sources"] }> {
+/** 소스 1개를 받아 파싱·정규화한다. 어떤 예외도 밖으로 던지지 않는다 — 실패는 이 소스만의 결과로 남긴다(격리). */
+async function collectFeedSource(
+  source: Source,
+  deps: Pick<CollectDeps, "fetch" | "userAgent" | "logger">,
+): Promise<{ outcome: SourceOutcome; items: FeedItem[] }> {
   const log = deps.logger;
-  const sourceId = deps.sourceId ?? SLICE_SOURCE_ID;
-  const empty: NewsOutcome = {
-    ok: false,
-    feedItems: 0,
-    selected: 0,
-    added: 0,
-    file: null,
-    path: null,
-  };
-
-  let source: Source;
-  try {
-    source = pickCollectableSource(await loadSources(deps.rootDir), sourceId);
-  } catch (error) {
-    log.error("collect.source.config", {
-      source: sourceId,
-      error: errorText(error),
-    });
-    return { outcome: { ...empty, error: errorText(error) }, sources: [] };
-  }
-
-  // 피드 받기·파싱 — 실패는 이 소스만의 실패로 기록한다(M1-03이 이슈 생성으로 보강).
+  const started = Date.now();
   let raws: RawFeedItem[];
-  const fetchStarted = Date.now();
   try {
     const xml = await fetchFeedXml(source.url, {
       fetch: deps.fetch,
@@ -243,36 +264,194 @@ async function runNewsStage(
     });
     raws = await parseFeedXml(xml);
   } catch (error) {
+    const errorType = sourceErrorType(error);
+    const status = error instanceof FeedFetchError ? error.status : null;
     log.error("collect.source.fail", {
       source: source.id,
-      errorType: error instanceof Error ? error.name : "unknown",
+      errorType,
+      status,
+      error: errorText(error),
+      elapsedMs: Date.now() - started,
+    });
+    return {
+      outcome: {
+        id: source.id,
+        ok: false,
+        items: 0,
+        usable: 0,
+        skipped: {},
+        errorType,
+        status,
+        error: errorText(error),
+      },
+      items: [],
+    };
+  }
+  // 정규화는 순수 함수라 던지지 않는다고 보지만, 방어선으로 같은 격리 안에 둔다.
+  try {
+    const { items, skipped } = normalizeFeedItems(raws, source);
+    log.info("collect.source.fetch", {
+      source: source.id,
+      items: raws.length,
+      usable: items.length,
+      skipped,
+      elapsedMs: Date.now() - started,
+    });
+    if (skipped["title-too-long"]) {
+      log.warn("collect.item.skip", {
+        source: source.id,
+        reason: "title-too-long",
+        count: skipped["title-too-long"],
+      });
+    }
+    return {
+      outcome: {
+        id: source.id,
+        ok: true,
+        items: raws.length,
+        usable: items.length,
+        skipped,
+      },
+      items,
+    };
+  } catch (error) {
+    log.error("collect.source.fail", {
+      source: source.id,
+      errorType: "unexpected",
       error: errorText(error),
     });
     return {
-      outcome: { ...empty, error: errorText(error) },
-      sources: [{ id: source.id, ok: false, items: 0 }],
+      outcome: {
+        id: source.id,
+        ok: false,
+        items: raws.length,
+        usable: 0,
+        skipped: {},
+        errorType: "unexpected",
+        status: null,
+        error: errorText(error),
+      },
+      items: [],
     };
   }
-  const { items, skipped } = normalizeFeedItems(raws, source);
-  log.info("collect.source.fetch", {
-    source: source.id,
-    items: raws.length,
-    usable: items.length,
-    skipped,
-    elapsedMs: Date.now() - fetchStarted,
-  });
-  if (skipped["title-too-long"]) {
-    log.warn("collect.item.skip", {
-      source: source.id,
-      reason: "title-too-long",
-      count: skipped["title-too-long"],
+}
+
+function sourceErrorType(error: unknown): SourceErrorType {
+  if (error instanceof FeedFetchError) return "fetch";
+  if (error instanceof FeedParseError) return "parse";
+  return "unexpected";
+}
+
+/** 일일 수집 계획을 구조화 로그로 남긴다 — 제외 소스는 id·type·사유 한 줄씩 */
+function logSourcePlan(log: Logger, plan: DailySourcePlan): void {
+  const byReason: Partial<Record<SourceExclusionReason, number>> = {};
+  for (const ex of plan.excluded) {
+    byReason[ex.reason] = (byReason[ex.reason] ?? 0) + 1;
+    // 크롤러가 없어 못 도는 crawl 소스는 설정과 실행이 어긋난 것이라 warn, 나머지는 의도된 제외라 info.
+    const level = ex.reason === "no-crawler" ? "warn" : "info";
+    log[level]("collect.source.skip", {
+      source: ex.id,
+      type: ex.type,
+      reason: ex.reason,
     });
   }
+  // 크롤러 모듈은 있지만 수집 실행기가 아직 없다(M1-05) — 지금은 등록된 크롤러가 없어 나오지 않는다.
+  for (const source of plan.crawls) {
+    log.warn("collect.source.skip", {
+      source: source.id,
+      type: source.type,
+      reason: "crawler-runner-pending",
+    });
+  }
+  log.info("collect.sources.plan", {
+    feeds: plan.feeds.length,
+    crawls: plan.crawls.length,
+    excluded: plan.excluded.length,
+    byReason,
+  });
+}
 
-  const cards = selectLatest(items, deps.limit).map((item) =>
-    buildCard(item, source, ctx.startedAt),
-  );
-  const sources = [{ id: source.id, ok: true, items: raws.length }];
+async function runNewsStage(
+  deps: CollectDeps,
+  ctx: { runId: string; publishDate: string; startedAt: string },
+): Promise<{ outcome: NewsOutcome; sources: RunLog["sources"] }> {
+  const log = deps.logger;
+  const empty: NewsOutcome = {
+    ok: false,
+    feedItems: 0,
+    selected: 0,
+    added: 0,
+    file: null,
+    path: null,
+    sources: [],
+    excluded: [],
+  };
+
+  // 소스 설정 → 일일 수집 계획. 설정 오류·수집 대상 0개는 뉴스 단계 실패(exit 1 — 커밋하지 않고 이슈).
+  let plan: DailySourcePlan;
+  try {
+    const sources = await (
+      deps.loadSources ?? (() => loadSources(deps.rootDir))
+    )();
+    plan = planDailySources(sources);
+  } catch (error) {
+    log.error("collect.source.config", { error: errorText(error) });
+    return { outcome: { ...empty, error: errorText(error) }, sources: [] };
+  }
+  logSourcePlan(log, plan);
+  if (plan.feeds.length === 0) {
+    const error =
+      "수집 대상 피드 소스가 없다(enabled && terms_checked인 rss·journalist·aggregator 0개)";
+    log.error("collect.source.config", {
+      error,
+      excluded: plan.excluded.length,
+    });
+    return {
+      outcome: { ...empty, excluded: plan.excluded, error },
+      sources: [],
+    };
+  }
+
+  // 소스별 수집 — 순서대로 하나씩(같은 호스트 피드가 여럿이다). 한 소스의 실패가 다른 소스를 막지 않는다.
+  const sourceById = new Map(plan.feeds.map((s) => [s.id, s] as const));
+  const outcomes: SourceOutcome[] = [];
+  const allItems: FeedItem[] = [];
+  for (const source of plan.feeds) {
+    const result = await collectFeedSource(source, deps);
+    outcomes.push(result.outcome);
+    allItems.push(...result.items);
+  }
+  const sources: RunLog["sources"] = outcomes.map((o) => ({
+    id: o.id,
+    ok: o.ok,
+    items: o.items,
+  }));
+  const feedItems = outcomes.reduce((sum, o) => sum + o.items, 0);
+  const failed = outcomes.filter((o) => !o.ok);
+  const base = { feedItems, sources: outcomes, excluded: plan.excluded };
+  if (failed.length === outcomes.length) {
+    const error = `모든 피드 소스 수집 실패(${failed.length}개)`;
+    log.error("collect.news.fail", {
+      reason: "all-sources-failed",
+      sources: failed.length,
+    });
+    return { outcome: { ...empty, ...base, error }, sources };
+  }
+
+  // 선별(슬라이스): 여러 소스를 합쳐 카드 ID(링크 해시)로 중복을 빼고 최신순 상위 N건 — 같은 링크는 설정 순서상 먼저 나온 소스가 갖는다.
+  const uniqueLinks = new Set(allItems.map((item) => cardIdFor(item.link)));
+  const cards = selectLatest(allItems, deps.limit).flatMap((item) => {
+    const source = sourceById.get(item.sourceId);
+    return source ? [buildCard(item, source, ctx.startedAt)] : [];
+  });
+  log.info("collect.select.done", {
+    usable: allItems.length,
+    unique: uniqueLinks.size,
+    duplicateLinks: allItems.length - uniqueLinks.size,
+    selected: cards.length,
+    limit: deps.limit,
+    failedSources: failed.length,
+  });
 
   try {
     const filePath = newsFilePath(deps.dataDir, ctx.publishDate);
@@ -282,10 +461,7 @@ async function runNewsStage(
     const unchanged = existing !== null && merged.added === 0;
     if (merged.cards.length === 0) {
       log.warn("collect.news.empty", { date: ctx.publishDate });
-      return {
-        outcome: { ...empty, ok: true, feedItems: raws.length },
-        sources,
-      };
+      return { outcome: { ...empty, ...base, ok: true }, sources };
     }
     const file = buildNewsFile({
       date: ctx.publishDate,
@@ -313,8 +489,8 @@ async function runNewsStage(
     }
     return {
       outcome: {
+        ...base,
         ok: true,
-        feedItems: raws.length,
         selected: cards.length,
         added: merged.added,
         file: unchanged && !deps.dry ? existing : file,
@@ -330,7 +506,7 @@ async function runNewsStage(
     return {
       outcome: {
         ...empty,
-        feedItems: raws.length,
+        ...base,
         selected: cards.length,
         error: errorText(error),
       },
@@ -546,12 +722,13 @@ async function runBriefStage(
 
 // ─── 전체 ────────────────────────────────────────────────────────────────
 
-/** 실행 상태 — 뉴스 실패 = failed, 브리핑 실패·키 없음 = partial, 그 밖 = success */
+/** 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음 = partial, 그 밖 = success */
 export function runStatus(
-  news: Pick<NewsOutcome, "ok">,
+  news: { ok: boolean; sources?: readonly { ok: boolean }[] },
   brief: BriefOutcome,
 ): RunLog["status"] {
   if (!news.ok) return "failed";
+  if (news.sources?.some((source) => !source.ok)) return "partial";
   if (brief.state === "failed") return "partial";
   if (brief.state === "skipped" && brief.reason === "no-api-key") {
     return "partial";
@@ -679,6 +856,8 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     collected: news.feedItems,
     clusters: news.selected,
     added: news.added,
+    sourcesOk: news.sources.filter((s) => s.ok).length,
+    sourcesFailed: news.sources.filter((s) => !s.ok).length,
     brief: brief.state === "done" ? "done" : `${brief.state}:${brief.reason}`,
     briefMatches: brief.inputMatches,
     briefLines: brief.state === "done" ? brief.lines.length : 0,

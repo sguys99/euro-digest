@@ -359,6 +359,71 @@ describe("⑥ data 파일 검증", () => {
   });
 });
 
+describe("⑥-2 소스 설정 경고 (M1-02 — 오류 아님)", () => {
+  /** 수집 조건을 모두 통과하는 rss 소스 */
+  const feed = {
+    id: "sample-feed",
+    name: "Sample — Football",
+    type: "rss",
+    url: "https://example.com/feed.xml",
+    lang: "en",
+    enabled: true,
+    summarize: false,
+    weight: 1,
+    tier: 2,
+    terms_checked: true,
+    robots_checked: true,
+  };
+
+  it("crawl+enabled+robots_checked:false · enabled+terms_checked:false · summarize:true를 경고하고 통과(exit 0)", () => {
+    write("configs/takedowns.json", "[]");
+    write("configs/sources.json", [
+      feed,
+      { ...feed, id: "list-site", type: "crawl", robots_checked: false },
+      { ...feed, id: "unchecked", terms_checked: false },
+      { ...feed, id: "summary", summarize: true },
+    ]);
+    const { exitCode, errors, report, lines } = run();
+    const warns = report.issues
+      .filter((i) => i.severity === "warn")
+      .map((i) => [i.stage, i.file, i.path]);
+
+    expect(exitCode).toBe(0);
+    expect(errors).toEqual([]);
+    expect(warns).toEqual([
+      ["configs", "configs/sources.json", "[1].robots_checked"],
+      ["configs", "configs/sources.json", "[2].terms_checked"],
+      ["configs", "configs/sources.json", "[3].summarize"],
+    ]);
+    expect(lines.filter((l) => l.startsWith("[validate] 경고 "))).toHaveLength(
+      3,
+    );
+    expect(lines.at(-1)).toMatch(/^\[validate\] 검증 통과 — .* · 경고 3건$/);
+  });
+
+  it("스키마 오류가 있는 sources.json은 경고 검사를 건너뛴다(오류만)", () => {
+    write("configs/takedowns.json", "[]");
+    write("configs/sources.json", [{ ...feed, summarize: true, weight: 9 }]);
+    const { exitCode, report } = run();
+    expect(exitCode).toBe(1);
+    expect(report.issues.some((i) => i.severity === "warn")).toBe(false);
+  });
+
+  it("저장소 configs/sources.json은 경고 0건", () => {
+    write("configs/takedowns.json", "[]");
+    write(
+      "configs/sources.json",
+      readFileSync(
+        fileURLToPath(new URL("../configs/sources.json", import.meta.url)),
+        "utf8",
+      ),
+    );
+    const { exitCode, report } = run();
+    expect(exitCode).toBe(0);
+    expect(report.issues.filter((i) => i.severity === "warn")).toEqual([]);
+  });
+});
+
 describe("⑦ 필수 파일 누락", () => {
   it("takedowns.json이 없으면 오류", () => {
     write("configs/sources.json", loadFixture("configs/sources.json"));

@@ -39,5 +39,20 @@
     "tier": 3,
     "terms_checked": false,
     "robots_checked": false
+  },
+  {
+    "id": "athletic-football",
+    "name": "The Athletic — Football",
+    "type": "rss",
+    "url": "https://www.nytimes.com/athletic/rss/football/",
+    "lang": "en",
+    "enabled": true,
+    "summarize": false,
+    "weight": 1.5,
+    "tier": 2,
+    "retentionDays": 7,
+    "terms_checked": true,
+    "robots_checked": true,
+    "note": "스키마 예시 — 소스별 보존 기간 7일(retentionDays, PRD §15 D32 2026-10-12)"
   }
 ]

@@ -6,6 +6,7 @@
  * v0.1 — 2026-10-10 사용자 확인: strictObject(알 수 없는 키 = 오류, Q5), id는 slug(Q7), url은 http/https만(Q3).
  * v0.1 — 2026-10-10 사용자 결정(M0-23, PRD §15 D22 · plan §14 B5): `summarize` 필수 필드 추가. `terms_checked`는
  *   "note에 적은 이용 방식(요약 또는 원제목+링크)이 약관상 허용됨"을 뜻한다 — 금지·불명확이면 false(이중 잠금).
+ * v0.1 — 2026-10-12 사용자 결정(PRD §15 D32): 선택 필드 `retentionDays`(소스별 보존 기간) 추가.
  */
 import { z } from "zod";
 
@@ -44,6 +45,13 @@ export const SourceSchema = z.strictObject({
   tier: TierSchema,
   competitions: z.array(CompIdSchema).default([]),
   author: z.string().optional(), // 작성자 필터(기자 채널)
+  /**
+   * 소스별 보존 기간(일) — 선택 필드. 없으면 PRD §8.4 기본(일별 뉴스 90일 → 월별 병합, 영구 보존).
+   * 기간이 지나면 수집 실행이 data/에서 그 출처를 지운다(대표 출처면 카드 삭제 — 삭제 구현은 plan M1-25).
+   * 현재 the-athletic-football 7일(ToS 4.1(5) 캐시·보관 금지). 양의 정수만(0·음수·소수 거부).
+   * v0.1 — 2026-10-12 사용자 결정(PRD §15 D32, plan 부록 A).
+   */
+  retentionDays: z.number().int().positive().optional(),
   terms_checked: z.boolean(),
   robots_checked: z.boolean(),
   note: z.string().optional(), // 약관 확인 메모·날짜

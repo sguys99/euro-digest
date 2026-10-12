@@ -216,6 +216,39 @@ describe("formatValidationReport — 출력 문구", () => {
     ]);
   });
 
+  it("경고는 정보 뒤·오류 앞에 출력하고 요약에 건수를 붙인다(Actions에서는 ::warning)", () => {
+    const withWarn: ValidationReport = {
+      ...report,
+      issues: [
+        ...report.issues,
+        {
+          severity: "warn",
+          stage: "configs",
+          file: "configs/sources.json",
+          path: "[3].summarize",
+          message: "summarize:true — 무시된다",
+        },
+      ],
+    };
+    const lines = formatValidationReport(withWarn);
+    expect(lines.slice(5)).toEqual([
+      "[validate] 정보 configs/sources.json — 아직 없음 · 뉴스 소스 (FR-01)",
+      "[validate] 경고 configs/sources.json:[3].summarize — summarize:true — 무시된다",
+      "[validate] 오류 configs/team-colors.json:sample-united.short — 약어는 100% 대문자,\n2~4자",
+      "[validate] 검증 실패 — 오류 1건 (파일 1개) · configs 2개 · data 1개 · 정보 1건 · 경고 1건",
+    ]);
+    expect(validationExitCode(withWarn)).toBe(1); // 오류 1건 때문 — 경고는 종료 코드에 영향 없음
+    expect(
+      validationExitCode({
+        ...withWarn,
+        issues: withWarn.issues.filter((i) => i.severity !== "error"),
+      }),
+    ).toBe(0);
+    expect(formatValidationReport(withWarn, { annotations: true })).toContain(
+      "::warning file=configs/sources.json,title=설정·데이터 검증::[3].summarize — summarize:true — 무시된다",
+    );
+  });
+
   it("GitHub Actions 주석 — 파일 속성과 메시지를 이스케이프한다", () => {
     const lines = formatValidationReport(report, { annotations: true });
     expect(lines).toContain(

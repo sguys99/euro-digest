@@ -6,6 +6,7 @@
  *   - configs/ 아래 모든 .json(하위 폴더 포함, prompts/ 제외): 레지스트리 스키마. 미등록 파일명은 오류.
  *     레지스트리 config 항목 중 없는 파일은 정보, 필수 파일(REQUIRED_CONFIG_FILES)이 없으면 오류.
  *   - 교차 참조: validate-crossref.ts (관련 파일이 모두 있을 때만)
+ *   - 소스 설정 경고(M1-02): sources.json이 스키마를 통과하면 수집 조건 모순·summarize:true를 경고(오류 아님 — exit 0)
  *   - configs/prompts/의 PROMPT_FILES: 있으면 비어 있지 않은지만, 없으면 정보
  *   - data/ 아래 모든 .json: 있으면 레지스트리 스키마 + 파일명 검사. 미등록 파일은 오류(`--configs-only`면 건너뜀)
  * 발행 검증 게이트(카드 수 하한·링크 형식·takedowns 제외 등)는 M1-25에서 여기에 붙인다.
@@ -16,10 +17,16 @@ import { schemaRegistry, type SchemaRegistryEntry } from "@/lib/schema";
 
 import type { ParseResult } from "./cli-args";
 import { formatAnnotation } from "./logger";
-import { pickCrossRefInput, runCrossRefChecks } from "./validate-crossref";
+import { sourceConfigWarnings } from "./sources";
+import {
+  CROSSREF_FILES,
+  pickCrossRefInput,
+  runCrossRefChecks,
+} from "./validate-crossref";
 import {
   checkJsonFile,
   formatIssue,
+  formatIssuePath,
   type EntryFinder,
   type ValidationIssue,
   type ValidationStage,
@@ -67,7 +74,7 @@ export interface ValidationReport {
   configsOnly: boolean;
   counts: { configs: number; data: number; prompts: number };
   crossRef: { checked: string[]; skipped: string[] };
-  /** 오류·정보 전부 (단계 → 파일 순) */
+  /** 오류·경고·정보 전부 (단계 → 파일 순) */
   issues: ValidationIssue[];
 }
 
@@ -143,8 +150,22 @@ export function buildValidationReport(
   }
 
   // ③ 교차 참조
-  const crossRef = runCrossRefChecks(pickCrossRefInput(parsedByPath));
+  const crossRefInput = pickCrossRefInput(parsedByPath);
+  const crossRef = runCrossRefChecks(crossRefInput);
   issues.push(...crossRef.issues);
+
+  // ③-2 소스 설정 경고 — 스키마는 통과했지만 수집 조건(FR-01)과 어긋나는 값(오류 아님)
+  if (crossRefInput.sources) {
+    for (const warning of sourceConfigWarnings(crossRefInput.sources)) {
+      issues.push({
+        severity: "warn",
+        stage: "configs",
+        file: CROSSREF_FILES.sources,
+        path: formatIssuePath([warning.index, warning.field]),
+        message: warning.message,
+      });
+    }
+  }
 
   // ④ 프롬프트 — 있으면 비어 있지 않은지만
   const prompts = new Map(snapshot.promptFiles.map((f) => [f.relPath, f]));
@@ -222,7 +243,7 @@ export interface FormatOptions {
 }
 
 /**
- * 결과 → 출력 줄. 단계별 건수 → 정보 → 오류 → 요약 순.
+ * 결과 → 출력 줄. 단계별 건수 → 정보 → 경고 → 오류 → 요약 순. 경고는 있을 때만 요약에 건수를 붙인다.
  * 파일 내용은 출력하지 않는다(경로·zod 경로·메시지만).
  */
 export function formatValidationReport(
@@ -253,6 +274,23 @@ export function formatValidationReport(
       lines.push(`${tag} 정보 ${formatIssue(issue)}`);
   }
 
+  for (const issue of report.issues) {
+    if (issue.severity !== "warn") continue;
+    if (!annotations) {
+      lines.push(`${tag} 경고 ${formatIssue(issue)}`);
+      continue;
+    }
+    const message = issue.path
+      ? `${issue.path} — ${issue.message}`
+      : issue.message;
+    lines.push(
+      formatAnnotation("warning", message, {
+        file: issue.file,
+        title: "설정·데이터 검증",
+      }),
+    );
+  }
+
   const errorIssues = report.issues.filter((i) => i.severity === "error");
   for (const [file, group] of groupByFile(errorIssues)) {
     for (const issue of group.slice(0, maxIssuesPerFile)) {
@@ -275,7 +313,8 @@ export function formatValidationReport(
   }
 
   const infoCount = countIssues(report, "info");
-  const scope = `configs ${counts.configs}개 · data ${counts.data}개 · 정보 ${infoCount}건`;
+  const warnCount = countIssues(report, "warn");
+  const scope = `configs ${counts.configs}개 · data ${counts.data}개 · 정보 ${infoCount}건${warnCount > 0 ? ` · 경고 ${warnCount}건` : ""}`;
   if (errorIssues.length === 0) {
     lines.push(`${tag} 검증 통과 — ${scope}`);
   } else {

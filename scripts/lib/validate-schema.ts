@@ -18,7 +18,8 @@ import {
   type SchemaRegistryEntry,
 } from "@/lib/schema";
 
-export type IssueSeverity = "error" | "info";
+/** error = exit 1 · warn = 사람이 확인할 설정 모순(통과) · info = 참고(통과) */
+export type IssueSeverity = "error" | "warn" | "info";
 
 /** 이슈가 나온 검사 단계 — 단계별 건수 로그에 쓴다. */
 export type ValidationStage = "configs" | "data" | "prompts" | "crossref";

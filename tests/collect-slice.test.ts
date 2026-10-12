@@ -3,6 +3,7 @@
  *
  * 네트워크·실호출 없음: 피드는 fixtures/rss/bbc-sport-football.xml, 경기는 fixtures/football/football-data/*,
  * LLM은 fixtures/llm/mock(by-id brief-YYYY-MM-DD) 또는 가짜 transport. 파일 쓰기는 임시 폴더(dataDir 주입).
+ * 소스는 BBC 1개만 주입한다(`loadSources`) — 여러 소스·실패 격리·로더는 tests/collect-sources.test.ts·tests/sources.test.ts.
  *
  * 필수 항목: 원제목·링크 = 피드 원문(엔티티 디코딩·앞뒤 공백 정리만), 200자 초과 건너뜀, 카드 ID 결정성·형식,
  * 같은 날 재실행 병합(중복 없음·앞선 카드 유지), 경기 없으면 브리핑 생략, 출력 파일 스키마 통과,
@@ -26,6 +27,7 @@ import {
   NewsFileSchema,
   RunsDevFileSchema,
   RunsFileSchema,
+  SourcesFileSchema,
   type NewsFile,
 } from "@/lib/schema";
 import { kstWindowRangeUtc } from "@/lib/time";
@@ -88,7 +90,6 @@ import {
   parseFeedXml,
   type FetchLike,
 } from "../scripts/lib/rss";
-import { isCollectable, pickCollectableSource } from "../scripts/lib/sources";
 import { readValidationSnapshot } from "../scripts/lib/validate-fs";
 import {
   buildValidationReport,
@@ -101,11 +102,11 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
 
 const BBC_XML = read("fixtures/rss/bbc-sport-football.xml");
-const SOURCES = JSON.parse(read("configs/sources.json"));
-const COMPETITIONS = JSON.parse(read("configs/competitions.json"));
-const BBC_SOURCE = SOURCES.find(
-  (s: { id: string }) => s.id === "bbc-sport-football",
+const SOURCES = SourcesFileSchema.parse(
+  JSON.parse(read("configs/sources.json")),
 );
+const COMPETITIONS = JSON.parse(read("configs/competitions.json"));
+const BBC_SOURCE = SOURCES.find((s) => s.id === "bbc-sport-football")!;
 const RSS_INDEX = JSON.parse(read("fixtures/rss/index.json")) as {
   sources: Array<{
     id: string;
@@ -190,6 +191,7 @@ function makeDeps(over: Partial<CollectDeps> = {}) {
     llmMode: "mock",
     dry: false,
     limit: SLICE_DEFAULT_LIMIT,
+    loadSources: async () => [BBC_SOURCE],
     now: () => NOW,
     fetch: fetcher.fetch,
     userAgent: feedUserAgent("test@example.com"),
@@ -531,26 +533,6 @@ describe("news-file.ts — 카드·선별·병합", () => {
     expect(result.duplicates).toBe(1);
     expect(result.cards.map((c) => c.id)).toEqual([b.id, a.id]); // 최신 출처 시각 순
     expect(result.cards.find((c) => c.id === a.id)).toEqual(a); // 기존 카드 유지
-  });
-});
-
-// ─── 소스 설정 ───────────────────────────────────────────────────────────
-
-describe("sources.ts — 수집 조건", () => {
-  it("bbc-sport-football은 수집 가능, 비활성·약관 미확인 소스는 거부", () => {
-    expect(pickCollectableSource(SOURCES, "bbc-sport-football").url).toBe(
-      BBC_SOURCE.url,
-    );
-    expect(() => pickCollectableSource(SOURCES, "sky-sports-football")).toThrow(
-      /수집 조건/,
-    );
-    expect(() => pickCollectableSource(SOURCES, "no-such-source")).toThrow(
-      /없다/,
-    );
-    expect(isCollectable({ ...BBC_SOURCE, terms_checked: false })).toBe(false);
-    expect(
-      isCollectable({ ...BBC_SOURCE, type: "crawl", robots_checked: false }),
-    ).toBe(false);
   });
 });
 
