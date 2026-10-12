@@ -5,7 +5,7 @@ import { preload } from "react-dom";
 import { fontFaceCss, fontPreloadHrefs } from "@/lib/fonts";
 import { withBasePath } from "@/lib/paths";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
-import { THEME_COLOR, THEME_INIT_SCRIPT } from "@/lib/theme";
+import { THEME_COLOR_METAS, THEME_INIT_SCRIPT } from "@/lib/theme";
 
 import "./globals.css";
 
@@ -14,14 +14,12 @@ export const metadata: Metadata = {
   description: SITE_TAGLINE,
 };
 
-// 라이트·다크 둘 다 지원한다고 CSS보다 먼저 알린다(<meta name="color-scheme">). 브라우저 UI 색은 지면(--paper) — DESIGN §2.1·§8.
-// theme-color는 시스템 설정 기준이다. 사용자가 시스템과 다른 테마를 고른 경우의 보정은 테마 토글(D0-12)에서 한다.
+// 라이트·다크 둘 다 지원한다고 CSS보다 먼저 알린다(<meta name="color-scheme">).
+// theme-color(브라우저 UI 색 = 지면 --paper, DESIGN §2.1·§8)는 viewport.themeColor로 내보내지 않고 아래 <head>에 직접 렌더한다.
+// Next는 viewport 메타를 페이지 이동(next/link 클라이언트 이동)마다 새 노드로 바꿔 넣어서, 초기 스크립트·테마 토글이 고친
+// media가 시스템 기준으로 돌아갔다(D0-12 리뷰). 루트 레이아웃의 메타는 이동 때 다시 마운트되지 않는다.
 export const viewport: Viewport = {
   colorScheme: "light dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: THEME_COLOR.light },
-    { media: "(prefers-color-scheme: dark)", color: THEME_COLOR.dark },
-  ],
 };
 
 // 웹폰트(DR-03, DESIGN §3.1·§11.3) — 빌드 때 한 번 만든다. 경로는 모두 withBasePath(basePath 포함, src/lib/fonts.ts 설명 참고).
@@ -42,6 +40,20 @@ export default function RootLayout({
     // 초기 스크립트가 하이드레이션 전에 data-theme·data-spoiler를 단다 → 속성 불일치 경고를 끈다(이 요소만, DESIGN §8).
     <html lang="ko" suppressHydrationWarning>
       <head>
+        {/*
+         * theme-color 2개(시스템 기준 미디어 쿼리 — 값·미디어 문자열은 theme.ts가 단일 출처). React 19는 <meta>를 끌어올려
+         * <head> 자식(아래 스크립트)보다 앞에 내보내므로 초기 스크립트가 실행될 때 이미 있다. 사용자가 테마를 저장했으면
+         * 초기 스크립트(재방문 첫 페인트)와 테마 토글이 media를 고친다. React는 하이드레이션 때 이 메타를 content·name으로
+         * 찾아 그대로 가져가고 media는 대조하지 않으며, 이후 props가 같아 다시 쓰지 않는다 — 고친 media가 유지된다(DESIGN §8).
+         */}
+        {THEME_COLOR_METAS.map(({ theme, media, content }) => (
+          <meta
+            key={theme}
+            name="theme-color"
+            media={media}
+            content={content}
+          />
+        ))}
         {/*
          * 깜빡임 없는 초기 테마·결과 가리기 스크립트(DR-02, DESIGN §8). 첫 페인트 전에 동기 실행해야 해서
          * next/script(비동기 주입)가 아니라 인라인 <script>로 둔다. 내용은 저장소 안 상수(src/lib/theme.ts)뿐이고

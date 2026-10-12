@@ -210,6 +210,10 @@ describe("cn — 등록한 키 전부", () => {
         [`duration-${k}`, "duration-0"],
         "duration-0",
       ]),
+      ...THEME_KEYS.animate.map((k): [string[], string] => [
+        [`animate-${k}`, "animate-none"],
+        "animate-none",
+      ]),
     ];
     const bad = cases
       .map(([input, expected]) => [input, merge(input), expected] as const)

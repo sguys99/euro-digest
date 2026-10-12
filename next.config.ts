@@ -8,6 +8,14 @@ import { siteLocationFromBuildEnv } from "./src/lib/paths";
 // 형식이 틀리면 여기서 빌드가 멈춘다.
 const { basePath, siteUrl } = siteLocationFromBuildEnv(process.env);
 
+// 기초 컴포넌트 견본(D0-12) — `SPECIMEN=1` 빌드(개발·테스트 전용, `npm run build:specimen`)에서만 만든다.
+// - 견본 라우트 파일은 `*.specimen.tsx`(src/app/specimen/page.specimen.tsx)라 이 확장자를 켤 때만 페이지가 된다.
+//   일반 빌드에서는 Next가 라우트로 보지 않아 out/에 없다(tests/e2e/smoke.spec.ts·tests/next-config.test.ts가 검사).
+// - 결과는 out/ 대신 out-specimen/에 낸다(output: export + distDir = export 목적지, Next 16). 일반 out/을 덮지 않는다.
+export const SPECIMEN_BUILD = process.env.SPECIMEN === "1";
+export const SPECIMEN_OUT_DIR = "out-specimen";
+const PAGE_EXTENSIONS = ["tsx", "ts", "jsx", "js"];
+
 // 정적 export 전용 설정 (CLAUDE.md §1-10, §7.1).
 // API Route·ISR·middleware·next/image 최적화 등 서버 런타임 기능은 쓰지 않는다.
 const nextConfig: NextConfig = {
@@ -17,6 +25,10 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  pageExtensions: SPECIMEN_BUILD
+    ? ["specimen.tsx", ...PAGE_EXTENSIONS]
+    : PAGE_EXTENSIONS,
+  ...(SPECIMEN_BUILD ? { distDir: SPECIMEN_OUT_DIR } : {}),
   // 같은 값을 서버·브라우저 번들에 빌드 시 인라인한다 → src/lib/paths.ts가 읽는다.
   // 직접 지정하지 않는다(BASE_PATH·SITE_URL과 다르면 siteLocationFromBuildEnv가 오류).
   env: {

@@ -610,6 +610,10 @@ describe("Tailwind 컴파일 결과 (tailwindcss compile — 실제 유틸리티
       "duration-base",
       "ease-print",
       "transition-colors",
+      "animate-stamp",
+      "animate-tear",
+      "animate-eject",
+      "animate-arrive",
       // 지운 기본값 — 만들어지면 안 된다
       ...REMOVED_DEFAULTS,
     ]);
@@ -646,6 +650,22 @@ describe("Tailwind 컴파일 결과 (tailwindcss compile — 실제 유틸리티
     expect(rule("ease-print")).toMatch(/var\(--ease\)/);
     expect(rule("transition-colors")).toMatch(/var\(--duration-fast\)/);
     expect(rule("transition-colors")).toMatch(/var\(--ease\)/);
+  });
+
+  it("인쇄형 모션 4종: animate-X 유틸리티와 같은 이름의 키프레임이 만들어진다(DESIGN §6.1, D0-12)", () => {
+    for (const name of ["stamp", "tear", "eject", "arrive"]) {
+      expect(rule(`animate-${name}`), name).toMatch(
+        new RegExp(`animation:\\s*var\\(--animate-${name}\\)`),
+      );
+      expect(css, `@keyframes ${name}`).toMatch(
+        new RegExp(`@keyframes ${name}\\s*\\{`),
+      );
+    }
+    // 지속 시간·곡선은 모션 토큰을 참조한다(새 값 없음)
+    const theme = /@layer theme\s*\{([\s\S]*?)\n\}/.exec(css)?.[1] ?? "";
+    expect(theme).toMatch(
+      /--animate-eject:\s*eject var\(--duration-base\) var\(--ease\) both;/,
+    );
   });
 
   it("--font-sans는 DESIGN 스택이고 Tailwind 기본 스택(ui-sans-serif)은 테마 변수에 없다", () => {

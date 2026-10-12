@@ -1,9 +1,10 @@
 # ── 의존성 ──
 /node_modules
 
-# ── Next.js 빌드 산출물 (정적 export 결과는 out/) ──
+# ── Next.js 빌드 산출물 (정적 export 결과는 out/, 견본 빌드 SPECIMEN=1은 out-specimen/) ──
 /.next/
 /out/
+/out-specimen/
 next-env.d.ts
 *.tsbuildinfo
 

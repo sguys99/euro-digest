@@ -27,6 +27,7 @@ D0-12 기초 컴포넌트와 M1-39 시각 검증은 아래 10장(`docs/design/d0
 
 - 캡처 조건: Chromium, `deviceScaleFactor` 1, `reducedMotion: reduce`, `localStorage` 비움(시스템 테마), 웹폰트 로드 확인 후. 첫 화면은 375×812·1024×800·1280×800 뷰포트 그대로(무손실 PNG), 전체 페이지는 sticky·fixed 요소를 캡처에서만 static으로 바꿔 찍고 256색으로 줄였다.
 - 1024 2단은 첫 화면 2장만 둔다. 2단 아래쪽(머리기사·피드·지면 안 위젯 자리)과 1024~1279 전체는 `concept-mix.html`을 그 폭으로 열어 확인한다.
+- **구현 견본(D0-12)**: `impl-components-{375,1280}-{light,dark}.png` — 기초 컴포넌트 견본 페이지(`SPECIMEN=1` 빌드 전용, §9.4) 전체 페이지를 같은 조건으로 찍었다(hover·focus-visible·`:target` 칸은 CDP로 실제 의사 클래스를 강제, 256색 혼합 팔레트로 줄임). 매트릭스 13행이 위 시안 견본과 같은 순서·배치다.
 
 ### 0.2 토큰을 바꾸는 절차
 
@@ -536,6 +537,13 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 | `--duration-base` | `200ms` | 뜯김, 배출, 색 면, 잉크 전환 |
 | `--duration-slow` | `250ms` | 도착(`:target`) |
 | `--ease` | `cubic-bezier(.2,.8,.2,1)` | 모든 전환·애니메이션의 곡선 하나 |
+| `--animate-stamp` | `stamp var(--duration-fast) var(--ease) both` | 찍힘(§6.2) — 유틸리티 `animate-stamp`. 키프레임 `stamp`: opacity 0 · 아래 4px → 제자리. 필터 결과 진입 카드(M1-33) |
+| `--animate-tear` | `tear var(--duration-base) var(--ease) both` | 뜯김 — `animate-tear`. 키프레임 `tear`: `clip-path: inset(0 0 100% 0)` → `inset(0)`. 결과 가림 펼치기(M4-15) |
+| `--animate-eject` | `eject var(--duration-base) var(--ease) both` | 배출 — `animate-eject`. 키프레임 `eject`: opacity 0 · 아래 12px → 제자리. 토스트 등장(D0-12) |
+| `--animate-arrive` | `arrive var(--duration-slow) var(--ease)` | 도착 — `animate-arrive`. 키프레임 `arrive`: 배경 투명 → 그 요소의 배경(`:target` 카드는 `--paper-2`). 채움 모드 없음(끝나면 요소 자신의 배경) |
+
+- `--animate-*` 4개는 이름이 Tailwind 테마 키와 같아 globals.css `@theme static`에 키프레임과 함께 둔다(D0-12). Tailwind 기본 애니메이션(spin·ping·pulse·bounce)은 지운 그대로다(§11.2).
+- 전환(transition)은 키가 없다 — `transition-colors`·`duration-fast|base|slow`·`ease-print` 유틸리티를 쓴다(기본 전환 시간·곡선은 fast·`--ease`).
 
 ### 6.2 인쇄형 모션
 
@@ -614,19 +622,20 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 저장 | `localStorage` 키 `ed-theme` = `light` \| `dark`. 시스템으로 돌아가면 키를 지운다. 읽기·쓰기는 모두 try/catch, 실패해도 시스템 테마로 정상 렌더 |
 | 결과 가리기 | 같은 초기 스크립트가 `ed-spoiler` = `on`이면 `<html data-spoiler="on">`을 단다(끄면 키 삭제). 기능은 M4-15, 키 이름은 지금 고정 |
 | CSS 선택자 | 라이트 = `:root`. 다크 = `[data-theme="dark"]` **와** `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }` 두 블록에 같은 값. 각 테마 블록에 `color-scheme: light`/`dark`, `<meta name="color-scheme" content="light dark">` |
-| 토글 | 티켓 도구 영역의 아이콘 버튼(44×44, 반쯤 채운 원 아이콘). `aria-label` "테마: {시스템 설정\|라이트\|다크} (눌러서 바꾸기)", 바꾸면 토스트 "테마: 라이트" |
+| 토글 | 티켓 도구 영역의 아이콘 버튼(44×44, 반쯤 채운 원 아이콘). `aria-label` "테마: {시스템 설정\|라이트\|다크} (눌러서 바꾸기)", 바꾸면 토스트 "테마: 라이트". 구현 `src/components/theme-toggle.tsx`(D0-12) |
 | 전환 | 잉크 전환(§6.2, base). 첫 렌더에는 전환이 없다(초기 스크립트가 CSS보다 먼저 속성을 단다) |
+| 브라우저 UI 색 | `<meta name="theme-color">` 2개(라이트 `--paper` · 다크 `--paper`, `media="(prefers-color-scheme: light\|dark)"`) — Next `viewport.themeColor`가 아니라 루트 레이아웃 `<head>`가 직접 렌더한다(클라이언트 이동에도 같은 노드가 남는다). 저장한 테마가 있으면 초기 스크립트가 그 테마 메타의 `media`를 `all`, 다른 쪽을 `not all`로 바꾸고(재방문 첫 페인트부터 지면과 같은 색), 토글도 같은 규칙으로 바꾼다. 시스템으로 돌아가면 원래 미디어 쿼리로 되돌린다(D0-12) |
 
-깜빡임 없는 초기 인라인 스크립트(혼합안 원문). `<head>` 안의 **동기 인라인 스크립트**로 `<body>` 파싱 전(첫 페인트 전)에 실행한다 — Next 16·React 19는 스타일시트 링크를 head 자식보다 먼저 내보내므로 "스타일시트보다 앞"은 보장되지 않지만 동기 실행이라 깜빡임은 없다(D0-10 e2e로 확인). 구현: `src/lib/theme.ts` `THEME_INIT_SCRIPT`.
+깜빡임 없는 초기 인라인 스크립트(혼합안 원문 + D0-12 theme-color 보정). `<head>` 안의 **동기 인라인 스크립트**로 `<body>` 파싱 전(첫 페인트 전)에 실행한다 — Next 16·React 19는 스타일시트 링크를 head 자식보다 먼저 내보내므로 "스타일시트보다 앞"은 보장되지 않지만 동기 실행이라 깜빡임은 없다(D0-10 e2e로 확인). 구현: `src/lib/theme.ts` `THEME_INIT_SCRIPT`.
 
 ```html
-<script>(function(){var d=document.documentElement,t,s;try{t=localStorage.getItem('ed-theme');s=localStorage.getItem('ed-spoiler')}catch(e){}if(t==='light'||t==='dark')d.setAttribute('data-theme',t);if(s==='on')d.setAttribute('data-spoiler','on')})();</script>
+<script>(function(){var d=document,r=d.documentElement,t,s,m,i;try{t=localStorage.getItem('ed-theme');s=localStorage.getItem('ed-spoiler')}catch(e){}if(s==='on')r.setAttribute('data-spoiler','on');if(t==='light'||t==='dark'){r.setAttribute('data-theme',t);m=d.querySelectorAll('meta[name="theme-color"]');for(i=0;i<m.length;i++)m[i].setAttribute('media',(m[i].getAttribute('media')||'').indexOf(t)<0?'not all':'all')}})();</script>
 ```
 
 - 저장값은 `light`·`dark`·`on`만 받아들이고 나머지는 무시한다.
 - React가 하이드레이션 전에 바뀐 속성을 경고하지 않도록 `<html suppressHydrationWarning>`을 둔다.
 - globals.css의 `@custom-variant dark`는 다크 토큰 블록과 같은 두 조건에서 켜진다: 사용자 다크 `[data-theme="dark"]`와 시스템 다크 `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }`(속성 없음). 이 변형은 shadcn 원본 클래스 호환용이다. 컴포넌트는 여전히 `dark:`로 색을 따로 고르지 않고 토큰만 쓴다(§2).
-- `<meta name="theme-color">`(브라우저 UI 색)는 시스템 설정 기준이라, 저장한 테마가 시스템과 다르면 재방문 때 지면 색과 어긋난다. 보정은 D0-12 할 일이다(§11.4).
+- **theme-color 보정(D0-12)**: 메타 2개는 Next `viewport.themeColor`가 아니라 루트 레이아웃(`src/app/layout.tsx`) `<head>`가 직접 렌더한다(값·미디어 문자열은 `src/lib/theme.ts` `THEME_COLOR_METAS`). Next의 viewport 메타는 페이지 트리와 함께 렌더되어 `next/link` 클라이언트 이동마다 **새 노드로 바뀌고**, 그때 초기 스크립트·토글이 고친 `media`가 시스템 기준으로 풀려 브라우저 UI 색이 지면과 어긋났다(커밋 전 리뷰에서 발견 — 저장 다크 + 시스템 라이트 → 이동). 루트 레이아웃은 이동 때 다시 마운트되지 않으므로 메타 노드가 그대로 남는다(추가 JS 0 — MutationObserver 섬으로 다시 고치는 방식은 기각). React 19는 `<meta>`를 끌어올려 `<head>` 자식(이 스크립트)보다 앞에 내보내므로 스크립트가 실행될 때 메타 2개가 이미 있다(e2e로 확인). 스크립트는 메타를 새로 넣지 않고 기존 메타의 `media`만 바꾼다 — React 19는 하이드레이션 때 `<meta>`를 `content`·`name`으로 찾아 기존 노드를 그대로 가져가는데, `media`는 대조하지 않아 경고가 없고(개발 서버로 확인 — 메타에 `suppressHydrationWarning` 불필요) 이후 props가 같아 다시 쓰지 않는다. 같은 `content`의 메타를 하나 더 넣으면 React가 그쪽을 자기 것으로 가져가 버린다. 메타가 없는 문서에서는 아무것도 하지 않는다. 스크립트 길이 243 → 414자. 스크립트는 HTML에 두 번(`<script>` 한 번 + RSC 페이로드 한 번) 들어가 페이지마다 원본 +358B · gzip +127B다(초기 JS 예산 밖 — 인라인).
 
 ---
 
@@ -647,7 +656,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 
 **터치 타깃 44px** — 보이는 크기가 작은 요소(칩 36px, AI 작성 라벨, '+N곳', 연결 줄 40px, 스위치 30px)는 `::after` 확장으로 누르는 영역을 44px 이상으로 만든다. 카드 제목 링크는 위아래 10px 패딩으로 넓힌다. 하단 탭 58px, 버튼·아이콘 버튼·목차 행·메뉴 항목·텍스트 링크는 최소 44px.
 
-**아이콘** — 인라인 SVG, 22px(메뉴 18px, 결과 가림·해제 16px), `fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"`, `aria-hidden="true" focusable="false"`. 둥근 끝(round cap/join)은 쓰지 않는다. 예외는 점을 찍을 때뿐이다(카드 메뉴의 가로 점 3개 — 선 굵기 3.2, round cap). 라이브러리 선택은 D0-12(`components.json` iconLibrary 미정).
+**아이콘** — 인라인 SVG, 22px(메뉴 18px, 결과 가림·해제 16px), `fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"`, `aria-hidden="true" focusable="false"`. 둥근 끝(round cap/join)은 쓰지 않는다. 예외는 점을 찍을 때뿐이다(카드 메뉴의 가로 점 3개 — 선 굵기 3.2, round cap). **아이콘 라이브러리는 쓰지 않는다**(D0-12 사용자 결정 — 새 런타임 의존성 없음): 혼합안 경로를 `src/components/ui/icons.tsx`에 인라인 SVG 컴포넌트로 옮겼다(검색·테마·공유·더 보기·닫기·아래 꺾쇠·하단 탭 5종). shadcn CLI도 쓰지 않으며 `components.json` `iconLibrary`는 `"none"`이다.
 
 **외부 링크** — 원문 링크는 `target="_blank" rel="noopener"`, 제목 끝 ↗(`--font-sans` 400, 0.62em, `--ink-2`, `aria-hidden`) + 화면 밖 텍스트 "(원문 {출처명}, 새 창)".
 
@@ -778,6 +787,38 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | **상태 화면 4종** | 글자·도형만(일러스트는 D3). ① 로딩: §9.2 Skeleton(5줄 + 카드 3장) ② 빈 상태: 필터 0건 = 필터 머리 + '0'(64px 윤곽) + "이 조건에 맞는 소식이 오늘 호에는 없어요." + "필터 해제" / 경기 없는 날 = S4 / 비시즌 = 평탄 탭 + 시즌명 + 종료일(`configs/competitions.json` 실값만, Barlow 800 34px) + 안내 ③ 오류: `--paper-2` 면 + 1px `--ink` 상자("오늘 호 발행이 늦어지고 있어요" 15px 800 + 마지막 정상 지면 안내 13.5px) 아래에 마지막 정상 데이터 ④ 오프라인: `--ink` 띠 + "오프라인" 상자(1px `--paper`) + 안내, 캐시된 지면 유지 | 문구는 UI 안내만, 사실(경기·선수·숫자)을 지어내지 않는다 |
 | **자리(placeholder)** | 아직 없는 섹션의 크기 표시: 얇은 섹션 머리 + 1.5px `--ink-3` 점선 상자(안쪽 14px), 안에 점선 도형(칩 96×44, 행 44/30px), 설명 "**자리** {무엇}" 12.5px `--ink-2` + 단계 ID(Barlow 600 13.5px). 1023 이하와 1024~1279(2단)는 지면 안 본문 사이(같은 순서), ≥1280은 마주 보는 면. **구현에서는 자리 대신 섹션을 숨긴다**(미완성 섹션 숨김, plan §2.3) — 자리는 시안·견본 전용 | `aria-label="{섹션} 자리"` |
 
+
+### 9.4 구현 (D0-12)
+
+규칙은 §9.1~§9.3이 원문이다. 아래는 파일·API와 구현하면서 정한 것이다. 모두 `src/components/ui/`(테마 토글만 `src/components/`).
+
+| 컴포넌트 | 파일 | 종류 | API |
+|---|---|---|---|
+| Button · Switch | `button.tsx`, 변형 문자열 `button-classes.ts` | 서버(JS 0) | `<Button variant="primary\|secondary\|link\|icon" box?>` · `buttonVariants({ variant, box })`(`<a>`·`next/link`에) · `<Switch checked aria-labelledby offLabel? onLabel?>`(`role="switch"`, 티켓 면) |
+| Chip 계열 | `chip.tsx`, 대회 색 클래스 `competition.ts` | 서버 | `<FilterChip pressed label count tone="category\|korean" disabled?>` · `<ContentsRow pressed label count marker>`(marker = 대회 `{ kind: "competition", comp, short }` · 분류 `{ kind: "category" }` · 한국 `{ kind: "korean" }`) · `<StampChip>` · `<FlatTab comp size="default\|contents" title>` · `<IndexTab comp title>` |
+| Card | `card.tsx` | 서버 | `<Card id aria-labelledby bleed?>` › `CardGutter`(`<CardNumber n>`) · `CardBody`(`CardTags` · `<CardTitle id href lang source linkProps?>` · `CardMeta`) · `CardTabs`. 격자 상수 `ROW_GRID`, `splitLastWord` |
+| Tabs(ARIA) | `tabs.tsx` | 클라이언트 섬 | `<Tabs value? defaultValue? onValueChange? activation="automatic\|manual">` › `<TabsList aria-label>` › `<TabsTrigger value competition?>` · `<TabsPanel value>` |
+| 링크 탭 | `nav-tabs.tsx` | 서버 | `<BottomTabs>` › `<BottomTab href icon current?>` · `<TopNav>` › `<TopNavLink href current?>`(`next/link`, `aria-current="page"`) |
+| 섹션 머리·필터 색 면 | `section-head.tsx` | 서버 | `<SectionHead heading headingAs? runningHead? thin? filter={{ comp, short, clear }}>` · `RunningHead` · `FilterBadge` |
+| 필터 해제 버튼 | `filter-clear-button.tsx` | 서버(섬이 import해도 `cn` 없음) | `<FilterClearButton onClick>` — `filter.clear`로 넘긴다. 필터 섬(M1-33)이 onClick을 주므로 `cn`을 쓰는 `section-head.tsx`와 파일을 나눴다 |
+| Skeleton | `skeleton.tsx` | 서버 | `<Skeleton>` · `<BriefRowSkeleton>` · `<CardSkeleton>` |
+| Toast | `toast.tsx` | 클라이언트 섬 | `toast({ message, kind?, action?, duration?, dismissible? })` → id · `dismissToast(id?)` · `<Toaster>`(페이지에 하나) · `<ToastView>`(모양만) |
+| 아이콘 | `icons.tsx` | 서버 | `SearchIcon` · `ThemeIcon` · `ShareIcon` · `MoreIcon` · `CloseIcon` · `ChevronDownIcon` · `HomeIcon` · `NewsIcon` · `LeagueIcon` · `KitIcon` · `BookmarkIcon`(`size` 기본 22) |
+| 테마 토글 | `src/components/theme-toggle.tsx` | 클라이언트 섬 | `<ThemeToggle announce?>`(§8) |
+
+- **섬 크기(gzip, esbuild로 react 빼고 실측)**: Tabs 1.9KB · Toast 1.9KB · 테마 토글 1.9KB(토스트 호출 포함) · 셋을 함께 4.4KB(커밋 전 리뷰 전 1.6 · 1.7 · 1.8 · 3.8KB — Tabs Tab 순서 보정 +0.26KB, Toast 포커스 복귀 +0.19KB). 일반 빌드 홈의 초기 JS는 그대로다(135.7KB — 섬을 레이아웃에 넣지 않았다).
+- **클래스 합치기 — `cn`은 서버 전용**: tailwind-merge 기반 `cn`이 섬 번들에 들어가면 gzip 약 9KB가 붙는다(실측 Tabs 섬 11.0KB → `cx`로 1.6KB). 그래서 섬과 섬 안에서 쓰이는 컴포넌트(아이콘·버튼·칩·탭·토스트·테마 토글·필터 해제 버튼)는 병합 없는 `cx`(`src/lib/cx.ts`)로 합치고, `cn`은 서버 컴포넌트(카드·스켈레톤·섹션 머리·링크 탭·페이지)에서만 쓴다. `cx`는 같은 속성 클래스를 덮지 않으므로 변형 문자열 안에서 같은 속성이 겹치지 않게 적고, 바깥 `className`은 여백·배치만 준다. `tests/ui-source-rules.test.ts`가 `"use client"` 모듈과 섬이 가져다 쓸 서버 컴포넌트(버튼·칩·아이콘·대회 색·필터 해제 버튼)에서 닿는 import 그래프에 `src/lib/utils.ts`가 없는지 검사하고, `tests/ui-class-conflicts.test.tsx`가 cx 컴포넌트의 모든 변형·상태를 렌더해 한 요소에 같은 조건(변형)·같은 CSS 속성을 정하는 클래스가 둘 이상 없는지 본다(분류표에 없는 유틸리티도 실패). 이 검사로 버튼 공통 `no-underline`과 텍스트 링크 `underline`이 겹쳐 CSS 순서에 기대던 것을 찾아 `no-underline`을 주·보조·아이콘 변형으로 옮겼다(보이는 결과 같음).
+- **공개 CSS에 견본 전용 유틸리티 — 감수**: globals.css `@import "tailwindcss" source("..")`가 `src/` 전체를 훑으므로 `*.specimen.tsx`에만 쓰인 유틸리티도 일반 빌드 CSS에 들어간다. 실측(oxide 스캐너로 견본 폴더를 빼고 다시 컴파일해 비교) 원본 약 3.0KB · gzip 약 0.5KB(공개 CSS 41KB · gzip 8.2KB 중), JS 영향 없음. 견본 폴더를 `@source not`으로 빼면 견본 빌드 CSS가 깨지고 빌드별 CSS 진입점을 나누는 복잡도가 더 커서 그대로 둔다. M1 화면이 같은 유틸리티를 쓰기 시작하면 차이는 줄어든다.
+- **값**: 색·간격·모서리·그림자·모션은 토큰만 쓴다(간격은 Tailwind 4px 단위 — `px-4.5` = 18px, `h-5.5` = 22px, `min-h-29.5` = 118px). 토큰이 아닌 컴포넌트 보조 글자 크기(§3.4 — 13.5px·11.5px·10.5px …)와 자간·행간은 그 값을 임의값(`text-[13.5px]`·`tracking-[0.06em]`)으로 적었다. 색 임의값은 없다(하드코딩 색 검사 테스트).
+- **포커스 링**: 컴포넌트는 링을 따로 그리지 않고 globals.css `:focus-visible`을 쓴다. 색 면 안의 재정의는 면을 가진 요소가 `[--ring:…]`로 준다 — 토스트 `--paper`, 대회 색 면 `--competition-x-foreground`, 선택된 대회 탭 `--ink`, 티켓 `--ticket-fg`(견본 e2e가 모든 포커스 대상의 링 = `--ring`, 둘레와 3:1 이상을 확인).
+- **버튼 커서**: Tailwind v4 프리플라이트 기본(`cursor: default`) 대신 globals.css base에서 `button`은 pointer, `:disabled`·`[aria-disabled="true"]`는 not-allowed.
+- **Tabs**: 자동 활성화가 기본(패널이 정적 데이터라 지연 없음 — APG). `aria-controls`는 짝 패널이 마운트된 뒤에만 단다(없는 id를 가리키지 않게). 선택 없음(`null`)은 견본용 상태라 모든 탭이 Tab 순서에 든다. 선택 값이 있는데 그 탭이 없거나(제어 `value`가 목록 밖) 비활성이면 활성인 첫 탭(문서 순서)을 Tab 순서에 넣는다(APG — 탭 목록에 키보드로 들어갈 수 있게, 탭이 마운트된 뒤 effect로 정해져 서버 HTML에는 없다).
+- **Toast**: 닫기 버튼(44×44 "알림 닫기")은 시안에 없어 선택(`dismissible`, 기본 꺼짐)으로 더했다. 포인터가 올라가 있거나 포커스가 안에 있으면 시간을 멈춘다(WCAG 2.2.1). 액션은 먼저 닫고 실행한다(액션이 띄운 토스트가 남게). 토스트 안(액션·닫기 버튼)에 포커스가 있는 채로 사라지면(버튼으로 닫음·교체·`dismissToast`) 토스트에 들어오기 전 요소로 포커스를 되돌리고, 그 요소가 없으면 `#main`(`tabindex="-1"`, §10)으로 보낸다 — `<body>`로 떨어지지 않게(지워지는 토스트의 layout effect 정리에서 처리). 오른쪽 끝이 버튼이면 안쪽 6px, 글자로 끝나면 16px.
+- **Card**: 제목 링크에 `relative` — 위아래 패딩 10px가 메타 줄(위 9px)과 1px 겹쳐 그만큼 메타 줄에 가려지던 것을 막는다(44px 터치 타깃, 견본 e2e). `:target` 막대는 블러 없는 안쪽 그림자 `shadow-[inset_4px_0_0_var(--brand-accent)]`.
+- **Skeleton**: 1024 이상 위아래 여백을 실제 카드(18·15px)·5줄 행(14·15px)과 같게 했다 — 시안 견본은 375 값 그대로였다. §9.2 "실제와 같은 높이"를 따른다.
+- **목차 행 ✓**: 대회 행이 선택되면 이름 뒤 " ✓"(`aria-hidden`, `--brand-accent-text`). 시안 견본 매트릭스는 `data-comp`가 빠져 ✓가 안 보였다 — 시안 목차의 실제 동작과 같게 했다.
+- **견본 라우트**: `src/app/specimen/page.specimen.tsx`(+ 동작 칸 섬 `specimen-controls.tsx`). `SPECIMEN=1` 빌드에서만 페이지 확장자 `specimen.tsx`를 켜고(next.config.ts `pageExtensions`) 결과를 `out-specimen/`에 낸다(`distDir`). 일반 `npm run build`의 out/에는 없다(`tests/next-config.test.ts`·`tests/e2e/smoke.spec.ts`). `npm run test:specimen` = 견본 빌드 → `playwright.specimen.config.ts`(375·1024·1280에서 axe 0 · 44px · 포커스 링 · 가로 넘침, 모션 · 토스트(키보드로 닫으면 포커스 복귀) · 탭 키보드 · 테마 토글 · theme-color 클라이언트 이동(견본 → 홈 → 뒤로) · 스크린샷 4장(375·1280 — 1024는 검사만)). hover·focus-visible·`:target` 칸은 시안처럼 강제 상태 클래스를 만들지 않고 캡처 때 CDP `CSS.forcePseudoState`로 실제 의사 클래스를 켠다(§11.1 #8).
+
 ---
 
 ## 10. 접근성 체크
@@ -824,7 +865,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - 테마 초기 스크립트(§8)는 `layout.tsx` `<head>` 안 동기 인라인 스크립트로 넣고 `<html suppressHydrationWarning>`(D0-10 구현 완료). `localStorage`는 try/catch(CLAUDE §7.2).
 - `@custom-variant dark`는 사용자 다크 + 시스템 다크 두 조건으로 켠다(D0-10 구현 완료, §8).
 - **지운 Tailwind 기본값**: 팔레트 색, 둥근 모서리, 곡선, 반복 애니메이션, 블러 그림자 4종(상자 `--shadow-*`·안쪽 `--inset-shadow-*`·드롭 `--drop-shadow-*`·글자 `--text-shadow-*`)을 `initial`로 지운다(§5.2). 각 그림자의 `-none` 유틸리티는 남는다.
-- **클래스 병합(`cn`)**: tailwind-merge는 CSS를 읽지 않아서 등록하지 않은 커스텀 유틸리티를 잘못 분류한다(실측: `text-type-card text-ink`에서 크기가 지워지고, `px-edge px-4`는 덮어쓰지 못한다). 그래서 `src/lib/utils.ts`의 `extendTailwindMerge` 설정에 `@theme` 키를 등록한다. 색은 기본값("아무 이름이나 색")을 실제 토큰 이름 + `inherit`·`current`·`transparent`로 바꾸고, 글자 크기 `type-*`·`num-*`, 폰트, 간격, 최대 폭 `page`, 모서리, 그림자 `print*`, 곡선 `print`, 전환 시간 `fast`·`base`·`slow`는 기본값에 더한다. `tests/utils.test.ts`가 globals.css `@theme` 키 목록과 대조하므로 `@theme`에 키를 더하면 `utils.ts`에도 더한다. 색 이름 `border`·`ring`은 단독으로도 유틸리티라서, CSS를 만들지 않도록 `utils.ts`를 클래스 탐색에서 뺀다(`@source not`).
+- **클래스 병합(`cn`)**: tailwind-merge는 CSS를 읽지 않아서 등록하지 않은 커스텀 유틸리티를 잘못 분류한다(실측: `text-type-card text-ink`에서 크기가 지워지고, `px-edge px-4`는 덮어쓰지 못한다). 그래서 `src/lib/utils.ts`의 `extendTailwindMerge` 설정에 `@theme` 키를 등록한다. 색은 기본값("아무 이름이나 색")을 실제 토큰 이름 + `inherit`·`current`·`transparent`로 바꾸고, 글자 크기 `type-*`·`num-*`, 폰트, 간격, 최대 폭 `page`, 모서리, 그림자 `print*`, 곡선 `print`, 전환 시간 `fast`·`base`·`slow`는 기본값에 더한다. `tests/utils.test.ts`가 globals.css `@theme` 키 목록과 대조하므로 `@theme`에 키를 더하면 `utils.ts`에도 더한다. 색 이름 `border`·`ring`은 단독으로도 유틸리티라서, CSS를 만들지 않도록 `utils.ts`를 클래스 탐색에서 뺀다(`@source not`). D0-12부터 `cn`은 서버 컴포넌트 전용이다 — 클라이언트 섬 번들에 tailwind-merge(gzip 약 9KB)를 넣지 않도록 섬과 섬에서 쓰는 컴포넌트는 병합 없는 `cx`(`src/lib/cx.ts`)를 쓴다(§9.4). `@theme` 키 `--animate-*` 4개도 등록했다.
 
 ### 11.3 D0-11 (웹폰트) — 구현 완료
 
@@ -838,11 +879,16 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - **검증 테스트**: `tests/fonts.test.ts`(woff2를 직접 읽어 패밀리·굵기·OFL 예약 글꼴명·라이선스 동봉·크기 상한·메트릭 기록값·폴백 계산·범위 겹침·CSS·preload·§3.1 스택 정합), `tests/fonts-coverage.test.ts`(§3.7), `tests/e2e/fonts.spec.ts`(폰트 요청 basePath 아래 200·한 번씩·외부 요청 0, 4면 `display: swap`·`document.fonts.check`, preload 2파일, 폰트 1.5초 지연 시 FCP < 폰트 도착·CLS ≤ 0.05). woff2 읽기는 Node 내장 brotli로 하는 `tests/support/woff2.ts`(새 의존성 없음).
 - **남은 일**: ① macOS·iOS 실기기에서 Apple SD Gothic Neo 한글·공백 폭을 재고 폴백 패밀리를 더할지 정한다 ② Android 실기기(삼성 기본 한글 글꼴이 Noto가 아닐 수 있음)·Roboto Bold 6% 차이 확인 ③ M1 실제 홈(5줄·카드·2단/3단)에서 같은 지연 CLS를 다시 잰다(M1-39) — CI 러너에는 맑은 고딕·Noto CJK KR이 없어(playwright `--with-deps`가 까는 한글 글꼴은 WenQuanYi Zen Hei로 보임 — 확인 필요) 폴백 패밀리가 맞지 않으므로, 실제 콘텐츠가 생긴 뒤 e2e CLS가 흔들리면 CI에 `fonts-noto-cjk`를 깔지 정한다 ④ 문장부호·숫자(한글 문장 속) 폭은 맞추지 않았다 — 실측에서 문제가 되면 면을 더 나눈다.
 
-### 11.4 D0-12 (기초 컴포넌트)
+### 11.4 D0-12 (기초 컴포넌트) — 구현 완료
 
-- §9.1 탈피 규칙 + §9.2 상태표대로 구현하고, 시안 매트릭스와 375/1024/1280 × 라이트/다크 스크린샷(§0.1)을 비교한다.
-- **theme-color 재방문 어긋남**: `layout.tsx`의 `<meta name="theme-color">`는 `prefers-color-scheme` 미디어 2개(라이트 `--paper` · 다크 `--paper`)라 시스템 설정을 따른다. 사용자가 시스템과 다른 테마를 저장하고 다시 오면 브라우저 UI 색과 지면 색이 어긋난다(예: 시스템 라이트 + 저장 다크 → 주소창은 라이트 지면 색, 지면은 다크). 테마 토글을 만들 때 ① 토글하면 meta 보정 ② 재방문 첫 페인트부터 맞추려면 초기 스크립트에서도 보정할지를 정한다. 초기 스크립트는 §8 원문 = `src/lib/theme.ts` `THEME_INIT_SCRIPT`(`tests/theme.test.ts`가 글자 하나까지 대조하고 vm으로 실행 검사)라서, 바꾸면 §8 원문·`theme.ts`(같은 로직의 순수 함수 포함)·테스트를 함께 고친다.
-- 토스트 라이브러리(sonner 등)나 아이콘 라이브러리는 새 런타임 의존성이다. 번들 영향(초기 JS 160KB 중 여유 약 22KB)을 확인한 뒤 사용자에게 묻는다(CLAUDE §2). 혼합안 토스트·필터·테마 토글은 인라인 JS gzip 약 4.0KB로 동작했다.
+- **완료**: §9.1 탈피 규칙 + §9.2 상태표를 구현했다(§9.4). 견본 페이지 전체를 시안과 같은 조건으로 찍어(§0.1 `impl-components-*`) 시안 매트릭스와 행마다 나란히 비교했다 — 칩·버튼·대회 탭·필터 머리·토스트는 같은 크기 행의 평균 픽셀 차이 0.2~3.4(1280, 0~255), 남은 차이는 아래 "의도한 차이"다.
+- **의도한 차이**(시안 견본의 축소·견본 전용 값 대신 실제 컴포넌트 값): 카드(시안 매트릭스는 거터 28px·제목 15/19px로 줄임 → 실제 `--gutter`·`--text-card*`), 하단 탭 58px(견본 52px), 상단 내비 48px·간격 28px(견본 44px·18px), 결과 가리기 스위치 70px(견본 칸이 98px로 늘어남 — 시안 티켓의 실제 스위치는 70px), 글자로 끝나는 토스트 오른쪽 16px(견본 정적 토스트 6px), 스켈레톤 1024 이상 여백(§9.4), 목차 대회 행 선택 ✓(§9.4).
+- **theme-color 재방문 어긋남 — 해결**: 초기 스크립트가 저장한 테마의 메타만 `media="all"`, 다른 쪽을 `not all`로 바꾸고(재방문 첫 페인트부터 브라우저 UI 색 = 지면), 토글도 같은 규칙(`syncThemeColorMeta`)을 쓴다. 시스템으로 돌아가면 원래 미디어 쿼리. §8 원문·`src/lib/theme.ts`(순수 함수 `initialThemeColorMedia`·`themeColorMedia` 포함)·`tests/theme.test.ts`·`tests/e2e/theme.spec.ts`를 함께 고쳤다.
+  - **클라이언트 이동 때 풀리던 문제 — 해결(커밋 전 리뷰)**: Next `viewport.themeColor` 메타는 `next/link` 이동마다 새 노드로 바뀌어 보정이 풀렸다. 메타를 루트 레이아웃 `<head>`에서 직접 렌더해(`THEME_COLOR_METAS`, 추가 JS 0) 이동·뒤로 가기에도 같은 노드가 남는다(§8). e2e: 일반 빌드 404 → 홈(`tests/e2e/theme.spec.ts`), 견본 빌드 견본 → 홈 → 뒤로(`tests/e2e-specimen/specimen.spec.ts`) — 하이드레이션 뒤·이동 뒤(문서 재요청 0)·뒤로 가기 뒤 모두 다크 지면. 수정 전 빌드에서 이 e2e가 실패함을 확인했다.
+- **의존성 없음**(사용자 결정 2026-10-12): 토스트·아이콘·탭 모두 직접 구현(cva·clsx만 — 이미 설치). shadcn CLI 미사용, `components.json` `iconLibrary: "none"`.
+- **`--animate-*`**: 인쇄형 모션 4종(§6.1)을 globals.css `@theme static`에 키프레임과 함께 더했다(토큰 대조·`cn` 키 대조 테스트 갱신).
+- **shadcn 기본값 제거 영향 확인**: 둥근 모서리·블러 그림자·투명도·`ring-ring/50`·반복 애니메이션·`dark:`·lg/xl 밖 브레이크포인트·아이콘 라이브러리가 `src/components/`에 없음을 `tests/ui-source-rules.test.ts`가 고정한다. 프리플라이트 버튼 커서 기본값만 base에서 되돌렸다(§9.4).
+- **남은 것**: ① 테마 토글·하단 탭·상단 내비·`<Toaster>`를 앱 셸에 배치(M1-30) ② 카드 내용(중요도 막대·완장·태그·출처 스택·카드 메뉴·머리기사·연결 줄 — 견본은 간이 마크업, M1-31) ③ 필터 섬(칩 줄 `role="group"`·`?cat=` 동기화·찍힘 모션, M1-33) ④ 상태 4종 화면(M1-37) ⑤ 결과 가리기 스위치 동작·뜯김 모션(M4-15) ⑥ 대회 탭 실제 패널(D1) ⑦ 세로쓰기 인덱스 탭 iOS Safari 실기기·4자 약칭(§11.1 #6) ⑧ CI에 `npm run test:specimen`을 넣을지(빌드 1회 + 약 15초 — 지금은 수동).
 - 컴포넌트 보조 크기(§3.4)는 컴포넌트 안에서만 쓴다. 두 컴포넌트가 같은 역할로 쓰게 되면 §3.3 토큰으로 올린다.
 - **반응형은 `lg:`·`xl:` 변형으로만** 쓴다(§7.1). 예: 홈 그리드 `lg:grid lg:grid-cols-[var(--col-contents)_minmax(0,1fr)] xl:grid-cols-[var(--col-contents)_minmax(0,1fr)_var(--col-facing)]`, 목차 `hidden lg:block lg:sticky lg:top-4`, 마주 보는 면 `hidden xl:block`, 지면 안 위젯 `xl:hidden`, 분류 칩 줄 `lg:hidden`, 하단 탭 `lg:hidden`, 상단 내비 `hidden lg:flex`, 머리기사 크기 `lg:` 쪽. `md:`·`sm:`·`2xl:`·`max-*:` 변형과 임의 미디어 쿼리(`min-[…]:`)는 쓰지 않는다.
 - **위젯 두 자리**: 혼합안은 같은 위젯을 지면 안(1단·2단, `xl:hidden`)과 마주 보는 면(3단, `hidden xl:block`)에 한 번씩 두고 `display`로 고른다. `display: none`이라 보조기술에 두 번 읽히지 않고, 정적 데이터라 비용은 HTML 크기뿐이다. 3단 마주 보는 면의 순서(오늘 밤 → 한국 선수 → 순위 → 이적)가 1단 순서와 달라서, 한 번만 렌더하고 grid 배치로 옮기면 읽기 순서와 보이는 순서가 어긋난다. 실제 위젯이 생기는 M2·M3(D1·D2 디자인)에서 이 방식을 그대로 쓸지 다시 본다.
@@ -858,3 +904,5 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 2026-10-12 | 브레이크포인트 3구간 반영(D31): 1023 이하 1단 · 1024~1279 `lg` 2단(목차 + 지면, 우측 위젯 자리는 지면 안 1단 순서) · 1280 이상 `xl` 3단, `--breakpoint-desktop` 삭제 · Tailwind `lg`/`xl` 사용. 첫 로드 진입 모션 없음(찍힘 = 필터 결과 진입). 혼합안 수정(2단·3단 규칙 분리, M1 축소 견본 넘침 수정, 3구간 축소 견본·브레이크포인트 견본, 한글 줄 길이 46em 전 폭), 기준 스크린샷에 1024 첫 화면 2장 추가. 토큰 값 변경 없음 | PRD DR-01·DR-08, D31 |
 | 2026-10-12 | D0-10 구현에 맞춰 문구 갱신: §8 `dark:` 변형(사용자 다크 + 시스템 다크), §11.2 지운 기본값(블러 그림자 4종)·`cn` 병합 설정(`extendTailwindMerge`), §8·§11.4 theme-color 재방문 어긋남을 D0-12 할 일로. 토큰 값 변경 없음 | PRD DR-02, D0-10 |
 | 2026-10-12 | D0-11 웹폰트 self-host: §3.1 폰트 스택에 메트릭 폴백 패밀리 3개 추가(`--font-sans` 뒤 "EuroDigest Sans Fallback Malgun"·"… Noto", `--font-numeric`·`--font-latin` 뒤 "Barlow Condensed Fallback"), 파일 표를 `public/fonts/` 경로·preload 열로, 메트릭 폴백 표 신설. §3.7 커버리지 테스트, §11.3 방식(손으로 쓴 `@font-face` + 인라인 `<style>`, `next/font` 기각 이유)·실측·남은 일. 다른 토큰 값 변경 없음 | PRD DR-03·DR-11, D29, D0-11 |
+| 2026-10-12 | D0-12 기초 컴포넌트: §6.1 `--animate-stamp`·`tear`·`eject`·`arrive` 토큰 4개, §8 초기 스크립트에 theme-color 보정(저장 테마 메타만 `all`)·토글 표, §9.1 아이콘 라이브러리 없음(인라인 SVG), §9.4 구현(파일·API·`cx`/`cn` 분리·섬 크기·의도한 차이), §0.1 구현 견본 스크린샷, §11.4 완료·남은 일. 다른 토큰 값 변경 없음 | PRD DR-02·DR-08·DR-12, D0-12 |
+| 2026-10-12 | D0-12 커밋 전 리뷰 반영: §8 theme-color 메타를 Next `viewport.themeColor` 대신 루트 레이아웃 `<head>`에서 직접 렌더(클라이언트 이동에도 보정 유지), §9.4 필터 해제 버튼 파일 분리(`cx`)·cx 겹침 검사(버튼 `no-underline`을 변형으로)·Tabs Tab 순서 보정(선택 탭 없음·비활성)·Toast 포커스 복귀·견본 1024 검사·공개 CSS의 견본 전용 유틸리티 감수, §11.4. 토큰 값 변경 없음 | PRD DR-02·DR-12, D0-12 |

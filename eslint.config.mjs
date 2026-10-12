@@ -59,6 +59,7 @@ export default defineConfig([
   globalIgnores([
     ".next/**",
     "out/**",
+    "out-specimen/**",
     "build/**",
     "node_modules/**",
     "coverage/**",

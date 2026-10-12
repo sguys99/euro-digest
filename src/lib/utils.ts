@@ -110,6 +110,8 @@ export const THEME_KEYS = {
   shadow: ["print", "print-accent"],
   /** `--ease-*` */
   ease: ["print"],
+  /** `--animate-*` — 인쇄형 모션 4종(DESIGN §6.1, D0-12) */
+  animate: ["stamp", "tear", "eject", "arrive"],
   /** `--transition-duration-*` */
   "transition-duration": ["fast", "base", "slow"],
 } as const satisfies Readonly<Record<string, readonly string[]>>;
@@ -134,6 +136,7 @@ const twMerge = extendTailwindMerge({
       radius: THEME_KEYS.radius,
       shadow: THEME_KEYS.shadow,
       ease: THEME_KEYS.ease,
+      animate: THEME_KEYS.animate,
     },
     classGroups: {
       // 전환 시간은 tailwind-merge에 테마 키가 없어 클래스 그룹에 바로 더한다

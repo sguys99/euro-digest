@@ -11,6 +11,10 @@
  *
  * - 초기 스크립트는 `matchMedia`를 보지 않는다. 시스템 테마는 globals.css의
  *   `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }` 블록이 맡는다.
+ * - 저장한 테마가 있으면 `<meta name="theme-color">`의 `media`도 바꾼다 — 그 테마 메타는 `all`, 다른 쪽은 `not all`
+ *   (재방문 때 브라우저 UI 색이 지면과 어긋나지 않게, D0-12). 토글은 `syncThemeColorMeta`로 같은 규칙을 쓴다.
+ *   메타는 Next `viewport.themeColor`가 아니라 루트 레이아웃 `<head>`가 직접 렌더한다(`THEME_COLOR_METAS`) — Next의
+ *   viewport 메타는 클라이언트 이동마다 새 노드로 바뀌어 고친 `media`가 풀렸다(D0-12 리뷰, DESIGN §8).
  * - `localStorage` 접근은 모두 try/catch(CLAUDE.md §7.2). 실패하면 시스템 테마·가리기 꺼짐으로 정상 렌더.
  * - 런타임 의존성 없음 — layout.tsx(서버)와 테마 토글(클라이언트 섬, D0-12)이 함께 import한다.
  */
@@ -47,16 +51,63 @@ export const THEME_COLOR: Readonly<Record<ResolvedTheme, string>> = {
   dark: "#0E1626",
 };
 
+/** theme-color 메타 선택자 — 초기 스크립트와 토글이 같은 메타를 고친다 */
+export const THEME_COLOR_META_SELECTOR = 'meta[name="theme-color"]';
+
+/** 미디어 쿼리 값: 항상 켬 / 항상 끔 */
+const MEDIA_ALL = "all";
+const MEDIA_NONE = "not all";
+
 /**
- * 깜빡임 없는 초기 인라인 스크립트 — DESIGN.md §8 혼합안 원문과 글자 하나까지 같다(테스트가 검사).
+ * theme-color 메타의 `media` 값.
+ * - 시스템: 원래 미디어 쿼리 `(prefers-color-scheme: light|dark)` — layout.tsx가 렌더하는 메타(`THEME_COLOR_METAS`)도 이 값
+ * - 라이트·다크: 고른 테마의 메타는 `all`(항상), 다른 쪽은 `not all`(끔)
+ */
+export function themeColorMedia(
+  metaTheme: ResolvedTheme,
+  preference: ThemePreference,
+): string {
+  if (preference === "system") return `(prefers-color-scheme: ${metaTheme})`;
+  return metaTheme === preference ? MEDIA_ALL : MEDIA_NONE;
+}
+
+/**
+ * 루트 레이아웃(`src/app/layout.tsx`) `<head>`에 직접 렌더하는 theme-color 메타 2개 — 시스템 기준 미디어 쿼리.
+ *
+ * Next `viewport.themeColor`를 쓰지 않는 이유(D0-12 리뷰): Next는 viewport 메타를 페이지 트리와 함께 렌더해서
+ * `next/link` 클라이언트 이동마다 새 `<meta>` 노드로 바꿔 넣는다 → 초기 스크립트·토글이 고친 `media`가 시스템 기준으로
+ * 돌아가 브라우저 UI 색이 지면과 어긋났다. 루트 레이아웃은 이동 때 다시 마운트되지 않으므로 이 메타 노드가 그대로 남는다.
+ * React 19는 `<meta>`를 끌어올려 `<head>` 자식(초기 스크립트)보다 앞에 내보내고, 하이드레이션 때 `content`·`name`으로
+ * 찾아 기존 노드를 그대로 가져간다(`media`는 대조하지 않음 — 경고 없음). 이후 props가 같아 DOM을 다시 쓰지 않는다.
+ * 추가 JS 0.
+ */
+export const THEME_COLOR_METAS: ReadonlyArray<{
+  theme: ResolvedTheme;
+  media: string;
+  content: string;
+}> = (["light", "dark"] as const).map((theme) => ({
+  theme,
+  media: themeColorMedia(theme, "system"),
+  content: THEME_COLOR[theme],
+}));
+
+/**
+ * 깜빡임 없는 초기 인라인 스크립트 — DESIGN.md §8 원문과 글자 하나까지 같다(테스트가 검사).
  * layout.tsx `<head>`에 인라인으로 넣어 첫 페인트 전에 동기 실행한다. 로직을 바꾸면 아래
- * `readInitialRootState`·`applyInitialRootState`와 DESIGN.md §8을 함께 고친다(테스트가 같은 결과인지 검사).
+ * `readInitialRootState`·`applyInitialRootState`·`initialThemeColorMedia`와 DESIGN.md §8을 함께 고친다
+ * (테스트가 같은 결과인지 검사).
+ *
+ * theme-color 보정: React가 레이아웃의 theme-color 메타(`THEME_COLOR_METAS`)를 끌어올려 `<head>` 자식(이 스크립트)보다
+ * 앞에 내보내므로 실행 시점에 메타가 있다. 메타를 새로 넣지 않고 `media`만 바꾼다 — React 19는 `<meta>`를 `content`
+ * 값으로 찾아 하이드레이션해서, 같은 `content`의 메타를 더 넣으면 그쪽을 자기 것으로 가져간다(DESIGN §8).
  */
 export const THEME_INIT_SCRIPT =
-  "(function(){var d=document.documentElement,t,s;" +
+  "(function(){var d=document,r=d.documentElement,t,s,m,i;" +
   `try{t=localStorage.getItem('${THEME_STORAGE_KEY}');s=localStorage.getItem('${SPOILER_STORAGE_KEY}')}catch(e){}` +
-  `if(t==='light'||t==='dark')d.setAttribute('${THEME_ATTRIBUTE}',t);` +
-  `if(s==='${SPOILER_ON}')d.setAttribute('${SPOILER_ATTRIBUTE}','${SPOILER_ON}')})();`;
+  `if(s==='${SPOILER_ON}')r.setAttribute('${SPOILER_ATTRIBUTE}','${SPOILER_ON}');` +
+  `if(t==='light'||t==='dark'){r.setAttribute('${THEME_ATTRIBUTE}',t);` +
+  `m=d.querySelectorAll('${THEME_COLOR_META_SELECTOR}');` +
+  `for(i=0;i<m.length;i++)m[i].setAttribute('media',(m[i].getAttribute('media')||'').indexOf(t)<0?'${MEDIA_NONE}':'${MEDIA_ALL}')}})();`;
 
 // ─── 저장소·요소 최소 인터페이스 (DOM 타입 없이 테스트할 수 있게) ─────────────
 
@@ -115,14 +166,63 @@ export function readInitialRootState(
   };
 }
 
-/** 초기 속성 적용 — 초기 스크립트처럼 달기만 하고 지우지는 않는다. */
+/** theme-color 메타(`<meta name="theme-color">`)에서 쓰는 부분 */
+export type ThemeColorMetaLike = Pick<
+  AttributeTarget,
+  "getAttribute" | "setAttribute"
+>;
+
+/**
+ * 초기 스크립트의 메타 규칙 — 원래 `media`(`(prefers-color-scheme: light|dark)`)에 고른 테마 이름이 들어 있으면
+ * `all`, 아니면 `not all`. 결과는 `themeColorMedia(그 메타의 테마, 고른 테마)`와 같다(테스트가 검사).
+ */
+export function initialThemeColorMedia(
+  media: string | null,
+  theme: ResolvedTheme,
+): string {
+  return (media ?? "").includes(theme) ? MEDIA_ALL : MEDIA_NONE;
+}
+
+/** 초기 속성 적용 — 초기 스크립트처럼 달기만 하고 지우지는 않는다. 테마를 저장했으면 theme-color 메타도 고친다. */
 export function applyInitialRootState(
   root: Pick<AttributeTarget, "setAttribute">,
   state: InitialRootState,
+  metas: Iterable<ThemeColorMetaLike> = [],
 ): void {
-  if (state.theme !== null) root.setAttribute(THEME_ATTRIBUTE, state.theme);
   if (state.spoiler !== null) {
     root.setAttribute(SPOILER_ATTRIBUTE, state.spoiler);
+  }
+  if (state.theme === null) return;
+  root.setAttribute(THEME_ATTRIBUTE, state.theme);
+  for (const meta of metas) {
+    meta.setAttribute(
+      "media",
+      initialThemeColorMedia(meta.getAttribute("media"), state.theme),
+    );
+  }
+}
+
+/**
+ * theme-color 메타가 어느 테마의 색인지 — `content`가 THEME_COLOR 값이면 그 테마.
+ * 초기 스크립트가 `media`를 `all`·`not all`로 바꾼 뒤에도 알 수 있게 `content`를 먼저 본다. 모르면 null.
+ */
+export function themeColorMetaTheme(
+  meta: Pick<AttributeTarget, "getAttribute">,
+): ResolvedTheme | null {
+  const content = meta.getAttribute("content")?.trim().toUpperCase();
+  if (content === THEME_COLOR.light.toUpperCase()) return "light";
+  if (content === THEME_COLOR.dark.toUpperCase()) return "dark";
+  return null;
+}
+
+/** 토글 후 theme-color 메타를 고른 테마에 맞춘다(DESIGN §8). 모르는 메타는 건드리지 않는다. */
+export function syncThemeColorMeta(
+  metas: Iterable<ThemeColorMetaLike>,
+  preference: ThemePreference,
+): void {
+  for (const meta of metas) {
+    const theme = themeColorMetaTheme(meta);
+    if (theme) meta.setAttribute("media", themeColorMedia(theme, preference));
   }
 }
 

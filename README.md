@@ -130,6 +130,7 @@ npm run preview    # out/을 GitHub Pages처럼 basePath 아래로 서빙
 | `npm run format` / `format:check` | Prettier 적용 / 검사 | 사용 가능 |
 | `npm run test` / `test:watch` | Vitest 단위 테스트 (LLM은 항상 mock) | 사용 가능 |
 | `npm run test:e2e` | Playwright — 375px·1280px, 빌드 결과(`out/`) 대상이라 먼저 `npm run build` | 사용 가능 (스모크 · 내부 링크 · axe 접근성 WCAG 2.1 AA) |
+| `npm run build:specimen` / `test:specimen` | 기초 컴포넌트 견본(`/specimen/`, `SPECIMEN=1` 빌드 전용 → `out-specimen/`, 공개 빌드에는 없음) 빌드 / 빌드 + Playwright 검사·스크린샷(`test-results/specimen-shots/`) | 사용 가능 (D0-12 — axe · 44px · 포커스 링 · 모션 · 토스트 · 탭 · 테마 토글) |
 | `npm run collect` | 수집 → 정제·분류 → 데이터 브리핑 → 검증 | 준비 중 (M1) — 현재 인자 파싱만 |
 | `npm run summarize` | 일일 데이터 브리핑 단계만 따로 실행 (명령 이름은 유지) | 준비 중 (M1-19~M1-23·M1-45) |
 | `npm run weekly` | 팀 프로필·한국 선수 주간 리포트·운영 리포트 | 준비 중 (M2-07·M3-06~M3-08·M4-06·M5-09) |

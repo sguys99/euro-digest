@@ -13,7 +13,7 @@
  *    - [data-theme="dark"]           다크(사용자가 고름)
  *    - @media (prefers-color-scheme: dark) :root:not([data-theme="light"])
  *                                    다크(시스템 설정, JS 없이도) — 값은 바로 위 블록과 똑같다
- *    - @theme static                 이름이 Tailwind 테마 키와 같은 토큰(폰트 3 · 인쇄 그림자 2)은 :root 대신 여기에 한 번만
+ *    - @theme static                 이름이 Tailwind 테마 키와 같은 토큰(폰트 3 · 인쇄 그림자 2 · 애니메이션 4 + 키프레임)은 :root 대신 여기에 한 번만
  *                                    선언한다. :root와 @theme에 같은 이름을 두면 자기 참조(--x: var(--x))가 된다(DESIGN §11.2).
  *                                    Tailwind가 @layer theme의 :root에 그대로 내보내므로 런타임 변수로도 쓸 수 있다
  * 4. @theme inline — 런타임 토큰을 Tailwind 유틸리티에 잇는다(값은 var()만, 새 값 없음)
@@ -74,7 +74,8 @@
 
 /* ── 3. 런타임 토큰 ─────────────────────────────────────────────────────────── */
 
-/* 테마·폭과 무관하고, 이름이 Tailwind 키와 같은 토큰 — font-sans·font-numeric·font-latin, shadow-print·shadow-print-accent */
+/* 테마·폭과 무관하고, 이름이 Tailwind 키와 같은 토큰 — font-sans·font-numeric·font-latin, shadow-print·shadow-print-accent,
+   animate-stamp·tear·eject·arrive */
 @theme static {
   /*
    * DESIGN §3.1 — font-sans는 Tailwind 기본 스택을 덮는다(의도).
@@ -97,6 +98,56 @@
   /* DESIGN §5.2 — 블러 없는 인쇄 오프셋. var()는 <html>에서 풀려 테마를 따른다 */
   --shadow-print: 4px 4px 0 var(--ink);
   --shadow-print-accent: 4px 4px 0 var(--brand-accent);
+
+  /*
+   * DESIGN §6.1·§6.2 — 인쇄형 모션 4종(animate-stamp·tear·eject·arrive, D0-12).
+   * 모션 줄이기(reduce)면 아래 base 규칙이 지속 시간을 0으로 만든다 — 채움 모드 both라 끝 상태로 바로 보인다.
+   */
+  --animate-stamp: stamp var(--duration-fast) var(--ease) both;
+  --animate-tear: tear var(--duration-base) var(--ease) both;
+  --animate-eject: eject var(--duration-base) var(--ease) both;
+  --animate-arrive: arrive var(--duration-slow) var(--ease);
+
+  /* 찍힘 — 필터 결과 진입 카드(첫 로드에는 없음, D31) */
+  @keyframes stamp {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* 뜯김 — 결과 가림 펼치기: 위에서 아래로 드러남 */
+  @keyframes tear {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  /* 배출 — 토스트: 아래 12px에서 밀려 올라옴 */
+  @keyframes eject {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* 도착 — :target 카드: 투명에서 요소 자신의 배경(--paper-2)이 배어 나옴 */
+  @keyframes arrive {
+    from {
+      background-color: transparent;
+    }
+  }
 }
 
 /* 라이트 + 375(1단) + 테마·폭 무관 */
@@ -538,6 +589,15 @@
   /* DESIGN §3.5 — 시각은 모두 표 숫자 */
   time {
     font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* DESIGN §9.1 — 누를 수 있는 버튼은 pointer, 비활성은 not-allowed(Tailwind v4 프리플라이트 기본은 default) */
+  button {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
   }
 
   /* DESIGN §9.1 — 포커스 링 3px 실선 · 2px 띄움(투명도 없음). 색 면 안에서는 컴포넌트가 --ring을 그 면의 글자색으로 바꾼다 */

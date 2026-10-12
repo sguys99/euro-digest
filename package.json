@@ -26,7 +26,9 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:specimen": "SPECIMEN=1 next build",
+    "test:specimen": "npm run build:specimen && playwright test -c playwright.specimen.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",
