@@ -340,6 +340,129 @@ export function isUtcIso(s: unknown): s is string {
   }
 }
 
+// ─── 공개 API: 피드 날짜 → UTC ──────────────────────────────────────────────
+
+const MONTHS_EN = [
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "may",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "oct",
+  "nov",
+  "dec",
+] as const;
+
+/** RFC 822 시간대 약어 → UTC 오프셋(분). 미국 약어는 RFC 822 §5.1에 정의된 것만 — BST·CEST 등은 모른다(null). */
+const RFC822_ZONES: Readonly<Record<string, number>> = {
+  GMT: 0,
+  UT: 0,
+  UTC: 0,
+  Z: 0,
+  EST: -5 * 60,
+  EDT: -4 * 60,
+  CST: -6 * 60,
+  CDT: -5 * 60,
+  MST: -7 * 60,
+  MDT: -6 * 60,
+  PST: -8 * 60,
+  PDT: -7 * 60,
+};
+
+/** `[요일, ]DD Mon YYYY HH:MM[:SS] 시간대` (RFC 822/1123 — RSS `pubDate`). 요일은 확인하지 않는다(피드가 자주 틀린다). */
+const RFC822_RE =
+  /^(?:[A-Za-z]{3},?\s+)?(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\s+(\d{2}):(\d{2})(?::(\d{2}))?\s+([A-Za-z]{1,3}|[+-]\d{4})$/;
+/** ISO 8601 + 명시 시간대 (Atom `updated`·`dc:date`) — 초·소수 초 선택, `Z`·`±HH:MM`·`±HHMM`. */
+const FEED_ISO_RE =
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?(Z|[+-]\d{2}:?\d{2})$/i;
+
+/** `+0200`·`-05:30` → 분. 형식이 틀리면 NaN. */
+function numericOffsetMinutes(zone: string): number {
+  const m = /^([+-])(\d{2}):?(\d{2})$/.exec(zone);
+  if (!m) return Number.NaN;
+  const h = group(m, 2);
+  const mi = group(m, 3);
+  if (h > 23 || mi > 59) return Number.NaN;
+  return (m[1] === "-" ? -1 : 1) * (h * 60 + mi);
+}
+
+/** 달력·시각 필드 + 오프셋(분) → UTC ISO. 달력에 없으면 null. */
+function feedFieldsToIso(
+  fields: [number, number, number, number, number, number, number],
+  offsetMinutes: number,
+): string | null {
+  const [y, month, day, h, mi, s, ms] = fields;
+  if (!Number.isFinite(offsetMinutes)) return null;
+  if (!isValidYmd(y, month, day) || !isValidHms(h, mi, s)) return null;
+  return toIso(
+    fieldsToMs(y, month, day, h, mi, s, ms) - offsetMinutes * MINUTE_MS,
+  );
+}
+
+/**
+ * 피드 날짜(RSS `pubDate` RFC 822/1123, Atom ISO 8601) → 저장용 UTC ISO(`toISOString()` 형식).
+ * **시간대가 적힌 값만** 받는다 — `GMT`·`UT`·`UTC`·`Z`·`±HHMM`·`±HH:MM`·RFC 822 미국 약어(EST·EDT·CST·CDT·MST·MDT·PST·PDT).
+ * 시간대가 없는 값(국내 피드의 오프셋 없는 KST 등)·모르는 약어(BST 등)·달력에 없는 날짜·빈 값은 추측하지 않고 null.
+ * 소스별 기본 시간대 보정(국내 피드 KST)은 M1-09 정규화에서 정한다. 앞뒤 공백은 무시한다.
+ * 예) "Sat, 10 Oct 2026 19:24:23 GMT" → "2026-10-10T19:24:23.000Z",
+ *     "Sun, 11 Oct 2026 02:43:46 +0900" → "2026-10-10T17:43:46.000Z", "Sat, 10 Oct 2026 20:00:00 BST" → null
+ */
+export function parseFeedDate(raw: string | null | undefined): string | null {
+  if (typeof raw !== "string") return null;
+  const s = raw.trim();
+  if (s === "") return null;
+
+  const rfc = RFC822_RE.exec(s);
+  if (rfc) {
+    const monthIndex = MONTHS_EN.indexOf(
+      (rfc[2] ?? "").toLowerCase() as (typeof MONTHS_EN)[number],
+    );
+    if (monthIndex < 0) return null;
+    const zone = rfc[7] ?? "";
+    const offset = /^[+-]/.test(zone)
+      ? numericOffsetMinutes(zone)
+      : (RFC822_ZONES[zone.toUpperCase()] ?? Number.NaN);
+    const sec = rfc[6] === undefined ? 0 : group(rfc, 6);
+    return feedFieldsToIso(
+      [
+        group(rfc, 3),
+        monthIndex + 1,
+        group(rfc, 1),
+        group(rfc, 4),
+        group(rfc, 5),
+        sec,
+        0,
+      ],
+      offset,
+    );
+  }
+
+  const iso = FEED_ISO_RE.exec(s);
+  if (iso) {
+    const zone = iso[8] ?? "";
+    const offset = zone.toUpperCase() === "Z" ? 0 : numericOffsetMinutes(zone);
+    const sec = iso[6] === undefined ? 0 : group(iso, 6);
+    const ms = Number((iso[7] ?? "").padEnd(3, "0").slice(0, 3));
+    return feedFieldsToIso(
+      [
+        group(iso, 1),
+        group(iso, 2),
+        group(iso, 3),
+        group(iso, 4),
+        group(iso, 5),
+        sec,
+        ms,
+      ],
+      offset,
+    );
+  }
+  return null;
+}
+
 // ─── 공개 API: UTC → 현지(KST) ──────────────────────────────────────────────
 
 /** UTC ISO → 지정 시간대의 벽시계 구성 요소. KST는 `kstParts`를 쓴다. */
