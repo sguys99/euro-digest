@@ -36,7 +36,6 @@ import { kstWindowRangeUtc } from "@/lib/time";
 import {
   briefInputWindow,
   buildBriefInput,
-  footballDataDateRange,
   roundLabel,
 } from "../scripts/lib/brief-input";
 import {
@@ -81,6 +80,7 @@ import {
   createFootballDataClient,
   FOOTBALL_DATA_BASE_URL,
   FOOTBALL_DATA_MIN_INTERVAL_MS,
+  footballDataDateRange,
   matchesPath,
   toFinishedResults,
 } from "../scripts/lib/providers/football-data";
@@ -96,6 +96,8 @@ import {
   buildValidationReport,
   validationExitCode,
 } from "../scripts/lib/validate-report";
+
+import { fdFixtureResponse, standingsCode } from "./support/football-data-fake";
 
 // ─── fixtures ────────────────────────────────────────────────────────────
 
@@ -137,8 +139,15 @@ interface FakeFetch {
   calls: Array<{ url: string; init?: RequestInit }>;
 }
 
-/** 피드 호스트와 football-data만 받는 가짜 fetch. 그 밖의 URL은 실패(실제 네트워크 차단). */
-function fakeFetch(routes: { feed?: Route; fd?: Route }): FakeFetch {
+/**
+ * 피드 호스트와 football-data만 받는 가짜 fetch. 그 밖의 URL은 실패(실제 네트워크 차단).
+ * football-data: 경기(`/matches`)는 `fd`, 순위(`/competitions/{code}/standings`)는 `standings`(없으면 fixture — M1-44).
+ */
+function fakeFetch(routes: {
+  feed?: Route;
+  fd?: Route;
+  standings?: Route;
+}): FakeFetch {
   const calls: FakeFetch["calls"] = [];
   const respond = (route: Route | undefined): Response => {
     if (route === undefined) return new Response("not found", { status: 404 });
@@ -152,6 +161,11 @@ function fakeFetch(routes: { feed?: Route; fd?: Route }): FakeFetch {
     fetch: async (url, init) => {
       calls.push({ url, init });
       if (url === BBC_SOURCE.url) return respond(routes.feed);
+      if (standingsCode(url) !== null) {
+        return routes.standings !== undefined
+          ? respond(routes.standings)
+          : fdFixtureResponse(url)!;
+      }
       if (url.startsWith(FOOTBALL_DATA_BASE_URL)) return respond(routes.fd);
       throw new Error(`테스트에서 예상하지 못한 URL: ${url}`);
     },
@@ -572,19 +586,24 @@ describe("providers/football-data.ts", () => {
       outOfWindow: 0,
       unknownComp: 0,
     });
-    expect(results.map((r) => r.fdId)).not.toContain(564698);
-    const arsenal = results.find((r) => r.fdId === 560593)!;
+    expect(results.map((r) => r.matchId)).not.toContain(564698);
+    const arsenal = results.find((r) => r.matchId === 560593)!;
     expect(arsenal).toEqual({
-      fdId: 560593,
+      provider: "football-data",
+      matchId: 560593,
       comp: "EPL",
       kickoff: "2026-10-10T11:30:00Z",
       matchday: 6,
       stage: "REGULAR_SEASON",
-      home: "Arsenal",
-      away: "Leeds United",
-      ft: { home: 2, away: 1 },
-      ht: { home: 0, away: 0 },
-      duration: "REGULAR",
+      home: { id: 57, name: "Arsenal", fullName: "Arsenal FC" },
+      away: { id: 341, name: "Leeds United", fullName: "Leeds United FC" },
+      score: {
+        ft: { home: 2, away: 1 },
+        ht: { home: 0, away: 0 },
+        regular: { home: 2, away: 1 },
+        pens: null,
+        duration: "REGULAR",
+      },
     });
     // 다른 날 창이면 전부 창 밖
     const other = toFinishedResults(
@@ -607,7 +626,7 @@ describe("providers/football-data.ts", () => {
     expect(skipped.invalid).toBe(1);
   });
 
-  it("클라이언트 — X-Auth-Token 헤더, 응답 후 6.5초 간격, 호출 수 집계, HTTP 오류는 FootballDataError", async () => {
+  it("클라이언트 — X-Auth-Token 헤더, 응답 후 6.5초 간격, 호출 수 집계, HTTP 오류는 FootballDataError(재시도 1회 포함)", async () => {
     const fetcher = fakeFetch({ fd: FD_MATCHES_1010 });
     let clock = 1_000_000;
     const sleeps: number[] = [];
@@ -634,15 +653,19 @@ describe("providers/football-data.ts", () => {
     expect(headers["X-Auth-Token"]).toBe("k-123");
     expect(fetcher.calls[0]!.url).not.toContain("k-123");
 
+    // 429는 1회 재시도(대기는 주입한 sleep — 실제로 기다리지 않는다), 두 번째도 429면 실패
     const failing = createFootballDataClient({
       apiKey: "k",
       fetch: fakeFetch({ fd: new Response("{}", { status: 429 }) }).fetch,
+      sleep: async () => undefined,
     });
     await expect(failing.getMatches(query)).rejects.toMatchObject({
       name: "FootballDataError",
+      kind: "http",
       status: 429,
     });
-    expect(failing.calls).toBe(1);
+    expect(failing.calls).toBe(2);
+    expect(failing.retries).toBe(1);
   });
 });
 
@@ -670,7 +693,15 @@ describe("brief-input.ts — 정형 입력(M0-34 창)", () => {
     const { results } = toFinishedResults(raw, COMPETITIONS, window);
     const withPens = [
       ...results,
-      { ...results[0]!, fdId: 1, duration: "PENALTY_SHOOTOUT" },
+      {
+        ...results[0]!,
+        matchId: 1,
+        score: {
+          ...results[0]!.score,
+          pens: { home: 4, away: 3 },
+          duration: "PENALTY_SHOOTOUT" as const,
+        },
+      },
     ];
     const { input, excluded } = buildBriefInput(
       "2026-10-11",
@@ -909,7 +940,7 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
 });
 
 describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 로그만)", () => {
-  it("mock: football-data 1요청 → 종료 23경기 입력 → callSingle 1회(D28 설정) → 줄 출력, 저장 파일 없음", async () => {
+  it("mock: football-data 경기 1요청 + 순위 5요청 → 종료 23경기 입력 → callSingle 1회(D28 설정) → 줄 출력, 저장 파일 없음", async () => {
     const { deps, printed, fetcher, llmRequests } = makeDeps();
     const outcome = await runCollect(deps);
     expect(outcome.brief).toMatchObject({ state: "done", inputMatches: 23 });
@@ -919,10 +950,22 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
     const fdCalls = fetcher.calls.filter((c) =>
       c.url.startsWith(FOOTBALL_DATA_BASE_URL),
     );
-    expect(fdCalls).toHaveLength(1);
-    expect(fdCalls[0]!.url).toBe(
-      `${FOOTBALL_DATA_BASE_URL}/matches?competitions=PL,PD,SA,BL1,FL1,CL&dateFrom=2026-10-10&dateTo=2026-10-11`,
-    );
+    // 순위는 종료 경기가 있는 대회만(2026-10-10: UCL 경기 없음) — M1-44
+    expect(
+      fdCalls.map((c) => c.url.slice(FOOTBALL_DATA_BASE_URL.length)),
+    ).toEqual([
+      "/matches?competitions=PL,PD,SA,BL1,FL1,CL&dateFrom=2026-10-10&dateTo=2026-10-11",
+      "/competitions/PL/standings",
+      "/competitions/PD/standings",
+      "/competitions/SA/standings",
+      "/competitions/BL1/standings",
+      "/competitions/FL1/standings",
+    ]);
+    expect(outcome.matchData?.footballData).toMatchObject({ state: "done" });
+    expect(outcome.matchData?.apiFootball).toMatchObject({
+      state: "skipped",
+      reason: "no-adapter",
+    });
     expect(
       (fdCalls[0]!.init!.headers as Record<string, string>)["X-Auth-Token"],
     ).toBe("test-football-data-key");
@@ -1133,7 +1176,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
       downgraded: 0,
       tokens: { in: 6590, out: 3231, cacheRead: 0, cacheWrite: 0 },
       costUsd: 0.002275, // M0-34 실측과 같은 usage → 같은 비용
-      apiCalls: { footballData: 1, apiFootball: 0 },
+      apiCalls: { footballData: 6, apiFootball: 0 }, // 경기 1 + 순위 5(M1-44)
       sources: [{ id: "bbc-sport-football", ok: true, items: 7 }],
       status: "success",
     });

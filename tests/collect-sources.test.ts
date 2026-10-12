@@ -49,6 +49,8 @@ import {
 } from "../scripts/lib/rss";
 import { planDailySources } from "../scripts/lib/sources";
 
+import { fdFixtureResponse } from "./support/football-data-fake";
+
 // ─── fixtures ────────────────────────────────────────────────────────────
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -106,7 +108,7 @@ interface FakeFetch {
 }
 
 /**
- * 수집 대상 피드 URL은 fixture XML(또는 소스 id별 덮어쓰기), football-data는 경기 fixture를 돌려준다.
+ * 수집 대상 피드 URL은 fixture XML(또는 소스 id별 덮어쓰기), football-data는 경기·순위 fixture를 돌려준다.
  * 그 밖의 URL은 실패시킨다(제외 소스를 요청하면 테스트가 잡는다). 동시 요청 수(전체·호스트별)도 잰다.
  * `delayMs`가 있으면 그 소스는 실제 시간으로 그만큼 늦게 응답한다(완료 순서 바꾸기용, 짧게).
  */
@@ -140,9 +142,9 @@ function fakeFetch(
       maxPerHost = Math.max(maxPerHost, perHost.get(host)!);
       try {
         await Promise.resolve();
-        if (url.startsWith(FOOTBALL_DATA_BASE_URL)) {
-          return respond(FD_MATCHES_1010);
-        }
+        // football-data: 경기는 2026-10-10 fixture, 순위는 대회별 fixture(M1-44)
+        const fd = fdFixtureResponse(url, FD_MATCHES_1010);
+        if (fd) return fd;
         const id = idByUrl.get(url);
         if (id === undefined) {
           throw new Error(`테스트에서 예상하지 못한 URL: ${url}`);
