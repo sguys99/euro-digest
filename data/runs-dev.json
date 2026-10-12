@@ -94,5 +94,35 @@
     },
     "sources": [],
     "status": "success"
+  },
+  {
+    "runId": "collect-dev-20261012T101225Z-07c3",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-12T10:12:25.078Z",
+    "finishedAt": "2026-10-12T10:12:36.875Z",
+    "collected": 80,
+    "clusters": 5,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": {
+      "in": 3198,
+      "out": 1839,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.001239,
+    "apiCalls": {
+      "footballData": 1,
+      "apiFootball": 0
+    },
+    "sources": [
+      {
+        "id": "bbc-sport-football",
+        "ok": true,
+        "items": 80
+      }
+    ],
+    "status": "success"
   }
 ]
