@@ -234,13 +234,13 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M1-01 💰 BBC RSS 1개 → 상위 5건 원제목 카드(분류 최소 규칙) → `data/news/YYYY-MM-DD.json` + 전날 경기 결과로 브리핑 1요청(저장은 M1-19 스키마 확정 전이라 로그 출력만) → 무스타일 목록 페이지 → Actions에서 커밋·빌드·Pages 배포까지 한 번에 성공 (D23·D24)
 
 ### M1-A 수집 (FR-01~11)
-- [ ] M1-02 `configs/sources.json` 초기 등록(M0 검증 통과분만) + 로더(`enabled && terms_checked`만) — `summarize` 값과 무관하게 LLM 미전송 (D23). ❓ The Athletic ToS 4.1(5) 캐시·보관 금지와 우리 보관 정책(일별 90일·월별 병합 — M5-10, `fixtures/rss/` 5건 포함)의 관계를 M1-40 정기 실행 활성화 전에 사용자 확인(M0-23 미해결 항목 — 보관 불가로 정하면 Athletic 카드만 보관 기간 단축 또는 제외)
+- [ ] M1-02 `configs/sources.json` 초기 등록(M0 검증 통과분만) + 로더(`enabled && terms_checked`만) — `summarize` 값과 무관하게 LLM 미전송 (D23). ~~❓ The Athletic ToS 4.1(5) 캐시·보관 금지와 우리 보관 정책의 관계~~ → 2026-10-12 사용자 결정(PRD §15 D32): **Athletic 카드는 7일만 보관** — `Source`에 선택 필드 `retentionDays`(부록 A) 추가, `the-athletic-football`에 7. 기간이 지난 출처의 삭제는 M1-25가 takedown 원본 삭제 경로로 처리(`fixtures/rss/` 5건은 테스트 입력이라 그대로)
 - [ ] M1-03 RSS 어댑터 (타임아웃·재시도, 소스별 실패 격리)
 - [ ] M1-04 기자 채널 RSS: the Daily Briefing(Substack)·Di Marzio — 작성자 필터는 현재 대상 없음(M0-23·M0-24: Guardian 제외, The Athletic은 축구 피드 전체를 원제목으로 수집), `author` 필드 지원만
-- [ ] M1-05 목록 크롤러 `scripts/crawlers/<site>.ts` — M0에서 허용 확인된 사이트만 (robots.txt, User-Agent, 2~3초 지연, 하루 1회)
+- [ ] ⏸ M1-05 목록 크롤러 `scripts/crawlers/<site>.ts` — M0에서 허용 확인된 사이트만 (robots.txt, User-Agent, 2~3초 지연, 하루 1회) (보류 — 2026-10-12 사용자 결정, PRD §15 D32: M0-23~25 판정에서 크롤링을 허용한 사이트가 0곳(후보 Sky Sport DE·Bundesliga.com·TEAMtalk·Football365 모두 약관상 봇 접근 금지)이라 만들 대상이 없다. `/add-source`로 `type: crawl` + `robots_checked` 소스가 승인되면 그때 착수)
 - [ ] M1-06 검색형 소스 공통: `configs/search-queries.json` 로더 + 매체 도메인 허용 목록 필터(`configs/publisher-domains.json`, `allow`만 게시, `isSearchResultAllowed`) — Google News RSS는 사용 불가(M0-26, PRD §15 D25)
-- [ ] M1-07 GDELT 어댑터 — ⏸ M0-27 판정: 약관 허용·**현재 비활성**(429 다발·허용 목록 통과 0건). M1-46 재측정 결과로 착수 여부 결정 ❓. 제목은 GDELT가 손본 흔적이 있어 RSS 제목·og:title로 교체 필요
-- [ ] M1-08 OG 메타 경량 수집기 — 요약 없는 항목만, `<head>`만 파싱, 최대 500자. 해외 원제목 소스는 OG 보충 안 함(M0-23·D23), 국내 소스는 M0-25 판정에 따름
+- [ ] ⏸ M1-07 GDELT 어댑터 — ⏸ M0-27 판정: 약관 허용·**현재 비활성**(429 다발·허용 목록 통과 0건). M1-46 재측정 결과로 착수 여부 결정 ❓. 제목은 GDELT가 손본 흔적이 있어 RSS 제목·og:title로 교체 필요 (보류 유지 — 2026-10-12 사용자 결정 D32: M1-46 재측정을 통과하면 M1-08과 함께 착수)
+- [ ] ⏸ M1-08 OG 메타 경량 수집기 — 요약 없는 항목만, `<head>`만 파싱, 최대 500자. 해외 원제목 소스는 OG 보충 안 함(M0-23·D23), 국내 소스는 M0-25 판정에 따름 (보류 — 2026-10-12 사용자 결정 D32: RSS 요약문·OG 설명을 표시·저장하지 않으므로(M0-25) 지금 소비처가 없고, 유일한 소비처는 GDELT 결과의 og:title·`article:published_time` 교체(M0-27)다 → M1-07과 함께 착수. 그때 CLAUDE §3의 "경량 HTML 파서" 패키지를 후보·크기와 함께 사용자 승인)
 - [ ] M1-09 공통 형식 정규화 + zod 검증 (FR-03), "본문 필드 없음" 테스트 (FR-02)
 - [ ] M1-10 수집 시간 창: 직전 성공 실행 ~ 현재, 최대 36시간 (FR-07)
 - [ ] M1-11 소스 건강도 기록 + 3일 연속 0건 이슈 (FR-11)
@@ -267,7 +267,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M1-24 🆕 **골든셋 회귀 평가(브리핑)**: 대표 입력 10일치(`fixtures/llm/golden/` — 경기 많은 날·적은 날·UCL 주간·대승·무승부 포함, PRD §9.2) + `npm run eval:prompt` — 프롬프트 수정 전후 출력 diff·검사기 결과 비교 (CLAUDE §6.3 구체화) (D24)
 
 ### M1-D 검증·발행·운영
-- [ ] M1-25 발행 검증 게이트: 스키마, 카드 수 하한(≥10, 휴식기 5), 링크 형식, `configs/takedowns.json` 등록 카드 제외 + 다음 수집에서 `data/` 원본 삭제 (FR-143, FR-153)
+- [ ] M1-25 발행 검증 게이트: 스키마, 카드 수 하한(≥10, 휴식기 5), 링크 형식, `configs/takedowns.json` 등록 카드 제외 + 다음 수집에서 `data/` 원본 삭제 · 🆕 소스별 보존 기간(`Source.retentionDays`, D32): 기간이 지난 출처를 같은 삭제 경로로 `data/`에서 지움(대표 출처면 카드 삭제 — 현재 The Athletic 7일) (FR-143, FR-153)
 - [ ] M1-26 `collect.yml` 완성: 수집 → 정제·분류 → 데이터 브리핑 → 검증 → 빌드 → `data/` 커밋(변경분만, `pull --rebase`) → `deploy.yml` 호출. 빌드 실패 시 커밋하지 않음 (CLAUDE §10)
 - [ ] M1-47 🆕 계절별 발행 시각 (FR-26, FR-150, NFR-05, PRD §15 D26): ① `src/lib/time.ts`에 발행 슬롯 함수 — 발행일(KST) → 계절(`europeanSummerTimeTransitions` 기준 여름/겨울)·수집 시작(06:30/07:10)·브리핑 마감(공개 목표 −10분: 06:50/07:20)·공개 목표(07:00/07:30) + 전환 경계 테스트(2026-10-25 여름 → 10-26 겨울, 2027-03-28 겨울 → 03-29 여름) ② collect 가드에 계절 판정 추가 — 계절에 맞지 않는 트리거(여름의 07:10·07:20, 겨울의 06:30·06:40)는 skip(실패 아님, collect job이 skipped라 12시간 가드의 성공 이력에 들어가지 않음). 트리거 구분은 백업 schedule = `github.event.schedule` cron 문자열, cron-job.org = dispatch 입력(예: `slot`, M1-40 활성화 때 본문 갱신), 입력 없는 수동 dispatch는 계절 판정 없이 기존 12시간 가드만 ③ `collect.yml` 백업 schedule 2개(`40 21 * * *` = 06:40 KST, `20 22 * * *` = 07:20 KST)와 워크플로 주석, `ci.yml`의 push 금지 시간대 주석(06:00~08:00) 갱신 ④ M1-45 브리핑 마감을 ① 함수로 계산(06:50 고정값 제거)하고 `scripts/`의 06:30·06:50 주석 정리. 가드·슬롯 함수는 순수 함수 단위 테스트
 - [ ] M1-27 `runs.json` 기록 완성 (토큰·비용·건수·실패 소스·API 호출 수) + 실패 이슈 (FR-151, FR-152)
@@ -558,6 +558,7 @@ const Source = z.strictObject({
   summarize: z.boolean(),                            // 필수(기본값 없음). false = LLM 미전송, 원제목+링크(ai:false) 카드만 — 피드 제목·URL 무수정 (PRD §15 D22). D23 이후 모든 소스 false
   competitions: z.array(CompId).default([]),
   author: z.string().optional(),                     // 작성자 필터(기자 채널)
+  retentionDays: z.number().int().positive().optional(), // 소스별 보존 기간(일) — 없으면 §8.4 기본(90일 → 월별 병합). 지나면 수집 실행이 data/에서 그 출처를 지운다(대표 출처면 카드 삭제, M1-25). The Athletic 7 (PRD §15 D32, 2026-10-12)
   terms_checked: z.boolean(), robots_checked: z.boolean(), // terms_checked = note의 이용 방식(요약/원제목+링크)이 약관상 허용됨, 금지·불명확이면 false
   note: z.string().optional(),                       // 약관 확인 메모·날짜
 });
@@ -882,3 +883,4 @@ const UnknownNamesFile = z.object({ updatedAt: Iso, names: z.record(NameText, Un
 | 2026-10-12 | D0-07 혼합안 확정(PRD §15 D30 보강): 연결 줄 짝은 빌드 시 엄격 규칙 계산(스키마 변경 없음 — M1-31 반영), 375 대회 필터 진입점 없음(대회는 M2 리그 탭), 다크 티켓 벽돌 레드 유지, 필터 결과 머리기사 없음 | 사용자 결정 |
 | 2026-10-12 | 브레이크포인트·첫 로드 모션(PRD §15 D31): 1023 이하 1단·1024~1279 2단·1280 이상 3단(DR-01 갱신), 첫 로드 진입 모션 없음(DR-08 해석 갱신). M1-30 그리드 문구 갱신 | 사용자 결정 — D0-09 DESIGN.md 작성 중 혼합안·DR-01 차이 발견 |
 | 2026-10-12 | **D0 완료**: D0-01~D0-12 + 완료 기준 3개 충족. CI에 견본 검사 job(`test:specimen`, 배포 조건 아님) 추가, ci.yml 주석의 push 금지 시간 06:00~08:00로 정정. CLAUDE.md 현재 단계·DESIGN.md 설명·명령 목록(`test:specimen`) 갱신 | D0 완료 |
+| 2026-10-12 | M1-A 수집 범위·The Athletic 보관(PRD §15 D32): M1-05 목록 크롤러 ⏸(허용 사이트 0곳), M1-07 GDELT·M1-08 OG 수집기 ⏸(M1-46 재측정 통과 시 함께 착수), M1-06은 로더·허용 목록 필터만. The Athletic 카드 7일 보관 — `Source.retentionDays`(부록 A) 추가, 삭제는 M1-25 | 사용자 결정 |
