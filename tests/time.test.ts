@@ -27,6 +27,7 @@ import {
   isWithinKstWindow,
   kstDate,
   utcDate,
+  utcMonth,
   kstDayRangeUtc,
   kstMonth,
   kstParts,
@@ -160,6 +161,22 @@ describe("utcDate — UTC 날짜(API-Football 일 한도 리셋 00:00 UTC = 09:0
   it("Z가 아닌 값은 거부한다", () => {
     expect(() => utcDate("2026-10-13T09:00:00+09:00")).toThrow(TimeInputError);
     expect(() => utcDate("2026-10-13")).toThrow(TimeInputError);
+  });
+});
+
+describe("utcMonth — UTC 달(경기 기록 원장 data/matches/YYYY-MM.json = 킥오프 UTC 달, M1-48b)", () => {
+  it.each([
+    ["2026-10-31T23:59:59.999Z", "2026-10"], // KST로는 11-01 08:59 — 원장은 UTC 달
+    ["2026-11-01T00:00:00Z", "2026-11"],
+    ["2026-10-25T00:59:59Z", "2026-10"], // 유럽 서머타임 종료 직전
+    ["2027-03-28T01:00:00Z", "2027-03"], // 유럽 서머타임 시작 순간
+    ["2026-12-31T23:30:00Z", "2026-12"], // 해 경계
+  ])("%s → %s", (iso, expected) => {
+    expect(utcMonth(iso)).toBe(expected);
+  });
+
+  it("Z가 아닌 값은 거부한다", () => {
+    expect(() => utcMonth("2026-11-01T08:00:00+09:00")).toThrow(TimeInputError);
   });
 });
 

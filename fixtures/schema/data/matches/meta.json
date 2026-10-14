@@ -1,0 +1,17 @@
+{
+  "season": 2026,
+  "since": "2026-10-09",
+  "playerSince": {
+    "hwang-hee-chan": "2026-10-09",
+    "jens-castrop": "2026-10-09",
+    "jeong-woo-yeong": "2026-10-09",
+    "kim-min-jae": "2026-10-09",
+    "lee-jae-sung": "2026-10-09",
+    "lee-kang-in": "2026-10-09",
+    "seol-young-woo": "2026-10-11"
+  },
+  "gaps": [
+    { "date": "2026-10-10", "reason": "date-query", "cause": "network" },
+    { "date": "2026-10-11", "reason": "dropped", "matches": [1570410] }
+  ]
+}

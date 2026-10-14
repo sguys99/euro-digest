@@ -50,6 +50,7 @@ import type {
   FinishedMatch,
   MatchDuration,
   MatchScore,
+  MatchSlot,
   Score,
   StandingsRow,
   StandingsTable,
@@ -606,6 +607,11 @@ export interface ResultsSummary {
   skipped: ResultsSkipped;
   /** 대회별 진행 중 경기 수(창과 무관 — 순위표 확정 여부 판단용). 0인 대회는 키가 없다 */
   inProgress: Partial<Record<CompId, number>>;
+  /**
+   * results 밖의 대상 대회 경기(킥오프·id 순) — 미종료·연기·중단·점수 없음은 ft null, 창 밖 종료 경기는 최종 스코어. 경기 연결(D37)이
+   * "그 af 경기에 맞는 fd 경기가 하나"인지 셀 때 쓴다(M1-48b 리뷰 — 점수를 모르는 같은 칸 경기가 있으면 자동 연결하지 않는다).
+   */
+  others: MatchSlot[];
 }
 
 function teamRef(team: z.infer<typeof TeamSchema>): TeamRef | null {
@@ -687,6 +693,10 @@ export function toFinishedResults(
   };
   const inProgress: Partial<Record<CompId, number>> = {};
   const results: FinishedMatch[] = [];
+  const others: MatchSlot[] = [];
+  /** 점수를 쓸 수 있으면 최종 스코어, 아니면 null */
+  const ftOf = (m: FdMatch): Score | null =>
+    m.status === "FINISHED" ? (toMatchScore(m.score)?.ft ?? null) : null;
   for (const raw of rawMatches) {
     const parsed = FdMatchSchema.safeParse(raw);
     if (!parsed.success) {
@@ -695,16 +705,23 @@ export function toFinishedResults(
     }
     const m = parsed.data;
     const comp = compByCode.get(m.competition.code);
+    const other = (): void => {
+      if (comp) {
+        others.push({ matchId: m.id, comp, kickoff: m.utcDate, ft: ftOf(m) });
+      }
+    };
     if (m.status !== "FINISHED") {
       skipped.notFinished += 1;
       if (comp && IN_PROGRESS_STATUSES.has(m.status)) {
         inProgress[comp] = (inProgress[comp] ?? 0) + 1;
       }
+      other();
       continue;
     }
     const kickoffMs = Date.parse(m.utcDate);
     if (kickoffMs < start || kickoffMs >= end) {
       skipped.outOfWindow += 1;
+      other();
       continue;
     }
     if (!comp) {
@@ -716,6 +733,7 @@ export function toFinishedResults(
     const score = toMatchScore(m.score);
     if (!home || !away || !score) {
       skipped.invalid += 1;
+      other();
       continue;
     }
     results.push({
@@ -730,11 +748,13 @@ export function toFinishedResults(
       score,
     });
   }
-  results.sort(
-    (a, b) =>
-      Date.parse(a.kickoff) - Date.parse(b.kickoff) || a.matchId - b.matchId,
-  );
-  return { results, skipped, inProgress };
+  const byKickoffId = (
+    a: Pick<MatchSlot, "kickoff" | "matchId">,
+    b: Pick<MatchSlot, "kickoff" | "matchId">,
+  ) => Date.parse(a.kickoff) - Date.parse(b.kickoff) || a.matchId - b.matchId;
+  results.sort(byKickoffId);
+  others.sort(byKickoffId);
+  return { results, skipped, inProgress, others };
 }
 
 /** 이 단계의 경기가 순위표를 바꾸는가 — 녹아웃(PLAYOFFS·LAST_16 …)은 아니다, stage가 없으면 바꾼다고 본다 */
@@ -847,6 +867,8 @@ export interface FootballDataBriefData {
   results: FinishedMatch[];
   skipped: ResultsSkipped;
   inProgress: Partial<Record<CompId, number>>;
+  /** results 밖의 대상 대회 경기 — 경기 연결(D37) 후보 수 세기용(ResultsSummary.others) */
+  others: MatchSlot[];
   /** 받은 순위(설정 순서) */
   standings: CompStandings[];
   /** 순위를 받지 못한 대회 — 그 대회 순위만 빠지고 브리핑은 진행한다 */
@@ -907,6 +929,7 @@ export async function fetchBriefFootballData(
     results: summary.results,
     skipped: summary.skipped,
     inProgress: summary.inProgress,
+    others: summary.others,
     standings,
     standingsFailed,
   };

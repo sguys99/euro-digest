@@ -28,6 +28,7 @@ import {
   TeamIdsFileSchema,
   TransferWindowsFileSchema,
 } from "./configs";
+import { MatchLedgerFileSchema, MatchLedgerMetaSchema } from "./matches";
 import { NamesKoFileSchema } from "./names";
 import { NewsFileSchema } from "./news";
 import {
@@ -253,6 +254,23 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
     schema: AfPendingFileSchema,
     description:
       "API-Football 상세 미수신 대상 경기 — 다음 실행 재조회 (PRD §15 D27·D33, M1-48)",
+  }),
+  entry({
+    pattern: "data/matches/????-??.json",
+    kind: "data",
+    status: "confirmed",
+    schema: MatchLedgerFileSchema,
+    description:
+      "경기 기록 원장 — 득점·도움·포메이션 + 등록 한국 선수 행 (PRD §15 D33, M1-48b, 파일명 = 킥오프 UTC 달)",
+    expectedBaseName: (f) => f.month,
+  }),
+  entry({
+    pattern: "data/matches/meta.json",
+    kind: "data",
+    status: "confirmed",
+    schema: MatchLedgerMetaSchema,
+    description:
+      "경기 기록 원장 메타 — 집계 시작일·선수별 시작일·빠진 날 (PRD §15 D33, M1-48b)",
   }),
 ];
 

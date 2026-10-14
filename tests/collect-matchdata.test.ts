@@ -5,7 +5,10 @@
  * football-data 실패 = 그날 브리핑 생략·뉴스 발행(D24), 순위 일부 실패 = 브리핑 진행·partial, 단계 시간 예산(150초),
  * 유럽 서머타임 종료 직후 겨울 슬롯(07:10 KST)의 입력 창, 실행 기록 apiCalls.footballData·apiFootball,
  * API-Football(M1-48): 브리핑은 컷오프까지의 몫만 기다리고 나머지는 계속, 일일 카운터(runs 합) 상한 → 건너뜀·partial,
- * 이월 파일 쓰기(dry 제외), errors.plan → 이슈 사건 파일(source-broken), 짝짓기(대응표 확인 쌍만 연결).
+ * 이월 파일 쓰기(dry 제외), errors.plan → 이슈 사건 파일(source-broken), 짝짓기(대응표 확인 + D37 강한 증거).
+ * 경기 기록 원장(M1-48b): COLLECT_ENABLED(ledgerEnabled) 꺼짐/켜짐·dry·dev, 첫 정기 실행 since·playerSince, 원장의 af-<id>로
+ * 재요청 생략(known), 내용 같으면 다시 쓰지 않음, 빠진 날(skipped·date-query) 기록·치유, 원장 쓰기 실패 → 이월 목록에 다시,
+ * 브리핑 입력 goals(연결 경기만).
  */
 import {
   existsSync,
@@ -23,9 +26,12 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   AfPendingFileSchema,
+  MatchLedgerFileSchema,
+  MatchLedgerMetaSchema,
   RunsDevFileSchema,
   RunsFileSchema,
   SourcesFileSchema,
+  type MatchLedgerMeta,
 } from "@/lib/schema";
 
 import {
@@ -39,6 +45,7 @@ import { createLlmClient, type LlmClient } from "../scripts/lib/llm";
 import { SourceBrokenPayloadSchema } from "../scripts/lib/github-issues";
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
 import { isolateProvider } from "../scripts/lib/match-data";
+import { isIncompleteLedgerMatch } from "../scripts/lib/match-ledger";
 import {
   FOOTBALL_DATA_BASE_URL,
   FOOTBALL_DATA_STAGE_BUDGET_MS,
@@ -46,6 +53,7 @@ import {
 import { feedUserAgent, type FetchLike } from "../scripts/lib/rss";
 
 import {
+  afFixtureBody,
   afFixtureResponse,
   afPath,
   readAfFixture,
@@ -375,6 +383,7 @@ describe("isolateProvider·runStatus — 프로바이더 실패 격리", () => {
             unknownComp: 0,
           },
           inProgress: {},
+          others: [],
           standings: [],
           standingsFailed: Array.from({ length: failed }, () => ({
             comp: "EPL" as const,
@@ -424,15 +433,13 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
     );
     expect(outcome.brief.state).toBe("done");
     expect(llmCalls()).toBe(1);
-    // 이월 파일 — 중단(INT) 경기 1건
-    const pending = AfPendingFileSchema.parse(
-      JSON.parse(
-        readFileSync(path.join(dataDir, "cache", "af-pending.json"), "utf8"),
-      ),
+    // 이월 목록 — 중단(INT) 경기 1건. dev 실행은 파일을 쓰지 않는다(리뷰 권장 4 — prod·비dry만)
+    expect(
+      md.apiFootball.data.stage.pending.map((f) => [f.id, f.status, f.comp]),
+    ).toEqual([[1570410, "INT", "LALIGA"]]);
+    expect(existsSync(path.join(dataDir, "cache", "af-pending.json"))).toBe(
+      false,
     );
-    expect(pending.fixtures.map((f) => [f.id, f.status, f.comp])).toEqual([
-      [1570410, "INT", "LALIGA"],
-    ]);
     // 짝짓기 — 2026-10-10 종료 23경기 모두 대응표(team-ids.json)로 확인된 쌍
     expect(md.pairing?.links).toHaveLength(23);
     expect(md.pairing?.unconfirmed).toEqual([]);
@@ -449,9 +456,31 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
       apiCalls: 25,
       details: 23,
       pending: 1,
-      pendingWritten: true,
+      pendingWritten: false,
       stoppedBy: null,
     });
+  });
+
+  it("prod 실행(정기 운영 전 — 원장 쓰지 않음)은 이월 파일을 쓴다 — INT 1경기(원장이 없으니 불완전 항목은 올리지 않는다)", async () => {
+    const { deps, records } = makeDeps(
+      undefined,
+      withApiFootball({ env: "prod" }),
+    );
+    await runCollect(deps);
+    const pending = AfPendingFileSchema.parse(
+      JSON.parse(
+        readFileSync(path.join(dataDir, "cache", "af-pending.json"), "utf8"),
+      ),
+    );
+    expect(pending.fixtures.map((f) => [f.id, f.status, f.comp])).toEqual([
+      [1570410, "INT", "LALIGA"],
+    ]);
+    expect(
+      records.find(
+        (r) =>
+          r.event === "collect.matchdata.done" && r.provider === "api-football",
+      ),
+    ).toMatchObject({ pendingWritten: true });
   });
 
   it("브리핑 컷오프 — API-Football이 느리면 브리핑은 컷오프(4분)에 진행하고, 나머지는 브리핑 뒤에 끝난다(단계 예산 6분 → 이월·partial)", async () => {
@@ -556,10 +585,21 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
       "af 1575180 BUNDESLIGA FC Augsburg(170) 2-2 Bayern München(157) [FT] 3-4-2-1/4-2-3-1",
     );
     expect(summary).toContain("[dry] data/cache/af-pending.json — 쓰지 않음");
-    expect(summary).toContain("짝짓기: 연결 23(대응표 확인)");
+    expect(summary).toContain("짝짓기: 연결 23(대응표 23 · 증거 0)");
+    // 원장(M1-48b) — dry는 쓰지 않고 항목·한국 선수 행·이름 대조만 보여 준다
+    expect(summary).toContain(
+      "원장: 쓰지 않음(dry) · 항목 23경기(이미 받음 0 · 형식 오류 0 · 불완전 16) · 한국 선수 행 5",
+    );
+    expect(summary).toContain(
+      "· af 1575180 seol-young-woo start 62분 0골 0도움",
+    );
+    expect(summary).toContain(
+      "이름 대조(kim-ji-soo, id 없음): af 1557418 away — 후보 없음",
+    );
     expect(existsSync(path.join(dataDir, "cache", "af-pending.json"))).toBe(
       false,
     );
+    expect(existsSync(path.join(dataDir, "matches"))).toBe(false);
   });
 
   it("일일 카운터 — 오늘(UTC) dev 기록이 50회면 건너뜀(daily-cap): 요청 없음, 브리핑은 그대로, partial", async () => {
@@ -712,7 +752,10 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
       "{ broken",
       "utf8",
     );
-    const { deps, records } = makeDeps(undefined, withApiFootball());
+    const { deps, records } = makeDeps(
+      undefined,
+      withApiFootball({ env: "prod" }),
+    );
     await runCollect(deps);
     expect(
       records.find((r) => r.event === "collect.matchdata.pending-unreadable"),
@@ -828,5 +871,326 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(afCalls.length).toBeLessThanOrEqual(1);
     expect(fdCalls.length).toBeLessThanOrEqual(1);
+  });
+});
+
+// ─── 경기 기록 원장 (M1-48b) ──────────────────────────────────────────────
+
+describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
+  const ledgerFile = () => path.join(dataDir, "matches", "2026-10.json");
+  const metaFile = () => path.join(dataDir, "matches", "meta.json");
+  const readMeta = () =>
+    MatchLedgerMetaSchema.parse(JSON.parse(readFileSync(metaFile(), "utf8")));
+  /** 정기 운영 prod 실행(06:30 KST) — mock LLM */
+  const regular = (over: Partial<CollectDeps> = {}) =>
+    withApiFootball({
+      env: "prod",
+      ledgerEnabled: true,
+      now: () => NOW,
+      ...over,
+    });
+  const TRACKED_SLUGS = [
+    "hwang-hee-chan",
+    "jens-castrop",
+    "jeong-woo-yeong",
+    "kim-min-jae",
+    "lee-jae-sung",
+    "lee-kang-in",
+    "seol-young-woo",
+  ];
+  const writeMeta = (meta: MatchLedgerMeta) => {
+    mkdirSync(path.join(dataDir, "matches"), { recursive: true });
+    writeFileSync(metaFile(), `${JSON.stringify(meta, null, 2)}\n`, "utf8");
+  };
+
+  it("첫 정기 실행: 받은 23경기를 원장에 쓰고 since = 받은 가장 이른 날(2026-10-09), 추적 선수 7명 playerSince = since", async () => {
+    const { deps, records } = makeDeps(undefined, regular());
+    const outcome = await runCollect(deps);
+    const file = MatchLedgerFileSchema.parse(
+      JSON.parse(readFileSync(ledgerFile(), "utf8")),
+    );
+    expect(file.matches).toHaveLength(23);
+    const m = file.matches.find((x) => x.id === "af-1575180")!;
+    expect(m.korean).toEqual([
+      {
+        player: 2897,
+        side: "away",
+        status: "bench",
+        minutes: 0,
+        goals: 0,
+        assists: 0,
+      },
+      {
+        player: 197985,
+        side: "home",
+        status: "start",
+        minutes: 62,
+        goals: 0,
+        assists: 0,
+      },
+    ]);
+    expect(m.home.formation).toBe("3-4-2-1");
+    expect(readMeta()).toEqual({
+      season: 2026,
+      since: "2026-10-09",
+      playerSince: Object.fromEntries(
+        TRACKED_SLUGS.map((s) => [s, "2026-10-09"]),
+      ),
+      gaps: [],
+    });
+    expect(outcome.matchData?.ledger).toMatchObject({
+      mode: "write",
+      requeued: [],
+      applied: { state: "started", errors: [] },
+    });
+    expect(
+      records.find((r) => r.event === "collect.ledger.meta"),
+    ).toMatchObject({ created: true, since: "2026-10-09", written: true });
+    // 이월 목록 = INT 1경기 + 불완전 항목 16경기(합성 상세 — events·라인업 없음, 처음 받은 경기라 requeries 0)
+    const incomplete = file.matches
+      .filter(isIncompleteLedgerMatch)
+      .map((x) => Number(x.id.slice(3)));
+    expect(incomplete).toHaveLength(16);
+    expect(outcome.matchData?.ledger?.incomplete).toEqual(
+      [...incomplete].sort((a, b) => a - b),
+    );
+    const pending = AfPendingFileSchema.parse(
+      JSON.parse(
+        readFileSync(path.join(dataDir, "cache", "af-pending.json"), "utf8"),
+      ),
+    );
+    expect(pending.fixtures.map((f) => f.id).sort((a, b) => a - b)).toEqual(
+      [1570410, ...incomplete].sort((a, b) => a - b),
+    );
+    for (const f of pending.fixtures) {
+      if (f.id !== 1570410)
+        expect(f).toMatchObject({ status: "FT", requeries: 0 });
+    }
+    expect(outcome.status).toBe("success");
+  });
+
+  it("다음 실행(같은 날 백업): 완전한 7경기는 다시 받지 않고(known), 불완전 16경기만 이월 목록에 있어 다시 받는다 — 같은 내용이면 원장·메타는 그대로", async () => {
+    await runCollect(makeDeps(undefined, regular()).deps);
+    const ledgerText = readFileSync(ledgerFile(), "utf8");
+    const metaText = readFileSync(metaFile(), "utf8");
+    const second = makeDeps(
+      undefined,
+      regular({ now: () => new Date("2026-10-10T21:40:00.000Z") }),
+    );
+    const outcome = await runCollect(second.deps);
+    expect(second.afCalls.slice(0, 2)).toEqual([
+      "/fixtures?date=2026-10-10",
+      "/fixtures?date=2026-10-09",
+    ]);
+    expect(second.afCalls).toHaveLength(2 + 16);
+    for (const real of [1575180, 1575181, 1557418, 1570403]) {
+      expect(second.afCalls).not.toContain(`/fixtures?id=${real}`);
+    }
+    const af = outcome.matchData!.apiFootball;
+    if (af.state !== "done") throw new Error("unreachable");
+    expect(af.data.stage.counts.known).toBe(7);
+    expect(af.data.ledger.entries).toHaveLength(16);
+    expect(readFileSync(ledgerFile(), "utf8")).toBe(ledgerText);
+    expect(readFileSync(metaFile(), "utf8")).toBe(metaText);
+    // 재조회 횟수를 이어 센다(0 → 1)
+    const pending = AfPendingFileSchema.parse(
+      JSON.parse(
+        readFileSync(path.join(dataDir, "cache", "af-pending.json"), "utf8"),
+      ),
+    );
+    expect(
+      pending.fixtures.filter((f) => f.id !== 1570410).map((f) => f.requeries),
+    ).toEqual(Array.from({ length: 16 }, () => 1));
+  });
+
+  it("불완전 항목(라인업 없음 → 한국 선수 행 unknown)은 다시 받아 완전해지면 덮어쓰고 이월 목록에서 빠진다", async () => {
+    const noLineups = (url: string) => {
+      if (!url.endsWith("id=1575180")) return afFixtureResponse(url)!;
+      const doc = JSON.parse(afFixtureBody(1575180)) as {
+        response: Array<Record<string, unknown>>;
+      };
+      doc.response[0] = { ...doc.response[0], lineups: [], players: [] };
+      return new Response(JSON.stringify(doc), { status: 200 });
+    };
+    await runCollect(makeDeps(undefined, regular(), noLineups).deps);
+    const before = MatchLedgerFileSchema.parse(
+      JSON.parse(readFileSync(ledgerFile(), "utf8")),
+    ).matches.find((m) => m.id === "af-1575180")!;
+    expect(before.home.formation).toBeNull();
+    expect(before.korean.map((r) => r.status)).toEqual(["unknown", "unknown"]);
+    expect(isIncompleteLedgerMatch(before)).toBe(true);
+
+    const second = makeDeps(
+      undefined,
+      regular({ now: () => new Date("2026-10-10T21:40:00.000Z") }),
+    );
+    await runCollect(second.deps);
+    expect(second.afCalls).toContain("/fixtures?id=1575180");
+    const after = MatchLedgerFileSchema.parse(
+      JSON.parse(readFileSync(ledgerFile(), "utf8")),
+    ).matches.find((m) => m.id === "af-1575180")!;
+    expect(after.home.formation).toBe("3-4-2-1");
+    expect(after.korean.map((r) => r.status)).toEqual(["bench", "start"]);
+    const pending = AfPendingFileSchema.parse(
+      JSON.parse(
+        readFileSync(path.join(dataDir, "cache", "af-pending.json"), "utf8"),
+      ),
+    );
+    expect(pending.fixtures.map((f) => f.id)).not.toContain(1575180);
+  });
+
+  it("COLLECT_ENABLED 꺼짐(정기 운영 전 수동 prod 실행)·dev·dry는 원장을 쓰지 않는다 — 항목·한국 선수 행은 메모리·로그로", async () => {
+    const off = makeDeps(undefined, regular({ ledgerEnabled: false }));
+    const offOutcome = await runCollect(off.deps);
+    expect(existsSync(path.join(dataDir, "matches"))).toBe(false);
+    expect(
+      off.records.find((r) => r.event === "collect.ledger.skip"),
+    ).toMatchObject({ reason: "ledger-disabled", entries: 23, koreanRows: 5 });
+    expect(offOutcome.matchData?.ledger?.korean).toContainEqual({
+      matchId: 1570403,
+      player: "lee-kang-in",
+      status: "sub",
+      minutes: 33,
+      goals: 0,
+      assists: 0,
+    });
+    expect(
+      off.records.filter((r) => r.event === "collect.ledger.korean"),
+    ).toHaveLength(5);
+    expect(
+      off.records.find((r) => r.event === "collect.ledger.player-candidate"),
+    ).toMatchObject({
+      player: "kim-ji-soo",
+      match: 1557418,
+      lineup: true,
+      candidates: [],
+    });
+
+    rmSync(path.join(dataDir, "runs.json"), { force: true });
+    const dev = makeDeps(undefined, withApiFootball({ ledgerEnabled: true }));
+    await runCollect(dev.deps);
+    expect(
+      dev.records.find((r) => r.event === "collect.ledger.skip"),
+    ).toMatchObject({ reason: "dev" });
+
+    const dry = makeDeps(undefined, regular({ dry: true }));
+    await runCollect(dry.deps);
+    expect(
+      dry.records.find((r) => r.event === "collect.ledger.skip"),
+    ).toMatchObject({ reason: "dry" });
+    expect(existsSync(path.join(dataDir, "matches"))).toBe(false);
+  });
+
+  it("원장이 있는데 API-Football 단계가 돌지 않으면(키 없음) 그날 조회 날짜를 빠진 날(skipped)로 — 나중 실행이 받으면 지운다", async () => {
+    const meta: MatchLedgerMeta = {
+      season: 2026,
+      since: "2026-10-01",
+      playerSince: Object.fromEntries(
+        TRACKED_SLUGS.map((s) => [s, "2026-10-01"]),
+      ),
+      gaps: [],
+    };
+    writeMeta(meta);
+    const skipped = makeDeps(undefined, regular({ apiFootballApiKey: "" }));
+    const outcome = await runCollect(skipped.deps);
+    expect(outcome.matchData?.apiFootball).toMatchObject({
+      state: "skipped",
+      reason: "no-api-key",
+    });
+    // 오늘(UTC 10-10) 조회만 첫 기회 — 어제(10-09)는 마지막 기회라 새 공백을 만들지 않는다
+    expect(readMeta().gaps).toEqual([
+      { date: "2026-10-10", reason: "skipped", cause: "no-api-key" },
+    ]);
+    // 다음 실행이 그 날짜를 받으면 치유
+    const next = makeDeps(undefined, regular());
+    await runCollect(next.deps);
+    expect(readMeta().gaps).toEqual([]);
+    expect(readMeta().since).toBe("2026-10-01"); // since는 바꾸지 않는다
+  });
+
+  it("오늘 날짜 조회 실패(5xx 재시도까지) → 빠진 날 date-query(http), partial", async () => {
+    writeMeta({ season: 2026, since: "2026-10-01", playerSince: {}, gaps: [] });
+    const { deps } = makeDeps(undefined, regular(), (url) =>
+      url.endsWith("date=2026-10-10")
+        ? new Response("busy", { status: 503 })
+        : afFixtureResponse(url)!,
+    );
+    const outcome = await runCollect(deps);
+    expect(readMeta().gaps).toEqual([
+      { date: "2026-10-10", reason: "date-query", cause: "http" },
+    ]);
+    // 이번 실행이 받은 날(10-09)부터 추적 선수 시작
+    expect(readMeta().playerSince["kim-min-jae"]).toBe("2026-10-09");
+    expect(outcome.status).toBe("partial");
+  });
+
+  it("어제 날짜 조회 실패(마지막 기회)는 새 빠진 날을 만들지 않는다 — 실행 상태는 partial", async () => {
+    writeMeta({ season: 2026, since: "2026-10-01", playerSince: {}, gaps: [] });
+    const { deps } = makeDeps(undefined, regular(), (url) =>
+      url.endsWith("date=2026-10-09")
+        ? new Response("busy", { status: 503 })
+        : afFixtureResponse(url)!,
+    );
+    const outcome = await runCollect(deps);
+    expect(readMeta().gaps).toEqual([]);
+    expect(outcome.status).toBe("partial");
+  });
+
+  it("원장을 쓰지 못하면(달·메타 읽기 실패) 받은 경기를 이월 목록에 다시 넣는다 — partial", async () => {
+    // data/matches 자리에 파일 — 폴더로 쓸 수 없다
+    writeFileSync(path.join(dataDir, "matches"), "not a dir", "utf8");
+    const { deps, records } = makeDeps(undefined, regular());
+    const outcome = await runCollect(deps);
+    expect(
+      records.find((r) => r.event === "collect.ledger.read-fail"),
+    ).toBeDefined();
+    const ledger = outcome.matchData!.ledger!;
+    expect(ledger.applied?.state).toBe("meta-unreadable");
+    expect(ledger.requeued).toHaveLength(23);
+    const pending = AfPendingFileSchema.parse(
+      JSON.parse(
+        readFileSync(path.join(dataDir, "cache", "af-pending.json"), "utf8"),
+      ),
+    );
+    expect(pending.fixtures).toHaveLength(24); // 23 + INT
+    expect(pending.fixtures.find((f) => f.id === 1575180)).toMatchObject({
+      status: "FT",
+      requeries: 1,
+    });
+    expect(outcome.status).toBe("partial");
+  });
+
+  it("브리핑 입력 goals — 브리핑 몫과 연결된 경기 중 득점 목록이 완전한 경기만(나머지 null)", async () => {
+    const { deps, printed, records } = makeDeps(
+      undefined,
+      withApiFootball({ dry: true }),
+    );
+    await runCollect(deps);
+    const block = printed.find((p) => p.startsWith("── [dry] 브리핑 입력"))!;
+    const input = JSON.parse(block.slice(block.indexOf("\n") + 1)) as {
+      matches: Array<{ id: string; goals: unknown[] | null }>;
+    };
+    const augsburg = input.matches.find((m) => m.id === "m565819")!;
+    expect(augsburg.goals).toEqual([
+      { min: "1", team: "Augsburg", player: "Robin Fellhauer" },
+      {
+        min: "55",
+        team: "Bayern",
+        player: "Ismael Saibari",
+        assist: "Harry Kane",
+      },
+      expect.objectContaining({ min: "64", team: "Augsburg" }),
+      expect.objectContaining({ min: "80" }),
+    ]);
+    const done = records.find((r) => r.event === "summarize.input.done")!;
+    expect(done).toMatchObject({
+      afBriefDetails: 23,
+      linkedByTeamIds: 23,
+      linkedByEvidence: 0,
+    });
+    // 합성 상세(fixture 파일 없음 — events 없음)는 득점 불완전 → null. 0-0 경기는 빈 배열
+    const filled = input.matches.filter((m) => m.goals !== null).length;
+    expect(done.goalsFilled).toBe(filled);
+    expect(Number(done.goalsFilled) + Number(done.goalsIncomplete)).toBe(23);
   });
 });

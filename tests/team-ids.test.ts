@@ -33,7 +33,7 @@ import {
   toMatchDetail,
 } from "../scripts/lib/providers/api-football";
 import { toFinishedResults } from "../scripts/lib/providers/football-data";
-import type { MatchDetail } from "../scripts/lib/match-data";
+import type { FinishedMatch, MatchDetail } from "../scripts/lib/match-data";
 import {
   buildTeamIdsDraft,
   FixtureIndexSchema,
@@ -519,7 +519,7 @@ describe("linkMatchDetails — football-data 종료 경기 ↔ API-Football 상�
   const compByLeague = new Map<number, CompId>(
     COMPETITIONS.map((c) => [c.apiFootballLeagueId, c.id]),
   );
-  const fdResults = toFinishedResults(
+  const fdSummary = toFinishedResults(
     (
       readJson(
         "fixtures/football/football-data/matches-6comps-2026-10-10.json",
@@ -527,7 +527,8 @@ describe("linkMatchDetails — football-data 종료 경기 ↔ API-Football 상�
     ).matches,
     COMPETITIONS,
     { start: "2026-10-10T00:00:00.000Z", end: "2026-10-11T00:00:00.000Z" },
-  ).results;
+  );
+  const fdResults = fdSummary.results;
   const details: MatchDetail[] = readJsonDir(
     "fixtures/football/api-football",
     "fixtures-id-",
@@ -539,7 +540,7 @@ describe("linkMatchDetails — football-data 종료 경기 ↔ API-Football 상�
     return r.kind === "finished" ? [r.detail] : [];
   });
 
-  it("대응표로 두 팀이 확인된 쌍만 연결(득점자를 붙여도 됨) — 2026-10-10 상세 7경기 모두 연결", () => {
+  it("대응표로 두 팀이 확인된 쌍은 team-ids 연결 — 2026-10-10 상세 7경기 모두", () => {
     const result = linkMatchDetails(
       fdResults,
       details,
@@ -549,21 +550,35 @@ describe("linkMatchDetails — football-data 종료 경기 ↔ API-Football 상�
     expect(linked).toHaveLength(7);
     expect(linked).toContainEqual([565819, 1575180]);
     for (const l of result.links) {
+      expect(l.linkedBy).toBe("team-ids");
       expect(l.fd.score.ft).toEqual(l.af.score.ft);
       expect(l.fd.comp).toBe(l.af.comp);
     }
     expect(result.unconfirmed).toEqual([]);
+    expect(result.autoLinked).toEqual([]);
     // 상세가 없는 fd 종료 경기(16)는 짝 없음 — 득점자 없이 진행
     expect(result.report.unmatched).toHaveLength(fdResults.length - 7);
   });
 
-  it("대응표에 없는 팀이 낀 쌍은 연결하지 않고(unconfirmed) 후보로만 낸다", () => {
+  it("D37: 대응표에 없는 팀(아우크스부르크)이 낀 쌍도 강한 증거면 자동 연결(evidence) — 팀 쌍은 autoLinked(configs는 그대로)", () => {
     const { augsburg: _drop, ...rest } = TABLE;
     void _drop;
     const result = linkMatchDetails(fdResults, details, buildTeamIdIndex(rest));
-    expect(result.links.map((l) => l.af.matchId)).not.toContain(1575180);
-    expect(result.unconfirmed).toEqual([
-      expect.objectContaining({ fdMatchId: 565819, afMatchId: 1575180 }),
+    const link = result.links.find((l) => l.af.matchId === 1575180)!;
+    expect(link).toMatchObject({ linkedBy: "evidence" });
+    expect(link.fd.matchId).toBe(565819);
+    expect(result.unconfirmed).toEqual([]);
+    // 바이에른(아는 쌍)은 빠지고 아우크스부르크만 new 후보 — 자동 연결 근거 경기와 함께
+    expect(result.autoLinked).toEqual([
+      {
+        fd: { id: 16, name: "Augsburg" },
+        af: { id: 170, name: "FC Augsburg" },
+        kind: "new",
+        slug: null,
+        evidence: [
+          expect.objectContaining({ fdMatchId: 565819, afMatchId: 1575180 }),
+        ],
+      },
     ]);
     expect(result.report.candidates).toEqual([
       expect.objectContaining({
@@ -572,6 +587,7 @@ describe("linkMatchDetails — football-data 종료 경기 ↔ API-Football 상�
         af: expect.objectContaining({ id: 170 }),
       }),
     ]);
+    expect(rest).not.toHaveProperty("augsburg"); // 대응표 객체를 고치지 않는다
   });
 
   it("근거 약했던 쾰른·프라이부르크(M1-44 메모) — 2026-10-11 종료 경기로 대응표 쌍이 확인된다(M1-48 실데이터)", () => {
@@ -589,9 +605,11 @@ describe("linkMatchDetails — football-data 종료 경기 ↔ API-Football 상�
       details.filter((d) => d.matchId === 1575183 || d.matchId === 1575179),
       buildTeamIdIndex(TABLE),
     );
-    expect(result.links.map((l) => [l.fd.matchId, l.af.matchId])).toEqual([
-      [565814, 1575183],
-      [565816, 1575179],
+    expect(
+      result.links.map((l) => [l.fd.matchId, l.af.matchId, l.linkedBy]),
+    ).toEqual([
+      [565814, 1575183, "team-ids"],
+      [565816, 1575179, "team-ids"],
     ]);
     expect(result.unconfirmed).toEqual([]);
     expect(result.report.conflicts).toEqual([]);
@@ -599,10 +617,329 @@ describe("linkMatchDetails — football-data 종료 경기 ↔ API-Football 상�
     expect(TABLE.freiburg).toMatchObject({ fd: 17, af: 160 });
   });
 
-  it("빈 대응표면 연결 0 — 모든 쌍이 후보(실행은 계속)", () => {
+  it("빈 대응표 — 후보가 하나뿐인 7쌍은 모두 증거로 연결(팀 쌍 14개 autoLinked), autoLink:false면 모두 미확인(disabled)", () => {
     const result = linkMatchDetails(fdResults, details);
-    expect(result.links).toEqual([]);
-    expect(result.unconfirmed).toHaveLength(7);
+    expect(result.links).toHaveLength(7);
+    expect(result.links.every((l) => l.linkedBy === "evidence")).toBe(true);
+    expect(result.autoLinked).toHaveLength(14);
+    const off = linkMatchDetails(fdResults, details, EMPTY_TEAM_ID_INDEX, {
+      autoLink: false,
+    });
+    expect(off.links).toEqual([]);
+    expect(off.unconfirmed.map((u) => u.reason)).toEqual(
+      Array.from({ length: 7 }, () => "disabled"),
+    );
+  });
+
+  it("빈 대응표 + 날짜 조회 목록(미종료 포함)·fd 결과 밖 경기로 후보를 세도 2026-10-10 상세 7경기는 후보 하나·점수 모르는 경기 없음", () => {
+    const listed = (
+      readJson(
+        "fixtures/football/api-football/fixtures-date-2026-10-10.json",
+      ) as { response: unknown[] }
+    ).response.flatMap((raw) => {
+      const f = toAfFixture(raw);
+      const p = f ? afFixtureToPairing(f, compByLeague) : null;
+      return p ? [p] : [];
+    });
+    expect(listed.length).toBeGreaterThan(details.length);
+    // 중단(INT) 라리가 경기는 점수를 모르는 후보(ft null)로 들어온다
+    expect(listed.find((p) => p.matchId === 1570410)?.ft).toBeNull();
+    const result = linkMatchDetails(fdResults, details, EMPTY_TEAM_ID_INDEX, {
+      afUniverse: listed,
+      fdUniverse: fdSummary.others,
+    });
+    expect(result.links).toHaveLength(7);
+    expect(result.unconfirmed).toEqual([]);
+  });
+});
+
+// ─── D37 강한 증거 — 합성 경기 ──────────────────────────────────────────
+
+const KICKOFF = "2026-10-17T14:00:00.000Z";
+
+function finished(
+  matchId: number,
+  home: [number, string],
+  away: [number, string],
+  ft: [number, number],
+  over: Partial<FinishedMatch> = {},
+): FinishedMatch {
+  return {
+    provider: "football-data",
+    matchId,
+    comp: "EPL",
+    kickoff: KICKOFF,
+    matchday: 8,
+    stage: "REGULAR_SEASON",
+    home: { id: home[0], name: home[1], fullName: null },
+    away: { id: away[0], name: away[1], fullName: null },
+    score: {
+      ft: { home: ft[0], away: ft[1] },
+      ht: null,
+      regular: { home: ft[0], away: ft[1] },
+      pens: null,
+      duration: "REGULAR",
+    },
+    ...over,
+  };
+}
+
+function detailOf(
+  matchId: number,
+  home: [number, string],
+  away: [number, string],
+  ft: [number, number],
+  over: Partial<MatchDetail> = {},
+): MatchDetail {
+  return {
+    provider: "api-football",
+    matchId,
+    leagueId: 39,
+    leagueName: "Premier League",
+    comp: "EPL",
+    season: 2026,
+    round: "Regular Season - 8",
+    kickoff: KICKOFF,
+    status: "FT",
+    home: { id: home[0], name: home[1], fullName: null },
+    away: { id: away[0], name: away[1], fullName: null },
+    score: {
+      ft: { home: ft[0], away: ft[1] },
+      ht: null,
+      regular: { home: ft[0], away: ft[1] },
+      pens: null,
+      duration: "REGULAR",
+    },
+    goals: [],
+    goalsComplete: false,
+    lineups: { home: null, away: null },
+    fetchedAt: "2026-10-17T22:10:00.000Z",
+    ...over,
+  };
+}
+
+describe("linkMatchDetails — D37 같은 칸에 점수를 모르는 경기가 있으면 자동 연결하지 않는다(M1-48b 리뷰)", () => {
+  // X = 진짜 짝(af에서는 아직 진행 중) · Y = 같은 대회·시각·스코어의 다른 경기(af에서 끝남, fd에서는 아직 진행 중)
+  const fdX = finished(11, [1101, "X Home"], [1102, "X Away"], [1, 0]);
+  const afY = detailOf(911, [801, "Y Home"], [802, "Y Away"], [1, 0]);
+  const afXLive = {
+    matchId: 910,
+    comp: "EPL" as const,
+    kickoff: "2026-10-17T14:02:00.000Z",
+    ft: null,
+  };
+  const fdYLive = {
+    matchId: 12,
+    comp: "EPL" as const,
+    kickoff: KICKOFF,
+    ft: null,
+  };
+
+  it("후보 수만 세면 X↔Y로 잘못 잇는다 — 날짜 목록·fd 밖 경기를 넘기지 않은 경우(이전 동작 재현)", () => {
+    expect(linkMatchDetails([fdX], [afY]).links).toEqual([
+      expect.objectContaining({ linkedBy: "evidence" }),
+    ]);
+  });
+
+  it("af 날짜 목록에 같은 칸의 미종료 경기(X)가 있으면 unknown-candidate", () => {
+    const r = linkMatchDetails([fdX], [afY], EMPTY_TEAM_ID_INDEX, {
+      afUniverse: [afXLive],
+    });
+    expect(r.links).toEqual([]);
+    expect(r.unconfirmed).toEqual([
+      expect.objectContaining({
+        fdMatchId: 11,
+        afMatchId: 911,
+        reason: "unknown-candidate",
+      }),
+    ]);
+    expect(r.autoLinked).toEqual([]);
+  });
+
+  it("fd 쪽에 같은 칸의 미종료 경기(Y)가 있어도 unknown-candidate", () => {
+    const r = linkMatchDetails([fdX], [afY], EMPTY_TEAM_ID_INDEX, {
+      fdUniverse: [fdYLive],
+    });
+    expect(r.links).toEqual([]);
+    expect(r.unconfirmed.map((u) => u.reason)).toEqual(["unknown-candidate"]);
+  });
+
+  it("연기·중단(점수 없음)도 같다 · 칸이 다르면(대회·킥오프 ±5분 밖) 막지 않는다 · 대응표 연결은 영향 없음", () => {
+    const postponed = { ...afXLive, matchId: 912 };
+    expect(
+      linkMatchDetails([fdX], [afY], EMPTY_TEAM_ID_INDEX, {
+        afUniverse: [postponed],
+      }).unconfirmed.map((u) => u.reason),
+    ).toEqual(["unknown-candidate"]);
+    expect(
+      linkMatchDetails([fdX], [afY], EMPTY_TEAM_ID_INDEX, {
+        afUniverse: [
+          { ...afXLive, comp: "UCL" },
+          { ...afXLive, matchId: 913, kickoff: "2026-10-17T14:06:00.000Z" },
+        ],
+        fdUniverse: [{ ...fdYLive, kickoff: "2026-10-17T16:00:00.000Z" }],
+      }).links,
+    ).toEqual([expect.objectContaining({ linkedBy: "evidence" })]);
+    const index = buildTeamIdIndex({
+      xh: { fd: 1101, af: 801 },
+      xa: { fd: 1102, af: 802 },
+    });
+    expect(
+      linkMatchDetails([fdX], [afY], index, {
+        afUniverse: [afXLive],
+        fdUniverse: [fdYLive],
+      }).links,
+    ).toEqual([expect.objectContaining({ linkedBy: "team-ids" })]);
+  });
+
+  it("같은 칸의 다른 종료 경기는 스코어가 다르면 후보가 아니다(점수를 아는 경기)", () => {
+    const r = linkMatchDetails([fdX], [afY], EMPTY_TEAM_ID_INDEX, {
+      afUniverse: [{ ...afXLive, ft: { home: 2, away: 2 } }],
+      fdUniverse: [{ ...fdYLive, ft: { home: 0, away: 3 } }],
+    });
+    expect(r.links).toEqual([
+      expect.objectContaining({ linkedBy: "evidence" }),
+    ]);
+  });
+});
+
+describe("linkMatchDetails — D37 강한 증거(같은 대회·킥오프 ±5분·스코어 일치·후보 하나)", () => {
+  const fdA = finished(1, [1001, "Sunderland"], [1002, "Leeds"], [1, 0]);
+  const afA = detailOf(901, [746, "Sunderland"], [63, "Leeds"], [1, 0], {
+    kickoff: "2026-10-17T14:03:00.000Z", // ±5분 안
+  });
+
+  it("후보가 하나면 연결 — 킥오프 3분 차, 대응표 없음", () => {
+    const r = linkMatchDetails([fdA], [afA]);
+    expect(
+      r.links.map((l) => [l.fd.matchId, l.af.matchId, l.linkedBy]),
+    ).toEqual([[1, 901, "evidence"]]);
+    expect(r.autoLinked.map((a) => [a.fd.id, a.af.id, a.kind])).toEqual([
+      [1001, 746, "new"],
+      [1002, 63, "new"],
+    ]);
+  });
+
+  it("같은 대회·시각·스코어 af 경기가 둘이면(하나는 상세 없이 날짜 목록에만) 연결하지 않는다(af-candidates)", () => {
+    const other = {
+      matchId: 902,
+      comp: "EPL" as const,
+      kickoff: KICKOFF,
+      home: { id: 34, name: "Newcastle" },
+      away: { id: 51, name: "Brighton" },
+      ft: { home: 1, away: 0 },
+    };
+    const r = linkMatchDetails([fdA], [afA], EMPTY_TEAM_ID_INDEX, {
+      afUniverse: [other],
+    });
+    expect(r.links).toEqual([]);
+    expect(r.unconfirmed).toEqual([
+      expect.objectContaining({
+        fdMatchId: 1,
+        afMatchId: 901,
+        reason: "af-candidates",
+      }),
+    ]);
+    expect(r.autoLinked).toEqual([]);
+    // 두 af 경기 모두 상세가 있으면 짝짓기 자체가 모호(ambiguous)
+    const both = linkMatchDetails(
+      [fdA],
+      [afA, detailOf(902, [34, "Newcastle"], [51, "Brighton"], [1, 0])],
+    );
+    expect(both.links).toEqual([]);
+    expect(both.report.ambiguous).toEqual([1]);
+  });
+
+  it("그 af 경기에 맞는 fd 경기가 둘이면 연결하지 않는다(fd-candidates) — 상세를 받지 못한 다른 경기에 잘못 붙지 않게", () => {
+    const fdB = finished(2, [1003, "Newcastle"], [1004, "Brighton"], [1, 0]);
+    const r = linkMatchDetails([fdA, fdB], [afA]);
+    expect(r.links).toEqual([]);
+    expect(r.unconfirmed).toEqual([
+      expect.objectContaining({
+        fdMatchId: 1,
+        afMatchId: 901,
+        reason: "fd-candidates",
+      }),
+    ]);
+    // 대응표가 두 팀을 확인하면 대응표 연결은 그대로
+    const index = buildTeamIdIndex({
+      sunderland: { fd: 1001, af: 746 },
+      leeds: { fd: 1002, af: 63 },
+    });
+    expect(linkMatchDetails([fdA, fdB], [afA], index).links).toEqual([
+      expect.objectContaining({ linkedBy: "team-ids" }),
+    ]);
+  });
+
+  it("스코어 불일치 — 최종 스코어가 다르면 짝 없음, 끝난 방식·승부차기 스코어가 다르면 연결하지 않음(score)", () => {
+    expect(
+      linkMatchDetails(
+        [fdA],
+        [{ ...afA, score: { ...afA.score, ft: { home: 2, away: 0 } } }],
+      ).report.unmatched,
+    ).toEqual([1]);
+    const fdPen = finished(3, [1001, "Sunderland"], [1002, "Leeds"], [1, 1], {
+      comp: "UCL",
+      score: {
+        ft: { home: 1, away: 1 },
+        ht: null,
+        regular: null,
+        pens: { home: 4, away: 3 },
+        duration: "PENALTY_SHOOTOUT",
+      },
+    });
+    const afPen = detailOf(903, [746, "Sunderland"], [63, "Leeds"], [1, 1], {
+      comp: "UCL",
+      status: "PEN",
+      score: {
+        ft: { home: 1, away: 1 },
+        ht: null,
+        regular: null,
+        pens: { home: 3, away: 4 },
+        duration: "PENALTY_SHOOTOUT",
+      },
+    });
+    expect(linkMatchDetails([fdPen], [afPen]).unconfirmed).toEqual([
+      expect.objectContaining({ reason: "score" }),
+    ]);
+    const afFt = detailOf(903, [746, "Sunderland"], [63, "Leeds"], [1, 1], {
+      comp: "UCL",
+    });
+    expect(linkMatchDetails([fdPen], [afFt]).unconfirmed).toEqual([
+      expect.objectContaining({ reason: "score" }),
+    ]);
+    const afSame = {
+      ...afPen,
+      score: { ...afPen.score, pens: { home: 4, away: 3 } },
+    };
+    expect(linkMatchDetails([fdPen], [afSame]).links).toEqual([
+      expect.objectContaining({ linkedBy: "evidence" }),
+    ]);
+  });
+
+  it("같은 fd 팀이 이번 실행에서 서로 다른 af 팀과 짝지어지면(후보끼리 어긋남) 그 경기들은 연결하지 않는다(conflict)", () => {
+    const fd2 = finished(4, [1001, "Sunderland"], [1005, "Fulham"], [2, 0], {
+      kickoff: "2026-10-18T14:00:00.000Z",
+    });
+    const af2 = detailOf(904, [999, "Someone Else"], [36, "Fulham"], [2, 0], {
+      kickoff: "2026-10-18T14:00:00.000Z",
+    });
+    const r = linkMatchDetails([fdA, fd2], [afA, af2]);
+    expect(r.links).toEqual([]);
+    expect(r.unconfirmed.map((u) => [u.fdMatchId, u.reason])).toEqual([
+      [1, "conflict"],
+      [4, "conflict"],
+    ]);
+    expect(r.autoLinked).toEqual([]);
+  });
+
+  it("대응표와 어긋나는 쌍(대응표 오류 가능성)은 짝짓지 않는다 — 증거가 있어도 연결하지 않음", () => {
+    const index = buildTeamIdIndex({ sunderland: { fd: 1001, af: 555 } });
+    const r = linkMatchDetails([fdA], [afA], index);
+    expect(r.links).toEqual([]);
+    expect(r.report.conflicts).toEqual([
+      expect.objectContaining({ kind: "table" }),
+    ]);
   });
 });
 

@@ -14,12 +14,17 @@
  *        (단계 예산 6분, 브리핑 컷오프 4분, 하루 ≤ 60회 우리 쪽 카운터 — api-football-stage.ts·api-football-plan.ts).
  *        미종료·미수신 경기는 data/cache/af-pending.json으로 이월한다(dry는 쓰지 않음). errors.plan·일 한도·그 밖의 errors는
  *        소스 이슈 사건(`source:api-football`)으로 사건 파일에 더한다(이슈는 collect.yml 다음 단계가 만든다).
+ *      - 경기 기록 원장(M1-48b, D33 — scripts/lib/match-ledger.ts): 받은 상세 → `data/matches/YYYY-MM.json`(득점·도움·포메이션 +
+ *        등록 한국 선수 행) + `meta.json`(since·playerSince·gaps). 원장의 af-<id>는 이미 받은 경기라 다시 받지 않는다(모든 실행이
+ *        읽는다). **쓰기는 정기 운영이 켜진 prod 실행만**(CollectDeps.ledgerEnabled = COLLECT_ENABLED) — dry·dev·정기 운영 전 실행은
+ *        항목·한국 선수 행·이름 후보를 메모리에서 만들어 로그로만 남긴다. 원장에 넣지 못한 경기는 이월 목록에 다시 넣는다.
  *      병렬 근거: 뉴스(예산 90초)·football-data·API-Football은 호스트가 모두 달라 서로의 한도를 쓰지 않고, 겨울(07:10 수집 →
  *      07:20 브리핑 마감)에 뉴스 시간만큼 브리핑 경기를 더 받을 수 있다. 뉴스가 실패하면 취소 신호로 경기 데이터의 새 요청을
  *      멈추고(보내는 중인 요청 1건까지) 브리핑(LLM)은 부르지 않는다 — 커밋되지 않는 실행의 LLM 비용·API-Football 한도 낭비를
  *      최소로 한다(낭비 상한 = 뉴스가 끝날 때까지 보낸 요청, 최대 약 12건).
  *   ③ 브리핑: football-data 종료 경기 → 정형 입력 → `callSingle` 1요청 → **출력은 로그만**(저장 M1-19). 브리핑은
- *      football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층 — 득점자 연결은 M1-48b·M1-19)을 기다린 뒤 시작하고,
+ *      football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층)을 기다린 뒤 시작하고, 둘을 이어(대응표 확인 + D37
+ *      강한 증거 — team-ids.ts linkMatchDetails) 득점 목록이 완전한 경기만 입력 `goals`에 득점자를 넣는다(M1-48b),
  *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
  *      football-data 단계가 실패하면 그날 브리핑만 생략하고 뉴스는 발행한다(D24). 순위 실패는 그 대회 순위만 빠진다(partial).
  *   ④ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
@@ -43,7 +48,7 @@
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
  * 다음 작업이 갈아끼울 자리: 중복 제거~점수화(M1-12~14) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
- * 계절별 마감(M1-47 — 브리핑 컷오프 상수) · 경기 원장·한국 선수 행·브리핑 득점자(M1-48b).
+ * 계절별 마감(M1-47 — 브리핑 컷오프 상수) · 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서).
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -51,7 +56,9 @@ import path from "node:path";
 import {
   CompetitionsFileSchema,
   KoreanPlayersFileSchema,
+  type AfPendingEntry,
   type CompetitionsFile,
+  type LedgerMatch,
   type NewsFile,
   type RunEnv,
   type RunLog,
@@ -69,11 +76,14 @@ import {
   buildAfTargetConfig,
   isDevQuietHours,
   readAfPending,
+  requeueAfPending,
   resolveApiFootballMaxCalls,
   sameAfPending,
   serializeAfPending,
   writeAfPending,
   type AfCallAllowance,
+  type AfDropped,
+  type AfPendingUpdate,
   type AfTargetBuild,
 } from "./api-football-plan";
 import {
@@ -86,6 +96,7 @@ import {
 } from "./api-football-stage";
 
 import {
+  BRIEF_MAX_MATCHES,
   briefInputWindow,
   buildBriefInput,
   serializeBriefInput,
@@ -135,7 +146,28 @@ import {
   type LlmResult,
 } from "./llm";
 import type { Logger } from "./logger";
-import { isolateProvider, type ProviderOutcome } from "./match-data";
+import {
+  isolateProvider,
+  type MatchDetail,
+  type ProviderOutcome,
+} from "./match-data";
+import {
+  afIdOfKey,
+  applyLedger,
+  buildLedgerEntries,
+  isIncompleteLedgerMatch,
+  koreanPlayerTargets,
+  ledgerMonthsAround,
+  ledgerPlanKnown,
+  ledgerWriteMode,
+  readLedgerWindow,
+  type KoreanNameCheck,
+  type KoreanPlayerTargets,
+  type LedgerApplyResult,
+  type LedgerSettleInput,
+  type LedgerWindowRead,
+  type LedgerWriteMode,
+} from "./match-ledger";
 import {
   buildCard,
   buildNewsFile,
@@ -174,9 +206,11 @@ import {
 } from "./source-health";
 import {
   buildTeamIdIndex,
+  EMPTY_TEAM_ID_INDEX,
   linkMatchDetails,
   loadTeamIds,
   type MatchLinkResult,
+  type TeamIdIndex,
 } from "./team-ids";
 import {
   loadSources,
@@ -265,6 +299,11 @@ export interface CollectDeps {
   apiFootballApiKey?: string;
   /** API_FOOTBALL_MAX_CALLS 원문(선택, 실행당 호출 상한 — dry·개발 실측용). 형식이 틀리면 API-Football 단계만 실패 */
   apiFootballMaxCalls?: string;
+  /**
+   * 정기 운영이 켜졌는가(저장소 변수 `COLLECT_ENABLED == 'true'` — collect.yml이 수집 단계 env로 넘긴다). 경기 기록 원장
+   * (`data/matches`, M1-48b)은 이 값이 true인 prod·비dry 실행만 쓴다(scripts/lib/match-ledger.ts `ledgerWriteMode`). 기본 false.
+   */
+  ledgerEnabled?: boolean;
   /** API-Football 호출 간격·재시도 대기(테스트 주입용) — 기본 setTimeout */
   apiFootballSleep?: (ms: number) => Promise<void>;
   /** API-Football 시계(ms) — 간격·단계 예산·브리핑 컷오프 계산(테스트 주입용). 기본 Date.now */
@@ -321,6 +360,8 @@ export interface ApiFootballData {
   rate: AfRateHeaders;
   /** 활성 한국 선수 소속팀인데 team-ids.json `af`가 없는 팀 */
   unmappedTeams: string[];
+  /** 경기 기록 원장(M1-48b) — 항목·한국 선수 행·이름 후보(메모리)와 쓰기 결과 */
+  ledger: LedgerOutcome;
   pendingFile: {
     /** 읽기·형식 오류(빈 목록으로 진행) */
     readError: string | null;
@@ -329,6 +370,42 @@ export interface ApiFootballData {
     /** 쓴 경로(dry·변화 없음·취소면 null) */
     written: string | null;
   };
+}
+
+/** 한국 선수 행 1개(로그·dry 출력용 — 원장에는 선수 API id만 저장한다) */
+export interface KoreanRowView {
+  matchId: number;
+  player: string;
+  status: string;
+  minutes: number | null;
+  goals: number;
+  assists: number;
+}
+
+/** 경기 기록 원장 단계 결과 (M1-48b — scripts/lib/match-ledger.ts) */
+export interface LedgerOutcome {
+  /** write 외에는 쓰지 않은 이유(dry·dev·ledger-disabled·cancelled) */
+  mode: LedgerWriteMode;
+  /** 이번 상세 → 원장 항목(메모리 — dry·dev도 만든다) */
+  entries: LedgerMatch[];
+  /** 형식 오류로 뺀 경기 */
+  invalid: Array<{ id: number; error: string }>;
+  /** 등록 한국 선수 행 */
+  korean: KoreanRowView[];
+  /** apiFootballId 없는 활성 선수의 이름 대조(운영 리포트 M5-09) */
+  nameChecks: KoreanNameCheck[];
+  /** 원장에 있어 다시 받지 않은 경기 수(근처 달의 af-<id>) */
+  known: number;
+  /** 근처 달 원장 읽기 오류 */
+  readErrors: Array<{ file: string; error: string }>;
+  /** 쓰기 결과 — mode가 write일 때만 */
+  applied: LedgerApplyResult | null;
+  /** 원장에 넣지 못해(쓰기 실패·형식 오류) 이월 목록에 다시 넣은 경기 id */
+  requeued: number[];
+  /** 원장에 들어갔지만 불완전해 이월 목록에 올린 경기 id(다시 받는다 — 상한에 걸리면 확정) */
+  incomplete: number[];
+  /** 원장 단계가 고친 이월 목록(호출부가 단계 결과에 반영) — 고칠 것이 없으면 null */
+  pending: AfPendingUpdate | null;
 }
 
 /**
@@ -340,8 +417,14 @@ export interface MatchDataOutcome {
   apiFootball: ProviderOutcome<ApiFootballData>;
   /** 브리핑이 기다린 API-Football 몫(컷오프 시점) — 건너뛰거나 실패했으면 null */
   apiFootballBrief: AfBriefSnapshot | null;
-  /** football-data 종료 경기 ↔ API-Football 상세 연결 — 둘 다 끝났을 때만(득점자 붙이기는 M1-48b·M1-19) */
+  /** football-data 종료 경기 ↔ API-Football 상세 연결(대응표 확인 + D37 강한 증거) — 둘 다 끝났을 때만(로그·후보용 — 브리핑
+   * 득점자는 브리핑 시점의 몫으로 따로 잇는다) */
   pairing: MatchLinkResult | null;
+  /**
+   * 경기 기록 원장 — API-Football이 끝났으면 그 결과(ApiFootballData.ledger), 건너뛰었거나 실패했으면 정기 운영 prod 실행에서
+   * 빠진 날(skipped)만 기록한 결과, 그 밖은 null
+   */
+  ledger: LedgerOutcome | null;
   /** 단계 전체(병렬) 소요 시간 */
   elapsedMs: number;
 }
@@ -1019,9 +1102,12 @@ async function runApiFootballProvider(
     return skip("dev-quiet-hours");
   }
 
-  // 설정 — 대상(6개 대회 + 활성 한국 선수 소속팀 af)·실행당 상한. 실패하면 이 프로바이더만 실패(브리핑은 득점자 없이)
+  // 설정 — 대상(6개 대회 + 활성 한국 선수 소속팀 af)·실행당 상한·원장 한국 선수·시즌. 실패하면 이 프로바이더만 실패(브리핑은
+  // 득점자 없이)
   let target: AfTargetBuild;
   let perRunCap: number | null;
+  let players: KoreanPlayerTargets;
+  let season: number | null;
   try {
     perRunCap = resolveApiFootballMaxCalls(deps.apiFootballMaxCalls);
     const [competitions, koreanPlayers, teamIds] = await Promise.all([
@@ -1034,6 +1120,11 @@ async function runApiFootballProvider(
       loadTeamIds(deps.rootDir),
     ]);
     target = buildAfTargetConfig({ competitions, koreanPlayers, teamIds });
+    players = koreanPlayerTargets(koreanPlayers, teamIds);
+    season =
+      competitions.length > 0
+        ? Math.max(...competitions.map((c) => c.season))
+        : null;
   } catch (error) {
     log.error("collect.matchdata.fail", {
       provider: "api-football",
@@ -1116,6 +1207,19 @@ async function runApiFootballProvider(
       error: pendingRead.error,
     });
   }
+  // 원장(M1-48b) — 근처 달의 af-<id>는 이미 받은 경기라 다시 받지 않는다(이월 정리 "원장에 있음"). 읽지 못한 달은 known에서
+  // 빠지고(다시 받는다) 그 달은 쓰지 않는다 — 검증 게이트가 손상 파일의 커밋을 막으므로 드문 경우다.
+  const ledgerRead = await readLedgerWindow(
+    deps.dataDir,
+    ledgerMonthsAround(nowIso),
+  );
+  for (const e of ledgerRead.errors) {
+    log.warn("collect.ledger.read-fail", {
+      provider: "api-football",
+      file: e.file,
+      error: e.error,
+    });
+  }
   const briefWindow = briefInputWindow(ctx.publishDate);
   const dates = afQueryDates(nowIso, briefWindow);
   const client = createApiFootballClient({
@@ -1142,10 +1246,13 @@ async function runApiFootballProvider(
       client,
       targets: target.targets,
       pending: pendingRead.fixtures,
-      // TODO(M1-48b): 원장(data/matches/YYYY-MM.json)의 af-<id> — 이미 받은 경기는 다시 받지 않는다. M1-48a 범위에서는
-      // 원장이 없어 빈 집합이고, 날짜 창(D-1·D)의 종료 대상 경기를 실행마다 다시 받는다(토·일 연속이면 약 43회 — 상한 60 안,
-      // 봇은 아직 비활성). 원장이 생기면 이 집합이 중복 요청을 없앤다.
-      known: new Set<number>(),
+      // 원장(data/matches/YYYY-MM.json)의 af-<id> — 이미 받은 경기는 다시 받지 않는다. 단 불완전 항목이 이월 목록에 있으면
+      // 빼서 다시 받는다(ledgerPlanKnown — 상한에 걸려 이월에서 빠지면 확정). 원장은 정기 운영 prod 실행만 쓰므로 개발·정기 운영
+      // 전 실행에서는 대개 비어 있다(날짜 창의 종료 대상 경기를 실행마다 다시 받는다 — 상한 안).
+      known: ledgerPlanKnown(
+        ledgerRead,
+        new Set(pendingRead.fixtures.map((f) => f.id)),
+      ),
       briefWindow,
       dates,
       now: deps.now,
@@ -1200,12 +1307,35 @@ async function runApiFootballProvider(
     });
   }
 
-  // 이월 목록 — dry·취소(뉴스 실패 → 커밋 안 됨)는 쓰지 않는다. 내용이 같으면 다시 쓰지 않는다(불필요한 data 커밋 방지)
+  // 원장(M1-48b) — 항목·한국 선수 행·이름 후보는 늘 만들고(로그·dry 출력), 정기 운영 prod 실행만 쓴다. 이월 목록보다 먼저 —
+  // 원장에 넣지 못한 경기는 이월 목록에 다시 넣는다(받은 경기가 원장·이월 어디에도 없이 사라지지 않게).
+  const ledger = await runLedgerStep(deps, {
+    nowIso: nowUtcIso(deps.now()),
+    stage,
+    read: ledgerRead,
+    players,
+    season,
+    pendingBefore: pendingRead.fixtures,
+    cancelled: signal.aborted,
+  });
+  if (ledger.pending) {
+    stage = {
+      ...stage,
+      pending: ledger.pending.fixtures,
+      dropped: [...stage.dropped, ...ledger.pending.dropped].sort(
+        (a, b) => a.id - b.id,
+      ),
+    };
+  }
+
+  // 이월 목록 — prod·비dry만 쓴다(dev 실행은 쓰지 않음 — 리뷰 권장 4, 원장과 같은 기준), 취소(뉴스 실패 → 커밋 안 됨)도 쓰지 않는다.
+  // 내용이 같으면 다시 쓰지 않는다(불필요한 data 커밋 방지)
   const changed =
     !sameAfPending(pendingRead.fixtures, stage.pending) ||
     pendingRead.error !== null;
   let written: string | null = null;
   const writable =
+    deps.env === "prod" &&
     !deps.dry &&
     stage.stoppedBy !== "cancelled" &&
     changed &&
@@ -1259,10 +1389,273 @@ async function runApiFootballProvider(
       retries: client.retries,
       rate: client.rate,
       unmappedTeams: target.unmappedTeams,
+      ledger,
       pendingFile: { readError: pendingRead.error, changed, written },
     },
     elapsedMs: elapsed(),
   };
+}
+
+// ─── 경기 기록 원장 (M1-48b) ──────────────────────────────────────────────
+
+/** 원장 쓰기 결과 로그(달·메타·오류) */
+function logLedgerApplied(log: Logger, applied: LedgerApplyResult): void {
+  for (const m of applied.months) {
+    log[m.error ? "error" : "info"]("collect.ledger.month", {
+      month: m.month,
+      added: m.added,
+      replaced: m.replaced,
+      written: m.written !== null,
+      error: m.error,
+    });
+  }
+  const meta = applied.meta;
+  log[applied.state === "started" ? "info" : "warn"]("collect.ledger.meta", {
+    state: applied.state,
+    created: meta?.created ?? false,
+    changed: meta?.changed ?? false,
+    written: applied.metaWritten !== null,
+    since: meta?.meta?.since ?? null,
+    playersAdded: (meta?.playersAdded ?? []).map((p) => `${p.slug}:${p.since}`),
+    gapsAdded: (meta?.gapsAdded ?? []).map(
+      (g) => `${g.date}:${g.reason}${g.cause ? `(${g.cause})` : ""}`,
+    ),
+    gapsHealed: (meta?.gapsHealed ?? []).map((g) => `${g.date}:${g.reason}`),
+    gaps: meta?.meta?.gaps.length ?? null,
+    seasonMismatch: meta?.seasonMismatch ?? false,
+  });
+  if (applied.errors.length > 0) {
+    log.error("collect.ledger.fail", { errors: applied.errors });
+  }
+}
+
+/**
+ * 원장 단계(API-Football이 끝난 실행) — 상세 → 원장 항목·한국 선수 행·이름 후보(메모리, 로그), 정기 운영 prod 실행이면 달 파일 →
+ * 이월 목록 갱신 → 메타 쓰기. 이월 목록 갱신(`pending`)은 호출부가 받아 쓴다:
+ *   - 원장에 넣지 못한 경기·형식 오류 경기 → 다시 받는다(재조회 +1)
+ *   - 원장에 들어갔지만 불완전한 경기(득점 불완전·라인업 없음) → 이월 목록에 올려 다시 받는다(처음 0, 재조회 +1 — 상한에 걸리면 확정)
+ *   - 이 갱신에서 정리 규칙(3일·재조회 3회)으로 버린 경기도 빠진 날(dropped)에 남긴다(메타보다 먼저 갱신하는 이유)
+ * 던지지 않는다.
+ */
+async function runLedgerStep(
+  deps: CollectDeps,
+  ctx: {
+    nowIso: string;
+    stage: AfStageResult;
+    read: LedgerWindowRead;
+    players: KoreanPlayerTargets;
+    season: number | null;
+    pendingBefore: readonly AfPendingEntry[];
+    cancelled: boolean;
+  },
+): Promise<LedgerOutcome> {
+  const log = deps.logger;
+  const build = buildLedgerEntries(ctx.stage.details, ctx.players);
+  const slugById = new Map(
+    ctx.players.tracked.map((p) => [p.apiFootballId, p.slug] as const),
+  );
+  const korean: KoreanRowView[] = build.entries.flatMap((e) =>
+    e.korean.map((r) => ({
+      matchId: afIdOfKey(e.id) ?? 0,
+      player: slugById.get(r.player) ?? String(r.player),
+      status: r.status,
+      minutes: r.minutes,
+      goals: r.goals,
+      assists: r.assists,
+    })),
+  );
+  for (const row of korean) log.info("collect.ledger.korean", { ...row });
+  // apiFootballId 없는 활성 선수 — 소속팀 경기 라인업 이름 대조 후보(운영 리포트 M5-09 입력, 사람이 확인해 configs에 id를 채운다)
+  for (const check of build.nameChecks) {
+    log[check.candidates.length > 0 ? "warn" : "info"](
+      "collect.ledger.player-candidate",
+      {
+        player: check.player,
+        match: check.matchId,
+        side: check.side,
+        lineup: check.lineup,
+        candidates: check.candidates.map(
+          (c) =>
+            `${c.name}(${c.id ?? "id 없음"}) ${c.basis} ${c.status}${c.minutes !== null ? ` ${c.minutes}분` : ""}`,
+        ),
+      },
+    );
+  }
+  for (const bad of build.invalid) {
+    log.error("collect.ledger.entry.invalid", {
+      fixture: bad.id,
+      error: bad.error,
+    });
+  }
+  const mode = ledgerWriteMode({
+    env: deps.env,
+    dry: deps.dry,
+    enabled: deps.ledgerEnabled ?? false,
+    cancelled: ctx.cancelled || ctx.stage.stoppedBy === "cancelled",
+  });
+  const outcome: LedgerOutcome = {
+    mode,
+    entries: build.entries,
+    invalid: build.invalid,
+    korean,
+    nameChecks: build.nameChecks,
+    known: ctx.stage.counts.known,
+    readErrors: ctx.read.errors,
+    applied: null,
+    requeued: [],
+    incomplete: [],
+    pending: null,
+  };
+  if (mode !== "write") {
+    log.info("collect.ledger.skip", {
+      reason: mode,
+      entries: build.entries.length,
+      koreanRows: korean.length,
+      known: outcome.known,
+      incomplete: build.entries.filter(isIncompleteLedgerMatch).length,
+    });
+    return outcome;
+  }
+  // 이월 정리로 버린 경기(3일·재조회 3회)의 킥오프 — 빠진 날(dropped)
+  const kickoffById = new Map<number, string>();
+  for (const p of ctx.pendingBefore) kickoffById.set(p.id, p.kickoff);
+  for (const o of ctx.stage.outcomes)
+    kickoffById.set(o.task.id, o.task.kickoff);
+  const droppedWithKickoff = (dropped: readonly AfDropped[]) =>
+    dropped.flatMap((d) => {
+      if (d.reason !== "expired" && d.reason !== "requery-limit") return [];
+      const kickoff = kickoffById.get(d.id);
+      return kickoff === undefined ? [] : [{ id: d.id, kickoff }];
+    });
+  /** 원장 사정으로 이월 목록에 다시 넣기(달 파일 뒤·메타 앞) */
+  const requeue = (r: LedgerSettleInput): AfPendingUpdate | null => {
+    const ids = new Set([...r.unstored, ...build.invalid.map((i) => i.id)]);
+    const incomplete = new Set(r.incomplete);
+    outcome.requeued = [...ids].sort((a, b) => a - b);
+    outcome.incomplete = [...incomplete].sort((a, b) => a - b);
+    if (ids.size === 0 && incomplete.size === 0) return null;
+    return requeueAfPending({
+      pending: ctx.stage.pending,
+      outcomes: ctx.stage.outcomes,
+      ids,
+      incomplete,
+      now: ctx.nowIso,
+    });
+  };
+  try {
+    const applied = await applyLedger({
+      dataDir: deps.dataDir,
+      now: ctx.nowIso,
+      read: ctx.read,
+      entries: build.entries,
+      facts: {
+        season: ctx.season,
+        dates: ctx.stage.dates.map((d) => ({
+          date: d.date,
+          ok: d.ok,
+          ...(d.errorType ? { errorType: d.errorType } : {}),
+        })),
+        skipped: null,
+        dropped: droppedWithKickoff(ctx.stage.dropped),
+        tracked: ctx.players.tracked,
+      },
+      settle: (r) => {
+        outcome.pending = requeue(r);
+        return { dropped: droppedWithKickoff(outcome.pending?.dropped ?? []) };
+      },
+    });
+    outcome.applied = applied;
+    logLedgerApplied(log, applied);
+  } catch (error) {
+    // 방어선 — applyLedger는 던지지 않는다. 여기 오면 원장 쓰기 전체를 실패로 남기고 받은 경기를 이월에 다시 넣는다
+    log.error("collect.ledger.fail", { errors: [errorText(error)] });
+    const all = build.entries.flatMap((e) => {
+      const id = afIdOfKey(e.id);
+      return id === null ? [] : [id];
+    });
+    outcome.applied = {
+      state: "started",
+      months: [],
+      unstored: all,
+      incomplete: [],
+      beforeSince: [],
+      meta: null,
+      metaWritten: null,
+      errors: [errorText(error)],
+    };
+    outcome.pending = requeue({ unstored: all, incomplete: [] });
+  }
+  if (outcome.requeued.length > 0 || outcome.incomplete.length > 0) {
+    log[outcome.requeued.length > 0 ? "warn" : "info"](
+      "collect.ledger.requeue",
+      {
+        provider: "api-football",
+        unstored: outcome.requeued,
+        incomplete: outcome.incomplete,
+        droppedByRule: (outcome.pending?.dropped ?? []).map(
+          (d) => `${d.id}:${d.reason}`,
+        ),
+      },
+    );
+  }
+  return outcome;
+}
+
+/**
+ * API-Football 단계가 끝나지 않은 실행(건너뜀·실패)의 원장 — 정기 운영 prod 실행이면 이번에 조회했어야 할 날짜 중 첫 기회인 오늘(UTC)
+ * 날짜만 빠진 날(skipped)로 남긴다(어제 날짜는 마지막 기회라 기존 공백만 유지 — match-ledger.ts nextLedgerMeta). 원장이 이미 시작됐을
+ * 때만, 나중 실행이 그 날짜를 받으면 지운다. 그 밖은 null. 던지지 않는다.
+ */
+async function runLedgerForUnfinishedStage(
+  deps: CollectDeps,
+  ctx: { publishDate: string },
+  af: ProviderOutcome<ApiFootballData>,
+  signal: AbortSignal,
+): Promise<LedgerOutcome | null> {
+  if (af.state === "done") return af.data.ledger;
+  const cause = af.state === "skipped" ? af.reason : af.errorType;
+  const mode = ledgerWriteMode({
+    env: deps.env,
+    dry: deps.dry,
+    enabled: deps.ledgerEnabled ?? false,
+    cancelled: signal.aborted || cause === "cancelled",
+  });
+  if (mode !== "write") return null;
+  const log = deps.logger;
+  const nowIso = nowUtcIso(deps.now());
+  const dates = afQueryDates(nowIso, briefInputWindow(ctx.publishDate));
+  const outcome: LedgerOutcome = {
+    mode,
+    entries: [],
+    invalid: [],
+    korean: [],
+    nameChecks: [],
+    known: 0,
+    readErrors: [],
+    applied: null,
+    requeued: [],
+    incomplete: [],
+    pending: null,
+  };
+  try {
+    outcome.applied = await applyLedger({
+      dataDir: deps.dataDir,
+      now: nowIso,
+      read: await readLedgerWindow(deps.dataDir, []),
+      entries: [],
+      facts: {
+        season: null,
+        dates: [],
+        skipped: { dates, cause },
+        dropped: [],
+        tracked: [],
+      },
+    });
+    logLedgerApplied(log, outcome.applied);
+  } catch (error) {
+    log.error("collect.ledger.fail", { errors: [errorText(error)] });
+  }
+  return outcome;
 }
 
 /** football-data 종료 경기 ↔ API-Football 상세 연결 + 대응표 후보 로그(운영 리포트 M5-09가 모은다). 던지지 않는다 */
@@ -1279,24 +1672,48 @@ async function pairMatchData(
       fd.data.results,
       af.data.stage.details,
       index,
+      { afUniverse: af.data.stage.listed, fdUniverse: fd.data.others },
     );
     log.info("collect.matchdata.pairing", {
       fdFinished: fd.data.results.length,
       afDetails: af.data.stage.details.filter((d) => d.comp !== null).length,
+      afListed: af.data.stage.listed.length,
+      fdOthers: fd.data.others.length,
       linked: result.links.length,
+      linkedByTeamIds: result.links.filter((l) => l.linkedBy === "team-ids")
+        .length,
+      linkedByEvidence: result.links.filter((l) => l.linkedBy === "evidence")
+        .length,
       unconfirmed: result.unconfirmed.length,
+      unconfirmedReasons: result.unconfirmed.map(
+        (u) => `${u.fdMatchId}↔${u.afMatchId}:${u.reason}`,
+      ),
       candidates: result.report.candidates.length,
       conflicts: result.report.conflicts.length,
       ambiguous: result.report.ambiguous.length,
       unmatched: result.report.unmatched.length,
     });
-    // 대응표에 없는 팀 — 득점자 없이 진행하고 후보만 알린다(D33, 사람이 확인해 team-ids.json에 넣는다)
+    // D37 — 강한 증거로 자동 연결한 팀 쌍. configs/team-ids.json은 고치지 않는다(사람이 모아서 옮긴다 — 운영 리포트 M5-09 후보)
+    for (const a of result.autoLinked) {
+      log.info("collect.teamids.auto-link", {
+        kind: a.kind,
+        slug: a.slug,
+        fd: `${a.fd.name}(${a.fd.id})`,
+        af: `${a.af.name}(${a.af.id})`,
+        evidence: a.evidence.map((e) => `${e.fdMatchId}↔${e.afMatchId}`),
+      });
+    }
+    // 대응표에 없는 팀 — 후보를 알린다(D33, 사람이 확인해 team-ids.json에 넣는다). 자동 연결된 쌍이면 autoLinked
+    const autoKeys = new Set(
+      result.autoLinked.map((a) => `${a.fd.id}:${a.af.id}`),
+    );
     for (const c of result.report.candidates) {
       log.info("collect.teamids.candidate", {
         kind: c.kind,
         slug: c.slug,
         fd: `${c.fd.name}(${c.fd.id})`,
         af: `${c.af.name}(${c.af.id})`,
+        autoLinked: autoKeys.has(`${c.fd.id}:${c.af.id}`),
         evidence: c.evidence.map((e) => `${e.fdMatchId}↔${e.afMatchId}`),
       });
     }
@@ -1373,6 +1790,7 @@ function startMatchDataStage(
         apiFootball: af,
         apiFootballBrief: brief,
         pairing: await pairMatchData(deps, fd, af),
+        ledger: await runLedgerForUnfinishedStage(deps, ctx, af, signal),
         elapsedMs: Math.max(0, now() - started),
       };
       if (deps.dry) deps.print(formatMatchDataSummary(outcome));
@@ -1443,12 +1861,41 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
   }
   const pairing = outcome.pairing;
   if (pairing) {
+    const byTable = pairing.links.filter(
+      (l) => l.linkedBy === "team-ids",
+    ).length;
     lines.push(
-      `짝짓기: 연결 ${pairing.links.length}(대응표 확인) · 미확인 ${pairing.unconfirmed.length} · 후보 ${pairing.report.candidates.length} · 충돌 ${pairing.report.conflicts.length} · 모호 ${pairing.report.ambiguous.length} · fd 짝 없음 ${pairing.report.unmatched.length}`,
+      `짝짓기: 연결 ${pairing.links.length}(대응표 ${byTable} · 증거 ${pairing.links.length - byTable}) · 미확인 ${pairing.unconfirmed.length} · 후보 ${pairing.report.candidates.length} · 충돌 ${pairing.report.conflicts.length} · 모호 ${pairing.report.ambiguous.length} · fd 짝 없음 ${pairing.report.unmatched.length}`,
+    );
+    const autoKeys = new Set(
+      pairing.autoLinked.map((a) => `${a.fd.id}:${a.af.id}`),
     );
     for (const c of pairing.report.candidates) {
       lines.push(
-        `  후보(${c.kind}${c.slug ? ` ${c.slug}` : ""}): fd ${c.fd.name}(${c.fd.id}) ↔ af ${c.af.name}(${c.af.id}) — ${c.evidence.map((e) => `${e.fdMatchId}↔${e.afMatchId}`).join(", ")}`,
+        `  후보(${c.kind}${c.slug ? ` ${c.slug}` : ""}${autoKeys.has(`${c.fd.id}:${c.af.id}`) ? " · 자동 연결 D37" : ""}): fd ${c.fd.name}(${c.fd.id}) ↔ af ${c.af.name}(${c.af.id}) — ${c.evidence.map((e) => `${e.fdMatchId}↔${e.afMatchId}`).join(", ")}`,
+      );
+    }
+    for (const u of pairing.unconfirmed) {
+      lines.push(`  미확인: ${u.fdMatchId}↔${u.afMatchId} (${u.reason})`);
+    }
+  }
+  const ledger = outcome.ledger;
+  if (ledger) {
+    const write =
+      ledger.mode === "write"
+        ? `씀(${ledger.applied?.state ?? "?"}${ledger.applied?.meta?.meta ? `, since ${ledger.applied.meta.meta.since}` : ""})`
+        : `쓰지 않음(${ledger.mode})`;
+    lines.push(
+      `원장: ${write} · 항목 ${ledger.entries.length}경기(이미 받음 ${ledger.known} · 형식 오류 ${ledger.invalid.length} · 불완전 ${ledger.entries.filter(isIncompleteLedgerMatch).length}) · 한국 선수 행 ${ledger.korean.length}`,
+    );
+    for (const r of ledger.korean) {
+      lines.push(
+        `  · af ${r.matchId} ${r.player} ${r.status}${r.minutes !== null ? ` ${r.minutes}분` : ""} ${r.goals}골 ${r.assists}도움`,
+      );
+    }
+    for (const c of ledger.nameChecks) {
+      lines.push(
+        `  이름 대조(${c.player}, id 없음): af ${c.matchId} ${c.side} — ${c.lineup ? (c.candidates.length > 0 ? c.candidates.map((x) => `${x.name}(${x.id ?? "?"}) ${x.basis} ${x.status}`).join(", ") : "후보 없음") : "라인업 없음"}`,
       );
     }
   }
@@ -1456,6 +1903,65 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
 }
 
 // ─── ③ 브리핑 ────────────────────────────────────────────────────────────
+
+/** 브리핑 득점자 연결 결과(M1-48b) */
+interface BriefGoalLinks {
+  /** football-data 경기 id → 연결된 API-Football 상세 */
+  byFd: Map<number, MatchDetail>;
+  byTeamIds: number;
+  byEvidence: number;
+  /** 대회·킥오프·스코어는 맞지만 연결하지 않은 쌍(이유) */
+  unconfirmed: string[];
+}
+
+/**
+ * 브리핑 몫(컷오프까지 받은 brief 계층 상세)을 football-data 종료 경기에 잇는다 — 대응표 확인 + D37 강한 증거(후보 수는 날짜 조회
+ * 목록·football-data 결과 밖 경기까지 센다). 대응표를 읽지 못하면 자동 연결도 끈다(대응표와 어긋나는지 확인할 수 없다 — 리뷰
+ * 권장 5) — 그날은 득점자 없이. 던지지 않는다 — 실패하면 득점자 없이(goals null).
+ */
+async function linkBriefGoals(
+  deps: CollectDeps,
+  fd: Pick<FootballDataBriefData, "results" | "others">,
+  snapshot: AfBriefSnapshot | null,
+): Promise<BriefGoalLinks> {
+  const empty: BriefGoalLinks = {
+    byFd: new Map(),
+    byTeamIds: 0,
+    byEvidence: 0,
+    unconfirmed: [],
+  };
+  if (snapshot === null || snapshot.details.length === 0) return empty;
+  let index: TeamIdIndex = EMPTY_TEAM_ID_INDEX;
+  let autoLink = true;
+  try {
+    index = buildTeamIdIndex(await loadTeamIds(deps.rootDir));
+  } catch (error) {
+    autoLink = false;
+    deps.logger.warn("summarize.input.team-ids-unreadable", {
+      file: "configs/team-ids.json",
+      error: errorText(error),
+      autoLink,
+    });
+  }
+  try {
+    const linked = linkMatchDetails(fd.results, snapshot.details, index, {
+      afUniverse: snapshot.listed,
+      fdUniverse: fd.others,
+      autoLink,
+    });
+    return {
+      byFd: new Map(linked.links.map((l) => [l.fd.matchId, l.af] as const)),
+      byTeamIds: linked.links.filter((l) => l.linkedBy === "team-ids").length,
+      byEvidence: linked.links.filter((l) => l.linkedBy === "evidence").length,
+      unconfirmed: linked.unconfirmed.map(
+        (u) => `${u.fdMatchId}↔${u.afMatchId}:${u.reason}`,
+      ),
+    };
+  } catch (error) {
+    deps.logger.warn("summarize.input.goals-fail", { error: errorText(error) });
+    return empty;
+  }
+}
 
 async function runBriefStage(
   deps: CollectDeps,
@@ -1491,7 +1997,7 @@ async function runBriefStage(
     };
   }
 
-  // 전날 경기 결과 → 정형 입력(순위는 M1-19가 입력에 넣는다)
+  // 전날 경기 결과 + 연결된 경기의 득점자(M1-48b) → 정형 입력(순위는 M1-19가 입력에 넣는다)
   let input: BriefInput;
   try {
     const competitions = await readConfigFile(
@@ -1499,10 +2005,17 @@ async function runBriefStage(
       "competitions.json",
       CompetitionsFileSchema,
     );
+    const goalLinks = await linkBriefGoals(
+      deps,
+      fd.data,
+      matchData.apiFootballBrief,
+    );
     const built = buildBriefInput(
       ctx.publishDate,
       fd.data.results,
       competitions,
+      BRIEF_MAX_MATCHES,
+      goalLinks.byFd,
     );
     input = built.input;
     log.info("summarize.input.done", {
@@ -1510,6 +2023,13 @@ async function runBriefStage(
       finished: fd.data.results.length,
       matches: input.matches.length,
       excluded: built.excluded,
+      // 득점자 — 연결(대응표·증거) 중 득점 목록이 완전한 경기만 goals 배열, 나머지는 null
+      afBriefDetails: matchData.apiFootballBrief?.details.length ?? null,
+      linkedByTeamIds: goalLinks.byTeamIds,
+      linkedByEvidence: goalLinks.byEvidence,
+      unconfirmed: goalLinks.unconfirmed,
+      goalsFilled: built.goals.filled,
+      goalsIncomplete: built.goals.incomplete,
     });
   } catch (error) {
     log.error("summarize.input.fail", {
@@ -1828,15 +2348,15 @@ export function apiFootballIncomplete(
 }
 
 /**
- * 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음·순위 일부 실패·API-Football 미완(apiFootballIncomplete)
- * = partial, 그 밖 = success. partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts).
+ * 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음·순위 일부 실패·API-Football 미완(apiFootballIncomplete)·
+ * 원장 쓰기 오류·원장 형식 오류 항목(M1-48b) = partial, 그 밖 = success. partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts).
  */
 export function runStatus(
   news: { ok: boolean; sources?: readonly { ok: boolean }[] },
   brief: BriefOutcome,
   matchData:
     | (Pick<MatchDataOutcome, "footballData"> &
-        Partial<Pick<MatchDataOutcome, "apiFootball">>)
+        Partial<Pick<MatchDataOutcome, "apiFootball" | "ledger">>)
     | null = null,
 ): RunLog["status"] {
   if (!news.ok) return "failed";
@@ -1852,6 +2372,9 @@ export function runStatus(
   if (matchData?.apiFootball && apiFootballIncomplete(matchData.apiFootball)) {
     return "partial";
   }
+  // 원장 쓰기 오류(달 파일·메타)·형식 오류 항목 — 받은 경기는 이월 목록에 다시 넣었지만 실행 상태에 드러낸다(M1-48b)
+  if ((matchData?.ledger?.applied?.errors.length ?? 0) > 0) return "partial";
+  if ((matchData?.ledger?.invalid.length ?? 0) > 0) return "partial";
   return "success";
 }
 

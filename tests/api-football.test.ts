@@ -558,10 +558,10 @@ describe("M1-48 보강 fixture(실응답) — 승부차기 이벤트·자책골�
     });
   });
 
-  it("1575183 카스트로프(280358) 명단 제외(out) · 1575179 황희찬(24888) 교체 11분", () => {
+  it("1575183 카스트로프(280358) 명단 제외(absent) · 1575179 황희찬(24888) 교체 11분", () => {
     expect(
       playerAppearance(detailOf("fixtures-id-1575183.json"), 280358, 163),
-    ).toMatchObject({ side: "away", status: "out", minutes: null });
+    ).toMatchObject({ side: "away", status: "absent", minutes: null });
     expect(
       playerAppearance(detailOf("fixtures-id-1575179.json"), 24888, 174),
     ).toMatchObject({ side: "away", status: "sub", minutes: 11 });
@@ -670,12 +670,12 @@ describe("playerAppearance — 선발 = startXI, apiFootballId로만 매칭", ()
     expect(playerAppearance(d, assist.assist!.id!)?.assists).toBeGreaterThan(0);
   });
 
-  it("1557418: 김지수(id 없음)는 매칭할 수 없다 — 팀 id로 부르면 명단 제외(out), 다른 경기 팀이면 null", () => {
+  it("1557418: 김지수(id 없음)는 매칭할 수 없다 — 팀 id로 부르면 명단 제외(absent), 다른 경기 팀이면 null", () => {
     const d = detailOf("fixtures-id-1557418.json");
     // 브렌트퍼드(55) 경기 — 라인업은 있지만 이 선수 id는 모른다
     expect(playerAppearance(d, 424242, 55)).toEqual({
       side: "away",
-      status: "out",
+      status: "absent",
       minutes: null,
       goals: 0,
       assists: 0,

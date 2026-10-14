@@ -574,6 +574,14 @@ export function utcDate(iso: string): string {
 }
 
 /**
+ * UTC ISO → UTC 달 "YYYY-MM"(시간대 변환 없음). 경기 기록 원장 파일 단위(`data/matches/YYYY-MM.json` = 킥오프 UTC 달, D33).
+ * 예) 2026-10-31T23:59:59Z → "2026-10"(KST로는 11-01 08:59), 2026-11-01T00:00:00Z → "2026-11".
+ */
+export function utcMonth(iso: string): string {
+  return utcDate(iso).slice(0, 7);
+}
+
+/**
  * UTC ISO → KST 달 "YYYY-MM". 월 예산(`MONTHLY_BUDGET_USD`) 집계 단위(scripts/lib/cost.ts).
  * 예) 2026-10-31T14:59:59Z → "2026-10", 2026-10-31T15:00:00Z(= 11-01 00:00 KST) → "2026-11".
  */

@@ -211,6 +211,42 @@ describe("toFinishedResults — 경계 zod 파싱·종료 경기만", () => {
     expect(summary.inProgress).toEqual({ EPL: 4 });
   });
 
+  it("others — results 밖의 대상 대회 경기: 미종료·연기·점수 없음은 ft null, 창 밖 종료 경기는 스코어, 대상 밖 대회는 뺀다(D37 후보 수, M1-48b)", () => {
+    const summary = toFinishedResults(
+      [
+        rawMatch({ id: 1, status: "IN_PLAY" }),
+        rawMatch({
+          id: 2,
+          status: "POSTPONED",
+          utcDate: "2026-10-10T13:00:00Z",
+        }),
+        rawMatch({ id: 3, utcDate: "2026-10-11T02:00:00Z" }), // 창 밖 종료
+        rawMatch({ id: 4, homeTeam: { id: null, name: null } }), // 종료인데 팀 없음
+        rawMatch({ id: 5, competition: { code: "XX" }, status: "IN_PLAY" }), // 대상 밖
+        rawMatch({ id: 6 }), // 결과
+      ],
+      COMPETITIONS,
+      WINDOW_1011,
+    );
+    expect(summary.results.map((r) => r.matchId)).toEqual([6]);
+    expect(summary.others).toEqual([
+      { matchId: 2, comp: "EPL", kickoff: "2026-10-10T13:00:00Z", ft: null },
+      { matchId: 1, comp: "EPL", kickoff: "2026-10-10T14:00:00Z", ft: null },
+      {
+        matchId: 4,
+        comp: "EPL",
+        kickoff: "2026-10-10T14:00:00Z",
+        ft: { home: 1, away: 0 },
+      },
+      {
+        matchId: 3,
+        comp: "EPL",
+        kickoff: "2026-10-11T02:00:00Z",
+        ft: { home: 1, away: 0 },
+      },
+    ]);
+  });
+
   it("누락 필드·잘못된 값은 그 건만 invalid — 팀 id·이름·최종 점수 없음, 시각 오프셋 표기, 음수 점수", () => {
     const bad = [
       { id: "x" },

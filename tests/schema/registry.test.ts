@@ -71,7 +71,8 @@ describe("schemaRegistry ↔ fixtures/schema", () => {
       .map((e) => e.pattern);
     expect(drafts).toEqual([]);
     // + configs/team-ids.json (PRD §15 D33, M1-44) · data/cache/af-pending.json (D27·D33, M1-48)
-    expect(schemaRegistry).toHaveLength(24);
+    // + data/matches/????-??.json · data/matches/meta.json (경기 기록 원장 D33, M1-48b)
+    expect(schemaRegistry).toHaveLength(26);
   });
 
   it("configs/ 항목은 알 수 없는 키를 거부하고 data/ 항목은 버린다 (결정 Q5)", () => {

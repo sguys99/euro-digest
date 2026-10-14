@@ -33,6 +33,7 @@ import {
 import type { IssuePayloadInput } from "./github-issues";
 import type { MatchDetail } from "./match-data";
 import {
+  afFixtureToPairing,
   AF_VOID_STATUSES,
   API_FOOTBALL_MIN_INTERVAL_MS,
   API_FOOTBALL_TIMEOUT_MS,
@@ -44,6 +45,7 @@ import {
   type ApiFootballClient,
   type ApiFootballErrorKind,
 } from "./providers/api-football";
+import type { PairingMatch } from "./team-ids";
 
 // ─── 상수 ────────────────────────────────────────────────────────────────
 
@@ -87,6 +89,12 @@ export interface AfBriefSnapshot {
   details: MatchDetail[];
   /** brief 계층인데 이 시점까지 받지 못한 경기 id */
   missing: number[];
+  /**
+   * 날짜 조회로 본 6개 대회 경기(짝짓기 입력 형식, 킥오프·id 순, 상태 무관 — 점수를 모르면 ft null) — 경기 연결(D37)이 "후보
+   * 하나"를 셀 때 상세를 받지 않은 경기·아직 안 끝난 경기까지 센다(scripts/lib/team-ids.ts `afUniverse`). 날짜 조회가 끝난 뒤라
+   * 브리핑 몫에도 다 들어 있다.
+   */
+  listed: PairingMatch[];
 }
 
 /** 이슈로 낼 사건(M1-11 소스 이슈 경로 재사용 — collect-run.ts가 사건 파일에 더한다) */
@@ -107,6 +115,8 @@ export interface AfStageResult {
   planned: Record<AfTaskTier, number>;
   /** 이번에 받은 종료 경기 상세(킥오프·id 순) */
   details: MatchDetail[];
+  /** 날짜 조회로 본 6개 대회 경기(짝짓기 입력, 점수를 모르면 ft null — AfBriefSnapshot.listed와 같다) */
+  listed: PairingMatch[];
   /** 요청 결과(계획 순서) */
   outcomes: AfTaskOutcome[];
   /** 다음 이월 목록 */
@@ -252,6 +262,18 @@ export async function runApiFootballStage(
 
   // ② 계획
   const compByLeague: ReadonlyMap<number, CompId> = input.targets.compByLeague;
+  // 6개 대회 경기(날짜 조회, 상태 무관 — 미종료·연기·중단은 ft null) — 경기 연결의 후보 수 세기용(D37). 같은 id는 한 번만
+  const listedById = new Map<number, PairingMatch>();
+  for (const fixture of fixtures) {
+    const pairing = afFixtureToPairing(fixture, compByLeague);
+    if (pairing && !listedById.has(pairing.matchId)) {
+      listedById.set(pairing.matchId, pairing);
+    }
+  }
+  const listed = [...listedById.values()].sort(
+    (a, b) =>
+      Date.parse(a.kickoff) - Date.parse(b.kickoff) || a.matchId - b.matchId,
+  );
   const plan = planAfFetches({
     fixtures,
     pending: input.pending,
@@ -280,6 +302,7 @@ export async function runApiFootballStage(
       missing: plan.tasks
         .filter((t) => t.tier === "brief" && !got.has(t.id))
         .map((t) => t.id),
+      listed,
     };
     state.brief = snapshot;
     input.onBriefReady?.(snapshot);
@@ -362,13 +385,19 @@ export async function runApiFootballStage(
     counts: plan.counts,
     planned,
     details: details.sort(byKickoffId),
+    listed,
     outcomes,
     pending: update.fixtures,
     dropped: update.dropped,
     stoppedBy: state.stoppedBy,
     degraded: state.degraded,
     issues,
-    brief: state.brief ?? { reason: "stopped", details: [], missing: [] },
+    brief: state.brief ?? {
+      reason: "stopped",
+      details: [],
+      missing: [],
+      listed,
+    },
   };
 }
 

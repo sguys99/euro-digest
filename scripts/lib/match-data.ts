@@ -27,6 +27,18 @@ export interface Score {
   away: number;
 }
 
+/**
+ * 경기 연결(D37)이 후보 수를 셀 때 쓰는 경기 칸 — 대회·킥오프·최종 스코어만. 스코어를 모르면(미종료·연기·중단·점수 없음) ft null —
+ * 그 경기가 같은 칸의 진짜 짝일 수 있어 자동 연결을 막는다(scripts/lib/team-ids.ts `linkMatchDetails`).
+ */
+export interface MatchSlot {
+  matchId: number;
+  comp: CompId;
+  /** 킥오프(UTC ISO, `Z`) */
+  kickoff: string;
+  ft: Score | null;
+}
+
 /** 경기가 끝난 방식 — 승부차기 경기는 연장도 치렀다 */
 export type MatchDuration = "REGULAR" | "EXTRA_TIME" | "PENALTY_SHOOTOUT";
 
@@ -153,8 +165,11 @@ export interface MatchDetail {
   fetchedAt: string;
 }
 
-/** 경기 1건에서 선수 1명의 출전 상태 — start 선발 · sub 교체 출전 · bench 교체 명단만 · out 명단 제외 · unknown 라인업 없음 */
-export type AppearanceStatus = "start" | "sub" | "bench" | "out" | "unknown";
+/**
+ * 경기 1건에서 선수 1명의 출전 상태 — start 선발 · sub 교체 출전 · bench 교체 명단만 · absent 명단 제외 · unknown 라인업 없음.
+ * 원장(`data/matches`)의 한국 선수 행 상태와 같은 값이다(src/lib/schema/matches.ts LedgerAppearanceSchema, M1-48b).
+ */
+export type AppearanceStatus = "start" | "sub" | "bench" | "absent" | "unknown";
 
 export interface PlayerAppearance {
   /** 선수의 팀 쪽 — 라인업에서 찾았거나 소속팀 id가 이 경기 팀이면 그쪽 */
@@ -180,9 +195,9 @@ function findInLineup(
 
 /**
  * 경기 상세에서 선수 1명의 출전 기록(순수 함수) — **선수 id로만 매칭**한다(이름 표기는 응답마다 다르다 — FR-60, D27).
- * 한국 선수는 configs/korean-players.json `apiFootballId`로 부른다(행 조립·저장은 M1-48b).
+ * 한국 선수는 configs/korean-players.json `apiFootballId`로 부른다(행 조립·저장은 scripts/lib/match-ledger.ts, M1-48b).
  *   - 라인업에 있으면: startXI → start, 교체 명단 → 출전 시간 > 0이면 sub, 아니면 bench
- *   - 라인업에 없고 `teamId`가 이 경기 팀이면: 라인업이 있으면 out(명단 제외), 없으면 unknown
+ *   - 라인업에 없고 `teamId`가 이 경기 팀이면: 라인업이 있으면 absent(명단 제외), 없으면 unknown
  *   - 그 밖(이 경기 선수가 아님) → null
  */
 export function playerAppearance(
@@ -220,7 +235,7 @@ export function playerAppearance(
   const hasLineup = detail.lineups[side] !== null;
   return {
     ...count(side),
-    status: hasLineup ? "out" : "unknown",
+    status: hasLineup ? "absent" : "unknown",
     minutes: null,
   };
 }

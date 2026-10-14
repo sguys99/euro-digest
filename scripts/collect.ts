@@ -5,7 +5,8 @@
  * (호스트별 병렬·재시도 1회·단계 시간 예산 90초, 소스별 실패 격리 — scripts/lib/feed-collect.ts) → 원제목 카드 최신순 상위 5건(`--limit`) → data/news/<KST 발행일>.json,
  * M1-44 경기 데이터(football-data 전날 종료 경기 + 그 대회 순위, 프로바이더별 병렬·실패 격리) → 브리핑 1요청(출력은 로그만),
  * M1-48 API-Football 경기 단건(날짜 조회 D-1·D → 대상 경기 상세, 브리핑 경기 먼저 · 이월 data/cache/af-pending.json —
- * 뉴스와 병렬로 시작, API_FOOTBALL_MAX_CALLS로 실행당 호출 상한을 걸 수 있다).
+ * 뉴스와 병렬로 시작, API_FOOTBALL_MAX_CALLS로 실행당 호출 상한을 걸 수 있다) · M1-48b 경기 기록 원장 data/matches/
+ * (COLLECT_ENABLED == "true"인 prod·비dry 실행만 쓴다 — 로컬 dev·dry는 메모리에서 만들어 로그만).
  * 파이프라인 본체는 scripts/lib/collect-run.ts(I/O 주입).
  * 이 파일은 인자·환경변수를 읽어 의존성을 꾸리고 종료 코드만 정한다.
  *
@@ -29,6 +30,7 @@ import { resolveBudgets } from "./lib/cost";
 import { actionsRunUrl } from "./lib/github-issues";
 import { createLlmClient, resolveLlmModel } from "./lib/llm";
 import { createLogger } from "./lib/logger";
+import { resolveLedgerEnabled } from "./lib/match-ledger";
 import { feedUserAgent } from "./lib/rss";
 
 const parsed = parseCollectArgs(process.argv.slice(2), process.env.LLM_MODE);
@@ -68,6 +70,8 @@ async function main(): Promise<number> {
     apiFootballApiKey: env.API_FOOTBALL_KEY,
     // 실행당 API-Football 호출 상한(선택 — dry·개발 실측용). 일일 상한(봇 60·개발 50)은 실행 기록 카운터로 지킨다.
     apiFootballMaxCalls: env.API_FOOTBALL_MAX_CALLS,
+    // 정기 운영(저장소 변수 COLLECT_ENABLED == 'true') — 경기 기록 원장(data/matches)은 이때의 prod·비dry 실행만 쓴다(M1-48b)
+    ledgerEnabled: resolveLedgerEnabled(env.COLLECT_ENABLED),
     // 브리핑 전용 설정은 브리핑 단계 안에서 해석한다(잘못된 값이면 브리핑만 실패, 뉴스는 발행).
     resolveBriefConfig: () => ({
       model: resolveLlmModel(env),

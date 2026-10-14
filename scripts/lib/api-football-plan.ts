@@ -352,7 +352,7 @@ export interface AfPlanInput {
   /** 날짜 조회로 받은 경기(성공한 날짜만) */
   fixtures: readonly AfFixture[];
   pending: readonly AfPendingEntry[];
-  /** 이미 상세를 받은 경기 id — 원장(M1-48b). 지금은 빈 집합 */
+  /** 이미 상세를 받은 경기 id — 원장 `data/matches`의 `af-<id>`(M1-48b, scripts/lib/match-ledger.ts readLedgerWindow) */
   known: ReadonlySet<number>;
   targets: AfTargetConfig;
   /** 브리핑 입력 창 — 이 안에 킥오프한 6개 대회 경기가 brief 계층 */
@@ -589,6 +589,52 @@ export function nextAfPending(input: {
     }
   }
   const kept: AfPendingEntry[] = [];
+  const ids = new Set<number>();
+  for (const entry of next.sort(byKickoffId)) {
+    if (ids.has(entry.id)) continue;
+    ids.add(entry.id);
+    const reason = pendingDropReason(entry, input.now);
+    if (reason) dropped.push({ id: entry.id, status: entry.status, reason });
+    else kept.push(entry);
+  }
+  return { fixtures: kept, dropped: dropped.sort((a, b) => a.id - b.id) };
+}
+
+/**
+ * 받은 경기를 원장 사정으로 이월 목록에 다시 넣는다(순수 함수, M1-48b). 정리 규칙(3일·재조회 3회)을 다시 적용한다.
+ *   - `ids` — 상세는 받았지만 원장에 넣지 못한 경기(달·메타 읽기·쓰기 실패·형식 오류): 재조회 +1(실패와 같은 취급 — 같은 원인이
+ *     계속되면 정리 규칙으로 빠진다).
+ *   - `incomplete` — 원장에 들어갔지만 불완전한 경기(득점 불완전·라인업 없음 — match-ledger.ts `isIncompleteLedgerMatch`): 이월
+ *     목록에서 온 요청이면 재조회 +1, 처음 받은 경기면 0부터(처음 받기는 재조회가 아니다). 이월 목록에 있는 동안 원장의 "이미 받음"
+ *     에서 빠져 다시 받고(`ledgerPlanKnown`), 정리 규칙으로 빠지면 그대로 확정된다.
+ */
+export function requeueAfPending(input: {
+  pending: readonly AfPendingEntry[];
+  outcomes: readonly AfTaskOutcome[];
+  ids: ReadonlySet<number>;
+  incomplete?: ReadonlySet<number>;
+  now: string;
+}): AfPendingUpdate {
+  const next = [...input.pending];
+  for (const { task, result } of input.outcomes) {
+    if (result.kind !== "fetched") continue;
+    const unstored = input.ids.has(task.id);
+    if (!unstored && !input.incomplete?.has(task.id)) continue;
+    const base: AfPendingEntry = task.pending ?? {
+      id: task.id,
+      comp: task.comp,
+      leagueId: task.leagueId,
+      kickoff: task.kickoff,
+      status: task.status,
+      firstSeen: input.now,
+      requeries: 0,
+    };
+    const requeries =
+      unstored || task.pending !== null ? base.requeries + 1 : base.requeries;
+    next.push({ ...base, requeries });
+  }
+  const kept: AfPendingEntry[] = [];
+  const dropped: AfDropped[] = [];
   const ids = new Set<number>();
   for (const entry of next.sort(byKickoffId)) {
     if (ids.has(entry.id)) continue;
