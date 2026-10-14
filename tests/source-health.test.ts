@@ -21,7 +21,12 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { SourcesFileSchema, type RunLog, type RunSource } from "@/lib/schema";
+import {
+  RunsDevFileSchema,
+  SourcesFileSchema,
+  type RunLog,
+  type RunSource,
+} from "@/lib/schema";
 
 import {
   runCollect,
@@ -33,6 +38,7 @@ import {
   buildIssue,
   issueFingerprint,
 } from "../scripts/lib/github-issues";
+import type { FeedParseDiagnostics } from "../scripts/lib/feed-diagnostics";
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
 import { FOOTBALL_DATA_BASE_URL } from "../scripts/lib/providers/football-data";
 import { feedUserAgent, type FetchLike } from "../scripts/lib/rss";
@@ -603,6 +609,79 @@ describe("healthIssuePayloads — 사건 → source-broken payload (소스별 �
     expect(JSON.stringify(payload)).not.toContain("<html>");
     expect(SourceBrokenPayloadSchema.safeParse(payload).success).toBe(true);
   });
+
+  // ── 파싱 실패 진단 (M1-03 보강) ──
+  const diag: FeedParseDiagnostics = {
+    status: 200,
+    mediaType: "text/html",
+    bytes: 171,
+    shape: "html",
+    sameHost: true,
+    redirects: 0,
+    parser: "unexpected-close-tag",
+    line: 2,
+    column: 81,
+  };
+  const parseFailed = (d: unknown, error = "parse") =>
+    assessSourceHealth({
+      run: { runId: "now", startedAt: NOW },
+      current: [
+        {
+          id: SRC,
+          ok: false,
+          items: 0,
+          error,
+          parseDiagnostics: d as FeedParseDiagnostics,
+        },
+        entry("fresh", "companion"),
+      ],
+      history: [],
+    });
+
+  it("이번 실행이 parse 실패면 응답 진단(enum·숫자만)을 payload parseDiagnostics로 싣는다", () => {
+    const [payload] = healthIssuePayloads(parseFailed(diag), {
+      sourceNames: names,
+    });
+    expect(payload).toMatchObject({
+      event: "failed",
+      errorType: "parse",
+      symptoms: ["파싱 실패"],
+      parseDiagnostics: diag,
+    });
+    expect(payload).not.toHaveProperty("httpStatus");
+    expect(SourceBrokenPayloadSchema.safeParse(payload).success).toBe(true);
+  });
+
+  it("진단이 스키마(enum·숫자)에 맞지 않으면 그 필드만 뺀다 — 이슈는 그대로, 덧붙은 키·자유 문자열은 새지 않는다", () => {
+    for (const bad of [
+      { ...diag, mediaType: "text/html; <b>MARKER</b>" },
+      { ...diag, shape: "MARKER" },
+      { ...diag, bytes: -1 },
+      { ...diag, line: 1.5 },
+    ]) {
+      const [payload] = healthIssuePayloads(parseFailed(bad), {
+        sourceNames: names,
+      });
+      expect(payload).toMatchObject({ event: "failed", errorType: "parse" });
+      expect(payload).not.toHaveProperty("parseDiagnostics");
+      expect(JSON.stringify(payload)).not.toContain("MARKER");
+    }
+    // 진단에 덧붙은 키(본문 조각 등)는 골라 담지 않는다
+    const [extra] = healthIssuePayloads(
+      parseFailed({ ...diag, snippet: "<title>MARKER</title>" }),
+      { sourceNames: names },
+    );
+    expect(extra!.parseDiagnostics).toEqual(diag);
+    expect(JSON.stringify(extra)).not.toContain("MARKER");
+  });
+
+  it("parse 실패가 아니면 진단이 있어도 싣지 않는다", () => {
+    const [payload] = healthIssuePayloads(parseFailed(diag, "timeout"), {
+      sourceNames: names,
+    });
+    expect(payload).toMatchObject({ errorType: "timeout" });
+    expect(payload).not.toHaveProperty("parseDiagnostics");
+  });
 });
 
 describe("runSourceEntries — 실행 기록의 소스별 결과 (D35)", () => {
@@ -873,6 +952,107 @@ describe("runCollect — 소스 건강도 연결 (M1-11)", () => {
       reason: "dry",
       file: null,
     });
+  });
+
+  it("파싱 실패(러너에서 빈 200 응답): 사건 payload에 응답 진단, 로그에 진단 필드 — runs 기록은 error: parse 그대로", async () => {
+    const file = path.join(tmpDir, "source-health.json");
+    const { deps, records } = makeDeps({
+      fetch: fakeFetch({
+        [ESPN_SOURCE.url]: () =>
+          new Response("", {
+            status: 200,
+            headers: { "content-type": "text/xml;charset=UTF-8" },
+          }),
+      }),
+      healthReportPath: file,
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.status).toBe("partial");
+
+    const [fail] = events(records, "collect.source.fail");
+    expect(fail).toMatchObject({
+      source: ESPN,
+      errorType: "parse",
+      status: 200,
+      mediaType: "text/xml",
+      bytes: 0,
+      bodyShape: "empty",
+      sameHost: true,
+      redirects: 0,
+      parseError: "no-document",
+      line: null,
+      column: null,
+    });
+
+    const written = JSON.parse(readFileSync(file, "utf8")) as unknown[];
+    expect(written).toHaveLength(1);
+    const payload = SourceBrokenPayloadSchema.parse(written[0]);
+    expect(payload).toMatchObject({
+      sourceId: ESPN,
+      event: "failed",
+      errorType: "parse",
+      symptoms: ["파싱 실패"],
+      parseDiagnostics: {
+        status: 200,
+        mediaType: "text/xml",
+        bytes: 0,
+        shape: "empty",
+        sameHost: true,
+        redirects: 0,
+        parser: "no-document",
+        line: null,
+        column: null,
+      },
+    });
+    const issue = buildIssue("source-broken", payload);
+    expect(issue.body).toContain(
+      "| 본문 형태 | `empty` — 빈 본문(공백·BOM만) |",
+    );
+
+    // 실행 기록(runs.json 형식)은 바뀌지 않는다 — 진단은 이슈 payload에만
+    const runs = RunsDevFileSchema.parse(
+      JSON.parse(readFileSync(path.join(dataDir, "runs-dev.json"), "utf8")),
+    );
+    const last = runs.at(-1)!;
+    expect(last.sources.find((s) => s.id === ESPN)).toEqual({
+      id: ESPN,
+      ok: false,
+      items: 0,
+      error: "parse",
+    });
+  });
+
+  it("파싱 실패(HTML 차단 페이지): 사건 파일·로그 어디에도 본문 조각이 없다", async () => {
+    const file = path.join(tmpDir, "source-health.json");
+    const html =
+      "<!DOCTYPE html><html><head><title>Access Denied MARKER</title></head><body>MARKER-REF</body></html>";
+    const { deps, records } = makeDeps({
+      fetch: fakeFetch({
+        [ESPN_SOURCE.url]: () =>
+          new Response(html, {
+            status: 200,
+            headers: { "content-type": "text/html" },
+          }),
+      }),
+      healthReportPath: file,
+    });
+    await runCollect(deps);
+    const written = readFileSync(file, "utf8");
+    const payload = SourceBrokenPayloadSchema.parse(
+      (JSON.parse(written) as unknown[])[0],
+    );
+    expect(payload.parseDiagnostics).toMatchObject({
+      mediaType: "text/html",
+      shape: "html",
+    });
+    for (const text of [
+      written,
+      JSON.stringify(records),
+      buildIssue("source-broken", payload).body,
+    ]) {
+      expect(text).not.toContain("MARKER");
+      expect(text).not.toContain("Access Denied");
+    }
   });
 
   it("사건이 없으면 빈 배열을 쓴다(이슈 단계는 '보고할 사건 없음')", async () => {

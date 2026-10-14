@@ -497,6 +497,113 @@ describe("buildIssue — source-broken 건강도 사건 (M1-11, D35)", () => {
   });
 });
 
+// ── 파싱 실패 진단 (M1-03 보강) ──
+
+const parsePayload: IssuePayloadInput<"source-broken"> = {
+  sourceId: "espn-soccer",
+  sourceName: "ESPN FC",
+  symptoms: ["파싱 실패"],
+  firstSeen: "2026-10-11",
+  runUrl: RUN_URL,
+  runId: "collect-prod-20261010T213000Z-ab12",
+  occurredAt: OCCURRED,
+  event: "failed",
+  streak: 1,
+  errorType: "parse",
+  parseDiagnostics: {
+    status: 200,
+    mediaType: "text/html",
+    bytes: 171,
+    shape: "html",
+    sameHost: true,
+    redirects: 0,
+    parser: "unexpected-close-tag",
+    line: 2,
+    column: 81,
+  },
+};
+
+describe("buildIssue·buildComment — 파싱 실패 응답 진단 표 (M1-03 보강)", () => {
+  const TABLE = [
+    "응답 진단 (파싱 실패 — 응답 본문은 싣지 않습니다):",
+    "",
+    "| 항목 | 값 |",
+    "|---|---|",
+    "| HTTP 상태 | 200 |",
+    "| Content-Type | `text/html` |",
+    "| 본문 크기 | 171바이트 |",
+    "| 본문 형태 | `html` — HTML (차단·오류 페이지일 수 있음) |",
+    "| 최종 호스트 | 피드 호스트와 같음 · 리다이렉트 0회 |",
+    "| 파서 오류 | `unexpected-close-tag` — 예상 밖 닫는 태그 (줄 2 · 열 81) |",
+  ].join("\n");
+
+  it("새 이슈 본문 메모에 진단 표 — 제목은 수집 실패 (parse)", () => {
+    const b = buildIssue("source-broken", parsePayload);
+    expect(b.title).toBe("[소스 고장] espn-soccer — 수집 실패 (parse)");
+    expect(b.body).toContain(`\n\n${TABLE}\n`);
+    expect(b.body).toContain(
+      "`collect.source.fail`에서 오류 종류·HTTP 상태(파싱 실패면 미디어 타입·본문 크기·본문 형태·파서 오류) 확인",
+    );
+  });
+
+  it("재발 댓글에도 같은 표", () => {
+    const c = buildComment("source-broken", parsePayload, { occurrence: 2 });
+    expect(c).toContain(`\n\n${TABLE}\n`);
+  });
+
+  it("빈 본문·헤더 없음·다른 호스트·위치 없음 표기", () => {
+    const b = buildIssue("source-broken", {
+      ...parsePayload,
+      parseDiagnostics: {
+        status: 200,
+        mediaType: "none",
+        bytes: 0,
+        shape: "empty",
+        sameHost: false,
+        redirects: 0,
+        parser: "no-document",
+        line: null,
+        column: null,
+      },
+    });
+    expect(b.body).toContain("| Content-Type | `none` (헤더 없음) |");
+    expect(b.body).toContain("| 본문 크기 | 0바이트 |");
+    expect(b.body).toContain("| 본문 형태 | `empty` — 빈 본문(공백·BOM만) |");
+    expect(b.body).toContain(
+      "| 최종 호스트 | **피드 호스트와 다름** (다른 곳으로 넘어감) · 리다이렉트 0회 |",
+    );
+    expect(b.body).toContain(
+      "| 파서 오류 | `no-document` — 파서가 문서를 얻지 못함(빈 본문·공백만) |",
+    );
+  });
+
+  it("진단이 없으면 표도 없다", () => {
+    expect(buildIssue("source-broken", failingPayload).body).not.toContain(
+      "응답 진단",
+    );
+  });
+
+  it.each([
+    ["미디어 타입 자유 문자열", { mediaType: "text/html; <b>본문</b>" }],
+    ["모르는 본문 형태", { shape: "xml" }],
+    ["모르는 파서 코드", { parser: "Unexpected close tag" }],
+    ["본문 조각 키", { snippet: "<title>Access Denied</title>" }],
+    ["음수 바이트", { bytes: -1 }],
+    ["범위 밖 HTTP 상태", { status: 42 }],
+    ["소수 위치", { line: 1.5 }],
+  ])("진단 형식 오류(%s)는 IssuePayloadError — enum·숫자만", (_label, over) => {
+    expect(() =>
+      buildIssue("source-broken", {
+        ...parsePayload,
+        parseDiagnostics: {
+          ...parsePayload.parseDiagnostics!,
+          ...over,
+        },
+      } as IssuePayloadInput<"source-broken">),
+    ).toThrow(IssuePayloadError);
+  });
+});
+
 describe("buildIssue — ops-report (M5 골격)", () => {
   it("기본 섹션은 자리표시, 넘긴 섹션은 내용으로", () => {
     const b = buildIssue("ops-report", {

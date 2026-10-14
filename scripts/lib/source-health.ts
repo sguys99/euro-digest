@@ -38,13 +38,19 @@
  *   수집 건수 = 피드 원문 items 합 · 창 안 새 항목 usable 합(`usable`이 기록된 실행만). runs.json에 요약 필드를 따로
  *   저장하지 않고(D35) 운영 리포트(M5-09)·/status가 같은 함수로 계산한다.
  *
+ * 파싱 실패 진단(M1-03 보강): 이번 실행이 `parse` 실패면 호출부가 넘긴 응답 진단(본문 없음 — enum·숫자만)을 payload
+ * `parseDiagnostics`로 싣는다. 이슈 스키마(ParseDiagnosticsPayloadSchema)를 통과하는 값만 싣고, 맞지 않으면 그 필드만 뺀다
+ * (진단 때문에 이슈 자체가 빠지지 않게). runs.json에는 남기지 않으므로 이번 실행 것만 있다.
+ *
  * 기록 범위: prod·collect 실행만(runs-dev.json의 dev 실행은 보지 않는다 — 발행 기록이 아니다), 이번 실행보다 늦게
  * 시작한 기록(시계 오류)과 이번 실행과 같은 runId는 뺀다. 이번 실행에서 수집 대상이 아니었던 소스(비활성)는 판정하지 않는다.
  */
 import type { RunLog, RunSource } from "@/lib/schema";
 import { kstDate, kstDayRangeUtc, parseUtcIso, shiftDate } from "@/lib/time";
 
+import type { FeedParseDiagnostics } from "./feed-diagnostics";
 import {
+  ParseDiagnosticsPayloadSchema,
   SOURCE_SYMPTOMS,
   sourceIssueKey,
   type IssuePayloadInput,
@@ -126,6 +132,8 @@ export interface SourceHealth {
   current: SourceRunRecord;
   /** 이번 실행의 HTTP 상태(받기 실패이고 응답이 있었을 때만) */
   httpStatus: number | null;
+  /** 이번 실행의 파싱 실패 진단(`parse` 실패일 때만, 본문 내용 없음) */
+  parseDiagnostics: FeedParseDiagnostics | null;
   /** 실패·빈 피드 연속(budget 건너뜀) */
   failStreak: Streak;
   /** 새 기사 없음 연속(budget·실패·빈 피드·옛 기록 건너뜀) */
@@ -140,8 +148,11 @@ export interface SourceHealth {
   suppressedEvent: HealthEvent | null;
 }
 
-/** 이번 실행의 소스 결과 — runs.json에 남길 기록 + (있으면) HTTP 상태 */
-export type CurrentSourceResult = RunSource & { httpStatus?: number | null };
+/** 이번 실행의 소스 결과 — runs.json에 남길 기록 + (있으면) HTTP 상태·파싱 실패 진단(runs.json에는 남기지 않는다) */
+export type CurrentSourceResult = RunSource & {
+  httpStatus?: number | null;
+  parseDiagnostics?: FeedParseDiagnostics | null;
+};
 
 // ─── 분류·이력 ───────────────────────────────────────────────────────────
 
@@ -376,6 +387,7 @@ export function assessSourceHealth(input: AssessInput): SourceHealth[] {
       id: entry.id,
       current,
       httpStatus: entry.httpStatus ?? null,
+      parseDiagnostics: entry.parseDiagnostics ?? null,
       failStreak: fail,
       staleStreak: stale,
       stats: sourceStats(records, input.run.startedAt),
@@ -449,6 +461,7 @@ export function healthIssuePayload(
       ? current.error.slice(0, 40)
       : undefined;
   const { httpStatus } = health;
+  const diagnostics = issueParseDiagnostics(health);
   return {
     sourceId: health.id,
     ...(name ? { sourceName: name.slice(0, 100) } : {}),
@@ -485,7 +498,37 @@ export function healthIssuePayload(
         ? { error: r.error.slice(0, 40) }
         : {}),
     })),
+    ...(diagnostics ? { parseDiagnostics: diagnostics } : {}),
   };
+}
+
+/**
+ * 이슈에 실을 파싱 실패 진단 — 이번 실행이 `parse` 실패이고 진단이 스키마(enum·숫자만)를 통과할 때만.
+ * 스키마에 없는 키는 버린다(strict 스키마로 다시 고르므로 본문 조각이 섞여 들어올 자리가 없다).
+ */
+function issueParseDiagnostics(
+  health: SourceHealth,
+): IssuePayloadInput<"source-broken">["parseDiagnostics"] | undefined {
+  const d = health.parseDiagnostics;
+  if (
+    !d ||
+    health.current.state !== "failed" ||
+    health.current.error !== "parse"
+  ) {
+    return undefined;
+  }
+  const parsed = ParseDiagnosticsPayloadSchema.safeParse({
+    status: d.status,
+    mediaType: d.mediaType,
+    bytes: d.bytes,
+    shape: d.shape,
+    sameHost: d.sameHost,
+    redirects: d.redirects,
+    parser: d.parser,
+    line: d.line,
+    column: d.column,
+  });
+  return parsed.success ? parsed.data : undefined;
 }
 
 /** 사건이 있는 소스만 payload로 (입력 순서) */

@@ -1,6 +1,6 @@
 /**
  * 피드 소스 수집 실행기 (M1-03, PRD FR-01·FR-11, CLAUDE.md §6.4) — 재시도·시간 상한·호스트별 병렬·소스별 실패 격리.
- * 요청 1회의 세부(UA·리다이렉트·크기 상한·타임아웃)는 scripts/lib/rss.ts `fetchFeedXml`이 맡는다.
+ * 요청 1회의 세부(UA·리다이렉트·크기 상한·타임아웃)는 scripts/lib/rss.ts `fetchFeed`가 맡는다.
  *
  * ── 재시도 (`fetchFeedWithRetry`) ───────────────────────────────────────
  *   일시 장애만 **1회** 다시 시도한다: 5xx · 429 · 네트워크 오류 · 타임아웃. 4xx(429 제외)·리다이렉트 거부·크기 초과·
@@ -25,6 +25,9 @@
  *   `runSourceEntries`)가 `{id, ok, items}` + 성공은 `usable`(수집 창 안 건수)·실패는 `error`(= errorType)를 남긴다
  *   (PRD §15 D35). 응답 본문·오류 메시지는 어디에도 남기지 않는다. 소스 실패·건강도 이슈는 이 모듈이 아니라
  *   scripts/lib/source-health.ts(판정) → collect.yml 이슈 단계(보고)가 맡는다(M1-11).
+ *   **파싱 실패 진단**(M1-03 보강): `parse` 실패는 본문 대신 응답 겉모습(HTTP 상태·미디어 타입·바이트 수·본문 형태·최종
+ *   호스트 일치·리다이렉트 수)과 파서 오류 코드·줄·열을 `parseDiagnostics`로 결과에 담고 `collect.source.fail` 로그에
+ *   펼쳐 남긴다(scripts/lib/feed-diagnostics.ts — 모두 enum·숫자). runs.json에는 그대로 `error: "parse"`만 남는다.
  *
  * ── 정규화·공통 형식 (M1-09) ─────────────────────────────────────────────
  *   파싱한 항목은 scripts/lib/normalize.ts가 공통 형식(`FeedItemSchema`, FR-03 — 본문 필드 불가 FR-02)으로 바꾸고 항목마다
@@ -45,6 +48,10 @@ import {
   filterByAuthor,
   type AuthorSkipReason,
 } from "./author-filter";
+import type {
+  FeedParseDiagnostics,
+  FeedResponseInfo,
+} from "./feed-diagnostics";
 import type { Logger } from "./logger";
 import {
   normalizeFeedItems,
@@ -57,7 +64,7 @@ import {
   FEED_TIMEOUT_MS,
   FeedFetchError,
   FeedParseError,
-  fetchFeedXml,
+  fetchFeed,
   parseFeedXml,
   type FeedFetchErrorKind,
   type FetchLike,
@@ -191,7 +198,13 @@ export type RetrySkipReason =
   | "no-time";
 
 export type FeedFetchResult =
-  | { ok: true; xml: string; retries: number }
+  | {
+      ok: true;
+      xml: string;
+      /** 응답 겉모습(본문 내용 없음) — 파싱 실패 진단에 쓴다 */
+      info: FeedResponseInfo;
+      retries: number;
+    }
   | {
       ok: false;
       error: FeedFetchError;
@@ -249,7 +262,7 @@ export async function fetchFeedWithRetry(
     const stageBound = stageDeadline - attemptStart <= timeoutMs;
     let failure: FeedFetchError;
     try {
-      const xml = await fetchFeedXml(url, {
+      const { text, info } = await fetchFeed(url, {
         fetch: options.fetch,
         userAgent: options.userAgent,
         timeoutMs,
@@ -257,7 +270,7 @@ export async function fetchFeedWithRetry(
         maxRedirects: policy.maxRedirects,
         now: () => clock.now(),
       });
-      return { ok: true, xml, retries };
+      return { ok: true, xml: text, info, retries };
     } catch (error) {
       if (!(error instanceof FeedFetchError)) throw error;
       failure =
@@ -404,6 +417,8 @@ export interface SourceOutcome {
   /** 재시도 대상 오류인데 다시 보내지 않은 이유 */
   retrySkipped?: RetrySkipReason;
   error?: string;
+  /** 파싱 실패(`parse`)일 때만 — 응답 겉모습 + 파서 오류 코드·줄·열(본문 내용 없음, M1-03 보강) */
+  parseDiagnostics?: FeedParseDiagnostics;
 }
 
 export interface FeedCollectDeps {
@@ -601,18 +616,24 @@ async function collectOne(
   } catch (error) {
     if (!(error instanceof FeedParseError)) throw error;
     const elapsedMs = clock.now() - started;
+    const parseDiagnostics: FeedParseDiagnostics = {
+      ...fetched.info,
+      ...error.info,
+    };
     log.error("collect.source.fail", {
       source: source.id,
       errorType: "parse",
       retries: fetched.retries,
       error: errorText(error),
       elapsedMs,
+      ...parseDiagnosticFields(parseDiagnostics),
     });
     return {
       outcome: failedOutcome(source.id, "parse", {
         retries: fetched.retries,
         elapsedMs,
         error: errorText(error),
+        parseDiagnostics,
       }),
       items: [],
     };
@@ -681,13 +702,36 @@ async function collectOne(
   };
 }
 
+/**
+ * 파싱 실패 진단 → `collect.source.fail` 로그 필드. 이름은 로그 필드 규칙을 따른다 — HTTP 상태는 `status`,
+ * 본문 형태는 `bodyShape`, 파서 오류 코드는 `parseError`(`error`는 짧은 메시지, `errorType`은 `parse`).
+ */
+export function parseDiagnosticFields(diagnostics: FeedParseDiagnostics) {
+  return {
+    status: diagnostics.status,
+    mediaType: diagnostics.mediaType,
+    bytes: diagnostics.bytes,
+    bodyShape: diagnostics.shape,
+    sameHost: diagnostics.sameHost,
+    redirects: diagnostics.redirects,
+    parseError: diagnostics.parser,
+    line: diagnostics.line,
+    column: diagnostics.column,
+  };
+}
+
 function failedOutcome(
   id: string,
   errorType: SourceErrorType,
   extra: Partial<
     Pick<
       SourceOutcome,
-      "status" | "retries" | "elapsedMs" | "retrySkipped" | "error"
+      | "status"
+      | "retries"
+      | "elapsedMs"
+      | "retrySkipped"
+      | "error"
+      | "parseDiagnostics"
     >
   >,
 ): SourceOutcome {
@@ -703,6 +747,9 @@ function failedOutcome(
     status: extra.status ?? null,
     ...(extra.retrySkipped ? { retrySkipped: extra.retrySkipped } : {}),
     ...(extra.error !== undefined ? { error: extra.error } : {}),
+    ...(extra.parseDiagnostics
+      ? { parseDiagnostics: extra.parseDiagnostics }
+      : {}),
   };
 }
 

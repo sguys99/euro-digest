@@ -9,8 +9,12 @@
  *     (다른 사이트로 넘어가면 약관 확인 대상이 바뀐다).
  *   · 크기 상한: `Content-Length`가 상한을 넘으면 읽기 전에, 본문을 읽는 중 누적 바이트가 넘으면 그 자리에서 중단(`too-large`).
  *   · 실패는 모두 `FeedFetchError`(종류 `kind` + HTTP 상태 + `Retry-After`). 응답 본문은 메시지·로그에 넣지 않는다.
+ *   · 성공하면 본문 문자열과 함께 응답 겉모습(`FeedResponseInfo` — HTTP 상태·미디어 타입·바이트 수·본문 형태·최종 호스트
+ *     일치·리다이렉트 수)을 돌려준다(`fetchFeed`). 파싱이 실패했을 때 본문 없이 원인을 가늠하는 진단 값이다
+ *     (scripts/lib/feed-diagnostics.ts, M1-03 보강). `fetchFeedXml`은 본문만 돌려주는 얇은 판이다.
  *   fetch는 주입한다(테스트는 네트워크 없이 fixtures/rss/*.xml·가짜 응답을 돌려준다).
- * - 파싱: `parseFeedXml` — XML 문자열 → 항목의 **제목·링크·날짜·작성자 원문만**. 본문(`content:encoded`)·
+ * - 파싱: `parseFeedXml` — XML 문자열 → 항목의 **제목·링크·날짜·작성자 원문만**. 실패는 `FeedParseError`(고정 코드 +
+ *   줄·열만 — 파서 메시지 원문·본문 조각은 담지 않는다). 본문(`content:encoded`)·
  *   요약문(`description`)·이미지(`enclosure`·`media:*`)는 여기서 버린다 — 카드에 저장·표시하지 않는다(CLAUDE.md §1-5,
  *   PRD §15 D23, M0-25). 공통 형식(M1-09)의 `summary`는 그래서 항상 null이다 — 요약문을 분류
  *   입력으로 쓰는 경로는 M1-17 착수 때 사용자 확인 후 연다.
@@ -24,6 +28,16 @@ import Parser from "rss-parser";
 
 import { REPO_URL } from "@/lib/site";
 import { parseFeedDate } from "@/lib/time";
+
+import {
+  classifyFeedBody,
+  describeParseError,
+  feedMediaType,
+  sameFeedHost,
+  type FeedParseErrorCode,
+  type FeedParseErrorInfo,
+  type FeedResponseInfo,
+} from "./feed-diagnostics";
 
 // ─── 상수 ────────────────────────────────────────────────────────────────
 
@@ -85,9 +99,30 @@ export class FeedFetchError extends Error {
   }
 }
 
-/** 피드 파싱 실패(깨진 XML·RSS/Atom이 아님). */
+/**
+ * 피드 파싱 실패(깨진 XML·RSS/Atom이 아님). 파서 메시지 원문 대신 고정 코드(`parser`)와 위치(줄·열, 1부터)만 담는다 —
+ * sax 메시지에는 본문 글자(`Char:`)·태그 이름이 붙을 수 있어서다(scripts/lib/feed-diagnostics.ts `describeParseError`).
+ */
 export class FeedParseError extends Error {
   override readonly name = "FeedParseError";
+  readonly parser: FeedParseErrorCode;
+  readonly line: number | null;
+  readonly column: number | null;
+  constructor(info: FeedParseErrorInfo) {
+    const position =
+      info.line !== null
+        ? ` 줄 ${info.line}${info.column !== null ? `·열 ${info.column}` : ""}`
+        : "";
+    super(`피드 파싱 실패 (${info.parser}${position})`);
+    this.parser = info.parser;
+    this.line = info.line;
+    this.column = info.column;
+  }
+
+  /** 오류 요약(고정 코드 + 위치) */
+  get info(): FeedParseErrorInfo {
+    return { parser: this.parser, line: this.line, column: this.column };
+  }
 }
 
 // ─── User-Agent ──────────────────────────────────────────────────────────
@@ -141,19 +176,35 @@ export interface FetchFeedOptions {
   now?: () => number;
 }
 
+/** 받은 피드 — 본문 문자열 + 응답 겉모습(본문 내용 없음) */
+export interface FeedResponse {
+  text: string;
+  info: FeedResponseInfo;
+}
+
 /** 시도가 타임아웃으로 중단됐다는 내부 표시(밖으로는 FeedFetchError("timeout")로 바뀐다) */
 class AttemptAborted extends Error {
   override readonly name = "AttemptAborted";
 }
 
 /**
- * 피드 XML을 받는다(요청 1회 — 같은 호스트 리다이렉트는 이 1회 안에서 따라간다).
- * 2xx가 아니거나, 따라가지 않는 리다이렉트이거나, 너무 크거나, 시간을 넘기면 FeedFetchError. 재시도는 하지 않는다.
+ * 피드 XML을 받는다(요청 1회 — 같은 호스트 리다이렉트는 이 1회 안에서 따라간다). 본문만 돌려준다(`fetchFeed`의 얇은 판).
  */
 export async function fetchFeedXml(
   url: string,
   options: FetchFeedOptions,
 ): Promise<string> {
+  return (await fetchFeed(url, options)).text;
+}
+
+/**
+ * 피드를 받는다(요청 1회 — 같은 호스트 리다이렉트는 이 1회 안에서 따라간다) → 본문 + 응답 겉모습.
+ * 2xx가 아니거나, 따라가지 않는 리다이렉트이거나, 너무 크거나, 시간을 넘기면 FeedFetchError. 재시도는 하지 않는다.
+ */
+export async function fetchFeed(
+  url: string,
+  options: FetchFeedOptions,
+): Promise<FeedResponse> {
   const timeoutMs = options.timeoutMs ?? FEED_TIMEOUT_MS;
   const controller = new AbortController();
   let timedOut = false;
@@ -181,12 +232,13 @@ async function fetchAttempt(
   url: string,
   options: FetchFeedOptions,
   signal: AbortSignal,
-): Promise<string> {
+): Promise<FeedResponse> {
   const maxRedirects = options.maxRedirects ?? FEED_MAX_REDIRECTS;
   const maxBytes = options.maxBytes ?? FEED_MAX_BYTES;
   const now = options.now ?? Date.now;
   let current = url;
-  for (let redirects = 0; ;) {
+  let redirects = 0;
+  for (;;) {
     let response: Response;
     try {
       response = await raceAbort(
@@ -240,7 +292,19 @@ async function fetchAttempt(
       );
     }
 
-    return readBodyCapped(response, maxBytes, signal);
+    const body = await readBodyCapped(response, maxBytes, signal);
+    return {
+      text: body.text,
+      info: {
+        status,
+        mediaType: feedMediaType(response.headers.get("content-type")),
+        bytes: body.bytes,
+        shape: classifyFeedBody(body.text),
+        // 주입한 fetch가 리다이렉트를 스스로 따라갔으면 response.url이 다르다(빈 값이면 마지막 요청 주소)
+        sameHost: sameFeedHost(url, response.url || current),
+        redirects,
+      },
+    };
   }
 }
 
@@ -302,14 +366,15 @@ function discardBody(response: Response): void {
 }
 
 /**
- * 본문을 상한 안에서 읽어 UTF-8 문자열로 바꾼다. `Content-Length`가 상한을 넘으면 읽지 않고, 읽는 중 누적 바이트가
- * 상한을 넘으면 그 자리에서 스트림을 취소한다. 압축 전송이면 Content-Length는 압축 크기라 읽는 중 검사가 최종 방어선이다.
+ * 본문을 상한 안에서 읽어 UTF-8 문자열과 바이트 수로 돌려준다. `Content-Length`가 상한을 넘으면 읽지 않고, 읽는 중 누적
+ * 바이트가 상한을 넘으면 그 자리에서 스트림을 취소한다. 압축 전송이면 Content-Length는 압축 크기라 읽는 중 검사가 최종
+ * 방어선이다.
  */
 async function readBodyCapped(
   response: Response,
   maxBytes: number,
   signal: AbortSignal,
-): Promise<string> {
+): Promise<{ text: string; bytes: number }> {
   const status = response.status;
   const declared = contentLength(response.headers.get("content-length"));
   if (declared !== null && declared > maxBytes) {
@@ -321,7 +386,7 @@ async function readBodyCapped(
     );
   }
   const body = response.body;
-  if (!body) return "";
+  if (!body) return { text: "", bytes: 0 };
   const reader = body.getReader();
   const chunks: Uint8Array[] = [];
   let total = 0;
@@ -354,7 +419,10 @@ async function readBodyCapped(
     reader.cancel().catch(() => undefined);
     throw error;
   }
-  return new TextDecoder("utf-8").decode(Buffer.concat(chunks));
+  return {
+    text: new TextDecoder("utf-8").decode(Buffer.concat(chunks)),
+    bytes: total,
+  };
 }
 
 /** `Content-Length` → 바이트 수(없거나 형식이 틀리면 null) */
@@ -460,8 +528,8 @@ function authorTexts(value: unknown): string[] {
 }
 
 /**
- * 피드 XML → 항목 목록(피드 순서 그대로). 깨진 XML·RSS/Atom이 아닌 문서는 FeedParseError, 항목이 없으면 [].
- * 본문·요약문·이미지 필드는 결과에 담지 않는다.
+ * 피드 XML → 항목 목록(피드 순서 그대로). 깨진 XML·RSS/Atom이 아닌 문서·빈 본문은 FeedParseError(고정 코드 + 줄·열),
+ * 항목이 없으면 []. 본문·요약문·이미지 필드는 결과에 담지 않는다.
  */
 export async function parseFeedXml(xml: string): Promise<RawFeedItem[]> {
   const parser = new Parser({ customFields: { item: AUTHOR_FIELDS } });
@@ -469,9 +537,7 @@ export async function parseFeedXml(xml: string): Promise<RawFeedItem[]> {
   try {
     feed = await parser.parseString(xml);
   } catch (error) {
-    throw new FeedParseError(
-      `피드 파싱 실패: ${error instanceof Error ? error.message.split("\n")[0] : String(error)}`,
-    );
+    throw new FeedParseError(describeParseError(error));
   }
   return (feed.items ?? []).map((item) => {
     // rss-parser 타입에 없는 dc:date는 `date` 키로, 작성자 배열은 AUTHOR_FIELDS의 키로 들어온다.

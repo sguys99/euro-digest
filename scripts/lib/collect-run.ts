@@ -2207,15 +2207,18 @@ async function runHealthStage(
       error: historyError,
     });
   }
-  const statusById = new Map(
-    ctx.outcomes.map((o) => [o.id, o.status ?? null] as const),
-  );
+  const outcomeById = new Map(ctx.outcomes.map((o) => [o.id, o] as const));
   const health = assessSourceHealth({
     run: { runId: ctx.runId, startedAt: ctx.startedAt },
-    current: ctx.sources.map((entry) => ({
-      ...entry,
-      httpStatus: statusById.get(entry.id) ?? null,
-    })),
+    // runs.json 기록 + HTTP 상태·파싱 실패 진단(M1-03 보강 — 이슈 payload에만, runs.json에는 남기지 않는다)
+    current: ctx.sources.map((entry) => {
+      const outcome = outcomeById.get(entry.id);
+      return {
+        ...entry,
+        httpStatus: outcome?.status ?? null,
+        parseDiagnostics: outcome?.parseDiagnostics ?? null,
+      };
+    }),
     history: ctx.runsRead.ok ? ctx.runsRead.runs : [],
   });
   // 소스별 한 줄 요약 — 사건이 있거나 뺐으면 warn

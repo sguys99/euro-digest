@@ -44,6 +44,13 @@ import { z } from "zod";
 import { IsoSchema } from "@/lib/schema";
 import { formatKst, kstDate, nowUtcIso } from "@/lib/time";
 
+import {
+  FEED_BODY_SHAPE_LABEL,
+  FEED_BODY_SHAPES,
+  FEED_MEDIA_TYPES,
+  FEED_PARSE_ERROR_CODES,
+  FEED_PARSE_ERROR_LABEL,
+} from "./feed-diagnostics";
 import { createLogger, sanitizeText, type Logger } from "./logger";
 
 // ─── 종류·라벨 ───────────────────────────────────────────────────────────
@@ -282,6 +289,32 @@ const SourceRecentRunSchema = z.strictObject({
   error: ErrorTypeSchema.optional(),
 });
 
+/** 위치(줄·열, 1부터) — 파서가 주지 않았으면 null */
+const ParsePosition = z.number().int().min(0).max(1_000_000_000).nullable();
+
+/**
+ * 파싱 실패 진단(M1-03 보강 — scripts/lib/feed-diagnostics.ts). 응답 본문 대신 겉모습만 — **정해진 enum·숫자·참거짓만**
+ * 받는다(자유 문자열 칸이 없어 본문 조각이 들어갈 자리가 없다).
+ */
+export const ParseDiagnosticsPayloadSchema = z.strictObject({
+  /** 최종 응답 HTTP 상태 */
+  status: z.number().int().min(100).max(599),
+  /** `Content-Type` 미디어 타입(목록 밖 `other`, 헤더 없음 `none`) */
+  mediaType: z.enum(FEED_MEDIA_TYPES),
+  /** 본문 바이트 길이 */
+  bytes: Count,
+  /** 본문 형태 */
+  shape: z.enum(FEED_BODY_SHAPES),
+  /** 최종 응답 호스트가 피드 호스트와 같은가 */
+  sameHost: z.boolean(),
+  /** 따라간 리다이렉트 수(같은 호스트만) */
+  redirects: z.number().int().min(0).max(20),
+  /** 파서 오류 코드 */
+  parser: z.enum(FEED_PARSE_ERROR_CODES),
+  line: ParsePosition,
+  column: ParsePosition,
+});
+
 export const SourceBrokenPayloadSchema = z.strictObject({
   sourceId: z.string().min(1).max(100),
   sourceName: z.string().max(100).optional(),
@@ -306,6 +339,8 @@ export const SourceBrokenPayloadSchema = z.strictObject({
   stats7d: SourceStatsPayloadSchema.optional(),
   /** 최근 실행(오래된 → 최근, 마지막이 이번 실행) */
   recent: z.array(SourceRecentRunSchema).max(30).optional(),
+  /** 이번 실행이 파싱 실패(`parse`)일 때 응답 진단 — 본문 내용 없음 */
+  parseDiagnostics: ParseDiagnosticsPayloadSchema.optional(),
 });
 
 /** 주간 운영 리포트 — M5(FR-155)에서 비용·성공률·소스 건강도·미등록 고유명사 섹션을 채운다. 지금은 골격. */
@@ -700,6 +735,41 @@ function recentTable(
   ];
 }
 
+/**
+ * 파싱 실패 진단 표 — 값은 모두 enum·숫자라 그대로 싣는다(본문 내용 없음).
+ * 리다이렉트 0회·같은 호스트가 정상이다.
+ */
+export function parseDiagnosticsTable(
+  d: IssuePayload<"source-broken">["parseDiagnostics"],
+): string[] {
+  if (!d) return [];
+  const position =
+    d.line !== null
+      ? ` (줄 ${d.line}${d.column !== null ? ` · 열 ${d.column}` : ""})`
+      : "";
+  const mediaNote =
+    d.mediaType === "none"
+      ? " (헤더 없음)"
+      : d.mediaType === "other"
+        ? " (목록 밖 형식)"
+        : "";
+  const host = d.sameHost
+    ? "피드 호스트와 같음"
+    : "**피드 호스트와 다름** (다른 곳으로 넘어감)";
+  return [
+    "응답 진단 (파싱 실패 — 응답 본문은 싣지 않습니다):",
+    "",
+    "| 항목 | 값 |",
+    "|---|---|",
+    `| HTTP 상태 | ${d.status} |`,
+    `| Content-Type | \`${d.mediaType}\`${mediaNote} |`,
+    `| 본문 크기 | ${d.bytes}바이트 |`,
+    `| 본문 형태 | \`${d.shape}\` — ${FEED_BODY_SHAPE_LABEL[d.shape]} |`,
+    `| 최종 호스트 | ${host} · 리다이렉트 ${d.redirects}회 |`,
+    `| 파서 오류 | \`${d.parser}\` — ${FEED_PARSE_ERROR_LABEL[d.parser]}${position} |`,
+  ];
+}
+
 /** 사건별 확인 항목 */
 function sourceEventChecklist(p: IssuePayload<"source-broken">): string[] {
   const common = [
@@ -715,7 +785,7 @@ function sourceEventChecklist(p: IssuePayload<"source-broken">): string[] {
     ];
   }
   return [
-    "- [ ] 실행 로그의 `collect.source.fail`에서 오류 종류·HTTP 상태 확인 (응답 본문·비밀값은 이슈에 붙이지 않는다)",
+    "- [ ] 실행 로그의 `collect.source.fail`에서 오류 종류·HTTP 상태(파싱 실패면 미디어 타입·본문 크기·본문 형태·파서 오류) 확인 (응답 본문·비밀값은 이슈에 붙이지 않는다)",
     "- [ ] 피드 URL·구조 변경, 약관·robots.txt 변경 여부 확인",
     ...common,
   ];
@@ -736,6 +806,7 @@ function buildSourceBroken(
   const eventTitle = sourceEventTitle(p);
   const eventLine = sourceEventLine(p);
   const table = recentTable(p.recent);
+  const diagnostics = parseDiagnosticsTable(p.parseDiagnostics);
   const memo = [
     ...(eventLine ? [`**${eventTitle}** — ${eventLine}`, ""] : []),
     ...(p.errorType ? [`- 오류 종류: ${codeSpan(p.errorType, 40)}`] : []),
@@ -747,6 +818,7 @@ function buildSourceBroken(
     p.event === "stale-streak"
       ? "- 피드는 정상 응답해 이번 실행도 그대로 발행했습니다."
       : "- 이 소스만 건너뛰고 나머지 수집은 계속했습니다 (소스 실패 격리, FR-08).",
+    ...(diagnostics.length ? ["", ...diagnostics] : []),
     ...(table.length ? ["", "최근 실행:", "", ...table] : []),
     ...(p.event ? ["", "확인할 것:", "", ...sourceEventChecklist(p)] : []),
     ...(p.note ? ["", noteText(p.note)] : []),
@@ -887,6 +959,7 @@ export function buildComment<K extends IssueKind>(
       const streakEvent =
         p.event === "failing-streak" || p.event === "stale-streak";
       const table = streakEvent ? recentTable(p.recent) : [];
+      const diagnostics = parseDiagnosticsTable(p.parseDiagnostics);
       lines = [
         `### ${eventTitle ?? "다시 발생"} — ${kstDateTime(occurredAt)}${nth}`,
         "",
@@ -897,6 +970,7 @@ export function buildComment<K extends IssueKind>(
         ...(p.httpStatus ? [`- HTTP 상태: ${p.httpStatus}`] : []),
         ...statsLines(p.stats7d),
         `- 실행: ${p.runUrl ? runLink(p.runUrl) : p.runId ? `runs.json 실행 ID ${inlineText(p.runId, 100)}` : "(실행 링크 없음)"}`,
+        ...(diagnostics.length ? ["", ...diagnostics] : []),
         ...(table.length ? ["", ...table] : []),
         ...(p.note ? ["", noteText(p.note)] : []),
       ];

@@ -185,7 +185,20 @@ describe("fetchFeedWithRetry — 재시도 1회", () => {
       const result = await drain(
         fetchFeedWithRetry(URL_A, retryOptions(f.fetch)),
       );
-      expect(result).toEqual({ ok: true, xml: XML, retries: 1 });
+      expect(result).toEqual({
+        ok: true,
+        xml: XML,
+        retries: 1,
+        // 응답 겉모습(파싱 실패 진단용) — 재시도 뒤 성공한 응답의 것
+        info: {
+          status: 200,
+          mediaType: "text/plain",
+          bytes: XML.length,
+          shape: "xml-rss",
+          sameHost: true,
+          redirects: 0,
+        },
+      });
       expect(f.calls).toHaveLength(2);
       const firstEnd = first.kind === "hang" ? 15_000 : 0;
       expect(f.calls[1]!.at - firstEnd).toBe(2_000);
