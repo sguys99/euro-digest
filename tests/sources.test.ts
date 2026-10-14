@@ -163,7 +163,7 @@ describe("planDailySources", () => {
     });
   });
 
-  it("현재 configs/sources.json — 수집 대상 피드 14개(BBC 4·The Athletic·ESPN·the Daily Briefing·Di Marzio·Relevo·국내 5), 나머지 제외 사유", async () => {
+  it("현재 configs/sources.json — 수집 대상 피드 13개(BBC 4·The Athletic·the Daily Briefing·Di Marzio·Relevo·국내 5), 나머지 제외 사유(ESPN은 2026-10-14부터 disabled)", async () => {
     const plan = planDailySources(await loadSources(ROOT));
     expect(plan.feeds.map((s) => `${s.id} (${s.type}, ${s.lang})`)).toEqual([
       "bbc-sport-football (rss, en)",
@@ -171,7 +171,6 @@ describe("planDailySources", () => {
       "bbc-sport-champions-league (rss, en)",
       "bbc-sport-european (rss, en)",
       "the-athletic-football (rss, en)",
-      "espn-soccer (rss, en)",
       "daily-briefing (journalist, en)",
       "di-marzio (journalist, it)",
       "relevo (rss, es)",
@@ -187,6 +186,8 @@ describe("planDailySources", () => {
     ).toEqual({
       "sky-sports-football": "disabled",
       "guardian-football": "disabled",
+      // 2026-10-14 사용자 결정 — Actions 러너에만 HTTP 202·0바이트 응답(봇 차단 추정). fixture는 동작 테스트용으로 남긴다
+      "espn-soccer": "disabled",
       "caughtoffside-romano": "disabled",
       caughtoffside: "disabled",
       "football-italia": "disabled",

@@ -1,7 +1,9 @@
 /**
  * M1-02 — `npm run collect` 뉴스 단계가 소스 로더의 수집 대상 피드 전부를 돌고, 소스별 실패를 격리하는지 검사한다.
  *
- * 네트워크·실호출 없음: 피드는 fixtures/rss/<소스 id>.xml(수집 대상 14개와 1:1 — tests/fixtures-rss.test.ts가 보장),
+ * 네트워크·실호출 없음: 피드는 fixtures/rss/<소스 id>.xml 14개, 소스는 configs/sources.json에서 fixture 피드만 켠 목록을
+ * 주입한다(tests/support/fixture-sources.ts — 실제 configs의 enabled에 기대지 않는다. 2026-10-14 espn-soccer 비활성 뒤에도
+ * 14개 그대로). 현재 configs의 수집 대상 스냅숏은 tests/sources.test.ts.
  * 경기는 fixtures/football/football-data/*, LLM은 fixtures/llm/mock 또는 가짜 transport. 파일 쓰기는 임시 폴더.
  *
  * 필수 항목: 수집 대상만 요청(제외 소스·검색형은 요청 없음) · 소스 1개 실패 격리 · 여러 소스의 같은 링크 중복 없음 ·
@@ -24,7 +26,6 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   NewsFileSchema,
   RunsDevFileSchema,
-  SourcesFileSchema,
   type NewsFile,
   type Source,
 } from "@/lib/schema";
@@ -50,6 +51,7 @@ import {
 import { planDailySources } from "../scripts/lib/sources";
 
 import { cancelGate } from "./support/cancel-gate";
+import { fixtureFeedSources } from "./support/fixture-sources";
 import { fdFixtureResponse } from "./support/football-data-fake";
 
 // ─── fixtures ────────────────────────────────────────────────────────────
@@ -57,9 +59,8 @@ import { fdFixtureResponse } from "./support/football-data-fake";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
 
-const SOURCES: Source[] = SourcesFileSchema.parse(
-  JSON.parse(read("configs/sources.json")),
-);
+/** configs/sources.json + fixture 피드 14개 활성(테스트 전용) — makeDeps가 loadSources로 주입한다 */
+const SOURCES: Source[] = fixtureFeedSources();
 const PLAN = planDailySources(SOURCES);
 const FEEDS = PLAN.feeds;
 const byId = (id: string): Source => {
@@ -213,6 +214,7 @@ function makeDeps(
     dry: false,
     limit: 45,
     now: () => NOW,
+    loadSources: async () => SOURCES,
     fetch: fetcher.fetch,
     userAgent: feedUserAgent("test@example.com"),
     feedClock: virtualClock().clock,
@@ -317,7 +319,7 @@ function brokenBodyResponse(): Response {
 
 // ─── 수집 대상 전부 ──────────────────────────────────────────────────────
 
-describe("runCollect — configs의 수집 대상 피드 전부", () => {
+describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성)", () => {
   it("수집 대상 14개 피드만 한 번씩 요청(다른 호스트 동시·같은 호스트 하나씩 설정 순서), 제외 소스·검색형은 요청하지 않는다", async () => {
     const { deps, fetcher, records } = makeDeps();
     const outcome = await runCollect(deps);

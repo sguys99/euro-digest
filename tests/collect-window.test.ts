@@ -6,6 +6,8 @@
  * 통합(runCollect): prod runs.json을 읽어 창을 열고, 창 밖·미래 항목을 소스를 합치기 전에 걸러낸다.
  *
  * 네트워크 없음 — 피드는 fixtures/rss/(BBC Football·ESPN), 경기는 빈 응답(브리핑 호출 생략), 시각은 주입한 시계.
+ * 소스는 fixture 피드를 켠 목록에서 고른다(tests/support/fixture-sources.ts) — 실제 configs에서 espn-soccer는 2026-10-14부터
+ * 비활성이지만, ESPN fixture의 'EST' 고정 표기로 미래 시각 가드를 계속 검사한다.
  * 파일은 임시 폴더(runs.json·runs-dev.json·news/를 테스트가 직접 쓴다).
  */
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -17,7 +19,6 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   NewsFileSchema,
-  SourcesFileSchema,
   type FeedItem,
   type NewsFile,
   type RunLog,
@@ -42,6 +43,8 @@ import {
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
 import { FOOTBALL_DATA_BASE_URL } from "../scripts/lib/providers/football-data";
 import { feedUserAgent, type FetchLike } from "../scripts/lib/rss";
+
+import { fixtureFeedSources } from "./support/fixture-sources";
 
 // ─── 시각 ────────────────────────────────────────────────────────────────
 
@@ -496,9 +499,8 @@ describe("applyCollectWindow — 항목 거르기·낮추기·집계", () => {
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
-const SOURCES = SourcesFileSchema.parse(
-  JSON.parse(read("configs/sources.json")),
-);
+/** configs/sources.json + fixture 피드 활성(테스트 전용 — ESPN은 실제 configs에서 비활성) */
+const SOURCES = fixtureFeedSources();
 const bySourceId = (id: string) => SOURCES.find((s) => s.id === id)!;
 const BBC_SOURCE = bySourceId(BBC);
 const ESPN_SOURCE = bySourceId(ESPN);

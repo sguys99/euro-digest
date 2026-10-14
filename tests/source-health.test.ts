@@ -7,6 +7,8 @@
  * 통합(runCollect): runs.json 이력 + 이번 실행 → 소스별 한 줄 로그, 사건 파일(Actions) / 로그만(로컬) / dry는 파일 없음.
  *
  * 네트워크·실호출 없음 — 피드는 fixtures/rss/(BBC Football·ESPN), 경기는 빈 응답(브리핑 호출 생략), 파일은 임시 폴더.
+ * 소스는 fixture 피드를 켠 목록에서 고른다(tests/support/fixture-sources.ts) — 실제 configs에서 espn-soccer는 2026-10-14부터
+ * 비활성이지만, 건강도 동작은 소스의 실제 enabled 값과 무관하게 검사한다.
  */
 import {
   existsSync,
@@ -21,12 +23,7 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import {
-  RunsDevFileSchema,
-  SourcesFileSchema,
-  type RunLog,
-  type RunSource,
-} from "@/lib/schema";
+import { RunsDevFileSchema, type RunLog, type RunSource } from "@/lib/schema";
 
 import {
   runCollect,
@@ -58,6 +55,8 @@ import {
   type SourceRunRecord,
   type SourceRunState,
 } from "../scripts/lib/source-health";
+
+import { fixtureFeedSources } from "./support/fixture-sources";
 
 // ─── 도우미 ──────────────────────────────────────────────────────────────
 
@@ -743,9 +742,8 @@ describe("runSourceEntries — 실행 기록의 소스별 결과 (D35)", () => {
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
-const SOURCES = SourcesFileSchema.parse(
-  JSON.parse(read("configs/sources.json")),
-);
+/** configs/sources.json + fixture 피드 활성(테스트 전용 — ESPN은 실제 configs에서 비활성) */
+const SOURCES = fixtureFeedSources();
 const BBC = "bbc-sport-football";
 const ESPN = "espn-soccer";
 const BBC_SOURCE = SOURCES.find((s) => s.id === BBC)!;

@@ -1,10 +1,11 @@
 /**
  * M1-09 — 수집 결과 공통 형식(FR-03) + "본문 필드 없음"(FR-02) + 피드 날짜 기본 시간대 `Source.tz`(PRD §15 D34).
  *
- * 네트워크 없음: 피드는 fixtures/rss/<소스 id>.xml(수집 대상 14개와 1:1), 소스는 configs/sources.json(실제 설정).
+ * 네트워크 없음: 피드는 fixtures/rss/<소스 id>.xml 14개, 소스는 configs/sources.json(실제 설정)에서 fixture 피드만 켠 목록
+ * (tests/support/fixture-sources.ts — 2026-10-14 비활성화한 espn-soccer도 fixture로 계속 검사한다).
  *
  * 고정하는 것
- *   - FR-02: 실제 14개 피드를 파싱 → 정규화한 결과의 키 집합이 정확히 공통 형식 키(FEED_ITEM_KEYS)와 같다.
+ *   - FR-02: fixture 14개 피드를 파싱 → 정규화한 결과의 키 집합이 정확히 공통 형식 키(FEED_ITEM_KEYS)와 같다.
  *     `FeedItemSchema`(strictObject)는 본문·요약·이미지 키(`content:encoded`·`description`·`enclosure` …)를 거부한다.
  *     본문이 든 합성 피드도 정규화 결과에 본문 텍스트가 남지 않는다.
  *   - FR-03: 모든 결과가 `FeedItemSchema`를 통과하고 `summary`는 null(M1-09 — RSS description을 읽지 않음).
@@ -23,7 +24,6 @@ import {
   FEED_ITEM_SUMMARY_MAX,
   FEED_ITEM_TITLE_MAX,
   FeedItemSchema,
-  SourcesFileSchema,
   type FeedItem,
   type Source,
 } from "@/lib/schema";
@@ -41,13 +41,13 @@ import { parseFeedXml, type FetchLike } from "../scripts/lib/rss";
 import { planDailySources } from "../scripts/lib/sources";
 
 import { issuePaths } from "./schema/helpers";
+import { fixtureFeedSources } from "./support/fixture-sources";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
 
-const SOURCES: Source[] = SourcesFileSchema.parse(
-  JSON.parse(read("configs/sources.json")),
-);
+/** configs/sources.json + fixture 피드 14개 활성(테스트 전용) */
+const SOURCES: Source[] = fixtureFeedSources();
 const FEEDS = planDailySources(SOURCES).feeds;
 const byId = (id: string): Source => {
   const source = FEEDS.find((s) => s.id === id);
@@ -115,8 +115,8 @@ describe("FEED_ITEM_KEYS — FR-03 공통 형식 + 내부 필드 authors", () =>
 
 // ─── FR-02 본문 필드 없음: 실제 fixture 14개 ─────────────────────────────
 
-describe("FR-02 — 실제 수집 대상 14개 피드의 정규화 결과에 본문 필드가 없다", () => {
-  it("수집 대상은 fixture 14개", () => {
+describe("FR-02 — fixture 14개 피드의 정규화 결과에 본문 필드가 없다", () => {
+  it("fixture 피드를 켠 수집 대상 = fixture 14개", () => {
     expect(FEEDS.map((s) => s.id).sort()).toEqual(
       RSS_INDEX.sources.map((s) => s.id).sort(),
     );

@@ -3,7 +3,8 @@
  *
  * - 기사 본문·요약문·이미지 요소가 없어야 한다(CLAUDE.md §1-5·§1-6, PRD §15 D23·D25 — 요약문은 표시·저장 안 함).
  * - index.json(수집 메타)과 실제 XML 항목 수가 맞아야 한다.
- * - 소스 id는 configs/sources.json의 수집 대상(enabled && terms_checked)과 같아야 한다.
+ * - 소스 id는 configs/sources.json의 수집 대상(enabled && terms_checked) + 스냅숏 뒤 비활성화했지만 동작 테스트용으로
+ *   남긴 소스(DISABLED_AFTER_SNAPSHOT — 약관 확인은 그대로)와 같아야 한다.
  * - 언어 4종(en·it·es·ko)이 모두 있어야 한다(D0 시안·M1-17 언어별 분류 테스트 입력).
  *
  * XML 파서 의존성을 늘리지 않으려고 정규식·문자열 검사만 쓴다(rss-parser는 M1 설치 예정).
@@ -90,12 +91,23 @@ function loadXmlFiles(): { id: string; text: string }[] {
     }));
 }
 
+/**
+ * M0-33 스냅숏 뒤 configs에서 비활성화했지만 fixture는 남긴 소스 — 수집·창·미래 시각 가드·건강도 동작 테스트가
+ * tests/support/fixture-sources.ts로 켜서 쓴다. 소스를 새로 끄면 여기에 더하거나 fixture를 지운다(fixture를 지우면 그 소스를
+ * 쓰는 동작 테스트도 함께 고친다).
+ *   - espn-soccer: 2026-10-14 사용자 결정 — GitHub Actions 러너에만 HTTP 202·0바이트 응답(봇 차단 추정). ESPN 'EST' 고정
+ *     표기는 미래 시각 가드(M1-10)의 실측 사례라 fixture를 유지한다.
+ */
+const DISABLED_AFTER_SNAPSHOT = ["espn-soccer"] as const;
+
+function configSources() {
+  const raw: unknown = JSON.parse(readFileSync(SOURCES_PATH, "utf8"));
+  return SourcesFileSchema.parse(raw);
+}
+
 /** 수집 대상 소스(enabled && terms_checked) — CLAUDE.md §6.4 */
 function collectTargets() {
-  const raw: unknown = JSON.parse(readFileSync(SOURCES_PATH, "utf8"));
-  return SourcesFileSchema.parse(raw).filter(
-    (s) => s.enabled && s.terms_checked,
-  );
+  return configSources().filter((s) => s.enabled && s.terms_checked);
 }
 
 /** CDATA·주석을 지운 마크업 — 태그 균형·엔티티 검사용 */
@@ -180,14 +192,24 @@ describe("fixtures/rss/index.json — 수집 메타", () => {
   const files = loadXmlFiles();
   const xmlById = new Map(files.map((f) => [f.id, f.text]));
 
-  it("소스 id가 sources.json 수집 대상(enabled && terms_checked)·XML 파일과 같다", () => {
-    const targets = collectTargets();
-    const targetIds = targets.map((s) => s.id).sort();
-    expect(index.sources.map((s) => s.id).sort()).toEqual(targetIds);
-    expect(files.map((f) => f.id).sort()).toEqual(targetIds);
+  it("소스 id가 sources.json 수집 대상(enabled && terms_checked) + 스냅숏 뒤 비활성 소스(espn-soccer)·XML 파일과 같다", () => {
+    const sources = configSources();
+    const fixtureIds = [
+      ...collectTargets().map((s) => s.id),
+      ...DISABLED_AFTER_SNAPSHOT,
+    ].sort();
+    expect(index.sources.map((s) => s.id).sort()).toEqual(fixtureIds);
+    expect(files.map((f) => f.id).sort()).toEqual(fixtureIds);
+    // 스냅숏 뒤 비활성 소스는 configs에 enabled:false로 남아 있고 약관 확인은 그대로다(테스트에서 켜도 되는 근거)
+    for (const id of DISABLED_AFTER_SNAPSHOT) {
+      expect(sources.find((x) => x.id === id)).toMatchObject({
+        enabled: false,
+        terms_checked: true,
+      });
+    }
     // URL·언어도 설정과 일치(소스 URL 하드코딩 없이 설정을 그대로 따랐는지)
     for (const s of index.sources) {
-      const t = targets.find((x) => x.id === s.id);
+      const t = sources.find((x) => x.id === s.id);
       expect(s.url).toBe(t?.url);
       expect(s.lang).toBe(t?.lang);
     }

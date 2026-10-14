@@ -2,6 +2,8 @@
  * M1-03 — scripts/lib/feed-collect.ts: 재시도(대상·비대상·Retry-After·소스별 시간) · 호스트별 병렬(같은 호스트 순차 + 간격,
  * 동시 상한) · 결과 순서 결정성 · 단계 시간 예산 초과 시 `budget` · 한 소스 실패가 다른 소스를 막지 않음.
  * 네트워크 없음(fetch 주입), 시간은 vitest 가짜 타이머(setTimeout·Date)로 돌린다.
+ * 14개 피드는 fixture 피드를 켠 소스 목록(tests/support/fixture-sources.ts)에서 고른다 — 실제 configs의 enabled에 기대지
+ * 않는다(2026-10-14 espn-soccer 비활성 뒤에도 호스트 9개·14피드 구성 그대로).
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -9,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { SourcesFileSchema, type Source } from "@/lib/schema";
+import type { Source } from "@/lib/schema";
 
 import {
   collectFeedSources,
@@ -29,12 +31,13 @@ import { createLogger, type LogRecord } from "../scripts/lib/logger";
 import { FeedFetchError, type FetchLike } from "../scripts/lib/rss";
 import { planDailySources } from "../scripts/lib/sources";
 
+import { fixtureFeedSources } from "./support/fixture-sources";
+
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
 
-const SOURCES: Source[] = SourcesFileSchema.parse(
-  JSON.parse(read("configs/sources.json")),
-);
+/** configs/sources.json + fixture 피드 14개 활성(테스트 전용) */
+const SOURCES: Source[] = fixtureFeedSources();
 const FEEDS = planDailySources(SOURCES).feeds;
 const FEED_XML = new Map(
   FEEDS.map((s) => [s.id, read(`fixtures/rss/${s.id}.xml`)] as const),
@@ -509,7 +512,7 @@ describe("runByHost — 같은 호스트 순차 + 간격, 다른 호스트 병�
 
 // ─── 수집 단계 전체 ──────────────────────────────────────────────────────
 
-describe("collectFeedSources — 수집 대상 14개 피드", () => {
+describe("collectFeedSources — fixture 피드 14개(테스트용 활성)", () => {
   const urlOf = new Map(FEEDS.map((s) => [s.url, s.id] as const));
   const BBC = FEEDS.filter((s) => hostKey(s.url) === "feeds.bbci.co.uk");
 
