@@ -1,7 +1,7 @@
 # CLAUDE.md — 유로 다이제스트 (Euro Digest)
 
 > 매일 아침, 밤사이 유럽 축구를 한눈에.
-> 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **M1(뉴스 MVP) 진행 중 — M1-01 수직 슬라이스 완료(2026-10-12)**
+> 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **M1(뉴스 MVP) 진행 중 — M1-01 수직 슬라이스·M1-A 수집 완료(2026-10-14) → M1-B 정제·분류**
 
 이 문서는 Claude Code가 이 저장소에서 **어떻게 일하는지**를 정한다. 문서끼리 충돌하면 아래 우선순위를 따르고 사용자에게 알린다.
 
@@ -83,7 +83,8 @@
 configs/     사람이 관리, 전부 zod 검증: sources · competitions · names.ko · korean-players · national-team · bigmatch-rules
              · search-queries · publisher-domains · formations · team-colors · transfer-windows · takedowns (.json) · prompts/ summarize(일일 브리핑)·team-profile·weekly-kr (.md)
 data/        파이프라인 산출물(손 편집 금지): news/YYYY-MM-DD.json · competitions/ · teams/ · players/ · transfers.json
-             · runs.json(봇) · runs-dev.json(dev 실행, 개발자 커밋) · cache/ seen-urls.json·unknown-names.json
+             · matches/ YYYY-MM.json·meta.json(경기 기록 원장 — 정기 운영만 씀, 화면은 읽지 않음, D33)
+             · runs.json(봇) · runs-dev.json(dev 실행, 개발자 커밋) · cache/ seen-urls.json·unknown-names.json·af-pending.json
 fixtures/    개발·테스트 샘플 (RSS·API 응답·LLM 응답·뉴스 카드)       tests/  단위·스키마 (e2e는 tests/e2e)
 scripts/     collect · summarize · weekly · validate · build-feeds · ops-report (.ts) · crawlers/<site>.ts
              · lib/ normalize·dedup·cluster·score·llm·cost·time·names·providers/ …
