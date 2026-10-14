@@ -1,8 +1,54 @@
 {
   "date": "2026-10-14",
-  "generatedAt": "2026-10-14T13:29:42.136Z",
-  "runId": "collect-prod-20261014T132937Z-da36",
+  "generatedAt": "2026-10-14T13:47:54.336Z",
+  "runId": "collect-prod-20261014T134749Z-7b0f",
   "cards": [
+    {
+      "id": "c_8c567a006c",
+      "t": "🚨 Don’t blame Lisandro Martinez - he’s only saying what everyone inside Manchester United is thinking",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/lisandro-martinez-man-united-outburst",
+          "at": "2026-10-14T13:33:18.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-14T13:47:49.909Z"
+    },
+    {
+      "id": "c_7b001dbad8",
+      "t": "“맨시티 징계 피하길 바라”…‘오일머니’끼리 통하나? PSG 사령탑 “트로피는 경기장에 남는다. 우승 자격 있었어”",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696410",
+          "at": "2026-10-14T13:31:48.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-14T13:47:49.909Z"
+    },
     {
       "id": "c_839cea1524",
       "t": "Big scorelines, one-sided games - are Women's World Cup play-offs working?",
@@ -25,6 +71,31 @@
       "lang": "en",
       "ai": false,
       "created": "2026-10-14T13:29:37.156Z"
+    },
+    {
+      "id": "c_cc59962239",
+      "t": "El Montevideo City Torque aspira a ser finalista en la Copa Sudamericana",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Relevo",
+          "u": "https://www.relevo.com/futbol/copa-sudamericana/montevideo-city-torque-historia-mineiro.html",
+          "at": "2026-10-14T13:12:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "es",
+      "ai": false,
+      "created": "2026-10-14T13:47:49.909Z"
     },
     {
       "id": "c_67205a5acd",
