@@ -1,0 +1,124 @@
+{
+  "date": "2026-10-14",
+  "generatedAt": "2026-10-14T13:29:42.136Z",
+  "runId": "collect-prod-20261014T132937Z-da36",
+  "cards": [
+    {
+      "id": "c_839cea1524",
+      "t": "Big scorelines, one-sided games - are Women's World Cup play-offs working?",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cq0k0x1l8gndo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-14T13:25:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-14T13:29:37.156Z"
+    },
+    {
+      "id": "c_67205a5acd",
+      "t": "Milan, novità in vista contro il Salisburgo: Tomori verso il rientro, spazio anche a Camarda",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/milan-probabile-formazione-salisburgo-europa-league-498297",
+          "at": "2026-10-14T13:00:39.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-14T13:29:37.156Z"
+    },
+    {
+      "id": "c_cd9706d7c7",
+      "t": "“무리뉴 축구? 10년 전에 유효 기간 끝났어!” 원조 악동의 소신 발언…“축구보다 말하는 걸 좋아해”",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696409",
+          "at": "2026-10-14T12:55:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-14T13:29:37.156Z"
+    },
+    {
+      "id": "c_c805f95cd6",
+      "t": "Burnham had two hospitality dinners with Man City chairman, deleted records show",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/c83vq9vpwwr1o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-14T12:47:43.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-14T13:29:37.156Z"
+    },
+    {
+      "id": "c_d229922804",
+      "t": "Fan cleared of assaults after fall from Ipswich stand",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/c65ynlyz385xo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-14T12:29:44.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-14T13:29:37.156Z"
+    }
+  ]
+}

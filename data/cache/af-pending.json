@@ -1,0 +1,86 @@
+{
+  "updatedAt": "2026-10-14T13:30:45.408Z",
+  "fixtures": [
+    {
+      "id": 1635665,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T16:45:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635674,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T16:45:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635614,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635620,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635635,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635639,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635690,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635725,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635733,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-14T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-14T13:29:44.381Z",
+      "requeries": 0
+    }
+  ]
+}
