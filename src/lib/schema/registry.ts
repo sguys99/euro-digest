@@ -238,7 +238,7 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
     kind: "data",
     status: "confirmed",
     schema: SeenUrlsFileSchema,
-    description: "처리한 URL 해시 (FR-04, 90일)",
+    description: "카드가 된 URL 해시 (FR-04, 90일)",
   }),
   entry({
     pattern: "data/cache/unknown-names.json",

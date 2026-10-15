@@ -407,7 +407,7 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     expect([...times].sort((a, b) => b - a)).toEqual(times);
   });
 
-  it("여러 소스의 같은 링크는 카드 1장 — 설정 순서상 먼저 나온 소스가 갖는다, 제목·링크는 피드 원문", async () => {
+  it("여러 소스의 같은 링크는 카드 1장 — 대표는 설정 순서상 먼저 나온 소스, 대회 태그는 소스들의 합집합(M1-12), 제목·링크는 피드 원문", async () => {
     // 상한을 넉넉히 줘서 고유 링크 전부를 카드로 만든다(상한 적용은 위 테스트)
     const { deps, records } = makeDeps({ limit: 100 });
     const outcome = await runCollect(deps);
@@ -441,11 +441,27 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       expect(card).toMatchObject({ ai: false, s: [] });
     }
 
-    // BBC Football(대회 태그 없음)과 Premier League 피드(EPL)에 함께 있는 링크 → 먼저 나온 BBC Football 카드
+    // BBC Football(대회 태그 없음)과 Premier League 피드(EPL)에 함께 있는 링크 → 먼저 나온 BBC Football 항목이 대표,
+    // 대회 태그는 두 소스의 합집합(M1-02 이월 → M1-12: 예전에는 먼저 나온 소스의 [] 그대로라 EPL을 잃었다)
     const shared = file.cards.find((c) =>
       c.src[0]!.u.includes("/articles/cqn73g3pvezdo"),
     )!;
-    expect(shared.comp).toEqual([]);
+    expect(shared.comp).toEqual(["EPL"]);
+    expect(shared.src).toEqual([
+      {
+        n: "BBC Sport",
+        u: "https://www.bbc.co.uk/sport/football/articles/cqn73g3pvezdo?at_medium=RSS&at_campaign=rss",
+        at: expect.any(String),
+        tier: 2,
+      },
+    ]);
+    expect(outcome.news.dedup).toEqual({
+      items: 64,
+      unique: 52,
+      duplicates: 12,
+      multiSource: 11, // 피드 안 중복(BBC Football cqzjx3z4ljr0o) 1쌍은 소스가 하나
+      seenBefore: 0,
+    });
     // Champions League(UCL)와 European(4개 리그)에 함께 있는 링크는 10-07 기사라 51시간 창 밖 — 카드 없음(M1-10)
     expect(
       file.cards.some((c) => c.src[0]!.u.includes("/articles/ckrey77jq1n7o")),
@@ -493,7 +509,9 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     const base = makeDeps();
     const baseOutcome = await runCollect(base.deps);
     const baseFile = readNews("2026-10-11");
+    // 두 번째 실행을 같은 빈 상태에서 — 발행 파일과 그 카드의 기억(cache/seen-urls.json, M1-12)을 함께 지운다
     rmSync(path.join(dataDir, "news"), { recursive: true, force: true });
+    rmSync(path.join(dataDir, "cache"), { recursive: true, force: true });
 
     // 설정 앞쪽일수록 늦게(실제 시간 수 ms) — 완료 순서가 설정 순서와 거꾸로
     const order = FEEDS.map((s) => s.id);

@@ -45,6 +45,7 @@ import {
   parseBriefOutput,
 } from "../scripts/lib/brief";
 import { cardIdFor } from "../scripts/lib/card-id";
+import { dedupeFeedItems } from "../scripts/lib/dedup";
 import {
   resolveCardLimit,
   resolveMaxItems,
@@ -526,19 +527,49 @@ describe("news-file.ts — 카드·선별·병합", () => {
     expect(card.transfer).toBeUndefined();
   });
 
-  it("선별: 같은 링크는 한 번만, 최신순 상위 N건", () => {
+  it("선별: 같은 링크는 한 번만(중복 제거 dedupeFeedItems — M1-12), 최신순 상위 N건", () => {
     const items = [
       item("https://e.com/1", "2026-10-10T10:00:00.000Z"),
       item("https://e.com/2", "2026-10-10T12:00:00.000Z"),
       item("https://e.com/1", "2026-10-10T13:00:00.000Z"), // 같은 링크 — 먼저 나온 것 유지
       item("https://e.com/3", "2026-10-10T11:00:00.000Z"),
     ];
-    expect(selectLatest(items, 2).map((i) => i.url)).toEqual([
+    const { groups } = dedupeFeedItems(items);
+    expect(selectLatest(groups, 2).map((g) => g.item.url)).toEqual([
       "https://e.com/2",
       "https://e.com/3",
     ]);
-    expect(selectLatest(items, 10)).toHaveLength(3);
-    expect(selectLatest(items, 0)).toEqual([]);
+    expect(selectLatest(groups, 10)).toHaveLength(3);
+    // 먼저 나온 항목(10:00)이 대표 — 뒤에 나온 같은 링크(13:00)가 최신순 맨 앞을 차지하지 않는다
+    expect(selectLatest(groups, 10).map((g) => g.item.url)).toEqual([
+      "https://e.com/2",
+      "https://e.com/3",
+      "https://e.com/1",
+    ]);
+    expect(selectLatest(groups, 0)).toEqual([]);
+  });
+
+  it("병합: 원문 링크가 추적 파라미터만 달라 ID가 다른 같은 기사도 두 번 들어가지 않는다(정규화 URL — M1-12)", () => {
+    const a = buildCard(
+      item(
+        "https://www.bbc.co.uk/sport/football/articles/a1?at_medium=RSS&at_campaign=rss",
+        "2026-10-10T10:00:00.000Z",
+      ),
+      BBC_SOURCE,
+      "2026-10-10T21:00:00.000Z",
+    );
+    const aPlain = buildCard(
+      item(
+        "https://www.bbc.co.uk/sport/football/articles/a1",
+        "2026-10-10T10:00:00.000Z",
+      ),
+      BBC_SOURCE,
+      "2026-10-10T22:00:00.000Z",
+    );
+    expect(aPlain.id).not.toBe(a.id); // 카드 ID는 아직 원문 링크 해시(M1-16에서 정규화 URL로)
+    const result = mergeCards([a], [aPlain]);
+    expect(result).toMatchObject({ added: 0, duplicates: 1 });
+    expect(result.cards).toEqual([a]);
   });
 
   it("병합: 기존 카드를 그대로 두고 새 ID만 더한다", () => {
@@ -1006,8 +1037,16 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
 
     const out = printed.find((p) => p.startsWith("── 브리핑 출력"));
     expect(out?.split("\n")).toHaveLength(6);
-    // 브리핑 저장 파일은 만들지 않는다. 데이터 API를 불렀으므로 mock이어도 runs-dev.json에 호출 수를 비용 0으로 남긴다(M1-48)
-    expect(readdirSync(dataDir).sort()).toEqual(["news", "runs-dev.json"]);
+    // 브리핑 저장 파일은 만들지 않는다. 데이터 API를 불렀으므로 mock이어도 runs-dev.json에 호출 수를 비용 0으로 남긴다(M1-48).
+    // cache/ = 발행 파일 카드의 seen-urls 기억(M1-12)
+    expect(readdirSync(dataDir).sort()).toEqual([
+      "cache",
+      "news",
+      "runs-dev.json",
+    ]);
+    expect(readdirSync(path.join(dataDir, "cache"))).toEqual([
+      "seen-urls.json",
+    ]);
     expect(outcome.run).toMatchObject({
       env: "dev",
       costUsd: 0,
@@ -1209,7 +1248,8 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     const { deps } = liveDeps({ env: "prod" });
     const outcome = await runCollect(deps);
     expect(outcome.exitCode).toBe(0);
-    expect(readdirSync(dataDir).sort()).toEqual(["news", "runs.json"]);
+    // cache/seen-urls.json = 발행 파일 카드의 기억(M1-12)
+    expect(readdirSync(dataDir).sort()).toEqual(["cache", "news", "runs.json"]);
     const runs = RunsFileSchema.parse(
       JSON.parse(readFileSync(path.join(dataDir, "runs.json"), "utf8")),
     );
@@ -1217,7 +1257,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(readNews("2026-10-11").runId).toBe(outcome.runId);
   });
 
-  it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·runs.json)을 통과시킨다", async () => {
+  it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·runs.json·cache/seen-urls.json)을 통과시킨다", async () => {
     const repo = path.join(dataDir, "repo");
     cpSync(path.join(ROOT, "configs"), path.join(repo, "configs"), {
       recursive: true,
@@ -1234,9 +1274,14 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     );
     expect(report.issues.filter((i) => i.severity === "error")).toEqual([]);
     expect(validationExitCode(report)).toBe(0);
+    expect(report.counts.data).toBe(3); // news·runs.json·cache/seen-urls.json 모두 스키마 검사 대상
     expect(readdirSync(path.join(repo, "data")).sort()).toEqual([
+      "cache",
       "news",
       "runs.json",
+    ]);
+    expect(readdirSync(path.join(repo, "data", "cache"))).toEqual([
+      "seen-urls.json",
     ]);
   });
 
@@ -1273,7 +1318,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
   it("dev에서 데이터 API도 LLM도 부르지 않은 실행(키 없음)은 기록하지 않는다", async () => {
     const dev = liveDeps({ env: "dev", footballDataApiKey: undefined });
     await runCollect(dev.deps);
-    expect(readdirSync(dataDir)).toEqual(["news"]);
+    expect(readdirSync(dataDir).sort()).toEqual(["cache", "news"]); // cache/ = seen-urls 기억(M1-12)
   });
 
   it("예산 초과가 예상되면 LLM을 부르지 않는다", async () => {
@@ -1384,5 +1429,26 @@ describe("collect-run.ts — 설정 해석", () => {
         { state: "skipped", reason: "no-matches", inputMatches: 0 },
       ),
     ).toBe("success");
+  });
+
+  it("상태: seen-urls 기억 읽기·쓰기 오류 = partial(발행은 됨, M1-12), 뉴스 실패가 우선", () => {
+    const done: BriefOutcome = { state: "done", inputMatches: 1, lines: ["a"] };
+    const seen = (readError: string | null, writeError: string | null) => ({
+      readError,
+      writeError,
+    });
+    expect(runStatus({ ok: true, seen: seen(null, null) }, done)).toBe(
+      "success",
+    );
+    expect(runStatus({ ok: true, seen: null }, done)).toBe("success");
+    expect(
+      runStatus({ ok: true, seen: seen("JSON 파싱 실패", null) }, done),
+    ).toBe("partial");
+    expect(runStatus({ ok: true, seen: seen(null, "EACCES") }, done)).toBe(
+      "partial",
+    );
+    expect(
+      runStatus({ ok: false, seen: seen("JSON 파싱 실패", null) }, done),
+    ).toBe("failed");
   });
 });

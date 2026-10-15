@@ -5,7 +5,9 @@
  *
  * M1-01 수직 슬라이스: 해시 입력은 **피드 원문 링크**(앞뒤 공백만 정리)다 — M0-34 원제목 카드 샘플
  * (`fixtures/news-sample.json`, 임시 `sha256(링크 원문)`)과 같은 규칙이라 같은 링크면 같은 ID가 나온다.
- * M1-16이 "대표 URL = 정규화 URL(추적 파라미터 제거 등, M1-10)" 기준으로 확정한다 — 그때 이 함수 하나만 바꾼다.
+ * M1-16이 "대표 URL = 정규화 URL" 기준으로 확정한다 — 그때 이 함수 하나만 바꾼다. 정규화·해시는 M1-12의
+ * scripts/lib/url-normalize.ts(`urlHash` = sha256(정규화 URL) 앞 16자리 = seen-urls 키)를 쓰면 카드 ID가 그 키의
+ * 접두사가 된다(`c_` + urlHash(url).slice(0, 10), 부록 A 11).
  */
 import { createHash } from "node:crypto";
 

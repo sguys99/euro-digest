@@ -18,17 +18,21 @@ import { NameKindSchema, NameTextSchema } from "./names";
 // ─── seen-urls ──────────────────────────────────────────────────────────────
 
 /**
- * 정규화 URL 해시 = 16진수 16자리(64비트). 90일 × 하루 수백 건 규모에서 충돌 확률이 무시할 수준.
- * 카드 ID(`c_` + 10자리)와 같은 해시 함수를 쓰면 카드 ID가 이 키의 앞부분과 같아진다(구현은 M1-12).
+ * 정규화 URL 해시 = sha256(정규화 URL) 16진수 앞 16자리(64비트, scripts/lib/url-normalize.ts `urlHash` — M1-12).
+ * 90일 × 하루 수백 건 규모에서 충돌 확률이 무시할 수준. 카드 ID(`c_` + 10자리)가 같은 해시의 앞 10자리를 쓰면
+ * 카드 ID가 이 키의 접두사가 된다(카드 ID 규칙은 M1-16).
  */
 export const UrlHashSchema = z
   .string()
   .regex(/^[0-9a-f]{16}$/, { error: "URL 해시는 16진수 소문자 16자리" });
 
-/** `data/cache/seen-urls.json` — 과거 처리한 URL 제외(FR-04), 90일 보존(CLAUDE.md §8). */
+/**
+ * `data/cache/seen-urls.json` — 이미 카드가 된 URL의 기억(FR-04 "같은 URL이 두 번 카드화되지 않음"), 90일 보존(CLAUDE.md §8).
+ * 발행 파일에 들어간 카드의 출처 링크만 담는다(창 안에 있었지만 선별되지 않은 항목은 담지 않는다 — scripts/lib/seen-urls.ts).
+ */
 export const SeenUrlsFileSchema = z.object({
   updatedAt: IsoSchema, // 마지막 갱신 시각
-  urls: z.record(UrlHashSchema, IsoSchema), // 정규화 URL 해시 → 처음 본 시각(UTC). 90일 지난 항목은 수집 실행이 지운다
+  urls: z.record(UrlHashSchema, IsoSchema), // 카드가 된 URL의 정규화 해시 → 처음 카드가 된 시각(UTC, card.created). 90일 지난 항목은 수집 실행이 지운다
 });
 export type SeenUrlsFile = z.infer<typeof SeenUrlsFileSchema>;
 

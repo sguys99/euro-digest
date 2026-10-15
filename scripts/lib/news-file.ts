@@ -2,10 +2,11 @@
  * 원제목 카드 만들기 · 선별 · 일별 뉴스 파일 병합/쓰기 (M1-01 수직 슬라이스, PRD FR-04·FR-20·FR-30, D23).
  *
  * - 카드: 해외·국내 모두 원제목+링크(`ai:false`, `s:[]`). 제목·링크는 normalize.ts가 정리한 원문 그대로 넣는다.
- * - 선별(슬라이스): 카드 ID로 중복을 빼고(같은 피드 안 같은 링크 — BBC 피드에 실제로 있다) 최신 발행 순 상위 N건.
- *   M1-11~M1-14(중복제거·클러스터링·점수화)가 대체한다.
- * - 병합: 같은 KST 발행일 파일이 이미 있으면 기존 카드를 그대로 두고(created 유지) 새 ID만 더한다 → 다시 실행해도
- *   앞선 카드를 잃지 않고 같은 ID가 두 번 들어가지 않는다. 정렬은 최신 출처 시각 내림차순(같으면 ID).
+ * - 선별(슬라이스): 중복 제거(dedup.ts — 정규화 URL 해시, M1-12)를 마친 묶음을 최신 발행 순 상위 N건.
+ *   M1-13·M1-14(클러스터링·점수화)가 대체한다.
+ * - 병합: 같은 KST 발행일 파일이 이미 있으면 기존 카드를 그대로 두고(created 유지) 새 카드만 더한다 → 다시 실행해도
+ *   앞선 카드를 잃지 않고 같은 카드(같은 ID 또는 같은 정규화 URL)가 두 번 들어가지 않는다. 정렬은 최신 출처 시각
+ *   내림차순(같으면 ID). 다른 날짜 파일과의 중복은 seen-urls.ts가 막는다(M1-12).
  * - 쓰기: `NewsFileSchema`로 검증한 뒤 임시 파일 → rename(원자적). 기존 파일이 스키마에 맞지 않으면 덮어쓰지 않고 던진다.
  *
  * 순수 함수 + 얇은 fs 함수. 파일 경로는 dataDir을 받아 테스트가 임시 폴더를 쓴다.
@@ -24,6 +25,7 @@ import {
 
 import { cardIdFor } from "./card-id";
 import { classifyMinimal } from "./classify";
+import { urlHash } from "./url-normalize";
 
 // ─── 카드 ────────────────────────────────────────────────────────────────
 
@@ -62,26 +64,22 @@ export function buildCard(
 }
 
 /**
- * 슬라이스 선별 — 카드 ID(링크 해시)로 중복 제거(먼저 나온 것 유지) → 발행 시각 내림차순(같으면 피드 순서) → 상위 limit건.
+ * 슬라이스 선별 — 대표 항목의 발행 시각 내림차순(같으면 입력 순서) → 상위 limit건. 중복 제거는 앞 단계(dedup.ts
+ * `dedupeFeedItems` — 정규화 URL 해시, M1-12)가 끝낸 묶음을 받는다. 점수화(M1-14)가 이 자리를 대체한다.
  */
-export function selectLatest(
-  items: readonly FeedItem[],
+export function selectLatest<T extends { item: FeedItem }>(
+  entries: readonly T[],
   limit: number,
-): FeedItem[] {
-  const seen = new Set<string>();
-  const unique: Array<{ item: FeedItem; index: number }> = [];
-  items.forEach((item, index) => {
-    const id = cardIdFor(item.url);
-    if (seen.has(id)) return;
-    seen.add(id);
-    unique.push({ item, index });
-  });
-  unique.sort(
-    (a, b) =>
-      Date.parse(b.item.publishedAt) - Date.parse(a.item.publishedAt) ||
-      a.index - b.index,
-  );
-  return unique.slice(0, Math.max(0, limit)).map((entry) => entry.item);
+): T[] {
+  return entries
+    .map((entry, index) => ({ entry, index }))
+    .sort(
+      (a, b) =>
+        Date.parse(b.entry.item.publishedAt) -
+          Date.parse(a.entry.item.publishedAt) || a.index - b.index,
+    )
+    .slice(0, Math.max(0, limit))
+    .map(({ entry }) => entry);
 }
 
 // ─── 병합 ────────────────────────────────────────────────────────────────
@@ -108,21 +106,33 @@ export interface MergeResult {
   duplicates: number;
 }
 
-/** 기존 카드는 그대로 두고 새 ID만 더한다(같은 ID는 기존 카드 유지 — created가 바뀌지 않는다). */
+/** 카드 출처 링크의 중복 판정 키(정규화 URL 해시, M1-12) */
+function srcKeys(card: NewsCard): string[] {
+  return card.src.map((s) => urlHash(s.u));
+}
+
+/**
+ * 기존 카드는 그대로 두고 새 카드만 더한다(같은 카드는 기존 카드 유지 — created가 바뀌지 않는다).
+ * 같은 카드 = 같은 ID 또는 출처 링크의 정규화 URL이 하나라도 같은 카드(M1-12 — 원문 링크가 추적 파라미터만 달라 ID가
+ * 다른 같은 기사도 두 번 들어가지 않는다).
+ */
 export function mergeCards(
   existing: readonly NewsCard[],
   incoming: readonly NewsCard[],
 ): MergeResult {
   const ids = new Set(existing.map((c) => c.id));
+  const keys = new Set(existing.flatMap(srcKeys));
   const merged = [...existing];
   let added = 0;
   let duplicates = 0;
   for (const card of incoming) {
-    if (ids.has(card.id)) {
+    const cardKeys = srcKeys(card);
+    if (ids.has(card.id) || cardKeys.some((key) => keys.has(key))) {
       duplicates += 1;
       continue;
     }
     ids.add(card.id);
+    for (const key of cardKeys) keys.add(key);
     merged.push(card);
     added += 1;
   }

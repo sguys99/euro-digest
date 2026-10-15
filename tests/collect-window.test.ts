@@ -4,13 +4,24 @@
  * 순수 함수(scripts/lib/collect-window.ts): 창 계산(첫 실행 51시간 · 직전 성공 − 겹침 3시간 · 51시간 상한(D36) · prod 발행
  * 기록만 · 소스별 시작 · runs.json 오류 = 51시간) · 항목 판정 경계(시작 포함 · 현재 + 5분 포함 · 3시간까지 낮춤 · 넘으면 제외).
  * 통합(runCollect): prod runs.json을 읽어 창을 열고, 창 밖·미래 항목을 소스를 합치기 전에 걸러낸다.
+ * M1-12 이월: 겹침 구간 기사의 날짜 간 중복은 seen-urls 기억이 막는다(겹침 통합 테스트 단언을 0으로 뒤집음) + 기억 연결
+ * (쓰기 시점·dry·뉴스 실패·같은 날 재실행·삭제된 카드·90일 정리·파일 손상·쓰기 실패) — 순수 함수는 tests/seen-urls.test.ts.
  *
  * 네트워크 없음 — 피드는 fixtures/rss/(BBC Football·ESPN), 경기는 빈 응답(브리핑 호출 생략), 시각은 주입한 시계.
  * 소스는 fixture 피드를 켠 목록에서 고른다(tests/support/fixture-sources.ts) — 실제 configs에서 espn-soccer는 2026-10-14부터
  * 비활성이지만, ESPN fixture의 'EST' 고정 표기로 미래 시각 가드를 계속 검사한다.
  * 파일은 임시 폴더(runs.json·runs-dev.json·news/를 테스트가 직접 쓴다).
  */
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,12 +30,13 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   NewsFileSchema,
+  SeenUrlsFileSchema,
   type FeedItem,
   type NewsFile,
   type RunLog,
+  type SeenUrlsFile,
 } from "@/lib/schema";
 
-import { cardIdFor } from "../scripts/lib/card-id";
 import { runCollect, type CollectDeps } from "../scripts/lib/collect-run";
 import {
   applyCollectWindow,
@@ -43,6 +55,7 @@ import {
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
 import { FOOTBALL_DATA_BASE_URL } from "../scripts/lib/providers/football-data";
 import { feedUserAgent, type FetchLike } from "../scripts/lib/rss";
+import { urlHash } from "../scripts/lib/url-normalize";
 
 import { fixtureFeedSources } from "./support/fixture-sources";
 
@@ -60,6 +73,8 @@ const NOW_MS = at(NOW);
 const YESTERDAY = "2026-10-09T21:30:00.000Z";
 /** 그제 실행 — 06:30 KST 2026-10-09 */
 const DAY_BEFORE = "2026-10-08T21:30:00.000Z";
+/** 다음 날 실행 — 06:30 KST 2026-10-12 (seen-urls 날짜 간 중복, M1-12) */
+const DAY2 = "2026-10-11T21:30:00.000Z";
 /** 51시간 상한 시작(48시간 + 겹침 3시간, D36) = 그제 실행 − 3시간 */
 const FLOOR = "2026-10-08T18:30:00.000Z";
 
@@ -487,7 +502,7 @@ describe("applyCollectWindow — 항목 거르기·낮추기·집계", () => {
     expect(items.map((i) => i.source)).toEqual([ESPN]);
   });
 
-  it("겹침 구간(직전 실행 − 3시간 ~ 직전 실행)의 기사는 다음 실행에서 다시 후보가 된다 — 날짜 간 중복은 M1-12 seen-urls가 막는다(지금은 막지 않음)", () => {
+  it("겹침 구간(직전 실행 − 3시간 ~ 직전 실행)의 기사는 다음 실행에서 다시 후보가 된다 — 창은 시각만 본다, 날짜 간 중복은 seen-urls 기억(M1-12)이 막는다(아래 통합 테스트·tests/seen-urls.test.ts)", () => {
     const window = plan(ok([runLog({ startedAt: YESTERDAY })]));
     const yesterdayCandidate = feedItem(BBC, "2026-10-09T20:00:00.000Z");
     const { items } = applyCollectWindow([yesterdayCandidate], window);
@@ -588,6 +603,15 @@ function readNews(date: string): NewsFile {
   );
 }
 
+/** data/cache/seen-urls.json(M1-12) — 스키마 검증 */
+function readSeen(): SeenUrlsFile {
+  return SeenUrlsFileSchema.parse(
+    JSON.parse(
+      readFileSync(path.join(dataDir, "cache", "seen-urls.json"), "utf8"),
+    ),
+  );
+}
+
 const cardFor = (file: NewsFile, linkId: string) =>
   file.cards.find((c) => c.src[0]!.u.includes(`/${linkId}?`));
 
@@ -621,7 +645,9 @@ describe("runCollect — 수집 시간 창 연결 (M1-10)", () => {
     });
 
     // 어제 실행 실패(커밋되지 않아 runs.json에 없음), 그제 성공 → 창 = 그제 − 3시간(= 51시간) → 어제 몫(10-09 18:20Z) 포함
+    // 다른 상황을 빈 상태에서 — 발행 파일과 그 카드의 기억(cache/seen-urls.json, M1-12)을 함께 지운다
     rmSync(path.join(dataDir, "news"), { recursive: true, force: true });
+    rmSync(path.join(dataDir, "cache"), { recursive: true, force: true });
     writeRuns("runs.json", [runLog({ startedAt: DAY_BEFORE })]);
     const afterFailure = makeDeps();
     const b = await runCollect(afterFailure.deps);
@@ -765,11 +791,18 @@ describe("runCollect — 수집 시간 창 연결 (M1-10)", () => {
     });
   });
 
-  it("겹침 구간의 기사는 다음 날 파일에도 다시 들어간다 — 같은 날짜 파일 안은 카드 ID 병합, 날짜 간 중복은 M1-12 seen-urls가 막는다(지금은 막지 않음)", async () => {
-    // 1일차 06:30 KST 실행 → 2026-10-11.json
+  it("겹침 구간의 기사는 다음 날 카드가 되지 않는다 — 같은 날짜 파일 안은 병합, 날짜 간 중복은 seen-urls 기억이 막는다(M1-12, M1-10 이월)", async () => {
+    // 1일차 06:30 KST 실행 → 2026-10-11.json + cache/seen-urls.json(그 파일 카드의 정규화 URL 해시 → 처음 본 시각)
     const day1 = makeDeps({ loadSources: async () => [BBC_SOURCE] });
     const run1 = await runCollect(day1.deps);
     expect(run1.exitCode).toBe(0);
+    const file1 = readNews("2026-10-11");
+    expect(file1.cards).toHaveLength(6);
+    const seen1 = readSeen();
+    expect(Object.keys(seen1.urls)).toEqual(
+      file1.cards.map((c) => urlHash(c.src[0]!.u)).sort(),
+    );
+    expect(new Set(Object.values(seen1.urls))).toEqual(new Set([NOW]));
     // 1일차 실행이 커밋됐다고 보고 runs.json에 남긴다(테스트는 mock이라 직접 쓴다)
     writeRuns("runs.json", [
       runLog({
@@ -777,29 +810,98 @@ describe("runCollect — 수집 시간 창 연결 (M1-10)", () => {
         sources: [{ id: BBC, ok: true, items: 7 }],
       }),
     ]);
-    // 2일차 06:30 KST — 같은 피드(새 기사 없음). 창 = [1일차 − 3시간, 현재] → 1일차 겹침 구간 기사가 다시 후보
+    // 2일차 06:30 KST — 같은 피드 + ① 1일차 카드(10-10 18:15Z 영상)가 pubDate를 새로 찍고 AMP·utm 링크로 다시 올라옴
+    // (창 안으로 들어옴 — 피드 일괄 갱신 사례) ② 진짜 새 기사 1건. 창 = [1일차 − 3시간, 현재] → 1일차 겹침 구간 기사가 다시 후보
+    const day2Xml = FEED_XML[BBC_SOURCE.url]!.replace(
+      "</channel>",
+      `<item><title><![CDATA[Bayern strike late to avoid shock defeat at Augsburg]]></title><link>https://www.bbc.co.uk/sport/football/videos/c674peklk5kno.amp?utm_source=twitter</link><pubDate>Sun, 11 Oct 2026 10:00:00 GMT</pubDate></item>
+      <item><title><![CDATA[A new story on day two]]></title><link>https://www.bbc.co.uk/sport/football/articles/cday2new0001o?at_medium=RSS&amp;at_campaign=rss</link><pubDate>Sun, 11 Oct 2026 20:00:00 GMT</pubDate></item>
+      </channel>`,
+    );
     const day2 = makeDeps({
       loadSources: async () => [BBC_SOURCE],
-      now: () => new Date("2026-10-11T21:30:00.000Z"),
+      now: () => new Date(DAY2),
+      fetch: async (url) =>
+        url === BBC_SOURCE.url
+          ? new Response(day2Xml, { status: 200 })
+          : fakeFetch(url),
     });
     const run2 = await runCollect(day2.deps);
+    expect(run2.exitCode).toBe(0);
+    expect(run2.status).toBe("success");
     expect(run2.news.window?.start).toBe("2026-10-10T18:30:00.000Z");
-    const file1 = readNews("2026-10-11");
     const file2 = readNews("2026-10-12");
     const ids1 = new Set(file1.cards.map((c) => c.id));
-    const repeated = file2.cards.filter((c) => ids1.has(c.id));
-    // TODO(M1-12): seen-urls.json이 생기면 repeated는 0이어야 한다
-    expect(repeated.length).toBe(file2.cards.length);
-    expect(repeated.map((c) => c.id)).toContain(
-      cardIdFor(
-        "https://www.bbc.co.uk/sport/football/articles/cqn73g3pvezdo?at_medium=RSS&at_campaign=rss",
-      ),
-    );
-    // 1일차에 미래라 낮췄던 기사(22:01Z)는 2일차에 원래 시각으로 다시 들어온다
+    // M1-10까지는 2일차 카드 전부가 1일차 카드였다(repeated = 전체) — 이제 0
+    expect(file2.cards.filter((c) => ids1.has(c.id))).toEqual([]);
+    expect(file2.cards.map((c) => c.src[0]!.u)).toEqual([
+      "https://www.bbc.co.uk/sport/football/articles/cday2new0001o?at_medium=RSS&at_campaign=rss",
+    ]);
+    // 창 안 7건(겹침 구간 5 + 추가 2) → 고유 6(피드 안 중복 1) → 1일차 카드 5묶음 제외 → 새 기사 1장
+    expect(run2.news.dedup).toEqual({
+      items: 7,
+      unique: 6,
+      duplicates: 1,
+      multiSource: 0,
+      seenBefore: 5,
+    });
+    expect(
+      day2.records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({ inWindow: 7, unique: 6, seenBefore: 5, selected: 1 });
+    // 1일차에 미래라 낮췄던 기사(22:01Z)는 2일차에 원래 시각으로 다시 들어오지 않는다(M1-10 이월 — 중복 키는 정규화 URL만)
     expect(cardFor(file1, BBC_ITEM.ahead)?.src[0]!.at).toBe(NOW);
-    expect(cardFor(file2, BBC_ITEM.ahead)?.src[0]!.at).toBe(
-      "2026-10-10T22:01:20.000Z",
+    expect(cardFor(file2, BBC_ITEM.ahead)).toBeUndefined();
+    // 기억: 1일차 키는 처음 본 시각 그대로, 새 기사 키만 2일차 시각으로 더해진다
+    const seen2 = readSeen();
+    expect(Object.keys(seen2.urls)).toHaveLength(7);
+    for (const card of file1.cards) {
+      expect(seen2.urls[urlHash(card.src[0]!.u)]).toBe(NOW);
+    }
+    expect(seen2.urls[urlHash(file2.cards[0]!.src[0]!.u)]).toBe(DAY2);
+    expect(run2.news.seen).toMatchObject({
+      readError: null,
+      size: 6,
+      backfilled: 0,
+      added: 1,
+      pruned: 0,
+      writeError: null,
+    });
+  });
+
+  it("seen-urls.json이 없어도(첫 실행·파일 손실) 최근 발행 파일(D-1~D-3)로 날짜 간 중복을 막고, 그 카드로 기억을 채운다", async () => {
+    const day1 = makeDeps({ loadSources: async () => [BBC_SOURCE] });
+    await runCollect(day1.deps);
+    const file1 = readNews("2026-10-11");
+    rmSync(path.join(dataDir, "cache"), { recursive: true, force: true });
+    writeRuns("runs.json", [
+      runLog({ startedAt: NOW, sources: [{ id: BBC, ok: true, items: 7 }] }),
+    ]);
+    const day2 = makeDeps({
+      loadSources: async () => [BBC_SOURCE],
+      now: () => new Date(DAY2),
+    });
+    const run2 = await runCollect(day2.deps);
+    expect(run2.exitCode).toBe(0);
+    // 새 기사가 없으니 2일차 파일은 생기지 않는다(카드 0장 — collect.news.empty)
+    expect(existsSync(path.join(dataDir, "news", "2026-10-12.json"))).toBe(
+      false,
     );
+    expect(run2.news.dedup).toMatchObject({ seenBefore: 4 });
+    expect(run2.news.seen).toMatchObject({
+      readError: null,
+      backfilled: file1.cards.length,
+    });
+    expect(
+      day2.records.find((r) => r.event === "collect.seen.load"),
+    ).toMatchObject({
+      exists: false,
+      stored: 0,
+      backfilled: 6,
+      recentDates: ["2026-10-11"],
+    });
+    expect(
+      day2.records.find((r) => r.event === "collect.news.empty"),
+    ).toMatchObject({ level: "warn", date: "2026-10-12" });
   });
 
   it("--dry도 같은 규칙으로 창을 계산한다(파일은 쓰지 않음)", async () => {
@@ -812,4 +914,205 @@ describe("runCollect — 수집 시간 창 연결 (M1-10)", () => {
       basis: "last-success",
     });
   });
+});
+
+// ─── seen-urls 기억 연결 (M1-12) ─────────────────────────────────────────
+
+describe("runCollect — 이미 카드가 된 URL 기억 data/cache/seen-urls.json (M1-12, FR-04)", () => {
+  const seenFile = () => path.join(dataDir, "cache", "seen-urls.json");
+  const bbcOnly = { loadSources: async () => [BBC_SOURCE] };
+
+  it("--dry: 기억을 읽고 판정하지만 쓰지 않는다(출력만)", async () => {
+    const { deps } = makeDeps({ ...bbcOnly, dry: true });
+    const printed: string[] = [];
+    deps.print = (text) => printed.push(text);
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(existsSync(path.join(dataDir, "cache"))).toBe(false);
+    expect(outcome.news.seen).toMatchObject({ added: 6, written: null });
+    expect(
+      printed.some((p) =>
+        p.startsWith(
+          "── [dry] data/cache/seen-urls.json — 쓰지 않음 (기억 6개, 새로 6개",
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  it("뉴스 단계가 실패하면(모든 소스 실패) 기억을 쓰지 않는다 — 커밋되지 않는 실행이 기억을 바꾸지 않게", async () => {
+    const { deps } = makeDeps({
+      ...bbcOnly,
+      fetch: async (url) =>
+        url === BBC_SOURCE.url
+          ? new Response("busy", { status: 503 })
+          : fakeFetch(url),
+      feedClock: { now: () => 0, sleep: async () => undefined },
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(1);
+    expect(outcome.news.seen).toBeNull();
+    expect(existsSync(path.join(dataDir, "cache"))).toBe(false);
+  });
+
+  it("같은 날 다시 실행해 새 카드가 없으면 기억 파일을 다시 쓰지 않는다", async () => {
+    await runCollect(makeDeps(bbcOnly).deps);
+    const before = readFileSync(seenFile(), "utf8");
+    const again = makeDeps({
+      ...bbcOnly,
+      now: () => new Date("2026-10-10T22:10:00.000Z"), // 같은 KST 날(07:10)
+    });
+    const outcome = await runCollect(again.deps);
+    expect(outcome.news.added).toBe(0);
+    expect(outcome.news.dedup?.seenBefore).toBe(0); // 오늘 파일 카드는 빼지 않는다(선별 자리 유지 → 병합이 건너뜀)
+    expect(readFileSync(seenFile(), "utf8")).toBe(before);
+    expect(
+      again.records.find((r) => r.event === "collect.seen.unchanged"),
+    ).toMatchObject({ count: 6, added: 0 });
+  });
+
+  it("오늘 카드가 됐다가 오늘 파일에서 빠진 URL(삭제 요청 등)은 같은 날 다시 실행해도 들어오지 않는다", async () => {
+    await runCollect(makeDeps(bbcOnly).deps);
+    const filePath = path.join(dataDir, "news", "2026-10-11.json");
+    const file = readNews("2026-10-11");
+    const removed = cardFor(file, BBC_ITEM.latest)!;
+    writeFileSync(
+      filePath,
+      `${JSON.stringify({ ...file, cards: file.cards.filter((c) => c.id !== removed.id) }, null, 2)}\n`,
+      "utf8",
+    );
+    const again = makeDeps({
+      ...bbcOnly,
+      now: () => new Date("2026-10-10T22:10:00.000Z"),
+    });
+    const outcome = await runCollect(again.deps);
+    expect(outcome.news.dedup?.seenBefore).toBe(1);
+    expect(cardFor(readNews("2026-10-11"), BBC_ITEM.latest)).toBeUndefined();
+  });
+
+  it("90일 지난 기억은 다음 실행이 정리한다(경계: 정확히 90일 전은 남김)", async () => {
+    mkdirSync(path.join(dataDir, "cache"), { recursive: true });
+    const old = "0000000000000001";
+    const edge = "0000000000000002";
+    writeFileSync(
+      seenFile(),
+      `${JSON.stringify({
+        updatedAt: YESTERDAY,
+        urls: {
+          [old]: new Date(NOW_MS - 90 * 24 * HOUR - 1).toISOString(),
+          [edge]: new Date(NOW_MS - 90 * 24 * HOUR).toISOString(),
+        },
+      })}\n`,
+      "utf8",
+    );
+    const { deps, records } = makeDeps(bbcOnly);
+    const outcome = await runCollect(deps);
+    expect(outcome.status).toBe("success");
+    const seen = readSeen();
+    expect(seen.urls[old]).toBeUndefined();
+    expect(seen.urls[edge]).toBeDefined();
+    expect(Object.keys(seen.urls)).toHaveLength(1 + 6);
+    expect(seen.updatedAt).toBe(NOW);
+    expect(records.find((r) => r.event === "collect.seen.write")).toMatchObject(
+      {
+        file: "data/cache/seen-urls.json",
+        count: 7,
+        added: 6,
+        pruned: 1,
+      },
+    );
+  });
+
+  it("기억 파일이 깨져 있으면 경고하고 발행 파일로 다시 만든다 — 발행은 계속(partial)", async () => {
+    mkdirSync(path.join(dataDir, "cache"), { recursive: true });
+    writeFileSync(seenFile(), "{ broken", "utf8");
+    const { deps, records } = makeDeps(bbcOnly);
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.status).toBe("partial");
+    expect(outcome.news.added).toBe(6);
+    expect(outcome.news.seen).toMatchObject({ readError: "JSON 파싱 실패" });
+    expect(Object.keys(readSeen().urls)).toHaveLength(6);
+    expect(
+      records.find((r) => r.event === "collect.seen.unreadable"),
+    ).toMatchObject({ level: "warn", error: "JSON 파싱 실패" });
+  });
+
+  it("cache 자리에 파일이 있어 기억 읽기·쓰기가 모두 실패해도 발행 파일은 쓰고 exit 0(partial)", async () => {
+    writeFileSync(path.join(dataDir, "cache"), "not a dir", "utf8"); // cache/ 자리에 파일 → 읽기 ENOTDIR·mkdir 실패
+    const { deps, records } = makeDeps(bbcOnly);
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.status).toBe("partial");
+    expect(readNews("2026-10-11").cards).toHaveLength(6);
+    expect(outcome.news.seen).toMatchObject({
+      readError: expect.stringMatching(/^읽기 실패/),
+      written: null,
+      writeError: expect.any(String),
+    });
+    expect(records.find((r) => r.event === "collect.seen.fail")).toMatchObject({
+      level: "warn",
+    });
+  });
+
+  // 읽기 전용 폴더로 쓰기만 막는다 — root는 권한을 무시하므로 건너뛴다(Actions 러너·로컬은 일반 사용자)
+  it.skipIf(process.getuid?.() === 0)(
+    "기억 읽기는 되고 쓰기만 실패해도(cache 폴더 읽기 전용) 발행 파일은 쓰고 exit 0(partial) — 다음 실행은 최근 발행 파일로 같은 중복을 막는다",
+    async () => {
+      const cacheDir = path.join(dataDir, "cache");
+      mkdirSync(cacheDir, { recursive: true });
+      const storedText = `${JSON.stringify(
+        {
+          updatedAt: YESTERDAY,
+          urls: { "0000000000000001": YESTERDAY },
+        },
+        null,
+        2,
+      )}\n`;
+      writeFileSync(seenFile(), storedText, "utf8");
+      chmodSync(cacheDir, 0o555);
+      let outcome: Awaited<ReturnType<typeof runCollect>>;
+      let records: LogRecord[];
+      try {
+        const run = makeDeps(bbcOnly);
+        records = run.records;
+        outcome = await runCollect(run.deps);
+      } finally {
+        chmodSync(cacheDir, 0o755);
+      }
+      expect(outcome.exitCode).toBe(0);
+      // 소스·브리핑은 정상 — partial은 기억 쓰기 실패 하나 때문이다
+      expect(outcome.news.sources.every((s) => s.ok)).toBe(true);
+      expect(outcome.brief).toMatchObject({
+        state: "skipped",
+        reason: "no-matches",
+      });
+      expect(outcome.status).toBe("partial");
+      expect(readNews("2026-10-11").cards).toHaveLength(6);
+      expect(outcome.news.seen).toMatchObject({
+        readError: null,
+        size: 1,
+        added: 6,
+        written: null,
+        writeError: expect.any(String),
+      });
+      expect(readFileSync(seenFile(), "utf8")).toBe(storedText); // 기존 기억은 그대로
+      expect(readdirSync(cacheDir)).toEqual(["seen-urls.json"]); // 임시 파일이 남지 않는다
+      expect(
+        records.find((r) => r.event === "collect.seen.fail"),
+      ).toMatchObject({ level: "warn", count: 7, added: 6 });
+
+      // 다음 날 — 기억에는 1일차 카드가 없지만 최근 발행 파일(D-1)로 채워 같은 기사를 다시 카드로 만들지 않는다
+      writeRuns("runs.json", [
+        runLog({ startedAt: NOW, sources: [{ id: BBC, ok: true, items: 7 }] }),
+      ]);
+      const day2 = makeDeps({ ...bbcOnly, now: () => new Date(DAY2) });
+      const run2 = await runCollect(day2.deps);
+      expect(run2.exitCode).toBe(0);
+      expect(run2.news.dedup).toMatchObject({ seenBefore: 4 });
+      expect(run2.news.seen).toMatchObject({ readError: null, backfilled: 6 });
+      expect(existsSync(path.join(dataDir, "news", "2026-10-12.json"))).toBe(
+        false,
+      );
+    },
+  );
 });

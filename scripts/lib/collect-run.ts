@@ -3,7 +3,9 @@
  *
  *   ① 뉴스: configs/sources.json의 일일 수집 대상 피드 전부(M1-02 로더 — enabled && terms_checked, rss·journalist·aggregator)
  *      → 소스별 격리 수집 → 수집 시간 창(M1-10, FR-07 — 직전 성공 실행 − 3시간 ~ 현재, 최대 51시간, 미래 시각 가드)
- *      → 합쳐서 링크 중복 제거·최신순 상위 N건 → 원제목 카드(최소 분류) → data/news/<KST 발행일>.json
+ *      → 합쳐서 정규화 URL 해시로 중복 제거(M1-12, FR-04 — 카드는 대표 소스 + 같은 URL을 낸 소스들의 대회 태그 합집합, dedup.ts)
+ *      → 이미 카드가 된 URL 제외(seen-urls.json 90일 기억 ∪ 최근 발행 파일 — seen-urls.ts) → 최신순 상위 N건
+ *      → 원제목 카드(최소 분류) → data/news/<KST 발행일>.json → 그 파일의 카드로 data/cache/seen-urls.json 갱신
  *      검색형 소스(M1-06): configs/search-queries.json의 활성 쿼리만 계획한다. 어댑터(M1-07)가 보류라 실행하지 않는다 —
  *      활성 쿼리 0개면 `collect.search.skip` 한 줄, 있으면 소스마다 경고 후 건너뛴다. 검색 설정 오류도 피드 수집을 멈추지 않는다.
  *   ② 경기 데이터(M1-44·M1-48): **뉴스와 병렬로 실행 시작 직후** 시작한다. 프로바이더별 단계도 병렬(호스트가 달라 분당
@@ -46,7 +48,7 @@
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
- * 다음 작업이 갈아끼울 자리: 중복 제거~점수화(M1-12~14) ·
+ * 다음 작업이 갈아끼울 자리: 클러스터링·점수화(M1-13·M1-14) · 카드 ID(M1-16 — 정규화 URL 해시) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
  * 계절별 마감(M1-47 — 브리핑 컷오프 상수) · 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서).
  */
@@ -59,6 +61,7 @@ import {
   type AfPendingEntry,
   type CompetitionsFile,
   type LedgerMatch,
+  type NewsCard,
   type NewsFile,
   type RunEnv,
   type RunLog,
@@ -108,9 +111,9 @@ import {
   loadSlicePrompt,
   parseBriefOutput,
 } from "./brief";
-import { cardIdFor } from "./card-id";
 import type { LlmMode } from "./cli-args";
 import { readConfigFile } from "./config-files";
+import { dedupeFeedItems, groupSource } from "./dedup";
 import {
   applyCollectWindow,
   ceilMinutes,
@@ -190,6 +193,20 @@ import {
   type FootballDataBriefData,
 } from "./providers/football-data";
 import type { FetchLike } from "./rss";
+import {
+  buildSeenIndex,
+  buildSeenUrlsFile,
+  filterUnseen,
+  readRecentNewsCards,
+  readSeenUrls,
+  sameSeen,
+  SEEN_RECENT_DAYS,
+  SEEN_URLS_REL_PATH,
+  serializeSeenUrls,
+  updateSeen,
+  writeSeenUrls,
+  type SeenIndex,
+} from "./seen-urls";
 import {
   countSearchExclusions,
   loadSearchQueries,
@@ -473,7 +490,45 @@ export interface NewsOutcome {
   window: CollectWindow | null;
   /** 창 적용 집계(창 밖·미래 낮춤·미래 제외) — 피드를 받지 않았으면 null */
   windowStats: WindowStats | null;
+  /** 같은 URL 중복 제거·이미 카드가 된 URL 제외(M1-12, FR-04) — 선별까지 가지 않았으면 null */
+  dedup: DedupOutcome | null;
+  /** `data/cache/seen-urls.json`(M1-12) — 선별까지 가지 않았으면 null */
+  seen: SeenOutcome | null;
   error?: string;
+}
+
+/** 중복 제거 집계 (M1-12) */
+export interface DedupOutcome {
+  /** 창 안 항목 수 */
+  items: number;
+  /** 정규화 URL 기준 고유 묶음 수 */
+  unique: number;
+  /** 같은 정규화 URL이라 합친 항목 수(items − unique) */
+  duplicates: number;
+  /** 소스가 둘 이상인 묶음 수(소스 메타를 합친 묶음) */
+  multiSource: number;
+  /** 다른 날(또는 삭제 전) 이미 카드가 된 URL이라 뺀 묶음 수 */
+  seenBefore: number;
+}
+
+/** seen-urls 기억 단계 결과 (M1-12 — scripts/lib/seen-urls.ts) */
+export interface SeenOutcome {
+  /** seen-urls.json 읽기·형식 오류(빈 기억 + 발행 파일로 다시 채워 진행) */
+  readError: string | null;
+  /** 이전 발행 파일(D-1~D-3) 중 깨진 파일 */
+  recentErrors: Array<{ date: string; error: string }>;
+  /** 정리 후 기억 크기(이번 실행 갱신 전) */
+  size: number;
+  /** 보존 기간(90일)이 지나 뺀 항목 수 */
+  pruned: number;
+  /** seen-urls.json에 없어 발행 파일에서 채운 키 수 */
+  backfilled: number;
+  /** 이번 실행이 새로 기억한 키 수(발행 파일 카드 기준 — 쓰지 않았으면 0) */
+  added: number;
+  /** 쓴 경로(dry·내용 같음·발행 파일 없음·쓰기 실패면 null) */
+  written: string | null;
+  /** 쓰기 실패(발행은 계속 — 실행 상태 partial) */
+  writeError: string | null;
 }
 
 /** 소스 건강도 단계 결과 (M1-11) */
@@ -739,6 +794,8 @@ async function runNewsStage(
     search: null,
     window: null,
     windowStats: null,
+    dedup: null,
+    seen: null,
   };
 
   // 소스 설정 → 일일 수집 계획. 설정 오류(소스·피드 수집 정책)·수집 대상 0개는 뉴스 단계 실패(exit 1 — 커밋하지 않고 이슈).
@@ -801,8 +858,7 @@ async function runNewsStage(
   });
   const outcomes: SourceOutcome[] = collected.outcomes;
   // 창 적용: 창 밖·3시간 넘는 미래는 빼고, 5분~3시간 미래는 수집 시각으로 낮춘다(카드 src.at도 낮춘 값).
-  // TODO(M1-12): 겹침(직전 실행 − 3시간) 구간의 항목은 어제 파일에 이미 있을 수 있다 — 날짜 간 중복은 seen-urls.json이
-  // 막는다. 같은 날짜 파일 안의 중복은 지금도 mergeCards(카드 ID)가 막는다.
+  // 겹침(직전 실행 − 3시간) 구간의 항목은 어제 카드일 수 있다 — 아래 seen-urls 기억(M1-12)이 뺀다.
   const windowed = applyCollectWindow(collected.items, window);
   logWindowApply(log, windowed.stats);
   const allItems = windowed.items;
@@ -827,31 +883,64 @@ async function runNewsStage(
     return { outcome: { ...empty, ...base, error }, ...stage };
   }
 
-  // 선별(슬라이스): 여러 소스를 합쳐 카드 ID(링크 해시)로 중복을 빼고 최신순 상위 N건 — 같은 링크는 설정 순서상 먼저 나온 소스가 갖는다.
-  const uniqueLinks = new Set(allItems.map((item) => cardIdFor(item.url)));
-  const cards = selectLatest(allItems, deps.limit).flatMap((item) => {
-    const source = sourceById.get(item.source);
-    return source ? [buildCard(item, source, ctx.startedAt)] : [];
+  // 오늘 발행 파일 — 깨져 있으면 덮어쓰지 않고 뉴스 단계 실패(exit 1).
+  const filePath = newsFilePath(deps.dataDir, ctx.publishDate);
+  let existing: NewsFile | null;
+  try {
+    existing = await readNewsFile(filePath);
+  } catch (error) {
+    log.error("collect.news.fail", {
+      date: ctx.publishDate,
+      error: errorText(error),
+    });
+    return {
+      outcome: { ...empty, ...base, error: errorText(error) },
+      ...stage,
+    };
+  }
+
+  // 중복 제거(M1-12, FR-04): 정규화 URL 해시로 묶는다 — 대표 = 설정 순서상 처음 나온 항목(링크는 피드 원문), 묶음 소스의
+  // 대회 태그는 카드를 만들 때 합친다(dedup.ts). 다른 날 이미 카드가 된 URL은 기억(seen-urls.ts)으로 뺀다.
+  const deduped = dedupeFeedItems(allItems);
+  const seenLoad = await loadSeen(deps, ctx, existing);
+  const unseen = filterUnseen(deduped.groups, seenLoad.index);
+  const dedup: DedupOutcome = {
+    items: allItems.length,
+    unique: deduped.groups.length,
+    duplicates: deduped.duplicates,
+    multiSource: deduped.groups.filter((g) => g.sources.length > 1).length,
+    seenBefore: unseen.seenBefore.length,
+  };
+
+  // 선별(슬라이스): 최신순 상위 N건 → 원제목 카드. 카드 소스 = 대표 소스(출처명·tier 그대로) + 묶음 대회 합집합.
+  // 묶음 최고 tier·최대 weight(meta.bestTier·maxWeight)는 점수화(M1-14) 입력 — 카드에는 쓰지 않는다.
+  const cards = selectLatest(unseen.kept, deps.limit).flatMap((group) => {
+    const meta = groupSource(group, sourceById);
+    return meta ? [buildCard(group.item, meta.card, ctx.startedAt)] : [];
   });
   log.info("collect.select.done", {
     usable: collected.items.length,
     inWindow: allItems.length,
-    unique: uniqueLinks.size,
-    duplicateLinks: allItems.length - uniqueLinks.size,
+    unique: dedup.unique,
+    duplicateLinks: dedup.duplicates,
+    multiSource: dedup.multiSource,
+    seenBefore: dedup.seenBefore,
     selected: cards.length,
     limit: deps.limit,
     failedSources: failed.length,
   });
 
+  let seen: SeenOutcome = seenLoad.outcome;
   try {
-    const filePath = newsFilePath(deps.dataDir, ctx.publishDate);
-    const existing = await readNewsFile(filePath);
     const merged = mergeCards(existing?.cards ?? [], cards);
     // 새 카드가 없으면 파일을 다시 쓰지 않는다(generatedAt만 바뀐 불필요한 data 커밋 방지).
     const unchanged = existing !== null && merged.added === 0;
     if (merged.cards.length === 0) {
       log.warn("collect.news.empty", { date: ctx.publishDate });
-      return { outcome: { ...empty, ...base, ok: true }, ...stage };
+      return {
+        outcome: { ...empty, ...base, ok: true, dedup, seen },
+        ...stage,
+      };
     }
     const file = buildNewsFile({
       date: ctx.publishDate,
@@ -877,6 +966,8 @@ async function runNewsStage(
       await writeNewsFile(filePath, file);
       log.info("collect.news.write", fields);
     }
+    // 기억 갱신(M1-12) — 발행 파일(이번에 쓴 것 또는 그대로 둔 것)의 카드로만. 발행 파일 쓰기가 실패하면 여기 오지 않는다.
+    seen = await saveSeen(deps, seenLoad, merged.cards);
     return {
       outcome: {
         ...base,
@@ -885,6 +976,8 @@ async function runNewsStage(
         added: merged.added,
         file: unchanged && !deps.dry ? existing : file,
         path: deps.dry || unchanged ? null : filePath,
+        dedup,
+        seen,
       },
       ...stage,
     };
@@ -898,10 +991,169 @@ async function runNewsStage(
         ...empty,
         ...base,
         selected: cards.length,
+        dedup,
+        seen,
         error: errorText(error),
       },
       ...stage,
     };
+  }
+}
+
+// ─── ①-b 이미 카드가 된 URL 기억 (M1-12 — scripts/lib/seen-urls.ts) ────────
+
+/** 로그·출력에 쓰는 기억 파일 이름 */
+const SEEN_URLS_LABEL = `data/${SEEN_URLS_REL_PATH.split(path.sep).join("/")}`;
+
+/** 기억 읽기 결과 — 쓰기 단계가 그대로 이어 쓴다 */
+interface SeenLoad {
+  index: SeenIndex;
+  /** seen-urls.json의 urls(읽지 못했으면 {}) — 내용이 같으면 다시 쓰지 않는다 */
+  storedUrls: Readonly<Record<string, string>>;
+  /** 파일이 있었고 형식이 맞았는가 */
+  storedOk: boolean;
+  outcome: SeenOutcome;
+}
+
+/**
+ * 기억 = seen-urls.json(90일 정리) ∪ 최근 발행 파일(D-1~D-3) ∪ 오늘 발행 파일. 읽기 오류는 경고만 하고 진행한다 —
+ * 기억이 비어도 최근 발행 파일이 수집 창이 닿는 날짜의 중복을 막는다(seen-urls.ts 머리 주석).
+ */
+async function loadSeen(
+  deps: CollectDeps,
+  ctx: { publishDate: string; startedAt: string },
+  existing: NewsFile | null,
+): Promise<SeenLoad> {
+  const log = deps.logger;
+  const todayCards = existing?.cards ?? [];
+  let readError: string | null = null;
+  let recentErrors: SeenOutcome["recentErrors"] = [];
+  let storedUrls: Readonly<Record<string, string>> = {};
+  let storedOk = false;
+  let index: SeenIndex;
+  try {
+    const stored = await readSeenUrls(deps.dataDir);
+    readError = stored.error;
+    storedUrls = stored.urls;
+    storedOk = stored.exists && stored.error === null;
+    if (stored.error !== null) {
+      log.warn("collect.seen.unreadable", {
+        file: SEEN_URLS_LABEL,
+        error: stored.error,
+      });
+    }
+    const recent = await readRecentNewsCards(
+      deps.dataDir,
+      ctx.publishDate,
+      SEEN_RECENT_DAYS,
+    );
+    recentErrors = recent.errors;
+    for (const failure of recent.errors) {
+      log.warn("collect.seen.recent-unreadable", {
+        date: failure.date,
+        error: failure.error,
+      });
+    }
+    index = buildSeenIndex({
+      stored: stored.urls,
+      recentCards: recent.cards,
+      todayCards,
+      now: ctx.startedAt,
+    });
+    log.info("collect.seen.load", {
+      file: SEEN_URLS_LABEL,
+      exists: stored.exists,
+      stored: index.stored,
+      pruned: index.pruned,
+      backfilled: index.backfilled,
+      recentDates: recent.dates,
+      count: index.seen.size,
+      todayKeys: index.todayKeys.size,
+    });
+  } catch (error) {
+    // 방어선 — 기억 단계의 예상 밖 오류도 발행을 멈추지 않는다(오늘 파일 기준 중복 제거만 남는다)
+    readError = errorText(error);
+    log.warn("collect.seen.unreadable", {
+      file: SEEN_URLS_LABEL,
+      stage: "unexpected",
+      error: readError,
+    });
+    index = buildSeenIndex({
+      stored: {},
+      recentCards: [],
+      todayCards,
+      now: ctx.startedAt,
+    });
+    storedOk = false;
+  }
+  return {
+    index,
+    storedUrls,
+    storedOk,
+    outcome: {
+      readError,
+      recentErrors,
+      size: index.seen.size,
+      pruned: index.pruned,
+      backfilled: index.backfilled,
+      added: 0,
+      written: null,
+      writeError: null,
+    },
+  };
+}
+
+/**
+ * 발행 파일의 카드로 기억을 갱신해 쓴다 — dry는 쓰지 않고 출력만, 내용(updatedAt 제외)이 같으면 쓰지 않는다.
+ * 쓰기 실패는 던지지 않고 결과에 남긴다(발행은 계속 — 실행 상태 partial).
+ */
+async function saveSeen(
+  deps: CollectDeps,
+  load: SeenLoad,
+  cards: readonly NewsCard[],
+): Promise<SeenOutcome> {
+  const log = deps.logger;
+  // 갱신·비교·쓰기 전부 try 안 — 발행 파일은 이미 썼으므로 기억 단계의 어떤 오류도 뉴스 단계를 실패시키지 않는다
+  try {
+    const { seen, added } = updateSeen(load.index.seen, cards);
+    const outcome: SeenOutcome = { ...load.outcome, added };
+    const fields = {
+      file: SEEN_URLS_LABEL,
+      count: seen.size,
+      added,
+      pruned: load.outcome.pruned,
+      backfilled: load.outcome.backfilled,
+    };
+    if (load.storedOk && sameSeen(load.storedUrls, seen)) {
+      log.info("collect.seen.unchanged", fields);
+      return outcome;
+    }
+    const file = buildSeenUrlsFile(seen, nowUtcIso(deps.now()));
+    if (deps.dry) {
+      log.info("collect.seen.dry", fields);
+      deps.print(
+        `── [dry] ${SEEN_URLS_LABEL} — 쓰지 않음 (기억 ${seen.size}개, 새로 ${added}개, 정리 ${load.outcome.pruned}개, 발행 파일에서 채움 ${load.outcome.backfilled}개, ${serializeSeenUrls(file).length}바이트)`,
+      );
+      return outcome;
+    }
+    try {
+      const written = await writeSeenUrls(deps.dataDir, file);
+      log.info("collect.seen.write", fields);
+      return { ...outcome, written };
+    } catch (error) {
+      const writeError = errorText(error);
+      log.warn("collect.seen.fail", { ...fields, error: writeError });
+      return { ...outcome, writeError };
+    }
+  } catch (error) {
+    // 방어선 — 갱신·검증의 예상 밖 오류(쓰기 전)
+    const writeError = errorText(error);
+    log.warn("collect.seen.fail", {
+      file: SEEN_URLS_LABEL,
+      stage: "unexpected",
+      error: writeError,
+    });
+    return { ...load.outcome, writeError };
   }
 }
 
@@ -2352,10 +2604,15 @@ export function apiFootballIncomplete(
 
 /**
  * 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음·순위 일부 실패·API-Football 미완(apiFootballIncomplete)·
- * 원장 쓰기 오류·원장 형식 오류 항목(M1-48b) = partial, 그 밖 = success. partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts).
+ * 원장 쓰기 오류·원장 형식 오류 항목(M1-48b)·seen-urls 기억 읽기·쓰기 오류(M1-12) = partial, 그 밖 = success.
+ * partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts).
  */
 export function runStatus(
-  news: { ok: boolean; sources?: readonly { ok: boolean }[] },
+  news: {
+    ok: boolean;
+    sources?: readonly { ok: boolean }[];
+    seen?: Pick<SeenOutcome, "readError" | "writeError"> | null;
+  },
   brief: BriefOutcome,
   matchData:
     | (Pick<MatchDataOutcome, "footballData"> &
@@ -2364,6 +2621,8 @@ export function runStatus(
 ): RunLog["status"] {
   if (!news.ok) return "failed";
   if (news.sources?.some((source) => !source.ok)) return "partial";
+  // 기억 파일이 깨졌거나(발행 파일로 다시 채워 진행) 쓰지 못했다(다음 실행은 최근 발행 파일로 중복을 막는다) — M1-12
+  if (news.seen?.readError || news.seen?.writeError) return "partial";
   if (brief.state === "failed") return "partial";
   const fd = matchData?.footballData;
   if (fd?.state === "done" && fd.data.standingsFailed.length > 0) {
