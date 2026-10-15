@@ -1,14 +1,25 @@
 /**
- * collect.yml 실행 가드 판단 로직 — I/O 없는 순수 함수 (M0-14, FR-150).
- * GitHub API 요청·출력·종료는 scripts/collect-guard.ts가 맡는다.
+ * collect.yml 실행 가드 판단 로직 — I/O 없는 순수 함수 (M0-14, FR-150, M1-47 계절 가드 — PRD §15 D26).
+ * GitHub API 요청·출력·종료는 scripts/collect-guard.ts가 맡는다. 현재 시각은 인자로 받는다.
  *
  * 판단 순서 (앞에서 결정되면 뒤는 보지 않는다)
  *   1. schedule·workflow_dispatch가 아닌 이벤트 → 실행 안 함
  *   2. main이 아닌 ref → 실행 안 함 (data 커밋·Pages 배포는 main 전용. github-pages environment도 main만 허용)
  *   3. schedule인데 저장소 변수 COLLECT_ENABLED가 "true"가 아님 → 실행 안 함
  *      (M1 파이프라인 완성·M1-40 리허설 전에는 백업 schedule이 매일 빈 실행을 하지 않게 한다)
- *   4. workflow_dispatch + force → 실행 (12시간 가드 무시, 수동 재실행용)
- *   5. 최근 12시간 안에 "수집 job이 성공한" 실행이 있으면 실행 안 함, 없으면 실행
+ *   3a. 계절 슬롯을 읽지 못한 트리거(모르는 cron·빈 SCHEDULE·summer·winter 밖의 slot 입력) → **실패**(`invalid-trigger`,
+ *      CLI exit 1 → 실패 이슈). 1~3 뒤에 판정한다 — 꺼져 있거나(COLLECT_ENABLED) main이 아닌 실행은 설정이 어긋나도 이슈를
+ *      내지 않고 건너뛴다. 읽기 오류는 readGuardEnv가 `trigger.slotError`에 담아 둔다.
+ *   4. 계절 슬롯이 붙은 트리거인데 오늘 발행일의 계절과 다름 → 실행 안 함(`off-season` — 실패 아님)
+ *      트리거 계절: 백업 schedule = `github.event.schedule` cron 문자열(`SCHEDULE_SEASONS`), cron-job.org =
+ *      workflow_dispatch 입력 `slot`(summer·winter). 입력 없는 수동 dispatch는 계절 판정 없이 5·6만 본다.
+ *      오늘 계절 = `publishSlotAt(now).season`(src/lib/time.ts — 발행일 00:00 KST의 유럽 서머타임 여부, 전환일 아침은
+ *      전환 전 계절). slot 입력은 force보다 먼저 본다 — slot은 "이 계절의 정기 트리거"라는 표시라 force로 넘기지 않는다.
+ *      여름: 06:30 dispatch(summer)·06:40 schedule만 진행, 07:10 dispatch(winter)·07:20 schedule은 skip.
+ *      겨울: 07:10 dispatch(winter)·07:20 schedule만 진행, 06:30 dispatch(summer)·06:40 schedule은 skip.
+ *   5. workflow_dispatch + force → 실행 (12시간 가드 무시, 수동 재실행용)
+ *   6. 최근 12시간 안에 "수집 job이 성공한" 실행이 있으면 실행 안 함, 없으면 실행
+ *   계절 skip도 3의 skip과 같이 실행은 success, 수집 job은 skipped로 끝나 아래 정의상 성공 이력이 아니다.
  *
  * "성공 이력" 정의 — 실행(run) 결론만 보지 않는 이유
  *   가드가 건너뛴 실행도 success로 끝난다. skip을 실패로 끝내면 매번 실패 이슈가 생기고 성공률 KPI가
@@ -19,7 +30,34 @@
  *   run 결론이 failure라 빠진다(다음 실행이 다시 시도하고, 실패 이슈가 따로 남는다).
  *   성공 시각은 수집 job의 completed_at(없으면 실행의 updated_at)이다.
  */
+import {
+  formatKst,
+  nowUtcIso,
+  PUBLISH_SEASONS,
+  publishSlotAt,
+  type PublishSeason,
+  type PublishSlot,
+} from "@/lib/time";
+
 import type { ParseResult } from "./cli-args";
+
+/**
+ * 백업 schedule cron(UTC, collect.yml `on.schedule[].cron`과 글자까지 같게) → 그 트리거의 계절 (FR-150, D26).
+ * GitHub는 `github.event.schedule`에 실행을 일으킨 cron 문자열을 그대로 넣는다. cron은 UTC라 KST로는 다음 날 아침이다.
+ * collect.yml의 schedule을 바꾸면 여기도 함께 바꾼다 — tests/collect-guard.test.ts가 집합·시각(publishSlot backupStart)을 확인한다.
+ */
+export const SCHEDULE_SEASONS: Readonly<Record<string, PublishSeason>> =
+  Object.freeze({
+    "40 21 * * *": "summer", // 06:40 KST
+    "20 22 * * *": "winter", // 07:20 KST
+  });
+
+/** 계절 이름(로그·Step Summary) */
+export const SEASON_LABELS: Readonly<Record<PublishSeason, string>> =
+  Object.freeze({
+    summer: "여름(유럽 서머타임)",
+    winter: "겨울(유럽 표준시)",
+  });
 
 /**
  * collect.yml의 수집 job 표시 이름(`jobs.collect.name`). GitHub jobs API는 job ID가 아니라 이 이름을 돌려준다.
@@ -51,9 +89,20 @@ export type GuardReason =
   | "unsupported-event"
   | "not-main"
   | "schedule-disabled"
+  | "invalid-trigger"
+  | "off-season"
   | "forced"
   | "recent-success"
   | "no-recent-success";
+
+/** 트리거에 붙은 계절 슬롯 (M1-47) */
+export interface TriggerSlot {
+  season: PublishSeason;
+  /** schedule = 백업 cron(`github.event.schedule`) · dispatch = cron-job.org가 보낸 입력 `slot` */
+  source: "schedule" | "dispatch";
+  /** 원문(정규화한 cron 문자열 또는 입력값) — 로그·Step Summary용 */
+  raw: string;
+}
 
 /** 실행을 일으킨 이벤트와 입력 */
 export interface GuardTrigger {
@@ -63,6 +112,13 @@ export interface GuardTrigger {
   collectEnabled: boolean;
   /** inputs.force (workflow_dispatch에서만 의미가 있다) */
   force: boolean;
+  /** 계절 슬롯 — null이면 계절 판정 없음(입력 없는 수동 dispatch, 그 밖의 이벤트, 읽기 오류) */
+  slot: TriggerSlot | null;
+  /**
+   * 계절 슬롯 읽기 오류(모르는 cron·빈 SCHEDULE·잘못된 slot 입력) — 있으면 precheck가 판단 순서 1~3 뒤에 실패(`invalid-trigger`)로
+   * 판정한다. 없으면 null.
+   */
+  slotError: string | null;
 }
 
 /** 12시간 안에 수집 job이 성공한 실행 */
@@ -81,6 +137,11 @@ export interface GuardDecision {
   /** 사람이 읽는 설명 (Step Summary·로그) */
   message: string;
   recent?: RecentSuccess;
+}
+
+/** 실패로 끝내야 하는 판단인가 — CLI가 exit 1로 끝내 실패 이슈(report-failure)를 남긴다. 건너뛰기는 실패가 아니다. */
+export function isFailureDecision(decision: GuardDecision): boolean {
+  return decision.reason === "invalid-trigger";
 }
 
 /** GitHub API workflow run에서 쓰는 필드만 */
@@ -121,6 +182,52 @@ export function parseFlag(value: string | undefined): boolean {
 /** `owner/repo` 형식만 허용 */
 const REPOSITORY_PATTERN = /^[\w.-]+\/[\w.-]+$/;
 
+/** cron 문자열 비교용 — 앞뒤 공백 제거, 필드 사이 공백 1칸 */
+export function normalizeCron(raw: string): string {
+  return raw.trim().split(/\s+/).join(" ");
+}
+
+/**
+ * 이벤트별 계절 슬롯을 읽는다 (M1-47).
+ * - schedule: `SCHEDULE`(= github.event.schedule)이 `SCHEDULE_SEASONS`에 있어야 한다. 없거나 모르는 cron이면 오류 —
+ *   collect.yml과 이 파일이 어긋난 설정 오류라 조용히 넘기지 않는다(readGuardEnv가 trigger.slotError에 담고, precheck가
+ *   판단 순서 1~3 뒤에 실패 `invalid-trigger`로 판정 → 가드 exit 1 → 실패 이슈).
+ * - workflow_dispatch: `SLOT`(= inputs.slot)이 비어 있으면 null(수동 실행 — 계절 판정 없음), summer·winter(대소문자·앞뒤
+ *   공백 무시)면 그 계절, 그 밖은 오류(cron-job.org 본문 오타를 조용히 수동 실행으로 바꾸지 않는다).
+ * - 그 밖의 이벤트: null(판단 순서 1이 거른다).
+ */
+export function readTriggerSlot(
+  eventName: string,
+  env: Readonly<Record<string, string | undefined>>,
+): ParseResult<TriggerSlot | null> {
+  if (eventName === "schedule") {
+    const cron = normalizeCron(env.SCHEDULE ?? "");
+    const season = Object.hasOwn(SCHEDULE_SEASONS, cron)
+      ? SCHEDULE_SEASONS[cron]
+      : undefined;
+    if (!season) {
+      return {
+        ok: false,
+        error: `알 수 없는 schedule cron("${cron}") — SCHEDULE(github.event.schedule)이 scripts/lib/collect-guard.ts SCHEDULE_SEASONS(${Object.keys(SCHEDULE_SEASONS).join(" · ")})에 없다. collect.yml의 schedule과 함께 고칠 것`,
+      };
+    }
+    return { ok: true, value: { season, source: "schedule", raw: cron } };
+  }
+  if (eventName === "workflow_dispatch") {
+    const raw = (env.SLOT ?? "").trim().toLowerCase();
+    if (raw === "") return { ok: true, value: null };
+    const season = PUBLISH_SEASONS.find((s) => s === raw);
+    if (!season) {
+      return {
+        ok: false,
+        error: `workflow_dispatch 입력 slot은 비우거나 ${PUBLISH_SEASONS.join("·")} 중 하나여야 합니다 (받은 값: "${raw.slice(0, 32)}")`,
+      };
+    }
+    return { ok: true, value: { season, source: "dispatch", raw } };
+  }
+  return { ok: true, value: null };
+}
+
 /** Actions가 주입하는 환경변수를 읽어 검증한다. */
 export function readGuardEnv(
   env: Readonly<Record<string, string | undefined>>,
@@ -141,6 +248,9 @@ export function readGuardEnv(
       error: `GITHUB_REPOSITORY는 owner/repo 형식이어야 합니다 (받은 값: "${repository}")`,
     };
   }
+  // 슬롯 읽기 오류는 여기서 실패시키지 않고 trigger에 담는다 — COLLECT_ENABLED가 꺼졌거나 main이 아닌 실행은 precheck가
+  // 먼저 건너뛰고, 그 뒤에야 실패(invalid-trigger)로 판정한다(판단 순서 3a).
+  const slot = readTriggerSlot(eventName, env);
 
   let currentRunId: number | null = null;
   const rawRunId = env.GITHUB_RUN_ID?.trim();
@@ -163,6 +273,8 @@ export function readGuardEnv(
         ref,
         collectEnabled: parseFlag(env.COLLECT_ENABLED),
         force: parseFlag(env.FORCE),
+        slot: slot.ok ? slot.value : null,
+        slotError: slot.ok ? null : slot.error,
       },
       repository,
       currentRunId,
@@ -175,11 +287,27 @@ export function readGuardEnv(
   };
 }
 
+/** 슬롯을 사람이 읽는 형태로 — "여름(유럽 서머타임) 06:30 수집 → 07:00 공개" */
+export function describeSlot(slot: PublishSlot): string {
+  return `${SEASON_LABELS[slot.season]} ${formatKst(slot.collectStart, "time")} 수집 → ${formatKst(slot.publishTarget, "time")} 공개`;
+}
+
+/** 트리거 슬롯 원문 표시 — "schedule `40 21 * * *` → 여름" */
+function describeTriggerSlot(slot: TriggerSlot): string {
+  const label = SEASON_LABELS[slot.season];
+  return slot.source === "schedule"
+    ? `백업 schedule \`${slot.raw}\` → ${label}`
+    : `dispatch 입력 slot=${slot.raw} → ${label}`;
+}
+
 /**
- * 이력 조회 없이 결정할 수 있는 경우를 판단한다(판단 순서 1~4).
- * null이면 이력(판단 순서 5)을 봐야 한다.
+ * 이력 조회 없이 결정할 수 있는 경우를 판단한다(판단 순서 1~5). `now`는 계절 판정(4)에 쓴다 — 그 순간의 KST 발행일 계절.
+ * null이면 이력(판단 순서 6)을 봐야 한다. `invalid-trigger`(3a)는 건너뛰기가 아니라 실패다 — `isFailureDecision`.
  */
-export function precheck(trigger: GuardTrigger): GuardDecision | null {
+export function precheck(
+  trigger: GuardTrigger,
+  now: Date,
+): GuardDecision | null {
   const { eventName, ref } = trigger;
   if (eventName !== "schedule" && eventName !== "workflow_dispatch") {
     return {
@@ -202,6 +330,24 @@ export function precheck(trigger: GuardTrigger): GuardDecision | null {
       message:
         '백업 schedule 비활성 — 저장소 변수 COLLECT_ENABLED가 "true"가 아니다 (M1-40 리허설 후 활성화)',
     };
+  }
+  if (trigger.slotError !== null) {
+    // 판단 순서 3a — 실패(isFailureDecision). force로도 넘기지 않는다(계절을 모르는 정기 트리거가 아무 때나 수집하지 않게)
+    return {
+      run: false,
+      reason: "invalid-trigger",
+      message: `계절 슬롯을 읽지 못한 트리거 — ${trigger.slotError}`,
+    };
+  }
+  if (trigger.slot !== null) {
+    const today = publishSlotAt(nowUtcIso(now));
+    if (trigger.slot.season !== today.season) {
+      return {
+        run: false,
+        reason: "off-season",
+        message: `계절에 맞지 않는 트리거 — 발행일 ${today.date}: ${describeSlot(today)} / 이 실행: ${describeTriggerSlot(trigger.slot)}. 건너뛴다(실패 아님, 성공 이력 아님 — PRD §15 D26)`,
+      };
+    }
   }
   if (eventName === "workflow_dispatch" && trigger.force) {
     return {
@@ -415,10 +561,30 @@ export function formatGuardSummary(
   now: Date,
 ): string {
   const cell = (value: string) => value.replace(/\|/g, "\\|");
+  const today = publishSlotAt(nowUtcIso(now));
   const rows: [string, string][] = [
-    ["결과", decision.run ? "**실행**" : "**건너뜀** (성공 종료)"],
+    [
+      "결과",
+      decision.run
+        ? "**실행**"
+        : isFailureDecision(decision)
+          ? "**실패** (exit 1 — 실패 이슈)"
+          : "**건너뜀** (성공 종료)",
+    ],
     ["이유", `\`${decision.reason}\` — ${cell(decision.message)}`],
     ["트리거", `${cell(trigger.eventName)} · \`${cell(trigger.ref)}\``],
+    [
+      "계절 슬롯",
+      trigger.slotError !== null
+        ? `**읽기 오류** — ${cell(trigger.slotError)}`
+        : trigger.slot === null
+          ? "없음 — 계절 판정 없이 12시간 가드만"
+          : cell(describeTriggerSlot(trigger.slot)),
+    ],
+    [
+      "발행일 계절",
+      `${today.date} · ${describeSlot(today)} · 브리핑 마감 ${formatKst(today.briefDeadline, "time")} (KST)`,
+    ],
     ["COLLECT_ENABLED", String(trigger.collectEnabled)],
     ["force", String(trigger.force)],
   ];
@@ -431,7 +597,7 @@ export function formatGuardSummary(
   }
   rows.push(["판단 시각 (UTC)", now.toISOString()]);
   return [
-    "## 수집 가드 (12시간 성공 이력)",
+    "## 수집 가드 (계절 슬롯 · 12시간 성공 이력)",
     "",
     "| 항목 | 값 |",
     "|---|---|",

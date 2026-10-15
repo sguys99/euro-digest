@@ -1,6 +1,7 @@
 /**
- * collect.yml `guard` job 진입점 (M0-14, FR-150) — 이번 실행에서 수집을 진행할지 판단해
- * `$GITHUB_OUTPUT`(run·reason)과 Step Summary에 남긴다. 판단 규칙은 scripts/lib/collect-guard.ts의 순수 함수.
+ * collect.yml `guard` job 진입점 (M0-14, FR-150, M1-47) — 이번 실행에서 수집을 진행할지 판단해
+ * `$GITHUB_OUTPUT`(run·reason)과 Step Summary에 남긴다. 판단 규칙(계절 슬롯 · 12시간 가드)은 scripts/lib/collect-guard.ts의
+ * 순수 함수.
  *
  * 환경변수
  *   GITHUB_EVENT_NAME · GITHUB_REF · GITHUB_REPOSITORY · GITHUB_RUN_ID · GITHUB_API_URL
@@ -8,14 +9,19 @@
  *   GH_TOKEN          이력 조회 토큰(github.token, actions: read). 없으면 비인증 요청(공개 저장소 로컬 확인용)
  *   COLLECT_ENABLED   vars.COLLECT_ENABLED — "true"일 때만 schedule 실행
  *   FORCE             inputs.force — "true"면 12시간 가드 무시
+ *   SCHEDULE          github.event.schedule — schedule 실행을 일으킨 cron 문자열(계절 판정, M1-47)
+ *   SLOT              inputs.slot — cron-job.org dispatch의 계절 슬롯(summer·winter, 비우면 계절 판정 없음, M1-47)
  *   COLLECT_WORKFLOW  이력을 볼 워크플로 파일(기본 collect.yml)
  *
- * 종료 코드: 판단 완료(실행·건너뜀 모두) 0, 환경변수 오류·GitHub API 조회 실패 1.
- * 조회 실패를 "실행"으로 넘기지 않는 이유: 06:30 실행 직후의 백업 실행이 중복 수집(LLM 비용 2배)하지 않게
- * 실패 쪽으로 닫고, 실패 이슈(report-failure job)로 사람이 보게 한다. 일시 오류는 재시도로 흡수한다.
+ * 종료 코드: 판단 완료(실행·건너뜀 모두) 0, 환경변수 오류·GitHub API 조회 실패 1, 계절 슬롯을 읽지 못한 트리거(모르는 cron·
+ * 빈 SCHEDULE·잘못된 slot 입력 — `invalid-trigger`) 1. 단 `invalid-trigger`는 이벤트·main·COLLECT_ENABLED 판정 뒤라 꺼진
+ * schedule·main이 아닌 실행은 설정이 어긋나도 건너뛰기(0)로 끝난다.
+ * 조회 실패를 "실행"으로 넘기지 않는 이유: 정기 실행(여름 06:30 · 겨울 07:10) 직후의 백업 실행(06:40 · 07:20)이 중복
+ * 수집(LLM 비용 2배)하지 않게 실패 쪽으로 닫고, 실패 이슈(report-failure job)로 사람이 보게 한다. 일시 오류는 재시도로 흡수한다.
+ * 계절 skip(off-season)은 이력을 조회하지 않고 끝난다(precheck).
  *
  * 로컬 확인 예:
- *   GITHUB_EVENT_NAME=workflow_dispatch GITHUB_REF=refs/heads/main GITHUB_REPOSITORY=sguys99/euro-digest \
+ *   GITHUB_EVENT_NAME=workflow_dispatch GITHUB_REF=refs/heads/main GITHUB_REPOSITORY=sguys99/euro-digest SLOT=winter \
  *     node --import tsx scripts/collect-guard.ts
  */
 import { appendFileSync } from "node:fs";
@@ -25,6 +31,7 @@ import {
   findCollectSuccess,
   formatGuardOutputs,
   formatGuardSummary,
+  isFailureDecision,
   parseWorkflowJobs,
   parseWorkflowRuns,
   precheck,
@@ -148,7 +155,7 @@ async function main(): Promise<number> {
   const env = parsed.value;
   const now = new Date();
 
-  let decision = precheck(env.trigger);
+  let decision = precheck(env.trigger, now);
   if (!decision) {
     try {
       decision = decideFromHistory(
@@ -163,6 +170,14 @@ async function main(): Promise<number> {
     }
   }
 
+  if (isFailureDecision(decision)) {
+    // 판단 순서 3a(invalid-trigger) — 설정이 어긋난 정기 트리거. Step Summary를 남기고 실패로 끝낸다(run=false라 수집하지 않음)
+    console.error(
+      `::error title=수집 가드 설정 오류 (${decision.reason})::${decision.message}`,
+    );
+    writeResult(decision, env, now);
+    return 1;
+  }
   console.log(
     decision.run
       ? `${TAG} 실행 — ${decision.reason}: ${decision.message}`

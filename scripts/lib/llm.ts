@@ -3,14 +3,15 @@
  *
  * 이 파일은 "보내고 받는" 일만 한다. 호출 지점(정형 데이터 기반 일일 브리핑 / 팀 한줄평+강점·약점 / 한국 선수
  * 주간 총평, CLAUDE.md §1-3 · PRD §15 D24)을 늘리지 않는다. 뉴스 기사(제목·설명 포함)는 어떤 호출에도 넣지 않는다(D23).
- * 무엇을 보낼지(입력 빌더), 출력 zod 검증과 1회 재시도·템플릿 강등, 06:50 폴백 결정, 비용 가드는
- * 호출부(M1-19~M1-23·M1-45)와 cost.ts(M0-21)가 맡는다.
+ * 무엇을 보낼지(입력 빌더), 출력 zod 검증과 1회 재시도·템플릿 강등, 브리핑 마감 폴백 결정(공개 목표 −10분 — 여름 06:50 ·
+ * 겨울 07:20 KST, 계산은 src/lib/time.ts publishSlot·scripts/lib/collect-deadlines.ts), 비용 가드는
+ * 호출부(M1-19~M1-23·M1-45·M1-47)와 cost.ts(M0-21)가 맡는다.
  *
  * 구성
  *   - 요청 검증: customId(Batches API 제약 `^[a-zA-Z0-9_-]{1,64}$`, 배치 안에서 유일), maxTokens 필수·상한
  *   - 배치: submitBatch → pollBatch(마감 시각까지) → collectBatchResults, 한 번에 돌리는 runBatch
- *   - 단건: callSingle — 일반 Messages API 1건. M0-20 당시 06:50 폴백(상위 10건 일반 API)용으로 만들었으나,
- *     D24 이후 일일 브리핑의 06:50 폴백은 배치 취소 + 코드 템플릿이라(FR-26) 그 경로에서는 쓰지 않는다
+ *   - 단건: callSingle — 일반 Messages API 1건. 일일 브리핑(호출 지점 #1, 하루 1~3요청)의 호출 방식이다(D28). `deadline`
+ *     (브리핑 마감 — collect-deadlines.ts)을 넘길 재시도 대기는 하지 않는다. 배치는 주간 2곳(팀 프로필·한국 선수 주간 총평)용
  *   - 재시도: 429·5xx(529 overloaded 포함)만 지수 백오프. 서버가 요청을 처리하지 않은 경우라 다시 보내도
  *     중복 과금이 없다. 연결 오류·타임아웃은 쓰기 요청(메시지 생성·배치 제출)에서 재시도하지 않는다
  *     (서버가 이미 처리했을 수 있어 중복 과금 위험). 읽기(배치 조회·결과)는 연결 오류도 재시도한다.
@@ -72,7 +73,7 @@ export const MAX_REQUESTS_PER_BATCH = 100;
 export const DEFAULT_POLL_INTERVAL_MS = 30_000;
 export const MIN_POLL_INTERVAL_MS = 5_000;
 
-/** live 모드 HTTP 요청 1회 타임아웃 (SDK 기본 10분은 06:30~07:00 발행 창에 비해 너무 길다). */
+/** live 모드 HTTP 요청 1회 타임아웃 (SDK 기본 10분은 브리핑 창 — 여름 06:30 → 06:50 · 겨울 07:10 → 07:20 KST — 에 비해 너무 길다). */
 export const DEFAULT_REQUEST_TIMEOUT_MS = 60_000;
 
 export interface RetryPolicy {
@@ -1080,7 +1081,7 @@ export interface LlmClientOptions {
 }
 
 export interface PollOptions {
-  /** 이 시각까지 끝나지 않으면 state "deadline"으로 돌아온다(예: 06:50 KST — 호출부가 time.ts로 계산) */
+  /** 이 시각까지 끝나지 않으면 state "deadline"으로 돌아온다(호출부가 src/lib/time.ts로 계산한 마감) */
   deadline: Date;
   /** 조회 간격(기본 30초, 최소 5초) */
   intervalMs?: number;
@@ -1109,7 +1110,8 @@ export type RunBatchOutcome =
       /**
        * 마감 초과. 처리 중인 배치의 결과는 API가 주지 않는다(ended 이후에만) — 부분 결과가 필요하면
        * cancelBatch → pollBatch(짧은 유예) → collectBatchResults 순서로 받는다(취소 전 처리분만 과금).
-       * 취소하지 않으면 배치는 계속 처리되고 과금된다. 06:50 폴백 결정(배치 취소 + 템플릿 브리핑)은 호출부(M1-45)가 한다.
+       * 취소하지 않으면 배치는 계속 처리되고 과금된다. 마감 초과 처리(배치 취소 등)는 호출부(주간 M3-07·M4-05)가 정한다 —
+       * 일일 브리핑은 배치를 쓰지 않는다(D28 — 단건 callSingle + 브리핑 마감, M1-45·M1-47).
        */
       timedOut: true;
       batchId: string;
@@ -1117,7 +1119,10 @@ export type RunBatchOutcome =
     };
 
 export interface CallSingleOptions {
-  /** 재시도 대기가 이 시각을 넘기면 더 기다리지 않고 실패로 돌려준다 */
+  /**
+   * 재시도 대기가 이 시각을 넘기면 더 기다리지 않고 실패로 돌려준다(일일 브리핑 = 브리핑 마감, scripts/lib/collect-deadlines.ts).
+   * 요청 타임아웃(requestTimeoutMs, 기본 60초)은 줄이지 않는다 — 남은 시간으로 줄이는 것은 M1-45(M0-36 확인 ①).
+   */
   deadline?: Date;
 }
 

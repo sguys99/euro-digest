@@ -3,7 +3,8 @@
  *
  * 슬라이스 범위: 요청 1건을 `llm.ts` `callSingle`(일반 Messages API 단건)로 보내고, 출력은 **로그로만** 남긴다.
  * 저장 스키마(M1-19)·정식 프롬프트(`configs/prompts/summarize.md`, M1-20)·코드 검증과 1회 재시도·템플릿 강등
- * (M1-23·M1-45)·마감 시각(M1-47)은 아직 없다.
+ * (M1-23·M1-45)은 아직 없다. 브리핑 마감(공개 목표 −10분 — M1-47)은 collect-run.ts가 collect-deadlines.ts로 계산해
+ * `callSingle` deadline으로 넘긴다(재시도 대기만 묶음 — 요청 타임아웃·마감 초과 템플릿은 M1-45).
  *
  * 요청 설정 (D28 — 바꾸려면 사용자 승인, CLAUDE.md §1-3): thinking 적응형 + `effort:"medium"` 명시, `max_tokens` 4,096,
  * 하루 1요청이라 지시문 캐싱(cacheSystem)은 끈다(B3 미발동 — 2요청 이상일 때만).

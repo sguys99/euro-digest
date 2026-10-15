@@ -3,6 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
+import { publishSlot, utcDate, zonedToUtcIso } from "@/lib/time";
+
 import type { ParseResult } from "../scripts/lib/cli-args";
 import {
   COLLECT_JOB_NAME,
@@ -10,17 +12,22 @@ import {
   findCollectSuccess,
   formatGuardOutputs,
   formatGuardSummary,
+  isFailureDecision,
   MAIN_REF,
+  normalizeCron,
   parseFlag,
   parseWorkflowJobs,
   parseWorkflowRuns,
   precheck,
   readGuardEnv,
+  readTriggerSlot,
   runJobsUrl,
+  SCHEDULE_SEASONS,
   selectCandidateRuns,
   workflowRunsUrl,
   type GuardTrigger,
   type RecentSuccess,
+  type TriggerSlot,
   type WorkflowJob,
   type WorkflowRun,
 } from "../scripts/lib/collect-guard";
@@ -35,22 +42,50 @@ function errorOf<T>(result: ParseResult<T>): string {
   return result.error;
 }
 
-// 기준 시각: 2026-10-11 06:45 KST
+// 기준 시각: 2026-10-11 06:45 KST (여름 — 유럽 서머타임 기간)
 const NOW = new Date("2026-10-10T21:45:00Z");
 
 function hoursAgo(hours: number): string {
   return new Date(NOW.getTime() - hours * 60 * 60 * 1000).toISOString();
 }
 
+/** 입력 없는 수동 dispatch가 기본(계절 슬롯 없음) */
 function trigger(overrides: Partial<GuardTrigger> = {}): GuardTrigger {
   return {
     eventName: "workflow_dispatch",
     ref: MAIN_REF,
     collectEnabled: false,
     force: false,
+    slot: null,
+    slotError: null,
     ...overrides,
   };
 }
+
+/** 계절 트리거 4종 (FR-150, D26) */
+const SUMMER_SCHEDULE: TriggerSlot = {
+  season: "summer",
+  source: "schedule",
+  raw: "40 21 * * *",
+};
+const WINTER_SCHEDULE: TriggerSlot = {
+  season: "winter",
+  source: "schedule",
+  raw: "20 22 * * *",
+};
+const SUMMER_DISPATCH: TriggerSlot = {
+  season: "summer",
+  source: "dispatch",
+  raw: "summer",
+};
+const WINTER_DISPATCH: TriggerSlot = {
+  season: "winter",
+  source: "dispatch",
+  raw: "winter",
+};
+
+/** KST 벽시계 → Date (테스트 기대값 계산용 — 변환은 time.ts) */
+const kst = (local: string) => new Date(zonedToUtcIso(local, "Asia/Seoul"));
 
 function run(overrides: Partial<WorkflowRun> = {}): WorkflowRun {
   return {
@@ -88,11 +123,13 @@ describe("parseFlag", () => {
 });
 
 describe("readGuardEnv", () => {
+  // schedule 실행은 github.event.schedule(SCHEDULE)이 늘 있다(M1-47 — 계절 판정)
   const base = {
     GITHUB_EVENT_NAME: "schedule",
     GITHUB_REF: "refs/heads/main",
     GITHUB_REPOSITORY: "sguys99/euro-digest",
     GITHUB_RUN_ID: "123456789",
+    SCHEDULE: "40 21 * * *",
   };
 
   it("Actions 환경변수를 읽고 기본값을 채운다", () => {
@@ -106,12 +143,43 @@ describe("readGuardEnv", () => {
         ref: "refs/heads/main",
         collectEnabled: true,
         force: false,
+        slot: SUMMER_SCHEDULE,
+        slotError: null,
       },
       repository: "sguys99/euro-digest",
       currentRunId: 123456789,
       apiUrl: "https://api.github.com",
       workflowFile: "collect.yml",
     });
+  });
+
+  it("workflow_dispatch: SLOT이 비면 계절 슬롯 없음(수동 실행), summer·winter면 그 계절", () => {
+    const dispatch = { ...base, GITHUB_EVENT_NAME: "workflow_dispatch" };
+    delete (dispatch as Partial<typeof dispatch>).SCHEDULE;
+    expect(unwrap(readGuardEnv(dispatch)).trigger.slot).toBeNull();
+    expect(
+      unwrap(readGuardEnv({ ...dispatch, SLOT: "" })).trigger.slot,
+    ).toBeNull();
+    expect(
+      unwrap(readGuardEnv({ ...dispatch, SLOT: "winter" })).trigger.slot,
+    ).toEqual(WINTER_DISPATCH);
+    // 모르는 값은 조용히 수동 실행으로 바꾸지 않는다 — 읽기는 성공하고 오류를 trigger에 담는다(precheck 3a가 실패로 판정)
+    const autumn = unwrap(
+      readGuardEnv({ ...dispatch, SLOT: "autumn" }),
+    ).trigger;
+    expect(autumn.slot).toBeNull();
+    expect(autumn.slotError).toContain("slot");
+  });
+
+  it("schedule: 모르는 cron·빈 SCHEDULE은 여기서 실패시키지 않고 slotError에 담는다(판정은 precheck — COLLECT_ENABLED 뒤)", () => {
+    const unknown = unwrap(
+      readGuardEnv({ ...base, SCHEDULE: "30 21 * * *" }),
+    ).trigger;
+    expect(unknown.slot).toBeNull();
+    expect(unknown.slotError).toContain("SCHEDULE_SEASONS");
+    expect(
+      unwrap(readGuardEnv({ ...base, SCHEDULE: "" })).trigger.slotError,
+    ).toContain("schedule cron");
   });
 
   it("GITHUB_API_URL 끝의 /를 떼고, COLLECT_WORKFLOW로 대상 워크플로를 바꾼다", () => {
@@ -143,9 +211,35 @@ describe("readGuardEnv", () => {
   });
 });
 
+describe("readTriggerSlot — 트리거 계절 (M1-47)", () => {
+  it("백업 schedule cron 2개 → 여름(06:40 KST)·겨울(07:20 KST), 공백 차이는 정규화", () => {
+    expect(
+      unwrap(readTriggerSlot("schedule", { SCHEDULE: "40 21 * * *" })),
+    ).toEqual(SUMMER_SCHEDULE);
+    expect(
+      unwrap(readTriggerSlot("schedule", { SCHEDULE: " 20  22 * * * " })),
+    ).toEqual(WINTER_SCHEDULE);
+    expect(normalizeCron("  20\t22  * * *\n")).toBe("20 22 * * *");
+  });
+
+  it("dispatch 입력은 대소문자·앞뒤 공백 무시, 다른 이벤트는 슬롯 없음", () => {
+    expect(
+      unwrap(readTriggerSlot("workflow_dispatch", { SLOT: " Summer " })),
+    ).toEqual(SUMMER_DISPATCH);
+    expect(unwrap(readTriggerSlot("workflow_dispatch", {}))).toBeNull();
+    expect(unwrap(readTriggerSlot("push", { SLOT: "winter" }))).toBeNull();
+  });
+
+  it("Object 프로토타입 키 같은 값은 cron으로 받지 않는다", () => {
+    expect(readTriggerSlot("schedule", { SCHEDULE: "constructor" }).ok).toBe(
+      false,
+    );
+  });
+});
+
 describe("precheck", () => {
   it("schedule·workflow_dispatch 밖의 이벤트는 실행하지 않는다", () => {
-    expect(precheck(trigger({ eventName: "push" }))).toMatchObject({
+    expect(precheck(trigger({ eventName: "push" }), NOW)).toMatchObject({
       run: false,
       reason: "unsupported-event",
     });
@@ -153,41 +247,238 @@ describe("precheck", () => {
 
   it("main이 아닌 ref는 실행하지 않는다 (force여도)", () => {
     expect(
-      precheck(trigger({ ref: "refs/heads/feature", force: true })),
+      precheck(trigger({ ref: "refs/heads/feature", force: true }), NOW),
     ).toMatchObject({ run: false, reason: "not-main" });
   });
 
-  it("schedule은 COLLECT_ENABLED가 아니면 건너뛴다", () => {
-    expect(precheck(trigger({ eventName: "schedule" }))).toMatchObject({
-      run: false,
-      reason: "schedule-disabled",
-    });
+  it("schedule은 COLLECT_ENABLED가 아니면 건너뛴다 (계절과 무관하게 이 이유가 먼저)", () => {
+    for (const slot of [SUMMER_SCHEDULE, WINTER_SCHEDULE]) {
+      expect(
+        precheck(trigger({ eventName: "schedule", slot }), NOW),
+      ).toMatchObject({ run: false, reason: "schedule-disabled" });
+    }
   });
 
-  it("schedule + COLLECT_ENABLED면 이력 확인으로 넘긴다", () => {
+  it("schedule + COLLECT_ENABLED + 계절이 맞으면 이력 확인으로 넘긴다", () => {
     expect(
-      precheck(trigger({ eventName: "schedule", collectEnabled: true })),
+      precheck(
+        trigger({
+          eventName: "schedule",
+          collectEnabled: true,
+          slot: SUMMER_SCHEDULE,
+        }),
+        NOW,
+      ),
     ).toBeNull();
   });
 
   it("schedule에는 force가 적용되지 않는다 (입력이 없는 이벤트)", () => {
     expect(
       precheck(
-        trigger({ eventName: "schedule", collectEnabled: true, force: true }),
+        trigger({
+          eventName: "schedule",
+          collectEnabled: true,
+          force: true,
+          slot: SUMMER_SCHEDULE,
+        }),
+        NOW,
       ),
     ).toBeNull();
   });
 
   it("workflow_dispatch는 COLLECT_ENABLED와 무관하게 이력 확인으로 넘긴다", () => {
-    expect(precheck(trigger({ collectEnabled: false }))).toBeNull();
+    expect(precheck(trigger({ collectEnabled: false }), NOW)).toBeNull();
   });
 
   it("workflow_dispatch + force는 가드 없이 실행한다", () => {
-    expect(precheck(trigger({ force: true }))).toMatchObject({
+    expect(precheck(trigger({ force: true }), NOW)).toMatchObject({
       run: true,
       reason: "forced",
     });
   });
+
+  it("입력 없는 수동 dispatch는 계절 판정 없이 지금과 같다 — 어느 계절·시각이든 이력 확인, force면 실행", () => {
+    for (const now of [
+      NOW, // 여름 06:45
+      kst("2026-10-11T07:15"), // 여름인데 겨울 수집 시각
+      kst("2026-12-01T06:35"), // 겨울인데 여름 수집 시각
+      kst("2026-12-01T14:00"),
+    ]) {
+      expect(precheck(trigger(), now)).toBeNull();
+      expect(precheck(trigger({ force: true }), now)).toMatchObject({
+        run: true,
+        reason: "forced",
+      });
+    }
+  });
+
+  it("계절에 맞지 않는 트리거는 off-season으로 건너뛴다 — 여름(10-11)의 07:10 dispatch·07:20 schedule", () => {
+    const winterDispatch = precheck(
+      trigger({ slot: WINTER_DISPATCH }),
+      kst("2026-10-11T07:10"),
+    );
+    expect(winterDispatch).toMatchObject({ run: false, reason: "off-season" });
+    expect(winterDispatch?.message).toContain("2026-10-11");
+    expect(winterDispatch?.message).toContain("06:30 수집 → 07:00 공개");
+    expect(winterDispatch?.message).toContain("slot=winter");
+    expect(
+      precheck(
+        trigger({
+          eventName: "schedule",
+          collectEnabled: true,
+          slot: WINTER_SCHEDULE,
+        }),
+        kst("2026-10-11T07:20"),
+      ),
+    ).toMatchObject({ run: false, reason: "off-season" });
+  });
+
+  it("slot이 있으면 force보다 계절 판정이 먼저다(정기 트리거 표시), 계절이 맞으면 force가 적용된다", () => {
+    expect(
+      precheck(trigger({ slot: WINTER_DISPATCH, force: true }), NOW),
+    ).toMatchObject({ run: false, reason: "off-season" });
+    expect(
+      precheck(trigger({ slot: SUMMER_DISPATCH, force: true }), NOW),
+    ).toMatchObject({ run: true, reason: "forced" });
+  });
+
+  describe("계절 슬롯 읽기 오류(3a) — 이벤트·main·COLLECT_ENABLED 판정 뒤에 실패", () => {
+    const env = (over: Record<string, string>) =>
+      unwrap(
+        readGuardEnv({
+          GITHUB_EVENT_NAME: "schedule",
+          GITHUB_REF: MAIN_REF,
+          GITHUB_REPOSITORY: "sguys99/euro-digest",
+          SCHEDULE: "30 21 * * *", // SCHEDULE_SEASONS에 없는 cron
+          ...over,
+        }),
+      ).trigger;
+
+    it("COLLECT_ENABLED=false + 모르는 cron → schedule-disabled 건너뛰기(실패 아님, exit 0)", () => {
+      const decision = precheck(env({ COLLECT_ENABLED: "false" }), NOW);
+      expect(decision).toMatchObject({
+        run: false,
+        reason: "schedule-disabled",
+      });
+      expect(isFailureDecision(decision!)).toBe(false);
+      // 빈 SCHEDULE도 같다
+      expect(
+        precheck(env({ COLLECT_ENABLED: "false", SCHEDULE: "" }), NOW)?.reason,
+      ).toBe("schedule-disabled");
+    });
+
+    it("main이 아닌 ref + 모르는 cron → not-main 건너뛰기", () => {
+      const decision = precheck(
+        env({ COLLECT_ENABLED: "true", GITHUB_REF: "refs/heads/feature" }),
+        NOW,
+      );
+      expect(decision?.reason).toBe("not-main");
+      expect(isFailureDecision(decision!)).toBe(false);
+    });
+
+    it("main + COLLECT_ENABLED + 모르는 cron → invalid-trigger 실패(exit 1)", () => {
+      const decision = precheck(env({ COLLECT_ENABLED: "true" }), NOW);
+      expect(decision).toMatchObject({
+        run: false,
+        reason: "invalid-trigger",
+      });
+      expect(decision?.message).toContain("SCHEDULE_SEASONS");
+      expect(isFailureDecision(decision!)).toBe(true);
+    });
+
+    it("dispatch의 잘못된 slot 입력 → main이면 force여도 실패, main이 아니면 not-main", () => {
+      const dispatch = (over: Record<string, string>) =>
+        env({
+          GITHUB_EVENT_NAME: "workflow_dispatch",
+          SLOT: "autumn",
+          ...over,
+        });
+      const forced = precheck(dispatch({ FORCE: "true" }), NOW);
+      expect(forced?.reason).toBe("invalid-trigger");
+      expect(isFailureDecision(forced!)).toBe(true);
+      expect(
+        precheck(dispatch({ GITHUB_REF: "refs/heads/feature" }), NOW)?.reason,
+      ).toBe("not-main");
+    });
+
+    it("다른 판단은 실패가 아니다", () => {
+      for (const reason of [
+        "unsupported-event",
+        "not-main",
+        "schedule-disabled",
+        "off-season",
+        "forced",
+        "recent-success",
+        "no-recent-success",
+      ] as const) {
+        expect(isFailureDecision({ run: false, reason, message: "x" })).toBe(
+          false,
+        );
+      }
+    });
+  });
+
+  it("계절은 시계가 아니라 발행일로 — 늦게 시작한 여름 06:40 schedule(10-25 10:30 KST, 전환 순간 뒤)도 그날은 여름이라 진행", () => {
+    expect(
+      precheck(
+        trigger({
+          eventName: "schedule",
+          collectEnabled: true,
+          slot: SUMMER_SCHEDULE,
+        }),
+        kst("2026-10-25T10:30"),
+      ),
+    ).toBeNull();
+  });
+});
+
+describe("계절 가드 — 서머타임 전환 경계의 트리거 4종 (PRD §15 D26, FR-150)", () => {
+  /** [발행일, 그날 진행하는 트리거] — 나머지 둘은 off-season */
+  const DAYS: Array<[string, "summer" | "winter"]> = [
+    ["2026-10-24", "summer"],
+    ["2026-10-25", "summer"], // 전환일(일) 아침은 전환 전 — 여름
+    ["2026-10-26", "winter"], // 첫 07:10 수집
+    ["2027-03-27", "winter"],
+    ["2027-03-28", "winter"], // 전환일(일) 아침은 전환 전 — 겨울
+    ["2027-03-29", "summer"], // 첫 06:30 수집
+  ];
+  const TRIGGERS: Array<[string, string, GuardTrigger]> = [
+    ["06:30 dispatch(summer)", "06:30", trigger({ slot: SUMMER_DISPATCH })],
+    [
+      "06:40 schedule",
+      "06:40",
+      trigger({
+        eventName: "schedule",
+        collectEnabled: true,
+        slot: SUMMER_SCHEDULE,
+      }),
+    ],
+    ["07:10 dispatch(winter)", "07:10", trigger({ slot: WINTER_DISPATCH })],
+    [
+      "07:20 schedule",
+      "07:20",
+      trigger({
+        eventName: "schedule",
+        collectEnabled: true,
+        slot: WINTER_SCHEDULE,
+      }),
+    ],
+  ];
+
+  for (const [date, season] of DAYS) {
+    it(`${date} — ${season === "summer" ? "06:30·06:40만" : "07:10·07:20만"} 진행`, () => {
+      const result = TRIGGERS.map(([label, hhmm, t]) => [
+        label,
+        precheck(t, kst(`${date}T${hhmm}`))?.reason ?? "history",
+      ]);
+      expect(result).toEqual(
+        TRIGGERS.map(([label, , t]) => [
+          label,
+          t.slot?.season === season ? "history" : "off-season",
+        ]),
+      );
+    });
+  }
 });
 
 describe("API 주소", () => {
@@ -355,7 +646,7 @@ describe("findCollectSuccess", () => {
   it("가드가 건너뛴 실행(수집 job skipped)은 실행이 success여도 성공 이력이 아니다", () => {
     const skippedRun = run();
     const jobs = [
-      job({ name: "실행 판단 (12시간 가드)", conclusion: "success" }),
+      job({ name: "실행 판단 (계절 · 12시간 가드)", conclusion: "success" }),
       job({ conclusion: "skipped" }),
       job({ name: "배포 (GitHub Pages)", conclusion: "skipped" }),
     ];
@@ -469,7 +760,10 @@ describe("12시간 가드 시나리오", () => {
         runStartedAt: hoursAgo(12.75),
       }),
       jobs: [
-        job({ name: "실행 판단 (12시간 가드)", completedAt: hoursAgo(12.7) }),
+        job({
+          name: "실행 판단 (계절 · 12시간 가드)",
+          completedAt: hoursAgo(12.7),
+        }),
         job({ conclusion: "skipped", completedAt: hoursAgo(12.7) }),
       ],
     };
@@ -479,6 +773,40 @@ describe("12시간 가드 시나리오", () => {
     };
     expect(
       decide([recentSkip, yesterdayEveningSkip, yesterdayMorning], 4),
+    ).toMatchObject({ run: true, reason: "no-recent-success" });
+  });
+
+  it("겨울 아침: 06:30 dispatch·06:40 schedule이 계절 skip(수집 job skipped)돼도 성공 이력이 아니다 → 07:10은 실행", () => {
+    // NOW(06:45)를 07:10 실행으로 보고 앞선 두 실행을 40분·30분 전에 둔다(가드가 off-season으로 끝냄)
+    const offSeason = (id: number, hours: number, event: string) => ({
+      run: run({
+        id,
+        event,
+        createdAt: hoursAgo(hours),
+        runStartedAt: hoursAgo(hours),
+        updatedAt: hoursAgo(hours - 0.02),
+      }),
+      jobs: [
+        job({
+          name: "실행 판단 (계절 · 12시간 가드)",
+          completedAt: hoursAgo(hours - 0.02),
+        }),
+        job({ conclusion: "skipped", completedAt: hoursAgo(hours - 0.02) }),
+        job({
+          name: "배포 (GitHub Pages)",
+          conclusion: "skipped",
+          completedAt: hoursAgo(hours - 0.02),
+        }),
+      ],
+    });
+    expect(
+      decide(
+        [
+          offSeason(1, 40 / 60, "workflow_dispatch"),
+          offSeason(2, 30 / 60, "schedule"),
+        ],
+        3,
+      ),
     ).toMatchObject({ run: true, reason: "no-recent-success" });
   });
 });
@@ -508,16 +836,56 @@ describe("출력 형식", () => {
           completedAt: "2026-10-10T21:44:00Z",
         },
       },
-      trigger({ eventName: "schedule", collectEnabled: true }),
+      trigger({
+        eventName: "schedule",
+        collectEnabled: true,
+        slot: SUMMER_SCHEDULE,
+      }),
       NOW,
     );
     expect(summary).toContain("**건너뜀** (성공 종료)");
     expect(summary).toContain("`recent-success` — a\\|b");
     expect(summary).toContain("schedule · `refs/heads/main`");
     expect(summary).toContain(
+      "| 계절 슬롯 | 백업 schedule `40 21 * * *` → 여름(유럽 서머타임) |",
+    );
+    expect(summary).toContain(
+      "| 발행일 계절 | 2026-10-11 · 여름(유럽 서머타임) 06:30 수집 → 07:00 공개 · 브리핑 마감 06:50 (KST) |",
+    );
+    expect(summary).toContain(
       "[#7](https://github.com/sguys99/euro-digest/actions/runs/100)",
     );
     expect(summary).toContain(NOW.toISOString());
+  });
+
+  it("Step Summary — 슬롯 없는 수동 실행·겨울 발행일", () => {
+    const summary = formatGuardSummary(
+      { run: true, reason: "no-recent-success", message: "x" },
+      trigger(),
+      kst("2026-10-26T07:12"),
+    );
+    expect(summary).toContain(
+      "| 계절 슬롯 | 없음 — 계절 판정 없이 12시간 가드만 |",
+    );
+    expect(summary).toContain(
+      "2026-10-26 · 겨울(유럽 표준시) 07:10 수집 → 07:30 공개 · 브리핑 마감 07:20 (KST)",
+    );
+  });
+
+  it("Step Summary — 슬롯 읽기 오류(invalid-trigger)는 실패로 표시", () => {
+    const summary = formatGuardSummary(
+      { run: false, reason: "invalid-trigger", message: "x" },
+      trigger({
+        eventName: "schedule",
+        collectEnabled: true,
+        slotError: "알 수 없는 schedule cron",
+      }),
+      NOW,
+    );
+    expect(summary).toContain("| 결과 | **실패** (exit 1 — 실패 이슈) |");
+    expect(summary).toContain(
+      "| 계절 슬롯 | **읽기 오류** — 알 수 없는 schedule cron |",
+    );
   });
 });
 
@@ -534,9 +902,46 @@ describe("collect.yml과의 동기화", () => {
     expect(match?.[1]).toBe(COLLECT_JOB_NAME);
   });
 
-  it("백업 schedule은 06:40 KST(21:40 UTC), concurrency 그룹은 collect", () => {
+  it("백업 schedule은 06:40 KST(21:40 UTC)·07:20 KST(22:20 UTC), concurrency 그룹은 collect", () => {
     expect(workflow).toContain('- cron: "40 21 * * *"');
+    expect(workflow).toContain('- cron: "20 22 * * *"');
     expect(workflow).toMatch(/^concurrency:\n {2}group: collect\n/m);
     expect(workflow).not.toMatch(/group: pages/);
+  });
+
+  it("schedule cron 목록 = SCHEDULE_SEASONS 키 (계절 판정 표와 글자까지 같다)", () => {
+    const crons = [...workflow.matchAll(/^ {4}- cron: "([^"]+)"/gm)].map(
+      (m) => m[1],
+    );
+    expect(crons.sort()).toEqual(Object.keys(SCHEDULE_SEASONS).sort());
+  });
+
+  it("각 cron의 UTC 시각 = 그 계절 발행 슬롯의 backupStart(publishSlot — 여름 06:40·겨울 07:20 KST)", () => {
+    // 그 계절의 아무 발행일: 여름 2026-08-01 · 겨울 2026-12-01 — cron은 발행일 전날(UTC) 실행
+    const sample = { summer: "2026-08-01", winter: "2026-12-01" } as const;
+    for (const [cron, season] of Object.entries(SCHEDULE_SEASONS)) {
+      const slot = publishSlot(sample[season]);
+      const [minute, hour] = cron.split(" ");
+      const at = new Date(slot.backupStart);
+      expect([cron, at.getUTCHours(), at.getUTCMinutes()]).toEqual([
+        cron,
+        Number(hour),
+        Number(minute),
+      ]);
+      expect(utcDate(slot.backupStart) < slot.date).toBe(true);
+    }
+  });
+
+  it("guard 단계가 SCHEDULE(github.event.schedule)·SLOT(inputs.slot)을 env로 넘기고, dispatch 입력 slot이 있다", () => {
+    const guard = workflow.slice(
+      workflow.indexOf("  guard:"),
+      workflow.indexOf("  collect:\n"),
+    );
+    expect(guard).toContain("SCHEDULE: ${{ github.event.schedule }}");
+    expect(guard).toContain("SLOT: ${{ inputs.slot }}");
+    expect(guard).toContain("FORCE: ${{ inputs.force }}");
+    expect(workflow).toMatch(
+      /^ {6}slot:\n(?: {8}.*\n)*? {8}type: string\n(?: {8}.*\n)*? {8}default: ""$/m,
+    );
   });
 });

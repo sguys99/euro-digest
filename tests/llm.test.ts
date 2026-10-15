@@ -819,7 +819,7 @@ describe("배치: 제출 → 폴링 → 결과", () => {
 
 // ─── 단건 ────────────────────────────────────────────────────────────────
 
-describe("callSingle (06:50 폴백용 일반 API)", () => {
+describe("callSingle (일일 브리핑 단건 일반 API — D28)", () => {
   it("429를 지수 백오프로 재시도해 성공한다", async () => {
     const { transport, calls } = fakeTransport({
       messages: [rateLimited(), rateLimited(), message('{"ok":1}')],

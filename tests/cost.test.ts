@@ -187,7 +187,7 @@ describe("costFromUsage — 배치/단건 · 캐시 읽기/쓰기", () => {
     expect(costFromUsage(MODEL, b, { cacheWriteTtl: "1h" })).toBe(0.01);
   });
 
-  it("배치 + 06:50 폴백 단건이 섞인 실행 — 소수 6자리 반올림", () => {
+  it("배치(주간 2곳) + 단건(일일 브리핑, D28) 사용량이 섞인 요약 — 소수 6자리 반올림", () => {
     // 배치: 562.5M + 1687.5M + 10.24M + 64M = 2324.24M pUSD, 단건: 250M + 750M = 1000M pUSD
     // 합 3324.24 µUSD → $0.003324
     const summary = {

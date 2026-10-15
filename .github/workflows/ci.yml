@@ -5,7 +5,9 @@
 # 참고
 # - 봇의 data 커밋은 GITHUB_TOKEN으로 push되므로 이 워크플로를 다시 트리거하지 않는다(GitHub 규칙).
 #   collect.yml·weekly.yml은 스스로 빌드·검증 후 deploy.yml을 호출한다(CLAUDE.md §6.1).
-# - 06:00~08:00 KST push 금지는 사람·봇 운영 규칙이라 여기서 강제하지 않는다(CLAUDE.md §10, PRD §15 D26).
+# - 06:00~08:00 KST push 금지(계절 무관 — 여름 06:30 수집 → 07:00 공개, 겨울 07:10 수집 → 07:30 공개와 공개 허용 범위
+#   ±15분을 한 구간으로 덮는다. 계절은 src/lib/time.ts publishSlot이 판정)는 사람·봇 운영 규칙이라 여기서 강제하지 않는다
+#   (CLAUDE.md §10, PRD §15 D26). 그 시간에 push하면 collect 실행의 data 커밋 rebase·배포(concurrency: pages)와 겹친다.
 name: CI
 
 on:

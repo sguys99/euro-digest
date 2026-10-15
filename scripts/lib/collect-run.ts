@@ -18,6 +18,9 @@
  *        (단계 예산 6분, 브리핑 컷오프 4분, 하루 ≤ 60회 우리 쪽 카운터 — api-football-stage.ts·api-football-plan.ts).
  *        미종료·미수신 경기는 data/cache/af-pending.json으로 이월한다(dry는 쓰지 않음). errors.plan·일 한도·그 밖의 errors는
  *        소스 이슈 사건(`source:api-football`)으로 사건 파일에 더한다(이슈는 collect.yml 다음 단계가 만든다).
+ *      - 시간 예산(M1-47): 실행 시작에 발행일 슬롯(src/lib/time.ts publishSlot)으로 브리핑 마감(공개 목표 − 10분 — 여름 06:50 ·
+ *        겨울 07:20 KST, 수동·지연 실행은 시작 + 8분)을 정하고, 단계마다 시작 시점의 남은 시간으로 위 상수 예산을 줄인다
+ *        (scripts/lib/collect-deadlines.ts — 정시 실행은 상수 그대로, 늦게 시작한 실행만 줄어든다).
  *      - 경기 기록 원장(M1-48b, D33 — scripts/lib/match-ledger.ts): 받은 상세 → `data/matches/YYYY-MM.json`(득점·도움·포메이션 +
  *        등록 한국 선수 행) + `meta.json`(since·playerSince·gaps). 원장의 af-<id>는 이미 받은 경기라 다시 받지 않는다(모든 실행이
  *        읽는다). **쓰기는 정기 운영이 켜진 prod 실행만**(CollectDeps.ledgerEnabled = COLLECT_ENABLED) — dry·dev·정기 운영 전 실행은
@@ -26,7 +29,8 @@
  *      07:20 브리핑 마감)에 뉴스 시간만큼 브리핑 경기를 더 받을 수 있다. 뉴스가 실패하면 취소 신호로 경기 데이터의 새 요청을
  *      멈추고(보내는 중인 요청 1건까지) 브리핑(LLM)은 부르지 않는다 — 커밋되지 않는 실행의 LLM 비용·API-Football 한도 낭비를
  *      최소로 한다(낭비 상한 = 뉴스가 끝날 때까지 보낸 요청, 최대 약 12건).
- *   ③ 브리핑: football-data 종료 경기 → 정형 입력 → `callSingle` 1요청 → **출력은 로그만**(저장 M1-19). 브리핑은
+ *   ③ 브리핑: football-data 종료 경기 → 정형 입력 → `callSingle` 1요청(브리핑 마감까지 — 재시도 대기만 묶음, 요청 타임아웃·
+ *      마감 초과 템플릿은 M1-45) → **출력은 로그만**(저장 M1-19). 브리핑은
  *      football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층)을 기다린 뒤 시작하고, 둘을 이어(대응표 확인 + D37
  *      강한 증거 — team-ids.ts linkMatchDetails) 득점 목록이 완전한 경기만 입력 `goals`에 득점자를 넣는다(M1-48b),
  *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
@@ -52,7 +56,7 @@
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
  * 다음 작업이 갈아끼울 자리: 점수화(M1-14 — 클러스터 `publishers` 수·소스 메타) · 대표 선정(M1-15) · 카드 ID(M1-16 — 정규화 URL 해시) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
- * 계절별 마감(M1-47 — 브리핑 컷오프 상수) · 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서).
+ * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -70,7 +74,7 @@ import {
   type SearchQueriesFile,
   type Source,
 } from "@/lib/schema";
-import { kstDate, nowUtcIso, utcDate } from "@/lib/time";
+import { kstDate, nowUtcIso, parseUtcIso, utcDate } from "@/lib/time";
 
 import {
   afPendingPath,
@@ -92,8 +96,6 @@ import {
   type AfTargetBuild,
 } from "./api-football-plan";
 import {
-  API_FOOTBALL_BRIEF_CUTOFF_MS,
-  API_FOOTBALL_STAGE_BUDGET_MS,
   apiFootballIssuePayloads,
   runApiFootballStage,
   type AfBriefSnapshot,
@@ -115,6 +117,13 @@ import {
 } from "./brief";
 import type { LlmMode } from "./cli-args";
 import { clusterDocs } from "./cluster";
+import {
+  deadlineLogFields,
+  msUntil,
+  planCollectDeadlines,
+  stageBudgets,
+  type CollectDeadlines,
+} from "./collect-deadlines";
 import { readConfigFile } from "./config-files";
 import { dedupeFeedItems } from "./dedup";
 import {
@@ -201,7 +210,6 @@ import {
 import {
   createFootballDataClient,
   fetchBriefFootballData,
-  FOOTBALL_DATA_STAGE_BUDGET_MS,
   FootballDataError,
   type FootballDataBriefData,
 } from "./providers/football-data";
@@ -1267,10 +1275,16 @@ interface ApiCallSink {
   apiCalls: { footballData: number; apiFootball: number };
 }
 
+/** 경기 데이터·브리핑 단계가 받는 실행 정보 — 발행일(KST)과 이번 실행의 브리핑 마감(UTC ISO, collect-deadlines.ts) */
+interface StageCtx {
+  publishDate: string;
+  briefDeadline: string;
+}
+
 /** football-data 단계 — 전날(KST 창) 종료 경기 + 그 경기가 있는 대회의 현재 순위. 던지지 않는다 */
 async function runFootballDataProvider(
   deps: CollectDeps,
-  ctx: { publishDate: string },
+  ctx: StageCtx,
   sink: ApiCallSink,
   signal: AbortSignal,
 ): Promise<ProviderOutcome<FootballDataBriefData>> {
@@ -1278,6 +1292,8 @@ async function runFootballDataProvider(
   const now = deps.footballDataNow ?? Date.now;
   const started = now();
   const elapsed = () => Math.max(0, now() - started);
+  // 단계 예산 = min(150초, 브리핑 마감까지 남은 시간) — 마감은 벽시계(deps.now), 예산은 단계 시계(now)에 더한다(M1-47)
+  const budget = stageBudgets(msUntil(ctx.briefDeadline, deps.now()));
   const apiKey = deps.footballDataApiKey?.trim();
   if (!apiKey) {
     log.warn("collect.matchdata.skip", {
@@ -1315,13 +1331,13 @@ async function runFootballDataProvider(
     };
   }
   const window = briefInputWindow(ctx.publishDate);
-  // 단계 시간 예산(150초) — 근거는 providers/football-data.ts 머리 주석. TODO(M1-47): 브리핑 마감에서 거꾸로 계산
+  // 단계 시간 예산(150초, 브리핑 마감이 더 가까우면 그때까지) — 근거는 providers/football-data.ts 머리 주석·collect-deadlines.ts
   const client = createFootballDataClient({
     apiKey,
     fetch: deps.fetch,
     sleep: deps.footballDataSleep,
     now,
-    deadline: started + FOOTBALL_DATA_STAGE_BUDGET_MS,
+    deadline: started + budget.footballDataMs,
     signal,
     onRetry: (event) =>
       log.warn("collect.matchdata.retry", {
@@ -1420,7 +1436,7 @@ async function readRunsQuiet(
  */
 async function runApiFootballProvider(
   deps: CollectDeps,
-  ctx: { publishDate: string },
+  ctx: StageCtx,
   sink: ApiCallSink,
   signal: AbortSignal,
   onBrief: (snapshot: AfBriefSnapshot) => void,
@@ -1429,6 +1445,8 @@ async function runApiFootballProvider(
   const now = deps.apiFootballNow ?? Date.now;
   const started = now();
   const elapsed = () => Math.max(0, now() - started);
+  // 단계 예산 6분·브리핑 컷오프 4분을 브리핑 마감까지 남은 시간으로 줄인다(M1-47 — collect-deadlines.ts stageBudgets)
+  const budget = stageBudgets(msUntil(ctx.briefDeadline, deps.now()));
   const skip = (
     reason: "no-api-key" | "daily-cap" | "cancelled" | "dev-quiet-hours",
   ) =>
@@ -1582,7 +1600,7 @@ async function runApiFootballProvider(
     fetch: deps.fetch,
     sleep: deps.apiFootballSleep,
     now,
-    deadline: started + API_FOOTBALL_STAGE_BUDGET_MS,
+    deadline: started + budget.apiFootballStageMs,
     maxCalls: allowance.remaining,
     signal,
     onRetry: (event) =>
@@ -1612,8 +1630,8 @@ async function runApiFootballProvider(
       dates,
       now: deps.now,
       clock: now,
-      // TODO(M1-47): 브리핑 마감(계절별) − LLM 여유로 계산
-      briefCutoffAt: started + API_FOOTBALL_BRIEF_CUTOFF_MS,
+      // min(시작 + 4분, 브리핑 마감 − LLM 몫 4분) — 근거는 collect-deadlines.ts 머리 주석(M1-47)
+      briefCutoffAt: started + budget.apiFootballBriefCutoffMs,
       onBriefReady: (snapshot) => {
         log.info("collect.matchdata.brief-ready", {
           provider: "api-football",
@@ -2101,7 +2119,7 @@ interface MatchDataStage {
  */
 function startMatchDataStage(
   deps: CollectDeps,
-  ctx: { publishDate: string },
+  ctx: StageCtx,
   sink: ApiCallSink,
   signal: AbortSignal,
 ): MatchDataStage {
@@ -2320,7 +2338,7 @@ async function linkBriefGoals(
 
 async function runBriefStage(
   deps: CollectDeps,
-  ctx: { publishDate: string },
+  ctx: StageCtx,
   matchData: MatchDataBriefView,
   sink: {
     results: LlmResult[];
@@ -2454,11 +2472,15 @@ async function runBriefStage(
     };
   }
 
-  // 단건 1요청 (D28). 재시도는 llm.ts 정책(429·5xx만). 마감 시각은 M1-45·M1-47.
+  // 단건 1요청 (D28). 재시도는 llm.ts 정책(429·5xx만)이고 브리핑 마감(M1-47 — 공개 목표 −10분, 수동·지연 실행은 시작 + 8분)을
+  // 넘길 재시도 대기는 하지 않는다. 요청 타임아웃을 남은 시간으로 줄이고 마감까지 실패하면 템플릿을 게시하는 것은 M1-45.
+  // deadline은 벽시계 기준이다 — createLlm이 만드는 클라이언트의 시계(llm.ts now, 운영은 Date.now)와 deps.now가 같아야 한다.
   let result: LlmResult;
   try {
     const llm = deps.createLlm(config.model);
-    result = await llm.callSingle(request);
+    result = await llm.callSingle(request, {
+      deadline: parseUtcIso(ctx.briefDeadline),
+    });
   } catch (error) {
     if (error instanceof LlmMockFixtureError) {
       log.warn("summarize.brief.skip", {
@@ -2785,6 +2807,11 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     limit: deps.limit,
     date: publishDate,
   });
+  // 브리핑 마감(M1-47) — 발행일 슬롯(계절)의 공개 목표 − 10분, 수동·지연 실행은 시작 + 8분. 경기 데이터 단계 예산과 LLM 재시도를
+  // 이 안으로 묶는다(scripts/lib/collect-deadlines.ts).
+  const deadlines: CollectDeadlines = planCollectDeadlines(startedAt);
+  log.info("collect.deadline", deadlineLogFields(deadlines, startedAt));
+  const stageCtx = { publishDate, briefDeadline: deadlines.briefDeadline };
 
   // ② 경기 데이터는 뉴스 피드 수집과 병렬로 시작한다(머리 주석 "병렬 근거") — 수집 대상이 정해진 뒤(설정 오류·대상 0개면
   // 시작하지 않는다). 뉴스가 실패하면 취소 신호로 새 요청을 멈춘다.
@@ -2799,7 +2826,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   const startMatchData = (): MatchDataStage => {
     match.stage ??= startMatchDataStage(
       deps,
-      { publishDate },
+      stageCtx,
       sink,
       cancelMatchData.signal,
     );
@@ -2857,7 +2884,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     } else {
       // football-data 결과 + API-Football 브리핑 몫(컷오프까지)만 기다린다 — API-Football 나머지는 브리핑과 동시에 계속 받는다
       const view = await startMatchData().briefView;
-      brief = await runBriefStage(deps, { publishDate }, view, sink);
+      brief = await runBriefStage(deps, stageCtx, view, sink);
     }
   } catch (error) {
     // 방어선 — 브리핑 단계의 예상 밖 오류도 발행을 멈추지 않는다.

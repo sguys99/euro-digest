@@ -16,9 +16,17 @@ import {
   type BigmatchRulesFile,
 } from "@/lib/schema";
 import {
+  BRIEF_DEADLINE_LEAD_MINUTES,
   europeanSummerTimeTransitions,
   formatIcsUtc,
   formatKst,
+  isEuropeanSummerTime,
+  PUBLISH_SEASONS,
+  PUBLISH_TIMES_KST,
+  publishSeason,
+  publishSlot,
+  publishSlotAt,
+  type PublishSlot,
   isoWeek,
   isoWeekOfDate,
   isoWeekRange,
@@ -708,6 +716,217 @@ describe("europeanSummerTimeTransitions — 3·10월 마지막 일요일 01:00 U
   });
 });
 
+describe("isEuropeanSummerTime — [start, end) 경계", () => {
+  it.each([
+    ["2026-10-25T00:59:59.999Z", true], // 10:00 KST 직전 — 아직 서머타임
+    ["2026-10-25T01:00:00.000Z", false], // 종료 순간(= 10:00 KST)
+    ["2027-03-28T00:59:59.999Z", false],
+    ["2027-03-28T01:00:00.000Z", true], // 시작 순간
+    ["2026-07-01T00:00:00.000Z", true],
+    ["2026-12-31T23:59:59.000Z", false],
+    ["2027-01-01T00:00:00.000Z", false],
+  ])("%s → %s", (iso, expected) => {
+    expect(isEuropeanSummerTime(iso)).toBe(expected);
+  });
+
+  it("런타임 시간대 데이터와 일치 — 런던 오프셋이 +60분이면 서머타임", () => {
+    for (const iso of [
+      "2026-03-29T00:59:59Z",
+      "2026-03-29T01:00:00Z",
+      "2026-10-25T00:59:59Z",
+      "2026-10-25T01:00:00Z",
+      "2027-03-28T00:59:59Z",
+      "2027-03-28T01:00:00Z",
+    ]) {
+      expect([iso, isEuropeanSummerTime(iso)]).toEqual([
+        iso,
+        offsetMinutes(iso, LONDON) === 60,
+      ]);
+    }
+  });
+
+  it("Z가 아닌 값은 TimeInputError", () => {
+    expect(() => isEuropeanSummerTime("2026-10-25T10:00:00+09:00")).toThrow(
+      TimeInputError,
+    );
+  });
+});
+
+// ─── 계절별 발행 슬롯 (PRD §15 D26, M1-47) ─────────────────────────────────
+
+describe("publishSeason — 발행일(KST)의 계절 = 그날 00:00 KST 순간의 유럽 서머타임 여부", () => {
+  it.each([
+    // 서머타임 종료(2026-10-25 일 10:00 KST) — 그날 아침 발행은 여름, 첫 겨울 발행은 10-26(월)
+    ["2026-10-24", "summer"],
+    ["2026-10-25", "summer"],
+    ["2026-10-26", "winter"],
+    // 서머타임 시작(2027-03-28 일 10:00 KST) — 그날 아침 발행은 겨울, 첫 여름 발행은 03-29(월)
+    ["2027-03-27", "winter"],
+    ["2027-03-28", "winter"],
+    ["2027-03-29", "summer"],
+    // 2026 시작(03-29)·2027 종료(10-31)도 같은 규칙
+    ["2026-03-29", "winter"],
+    ["2026-03-30", "summer"],
+    ["2027-10-31", "summer"],
+    ["2027-11-01", "winter"],
+    // 계절 한가운데·UTC 연도 경계(1월 1일 00:00 KST = 전년 12-31 15:00Z)
+    ["2026-07-15", "summer"],
+    ["2026-12-31", "winter"],
+    ["2027-01-01", "winter"],
+  ])("%s → %s", (date, season) => {
+    expect(publishSeason(date)).toBe(season);
+  });
+
+  it("전환일 아침 발행 창(00:00~09:59 KST)은 모두 전환 전 계절 — 판정 순간을 아침 어디로 잡아도 같다, 10:00 KST에 바뀐다", () => {
+    for (const date of ["2026-10-25", "2027-03-28"]) {
+      const season = publishSeason(date);
+      for (const hhmm of [
+        "00:00",
+        "06:00",
+        "06:30",
+        "06:40",
+        "07:10",
+        "07:20",
+        "08:00",
+        "09:59",
+      ]) {
+        const at = zonedToUtcIso(`${date}T${hhmm}`, "Asia/Seoul");
+        expect([date, hhmm, isEuropeanSummerTime(at)]).toEqual([
+          date,
+          hhmm,
+          season === "summer",
+        ]);
+      }
+      const ten = zonedToUtcIso(`${date}T10:00`, "Asia/Seoul");
+      expect(isEuropeanSummerTime(ten)).toBe(season !== "summer");
+    }
+  });
+
+  it("형식이 틀린 날짜는 TimeInputError", () => {
+    expect(() => publishSeason("2026-10-32")).toThrow(TimeInputError);
+    expect(() => publishSeason("20261025")).toThrow(TimeInputError);
+  });
+});
+
+describe("publishSlot — 계절별 수집·백업·브리핑 마감(공개 −10분)·공개 목표", () => {
+  it.each<[string, PublishSlot]>([
+    [
+      "2026-10-25",
+      {
+        date: "2026-10-25",
+        season: "summer",
+        collectStart: "2026-10-24T21:30:00.000Z", // 06:30 KST
+        backupStart: "2026-10-24T21:40:00.000Z", // 06:40 KST
+        briefDeadline: "2026-10-24T21:50:00.000Z", // 06:50 KST
+        publishTarget: "2026-10-24T22:00:00.000Z", // 07:00 KST
+      },
+    ],
+    [
+      "2026-10-26",
+      {
+        date: "2026-10-26",
+        season: "winter",
+        collectStart: "2026-10-25T22:10:00.000Z", // 07:10 KST
+        backupStart: "2026-10-25T22:20:00.000Z", // 07:20 KST
+        briefDeadline: "2026-10-25T22:20:00.000Z", // 07:20 KST
+        publishTarget: "2026-10-25T22:30:00.000Z", // 07:30 KST
+      },
+    ],
+    [
+      "2027-03-28",
+      {
+        date: "2027-03-28",
+        season: "winter",
+        collectStart: "2027-03-27T22:10:00.000Z",
+        backupStart: "2027-03-27T22:20:00.000Z",
+        briefDeadline: "2027-03-27T22:20:00.000Z",
+        publishTarget: "2027-03-27T22:30:00.000Z",
+      },
+    ],
+    [
+      "2027-03-29",
+      {
+        date: "2027-03-29",
+        season: "summer",
+        collectStart: "2027-03-28T21:30:00.000Z",
+        backupStart: "2027-03-28T21:40:00.000Z",
+        briefDeadline: "2027-03-28T21:50:00.000Z",
+        publishTarget: "2027-03-28T22:00:00.000Z",
+      },
+    ],
+  ])("%s", (date, slot) => {
+    expect(publishSlot(date)).toEqual(slot);
+  });
+
+  it("KST 표시: 여름 06:30 → 06:40 → 06:50 → 07:00, 겨울 07:10 → 07:20 → 07:20 → 07:30", () => {
+    const kst = (s: PublishSlot) =>
+      [s.collectStart, s.backupStart, s.briefDeadline, s.publishTarget].map(
+        (iso) => formatKst(iso, "time"),
+      );
+    expect(kst(publishSlot("2026-08-01"))).toEqual([
+      "06:30",
+      "06:40",
+      "06:50",
+      "07:00",
+    ]);
+    expect(kst(publishSlot("2026-12-01"))).toEqual([
+      "07:10",
+      "07:20",
+      "07:20",
+      "07:30",
+    ]);
+  });
+
+  it("브리핑 마감은 공개 목표 − 10분으로 계산한다(고정 시각 없음), 슬롯 시각은 발행일 KST 날짜 안", () => {
+    expect(BRIEF_DEADLINE_LEAD_MINUTES).toBe(10);
+    for (const season of PUBLISH_SEASONS) {
+      expect(Object.keys(PUBLISH_TIMES_KST[season]).sort()).toEqual([
+        "backup",
+        "collect",
+        "publish",
+      ]);
+    }
+    for (const date of [
+      "2026-10-25",
+      "2026-10-26",
+      "2027-03-28",
+      "2027-03-29",
+    ]) {
+      const s = publishSlot(date);
+      expect(ms(s.publishTarget) - ms(s.briefDeadline)).toBe(10 * 60_000);
+      // 수집 → 백업 → 브리핑 마감 → 공개 순서(겨울은 백업과 마감이 같은 07:20)
+      expect(ms(s.collectStart)).toBeLessThan(ms(s.backupStart));
+      expect(ms(s.backupStart)).toBeLessThanOrEqual(ms(s.briefDeadline));
+      expect(ms(s.briefDeadline)).toBeLessThan(ms(s.publishTarget));
+      for (const iso of [
+        s.collectStart,
+        s.backupStart,
+        s.briefDeadline,
+        s.publishTarget,
+      ]) {
+        expect(kstDate(iso)).toBe(date);
+      }
+    }
+  });
+});
+
+describe("publishSlotAt — UTC 순간 → 그 KST 발행일의 슬롯", () => {
+  it.each([
+    // 06:30 KST 2026-10-25(UTC로 전날 21:30) → 여름 슬롯
+    ["2026-10-24T21:30:00Z", "2026-10-25", "summer"],
+    // 07:10 KST 2026-10-26 → 첫 겨울 슬롯
+    ["2026-10-25T22:10:00Z", "2026-10-26", "winter"],
+    // 전환 순간 뒤(10-25 10:00 KST 이후)라도 발행일이 10-25면 여름 — 계절은 시계가 아니라 발행일로 정한다
+    ["2026-10-25T05:00:00Z", "2026-10-25", "summer"],
+    ["2027-03-28T05:00:00Z", "2027-03-28", "winter"],
+    // KST 자정 경계: 14:59:59Z는 10-25, 15:00Z는 10-26
+    ["2026-10-25T14:59:59Z", "2026-10-25", "summer"],
+    ["2026-10-25T15:00:00Z", "2026-10-26", "winter"],
+  ])("%s → %s %s", (iso, date, season) => {
+    expect(publishSlotAt(iso)).toMatchObject({ date, season });
+  });
+});
+
 // ─── KST 날짜·구간 ─────────────────────────────────────────────────────────
 
 describe("shiftDate", () => {
@@ -950,6 +1169,10 @@ describe("시스템 시간대(TZ)와 무관", () => {
     expect(europeanSummerTimeTransitions(2026).end).toBe(
       "2026-10-25T01:00:00.000Z",
     );
+    expect(publishSlot("2026-10-26").briefDeadline).toBe(
+      "2026-10-25T22:20:00.000Z",
+    );
+    expect(publishSeason("2026-10-25")).toBe("summer");
   });
 });
 

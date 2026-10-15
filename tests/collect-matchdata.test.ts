@@ -535,6 +535,99 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
     expect(outcome.status).toBe("partial");
   });
 
+  it("계절별 마감(M1-47) — 늦게 시작한 여름 slot 실행(06:45 KST, 마감 06:50까지 5분): 컷오프 1분·단계 5분으로 줄고 LLM은 06:50 마감을 받는다", async () => {
+    const LATE = new Date("2026-10-10T21:45:00.000Z"); // 2026-10-11 06:45 KST
+    let t = 0;
+    const starts: number[] = [];
+    const deadlines: Array<Date | undefined> = [];
+    const { deps, records } = makeDeps(
+      undefined,
+      withApiFootball({
+        env: "prod", // dev는 06:00~08:00 KST에 API-Football을 부르지 않는다
+        now: () => LATE,
+        apiFootballNow: () => t,
+        apiFootballSleep: async (ms) => {
+          t += ms;
+        },
+        createLlm: () => {
+          const client = createLlmClient({
+            mode: "mock",
+            logger: () => undefined,
+          });
+          return {
+            model: client.model,
+            callSingle: (request, options) => {
+              deadlines.push(options?.deadline);
+              return client.callSingle(request, options);
+            },
+          };
+        },
+      }),
+      async (url) => {
+        starts.push(t);
+        t += 20_000; // 요청마다 20초
+        return afFixtureResponse(url)!;
+      },
+    );
+    const outcome = await runCollect(deps);
+    expect(records.find((r) => r.event === "collect.deadline")).toMatchObject({
+      date: "2026-10-11",
+      season: "summer",
+      basis: "slot",
+      briefDeadline: "2026-10-10T21:50:00.000Z",
+      briefDeadlineKst: "06:50",
+      remainingMs: 300_000,
+      footballDataBudgetMs: 150_000,
+      afBriefCutoffMs: 60_000,
+      afStageBudgetMs: 300_000,
+    });
+    const md = outcome.matchData!;
+    // 날짜 조회 2건(46.5초) 뒤 첫 판정에서 컷오프(60초) — 득점자 없이 브리핑 진행
+    expect(md.apiFootballBrief?.reason).toBe("cutoff");
+    expect(md.apiFootballBrief!.details).toEqual([]);
+    expect(md.apiFootballBrief!.missing.length).toBeGreaterThan(0);
+    if (md.apiFootball.state !== "done") throw new Error("unreachable");
+    // 단계는 브리핑 마감(5분)에서 멈추고 나머지는 이월 — 6분 상수보다 짧다
+    expect(md.apiFootball.data.stage.stoppedBy).toBe("budget");
+    expect(Math.max(...starts)).toBeLessThan(300_000);
+    expect(md.apiFootball.data.stage.pending.length).toBeGreaterThan(1);
+    expect(outcome.brief.state).toBe("done");
+    expect(deadlines).toEqual([new Date("2026-10-10T21:50:00.000Z")]);
+  });
+
+  it("계절별 마감(M1-47) — 마감이 지난 수동 실행(08:30 KST)은 off-slot: 시작 + 8분을 마감으로, 단계 예산은 상수 그대로", async () => {
+    const deadlines: Array<Date | undefined> = [];
+    const { deps, records } = makeDeps(
+      undefined,
+      withApiFootball({
+        createLlm: () => {
+          const client = createLlmClient({
+            mode: "mock",
+            logger: () => undefined,
+          });
+          return {
+            model: client.model,
+            callSingle: (request, options) => {
+              deadlines.push(options?.deadline);
+              return client.callSingle(request, options);
+            },
+          };
+        },
+      }),
+    );
+    const outcome = await runCollect(deps);
+    expect(records.find((r) => r.event === "collect.deadline")).toMatchObject({
+      date: "2026-10-11",
+      season: "summer",
+      basis: "off-slot",
+      briefDeadline: "2026-10-10T23:38:00.000Z", // 08:30 + 8분
+      afBriefCutoffMs: 240_000,
+      afStageBudgetMs: 360_000,
+    });
+    expect(outcome.matchData?.apiFootballBrief?.reason).toBe("complete");
+    expect(deadlines).toEqual([new Date("2026-10-10T23:38:00.000Z")]);
+  });
+
   it("football-data가 실패하면 브리핑은 생략되므로 API-Football 몫을 기다리지 않는다(API-Football은 끝까지 받는다)", async () => {
     // API-Football 요청은 브리핑 단계가 끝났다는 로그(summarize.input.fail)가 나올 때까지 붙잡힌다 — 브리핑이 기다리면 멈춘다
     let release: () => void = () => undefined;

@@ -26,6 +26,10 @@
  * - 마드리드·로마·베를린·파리: CET UTC+1 ↔ CEST UTC+2 → KST와 8시간 / 7시간 차
  * - 같은 "현지 20:00 킥오프"가 서머타임 종료 후에는 KST로 1시간 늦어지고(04:00 → 05:00),
  *   시작 후에는 1시간 당겨진다(05:00 → 04:00). 위 날짜 전후는 tests/time.test.ts가 고정값으로 검증한다.
+ *
+ * 계절별 발행 슬롯 (PRD §15 D26 — `publishSlot`): 여름(유럽 서머타임 기간) 06:30 수집 → 07:00 공개, 겨울(유럽 표준시 기간)
+ * 07:10 수집 → 07:30 공개, 브리핑 마감 = 공개 목표 − 10분. 발행일의 계절은 그날 00:00 KST 순간으로 정한다 — 전환 순간이
+ * 늘 일요일 10:00 KST라 전환일 아침 발행은 전환 전 계절이다(2026-10-26(월)부터 07:30, 2027-03-29(월)부터 07:00).
  */
 import { DISPLAY_TIME_ZONE } from "@/lib/site";
 
@@ -893,4 +897,112 @@ export function europeanSummerTimeTransitions(year: number): UtcRange {
     start: toIso(fieldsToMs(year, 3, lastSunday(year, 3), 1)),
     end: toIso(fieldsToMs(year, 10, lastSunday(year, 10), 1)),
   };
+}
+
+/**
+ * 그 순간 유럽(EU 공통 규칙)이 서머타임인가 — `europeanSummerTimeTransitions`의 [start, end).
+ * 예) 2026-10-25T00:59:59.999Z → true, 2026-10-25T01:00:00.000Z(= 10:00 KST) → false.
+ */
+export function isEuropeanSummerTime(iso: string): boolean {
+  const t = parseUtcIsoMs(iso);
+  const { start, end } = europeanSummerTimeTransitions(
+    new Date(t).getUTCFullYear(),
+  );
+  return t >= Date.parse(start) && t < Date.parse(end);
+}
+
+// ─── 공개 API: 계절별 발행 슬롯 (PRD §15 D26 · FR-26 · FR-150 · NFR-05) ─────
+
+/** 발행 계절 — `summer` = 유럽 서머타임 기간, `winter` = 유럽 표준시 기간 (PRD §15 D26). */
+export type PublishSeason = "summer" | "winter";
+
+export const PUBLISH_SEASONS: readonly PublishSeason[] = Object.freeze([
+  "summer",
+  "winter",
+]);
+
+/** 계절별 KST 벽시계 시각 — 외부 크론 수집 시작 · 백업 schedule · 공개 목표. */
+export interface PublishTimesKst {
+  /** cron-job.org → workflow_dispatch (FR-150) */
+  collect: string;
+  /** collect.yml 백업 schedule (FR-150) */
+  backup: string;
+  /** 공개 목표 (NFR-05 — ±15분) */
+  publish: string;
+}
+
+/**
+ * 계절별 발행 시각(KST "HH:MM", PRD §15 D26). 브리핑 마감은 여기 적지 않고 공개 목표에서 계산한다
+ * (`BRIEF_DEADLINE_LEAD_MINUTES` — 06:50·07:20을 따로 고정하지 않는다).
+ */
+export const PUBLISH_TIMES_KST: Readonly<
+  Record<PublishSeason, Readonly<PublishTimesKst>>
+> = Object.freeze({
+  summer: Object.freeze({
+    collect: "06:30",
+    backup: "06:40",
+    publish: "07:00",
+  }),
+  winter: Object.freeze({
+    collect: "07:10",
+    backup: "07:20",
+    publish: "07:30",
+  }),
+});
+
+/** 브리핑 마감 = 공개 목표 − 10분 (FR-26, D26·D28) — 그 뒤 10분은 검증·빌드·커밋·배포 몫이다. */
+export const BRIEF_DEADLINE_LEAD_MINUTES = 10;
+
+/** 발행일 하루의 슬롯 — 시각은 모두 UTC ISO(`toISOString()` 형식). */
+export interface PublishSlot {
+  /** 발행일(KST) "YYYY-MM-DD" */
+  date: string;
+  season: PublishSeason;
+  /** 외부 크론(cron-job.org) 수집 시작 */
+  collectStart: string;
+  /** 백업 schedule 시각 */
+  backupStart: string;
+  /** 브리핑 마감 = 공개 목표 − `BRIEF_DEADLINE_LEAD_MINUTES` (FR-26) */
+  briefDeadline: string;
+  /** 공개 목표 (NFR-05) */
+  publishTarget: string;
+}
+
+/**
+ * 발행일(KST "YYYY-MM-DD") → 계절. **정의: 발행일 00:00 KST 순간의 유럽 서머타임 여부.**
+ * 전환 순간은 늘 일요일 01:00 UTC = 10:00 KST라 그날 00:00~09:59 KST는 모두 전환 전 계절이다 — 아침 발행 창
+ * (06:00~08:00 KST, push 금지 시간대)의 어느 순간으로 판정해도 같은 값이고, 전환일 아침 발행은 전환 전 시각을 따른다.
+ * 시계가 아니라 발행일로 정하므로 늦게 시작한 트리거(GitHub schedule 지연)도 그날의 계절로 판정된다.
+ * 예) 2026-10-25(일) → summer · 2026-10-26(월) → winter · 2027-03-28(일) → winter · 2027-03-29(월) → summer
+ */
+export function publishSeason(date: string): PublishSeason {
+  return isEuropeanSummerTime(kstDayRangeUtc(date).start) ? "summer" : "winter";
+}
+
+/**
+ * 발행일(KST) → 그날의 발행 슬롯(계절·수집 시작·백업·브리핑 마감·공개 목표, UTC ISO).
+ * 예) "2026-10-25" → summer { collectStart: 2026-10-24T21:30Z, backupStart: 21:40Z, briefDeadline: 21:50Z, publishTarget: 22:00Z }
+ *     "2026-10-26" → winter { collectStart: 2026-10-25T22:10Z, backupStart: 22:20Z, briefDeadline: 22:20Z, publishTarget: 22:30Z }
+ */
+export function publishSlot(date: string): PublishSlot {
+  const season = publishSeason(date);
+  const times = PUBLISH_TIMES_KST[season];
+  const at = (hhmm: string) =>
+    zonedToUtcIso(`${date}T${hhmm}`, DISPLAY_TIME_ZONE);
+  const publishTarget = at(times.publish);
+  return {
+    date,
+    season,
+    collectStart: at(times.collect),
+    backupStart: at(times.backup),
+    briefDeadline: toIso(
+      Date.parse(publishTarget) - BRIEF_DEADLINE_LEAD_MINUTES * MINUTE_MS,
+    ),
+    publishTarget,
+  };
+}
+
+/** UTC 순간 → 그 순간의 KST 발행일 슬롯(`publishSlot(kstDate(iso))`). 수집 가드·collect가 현재 시각으로 부른다. */
+export function publishSlotAt(iso: string): PublishSlot {
+  return publishSlot(kstDate(iso));
 }

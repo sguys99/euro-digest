@@ -3,12 +3,20 @@
 # 상위 5건 → data/news/<KST 발행일>.json, 전날 경기 결과 → 브리핑 1요청(출력은 로그만 — 저장은 M1-19)을 하고,
 # 실행 기록을 data/runs.json(prod — GITHUB_ACTIONS=true)에 남긴다. `npm run validate`는 configs·data 스키마(M0-17)를 검사한다.
 #
-# 트리거
-# - 06:30 KST 주 경로: cron-job.org → workflow_dispatch (fine-grained PAT, Actions 권한만 — 저장소에 두지 않는다).
-#   cron-job.org 정기 실행 활성화는 M1-40 리허설 후(M0-15는 호출 테스트만).
-# - 06:40 KST 백업: schedule. 06:30 실행이 진행 중이면 concurrency로 기다렸다가 12시간 가드로 건너뛴다.
-#   저장소 변수 COLLECT_ENABLED == 'true'일 때만 진행한다(M1-40 리허설 전에는 매일 빈 실행을 하지 않게).
-#   workflow_dispatch는 이 변수와 무관하게 진행한다.
+# 트리거 — 계절별 발행 시각(PRD §15 D26, FR-150): 여름(유럽 서머타임 기간) 06:30 수집 → 07:00 공개,
+# 겨울(유럽 표준시 기간) 07:10 수집 → 07:30 공개. 계절은 src/lib/time.ts publishSlot(europeanSummerTimeTransitions)이 발행일
+# (KST) 기준으로 판정한다 — 전환 순간이 일요일 10:00 KST라 전환일 아침은 전환 전 계절(2026-10-26(월)부터 07:10 수집,
+# 2027-03-29(월)부터 06:30 수집). 트리거는 계절마다 2개씩 4개이고, guard가 계절에 맞지 않는 쪽을 skip한다(M1-47).
+# - 주 경로: cron-job.org 작업 2개 → workflow_dispatch (fine-grained PAT, Actions 권한만 — 저장소에 두지 않는다).
+#   06:30 KST 작업은 본문 {"ref":"main","inputs":{"slot":"summer"}}, 07:10 KST 작업은 {"ref":"main","inputs":{"slot":"winter"}}.
+#   cron-job.org 정기 실행 활성화·본문 갱신은 M1-40 리허설 후(M0-15는 호출 테스트만 — 지금 본문 {"ref":"main"}은 slot이 없어
+#   수동 실행처럼 12시간 가드만 본다).
+# - 백업: schedule 2개 — 06:40 KST(`40 21 * * *`, 여름) · 07:20 KST(`20 22 * * *`, 겨울). 같은 계절의 주 경로 실행이
+#   진행 중이면 concurrency로 기다렸다가 12시간 가드로 건너뛴다. 저장소 변수 COLLECT_ENABLED == 'true'일 때만 진행한다
+#   (M1-40 리허설 전에는 매일 빈 실행을 하지 않게). workflow_dispatch는 이 변수와 무관하게 진행한다.
+# - 계절 가드: 여름에는 07:10 dispatch(slot=winter)·07:20 schedule, 겨울에는 06:30 dispatch(slot=summer)·06:40 schedule을
+#   skip한다(실패 아님 — collect job이 skipped라 12시간 가드의 성공 이력에도 들어가지 않는다). slot 입력 없는 수동 실행은
+#   계절 판정 없이 12시간 가드만, force는 12시간 가드도 건너뛴다(이전과 같다). 판단 순서는 scripts/lib/collect-guard.ts.
 #
 # job 흐름: guard(판단) → collect(수집·검증·빌드·커밋) → deploy(deploy.yml 재사용) / 어느 하나라도 실패 → report-failure
 # - guard가 건너뛰기로 판단하면 collect·deploy는 skipped, 실행은 성공으로 끝난다(skip은 실패가 아니다).
@@ -20,7 +28,7 @@
 #   $RUNNER_TEMP 파일에 쓰고, 바로 다음 단계가 그 파일로 소스별 이슈 하나(fingerprint source:<id>)를 만들거나 댓글을 단다.
 #   쓰기 토큰은 그 단계 env로만 넘긴다(env 수준 격리 — 한계는 그 단계 주석). 실행 자체의 실패 보고(report-failure)와는 별개다.
 name: Collect
-run-name: "Collect (${{ github.event_name }}${{ inputs.force && ', force' || '' }}${{ inputs.limit && format(', limit {0}', inputs.limit) || '' }})"
+run-name: "Collect (${{ github.event_name }}${{ github.event.schedule && format(' {0}', github.event.schedule) || '' }}${{ inputs.slot && format(', slot {0}', inputs.slot) || '' }}${{ inputs.force && ', force' || '' }}${{ inputs.limit && format(', limit {0}', inputs.limit) || '' }})"
 
 on:
   workflow_dispatch:
@@ -35,10 +43,19 @@ on:
         type: boolean
         required: false
         default: false
+      # cron-job.org 작업이 본문 inputs로 보낸다(06:30 작업 summer · 07:10 작업 winter). 수동 실행은 비워 둔다 — 값이 있으면
+      # 그 계절이 아닌 날 skip한다. 값 검증(비움·summer·winter 외 → guard 실패)은 scripts/lib/collect-guard.ts readTriggerSlot.
+      slot:
+        description: "계절 슬롯 — cron-job.org 전용(summer = 06:30 작업 · winter = 07:10 작업). 수동 실행은 비워 둔다"
+        type: string
+        required: false
+        default: ""
   schedule:
-    # 06:40 KST = 21:40 UTC(전날). cron은 UTC 기준이라 UTC 날짜로는 하루 전이지만 KST로는 당일 아침이다.
-    # 한국은 서머타임이 없어 연중 고정. GitHub schedule은 부하에 따라 수 분~수십 분 늦게 시작될 수 있다(백업이라 허용).
-    - cron: "40 21 * * *"
+    # 백업 2개 — cron은 UTC라 UTC 날짜로는 하루 전이지만 KST로는 당일 아침이다. 한국은 서머타임이 없어 연중 고정이고,
+    # 둘 중 그날 계절에 맞는 하나만 진행한다(guard — SCHEDULE_SEASONS와 글자까지 같게, tests/collect-guard.test.ts가 확인).
+    # GitHub schedule은 부하에 따라 수 분~수십 분 늦게 시작될 수 있다(백업이라 허용 — 계절은 시계가 아니라 발행일로 판정).
+    - cron: "40 21 * * *" # 06:40 KST — 여름(유럽 서머타임 기간)
+    - cron: "20 22 * * *" # 07:20 KST — 겨울(유럽 표준시 기간)
 
 # 수집 실행은 한 번에 하나만, 진행 중인 실행은 끊지 않는다(대기는 최신 1건만 남고 그 사이 대기분은 GitHub가 취소).
 # 그룹 이름은 deploy.yml의 `pages`와 겹치면 안 된다(같으면 호출 측과 서로 기다린다).
@@ -51,7 +68,7 @@ permissions: {}
 
 jobs:
   guard:
-    name: 실행 판단 (12시간 가드)
+    name: 실행 판단 (계절 · 12시간 가드)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -75,8 +92,10 @@ jobs:
       - name: 의존성 설치
         run: npm ci
 
-      # 판단 결과를 output(run·reason)과 Step Summary에 남긴다. 건너뛰기도 exit 0(성공).
-      # 이력 조회가 실패하면 exit 1 → 수집하지 않고 report-failure가 이슈를 만든다.
+      # 판단 결과를 output(run·reason)과 Step Summary에 남긴다. 건너뛰기(계절 off-season 포함)도 exit 0(성공).
+      # 이력 조회가 실패하거나 모르는 cron·slot 값이면 exit 1 → 수집하지 않고 report-failure가 이슈를 만든다. 모르는 cron·slot은
+      # 이벤트·main·COLLECT_ENABLED 판정 뒤에 실패로 보므로, 꺼진 schedule·main이 아닌 실행은 건너뛰기(exit 0)로 끝난다.
+      # SCHEDULE·SLOT은 셸에 펼치지 않고 env로만 넘긴다(입력값 주입 방지). schedule이 아니면 SCHEDULE은 빈 값이다.
       - name: 실행 여부 판단
         id: decide
         timeout-minutes: 3
@@ -84,6 +103,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           COLLECT_ENABLED: ${{ vars.COLLECT_ENABLED }}
           FORCE: ${{ inputs.force }}
+          SCHEDULE: ${{ github.event.schedule }}
+          SLOT: ${{ inputs.slot }}
         run: node --import tsx scripts/collect-guard.ts
 
   collect:
@@ -92,8 +113,10 @@ jobs:
     needs: guard
     if: needs.guard.outputs.run == 'true'
     runs-on: ubuntu-latest
-    # job 전체 상한(여유 포함). 일일 브리핑은 단건 Messages API 1~3요청(D28 — 배치 대기 없음)이고, 06:50 브리핑 마감
-    # (마감까지 성공하지 못하면 코드 템플릿 게시, FR-26)은 M1-45에서 collect 스크립트가 처리한다.
+    # job 전체 상한(여유 포함). 일일 브리핑은 단건 Messages API 1~3요청(D28 — 배치 대기 없음)이다. 브리핑 마감
+    # (공개 목표 −10분 — 여름 06:50 · 겨울 07:20, FR-26)은 collect 스크립트가 발행일 슬롯(src/lib/time.ts publishSlot)으로
+    # 계산해 경기 데이터 단계 예산·LLM 재시도를 그 안으로 묶는다(scripts/lib/collect-deadlines.ts, M1-47). 마감까지 성공하지
+    # 못하면 코드 템플릿 게시는 M1-45. 마감이 이미 지났거나 3분도 남지 않은 실행(수동·지연 실행)은 시작 + 8분을 마감으로 쓴다.
     timeout-minutes: 30
     permissions:
       contents: write # data/·public/ 커밋 push
@@ -242,7 +265,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- "${paths[@]}"
-          # 발행일은 KST 날짜(06:30~06:40 KST 실행이면 UTC로는 전날이다).
+          # 발행일은 KST 날짜(아침 실행 — 여름 06:30~06:40 · 겨울 07:10~07:20 KST — 은 UTC로는 전날이다).
           publish_date="$(TZ=Asia/Seoul date +%F)"
           git commit --quiet -m "chore(data): ${publish_date} 발행"
 

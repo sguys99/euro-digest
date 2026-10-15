@@ -59,7 +59,7 @@ export const SEEN_URLS_RETENTION_DAYS = 90;
 export const SEEN_URLS_RETENTION_MS = SEEN_URLS_RETENTION_DAYS * DAY_MS;
 
 /**
- * 기억에 더하는 이전 발행 파일 수(오늘 제외) — 수집 창 상한 51시간(D36). 정기 실행(06:30 KST)이면 D-2 03:30 KST까지만
+ * 기억에 더하는 이전 발행 파일 수(오늘 제외) — 수집 창 상한 51시간(D36). 정기 실행(여름 06:30·겨울 07:10 KST, D26)이면 D-2 03:30·04:10 KST까지만
  * 닿지만, 자정 직후 실행(예: 00:05 KST 수동·재실행)이면 D-3 21:05 KST까지 닿으므로 D-1·D-2·D-3. 하루 중 언제 실행해도
  * 창은 D-4 파일의 카드(D-4 23:59 KST 이전에 카드가 됨)까지 닿지 않는다. 이 범위의 카드는 seen-urls.json이 없거나 깨져도
  * 다시 나오지 않는다.
