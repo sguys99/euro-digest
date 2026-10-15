@@ -38,6 +38,9 @@
  *      강한 증거 — team-ids.ts linkMatchDetails) 득점 목록이 완전한 경기만 입력 `goals`에 득점자를 넣는다(M1-48b),
  *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
  *      football-data 단계가 실패하면 그날 브리핑만 생략하고 뉴스는 발행한다(D24). 순위 실패는 그 대회 순위만 빠진다(partial).
+ *      비용 가드(M1-22, FR-27 — budget-guard.ts): live 실행은 호출 전에 최악값 예상(첫 호출 + FR-29 재시도, 출력 = max_tokens)을
+ *      출력하고 실행 시작 KST 날짜·달의 사용액(월 prod+dev, 일 prod 실행=prod만)과 비교한다. 초과 예상이거나 runs 파일을 읽지 못하면
+ *      LLM 없이 `skipped`·reason `budget`(템플릿 게시는 M1-19). 실행 시작에는 이번 달 누적과 dev 50% 초과 경고를 남긴다.
  *   ④ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
  *
  * 실패 격리: 소스 하나의 실패(받기·파싱·예상 밖 오류)는 그 소스만 건너뛴다(상태 partial). 피드 받기는 scripts/lib/feed-collect.ts가
@@ -115,12 +118,14 @@ import {
   serializeBriefInput,
   type BriefInput,
 } from "./brief-input";
+import { buildBriefRequest, loadSlicePrompt, parseBriefOutput } from "./brief";
 import {
-  buildBriefRequest,
-  estimateBriefCost,
-  loadSlicePrompt,
-  parseBriefOutput,
-} from "./brief";
+  announceBriefBudget,
+  briefBudgetSkip,
+  guardBriefBudget,
+  noticeMonthlyUsage,
+  type BriefBudgetSkip,
+} from "./budget-guard";
 import type { LlmMode } from "./cli-args";
 import { clusterDocs } from "./cluster";
 import {
@@ -143,8 +148,6 @@ import {
   type WindowStats,
 } from "./collect-window";
 import {
-  checkBudgetFromFiles,
-  formatEstimate,
   formatUsd,
   makeRunId,
   readRuns,
@@ -391,11 +394,17 @@ export type BriefOutcome =
   | {
       state: "skipped";
       reason:
-        | "news-failed"
-        | "no-api-key"
-        | "no-matches"
-        | "budget"
-        | "mock-fixture-missing";
+        "news-failed" | "no-api-key" | "no-matches" | "mock-fixture-missing";
+      inputMatches: number;
+    }
+  | {
+      /**
+       * 비용 가드(M1-22, FR-27)가 LLM을 막았다 — 일·월 예산 초과 예상 또는 runs 파일을 읽지 못해 판정 불가.
+       * 템플릿 브리핑(M1-19)이 이 결과를 받아 게시하고, 실행 기록(M1-45)이 사유를 잇는다.
+       */
+      state: "skipped";
+      reason: "budget";
+      budget: BriefBudgetSkip;
       inputMatches: number;
     }
   | {
@@ -1456,6 +1465,8 @@ interface ApiCallSink {
 interface StageCtx {
   publishDate: string;
   briefDeadline: string;
+  /** 실행 시작(UTC ISO) — 비용 가드가 이 시각의 KST 날짜·달로 판정한다(실행 기록 귀속과 같은 칸, M1-22) */
+  startedAt: string;
 }
 
 /** football-data 단계 — 전날(KST 창) 종료 경기 + 그 경기가 있는 대회의 현재 순위. 던지지 않는다 */
@@ -2610,7 +2621,8 @@ async function runBriefStage(
     );
   }
 
-  // 설정 해석 · 요청 준비 · 실행 전 예상 비용 · 예산 가드(live만 — mock은 비용 0)
+  // 설정 해석 · 요청 준비 · 비용 가드(M1-22 — live만, mock은 비용 0): 최악값(첫 호출 + FR-29 재시도, 출력 = max_tokens) 예상을
+  // 출력하고, 실행 시작 KST 날짜·달의 prod+dev 사용과 비교한다. runs 파일을 읽지 못하면 판정 불가로 LLM을 부르지 않는다.
   let request: LlmRequest;
   let config: BriefConfig;
   try {
@@ -2618,22 +2630,24 @@ async function runBriefStage(
     sink.model = config.model;
     request = buildBriefRequest(input, await loadSlicePrompt(deps.rootDir));
     if (deps.llmMode === "live") {
-      const estimate = estimateBriefCost(request, config.model);
-      const budget = await checkBudgetFromFiles({
+      const decision = await guardBriefBudget({
         env: deps.env,
-        estimatedUsd: estimate.usd,
-        now: deps.now(),
-        dataDir: deps.dataDir,
+        requests: [request],
+        model: config.model,
         budgets: config.budgets,
+        at: parseUtcIso(ctx.startedAt),
+        dataDir: deps.dataDir,
       });
-      deps.print(formatEstimate(estimate, budget));
-      if (!budget.allowed) {
-        // 템플릿 브리핑(M1-19)은 아직 없다 — 슬라이스는 건너뛴다.
-        log.warn("summarize.brief.skip", {
+      announceBriefBudget(decision, deps);
+      const skip = briefBudgetSkip(decision);
+      if (skip !== null) {
+        // 템플릿 브리핑(M1-19)은 아직 없다 — 이 결과(reason budget + 판정)를 받아 템플릿을 게시하는 것은 M1-19.
+        return {
+          state: "skipped",
           reason: "budget",
-          budgetReason: budget.reason,
-        });
-        return { state: "skipped", reason: "budget", inputMatches };
+          budget: skip,
+          inputMatches,
+        };
       }
     }
   } catch (error) {
@@ -2936,6 +2950,15 @@ export function runStatus(
   if (brief.state === "skipped" && brief.reason === "no-api-key") {
     return "partial";
   }
+  // 비용 기록(runs 파일)을 읽지 못해 예산을 확인할 수 없었다 — LLM 없이 진행했지만 기록 파일을 고쳐야 한다(M1-22).
+  // 예산 초과 예상(daily·monthly_exceeded)은 의도된 강등이라 success로 둔다(FR-27).
+  if (
+    brief.state === "skipped" &&
+    brief.reason === "budget" &&
+    brief.budget.verdict === "runs_unreadable"
+  ) {
+    return "partial";
+  }
   if (matchData?.apiFootball && apiFootballIncomplete(matchData.apiFootball)) {
     return "partial";
   }
@@ -2988,7 +3011,21 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   // 이 안으로 묶는다(scripts/lib/collect-deadlines.ts).
   const deadlines: CollectDeadlines = planCollectDeadlines(startedAt);
   log.info("collect.deadline", deadlineLogFields(deadlines, startedAt));
-  const stageCtx = { publishDate, briefDeadline: deadlines.briefDeadline };
+  // 비용(M1-22) — 이번 달 prod·dev 누적 한 줄, dev 사용이 월 예산 50%를 넘으면 경고(dev = 눈에 띄는 출력, prod = Actions 주석).
+  // 던지지 않는다. 예산 설정은 브리핑 설정 해석을 빌리고, 잘못된 값이면 알림만 건너뛴다(브리핑 판정은 브리핑 단계가 따로 한다).
+  await noticeMonthlyUsage({
+    env: deps.env,
+    dataDir: deps.dataDir,
+    at: parseUtcIso(startedAt),
+    resolveBudgets: () => deps.resolveBriefConfig().budgets,
+    logger: log,
+    print: deps.print,
+  });
+  const stageCtx = {
+    publishDate,
+    briefDeadline: deadlines.briefDeadline,
+    startedAt,
+  };
 
   // ② 경기 데이터는 뉴스 피드 수집과 병렬로 시작한다(머리 주석 "병렬 근거") — 수집 대상이 정해진 뒤(설정 오류·대상 0개면
   // 시작하지 않는다). 뉴스가 실패하면 취소 신호로 새 요청을 멈춘다.

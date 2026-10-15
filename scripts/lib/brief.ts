@@ -21,6 +21,13 @@ import type { LlmRequest } from "./llm";
 
 /** D28 브리핑 max_tokens (thinking 포함) */
 export const BRIEF_MAX_TOKENS = 4_096;
+/**
+ * 브리핑 요청 1건이 과금될 수 있는 최대 횟수 — 첫 호출 + FR-29 출력 재시도 1회(zod·코드 검증 실패를 합쳐 1회, D40 ①의
+ * max_tokens 포함). 비용 가드(M1-22 budget-guard.ts)가 이 횟수 × (넉넉한 입력 어림 + 출력 상한)으로 판정한다 — M1-45 재시도 루프도
+ * 이 값을 쓸 것.
+ * llm.ts 전송 재시도(429·5xx)는 응답 usage가 없어 비용 기록에 0으로 남으므로 여기에 세지 않는다.
+ */
+export const BRIEF_MAX_ATTEMPTS = 2;
 /** D28 — 적응형 thinking 기본 + effort medium 명시(끄거나 low로 낮추지 않는다, M0-30) */
 export const BRIEF_EFFORT = "medium" as const;
 export const BRIEF_THINKING = "adaptive" as const;
@@ -62,8 +69,9 @@ export function buildBriefRequest(
 }
 
 /**
- * 실행 전 예상 입력 토큰(어림값, 넉넉하게) — 한국어 지시문은 글자당 약 1토큰(M0-30: 2,119자 → 2,034토큰),
- * 영문 JSON 입력은 약 1.9자당 1토큰(M0-34: 8,619자 → 약 4,560토큰)이라 1.5자당 1토큰으로 잡는다.
+ * 실행 전 예상 입력 토큰 — **상한이 아니라 넉넉한 어림**이다. 한국어 지시문은 글자당 약 1토큰(M0-30: 2,119자 → 2,034토큰),
+ * 영문 JSON 입력은 약 1.9자당 1토큰(M0-34: 8,619자 → 약 4,560토큰)이라 지시문은 글자당 1토큰, 입력은 1.5자당 1토큰으로 잡는다
+ * → 두 실측 합 6,594토큰에 대해 7,865토큰(약 +19%). 입력 모양이 크게 바뀌면(M1-19·M1-20) 실측으로 다시 확인할 것.
  */
 export function estimateBriefInputTokens(
   request: Pick<LlmRequest, "system" | "user">,
@@ -71,7 +79,7 @@ export function estimateBriefInputTokens(
   return Math.ceil(request.system.length + request.user.length / 1.5);
 }
 
-/** 실행 전 예상 비용 — 출력은 상한(max_tokens)으로 잡는다(thinking 포함, 보수적) */
+/** 실행 전 예상 비용(요청 1건·1회) — 넉넉한 입력 어림(실측 대비 약 +19%) + 출력 상한(max_tokens, thinking 포함) */
 export function estimateBriefCost(
   request: Pick<LlmRequest, "system" | "user" | "maxTokens">,
   model: string,

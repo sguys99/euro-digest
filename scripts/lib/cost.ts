@@ -4,9 +4,11 @@
  * 구성
  *   - 단가 표 `MODEL_PRICING`: 모델 ID → 단가. 표에 없는 모델은 오류(조용히 0원으로 계산하지 않는다).
  *   - 순수 함수: estimateCost(실행 전 예상) · costFromUsage / costFromResults(실측 usage → USD) ·
- *     todayTotal / monthToDate(prod+dev 합산, env별 분리) · checkBudget(가드) · pruneRuns(180일) ·
- *     formatEstimate(실행 전 출력 문구)
- *   - 얇은 I/O: readRuns · appendRun(원자적 쓰기) · recordRun · createRunRecorder / withRecordedRun
+ *     todayTotal / monthToDate(prod+dev 합산, env별 분리) · checkBudget(가드) · assessDevUsage(dev 50% 알림) ·
+ *     pruneRuns(180일) · formatEstimate(실행 전 출력 문구) · formatDevAlert(실행 시작 경고)
+ *   - 얇은 I/O: readRuns · tryLoadRuns(던지지 않는 판 — 가드용) · appendRun(원자적 쓰기) · recordRun ·
+ *     createRunRecorder / withRecordedRun
+ *   - 일일 브리핑 실행 전 판정(최악값 예상·판정 불가 처리)과 실행 시작 알림은 budget-guard.ts(M1-22)가 이 함수들로 한다.
  *
  * 확인한 단가 (2026-10-10 확인)
  *   출처: https://platform.claude.com/docs/en/about-claude/pricing (Model pricing · Batch processing ·
@@ -488,6 +490,60 @@ function assertRunsEnv(runs: readonly RunLog[], env: RunEnv, label: string) {
 }
 
 /**
+ * 이번 달 dev 누적 ÷ 월 예산과 알림 여부 — 50%를 **넘으면** 알린다(정확히 50%는 알리지 않는다). 비교는 마이크로달러 정수.
+ * 월 예산이 0이면 비율은 0, dev 사용이 조금이라도 있으면 알린다.
+ */
+function devShareOf(
+  month: SpendTotals,
+  monthlyBudget: number,
+): { share: number; alert: boolean } {
+  const devMicro = toMicro(month.dev);
+  const limitMicro = toMicro(monthlyBudget);
+  if (limitMicro <= 0) return { share: 0, alert: devMicro > 0 };
+  return {
+    share: devMicro / limitMicro,
+    alert: devMicro > limitMicro * DEV_ALERT_SHARE,
+  };
+}
+
+/** 이번 달(KST) dev 사용률 (CLAUDE.md §6.3 — 50% 초과 알림, M1-22) */
+export interface DevUsage {
+  /** KST 달 "YYYY-MM" */
+  key: string;
+  /** 이번 달 dev 누적 */
+  dev: number;
+  /** 이번 달 prod 누적(참고) */
+  prod: number;
+  monthlyBudget: number;
+  /** dev ÷ 월 예산 */
+  share: number;
+  /** share가 DEV_ALERT_SHARE(50%)를 넘음 */
+  alert: boolean;
+}
+
+/**
+ * 이번 달 dev 사용률 — `now`의 KST 달로 집계한다(실행은 startedAt의 KST 달로 귀속). runs에는 prod·dev를 섞어 넣어도 된다
+ * (dev만 비율에 들어간다). checkBudget의 devShare·devAlert와 같은 계산이다.
+ */
+export function assessDevUsage(
+  runs: readonly RunLog[],
+  now: Date,
+  monthlyBudget: number,
+): DevUsage {
+  assertUsd(monthlyBudget, "monthlyBudget");
+  const month = monthToDate(runs, now);
+  const { share, alert } = devShareOf(month, monthlyBudget);
+  return {
+    key: month.key,
+    dev: month.dev,
+    prod: month.prod,
+    monthlyBudget,
+    share,
+    alert,
+  };
+}
+
+/**
  * 예산 가드. 월 예산은 prod+dev 합산, 일일 예산은 prod 실행이면 prod만·dev 실행이면 prod+dev.
  * 경계는 포함(used + 예상 == 예산이면 허용). 금액 비교는 마이크로달러 정수로 한다.
  */
@@ -543,9 +599,10 @@ export function checkBudget(input: CheckBudgetInput): BudgetCheck {
       ? "daily_exceeded"
       : "ok";
 
-  const devMicro = toMicro(month.dev);
-  const devShare = monthlyLimit > 0 ? devMicro / monthlyLimit : 0;
-  const devAlert = monthlyLimit > 0 ? devShare > DEV_ALERT_SHARE : devMicro > 0;
+  const { share: devShare, alert: devAlert } = devShareOf(
+    month,
+    input.monthlyBudget,
+  );
 
   const message =
     reason === "monthly_exceeded"
@@ -623,10 +680,12 @@ function formatPercent(part: number, whole: number): string {
 export function formatEstimate(
   estimate: CostEstimate,
   budget: BudgetCheck,
+  /** 요청 수 뒤에 붙일 설명(예: "최악값 — 첫 호출 + FR-29 재시도 1회") */
+  note?: string,
 ): string {
   const t = estimate.tokens;
   const lines = [
-    `[cost] 예상 — ${estimate.model} · ${estimate.batch ? "배치(50% 할인)" : "단건"} · 요청 ${formatInt(estimate.requests)}건 · env ${budget.env}`,
+    `[cost] 예상 — ${estimate.model} · ${estimate.batch ? "배치(50% 할인)" : "단건"} · 요청 ${formatInt(estimate.requests)}건${note ? `(${note})` : ""} · env ${budget.env}`,
     `[cost]   토큰: 입력 ${formatInt(t.in)} · 캐시 읽기 ${formatInt(t.cacheRead)} · 캐시 쓰기 ${formatInt(t.cacheWrite)} · 출력 ${formatInt(t.out)}(thinking 포함)`,
     `[cost]   예상 비용: ${formatUsd(estimate.usd)}`,
     `[cost]   오늘(${budget.daily.key} KST, ${budget.daily.scope}): ${formatUsd(budget.daily.used)} → ${formatUsd(budget.daily.projected)} / ${formatUsd(budget.daily.limit)} (${formatPercent(budget.daily.projected, budget.daily.limit)})`,
@@ -639,6 +698,22 @@ export function formatEstimate(
     );
   }
   return lines.join("\n");
+}
+
+/**
+ * dev 사용 50% 초과 경고 — 실행 시작에 눈에 띄게 찍는 여러 줄 문구(CLAUDE.md §6.3, M1-22). 끝 개행 없음.
+ * 알림 대상이 아니면(alert false) 빈 문자열.
+ */
+export function formatDevAlert(usage: DevUsage): string {
+  if (!usage.alert) return "";
+  const bar = "!".repeat(64);
+  return [
+    bar,
+    `[cost] 경고: ${usage.key}(KST) dev LLM 사용이 월 예산의 ${(usage.share * 100).toFixed(1)}% — 50%를 넘었다`,
+    `[cost]   dev ${formatUsd(usage.dev)} · prod ${formatUsd(usage.prod)} / 월 예산 ${formatUsd(usage.monthlyBudget)} (prod+dev 합산 가드)`,
+    `[cost]   사용자에게 알리고 실호출을 줄일 것 — --mock·--dry·--limit (CLAUDE.md §6.3)`,
+    bar,
+  ].join("\n");
 }
 
 // ─── 환경변수 ────────────────────────────────────────────────────────────
@@ -864,6 +939,48 @@ export async function loadRuns(
     readRuns(runsPathFor("dev", dataDir), io),
   ]);
   return { prodRuns, devRuns };
+}
+
+/** tryLoadRuns 결과 — 읽지 못하면 그 파일과 오류(경로는 파일 이름만) */
+export type RunsLoad =
+  | { ok: true; prodRuns: RunLog[]; devRuns: RunLog[] }
+  | { ok: false; file: string; error: string };
+
+/**
+ * prod·dev 실행 로그를 읽되 던지지 않는다(M1-22 비용 가드용). 파일이 없으면 [](기록 전)이고, JSON·스키마·I/O 오류는
+ * `ok: false` — 호출부가 판정 불가로 다룬다(브리핑은 LLM 없이 — budget-guard.ts). 두 파일이 모두 깨졌으면 prod 쪽을 알린다.
+ */
+export async function tryLoadRuns(
+  dataDir: string = DEFAULT_DATA_DIR,
+  io: RunsFileIo = nodeIo,
+): Promise<RunsLoad> {
+  const [prod, dev] = await Promise.allSettled([
+    readRuns(runsPathFor("prod", dataDir), io),
+    readRuns(runsPathFor("dev", dataDir), io),
+  ]);
+  if (prod.status === "rejected") return runsLoadFailure("prod", prod.reason);
+  if (dev.status === "rejected") return runsLoadFailure("dev", dev.reason);
+  return { ok: true, prodRuns: prod.value, devRuns: dev.value };
+}
+
+/** 읽기 실패 → 한 줄 사유. RunsFileError는 이미 파일 이름을 앞에 붙인다. 그 밖(I/O 오류)은 전체 경로 대신 오류 코드만 남긴다. */
+function runsLoadFailure(
+  env: RunEnv,
+  reason: unknown,
+): Extract<RunsLoad, { ok: false }> {
+  const file = RUNS_FILE_NAMES[env];
+  if (reason instanceof RunsFileError) {
+    return { ok: false, file, error: reason.message.split("\n")[0] ?? file };
+  }
+  const code =
+    typeof reason === "object" && reason !== null && "code" in reason
+      ? String((reason as { code?: unknown }).code)
+      : null;
+  return {
+    ok: false,
+    file,
+    error: `${file}: 읽기 실패${code ? ` (${code})` : ""}`,
+  };
 }
 
 export interface CheckBudgetFromFilesInput {
