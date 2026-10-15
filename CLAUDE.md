@@ -123,7 +123,7 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
 
 ### 6.3 개발 중 LLM 사용
 - 반복 실험은 소량(`--limit`, 브리핑은 1~3요청)으로 줄이고, 실행 전 예상 토큰·비용을 출력한다.
-- prod 실행은 `data/runs.json`, dev 실행은 `data/runs-dev.json`(개발자가 커밋)에 `env`와 토큰·비용을 기록하고, 비용 가드는 두 파일을 합산해 판단. dev 사용이 그 달 예산의 50%를 넘으면 사용자에게 알린다.
+- prod 실행은 `data/runs.json`, dev 실행은 `data/runs-dev.json`(개발자가 커밋)에 `env`와 토큰·비용을 기록하고, 비용 가드는 두 파일을 합산해 판단(월 예산 — 일 예산은 봇 실행이면 prod만, PRD §15 D43). dev 사용이 그 달 예산의 50%를 넘으면 사용자에게 알린다.
 - 자동 테스트·CI는 `LLM_MODE=mock`으로 `fixtures/llm/` 응답 사용(결정적·무비용).
 - 프롬프트 수정 시 샘플 10건(브리핑은 10일치 입력) 회귀 비교(`npm run eval:prompt`, 이전/이후 출력 diff)를 실행하고 `fixtures/llm/`을 갱신.
 

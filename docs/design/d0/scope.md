@@ -157,7 +157,7 @@
 | 4 | `c_d8eac2777b` | ko | result | BUNDESLIGA | 5 | ✓ | ✓ | 3 (+2곳) | – | 84 | 베스트일레븐 · 10.11 02:56 | “내 멍청한 실수였다”… 노이어, ‘8.4초’ 분데스리가 역대… | 다출처·한국 선수·결과·국내 |
 | 5 | `c_cd33b9b380` | ko | result | LALIGA | 5 | ✓ | ✓ | 3 (+2곳) | – | 68 | 베스트일레븐 · 10.11 01:14 | ‘이강인 33분 소화’… 상대 퇴장 1명으로 ‘수적 우위’ 아… | 다출처·한국 선수·결과·국내 |
 | 6 | `c_114856ecfb` | it | other | LALIGA | 4 |  | ✓ | 2 (+1곳) | – | 96 | Gianluca Di Marzio · 10.11 05:43 | Follia di Vinicius: gol, espulsion… | 다출처·결과 |
-| 7 | `c_f97bda2884` | en | national | – | 4 |  |  | 2 (+1곳) | – | 94 | The Athletic · 10.10 21:56 | Portugal FA opens 'urgent' proceed… | 다출처 |
+| 7 | `c_8630993971` | en | national | – | 4 |  |  | 2 (+1곳) | – | 94 | The Athletic · 10.10 21:56 | Portugal FA launches urgent inquiry… | 다출처 |
 | 8 | `c_431b1523c4` | ko | club | LALIGA | 4 | ✓ | ✓ | 1 | – | 75 | 인터풋볼 · 10.11 08:10 | 이강인이 대체 뭘 잘못했길래…레알 마드리드, 승리하고도 또 분… | 한국 선수·결과·국내 |
 | 9 | `c_744396ca78` | ko | result | EPL | 4 |  | ✓ | 2 (+1곳) | – | 75 | 인터풋볼 · 10.11 03:10 | [PL REVIEW] '손흥민 보기 부끄럽다' 벤탄쿠르 박치기… | 다출처·결과·국내 |
 | 10 | `c_c19e60220d` | ko | transfer | LALIGA | 4 | ✓ |  | 1 | collapsed/T3 | 67 | 인터풋볼 · 10.10 16:45 | ‘바르셀로나 보내준다더니 결국 물거품’…이강인 공격 파트너 알… | 이적·한국 선수·국내 |
