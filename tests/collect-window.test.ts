@@ -40,6 +40,7 @@ import {
 import { runCollect, type CollectDeps } from "../scripts/lib/collect-run";
 import {
   applyCollectWindow,
+  clampedItemKey,
   COLLECT_WINDOW_MAX_MS,
   COLLECT_WINDOW_OVERLAP_MS,
   FUTURE_CLAMP_MAX_MS,
@@ -446,7 +447,11 @@ describe("applyCollectWindow — 항목 거르기·낮추기·집계", () => {
       feedItem(ESPN, "2026-10-10T23:00:00.000Z", 5), // +1.5시간 → 낮춤
       feedItem(BBC, FLOOR, 6), // 상한과 같음 → 창 안
     ];
-    const { items: kept, stats } = applyCollectWindow(items, window);
+    const {
+      items: kept,
+      stats,
+      clampedKeys,
+    } = applyCollectWindow(items, window);
     expect(kept.map((i) => [i.url.split("/").pop(), i.publishedAt])).toEqual([
       ["1", "2026-10-10T20:00:00.000Z"],
       ["2", NOW],
@@ -455,6 +460,13 @@ describe("applyCollectWindow — 항목 거르기·낮추기·집계", () => {
     ]);
     // 낮춘 항목도 나머지 필드는 그대로
     expect(kept[1]).toEqual({ ...items[1], publishedAt: NOW });
+    // 낮춘 항목 키(소스 id + 링크) — 점수화가 최신성을 믿지 않는다(M1-14). 낮춘 항목에서도 원래 항목에서도 같은 키
+    expect([...clampedKeys]).toEqual([
+      clampedItemKey(items[1]!),
+      clampedItemKey(items[4]!),
+    ]);
+    expect(clampedKeys.has(clampedItemKey(kept[1]!))).toBe(true);
+    expect(clampedKeys.has(clampedItemKey(kept[0]!))).toBe(false);
     expect(stats).toEqual({
       total: 6,
       inWindow: 4,
@@ -725,6 +737,26 @@ describe("runCollect — 수집 시간 창 연결 (M1-10)", () => {
       windowBasis: "first-run",
       inWindow: 8,
     });
+    // 점수화(M1-14): 낮춘 BBC 기사는 최신성을 믿지 않는다(창 가운데로 본다) — 카드는 되지만 '방금 나온 기사'로 보지 않는다
+    expect(
+      records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({ selectedMix: expect.objectContaining({ clamped: 1 }) });
+  });
+
+  it("점수화(M1-14): 낮춘 기사는 선별 상한이 작으면 실제 시각이 최근인 기사에 밀린다 — 최신순이었다면 낮춘 기사가 1위", async () => {
+    const { deps, records } = makeDeps({ limit: 1 });
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    const file = readNews("2026-10-11");
+    expect(file.cards).toHaveLength(1);
+    expect(cardFor(file, BBC_ITEM.ahead)).toBeUndefined();
+    expect(
+      records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({
+      limit: 1,
+      ranked: 1,
+      selectedMix: expect.objectContaining({ clamped: 0 }),
+    });
   });
 
   it.each([
@@ -963,7 +995,7 @@ describe("runCollect — 이미 카드가 된 URL 기억 data/cache/seen-urls.js
     });
     const outcome = await runCollect(again.deps);
     expect(outcome.news.added).toBe(0);
-    expect(outcome.news.dedup?.seenBefore).toBe(0); // 오늘 파일 카드는 빼지 않는다(선별 자리 유지 → 병합이 건너뜀)
+    expect(outcome.news.dedup?.seenBefore).toBe(0); // 오늘 파일 카드는 다른 날 카드로 빼지 않는다(오늘 카드 클러스터 → 출처만 붙임, 새 자리는 그날 파일 기준 — D44)
     expect(readFileSync(seenFile(), "utf8")).toBe(before);
     expect(
       again.records.find((r) => r.event === "collect.seen.unchanged"),

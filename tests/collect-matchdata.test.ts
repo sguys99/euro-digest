@@ -37,7 +37,6 @@ import {
 import {
   runCollect,
   runStatus,
-  SLICE_DEFAULT_LIMIT,
   type BriefOutcome,
   type CollectDeps,
 } from "../scripts/lib/collect-run";
@@ -110,7 +109,7 @@ function makeDeps(
     env: "dev",
     llmMode: "mock",
     dry: false,
-    limit: SLICE_DEFAULT_LIMIT,
+    limit: 5, // 소량 실행(--limit 5) — 이 파일은 경기 데이터 경로를 본다
     loadSources: async () => [BBC],
     now: () => NOW,
     fetch,

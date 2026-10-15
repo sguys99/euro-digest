@@ -43,6 +43,8 @@
  *   - 5분 < ahead ≤ 3시간: 수집 시각(이번 실행 시작)으로 낮춘다(`future-clamped`) — 카드 `src.at`도 낮춘 값.
  *     시간대 표기 오류로 1~2시간 미래가 되는 피드가 실제로 있다: ESPN은 서머타임 기간에도 'EST'로 적어 최대 1시간
  *     미래(M1-09 dry 실측 +35분), 유럽 현지 시각에 GMT를 붙이면 최대 2시간. 기사 자체는 진짜라 버리지 않는다.
+ *     낮춘 항목은 `clampedKeys`(`clampedItemKey` — 소스 id + 링크)로 알려 점수화(score.ts, M1-14)가 최신성을 믿지 않게 한다
+ *     (낮춘 시각 = 실행 시작이라 그대로 두면 '방금 나온 기사'로 맨 위를 차지한다 — M1-02·M1-10 실측).
  *   - ahead > 3시간: 제외(`future`) — 시간대 설정이 크게 틀렸거나(예: 소스 `tz` 누락으로 KST를 UTC로 읽으면 9시간
  *     미래) 날짜가 깨진 것이다. 수집 시각으로 낮추면 오래된 기사가 최신처럼 맨 위에 서므로 빼고 경고한다.
  *
@@ -299,15 +301,21 @@ export interface WindowStats {
   bySource: Record<string, SourceWindowStats>;
 }
 
+/** 낮춘 항목 식별 키 — 소스 id + 원문 링크(같은 소스의 같은 링크는 중복 제거에서 한 항목이 된다) */
+export function clampedItemKey(item: Pick<FeedItem, "source" | "url">): string {
+  return `${item.source}\n${item.url}`;
+}
+
 /**
  * 수집 창을 적용한다 — 창 밖·3시간 넘는 미래는 빼고, 허용 오차를 넘는 미래(3시간 이내)는 발행 시각을 수집 시각으로
- * 낮춘 새 항목으로 바꾼다. 남는 항목의 순서는 입력 순서 그대로다(결정적). 순수 함수.
+ * 낮춘 새 항목으로 바꾼다(그 키는 `clampedKeys`). 남는 항목의 순서는 입력 순서 그대로다(결정적). 순수 함수.
  */
 export function applyCollectWindow(
   items: readonly FeedItem[],
   window: CollectWindow,
-): { items: FeedItem[]; stats: WindowStats } {
+): { items: FeedItem[]; stats: WindowStats; clampedKeys: Set<string> } {
   const kept: FeedItem[] = [];
+  const clampedKeys = new Set<string>();
   const stats: WindowStats = {
     total: items.length,
     inWindow: 0,
@@ -336,6 +344,7 @@ export function applyCollectWindow(
         break;
       case "future-clamped":
         kept.push({ ...item, publishedAt: verdict.publishedAt });
+        clampedKeys.add(clampedItemKey(item));
         stats.inWindow += 1;
         stats.futureClamped += 1;
         per.inWindow += 1;
@@ -355,7 +364,7 @@ export function applyCollectWindow(
         return assertNever(verdict);
     }
   }
-  return { items: kept, stats };
+  return { items: kept, stats, clampedKeys };
 }
 
 // ─── 로그 도우미 ─────────────────────────────────────────────────────────

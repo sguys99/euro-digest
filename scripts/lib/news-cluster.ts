@@ -24,13 +24,15 @@
  *
  * ── ④ 보도 매체 수 ──────────────────────────────────────────────────────
  *   클러스터 크기 = 묶음 수가 아니라 **매체명(`publisherNameOf`) 수**다 — BBC 피드 4개·국내 섹션/전체기사 피드는 한 매체.
- *   점수화(M1-14, FR-06 '클러스터 크기(보도 매체 수)') 입력.
+ *   점수화(score.ts — M1-14, FR-06 '클러스터 크기(보도 매체 수)') 입력. 선별은 `fresh`만 점수 순으로 줄 세우고, 새 카드 자리는
+ *   그날 파일 기준(상한 − 오늘 파일 카드 수 — D44, collect-run.ts)이다. `existing`은 오늘 카드에 출처만 붙인다.
  *
  * 대표 항목은 지금 클러스터의 첫 묶음(설정 순서상 처음 — dedup.ts와 같은 규칙)이다. Tier·weight·최신성 순 대표 선정은
  * M1-15가 `members`로 한다.
  */
-import type { CardSource, FeedItem, NewsCard, Source } from "@/lib/schema";
+import type { CardSource, NewsCard, Source } from "@/lib/schema";
 
+import type { CardSignals } from "./classify";
 import {
   DEFAULT_CLUSTER_POLICY,
   clusterDocs,
@@ -103,19 +105,6 @@ export function clusterSourceMeta(
   return groupSource({ sources: ids }, sourceById);
 }
 
-/** 클러스터에서 가장 최근 발행 항목(같으면 앞 묶음) — 최신순 선별 키 */
-export function latestItem(cluster: Pick<NewsCluster, "members">): FeedItem {
-  const [first, ...rest] = cluster.members;
-  if (first === undefined) throw new Error("빈 클러스터");
-  return rest.reduce(
-    (best, g) =>
-      Date.parse(g.item.publishedAt) > Date.parse(best.publishedAt)
-        ? g.item
-        : best,
-    first.item,
-  );
-}
-
 /** 묶음 1개 → 카드 출처 1건(대표 소스의 매체명·tier, 링크·시각은 피드 원문). 대표 소스가 설정에 없으면 null */
 export function groupCardSource(
   group: Pick<DedupGroup, "item" | "sources">,
@@ -135,11 +124,13 @@ export function groupCardSource(
  * 클러스터 → 원제목 카드: 대표 = 첫 묶음(설정 순서상 처음 — M1-15가 Tier·weight·최신성으로 바꾼다)의 피드 원문 제목·링크,
  * 출처 = 대표 + 나머지 묶음(입력 순서, 묶음마다 1건), 카드 소스 = 대표 소스 + 클러스터 대회 합집합. 대표 소스가 설정에
  * 없으면 null(그 클러스터는 건너뛴다), 나머지 묶음 중 소스가 설정에 없는 것은 출처에서 뺀다.
+ * `signals` = 선별 점수(M1-14) — 분류(classify.ts, M1-17 중요도)로 넘긴다.
  */
 export function buildClusterCard(
   cluster: NewsCluster,
   sourceById: ReadonlyMap<string, Source>,
   created: string,
+  signals: CardSignals | null = null,
 ): NewsCard | null {
   const [lead, ...rest] = cluster.members;
   const meta = clusterSourceMeta(cluster, sourceById);
@@ -148,7 +139,7 @@ export function buildClusterCard(
     const src = groupCardSource(g, sourceById);
     return src ? [src] : [];
   });
-  return buildCard(lead.item, meta.card, created, more);
+  return buildCard(lead.item, meta.card, created, more, signals);
 }
 
 // ─── 계획 ────────────────────────────────────────────────────────────────

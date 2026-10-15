@@ -3,7 +3,8 @@
  *
  * M1-01 수직 슬라이스 + M1-02 소스 로더 + M1-03 RSS 어댑터: configs/sources.json의 일일 수집 대상 피드 전부
  * (호스트별 병렬·재시도 1회·단계 시간 예산 90초, 소스별 실패 격리 — scripts/lib/feed-collect.ts) → 같은 URL 묶음(M1-12) → 같은 사건
- * 클러스터(M1-13 — 제목 유사도, 국내·해외 따로) → 원제목 카드 최신순 상위 5건(`--limit`) → data/news/<KST 발행일>.json,
+ * 클러스터(M1-13 — 제목 유사도, 국내·해외 따로) → 점수화 상위 MAX_ITEMS_PER_RUN(기본 45, 소량 실행 `--limit` — M1-14, FR-06)
+ * 원제목 카드 → data/news/<KST 발행일>.json,
  * M1-44 경기 데이터(football-data 전날 종료 경기 + 그 대회 순위, 프로바이더별 병렬·실패 격리) → 브리핑 1요청(출력은 로그만),
  * M1-48 API-Football 경기 단건(날짜 조회 D-1·D → 대상 경기 상세, 브리핑 경기 먼저 · 이월 data/cache/af-pending.json —
  * 뉴스와 병렬로 시작, API_FOOTBALL_MAX_CALLS로 실행당 호출 상한을 걸 수 있다) · M1-48b 경기 기록 원장 data/matches/

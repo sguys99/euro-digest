@@ -1,7 +1,8 @@
 # 일일 수집 워크플로 (M0-14, FR-150 · FR-152) — 수집 → 정제·분류 → 데이터 브리핑 → 검증 게이트 → 빌드 → data 커밋 → 배포.
-# CLAUDE.md §6.1 · PRD §10 운영 흐름. M1-01 얇은 수직 슬라이스: `npm run collect`가 BBC 피드 1개 → 원제목 카드
-# 상위 5건 → data/news/<KST 발행일>.json, 전날 경기 결과 → 브리핑 1요청(출력은 로그만 — 저장은 M1-19)을 하고,
-# 실행 기록을 data/runs.json(prod — GITHUB_ACTIONS=true)에 남긴다. `npm run validate`는 configs·data 스키마(M0-17)를 검사한다.
+# CLAUDE.md §6.1 · PRD §10 운영 흐름. `npm run collect`가 일일 수집 대상 피드 → 같은 URL·같은 사건 묶기 → 점수화 상위
+# MAX_ITEMS_PER_RUN(아래 env 45 — M1-14, FR-06) 원제목 카드 → data/news/<KST 발행일>.json, 전날 경기 결과 → 브리핑 1요청
+# (출력은 로그만 — 저장은 M1-19)을 하고, 실행 기록을 data/runs.json(prod — GITHUB_ACTIONS=true)에 남긴다.
+# `npm run validate`는 configs·data 스키마(M0-17)를 검사한다.
 #
 # 트리거 — 계절별 발행 시각(PRD §15 D26, FR-150): 여름(유럽 서머타임 기간) 06:30 수집 → 07:00 공개,
 # 겨울(유럽 표준시 기간) 07:10 수집 → 07:30 공개. 계절은 src/lib/time.ts publishSlot(europeanSummerTimeTransitions)이 발행일
@@ -34,7 +35,7 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: "소량 실행 — 선별 카드 상한(양의 정수, 예: 5). 비우면 M1-01 슬라이스 기본 5건(M1-14 이후 MAX_ITEMS_PER_RUN 45)"
+        description: "소량 실행 — 점수화 선별 상한(양의 정수, 예: 5). 비우면 MAX_ITEMS_PER_RUN(45)"
         type: string
         required: false
         default: ""

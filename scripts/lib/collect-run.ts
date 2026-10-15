@@ -6,7 +6,10 @@
  *      → 합쳐서 정규화 URL 해시로 중복 제거(M1-12, FR-04 — 카드는 대표 소스 + 같은 URL을 낸 소스들의 대회 태그 합집합, dedup.ts)
  *      → 제목 유사도로 같은 사건 클러스터(M1-13, FR-05 — cluster.ts·news-cluster.ts: 다른 날 카드였던 URL이 든 클러스터는
  *        통째로 제외(seen-urls.json 90일 기억 ∪ 최근 발행 파일 — seen-urls.ts), 오늘 카드와 같은 사건이면 그 카드의 새 출처)
- *      → 최신순 상위 N 클러스터 → 원제목 카드(대표 + 클러스터 출처, 최소 분류) → data/news/<KST 발행일>.json
+ *      → 점수화 선별(M1-14, FR-06 — score.ts: 소스 weight × Tier × 키워드 × 보도 매체 수 × 최신성 × 범위). 일일 상한은 그날
+ *        파일 기준(D44 — 새 카드 자리 = MAX_ITEMS_PER_RUN − 오늘 파일 카드 수), 국내 최소 몫(상한의 1/3)을 먼저 채움
+ *        → 원제목 카드(대표 + 클러스터 출처, 최소 분류 + 선별 점수 전달)
+ *      → data/news/<KST 발행일>.json(파일 순서 = 화면 순서: 중요도 → 최신 출처 시각 — news-file.ts sortCards)
  *      → 그 파일의 카드로 data/cache/seen-urls.json 갱신
  *      검색형 소스(M1-06): configs/search-queries.json의 활성 쿼리만 계획한다. 어댑터(M1-07)가 보류라 실행하지 않는다 —
  *      활성 쿼리 0개면 `collect.search.skip` 한 줄, 있으면 소스마다 경고 후 건너뛴다. 검색 설정 오류도 피드 수집을 멈추지 않는다.
@@ -54,8 +57,9 @@
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
- * 다음 작업이 갈아끼울 자리: 점수화(M1-14 — 클러스터 `publishers` 수·소스 메타) · 대표 선정(M1-15) · 카드 ID(M1-16 — 정규화 URL 해시) ·
- * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
+ * 다음 작업이 갈아끼울 자리: 대표 선정(M1-15) · 카드 ID(M1-16 — 정규화 URL 해시) · 분류(M1-17 — 선별 점수 → 중요도, 팀→리그
+ * 대회 근거를 점수화 `comps`로) · 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
+ * 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
  */
 import { mkdir, writeFile } from "node:fs/promises";
@@ -64,8 +68,10 @@ import path from "node:path";
 import {
   CompetitionsFileSchema,
   KoreanPlayersFileSchema,
+  NamesKoFileSchema,
   type AfPendingEntry,
   type CompetitionsFile,
+  type FeedItem,
   type LedgerMatch,
   type NewsCard,
   type NewsFile,
@@ -129,6 +135,7 @@ import { dedupeFeedItems } from "./dedup";
 import {
   applyCollectWindow,
   ceilMinutes,
+  clampedItemKey,
   planCollectWindow,
   windowLogFields,
   type CollectWindow,
@@ -186,7 +193,6 @@ import {
 import {
   buildClusterCard,
   groupCardSource,
-  latestItem,
   planNewsClusters,
   singletonClusters,
   type ClusterFn,
@@ -199,10 +205,14 @@ import {
   type CardAttachment,
   newsFilePath,
   readNewsFile,
-  selectLatest,
   serializeNewsFile,
   writeNewsFile,
 } from "./news-file";
+import {
+  buildKeywordIndex,
+  isKoLang,
+  type KeywordIndex,
+} from "./news-keywords";
 import {
   createApiFootballClient,
   type AfRateHeaders,
@@ -214,6 +224,16 @@ import {
   type FootballDataBriefData,
 } from "./providers/football-data";
 import type { FetchLike } from "./rss";
+import {
+  NEUTRAL_TRANSFER_BOOST,
+  planSlots,
+  roundScore,
+  scoreCluster,
+  selectTopScored,
+  selectWithQuota,
+  type Scored,
+  type SlotPlan,
+} from "./score";
 import {
   buildSeenIndex,
   buildSeenUrlsFile,
@@ -259,10 +279,7 @@ import {
 
 // ─── 설정 ────────────────────────────────────────────────────────────────
 
-/** M1-01 슬라이스 기본 카드 수(`--limit` 미지정). M1-14 선별이 들어오면 MAX_ITEMS_PER_RUN(45)으로 돌아간다 */
-export const SLICE_DEFAULT_LIMIT = 5;
-
-/** `MAX_ITEMS_PER_RUN` 기본값(일일 카드 선별 상한, CLAUDE.md §10) */
+/** `MAX_ITEMS_PER_RUN` 기본값(일일 카드 선별 상한, CLAUDE.md §10 · PRD FR-06) */
 export const DEFAULT_MAX_ITEMS_PER_RUN = 45;
 
 /** 실행 환경 — Actions(GITHUB_ACTIONS=true)면 prod(runs.json), 그 밖(로컬)은 dev(runs-dev.json) */
@@ -284,12 +301,16 @@ export function resolveMaxItems(raw: string | undefined): number {
   return Number(value);
 }
 
-/** 이번 실행의 카드 상한 — `--limit`(없으면 슬라이스 기본 5), MAX_ITEMS_PER_RUN을 넘지 않는다 */
+/**
+ * 이번 실행의 카드 상한 — `--limit`(소량 실행)이 있으면 그 값, 없으면 MAX_ITEMS_PER_RUN. 어느 쪽이든 MAX_ITEMS_PER_RUN을 넘지
+ * 않는다(M1-14 — M1-01 슬라이스 기본 5건 폐지). 그날 파일 기준이다 — 새 카드 자리는 이 값에서 오늘 파일의 기존 카드 수를 뺀
+ * 만큼(PRD §15 D44, score.ts `planSlots`).
+ */
 export function resolveCardLimit(
   argLimit: number | null,
   maxItems: number,
 ): number {
-  return Math.min(argLimit ?? SLICE_DEFAULT_LIMIT, maxItems);
+  return Math.min(argLimit ?? maxItems, maxItems);
 }
 
 // ─── 의존성·결과 ─────────────────────────────────────────────────────────
@@ -520,9 +541,36 @@ export interface NewsOutcome {
   cluster: ClusterPlanStats | null;
   /** 클러스터링 예상 밖 오류(클러스터 없이 발행 — 실행 상태 partial) */
   clusterError: string | null;
+  /** 점수화 선별 집계(M1-14, FR-06 — score.ts) — 선별까지 가지 않았으면 null */
+  score: ScoreOutcome | null;
   /** `data/cache/seen-urls.json`(M1-12) — 선별까지 가지 않았으면 null */
   seen: SeenOutcome | null;
   error?: string;
+}
+
+/** 점수화 선별 집계 (M1-14·D44 — 로그 `collect.select.done`과 같은 값) */
+export interface ScoreOutcome {
+  /** 줄 세운 후보 = 새 클러스터 수(오늘 카드 클러스터는 출처만 붙고 후보가 아니다) */
+  candidates: number;
+  /** 오늘 파일의 기존 카드 수 */
+  existingCards: number;
+  /** 새 카드 자리 = max(0, 상한 − 기존 카드 수) — 그날 파일 기준(D44) */
+  slots: number;
+  /** 이번 실행의 국내 몫(하루 몫 − 기존 국내 카드, 자리 이하) */
+  domesticQuota: number;
+  /** 자리에 든 클러스터 수 */
+  ranked: number;
+  /** 그중 국내 몫 때문에 들어간 수(순수 점수 순이면 자리 밖) */
+  domesticByQuota: number;
+  /** 이적 창 배수(FR-105 — 지금은 항상 중립 1) */
+  transferBoost: number;
+  /** 자리에 든 최고·최저 점수(반올림) — 없으면 null. 국내 몫 때문에 최저가 firstOut보다 낮을 수 있다 */
+  top: number | null;
+  cutoff: number | null;
+  /** 자리 밖으로 밀린 후보 중 최고 점수(반올림) — 없으면 null */
+  firstOut: number | null;
+  /** 키워드 설정(names.ko.json·korean-players.json) 읽기 오류 — 코드 표(빅클럽·대회·이적)만으로 점수화했다 */
+  keywordsError: string | null;
 }
 
 /** 중복 제거 집계 (M1-12) */
@@ -829,6 +877,7 @@ async function runNewsStage(
     dedup: null,
     cluster: null,
     clusterError: null,
+    score: null,
     seen: null,
   };
 
@@ -972,29 +1021,60 @@ async function runNewsStage(
       clusters.stats.seenBeforeGroups + clusters.stats.existingSeenBefore,
   };
 
-  // 선별(슬라이스): 새 클러스터 + 후보가 있는 오늘 카드 클러스터를 가장 최근 구성 기사 순으로 상위 N — 오늘 카드는 자리만
-  // 차지한다(같은 날 재실행 파일 팽창 방지, M1-12). 오늘 카드의 새 출처는 순위와 무관하게 붙인다(카드 수가 늘지 않는다).
+  // 선별(M1-14, FR-06 — score.ts): 새 클러스터를 점수 순으로 줄 세우고, 일일 상한은 그날 파일 기준(D44) — 새 카드 자리 =
+  // max(0, 상한 − 오늘 파일 카드 수). 기존 카드가 수집 창 밖이어도 파일 카드로 세므로 같은 날 재실행이 파일을 상한 너머로 키우지
+  // 않는다. 그 자리 안에서 국내(ko) 몫(하루 상한의 1/3 − 기존 국내 카드)을 국내 점수 순으로 먼저 채우고 나머지는 전체 점수 순
+  // (국내 후보가 모자라면 해외로). 오늘 카드의 새 출처는 자리와 무관하게 붙인다(카드 수가 늘지 않는다). 점수가 같으면 클러스터
+  // 첫 묶음의 입력 순서(설정 순서 — 결정적). 수집 시각으로 낮춘 기사(창 단계 clampedKeys)는 최신성을 믿지 않는다. 이적 창 배수는
+  // 중립(FR-105 — M4-03이 연결).
   // 카드 = 대표 묶음(지금은 클러스터의 첫 묶음 — M1-15) + 나머지 묶음의 출처, 카드 소스 = 대표 소스 + 클러스터 대회 합집합.
-  // 클러스터 최고 tier·최대 weight·보도 매체 수는 점수화(M1-14) 입력 — 카드에는 쓰지 않는다.
+  // 선별 점수는 카드 생성(분류 — M1-17 중요도)까지 넘긴다. 카드·파일에는 저장하지 않는다.
+  const keywordLoad = await loadKeywordIndex(deps);
+  const scoreCtx = {
+    now: window.now,
+    sourceById,
+    keywords: keywordLoad.index,
+    isClamped: (item: FeedItem) =>
+      windowed.clampedKeys.has(clampedItemKey(item)),
+    transferBoost: NEUTRAL_TRANSFER_BOOST,
+  };
   const order = new Map(deduped.groups.map((g, i) => [g.key, i] as const));
   const firstIndex = (c: NewsCluster) =>
     Math.min(...c.members.map((g) => order.get(g.key) ?? 0));
-  const ranked = selectLatest(
-    [
-      ...clusters.fresh.map((cluster) => ({ cluster, cardId: null })),
-      ...clusters.existing.map((cluster) => ({
-        cluster,
-        cardId: cluster.cardId,
-      })),
-    ]
-      .sort((a, b) => firstIndex(a.cluster) - firstIndex(b.cluster))
-      .map((entry) => ({ ...entry, item: latestItem(entry.cluster) })),
-    deps.limit,
+  const todayCards = existing?.cards ?? [];
+  const slotPlan = planSlots({
+    limit: deps.limit,
+    existingCards: todayCards.length,
+    existingDomestic: todayCards.filter((c) => isKoLang(c.lang)).length,
+  });
+  const candidates = [...clusters.fresh].sort(
+    (a, b) => firstIndex(a) - firstIndex(b),
   );
-  const cards = ranked.flatMap(({ cluster, cardId }) => {
-    if (cardId !== null) return [];
-    const card = buildClusterCard(cluster, sourceById, ctx.startedAt);
+  const byScore = selectTopScored(
+    candidates,
+    (cluster) => scoreCluster(cluster, scoreCtx),
+    candidates.length,
+  );
+  const quotaPick = selectWithQuota(byScore, {
+    slots: slotPlan.slots,
+    quota: slotPlan.domesticQuota,
+    inQuota: isDomesticCluster,
+  });
+  const ranked = quotaPick.selected;
+  const cards = ranked.flatMap(({ entry, score }) => {
+    const card = buildClusterCard(entry, sourceById, ctx.startedAt, {
+      score,
+    });
     return card ? [card] : [];
+  });
+  const scoreOutcome = summarizeScores({
+    byScore,
+    ranked,
+    slotPlan,
+    existingCards: todayCards.length,
+    domesticByQuota: quotaPick.byQuota,
+    transferBoost: scoreCtx.transferBoost,
+    keywordsError: keywordLoad.error,
   });
   const attachments: CardAttachment[] = clusters.existing.map((c) => ({
     id: c.cardId,
@@ -1021,8 +1101,19 @@ async function runNewsStage(
     seenBeforeClusters: clusters.stats.seenBefore,
     seenBeforeExtra: clusters.stats.seenBeforeExtra,
     existingSeenBefore: clusters.stats.existingSeenBefore,
+    candidates: scoreOutcome.candidates,
+    existingCards: scoreOutcome.existingCards,
+    slots: scoreOutcome.slots,
+    ranked: scoreOutcome.ranked,
     selected: cards.length,
     limit: deps.limit,
+    scoreTop: scoreOutcome.top,
+    scoreCutoff: scoreOutcome.cutoff,
+    scoreFirstOut: scoreOutcome.firstOut,
+    transferBoost: scoreOutcome.transferBoost,
+    // 자리에 든 클러스터의 구성·점수 근거 수 — 국내(ko)와 국내 몫(koQuota)·몫 때문에 든 수(koByQuota), 키워드, 범위 근거 없음
+    // (감점), 낮춘 시각(최신성 불신)
+    selectedMix: selectedMix(ranked, scoreOutcome),
     failedSources: failed.length,
   });
 
@@ -1042,6 +1133,7 @@ async function runNewsStage(
           dedup,
           cluster: clusters.stats,
           clusterError,
+          score: scoreOutcome,
           seen,
         },
         ...stage,
@@ -1086,6 +1178,7 @@ async function runNewsStage(
         dedup,
         cluster: clusters.stats,
         clusterError,
+        score: scoreOutcome,
         seen,
       },
       ...stage,
@@ -1103,12 +1196,96 @@ async function runNewsStage(
         dedup,
         cluster: clusters.stats,
         clusterError,
+        score: scoreOutcome,
         seen,
         error: errorText(error),
       },
       ...stage,
     };
   }
+}
+
+// ─── ①-a 점수화 선별 도우미 (M1-14 — scripts/lib/score.ts) ────────────────
+
+/**
+ * 점수화 키워드 색인 — configs/names.ko.json·korean-players.json(news-keywords.ts). 읽기·형식 오류는 경고만 하고 코드 표
+ * (빅클럽·대회·이적)만으로 점수화한다 — 발행은 계속하고, 설정 오류 자체는 같은 실행의 검증 게이트(`npm run validate`)가 잡아
+ * 커밋되지 않는다.
+ */
+async function loadKeywordIndex(
+  deps: Pick<CollectDeps, "rootDir" | "logger">,
+): Promise<{ index: KeywordIndex; error: string | null }> {
+  try {
+    const [names, koreanPlayers] = await Promise.all([
+      readConfigFile(deps.rootDir, "names.ko.json", NamesKoFileSchema),
+      readConfigFile(
+        deps.rootDir,
+        "korean-players.json",
+        KoreanPlayersFileSchema,
+      ),
+    ]);
+    return { index: buildKeywordIndex({ names, koreanPlayers }), error: null };
+  } catch (error) {
+    deps.logger.warn("collect.score.keywords", { error: errorText(error) });
+    return { index: buildKeywordIndex({}), error: errorText(error) };
+  }
+}
+
+/** 국내 클러스터인가 — 대표 기사 언어(국내·해외는 한 클러스터가 되지 않는다 — D30) */
+function isDomesticCluster(cluster: NewsCluster): boolean {
+  return isKoLang(cluster.members[0]?.item.lang ?? "");
+}
+
+type ScoredCluster = Scored<NewsCluster>;
+
+/** 점수화 선별 집계 — `byScore` = 후보 전체(점수 순), `ranked` = 그중 자리에 든 것(점수 순) */
+function summarizeScores(input: {
+  byScore: readonly ScoredCluster[];
+  ranked: readonly ScoredCluster[];
+  slotPlan: SlotPlan;
+  existingCards: number;
+  domesticByQuota: number;
+  transferBoost: number;
+  keywordsError: string | null;
+}): ScoreOutcome {
+  const { byScore, ranked } = input;
+  const rounded = (value: number | undefined) =>
+    value === undefined ? null : roundScore(value);
+  const inRanked = new Set(ranked.map((r) => r.entry));
+  return {
+    candidates: byScore.length,
+    existingCards: input.existingCards,
+    slots: input.slotPlan.slots,
+    domesticQuota: input.slotPlan.domesticQuota,
+    ranked: ranked.length,
+    domesticByQuota: input.domesticByQuota,
+    transferBoost: input.transferBoost,
+    top: rounded(ranked.at(0)?.score.score),
+    cutoff: rounded(ranked.at(-1)?.score.score),
+    firstOut: rounded(byScore.find((r) => !inRanked.has(r.entry))?.score.score),
+    keywordsError: input.keywordsError,
+  };
+}
+
+/** 자리에 든 클러스터의 구성·점수 근거 수(로그 — 관찰 주간 M1-43 검수용, 제목은 남기지 않는다) */
+function selectedMix(
+  ranked: readonly ScoredCluster[],
+  outcome: Pick<ScoreOutcome, "domesticQuota" | "domesticByQuota">,
+) {
+  const count = (pred: (r: ScoredCluster) => boolean) =>
+    ranked.filter(pred).length;
+  return {
+    ko: count((r) => isDomesticCluster(r.entry)),
+    koQuota: outcome.domesticQuota,
+    koByQuota: outcome.domesticByQuota,
+    korean: count((r) => r.score.signals.koreanPlayers.length > 0),
+    bigClub: count((r) => r.score.signals.bigClubs.length > 0),
+    ucl: count((r) => r.score.signals.comps.includes("UCL")),
+    transfer: count((r) => r.score.signals.transfer),
+    multiPublisher: count((r) => r.score.signals.publishers > 1),
+    noScope: count((r) => r.score.factors.scope < 1),
+    clamped: count((r) => r.score.signals.clamped),
+  };
 }
 
 // ─── ①-b 이미 카드가 된 URL 기억 (M1-12 — scripts/lib/seen-urls.ts) ────────

@@ -53,7 +53,6 @@ import {
   runCollect,
   runStatus,
   shouldRecordRun,
-  SLICE_DEFAULT_LIMIT,
   type BriefOutcome,
   type CollectDeps,
 } from "../scripts/lib/collect-run";
@@ -65,12 +64,14 @@ import {
   type MessageParams,
 } from "../scripts/lib/llm";
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
+import { toCluster } from "../scripts/lib/news-cluster";
 import {
   buildCard,
   mergeCards,
   publisherNameOf,
-  selectLatest,
+  sortCards,
 } from "../scripts/lib/news-file";
+import { buildKeywordIndex } from "../scripts/lib/news-keywords";
 import {
   cleanTitle,
   decodeEntities,
@@ -92,6 +93,7 @@ import {
   parseFeedXml,
   type FetchLike,
 } from "../scripts/lib/rss";
+import { scoreCluster, selectTopScored } from "../scripts/lib/score";
 import { readValidationSnapshot } from "../scripts/lib/validate-fs";
 import {
   buildValidationReport,
@@ -207,7 +209,7 @@ function makeDeps(over: Partial<CollectDeps> = {}) {
     env: "dev",
     llmMode: "mock",
     dry: false,
-    limit: SLICE_DEFAULT_LIMIT,
+    limit: 5, // 소량 실행(--limit 5) — 피드 6건 중 5건이 남는 상한
     loadSources: async () => [BBC_SOURCE],
     now: () => NOW,
     fetch: fetcher.fetch,
@@ -527,7 +529,7 @@ describe("news-file.ts — 카드·선별·병합", () => {
     expect(card.transfer).toBeUndefined();
   });
 
-  it("선별: 같은 링크는 한 번만(중복 제거 dedupeFeedItems — M1-12), 최신순 상위 N건", () => {
+  it("선별: 같은 링크는 한 번만(중복 제거 dedupeFeedItems — M1-12), 점수 상위 N건(M1-14 — 같은 소스·키워드 없음이면 최신성 순)", () => {
     const items = [
       item("https://e.com/1", "2026-10-10T10:00:00.000Z"),
       item("https://e.com/2", "2026-10-10T12:00:00.000Z"),
@@ -535,18 +537,26 @@ describe("news-file.ts — 카드·선별·병합", () => {
       item("https://e.com/3", "2026-10-10T11:00:00.000Z"),
     ];
     const { groups } = dedupeFeedItems(items);
-    expect(selectLatest(groups, 2).map((g) => g.item.url)).toEqual([
-      "https://e.com/2",
-      "https://e.com/3",
-    ]);
-    expect(selectLatest(groups, 10)).toHaveLength(3);
-    // 먼저 나온 항목(10:00)이 대표 — 뒤에 나온 같은 링크(13:00)가 최신순 맨 앞을 차지하지 않는다
-    expect(selectLatest(groups, 10).map((g) => g.item.url)).toEqual([
+    const sourceById = new Map([[BBC_SOURCE.id, BBC_SOURCE] as const]);
+    const ctx = {
+      now: "2026-10-10T21:30:00.000Z",
+      sourceById,
+      keywords: buildKeywordIndex({}),
+    };
+    const top = (limit: number) =>
+      selectTopScored(
+        groups.map((g) => toCluster([g], sourceById)),
+        (c) => scoreCluster(c, ctx),
+        limit,
+      ).map(({ entry }) => entry.members[0]!.item.url);
+    expect(top(2)).toEqual(["https://e.com/2", "https://e.com/3"]);
+    // 먼저 나온 항목(10:00)이 대표 — 뒤에 나온 같은 링크(13:00)가 최신성으로 맨 앞을 차지하지 않는다
+    expect(top(10)).toEqual([
       "https://e.com/2",
       "https://e.com/3",
       "https://e.com/1",
     ]);
-    expect(selectLatest(groups, 0)).toEqual([]);
+    expect(top(0)).toEqual([]);
   });
 
   it("병합: 원문 링크가 추적 파라미터만 달라 ID가 다른 같은 기사도 두 번 들어가지 않는다(정규화 URL — M1-12)", () => {
@@ -589,6 +599,34 @@ describe("news-file.ts — 카드·선별·병합", () => {
     expect(result.duplicates).toBe(1);
     expect(result.cards.map((c) => c.id)).toEqual([b.id, a.id]); // 최신 출처 시각 순
     expect(result.cards.find((c) => c.id === a.id)).toEqual(a); // 기존 카드 유지
+  });
+
+  it("파일 순서 = 화면 순서: 중요도(imp) 내림차순 → 최신 출처 시각 내림차순 → ID(M1-14 — PRD §4.2 '중요도·시각 순')", () => {
+    const card = (url: string, at: string, imp: number) => ({
+      ...buildCard(item(url, at), BBC_SOURCE, "2026-10-10T21:00:00.000Z"),
+      imp,
+    });
+    const oldHigh = card(
+      "https://e.com/old-high",
+      "2026-10-10T08:00:00.000Z",
+      5,
+    );
+    const newLow = card("https://e.com/new-low", "2026-10-10T20:00:00.000Z", 2);
+    const midA = card("https://e.com/mid-a", "2026-10-10T12:00:00.000Z", 3);
+    const midB = card("https://e.com/mid-b", "2026-10-10T15:00:00.000Z", 3);
+    const sameTime = card("https://e.com/mid-c", "2026-10-10T15:00:00.000Z", 3);
+    const sorted = sortCards([newLow, midA, sameTime, oldHigh, midB]);
+    const tie = [midB, sameTime].sort((x, y) => (x.id < y.id ? -1 : 1));
+    expect(sorted.map((c) => c.id)).toEqual([
+      oldHigh.id,
+      ...tie.map((c) => c.id),
+      midA.id,
+      newLow.id,
+    ]);
+    // 같은 날 재실행 병합도 같은 규칙(기존 카드·새 카드 구분 없이)
+    expect(
+      mergeCards([newLow, midA], [oldHigh]).cards.map((c) => c.id),
+    ).toEqual([oldHigh.id, midA.id, newLow.id]);
   });
 });
 
@@ -860,6 +898,18 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
       "Bayern strike late to avoid shock defeat at Augsburg",
     );
     expect(records.some((r) => r.event === "collect.news.write")).toBe(true);
+    // 국내 몫(floor(5/3) = 1)이 있어도 국내 후보가 없으면 해외로 채운다(D44)
+    expect(outcome.news.score).toMatchObject({
+      slots: 5,
+      domesticQuota: 1,
+      ranked: 5,
+      domesticByQuota: 0,
+    });
+    expect(
+      records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({
+      selectedMix: expect.objectContaining({ ko: 0, koQuota: 1 }),
+    });
   });
 
   it("같은 날 다시 실행해도 앞선 카드를 잃지 않고 ID가 겹치지 않는다(새 카드가 없으면 파일을 다시 쓰지 않음)", async () => {
@@ -880,6 +930,8 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
       expect(after2.cards.find((c) => c.id === old.id)).toEqual(old); // created 유지
     }
     expect(run2.news.added).toBe(3);
+    // 그날 파일 기준 상한(D44): 새 자리 = 5 − 기존 2
+    expect(run2.news.score).toMatchObject({ existingCards: 2, slots: 3 });
 
     const filePath = path.join(dataDir, "news", "2026-10-11.json");
     const mtime = statSync(filePath).mtimeMs;
@@ -887,11 +939,41 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
     const third = makeDeps({ limit: 5, now: () => later });
     const run3 = await runCollect(third.deps);
     expect(run3.news.added).toBe(0);
+    expect(run3.news.score).toMatchObject({ existingCards: 5, slots: 0 });
     expect(readFileSync(filePath, "utf8")).toBe(before);
     expect(statSync(filePath).mtimeMs).toBe(mtime);
     expect(
       third.records.some((r) => r.event === "collect.news.unchanged"),
     ).toBe(true);
+  });
+
+  it("키워드 설정(names.ko.json·korean-players.json)을 읽지 못해도 경고만 하고 코드 표로 점수화해 발행한다(M1-14)", async () => {
+    const emptyRoot = mkdtempSync(
+      path.join(os.tmpdir(), "euro-digest-noconf-"),
+    );
+    try {
+      const { deps, records } = makeDeps({
+        rootDir: emptyRoot, // configs/ 없음
+        footballDataApiKey: undefined, // 브리핑(프롬프트 파일)도 rootDir를 읽으므로 뺀다
+      });
+      const outcome = await runCollect(deps);
+      expect(outcome.exitCode).toBe(0);
+      expect(readNews("2026-10-11").cards).toHaveLength(5);
+      expect(outcome.news.score?.keywordsError).toMatch(
+        /names\.ko\.json|korean-players\.json/,
+      );
+      expect(
+        records.find((r) => r.event === "collect.score.keywords"),
+      ).toMatchObject({ level: "warn" });
+      // 빅클럽은 코드 표라 그대로 잡힌다(Spurs·Man Utd·Bayern·AC Milan)
+      expect(
+        records.find((r) => r.event === "collect.select.done"),
+      ).toMatchObject({
+        selectedMix: expect.objectContaining({ korean: 0, bigClub: 4 }),
+      });
+    } finally {
+      rmSync(emptyRoot, { recursive: true, force: true });
+    }
   });
 
   it("200자 초과 원제목은 카드로 만들지 않고 로그에 남긴다", async () => {
@@ -1343,8 +1425,9 @@ describe("collect-run.ts — 설정 해석", () => {
     expect(resolveRunEnv({ GITHUB_ACTIONS: "false" })).toBe("dev");
   });
 
-  it("카드 상한: --limit(없으면 슬라이스 기본 5), MAX_ITEMS_PER_RUN을 넘지 않음", () => {
-    expect(resolveCardLimit(null, 45)).toBe(5);
+  it("카드 상한: --limit(없으면 MAX_ITEMS_PER_RUN — M1-14, 슬라이스 기본 5건 폐지), MAX_ITEMS_PER_RUN을 넘지 않음", () => {
+    expect(resolveCardLimit(null, 45)).toBe(45);
+    expect(resolveCardLimit(null, 30)).toBe(30);
     expect(resolveCardLimit(10, 45)).toBe(10);
     expect(resolveCardLimit(100, 45)).toBe(45);
     expect(resolveMaxItems(undefined)).toBe(45);

@@ -4,11 +4,15 @@
  * - 카드: 해외·국내 모두 원제목+링크(`ai:false`, `s:[]`). 제목·링크는 normalize.ts가 정리한 원문 그대로 넣는다.
  * - 카드 출처(`src`): 같은 사건 클러스터(news-cluster.ts, M1-13)의 묶음마다 1건 — 대표 묶음이 먼저, 나머지는 입력 순서.
  *   같은 매체의 다른 기사(BBC 경기 기사+영상)도 각각 1건이다('+N곳'은 매체명 수로 센다 — M1-31).
- * - 선별(슬라이스): 클러스터를 가장 최근 구성 기사 시각 순으로 상위 N건. M1-14(점수화)가 대체한다.
+ * - 선별: 점수화(score.ts, M1-14 — FR-06) 상위 `MAX_ITEMS_PER_RUN`. 선별 점수는 카드 생성(`buildCard`의 `signals`)까지
+ *   넘어가 분류(classify.ts — M1-17 중요도 `imp`)가 쓴다. 카드·파일에는 점수를 저장하지 않는다(스키마 변경 없음).
  * - 병합: 같은 KST 발행일 파일이 이미 있으면 기존 카드를 그대로 두고(id·created 유지) 새 카드만 더한다 → 다시 실행해도
  *   앞선 카드를 잃지 않고 같은 카드(같은 ID 또는 같은 정규화 URL)가 두 번 들어가지 않는다. 기존 카드와 같은 사건의
  *   새 기사는 새 카드가 아니라 그 카드의 출처로 붙는다(`attachments`, 그리고 출처 URL이 겹치는 새 카드의 나머지 출처 —
- *   M1-13). 정렬은 최신 출처 시각 내림차순(같으면 ID). 다른 날짜 파일과의 중복은 seen-urls.ts·news-cluster.ts가 막는다.
+ *   M1-13). 다른 날짜 파일과의 중복은 seen-urls.ts·news-cluster.ts가 막는다.
+ * - **파일 순서 = 화면 표시 순서**(화면은 파일 순서 그대로 그린다 — M1-01 이월): 중요도(`imp`) 내림차순 → 최신 출처 시각
+ *   내림차순 → ID(PRD §4.2-6 '중요도·시각 순', D0 시안 = imp 내림차순). 점수가 아니라 카드에 저장된 `imp`로 정렬해 같은 날
+ *   재실행으로 기존 카드와 새 카드를 합쳐도 순서 규칙이 하나다. M1-17 전에는 모든 카드가 기본 imp(3)라 시각 순과 같다.
  * - 쓰기: `NewsFileSchema`로 검증한 뒤 임시 파일 → rename(원자적). 기존 파일이 스키마에 맞지 않으면 덮어쓰지 않고 던진다.
  *
  * 순수 함수 + 얇은 fs 함수. 파일 경로는 dataDir을 받아 테스트가 임시 폴더를 쓴다.
@@ -27,7 +31,7 @@ import {
 } from "@/lib/schema";
 
 import { cardIdFor } from "./card-id";
-import { classifyMinimal } from "./classify";
+import { classifyMinimal, type CardSignals } from "./classify";
 import { urlHash } from "./url-normalize";
 
 // ─── 카드 ────────────────────────────────────────────────────────────────
@@ -44,18 +48,20 @@ export function publisherNameOf(source: Pick<Source, "name">): string {
 /**
  * 피드 항목 1건(대표) → 원제목 카드(분류는 최소 규칙). created = 이번 실행 시각(UTC ISO).
  * `more` = 같은 사건 클러스터의 나머지 출처(M1-13) — 대표 출처 뒤에 그대로 붙는다.
+ * `signals` = 선별 단계 신호(M1-14 점수 — 분류 규칙 M1-17이 중요도에 쓴다). 없으면 null.
  */
 export function buildCard(
   item: FeedItem,
   source: Source,
   created: string,
   more: readonly CardSource[] = [],
+  signals: CardSignals | null = null,
 ): NewsCard {
   return {
     id: cardIdFor(item.url),
     t: item.title,
     s: [],
-    ...classifyMinimal(item, source),
+    ...classifyMinimal(item, source, signals),
     src: [
       {
         n: publisherNameOf(source),
@@ -71,25 +77,6 @@ export function buildCard(
   };
 }
 
-/**
- * 슬라이스 선별 — 항목(`item`)의 발행 시각 내림차순(같으면 입력 순서) → 상위 limit건. 수집 실행은 같은 사건 클러스터
- * (news-cluster.ts — 가장 최근 구성 기사 `latestItem`)를 넘긴다. 점수화(M1-14)가 이 자리를 대체한다.
- */
-export function selectLatest<T extends { item: FeedItem }>(
-  entries: readonly T[],
-  limit: number,
-): T[] {
-  return entries
-    .map((entry, index) => ({ entry, index }))
-    .sort(
-      (a, b) =>
-        Date.parse(b.entry.item.publishedAt) -
-          Date.parse(a.entry.item.publishedAt) || a.index - b.index,
-    )
-    .slice(0, Math.max(0, limit))
-    .map(({ entry }) => entry);
-}
-
 // ─── 병합 ────────────────────────────────────────────────────────────────
 
 /** 카드의 가장 최근 출처 시각(ms) — 정렬 키 */
@@ -97,10 +84,11 @@ function newestSourceMs(card: NewsCard): number {
   return Math.max(...card.src.map((s) => Date.parse(s.at)));
 }
 
-/** 표시 순서: 최신 출처 시각 내림차순, 같으면 ID 오름차순(결정적) */
+/** 표시 순서(= 파일 순서): 중요도 내림차순 → 최신 출처 시각 내림차순 → ID 오름차순(결정적) — 머리 주석 */
 export function sortCards(cards: readonly NewsCard[]): NewsCard[] {
   return [...cards].sort(
     (a, b) =>
+      b.imp - a.imp ||
       newestSourceMs(b) - newestSourceMs(a) ||
       (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
   );

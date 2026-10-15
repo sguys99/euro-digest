@@ -28,11 +28,12 @@ import {
   clusterPublishers,
   clusterSourceMeta,
   groupCardSource,
-  latestItem,
   planNewsClusters,
   toCluster,
 } from "../scripts/lib/news-cluster";
 import { buildCard, mergeCards } from "../scripts/lib/news-file";
+import { buildKeywordIndex } from "../scripts/lib/news-keywords";
+import { scoreCluster } from "../scripts/lib/score";
 import { buildSeenIndex } from "../scripts/lib/seen-urls";
 import { urlHash } from "../scripts/lib/url-normalize";
 
@@ -395,6 +396,26 @@ describe("클러스터 카드 — 대표 원문 무수정, 출처는 묶음마�
     expect(ko.src.map((s) => s.n)).toEqual(["인터풋볼", "풋볼리스트"]);
   });
 
+  it("buildClusterCard: 선별 점수(M1-14)는 분류로 넘기기만 하고 카드에 저장하지 않는다(스키마 변경 없음 — 중요도 구간은 M1-17)", () => {
+    const plan = planNewsClusters({
+      groups: groupsOf(dayItems()),
+      sourceById: SOURCE_BY_ID,
+      index: NO_MEMORY,
+      todayCards: [],
+    });
+    const cluster = plan.fresh[0]!;
+    const score = scoreCluster(cluster, {
+      now: NOW,
+      sourceById: SOURCE_BY_ID,
+      keywords: buildKeywordIndex({}),
+    });
+    expect(score.score).toBeGreaterThan(0);
+    const withScore = buildClusterCard(cluster, SOURCE_BY_ID, NOW, { score })!;
+    expect(withScore).toEqual(buildClusterCard(cluster, SOURCE_BY_ID, NOW));
+    expect(Object.keys(withScore)).not.toContain("score");
+    expect(withScore.imp).toBe(3); // 기본 중요도 — 점수 구간은 M1-17
+  });
+
   it("clusterSourceMeta: 카드 소스 = 대표 소스 + 대회 합집합, 점수화 입력 = 클러스터 최고 tier·최대 weight·최단 보존", () => {
     const cluster = toCluster(
       groupsOf([
@@ -452,16 +473,6 @@ describe("클러스터 카드 — 대표 원문 무수정, 출처는 묶음마�
       NOW,
     )!;
     expect(card.src.map((s) => s.u)).toEqual([ESPN_B]);
-  });
-
-  it("latestItem: 가장 최근 발행 기사(같으면 앞 묶음)", () => {
-    const groups = groupsOf([
-      item("bbc-sport-football", BBC_A, HAALAND_EN, 0),
-      item("espn-soccer", ESPN_B, HAALAND_EN2, 1),
-      item("bbc-sport-football", BBC_C, CHELSEA, 1),
-    ]);
-    expect(latestItem({ members: groups }).url).toBe(ESPN_B);
-    expect(() => latestItem({ members: [] })).toThrow();
   });
 });
 

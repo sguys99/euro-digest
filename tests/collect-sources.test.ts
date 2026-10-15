@@ -19,7 +19,14 @@
  * Athletic 항목은 합성 제목·링크, D32·D42)
  * → 카드 = 클러스터. 유사도·계획 자체는 tests/cluster.test.ts·tests/news-cluster.test.ts.
  */
-import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -29,6 +36,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   NewsFileSchema,
   RunsDevFileSchema,
+  type NewsCard,
   type NewsFile,
   type Source,
 } from "@/lib/schema";
@@ -45,6 +53,12 @@ import {
 } from "../scripts/lib/llm";
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
 import { hostKey, type FeedClock } from "../scripts/lib/feed-collect";
+import {
+  buildCard,
+  buildNewsFile,
+  newsFilePath,
+  serializeNewsFile,
+} from "../scripts/lib/news-file";
 import { FOOTBALL_DATA_BASE_URL } from "../scripts/lib/providers/football-data";
 import {
   feedUserAgent,
@@ -390,7 +404,7 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     expect(outcome.news.excluded).toEqual(PLAN.excluded);
   });
 
-  it("카드 상한(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 창 안 64건(M1-10) → 고유 링크 52건 → 클러스터 45개(M1-13) → 최신순 상위 N장", async () => {
+  it("카드 상한(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 창 안 64건(M1-10) → 고유 링크 52건 → 클러스터 45개(M1-13) → 점수 상위 N장(M1-14)", async () => {
     const { deps, records } = makeDeps({ limit: 40 });
     const outcome = await runCollect(deps);
     const file = readNews("2026-10-11");
@@ -411,8 +425,26 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       seenBeforeExtra: 0,
       selected: 40,
       limit: 40,
+      candidates: 45,
+      existingCards: 0,
+      slots: 40,
+      ranked: 40,
+      // 국내 몫 13 = floor(40 / 3) — 점수 순 상위 40에 국내 13장이 이미 있어 몫이 자리를 바꾸지 않는다
+      selectedMix: expect.objectContaining({
+        ko: 13,
+        koQuota: 13,
+        koByQuota: 0,
+      }),
     });
-    // 파일 순서 = 카드의 가장 최근 출처 시각 내림차순(sortCards — 클러스터 카드는 대표 출처보다 늦은 출처가 있을 수 있다)
+    // 밀려난 5장 = 점수 하위 — 범위 근거 없는 K리그 기사 2건(충북청주·천안)·오래된(40시간+) 기사 3건
+    const titles = file.cards.map((c) => c.t);
+    expect(titles.some((t) => t.includes("충북청주"))).toBe(false);
+    expect(titles.some((t) => t.includes("천안"))).toBe(false);
+    expect(titles.some((t) => t.startsWith("Pochettino's youngsters"))).toBe(
+      false,
+    );
+    // 파일 순서 = 카드의 가장 최근 출처 시각 내림차순(sortCards — 중요도가 모두 같을 때. 클러스터 카드는 대표 출처보다 늦은 출처가
+    // 있을 수 있다)
     const times = file.cards.map((c) =>
       Math.max(...c.src.map((s) => Date.parse(s.at))),
     );
@@ -548,14 +580,215 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     });
   });
 
-  it("카드 상한(슬라이스 기본 5)은 소스를 합친 뒤 최신순으로 적용한다", async () => {
-    const { deps } = makeDeps({ limit: 5 });
+  it("카드 상한(--limit 5)은 소스를 합친 뒤 점수 순으로 적용한다(M1-14, FR-06) — 빅클럽·등록 한국 선수·보도 매체 수가 위로", async () => {
+    const { deps, records } = makeDeps({ limit: 5 });
     const outcome = await runCollect(deps);
     const file = readNews("2026-10-11");
     expect(file.cards).toHaveLength(5);
     expect(outcome.news.selected).toBe(5);
-    const times = file.cards.map((c) => Date.parse(c.src[0]!.at));
+    expect(outcome.news.score).toMatchObject({
+      candidates: 45,
+      existingCards: 0,
+      slots: 5,
+      domesticQuota: 1, // floor(5 / 3) — 순수 점수 순 상위 5에 국내가 3장이라 몫이 자리를 바꾸지 않는다
+      ranked: 5,
+      domesticByQuota: 0,
+      transferBoost: 1,
+      keywordsError: null,
+    });
+    const score = outcome.news.score!;
+    expect(score.top!).toBeGreaterThanOrEqual(score.cutoff!);
+    expect(score.cutoff!).toBeGreaterThanOrEqual(score.firstOut!);
+    // 상위 5 = 맨유-토트넘(BBC+Athletic 2곳, 빅클럽 2) · AC 밀란 이적설(빅클럽+이적) · 김민재·설영우 분데스(국내 3곳, 한국 선수)
+    // · 이강인 라리가(국내 3곳) · 이강인-레알(한국 선수+빅클럽). 최신순이었다면 ESPN 일괄 갱신 시각 기사 4건이 들었다.
+    const titles = file.cards.map((c) => c.t);
+    for (const head of [
+      "Solanke scores in added time",
+      "AC Milan keen on Scott",
+      "[분데스 REVIEW] 김민재는 결장!",
+      "[라리가 REVIEW] '발목 부상' 이강인",
+      "이강인이 대체 뭘 잘못했길래",
+    ]) {
+      expect(titles.some((t) => t.startsWith(head))).toBe(true);
+    }
+    expect(file.cards.some((c) => c.src[0]!.n === "ESPN")).toBe(false);
+    // 파일 순서 = 화면 순서: 중요도(지금은 모두 기본 3) → 가장 최근 출처 시각 내림차순
+    expect(new Set(file.cards.map((c) => c.imp))).toEqual(new Set([3]));
+    const times = file.cards.map((c) =>
+      Math.max(...c.src.map((s) => Date.parse(s.at))),
+    );
     expect([...times].sort((a, b) => b - a)).toEqual(times);
+    expect(
+      records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({
+      candidates: 45,
+      existingCards: 0,
+      slots: 5,
+      ranked: 5,
+      selected: 5,
+      limit: 5,
+      scoreTop: score.top,
+      scoreCutoff: score.cutoff,
+      scoreFirstOut: score.firstOut,
+      transferBoost: 1,
+      selectedMix: {
+        ko: 3,
+        koQuota: 1,
+        koByQuota: 0,
+        korean: 3,
+        bigClub: 5,
+        ucl: 0,
+        transfer: 1,
+        multiPublisher: 3,
+        noScope: 0,
+        clamped: 0,
+      },
+    });
+  });
+
+  it("국내 최소 몫(D44): 상한의 1/3을 국내 클러스터 점수 순으로 먼저 채운다 — 순수 점수 순 15위(해외)가 국내 5번째에 자리를 내준다", async () => {
+    const { deps, records } = makeDeps({ limit: 15 });
+    const outcome = await runCollect(deps);
+    const file = readNews("2026-10-11");
+    expect(file.cards).toHaveLength(15);
+    expect(outcome.news.score).toMatchObject({
+      slots: 15,
+      domesticQuota: 5,
+      ranked: 15,
+      domesticByQuota: 1,
+    });
+    expect(file.cards.filter((c) => c.lang === "ko")).toHaveLength(5);
+    const titles = file.cards.map((c) => c.t);
+    // 몫으로 들어온 국내 카드(점수는 자리 밖) · 그 대신 밀려난 해외 카드(점수로는 15위)
+    expect(titles.some((t) => t.startsWith("‘친정팀’ 맨시티에"))).toBe(true);
+    expect(
+      titles.some((t) => t.startsWith("Palmer signs new Chelsea contract")),
+    ).toBe(false);
+    const score = outcome.news.score!;
+    expect(score.cutoff!).toBeLessThan(score.firstOut!); // 몫 때문에 점수가 더 낮은 국내 카드가 들었다
+    expect(
+      records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({
+      selectedMix: expect.objectContaining({
+        ko: 5,
+        koQuota: 5,
+        koByQuota: 1,
+      }),
+    });
+  });
+
+  describe("같은 날 재실행 — 일일 카드 상한은 그날 파일 기준(D44)", () => {
+    /** 오늘 파일에 기존 카드를 미리 쓴다 — 링크가 피드에 없어(수집 창 밖과 같다) 클러스터 후보로 다시 들어오지 않는다 */
+    function seedToday(count: number, domestic: number): NewsCard[] {
+      const bySource = (id: string) => SOURCES.find((s) => s.id === id)!;
+      const cards = Array.from({ length: count }, (_, i) => {
+        const ko = i < domestic;
+        const source = bySource(
+          ko ? "interfootball-world" : "bbc-sport-football",
+        );
+        return buildCard(
+          {
+            title: ko ? `오늘 아침 국내 기사 ${i}` : `Morning story ${i}`,
+            url: `https://example.com/morning/${i}`,
+            publishedAt: "2026-10-10T12:00:00.000Z",
+            summary: null,
+            source: source.id,
+            author: null,
+            authors: [],
+            lang: source.lang,
+          },
+          source,
+          "2026-10-10T21:30:00.000Z",
+        );
+      });
+      writeFileSync(
+        newsFilePath(dataDir, "2026-10-11"),
+        serializeNewsFile(
+          buildNewsFile({
+            date: "2026-10-11",
+            generatedAt: "2026-10-10T21:31:00.000Z",
+            runId: "collect-prod-20261010T213000Z-0000",
+            cards,
+          }),
+        ),
+      );
+      return cards;
+    }
+
+    beforeEach(() => {
+      mkdirSync(path.join(dataDir, "news"), { recursive: true });
+    });
+
+    it("기존 카드 40장(모두 창 밖)이면 새 카드는 5장만 — 파일 45장, 국내 몫이 모자라 새 자리 5장이 모두 국내", async () => {
+      const morning = seedToday(40, 0);
+      const { deps, records } = makeDeps({ limit: 45 });
+      const outcome = await runCollect(deps);
+      const file = readNews("2026-10-11");
+      expect(file.cards).toHaveLength(45);
+      expect(outcome.news.added).toBe(5);
+      expect(outcome.news.score).toMatchObject({
+        candidates: 45,
+        existingCards: 40,
+        slots: 5,
+        domesticQuota: 5, // 하루 몫 15 − 기존 국내 0, 자리 5 이하
+        ranked: 5,
+      });
+      const added = file.cards.filter(
+        (c) => !morning.some((m) => m.id === c.id),
+      );
+      expect(added.map((c) => c.lang)).toEqual(Array(5).fill("ko"));
+      // 기존 카드는 그대로(id·created·제목)
+      for (const card of morning) {
+        expect(file.cards.find((c) => c.id === card.id)).toEqual(card);
+      }
+      expect(
+        records.find((r) => r.event === "collect.select.done"),
+      ).toMatchObject({
+        existingCards: 40,
+        slots: 5,
+        selectedMix: expect.objectContaining({ ko: 5, koQuota: 5 }),
+      });
+    });
+
+    it("기존 국내 카드가 하루 몫(15)을 채웠으면 남은 자리는 순수 점수 순 — 파일 45장", async () => {
+      seedToday(40, 15);
+      const { deps } = makeDeps({ limit: 45 });
+      const outcome = await runCollect(deps);
+      const file = readNews("2026-10-11");
+      expect(file.cards).toHaveLength(45);
+      expect(outcome.news.score).toMatchObject({
+        slots: 5,
+        domesticQuota: 0,
+        domesticByQuota: 0,
+      });
+      // --limit 5 첫 실행과 같은 상위 5(국내 3·해외 2)
+      const titles = file.cards.map((c) => c.t);
+      for (const head of [
+        "Solanke scores in added time",
+        "AC Milan keen on Scott",
+        "[분데스 REVIEW] 김민재는 결장!",
+        "[라리가 REVIEW] '발목 부상' 이강인",
+        "이강인이 대체 뭘 잘못했길래",
+      ]) {
+        expect(titles.some((t) => t.startsWith(head))).toBe(true);
+      }
+    });
+
+    it("기존 카드가 상한 이상이면 새 카드 0장 — 파일은 그대로", async () => {
+      seedToday(45, 0);
+      const before = readFileSync(newsFilePath(dataDir, "2026-10-11"), "utf8");
+      const { deps, records } = makeDeps({ limit: 45 });
+      const outcome = await runCollect(deps);
+      expect(outcome.exitCode).toBe(0);
+      expect(outcome.news.added).toBe(0);
+      expect(outcome.news.score).toMatchObject({ slots: 0, ranked: 0 });
+      expect(readFileSync(newsFilePath(dataDir, "2026-10-11"), "utf8")).toBe(
+        before,
+      );
+      expect(records.some((r) => r.event === "collect.news.unchanged")).toBe(
+        true,
+      );
+    });
   });
 
   it("소스 결과·카드는 응답 완료 순서와 무관하다 — 설정 앞쪽 소스가 늦게 응답해도 같은 파일", async () => {
