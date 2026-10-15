@@ -97,6 +97,7 @@ export function mergeSourceMeta(
 /**
  * 묶음의 소스 메타 — 묶음 소스 id를 설정에서 찾아 `mergeSourceMeta`. 대표 소스를 찾지 못하면 null(설정에 없는 소스 —
  * 호출부가 그 항목을 건너뛴다). 대표가 아닌 소스 id를 찾지 못하면 그 소스만 빼고 합친다.
+ * 같은 사건 클러스터(news-cluster.ts `clusterSourceMeta`, M1-13)도 구성 묶음들의 소스 id를 모아 이 함수로 합친다.
  */
 export function groupSource(
   group: Pick<DedupGroup, "sources">,

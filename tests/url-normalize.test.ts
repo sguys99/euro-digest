@@ -210,12 +210,8 @@ describe("normalizeUrl — 스킴·호스트·경로·조각", () => {
       "https://example.com/a/b",
     );
     expect(
-      normalizeUrl(
-        "https://www.nytimes.com/athletic/7667943/2026/10/10/manc-utd-tottenham-result-analysis/",
-      ),
-    ).toBe(
-      "https://nytimes.com/athletic/7667943/2026/10/10/manc-utd-tottenham-result-analysis",
-    );
+      normalizeUrl("https://www.nytimes.com/athletic/fixture/synthetic-0/"),
+    ).toBe("https://nytimes.com/athletic/fixture/synthetic-0");
     expect(normalizeUrl("https://example.com/")).toBe("https://example.com/");
     expect(normalizeUrl("https://example.com")).toBe("https://example.com/");
   });

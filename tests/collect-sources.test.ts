@@ -15,6 +15,9 @@
  * tests/feed-item.test.ts). 섹션 피드 ⊂ 전체기사 피드라 국내 같은 링크 9쌍이 더해진다.
  * M1-10(FR-07): 수집 시간 창이 소스를 합치기 전에 적용된다 — 시각은 피드 스냅샷 직후(NOW 주석), 창 계산·미래 가드는
  * tests/collect-window.test.ts.
+ * M1-13(FR-05): 고유 링크 52건 → 같은 사건 클러스터 45개(국내 3매체 2묶음 −4, BBC+Athletic 2묶음 −2, BBC+Relevo 1묶음 −1 —
+ * Athletic 항목은 합성 제목·링크, D32·D42)
+ * → 카드 = 클러스터. 유사도·계획 자체는 tests/cluster.test.ts·tests/news-cluster.test.ts.
  */
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import os from "node:os";
@@ -387,11 +390,47 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     expect(outcome.news.excluded).toEqual(PLAN.excluded);
   });
 
-  it("카드 상한 45(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 창 안 64건(M1-10) → 고유 링크 52건 → 최신순 45장", async () => {
-    const { deps, records } = makeDeps();
+  it("카드 상한(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 창 안 64건(M1-10) → 고유 링크 52건 → 클러스터 45개(M1-13) → 최신순 상위 N장", async () => {
+    const { deps, records } = makeDeps({ limit: 40 });
     const outcome = await runCollect(deps);
     const file = readNews("2026-10-11");
+    expect(file.cards).toHaveLength(40);
+    expect(outcome.news.selected).toBe(40);
+    expect(
+      records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({
+      usable: 69,
+      inWindow: 64,
+      unique: 52,
+      duplicateLinks: 12,
+      clusters: 45,
+      clustered: 5,
+      merged: 7,
+      maxPublishers: 3,
+      seenBefore: 0,
+      seenBeforeExtra: 0,
+      selected: 40,
+      limit: 40,
+    });
+    // 파일 순서 = 카드의 가장 최근 출처 시각 내림차순(sortCards — 클러스터 카드는 대표 출처보다 늦은 출처가 있을 수 있다)
+    const times = file.cards.map((c) =>
+      Math.max(...c.src.map((s) => Date.parse(s.at))),
+    );
+    expect([...times].sort((a, b) => b - a)).toEqual(times);
+  });
+
+  it("여러 소스의 같은 링크는 출처 1건 — 대표는 설정 순서상 먼저 나온 소스, 대회 태그는 소스들의 합집합(M1-12), 같은 사건은 카드 1장(M1-13), 제목·링크는 피드 원문", async () => {
+    // 상한을 넉넉히 줘서 클러스터 전부를 카드로 만든다(상한 적용은 위 테스트)
+    const { deps, records } = makeDeps({ limit: 100 });
+    const outcome = await runCollect(deps);
+    const file = readNews("2026-10-11");
+    const links = file.cards.flatMap((c) => c.src.map((s) => s.u));
+    // 창 안 64건 중 같은 링크 12쌍(BBC 피드 사이 2쌍 + BBC 피드 안 1쌍 + 국내 섹션 ⊂ 전체기사 9쌍) → 고유 52건
+    // → 같은 사건 7건이 다른 클러스터에 합쳐져 45장. 모든 고유 링크가 정확히 한 카드의 출처로 남는다.
     expect(file.cards).toHaveLength(45);
+    expect(links).toHaveLength(52);
+    expect(new Set(links).size).toBe(52);
+    expect(new Set(file.cards.map((c) => c.id)).size).toBe(file.cards.length);
     expect(outcome.news.selected).toBe(45);
     expect(
       records.find((r) => r.event === "collect.select.done"),
@@ -400,35 +439,24 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       inWindow: 64,
       unique: 52,
       duplicateLinks: 12,
+      clusters: 45,
       selected: 45,
-      limit: 45,
     });
-    const times = file.cards.map((c) => Date.parse(c.src[0]!.at));
-    expect([...times].sort((a, b) => b - a)).toEqual(times);
-  });
-
-  it("여러 소스의 같은 링크는 카드 1장 — 대표는 설정 순서상 먼저 나온 소스, 대회 태그는 소스들의 합집합(M1-12), 제목·링크는 피드 원문", async () => {
-    // 상한을 넉넉히 줘서 고유 링크 전부를 카드로 만든다(상한 적용은 위 테스트)
-    const { deps, records } = makeDeps({ limit: 100 });
-    const outcome = await runCollect(deps);
-    const file = readNews("2026-10-11");
-    const links = file.cards.map((c) => c.src[0]!.u);
-    // 창 안 64건 중 같은 링크 12쌍(BBC 피드 사이 2쌍 + BBC 피드 안 1쌍 + 국내 섹션 ⊂ 전체기사 9쌍) → 52장
-    expect(file.cards).toHaveLength(52);
-    expect(new Set(links).size).toBe(file.cards.length);
-    expect(new Set(file.cards.map((c) => c.id)).size).toBe(file.cards.length);
-    expect(outcome.news.selected).toBe(52);
-    expect(
-      records.find((r) => r.event === "collect.select.done"),
-    ).toMatchObject({
-      usable: 69,
-      inWindow: 64,
-      unique: 52,
-      duplicateLinks: 12,
-      selected: 52,
+    expect(outcome.news.cluster).toEqual({
+      groups: 52,
+      fresh: 45,
+      multi: 5,
+      merged: 7,
+      maxPublishers: 3,
+      existing: 0,
+      additions: 0,
+      existingSeenBefore: 0,
+      seenBefore: 0,
+      seenBeforeGroups: 0,
+      seenBeforeExtra: 0,
     });
 
-    // 원제목·링크 무수정(엔티티 디코딩·앞뒤 공백 정리만) — 원문 항목은 fixture index에서 찾는다
+    // 원제목·링크 무수정(엔티티 디코딩·앞뒤 공백 정리만) — 원문 항목은 fixture index에서 찾는다. 출처마다 원문 링크.
     const indexByLink = new Map(
       RSS_INDEX.sources.flatMap((s) =>
         s.items.map((i) => [i.link, i] as const),
@@ -439,7 +467,32 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       expect(original).toBeDefined();
       expect(card.id).toBe(cardIdFor(original!.link));
       expect(card).toMatchObject({ ai: false, s: [] });
+      for (const src of card.src) expect(indexByLink.has(src.u)).toBe(true);
     }
+
+    // 같은 사건(M1-13): 국내 3매체가 함께 보도한 아틀레티코 2-1 알라베스 → 카드 1장, 출처 3건(매체마다 1건, 설정 순서),
+    // 대표 = 설정 순서상 처음(인터풋볼 전체기사 — 섹션 피드에는 없는 기사). 제목은 대표 출처의 피드 원문 그대로.
+    const alaves = file.cards.find((c) =>
+      c.t.includes("알라베스 2-1 제압! 4"),
+    )!;
+    expect(alaves.src.map((s) => s.n)).toEqual([
+      "인터풋볼",
+      "풋볼리스트",
+      "베스트일레븐",
+    ]);
+    expect(alaves.t).toBe(indexByLink.get(alaves.src[0]!.u)!.title);
+    // 해외: BBC(경기 영상) + The Athletic 경기 기사(합성 제목 — fixtures/rss README, D32·D42) → 카드 1장.
+    // 다른 언어(BBC 영어 + Relevo 스페인어)도 같은 사건이면 1장
+    const spurs = file.cards.find((c) =>
+      c.src.some((s) => s.u.includes("/videos/crz9zdl0g04zo")),
+    )!;
+    expect(spurs.src.map((s) => s.n)).toEqual(["BBC Sport", "The Athletic"]);
+    const mbappe = file.cards.find((c) => c.t.startsWith("Mourinho calls"))!;
+    expect(mbappe.src.map((s) => s.n)).toEqual(["BBC Sport", "Relevo"]);
+    // 국내·해외 같은 사건(맨유 1-1 토트넘)은 합치지 않는다(D30 — 연결 줄은 M1-31)
+    const spursKo = file.cards.find((c) => c.t.includes("솔란케 극장골로"))!;
+    expect(spursKo.lang).toBe("ko");
+    expect(spursKo.id).not.toBe(spurs.id);
 
     // BBC Football(대회 태그 없음)과 Premier League 피드(EPL)에 함께 있는 링크 → 먼저 나온 BBC Football 항목이 대표,
     // 대회 태그는 두 소스의 합집합(M1-02 이월 → M1-12: 예전에는 먼저 나온 소스의 [] 그대로라 EPL을 잃었다)

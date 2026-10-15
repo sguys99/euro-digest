@@ -4,8 +4,10 @@
  *   ① 뉴스: configs/sources.json의 일일 수집 대상 피드 전부(M1-02 로더 — enabled && terms_checked, rss·journalist·aggregator)
  *      → 소스별 격리 수집 → 수집 시간 창(M1-10, FR-07 — 직전 성공 실행 − 3시간 ~ 현재, 최대 51시간, 미래 시각 가드)
  *      → 합쳐서 정규화 URL 해시로 중복 제거(M1-12, FR-04 — 카드는 대표 소스 + 같은 URL을 낸 소스들의 대회 태그 합집합, dedup.ts)
- *      → 이미 카드가 된 URL 제외(seen-urls.json 90일 기억 ∪ 최근 발행 파일 — seen-urls.ts) → 최신순 상위 N건
- *      → 원제목 카드(최소 분류) → data/news/<KST 발행일>.json → 그 파일의 카드로 data/cache/seen-urls.json 갱신
+ *      → 제목 유사도로 같은 사건 클러스터(M1-13, FR-05 — cluster.ts·news-cluster.ts: 다른 날 카드였던 URL이 든 클러스터는
+ *        통째로 제외(seen-urls.json 90일 기억 ∪ 최근 발행 파일 — seen-urls.ts), 오늘 카드와 같은 사건이면 그 카드의 새 출처)
+ *      → 최신순 상위 N 클러스터 → 원제목 카드(대표 + 클러스터 출처, 최소 분류) → data/news/<KST 발행일>.json
+ *      → 그 파일의 카드로 data/cache/seen-urls.json 갱신
  *      검색형 소스(M1-06): configs/search-queries.json의 활성 쿼리만 계획한다. 어댑터(M1-07)가 보류라 실행하지 않는다 —
  *      활성 쿼리 0개면 `collect.search.skip` 한 줄, 있으면 소스마다 경고 후 건너뛴다. 검색 설정 오류도 피드 수집을 멈추지 않는다.
  *   ② 경기 데이터(M1-44·M1-48): **뉴스와 병렬로 실행 시작 직후** 시작한다. 프로바이더별 단계도 병렬(호스트가 달라 분당
@@ -48,7 +50,7 @@
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
- * 다음 작업이 갈아끼울 자리: 클러스터링·점수화(M1-13·M1-14) · 카드 ID(M1-16 — 정규화 URL 해시) ·
+ * 다음 작업이 갈아끼울 자리: 점수화(M1-14 — 클러스터 `publishers` 수·소스 메타) · 대표 선정(M1-15) · 카드 ID(M1-16 — 정규화 URL 해시) ·
  * 분류(M1-17) · 브리핑 입력·템플릿(M1-19) · 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
  * 계절별 마감(M1-47 — 브리핑 컷오프 상수) · 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서).
  */
@@ -112,8 +114,9 @@ import {
   parseBriefOutput,
 } from "./brief";
 import type { LlmMode } from "./cli-args";
+import { clusterDocs } from "./cluster";
 import { readConfigFile } from "./config-files";
-import { dedupeFeedItems, groupSource } from "./dedup";
+import { dedupeFeedItems } from "./dedup";
 import {
   applyCollectWindow,
   ceilMinutes,
@@ -172,9 +175,19 @@ import {
   type LedgerWriteMode,
 } from "./match-ledger";
 import {
-  buildCard,
+  buildClusterCard,
+  groupCardSource,
+  latestItem,
+  planNewsClusters,
+  singletonClusters,
+  type ClusterFn,
+  type ClusterPlanStats,
+  type NewsCluster,
+} from "./news-cluster";
+import {
   buildNewsFile,
   mergeCards,
+  type CardAttachment,
   newsFilePath,
   readNewsFile,
   selectLatest,
@@ -196,7 +209,6 @@ import type { FetchLike } from "./rss";
 import {
   buildSeenIndex,
   buildSeenUrlsFile,
-  filterUnseen,
   readRecentNewsCards,
   readSeenUrls,
   sameSeen,
@@ -298,6 +310,8 @@ export interface CollectDeps {
   loadSources?: () => Promise<Source[]>;
   /** 검색 쿼리 설정 읽기 — 기본은 `<rootDir>/configs/search-queries.json`(loadSearchQueries). 테스트 주입용 */
   loadSearchQueries?: () => Promise<SearchQueriesFile>;
+  /** 같은 사건 클러스터링(M1-13) — 기본은 제목 유사도(cluster.ts `clusterDocs`). 테스트가 실패 경로를 주입한다 */
+  clusterDocs?: ClusterFn;
   now: () => Date;
   /** RSS·football-data 공용 fetch */
   fetch: FetchLike;
@@ -476,6 +490,8 @@ export interface NewsOutcome {
   selected: number;
   /** 파일에 새로 더한 카드 수 */
   added: number;
+  /** 오늘 파일의 기존 카드에 새로 붙인 출처 수(같은 날 재실행 — M1-13) */
+  attached: number;
   /** 쓴(또는 dry면 쓰려던) 파일 내용. 카드가 하나도 없으면 null */
   file: NewsFile | null;
   /** 실제로 쓴 경로(dry·빈 결과면 null) */
@@ -492,6 +508,10 @@ export interface NewsOutcome {
   windowStats: WindowStats | null;
   /** 같은 URL 중복 제거·이미 카드가 된 URL 제외(M1-12, FR-04) — 선별까지 가지 않았으면 null */
   dedup: DedupOutcome | null;
+  /** 같은 사건 클러스터 계획 집계(M1-13, FR-05 — news-cluster.ts) — 선별까지 가지 않았으면 null */
+  cluster: ClusterPlanStats | null;
+  /** 클러스터링 예상 밖 오류(클러스터 없이 발행 — 실행 상태 partial) */
+  clusterError: string | null;
   /** `data/cache/seen-urls.json`(M1-12) — 선별까지 가지 않았으면 null */
   seen: SeenOutcome | null;
   error?: string;
@@ -507,7 +527,10 @@ export interface DedupOutcome {
   duplicates: number;
   /** 소스가 둘 이상인 묶음 수(소스 메타를 합친 묶음) */
   multiSource: number;
-  /** 다른 날(또는 삭제 전) 이미 카드가 된 URL이라 뺀 묶음 수 */
+  /**
+   * 다른 날(또는 삭제 전) 이미 카드가 된 사건이라 뺀 묶음 수 — 그 URL 자신 + 같은 클러스터의 늦은 기사(M1-13,
+   * 내역은 `NewsOutcome.cluster.seenBeforeExtra`)
+   */
   seenBefore: number;
 }
 
@@ -787,6 +810,7 @@ async function runNewsStage(
     feedItems: 0,
     selected: 0,
     added: 0,
+    attached: 0,
     file: null,
     path: null,
     sources: [],
@@ -795,6 +819,8 @@ async function runNewsStage(
     window: null,
     windowStats: null,
     dedup: null,
+    cluster: null,
+    clusterError: null,
     seen: null,
   };
 
@@ -900,31 +926,93 @@ async function runNewsStage(
   }
 
   // 중복 제거(M1-12, FR-04): 정규화 URL 해시로 묶는다 — 대표 = 설정 순서상 처음 나온 항목(링크는 피드 원문), 묶음 소스의
-  // 대회 태그는 카드를 만들 때 합친다(dedup.ts). 다른 날 이미 카드가 된 URL은 기억(seen-urls.ts)으로 뺀다.
+  // 대회 태그는 카드를 만들 때 합친다(dedup.ts).
+  // 같은 사건 클러스터(M1-13, FR-05): 제목 유사도로 묶음을 묶는다(news-cluster.ts). 다른 날 카드였던 URL이 든 클러스터는
+  // 통째로 빼고(seen-urls.ts 기억), 오늘 파일 카드와 같은 사건이면 그 카드의 새 출처가 된다(같은 날 재실행).
   const deduped = dedupeFeedItems(allItems);
   const seenLoad = await loadSeen(deps, ctx, existing);
-  const unseen = filterUnseen(deduped.groups, seenLoad.index);
+  // 제목 유사도 단계(ClusterFn — 특징 추출·유사도·병합, 기본 cluster.ts `clusterDocs`)의 예상 밖 오류만 여기서 막는다:
+  // 같은 사건을 합치지 않은 채(문서마다 혼자 — singletonClusters) 나머지 규칙(기억·오늘 카드)으로 계속하고 실행 상태 partial.
+  // 계획 자체(planNewsClusters의 기억·오늘 카드 분류)의 오류는 막지 않는다 — 수집 실행 실패(exit 1, 커밋 안 함)로 끝난다.
+  const failure: { error: string | null } = { error: null };
+  const titleClusters = deps.clusterDocs ?? clusterDocs;
+  const clusters = planNewsClusters(
+    {
+      groups: deduped.groups,
+      sourceById,
+      index: seenLoad.index,
+      todayCards: existing?.cards ?? [],
+    },
+    (docs, policy) => {
+      try {
+        return titleClusters(docs, policy);
+      } catch (error) {
+        failure.error = errorText(error);
+        log.warn("collect.cluster.fail", { error: failure.error });
+        return singletonClusters(docs, policy);
+      }
+    },
+  );
+  const clusterError = failure.error;
   const dedup: DedupOutcome = {
     items: allItems.length,
     unique: deduped.groups.length,
     duplicates: deduped.duplicates,
     multiSource: deduped.groups.filter((g) => g.sources.length > 1).length,
-    seenBefore: unseen.seenBefore.length,
+    // 뺀 묶음 = 다른 날 사건 클러스터의 묶음 + 오늘 카드 클러스터에 든 다른 날 카드 URL(M1-12 집계보다 줄지 않는다)
+    seenBefore:
+      clusters.stats.seenBeforeGroups + clusters.stats.existingSeenBefore,
   };
 
-  // 선별(슬라이스): 최신순 상위 N건 → 원제목 카드. 카드 소스 = 대표 소스(출처명·tier 그대로) + 묶음 대회 합집합.
-  // 묶음 최고 tier·최대 weight(meta.bestTier·maxWeight)는 점수화(M1-14) 입력 — 카드에는 쓰지 않는다.
-  const cards = selectLatest(unseen.kept, deps.limit).flatMap((group) => {
-    const meta = groupSource(group, sourceById);
-    return meta ? [buildCard(group.item, meta.card, ctx.startedAt)] : [];
+  // 선별(슬라이스): 새 클러스터 + 후보가 있는 오늘 카드 클러스터를 가장 최근 구성 기사 순으로 상위 N — 오늘 카드는 자리만
+  // 차지한다(같은 날 재실행 파일 팽창 방지, M1-12). 오늘 카드의 새 출처는 순위와 무관하게 붙인다(카드 수가 늘지 않는다).
+  // 카드 = 대표 묶음(지금은 클러스터의 첫 묶음 — M1-15) + 나머지 묶음의 출처, 카드 소스 = 대표 소스 + 클러스터 대회 합집합.
+  // 클러스터 최고 tier·최대 weight·보도 매체 수는 점수화(M1-14) 입력 — 카드에는 쓰지 않는다.
+  const order = new Map(deduped.groups.map((g, i) => [g.key, i] as const));
+  const firstIndex = (c: NewsCluster) =>
+    Math.min(...c.members.map((g) => order.get(g.key) ?? 0));
+  const ranked = selectLatest(
+    [
+      ...clusters.fresh.map((cluster) => ({ cluster, cardId: null })),
+      ...clusters.existing.map((cluster) => ({
+        cluster,
+        cardId: cluster.cardId,
+      })),
+    ]
+      .sort((a, b) => firstIndex(a.cluster) - firstIndex(b.cluster))
+      .map((entry) => ({ ...entry, item: latestItem(entry.cluster) })),
+    deps.limit,
+  );
+  const cards = ranked.flatMap(({ cluster, cardId }) => {
+    if (cardId !== null) return [];
+    const card = buildClusterCard(cluster, sourceById, ctx.startedAt);
+    return card ? [card] : [];
   });
+  const attachments: CardAttachment[] = clusters.existing.map((c) => ({
+    id: c.cardId,
+    src: c.additions.flatMap((g) => {
+      const src = groupCardSource(g, sourceById);
+      return src ? [src] : [];
+    }),
+  }));
   log.info("collect.select.done", {
     usable: collected.items.length,
     inWindow: allItems.length,
     unique: dedup.unique,
     duplicateLinks: dedup.duplicates,
     multiSource: dedup.multiSource,
+    clusters: clusters.stats.fresh,
+    clustered: clusters.stats.multi,
+    merged: clusters.stats.merged,
+    maxPublishers: clusters.stats.maxPublishers,
+    todayCards: clusters.stats.existing,
+    additions: clusters.stats.additions,
+    // seenBefore = 뺀 묶음 수(M1-12와 같은 뜻) — 그중 같은 클러스터라서 빠진 늦은 기사가 seenBeforeExtra,
+    // 오늘 카드 클러스터에 들어 출처로 붙이지 않은 다른 날 카드 URL이 existingSeenBefore
     seenBefore: dedup.seenBefore,
+    seenBeforeClusters: clusters.stats.seenBefore,
+    seenBeforeExtra: clusters.stats.seenBeforeExtra,
+    existingSeenBefore: clusters.stats.existingSeenBefore,
     selected: cards.length,
     limit: deps.limit,
     failedSources: failed.length,
@@ -932,13 +1020,22 @@ async function runNewsStage(
 
   let seen: SeenOutcome = seenLoad.outcome;
   try {
-    const merged = mergeCards(existing?.cards ?? [], cards);
-    // 새 카드가 없으면 파일을 다시 쓰지 않는다(generatedAt만 바뀐 불필요한 data 커밋 방지).
-    const unchanged = existing !== null && merged.added === 0;
+    const merged = mergeCards(existing?.cards ?? [], cards, attachments);
+    // 새 카드도 새 출처도 없으면 파일을 다시 쓰지 않는다(generatedAt만 바뀐 불필요한 data 커밋 방지).
+    const unchanged =
+      existing !== null && merged.added === 0 && merged.attached === 0;
     if (merged.cards.length === 0) {
       log.warn("collect.news.empty", { date: ctx.publishDate });
       return {
-        outcome: { ...empty, ...base, ok: true, dedup, seen },
+        outcome: {
+          ...empty,
+          ...base,
+          ok: true,
+          dedup,
+          cluster: clusters.stats,
+          clusterError,
+          seen,
+        },
         ...stage,
       };
     }
@@ -953,12 +1050,13 @@ async function runNewsStage(
       selected: cards.length,
       added: merged.added,
       duplicates: merged.duplicates,
+      attached: merged.attached,
       count: file.cards.length,
     };
     if (deps.dry) {
       log.info("collect.news.dry", fields);
       deps.print(
-        `── [dry] data/news/${ctx.publishDate}.json — 쓰지 않음 (카드 ${file.cards.length}장, 새 카드 ${merged.added}장)\n${serializeNewsFile(file).trimEnd()}`,
+        `── [dry] data/news/${ctx.publishDate}.json — 쓰지 않음 (카드 ${file.cards.length}장, 새 카드 ${merged.added}장, 기존 카드에 붙인 출처 ${merged.attached}건)\n${serializeNewsFile(file).trimEnd()}`,
       );
     } else if (unchanged) {
       log.info("collect.news.unchanged", fields);
@@ -974,9 +1072,12 @@ async function runNewsStage(
         ok: true,
         selected: cards.length,
         added: merged.added,
+        attached: merged.attached,
         file: unchanged && !deps.dry ? existing : file,
         path: deps.dry || unchanged ? null : filePath,
         dedup,
+        cluster: clusters.stats,
+        clusterError,
         seen,
       },
       ...stage,
@@ -992,6 +1093,8 @@ async function runNewsStage(
         ...base,
         selected: cards.length,
         dedup,
+        cluster: clusters.stats,
+        clusterError,
         seen,
         error: errorText(error),
       },
@@ -2604,7 +2707,7 @@ export function apiFootballIncomplete(
 
 /**
  * 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음·순위 일부 실패·API-Football 미완(apiFootballIncomplete)·
- * 원장 쓰기 오류·원장 형식 오류 항목(M1-48b)·seen-urls 기억 읽기·쓰기 오류(M1-12) = partial, 그 밖 = success.
+ * 원장 쓰기 오류·원장 형식 오류 항목(M1-48b)·seen-urls 기억 읽기·쓰기 오류(M1-12)·클러스터링 오류(M1-13) = partial, 그 밖 = success.
  * partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts).
  */
 export function runStatus(
@@ -2612,6 +2715,7 @@ export function runStatus(
     ok: boolean;
     sources?: readonly { ok: boolean }[];
     seen?: Pick<SeenOutcome, "readError" | "writeError"> | null;
+    clusterError?: string | null;
   },
   brief: BriefOutcome,
   matchData:
@@ -2623,6 +2727,8 @@ export function runStatus(
   if (news.sources?.some((source) => !source.ok)) return "partial";
   // 기억 파일이 깨졌거나(발행 파일로 다시 채워 진행) 쓰지 못했다(다음 실행은 최근 발행 파일로 중복을 막는다) — M1-12
   if (news.seen?.readError || news.seen?.writeError) return "partial";
+  // 클러스터링 실패 — 같은 사건을 합치지 않은 채 발행했다(M1-13)
+  if (news.clusterError) return "partial";
   if (brief.state === "failed") return "partial";
   const fd = matchData?.footballData;
   if (fd?.state === "done" && fd.data.standingsFailed.length > 0) {

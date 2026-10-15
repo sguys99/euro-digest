@@ -1,4 +1,4 @@
-# fixtures/rss/ — 실제 RSS 수집 샘플 (M0-33)
+# fixtures/rss/ — 실제 RSS 수집 샘플 (M0-33, The Athletic 항목만 합성 — D32·D42)
 
 `configs/sources.json`에서 `enabled && terms_checked`인 소스 14개의 피드를 실제로 한 번 받아, **제목·링크·날짜 같은 메타데이터만** 남긴 샘플이다.
 
@@ -18,6 +18,15 @@
 
 - `<source-id>.xml`: 소스별 피드. 원래 포맷(RSS 2.0)과 XML 선언·네임스페이스 선언(쓰지 않게 된 `content:`·`media:` 선언 포함)을 그대로 두었다.
 - `index.json`: 수집 메타(소스별 URL·HTTP 상태·원본/보존 항목 수·실패 사유·제거 요소·시간 표기), 항목별 커버리지 태그, 중복 링크, 클러스터 메모. 항목 참조는 `<source-id>#<pos>`이고, `pos`는 이 fixture 안 순서(0부터), `feedPos`는 원래 피드 안 순서다. `title`·`link`는 XML을 파싱한 값(엔티티·CDATA 해제)이다. 원본 표기는 XML이 기준이다.
+
+## 합성 항목 — `the-athletic-football.xml` (PRD §15 D32·D42)
+
+The Athletic ToS 4.1(5)(캐시·보관 금지 — D32, 카드도 7일만 보관)에 따라 이 피드의 **항목 5건 제목·링크(`link`·`guid`)는 실존하지 않는
+합성 값**으로 바꿨다(2026-10-15, D42). XML 구조·요소·항목 수·`pubDate`·채널 메타와 `index.json`의 `pos`·`feedPos`·`pubDate`·태그는
+그대로다(`title`·`titleLength`·`link`만 합성 값에 맞춤). 링크는 `https://www.nytimes.com/athletic/fixture/synthetic-<pos>/` 형식이라
+실제 기사 경로가 아니다. 합성 제목은 원래 손 판정 성질을 지킨다 — `#0`은 BBC 맨유-토트넘 영상, `#1`은 BBC 아스널-리즈 기사와 같은
+사건으로 묶이고(`cluster:*` 태그), `#1`은 숫자 스코어(`score`), `#3`·`#4`는 36시간 창 밖(`older-than-36h`). 이 피드에는 "원문 유지"
+규칙(아래)이 적용되지 않는다. `fixtures/news-sample.json`의 Athletic 출처 3건(대표 1건 — 카드 id `c_8630993971`)도 같은 합성 값이다.
 
 ## 남긴 것과 지운 것
 
