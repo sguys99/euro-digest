@@ -56,8 +56,8 @@
 
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
-**현재 위치**: M1 뉴스 MVP 진행 중 — M1-01 수직 슬라이스(2026-10-12) · **M1-A 수집 완료(2026-10-14)**: M1-02·03·04·06·09·10·11·44·48 완료, M1-05·07·08 보류(D32 — 대상 없음·M1-46 재측정 후). 결정 D32~D37
-**다음 작업**: `M1-12` URL 정규화 + 해시 중복 제거 + `seen-urls.json`(M1-B 정제·분류 시작 — M1-A 수집 완료 2026-10-14, M1-05·M1-07·M1-08은 ⏸ D32)
+**현재 위치**: M1 뉴스 MVP 진행 중 — M1-01 수직 슬라이스(2026-10-12) · **M1-A 수집 완료(2026-10-14)**: M1-02·03·04·06·09·10·11·44·48 완료, M1-05·07·08 보류(D32 — 대상 없음·M1-46 재측정 후). 결정 D32~D40 · **M1-B 정제·분류 진행 중**: M1-12 완료(2026-10-15)
+**다음 작업**: `M1-13` 제목 유사도 클러스터링(M1-B 정제·분류 진행 중 — M1-12 완료 2026-10-15, M1-05·M1-07·M1-08은 ⏸ D32)
 
 ---
 
@@ -260,7 +260,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 🆕 M1-48 이월 메모: **M1-19** 같은 아침 두 번째 실행(백업·force)은 브리핑 창 경기가 원장에 있어 다시 받지 않으므로 득점자가 빠짐 → 원장의 완전 항목을 득점자 입력으로 사용, `briefGoalsOf` 재사용, 연장·승부차기 경기는 아직 입력에서 빠짐 · **M1-27** 커밋되지 않은 실행의 원장·이월 쓰기도 사라짐(실패 실행 기록 보존과 함께) · **M1-47** 브리핑 컷오프(단계 시작 + 4분)·football-data 150초 예산을 계절별 마감 기준으로 · **M3-02·M3-03** `PlayerMatchLog`는 원장 행에서(started: start → true·sub/bench/absent → false·unknown → null), 시즌 누적은 kickoff ≥ `playerSince[slug]`, `goalsComplete:false` 경기 골은 확정 값 아님, 나중 등록 선수 행 보충(원장 id 재조회)은 미구현 · **M5-09** 운영 리포트 입력 = 로그 `collect.teamids.auto-link`(configs 이전 후보)·`collect.teamids.candidate`·`collect.ledger.player-candidate`·meta `gaps`·`seasonMismatch`, 실행 자체가 없던 날은 runs.json으로 감지 · 라인업 정보가 없는 대회(일부 컵·기타 대회) 경기는 늘 불완전이라 경기당 최대 3번 더 받음(requery 계층·일일 60 안) · **/new-season** 시즌 전환 때 meta(새 since) 처리 규칙 필요
 
 ### M1-B 정제·분류 — 코드, 순수 함수 + 단위 테스트
-- [ ] M1-12 URL 정규화(utm·트래킹 파라미터·AMP) + 해시 중복 제거 + `seen-urls.json`(90일) (FR-04) · 🆕 실측(2026-10-13 발행): 겹침 구간 때문에 전날 카드('Police officer hurt after Liverpool-Man City game')가 다음 날 파일에 다시 들어감 — M1-10 이월 메모대로 seen-urls로 막을 것
+- [x] M1-12 URL 정규화(utm·트래킹 파라미터·AMP) + 해시 중복 제거 + `seen-urls.json`(90일) (FR-04) · 🆕 실측(2026-10-13 발행): 겹침 구간 때문에 전날 카드('Police officer hurt after Liverpool-Man City game')가 다음 날 파일에 다시 들어감 — M1-10 이월 메모대로 seen-urls로 막을 것 — 2026-10-15 완료: `scripts/lib/url-normalize.ts` 정규화(추적 파라미터 `utm_`·`at_`(BBC)·`ns_` 접두사 + 클릭 id 28종, AMP 경로 조각·`.amp`·`articleViewAmp.html`·AMP 쿼리·Google AMP 뷰어·cdn.ampproject.org·`amp.` 호스트, http=https·`www.`/`m.` 제거, 끝 슬래시·조각 제거, 쿼리 이름순 — `ref`·`source` 등 애매한 파라미터와 국내 `idxno`는 보존) + `urlHash` = sha256 앞 16자리(seen 키). `dedup.ts`: 정규화 URL 해시로 묶고 대표 = 설정 순서상 처음 항목(카드 링크는 피드 원문 — 정규화 URL은 키로만, D23), 카드 소스 = 대표 소스 그대로 + 대회 합집합(M1-02 이월: BBC Football+PL 공통 링크가 EPL 유지, 카드 `src[].n`·`tier`는 같은 출처 값). 묶음 최고 tier·최대 weight·최단 보존 기간은 점수화·보존 입력(`GroupSourceMeta.bestTier`·`maxWeight`·`minRetentionDays`)으로만. `seen-urls.ts`: 기억 = `seen-urls.json`(90일 정리) ∪ 발행 파일 D-1~D-3 ∪ 오늘 파일. **기억에는 카드가 된 URL만**(정규화 해시 → 처음 카드가 된 시각) — FR-04 수용 기준 '두 번 카드화되지 않음' 해석, 선별에서 빠진 항목은 다음 실행에서 다시 경쟁. 다른 날 카드는 후보에서 제외, 오늘 파일 카드는 선별 자리 유지(같은 날 재실행 파일 팽창 방지), 오늘 지워진 카드는 제외. 쓰기는 발행 파일을 쓴 뒤 그 카드로만(dry·뉴스 실패는 안 씀, 내용 같으면 안 씀 → 커밋된 기억 ⊂ 커밋된 카드), 손상·쓰기 실패는 경고 + `partial`로 발행 계속. `mergeCards`도 정규화 URL로 같은 카드 판정(M1-16 ID 전환 대비). 실측: 10-13 'Police officer…' 재게시를 10-12 파일로 차단 확인, 실제 피드 dry(RSS만) 창 안 234 → 고유 168(중복 66·여러 소스 묶음 59) → 이전 카드 4 제외, fixtures 69건·실제 발행 출처 18건 잘못 합쳐짐 0. M1-10 겹침 테스트 단언을 0으로 뒤집음. 테스트 +83(3,084), 스키마 변경 없음(부록 A 11). 리뷰(code-reviewer) 차단 0·중요 0, 권장 4건 반영(카드 tier = 대표 출처 값, 주석 예시, 쓰기만 실패 테스트, 스키마 주석 문구)
+  - 🆕 M1-12 이월 메모: **M1-13** 입력은 `DedupGroup[]`(key·item·sources), 기억 판정은 지금 묶음 키 단위 → 클러스터 안 URL 하나가 다른 날 카드였을 때 클러스터 전체를 뺄지·그 출처만 뺄지 결정, 같은 날 재실행에서 기존 카드에 새 출처를 붙일지(`mergeCards`는 지금 출처 URL이 하나라도 겹치면 새 카드를 통째로 건너뜀) 결정, 보도 매체 수는 `DedupGroup.sources` 수가 아니라 매체명(`publisherNameOf`) 기준으로 셀 것(같은 매체 섹션 피드 중복 계산 방지) · **M1-14** 점수화 입력은 `groupSource()`의 `bestTier`·`maxWeight`(카드 tier 아님), 묶음 단위로 동작하는 `selectLatest`가 대체 대상 · **M1-16** `cardIdFor`를 `c_` + `urlHash(url).slice(0, 10)`로 바꾸면 카드 ID가 seen 키의 접두사, 이미 발행된 카드(10-12~) ID는 그대로, `collect-slice`의 'M0-34 샘플과 같은 ID' 테스트·`fixtures/news-sample.json` 처리 필요 · **M1-17** 분류는 합친 소스(대회 합집합)를 받음 — BBC European처럼 4개 리그가 붙는 소스는 팀→리그 규칙으로 좁힐 것 · **M1-25** 삭제·보존 만료 카드는 seen 해시가 남아 다시 올라오지 않음(의도, URL·제목은 남지 않음), 카드 `src`의 보존 기간은 대표 소스 기준·묶음 최단 값은 `minRetentionDays`(지금 설정에서는 서로 다른 호스트가 같은 URL로 묶일 일 없음) · **M1-27** 실패 실행의 runs 기록만 커밋하는 경로를 만들면 `seen-urls.json`은 커밋하지 않아야 커밋된 기억 ⊂ 커밋된 카드 유지 · **dev 실행** dry 없이 로컬 실행하면 `data/cache/seen-urls.json`·`data/news`가 바뀜 → dev 커밋에는 `runs-dev.json`만 넣는다 · **M5-09** 평소 `collect.seen.load`의 `backfilled > 0`은 지난 실행의 기억 쓰기 실패·파일 유실 신호(제안: validate 경고 — 최근 3일 발행 카드 URL이 seen에 모두 있는지)
 - [ ] M1-13 제목 유사도 클러스터링 — 다국어 혼합(en·it·es·ko), 임계값은 fixtures로 튜닝 (FR-05)
 - [ ] M1-14 점수화 + 상위 `MAX_ITEMS_PER_RUN` 선별, 이적 창 가중 연결 지점 마련 (FR-06, FR-105)
 - [ ] M1-15 카드 생성 경로 (FR-20, D23): 해외 클러스터 → 원제목+링크 카드(`ai:false`, `s:[]`, 대표 항목의 피드 `title`·`link` 무수정 — 엔티티 디코딩·앞뒤 공백 정리만, 200자 초과는 건너뛰고 로그, 대표 항목은 Tier·weight·최신성 순). 한국어 클러스터 → LLM 생략, 제목+링크(`s:[]`) — RSS 요약 절단은 M0-25 판정 결과 적용 매체 없음 — 요약문(description)은 표시·저장하지 않는다(2026-10-10). 원제목·링크가 피드 원문과 같은지 테스트
@@ -870,7 +871,7 @@ const KoreanPlayersDataFile = z.object({ season: Season, generatedAt: Iso, playe
 
 // 11. data/cache/seen-urls.json  (FR-04, 90일) — 키 정렬 저장(diff 최소화)
 const UrlHash = z.string().regex(/^[0-9a-f]{16}$/); // 정규화 URL 해시 앞 16자(64비트) — 카드 ID와 같은 해시면 카드 ID가 접두사
-const SeenUrlsFile = z.object({ updatedAt: Iso, urls: z.record(UrlHash, Iso) });   // 해시 → 처음 본 시각
+const SeenUrlsFile = z.object({ updatedAt: Iso, urls: z.record(UrlHash, Iso) });   // 카드가 된 URL의 정규화 해시(sha256 앞 16자리) → 처음 카드가 된 시각(card.created) — M1-12
 
 // 12. data/cache/unknown-names.json  (FR-24) — 키 = LLM 영문 표기 그대로, 사전 등록·ignore 이름은 다음 수집이 제거
 const UnknownName = z.object({
