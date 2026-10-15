@@ -27,11 +27,7 @@ import {
   type RunLog,
 } from "@/lib/schema";
 
-import {
-  runCollect,
-  SLICE_DEFAULT_LIMIT,
-  type CollectDeps,
-} from "../scripts/lib/collect-run";
+import { runCollect, type CollectDeps } from "../scripts/lib/collect-run";
 import {
   createLlmClient,
   type LlmTransport,
@@ -133,7 +129,7 @@ function liveDeps(over: Partial<CollectDeps> = {}) {
     env: "dev",
     llmMode: "live",
     dry: false,
-    limit: SLICE_DEFAULT_LIMIT,
+    limit: 5, // 소량 실행(--limit 5)
     loadSources: async () => [BBC],
     now: () => NOW,
     fetch,

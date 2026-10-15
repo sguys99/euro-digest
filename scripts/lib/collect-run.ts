@@ -62,7 +62,7 @@
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
  * 다음 작업이 갈아끼울 자리: 대표 선정(M1-15) · 카드 ID(M1-16 — 정규화 URL 해시) · 분류(M1-17 — 선별 점수 → 중요도, 팀→리그
  * 대회 근거를 점수화 `comps`로) · 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
- * 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · 비용 가드(M1-22) · runs 기록(M1-27) ·
+ * 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · runs 기록(M1-27) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
  */
 import { mkdir, writeFile } from "node:fs/promises";
