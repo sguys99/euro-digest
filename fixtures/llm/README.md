@@ -124,7 +124,9 @@ FR-29 순서(zod → 출력 전체 코드 검증 → 1회 재시도 → 템플�
 - `review` — 실제 출력의 사람 검토 수(M0-30 review·M0-34 판정): ok·error(틀린 사실)·unsupported(입력에 근거 없음)
 - `traps` — 검사기 구현 함정(이름 속 숫자 'Como 1907', 한국어 비율은 이름을 지운 뒤 비교, 숫자 대조는 근거 id 범위, 스코어 두 순서, 순위 동사 등)
 
-## brief-inputs/ — 브리핑 정형 입력 (임시 형식, M1-19에서 확정)
+## brief-inputs/ — 브리핑 정형 입력 (M0-30·M0-34 임시 형식 — 바이트 그대로 보존)
+
+> **M1-19 확정 형식과의 차이** (2026-10-16, `scripts/lib/brief-input.ts` 머리 주석이 기준): 이 폴더의 파일은 mock 출력의 근거라 고치지 않는다. 확정 빌더는 ① 경기를 **중요도 순**(한국 선수 소속팀·UCL·빅클럽·리그·상위 맞대결·다득점)으로 정렬하고 상한 30경기를 그 순서로 자른다(M0 입력은 킥오프 순) ② 연장·승부차기 경기를 `aet: true`·`regular`(90분)·`pens`(승부차기, 홈-원정)로 넣는다 ③ `standings`는 확정 순위표(진행 중 경기가 있는 대회 제외)의 상위 4위까지(공동 순위 포함), `note`는 `"current table, top 4 positions only"`, `prev`는 없다(M2-03) ④ `korean`은 없다(M3-03) ⑤ 대회 이름은 `competitions.json` nameEn(`"UEFA Champions League"` — B는 `"Champions League"`). 입력 창은 M1-19에서 아래 "입력 창"대로 확정했다. 골든셋(M1-24)은 확정 빌더 출력으로 다시 만든다.
 
 그날 순위표 등은 다시 받을 수 없어(API 날짜 창·현재 순위만 제공) M0-30·M0-34 scratchpad 원본을 바이트 그대로 옮겼다. 요청의 user 메시지 = 파일 내용 `.trim()`.
 
@@ -138,7 +140,7 @@ FR-29 순서(zod → 출력 전체 코드 검증 → 1회 재시도 → 템플�
 | `2026-10-11.json` | E | 2026-10-11 | 10-10 UTC 종료 23경기 전부(취소 1 제외, 득점은 API-Football로 조회한 13경기) + 5대 리그 순위 상위 4(prev 없음) + **한국 선수 5명** | M0-34 |
 | `2026-10-11.meta.json` | — | — | E의 입력 창·취소 경기·API-Football↔football-data 경기 id 대응 | — |
 
-- **입력 창(임시)**: 발행일 D의 입력 = UTC 하루 D-1에 시작한 종료 경기 = KST [D-1 09:00, D 09:00) — `time.ts` `kstWindowRangeUtc(D-1, {fromKst:"09:00", toKst:"09:00"})`와 같다(E meta로 확인). PRD는 "전날(KST)"이라 M1-19에서 창을 확정한다. A·D는 측정용 부분 입력이라 그날 경기 전부가 아니다.
+- **입력 창(M1-19 확정)**: 발행일 D의 입력 = UTC 하루 D-1에 시작한 종료 경기 = KST [D-1 09:00, D 09:00) — `time.ts` `kstWindowRangeUtc(D-1, {fromKst:"09:00", toKst:"09:00"})`와 같다(E meta로 확인). PRD "전날(KST)"을 KST 달력 하루로 자르면 유럽 저녁 경기(KST 새벽 킥오프)가 다음 날로 밀려 UTC 하루(유럽 현지의 어제 경기 전부)로 확정했다. A·D는 측정용 부분 입력이라 그날 경기 전부가 아니다.
 - **필드**
   - `briefDate` — 발행일(KST, YYYY-MM-DD)
   - `matches[]` — `id`(`m` + football-data 경기 id, 예외: A의 `m1575167`은 API-Football 경기 id) · `comp`(대회 표시명) · `round` · `home` · `away` · `ft`·`ht`(**홈-원정** 순서 `"h-a"`) · `goals`(`null` = 득점 데이터 없음 / `[{ min("90+2"), team(골이 기록된 팀), player, assist?, type?("penalty"·"own_goal") }]`)

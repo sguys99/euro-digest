@@ -74,13 +74,13 @@ function linkedMap(
 
 describe("buildBriefInput — 연결된 경기의 득점자(M1-48b ⑥)", () => {
   it("2026-10-10 연결 7경기의 goals가 M0-34 실측 입력과 같다(분·추가 시간·팀·득점자·도움·PK) — 나머지 16경기는 null", () => {
-    const built = buildBriefInput(
-      "2026-10-11",
-      FD_RESULTS,
-      COMPETITIONS,
-      BRIEF_MAX_MATCHES,
-      linkedMap(),
-    );
+    const built = buildBriefInput({
+      briefDate: "2026-10-11",
+      results: FD_RESULTS,
+      competitions: COMPETITIONS,
+      maxMatches: BRIEF_MAX_MATCHES,
+      linked: linkedMap(),
+    });
     expect(built.goals).toEqual({ filled: 7, incomplete: 0 });
     const filled = built.input.matches.filter((m) => m.goals !== null);
     expect(filled.map((m) => m.id).sort()).toEqual(
@@ -109,13 +109,12 @@ describe("buildBriefInput — 연결된 경기의 득점자(M1-48b ⑥)", () => 
   });
 
   it("D37 — 대응표가 비어도 강한 증거로 연결된 경기는 득점자를 넣는다", () => {
-    const built = buildBriefInput(
-      "2026-10-11",
-      FD_RESULTS,
-      COMPETITIONS,
-      BRIEF_MAX_MATCHES,
-      linkedMap(buildTeamIdIndex({})),
-    );
+    const built = buildBriefInput({
+      briefDate: "2026-10-11",
+      results: FD_RESULTS,
+      competitions: COMPETITIONS,
+      linked: linkedMap(buildTeamIdIndex({})),
+    });
     expect(built.goals.filled).toBe(7);
   });
 
@@ -123,13 +122,12 @@ describe("buildBriefInput — 연결된 경기의 득점자(M1-48b ⑥)", () => 
     const map = linkedMap();
     const [first] = [...map.keys()];
     map.set(first!, { ...map.get(first!)!, goalsComplete: false });
-    const built = buildBriefInput(
-      "2026-10-11",
-      FD_RESULTS,
-      COMPETITIONS,
-      BRIEF_MAX_MATCHES,
-      map,
-    );
+    const built = buildBriefInput({
+      briefDate: "2026-10-11",
+      results: FD_RESULTS,
+      competitions: COMPETITIONS,
+      linked: map,
+    });
     expect(built.goals).toEqual({ filled: 6, incomplete: 1 });
     expect(
       built.input.matches.find((m) => m.id === `m${first}`)?.goals,
@@ -137,7 +135,11 @@ describe("buildBriefInput — 연결된 경기의 득점자(M1-48b ⑥)", () => 
   });
 
   it("연결 없이 부르면 기존처럼 모두 null(슬라이스 동작 유지)", () => {
-    const built = buildBriefInput("2026-10-11", FD_RESULTS, COMPETITIONS);
+    const built = buildBriefInput({
+      briefDate: "2026-10-11",
+      results: FD_RESULTS,
+      competitions: COMPETITIONS,
+    });
     expect(built.goals).toEqual({ filled: 0, incomplete: 0 });
     expect(built.input.matches.every((m) => m.goals === null)).toBe(true);
   });

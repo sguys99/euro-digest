@@ -11,11 +11,13 @@
  */
 import {
   cpSync,
+  mkdirSync,
   mkdtempSync,
   readFileSync,
   readdirSync,
   rmSync,
   statSync,
+  writeFileSync,
 } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -24,10 +26,12 @@ import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
+  BriefFileSchema,
   NewsFileSchema,
   RunsDevFileSchema,
   RunsFileSchema,
   SourcesFileSchema,
+  type BriefFile,
   type FeedItem,
   type NewsFile,
 } from "@/lib/schema";
@@ -37,6 +41,7 @@ import {
   briefInputWindow,
   buildBriefInput,
   roundLabel,
+  type BriefInput,
 } from "../scripts/lib/brief-input";
 import {
   BRIEF_MAX_TOKENS,
@@ -299,6 +304,22 @@ function newsFiles(): string[] {
   } catch {
     return [];
   }
+}
+
+function briefFiles(): string[] {
+  try {
+    return readdirSync(path.join(dataDir, "briefs"));
+  } catch {
+    return [];
+  }
+}
+
+function readBrief(date: string): BriefFile {
+  return BriefFileSchema.parse(
+    JSON.parse(
+      readFileSync(path.join(dataDir, "briefs", `${date}.json`), "utf8"),
+    ),
+  );
 }
 
 function readNews(date: string): NewsFile {
@@ -738,31 +759,45 @@ describe("brief-input.ts — 정형 입력(M0-34 창)", () => {
     });
   });
 
-  it("경기 결과만 넣는다 — 기사 텍스트·득점자 없음(goals: null), 연장·승부차기는 뺀다", () => {
+  it("경기 결과만 넣는다 — 기사 텍스트·득점자 없음(goals: null), 연장·승부차기는 aet·regular·pens로 넣는다(M1-19)", () => {
     const raw = JSON.parse(FD_MATCHES_1010).matches as unknown[];
     const window = briefInputWindow("2026-10-11");
     const { results } = toFinishedResults(raw, COMPETITIONS, window);
-    const withPens = [
-      ...results,
-      {
-        ...results[0]!,
-        matchId: 1,
-        score: {
-          ...results[0]!.score,
-          pens: { home: 4, away: 3 },
-          duration: "PENALTY_SHOOTOUT" as const,
-        },
+    const base = results[0]!;
+    const shootout = {
+      ...base,
+      matchId: 1,
+      score: {
+        ft: { home: 1, away: 1 },
+        ht: { home: 0, away: 1 },
+        regular: { home: 1, away: 1 },
+        pens: { home: 4, away: 3 },
+        duration: "PENALTY_SHOOTOUT" as const,
       },
-    ];
-    const { input, excluded } = buildBriefInput(
-      "2026-10-11",
-      withPens,
-      COMPETITIONS,
-    );
+    };
+    const extraTime = {
+      ...base,
+      matchId: 2,
+      score: {
+        ft: { home: 2, away: 1 },
+        ht: null,
+        regular: null, // 응답에 90분 점수가 없으면 regular 키 없음
+        pens: null,
+        duration: "EXTRA_TIME" as const,
+      },
+    };
+    const built = buildBriefInput({
+      briefDate: "2026-10-11",
+      results: [...results, shootout, extraTime],
+      competitions: COMPETITIONS,
+    });
+    const { input, excluded } = built;
     expect(input.briefDate).toBe("2026-10-11");
-    expect(input.matches).toHaveLength(23);
-    expect(excluded).toEqual({ nonRegular: 1, overCap: 0 });
-    expect(input.matches[0]).toEqual({
+    expect(input.matches).toHaveLength(25);
+    expect(excluded).toEqual({ overCap: 0 });
+    expect(built.extraTime).toBe(2);
+    expect(input.standings).toEqual([]); // 순위를 넘기지 않았다
+    expect(input.matches.find((m) => m.id === "m560593")).toEqual({
       id: "m560593",
       comp: "Premier League",
       round: "Matchday 6",
@@ -772,17 +807,54 @@ describe("brief-input.ts — 정형 입력(M0-34 창)", () => {
       ht: "0-0",
       goals: null,
     });
+    const pso = input.matches.find((m) => m.id === "m1")!;
+    expect(JSON.stringify(pso)).toBe(
+      JSON.stringify({
+        id: "m1",
+        comp: "Premier League",
+        round: "Matchday 6",
+        home: "Arsenal",
+        away: "Leeds United",
+        ft: "1-1",
+        ht: "0-1",
+        aet: true,
+        regular: "1-1",
+        pens: "4-3",
+        goals: null,
+      }),
+    );
+    expect(input.matches.find((m) => m.id === "m2")).toEqual(
+      expect.objectContaining({ ft: "2-1", aet: true }),
+    );
+    expect(input.matches.find((m) => m.id === "m2")).not.toHaveProperty(
+      "regular",
+    );
     for (const m of input.matches) {
       expect(
         Object.keys(m).every((k) =>
-          ["id", "comp", "round", "home", "away", "ft", "ht", "goals"].includes(
-            k,
-          ),
+          [
+            "id",
+            "comp",
+            "round",
+            "home",
+            "away",
+            "ft",
+            "ht",
+            "aet",
+            "regular",
+            "pens",
+            "goals",
+          ].includes(k),
         ),
       ).toBe(true);
     }
     expect(
-      buildBriefInput("2026-10-11", results, COMPETITIONS, 5).excluded.overCap,
+      buildBriefInput({
+        briefDate: "2026-10-11",
+        results,
+        competitions: COMPETITIONS,
+        maxMatches: 5,
+      }).excluded.overCap,
     ).toBe(18);
   });
 
@@ -798,7 +870,7 @@ describe("brief-input.ts — 정형 입력(M0-34 창)", () => {
 });
 
 describe("brief.ts — 요청 설정(D28)·출력 파싱", () => {
-  const input = { briefDate: "2026-10-11", matches: [] };
+  const input = { briefDate: "2026-10-11", matches: [], standings: [] };
 
   it("단건 요청 — max_tokens 4096, thinking 적응형 + effort medium 명시, 1요청이라 캐싱 끔", () => {
     const request = buildBriefRequest(input, "지시문");
@@ -1045,8 +1117,8 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
   });
 });
 
-describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 로그만)", () => {
-  it("mock: football-data 경기 1요청 + 순위 5요청 → 종료 23경기 입력 → callSingle 1회(D28 설정) → 줄 출력, 저장 파일 없음", async () => {
+describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력은 로그만) → 템플릿 브리핑 게시(M1-19)", () => {
+  it("mock: football-data 경기 1요청 + 순위 5요청 → 종료 23경기 입력 → callSingle 1회(D28 설정) → 줄 출력, data/briefs에는 템플릿", async () => {
     const { deps, printed, fetcher, llmRequests } = makeDeps();
     const outcome = await runCollect(deps);
     expect(outcome.brief).toMatchObject({ state: "done", inputMatches: 23 });
@@ -1090,9 +1162,16 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
     expect(request.system).toBe(
       read("fixtures/llm/brief-inputs/prompt-m0-30-long.md").trim(),
     );
-    // 기사 텍스트(제목·링크)는 브리핑 입력에 없다(D23·D24)
-    const user = JSON.parse(request.user);
-    expect(Object.keys(user)).toEqual(["briefDate", "matches"]);
+    // 기사 텍스트(제목·링크)는 브리핑 입력에 없다(D23·D24). 현재 순위는 입력 경기 대회의 확정 순위표(M1-19 — 중요도 순)
+    const user = JSON.parse(request.user) as BriefInput;
+    expect(Object.keys(user)).toEqual(["briefDate", "matches", "standings"]);
+    expect(user.standings.map((s) => s.id)).toEqual([
+      "sBL",
+      "sLL",
+      "sPL",
+      "sSA",
+      "sL1",
+    ]);
     expect(request.user).not.toContain("bbc.co.uk");
     for (const card of outcome.news.file!.cards) {
       expect(request.user).not.toContain(card.t);
@@ -1100,13 +1179,38 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
 
     const out = printed.find((p) => p.startsWith("── 브리핑 출력"));
     expect(out?.split("\n")).toHaveLength(6);
-    // 브리핑 저장 파일은 만들지 않는다. 데이터 API를 불렀으므로 mock이어도 runs-dev.json에 호출 수를 비용 0으로 남긴다(M1-48).
-    // cache/ = 발행 파일 카드의 seen-urls 기억(M1-12)
+    // 브리핑 파일(M1-19, D38): 검증(M1-23·M1-45) 전이라 LLM 줄은 저장하지 않고 같은 입력의 코드 템플릿을 게시한다.
+    // 데이터 API를 불렀으므로 mock이어도 runs-dev.json에 호출 수를 비용 0으로 남긴다(M1-48). cache/ = seen-urls 기억(M1-12)
     expect(readdirSync(dataDir).sort()).toEqual([
+      "briefs",
       "cache",
       "news",
       "runs-dev.json",
     ]);
+    const briefFile = readBrief("2026-10-11");
+    expect(briefFile).toMatchObject({
+      date: "2026-10-11",
+      runId: outcome.runId,
+      mode: "template",
+      generatedAt: NOW.toISOString(),
+    });
+    expect(briefFile.lines).toHaveLength(5);
+    const ids = new Set([
+      ...user.matches.map((m) => m.id),
+      ...user.standings.map((s) => s.id),
+    ]);
+    for (const line of briefFile.lines) {
+      expect(line.ai).toBe(false);
+      for (const ref of line.refs) expect(ids.has(ref), ref).toBe(true);
+      // 검증 안 된 LLM 줄은 파일에 없다(M1-45 전 — 이 동작을 고정한다)
+      expect(outcome.brief.lines).not.toContain(line.text);
+    }
+    expect(outcome.briefFile).toMatchObject({
+      action: "written",
+      plan: { mode: "template", reason: "unverified" },
+      existingMode: null,
+      error: null,
+    });
     expect(readdirSync(path.join(dataDir, "cache"))).toEqual([
       "seen-urls.json",
     ]);
@@ -1147,6 +1251,11 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
       ).toMatchObject({
         reason: "no-matches",
       });
+      // 경기 없는 날도 5줄 블록을 유지할 수 있게 empty 브리핑을 게시한다(D30·D38)
+      expect(readBrief("2026-10-11")).toMatchObject({
+        mode: "empty",
+        lines: [],
+      });
     }
     expect(newsFiles()).toEqual(["2026-10-11.json"]);
   });
@@ -1167,6 +1276,12 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
     expect(outcome.exitCode).toBe(0);
     expect(outcome.status).toBe("partial");
     expect(readNews("2026-10-11").cards).toHaveLength(5);
+    // 정형 입력이 없으면 브리핑 파일을 만들지 않는다(템플릿도 만들 수 없다)
+    expect(briefFiles()).toEqual([]);
+    expect(outcome.briefFile).toMatchObject({
+      action: "none",
+      plan: { mode: null, reason: "no-input" },
+    });
   });
 
   it("브리핑 설정(LLM_MODEL·예산 env)이 잘못돼도 브리핑만 실패하고 뉴스는 발행한다(partial)", async () => {
@@ -1184,6 +1299,9 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
     expect(
       records.find((r) => r.event === "summarize.brief.fail"),
     ).toMatchObject({ stage: "setup" });
+    // 브리핑 설정이 틀려도 정형 입력이 있으니 템플릿을 게시한다(FR-26 정신)
+    expect(readBrief("2026-10-11").mode).toBe("template");
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "setup-failed" });
   });
 
   it("FOOTBALL_DATA_API_KEY가 없으면 football-data를 부르지 않는다", async () => {
@@ -1197,6 +1315,7 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
       fetcher.calls.some((c) => c.url.startsWith(FOOTBALL_DATA_BASE_URL)),
     ).toBe(false);
     expect(outcome.exitCode).toBe(0);
+    expect(briefFiles()).toEqual([]);
   });
 
   it("LLM 실패·출력 형식 오류도 발행을 멈추지 않는다", async () => {
@@ -1221,6 +1340,8 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
       reason: "mock-fixture-missing",
     });
     expect(skipped.exitCode).toBe(0);
+    expect(readBrief("2026-10-12").mode).toBe("template");
+    expect(skipped.briefFile?.plan).toMatchObject({ reason: "mock-missing" });
 
     // createLlm 자체가 던짐(예: live 키 없음)
     const throwing = makeDeps({
@@ -1232,6 +1353,10 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
     expect(failed.brief).toMatchObject({ state: "failed", reason: "llm" });
     expect(failed.exitCode).toBe(0);
     expect(failed.status).toBe("partial");
+    expect(failed.briefFile).toMatchObject({
+      action: "written",
+      plan: { mode: "template", reason: "llm-failed" },
+    });
 
     // 출력이 JSON이 아님
     const badOutput = makeDeps({
@@ -1245,6 +1370,139 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(출력은 �
     const bad = await runCollect(badOutput.deps);
     expect(bad.brief).toMatchObject({ state: "failed", reason: "output" });
     expect(readNews("2026-10-11").cards.length).toBeGreaterThan(0);
+    // 앞 실행과 같은 입력이라 템플릿 내용이 같다 — 다시 쓰지 않는다
+    expect(bad.briefFile).toMatchObject({
+      action: "unchanged",
+      plan: { mode: "template", reason: "output-failed" },
+      existingMode: "template",
+    });
+  });
+
+  it("같은 날 재실행 — 그날 파일이 llm·mixed면 LLM을 부르지 않고 덮지 않는다(M1-19 재실행 판정)", async () => {
+    for (const mode of ["llm", "mixed"] as const) {
+      const lines = [
+        {
+          text: "아스널이 첼시를 2-1로 꺾었다.",
+          ai: true,
+          refs: ["m560593"],
+        },
+        ...(mode === "mixed"
+          ? [
+              {
+                text: "프리미어리그 Chelsea 5-1 Bournemouth, 홈팀이 4골 차로 이겼다.",
+                ai: false,
+                refs: ["m560595"],
+              },
+            ]
+          : []),
+      ];
+      const existing = BriefFileSchema.parse({
+        date: "2026-10-11",
+        generatedAt: "2026-10-10T21:31:00.000Z",
+        runId: "collect-prod-20261010T213000Z-0000",
+        mode,
+        lines,
+      });
+      const target = path.join(dataDir, "briefs", "2026-10-11.json");
+      mkdirSync(path.dirname(target), { recursive: true });
+      const text = `${JSON.stringify(existing, null, 2)}\n`;
+      writeFileSync(target, text, "utf8");
+      const { deps, llmCreated, records } = makeDeps();
+      const outcome = await runCollect(deps);
+      expect(outcome.brief).toEqual({
+        state: "skipped",
+        reason: "kept",
+        existingMode: mode,
+        inputMatches: 23,
+      });
+      expect(llmCreated()).toBe(0);
+      expect(readFileSync(target, "utf8")).toBe(text);
+      expect(outcome.briefFile).toMatchObject({
+        action: "none",
+        plan: { mode: null, reason: "kept" },
+        existingMode: mode,
+      });
+      expect(outcome.status).toBe("success");
+      expect(
+        records.find((r) => r.event === "summarize.brief.skip"),
+      ).toMatchObject({ reason: "kept", existingMode: mode });
+    }
+  });
+
+  it("같은 날 재실행 — template은 같은 내용이면 다시 쓰지 않고, 깨진 파일은 새 템플릿으로 고친다(partial)", async () => {
+    await runCollect(makeDeps().deps);
+    const target = path.join(dataDir, "briefs", "2026-10-11.json");
+    const before = readFileSync(target, "utf8");
+    const mtime = statSync(target).mtimeMs;
+    const later = () => new Date("2026-10-10T22:10:00.000Z"); // 같은 KST 날(07:10)
+    const again = await runCollect(makeDeps({ now: later }).deps);
+    expect(again.briefFile?.action).toBe("unchanged");
+    expect(readFileSync(target, "utf8")).toBe(before);
+    expect(statSync(target).mtimeMs).toBe(mtime);
+    // 늦은 재실행이 경기를 덜 받아 줄이 줄어든 템플릿이면 공개된 브리핑을 바꾸지 않는다
+    const fewer = JSON.stringify({
+      matches: JSON.parse(FD_MATCHES_1010).matches.slice(0, 2),
+    });
+    const shrunk = await runCollect(
+      makeDeps({
+        now: later,
+        fetch: fakeFetch({ feed: BBC_XML, fd: fewer }).fetch,
+      }).deps,
+    );
+    expect(shrunk.briefFile).toMatchObject({
+      action: "kept",
+      existingMode: "template",
+    });
+    expect(shrunk.briefFile!.file!.lines.length).toBeLessThan(5);
+    expect(readFileSync(target, "utf8")).toBe(before);
+
+    writeFileSync(target, "{ broken", "utf8");
+    const fixed = await runCollect(makeDeps({ now: later }).deps);
+    expect(fixed.briefFile).toMatchObject({
+      action: "written",
+      readError: "JSON 형식 오류",
+      existingMode: null,
+    });
+    expect(readBrief("2026-10-11").mode).toBe("template");
+    expect(fixed.status).toBe("partial");
+    expect(fixed.exitCode).toBe(0);
+  });
+
+  it("브리핑 파일을 쓰지 못해도 뉴스는 발행한다(partial)", async () => {
+    writeFileSync(path.join(dataDir, "briefs"), "not a directory", "utf8");
+    const { deps, records } = makeDeps();
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.status).toBe("partial");
+    expect(outcome.briefFile).toMatchObject({
+      action: "failed",
+      plan: { mode: "template" },
+    });
+    expect(readNews("2026-10-11").cards).toHaveLength(5);
+    expect(
+      records.find((r) => r.event === "summarize.brief.publish.fail"),
+    ).toMatchObject({ stage: "write" });
+    expect(
+      runStatus({ ok: true }, outcome.brief, null, {
+        action: "written",
+        readError: null,
+      }),
+    ).toBe("success");
+  });
+
+  it("--dry: 브리핑 파일을 쓰지 않고 내용을 출력한다(스키마 통과)", async () => {
+    const { deps, printed } = makeDeps({ dry: true });
+    const outcome = await runCollect(deps);
+    expect(briefFiles()).toEqual([]);
+    expect(outcome.briefFile?.action).toBe("dry");
+    const out = printed.find((p) =>
+      p.startsWith(
+        "── [dry] data/briefs/2026-10-11.json (template · unverified, 5줄",
+      ),
+    );
+    expect(out).toBeDefined();
+    const json = JSON.parse(out!.slice(out!.indexOf("\n") + 1));
+    expect(BriefFileSchema.parse(json).lines).toHaveLength(5);
   });
 });
 
@@ -1311,8 +1569,13 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     const { deps } = liveDeps({ env: "prod" });
     const outcome = await runCollect(deps);
     expect(outcome.exitCode).toBe(0);
-    // cache/seen-urls.json = 발행 파일 카드의 기억(M1-12)
-    expect(readdirSync(dataDir).sort()).toEqual(["cache", "news", "runs.json"]);
+    // cache/seen-urls.json = 발행 파일 카드의 기억(M1-12), briefs/ = 일일 브리핑(M1-19)
+    expect(readdirSync(dataDir).sort()).toEqual([
+      "briefs",
+      "cache",
+      "news",
+      "runs.json",
+    ]);
     const runs = RunsFileSchema.parse(
       JSON.parse(readFileSync(path.join(dataDir, "runs.json"), "utf8")),
     );
@@ -1320,7 +1583,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(readNews("2026-10-11").runId).toBe(outcome.runId);
   });
 
-  it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·runs.json·cache/seen-urls.json)을 통과시킨다", async () => {
+  it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·briefs·runs.json·cache/seen-urls.json)을 통과시킨다", async () => {
     const repo = path.join(dataDir, "repo");
     cpSync(path.join(ROOT, "configs"), path.join(repo, "configs"), {
       recursive: true,
@@ -1337,8 +1600,9 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     );
     expect(report.issues.filter((i) => i.severity === "error")).toEqual([]);
     expect(validationExitCode(report)).toBe(0);
-    expect(report.counts.data).toBe(3); // news·runs.json·cache/seen-urls.json 모두 스키마 검사 대상
+    expect(report.counts.data).toBe(4); // news·briefs·runs.json·cache/seen-urls.json 모두 스키마 검사 대상
     expect(readdirSync(path.join(repo, "data")).sort()).toEqual([
+      "briefs",
       "cache",
       "news",
       "runs.json",
@@ -1384,7 +1648,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(readdirSync(dataDir).sort()).toEqual(["cache", "news"]); // cache/ = seen-urls 기억(M1-12)
   });
 
-  it("예산 초과가 예상되면 LLM을 부르지 않는다", async () => {
+  it("예산 초과가 예상되면 LLM을 부르지 않고 같은 입력의 템플릿을 게시한다(M1-22 이월)", async () => {
     const { deps, params, llmCreated } = liveDeps({
       resolveBriefConfig: () => ({
         model: "claude-haiku-5-5",
@@ -1396,6 +1660,11 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(params).toHaveLength(0);
     expect(llmCreated()).toBe(0);
     expect(outcome.exitCode).toBe(0);
+    const file = readBrief("2026-10-11");
+    expect(file.mode).toBe("template");
+    expect(file.lines.length).toBeGreaterThan(0);
+    expect(file.lines.every((l) => !l.ai)).toBe(true);
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "budget" });
   });
 });
 

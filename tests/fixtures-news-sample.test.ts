@@ -4,7 +4,7 @@
  * - 뉴스 카드 샘플은 NewsFileSchema를 그대로 통과해야 한다(M1 UI가 같은 로더로 읽는다).
  * - 모든 카드는 LLM을 거치지 않은 원제목+링크다: `ai:false`, `s:[]` (PRD §15 D23, M0-25).
  * - 카드의 `t`·`src[].u`는 fixtures/rss의 실제 항목 title·link와 같아야 한다(엔티티·CDATA 해제 + 앞뒤 공백 정리만, FR-20).
- * - 브리핑 샘플은 저장 스키마 미확정(M1-19)이라 테스트 안에서 모양만 확인한다(src/lib/schema에 넣지 않는다).
+ * - 브리핑 샘플의 날마다 data/briefs 파일 스키마(BriefFileSchema — PRD §15 D38, M1-19)를 통과해야 한다(보조 필드는 버린다).
  *
  * XML 파서 의존성을 늘리지 않으려고 정규식으로 항목을 읽는다(fixtures-rss.test.ts와 같은 방식).
  */
@@ -16,7 +16,12 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
-import { KoreanPlayersFileSchema, NewsFileSchema } from "@/lib/schema";
+import {
+  BRIEF_LINE_MAX,
+  BriefFileSchema,
+  KoreanPlayersFileSchema,
+  NewsFileSchema,
+} from "@/lib/schema";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const RSS_DIR = path.join(ROOT, "fixtures/rss");
@@ -32,8 +37,6 @@ const VARIANTS = [
   "domestic",
 ] as const;
 const REQUIRED_LANGS = ["en", "it", "es", "ko"] as const;
-/** 줄당 60자 내외(FR-23) — 두 문장 줄(M0-30 샘플 66자)까지 받아 주는 상한 */
-const BRIEF_LINE_MAX = 80;
 
 // ─── fixtures/rss 항목 (정규식) ─────────────────────────────────────────────
 
@@ -111,25 +114,10 @@ const MetaSchema = z.object({
   sourceNames: z.record(z.string(), z.string()),
 });
 
-/** 브리핑 샘플 — PRD §8.2 초안 모양(저장 스키마 아님, M1-19 확정 전) */
+/** 브리핑 샘플 — 날마다 data/briefs/YYYY-MM-DD.json 한 파일(BriefFileSchema, D38 — 줄 80자 상한 D40 ⑤ 포함) */
 const BriefSampleSchema = z.object({
   _note: z.string().includes("M1-19"),
-  days: z
-    .array(
-      z.object({
-        date: z.iso.date(),
-        generatedAt: z.iso.datetime(),
-        runId: z.string().min(1),
-        lines: z.array(
-          z.object({
-            text: z.string().min(1),
-            ai: z.boolean(),
-            refs: z.array(z.string().min(1)),
-          }),
-        ),
-      }),
-    )
-    .min(1),
+  days: z.array(BriefFileSchema).min(1),
 });
 
 const news = NewsFileSchema.parse(readJson("fixtures/news-sample.json"));
@@ -277,6 +265,12 @@ describe("fixtures/brief-sample.json — 데이터 브리핑 샘플(D24)", () =>
   it("강등(ai:false) 줄과 5줄 미만인 날이 있다(D0 상태 시연)", () => {
     expect(lines.some((l) => !l.ai)).toBe(true);
     expect(days.some((d) => d.lines.length < 5)).toBe(true);
+  });
+
+  it("mode 셋(llm·mixed·template)을 모두 시연한다", () => {
+    expect(new Set(days.map((d) => d.mode))).toEqual(
+      new Set(["llm", "mixed", "template"]),
+    );
   });
 
   it("LLM이 쓴 줄(ai:true)은 근거 id가 있고 한자가 섞이지 않았다", () => {

@@ -371,6 +371,59 @@ export function toLedgerMatch(
   };
 }
 
+const DURATION_BY_LEDGER_STATUS = {
+  FT: "REGULAR",
+  AET: "EXTRA_TIME",
+  PEN: "PENALTY_SHOOTOUT",
+} as const satisfies Record<
+  LedgerMatch["status"],
+  MatchDetail["score"]["duration"]
+>;
+
+/**
+ * 원장 항목 → 경기 상세(브리핑 득점자 연결용 — M1-19, M1-48 이월). 같은 아침 두 번째 실행(백업·force)은 브리핑 창 경기가 원장에
+ * 있어 다시 받지 않으므로, 브리핑은 원장 항목을 이번 실행의 상세처럼 잇는다(collect-run.ts — 득점자는 `goalsComplete`인 항목만,
+ * brief-input.ts `briefGoalsOf`). 원장에 없는 값: 전반 스코어(저장하지 않음 — null)·라인업(한국 선수 행만 저장 — null, 이 변환
+ * 결과로 출전 기록을 만들지 않는다)·팀 정식 이름(null). 90분 스코어는 정규시간 경기(FT)만 최종 스코어와 같다. 키가 `af-<id>`
+ * 형식이 아니면 null.
+ */
+export function ledgerMatchToDetail(m: LedgerMatch): MatchDetail | null {
+  const matchId = afIdOfKey(m.id);
+  if (matchId === null) return null;
+  const ft = { home: m.ft.home, away: m.ft.away };
+  return {
+    provider: "api-football",
+    matchId,
+    leagueId: m.leagueId,
+    leagueName: m.league,
+    comp: m.comp,
+    season: m.season,
+    round: m.round,
+    kickoff: m.kickoff,
+    status: m.status,
+    home: { id: m.home.id, name: m.home.name, fullName: null },
+    away: { id: m.away.id, name: m.away.name, fullName: null },
+    score: {
+      ft,
+      ht: null,
+      regular: m.status === "FT" ? ft : null,
+      pens: m.pens ? { home: m.pens.home, away: m.pens.away } : null,
+      duration: DURATION_BY_LEDGER_STATUS[m.status],
+    },
+    goals: m.goals.map((g) => ({
+      minute: g.minute,
+      extra: g.extra,
+      side: g.side,
+      kind: g.kind,
+      scorer: { id: g.scorer.id, name: g.scorer.name },
+      assist: g.assist ? { id: g.assist.id, name: g.assist.name } : null,
+    })),
+    goalsComplete: m.goalsComplete,
+    lineups: { home: null, away: null },
+    fetchedAt: m.fetchedAt,
+  };
+}
+
 export interface LedgerEntriesBuild {
   /** 원장 항목(킥오프·id 순) */
   entries: LedgerMatch[];

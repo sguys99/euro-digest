@@ -11,6 +11,7 @@
  * 브리핑 입력 goals(연결 경기만).
  */
 import {
+  cpSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
@@ -1284,5 +1285,146 @@ describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
     const filled = input.matches.filter((m) => m.goals !== null).length;
     expect(done.goalsFilled).toBe(filled);
     expect(Number(done.goalsFilled) + Number(done.goalsIncomplete)).toBe(23);
+  });
+
+  it("같은 아침 두 번째 실행 — 원장에 있어 다시 받지 않은 경기의 득점자는 원장 항목으로 잇는다(M1-19, M1-48 이월)", async () => {
+    const first = makeDeps(undefined, regular());
+    await runCollect(first.deps);
+    const firstDone = first.records.find(
+      (r) => r.event === "summarize.input.done",
+    )!;
+    expect(firstDone).toMatchObject({ goalsFilled: 7, linkedFromLedger: 0 });
+
+    // 백업 실행(06:40 KST) — 완전한 7경기는 원장에 있어 다시 받지 않는다(known). dry로 입력을 출력해 본다
+    const second = makeDeps(
+      undefined,
+      regular({ now: () => new Date("2026-10-10T21:40:00.000Z"), dry: true }),
+    );
+    await runCollect(second.deps);
+    expect(second.afCalls).not.toContain("/fixtures?id=1575180");
+    const done = second.records.find(
+      (r) => r.event === "summarize.input.done",
+    )!;
+    expect(done).toMatchObject({
+      afBriefDetails: 16, // 이번 실행이 받은 것은 불완전 16경기뿐
+      linkedFromLedger: 7,
+      goalsFilled: 7,
+    });
+    const block = second.printed.find((p) =>
+      p.startsWith("── [dry] 브리핑 입력"),
+    )!;
+    const input = JSON.parse(block.slice(block.indexOf("\n") + 1)) as {
+      matches: Array<{ id: string; goals: unknown[] | null }>;
+    };
+    expect(input.matches.find((m) => m.id === "m565819")!.goals).toEqual([
+      { min: "1", team: "Augsburg", player: "Robin Fellhauer" },
+      {
+        min: "55",
+        team: "Bayern",
+        player: "Ismael Saibari",
+        assist: "Harry Kane",
+      },
+      expect.objectContaining({ min: "64", team: "Augsburg" }),
+      expect.objectContaining({ min: "80" }),
+    ]);
+  });
+
+  it("API-Football 단계가 돌지 않아도(키 없음) 원장의 완전 항목으로 득점자를 넣는다 — 템플릿 줄에도 쓰인다", async () => {
+    await runCollect(makeDeps(undefined, regular()).deps);
+    const { deps, records } = makeDeps(undefined, {
+      env: "prod",
+      ledgerEnabled: true,
+      now: () => new Date("2026-10-10T21:40:00.000Z"),
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.matchData?.apiFootball).toMatchObject({
+      state: "skipped",
+      reason: "no-api-key",
+    });
+    expect(
+      records.find((r) => r.event === "summarize.input.done"),
+    ).toMatchObject({
+      afBriefDetails: null,
+      linkedFromLedger: 23, // 원장 23경기 모두 대응표로 연결 — 득점 목록이 완전한 7경기만 goals 배열
+      linkedByTeamIds: 23,
+      linkedByEvidence: 0,
+      goalsFilled: 7,
+      goalsIncomplete: 16,
+    });
+    const brief = JSON.parse(
+      readFileSync(path.join(dataDir, "briefs", "2026-10-11.json"), "utf8"),
+    ) as { mode: string; lines: Array<{ text: string; refs: string[] }> };
+    expect(brief.mode).toBe("template");
+    // 득점자 서술(결승골·동점골·해트트릭)이 들어간 줄이 있다 — 원장 항목에서 온 득점 목록
+    expect(brief.lines.some((l) => /결승골|동점골|해트트릭/.test(l.text))).toBe(
+      true,
+    );
+  });
+
+  it("API-Football 단계가 돌지 않은 실행은 D37 자동 연결을 끈다 — 날짜 조회 목록이 없어 '점수 모르는 후보' 차단을 확인할 수 없다(대응표만)", async () => {
+    await runCollect(makeDeps(undefined, regular()).deps);
+    // 대응표에서 Augsburg를 뺀 설정 — Augsburg 2-2 Bayern(m565819 ↔ af 1575180)은 강한 증거로만 이을 수 있다
+    const root = mkdtempSync(path.join(os.tmpdir(), "euro-digest-noaug-"));
+    try {
+      cpSync(path.join(ROOT, "configs"), path.join(root, "configs"), {
+        recursive: true,
+      });
+      cpSync(
+        path.join(ROOT, "fixtures/llm/brief-inputs"),
+        path.join(root, "fixtures/llm/brief-inputs"),
+        { recursive: true },
+      );
+      const teamIdsPath = path.join(root, "configs", "team-ids.json");
+      const teamIds = JSON.parse(readFileSync(teamIdsPath, "utf8")) as Record<
+        string,
+        unknown
+      >;
+      delete teamIds["augsburg"];
+      writeFileSync(teamIdsPath, JSON.stringify(teamIds), "utf8");
+      const inputOf = (printed: string[]) => {
+        const block = printed.find((p) =>
+          p.startsWith("── [dry] 브리핑 입력"),
+        )!;
+        return JSON.parse(block.slice(block.indexOf("\n") + 1)) as {
+          matches: Array<{ id: string; goals: unknown[] | null }>;
+        };
+      };
+
+      // 키 없음(snapshot 없음) — 원장 항목만, 자동 연결 끔
+      const ledgerOnly = makeDeps(undefined, {
+        rootDir: root,
+        env: "prod",
+        dry: true,
+        now: () => new Date("2026-10-10T21:40:00.000Z"),
+      });
+      await runCollect(ledgerOnly.deps);
+      expect(
+        ledgerOnly.records.find((r) => r.event === "summarize.input.done"),
+      ).toMatchObject({
+        afBriefDetails: null,
+        linkedByTeamIds: 22,
+        linkedByEvidence: 0,
+        goalsFilled: 6,
+      });
+      expect(
+        inputOf(ledgerOnly.printed).matches.find((m) => m.id === "m565819")!
+          .goals,
+      ).toBeNull();
+
+      // API-Football 단계가 돌면(날짜 조회 목록 있음) 같은 경기를 강한 증거로 잇는다
+      const withAf = makeDeps(
+        undefined,
+        withApiFootball({ rootDir: root, dry: true }),
+      );
+      await runCollect(withAf.deps);
+      expect(
+        withAf.records.find((r) => r.event === "summarize.input.done"),
+      ).toMatchObject({ linkedByEvidence: 1 });
+      expect(
+        inputOf(withAf.printed).matches.find((m) => m.id === "m565819")!.goals,
+      ).not.toBeNull();
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

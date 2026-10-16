@@ -1,18 +1,16 @@
 {
-  "_note": "초안 형식 — M1-19 확정 시 갱신. 데이터 브리핑(\"오늘의 5줄\") 샘플(D0 시안 입력, M0-34). 날짜별 { date, generatedAt, runId, lines: [{ text, ai, refs }] }는 PRD §8.2 초안을 하루 단위로 쓴 것이고 zod 스키마·레지스트리는 아직 없다(M1-19 ❓ 사용자 확인 전). 보조 필드: textRaw = 치환 전 LLM 출력(템플릿 줄은 영문 입력 표기), lenKo = 치환 뒤 글자 수, _note·_downgrade = 설명(스키마 밖). refs = 근거 id(m<football-data 경기 id — 예외: 2026-09-19의 m1575167은 API-Football 경기 id> · s<대회> 순위표 · k<API-Football 선수 id>). ai:true = LLM 작성(\"AI 작성\" 라벨), ai:false = 코드 템플릿(라벨 없음). 고유명사 치환: configs/names.ko.json → M0-30 임시 사전 → M0-34 임시 사전(scratchpad, 확정 아님) 순서 + 조사 보정 시험판.",
+  "_note": "M1-19 확정 형식(PRD §15 D38 — src/lib/schema/brief.ts BriefFileSchema). 데이터 브리핑(\"오늘의 5줄\") 샘플(D0 시안 입력, M0-34). 날짜별 { date, generatedAt, runId, mode, lines: [{ text, ai, refs }] }는 data/briefs/YYYY-MM-DD.json 한 파일씩을 한데 모은 것이다(각 날이 BriefFileSchema 통과 — 보조 필드는 스키마가 버린다). mode = llm(모든 줄 LLM)·mixed(일부 줄 템플릿 강등)·template(LLM 없음)·empty(전날 경기 없음). 보조 필드(표시·검토용, 실제 data/briefs에는 없음): textRaw = 치환 전 LLM 출력(LLM 줄만 — 템플릿 줄은 이름을 바꾼 채로 바로 만들어 원문 단계가 없다), lenKo = 치환 뒤 글자 수, _note·_downgrade = 설명. refs = 근거 id(m<football-data 경기 id — 예외: 2026-09-19의 m1575167은 API-Football 경기 id> · s<대회> 순위표 · k<API-Football 선수 id>). ai:true = LLM 작성(\"AI 작성\" 라벨), ai:false = 코드 템플릿(라벨 없음 — scripts/lib/brief-template.ts M1-19 생성기 출력). 고유명사 치환: configs/names.ko.json → M0-30 임시 사전 → M0-34 임시 사전(scratchpad, 확정 아님) 순서 + 조사 보정 시험판.",
   "templateFormats": {
-    "match": "{홈} {홈점수}-{원정점수} {원정}",
-    "standing": "{팀}, 승점 {n}(으)로 {리그} {r}위",
-    "koreanStarted": "{선수}, {팀} 선발 출전 {m}분",
-    "koreanSub": "{선수}, {팀} 교체 출전 {m}분",
-    "koreanBench": "{선수}, {팀} 경기 출전 없음",
-    "_note": "M0-34 임시 템플릿(정형 입력만으로 결정적, LLM 없음). 정식 구현은 M1-19. 팀·선수 이름은 위 치환 순서로 한글 표기. (으)로는 숫자 받침 기준."
+    "match": "{대회} {홈} {홈점수}-{원정점수} {원정}, {서술}. — 스코어는 홈-원정 고정(D30). 서술(입력에서 계산되는 것만): 홈팀이/원정팀이 이겼다 · n골 차로 이겼다(3골 차 이상) · 역전승을 거뒀다(뒤진 적이 확인될 때) · {선수}의 {분}분 결승골로 … 이겼다 · {선수}의 해트트릭으로 … 이겼다 · {선수}의 {분}분 동점골로 두 팀이 비겼다 · 두 팀이 승부를 가리지 못했다 · 득점 없이 비겼다 · 연장 끝에 … 이겼다 · 연장 끝에 비겼다 · 승부차기(h-a) 끝에 … 이겼다",
+    "standing": "{대회} 순위는 1위 {팀}(승점 n), 2위 {팀}(승점 n) 순이다. — 같은 순위는 공동 n위 {팀}·{팀}, 전일 순위가 없어 변동 서술 없음(D40)",
+    "_note": "M1-19 생성기(scripts/lib/brief-template.ts) 문형 요약. 결정적·ai:false·줄마다 refs. 이름 바로 뒤에 받침에 따라 바뀌는 조사를 붙이지 않는다(쉼표·괄호·'의'만) — 조사 보정 없이 한글 이름으로 바꿀 수 있다(M1-21). 60자 안의 가장 자세한 변형, 없으면 80자 안. 한국 선수 출전 문형은 M3-03 이후."
   },
   "days": [
     {
       "date": "2026-10-11",
       "generatedAt": "2026-10-11T06:54:14.659Z",
       "runId": "collect-dev-20261011T065401Z-0df9",
+      "mode": "mixed",
       "_note": "실측 1회(M0-34, claude-haiku-5-5 단건·thinking 적응형·effort medium·max_tokens 4096) — 입력 E: 2026-10-10 UTC(KST 10-10 09:00~10-11 09:00) 6개 대회 종료 경기 23개(취소 1개 제외, 득점은 API-Football로 조회한 13경기만) + 리그별 현재 순위 상위 4 + 한국 선수 5명. 코드 검증에서 걸린 줄은 템플릿으로 강등(실제 강등 사례).",
       "lines": [
         {
@@ -56,12 +54,12 @@
           "lenKo": 52
         },
         {
-          "text": "라이프치히 6-0 프랑크푸르트",
+          "text": "분데스리가 라이프치히 6-0 프랑크푸르트, 은쿠쿠의 해트트릭으로 홈팀이 이겼다.",
           "ai": false,
           "refs": [
             "m565815"
           ],
-          "lenKo": 16,
+          "lenKo": 44,
           "_downgrade": "LLM 줄 \"RB Leipzig이 Frankfurt를 6-0으로 완파했고 Christopher Nkunku는 2골을 넣었다.\" — 근거에 없는 숫자 2"
         }
       ]
@@ -70,6 +68,7 @@
       "date": "2026-10-10",
       "generatedAt": "2026-10-10T16:41:23.508Z",
       "runId": "collect-dev-20261010T163429Z-6027",
+      "mode": "llm",
       "_note": "M0-30 샘플(입력 C) — 2026-10-09 UTC 6개 대회 경기 3개 전부(M0-34 조회로 확인). text는 M0-30 textRaw를 names.ko 우선 치환으로 다시 만들었다(사실 동일, 표기만 names.ko에 맞춤).",
       "lines": [
         {
@@ -123,6 +122,7 @@
       "date": "2026-09-21",
       "generatedAt": "2026-10-10T16:41:23.508Z",
       "runId": "collect-dev-20261010T163429Z-6027",
+      "mode": "llm",
       "_note": "M0-30 샘플(입력 D) — 2026-09-20 UTC 6개 대회 경기 20개 중 프리미어리그 4개만 입력에 넣은 측정용 입력. text는 M0-30 textRaw를 names.ko 우선 치환으로 다시 만들었다(사실 동일, 표기만 names.ko에 맞춤).",
       "lines": [
         {
@@ -176,6 +176,7 @@
       "date": "2026-09-19",
       "generatedAt": "2026-10-10T16:41:23.508Z",
       "runId": "collect-dev-20261010T163429Z-6027",
+      "mode": "llm",
       "_note": "M0-30 샘플(입력 A) — 2026-09-18 UTC 6개 대회 경기 5개 중 2개(브렌트포드-첼시·바이에른-우니온 베를린)만 입력에 넣은 측정용 입력이라 나머지 3경기는 없다(M0-34 football-data 조회로 확인). 근거 id m1575167은 API-Football 경기 id다(입력 A 그대로 — football-data id는 565804). text는 M0-30 textRaw를 names.ko 우선 치환으로 다시 만들었다(사실 동일, 표기만 names.ko에 맞춤).",
       "lines": [
         {
@@ -231,25 +232,24 @@
       "date": "2026-09-18",
       "generatedAt": "2026-10-11T06:55:55.320Z",
       "runId": "fixture-m0-34",
+      "mode": "template",
       "_note": "경기 수가 적은 날 + LLM 없이 템플릿만 게시한 상태 시연(예산 초과·LLM 실패 시 FR-26·FR-27 경로). 입력 F: 2026-09-17 UTC 6개 대회 실제 종료 경기 2개(라리가 주중 6라운드, M0-34 football-data 조회) — 지난 날짜라 그날 순위표는 없어 순위 줄 없음.",
       "lines": [
         {
-          "text": "레알 베티스 1-0 헤타페",
+          "text": "라리가 레알 베티스 1-0 헤타페, 홈팀이 이겼다.",
           "ai": false,
           "refs": [
             "m564686"
           ],
-          "textRaw": "Real Betis 1-0 Getafe",
-          "lenKo": 14
+          "lenKo": 28
         },
         {
-          "text": "말라가 1-3 비야레알",
+          "text": "라리가 말라가 1-3 비야레알, 원정팀이 이겼다.",
           "ai": false,
           "refs": [
             "m564683"
           ],
-          "textRaw": "Málaga 1-3 Villarreal",
-          "lenKo": 12
+          "lenKo": 27
         }
       ]
     },
@@ -257,6 +257,7 @@
       "date": "2026-09-11",
       "generatedAt": "2026-10-10T16:41:23.508Z",
       "runId": "collect-dev-20261010T163429Z-6027",
+      "mode": "llm",
       "_note": "M0-30 샘플(입력 B) — 2026-09-10 UTC UCL 리그 페이즈 1차전 6경기, 득점자·한국 선수 데이터 없음. text는 M0-30 textRaw를 names.ko 우선 치환으로 다시 만들었다(사실 동일, 표기만 names.ko에 맞춤).",
       "lines": [
         {

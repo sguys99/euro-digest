@@ -1189,6 +1189,7 @@ describe("summarize 값과 무관하게 기사는 LLM에 보내지 않는다 (D2
     expect(Object.keys(JSON.parse(request.user))).toEqual([
       "briefDate",
       "matches",
+      "standings", // 현재 순위(M1-19) — 기사 텍스트가 아닌 정형 데이터
     ]);
     const body = `${request.system}\n${request.user}`;
     for (const id of ["bbc-sport-football", "the-athletic-football"]) {

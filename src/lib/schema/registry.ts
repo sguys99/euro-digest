@@ -12,6 +12,7 @@
  */
 import type { z } from "zod";
 
+import { BriefFileSchema } from "./brief";
 import {
   AfPendingFileSchema,
   SeenUrlsFileSchema,
@@ -179,6 +180,15 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
     status: "confirmed",
     schema: NewsFileSchema,
     description: "일별 뉴스 카드 (F3, 파일명 = KST 발행일)",
+    expectedBaseName: (f) => f.date,
+  }),
+  entry({
+    pattern: "data/briefs/????-??-??.json",
+    kind: "data",
+    status: "confirmed",
+    schema: BriefFileSchema,
+    description:
+      '일일 브리핑 "오늘의 5줄" — mode llm·mixed·template·empty (PRD §15 D38, M1-19, 파일명 = KST 발행일)',
     expectedBaseName: (f) => f.date,
   }),
   entry({

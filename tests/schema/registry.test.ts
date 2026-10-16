@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  BriefFileSchema,
   KoreanPlayersDataFileSchema,
   NewsFileSchema,
   RunsDevFileSchema,
@@ -72,7 +73,8 @@ describe("schemaRegistry ↔ fixtures/schema", () => {
     expect(drafts).toEqual([]);
     // + configs/team-ids.json (PRD §15 D33, M1-44) · data/cache/af-pending.json (D27·D33, M1-48)
     // + data/matches/????-??.json · data/matches/meta.json (경기 기록 원장 D33, M1-48b)
-    expect(schemaRegistry).toHaveLength(26);
+    // + data/briefs/????-??-??.json (일일 브리핑 D38, M1-19)
+    expect(schemaRegistry).toHaveLength(27);
   });
 
   it("configs/ 항목은 알 수 없는 키를 거부하고 data/ 항목은 버린다 (결정 Q5)", () => {
@@ -104,6 +106,7 @@ describe("findSchemaEntry — 경로 매칭", () => {
     ["./configs/sources.json", SourcesFileSchema],
     ["configs\\sources.json", SourcesFileSchema],
     ["data/news/2026-10-10.json", NewsFileSchema],
+    ["data/briefs/2026-10-11.json", BriefFileSchema],
     ["data/players/korean.json", KoreanPlayersDataFileSchema],
     ["data/players/weekly/2026-53.json", WeeklyReportSchema],
     ["data/runs.json", RunsFileSchema],

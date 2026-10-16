@@ -32,15 +32,20 @@
  *      07:20 브리핑 마감)에 뉴스 시간만큼 브리핑 경기를 더 받을 수 있다. 뉴스가 실패하면 취소 신호로 경기 데이터의 새 요청을
  *      멈추고(보내는 중인 요청 1건까지) 브리핑(LLM)은 부르지 않는다 — 커밋되지 않는 실행의 LLM 비용·API-Football 한도 낭비를
  *      최소로 한다(낭비 상한 = 뉴스가 끝날 때까지 보낸 요청, 최대 약 12건).
- *   ③ 브리핑: football-data 종료 경기 → 정형 입력 → `callSingle` 1요청(브리핑 마감까지 — 재시도 대기만 묶음, 요청 타임아웃·
- *      마감 초과 템플릿은 M1-45) → **출력은 로그만**(저장 M1-19). 브리핑은
+ *   ③ 브리핑: football-data 종료 경기 + 현재 순위 → 정형 입력(M1-19 — brief-input.ts: 중요도 순 상한, 확정 순위표 상위 4위,
+ *      연장·승부차기 표기) → `callSingle` 1요청(브리핑 마감까지 — 재시도 대기만 묶음, 요청 타임아웃·마감 초과 템플릿은 M1-45)
+ *      → **LLM 출력은 로그만** → `data/briefs/<KST 발행일>.json` 게시(M1-19, D38 — brief-file.ts). 검증(M1-23)·재시도·강등(M1-45)
+ *      전이라 검증 안 된 LLM 줄은 저장하지 않고 같은 입력의 코드 템플릿 문장(brief-template.ts, `template`)을 게시한다. 경기가
+ *      없으면 `empty`(호출 생략), 정형 입력이 없으면(football-data 키 없음·실패) 파일 없음. 그날 파일이 이미 `llm`·`mixed`면
+ *      LLM을 부르지 않고 덮지 않는다(재실행 판정 — brief-file.ts `decideBriefWrite`). 브리핑은
  *      football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층)을 기다린 뒤 시작하고, 둘을 이어(대응표 확인 + D37
- *      강한 증거 — team-ids.ts linkMatchDetails) 득점 목록이 완전한 경기만 입력 `goals`에 득점자를 넣는다(M1-48b),
+ *      강한 증거 — team-ids.ts linkMatchDetails) 득점 목록이 완전한 경기만 입력 `goals`에 득점자를 넣는다(M1-48b). 같은 아침
+ *      두 번째 실행은 브리핑 창 경기를 다시 받지 않으므로 원장(data/matches)의 같은 창 항목도 잇는다(M1-19 — M1-48 이월).
  *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
  *      football-data 단계가 실패하면 그날 브리핑만 생략하고 뉴스는 발행한다(D24). 순위 실패는 그 대회 순위만 빠진다(partial).
  *      비용 가드(M1-22, FR-27 — budget-guard.ts): live 실행은 호출 전에 최악값 예상(첫 호출 + FR-29 재시도, 출력 = max_tokens)을
  *      출력하고 실행 시작 KST 날짜·달의 사용액(월 prod+dev, 일 prod 실행=prod만)과 비교한다. 초과 예상이거나 runs 파일을 읽지 못하면
- *      LLM 없이 `skipped`·reason `budget`(템플릿 게시는 M1-19). 실행 시작에는 이번 달 누적과 dev 50% 초과 경고를 남긴다.
+ *      LLM 없이 `skipped`·reason `budget` → 같은 입력의 템플릿 게시(M1-19). 실행 시작에는 이번 달 누적과 dev 50% 초과 경고를 남긴다.
  *   ④ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
  *
  * 실패 격리: 소스 하나의 실패(받기·파싱·예상 밖 오류)는 그 소스만 건너뛴다(상태 partial). 피드 받기는 scripts/lib/feed-collect.ts가
@@ -73,6 +78,8 @@ import {
   KoreanPlayersFileSchema,
   NamesKoFileSchema,
   type AfPendingEntry,
+  type BriefFile,
+  type BriefMode,
   type CompetitionsFile,
   type FeedItem,
   type LedgerMatch,
@@ -112,13 +119,31 @@ import {
 } from "./api-football-stage";
 
 import {
-  BRIEF_MAX_MATCHES,
   briefInputWindow,
   buildBriefInput,
+  mergeBriefDetails,
   serializeBriefInput,
   type BriefInput,
+  type BriefInputBuild,
 } from "./brief-input";
 import { buildBriefRequest, loadSlicePrompt, parseBriefOutput } from "./brief";
+import {
+  buildBriefFile,
+  decideBriefWrite,
+  isKeptBriefMode,
+  planBriefPublish,
+  readBriefFile,
+  serializeBriefFile,
+  writeBriefFile,
+  type BriefFileRead,
+  type BriefPublishPlan,
+} from "./brief-file";
+import {
+  ENGLISH_NAMES,
+  namesKoResolver,
+  templateBriefLines,
+  type BriefNames,
+} from "./brief-template";
 import {
   announceBriefBudget,
   briefBudgetSkip,
@@ -182,9 +207,12 @@ import {
   buildLedgerEntries,
   isIncompleteLedgerMatch,
   koreanPlayerTargets,
+  ledgerMatchToDetail,
+  ledgerMonthOf,
   ledgerMonthsAround,
   ledgerPlanKnown,
   ledgerWriteMode,
+  readLedgerMonth,
   readLedgerWindow,
   type KoreanNameCheck,
   type KoreanPlayerTargets,
@@ -399,8 +427,18 @@ export type BriefOutcome =
     }
   | {
       /**
+       * 그날 브리핑 파일이 이미 검증 통과 LLM 브리핑(`llm`·`mixed`)이라 LLM을 부르지 않았다(M1-19 재실행 판정 — 덮지 않음,
+       * brief-file.ts). M1-45 전에는 이 mode를 쓰는 실행이 없어 생기지 않는다.
+       */
+      state: "skipped";
+      reason: "kept";
+      existingMode: BriefMode;
+      inputMatches: number;
+    }
+  | {
+      /**
        * 비용 가드(M1-22, FR-27)가 LLM을 막았다 — 일·월 예산 초과 예상 또는 runs 파일을 읽지 못해 판정 불가.
-       * 템플릿 브리핑(M1-19)이 이 결과를 받아 게시하고, 실행 기록(M1-45)이 사유를 잇는다.
+       * 같은 입력의 템플릿 브리핑(M1-19)을 게시하고(verdict 셋 다), 실행 기록(M1-45)이 사유를 잇는다.
        */
       state: "skipped";
       reason: "budget";
@@ -413,7 +451,32 @@ export type BriefOutcome =
       detail: string;
       inputMatches: number;
     }
+  /** LLM 출력이 임시 스키마를 통과했다 — 검증(M1-23·M1-45) 전이라 lines는 로그·dry 출력에만 쓰고 저장하지 않는다(M1-19) */
   | { state: "done"; inputMatches: number; lines: string[] };
+
+/**
+ * 브리핑 게시 결과(M1-19 — data/briefs/<KST 발행일>.json, D38). 브리핑 단계가 시작되지 않았으면(뉴스 실패) CollectOutcome.briefFile은
+ * null이다.
+ */
+export interface BriefFileOutcome {
+  /** 이번 실행의 게시 계획(brief-file.ts planBriefPublish) — mode null이면 파일을 만들지 않았다. 계획 중 예상 밖 오류면 null */
+  plan: BriefPublishPlan | null;
+  /**
+   * written = 썼다 · unchanged = 기존과 내용이 같아 쓰지 않음 · kept = 기존 파일 유지(llm·mixed 또는 줄 있는 template을 empty로
+   * 지우지 않음) · dry = 출력만 · none = 만들 파일이 없음(plan.mode null) · failed = 검증·쓰기 오류(이 실행은 partial)
+   */
+  action: "written" | "unchanged" | "kept" | "dry" | "none" | "failed";
+  /** 만든 파일 내용(dry·테스트용) — 만들지 않았으면 null */
+  file: BriefFile | null;
+  /** 쓴 경로 — 쓰지 않았으면 null */
+  path: string | null;
+  /** 기존 파일 mode(없거나 깨졌으면 null) */
+  existingMode: BriefMode | null;
+  /** 기존 파일 읽기 오류(깨진 파일 — 새 파일로 고쳤으면 written과 함께) */
+  readError: string | null;
+  /** 검증·쓰기 오류 */
+  error: string | null;
+}
 
 export type { SourceErrorType, SourceOutcome } from "./feed-collect";
 
@@ -643,6 +706,8 @@ export interface CollectOutcome {
    */
   matchData: MatchDataOutcome | null;
   brief: BriefOutcome;
+  /** 브리핑 게시(M1-19) — 브리핑 단계가 돌지 않았으면(뉴스 실패) null */
+  briefFile: BriefFileOutcome | null;
   /** 기록한 실행 로그(기록하지 않았으면 null) */
   run: RunLog | null;
   runPath: string | null;
@@ -2492,7 +2557,7 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
 
 // ─── ③ 브리핑 ────────────────────────────────────────────────────────────
 
-/** 브리핑 득점자 연결 결과(M1-48b) */
+/** 브리핑 득점자 연결 결과(M1-48b · 원장 항목 M1-19) */
 interface BriefGoalLinks {
   /** football-data 경기 id → 연결된 API-Football 상세 */
   byFd: Map<number, MatchDetail>;
@@ -2500,43 +2565,135 @@ interface BriefGoalLinks {
   byEvidence: number;
   /** 대회·킥오프·스코어는 맞지만 연결하지 않은 쌍(이유) */
   unconfirmed: string[];
+  /** 이번 실행이 받지 않아 원장(data/matches)에서 보탠 상세 수 */
+  fromLedger: number;
+}
+
+/** 브리핑이 쓰는 팀 id 대응표 — 읽지 못하면 빈 색인 + 자동 연결 끔(대응표와 어긋나는지 확인할 수 없다 — M1-48b 리뷰 권장 5) */
+interface BriefTeamIndex {
+  index: TeamIdIndex;
+  autoLink: boolean;
+}
+
+async function loadBriefTeamIndex(deps: CollectDeps): Promise<BriefTeamIndex> {
+  try {
+    return {
+      index: buildTeamIdIndex(await loadTeamIds(deps.rootDir)),
+      autoLink: true,
+    };
+  } catch (error) {
+    deps.logger.warn("summarize.input.team-ids-unreadable", {
+      file: "configs/team-ids.json",
+      error: errorText(error),
+      autoLink: false,
+    });
+    return { index: EMPTY_TEAM_ID_INDEX, autoLink: false };
+  }
 }
 
 /**
- * 브리핑 몫(컷오프까지 받은 brief 계층 상세)을 football-data 종료 경기에 잇는다 — 대응표 확인 + D37 강한 증거(후보 수는 날짜 조회
- * 목록·football-data 결과 밖 경기까지 센다). 대응표를 읽지 못하면 자동 연결도 끈다(대응표와 어긋나는지 확인할 수 없다 — 리뷰
- * 권장 5) — 그날은 득점자 없이. 던지지 않는다 — 실패하면 득점자 없이(goals null).
+ * 중요도 입력 — 활성 한국 선수 소속팀의 football-data 팀 id(korean-players.json → team-ids.json). 읽지 못하면 빈 집합(중요도에서
+ * 한국 선수 가중치만 빠진다 — 경고).
+ */
+async function briefKoreanTeamIds(
+  deps: CollectDeps,
+  index: TeamIdIndex,
+): Promise<Set<number>> {
+  try {
+    const players = await readConfigFile(
+      deps.rootDir,
+      "korean-players.json",
+      KoreanPlayersFileSchema,
+    );
+    const ids = new Set<number>();
+    for (const p of players) {
+      if (!p.active) continue;
+      const fd = index.bySlug.get(p.team)?.fd;
+      if (fd !== null && fd !== undefined) ids.add(fd);
+    }
+    return ids;
+  } catch (error) {
+    deps.logger.warn("summarize.input.korean-players-unreadable", {
+      file: "configs/korean-players.json",
+      error: errorText(error),
+    });
+    return new Set();
+  }
+}
+
+/**
+ * 원장(data/matches)의 브리핑 창 항목 → 경기 상세(6개 대회만 — football-data와 짝짓는 대상). 같은 아침 두 번째 실행은 브리핑 창
+ * 경기를 다시 받지 않으므로 이 항목으로 득점자를 잇는다(M1-48 이월). 원장은 정기 운영 prod 실행만 쓰므로 개발 실행에서는 대개 없다.
+ * 던지지 않는다 — 읽지 못하면 경고하고 빈 목록.
+ */
+async function readBriefLedgerDetails(
+  deps: CollectDeps,
+  window: { start: string; end: string },
+): Promise<MatchDetail[]> {
+  const start = Date.parse(window.start);
+  const end = Date.parse(window.end);
+  const months = [
+    ...new Set([
+      ledgerMonthOf(window.start),
+      ledgerMonthOf(new Date(end - 1).toISOString()),
+    ]),
+  ];
+  const details: MatchDetail[] = [];
+  for (const month of months) {
+    const read = await readLedgerMonth(deps.dataDir, month);
+    if (read.error !== null) {
+      deps.logger.warn("summarize.input.ledger-unreadable", {
+        file: `data/matches/${month}.json`,
+        error: read.error,
+      });
+      continue;
+    }
+    for (const m of read.value?.matches ?? []) {
+      const kickoff = Date.parse(m.kickoff);
+      if (m.comp === null || kickoff < start || kickoff >= end) continue;
+      const detail = ledgerMatchToDetail(m);
+      if (detail) details.push(detail);
+    }
+  }
+  return details;
+}
+
+/**
+ * 브리핑 몫(컷오프까지 받은 brief 계층 상세) + 원장의 같은 창 항목을 football-data 종료 경기에 잇는다 — 대응표 확인 + D37 강한
+ * 증거(후보 수는 날짜 조회 목록·football-data 결과 밖 경기까지 센다). 대응표를 읽지 못했거나 API-Football 단계가 돌지 않아 날짜
+ * 조회 목록이 없으면(원장 항목만) 자동 연결을 끈다 — 그날은 대응표로 확인된 경기만. 던지지 않는다 — 실패하면 득점자 없이(goals null).
  */
 async function linkBriefGoals(
   deps: CollectDeps,
-  fd: Pick<FootballDataBriefData, "results" | "others">,
+  fd: Pick<FootballDataBriefData, "results" | "others" | "window">,
   snapshot: AfBriefSnapshot | null,
+  team: BriefTeamIndex,
 ): Promise<BriefGoalLinks> {
   const empty: BriefGoalLinks = {
     byFd: new Map(),
     byTeamIds: 0,
     byEvidence: 0,
     unconfirmed: [],
+    fromLedger: 0,
   };
-  if (snapshot === null || snapshot.details.length === 0) return empty;
-  let index: TeamIdIndex = EMPTY_TEAM_ID_INDEX;
-  let autoLink = true;
   try {
-    index = buildTeamIdIndex(await loadTeamIds(deps.rootDir));
-  } catch (error) {
-    autoLink = false;
-    deps.logger.warn("summarize.input.team-ids-unreadable", {
-      file: "configs/team-ids.json",
-      error: errorText(error),
-      autoLink,
-    });
-  }
-  try {
-    const linked = linkMatchDetails(fd.results, snapshot.details, index, {
-      afUniverse: snapshot.listed,
+    const merged = mergeBriefDetails(
+      snapshot?.details ?? [],
+      await readBriefLedgerDetails(deps, fd.window),
+    );
+    if (merged.details.length === 0) return empty;
+    // API-Football 단계가 돌지 않았으면(snapshot null — 키 없음·일 한도·실패) 날짜 조회 목록이 없어 D37의 '같은 칸에 점수 모르는
+    // 후보가 있으면 차단'을 확인할 수 없다 → 자동 연결을 끄고 대응표로 확인된 경기만 잇는다(M1-48b 원칙)
+    const linked = linkMatchDetails(fd.results, merged.details, team.index, {
+      afUniverse: snapshot?.listed ?? [],
       fdUniverse: fd.others,
-      autoLink,
+      autoLink: team.autoLink && snapshot !== null,
     });
+    const ledgerIds = new Set(
+      merged.details
+        .slice(merged.details.length - merged.fromLedger)
+        .map((d) => d.matchId),
+    );
     return {
       byFd: new Map(linked.links.map((l) => [l.fd.matchId, l.af] as const)),
       byTeamIds: linked.links.filter((l) => l.linkedBy === "team-ids").length,
@@ -2544,6 +2701,8 @@ async function linkBriefGoals(
       unconfirmed: linked.unconfirmed.map(
         (u) => `${u.fdMatchId}↔${u.afMatchId}:${u.reason}`,
       ),
+      fromLedger: linked.links.filter((l) => ledgerIds.has(l.af.matchId))
+        .length,
     };
   } catch (error) {
     deps.logger.warn("summarize.input.goals-fail", { error: errorText(error) });
@@ -2551,6 +2710,21 @@ async function linkBriefGoals(
   }
 }
 
+/** 브리핑 단계 결과 — LLM 결과 + 게시(publishBrief)에 쓸 정형 입력·설정 */
+interface BriefStageRun {
+  outcome: BriefOutcome;
+  /** 정형 입력 — 만들지 못했으면 null(football-data 키 없음·실패, 설정 읽기 실패) */
+  input: BriefInput | null;
+  /** 대회 설정(템플릿 대회 표기) */
+  competitions: CompetitionsFile | null;
+  /** 그날 기존 브리핑 파일(입력을 만든 뒤 읽는다) */
+  existing: BriefFileRead | null;
+}
+
+/**
+ * 브리핑 단계 — 정형 입력을 만들고 LLM 1요청을 보낸다(던지지 않는다 — 예상 밖 오류는 호출부 방어선). 출력은 로그·dry 출력에만
+ * 남긴다(M1-19 — 검증·강등 M1-45 전). 게시는 publishBrief가 이 결과의 입력으로 한다.
+ */
 async function runBriefStage(
   deps: CollectDeps,
   ctx: StageCtx,
@@ -2560,15 +2734,21 @@ async function runBriefStage(
     /** 브리핑 설정을 해석했으면 그 모델(실행 기록 단가용) */
     model: string | null;
   },
-): Promise<BriefOutcome> {
+): Promise<BriefStageRun> {
   const log = deps.logger;
   const fd = matchData.footballData;
+  const noInput = (outcome: BriefOutcome): BriefStageRun => ({
+    outcome,
+    input: null,
+    competitions: null,
+    existing: null,
+  });
   if (fd.state === "skipped") {
     log.warn("summarize.brief.skip", {
       reason: "no-api-key",
       missing: "FOOTBALL_DATA_API_KEY",
     });
-    return { state: "skipped", reason: "no-api-key", inputMatches: 0 };
+    return noInput({ state: "skipped", reason: "no-api-key", inputMatches: 0 });
   }
   if (fd.state === "failed") {
     // 경기 결과가 없으면 그날 브리핑은 생략한다 — 뉴스는 발행(D24)
@@ -2577,47 +2757,59 @@ async function runBriefStage(
       errorType: fd.errorType,
       error: fd.error,
     });
-    return {
+    return noInput({
       state: "failed",
       reason: "football-data",
       detail: fd.error,
       inputMatches: 0,
-    };
+    });
   }
 
-  // 전날 경기 결과 + 연결된 경기의 득점자(M1-48b) → 정형 입력(순위는 M1-19가 입력에 넣는다)
+  // 전날 경기 결과 + 현재 순위 + 연결된 경기의 득점자(M1-48b, 원장 항목 M1-19) → 정형 입력(M1-19 — 중요도 순)
   let input: BriefInput;
+  let competitions: CompetitionsFile;
+  let built: BriefInputBuild;
   try {
-    const competitions = await readConfigFile(
+    competitions = await readConfigFile(
       deps.rootDir,
       "competitions.json",
       CompetitionsFileSchema,
     );
+    const team = await loadBriefTeamIndex(deps);
     const goalLinks = await linkBriefGoals(
       deps,
       fd.data,
       matchData.apiFootballBrief,
+      team,
     );
-    const built = buildBriefInput(
-      ctx.publishDate,
-      fd.data.results,
+    built = buildBriefInput({
+      briefDate: ctx.publishDate,
+      results: fd.data.results,
       competitions,
-      BRIEF_MAX_MATCHES,
-      goalLinks.byFd,
-    );
+      standings: fd.data.standings,
+      linked: goalLinks.byFd,
+      koreanTeamIds: await briefKoreanTeamIds(deps, team.index),
+    });
     input = built.input;
     log.info("summarize.input.done", {
       date: ctx.publishDate,
       finished: fd.data.results.length,
       matches: input.matches.length,
       excluded: built.excluded,
+      extraTime: built.extraTime,
+      // 순위 — 확정 순위표만(진행 중 경기가 있는 대회는 빼서 순위 문장 금지), 상위 4위
+      standings: built.standings.included,
+      standingsInProgress: built.standings.inProgress,
+      standingsMultiTable: built.standings.multiTable,
       // 득점자 — 연결(대응표·증거) 중 득점 목록이 완전한 경기만 goals 배열, 나머지는 null
       afBriefDetails: matchData.apiFootballBrief?.details.length ?? null,
       linkedByTeamIds: goalLinks.byTeamIds,
       linkedByEvidence: goalLinks.byEvidence,
+      linkedFromLedger: goalLinks.fromLedger,
       unconfirmed: goalLinks.unconfirmed,
       goalsFilled: built.goals.filled,
       goalsIncomplete: built.goals.incomplete,
+      inputChars: serializeBriefInput(input).length,
     });
   } catch (error) {
     log.error("summarize.input.fail", {
@@ -2625,22 +2817,43 @@ async function runBriefStage(
       errorType: error instanceof Error ? error.name : "unknown",
       error: errorText(error),
     });
-    return {
+    return noInput({
       state: "failed",
       reason: "setup",
       detail: errorText(error),
       inputMatches: 0,
-    };
+    });
   }
 
   const inputMatches = input.matches.length;
+  // 그날 기존 브리핑 — 이미 검증 통과 LLM 브리핑(llm·mixed)이면 LLM을 부르지 않는다(덮지 않음 — brief-file.ts 재실행 판정)
+  const existing = await readBriefFile(deps.dataDir, ctx.publishDate);
+  const withInput = (outcome: BriefOutcome): BriefStageRun => ({
+    outcome,
+    input,
+    competitions,
+    existing,
+  });
+  if (existing.value && isKeptBriefMode(existing.value.mode)) {
+    log.info("summarize.brief.skip", {
+      reason: "kept",
+      date: ctx.publishDate,
+      existingMode: existing.value.mode,
+    });
+    return withInput({
+      state: "skipped",
+      reason: "kept",
+      existingMode: existing.value.mode,
+      inputMatches,
+    });
+  }
   if (inputMatches === 0) {
-    // 종료 경기가 없으면 LLM을 부르지 않는다(D24).
+    // 종료 경기가 없으면 LLM을 부르지 않는다(D24) — 게시는 empty
     log.info("summarize.brief.skip", {
       reason: "no-matches",
       date: ctx.publishDate,
     });
-    return { state: "skipped", reason: "no-matches", inputMatches };
+    return withInput({ state: "skipped", reason: "no-matches", inputMatches });
   }
   if (deps.dry) {
     deps.print(
@@ -2668,13 +2881,13 @@ async function runBriefStage(
       announceBriefBudget(decision, deps);
       const skip = briefBudgetSkip(decision);
       if (skip !== null) {
-        // 템플릿 브리핑(M1-19)은 아직 없다 — 이 결과(reason budget + 판정)를 받아 템플릿을 게시하는 것은 M1-19.
-        return {
+        // 같은 입력의 템플릿 브리핑을 게시한다(publishBrief — verdict 셋 다, M1-22 이월)
+        return withInput({
           state: "skipped",
           reason: "budget",
           budget: skip,
           inputMatches,
-        };
+        });
       }
     }
   } catch (error) {
@@ -2682,12 +2895,12 @@ async function runBriefStage(
       stage: "setup",
       error: errorText(error),
     });
-    return {
+    return withInput({
       state: "failed",
       reason: "setup",
       detail: errorText(error),
       inputMatches,
-    };
+    });
   }
 
   // 단건 1요청 (D28). 재시도는 llm.ts 정책(429·5xx만)이고 브리핑 마감(M1-47 — 공개 목표 −10분, 수동·지연 실행은 시작 + 8분)을
@@ -2705,18 +2918,22 @@ async function runBriefStage(
         reason: "mock-fixture-missing",
         customId: request.customId,
       });
-      return { state: "skipped", reason: "mock-fixture-missing", inputMatches };
+      return withInput({
+        state: "skipped",
+        reason: "mock-fixture-missing",
+        inputMatches,
+      });
     }
     log.error("summarize.brief.fail", {
       stage: "llm",
       error: errorText(error),
     });
-    return {
+    return withInput({
       state: "failed",
       reason: "llm",
       detail: errorText(error),
       inputMatches,
-    };
+    });
   }
   sink.results.push(result);
   const usageFields = {
@@ -2732,12 +2949,12 @@ async function runBriefStage(
       errorType: result.errorType,
       ...usageFields,
     });
-    return {
+    return withInput({
       state: "failed",
       reason: "llm",
       detail: `${result.errorType}: ${result.message}`,
       inputMatches,
-    };
+    });
   }
 
   const parsed = parseBriefOutput(result.text);
@@ -2747,12 +2964,12 @@ async function runBriefStage(
       reason: parsed.reason,
       ...usageFields,
     });
-    return {
+    return withInput({
       state: "failed",
       reason: "output",
       detail: `출력 형식 오류(${parsed.reason})`,
       inputMatches,
-    };
+    });
   }
   const lines = parsed.lines.map((line) => line.t);
   log.info("summarize.brief.done", {
@@ -2761,16 +2978,146 @@ async function runBriefStage(
     lines: lines.length,
     ...usageFields,
   });
-  // 저장 스키마(M1-19) 전이라 사람이 읽는 출력으로만 남긴다 — 화면·data/에는 아직 나가지 않는다.
+  // 검증(M1-23)·강등(M1-45) 전이라 사람이 읽는 출력으로만 남긴다 — data/briefs에는 같은 입력의 템플릿을 게시한다(publishBrief).
   deps.print(
     [
-      `── 브리핑 출력 (${ctx.publishDate}, ${deps.llmMode}, 저장 안 함 — M1-19 전, 검증·고유명사 치환 전 원문)`,
+      `── 브리핑 출력 (${ctx.publishDate}, ${deps.llmMode}, 저장 안 함 — 검증(M1-23·M1-45) 전, 고유명사 치환 전 원문)`,
       ...parsed.lines.map(
         (line, i) => `${i + 1}. ${line.t}  [${line.r.join(",")}]`,
       ),
     ].join("\n"),
   );
-  return { state: "done", inputMatches, lines };
+  return withInput({ state: "done", inputMatches, lines });
+}
+
+/** 템플릿 이름 표기 — configs/names.ko.json 단순 대조(읽지 못하면 영문 그대로 — 경고). 조사 보정·미등록 적재는 M1-21 */
+async function briefTemplateNames(deps: CollectDeps): Promise<BriefNames> {
+  try {
+    return namesKoResolver(
+      await readConfigFile(deps.rootDir, "names.ko.json", NamesKoFileSchema),
+    );
+  } catch (error) {
+    deps.logger.warn("summarize.brief.names-unreadable", {
+      file: "configs/names.ko.json",
+      error: errorText(error),
+    });
+    return ENGLISH_NAMES;
+  }
+}
+
+/**
+ * 브리핑 게시(M1-19 — data/briefs/<KST 발행일>.json, D38). 계획은 brief-file.ts `planBriefPublish`(M1-45 전에는 LLM이 성공해도
+ * 템플릿), 같은 날 재실행은 `decideBriefWrite`. dry는 내용만 출력한다. 던지지 않는다 — 검증·쓰기 오류는 failed(실행은 partial).
+ */
+async function publishBrief(
+  deps: CollectDeps,
+  ctx: StageCtx & { runId: string },
+  stage: BriefStageRun,
+): Promise<BriefFileOutcome> {
+  const log = deps.logger;
+  const templateLines =
+    stage.input && stage.competitions && stage.input.matches.length > 0
+      ? templateBriefLines(stage.input, {
+          competitions: stage.competitions,
+          names: await briefTemplateNames(deps),
+        })
+      : [];
+  const plan = planBriefPublish({
+    brief: stage.outcome,
+    inputMatches: stage.input?.matches.length ?? null,
+    templateLines,
+  });
+  const existing = stage.existing;
+  const base = {
+    plan,
+    existingMode: existing?.value?.mode ?? null,
+    readError: existing?.error ?? null,
+  };
+  if (existing?.error) {
+    // 깨진 기존 파일은 새 파일로 고친다(검증 게이트가 깨진 파일의 커밋을 막으므로 드문 경우) — 실행은 partial
+    log.warn("summarize.brief.file-unreadable", {
+      file: `data/briefs/${ctx.publishDate}.json`,
+      error: existing.error,
+    });
+  }
+  if (plan.mode === null) {
+    log.info("summarize.brief.publish", {
+      date: ctx.publishDate,
+      mode: null,
+      reason: plan.reason,
+      action: "none",
+    });
+    return { ...base, action: "none", file: null, path: null, error: null };
+  }
+  let file: BriefFile;
+  try {
+    file = buildBriefFile({
+      date: ctx.publishDate,
+      generatedAt: nowUtcIso(deps.now()),
+      runId: ctx.runId,
+      mode: plan.mode,
+      lines: plan.lines,
+    });
+  } catch (error) {
+    log.error("summarize.brief.publish.fail", {
+      date: ctx.publishDate,
+      stage: "build",
+      error: errorText(error),
+    });
+    return {
+      ...base,
+      action: "failed",
+      file: null,
+      path: null,
+      error: errorText(error),
+    };
+  }
+  const fields = {
+    date: ctx.publishDate,
+    mode: file.mode,
+    reason: plan.reason,
+    lines: file.lines.length,
+    existingMode: base.existingMode,
+  };
+  if (deps.dry) {
+    deps.print(
+      `── [dry] data/briefs/${ctx.publishDate}.json (${file.mode} · ${plan.reason}, ${file.lines.length}줄 — 쓰지 않음)\n${serializeBriefFile(file)}`,
+    );
+    log.info("summarize.brief.publish", { ...fields, action: "dry" });
+    return { ...base, action: "dry", file, path: null, error: null };
+  }
+  const decision = decideBriefWrite(existing?.value ?? null, file);
+  if (decision.action !== "write") {
+    const action = decision.action === "keep" ? "kept" : "unchanged";
+    log.info("summarize.brief.publish", {
+      ...fields,
+      action,
+      keepReason: decision.action === "keep" ? decision.reason : null,
+    });
+    return { ...base, action, file, path: null, error: null };
+  }
+  try {
+    const written = await writeBriefFile(deps.dataDir, file);
+    log.info("summarize.brief.publish", {
+      ...fields,
+      action: "written",
+      file: `data/briefs/${ctx.publishDate}.json`,
+    });
+    return { ...base, action: "written", file, path: written, error: null };
+  } catch (error) {
+    log.error("summarize.brief.publish.fail", {
+      date: ctx.publishDate,
+      stage: "write",
+      error: errorText(error),
+    });
+    return {
+      ...base,
+      action: "failed",
+      file,
+      path: null,
+      error: errorText(error),
+    };
+  }
 }
 
 // ─── 소스 건강도 (M1-11) ──────────────────────────────────────────────────
@@ -2947,7 +3294,8 @@ export function apiFootballIncomplete(
 
 /**
  * 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음·순위 일부 실패·API-Football 미완(apiFootballIncomplete)·
- * 원장 쓰기 오류·원장 형식 오류 항목(M1-48b)·seen-urls 기억 읽기·쓰기 오류(M1-12)·클러스터링 오류(M1-13) = partial, 그 밖 = success.
+ * 원장 쓰기 오류·원장 형식 오류 항목(M1-48b)·seen-urls 기억 읽기·쓰기 오류(M1-12)·클러스터링 오류(M1-13)·브리핑 파일 쓰기 오류·깨진
+ * 기존 브리핑 파일(M1-19) = partial, 그 밖 = success.
  * partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts).
  */
 export function runStatus(
@@ -2962,6 +3310,7 @@ export function runStatus(
     | (Pick<MatchDataOutcome, "footballData"> &
         Partial<Pick<MatchDataOutcome, "apiFootball" | "ledger">>)
     | null = null,
+  briefFile: Pick<BriefFileOutcome, "action" | "readError"> | null = null,
 ): RunLog["status"] {
   if (!news.ok) return "failed";
   if (news.sources?.some((source) => !source.ok)) return "partial";
@@ -2992,6 +3341,8 @@ export function runStatus(
   // 원장 쓰기 오류(달 파일·메타)·형식 오류 항목 — 받은 경기는 이월 목록에 다시 넣었지만 실행 상태에 드러낸다(M1-48b)
   if ((matchData?.ledger?.applied?.errors.length ?? 0) > 0) return "partial";
   if ((matchData?.ledger?.invalid.length ?? 0) > 0) return "partial";
+  // 브리핑 파일 검증·쓰기 실패, 또는 깨진 기존 파일을 고쳐 썼다(M1-19) — 뉴스는 발행됐다
+  if (briefFile?.action === "failed" || briefFile?.readError) return "partial";
   return "success";
 }
 
@@ -3115,6 +3466,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
 
   let matchData: MatchDataOutcome | null = null;
   let brief: BriefOutcome;
+  let briefStage: BriefStageRun | null = null;
   try {
     if (!news.ok) {
       // 뉴스가 실패하면 exit 1 → Actions가 커밋하지 않아 이번 실행의 runs.json 기록(LLM 비용)이 사라지고, 백업 실행이
@@ -3125,7 +3477,8 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     } else {
       // football-data 결과 + API-Football 브리핑 몫(컷오프까지)만 기다린다 — API-Football 나머지는 브리핑과 동시에 계속 받는다
       const view = await startMatchData().briefView;
-      brief = await runBriefStage(deps, stageCtx, view, sink);
+      briefStage = await runBriefStage(deps, stageCtx, view, sink);
+      brief = briefStage.outcome;
     }
   } catch (error) {
     // 방어선 — 브리핑 단계의 예상 밖 오류도 발행을 멈추지 않는다.
@@ -3139,6 +3492,28 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
       detail: errorText(error),
       inputMatches: 0,
     };
+  }
+  // 브리핑 게시(M1-19) — data/briefs/<KST 발행일>.json. 실패해도 뉴스 발행은 계속(partial)
+  let briefFile: BriefFileOutcome | null = null;
+  if (briefStage !== null) {
+    try {
+      briefFile = await publishBrief(deps, { ...stageCtx, runId }, briefStage);
+    } catch (error) {
+      // 방어선 — publishBrief는 던지지 않는다. 여기 오면 템플릿 생성의 예상 밖 오류다.
+      log.error("summarize.brief.publish.fail", {
+        stage: "unexpected",
+        error: errorText(error),
+      });
+      briefFile = {
+        plan: null,
+        action: "failed",
+        file: null,
+        path: null,
+        existingMode: briefStage.existing?.value?.mode ?? null,
+        readError: briefStage.existing?.error ?? null,
+        error: errorText(error),
+      };
+    }
   }
 
   // 경기 데이터 마무리 — API-Football 나머지·이월 파일·짝짓기. 실행 기록(호출 수 = 다음 실행의 일일 카운터) 전에 기다린다.
@@ -3158,7 +3533,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     log.error("collect.matchdata.issue.fail", { error: errorText(error) });
   }
 
-  const status = runStatus(news, brief, matchData);
+  const status = runStatus(news, brief, matchData, briefFile);
   let exitCode = news.ok ? 0 : 1;
   let run: RunLog | null = null;
   let runPath: string | null = null;
@@ -3229,6 +3604,9 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     brief: brief.state === "done" ? "done" : `${brief.state}:${brief.reason}`,
     briefMatches: brief.inputMatches,
     briefLines: brief.state === "done" ? brief.lines.length : 0,
+    briefFile: briefFile
+      ? `${briefFile.plan?.mode ?? "none"}:${briefFile.action}`
+      : null,
     footballData: matchData?.footballData.state ?? null,
     apiFootball: matchData?.apiFootball.state ?? null,
     matchDataMs: matchData?.elapsedMs ?? null,
@@ -3246,6 +3624,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     health,
     matchData,
     brief,
+    briefFile,
     run,
     runPath,
     status,
