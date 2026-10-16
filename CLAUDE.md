@@ -82,7 +82,7 @@
              · ISSUE_TEMPLATE/ summary-error·takedown·source-broken
 configs/     사람이 관리, 전부 zod 검증: sources · competitions · names.ko · korean-players · national-team · bigmatch-rules
              · search-queries · publisher-domains · formations · team-colors · transfer-windows · takedowns (.json) · prompts/ summarize(일일 브리핑)·team-profile·weekly-kr (.md)
-data/        파이프라인 산출물(손 편집 금지): news/YYYY-MM-DD.json · competitions/ · teams/ · players/ · transfers.json
+data/        파이프라인 산출물(손 편집 금지): news/YYYY-MM-DD.json · briefs/YYYY-MM-DD.json(일일 브리핑, D38) · competitions/ · teams/ · players/ · transfers.json
              · matches/ YYYY-MM.json·meta.json(경기 기록 원장 — 정기 운영만 씀, 화면은 읽지 않음, D33)
              · runs.json(봇) · runs-dev.json(dev 실행, 개발자 커밋) · cache/ seen-urls.json·unknown-names.json·af-pending.json
 fixtures/    개발·테스트 샘플 (RSS·API 응답·LLM 응답·뉴스 카드)       tests/  단위·스키마 (e2e는 tests/e2e)
@@ -153,7 +153,7 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
 - **저장은 UTC(ISO 8601), 표시는 KST.** 변환은 `src/lib/time.ts`에서만. 유럽 서머타임 전환(3·10월 마지막 일요일) 테스트 필수.
 - `data/`는 파이프라인만 쓴다. 수정은 스크립트를 고치거나 `configs/`(예: `takedowns.json`)로 반영.
 - 스키마 변경은 사용자 확인 후 zod 스키마 → 마이그레이션 스크립트 → fixtures → 테스트 순으로 함께 바꾼다.
-- 카드 ID(`c_` + 16진수 10자리)는 원문 URL 기반 결정적 해시(공유 앵커가 깨지지 않게).
+- 카드 ID(`c_` + 16진수 10자리)는 대표 원문 URL을 정규화한 값(FR-04 — 추적 파라미터·AMP 변형 제거)의 결정적 해시(공유 앵커가 깨지지 않게, M1-16). 이미 발행된 카드의 ID는 바꾸지 않는다.
 - 보존: 일별 뉴스 90일 후 월별 병합, seen-urls 90일, runs.json·runs-dev.json 180일.
 
 ## 9. 코드 품질
