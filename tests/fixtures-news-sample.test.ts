@@ -170,7 +170,10 @@ describe("fixtures/news-sample.json — 원제목 카드 샘플", () => {
     }
   });
 
-  it("카드 id = c_ + sha256(대표 링크 원문) 앞 10자리(M1-12 정규화 전 임시 규칙)", () => {
+  // M1-16(2026-10-16): 카드 ID 규칙은 정규화 URL 해시(scripts/lib/card-id.ts)로 바뀌었지만 이 샘플은 다시 계산하지 않는다 —
+  // D0 시안 HTML·scope.md·DECISIONS.md·견본(specimen) 페이지가 이 id를 앵커로 쓰는 기록이고, 2026-10-12~14 발행 파일과
+  // 같은 옛 규칙이라 '옛 규칙 ID 카드가 섞인 병합' 테스트 입력(tests/card-id.test.ts)으로도 쓴다.
+  it("카드 id = c_ + sha256(대표 링크 원문) 앞 10자리(M0-34 옛 임시 규칙 그대로 — M1-16에서 재계산하지 않음)", () => {
     for (const c of cards) {
       const hash = createHash("sha256")
         .update(c.src[0]?.u ?? "")

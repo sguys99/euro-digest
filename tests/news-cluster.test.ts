@@ -518,7 +518,8 @@ describe("③ mergeCards — 기존 카드에 새 출처 붙이기(news-file.ts)
       "2026-10-10T23:00:00.000Z",
       [espnSrc],
     );
-    expect(incoming.id).not.toBe(morning.id);
+    // M1-16: 추적 파라미터만 다른 링크는 같은 ID(정규화 URL 해시). ID가 다른 옛 규칙 카드와의 병합은 tests/card-id.test.ts ④
+    expect(incoming.id).toBe(morning.id);
     const merged = mergeCards([morning], [incoming]);
     expect(merged).toMatchObject({ added: 0, duplicates: 1, attached: 1 });
     expect(merged.cards.map((c) => [c.id, c.created, c.src.length])).toEqual([

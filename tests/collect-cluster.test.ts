@@ -8,9 +8,12 @@
  *   - 클러스터링 실패 격리: 예상 밖 오류면 같은 사건을 합치지 않은 채 발행(partial + 경고)
  *   - 카드 생성 경로(M1-15): 오늘 카드의 대표는 재실행에서 바뀌지 않음 · 제목 정리 경계와 링크 원문 · 요약문·본문 없음 ·
  *     200자 초과 항목은 그 항목만 빠지고 같은 사건의 다음 후보가 대표
+ *   - 카드 ID(M1-16): 옛 규칙 ID(sha256(원문 링크) — 2026-10-14까지 발행) 카드가 있는 오늘 파일 재실행 — 옛 ID 유지, 같은 기사
+ *     (링크 변형 포함)는 합치고 같은 사건 기사는 출처로, 새 카드는 새 규칙 ID. 다음 날 기억도 ID가 아니라 URL로
  *
  * 네트워크 없음 — 피드는 테스트가 만든 작은 RSS(제목·링크·날짜만), 경기는 빈 응답(브리핑 호출 생략), 파일은 임시 폴더.
  */
+import { createHash } from "node:crypto";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -34,6 +37,7 @@ import {
   type CollectDeps,
 } from "../scripts/lib/collect-run";
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
+import { serializeNewsFile } from "../scripts/lib/news-file";
 import { FOOTBALL_DATA_BASE_URL } from "../scripts/lib/providers/football-data";
 import { feedUserAgent } from "../scripts/lib/rss";
 import { urlHash } from "../scripts/lib/url-normalize";
@@ -534,5 +538,87 @@ describe("runCollect — 클러스터링 실패 격리 (M1-13)", () => {
     expect(runStatus({ ok: true, clusterError: null }, done)).toBe("success");
     expect(runStatus({ ok: true, clusterError: "boom" }, done)).toBe("partial");
     expect(runStatus({ ok: false, clusterError: "boom" }, done)).toBe("failed");
+  });
+});
+
+describe("runCollect — 옛 규칙 ID 카드가 있는 오늘 파일 (M1-16, D15)", () => {
+  /** 2026-10-14까지의 카드 ID 규칙 — `c_` + sha256(피드 원문 링크) 앞 10자리 */
+  const legacyId = (url: string) =>
+    `c_${createHash("sha256").update(url, "utf8").digest("hex").slice(0, 10)}`;
+
+  it("재실행 — 옛 ID·created 유지, 같은 기사(추적 파라미터 없는 링크)는 합치고 같은 사건 기사는 출처로, 새 카드는 새 규칙 ID", async () => {
+    await runCollect(makeDeps(NOW, { [BBC.id]: [A] }).deps);
+    const filePath = path.join(dataDir, "news", "2026-10-11.json");
+    const published = readNews("2026-10-11");
+    expect(published.cards.map((c) => c.id)).toEqual([cardIdFor(BBC_A)]);
+    // 2026-10-14까지 발행된 파일처럼 ID만 옛 규칙으로 되돌린다
+    const oldId = legacyId(BBC_A);
+    expect(oldId).not.toBe(cardIdFor(BBC_A));
+    writeFileSync(
+      filePath,
+      serializeNewsFile({
+        ...published,
+        cards: published.cards.map((c) => ({ ...c, id: oldId })),
+      }),
+      "utf8",
+    );
+
+    const BBC_A_PLAIN = BBC_A.split("?")[0]!; // 같은 기사, 추적 파라미터 없는 링크 — 새 규칙 ID는 cardIdFor(BBC_A)와 같다
+    const again = makeDeps(LATER, {
+      [BBC.id]: [{ ...A, link: BBC_A_PLAIN }, C],
+      [ESPN.id]: [B],
+    });
+    const outcome = await runCollect(again.deps);
+    expect(outcome.exitCode).toBe(0);
+    const after = readNews("2026-10-11");
+    expect(after.cards).toHaveLength(2);
+    const city = after.cards.find((c) => c.id === oldId)!;
+    expect(city).toMatchObject({ created: NOW, t: A.title });
+    expect(city.src.map((s) => s.u)).toEqual([BBC_A, ESPN_B]); // 원문 링크 그대로, 변형 링크는 붙지 않음
+    const chelsea = after.cards.find((c) => c.src[0]!.u === BBC_C)!;
+    expect(chelsea.id).toBe(cardIdFor(BBC_C));
+    expect(chelsea.id).toBe(`c_${urlHash(BBC_C).slice(0, 10)}`);
+    expect(after.cards.some((c) => c.id === cardIdFor(BBC_A))).toBe(false);
+    expect(outcome.news).toMatchObject({ added: 1, attached: 1 });
+    expect(
+      again.records.some((r) => r.event === "collect.card.id-collision"),
+    ).toBe(false);
+    expect(readSeenKeys().sort()).toEqual(
+      [BBC_A, ESPN_B, BBC_C].map(urlHash).sort(),
+    );
+
+    // 다음 날: 겹침 창으로 다시 들어온 옛 ID 카드의 기사는 카드가 되지 않는다(기억은 ID가 아니라 URL 기준)
+    writeProdRun(NOW); // 창 시작 = NOW − 3시간 → A(20:00Z)가 다시 후보
+    const day2 = makeDeps(DAY2, { [BBC.id]: [A], [ESPN.id]: [E] });
+    const outcome2 = await runCollect(day2.deps);
+    expect(outcome2.exitCode).toBe(0);
+    expect(outcome2.news.dedup).toMatchObject({ unique: 2, seenBefore: 1 });
+    expect(srcLinks(readNews("2026-10-12"))).toEqual([[ESPN_E]]);
+  });
+  it("ID 충돌(출처 링크가 겹치지 않는데 ID가 같음 — 흉내) — 새 카드를 넣지 않고 경고, 기존 카드·파일 검증은 그대로", async () => {
+    await runCollect(makeDeps(NOW, { [BBC.id]: [A] }).deps);
+    const filePath = path.join(dataDir, "news", "2026-10-11.json");
+    const published = readNews("2026-10-11");
+    // 오늘 카드(A)의 ID를 C의 새 규칙 ID로 바꿔 40비트 충돌을 흉내 낸다
+    const clashId = cardIdFor(BBC_C);
+    writeFileSync(
+      filePath,
+      serializeNewsFile({
+        ...published,
+        cards: published.cards.map((c) => ({ ...c, id: clashId })),
+      }),
+      "utf8",
+    );
+    const again = makeDeps(LATER, { [BBC.id]: [A, C] });
+    const outcome = await runCollect(again.deps);
+    expect(outcome.exitCode).toBe(0);
+    const after = readNews("2026-10-11");
+    expect(after.cards.map((c) => [c.id, c.src.map((s) => s.u)])).toEqual([
+      [clashId, [BBC_A]],
+    ]);
+    expect(outcome.news).toMatchObject({ added: 0, attached: 0 });
+    expect(
+      again.records.find((r) => r.event === "collect.card.id-collision"),
+    ).toMatchObject({ level: "warn", date: "2026-10-11", ids: [clashId] });
   });
 });

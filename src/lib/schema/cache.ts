@@ -19,8 +19,8 @@ import { NameKindSchema, NameTextSchema } from "./names";
 
 /**
  * 정규화 URL 해시 = sha256(정규화 URL) 16진수 앞 16자리(64비트, scripts/lib/url-normalize.ts `urlHash` — M1-12).
- * 90일 × 하루 수백 건 규모에서 충돌 확률이 무시할 수준. 카드 ID(`c_` + 10자리)가 같은 해시의 앞 10자리를 쓰면
- * 카드 ID가 이 키의 접두사가 된다(카드 ID 규칙은 M1-16).
+ * 90일 × 하루 수백 건 규모에서 충돌 확률이 무시할 수준. 카드 ID(`c_` + 10자리)는 대표 링크의 이 해시 앞 10자리라
+ * 이 키의 접두사다(M1-16 — scripts/lib/card-id.ts. 2026-10-14까지 발행된 카드는 옛 규칙 ID라 접두사가 아닐 수 있다).
  */
 export const UrlHashSchema = z
   .string()

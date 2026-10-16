@@ -1,21 +1,32 @@
 /**
- * 뉴스 카드 ID — `c_` + 16진수 10자리, 대표 URL의 결정적 해시 (PRD §15 D15, CLAUDE.md §8).
- * 같은 URL은 실행·날짜와 무관하게 항상 같은 ID가 된다 → 공유 앵커(`/news/<date>/#c_…`)가 깨지지 않고,
- * 같은 날 다시 실행해도 같은 카드가 두 번 생기지 않는다(FR-04).
+ * 뉴스 카드 ID — `c_` + 16진수 10자리, 대표 URL의 결정적 해시 (PRD §15 D15, CLAUDE.md §8, plan M1-16) — 순수 함수.
  *
- * M1-01 수직 슬라이스: 해시 입력은 **피드 원문 링크**(앞뒤 공백만 정리)다 — M0-34 원제목 카드 샘플
- * (`fixtures/news-sample.json`, 임시 `sha256(링크 원문)`)과 같은 규칙이라 같은 링크면 같은 ID가 나온다.
- * M1-16이 "대표 URL = 정규화 URL" 기준으로 확정한다 — 그때 이 함수 하나만 바꾼다. 정규화·해시는 M1-12의
- * scripts/lib/url-normalize.ts(`urlHash` = sha256(정규화 URL) 앞 16자리 = seen-urls 키)를 쓰면 카드 ID가 그 키의
- * 접두사가 된다(`c_` + urlHash(url).slice(0, 10), 부록 A 11).
+ * ── 규칙 (M1-16 확정, 2026-10-16) ─────────────────────────────────────────
+ *   ID = `c_` + `urlHash(대표 링크)`의 앞 10자리 = `c_` + sha256(**정규화 URL**) 16진수 앞 10자리(40비트).
+ *   정규화·해시는 url-normalize.ts 한 곳(M1-12 — seen-urls 키와 같은 함수)을 쓴다 → 카드 ID는 그 카드 대표 링크의
+ *   seen-urls 키(16자리)의 접두사다. 추적 파라미터·AMP 변형·http/https·`www.`만 다른 같은 기사는 같은 ID다(공유 앵커
+ *   `/news/<date>/#c_…`가 링크 표기 변화에 흔들리지 않는다). "원문 URL 기반"(CLAUDE.md §8) = 원문 URL을 정규화한 값.
+ *   대표 링크는 클러스터에서 고른 대표(card-lead.ts — 첫 묶음이 아닐 수 있다)의 피드 원문 링크다(news-file.ts `buildCard` 한 곳).
+ *
+ * ── 이미 발행된 카드 (옛 규칙) ──────────────────────────────────────────────
+ *   2026-10-12~10-14 발행 파일(`data/news/`)과 M0-34 카드 샘플(`fixtures/news-sample.json`)의 ID는 옛 임시 규칙
+ *   `c_` + sha256(피드 원문 링크)의 앞 10자리다. **다시 계산하지 않는다**(발행 파일을 다시 만들지 않음 — 이미 나간 앵커·
+ *   오류 신고 링크·takedown 등록이 그 ID를 가리킨다). 원문 링크가 이미 정규화된 꼴이면 두 규칙의 ID가 같고, 그렇지 않으면
+ *   다르다. 그래서 **카드 ID는 저장된 값을 불투명한 키로만 쓴다** — 대표 링크에서 ID를 다시 계산해 기존 카드를 찾지 않는다.
+ *   같은 날 재실행에서 옛 규칙 카드와 새 규칙 카드가 같은 기사인지는 출처 링크의 정규화 URL 해시로 가린다(news-file.ts
+ *   `mergeCards`, news-cluster.ts 오늘 카드 묶음 — 둘 다 ID가 아니라 `src[].u`의 `urlHash`를 본다).
+ *
+ * ── 충돌 ────────────────────────────────────────────────────────────────
+ *   40비트라 같은 파일(하루 상한 45장 — D44) 안 충돌 확률은 약 (45·44/2)/2⁴⁰ ≈ 9×10⁻¹⁰, 90일(약 4,050장) 전체에서 아무 두 카드가
+ *   겹칠 확률은 약 7.5×10⁻⁶이다. 같은 파일 안에서 정규화 URL이 다른 두 카드의 ID가 겹치면 뒤에 온 카드를 넣지 않는다
+ *   (`mergeCards` `idCollisions` — 다른 기사를 출처로 붙이지 않는다). 파일 안 ID 중복은 NewsFileSchema가 막는다.
  */
-import { createHash } from "node:crypto";
+import { urlHash } from "./url-normalize";
 
-/** 카드 ID 16진수 자릿수 */
+/** 카드 ID 16진수 자릿수(부록 A `c_[0-9a-f]{10}`) — `urlHash`(16자리)의 앞부분 */
 export const CARD_ID_HEX_LENGTH = 10;
 
-/** 대표 URL → 카드 ID (`c_` + sha256 앞 10자리, 소문자). */
+/** 대표 링크(피드 원문) → 카드 ID (`c_` + sha256(정규화 URL) 앞 10자리, 소문자). */
 export function cardIdFor(url: string): string {
-  const digest = createHash("sha256").update(url, "utf8").digest("hex");
-  return `c_${digest.slice(0, CARD_ID_HEX_LENGTH)}`;
+  return `c_${urlHash(url).slice(0, CARD_ID_HEX_LENGTH)}`;
 }

@@ -60,7 +60,7 @@
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
- * 다음 작업이 갈아끼울 자리: 대표 선정(M1-15) · 카드 ID(M1-16 — 정규화 URL 해시) · 분류(M1-17 — 선별 점수 → 중요도, 팀→리그
+ * 다음 작업이 갈아끼울 자리: 분류(M1-17 — 선별 점수 → 중요도, 팀→리그
  * 대회 근거를 점수화 `comps`로) · 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
  * 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · runs 기록(M1-27) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
@@ -1149,6 +1149,13 @@ async function runNewsStage(
   let seen: SeenOutcome = seenLoad.outcome;
   try {
     const merged = mergeCards(existing?.cards ?? [], cards, attachments);
+    if (merged.idCollisions.length > 0) {
+      // 카드 ID 40비트 해시 충돌(M1-16 — 평소 없음): 출처 링크가 겹치지 않는데 ID가 같은 새 카드는 넣지 않았다
+      log.warn("collect.card.id-collision", {
+        date: ctx.publishDate,
+        ids: merged.idCollisions,
+      });
+    }
     // 새 카드도 새 출처도 없으면 파일을 다시 쓰지 않는다(generatedAt만 바뀐 불필요한 data 커밋 방지).
     const unchanged =
       existing !== null && merged.added === 0 && merged.attached === 0;

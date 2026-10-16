@@ -123,7 +123,6 @@ const RSS_INDEX = JSON.parse(read("fixtures/rss/index.json")) as {
 const BBC_INDEX_ITEMS = RSS_INDEX.sources.find(
   (s) => s.id === "bbc-sport-football",
 )!.items;
-const NEWS_SAMPLE = JSON.parse(read("fixtures/news-sample.json")) as NewsFile;
 const FD_MATCHES_1010 = read(
   "fixtures/football/football-data/matches-6comps-2026-10-10.json",
 );
@@ -452,25 +451,7 @@ describe("normalize.ts — 원제목·링크 무수정(엔티티 디코딩·앞�
 
 // ─── 카드 ID·카드·선별·병합 ───────────────────────────────────────────────
 
-describe("card-id.ts — c_ + 16진수 10자리, 결정적", () => {
-  it("형식과 결정성", () => {
-    const url = "https://www.bbc.co.uk/sport/football/articles/x?at_medium=RSS";
-    expect(cardIdFor(url)).toMatch(/^c_[0-9a-f]{10}$/);
-    expect(cardIdFor(url)).toBe(cardIdFor(url));
-    expect(cardIdFor(url)).not.toBe(cardIdFor(`${url}&x=1`));
-  });
-
-  it("M0-34 원제목 카드 샘플(임시 sha256(링크 원문))과 같은 링크면 같은 ID", () => {
-    const bbcCards = NEWS_SAMPLE.cards.filter((c) =>
-      c.src.some((s) => s.n === "BBC Sport"),
-    );
-    expect(bbcCards.length).toBeGreaterThan(0);
-    for (const card of bbcCards) {
-      // 대표 출처(첫 출처)의 링크가 ID 입력이다
-      expect(cardIdFor(card.src[0]!.u)).toBe(card.id);
-    }
-  });
-});
+// 카드 ID 규칙(M1-16 — 정규화 URL 해시, 옛 규칙 카드와 섞인 병합)은 tests/card-id.test.ts
 
 describe("news-file.ts — 카드·선별·병합", () => {
   const item = (url: string, publishedAt: string, title = "T"): FeedItem => ({
@@ -559,7 +540,7 @@ describe("news-file.ts — 카드·선별·병합", () => {
     expect(top(0)).toEqual([]);
   });
 
-  it("병합: 원문 링크가 추적 파라미터만 달라 ID가 다른 같은 기사도 두 번 들어가지 않는다(정규화 URL — M1-12)", () => {
+  it("병합: 원문 링크가 추적 파라미터만 다른 같은 기사는 같은 ID이고 두 번 들어가지 않는다(정규화 URL — M1-12·M1-16)", () => {
     const a = buildCard(
       item(
         "https://www.bbc.co.uk/sport/football/articles/a1?at_medium=RSS&at_campaign=rss",
@@ -576,7 +557,7 @@ describe("news-file.ts — 카드·선별·병합", () => {
       BBC_SOURCE,
       "2026-10-10T22:00:00.000Z",
     );
-    expect(aPlain.id).not.toBe(a.id); // 카드 ID는 아직 원문 링크 해시(M1-16에서 정규화 URL로)
+    expect(aPlain.id).toBe(a.id); // 카드 ID = 정규화 URL 해시(M1-16) — 옛 규칙 ID와 섞인 경우는 tests/card-id.test.ts
     const result = mergeCards([a], [aPlain]);
     expect(result).toMatchObject({ added: 0, duplicates: 1 });
     expect(result.cards).toEqual([a]);
