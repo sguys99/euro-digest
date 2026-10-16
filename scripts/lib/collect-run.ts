@@ -194,7 +194,7 @@ import {
   type LedgerWriteMode,
 } from "./match-ledger";
 import {
-  buildClusterCard,
+  clusterCard,
   groupCardSource,
   planNewsClusters,
   singletonClusters,
@@ -1036,7 +1036,9 @@ async function runNewsStage(
   // (국내 후보가 모자라면 해외로). 오늘 카드의 새 출처는 자리와 무관하게 붙인다(카드 수가 늘지 않는다). 점수가 같으면 클러스터
   // 첫 묶음의 입력 순서(설정 순서 — 결정적). 수집 시각으로 낮춘 기사(창 단계 clampedKeys)는 최신성을 믿지 않는다. 이적 창 배수는
   // 중립(FR-105 — M4-03이 연결).
-  // 카드 = 대표 묶음(지금은 클러스터의 첫 묶음 — M1-15) + 나머지 묶음의 출처, 카드 소스 = 대표 소스 + 클러스터 대회 합집합.
+  // 카드(M1-15, FR-20 — news-cluster.ts `clusterCard`): 대표 = 클러스터 묶음 중 Tier·weight·최신성 1위(card-lead.ts — 낮춘 시각은
+  // 최신성을 믿지 않는다, 200자 초과·설정에 없는 소스는 다음 후보)의 피드 원문 제목·링크, 출처 = 대표 + 나머지(Tier → 최신 → URL),
+  // 카드 소스 = 대표 소스 + 클러스터 대회 합집합, `ai:false`·`s:[]`(LLM 없음 — D23). 오늘 카드는 대표를 다시 고르지 않는다.
   // 선별 점수는 카드 생성(분류 — M1-17 중요도)까지 넘긴다. 카드·파일에는 저장하지 않는다.
   const keywordLoad = await loadKeywordIndex(deps);
   const scoreCtx = {
@@ -1070,12 +1072,28 @@ async function runNewsStage(
     inQuota: isDomesticCluster,
   });
   const ranked = quotaPick.selected;
+  const leadStats = { reordered: 0, unknownSource: 0, titleTooLong: 0 };
   const cards = ranked.flatMap(({ entry, score }) => {
-    const card = buildClusterCard(entry, sourceById, ctx.startedAt, {
-      score,
-    });
-    return card ? [card] : [];
+    const built = clusterCard(
+      entry,
+      sourceById,
+      ctx.startedAt,
+      { score },
+      { isClamped: scoreCtx.isClamped },
+    );
+    if (built.reordered) leadStats.reordered += 1;
+    leadStats.unknownSource += built.skipped.unknownSource;
+    leadStats.titleTooLong += built.skipped.titleTooLong;
+    return built.card ? [built.card] : [];
   });
+  if (leadStats.unknownSource > 0 || leadStats.titleTooLong > 0) {
+    // 대표 후보에서 뺀 묶음(방어선 — 정규화·설정에서 이미 걸러져 평소 0). 카드가 안 된 클러스터 수 = ranked − selected
+    log.warn("collect.card.skip", {
+      unknownSource: leadStats.unknownSource,
+      titleTooLong: leadStats.titleTooLong,
+      clustersWithoutCard: ranked.length - cards.length,
+    });
+  }
   const scoreOutcome = summarizeScores({
     byScore,
     ranked,
@@ -1115,6 +1133,8 @@ async function runNewsStage(
     slots: scoreOutcome.slots,
     ranked: scoreOutcome.ranked,
     selected: cards.length,
+    // 대표가 클러스터 첫 묶음(설정 순서)이 아닌 카드 수 — Tier·weight·최신성 규칙이 대표를 바꾼 수(M1-15)
+    leadReordered: leadStats.reordered,
     limit: deps.limit,
     scoreTop: scoreOutcome.top,
     scoreCutoff: scoreOutcome.cutoff,
@@ -1240,7 +1260,7 @@ async function loadKeywordIndex(
   }
 }
 
-/** 국내 클러스터인가 — 대표 기사 언어(국내·해외는 한 클러스터가 되지 않는다 — D30) */
+/** 국내 클러스터인가 — 첫 묶음 언어(D30 — 국내·해외는 한 클러스터가 되지 않아 카드 대표의 언어와 같다) */
 function isDomesticCluster(cluster: NewsCluster): boolean {
   return isKoLang(cluster.members[0]?.item.lang ?? "");
 }

@@ -8,7 +8,8 @@
  *   ③ 같은 날 재실행 — 오늘 카드와 같은 사건의 새 기사는 그 카드의 새 출처(카드 URL이 다시 들어온 묶음은 바로 붙고,
  *      제목이 비슷한 새 묶음도 붙는다). 서로 다른 오늘 카드는 합치지 않는다
  *   ④ 보도 매체 수 = 매체명(publisherNameOf) 수 — BBC 피드 4개·국내 섹션/전체기사는 한 매체
- * 카드: 대표 = 첫 묶음(피드 원문 제목·링크 무수정), 출처 = 묶음마다 1건, 대회 = 클러스터 소스 합집합.
+ * 카드: 대표 = Tier·weight·최신성 1위 묶음(M1-15 — 피드 원문 제목·링크 무수정, 세부는 tests/news-card.test.ts), 출처 = 묶음마다
+ * 1건(대표 → Tier·최신 순), 대회 = 클러스터 소스 합집합.
  * 병합(news-file.ts mergeCards): 붙일 출처(attachments)·URL이 겹치는 새 카드의 나머지 출처를 기존 카드에 붙인다(id·created 유지).
  * 네트워크 없음.
  */
@@ -369,7 +370,7 @@ describe("③ planNewsClusters — 같은 날 재실행: 오늘 카드의 새 �
 });
 
 describe("클러스터 카드 — 대표 원문 무수정, 출처는 묶음마다, 대회는 소스 합집합", () => {
-  it("buildClusterCard: id·제목·링크는 대표 묶음 원문, 출처 순서 = 대표 → 입력 순서, 스키마 통과", () => {
+  it("buildClusterCard: id·제목·링크는 대표 묶음 원문(BBC weight 3 > ESPN 1), 출처 순서 = 대표 → 나머지, 스키마 통과", () => {
     const plan = planNewsClusters({
       groups: groupsOf(dayItems()),
       sourceById: SOURCE_BY_ID,
@@ -446,7 +447,7 @@ describe("클러스터 카드 — 대표 원문 무수정, 출처는 묶음마�
     expect(cluster.publishers).toEqual(["BBC Sport", "The Athletic", "Relevo"]);
   });
 
-  it("대표 소스가 설정에 없으면 카드를 만들지 않고, 나머지 중 설정에 없는 소스의 출처는 뺀다", () => {
+  it("소스가 설정에 없는 묶음은 대표가 될 수 없고(다음 후보가 대표 — M1-15) 출처에서도 빠진다, 후보가 없으면 카드 없음", () => {
     const lost: DedupGroup = {
       key: urlHash("https://example.com/a"),
       item: item("espn-soccer", "https://example.com/a", HAALAND_EN),
@@ -459,20 +460,23 @@ describe("클러스터 카드 — 대표 원문 무수정, 출처는 묶음마�
       sources: ["espn-soccer"],
       count: 1,
     };
+    // M1-13까지는 첫 묶음 소스가 설정에 없으면 클러스터 전체를 건너뛰었다 — 대표를 고르는 지금은 다음 후보가 대표가 된다
     expect(
-      buildClusterCard(
-        { members: [lost, ok], publishers: [] },
-        SOURCE_BY_ID,
-        NOW,
-      ),
+      buildClusterCard({ members: [lost], publishers: [] }, SOURCE_BY_ID, NOW),
     ).toBeNull();
     expect(groupCardSource(lost, SOURCE_BY_ID)).toBeNull();
-    const card = buildClusterCard(
-      { members: [ok, lost], publishers: [] },
-      SOURCE_BY_ID,
-      NOW,
-    )!;
-    expect(card.src.map((s) => s.u)).toEqual([ESPN_B]);
+    for (const members of [
+      [lost, ok],
+      [ok, lost],
+    ]) {
+      const card = buildClusterCard(
+        { members, publishers: [] },
+        SOURCE_BY_ID,
+        NOW,
+      )!;
+      expect(card.id).toBe(cardIdFor(ESPN_B));
+      expect(card.src.map((s) => s.u)).toEqual([ESPN_B]);
+    }
   });
 });
 

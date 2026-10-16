@@ -6,6 +6,8 @@
  *     다시 들어온 경우·창 밖으로 빠진 경우(제목으로) 모두
  *   - 다음 날: 어제 카드와 같은 사건의 늦은 기사는 카드가 되지 않는다(클러스터 통째 제외), 다른 새 소식은 카드가 된다
  *   - 클러스터링 실패 격리: 예상 밖 오류면 같은 사건을 합치지 않은 채 발행(partial + 경고)
+ *   - 카드 생성 경로(M1-15): 오늘 카드의 대표는 재실행에서 바뀌지 않음 · 제목 정리 경계와 링크 원문 · 요약문·본문 없음 ·
+ *     200자 초과 항목은 그 항목만 빠지고 같은 사건의 다음 후보가 대표
  *
  * 네트워크 없음 — 피드는 테스트가 만든 작은 RSS(제목·링크·날짜만), 경기는 빈 응답(브리핑 호출 생략), 파일은 임시 폴더.
  */
@@ -360,6 +362,145 @@ describe("runCollect — 같은 사건 클러스터 → 카드 (M1-13, FR-05)", 
     });
     // B는 카드가 되지 않았으니 기억에도 없다(다음에 다시 후보가 되면 같은 규칙으로 판정)
     expect(readSeenKeys()).not.toContain(urlHash(ESPN_B));
+  });
+});
+
+describe("runCollect — 카드 생성 경로 (M1-15, FR-20·D23)", () => {
+  it("같은 날 재실행 — 더 높은 weight 기사(BBC 3 > ESPN 1)가 나중에 들어와도 오늘 카드의 대표(id·제목·src[0])는 그대로", async () => {
+    await runCollect(makeDeps(NOW, { [ESPN.id]: [B] }).deps);
+    const before = readNews("2026-10-11");
+    expect(srcLinks(before)).toEqual([[ESPN_B]]);
+    const card = before.cards[0]!;
+    expect(card).toMatchObject({ id: cardIdFor(ESPN_B), t: B.title });
+
+    const again = makeDeps(LATER, { [BBC.id]: [A], [ESPN.id]: [B] });
+    const outcome = await runCollect(again.deps);
+    const after = readNews("2026-10-11");
+    expect(after.cards).toHaveLength(1);
+    expect(after.cards[0]).toMatchObject({
+      id: card.id,
+      t: B.title,
+      created: NOW,
+      ai: false,
+      s: [],
+    });
+    expect(srcLinks(after)).toEqual([[ESPN_B, BBC_A]]);
+    expect(outcome.news).toMatchObject({ added: 0, attached: 1 });
+    // 같은 두 기사가 처음부터 함께 들어왔다면 대표는 BBC(weight 3) — 위 첫 테스트(맨시티 카드)
+  });
+
+  it("보존 기간 후순위(D32·M1-25) — 같은 실행이면 BBC가 대표, 오늘 카드가 Athletic 대표면 재실행에서 BBC가 와도 그대로", async () => {
+    const ATH = byId("the-athletic-football");
+    const ATH_X = "https://www.nytimes.com/athletic/fixture/synthetic-x/";
+    const X: FeedEntry = {
+      title: "Haaland double fires Man City past Brentford",
+      link: ATH_X,
+      at: "2026-10-10T21:20:00.000Z", // A(BBC)보다 최신
+    };
+    const withAthletic = (
+      now: string,
+      feeds: Partial<Record<string, readonly FeedEntry[]>>,
+    ) =>
+      makeDeps(now, feeds, {
+        loadSources: async () => [...FEEDS, ATH],
+        fetch: async (input) => {
+          const url = String(input);
+          if (url.startsWith(FOOTBALL_DATA_BASE_URL)) {
+            return new Response('{"matches":[]}', { status: 200 });
+          }
+          const source = [...FEEDS, ATH].find((s) => s.url === url);
+          if (source === undefined)
+            throw new Error(`예상하지 못한 URL: ${url}`);
+          return new Response(rss(feeds[source.id] ?? []), { status: 200 });
+        },
+      });
+
+    // 같은 실행: Athletic(weight 1.5, 최신) + BBC(weight 3) → BBC 대표, Athletic은 출처
+    await runCollect(withAthletic(NOW, { [BBC.id]: [A], [ATH.id]: [X] }).deps);
+    expect(srcLinks(readNews("2026-10-11"))).toEqual([[BBC_A, ATH_X]]);
+    rmSync(path.join(dataDir, "news"), { recursive: true, force: true });
+    rmSync(path.join(dataDir, "cache"), { recursive: true, force: true });
+
+    // 오늘 카드가 Athletic만으로 먼저 만들어졌으면(다른 후보 없음 → Athletic 대표) 재실행에서 BBC가 와도 대표를 다시 고르지 않는다
+    await runCollect(withAthletic(NOW, { [ATH.id]: [X] }).deps);
+    const before = readNews("2026-10-11").cards[0]!;
+    expect(before).toMatchObject({ id: cardIdFor(ATH_X), t: X.title });
+    const outcome = await runCollect(
+      withAthletic(LATER, { [BBC.id]: [A], [ATH.id]: [X] }).deps,
+    );
+    const after = readNews("2026-10-11");
+    expect(after.cards).toHaveLength(1);
+    expect(after.cards[0]).toMatchObject({
+      id: before.id,
+      t: X.title,
+      created: NOW,
+    });
+    expect(srcLinks(after)).toEqual([[ATH_X, BBC_A]]);
+    expect(outcome.news).toMatchObject({ added: 0, attached: 1 });
+  });
+
+  it("FR-20 — 제목은 정리만(이중 인코딩 엔티티·줄바꿈·제어 문자), 링크는 피드 원문, 요약문·본문은 파일에 없다, LLM 없음", async () => {
+    const bbcXml = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>t</title><link>https://example.com/</link><description>d</description>
+      <item><title>
+        Haaland double fires
+        Manchester City past Brentford&#x7f;
+      </title><link>${BBC_A.replace(/&/g, "&amp;")}</link><pubDate>${new Date(A.at).toUTCString()}</pubDate>
+      <description>합성-요약문-DESC</description><content:encoded><![CDATA[<p>합성-본문-BODY</p>]]></content:encoded></item>
+      <item><title>Chelsea &amp;amp; Spurs &amp;#8211; Arteta&amp;#8217;s  &amp;quot;derby&amp;quot;</title><link>${BBC_C}</link><pubDate>${new Date(C.at).toUTCString()}</pubDate><description>합성-요약문-DESC2</description></item>
+      </channel></rss>`;
+    const { deps } = makeDeps(
+      NOW,
+      { [IF.id]: [K1] },
+      {
+        fetch: async (input) => {
+          const url = String(input);
+          if (url.startsWith(FOOTBALL_DATA_BASE_URL)) {
+            return new Response('{"matches":[]}', { status: 200 });
+          }
+          if (url === BBC.url) return new Response(bbcXml, { status: 200 });
+          if (url === IF.url) return new Response(rss([K1]), { status: 200 });
+          return new Response(rss([]), { status: 200 });
+        },
+      },
+    );
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    const text = readFileSync(
+      path.join(dataDir, "news", "2026-10-11.json"),
+      "utf8",
+    );
+    expect(text).not.toMatch(/합성-요약문|합성-본문/);
+    const file = readNews("2026-10-11");
+    const byLink = new Map(file.cards.map((c) => [c.src[0]!.u, c] as const));
+    expect(byLink.get(BBC_A)!.t).toBe(
+      "Haaland double fires Manchester City past Brentford",
+    );
+    expect(byLink.get(BBC_C)!.t).toBe(
+      'Chelsea & Spurs – Arteta’s  "derby"', // 안쪽 두 칸은 그대로
+    );
+    // 국내 카드도 LLM 없이 제목+링크(createLlm이 불리면 던진다)
+    expect(byLink.get(IF_K1)).toMatchObject({ t: K1.title, lang: "ko" });
+    for (const card of file.cards) {
+      expect(card).toMatchObject({ ai: false, s: [] });
+    }
+  });
+
+  it("200자 초과 원제목은 정규화에서 그 항목만 빠진다 — 같은 사건의 다음 후보(ESPN)가 대표, 빠진 링크는 출처에도 없음", async () => {
+    const longA = { ...A, title: `${A.title} ${"x".repeat(200)}` };
+    const { deps, records } = makeDeps(NOW, {
+      [BBC.id]: [longA],
+      [ESPN.id]: [B],
+    });
+    await runCollect(deps);
+    const file = readNews("2026-10-11");
+    expect(srcLinks(file)).toEqual([[ESPN_B]]);
+    expect(file.cards[0]).toMatchObject({ id: cardIdFor(ESPN_B), t: B.title });
+    expect(
+      records.find(
+        (r) => r.event === "collect.item.skip" && r.source === BBC.id,
+      ),
+    ).toMatchObject({ level: "warn", reason: "title-too-long", count: 1 });
+    expect(records.some((r) => r.event === "collect.card.skip")).toBe(false);
   });
 });
 

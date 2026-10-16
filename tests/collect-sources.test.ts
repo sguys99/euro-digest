@@ -106,6 +106,19 @@ const FD_MATCHES_1010 = read(
  */
 const NOW = new Date("2026-10-11T06:20:00.000Z");
 
+/**
+ * fixture 피드 점수 상위 5장의 제목 머리(--limit 5). 국내 3매체 두 카드(분데스 김민재·설영우 / 라리가 이강인)의 제목은 사건
+ * 대표(M1-15 — Tier 3·weight 1 동률에서 가장 최신인 베스트일레븐)의 원문이다(예전: 설정 순서상 처음인 인터풋볼 '[분데스 REVIEW]
+ * 김민재는 결장!'·'[라리가 REVIEW] '발목 부상' 이강인').
+ */
+const LIMIT5_HEADS = [
+  "Solanke scores in added time",
+  "AC Milan keen on Scott",
+  "“내 멍청한 실수였다”… 노이어",
+  "‘이강인 33분 소화’",
+  "이강인이 대체 뭘 잘못했길래",
+];
+
 const KOREAN_FEEDS = [
   "interfootball-world",
   "interfootball-all",
@@ -451,7 +464,7 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     expect([...times].sort((a, b) => b - a)).toEqual(times);
   });
 
-  it("여러 소스의 같은 링크는 출처 1건 — 대표는 설정 순서상 먼저 나온 소스, 대회 태그는 소스들의 합집합(M1-12), 같은 사건은 카드 1장(M1-13), 제목·링크는 피드 원문", async () => {
+  it("여러 소스의 같은 링크는 출처 1건 — 같은 링크의 대표는 설정 순서상 먼저 나온 소스, 대회 태그는 소스들의 합집합(M1-12), 같은 사건은 카드 1장(M1-13), 사건 대표는 Tier·weight·최신성(M1-15), 제목·링크는 피드 원문", async () => {
     // 상한을 넉넉히 줘서 클러스터 전부를 카드로 만든다(상한 적용은 위 테스트)
     const { deps, records } = makeDeps({ limit: 100 });
     const outcome = await runCollect(deps);
@@ -488,7 +501,9 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       seenBeforeExtra: 0,
     });
 
-    // 원제목·링크 무수정(엔티티 디코딩·앞뒤 공백 정리만) — 원문 항목은 fixture index에서 찾는다. 출처마다 원문 링크.
+    // 원제목·링크 무수정(FR-20 수용 기준 — 엔티티 디코딩·공백 정리만) — 원문 항목은 fixture index에서 찾는다(`title`·`link`는
+    // XML 파싱 값 = 원문). fixture 제목에는 파싱 뒤 남은 엔티티·줄바꿈·제어 문자가 없어 정리 결과 = 앞뒤 공백 정리뿐이다(전제 확인).
+    // 출처마다 원문 링크. 해외·국내 모두 LLM을 거치지 않는다(ai:false, s:[] — D23).
     const indexByLink = new Map(
       RSS_INDEX.sources.flatMap((s) =>
         s.items.map((i) => [i.link, i] as const),
@@ -497,22 +512,85 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     for (const card of file.cards) {
       const original = indexByLink.get(card.src[0]!.u);
       expect(original).toBeDefined();
+      expect(original!.title).not.toMatch(/&[#a-zA-Z0-9]+;|[\t\n\r]|\p{Cc}/u);
+      expect(card.t).toBe(original!.title.trim());
+      expect(card.src[0]!.u).toBe(original!.link);
       expect(card.id).toBe(cardIdFor(original!.link));
       expect(card).toMatchObject({ ai: false, s: [] });
       for (const src of card.src) expect(indexByLink.has(src.u)).toBe(true);
     }
 
-    // 같은 사건(M1-13): 국내 3매체가 함께 보도한 아틀레티코 2-1 알라베스 → 카드 1장, 출처 3건(매체마다 1건, 설정 순서),
-    // 대표 = 설정 순서상 처음(인터풋볼 전체기사 — 섹션 피드에는 없는 기사). 제목은 대표 출처의 피드 원문 그대로.
+    // 대표(M1-15): 카드마다 src[0] = 출처 중 보존 기간 후순위(Athletic) → Tier → weight(같은 링크를 낸 소스 중 최대) → 최신 1위,
+    // 나머지는 Tier → 최신 순.
+    // 이 테스트가 소스 설정에서 따로 계산한다(card-lead.ts 함수를 쓰지 않음).
+    const sourcesByLink = new Map<string, Source[]>();
+    for (const s of RSS_INDEX.sources) {
+      for (const i of s.items) {
+        sourcesByLink.set(i.link, [
+          ...(sourcesByLink.get(i.link) ?? []),
+          byId(s.id),
+        ]);
+      }
+    }
+    const rankOf = (u: string, at: string) => {
+      const srcs = sourcesByLink.get(u)!;
+      return [
+        srcs.some((x) => x.retentionDays !== undefined) ? 1 : 0, // 보존 기간 후순위(D32·M1-25)
+        Math.min(...srcs.map((x) => x.tier)),
+        -Math.max(...srcs.map((x) => x.weight)),
+        -Date.parse(at),
+      ];
+    };
+    const before = (a: number[], b: number[]) => {
+      for (let k = 0; k < a.length; k += 1) {
+        if (a[k] !== b[k]) return a[k]! < b[k]!;
+      }
+      return false;
+    };
+    for (const card of file.cards) {
+      const [lead, ...rest] = card.src;
+      for (const other of rest) {
+        expect(
+          before(rankOf(other.u, other.at), rankOf(lead!.u, lead!.at)),
+        ).toBe(false);
+      }
+      for (let k = 1; k < rest.length; k += 1) {
+        const [a, b] = [rest[k - 1]!, rest[k]!];
+        expect(a.tier <= b.tier).toBe(true);
+        if (a.tier === b.tier)
+          expect(Date.parse(a.at) >= Date.parse(b.at)).toBe(true);
+      }
+      if (card.lang !== "ko")
+        expect(card.lang).toBe(sourcesByLink.get(lead!.u)![0]!.lang);
+    }
+    // 대표가 클러스터 첫 묶음(설정 순서)과 달라진 카드 — 국내 3매체 2묶음(같은 Tier·weight에서 더 최신인 베스트일레븐)
+    expect(
+      records.find((r) => r.event === "collect.select.done"),
+    ).toMatchObject({ leadReordered: 2 });
+    expect(records.some((r) => r.event === "collect.card.skip")).toBe(false);
+
+    // 같은 사건(M1-13): 국내 3매체가 함께 보도한 아틀레티코 2-1 알라베스 → 카드 1장, 출처 3건(매체마다 1건).
+    // 대표(M1-15) = 셋 다 Tier 3 · weight는 인터풋볼 전체기사 1 = 베스트일레븐(WORLD 1·전체기사 0.5 중 최대 1) > 풋볼리스트 0.5
+    // → 최신성: 베스트일레븐 01:14:40 KST > 인터풋볼 01:11:36 KST. 나머지는 최신순(풋볼리스트 01:19:02 → 인터풋볼).
+    // 제목은 대표 출처의 피드 원문 그대로(예전 대표 = 설정 순서상 처음 인터풋볼 '[라리가 REVIEW] …').
     const alaves = file.cards.find((c) =>
-      c.t.includes("알라베스 2-1 제압! 4"),
+      c.src.some(
+        (s) =>
+          s.u ===
+          "https://www.interfootball.co.kr/news/articleView.html?idxno=696151",
+      ),
     )!;
     expect(alaves.src.map((s) => s.n)).toEqual([
-      "인터풋볼",
-      "풋볼리스트",
       "베스트일레븐",
+      "풋볼리스트",
+      "인터풋볼",
     ]);
+    expect(alaves.src[0]!.u).toBe(
+      "https://www.besteleven.com/news/articleView.html?idxno=313012",
+    );
     expect(alaves.t).toBe(indexByLink.get(alaves.src[0]!.u)!.title);
+    expect(alaves.t.startsWith("‘이강인 33분 소화’")).toBe(true);
+    expect(alaves.id).toBe(cardIdFor(alaves.src[0]!.u));
     // 해외: BBC(경기 영상) + The Athletic 경기 기사(합성 제목 — fixtures/rss README, D32·D42) → 카드 1장.
     // 다른 언어(BBC 영어 + Relevo 스페인어)도 같은 사건이면 1장
     const spurs = file.cards.find((c) =>
@@ -601,14 +679,9 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     expect(score.cutoff!).toBeGreaterThanOrEqual(score.firstOut!);
     // 상위 5 = 맨유-토트넘(BBC+Athletic 2곳, 빅클럽 2) · AC 밀란 이적설(빅클럽+이적) · 김민재·설영우 분데스(국내 3곳, 한국 선수)
     // · 이강인 라리가(국내 3곳) · 이강인-레알(한국 선수+빅클럽). 최신순이었다면 ESPN 일괄 갱신 시각 기사 4건이 들었다.
+    // 국내 3곳 두 카드의 제목은 대표(M1-15 — 같은 Tier·weight에서 가장 최신인 베스트일레븐) 원문이다.
     const titles = file.cards.map((c) => c.t);
-    for (const head of [
-      "Solanke scores in added time",
-      "AC Milan keen on Scott",
-      "[분데스 REVIEW] 김민재는 결장!",
-      "[라리가 REVIEW] '발목 부상' 이강인",
-      "이강인이 대체 뭘 잘못했길래",
-    ]) {
+    for (const head of LIMIT5_HEADS) {
       expect(titles.some((t) => t.startsWith(head))).toBe(true);
     }
     expect(file.cards.some((c) => c.src[0]!.n === "ESPN")).toBe(false);
@@ -763,13 +836,7 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       });
       // --limit 5 첫 실행과 같은 상위 5(국내 3·해외 2)
       const titles = file.cards.map((c) => c.t);
-      for (const head of [
-        "Solanke scores in added time",
-        "AC Milan keen on Scott",
-        "[분데스 REVIEW] 김민재는 결장!",
-        "[라리가 REVIEW] '발목 부상' 이강인",
-        "이강인이 대체 뭘 잘못했길래",
-      ]) {
+      for (const head of LIMIT5_HEADS) {
         expect(titles.some((t) => t.startsWith(head))).toBe(true);
       }
     });

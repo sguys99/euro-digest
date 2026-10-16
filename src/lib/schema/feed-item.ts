@@ -32,7 +32,7 @@ const trimmedText = (label: string) =>
 
 /**
  * 공통 형식 1건.
- * - `title`  원제목 — 엔티티 디코딩·앞뒤 공백 정리만(D23 무수정), 1~200자.
+ * - `title`  원제목 — 엔티티 디코딩·공백 정리만(D23 무수정 — 범위는 scripts/lib/normalize.ts `cleanTitle`), 정리 뒤 1~200자.
  * - `url`    원문 링크 — 피드 원문 그대로(앞뒤 공백 정리만, http/https). 추적 파라미터 제거 등 URL 정규화는 중복 판정
  *            해시에만 쓴다(M1-12). 국내 매체 `?idxno=` 같은 기사 식별자 쿼리도 그대로 남는다.
  * - `publishedAt` 원문 발행 시각(UTC ISO, 끝 `Z`) — 피드 날짜 → `parseFeedDate`(시간대 없는 날짜는 `Source.tz`, D34).

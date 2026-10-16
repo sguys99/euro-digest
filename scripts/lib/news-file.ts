@@ -1,9 +1,11 @@
 /**
  * 원제목 카드 만들기 · 선별 · 일별 뉴스 파일 병합/쓰기 (M1-01 수직 슬라이스, PRD FR-04·FR-20·FR-30, D23).
  *
- * - 카드: 해외·국내 모두 원제목+링크(`ai:false`, `s:[]`). 제목·링크는 normalize.ts가 정리한 원문 그대로 넣는다.
- * - 카드 출처(`src`): 같은 사건 클러스터(news-cluster.ts, M1-13)의 묶음마다 1건 — 대표 묶음이 먼저, 나머지는 입력 순서.
- *   같은 매체의 다른 기사(BBC 경기 기사+영상)도 각각 1건이다('+N곳'은 매체명 수로 센다 — M1-31).
+ * - 카드: 해외·국내 모두 원제목+링크(`ai:false`, `s:[]` — LLM을 거치지 않는다, FR-20·D23). 제목·링크는 normalize.ts가
+ *   정리한 원문 그대로 넣는다. RSS 요약문(description)은 카드에 넣지 않는다(FeedItem `summary`도 쓰지 않음 — D39).
+ * - 카드 출처(`src`): 같은 사건 클러스터(news-cluster.ts, M1-13)의 묶음마다 1건 — 대표 묶음(card-lead.ts, M1-15 — Tier·weight·
+ *   최신성)이 먼저, 나머지는 `compareCardSources`(Tier → 최신 → URL) 순. 같은 날 재실행으로 출처가 붙어도 같은 규칙으로 다시
+ *   줄 세운다(`src[0]`은 그대로). 같은 매체의 다른 기사(BBC 경기 기사+영상)도 각각 1건이다('+N곳'은 매체명 수로 센다 — M1-31).
  * - 선별: 점수화(score.ts, M1-14 — FR-06) 상위 `MAX_ITEMS_PER_RUN`. 선별 점수는 카드 생성(`buildCard`의 `signals`)까지
  *   넘어가 분류(classify.ts — M1-17 중요도 `imp`)가 쓴다. 카드·파일에는 점수를 저장하지 않는다(스키마 변경 없음).
  * - 병합: 같은 KST 발행일 파일이 이미 있으면 기존 카드를 그대로 두고(id·created 유지) 새 카드만 더한다 → 다시 실행해도
@@ -31,6 +33,7 @@ import {
 } from "@/lib/schema";
 
 import { cardIdFor } from "./card-id";
+import { orderCardSources } from "./card-lead";
 import { classifyMinimal, type CardSignals } from "./classify";
 import { urlHash } from "./url-normalize";
 
@@ -47,7 +50,8 @@ export function publisherNameOf(source: Pick<Source, "name">): string {
 
 /**
  * 피드 항목 1건(대표) → 원제목 카드(분류는 최소 규칙). created = 이번 실행 시각(UTC ISO).
- * `more` = 같은 사건 클러스터의 나머지 출처(M1-13) — 대표 출처 뒤에 그대로 붙는다.
+ * 제목 `t`·대표 링크 `src[0].u`는 피드 원문(정리된 값) 그대로, `s` = [], `ai` = false — 이 함수는 다른 값을 만들지 않는다(D23).
+ * `more` = 같은 사건 클러스터의 나머지 출처(M1-13) — 대표 출처 뒤에 `compareCardSources` 순으로 붙는다(M1-15).
  * `signals` = 선별 단계 신호(M1-14 점수 — 분류 규칙 M1-17이 중요도에 쓴다). 없으면 null.
  */
 export function buildCard(
@@ -62,15 +66,15 @@ export function buildCard(
     t: item.title,
     s: [],
     ...classifyMinimal(item, source, signals),
-    src: [
+    src: orderCardSources(
       {
         n: publisherNameOf(source),
         u: item.url,
         at: item.publishedAt,
         tier: source.tier,
       },
-      ...more,
-    ],
+      more,
+    ),
     lang: item.lang,
     ai: false,
     created,
@@ -116,8 +120,9 @@ function srcKeys(card: Pick<NewsCard, "src">): string[] {
 }
 
 /**
- * 기존 카드는 그대로 두고(id·created·제목 유지) 새 카드를 더하고, 기존 카드에 새 출처를 붙인다.
- *   - `attachments`: 그 id의 기존 카드 출처 뒤에 붙인다(어느 카드에든 이미 있는 URL은 건너뜀). 없는 id는 무시.
+ * 기존 카드는 그대로 두고(id·created·제목·대표 출처 `src[0]` 유지) 새 카드를 더하고, 기존 카드에 새 출처를 붙인다.
+ * 출처가 붙은 카드는 나머지 출처(`src[1..]`)를 `compareCardSources` 순으로 다시 줄 세운다(M1-15 — 파일 순서 = 출처 스택 순서).
+ *   - `attachments`: 그 id의 기존 카드 출처에 붙인다(어느 카드에든 이미 있는 URL은 건너뜀). 없는 id는 무시.
  *   - `incoming`: 같은 카드(같은 ID 또는 출처 링크의 정규화 URL이 하나라도 같은 카드 — M1-12)가 있으면 새 카드로 더하지
  *     않고, 그 카드에 없는 출처만 그 카드에 붙인다(M1-13 — 예전에는 통째로 건너뛰었다). 없으면 새 카드로 더한다.
  */
@@ -136,12 +141,17 @@ export function mergeCards(
   }
   let attached = 0;
   const attach = (target: NewsCard, src: readonly CardSource[]) => {
+    const before = target.src.length;
     for (const entry of src) {
       const key = urlHash(entry.u);
       if (ownerByKey.has(key)) continue;
       target.src.push(entry);
       ownerByKey.set(key, target);
       attached += 1;
+    }
+    const [lead, ...rest] = target.src;
+    if (target.src.length > before && lead !== undefined) {
+      target.src = orderCardSources(lead, rest);
     }
   };
   for (const { id, src } of attachments) {

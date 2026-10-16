@@ -406,7 +406,7 @@ describe("normalize.ts — 원제목·링크 무수정(엔티티 디코딩·앞�
     );
   });
 
-  it("앞뒤 공백만 정리하고 안쪽 글자는 그대로 둔다", () => {
+  it("앞뒤 공백을 정리하고 안쪽 일반 공백은 그대로 둔다(줄바꿈·탭·제어 문자·이중 인코딩 규칙은 tests/news-card.test.ts)", () => {
     expect(cleanTitle("  Bayern strike late  ")).toBe("Bayern strike late");
     expect(cleanTitle("A  -  B")).toBe("A  -  B");
   });

@@ -27,11 +27,16 @@
  *   점수화(score.ts — M1-14, FR-06 '클러스터 크기(보도 매체 수)') 입력. 선별은 `fresh`만 점수 순으로 줄 세우고, 새 카드 자리는
  *   그날 파일 기준(상한 − 오늘 파일 카드 수 — D44, collect-run.ts)이다. `existing`은 오늘 카드에 출처만 붙인다.
  *
- * 대표 항목은 지금 클러스터의 첫 묶음(설정 순서상 처음 — dedup.ts와 같은 규칙)이다. Tier·weight·최신성 순 대표 선정은
- * M1-15가 `members`로 한다.
+ * 클러스터 구성 묶음(`members`)은 입력 순서(설정 순서)다. 카드의 대표(제목·링크·ID)는 카드를 만들 때 `members`에서
+ * Tier·weight·최신성 순으로 고른다(card-lead.ts, M1-15). 오늘 카드(③)는 대표를 다시 고르지 않는다(id·제목 유지).
  */
 import type { CardSource, NewsCard, Source } from "@/lib/schema";
 
+import {
+  pickClusterLead,
+  type LeadOptions,
+  type LeadSkipCounts,
+} from "./card-lead";
 import type { CardSignals } from "./classify";
 import {
   DEFAULT_CLUSTER_POLICY,
@@ -61,7 +66,7 @@ export const singletonClusters: ClusterFn = (docs) => docs.map((_, k) => [k]);
 
 /** 같은 사건 묶음 클러스터 */
 export interface NewsCluster {
-  /** 구성 묶음(입력 순서) — 첫 번째가 지금의 대표 */
+  /** 구성 묶음(입력 순서) — 카드 대표는 card-lead.ts `pickClusterLead`가 이 중에서 고른다(M1-15) */
   members: DedupGroup[];
   /** 보도 매체명(처음 나온 순서, 중복 없음) — 클러스터 크기 = publishers.length */
   publishers: string[];
@@ -93,9 +98,9 @@ export function toCluster(
 }
 
 /**
- * 클러스터의 소스 메타 — 대표 묶음의 대표 소스를 앞에 두고 모든 구성 묶음의 소스 id(중복 없음)를 dedup.ts `groupSource`로
- * 합친다: 카드용 소스 = 대표 소스 + 대회 합집합, 점수화 입력 = 최고 tier·최대 weight·최단 보존 기간. 대표 소스가 설정에
- * 없으면 null(호출부가 그 클러스터를 건너뛴다), 설정에 없는 나머지 소스는 빼고 합친다.
+ * 클러스터의 소스 메타 — 첫 묶음의 대표 소스를 앞에 두고 모든 구성 묶음의 소스 id(중복 없음)를 dedup.ts `groupSource`로
+ * 합친다: 카드용 소스 = 첫 묶음 소스 + 대회 합집합, 점수화 입력 = 최고 tier·최대 weight·최단 보존 기간(순서와 무관). 첫 묶음
+ * 소스가 설정에 없으면 null, 설정에 없는 나머지 소스는 빼고 합친다. 카드는 대표를 맨 앞에 둔 순서로 부른다(`clusterCard`).
  */
 export function clusterSourceMeta(
   cluster: Pick<NewsCluster, "members">,
@@ -120,26 +125,54 @@ export function groupCardSource(
   };
 }
 
+/** 클러스터 카드 결과 — 카드 + 대표 선정 집계(로그용) */
+export interface ClusterCardOutcome {
+  /** 대표가 될 묶음이 없으면 null(그 클러스터는 건너뛴다) */
+  card: NewsCard | null;
+  /** 대표가 입력 순서상 첫 묶음이 아니다(Tier·weight·최신성으로 바뀜) */
+  reordered: boolean;
+  /** 대표 후보에서 뺀 묶음 수(설정에 없는 소스·200자 초과 제목) */
+  skipped: LeadSkipCounts;
+}
+
 /**
- * 클러스터 → 원제목 카드: 대표 = 첫 묶음(설정 순서상 처음 — M1-15가 Tier·weight·최신성으로 바꾼다)의 피드 원문 제목·링크,
- * 출처 = 대표 + 나머지 묶음(입력 순서, 묶음마다 1건), 카드 소스 = 대표 소스 + 클러스터 대회 합집합. 대표 소스가 설정에
- * 없으면 null(그 클러스터는 건너뛴다), 나머지 묶음 중 소스가 설정에 없는 것은 출처에서 뺀다.
- * `signals` = 선별 점수(M1-14) — 분류(classify.ts, M1-17 중요도)로 넘긴다.
+ * 클러스터 → 원제목 카드(FR-20, D23): 대표 = `members` 중 Tier·weight·최신성 1위(card-lead.ts — 200자 초과·설정에 없는 소스는
+ * 건너뛰고 다음 후보)의 피드 원문 제목·링크·언어, 출처 = 대표 + 나머지 묶음(묶음마다 1건, `compareCardSources` 순), 카드 소스 =
+ * 대표 소스 + 클러스터 대회 합집합. 나머지 묶음 중 소스가 설정에 없는 것은 출처에서 뺀다. 카드는 `ai:false`·`s:[]`뿐이다.
+ * `signals` = 선별 점수(M1-14) — 분류(classify.ts, M1-17 중요도)로 넘긴다. `options` = 낮춘 시각 판정(최신성 비교).
  */
+export function clusterCard(
+  cluster: NewsCluster,
+  sourceById: ReadonlyMap<string, Source>,
+  created: string,
+  signals: CardSignals | null = null,
+  options: LeadOptions = {},
+): ClusterCardOutcome {
+  const pick = pickClusterLead(cluster.members, sourceById, options);
+  const { lead, skipped } = pick;
+  if (lead === null) return { card: null, reordered: false, skipped };
+  const meta = clusterSourceMeta({ members: [lead, ...pick.rest] }, sourceById);
+  if (meta === null) return { card: null, reordered: false, skipped };
+  const more = pick.rest.flatMap((g) => {
+    const src = groupCardSource(g, sourceById);
+    return src ? [src] : [];
+  });
+  return {
+    card: buildCard(lead.item, meta.card, created, more, signals),
+    reordered: pick.reordered,
+    skipped,
+  };
+}
+
+/** `clusterCard`의 카드만 — 대표가 될 묶음이 없으면 null */
 export function buildClusterCard(
   cluster: NewsCluster,
   sourceById: ReadonlyMap<string, Source>,
   created: string,
   signals: CardSignals | null = null,
+  options: LeadOptions = {},
 ): NewsCard | null {
-  const [lead, ...rest] = cluster.members;
-  const meta = clusterSourceMeta(cluster, sourceById);
-  if (lead === undefined || meta === null) return null;
-  const more = rest.flatMap((g) => {
-    const src = groupCardSource(g, sourceById);
-    return src ? [src] : [];
-  });
-  return buildCard(lead.item, meta.card, created, more, signals);
+  return clusterCard(cluster, sourceById, created, signals, options).card;
 }
 
 // ─── 계획 ────────────────────────────────────────────────────────────────
