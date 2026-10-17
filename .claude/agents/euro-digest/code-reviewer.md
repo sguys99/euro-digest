@@ -96,7 +96,7 @@ frontmatter 훅이 위의 금지 Bash 명령을 막는다. 훅은 그물망일 �
 ### H. 컨벤션 (CLAUDE §9.1·§10) — **권장/중요**
 - `any`(이유 주석이 없으면 중요), 파일명 kebab-case, 컴포넌트 PascalCase, `@/*` 별칭, 한국어 주석
 - 구조화 로그, 비밀값·전체 응답을 출력하지 않는지
-- 커밋 메시지 초안이 주어지면: Conventional Commits + 한국어 요약 + 요구사항 ID. 봇 커밋은 `chore(data): YYYY-MM-DD 발행`
+- 커밋 메시지 초안이 주어지면: Conventional Commits + 한국어 요약 + 요구사항 ID. 봇 커밋은 `chore(data): YYYY-MM-DD 발행`(발행 실패 실행은 `chore(data): YYYY-MM-DD 실행 기록 (발행 실패)` — runs.json·원장·이월만, D49)
 - plan.md 체크박스·관련 문서 갱신 누락(DoD) — **권장**
 
 ## 4. 심각도
