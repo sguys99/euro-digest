@@ -36,18 +36,13 @@ import {
 import { cardIdFor } from "./card-id";
 import { orderCardSources } from "./card-lead";
 import { classifyMinimal, type CardSignals } from "./classify";
+import { publisherNameOf } from "./publisher-name";
 import { urlHash } from "./url-normalize";
 
 // ─── 카드 ────────────────────────────────────────────────────────────────
 
-/**
- * 카드에 표시할 출처명 — 소스 이름에서 섹션(" — Football")·괄호 설명(" (Fabrizio Romano)")을 뗀 매체명.
- * 예) "BBC Sport — Football" → "BBC Sport", "인터풋볼 — 해외축구" → "인터풋볼" (M0-34 카드 샘플과 같은 표기).
- */
-export function publisherNameOf(source: Pick<Source, "name">): string {
-  const base = source.name.split(" — ")[0] ?? source.name;
-  return base.replace(/\s*\([^)]*\)\s*$/, "").trim() || source.name;
-}
+// 카드에 표시할 출처명(매체명) — publisher-name.ts(분류 단계도 쓰므로 따로 둔다), 기존 import를 위해 다시 내보낸다
+export { publisherNameOf } from "./publisher-name";
 
 /**
  * 피드 항목 1건(대표) → 원제목 카드. created = 이번 실행 시각(UTC ISO). 분류 필드는 `signals.classification`(M1-17 코드 분류)이

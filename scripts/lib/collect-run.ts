@@ -9,7 +9,7 @@
  *      → 제목 유사도로 같은 사건 클러스터(M1-13, FR-05 — cluster.ts·news-cluster.ts: 다른 날 카드였던 URL이 든 클러스터는
  *        통째로 제외(seen-urls.json 90일 기억 ∪ 최근 발행 파일 — seen-urls.ts), 오늘 카드와 같은 사건이면 그 카드의 새 출처)
  *      → 코드 분류(M1-17, FR-21 — classify.ts·tag-names.ts: 모든 구성 묶음 제목 + 메모리 안 요약문(spoiler와 제외의 남기는 근거만,
- *        D39 ①·D47 ① — 위험 수용 3소스는 요약문을 읽지 않음, D48)) + 엔티티 2단계 병합(D42 — entity-merge.ts·cluster-classify.ts:
+ *        D39 ①·D47 ① — 위험 수용 3소스는 요약문을 읽지 않음, D48), 이적 카드의 `transfer` — M1-18 transfer-extract.ts) + 엔티티 2단계 병합(D42 — entity-merge.ts·cluster-classify.ts:
  *        '경기 결과' 경기 기사 + 같은 두 팀 + 공통 스코어(해외 스코어 없는 기사는 스코어 기사 뒤에만) + 12시간, 오늘 결과 카드와 같은
  *        경기면 그 카드의 출처)
  *      → 점수화 선별(M1-14, FR-06 — score.ts: 소스 weight × Tier × 키워드 × 보도 매체 수 × 최신성 × 범위 — 범위 근거에 제목 팀·한국
@@ -89,7 +89,9 @@
  * 범위 판정 단계의 예상 밖 오류는 빼지 않고, 코드 분류·병합 단계의 예상 밖 오류는 병합 없이 최소 분류(소스 대회·기본값)로 발행한다
  * (실행 상태 partial — `classifyError`, 로그 `collect.filter.fail`·`collect.classify.fail`). 두 단계는 테스트가 실패를 주입할 수 있다
  * (`deps.filterOutOfScope`·`deps.classifyClusters`).
- * 다음 작업이 갈아끼울 자리: 이적 추출(M1-18 — 카드 `transfer`) · 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
+ * 이적 정보(M1-18 — transfer-extract.ts): 카테고리 '이적' 새 카드의 `transfer`(선수·출발·행선지·단계·tier)는 코드 분류가 채운다(classify.ts —
+ * 확실할 때만, agreed 이상 승격 조건). 같은 날 재실행에서 오늘 카드에 붙인 새 출처로는 다시 판정하지 않는다(카드 id·제목처럼 유지).
+ * 다음 작업이 갈아끼울 자리: 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
  * 검증·강등(M1-23·M1-45) · 브리핑 줄 수 기록(summarized·downgraded = 게시 줄 기준 — M1-45) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
  */
@@ -1309,6 +1311,9 @@ async function runNewsStage(
     // 한국 선수 배수 = 분류 kr과 같은 기준(동명이인 확인 — classify.ts `korean`)
     koreanPlayers: (cluster: Pick<NewsCluster, "members">) =>
       classified.analysisOf(cluster as NewsCluster)?.korean,
+    // 이적 배수 = 분류의 이적 화제와 같은 근거(국내 'T행' 포함 — M1-18)
+    transferTopic: (cluster: Pick<NewsCluster, "members">) =>
+      classified.analysisOf(cluster as NewsCluster)?.transferTopic,
   };
   const slotPlan = planSlots({
     limit: deps.limit,
@@ -1610,13 +1615,21 @@ function summarizeScores(input: {
   };
 }
 
-/** 새 카드의 분류 구성 — 중요도별·카테고리별 수, kr·spoiler 수(로그 — 관찰 주간 검수용) */
+/**
+ * 새 카드의 분류 구성 — 중요도별·카테고리별 수, kr·spoiler 수, 이적 정보(M1-18 — 단계별 수·행선지/출발이 채워진 수)(로그 — 관찰 주간
+ * 검수용, 제목·선수는 남기지 않는다)
+ */
 function classifiedMix(cards: readonly NewsCard[]) {
   const imp: Record<string, number> = {};
   const cat: Record<string, number> = {};
+  const transfer: Record<string, number> = {};
   for (const card of cards) {
     imp[String(card.imp)] = (imp[String(card.imp)] ?? 0) + 1;
     cat[card.cat] = (cat[card.cat] ?? 0) + 1;
+    if (card.transfer) {
+      transfer[card.transfer.status] =
+        (transfer[card.transfer.status] ?? 0) + 1;
+    }
   }
   return {
     imp,
@@ -1624,6 +1637,9 @@ function classifiedMix(cards: readonly NewsCard[]) {
     kr: cards.filter((c) => c.kr).length,
     spoiler: cards.filter((c) => c.spoiler).length,
     noComp: cards.filter((c) => c.comp.length === 0).length,
+    transfer,
+    transferTo: cards.filter((c) => c.transfer?.to !== undefined).length,
+    transferFrom: cards.filter((c) => c.transfer?.from !== undefined).length,
   };
 }
 

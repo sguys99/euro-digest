@@ -375,8 +375,25 @@ const KO_TRANSFER_COMPOUNDS: readonly string[] = [
 ];
 
 /**
- * 이적 화제(FR-06 키워드 '이적', FR-105 이적 창 가중 대상). 상태(rumor~official) 판정이 아니다 — 상태 표·의문·부정형은
- * M1-18이 이 옆에 둔다. 너무 흔한 말(deal·talks·move·target·join 계열 일부)은 오탐이 많아 넣지 않았다.
+ * 지난 이적을 꾸미는 관형형(국내 제목 — `koSpacedText`에 적용) — ① '이적한'·'이적했던'·'영입된'·'임대된'·'이적시킨'·'이적해 온'·
+ * '이적하자마자' ② '이적(을)
+ * 설득한'·'영입을 주도한'·'이적 성사시킨'·'이적 거절한' ③ '이적(을) 이끈'·'이적 도운'·'이적 막은' ④ '이적 당시'·'영입 당시'·'이적
+ * 시절'·'이적 1주년'·'이적 이후'. 뒤가 한글이면 맞지 않는다('이적한다'·
+ * '영입했다'는 지금 소식). 합성어 꾸밈말('완전이적한')도 같은 자리다.
+ */
+export const KO_PAST_TRANSFER_RE: readonly RegExp[] = [
+  /(?:이적|영입|임대)(?:한|했던|된|됐던|되었던|시킨|시켰던|해\s?온|해\s?간|하자마자)(?![\p{Script=Hangul}])/gu,
+  /(?:이적|영입|임대)\s?(?:을|를)?\s?(?:설득|주도|성사|권유|만류|반대|성공|거절)(?:한|했던|시킨|시켰던)(?![\p{Script=Hangul}])/gu,
+  /(?:이적|영입|임대)\s?(?:을|를)?\s?(?:이끈|이끌었던|도운|도왔던|막은|막았던)(?![\p{Script=Hangul}])/gu,
+  // ④ 때·기념일 — '이적 당시'·'영입 당시 이적료'·'이적 시절'·'이적 1주년'·'이적 이후'(M1-18 리뷰)
+  /(?:이적|영입|임대|입단)\s?(?:\d+\s?)?(?:주년|당시|시절|이후|직후)(?:\s?이적료)?(?![\p{Script=Hangul}])/gu,
+];
+
+/**
+ * 이적 화제(FR-06 키워드 '이적', FR-105 이적 창 가중 대상, FR-21 카테고리). 단계(rumor~official·collapsed) 판정이 아니다 — 단계 표·
+ * 의문·부정형은 아래 '표: 이적 단계'(M1-18 — `TRANSFER_RUMOR_TERMS` 등, transfer-extract.ts)다. 너무 흔한 말(deal·talks·move·target·join
+ * 계열 일부)은 오탐이 많아 넣지 않았다. 국내 제목의 **지난 이적을 꾸미는 말**('이강인 이적 설득한 코케'·'나폴리 이적 이끈 인물'·'여름에
+ * 영입한 수비수'·'리버풀로 이적한 바르콜라')은 지금 이적 소식이 아니다(`KO_PAST_TRANSFER_RE` — M1-17 이월).
  */
 export const TRANSFER_TERMS: KeywordGroup = {
   terms: {
@@ -433,6 +450,7 @@ export const TRANSFER_TERMS: KeywordGroup = {
       "fichajes",
       "fichar",
       "ficha por",
+      "ficha a",
       "traspaso",
       "cesion",
       "cedido",
@@ -467,6 +485,9 @@ export const TRANSFER_TERMS: KeywordGroup = {
   },
   // 붙여 쓴 합성어('이강인, 완전이적 임박'·'맨유, 전격영입 발표') — 낱말 앞 경계로는 맞지 않는다(M1-17 재리뷰)
   koInfix: KO_TRANSFER_COMPOUNDS,
+  // 지난 이적을 꾸미는 말(관형형 — '이적한'·'영입된'·'이적 설득한'·'이적 이끈')은 지운다(M1-18 — '이강인 이적 설득한 코케, 부상 이탈'이
+  // 이적으로 분류됐다, M1-17 이월). '이적한다'·'영입했다'(지금 소식)는 지우지 않는다
+  excludeKoRe: KO_PAST_TRANSFER_RE,
   // 이적이 아닌 흔한 쓰임 — 배수가 1.2라 자주 나오는 것만(무리하게 늘리지 않는다)
   exclude: {
     en: [
@@ -492,7 +513,8 @@ export const TRANSFER_TERMS: KeywordGroup = {
       "double bid",
     ],
     // '리버풀 이적 후 첫 골' — 이적한 뒤의 활약(이적 소식이 아니다)
-    ko: ["이적 후", "이적 이후", "이적 뒤"],
+    // '나폴리, 김민재 영입 당시 이적료 공개' — 지난 이적의 이적료(M1-18 리뷰)
+    ko: ["이적 후", "이적 이후", "이적 뒤", "당시 이적료"],
     it: [
       "firma il gol",
       "firma la rete",
@@ -743,6 +765,7 @@ export const TRANSFER_STRONG_TERMS: KeywordGroup = {
       "fichajes",
       "fichar",
       "ficha por",
+      "ficha a",
       "traspaso",
       "cesion",
       "cedido",
@@ -764,6 +787,7 @@ export const TRANSFER_STRONG_TERMS: KeywordGroup = {
   },
   koInfix: KO_TRANSFER_COMPOUNDS,
   exclude: TRANSFER_TERMS.exclude,
+  excludeKoRe: KO_PAST_TRANSFER_RE,
 };
 
 /** 여러 소식 묶음 제목(🚨 'X want Y, Z eye W & more')의 이적 동사 — 묶음 제목에만 쓴다(한 소식 제목에는 너무 흔한 말) */
@@ -787,6 +811,351 @@ export const TRANSFER_ROUNDUP_TERMS: KeywordGroup = {
       "replace",
       "shortlist",
     ],
+  },
+};
+
+// ─── 표: 이적 rumor·문턱 (M1-18, FR-21·FR-100~103, D23·D54 — transfer-extract.ts) ───────────────────────────
+//
+// 이적 단계는 부록 A `TransferStatus`(rumor < negotiating < agreed < official, 그리고 결렬 collapsed)다. **negotiating 이상·결렬은 닫힌 문형만**
+// (PRD §15 D54 — transfer-patterns.ts `STAGE_PATTERNS`, 언어 × 단계 × 문형 × 꼬리 슬롯)이고, 이 절의 표는 rumor 근거(`TRANSFER_RUMOR_TERMS` —
+// 키워드 방식)와 문턱(잔류·에이전트·재계약 단서)뿐이다. 이적 화제(`TRANSFER_TERMS` — 점수화·카테고리)와는 따로다.
+
+/** hold 동사 꼴 — 결과 표의 회담 제외(`HOLD_MEETING_EXCLUDES` — 'hold talks'는 결과가 아니다)가 쓴다 */
+const HOLD_FORMS: readonly string[] = ["hold", "holds", "held", "holding"];
+
+/** hold와 회담 명사 사이 꾸밈말(0~1개 — '' = 없음) */
+const HOLD_TALK_MODIFIERS: readonly string[] = [
+  "",
+  "a",
+  "an",
+  "fresh",
+  "further",
+  "new",
+  "more",
+  "contract",
+  "transfer",
+  "advanced",
+  "positive",
+  "initial",
+  "formal",
+  "informal",
+  "urgent",
+  "crunch",
+  "emergency",
+  "crisis",
+  "secret",
+  "private",
+  "direct",
+  "exploratory",
+  "preliminary",
+  "detailed",
+  "constructive",
+  "board",
+  "face to face",
+];
+
+/**
+ * rumor 근거 — 관심·연결·물망·이적설. 주어(팀)와 선수 사이의 동사('Arsenal eye Kane')·명사('김민재 이적설'·'아스널 관심') 모두.
+ * 제외: 경기 탈락('cup exit')·연계 플레이('link up')·'target man', 국내 '관심 집중'·'우승 노린다' 같은 목표 표현.
+ */
+export const TRANSFER_RUMOR_TERMS: KeywordGroup = {
+  terms: {
+    en: [
+      "linked",
+      "links",
+      "link",
+      "eye",
+      "eyes",
+      "eyeing",
+      "want",
+      "wants",
+      "wanted by",
+      "keen on",
+      "keen",
+      "interest",
+      "interested",
+      "admirers",
+      "suitors",
+      "monitor",
+      "monitoring",
+      "monitored",
+      "scout",
+      "scouts",
+      "scouted",
+      "scouting",
+      "consider",
+      "considering",
+      "weigh",
+      "weighs",
+      "weighing",
+      "plot",
+      "plots",
+      "plotting",
+      "target",
+      "targets",
+      "targeted",
+      "targeting",
+      "chase",
+      "chases",
+      "chasing",
+      "race for",
+      "race to sign",
+      "battle for",
+      "swoop",
+      "swoops",
+      "approach",
+      "approached",
+      "shortlist",
+      "shortlisted",
+      "tipped",
+      "rumour",
+      "rumours",
+      "rumoured",
+      "rumor",
+      "rumors",
+      "rumored",
+      "speculation",
+      "exit",
+      "exits",
+      "move for",
+      "dream move",
+    ],
+    it: [
+      "interesse",
+      "interessa",
+      "piace",
+      "nel mirino",
+      "mirino",
+      "obiettivo",
+      "sondaggio",
+      "sondaggi",
+      "sonda",
+      "idea",
+      "pensa a",
+      "accostato",
+      "accostata",
+      "corteggia",
+      "corteggiamento",
+      "occhi su",
+      "osserva",
+      "osservato",
+      "monitora",
+      "tentazione",
+      "suggestione",
+      "pista",
+      "punta su",
+      "vuole",
+      "voci",
+      "indiscrezione",
+      "ipotesi",
+      "candidato",
+    ],
+    es: [
+      "interesa",
+      "interes",
+      "interesado",
+      "interesados",
+      "en la agenda",
+      "objetivo",
+      "sondea",
+      "sondeo",
+      "piensa en",
+      "quiere",
+      "pretende",
+      "suena",
+      "suena para",
+      "en el radar",
+      "tienta",
+      "tentado",
+      "candidato",
+      "opcion",
+      "persigue",
+      "vigila",
+      "rumor",
+      "rumores",
+      "posible fichaje",
+    ],
+    ko: [
+      "이적설",
+      "임대설",
+      "영입설",
+      "관심",
+      "눈독",
+      "노린다",
+      "노려",
+      "노리는",
+      "원한다",
+      "원해",
+      "원하는",
+      "탐낸다",
+      "탐내",
+      "군침",
+      "러브콜",
+      "물망",
+      "영입 후보",
+      "거론",
+      "연결됐",
+      "연결된",
+      "연결되",
+      "연결돼",
+      "링크",
+      "타깃",
+      "타겟",
+      "표적",
+      "주시",
+      "레이더",
+      "관찰",
+      "스카우트",
+      "스카우터",
+      "이적 가능성",
+      "영입 추진",
+      "이적 추진",
+      "구애",
+      "영입 리스트",
+      "영입 명단",
+      "점찍",
+      "만지작",
+      "이적 루머",
+      "영입 루머",
+      "매물",
+      "영입에 나서",
+      "영입 나서",
+    ],
+  },
+  exclude: {
+    en: [
+      "cup exit",
+      "league exit",
+      "group stage exit",
+      "knockout exit",
+      "link up",
+      "links up",
+      "linked up",
+      "target man",
+    ],
+    ko: [
+      "관심 집중",
+      "관심이 쏠",
+      "관심 쏠",
+      "관심을 모",
+      "관심 모",
+      "관심을 끈",
+      "관심 끈",
+      "관심사",
+    ],
+  },
+  // 목표 표현('우승 노린다'·'첫 승 노려'·'반등 원한다') — 선수를 노리는 말이 아니다
+  excludeKoRe: [
+    /(?:우승|승리|연승|첫\s?승|반등|복수|설욕|트레블|더블|1위|선두|득점왕|대기록|기록|탈출|역전|승점|잔류|본선|16강|8강|4강|결승|진출)\s?(?:을|를)?\s?(?:노린다|노려|노리는|원한다|원해|원하는)/gu,
+  ],
+};
+
+/**
+ * 잔류 — 떠나지 않는다는 말. 같은 절의 단계를 rumor로 낮추고(부정형과 같다) 그 제목에서는 출발·행선지를 정하지 않는다('Napoli back
+ * McTominay to stay amid Real links'). 'keep tabs on'(주시 — rumor 근거)은 잔류가 아니다.
+ */
+export const TRANSFER_STAY_TERMS: KeywordGroup = {
+  terms: {
+    en: [
+      "stay",
+      "stays",
+      "staying",
+      "remain",
+      "remains",
+      "remaining",
+      "keep",
+      "keeps",
+      "retain",
+      "retains",
+      "commit",
+      "commits",
+      "committed",
+      "loyal",
+      "not for sale",
+      "stays put",
+    ],
+    it: [
+      "resta",
+      "restare",
+      "rimane",
+      "rimanere",
+      "permanenza",
+      "incedibile",
+      "blindato",
+      "blinda",
+    ],
+    es: [
+      "se queda",
+      "quedarse",
+      "seguira",
+      "continuidad",
+      "permanencia",
+      "intransferible",
+    ],
+    ko: ["잔류", "남는다", "남을", "남기로", "붙잡", "판매 불가", "이적 불가"],
+  },
+  exclude: {
+    en: [
+      "keep tabs",
+      "keeps tabs",
+      "keeping tabs",
+      "keep an eye",
+      "keeps an eye",
+      "keeping an eye",
+      "keep track",
+    ],
+  },
+};
+
+/**
+ * 에이전트 기사 — 선수의 에이전트 교체·계약('알바레스, 로드리 에이전트와 계약 임박'·'Álvarez deja a Hidalgo y busca nuevo agente')은
+ * 이적이 아니다. 이 표현이 있는 제목은 이적 정보를 만들지 않는다(보수적 — 에이전트가 협상하는 이적 기사도 건너뛴다). 'free agent'(FA)는
+ * 에이전트가 아니다.
+ */
+export const TRANSFER_AGENT_TERMS: KeywordGroup = {
+  terms: {
+    en: [
+      "agent",
+      "agents",
+      "agency",
+      "representative",
+      "representatives",
+      "intermediary",
+      "intermediaries",
+    ],
+    it: ["agente", "agenti", "procuratore", "procuratori"],
+    es: ["agente", "agentes", "representante", "representantes"],
+    ko: ["에이전트", "대리인"],
+  },
+  exclude: {
+    en: ["free agent", "free agents"],
+    it: ["svincolato"],
+    es: ["agente libre", "agentes libres"],
+  },
+};
+
+/**
+ * 재계약 협상 단서 — 재계약 표(`RENEWAL_TERMS`)에 없는 협상 표현('hold contract talks'·'contract negotiations'). 이 표현이 있는 제목은
+ * 이적 정보를 만들지 않는다(재계약 협상을 이적 협상으로 읽지 않게 — 보수적).
+ */
+export const TRANSFER_RENEWAL_HINT_TERMS: KeywordGroup = {
+  terms: {
+    en: [
+      "contract talks",
+      "contract negotiations",
+      "contract discussions",
+      "contract extension",
+      "extension talks",
+      "new terms",
+      "extension",
+      "renewal",
+      "extends",
+      "extend",
+      "extended",
+    ],
+    it: ["prolungamento", "rinnovo", "rinnova", "prolunga"],
+    es: ["renovacion", "renueva", "ampliacion", "amplia"],
+    ko: ["재계약", "계약 연장", "연장 계약", "연장 협상"],
   },
 };
 
@@ -1171,43 +1540,12 @@ export const RESULT_TERMS: KeywordGroup = {
   },
 };
 
-/** hold 동사 꼴 */
-const HOLD_FORMS: readonly string[] = ["hold", "holds", "held", "holding"];
-
 /**
  * 회담·회의를 '여는' hold — 결과가 아니다. hold + (꾸밈말 0~1개) + talks·meeting·discussions·negotiations·press conference(꾸밈말 목록만 —
  * 사이에 팀 이름이 오면 결과 'Liverpool hold Arsenal as title talks heat up'). 그 밖의 고정 구('minute s silence').
  */
 const HOLD_MEETING_EXCLUDES: readonly string[] = (() => {
-  const modifiers = [
-    "",
-    "a",
-    "an",
-    "fresh",
-    "further",
-    "new",
-    "more",
-    "contract",
-    "transfer",
-    "advanced",
-    "positive",
-    "initial",
-    "formal",
-    "informal",
-    "urgent",
-    "crunch",
-    "emergency",
-    "crisis",
-    "secret",
-    "private",
-    "direct",
-    "exploratory",
-    "preliminary",
-    "detailed",
-    "constructive",
-    "board",
-    "face to face",
-  ];
+  const modifiers = HOLD_TALK_MODIFIERS;
   const nouns = [
     "talks",
     "meeting",

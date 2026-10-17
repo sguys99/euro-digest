@@ -250,6 +250,13 @@ export interface ClusterScoreContext {
   koreanPlayers?: (
     cluster: Pick<NewsCluster, "members">,
   ) => readonly string[] | undefined;
+  /**
+   * 클러스터의 이적 화제(M1-18 — classify.ts 분석의 `transferTopic`: 이적 표 + 국내 'T행'). true면 제목 키워드에 이적 표현이 없어도 이적
+   * 배수를 받는다(카테고리와 같은 근거). undefined·false면 제목 키워드만(M1-14 동작).
+   */
+  transferTopic?: (
+    cluster: Pick<NewsCluster, "members">,
+  ) => boolean | undefined;
 }
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -292,7 +299,7 @@ export function clusterSignals(
     comps,
     koreanPlayers: ctx.koreanPlayers?.(cluster) ?? hits.koreanPlayers,
     bigClubs: hits.bigClubs,
-    transfer: hits.transfer,
+    transfer: hits.transfer || ctx.transferTopic?.(cluster) === true,
     ageHours,
     clamped,
   };

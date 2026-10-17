@@ -42,6 +42,12 @@
  *                  제목에 축구 근거(팀·대회 태그·축구 표현·선수 기사 문맥어·카테고리 신호·다른 등록 선수)가 있을 때만(배우 김지수·가수
  *                  정우영에게 kr을 주지 않는다). 다른 등록 선수는 이름만으로 kr('괴물' 김민재·'이강인 근황' — M1-17 재리뷰). 점수화의
  *                  한국 선수 배수도 이 결과(`korean`)를 쓴다(collect-run.ts — score.ts `koreanPlayers`).
+ *   transfer       카테고리가 '이적'인 카드만 — 이적 추출 규칙 v0.1(transfer-extract.ts, M1-18): 모든 구성 묶음 제목에서 등록 선수 1명·단계
+ *                  (negotiating 이상·결렬은 닫힌 문형만 — D54 transfer-patterns.ts, rumor는 키워드, official은 명시 표현·매체 2곳 — D52,
+ *                  agreed 이상·결렬 승격 조건)·출발/행선지(문형 슬롯 또는 확실한 방향 규칙)를 뽑고, tier = 클러스터 최고 출처 Tier. 미등록
+ *                  선수·애매한 기사는 생략(카테고리만 이적 — PRD F10). 이적 화제는 `TRANSFER_TERMS` + 국내 'T행'(바로 뒤 단서) + 닫힌 문형에 맞는
+ *                  제목이고, 국내 제목의 지난 이적을 꾸미는 말('이적 설득한'·'이적 이끈'·'이적 당시')은 화제 표에서 지운다(M1-17 이월 — '이강인
+ *                  이적 설득한 코케, 부상 이탈'은 부상).
  *   imp            선별 점수(M1-14 `signals.score`)의 **절대 임계값** 구간 1~4(`IMPORTANCE_THRESHOLDS` — 같은 날 재실행 카드끼리 같은
  *                  기준). 5는 머리기사(D30 — imp 최고 1장) 자리: 그날 파일에 imp 5 카드가 없을 때 이번 실행에 **만들어진** 새 카드 중
  *                  점수 1위 1장이 imp 4 임계값 이상이면 5(`assignImportance` — 하루 1장, 같은 날 재실행이 머리기사를 바꾸지 않는다).
@@ -50,6 +56,7 @@
  */
 import {
   CompIdSchema,
+  type CardTransfer,
   type Category,
   type CompId,
   type FeedItem,
@@ -96,6 +103,12 @@ import {
   type TagIndex,
   type TitleTags,
 } from "./tag-names";
+import {
+  clusterTransfer,
+  gossipLead,
+  koBoundForTeam,
+} from "./transfer-extract";
+import { matchStagePatterns } from "./transfer-patterns";
 
 /** 분류 규칙이 없을 때의 카테고리 */
 export const DEFAULT_CATEGORY: Category = "other";
@@ -112,6 +125,8 @@ export interface CardClassification {
   imp: number;
   kr: boolean;
   spoiler: boolean;
+  /** 이적 정보(카테고리 '이적' + 확실할 때만 — transfer-extract.ts, M1-18). 없으면 키 자체가 없다 */
+  transfer?: CardTransfer;
 }
 
 /**
@@ -458,6 +473,11 @@ export interface ClusterAnalysis extends Omit<CardClassification, "imp"> {
   korean: string[];
   /** 가장 이른 구성 기사 시각(ms) — D42 엔티티 병합 */
   earliestMs: number;
+  /**
+   * 이적 화제(구성 제목 중 하나라도 — 이적 표 + 국내 'T행', M1-18). 점수화 이적 배수가 카테고리와 같은 근거를 보게 한다(score.ts
+   * `transferTopic` — 'T행'은 이적 표에 없다)
+   */
+  transferTopic?: boolean;
 }
 
 const COMP_ORDER: readonly CompId[] = CompIdSchema.options;
@@ -551,7 +571,24 @@ function titleFacts(item: ClassifyItem, ctx: ClassifyContext): TitleFacts {
   const tags = matchTitleTags(item.title, item.lang, ctx.tags, {
     sourceComps: sourceCompsOf([item], ctx.sourceById),
   });
-  const s = textSignals(item.title, item.lang);
+  // 국내 제목의 'T행'(팀 이름 + 행 — '김민재, 아스널행 임박')도 이적 화제다(이적 표에는 팀 이름 없이 넣을 수 없다 — M1-18)
+  // 이적 높은 단계 닫힌 문형에 맞는 제목('Bukayo Saka completes move to Chelsea' — 이적 표에 'completes move'가 없다)도 이적 화제다(D54)
+  const s0 = textSignals(item.title, item.lang);
+  const s =
+    !s0.transfer &&
+    (koBoundForTeam(item.title, item.lang, tags.teams) ||
+      (tags.teams.length > 0 &&
+        tags.players.some(
+          (p) =>
+            matchStagePatterns({
+              title: item.title,
+              lang: item.lang,
+              playerSlug: p.slug,
+              tags: ctx.tags,
+            }).length > 0,
+        )))
+      ? { ...s0, transfer: true, transferStrong: true }
+      : s0;
   const hits = matchTitles([item], ctx.keywords);
   // 이름 바로 앞뒤에 직업 명사('배우 김민재'·'가수 정우영')가 붙은 이름은 그 선수가 아니다(tag-names.ts — M1-17 3차 리뷰)
   const occupied = new Set(tags.occupationPlayers);
@@ -653,6 +690,32 @@ export function analyzeItems(
     crossLeagueMatch,
   });
 
+  // 이적 정보(M1-18 — transfer-extract.ts): 카테고리 '이적' 카드만, 모든 구성 묶음 제목 + 묶음 소스(매체명·Tier). 요약문은 쓰지 않는다
+  const transfer =
+    cat === "transfer"
+      ? clusterTransfer(
+          items.map((item, i) => {
+            const p = perTitle[i]!;
+            const lead = p.s.roundup ? gossipLead(item.title) : null;
+            return {
+              title: item.title,
+              lang: item.lang,
+              sourceComps: sourceCompsOf([item], ctx.sourceById),
+              players: p.tags.players.map((h) => h.slug),
+              transfer: p.s.transfer,
+              renewal: p.s.renewal,
+              roundup: p.s.roundup,
+              ...(lead !== null
+                ? { gossipLeadRoundup: isMultiStoryTitle(lead, item.lang) }
+                : {}),
+              sources: item.sources,
+              publishedAt: item.publishedAt,
+            };
+          }),
+          { tags: ctx.tags, sourceById: ctx.sourceById },
+        ).transfer
+      : null;
+
   const summaries = items.flatMap((item) =>
     item.summary ? [textSignals(item.summary, item.lang)] : [],
   );
@@ -675,6 +738,8 @@ export function analyzeItems(
     leagues: tagLeagues(teams, players, ctx.tags),
     korean,
     earliestMs: Math.min(...items.map((i) => Date.parse(i.publishedAt))),
+    transferTopic: perTitle.some((p) => p.s.transfer),
+    ...(transfer ? { transfer } : {}),
   };
 }
 
@@ -760,5 +825,6 @@ export function toClassification(
     imp,
     kr: analysis.kr,
     spoiler: analysis.spoiler,
+    ...(analysis.transfer ? { transfer: { ...analysis.transfer } } : {}),
   };
 }

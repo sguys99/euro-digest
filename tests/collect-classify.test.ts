@@ -425,3 +425,64 @@ describe("runCollect — 엔티티 2단계 병합 같은 날 재실행 (D42 ⑥)
     expect(readNews("2026-10-11").cards).toHaveLength(2);
   });
 });
+
+describe("runCollect — 이적 정보가 카드에 (M1-18, FR-21·FR-100 입력)", () => {
+  const KANE: FeedEntry = {
+    title: "Arsenal agree £100m fee for Bayern striker Harry Kane",
+    link: "https://www.bbc.co.uk/sport/football/articles/c0kane01o",
+    at: "2026-10-10T20:50:00.000Z",
+  };
+  const ROUNDUP: FeedEntry = {
+    title:
+      "🚨 Haaland to Arsenal update, Liverpool want PL winger, Man United want ex-midfielder & more",
+    link: "https://www.bbc.co.uk/sport/football/articles/c0round1o",
+    at: "2026-10-10T20:55:00.000Z",
+  };
+
+  it("이적 카드의 transfer(선수·출발·행선지·단계·tier)는 스키마를 통과해 data/에 들어가고, 국내 1곳 rumor·묶음 제목·이적 아닌 카드에는 맞게 붙는다", async () => {
+    const { deps, records } = makeDeps(NOW, {
+      [BBC.id]: [KANE, ROUNDUP, ARS_CHE],
+      [IF_ALL.id]: [KOREAN],
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    const file = readNews("2026-10-11");
+    const kane = file.cards.find((c) => c.t === KANE.title)!;
+    expect(kane).toMatchObject({
+      cat: "transfer",
+      ai: false,
+      s: [],
+      transfer: {
+        player: "harry-kane",
+        from: "bayern-munchen",
+        to: "arsenal",
+        status: "agreed",
+        tier: 2,
+      },
+    });
+    // 국내 1곳 — rumor(가능성), 행선지 아스널, tier = 그 카드 최고 출처 Tier(인터풋볼 3)
+    expect(file.cards.find((c) => c.t === KOREAN.title)!.transfer).toEqual({
+      player: "kim-min-jae",
+      to: "arsenal",
+      status: "rumor",
+      tier: 3,
+    });
+    // 여러 소식 묶음은 카테고리만 이적, 경기 결과 카드에는 키 자체가 없다
+    const roundup = file.cards.find((c) => c.t === ROUNDUP.title)!;
+    expect(roundup.cat).toBe("transfer");
+    expect("transfer" in roundup).toBe(false);
+    expect("transfer" in file.cards.find((c) => c.t === ARS_CHE.title)!).toBe(
+      false,
+    );
+    // 로그 — 단계별 수·방향이 채워진 수(제목·선수 없음)
+    const select = records.find((r) => r.event === "collect.select.done")!;
+    expect(select).toMatchObject({
+      classifiedMix: expect.objectContaining({
+        transfer: { agreed: 1, rumor: 1 },
+        transferTo: 2,
+        transferFrom: 1,
+      }),
+    });
+    expect(JSON.stringify(select)).not.toContain("harry-kane");
+  });
+});

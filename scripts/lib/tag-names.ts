@@ -259,6 +259,11 @@ export interface TagIndex {
   teamLeague: ReadonlyMap<string, LeagueId>;
   /** 활성 등록 한국 선수 slug → 소속 리그(korean-players.json `comp` — 5대 리그만) */
   playerLeague: ReadonlyMap<string, LeagueId>;
+  /**
+   * 등록 한국 선수 slug → 설정의 소속팀 slug(korean-players.json `team` — 활성 여부 무관). 이적 행선지가 지금 소속팀이면 모순이라 버린다
+   * (transfer-extract.ts — 출발 팀을 설정에서 채우지는 않는다: 제목에 없는 사실)
+   */
+  playerTeam: ReadonlyMap<string, string>;
   /** 대회 표현(같은 제목 대회 근거 — 겹치는 별칭의 확인용) */
   competitions: ReadonlyArray<{ comp: CompId; group: CompiledGroup }>;
 }
@@ -344,9 +349,11 @@ export function buildTagIndex(input: {
     }
   }
   const playerLeague = new Map<string, LeagueId>();
+  const playerTeam = new Map<string, string>();
   for (const p of input.koreanPlayers ?? []) {
     addPlayer(p.slug, [p.nameEn], koNameTerms(p.nameKo));
     if (p.active && isLeagueId(p.comp)) playerLeague.set(p.slug, p.comp);
+    playerTeam.set(p.slug, p.team);
   }
   const playerTags = dropSharedTerms([...players.values()]).map(compileTag);
 
@@ -355,6 +362,7 @@ export function buildTagIndex(input: {
     players: playerTags,
     teamLeague: input.teamLeague ?? TEAM_LEAGUE_INDEX,
     playerLeague,
+    playerTeam,
     competitions: (Object.keys(COMPETITION_TERMS) as CompId[]).map((comp) => ({
       comp,
       group: compileGroup(COMPETITION_TERMS[comp]),
@@ -364,10 +372,11 @@ export function buildTagIndex(input: {
 
 // ─── 맞추기 ──────────────────────────────────────────────────────────────
 
-/** 태그 1개 — 제목 안 처음 나온 자리(정렬용) */
+/** 태그 1개 — 제목 안 처음 나온 자리(정렬용)와 그 표기의 끝 자리(`tagMatchText` 기준 — 이적 방향 판정용, transfer-extract.ts) */
 export interface TagHit {
   slug: string;
   pos: number;
+  end: number;
 }
 
 /** 제목 1건의 태그 */
@@ -467,10 +476,12 @@ function firstHit(
         end,
         ambiguous: term.ambiguous,
       };
+      // 같은 자리면 긴 표기('Newcastle United' > 'Newcastle' — M1-18: 이적 문형의 {팀} 슬롯이 표기 전체를 덮어야 한다)
       if (
         best === null ||
         (best.ambiguous && !hit.ambiguous) ||
-        (best.ambiguous === hit.ambiguous && hit.pos < best.pos)
+        (best.ambiguous === hit.ambiguous &&
+          (hit.pos < best.pos || (hit.pos === best.pos && hit.end > best.end)))
       ) {
         best = hit;
       }
@@ -512,6 +523,18 @@ function originalWords(title: string): string[] {
 }
 
 /**
+ * 태그 맞춤 텍스트 — `TagHit.pos`·`end`의 기준(국내 = NFKC·공백 정리 `koSpaced`, 라틴 = 쌍점·세로줄을 낱말 하나(`LATIN_BREAK`)로 둔 뒤
+ * `latinSpaced` — 대소문자 유지, 발음 기호·문장부호 없음).
+ */
+export function tagMatchText(title: string, lang: string): string {
+  if (isKoLang(lang)) return koSpaced(title);
+  return latinSpaced(title.replace(/\s*[:|]\s*/gu, ` ${LATIN_BREAK} `));
+}
+
+/** 라틴 맞춤 텍스트의 절 경계 낱말(쌍점·세로줄 자리 — `tagMatchText`) */
+export const TAG_TEXT_BREAK = LATIN_BREAK;
+
+/**
  * 제목 1건 → 팀·선수 태그(제목 안 순서) + 대회 표현. 국내 제목은 한국어 표기만, 그 밖은 라틴 표기만 본다.
  *   - 겹치는 별칭(`AMBIGUOUS_TAG_TERMS`)만 맞은 팀은 ① 라틴 원문이 대문자로 시작하고 ② 원문에 발음 기호가 없고('Cómo'는 Como가 아니다)
  *     ③ 앞말이 장소 앞말(`LOCATIVE_WORDS`)이 아니고 ④ 같은 제목에 확인 근거 — **같은 리그의 다른 팀**(겹치지 않는 표기) · 그 팀 리그의
@@ -529,7 +552,7 @@ export function matchTitleTags(
   const ko = isKoLang(lang);
   // 라틴 쌍점·세로줄은 낱말 하나(LATIN_BREAK)로 남긴다 — 유소년 접미가 쌍점 너머를 보지 않게
   const broken = ko ? title : title.replace(/\s*[:|]\s*/gu, ` ${LATIN_BREAK} `);
-  const text = ko ? koSpaced(title) : latinSpaced(broken);
+  const text = tagMatchText(title, lang);
   const words = ko ? [] : text.trim().split(" ");
   const origWords = ko ? [] : originalWords(broken);
   const aligned = words.length === origWords.length;
@@ -560,6 +583,18 @@ export function matchTitleTags(
     if (womenRes.some((re) => text.search(re) >= 0)) women = true;
     return [hit];
   });
+  // 다른 팀 표기 안에 든 짧은 표기는 그 팀이 아니다('Inter Milan'의 Milan — M1-18 리뷰 권장 13)
+  const contained = (h: RawHit) =>
+    teamRaw.some(
+      (o) =>
+        o !== h &&
+        o.pos <= h.pos &&
+        o.end >= h.end &&
+        o.end - o.pos > h.end - h.pos,
+    );
+  for (let i = teamRaw.length - 1; i >= 0; i--) {
+    if (contained(teamRaw[i]!)) teamRaw.splice(i, 1);
+  }
   const confirmed = teamRaw.filter((h) => !h.ambiguous).map((h) => h.slug);
   // 소스 대회는 한 리그만 다루는 소스일 때만 근거(Di Marzio = 세리에 A) — BBC European(4개 리그)은 근거가 아니다
   const sourceLeagues = (ctx.sourceComps ?? []).filter((c) => c !== "UCL");
@@ -618,15 +653,19 @@ export function matchTitleTags(
   });
   const byPos = (a: TagHit, b: TagHit) => a.pos - b.pos;
   return {
-    teams: teams.map(({ slug, pos }) => ({ slug, pos })).sort(byPos),
-    players: players.map(({ slug, pos }) => ({ slug, pos })).sort(byPos),
+    teams: teams.map(({ slug, pos, end }) => ({ slug, pos, end })).sort(byPos),
+    players: players
+      .map(({ slug, pos, end }) => ({ slug, pos, end }))
+      .sort(byPos),
     comps,
     occupationPlayers,
   };
 }
 
 /** 여러 제목 태그의 합집합(앞 제목 먼저, 제목 안 순서 — 중복 없음) */
-export function unionTags(lists: readonly (readonly TagHit[])[]): string[] {
+export function unionTags(
+  lists: readonly (readonly Pick<TagHit, "slug" | "pos">[])[],
+): string[] {
   const out: string[] = [];
   for (const list of lists) {
     for (const hit of list) if (!out.includes(hit.slug)) out.push(hit.slug);
