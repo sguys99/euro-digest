@@ -47,6 +47,9 @@
  *      출력하고 실행 시작 KST 날짜·달의 사용액(월 prod+dev, 일 prod 실행=prod만)과 비교한다. 초과 예상이거나 runs 파일을 읽지 못하면
  *      LLM 없이 `skipped`·reason `budget` → 같은 입력의 템플릿 게시(M1-19). 실행 시작에는 이번 달 누적과 dev 50% 초과 경고를 남긴다.
  *   ④ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
+ *   (①보다 먼저) ⓪ data 원본 삭제(M1-25 — purge-stage.ts·purge-plan.ts): configs/takedowns.json 등록 카드(저장된 카드 ID, 모든 날짜
+ *      파일)와 보존 기간이 지난 출처(Source.retentionDays — The Athletic 7일, 대표 출처면 카드)를 data/news에서 지우고 그 링크 해시를
+ *      기억(seen-urls)에 남긴다. dry는 계획만 출력. 실패는 partial(발행 계속 — 빌드 제외가 공개 사이트를 지킨다).
  *
  * 실패 격리: 소스 하나의 실패(받기·파싱·예상 밖 오류)는 그 소스만 건너뛴다(상태 partial). 피드 받기는 scripts/lib/feed-collect.ts가
  * 호스트별 병렬·재시도(1회)·단계 시간 예산(90초)으로 하고, 결과는 설정 순서로 돌려준다(M1-03).
@@ -244,6 +247,12 @@ import {
   isKoLang,
   type KeywordIndex,
 } from "./news-keywords";
+import {
+  purgeSummary,
+  runPurgeStage,
+  withPurgeStatus,
+  type PurgeOutcome,
+} from "./purge-stage";
 import {
   createApiFootballClient,
   type AfRateHeaders,
@@ -697,6 +706,8 @@ export interface HealthOutcome {
 export interface CollectOutcome {
   runId: string;
   publishDate: string;
+  /** data 원본 삭제(M1-25 — 삭제 요청·보존 기간, purge-stage.ts) — 뉴스 단계 전에 돈다 */
+  purge: PurgeOutcome;
   news: NewsOutcome;
   /** 소스 건강도 — 수집을 시도한 소스가 없거나(설정 오류) 단계가 실패했으면 null */
   health: HealthOutcome | null;
@@ -3405,6 +3416,22 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     startedAt,
   };
 
+  // ⓪ data 원본 삭제(M1-25 — 삭제 요청·소스별 보존 기간, purge-stage.ts). 뉴스 단계 **전에** 지워야 뉴스 단계가 지운 뒤의 오늘 파일·
+  // 최근 발행 파일·기억을 읽는다(지운 카드가 같은 실행에서 다시 카드가 되지 않음). 던지지 않는다 — 실패는 partial(발행 계속).
+  const purge = await runPurgeStage(
+    {
+      rootDir: deps.rootDir,
+      dataDir: deps.dataDir,
+      env: deps.env,
+      dry: deps.dry,
+      now: deps.now,
+      ...(deps.loadSources ? { loadSources: deps.loadSources } : {}),
+      logger: log,
+      print: deps.print,
+    },
+    { runId, startedAt },
+  );
+
   // ② 경기 데이터는 뉴스 피드 수집과 병렬로 시작한다(머리 주석 "병렬 근거") — 수집 대상이 정해진 뒤(설정 오류·대상 0개면
   // 시작하지 않는다). 뉴스가 실패하면 취소 신호로 새 요청을 멈춘다.
   const sink = {
@@ -3533,7 +3560,11 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     log.error("collect.matchdata.issue.fail", { error: errorText(error) });
   }
 
-  const status = runStatus(news, brief, matchData, briefFile);
+  // 삭제 단계 오류(M1-25)는 runStatus 바깥에서 partial로 덧씌운다
+  const status = withPurgeStatus(
+    runStatus(news, brief, matchData, briefFile),
+    purge,
+  );
   let exitCode = news.ok ? 0 : 1;
   let run: RunLog | null = null;
   let runPath: string | null = null;
@@ -3594,6 +3625,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   log.info("collect.done", {
     runId,
     status,
+    purge: purgeSummary(purge),
     collected: news.feedItems,
     clusters: news.selected,
     added: news.added,
@@ -3620,6 +3652,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   return {
     runId,
     publishDate,
+    purge,
     news,
     health,
     matchData,

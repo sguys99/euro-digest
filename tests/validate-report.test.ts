@@ -8,6 +8,7 @@ import {
   buildValidationReport,
   formatValidationReport,
   parseValidateArgs,
+  resolvePublishDate,
   validationExitCode,
   type ValidationReport,
 } from "../scripts/lib/validate-report";
@@ -18,6 +19,8 @@ import {
   formatIssuePath,
   suggestRegisteredPath,
 } from "../scripts/lib/validate-schema";
+
+import type { GateFloor, RestPeriod } from "../scripts/lib/publish-gate";
 
 import { loadFixture } from "./schema/helpers";
 
@@ -281,4 +284,126 @@ describe("parseValidateArgs", () => {
       expect(parseValidateArgs([arg]).ok).toBe(false);
     },
   );
+});
+
+describe("parseValidateArgs — --publish-date (M1-25)", () => {
+  it("YYYY-MM-DD·today를 받는다(없으면 키 없음)", () => {
+    expect(parseValidateArgs(["--publish-date", "2026-10-17"])).toEqual({
+      ok: true,
+      value: { configsOnly: false, help: false, publishDate: "2026-10-17" },
+    });
+    expect(parseValidateArgs(["--publish-date=today"])).toEqual({
+      ok: true,
+      value: { configsOnly: false, help: false, publishDate: "today" },
+    });
+    const none = parseValidateArgs([]);
+    expect(none.ok && "publishDate" in none.value).toBe(false);
+  });
+
+  it.each([
+    [["--publish-date", "2026-02-30"]],
+    [["--publish-date", "20261017"]],
+    [["--publish-date", "yesterday"]],
+    [["--publish-date"]],
+    [["--configs-only", "--publish-date", "2026-10-17"]],
+  ])("거부: %j", (argv) => {
+    expect(parseValidateArgs(argv).ok).toBe(false);
+  });
+
+  it("today = 실행 시각의 KST 날짜(15:00Z 경계)", () => {
+    expect(
+      resolvePublishDate("today", new Date("2026-10-16T21:31:00.000Z")),
+    ).toBe("2026-10-17");
+    expect(
+      resolvePublishDate("today", new Date("2026-10-17T14:59:59.000Z")),
+    ).toBe("2026-10-17");
+    expect(
+      resolvePublishDate("today", new Date("2026-10-17T15:00:00.000Z")),
+    ).toBe("2026-10-18");
+    expect(resolvePublishDate("2026-10-14", new Date())).toBe("2026-10-14");
+  });
+});
+
+describe("formatValidationReport — 발행 게이트 줄 (M1-25)", () => {
+  const base: ValidationReport = {
+    configsOnly: false,
+    counts: { configs: 1, data: 2, prompts: 0 },
+    crossRef: { checked: [], skipped: [] },
+    issues: [],
+  };
+  const rest: RestPeriod = { reasons: [], basis: [] };
+  const cases: Array<[GateFloor | null, string]> = [
+    [null, "카드 수 하한 — 기준 날짜 없음(건너뜀)"],
+    [
+      {
+        date: "2026-10-17",
+        strict: false,
+        state: "present",
+        cards: 23,
+        required: 10,
+        rest,
+      },
+      "2026-10-17 카드 23장 · 하한 10장(평시)",
+    ],
+    [
+      {
+        date: "2026-10-17",
+        strict: false,
+        state: "missing",
+        cards: 0,
+        required: 10,
+        rest,
+      },
+      "2026-10-17 발행 파일 없음 — 카드 수 하한 건너뜀",
+    ],
+    [
+      {
+        date: "2026-10-17",
+        strict: true,
+        state: "missing",
+        cards: 0,
+        required: 10,
+        rest,
+      },
+      "2026-10-17(--publish-date) 발행 파일 없음 · 하한 10장(평시)",
+    ],
+    [
+      {
+        date: "2026-10-17",
+        strict: true,
+        state: "invalid",
+        cards: 0,
+        required: 10,
+        rest,
+      },
+      "2026-10-17(--publish-date) 파일 스키마 오류 — 카드 수 하한 건너뜀",
+    ],
+    [
+      {
+        date: "2027-06-20",
+        strict: false,
+        state: "present",
+        cards: 6,
+        required: 5,
+        rest: { reasons: ["off-season"], basis: [] },
+      },
+      "2027-06-20 카드 6장 · 하한 5장(휴식기 — 비시즌)",
+    ],
+  ];
+
+  it.each(cases)("하한 %#", (floor, text) => {
+    const lines = formatValidationReport({
+      ...base,
+      gate: { checked: [], newsFiles: 2, briefFiles: 1, floor },
+    });
+    expect(lines[5]).toBe(
+      `[validate] 발행 게이트: 뉴스 2개 · 브리핑 1개 · ${text} · 오류 0건 · 경고 0건`,
+    );
+  });
+
+  it("gate가 없는 보고서(--configs-only·직접 만든 값)는 게이트 줄이 없다", () => {
+    expect(
+      formatValidationReport(base).some((l) => l.includes("발행 게이트")),
+    ).toBe(false);
+  });
 });

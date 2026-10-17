@@ -8,15 +8,32 @@
  *   - 교차 참조: validate-crossref.ts (관련 파일이 모두 있을 때만)
  *   - 소스 설정 경고(M1-02): sources.json이 스키마를 통과하면 수집 조건 모순·summarize:true를 경고(오류 아님 — exit 0)
  *   - configs/prompts/의 PROMPT_FILES: 있으면 비어 있지 않은지만, 없으면 정보
+ *   - 소스 보존 기간 일관성(M1-25): 같은 매체명(`publisherNameOf`)의 소스끼리 `retentionDays`가 같아야 한다(오류) — 카드 출처는
+ *     매체명으로 보존 기간을 찾는다(purge-plan.ts)
  *   - data/ 아래 모든 .json: 있으면 레지스트리 스키마 + 파일명 검사. 미등록 파일은 오류(`--configs-only`면 건너뜀)
- * 발행 검증 게이트(카드 수 하한·링크 형식·takedowns 제외 등)는 M1-25에서 여기에 붙인다.
+ *   - 발행 검증 게이트(M1-25, FR-153 — publish-gate.ts): 스키마를 통과한 data·configs 값으로 카드 내용(ai·요약 줄·링크 형식)·
+ *     미래 날짜·카드 수 하한(발행일 파일 ≥ 10, 휴식기 5) = 오류, 남은 삭제 요청 카드·보존 기간 만료 출처·72시간·매체명 = 경고.
+ *     시각 기준 검사는 `now`가 있을 때만(진입점이 실행 시각을 넘긴다). `--configs-only`면 건너뜀.
  */
 import { parseArgs } from "node:util";
 
-import { schemaRegistry, type SchemaRegistryEntry } from "@/lib/schema";
+import {
+  IsoDateSchema,
+  schemaRegistry,
+  type SchemaRegistryEntry,
+} from "@/lib/schema";
+import { kstDate, nowUtcIso } from "@/lib/time";
 
 import type { ParseResult } from "./cli-args";
 import { formatAnnotation } from "./logger";
+import {
+  isDailyNewsPath,
+  pickGateInput,
+  restLabel,
+  runPublishGate,
+  type GateFloor,
+} from "./publish-gate";
+import { publisherRetentionConflicts } from "./purge-plan";
 import { sourceConfigWarnings } from "./sources";
 import {
   CROSSREF_FILES,
@@ -65,15 +82,35 @@ export interface ValidationSnapshot {
 
 export interface ValidationOptions {
   configsOnly: boolean;
+  /**
+   * 실행 시각 — 발행 게이트의 시각 기준 검사(미래 날짜·보존 기간 만료·72시간, 발행일 기본값 = KST 오늘)에 쓴다.
+   * 없으면 그 검사들을 건너뛴다(테스트가 시각과 무관한 검사만 볼 때). 진입점(scripts/validate.ts)은 항상 넘긴다.
+   */
+  now?: Date;
+  /** 카드 수 하한을 볼 발행일(`--publish-date` — resolvePublishDate로 푼 YYYY-MM-DD). 주면 그 파일이 없을 때 오류 */
+  publishDate?: string;
   /** 테스트 주입용 — 기본값은 `@/lib/schema`의 레지스트리 */
   registry?: readonly SchemaRegistryEntry[];
   findEntry?: EntryFinder;
+}
+
+/** 발행 검증 게이트 요약(출력 한 줄) — `--configs-only`면 없다 */
+export interface GateSummary {
+  /** 실행한 검사 이름 */
+  checked: string[];
+  /** 검사한 일별 뉴스·브리핑 파일 수(스키마 통과분) */
+  newsFiles: number;
+  briefFiles: number;
+  /** 카드 수 하한 — 발행일을 정하지 못했으면 null */
+  floor: GateFloor | null;
 }
 
 export interface ValidationReport {
   configsOnly: boolean;
   counts: { configs: number; data: number; prompts: number };
   crossRef: { checked: string[]; skipped: string[] };
+  /** 발행 검증 게이트(M1-25) — `--configs-only`이거나 직접 만든 보고서면 없다 */
+  gate?: GateSummary;
   /** 오류·경고·정보 전부 (단계 → 파일 순) */
   issues: ValidationIssue[];
 }
@@ -100,7 +137,13 @@ export function buildValidationReport(
   snapshot: ValidationSnapshot,
   options: ValidationOptions,
 ): ValidationReport {
-  const { configsOnly, registry = schemaRegistry, findEntry } = options;
+  const {
+    configsOnly,
+    registry = schemaRegistry,
+    findEntry,
+    now,
+    publishDate,
+  } = options;
   const issues: ValidationIssue[] = [];
   const parsedByPath = new Map<string, unknown>();
 
@@ -167,6 +210,27 @@ export function buildValidationReport(
     }
   }
 
+  // ③-3 같은 매체명끼리 보존 기간이 같아야 한다(M1-25 — 카드 출처는 매체명으로 보존 기간을 찾는다, purge-plan.ts)
+  if (crossRefInput.sources) {
+    for (const conflict of publisherRetentionConflicts(crossRefInput.sources)) {
+      const first = conflict.sources[0];
+      const odd =
+        conflict.sources.find(
+          (s) => s.retentionDays !== first?.retentionDays,
+        ) ?? first;
+      const values = conflict.sources
+        .map((s) => `${s.id}: ${s.retentionDays ?? "없음"}`)
+        .join(", ");
+      issues.push({
+        severity: "error",
+        stage: "configs",
+        file: CROSSREF_FILES.sources,
+        path: formatIssuePath([odd?.index ?? 0, "retentionDays"]),
+        message: `매체명 "${conflict.publisher}"의 소스끼리 retentionDays가 다름(${values}) — 카드 출처는 매체명으로 보존 기간을 찾으므로 같은 값이어야 한다(D32·M1-25)`,
+      });
+    }
+  }
+
   // ④ 프롬프트 — 있으면 비어 있지 않은지만
   const prompts = new Map(snapshot.promptFiles.map((f) => [f.relPath, f]));
   for (const name of PROMPT_FILES) {
@@ -194,6 +258,26 @@ export function buildValidationReport(
   // ⑤ data 스키마
   if (!configsOnly) checkFiles(snapshot.dataFiles, "data");
 
+  // ⑥ 발행 검증 게이트(M1-25) — 스키마를 통과한 data·configs 값만
+  let gate: GateSummary | undefined;
+  if (!configsOnly) {
+    const input = pickGateInput(parsedByPath, {
+      newsPaths: snapshot.dataFiles
+        .map((f) => f.relPath)
+        .filter(isDailyNewsPath),
+      ...(now !== undefined ? { now: nowUtcIso(now) } : {}),
+      ...(publishDate !== undefined ? { publishDate } : {}),
+    });
+    const result = runPublishGate(input);
+    issues.push(...result.issues);
+    gate = {
+      checked: result.checked,
+      newsFiles: input.news.length,
+      briefFiles: input.briefs.length,
+      floor: result.floor,
+    };
+  }
+
   return {
     configsOnly,
     counts: {
@@ -202,8 +286,26 @@ export function buildValidationReport(
       prompts: snapshot.promptFiles.length,
     },
     crossRef: { checked: crossRef.checked, skipped: crossRef.skipped },
+    ...(gate ? { gate } : {}),
     issues,
   };
+}
+
+/** 게이트 요약 한 줄의 하한 부분 */
+function formatFloor(floor: GateFloor | null): string {
+  if (floor === null) return "카드 수 하한 — 기준 날짜 없음(건너뜀)";
+  const where = `${floor.date}${floor.strict ? "(--publish-date)" : ""}`;
+  const required = `하한 ${floor.required}장(${restLabel(floor.rest)})`;
+  switch (floor.state) {
+    case "present":
+      return `${where} 카드 ${floor.cards}장 · ${required}`;
+    case "invalid":
+      return `${where} 파일 스키마 오류 — 카드 수 하한 건너뜀`;
+    case "missing":
+      return floor.strict
+        ? `${where} 발행 파일 없음 · ${required}`
+        : `${where} 발행 파일 없음 — 카드 수 하한 건너뜀`;
+  }
 }
 
 export function countIssues(
@@ -258,6 +360,8 @@ export function formatValidationReport(
   const { counts, crossRef } = report;
   const errors = (stage: ValidationStage) =>
     countIssues(report, "error", stage);
+  const titleOf = (issue: ValidationIssue) =>
+    issue.stage === "gate" ? "발행 검증 게이트 (FR-153)" : "설정·데이터 검증";
 
   const lines = [
     `${tag} 시작 — 범위: ${report.configsOnly ? "configs만 (--configs-only)" : "configs + data"}`,
@@ -268,6 +372,12 @@ export function formatValidationReport(
       ? `${tag} data: 건너뜀 (--configs-only)`
       : `${tag} data: ${counts.data}개 검사 · 오류 ${errors("data")}건`,
   ];
+  if (report.gate) {
+    const { gate } = report;
+    lines.push(
+      `${tag} 발행 게이트: 뉴스 ${gate.newsFiles}개 · 브리핑 ${gate.briefFiles}개 · ${formatFloor(gate.floor)} · 오류 ${errors("gate")}건 · 경고 ${countIssues(report, "warn", "gate")}건`,
+    );
+  }
 
   for (const issue of report.issues) {
     if (issue.severity === "info")
@@ -286,7 +396,7 @@ export function formatValidationReport(
     lines.push(
       formatAnnotation("warning", message, {
         file: issue.file,
-        title: "설정·데이터 검증",
+        title: titleOf(issue),
       }),
     );
   }
@@ -304,7 +414,7 @@ export function formatValidationReport(
       lines.push(
         formatAnnotation("error", message, {
           file,
-          title: "설정·데이터 검증",
+          title: titleOf(issue),
         }),
       );
     }
@@ -331,14 +441,23 @@ export function formatValidationReport(
 export interface ValidateArgs {
   configsOnly: boolean;
   help: boolean;
+  /** `--publish-date` 원문(YYYY-MM-DD 또는 today) — 없으면 키가 없다 */
+  publishDate?: string;
 }
 
 export const VALIDATE_USAGE = [
-  "사용법: npm run validate -- [--configs-only]",
-  "  --configs-only  configs/만 검사 (data/ 건너뜀)",
-  "  --help, -h      이 도움말",
+  "사용법: npm run validate -- [--configs-only] [--publish-date <YYYY-MM-DD|today>]",
+  "  --configs-only           configs/만 검사 (data/·발행 게이트 건너뜀)",
+  "  --publish-date <날짜>    카드 수 하한을 볼 발행일(KST) — 그 파일이 없으면 오류. today = 실행 시각의 KST 날짜.",
+  "                           생략하면 KST 오늘 파일이 있을 때만 하한을 본다(사람 push의 CI용)",
+  "  --help, -h               이 도움말",
   "종료 코드: 오류 0건이면 0, 1건 이상이면 1",
 ].join("\n");
+
+/** `--publish-date` 원문 → YYYY-MM-DD (today = 실행 시각의 KST 날짜) */
+export function resolvePublishDate(raw: string, now: Date): string {
+  return raw === "today" ? kstDate(nowUtcIso(now)) : raw;
+}
 
 /** validate 인자 파싱. 모르는 옵션·위치 인자는 오류. */
 export function parseValidateArgs(
@@ -351,14 +470,36 @@ export function parseValidateArgs(
       allowPositionals: false,
       options: {
         "configs-only": { type: "boolean", default: false },
+        "publish-date": { type: "string" },
         help: { type: "boolean", short: "h", default: false },
       },
     });
+    const configsOnly = values["configs-only"] ?? false;
+    const publishDate = values["publish-date"];
+    if (publishDate !== undefined) {
+      if (
+        publishDate !== "today" &&
+        !IsoDateSchema.safeParse(publishDate).success
+      ) {
+        return {
+          ok: false,
+          error: `--publish-date는 YYYY-MM-DD 또는 today (받은 값: "${publishDate}")`,
+        };
+      }
+      if (configsOnly) {
+        return {
+          ok: false,
+          error:
+            "--publish-date는 --configs-only와 함께 쓸 수 없다(data를 읽지 않음)",
+        };
+      }
+    }
     return {
       ok: true,
       value: {
-        configsOnly: values["configs-only"] ?? false,
+        configsOnly,
         help: values.help ?? false,
+        ...(publishDate !== undefined ? { publishDate } : {}),
       },
     };
   } catch (error) {

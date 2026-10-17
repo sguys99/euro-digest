@@ -13,7 +13,8 @@
  * `summarize` 값은 수집 여부·경로에 영향을 주지 않는다 — 뉴스 기사는 어떤 소스든 LLM에 보내지 않고 원제목+링크
  * (`ai:false`) 카드로만 쓴다(D23). 수집 판정은 `summarize`를 읽지 않고, `sourceConfigWarnings`만 true를 경고한다.
  *
- * 소스별 보존 기간(`retentionDays`, D32): 조회 함수만 둔다. 기간이 지난 출처를 data/에서 지우는 일은 M1-25.
+ * 소스별 보존 기간(`retentionDays`, D32): 조회 함수만 둔다. 기간이 지난 출처를 data/에서 지우는 일은 purge-plan.ts·purge-stage.ts
+ * (M1-25 — 카드 출처에 소스 id가 없어 매체명으로 찾는다: `retentionByPublisher`).
  */
 import { SourcesFileSchema, type Source } from "@/lib/schema";
 
@@ -147,7 +148,8 @@ export function retentionDaysOf(
 }
 
 /**
- * 보존 기간을 설정한 소스만 모은 표(id → 일). M1-25가 기간이 지난 출처를 지울 때 쓴다.
+ * 보존 기간을 설정한 소스만 모은 표(id → 일). 수집 묶음(소스 id를 아는 단계)용 — 이미 저장된 카드의 출처는 소스 id가 없어
+ * 삭제 단계(M1-25)가 매체명 표(purge-plan.ts `retentionByPublisher`)를 쓴다.
  * 활성 여부와 무관하게 담는다 — 수집을 멈춘 소스의 과거 카드도 기간이 지나면 지워야 한다.
  */
 export function retentionBySource(

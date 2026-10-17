@@ -341,15 +341,39 @@ describe("⑤ 교차 참조 실패", () => {
 });
 
 describe("⑥ data 파일 검증", () => {
-  it("fixtures/schema/data를 그대로 복사하면 통과한다", () => {
+  // M1-25: 이 fixture는 부록 A 스키마 예시라 LLM 요약 경로 형식(ai:true 카드·요약 줄)을 담는다 — 스키마는 통과하지만 발행 게이트가
+  // 거부한다(D23). 예전 단언 '그대로 복사하면 통과(exit 0)'를 '스키마 오류 0 + 게이트 오류는 그 카드 3건뿐'으로 바꿨다.
+  it("fixtures/schema/data를 그대로 복사하면 스키마는 통과하고, 발행 게이트는 LLM 요약 형식 카드(ai:true·요약 줄 — D23)만 거부한다", () => {
     write("configs/takedowns.json", "[]");
     copyFixtures("data");
-    const { exitCode, errors, report } = run();
+    const { exitCode, report } = run();
+
+    const errors = report.issues.filter((i) => i.severity === "error");
+    expect(errors.filter((i) => i.stage !== "gate")).toEqual([]);
+    expect(errors.map((i) => `${i.file}:${i.path}`)).toEqual([
+      "data/news/2026-10-10.json:cards[0].ai",
+      "data/news/2026-10-10.json:cards[0].s",
+      "data/news/2026-10-10.json:cards[1].s",
+    ]);
+    expect(exitCode).toBe(1);
+    // + data/cache/af-pending.json (M1-48) · data/matches/2026-10.json·meta.json (M1-48b) · data/briefs/2026-10-11.json (M1-19)
+    expect(report.counts.data).toBe(15);
+  });
+
+  it("같은 fixture의 뉴스 카드를 원제목+링크 형식(ai:false·s:[])으로 바꾸면 통과한다", () => {
+    write("configs/takedowns.json", "[]");
+    copyFixtures("data");
+    const news = loadFixture("data/news/2026-10-10.json") as {
+      cards: Array<Record<string, unknown>>;
+    };
+    write("data/news/2026-10-10.json", {
+      ...news,
+      cards: news.cards.map((card) => ({ ...card, ai: false, s: [] })),
+    });
+    const { exitCode, errors } = run();
 
     expect(errors).toEqual([]);
     expect(exitCode).toBe(0);
-    // + data/cache/af-pending.json (M1-48) · data/matches/2026-10.json·meta.json (M1-48b) · data/briefs/2026-10-11.json (M1-19)
-    expect(report.counts.data).toBe(15);
   });
 
   it("파일명 불일치·스키마 오류·미등록 파일은 오류", () => {
@@ -501,5 +525,207 @@ describe("CI 연결 — 워크플로가 validate를 빌드·커밋 전에 실행
     const positions = steps.map((s) => text.indexOf(s));
     expect(positions.every((p) => p >= 0)).toBe(true);
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+  });
+});
+
+// ─── M1-25 발행 검증 게이트 (FR-153·FR-143·D32) ─────────────────────────────
+
+describe("⑧ 발행 검증 게이트 — 실제 파일 읽기 + 실행 시각", () => {
+  /** 06:31 KST 2026-10-17 */
+  const NOW = new Date("2026-10-16T21:31:00.000Z");
+
+  function runAt(options: { now?: Date; publishDate?: string } = { now: NOW }) {
+    const report = buildValidationReport(
+      readValidationSnapshot(root, { configsOnly: false }),
+      { configsOnly: false, ...options },
+    );
+    const of = (severity: "error" | "warn") =>
+      report.issues.filter((i) => i.severity === severity).map(formatIssue);
+    return {
+      report,
+      errors: of("error"),
+      warns: of("warn"),
+      exitCode: validationExitCode(report),
+      lines: formatValidationReport(report),
+    };
+  }
+
+  /** 원제목+링크 카드 n장(유효한 일별 파일) */
+  function issue(date: string, n: number, extra: object[] = []) {
+    const cards = Array.from({ length: n }, (_, i) => ({
+      id: `c_${(i + 1).toString(16).padStart(10, "0")}`,
+      t: `Title ${i + 1}`,
+      s: [],
+      cat: "other",
+      comp: [],
+      teams: [],
+      players: [],
+      imp: 3,
+      kr: false,
+      spoiler: false,
+      src: [
+        {
+          n: "Sample",
+          u: `https://example.com/news/${date}/${i + 1}`,
+          at: "2026-10-16T20:00:00Z",
+          tier: 2,
+        },
+      ],
+      lang: "en",
+      ai: false,
+      created: "2026-10-16T21:30:00Z",
+    }));
+    return {
+      date,
+      generatedAt: "2026-10-16T21:31:00Z",
+      runId: "prod-collect-20261016T213000Z",
+      cards: [...cards, ...extra],
+    };
+  }
+
+  it("오늘(KST) 파일 카드 수가 하한 미만이면 오류 — 요약 줄에 하한·평시 표시", () => {
+    write("configs/takedowns.json", "[]");
+    write("data/news/2026-10-17.json", issue("2026-10-17", 9));
+    const { exitCode, errors, lines } = runAt();
+
+    expect(exitCode).toBe(1);
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toMatch(
+      /^data\/news\/2026-10-17\.json:cards — 카드 9장 < 하한 10장\(평시/,
+    );
+    expect(lines).toContain(
+      "[validate] 발행 게이트: 뉴스 1개 · 브리핑 0개 · 2026-10-17 카드 9장 · 하한 10장(평시) · 오류 1건 · 경고 0건",
+    );
+  });
+
+  it("오늘 파일이 없으면(사람 push의 CI) 하한을 건너뛰고 통과, --publish-date면 오류", () => {
+    write("configs/takedowns.json", "[]");
+    write("data/news/2026-10-14.json", issue("2026-10-14", 8)); // 하한 이전 발행분
+    const loose = runAt();
+    expect(loose.exitCode).toBe(0);
+    expect(loose.lines).toContain(
+      "[validate] 발행 게이트: 뉴스 1개 · 브리핑 0개 · 2026-10-17 발행 파일 없음 — 카드 수 하한 건너뜀 · 오류 0건 · 경고 0건",
+    );
+    const strict = runAt({ now: NOW, publishDate: "2026-10-17" });
+    expect(strict.exitCode).toBe(1);
+    expect(strict.errors[0]).toMatch(
+      /발행 파일이 없음\(--publish-date 2026-10-17\)/,
+    );
+  });
+
+  it("삭제 요청 카드가 data에 남아 있으면 경고만(등록 push가 막히지 않게) — 72시간 지남도 경고", () => {
+    write("configs/takedowns.json", [
+      {
+        id: "c_0000000003",
+        requestedAt: "2026-10-12T00:00:00Z",
+        handledAt: null,
+        reason: "저작권자 삭제 요청 (#12)",
+      },
+    ]);
+    write("data/news/2026-10-17.json", issue("2026-10-17", 10));
+    const { exitCode, warns, lines } = runAt();
+
+    expect(exitCode).toBe(0);
+    expect(warns).toEqual([
+      "data/news/2026-10-17.json:cards[2] — 삭제 요청 카드 c_0000000003가 남아 있음 — 빌드에서는 이미 제외, 다음 수집 실행이 원본을 지운다(FR-143)",
+      "configs/takedowns.json:[0].handledAt — 삭제 요청 c_0000000003 접수 후 117시간 — 72시간 기준(FR-143)을 넘었는데 handledAt이 null. 배포 확인 후 기록할 것(/takedown)",
+    ]);
+    expect(lines.at(-1)).toMatch(/검증 통과 — .* · 경고 2건$/);
+  });
+
+  it("ai:true 뉴스 카드는 지난 파일에 있어도 오류(Actions 주석 제목 = 발행 검증 게이트)", () => {
+    write("configs/takedowns.json", "[]");
+    const aiCard = { ...issue("2026-10-12", 1).cards[0], ai: true };
+    write("data/news/2026-10-12.json", {
+      ...issue("2026-10-12", 0),
+      cards: [aiCard],
+    });
+    const { exitCode, errors, report } = runAt();
+
+    expect(exitCode).toBe(1);
+    expect(errors).toEqual([
+      'data/news/2026-10-12.json:cards[0].ai — 뉴스 카드 ai:true(c_0000000001) — 뉴스 기사는 LLM을 거치지 않는다(D23). "AI 작성" 라벨 없이 AI 제목이 게시되지 않게 발행을 막는다',
+    ]);
+    expect(formatValidationReport(report, { annotations: true })).toContain(
+      '::error file=data/news/2026-10-12.json,title=발행 검증 게이트 (FR-153)::cards[0].ai — 뉴스 카드 ai:true(c_0000000001) — 뉴스 기사는 LLM을 거치지 않는다(D23). "AI 작성" 라벨 없이 AI 제목이 게시되지 않게 발행을 막는다',
+    );
+  });
+
+  it("스키마 오류 파일은 게이트에서 빠진다(같은 문제를 두 번 보고하지 않음)", () => {
+    write("configs/takedowns.json", "[]");
+    write("data/news/2026-10-17.json", {
+      ...issue("2026-10-17", 3),
+      runId: "",
+    });
+    const { errors, report } = runAt();
+    expect(errors).toEqual([
+      "data/news/2026-10-17.json:runId — Too small: expected string to have >=1 characters",
+    ]);
+    expect(report.gate?.floor?.state).toBe("invalid");
+  });
+
+  it("--configs-only면 게이트를 돌리지 않는다(요약 줄 없음)", () => {
+    write("configs/takedowns.json", "[]");
+    write("data/news/2026-10-17.json", issue("2026-10-17", 1));
+    const { report, lines } = run(true);
+    expect(report.gate).toBeUndefined();
+    expect(lines.some((l) => l.includes("발행 게이트"))).toBe(false);
+  });
+
+  it("저장소 data/·configs/ 그대로면 통과한다(오늘 날짜와 무관한 검사만 — 시각 없이)", () => {
+    const repo = fileURLToPath(new URL("../", import.meta.url));
+    cpSync(path.join(repo, "configs"), path.join(root, "configs"), {
+      recursive: true,
+    });
+    cpSync(path.join(repo, "data"), path.join(root, "data"), {
+      recursive: true,
+    });
+    const { exitCode, errors } = runAt({});
+    expect(errors).toEqual([]);
+    expect(exitCode).toBe(0);
+  });
+});
+
+describe("⑨ 같은 매체명 = 같은 보존 기간 (M1-25 — M1-02 이월)", () => {
+  const source = {
+    id: "athletic-a",
+    name: "The Athletic — Football",
+    type: "rss",
+    url: "https://example.com/a.xml",
+    lang: "en",
+    enabled: true,
+    summarize: false,
+    weight: 1,
+    tier: 1,
+    retentionDays: 7,
+    terms_checked: true,
+    robots_checked: false,
+  };
+
+  it("같은 매체명인데 retentionDays가 다르면(없음 포함) 오류", () => {
+    write("configs/takedowns.json", "[]");
+    write("configs/sources.json", [
+      source,
+      {
+        ...source,
+        id: "athletic-b",
+        name: "The Athletic — Transfers",
+        retentionDays: undefined,
+      },
+    ]);
+    const { exitCode, errors } = run(true);
+    expect(exitCode).toBe(1);
+    expect(errors).toEqual([
+      'configs/sources.json:[1].retentionDays — 매체명 "The Athletic"의 소스끼리 retentionDays가 다름(athletic-a: 7, athletic-b: 없음) — 카드 출처는 매체명으로 보존 기간을 찾으므로 같은 값이어야 한다(D32·M1-25)',
+    ]);
+  });
+
+  it("같은 값이면 통과", () => {
+    write("configs/takedowns.json", "[]");
+    write("configs/sources.json", [
+      source,
+      { ...source, id: "athletic-b", name: "The Athletic — Transfers" },
+    ]);
+    expect(run(true).exitCode).toBe(0);
   });
 });

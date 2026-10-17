@@ -12,7 +12,14 @@ import path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { NEWS_DIR, listNewsDates, loadLatestNews } from "@/lib/data/news";
+import {
+  NEWS_DIR,
+  TAKEDOWNS_FILE,
+  listNewsDates,
+  loadLatestNews,
+  loadTakedownIds,
+  withoutTakedowns,
+} from "@/lib/data/news";
 
 const FIXTURE_DIR = path.resolve("fixtures/schema/data/news");
 const FIXTURE_FILE = path.join(FIXTURE_DIR, "2026-10-10.json");
@@ -96,5 +103,78 @@ describe("loadLatestNews", () => {
     expect(() => loadLatestNews(dir)).toThrow(
       /date\(2026-10-10\)가 파일명\(2026-10-11\)과 다름/,
     );
+  });
+});
+
+describe("삭제 요청 카드 빌드 제외 (M1-25, FR-143)", () => {
+  /** 임시 takedowns.json을 쓰고 경로를 돌려준다 */
+  function writeTakedowns(entries: unknown): string {
+    const file = path.join(dir, "takedowns.json");
+    writeFileSync(file, JSON.stringify(entries));
+    return file;
+  }
+  const takedown = (id: string) => ({
+    id,
+    requestedAt: "2026-10-10T03:00:00Z",
+    handledAt: null,
+    reason: "저작권자 삭제 요청 (#12)",
+  });
+
+  it("기본 등록 파일은 저장소 configs/takedowns.json이다", () => {
+    expect(TAKEDOWNS_FILE).toBe(path.resolve("configs/takedowns.json"));
+    expect(loadTakedownIds()).toBeInstanceOf(Set);
+  });
+
+  it("등록된 카드 ID(저장된 card.id — 등록만으로, handledAt 무관)를 최신 호에서 빼고 순서는 유지한다", () => {
+    const takedownsFile = writeTakedowns([takedown("c_0a1b2c3d4e")]);
+
+    const news = loadLatestNews(FIXTURE_DIR, { takedownsFile });
+
+    expect(news?.cards.map((card) => card.id)).toEqual([
+      "c_8f3a1b2c4d",
+      "c_5f6e7d8c9b",
+    ]);
+    expect(news?.date).toBe("2026-10-10");
+  });
+
+  it("최신 호의 카드가 모두 삭제 요청이면 카드 0장의 호(전날 호로 넘어가지 않음)", () => {
+    writeIssue(dir, "2026-10-09");
+    writeIssue(dir, "2026-10-10");
+    const takedownsFile = writeTakedowns(
+      ["c_8f3a1b2c4d", "c_0a1b2c3d4e", "c_5f6e7d8c9b"].map(takedown),
+    );
+
+    const news = loadLatestNews(dir, { takedownsFile });
+
+    expect(news?.date).toBe("2026-10-10");
+    expect(news?.cards).toEqual([]);
+  });
+
+  it("등록 파일이 없거나 깨졌으면 던진다(빌드 실패 — 삭제 요청을 뺐다고 보장할 수 없음)", () => {
+    writeIssue(dir, "2026-10-10");
+
+    expect(() =>
+      loadLatestNews(dir, { takedownsFile: path.join(dir, "missing.json") }),
+    ).toThrow(/삭제 요청 등록 파일을 읽을 수 없음/);
+    expect(() =>
+      loadLatestNews(dir, {
+        takedownsFile: writeTakedowns([{ id: "bad", reason: "x" }]),
+      }),
+    ).toThrow(/삭제 요청 등록 파일 스키마 검증 실패/);
+  });
+
+  it("뉴스 파일이 없으면 등록 파일을 읽지 않는다(빈 data/news의 CI 빌드)", () => {
+    expect(
+      loadLatestNews(dir, { takedownsFile: path.join(dir, "missing.json") }),
+    ).toBeNull();
+  });
+
+  it("withoutTakedowns — 뺄 카드가 없으면 같은 객체, 있으면 새 객체(원본 불변)", () => {
+    const news = loadLatestNews(FIXTURE_DIR)!;
+    expect(withoutTakedowns(news, new Set(["c_9999999999"]))).toBe(news);
+    const filtered = withoutTakedowns(news, new Set(["c_8f3a1b2c4d"]));
+    expect(filtered).not.toBe(news);
+    expect(filtered.cards).toHaveLength(2);
+    expect(news.cards).toHaveLength(3);
   });
 });

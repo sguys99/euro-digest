@@ -5,6 +5,7 @@
  *   - 제목: `cleanTitle` — HTML 엔티티 디코딩(`&amp;`·`&#8217;` 등 XML 파싱 뒤에도 남은 것, 이중 인코딩 포함) + 공백 정리만.
  *     번역·요약·다듬기 없음. 정리 범위(D23 '무수정'과의 경계 — 화면에 보이는 글자는 바뀌지 않는 것만)는 `cleanTitle` 주석.
  *   - 링크(`url`): 앞뒤 공백 정리만. 추적 파라미터 제거 같은 URL 정규화는 중복 판정 해시에만 쓴다(M1-12) — 표시 링크는 원문.
+ *     형식 문제(안쪽 공백·제어 문자·사용자 정보 등 — link-check.ts, 발행 게이트와 같은 판정 M1-25)가 있으면 `bad-link`로 건너뛴다.
  *   - 날짜(`publishedAt`): `parseFeedDate`(src/lib/time.ts). 시간대가 적힌 값은 그대로 UTC로, 시간대가 없는 값은 소스의
  *     `tz`(D34 — 국내 5피드 Asia/Seoul)가 있을 때만 그 시간대로 해석한다. 둘 다 아니면 그 항목을 건너뛴다(`no-date`, 추측 안 함).
  *   - 요약(`summary`): 항상 null — RSS `description`은 파서가 꺼내지 않는다(M0-25, 분류 입력으로 쓸지는 M1-17에서 사용자 확인).
@@ -28,6 +29,7 @@ import {
 import { parseFeedDate } from "@/lib/time";
 
 import { authorKey } from "./author-filter";
+import { linkFormatProblem } from "./link-check";
 import type { RawFeedItem } from "./rss";
 
 /** 원제목 상한 — NewsCardSchema `t` max(200)·FeedItemSchema `title`과 같다. 넘으면 카드화하지 않는다(FR-20). */
@@ -244,7 +246,11 @@ export function normalizeFeedItem(
     return { ok: false, reason: "title-too-long" };
   }
   const url = raw.link?.trim() ?? "";
-  if (!HttpUrlSchema.safeParse(url).success) {
+  // 링크 형식(M1-25): 스키마(http/https·도메인) + 발행 게이트와 같은 검사(공백·제어 문자·사용자 정보 등 — link-check.ts)
+  if (
+    !HttpUrlSchema.safeParse(url).success ||
+    linkFormatProblem(url) !== null
+  ) {
     return { ok: false, reason: "bad-link" };
   }
   const publishedAt = parseFeedDate(raw.pubDate, source.tz);
