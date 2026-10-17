@@ -14,8 +14,9 @@
  *     `clampedAgeHours`(창 가운데쯤)로 본다 — 낮춘 기사가 '방금 나온 기사'로 맨 위를 차지하지 않게(M1-02·M1-10 이월).
  *     섞인 클러스터는 min(믿을 수 있는 기사 나이, clampedAgeHours).
  *   - 범위: 서비스 범위(5대 리그·UCL) 근거가 하나도 없으면 감점 — 근거 = 클러스터 소스 대회(`competitions`) ∪ 제목 대회
- *     표현 ∪ 빅클럽 ∪ 등록 한국 선수. 하부 리그·다른 리그·사건 기사가 근거 없이 위로 오지 않게(M1-01 이월). **제외**는
- *     하지 않는다 — 축구 외·K리그·연예 기사 제외는 M1-17(클러스터링 전 묶음 단계), 팀→리그 근거도 M1-17이 `comps`로 넣는다.
+ *     표현 ∪ 제목 팀·등록 한국 선수의 리그(M1-17 — `extraComps`, classify.ts 분석의 `leagues`: 빅클럽 밖 EPL 기사 'Wolves …'가
+ *     아니라 'Aston Villa revival'처럼 5대 리그 팀이면 감점 없음) ∪ 빅클럽 ∪ 등록 한국 선수. 하부 리그·다른 리그·사건 기사가 근거
+ *     없이 위로 오지 않게(M1-01 이월). 축구 외·K리그·연예 기사는 점수화 전(클러스터링 전 묶음 단계)에 뺀다(news-scope.ts, M1-17).
  *
  * 값은 코드 상수 `DEFAULT_SCORE_WEIGHTS` 한 곳에서 조정한다(이적 창 배수만 `configs/transfer-windows.json` `boost` — M4-03,
  * 스키마 주석 '그 밖의 점수화 가중치는 코드 상수'). 선별 규모는 환경변수 `MAX_ITEMS_PER_RUN`(collect-run.ts).
@@ -134,7 +135,7 @@ export interface ScoreSignals {
   bestTier: Tier;
   /** 보도 매체 수(매체명 기준) */
   publishers: number;
-  /** 범위 대회 근거 — 소스 대회 ∪ 제목 대회 표현(M1-17: 팀→리그 태그도 여기로) */
+  /** 범위 대회 근거 — 소스 대회 ∪ 제목 대회 표현 ∪ 제목 팀·등록 한국 선수의 리그(M1-17 `extraComps`) */
   comps: readonly CompId[];
   /** 등록 한국 선수 slug(제목) */
   koreanPlayers: readonly string[];
@@ -237,6 +238,18 @@ export interface ClusterScoreContext {
   /** 이적 창 배수(FR-105) — 기본 중립 1 */
   transferBoost?: number;
   weights?: Readonly<ScoreWeights>;
+  /**
+   * 클러스터의 추가 범위 대회 근거(M1-17 — 제목 팀 → 리그, 등록 한국 선수 → 소속 리그: classify.ts 분석의 `leagues`). 없으면 소스 대회 ∪
+   * 제목 대회 표현만(M1-14 동작).
+   */
+  extraComps?: (cluster: Pick<NewsCluster, "members">) => readonly CompId[];
+  /**
+   * 클러스터의 등록 한국 선수(M1-17 — classify.ts 분석의 `korean`: 동명이인 김지수·정우영은 축구 근거가 있을 때만 — 분류 `kr`과 같은
+   * 기준). undefined면(분석 없음) 제목 키워드(`matchTitles`)로 본다.
+   */
+  koreanPlayers?: (
+    cluster: Pick<NewsCluster, "members">,
+  ) => readonly string[] | undefined;
 }
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -255,6 +268,9 @@ export function clusterSignals(
   const hits = matchTitles(items, ctx.keywords);
   const comps = [...(meta?.card.competitions ?? [])];
   for (const comp of hits.comps) if (!comps.includes(comp)) comps.push(comp);
+  for (const comp of ctx.extraComps?.(cluster) ?? []) {
+    if (!comps.includes(comp)) comps.push(comp);
+  }
 
   // 나이 = 구성 기사 중 가장 어린 나이. 낮춘 기사는 clampedAgeHours로 센다 — 섞이면 min(믿을 수 있는 나이, clampedAgeHours).
   const nowMs = parseUtcIso(ctx.now).getTime();
@@ -274,7 +290,7 @@ export function clusterSignals(
     bestTier: meta?.bestTier ?? 3,
     publishers: cluster.publishers.length,
     comps,
-    koreanPlayers: hits.koreanPlayers,
+    koreanPlayers: ctx.koreanPlayers?.(cluster) ?? hits.koreanPlayers,
     bigClubs: hits.bigClubs,
     transfer: hits.transfer,
     ageHours,

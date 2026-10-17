@@ -114,6 +114,7 @@ export type SourceEventType = (typeof SOURCE_EVENT_TYPES)[number];
  *   purge            data 원본 삭제 단계 오류(M1-25 — 삭제 요청·보존 기간 만료 카드가 data/에 남음)
  *   seen             카드 URL 기억(data/cache/seen-urls.json) 읽기·쓰기 오류(M1-12)
  *   cluster          같은 사건 클러스터링 오류(M1-13 — 합치지 않은 채 발행)
+ *   classify         범위 밖 제외·코드 분류·엔티티 병합 오류(M1-17 — 제외·병합 없이 최소 분류로 발행)
  *   brief            브리핑 단계 실패(LLM·출력·설정 — 데이터 API 실패는 source-broken이 맡는다)
  *   brief-file       브리핑 파일(data/briefs) 검증·쓰기 오류 또는 깨진 기존 파일(M1-19)
  *   runs-unreadable  실행 기록(runs.json·runs-dev.json)을 읽지 못해 비용 가드가 판정 불가 → LLM 없이 템플릿(M1-22)
@@ -125,6 +126,7 @@ export const PIPELINE_PARTIAL_REASONS = [
   "purge",
   "seen",
   "cluster",
+  "classify",
   "brief",
   "brief-file",
   "runs-unreadable",
@@ -764,6 +766,15 @@ const PARTIAL_REASON_INFO: Readonly<
       "같은 사건 기사를 합치지 않은 채(같은 URL 중복 제거만) 카드를 만들었습니다 — 발행됐다면 비슷한 카드가 여러 장일 수 있습니다.",
     checks: [
       "실행 로그 `collect.cluster.*`의 오류 확인 — 코드 버그일 가능성이 큽니다",
+    ],
+  },
+  classify: {
+    label: "범위 밖 제외·코드 분류 오류",
+    effect:
+      "범위 밖 기사(축구 외·K리그·연예) 제외나 코드 분류·같은 경기 병합을 하지 못한 채 카드를 만들었습니다 — 발행됐다면 범위 밖 카드가 섞였거나 카테고리·태그가 기본값(기타, 소스 대회)일 수 있습니다.",
+    checks: [
+      "실행 로그 `collect.filter.fail`·`collect.classify.fail`의 오류 확인 — 코드 버그일 가능성이 큽니다",
+      "키워드·표기 설정(configs/names.ko.json·korean-players.json)을 바꾼 직후라면 `npm run validate`로 형식 확인",
     ],
   },
   brief: {

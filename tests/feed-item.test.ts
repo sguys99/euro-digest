@@ -8,7 +8,8 @@
  *   - FR-02: fixture 14개 피드를 파싱 → 정규화한 결과의 키 집합이 정확히 공통 형식 키(FEED_ITEM_KEYS)와 같다.
  *     `FeedItemSchema`(strictObject)는 본문·요약·이미지 키(`content:encoded`·`description`·`enclosure` …)를 거부한다.
  *     본문이 든 합성 피드도 정규화 결과에 본문 텍스트가 남지 않는다.
- *   - FR-03: 모든 결과가 `FeedItemSchema`를 통과하고 `summary`는 null(M1-09 — RSS description을 읽지 않음).
+ *   - FR-03: 모든 결과가 `FeedItemSchema`를 통과한다. `summary`는 RSS description(M1-17 — D39 ① 메모리 안 분류 입력 전용) —
+ *     fixture에는 요약문이 없어(공개 저장소, D25) null.
  *   - D34: 국내 5피드(`tz: "Asia/Seoul"`)가 이제 전부 쓸 수 있고(no-date 0), publishedAt = KST − 9시간(손계산 대조 포함).
  *     tz를 빼면 다시 전부 no-date(시간대 없는 날짜를 추측하는 다른 경로가 없다).
  *   - 공통 형식 zod 실패는 그 항목만 `schema` 사유로 건너뛰고 집계·로그(값 없이 경로·코드만), 다른 소스는 계속.
@@ -138,7 +139,9 @@ describe("FR-02 — fixture 14개 피드의 정규화 결과에 본문 필드가
     },
   );
 
-  it("본문·요약·이미지가 든 합성 피드도 결과에 그 키·텍스트가 없다(파서 + strict 스키마 이중 차단)", async () => {
+  // M1-17(PRD §15 D39 ①): 요약문(description)은 `summary`(메모리 안 분류 입력 전용 — 카드·data/에 넣지 않음, tests/collect-classify.test.ts)로
+  // 남는다. 본문·이미지는 여전히 키도 텍스트도 없다.
+  it("본문·이미지가 든 합성 피드도 결과에 그 키·텍스트가 없다(파서 + strict 스키마 이중 차단), 요약문은 summary로만", async () => {
     const xml = `<?xml version="1.0"?>
       <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:dc="http://purl.org/dc/elements/1.1/">
       <channel><title>t</title><image><url>https://example.com/logo.png</url></image>
@@ -160,16 +163,14 @@ describe("FR-02 — fixture 14개 피드의 정규화 결과에 본문 필드가
         title: "Title",
         url: "https://example.com/a",
         publishedAt: "2026-10-11T04:55:17.000Z",
-        summary: null,
+        summary: "요약문 SUMMARY-TEXT",
         source: "sample-ko",
         author: "Reporter",
         authors: ["Reporter"],
         lang: "ko",
       },
     ]);
-    expect(JSON.stringify(items)).not.toMatch(
-      /SUMMARY-TEXT|BODY-TEXT|요약문|본문|\.jpg|\.png/,
-    );
+    expect(JSON.stringify(items)).not.toMatch(/BODY-TEXT|본문|\.jpg|\.png/);
   });
 });
 

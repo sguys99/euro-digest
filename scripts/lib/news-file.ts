@@ -6,8 +6,8 @@
  * - 카드 출처(`src`): 같은 사건 클러스터(news-cluster.ts, M1-13)의 묶음마다 1건 — 대표 묶음(card-lead.ts, M1-15 — Tier·weight·
  *   최신성)이 먼저, 나머지는 `compareCardSources`(Tier → 최신 → URL) 순. 같은 날 재실행으로 출처가 붙어도 같은 규칙으로 다시
  *   줄 세운다(`src[0]`은 그대로). 같은 매체의 다른 기사(BBC 경기 기사+영상)도 각각 1건이다('+N곳'은 매체명 수로 센다 — M1-31).
- * - 선별: 점수화(score.ts, M1-14 — FR-06) 상위 `MAX_ITEMS_PER_RUN`. 선별 점수는 카드 생성(`buildCard`의 `signals`)까지
- *   넘어가 분류(classify.ts — M1-17 중요도 `imp`)가 쓴다. 카드·파일에는 점수를 저장하지 않는다(스키마 변경 없음).
+ * - 선별: 점수화(score.ts, M1-14 — FR-06) 상위 `MAX_ITEMS_PER_RUN`. 선별 점수와 코드 분류(classify.ts, M1-17 — 카테고리·대회·
+ *   팀·선수·kr·spoiler·중요도 `imp`)는 카드 생성(`buildCard`의 `signals`)까지 넘어간다. 카드·파일에는 점수를 저장하지 않는다(스키마 변경 없음).
  * - 병합: 같은 KST 발행일 파일이 이미 있으면 기존 카드를 그대로 두고(id·created 유지) 새 카드만 더한다 → 다시 실행해도
  *   앞선 카드를 잃지 않고 같은 카드(출처 링크의 정규화 URL이 같은 카드 — 옛 규칙 ID 카드 포함, M1-16)가 두 번 들어가지
  *   않으며 파일 안 카드 ID도 겹치지 않는다(해시 충돌 카드는 넣지 않음 — `idCollisions`). 기존 카드와 같은 사건의
@@ -15,7 +15,7 @@
  *   M1-13). 다른 날짜 파일과의 중복은 seen-urls.ts·news-cluster.ts가 막는다.
  * - **파일 순서 = 화면 표시 순서**(화면은 파일 순서 그대로 그린다 — M1-01 이월): 중요도(`imp`) 내림차순 → 최신 출처 시각
  *   내림차순 → ID(PRD §4.2-6 '중요도·시각 순', D0 시안 = imp 내림차순). 점수가 아니라 카드에 저장된 `imp`로 정렬해 같은 날
- *   재실행으로 기존 카드와 새 카드를 합쳐도 순서 규칙이 하나다. M1-17 전에는 모든 카드가 기본 imp(3)라 시각 순과 같다.
+ *   재실행으로 기존 카드와 새 카드를 합쳐도 순서 규칙이 하나다(M1-17 전 카드는 모두 기본 imp 3).
  * - 쓰기: `NewsFileSchema`로 검증한 뒤 임시 파일 → rename(원자적). 기존 파일이 스키마에 맞지 않으면 덮어쓰지 않고 던진다.
  *
  * 순수 함수 + 얇은 fs 함수. 파일 경로는 dataDir을 받아 테스트가 임시 폴더를 쓴다.
@@ -50,10 +50,11 @@ export function publisherNameOf(source: Pick<Source, "name">): string {
 }
 
 /**
- * 피드 항목 1건(대표) → 원제목 카드(분류는 최소 규칙). created = 이번 실행 시각(UTC ISO).
+ * 피드 항목 1건(대표) → 원제목 카드. created = 이번 실행 시각(UTC ISO). 분류 필드는 `signals.classification`(M1-17 코드 분류)이
+ * 있으면 그것, 없으면 최소 규칙(classify.ts `classifyMinimal` — 소스 대회·기본값).
  * 제목 `t`·대표 링크 `src[0].u`는 피드 원문(정리된 값) 그대로, `s` = [], `ai` = false — 이 함수는 다른 값을 만들지 않는다(D23).
  * `more` = 같은 사건 클러스터의 나머지 출처(M1-13) — 대표 출처 뒤에 `compareCardSources` 순으로 붙는다(M1-15).
- * `signals` = 선별 단계 신호(M1-14 점수 — 분류 규칙 M1-17이 중요도에 쓴다). 없으면 null.
+ * `signals` = 선별 단계 신호(M1-14 점수 + M1-17 분류). 없으면 null.
  */
 export function buildCard(
   item: FeedItem,
@@ -66,7 +67,7 @@ export function buildCard(
     id: cardIdFor(item.url),
     t: item.title,
     s: [],
-    ...classifyMinimal(item, source, signals),
+    ...(signals?.classification ?? classifyMinimal(item, source, signals)),
     src: orderCardSources(
       {
         n: publisherNameOf(source),

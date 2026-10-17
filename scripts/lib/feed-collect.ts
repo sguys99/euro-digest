@@ -53,6 +53,7 @@ import type {
   FeedResponseInfo,
 } from "./feed-diagnostics";
 import type { Logger } from "./logger";
+import { readsSummary } from "./source-policy";
 import {
   normalizeFeedItems,
   type NormalizeSource,
@@ -612,7 +613,10 @@ async function collectOne(
 
   let raws: Awaited<ReturnType<typeof parseFeedXml>>;
   try {
-    raws = await parseFeedXml(fetched.xml);
+    // 위험 수용 소스(D48)는 요약문(description)을 꺼내지 않는다 — source-policy.ts
+    raws = await parseFeedXml(fetched.xml, {
+      summaries: readsSummary(source.id),
+    });
   } catch (error) {
     if (!(error instanceof FeedParseError)) throw error;
     const elapsedMs = clock.now() - started;

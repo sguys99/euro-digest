@@ -417,12 +417,33 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     expect(outcome.news.excluded).toEqual(PLAN.excluded);
   });
 
-  it("카드 상한(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 창 안 64건(M1-10) → 고유 링크 52건 → 클러스터 45개(M1-13) → 점수 상위 N장(M1-14)", async () => {
-    const { deps, records } = makeDeps({ limit: 40 });
+  it("카드 상한(MAX_ITEMS_PER_RUN) — 쓸 수 있는 69건 → 창 안 64건(M1-10) → 고유 링크 52건 → 범위 밖 3건 제외(M1-17) → 클러스터 42개(M1-13) → 같은 경기 병합 41개(D42) → 점수 상위 N장(M1-14)", async () => {
+    const { deps, records } = makeDeps({ limit: 35 });
     const outcome = await runCollect(deps);
     const file = readNews("2026-10-11");
-    expect(file.cards).toHaveLength(40);
-    expect(outcome.news.selected).toBe(40);
+    expect(file.cards).toHaveLength(35);
+    expect(outcome.news.selected).toBe(35);
+    // 범위 밖(M1-17 — 클러스터링 전): Relevo NFL 1건 · K리그 2건(풋볼리스트 [케리뷰] 천안·베스트일레븐 충북청주)
+    expect(outcome.news.filter).toEqual({
+      groups: 52,
+      kept: 49,
+      excluded: 3,
+      nonFootball: 1,
+      kLeague: 2,
+      entertainment: 0,
+      bySource: { relevo: 1, "footballist-football": 1, "besteleven-all": 1 },
+    });
+    expect(
+      records.find((r) => r.event === "collect.filter.done"),
+    ).toMatchObject({ groups: 52, kept: 49, nonFootball: 1, kLeague: 2 });
+    // 같은 경기 병합(D42): 맨유 1-1 토트넘 국내(인터풋볼 [PL REVIEW] + 베스트일레븐 — 같은 스코어 1-1)만 하나로. 해외(BBC·Athletic
+    // 클러스터 + ESPN 'Man United held by Spurs')는 셋 다 스코어가 없어 합치지 않는다(스코어 있는 구성원끼리만 — M1-17 재리뷰).
+    // 국내·해외는 합치지 않는다(D30)
+    expect(outcome.news.entity).toMatchObject({
+      merges: 1,
+      merged: 1,
+      attached: 0,
+    });
     expect(
       records.find((r) => r.event === "collect.select.done"),
     ).toMatchObject({
@@ -430,38 +451,54 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       inWindow: 64,
       unique: 52,
       duplicateLinks: 12,
-      clusters: 45,
-      clustered: 5,
-      merged: 7,
+      clusters: 42,
       maxPublishers: 3,
       seenBefore: 0,
       seenBeforeExtra: 0,
-      selected: 40,
-      limit: 40,
-      candidates: 45,
+      selected: 35,
+      limit: 35,
+      candidates: 41,
       existingCards: 0,
-      slots: 40,
-      ranked: 40,
-      // 국내 몫 13 = floor(40 / 3) — 점수 순 상위 40에 국내 13장이 이미 있어 몫이 자리를 바꾸지 않는다
+      slots: 35,
+      ranked: 35,
+      entityMerged: 1,
+      entityAttached: 0,
+      // 국내 몫 11 = floor(35 / 3) — 점수 순 상위 35에 국내 12장이 이미 있어 몫이 자리를 바꾸지 않는다
       selectedMix: expect.objectContaining({
-        ko: 13,
-        koQuota: 13,
+        ko: 12,
+        koQuota: 11,
         koByQuota: 0,
       }),
     });
-    // 밀려난 5장 = 점수 하위 — 범위 근거 없는 K리그 기사 2건(충북청주·천안)·오래된(40시간+) 기사 3건
     const titles = file.cards.map((c) => c.t);
+    // 범위 밖 기사는 카드가 없다(점수 감점이 아니라 제외)
     expect(titles.some((t) => t.includes("충북청주"))).toBe(false);
     expect(titles.some((t) => t.includes("천안"))).toBe(false);
-    expect(titles.some((t) => t.startsWith("Pochettino's youngsters"))).toBe(
-      false,
-    );
-    // 파일 순서 = 카드의 가장 최근 출처 시각 내림차순(sortCards — 중요도가 모두 같을 때. 클러스터 카드는 대표 출처보다 늦은 출처가
-    // 있을 수 있다)
-    const times = file.cards.map((c) =>
-      Math.max(...c.src.map((s) => Date.parse(s.at))),
-    );
-    expect([...times].sort((a, b) => b - a)).toEqual(times);
+    expect(titles.some((t) => t.startsWith("Eagles-Jaguars"))).toBe(false);
+    // 밀려난 6장 = 점수 하위(후보 41 − 자리 35, 모두 imp 1) — 해외 기사 3건(USWNT·Pochettino·한국 병역 논란)·Relevo 3건
+    for (const head of [
+      "Pochettino's youngsters",
+      "USWNT player ratings",
+      "Julián Álvarez deja a Hidalgo",
+      "Flick pierde a Raphinha",
+      "Shai Gilgeous-Alexander",
+      "South Korea sports stars",
+    ]) {
+      expect(
+        titles.some((t) => t.startsWith(head)),
+        head,
+      ).toBe(false);
+    }
+    // 파일 순서 = 중요도 내림차순 → 가장 최근 출처 시각 내림차순(sortCards)
+    for (let i = 1; i < file.cards.length; i += 1) {
+      const [a, b] = [file.cards[i - 1]!, file.cards[i]!];
+      expect(a.imp).toBeGreaterThanOrEqual(b.imp);
+      if (a.imp === b.imp) {
+        const at = (c: NewsCard) =>
+          Math.max(...c.src.map((x) => Date.parse(x.at)));
+        expect(at(a)).toBeGreaterThanOrEqual(at(b));
+      }
+    }
   });
 
   it("여러 소스의 같은 링크는 출처 1건 — 같은 링크의 대표는 설정 순서상 먼저 나온 소스, 대회 태그는 소스들의 합집합(M1-12), 같은 사건은 카드 1장(M1-13), 사건 대표는 Tier·weight·최신성(M1-15), 제목·링크는 피드 원문", async () => {
@@ -471,12 +508,13 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     const file = readNews("2026-10-11");
     const links = file.cards.flatMap((c) => c.src.map((s) => s.u));
     // 창 안 64건 중 같은 링크 12쌍(BBC 피드 사이 2쌍 + BBC 피드 안 1쌍 + 국내 섹션 ⊂ 전체기사 9쌍) → 고유 52건
-    // → 같은 사건 7건이 다른 클러스터에 합쳐져 45장. 모든 고유 링크가 정확히 한 카드의 출처로 남는다.
-    expect(file.cards).toHaveLength(45);
-    expect(links).toHaveLength(52);
-    expect(new Set(links).size).toBe(52);
+    // → 범위 밖 3건 제외(M1-17 — NFL·K리그 2) → 49건 → 같은 사건 7건이 다른 클러스터에 합쳐져 42개(M1-13) → 같은 경기 1건이 더
+    // 합쳐져 41장(D42). 남긴 고유 링크 49건이 모두 정확히 한 카드의 출처로 남는다.
+    expect(file.cards).toHaveLength(41);
+    expect(links).toHaveLength(49);
+    expect(new Set(links).size).toBe(49);
     expect(new Set(file.cards.map((c) => c.id)).size).toBe(file.cards.length);
-    expect(outcome.news.selected).toBe(45);
+    expect(outcome.news.selected).toBe(41);
     expect(
       records.find((r) => r.event === "collect.select.done"),
     ).toMatchObject({
@@ -484,12 +522,13 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       inWindow: 64,
       unique: 52,
       duplicateLinks: 12,
-      clusters: 45,
-      selected: 45,
+      clusters: 42,
+      candidates: 41,
+      selected: 41,
     });
     expect(outcome.news.cluster).toEqual({
-      groups: 52,
-      fresh: 45,
+      groups: 49,
+      fresh: 42,
       multi: 5,
       merged: 7,
       maxPublishers: 3,
@@ -596,6 +635,8 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     const spurs = file.cards.find((c) =>
       c.src.some((s) => s.u.includes("/videos/crz9zdl0g04zo")),
     )!;
+    // ESPN 'Man United held by Spurs, fall to worst start in 40 years'는 같은 경기지만 합치지 않는다 — 해외 스코어 없는 기사끼리는
+    // 엔티티 병합 대상이 아니다(D42 ⑤, M1-17 리뷰 — 잘못 합치기 0 우선)
     expect(spurs.src.map((s) => s.n)).toEqual(["BBC Sport", "The Athletic"]);
     const mbappe = file.cards.find((c) => c.t.startsWith("Mourinho calls"))!;
     expect(mbappe.src.map((s) => s.n)).toEqual(["BBC Sport", "Relevo"]);
@@ -665,7 +706,7 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     expect(file.cards).toHaveLength(5);
     expect(outcome.news.selected).toBe(5);
     expect(outcome.news.score).toMatchObject({
-      candidates: 45,
+      candidates: 41,
       existingCards: 0,
       slots: 5,
       domesticQuota: 1, // floor(5 / 3) — 순수 점수 순 상위 5에 국내가 3장이라 몫이 자리를 바꾸지 않는다
@@ -685,16 +726,16 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       expect(titles.some((t) => t.startsWith(head))).toBe(true);
     }
     expect(file.cards.some((c) => c.src[0]!.n === "ESPN")).toBe(false);
-    // 파일 순서 = 화면 순서: 중요도(지금은 모두 기본 3) → 가장 최근 출처 시각 내림차순
-    expect(new Set(file.cards.map((c) => c.imp))).toEqual(new Set([3]));
-    const times = file.cards.map((c) =>
-      Math.max(...c.src.map((s) => Date.parse(s.at))),
-    );
-    expect([...times].sort((a, b) => b - a)).toEqual(times);
+    // 파일 순서 = 화면 순서: 중요도(M1-17 — 점수 구간, 점수 1위 1장은 머리기사 imp 5) → 가장 최근 출처 시각 내림차순
+    const imps = file.cards.map((c) => c.imp);
+    expect([...imps].sort((a, b) => b - a)).toEqual(imps);
+    expect(imps.filter((i) => i === 5)).toHaveLength(1);
+    expect(file.cards[0]!.imp).toBe(5);
+    expect(score.top!).toBeGreaterThanOrEqual(4); // imp 4 임계값 이상이라 머리기사
     expect(
       records.find((r) => r.event === "collect.select.done"),
     ).toMatchObject({
-      candidates: 45,
+      candidates: 41,
       existingCards: 0,
       slots: 5,
       ranked: 5,
@@ -732,8 +773,12 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     });
     expect(file.cards.filter((c) => c.lang === "ko")).toHaveLength(5);
     const titles = file.cards.map((c) => c.t);
-    // 몫으로 들어온 국내 카드(점수는 자리 밖) · 그 대신 밀려난 해외 카드(점수로는 15위)
-    expect(titles.some((t) => t.startsWith("‘친정팀’ 맨시티에"))).toBe(true);
+    // 몫으로 들어온 국내 카드(점수는 자리 밖 — 국내 5번째, 점수로는 16위) · 그 대신 밀려난 해외 카드(점수로는 15위). M1-17부터
+    // 국내 5번째는 인터풋볼·베스트일레븐의 맨유 1-1 토트넘 두 클러스터를 같은 경기로 합친 카드(D42 — 같은 두 팀·같은 스코어)다
+    expect(titles.some((t) => t.startsWith("[PL REVIEW] '손흥민 보기"))).toBe(
+      true,
+    );
+    expect(titles.some((t) => t.startsWith("‘친정팀’ 맨시티에"))).toBe(false);
     expect(
       titles.some((t) => t.startsWith("Palmer signs new Chelsea contract")),
     ).toBe(false);
@@ -800,7 +845,7 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
       expect(file.cards).toHaveLength(45);
       expect(outcome.news.added).toBe(5);
       expect(outcome.news.score).toMatchObject({
-        candidates: 45,
+        candidates: 41, // 클러스터 42 − 같은 경기 병합 1(D42, M1-17)
         existingCards: 40,
         slots: 5,
         domesticQuota: 5, // 하루 몫 15 − 기존 국내 0, 자리 5 이하

@@ -114,6 +114,24 @@ describe("partialFindings — 수집 단계 안에서 실패했지만 실행은 
     expect(findings.every((f) => !f.detail.includes("\n"))).toBe(true);
   });
 
+  it("범위 판정·코드 분류 실패(M1-17) → classify — 사유 목록에서 cluster 다음", () => {
+    const findings = partialFindings({
+      ...CLEAN,
+      news: {
+        ...CLEAN.news,
+        clusterError: "RangeError",
+        classifyError: "TypeError: Cannot read properties\n  at classify.ts:9",
+      },
+    });
+    expect(findings).toEqual([
+      { reason: "cluster", detail: "RangeError" },
+      {
+        reason: "classify",
+        detail: "TypeError: Cannot read properties at classify.ts:9",
+      },
+    ]);
+  });
+
   it("runs 파일을 읽지 못한 비용 가드(M1-22 이월) → runs-unreadable", () => {
     expect(
       partialFindings({

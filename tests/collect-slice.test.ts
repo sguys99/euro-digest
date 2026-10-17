@@ -338,20 +338,23 @@ function readNews(date: string): NewsFile {
 // ─── RSS 파싱·정규화 ─────────────────────────────────────────────────────
 
 describe("rss.ts — 피드 파싱", () => {
-  it("BBC 피드 fixture에서 제목·링크·날짜만 꺼낸다(본문·요약·이미지 필드 없음)", async () => {
+  // M1-17(D39 ①): 요약문(description)은 `summary`로 꺼낸다(메모리 안 분류 입력 전용) — fixture에는 요약문이 없어 null
+  it("BBC 피드 fixture에서 제목·링크·날짜(+ 요약문 자리)만 꺼낸다(본문·이미지 필드 없음)", async () => {
     const items = await parseFeedXml(BBC_XML);
     expect(items).toHaveLength(BBC_INDEX_ITEMS.length);
     items.forEach((item, i) => {
       expect(Object.keys(item).sort()).toEqual(
-        ["authors", "link", "pubDate", "title"].sort(),
+        ["authors", "link", "pubDate", "summary", "title"].sort(),
       );
+      expect(item.summary).toBeNull();
       expect(item.title).toBe(BBC_INDEX_ITEMS[i]!.title);
       expect(item.link).toBe(BBC_INDEX_ITEMS[i]!.link);
       expect(item.pubDate).toBe(BBC_INDEX_ITEMS[i]!.pubDate);
     });
   });
 
-  it("description·content:encoded·enclosure가 있어도 결과에 담지 않는다", async () => {
+  // M1-17(D39 ①): description은 `summary` 원문으로만(분류 입력 전용) — 본문·이미지는 여전히 담지 않는다
+  it("content:encoded·enclosure는 결과에 담지 않고, description은 요약문 원문(summary)으로만 꺼낸다", async () => {
     const xml = `<?xml version="1.0"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>t</title>
       <item><title>Title</title><link>https://example.com/a</link><pubDate>Sat, 10 Oct 2026 19:24:23 GMT</pubDate>
       <description>요약문</description><content:encoded><![CDATA[<p>본문</p>]]></content:encoded>
@@ -361,9 +364,10 @@ describe("rss.ts — 피드 파싱", () => {
       title: "Title",
       link: "https://example.com/a",
       pubDate: "Sat, 10 Oct 2026 19:24:23 GMT",
+      summary: "요약문",
       authors: [],
     });
-    expect(JSON.stringify(item)).not.toMatch(/요약문|본문|a\.jpg/);
+    expect(JSON.stringify(item)).not.toMatch(/본문|a\.jpg/);
   });
 
   it("빈 피드는 항목 0건", async () => {
@@ -946,9 +950,20 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
     const byLink = new Map(
       [...BBC_INDEX_ITEMS].reverse().map((i) => [i.link, i] as const),
     );
-    expect(file.cards.map((c) => byLink.get(c.src[0]!.u)!.pos)).toEqual([
-      2, 1, 3, 0, 4,
-    ]);
+    // 같은 5건(10/9 하이라이트 제외). 파일 순서 = 중요도(M1-17 — 점수 구간) → 최신 출처 시각 — 범위 근거 없는 'Naderi … Rangers'
+    // (pos 3, 스코틀랜드)는 중요도가 가장 낮아 맨 뒤(M1-17 전에는 모두 imp 3이라 시각 순 2, 1, 3, 0, 4)
+    const positions = file.cards.map((c) => byLink.get(c.src[0]!.u)!.pos);
+    expect([...positions].sort()).toEqual([0, 1, 2, 3, 4]);
+    expect(positions.at(-1)).toBe(3);
+    for (let i = 1; i < file.cards.length; i += 1) {
+      const [a, b] = [file.cards[i - 1]!, file.cards[i]!];
+      expect(a.imp).toBeGreaterThanOrEqual(b.imp);
+      if (a.imp === b.imp) {
+        expect(Date.parse(a.src[0]!.at)).toBeGreaterThanOrEqual(
+          Date.parse(b.src[0]!.at),
+        );
+      }
+    }
     for (const card of file.cards) {
       const original = byLink.get(card.src[0]!.u)!;
       expect(card.t).toBe(original.title.trim()); // 무수정(앞뒤 공백만)

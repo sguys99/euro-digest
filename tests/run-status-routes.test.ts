@@ -102,6 +102,9 @@ const SCENARIOS: Record<string, Scenario> = {
   cluster: base({
     news: { ok: true, sources: [{ ok: true }], clusterError: "RangeError" },
   }),
+  classify: base({
+    news: { ok: true, sources: [{ ok: true }], classifyError: "TypeError" },
+  }),
   "brief-failed": base({
     brief: {
       state: "failed",

@@ -224,7 +224,7 @@ describe("① cleanTitle — D23 '무수정'의 경계(엔티티 디코딩·공�
     expect(n).toBe(69);
   });
 
-  it("XML → 파싱 → 정규화: 제목은 정리만, 링크는 XML 엔티티만 풀린 원문(추적 파라미터 유지), 요약문·본문은 결과에 없다", async () => {
+  it("XML → 파싱 → 정규화: 제목은 정리만, 링크는 XML 엔티티만 풀린 원문(추적 파라미터 유지), 본문은 결과에 없고 요약문은 summary로만", async () => {
     const xml = `<?xml version="1.0"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>t</title>
       <item><title>
         Haaland double fires
@@ -246,8 +246,13 @@ describe("① cleanTitle — D23 '무수정'의 경계(엔티티 디코딩·공�
       ["Arteta: ‘We’re ready’ & calm", "https://example.com/b"],
       ["Chelsea & Spurs – derby  preview", "https://example.com/c"],
     ]);
-    expect(items.every((i) => i.summary === null)).toBe(true);
-    expect(JSON.stringify(items)).not.toMatch(/합성-요약문|합성-본문/);
+    // M1-17(D39 ①): 요약문은 메모리 안 분류 입력(summary)으로만 — 카드에 넣지 않는 것은 buildCard 테스트·tests/collect-classify.test.ts
+    expect(items.map((i) => i.summary)).toEqual([
+      "합성-요약문-DESC",
+      null,
+      null,
+    ]);
+    expect(JSON.stringify(items)).not.toMatch(/합성-본문/);
   });
 });
 

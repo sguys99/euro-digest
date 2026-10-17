@@ -36,8 +36,9 @@ const trimmedText = (label: string) =>
  * - `url`    원문 링크 — 피드 원문 그대로(앞뒤 공백 정리만, http/https). 추적 파라미터 제거 등 URL 정규화는 중복 판정
  *            해시에만 쓴다(M1-12). 국내 매체 `?idxno=` 같은 기사 식별자 쿼리도 그대로 남는다.
  * - `publishedAt` 원문 발행 시각(UTC ISO, 끝 `Z`) — 피드 날짜 → `parseFeedDate`(시간대 없는 날짜는 `Source.tz`, D34).
- * - `summary` 요약문(≤500자) — **M1-09 현재 모든 소스 null**. RSS `description`·OG 설명은 읽지 않는다(M0-25: 표시·저장 안 함,
- *            유일한 소비처는 M1-17 분류 규칙 — 어느 소스의 요약을 분류에 쓸지는 M1-17 착수 때 사용자 확인).
+ * - `summary` 요약문(≤500자) — RSS `description`(Atom `summary`)을 태그 제거·엔티티·공백 정리해 담는다(M1-17, normalize.ts
+ *            `cleanSummary`). PRD §15 D39 ①: **메모리 안 코드 분류 입력 전용** — 카드·`data/`·로그·LLM에 넣지 않고 표시하지 않는다
+ *            (M0-25). 쓰는 곳은 classify.ts(spoiler)·news-scope.ts(범위 밖 제외의 남기는 근거)뿐이다. 요약문이 없으면 null.
  * - `source` 소스 id(`configs/sources.json`의 `id`, slug).
  * - `author` FR-03 `author?` — `authors`를 ", "로 이은 한 줄, 작성자가 없으면 null. 카드(NewsCard)에는 저장하지 않는다.
  * - `authors` 작성자 이름 목록(M1-04 내부 필드 — 피드 순서, 정리·중복 제거). 기자 채널 작성자 필터

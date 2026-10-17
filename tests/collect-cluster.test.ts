@@ -241,9 +241,14 @@ describe("runCollect — 같은 사건 클러스터 → 카드 (M1-13, FR-05)", 
     const outcome = await runCollect(deps);
     expect(outcome.exitCode).toBe(0);
     const file = readNews("2026-10-11");
-    // 최신 출처 시각 순: 맨시티(ESPN 21:10Z) · 국내 맨시티(21:00Z) · 첼시(19:00Z)
-    expect(srcLinks(file)).toEqual([[BBC_A, ESPN_B], [IF_K1, FL_K2], [BBC_C]]);
-    const city = file.cards[0]!;
+    // 카드 3장(맨시티 해외 2곳 · 국내 맨시티 2곳 · 첼시). 파일 순서 = 중요도(M1-17) → 최신 출처 시각 — 순서 규칙은 news-file.ts
+    // sortCards 테스트가 고정하고, 여기서는 카드 구성만 본다
+    const links = srcLinks(file);
+    expect(links).toHaveLength(3);
+    expect(links).toEqual(
+      expect.arrayContaining([[BBC_A, ESPN_B], [IF_K1, FL_K2], [BBC_C]]),
+    );
+    const city = file.cards.find((c) => c.id === cardIdFor(BBC_A))!;
     expect(city).toMatchObject({
       id: cardIdFor(BBC_A),
       t: A.title,
@@ -256,10 +261,9 @@ describe("runCollect — 같은 사건 클러스터 → 카드 (M1-13, FR-05)", 
       { n: "BBC Sport", u: BBC_A, at: A.at, tier: 2 },
       { n: "ESPN", u: ESPN_B, at: B.at, tier: 2 },
     ]);
-    expect(file.cards[1]!.src.map((s) => s.n)).toEqual([
-      "인터풋볼",
-      "풋볼리스트",
-    ]);
+    expect(
+      file.cards.find((c) => c.lang === "ko")!.src.map((s) => s.n),
+    ).toEqual(["인터풋볼", "풋볼리스트"]);
     expect(outcome.news).toMatchObject({ selected: 3, added: 3, attached: 0 });
     expect(outcome.news.cluster).toMatchObject({
       groups: 5,
@@ -523,11 +527,12 @@ describe("runCollect — 클러스터링 실패 격리 (M1-13)", () => {
     expect(outcome.exitCode).toBe(0);
     expect(outcome.status).toBe("partial");
     expect(outcome.news).toMatchObject({ ok: true, clusterError: "boom" });
-    expect(srcLinks(readNews("2026-10-11"))).toEqual([
-      [ESPN_B],
-      [BBC_A],
-      [BBC_C],
-    ]);
+    // 합치지 않은 카드 3장(출처 1건씩). 순서는 중요도 → 시각이라(M1-17 — BBC weight 3 카드가 ESPN weight 1보다 imp가 높다) 집합으로 본다
+    const links = srcLinks(readNews("2026-10-11"));
+    expect(links.every((l) => l.length === 1)).toBe(true);
+    expect(links.map((l) => l[0]).sort()).toEqual(
+      [ESPN_B, BBC_A, BBC_C].sort(),
+    );
     expect(
       records.find((r) => r.event === "collect.cluster.fail"),
     ).toMatchObject({ level: "warn", error: "boom" });

@@ -21,8 +21,14 @@ import {
 
 import { clampedItemKey } from "../scripts/lib/collect-window";
 import { dedupeFeedItems } from "../scripts/lib/dedup";
-import { planNewsClusters, toCluster } from "../scripts/lib/news-cluster";
+import { analyzeCluster } from "../scripts/lib/classify";
+import {
+  planNewsClusters,
+  toCluster,
+  type NewsCluster,
+} from "../scripts/lib/news-cluster";
 import { buildKeywordIndex } from "../scripts/lib/news-keywords";
+import { buildTagIndex } from "../scripts/lib/tag-names";
 import {
   DEFAULT_SCORE_WEIGHTS,
   DOMESTIC_QUOTA_DIVISOR,
@@ -43,6 +49,7 @@ import {
 } from "../scripts/lib/score";
 
 import { configSources } from "./support/fixture-sources";
+import { namesWithExtras } from "./support/names-extras";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const readJson = (rel: string): unknown =>
@@ -544,5 +551,71 @@ describe("실데이터 회귀 — fixtures/cluster 창 안 198건(2026-10-15 수
     }
     for (const id of ["t044", "t047", "t050"])
       expect(topIds.has(id)).toBe(false); // 38~49시간 전 · 범위 밖
+  });
+});
+
+// ─── M1-17: 팀 → 리그 범위 근거 (extraComps) ─────────────────────────────────
+
+describe("M1-17 — 제목 팀·등록 한국 선수의 리그가 범위 근거(extraComps, classify.ts 분석 leagues)", () => {
+  const names = namesWithExtras(
+    NamesKoFileSchema.parse(readJson("configs/names.ko.json")),
+  );
+  const players = KoreanPlayersFileSchema.parse(
+    readJson("configs/korean-players.json"),
+  );
+  const classifyCtx = {
+    keywords: buildKeywordIndex({ names, koreanPlayers: players }),
+    tags: buildTagIndex({ names, koreanPlayers: players }),
+    sourceById: SOURCE_BY_ID,
+  };
+  const withLeagues: ClusterScoreContext = {
+    ...CTX,
+    keywords: classifyCtx.keywords,
+    extraComps: (cluster) =>
+      analyzeCluster(cluster as NewsCluster, classifyCtx).leagues,
+  };
+
+  it("BBC Football(대회 없음)의 빅클럽 밖 EPL 기사는 팀 리그로 범위 감점에서 풀린다 — 5대 리그 밖 팀(Wolves·Rangers)은 그대로 감점", () => {
+    const villa = clusterOf(
+      item(
+        "bbc-sport-football",
+        "Jackson steps up again as Aston Villa revival continues",
+        1,
+      ),
+    );
+    const before = scoreCluster(villa, CTX);
+    const after = scoreCluster(villa, withLeagues);
+    expect(before.factors.scope).toBe(DEFAULT_SCORE_WEIGHTS.noScope);
+    expect(after.factors.scope).toBe(1);
+    expect(after.signals.comps).toEqual(["EPL"]);
+    // 2026-27 시즌 5대 리그 밖(team-leagues.ts — Wolves는 순위표에 없다)
+    const wolves = clusterOf(
+      item(
+        "bbc-sport-football",
+        "Wolves striker Jimenez to have knee surgery",
+        1,
+      ),
+    );
+    expect(scoreCluster(wolves, withLeagues).factors.scope).toBe(
+      DEFAULT_SCORE_WEIGHTS.noScope,
+    );
+    const rangers = clusterOf(
+      item(
+        "bbc-sport-football",
+        "'Reminds me of Muller' - Naderi proving worth in Rangers revival",
+        1,
+      ),
+    );
+    expect(scoreCluster(rangers, withLeagues).factors.scope).toBe(
+      DEFAULT_SCORE_WEIGHTS.noScope,
+    );
+  });
+
+  it("extraComps가 없으면 M1-14 동작 그대로(소스 대회 ∪ 제목 대회 표현)", () => {
+    const c = clusterOf(
+      item("bbc-sport-football", "Brentford extend unbeaten start", 1),
+    );
+    expect(scoreCluster(c, CTX).signals.comps).toEqual([]);
+    expect(scoreCluster(c, withLeagues).signals.comps).toEqual(["EPL"]);
   });
 });

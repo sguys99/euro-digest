@@ -8,7 +8,9 @@
  *     형식 문제(안쪽 공백·제어 문자·사용자 정보 등 — link-check.ts, 발행 게이트와 같은 판정 M1-25)가 있으면 `bad-link`로 건너뛴다.
  *   - 날짜(`publishedAt`): `parseFeedDate`(src/lib/time.ts). 시간대가 적힌 값은 그대로 UTC로, 시간대가 없는 값은 소스의
  *     `tz`(D34 — 국내 5피드 Asia/Seoul)가 있을 때만 그 시간대로 해석한다. 둘 다 아니면 그 항목을 건너뛴다(`no-date`, 추측 안 함).
- *   - 요약(`summary`): 항상 null — RSS `description`은 파서가 꺼내지 않는다(M0-25, 분류 입력으로 쓸지는 M1-17에서 사용자 확인).
+ *   - 요약(`summary`): RSS `description`(Atom `summary`) → `cleanSummary`(태그 제거·엔티티·공백 정리·500자). **메모리 안 분류 입력
+ *     전용**(PRD §15 D39 ① — M1-17 classify.ts·news-scope.ts). 카드(news-file.ts `buildCard`)·data/·로그·LLM에는 넣지 않는다.
+ *     위험 수용 소스(D48 — the Daily Briefing·Di Marzio·Relevo, source-policy.ts)는 null(요약문을 읽지 않는다).
  *   - 작성자(M1-04): 이름마다 엔티티 디코딩 + 앞뒤 공백 정리, 빈 값 제거, 같은 이름(비교 키 `authorKey` 기준) 중복 제거.
  *     카드에는 저장하지 않고 기자 채널 작성자 필터(scripts/lib/author-filter.ts)·로그에만 쓴다.
  * 제목이 200자(NewsCard.t 상한)를 넘으면 자르지 않고 그 항목을 건너뛴다(FR-20). 길이는 **정리가 끝난 제목**(카드 `t`에
@@ -20,6 +22,7 @@
  * 순수 함수만 둔다(시간대 판정도 입력 `source.tz`로만).
  */
 import {
+  FEED_ITEM_SUMMARY_MAX,
   FEED_ITEM_TITLE_MAX,
   FeedItemSchema,
   HttpUrlSchema,
@@ -29,6 +32,7 @@ import {
 import { parseFeedDate } from "@/lib/time";
 
 import { authorKey } from "./author-filter";
+import { readsSummary } from "./source-policy";
 import { linkFormatProblem } from "./link-check";
 import type { RawFeedItem } from "./rss";
 
@@ -204,6 +208,29 @@ export function cleanTitle(raw: string): string {
     .trim();
 }
 
+/** HTML 태그(요약문 안 `<p>`·`<a href>`·`<img>` 등) — 지우고 공백 하나 */
+const HTML_TAG = /<[^>]*>/gu;
+
+/**
+ * 요약문 원문 → 분류 입력용 글자(D39 ① — 메모리 안에서만). HTML 태그 제거 → 엔티티 디코딩(제목과 같은 규칙) → 제어 문자 제거 →
+ * 공백(NBSP 포함) 연속은 공백 하나 → 앞뒤 공백 정리 → 500자(FR-03 `summary ≤500자` — JS 문자열 길이, 서로게이트 쌍은 자르지 않음)에서 자른다. 남는 글자가 없으면
+ * null. 화면·카드에 쓰지 않으므로 자르기·공백 정리가 원문 무수정 원칙(D23)과 부딪히지 않는다.
+ */
+export function cleanSummary(raw: string | null | undefined): string | null {
+  if (raw === null || raw === undefined) return null;
+  const text = decodeEntitiesFully(raw.replace(HTML_TAG, " "))
+    .replace(HTML_TAG, " ")
+    .replace(C1_CHARS, (ch) => WINDOWS_1252_C1.get(ch.charCodeAt(0)) ?? ch)
+    .replace(CONTROL_CHARS, " ")
+    .replace(/\s+/gu, " ")
+    .trim();
+  if (text === "") return null;
+  if (text.length <= FEED_ITEM_SUMMARY_MAX) return text;
+  // JS 문자열 길이(UTF-16) 기준 — 스키마(max 500)와 같은 잣대. 서로게이트 쌍 가운데서 자르지 않는다
+  const cut = text.slice(0, FEED_ITEM_SUMMARY_MAX);
+  return (/[\uD800-\uDBFF]$/u.test(cut) ? cut.slice(0, -1) : cut).trimEnd();
+}
+
 /**
  * 작성자 원문 목록 정리 — 이름마다 엔티티 디코딩 → 앞뒤 공백 정리, 빈 값 제거, 비교 키가 같은 이름은 처음 것만.
  * (같은 사람이 `dc:creator`와 `author`에 함께 적힌 피드가 있다.) 안쪽 글자는 바꾸지 않는다.
@@ -260,7 +287,8 @@ export function normalizeFeedItem(
     title,
     url,
     publishedAt,
-    summary: null,
+    // 위험 수용 소스(D48 — source-policy.ts)는 요약문을 쓰지 않는다(파서도 꺼내지 않는다 — 이중 차단)
+    summary: readsSummary(source.id) ? cleanSummary(raw.summary) : null,
     source: source.id,
     author: authors.length > 0 ? authors.join(", ") : null,
     authors,

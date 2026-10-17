@@ -4,11 +4,19 @@
  *   ① 뉴스: configs/sources.json의 일일 수집 대상 피드 전부(M1-02 로더 — enabled && terms_checked, rss·journalist·aggregator)
  *      → 소스별 격리 수집 → 수집 시간 창(M1-10, FR-07 — 직전 성공 실행 − 3시간 ~ 현재, 최대 51시간, 미래 시각 가드)
  *      → 합쳐서 정규화 URL 해시로 중복 제거(M1-12, FR-04 — 카드는 대표 소스 + 같은 URL을 낸 소스들의 대회 태그 합집합, dedup.ts)
+ *      → 범위 밖 기사 제외(M1-17 — news-scope.ts: 축구 외 종목·K리그·연예, Relevo는 링크 경로 `/futbol/`(source-policy.ts),
+ *        클러스터링 전, 사유·소스별 건수 `collect.filter.done`)
  *      → 제목 유사도로 같은 사건 클러스터(M1-13, FR-05 — cluster.ts·news-cluster.ts: 다른 날 카드였던 URL이 든 클러스터는
  *        통째로 제외(seen-urls.json 90일 기억 ∪ 최근 발행 파일 — seen-urls.ts), 오늘 카드와 같은 사건이면 그 카드의 새 출처)
- *      → 점수화 선별(M1-14, FR-06 — score.ts: 소스 weight × Tier × 키워드 × 보도 매체 수 × 최신성 × 범위). 일일 상한은 그날
- *        파일 기준(D44 — 새 카드 자리 = MAX_ITEMS_PER_RUN − 오늘 파일 카드 수), 국내 최소 몫(상한의 1/3)을 먼저 채움
- *        → 원제목 카드(대표 + 클러스터 출처, 최소 분류 + 선별 점수 전달)
+ *      → 코드 분류(M1-17, FR-21 — classify.ts·tag-names.ts: 모든 구성 묶음 제목 + 메모리 안 요약문(spoiler와 제외의 남기는 근거만,
+ *        D39 ①·D47 ① — 위험 수용 3소스는 요약문을 읽지 않음, D48)) + 엔티티 2단계 병합(D42 — entity-merge.ts·cluster-classify.ts:
+ *        '경기 결과' 경기 기사 + 같은 두 팀 + 공통 스코어(해외 스코어 없는 기사는 스코어 기사 뒤에만) + 12시간, 오늘 결과 카드와 같은
+ *        경기면 그 카드의 출처)
+ *      → 점수화 선별(M1-14, FR-06 — score.ts: 소스 weight × Tier × 키워드 × 보도 매체 수 × 최신성 × 범위 — 범위 근거에 제목 팀·한국
+ *        선수 리그(M1-17)). 일일 상한은 그날 파일 기준(D44 — 새 카드 자리 = MAX_ITEMS_PER_RUN − 오늘 파일 카드 수), 국내 최소
+ *        몫(상한의 1/3)을 먼저 채움
+ *        → 원제목 카드(대표 + 클러스터 출처, 코드 분류 + 중요도 — 점수 절대 임계값 1~4, 머리기사 imp 5는 그날 파일에 없을 때 만들어진
+ *        새 카드 중 점수 1위 1장)
  *      → data/news/<KST 발행일>.json(파일 순서 = 화면 순서: 중요도 → 최신 출처 시각 — news-file.ts sortCards)
  *      → 그 파일의 카드로 data/cache/seen-urls.json 갱신
  *      검색형 소스(M1-06): configs/search-queries.json의 활성 쿼리만 계획한다. 어댑터(M1-07)가 보류라 실행하지 않는다 —
@@ -78,8 +86,10 @@
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
- * 다음 작업이 갈아끼울 자리: 분류(M1-17 — 선별 점수 → 중요도, 팀→리그
- * 대회 근거를 점수화 `comps`로) · 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
+ * 범위 판정 단계의 예상 밖 오류는 빼지 않고, 코드 분류·병합 단계의 예상 밖 오류는 병합 없이 최소 분류(소스 대회·기본값)로 발행한다
+ * (실행 상태 partial — `classifyError`, 로그 `collect.filter.fail`·`collect.classify.fail`). 두 단계는 테스트가 실패를 주입할 수 있다
+ * (`deps.filterOutOfScope`·`deps.classifyClusters`).
+ * 다음 작업이 갈아끼울 자리: 이적 추출(M1-18 — 카드 `transfer`) · 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
  * 검증·강등(M1-23·M1-45) · 브리핑 줄 수 기록(summarized·downgraded = 게시 줄 기준 — M1-45) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
  */
@@ -173,7 +183,14 @@ import {
   type BriefBudgetSkip,
 } from "./budget-guard";
 import type { LlmMode } from "./cli-args";
+import {
+  assignImportance,
+  HEADLINE_IMPORTANCE,
+  importanceOf,
+  toClassification,
+} from "./classify";
 import { clusterDocs } from "./cluster";
+import { classifyClusters, type ClassifiedClusters } from "./cluster-classify";
 import {
   deadlineLogFields,
   msUntil,
@@ -182,7 +199,8 @@ import {
   type CollectDeadlines,
 } from "./collect-deadlines";
 import { readConfigFile } from "./config-files";
-import { dedupeFeedItems } from "./dedup";
+import { dedupeFeedItems, type DedupGroup } from "./dedup";
+import type { EntityMergeStats } from "./entity-merge";
 import {
   applyCollectWindow,
   ceilMinutes,
@@ -276,6 +294,7 @@ import {
   isKoLang,
   type KeywordIndex,
 } from "./news-keywords";
+import { filterOutOfScope, type ScopeFilterResult } from "./news-scope";
 import {
   purgeSummary,
   runPurgeStage,
@@ -339,6 +358,7 @@ import {
   type MatchLinkResult,
   type TeamIdIndex,
 } from "./team-ids";
+import { buildTagIndex, type TagIndex } from "./tag-names";
 import {
   loadSources,
   planDailySources,
@@ -418,6 +438,10 @@ export interface CollectDeps {
   loadSearchQueries?: () => Promise<SearchQueriesFile>;
   /** 같은 사건 클러스터링(M1-13) — 기본은 제목 유사도(cluster.ts `clusterDocs`). 테스트가 실패 경로를 주입한다 */
   clusterDocs?: ClusterFn;
+  /** 코드 분류·엔티티 병합 단계(M1-17) — 기본은 cluster-classify.ts `classifyClusters`. 테스트가 실패 경로를 주입한다 */
+  classifyClusters?: typeof classifyClusters;
+  /** 범위 밖 기사 제외 단계(M1-17) — 기본은 news-scope.ts `filterOutOfScope`. 테스트가 실패 경로를 주입한다 */
+  filterOutOfScope?: typeof filterOutOfScope;
   now: () => Date;
   /** RSS·football-data 공용 fetch */
   fetch: FetchLike;
@@ -676,11 +700,35 @@ export interface NewsOutcome {
   cluster: ClusterPlanStats | null;
   /** 클러스터링 예상 밖 오류(클러스터 없이 발행 — 실행 상태 partial) */
   clusterError: string | null;
+  /** 범위 밖 기사 제외(M1-17 — news-scope.ts) — 선별까지 가지 않았거나 판정이 실패했으면 null */
+  filter: FilterOutcome | null;
+  /** 엔티티 2단계 병합(D42 — entity-merge.ts) 집계 — 선별까지 가지 않았으면 null */
+  entity: EntityMergeStats | null;
+  /** 범위 판정·코드 분류의 예상 밖 오류(제외·병합 없이 최소 분류로 발행 — 실행 상태 partial) */
+  classifyError: string | null;
   /** 점수화 선별 집계(M1-14, FR-06 — score.ts) — 선별까지 가지 않았으면 null */
   score: ScoreOutcome | null;
   /** `data/cache/seen-urls.json`(M1-12) — 선별까지 가지 않았으면 null */
   seen: SeenOutcome | null;
   error?: string;
+}
+
+/** 범위 밖 기사 제외 집계 (M1-17 — 로그 `collect.filter.done`과 같은 값, 제목·요약문은 남기지 않는다) */
+export interface FilterOutcome {
+  /** 입력 묶음 수(같은 URL 묶음) */
+  groups: number;
+  /** 남긴 묶음 수 */
+  kept: number;
+  /** 뺀 묶음 수(= groups − kept) */
+  excluded: number;
+  /** 사유별 — 축구 외 종목 */
+  nonFootball: number;
+  /** 사유별 — K리그·국내 축구 */
+  kLeague: number;
+  /** 사유별 — 연예 */
+  entertainment: number;
+  /** 뺀 묶음 수(대표 소스 id별) */
+  bySource: Record<string, number>;
 }
 
 /** 점수화 선별 집계 (M1-14·D44 — 로그 `collect.select.done`과 같은 값) */
@@ -1018,6 +1066,9 @@ async function runNewsStage(
     dedup: null,
     cluster: null,
     clusterError: null,
+    filter: null,
+    entity: null,
+    classifyError: null,
     score: null,
     seen: null,
   };
@@ -1128,6 +1179,34 @@ async function runNewsStage(
   // 같은 사건 클러스터(M1-13, FR-05): 제목 유사도로 묶음을 묶는다(news-cluster.ts). 다른 날 카드였던 URL이 든 클러스터는
   // 통째로 빼고(seen-urls.ts 기억), 오늘 파일 카드와 같은 사건이면 그 카드의 새 출처가 된다(같은 날 재실행).
   const deduped = dedupeFeedItems(allItems);
+  // 범위 밖 기사 제외(M1-17 — news-scope.ts): 축구 외 종목·K리그·연예를 **클러스터링 전**(묶음 단계)에 뺀다 — 제목 유사도의 IDF·
+  // 병합과 국내 몫 경쟁에 섞이지 않게. 판정 실패(예상 밖 오류)는 빼지 않고 계속한다(실행 상태 partial).
+  const keywordLoad = await loadKeywordIndex(deps);
+  const classifyFailure: { error: string | null } = { error: null };
+  const noteClassifyFailure = (event: string, error: unknown) => {
+    classifyFailure.error ??= errorText(error);
+    log.warn(event, { error: errorText(error) });
+  };
+  let scope: ScopeFilterResult | null = null;
+  try {
+    scope = (deps.filterOutOfScope ?? filterOutOfScope)(deduped.groups, {
+      keywords: keywordLoad.index,
+      tags: keywordLoad.tags,
+    });
+  } catch (error) {
+    noteClassifyFailure("collect.filter.fail", error);
+  }
+  const scopedGroups = scope?.kept ?? deduped.groups;
+  const filter: FilterOutcome | null = scope && {
+    groups: deduped.groups.length,
+    kept: scope.kept.length,
+    excluded: deduped.groups.length - scope.kept.length,
+    nonFootball: scope.excluded["non-football"],
+    kLeague: scope.excluded["k-league"],
+    entertainment: scope.excluded.entertainment,
+    bySource: scope.bySource,
+  };
+  if (filter) log.info("collect.filter.done", { ...filter });
   const seenLoad = await loadSeen(deps, ctx, existing);
   // 제목 유사도 단계(ClusterFn — 특징 추출·유사도·병합, 기본 cluster.ts `clusterDocs`)의 예상 밖 오류만 여기서 막는다:
   // 같은 사건을 합치지 않은 채(문서마다 혼자 — singletonClusters) 나머지 규칙(기억·오늘 카드)으로 계속하고 실행 상태 partial.
@@ -1136,7 +1215,7 @@ async function runNewsStage(
   const titleClusters = deps.clusterDocs ?? clusterDocs;
   const clusters = planNewsClusters(
     {
-      groups: deduped.groups,
+      groups: scopedGroups,
       sourceById,
       index: seenLoad.index,
       todayCards: existing?.cards ?? [],
@@ -1172,7 +1251,44 @@ async function runNewsStage(
   // 최신성을 믿지 않는다, 200자 초과·설정에 없는 소스는 다음 후보)의 피드 원문 제목·링크, 출처 = 대표 + 나머지(Tier → 최신 → URL),
   // 카드 소스 = 대표 소스 + 클러스터 대회 합집합, `ai:false`·`s:[]`(LLM 없음 — D23). 오늘 카드는 대표를 다시 고르지 않는다.
   // 선별 점수는 카드 생성(분류 — M1-17 중요도)까지 넘긴다. 카드·파일에는 저장하지 않는다.
-  const keywordLoad = await loadKeywordIndex(deps);
+  // 코드 분류(M1-17, FR-21 — classify.ts)와 엔티티 2단계 병합(D42 — entity-merge.ts, cluster-classify.ts): 새 클러스터마다 모든
+  // 구성 묶음 제목(+ 메모리 안 요약문 — spoiler·범위 밖 남기는 근거만)으로 분석하고, 같은 경기(같은 두 팀 + 같은 스코어 + 12시간 —
+  // 스코어가 있는 클러스터만) 새 클러스터를 합치거나 오늘 카드의 출처로 돌린다. 점수화 범위 근거에 제목 팀·한국 선수 리그를 더하고
+  // (M1-14 이월 — score.ts `extraComps`), 한국 선수 배수는 분류 kr과 같은 기준(동명이인 확인 — `koreanPlayers`)이다. 분류 단계의 예상 밖 오류는 병합 없이 최소 분류(소스 대회·기본값)로 계속한다(실행 상태 partial).
+  const order = new Map(deduped.groups.map((g, i) => [g.key, i] as const));
+  const groupOrder = (g: DedupGroup) => order.get(g.key) ?? 0;
+  const firstIndex = (c: NewsCluster) => Math.min(...c.members.map(groupOrder));
+  const todayCards = existing?.cards ?? [];
+  let classified: ClassifiedClusters;
+  try {
+    classified = (deps.classifyClusters ?? classifyClusters)({
+      fresh: clusters.fresh,
+      todayCards,
+      ctx: {
+        keywords: keywordLoad.index,
+        tags: keywordLoad.tags,
+        sourceById,
+      },
+      groupOrder,
+    });
+  } catch (error) {
+    noteClassifyFailure("collect.classify.fail", error);
+    classified = {
+      fresh: [...clusters.fresh],
+      analysisOf: () => undefined,
+      attachments: [],
+      stats: {
+        eligible: 0,
+        eligibleToday: 0,
+        merges: 0,
+        merged: 0,
+        attached: 0,
+        conflicts: 0,
+      },
+    };
+  }
+  const classifyError = classifyFailure.error;
+  log.info("collect.entity.done", { ...classified.stats });
   const scoreCtx = {
     now: window.now,
     sourceById,
@@ -1180,17 +1296,18 @@ async function runNewsStage(
     isClamped: (item: FeedItem) =>
       windowed.clampedKeys.has(clampedItemKey(item)),
     transferBoost: NEUTRAL_TRANSFER_BOOST,
+    extraComps: (cluster: Pick<NewsCluster, "members">) =>
+      classified.analysisOf(cluster as NewsCluster)?.leagues ?? [],
+    // 한국 선수 배수 = 분류 kr과 같은 기준(동명이인 확인 — classify.ts `korean`)
+    koreanPlayers: (cluster: Pick<NewsCluster, "members">) =>
+      classified.analysisOf(cluster as NewsCluster)?.korean,
   };
-  const order = new Map(deduped.groups.map((g, i) => [g.key, i] as const));
-  const firstIndex = (c: NewsCluster) =>
-    Math.min(...c.members.map((g) => order.get(g.key) ?? 0));
-  const todayCards = existing?.cards ?? [];
   const slotPlan = planSlots({
     limit: deps.limit,
     existingCards: todayCards.length,
     existingDomestic: todayCards.filter((c) => isKoLang(c.lang)).length,
   });
-  const candidates = [...clusters.fresh].sort(
+  const candidates = [...classified.fresh].sort(
     (a, b) => firstIndex(a) - firstIndex(b),
   );
   const byScore = selectTopScored(
@@ -1205,19 +1322,39 @@ async function runNewsStage(
   });
   const ranked = quotaPick.selected;
   const leadStats = { reordered: 0, unknownSource: 0, titleTooLong: 0 };
-  const cards = ranked.flatMap(({ entry, score }) => {
-    const built = clusterCard(
+  const built = ranked.flatMap(({ entry, score }) => {
+    const analysis = classified.analysisOf(entry);
+    const outcome = clusterCard(
       entry,
       sourceById,
       ctx.startedAt,
-      { score },
+      analysis
+        ? {
+            score,
+            classification: toClassification(
+              analysis,
+              importanceOf(score.score),
+            ),
+          }
+        : { score },
       { isClamped: scoreCtx.isClamped },
     );
-    if (built.reordered) leadStats.reordered += 1;
-    leadStats.unknownSource += built.skipped.unknownSource;
-    leadStats.titleTooLong += built.skipped.titleTooLong;
-    return built.card ? [built.card] : [];
+    if (outcome.reordered) leadStats.reordered += 1;
+    leadStats.unknownSource += outcome.skipped.unknownSource;
+    leadStats.titleTooLong += outcome.skipped.titleTooLong;
+    return outcome.card
+      ? [{ card: outcome.card, score: score.score, classified: !!analysis }]
+      : [];
   });
+  // 중요도(M1-17): 점수 절대 임계값 1~4, 머리기사 imp 5는 그날 파일에 없을 때 **만들어진** 새 카드 중 점수 1위 1장(classify.ts
+  // `assignImportance` — 대표가 없어 카드가 안 된 클러스터는 건너뛴다). 분류 단계가 실패한 카드(최소 분류)는 그대로 둔다.
+  const imps = assignImportance(
+    built.map((b) => b.score),
+    { headTaken: todayCards.some((c) => c.imp >= HEADLINE_IMPORTANCE) },
+  );
+  const cards = built.map(({ card, classified: ok }, i) =>
+    ok ? { ...card, imp: imps[i]! } : card,
+  );
   if (leadStats.unknownSource > 0 || leadStats.titleTooLong > 0) {
     // 대표 후보에서 뺀 묶음(방어선 — 정규화·설정에서 이미 걸러져 평소 0). 카드가 안 된 클러스터 수 = ranked − selected
     log.warn("collect.card.skip", {
@@ -1235,13 +1372,22 @@ async function runNewsStage(
     transferBoost: scoreCtx.transferBoost,
     keywordsError: keywordLoad.error,
   });
-  const attachments: CardAttachment[] = clusters.existing.map((c) => ({
-    id: c.cardId,
-    src: c.additions.flatMap((g) => {
+  const sourcesOf = (groups: readonly DedupGroup[]) =>
+    groups.flatMap((g) => {
       const src = groupCardSource(g, sourceById);
       return src ? [src] : [];
-    }),
-  }));
+    });
+  // 오늘 카드의 새 출처 = 제목 유사도로 묶인 것(M1-13 ③) + 같은 경기로 합친 것(D42 ⑥)
+  const attachments: CardAttachment[] = [
+    ...clusters.existing.map((c) => ({
+      id: c.cardId,
+      src: sourcesOf(c.additions),
+    })),
+    ...classified.attachments.map((a) => ({
+      id: a.cardId,
+      src: sourcesOf(a.groups),
+    })),
+  ];
   log.info("collect.select.done", {
     usable: collected.items.length,
     inWindow: allItems.length,
@@ -1275,6 +1421,10 @@ async function runNewsStage(
     // 자리에 든 클러스터의 구성·점수 근거 수 — 국내(ko)와 국내 몫(koQuota)·몫 때문에 든 수(koByQuota), 키워드, 범위 근거 없음
     // (감점), 낮춘 시각(최신성 불신)
     selectedMix: selectedMix(ranked, scoreOutcome),
+    // 새 카드의 코드 분류 구성(M1-17 — 관찰 주간 M1-43 검수용, 제목은 남기지 않는다)
+    classifiedMix: classifiedMix(cards),
+    entityMerged: classified.stats.merged,
+    entityAttached: classified.stats.attached,
     failedSources: failed.length,
   });
 
@@ -1301,6 +1451,9 @@ async function runNewsStage(
           dedup,
           cluster: clusters.stats,
           clusterError,
+          filter,
+          entity: classified.stats,
+          classifyError,
           score: scoreOutcome,
           seen,
         },
@@ -1346,6 +1499,9 @@ async function runNewsStage(
         dedup,
         cluster: clusters.stats,
         clusterError,
+        filter,
+        entity: classified.stats,
+        classifyError,
         score: scoreOutcome,
         seen,
       },
@@ -1364,6 +1520,9 @@ async function runNewsStage(
         dedup,
         cluster: clusters.stats,
         clusterError,
+        filter,
+        entity: classified.stats,
+        classifyError,
         score: scoreOutcome,
         seen,
         error: errorText(error),
@@ -1376,13 +1535,13 @@ async function runNewsStage(
 // ─── ①-a 점수화 선별 도우미 (M1-14 — scripts/lib/score.ts) ────────────────
 
 /**
- * 점수화 키워드 색인 — configs/names.ko.json·korean-players.json(news-keywords.ts). 읽기·형식 오류는 경고만 하고 코드 표
- * (빅클럽·대회·이적)만으로 점수화한다 — 발행은 계속하고, 설정 오류 자체는 같은 실행의 검증 게이트(`npm run validate`)가 잡아
- * 커밋되지 않는다.
+ * 점수화 키워드 색인(news-keywords.ts)과 태그 색인(tag-names.ts — M1-17 코드 분류) — configs/names.ko.json·korean-players.json.
+ * 읽기·형식 오류는 경고만 하고 코드 표(빅클럽·대회·이적)만으로 점수화·분류한다 — 발행은 계속하고, 설정 오류 자체는 같은 실행의 검증
+ * 게이트(`npm run validate`)가 잡아 커밋되지 않는다.
  */
 async function loadKeywordIndex(
   deps: Pick<CollectDeps, "rootDir" | "logger">,
-): Promise<{ index: KeywordIndex; error: string | null }> {
+): Promise<{ index: KeywordIndex; tags: TagIndex; error: string | null }> {
   try {
     const [names, koreanPlayers] = await Promise.all([
       readConfigFile(deps.rootDir, "names.ko.json", NamesKoFileSchema),
@@ -1392,10 +1551,18 @@ async function loadKeywordIndex(
         KoreanPlayersFileSchema,
       ),
     ]);
-    return { index: buildKeywordIndex({ names, koreanPlayers }), error: null };
+    return {
+      index: buildKeywordIndex({ names, koreanPlayers }),
+      tags: buildTagIndex({ names, koreanPlayers }),
+      error: null,
+    };
   } catch (error) {
     deps.logger.warn("collect.score.keywords", { error: errorText(error) });
-    return { index: buildKeywordIndex({}), error: errorText(error) };
+    return {
+      index: buildKeywordIndex({}),
+      tags: buildTagIndex({}),
+      error: errorText(error),
+    };
   }
 }
 
@@ -1432,6 +1599,23 @@ function summarizeScores(input: {
     cutoff: rounded(ranked.at(-1)?.score.score),
     firstOut: rounded(byScore.find((r) => !inRanked.has(r.entry))?.score.score),
     keywordsError: input.keywordsError,
+  };
+}
+
+/** 새 카드의 분류 구성 — 중요도별·카테고리별 수, kr·spoiler 수(로그 — 관찰 주간 검수용) */
+function classifiedMix(cards: readonly NewsCard[]) {
+  const imp: Record<string, number> = {};
+  const cat: Record<string, number> = {};
+  for (const card of cards) {
+    imp[String(card.imp)] = (imp[String(card.imp)] ?? 0) + 1;
+    cat[card.cat] = (cat[card.cat] ?? 0) + 1;
+  }
+  return {
+    imp,
+    cat,
+    kr: cards.filter((c) => c.kr).length,
+    spoiler: cards.filter((c) => c.spoiler).length,
+    noComp: cards.filter((c) => c.comp.length === 0).length,
   };
 }
 
@@ -3607,6 +3791,7 @@ export interface RunStatusInput {
     sources?: readonly { ok: boolean; errorType?: string }[];
     seen?: Pick<SeenOutcome, "readError" | "writeError"> | null;
     clusterError?: string | null;
+    classifyError?: string | null;
   };
   brief: BriefOutcome;
   matchData:
@@ -3674,6 +3859,12 @@ export const RUN_PARTIAL_CONDITIONS: readonly PartialCondition[] = [
     id: "cluster",
     route: { kind: "pipeline-partial", reason: "cluster" },
     holds: ({ news }) => Boolean(news.clusterError),
+  },
+  {
+    // 범위 판정·코드 분류·엔티티 병합 실패 — 범위 밖 제외·병합 없이 최소 분류(소스 대회·기본값)로 카드를 만들었다(M1-17)
+    id: "classify",
+    route: { kind: "pipeline-partial", reason: "classify" },
+    holds: ({ news }) => Boolean(news.classifyError),
   },
   {
     id: "brief-failed",

@@ -9,6 +9,7 @@
  *     purge            삭제 단계 오류 1건 이상(PurgeOutcome.errors — M1-25 이월: 이전에는 이슈 없음)
  *     seen             seen-urls.json 읽기·쓰기 오류(M1-12)
  *     cluster          클러스터링 예상 밖 오류(M1-13)
+ *     classify         범위 판정·코드 분류·엔티티 병합 예상 밖 오류(M1-17 — 제외·병합 없이 최소 분류)
  *     brief            브리핑 단계 failed — reason llm·output·setup(M1-01 이월: partial·exit 0이라 이슈 없음). football-data는
  *                      데이터 API 문제라 아래 source-broken이 맡는다(같은 원인 이슈 둘 방지)
  *     brief-file       브리핑 파일 검증·쓰기 실패 또는 깨진 기존 파일(M1-19)
@@ -59,6 +60,7 @@ export interface PartialFindingsInput {
   news: {
     seen?: { readError: string | null; writeError: string | null } | null;
     clusterError?: string | null;
+    classifyError?: string | null;
   };
   brief:
     | { state: "done" }
@@ -130,6 +132,12 @@ export function partialFindings(input: PartialFindingsInput): PartialFinding[] {
   }
   if (input.news.clusterError) {
     found.push({ reason: "cluster", detail: oneLine(input.news.clusterError) });
+  }
+  if (input.news.classifyError) {
+    found.push({
+      reason: "classify",
+      detail: oneLine(input.news.classifyError),
+    });
   }
   const brief = input.brief;
   if (brief.state === "failed" && brief.reason !== "football-data") {
