@@ -174,7 +174,7 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
 - 커밋: Conventional Commits + 한국어 요약 + 요구사항 ID. 예: `feat(news): 동일 사건 클러스터링 (FR-05)`
 - 봇 데이터 커밋: `chore(data): YYYY-MM-DD 발행` — 변경분만, `data/`·`public/` 산출물에 한정.
 - 개발·봇 모두 `main`에 직접 커밋(무인 발행 브랜치) → **커밋 전 `npm run check`·`npm run build` 통과 필수**. `ci.yml`이 push마다 같은 검사를 돌리고, 실패하면 즉시 수정 또는 revert. main push가 검사를 통과하면 `deploy.yml`로 배포된다(`concurrency: pages`).
-- 큰 변경(스키마·파이프라인 구조)은 작은 커밋으로 나눈다. **06:00~08:00 KST에는 push 금지**(계절 무관 — 여름 06:30 수집~07:15, 겨울 07:10 수집~07:45 공개 허용 범위를 한 구간으로 덮는다, D26). push 전 항상 `git pull --rebase`.
+- 큰 변경(스키마·파이프라인 구조)은 작은 커밋으로 나눈다. **06:00~08:00 KST에는 사람(개발) push 금지**(봇의 `chore(data)` 발행 커밋은 이 시간대가 정상)(계절 무관 — 여름 06:30 수집~07:15, 겨울 07:10 수집~07:45 공개 허용 범위를 한 구간으로 덮는다, D26). push 전 항상 `git pull --rebase`.
 - Secrets: `ANTHROPIC_API_KEY`, `FOOTBALL_DATA_API_KEY`, `API_FOOTBALL_KEY`는 Actions Secrets. cron-job.org용 PAT(Actions 권한만)는 저장소에 두지 않는다.
 - 환경변수 기본값: `LLM_MODEL=claude-haiku-5-5` · `LLM_MODE=live`(테스트·CI는 `mock`) · `MAX_ITEMS_PER_RUN=45`(일일 카드 선별 상한) · `DAILY_BUDGET_USD=0.10` / `MONTHLY_BUDGET_USD=3` · `SITE_URL=https://sguys99.github.io` / `BASE_PATH=/euro-digest` · `CONTACT_EMAIL`(User-Agent·삭제 요청 연락처, M0에서 개설)
 
