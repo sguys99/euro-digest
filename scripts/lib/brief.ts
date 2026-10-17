@@ -34,7 +34,12 @@ import { z } from "zod";
 import { BRIEF_LINE_MAX, BRIEF_MAX_LINES, BRIEF_REFS_MAX } from "@/lib/schema";
 
 import { estimateCost, type CostEstimate } from "./cost";
-import { serializeBriefInput, type BriefInput } from "./brief-input";
+import {
+  briefLlmInput,
+  BRIEF_LLM_MAX_MATCHES,
+  serializeBriefInput,
+  type BriefInput,
+} from "./brief-input";
 import type { LlmRequest } from "./llm";
 
 /** D28 브리핑 max_tokens (thinking 포함) */
@@ -78,15 +83,19 @@ export function briefPromptId(system: string): string {
   return `p_${createHash("sha256").update(system, "utf8").digest("hex").slice(0, 12)}`;
 }
 
-/** 브리핑 요청 1건(순수 함수) */
+/**
+ * 브리핑 요청 1건(순수 함수). user 본문은 **전체 입력의 앞 `llmMaxMatches`경기**(D51 — `briefLlmInput`, 기본 15)다 — 모델이 보지
+ * 못한 근거 id는 `briefLlmInput(input).hiddenRefs`로 검사기에 넘긴다(JudgeOptions.hiddenRefs). 템플릿·검사기 근거는 전체 입력.
+ */
 export function buildBriefRequest(
   input: BriefInput,
   system: string,
+  llmMaxMatches: number = BRIEF_LLM_MAX_MATCHES,
 ): LlmRequest {
   return {
     customId: briefCustomId(input.briefDate),
     system,
-    user: serializeBriefInput(input),
+    user: serializeBriefInput(briefLlmInput(input, llmMaxMatches).input),
     maxTokens: BRIEF_MAX_TOKENS,
     effort: BRIEF_EFFORT,
     thinking: BRIEF_THINKING,

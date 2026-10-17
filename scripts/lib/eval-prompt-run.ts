@@ -25,9 +25,11 @@ import {
 import { kstDate, nowUtcIso } from "@/lib/time";
 
 import { estimateBriefInputTokens, loadBriefPrompt } from "./brief";
+import { briefLlmInput, BRIEF_LLM_MAX_MATCHES } from "./brief-input";
 import type { BriefCheckContext, BriefCheckInput } from "./brief-check";
 import {
   buildEvalRequest,
+  evalHiddenRefs,
   evalUserMessage,
   EVAL_VARIANTS,
   evalDayRecord,
@@ -372,8 +374,8 @@ export const DEFAULT_PROMPT_REL = path.join(
 );
 
 /**
- * 검사기 판에 넣는 파일 — 판정 결과를 바꾸는 코드: `scripts/lib/brief-check*.ts`(검사기·어휘 표 — 이름이 바뀌어도 접두사가 같으면
- * 들어간다) + 출력 파싱(brief.ts)·템플릿 해석(brief-template.ts — matchFacts)·고유명사 치환(names.ts)·조사(josa.ts).
+ * 검사기 판에 넣는 파일 — 판정 결과를 바꾸는 코드: `scripts/lib/brief-check*.ts`·`brief-grammar*.ts`(검사기·어휘 표·닫힌 문법 —
+ * D50, 접두사가 같으면 들어간다) + 출력 파싱(brief.ts)·템플릿 해석(brief-template.ts — matchFacts)·고유명사 치환(names.ts)·조사(josa.ts).
  */
 export const CHECKER_FIXED_FILES: readonly string[] = Object.freeze([
   "brief.ts",
@@ -388,7 +390,7 @@ export async function checkerFingerprint(
 ): Promise<{ id: string; files: string[] }> {
   const libDir = path.join(rootDir, "scripts", "lib");
   const names = (await readdir(libDir))
-    .filter((f) => /^brief-check[a-z0-9-]*\.ts$/.test(f))
+    .filter((f) => /^brief-(check|grammar)[a-z0-9-]*\.ts$/.test(f))
     .concat(CHECKER_FIXED_FILES)
     .sort();
   const hash = createHash("sha256");
@@ -411,29 +413,38 @@ export const CONFIG_FILES: readonly string[] = Object.freeze([
   "team-ids.json",
 ]);
 
-/** 설정 판 — 위 configs 파일 내용의 sha256 앞 12자리(`g_`). 같은 내용이면 같은 id */
+/**
+ * 설정 판 — 위 configs 파일 내용 + LLM 요청 본문 경기 상한(D51)의 sha256 앞 12자리(`g_`). 같은 내용·같은 상한이면 같은 id.
+ * 상한 null = 자르지 않음(D51 전 실행·M0 기준선).
+ */
 export async function configsFingerprint(
   rootDir: string,
-): Promise<{ id: string; files: string[] }> {
+  llmMaxMatches: number | null = BRIEF_LLM_MAX_MATCHES,
+): Promise<EvalRun["configs"]> {
   const hash = createHash("sha256");
   for (const name of CONFIG_FILES) {
     hash.update(`${name}\0`);
     hash.update(await readFile(path.join(rootDir, "configs", name)));
     hash.update("\0");
   }
+  hash.update(`llmMaxMatches=${llmMaxMatches ?? "none"}`);
   return {
     id: `g_${hash.digest("hex").slice(0, 12)}`,
     files: CONFIG_FILES.map((n) => `configs/${n}`),
+    llmMaxMatches,
   };
 }
 
 /** 이 실행의 판정 판(검사기 + 설정) */
 export type EvalVersions = Pick<EvalRun, "checker" | "configs">;
 
-export async function evalVersions(rootDir: string): Promise<EvalVersions> {
+export async function evalVersions(
+  rootDir: string,
+  llmMaxMatches: number | null = BRIEF_LLM_MAX_MATCHES,
+): Promise<EvalVersions> {
   return {
     checker: await checkerFingerprint(rootDir),
-    configs: await configsFingerprint(rootDir),
+    configs: await configsFingerprint(rootDir, llmMaxMatches),
   };
 }
 
@@ -634,7 +645,9 @@ export async function m0BaselineRun(
     promptId: evalPromptId(system, "base"),
     prompt: M0_PROMPT_REL,
     promptChars: system.length,
-    ...versions,
+    checker: versions.checker,
+    // M0 출력은 자르지 않은 입력(M0 형식)을 봤다 — 상한 없음
+    configs: await configsFingerprint(rootDir, null),
     runId: null,
     startedAt: "2026-10-11T00:00:00.000Z",
     finishedAt: "2026-10-11T00:00:00.000Z",
@@ -861,6 +874,12 @@ async function rejudgeRun(
   );
   if (args.limit !== null) picked = picked.slice(0, args.limit);
   const startedAt = nowUtcIso(deps.now());
+  // 원래 실행이 모델에 보낸 범위로 판정한다 — D51 전 실행(상한 기록 없음)은 자르지 않은 입력을 봤다
+  const cap = original.configs.llmMaxMatches ?? null;
+  const versions: EvalVersions = {
+    checker: env.versions.checker,
+    configs: await configsFingerprint(deps.rootDir, cap),
+  };
   const days = picked.map((d) =>
     evalDayRecord(
       {
@@ -869,7 +888,8 @@ async function rejudgeRun(
         input: inputs.get(d.date)!,
         user:
           // 입력 해시는 지금 골든셋 입력 기준(원래와 다르면 리포트가 '입력 다름'으로 표시)
-          evalUserMessage(inputs.get(d.date)!, original.variant),
+          evalUserMessage(inputs.get(d.date)!, original.variant, cap),
+        hiddenRefs: evalHiddenRefs(inputs.get(d.date)!, cap),
         response: savedResponse(d),
         thinkingKnown: d.thinkingTokens !== null,
         latencyMs: d.latencyMs,
@@ -894,9 +914,9 @@ async function rejudgeRun(
     runId: null,
     startedAt,
     finishedAt: nowUtcIso(deps.now()),
-    ...env.versions,
+    ...versions,
     rejudgedFrom: original.label,
-    note: `${original.label}(${original.mode}, 검사기 ${original.checker.id} · 설정 ${original.configs.id})의 출력을 검사기 ${env.versions.checker.id} · 설정 ${env.versions.configs.id}로 다시 판정 — LLM 호출 없음, 토큰·비용·지연은 원래 실행 값`,
+    note: `${original.label}(${original.mode}, 검사기 ${original.checker.id} · 설정 ${original.configs.id})의 출력을 검사기 ${versions.checker.id} · 설정 ${versions.configs.id}로 다시 판정 — LLM 호출 없음, 토큰·비용·지연은 원래 실행 값`,
     days,
   };
   let runFile: string | null = null;
@@ -980,10 +1000,10 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
   deps.print(
     [
       `[eval] 골든셋 ${days.length}/${set.days.length}일 · 변형 ${args.variant} · 지시문 ${promptId}(${evalSystemPrompt(system, args.variant).length}자 · ${promptRel}) · 검사기 ${versions.checker.id} · 설정 ${versions.configs.id} · ${deps.model} · ${args.llmMode}${args.dry ? " · dry(호출 없음)" : ""}`,
-      `[eval] 설정 D28 — 단건 · max_tokens ${requests[0]!.maxTokens} · thinking ${requests[0]!.thinking} · effort ${requests[0]!.effort} · 캐싱 끔 · 첫 시도만(FR-29 재시도 없음)`,
+      `[eval] 설정 D28 — 단건 · max_tokens ${requests[0]!.maxTokens} · thinking ${requests[0]!.thinking} · effort ${requests[0]!.effort} · 캐싱 끔 · 첫 시도만(FR-29 재시도 없음) · LLM 본문 경기 상한 ${BRIEF_LLM_MAX_MATCHES}(D51)`,
       ...days.map(
         (d, i) =>
-          `[eval]   ${d.date}  경기 ${String(d.input.matches.length).padStart(2)} · 입력 ${requests[i]!.user.length}자 · 입력 어림 ${inputEstimate[i]}토큰 · ${d.tags.join(",")}`,
+          `[eval]   ${d.date}  경기 ${String(d.input.matches.length).padStart(2)}(LLM 본문 ${briefLlmInput(d.input).input.matches.length}) · 입력 ${requests[i]!.user.length}자 · 입력 어림 ${inputEstimate[i]}토큰 · ${d.tags.join(",")}`,
       ),
     ].join("\n"),
   );
@@ -1072,6 +1092,7 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
             customId: request.customId,
             input: day.input,
             user: request.user,
+            hiddenRefs: evalHiddenRefs(day.input, BRIEF_LLM_MAX_MATCHES),
             response: result.ok
               ? {
                   ok: true,

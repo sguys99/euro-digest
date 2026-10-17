@@ -144,6 +144,8 @@ export type BriefWholeReason = "korean-ratio" | "han";
  */
 export type BriefLineReasonCode =
   | "ref-unknown"
+  /** 입력에는 있지만 모델이 보지 못한 근거 id(D51 — LLM 요청 본문에서 잘린 경기·순위, JudgeOptions.hiddenRefs) */
+  | "ref-hidden"
   | "newline"
   | "sentence-multi"
   | "sentence-form"
@@ -353,6 +355,8 @@ interface CheckModel {
   koRe: RegExp | null;
   /** 근거 id → 그 항목의 대상 key */
   refEntities: Map<string, Set<string>>;
+  /** 모델이 보지 못한 근거 id(D51) — 이 id를 단 줄은 강등 */
+  hidden: ReadonlySet<string>;
 }
 
 function escapeRegExp(text: string): string {
@@ -440,6 +444,7 @@ function koreanForms(
 function buildModel(
   input: BriefCheckInput,
   ctx: BriefCheckContext,
+  hidden: ReadonlySet<string> = new Set(),
 ): CheckModel {
   const index = ctx.names;
   const teamKey = (name: string): string => {
@@ -618,6 +623,7 @@ function buildModel(
     ko,
     koRe,
     refEntities,
+    hidden,
   };
 }
 
@@ -721,6 +727,8 @@ function warn(s: LineState, code: BriefLineWarnCode, detail?: string): void {
 function lineRefs(s: LineState): void {
   for (const r of s.refs) {
     if (!s.model.ids.has(r)) fail(s, "ref-unknown", r);
+    // 전체 입력에는 있어도 요청 본문에서 잘린 항목이면 모델이 볼 수 없던 사실이다(D51)
+    else if (s.model.hidden.has(r)) fail(s, "ref-hidden", r);
   }
 }
 
@@ -2027,14 +2035,16 @@ function checkWhole(
 }
 
 /**
- * 스키마를 통과한 줄(parseBriefOutput — 앞 5줄) → 출력 전체·줄별 판정(순수 함수). `input`은 LLM에 보낸 입력 그대로.
+ * 스키마를 통과한 줄(parseBriefOutput — 앞 5줄) → 출력 전체·줄별 판정(순수 함수). `input`은 전체 입력(득점자 입력 정리를 거친
+ * 빌더 출력 — 템플릿과 같은 근거)이고, 요청 본문에서 잘린 항목은 `options.hiddenRefs`로 알려 준다(D51).
  */
 export function checkBriefOutput(
   lines: readonly BriefOutputLine[],
   input: BriefCheckInput,
   ctx: BriefCheckContext,
+  options: Pick<JudgeOptions, "hiddenRefs"> = {},
 ): BriefCheckResult {
-  const model = buildModel(input, ctx);
+  const model = buildModel(input, ctx, options.hiddenRefs);
   const substitutions = substituteBriefLines(
     lines.map((l) => l.t),
     input,
@@ -2059,6 +2069,11 @@ export interface JudgeOptions {
    * 기본 false(첫 시도).
    */
   finalAttempt?: boolean;
+  /**
+   * 모델이 보지 못한 근거 id(D51 — brief-input.ts `briefLlmInput(input).hiddenRefs`). `input`은 전체 입력(템플릿과 같은 근거)이고, 이 id를
+   * 근거로 단 줄은 `ref-hidden`으로 강등한다. 없으면 입력 전체를 모델이 본 것으로 본다.
+   */
+  hiddenRefs?: ReadonlySet<string>;
 }
 
 /** 시도 번호(1부터) → 마지막 시도인가 */
@@ -2104,7 +2119,9 @@ export function judgeBriefResponse(
   const parsed = parseBriefOutput(response.text);
   if (!parsed.ok) return done(retry(), "zod", parsed.reason);
   const parse = { fenced: parsed.fenced, droppedLines: parsed.droppedLines };
-  const check = checkBriefOutput(parsed.lines, input, ctx);
+  const check = checkBriefOutput(parsed.lines, input, ctx, {
+    hiddenRefs: options.hiddenRefs,
+  });
   if (!check.whole.ok)
     return done(retry(), "whole", check.whole.reasons.join(","), check, parse);
   const failed = check.lines.filter((l) => !l.ok).map((l) => l.n);

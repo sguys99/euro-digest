@@ -18,7 +18,12 @@ import { createHash } from "node:crypto";
 
 import { z } from "zod";
 
-import type { BriefInput } from "./brief-input";
+import {
+  briefLlmInput,
+  BRIEF_LLM_MAX_MATCHES,
+  serializeBriefInput,
+  type BriefInput,
+} from "./brief-input";
 import {
   briefPromptId,
   buildBriefRequest,
@@ -71,10 +76,24 @@ export function evalSystemPrompt(system: string, variant: EvalVariant): string {
 export function evalUserMessage(
   input: BriefInput,
   variant: EvalVariant,
+  /** LLM 요청 본문 경기 상한(D51 — 기본 15). null이면 자르지 않는다(D51 이전 실행 재판정용) */
+  llmMaxMatches: number | null = BRIEF_LLM_MAX_MATCHES,
 ): string {
+  const sent =
+    llmMaxMatches === null ? input : briefLlmInput(input, llmMaxMatches).input;
   return variant === "pre"
-    ? JSON.stringify(withPrecomputedFacts(input))
-    : JSON.stringify(input);
+    ? JSON.stringify(withPrecomputedFacts(sent))
+    : serializeBriefInput(sent);
+}
+
+/** 모델이 보지 못한 근거 id(D51) — 상한이 없으면 빈 집합 */
+export function evalHiddenRefs(
+  input: BriefInput,
+  llmMaxMatches: number | null,
+): Set<string> {
+  return llmMaxMatches === null
+    ? new Set()
+    : briefLlmInput(input, llmMaxMatches).hiddenRefs;
 }
 
 /**
@@ -85,12 +104,17 @@ export function buildEvalRequest(
   day: { date: string; input: BriefInput },
   system: string,
   variant: EvalVariant,
+  llmMaxMatches: number = BRIEF_LLM_MAX_MATCHES,
 ): LlmRequest {
-  const base = buildBriefRequest(day.input, evalSystemPrompt(system, variant));
+  const base = buildBriefRequest(
+    day.input,
+    evalSystemPrompt(system, variant),
+    llmMaxMatches,
+  );
   return {
     ...base,
     customId: evalCustomId(day.date, variant),
-    user: evalUserMessage(day.input, variant),
+    user: evalUserMessage(day.input, variant, llmMaxMatches),
   };
 }
 
@@ -123,6 +147,8 @@ export const EvalLineSchema = z.strictObject({
   warnings: z.array(z.string()),
   /** 같은 근거의 템플릿 줄(줄 단위 강등 때 대신 들어갈 문장 — 비교용) */
   template: z.string().nullable(),
+  /** 검사기가 고른 문형(닫힌 문법 — 'win+korean', 문법 밖이면 null). D50 전 실행에는 없다 */
+  grammar: z.string().nullable().optional(),
 });
 export type EvalLine = z.infer<typeof EvalLineSchema>;
 
@@ -150,6 +176,8 @@ export const EvalDaySchema = z.strictObject({
   lineReasons: z.record(z.string(), z.array(z.string())),
   lineWarnings: z.record(z.string(), z.array(z.string())),
   lines: z.array(EvalLineSchema),
+  /** 모델이 보지 못한 근거 id(D51 — 요청 본문에서 잘린 경기·순위). D51 전 실행에는 없다 */
+  hiddenRefs: z.array(z.string()).optional(),
   /** 그날 입력의 템플릿 브리핑(전체 강등 때 게시될 문장 — 비교용) */
   template: z.array(z.string()),
 });
@@ -185,6 +213,8 @@ export const EvalRunSchema = z.strictObject({
   configs: z.strictObject({
     id: z.string().regex(/^g_[0-9a-f]{12}$/),
     files: z.array(z.string()).min(1),
+    /** LLM 요청 본문 경기 상한(D51 — id 해시에 들어간다). 없으면(D51 전 실행) 상한 없음(빌더 30) */
+    llmMaxMatches: z.number().int().positive().nullable().optional(),
   }),
   /** rejudge 실행의 원래 실행 라벨 */
   rejudgedFrom: z.string().optional(),
@@ -231,6 +261,8 @@ export interface EvalDayInput {
   response: EvalResponse;
   /** thinkingTokens를 모르면(mock·M0) null로 기록 */
   thinkingKnown: boolean;
+  /** 모델이 보지 못한 근거 id(D51 — evalHiddenRefs). 없으면 입력 전체를 본 것으로 판정 */
+  hiddenRefs?: ReadonlySet<string>;
   latencyMs: number | null;
   model: string;
 }
@@ -249,6 +281,7 @@ export function evalDayRecord(
     r.ok ? { ok: true, text: r.text } : { ok: false, errorType: r.errorType },
     day.input,
     ctx,
+    { hiddenRefs: day.hiddenRefs },
   );
   const fields = briefCheckLogFields(judgement);
   const tctx: BriefTemplateContext = {
@@ -273,6 +306,7 @@ export function evalDayRecord(
             warnings: lc.warnings.map(issueText),
             template:
               templateLineForRefs(day.input, line.r, tctx)?.text ?? null,
+            grammar: lc.grammar,
           };
         })
       : [];
@@ -296,6 +330,7 @@ export function evalDayRecord(
     lineReasons: fields.lineReasons,
     lineWarnings: fields.lineWarnings,
     lines,
+    ...(day.hiddenRefs ? { hiddenRefs: [...day.hiddenRefs] } : {}),
     template: templateBriefLines(day.input, tctx).map((l) => l.text),
   };
 }

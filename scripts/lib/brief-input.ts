@@ -68,6 +68,14 @@ export const BRIEF_INPUT_WINDOW: Readonly<KstWindow> = Object.freeze({
  */
 export const BRIEF_MAX_MATCHES = 30;
 
+/**
+ * **LLM 요청 본문**에 넣는 경기 수 상한(PRD §15 D51, 2026-10-17 사용자 결정) — 중요도 순 앞 15경기만 보낸다. 바쁜 날(23경기)
+ * v0.1 실측에서 출력(thinking 포함)이 `max_tokens` 4,096을 다 쓴 표본이 나왔다(M1-24 반복 실측 — 2,922 · 3,941(선계산 변형) ·
+ * 4,096 잘림). 5줄만 쓰는 브리핑이 앞쪽 15경기 밖을 쓸 일은 드물고, `max_tokens`·thinking·effort·호출 수(D28)는 그대로 둔다.
+ * 템플릿 줄·근거(refs) 대조·검사기 근거는 전체 입력(`BRIEF_MAX_MATCHES`) 기준이다 — `briefLlmInput`.
+ */
+export const BRIEF_LLM_MAX_MATCHES = 15;
+
 /** 순위표는 이 순위까지(공동 순위 포함) — M0-34 입력과 같은 범위(상위 4) */
 export const BRIEF_STANDINGS_TOP_POS = 4;
 
@@ -472,6 +480,53 @@ export function buildBriefInput(
     extraTime: kept.filter((r) => r.score.duration !== "REGULAR").length,
     standings: stats,
     goals: goalStats,
+  };
+}
+
+/** LLM 요청 본문 입력(D51) — 전체 입력에서 잘라 낸 것과 모델이 보지 못한 근거 id */
+export interface BriefLlmInput {
+  /** 요청 본문에 넣는 입력 — 경기는 중요도 순 앞 n개, 순위는 남은 경기의 대회만(입력 빌더와 같은 규칙) */
+  input: BriefInput;
+  /**
+   * 전체 입력에는 있지만 모델이 보지 못한 근거 id(잘린 경기 m… · 대회 경기가 모두 잘려 뺀 순위 s…). 검사기는 전체 입력으로 판정하되
+   * 이 id를 근거로 단 줄은 강등한다(`ref-hidden` — 모델이 보지 않은 사실은 쓸 수 없다, brief-check.ts JudgeOptions.hiddenRefs).
+   */
+  hiddenRefs: Set<string>;
+  dropped: { matches: number; standings: string[] };
+}
+
+/**
+ * 전체 입력 → LLM 요청 본문 입력(순수 함수, D51). 경기는 이미 중요도 순이라 앞에서 자른다. 순위는 남은 경기가 있는 대회만 남긴다 —
+ * 빌더가 입력 경기가 있는 대회의 순위만 넣는 규칙과 같고, 바쁜 날 입력 토큰을 줄인다. 상한 이하이면 그대로(복사) 돌려준다.
+ * 한국 선수 블록(M3-03)이 생기면 그 선수의 경기가 잘리지 않는지(중요도 +3으로 대개 앞쪽) 이 함수에서 확인할 것.
+ */
+export function briefLlmInput(
+  input: BriefInput,
+  maxMatches: number = BRIEF_LLM_MAX_MATCHES,
+): BriefLlmInput {
+  const cap = Math.max(1, Math.floor(maxMatches));
+  const matches = input.matches.slice(0, cap);
+  const comps = new Set(matches.map((m) => m.comp));
+  const standings = input.standings.filter((s) => comps.has(s.comp));
+  const keptIds = new Set([
+    ...matches.map((m) => m.id),
+    ...standings.map((s) => s.id),
+  ]);
+  const hiddenRefs = new Set(
+    [
+      ...input.matches.map((m) => m.id),
+      ...input.standings.map((s) => s.id),
+    ].filter((id) => !keptIds.has(id)),
+  );
+  return {
+    input: { ...input, matches, standings },
+    hiddenRefs,
+    dropped: {
+      matches: input.matches.length - matches.length,
+      standings: input.standings
+        .filter((s) => !comps.has(s.comp))
+        .map((s) => s.id),
+    },
   };
 }
 

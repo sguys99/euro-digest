@@ -636,6 +636,7 @@ describe("--rejudge · --prompt · 검사기 판", () => {
     expect(a.id).toMatch(/^c_[0-9a-f]{12}$/);
     expect(a.files).toContain("scripts/lib/brief-check.ts");
     expect(a.files).toContain("scripts/lib/brief-check-lexicon.ts");
+    expect(a.files).toContain("scripts/lib/brief-grammar.ts"); // 닫힌 문법(D50)
     expect(a.files).toContain("scripts/lib/names.ts");
   });
 

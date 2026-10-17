@@ -49,6 +49,7 @@ npm run eval:prompt -- --build-golden             # 빌더·configs가 바뀌었
 ```
 
 - 설정은 D28 그대로(단건·`max_tokens` 4,096·thinking 적응형·`effort` medium·캐싱 끔), 첫 시도만 보낸다(FR-29 재시도 없음).
+- 요청 본문은 파이프라인과 같이 **중요도 순 앞 15경기**(D51 — `briefLlmInput`, 그 대회 경기가 모두 잘린 순위도 뺀다)이고, 판정·템플릿은 전체 입력으로 한다. 잘린 근거 id를 단 줄은 `ref-hidden`으로 강등한다. 상한은 실행 기록 `configs.llmMaxMatches`(설정 판 해시에 포함)에 남고, 상한 기록이 없는 D51 전 실행은 `--rejudge`에서 자르지 않은 입력으로 다시 판정한다.
 - 실행 전에 비용 가드(`guardBriefBudget({env:"dev", requests, attempts:1})` — 일 $0.10·월 $3, prod+dev 합산)와 이번 달 dev 사용 알림(50%)이 돈다. 넘으면 부르지 않는다 — `--dates`로 나눠 실행한다.
 - 출력 토큰이 3,500을 넘는 날이 있으면 경고한다(D28 — 4,096 여유가 작다. 지시문 축소나 `max_tokens` 변경은 사용자 승인).
 

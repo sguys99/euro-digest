@@ -143,6 +143,7 @@ import {
 
 import {
   briefInputWindow,
+  briefLlmInput,
   buildBriefInput,
   mergeBriefDetails,
   serializeBriefInput,
@@ -3184,10 +3185,17 @@ async function runBriefStage(
     });
     return withInput({ state: "skipped", reason: "no-matches", inputMatches });
   }
+  // LLM 요청 본문 = 중요도 순 앞 15경기(D51 — 바쁜 날 출력 잘림 대응). 템플릿·검사기 근거는 전체 입력, 잘린 근거 id는 검사기가 강등
+  const llmView = briefLlmInput(input);
   if (deps.dry) {
     deps.print(
       `── [dry] 브리핑 입력 (경기 ${inputMatches}개, 기사 텍스트 없음)\n${serializeBriefInput(input)}`,
     );
+    if (llmView.dropped.matches > 0 || llmView.dropped.standings.length > 0) {
+      deps.print(
+        `── [dry] LLM 요청 본문은 앞 ${llmView.input.matches.length}경기(D51) — 잘린 경기 ${llmView.dropped.matches}개 · 뺀 순위 ${llmView.dropped.standings.join(",") || "없음"} (템플릿·검사기 근거는 전체)`,
+      );
+    }
   }
 
   // 설정 해석 · 요청 준비 · 비용 가드(M1-22 — live만, mock은 비용 0): 최악값(첫 호출 + FR-29 재시도, 출력 = max_tokens) 예상을
@@ -3287,6 +3295,7 @@ async function runBriefStage(
         { ok: false, errorType: result.errorType },
         input,
         checkCtx,
+        { hiddenRefs: llmView.hiddenRefs },
       ).label,
       ...usageFields,
     });
@@ -3334,6 +3343,7 @@ async function runBriefStage(
       { ok: true, text: result.text },
       input,
       checkCtx,
+      { hiddenRefs: llmView.hiddenRefs },
     );
     view = {
       judgement: judged,
@@ -3377,6 +3387,9 @@ async function runBriefStage(
   log.info("summarize.brief.done", {
     date: ctx.publishDate,
     matches: inputMatches,
+    // LLM 요청 본문 경기 수(D51 — 앞 15경기) · 잘린 경기 수
+    llmMatches: llmView.input.matches.length,
+    llmDroppedMatches: llmView.dropped.matches,
     lines: lines.length,
     prompt,
     fenced: parsed.fenced,

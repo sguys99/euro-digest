@@ -40,6 +40,7 @@ import {
 import { kstWindowRangeUtc } from "@/lib/time";
 
 import {
+  BRIEF_LLM_MAX_MATCHES,
   briefInputWindow,
   buildBriefInput,
   roundLabel,
@@ -1194,14 +1195,15 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
     // 지시문 = configs/prompts/summarize.md(M1-20 — M1-01 이월: 슬라이스 fixture 지시문에서 교체)
     expect(request.system).toBe(read(BRIEF_PROMPT_PATH).trim());
     // 기사 텍스트(제목·링크)는 브리핑 입력에 없다(D23·D24). 현재 순위는 입력 경기 대회의 확정 순위표(M1-19 — 중요도 순)
+    // LLM 요청 본문은 중요도 순 앞 15경기(D51) — 23경기 중 리그 1 경기는 모두 잘려 리그 1 순위(sL1)도 본문에서 빠진다(템플릿·검사기는 전체 입력)
     const user = JSON.parse(request.user) as BriefInput;
     expect(Object.keys(user)).toEqual(["briefDate", "matches", "standings"]);
+    expect(user.matches).toHaveLength(BRIEF_LLM_MAX_MATCHES);
     expect(user.standings.map((s) => s.id)).toEqual([
       "sBL",
       "sLL",
       "sPL",
       "sSA",
-      "sL1",
     ]);
     expect(request.user).not.toContain("bbc.co.uk");
     for (const card of outcome.news.file!.cards) {
