@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1, 변형 base, 지시문 p_8b26415c8ca6) — thinking 2849토큰, 지연 12983ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"Aston Villa가 Fenerbahçe를 6-0으로 완파했다.\",\"r\":[\"m575355\"]},{\"t\":\"PSG가 원정에서 Man City를 4-2로 꺾었다.\",\"r\":[\"m575353\"]},{\"t\":\"Real Madrid가 Roma 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.\",\"r\":[\"m575352\"]},{\"t\":\"Liverpool이 원정에서 LASK를 6-3으로 꺾었다.\",\"r\":[\"m575350\"]},{\"t\":\"Stuttgart가 Sl. Bratislava 원정에서 3-0으로 이기며 승점 6으로 4위에 자리했다.\",\"r\":[\"m575358\",\"sUCL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 5073,
+    "output_tokens": 3112,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "briefDate": "2026-09-19",
+  "results": [
+    {
+      "provider": "football-data",
+      "matchId": 565804,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-09-18T18:30:00Z",
+      "matchday": 4,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 5,
+        "name": "Bayern",
+        "fullName": "FC Bayern München"
+      },
+      "away": {
+        "id": 28,
+        "name": "Union Berlin",
+        "fullName": "1. FC Union Berlin"
+      },
+      "score": {
+        "ft": {
+          "home": 7,
+          "away": 0
+        },
+        "ht": {
+          "home": 3,
+          "away": 0
+        },
+        "regular": {
+          "home": 7,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 558596,
+      "comp": "SERIEA",
+      "kickoff": "2026-09-18T18:45:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 5911,
+        "name": "Monza",
+        "fullName": "AC Monza"
+      },
+      "away": {
+        "id": 471,
+        "name": "Sassuolo",
+        "fullName": "US Sassuolo Calcio"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 559682,
+      "comp": "LIGUE1",
+      "kickoff": "2026-09-18T18:45:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 548,
+        "name": "Monaco",
+        "fullName": "AS Monaco FC"
+      },
+      "away": {
+        "id": 546,
+        "name": "RC Lens",
+        "fullName": "Racing Club de Lens"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560591,
+      "comp": "EPL",
+      "kickoff": "2026-09-18T19:00:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 402,
+        "name": "Brentford",
+        "fullName": "Brentford FC"
+      },
+      "away": {
+        "id": 61,
+        "name": "Chelsea",
+        "fullName": "Chelsea FC"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564692,
+      "comp": "LALIGA",
+      "kickoff": "2026-09-18T19:00:00Z",
+      "matchday": 7,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 80,
+        "name": "Espanyol",
+        "fullName": "RCD Espanyol de Barcelona"
+      },
+      "away": {
+        "id": 285,
+        "name": "Elche",
+        "fullName": "Elche CF"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 3
+        },
+        "ht": {
+          "home": 0,
+          "away": 2
+        },
+        "regular": {
+          "home": 1,
+          "away": 3
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    }
+  ],
+  "standings": [
+    {
+      "comp": "EPL",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "REGULAR_SEASON",
+          "group": null,
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 57,
+                "name": "Arsenal",
+                "fullName": "Arsenal FC"
+              },
+              "played": 4,
+              "pts": 12,
+              "gd": 7
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 65,
+                "name": "Man City",
+                "fullName": "Manchester City FC"
+              },
+              "played": 4,
+              "pts": 12,
+              "gd": 6
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 402,
+                "name": "Brentford",
+                "fullName": "Brentford FC"
+              },
+              "played": 5,
+              "pts": 9,
+              "gd": 6
+            },
+            {
+              "pos": 4,
+              "team": {
+                "id": 341,
+                "name": "Leeds United",
+                "fullName": "Leeds United FC"
+              },
+              "played": 4,
+              "pts": 8,
+              "gd": 4
+            },
+            {
+              "pos": 7,
+              "team": {
+                "id": 61,
+                "name": "Chelsea",
+                "fullName": "Chelsea FC"
+              },
+              "played": 5,
+              "pts": 7,
+              "gd": -2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "fd": 565804,
+      "from": "api-football",
+      "af": 1575167,
+      "goals": [
+        {
+          "minute": 18,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 181812,
+            "name": "J. Musiala"
+          },
+          "assist": {
+            "id": 509,
+            "name": "A. Davies"
+          }
+        },
+        {
+          "minute": 39,
+          "extra": null,
+          "side": "home",
+          "kind": "penalty",
+          "scorer": {
+            "id": 184,
+            "name": "H. Kane"
+          },
+          "assist": null
+        },
+        {
+          "minute": 43,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 19617,
+            "name": "M. Olise"
+          },
+          "assist": {
+            "id": 181812,
+            "name": "J. Musiala"
+          }
+        },
+        {
+          "minute": 54,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 184,
+            "name": "H. Kane"
+          },
+          "assist": {
+            "id": 19617,
+            "name": "M. Olise"
+          }
+        },
+        {
+          "minute": 70,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 161897,
+            "name": "I. Saibari"
+          },
+          "assist": {
+            "id": 509,
+            "name": "A. Davies"
+          }
+        },
+        {
+          "minute": 73,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 19617,
+            "name": "M. Olise"
+          },
+          "assist": {
+            "id": 325975,
+            "name": "T. Bischof"
+          }
+        },
+        {
+          "minute": 76,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 19617,
+            "name": "M. Olise"
+          },
+          "assist": {
+            "id": 325975,
+            "name": "T. Bischof"
+          }
+        }
+      ],
+      "goalsComplete": true
+    }
+  ]
+}

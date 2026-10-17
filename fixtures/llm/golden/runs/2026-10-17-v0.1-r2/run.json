@@ -1,0 +1,273 @@
+{
+  "label": "2026-10-17-v0.1-r2",
+  "variant": "base",
+  "mode": "live",
+  "model": "claude-haiku-5-5",
+  "promptId": "p_8b26415c8ca6",
+  "prompt": "configs/prompts/summarize.md",
+  "promptChars": 4305,
+  "checker": {
+    "id": "c_c343ecd59d6a",
+    "files": [
+      "scripts/lib/brief-check-lexicon.ts",
+      "scripts/lib/brief-check.ts",
+      "scripts/lib/brief-template.ts",
+      "scripts/lib/brief.ts",
+      "scripts/lib/josa.ts",
+      "scripts/lib/names.ts"
+    ]
+  },
+  "configs": {
+    "id": "g_d1a3dc061c6a",
+    "files": [
+      "configs/competitions.json",
+      "configs/korean-players.json",
+      "configs/names.ko.json",
+      "configs/team-ids.json"
+    ]
+  },
+  "runId": "eval-dev-20261017T060246Z-3e4c",
+  "startedAt": "2026-10-17T06:02:46.982Z",
+  "finishedAt": "2026-10-17T06:03:31.091Z",
+  "settings": {
+    "maxTokens": 4096,
+    "thinking": "adaptive",
+    "effort": "medium",
+    "cacheSystem": false,
+    "attempts": 1
+  },
+  "days": [
+    {
+      "date": "2026-09-19",
+      "customId": "golden-2026-09-19",
+      "inputHash": "i_1b7881177134",
+      "matches": 5,
+      "userChars": 1528,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Michael Olise의 해트트릭을 앞세워 Bayern가 Union Berlin을 7-0으로 완파했다.\",\"r\":[\"m565804\"]},{\"t\":\"Brentford가 홈 경기에서 Chelsea를 3-0으로 완파했다.\",\"r\":[\"m560591\"]},{\"t\":\"Elche가 Espanyol 원정에서 3-1로 이겼다.\",\"r\":[\"m564692\"]},{\"t\":\"Monaco가 홈에서 RC Lens를 2-1로 눌렀다.\",\"r\":[\"m559682\"]},{\"t\":\"Monza는 Sassuolo를 2-1로 눌렀다.\",\"r\":[\"m558596\"]}]}",
+      "usage": {
+        "in": 5012,
+        "out": 2811,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 2571,
+      "latencyMs": 12461.123985,
+      "costUsd": 0.001907,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Michael Olise의 해트트릭을 앞세워 Bayern가 Union Berlin을 7-0으로 완파했다.",
+          "text": "마이클 올리세의 해트트릭을 앞세워 바이에른 뮌헨이 우니온 베를린을 7-0으로 완파했다.",
+          "refs": [
+            "m565804"
+          ],
+          "chars": 48,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바이에른 뮌헨이 분데스리가 홈경기에서 마이클 올리세의 해트트릭을 앞세워 우니온 베를린을 7-0으로 완파했다."
+        },
+        {
+          "n": 2,
+          "raw": "Brentford가 홈 경기에서 Chelsea를 3-0으로 완파했다.",
+          "text": "브렌트포드가 홈 경기에서 첼시를 3-0으로 완파했다.",
+          "refs": [
+            "m560591"
+          ],
+          "chars": 29,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "브렌트포드가 프리미어리그 홈경기에서 첼시를 3-0으로 완파했다."
+        },
+        {
+          "n": 3,
+          "raw": "Elche가 Espanyol 원정에서 3-1로 이겼다.",
+          "text": "엘체가 에스파뇰 원정에서 3-1로 이겼다.",
+          "refs": [
+            "m564692"
+          ],
+          "chars": 23,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "엘체가 라리가 원정에서 에스파뇰을 3-1로 꺾었다."
+        },
+        {
+          "n": 4,
+          "raw": "Monaco가 홈에서 RC Lens를 2-1로 눌렀다.",
+          "text": "모나코가 홈에서 랑스를 2-1로 눌렀다.",
+          "refs": [
+            "m559682"
+          ],
+          "chars": 22,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "모나코가 리그 1 홈경기에서 랑스를 2-1로 꺾었다."
+        },
+        {
+          "n": 5,
+          "raw": "Monza는 Sassuolo를 2-1로 눌렀다.",
+          "text": "몬차는 사수올로를 2-1로 눌렀다.",
+          "refs": [
+            "m558596"
+          ],
+          "chars": 19,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "몬차가 세리에 A 홈경기에서 사수올로를 2-1로 꺾었다."
+        }
+      ],
+      "template": [
+        "브렌트포드가 프리미어리그 홈경기에서 첼시를 3-0으로 완파했다.",
+        "바이에른 뮌헨이 분데스리가 홈경기에서 마이클 올리세의 해트트릭을 앞세워 우니온 베를린을 7-0으로 완파했다.",
+        "엘체가 라리가 원정에서 에스파뇰을 3-1로 꺾었다.",
+        "몬차가 세리에 A 홈경기에서 사수올로를 2-1로 꺾었다.",
+        "아스널이 승점 12로 프리미어리그 선두, 맨체스터 시티가 승점 12로 2위, 브렌트포드가 승점 9로 3위다."
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "customId": "golden-2026-10-11",
+      "inputHash": "i_70b50cedd942",
+      "matches": 23,
+      "userChars": 7945,
+      "ok": false,
+      "stopReason": null,
+      "errorType": "max_tokens",
+      "text": null,
+      "usage": {
+        "in": 8435,
+        "out": 4096,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 4095,
+      "latencyMs": 17252.358014,
+      "costUsd": 0.002892,
+      "verdict": "retry",
+      "stage": "transport",
+      "reason": "max_tokens",
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [],
+      "template": [
+        "바이에른 뮌헨이 분데스리가 원정에서 Nathaniel Brown의 동점골로 아우크스부르크와 2-2로 비겼다.",
+        "아틀레티코 마드리드가 라리가 원정에서 크리스티안 로메로의 87분 결승골로 알라베스를 2-1로 꺾었다.",
+        "토트넘이 프리미어리그 원정에서 도미닉 솔란케의 90+2분 동점골로 맨체스터 유나이티드와 1-1로 비겼다.",
+        "레버쿠젠이 분데스리가 원정에서 무사 디아비의 65분 결승골로 마인츠를 4-3으로 꺾었다.",
+        "도르트문트가 승점 13으로 분데스리가 선두, 바이에른 뮌헨이 승점 11로 2위다."
+      ]
+    },
+    {
+      "date": "2026-10-15",
+      "customId": "golden-2026-10-15",
+      "inputHash": "i_dd058de5de55",
+      "matches": 9,
+      "userChars": 1690,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Aston Villa가 Fenerbahçe를 6-0으로 완파했다.\",\"r\":[\"m575355\"]},{\"t\":\"Real Madrid가 Roma 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.\",\"r\":[\"m575352\"]},{\"t\":\"PSG가 원정에서 Man City를 4-2로 꺾고 승점 6으로 선두다.\",\"r\":[\"m575353\",\"sUCL\"]},{\"t\":\"Stuttgart가 Sl. Bratislava 원정에서 3-0으로 눌렀다.\",\"r\":[\"m575358\"]},{\"t\":\"Bodø/Glimt는 홈에서 Dortmund를 1-0으로 꺾었다.\",\"r\":[\"m575354\"]}]}",
+      "usage": {
+        "in": 5073,
+        "out": 2439,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 2174,
+      "latencyMs": 10161.505586000003,
+      "costUsd": 0.001727,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Aston Villa가 Fenerbahçe를 6-0으로 완파했다.",
+          "text": "애스턴 빌라가 페네르바체를 6-0으로 완파했다.",
+          "refs": [
+            "m575355"
+          ],
+          "chars": 26,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "애스턴 빌라가 UEFA 챔피언스리그 홈경기에서 페네르바체를 6-0으로 완파했다."
+        },
+        {
+          "n": 2,
+          "raw": "Real Madrid가 Roma 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "text": "레알 마드리드가 로마 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "refs": [
+            "m575352"
+          ],
+          "chars": 39,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "레알 마드리드가 UEFA 챔피언스리그 원정에서 로마를 4-3으로 꺾었다."
+        },
+        {
+          "n": 3,
+          "raw": "PSG가 원정에서 Man City를 4-2로 꺾고 승점 6으로 선두다.",
+          "text": "파리 생제르맹이 원정에서 맨체스터 시티를 4-2로 꺾고 승점 6으로 선두다.",
+          "refs": [
+            "m575353",
+            "sUCL"
+          ],
+          "chars": 42,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "파리 생제르맹이 UEFA 챔피언스리그 원정에서 맨체스터 시티를 4-2로 꺾었다."
+        },
+        {
+          "n": 4,
+          "raw": "Stuttgart가 Sl. Bratislava 원정에서 3-0으로 눌렀다.",
+          "text": "슈투트가르트가 슬로반 브라티슬라바 원정에서 3-0으로 눌렀다.",
+          "refs": [
+            "m575358"
+          ],
+          "chars": 34,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "슈투트가르트가 UEFA 챔피언스리그 원정에서 슬로반 브라티슬라바를 3-0으로 완파했다."
+        },
+        {
+          "n": 5,
+          "raw": "Bodø/Glimt는 홈에서 Dortmund를 1-0으로 꺾었다.",
+          "text": "보되/글림트는 홈에서 도르트문트를 1-0으로 꺾었다.",
+          "refs": [
+            "m575354"
+          ],
+          "chars": 29,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "보되/글림트가 UEFA 챔피언스리그 홈경기에서 도르트문트를 1-0으로 꺾었다."
+        }
+      ],
+      "template": [
+        "파리 생제르맹이 UEFA 챔피언스리그 원정에서 맨체스터 시티를 4-2로 꺾었다.",
+        "리버풀이 UEFA 챔피언스리그 원정에서 LASK를 6-3으로 완파했다.",
+        "레알 마드리드가 UEFA 챔피언스리그 원정에서 로마를 4-3으로 꺾었다.",
+        "보되/글림트가 UEFA 챔피언스리그 홈경기에서 도르트문트를 1-0으로 꺾었다.",
+        "파리 생제르맹이 승점 6으로 UEFA 챔피언스리그 선두, 바르셀로나가 승점 6으로 2위다."
+      ]
+    }
+  ]
+}

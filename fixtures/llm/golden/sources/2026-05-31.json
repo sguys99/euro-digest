@@ -1,0 +1,44 @@
+{
+  "briefDate": "2026-05-31",
+  "results": [
+    {
+      "provider": "football-data",
+      "matchId": 552096,
+      "comp": "UCL",
+      "kickoff": "2026-05-30T16:00:00Z",
+      "matchday": null,
+      "stage": "FINAL",
+      "home": {
+        "id": 524,
+        "name": "PSG",
+        "fullName": "Paris Saint-Germain FC"
+      },
+      "away": {
+        "id": 57,
+        "name": "Arsenal",
+        "fullName": "Arsenal FC"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 1,
+          "away": 1
+        },
+        "pens": {
+          "home": 4,
+          "away": 3
+        },
+        "duration": "PENALTY_SHOOTOUT"
+      }
+    }
+  ],
+  "standings": [],
+  "links": []
+}

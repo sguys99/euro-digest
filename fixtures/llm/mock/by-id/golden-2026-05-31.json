@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1, 변형 base, 지시문 p_8b26415c8ca6) — thinking 625토큰, 지연 3509ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"PSG가 UEFA Champions League 결승에서 Arsenal과 연장까지 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다.\",\"r\":[\"m552096\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 4335,
+    "output_tokens": 711,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

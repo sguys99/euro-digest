@@ -1,0 +1,242 @@
+{
+  "briefDate": "2026-09-21",
+  "matches": [
+    {
+      "id": "m564688",
+      "comp": "LaLiga",
+      "round": "Matchday 7",
+      "home": "Atleti",
+      "away": "Real Madrid",
+      "ft": "2-1",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m560590",
+      "comp": "Premier League",
+      "round": "Matchday 5",
+      "home": "Man City",
+      "away": "Sunderland",
+      "ft": "5-3",
+      "ht": "3-2",
+      "goals": null
+    },
+    {
+      "id": "m560582",
+      "comp": "Premier League",
+      "round": "Matchday 5",
+      "home": "Bournemouth",
+      "away": "Liverpool",
+      "ft": "0-1",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m560583",
+      "comp": "Premier League",
+      "round": "Matchday 5",
+      "home": "Fulham",
+      "away": "Man United",
+      "ft": "1-1",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m565805",
+      "comp": "Bundesliga",
+      "round": "Matchday 4",
+      "home": "Schalke",
+      "away": "Elversberg",
+      "ft": "0-0",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m558597",
+      "comp": "Serie A",
+      "round": "Matchday 5",
+      "home": "Milan",
+      "away": "Lecce",
+      "ft": "3-0",
+      "ht": "1-0",
+      "goals": null
+    },
+    {
+      "id": "m558591",
+      "comp": "Serie A",
+      "round": "Matchday 5",
+      "home": "Fiorentina",
+      "away": "Napoli",
+      "ft": "1-1",
+      "ht": "0-1",
+      "goals": null
+    },
+    {
+      "id": "m558595",
+      "comp": "Serie A",
+      "round": "Matchday 5",
+      "home": "Juventus",
+      "away": "Atalanta",
+      "ft": "2-0",
+      "ht": "1-0",
+      "goals": null
+    },
+    {
+      "id": "m560585",
+      "comp": "Premier League",
+      "round": "Matchday 5",
+      "home": "Leeds United",
+      "away": "Crystal Palace",
+      "ft": "0-0",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m559675",
+      "comp": "Ligue 1",
+      "round": "Matchday 5",
+      "home": "Marseille",
+      "away": "PSG",
+      "ft": "1-2",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m564689",
+      "comp": "LaLiga",
+      "round": "Matchday 7",
+      "home": "Valencia",
+      "away": "Real Sociedad",
+      "ft": "2-3",
+      "ht": "0-1",
+      "goals": null
+    },
+    {
+      "id": "m564697",
+      "comp": "LaLiga",
+      "round": "Matchday 7",
+      "home": "Getafe",
+      "away": "Málaga",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m558590",
+      "comp": "Serie A",
+      "round": "Matchday 5",
+      "home": "Parma",
+      "away": "Genoa",
+      "ft": "2-1",
+      "ht": "1-0",
+      "goals": null
+    },
+    {
+      "id": "m558592",
+      "comp": "Serie A",
+      "round": "Matchday 5",
+      "home": "Frosinone",
+      "away": "Como 1907",
+      "ft": "2-0",
+      "ht": "2-0",
+      "goals": null
+    },
+    {
+      "id": "m565807",
+      "comp": "Bundesliga",
+      "round": "Matchday 4",
+      "home": "Leverkusen",
+      "away": "RB Leipzig",
+      "ft": "2-0",
+      "ht": "1-0",
+      "goals": null
+    },
+    {
+      "id": "m564695",
+      "comp": "LaLiga",
+      "round": "Matchday 7",
+      "home": "Deportivo",
+      "away": "Real Betis",
+      "ft": "1-1",
+      "ht": "0-1",
+      "goals": null
+    },
+    {
+      "id": "m564696",
+      "comp": "LaLiga",
+      "round": "Matchday 7",
+      "home": "Villarreal",
+      "away": "Levante",
+      "ft": "3-1",
+      "ht": "1-1",
+      "goals": null
+    },
+    {
+      "id": "m565803",
+      "comp": "Bundesliga",
+      "round": "Matchday 4",
+      "home": "SC Paderborn",
+      "away": "Hoffenheim",
+      "ft": "3-1",
+      "ht": "2-0",
+      "goals": null
+    },
+    {
+      "id": "m559676",
+      "comp": "Ligue 1",
+      "round": "Matchday 5",
+      "home": "Auxerre",
+      "away": "Brest",
+      "ft": "2-1",
+      "ht": "0-1",
+      "goals": null
+    },
+    {
+      "id": "m559678",
+      "comp": "Ligue 1",
+      "round": "Matchday 5",
+      "home": "Nice",
+      "away": "Lille",
+      "ft": "2-1",
+      "ht": "1-0",
+      "goals": null
+    }
+  ],
+  "standings": [
+    {
+      "id": "sPL",
+      "comp": "Premier League",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Man City",
+          "played": 5,
+          "pts": 15,
+          "gd": 8
+        },
+        {
+          "pos": 2,
+          "team": "Arsenal",
+          "played": 5,
+          "pts": 12,
+          "gd": 4
+        },
+        {
+          "pos": 3,
+          "team": "Brighton Hove",
+          "played": 5,
+          "pts": 10,
+          "gd": 11
+        },
+        {
+          "pos": 4,
+          "team": "Brentford",
+          "played": 5,
+          "pts": 9,
+          "gd": 6
+        }
+      ]
+    }
+  ]
+}

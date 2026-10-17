@@ -1,0 +1,19 @@
+{
+  "briefDate": "2026-05-31",
+  "matches": [
+    {
+      "id": "m552096",
+      "comp": "UEFA Champions League",
+      "round": "FINAL",
+      "home": "PSG",
+      "away": "Arsenal",
+      "ft": "1-1",
+      "ht": "0-1",
+      "aet": true,
+      "regular": "1-1",
+      "pens": "4-3",
+      "goals": null
+    }
+  ],
+  "standings": []
+}

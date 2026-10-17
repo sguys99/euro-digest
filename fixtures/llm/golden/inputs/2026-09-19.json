@@ -1,0 +1,135 @@
+{
+  "briefDate": "2026-09-19",
+  "matches": [
+    {
+      "id": "m560591",
+      "comp": "Premier League",
+      "round": "Matchday 5",
+      "home": "Brentford",
+      "away": "Chelsea",
+      "ft": "3-0",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m565804",
+      "comp": "Bundesliga",
+      "round": "Matchday 4",
+      "home": "Bayern",
+      "away": "Union Berlin",
+      "ft": "7-0",
+      "ht": "3-0",
+      "goals": [
+        {
+          "min": "18",
+          "team": "Bayern",
+          "player": "Jamal Musiala",
+          "assist": "Alphonso Davies"
+        },
+        {
+          "min": "39",
+          "team": "Bayern",
+          "player": "Harry Kane",
+          "type": "penalty"
+        },
+        {
+          "min": "43",
+          "team": "Bayern",
+          "player": "Michael Olise",
+          "assist": "Jamal Musiala"
+        },
+        {
+          "min": "54",
+          "team": "Bayern",
+          "player": "Harry Kane",
+          "assist": "Michael Olise"
+        },
+        {
+          "min": "70",
+          "team": "Bayern",
+          "player": "I. Saibari",
+          "assist": "Alphonso Davies"
+        },
+        {
+          "min": "73",
+          "team": "Bayern",
+          "player": "Michael Olise",
+          "assist": "T. Bischof"
+        },
+        {
+          "min": "76",
+          "team": "Bayern",
+          "player": "Michael Olise",
+          "assist": "T. Bischof"
+        }
+      ]
+    },
+    {
+      "id": "m564692",
+      "comp": "LaLiga",
+      "round": "Matchday 7",
+      "home": "Espanyol",
+      "away": "Elche",
+      "ft": "1-3",
+      "ht": "0-2",
+      "goals": null
+    },
+    {
+      "id": "m558596",
+      "comp": "Serie A",
+      "round": "Matchday 5",
+      "home": "Monza",
+      "away": "Sassuolo",
+      "ft": "2-1",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m559682",
+      "comp": "Ligue 1",
+      "round": "Matchday 5",
+      "home": "Monaco",
+      "away": "RC Lens",
+      "ft": "2-1",
+      "ht": "1-0",
+      "goals": null
+    }
+  ],
+  "standings": [
+    {
+      "id": "sPL",
+      "comp": "Premier League",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Arsenal",
+          "played": 4,
+          "pts": 12,
+          "gd": 7
+        },
+        {
+          "pos": 2,
+          "team": "Man City",
+          "played": 4,
+          "pts": 12,
+          "gd": 6
+        },
+        {
+          "pos": 3,
+          "team": "Brentford",
+          "played": 5,
+          "pts": 9,
+          "gd": 6
+        },
+        {
+          "pos": 4,
+          "team": "Leeds United",
+          "played": 4,
+          "pts": 8,
+          "gd": 4
+        }
+      ]
+    }
+  ]
+}

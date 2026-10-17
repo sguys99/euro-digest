@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1-pre, 변형 pre, 지시문 p_d623440fce54) — thinking 3619토큰, 지연 16433ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"Christopher Nkunku의 해트트릭을 앞세워 RB Leipzig가 Frankfurt를 6-0으로 완파했다.\",\"r\":[\"m565815\"]},{\"t\":\"Bruno Guimarães의 70분 결승골로 Arsenal이 Leeds United를 2-1로 꺾고 역전승을 거뒀다.\",\"r\":[\"m560593\"]},{\"t\":\"Leverkusen이 Mainz 원정에서 Moussa Diaby의 65분 결승골로 4-3 승리를 거뒀다.\",\"r\":[\"m565812\"]},{\"t\":\"Atleti가 Alavés 원정에서 Cristian Romero의 87분 결승골로 2-1 승리를 거뒀다.\",\"r\":[\"m564699\"]},{\"t\":\"Barça는 Getafe를 3-0으로 꺾고 승점 24로 선두다.\",\"r\":[\"m564700\",\"sLL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 9441,
+    "output_tokens": 3941,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

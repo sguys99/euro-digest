@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1, 변형 base, 지시문 p_8b26415c8ca6) — thinking 1971토큰, 지연 8947ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"Bayern이 홈에서 Bodø/Glimt를 5-0으로 완파했다.\",\"r\":[\"m575337\"]},{\"t\":\"Man United는 홈에서 Sabah FK를 4-0으로 눌렀다.\",\"r\":[\"m575338\"]},{\"t\":\"Como 1907이 홈에서 RB Leipzig를 4-1로 꺾었다.\",\"r\":[\"m575339\"]},{\"t\":\"RC Lens가 Slavia Praha 원정에서 3-2로 이겼다.\",\"r\":[\"m575340\"]},{\"t\":\"PSG는 승점 3으로 선두다.\",\"r\":[\"sUCL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 4851,
+    "output_tokens": 2197,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

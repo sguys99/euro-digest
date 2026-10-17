@@ -1,0 +1,256 @@
+{
+  "briefDate": "2026-10-17",
+  "matches": [
+    {
+      "id": "m558573",
+      "comp": "Serie A",
+      "round": "Matchday 7",
+      "home": "Frosinone",
+      "away": "Sassuolo",
+      "ft": "4-2",
+      "ht": "3-2",
+      "goals": [
+        {
+          "min": "9",
+          "team": "Frosinone",
+          "player": "Giacomo Calò"
+        },
+        {
+          "min": "15",
+          "team": "Sassuolo",
+          "player": "Domenico Berardi",
+          "assist": "Darryl Bakola"
+        },
+        {
+          "min": "26",
+          "team": "Frosinone",
+          "player": "Antonio Raimondo"
+        },
+        {
+          "min": "30",
+          "team": "Frosinone",
+          "player": "Antonio Raimondo"
+        },
+        {
+          "min": "37",
+          "team": "Sassuolo",
+          "player": "Kristian Thorstvedt"
+        },
+        {
+          "min": "57",
+          "team": "Frosinone",
+          "player": "Antonio Raimondo"
+        }
+      ]
+    },
+    {
+      "id": "m565828",
+      "comp": "Bundesliga",
+      "round": "Matchday 6",
+      "home": "Frankfurt",
+      "away": "1. FC Köln",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "77",
+          "team": "Frankfurt",
+          "player": "Younes Ebnoutalib",
+          "assist": "Noel Aseko"
+        }
+      ]
+    },
+    {
+      "id": "m559661",
+      "comp": "Ligue 1",
+      "round": "Matchday 7",
+      "home": "Le Mans",
+      "away": "Toulouse",
+      "ft": "0-3",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "46",
+          "team": "Toulouse",
+          "player": "Jacen Russell-Rowe",
+          "assist": "Aron Dønnum"
+        },
+        {
+          "min": "59",
+          "team": "Toulouse",
+          "player": "Aron Dønnum"
+        },
+        {
+          "min": "87",
+          "team": "Toulouse",
+          "player": "Casper Tengstedt",
+          "assist": "Cristian Casseres"
+        }
+      ]
+    },
+    {
+      "id": "m564716",
+      "comp": "LaLiga",
+      "round": "Matchday 9",
+      "home": "Deportivo",
+      "away": "Levante",
+      "ft": "1-1",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "63",
+          "team": "Deportivo",
+          "player": "Bil Nsongo"
+        },
+        {
+          "min": "82",
+          "team": "Levante",
+          "player": "Daniel Requena Sánchez",
+          "assist": "Petar Ratkov"
+        }
+      ]
+    }
+  ],
+  "standings": [
+    {
+      "id": "sSA",
+      "comp": "Serie A",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Inter",
+          "played": 6,
+          "pts": 16,
+          "gd": 10
+        },
+        {
+          "pos": 2,
+          "team": "Lazio",
+          "played": 6,
+          "pts": 16,
+          "gd": 7
+        },
+        {
+          "pos": 3,
+          "team": "Roma",
+          "played": 6,
+          "pts": 14,
+          "gd": 11
+        },
+        {
+          "pos": 4,
+          "team": "Frosinone",
+          "played": 7,
+          "pts": 13,
+          "gd": 4
+        }
+      ]
+    },
+    {
+      "id": "sBL",
+      "comp": "Bundesliga",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Freiburg",
+          "played": 5,
+          "pts": 13,
+          "gd": 10
+        },
+        {
+          "pos": 2,
+          "team": "Dortmund",
+          "played": 5,
+          "pts": 13,
+          "gd": 7
+        },
+        {
+          "pos": 3,
+          "team": "Bayern",
+          "played": 5,
+          "pts": 11,
+          "gd": 12
+        },
+        {
+          "pos": 4,
+          "team": "Leverkusen",
+          "played": 5,
+          "pts": 10,
+          "gd": 6
+        }
+      ]
+    },
+    {
+      "id": "sL1",
+      "comp": "Ligue 1",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Monaco",
+          "played": 6,
+          "pts": 14,
+          "gd": 5
+        },
+        {
+          "pos": 2,
+          "team": "Lille",
+          "played": 6,
+          "pts": 13,
+          "gd": 5
+        },
+        {
+          "pos": 3,
+          "team": "Stade Rennais",
+          "played": 6,
+          "pts": 13,
+          "gd": 2
+        },
+        {
+          "pos": 4,
+          "team": "Olympique Lyon",
+          "played": 6,
+          "pts": 11,
+          "gd": 7
+        }
+      ]
+    },
+    {
+      "id": "sLL",
+      "comp": "LaLiga",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Barça",
+          "played": 8,
+          "pts": 24,
+          "gd": 27
+        },
+        {
+          "pos": 2,
+          "team": "Atleti",
+          "played": 8,
+          "pts": 19,
+          "gd": 10
+        },
+        {
+          "pos": 3,
+          "team": "Real Betis",
+          "played": 8,
+          "pts": 19,
+          "gd": 5
+        },
+        {
+          "pos": 4,
+          "team": "Real Madrid",
+          "played": 8,
+          "pts": 18,
+          "gd": 11
+        }
+      ]
+    }
+  ]
+}

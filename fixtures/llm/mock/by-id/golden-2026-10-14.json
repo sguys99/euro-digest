@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1, 변형 base, 지시문 p_8b26415c8ca6) — thinking 1362토큰, 지연 7064ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"Barça가 Galatasaray 원정에서 4-1로 완파했다.\",\"r\":[\"m575344\"]},{\"t\":\"Club Brugge가 Inter 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.\",\"r\":[\"m575343\"]},{\"t\":\"Arsenal이 Lille을 3-0으로 완파했다.\",\"r\":[\"m575346\"]},{\"t\":\"Atleti가 Man United를 2-0으로 꺾었다.\",\"r\":[\"m575345\"]},{\"t\":\"Viking과 Bayern은 6골이 터진 3-3 무승부를 기록했다.\",\"r\":[\"m575347\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 4887,
+    "output_tokens": 1592,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

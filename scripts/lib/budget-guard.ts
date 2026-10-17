@@ -278,7 +278,11 @@ export async function guardBriefBudget(
 
 /** 실행 전 출력 문구(CLAUDE.md §6.3) — 최악값 예상·오늘/이번 달 사용률·판정. 여러 줄, 끝 개행 없음 */
 export function formatBriefBudget(decision: BriefBudgetDecision): string {
-  const note = `최악값 — 요청마다 첫 호출 + FR-29 재시도, 출력 = max_tokens`;
+  // attempts 1(골든셋 eval:prompt — 재시도 없음, M1-24)이면 재시도를 세지 않는다
+  const note =
+    decision.attempts > 1
+      ? `최악값 — 요청마다 첫 호출 + FR-29 재시도, 출력 = max_tokens`
+      : `최악값 — 요청마다 1회(재시도 없음), 출력 = max_tokens`;
   if (decision.check) {
     return formatEstimate(decision.estimate, decision.check, note);
   }

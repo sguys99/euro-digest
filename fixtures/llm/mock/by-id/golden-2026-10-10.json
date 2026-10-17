@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1, 변형 base, 지시문 p_8b26415c8ca6) — thinking 2311토큰, 지연 10706ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"Dortmund는 Bremen과 2-2로 비겼지만 Bremen의 Niclas Füllkrug가 90+2분 동점골을 넣었다.\",\"r\":[\"m565820\"]},{\"t\":\"RC Lens가 홈에서 Olympique Lyon을 2-1로 꺾었다.\",\"r\":[\"m559669\"]},{\"t\":\"Málaga는 홈에서 Espanyol과 1-1로 비겼다.\",\"r\":[\"m564706\"]},{\"t\":\"Dortmund는 Bundesliga 선두다.\",\"r\":[\"sBL\"]},{\"t\":\"Monaco는 Ligue 1 선두다.\",\"r\":[\"sL1\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 4936,
+    "output_tokens": 2548,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

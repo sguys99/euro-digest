@@ -26,6 +26,7 @@ mock/
 | `brief-YYYY-MM-DD` | **발행일(KST) 정상 응답** — 그날 입력 `brief-inputs/YYYY-MM-DD.json`(briefDate)에 대한 실제 모델 출력. M1-45가 발행일로 customId를 만들면 mock 실행이 이 파일을 찾는다. 날짜 형식 id는 이 용도로만 쓴다(실패 사례에 날짜를 넣지 않는다). |
 | `brief-YYYY-MM-DD-r1` | 예약(아직 없음) — 재시도 응답. M1-45가 재시도 customId를 이렇게 정하면 "재시도 뒤 성공" 경로를 fixture로 시험할 수 있다. |
 | `brief-case-<유형>` | 실패·경계 사례. 날짜가 없어 발행일 id와 겹치지 않는다. 같은 유형의 두 번째는 `-2`. |
+| `golden-YYYY-MM-DD` · `golden-pre-YYYY-MM-DD` | 골든셋(`golden/` — M1-24) 실측 응답. `npm run eval:prompt` live 실행의 `--update-mock`이 쓰고 `--mock`이 재생한다(base = 지시문 v0.1, pre = 🧪 사실 선계산 변형). note에 실행 라벨·지시문 판·thinking·지연 |
 
 단건 호출의 customId는 API로 보내지 않는다(mock 조회·로그에만 쓰인다). 형식 제약은 배치와 같은 `^[a-zA-Z0-9_-]{1,64}$`.
 
@@ -70,8 +71,10 @@ mock/
 | `brief-cases.json` | 브리핑 mock 기대 판정 표 — 케이스별 원천 입력·단계·FR-29 판정·줄별 근거 (M0-36) |
 | `brief-check-probes.json` | 사실성 검사기 회귀 문장 158개(거짓 112 · 참 46) — M1-23 리뷰가 찾은 미탐(결과 동사 동의어·경기 중 점수 방향·숫자 없는 득점·도움·자책골·종류 모르는 숫자·prev 없는 순위 변동 동의어·장소·소속·대회)과 같은 입력의 참 문장. 사람이 쓴 시험 문장이다(LLM 출력 아님) — `tests/brief-check.test.ts` (M1-23) |
 | `brief-inputs/` | 브리핑 정형 입력 6일치(M0-30 A~D · M0-34 E·F) + E 메타 + 임시 프롬프트 2개 + 임시 고유명사 사전 (M0-36, M1-24 골든셋 씨앗) |
+| `golden/` | 브리핑 골든셋 10일치 — 소스·확정 빌더 입력·실행 기록(`golden/README.md`, M1-24) |
+| `mock/by-id/golden-*.json` (20개) | 골든셋 실측 응답 — v0.1 10개 + 🧪 pre 변형 10개(2026-10-17, M1-24) |
 
-골든셋(`golden/` — 브리핑 입력 10일치, `npm run eval:prompt`)은 M1-24에서 추가한다(`brief-inputs/`가 출발점). 기사 텍스트(본문·제목·설명)·이미지·비밀값은 넣지 않는다.
+골든셋(`golden/` — 브리핑 입력 10일치, `npm run eval:prompt`)은 M1-24에서 추가했다(`brief-inputs/` 5일 + football-data·API-Football 실응답 5일 — `golden/README.md`). 기사 텍스트(본문·제목·설명)·이미지·비밀값은 넣지 않는다.
 
 ## 브리핑 mock 케이스 (M0-36)
 

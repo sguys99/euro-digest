@@ -1,0 +1,313 @@
+{
+  "briefDate": "2026-10-14",
+  "results": [
+    {
+      "provider": "football-data",
+      "matchId": 575341,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T16:45:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 546,
+        "name": "RC Lens",
+        "fullName": "Racing Club de Lens"
+      },
+      "away": {
+        "id": 498,
+        "name": "Sporting CP",
+        "fullName": "Sporting Clube de Portugal"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 2
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 0,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575342,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T16:45:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 10233,
+        "name": "Sabah FK",
+        "fullName": "Sabah FK"
+      },
+      "away": {
+        "id": 930,
+        "name": "Slavia Praha",
+        "fullName": "SK Slavia Praha"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575343,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 108,
+        "name": "Inter",
+        "fullName": "FC Internazionale Milano"
+      },
+      "away": {
+        "id": 851,
+        "name": "Club Brugge",
+        "fullName": "Club Brugge KV"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 4
+        },
+        "ht": {
+          "home": 1,
+          "away": 1
+        },
+        "regular": {
+          "home": 3,
+          "away": 4
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575344,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 610,
+        "name": "Galatasaray",
+        "fullName": "Galatasaray SK"
+      },
+      "away": {
+        "id": 81,
+        "name": "Barça",
+        "fullName": "FC Barcelona"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 4
+        },
+        "ht": {
+          "home": 1,
+          "away": 1
+        },
+        "regular": {
+          "home": 1,
+          "away": 4
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575345,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 78,
+        "name": "Atleti",
+        "fullName": "Club Atlético de Madrid"
+      },
+      "away": {
+        "id": 66,
+        "name": "Man United",
+        "fullName": "Manchester United FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575346,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 57,
+        "name": "Arsenal",
+        "fullName": "Arsenal FC"
+      },
+      "away": {
+        "id": 521,
+        "name": "Lille",
+        "fullName": "Lille OSC"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575347,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 5720,
+        "name": "Viking",
+        "fullName": "Viking FK"
+      },
+      "away": {
+        "id": 5,
+        "name": "Bayern",
+        "fullName": "FC Bayern München"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 3
+        },
+        "ht": {
+          "home": 2,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 3
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575348,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 721,
+        "name": "RB Leipzig",
+        "fullName": "RB Leipzig"
+      },
+      "away": {
+        "id": 674,
+        "name": "PSV",
+        "fullName": "PSV"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 1,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575349,
+      "comp": "UCL",
+      "kickoff": "2026-10-13T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 94,
+        "name": "Villarreal",
+        "fullName": "Villarreal CF"
+      },
+      "away": {
+        "id": 113,
+        "name": "Napoli",
+        "fullName": "SSC Napoli"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 1
+        },
+        "ht": {
+          "home": 2,
+          "away": 1
+        },
+        "regular": {
+          "home": 3,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    }
+  ],
+  "standings": [],
+  "links": []
+}

@@ -1,0 +1,902 @@
+{
+  "briefDate": "2026-10-15",
+  "results": [
+    {
+      "provider": "football-data",
+      "matchId": 575350,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T16:45:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 2016,
+        "name": "LASK",
+        "fullName": "LASK Linz"
+      },
+      "away": {
+        "id": 64,
+        "name": "Liverpool",
+        "fullName": "Liverpool FC"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 6
+        },
+        "ht": {
+          "home": 0,
+          "away": 3
+        },
+        "regular": {
+          "home": 3,
+          "away": 6
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575351,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T16:45:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 675,
+        "name": "Feyenoord",
+        "fullName": "Feyenoord Rotterdam"
+      },
+      "away": {
+        "id": 7397,
+        "name": "Como 1907",
+        "fullName": "Como 1907"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 2
+        },
+        "ht": {
+          "home": 1,
+          "away": 1
+        },
+        "regular": {
+          "home": 3,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575352,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 100,
+        "name": "Roma",
+        "fullName": "AS Roma"
+      },
+      "away": {
+        "id": 86,
+        "name": "Real Madrid",
+        "fullName": "Real Madrid CF"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 4
+        },
+        "ht": {
+          "home": 1,
+          "away": 1
+        },
+        "regular": {
+          "home": 3,
+          "away": 4
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575353,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 65,
+        "name": "Man City",
+        "fullName": "Manchester City FC"
+      },
+      "away": {
+        "id": 524,
+        "name": "PSG",
+        "fullName": "Paris Saint-Germain FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 4
+        },
+        "ht": {
+          "home": 0,
+          "away": 3
+        },
+        "regular": {
+          "home": 2,
+          "away": 4
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575354,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 5721,
+        "name": "Bodø/Glimt",
+        "fullName": "FK Bodø/Glimt"
+      },
+      "away": {
+        "id": 4,
+        "name": "Dortmund",
+        "fullName": "Borussia Dortmund"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 1,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575355,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 58,
+        "name": "Aston Villa",
+        "fullName": "Aston Villa FC"
+      },
+      "away": {
+        "id": 613,
+        "name": "Fenerbahçe",
+        "fullName": "Fenerbahçe SK"
+      },
+      "score": {
+        "ft": {
+          "home": 6,
+          "away": 0
+        },
+        "ht": {
+          "home": 3,
+          "away": 0
+        },
+        "regular": {
+          "home": 6,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575356,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 90,
+        "name": "Real Betis",
+        "fullName": "Real Betis Balompié"
+      },
+      "away": {
+        "id": 503,
+        "name": "Porto",
+        "fullName": "FC Porto"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 2
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575357,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 1887,
+        "name": "Shaktar",
+        "fullName": "FK Shakhtar Donetsk"
+      },
+      "away": {
+        "id": 1899,
+        "name": "PAE AEK",
+        "fullName": "PAE AEK"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 1
+        },
+        "regular": {
+          "home": 3,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 575358,
+      "comp": "UCL",
+      "kickoff": "2026-10-14T19:00:00Z",
+      "matchday": 2,
+      "stage": "LEAGUE_STAGE",
+      "home": {
+        "id": 7509,
+        "name": "Sl. Bratislava",
+        "fullName": "ŠK Slovan Bratislava"
+      },
+      "away": {
+        "id": 10,
+        "name": "Stuttgart",
+        "fullName": "VfB Stuttgart"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 3
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 0,
+          "away": 3
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    }
+  ],
+  "standings": [
+    {
+      "comp": "UCL",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "LEAGUE_STAGE",
+          "group": "League phase",
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 524,
+                "name": "PSG",
+                "fullName": "Paris Saint-Germain FC"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 7,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 10,
+              "ga": 3
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 81,
+                "name": "Barça",
+                "fullName": "FC Barcelona"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 7,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 9,
+              "ga": 2
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 58,
+                "name": "Aston Villa",
+                "fullName": "Aston Villa FC"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 7,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 9,
+              "ga": 2
+            },
+            {
+              "pos": 4,
+              "team": {
+                "id": 10,
+                "name": "Stuttgart",
+                "fullName": "VfB Stuttgart"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 5,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 6,
+              "ga": 1
+            },
+            {
+              "pos": 5,
+              "team": {
+                "id": 64,
+                "name": "Liverpool",
+                "fullName": "Liverpool FC"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 4,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 8,
+              "ga": 4
+            },
+            {
+              "pos": 6,
+              "team": {
+                "id": 498,
+                "name": "Sporting CP",
+                "fullName": "Sporting Clube de Portugal"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 4,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 5,
+              "ga": 1
+            },
+            {
+              "pos": 7,
+              "team": {
+                "id": 57,
+                "name": "Arsenal",
+                "fullName": "Arsenal FC"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 4,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 4,
+              "ga": 0
+            },
+            {
+              "pos": 8,
+              "team": {
+                "id": 86,
+                "name": "Real Madrid",
+                "fullName": "Real Madrid CF"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 2,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 6,
+              "ga": 4
+            },
+            {
+              "pos": 9,
+              "team": {
+                "id": 90,
+                "name": "Real Betis",
+                "fullName": "Real Betis Balompié"
+              },
+              "played": 2,
+              "pts": 6,
+              "gd": 2,
+              "w": 2,
+              "d": 0,
+              "l": 0,
+              "gf": 6,
+              "ga": 4
+            },
+            {
+              "pos": 10,
+              "team": {
+                "id": 5,
+                "name": "Bayern",
+                "fullName": "FC Bayern München"
+              },
+              "played": 2,
+              "pts": 4,
+              "gd": 5,
+              "w": 1,
+              "d": 1,
+              "l": 0,
+              "gf": 8,
+              "ga": 3
+            },
+            {
+              "pos": 11,
+              "team": {
+                "id": 1887,
+                "name": "Shaktar",
+                "fullName": "FK Shakhtar Donetsk"
+              },
+              "played": 2,
+              "pts": 4,
+              "gd": 2,
+              "w": 1,
+              "d": 1,
+              "l": 0,
+              "gf": 4,
+              "ga": 2
+            },
+            {
+              "pos": 12,
+              "team": {
+                "id": 7397,
+                "name": "Como 1907",
+                "fullName": "Como 1907"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": 2,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 6,
+              "ga": 4
+            },
+            {
+              "pos": 13,
+              "team": {
+                "id": 66,
+                "name": "Man United",
+                "fullName": "Manchester United FC"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": 2,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 4,
+              "ga": 2
+            },
+            {
+              "pos": 14,
+              "team": {
+                "id": 94,
+                "name": "Villarreal",
+                "fullName": "Villarreal CF"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": 1,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 5,
+              "ga": 4
+            },
+            {
+              "pos": 15,
+              "team": {
+                "id": 78,
+                "name": "Atleti",
+                "fullName": "Club Atlético de Madrid"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": 1,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 3,
+              "ga": 2
+            },
+            {
+              "pos": 16,
+              "team": {
+                "id": 851,
+                "name": "Club Brugge",
+                "fullName": "Club Brugge KV"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": 0,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 6,
+              "ga": 6
+            },
+            {
+              "pos": 17,
+              "team": {
+                "id": 65,
+                "name": "Man City",
+                "fullName": "Manchester City FC"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": 0,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 4,
+              "ga": 4
+            },
+            {
+              "pos": 18,
+              "team": {
+                "id": 4,
+                "name": "Dortmund",
+                "fullName": "Borussia Dortmund"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": 0,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 3,
+              "ga": 3
+            },
+            {
+              "pos": 19,
+              "team": {
+                "id": 546,
+                "name": "RC Lens",
+                "fullName": "Racing Club de Lens"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": -1,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 3,
+              "ga": 4
+            },
+            {
+              "pos": 20,
+              "team": {
+                "id": 1899,
+                "name": "PAE AEK",
+                "fullName": "PAE AEK"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": -1,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 2,
+              "ga": 3
+            },
+            {
+              "pos": 21,
+              "team": {
+                "id": 721,
+                "name": "RB Leipzig",
+                "fullName": "RB Leipzig"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": -2,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 2,
+              "ga": 4
+            },
+            {
+              "pos": 22,
+              "team": {
+                "id": 10233,
+                "name": "Sabah FK",
+                "fullName": "Sabah FK"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": -2,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 2,
+              "ga": 4
+            },
+            {
+              "pos": 23,
+              "team": {
+                "id": 675,
+                "name": "Feyenoord",
+                "fullName": "Feyenoord Rotterdam"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": -3,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 4,
+              "ga": 7
+            },
+            {
+              "pos": 24,
+              "team": {
+                "id": 5721,
+                "name": "Bodø/Glimt",
+                "fullName": "FK Bodø/Glimt"
+              },
+              "played": 2,
+              "pts": 3,
+              "gd": -4,
+              "w": 1,
+              "d": 0,
+              "l": 1,
+              "gf": 1,
+              "ga": 5
+            },
+            {
+              "pos": 25,
+              "team": {
+                "id": 100,
+                "name": "Roma",
+                "fullName": "AS Roma"
+              },
+              "played": 2,
+              "pts": 1,
+              "gd": -1,
+              "w": 0,
+              "d": 1,
+              "l": 1,
+              "gf": 4,
+              "ga": 5
+            },
+            {
+              "pos": 26,
+              "team": {
+                "id": 674,
+                "name": "PSV",
+                "fullName": "PSV"
+              },
+              "played": 2,
+              "pts": 1,
+              "gd": -1,
+              "w": 0,
+              "d": 1,
+              "l": 1,
+              "gf": 1,
+              "ga": 2
+            },
+            {
+              "pos": 27,
+              "team": {
+                "id": 5720,
+                "name": "Viking",
+                "fullName": "Viking FK"
+              },
+              "played": 2,
+              "pts": 1,
+              "gd": -2,
+              "w": 0,
+              "d": 1,
+              "l": 1,
+              "gf": 4,
+              "ga": 6
+            },
+            {
+              "pos": 28,
+              "team": {
+                "id": 613,
+                "name": "Fenerbahçe",
+                "fullName": "Fenerbahçe SK"
+              },
+              "played": 2,
+              "pts": 1,
+              "gd": -6,
+              "w": 0,
+              "d": 1,
+              "l": 1,
+              "gf": 1,
+              "ga": 7
+            },
+            {
+              "pos": 29,
+              "team": {
+                "id": 108,
+                "name": "Inter",
+                "fullName": "FC Internazionale Milano"
+              },
+              "played": 2,
+              "pts": 0,
+              "gd": -2,
+              "w": 0,
+              "d": 0,
+              "l": 2,
+              "gf": 4,
+              "ga": 6
+            },
+            {
+              "pos": 30,
+              "team": {
+                "id": 503,
+                "name": "Porto",
+                "fullName": "FC Porto"
+              },
+              "played": 2,
+              "pts": 0,
+              "gd": -3,
+              "w": 0,
+              "d": 0,
+              "l": 2,
+              "gf": 2,
+              "ga": 5
+            },
+            {
+              "pos": 31,
+              "team": {
+                "id": 930,
+                "name": "Slavia Praha",
+                "fullName": "SK Slavia Praha"
+              },
+              "played": 2,
+              "pts": 0,
+              "gd": -3,
+              "w": 0,
+              "d": 0,
+              "l": 2,
+              "gf": 2,
+              "ga": 5
+            },
+            {
+              "pos": 32,
+              "team": {
+                "id": 113,
+                "name": "Napoli",
+                "fullName": "SSC Napoli"
+              },
+              "played": 2,
+              "pts": 0,
+              "gd": -3,
+              "w": 0,
+              "d": 0,
+              "l": 2,
+              "gf": 1,
+              "ga": 4
+            },
+            {
+              "pos": 33,
+              "team": {
+                "id": 2016,
+                "name": "LASK",
+                "fullName": "LASK Linz"
+              },
+              "played": 2,
+              "pts": 0,
+              "gd": -4,
+              "w": 0,
+              "d": 0,
+              "l": 2,
+              "gf": 3,
+              "ga": 7
+            },
+            {
+              "pos": 34,
+              "team": {
+                "id": 521,
+                "name": "Lille",
+                "fullName": "Lille OSC"
+              },
+              "played": 2,
+              "pts": 0,
+              "gd": -4,
+              "w": 0,
+              "d": 0,
+              "l": 2,
+              "gf": 2,
+              "ga": 6
+            },
+            {
+              "pos": 35,
+              "team": {
+                "id": 610,
+                "name": "Galatasaray",
+                "fullName": "Galatasaray SK"
+              },
+              "played": 2,
+              "pts": 0,
+              "gd": -5,
+              "w": 0,
+              "d": 0,
+              "l": 2,
+              "gf": 2,
+              "ga": 7
+            },
+            {
+              "pos": 36,
+              "team": {
+                "id": 7509,
+                "name": "Sl. Bratislava",
+                "fullName": "ŠK Slovan Bratislava"
+              },
+              "played": 2,
+              "pts": 0,
+              "gd": -8,
+              "w": 0,
+              "d": 0,
+              "l": 2,
+              "gf": 1,
+              "ga": 9
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": []
+}

@@ -42,10 +42,10 @@ import {
 } from "@/lib/time";
 
 import type {
-  CompStandings,
   FinishedMatch,
   MatchDetail,
   Score,
+  StandingsRow,
   TeamRef,
 } from "./match-data";
 import {
@@ -179,6 +179,21 @@ export const BRIEF_IMPORTANCE: Readonly<{
   }),
 });
 
+/**
+ * 빌더가 읽는 순위 필드 — `CompStandings`(football-data 어댑터 출력)를 그대로 넣을 수 있다. 행은 순위·팀·경기 수·승점·득실차만
+ * 읽는다(승·무·패·득점·실점은 읽지 않는다 — M1-24 골든셋의 M0 입력에서 온 순위 행에는 그 값이 없다).
+ */
+export interface BriefStandingsSource {
+  comp: CompId;
+  /** 받은 시점의 진행 중 경기 수 — 0보다 크면 순위를 넣지 않는다 */
+  inProgress: number;
+  tables: ReadonlyArray<{
+    rows: ReadonlyArray<
+      Pick<StandingsRow, "pos" | "team" | "played" | "pts" | "gd">
+    >;
+  }>;
+}
+
 /** 중요도 판정 재료(실행마다 설정·순위에서 만든다) */
 export interface BriefImportanceContext {
   /** 활성 한국 선수 소속팀의 football-data 팀 id(korean-players.json → team-ids.json) */
@@ -202,7 +217,7 @@ export function isBigClub(team: Pick<TeamRef, "name" | "fullName">): boolean {
 
 /** 확정 순위표(진행 중 경기 없음·표 1개)의 팀 id → 순위 */
 export function standingsPositions(
-  standings: readonly CompStandings[],
+  standings: readonly BriefStandingsSource[],
 ): Map<CompId, Map<number, number>> {
   const out = new Map<CompId, Map<number, number>>();
   for (const s of standings) {
@@ -327,8 +342,8 @@ export interface BuildBriefInputOptions {
   /** football-data 종료 경기(창 안) */
   results: readonly FinishedMatch[];
   competitions: readonly CompetitionConfig[];
-  /** 현재 순위(football-data) — 없으면 standings 빈 배열 */
-  standings?: readonly CompStandings[];
+  /** 현재 순위(football-data `CompStandings` — 빌더는 `BriefStandingsSource` 필드만 읽는다) — 없으면 standings 빈 배열 */
+  standings?: readonly BriefStandingsSource[];
   /** football-data 경기 id → 연결된 API-Football 상세(득점자) */
   linked?: ReadonlyMap<number, Pick<MatchDetail, "goals" | "goalsComplete">>;
   /** 활성 한국 선수 소속팀 football-data 팀 id(중요도) */

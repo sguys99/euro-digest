@@ -1,0 +1,96 @@
+{
+  "briefDate": "2026-10-14",
+  "matches": [
+    {
+      "id": "m575345",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Atleti",
+      "away": "Man United",
+      "ft": "2-0",
+      "ht": "1-0",
+      "goals": null
+    },
+    {
+      "id": "m575347",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Viking",
+      "away": "Bayern",
+      "ft": "3-3",
+      "ht": "2-0",
+      "goals": null
+    },
+    {
+      "id": "m575343",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Inter",
+      "away": "Club Brugge",
+      "ft": "3-4",
+      "ht": "1-1",
+      "goals": null
+    },
+    {
+      "id": "m575344",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Galatasaray",
+      "away": "Barça",
+      "ft": "1-4",
+      "ht": "1-1",
+      "goals": null
+    },
+    {
+      "id": "m575346",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Arsenal",
+      "away": "Lille",
+      "ft": "3-0",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m575349",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Villarreal",
+      "away": "Napoli",
+      "ft": "3-1",
+      "ht": "2-1",
+      "goals": null
+    },
+    {
+      "id": "m575341",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "RC Lens",
+      "away": "Sporting CP",
+      "ft": "0-2",
+      "ht": "0-1",
+      "goals": null
+    },
+    {
+      "id": "m575342",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Sabah FK",
+      "away": "Slavia Praha",
+      "ft": "2-0",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m575348",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "RB Leipzig",
+      "away": "PSV",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": null
+    }
+  ],
+  "standings": []
+}

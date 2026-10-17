@@ -1,0 +1,821 @@
+{
+  "briefDate": "2026-09-21",
+  "results": [
+    {
+      "provider": "football-data",
+      "matchId": 558591,
+      "comp": "SERIEA",
+      "kickoff": "2026-09-20T10:30:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 99,
+        "name": "Fiorentina",
+        "fullName": "ACF Fiorentina"
+      },
+      "away": {
+        "id": 113,
+        "name": "Napoli",
+        "fullName": "SSC Napoli"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 1,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564697,
+      "comp": "LALIGA",
+      "kickoff": "2026-09-20T12:00:00Z",
+      "matchday": 7,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 82,
+        "name": "Getafe",
+        "fullName": "Getafe CF"
+      },
+      "away": {
+        "id": 84,
+        "name": "Málaga",
+        "fullName": "Málaga CF"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 1,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 558590,
+      "comp": "SERIEA",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 112,
+        "name": "Parma",
+        "fullName": "Parma Calcio 1913"
+      },
+      "away": {
+        "id": 107,
+        "name": "Genoa",
+        "fullName": "Genoa CFC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 558592,
+      "comp": "SERIEA",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 470,
+        "name": "Frosinone",
+        "fullName": "Frosinone Calcio"
+      },
+      "away": {
+        "id": 7397,
+        "name": "Como 1907",
+        "fullName": "Como 1907"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 2,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 559676,
+      "comp": "LIGUE1",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 519,
+        "name": "Auxerre",
+        "fullName": "AJ Auxerre"
+      },
+      "away": {
+        "id": 512,
+        "name": "Brest",
+        "fullName": "Stade Brestois 29"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560582,
+      "comp": "EPL",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 1044,
+        "name": "Bournemouth",
+        "fullName": "AFC Bournemouth"
+      },
+      "away": {
+        "id": 64,
+        "name": "Liverpool",
+        "fullName": "Liverpool FC"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 0,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560585,
+      "comp": "EPL",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 341,
+        "name": "Leeds United",
+        "fullName": "Leeds United FC"
+      },
+      "away": {
+        "id": 354,
+        "name": "Crystal Palace",
+        "fullName": "Crystal Palace FC"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 0,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560590,
+      "comp": "EPL",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 65,
+        "name": "Man City",
+        "fullName": "Manchester City FC"
+      },
+      "away": {
+        "id": 71,
+        "name": "Sunderland",
+        "fullName": "Sunderland AFC"
+      },
+      "score": {
+        "ft": {
+          "home": 5,
+          "away": 3
+        },
+        "ht": {
+          "home": 3,
+          "away": 2
+        },
+        "regular": {
+          "home": 5,
+          "away": 3
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565807,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-09-20T13:30:00Z",
+      "matchday": 4,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 3,
+        "name": "Leverkusen",
+        "fullName": "Bayer 04 Leverkusen"
+      },
+      "away": {
+        "id": 721,
+        "name": "RB Leipzig",
+        "fullName": "RB Leipzig"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564688,
+      "comp": "LALIGA",
+      "kickoff": "2026-09-20T14:15:00Z",
+      "matchday": 7,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 78,
+        "name": "Atleti",
+        "fullName": "Club Atlético de Madrid"
+      },
+      "away": {
+        "id": 86,
+        "name": "Real Madrid",
+        "fullName": "Real Madrid CF"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 559678,
+      "comp": "LIGUE1",
+      "kickoff": "2026-09-20T15:15:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 522,
+        "name": "Nice",
+        "fullName": "OGC Nice"
+      },
+      "away": {
+        "id": 521,
+        "name": "Lille",
+        "fullName": "Lille OSC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560583,
+      "comp": "EPL",
+      "kickoff": "2026-09-20T15:30:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 63,
+        "name": "Fulham",
+        "fullName": "Fulham FC"
+      },
+      "away": {
+        "id": 66,
+        "name": "Man United",
+        "fullName": "Manchester United FC"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 1,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565805,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-09-20T15:30:00Z",
+      "matchday": 4,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 6,
+        "name": "Schalke",
+        "fullName": "FC Schalke 04"
+      },
+      "away": {
+        "id": 719,
+        "name": "Elversberg",
+        "fullName": "SV 07 Elversberg"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 0,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 558595,
+      "comp": "SERIEA",
+      "kickoff": "2026-09-20T16:00:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 109,
+        "name": "Juventus",
+        "fullName": "Juventus FC"
+      },
+      "away": {
+        "id": 102,
+        "name": "Atalanta",
+        "fullName": "Atalanta BC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564695,
+      "comp": "LALIGA",
+      "kickoff": "2026-09-20T16:30:00Z",
+      "matchday": 7,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 560,
+        "name": "Deportivo",
+        "fullName": "RC Deportivo La Coruña"
+      },
+      "away": {
+        "id": 90,
+        "name": "Real Betis",
+        "fullName": "Real Betis Balompié"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 1,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564696,
+      "comp": "LALIGA",
+      "kickoff": "2026-09-20T16:30:00Z",
+      "matchday": 7,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 94,
+        "name": "Villarreal",
+        "fullName": "Villarreal CF"
+      },
+      "away": {
+        "id": 88,
+        "name": "Levante",
+        "fullName": "Levante UD"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 1
+        },
+        "regular": {
+          "home": 3,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565803,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-09-20T17:30:00Z",
+      "matchday": 4,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 29,
+        "name": "SC Paderborn",
+        "fullName": "SC Paderborn 07"
+      },
+      "away": {
+        "id": 2,
+        "name": "Hoffenheim",
+        "fullName": "TSG 1899 Hoffenheim"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 1
+        },
+        "ht": {
+          "home": 2,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 558597,
+      "comp": "SERIEA",
+      "kickoff": "2026-09-20T18:45:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 98,
+        "name": "Milan",
+        "fullName": "AC Milan"
+      },
+      "away": {
+        "id": 5890,
+        "name": "Lecce",
+        "fullName": "US Lecce"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 559675,
+      "comp": "LIGUE1",
+      "kickoff": "2026-09-20T18:45:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 516,
+        "name": "Marseille",
+        "fullName": "Olympique de Marseille"
+      },
+      "away": {
+        "id": 524,
+        "name": "PSG",
+        "fullName": "Paris Saint-Germain FC"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 2
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 1,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564689,
+      "comp": "LALIGA",
+      "kickoff": "2026-09-20T19:00:00Z",
+      "matchday": 7,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 95,
+        "name": "Valencia",
+        "fullName": "Valencia CF"
+      },
+      "away": {
+        "id": 92,
+        "name": "Real Sociedad",
+        "fullName": "Real Sociedad de Fútbol"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 3
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 2,
+          "away": 3
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    }
+  ],
+  "standings": [
+    {
+      "comp": "EPL",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "REGULAR_SEASON",
+          "group": null,
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 65,
+                "name": "Man City",
+                "fullName": "Manchester City FC"
+              },
+              "played": 5,
+              "pts": 15,
+              "gd": 8
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 57,
+                "name": "Arsenal",
+                "fullName": "Arsenal FC"
+              },
+              "played": 5,
+              "pts": 12,
+              "gd": 4
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 397,
+                "name": "Brighton Hove",
+                "fullName": "Brighton & Hove Albion FC"
+              },
+              "played": 5,
+              "pts": 10,
+              "gd": 11
+            },
+            {
+              "pos": 4,
+              "team": {
+                "id": 402,
+                "name": "Brentford",
+                "fullName": "Brentford FC"
+              },
+              "played": 5,
+              "pts": 9,
+              "gd": 6
+            },
+            {
+              "pos": 5,
+              "team": {
+                "id": 341,
+                "name": "Leeds United",
+                "fullName": "Leeds United FC"
+              },
+              "played": 5,
+              "pts": 9,
+              "gd": 4
+            },
+            {
+              "pos": 6,
+              "team": {
+                "id": 64,
+                "name": "Liverpool",
+                "fullName": "Liverpool FC"
+              },
+              "played": 5,
+              "pts": 9,
+              "gd": 3
+            },
+            {
+              "pos": 12,
+              "team": {
+                "id": 66,
+                "name": "Man United",
+                "fullName": "Manchester United FC"
+              },
+              "played": 5,
+              "pts": 5,
+              "gd": 0
+            },
+            {
+              "pos": 14,
+              "team": {
+                "id": 71,
+                "name": "Sunderland",
+                "fullName": "Sunderland AFC"
+              },
+              "played": 5,
+              "pts": 4,
+              "gd": -4
+            },
+            {
+              "pos": 15,
+              "team": {
+                "id": 354,
+                "name": "Crystal Palace",
+                "fullName": "Crystal Palace FC"
+              },
+              "played": 5,
+              "pts": 4,
+              "gd": -5
+            },
+            {
+              "pos": 17,
+              "team": {
+                "id": 1044,
+                "name": "Bournemouth",
+                "fullName": "AFC Bournemouth"
+              },
+              "played": 5,
+              "pts": 3,
+              "gd": -2
+            },
+            {
+              "pos": 19,
+              "team": {
+                "id": 63,
+                "name": "Fulham",
+                "fullName": "Fulham FC"
+              },
+              "played": 5,
+              "pts": 2,
+              "gd": -3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": []
+}

@@ -1,0 +1,690 @@
+{
+  "briefDate": "2026-10-11",
+  "matches": [
+    {
+      "id": "m565819",
+      "comp": "Bundesliga",
+      "round": "Matchday 5",
+      "home": "Augsburg",
+      "away": "Bayern",
+      "ft": "2-2",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "1",
+          "team": "Augsburg",
+          "player": "Robin Fellhauer"
+        },
+        {
+          "min": "55",
+          "team": "Bayern",
+          "player": "Ismael Saibari",
+          "assist": "Harry Kane"
+        },
+        {
+          "min": "64",
+          "team": "Augsburg",
+          "player": "Rodrigo Ribeiro"
+        },
+        {
+          "min": "80",
+          "team": "Bayern",
+          "player": "Nathaniel Brown",
+          "assist": "Harry Kane"
+        }
+      ]
+    },
+    {
+      "id": "m564699",
+      "comp": "LaLiga",
+      "round": "Matchday 8",
+      "home": "Alavés",
+      "away": "Atleti",
+      "ft": "1-2",
+      "ht": "1-1",
+      "goals": [
+        {
+          "min": "33",
+          "team": "Atleti",
+          "player": "Alejandro Grimaldo",
+          "assist": "Jonathan David"
+        },
+        {
+          "min": "45+6",
+          "team": "Alavés",
+          "player": "Lucas Boyé",
+          "type": "penalty"
+        },
+        {
+          "min": "87",
+          "team": "Atleti",
+          "player": "Cristian Romero",
+          "assist": "Alejandro Baena Rodríguez"
+        }
+      ]
+    },
+    {
+      "id": "m560600",
+      "comp": "Premier League",
+      "round": "Matchday 6",
+      "home": "Man United",
+      "away": "Tottenham",
+      "ft": "1-1",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "73",
+          "team": "Man United",
+          "player": "Bryan Mbeumo",
+          "assist": "Matheus Cunha"
+        },
+        {
+          "min": "90+2",
+          "team": "Tottenham",
+          "player": "Dominic Solanke",
+          "assist": "Sandro Tonali"
+        }
+      ]
+    },
+    {
+      "id": "m565812",
+      "comp": "Bundesliga",
+      "round": "Matchday 5",
+      "home": "Mainz",
+      "away": "Leverkusen",
+      "ft": "3-4",
+      "ht": "2-2",
+      "goals": [
+        {
+          "min": "5",
+          "team": "Leverkusen",
+          "player": "Robert Andrich"
+        },
+        {
+          "min": "9",
+          "team": "Leverkusen",
+          "player": "Patrik Schick",
+          "assist": "Aleix García"
+        },
+        {
+          "min": "33",
+          "team": "Mainz",
+          "player": "Anthony Caci"
+        },
+        {
+          "min": "42",
+          "team": "Mainz",
+          "player": "Anthony Caci",
+          "assist": "Nadiem Amiri"
+        },
+        {
+          "min": "55",
+          "team": "Leverkusen",
+          "player": "Jarell Quansah"
+        },
+        {
+          "min": "65",
+          "team": "Leverkusen",
+          "player": "Moussa Diaby",
+          "assist": "Afonso Moreira"
+        },
+        {
+          "min": "90+2",
+          "team": "Mainz",
+          "player": "Benedict Hollerbach"
+        }
+      ]
+    },
+    {
+      "id": "m560595",
+      "comp": "Premier League",
+      "round": "Matchday 6",
+      "home": "Chelsea",
+      "away": "Bournemouth",
+      "ft": "5-1",
+      "ht": "2-0",
+      "goals": [
+        {
+          "min": "2",
+          "team": "Chelsea",
+          "player": "Jordan Henderson",
+          "assist": "Cole Palmer"
+        },
+        {
+          "min": "3",
+          "team": "Chelsea",
+          "player": "Morgan Rogers",
+          "assist": "Jordan Henderson"
+        },
+        {
+          "min": "46",
+          "team": "Chelsea",
+          "player": "João Pedro",
+          "assist": "Pedro Neto"
+        },
+        {
+          "min": "51",
+          "team": "Bournemouth",
+          "player": "Francisco Evanilson"
+        },
+        {
+          "min": "67",
+          "team": "Chelsea",
+          "player": "João Pedro",
+          "assist": "Pep Chavarria"
+        },
+        {
+          "min": "70",
+          "team": "Chelsea",
+          "player": "Jordan Henderson"
+        }
+      ]
+    },
+    {
+      "id": "m560601",
+      "comp": "Premier League",
+      "round": "Matchday 6",
+      "home": "Aston Villa",
+      "away": "Brentford",
+      "ft": "2-2",
+      "ht": "1-1",
+      "goals": [
+        {
+          "min": "10",
+          "team": "Brentford",
+          "player": "Yehor Yarmoliuk"
+        },
+        {
+          "min": "12",
+          "team": "Aston Villa",
+          "player": "Nicolas Jackson"
+        },
+        {
+          "min": "77",
+          "team": "Aston Villa",
+          "player": "John McGinn",
+          "assist": "Johan Manzambi"
+        },
+        {
+          "min": "79",
+          "team": "Brentford",
+          "player": "Kristoffer Ajer",
+          "assist": "Jaidon Anthony"
+        }
+      ]
+    },
+    {
+      "id": "m560593",
+      "comp": "Premier League",
+      "round": "Matchday 6",
+      "home": "Arsenal",
+      "away": "Leeds United",
+      "ft": "2-1",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "55",
+          "team": "Leeds United",
+          "player": "James Justin",
+          "assist": "Gabriel Gudmundsson"
+        },
+        {
+          "min": "62",
+          "team": "Arsenal",
+          "player": "Riccardo Calafiori",
+          "assist": "Ben White"
+        },
+        {
+          "min": "70",
+          "team": "Arsenal",
+          "player": "Bruno Guimarães",
+          "assist": "Declan Rice"
+        }
+      ]
+    },
+    {
+      "id": "m565817",
+      "comp": "Bundesliga",
+      "round": "Matchday 5",
+      "home": "Union Berlin",
+      "away": "Elversberg",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "81",
+          "team": "Union Berlin",
+          "player": "Livan Burcu"
+        }
+      ]
+    },
+    {
+      "id": "m558582",
+      "comp": "Serie A",
+      "round": "Matchday 6",
+      "home": "Inter",
+      "away": "Parma",
+      "ft": "3-0",
+      "ht": "3-0",
+      "goals": null
+    },
+    {
+      "id": "m564700",
+      "comp": "LaLiga",
+      "round": "Matchday 8",
+      "home": "Barça",
+      "away": "Getafe",
+      "ft": "3-0",
+      "ht": "2-0",
+      "goals": [
+        {
+          "min": "2",
+          "team": "Barça",
+          "player": "Anthony Gordon"
+        },
+        {
+          "min": "30",
+          "team": "Barça",
+          "player": "Gabriel Jesus"
+        },
+        {
+          "min": "73",
+          "team": "Barça",
+          "player": "Jules Koundé",
+          "assist": "Lamine Yamal"
+        }
+      ]
+    },
+    {
+      "id": "m558586",
+      "comp": "Serie A",
+      "round": "Matchday 6",
+      "home": "Napoli",
+      "away": "Frosinone",
+      "ft": "3-0",
+      "ht": "2-0",
+      "goals": [
+        {
+          "min": "29",
+          "team": "Napoli",
+          "player": "Kevin De Bruyne",
+          "type": "penalty"
+        },
+        {
+          "min": "32",
+          "team": "Napoli",
+          "player": "Noa Lang"
+        },
+        {
+          "min": "90+4",
+          "team": "Napoli",
+          "player": "Kevin De Bruyne",
+          "assist": "Giovane Santana Do Nascimento"
+        }
+      ]
+    },
+    {
+      "id": "m564702",
+      "comp": "LaLiga",
+      "round": "Matchday 8",
+      "home": "Real Madrid",
+      "away": "Villarreal",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "62",
+          "team": "Real Madrid",
+          "player": "Yan Diomande",
+          "assist": "Federico Valverde"
+        }
+      ]
+    },
+    {
+      "id": "m565818",
+      "comp": "Bundesliga",
+      "round": "Matchday 5",
+      "home": "Hoffenheim",
+      "away": "HSV",
+      "ft": "2-3",
+      "ht": "1-1",
+      "goals": null
+    },
+    {
+      "id": "m560592",
+      "comp": "Premier League",
+      "round": "Matchday 6",
+      "home": "Sunderland",
+      "away": "Brighton Hove",
+      "ft": "0-2",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m560599",
+      "comp": "Premier League",
+      "round": "Matchday 6",
+      "home": "Ipswich Town",
+      "away": "Fulham",
+      "ft": "2-1",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m565815",
+      "comp": "Bundesliga",
+      "round": "Matchday 5",
+      "home": "RB Leipzig",
+      "away": "Frankfurt",
+      "ft": "6-0",
+      "ht": "4-0",
+      "goals": [
+        {
+          "min": "1",
+          "team": "RB Leipzig",
+          "player": "Ezechiel Banzuzi",
+          "assist": "Neil El Aynaoui"
+        },
+        {
+          "min": "5",
+          "team": "RB Leipzig",
+          "player": "Christopher Nkunku",
+          "assist": "Antonio Nusa"
+        },
+        {
+          "min": "41",
+          "team": "RB Leipzig",
+          "player": "Christopher Nkunku"
+        },
+        {
+          "min": "44",
+          "team": "RB Leipzig",
+          "player": "Christopher Nkunku"
+        },
+        {
+          "min": "54",
+          "team": "RB Leipzig",
+          "player": "Antonio Nusa",
+          "assist": "Ezechiel Banzuzi"
+        },
+        {
+          "min": "89",
+          "team": "RB Leipzig",
+          "player": "Tidiam Gomis",
+          "assist": "Benjamin Henrichs"
+        }
+      ]
+    },
+    {
+      "id": "m559672",
+      "comp": "Ligue 1",
+      "round": "Matchday 6",
+      "home": "PSG",
+      "away": "Le Mans",
+      "ft": "3-1",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "19",
+          "team": "PSG",
+          "player": "Lucas Beraldo",
+          "type": "penalty"
+        },
+        {
+          "min": "54",
+          "team": "Le Mans",
+          "player": "Louis Mafouta",
+          "assist": "Lucas Calodat"
+        },
+        {
+          "min": "61",
+          "team": "PSG",
+          "player": "Khvicha Kvaratskhelia"
+        },
+        {
+          "min": "68",
+          "team": "PSG",
+          "player": "Maghnes Akliouche",
+          "assist": "Warren Zaire-Emery"
+        }
+      ]
+    },
+    {
+      "id": "m558588",
+      "comp": "Serie A",
+      "round": "Matchday 6",
+      "home": "Genoa",
+      "away": "Fiorentina",
+      "ft": "2-1",
+      "ht": "2-0",
+      "goals": null
+    },
+    {
+      "id": "m565813",
+      "comp": "Bundesliga",
+      "round": "Matchday 5",
+      "home": "SC Paderborn",
+      "away": "Stuttgart",
+      "ft": "0-2",
+      "ht": "0-1",
+      "goals": null
+    },
+    {
+      "id": "m559666",
+      "comp": "Ligue 1",
+      "round": "Matchday 6",
+      "home": "Brest",
+      "away": "Angers SCO",
+      "ft": "5-1",
+      "ht": "4-0",
+      "goals": null
+    },
+    {
+      "id": "m559674",
+      "comp": "Ligue 1",
+      "round": "Matchday 6",
+      "home": "Lille",
+      "away": "Le Havre",
+      "ft": "1-0",
+      "ht": "1-0",
+      "goals": null
+    },
+    {
+      "id": "m559668",
+      "comp": "Ligue 1",
+      "round": "Matchday 6",
+      "home": "Lorient",
+      "away": "Paris FC",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m559673",
+      "comp": "Ligue 1",
+      "round": "Matchday 6",
+      "home": "Monaco",
+      "away": "Toulouse",
+      "ft": "2-2",
+      "ht": "2-0",
+      "goals": null
+    }
+  ],
+  "standings": [
+    {
+      "id": "sBL",
+      "comp": "Bundesliga",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Dortmund",
+          "played": 5,
+          "pts": 13,
+          "gd": 7
+        },
+        {
+          "pos": 2,
+          "team": "Bayern",
+          "played": 5,
+          "pts": 11,
+          "gd": 12
+        },
+        {
+          "pos": 3,
+          "team": "Freiburg",
+          "played": 4,
+          "pts": 10,
+          "gd": 9
+        },
+        {
+          "pos": 4,
+          "team": "Leverkusen",
+          "played": 5,
+          "pts": 10,
+          "gd": 6
+        }
+      ]
+    },
+    {
+      "id": "sLL",
+      "comp": "LaLiga",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Barça",
+          "played": 8,
+          "pts": 24,
+          "gd": 27
+        },
+        {
+          "pos": 2,
+          "team": "Atleti",
+          "played": 8,
+          "pts": 19,
+          "gd": 10
+        },
+        {
+          "pos": 3,
+          "team": "Real Madrid",
+          "played": 8,
+          "pts": 18,
+          "gd": 11
+        },
+        {
+          "pos": 4,
+          "team": "Real Betis",
+          "played": 7,
+          "pts": 16,
+          "gd": 2
+        }
+      ]
+    },
+    {
+      "id": "sPL",
+      "comp": "Premier League",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Man City",
+          "played": 5,
+          "pts": 15,
+          "gd": 8
+        },
+        {
+          "pos": 2,
+          "team": "Arsenal",
+          "played": 6,
+          "pts": 15,
+          "gd": 5
+        },
+        {
+          "pos": 3,
+          "team": "Brighton Hove",
+          "played": 6,
+          "pts": 13,
+          "gd": 13
+        },
+        {
+          "pos": 4,
+          "team": "Brentford",
+          "played": 6,
+          "pts": 10,
+          "gd": 6
+        }
+      ]
+    },
+    {
+      "id": "sSA",
+      "comp": "Serie A",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Inter",
+          "played": 6,
+          "pts": 16,
+          "gd": 10
+        },
+        {
+          "pos": 2,
+          "team": "Roma",
+          "played": 5,
+          "pts": 13,
+          "gd": 11
+        },
+        {
+          "pos": 3,
+          "team": "Lazio",
+          "played": 5,
+          "pts": 13,
+          "gd": 5
+        },
+        {
+          "pos": 4,
+          "team": "Cagliari",
+          "played": 5,
+          "pts": 12,
+          "gd": 3
+        }
+      ]
+    },
+    {
+      "id": "sL1",
+      "comp": "Ligue 1",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Monaco",
+          "played": 6,
+          "pts": 14,
+          "gd": 5
+        },
+        {
+          "pos": 2,
+          "team": "Lille",
+          "played": 6,
+          "pts": 13,
+          "gd": 5
+        },
+        {
+          "pos": 3,
+          "team": "Olympique Lyon",
+          "played": 6,
+          "pts": 11,
+          "gd": 7
+        },
+        {
+          "pos": 4,
+          "team": "Paris FC",
+          "played": 6,
+          "pts": 11,
+          "gd": 4
+        }
+      ]
+    }
+  ]
+}

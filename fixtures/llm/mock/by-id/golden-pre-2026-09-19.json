@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1-pre, 변형 pre, 지시문 p_d623440fce54) — thinking 2387토큰, 지연 11380ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"Bayern이 Michael Olise의 해트트릭을 앞세워 Union Berlin을 7-0으로 완파했다.\",\"r\":[\"m565804\"]},{\"t\":\"Brentford가 Chelsea를 3-0으로 완파하고 승점 9로 3위를 달린다.\",\"r\":[\"m560591\",\"sPL\"]},{\"t\":\"Elche가 원정에서 Espanyol을 3-1로 꺾었다.\",\"r\":[\"m564692\"]},{\"t\":\"Monaco가 RC Lens를 2-1로 꺾었다.\",\"r\":[\"m559682\"]},{\"t\":\"Monza가 홈에서 Sassuolo를 2-1로 꺾었다.\",\"r\":[\"m558596\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 5523,
+    "output_tokens": 2639,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "briefDate": "2026-02-26",
+  "matches": [
+    {
+      "id": "m552065",
+      "comp": "UEFA Champions League",
+      "round": "Matchday 2",
+      "home": "Atalanta",
+      "away": "Dortmund",
+      "ft": "4-1",
+      "ht": "2-0",
+      "goals": null
+    },
+    {
+      "id": "m552063",
+      "comp": "UEFA Champions League",
+      "round": "Matchday 2",
+      "home": "Juventus",
+      "away": "Galatasaray",
+      "ft": "3-2",
+      "ht": "1-0",
+      "aet": true,
+      "regular": "3-0",
+      "goals": null
+    },
+    {
+      "id": "m552060",
+      "comp": "UEFA Champions League",
+      "round": "Matchday 2",
+      "home": "Real Madrid",
+      "away": "SL Benfica",
+      "ft": "2-1",
+      "ht": "1-1",
+      "goals": null
+    },
+    {
+      "id": "m552061",
+      "comp": "UEFA Champions League",
+      "round": "Matchday 2",
+      "home": "PSG",
+      "away": "Monaco",
+      "ft": "2-2",
+      "ht": "0-1",
+      "goals": null
+    }
+  ],
+  "standings": []
+}

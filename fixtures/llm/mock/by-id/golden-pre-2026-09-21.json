@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1-pre, 변형 pre, 지시문 p_d623440fce54) — thinking 2172토큰, 지연 10070ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"Atleti가 Real Madrid를 2-1로 꺾었다.\",\"r\":[\"m564688\"]},{\"t\":\"Man City가 Sunderland를 5-3으로 꺾고 승점 15로 선두를 달린다.\",\"r\":[\"m560590\",\"sPL\"]},{\"t\":\"Auxerre가 Brest를 2-1로 꺾고 역전승을 거뒀다.\",\"r\":[\"m559676\"]},{\"t\":\"Leverkusen이 RB Leipzig를 2-0으로 꺾었다.\",\"r\":[\"m565807\"]},{\"t\":\"Milan이 Lecce를 3-0으로 완파했다.\",\"r\":[\"m558597\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 6531,
+    "output_tokens": 2406,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "briefDate": "2026-02-26",
+  "results": [
+    {
+      "provider": "football-data",
+      "matchId": 552065,
+      "comp": "UCL",
+      "kickoff": "2026-02-25T17:45:00Z",
+      "matchday": 2,
+      "stage": "PLAYOFFS",
+      "home": {
+        "id": 102,
+        "name": "Atalanta",
+        "fullName": "Atalanta BC"
+      },
+      "away": {
+        "id": 4,
+        "name": "Dortmund",
+        "fullName": "Borussia Dortmund"
+      },
+      "score": {
+        "ft": {
+          "home": 4,
+          "away": 1
+        },
+        "ht": {
+          "home": 2,
+          "away": 0
+        },
+        "regular": {
+          "home": 4,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 552060,
+      "comp": "UCL",
+      "kickoff": "2026-02-25T20:00:00Z",
+      "matchday": 2,
+      "stage": "PLAYOFFS",
+      "home": {
+        "id": 86,
+        "name": "Real Madrid",
+        "fullName": "Real Madrid CF"
+      },
+      "away": {
+        "id": 1903,
+        "name": "SL Benfica",
+        "fullName": "Sport Lisboa e Benfica"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 1
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 552061,
+      "comp": "UCL",
+      "kickoff": "2026-02-25T20:00:00Z",
+      "matchday": 2,
+      "stage": "PLAYOFFS",
+      "home": {
+        "id": 524,
+        "name": "PSG",
+        "fullName": "Paris Saint-Germain FC"
+      },
+      "away": {
+        "id": 548,
+        "name": "Monaco",
+        "fullName": "AS Monaco FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 2
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 2,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 552063,
+      "comp": "UCL",
+      "kickoff": "2026-02-25T20:00:00Z",
+      "matchday": 2,
+      "stage": "PLAYOFFS",
+      "home": {
+        "id": 109,
+        "name": "Juventus",
+        "fullName": "Juventus FC"
+      },
+      "away": {
+        "id": 610,
+        "name": "Galatasaray",
+        "fullName": "Galatasaray SK"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 2
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "EXTRA_TIME"
+      }
+    }
+  ],
+  "standings": [],
+  "links": []
+}

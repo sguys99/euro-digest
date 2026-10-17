@@ -1,0 +1,287 @@
+{
+  "briefDate": "2026-10-10",
+  "results": [
+    {
+      "provider": "football-data",
+      "matchId": 565820,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-10-09T18:30:00Z",
+      "matchday": 5,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 4,
+        "name": "Dortmund",
+        "fullName": "Borussia Dortmund"
+      },
+      "away": {
+        "id": 12,
+        "name": "Bremen",
+        "fullName": "SV Werder Bremen"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 2
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 559669,
+      "comp": "LIGUE1",
+      "kickoff": "2026-10-09T18:45:00Z",
+      "matchday": 6,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 546,
+        "name": "RC Lens",
+        "fullName": "Racing Club de Lens"
+      },
+      "away": {
+        "id": 523,
+        "name": "Olympique Lyon",
+        "fullName": "Olympique Lyonnais"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564706,
+      "comp": "LALIGA",
+      "kickoff": "2026-10-09T19:00:00Z",
+      "matchday": 8,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 84,
+        "name": "Málaga",
+        "fullName": "Málaga CF"
+      },
+      "away": {
+        "id": 80,
+        "name": "Espanyol",
+        "fullName": "RCD Espanyol de Barcelona"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 1,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    }
+  ],
+  "standings": [
+    {
+      "comp": "BUNDESLIGA",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "REGULAR_SEASON",
+          "group": null,
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 4,
+                "name": "Dortmund",
+                "fullName": "Borussia Dortmund"
+              },
+              "played": 5,
+              "pts": 13,
+              "gd": 7
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 5,
+                "name": "Bayern",
+                "fullName": "FC Bayern München"
+              },
+              "played": 4,
+              "pts": 10,
+              "gd": 12
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 17,
+                "name": "Freiburg",
+                "fullName": "SC Freiburg"
+              },
+              "played": 4,
+              "pts": 10,
+              "gd": 9
+            },
+            {
+              "pos": 4,
+              "team": {
+                "id": 12,
+                "name": "Bremen",
+                "fullName": "SV Werder Bremen"
+              },
+              "played": 5,
+              "pts": 8,
+              "gd": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "comp": "LIGUE1",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "REGULAR_SEASON",
+          "group": null,
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 548,
+                "name": "Monaco",
+                "fullName": "AS Monaco FC"
+              },
+              "played": 5,
+              "pts": 13,
+              "gd": 5
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 523,
+                "name": "Olympique Lyon",
+                "fullName": "Olympique Lyonnais"
+              },
+              "played": 6,
+              "pts": 11,
+              "gd": 7
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 1045,
+                "name": "Paris FC",
+                "fullName": "Paris FC"
+              },
+              "played": 5,
+              "pts": 11,
+              "gd": 5
+            },
+            {
+              "pos": 7,
+              "team": {
+                "id": 546,
+                "name": "RC Lens",
+                "fullName": "Racing Club de Lens"
+              },
+              "played": 6,
+              "pts": 7,
+              "gd": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "fd": 565820,
+      "from": "m0-input",
+      "af": null,
+      "goals": [
+        {
+          "minute": 80,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": null,
+            "name": "Daniel Svensson"
+          },
+          "assist": {
+            "id": null,
+            "name": "Fábio Silva"
+          }
+        },
+        {
+          "minute": 85,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": null,
+            "name": "Nico Schlotterbeck"
+          },
+          "assist": {
+            "id": null,
+            "name": "Joey Veerman"
+          }
+        },
+        {
+          "minute": 88,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": null,
+            "name": "Ludovit Reis"
+          },
+          "assist": {
+            "id": null,
+            "name": "Oskar Wójcik"
+          }
+        },
+        {
+          "minute": 90,
+          "extra": 2,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": null,
+            "name": "Niclas Füllkrug"
+          },
+          "assist": {
+            "id": null,
+            "name": "Marco Grüll"
+          }
+        }
+      ],
+      "goalsComplete": true
+    }
+  ]
+}

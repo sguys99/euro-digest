@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1-pre, 변형 pre, 지시문 p_d623440fce54) — thinking 1286토큰, 지연 6627ms, 판정 ok",
+  "text": "{\"l\":[{\"t\":\"Atalanta가 홈에서 Dortmund를 4-1로 완파했다.\",\"r\":[\"m552065\"]},{\"t\":\"Real Madrid가 SL Benfica를 2-1로 꺾었다.\",\"r\":[\"m552060\"]},{\"t\":\"PSG는 Monaco와 4골을 주고받은 끝에 2-2로 비겼다.\",\"r\":[\"m552061\"]},{\"t\":\"Juventus와 Galatasaray의 경기는 연장까지 3-2로 끝났다.\",\"r\":[\"m552063\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 4998,
+    "output_tokens": 1478,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

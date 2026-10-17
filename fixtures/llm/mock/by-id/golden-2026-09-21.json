@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-10-17-v0.1, 변형 base, 지시문 p_8b26415c8ca6) — thinking 1351토큰, 지연 7050ms, 판정 downgrade-line:2",
+  "text": "{\"l\":[{\"t\":\"Atleti가 홈에서 Real Madrid를 2-1로 꺾었다.\",\"r\":[\"m564688\"]},{\"t\":\"Man City가 8골이 터진 난타전 끝에 Sunderland를 5-3으로 꺾었다.\",\"r\":[\"m560590\"]},{\"t\":\"Milan이 Lecce를 3-0으로 완파했다.\",\"r\":[\"m558597\"]},{\"t\":\"Liverpool이 Bournemouth 원정에서 1-0으로 이겼다.\",\"r\":[\"m560582\"]},{\"t\":\"Man City는 승점 15로 선두다.\",\"r\":[\"sPL\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 5757,
+    "output_tokens": 1571,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

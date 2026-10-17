@@ -1,0 +1,132 @@
+{
+  "briefDate": "2026-10-15",
+  "matches": [
+    {
+      "id": "m575353",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Man City",
+      "away": "PSG",
+      "ft": "2-4",
+      "ht": "0-3",
+      "goals": null
+    },
+    {
+      "id": "m575350",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "LASK",
+      "away": "Liverpool",
+      "ft": "3-6",
+      "ht": "0-3",
+      "goals": null
+    },
+    {
+      "id": "m575352",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Roma",
+      "away": "Real Madrid",
+      "ft": "3-4",
+      "ht": "1-1",
+      "goals": null
+    },
+    {
+      "id": "m575354",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Bodø/Glimt",
+      "away": "Dortmund",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m575351",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Feyenoord",
+      "away": "Como 1907",
+      "ft": "3-2",
+      "ht": "1-1",
+      "goals": null
+    },
+    {
+      "id": "m575355",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Aston Villa",
+      "away": "Fenerbahçe",
+      "ft": "6-0",
+      "ht": "3-0",
+      "goals": null
+    },
+    {
+      "id": "m575356",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Real Betis",
+      "away": "Porto",
+      "ft": "3-2",
+      "ht": "0-0",
+      "goals": null
+    },
+    {
+      "id": "m575358",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Sl. Bratislava",
+      "away": "Stuttgart",
+      "ft": "0-3",
+      "ht": "0-1",
+      "goals": null
+    },
+    {
+      "id": "m575357",
+      "comp": "UEFA Champions League",
+      "round": "League phase MD 2",
+      "home": "Shaktar",
+      "away": "PAE AEK",
+      "ft": "3-1",
+      "ht": "1-1",
+      "goals": null
+    }
+  ],
+  "standings": [
+    {
+      "id": "sUCL",
+      "comp": "UEFA Champions League",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "PSG",
+          "played": 2,
+          "pts": 6,
+          "gd": 7
+        },
+        {
+          "pos": 2,
+          "team": "Barça",
+          "played": 2,
+          "pts": 6,
+          "gd": 7
+        },
+        {
+          "pos": 3,
+          "team": "Aston Villa",
+          "played": 2,
+          "pts": 6,
+          "gd": 7
+        },
+        {
+          "pos": 4,
+          "team": "Stuttgart",
+          "played": 2,
+          "pts": 6,
+          "gd": 5
+        }
+      ]
+    }
+  ]
+}

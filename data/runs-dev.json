@@ -233,5 +233,77 @@
       }
     ],
     "status": "success"
+  },
+  {
+    "runId": "eval-dev-20261017T052936Z-72fa",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T05:29:36.973Z",
+    "finishedAt": "2026-10-17T05:31:16.630Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 43,
+    "downgraded": 2,
+    "tokens": {
+      "in": 53465,
+      "out": 22083,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.016388,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
+  },
+  {
+    "runId": "eval-dev-20261017T053324Z-f8a3",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T05:33:24.871Z",
+    "finishedAt": "2026-10-17T05:35:11.640Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 44,
+    "downgraded": 1,
+    "tokens": {
+      "in": 59246,
+      "out": 22962,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.017406,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
+  },
+  {
+    "runId": "eval-dev-20261017T060246Z-3e4c",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T06:02:46.982Z",
+    "finishedAt": "2026-10-17T06:03:31.087Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 10,
+    "downgraded": 0,
+    "tokens": {
+      "in": 18520,
+      "out": 9346,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.006525,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "partial"
   }
 ]
