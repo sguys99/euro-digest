@@ -1,5 +1,5 @@
 {
-  "_note": "브리핑 LLM mock 기대 판정 표(M0-36 → M1-20 갱신). 케이스 id = customId = mock/by-id/<id>.json. M1-23(코드 검증)·M1-45(브리핑 실행) 테스트 입력. 출력 형식 { l: [{ t, r }] }는 M1-20 확정 스키마(scripts/lib/brief.ts BriefOutputSchema — M0-30 임시 스키마의 키 그대로)라 mock을 다시 만들지 않았다. M1-20에서 관용 파싱(D40 ⑤ — 전체 코드블록 벗김·앞 5줄·80자 초과 줄 강등)과 D40 ①~④ 판정을 기대값에 반영했다(미정이던 json-fenced·max-tokens·refusal과 미정 줄 4개). 판정 기준이 아직 없는 줄은 undecidedLines, 케이스 전체가 미정이면 expected 대신 candidates로 둔다(테스트는 미정 항목을 단정하지 않는다). mock 출력은 M0-30·M0-34 임시 프롬프트의 출력이다 — 지시문 v0.1(configs/prompts/summarize.md)의 실제 출력은 dev 실행·골든셋(M1-24)으로 더한다. M1-23(2026-10-17): 코드 검증기(scripts/lib/brief-check.ts judgeBriefResponse)의 판정이 모든 케이스의 expected·stage와 같은지 tests/brief-check.test.ts가 고정한다. D40 ④(사전 공식 표기 한글 이름 허용)와 M1-21 사전 별칭('Lens')으로 4건을 재정의했다 — brief-case-translit(1~5 → 1,2)·brief-case-translit-rank(1~5 → 1~4)·brief-case-short-name-team(4 → ok)·brief-case-short-name-team-2(4,5 → 5). M1-23 리뷰 반영(사용자 결정 2026-10-17 — 지시문 목록 밖 평가어는 그 줄 강등): brief-case-particle(2 → 1,2 — L1 '대파').",
+  "_note": "브리핑 LLM mock 기대 판정 표(M0-36 → M1-20 갱신). 케이스 id = customId = mock/by-id/<id>.json. M1-23(코드 검증)·M1-45(브리핑 실행) 테스트 입력. 출력 형식 { l: [{ t, r }] }는 M1-20 확정 스키마(scripts/lib/brief.ts BriefOutputSchema — M0-30 임시 스키마의 키 그대로)라 mock을 다시 만들지 않았다. M1-20에서 관용 파싱(D40 ⑤ — 전체 코드블록 벗김·앞 5줄·80자 초과 줄 강등)과 D40 ①~④ 판정을 기대값에 반영했다(미정이던 json-fenced·max-tokens·refusal과 미정 줄 4개). 판정 기준이 아직 없는 줄은 undecidedLines, 케이스 전체가 미정이면 expected 대신 candidates로 둔다(테스트는 미정 항목을 단정하지 않는다). mock 출력은 M0-30·M0-34 임시 프롬프트의 출력이다 — 지시문 v0.1(configs/prompts/summarize.md)의 실제 출력은 dev 실행·골든셋(M1-24)으로 더한다. M1-23(2026-10-17): 코드 검증기(scripts/lib/brief-check.ts judgeBriefResponse)의 판정이 모든 케이스의 expected·stage와 같은지 tests/brief-check.test.ts가 고정한다. D40 ④(사전 공식 표기 한글 이름 허용)와 M1-21 사전 별칭('Lens')으로 4건을 재정의했다 — brief-case-translit(1~5 → 1,2)·brief-case-translit-rank(1~5 → 1~4)·brief-case-short-name-team(4 → ok)·brief-case-short-name-team-2(4,5 → 5). M1-23 리뷰 반영(사용자 결정 2026-10-17 — 지시문 목록 밖 평가어는 그 줄 강등): brief-case-particle(2 → 1,2 — L1 '대파'). D50 닫힌 문법(2026-10-17): 사실은 맞지만 문형 밖인 줄을 강등으로 7건 재정의 — brief-case-rank-direction(3,4 → 2,3,4,5)·brief-case-rank-no-prev(5 → 2,3,5)·brief-case-short-name-player(4 → 2,3,4,5)·brief-case-short-name-team(ok → 4,5)·brief-case-short-name-team-2(5 → 4,5)·brief-case-leftover-word(1 → 1,2,5)·brief-case-particle(1,2 → 1,2,3,4). 발행일 케이스 5건(brief-2026-*)의 기대값은 그대로다.",
   "task": "M0-36",
   "flow": "FR-29 — 출력 스키마(관용 파싱 D40 ⑤ 뒤) → 코드 검증(출력 전체: 한국어 비율·한자) → 실패하면 1회 재시도(zod 실패·max_tokens와 합쳐 1회 — D40 ①) → 그래도 실패하면 템플릿. 줄 단위 불일치(스코어·이름·순위 서술·근거 id·1줄 1문장·치환 뒤 80자 초과)는 재시도 없이 그 줄만 템플릿(FR-22, D40 ⑤). refusal은 재시도 없이 템플릿(D40 ①). transport 실패는 llm.ts 재시도(429·5xx만) 뒤 FR-26 템플릿.",
   "verdicts": {
@@ -27,13 +27,14 @@
     "숫자 대조 전에 입력 이름을 지운다 — 'Como 1907'·'Ligue 1' 속 숫자(brief-2026-09-11·brief-2026-10-10).",
     "숫자 대조 범위는 줄의 근거 id(r)다 — brief-2026-10-11 L5 '2골'은 입력 전체 범위로 대조하면 다른 경기 스코어의 2 때문에 통과한다.",
     "스코어 순서: 홈-원정 순서와 '주어 팀 점수 먼저'(M1-20)를 모두 인정하되(brief-case-score-winner-first·brief-2026-09-21 L2) 둘 다 아닌 뒤집힘은 잡는다(brief-case-score-reversed). 스코어가 맞아도 승패 동사의 주어가 틀리면 잡아야 한다(brief-case-winner-swap).",
-    "순위 동사: '1위에 올라 있다'(상태)는 prev 없는 표에서도 통과해야 하고(brief-2026-10-10 L2), '머물렀다·유지·지켰다'는 prev가 있고 pos와 같을 때만, '공동 n위'는 pos가 같을 때만 쓴다. prev 없는 '상위 5위에 올랐다'·'상위권에 올랐다'는 변동 서술로 강등(D40 ③ — brief-2026-09-11 L5·brief-case-short-name-team-2 L5).",
-    "파생 숫자(합계·차이): 그 줄 근거(r) 항목의 숫자 두 개의 차·합과 정확히 같을 때만 허용(D40 ②) — '3점 앞섰다'(sBL 13−10, brief-case-leftover-word L5) 통과. brief-case-translit-rank L1 '4골'(ft 2-2의 2+2)은 D40 ② 합으로는 맞지만 팀·시간대별로 센 골 수라 불허(세는 숫자는 한 선수의 골 수뿐 — M1-20 지시문)이고 두 문장으로도 강등된다.",
+    "순위 동사: '1위에 올라 있다'(상태)는 prev 없는 표에서도 통과해야 하고(brief-2026-10-10 L2), '머물렀다·유지·지켰다'는 prev가 있고 pos와 같을 때만, '공동 n위'는 pos가 같을 때만 쓴다. prev 없는 '상위 5위에 올랐다'·'상위권에 올랐다'는 변동 서술로 강등(D40 ③ — brief-2026-09-11 L5·brief-case-short-name-team-2 L5). D50(닫힌 문법) 이후 '머물렀다'·'끌어올렸다'·'상위 n위에 올랐다' 같은 목록 밖 술어는 prev와 무관하게 문형 밖으로 강등된다.",
+    "파생 숫자(합계·차이): 그 줄 근거(r) 항목의 숫자 두 개의 차·합과 정확히 같을 때만 허용(D40 ②) — '3점 앞섰다'(sBL 13−10)는 계산이 맞다 — D50 이후 문형은 '2위 Bayern에 승점 3 앞선 선두다'(brief-case-leftover-word L5의 괄호·'n점' 꼴은 문형 밖). brief-case-translit-rank L1 '4골'(ft 2-2의 2+2)은 D40 ② 합으로는 맞지만 팀·시간대별로 센 골 수라 불허(세는 숫자는 한 선수의 골 수뿐 — M1-20 지시문)이고 두 문장으로도 강등된다.",
     "조사 오류('Bayern가'·'Dortmund은')는 강등이 아니라 치환 뒤 받침 기준 보정(M1-21).",
     "mock 재시도: 같은 customId는 같은 응답을 준다. 재시도 성공 경로는 다른 customId(예약: brief-<날짜>-r1)나 주입 transport로 시험한다.",
     "줄 길이: 80자(D40 ⑤)는 고유명사 치환·조사 보정 뒤 문장으로 잰다(PRD §9.4) — 영문 원문 길이로 재면 안 된다(brief-2026-10-10 L1 원문 95자·치환 뒤 86자, brief-case-line-over-schema L1 치환 뒤 146자). 자르지 않고 그 줄만 템플릿.",
-    "한글 고유명사(D40 ④): 사전·competitions 공식 표기와 같고 대상이 입력에 있으면 허용(brief-case-translit L3~L5 '김민재'·'브렌트포드'·'프리미어리그'), 공식 표기의 일부('올리세'·'베를린')·다른 음역('유니온 베를린')·별칭('맨시티')은 강등. 결과·순위·득점 서술의 주어 자리에 사전에 없는 한글 낱말이 오면 확인할 수 없어 강등(M1-23).",
-    "사전 별칭(M1-21): 'Lens'·'Bayern'·'Man City'처럼 names.ko.json 별칭에 있는 짧은 이름은 허용 목록(briefNameAllowlist)에 있어 통과하고 치환된다 — 성만 쓴 선수 이름('Olise')은 별칭이 아니라 강등."
+    "한글 고유명사(D40 ④): 사전·competitions 공식 표기와 같고 대상이 입력에 있으면 허용(brief-case-translit L3~L5 '김민재'·'브렌트포드'·'프리미어리그'), 공식 표기의 일부('올리세'·'베를린')·다른 음역('유니온 베를린')·별칭('맨시티')은 강등. 사전에 없는 한글 낱말(모델 음역)은 이름으로 읽히지 않아 문형 밖으로 강등(M1-23 → D50).",
+    "사전 별칭(M1-21): 'Lens'·'Bayern'·'Man City'처럼 names.ko.json 별칭에 있는 짧은 이름은 허용 목록(briefNameAllowlist)에 있어 통과하고 치환된다 — 성만 쓴 선수 이름('Olise')은 별칭이 아니라 강등.",
+    "닫힌 문법(D50, 2026-10-17 사용자 결정): 줄은 허용 문형(scripts/lib/brief-grammar.ts = 지시문 v0.2 [문형])으로만 통과한다. 사실이 맞아도 문형 밖의 꼴(쉼표 절·흐름 서술·목록 밖 술어·괄호·두 경기 나열)은 grammar-unknown으로 강등 — M0-30·M0-34 출력은 v0.1 이전 지시문의 자유 문장이라 이 이유의 강등이 많다(v0.2 실측은 M1-24)."
   ],
   "inputs": {
     "A": {
@@ -428,7 +429,7 @@
         "short-name"
       ],
       "stage": "line",
-      "expected": "downgrade-line:3,4",
+      "expected": "downgrade-line:2,3,4,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -441,8 +442,8 @@
       "lines": [
         {
           "n": 2,
-          "code": "pass",
-          "why": "'7위에서 3위로 올랐다' — prev 7·pos 3"
+          "code": "downgrade",
+          "why": "'승점 9점으로 순위가 7위에서 3위로 올랐다' — 사실은 맞지만(prev 7·pos 3) '9점'·'순위가'는 문형 밖 (D50 닫힌 문법 — 2026-10-17 사용자 결정). 지시문 v0.2 문형은 '{팀}이 7위에서 3위로 올랐다'·'승점 9'"
         },
         {
           "n": 3,
@@ -454,9 +455,14 @@
           "n": 4,
           "code": "downgrade",
           "why": "한 줄 두 문장 + 축약 이름 'Olise'·'Kane'(입력 'M. Olise'·'H. Kane'), 치환 뒤 68자(M1-21 사전 기준)"
+        },
+        {
+          "n": 5,
+          "code": "downgrade",
+          "why": "두 선수를 쉼표로 이은 줄 — 사실은 맞지만 쉼표 연결은 문형 밖(쉼표는 순위 나열에만) (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         }
       ],
-      "note": "순위 변동 방향 오류 — M0-30 실제 출력(단건·짧은 판·thinking 끔). L3 'Chelsea는 7위에 머물렀다'(입력 prev 6 → pos 7, 하락). 기대: downgrade-line:3,4(L4는 두 문장·축약 이름)."
+      "note": "순위 변동 방향 오류 — M0-30 실제 출력(단건·짧은 판·thinking 끔). L3 'Chelsea는 7위에 머물렀다'(입력 prev 6 → pos 7, 하락). 기대: downgrade-line:3,4(L4는 두 문장·축약 이름). D50(2026-10-17) 재정의: downgrade-line:2,3,4,5 — L2·L5는 사실이 맞지만 문형 밖."
     },
     {
       "id": "brief-case-rank-tie",
@@ -525,7 +531,7 @@
         "particle"
       ],
       "stage": "line",
-      "expected": "downgrade-line:5",
+      "expected": "downgrade-line:2,3,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -542,13 +548,23 @@
           "why": "'Dortmund은' 조사 — 치환 뒤 받침 기준 보정(M1-21) 대상, 강등 아님"
         },
         {
+          "n": 2,
+          "code": "downgrade",
+          "why": "'80분 Daniel Svensson, 85분 … 연속 골로 한때 앞서갔다' — 사실은 맞지만 경기 흐름 서술은 문형 밖 (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
+        },
+        {
+          "n": 3,
+          "code": "downgrade",
+          "why": "'… 득점으로 경기를 2-2로 끝냈다' — 사실은 맞지만 문형 밖 (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
+        },
+        {
           "n": 5,
           "human": "unsupported",
           "code": "downgrade",
           "why": "'선두를 유지했다' — sBL에 prev 없음(현실과는 맞지만 입력 근거 없음)"
         }
       ],
-      "note": "전일 순위 없이 순위 유지 서술 — M0-30 실제 출력(배치·짧은 판·effort low). L5 'Dortmund은 … 선두를 유지했다'(sBL에 prev 없음). 기대: downgrade-line:5."
+      "note": "전일 순위 없이 순위 유지 서술 — M0-30 실제 출력(배치·짧은 판·effort low). L5 'Dortmund은 … 선두를 유지했다'(sBL에 prev 없음). 기대: downgrade-line:5. D50(2026-10-17) 재정의: downgrade-line:2,3,5 — L2·L3은 사실이 맞지만 문형 밖."
     },
     {
       "id": "brief-case-translit-rank",
@@ -629,7 +645,7 @@
         "short-name"
       ],
       "stage": "line",
-      "expected": "downgrade-line:4",
+      "expected": "downgrade-line:2,3,4,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -642,21 +658,26 @@
       "lines": [
         {
           "n": 2,
-          "code": "pass",
-          "why": "'무득점에 그쳤다' 약한 평가 표현(사람 검토 일치) — 코드 검사 대상 아님"
+          "code": "downgrade",
+          "why": "'무득점에 그쳤다' — 사실(골 0)은 맞지만 문형 밖(지시문 v0.2 꼬리 문형은 '득점은 없었다') (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         },
         {
           "n": 3,
-          "code": "pass",
-          "why": "'전반 3-0' — ht 대조"
+          "code": "downgrade",
+          "why": "'7-0으로 꺾었고, 전반 3-0 뒤 후반에도 득점을 이어갔다' — 쉼표 연결·흐름 서술은 문형 밖 (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         },
         {
           "n": 4,
           "code": "downgrade",
           "why": "축약 이름 'Olise'(입력 'M. Olise') — 영문 토큰 허용 목록 밖. 사실(43·73·76분 해트트릭)은 일치"
+        },
+        {
+          "n": 5,
+          "code": "downgrade",
+          "why": "'순위를 7위에서 3위로 끌어올렸다' — 사실(prev 7·pos 3)은 맞지만 술어가 문형 밖(문형: '7위에서 3위로 올랐다') (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         }
       ],
-      "note": "축약 선수 이름 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L4 'Olise가 … 해트트릭'(입력 'M. Olise'). 기대: downgrade-line:4."
+      "note": "축약 선수 이름 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L4 'Olise가 … 해트트릭'(입력 'M. Olise'). 기대: downgrade-line:4. D50(2026-10-17) 재정의: downgrade-line:2,3,4,5 — L2·L3·L5는 사실이 맞지만 문형 밖."
     },
     {
       "id": "brief-case-short-name-team",
@@ -674,8 +695,8 @@
       "types": [
         "short-name"
       ],
-      "stage": "none",
-      "expected": "ok",
+      "stage": "line",
+      "expected": "downgrade-line:4,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -693,16 +714,16 @@
         },
         {
           "n": 4,
-          "code": "pass",
-          "why": "'Lens' — configs/names.ko.json의 RC Lens 별칭(M1-21·D39 ②)이라 영문 토큰 허용 목록(briefNameAllowlist)에 있고 '랑스'로 치환된다. 'Lens가 이겼다'의 주어 = 실제 승자(원정 RC Lens), 2-3은 'A와 B의 경기는' 앞 팀(홈) 점수 먼저와 같다"
+          "code": "downgrade",
+          "why": "'Slavia Praha와 RC Lens의 경기는 2-3으로 Lens가 이겼다' — 사실은 맞고 'Lens'는 사전 별칭이라 이름은 허용(M1-21·D39 ②)이지만 '경기는 … 이겼다' 꼴은 문형 밖(문형: '경기는 2-3으로 끝났다' 또는 'RC Lens가 … 원정에서 3-2로 이겼다') (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         },
         {
           "n": 5,
-          "code": "pass",
-          "why": "한 줄에 두 경기(근거 2개, 한 문장) — 짧은 판 규칙 위반 아님"
+          "code": "downgrade",
+          "why": "'Fenerbahçe와 Roma, PSV와 Shaktar는 각각 1-1로 비겼다' — 두 경기를 쉼표로 이은 줄은 문형 밖(한 줄 한 경기) (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         }
       ],
-      "note": "축약 팀 이름 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L4 '… 2-3으로 Lens가 이겼다'(입력 'RC Lens'). 기대(M1-23 재정의 — M1-21 이월): ok. M1-21이 'Lens'를 사전 별칭으로 등록해(D39 ②) 축약이 아니라 허용·치환되는 표기가 됐다(성만 쓴 선수 'Olise'는 사전에 없어 여전히 강등 — brief-case-short-name-player). M0-36 기대는 downgrade-line:4였다."
+      "note": "축약 팀 이름 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L4 '… 2-3으로 Lens가 이겼다'(입력 'RC Lens'). 기대(M1-23 재정의 — M1-21 이월): ok. M1-21이 'Lens'를 사전 별칭으로 등록해(D39 ②) 축약이 아니라 허용·치환되는 표기가 됐다(성만 쓴 선수 'Olise'는 사전에 없어 여전히 강등 — brief-case-short-name-player). M0-36 기대는 downgrade-line:4였다. D50(2026-10-17) 재정의: ok → downgrade-line:4,5 — 두 줄 모두 사실은 맞지만 문형 밖."
     },
     {
       "id": "brief-case-short-name-team-2",
@@ -721,7 +742,7 @@
         "short-name"
       ],
       "stage": "line",
-      "expected": "downgrade-line:5",
+      "expected": "downgrade-line:4,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -734,8 +755,8 @@
       "lines": [
         {
           "n": 4,
-          "code": "pass",
-          "why": "'Lens' — 사전 별칭(M1-21·D39 ②)이라 허용(brief-case-short-name-team과 같다)"
+          "code": "downgrade",
+          "why": "brief-case-short-name-team L4와 같은 문장 — 문형 밖 (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         },
         {
           "n": 5,
@@ -743,7 +764,7 @@
           "why": "'리그 페이즈 상위권에 올랐다' — prev 없는 '올랐다'는 변동 서술(D40 ③), Como 1907 숫자 함정"
         }
       ],
-      "note": "축약 팀 이름(두 번째) — M0-30 실제 출력(배치·짧은 판·effort low). L4 'Lens'. 기대(M1-23 재정의): downgrade-line:5 — L4 'Lens'는 사전 별칭이라 통과(M1-21 이월), L5 '상위권에 올랐다'는 prev 없는 '올랐다'(D40 ③)."
+      "note": "축약 팀 이름(두 번째) — M0-30 실제 출력(배치·짧은 판·effort low). L4 'Lens'. 기대(M1-23 재정의): downgrade-line:5 — L4 'Lens'는 사전 별칭이라 통과(M1-21 이월), L5 '상위권에 올랐다'는 prev 없는 '올랐다'(D40 ③). D50(2026-10-17) 재정의: downgrade-line:4,5 — L4는 사실이 맞지만 문형 밖."
     },
     {
       "id": "brief-case-leftover-word",
@@ -764,7 +785,7 @@
         "particle"
       ],
       "stage": "line",
-      "expected": "downgrade-line:1",
+      "expected": "downgrade-line:1,2,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -781,12 +802,17 @@
           "why": "'Matchday' — 입력 round 값의 일부지만 허용 목록(팀·선수·대회 이름) 밖. 'Dortmund과'는 조사 보정 대상"
         },
         {
+          "n": 2,
+          "code": "downgrade",
+          "why": "'88분과 90+2분에 연속 득점해 경기를 원점으로 돌렸다' — 사실은 맞지만 흐름 서술은 문형 밖 (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
+        },
+        {
           "n": 5,
-          "code": "pass",
-          "why": "'2위 Bayern(10점)보다 3점 앞섰다' — 13−10 계산값이 그 줄 근거 sBL의 두 숫자 차와 같아 허용(D40 ②, 사람 검토도 맞음). 3이 sBL pos 3으로 근거 숫자에 우연히 있는 함정도 있다"
+          "code": "downgrade",
+          "why": "'2위 Bayern(10점)보다 3점 앞섰다' — 계산(13−10)은 D40 ②대로 맞지만 괄호·'n점'은 문형 밖(문형: '2위 Bayern에 승점 3 앞선 선두다') (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         }
       ],
-      "note": "영문 일반어 잔존 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L1 'Matchday 5 경기는'. 기대: downgrade-line:1(L5 파생 숫자 '3점 앞섰다'는 그 줄 근거 sBL의 13−10과 같아 통과 — D40 ②, M1-20에서 확정)."
+      "note": "영문 일반어 잔존 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L1 'Matchday 5 경기는'. 기대: downgrade-line:1(L5 파생 숫자 '3점 앞섰다'는 그 줄 근거 sBL의 13−10과 같아 통과 — D40 ②, M1-20에서 확정). D50(2026-10-17) 재정의: downgrade-line:1,2,5 — L2·L5는 사실이 맞지만 문형 밖."
     },
     {
       "id": "brief-case-particle",
@@ -806,7 +832,7 @@
         "short-name"
       ],
       "stage": "line",
-      "expected": "downgrade-line:1,2",
+      "expected": "downgrade-line:1,2,3,4",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -820,7 +846,7 @@
         {
           "n": 1,
           "code": "downgrade",
-          "why": "'대파했다' — 지시문 목록('완파'·'역전승') 밖 평가어는 점수 차가 맞아도(7-0) 그 줄 강등(사용자 결정 2026-10-17 — M1-23 리뷰). 'Bayern가' 조사는 치환 뒤 '바이에른 뮌헨이'로 보정되는 대상(M1-21)"
+          "why": "'대파했다' — 지시문 목록('완파'·'역전승') 밖 평가어는 점수 차가 맞아도(7-0) 그 줄 강등(사용자 결정 2026-10-17 — M1-23 리뷰, D50 이후 문형 밖 술어로 걸린다). 'Bayern가' 조사는 치환 뒤 '바이에른 뮌헨이'로 보정되는 대상(M1-21)"
         },
         {
           "n": 2,
@@ -829,8 +855,13 @@
         },
         {
           "n": 3,
-          "code": "pass",
-          "why": "두 선수를 쉼표로 이은 한 문장, 원문 71자 → 치환 뒤 51자"
+          "code": "downgrade",
+          "why": "두 선수를 쉼표로 이은 줄 + '투입되어'·'60분 뛰고' — 사실은 맞지만 문형 밖 (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
+        },
+        {
+          "n": 4,
+          "code": "downgrade",
+          "why": "'순위를 3위로 끌어올렸다' — 사실(prev 7·pos 3)은 맞지만 술어가 문형 밖 (D50 닫힌 문법 — 2026-10-17 사용자 결정)"
         },
         {
           "n": 5,
@@ -838,7 +869,7 @@
           "why": "'프리미어리그' — 모델이 쓴 한글 대회 이름이 competitions.json nameKo와 같고 대상(EPL)이 입력에 있어 허용(D40 ④). '선두를 지켰다'는 prev 1·pos 1이라 사실 일치"
         }
       ],
-      "note": "조사 오류 + 축약 이름 — M0-30 실제 출력(배치·짧은 판·thinking 끔). L1 'Bayern가'(보정 대상)·'대파'(목록 밖 평가어), L2 'Olise'. 기대(M1-23 리뷰 반영): downgrade-line:1,2 — L1은 목록 밖 평가어 '대파'로 강등(사용자 결정 2026-10-17, M1-20 확정값 downgrade-line:2에서 바뀜). L5 '프리미어리그'는 competitions.json 공식 표기(nameKo)와 같고 대상이 입력에 있어 통과(D40 ④)."
+      "note": "조사 오류 + 축약 이름 — M0-30 실제 출력(배치·짧은 판·thinking 끔). L1 'Bayern가'(보정 대상)·'대파'(목록 밖 평가어), L2 'Olise'. 기대(M1-23 리뷰 반영): downgrade-line:1,2 — L1은 목록 밖 평가어 '대파'로 강등(사용자 결정 2026-10-17, M1-20 확정값 downgrade-line:2에서 바뀜). L5 '프리미어리그'는 competitions.json 공식 표기(nameKo)와 같고 대상이 입력에 있어 통과(D40 ④). D50(2026-10-17) 재정의: downgrade-line:1,2,3,4 — L3·L4는 사실이 맞지만 문형 밖."
     },
     {
       "id": "brief-case-score-winner-first",

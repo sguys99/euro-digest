@@ -1,6 +1,6 @@
 /**
- * 브리핑 자동 사실성 검사기 (M1-23 — PRD FR-22·FR-29 §9.4, D24·D28·D40). LLM이 쓴 "오늘의 5줄"을 **보낸 정형 입력**과 코드로
- * 대조한다. 비용 0·결정적 순수 함수 — I/O 없음(사전·대회 설정은 호출부가 읽어 넘긴다).
+ * 브리핑 자동 사실성 검사기 (M1-23 → **닫힌 문법 재설계** — PRD FR-22·FR-29 §9.4, D24·D28·D40·D50). LLM이 쓴 "오늘의 5줄"을
+ * **보낸 정형 입력**과 코드로 대조한다. 비용 0·결정적 순수 함수 — I/O 없음(사전·대회 설정은 호출부가 읽어 넘긴다).
  *
  * FR-29 순서: 출력 스키마(brief.ts `parseBriefOutput` — 관용 파싱 D40 ⑤) → **코드 검증(여기)** → 출력 전체 실패면 1회 재시도
  * (스키마 실패·max_tokens와 합쳐 1회 — D40 ①) → 그래도 실패하면 템플릿. 줄 단위 불일치는 재시도 없이 그 줄만 템플릿.
@@ -11,55 +11,37 @@
  *   한자·가나 혼입(M0-30 '出场') — 한 글자라도 있으면 실패
  *
  * ── 줄 단위 (실패 = 그 줄만 템플릿, 재시도 없음 — 호출 증가는 CLAUDE.md §1-3 승인 사항) ─────────
- *   원칙: **알아본 서술만 통과시킨다**(허용 목록 방식 — M1-23 리뷰). 역할을 알아보지 못한 서술은 확인할 수 없어 강등한다.
- *   이름   영문 토큰 허용 목록 = names.ts `briefNameAllowlist(보낸 입력)` + 한국 선수 블록 이름. 남은 라틴 낱말은 'PK'만 허용
- *          ('Olise'처럼 성만 쓴 축약·'Matchday' 같은 일반어는 강등 — 사전 별칭 'Lens'·'Bayern'은 허용).
- *          모델이 쓴 한글 고유명사(D40 ④)는 사전(names.ko `ko`)·대회(nameKo·shortKo) 공식 표기와 같고 그 대상이 입력에 있으면 허용,
- *          공식 표기의 일부('올리세'·'바이에른')·다른 음역('유니온 베를린' — 사전 '우니온 베를린')·별칭('맨시티')은 강등.
- *          언급한 이름(팀·선수·대회)은 그 줄 근거(r) 항목에 있어야 한다. 결과·순위·득점 서술의 주어 자리에 사전에 없는 한글
- *          낱말(모델 음역)이 오면 확인할 수 없어 강등. 'T의 X'·'X가 T 소속으로'는 X가 T 선수일 때만, 결과 절의 대회 이름은 그 경기
- *          대회일 때만, 순위 절의 대회 이름은 그 팀 순위표 대회일 때만
- *   근거   r의 id가 입력에 있어야 한다
- *   문장   한 줄 한 문장('다.'로 끝남, 문장 안 마침표·느낌표·물음표 없음), 줄바꿈 없음(저장 스키마가 거부), 치환 뒤 80자 이하(D40 ⑤ —
- *          brief.ts `briefLinesOverLimit`과 같은 판정)
- *   승패   알아본 결과 동사('꺾었다·이겼다·눌렀다·제압했다·졌다·패했다·비겼다·맞섰다·끝났다·승리·역전승 …')의 주어가 실제 승자·
- *          패자(brief-case-winner-swap — 주어가 여럿이면 'A가 1-0, B가 2-1로 각각 이겼다'처럼 모두), 목적어('를'·'에'·'와'·'상대로')는
- *          그 앞 주어의 상대. 경기 점수가 있거나 상대를 목적어로 쓴 절에 알아본 결과 동사가 없으면 강등(`result-verb-unknown` — '제쳤다'·
- *          '웃었다'·'무너졌다'·'발목을 잡혔다' 같은 동의어로는 누가 이겼는지 확인할 수 없다). 승부차기 경기의 승자는 승부차기 결과이고
- *          '비겼다' 금지(M1-19 이월), 무승부 동사는 ft 동점일 때만, 연장(승부차기 없음)에서 이긴 팀이 90분에 이미 앞섰거나 90분 점수가
- *          없으면 이긴 것처럼 쓰지 않는다(M1-20 — 두 경기 합산 연장일 수 있다)
- *   점수   입력의 홈-원정 'a-b' 또는 **주어 팀 점수 먼저**만 인정(순서를 무시하면 brief-case-score-reversed가 통과한다). 앞 낱말로
- *          종류를 가린다 — '전반 3-0' = ht, '90분' = regular, '승부차기에서 4-3'·괄호 '(4-3)' = pens, 그 밖 = ft. 'A와 B의 경기는
- *          x-y로'처럼 두 팀을 나란히 쓰면 앞 팀 점수 먼저, 종료 동사만 있는 절('X가 Y와의 경기를 1-0으로 마쳤다')은 주어 점수 먼저.
- *          경기 중 점수('0-1로 뒤지다'·'전반을 2-0으로 앞섰다')는 주어 점수 먼저로 읽고 전반 점수·득점 순서에 그 점수가 있어야 하며
- *          '앞서' = 주어가 앞섬 · '뒤지' = 주어가 뒤짐
- *   득점   (숫자 없이도) 'X가 골을 넣었다·득점했다·골망을 흔들었다' ⇒ X에게 자책골이 아닌 골 · 'X의 골로' ⇒ X의 그 팀 쪽 골 ·
- *          자책골은 그 절에 '자책'이 있을 때만 맞는 골이다 · '도움'·'도왔다' ⇒ 그 선수에게 도움, 'Y의 결승골을 도왔다' ⇒ 그 골의
- *          도움이 주어 · '만회골' ⇒ 진 팀의 골. 한국 선수 블록이 있으면 그 골·도움 수로 확인
- *   파생   (사용자 결정 2026-10-17 — 정의대로 허용 + 검증) '완파' ⇒ 3골 차 이상 · '해트트릭'·'n골'·'골 n개'·'n번 골망' ⇒ 그 선수 goals
- *          항목 수(자책골 제외 — 팀·시간대별 '후반 4골' 불허) · '결승골' ⇒ 이긴 팀의 (진 팀 점수+1)번째 골·자책골 아님 · '동점골' ⇒
- *          비긴 경기의 마지막 골·자책골 아님 · '역전승' ⇒ ht 또는 득점 순서 · round 낱말(결승·4강·8강·16강·플레이오프) ⇒ 근거 경기
- *          round · '홈에서'·'홈 팬들 앞에서'·'안방'·'원정(길)에서'·'적지' ⇒ 주어 팀의 홈·원정 · '연장 끝에' ⇒ regular가 있고 이긴 팀이
- *          90분에 앞서지 않음 · 승점 차 'X는 Y보다 n점 앞섰다/뒤졌다' ⇒ 방향까지 · '승점 3을 챙겼다'·'승점을 나눠 가졌다' ⇒ 리그 경기
- *          승리·무승부(녹아웃 없음). **지시문 목록('완파'·'역전승') 밖 평가어('대파'·'대승'·'신승'·'완패' …)는 점수 차가 맞아도 강등**
- *          (사용자 결정 2026-10-17), 정의할 수 없는 평가·흐름 서술('압도'·'주도'·'연승'·'반등'·'따라붙었다' …)도 강등
- *   숫자   종류를 알아본 숫자만 — 점수·분·순위·승점·득실차·경기 수·골/도움 수·라운드. 파생 숫자(D40 ②)는 전용 규칙(승점 차·점수 차
- *          '3골 차'·두 팀 골 합 '7골을 주고받은')만 허용하고, 그 밖의 숫자('슈팅 7개'·'관중 9명'·'시즌 2호골')는 강등
- *   순위   prev 없는 변동 서술('올랐다·상승·하락·도약·지켰다·유지·되찾았다·꿰찼다·밀렸다·끌어내렸다')과 도착·폭('2위로'·'선두로'·
- *          '한 계단')은 강등(D40 ③) — '1위에 올라 있다'(상태)는 허용. 'n위'·'선두'·'승점 n'은 그 팀의 행과 같아야 하고 '공동 n위'는
- *          같은 순위일 때만, 'A와 B가 n위와 m위'는 순서대로. '최하위'·'강등권'은 근거 없음(입력 순위표는 상위권만)
- *   분     득점 서술의 분은 그 선수(또는 팀)의 득점 시각, 출전 서술의 분은 한국 선수 기록(subOn·subOff·minutes). '후반 10분'처럼
- *          바꿔 쓴 분은 강등(지시문 '[사실]'). 출전 서술('출전했다'·'나섰다')은 출전 시간이 있어야 한다
- *   기타   '무실점' ⇒ 상대 점수 0 · 'n라운드' ⇒ 근거 경기 matchday 또는 순위표 경기 수 · '두 골'처럼 고유어 수사도 숫자로 센다
+ *   원칙(사용자 결정 2026-10-17 — D50): **허용 문형만 통과**. 한 줄 = 허용 절 1~2개(brief-grammar.ts — 지시문 v0.2의 [문형] 목록과
+ *   같다). 문형 밖의 낱말·술어·수식이 하나라도 있으면 `grammar-unknown`(근거 = 처음 읽지 못한 낱말)으로 강등한다 — 이전 판(틀린 표현
+ *   목록)은 자유 문장의 새 표현('패배를 안겼다'·'웃었다'·'수비를 지켰다' …)이 계속 빠져나갔다(리뷰 1·2회차 약 270문장).
+ *   순서: ① 문장 형식·문자·이름 사전 검사 ② 이름을 `⟨i⟩`로 바꾼 뼈대를 문법으로 분석 ③ 분석된 절마다 슬롯 값을 입력과 대조 —
+ *   분석이 여럿이면 입력과 맞는 분석이 하나라도 있으면 통과, 없으면 사유가 가장 적은 분석의 사유를 남긴다.
+ *   ① 사전 검사
+ *     근거   r의 id가 입력에 있어야 한다
+ *     문장   한 줄 한 문장('다.'로 끝남, 문장 안 마침표·느낌표·물음표 없음), 줄바꿈 없음, 치환 뒤 80자 이하(D40 ⑤ — brief.ts
+ *            `briefLinesOverLimit`과 같은 판정)
+ *     문자   한자·가나·키릴 등 다른 문자·그림 문자 없음, 이름 밖 라틴 낱말은 'PK'만
+ *     이름   영문 = 허용 목록(names.ts `briefNameAllowlist(보낸 입력)` + 한국 선수 블록), 한글 = 사전(names.ko `ko`)·대회(nameKo·shortKo)
+ *            공식 표기이고 대상이 입력에 있을 때만(D40 ④ — 부분·띄어쓰기 변형·별칭·다른 음역은 강등), 언급한 이름은 그 줄 근거(r)
+ *            항목에 있어야 한다. 사전 밖 한글 낱말(모델 음역)은 이름으로 읽히지 않아 ②에서 문법 밖이 된다
+ *   ③ 슬롯 대조(절 종류 — brief-grammar.ts 머리 주석)
+ *     결과   주어가 실제 승자·패자(승부차기 경기의 승자는 승부차기 결과 — 그 경기는 '승부차기' 수식이 있어야 하고 '비겼다' 금지),
+ *            목적어·짝은 그 경기 상대, 점수는 홈-원정 또는 주어 팀 먼저(D30 — 'A와 B의 경기는'은 앞 팀 먼저), 90분에 이미 앞선 연장
+ *            승리·90분 점수가 없는 연장 승리는 이긴 것처럼 쓰지 않음(M1-20 — '경기는 연장까지 h-a로 끝났다'), '완파' = 3골 차 이상,
+ *            '역전승'·'역전패' = ht 또는 득점 순서로 이긴 팀이 뒤진 적, 수식(대회·홈/원정·{상대} 원정·라운드·연장 끝에·승부차기·
+ *            {선수}의 결승골로·해트트릭을 앞세워·n골을 주고받은 끝에·동점골로·n-m으로 뒤지다)은 정의대로
+ *     득점   그 선수의 근거 경기 골(자책골은 '자책골' 꼴에서만)·분·PK·도움 선수, 선제골·결승골(이긴 팀의 (진 팀 점수+1)번째 골)·
+ *            동점골(비긴 경기의 마지막 골)·만회골(진 팀이 뒤진 상태에서 넣은 골), 골·도움 수, '{팀}의 {선수}' 소속, '{상대}전에서'
+ *     한국 선수 블록 기록(선발·교체 투입 분·출전 분·교체 아웃·풀타임·결장)과 일치, '득점은 없었다' = 골 0
+ *     순위   그 팀의 근거 순위표 행(순위·승점·공동 — 같은 순위 2팀 이상), 변동·유지 꼴은 전일 순위(prev)가 있을 때만(D40 ③),
+ *            승점 차(D40 ②)는 방향까지, 대회 이름은 그 순위표의 대회
+ *     분     '전반'·'후반'·'연장'은 분과 맞아야 한다(전반 ≤ 45 · 후반 46~90 · 연장 ≥ 91 — 바꿔 계산한 분은 숫자가 달라 걸린다)
  *
  * ── 경고 (강등 아님 — 관찰 주간 M1-43 지표) ─────────────────────────────────
- *   쉼표로 절을 이은 줄·사실(술어) 셋 이상 줄·한 줄 두 경기 이상·괄호·따옴표·마침표 없는 끝.
- *   근거: M0-30 실제 출력에서 이 문체 위반 줄은 모두 사실이 맞았다(사람 검토 ok) — 강등하면 정상 줄을 잃는다(과잉 강등). 길이는 이미
- *   80자 상한이 묶는다. 관찰 주간에 빈도를 보고 강등으로 올릴지 정한다.
+ *   마침표 없는 끝('…다' — 저장은 그대로) · 한 줄 두 경기(문법 안 두 절이 서로 다른 경기).
  *
- * 남은 한계(보고 — M1-43 관찰): 주어·목적어가 아닌 자리의 사전 밖 한글 음역(예: '…의 홈 구장'에 붙은 음역)은 잡지 못한다 ·
- * '-은/-는' 주어 후보는 절 첫머리만 본다(관형형 어미와 모양이 같다) · '연속 득점'·'한때 앞섰다'의 득점 순서 세부는 앞섬·뒤짐
- * 방향만 본다 · 한국 선수 블록(`korean`)은 M0 입력 형식 기준(M3-03이 확정) · 어휘 표는 brief-check-lexicon.ts(관찰 주간에 고치는 곳).
+ * 남은 한계(보고 — M1-43 관찰): 문법 안의 문장도 입력 대조가 근거 항목(r) 범위로만 이뤄진다(r에 없는 경기를 쓰면 이름 검사가 막는다) ·
+ * 한국 선수 블록(`korean`)은 M0 입력 형식 기준(M3-03이 확정) · 허용 문형을 늘리면 지시문 v0.2 [문형]도 함께 고친다.
  */
 import type { CompetitionConfig, CompId } from "@/lib/schema";
 
@@ -69,61 +51,25 @@ import {
   parseBriefOutput,
   type BriefOutputLine,
 } from "./brief";
+import {
+  KO_UNOFFICIAL_FORMS,
+  LATIN_ALLOWED_TOKENS,
+  NAME_SUFFIX,
+} from "./brief-check-lexicon";
+import {
+  buildSkeleton,
+  parseBriefLine,
+  skeletonWordAt,
+  type Bag,
+  type LineParse,
+  type ParsedClause,
+} from "./brief-grammar";
 import type {
   BriefInput,
   BriefInputMatch,
   BriefInputStandingRow,
   BriefInputStandings,
 } from "./brief-input";
-import {
-  ADNOMINAL_RESULT_WORDS,
-  APPEARANCE_CONTEXT,
-  ASSIST,
-  CLEAN_SHEET,
-  COMEBACK,
-  COMEBACK_LOSS,
-  CONNECTIVE_NOUN_EXCEPTIONS,
-  COUNT_UNITS,
-  DRAW_VERB,
-  END_VERB,
-  EVAL_UNSUPPORTED,
-  EXTRA_TIME,
-  EXTRA_TIME_DECIDED,
-  GAINED_POINTS,
-  GOAL_CONTEXT,
-  HISTORY_UNSUPPORTED,
-  KO_UNOFFICIAL_FORMS,
-  KOREAN_NUMERALS,
-  LATIN_ALLOWED_TOKENS,
-  LEVEL_VERB,
-  LOSE_VERB,
-  MARGIN_WORDS,
-  MOVE_DOWN,
-  MOVE_SAME,
-  MOVE_UP,
-  NAME_SUFFIX,
-  NO_ASSIST,
-  NO_GOAL,
-  NON_ENTITY_WORDS,
-  OBJECT_PARTICLES,
-  PENALTY,
-  RANK_ARRIVAL,
-  RANK_CONTEXT,
-  RANK_STATE,
-  RANK_STEPS,
-  ROUND_WORDS,
-  RUNNING_LEAD,
-  RUNNING_TRAIL,
-  SCORING,
-  SCORING_NOUN,
-  SHOOTOUT,
-  SUB_OFF,
-  SUB_ON,
-  SUBJECT_PARTICLES,
-  VENUE_AWAY,
-  VENUE_HOME,
-  WIN_VERB,
-} from "./brief-check-lexicon";
 import {
   briefCompLabel,
   briefNamesFromIndex,
@@ -192,7 +138,9 @@ export interface BriefCheckContext {
 export type BriefWholeReason = "korean-ratio" | "han";
 
 /**
- * 줄 강등 사유 코드(로그·M1-43 검수·M1-24 회귀 비교용 — 이름을 바꾸면 회귀 비교 기준이 깨진다).
+ * 줄 강등 사유 코드(로그·M1-43 검수·M1-24 회귀 비교용). 닫힌 문법 재설계(D50)로 `grammar-unknown`이 생기고, 거부 목록 판의
+ * 코드(name-unknown·result-verb-unknown·eval-unsupported·history-unsupported·count-unsupported·number-unsupported·goal-diff·
+ * played)는 모두 `grammar-unknown`이 대신한다.
  */
 export type BriefLineReasonCode =
   | "ref-unknown"
@@ -207,9 +155,8 @@ export type BriefLineReasonCode =
   | "ko-name-unofficial"
   | "ko-name-not-in-input"
   | "name-not-in-refs"
-  | "name-unknown"
+  | "grammar-unknown"
   | "subject-unknown"
-  | "result-verb-unknown"
   | "comp-mismatch"
   | "affiliation"
   | "winner-mismatch"
@@ -224,11 +171,8 @@ export type BriefLineReasonCode =
   | "shootout"
   | "comeback"
   | "margin"
-  | "eval-unsupported"
-  | "history-unsupported"
   | "goal-count"
   | "assist-count"
-  | "count-unsupported"
   | "decisive-goal"
   | "equaliser"
   | "opening-goal"
@@ -241,18 +185,10 @@ export type BriefLineReasonCode =
   | "rank-tie"
   | "rank-move-no-prev"
   | "rank-move"
-  | "points"
-  | "goal-diff"
-  | "played"
-  | "number-unsupported";
+  | "points";
 
 /** 경고 코드 — 강등하지 않는다(머리 주석 "경고") */
-export type BriefLineWarnCode =
-  | "style-comma-clause"
-  | "style-many-facts"
-  | "style-punctuation"
-  | "sentence-no-period"
-  | "style-multi-match";
+export type BriefLineWarnCode = "sentence-no-period" | "style-multi-match";
 
 export interface BriefLineIssue<C extends string> {
   code: C;
@@ -266,6 +202,8 @@ export interface BriefLineCheck {
   ok: boolean;
   reasons: BriefLineIssue<BriefLineReasonCode>[];
   warnings: BriefLineIssue<BriefLineWarnCode>[];
+  /** 고른 분석의 문형(절 종류 — 'win+korean') · 문법 밖이면 null */
+  grammar: string | null;
 }
 
 export interface BriefWholeCheck {
@@ -683,7 +621,7 @@ function buildModel(
   };
 }
 
-// ─── 줄 해석 ──────────────────────────────────────────────────────────────
+// ─── 이름 찾기 ────────────────────────────────────────────────────────────
 
 interface Mention {
   start: number;
@@ -693,22 +631,6 @@ interface Mention {
   kind: Kind | null;
   script: "latin" | "hangul";
   official: boolean;
-  /** 바로 뒤 붙은 한글(조사·접미) */
-  particle: string;
-}
-
-/** 주어 묶음 — 이름 목록('A, B와 C가') 또는 사전에 없는 한글 낱말(members null) */
-interface SubjectGroup {
-  pos: number;
-  members: Mention[] | null;
-  word?: string;
-}
-
-interface Clause {
-  start: number;
-  end: number;
-  mentions: Mention[];
-  subjects: SubjectGroup[];
 }
 
 const MASK_CHAR = "\uE000";
@@ -717,8 +639,6 @@ function findMentions(text: string, model: CheckModel): Mention[] {
   const out: Mention[] = [];
   const taken = (s: number, e: number) =>
     out.some((m) => s < m.end && e > m.start);
-  const particleAt = (end: number) =>
-    /^[가-힣]+/.exec(text.slice(end))?.[0] ?? "";
   if (model.koRe) {
     for (const m of text.matchAll(new RegExp(model.koRe.source, "gu"))) {
       const target = model.ko.get(m[0]);
@@ -731,7 +651,6 @@ function findMentions(text: string, model: CheckModel): Mention[] {
         kind: target.kind,
         script: "hangul",
         official: target.official,
-        particle: particleAt(m.index + m[0].length),
       });
     }
   }
@@ -750,23 +669,10 @@ function findMentions(text: string, model: CheckModel): Mention[] {
         kind: target?.kind ?? null,
         script: "latin",
         official: true,
-        particle: particleAt(end),
       });
     }
   }
   return out.sort((a, b) => a.start - b.start);
-}
-
-/** '두 골'·'세 골 차' → '2 골'·'3 골 차'(글자 수 그대로 — 위치가 원문과 같다). 세는 단위 앞의 고유어 수사만 */
-function normalizeNumerals(masked: string): string {
-  let out = masked;
-  for (const [word, digits] of KOREAN_NUMERALS) {
-    out = out.replace(
-      new RegExp(`(?<![가-힣])${word}(?=\\s?${COUNT_UNITS})`, "gu"),
-      digits,
-    );
-  }
-  return out;
 }
 
 function maskText(text: string, mentions: readonly Mention[]): string {
@@ -779,90 +685,7 @@ function maskText(text: string, mentions: readonly Mention[]): string {
   return out + text.slice(last);
 }
 
-/** 절 끝(연결 어미 낱말 뒤 · 마침표 뒤) 위치 */
-function clauseBreaks(masked: string): number[] {
-  const breaks: number[] = [];
-  for (const m of masked.matchAll(/[^\s]+/gu)) {
-    const word = m[0].replace(/[,.]+$/u, "");
-    const end = m.index + m[0].length;
-    if (/[.!?]$/u.test(m[0]) && end < masked.trimEnd().length) {
-      breaks.push(end);
-      continue;
-    }
-    if (!/^[가-힣]{2,}$/u.test(word)) continue;
-    if (CONNECTIVE_NOUN_EXCEPTIONS.has(word)) continue;
-    if (/(?:고|며|으며|면서|지만|는데|으나)$/u.test(word)) breaks.push(end);
-  }
-  return breaks;
-}
-
-/** 이름 사이가 목록 이음('A, B'·'A·B'·'A와 B')인가 */
-function listJoined(prev: Mention, next: Mention, text: string): boolean {
-  const between = text.slice(prev.end + prev.particle.length, next.start);
-  if (prev.particle === "")
-    return /^[\s,·]*$/u.test(between) && between.length > 0;
-  if (
-    prev.particle === "와" ||
-    prev.particle === "과" ||
-    prev.particle === "및"
-  )
-    return /^\s*$/u.test(between);
-  return false;
-}
-
-function buildClauses(
-  text: string,
-  masked: string,
-  mentions: readonly Mention[],
-): Clause[] {
-  const bounds = [0, ...clauseBreaks(masked), masked.length];
-  const clauses: Clause[] = [];
-  for (let i = 0; i + 1 < bounds.length; i += 1) {
-    const start = bounds[i]!;
-    const end = bounds[i + 1]!;
-    if (end <= start) continue;
-    const ms = mentions.filter((m) => m.start >= start && m.start < end);
-    const subjects: SubjectGroup[] = [];
-    ms.forEach((m, j) => {
-      if (!SUBJECT_PARTICLES.has(m.particle)) return;
-      const members = [m];
-      for (let k = j - 1; k >= 0; k -= 1) {
-        if (!listJoined(ms[k]!, members[0]!, text)) break;
-        members.unshift(ms[k]!);
-      }
-      // 비공식 한글 표기('올리세가')가 낀 묶음은 대상을 확인할 수 없다 — 사전 밖 낱말과 같게 본다
-      if (members.some((x) => x.key === null)) {
-        subjects.push({
-          pos: m.start,
-          members: null,
-          word: m.text + m.particle,
-        });
-      } else subjects.push({ pos: m.start, members });
-    });
-    // 사전에 없는 한글 낱말 + 주어 조사(모델 음역 후보)
-    const seg = masked.slice(start, end);
-    for (const w of seg.matchAll(
-      /(?<![가-힣\uE000\p{Script=Latin}\p{N}])([가-힣]{2,})(이|가|은|는)(?![가-힣])/gu,
-    )) {
-      const base = w[1]!;
-      const pos = start + w.index;
-      if (NON_ENTITY_WORDS.has(base)) continue;
-      // '-은'·'-는'은 관형형 어미('주고받은 끝에'·'선두를 달리는')와 모양이 같다 — 주제어 자리인 절 첫머리만 이름 후보로 본다
-      if (
-        (w[2] === "는" || w[2] === "은") &&
-        !/^[\s,]*$/u.test(masked.slice(start, pos))
-      )
-        continue;
-      if (/^(?:같|없|많|높|깊|나란|각각|모두|함께)/u.test(base)) continue;
-      subjects.push({ pos, members: null, word: w[0] });
-    }
-    subjects.sort((a, b) => a.pos - b.pos);
-    clauses.push({ start, end, mentions: ms, subjects });
-  }
-  return clauses;
-}
-
-// ─── 줄 검사 ──────────────────────────────────────────────────────────────
+// ─── 줄 상태 ──────────────────────────────────────────────────────────────
 
 interface LineState {
   model: CheckModel;
@@ -870,19 +693,22 @@ interface LineState {
   masked: string;
   refs: readonly string[];
   mentions: Mention[];
-  clauses: Clause[];
   reasons: BriefLineIssue<BriefLineReasonCode>[];
   warnings: BriefLineIssue<BriefLineWarnCode>[];
-  /** 가린 텍스트에서 이미 해석한 숫자 구간 */
-  consumed: Array<[number, number]>;
   refMatches: MatchModel[];
   refStandings: StandingsModel[];
   refKorean: KoreanModel[];
 }
 
+type Issues = BriefLineIssue<BriefLineReasonCode>[];
+
+function push(list: Issues, code: BriefLineReasonCode, detail?: string): void {
+  if (list.some((r) => r.code === code && r.detail === detail)) return;
+  list.push(detail === undefined ? { code } : { code, detail });
+}
+
 function fail(s: LineState, code: BriefLineReasonCode, detail?: string): void {
-  if (s.reasons.some((r) => r.code === code && r.detail === detail)) return;
-  s.reasons.push(detail === undefined ? { code } : { code, detail });
+  push(s.reasons, code, detail);
 }
 
 function warn(s: LineState, code: BriefLineWarnCode, detail?: string): void {
@@ -890,102 +716,11 @@ function warn(s: LineState, code: BriefLineWarnCode, detail?: string): void {
   s.warnings.push(detail === undefined ? { code } : { code, detail });
 }
 
-function consume(s: LineState, start: number, end: number): void {
-  s.consumed.push([start, end]);
-}
-
-function isConsumed(s: LineState, start: number, end: number): boolean {
-  return s.consumed.some(([a, b]) => start < b && end > a);
-}
-
-/** 절 안 위치 p 앞의 가장 가까운 주어 묶음 → 없으면 절 안 뒤쪽 첫 묶음 → 없으면 앞 절에서 이어받은 주어 */
-function subjectFor(
-  s: LineState,
-  clauseIndex: number,
-  p: number,
-): SubjectGroup | null {
-  const c = s.clauses[clauseIndex]!;
-  const before = c.subjects.filter((g) => g.pos < p);
-  if (before.length > 0) return before.at(-1)!;
-  const after = c.subjects.find((g) => g.pos >= p);
-  if (after) return after;
-  for (let i = clauseIndex - 1; i >= 0; i -= 1) {
-    const last = s.clauses[i]!.subjects.at(-1);
-    if (last) return last;
-  }
-  return null;
-}
-
-/** 대상 key를 가진 근거 경기와 그 쪽 */
-function matchOfTeam(
-  s: LineState,
-  team: string,
-): { match: MatchModel; side: Side } | null {
-  for (const match of s.refMatches) {
-    if (match.home === team) return { match, side: "home" };
-    if (match.away === team) return { match, side: "away" };
-  }
-  return null;
-}
-
-/** 선수 key → 그 선수가 뛴 근거 경기의 팀 key(한국 선수 블록 → 득점·도움 목록 — 자책골은 상대 팀 소속) */
-function teamOfPlayer(s: LineState, player: string): string | null {
-  for (const k of s.refKorean) if (k.player === player) return k.team;
-  for (const k of s.model.korean.values())
-    if (k.player === player) return k.team;
-  const keyOf = (name: string | undefined) =>
-    name ? s.model.latin.get(foldName(name))?.key : undefined;
-  for (const match of s.refMatches) {
-    for (const g of match.m.goals ?? []) {
-      const scorer = keyOf(g.player) === player;
-      if (!scorer && keyOf(g.assist) !== player) continue;
-      const scoringTeam = g.team === match.m.home ? match.home : match.away;
-      const own = scorer && g.type === "own_goal";
-      return own
-        ? scoringTeam === match.home
-          ? match.away
-          : match.home
-        : scoringTeam;
-    }
-  }
-  return null;
-}
-
-/** 묶음 → 팀 key 목록(선수는 소속 팀으로). 모르는 낱말이면 null */
-function groupTeams(s: LineState, g: SubjectGroup): string[] | null {
-  if (!g.members) return null;
-  const out: string[] = [];
-  for (const m of g.members) {
-    if (m.kind === "team" && m.key) out.push(m.key);
-    else if (m.kind === "player" && m.key) {
-      const t = teamOfPlayer(s, m.key);
-      if (t) out.push(t);
-    }
-  }
-  return out;
-}
-
-function pairEq(a: Pair, h: number, x: number): boolean {
-  return a.home === h && a.away === x;
-}
-
-/** 'a-b'가 그 점수(홈-원정)와 맞는가 — 홈-원정 순서 또는 주어 쪽 먼저 */
-function scoreMatches(
-  pair: Pair,
-  a: number,
-  b: number,
-  subjectSide: Side | null,
-): "ok" | "order" | "mismatch" {
-  if (pairEq(pair, a, b)) return "ok";
-  if (subjectSide === "away" && pairEq(pair, b, a)) return "ok";
-  if (pairEq(pair, b, a)) return "order";
-  return "mismatch";
-}
+// ─── ① 사전 검사 ──────────────────────────────────────────────────────────
 
 function lineRefs(s: LineState): void {
-  const { model } = s;
   for (const r of s.refs) {
-    if (!model.ids.has(r)) fail(s, "ref-unknown", r);
+    if (!s.model.ids.has(r)) fail(s, "ref-unknown", r);
   }
 }
 
@@ -1005,12 +740,6 @@ function lineSentence(s: LineState): void {
     if (/다$/u.test(body)) warn(s, "sentence-no-period");
     else fail(s, "sentence-form");
   }
-  if (/[()[\]"'“”‘’「」『』]/u.test(body)) warn(s, "style-punctuation");
-  // 쉼표로 절을 이음(연결 어미 바로 뒤 쉼표) · 술어 셋 이상
-  if (/[가-힣](?:고|며|으며|면서|지만|는데),/u.test(body))
-    warn(s, "style-comma-clause");
-  if (s.clauses.length >= 3)
-    warn(s, "style-many-facts", String(s.clauses.length));
 }
 
 function lineScripts(s: LineState): void {
@@ -1052,447 +781,141 @@ function lineNames(s: LineState): void {
   }
 }
 
-/** 결과 동사 하나 */
-interface ResultClaim {
-  type: "win" | "lose" | "draw" | "level" | "end";
-  pos: number;
-  end: number;
-  word: string;
+// ─── ③ 슬롯 대조 — 공통 ───────────────────────────────────────────────────
+
+/** 한 분석의 대조 환경 */
+interface Env {
+  s: LineState;
+  issues: Issues;
 }
 
-function resultClaims(seg: string, offset: number): ResultClaim[] {
-  const out: ResultClaim[] = [];
-  const add = (re: RegExp, type: ResultClaim["type"]) => {
-    for (const m of seg.matchAll(new RegExp(re.source, "gu"))) {
-      const pos = offset + m.index;
-      if (out.some((c) => pos < c.end && pos + m[0].length > c.pos)) continue;
-      const word = /^[^\s,.]+/u.exec(seg.slice(m.index))?.[0] ?? m[0];
-      out.push({ type, pos, end: pos + m[0].length, word });
-    }
-  };
-  // 패배를 먼저(역전패·완패가 승리 낱말 '역전'·'완파'와 겹치지 않게)
-  add(LOSE_VERB, "lose");
-  add(WIN_VERB, "win");
-  add(DRAW_VERB, "draw");
-  add(LEVEL_VERB, "level");
-  add(END_VERB, "end");
-  return out.sort((a, b) => a.pos - b.pos);
+function bad(env: Env, code: BriefLineReasonCode, detail?: string): void {
+  push(env.issues, code, detail);
 }
 
-/** 결과 동사의 주어 — 관형형이면 바로 뒤 이름, 명사형('X의 7-0 승리')이면 앞의 '의' 이름, 아니면 subjectFor */
-function claimSubject(
+function mentionAt(env: Env, bag: Bag, key: string): Mention | null {
+  const i = bag[key];
+  return typeof i === "number" ? (env.s.mentions[i] ?? null) : null;
+}
+
+function keyAt(env: Env, bag: Bag, key: string): string | null {
+  return mentionAt(env, bag, key)?.key ?? null;
+}
+
+function textAt(env: Env, bag: Bag, key: string): string {
+  return mentionAt(env, bag, key)?.text ?? key;
+}
+
+function pairAt(bag: Bag, key: string): [number, number] | null {
+  const v = bag[key];
+  return Array.isArray(v) &&
+    v.length === 2 &&
+    typeof v[0] === "number" &&
+    typeof v[1] === "number"
+    ? [v[0], v[1]]
+    : null;
+}
+
+function numAt(bag: Bag, key: string): number | null {
+  const v = bag[key];
+  return typeof v === "number" ? v : null;
+}
+
+function strAt(bag: Bag, key: string): string | null {
+  const v = bag[key];
+  return typeof v === "string" ? v : null;
+}
+
+function strListAt(bag: Bag, key: string): string[] | null {
+  const v = bag[key];
+  return Array.isArray(v) && v.every((x) => typeof x === "string")
+    ? (v as string[])
+    : null;
+}
+
+/** 이름 묶음(순번 목록) → key 목록 */
+function groupKeys(env: Env, bag: Bag, key: string): string[] | null {
+  const v = bag[key];
+  if (!Array.isArray(v)) return null;
+  const keys: string[] = [];
+  for (const i of v) {
+    const k = typeof i === "number" ? env.s.mentions[i]?.key : null;
+    if (!k) return null;
+    keys.push(k);
+  }
+  return keys;
+}
+
+/** 근거 경기에서 그 팀의 경기·쪽 */
+function matchOfTeam(
   s: LineState,
-  ci: number,
-  claim: ResultClaim,
-): SubjectGroup | null {
-  const c = s.clauses[ci]!;
-  if (ADNOMINAL_RESULT_WORDS.has(claim.word)) {
-    const after = s.masked.slice(claim.pos + claim.word.length);
-    const head = c.mentions.find(
-      (m) =>
-        m.start >= claim.pos + claim.word.length &&
-        /^\s*$/u.test(s.masked.slice(claim.pos + claim.word.length, m.start)),
-    );
-    if (head && /^\s*\uE000/u.test(after)) {
-      const g = c.subjects.find((x) => x.members?.includes(head));
-      return g ?? { pos: head.start, members: [head] };
-    }
-  }
-  if (/^(?:승리|대승|압승|역전승|패배|완패|무승부)/u.test(claim.word)) {
-    // 소유 팀('Bayern의 7-0 승리') — 선수 소유('X의 결승골로 … 역전승')는 주어가 아니다
-    const owner = [...c.mentions]
-      .reverse()
-      .find(
-        (m) => m.end <= claim.pos && m.particle === "의" && m.kind === "team",
-      );
-    const nearestSubject = c.subjects.filter((g) => g.pos < claim.pos).at(-1);
-    if (owner && (!nearestSubject || nearestSubject.pos < owner.start)) {
-      return { pos: owner.start, members: [owner] };
-    }
-  }
-  return subjectFor(s, ci, claim.pos);
-}
-
-interface ClauseResult {
-  /** 결과 동사의 (첫) 주어 팀(그 경기·쪽) */
-  subject: { team: string; match: MatchModel; side: Side } | null;
-  /** 절의 결과 서술(이겼다·졌다·비겼다·맞섰다·끝났다·승리 …) */
-  claims: ResultClaim[];
-}
-
-/** 결과 동사의 주어 묶음들 — 관형형·명사형은 하나, 그 밖은 앞 결과 동사 뒤~이 동사 앞의 주어 묶음 모두('A가 1-0, B가 2-1로 각각 이겼다') */
-function claimSubjects(
-  s: LineState,
-  ci: number,
-  claim: ResultClaim,
-  prevEnd: number,
-): SubjectGroup[] {
-  const c = s.clauses[ci]!;
-  const single = claimSubject(s, ci, claim);
-  const adnominal = ADNOMINAL_RESULT_WORDS.has(claim.word);
-  const nominal = single !== null && !c.subjects.includes(single);
-  if (adnominal || nominal) return single ? [single] : [];
-  const range = c.subjects.filter((g) => g.pos >= prevEnd && g.pos < claim.pos);
-  if (range.length > 1) return range;
-  return single ? [single] : [];
-}
-
-/** 근거 경기의 대회 key — 결과 절에 쓴 대회 이름은 그 경기의 대회여야 한다 */
-function checkCompMentions(s: LineState, ci: number, match: MatchModel): void {
-  for (const m of s.clauses[ci]!.mentions) {
-    if (m.kind === "comp" && m.key && m.key !== match.comp)
-      fail(s, "comp-mismatch", m.text);
-  }
-}
-
-function checkResults(s: LineState, ci: number): ClauseResult {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-  const claims = resultClaims(seg, c.start);
-  let subject: ClauseResult["subject"] = null;
-  let prevEnd = c.start;
-  for (const claim of claims) {
-    if (claim.type === "end") {
-      prevEnd = claim.end;
-      continue;
-    }
-    const groups = claimSubjects(s, ci, claim, prevEnd);
-    prevEnd = claim.end;
-    if (groups.some((g) => !g.members)) {
-      fail(s, "name-unknown", groups.find((g) => !g.members)!.word);
-      continue;
-    }
-    let teams = groups.flatMap((g) => groupTeams(s, g) ?? []);
-    if (
-      teams.length === 0 &&
-      (claim.type === "draw" || claim.type === "level")
-    ) {
-      // 'X와 Y의 경기는 무승부' — 주어가 없으면 절의 팀 이름
-      teams = c.mentions
-        .filter((m) => m.kind === "team" && m.key && m.start < claim.pos)
-        .map((m) => m.key!);
-      if (teams.length === 0 && s.refMatches.length === 1)
-        teams = [s.refMatches[0]!.home];
-    }
-    if (teams.length === 0) {
-      if (claim.type === "win" || claim.type === "lose")
-        fail(s, "subject-unknown", claim.word);
-      continue;
-    }
-    for (const team of teams) {
-      const found = matchOfTeam(s, team);
-      if (!found) continue; // 근거 밖 이름은 lineNames가 잡는다
-      const { match, side } = found;
-      const f = match.facts;
-      if (!f) {
-        fail(s, "score-mismatch", match.id);
-        continue;
-      }
-      checkCompMentions(s, ci, match);
-      if (claim.type === "win" && f.winner !== side)
-        fail(s, "winner-mismatch", claim.word);
-      // 연장(승부차기 없음)에서 이긴 팀이 90분에 이미 앞섰거나 90분 점수가 없으면 두 경기 합산 때문에 치른 연장일 수 있다 —
-      // 그 경기를 이긴 것처럼 쓰지 않는다(M1-20 — 템플릿은 '…의 경기는 연장까지 h-a로 끝났다')
-      if (
-        (claim.type === "win" || claim.type === "lose") &&
-        f.aet &&
-        !f.pens &&
-        f.winner !== null &&
-        (f.regular === null || f.regular[f.winner] > f.regular[other(f.winner)])
-      )
-        fail(s, "extra-time", claim.word);
-      if (claim.type === "lose" && (f.winner === null || f.winner === side))
-        fail(s, "winner-mismatch", claim.word);
-      if (claim.type === "draw") {
-        if (f.pens) fail(s, "shootout-draw", claim.word);
-        else if (f.ft.home !== f.ft.away) fail(s, "draw-mismatch", claim.word);
-      }
-      if (claim.type === "level" && f.ft.home !== f.ft.away)
-        fail(s, "draw-mismatch", claim.word);
-      if ((claim.type === "win" || claim.type === "lose") && !subject) {
-        subject = { team, match, side };
-      }
-    }
-    // 목적어(상대) — 목적어 조사가 붙은 팀 이름은 그 앞 가장 가까운 주어 묶음 팀의 상대여야 한다
-    for (const m of c.mentions) {
-      if (m.kind !== "team" || !m.key || m.start > claim.pos) continue;
-      if (
-        !OBJECT_PARTICLES.has(m.particle) &&
-        !/^\s*상대로/u.test(s.masked.slice(m.end + m.particle.length))
-      )
-        continue;
-      if (groups.some((g) => g.members?.includes(m))) continue;
-      const owner =
-        c.subjects.filter((g) => g.members && g.pos < m.start).at(-1) ??
-        groups[0];
-      const ownerTeams = owner ? (groupTeams(s, owner) ?? []) : teams;
-      if (ownerTeams.includes(m.key)) continue;
-      const ok = ownerTeams.some((t) => {
-        const f = matchOfTeam(s, t);
-        return (
-          !!f && (f.side === "home" ? f.match.away : f.match.home) === m.key
-        );
-      });
-      if (!ok) fail(s, "opponent-mismatch", m.text);
-    }
-    // 목적어 자리의 사전에 없는 한글 낱말(모델 음역) — 결과 동사 앞 '…를'·'…에게'
-    if (claim.type === "win" || claim.type === "lose") {
-      const before = s.masked.slice(c.start, claim.pos);
-      for (const w of before.matchAll(
-        /(?<![가-힣\uE000\p{Script=Latin}\p{N}])([가-힣]{2,})(을|를|에게)(?![가-힣])/gu,
-      )) {
-        if (!NON_ENTITY_WORDS.has(w[1]!)) fail(s, "name-unknown", w[0]);
-      }
-    }
-  }
-  // 허용 목록 방식(M1-23 리뷰 차단 1): 팀과 그 상대를 목적어로 쓴 절에는 알아본 결과 서술이 있어야 한다 — 목록 밖 동의어
-  // ('제쳤다'·'무너졌다'·'웃었다' …)는 주어 역할을 확인할 수 없다. 점수가 있는 절은 checkScores가 같은 규칙을 건다.
-  if (claims.length === 0 && !COMEBACK.test(seg)) {
-    const teamMentions = c.mentions.filter((m) => m.kind === "team" && m.key);
-    for (const m of teamMentions) {
-      const objectLike =
-        OBJECT_PARTICLES.has(m.particle) &&
-        m.particle !== "와" &&
-        m.particle !== "과"
-          ? true
-          : /^\s*상대로/u.test(s.masked.slice(m.end + m.particle.length));
-      if (!objectLike) continue;
-      const opp = teamMentions.find((x) => {
-        if (x === m) return false;
-        const f = matchOfTeam(s, x.key!);
-        return (
-          !!f && (f.side === "home" ? f.match.away : f.match.home) === m.key
-        );
-      });
-      const subjectOpp =
-        opp ??
-        (() => {
-          const g = subjectFor(s, ci, m.start);
-          const t = g ? (groupTeams(s, g) ?? []) : [];
-          return t.some((k) => {
-            const f = matchOfTeam(s, k);
-            return (
-              !!f && (f.side === "home" ? f.match.away : f.match.home) === m.key
-            );
-          });
-        })();
-      if (subjectOpp) {
-        fail(s, "result-verb-unknown", m.text);
-        break;
-      }
-    }
-  }
-  return { subject, claims };
-}
-
-/** 점수 종류 — 앞 낱말로 가린다 */
-function pairKind(before: string): "ft" | "ht" | "regular" | "pens" {
-  if (
-    /(?:승부차기|PK)(?:에서|\s?끝에|\s?승부(?:에서)?)?\s*\(?\s*$/u.test(before)
-  )
-    return "pens";
-  // '1-1(4-3)' — 경기 점수 바로 뒤 괄호 안 점수(M1-19 이월 '(h-a)' 표기)
-  if (/\d\s?[-–]\s?\d+\s*\(\s*$/u.test(before)) return "pens";
-  if (/전반(?:을|에|은|에는|에만)?\s*$/u.test(before)) return "ht";
-  if (
-    /(?:90분|정규\s?시간)(?:까지|에|은|을|는|동안|\s?동안)?\s*$/u.test(before)
-  )
-    return "regular";
-  // '승부차기에서 TeamB가 4-3으로 이겼다' — 절 안에서 이 점수 앞에 승부차기 낱말이 있고 그 사이에 다른 점수가 없으면 승부차기 점수
-  const lastShootout = Math.max(
-    before.lastIndexOf("승부차기"),
-    before.search(/PK\s?승부/u),
-  );
-  if (lastShootout >= 0) {
-    const between = before.slice(lastShootout);
-    if (!/\d\s?[-–]\s?\d/u.test(between)) return "pens";
-  }
-  return "ft";
-}
-
-/** 점수 대조 후보 — (경기, 주어 쪽) */
-type ScoreCandidate = { match: MatchModel; side: Side | null };
-
-function teamCandidates(
-  s: LineState,
-  teams: readonly string[],
-): ScoreCandidate[] {
-  const out: ScoreCandidate[] = [];
-  for (const t of teams) {
-    const f = matchOfTeam(s, t);
-    if (f && !out.some((x) => x.match === f.match))
-      out.push({ match: f.match, side: teams.length === 1 ? f.side : null });
-  }
-  return out;
-}
-
-/**
- * 점수 쌍의 경기 — ① 절 안에서 그 점수 바로 앞의 주어 묶음('A가 1-0, B가 2-1로 각각 이겼다') ② 결과 동사의 주어(관형형
- * 'TeamE를 3-0으로 꺾은 TeamF는') ③ 이어받은 주어 ④ 절의 팀 이름 ⑤ 근거 경기 전부
- */
-function scoreCandidates(
-  s: LineState,
-  ci: number,
-  pos: number,
-  result: ClauseResult,
-): ScoreCandidate[] {
-  const c = s.clauses[ci]!;
-  const near = c.subjects.filter((g) => g.members && g.pos < pos).at(-1);
-  if (near) {
-    const cands = teamCandidates(s, groupTeams(s, near) ?? []);
-    if (cands.length > 0) return cands;
-  }
-  if (result.subject)
-    return [{ match: result.subject.match, side: result.subject.side }];
-  const g = subjectFor(s, ci, pos);
-  const fromSubject = teamCandidates(s, g ? (groupTeams(s, g) ?? []) : []);
-  if (fromSubject.length > 0) return fromSubject;
-  const fromMentions = teamCandidates(
-    s,
-    c.mentions.filter((m) => m.kind === "team" && m.key).map((m) => m.key!),
-  ).map((x) => ({ ...x, side: null }));
-  if (fromMentions.length > 0) return fromMentions;
-  return s.refMatches.map((match) => ({ match, side: null }));
-}
-
-function checkScores(s: LineState, ci: number, result: ClauseResult): void {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-  const re = /(?<![\d+])(\d{1,2})\s?(?:[-–]|대\s?)(\d{1,2})(?![\d+])/gu;
-  const types = new Set(result.claims.map((x) => x.type));
-  // 종료 동사만 있는 절('X가 Y와의 경기를 1-0으로 마쳤다') — 주어 팀 점수 먼저 또는 'A와 B의 경기'(앞 팀 먼저)만 인정
-  const endOnly =
-    types.has("end") &&
-    !types.has("win") &&
-    !types.has("lose") &&
-    !types.has("draw") &&
-    !types.has("level");
-  let ftPairs = 0;
-  for (const m of seg.matchAll(re)) {
-    const pos = c.start + m.index;
-    const end = pos + m[0].length;
-    // 득실차 '+5'·'-3'은 checkStandings가 먼저 가져간다
-    if (isConsumed(s, pos, end)) continue;
-    consume(s, pos, end);
-    const a = Number(m[1]);
-    const b = Number(m[2]);
-    const after = s.masked.slice(end);
-    // 경기 중 점수('0-1로 뒤지다'·'한때 2-0으로 앞서') — 주어 점수 먼저로 읽고, '앞서' = 주어가 앞섬 · '뒤지' = 주어가 뒤짐
-    const lead = RUNNING_LEAD.test(after);
-    const trail = RUNNING_TRAIL.test(after);
-    const running =
-      lead || trail || /한때\s?$/u.test(s.masked.slice(c.start, pos));
-    const before = s.masked.slice(c.start, pos);
-    const kind = pairKind(before);
-    const candidates = scoreCandidates(s, ci, pos, result);
-    if (candidates.length === 0) {
-      fail(s, "score-mismatch", m[0]);
-      continue;
-    }
-    if (running) {
-      const ok = candidates.some(({ match, side }) => {
-        if (side === null) return false; // 누가 앞섰는지 확인할 수 없다
-        const states =
-          kind === "ht"
-            ? [parseHt(match.m.ht)].filter((x): x is Pair => x !== null)
-            : runningScores(match);
-        return states.some(
-          (p) =>
-            p[side] === a &&
-            p[other(side)] === b &&
-            (!lead || a > b) &&
-            (!trail || a < b),
-        );
-      });
-      if (!ok) fail(s, "score-mismatch", m[0]);
-      continue;
-    }
-    if (kind === "ft") ftPairs += 1;
-    let best: "ok" | "order" | "mismatch" = "mismatch";
-    let missing: BriefLineReasonCode | null = null;
-    for (const { match, side } of candidates) {
-      const f = match.facts;
-      if (!f) continue;
-      const pair =
-        kind === "ft"
-          ? f.ft
-          : kind === "ht"
-            ? (parseHt(match.m.ht) ?? null)
-            : kind === "regular"
-              ? f.regular
-              : f.pens;
-      if (!pair) {
-        missing =
-          kind === "pens"
-            ? "shootout"
-            : kind === "regular"
-              ? "extra-time"
-              : "score-mismatch";
-        continue;
-      }
-      // 'A와 B의 경기는 x-y로 끝났다'처럼 두 팀을 나란히 쓴 절은 앞 팀 점수 먼저로 읽힌다 — 홈-원정 순서는 앞 팀이 홈일 때만
-      const firstNamed = pairedFirst(s, ci, match, pos);
-      const r =
-        firstNamed !== null
-          ? orientedMatches(pair, a, b, firstNamed, side)
-          : endOnly && side !== null
-            ? orientedMatches(pair, a, b, side, null)
-            : scoreMatches(pair, a, b, side);
-      if (r === "ok") best = "ok";
-      else if (r === "order" && best === "mismatch") best = "order";
-    }
-    if (best === "ok") continue;
-    if (best === "order") fail(s, "score-order", m[0]);
-    else fail(s, missing ?? "score-mismatch", m[0]);
-  }
-  // 허용 목록 방식(M1-23 리뷰 차단 1): 경기 점수가 있는 절에는 알아본 결과 서술이 있어야 한다 — 목록 밖 동의어('제쳤다'·
-  // '웃었다'·'무너졌다' …)로는 누가 이겼는지 확인할 수 없어 점수 순서(D30 두 순서 허용)만 맞아도 통과하게 된다
-  if (ftPairs > 0 && result.claims.length === 0 && !COMEBACK.test(seg))
-    fail(s, "result-verb-unknown", seg.trim().split(/\s+/u).at(-1));
-}
-
-/**
- * 절에서 그 경기의 두 팀을 'A와 B'로 나란히 쓴 앞 팀의 쪽(점수 앞) — 없으면 null. 'Slavia Praha와 RC Lens의 경기는 2-3으로'.
- */
-function pairedFirst(
-  s: LineState,
-  ci: number,
-  match: MatchModel,
-  pos: number,
-): Side | null {
-  const ms = s.clauses[ci]!.mentions.filter(
-    (m) => m.kind === "team" && m.key && m.end <= pos,
-  );
-  for (let i = 0; i + 1 < ms.length; i += 1) {
-    const a = ms[i]!;
-    const b = ms[i + 1]!;
-    if (a.particle !== "와" && a.particle !== "과") continue;
-    if (!/^\s*$/u.test(s.masked.slice(a.end + a.particle.length, b.start)))
-      continue;
-    const teams = [match.home, match.away];
-    if (!teams.includes(a.key!) || !teams.includes(b.key!) || a.key === b.key)
-      continue;
-    return a.key === match.home ? "home" : "away";
+  team: string,
+): { match: MatchModel; side: Side } | null {
+  for (const match of s.refMatches) {
+    if (match.home === team) return { match, side: "home" };
+    if (match.away === team) return { match, side: "away" };
   }
   return null;
 }
 
-/** 앞 팀 먼저(`first`) 또는 결과 주어 먼저(`subjectSide`)만 인정 */
+/** 두 팀이 맞붙은 근거 경기 — side = 앞 팀(a)의 쪽 */
+function matchOfPair(
+  s: LineState,
+  a: string,
+  b: string,
+): { match: MatchModel; side: Side } | null {
+  for (const match of s.refMatches) {
+    if (match.home === a && match.away === b) return { match, side: "home" };
+    if (match.away === a && match.home === b) return { match, side: "away" };
+  }
+  return null;
+}
+
+function teamOn(match: MatchModel, side: Side): string {
+  return side === "home" ? match.home : match.away;
+}
+
+function pairEq(a: Pair, h: number, x: number): boolean {
+  return a.home === h && a.away === x;
+}
+
+/** 'a-b'가 그 점수(홈-원정)와 맞는가 — 홈-원정 순서 또는 주어 쪽 먼저(D30) */
+function scoreMatches(
+  pair: Pair,
+  a: number,
+  b: number,
+  subjectSide: Side | null,
+): "ok" | "order" | "mismatch" {
+  if (pairEq(pair, a, b)) return "ok";
+  if (subjectSide === "away" && pairEq(pair, b, a)) return "ok";
+  if (pairEq(pair, b, a)) return "order";
+  return "mismatch";
+}
+
+/** 'A와 B의 경기는 a-b'처럼 앞 팀(first) 점수 먼저만 인정 */
 function orientedMatches(
   pair: Pair,
   a: number,
   b: number,
   first: Side,
-  subjectSide: Side | null,
 ): "ok" | "order" | "mismatch" {
-  const firstOk = pair[first] === a && pair[other(first)] === b;
-  const subjectOk =
-    subjectSide !== null &&
-    pair[subjectSide] === a &&
-    pair[other(subjectSide)] === b;
-  if (firstOk || subjectOk) return "ok";
+  if (pair[first] === a && pair[other(first)] === b) return "ok";
   if (pair[first] === b && pair[other(first)] === a) return "order";
   return "mismatch";
+}
+
+function scoreIssue(
+  env: Env,
+  r: "ok" | "order" | "mismatch",
+  score: [number, number],
+): void {
+  if (r === "order") bad(env, "score-order", `${score[0]}-${score[1]}`);
+  if (r === "mismatch") bad(env, "score-mismatch", `${score[0]}-${score[1]}`);
+}
+
+function parseHt(ht: string | undefined): Pair | null {
+  const m = /^(\d{1,2})-(\d{1,2})$/.exec(ht ?? "");
+  return m ? { home: Number(m[1]), away: Number(m[2]) } : null;
 }
 
 /** 경기 중 거친 점수(홈-원정) — 전반 점수 + 득점 순서(득점 목록이 완전할 때)의 매 골 뒤 점수 */
@@ -1508,1246 +931,1015 @@ function runningScores(match: MatchModel): Pair[] {
   return out;
 }
 
-function parseHt(ht: string | undefined): Pair | null {
-  const m = /^(\d{1,2})-(\d{1,2})$/.exec(ht ?? "");
-  return m ? { home: Number(m[1]), away: Number(m[2]) } : null;
-}
-
-/** 절 주어 팀의 (경기·쪽) — 결과 주어 → 가장 가까운 주어 묶음의 팀(하나일 때) */
-function subjectMatch(
-  s: LineState,
-  ci: number,
-  pos: number,
-  result: ClauseResult,
-): { team: string; match: MatchModel; side: Side } | "unknown" | null {
-  if (result.subject) return result.subject;
-  const g = subjectFor(s, ci, pos);
-  if (!g) return null;
-  if (!g.members) return "unknown";
-  const teams = groupTeams(s, g) ?? [];
-  if (teams.length !== 1) return null;
-  const f = matchOfTeam(s, teams[0]!);
-  return f ? { team: teams[0]!, ...f } : null;
-}
-
-function checkMatchWords(s: LineState, ci: number, result: ClauseResult): void {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-  const line = s.masked;
-  // 장소 — '홈에서' ⇒ 주어 팀 홈, 'X 원정에서' ⇒ X 홈·주어 원정, '원정에서' ⇒ 주어 원정
-  for (const [re, want] of [
-    [VENUE_HOME, "home"],
-    [VENUE_AWAY, "away"],
-  ] as const) {
-    for (const m of seg.matchAll(new RegExp(re.source, "gu"))) {
-      const pos = c.start + m.index;
-      const named = c.mentions.find(
-        (x) =>
-          x.kind === "team" &&
-          x.particle === "" &&
-          /^\s*$/u.test(s.masked.slice(x.end, pos)),
-      );
-      const subj = subjectMatch(s, ci, pos, result);
-      const match =
-        (named?.key ? matchOfTeam(s, named.key)?.match : undefined) ??
-        (subj && subj !== "unknown" ? subj.match : undefined) ??
-        (s.refMatches.length === 1 ? s.refMatches[0] : undefined);
-      if (!match) {
-        fail(s, "venue", m[0]);
-        continue;
-      }
-      if (NEUTRAL_ROUNDS.has(match.m.round)) {
-        fail(s, "venue", m[0]);
-        continue;
-      }
-      if (named?.key) {
-        // 'X 원정에서'·'X 홈에서' — X가 홈 팀
-        if (named.key !== match.home) fail(s, "venue", m[0]);
-        if (subj && subj !== "unknown" && subj.team === named.key)
-          fail(s, "venue", m[0]);
-        continue;
-      }
-      if (subj === "unknown") {
-        fail(s, "name-unknown", m[0]);
-        continue;
-      }
-      if (!subj) {
-        fail(s, "venue", m[0]);
-        continue;
-      }
-      if (subj.side !== want) fail(s, "venue", m[0]);
-    }
-  }
-  // 라운드 낱말 ⇒ 근거 경기 round('8강'의 숫자는 라운드 이름이지 사실 숫자가 아니다 — 가져간다)
-  for (const { re, rounds } of ROUND_WORDS) {
-    const m = re.exec(seg);
-    if (!m) continue;
-    consume(s, c.start + m.index, c.start + m.index + m[0].length);
-    const ok =
-      s.refMatches.some(
-        (x) =>
-          rounds.includes(x.m.round) ||
-          (rounds.includes("LEAGUE_STAGE") && /^League phase/u.test(x.m.round)),
-      ) ||
-      (rounds.includes("LEAGUE_STAGE") &&
-        s.refStandings.some((x) => x.comp === "c:UCL"));
-    if (!ok) fail(s, "round", m[0]);
-  }
-  // 'n라운드' ⇒ 근거 경기의 Matchday·리그 페이즈 MD 번호 또는 근거 순위표의 경기 수
-  for (const m of seg.matchAll(/(\d{1,2})\s?라운드/gu)) {
-    const pos = c.start + m.index;
-    consume(s, pos, pos + m[0].length);
-    const n = Number(m[1]);
-    const ok =
-      s.refMatches.some(
-        (x) => /(?:Matchday|MD) (\d+)$/u.exec(x.m.round)?.[1] === String(n),
-      ) || s.refStandings.some((t) => t.rows.some((r) => r.played === n));
-    if (!ok) fail(s, "round", m[0]);
-  }
-  // 연장·승부차기
-  const subj = subjectMatch(s, ci, c.start, result);
-  const target = subj && subj !== "unknown" ? [subj.match] : s.refMatches;
-  if (EXTRA_TIME_DECIDED.test(seg)) {
-    const ok = target.some((x) => {
-      const f = x.facts;
-      if (!f || !f.aet) return false;
-      if (f.pens) return SHOOTOUT.test(line);
-      if (f.winner === null) return f.ft.home === f.ft.away;
-      return (
-        f.regular !== null && f.regular[f.winner] <= f.regular[other(f.winner)]
-      );
-    });
-    if (!ok) fail(s, "extra-time", "연장 끝에");
-  } else if (EXTRA_TIME.test(seg)) {
-    if (!target.some((x) => x.facts?.aet)) fail(s, "extra-time", "연장");
-  }
-  if (SHOOTOUT.test(seg) && !target.some((x) => x.facts?.pens))
-    fail(s, "shootout", "승부차기");
-  // 역전
-  if (COMEBACK_LOSS.test(seg) || COMEBACK.test(seg)) {
-    const loss = COMEBACK_LOSS.test(seg);
-    if (subj === "unknown") fail(s, "name-unknown", "역전");
-    else if (!subj) fail(s, "comeback", loss ? "역전패" : "역전");
-    else {
-      const f = subj.match.facts;
-      const role = loss
-        ? f?.winner !== null && f?.winner !== subj.side
-        : f?.winner === subj.side;
-      if (!f || !role || !f.comeback || f.pens)
-        fail(s, "comeback", loss ? "역전패" : "역전");
-    }
-  }
-  // 점수 차 평가어(정의대로)
-  for (const word of MARGIN_WORDS) {
-    const m = word.re.exec(seg);
-    if (!m) continue;
-    if (subj === "unknown") {
-      fail(s, "name-unknown", m[0]);
-      continue;
-    }
-    const f = subj?.match.facts;
-    const roleOk =
-      !!subj &&
-      !!f &&
-      f.winner !== null &&
-      !f.pens &&
-      (word.role === "winner"
-        ? f.winner === subj.side
-        : f.winner !== subj.side);
-    const marginOk =
-      !!f &&
-      f.margin >= word.margin.min &&
-      (word.margin.max === undefined || f.margin <= word.margin.max);
-    if (!roleOk || !marginOk) fail(s, "margin", m[0]);
-  }
-  // 무실점 ⇒ 주어 팀의 상대 점수 0
-  const cs = CLEAN_SHEET.exec(seg);
-  if (cs) {
-    if (subj === "unknown") fail(s, "name-unknown", cs[0]);
-    else if (!subj?.match.facts || subj.match.facts.ft[other(subj.side)] !== 0)
-      fail(s, "score-mismatch", cs[0]);
-  }
-  const ev = EVAL_UNSUPPORTED.exec(seg);
-  if (ev) fail(s, "eval-unsupported", ev[0]);
-  const hist = HISTORY_UNSUPPORTED.exec(seg);
-  if (hist) fail(s, "history-unsupported", hist[0]);
-}
-
-/** 얻은 승점('승점 3을 챙겼다') ⇒ 리그 경기 승리 3·무승부 1(표의 승점이 아니다) — 순위 검사보다 먼저 가져간다 */
-function checkGainedPoints(
-  s: LineState,
-  ci: number,
-  result: ClauseResult,
-): void {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-  const subj = subjectMatch(s, ci, c.start, result);
-  for (const m of seg.matchAll(new RegExp(GAINED_POINTS.source, "gu"))) {
-    const pos = c.start + m.index;
-    consume(s, pos, pos + m[0].length);
-    const n = m[1] !== undefined ? Number(m[1]) : null;
-    const shared = /나눠/u.test(m[0]);
-    // 경기 — 주어 팀의 경기, 'A와 B는 … 승점을 나눠 가졌다'처럼 주어가 둘이면 근거 경기가 하나일 때 그 경기
-    const match =
-      subj && subj !== "unknown"
-        ? subj.match
-        : s.refMatches.length === 1
-          ? s.refMatches[0]!
-          : null;
-    const side = subj && subj !== "unknown" ? subj.side : null;
-    const f = match?.facts ?? null;
-    // 리그 경기(리그·UCL 리그 페이즈)만 승점이 있다 — 녹아웃(연장·승부차기)에는 없다
-    const league = !!match && /^(?:Matchday|League phase)/u.test(match.m.round);
-    const draw = !!f && f.winner === null;
-    const won = !!f && side !== null && f.winner === side;
-    const ok =
-      !!f &&
-      league &&
-      !f.pens &&
-      (n === 3
-        ? won
-        : n === 1 || shared
-          ? draw
-          : n === null
-            ? won || draw
-            : false);
-    if (!ok) fail(s, "points", m[0]);
-  }
-}
-
-// ─── 득점·분 ─────────────────────────────────────────────────────────────
-
-type Anchor =
-  | { type: "player"; key: string; mention: Mention }
-  | { type: "team"; key: string }
-  | { type: "unknown"; word: string }
-  | null;
-
-/**
- * 득점·출전 서술의 대상 — 바로 뒤 선수 이름('80분 Daniel Svensson') → 앞쪽 가장 가까운 선수 이름 → 주어 묶음(팀·선수) → 이어받은
- * 주어. 앞쪽에서 선수 이름보다 가까운 사전 밖 주어 낱말이 있으면 unknown.
- */
-function anchorAt(
-  s: LineState,
-  ci: number,
-  pos: number,
-  end: number,
-  preferFollowing: boolean,
-): Anchor {
-  const c = s.clauses[ci]!;
-  if (preferFollowing) {
-    const next = c.mentions.find(
-      (m) =>
-        m.start >= end &&
-        m.kind === "player" &&
-        /^[\s,]*$/u.test(s.masked.slice(end, m.start)),
-    );
-    if (next?.key) return { type: "player", key: next.key, mention: next };
-  }
-  const players = c.mentions.filter(
-    (m) => m.kind === "player" && m.key && m.end <= pos,
+/** 연장에서 승부가 났다(90분 점수가 있고 이긴 팀이 90분에 앞서지 않음) */
+function decidedInEt(f: MatchFacts): boolean {
+  return (
+    f.winner !== null &&
+    f.regular !== null &&
+    f.regular[f.winner] <= f.regular[other(f.winner)]
   );
-  const lastPlayer = players.at(-1);
-  const unknown = c.subjects.filter((g) => !g.members && g.pos < pos).at(-1);
-  if (unknown && (!lastPlayer || unknown.pos > lastPlayer.start))
-    return { type: "unknown", word: unknown.word ?? "" };
-  if (lastPlayer?.key)
-    return { type: "player", key: lastPlayer.key, mention: lastPlayer };
-  const g = subjectFor(s, ci, pos);
-  if (g && !g.members) return { type: "unknown", word: g.word ?? "" };
-  const member = g?.members?.at(-1);
-  if (member?.kind === "player" && member.key)
-    return { type: "player", key: member.key, mention: member };
-  if (member?.kind === "team" && member.key)
-    return { type: "team", key: member.key };
-  // 절에 팀 이름 하나 — 주어 조사가 없어도('Bayern의')
-  const teams = c.mentions.filter(
-    (m) => m.kind === "team" && m.key && m.end <= pos,
+}
+
+/** 결승골 — 이긴 팀의 (진 팀 점수 + 1)번째 골(승부차기 경기 없음) */
+function decisiveGoal(match: MatchModel): GoalRow | null {
+  const f = match.facts;
+  if (!f || f.pens || f.winner === null || !match.goals) return null;
+  const winner = f.winner;
+  return (
+    match.goals.filter((g) => g.side === winner)[f.ft[other(winner)]] ?? null
   );
-  const lastTeam = teams.at(-1);
-  if (lastTeam?.key) return { type: "team", key: lastTeam.key };
-  return null;
 }
 
-/** 선수의 근거 경기 득점(자책골 제외)·자책골·도움 */
-function playerGoals(
-  s: LineState,
-  player: string,
-): {
-  goals: GoalRow[];
-  own: GoalRow[];
-  assists: number;
-  known: boolean;
-  match: MatchModel | null;
-} {
-  for (const match of s.refMatches) {
-    const inMatch =
-      match.m.goals?.some(
-        (g) =>
-          s.model.latin.get(foldName(g.player))?.key === player ||
-          s.model.latin.get(foldName(g.assist ?? ""))?.key === player,
-      ) ?? false;
-    const korean = s.refKorean.find(
-      (k) => k.player === player && k.k.match === match.id,
-    );
-    if (!inMatch && !korean) continue;
-    if (!match.goals) {
-      return { goals: [], own: [], assists: 0, known: false, match };
-    }
-    const goals = match.goals.filter((g) => g.player === player && !g.ownGoal);
-    const own = match.goals.filter((g) => g.player === player && g.ownGoal);
-    return {
-      goals,
-      own,
-      assists: match.assists?.get(player) ?? 0,
-      known: true,
-      match,
-    };
-  }
-  // 득점·도움 기록이 없는 선수 — 한국 선수 블록이면 그 숫자
-  const k = s.refKorean.find((x) => x.player === player);
-  if (k) {
-    const match = s.model.matches.get(k.k.match) ?? null;
-    if (match?.goals) {
-      return {
-        goals: match.goals.filter((g) => g.player === player && !g.ownGoal),
-        own: match.goals.filter((g) => g.player === player && g.ownGoal),
-        assists: match.assists?.get(player) ?? 0,
-        known: true,
-        match,
-      };
-    }
-    return {
-      goals: [],
-      own: [],
-      assists: k.k.assists,
-      known: k.k.goals === 0,
-      match,
-    };
-  }
-  return { goals: [], own: [], assists: 0, known: false, match: null };
+/** 동점골 — 비긴 경기(0-0 아님·승부차기 없음)의 마지막 골 */
+function equaliserGoal(match: MatchModel): GoalRow | null {
+  const f = match.facts;
+  if (!f || f.pens || f.ft.home !== f.ft.away || f.ft.home === 0) return null;
+  return match.goals?.at(-1) ?? null;
 }
 
-/** 팀의 근거 경기 득점 */
-function teamGoals(
-  s: LineState,
-  team: string,
-): { match: MatchModel; side: Side; goals: GoalRow[] | null } | null {
-  const f = matchOfTeam(s, team);
-  if (!f) return null;
-  return {
-    ...f,
-    goals: f.match.goals?.filter((g) => g.side === f.side) ?? null,
-  };
-}
-
-function checkGoals(s: LineState, ci: number): void {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-
-  // n골 차(점수 차 — D40 ②) · n골을 주고받(합)
-  for (const m of seg.matchAll(/(\d{1,2})\s?골\s?차/gu)) {
-    const pos = c.start + m.index;
-    consume(s, pos, pos + m[0].length);
-    const n = Number(m[1]);
-    if (!s.refMatches.some((x) => x.facts && x.facts.margin === n))
-      fail(s, "margin", m[0]);
-  }
-  for (const m of seg.matchAll(
-    /(\d{1,2})\s?골(?:을|이)?\s?(?:주고받|나온|나왔|나오|터진|터졌|오간|오갔)/gu,
-  )) {
-    const pos = c.start + m.index;
-    consume(s, pos, pos + m[0].length);
-    const n = Number(m[1]);
-    if (
-      !s.refMatches.some(
-        (x) => x.facts && x.facts.ft.home + x.facts.ft.away === n,
-      )
-    )
-      fail(s, "count-unsupported", m[0]);
-  }
-  // n번째 — 세지 않는다
-  for (const m of seg.matchAll(/(\d{1,2})\s?번째/gu)) {
-    const pos = c.start + m.index;
-    consume(s, pos, pos + m[0].length);
-    fail(s, "count-unsupported", m[0]);
-  }
-
-  // 선수(또는 팀) 골 수·도움 수·해트트릭·멀티골
-  const countClaims: Array<{
-    re: RegExp;
-    check: (n: number | null, g: ReturnType<typeof playerGoals>) => boolean;
-    code: BriefLineReasonCode;
-  }> = [
-    {
-      re: /(\d{1,2})\s?골(?!\s?차|키퍼|대|문|망|라인|\s?(?:을|이)?\s?(?:주고받|나온|나왔|나오|터진|터졌|오간|오갔))/gu,
-      check: (n, g) => g.known && g.goals.length === n,
-      code: "goal-count",
-    },
-    {
-      // '골 4개'·'4번 골망을 흔들었다'·'두 차례 골을' — 개수 주장(M1-23 리뷰 차단 5)
-      re: /골\s?(\d{1,2})\s?개|(\d{1,2})\s?(?:번|차례)\s?(?:골망|골|득점)/gu,
-      check: (n, g) => g.known && g.goals.length === n,
-      code: "goal-count",
-    },
-    {
-      re: /도움\s?(\d{1,2})\s?개/gu,
-      check: (n, g) => g.known && g.assists === n,
-      code: "assist-count",
-    },
-    {
-      re: /(\d{1,2})\s?도움/gu,
-      check: (n, g) => g.known && g.assists === n,
-      code: "assist-count",
-    },
-    {
-      re: /해트트릭/gu,
-      check: (_, g) => g.known && g.goals.length >= 3,
-      code: "goal-count",
-    },
-    {
-      re: /멀티\s?골/gu,
-      check: (_, g) => g.known && g.goals.length >= 2,
-      code: "goal-count",
-    },
-  ];
-  const timeQualified = /(?:전반|후반|막판|연장)/u.test(seg);
-  for (const claim of countClaims) {
-    for (const m of seg.matchAll(new RegExp(claim.re.source, "gu"))) {
-      const pos = c.start + m.index;
-      const end = pos + m[0].length;
-      if (isConsumed(s, pos, end)) continue;
-      consume(s, pos, end);
-      const digits = m.slice(1).find((x) => x !== undefined);
-      const n = digits !== undefined ? Number(digits) : null;
-      const anchor = anchorAt(s, ci, pos, end, false);
-      if (!anchor) {
-        fail(s, "count-unsupported", m[0]);
-        continue;
-      }
-      if (anchor.type === "unknown") {
-        fail(s, "name-unknown", anchor.word);
-        continue;
-      }
-      if (anchor.type === "team") {
-        // 팀 합계 = 그 팀 점수(시간대 수식 없이)만 — '후반 4골'처럼 팀·시간대별로 센 수는 불허
-        const t = teamGoals(s, anchor.key);
-        const ok =
-          claim.code === "goal-count" &&
-          n !== null &&
-          !timeQualified &&
-          !!t?.match.facts &&
-          t.match.facts.ft[t.side] === n;
-        if (!ok) fail(s, "count-unsupported", m[0]);
-        continue;
-      }
-      const g = playerGoals(s, anchor.key);
-      if (!claim.check(n, g))
-        fail(s, claim.code, `${anchor.mention.text} ${m[0]}`);
-    }
-  }
-
-  // 결승골·동점골·선제골·자책골·득점(골) 서술
-  const goalNouns: Array<{
-    re: RegExp;
-    code: BriefLineReasonCode;
-    pick: (match: MatchModel, f: MatchFacts) => GoalRow | null;
-  }> = [
-    {
-      re: /결승골/gu,
-      code: "decisive-goal",
-      pick: (match, f) => {
-        if (f.pens || f.winner === null || !match.goals) return null;
-        const loser = f.ft[other(f.winner)];
-        const g = match.goals.filter((x) => x.side === f.winner)[loser];
-        return g && !g.ownGoal ? g : null;
-      },
-    },
-    {
-      re: /동점골/gu,
-      code: "equaliser",
-      pick: (match, f) => {
-        if (f.ft.home !== f.ft.away || f.ft.home === 0 || !match.goals)
-          return null;
-        const g = match.goals.at(-1);
-        return g && !g.ownGoal ? g : null;
-      },
-    },
-    {
-      re: /선제골|첫\s?골/gu,
-      code: "opening-goal",
-      pick: (match) => {
-        const g = match.goals?.[0];
-        return g && !g.ownGoal ? g : null;
-      },
-    },
-  ];
-  for (const noun of goalNouns) {
-    for (const m of seg.matchAll(new RegExp(noun.re.source, "gu"))) {
-      const pos = c.start + m.index;
-      const anchor = anchorAt(s, ci, pos, pos + m[0].length, false);
-      if (anchor?.type === "unknown") {
-        fail(s, "name-unknown", anchor.word);
-        continue;
-      }
-      // 분('55분 결승골'·'55분 PK 결승골')
-      const minText =
-        /(\d{1,3}(?:\+\d{1,2})?)\s?분\s?(?:PK\s?|페널티킥\s?)?$/u.exec(
-          s.masked.slice(c.start, pos),
-        );
-      const penaltyNear = /(?:PK|페널티킥)\s?$/u.test(
-        s.masked.slice(c.start, pos),
-      );
-      let ok = false;
-      const matchList =
-        anchor?.type === "player"
-          ? s.refMatches.filter(
-              (x) => x.goals?.some((g) => g.player === anchor.key) ?? false,
-            )
-          : anchor?.type === "team"
-            ? s.refMatches.filter(
-                (x) => x.home === anchor.key || x.away === anchor.key,
-              )
-            : s.refMatches;
-      for (const match of matchList) {
-        const f = match.facts;
-        if (!f) continue;
-        const g = noun.pick(match, f);
-        if (!g) continue;
-        if (anchor?.type === "player" && g.player !== anchor.key) continue;
-        if (anchor?.type === "team") {
-          const side = match.home === anchor.key ? "home" : "away";
-          if (g.side !== side) continue;
-        }
-        if (minText && minText[1] !== g.min) continue;
-        if (penaltyNear && !g.penalty) continue;
-        ok = true;
-      }
-      if (!ok) fail(s, noun.code, m[0]);
-      if (minText) {
-        const start = c.start + minText.index;
-        consume(s, start, start + minText[0].length);
-      }
-    }
-  }
-  // 득점 없음 — 선수 0골 · 팀 0점
-  const ng = NO_GOAL.exec(seg);
-  if (ng) {
-    const pos = c.start + ng.index;
-    const anchor = anchorAt(s, ci, pos, pos + ng[0].length, false);
-    if (anchor?.type === "unknown") fail(s, "name-unknown", anchor.word);
-    else if (anchor?.type === "player") {
-      const k = s.refKorean.find((x) => x.player === anchor.key);
-      const g = playerGoals(s, anchor.key);
-      const zero = k ? k.k.goals === 0 : g.known && g.goals.length === 0;
-      if (!zero) fail(s, "goal-count", ng[0]);
-    } else if (anchor?.type === "team") {
-      const t = teamGoals(s, anchor.key);
-      if (!t?.match.facts || t.match.facts.ft[t.side] !== 0)
-        fail(s, "goal-count", ng[0]);
-    }
-  }
-  // 자책골 — 그 선수의 자책골이 있어야
-  for (const m of seg.matchAll(/자책골/gu)) {
-    const pos = c.start + m.index;
-    const anchor = anchorAt(s, ci, pos, pos + m[0].length, false);
-    if (anchor?.type === "player") {
-      if (playerGoals(s, anchor.key).own.length === 0) fail(s, "scorer", m[0]);
-    } else if (!s.refMatches.some((x) => x.goals?.some((g) => g.ownGoal)))
-      fail(s, "scorer", m[0]);
-  }
-  // PK(경기 중 페널티킥) — 그 선수(또는 근거 경기)에 PK 골이 있어야
-  const pk = PENALTY.exec(seg);
-  if (pk && !SHOOTOUT.test(seg)) {
-    const pos = c.start + pk.index;
-    const anchor = anchorAt(s, ci, pos, pos + pk[0].length, false);
-    const has =
-      anchor?.type === "player"
-        ? playerGoals(s, anchor.key).goals.some((g) => g.penalty)
-        : s.refMatches.some((x) => x.goals?.some((g) => g.penalty));
-    if (!has) fail(s, "penalty", pk[0]);
-  }
-}
-
-/** 선수 key → 이름 묶음 앞쪽 목록('A와 B의 연속골') 포함 소유 선수들 — 소유격 이름 바로 뒤가 pos */
-function genitivePlayers(s: LineState, ci: number, pos: number): Mention[] {
-  const c = s.clauses[ci]!;
-  const owner = [...c.mentions]
-    .reverse()
-    .find(
-      (m) =>
-        m.end <= pos &&
-        m.kind === "player" &&
-        m.particle === "의" &&
-        /^[\s\d+분PK]*$/u.test(
-          s.masked.slice(m.end + 1, pos).replace(/페널티킥|연속/gu, ""),
-        ),
-    );
-  if (!owner) return [];
-  const out = [owner];
-  const idx = c.mentions.indexOf(owner);
-  for (let k = idx - 1; k >= 0; k -= 1) {
-    const prev = c.mentions[k]!;
-    if (prev.kind !== "player" || !listJoined(prev, out[0]!, s.text)) break;
-    out.unshift(prev);
+/** 만회골 — 진 팀이 뒤진 상태에서 넣은 골 */
+function consolationGoals(match: MatchModel): GoalRow[] {
+  const f = match.facts;
+  if (!f || f.winner === null || f.pens || !match.goals) return [];
+  const winner = f.winner;
+  const loser = other(winner);
+  const out: GoalRow[] = [];
+  const run: Pair = { home: 0, away: 0 };
+  for (const g of match.goals) {
+    if (g.side === loser && run[loser] < run[winner]) out.push(g);
+    run[g.side] += 1;
   }
   return out;
 }
 
-/** 근거 경기에서 그 선수의 골(자책골 여부로 고름) — 득점 목록을 모르면 null */
-function goalsOf(s: LineState, player: string, own: boolean): GoalRow[] | null {
-  const g = playerGoals(s, player);
-  if (!g.known) return null;
-  return own ? g.own : g.goals;
+/** 구간 낱말(전반·후반·연장·추가시간·전반 추가시간·후반 추가시간)이 그 분과 맞는가 */
+function halfOk(half: string | null, min: string): boolean {
+  if (half === null) return true;
+  const base = Number(/^\d+/u.exec(min)?.[0] ?? "0");
+  const added = min.includes("+");
+  switch (half) {
+    case "전반":
+      return base <= 45;
+    case "후반":
+      return base >= 46 && base <= 90;
+    case "연장":
+      return base >= 91;
+    case "추가시간":
+      return added;
+    case "전반 추가시간":
+      return added && base === 45;
+    case "후반 추가시간":
+      return added && base === 90;
+    default:
+      return false;
+  }
 }
 
-/**
- * 숫자 없는 득점·도움 서술과 소속(M1-23 리뷰 차단 3·4, 중요 3):
- *   'X가 골을 넣었다'·'득점했다'·'골망을 흔들었다' ⇒ X에게 자책골이 아닌 골(절에 '자책'이 있으면 자책골)이 있어야 · 'X의 골로'·
- *   'X의 득점으로' ⇒ X의 골(결과 주어 팀이 있으면 그 팀 쪽 골) · '도움'·'도왔다' ⇒ 그 선수에게 도움, 'Y의 결승골을 도왔다' ⇒ 그 골의
- *   도움이 주어 · '만회골' ⇒ 진 팀의 골 · 'T의 X'·'X가 T 소속으로' ⇒ X가 T의 선수
- */
-function checkGoalClaims(s: LineState, ci: number, result: ClauseResult): void {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-  const own = /자책/u.test(seg);
-  // 득점 서술
-  const scoring = SCORING.exec(seg);
-  const negated = NO_GOAL.test(seg) || /넣지\s?못/u.test(seg);
-  if (scoring && !negated) {
-    const pos = c.start + scoring.index;
-    const anchor = anchorAt(s, ci, pos, pos + scoring[0].length, false);
-    if (anchor?.type === "unknown") fail(s, "name-unknown", anchor.word);
-    else if (anchor?.type === "player") {
-      const rows = goalsOf(s, anchor.key, own);
-      const korean = s.refKorean.find((k) => k.player === anchor.key);
-      const scored =
-        rows !== null
-          ? rows.length > 0
-          : korean
-            ? !own && korean.k.goals > 0
-            : false;
-      if (!scored) fail(s, "scorer", `${anchor.mention.text} ${scoring[0]}`);
-    } else if (anchor?.type === "team") {
-      const t = teamGoals(s, anchor.key);
-      if (!t?.match.facts || t.match.facts.ft[t.side] === 0)
-        fail(s, "scorer", scoring[0]);
-    }
+/** 분 슬롯의 구간 낱말 — 분이 있으면 그 분, 구간 낱말만 있으면 실제 골 분(actual)으로 잰다 */
+function checkHalf(env: Env, bag: Bag, key: string, actual?: string): void {
+  const half = strAt(bag, `${key}H`);
+  if (half === null) return;
+  const min = strAt(bag, key) ?? actual ?? null;
+  if (min === null || !halfOk(half, min))
+    bad(env, "minute-half", `${half}${min !== null ? ` ${min}분` : ""}`);
+}
+
+const ROUND_OF: Readonly<Record<string, string>> = Object.freeze({
+  결승: "FINAL",
+  "4강": "SEMI_FINALS",
+  "8강": "QUARTER_FINALS",
+  "16강": "LAST_16",
+  플레이오프: "PLAYOFFS",
+});
+
+// ─── ③ 결과 절 ────────────────────────────────────────────────────────────
+
+/** 절의 주어 팀·경기 — 절2(주어 생략 순위·승점 꼴)가 이어받는다 */
+interface ClauseSubject {
+  team: string | null;
+  match: MatchModel | null;
+}
+
+const NO_SUBJECT: ClauseSubject = { team: null, match: null };
+
+/** 결과 절 공통 수식(대회·장소·라운드·결승골·해트트릭·골 합·동점골·뒤지다) */
+function checkResultMods(
+  env: Env,
+  bag: Bag,
+  match: MatchModel,
+  side: Side,
+): void {
+  const f = match.facts!;
+  const compKey = keyAt(env, bag, "comp");
+  if (compKey !== null && compKey !== match.comp)
+    bad(env, "comp-mismatch", textAt(env, bag, "comp"));
+  const venue = strAt(bag, "venue");
+  if (venue !== null) {
+    if (NEUTRAL_ROUNDS.has(match.m.round)) bad(env, "venue", "중립 경기장");
+    else if (venue === "named") {
+      if (keyAt(env, bag, "venueTeam") !== match.home || side !== "away")
+        bad(env, "venue", `${textAt(env, bag, "venueTeam")} 원정`);
+    } else if (venue !== side)
+      bad(env, "venue", venue === "home" ? "홈" : "원정");
   }
-  // 'X의 골로'·'X의 득점으로'
-  for (const m of seg.matchAll(new RegExp(SCORING_NOUN.source, "gu"))) {
-    const pos = c.start + m.index;
-    const owners = genitivePlayers(s, ci, pos);
-    for (const o of owners) {
-      if (!o.key) continue;
-      const rows = goalsOf(s, o.key, own) ?? [];
-      const side =
-        result.subject &&
-        rows.length > 0 &&
-        s.refMatches.includes(result.subject.match)
-          ? result.subject.side
-          : null;
-      const ok = rows.some((g) => side === null || g.side === side);
-      if (!ok) fail(s, "scorer", `${o.text}의 ${m[0]}`);
-    }
+  const round = strAt(bag, "round");
+  if (round !== null && ROUND_OF[round] !== match.m.round)
+    bad(env, "round", round);
+  const total = numAt(bag, "total");
+  if (total !== null && f.ft.home + f.ft.away !== total)
+    bad(env, "goal-count", `${total}골을 주고받은`);
+  // {선수}의 [{분}] [PK ]결승골로
+  if (bag.scorerKind === "decisive") {
+    const g = decisiveGoal(match);
+    const min = strAt(bag, "scorerMin");
+    const ok =
+      g !== null &&
+      !g.ownGoal &&
+      g.player === keyAt(env, bag, "scorer") &&
+      g.side === side &&
+      (min === null || g.min === min) &&
+      (bag.scorerPk !== true || g.penalty);
+    if (!ok) bad(env, "decisive-goal", textAt(env, bag, "scorer"));
+    checkHalf(env, bag, "scorerMin", g?.min);
   }
-  // 만회골 ⇒ 진 팀의 골
-  for (const m of seg.matchAll(/만회골/gu)) {
-    if (negated) break;
-    const pos = c.start + m.index;
-    const anchor = anchorAt(s, ci, pos, pos + m[0].length, false);
-    if (anchor?.type !== "player") continue;
-    const ok = s.refMatches.some((x) => {
-      const f = x.facts;
-      if (!f || f.winner === null || !x.goals) return false;
-      return x.goals.some(
-        (g) => g.player === anchor.key && !g.ownGoal && g.side !== f.winner,
+  // {선수}의 해트트릭을·멀티골을·n골을 앞세워 — 주어 팀 선수의 자책골 아닌 골 수
+  const featKind = strAt(bag, "featKind");
+  if (featKind !== null) {
+    const feat = keyAt(env, bag, "feat");
+    const n = (match.goals ?? []).filter(
+      (g) => g.player === feat && !g.ownGoal && g.side === side,
+    ).length;
+    const ok =
+      match.goals !== null &&
+      (featKind === "hat"
+        ? n >= 3
+        : featKind === "multi"
+          ? n >= 2
+          : n === numAt(bag, "featN") && n >= 2);
+    if (!ok) bad(env, "goal-count", textAt(env, bag, "feat"));
+  }
+  // (무승부) {선수}의 [{분}] [PK ]동점골로
+  if (typeof bag.eq === "number") {
+    const g = equaliserGoal(match);
+    const min = strAt(bag, "eqMin");
+    const ok =
+      g !== null &&
+      !g.ownGoal &&
+      g.player === keyAt(env, bag, "eq") &&
+      g.side === side &&
+      (min === null || g.min === min) &&
+      (bag.eqPk !== true || g.penalty);
+    if (!ok) bad(env, "equaliser", textAt(env, bag, "eq"));
+    checkHalf(env, bag, "eqMin", g?.min);
+  }
+  // (역전승) {a-b}로 뒤지다 — 주어가 a, 상대가 b로 뒤진 적
+  const trail = pairAt(bag, "trail");
+  if (trail) {
+    const ok =
+      trail[0] < trail[1] &&
+      runningScores(match).some(
+        (p) => p[side] === trail[0] && p[other(side)] === trail[1],
       );
-    });
-    if (!ok) fail(s, "scorer", m[0]);
+    if (!ok) bad(env, "score-mismatch", `${trail[0]}-${trail[1]}로 뒤지다`);
   }
-  // 도움 서술 — 'n도움'·'도움 n개'는 개수 규칙이 이미 봤다
-  const assist = ASSIST.exec(seg);
-  if (assist && !NO_ASSIST.test(seg)) {
-    const pos = c.start + assist.index;
-    if (!isConsumed(s, pos, pos + assist[0].length)) {
-      // 도움을 준 선수 — 'Y의 도움으로'면 Y, 아니면 절의 주어(선수)
-      const giver = genitivePlayers(s, ci, pos)[0];
-      const g = subjectFor(s, ci, pos);
-      const provider =
-        giver && /^도움/u.test(assist[0])
-          ? { key: giver.key!, text: giver.text }
-          : g && g.members
-            ? (() => {
-                const p = g.members.find((x) => x.kind === "player" && x.key);
-                return p ? { key: p.key!, text: p.text } : null;
-              })()
-            : null;
-      if (g && !g.members && !giver) fail(s, "name-unknown", g.word);
-      else if (provider) {
-        // 'Y의 결승골을 도왔다' — 도운 골이 정해져 있으면 그 골의 도움이 주어
-        const tm = /(결승골|동점골|선제골|골)(?:을|를|에)?\s?$/u.exec(
-          s.masked.slice(c.start, pos),
-        );
-        const target = tm?.[1] ?? null;
-        const scorer = tm
-          ? genitivePlayers(s, ci, c.start + tm.index)[0]
-          : undefined;
-        let ok: boolean;
-        if (target) {
-          ok = s.refMatches.some((x) => {
-            const f = x.facts;
-            if (!f || !x.goals) return false;
-            let goals = x.goals.filter((r) => !r.ownGoal);
-            if (target === "결승골") {
-              if (f.pens || f.winner === null) return false;
-              const d = x.goals.filter((r) => r.side === f.winner)[
-                f.ft[other(f.winner)]
-              ];
-              goals = d ? [d] : [];
-            } else if (target === "동점골") {
-              const last = x.goals.at(-1);
-              goals = f.ft.home === f.ft.away && last ? [last] : [];
-            } else if (target === "선제골") {
-              goals = x.goals[0] ? [x.goals[0]] : [];
-            }
-            if (scorer?.key)
-              goals = goals.filter((r) => r.player === scorer.key);
-            return goals.some((r) => r.assist === provider.key);
-          });
-        } else {
-          const pg = playerGoals(s, provider.key);
-          const korean = s.refKorean.find((k) => k.player === provider.key);
-          ok = pg.known
-            ? pg.assists > 0
-            : korean
-              ? korean.k.assists > 0
-              : false;
+}
+
+/** 이긴 경기(win)·진 경기(loss) — 주어 = 승자·패자 */
+function vResult(
+  env: Env,
+  bag: Bag,
+  subject: string | null,
+  role: "win" | "loss",
+): ClauseSubject {
+  if (subject === null) {
+    bad(env, "subject-unknown");
+    return NO_SUBJECT;
+  }
+  const found = matchOfTeam(env.s, subject);
+  if (!found) {
+    bad(env, "name-not-in-refs", textAt(env, bag, "subj"));
+    return NO_SUBJECT;
+  }
+  const { match, side } = found;
+  const f = match.facts;
+  if (!f) {
+    bad(env, "score-mismatch", match.id);
+    return { team: subject, match };
+  }
+  const obj = keyAt(env, bag, "obj");
+  if (obj !== null && obj !== teamOn(match, other(side)))
+    bad(env, "opponent-mismatch", textAt(env, bag, "obj"));
+  // 승부차기 경기의 승패는 승부차기 결과 — '승부차기' 수식이 있어야 한다(M1-19)
+  if (f.pens && bag.shootout !== true) bad(env, "shootout", "승부차기 경기");
+  if (!f.pens && bag.shootout === true) bad(env, "shootout", "승부차기");
+  const verb = strAt(bag, "verb") ?? "";
+  if (
+    role === "win" ? f.winner !== side : f.winner === null || f.winner === side
+  )
+    bad(env, "winner-mismatch", verb);
+  // 90분에 이미 앞섰거나 90분 점수가 없는 연장 승부 — 두 경기 합산 연장일 수 있어 이긴 것처럼 쓰지 않는다(M1-20)
+  if (f.aet && !f.pens && f.winner !== null && !decidedInEt(f))
+    bad(env, "extra-time", "연장 승부");
+  if (bag.et === true && !(f.aet && !f.pens && decidedInEt(f)))
+    bad(env, "extra-time", "연장 끝에");
+  const score = pairAt(bag, "score");
+  if (score) {
+    const pair = bag.shootout === true ? f.pens : f.ft;
+    if (!pair) bad(env, "shootout", "승부차기 점수");
+    else scoreIssue(env, scoreMatches(pair, score[0], score[1], side), score);
+  }
+  if (verb === "완파하다" && !(f.margin >= 3 && !f.pens))
+    bad(env, "margin", "완파");
+  const margin = numAt(bag, "margin");
+  if (margin !== null && !(f.margin === margin && !f.pens))
+    bad(env, "margin", `${margin}골 차`);
+  const comeback =
+    bag.kind === "역전승" ||
+    bag.kind === "역전패" ||
+    verb === "역전승하다" ||
+    verb === "역전패하다";
+  if (comeback && !(f.comeback && !f.pens))
+    bad(env, "comeback", role === "win" ? "역전승" : "역전패");
+  checkResultMods(env, bag, match, side);
+  return { team: subject, match };
+}
+
+/** 비긴 경기(draw) — 짝 주어('A와 B가') 또는 주어 + 짝 목적어 */
+function vDraw(env: Env, bag: Bag, subject: string | null): ClauseSubject {
+  const pair = typeof bag.subj2 === "number";
+  const b = pair ? keyAt(env, bag, "subj2") : keyAt(env, bag, "obj");
+  if (subject === null) {
+    bad(env, "subject-unknown");
+    return NO_SUBJECT;
+  }
+  const found =
+    b !== null ? matchOfPair(env.s, subject, b) : matchOfTeam(env.s, subject);
+  if (!found) {
+    if (!matchOfTeam(env.s, subject))
+      bad(env, "name-not-in-refs", textAt(env, bag, "subj"));
+    else
+      bad(env, "opponent-mismatch", textAt(env, bag, pair ? "subj2" : "obj"));
+    return NO_SUBJECT;
+  }
+  const { match, side } = found;
+  const f = match.facts;
+  if (!f) {
+    bad(env, "score-mismatch", match.id);
+    return NO_SUBJECT;
+  }
+  if (f.pens) bad(env, "shootout-draw", "비겼다");
+  else if (f.ft.home !== f.ft.away) bad(env, "draw-mismatch", "비겼다");
+  const score = pairAt(bag, "score");
+  if (
+    score &&
+    !(
+      score[0] === score[1] &&
+      score[0] === f.ft.home &&
+      f.ft.home === f.ft.away
+    )
+  )
+    bad(env, "score-mismatch", `${score[0]}-${score[1]}`);
+  if (bag.et === true && !(f.aet && !f.pens && f.ft.home === f.ft.away))
+    bad(env, "extra-time", "연장 끝에");
+  checkResultMods(env, bag, match, side);
+  return pair ? { team: null, match } : { team: subject, match };
+}
+
+/** 승부차기 맞선 뒤(pens) — ft 동점 + 승부차기 승자 */
+function vPens(env: Env, bag: Bag): ClauseSubject {
+  const subject = keyAt(env, bag, "subj");
+  const obj = keyAt(env, bag, "obj");
+  const found =
+    subject !== null && obj !== null ? matchOfPair(env.s, subject, obj) : null;
+  if (!found) {
+    bad(env, "opponent-mismatch", textAt(env, bag, "obj"));
+    return NO_SUBJECT;
+  }
+  const { match, side } = found;
+  const f = match.facts;
+  if (!f || !f.pens) {
+    bad(env, "shootout", "승부차기");
+    return { team: subject, match };
+  }
+  if (f.ft.home !== f.ft.away) bad(env, "shootout", "경기 점수 동점 아님");
+  if (f.winner !== side) bad(env, "winner-mismatch", "이겼다");
+  if (bag.etUntil === true && !f.aet) bad(env, "extra-time", "연장까지");
+  const score = pairAt(bag, "score");
+  if (score && !(score[0] === score[1] && score[0] === f.ft.home))
+    bad(env, "score-mismatch", `${score[0]}-${score[1]}`);
+  const pens = pairAt(bag, "pens");
+  if (pens) scoreIssue(env, scoreMatches(f.pens, pens[0], pens[1], side), pens);
+  checkResultMods(env, bag, match, side);
+  return { team: subject, match };
+}
+
+/** 'A와 B의 경기는 … 끝났다'(end) — 앞 팀 점수 먼저. 승부차기 경기면 뒤 절(endPens)이 있어야 한다 */
+function vEnd(env: Env, bag: Bag, hasPensTail: boolean): ClauseSubject {
+  const a = keyAt(env, bag, "subj");
+  const b = keyAt(env, bag, "subj2");
+  const found = a !== null && b !== null ? matchOfPair(env.s, a, b) : null;
+  if (!found) {
+    bad(env, "opponent-mismatch", textAt(env, bag, "subj2"));
+    return NO_SUBJECT;
+  }
+  const { match, side } = found;
+  const f = match.facts;
+  if (!f) {
+    bad(env, "score-mismatch", match.id);
+    return NO_SUBJECT;
+  }
+  const score = pairAt(bag, "score");
+  if (score)
+    scoreIssue(env, orientedMatches(f.ft, score[0], score[1], side), score);
+  if (bag.etUntil === true && !f.aet) bad(env, "extra-time", "연장까지");
+  if (bag.drawWord === true) {
+    if (f.pens) bad(env, "shootout-draw", "무승부");
+    else if (f.ft.home !== f.ft.away) bad(env, "draw-mismatch", "무승부");
+  }
+  if (f.pens && !hasPensTail) bad(env, "shootout", "승부차기 결과 없음");
+  checkResultMods(env, bag, match, side);
+  return { team: null, match };
+}
+
+/** (end 뒤) 승부차기에서 {팀}이 {점수}로 이겼다 */
+function vEndPens(env: Env, bag: Bag, prev: ClauseSubject): void {
+  const match = prev.match;
+  const team = keyAt(env, bag, "subj");
+  if (!match || team === null) {
+    bad(env, "subject-unknown");
+    return;
+  }
+  const side: Side | null =
+    match.home === team ? "home" : match.away === team ? "away" : null;
+  if (side === null) {
+    bad(env, "opponent-mismatch", textAt(env, bag, "subj"));
+    return;
+  }
+  const f = match.facts;
+  if (!f?.pens) {
+    bad(env, "shootout", "승부차기");
+    return;
+  }
+  if (f.winner !== side) bad(env, "winner-mismatch", "승부차기");
+  const pens = pairAt(bag, "pens");
+  if (pens) scoreIssue(env, scoreMatches(f.pens, pens[0], pens[1], side), pens);
+}
+
+// ─── ③ 득점 절 ────────────────────────────────────────────────────────────
+
+/** 선수 key → 그 선수가 뛴 근거 경기의 팀 key(한국 선수 블록 → 득점·도움 목록 — 자책골은 상대 팀 소속) */
+function teamOfPlayer(s: LineState, player: string): string | null {
+  for (const k of s.refKorean) if (k.player === player) return k.team;
+  for (const k of s.model.korean.values())
+    if (k.player === player) return k.team;
+  const keyOf = (name: string | undefined) =>
+    name ? s.model.latin.get(foldName(name))?.key : undefined;
+  for (const match of s.refMatches) {
+    for (const g of match.m.goals ?? []) {
+      const scorer = keyOf(g.player) === player;
+      if (!scorer && keyOf(g.assist) !== player) continue;
+      const scoringTeam = g.team === match.m.home ? match.home : match.away;
+      const own = scorer && g.type === "own_goal";
+      return own
+        ? scoringTeam === match.home
+          ? match.away
+          : match.home
+        : scoringTeam;
+    }
+  }
+  return null;
+}
+
+interface PlayerData {
+  match: MatchModel;
+  /** 그 선수 팀의 쪽(모르면 null) */
+  side: Side | null;
+  /** 자책골이 아닌 골 */
+  goals: GoalRow[];
+  own: GoalRow[];
+  assists: number;
+  /** 득점 목록이 완전한가(false면 한국 선수 블록 수만 안다) */
+  known: boolean;
+  korean: KoreanModel | null;
+}
+
+/** 근거 경기에서 그 선수의 기록 — 득점 목록에 없고 한국 선수 블록도 없으면 null */
+function playerData(s: LineState, player: string): PlayerData | null {
+  const keyOf = (name: string | undefined) =>
+    name ? s.model.latin.get(foldName(name))?.key : undefined;
+  const sideOf = (match: MatchModel): Side | null => {
+    const team = teamOfPlayer(s, player);
+    return team === match.home ? "home" : team === match.away ? "away" : null;
+  };
+  const from = (match: MatchModel, korean: KoreanModel | null): PlayerData =>
+    match.goals
+      ? {
+          match,
+          side: sideOf(match),
+          goals: match.goals.filter((g) => g.player === player && !g.ownGoal),
+          own: match.goals.filter((g) => g.player === player && g.ownGoal),
+          assists: match.assists?.get(player) ?? 0,
+          known: true,
+          korean,
         }
-        if (!ok) fail(s, "assist-count", `${provider.text} ${assist[0]}`);
-      }
-    }
+      : {
+          match,
+          side: sideOf(match),
+          goals: [],
+          own: [],
+          assists: korean?.k.assists ?? 0,
+          known: false,
+          korean,
+        };
+  for (const match of s.refMatches) {
+    const involved =
+      match.m.goals?.some(
+        (g) => keyOf(g.player) === player || keyOf(g.assist) === player,
+      ) ?? false;
+    const korean =
+      s.refKorean.find((k) => k.player === player && k.k.match === match.id) ??
+      null;
+    if (!involved && !korean) continue;
+    return from(match, korean);
   }
-  // 소속 — 'T의 X'(팀 바로 뒤 선수) · 'X가 T 소속으로'
-  c.mentions.forEach((m, i) => {
-    if (m.kind !== "team" || !m.key) return;
-    const next = c.mentions[i + 1];
-    const between = next
-      ? s.masked.slice(m.end + m.particle.length, next.start)
-      : "";
-    let player: Mention | undefined;
-    if (
-      m.particle === "의" &&
-      next?.kind === "player" &&
-      /^\s*$/u.test(between)
-    )
-      player = next;
-    else if (/^\s*소속/u.test(s.masked.slice(m.end + m.particle.length)))
-      player =
-        [...c.mentions.slice(0, i)]
-          .reverse()
-          .find((x) => x.kind === "player") ??
-        c.mentions.slice(i + 1).find((x) => x.kind === "player");
-    if (!player?.key) return;
-    const team = teamOfPlayer(s, player.key);
-    if (team !== null && team !== m.key)
-      fail(s, "affiliation", `${m.text} ${player.text}`);
-  });
+  const k = s.refKorean.find((x) => x.player === player);
+  const match = k ? s.model.matches.get(k.k.match) : undefined;
+  return k && match ? from(match, k) : null;
 }
 
-function checkMinutes(s: LineState, ci: number): void {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-  const appearance = APPEARANCE_CONTEXT.test(seg);
-  const goalCtx = GOAL_CONTEXT.test(seg);
-  const re =
-    /(?<![\d+])(\d{1,3})(?:\+(\d{1,2}))?\s?분|(?<![\d+])(\d{1,3})\+(\d{1,2})(?!\d)/gu;
-  for (const m of seg.matchAll(re)) {
-    const pos = c.start + m.index;
-    const end = pos + m[0].length;
-    if (isConsumed(s, pos, end) && !/분/u.test(m[0])) continue;
-    consume(s, pos, end);
-    const base = Number(m[1] ?? m[3]);
-    const extraRaw = m[2] ?? m[4];
-    const label = extraRaw ? `${base}+${extraRaw}` : String(base);
-    const before = s.masked.slice(c.start, pos);
-    const after = s.masked.slice(end);
-    // '90분을 1-1로 마쳤다'·'90분까지 1-1' — 정규시간을 가리키는 말(점수는 checkScores가 regular로 대조)
-    if (
-      base === 90 &&
-      !extraRaw &&
-      /^(?:을|까지|동안|\s?동안|에는|엔)?\s?\d{1,2}\s?[-–]\s?\d/u.test(after)
-    )
-      continue;
-    // 전반·후반 수식 — '후반 10분'(바꿔 쓴 분)은 강등
-    const half = /(전반|후반)\s?$/u.exec(before)?.[1];
-    if (half === "전반" && base > 45)
-      fail(s, "minute-half", `${half} ${label}분`);
-    if (half === "후반" && base < 46)
-      fail(s, "minute-half", `${half} ${label}분`);
-    const anchor = anchorAt(s, ci, pos, end, true);
-    if (anchor?.type === "unknown") {
-      fail(s, "name-unknown", anchor.word);
-      continue;
-    }
-    // 한국 선수 출전 기록
-    const k =
-      anchor?.type === "player"
-        ? s.refKorean.find((x) => x.player === anchor.key)
-        : undefined;
-    if (appearance && k) {
-      const kk = k.k;
-      const played = /^(?:을|간|\s?동안)?\s?(?:뛰|소화)/u.test(after);
-      const on = /^(?:에)?\s?(?:교체\s?)?(?:투입|교체로|교체\s?출전)/u.test(
-        after,
-      );
-      const off =
-        /^(?:까지\s?뛰|에\s?교체(?:\s?아웃|됐|돼|되)|\s?교체\s?아웃)/u.test(
-          after,
-        );
-      const want = played
-        ? [kk.minutes]
-        : on
-          ? [kk.subOn]
-          : off
-            ? [kk.subOff]
-            : [kk.minutes, kk.subOn, kk.subOff];
-      if (extraRaw || !want.includes(base)) fail(s, "minute", `${label}분`);
-      continue;
-    }
-    if (goalCtx || anchor?.type === "player") {
-      // 자책골 기록은 그 절에 '자책'이 있을 때만 맞는 분이다(자책골을 일반 골처럼 쓴 문장 — M1-23 리뷰 차단 4)
-      const ownCtx = /자책/u.test(seg);
-      const rows =
-        anchor?.type === "player"
-          ? ownCtx
-            ? playerGoals(s, anchor.key).own
-            : playerGoals(s, anchor.key).goals
-          : anchor?.type === "team"
-            ? (teamGoals(s, anchor.key)?.goals ?? [])
-            : s.refMatches.flatMap((x) => x.goals ?? []);
-      if (!rows.some((g) => g.min === label)) fail(s, "minute", `${label}분`);
-      continue;
-    }
-    // 그 밖 — 근거 항목의 분(득점 시각·한국 선수 기록)
-    const known = new Set<string>();
-    for (const x of s.refMatches)
-      for (const g of x.goals ?? []) known.add(g.min);
-    for (const x of s.refKorean) {
-      for (const v of [x.k.minutes, x.k.subOn, x.k.subOff])
-        if (v !== undefined) known.add(String(v));
-    }
-    if (!known.has(label)) fail(s, "minute", `${label}분`);
+/** 골 수 — 목록을 모르면 한국 선수 블록 수, 그것도 없으면 null */
+function goalTotal(pd: PlayerData): number | null {
+  if (pd.known) return pd.goals.length;
+  return pd.korean ? pd.korean.k.goals : null;
+}
+
+function assistTotal(pd: PlayerData): number | null {
+  if (pd.known) return pd.assists;
+  return pd.korean ? pd.korean.k.assists : null;
+}
+
+/** 득점 절 공통 — '{팀}의 {선수}' 소속 · '{상대}전에서'·'{상대}를 상대로' */
+function checkPlayerMods(
+  env: Env,
+  bag: Bag,
+  player: string,
+  pd: PlayerData,
+): void {
+  const team = keyAt(env, bag, "team");
+  if (team !== null && teamOfPlayer(env.s, player) !== team)
+    bad(
+      env,
+      "affiliation",
+      `${textAt(env, bag, "team")} ${textAt(env, bag, "subj")}`,
+    );
+  const opp = keyAt(env, bag, "opp");
+  if (opp !== null) {
+    const ok = pd.side !== null && teamOn(pd.match, other(pd.side)) === opp;
+    if (!ok) bad(env, "opponent-mismatch", textAt(env, bag, "opp"));
   }
 }
 
-function checkAppearance(s: LineState, ci: number): void {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-  if (!APPEARANCE_CONTEXT.test(seg)) return;
-  const m = APPEARANCE_CONTEXT.exec(seg)!;
-  const pos = c.start + m.index;
-  const anchor = anchorAt(s, ci, pos, pos + m[0].length, false);
-  if (anchor?.type === "unknown") {
-    fail(s, "name-unknown", anchor.word);
+const NOUN_CODE: Readonly<Record<string, BriefLineReasonCode>> = Object.freeze({
+  골: "scorer",
+  선제골: "opening-goal",
+  결승골: "decisive-goal",
+  동점골: "equaliser",
+  만회골: "scorer",
+  자책골: "scorer",
+});
+
+/** 득점(goal) — 그 선수의 골(종류·분·PK·도움 선수) */
+function vGoal(env: Env, bag: Bag): void {
+  const player = keyAt(env, bag, "subj");
+  const pd = player !== null ? playerData(env.s, player) : null;
+  if (player === null || pd === null) {
+    bad(env, "scorer", textAt(env, bag, "subj"));
     return;
   }
-  const k =
-    anchor?.type === "player"
-      ? s.refKorean.find((x) => x.player === anchor.key)
-      : undefined;
+  checkPlayerMods(env, bag, player, pd);
+  const noun = strAt(bag, "noun") ?? "골";
+  const code = NOUN_CODE[noun] ?? "scorer";
+  const half = strAt(bag, "minH");
+  const min = strAt(bag, "min");
+  const mins = strListAt(bag, "mins");
+  const assistBy = keyAt(env, bag, "assistBy");
+  if (!pd.known) {
+    // 득점 목록이 없으면 한국 선수 블록의 골 수만 안다 — 분·종류·도움 선수는 확인할 수 없다
+    const plain =
+      noun === "골" &&
+      min === null &&
+      half === null &&
+      mins === null &&
+      assistBy === null &&
+      bag.pk !== true;
+    if (!plain || (goalTotal(pd) ?? 0) === 0)
+      bad(env, code, textAt(env, bag, "subj"));
+    return;
+  }
+  const match = pd.match;
+  let pool: GoalRow[];
+  if (noun === "자책골") pool = pd.own;
+  else if (noun === "선제골") {
+    const first = match.goals?.[0];
+    pool = first && !first.ownGoal && first.player === player ? [first] : [];
+  } else if (noun === "결승골") {
+    const g = decisiveGoal(match);
+    pool = g && !g.ownGoal && g.player === player ? [g] : [];
+  } else if (noun === "동점골") {
+    const g = equaliserGoal(match);
+    pool = g && !g.ownGoal && g.player === player ? [g] : [];
+  } else if (noun === "만회골") {
+    pool = consolationGoals(match).filter(
+      (g) => g.player === player && !g.ownGoal,
+    );
+  } else pool = pd.goals;
+  if (pool.length === 0) {
+    bad(env, code, textAt(env, bag, "subj"));
+    return;
+  }
+  if (mins) {
+    if (!mins.every((x) => pool.some((g) => g.min === x)))
+      bad(env, "minute", mins.join("·"));
+    return;
+  }
+  const byMin = min === null ? pool : pool.filter((g) => g.min === min);
+  if (byMin.length === 0) {
+    bad(env, "minute", `${min}분`);
+    return;
+  }
+  if (half !== null && !byMin.some((g) => halfOk(half, g.min))) {
+    bad(env, "minute-half", `${half}${min !== null ? ` ${min}분` : ""}`);
+    return;
+  }
+  const byPk = bag.pk === true ? byMin.filter((g) => g.penalty) : byMin;
+  if (byPk.length === 0) {
+    bad(env, "penalty", "PK");
+    return;
+  }
+  if (assistBy !== null && !byPk.some((g) => g.assist === assistBy))
+    bad(env, "assist-count", `${textAt(env, bag, "assistBy")} 도움`);
+}
+
+/** 골 수(count) — n골·해트트릭·멀티골·n골 m도움 */
+function vCount(env: Env, bag: Bag): void {
+  const player = keyAt(env, bag, "subj");
+  const pd = player !== null ? playerData(env.s, player) : null;
+  if (player === null || pd === null) {
+    bad(env, "goal-count", textAt(env, bag, "subj"));
+    return;
+  }
+  checkPlayerMods(env, bag, player, pd);
+  const total = goalTotal(pd);
+  const n = numAt(bag, "n");
+  const feat = strAt(bag, "feat");
+  const label = `${textAt(env, bag, "subj")} ${n !== null ? `${n}골` : feat === "hat" ? "해트트릭" : "멀티골"}`;
+  const ok =
+    total !== null &&
+    (n !== null ? total === n : feat === "hat" ? total >= 3 : total >= 2);
+  if (!ok) bad(env, "goal-count", label);
+  const assists = numAt(bag, "assists");
+  if (assists !== null && assistTotal(pd) !== assists)
+    bad(env, "assist-count", `${textAt(env, bag, "subj")} ${assists}도움`);
+  const mins = strListAt(bag, "mins");
+  if (mins) {
+    const okMins =
+      pd.known &&
+      new Set(mins).size === mins.length &&
+      mins.every((x) => pd.goals.some((g) => g.min === x)) &&
+      (total === null || mins.length <= total);
+    if (!okMins) bad(env, "minute", mins.join("·"));
+  }
+}
+
+/** 도움(assist) — 도움 수 · '{득점자}의 골을 도왔다' */
+function vAssist(env: Env, bag: Bag): void {
+  const player = keyAt(env, bag, "subj");
+  const pd = player !== null ? playerData(env.s, player) : null;
+  if (player === null || pd === null) {
+    bad(env, "assist-count", textAt(env, bag, "subj"));
+    return;
+  }
+  checkPlayerMods(env, bag, player, pd);
+  const target = keyAt(env, bag, "target");
+  if (target === null) {
+    const want = numAt(bag, "assists") ?? -1;
+    const have = assistTotal(pd);
+    const ok = have !== null && (want === -1 ? have >= 1 : have === want);
+    if (!ok) bad(env, "assist-count", `${textAt(env, bag, "subj")} 도움`);
+    return;
+  }
+  // {득점자}의 [{분}] 골·결승골…을 도왔다 — 그 골의 도움이 주어
+  const match = pd.match;
+  const goals = match.goals;
+  if (!goals) {
+    bad(env, "assist-count", `${textAt(env, bag, "subj")} 도움`);
+    return;
+  }
+  const noun = strAt(bag, "noun") ?? "골";
+  let pool = goals.filter((g) => g.player === target && !g.ownGoal);
+  if (noun === "결승골") pool = pool.filter((g) => g === decisiveGoal(match));
+  if (noun === "동점골") pool = pool.filter((g) => g === equaliserGoal(match));
+  if (noun === "선제골") pool = pool.filter((g) => g === goals[0]);
+  if (noun === "만회골")
+    pool = pool.filter((g) => consolationGoals(match).includes(g));
+  const min = strAt(bag, "min");
+  if (min !== null) pool = pool.filter((g) => g.min === min);
+  const half = strAt(bag, "minH");
+  if (half !== null) pool = pool.filter((g) => halfOk(half, g.min));
+  if (!pool.some((g) => g.assist === player))
+    bad(
+      env,
+      "assist-count",
+      `${textAt(env, bag, "subj")} → ${textAt(env, bag, "target")}`,
+    );
+}
+
+// ─── ③ 한국 선수 절 ───────────────────────────────────────────────────────
+
+/** 한국 선수 출전(korean) — 블록 기록과 일치 */
+function vKorean(env: Env, bag: Bag): KoreanModel | null {
+  const player = keyAt(env, bag, "subj");
+  const k = env.s.refKorean.find((x) => x.player === player) ?? null;
   if (!k) {
-    // 출전 기록은 한국 선수 블록에만 있다(라인업 미입력 — M0-30 지시문). 팀 주어('선두로 나섰다')는 순위 규칙이 본다
-    if (anchor?.type === "player") fail(s, "appearance", m[0]);
-    return;
+    bad(env, "appearance", `${textAt(env, bag, "subj")} 기록 없음`);
+    return null;
   }
   const kk = k.k;
-  // 출전했다는 서술('출전했다'·'나섰다'·'n분을 뛰었다'·'투입됐다')은 출전 시간이 있어야 한다 — 0분(벤치)이면 강등
-  const negatedAppearance =
-    /(?:출전하지|결장|벤치|나서지\s?못|뛰지\s?못|명단에만|출전\s?기회)/u.test(
-      seg,
-    );
-  if (
-    !negatedAppearance &&
-    /(?:출전|출장|나섰|나서|뛰|투입|선발|소화)/u.test(seg) &&
-    kk.minutes <= 0
-  )
-    fail(s, "appearance", "출전");
-  const subOn = SUB_ON.test(seg);
-  const subOff = SUB_OFF.test(seg);
-  if (/선발/u.test(seg) && !kk.started) fail(s, "appearance", "선발");
-  if (subOn && (kk.started || kk.subOn === undefined))
-    fail(s, "appearance", "교체 투입");
-  if (subOff && !subOn && kk.subOff === undefined)
-    fail(s, "appearance", "교체 아웃");
-  if (
-    /풀타임/u.test(seg) &&
-    (!kk.started || kk.subOff !== undefined || kk.minutes < 90)
-  )
-    fail(s, "appearance", "풀타임");
-  if (/(?:결장|출전하지|벤치)/u.test(seg) && kk.minutes > 0)
-    fail(s, "appearance", "결장");
-}
-
-// ─── 순위 ────────────────────────────────────────────────────────────────
-
-/** 순위 서술의 팀 — 바로 뒤 팀 이름('2위 Bayern') → 앞쪽 가장 가까운 팀 이름(목록이면 묶음 전체) → 이어받은 주어 */
-function rankTeams(
-  s: LineState,
-  ci: number,
-  pos: number,
-  end: number,
-): string[] | "unknown" | null {
-  const c = s.clauses[ci]!;
-  const groupOf = (m: Mention): string[] => {
-    const g = c.subjects.find((x) => x.members?.includes(m));
-    return g?.members
-      ? g.members.filter((x) => x.kind === "team" && x.key).map((x) => x.key!)
-      : [m.key!];
-  };
-  // ① 바로 뒤 팀 이름('2위 Bayern'·'선두 Dortmund')
-  const next = c.mentions.find(
-    (m) => m.start >= end && /^\s*$/u.test(s.masked.slice(end, m.start)),
+  const match = env.s.model.matches.get(kk.match) ?? null;
+  const kTeam = keyAt(env, bag, "kTeam");
+  if (kTeam !== null && kTeam !== k.team)
+    bad(env, "affiliation", textAt(env, bag, "kTeam"));
+  const kOpp = keyAt(env, bag, "kOpp");
+  if (kOpp !== null) {
+    const opp = !match
+      ? null
+      : match.home === k.team
+        ? match.away
+        : match.away === k.team
+          ? match.home
+          : null;
+    if (opp !== kOpp) bad(env, "opponent-mismatch", textAt(env, bag, "kOpp"));
+  }
+  const app = strAt(bag, "app");
+  if (app === "bench") {
+    if (kk.minutes > 0) bad(env, "appearance", "결장");
+    return k;
+  }
+  if (kk.minutes <= 0) bad(env, "appearance", "출전");
+  if (app === "start" && !kk.started) bad(env, "appearance", "선발");
+  if (app === "sub" && (kk.started || kk.subOn === undefined))
+    bad(env, "appearance", "교체 투입");
+  const subOn = strAt(bag, "subOn");
+  if (subOn !== null && String(kk.subOn) !== subOn)
+    bad(env, "minute", `${subOn}분 투입`);
+  checkHalf(
+    env,
+    bag,
+    "subOn",
+    kk.subOn !== undefined ? String(kk.subOn) : undefined,
   );
-  if (next?.kind === "team" && next.key) return [next.key];
-  // ② 바로 앞 팀 이름('Bayern(10점)')
-  const prev = [...c.mentions].reverse().find((m) => m.end <= pos);
+  const minutes = numAt(bag, "minutes");
+  if (minutes !== null && minutes !== kk.minutes)
+    bad(env, "minute", `${minutes}분 출전`);
+  if (bag.subOff === true && kk.subOff === undefined)
+    bad(env, "appearance", "교체 아웃");
+  // {분}까지 뛰었다 — 교체 아웃 분(교체 없이 끝까지면 출전 분)
+  const until = strAt(bag, "subOffMin");
+  if (until !== null) {
+    const end = kk.subOff ?? (kk.started ? kk.minutes : undefined);
+    if (end === undefined || String(end) !== until)
+      bad(env, "minute", `${until}분까지`);
+    if (
+      bag.verb !== "뛰다" &&
+      bag.verb !== "소화하다" &&
+      kk.subOff === undefined
+    )
+      bad(env, "appearance", "교체 아웃");
+    checkHalf(env, bag, "subOffMin");
+  }
   if (
-    prev?.kind === "team" &&
-    prev.key &&
-    /^[\s(]*$/u.test(s.masked.slice(prev.end + prev.particle.length, pos))
+    bag.full === true &&
+    !(kk.started && kk.subOff === undefined && kk.minutes >= 90)
   )
-    return groupOf(prev);
-  // ③ 가장 가까운 주어 묶음('Arsenal은 … Man City와 동률이지만 … 2위다' — 주어가 비교 대상보다 우선)
-  const subj = c.subjects.filter((g) => g.pos < pos).at(-1);
-  if (subj) {
-    if (!subj.members) return "unknown";
-    const teams = groupTeams(s, subj) ?? [];
-    if (teams.length > 0) return teams;
-  }
-  // ④ 앞쪽 가장 가까운 팀 이름 → ⑤ 이어받은 주어
-  const last = c.mentions
-    .filter((m) => m.kind === "team" && m.key && m.end <= pos)
-    .at(-1);
-  if (last) return groupOf(last);
-  const g = subjectFor(s, ci, pos);
-  if (g && !g.members) return "unknown";
-  const teams = g ? (groupTeams(s, g) ?? []) : [];
-  return teams.length > 0 ? teams : null;
+    bad(env, "appearance", "풀타임");
+  return k;
 }
 
-function rowsOf(s: LineState, team: string): RowModel[] {
-  return s.refStandings.flatMap((t) => t.rows.filter((r) => r.team === team));
+/** (korean 뒤) 득점은 없었다 · 공격포인트는 없었다 */
+function vKoreanTail(env: Env, bag: Bag, k: KoreanModel | null): void {
+  if (!k) {
+    bad(env, "subject-unknown");
+    return;
+  }
+  if (k.k.goals !== 0) bad(env, "goal-count", "득점 없음");
+  if (bag.tail === "공격포인트는" && k.k.assists !== 0)
+    bad(env, "assist-count", "공격포인트 없음");
 }
 
-function checkStandings(s: LineState, ci: number): void {
-  const c = s.clauses[ci]!;
-  const seg = s.masked.slice(c.start, c.end);
-  const tables = s.refStandings;
-  const allRows = tables.flatMap((t) => t.rows);
+// ─── ③ 순위 절 ────────────────────────────────────────────────────────────
 
-  // 득실차 '+5' — 점수 쌍보다 먼저
-  for (const m of seg.matchAll(/득실(?:\s?차)?\s?([+−-]?\d{1,2})/gu)) {
-    const pos = c.start + m.index;
-    consume(s, pos, pos + m[0].length);
-    const raw = m[1]!.replace("−", "-");
-    const v = Number(raw);
-    const teams = rankTeams(s, ci, pos, pos + m[0].length);
-    if (teams === "unknown") {
-      fail(s, "name-unknown", m[0]);
-      continue;
-    }
-    const ok = teams
-      ? teams.every((t) =>
-          rowsOf(s, t).some(
-            (r) => r.gd === v || (!/[+-]/u.test(raw) && Math.abs(r.gd) === v),
-          ),
-        )
-      : allRows.some((r) => r.gd === v);
-    if (!ok) fail(s, "goal-diff", m[0]);
-  }
+/** 순위 절의 순위표 — 대회 이름이 있으면 그 대회 순위표만 */
+function tablesFor(env: Env, bag: Bag): StandingsModel[] {
+  const comp = keyAt(env, bag, "comp");
+  const tables = env.s.refStandings;
+  if (comp === null) return tables;
+  const picked = tables.filter((t) => t.comp === comp);
+  if (picked.length === 0) bad(env, "comp-mismatch", textAt(env, bag, "comp"));
+  return picked;
+}
 
-  // 표 아래쪽 순위('최하위'·'강등권') — 입력 순위표는 상위권만이라(note) 근거가 없다
-  const bottom = /최하위|꼴찌|강등권/u.exec(seg);
-  if (bottom) fail(s, "rank-pos", bottom[0]);
+function rowIn(
+  tables: readonly StandingsModel[],
+  team: string,
+): { row: RowModel; table: StandingsModel } | null {
+  for (const table of tables) {
+    const row = table.rows.find((r) => r.team === team);
+    if (row) return { row, table };
+  }
+  return null;
+}
 
-  // 순위 변동 'n위에서 m위로'
-  for (const m of seg.matchAll(/(\d{1,2})위에서\s?(\d{1,2})위/gu)) {
-    const pos = c.start + m.index;
-    const end = pos + m[0].length;
-    consume(s, pos, end);
-    const teams = rankTeams(s, ci, pos, end);
-    if (teams === "unknown") {
-      fail(s, "name-unknown", m[0]);
+/** 순위 묶음 하나(팀들 + 승점 + 순위) */
+function checkRankGroup(
+  env: Env,
+  tables: readonly StandingsModel[],
+  teams: readonly string[],
+  pts: number | null,
+  rank: number | null,
+  tied: boolean,
+): void {
+  for (const team of teams) {
+    const hit = rowIn(tables, team);
+    if (!hit) {
+      bad(env, "rank-pos", "순위표에 없음");
       continue;
     }
-    const from = Number(m[1]);
-    const to = Number(m[2]);
-    if (!teams) {
-      fail(s, "rank-pos", m[0]);
-      continue;
-    }
-    for (const t of teams) {
-      const rows = rowsOf(s, t);
-      if (rows.length === 0) fail(s, "rank-pos", m[0]);
-      else if (rows.every((r) => r.prev === undefined))
-        fail(s, "rank-move-no-prev", m[0]);
-      else if (!rows.some((r) => r.prev === from && r.pos === to))
-        fail(s, "rank-move", m[0]);
-    }
-  }
-
-  // 'A와 B가 … n위와 m위다' — 묶음 순서대로 짝짓는다
-  for (const m of seg.matchAll(/(\d{1,2})위(?:와|과)\s?(\d{1,2})위/gu)) {
-    const pos = c.start + m.index;
-    const end = pos + m[0].length;
-    if (isConsumed(s, pos, end)) continue;
-    consume(s, pos, end);
-    const teams = rankTeams(s, ci, pos, end);
-    if (teams === "unknown") {
-      fail(s, "name-unknown", m[0]);
-      continue;
-    }
-    const want = [Number(m[1]), Number(m[2])];
-    const ok =
-      !!teams &&
-      teams.length === 2 &&
-      teams.every((t, i) => rowsOf(s, t).some((r) => r.pos === want[i]));
-    if (!ok) fail(s, "rank-pos", m[0]);
-  }
-
-  // 도착 순위('2위로'·'선두로'·'선두 자리를') · 변동 폭('한 계단') — 순위가 바뀌었다는 서술이라 prev가 있어야 하고 바뀌었어야
-  // 한다(D40 ③ — M1-23 리뷰 차단 6: '2위로 한 계단 밀렸다'·'선두를 되찾았다'·'2위로 끌어내렸다')
-  for (const [re, steps] of [
-    [RANK_ARRIVAL, false],
-    [RANK_STEPS, true],
-  ] as const) {
-    for (const m of seg.matchAll(new RegExp(re.source, "gu"))) {
-      const pos = c.start + m.index;
-      const teams = rankTeams(s, ci, pos, pos + m[0].length);
-      if (teams === "unknown") {
-        fail(s, "name-unknown", m[0]);
-        continue;
-      }
-      if (steps) consume(s, pos, pos + m[0].length);
-      const rowsFor = teams ? teams.map((t) => rowsOf(s, t)) : [allRows];
-      for (const rows of rowsFor) {
-        const withPrev = rows.filter((r) => r.prev !== undefined);
-        if (withPrev.length === 0) {
-          fail(s, "rank-move-no-prev", m[0]);
-          continue;
-        }
-        const n = steps ? Number(m[1]) : null;
-        const ok = withPrev.some((r) =>
-          n === null ? r.prev !== r.pos : Math.abs(r.prev! - r.pos) === n,
-        );
-        if (!ok) fail(s, "rank-move", m[0]);
-      }
-    }
-  }
-
-  // 순위 'n위'·'공동 n위'·'선두'·'상위 n위'
-  const rankRe =
-    /(공동\s?)?(?:(상위\s?)?(\d{1,2})위(?!권|에서)|선두(?!권|\s?경쟁|\s?다툼))/gu;
-  for (const m of seg.matchAll(rankRe)) {
-    const pos = c.start + m.index;
-    const end = pos + m[0].length;
-    if (isConsumed(s, pos, end)) continue;
-    consume(s, pos, end);
-    const tied = !!m[1];
-    const top = !!m[2];
-    const n = m[3] !== undefined ? Number(m[3]) : 1;
-    if (tables.length === 0) {
-      fail(s, "rank-pos", m[0]);
-      continue;
-    }
-    const teams = rankTeams(s, ci, pos, end);
-    if (teams === "unknown") {
-      fail(s, "name-unknown", m[0]);
-      continue;
-    }
-    if (!teams) {
-      if (!allRows.some((r) => (top ? r.pos <= n : r.pos === n)))
-        fail(s, "rank-pos", m[0]);
-      continue;
-    }
-    for (const t of teams) {
-      const rows = rowsOf(s, t);
-      if (rows.length === 0) {
-        fail(s, "rank-pos", m[0]);
-        continue;
-      }
-      if (top) {
-        if (!rows.some((r) => r.pos <= n)) fail(s, "rank-pos", m[0]);
-        continue;
-      }
-      if (!rows.some((r) => r.pos === n)) {
-        fail(s, tied ? "rank-tie" : "rank-pos", m[0]);
-        continue;
-      }
-      if (tied) {
-        const table = tables.find((x) =>
-          x.rows.some((r) => r.team === t && r.pos === n),
-        );
-        if (!table || table.rows.filter((r) => r.pos === n).length < 2)
-          fail(s, "rank-tie", m[0]);
-      }
-    }
-  }
-
-  // 순위 변동 동사(D40 ③) — 순위 맥락이 있는 절만('1위에 올라 있다'는 상태)
-  if (RANK_CONTEXT.test(seg)) {
-    const segNoState = seg.replace(new RegExp(RANK_STATE.source, "gu"), (x) =>
-      "\u25a1".repeat(x.length),
-    );
-    for (const [re, dir] of [
-      [MOVE_UP, "up"],
-      [MOVE_DOWN, "down"],
-      [MOVE_SAME, "same"],
-    ] as const) {
-      for (const m of segNoState.matchAll(new RegExp(re.source, "gu"))) {
-        const pos = c.start + m.index;
-        const teams = rankTeams(s, ci, pos, pos + m[0].length);
-        if (teams === "unknown") {
-          fail(s, "name-unknown", m[0]);
-          continue;
-        }
-        const rowsFor = teams ? teams.map((t) => rowsOf(s, t)) : [allRows];
-        for (const rows of rowsFor) {
-          const withPrev = rows.filter((r) => r.prev !== undefined);
-          if (withPrev.length === 0) {
-            fail(s, "rank-move-no-prev", m[0]);
-            continue;
-          }
-          if (!teams) continue;
-          const ok = withPrev.some((r) =>
-            dir === "up"
-              ? r.prev! > r.pos
-              : dir === "down"
-                ? r.prev! < r.pos
-                : r.prev === r.pos,
-          );
-          if (!ok) fail(s, "rank-move", m[0]);
-        }
-      }
-    }
-  } else {
-    // 순위 맥락 없는 '올랐다' + 라운드 낱말 = 다음 라운드 진출(합산은 입력에 없다)
-    if (MOVE_UP.test(seg) && ROUND_WORDS.some((w) => w.re.test(seg)))
-      fail(s, "history-unsupported", "진출");
-    MOVE_UP.lastIndex = 0;
-  }
-
-  // 승점 — '승점 n'·'n점'·차이 'n점 앞섰다'·'승점 n 차'
-  const diffRe =
-    /(?:승점\s?)?(\d{1,3})\s?점?\s?(?:차(?!례)|앞|뒤)|승점\s?차(?:는|가|로)?\s?(\d{1,3})/gu;
-  for (const m of seg.matchAll(diffRe)) {
-    const pos = c.start + m.index;
-    const end = pos + m[0].length;
-    if (isConsumed(s, pos, end)) continue;
-    if (!/점|승점/u.test(m[0])) continue;
-    consume(s, pos, end);
-    const n = Number(m[1] ?? m[2]);
-    // 방향(M1-23 리뷰): 'X는 Y보다 n점 앞섰다' ⇒ X − Y = n · '뒤졌다' ⇒ Y − X = n · '차' ⇒ |X − Y| = n
-    const dir = /앞$/u.test(m[0])
-      ? "ahead"
-      : /뒤$/u.test(m[0])
-        ? "behind"
-        : "gap";
-    const subj =
-      c.subjects.filter((g) => g.members && g.pos < pos).at(-1) ??
-      subjectFor(s, ci, pos);
-    const subjTeam = subj?.members ? (groupTeams(s, subj) ?? [])[0] : undefined;
-    const others = c.mentions
-      .filter((x) => x.kind === "team" && x.key && x.key !== subjTeam)
-      .map((x) => x.key!);
-    const ptsOf = (t: string) => rowsOf(s, t).map((r) => r.pts);
-    let ok = false;
-    if (subjTeam && others.length > 0) {
-      for (const cmp of others)
-        for (const a of ptsOf(subjTeam))
-          for (const b of ptsOf(cmp)) {
-            const d = a - b;
-            if (
-              dir === "ahead"
-                ? d === n
-                : dir === "behind"
-                  ? -d === n
-                  : Math.abs(d) === n
-            )
-              ok = true;
-          }
-    } else if (dir === "gap") {
-      for (const a of allRows)
-        for (const b of allRows) if (a.pts - b.pts === n) ok = true;
-    }
-    if (!ok) fail(s, "points", m[0]);
-  }
-  for (const m of seg.matchAll(
-    /승점\s?(\d{1,3})(?:\s?점)?|(?<![\d승]\s?)(\d{1,3})\s?점(?!유|수|차)/gu,
-  )) {
-    const pos = c.start + m.index;
-    const end = pos + m[0].length;
-    if (isConsumed(s, pos, end)) continue;
-    consume(s, pos, end);
-    const n = Number(m[1] ?? m[2]);
-    if (tables.length === 0) {
-      fail(s, "points", m[0]);
-      continue;
-    }
-    const teams = rankTeams(s, ci, pos, end);
-    if (teams === "unknown") {
-      fail(s, "name-unknown", m[0]);
-      continue;
-    }
-    const ok = teams
-      ? teams.every((t) => rowsOf(s, t).some((r) => r.pts === n))
-      : allRows.some((r) => r.pts === n);
-    if (!ok) fail(s, "points", m[0]);
-  }
-  // 대회 이름 — 그 절의 팀 순위는 언급한 대회의 순위표에 있어야 한다('Arsenal은 LaLiga 2위다' — 근거에 두 대회 순위표가 있을 때)
-  const compKeys = c.mentions
-    .filter((x) => x.kind === "comp" && x.key)
-    .map((x) => x.key!);
-  if (compKeys.length > 0 && tables.length > 0 && RANK_CONTEXT.test(seg)) {
-    for (const t of c.mentions.filter((x) => x.kind === "team" && x.key)) {
-      const inTables = tables.filter((tb) =>
-        tb.rows.some((r) => r.team === t.key),
+    const { row, table } = hit;
+    if (pts !== null && row.pts !== pts) bad(env, "points", `승점 ${pts}`);
+    if (rank !== null && row.pos !== rank)
+      bad(
+        env,
+        tied ? "rank-tie" : "rank-pos",
+        tied ? `공동 ${rank}위` : `${rank}위`,
       );
-      if (inTables.length === 0) continue;
-      if (!inTables.some((tb) => compKeys.includes(tb.comp)))
-        fail(s, "comp-mismatch", t.text);
-    }
+    if (tied && table.rows.filter((r) => r.pos === row.pos).length < 2)
+      bad(env, "rank-tie", `공동 ${rank ?? row.pos}위`);
   }
+  if (teams.length > 1 && !tied) bad(env, "rank-tie", "공동 아님");
+}
 
-  // 경기 수 'n경기'
-  for (const m of seg.matchAll(/(\d{1,2})\s?경기(?!\s?(?:만에|연속|째))/gu)) {
-    const pos = c.start + m.index;
-    const end = pos + m[0].length;
-    if (isConsumed(s, pos, end)) continue;
-    consume(s, pos, end);
-    const n = Number(m[1]);
-    const teams = rankTeams(s, ci, pos, end);
-    const ok =
-      teams && teams !== "unknown"
-        ? teams.every((t) => rowsOf(s, t).some((r) => r.played === n))
-        : allRows.some((r) => r.played === n);
-    if (!ok) fail(s, "played", m[0]);
+function subjectTeams(
+  env: Env,
+  bag: Bag,
+  inherited: string | null,
+): string[] | null {
+  const group = groupKeys(env, bag, "subj");
+  if (group) return group;
+  const single = keyAt(env, bag, "subj");
+  if (single !== null) return [single];
+  return inherited !== null ? [inherited] : null;
+}
+
+/** 순위(rank) — [팀] [승점 n으로] [대회] 선두다·n위다 … */
+function vRank(env: Env, bag: Bag, inherited: string | null): string | null {
+  const teams = subjectTeams(env, bag, inherited);
+  if (!teams) {
+    bad(env, "subject-unknown");
+    return null;
+  }
+  checkRankGroup(
+    env,
+    tablesFor(env, bag),
+    teams,
+    numAt(bag, "pts"),
+    numAt(bag, "rank"),
+    bag.rankT === true,
+  );
+  return teams.length === 1 ? teams[0]! : null;
+}
+
+/** 순위 나열(rankList) — 묶음마다 */
+function vRankList(env: Env, bag: Bag): void {
+  const tables = tablesFor(env, bag);
+  for (const i of [1, 2, 3]) {
+    const teams = groupKeys(env, bag, `g${i}`);
+    if (!teams) continue;
+    checkRankGroup(
+      env,
+      tables,
+      teams,
+      numAt(bag, `pts${i}`),
+      numAt(bag, `rank${i}`),
+      bag[`rank${i}T`] === true,
+    );
   }
 }
 
-// ─── 남은 숫자 ────────────────────────────────────────────────────────────
+const MOVE_UP: ReadonlySet<string> = new Set([
+  "오르다",
+  "올라서다",
+  "상승하다",
+]);
 
-/**
- * 종류를 알아보지 못한 숫자는 강등한다(M1-23 리뷰 차단 5 — '슈팅 7개'·'관중 9명'·'시즌 2호골'). 점수·분·순위·승점·득실차·경기 수·
- * 골/도움 수·라운드는 앞 규칙이 종류별로 대조하고 가져갔다. D40 ② 파생 숫자는 전용 규칙만 허용한다 — 승점 차('3점 앞섰다' = 그 두 팀
- * 승점의 차)·점수 차('3골 차')·두 팀 골 합('7골을 주고받은'). 근거 숫자 아무 둘의 합·차를 허용하면 작은 정수가 거의 다 통과한다.
- */
-function checkLeftoverNumbers(s: LineState): void {
-  for (const m of s.masked.matchAll(/\d+/gu)) {
-    if (isConsumed(s, m.index, m.index + m[0].length)) continue;
-    fail(s, "number-unsupported", m[0]);
+/** 순위 변동(move) — prev가 있을 때만(D40 ③) */
+function vMove(env: Env, bag: Bag, inherited: string | null): string | null {
+  const team = keyAt(env, bag, "subj") ?? inherited;
+  if (team === null) {
+    bad(env, "subject-unknown");
+    return null;
   }
+  const hit = rowIn(tablesFor(env, bag), team);
+  if (!hit) {
+    bad(env, "rank-pos", "순위표에 없음");
+    return team;
+  }
+  const { row } = hit;
+  const from = numAt(bag, "from");
+  const to = numAt(bag, "to");
+  const pts = numAt(bag, "pts");
+  if (pts !== null && row.pts !== pts) bad(env, "points", `승점 ${pts}`);
+  const label = `${from !== null ? `${from}위에서 ` : ""}${to}위로`;
+  if (row.prev === undefined) {
+    bad(env, "rank-move-no-prev", label);
+    return team;
+  }
+  // '{p}위에서'를 빼면('3위로 올라섰다') 전일 순위가 출발점이다
+  const start = from ?? row.prev;
+  const up = MOVE_UP.has(strAt(bag, "verb") ?? "");
+  const directionOk = to !== null && (up ? to < start : to > start);
+  if (row.prev !== start || row.pos !== to || !directionOk)
+    bad(env, "rank-move", label);
+  return team;
+}
+
+/** 순위 유지(keep) — prev가 있고 같을 때만(D40 ③) */
+function vKeep(env: Env, bag: Bag, inherited: string | null): string | null {
+  const team = keyAt(env, bag, "subj") ?? inherited;
+  if (team === null) {
+    bad(env, "subject-unknown");
+    return null;
+  }
+  const hit = rowIn(tablesFor(env, bag), team);
+  if (!hit) {
+    bad(env, "rank-pos", "순위표에 없음");
+    return team;
+  }
+  const { row } = hit;
+  if (row.prev === undefined) bad(env, "rank-move-no-prev", "지켰다");
+  else if (row.prev !== row.pos || row.pos !== numAt(bag, "rank"))
+    bad(env, "rank-move", "지켰다");
+  return team;
+}
+
+/** 승점 차(gap) — 방향까지(D40 ②) */
+function vGap(env: Env, bag: Bag, inherited: string | null): string | null {
+  const team = keyAt(env, bag, "subj") ?? inherited;
+  const otherTeam = keyAt(env, bag, "other");
+  if (team === null || otherTeam === null) {
+    bad(env, "subject-unknown");
+    return null;
+  }
+  const tables = tablesFor(env, bag);
+  const a = rowIn(tables, team);
+  const b = rowIn(tables, otherTeam);
+  if (!a || !b || a.table !== b.table) {
+    bad(env, "rank-pos", "순위표에 없음");
+    return team;
+  }
+  const pts = numAt(bag, "pts");
+  if (pts !== null && a.row.pts !== pts) bad(env, "points", `승점 ${pts}`);
+  const gap = numAt(bag, "gap");
+  const diff =
+    bag.dir === "ahead" ? a.row.pts - b.row.pts : b.row.pts - a.row.pts;
+  if (gap === null || diff !== gap) bad(env, "points", `승점 ${gap} 차`);
+  const otherRank = numAt(bag, "otherRank");
+  if (otherRank !== null && b.row.pos !== otherRank)
+    bad(env, "rank-pos", `${otherRank}위 ${textAt(env, bag, "other")}`);
+  const rank = numAt(bag, "rank");
+  if (rank !== null && a.row.pos !== rank) bad(env, "rank-pos", `${rank}위`);
+  return team;
+}
+
+/** (win·draw 뒤) 승점 3을 챙겼다 · 승점 1씩 나눠 가졌다 — 리그 경기(녹아웃·연장 없음)의 승리 3·무승부 1 */
+function vPoints(
+  env: Env,
+  bag: Bag,
+  prevType: string | null,
+  prev: ClauseSubject,
+): void {
+  const match = prev.match;
+  const f = match?.facts ?? null;
+  const league = !!match && /^(?:Matchday|League phase)/u.test(match.m.round);
+  const gained = numAt(bag, "gained");
+  const ok =
+    !!f &&
+    league &&
+    !f.aet &&
+    (gained === 3
+      ? prevType === "win"
+      : prevType === "draw" && f.winner === null);
+  if (!ok) bad(env, "points", `승점 ${gained}`);
+}
+
+// ─── ③ 분석 대조 ──────────────────────────────────────────────────────────
+
+/** 분석 하나 → 사유 목록(빈 목록 = 입력과 맞음) */
+function validateParse(s: LineState, parse: LineParse): Issues {
+  const env: Env = { s, issues: [] };
+  let prevSubject: ClauseSubject = NO_SUBJECT;
+  let prevType: string | null = null;
+  let prevKorean: KoreanModel | null = null;
+  parse.clauses.forEach((c: ParsedClause, i) => {
+    const bag = c.bag;
+    const adn =
+      i === 0 && parse.adnSubject !== undefined
+        ? (s.mentions[parse.adnSubject]?.key ?? null)
+        : null;
+    const subject = adn ?? keyAt(env, bag, "subj");
+    const inherited = prevSubject.team;
+    let next: ClauseSubject = NO_SUBJECT;
+    switch (c.type) {
+      case "win":
+      case "loss":
+        next = vResult(env, bag, subject, c.type);
+        break;
+      case "draw":
+        next = vDraw(env, bag, subject);
+        break;
+      case "pens":
+        next = vPens(env, bag);
+        break;
+      case "end":
+        next = vEnd(env, bag, parse.clauses[i + 1]?.type === "endPens");
+        break;
+      case "endPens":
+        vEndPens(env, bag, prevSubject);
+        break;
+      case "goal":
+        vGoal(env, bag);
+        break;
+      case "count":
+        vCount(env, bag);
+        break;
+      case "assist":
+        vAssist(env, bag);
+        break;
+      case "korean":
+        prevKorean = vKorean(env, bag);
+        break;
+      case "koreanTail":
+        vKoreanTail(env, bag, prevType === "korean" ? prevKorean : null);
+        break;
+      case "rank":
+        next = { team: vRank(env, bag, inherited), match: null };
+        break;
+      case "rankList":
+        vRankList(env, bag);
+        break;
+      case "move":
+        next = { team: vMove(env, bag, inherited), match: null };
+        break;
+      case "keep":
+        next = { team: vKeep(env, bag, inherited), match: null };
+        break;
+      case "gap":
+        next = { team: vGap(env, bag, inherited), match: null };
+        break;
+      case "points":
+        vPoints(env, bag, prevType, prevSubject);
+        break;
+    }
+    prevSubject = next;
+    prevType = c.type;
+  });
+  return env.issues;
+}
+
+/** 뼈대 분석 → 입력과 맞는 분석(없으면 사유가 가장 적은 분석의 사유). 문법 밖이면 grammar-unknown */
+function lineGrammar(s: LineState): string | null {
+  const spans = s.mentions.map((m) => ({
+    start: m.start,
+    end: m.end,
+    text: m.text,
+    kind: m.kind,
+  }));
+  const skeleton = buildSkeleton(s.text, spans);
+  const { parses, furthest } = parseBriefLine(
+    skeleton,
+    spans.map((m) => m.kind),
+  );
+  if (parses.length === 0) {
+    fail(s, "grammar-unknown", skeletonWordAt(skeleton, furthest, spans));
+    return null;
+  }
+  let best: { issues: Issues; parse: LineParse } | null = null;
+  for (const parse of parses) {
+    const issues = validateParse(s, parse);
+    if (!best || issues.length < best.issues.length) best = { issues, parse };
+    if (issues.length === 0) break;
+  }
+  for (const issue of best!.issues) fail(s, issue.code, issue.detail);
+  return best!.parse.clauses.map((c) => c.type).join("+");
 }
 
 // ─── 공개 함수 ────────────────────────────────────────────────────────────
@@ -2760,18 +1952,15 @@ function checkLine(
 ): BriefLineCheck {
   const text = line.t.normalize("NFC");
   const mentions = findMentions(text, model);
-  const masked = normalizeNumerals(maskText(text, mentions));
-  const clauses = buildClauses(text, masked, mentions);
+  const masked = maskText(text, mentions);
   const s: LineState = {
     model,
     text,
     masked,
     refs: line.r,
     mentions,
-    clauses,
     reasons: [],
     warnings: [],
-    consumed: [],
     refMatches: line.r.flatMap((r) => {
       const m = model.matches.get(r);
       return m ? [m] : [];
@@ -2791,18 +1980,7 @@ function checkLine(
     fail(s, "over-limit", String(substituted.length));
   lineScripts(s);
   lineNames(s);
-  clauses.forEach((_, ci) => {
-    const result = checkResults(s, ci);
-    checkGainedPoints(s, ci, result);
-    checkStandings(s, ci);
-    checkScores(s, ci, result);
-    checkMatchWords(s, ci, result);
-    checkGoals(s, ci);
-    checkGoalClaims(s, ci, result);
-    checkMinutes(s, ci);
-    checkAppearance(s, ci);
-  });
-  checkLeftoverNumbers(s);
+  const grammar = lineGrammar(s);
   // 한 줄에 두 경기 이상(지시문 '한 줄에 한 경기') — 사실이 맞으면 경고만(관찰 주간 지표)
   const matchesNamed = new Set(
     mentions.flatMap((m) =>
@@ -2820,6 +1998,7 @@ function checkLine(
     ok: s.reasons.length === 0,
     reasons: s.reasons,
     warnings: s.warnings,
+    grammar,
   };
 }
 
@@ -2928,10 +2107,10 @@ export function judgeBriefResponse(
   const check = checkBriefOutput(parsed.lines, input, ctx);
   if (!check.whole.ok)
     return done(retry(), "whole", check.whole.reasons.join(","), check, parse);
-  const bad = check.lines.filter((l) => !l.ok).map((l) => l.n);
-  if (bad.length > 0)
+  const failed = check.lines.filter((l) => !l.ok).map((l) => l.n);
+  if (failed.length > 0)
     return done(
-      { verdict: "downgrade-line", lines: bad },
+      { verdict: "downgrade-line", lines: failed },
       "line",
       null,
       check,

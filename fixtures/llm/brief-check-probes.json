@@ -1,5 +1,5 @@
 {
-  "_note": "M1-23 리뷰(2026-10-17) 재현 문장 — 검사기(scripts/lib/brief-check.ts)가 처음 놓친 거짓 문장(결과 동사 동의어·경기 중 점수 방향·숫자 없는 득점·도움·자책골·종류 모르는 숫자·prev 없는 순위 변동 동의어·장소·소속·대회)과 같은 입력의 참 문장. pass = 통과해야 하는 문장(오탐 함정), false = 강등돼야 하는 문장(미탐 함정). 입력은 LLM에 보낸 그대로 canonicalizeBriefInput을 거쳐 판정한다(tests/brief-check.test.ts). LLM 출력이 아니라 사람이 쓴 시험 문장이다 — 기사 텍스트·URL 없음.",
+  "_note": "M1-23 리뷰 재현 문장 — 1회차(2026-10-17, 158문장: 거짓 112·참 46)와 2회차(2026-10-17 재리뷰, 511문장: 거짓 348·참 163 — 판단 보류 40문장 제외). truth = 사람 판정(참·거짓), pass = 검사기 기대 판정. 거짓은 모두 강등돼야 한다(미탐 함정). 참이 pass=false면 닫힌 문법(D50) 밖의 꼴이라 강등되는 것이고 note에 그 이유를 적었다(code가 있으면 그 사유, 없으면 grammar-unknown만). 입력은 LLM에 보낸 그대로 canonicalizeBriefInput을 거쳐 판정한다(tests/brief-check.test.ts). LLM 출력이 아니라 사람이 쓴 시험 문장이다 — 기사 텍스트·URL 없음.",
   "task": "M1-23",
   "inputs": {
     "E": "brief-inputs/2026-10-11.json",
@@ -76,12 +76,72 @@
         }
       ],
       "standings": []
+    },
+    "2026-10-10": "brief-inputs/2026-10-10.json",
+    "SYN2": {
+      "briefDate": "2026-10-11",
+      "matches": [
+        {
+          "id": "pk",
+          "comp": "Champions League",
+          "round": "QUARTER_FINALS",
+          "home": "PSG",
+          "away": "Barça",
+          "ft": "1-1",
+          "ht": "0-0",
+          "aet": true,
+          "regular": "1-1",
+          "pens": "3-5",
+          "goals": [
+            {
+              "min": "30",
+              "team": "PSG",
+              "player": "Lucas Beraldo"
+            },
+            {
+              "min": "70",
+              "team": "Barça",
+              "player": "Lamine Yamal"
+            }
+          ]
+        },
+        {
+          "id": "et",
+          "comp": "Champions League",
+          "round": "LAST_16",
+          "home": "Dortmund",
+          "away": "Napoli",
+          "ft": "2-1",
+          "ht": "1-0",
+          "aet": true,
+          "regular": "1-1",
+          "goals": [
+            {
+              "min": "20",
+              "team": "Dortmund",
+              "player": "Daniel Svensson"
+            },
+            {
+              "min": "80",
+              "team": "Napoli",
+              "player": "Noa Lang"
+            },
+            {
+              "min": "110",
+              "team": "Dortmund",
+              "player": "Nico Schlotterbeck"
+            }
+          ]
+        }
+      ],
+      "standings": []
     }
   },
   "probes": [
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Villarreal이 Real Madrid를 1-0으로 제쳤다.",
       "r": [
@@ -91,6 +151,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Villarreal이 Real Madrid를 1-0으로 따돌렸다.",
       "r": [
@@ -100,6 +161,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Villarreal이 Real Madrid를 1-0으로 울렸다.",
       "r": [
@@ -109,6 +171,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Villarreal이 Real Madrid를 상대로 1-0으로 웃었다.",
       "r": [
@@ -118,6 +181,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Genoa가 Fiorentina에 2-1로 무너졌다.",
       "r": [
@@ -127,6 +191,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Genoa가 Fiorentina에 2-1로 발목을 잡혔다.",
       "r": [
@@ -136,6 +201,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Genoa가 Fiorentina에 2-1로 고개를 숙였다.",
       "r": [
@@ -145,6 +211,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Genoa가 Fiorentina에 2-1로 패배했다.",
       "r": [
@@ -154,6 +221,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Genoa가 Fiorentina에 2-1로 일격을 당했다.",
       "r": [
@@ -163,6 +231,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "running-direction",
       "t": "Villarreal이 Real Madrid에 1-0으로 앞섰다.",
       "r": [
@@ -172,6 +241,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "running-direction",
       "t": "Real Madrid가 Villarreal에 1-0으로 뒤졌다.",
       "r": [
@@ -181,6 +251,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "running-direction",
       "t": "Leeds United가 0-1로 뒤지다 Arsenal에 졌다.",
       "r": [
@@ -190,6 +261,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "running-direction",
       "t": "Fiorentina가 전반을 2-0으로 앞섰다.",
       "r": [
@@ -199,6 +271,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Federico Valverde가 골을 넣어 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
       "r": [
@@ -208,6 +281,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Federico Valverde가 득점했다.",
       "r": [
@@ -217,6 +291,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Kang-in Lee가 교체 투입돼 골을 넣었다.",
       "r": [
@@ -226,6 +301,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "이강인이 교체 투입돼 골을 넣었다.",
       "r": [
@@ -235,6 +311,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "assist",
       "t": "Kang-in Lee가 도움을 올렸다.",
       "r": [
@@ -244,6 +321,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Kang-in Lee가 골망을 흔들었다.",
       "r": [
@@ -253,6 +331,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "appearance",
       "t": "Min-jae Kim은 Bayern의 Augsburg 원정에 출전했다.",
       "r": [
@@ -262,6 +341,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Min-jae Kim은 Augsburg전에 나섰다.",
       "r": [
@@ -271,6 +351,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Woo-yeong Jeong이 78분을 뛰고 득점했다.",
       "r": [
@@ -280,6 +361,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "own-goal",
       "t": "Reece James가 30분 골을 넣었다.",
       "r": [
@@ -289,6 +371,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "own-goal",
       "t": "Reece James의 골로 Arsenal이 Chelsea를 1-0으로 꺾었다.",
       "r": [
@@ -297,16 +380,19 @@
     },
     {
       "input": "SYN",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "own-goal",
       "t": "Arsenal이 Reece James의 자책골로 Chelsea를 1-0으로 꺾었다.",
       "r": [
         "og"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "own-goal",
       "t": "Reece James의 결승골로 Arsenal이 Chelsea를 1-0으로 꺾었다.",
       "r": [
@@ -316,6 +402,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "own-goal",
       "t": "Jarrad Branthwaite가 2골을 넣었다.",
       "r": [
@@ -325,6 +412,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "own-goal",
       "t": "Liverpool이 Jarrad Branthwaite의 80분 결승골로 Everton을 2-1로 꺾었다.",
       "r": [
@@ -334,6 +422,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "own-goal",
       "t": "Liverpool이 Jarrad Branthwaite의 80분 골로 Everton을 2-1로 꺾었다.",
       "r": [
@@ -343,6 +432,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "extra-time-shootout",
       "t": "Dortmund가 연장전에서 Napoli를 2-0으로 꺾었다.",
       "r": [
@@ -352,6 +442,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Dortmund가 Napoli를 2-0으로 이기고 8강에 올랐다.",
       "r": [
@@ -361,6 +452,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Napoli가 Dortmund에 0-2로 졌다.",
       "r": [
@@ -370,6 +462,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Dortmund가 Napoli를 상대로 2-0으로 웃었다.",
       "r": [
@@ -379,6 +472,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "extra-time-shootout",
       "t": "PSG와 Barça는 1-1 무승부를 기록했다.",
       "r": [
@@ -388,6 +482,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "extra-time-shootout",
       "t": "PSG와 Barça가 연장까지 1-1로 비긴 뒤 승부차기에서 Barça가 5-3으로 이겼다.",
       "r": [
@@ -397,6 +492,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "extra-time-shootout",
       "t": "PSG가 Barça와 1-1로 팽팽히 맞섰다.",
       "r": [
@@ -406,6 +502,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "PSG와 Barça는 1-1로 승부를 가리지 못했다.",
       "r": [
@@ -415,6 +512,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "gained-points",
       "t": "PSG가 Barça와 1-1로 승점을 나눠 가졌다.",
       "r": [
@@ -424,6 +522,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "extra-time-shootout",
       "t": "Barça가 승부차기에서 PSG에 3-5로 졌다.",
       "r": [
@@ -433,6 +532,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "running-direction",
       "t": "Bayern은 Dortmund보다 2점 앞섰다.",
       "r": [
@@ -442,6 +542,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "running-direction",
       "t": "Barça는 Real Madrid에 승점 6 뒤졌다.",
       "r": [
@@ -451,6 +552,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Man City가 Premier League 선두 자리를 꿰찼다.",
       "r": [
@@ -460,6 +562,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Man City가 Premier League 선두를 되찾았다.",
       "r": [
@@ -469,6 +572,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Man City가 Arsenal을 2위로 끌어내렸다.",
       "r": [
@@ -478,6 +582,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Arsenal은 2위로 한 계단 밀렸다.",
       "r": [
@@ -487,6 +592,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Man City가 Premier League 선두로 나섰다.",
       "r": [
@@ -496,6 +602,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "venue",
       "t": "Hoffenheim이 원정길에서 HSV에 2-3으로 졌다.",
       "r": [
@@ -505,6 +612,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "venue",
       "t": "HSV가 홈 팬들 앞에서 Hoffenheim을 3-2로 꺾었다.",
       "r": [
@@ -514,6 +622,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "venue",
       "t": "HSV가 안방에서 Hoffenheim을 3-2로 꺾었다.",
       "r": [
@@ -523,6 +632,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "number",
       "t": "Yan Diomande의 시즌 2호골로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
       "r": [
@@ -532,6 +642,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "number",
       "t": "Real Madrid가 슈팅 7개 끝에 Villarreal을 1-0으로 꺾었다.",
       "r": [
@@ -541,6 +652,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "number",
       "t": "Real Madrid가 관중 9명 앞에서 Villarreal을 1-0으로 꺾었다.",
       "r": [
@@ -550,6 +662,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "number",
       "t": "Yan Diomande가 데뷔 16경기 만에 골을 넣었다.",
       "r": [
@@ -559,6 +672,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 리그 3위권에 들었다.",
       "r": [
@@ -569,6 +683,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "comeback",
       "t": "Leverkusen이 Mainz에 4-3 역전승을 거뒀다.",
       "r": [
@@ -578,6 +693,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "comeback",
       "t": "Leverkusen이 Mainz를 상대로 경기를 뒤집었다.",
       "r": [
@@ -586,16 +702,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "scorer",
       "t": "Christopher Nkunku가 RB Leipzig의 6-0 승리에서 해트트릭을 기록했다.",
       "r": [
         "m565815"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Antonio Nusa가 해트트릭을 기록했다.",
       "r": [
@@ -605,6 +724,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "scorer",
       "t": "Jordan Henderson이 멀티골을 기록했다.",
       "r": [
@@ -614,6 +734,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Morgan Rogers가 멀티골을 기록했다.",
       "r": [
@@ -623,6 +744,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Chelsea가 João Pedro의 해트트릭으로 5-1 대승을 거뒀다.",
       "r": [
@@ -632,6 +754,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Riccardo Calafiori의 결승골로 Arsenal이 Leeds United를 2-1로 꺾었다.",
       "r": [
@@ -641,6 +764,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "scorer",
       "t": "Bruno Guimarães의 결승골로 Arsenal이 Leeds United를 2-1로 꺾었다.",
       "r": [
@@ -649,16 +773,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "scorer",
       "t": "Bryan Mbeumo가 선제골을 넣었지만 Man United는 Tottenham과 1-1로 비겼다.",
       "r": [
         "m560600"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Dominic Solanke가 선제골을 넣었다.",
       "r": [
@@ -668,6 +795,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "scorer",
       "t": "Nathaniel Brown이 80분 동점골을 넣었다.",
       "r": [
@@ -677,6 +805,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Rodrigo Ribeiro가 동점골을 넣었다.",
       "r": [
@@ -686,6 +815,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "affiliation",
       "t": "Villarreal의 Yan Diomande가 62분 골을 넣었다.",
       "r": [
@@ -695,6 +825,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "affiliation",
       "t": "Yan Diomande가 Villarreal 소속으로 62분 득점했다.",
       "r": [
@@ -704,6 +835,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Yan Diomande가 62분 골을 넣었지만 Real Madrid는 Villarreal에 1-0으로 졌다.",
       "r": [
@@ -713,6 +845,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "competition",
       "t": "Real Madrid가 Premier League에서 Villarreal을 1-0으로 꺾었다.",
       "r": [
@@ -723,6 +856,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "competition",
       "t": "Real Madrid가 프리미어리그에서 Villarreal을 1-0으로 꺾었다.",
       "r": [
@@ -733,6 +867,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 LaLiga 2위 Atleti를 승점 1 차로 추격했다.",
       "r": [
@@ -743,6 +878,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "rank-move",
       "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 LaLiga 2위 Atleti에 승점 1 차로 따라붙었다.",
       "r": [
@@ -753,6 +889,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Fiorentina가 무실점으로 버텼다.",
       "r": [
@@ -762,6 +899,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "assist",
       "t": "Harry Kane이 2도움을 기록했다.",
       "r": [
@@ -771,6 +909,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "assist",
       "t": "Harry Kane이 도움 2개를 기록했다.",
       "r": [
@@ -780,6 +919,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "assist",
       "t": "Harry Kane이 도움 3개를 기록했다.",
       "r": [
@@ -789,6 +929,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "number",
       "t": "Christopher Nkunku가 골 4개를 넣었다.",
       "r": [
@@ -798,6 +939,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "number",
       "t": "Christopher Nkunku가 네 골을 몰아쳤다.",
       "r": [
@@ -807,6 +949,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "number",
       "t": "Christopher Nkunku가 4번 골망을 흔들었다.",
       "r": [
@@ -816,6 +959,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Real Madrid가 Villarreal을 0-1로 꺾었다.",
       "r": [
@@ -825,6 +969,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "result",
       "t": "Real Madrid가 Villarreal에 1-0 승리를 거뒀다.",
       "r": [
@@ -834,6 +979,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Villarreal이 Real Madrid에 1-0 승리를 거뒀다.",
       "r": [
@@ -842,16 +988,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "result",
       "t": "Real Madrid의 1-0 승리였다.",
       "r": [
         "m564702"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Villarreal의 1-0 승리였다.",
       "r": [
@@ -861,6 +1010,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "venue",
       "t": "Villarreal은 Real Madrid 원정에서 0-1로 패했다.",
       "r": [
@@ -870,6 +1020,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Real Madrid가 Villarreal을 2-1로, Genoa가 Fiorentina를 1-0으로 꺾었다.",
       "r": [
@@ -879,17 +1030,20 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "result",
       "t": "Real Madrid가 1-0, Genoa가 2-1로 각각 이겼다.",
       "r": [
         "m564702",
         "m558588"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Real Madrid가 2-1, Genoa가 1-0으로 각각 이겼다.",
       "r": [
@@ -900,6 +1054,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Real Madrid와 Fiorentina가 나란히 이겼다.",
       "r": [
@@ -909,17 +1064,20 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "result",
       "t": "Real Madrid는 Villarreal을, Genoa는 Fiorentina를 꺾었다.",
       "r": [
         "m564702",
         "m558588"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Real Madrid는 Villarreal을, Fiorentina는 Genoa를 꺾었다.",
       "r": [
@@ -930,6 +1088,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Villarreal과 Real Madrid의 경기는 1-0으로 끝났다.",
       "r": [
@@ -939,6 +1098,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "result",
       "t": "Real Madrid와 Villarreal의 경기는 1-0으로 끝났다.",
       "r": [
@@ -947,16 +1107,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "verb-synonym",
       "t": "Real Madrid가 Villarreal과의 경기를 1-0으로 마쳤다.",
       "r": [
         "m564702"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "verb-synonym",
       "t": "Villarreal이 Real Madrid와의 경기를 1-0으로 마쳤다.",
       "r": [
@@ -966,6 +1129,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "result",
       "t": "Leverkusen이 Mainz를 4-3으로 꺾었다.",
       "r": [
@@ -975,6 +1139,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "result",
       "t": "Leverkusen이 Mainz를 3-4로 꺾었다.",
       "r": [
@@ -984,6 +1149,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Mainz가 Leverkusen에 4-3으로 졌다.",
       "r": [
@@ -993,6 +1159,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "result",
       "t": "Mainz가 Leverkusen에 3-4로 졌다.",
       "r": [
@@ -1002,6 +1169,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Hoffenheim이 HSV에 3-2로 졌다.",
       "r": [
@@ -1011,6 +1179,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "result",
       "t": "Hoffenheim은 HSV에 2-3으로 졌다.",
       "r": [
@@ -1020,6 +1189,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "standings",
       "t": "Man City가 승점 15로 Premier League 1위, Arsenal이 승점 15로 2위다.",
       "r": [
@@ -1029,6 +1199,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "standings",
       "t": "Arsenal이 승점 15로 Premier League 1위, Man City가 승점 15로 2위다.",
       "r": [
@@ -1037,16 +1208,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "standings",
       "t": "Arsenal이 Man City와 승점 15로 동률이지만 골득실에서 밀려 2위다.",
       "r": [
         "sPL"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "standings",
       "t": "Man City가 Arsenal과 승점 15로 동률이지만 골득실에서 밀려 2위다.",
       "r": [
@@ -1055,16 +1229,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "standings",
       "t": "Brighton Hove는 득실차 +13으로 3위다.",
       "r": [
         "sPL"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "standings",
       "t": "Brighton Hove는 득실차 +12로 3위다.",
       "r": [
@@ -1074,6 +1251,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "standings",
       "t": "Inter가 승점 16으로 Serie A 선두를 달렸다.",
       "r": [
@@ -1082,16 +1260,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "standings",
       "t": "Inter가 승점 16으로 Serie A 선두를 질주했다.",
       "r": [
         "sSA"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "standings",
       "t": "Roma와 Lazio가 승점 13으로 공동 2위다.",
       "r": [
@@ -1100,16 +1281,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "standings",
       "t": "Roma와 Lazio가 승점 13으로 나란히 2위와 3위다.",
       "r": [
         "sSA"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "scorer",
       "t": "Christopher Nkunku의 해트트릭으로 RB Leipzig이 Frankfurt를 6-0으로 완파했다.",
       "r": [
@@ -1119,6 +1303,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Christopher Nkunku의 해트트릭으로 Frankfurt가 RB Leipzig을 6-0으로 완파했다.",
       "r": [
@@ -1128,6 +1313,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "RB Leipzig이 Frankfurt를 6-0으로 완파했고 Antonio Nusa가 2골을 넣었다.",
       "r": [
@@ -1137,6 +1323,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "scorer",
       "t": "RB Leipzig이 Frankfurt를 6-0으로 완파했고 Ezechiel Banzuzi가 1분 선제골을 넣었다.",
       "r": [
@@ -1145,16 +1332,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "scorer",
       "t": "Ezechiel Banzuzi가 1분 만에 선제골을 넣었다.",
       "r": [
         "m565815"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Ezechiel Banzuzi가 2분 만에 선제골을 넣었다.",
       "r": [
@@ -1164,6 +1354,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Tidiam Gomis가 89분 쐐기골을 넣었다.",
       "r": [
@@ -1172,16 +1363,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "scorer",
       "t": "Tidiam Gomis가 89분 추가골을 넣었다.",
       "r": [
         "m565815"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Tidiam Gomis가 88분 추가골을 넣었다.",
       "r": [
@@ -1190,16 +1384,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "scorer",
       "t": "Tidiam Gomis가 추가골을 넣었다.",
       "r": [
         "m565815"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Benjamin Henrichs가 추가골을 넣었다.",
       "r": [
@@ -1209,6 +1406,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Benjamin Henrichs가 만회골을 넣었다.",
       "r": [
@@ -1218,6 +1416,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "scorer",
       "t": "Francisco Evanilson이 만회골을 넣었다.",
       "r": [
@@ -1226,16 +1425,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "scorer",
       "t": "Frankfurt는 만회골을 넣지 못했다.",
       "r": [
         "m565815"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "A",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Kim Min-jae가 결장했다.",
       "r": [
@@ -1245,6 +1447,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "appearance",
       "t": "Min-jae Kim은 벤치를 지켰다.",
       "r": [
@@ -1253,16 +1456,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "rank-move",
       "t": "Min-jae Kim은 교체 명단에 올랐지만 출전하지 못했다.",
       "r": [
         "k2897"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "appearance",
       "t": "Woo-yeong Jeong은 선발 출전해 78분을 뛰었다.",
       "r": [
@@ -1272,6 +1478,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "appearance",
       "t": "Woo-yeong Jeong은 선발 출전해 90분을 뛰었다.",
       "r": [
@@ -1281,6 +1488,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "appearance",
       "t": "Woo-yeong Jeong은 선발 출전해 풀타임 가까이 뛰었다.",
       "r": [
@@ -1289,17 +1497,20 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "appearance",
       "t": "Young-woo Seol은 Augsburg의 2-2 무승부에 선발로 나서 62분을 뛰었다.",
       "r": [
         "k197985",
         "m565819"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "appearance",
       "t": "Young-woo Seol은 Augsburg의 2-1 승리에 선발로 나서 62분을 뛰었다.",
       "r": [
@@ -1310,6 +1521,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Young-woo Seol은 Augsburg의 승리에 힘을 보탰다.",
       "r": [
@@ -1320,6 +1532,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "result",
       "t": "Young-woo Seol이 뛴 Augsburg가 Bayern을 꺾었다.",
       "r": [
@@ -1329,26 +1542,31 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "standings",
       "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 리그 3위를 달렸다.",
       "r": [
         "m564702",
         "sLL"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "standings",
       "t": "Barça가 승점 24로 리그 선두다.",
       "r": [
         "sLL"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "standings",
       "t": "Barça가 승점 24로 LaLiga 선두다.",
       "r": [
@@ -1358,6 +1576,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Real Madrid가 Kang-in Lee의 결승골로 Villarreal을 1-0으로 꺾었다.",
       "r": [
@@ -1367,6 +1586,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "number",
       "t": "Kang-in Lee가 시즌 2호골을 터뜨렸다.",
       "r": [
@@ -1377,6 +1597,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "scorer",
       "t": "Kang-in Lee는 57분 교체 투입돼 시즌 첫 골을 넣었다.",
       "r": [
@@ -1387,6 +1608,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "comeback",
       "t": "Kang-in Lee는 57분 교체 투입돼 Atleti의 역전승에 힘을 보탰다.",
       "r": [
@@ -1397,6 +1619,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "assist",
       "t": "Kang-in Lee는 57분 교체 투입돼 결승골을 도왔다.",
       "r": [
@@ -1407,6 +1630,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "assist",
       "t": "Kang-in Lee는 57분 교체 투입돼 Cristian Romero의 결승골을 도왔다.",
       "r": [
@@ -1417,6 +1641,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "venue",
       "t": "Atleti가 Alavés 원정에서 2-1로 이겼다.",
       "r": [
@@ -1426,6 +1651,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "venue",
       "t": "Atleti가 Alavés 원정에서 2-1로 이겼고 Kang-in Lee는 33분을 뛰었다.",
       "r": [
@@ -1436,6 +1662,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "assist",
       "t": "Atleti가 Alavés 원정에서 2-1로 이겼고 Kang-in Lee는 33분을 뛰며 도움을 기록했다.",
       "r": [
@@ -1446,6 +1673,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "assist",
       "t": "Atleti가 Alavés 원정에서 2-1로 이겼고 Kang-in Lee는 33분을 뛰며 1도움을 기록했다.",
       "r": [
@@ -1456,6 +1684,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "gained-points",
       "t": "Monaco와 Toulouse는 2-2로 비기며 승점을 나눠 가졌다.",
       "r": [
@@ -1465,6 +1694,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "gained-points",
       "t": "Real Madrid는 Villarreal을 1-0으로 꺾고 승점 3을 챙겼다.",
       "r": [
@@ -1473,16 +1703,19 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "gained-points",
       "t": "Real Madrid는 Villarreal을 1-0으로 꺾고 승점을 챙겼다.",
       "r": [
         "m564702"
-      ]
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
     },
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "gained-points",
       "t": "Genoa는 Fiorentina를 2-1로 꺾고 승점을 나눠 가졌다.",
       "r": [
@@ -1492,6 +1725,7 @@
     {
       "input": "SYN",
       "pass": false,
+      "truth": false,
       "group": "gained-points",
       "t": "Dortmund는 연장 끝에 Napoli를 2-0으로 꺾고 승점 3을 챙겼다.",
       "r": [
@@ -1501,6 +1735,7 @@
     {
       "input": "E",
       "pass": false,
+      "truth": false,
       "group": "competition",
       "t": "Arsenal은 승점 15로 LaLiga 2위다.",
       "r": [
@@ -1511,6 +1746,7 @@
     {
       "input": "E",
       "pass": true,
+      "truth": true,
       "group": "standings",
       "t": "Arsenal은 승점 15로 Premier League 2위다.",
       "r": [
@@ -1520,13 +1756,5797 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
+      "truth": true,
       "group": "result",
       "t": "Real Madrid가 1-0, Genoa가 2-1로 각각 이겼다.",
       "r": [
         "m564702",
         "m558588"
+      ],
+      "note": "참이지만 문형 밖(D50) — grammar-unknown"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 1-0 패배를 안겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "사동 패배 안김 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid에 1-0 패배를 안겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "사동 패배 안김 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid에 패배를 안겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "사동 숫자 없음"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid에 첫 패배를 안겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "사동"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid의 덜미를 잡았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "덜미를 잡았다(능동)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid에 1-0으로 덜미를 잡혔다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "덜미 잡힘 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 덜미를 잡혔다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "덜미 잡힘 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid를 무릎 꿇렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "사동 꿇렸다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid를 1-0으로 무릎 꿇렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "사동 꿇렸다 점수"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 1-0으로 꺾였다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "피동 꺾였다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal에 1-0으로 꺾인 Real Madrid는 3위다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "피동 관형"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 승리를 내줬다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "승리를 내줬다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 1-0 승리를 내줬다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "승리를 내줬다 점수"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 승리를 헌납했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "헌납"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 승리를 놓쳤다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "승리를 놓쳤다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal을 상대로 승리하지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "부정 승리하지 못했다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal을 상대로 승리를 거두지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "부정"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid는 Villarreal과의 경기에서 승리하지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "부정 와의 경기"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 패배를 면했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "패배를 면했다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid 원정에서 패배를 면했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "패배를 면했다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 패하지 않았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "부정 패하지 않았다 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal은 Real Madrid에 지지 않았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "부정 지지 않았다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal은 Real Madrid에 1-0으로 지지 않았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "부정 지지 않았다 점수"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid에 쓴맛을 안겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "쓴맛 안김 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid에 고배를 마셨다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "고배를 마셨다(END_VERB 마?) — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 고배를 마셨다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "고배 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 0-1로 고배를 마셨다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "고배 거짓 점수"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 1-0으로 고배를 마셨다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "고배 거짓 점수2"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal에 승점 3을 내줬다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "승점 내줌"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 Real Madrid에 승점 3을 내줬다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "승점 내줌 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "경기는 Real Madrid의 1-0 승리로 끝났다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "명사형 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "경기는 Villarreal의 1-0 승리로 끝났다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "명사형 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "경기는 Villarreal의 0-1 패배로 끝났다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "명사형 패배 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "경기는 Real Madrid의 0-1 패배로 끝났다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "명사형 패배 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid와 Villarreal의 경기는 Villarreal의 승리로 끝났다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "명사형 숫자없음"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid와 Villarreal의 경기는 원정팀의 1-0 승리로 끝났다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "원정팀의 승리"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "Real Madrid와 Villarreal의 경기는 홈팀의 1-0 승리로 끝났다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "홈팀의 승리 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid와 Villarreal의 경기는 원정팀이 1-0으로 이겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "원정팀이 이겼다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal 원정에 나선 Real Madrid가 1-0으로 이겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "원정에 나선"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 홈으로 불러들인 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "홈으로 불러들인 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Villarreal이 홈으로 불러들인 Real Madrid에 0-1로 졌다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "홈으로 불러들인 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Atleti가 Alavés를 홈으로 불러들여 2-1로 이겼다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "홈으로 불러들여 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Atleti가 홈 관중 앞에서 Alavés를 2-1로 꺾었다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "홈 관중 앞"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal 홈에서 1-0으로 이겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "X 홈에서"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Real Madrid가 Villarreal의 홈에서 1-0으로 이겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "X의 홈에서"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-result-forms",
+      "t": "Atleti가 Alavés의 안방에서 2-1로 이겼다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "X의 안방에서 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Alavés가 Atleti의 안방에서 1-2로 졌다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "X의 안방 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "홈팀 Villarreal이 Real Madrid에 0-1로 졌다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "홈팀 X"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "원정팀 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "원정팀 X"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Union Berlin이 Elversberg를 1-0으로 손쉽게 꺾었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "손쉽게 1-0"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Chelsea가 Bournemouth를 5-1로 힘겹게 꺾었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "힘겹게 5-1"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Chelsea가 Bournemouth를 5-1로 간신히 이겼다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "간신히 5-1"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Union Berlin이 Elversberg를 1-0으로 여유 있게 꺾었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "여유 있게 1-0"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-result-forms",
+      "t": "Bournemouth가 Chelsea에 1-5로 아쉽게 졌다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "아쉽게 1-5"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 Villarreal을 1-0으로, Atleti가 Alavés를 2-1로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "두 경기 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 Villarreal을 2-1로, Atleti가 Alavés를 1-0으로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "두 경기 점수 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 Villarreal을 꺾고 Atleti는 Alavés에 졌다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "두 경기 승패 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾었고 Atleti도 Alavés를 1-0으로 이겼다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "도 점수"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Real Madrid와 Atleti가 각각 Villarreal과 Alavés를 1-0, 2-1로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "각각 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid와 Atleti가 각각 Alavés와 Villarreal을 1-0, 2-1로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "각각 상대 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid와 Atleti가 모두 1-0으로 이겼다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "모두 같은 점수"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid와 Atleti가 나란히 2-1로 이겼다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "나란히"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾은 날 Atleti는 Alavés를 2-1로 눌렀다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "날 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Atleti가 Alavés를 1-0으로 꺾은 날 Real Madrid는 Villarreal을 2-1로 눌렀다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "날 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Real Madrid는 1-0, Atleti는 2-1 승리를 거뒀다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "은/는 나열 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid는 2-1, Atleti는 1-0 승리를 거뒀다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "은/는 나열 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 1-0으로 이긴 반면 Atleti는 2-1로 이겼다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "반면 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 2-1로 이긴 반면 Atleti는 1-0으로 이겼다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "반면 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Arsenal이 Leeds United를 2-1로 꺾었고 Man United와 Tottenham은 1-1로 비겼다.",
+      "r": [
+        "m560593",
+        "m560600"
+      ],
+      "note": "섞기 참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Arsenal이 Leeds United를 1-1로 꺾었고 Man United와 Tottenham은 2-1로 비겼다.",
+      "r": [
+        "m560593",
+        "m560600"
+      ],
+      "note": "섞기 점수 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Arsenal이 Leeds United를, Man United가 Tottenham을 꺾었다.",
+      "r": [
+        "m560593",
+        "m560600"
+      ],
+      "note": "둘째 거짓(무승부)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Arsenal과 Man United가 각각 Leeds United와 Tottenham을 꺾었다.",
+      "r": [
+        "m560593",
+        "m560600"
+      ],
+      "note": "각각 둘째 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 두 골을 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "두 골(실제 3)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 세 골을 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "세 골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 골 두 개를 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "골 두 개"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 네 골을 몰아쳤다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "네 골 몰아침"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 두 차례 골망을 흔들었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "두 차례"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 혼자 두 골을 책임졌다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "책임"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 Villarreal을 두 골 차로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "두 골 차(실제 1)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Real Madrid가 Villarreal을 한 골 차로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "한 골 차"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Mainz가 Leverkusen에 한 골 차로 졌다.",
+      "r": [
+        "m565812"
+      ],
+      "note": "한 골 차 패"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Mainz와 Leverkusen이 일곱 골을 주고받았다.",
+      "r": [
+        "m565812"
+      ],
+      "note": "일곱 골 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Mainz와 Leverkusen이 여덟 골을 주고받았다.",
+      "r": [
+        "m565812"
+      ],
+      "note": "여덟 골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Chelsea가 다섯 골을 넣었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "팀 다섯 골 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Chelsea가 여섯 골을 넣었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "팀 여섯 골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Chelsea가 Bournemouth를 상대로 다섯 골을 몰아쳤다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "몰아침 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Chelsea가 Bournemouth를 상대로 여섯 골을 몰아쳤다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "몰아침 거짓"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Jordan Henderson이 두 골을 넣었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "Henderson 2골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Jordan Henderson이 두 골에 도움 하나를 더했다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "도움 하나(1) — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Jordan Henderson이 두 골에 도움 둘을 더했다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "도움 둘(실제 1)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Harry Kane이 도움 둘을 기록했다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "도움 둘 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Harry Kane이 도움 셋을 기록했다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "도움 셋"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Harry Kane이 세 골에 관여했다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "관여 셋"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Harry Kane이 두 골에 관여했다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "관여 둘 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 골 셋을 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "골 셋 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 골 넷을 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "골 넷"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 3골을 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "3골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 4골을 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "4골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 세 번 골망을 흔들었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "세 번 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 네 번이나 골망을 흔들었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "네 번이나"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 4번이나 골망을 갈랐다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "4번이나"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 4골이나 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "4골이나"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Christopher Nkunku가 무려 네 골을 넣었다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "무려"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Kevin De Bruyne이 두 번째 골을 넣었다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "두 번째(실제 1·3번째)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Kevin De Bruyne이 첫 골과 세 번째 골을 넣었다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "번째 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-numbers",
+      "t": "Kevin De Bruyne이 첫 골과 마지막 골을 넣었다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "마지막 골 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Noa Lang이 마지막 골을 넣었다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "마지막 골 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-numbers",
+      "t": "Noa Lang이 쐐기를 박았다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "쐐기"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Dominic Solanke가 추가시간 동점골을 넣었다.",
+      "r": [
+        "m560600"
+      ],
+      "note": "추가시간 참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 추가시간 결승골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "추가시간 거짓(62)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 후반 추가시간 골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "후반 추가시간 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 경기 종료 직전 결승골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "종료 직전 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 후반 막판 결승골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "후반 막판(62)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 경기 막판 결승골을 터뜨렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "경기 막판(62)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Livan Burcu가 전반 결승골을 넣었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "전반(81)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Livan Burcu가 전반에 결승골을 넣었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "전반에(81)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Livan Burcu가 후반 결승골을 넣었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "후반(81) 참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Robin Fellhauer가 경기 시작 직후 선제골을 넣었다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "시작 직후(1) — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Ismael Saibari가 경기 시작 직후 골을 넣었다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "시작 직후 거짓(55)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Lucas Boyé가 후반 PK 골을 넣었다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "후반 PK(45+6)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Lucas Boyé가 전반 추가시간 PK로 동점을 만들었다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "전반 추가시간 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Cristian Romero가 전반 추가시간 결승골을 넣었다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "전반 추가시간 거짓(87)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Cristian Romero가 종료 5분 전 결승골을 넣었다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "종료 5분 전(87→ 3분 전)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Union Berlin이 전반에 터진 골로 Elversberg를 1-0으로 꺾었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "전반 팀(81)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Union Berlin이 전반 골로 Elversberg를 1-0으로 꺾었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "전반 골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Union Berlin이 Livan Burcu의 전반 골로 Elversberg를 1-0으로 꺾었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "선수 전반 골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Barça가 전반에만 두 골을 넣었다.",
+      "r": [
+        "m564700"
+      ],
+      "note": "전반에만 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 후반에만 두 골을 넣었다.",
+      "r": [
+        "m564700"
+      ],
+      "note": "후반에만(1골)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Chelsea가 경기 시작 3분 만에 두 골을 넣었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "3분 만에 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Augsburg가 경기 시작 1분 만에 선제골을 넣었다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "1분 만에 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Augsburg가 경기 시작 2분 만에 선제골을 넣었다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "2분 만에"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Union Berlin이 후반 30분 결승골을 넣었다.",
+      "r": [
+        "m565817"
+      ],
+      "note": "후반 30분(81)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 시즌 3번째 골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "시즌 3번째"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 올 시즌 세 번째 골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "세 번째"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 리그 3경기 연속 골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "경기 연속"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 리그 세 경기 연속 득점했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "세 경기 연속"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 2경기 연속골을 터뜨렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "연속골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 연속골을 터뜨렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "연속골(1골)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 시즌 득점 선두를 달렸다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "득점 선두"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Harry Kane이 리그 도움 선두다.",
+      "r": [
+        "m565819",
+        "sBL"
+      ],
+      "note": "도움 선두"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Yan Diomande가 이적 후 첫 골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "이적 후 첫 골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Jordan Henderson이 이적 후 첫 골을 넣었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "이적 후 첫 골(경기 첫골)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Jordan Henderson이 친정팀을 상대로 골을 넣었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "친정팀"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Jordan Henderson이 친정팀 Bournemouth를 상대로 두 골을 넣었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "친정팀 X"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 홈에서 Villarreal을 1-0으로 꺾고 홈 강세를 이어갔다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "이어갔다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 LaLiga 선두 질주를 이어갔다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "질주 이어감"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 LaLiga 선두를 질주했다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "질주"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 LaLiga 3위 자리를 굳혔다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "굳혔다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 LaLiga 선두를 굳건히 했다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "굳건히"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Barça가 Getafe를 3-0으로 꺾고 선두를 달렸다.",
+      "r": [
+        "m564700",
+        "sLL"
+      ],
+      "note": "선두 달림"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Villarreal을 꺾고 다시 3위가 됐다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "다시 n위가 됐다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Villarreal을 꺾고 3위가 됐다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "n위가 됐다(prev 없음)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Villarreal을 꺾고 3위 자리에 올랐다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "올랐다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Villarreal을 꺾고 3위를 차지했다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "차지했다"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 2위 Atleti에 승점 1 뒤진 3위다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "1 뒤진"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 2위 Atleti에 승점 2 뒤진 3위다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "2 뒤진"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Real Madrid는 선두 Barça에 승점 6 뒤졌다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "6 뒤졌다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid는 선두 Barça에 승점 5 뒤졌다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "5 뒤졌다"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Barça는 2위 Atleti에 승점 5 앞선 선두다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "5 앞선"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça는 2위 Atleti에 승점 4 앞선 선두다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "4 앞선"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 2위 Atleti와 승점 6 차 선두다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "6 차"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 2위 Atleti와 승점 차를 6으로 유지했다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "유지"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 2위 Atleti와의 격차를 승점 6으로 늘렸다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "늘렸다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 2위와 승점 6 차 선두다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "2위와 6 차(익명)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Barça가 2위와 승점 5 차 선두다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "2위와 5 차(익명) — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Barça가 3위와 승점 5 차다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "3위와 5 차(실제 6)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Atleti는 Barça보다 승점 5 적은 2위다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "적은 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Atleti는 Barça보다 승점 4 적은 2위다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "적은 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Atleti는 Barça보다 승점 5 많은 2위다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "많은 방향"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Man City는 Arsenal보다 한 경기 덜 치렀다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "덜 치렀다 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Man City는 Arsenal보다 한 경기 더 치렀다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "더 치렀다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Arsenal은 Man City와 승점이 같지만 골득실에서 앞선다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "골득실 앞섬 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Man City가 Arsenal과 승점 15로 같지만 골득실에서 앞서 선두다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "골득실 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Arsenal이 Man City와 승점 15로 같지만 골득실에서 앞서 선두다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "골득실 거짓 선두"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Arsenal이 골득실에서 Man City를 앞섰다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "골득실에서 X를 앞섰다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Arsenal이 득실차에서 밀려 2위다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "득실차에서 밀려 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Man City가 득실차에서 밀려 선두다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "밀려 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Premier League 3위다.",
+      "r": [
+        "sLL",
+        "sPL"
+      ],
+      "note": "대회 혼동"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 프리미어리그 3위다.",
+      "r": [
+        "sLL",
+        "sPL"
+      ],
+      "note": "대회 혼동 한글"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Arsenal은 리그 2위, Real Madrid는 Premier League 3위다.",
+      "r": [
+        "sLL",
+        "sPL"
+      ],
+      "note": "대회 혼동 둘째"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Premier League의 Arsenal과 같은 순위다.",
+      "r": [
+        "sLL",
+        "sPL"
+      ],
+      "note": "같은 순위"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid는 Bundesliga 선두 Dortmund와 같은 승점 13이다.",
+      "r": [
+        "sBL",
+        "sLL"
+      ],
+      "note": "승점 13"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid는 Villarreal을 꺾고 Bundesliga 3위가 됐다.",
+      "r": [
+        "m564702",
+        "sBL"
+      ],
+      "note": "Bundesliga 3위"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾었고 Brighton Hove는 3위다.",
+      "r": [
+        "m564702",
+        "sPL",
+        "sLL"
+      ],
+      "note": "다른 팀 3위"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾었고 LaLiga 3위다.",
+      "r": [
+        "m564702",
+        "sPL",
+        "sLL"
+      ],
+      "note": "3위"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾었고 Premier League 3위다.",
+      "r": [
+        "m564702",
+        "sPL",
+        "sLL"
+      ],
+      "note": "PL 3위"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-time-rank",
+      "t": "Real Madrid가 Premier League 3위 Brighton Hove와 같은 순위다.",
+      "r": [
+        "sPL",
+        "sLL"
+      ],
+      "note": "같은 순위2"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid 감독은 결과에 만족했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "감독 만족"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid 감독은 경기 뒤 선수들을 칭찬했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "칭찬"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Villarreal 감독은 판정에 불만을 드러냈다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "판정"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid는 Villarreal을 1-0으로 꺾은 뒤 감독이 만족감을 드러냈다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "감독이"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Yan Diomande는 경기 뒤 팬들에게 감사를 전했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "감사"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid는 홈 팬들의 환호 속에 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "환호"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Villarreal은 다음 라운드에서 Barça를 상대한다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "다음 일정"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Villarreal은 다음 경기에서 반격을 노린다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "다음 경기"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid는 이 승리로 자신감을 얻었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "자신감"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 완벽한 하루를 보냈다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "완벽한"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Villarreal이 Real Madrid에 0-1로 지며 충격의 패배를 당했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "충격의"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾는 이변이 나왔다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "이변"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 기분 좋은 승리를 챙겼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "기분 좋은"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 한숨을 돌렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "한숨"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 위기에서 벗어났다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "위기"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 우승 경쟁에 불을 붙였다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "우승 경쟁"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 선두 경쟁을 이어갔다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "선두 경쟁 이어감"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 선두 추격에 나섰다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "추격"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Yan Diomande가 결승골로 팀을 구했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "팀을 구했다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Yan Diomande가 결승골의 주인공이 됐다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "주인공 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 결승골의 주인공이 됐다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "주인공 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 해결사로 나섰다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "해결사 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 해결사 역할을 했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "해결사 역할"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 영웅이 됐다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "영웅"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 승리의 일등공신이 됐다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "일등공신"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 결승골로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "도움→결승골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 한 방으로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "한 방"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 원더골로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "원더골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 헤더로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "헤더로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 결승포로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "결승포로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 결승 골로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "결승 골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 발끝에서 결승골이 나왔다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "발끝에서"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 결승골을 뽑아냈다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "뽑아냈다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 결승골을 책임졌다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "책임졌다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Benjamin Henrichs가 결승골에 관여했다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "관여 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 해결했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "해결했다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Federico Valverde가 62분 결승골을 기록했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "기록"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "62분 Federico Valverde의 결승골이 터졌다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "62분 X의 결승골이 터졌다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "62분 Federico Valverde가 결승골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "62분 X가"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid는 Federico Valverde가 62분 넣은 골을 지켰다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "넣은 골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Yan Diomande의 도움을 받은 Federico Valverde가 결승골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "도움 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 도움을 받은 Yan Diomande가 결승골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "도움 참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 패스를 받은 Yan Diomande가 결승골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "패스 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Yan Diomande의 패스를 받은 Federico Valverde가 결승골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "패스 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Yan Diomande의 크로스를 Federico Valverde가 마무리했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "크로스 마무리"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Federico Valverde의 크로스를 Yan Diomande가 마무리했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "크로스 마무리 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Ben White가 Bruno Guimarães의 골을 도왔다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "다른 골 도움"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Declan Rice의 도움을 받은 Riccardo Calafiori가 골을 넣었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "도움 짝 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Declan Rice의 도움으로 Riccardo Calafiori가 골을 넣었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "도움으로 짝 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Ben White의 도움으로 Riccardo Calafiori가 62분 골을 넣었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "도움으로 참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Pep Chavarria의 도움으로 João Pedro가 46분 골을 넣었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "분·도움 짝 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Harry Kane이 Robin Fellhauer의 골을 도왔다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "상대 팀 골 도움"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Harry Kane이 Ismael Saibari와 Nathaniel Brown의 골을 도왔다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "두 골 도움 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Harry Kane이 Ismael Saibari와 Rodrigo Ribeiro의 골을 도왔다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "두 골 중 하나 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Harry Kane은 Ismael Saibari의 골과 Rodrigo Ribeiro의 골을 도왔다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "두 골 따로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Ismael Saibari와 Rodrigo Ribeiro가 Harry Kane의 도움으로 골을 넣었다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "도움 목록"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Bayern은 Harry Kane의 도움 2개로 Augsburg와 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "도움 2개로 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Noa Lang의 PK 선제골로 Napoli가 앞서갔다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "PK 선제골 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Noa Lang이 PK를 얻어냈다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "PK 얻어냄"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Kevin De Bruyne이 PK를 성공시켰다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "PK 성공 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Kevin De Bruyne이 PK를 실축했다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "PK 실축"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Noa Lang이 PK를 실축했다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "PK 실축2"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Leeds United가 선제골을 내줬다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "선제골 내줌 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Arsenal이 선제골을 내주고도 Leeds United를 2-1로 꺾었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "선제골 내주고 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 62분 결승골을 허용했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "결승골 허용"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Villarreal이 62분 결승골을 허용했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "결승골 허용 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Augsburg가 먼저 실점한 뒤 Bayern과 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "먼저 실점 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Bayern이 먼저 실점한 뒤 Augsburg와 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "먼저 실점 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Augsburg가 먼저 골을 내줬지만 Bayern과 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "골을 내줬지만"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Bayern이 먼저 골을 넣었지만 Augsburg와 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "먼저 골 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Bayern이 먼저 앞서갔지만 Augsburg와 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "먼저 앞서감 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Augsburg가 두 번 앞서갔지만 Bayern과 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "두 번 앞서 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Bayern이 두 번 앞서갔지만 Augsburg와 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "두 번 앞서 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Augsburg가 두 차례 리드를 잡았지만 Bayern과 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "리드를 잡 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Bayern이 두 차례 리드를 잡았지만 Augsburg와 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "리드를 잡 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Bayern이 리드를 잡았지만 Augsburg와 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "리드 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Leeds United가 리드를 잡았지만 Arsenal에 1-2로 졌다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "리드 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Arsenal이 먼저 앞서간 뒤 Leeds United를 2-1로 꺾었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "먼저 앞서간"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Arsenal이 끌려가다 Leeds United를 2-1로 꺾었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "끌려가다 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Leeds United가 끌려가다 Arsenal에 1-2로 졌다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "끌려가다 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Leeds United가 0-1로 끌려가다 Arsenal에 1-2로 졌다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "0-1 끌려가다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Arsenal이 뒤지던 경기를 뒤집었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "뒤집 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Real Madrid가 뒤지던 경기를 뒤집었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "뒤집 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Bryan Mbeumo가 추가골을 넣었다.",
+      "r": [
+        "m560600"
+      ],
+      "note": "추가골 거짓(유일 1골)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Yan Diomande가 추가골을 넣었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "추가골 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Riccardo Calafiori가 역전골을 넣었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전골 거짓(동점골)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Bruno Guimarães가 역전골을 넣었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전골 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-roles",
+      "t": "Riccardo Calafiori가 동점골을 넣었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "동점골 참(이긴 경기) — 참(일반 용법)이지만 지시문 정의(동점골 = 비긴 경기의 마지막 골) 밖",
+      "code": "equaliser"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-roles",
+      "t": "Bruno Guimarães가 동점골을 넣었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "동점골 거짓"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 57분 교체 투입돼 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 60분 교체 투입돼 30분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "분 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 선발 출전해 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "선발 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 선발로 나서 57분까지 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "선발 57분까지"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 풀타임을 소화했다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "풀타임"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 후반 교체 투입돼 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "후반 교체 투입"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 전반 교체 투입돼 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "전반 교체 투입(57)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 후반 시작과 함께 투입됐다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "후반 시작과 함께(57)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 하프타임에 교체 투입됐다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "하프타임(57)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 후반 막판 교체 투입됐다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "후반 막판(57)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 경기 막판 투입돼 짧게 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "경기 막판(57, 33분)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 30분 넘게 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "30분 넘게 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 40분 가까이 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "40분 가까이"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 33분 동안 뛰며 Atleti의 승리를 도왔다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "승리를 도왔다(도움 0)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 33분 동안 뛰며 결승골의 발판을 놓았다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "발판(0도움)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 33분 동안 뛰며 결승골에 관여했다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "관여"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 33분 동안 뛰며 날카로운 슈팅을 보여줬다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "슈팅"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 33분 동안 뛰며 공격을 이끌었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "이끌었다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 33분 동안 뛰었지만 공격포인트는 없었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "포인트 없음 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 공격포인트 없이 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "포인트 없이 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 Villarreal전에 교체 투입돼 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "m564702"
+      ],
+      "note": "X전 상대 거짓"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 Alavés전에 교체 투입돼 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "X전 참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 Villarreal을 상대로 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "m564702"
+      ],
+      "note": "상대로 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 Real Madrid전에서 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "m564702"
+      ],
+      "note": "X전에서 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 홈 경기에서 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "홈 경기(원정)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 원정 경기에서 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "원정 경기 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Jae-sung Lee는 70분 교체 투입돼 20분을 뛰었다.",
+      "r": [
+        "k2906",
+        "m565812"
+      ],
+      "note": "참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Jae-sung Lee는 70분 교체 투입돼 Mainz의 추격에 힘을 보탰다.",
+      "r": [
+        "k2906",
+        "m565812"
+      ],
+      "note": "추격"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Jae-sung Lee는 70분 교체 투입돼 Mainz의 만회골을 도왔다.",
+      "r": [
+        "k2906",
+        "m565812"
+      ],
+      "note": "만회골 도움"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Jae-sung Lee는 Mainz가 3-4로 진 경기에서 20분을 뛰었다.",
+      "r": [
+        "k2906",
+        "m565812"
+      ],
+      "note": "진 경기 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Jae-sung Lee는 Mainz가 4-3으로 이긴 경기에서 20분을 뛰었다.",
+      "r": [
+        "k2906",
+        "m565812"
+      ],
+      "note": "이긴 경기 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Jae-sung Lee는 Mainz가 Leverkusen을 꺾은 경기에서 20분을 뛰었다.",
+      "r": [
+        "k2906",
+        "m565812"
+      ],
+      "note": "꺾은 경기 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Jae-sung Lee는 Mainz의 승리 속에 20분을 뛰었다.",
+      "r": [
+        "k2906",
+        "m565812"
+      ],
+      "note": "승리 속 거짓"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong은 선발 출전해 78분을 뛰었다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong은 풀타임을 뛰었다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "풀타임 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong은 선발 출전해 90분을 뛰었다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "90분 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong은 교체 투입돼 78분을 뛰었다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "교체 투입 거짓"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong은 선발 출전해 78분을 뛴 뒤 교체됐다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "교체됐다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong은 선발 출전해 Livan Burcu의 결승골을 도왔다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "결승골 도움(Burcu assist 없음)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong은 선발 출전해 결승골을 넣었다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "결승골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong의 결승골로 Union Berlin이 Elversberg를 1-0으로 꺾었다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "의 결승골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong의 골로 Union Berlin이 Elversberg를 1-0으로 꺾었다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "의 골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong이 81분 결승골을 넣었다.",
+      "r": [
+        "k512",
+        "m565817"
+      ],
+      "note": "81분 결승골"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Young-woo Seol은 선발로 나서 62분을 소화했다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ],
+      "note": "참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Young-woo Seol은 62분 교체 투입됐다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ],
+      "note": "투입 거짓"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Young-woo Seol은 선발로 나서 62분을 소화한 뒤 교체됐다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ],
+      "note": "교체됐다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Young-woo Seol은 선발로 나서 Robin Fellhauer의 선제골을 도왔다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ],
+      "note": "선제골 도움 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Young-woo Seol은 선발로 나서 1분 만에 골을 넣었다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ],
+      "note": "1분 만에 골"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 벤치를 지켰다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "벤치 참"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 결장했다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "결장 참"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 출전하지 않았다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "출전하지"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Bayern의 무승부에 힘을 보탰다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "0분 힘 보탬"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Bayern 수비를 지켰다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "수비를 지켰다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Bayern의 뒷문을 지켰다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "뒷문"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Bayern이 2-2로 비긴 경기에 나서지 않았다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "나서지 않았다 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Bayern이 2-2로 비긴 경기에 나섰다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "나섰다 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Bayern의 2-2 무승부 때 수비진에 포함됐다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "수비진"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Augsburg전에서 벤치에 머물렀다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "벤치 머묾 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Augsburg전에서 활약했다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "활약"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Min-jae Kim은 Augsburg전에서 무실점을 이끌지 못했다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "무실점"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "김민재는 Augsburg전에서 교체로 들어갔다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "한글 이름 교체"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kim Min-jae는 Augsburg전에서 교체로 들어갔다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "철자 변형 교체"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Minjae Kim은 Augsburg전에서 교체로 들어갔다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "철자 변형2 교체"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kim Min-jae는 Augsburg전에서 벤치를 지켰다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "철자 변형 참"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Lee Kang-in은 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "철자 변형"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kangin Lee가 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "Kangin"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-In Lee가 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "대소문자"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Jaesung Lee는 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "다른 Lee 33분(k927 근거)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Jae-sung Lee는 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2906",
+        "m565812"
+      ],
+      "note": "근거 교차 — Jae-sung 33분"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 20분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2906",
+        "m565812"
+      ],
+      "note": "근거 교차 — Kang-in 20분"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 70분 교체 투입됐다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2906",
+        "m565812"
+      ],
+      "note": "근거 교차 — 70분 투입"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee와 Jae-sung Lee가 각각 33분과 20분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2906",
+        "m565812"
+      ],
+      "note": "각각 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee와 Jae-sung Lee가 각각 20분과 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2906",
+        "m565812"
+      ],
+      "note": "각각 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee와 Jae-sung Lee가 교체 투입돼 각각 33분, 20분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2906",
+        "m565812"
+      ],
+      "note": "각각 쉼표 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee와 Jae-sung Lee가 교체 투입돼 각각 20분, 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2906",
+        "m565812"
+      ],
+      "note": "각각 쉼표 바꿈"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee와 Min-jae Kim이 교체 투입됐다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2897",
+        "m565819"
+      ],
+      "note": "둘째 거짓 교체"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee와 Min-jae Kim이 나란히 출전했다.",
+      "r": [
+        "k927",
+        "m564699",
+        "k2897",
+        "m565819"
+      ],
+      "note": "나란히 출전"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong과 Young-woo Seol이 선발 출전했다.",
+      "r": [
+        "k512",
+        "m565817",
+        "k197985",
+        "m565819"
+      ],
+      "note": "둘 선발 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Woo-yeong Jeong과 Kang-in Lee가 선발 출전했다.",
+      "r": [
+        "k512",
+        "m565817",
+        "k927",
+        "m564699"
+      ],
+      "note": "둘째 선발 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee와 Woo-yeong Jeong이 선발 출전했다.",
+      "r": [
+        "k512",
+        "m565817",
+        "k927",
+        "m564699"
+      ],
+      "note": "첫째 선발 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-korean",
+      "t": "Kang-in Lee의 Atleti가 Alavés를 2-1로 꺾었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "의 팀 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee의 Atleti가 Alavés를 1-0으로 꺾었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "점수 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee가 뛴 Atleti가 Alavés에 1-2로 졌다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "결과 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee가 뛴 Alavés가 Atleti에 1-2로 졌다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "소속 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Alavés의 Kang-in Lee가 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "소속 거짓 의"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 Alavés 소속으로 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "소속 거짓 소속"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 Alavés 유니폼을 입고 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "유니폼 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-korean",
+      "t": "Kang-in Lee는 Alavés에서 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "에서 거짓"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Dortmund은 80분 Daniel Svensson, 85분 Nico Schlotterbeck의 연속 골로 한때 앞서갔다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "실제 출력 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Bremen은 80분 Daniel Svensson, 85분 Nico Schlotterbeck의 연속 골로 한때 앞서갔다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "팀 바꿈"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Bremen은 한때 2-0으로 앞서갔다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "한때 점수 거짓"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Bremen은 한때 앞서갔지만 Dortmund와 2-2로 비겼다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "한때 숫자 없음 거짓"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Dortmund은 한때 앞서갔지만 Bremen과 2-2로 비겼다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "한때 숫자 없음 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Bremen은 막판에 동점을 만들었다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "동점 만듦 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Dortmund은 막판에 동점을 만들었다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "동점 만듦 거짓"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Daniel Svensson이 동점을 만들었다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "선수 동점 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Cristian Romero가 동점을 만들었다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "결승골 선수 동점"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Dortmund은 연속 득점해 경기를 원점으로 돌렸다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "원점 거짓"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Bremen은 연속 득점해 경기를 원점으로 돌렸다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "원점 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Bremen은 두 골 차를 따라잡았다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "따라잡음 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Dortmund은 두 골 차를 따라잡았다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "따라잡음 거짓"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Dortmund은 두 골을 먼저 넣고도 비겼다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "먼저 넣고도 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Bremen은 두 골을 먼저 넣고도 비겼다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "먼저 넣고도 거짓"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Bremen은 2-0 리드를 지키지 못했다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "리드 못 지킴 거짓"
+    },
+    {
+      "input": "2026-10-10",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Dortmund은 2-0 리드를 지키지 못했다.",
+      "r": [
+        "m565820"
+      ],
+      "note": "리드 못 지킴 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Yan Diomande는 골을 넣지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "넣지 못 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Federico Valverde는 도움을 기록하지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "도움 부정 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Harry Kane은 공격포인트를 올리지 못했다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "포인트 부정 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Harry Kane은 득점하지 못했다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "득점하지 못 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Ismael Saibari는 득점하지 못했다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "득점하지 못 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Ismael Saibari는 골을 기록하지 못했다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "기록하지 못 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Real Madrid는 골을 넣지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "팀 넣지 못 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Villarreal은 골을 넣지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "팀 넣지 못 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Villarreal은 무득점에 그쳤다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "무득점 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Real Madrid는 무득점에 그쳤다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "무득점 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Real Madrid는 실점하지 않았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "실점 없음 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Villarreal은 실점하지 않았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "실점 없음 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Villarreal은 한 골도 내주지 않았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "내주지 않았다 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Real Madrid는 Villarreal에 한 골도 내주지 않았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "내주지 않았다 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Villarreal은 무실점으로 버텼다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "무실점 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Real Madrid는 골문을 지켰다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "골문 지킴 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Villarreal은 골문을 지켰다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "골문 지킴 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Kang-in Lee는 Villarreal전에 교체 투입돼 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564702"
+      ],
+      "note": "r 오용 X전"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Kang-in Lee는 Villarreal전에서 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564702"
+      ],
+      "note": "r 오용 X전2"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Kang-in Lee는 Real Madrid의 Villarreal전에 교체 투입돼 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564702"
+      ],
+      "note": "r 오용 X의 Y전"
+    },
+    {
+      "input": "A",
+      "pass": true,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Kim Min-jae는 Bayern의 Union Berlin전에서 후반 46분 교체 투입돼 45분을 뛰었다.",
+      "r": [
+        "k2897",
+        "m1575167"
+      ],
+      "note": "실제 참"
+    },
+    {
+      "input": "A",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Kim Min-jae는 Bayern의 Chelsea전에서 후반 46분 교체 투입돼 45분을 뛰었다.",
+      "r": [
+        "k2897",
+        "m1575167",
+        "m560591"
+      ],
+      "note": "실제 X전 거짓"
+    },
+    {
+      "input": "A",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Kim Min-jae는 Bayern의 Brentford전에서 교체 투입돼 45분을 뛰었다.",
+      "r": [
+        "k2897",
+        "m560591"
+      ],
+      "note": "실제 X전 r 오용"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 여분"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Atleti가 Villarreal을 2-1로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 교차 상대"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Real Madrid가 Alavés를 1-0으로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 교차 상대2"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Yan Diomande가 87분 결승골을 넣었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 교차 분"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Cristian Romero가 62분 결승골을 넣었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 교차 분2"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Federico Valverde의 도움으로 Cristian Romero가 결승골을 넣었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 교차 도움"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Alejandro Baena Rodríguez의 도움으로 Yan Diomande가 결승골을 넣었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 교차 도움2"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Atleti가 Yan Diomande의 결승골로 Alavés를 2-1로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 교차 결승골"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Atleti가 Yan Diomande의 골로 Alavés를 2-1로 꺾었다.",
+      "r": [
+        "m564702",
+        "m564699"
+      ],
+      "note": "r 교차 골로"
+    },
+    {
+      "input": "SYN2",
+      "pass": true,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Barça가 승부차기 끝에 PSG를 꺾었다.",
+      "r": [
+        "pk"
+      ],
+      "note": "PK 참"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "PSG가 승부차기 끝에 Barça를 꺾었다.",
+      "r": [
+        "pk"
+      ],
+      "note": "PK 거짓"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "PSG가 승부차기 끝에 Barça를 5-3으로 꺾었다.",
+      "r": [
+        "pk"
+      ],
+      "note": "PK 점수 거짓"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "PSG가 Barça와 1-1로 맞선 뒤 승부차기에서 웃었다.",
+      "r": [
+        "pk"
+      ],
+      "note": "웃었다 PK"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "PSG가 Barça를 승부차기로 따돌렸다.",
+      "r": [
+        "pk"
+      ],
+      "note": "따돌렸다"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "PSG가 승부차기에서 Barça에 승리를 내줬다.",
+      "r": [
+        "pk"
+      ],
+      "note": "승리 내줌 PK 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Barça가 승부차기에서 PSG에 승리를 내줬다.",
+      "r": [
+        "pk"
+      ],
+      "note": "승리 내줌 PK 거짓"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Barça의 키커 5명이 모두 성공했다.",
+      "r": [
+        "pk"
+      ],
+      "note": "키커"
+    },
+    {
+      "input": "SYN2",
+      "pass": true,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Dortmund이 연장 110분 Nico Schlotterbeck의 결승골로 Napoli를 2-1로 꺾었다.",
+      "r": [
+        "et"
+      ],
+      "note": "연장 결승골 참"
+    },
+    {
+      "input": "SYN2",
+      "pass": true,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Dortmund이 연장 끝에 Napoli를 2-1로 꺾었다.",
+      "r": [
+        "et"
+      ],
+      "note": "연장 끝에 참"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Napoli가 연장 끝에 Dortmund를 2-1로 꺾었다.",
+      "r": [
+        "et"
+      ],
+      "note": "연장 끝에 거짓"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Dortmund이 정규 시간 막판 Nico Schlotterbeck의 결승골로 Napoli를 2-1로 꺾었다.",
+      "r": [
+        "et"
+      ],
+      "note": "정규 시간 결승골 거짓(110)"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Dortmund이 90분 안에 Napoli를 2-1로 꺾었다.",
+      "r": [
+        "et"
+      ],
+      "note": "90분 안에"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Noa Lang이 80분 동점골을 넣어 연장으로 끌고 갔다.",
+      "r": [
+        "et"
+      ],
+      "note": "동점골 연장 (ft 2-1 → 동점골 규칙?) — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": true,
+      "group": "r2-flow-refs",
+      "t": "Napoli가 Noa Lang의 동점골로 연장에 들어갔다.",
+      "r": [
+        "et"
+      ],
+      "note": "동점골로 연장 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "SYN2",
+      "pass": false,
+      "truth": false,
+      "group": "r2-flow-refs",
+      "t": "Dortmund이 Daniel Svensson의 동점골로 연장에 들어갔다.",
+      "r": [
+        "et"
+      ],
+      "note": "동점골 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Villarreal이 웃었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "웃었다 단독"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Real Madrid와 Villarreal의 경기는 1-0으로 끝났고 Villarreal이 웃었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "끝났고 웃었다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Villarreal이 Real Madrid와의 경기를 0-1로 마치며 웃었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "마치며 웃었다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Real Madrid가 고개를 숙였다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "고개 숙임"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Real Madrid가 무너졌다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "무너졌다 단독"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Villarreal이 승전고를 울렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "승전고"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Villarreal이 Real Madrid 원정에서 승전고를 울렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "원정 승전고"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Villarreal이 원정에서 웃었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "원정 웃었다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Villarreal이 원정에서 1-0으로 웃었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "원정 1-0 웃었다"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Villarreal이 Yan Diomande에게 결승골을 얻어맞았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "얻어맞았다 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Real Madrid가 Yan Diomande에게 결승골을 얻어맞았다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "얻어맞았다 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Real Madrid는 Yan Diomande의 골을 끝까지 지켰다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "지켰다 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Villarreal은 Yan Diomande의 골을 끝까지 지켰다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "지켰다 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Real Madrid가 1-0 리드를 끝까지 지켰다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "리드 지킴 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Villarreal이 1-0 리드를 끝까지 지켰다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "리드 지킴 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Villarreal이 0-1 열세를 뒤집지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "열세 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Real Madrid가 0-1 열세를 뒤집지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "열세 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Real Madrid가 끝내 동점골을 넣지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "동점골 못넣음 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Villarreal이 끝내 동점골을 넣지 못했다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "동점골 못넣음 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Atleti가 Alavés 원정에서 2-1 역전승을 거뒀다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "역전승 거짓(Atleti 선제)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Alavés가 Atleti에 1-2 역전패를 당했다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "역전패 거짓"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Arsenal이 Leeds United에 역전승을 거뒀다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전승 참"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Leeds United가 Arsenal에 역전패를 당했다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전패 참"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Leeds United가 Arsenal에 역전승을 내줬다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전승 내줌 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Arsenal이 Leeds United에 역전승을 내줬다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전승 내줌 거짓"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Arsenal이 Leeds United에 역전패를 안겼다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전패 안김 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-predicates",
+      "t": "Leeds United가 Arsenal에 역전패를 안겼다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전패 안김 거짓"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Real Madrid가 Yan Diomande의 62분 결승골로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "결승골로"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Yan Diomande의 62분 결승골을 앞세운 Real Madrid가 Villarreal을 1-0으로 눌렀다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "앞세운"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Federico Valverde의 도움을 받은 Yan Diomande가 62분 결승골을 넣었다.",
+      "r": [
+        "m564702"
       ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Atleti가 Cristian Romero의 87분 결승골로 Alavés 원정에서 2-1로 이겼다.",
+      "r": [
+        "m564699"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Cristian Romero가 87분 결승골을 터뜨려 Atleti의 2-1 원정 승리를 이끌었다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "이끌었다 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Atleti는 Alavés 원정에서 87분 Cristian Romero의 결승골로 2-1 승리를 거뒀다.",
+      "r": [
+        "m564699"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Christopher Nkunku가 해트트릭을 기록한 RB Leipzig가 Frankfurt를 6-0으로 완파했다.",
+      "r": [
+        "m565815"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "RB Leipzig가 Christopher Nkunku의 해트트릭을 앞세워 Frankfurt를 6-0으로 완파했다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Chelsea가 Jordan Henderson과 João Pedro의 멀티골로 Bournemouth를 5-1로 완파했다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Jordan Henderson과 João Pedro가 나란히 두 골씩 넣은 Chelsea가 Bournemouth를 5-1로 꺾었다.",
+      "r": [
+        "m560595"
+      ],
+      "note": "두 골씩 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Leverkusen이 7골을 주고받은 끝에 Mainz 원정에서 4-3으로 이겼다.",
+      "r": [
+        "m565812"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Mainz는 홈에서 Leverkusen에 3-4로 졌다.",
+      "r": [
+        "m565812"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Benedict Hollerbach가 90+2분 만회골을 넣었지만 Mainz는 Leverkusen에 3-4로 졌다.",
+      "r": [
+        "m565812"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Arsenal이 0-1로 뒤지다 Leeds United를 2-1로 역전승했다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "역전승했다 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Arsenal이 Bruno Guimarães의 70분 역전 결승골로 Leeds United를 2-1로 꺾었다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Leeds United는 James Justin의 선제골에도 Arsenal에 1-2로 역전패했다.",
+      "r": [
+        "m560593"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Man United와 Tottenham은 1-1로 비겼다.",
+      "r": [
+        "m560600"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Dominic Solanke가 90+2분 동점골을 넣어 Tottenham이 Man United와 1-1로 비겼다.",
+      "r": [
+        "m560600"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Tottenham이 Dominic Solanke의 90+2분 동점골로 Man United 원정에서 1-1로 비겼다.",
+      "r": [
+        "m560600"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Augsburg와 Bayern이 2-2로 비겼고 Harry Kane은 도움 2개를 기록했다.",
+      "r": [
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Harry Kane이 도움 2개를 올렸지만 Bayern은 Augsburg와 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "올렸지만 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Bayern은 Augsburg 원정에서 두 차례 끌려가다 2-2로 비겼다.",
+      "r": [
+        "m565819"
+      ],
+      "note": "두 차례 끌려가다 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Barça가 Getafe를 3-0으로 완파하고 승점 24로 LaLiga 선두를 달렸다.",
+      "r": [
+        "m564700",
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Barça는 승점 24로 LaLiga 선두다.",
+      "r": [
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Atleti가 승점 19로 2위, Real Madrid가 승점 18로 3위다.",
+      "r": [
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Man City와 Arsenal이 승점 15로 같지만 Man City가 득실차에서 앞서 선두다.",
+      "r": [
+        "sPL"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Inter가 Parma를 3-0으로 완파하고 승점 16으로 Serie A 선두를 달렸다.",
+      "r": [
+        "m558582",
+        "sSA"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Napoli는 Kevin De Bruyne의 두 골로 Frosinone을 3-0으로 꺾었다.",
+      "r": [
+        "m558586"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Kevin De Bruyne이 PK 선제골과 90+4분 쐐기골을 넣었다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "쐐기골(평가어 금지?) — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Kevin De Bruyne이 PK 포함 두 골을 넣어 Napoli의 3-0 승리를 이끌었다.",
+      "r": [
+        "m558586"
+      ],
+      "note": "이끌었다2 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "PSG가 홈에서 Le Mans를 3-1로 꺾었다.",
+      "r": [
+        "m559672"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Union Berlin은 81분 Livan Burcu의 결승골로 Elversberg를 1-0으로 눌렀다.",
+      "r": [
+        "m565817"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Aston Villa와 Brentford는 2-2로 비겼다.",
+      "r": [
+        "m560601"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Brentford는 79분 Kristoffer Ajer의 동점골로 Aston Villa 원정에서 2-2로 비겼다.",
+      "r": [
+        "m560601"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Kang-in Lee는 Atleti의 2-1 승리 경기에서 57분 교체 투입돼 33분을 뛰었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Min-jae Kim은 Bayern이 Augsburg와 2-2로 비긴 경기에서 벤치를 지켰다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Min-jae Kim은 Augsburg전에 출전하지 않았다.",
+      "r": [
+        "k2897",
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-predicates",
+      "t": "Jae-sung Lee는 70분 교체로 들어가 20분을 뛰었지만 Mainz는 Leverkusen에 3-4로 졌다.",
+      "r": [
+        "k2906",
+        "m565812"
+      ],
+      "note": "참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Real Madrid가 Yan Diomande의 추가시간 결승골로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "X의 추가시간 결승골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Real Madrid가 Yan Diomande의 후반 막판 결승골로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "X의 후반 막판 결승골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Real Madrid가 Yan Diomande의 전반 결승골로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "X의 전반 결승골로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-goal-nouns",
+      "t": "Tottenham이 Dominic Solanke의 극장골로 Man United와 1-1로 비겼다.",
+      "r": [
+        "m560600"
+      ],
+      "note": "극장골 참 — 참이지만 문형 밖(D50)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Real Madrid가 Yan Diomande의 극장골로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "극장골 거짓(62)"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Real Madrid가 Federico Valverde의 극장골로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "극장골 도움 선수"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Federico Valverde가 극장골을 터뜨렸다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "극장골 터뜨림 도움 선수"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Real Madrid가 Federico Valverde의 천금 같은 결승골로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "천금"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Real Madrid가 Federico Valverde의 벼락같은 중거리포로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "중거리포로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Real Madrid가 Federico Valverde의 득점포로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "득점포로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Federico Valverde의 결승 득점으로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "결승 득점으로"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Federico Valverde의 골에 힘입어 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "골에 힘입어"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Federico Valverde의 골을 앞세운 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "골을 앞세운"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Federico Valverde의 골을 앞세워 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "골을 앞세워"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Federico Valverde의 결승골을 앞세워 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "결승골을 앞세워"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r2-goal-nouns",
+      "t": "Federico Valverde의 해트트릭을 앞세워 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "해트트릭 앞세워"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": true,
+      "group": "r2-goal-nouns",
+      "t": "Yan Diomande의 골을 앞세운 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ],
+      "note": "골을 앞세운 참 — 참이지만 문형 밖(D50)"
     }
   ]
 }
