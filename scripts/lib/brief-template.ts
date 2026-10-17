@@ -17,9 +17,12 @@
  *       해트트릭(이긴 팀 같은 선수 3골 이상 — 점수 차와 무관, 4골 이상은 'n골') `… {선수}의 해트트릭을 앞세워 …`
  *   무승부    `{홈}과 {원정}이 [대회에서] h-a로 비겼다.`(0-0 포함 — 점수를 늘 쓴다)
  *     동점골(마지막 골 — 자책골 제외) `{동점 팀}이 [장소] {선수}의 {분}분 동점골로 {상대}와 h-h로 비겼다.`
- *   연장      `{승자}가 [장소] 연장 끝에 {패자}를 w-l로 꺾었다.` · `{홈}과 {원정}이 [대회에서] 연장 끝에 h-a로 비겼다.`
- *   승부차기  `{승자}가 [장소] {패자}와 연장까지 1-1로 맞선 뒤 승부차기에서 w-l로 이겼다.` — 승부차기 점수도 이긴 팀 먼저,
- *            승부차기 경기의 `ft` 동점을 '비겼다'로 쓰지 않는다(M1-19 이월 — 결과는 승부차기 승패)
+ *   연장      `{승자}가 [장소] 연장 끝에 {패자}를 w-l로 꺾었다.`(90분 점수가 있고 이긴 팀이 90분에 앞서지 않았을 때만 — 90분에
+ *            이미 앞섰거나 90분 점수가 없으면 `연장전까지 치러`) · `{홈}과 {원정}이 [대회에서] 연장 끝에 h-a로 비겼다.`
+ *   승부차기  승자는 늘 승부차기 결과(승부차기 점수가 동점이면 줄 없음). `ft` 동점이면 `{승자}가 [장소] {패자}와 연장까지 1-1로
+ *            맞선 뒤 승부차기에서 w-l로 이겼다.`(승부차기 점수도 이긴 팀 먼저, '비겼다'로 쓰지 않음 — M1-19 이월, '연장까지'는 입력
+ *            aet일 때만). `ft`가 동점이 아니면(두 경기 합산 동점 뒤 승부차기 — 합산은 입력에 없다) `{홈}과 {원정}의 [대회 ]경기는
+ *            [연장까지 ]h-a로 끝났고 승부차기에서 {승자}가 w-l로 이겼다.` — 그 경기 점수를 이긴 것처럼 쓰지 않는다
  *   중립 경기장 결승(round FINAL)은 장소 대신 `[대회 ]결승에서` — 홈·원정이 없다
  *   순위      `{1위}가 승점 n으로 [대회] 선두, {2위}가 승점 m으로 2위[, {3위}가 승점 k로 3위]다.` — 같은 순위는
  *            `{A}와 {B}가 승점 n으로 [대회] 공동 선두`·`A·B·C가 … 공동 n위`(응답 순서, 승점이 같을 때만). 전일 순위가 없으므로
@@ -178,12 +181,17 @@ interface GoalFact {
 
 interface MatchFacts {
   ft: Pair;
-  /** 이긴 쪽(승부차기 경기는 승부차기 결과) — 무승부면 null */
+  /**
+   * 이긴 쪽 — 승부차기 경기는 **항상 승부차기 결과**(ft가 동점이 아니어도 — 두 경기 합산 동점 뒤 승부차기면 그 경기 점수의 승자와
+   * 다를 수 있다), 그 밖은 ft. 무승부면 null
+   */
   winner: Side | null;
   margin: number;
   aet: boolean;
   /** 승부차기 점수(홈-원정) — 승부차기 경기만 */
   pens: Pair | null;
+  /** 90분 점수(홈-원정) — 연장 경기에서 입력에 있을 때만 */
+  regular: Pair | null;
   /** 이긴 팀이 뒤진 적이 있다(전반 스코어 또는 완전한 득점 순서로 확인될 때만 true) */
   comeback: boolean;
   /** 시간 순 득점 — 득점 목록이 완전하고 점수와 맞을 때만, 아니면 null */
@@ -235,7 +243,11 @@ function matchFacts(match: BriefInputMatch): MatchFacts | null {
   if (match.pens !== undefined && !pens) return null;
   const aet = match.aet === true || pens !== null;
   const byFt = sideByScore(ft);
-  const winner = byFt ?? (pens ? sideByScore(pens) : null);
+  // 승부차기 경기의 승자는 승부차기 결과뿐이다. 승부차기 점수가 동점(입력 이상)이면 줄을 만들지 않는다
+  if (pens && sideByScore(pens) === null) return null;
+  const winner = pens ? sideByScore(pens) : byFt;
+  const regular =
+    match.regular !== undefined ? parseScorePair(match.regular) : null;
   const goals = goalFacts(match, ft);
   let comeback = false;
   if (byFt !== null) {
@@ -256,6 +268,7 @@ function matchFacts(match: BriefInputMatch): MatchFacts | null {
     margin: Math.abs(ft.home - ft.away),
     aet,
     pens,
+    regular,
     comeback,
     goals,
   };
@@ -354,13 +367,34 @@ function winSentences(
   const only = (base: string): Sentences => ({ full: null, mid: null, base });
   if (facts.pens) {
     const pens = scoreFrom(facts.pens, winner);
+    if (facts.ft.home !== facts.ft.away) {
+      // 그 경기 점수는 동점이 아닌데 승부차기(두 경기 합산 동점 등) — 합산은 입력에 없으므로 그 경기 점수를 이긴 것처럼 쓰지 않고
+      // 사실만: 경기 점수(홈-원정)와 승부차기 승자
+      const H = names.team(match.home);
+      const A = names.team(match.away);
+      return only(
+        sentence(
+          words(
+            withJosa(H, "과/와"),
+            `${A}의`,
+            label ? `${label} 경기는` : "경기는",
+            match.aet === true ? "연장까지" : null,
+            withJosa(scoreFrom(facts.ft, "home"), "으로/로"),
+            "끝났고 승부차기에서",
+            subject,
+            withJosa(pens, "으로/로"),
+            "이겼다",
+          ),
+        ),
+      );
+    }
     return only(
       sentence(
         words(
           subject,
           venue,
           withJosa(L, "과/와"),
-          facts.aet ? "연장까지" : null,
+          match.aet === true ? "연장까지" : null,
           withJosa(score, "으로/로"),
           "맞선 뒤 승부차기에서",
           withJosa(pens, "으로/로"),
@@ -370,12 +404,17 @@ function winSentences(
     );
   }
   if (facts.aet) {
+    // '연장 끝에'는 90분 점수가 있고 이긴 팀이 90분에 앞서지 않았을 때만 — 90분에 이미 앞섰거나(두 경기 합산 때문에 연장)
+    // 90분 점수가 없으면 연장에서 승부가 났다고 쓸 수 없어 '연장전까지 치러'(연장을 치렀다는 사실만)
+    const decidedInEt =
+      facts.regular !== null &&
+      facts.regular[winner] <= facts.regular[other(winner)];
     return only(
       sentence(
         words(
           subject,
           venue,
-          "연장 끝에",
+          decidedInEt ? "연장 끝에" : "연장전까지 치러",
           withJosa(L, "을/를"),
           withJosa(score, "으로/로"),
           "꺾었다",

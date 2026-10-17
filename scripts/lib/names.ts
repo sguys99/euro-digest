@@ -12,17 +12,24 @@
  *     찾는다. 'Inter Milan'이 'Inter'·'Milan'보다, 'Borussia Dortmund'가 'Dortmund'보다 먼저 맞는다. 바꾼 이름 바로 뒤의 붙은
  *     조사는 한글 이름의 받침으로 고친다(josa.ts — 'Bayern가' → '바이에른 뮌헨이', 'Dortmund은' → '도르트문트는').
  *     대회는 브리핑 단위로 고른 표기(nameKo·shortKo — brief-template.ts `BriefCompForm`)로 바꾼다(D30·D45 ④).
+ *   보호 구(`PROTECTED_LATIN_PHRASES` — 'Inter Miami'·'Juve Stabia' …): 사전 이름을 품은 다른 대상의 이름이라 그대로 둔다 —
+ *     색인에 '그대로 둠' 대상으로 넣어 긴 이름 먼저 규칙으로 막는다('Inter Miami'의 Inter가 인테르로 바뀌지 않게).
+ *   첫 글자 축약 별칭('H. Kane'·'A. Davies' — `X. 성` 형태): 동명이인 오매칭 위험이 커서 **치환·이름 찾기에 쓰지 않는다**.
+ *     입력 정리(`canonicalizeBriefInput`)에서 득점 팀이 그 선수 소속팀과 같을 때만 대표 표기로 바꾼다.
  *   이름 찾기(`lookupName`): 영문 표기 정확히 같음(접기 기준) + 유형 — 템플릿·입력 정리용(부분 일치 없음).
  *
  * ── 브리핑 입력 (M0-30 — 모델 축약 방지) ────────────────────────────────────
- *   `canonicalizeBriefInput`: 득점자·도움(API-Football 원문 'H. Kane'·'Kim Min-Jae')이 사전에 있으면 그 항목의 **대표 영문 표기
- *   (`en[0]`)**로 바꾼다 — 모델이 입력 표기를 그대로 옮기면 사전 키와 같아 치환된다(M0-30: 'M. Olise' → 출력 'Olise'). 팀 이름은
- *   football-data 짧은 이름 그대로 둔다(별칭으로 등록 — 'Bayern'·'Man City'·'Barça', D39 ②). 사전에 없는 이름은 원문 그대로.
+ *   `canonicalizeBriefInput`: 득점자·도움(API-Football 원문 'Kim Min-Jae'·'H. Kane')이 사전에 있으면 그 항목의 **대표 영문 표기
+ *   (`en[0]`)**로 바꾼다 — 모델이 입력 표기를 그대로 옮기면 사전 키와 같아 치환된다(M0-30: 'M. Olise' → 출력 'Olise'). 첫 글자
+ *   축약 별칭은 득점 팀(자책골은 상대 팀)이 그 선수의 소속팀(`playerTeams` — 등록 한국 선수 + `KNOWN_PLAYER_TEAMS`)과 같을
+ *   때만 바꾼다(다른 팀의 'A. Davies'를 알폰소 데이비스로 바꾸지 않게). 팀 이름은 football-data 짧은 이름 그대로 둔다(별칭으로
+ *   등록 — 'Bayern'·'Man City'·'Barça', D39 ②). 사전에 없는 이름은 원문 그대로.
  *
  * ── 미등록 이름 (FR-24 — data/cache/unknown-names.json, unknown-names.ts) ────────
  *   데이터 API 이름 = 브리핑 입력의 팀(경기·순위표)·득점자·도움 중 사전에도 무시 목록에도 없는 것(`briefInputNames`).
  *   브리핑 출력 이름 = 치환 뒤에도 남은 라틴 문자 덩어리 중 이름처럼 보이는 것(`unknownNamesInText` — 대회 표기·무시 목록·일반 약어
- *   `GENERIC_LATIN_TOKENS`·라운드 표기·한 글자 제외). 키는 영문 표기 그대로(부록 A 12).
+ *   `GENERIC_LATIN_TOKENS`·라운드 표기·한 글자 제외). **치환이 넣은 한글 표기('AC 밀란'·'파리 FC'·'UEFA 챔피언스리그') 속 라틴
+ *   낱말은 후보가 아니다** — `SubstituteResult.masked`(치환 구간을 가린 텍스트)에서 찾는다. 키는 영문 표기 그대로(부록 A 12).
  *
  * ── 영문 토큰 허용 목록 (M1-23 코드 검증용 — `briefNameAllowlist`) ──────────────
  *   입력의 팀·선수·대회 이름 + 그 사전 항목의 모든 영문 표기 + 대회 별칭·라틴 shortKo(EPL·UCL). 접은 문자열 집합.
@@ -40,14 +47,22 @@ import { fixAttachedParticle } from "./josa";
 
 // ─── 접기 ─────────────────────────────────────────────────────────────────
 
-const QUOTE_CHARS = new Set(["‘", "’", "ʼ", "`", "´"]);
-const DASH_CHARS = new Set(["‐", "‑", "‒", "–", "—", "―", "−"]);
+const QUOTE_CHARS = new Set(["\u2018", "\u2019", "\u02bc", "\u0060", "\u00b4"]);
+const DASH_CHARS = new Set([
+  "\u2010",
+  "\u2011",
+  "\u2012",
+  "\u2013",
+  "\u2014",
+  "\u2015",
+  "\u2212",
+]);
 
 function foldChar(ch: string): string {
   if (ch.length !== 1) return ch; // 보조 평면 글자(이모지 등) — 그대로(코드 단위 2개 유지)
   if (QUOTE_CHARS.has(ch)) return "'";
   if (DASH_CHARS.has(ch)) return "-";
-  if (ch === " ") return " ";
+  if (ch === "\u00a0") return " ";
   const base = ch.normalize("NFKD").replace(/\p{M}+/gu, "");
   const pick = base.length === 1 ? base : ch;
   const lower = pick.toLowerCase();
@@ -95,10 +110,47 @@ export const GENERIC_LATIN_TOKENS: readonly string[] = Object.freeze([
   "Leg",
 ]);
 
+/**
+ * 그대로 두는 보호 구 — 사전 이름(Inter·Milan·Juventus·Real Madrid …)을 품었지만 다른 대상(다른 리그·여자팀·2군)의 이름. 색인에
+ * '그대로 둠' 대상으로 넣어 긴 이름 먼저 규칙으로 막는다. news-keywords.ts BIG_CLUBS 제외 표현과 같은 종류다.
+ */
+export const PROTECTED_LATIN_PHRASES: readonly string[] = Object.freeze([
+  "Inter Miami",
+  "Inter Miami CF",
+  "Inter de Miami",
+  "Juve Stabia",
+  "Milan Futuro",
+  "Real Madrid Castilla",
+  "Barcelona Atlètic",
+  "Bayern München II",
+  "Borussia Dortmund II",
+]);
+
+/**
+ * 첫 글자 축약 별칭(names.ko.json `X. 성`)이 가리키는 선수의 소속팀 slug(등록 한국 선수는 korean-players.json이 주므로 여기 없다).
+ * fixtures/football API-Football 응답에서 그 표기를 본 팀만 적는다(2026-10 기준). 이적하면 확인이 실패해 대표 표기로 바꾸지 않을
+ * 뿐이다(영문 그대로 — 안전한 쪽). 축약 별칭을 사전에 더하면 여기 소속팀도 함께 적는다(tests/names-ko-dict.test.ts가 확인).
+ */
+export const KNOWN_PLAYER_TEAMS: Readonly<Record<string, string>> =
+  Object.freeze({
+    "harry-kane": "bayern-munchen",
+    "jamal-musiala": "bayern-munchen",
+    "michael-olise": "bayern-munchen",
+    "alphonso-davies": "bayern-munchen",
+  });
+
+/** `X. 성` 첫 글자 축약 표기인가('H. Kane'·'J. Castrop' — 'Sl. Bratislava'·'1. FC Köln'은 아니다) */
+export function isInitialForm(name: string): boolean {
+  return /^\p{Lu}\. \S/u.test(name.trim());
+}
+
 // ─── 색인 ─────────────────────────────────────────────────────────────────
 
 type Target =
-  { type: "entry"; entry: NameEntry } | { type: "competition"; comp: CompId };
+  | { type: "entry"; entry: NameEntry }
+  | { type: "competition"; comp: CompId }
+  /** 보호 구 — 맞은 자리를 그대로 둔다 */
+  | { type: "keep" };
 
 export interface NameIndex {
   /** 접힌 영문 표기 → 사전 항목 */
@@ -109,6 +161,8 @@ export interface NameIndex {
   ignore: ReadonlySet<string>;
   /** `유형:slug` → 항목 */
   bySlug: ReadonlyMap<string, NameEntry>;
+  /** 접힌 첫 글자 축약 별칭 → 항목(치환·이름 찾기에 쓰지 않음 — 입력 정리의 소속팀 확인용) */
+  initials: ReadonlyMap<string, NameEntry>;
   /** 치환 정규식(접힌 텍스트용, 긴 이름 먼저) — 표기가 하나도 없으면 null */
   matcher: RegExp | null;
   /** 정규식 별칭 → 대상 */
@@ -129,6 +183,7 @@ export function buildNameIndex(
 ): NameIndex {
   const byEn = new Map<string, NameEntry>();
   const bySlug = new Map<string, NameEntry>();
+  const initials = new Map<string, NameEntry>();
   const targets = new Map<string, Target>();
   for (const entry of file?.entries ?? []) {
     if (entry.slug !== undefined) {
@@ -137,7 +192,12 @@ export function buildNameIndex(
     }
     for (const en of entry.en) {
       const folded = foldName(en);
-      if (folded.trim() === "" || byEn.has(folded)) continue;
+      if (folded.trim() === "") continue;
+      if (isInitialForm(en)) {
+        if (!initials.has(folded)) initials.set(folded, entry);
+        continue;
+      }
+      if (byEn.has(folded)) continue;
       byEn.set(folded, entry);
       targets.set(folded, { type: "entry", entry });
     }
@@ -158,6 +218,10 @@ export function buildNameIndex(
     if (!targets.has(folded))
       targets.set(folded, { type: "competition", comp });
   }
+  for (const phrase of PROTECTED_LATIN_PHRASES) {
+    const folded = foldName(phrase);
+    if (!targets.has(folded)) targets.set(folded, { type: "keep" });
+  }
   const ignore = new Set((file?.ignore ?? []).map(foldName));
   const keys = [...targets.keys()].sort(
     (a, b) => b.length - a.length || (a < b ? -1 : a > b ? 1 : 0),
@@ -169,7 +233,7 @@ export function buildNameIndex(
           `(?<![\\p{Script=Latin}\\p{N}])(?:${keys.map(escapeRegExp).join("|")})(?![\\p{Script=Latin}\\p{N}])`,
           "gu",
         );
-  return { byEn, compByEn, ignore, bySlug, matcher, targets };
+  return { byEn, compByEn, ignore, bySlug, initials, matcher, targets };
 }
 
 /** 영문 표기(정확히 — 접기 기준) → 사전 항목. `kinds`를 주면 그 유형만 */
@@ -230,6 +294,8 @@ export interface NameReplacement {
 
 export interface SubstituteResult {
   text: string;
+  /** `text`에서 치환한 구간을 가린 텍스트(미등록 이름 후보 찾기용 — 한글 표기 속 라틴 낱말을 후보로 보지 않게) */
+  masked: string;
   replaced: NameReplacement[];
   /** 받침에 맞춰 고친 붙은 조사 수 */
   particleFixes: number;
@@ -240,6 +306,9 @@ export interface SubstituteOptions {
   competitionLabel?: (comp: CompId) => string;
 }
 
+/** `masked`에서 치환 구간 자리 — 라틴 글자·공백이 아니라 앞뒤 덩어리를 끊는다 */
+const MASK = "\u25a1";
+
 /** 텍스트의 영문 고유명사 → 한글(머리 주석 "치환"). 결과는 NFC */
 export function substituteNames(
   text: string,
@@ -249,9 +318,10 @@ export function substituteNames(
   const source = text.normalize("NFC");
   const replaced: NameReplacement[] = [];
   if (index.matcher === null)
-    return { text: source, replaced, particleFixes: 0 };
+    return { text: source, masked: source, replaced, particleFixes: 0 };
   const folded = foldName(source);
   let out = "";
+  let masked = "";
   let last = 0;
   let particleFixes = 0;
   const matcher = new RegExp(index.matcher.source, index.matcher.flags);
@@ -260,7 +330,7 @@ export function substituteNames(
     const end = start + m[0].length;
     if (start < last) continue; // 앞 치환의 조사 자리(한글이라 맞을 수 없지만 방어)
     const target = index.targets.get(m[0]);
-    if (!target) continue;
+    if (!target || target.type === "keep") continue;
     let to: string;
     let kind: NameReplacement["kind"];
     if (target.type === "entry") {
@@ -278,18 +348,20 @@ export function substituteNames(
       /^[가-힣]+/.exec(fixAttachedParticle(to, following))?.[0] ?? "";
     if (fixedRun !== run) particleFixes += 1;
     out += source.slice(last, start) + to + fixedRun;
+    masked += `${source.slice(last, start)}${MASK}${fixedRun}`;
     last = end + run.length;
     replaced.push({ from, to, kind });
   }
   out += source.slice(last);
-  return { text: out, replaced, particleFixes };
+  masked += source.slice(last);
+  return { text: out, masked, replaced, particleFixes };
 }
 
 // ─── 남은 영문(미등록 이름) ─────────────────────────────────────────────────
 
-/** 라틴 문자 덩어리(단어 사이 공백 1칸 허용, 이름 속 '.·-·&·/·숫자' 포함) */
+/** 라틴 문자 덩어리(단어 사이 공백 1칸 허용, 이름 속 '.·-·&·/·숫자', 단어 사이 '&'(Brighton & Hove Albion) 포함) */
 const LATIN_SPAN =
-  /[\p{Script=Latin}][\p{Script=Latin}\p{M}\p{N}'’.&/-]*(?: (?:[\p{Script=Latin}\p{N}][\p{Script=Latin}\p{M}\p{N}'’.&/-]*))*/gu;
+  /[\p{Script=Latin}][\p{Script=Latin}\p{M}\p{N}'’.&/-]*(?: (?:&|[\p{Script=Latin}\p{N}][\p{Script=Latin}\p{M}\p{N}'’.&/-]*))*/gu;
 
 /** 텍스트에 남은 라틴 문자 덩어리(끝의 마침표·하이픈 제거) */
 export function latinSpans(text: string): string[] {
@@ -303,8 +375,9 @@ const GENERIC_FOLDED = new Set(GENERIC_LATIN_TOKENS.map(foldName));
 /** 덩어리 속 이름이 아닌 단어 묶음의 최대 길이('League phase'·'UEFA Champions League') */
 const NOISE_WINDOW_MAX = 3;
 
-/** 이름 속 소문자 낱말(van Dijk·De Bruyne의 de·dos Santos) — 이 밖의 소문자 단어는 이름이 아니다 */
+/** 이름 속 소문자 낱말(van Dijk·De Bruyne의 de·dos Santos)과 이음표 '&' — 이 밖의 소문자 단어는 이름이 아니다 */
 const NAME_PARTICLES: ReadonlySet<string> = new Set([
+  "&",
   "van",
   "von",
   "de",
@@ -319,15 +392,18 @@ const NAME_PARTICLES: ReadonlySet<string> = new Set([
   "das",
   "du",
   "ter",
-  "y",
-  "e",
   "el",
   "al",
   "bin",
 ]);
 
-/** 이름이 아닌 단어 — 숫자·한 글자('세리에 A'의 A — 이니셜 'J.'은 이름의 일부)·서수('43rd')·소문자 일반어('scored') */
+/**
+ * 이름이 아닌 단어 — 숫자·한 글자('세리에 A'의 A — 이니셜 'J.'은 이름의 일부)·서수('43rd')·소문자 일반어('scored').
+ * '&'만 한 글자 예외(Brighton & Hove Albion) — 접속사 'y'·'e'(Reis e Füllkrug)는 한 글자라 끊기므로 미등록 이름 둘이 하나로
+ * 합쳐지지 않는다.
+ */
 function isNoiseWord(word: string): boolean {
+  if (word === "&") return false;
   if (/^\d+$/.test(word) || [...word].length < 2) return true;
   if (/^\d+\p{L}/u.test(word)) return true;
   return /^\p{Ll}/u.test(word) && !NAME_PARTICLES.has(word);
@@ -422,28 +498,66 @@ export function unknownBriefInputNames(
   return briefInputNames(input).filter((n) => !isKnownName(index, n.name));
 }
 
-function canonicalPerson(index: NameIndex, name: string): string {
-  return lookupName(index, name, PERSON_KINDS)?.en[0] ?? name;
+/** 입력 정리 옵션 */
+export interface CanonicalizeOptions {
+  /**
+   * 선수 slug → 소속팀 slug — 첫 글자 축약 별칭을 대표 표기로 바꿀 때만 확인한다(`playerTeamsFrom`). 없으면 축약 별칭은 바꾸지 않는다
+   */
+  playerTeams?: ReadonlyMap<string, string>;
+}
+
+/** 등록 한국 선수(korean-players.json의 slug·team) + `KNOWN_PLAYER_TEAMS` → 선수 slug → 소속팀 slug */
+export function playerTeamsFrom(
+  koreanPlayers: ReadonlyArray<{ slug: string; team: string }> = [],
+): Map<string, string> {
+  const out = new Map<string, string>(Object.entries(KNOWN_PLAYER_TEAMS));
+  for (const p of koreanPlayers) out.set(p.slug, p.team);
+  return out;
 }
 
 /**
  * 득점자·도움을 사전 대표 영문 표기로(머리 주석 "브리핑 입력"). 순수 함수 — 새 입력과 바꾼 이름 수. 키 순서는 그대로.
+ * 첫 글자 축약 별칭은 그 선수의 팀(득점자 = 득점 팀, 자책골 득점자 = 상대 팀, 도움 = 득점 팀)이 소속팀과 같을 때만.
  */
 export function canonicalizeBriefInput(
   input: BriefInput,
   index: NameIndex,
+  options: CanonicalizeOptions = {},
 ): { input: BriefInput; replaced: number } {
   let replaced = 0;
-  const fix = (name: string): string => {
-    const canonical = canonicalPerson(index, name);
+  const teamSlug = (name: string): string | null =>
+    lookupName(index, name, TEAM_KINDS)?.slug ?? null;
+  const fix = (name: string, team: string): string => {
+    const full = lookupName(index, name, PERSON_KINDS);
+    let canonical = full?.en[0] ?? name;
+    if (!full) {
+      const entry = index.initials.get(foldName(name.trim()));
+      const expected =
+        entry?.slug !== undefined
+          ? (options.playerTeams?.get(entry.slug) ?? null)
+          : null;
+      const actual = teamSlug(team);
+      if (
+        entry &&
+        PERSON_KINDS.includes(entry.kind) &&
+        expected !== null &&
+        actual !== null &&
+        expected === actual
+      ) {
+        canonical = entry.en[0]!;
+      }
+    }
     if (canonical !== name) replaced += 1;
     return canonical;
   };
   const matches = input.matches.map((m) => {
     if (m.goals === null) return m;
     const goals = m.goals.map((g): BriefInputGoal => {
-      const next: BriefInputGoal = { ...g, player: fix(g.player) };
-      if (g.assist !== undefined) next.assist = fix(g.assist);
+      // 자책골의 team은 득점이 인정된 팀 — 자책한 선수는 상대 팀 소속
+      const scorerTeam =
+        g.type === "own_goal" ? (g.team === m.home ? m.away : m.home) : g.team;
+      const next: BriefInputGoal = { ...g, player: fix(g.player, scorerTeam) };
+      if (g.assist !== undefined) next.assist = fix(g.assist, g.team);
       return next;
     });
     return { ...m, goals };

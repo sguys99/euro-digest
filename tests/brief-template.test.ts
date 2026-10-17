@@ -197,6 +197,42 @@ describe("경기 줄 — 주어 팀 점수 먼저(D45 ④, 득점 데이터 없�
     );
   });
 
+  it("승부차기 승자는 늘 승부차기 결과 — 그 경기 점수가 동점이 아니면(두 경기 합산 동점 뒤) 경기 점수를 이긴 것처럼 쓰지 않는다", () => {
+    // 홈이 1-0으로 이겼지만 승부차기는 원정 승리 — '아스널이 … 1-0으로 이겼다'·'첼시가 … 1-0으로 꺾었다'가 아니다
+    const leg = match({ ft: "1-0", aet: true, regular: "1-0", pens: "3-4" });
+    expect(textOf(leg, KO)).toBe(
+      "아스널과 첼시의 프리미어리그 경기는 연장까지 1-0으로 끝났고 승부차기에서 첼시가 4-3으로 이겼다.",
+    );
+    expect(textOf(leg, KO)).not.toMatch(/합계|꺾었다|비겼/);
+    // 승부차기만 있고 연장 표시가 없으면 '연장까지'를 쓰지 않는다 · 승부차기 점수가 동점이면(입력 이상) 줄 없음
+    expect(textOf(match({ ft: "0-2", pens: "5-4" }), KO)).toBe(
+      "아스널과 첼시의 프리미어리그 경기는 0-2로 끝났고 승부차기에서 아스널이 5-4로 이겼다.",
+    );
+    expect(textOf(match({ ft: "1-1", pens: "4-3" }), KO)).toBe(
+      "아스널이 프리미어리그 홈경기에서 첼시와 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다.",
+    );
+    expect(
+      templateMatchLine(match({ ft: "1-1", aet: true, pens: "3-3" }), KO),
+    ).toBeNull();
+  });
+
+  it("연장 승리 — 90분에 이미 앞섰거나 90분 점수가 없으면 '연장 끝에'를 쓰지 않는다(연장을 치른 사실만)", () => {
+    // 90분 2-0(두 경기 합산 동점이라 연장) → 최종 2-1: 연장에서 승부가 난 것이 아니다
+    expect(textOf(match({ ft: "2-1", aet: true, regular: "2-0" }), KO)).toBe(
+      "아스널이 프리미어리그 홈경기에서 연장전까지 치러 첼시를 2-1로 꺾었다.",
+    );
+    expect(textOf(match({ ft: "2-1", aet: true }), KO)).toBe(
+      "아스널이 프리미어리그 홈경기에서 연장전까지 치러 첼시를 2-1로 꺾었다.",
+    );
+    // 90분 동점·뒤짐 → 연장에서 이겼다
+    expect(
+      textOf(match({ ft: "2-1", aet: true, regular: "1-1" }), KO),
+    ).toContain("연장 끝에 첼시를 2-1로 꺾었다.");
+    expect(
+      textOf(match({ ft: "3-2", aet: true, regular: "1-2" }), KO),
+    ).toContain("연장 끝에 첼시를 3-2로 꺾었다.");
+  });
+
   it("중립 경기장 결승(round FINAL)은 장소 대신 '결승에서'", () => {
     const final = match({
       comp: "UEFA Champions League",
@@ -411,7 +447,7 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
         }),
       ),
     ).toBe(
-      "Arsenal이 프리미어리그 홈경기에서 연장 끝에 Chelsea를 2-1로 꺾었다.",
+      "Arsenal이 프리미어리그 홈경기에서 연장전까지 치러 Chelsea를 2-1로 꺾었다.",
     );
   });
 

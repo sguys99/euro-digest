@@ -209,6 +209,7 @@ import {
   buildNameIndex,
   canonicalizeBriefInput,
   foldName,
+  playerTeamsFrom,
   isKnownName,
   substituteNames,
   unknownBriefInputNames,
@@ -2675,6 +2676,27 @@ async function briefKoreanTeamIds(
 }
 
 /**
+ * 선수 slug → 소속팀 slug(M1-21 — 첫 글자 축약 별칭 'H. Kane'을 대표 표기로 바꿀 때 소속팀 확인, names.ts playerTeamsFrom).
+ * 등록 한국 선수(활성·비활성 모두) + 코드 표. 던지지 않는다 — 읽지 못하면 코드 표만.
+ */
+async function briefPlayerTeams(
+  deps: CollectDeps,
+): Promise<Map<string, string>> {
+  try {
+    return playerTeamsFrom(
+      await readConfigFile(
+        deps.rootDir,
+        "korean-players.json",
+        KoreanPlayersFileSchema,
+      ),
+    );
+  } catch {
+    // 중요도 계산(briefKoreanTeamIds)이 같은 파일 오류를 이미 경고한다
+    return playerTeamsFrom();
+  }
+}
+
+/**
  * 원장(data/matches)의 브리핑 창 항목 → 경기 상세(6개 대회만 — football-data와 짝짓는 대상). 같은 아침 두 번째 실행은 브리핑 창
  * 경기를 다시 받지 않으므로 이 항목으로 득점자를 잇는다(M1-48 이월). 원장은 정기 운영 prod 실행만 쓰므로 개발 실행에서는 대개 없다.
  * 던지지 않는다 — 읽지 못하면 경고하고 빈 목록.
@@ -2882,7 +2904,9 @@ async function runBriefStage(
       koreanTeamIds: await briefKoreanTeamIds(deps, team.index),
     });
     const canonical = names
-      ? canonicalizeBriefInput(built.input, names)
+      ? canonicalizeBriefInput(built.input, names, {
+          playerTeams: await briefPlayerTeams(deps),
+        })
       : { input: built.input, replaced: 0 };
     input = canonical.input;
     log.info("summarize.input.done", {
@@ -3088,14 +3112,15 @@ async function runBriefStage(
   const substituted = parsed.lines.map((line) =>
     names
       ? substituteNames(line.t, names, { competitionLabel })
-      : { text: line.t, replaced: [], particleFixes: 0 },
+      : { text: line.t, masked: line.t, replaced: [], particleFixes: 0 },
   );
   const outputNames = names
     ? [
         ...new Set(
           substituted
             .filter((r) => mostlyHangul(r.text))
-            .flatMap((r) => unknownNamesInText(r.text, names)),
+            // 치환이 넣은 한글 표기('AC 밀란'·'UEFA 챔피언스리그') 속 라틴 낱말은 후보가 아니다 — 가린 텍스트에서 찾는다
+            .flatMap((r) => unknownNamesInText(r.masked, names)),
         ),
       ]
     : [];

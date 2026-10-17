@@ -11,6 +11,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   CompetitionsFileSchema,
+  KoreanPlayersFileSchema,
   NamesKoFileSchema,
   type CompId,
 } from "@/lib/schema";
@@ -27,6 +28,7 @@ import {
   koreanNameBySlug,
   latinSpans,
   lookupName,
+  playerTeamsFrom,
   substituteNames,
   unknownBriefInputNames,
   unknownNamesInText,
@@ -40,6 +42,9 @@ const COMPETITIONS = CompetitionsFileSchema.parse(
   readJson("configs/competitions.json"),
 );
 const NAMES = NamesKoFileSchema.parse(readJson("configs/names.ko.json"));
+const PLAYER_TEAMS = playerTeamsFrom(
+  KoreanPlayersFileSchema.parse(readJson("configs/korean-players.json")),
+);
 const INDEX = buildNameIndex(NAMES, COMPETITIONS);
 const nameKo = (comp: CompId) =>
   COMPETITIONS.find((c) => c.id === comp)!.nameKo;
@@ -128,6 +133,16 @@ describe("substituteNames — 치환", () => {
     expect(koreanName(INDEX, "Atleti")).toBe("아틀레티코 마드리드");
   });
 
+  it("보호 구('Inter Miami'·'Juve Stabia')는 그대로, 'Inter Milan'은 인테르('Milan' → AC 밀란 오치환 없음)", () => {
+    expect(sub("Inter Miami와 Inter Milan, 그리고 Milan")).toBe(
+      "Inter Miami와 인테르, 그리고 AC 밀란",
+    );
+    expect(sub("Juve Stabia가 Juventus를 꺾었다")).toBe(
+      "Juve Stabia가 유벤투스를 꺾었다",
+    );
+    expect(sub("Inter가 Milan을 꺾었다")).toBe("인테르가 AC 밀란을 꺾었다");
+  });
+
   it("대회 이름은 브리핑 단위 표기로만 바꾼다 — 표기를 주지 않으면 그대로", () => {
     expect(substituteNames("Arsenal이 Premier League 선두다", SMALL).text).toBe(
       "아스널이 Premier League 선두다",
@@ -172,6 +187,7 @@ describe("substituteNames — 치환", () => {
     const empty = buildNameIndex(null);
     expect(substituteNames("Bayern가", empty)).toEqual({
       text: "Bayern가",
+      masked: "Bayern가",
       replaced: [],
       particleFixes: 0,
     });
@@ -211,6 +227,30 @@ describe("미등록 이름 후보 — unknownNamesInText", () => {
     expect(
       unknownNamesInText("UEFA 챔피언스리그 리그 페이즈 1라운드 순위", SMALL),
     ).toEqual([]);
+    // 'Brighton & Hove Albion'은 '&'에서 끊지 않는다 — 접속사 y·e로 이어진 두 이름은 따로
+    expect(
+      unknownNamesInText("Brighton & Hove Albion이 이겼다", SMALL),
+    ).toEqual(["Brighton & Hove Albion"]);
+    expect(
+      unknownNamesInText(
+        "Ludovit Reis e Niclas Füllkrug, Pedro y Pablo Gavi",
+        SMALL,
+      ),
+    ).toEqual(["Ludovit Reis", "Niclas Füllkrug", "Pedro", "Pablo Gavi"]);
+  });
+
+  it("치환이 넣은 한글 표기 속 라틴 낱말('AC 밀란'·'파리 FC'·'AEK 아테네'·'UEFA 챔피언스리그')은 후보가 아니다 — masked에서 찾는다", () => {
+    const r = substituteNames(
+      "Milan과 Paris FC, PAE AEK가 Champions League에서 Sabah FK와 만났다",
+      INDEX,
+      { competitionLabel: nameKo },
+    );
+    expect(r.text).toBe(
+      "AC 밀란과 파리 FC, AEK 아테네가 UEFA 챔피언스리그에서 Sabah FK와 만났다",
+    );
+    expect(unknownNamesInText(r.masked, INDEX)).toEqual(["Sabah FK"]);
+    // 가리지 않은 텍스트에서는 'AC'·'FC'·'AEK'가 섞여 나온다(이 때문에 masked를 쓴다)
+    expect(unknownNamesInText(r.text, INDEX)).not.toEqual(["Sabah FK"]);
   });
 });
 
@@ -256,7 +296,9 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
   };
 
   it("득점자·도움을 사전 대표 영문 표기(en[0])로 — 모델 축약 방지(M0-30), 미등록·팀 이름은 그대로, 키 순서 유지", () => {
-    const out = canonicalizeBriefInput(input, INDEX);
+    const out = canonicalizeBriefInput(input, INDEX, {
+      playerTeams: PLAYER_TEAMS,
+    });
     expect(out.replaced).toBe(3);
     expect(out.input.matches[0]!.goals).toEqual([
       { min: "39", team: "Bayern", player: "Harry Kane", type: "penalty" },
@@ -286,6 +328,67 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
     ).toBeNull();
   });
 
+  it("첫 글자 축약 별칭('A. Davies')은 소속팀이 맞을 때만 대표 표기로 — 다른 팀의 같은 축약 이름·소속팀 정보 없음은 그대로", () => {
+    const davies = (team: string, type?: "own_goal") =>
+      canonicalizeBriefInput(
+        {
+          ...input,
+          matches: [
+            match({
+              home: "Bayern",
+              away: "Arsenal",
+              ft: "1-0",
+              goals: [
+                type
+                  ? { min: "9", team, player: "A. Davies", type }
+                  : { min: "9", team, player: "A. Davies" },
+              ],
+            }),
+          ],
+        },
+        INDEX,
+        { playerTeams: PLAYER_TEAMS },
+      ).input.matches[0]!.goals![0]!.player;
+    expect(davies("Bayern")).toBe("Alphonso Davies");
+    expect(davies("Arsenal")).toBe("A. Davies"); // 다른 팀의 A. Davies
+    // 자책골의 team은 득점 인정 팀 — 자책한 선수는 상대 팀(Bayern) 소속
+    expect(davies("Arsenal", "own_goal")).toBe("Alphonso Davies");
+    expect(davies("Bayern", "own_goal")).toBe("A. Davies");
+    // 소속팀 표(playerTeams)가 없으면 축약 별칭은 바꾸지 않는다 — 전체 표기 별칭('Kim Min-Jae')은 그대로 바꾼다
+    const bare = canonicalizeBriefInput(input, INDEX).input.matches[0]!.goals!;
+    expect(bare.map((g) => [g.player, g.assist])).toEqual([
+      ["H. Kane", undefined],
+      ["Min-jae Kim", "J. Musiala"],
+    ]);
+    // 한국 선수 축약 별칭은 korean-players.json 소속팀으로 확인한다(카스트로프 — 묀헨글라트바흐)
+    const castrop = canonicalizeBriefInput(
+      {
+        ...input,
+        matches: [
+          match({
+            home: "M'gladbach",
+            away: "Bayern",
+            goals: [{ min: "5", team: "M'gladbach", player: "J. Castrop" }],
+          }),
+        ],
+      },
+      INDEX,
+      { playerTeams: PLAYER_TEAMS },
+    ).input.matches[0]!.goals![0]!.player;
+    expect(castrop).toBe("Jens Castrop");
+  });
+
+  it("첫 글자 축약 별칭은 치환·이름 찾기에 쓰지 않는다(동명이인 오매칭 방지 — 입력 정리를 거친 대표 표기만 한글로)", () => {
+    expect(lookupName(INDEX, "A. Davies")).toBeNull();
+    expect(substituteNames("A. Davies가 골을 넣었다", INDEX).text).toBe(
+      "A. Davies가 골을 넣었다",
+    );
+    expect(substituteNames("Alphonso Davies가 골을 넣었다", INDEX).text).toBe(
+      "알폰소 데이비스가 골을 넣었다",
+    );
+    expect(isKnownName(INDEX, "A. Davies")).toBe(false); // 미등록 후보로 적재(사람이 확인)
+  });
+
   it("데이터 API 이름(팀·득점자·도움) — 입력 순서, 중복 한 번, 미등록만 고르기", () => {
     expect(briefInputNames(input).map((n) => `${n.kind}:${n.name}`)).toEqual([
       "team:Bayern",
@@ -298,14 +401,28 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
       "player:J. Musiala",
       "player:Noni Madueke",
     ]);
+    // 첫 글자 축약 별칭은 등록 이름으로 치지 않는다 — 입력 정리를 거치지 않은 'H. Kane'·'J. Musiala'는 미등록 후보
     expect(unknownBriefInputNames(input, INDEX)).toEqual([
+      { name: "Sabah FK", kind: "team" },
+      { name: "H. Kane", kind: "player" },
+      { name: "J. Musiala", kind: "player" },
+      { name: "Noni Madueke", kind: "player" },
+    ]);
+    const canonical = canonicalizeBriefInput(input, INDEX, {
+      playerTeams: PLAYER_TEAMS,
+    }).input;
+    expect(unknownBriefInputNames(canonical, INDEX)).toEqual([
       { name: "Sabah FK", kind: "team" },
       { name: "Noni Madueke", kind: "player" },
     ]);
   });
 
   it("영문 토큰 허용 목록(M1-23) — 입력 이름 + 그 사전 항목의 모든 영문 표기 + 입력 대회 별칭·라틴 shortKo", () => {
-    const allow = briefNameAllowlist(input, INDEX, COMPETITIONS);
+    // M1-23은 입력 정리를 거친 입력(LLM에 보낸 그대로)으로 부른다
+    const sent = canonicalizeBriefInput(input, INDEX, {
+      playerTeams: PLAYER_TEAMS,
+    }).input;
+    const allow = briefNameAllowlist(sent, INDEX, COMPETITIONS);
     for (const t of [
       "Bayern",
       "FC Bayern München",
@@ -313,14 +430,20 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
       "Sabah FK",
       "Kim Min-Jae",
       "Min-jae Kim",
-      "H. Kane",
       "Harry Kane",
+      "Jamal Musiala",
       "Bundesliga",
     ]) {
       expect(allow.has(foldName(t)), t).toBe(true);
     }
     expect(allow.has(foldName("Premier League"))).toBe(false); // 입력에 없는 대회
     expect(allow.has(foldName("Kane"))).toBe(false); // 축약 성
+    // 소속팀을 확인하지 못한 축약 이름이면 대표 표기는 허용하지 않는다(다른 사람일 수 있다)
+    expect(
+      briefNameAllowlist(input, INDEX, COMPETITIONS).has(
+        foldName("Harry Kane"),
+      ),
+    ).toBe(false);
     const ucl = briefNameAllowlist(
       { matches: [match({ comp: "UEFA Champions League" })], standings: [] },
       INDEX,

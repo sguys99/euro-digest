@@ -22,6 +22,7 @@ import {
   TeamIdsFileSchema,
 } from "@/lib/schema";
 
+import { isInitialForm, KNOWN_PLAYER_TEAMS } from "../scripts/lib/names";
 import { BIG_CLUBS } from "../scripts/lib/news-keywords";
 import { teamSlugFromName } from "../scripts/lib/team-ids-draft";
 
@@ -39,25 +40,16 @@ const COMPETITIONS = CompetitionsFileSchema.parse(
 );
 
 /**
- * 표기 확인 대기(M1-21 보고 — 국내 매체끼리 표기가 갈리거나 근거가 부족) — football-data 정식 이름.
- * 사용자 결정 뒤 사전에 넣으면 여기서 뺀다.
+ * 표기 확인 대기 — football-data 정식 이름. M1-21 보고의 확인 목록은 2026-10-17 사용자가 추천 표기를 일괄 확정했고(PRD §15 D46),
+ * 국내 매체 표기 근거가 없는 두 팀만 보류로 남았다. 사용자 결정 뒤 사전에 넣으면 여기서 뺀다.
  */
 const PENDING: readonly string[] = [
-  "Brighton & Hove Albion FC", // 브라이턴 / 브라이튼
-  "Everton FC", // 에버턴 / 에버튼
-  "Nottingham Forest FC", // 노팅엄 포리스트 / 노팅엄 포레스트
-  "Aston Villa FC", // 애스턴 빌라 / 아스톤 빌라
-  "Crystal Palace FC", // 크리스털 팰리스 / 크리스탈 팰리스
-  "Coventry City FC", // 코번트리 / 코벤트리
-  "RC Deportivo La Coruña", // 데포르티보 라코루냐 / 데포르티보 / 라 코루냐
-  "FC Internazionale Milano", // 인테르 / 인터 밀란
-  "SV 07 Elversberg", // 엘버스베르크 / 엘페르스베르크
-  "Sporting Clube de Portugal", // 스포르팅 CP / 스포르팅 리스본 / 스포르팅
-  "Fenerbahçe SK", // 페네르바흐체 / 페네르바체
-  "LASK Linz", // LASK / LASK 린츠
-  "Viking FK", // 국내 매체 표기 근거 없음
-  "Sabah FK", // 국내 매체 표기 근거 없음(위키 문서 없음)
+  "Viking FK", // 국내 매체 표기 근거 없음(D46 보류)
+  "Sabah FK", // 국내 매체 표기 근거 없음 — 위키 문서 없음(D46 보류)
 ];
+
+/** football-data 짧은 이름을 별칭으로 넣지 않는 팀 — 다른 팀과 겹침(D46: 'Deportivo'는 Deportivo Alavés와 겹친다) */
+const SHORT_NAME_NOT_ALIAS: readonly string[] = ["RC Deportivo La Coruña"];
 
 interface FdTeam {
   name: string;
@@ -99,11 +91,11 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
     }
   });
 
-  it("빅클럽 16곳 중 표기 확인 대기(인테르)를 뺀 15곳이 같은 slug로 있다 — BIG_CLUBS 별칭에 합류", () => {
+  it("빅클럽 16곳이 모두 같은 slug로 있다 — BIG_CLUBS 별칭에 합류(인테르는 D46 확정)", () => {
     const missing = BIG_CLUBS.filter(
       (c) => !teamEntries.some((e) => e.slug === c.slug),
     ).map((c) => c.slug);
-    expect(missing).toEqual(["internazionale-milano"]);
+    expect(missing).toEqual([]);
   });
 
   it("이번 시즌 6개 대회 팀은 정식·짧은 이름이 모두 별칭으로 등록됐거나 확인 대기다", () => {
@@ -119,6 +111,13 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
         continue;
       }
       expect(owner?.kind, team.name).toBe("team");
+      if (SHORT_NAME_NOT_ALIAS.includes(team.name)) {
+        expect(
+          enOwner.get(team.shortName.toLowerCase()),
+          team.shortName,
+        ).not.toBe(owner);
+        continue;
+      }
       expect(enOwner.get(team.shortName.toLowerCase()), team.shortName).toBe(
         owner,
       );
@@ -149,13 +148,64 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
     }
   });
 
-  it("모든 항목에 근거(note)가 있고, 표기는 앞뒤 공백 없는 한글 중심(라틴은 약칭 PSV·AEK·AC·FC만)", () => {
+  it("모든 항목에 근거(note)가 있고, 표기는 앞뒤 공백 없는 한글 중심(라틴은 약칭 PSV·AEK·AC·FC·CP·LASK만)", () => {
     for (const e of NAMES.entries) {
-      expect(e.note, e.ko).toMatch(/^(확실|관용|통칭)/);
+      expect(e.note, e.ko).toMatch(/^(확실|관용|통칭|확정)/);
       const latin = e.ko.match(/[A-Za-z]+/g) ?? [];
       for (const word of latin) {
-        expect(["PSV", "AEK", "AC", "FC"], e.ko).toContain(word);
+        expect(["PSV", "AEK", "AC", "FC", "CP", "LASK"], e.ko).toContain(word);
       }
+    }
+  });
+
+  it("D46 사용자 확정 항목은 note에 결정이 남아 있다 — Club Brugge는 KFA 대신 매체 관례 '클럽 브뤼헤'(D39 ② 예외)", () => {
+    const d46 = NAMES.entries.filter((e) => e.note?.includes("D46"));
+    expect(d46.length).toBe(30); // 팀 13(Club Brugge 포함) · 선수 14 · 감독 3
+    expect(d46.every((e) => e.note!.includes("2026-10-17"))).toBe(true);
+    const brugge = teamEntries.find((e) => e.slug === "brugge-kv")!;
+    expect(brugge.ko).toBe("클럽 브뤼헤");
+    expect(brugge.note).toContain("D39 ②(KFA 우선)의 예외");
+  });
+
+  it("5대 리그 밖 한국 선수(D46 — 미등록 손흥민)는 넣지 않는다 · 등록 한국 선수는 비활성(FR-64 홍현석)도 그대로 둔다", () => {
+    // D46의 '5대 리그 밖 제외'는 한국 선수 범위(FR-60)에 한정 — 외국 선수(그리즈만·산초 등)는 소속 리그와 무관하게 둔다
+    expect(
+      NAMES.entries.some(
+        (e) => e.kind === "player" && e.slug === "hong-hyun-seok",
+      ),
+    ).toBe(true);
+    for (const slug of ["antoine-griezmann", "jadon-sancho"]) {
+      expect(
+        NAMES.entries.some((e) => e.kind === "player" && e.slug === slug),
+        slug,
+      ).toBe(true);
+    }
+    for (const slug of ["son-heung-min"]) {
+      expect(
+        NAMES.entries.some((e) => e.kind === "player" && e.slug === slug),
+        slug,
+      ).toBe(false);
+    }
+  });
+
+  it("첫 글자 축약 별칭('X. 성')은 소속팀을 확인할 수 있는 선수만 — 한국 선수(korean-players.json) 또는 KNOWN_PLAYER_TEAMS(감독은 입력 정리 대상이 아니라 제외)", () => {
+    const koreanSlugs = new Set(KOREAN.map((p) => p.slug));
+    for (const e of NAMES.entries.filter((x) => x.kind === "player")) {
+      if (!e.en.some(isInitialForm)) continue;
+      expect(
+        koreanSlugs.has(e.slug!) || e.slug! in KNOWN_PLAYER_TEAMS,
+        `${e.ko} — 축약 별칭의 소속팀 확인 경로 없음`,
+      ).toBe(true);
+    }
+    for (const [player, team] of Object.entries(KNOWN_PLAYER_TEAMS)) {
+      expect(
+        NAMES.entries.some((e) => e.kind === "player" && e.slug === player),
+        player,
+      ).toBe(true);
+      expect(
+        teamEntries.some((e) => e.slug === team),
+        team,
+      ).toBe(true);
     }
   });
 

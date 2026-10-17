@@ -234,6 +234,53 @@
       "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '풀럼 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Fulham FC'·short 'Fulham', API-Football 'Fulham'"
     },
     {
+      "ko": "브라이턴",
+      "en": [
+        "Brighton & Hove Albion FC",
+        "Brighton Hove",
+        "Brighton",
+        "Brighton & Hove Albion"
+      ],
+      "kind": "team",
+      "slug": "brighton-hove-albion",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(브라이턴/브라이튼 중 규범·위키 표기) · 위키백과 '브라이턴 & 호브 앨비언 FC' · 영문: football-data 'Brighton & Hove Albion FC'·short 'Brighton Hove', API-Football 'Brighton'"
+    },
+    {
+      "ko": "에버턴",
+      "en": ["Everton FC", "Everton"],
+      "kind": "team",
+      "slug": "everton",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(에버턴/에버튼 중 위키 문서명 표기) · 위키백과 '에버턴 FC' · 영문: football-data 'Everton FC'·short 'Everton'"
+    },
+    {
+      "ko": "노팅엄 포레스트",
+      "en": ["Nottingham Forest FC", "Nottingham", "Nottingham Forest"],
+      "kind": "team",
+      "slug": "nottingham-forest",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '노팅엄 포리스트'와 다른 국내 매체 관례 '포레스트' · 위키백과 '노팅엄 포리스트 FC' · 영문: football-data 'Nottingham Forest FC'·short 'Nottingham'"
+    },
+    {
+      "ko": "애스턴 빌라",
+      "en": ["Aston Villa FC", "Aston Villa"],
+      "kind": "team",
+      "slug": "aston-villa",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(애스턴/아스톤 중 위키 문서명 표기) · 위키백과 '애스턴 빌라 FC' · 영문: football-data 'Aston Villa FC'·short 'Aston Villa', API-Football 'Aston Villa'"
+    },
+    {
+      "ko": "크리스털 팰리스",
+      "en": ["Crystal Palace FC", "Crystal Palace"],
+      "kind": "team",
+      "slug": "crystal-palace",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(크리스털/크리스탈 중 위키 문서명 표기) · 위키백과 '크리스털 팰리스 FC' · 영문: football-data 'Crystal Palace FC'·short 'Crystal Palace'"
+    },
+    {
+      "ko": "코번트리 시티",
+      "en": ["Coventry City FC", "Coventry City", "Coventry"],
+      "kind": "team",
+      "slug": "coventry-city",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(코번트리/코벤트리 중 위키 문서명 표기) · 위키백과 '코번트리 시티 FC' · 영문: football-data 'Coventry City FC'·short 'Coventry City'"
+    },
+    {
       "ko": "바르셀로나",
       "en": ["FC Barcelona", "Barça", "Barcelona"],
       "kind": "team",
@@ -358,6 +405,29 @@
       "kind": "team",
       "slug": "valencia",
       "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '발렌시아 CF'(법인·형태 약칭 뺌) · 영문: football-data 'Valencia CF'·short 'Valencia'"
+    },
+    {
+      "ko": "데포르티보 라코루냐",
+      "en": [
+        "RC Deportivo La Coruña",
+        "Deportivo La Coruña",
+        "Deportivo de La Coruña"
+      ],
+      "kind": "team",
+      "slug": "rc-deportivo-la-coruna",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(위키 문서명). football-data 짧은 이름 'Deportivo'는 알라베스(Deportivo Alavés)와 겹쳐 별칭으로 넣지 않는다 · 위키백과 '데포르티보 라코루냐' · 영문: football-data 'RC Deportivo La Coruña'"
+    },
+    {
+      "ko": "인테르",
+      "en": [
+        "FC Internazionale Milano",
+        "Inter",
+        "Inter Milan",
+        "Internazionale"
+      ],
+      "kind": "team",
+      "slug": "internazionale-milano",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(인테르/인터 밀란 중 최근 국내 축구 매체 관례·짧은 표기) · 위키백과 'FC 인테르나치오날레 밀라노' · 영문: football-data 'FC Internazionale Milano'·short 'Inter', API-Football 'Inter'"
     },
     {
       "ko": "로마",
@@ -526,6 +596,13 @@
       "kind": "team",
       "slug": "werder-bremen",
       "note": "통칭 — 위키 'SV 베르더 브레멘'의 국내 매체 통칭 · 영문: football-data 'SV Werder Bremen'·short 'Bremen'"
+    },
+    {
+      "ko": "엘페르스베르크",
+      "en": ["SV 07 Elversberg", "Elversberg", "SV Elversberg"],
+      "kind": "team",
+      "slug": "07-elversberg",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(엘페르스베르크/엘버스베르크 중 위키 문서명·독일어 발음) · 위키백과 'SV 엘페르스베르크' · 영문: football-data 'SV 07 Elversberg'·short 'Elversberg', API-Football 'SV Elversberg'"
     },
     {
       "ko": "슈투트가르트",
@@ -728,11 +805,11 @@
       "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'PSV 에인트호번' · 영문: football-data 'PSV'"
     },
     {
-      "ko": "클뤼프 브뤼허",
+      "ko": "클럽 브뤼헤",
       "en": ["Club Brugge KV", "Club Brugge"],
       "kind": "team",
       "slug": "brugge-kv",
-      "note": "확실(KFA) — KFA 2026-09-14 소집 명단 '이한범(클뤼프 브뤼허, 벨기에)'(idx 28281) — 국내 매체 관례 '클럽 브뤼헤'와 다르지만 D39 ② KFA 우선 · 위키백과 '클뤼프 브뤼허 KV' · 영문: football-data 'Club Brugge KV'·short 'Club Brugge'"
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — D39 ②(KFA 우선)의 예외 — KFA 소집 명단은 '클뤼프 브뤼허'(idx 28281)지만 국내 매체 관례 '클럽 브뤼헤'를 쓴다 · 위키백과 '클뤼프 브뤼허 KV' · 영문: football-data 'Club Brugge KV'·short 'Club Brugge'"
     },
     {
       "ko": "슬라비아 프라하",
@@ -740,6 +817,27 @@
       "kind": "team",
       "slug": "sk-slavia-praha",
       "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'SK 슬라비아 프라하'(법인·형태 약칭 뺌) · 영문: football-data 'SK Slavia Praha'·short 'Slavia Praha'"
+    },
+    {
+      "ko": "스포르팅 CP",
+      "en": ["Sporting Clube de Portugal", "Sporting CP"],
+      "kind": "team",
+      "slug": "sporting-clube-de-portugal",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(위키 문서명·구단 정식 약칭) · 위키백과 '스포르팅 CP' · 영문: football-data 'Sporting Clube de Portugal'·short 'Sporting CP'"
+    },
+    {
+      "ko": "페네르바체",
+      "en": ["Fenerbahçe SK", "Fenerbahçe"],
+      "kind": "team",
+      "slug": "fenerbahce-sk",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '페네르바흐체'와 다른 국내 매체 관례 '페네르바체'(김민재 소속 시절부터) · 위키백과 '페네르바흐체 SK (축구)' · 영문: football-data 'Fenerbahçe SK'·short 'Fenerbahçe'"
+    },
+    {
+      "ko": "LASK",
+      "en": ["LASK Linz", "LASK"],
+      "kind": "team",
+      "slug": "lask-linz",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(위키 문서명 그대로 라틴 약칭) · 위키백과 'LASK' · 영문: football-data 'LASK Linz'·short 'LASK'"
     },
     {
       "ko": "갈라타사라이",
@@ -1050,6 +1148,104 @@
       "note": "관용 — 위키 '마커스 래시퍼드'와 다름 — 국내 매체 표기 '래시포드' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
     },
     {
+      "ko": "엘링 홀란",
+      "en": ["Erling Haaland"],
+      "kind": "player",
+      "slug": "erling-haaland",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(홀란/홀란드 중 위키 문서명) · 위키백과 '엘링 홀란' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "콜 팔머",
+      "en": ["Cole Palmer"],
+      "kind": "player",
+      "slug": "cole-palmer",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '콜 파머'와 다른 국내 매체 관례 '팔머' · 위키백과 '콜 파머' · 국내 축구 매체 제목에 '팔머' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "데클란 라이스",
+      "en": ["Declan Rice"],
+      "kind": "player",
+      "slug": "declan-rice",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '데클런'과 다른 국내 매체 관례 '데클란' · 위키백과 '데클런 라이스' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "케빈 더브라위너",
+      "en": ["Kevin De Bruyne"],
+      "kind": "player",
+      "slug": "kevin-de-bruyne",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(더브라위너 — 위키 '더 브라위너'의 붙여 쓴 국내 매체 관례) · 위키백과 '케빈 더 브라위너' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "흐비차 크바라츠헬리아",
+      "en": ["Khvicha Kvaratskhelia"],
+      "kind": "player",
+      "slug": "khvicha-kvaratskhelia",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(크바라츠헬리아/크바라츠켈리아 중 위키 문서명) · 위키백과 '흐비차 크바라츠헬리아' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "크리스토퍼 은쿠쿠",
+      "en": ["Christopher Nkunku"],
+      "kind": "player",
+      "slug": "christopher-nkunku",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '크리스토페르 은쿤쿠'와 다른 국내 매체 관례 '크리스토퍼 은쿠쿠' · 위키백과 '크리스토페르 은쿤쿠' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "알렉산더 이삭",
+      "en": ["Alexander Isak"],
+      "kind": "player",
+      "slug": "alexander-isak",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '알렉산데르 이사크'와 다른 국내 매체 관례 '알렉산더 이삭' · 위키백과 '알렉산데르 이사크' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "빅토르 요케레스",
+      "en": ["Viktor Gyökeres"],
+      "kind": "player",
+      "slug": "viktor-gyokeres",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(요케레스/교케레스 중 위키 문서명) · 위키백과 '빅토르 요케레스' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "하피냐",
+      "en": ["Raphinha"],
+      "kind": "player",
+      "slug": "raphinha",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 문서명은 본명, 국내 매체 표기 '하피냐'(라피냐 아님) · 위키백과 '하파에우 지아스 벨롤리' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "알레한드로 그리말도",
+      "en": ["Alejandro Grimaldo"],
+      "kind": "player",
+      "slug": "alejandro-grimaldo",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '알렉스 그리말도'와 다른 이름 표기 '알레한드로' · 위키백과 '알렉스 그리말도' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "파트리크 시크",
+      "en": ["Patrik Schick"],
+      "kind": "player",
+      "slug": "patrik-schick",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(시크/쉬크 중 위키 문서명) · 위키백과 '파트리크 시크' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "브루노 기마랑이스",
+      "en": ["Bruno Guimarães"],
+      "kind": "player",
+      "slug": "bruno-guimaraes",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '브루누'와 다른 국내 매체 관례 '브루노' · 위키백과 '브루누 기마랑이스' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "하파엘 레앙",
+      "en": ["Rafael Leão"],
+      "kind": "player",
+      "slug": "rafael-leao",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(하파엘/라파엘 중 위키 문서명) · 위키백과 '하파엘 레앙' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "니콜라스 잭슨",
+      "en": ["Nicolas Jackson"],
+      "kind": "player",
+      "slug": "nicolas-jackson",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '니콜라 작송'과 다른 국내 매체 관례 '니콜라스 잭슨' · 위키백과 '니콜라 작송' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
       "ko": "펩 과르디올라",
       "en": ["Pep Guardiola", "Josep Guardiola"],
       "kind": "manager",
@@ -1118,6 +1314,27 @@
       "kind": "manager",
       "slug": "xabi-alonso",
       "note": "관용 — 위키 '샤비 알론소'와 다름 — 국내 매체 표기 '사비 알론소' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "조제 무리뉴",
+      "en": ["José Mourinho"],
+      "kind": "manager",
+      "slug": "jose-mourinho",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '주제 모리뉴'와 다른 표기, 국내 매체는 '무리뉴'·'모리뉴'가 갈렸다(수집 제목 무리뉴 3·모리뉴 2) · 위키백과 '주제 모리뉴' · 국내 축구 매체 제목에 '무리뉴' 3건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "엔초 마레스카",
+      "en": ["Enzo Maresca"],
+      "kind": "manager",
+      "slug": "enzo-maresca",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(엔초/엔조 중 위키 문서명) · 위키백과 '엔초 마레스카' · 국내 축구 매체 제목에 '마레스카' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "한지 플리크",
+      "en": ["Hansi Flick"],
+      "kind": "manager",
+      "slug": "hansi-flick",
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(플리크/플릭 중 위키 문서명) · 위키백과 '한지 플리크' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
     }
   ],
   "ignore": []

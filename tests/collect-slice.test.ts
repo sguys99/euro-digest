@@ -49,6 +49,7 @@ import {
   buildBriefRequest,
   estimateBriefCost,
   parseBriefOutput,
+  SLICE_PROMPT_PATH,
 } from "../scripts/lib/brief";
 import { cardIdFor } from "../scripts/lib/card-id";
 import { dedupeFeedItems } from "../scripts/lib/dedup";
@@ -1231,12 +1232,11 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
       "seen-urls.json",
     ]);
     expect(outcome.unknownNames).toMatchObject({ action: "logged" });
-    expect(outcome.unknownNames!.observed).toEqual(
-      expect.arrayContaining([
-        { name: "Inter", kind: "team" },
-        { name: "Brighton Hove", kind: "team" },
-      ]),
-    );
+    // 2026-10-10 입력의 팀(23경기 + 순위표)은 모두 사전에 있다(D46 확정 반영 — 템플릿에 영문 팀명이 남지 않는다)
+    expect(outcome.unknownNames!.observed).toEqual([]);
+    for (const line of briefFile.lines) {
+      expect(line.text, line.text).not.toMatch(/\p{Script=Latin}/u);
+    }
     expect(outcome.run).toMatchObject({
       env: "dev",
       costUsd: 0,
@@ -1606,17 +1606,43 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(readNews("2026-10-11").runId).toBe(outcome.runId);
   });
 
-  it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·briefs·runs.json·cache/seen-urls.json·cache/unknown-names.json)을 통과시킨다", async () => {
-    const repo = path.join(dataDir, "repo");
+  /** 저장소 사본(configs + 브리핑 지시문) — 사본의 사전을 고쳐도 실제 configs는 그대로 */
+  function copyRepo(repo: string): void {
     cpSync(path.join(ROOT, "configs"), path.join(repo, "configs"), {
       recursive: true,
     });
-    const { deps } = liveDeps({
+    cpSync(
+      path.join(ROOT, SLICE_PROMPT_PATH),
+      path.join(repo, SLICE_PROMPT_PATH),
+    );
+  }
+
+  /** 저장소 사본의 names.ko.json에서 팀 항목을 뺀다 — 미등록 이름이 생기게 */
+  function dropTeams(repo: string, slugs: readonly string[]): object[] {
+    const namesPath = path.join(repo, "configs", "names.ko.json");
+    const names = JSON.parse(readFileSync(namesPath, "utf8")) as {
+      entries: Array<{ kind: string; slug?: string }>;
+    };
+    const dropped = names.entries.filter(
+      (e) => e.kind === "team" && slugs.includes(e.slug ?? ""),
+    );
+    names.entries = names.entries.filter((e) => !dropped.includes(e));
+    writeFileSync(namesPath, JSON.stringify(names));
+    return dropped;
+  }
+
+  it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·briefs·runs.json·cache/seen-urls.json·cache/unknown-names.json)을 통과시킨다", async () => {
+    const repo = path.join(dataDir, "repo");
+    copyRepo(repo);
+    dropTeams(repo, ["internazionale-milano"]); // 미등록 이름 1개(Inter) → unknown-names.json이 생긴다
+    const { deps, params } = liveDeps({
       env: "prod",
+      rootDir: repo,
       dataDir: path.join(repo, "data"),
     });
     const outcome = await runCollect(deps);
     expect(outcome.exitCode).toBe(0);
+    expect(params).toHaveLength(1); // 사본에서도 브리핑 1요청(지시문 복사)
     const report = buildValidationReport(
       readValidationSnapshot(repo, { configsOnly: false }),
       { configsOnly: false },
@@ -1638,9 +1664,10 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
 
   it("prod: 미등록 고유명사를 data/cache/unknown-names.json에 적재 — 실행당 1회, 사전 등록 이름은 다음 실행이 뺀다(M1-21)", async () => {
     const repo = path.join(dataDir, "repo-names");
-    cpSync(path.join(ROOT, "configs"), path.join(repo, "configs"), {
-      recursive: true,
-    });
+    copyRepo(repo);
+    // 사본 사전에서 인테르·브라이턴을 빼 미등록 이름을 만든다
+    const [inter] = dropTeams(repo, ["internazionale-milano"]);
+    dropTeams(repo, ["brighton-hove-albion"]);
     const run = async () => {
       const { deps } = liveDeps({
         env: "prod",
@@ -1656,7 +1683,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     const read = () =>
       UnknownNamesFileSchema.parse(JSON.parse(readFileSync(file, "utf8")));
     const before = read();
-    // 데이터 API 이름(입력 팀) — 사전 확인 대기 팀은 미등록, 등록 팀(Man City 등)은 없다
+    // 데이터 API 이름(입력 팀) — 사전에 없는 팀만, 등록 팀(Man City 등)은 없다
     expect(before.names.Inter).toEqual({
       count: 1,
       firstSeen: NOW.toISOString(),
@@ -1664,25 +1691,18 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
       kind: "team",
       cards: [],
     });
-    expect(Object.keys(before.names)).toEqual(
-      expect.arrayContaining(["Inter", "Brighton Hove", "Aston Villa"]),
-    );
+    expect(Object.keys(before.names)).toEqual(["Brighton Hove", "Inter"]);
     expect(before.names["Man City"]).toBeUndefined();
     expect(Object.keys(before.names)).toEqual(
       [...Object.keys(before.names)].sort(),
     );
 
-    // 사람이 'Inter'를 사전에 넣으면 다음 실행이 캐시에서 뺀다
+    // 사람이 인테르를 사전에 다시 넣으면 다음 실행이 캐시에서 뺀다
     const namesPath = path.join(repo, "configs", "names.ko.json");
     const names = JSON.parse(readFileSync(namesPath, "utf8")) as {
       entries: object[];
     };
-    names.entries.push({
-      ko: "테스트 인테르",
-      en: ["Inter"],
-      kind: "team",
-      slug: "test-inter",
-    });
+    names.entries.push(inter!);
     writeFileSync(namesPath, JSON.stringify(names));
     const second = await run();
     expect(second.unknownNames?.pruned).toEqual(["Inter"]);

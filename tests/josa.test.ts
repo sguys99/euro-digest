@@ -149,6 +149,24 @@ describe("fixAttachedParticle — 이름 바로 뒤 붙은 조사", () => {
     expect(fixAttachedParticle("첼시", "")).toBe("");
   });
 
+  it("덩어리 전체가 정해진 형태일 때만 고친다 — '토트넘다운'·'첼시답게'·'아스널로마'는 조사가 아니다(과잉 보정 방지)", () => {
+    expect(fixAttachedParticle("토트넘", "다운 경기")).toBe("다운 경기");
+    expect(fixAttachedParticle("첼시", "답게")).toBe("답게");
+    expect(fixAttachedParticle("토트넘", "고향")).toBe("고향");
+    expect(fixAttachedParticle("아스널", "로마")).toBe("로마");
+    expect(fixAttachedParticle("첼시", "을지로")).toBe("을지로");
+    // 정해진 꼬리(와의·로부터·과도)는 고친다
+    expect(fixAttachedParticle("토트넘", "와의 경기")).toBe("과의 경기");
+    expect(fixAttachedParticle("토트넘", "로부터")).toBe("으로부터");
+    expect(fixAttachedParticle("첼시", "이었으며")).toBe("였으며");
+    // 'Bayern였던' → 바이에른 뮌헨이었던 · 이었을/였을 · 으로까지/로까지
+    expect(fixAttachedParticle("바이에른 뮌헨", "였던 팀")).toBe("이었던 팀");
+    expect(fixAttachedParticle("첼시", "이었던")).toBe("였던");
+    expect(fixAttachedParticle("토트넘", "였을 때")).toBe("이었을 때");
+    expect(fixAttachedParticle("토트넘", "로까지")).toBe("으로까지");
+    expect(fixAttachedParticle("아스널", "으로까지")).toBe("로까지");
+  });
+
   it("끝소리를 모르면(기호 등) 고치지 않는다", () => {
     expect(fixAttachedParticle("★", "가 이겼다")).toBe("가 이겼다");
   });

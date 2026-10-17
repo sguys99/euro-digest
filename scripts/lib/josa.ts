@@ -16,11 +16,14 @@
  *   끝의 닫는 괄호·따옴표는 건너뛰고 그 앞 글자로 판정한다('브라운(Brown)' 같은 표기는 쓰지 않지만 방어).
  *
  * ── 붙은 조사 고치기 `fixAttachedParticle` ─────────────────────────────────────
- *   이름 바로 뒤(띄어 쓰지 않은) 한글 덩어리의 첫 조사만 본다. 바꿀 수 있는 짝(받침 있음 형태, 받침 없음 형태):
- *     이/가(덩어리가 정확히 그 한 글자일 때만 — '이번'·'가장'은 조사가 아니다) · 은/는 · 을/를 · 과/와 · 으로/로(ㄹ 받침은 로) ·
- *     서술격·연결형 이었/였 · 이라/라 · 이란/란 · 이나/나 · 이며/며 · 이고/고 · 이자/자 · 이든/든 · 이랑/랑 · 이야/야 · 이지만/지만 ·
- *     이면/면 · 이다/다.
- *   의·에·에서·도·만·까지·처럼·보다·전(경기)처럼 받침과 무관한 말은 그대로 둔다. 끝소리를 모르면(unknown) 고치지 않는다.
+ *   이름 바로 뒤(띄어 쓰지 않은) 한글 덩어리 **전체가 정해진 형태일 때만** 고친다 — 덩어리가 다른 말로 이어지면('토트넘다운'의
+ *   '다운'·'이번'·'가장') 조사로 보지 않는다(과잉 보정 방지). 바꿀 수 있는 짝(받침 있음 형태, 받침 없음 형태):
+ *     이/가 · 은/는 · 을/를(정확히 그 한 글자) · 과/와(+ 의·도·는·만·까지) · 으로/로(ㄹ 받침은 로 — + 서·써·부터·까지·는·도·만·의) ·
+ *     서술격·연결형(덩어리 전체) 이다/다 · 이고/고 · 이며/며 · 이자/자 · 이었다/였다 · 이었고/였고 · 이었으며/였으며 · 이었지만/였지만 ·
+ *     이었던/였던 · 이었을/였을 ·
+ *     이라는/라는 · 이라고/라고 · 이라며/라며 · 이라서/라서 · 이라/라 · 이란/란 · 이나/나 · 이든/든 · 이랑/랑 · 이야/야 · 이지만/지만 ·
+ *     이면/면 · 이어서/여서.
+ *   의·에·에서·도·만·까지·처럼·보다·전(경기)·다운처럼 받침과 무관한 말은 그대로 둔다. 끝소리를 모르면(unknown) 고치지 않는다.
  */
 
 /** 끝소리 — none 받침 없음 · rieul ㄹ 받침 · other 그 밖 받침 · unknown 판단 불가 */
@@ -158,53 +161,73 @@ export function withJosa(word: string, particle: Particle): string {
 
 // ─── 붙은 조사 고치기 ───────────────────────────────────────────────────────
 
-/** 서술격·연결형 짝(받침 있음, 받침 없음) — 긴 것 먼저 */
+/** 서술격·연결형 짝(받침 있음, 받침 없음) — 덩어리 전체가 이 형태일 때만 */
 const COPULA_PAIRS: ReadonlyArray<readonly [string, string]> = [
-  ["이지만", "지만"],
-  ["이었", "였"],
+  ["이다", "다"],
+  ["이고", "고"],
+  ["이며", "며"],
+  ["이자", "자"],
+  ["이었다", "였다"],
+  ["이었고", "였고"],
+  ["이었으며", "였으며"],
+  ["이었지만", "였지만"],
+  ["이었던", "였던"],
+  ["이었을", "였을"],
+  ["이라는", "라는"],
+  ["이라고", "라고"],
+  ["이라며", "라며"],
+  ["이라서", "라서"],
   ["이라", "라"],
   ["이란", "란"],
   ["이나", "나"],
-  ["이며", "며"],
-  ["이고", "고"],
-  ["이자", "자"],
   ["이든", "든"],
   ["이랑", "랑"],
   ["이야", "야"],
+  ["이지만", "지만"],
   ["이면", "면"],
-  ["이다", "다"],
+  ["이어서", "여서"],
+];
+
+/** 한 글자 조사 짝 — 덩어리가 정확히 그 글자이거나 뒤에 붙을 수 있는 말(`tails`)만 이어질 때 */
+const SIMPLE_PAIRS: ReadonlyArray<{
+  consonant: string;
+  vowel: string;
+  tails: readonly string[];
+  isRo: boolean;
+}> = [
+  { consonant: "이", vowel: "가", tails: [], isRo: false },
+  { consonant: "은", vowel: "는", tails: [], isRo: false },
+  { consonant: "을", vowel: "를", tails: [], isRo: false },
+  {
+    consonant: "과",
+    vowel: "와",
+    tails: ["의", "도", "는", "만", "까지"],
+    isRo: false,
+  },
+  {
+    consonant: "으로",
+    vowel: "로",
+    tails: ["서", "써", "부터", "까지", "는", "도", "만", "의"],
+    isRo: true,
+  },
 ];
 
 /** 덩어리 첫머리에서 바꿀 수 있는 조사 — [받침 있음, 받침 없음, 덩어리에서 차지한 길이, 으로/로 여부] */
 function leadingParticle(
   run: string,
 ): { consonant: string; vowel: string; length: number; isRo: boolean } | null {
-  if (run === "이" || run === "가") {
-    return { consonant: "이", vowel: "가", length: 1, isRo: false };
-  }
-  if (run.startsWith("으로")) {
-    return { consonant: "으로", vowel: "로", length: 2, isRo: true };
-  }
-  if (run.startsWith("로")) {
-    return { consonant: "으로", vowel: "로", length: 1, isRo: true };
-  }
-  for (const [consonant, vowel] of [
-    ["은", "는"],
-    ["을", "를"],
-    ["과", "와"],
-  ] as const) {
-    if (run.startsWith(consonant) || run.startsWith(vowel)) {
-      return { consonant, vowel, length: 1, isRo: false };
+  for (const { consonant, vowel, tails, isRo } of SIMPLE_PAIRS) {
+    for (const form of [consonant, vowel]) {
+      if (!run.startsWith(form)) continue;
+      const rest = run.slice(form.length);
+      if (rest === "" || tails.includes(rest)) {
+        return { consonant, vowel, length: form.length, isRo };
+      }
     }
   }
   for (const [consonant, vowel] of COPULA_PAIRS) {
-    if (run.startsWith(consonant)) {
-      return { consonant, vowel, length: consonant.length, isRo: false };
-    }
-  }
-  for (const [consonant, vowel] of COPULA_PAIRS) {
-    if (run.startsWith(vowel)) {
-      return { consonant, vowel, length: vowel.length, isRo: false };
+    if (run === consonant || run === vowel) {
+      return { consonant, vowel, length: run.length, isRo: false };
     }
   }
   return null;
