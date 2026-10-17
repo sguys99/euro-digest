@@ -1,6 +1,6 @@
 ---
 description: 한국 선수를 configs/korean-players.json에 등록하고 한글 표기(names.ko)·검색 쿼리(search-queries)를 함께 추가한다 (FR-60)
-argument-hint: "<선수 이름 — 한글 또는 영문, 예: 손흥민 | Son Heung-min>"
+argument-hint: "<선수 이름 — 한글 또는 영문, 예: 이강인 | Kang-in Lee (5대 리그 소속만 — FR-60·D46)>"
 ---
 
 # /add-player — 한국 선수 등록
@@ -10,7 +10,7 @@ argument-hint: "<선수 이름 — 한글 또는 영문, 예: 손흥민 | Son He
 목적: 선수 1명을 명단·표기 사전·검색 쿼리 세 곳에 한 번에 등록해, 선수 페이지·주간 리포트·뉴스 태그가 같은 slug를 쓰게 한다.
 근거: CLAUDE.md §11·§12(한국 선수 이적 감지) · PRD FR-60·FR-63·FR-64·FR-24 · plan 부록 A `KoreanPlayer` · plan M3-01
 
-## 현재 상태 (M0-08 초안)
+## 현재 상태 (M0-08 초안 · 2026-10-17 표기 정책 반영 — 5대 리그 밖 한국 선수는 등록하지 않음, PRD §15 D46)
 - 설정 파일: !`ls configs/*.json 2>/dev/null || echo "(configs/*.json 없음)"`
 - zod 스키마(M0-16, `src/lib/schema/`)·configs 검증(M0-17, `npm run validate` — `search-queries.player`·대표팀 명단 → `korean-players` 교차 참조 포함)은 완료. 명단 초안은 M0-32, 검색 쿼리 어댑터 M1-06, 명단 확정 M3-01에서 구현 예정.
 - **그 전에는** 파일을 새로 만들지 않고 1~4단계 조사 결과와 등록안(JSON)만 보고한다. 사용자가 "지금 생성"을 고른 경우에만 부록 A 형태 그대로 만들고, M0-16에서 재검증이 필요하다고 적는다.
@@ -24,7 +24,7 @@ argument-hint: "<선수 이름 — 한글 또는 영문, 예: 손흥민 | Son He
    - `comp`: `EPL|LALIGA|SERIEA|BUNDESLIGA|LIGUE1|UCL` 중 소속 리그. 5대 리그 밖이면 `"OTHER"` + `active: false`(기록 갱신 중단, 목록 유지 — FR-64).
    - `position`: `GK|DF|MF|FW` · `birthYear`: 공식 프로필 기준.
    - `apiFootballId`: API-Football 응답으로 **확인한 값만**. 후보 구단의 `/players/squads?team=<팀 id>`(시즌 파라미터 없음, 1건)로 선수 id를 찾고, `/players/teams?player=<id>`(1건)로 경력에 현재 시즌 소속이 있는지 확인한다(M0-29). 무료 플랜은 시즌 단위(`season=`) 조회가 막혀 `/players?search=` 같은 시즌 단위 요청은 쓰지 않는다. `/players/profiles?search=`는 영숫자·공백만 받아 하이픈 이름이 거부된다. squads 명단은 늦게 갱신될 수 있으니(M0-29: 이강인이 PSG 명단에 없음) 소속은 1차 출처로 확인한다. 키가 필요하므로 provider 어댑터를 쓰거나 사용자가 대시보드에서 확인한 값을 받는다. 확인하지 못하면 `null`. 호출은 1~2회로 끝낸다(하루 100회·분당 10회, 일일 계획 ≤ 60회, 개발 호출 하루 50건 이내 — §6.4).
-4. **표기·쿼리 초안** — `names.ko.json`: 영문 표기와 변형(`Heung-min Son` 등 성·이름 순서 변형)을 한글 표기로 매핑. 성만 있는 짧은 형태(`Son`)는 오매칭 위험이 있어 넣지 않는다. `search-queries.json`: 한/영 쿼리 각 1개(예: `"손흥민"`, `"Son Heung-min"`). 일일 쿼리 상한(M0-26에서 결정)을 넘으면 질문한다.
+4. **표기·쿼리 초안** — `names.ko.json`: 영문 표기와 변형(`Lee Kang-in` 등 성·이름 순서 변형)을 한글 표기로 매핑(표기 정책은 `/add-name` — D39 ②·D46). 성만 있는 짧은 형태(`Lee`)는 오매칭 위험이 있어 넣지 않는다. `search-queries.json`: 한/영 쿼리 각 1개(예: `"이강인"`, `"Kang-in Lee"`). 일일 쿼리 상한(M0-26에서 결정)을 넘으면 질문한다.
 5. **등록안 확인** — 아래 '사용자 확인 지점'을 거친다.
 6. **반영** — 세 파일에 추가하고 기존 정렬 규칙을 따른다. 스키마에 없는 필드는 추가하지 않는다(필요하면 질문 — CLAUDE §2).
 7. **검증** — `npm run validate`.
