@@ -1368,14 +1368,10 @@ describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
     // 대응표에서 Augsburg를 뺀 설정 — Augsburg 2-2 Bayern(m565819 ↔ af 1575180)은 강한 증거로만 이을 수 있다
     const root = mkdtempSync(path.join(os.tmpdir(), "euro-digest-noaug-"));
     try {
+      // configs 사본 — 브리핑 지시문(configs/prompts/summarize.md, M1-20)도 함께 복사된다
       cpSync(path.join(ROOT, "configs"), path.join(root, "configs"), {
         recursive: true,
       });
-      cpSync(
-        path.join(ROOT, "fixtures/llm/brief-inputs"),
-        path.join(root, "fixtures/llm/brief-inputs"),
-        { recursive: true },
-      );
       const teamIdsPath = path.join(root, "configs", "team-ids.json");
       const teamIds = JSON.parse(readFileSync(teamIdsPath, "utf8")) as Record<
         string,

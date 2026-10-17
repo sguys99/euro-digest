@@ -11,6 +11,7 @@
  */
 import {
   cpSync,
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -48,8 +49,8 @@ import {
   BRIEF_MAX_TOKENS,
   buildBriefRequest,
   estimateBriefCost,
+  BRIEF_PROMPT_PATH,
   parseBriefOutput,
-  SLICE_PROMPT_PATH,
 } from "../scripts/lib/brief";
 import { cardIdFor } from "../scripts/lib/card-id";
 import { dedupeFeedItems } from "../scripts/lib/dedup";
@@ -897,15 +898,27 @@ describe("brief.ts — 요청 설정(D28)·출력 파싱", () => {
     expect(estimate.usd).toBeLessThan(0.01);
   });
 
-  it("M0-30 임시 출력 스키마로 줄을 꺼낸다(엄격 JSON만)", () => {
-    expect(parseBriefOutput(BRIEF_TEXT_OK)).toMatchObject({ ok: true });
+  it("확정 출력 스키마로 줄을 꺼낸다(M1-20 — 코드블록은 벗기고 스키마로 판정, D40 ⑤)", () => {
+    expect(parseBriefOutput(BRIEF_TEXT_OK)).toMatchObject({
+      ok: true,
+      fenced: false,
+      droppedLines: 0,
+    });
+    // M0-30 슬라이스는 코드블록을 json 실패로 봤다 — D40 ⑤로 벗긴 뒤 스키마 판정(빈 객체 → schema)
     expect(parseBriefOutput("```json\n{}\n```")).toEqual({
       ok: false,
-      reason: "json",
+      reason: "schema",
+      fenced: true,
     });
     expect(parseBriefOutput('{"l":[]}')).toEqual({
       ok: false,
       reason: "schema",
+      fenced: false,
+    });
+    expect(parseBriefOutput("브리핑: {")).toEqual({
+      ok: false,
+      reason: "json",
+      fenced: false,
     });
   });
 });
@@ -1161,9 +1174,8 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
       thinking: "adaptive",
     });
     expect(request.cacheSystem).toBeUndefined();
-    expect(request.system).toBe(
-      read("fixtures/llm/brief-inputs/prompt-m0-30-long.md").trim(),
-    );
+    // 지시문 = configs/prompts/summarize.md(M1-20 — M1-01 이월: 슬라이스 fixture 지시문에서 교체)
+    expect(request.system).toBe(read(BRIEF_PROMPT_PATH).trim());
     // 기사 텍스트(제목·링크)는 브리핑 입력에 없다(D23·D24). 현재 순위는 입력 경기 대회의 확정 순위표(M1-19 — 중요도 순)
     const user = JSON.parse(request.user) as BriefInput;
     expect(Object.keys(user)).toEqual(["briefDate", "matches", "standings"]);
@@ -1559,7 +1571,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(params[0]!.system).toEqual([
       {
         type: "text",
-        text: read("fixtures/llm/brief-inputs/prompt-m0-30-long.md").trim(),
+        text: read(BRIEF_PROMPT_PATH).trim(),
       },
     ]); // cache_control 없음(1요청)
     expect(newsFiles()).toEqual([]);
@@ -1588,6 +1600,47 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(printed.some((p) => p.startsWith("[cost] 실측"))).toBe(true);
   });
 
+  it("출력 관용 파싱(M1-20, D40 ⑤): 코드블록을 벗기고 앞 5줄만 읽으며, 치환 뒤 80자 초과 줄은 강등 대상으로 표시만 한다", async () => {
+    const long = `Chelsea가 홈에서 Bournemouth를 5-1로 꺾었고 ${"Bournemouth는 끝까지 따라붙지 못했고 ".repeat(3)}경기를 마쳤다.`;
+    const lines = [
+      { t: long, r: ["m560595"] },
+      ...["m565812", "m560601", "m560593", "m565815", "m559672"].map((id) => ({
+        t: "정상 길이의 브리핑 문장이다.",
+        r: [id],
+      })),
+    ];
+    const fake = fakeLiveTransport(
+      "```json\n" + JSON.stringify({ l: lines }) + "\n```",
+    );
+    const { deps, printed, records } = makeDeps({
+      llmMode: "live",
+      dry: true,
+      createLlm: () =>
+        createLlmClient({
+          mode: "live",
+          model: "claude-haiku-5-5",
+          transport: fake.transport,
+          logger: () => undefined,
+        }),
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.brief).toMatchObject({ state: "done" });
+    if (outcome.brief?.state !== "done") throw new Error("브리핑 미완료");
+    expect(outcome.brief.lines).toHaveLength(5);
+    const done = records.find((r) => r.event === "summarize.brief.done");
+    expect(done).toMatchObject({
+      lines: 5,
+      fenced: true,
+      droppedLines: 1,
+      overLimitLines: 1,
+    });
+    expect(String(done?.prompt)).toMatch(/^p_[0-9a-f]{12}$/);
+    const out = printed.find((p) => p.startsWith("── 브리핑 출력"));
+    expect(out).toContain("코드블록을 벗겨 읽음");
+    expect(out).toContain("5줄 넘는 1줄은 버림");
+    expect(out?.match(/80자 초과, 강등 대상/g)).toHaveLength(1);
+  });
+
   it("prod(Actions): runs.json에 기록하고 data/news도 쓴다", async () => {
     const { deps } = liveDeps({ env: "prod" });
     const outcome = await runCollect(deps);
@@ -1606,15 +1659,12 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(readNews("2026-10-11").runId).toBe(outcome.runId);
   });
 
-  /** 저장소 사본(configs + 브리핑 지시문) — 사본의 사전을 고쳐도 실제 configs는 그대로 */
+  /** 저장소 사본(configs — 브리핑 지시문 configs/prompts/summarize.md 포함) — 사본의 사전을 고쳐도 실제 configs는 그대로 */
   function copyRepo(repo: string): void {
     cpSync(path.join(ROOT, "configs"), path.join(repo, "configs"), {
       recursive: true,
     });
-    cpSync(
-      path.join(ROOT, SLICE_PROMPT_PATH),
-      path.join(repo, SLICE_PROMPT_PATH),
-    );
+    expect(existsSync(path.join(repo, BRIEF_PROMPT_PATH))).toBe(true);
   }
 
   /** 저장소 사본의 names.ko.json에서 팀 항목을 뺀다 — 미등록 이름이 생기게 */

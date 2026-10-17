@@ -33,7 +33,8 @@
  *      멈추고(보내는 중인 요청 1건까지) 브리핑(LLM)은 부르지 않는다 — 커밋되지 않는 실행의 LLM 비용·API-Football 한도 낭비를
  *      최소로 한다(낭비 상한 = 뉴스가 끝날 때까지 보낸 요청, 최대 약 12건).
  *   ③ 브리핑: football-data 종료 경기 + 현재 순위 → 정형 입력(M1-19 — brief-input.ts: 중요도 순 상한, 확정 순위표 상위 4위,
- *      연장·승부차기 표기) → `callSingle` 1요청(브리핑 마감까지 — 재시도 대기만 묶음, 요청 타임아웃·마감 초과 템플릿은 M1-45)
+ *      연장·승부차기 표기) → `callSingle` 1요청(지시문 `configs/prompts/summarize.md` v0.1 — M1-20, 브리핑 마감까지 — 재시도
+ *      대기만 묶음, 요청 타임아웃·마감 초과 템플릿은 M1-45) → 출력 스키마·관용 파싱(M1-20, D40 ⑤ — brief.ts)
  *      → **LLM 출력은 로그만** → `data/briefs/<KST 발행일>.json` 게시(M1-19, D38 — brief-file.ts). 검증(M1-23)·재시도·강등(M1-45)
  *      전이라 검증 안 된 LLM 줄은 저장하지 않고 같은 입력의 코드 템플릿 문장(brief-template.ts, `template`)을 게시한다. 경기가
  *      없으면 `empty`(호출 생략), 정형 입력이 없으면(football-data 키 없음·실패) 파일 없음. 그날 파일이 이미 `llm`·`mixed`면
@@ -74,7 +75,7 @@
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
  * 다음 작업이 갈아끼울 자리: 분류(M1-17 — 선별 점수 → 중요도, 팀→리그
  * 대회 근거를 점수화 `comps`로) · 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
- * 프롬프트(M1-20) · 검증·강등(M1-23·M1-45) · runs 기록(M1-27) ·
+ * 검증·강등(M1-23·M1-45) · runs 기록(M1-27) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
  */
 import { mkdir, writeFile } from "node:fs/promises";
@@ -134,7 +135,13 @@ import {
   type BriefInput,
   type BriefInputBuild,
 } from "./brief-input";
-import { buildBriefRequest, loadSlicePrompt, parseBriefOutput } from "./brief";
+import {
+  briefLinesOverLimit,
+  briefPromptId,
+  buildBriefRequest,
+  loadBriefPrompt,
+  parseBriefOutput,
+} from "./brief";
 import {
   buildBriefFile,
   decideBriefWrite,
@@ -2993,7 +3000,7 @@ async function runBriefStage(
   try {
     config = deps.resolveBriefConfig();
     sink.model = config.model;
-    request = buildBriefRequest(input, await loadSlicePrompt(deps.rootDir));
+    request = buildBriefRequest(input, await loadBriefPrompt(deps.rootDir));
     if (deps.llmMode === "live") {
       const decision = await guardBriefBudget({
         env: deps.env,
@@ -3082,11 +3089,15 @@ async function runBriefStage(
     });
   }
 
+  // 출력 스키마(M1-20 확정) + 관용 파싱(D40 ⑤ — 전체 코드블록 벗김·앞 5줄)
   const parsed = parseBriefOutput(result.text);
+  const prompt = briefPromptId(request.system);
   if (!parsed.ok) {
     log.error("summarize.brief.fail", {
       stage: "output",
       reason: parsed.reason,
+      fenced: parsed.fenced,
+      prompt,
       ...usageFields,
     });
     return withInput({
@@ -3124,10 +3135,16 @@ async function runBriefStage(
         ),
       ]
     : [];
+  // 80자 초과(D40 ⑤)는 치환·조사 보정 뒤 문장으로 잰다 — 강등 대상 표시만(실제 강등은 M1-45)
+  const overLimit = briefLinesOverLimit(substituted.map((r) => r.text));
   log.info("summarize.brief.done", {
     date: ctx.publishDate,
     matches: inputMatches,
     lines: lines.length,
+    prompt,
+    fenced: parsed.fenced,
+    droppedLines: parsed.droppedLines,
+    overLimitLines: overLimit.length,
     namesReplaced: substituted.reduce((n, r) => n + r.replaced.length, 0),
     particleFixes: substituted.reduce((n, r) => n + r.particleFixes, 0),
     outputUnknownNames: outputNames.length,
@@ -3137,10 +3154,17 @@ async function runBriefStage(
   deps.print(
     [
       `── 브리핑 출력 (${ctx.publishDate}, ${deps.llmMode}, 저장 안 함 — 검증(M1-23·M1-45) 전, 고유명사 치환·조사 보정 뒤 / 원문)`,
-      ...parsed.lines.map(
-        (line, i) =>
-          `${i + 1}. ${substituted[i]!.text}  [${line.r.join(",")}]\n   원문: ${line.t}`,
-      ),
+      ...(parsed.fenced ? ["   (코드블록을 벗겨 읽음 — D40 ⑤)"] : []),
+      ...(parsed.droppedLines > 0
+        ? [`   (5줄 넘는 ${parsed.droppedLines}줄은 버림 — D40 ⑤)`]
+        : []),
+      ...parsed.lines.map((line, i) => {
+        const text = substituted[i]!.text;
+        const flag = overLimit.includes(i + 1)
+          ? `  (${text.length}자 — 80자 초과, 강등 대상(D40 ⑤))`
+          : "";
+        return `${i + 1}. ${text}  [${line.r.join(",")}]${flag}\n   원문: ${line.t}`;
+      }),
     ].join("\n"),
   );
   return withInput({ state: "done", inputMatches, lines }, outputNames);

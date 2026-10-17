@@ -4,14 +4,16 @@
  * - mock/ 아래 모든 파일이 `MockFixtureSchema`(scripts/lib/llm.ts)를 통과한다.
  * - mock/by-id/brief-*.json ↔ brief-cases.json 케이스가 1:1이고, customId 규칙(발행일 `brief-YYYY-MM-DD` ·
  *   실패 사례 `brief-case-<유형>`)을 지킨다. 발행일 id는 그날 입력의 briefDate와 같다.
- * - 각 케이스의 stage가 fixture 내용과 맞는다: zod 단계 사례만 M0-30 임시 출력 스키마에 실패하고,
- *   transport 사례는 errored·max_tokens·refusal이다. 기대 줄 번호·사람 검토 수가 서로 맞는다.
+ * - 각 케이스의 stage가 fixture 내용과 맞는다: zod 단계 사례만 확정 출력 스키마(M1-20 — scripts/lib/brief.ts
+ *   parseBriefOutput, 관용 파싱 D40 ⑤ 포함)에 실패하고, transport 사례는 errored·max_tokens·refusal이다. 기대 줄 번호·사람 검토
+ *   수가 서로 맞는다.
  * - brief-inputs/의 정형 입력(A~F)은 정해진 키만 가진다(기사 텍스트 없음, D24). E meta의 입력 창이 time.ts와 같다.
  * - 대표 케이스를 `createLlmClient({ mode: "mock" }).callSingle`로 실제로 불러 llm.ts 경유 결과를 확인한다(통합).
  * - 비밀값 흔적·URL이 없다(CLAUDE.md §1-6·§1-8).
  *
  * 출력 판정 로직(M1-23)은 아직 없다. 여기서는 fixture 자체만 검사하고 판정은 brief-cases.json 값을 믿는다.
- * M1-20에서 출력 스키마가 확정되면 아래 임시 스키마를 확정 스키마로 바꾸고 mock을 다시 만든다.
+ * M1-20: 출력 형식 {l:[{t,r}]}가 M0-30 임시 스키마의 키 그대로 확정돼 mock은 다시 만들지 않았다(note만 갱신). 확정 판정(D40)과
+ * 관용 파싱 사례는 tests/brief-output.test.ts.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
@@ -22,6 +24,7 @@ import { z } from "zod";
 
 import { kstWindowRangeUtc, shiftDate } from "@/lib/time";
 
+import { parseBriefOutput } from "../scripts/lib/brief";
 import {
   createLlmClient,
   CUSTOM_ID_PATTERN,
@@ -54,19 +57,6 @@ const DATE_ID = /^brief-(\d{4}-\d{2}-\d{2})$/;
 const CASE_ID = /^brief-case-[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const VERDICT = /^(?:ok|retry|downgrade-all|downgrade-line:\d+(?:,\d+)*)$/;
 const INPUT_KEYS = ["A", "B", "C", "D", "E", "F"] as const;
-
-// ─── M0-30 임시 출력 스키마 (README 요약과 같음 — M1-20에서 확정 스키마로 교체) ───
-const BriefOutputTmpSchema = z.strictObject({
-  l: z
-    .array(
-      z.strictObject({
-        t: z.string().min(5).max(150),
-        r: z.array(z.string().min(1)).min(1).max(6),
-      }),
-    )
-    .min(1)
-    .max(5),
-});
 
 // ─── 정형 입력 (임시 형식 — M1-19에서 확정). 정해진 키만 허용해 기사 텍스트가 섞이지 않게 한다 ───
 const Score = z.string().regex(/^\d+-\d+$/);
@@ -209,14 +199,10 @@ function fixtureOf(id: string): MockFixture {
 function inputOf(key: (typeof INPUT_KEYS)[number]): BriefInput {
   return BriefInputSchema.parse(readJson(casesFile.inputs[key].file));
 }
-/** 엄격 JSON.parse + 임시 스키마. 실패하면 null */
-function parseOutputStrict(text: string) {
-  try {
-    const parsed = BriefOutputTmpSchema.safeParse(JSON.parse(text));
-    return parsed.success ? parsed.data : null;
-  } catch {
-    return null;
-  }
+/** 확정 출력 스키마 + 관용 파싱(M1-20 — brief.ts parseBriefOutput). 실패하면 null, 성공이면 앞 5줄 */
+function parseOutput(text: string) {
+  const parsed = parseBriefOutput(text);
+  return parsed.ok ? { l: parsed.lines } : null;
 }
 function downgradeLines(verdict: string | undefined): number[] {
   const m = verdict?.match(/^downgrade-line:(.+)$/);
@@ -243,7 +229,7 @@ describe("mock 파일 형식 (fixtures/llm/mock)", () => {
     expect(parsed.success, JSON.stringify(parsed.error?.issues)).toBe(true);
   });
 
-  it("by-hash는 아직 비어 있다(M1-20 이후) — .gitkeep만 유지", () => {
+  it("by-hash는 아직 비어 있다(골든셋 M1-24 후보) — .gitkeep만 유지", () => {
     expect(readdirSync(path.join(MOCK_DIR, "by-hash"))).toEqual([".gitkeep"]);
   });
 
@@ -270,11 +256,11 @@ describe("mock 파일 형식 (fixtures/llm/mock)", () => {
     expect(briefMockFiles.some((f) => /-r\d+\.json$/.test(f))).toBe(false);
   });
 
-  it("모든 브리핑 mock note에 임시 형식·M1-20 재생성 안내가 있고, 합성은 '합성 —'으로 시작한다", () => {
+  it("모든 브리핑 mock note에 확정 형식·지시문 출처 안내가 있고, 합성은 '합성 —'으로 시작한다", () => {
     for (const c of CASES) {
       const note = fixtureOf(c.id).note ?? "";
-      expect(note, c.id).toContain("M0-30 임시 스키마");
-      expect(note, c.id).toContain("M1-20");
+      expect(note, c.id).toContain("M1-20 확정 스키마");
+      expect(note, c.id).toContain("M0-30 임시 프롬프트");
       if (c.origin === "synthetic") expect(note, c.id).toMatch(/^합성 — /);
     }
   });
@@ -316,8 +302,8 @@ describe("brief-cases.json 기대 판정 표", () => {
       );
       expect(c.llm.ok).toBe(c.stage !== "transport");
       if (fixture.type !== "succeeded" || transportFail) return;
-      // zod 단계 사례만 임시 스키마(엄격 파싱)에 실패한다
-      expect(parseOutputStrict(fixture.text) === null).toBe(c.stage === "zod");
+      // zod 단계 사례만 확정 출력 스키마(관용 파싱 뒤)에 실패한다
+      expect(parseOutput(fixture.text) === null).toBe(c.stage === "zod");
     },
   );
 
@@ -326,7 +312,7 @@ describe("brief-cases.json 기대 판정 표", () => {
     (_, c) => {
       const fixture = fixtureOf(c.id);
       const output =
-        fixture.type === "succeeded" ? parseOutputStrict(fixture.text) : null;
+        fixture.type === "succeeded" ? parseOutput(fixture.text) : null;
       const lineCount = output?.l.length ?? 0;
       const downgrade = downgradeLines(c.expected);
       const undecided = c.undecidedLines ?? [];
@@ -385,7 +371,7 @@ describe("brief-cases.json 기대 판정 표", () => {
       const day = sample.days.find((d) => d.date === date);
       const fixture = fixtureOf(c.id);
       if (fixture.type !== "succeeded") throw new Error(c.id);
-      const output = parseOutputStrict(fixture.text);
+      const output = parseOutput(fixture.text);
       expect(day, date).toBeDefined();
       expect(output?.l.length, date).toBe(day!.lines.length);
       day!.lines.forEach((line, i) => {
@@ -544,9 +530,10 @@ describe("llm.ts callSingle로 브리핑 mock 부르기 (LLM_MODE=mock)", () => 
       cacheWrite: 0,
     });
     expect(attemptsOf(events)).toBe(1);
-    const output = BriefOutputTmpSchema.parse(JSON.parse(ok.text));
-    expect(output.l).toHaveLength(5);
-    const l5 = output.l[4]!;
+    const output = parseBriefOutput(ok.text);
+    if (!output.ok) throw new Error(`출력 파싱 실패: ${output.reason}`);
+    expect(output.lines).toHaveLength(5);
+    const l5 = output.lines[4]!;
     expect(l5.t).toContain("Christopher Nkunku는 2골");
     const match = inputOf("E").matches.find((m) => m.id === l5.r[0]);
     const goals = (match?.goals ?? []).filter(

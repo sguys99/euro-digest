@@ -29,7 +29,10 @@ import {
   standingsRefId,
   STANDINGS_NOTE,
 } from "../scripts/lib/brief-input";
-import { estimateBriefInputTokens } from "../scripts/lib/brief";
+import {
+  BRIEF_PROMPT_PATH,
+  estimateBriefInputTokens,
+} from "../scripts/lib/brief";
 import type {
   CompStandings,
   FinishedMatch,
@@ -325,14 +328,13 @@ describe("득점자 — 원장 항목(같은 아침 두 번째 실행, M1-48 이
   });
 });
 
-describe("입력 크기 — 비용 가드 입력 어림(M1-22 이월)", () => {
-  it("M0-34 실측 비율(영문 JSON 약 1.89자/토큰, 지시문 2,119자 → 2,034토큰)보다 넉넉하게 잡는다", () => {
-    const system = read(
-      "fixtures/llm/brief-inputs/prompt-m0-30-long.md",
-    ).trim();
+describe("입력 크기 — 비용 가드 입력 어림(M1-22·M1-20 이월)", () => {
+  it("실측 비율(영문 JSON 약 1.89자/토큰, 한국어 지시문 0.96토큰/자 — M0-30 긴 판 2,119자 → 2,034토큰)보다 넉넉하게 잡는다", () => {
+    // 지시문 v0.1(configs/prompts/summarize.md)은 M0-30 긴 판과 글자 구성이 같다(tests/brief-prompt.test.ts가 지킨다)
+    const system = read(BRIEF_PROMPT_PATH).trim();
     const user = serializeBriefInput(build({ linked: new Map() }).input);
     const estimate = estimateBriefInputTokens({ system, user });
-    const measuredLike = 2034 + user.length / 1.89;
+    const measuredLike = system.length * (2034 / 2119) + user.length / 1.89;
     expect(estimate).toBeGreaterThan(measuredLike * 1.1);
     // 23경기 + 5개 리그 상위 4위 — M0-34 입력 E(8,619자, 한국 선수 블록 포함)보다 작다
     expect(user.length).toBeLessThan(8619);

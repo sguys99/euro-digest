@@ -1,7 +1,7 @@
 {
-  "_note": "브리핑 LLM mock 기대 판정 표(M0-36). 케이스 id = customId = mock/by-id/<id>.json. M1-23(코드 검증)·M1-45(브리핑 실행) 테스트 입력. 출력 형식은 M0-30 임시 스키마 { l: [{ t, r }] } — M1-20에서 프롬프트·출력 스키마가 확정되면 mock과 함께 다시 만든다. 판정 기준이 아직 없는 줄은 undecidedLines, 케이스 전체가 미정이면 expected 대신 candidates로 둔다(테스트는 미정 항목을 단정하지 않는다).",
+  "_note": "브리핑 LLM mock 기대 판정 표(M0-36 → M1-20 갱신). 케이스 id = customId = mock/by-id/<id>.json. M1-23(코드 검증)·M1-45(브리핑 실행) 테스트 입력. 출력 형식 { l: [{ t, r }] }는 M1-20 확정 스키마(scripts/lib/brief.ts BriefOutputSchema — M0-30 임시 스키마의 키 그대로)라 mock을 다시 만들지 않았다. M1-20에서 관용 파싱(D40 ⑤ — 전체 코드블록 벗김·앞 5줄·80자 초과 줄 강등)과 D40 ①~④ 판정을 기대값에 반영했다(미정이던 json-fenced·max-tokens·refusal과 미정 줄 4개). 판정 기준이 아직 없는 줄은 undecidedLines, 케이스 전체가 미정이면 expected 대신 candidates로 둔다(테스트는 미정 항목을 단정하지 않는다). mock 출력은 M0-30·M0-34 임시 프롬프트의 출력이다 — 지시문 v0.1(configs/prompts/summarize.md)의 실제 출력은 dev 실행·골든셋(M1-24)으로 더한다.",
   "task": "M0-36",
-  "flow": "FR-29 — zod → 코드 검증(출력 전체: 한국어 비율·한자) → 실패하면 1회 재시도(zod 실패와 합쳐 1회) → 그래도 실패하면 템플릿. 줄 단위 불일치(스코어·이름·순위 서술·근거 id·1줄 1문장)는 재시도 없이 그 줄만 템플릿(FR-22). transport 실패는 llm.ts 재시도(429·5xx만) 뒤 FR-26 템플릿.",
+  "flow": "FR-29 — 출력 스키마(관용 파싱 D40 ⑤ 뒤) → 코드 검증(출력 전체: 한국어 비율·한자) → 실패하면 1회 재시도(zod 실패·max_tokens와 합쳐 1회 — D40 ①) → 그래도 실패하면 템플릿. 줄 단위 불일치(스코어·이름·순위 서술·근거 id·1줄 1문장·치환 뒤 80자 초과)는 재시도 없이 그 줄만 템플릿(FR-22, D40 ⑤). refusal은 재시도 없이 템플릿(D40 ①). transport 실패는 llm.ts 재시도(429·5xx만) 뒤 FR-26 템플릿.",
   "verdicts": {
     "ok": "모든 줄 통과 → 그대로 게시(ai:true)",
     "downgrade-line:<n>[,<n>…]": "줄 단위 검증 불일치 → 그 줄만 템플릿 문장(ai:false), 재시도 없음. 1부터 센다",
@@ -10,8 +10,8 @@
   },
   "stages": {
     "none": "모든 검사 통과",
-    "transport": "llm.ts 결과가 실패(ok:false) — max_tokens·refusal·errored",
-    "zod": "JSON 파싱 또는 임시 스키마 실패",
+    "transport": "llm.ts 결과가 실패(ok:false) — max_tokens(재시도, D40 ①)·refusal(바로 템플릿, D40 ①)·errored",
+    "zod": "JSON 파싱 또는 확정 출력 스키마 실패(M1-20 — 출력 전체를 감싼 코드블록은 벗기고 6줄 이상은 앞 5줄만 읽은 뒤, D40 ⑤)",
     "whole": "출력 전체 코드 검증 실패(한국어 비율·한자)",
     "line": "줄 단위 코드 검증 실패"
   },
@@ -27,10 +27,11 @@
     "숫자 대조 전에 입력 이름을 지운다 — 'Como 1907'·'Ligue 1' 속 숫자(brief-2026-09-11·brief-2026-10-10).",
     "숫자 대조 범위는 줄의 근거 id(r)다 — brief-2026-10-11 L5 '2골'은 입력 전체 범위로 대조하면 다른 경기 스코어의 2 때문에 통과한다.",
     "스코어 순서: 홈-원정 순서와 '주어 팀 점수 먼저'(M1-20)를 모두 인정하되(brief-case-score-winner-first·brief-2026-09-21 L2) 둘 다 아닌 뒤집힘은 잡는다(brief-case-score-reversed). 스코어가 맞아도 승패 동사의 주어가 틀리면 잡아야 한다(brief-case-winner-swap).",
-    "순위 동사: '1위에 올라 있다'(상태)는 prev 없는 표에서도 통과해야 하고(brief-2026-10-10 L2), '머물렀다·유지·지켰다'는 prev가 있고 pos와 같을 때만, '공동 n위'는 pos가 같을 때만 쓴다. '상위 5위에 올랐다'류는 미정.",
-    "파생 숫자(합계·차이): '3점 앞섰다'(13−10)·'4골'(득점 합산) — 허용 여부 미정(brief-case-leftover-word L5·brief-case-translit-rank L1).",
+    "순위 동사: '1위에 올라 있다'(상태)는 prev 없는 표에서도 통과해야 하고(brief-2026-10-10 L2), '머물렀다·유지·지켰다'는 prev가 있고 pos와 같을 때만, '공동 n위'는 pos가 같을 때만 쓴다. prev 없는 '상위 5위에 올랐다'·'상위권에 올랐다'는 변동 서술로 강등(D40 ③ — brief-2026-09-11 L5·brief-case-short-name-team-2 L5).",
+    "파생 숫자(합계·차이): 그 줄 근거(r) 항목의 숫자 두 개의 차·합과 정확히 같을 때만 허용(D40 ②) — '3점 앞섰다'(sBL 13−10, brief-case-leftover-word L5) 통과. brief-case-translit-rank L1 '4골'(ft 2-2의 2+2)은 숫자로는 허용이지만 음역·두 문장으로 강등된다.",
     "조사 오류('Bayern가'·'Dortmund은')는 강등이 아니라 치환 뒤 받침 기준 보정(M1-21).",
-    "mock 재시도: 같은 customId는 같은 응답을 준다. 재시도 성공 경로는 다른 customId(예약: brief-<날짜>-r1)나 주입 transport로 시험한다."
+    "mock 재시도: 같은 customId는 같은 응답을 준다. 재시도 성공 경로는 다른 customId(예약: brief-<날짜>-r1)나 주입 transport로 시험한다.",
+    "줄 길이: 80자(D40 ⑤)는 고유명사 치환·조사 보정 뒤 문장으로 잰다(PRD §9.4) — 영문 원문 길이로 재면 안 된다(brief-2026-10-10 L1 원문 95자·치환 뒤 86자, brief-case-line-over-schema L1 치환 뒤 146자). 자르지 않고 그 줄만 템플릿."
   ],
   "inputs": {
     "A": {
@@ -85,11 +86,8 @@
       "types": [
         "normal"
       ],
-      "stage": "none",
-      "expected": "ok",
-      "undecidedLines": [
-        5
-      ],
+      "stage": "line",
+      "expected": "downgrade-line:5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -112,11 +110,11 @@
         },
         {
           "n": 5,
-          "code": "undecided",
-          "why": "'상위 5위에 올랐다' — sUCL에 prev 없음. 상태 서술인지 순위 상승 서술인지 M1-23에서 정한다(사람 검토는 일치). Como 1907 숫자 함정도 있다"
+          "code": "downgrade",
+          "why": "'상위 5위에 올랐다' — sUCL에 prev가 없는 '올랐다'는 변동 서술(D40 ③ — 사람 검토는 일치였다). Como 1907 숫자 함정도 있다"
         }
       ],
-      "note": "정상(발행일 2026-09-11, 입력 B) — M0-30 실제 출력(배치·긴 판·지시문 캐시 쓰기·thinking 기본). fixtures/brief-sample.json 2026-09-11과 같은 출력. 기대: ok(L5 순위 동사 판정은 미정)."
+      "note": "정상(발행일 2026-09-11, 입력 B) — M0-30 실제 출력(배치·긴 판·지시문 캐시 쓰기·thinking 기본). fixtures/brief-sample.json 2026-09-11과 같은 출력. 기대: downgrade-line:5(L5 '상위 5위에 올랐다' — sUCL에 prev가 없는 '올랐다', D40 ③ — M1-20에서 확정)."
     },
     {
       "id": "brief-2026-09-19",
@@ -721,10 +719,7 @@
         "short-name"
       ],
       "stage": "line",
-      "expected": "downgrade-line:4",
-      "undecidedLines": [
-        5
-      ],
+      "expected": "downgrade-line:4,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -742,11 +737,11 @@
         },
         {
           "n": 5,
-          "code": "undecided",
-          "why": "'리그 페이즈 상위권에 올랐다' — prev 없는 '올랐다'(상태 서술인지 M1-23에서 정한다), Como 1907 숫자 함정"
+          "code": "downgrade",
+          "why": "'리그 페이즈 상위권에 올랐다' — prev 없는 '올랐다'는 변동 서술(D40 ③), Como 1907 숫자 함정"
         }
       ],
-      "note": "축약 팀 이름(두 번째) — M0-30 실제 출력(배치·짧은 판·effort low). L4 'Lens'. 기대: downgrade-line:4(L5 순위 동사 판정은 미정)."
+      "note": "축약 팀 이름(두 번째) — M0-30 실제 출력(배치·짧은 판·effort low). L4 'Lens'. 기대: downgrade-line:4,5(L5 '상위권에 올랐다' — prev 없는 '올랐다', D40 ③ — M1-20에서 확정)."
     },
     {
       "id": "brief-case-leftover-word",
@@ -768,9 +763,6 @@
       ],
       "stage": "line",
       "expected": "downgrade-line:1",
-      "undecidedLines": [
-        5
-      ],
       "llm": {
         "ok": true,
         "attempts": 1
@@ -788,11 +780,11 @@
         },
         {
           "n": 5,
-          "code": "undecided",
-          "why": "'2위 Bayern(10점)보다 3점 앞섰다' — 13−10 계산값(입력에 없는 파생 숫자, 사람 검토는 맞음). 3이 sBL pos 3으로 근거 숫자에 우연히 있어 숫자 대조로는 통과한다 — 파생 수치 허용 여부를 M1-20·M1-23에서 정한다"
+          "code": "pass",
+          "why": "'2위 Bayern(10점)보다 3점 앞섰다' — 13−10 계산값이 그 줄 근거 sBL의 두 숫자 차와 같아 허용(D40 ②, 사람 검토도 맞음). 3이 sBL pos 3으로 근거 숫자에 우연히 있는 함정도 있다"
         }
       ],
-      "note": "영문 일반어 잔존 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L1 'Matchday 5 경기는'. 기대: downgrade-line:1(L5 파생 숫자 '3점 앞섰다' 판정은 미정)."
+      "note": "영문 일반어 잔존 — M0-30 실제 출력(배치·짧은 판·thinking 기본). L1 'Matchday 5 경기는'. 기대: downgrade-line:1(L5 파생 숫자 '3점 앞섰다'는 그 줄 근거 sBL의 13−10과 같아 통과 — D40 ②, M1-20에서 확정)."
     },
     {
       "id": "brief-case-particle",
@@ -813,9 +805,6 @@
       ],
       "stage": "line",
       "expected": "downgrade-line:2",
-      "undecidedLines": [
-        5
-      ],
       "llm": {
         "ok": true,
         "attempts": 1
@@ -843,11 +832,11 @@
         },
         {
           "n": 5,
-          "code": "undecided",
-          "why": "'프리미어리그' — 대회 이름을 한글로 썼다(입력 'Premier League'). 사람 검토는 사실 일치('선두를 지켰다' prev 1·pos 1)라 표시하지 않았다. 대회 이름을 음역 규칙에 넣을지 M1-23에서 정한다"
+          "code": "pass",
+          "why": "'프리미어리그' — 모델이 쓴 한글 대회 이름이 competitions.json nameKo와 같고 대상(EPL)이 입력에 있어 허용(D40 ④). '선두를 지켰다'는 prev 1·pos 1이라 사실 일치"
         }
       ],
-      "note": "조사 오류 + 축약 이름 — M0-30 실제 출력(배치·짧은 판·thinking 끔). L1 'Bayern가'(보정 대상), L2 'Olise'. 기대: downgrade-line:2(L5 대회 이름 한글 표기 판정은 미정)."
+      "note": "조사 오류 + 축약 이름 — M0-30 실제 출력(배치·짧은 판·thinking 끔). L1 'Bayern가'(보정 대상), L2 'Olise'. 기대: downgrade-line:2(L5 '프리미어리그'는 competitions.json 공식 표기(nameKo)와 같고 대상이 입력에 있어 통과 — D40 ④, M1-20에서 확정)."
     },
     {
       "id": "brief-case-score-winner-first",
@@ -916,16 +905,13 @@
       "types": [
         "json-fenced"
       ],
-      "stage": "zod",
-      "candidates": [
-        "ok",
-        "retry"
-      ],
+      "stage": "none",
+      "expected": "ok",
       "llm": {
         "ok": true,
         "attempts": 1
       },
-      "note": "합성 — brief-2026-09-19 원문을 ```json 코드블록으로 감쌌다. 엄격 JSON.parse는 실패하고, 코드블록 제거·중괄호 추출이면 5줄 모두 통과한다. 지시문은 코드블록을 금지한다. 판정 미정: 관대한 파싱을 허용할지 M1-20에서 정한다(허용하면 ok, 아니면 retry)."
+      "note": "합성 — brief-2026-09-19 원문을 ```json 코드블록으로 감쌌다. 엄격 JSON.parse는 실패하고, 코드블록 제거·중괄호 추출이면 5줄 모두 통과한다. 지시문은 코드블록을 금지한다. D40 ⑤(M1-20 확정): 출력 전체를 감싼 코드블록은 벗겨서 파싱한다(그 밖의 앞뒤 글은 벗기지 않는다). 기대: ok."
     },
     {
       "id": "brief-case-missing-key",
@@ -953,13 +939,13 @@
       "types": [
         "too-many-lines"
       ],
-      "stage": "zod",
-      "expected": "retry",
+      "stage": "none",
+      "expected": "ok",
       "llm": {
         "ok": true,
         "attempts": 1
       },
-      "note": "합성 — brief-2026-09-19 원문에 6번째 줄 'Arsenal은 승점 12로 Premier League 1위다.'(근거 sPL — 입력 A Arsenal pos 1·pts 12, 사실은 맞음)를 덧붙였다. 임시 스키마 l 최대 5 → zod 실패. 기대: retry. M1-20이 '앞 5줄만 쓰기(절단)'를 택하면 판정이 바뀐다."
+      "note": "합성 — brief-2026-09-19 원문에 6번째 줄 'Arsenal은 승점 12로 Premier League 1위다.'(근거 sPL — 입력 A Arsenal pos 1·pts 12, 사실은 맞음)를 덧붙였다. D40 ⑤(M1-20 확정): 6줄 이상이면 앞 5줄만 쓴다 → 6번째 줄은 버리고 기준 출력과 같은 5줄. 기대: ok(임시 스키마에서는 l 최대 5 → zod 실패·retry였다)."
     },
     {
       "id": "brief-case-line-over-schema",
@@ -970,13 +956,20 @@
       "types": [
         "line-too-long"
       ],
-      "stage": "zod",
-      "expected": "retry",
+      "stage": "line",
+      "expected": "downgrade-line:1",
       "llm": {
         "ok": true,
         "attempts": 1
       },
-      "note": "합성 — brief-2026-09-19 원문 1~3번째 줄을 쉼표로 이어 한 줄(근거 3개)로 만들었다(150자 초과, 문장은 원문 그대로). 임시 스키마 t 최대 150자 → zod 실패. 기대: retry. 60자 안팎(FR-23)을 넘지만 150자 이하인 줄의 처리(절단·강등)는 아직 정하지 않았다 — 실제 사례 brief-2026-10-10 L1(치환 뒤 66자)·brief-case-rank-tie L5(61자)·brief-case-rank-direction L4(65자)."
+      "lines": [
+        {
+          "n": 1,
+          "code": "downgrade",
+          "why": "세 문장을 쉼표로 이은 한 줄 — 치환 뒤 146자로 80자 초과(D40 ⑤, 자르지 않음). 근거 3개(k2897·m1575167·k512) — 줄 강등은 첫 경기 id의 템플릿(templateLineForRefs)"
+        }
+      ],
+      "note": "합성 — brief-2026-09-19 원문 1~3번째 줄을 쉼표로 이어 한 줄(근거 3개)로 만들었다(150자 초과, 문장은 원문 그대로). D40 ⑤(M1-20 확정): 출력 스키마는 줄 길이를 막지 않고, 고유명사 치환·조사 보정 뒤 80자를 넘는 줄은 자르지 않고 그 줄만 템플릿으로 강등한다 — 이 줄은 치환 뒤 146자. 기대: downgrade-line:1(임시 스키마에서는 t 최대 150자 → zod 실패·retry였다). 60~80자 줄은 허용('60자 내외') — 실제 사례 brief-case-rank-tie L5·brief-case-rank-direction L4."
     },
     {
       "id": "brief-case-score-mismatch",
@@ -1057,17 +1050,14 @@
         "max-tokens"
       ],
       "stage": "transport",
-      "candidates": [
-        "retry",
-        "downgrade-all"
-      ],
+      "expected": "retry",
       "llm": {
         "ok": false,
         "errorType": "max_tokens",
         "retryable": false,
         "attempts": 1
       },
-      "note": "합성 — stop_reason max_tokens(출력 잘림). text는 brief-2026-09-19 원문을 2번째 줄 중간에서 자른 것이다. usage는 같은 요청을 캐시 없이 보냈을 때의 입력(778 + 지시문 2,034토큰)과 max_tokens 4,096을 다 쓴 출력으로 가정했다. M0-30·M0-34 18건 중 실제 사례 0건(실측 최대 출력 3,231). llm.ts는 이 결과를 실패(errorType max_tokens, retryable false, 과금됨)로 돌려주고 text를 버린다. 판정 미정: FR-29 '출력 전체 실패'로 보고 1회 재시도할지, 바로 템플릿으로 갈지 M1-45에서 정한다."
+      "note": "합성 — stop_reason max_tokens(출력 잘림). text는 brief-2026-09-19 원문을 2번째 줄 중간에서 자른 것이다. usage는 같은 요청을 캐시 없이 보냈을 때의 입력(778 + 지시문 2,034토큰)과 max_tokens 4,096을 다 쓴 출력으로 가정했다. M0-30·M0-34 18건 중 실제 사례 0건(실측 최대 출력 3,231). llm.ts는 이 결과를 실패(errorType max_tokens, retryable false, 과금됨)로 돌려주고 text를 버린다. D40 ①(M1-20에서 확정): max_tokens는 출력 전체 실패 → FR-29 1회 재시도 안에서 처리한다. 기대: retry(mock은 같은 customId에 같은 응답을 주므로 같은 id로 재시도하면 downgrade-all)."
     },
     {
       "id": "brief-case-refusal",
@@ -1079,17 +1069,14 @@
         "refusal"
       ],
       "stage": "transport",
-      "candidates": [
-        "downgrade-all",
-        "retry"
-      ],
+      "expected": "downgrade-all",
       "llm": {
         "ok": false,
         "errorType": "refusal",
         "retryable": false,
         "attempts": 1
       },
-      "note": "합성 — stop_reason refusal(빈 출력). 입력 토큰은 brief-case-max-tokens와 같은 가정. M0-30·M0-34 18건 중 실제 사례 0건이고 정형 경기 데이터에서 거절은 드물 것으로 본다. llm.ts는 실패(errorType refusal, retryable false, 입력 토큰 과금)로 돌려준다. 판정 미정: 같은 입력은 다시 거절될 가능성이 커서 바로 템플릿(downgrade-all)이 후보, FR-29 재시도로 묶을지는 M1-45에서 정한다."
+      "note": "합성 — stop_reason refusal(빈 출력). 입력 토큰은 brief-case-max-tokens와 같은 가정. M0-30·M0-34 18건 중 실제 사례 0건이고 정형 경기 데이터에서 거절은 드물 것으로 본다. llm.ts는 실패(errorType refusal, retryable false, 입력 토큰 과금)로 돌려준다. D40 ①(M1-20에서 확정): refusal은 재시도 없이 바로 템플릿(template). 기대: downgrade-all."
     },
     {
       "id": "brief-case-errored-overloaded",

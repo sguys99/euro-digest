@@ -4,14 +4,14 @@ LLM 응답 샘플. `LLM_MODE=mock`(또는 `--mock`)이면 `scripts/lib/llm.ts`�
 
 일일 LLM 호출은 정형 경기 데이터로 쓰는 한국어 브리핑("오늘의 5줄")뿐이다(PRD §15 D24). 뉴스 기사는 LLM에 보내지 않으므로(D23) 기사 요약 응답 fixture는 두지 않는다. 주간 호출(팀 한줄평+강점·약점, 한국 선수 주간 총평)의 mock은 M3·M4에서 추가한다.
 
-> **M1-20 재생성 주의** — 브리핑 mock의 `text`는 **M0-30 임시 프롬프트·임시 출력 스키마**로 나온 모델 원문이다. M1-20에서 `configs/prompts/summarize.md`와 출력 zod 스키마가 확정되면 형식이 바뀌므로 `mock/by-id/brief-*.json`·`brief-cases.json`을 다시 만든다(실제 출력이 필요하면 `npm run eval:prompt` 소량 실행, 비용은 `data/runs-dev.json`에 기록). 그때까지 판정 기대값은 이 임시 형식 기준이다.
+> **M1-20 확정 (2026-10-17)** — 출력 zod 스키마는 M0-30 임시 스키마의 짧은 키 `{ l: [{ t, r }] }`를 그대로 확정했다(`scripts/lib/brief.ts` `BriefOutputSchema` — 아래 "출력 스키마"). 그래서 `mock/by-id/brief-*.json`은 **형식 때문에 다시 만들지 않았고** note와 `brief-cases.json` 기대값만 D40 판정으로 고쳤다. 단 mock의 `text`는 **M0-30·M0-34 임시 프롬프트**의 출력이다 — 지시문 v0.1(`configs/prompts/summarize.md`)의 실제 출력은 병합 뒤 dev 소량 실행(💰 M1-20)과 골든셋(M1-24, `npm run eval:prompt`)으로 더한다(비용은 `data/runs-dev.json`).
 
 ## mock/ — 요청별 응답
 
 ```
 mock/
   by-id/<customId>.json       # 1순위: 요청의 customId(브리핑 날짜·팀 묶음 ID 등)로 찾는다
-  by-hash/<h_해시>.json        # 2순위: system + user 내용 해시로 찾는다 (지금은 비어 있음 — M1-20 이후)
+  by-hash/<h_해시>.json        # 2순위: system + user 내용 해시로 찾는다 (지금은 비어 있음 — 골든셋 M1-24 후보)
 ```
 
 - 조회 순서는 `by-id` → `by-hash`. 둘 다 없으면 `LlmMockFixtureError`가 나고, 오류 메시지에 만들어야 할 파일 경로가 나온다.
@@ -32,7 +32,7 @@ mock/
 ## 파일 형식 (zod `MockFixtureSchema`, 키는 API 응답 이름을 따른다)
 
 ```jsonc
-// 성공 — text는 모델이 낸 원문 출력(문자열). 출력 JSON 형식은 프롬프트가 정한다(브리핑은 M1-20)
+// 성공 — text는 모델이 낸 원문 출력(문자열). 출력 JSON 형식은 프롬프트가 정한다(브리핑은 M1-20 확정 스키마)
 { "type": "succeeded", "text": "...", "stop_reason": "end_turn",
   "usage": { "input_tokens": 250, "output_tokens": 150,
              "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0 } }
@@ -78,7 +78,7 @@ mock/
 
 | id | 유형 | 실제·합성 | 입력 | 기대 판정 |
 |---|---|---|---|---|
-| `brief-2026-09-11` | 정상 | 실제 | B | ok (L5 순위 동사 미정) |
+| `brief-2026-09-11` | 정상 · prev 없는 '올랐다' | 실제 | B | downgrade-line:5 (D40 ③ — M1-20) |
 | `brief-2026-09-19` | 정상 · 한국 선수 | 실제 | A | ok |
 | `brief-2026-09-21` | 정상 | 실제 | D | ok |
 | `brief-2026-10-10` | 정상 · 한 줄 두 문장 | 실제 | C | downgrade-line:1 |
@@ -92,25 +92,25 @@ mock/
 | `brief-case-translit-rank` | 음역 + 근거 없는 순위 서술 | 실제 | C | downgrade-line:1~5 |
 | `brief-case-short-name-player` | 축약 선수 이름('Olise') | 실제 | A | downgrade-line:4 |
 | `brief-case-short-name-team` | 축약 팀 이름('Lens') | 실제 | B | downgrade-line:4 |
-| `brief-case-short-name-team-2` | 축약 팀 이름(effort low) | 실제 | B | downgrade-line:4 (L5 미정) |
-| `brief-case-leftover-word` | 영문 일반어('Matchday') | 실제 | C | downgrade-line:1 (L5 파생 숫자 미정) |
-| `brief-case-particle` | 조사 오류('Bayern가' — 보정 대상) + 축약 이름 | 실제 | A | downgrade-line:2 (L5 미정) |
+| `brief-case-short-name-team-2` | 축약 팀 이름(effort low) | 실제 | B | downgrade-line:4,5 (L5 D40 ③ — M1-20) |
+| `brief-case-leftover-word` | 영문 일반어('Matchday') | 실제 | C | downgrade-line:1 (L5 파생 숫자 통과 — D40 ②) |
+| `brief-case-particle` | 조사 오류('Bayern가' — 보정 대상) + 축약 이름 | 실제 | A | downgrade-line:2 (L5 '프리미어리그' 통과 — D40 ④) |
 | `brief-case-score-winner-first` | 이긴 팀 점수 먼저('1-0으로 이겼다' — ft 0-1) | 실제 | D | ok |
 | `brief-case-json-invalid` | JSON 파싱 불가 | 합성 | A | retry |
-| `brief-case-json-fenced` | 코드블록으로 감싼 JSON | 합성 | A | 미정(ok 또는 retry — M1-20) |
+| `brief-case-json-fenced` | 코드블록으로 감싼 JSON | 합성 | A | ok (코드블록 벗김 — D40 ⑤) |
 | `brief-case-missing-key` | 필수 키(r) 누락 | 합성 | A | retry |
-| `brief-case-too-many-lines` | 6줄 | 합성 | A | retry |
-| `brief-case-line-over-schema` | 한 줄 150자 초과 | 합성 | A | retry |
+| `brief-case-too-many-lines` | 6줄 | 합성 | A | ok (앞 5줄 — D40 ⑤, 임시 스키마에서는 retry) |
+| `brief-case-line-over-schema` | 한 줄 150자 초과(치환 뒤 146자) | 합성 | A | downgrade-line:1 (80자 초과 — D40 ⑤, 임시 스키마에서는 retry) |
 | `brief-case-score-mismatch` | 입력에 없는 스코어(3-1) | 합성 | A | downgrade-line:4 |
 | `brief-case-score-reversed` | 스코어 순서 뒤집힘(0-3으로 꺾었다) | 합성 | A | downgrade-line:4 |
 | `brief-case-winner-swap` | 승자 뒤바뀜(스코어는 그대로) | 합성 | A | downgrade-line:4 |
 | `brief-case-bad-ref` | 입력에 없는 근거 id | 합성 | A | downgrade-line:4 |
-| `brief-case-max-tokens` | `stop_reason: max_tokens`(잘린 JSON) | 합성 | A | 미정(retry 또는 downgrade-all — M1-45) |
-| `brief-case-refusal` | `stop_reason: refusal` | 합성 | A | 미정(downgrade-all 또는 retry — M1-45) |
+| `brief-case-max-tokens` | `stop_reason: max_tokens`(잘린 JSON) | 합성 | A | retry (출력 전체 실패 — D40 ①) |
+| `brief-case-refusal` | `stop_reason: refusal` | 합성 | A | downgrade-all (재시도 없이 템플릿 — D40 ①) |
 | `brief-case-errored-overloaded` | 529 과부하 — llm.ts 재시도 대상 | 합성 | A | downgrade-all |
 | `brief-case-errored-timeout` | 연결 오류·타임아웃 — 재시도 안 함 | 합성 | A | downgrade-all |
 
-발행일 5개는 `fixtures/brief-sample.json`(D0 시안 입력)과 같은 날·같은 출력이다(가드 테스트가 확인). 단 brief-sample은 표시용이라 2026-10-10 L1(두 문장)을 강등하지 않았다.
+발행일 5개는 `fixtures/brief-sample.json`(D0 시안 입력)과 같은 날·같은 출력이다(가드 테스트가 확인). 단 brief-sample은 표시용이라 2026-10-10 L1(두 문장)·2026-09-11 L5(prev 없는 '올랐다' — M1-20에서 D40 ③으로 확정)를 강등하지 않았다.
 
 ### brief-cases.json
 
@@ -149,7 +149,7 @@ FR-29 순서(zod → 출력 전체 코드 검증 → 1회 재시도 → 템플�
 - **표기 차이(M1-19에서 통일)**: 한국 선수 이름이 A는 성-이름("Kim Min-jae"), E는 이름-성("Kang-in Lee"), 득점 선수가 A는 API-Football 축약("M. Olise"), C·E는 전체 이름이다. 모두 `configs/names.ko.json` 별칭에 있거나 임시 사전에 있다.
 - 로고·사진 URL·배당(odds)·평점은 옮기지 않았다. 기사 텍스트는 없다.
 
-### 임시 프롬프트 (M1-20 출발점, mock 재현 근거)
+### 임시 프롬프트 (M1-20 출발점, mock 재현 근거 — 파이프라인 지시문은 `configs/prompts/summarize.md`)
 
 `docs/research/m0-validation.md` M0-30 절에는 요약만 있어 전문을 보관한다. system = 파일 내용 `.trim()`.
 
@@ -160,18 +160,21 @@ FR-29 순서(zod → 출력 전체 코드 검증 → 1회 재시도 → 템플�
 
 요청 설정: M0-30 "기본" = 모델 기본값(적응형 thinking, effort medium — 명시하지 않음), "effort low", "thinking 끔" 세 가지. M0-34는 thinking 적응형 + `effort:"medium"` 명시. 모두 `max_tokens` 4,096. 케이스별 값은 `brief-cases.json` `request`.
 
-### 임시 출력 스키마 (M0-30 `common.ts`, M1-20에서 확정)
+### 출력 스키마 (M1-20 확정 — `scripts/lib/brief.ts`)
+
+M0-30 임시 스키마(`common.ts` — `t` 5~150자, `l` 1~5줄)의 짧은 키를 그대로 두고, 길이·줄 수는 스키마가 아니라 관용 파싱·줄 판정으로 옮겼다(D40 ⑤).
 
 ```ts
-z.strictObject({                       // 모르는 키 거부
+BriefOutputSchema = z.strictObject({            // 모르는 키 거부 → 출력 전체 실패(FR-29 재시도)
   l: z.array(z.strictObject({
-    t: z.string().min(5).max(150),      // 브리핑 문장 1개 — 팀·선수·대회 이름은 입력 영문 그대로
-    r: z.array(z.string().min(1)).min(1).max(6),  // 근거 입력 항목 id(m…·s…·k…)
-  })).min(1).max(5),                    // 최대 5줄
+    t: z.string().trim().min(5),                 // 브리핑 문장 1개 — 팀·선수·대회 이름은 입력 영문 그대로(치환은 names.ts)
+    r: z.array(z.string().trim().min(1)).min(1).max(6)  // 근거 입력 항목 id(m…·s…·k…) — 줄 안 중복은 하나로
+      .transform((refs) => [...new Set(refs)]),
+  })).min(1),                                    // 줄 수 상한 없음 — 파서가 앞 5줄만 쓴다
 })
 ```
 
-M0-30은 엄격 `JSON.parse`가 실패하면 첫 `{`~마지막 `}`를 잘라 다시 파싱하는 관대한 경로도 쟀다(18건 모두 엄격 JSON이라 쓰이지 않음). 관대한 파싱 허용 여부는 M1-20에서 정한다(`brief-case-json-fenced`).
+관용 파싱 `parseBriefOutput` (D40 ⑤, 비용 0): ① 출력 **전체**를 감싼 ```` ``` ````·```` ```json ```` 코드블록은 벗긴다(`fenced`) — 앞뒤에 다른 글이 붙으면 벗기지 않고 `json` 실패. M0-30이 잰 첫 `{`~마지막 `}` 추출은 쓰지 않는다 ② 6줄 이상이면 앞 5줄만(`droppedLines`) ③ 80자 초과 줄은 **고유명사 치환·조사 보정 뒤 문장**으로 재서(`briefLinesOverLimit`) 그 줄만 템플릿 강등 대상으로 표시한다(자르지 않음 — 실제 강등은 M1-45). 실패 이유는 `json`·`schema`(둘 다 출력 전체 실패).
 
 ### 임시 고유명사 사전 `names-ko.tmp.json`
 
