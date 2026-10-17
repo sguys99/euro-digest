@@ -1,0 +1,292 @@
+{
+  "label": "2026-10-17-v0.4-c",
+  "variant": "base",
+  "mode": "live",
+  "model": "claude-haiku-5-5",
+  "promptId": "p_24543d78cd9a",
+  "prompt": "configs/prompts/summarize.md",
+  "promptChars": 4455,
+  "checker": {
+    "id": "c_4011fb3c1d54",
+    "files": [
+      "scripts/lib/brief-check-lexicon.ts",
+      "scripts/lib/brief-check.ts",
+      "scripts/lib/brief-grammar.ts",
+      "scripts/lib/brief-template.ts",
+      "scripts/lib/brief.ts",
+      "scripts/lib/josa.ts",
+      "scripts/lib/names.ts"
+    ]
+  },
+  "configs": {
+    "id": "g_a027a4250859",
+    "files": [
+      "configs/competitions.json",
+      "configs/korean-players.json",
+      "configs/names.ko.json",
+      "configs/team-ids.json"
+    ],
+    "llmMaxMatches": 15
+  },
+  "runId": "eval-dev-20261017T102558Z-eba6",
+  "startedAt": "2026-10-17T10:25:58.037Z",
+  "finishedAt": "2026-10-17T10:26:34.679Z",
+  "settings": {
+    "maxTokens": 8192,
+    "thinking": "adaptive",
+    "effort": "medium",
+    "cacheSystem": false,
+    "attempts": 1
+  },
+  "warnings": [],
+  "days": [
+    {
+      "date": "2026-02-26",
+      "customId": "golden-2026-02-26",
+      "inputHash": "i_d945e3d422ab",
+      "matches": 4,
+      "userChars": 633,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Atalanta가 UEFA Champions League 플레이오프에서 Dortmund를 4-1로 완파했다.\",\"r\":[\"m552065\"]},{\"t\":\"Juventus와 Galatasaray의 UEFA Champions League 경기는 연장까지 3-2로 끝났다.\",\"r\":[\"m552063\"]},{\"t\":\"Real Madrid가 홈에서 SL Benfica를 2-1로 꺾었다.\",\"r\":[\"m552060\"]},{\"t\":\"PSG가 Monaco와 4골을 주고받은 끝에 2-2로 비겼다.\",\"r\":[\"m552061\"]}]}",
+      "usage": {
+        "in": 4706,
+        "out": 3456,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 3238,
+      "latencyMs": 14954.116242,
+      "costUsd": 0.002199,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Atalanta가 UEFA Champions League 플레이오프에서 Dortmund를 4-1로 완파했다.",
+          "text": "아탈란타가 UEFA 챔피언스리그 플레이오프에서 도르트문트를 4-1로 완파했다.",
+          "refs": [
+            "m552065"
+          ],
+          "chars": 43,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "아탈란타가 UEFA 챔피언스리그 홈경기에서 도르트문트를 4-1로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 2,
+          "raw": "Juventus와 Galatasaray의 UEFA Champions League 경기는 연장까지 3-2로 끝났다.",
+          "text": "유벤투스와 갈라타사라이의 UEFA 챔피언스리그 경기는 연장까지 3-2로 끝났다.",
+          "refs": [
+            "m552063"
+          ],
+          "chars": 44,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "유벤투스와 갈라타사라이의 UEFA 챔피언스리그 경기는 연장까지 3-2로 끝났다.",
+          "grammar": "end"
+        },
+        {
+          "n": 3,
+          "raw": "Real Madrid가 홈에서 SL Benfica를 2-1로 꺾었다.",
+          "text": "레알 마드리드가 홈에서 SL Benfica를 2-1로 꺾었다.",
+          "refs": [
+            "m552060"
+          ],
+          "chars": 34,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "레알 마드리드가 UEFA 챔피언스리그 홈경기에서 SL Benfica를 2-1로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 4,
+          "raw": "PSG가 Monaco와 4골을 주고받은 끝에 2-2로 비겼다.",
+          "text": "파리 생제르맹이 모나코와 4골을 주고받은 끝에 2-2로 비겼다.",
+          "refs": [
+            "m552061"
+          ],
+          "chars": 35,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "파리 생제르맹과 모나코가 UEFA 챔피언스리그에서 2-2로 비겼다.",
+          "grammar": "draw"
+        }
+      ],
+      "hiddenRefs": [],
+      "template": [
+        "아탈란타가 UEFA 챔피언스리그 홈경기에서 도르트문트를 4-1로 완파했다.",
+        "유벤투스와 갈라타사라이의 UEFA 챔피언스리그 경기는 연장까지 3-2로 끝났다.",
+        "레알 마드리드가 UEFA 챔피언스리그 홈경기에서 SL Benfica를 2-1로 꺾었다.",
+        "파리 생제르맹과 모나코가 UEFA 챔피언스리그에서 2-2로 비겼다."
+      ]
+    },
+    {
+      "date": "2026-05-31",
+      "customId": "golden-2026-05-31",
+      "inputHash": "i_7dd55ac8168c",
+      "matches": 1,
+      "userChars": 222,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"UEFA Champions League 결승에서 PSG가 Arsenal과 연장까지 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다.\",\"r\":[\"m552096\"]}]}",
+      "usage": {
+        "in": 4490,
+        "out": 1068,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 982,
+      "latencyMs": 5182.174050999998,
+      "costUsd": 0.000983,
+      "verdict": "downgrade-line:1",
+      "stage": "line",
+      "reason": null,
+      "lineReasons": {
+        "1": [
+          "grammar-unknown"
+        ]
+      },
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "UEFA Champions League 결승에서 PSG가 Arsenal과 연장까지 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다.",
+          "text": "UCL 결승에서 파리 생제르맹이 아스널과 연장까지 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다.",
+          "refs": [
+            "m552096"
+          ],
+          "chars": 55,
+          "ok": false,
+          "reasons": [
+            "grammar-unknown(UEFA Champions League)"
+          ],
+          "warnings": [],
+          "template": "파리 생제르맹이 UCL 결승에서 아스널과 연장까지 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다.",
+          "grammar": null
+        }
+      ],
+      "hiddenRefs": [],
+      "template": [
+        "파리 생제르맹이 UCL 결승에서 아스널과 연장까지 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다."
+      ]
+    },
+    {
+      "date": "2026-09-11",
+      "customId": "golden-2026-09-11",
+      "inputHash": "i_8ecedbaa110f",
+      "matches": 6,
+      "userChars": 1241,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Bayern가 Bodø/Glimt를 5-0으로 완파했고 승점 3으로 UEFA Champions League 2위다.\",\"r\":[\"m575337\",\"sUCL\"]},{\"t\":\"Man United가 Sabah FK를 4-0으로 완파했고 승점 3으로 UEFA Champions League 4위다.\",\"r\":[\"m575338\",\"sUCL\"]},{\"t\":\"Como 1907이 RB Leipzig를 4-1로 꺾었다.\",\"r\":[\"m575339\"]},{\"t\":\"RC Lens가 Slavia Praha 원정에서 3-2로 이겼다.\",\"r\":[\"m575340\"]},{\"t\":\"Fenerbahçe가 Roma와 1-1로 비겼다.\",\"r\":[\"m575335\"]}]}",
+      "usage": {
+        "in": 5006,
+        "out": 3597,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 3329,
+      "latencyMs": 15709.521926000005,
+      "costUsd": 0.002299,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Bayern가 Bodø/Glimt를 5-0으로 완파했고 승점 3으로 UEFA Champions League 2위다.",
+          "text": "바이에른 뮌헨이 보되/글림트를 5-0으로 완파했고 승점 3으로 UEFA 챔피언스리그 2위다.",
+          "refs": [
+            "m575337",
+            "sUCL"
+          ],
+          "chars": 51,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바이에른 뮌헨이 UEFA 챔피언스리그 홈경기에서 보되/글림트를 5-0으로 완파했다.",
+          "grammar": "win+rank"
+        },
+        {
+          "n": 2,
+          "raw": "Man United가 Sabah FK를 4-0으로 완파했고 승점 3으로 UEFA Champions League 4위다.",
+          "text": "맨체스터 유나이티드가 Sabah FK를 4-0으로 완파했고 승점 3으로 UEFA 챔피언스리그 4위다.",
+          "refs": [
+            "m575338",
+            "sUCL"
+          ],
+          "chars": 56,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "맨체스터 유나이티드가 UEFA 챔피언스리그 홈경기에서 Sabah FK를 4-0으로 완파했다.",
+          "grammar": "win+rank"
+        },
+        {
+          "n": 3,
+          "raw": "Como 1907이 RB Leipzig를 4-1로 꺾었다.",
+          "text": "코모가 라이프치히를 4-1로 꺾었다.",
+          "refs": [
+            "m575339"
+          ],
+          "chars": 20,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "코모가 UEFA 챔피언스리그 홈경기에서 라이프치히를 4-1로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 4,
+          "raw": "RC Lens가 Slavia Praha 원정에서 3-2로 이겼다.",
+          "text": "랑스가 슬라비아 프라하 원정에서 3-2로 이겼다.",
+          "refs": [
+            "m575340"
+          ],
+          "chars": 27,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "랑스가 UEFA 챔피언스리그 원정에서 슬라비아 프라하를 3-2로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 5,
+          "raw": "Fenerbahçe가 Roma와 1-1로 비겼다.",
+          "text": "페네르바체가 로마와 1-1로 비겼다.",
+          "refs": [
+            "m575335"
+          ],
+          "chars": 20,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "페네르바체와 로마가 UEFA 챔피언스리그에서 1-1로 비겼다.",
+          "grammar": "draw"
+        }
+      ],
+      "hiddenRefs": [],
+      "template": [
+        "바이에른 뮌헨이 UEFA 챔피언스리그 홈경기에서 보되/글림트를 5-0으로 완파했다.",
+        "맨체스터 유나이티드가 UEFA 챔피언스리그 홈경기에서 Sabah FK를 4-0으로 완파했다.",
+        "코모가 UEFA 챔피언스리그 홈경기에서 라이프치히를 4-1로 완파했다.",
+        "랑스가 UEFA 챔피언스리그 원정에서 슬라비아 프라하를 3-2로 꺾었다.",
+        "파리 생제르맹이 승점 3으로 UEFA 챔피언스리그 선두, 바이에른 뮌헨이 승점 3으로 2위다."
+      ]
+    }
+  ]
+}

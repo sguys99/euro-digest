@@ -45,6 +45,7 @@ import {
   configsFingerprint,
   EVAL_OUTPUT_ALERT_TOKENS,
   evalPromptPathError,
+  evalOutputWarning,
   evalStopReason,
   evalVersions,
   isValidEvalLabel,
@@ -585,71 +586,122 @@ describe("runEvalPrompt — live 흐름(가짜 클라이언트, 임시 data/)", 
     expect(readdirSync(d.dataDir)).toEqual(["runs.json"]);
   });
 
-  it.each([
-    [
-      "출력 6,000토큰 초과",
-      {
-        ok: true,
-        text: '{"l":[]}',
-        stopReason: "end_turn",
-        out: 6_001,
+  /** 날짜마다 정한 모양을 돌려주는 가짜 live 클라이언트 */
+  const shaped =
+    (
+      calls: LlmRequest[],
+      shapeOf: (customId: string) => Record<string, unknown> & { out: number },
+    ) =>
+    (model: string) => ({
+      model,
+      async callSingle(request: LlmRequest): Promise<LlmResult> {
+        calls.push(request);
+        const { out, ...rest } = shapeOf(request.customId);
+        return {
+          ...rest,
+          customId: request.customId,
+          batch: false,
+          usage: { in: 5_000, out, cacheRead: 0, cacheWrite: 0 },
+          thinkingTokens: 100,
+        } as LlmResult;
       },
-      "출력 6001토큰 > 6000",
-    ],
-    [
-      "잘림(max_tokens)",
-      {
+    });
+  const okShape = (out: number) => ({
+    ok: true,
+    text: '{"l":[]}',
+    stopReason: "end_turn",
+    out,
+  });
+
+  it("잘림(max_tokens)이면 남은 날을 보내지 않고 멈춘다(사용자 결정 2026-10-17 — 멈춤은 잘림만, live만)", async () => {
+    const calls: LlmRequest[] = [];
+    const d = deps({
+      args: args({
+        llmMode: "live",
+        dates: ["2026-10-10", "2026-10-17"],
+        label: "stop-t",
+        baseline: "none",
+      }),
+      createLlm: shaped(calls, () => ({
         ok: false,
         errorType: "max_tokens",
         message: "max_tokens",
         retryable: false,
         out: 8_192,
+      })),
+    });
+    const outcome = await runEvalPrompt(d);
+    expect(outcome.exitCode).toBe(0);
+    expect(calls.map((c) => c.customId)).toEqual(["golden-2026-10-10"]);
+    expect(outcome.run!.days.map((x) => x.date)).toEqual(["2026-10-10"]);
+    const printed = d.out.join("\n");
+    expect(printed).toContain("[eval] 멈춤: 2026-10-10 잘림(max_tokens)");
+    expect(printed).toContain("남은 1일은 보내지 않는다");
+    // 잘린 날도 출력이 경고 기준을 넘었으므로 경고가 남는다
+    expect(outcome.run!.warnings).toEqual([
+      {
+        date: "2026-10-10",
+        code: "output-over-alert",
+        out: 8_192,
+        limit: 6_000,
       },
-      "잘림(max_tokens)",
-    ],
-  ] as const)(
-    "%s면 남은 날을 보내지 않고 멈춘다(D53 — 멈추고 보고, live만)",
-    async (_, shape, reason) => {
-      const calls: LlmRequest[] = [];
-      const d = deps({
-        args: args({
-          llmMode: "live",
-          dates: ["2026-10-10", "2026-10-17"],
-          label: "stop-t",
-          baseline: "none",
-        }),
-        createLlm: (model: string) => ({
-          model,
-          async callSingle(request: LlmRequest): Promise<LlmResult> {
-            calls.push(request);
-            const { out, ...rest } = shape;
-            return {
-              ...rest,
-              customId: request.customId,
-              batch: false,
-              usage: { in: 5_000, out, cacheRead: 0, cacheWrite: 0 },
-              thinkingTokens: 100,
-            } as LlmResult;
-          },
-        }),
-      });
-      const outcome = await runEvalPrompt(d);
-      expect(outcome.exitCode).toBe(0);
-      expect(calls.map((c) => c.customId)).toEqual(["golden-2026-10-10"]);
-      expect(outcome.run!.days.map((x) => x.date)).toEqual(["2026-10-10"]);
-      const printed = d.out.join("\n");
-      expect(printed).toContain(`[eval] 멈춤: 2026-10-10 ${reason}`);
-      expect(printed).toContain("남은 1일은 보내지 않는다");
-      const runs = RunsDevFileSchema.parse(
-        readJson(path.join(d.dataDir, "runs-dev.json")),
-      );
-      expect(runs[0]!.status).toBe("partial");
-      expect(runs[0]!.tokens.out).toBe(shape.out);
-    },
-  );
+    ]);
+    const runs = RunsDevFileSchema.parse(
+      readJson(path.join(d.dataDir, "runs-dev.json")),
+    );
+    expect(runs[0]!.status).toBe("partial");
+    expect(runs[0]!.tokens.out).toBe(8_192);
+  });
 
-  it("evalStopReason — 6,000 이하·정상 종료면 멈추지 않는다", () => {
+  it("출력 6,000토큰 초과는 멈추지 않고 경고만 — 로그·run.json warnings에 남고 다음 날도 보낸다", async () => {
+    const calls: LlmRequest[] = [];
+    const warned: string[] = [];
+    const d = deps({
+      args: args({
+        llmMode: "live",
+        dates: ["2026-10-10", "2026-10-17"],
+        label: "warn-t",
+        baseline: "none",
+      }),
+      createLlm: shaped(calls, (id) =>
+        okShape(id === "golden-2026-10-10" ? 6_729 : 3_000),
+      ),
+      logger: createLogger({
+        scope: "test",
+        sink: (line) => warned.push(String(line)),
+      }),
+    });
+    const outcome = await runEvalPrompt(d);
+    expect(outcome.exitCode).toBe(0);
+    expect(calls.map((c) => c.customId)).toEqual([
+      "golden-2026-10-10",
+      "golden-2026-10-17",
+    ]);
+    const printed = d.out.join("\n");
+    expect(printed).not.toContain("[eval] 멈춤");
+    expect(printed).toContain(
+      "[eval] 경고: 2026-10-10 출력 6729토큰 > 6000 — 계속한다",
+    );
+    expect(warned.join("\n")).toContain("eval.output-over-alert");
+    expect(outcome.run!.warnings).toEqual([
+      {
+        date: "2026-10-10",
+        code: "output-over-alert",
+        out: 6_729,
+        limit: 6_000,
+      },
+    ]);
+    const saved = EvalRunSchema.parse(readJson(outcome.runFile!));
+    expect(saved.warnings).toEqual(outcome.run!.warnings);
+    const runs = RunsDevFileSchema.parse(
+      readJson(path.join(d.dataDir, "runs-dev.json")),
+    );
+    expect(runs[0]!.status).toBe("success");
+  });
+
+  it("evalStopReason은 잘림만 · evalOutputWarning은 6,000 초과(같음은 경고 아님)", () => {
     const day = (ok: boolean, out: number, errorType: string | null) => ({
+      date: "2026-10-10",
       ok,
       errorType,
       usage: { in: 1, out, cacheRead: 0, cacheWrite: 0 },
@@ -658,10 +710,19 @@ describe("runEvalPrompt — live 흐름(가짜 클라이언트, 임시 data/)", 
       null,
     );
     expect(evalStopReason(day(false, 10, "api_error"))).toBe(null);
-    expect(evalStopReason(day(true, 6_001, null))).toMatch(/^출력 6001토큰/);
+    expect(evalStopReason(day(true, 6_001, null))).toBe(null);
     expect(evalStopReason(day(false, 8_192, "max_tokens"))).toMatch(
       /^잘림\(max_tokens\)/,
     );
+    expect(evalOutputWarning(day(true, EVAL_OUTPUT_ALERT_TOKENS, null))).toBe(
+      null,
+    );
+    expect(evalOutputWarning(day(true, 6_001, null))).toEqual({
+      date: "2026-10-10",
+      code: "output-over-alert",
+      out: 6_001,
+      limit: 6_000,
+    });
   });
 
   it("--dry는 예상만 출력하고 부르지 않는다", async () => {

@@ -1,0 +1,149 @@
+{
+  "label": "2026-10-17-v0.4-e",
+  "variant": "base",
+  "mode": "live",
+  "model": "claude-haiku-5-5",
+  "promptId": "p_24543d78cd9a",
+  "prompt": "configs/prompts/summarize.md",
+  "promptChars": 4455,
+  "checker": {
+    "id": "c_4011fb3c1d54",
+    "files": [
+      "scripts/lib/brief-check-lexicon.ts",
+      "scripts/lib/brief-check.ts",
+      "scripts/lib/brief-grammar.ts",
+      "scripts/lib/brief-template.ts",
+      "scripts/lib/brief.ts",
+      "scripts/lib/josa.ts",
+      "scripts/lib/names.ts"
+    ]
+  },
+  "configs": {
+    "id": "g_a027a4250859",
+    "files": [
+      "configs/competitions.json",
+      "configs/korean-players.json",
+      "configs/names.ko.json",
+      "configs/team-ids.json"
+    ],
+    "llmMaxMatches": 15
+  },
+  "runId": "eval-dev-20261017T102716Z-c4fc",
+  "startedAt": "2026-10-17T10:27:16.121Z",
+  "finishedAt": "2026-10-17T10:27:31.604Z",
+  "settings": {
+    "maxTokens": 8192,
+    "thinking": "adaptive",
+    "effort": "medium",
+    "cacheSystem": false,
+    "attempts": 1
+  },
+  "warnings": [],
+  "days": [
+    {
+      "date": "2026-10-14",
+      "customId": "golden-2026-10-14",
+      "inputHash": "i_0da9ad6e0d96",
+      "matches": 9,
+      "userChars": 1371,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Barça가 Galatasaray를 4-1로 완파했다.\",\"r\":[\"m575344\"]},{\"t\":\"Arsenal이 홈에서 Lille을 3-0으로 눌렀다.\",\"r\":[\"m575346\"]},{\"t\":\"Club Brugge가 Inter를 7골을 주고받은 끝에 4-3으로 이겼다.\",\"r\":[\"m575343\"]},{\"t\":\"Viking이 6골을 주고받은 끝에 Bayern과 3-3으로 비겼다.\",\"r\":[\"m575347\"]},{\"t\":\"Atleti가 홈에서 Man United를 2-0으로 꺾었다.\",\"r\":[\"m575345\"]}]}",
+      "usage": {
+        "in": 5042,
+        "out": 3497,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 3261,
+      "latencyMs": 15036.898935000001,
+      "costUsd": 0.002253,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Barça가 Galatasaray를 4-1로 완파했다.",
+          "text": "바르셀로나가 갈라타사라이를 4-1로 완파했다.",
+          "refs": [
+            "m575344"
+          ],
+          "chars": 25,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바르셀로나가 UEFA 챔피언스리그 원정에서 갈라타사라이를 4-1로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 2,
+          "raw": "Arsenal이 홈에서 Lille을 3-0으로 눌렀다.",
+          "text": "아스널이 홈에서 릴을 3-0으로 눌렀다.",
+          "refs": [
+            "m575346"
+          ],
+          "chars": 22,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "아스널이 UEFA 챔피언스리그 홈경기에서 릴을 3-0으로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 3,
+          "raw": "Club Brugge가 Inter를 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "text": "클럽 브뤼헤가 인테르를 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "refs": [
+            "m575343"
+          ],
+          "chars": 35,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "클럽 브뤼헤가 UEFA 챔피언스리그 원정에서 인테르를 4-3으로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 4,
+          "raw": "Viking이 6골을 주고받은 끝에 Bayern과 3-3으로 비겼다.",
+          "text": "Viking이 6골을 주고받은 끝에 바이에른 뮌헨과 3-3으로 비겼다.",
+          "refs": [
+            "m575347"
+          ],
+          "chars": 39,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "Viking과 바이에른 뮌헨이 UEFA 챔피언스리그에서 3-3으로 비겼다.",
+          "grammar": "draw"
+        },
+        {
+          "n": 5,
+          "raw": "Atleti가 홈에서 Man United를 2-0으로 꺾었다.",
+          "text": "아틀레티코 마드리드가 홈에서 맨체스터 유나이티드를 2-0으로 꺾었다.",
+          "refs": [
+            "m575345"
+          ],
+          "chars": 38,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "아틀레티코 마드리드가 UEFA 챔피언스리그 홈경기에서 맨체스터 유나이티드를 2-0으로 꺾었다.",
+          "grammar": "win"
+        }
+      ],
+      "hiddenRefs": [],
+      "template": [
+        "아틀레티코 마드리드가 UEFA 챔피언스리그 홈경기에서 맨체스터 유나이티드를 2-0으로 꺾었다.",
+        "Viking과 바이에른 뮌헨이 UEFA 챔피언스리그에서 3-3으로 비겼다.",
+        "클럽 브뤼헤가 UEFA 챔피언스리그 원정에서 인테르를 4-3으로 꺾었다.",
+        "바르셀로나가 UEFA 챔피언스리그 원정에서 갈라타사라이를 4-1로 완파했다.",
+        "아스널이 UEFA 챔피언스리그 홈경기에서 릴을 3-0으로 완파했다."
+      ]
+    }
+  ]
+}

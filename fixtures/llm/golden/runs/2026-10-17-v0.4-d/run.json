@@ -1,0 +1,156 @@
+{
+  "label": "2026-10-17-v0.4-d",
+  "variant": "base",
+  "mode": "live",
+  "model": "claude-haiku-5-5",
+  "promptId": "p_24543d78cd9a",
+  "prompt": "configs/prompts/summarize.md",
+  "promptChars": 4455,
+  "checker": {
+    "id": "c_4011fb3c1d54",
+    "files": [
+      "scripts/lib/brief-check-lexicon.ts",
+      "scripts/lib/brief-check.ts",
+      "scripts/lib/brief-grammar.ts",
+      "scripts/lib/brief-template.ts",
+      "scripts/lib/brief.ts",
+      "scripts/lib/josa.ts",
+      "scripts/lib/names.ts"
+    ]
+  },
+  "configs": {
+    "id": "g_a027a4250859",
+    "files": [
+      "configs/competitions.json",
+      "configs/korean-players.json",
+      "configs/names.ko.json",
+      "configs/team-ids.json"
+    ],
+    "llmMaxMatches": 15
+  },
+  "runId": "eval-dev-20261017T102652Z-afc0",
+  "startedAt": "2026-10-17T10:26:52.465Z",
+  "finishedAt": "2026-10-17T10:27:05.495Z",
+  "settings": {
+    "maxTokens": 8192,
+    "thinking": "adaptive",
+    "effort": "medium",
+    "cacheSystem": false,
+    "attempts": 1
+  },
+  "warnings": [],
+  "days": [
+    {
+      "date": "2026-09-21",
+      "customId": "golden-2026-09-21",
+      "inputHash": "i_890a41ebb91a",
+      "matches": 20,
+      "userChars": 2298,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Sunderland를 5-3으로 꺾은 Man City는 승점 15로 Premier League 선두다.\",\"r\":[\"m560590\",\"sPL\"]},{\"t\":\"Milan이 Lecce를 3-0으로 완파했다.\",\"r\":[\"m558597\"]},{\"t\":\"Atleti가 Real Madrid를 2-1로 꺾었다.\",\"r\":[\"m564688\"]},{\"t\":\"Juventus가 Atalanta를 2-0으로 눌렀다.\",\"r\":[\"m558595\"]},{\"t\":\"Leverkusen이 RB Leipzig를 2-0으로 꺾었다.\",\"r\":[\"m565807\"]}]}",
+      "usage": {
+        "in": 5573,
+        "out": 2933,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 2705,
+      "latencyMs": 12554.103434,
+      "costUsd": 0.002024,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Sunderland를 5-3으로 꺾은 Man City는 승점 15로 Premier League 선두다.",
+          "text": "선덜랜드를 5-3으로 꺾은 맨체스터 시티는 승점 15로 프리미어리그 선두다.",
+          "refs": [
+            "m560590",
+            "sPL"
+          ],
+          "chars": 42,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "맨체스터 시티가 프리미어리그 홈경기에서 선덜랜드를 5-3으로 꺾었다.",
+          "grammar": "win+rank"
+        },
+        {
+          "n": 2,
+          "raw": "Milan이 Lecce를 3-0으로 완파했다.",
+          "text": "AC 밀란이 레체를 3-0으로 완파했다.",
+          "refs": [
+            "m558597"
+          ],
+          "chars": 22,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "AC 밀란이 세리에 A 홈경기에서 레체를 3-0으로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 3,
+          "raw": "Atleti가 Real Madrid를 2-1로 꺾었다.",
+          "text": "아틀레티코 마드리드가 레알 마드리드를 2-1로 꺾었다.",
+          "refs": [
+            "m564688"
+          ],
+          "chars": 30,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "아틀레티코 마드리드가 라리가 홈경기에서 레알 마드리드를 2-1로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 4,
+          "raw": "Juventus가 Atalanta를 2-0으로 눌렀다.",
+          "text": "유벤투스가 아탈란타를 2-0으로 눌렀다.",
+          "refs": [
+            "m558595"
+          ],
+          "chars": 22,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "유벤투스가 세리에 A 홈경기에서 아탈란타를 2-0으로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 5,
+          "raw": "Leverkusen이 RB Leipzig를 2-0으로 꺾었다.",
+          "text": "레버쿠젠이 라이프치히를 2-0으로 꺾었다.",
+          "refs": [
+            "m565807"
+          ],
+          "chars": 23,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "레버쿠젠이 분데스리가 홈경기에서 라이프치히를 2-0으로 꺾었다.",
+          "grammar": "win"
+        }
+      ],
+      "hiddenRefs": [
+        "m564695",
+        "m564696",
+        "m565803",
+        "m559676",
+        "m559678"
+      ],
+      "template": [
+        "아틀레티코 마드리드가 라리가 홈경기에서 레알 마드리드를 2-1로 꺾었다.",
+        "맨체스터 시티가 프리미어리그 홈경기에서 선덜랜드를 5-3으로 꺾었다.",
+        "리버풀이 프리미어리그 원정에서 본머스를 1-0으로 꺾었다.",
+        "풀럼과 맨체스터 유나이티드가 프리미어리그에서 1-1로 비겼다.",
+        "맨체스터 시티가 승점 15로 프리미어리그 선두, 아스널이 승점 12로 2위다."
+      ]
+    }
+  ]
+}

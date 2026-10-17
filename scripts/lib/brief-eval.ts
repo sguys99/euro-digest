@@ -231,9 +231,24 @@ export const EvalRunSchema = z.strictObject({
     attempts: z.literal(1),
   }),
   note: z.string().optional(),
+  /**
+   * 출력 경고 — 출력 토큰이 경고 기준(eval-prompt-run.ts `EVAL_OUTPUT_ALERT_TOKENS` 6,000)을 넘은 날. 멈추지 않고 기록만 한다
+   * (사용자 결정 2026-10-17 — 멈춤은 잘림만). 이 칸이 생기기 전 실행에는 없다
+   */
+  warnings: z
+    .array(
+      z.strictObject({
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        code: z.literal("output-over-alert"),
+        out: z.number().int().nonnegative(),
+        limit: z.number().int().positive(),
+      }),
+    )
+    .optional(),
   days: z.array(EvalDaySchema),
 });
 export type EvalRun = z.infer<typeof EvalRunSchema>;
+export type EvalRunWarning = NonNullable<EvalRun["warnings"]>[number];
 
 /** 판정에 넣는 응답 모양(llm.ts `LlmResult`의 부분 — M0 기준선도 같은 모양으로 만든다) */
 export type EvalResponse =

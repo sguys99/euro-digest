@@ -1,5 +1,5 @@
 {
-  "_note": "M1-23 리뷰 재현 문장 — 1회차(2026-10-17, 158문장: 거짓 112·참 46), 2회차(511문장: 거짓 348·참 163 — 판단 보류 40문장 제외), 3회차(788문장: 손으로 쓴 재현 316 = 거짓 122·참 194 — 판단 보류 21문장 제외, 변이 472 = 이전 판(b06ce02)을 통과한 변이 중 도움으로·공동/승점 차·골 명사·주고받은 묶음을 독립 판정(오라클)한 거짓 264·참 208). truth = 사람(또는 오라클) 판정, pass = 검사기 기대 판정. 거짓은 모두 강등돼야 한다(미탐 함정). 참이 pass=false면 닫힌 문법(D50·D53 ② 축소) 밖의 꼴이거나(code 없음 = grammar-unknown만), 안전한 쪽 규칙(code — 좁은 동점골 정의·두 절 다른 대상·문자 형식 등)에 걸린 것이다. 입력은 LLM에 보낸 그대로 canonicalizeBriefInput을 거쳐 판정한다(tests/brief-check.test.ts). LLM 출력이 아니라 사람이 쓴 시험 문장이다 — 기사 텍스트·URL 없음. D55(2026-10-17 사용자 결정): 승패 문장은 주어 팀 점수 먼저만 — 홈-원정 순서로 쓴 참 문장 15개(1회차 1 · 3회차 변이 14)를 pass=false·code=score-order로 바꿨다(의도된 변화).",
+  "_note": "M1-23 리뷰 재현 문장 — 1회차(2026-10-17, 158문장: 거짓 112·참 46), 2회차(511문장: 거짓 348·참 163 — 판단 보류 40문장 제외), 3회차(788문장: 손으로 쓴 재현 316 = 거짓 122·참 194 — 판단 보류 21문장 제외, 변이 472 = 이전 판(b06ce02)을 통과한 변이 중 도움으로·공동/승점 차·골 명사·주고받은 묶음을 독립 판정(오라클)한 거짓 264·참 208). truth = 사람(또는 오라클) 판정, pass = 검사기 기대 판정. 거짓은 모두 강등돼야 한다(미탐 함정). 참이 pass=false면 닫힌 문법(D50·D53 ② 축소) 밖의 꼴이거나(code 없음 = grammar-unknown만), 안전한 쪽 규칙(code — 좁은 동점골 정의·두 절 다른 대상·문자 형식 등)에 걸린 것이다. 입력은 LLM에 보낸 그대로 canonicalizeBriefInput을 거쳐 판정한다(tests/brief-check.test.ts). LLM 출력이 아니라 사람이 쓴 시험 문장이다 — 기사 텍스트·URL 없음. D55(2026-10-17 사용자 결정): 승패 문장은 주어 팀 점수 먼저만 — 홈-원정 순서로 쓴 참 문장 15개(1회차 1 · 3회차 변이 14)를 pass=false·code=score-order로 바꿨다(의도된 변화). 4회차(2026-10-17, b10·b11 — 한국 선수 블록 경기가 입력 밖·결과 아닌 절 뒤 순위 꼬리·경기와 다른 대회 순위표·후보 고정·승부차기 점수 순서·합산 승부차기 승리·prev 일부 행·같은 이름 두 블록): 65문장(판단 보류 5문장 제외) — 거짓은 모두 강등, 참은 통과.",
   "task": "M1-23",
   "inputs": {
     "E": "brief-inputs/2026-10-11.json",
@@ -662,7 +662,370 @@
     "golden-2026-09-21": "golden/inputs/2026-09-21.json",
     "golden-2026-10-10": "golden/inputs/2026-10-10.json",
     "golden-2026-10-14": "golden/inputs/2026-10-14.json",
-    "golden-2026-10-15": "golden/inputs/2026-10-15.json"
+    "golden-2026-10-15": "golden/inputs/2026-10-15.json",
+    "r4-syn-1723020c": {
+      "briefDate": "2026-10-11",
+      "matches": [
+        {
+          "id": "m1",
+          "comp": "Premier League",
+          "round": "Matchday 6",
+          "home": "Arsenal",
+          "away": "Leeds United",
+          "ft": "2-1",
+          "ht": "0-0",
+          "goals": [
+            {
+              "min": "55",
+              "team": "Leeds United",
+              "player": "James Justin"
+            },
+            {
+              "min": "62",
+              "team": "Arsenal",
+              "player": "Riccardo Calafiori"
+            },
+            {
+              "min": "70",
+              "team": "Arsenal",
+              "player": "Bruno Guimarães"
+            }
+          ]
+        },
+        {
+          "id": "m2",
+          "comp": "Ligue 1",
+          "round": "Matchday 6",
+          "home": "PSG",
+          "away": "Le Mans",
+          "ft": "3-1",
+          "ht": "1-0",
+          "goals": null
+        }
+      ],
+      "standings": [
+        {
+          "id": "sL1",
+          "comp": "Ligue 1",
+          "note": "",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "PSG",
+              "pts": 16,
+              "gd": 9,
+              "played": 6
+            },
+            {
+              "pos": 2,
+              "team": "Monaco",
+              "pts": 14,
+              "gd": 5,
+              "played": 6
+            }
+          ]
+        },
+        {
+          "id": "sPL",
+          "comp": "Premier League",
+          "note": "",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "Arsenal",
+              "pts": 16,
+              "gd": 9,
+              "played": 6
+            },
+            {
+              "pos": 2,
+              "team": "Man City",
+              "pts": 14,
+              "gd": 5,
+              "played": 6
+            }
+          ]
+        }
+      ],
+      "korean": [
+        {
+          "id": "kc",
+          "player": "Kang-in Lee",
+          "team": "PSG",
+          "match": "cup99",
+          "started": true,
+          "minutes": 90,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "id": "kp",
+          "player": "Kang-in Lee",
+          "team": "PSG",
+          "match": "m2",
+          "started": true,
+          "minutes": 90,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    "r4-syn-0293f6c5": {
+      "briefDate": "2026-10-11",
+      "matches": [
+        {
+          "id": "b1",
+          "comp": "Bundesliga",
+          "round": "Matchday 5",
+          "home": "Bayern",
+          "away": "Augsburg",
+          "ft": "3-0",
+          "ht": "1-0",
+          "goals": [
+            {
+              "min": "10",
+              "team": "Bayern",
+              "player": "Harry Kane"
+            },
+            {
+              "min": "50",
+              "team": "Bayern",
+              "player": "Harry Kane"
+            },
+            {
+              "min": "80",
+              "team": "Bayern",
+              "player": "Michael Olise"
+            }
+          ]
+        },
+        {
+          "id": "b2",
+          "comp": "UEFA Champions League",
+          "round": "League phase MD 2",
+          "home": "PSG",
+          "away": "Bayern",
+          "ft": "1-2",
+          "ht": "1-1",
+          "goals": [
+            {
+              "min": "20",
+              "team": "PSG",
+              "player": "Vitinha"
+            },
+            {
+              "min": "40",
+              "team": "Bayern",
+              "player": "Jamal Musiala"
+            },
+            {
+              "min": "88",
+              "team": "Bayern",
+              "player": "Harry Kane"
+            }
+          ]
+        }
+      ],
+      "standings": [
+        {
+          "id": "sBL",
+          "comp": "Bundesliga",
+          "note": "",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "Bayern",
+              "pts": 15,
+              "gd": 9,
+              "played": 5
+            },
+            {
+              "pos": 2,
+              "team": "Dortmund",
+              "pts": 13,
+              "gd": 5,
+              "played": 5
+            }
+          ]
+        },
+        {
+          "id": "sUCL",
+          "comp": "UEFA Champions League",
+          "note": "",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "PSG",
+              "pts": 6,
+              "gd": 5,
+              "played": 2
+            },
+            {
+              "pos": 2,
+              "team": "Inter",
+              "pts": 6,
+              "gd": 4,
+              "played": 2
+            },
+            {
+              "pos": 3,
+              "team": "Bayern",
+              "pts": 3,
+              "gd": 1,
+              "played": 2
+            }
+          ]
+        }
+      ]
+    },
+    "r4-syn-394dec88": {
+      "briefDate": "2026-10-11",
+      "matches": [],
+      "standings": [
+        {
+          "id": "sA",
+          "comp": "Serie A",
+          "note": "",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "Inter",
+              "pts": 16,
+              "gd": 9,
+              "played": 6,
+              "prev": 2
+            },
+            {
+              "pos": 2,
+              "team": "Roma",
+              "pts": 13,
+              "gd": 4,
+              "played": 6
+            }
+          ]
+        },
+        {
+          "id": "sB",
+          "comp": "LaLiga",
+          "note": "",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "Barça",
+              "pts": 24,
+              "gd": 9,
+              "played": 6
+            },
+            {
+              "pos": 2,
+              "team": "Atleti",
+              "pts": 19,
+              "gd": 4,
+              "played": 6
+            }
+          ]
+        }
+      ]
+    },
+    "r4-syn-ad2f8719": {
+      "briefDate": "2026-10-15",
+      "matches": [
+        {
+          "id": "u1",
+          "comp": "UEFA Champions League",
+          "round": "League phase MD 2",
+          "home": "Arsenal",
+          "away": "Lille",
+          "ft": "3-0",
+          "ht": "0-0",
+          "goals": [
+            {
+              "min": "50",
+              "team": "Arsenal",
+              "player": "Bukayo Saka"
+            },
+            {
+              "min": "60",
+              "team": "Arsenal",
+              "player": "Declan Rice"
+            },
+            {
+              "min": "80",
+              "team": "Arsenal",
+              "player": "Viktor Gyökeres"
+            }
+          ]
+        },
+        {
+          "id": "p1",
+          "comp": "Premier League",
+          "round": "Matchday 7",
+          "home": "Chelsea",
+          "away": "Fulham",
+          "ft": "2-0",
+          "ht": "1-0",
+          "goals": null
+        }
+      ],
+      "standings": [
+        {
+          "id": "sPL",
+          "comp": "Premier League",
+          "note": "",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "Man City",
+              "pts": 18,
+              "gd": 9,
+              "played": 7
+            },
+            {
+              "pos": 2,
+              "team": "Arsenal",
+              "pts": 15,
+              "gd": 7,
+              "played": 6
+            },
+            {
+              "pos": 3,
+              "team": "Chelsea",
+              "pts": 14,
+              "gd": 5,
+              "played": 7
+            }
+          ]
+        },
+        {
+          "id": "sUCL",
+          "comp": "UEFA Champions League",
+          "note": "",
+          "rows": [
+            {
+              "pos": 1,
+              "team": "PSG",
+              "pts": 6,
+              "gd": 7,
+              "played": 2
+            },
+            {
+              "pos": 2,
+              "team": "Arsenal",
+              "pts": 6,
+              "gd": 5,
+              "played": 2
+            },
+            {
+              "pos": 3,
+              "team": "Inter",
+              "pts": 3,
+              "gd": 1,
+              "played": 2
+            }
+          ]
+        }
+      ]
+    }
   },
   "probes": [
     {
@@ -16828,6 +17191,764 @@
         "t2"
       ],
       "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+    },
+    {
+      "input": "r4-syn-1723020c",
+      "pass": false,
+      "truth": false,
+      "group": "r4-A",
+      "t": "Kang-in Lee는 선발 출전해 90분을 뛰었고 Arsenal이 Leeds United를 2-1로 꺾었다.",
+      "r": [
+        "kc",
+        "m1"
+      ],
+      "note": "리뷰 4회차 A clause-mismatch — 한국 선수 블록 경기가 입력 밖 — F 이강인이 Arsenal 경기에 뛴 것처럼"
+    },
+    {
+      "input": "r4-syn-1723020c",
+      "pass": false,
+      "truth": false,
+      "group": "r4-A",
+      "t": "Kang-in Lee는 선발 출전해 90분을 뛰었고 Bruno Guimarães가 70분 결승골을 넣었다.",
+      "r": [
+        "kc",
+        "m1"
+      ],
+      "note": "리뷰 4회차 A clause-mismatch — 한국 선수 블록 경기가 입력 밖 — F"
+    },
+    {
+      "input": "r4-syn-1723020c",
+      "pass": false,
+      "truth": false,
+      "group": "r4-A",
+      "t": "Kang-in Lee는 선발 출전해 90분을 뛰었고 Arsenal은 승점 16으로 선두다.",
+      "r": [
+        "kc",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 A clause-mismatch — 한국 선수 블록 경기가 입력 밖 — F 이강인=PSG"
+    },
+    {
+      "input": "r4-syn-1723020c",
+      "pass": false,
+      "truth": false,
+      "group": "r4-A",
+      "t": "Kang-in Lee는 선발 출전해 90분을 뛰었고 Arsenal이 Leeds United를 2-1로 꺾었다.",
+      "r": [
+        "kp",
+        "m1"
+      ],
+      "note": "리뷰 4회차 A clause-mismatch — 한국 선수 블록 경기가 입력 밖 — F (대조됨 예상)"
+    },
+    {
+      "input": "r4-syn-1723020c",
+      "pass": true,
+      "truth": true,
+      "group": "r4-A",
+      "t": "Kang-in Lee는 선발 출전해 90분을 뛰었고 득점은 없었다.",
+      "r": [
+        "kc"
+      ],
+      "note": "리뷰 4회차 A clause-mismatch — 한국 선수 블록 경기가 입력 밖 — T"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-B",
+      "t": "Bruno Guimarães가 70분 결승골을 넣었고 승점 15로 2위다.",
+      "r": [
+        "m560593",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 B 주어 생략 순위 꼬리가 결과 문형이 아닌 절 뒤 — M 선수가 2위처럼(지시문은 결과 문형 뒤만)"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-B",
+      "t": "Ismael Saibari가 55분 골을 넣었고 승점 11로 2위다.",
+      "r": [
+        "m565819",
+        "sBL"
+      ],
+      "note": "리뷰 4회차 B 주어 생략 순위 꼬리가 결과 문형이 아닌 절 뒤 — M"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-B",
+      "t": "Patrik Schick이 9분 골을 넣었고 승점 10으로 4위다.",
+      "r": [
+        "m565812",
+        "sBL"
+      ],
+      "note": "리뷰 4회차 B 주어 생략 순위 꼬리가 결과 문형이 아닌 절 뒤 — M"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-B",
+      "t": "Harry Kane이 Nathaniel Brown의 80분 동점골을 도왔고 2위다.",
+      "r": [
+        "m565819",
+        "sBL"
+      ],
+      "note": "리뷰 4회차 B 주어 생략 순위 꼬리가 결과 문형이 아닌 절 뒤 — M"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-B",
+      "t": "Yan Diomande가 62분 결승골을 넣었고 3위를 달린다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "리뷰 4회차 B 주어 생략 순위 꼬리가 결과 문형이 아닌 절 뒤 — M"
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "truth": false,
+      "group": "r4-B",
+      "t": "Kang-in Lee는 57분 교체 투입돼 33분을 뛰었고 승점 19로 2위다.",
+      "r": [
+        "k927",
+        "sLL"
+      ],
+      "note": "리뷰 4회차 B 주어 생략 순위 꼬리가 결과 문형이 아닌 절 뒤 — M 이강인이 2위처럼"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-B",
+      "t": "Barça는 승점 24로 선두이고 선두를 달린다.",
+      "r": [
+        "sLL"
+      ],
+      "note": "리뷰 4회차 B 주어 생략 순위 꼬리가 결과 문형이 아닌 절 뒤 — M 중복(무해)"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-B",
+      "t": "Augsburg와 Bayern의 경기는 2-2로 끝났고 2위다.",
+      "r": [
+        "m565819",
+        "sBL"
+      ],
+      "note": "리뷰 4회차 B 주어 생략 순위 꼬리가 결과 문형이 아닌 절 뒤 — F? 주어 없음(대조됨 예상)"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Arsenal이 Leeds United를 2-1로 꺾었고 Man City는 승점 15로 선두다.",
+      "r": [
+        "m560593",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — M 다른 팀 순위(같은 표)"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": true,
+      "truth": true,
+      "group": "r4-C",
+      "t": "Leeds United를 2-1로 꺾은 Arsenal은 승점 15로 2위다.",
+      "r": [
+        "m560593",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — T"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Leeds United를 2-1로 꺾은 Arsenal은 승점 15로 선두다.",
+      "r": [
+        "m560593",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — F"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": true,
+      "truth": true,
+      "group": "r4-C",
+      "t": "Villarreal을 1-0으로 꺾은 Real Madrid는 승점 18로 3위다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — T"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Villarreal을 0-1로 꺾은 Real Madrid는 승점 18로 3위다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — F score-order"
+    },
+    {
+      "input": "r4-syn-0293f6c5",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Bayern이 이기고 승점 3으로 3위다.",
+      "r": [
+        "b1",
+        "b2",
+        "sUCL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — M? UCL 3위 — 이긴 경기 후보 b1(분데스)"
+    },
+    {
+      "input": "r4-syn-0293f6c5",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Bayern이 PSG를 2-1로 꺾고 승점 15로 선두다.",
+      "r": [
+        "b2",
+        "sBL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — M UCL 경기 + 분데스 순위"
+    },
+    {
+      "input": "r4-syn-0293f6c5",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Bayern이 Augsburg를 3-0으로 꺾고 승점 3으로 3위다.",
+      "r": [
+        "b1",
+        "sUCL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — M 분데스 경기 + UCL 순위"
+    },
+    {
+      "input": "r4-syn-0293f6c5",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Harry Kane이 88분 결승골을 넣었고 승점 15로 선두다.",
+      "r": [
+        "b2",
+        "sBL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — M UCL 결승골 + 분데스 순위"
+    },
+    {
+      "input": "r4-syn-0293f6c5",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Harry Kane이 2골을 넣었다.",
+      "r": [
+        "b1",
+        "b2"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — F? 하루 3골(두 경기)"
+    },
+    {
+      "input": "r4-syn-0293f6c5",
+      "pass": true,
+      "truth": true,
+      "group": "r4-C",
+      "t": "Harry Kane이 2골을 넣었다.",
+      "r": [
+        "b1"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — T"
+    },
+    {
+      "input": "r4-syn-0293f6c5",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Bayern이 홈에서 이겼다.",
+      "r": [
+        "b1",
+        "b2"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — M 후보 둘 — b1만 홈"
+    },
+    {
+      "input": "r4-syn-0293f6c5",
+      "pass": false,
+      "truth": false,
+      "group": "r4-C",
+      "t": "Bayern이 원정에서 2-1로 이겼고 승점 15로 선두다.",
+      "r": [
+        "b1",
+        "b2",
+        "sBL"
+      ],
+      "note": "리뷰 4회차 C 같은 경기 판정 경계 — 상대 팀·관형·두 경기 팀 — M UCL 원정 승 + 분데스 순위"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-D",
+      "t": "Atleti가 Alavés를 1-2로 꺾었다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — F 홈-원정 순서(score-order)"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": true,
+      "truth": true,
+      "group": "r4-D",
+      "t": "Atleti가 Alavés 원정에서 2-1로 이겼다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — T"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": true,
+      "truth": true,
+      "group": "r4-D",
+      "t": "Alavés를 2-1로 이긴 Atleti는 승점 19로 2위다.",
+      "r": [
+        "m564699",
+        "sLL"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — T"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-D",
+      "t": "Alavés가 Atleti에 2-1로 졌다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — F order"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": false,
+      "truth": false,
+      "group": "r4-D",
+      "t": "Alavés와 Atleti의 경기는 2-1로 끝났다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — F 앞 팀 먼저"
+    },
+    {
+      "input": "golden-2026-10-11",
+      "pass": true,
+      "truth": true,
+      "group": "r4-D",
+      "t": "Atleti와 Alavés의 경기는 2-1로 끝났다.",
+      "r": [
+        "m564699"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — T 앞 팀(Atleti) 먼저"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-D",
+      "t": "Barça가 PSG와 연장까지 1-1로 맞선 뒤 승부차기에서 3-5로 이겼다.",
+      "r": [
+        "pk1"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — M 이긴 팀 점수 뒤(홈-원정)"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-D",
+      "t": "PSG와 Barça의 경기는 연장까지 1-1로 끝났고 승부차기에서 Barça가 3-5로 이겼다.",
+      "r": [
+        "pk1"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — M"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-D",
+      "t": "Barça가 승부차기 끝에 PSG를 3-5로 꺾었다.",
+      "r": [
+        "pk1"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — M (대조됨 예상)"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-D",
+      "t": "Inter와 Bayern의 경기는 연장까지 1-0으로 끝났고 승부차기에서 Bayern이 2-4로 이겼다.",
+      "r": [
+        "pk2"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — M"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": true,
+      "truth": true,
+      "group": "r4-D",
+      "t": "Dortmund가 연장 끝에 Napoli를 2-1로 꺾었다.",
+      "r": [
+        "et1"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — T"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-D",
+      "t": "Napoli와 Dortmund의 경기는 연장까지 2-1로 끝났다.",
+      "r": [
+        "et1"
+      ],
+      "note": "리뷰 4회차 D score-order 경계 — F 앞 팀 먼저(1-2)"
+    },
+    {
+      "input": "r4-syn-394dec88",
+      "pass": true,
+      "truth": true,
+      "group": "r4-E",
+      "t": "Inter는 2위에서 1위로 올랐다.",
+      "r": [
+        "sA"
+      ],
+      "note": "리뷰 4회차 E requires 키 — prev 일부 행 — T"
+    },
+    {
+      "input": "r4-syn-394dec88",
+      "pass": false,
+      "truth": false,
+      "group": "r4-E",
+      "t": "Roma는 1위에서 2위로 내려갔다.",
+      "r": [
+        "sA"
+      ],
+      "note": "리뷰 4회차 E requires 키 — prev 일부 행 — F prev 없음"
+    },
+    {
+      "input": "r4-syn-394dec88",
+      "pass": false,
+      "truth": false,
+      "group": "r4-E",
+      "t": "Barça는 선두를 지켰다.",
+      "r": [
+        "sB"
+      ],
+      "note": "리뷰 4회차 E requires 키 — prev 일부 행 — F prev 없음"
+    },
+    {
+      "input": "r4-syn-394dec88",
+      "pass": false,
+      "truth": false,
+      "group": "r4-E",
+      "t": "Inter는 선두를 지켰다.",
+      "r": [
+        "sA"
+      ],
+      "note": "리뷰 4회차 E requires 키 — prev 일부 행 — F prev 2"
+    },
+    {
+      "input": "r4-syn-394dec88",
+      "pass": true,
+      "truth": true,
+      "group": "r4-E",
+      "t": "Inter는 2위에서 1위로 올랐고 Roma는 2위다.",
+      "r": [
+        "sA"
+      ],
+      "note": "리뷰 4회차 E requires 키 — prev 일부 행 — T"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": true,
+      "truth": true,
+      "group": "r4-F",
+      "t": "Atleti의 Cristian Romero가 87분 골을 넣었다.",
+      "r": [
+        "t1",
+        "t2"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — T 소속 고정"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": false,
+      "truth": false,
+      "group": "r4-F",
+      "t": "Tottenham의 Cristian Romero가 87분 골을 넣었다.",
+      "r": [
+        "t1",
+        "t2"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — F"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": true,
+      "truth": true,
+      "group": "r4-F",
+      "t": "Cristian Romero가 Richarlison의 70분 골을 도왔다.",
+      "r": [
+        "t1",
+        "t2"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — T"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": false,
+      "truth": false,
+      "group": "r4-F",
+      "t": "Cristian Romero가 1골을 넣었다.",
+      "r": [
+        "t1",
+        "t2"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — M 어느 Romero(고정 없음)"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": false,
+      "truth": false,
+      "group": "r4-F",
+      "t": "Tottenham의 Cristian Romero가 1골을 넣었다.",
+      "r": [
+        "t1",
+        "t2"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — F"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": true,
+      "truth": true,
+      "group": "r4-F",
+      "t": "Min-jae Kim은 PSG전에서 결장했다.",
+      "r": [
+        "kA",
+        "kB"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — T"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": false,
+      "truth": false,
+      "group": "r4-F",
+      "t": "Min-jae Kim은 결장했다.",
+      "r": [
+        "kA",
+        "kB"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — M 고정 없음 — 한 블록은 90분"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": false,
+      "truth": false,
+      "group": "r4-F",
+      "t": "Min-jae Kim은 Augsburg전에서 결장했다.",
+      "r": [
+        "kA",
+        "kB"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — F"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": false,
+      "truth": false,
+      "group": "r4-F",
+      "t": "Bayern의 Min-jae Kim은 선발 출전해 90분을 뛰었다.",
+      "r": [
+        "kA",
+        "kB"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — M kTeam 고정(같은 팀이라 실제로는 못 가린다)"
+    },
+    {
+      "input": "r3-syn-9a367b7f",
+      "pass": true,
+      "truth": true,
+      "group": "r4-F",
+      "t": "Min-jae Kim은 Bayern의 Augsburg전에서 선발 출전해 90분을 뛰었다.",
+      "r": [
+        "kA",
+        "kB"
+      ],
+      "note": "리뷰 4회차 F 같은 이름·한 선수 두 블록 후보 — T"
+    },
+    {
+      "input": "r4-syn-ad2f8719",
+      "pass": false,
+      "truth": false,
+      "group": "r4-G",
+      "t": "Arsenal이 Lille을 3-0으로 완파하고 승점 15로 2위다.",
+      "r": [
+        "u1",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 G 경기 대회와 다른 대회 순위표(같은 팀) — M UCL 경기 + PL 순위(같은 대회로 읽힘)"
+    },
+    {
+      "input": "r4-syn-ad2f8719",
+      "pass": false,
+      "truth": false,
+      "group": "r4-G",
+      "t": "Lille을 3-0으로 꺾은 Arsenal은 승점 15로 2위다.",
+      "r": [
+        "u1",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 G 경기 대회와 다른 대회 순위표(같은 팀) — M"
+    },
+    {
+      "input": "r4-syn-ad2f8719",
+      "pass": true,
+      "truth": true,
+      "group": "r4-G",
+      "t": "Lille을 3-0으로 꺾은 Arsenal은 승점 6으로 2위다.",
+      "r": [
+        "u1",
+        "sUCL"
+      ],
+      "note": "리뷰 4회차 G 경기 대회와 다른 대회 순위표(같은 팀) — T 같은 대회"
+    },
+    {
+      "input": "r4-syn-ad2f8719",
+      "pass": false,
+      "truth": false,
+      "group": "r4-G",
+      "t": "Arsenal이 Lille을 3-0으로 완파하고 승점 15로 Premier League 2위다.",
+      "r": [
+        "u1",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 G 경기 대회와 다른 대회 순위표(같은 팀) — M? 대회 이름이 있어도 '완파하고 2위' 인과"
+    },
+    {
+      "input": "r4-syn-ad2f8719",
+      "pass": false,
+      "truth": false,
+      "group": "r4-G",
+      "t": "Declan Rice가 60분 골을 넣었고 승점 15로 2위다.",
+      "r": [
+        "u1",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 G 경기 대회와 다른 대회 순위표(같은 팀) — M 결과 아닌 절 + 다른 대회"
+    },
+    {
+      "input": "r4-syn-ad2f8719",
+      "pass": false,
+      "truth": false,
+      "group": "r4-G",
+      "t": "Arsenal은 승점 15로 2위이고 Arsenal이 Lille을 3-0으로 꺾었다.",
+      "r": [
+        "sPL",
+        "u1"
+      ],
+      "note": "리뷰 4회차 G 경기 대회와 다른 대회 순위표(같은 팀) — M"
+    },
+    {
+      "input": "r4-syn-ad2f8719",
+      "pass": false,
+      "truth": false,
+      "group": "r4-G",
+      "t": "Viktor Gyökeres가 80분 골을 넣었고 Arsenal은 승점 15로 Premier League 2위다.",
+      "r": [
+        "u1",
+        "sPL"
+      ],
+      "note": "리뷰 4회차 G 경기 대회와 다른 대회 순위표(같은 팀) — M"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-H",
+      "t": "Bayern이 승부차기 끝에 Inter를 꺾었다.",
+      "r": [
+        "pk2"
+      ],
+      "note": "리뷰 4회차 H 합산 승부차기(ft 동점 아님)를 이긴 꼴로 — M 지시문: ft 동점 아니면 이긴 것처럼 쓰지 않는다"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-H",
+      "t": "Bayern이 승부차기 끝에 Inter를 4-2로 꺾었다.",
+      "r": [
+        "pk2"
+      ],
+      "note": "리뷰 4회차 H 합산 승부차기(ft 동점 아님)를 이긴 꼴로 — M"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-H",
+      "t": "Bayern이 승부차기 끝에 Inter에 승리를 거뒀다.",
+      "r": [
+        "pk2"
+      ],
+      "note": "리뷰 4회차 H 합산 승부차기(ft 동점 아님)를 이긴 꼴로 — M"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": false,
+      "truth": false,
+      "group": "r4-H",
+      "t": "Bayern이 원정에서 승부차기 끝에 이겼다.",
+      "r": [
+        "pk2"
+      ],
+      "note": "리뷰 4회차 H 합산 승부차기(ft 동점 아님)를 이긴 꼴로 — M"
+    },
+    {
+      "input": "r3-syn-e891fb1e",
+      "pass": true,
+      "truth": true,
+      "group": "r4-H",
+      "t": "Inter와 Bayern의 경기는 연장까지 1-0으로 끝났고 승부차기에서 Bayern이 4-2로 이겼다.",
+      "r": [
+        "pk2"
+      ],
+      "note": "리뷰 4회차 H 합산 승부차기(ft 동점 아님)를 이긴 꼴로 — T"
     }
   ]
 }

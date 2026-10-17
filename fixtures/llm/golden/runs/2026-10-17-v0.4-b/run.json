@@ -1,0 +1,265 @@
+{
+  "label": "2026-10-17-v0.4-b",
+  "variant": "base",
+  "mode": "live",
+  "model": "claude-haiku-5-5",
+  "promptId": "p_24543d78cd9a",
+  "prompt": "configs/prompts/summarize.md",
+  "promptChars": 4455,
+  "checker": {
+    "id": "c_4011fb3c1d54",
+    "files": [
+      "scripts/lib/brief-check-lexicon.ts",
+      "scripts/lib/brief-check.ts",
+      "scripts/lib/brief-grammar.ts",
+      "scripts/lib/brief-template.ts",
+      "scripts/lib/brief.ts",
+      "scripts/lib/josa.ts",
+      "scripts/lib/names.ts"
+    ]
+  },
+  "configs": {
+    "id": "g_a027a4250859",
+    "files": [
+      "configs/competitions.json",
+      "configs/korean-players.json",
+      "configs/names.ko.json",
+      "configs/team-ids.json"
+    ],
+    "llmMaxMatches": 15
+  },
+  "runId": "eval-dev-20261017T102457Z-b282",
+  "startedAt": "2026-10-17T10:24:57.773Z",
+  "finishedAt": "2026-10-17T10:25:39.699Z",
+  "settings": {
+    "maxTokens": 8192,
+    "thinking": "adaptive",
+    "effort": "medium",
+    "cacheSystem": false,
+    "attempts": 1
+  },
+  "warnings": [],
+  "days": [
+    {
+      "date": "2026-10-11",
+      "customId": "golden-2026-10-11",
+      "inputHash": "i_e69ad2b9b327",
+      "matches": 23,
+      "userChars": 5876,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Leverkusen이 Mainz 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.\",\"r\":[\"m565812\"]},{\"t\":\"Arsenal이 Bruno Guimarães의 70분 결승골로 Leeds United에 2-1 역전승을 거뒀다.\",\"r\":[\"m560593\"]},{\"t\":\"Getafe를 3-0으로 완파한 Barça는 승점 24로 LaLiga 선두다.\",\"r\":[\"m564700\",\"sLL\"]},{\"t\":\"Chelsea가 Bournemouth를 5-1로 완파했다.\",\"r\":[\"m560595\"]},{\"t\":\"Napoli가 Frosinone를 3-0으로 완파했다.\",\"r\":[\"m558586\"]}]}",
+      "usage": {
+        "in": 7458,
+        "out": 5068,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 4804,
+      "latencyMs": 21881.134855999997,
+      "costUsd": 0.00328,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Leverkusen이 Mainz 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "text": "레버쿠젠이 마인츠 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "refs": [
+            "m565812"
+          ],
+          "chars": 37,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "레버쿠젠이 분데스리가 원정에서 무사 디아비의 65분 결승골로 마인츠를 4-3으로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 2,
+          "raw": "Arsenal이 Bruno Guimarães의 70분 결승골로 Leeds United에 2-1 역전승을 거뒀다.",
+          "text": "아스널이 브루노 기마랑이스의 70분 결승골로 리즈 유나이티드에 2-1 역전승을 거뒀다.",
+          "refs": [
+            "m560593"
+          ],
+          "chars": 48,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "아스널이 프리미어리그 홈경기에서 브루노 기마랑이스의 결승골로 리즈 유나이티드에 2-1 역전승을 거뒀다.",
+          "grammar": "win"
+        },
+        {
+          "n": 3,
+          "raw": "Getafe를 3-0으로 완파한 Barça는 승점 24로 LaLiga 선두다.",
+          "text": "헤타페를 3-0으로 완파한 바르셀로나는 승점 24로 라리가 선두다.",
+          "refs": [
+            "m564700",
+            "sLL"
+          ],
+          "chars": 37,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바르셀로나가 라리가 홈경기에서 헤타페를 3-0으로 완파했다.",
+          "grammar": "win+rank"
+        },
+        {
+          "n": 4,
+          "raw": "Chelsea가 Bournemouth를 5-1로 완파했다.",
+          "text": "첼시가 본머스를 5-1로 완파했다.",
+          "refs": [
+            "m560595"
+          ],
+          "chars": 19,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "첼시가 프리미어리그 홈경기에서 본머스를 5-1로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 5,
+          "raw": "Napoli가 Frosinone를 3-0으로 완파했다.",
+          "text": "나폴리가 프로시노네를 3-0으로 완파했다.",
+          "refs": [
+            "m558586"
+          ],
+          "chars": 23,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "나폴리가 세리에 A 홈경기에서 프로시노네를 3-0으로 완파했다.",
+          "grammar": "win"
+        }
+      ],
+      "hiddenRefs": [
+        "m565815",
+        "m559672",
+        "m558588",
+        "m565813",
+        "m559666",
+        "m559674",
+        "m559668",
+        "m559673",
+        "sL1"
+      ],
+      "template": [
+        "바이에른 뮌헨이 분데스리가 원정에서 Nathaniel Brown의 동점골로 아우크스부르크와 2-2로 비겼다.",
+        "아틀레티코 마드리드가 라리가 원정에서 크리스티안 로메로의 87분 결승골로 알라베스를 2-1로 꺾었다.",
+        "토트넘이 프리미어리그 원정에서 도미닉 솔란케의 90+2분 동점골로 맨체스터 유나이티드와 1-1로 비겼다.",
+        "레버쿠젠이 분데스리가 원정에서 무사 디아비의 65분 결승골로 마인츠를 4-3으로 꺾었다.",
+        "도르트문트가 승점 13으로 분데스리가 선두, 바이에른 뮌헨이 승점 11로 2위다."
+      ]
+    },
+    {
+      "date": "2026-10-17",
+      "customId": "golden-2026-10-17",
+      "inputHash": "i_1b07e6fd129d",
+      "matches": 4,
+      "userChars": 2603,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Frosinone이 Antonio Raimondo의 해트트릭을 앞세워 Sassuolo를 4-2로 꺾었다.\",\"r\":[\"m558573\"]},{\"t\":\"Frosinone은 승점 13으로 Serie A 4위다.\",\"r\":[\"sSA\"]},{\"t\":\"Frankfurt이 Younes Ebnoutalib의 77분 결승골로 1. FC Köln을 1-0으로 꺾었다.\",\"r\":[\"m565828\"]},{\"t\":\"Toulouse가 Le Mans를 3-0으로 완파했다.\",\"r\":[\"m559661\"]},{\"t\":\"Levante가 Daniel Requena Sánchez의 82분 동점골로 Deportivo와 1-1로 비겼다.\",\"r\":[\"m564716\"]}]}",
+      "usage": {
+        "in": 5791,
+        "out": 4636,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 4361,
+      "latencyMs": 19701.307902000004,
+      "costUsd": 0.002897,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Frosinone이 Antonio Raimondo의 해트트릭을 앞세워 Sassuolo를 4-2로 꺾었다.",
+          "text": "프로시노네가 Antonio Raimondo의 해트트릭을 앞세워 사수올로를 4-2로 꺾었다.",
+          "refs": [
+            "m558573"
+          ],
+          "chars": 50,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "프로시노네가 세리에 A 홈경기에서 사수올로를 4-2로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 2,
+          "raw": "Frosinone은 승점 13으로 Serie A 4위다.",
+          "text": "프로시노네는 승점 13으로 세리에 A 4위다.",
+          "refs": [
+            "sSA"
+          ],
+          "chars": 25,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "인테르가 승점 16으로 세리에 A 선두, 라치오가 승점 16으로 2위, 로마가 승점 14로 3위다.",
+          "grammar": "rank"
+        },
+        {
+          "n": 3,
+          "raw": "Frankfurt이 Younes Ebnoutalib의 77분 결승골로 1. FC Köln을 1-0으로 꺾었다.",
+          "text": "프랑크푸르트가 Younes Ebnoutalib의 77분 결승골로 쾰른을 1-0으로 꺾었다.",
+          "refs": [
+            "m565828"
+          ],
+          "chars": 50,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "프랑크푸르트가 분데스리가 홈경기에서 Younes Ebnoutalib의 결승골로 쾰른을 1-0으로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 4,
+          "raw": "Toulouse가 Le Mans를 3-0으로 완파했다.",
+          "text": "툴루즈가 르망을 3-0으로 완파했다.",
+          "refs": [
+            "m559661"
+          ],
+          "chars": 20,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "툴루즈가 리그 1 원정에서 르망을 3-0으로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 5,
+          "raw": "Levante가 Daniel Requena Sánchez의 82분 동점골로 Deportivo와 1-1로 비겼다.",
+          "text": "레반테가 Daniel Requena Sánchez의 82분 동점골로 Deportivo와 1-1로 비겼다.",
+          "refs": [
+            "m564716"
+          ],
+          "chars": 58,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "Deportivo와 레반테가 라리가에서 1-1로 비겼다.",
+          "grammar": "draw"
+        }
+      ],
+      "hiddenRefs": [],
+      "template": [
+        "프로시노네가 세리에 A 홈경기에서 사수올로를 4-2로 꺾었다.",
+        "프랑크푸르트가 분데스리가 홈경기에서 Younes Ebnoutalib의 결승골로 쾰른을 1-0으로 꺾었다.",
+        "툴루즈가 리그 1 원정에서 르망을 3-0으로 완파했다.",
+        "Deportivo와 레반테가 라리가에서 1-1로 비겼다.",
+        "인테르가 승점 16으로 세리에 A 선두, 라치오가 승점 16으로 2위, 로마가 승점 14로 3위다."
+      ]
+    }
+  ]
+}

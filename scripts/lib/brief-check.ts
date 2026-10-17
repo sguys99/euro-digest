@@ -19,7 +19,10 @@
  *   순서: ① 문장 형식·문자·이름 사전 검사 ② 이름을 `⟨i⟩`로 바꾼 뼈대를 문법으로 분석 ③ 분석된 절마다 슬롯 값을 입력과 대조 —
  *   분석이 여럿이면 입력과 맞는 분석이 하나라도 있으면 통과, 없으면 사유가 가장 적은 분석의 사유를 남긴다. 한 절 안에서 이름이
  *   여러 경기·선수에 맞으면 목적어·상대로 고정되는 후보만 고르고, 고정되지 않으면 후보 모두가 맞아야 통과한다(3회차 리뷰).
- *   두 절은 같은 경기(순위끼리는 같은 순위표)여야 한다 — 다르면 `clause-mismatch`(경기)·`rank-table`(순위표).
+ *   두 절은 같은 경기(순위끼리는 같은 순위표)여야 한다 — 다르면 `clause-mismatch`(경기)·`rank-table`(순위표). 경기와 순위를 한 줄에
+ *   쓰면 순위 팀은 경기 주어 쪽 팀이고 순위표 대회가 그 경기 대회여야 하며, 후보를 고정하지 못한 절은 모든 후보에서 그래야 한다(리뷰
+ *   4회차 차단 2). 한국 선수 블록의 경기는 입력 경기 목록에 없어도 그 경기로 본다(차단 3 — 다른 경기 절·순위와 잇지 않는다).
+ *   주어를 빼는 순위 꼬리는 한 팀이 주어인 결과 문형 뒤만(차단 1 — brief-grammar.ts `after`).
  *   ① 사전 검사
  *     근거   r의 id가 입력에 있어야 한다
  *     문장   한 줄 한 문장('다.'로 끝남, 문장 안 마침표·느낌표·물음표 없음), 줄바꿈 없음, 치환 뒤 80자 이하(D40 ⑤ — brief.ts
@@ -31,7 +34,8 @@
  *   ③ 슬롯 대조(절 종류 — brief-grammar.ts 머리 주석)
  *     결과   주어가 실제 승자·패자(승부차기 경기의 승자는 승부차기 결과 — 그 경기는 '승부차기' 수식이 있어야 하고 '비겼다' 금지),
  *            목적어·짝은 그 경기 상대, 승패 문장의 점수는 주어 팀 먼저만(D55 ② — D30 보강, 홈-원정 순서는 score-order), 'A와 B의
- *            경기는'은 앞 팀 먼저, 승부차기 꼴의 승부차기 점수는 홈-원정 또는 승자 먼저(D30 그대로), 90분에 이미 앞선 연장
+ *            경기는'은 앞 팀 먼저, 승부차기 점수는 이긴 팀 먼저만(4회차 중요 2), 합산 승부차기(ft 동점 아님)는 이기거나 진 문장으로
+ *            쓰지 않음('경기는 … 끝났고 승부차기에서'만 — 중요 1), 90분에 이미 앞선 연장
  *            승리·90분 점수가 없는 연장 승리는 이긴 것처럼 쓰지 않음(M1-20 — '경기는 연장까지 h-a로 끝났다'), '완파' = 3골 차 이상,
  *            '역전승' = ht 또는 득점 순서로 이긴 팀이 뒤진 적, '연장까지'·'연장 끝에' = 입력 aet, 수식(대회·홈/원정·{상대} 원정·
  *            라운드 — stage 우선 표기·연장 끝에·승부차기 끝에·{선수}의 결승골로(연장에서 갈리지 않은 연장 경기는 결승골 없음)·
@@ -839,16 +843,18 @@ function bad(env: Env, code: BriefLineReasonCode, detail?: string): void {
  * 가리는 슬롯(상대·소속·{상대}전 …)을 썼으면(`pinned`) 입력과 가장 잘 맞는 후보, 아니면 **모든 후보에서 참이어야** 한다(사유가 가장
  * 많은 후보 — 독자는 어느 경기인지 알 수 없다, 안전한 쪽). 후보가 없으면 null.
  */
-function bestOf<T, R>(
+function pickCandidate<T, R>(
   env: Env,
   candidates: readonly T[],
   run: (sub: Env, c: T) => R,
-  pinned = true,
-): R | null {
+  pinned: boolean,
+): { r: R; all: R[] } | null {
   let best: { issues: Issues; r: R } | null = null;
+  const all: R[] = [];
   for (const c of candidates) {
     const sub: Env = { s: env.s, issues: [] };
     const r = run(sub, c);
+    all.push(r);
     const better = pinned
       ? !best || sub.issues.length < best.issues.length
       : !best || sub.issues.length > best.issues.length;
@@ -856,7 +862,21 @@ function bestOf<T, R>(
     if (pinned && sub.issues.length === 0) break;
   }
   if (best) for (const i of best.issues) push(env.issues, i.code, i.detail);
-  return best?.r ?? null;
+  return best ? { r: best.r, all } : null;
+}
+
+/** 대상을 돌려주는 절의 후보 고르기(`pickCandidate`) — 고정하지 못한 후보가 여럿이면 모든 후보 대상을 `alts`에 담는다(두 절 대조용, 4회차 차단 2) */
+function focusOf<T>(
+  env: Env,
+  candidates: readonly T[],
+  run: (sub: Env, c: T) => Focus,
+  pinned = true,
+): Focus | null {
+  const picked = pickCandidate(env, candidates, run, pinned);
+  if (!picked) return null;
+  return !pinned && picked.all.length > 1
+    ? { ...picked.r, alts: picked.all }
+    : picked.r;
 }
 
 function mentionAt(env: Env, bag: Bag, key: string): Mention | null {
@@ -949,27 +969,7 @@ function teamOn(match: MatchModel, side: Side): string {
   return side === "home" ? match.home : match.away;
 }
 
-function pairEq(a: Pair, h: number, x: number): boolean {
-  return a.home === h && a.away === x;
-}
-
-/**
- * 'a-b'가 그 점수(홈-원정)와 맞는가 — 홈-원정 순서 또는 주어 쪽 먼저(D30). 승부차기 꼴의 승부차기 점수(pens·endPens)만 쓴다 —
- * 승패 문장은 주어 팀 먼저만(`orientedMatches`, D55 ②)
- */
-function scoreMatches(
-  pair: Pair,
-  a: number,
-  b: number,
-  subjectSide: Side | null,
-): "ok" | "order" | "mismatch" {
-  if (pairEq(pair, a, b)) return "ok";
-  if (subjectSide === "away" && pairEq(pair, b, a)) return "ok";
-  if (pairEq(pair, b, a)) return "order";
-  return "mismatch";
-}
-
-/** 'A와 B의 경기는 a-b'의 앞 팀·승패 문장의 주어 팀(D55 ②) — first 쪽 점수 먼저만 인정 */
+/** 'A와 B의 경기는 a-b'의 앞 팀·승패 문장의 주어 팀(D55 ②)·승부차기 점수의 이긴 팀(4회차 중요 2) — first 쪽 점수 먼저만 인정 */
 function orientedMatches(
   pair: Pair,
   a: number,
@@ -1067,19 +1067,48 @@ const ROUND_OF: Readonly<Record<string, string>> = Object.freeze({
 /** 절이 다루는 대상 — 경기 절은 그 경기, 순위 절은 그 순위표, teams = 주어 쪽 팀(순위 절이 이어받는 팀) */
 interface Focus {
   match: MatchModel | null;
+  /**
+   * 입력 경기 목록에 없는 경기 id — 한국 선수 블록이 가리키는 경기가 입력에 없을 때(컵 경기 등). 같은 경기 판정은 이 id로 한다
+   * (리뷰 4회차 차단 3 — 대상이 정해진 절이 '대상 미정'으로 통과하지 않게)
+   */
+  matchId?: string;
   table: StandingsModel | null;
   teams: readonly string[];
+  /** 후보를 고정하지 못한 절(`focusOf` — pinned 아님)의 모든 후보 대상. 두 절 대조는 모든 후보에서 참이어야 한다(4회차 차단 2) */
+  alts?: readonly Focus[];
 }
 
 const NO_FOCUS: Focus = { match: null, table: null, teams: [] };
 
-/** 두 절이 같은 대상인가 — 경기끼리 같은 경기, 순위끼리 같은 순위표, 경기와 순위면 순위 절 팀이 경기 절 주어 쪽 팀 */
-function sameFocus(a: Focus, b: Focus): boolean {
-  if (a.match && b.match) return a.match.id === b.match.id;
+function focusMatchId(f: Focus): string | null {
+  return f.match?.id ?? f.matchId ?? null;
+}
+
+/**
+ * 두 절이 같은 대상인가(후보 하나씩) — 경기끼리 같은 경기, 순위끼리 같은 순위표, 경기와 순위면 순위 절 팀이 경기 절 주어 쪽 팀이고
+ * 순위표 대회가 그 경기 대회(4회차 차단 2 — UCL 경기 + 리그 순위표를 한 줄에 쓰면 같은 대회로 읽힌다). 입력에 없는 경기(한국 선수
+ * 블록)는 대회를 알 수 없어 순위와 잇지 않는다.
+ */
+function sameFocusOne(a: Focus, b: Focus): boolean {
+  const am = focusMatchId(a);
+  const bm = focusMatchId(b);
+  if (am !== null && bm !== null) return am === bm;
   if (a.table && b.table) return a.table.id === b.table.id;
-  const [game, standing] = a.match ? [a, b] : [b, a];
-  if (!game.match || !standing.table) return true; // 대상을 정하지 못한 절은 다른 사유로 이미 걸렸다
-  return standing.teams.every((t) => game.teams.includes(t));
+  const [game, standing] = am !== null ? [a, b] : [b, a];
+  // 대상을 정하지 못한 절(NO_FOCUS)은 다른 사유로 이미 걸렸다
+  if (focusMatchId(game) === null || !standing.table) return true;
+  if (!game.match) return false;
+  return (
+    standing.table.comp === game.match.comp &&
+    standing.teams.every((t) => game.teams.includes(t))
+  );
+}
+
+/** 두 절이 같은 대상인가 — 후보가 여럿인 절은 모든 후보 조합에서 같아야 한다(안전한 쪽) */
+function sameFocus(a: Focus, b: Focus): boolean {
+  const as = a.alts ?? [a];
+  const bs = b.alts ?? [b];
+  return as.every((x) => bs.every((y) => sameFocusOne(x, y)));
 }
 
 // ─── ③ 결과 절 ────────────────────────────────────────────────────────────
@@ -1177,7 +1206,7 @@ function vResult(
     return NO_FOCUS;
   }
   return (
-    bestOf(
+    focusOf(
       env,
       candidates,
       (sub, { match, side }) => {
@@ -1192,6 +1221,10 @@ function vResult(
         // 승부차기 경기의 승패는 승부차기 결과 — '승부차기' 수식이 있어야 한다(M1-19)
         if (f.pens && bag.shootout !== true)
           bad(sub, "shootout", "승부차기 경기");
+        // 합산 승부차기(ft 동점 아님 — 두 경기 합계는 입력에 없다)는 이기거나 진 문장으로 쓰지 않는다(지시문 [연장·승부차기],
+        // 4회차 중요 1) — '경기는 … 끝났고 승부차기에서' 문형만
+        if (f.pens && f.ft.home !== f.ft.away)
+          bad(sub, "shootout", "경기 점수 동점 아님");
         if (!f.pens && bag.shootout === true) bad(sub, "shootout", "승부차기");
         const verb = strAt(bag, "verb") ?? "";
         if (
@@ -1252,7 +1285,7 @@ function vDraw(env: Env, bag: Bag, subject: string | null): Focus {
     return NO_FOCUS;
   }
   return (
-    bestOf(
+    focusOf(
       env,
       candidates,
       (sub, { match, side }) => {
@@ -1314,7 +1347,13 @@ function vPens(env: Env, bag: Bag): Focus {
   if (score && !(score[0] === score[1] && score[0] === f.ft.home))
     bad(env, "score-mismatch", `${score[0]}-${score[1]}`);
   const pens = pairAt(bag, "pens");
-  if (pens) scoreIssue(env, scoreMatches(f.pens, pens[0], pens[1], side), pens);
+  // 승부차기 점수는 이긴 팀 것 먼저만(지시문 '이긴 팀 것을 먼저' · 템플릿과 같다 — 4회차 중요 2, 오케스트레이터 결정)
+  if (pens)
+    scoreIssue(
+      env,
+      orientedMatches(f.pens, pens[0], pens[1], f.winner ?? side),
+      pens,
+    );
   checkResultMods(env, bag, match, side);
   return focus;
 }
@@ -1371,7 +1410,13 @@ function vEndPens(
   }
   if (f.winner !== side) bad(env, "winner-mismatch", "승부차기");
   const pens = pairAt(bag, "pens");
-  if (pens) scoreIssue(env, scoreMatches(f.pens, pens[0], pens[1], side), pens);
+  // 승부차기 점수는 이긴 팀 것 먼저만(지시문 '이긴 팀 것을 먼저' · 템플릿과 같다 — 4회차 중요 2, 오케스트레이터 결정)
+  if (pens)
+    scoreIssue(
+      env,
+      orientedMatches(f.pens, pens[0], pens[1], f.winner ?? side),
+      pens,
+    );
 }
 
 // ─── ③ 득점 절 ────────────────────────────────────────────────────────────
@@ -1510,7 +1555,7 @@ function vGoal(env: Env, bag: Bag): Focus {
     return NO_FOCUS;
   }
   return (
-    bestOf(
+    focusOf(
       env,
       candidates,
       (sub, pd) => {
@@ -1552,7 +1597,7 @@ function vCount(env: Env, bag: Bag): Focus {
     return NO_FOCUS;
   }
   return (
-    bestOf(
+    focusOf(
       env,
       candidates,
       (sub, pd) => {
@@ -1584,7 +1629,7 @@ function vAssist(env: Env, bag: Bag): Focus {
     return NO_FOCUS;
   }
   return (
-    bestOf(
+    focusOf(
       env,
       candidates,
       (sub, pd) => {
@@ -1615,62 +1660,72 @@ function vKorean(env: Env, bag: Bag): { focus: Focus; k: KoreanModel | null } {
     bad(env, "appearance", `${textAt(env, bag, "subj")} 기록 없음`);
     return { focus: NO_FOCUS, k: null };
   }
-  return (
-    bestOf(
-      env,
-      blocks,
-      (sub, k) => {
-        const kk = k.k;
-        const match = env.s.model.matches.get(kk.match) ?? null;
-        const focus: Focus = { match, table: null, teams: [k.team] };
-        for (const key of ["kTeam", "kTeam2"]) {
-          const t = keyAt(env, bag, key);
-          if (t !== null && t !== k.team)
-            bad(sub, "affiliation", textAt(env, bag, key));
-        }
-        const kOpp = keyAt(env, bag, "kOpp");
-        if (kOpp !== null) {
-          const opp = !match
-            ? null
-            : match.home === k.team
-              ? match.away
-              : match.away === k.team
-                ? match.home
-                : null;
-          if (opp !== kOpp)
-            bad(sub, "opponent-mismatch", textAt(env, bag, "kOpp"));
-        }
-        const app = strAt(bag, "app");
-        if (app === "bench") {
-          if (kk.minutes > 0) bad(sub, "appearance", "결장");
-          return { focus, k };
-        }
-        if (kk.minutes <= 0) bad(sub, "appearance", "출전");
-        if (app === "start" && !kk.started) bad(sub, "appearance", "선발");
-        if (app === "sub" && (kk.started || kk.subOn === undefined))
-          bad(sub, "appearance", "교체 투입");
-        const subOn = strAt(bag, "subOn");
-        if (subOn !== null && String(kk.subOn) !== subOn)
-          bad(sub, "minute", `${subOn}분 투입`);
-        checkHalf(
-          sub,
-          bag,
-          "subOn",
-          kk.subOn !== undefined ? String(kk.subOn) : undefined,
-        );
-        const minutes = numAt(bag, "minutes");
-        if (minutes !== null && minutes !== kk.minutes)
-          bad(sub, "minute", `${minutes}분 출전`);
-        if (bag.subOff === true && kk.subOff === undefined)
-          bad(sub, "appearance", "교체 아웃");
-        return { focus, k };
-      },
-      ["kOpp", "kTeam", "kTeam2"].some((key) => keyAt(env, bag, key) !== null),
-    ) ?? {
-      focus: NO_FOCUS,
-      k: null,
-    }
+  const pinned = ["kOpp", "kTeam", "kTeam2"].some(
+    (key) => keyAt(env, bag, key) !== null,
   );
+  const picked = pickCandidate(
+    env,
+    blocks,
+    (sub, k): { focus: Focus; k: KoreanModel } => {
+      const kk = k.k;
+      const match = env.s.model.matches.get(kk.match) ?? null;
+      // 입력 경기 목록에 없는 블록 경기도 id는 담는다(4회차 차단 3 — 다른 경기 절과 이어 쓰면 clause-mismatch)
+      const focus: Focus = {
+        match,
+        ...(match ? {} : { matchId: kk.match }),
+        table: null,
+        teams: [k.team],
+      };
+      for (const key of ["kTeam", "kTeam2"]) {
+        const t = keyAt(env, bag, key);
+        if (t !== null && t !== k.team)
+          bad(sub, "affiliation", textAt(env, bag, key));
+      }
+      const kOpp = keyAt(env, bag, "kOpp");
+      if (kOpp !== null) {
+        const opp = !match
+          ? null
+          : match.home === k.team
+            ? match.away
+            : match.away === k.team
+              ? match.home
+              : null;
+        if (opp !== kOpp)
+          bad(sub, "opponent-mismatch", textAt(env, bag, "kOpp"));
+      }
+      const app = strAt(bag, "app");
+      if (app === "bench") {
+        if (kk.minutes > 0) bad(sub, "appearance", "결장");
+        return { focus, k };
+      }
+      if (kk.minutes <= 0) bad(sub, "appearance", "출전");
+      if (app === "start" && !kk.started) bad(sub, "appearance", "선발");
+      if (app === "sub" && (kk.started || kk.subOn === undefined))
+        bad(sub, "appearance", "교체 투입");
+      const subOn = strAt(bag, "subOn");
+      if (subOn !== null && String(kk.subOn) !== subOn)
+        bad(sub, "minute", `${subOn}분 투입`);
+      checkHalf(
+        sub,
+        bag,
+        "subOn",
+        kk.subOn !== undefined ? String(kk.subOn) : undefined,
+      );
+      const minutes = numAt(bag, "minutes");
+      if (minutes !== null && minutes !== kk.minutes)
+        bad(sub, "minute", `${minutes}분 출전`);
+      if (bag.subOff === true && kk.subOff === undefined)
+        bad(sub, "appearance", "교체 아웃");
+      return { focus, k };
+    },
+    pinned,
+  );
+  if (!picked) return { focus: NO_FOCUS, k: null };
+  const focus =
+    !pinned && picked.all.length > 1
+      ? { ...picked.r.focus, alts: picked.all.map((x) => x.focus) }
+      : picked.r.focus;
+  return { focus, k: picked.r.k };
 }
 
 /** (출전한 한국 선수 문형 뒤) 득점은 없었다 — 결장 뒤 꼬리는 거부(권장 1) */

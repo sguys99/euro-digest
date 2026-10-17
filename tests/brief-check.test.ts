@@ -776,7 +776,7 @@ function standingsReviewMutations(
   return out;
 }
 
-describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json — 1·2·3회차) — 거짓은 모두 강등, 참은 문법 안이면 통과", () => {
+describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json — 1~4회차) — 거짓은 모두 강등, 참은 문법 안이면 통과", () => {
   const Probe = z.object({
     input: z.string(),
     /** 기대 판정 */
@@ -803,9 +803,15 @@ describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json — 1·2·3�
     ]),
   );
   const round = (p: z.infer<typeof Probe>) =>
-    p.group.startsWith("r3-") ? 3 : p.group.startsWith("r2-") ? 2 : 1;
+    p.group.startsWith("r4-")
+      ? 4
+      : p.group.startsWith("r3-")
+        ? 3
+        : p.group.startsWith("r2-")
+          ? 2
+          : 1;
 
-  it("문장 수 — 1회차 158(거짓 112 · 참 46), 2회차 511(거짓 348 · 참 163), 3회차 788(재현 316 = 거짓 122 · 참 194, 이전 판을 통과한 변이 472 = 거짓 264 · 참 208)", () => {
+  it("문장 수 — 1회차 158(거짓 112 · 참 46), 2회차 511(거짓 348 · 참 163), 3회차 788(재현 316 = 거짓 122 · 참 194, 이전 판을 통과한 변이 472 = 거짓 264 · 참 208), 4회차 65(거짓 49 · 참 16)", () => {
     const of = (n: number, truth: boolean) =>
       file.probes.filter((p) => round(p) === n && p.truth === truth);
     expect(of(1, false)).toHaveLength(112);
@@ -817,15 +823,79 @@ describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json — 1·2·3�
     expect(
       of(3, false).filter((p) => p.group.startsWith("r3-mut-")),
     ).toHaveLength(264);
-    // 거짓은 늘 강등 기대. 참 611 중 문법 안 325 · 강등 286(문형 밖 257 + 안전한 쪽 규칙 29 — 좁은 동점골·두 절 다른 대상·문자 형식 …
+    expect(of(4, false)).toHaveLength(49);
+    expect(of(4, true)).toHaveLength(16);
+    // 거짓은 늘 강등 기대. 참 627 중 문법 안 341 · 강등 286(문형 밖 257 + 안전한 쪽 규칙 29 — 좁은 동점골·두 절 다른 대상·문자 형식 …
     // + 승패 문장 홈-원정 순서 점수 15(D55 ② — 주어 팀 점수 먼저만))
     expect(file.probes.filter((p) => !p.truth && p.pass)).toEqual([]);
-    expect(file.probes.filter((p) => p.truth && p.pass)).toHaveLength(325);
+    expect(file.probes.filter((p) => p.truth && p.pass)).toHaveLength(341);
     expect(file.probes.filter((p) => p.truth && !p.pass)).toHaveLength(286);
     expect(file.probes.filter((p) => p.code !== undefined)).toHaveLength(29);
     expect(
       file.probes.filter((p) => p.code === "score-order").map((p) => p.truth),
     ).toEqual(Array(15).fill(true));
+  });
+
+  it("4회차 규칙의 사유 코드 — 입력 밖 한국 선수 경기·다른 대회 순위표·후보 여럿 = clause-mismatch, 결과 아닌 절 뒤 순위 꼬리 = grammar-unknown, 합산 승부차기 승리 = shootout, 승부차기 점수 진 팀 먼저 = score-order", () => {
+    const codesOf = (t: string) => {
+      const p = file.probes.find(
+        (x) => x.t === t && x.group.startsWith("r4-"),
+      )!;
+      const res = checkBriefOutput(
+        [{ t: p.t, r: p.r }],
+        inputs.get(p.input)!,
+        CTX,
+      );
+      return res.lines[0]!.reasons.map((r) => r.code);
+    };
+    const cases: Array<[string, BriefLineReasonCode]> = [
+      // 차단 3 — 블록 경기(cup99)가 입력 밖이어도 다른 경기 절과 잇지 않는다
+      [
+        "Kang-in Lee는 선발 출전해 90분을 뛰었고 Arsenal이 Leeds United를 2-1로 꺾었다.",
+        "clause-mismatch",
+      ],
+      [
+        "Kang-in Lee는 선발 출전해 90분을 뛰었고 Arsenal은 승점 16으로 선두다.",
+        "clause-mismatch",
+      ],
+      // 차단 1 — 주어 생략 순위 꼬리는 한 팀이 주어인 결과 문형 뒤만
+      [
+        "Bruno Guimarães가 70분 결승골을 넣었고 승점 15로 2위다.",
+        "grammar-unknown",
+      ],
+      ["Barça는 승점 24로 선두이고 선두를 달린다.", "grammar-unknown"],
+      ["Augsburg와 Bayern의 경기는 2-2로 끝났고 2위다.", "grammar-unknown"],
+      // 차단 2 — 경기 대회 ≠ 순위표 대회, 후보가 여럿이면 모든 후보에서
+      [
+        "Arsenal이 Lille을 3-0으로 완파하고 승점 15로 2위다.",
+        "clause-mismatch",
+      ],
+      ["Lille을 3-0으로 꺾은 Arsenal은 승점 15로 2위다.", "clause-mismatch"],
+      [
+        "Arsenal은 승점 15로 2위이고 Arsenal이 Lille을 3-0으로 꺾었다.",
+        "clause-mismatch",
+      ],
+      ["Bayern이 PSG를 2-1로 꺾고 승점 15로 선두다.", "clause-mismatch"],
+      ["Bayern이 이기고 승점 3으로 3위다.", "clause-mismatch"],
+      // 중요 1 — 합산 승부차기(ft 동점 아님)는 이긴 꼴로 쓰지 않는다
+      ["Bayern이 승부차기 끝에 Inter를 4-2로 꺾었다.", "shootout"],
+      ["Bayern이 원정에서 승부차기 끝에 이겼다.", "shootout"],
+      // 중요 2 — 승부차기 점수는 이긴 팀 것 먼저만
+      [
+        "Barça가 PSG와 연장까지 1-1로 맞선 뒤 승부차기에서 3-5로 이겼다.",
+        "score-order",
+      ],
+      [
+        "PSG와 Barça의 경기는 연장까지 1-1로 끝났고 승부차기에서 Barça가 3-5로 이겼다.",
+        "score-order",
+      ],
+    ];
+    for (const [t, code] of cases) expect(codesOf(t), t).toContain(code);
+    // 같은 대회 순위표면 통과(관형 결과 + 순위)
+    const ok = file.probes.find(
+      (x) => x.t === "Lille을 3-0으로 꺾은 Arsenal은 승점 6으로 2위다.",
+    )!;
+    expect(ok.truth && ok.pass).toBe(true);
   });
 
   it.each(

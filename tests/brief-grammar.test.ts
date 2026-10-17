@@ -12,7 +12,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { CompetitionsFileSchema, NamesKoFileSchema } from "@/lib/schema";
 
@@ -38,6 +38,10 @@ import {
   type MentionKind,
 } from "../scripts/lib/brief-grammar";
 import { buildNameIndex } from "../scripts/lib/names";
+
+// 표기 펼치기 시험(문형마다 꼴 수백~수천 개를 분석)이 있어 이 파일만 시간 상한을 늘린다 — 단독 1초 안팎, 전체 스위트를 병렬로 돌리면
+// 기본 5초를 넘은 적이 있다(2026-10-17)
+vi.setConfig({ testTimeout: 30_000 });
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
@@ -428,13 +432,73 @@ describe("지시문 [문형] = 문법(D53 ② — 한 출처, 양방향)", () =>
         parseBriefLine(`${p.context ?? ""}${e}.`, EXPAND_KINDS, {
           keys: keys as typeof BRIEF_INPUT_KEYS,
         }).parses.some((x) => x.clauses.some((c) => c.id === p.id));
-      const missed = lines.filter((e) => !parsedAs(e, BRIEF_INPUT_KEYS));
+      // 키 없는 문형은 지금 입력(키 없음)의 문법으로, 입력 선택 키 문형은 키를 켠 문법으로 모두 분석된다(꼴마다 한 번 — 파싱이 이
+      // 시험 시간의 대부분이다)
+      const missed = lines.filter(
+        (e) => !parsedAs(e, p.requires ? BRIEF_INPUT_KEYS : []),
+      );
       expect(missed).toEqual([]);
-      // 키가 없으면(지금 입력) 그 문형으로는 분석되지 않는다 — 키 없는 문형은 늘 켜져 있다
-      const offParsed = lines.filter((e) => parsedAs(e, []));
-      expect(offParsed).toEqual(p.requires ? [] : lines);
+      // 입력 선택 키 문형은 키가 없으면(지금 입력) 그 문형으로 분석되지 않는다
+      if (p.requires) expect(lines.filter((e) => parsedAs(e, []))).toEqual([]);
     },
   );
+
+  it("절2 꼬리의 앞 절 조건(4회차 차단 1) — 주어를 빼는 순위 꼬리는 한 팀이 주어인 결과 문형 뒤만, 승부차기 꼬리는 '경기는 … 끝났고' 뒤만, 득점 없음 꼬리는 출전 문형 뒤만", () => {
+    expect(
+      PATTERNS.filter((p) => p.role === "second").map((p) => [p.id, p.after]),
+    ).toEqual([
+      ["end-pens", ["end"]],
+      ["korean-tail", ["korean"]],
+      ["rank-after", ["win", "win-beat", "win-earn", "loss", "draw", "pens"]],
+    ]);
+    const T: MentionKind = "team";
+    const P: MentionKind = "player";
+    const KINDS: MentionKind[] = [T, T, P, P, "comp"];
+    const tails = (skeleton: string) =>
+      parseBriefLine(skeleton, KINDS, { keys: BRIEF_INPUT_KEYS })
+        .parses.filter((x) => x.clauses.length === 2)
+        .map((x) => `${x.clauses[0]!.id}+${x.clauses[1]!.id}`);
+    // 결과 문형 뒤 — 붙는다
+    for (const [line, first] of [
+      ["⟨0⟩가 ⟨1⟩를 2-1로 꺾고 승점 13으로 2위다.", "win"],
+      ["⟨0⟩가 ⟨1⟩를 2-1로 이기고 2위다.", "win-beat"],
+      ["⟨0⟩가 ⟨1⟩에 2-1 승리를 거두고 2위다.", "win-earn"],
+      ["⟨0⟩가 ⟨1⟩에 1-2로 지고 2위다.", "loss"],
+      ["⟨0⟩가 ⟨1⟩와 2-2로 비기고 2위다.", "draw"],
+      ["⟨0⟩가 ⟨1⟩와 1-1로 맞선 뒤 승부차기에서 4-3으로 이기고 2위다.", "pens"],
+    ] as const)
+      expect(tails(line), line).toContain(`${first}+rank-after`);
+    // 결과 문형이 아닌 절 뒤(골·도움·출전·순위·'경기는 끝났다'·짝 무승부) — 붙지 않는다
+    for (const line of [
+      "⟨2⟩가 62분 골을 넣었고 승점 13으로 2위다.",
+      "⟨2⟩가 ⟨3⟩의 62분 골을 도왔고 2위다.",
+      "⟨2⟩는 선발 출전해 90분을 뛰었고 승점 13으로 2위다.",
+      "⟨0⟩는 승점 13으로 선두이고 선두를 달린다.",
+      "⟨0⟩와 ⟨1⟩의 경기는 2-2로 끝났고 2위다.",
+      "⟨0⟩와 ⟨1⟩가 2-2로 비겼고 2위다.",
+    ])
+      expect(
+        tails(line).filter((x) => x.endsWith("+rank-after")),
+        line,
+      ).toEqual([]);
+    // 다른 꼬리도 정해진 앞 절 뒤만
+    expect(
+      tails("⟨0⟩가 ⟨1⟩를 2-1로 꺾었고 승부차기에서 ⟨0⟩가 4-3으로 이겼다."),
+    ).not.toContain("win+end-pens");
+    expect(tails("⟨0⟩가 ⟨1⟩를 2-1로 꺾었고 득점은 없었다.")).toEqual([]);
+  });
+
+  it("점 묶음 주어('A·B가'·'A·B·C가')는 템플릿 공동 순위 꼴 — 문법은 받고 지시문 [문형]에는 없다(4회차 중요 3)", () => {
+    const T: MentionKind = "team";
+    expect(
+      parseBriefLine("⟨0⟩·⟨1⟩이 승점 12로 공동 2위다.", [T, T]).parses.length,
+    ).toBeGreaterThan(0);
+    expect(
+      parseBriefLine("⟨0⟩·⟨1⟩·⟨2⟩가 승점 12로 공동 2위다.", [T, T, T]).parses
+        .length,
+    ).toBeGreaterThan(0);
+    expect(renderBriefPatterns()).not.toMatch(/\{팀\}·\{팀\}/);
+  });
 
   it("지시문 [문형]에는 입력 선택 키 문형이 없고(D55 ① — 한국 선수 절·prev 꼴), 키를 켜면 그 꼴이 나온다(M2-03·M3-03에서 되살리기)", () => {
     const base = renderBriefPatterns();

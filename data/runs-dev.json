@@ -377,5 +377,101 @@
     },
     "sources": [],
     "status": "partial"
+  },
+  {
+    "runId": "eval-dev-20261017T102457Z-b282",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T10:24:57.773Z",
+    "finishedAt": "2026-10-17T10:25:39.687Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 10,
+    "downgraded": 0,
+    "tokens": {
+      "in": 13249,
+      "out": 9704,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.006177,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
+  },
+  {
+    "runId": "eval-dev-20261017T102558Z-eba6",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T10:25:58.037Z",
+    "finishedAt": "2026-10-17T10:26:34.665Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 9,
+    "downgraded": 1,
+    "tokens": {
+      "in": 14202,
+      "out": 8121,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.005481,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
+  },
+  {
+    "runId": "eval-dev-20261017T102652Z-afc0",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T10:26:52.465Z",
+    "finishedAt": "2026-10-17T10:27:05.490Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": {
+      "in": 5573,
+      "out": 2933,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.002024,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
+  },
+  {
+    "runId": "eval-dev-20261017T102716Z-c4fc",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T10:27:16.121Z",
+    "finishedAt": "2026-10-17T10:27:31.600Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": {
+      "in": 5042,
+      "out": 3497,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.002253,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
   }
 ]

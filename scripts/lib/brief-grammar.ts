@@ -28,8 +28,9 @@
  *
  * ── 줄 = 절 1~2개 ─────────────────────────────────────────────────────────
  *   절1 '다.'  |  절1(-고·-며) 절2 '다.'  |  관형 앞절('{상대}를 3-0으로 꺾은') {팀}은 + 순위 절 '다.'
- *   절2는 주어를 뺀 순위 꼴(앞 결과 절 주어 팀의 순위)·한국 선수 꼬리·승부차기 꼬리이거나 이름 주어가 있는 문형이다. 두 절은 같은
- *   경기(순위 절끼리는 같은 순위표)여야 한다 — 검사기가 대조한다.
+ *   절2는 주어를 뺀 순위 꼴(앞 결과 절 주어 팀의 순위)·한국 선수 꼬리·승부차기 꼬리이거나 이름 주어가 있는 문형이다. 꼬리 꼴은 정해진
+ *   앞 절 뒤에만 붙는다(`after` — 순위 꼬리는 한 팀이 주어인 결과 문형 뒤, 리뷰 4회차 차단 1). 두 절은 같은 경기(순위 절끼리는 같은
+ *   순위표, 경기와 순위는 같은 대회)여야 한다 — 검사기가 대조한다.
  */
 
 // ─── 뼈대 ────────────────────────────────────────────────────────────────
@@ -272,6 +273,11 @@ const comp = (key: string, particle: string) =>
   slot(key, ["comp"], particle, "{대회}");
 
 /** 이름 묶음 주어 — 'A가' · 'A와 B가' · 'A·B·C가'(템플릿 공동 순위) → key = 순번 목록 */
+/**
+ * 순위 주어 묶음 — '{팀}이' · '{팀}과 {팀}이' · 점 묶음 '{팀}·{팀}이'·'{팀}·{팀}·{팀}이'. 점 묶음은 템플릿의 공동 순위 문장
+ * (brief-template.ts — 같은 pos 팀을 가운뎃점으로 잇는다)이 쓰는 꼴이라 문법은 받지만 지시문 [문형]에는 적지 않는다(LLM 지시는
+ * '{팀}과 {팀}이' — 4회차 중요 3). 점 묶음은 vocab에 '{팀}'만 남기므로 양방향 시험(문법 → 표기)과 충돌하지 않는다.
+ */
 function teamGroup(key: string, particle: string): El {
   note("{팀}");
   return alt(
@@ -667,6 +673,11 @@ export interface PatternEntry {
   role: PatternRole;
   /** 이 입력 키가 있을 때만 켜는 문형(D55 ① — 없으면 늘 켜짐) */
   requires?: BriefInputKey;
+  /**
+   * second 절만 — 앞 절이 이 문형(id)일 때만 붙는다. 주어를 빼거나 앞 절에 기대는 꼬리라 아무 절 뒤에나 붙으면 다른 대상의 서술로
+   * 읽힌다(리뷰 4회차 차단 1 — '…골을 넣었고 승점 15로 2위다'는 선수가 2위처럼 읽힌다)
+   */
+  after?: readonly string[];
   /** 지시문 표기(앞의 '- ' 없이) — ' — '뒤는 설명(펼치지 않는다) */
   text: string;
   /** 시험용 앞절(뼈대) — second는 이 앞절 뒤에 붙여 분석한다 */
@@ -692,6 +703,7 @@ function pattern(
     type: spec.type,
     role: spec.role,
     ...(spec.requires ? { requires: spec.requires } : {}),
+    ...(spec.after ? { after: spec.after } : {}),
     text: spec.text,
     ...(spec.context ? { context: spec.context } : {}),
     el: head.value,
@@ -703,6 +715,16 @@ function pattern(
 const subject = () => team("subj", P.subj);
 
 const ENDS: readonly End[] = ["final", "conn"];
+
+/** 한 팀이 주어인 결과 문형(주어를 빼는 순위 꼬리 rank-after가 붙을 수 있는 앞 절 — 4회차 차단 1) */
+const RESULT_ONE_SUBJECT: readonly string[] = Object.freeze([
+  "win",
+  "win-beat",
+  "win-earn",
+  "loss",
+  "draw",
+  "pens",
+]);
 
 /** 한국 선수 출전 꼴 — 선발·교체 */
 function appearance(): El {
@@ -872,6 +894,7 @@ export const PATTERNS: readonly PatternEntry[] = [
     section: "결과",
     type: "endPens",
     role: "second",
+    after: ["end"],
     text: "(승부차기 경기의 '경기는 … 끝났고' 뒤) 승부차기에서 {팀}이 {점수}로 이겼다",
     context: `${OPEN}0${CLOSE}과 ${OPEN}1${CLOSE}의 경기는 1-1로 끝났고 `,
     build: () =>
@@ -1011,6 +1034,7 @@ export const PATTERNS: readonly PatternEntry[] = [
     section: "한국 선수",
     type: "koreanTail",
     role: "second",
+    after: ["korean"],
     text: "(출전 문형 뒤) 득점은 없었다",
     context: `${OPEN}2${CLOSE}는 선발 출전해 78분을 뛰었고 `,
     build: () => seq(w("득점은"), pred(["없다"], ["final"])),
@@ -1029,6 +1053,8 @@ export const PATTERNS: readonly PatternEntry[] = [
     section: "순위",
     type: "rank",
     role: "second",
+    // 한 팀이 주어인 결과 문형 뒤만(지시문 '결과 문형 뒤, 주어를 빼고 그 팀 순위' — 'A와 B의 경기는'·'A와 B가 비겼다'는 주어가 두 팀)
+    after: RESULT_ONE_SUBJECT,
     text: "(결과 문형 뒤, 주어를 빼고 그 팀 순위) [승점 {n}으로] [{대회}] [공동] ({순위}다 / {순위}를 달렸다·달린다)",
     context: `${OPEN}0${CLOSE}가 ${OPEN}1${CLOSE}를 2-1로 꺾고 `,
     build: () => rankBody(false),
@@ -1245,6 +1271,7 @@ export function parseBriefLine(
       }
       if (st.bag.end !== "conn") continue;
       for (const second of seconds) {
+        if (second.after && !second.after.includes(first.id)) continue;
         for (const st2 of second.el(cx, { pos: st.pos, bag: {} })) {
           if (st2.bag.end === "final" && atLineEnd(skeleton, st2.pos))
             parses.push({

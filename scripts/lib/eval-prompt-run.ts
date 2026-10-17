@@ -3,8 +3,9 @@
  *
  * 흐름(live): 골든셋·지시문 읽기 → 요청 계획 출력(날짜·경기 수·입력 어림) → 이번 달 사용 알림(`noticeMonthlyUsage` — dev 50%)
  *   → 비용 가드(`guardBriefBudget({env:"dev", requests: 고른 날짜 전부, attempts: 1})` — 예상 출력, 일·월 예산 초과면 부르지 않음 —
- *   M1-22 이월) → 날짜마다 단건 1요청(순서대로, D28 설정 — 출력 6,000토큰 초과·잘림이면 남은 날은 멈춤, D53) → 실행 기록(`data/runs-dev.json` — cost.ts withRecordedRun, runId
- *   `eval-dev-…`, job 칸은 스키마 enum상 "collect") → 판정·기록 `fixtures/llm/golden/runs/<라벨>/run.json` → 기준 실행과 비교 리포트.
+ *   M1-22 이월) → 날짜마다 단건 1요청(순서대로, D28 설정 — 잘림이면 남은 날은 멈춤, 6,000토큰 초과는 경고만) → 실행 기록
+ *   (`data/runs-dev.json` — cost.ts withRecordedRun, runId `eval-dev-…`, job 칸은 스키마 enum상 "collect") → 판정·기록
+ *   `fixtures/llm/golden/runs/<라벨>/run.json`(출력 경고 `warnings` 포함) → 기준 실행과 비교 리포트.
  * mock: 같은 흐름에서 LLM 대신 `fixtures/llm/mock/by-id/golden[-pre]-<날짜>.json`(결정적·무비용), 비용 가드·runs 기록 없음,
  *   기본으로 run.json을 쓰지 않는다(`--save`로 쓴다).
  * 골든셋 입력 다시 쓰기(`--build-golden`)·확인(`--check-golden`)은 LLM을 부르지 않는다.
@@ -41,6 +42,7 @@ import {
   summarizeEvalRun,
   type EvalDay,
   type EvalDayInput,
+  type EvalRunWarning,
   type EvalRun,
   type EvalVariant,
 } from "./brief-eval";
@@ -743,23 +745,41 @@ export interface EvalOutcome {
 }
 
 /**
- * 출력 토큰이 이 값을 넘는 날이 있으면 경고 — max_tokens 8,192(D53)의 약 3/4. 넘으면 live 실행은 남은 날을 보내지 않고 멈춘다
- * (`evalStopReason` — D53 재측정 기준 "넘거나 잘리면 멈추고 보고", 2026-10-17). D28(4,096) 때는 3,500이었다.
+ * 출력 토큰 경고 기준 — max_tokens 8,192(D53)의 약 3/4. 넘은 날은 로그와 run.json `warnings`에 남기고 실행은 계속한다(사용자 결정
+ * 2026-10-17 — 멈춤은 잘림만, `evalStopReason`). D28(4,096) 때는 3,500이었다.
  */
 export const EVAL_OUTPUT_ALERT_TOKENS = 6_000;
 
 /**
- * live 실행에서 이 날 뒤의 요청을 멈춰야 하나 — 출력이 `EVAL_OUTPUT_ALERT_TOKENS`를 넘었거나 잘렸다(max_tokens). D53 재측정 기준
- * "넘거나 잘리면 멈추고 보고"를 코드로 지킨다(남은 날을 보내지 않아 비용만 준다 — 호출 수 증가 없음).
+ * live 실행에서 이 날 뒤의 요청을 멈춰야 하나 — 출력이 잘렸다(max_tokens). 사용자 결정(2026-10-17): 판단 기준은 8,192에서의 잘림률이라
+ * 잘림만 멈추고 보고한다(남은 날을 보내지 않아 비용만 준다 — 호출 수 증가 없음). 6,000 초과는 `evalOutputWarning`(경고만).
  */
 export function evalStopReason(
   day: Pick<EvalDay, "usage" | "ok" | "errorType">,
 ): string | null {
   if (!day.ok && day.errorType === "max_tokens")
     return `잘림(max_tokens) · 출력 ${day.usage.out}토큰`;
-  if (day.usage.out > EVAL_OUTPUT_ALERT_TOKENS)
-    return `출력 ${day.usage.out}토큰 > ${EVAL_OUTPUT_ALERT_TOKENS}`;
   return null;
+}
+
+/** 출력 경고 — 출력 토큰이 `EVAL_OUTPUT_ALERT_TOKENS`를 넘은 날(잘린 날 포함). 멈추지 않는다 */
+export function evalOutputWarning(
+  day: Pick<EvalDay, "date" | "usage">,
+): EvalRunWarning | null {
+  return day.usage.out > EVAL_OUTPUT_ALERT_TOKENS
+    ? {
+        date: day.date,
+        code: "output-over-alert",
+        out: day.usage.out,
+        limit: EVAL_OUTPUT_ALERT_TOKENS,
+      }
+    : null;
+}
+
+function evalOutputWarnings(
+  days: readonly Pick<EvalDay, "date" | "usage">[],
+): EvalRunWarning[] {
+  return days.flatMap((d) => evalOutputWarning(d) ?? []);
 }
 /** 실행 전 '보통' 예상에 쓰는 요청당 출력 토큰(M0-30·M0-34 실측 1,355~3,231 — thinking 포함) */
 export const EVAL_TYPICAL_OUTPUT_TOKENS = 2_500;
@@ -934,6 +954,7 @@ async function rejudgeRun(
     ...versions,
     rejudgedFrom: original.label,
     note: `${original.label}(${original.mode}, 검사기 ${original.checker.id} · 설정 ${original.configs.id})의 출력을 검사기 ${versions.checker.id} · 설정 ${versions.configs.id}로 다시 판정 — LLM 호출 없음, 토큰·비용·지연은 원래 실행 값`,
+    warnings: evalOutputWarnings(days),
     days,
   };
   let runFile: string | null = null;
@@ -1136,6 +1157,17 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
         deps.print(
           `[eval]   ${day.date} → ${record.ok ? record.verdict : `실패 ${record.errorType}`} · 출력 ${record.usage.out}${record.thinkingTokens === null ? "" : `(thinking ${record.thinkingTokens})`} · ${formatUsd(record.costUsd)}${record.latencyMs === null ? "" : ` · ${(record.latencyMs / 1000).toFixed(1)}s`}`,
         );
+        const warning = evalOutputWarning(record);
+        if (warning) {
+          deps.print(
+            `[eval] 경고: ${day.date} 출력 ${warning.out}토큰 > ${warning.limit} — 계속한다(멈춤은 잘림만, 2026-10-17 사용자 결정)`,
+          );
+          deps.logger.warn("eval.output-over-alert", {
+            date: day.date,
+            out: warning.out,
+            limit: warning.limit,
+          });
+        }
         const stop =
           args.llmMode === "live" && i < days.length - 1
             ? evalStopReason(record)
@@ -1143,7 +1175,7 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
         if (stop) {
           stopped = days.length - 1 - i;
           deps.print(
-            `[eval] 멈춤: ${day.date} ${stop} — 남은 ${stopped}일은 보내지 않는다(D53 — 출력 ${EVAL_OUTPUT_ALERT_TOKENS}토큰 초과·잘림은 멈추고 보고)`,
+            `[eval] 멈춤: ${day.date} ${stop} — 남은 ${stopped}일은 보내지 않는다(잘림은 멈추고 보고 — 2026-10-17 사용자 결정)`,
           );
           break;
         }
@@ -1189,6 +1221,7 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
           note: "🧪 사실 선계산 변형 — 입력에 x(brief-precompute.ts), 지시문 뒤에 x 설명. 판정은 확정 입력 기준",
         }
       : {}),
+    warnings: evalOutputWarnings(recorded.value),
     days: recorded.value,
   };
   let runFile: string | null = null;
@@ -1230,10 +1263,10 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
     deps.print(`[eval] 기준 실행 "${picked.label}"이 없다 — 비교 없이 출력`);
   const report = formatEvalReport(run, baseline, { lines: !args.summaryOnly });
   deps.print(report);
-  const over = run.days.filter((d) => d.usage.out > EVAL_OUTPUT_ALERT_TOKENS);
+  const over = run.warnings ?? [];
   if (over.length > 0) {
     deps.print(
-      `[eval] 경고: 출력 토큰이 ${EVAL_OUTPUT_ALERT_TOKENS}을 넘은 날 ${over.map((d) => `${d.date}(${d.usage.out})`).join(", ")} — max_tokens ${requests[0]!.maxTokens} 여유가 작다(D53). 지시문 축소 또는 max_tokens 상향은 사용자 승인 사항`,
+      `[eval] 경고: 출력 토큰이 ${EVAL_OUTPUT_ALERT_TOKENS}을 넘은 날 ${over.map((d) => `${d.date}(${d.out})`).join(", ")} — max_tokens ${requests[0]!.maxTokens} 여유가 작다(D53). 지시문 축소 또는 max_tokens 상향은 사용자 승인 사항`,
     );
   }
   if (recorded.record.persisted) {
