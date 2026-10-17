@@ -36,6 +36,7 @@ import {
   type BriefCheckContext,
   type BriefCheckInput,
   type BriefLineCheck,
+  type BriefLineReasonCode,
   type BriefResponse,
 } from "../scripts/lib/brief-check";
 import {
@@ -238,9 +239,9 @@ describe("사람 검토 대비 — M0-30·M0-34 실제 출력 90줄", () => {
   });
 
   // D50(닫힌 문법) 뒤로 사실은 맞지만 문형 밖인 줄(쉼표 절·흐름 서술·목록 밖 술어·괄호·두 경기 나열 — M0-30·M0-34 지시문은 자유
-  // 문장이었다)이 grammar-unknown으로 강등된다: 21 → 35줄(정상 줄 83줄의 42.2%) → D53 ② 문형 축소 뒤 37줄(44.6%). 지시문 v0.2·v0.3
-  // 출력의 실측은 골든셋(M1-24·D53 ③)
-  it("사실이 맞는데 막힌 37줄은 모두 정해진 규칙 때문이다(언어 10 · 이름 표기 5 · 두 문장·80자 3 · 문형 밖 19) — 규칙 밖 오탐 0", () => {
+  // 문장이었다)이 grammar-unknown으로 강등된다: 21 → 35줄(정상 줄 83줄의 42.2%) → D53 ② 문형 축소 뒤 37줄(44.6%) → D55 ② 승패
+  // 문장 주어 팀 점수 먼저만(원정 승을 홈-원정 순서로 쓴 3줄) 40줄(48.2%). 지시문 v0.2~v0.4 출력의 실측은 골든셋(M1-24·D53 ③·D55)
+  it("사실이 맞는데 막힌 40줄은 모두 정해진 규칙 때문이다(언어 10 · 이름 표기 5 · 두 문장·80자 3 · 문형 밖 19 · 점수 순서 3) — 규칙 밖 오탐 0", () => {
     const category = (codes: readonly string[]): string => {
       if (codes.includes("han") || codes.includes("korean-ratio"))
         return "language";
@@ -255,6 +256,9 @@ describe("사람 검토 대비 — M0-30·M0-34 실제 출력 90줄", () => {
       // 문형 밖(D50) — 사유가 grammar-unknown뿐(슬롯 대조로는 걸리지 않았다 = 사실과 어긋난 슬롯 없음)
       if (codes.length > 0 && codes.every((x) => x === "grammar-unknown"))
         return "grammar";
+      // 승패 문장의 홈-원정 순서 점수(D55 ② — 주어 팀 점수 먼저만, 사실은 맞다)
+      if (codes.length > 0 && codes.every((x) => x === "score-order"))
+        return "score-order";
       return `other:${codes.join(",")}`;
     };
     const blockedOk = rows.filter((r) => r.human === "ok" && r.blocked);
@@ -268,8 +272,9 @@ describe("사람 검토 대비 — M0-30·M0-34 실제 출력 90줄", () => {
       "name-form": 5,
       sentence: 3,
       grammar: 19,
+      "score-order": 3,
     });
-    // 출력 전체 재시도(언어) 10줄을 빼면 줄 단위 강등 27/73(37.0%)
+    // 출력 전체 재시도(언어) 10줄을 빼면 줄 단위 강등 30/73(41.1%)
     const lineOnly = rows.filter(
       (r) =>
         r.human === "ok" &&
@@ -277,7 +282,7 @@ describe("사람 검토 대비 — M0-30·M0-34 실제 출력 90줄", () => {
         !r.codes.includes("korean-ratio"),
     );
     expect(lineOnly).toHaveLength(73);
-    expect(lineOnly.filter((r) => r.blocked)).toHaveLength(27);
+    expect(lineOnly.filter((r) => r.blocked)).toHaveLength(30);
   });
 });
 
@@ -303,7 +308,7 @@ describe("fixtures/brief-sample.json (D0 표시용 6일치)", () => {
   const inputByDate = (date: string) =>
     sent(readJson(`fixtures/llm/brief-inputs/${date}.json`));
 
-  it("LLM 줄(textRaw) 24줄 중 막히는 줄은 mock 판정과 같은 2줄(10-10 L1 두 문장·80자, 09-11 L5 문형 밖 '1라운드 후 … 상위 5위에 올랐다'), 템플릿 줄 3줄은 통과", () => {
+  it("LLM 줄(textRaw) 24줄 중 막히는 줄은 mock 판정과 같은 5줄(10-10 L1 두 문장·80자, 09-11 L5 문형 밖 '1라운드 후 … 상위 5위에 올랐다', 09-11 L4·09-21 L2·10-11 L1 원정 승 홈-원정 순서 — D55 ②), 템플릿 줄 3줄은 통과", () => {
     const blocked: string[] = [];
     let ai = 0;
     let template = 0;
@@ -322,7 +327,13 @@ describe("fixtures/brief-sample.json (D0 표시용 6일치)", () => {
     }
     expect(ai).toBe(24);
     expect(template).toBe(3);
-    expect(blocked.sort()).toEqual(["2026-09-11 L5", "2026-10-10 L1"]);
+    expect(blocked.sort()).toEqual([
+      "2026-09-11 L4",
+      "2026-09-11 L5",
+      "2026-09-21 L2",
+      "2026-10-10 L1",
+      "2026-10-11 L1",
+    ]);
   });
 });
 
@@ -806,11 +817,15 @@ describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json — 1·2·3�
     expect(
       of(3, false).filter((p) => p.group.startsWith("r3-mut-")),
     ).toHaveLength(264);
-    // 거짓은 늘 강등 기대. 참 611 중 문법 안 340 · 강등 271(문형 밖 257 + 안전한 쪽 규칙 14 — 좁은 동점골·두 절 다른 대상·문자 형식 …)
+    // 거짓은 늘 강등 기대. 참 611 중 문법 안 325 · 강등 286(문형 밖 257 + 안전한 쪽 규칙 29 — 좁은 동점골·두 절 다른 대상·문자 형식 …
+    // + 승패 문장 홈-원정 순서 점수 15(D55 ② — 주어 팀 점수 먼저만))
     expect(file.probes.filter((p) => !p.truth && p.pass)).toEqual([]);
-    expect(file.probes.filter((p) => p.truth && p.pass)).toHaveLength(340);
-    expect(file.probes.filter((p) => p.truth && !p.pass)).toHaveLength(271);
-    expect(file.probes.filter((p) => p.code !== undefined)).toHaveLength(14);
+    expect(file.probes.filter((p) => p.truth && p.pass)).toHaveLength(325);
+    expect(file.probes.filter((p) => p.truth && !p.pass)).toHaveLength(286);
+    expect(file.probes.filter((p) => p.code !== undefined)).toHaveLength(29);
+    expect(
+      file.probes.filter((p) => p.code === "score-order").map((p) => p.truth),
+    ).toEqual(Array(15).fill(true));
   });
 
   it.each(
@@ -840,7 +855,7 @@ describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json — 1·2·3�
 
 describe("리뷰 유형의 참 문장(문형 안)은 통과한다(오탐 기준선)", () => {
   it.each(TEMPLATE_CTXS)(
-    "실제 입력 7일치 모든 경기 — 맞는 장소·패자 주어 홈-원정 순서·완파·소속·n골·'Y의 골을 도왔다' (%s)",
+    "실제 입력 7일치 모든 경기 — 맞는 장소·패자 주어 점수 먼저·완파·소속·n골·'Y의 골을 도왔다' (%s)",
     (_, tctx) => {
       const team = (n: string) => (tctx.names ? tctx.names.team(n) : n);
       const person = (n: string) => (tctx.names ? tctx.names.person(n) : n);
@@ -896,6 +911,65 @@ describe("리뷰 유형의 참 문장(문형 안)은 통과한다(오탐 기준�
       }
       expect(blocked).toEqual([]);
       expect(total).toBeGreaterThan(250);
+    },
+  );
+});
+
+describe("승패 문장 점수 순서 — 주어 팀 점수 먼저만(D55 ② — D30 보강, 2026-10-17 사용자 결정)", () => {
+  it.each(TEMPLATE_CTXS)(
+    "실제 입력 7일치 원정 승리 경기 — 승패 문장의 홈-원정 순서는 score-order, 주어 팀 먼저는 통과, 'A와 B의 경기는'은 앞 팀 먼저 그대로 (%s)",
+    (_, tctx) => {
+      const team = (n: string) => (tctx.names ? tctx.names.team(n) : n);
+      const wrong: string[] = [];
+      let away = 0;
+      for (const input of REAL_INPUTS) {
+        for (const m of input.matches) {
+          const [h, a] = m.ft.split("-").map(Number) as [number, number];
+          if (m.aet || m.pens || !(a > h)) continue;
+          away += 1;
+          const H = team(m.home);
+          const A = team(m.away);
+          const hw = withJosa(`${h}-${a}`, "으로/로"); // 홈-원정 순서
+          const aw = withJosa(`${a}-${h}`, "으로/로"); // 원정(주어) 먼저
+          const cases: Array<[string, BriefLineReasonCode | null]> = [
+            [
+              `${withJosa(A, "이/가")} ${H} 원정에서 ${hw} 이겼다.`,
+              "score-order",
+            ],
+            [
+              `${withJosa(A, "이/가")} ${withJosa(H, "을/를")} ${hw} 꺾었다.`,
+              "score-order",
+            ],
+            [
+              `${withJosa(A, "이/가")} ${H}에 ${h}-${a} 승리를 거뒀다.`,
+              "score-order",
+            ],
+            [`${withJosa(A, "이/가")} ${H} 원정에서 ${aw} 이겼다.`, null],
+            [`${withJosa(H, "이/가")} 홈에서 ${A}에 ${hw} 졌다.`, null],
+            [
+              `${withJosa(H, "이/가")} 홈에서 ${A}에 ${aw} 졌다.`,
+              "score-order",
+            ],
+            [`${withJosa(H, "과/와")} ${A}의 경기는 ${hw} 끝났다.`, null],
+            [`${withJosa(A, "과/와")} ${H}의 경기는 ${aw} 끝났다.`, null],
+            [
+              `${withJosa(A, "과/와")} ${H}의 경기는 ${hw} 끝났다.`,
+              "score-order",
+            ],
+          ];
+          for (const [t, want] of cases) {
+            const { line, wholeOk } = one(t, [m.id], input);
+            const codes = line.reasons.map((r) => r.code);
+            const ok = line.ok && wholeOk;
+            if (want === null ? !ok : ok || !codes.includes(want))
+              wrong.push(
+                `${t} → ${describeLineCheck(line)} (기대 ${want ?? "통과"})`,
+              );
+          }
+        }
+      }
+      expect(wrong).toEqual([]);
+      expect(away).toBeGreaterThan(10);
     },
   );
 });
@@ -1035,7 +1109,8 @@ const PROBES_E: Probe[] = [
   ],
   ["Hoffenheim은 홈에서 HSV에 2-3으로 졌다.", ["m565818"], null],
   ["HSV가 Hoffenheim 원정에서 3-2로 이겼다.", ["m565818"], null],
-  ["Atleti가 Alavés 원정에서 1-2로 이겼다.", ["m564699"], null], // 홈-원정 순서(D30 — 두 순서 인정)
+  // 홈-원정 순서 — D30은 두 순서를 인정했지만 승패 문장은 주어 팀 점수 먼저만(D55 ②, 2026-10-17 사용자 결정)
+  ["Atleti가 Alavés 원정에서 1-2로 이겼다.", ["m564699"], "score-order"],
   [
     "Arsenal은 Leeds United에 0-1로 뒤지다 2-1 역전승을 거뒀다.",
     ["m560593"],
@@ -1757,11 +1832,12 @@ describe("판정 형식·로그(M1-45·M1-43·M1-24가 쓴다)", () => {
   it("briefCheckLogFields — 줄 번호 → 사유 코드(중복 없음)·경고, 문장 원문은 없다", () => {
     const c = CASES_FILE.cases.find((x) => x.id === "brief-2026-10-11")!;
     const fields = briefCheckLogFields(judgeCase(c));
+    // L1 원정 승을 홈-원정 순서로 썼다(D55 ② — 주어 팀 점수 먼저만) · L5 골 수 오류
     expect(fields).toMatchObject({
-      verdict: "downgrade-line:5",
+      verdict: "downgrade-line:1,5",
       stage: "line",
       reason: null,
-      lineReasons: { "5": ["goal-count"] },
+      lineReasons: { "1": ["score-order"], "5": ["goal-count"] },
     });
     expect(JSON.stringify(fields)).not.toContain("Nkunku는");
   });
@@ -1769,7 +1845,8 @@ describe("판정 형식·로그(M1-45·M1-43·M1-24가 쓴다)", () => {
   it("describeLineCheck — '통과' · '강등 대상 — 코드(근거)'", () => {
     const c = CASES_FILE.cases.find((x) => x.id === "brief-2026-10-11")!;
     const lines = judgeCase(c).check!.lines;
-    expect(describeLineCheck(lines[0]!)).toMatch(/^통과/);
+    expect(describeLineCheck(lines[1]!)).toMatch(/^통과/);
+    expect(describeLineCheck(lines[0]!)).toBe("강등 대상 — score-order(1-2)");
     expect(describeLineCheck(lines[4]!)).toBe(
       "강등 대상 — goal-count(Christopher Nkunku 2골)",
     );

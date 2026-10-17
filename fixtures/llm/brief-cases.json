@@ -1,5 +1,5 @@
 {
-  "_note": "브리핑 LLM mock 기대 판정 표(M0-36 → M1-20 갱신). 케이스 id = customId = mock/by-id/<id>.json. M1-23(코드 검증)·M1-45(브리핑 실행) 테스트 입력. 출력 형식 { l: [{ t, r }] }는 M1-20 확정 스키마(scripts/lib/brief.ts BriefOutputSchema — M0-30 임시 스키마의 키 그대로)라 mock을 다시 만들지 않았다. M1-20에서 관용 파싱(D40 ⑤ — 전체 코드블록 벗김·앞 5줄·80자 초과 줄 강등)과 D40 ①~④ 판정을 기대값에 반영했다(미정이던 json-fenced·max-tokens·refusal과 미정 줄 4개). 판정 기준이 아직 없는 줄은 undecidedLines, 케이스 전체가 미정이면 expected 대신 candidates로 둔다(테스트는 미정 항목을 단정하지 않는다). mock 출력은 M0-30·M0-34 임시 프롬프트의 출력이다 — 지시문 v0.1(configs/prompts/summarize.md)의 실제 출력은 dev 실행·골든셋(M1-24)으로 더한다. M1-23(2026-10-17): 코드 검증기(scripts/lib/brief-check.ts judgeBriefResponse)의 판정이 모든 케이스의 expected·stage와 같은지 tests/brief-check.test.ts가 고정한다. D40 ④(사전 공식 표기 한글 이름 허용)와 M1-21 사전 별칭('Lens')으로 4건을 재정의했다 — brief-case-translit(1~5 → 1,2)·brief-case-translit-rank(1~5 → 1~4)·brief-case-short-name-team(4 → ok)·brief-case-short-name-team-2(4,5 → 5). M1-23 리뷰 반영(사용자 결정 2026-10-17 — 지시문 목록 밖 평가어는 그 줄 강등): brief-case-particle(2 → 1,2 — L1 '대파'). D50 닫힌 문법(2026-10-17): 사실은 맞지만 문형 밖인 줄을 강등으로 7건 재정의 — brief-case-rank-direction(3,4 → 2,3,4,5)·brief-case-rank-no-prev(5 → 2,3,5)·brief-case-short-name-player(4 → 2,3,4,5)·brief-case-short-name-team(ok → 4,5)·brief-case-short-name-team-2(5 → 4,5)·brief-case-leftover-word(1 → 1,2,5)·brief-case-particle(1,2 → 1,2,3,4). 발행일 케이스 5건(brief-2026-*)의 기대값은 그대로다. D53 ② 문형 축소(2026-10-17): brief-case-translit(1,2 → 1,2,4,5).",
+  "_note": "브리핑 LLM mock 기대 판정 표(M0-36 → M1-20 갱신). 케이스 id = customId = mock/by-id/<id>.json. M1-23(코드 검증)·M1-45(브리핑 실행) 테스트 입력. 출력 형식 { l: [{ t, r }] }는 M1-20 확정 스키마(scripts/lib/brief.ts BriefOutputSchema — M0-30 임시 스키마의 키 그대로)라 mock을 다시 만들지 않았다. M1-20에서 관용 파싱(D40 ⑤ — 전체 코드블록 벗김·앞 5줄·80자 초과 줄 강등)과 D40 ①~④ 판정을 기대값에 반영했다(미정이던 json-fenced·max-tokens·refusal과 미정 줄 4개). 판정 기준이 아직 없는 줄은 undecidedLines, 케이스 전체가 미정이면 expected 대신 candidates로 둔다(테스트는 미정 항목을 단정하지 않는다). mock 출력은 M0-30·M0-34 임시 프롬프트의 출력이다 — 지시문 v0.1(configs/prompts/summarize.md)의 실제 출력은 dev 실행·골든셋(M1-24)으로 더한다. M1-23(2026-10-17): 코드 검증기(scripts/lib/brief-check.ts judgeBriefResponse)의 판정이 모든 케이스의 expected·stage와 같은지 tests/brief-check.test.ts가 고정한다. D40 ④(사전 공식 표기 한글 이름 허용)와 M1-21 사전 별칭('Lens')으로 4건을 재정의했다 — brief-case-translit(1~5 → 1,2)·brief-case-translit-rank(1~5 → 1~4)·brief-case-short-name-team(4 → ok)·brief-case-short-name-team-2(4,5 → 5). M1-23 리뷰 반영(사용자 결정 2026-10-17 — 지시문 목록 밖 평가어는 그 줄 강등): brief-case-particle(2 → 1,2 — L1 '대파'). D50 닫힌 문법(2026-10-17): 사실은 맞지만 문형 밖인 줄을 강등으로 7건 재정의 — brief-case-rank-direction(3,4 → 2,3,4,5)·brief-case-rank-no-prev(5 → 2,3,5)·brief-case-short-name-player(4 → 2,3,4,5)·brief-case-short-name-team(ok → 4,5)·brief-case-short-name-team-2(5 → 4,5)·brief-case-leftover-word(1 → 1,2,5)·brief-case-particle(1,2 → 1,2,3,4). 발행일 케이스 5건(brief-2026-*)의 기대값은 그대로다. D53 ② 문형 축소(2026-10-17): brief-case-translit(1,2 → 1,2,4,5). D55(2026-10-17): ② 승패 문장 주어 팀 점수 먼저만 — 발행일 케이스 3건 재정의 brief-2026-09-11(5 → 4,5)·brief-2026-09-21(ok → 2)·brief-2026-10-11(5 → 1,5), 모두 원정 승을 홈-원정 순서로 쓴 참 문장. ① 입력에 없는 키(korean·prev)의 문형은 그 키가 있는 입력(M0 입력 A·D·E 등)에서만 켜진다 — 기대값 변화 없음.",
   "task": "M0-36",
   "flow": "FR-29 — 출력 스키마(관용 파싱 D40 ⑤ 뒤) → 코드 검증(출력 전체: 한국어 비율·한자) → 실패하면 1회 재시도(zod 실패·max_tokens와 합쳐 1회 — D40 ①) → 그래도 실패하면 템플릿. 줄 단위 불일치(스코어·이름·순위 서술·근거 id·1줄 1문장·치환 뒤 80자 초과)는 재시도 없이 그 줄만 템플릿(FR-22, D40 ⑤). refusal은 재시도 없이 템플릿(D40 ①). transport 실패는 llm.ts 재시도(429·5xx만) 뒤 FR-26 템플릿.",
   "verdicts": {
@@ -90,7 +90,7 @@
         "normal"
       ],
       "stage": "line",
-      "expected": "downgrade-line:5",
+      "expected": "downgrade-line:4,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -108,8 +108,8 @@
         },
         {
           "n": 4,
-          "code": "pass",
-          "why": "원정 승을 홈-원정 순서로 '2-3으로 이겼다' — 두 순서 모두 인정(M1-20)"
+          "code": "downgrade",
+          "why": "원정 승을 홈-원정 순서로 '2-3으로 이겼다' — D55 ②(D30 보강, 2026-10-17 사용자 결정): 승패 문장은 주어 팀 점수 먼저만 → score-order 강등(사실은 맞다 — 의도된 변화)"
         },
         {
           "n": 5,
@@ -172,8 +172,8 @@
       "types": [
         "normal"
       ],
-      "stage": "none",
-      "expected": "ok",
+      "stage": "line",
+      "expected": "downgrade-line:2",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -186,8 +186,8 @@
       "lines": [
         {
           "n": 2,
-          "code": "pass",
-          "why": "원정 승 '0-1로 이겼다'(홈-원정 순서) — 두 순서 모두 인정(M1-20)"
+          "code": "downgrade",
+          "why": "원정 승 '0-1로 이겼다'(홈-원정 순서) — D55 ②(D30 보강, 2026-10-17 사용자 결정): 승패 문장은 주어 팀 점수 먼저만 → score-order 강등(사실은 맞다 — 의도된 변화)"
         },
         {
           "n": 3,
@@ -195,7 +195,7 @@
           "why": "'Man City는 선두를 지켰다' — prev 1·pos 1이라 유지 서술 허용"
         }
       ],
-      "note": "정상(발행일 2026-09-21, 입력 D) — M0-30 실제 출력(단건·긴 판·지시문 캐시 읽기·thinking 기본). fixtures/brief-sample.json 2026-09-21과 같은 출력. 기대: ok."
+      "note": "정상(발행일 2026-09-21, 입력 D) — M0-30 실제 출력(단건·긴 판·지시문 캐시 읽기·thinking 기본). fixtures/brief-sample.json 2026-09-21과 같은 출력. 기대: downgrade-line:2(D55 ② — L2 홈-원정 순서 원정 승, 그 전에는 ok)."
     },
     {
       "id": "brief-2026-10-10",
@@ -264,7 +264,7 @@
         "fact-number"
       ],
       "stage": "line",
-      "expected": "downgrade-line:5",
+      "expected": "downgrade-line:1,5",
       "llm": {
         "ok": true,
         "attempts": 1
@@ -277,8 +277,8 @@
       "lines": [
         {
           "n": 1,
-          "code": "pass",
-          "why": "원정 승 '1-2로 이겼다'(홈-원정 순서) + 한국 선수(k927 subOn 57·minutes 33)"
+          "code": "downgrade",
+          "why": "원정 승 '1-2로 이겼다'(홈-원정 순서) — D55 ②(D30 보강, 2026-10-17 사용자 결정): 승패 문장은 주어 팀 점수 먼저만 → score-order 강등(사실은 맞다 — 의도된 변화). 한국 선수 꼬리(k927 subOn 57·minutes 33)는 맞고 입력 E에 korean 블록이 있어 그 문형은 켜진다(D55 ①)"
         },
         {
           "n": 5,

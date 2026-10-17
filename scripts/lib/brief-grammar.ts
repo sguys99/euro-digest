@@ -1,5 +1,5 @@
 /**
- * 브리핑 닫힌 문법 (M1-23 재설계 — PRD §15 D50 → **D53 ② 문형 축소·지시문 [문형]과 한 출처**, FR-22·FR-29). "오늘의 5줄" 한 줄이
+ * 브리핑 닫힌 문법 (M1-23 재설계 — PRD §15 D50 → **D53 ② 문형 축소·지시문 [문형]과 한 출처** → D55 ① 입력 선택 키, FR-22·FR-29). "오늘의 5줄" 한 줄이
  * **허용 문형**으로만 이루어졌는지 가린다. 문형 밖의 낱말·술어·수식이 하나라도 있으면 그 줄은 분석되지 않는다(`parseBriefLine` →
  * 분석 0개 — 검사기가 `grammar-unknown`으로 강등). 거부 목록(틀린 표현 목록)은 새 표현이 계속 빠져나가므로(M1-23 리뷰 1·2회차가 찾은
  * 미탐 112 + 160문장) 알아본 꼴만 통과시킨다.
@@ -13,6 +13,10 @@
  *   양방향 고정: ① 표기 → 문법 — 표기를 펼친 모든 꼴(`expandPatternText`)이 분석된다 ② 문법 → 표기 — 문법 요소가 쓰는 낱말·술어·
  *   자리표시자(`vocab` — 요소를 만들 때 모은다)가 모두 그 항목 표기에 있다. 문형을 더하거나 빼면 이 파일만 고치고 지시문 [문형]을
  *   다시 붙인다(테스트가 차이를 알린다).
+ *   입력 선택 키(D55 ①, `BriefInputKey`): 한국 선수 출전(korean·korean-bench·korean-tail — 키 `korean`, M3-03)과 순위 변동·유지
+ *   (move·keep — 키 `prev`, M2-03)는 지금 입력에 그 키가 없어 꺼 둔다. 꺼진 문형은 분석되지 않고(`parseBriefLine` options.keys)
+ *   지시문 [문형]에도 나오지 않는다(`renderBriefPatterns()` — 키 없이). 키가 입력에 들어오면 검사기가 그 문형을 켠다
+ *   (brief-check.ts `briefInputKeys`). 되살릴 때는 지시문 [문형]을 `renderBriefPatterns({ keys })`로 다시 붙이고 [입력]에 키 설명을 더한다.
  *   표기법: {팀}·{상대}·{선수}·{득점자}·{대회} 입력 이름, {점수} '2-1', {분} '62분'·'90+2분'·'후반 62분', {n} 수, {순위} '선두'·'2위' ·
  *   [ ] 넣거나 뺄 수 있는 말 · ( / ) 그중 하나 · 낱말 안의 '·' 그중 하나 · [장소]·[수식]·[무승부 수식] 수식 묶음.
  *
@@ -639,11 +643,30 @@ export type PatternRole = "first" | "second" | "adn";
 /** 지시문 [문형]의 절(분류) — 렌더 순서 */
 export type PatternSection = "결과" | "득점" | "한국 선수" | "순위";
 
+/**
+ * 입력 선택 키(D55 ①) — 이 키가 입력에 있을 때만 켜는 문형의 조건. 지금 입력(M1-19 빌더)에는 두 키가 없다: 한국 선수 출전
+ * `korean`은 M3-03, 전일 순위 `prev`는 M2-03이 더한다. 꺼진 문형은 분석되지 않고(문법 밖 — `grammar-unknown`) 지시문 [문형]에도
+ * 나오지 않는다. 키가 생기면 `parseBriefLine`·`renderBriefPatterns`의 `keys`로 켠다(검사기는 입력에서 키를 읽는다).
+ */
+export type BriefInputKey = "korean" | "prev";
+
+export const BRIEF_INPUT_KEYS: readonly BriefInputKey[] = Object.freeze([
+  "korean",
+  "prev",
+]);
+
+/** 켤 입력 선택 키 — 없으면 빈 집합(지금 입력 = 지시문 v0.4 [문형]) */
+export interface GrammarOptions {
+  keys?: Iterable<BriefInputKey>;
+}
+
 export interface PatternEntry {
   id: string;
   section: PatternSection;
   type: ClauseType;
   role: PatternRole;
+  /** 이 입력 키가 있을 때만 켜는 문형(D55 ① — 없으면 늘 켜짐) */
+  requires?: BriefInputKey;
   /** 지시문 표기(앞의 '- ' 없이) — ' — '뒤는 설명(펼치지 않는다) */
   text: string;
   /** 시험용 앞절(뼈대) — second는 이 앞절 뒤에 붙여 분석한다 */
@@ -668,6 +691,7 @@ function pattern(
     section: spec.section,
     type: spec.type,
     role: spec.role,
+    ...(spec.requires ? { requires: spec.requires } : {}),
     text: spec.text,
     ...(spec.context ? { context: spec.context } : {}),
     el: head.value,
@@ -941,6 +965,7 @@ export const PATTERNS: readonly PatternEntry[] = [
   // ── 한국 선수
   pattern({
     id: "korean",
+    requires: "korean",
     section: "한국 선수",
     type: "korean",
     role: "first",
@@ -967,6 +992,7 @@ export const PATTERNS: readonly PatternEntry[] = [
   }),
   pattern({
     id: "korean-bench",
+    requires: "korean",
     section: "한국 선수",
     type: "korean",
     role: "first",
@@ -981,6 +1007,7 @@ export const PATTERNS: readonly PatternEntry[] = [
   }),
   pattern({
     id: "korean-tail",
+    requires: "korean",
     section: "한국 선수",
     type: "koreanTail",
     role: "second",
@@ -1046,6 +1073,7 @@ export const PATTERNS: readonly PatternEntry[] = [
   }),
   pattern({
     id: "move",
+    requires: "prev",
     section: "순위",
     type: "move",
     role: "first",
@@ -1068,6 +1096,7 @@ export const PATTERNS: readonly PatternEntry[] = [
   }),
   pattern({
     id: "keep",
+    requires: "prev",
     section: "순위",
     type: "keep",
     role: "first",
@@ -1124,16 +1153,19 @@ const GROUP_LINES: ReadonlyArray<{
 
 /**
  * 지시문 [문형] 절 — 문형 목록·수식 묶음을 지시문 표기로(머리 주석 "문형 목록 = 지시문 [문형]"). configs/prompts/summarize.md의
- * '[문형]'부터 다음 절 앞까지가 이 글과 같아야 한다.
+ * '[문형]'부터 다음 절 앞까지가 키 없이 만든 이 글과 같아야 한다(D55 ① — 입력 선택 키의 문형은 `options.keys`로 켤 때만 나온다,
+ * 문형이 하나도 없는 절은 제목도 쓰지 않는다).
  */
-export function renderBriefPatterns(): string {
+export function renderBriefPatterns(options: GrammarOptions = {}): string {
+  const enabled = enabledPatterns(options);
   const lines: string[] = [
     "[문형] 이 꼴로만 쓴다. {팀}·{상대}·{선수}·{득점자}·{대회} 입력 이름 · {점수} '2-1' · {분} '62분'·'후반 62분' · {n} 수 · {순위} '선두'·'2위' · [ ] 넣거나 뺌 · ( / )와 '·' 그중 하나",
   ];
   for (const section of SECTIONS) {
+    const inSection = enabled.filter((x) => x.section === section);
+    if (inSection.length === 0) continue;
     lines.push(section);
-    for (const p of PATTERNS.filter((x) => x.section === section))
-      lines.push(`- ${p.text}`);
+    for (const p of inSection) lines.push(`- ${p.text}`);
     if (section === "결과") {
       for (const g of GROUP_LINES) {
         const own = MODIFIERS.filter(
@@ -1166,10 +1198,12 @@ export interface LineParse {
   adnSubject?: number;
 }
 
-const FIRST = PATTERNS.filter((p) => p.role === "first");
-const SECOND = PATTERNS.filter(
-  (p) => p.role === "first" || p.role === "second",
-);
+/** 켠 입력 키에서 쓸 수 있는 문형(D55 ① — `requires`가 없거나 그 키가 켜진 문형) */
+function enabledPatterns(options: GrammarOptions): PatternEntry[] {
+  const keys = new Set(options.keys ?? []);
+  return PATTERNS.filter((p) => !p.requires || keys.has(p.requires));
+}
+
 const ADNOMINAL = PATTERNS.filter((p) => p.role === "adn");
 const RANK_AFTER = PATTERNS.find((p) => p.id === "rank-after")!;
 
@@ -1187,16 +1221,22 @@ export interface GrammarResult {
 
 /**
  * 뼈대 한 줄 → 허용 문형 분석(순수 함수). `kinds[i]` = 뼈대 `⟨i⟩` 이름의 종류. 분석이 여럿이면 모두 돌려준다(검사기가 입력과 맞는
- * 분석을 고른다).
+ * 분석을 고른다). `options.keys` = 입력에 있는 선택 키(D55 ① — 없으면 그 키를 쓰는 문형은 문법 밖).
  */
 export function parseBriefLine(
   skeleton: string,
   kinds: readonly (MentionKind | null)[],
+  options: GrammarOptions = {},
 ): GrammarResult {
   const cx: Cx = { s: skeleton, kinds, furthest: 0 };
   const parses: LineParse[] = [];
   const start: State = { pos: 0, bag: {} };
-  for (const first of FIRST) {
+  const enabled = enabledPatterns(options);
+  const firsts = enabled.filter((p) => p.role === "first");
+  const seconds = enabled.filter(
+    (p) => p.role === "first" || p.role === "second",
+  );
+  for (const first of firsts) {
     for (const st of first.el(cx, start)) {
       const c1: ParsedClause = { type: first.type, id: first.id, bag: st.bag };
       if (st.bag.end === "final") {
@@ -1204,7 +1244,7 @@ export function parseBriefLine(
         continue;
       }
       if (st.bag.end !== "conn") continue;
-      for (const second of SECOND) {
+      for (const second of seconds) {
         for (const st2 of second.el(cx, { pos: st.pos, bag: {} })) {
           if (st2.bag.end === "final" && atLineEnd(skeleton, st2.pos))
             parses.push({

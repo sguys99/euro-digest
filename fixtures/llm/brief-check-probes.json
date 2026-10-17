@@ -1,5 +1,5 @@
 {
-  "_note": "M1-23 리뷰 재현 문장 — 1회차(2026-10-17, 158문장: 거짓 112·참 46), 2회차(511문장: 거짓 348·참 163 — 판단 보류 40문장 제외), 3회차(788문장: 손으로 쓴 재현 316 = 거짓 122·참 194 — 판단 보류 21문장 제외, 변이 472 = 이전 판(b06ce02)을 통과한 변이 중 도움으로·공동/승점 차·골 명사·주고받은 묶음을 독립 판정(오라클)한 거짓 264·참 208). truth = 사람(또는 오라클) 판정, pass = 검사기 기대 판정. 거짓은 모두 강등돼야 한다(미탐 함정). 참이 pass=false면 닫힌 문법(D50·D53 ② 축소) 밖의 꼴이거나(code 없음 = grammar-unknown만), 안전한 쪽 규칙(code — 좁은 동점골 정의·두 절 다른 대상·문자 형식 등)에 걸린 것이다. 입력은 LLM에 보낸 그대로 canonicalizeBriefInput을 거쳐 판정한다(tests/brief-check.test.ts). LLM 출력이 아니라 사람이 쓴 시험 문장이다 — 기사 텍스트·URL 없음.",
+  "_note": "M1-23 리뷰 재현 문장 — 1회차(2026-10-17, 158문장: 거짓 112·참 46), 2회차(511문장: 거짓 348·참 163 — 판단 보류 40문장 제외), 3회차(788문장: 손으로 쓴 재현 316 = 거짓 122·참 194 — 판단 보류 21문장 제외, 변이 472 = 이전 판(b06ce02)을 통과한 변이 중 도움으로·공동/승점 차·골 명사·주고받은 묶음을 독립 판정(오라클)한 거짓 264·참 208). truth = 사람(또는 오라클) 판정, pass = 검사기 기대 판정. 거짓은 모두 강등돼야 한다(미탐 함정). 참이 pass=false면 닫힌 문법(D50·D53 ② 축소) 밖의 꼴이거나(code 없음 = grammar-unknown만), 안전한 쪽 규칙(code — 좁은 동점골 정의·두 절 다른 대상·문자 형식 등)에 걸린 것이다. 입력은 LLM에 보낸 그대로 canonicalizeBriefInput을 거쳐 판정한다(tests/brief-check.test.ts). LLM 출력이 아니라 사람이 쓴 시험 문장이다 — 기사 텍스트·URL 없음. D55(2026-10-17 사용자 결정): 승패 문장은 주어 팀 점수 먼저만 — 홈-원정 순서로 쓴 참 문장 15개(1회차 1 · 3회차 변이 14)를 pass=false·code=score-order로 바꿨다(의도된 변화).",
   "task": "M1-23",
   "inputs": {
     "E": "brief-inputs/2026-10-11.json",
@@ -1668,13 +1668,15 @@
     },
     {
       "input": "E",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "result",
       "t": "Leverkusen이 Mainz를 3-4로 꺾었다.",
       "r": [
         "m565812"
-      ]
+      ],
+      "code": "score-order",
+      "note": "D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)"
     },
     {
       "input": "E",
@@ -11623,14 +11625,15 @@
     },
     {
       "input": "golden-2026-09-11",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "RC Lens이 5골을 주고받은 끝에 Slavia Praha을 2-3으로 꺾었다.",
       "r": [
         "m575340"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-09-19",
@@ -12052,14 +12055,15 @@
     },
     {
       "input": "golden-2026-09-19",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Elche이 4골을 주고받은 끝에 Espanyol을 1-3으로 꺾었다.",
       "r": [
         "m564692"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-09-19",
@@ -12107,25 +12111,27 @@
     },
     {
       "input": "golden-2026-09-21",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "PSG이 3골을 주고받은 끝에 Marseille을 1-2로 꺾었다.",
       "r": [
         "m559675"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-09-21",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Real Sociedad이 5골을 주고받은 끝에 Valencia을 2-3으로 꺾었다.",
       "r": [
         "m564689"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-09-21",
@@ -12833,14 +12839,15 @@
     },
     {
       "input": "golden-2026-10-11",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Atleti이 3골을 주고받은 끝에 Alavés을 1-2로 꺾었다.",
       "r": [
         "m564699"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-10-11",
@@ -13196,14 +13203,15 @@
     },
     {
       "input": "golden-2026-10-11",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Leverkusen이 7골을 주고받은 끝에 Mainz을 3-4로 꺾었다.",
       "r": [
         "m565812"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-10-11",
@@ -14714,14 +14722,15 @@
     },
     {
       "input": "golden-2026-10-11",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "HSV이 5골을 주고받은 끝에 Hoffenheim을 2-3으로 꺾었다.",
       "r": [
         "m565818"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-10-11",
@@ -15506,25 +15515,27 @@
     },
     {
       "input": "golden-2026-10-14",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Club Brugge이 7골을 주고받은 끝에 Inter을 3-4로 꺾었다.",
       "r": [
         "m575343"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-10-14",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Barça이 5골을 주고받은 끝에 Galatasaray을 1-4로 꺾었다.",
       "r": [
         "m575344"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-10-14",
@@ -15539,36 +15550,39 @@
     },
     {
       "input": "golden-2026-10-15",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "PSG이 6골을 주고받은 끝에 Man City을 2-4로 꺾었다.",
       "r": [
         "m575353"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-10-15",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Liverpool이 9골을 주고받은 끝에 LASK을 3-6으로 꺾었다.",
       "r": [
         "m575350"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-10-15",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Real Madrid이 7골을 주고받은 끝에 Roma을 3-4로 꺾었다.",
       "r": [
         "m575352"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "golden-2026-10-15",
@@ -16452,14 +16466,15 @@
     },
     {
       "input": "r3-syn-e891fb1e",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Sevilla이 5골을 주고받은 끝에 Real Betis을 2-3으로 꺾었다.",
       "r": [
         "cb"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "r3-syn-e891fb1e",
@@ -16738,14 +16753,15 @@
     },
     {
       "input": "r3-syn-9a367b7f",
-      "pass": true,
+      "pass": false,
       "truth": true,
       "group": "r3-mut-total",
       "t": "Atleti이 3골을 주고받은 끝에 Alavés을 1-2로 꺾었다.",
       "r": [
         "t2"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · D55 ② — 승패 문장은 주어 팀 점수 먼저만(홈-원정 순서는 score-order 강등, 사실은 맞다)",
+      "code": "score-order"
     },
     {
       "input": "r3-syn-9a367b7f",

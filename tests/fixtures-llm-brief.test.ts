@@ -380,12 +380,15 @@ describe("brief-cases.json 기대 판정 표", () => {
         if (line.ai) expect(line.textRaw).toBe(llmLine.t);
         else expect(line._downgrade).toContain(llmLine.t);
       });
-      // brief-sample에서 템플릿으로 강등된 줄 = 기대 판정의 강등 줄(2026-10-11 L5)
+      // brief-sample에서 템플릿으로 강등된 줄은 기대 판정의 강등 줄에 들어 있다(2026-10-11 L5). 표시용 샘플(D0)은 그 시점 판정이라
+      // D55 ②(승패 문장 주어 팀 점수 먼저만)로 늘어난 강등 줄(2026-10-11 L1 등 원정 승 홈-원정 순서)은 샘플에 반영하지 않았다
       const sampleDowngraded = day!.lines.flatMap((l, i) =>
         l.ai ? [] : [i + 1],
       );
       if (sampleDowngraded.length > 0) {
-        expect(downgradeLines(c.expected)).toEqual(sampleDowngraded);
+        expect(downgradeLines(c.expected)).toEqual(
+          expect.arrayContaining(sampleDowngraded),
+        );
       }
     }
   });

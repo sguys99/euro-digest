@@ -1,5 +1,6 @@
 /**
- * M1-23 — 브리핑 닫힌 문법(scripts/lib/brief-grammar.ts, PRD §15 D50)과 지시문 [문형]의 **한 출처**(D53 ② — v0.3).
+ * M1-23 — 브리핑 닫힌 문법(scripts/lib/brief-grammar.ts, PRD §15 D50)과 지시문 [문형]의 **한 출처**(D53 ② — v0.3 → D55 ① v0.4:
+ * 지금 입력에 없는 키(korean·prev)의 문형은 그 키가 입력에 있을 때만 켜지고 지시문 [문형]에 나오지 않는다).
  * 네트워크·LLM 없음.
  *
  * - 뼈대(`buildSkeleton`)·분석(`parseBriefLine`)·깨진 낱말(`skeletonWordAt`) 단위
@@ -7,7 +8,7 @@
  *   그 문형으로 분석된다 ③ 문법 → 표기 — 문법 요소가 쓰는 낱말·술어·자리표시자가 모두 그 문형(수식) 표기에 있다
  * - 지시문 [예] '좋음'은 통과, '나쁨'은 강등 · 문형마다 채운 참 문장(합성 입력)은 통과 · 슬롯 하나를 틀리게 바꾼 문장은 강등
  */
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,12 +18,14 @@ import { CompetitionsFileSchema, NamesKoFileSchema } from "@/lib/schema";
 
 import { BRIEF_PROMPT_PATH } from "../scripts/lib/brief";
 import {
+  briefInputKeys,
   checkBriefOutput,
   describeLineCheck,
   type BriefCheckContext,
   type BriefCheckInput,
 } from "../scripts/lib/brief-check";
 import {
+  BRIEF_INPUT_KEYS,
   buildSkeleton,
   EXPAND_KINDS,
   expandPatternText,
@@ -377,9 +380,19 @@ describe("지시문 [문형] = 문법(D53 ② — 한 출처, 양방향)", () =>
     expect(PROMPT.slice(start, end)).toBe(renderBriefPatterns());
   });
 
-  it("[문형]은 문형 22개·수식 12개다(D53 ② 축소 — 문법에만 있던 꼴 약 25개를 뺐다)", () => {
+  it("문형 22개·수식 12개다(D53 ② 축소 — 문법에만 있던 꼴 약 25개를 뺐다). 그중 5개는 입력 선택 키 문형(D55 ①)", () => {
     expect(PATTERNS).toHaveLength(22);
     expect(MODIFIERS).toHaveLength(12);
+    expect(BRIEF_INPUT_KEYS).toEqual(["korean", "prev"]);
+    expect(
+      PATTERNS.filter((p) => p.requires).map((p) => [p.id, p.requires]),
+    ).toEqual([
+      ["korean", "korean"],
+      ["korean-bench", "korean"],
+      ["korean-tail", "korean"],
+      ["move", "prev"],
+      ["keep", "prev"],
+    ]);
     expect(PATTERNS.map((p) => p.id)).toEqual([
       "win",
       "win-beat",
@@ -407,17 +420,38 @@ describe("지시문 [문형] = 문법(D53 ② — 한 출처, 양방향)", () =>
   });
 
   it.each(PATTERNS.map((p) => [p.id, p] as const))(
-    "표기 → 문법: %s의 표기를 펼친 모든 꼴이 그 문형으로 분석된다",
+    "표기 → 문법: %s의 표기를 펼친 모든 꼴이 그 문형으로 분석된다(입력 선택 키 문형은 키를 켰을 때만)",
     (_, p) => {
       const lines = expandPatternText(p.text);
       expect(lines.length).toBeGreaterThan(0);
-      const missed = lines.filter((e) => {
-        const r = parseBriefLine(`${p.context ?? ""}${e}.`, EXPAND_KINDS);
-        return !r.parses.some((x) => x.clauses.some((c) => c.id === p.id));
-      });
+      const parsedAs = (e: string, keys: readonly string[]) =>
+        parseBriefLine(`${p.context ?? ""}${e}.`, EXPAND_KINDS, {
+          keys: keys as typeof BRIEF_INPUT_KEYS,
+        }).parses.some((x) => x.clauses.some((c) => c.id === p.id));
+      const missed = lines.filter((e) => !parsedAs(e, BRIEF_INPUT_KEYS));
       expect(missed).toEqual([]);
+      // 키가 없으면(지금 입력) 그 문형으로는 분석되지 않는다 — 키 없는 문형은 늘 켜져 있다
+      const offParsed = lines.filter((e) => parsedAs(e, []));
+      expect(offParsed).toEqual(p.requires ? [] : lines);
     },
   );
+
+  it("지시문 [문형]에는 입력 선택 키 문형이 없고(D55 ① — 한국 선수 절·prev 꼴), 키를 켜면 그 꼴이 나온다(M2-03·M3-03에서 되살리기)", () => {
+    const base = renderBriefPatterns();
+    expect(base).not.toContain("한국 선수");
+    expect(base).not.toContain("prev");
+    expect(base).not.toContain("결장했다");
+    expect(base).not.toContain("지켰다");
+    for (const p of PATTERNS.filter((x) => x.requires))
+      expect(base).not.toContain(p.text);
+    const all = renderBriefPatterns({ keys: BRIEF_INPUT_KEYS });
+    for (const p of PATTERNS) expect(all).toContain(`- ${p.text}`);
+    expect(all).toContain("\n한국 선수\n");
+    expect(renderBriefPatterns({ keys: ["prev"] })).not.toContain("한국 선수");
+    expect(renderBriefPatterns({ keys: ["prev"] })).toContain(
+      "(prev 있을 때만)",
+    );
+  });
 
   it("문법 → 표기: 문형·수식 요소가 쓰는 낱말·술어·자리표시자는 모두 그 표기에 있다", () => {
     const missing: string[] = [];
@@ -438,10 +472,6 @@ const EXAMPLE_REFS: Record<string, string[]> = {
   ],
   "TeamE를 3-0으로 꺾은 TeamF는 승점 24로 선두다.": ["m3", "sPL"],
   "TeamG가 TeamH 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.": ["m4"],
-  "TeamI는 TeamJ와 1-1로 비겼고 PlayerZ는 57분 교체 투입돼 33분을 뛰었다.": [
-    "m5",
-    "k1",
-  ],
   "TeamA가 3연승을 달렸다.": ["m1"],
   "TeamB가 3위로 올라섰다.": ["sPL"],
   "TeamC가 TeamD를 1-0으로 제치고 웃었다.": ["m2"],
@@ -455,8 +485,8 @@ describe("지시문 [예] — 좋음은 통과, 나쁨은 강등", () => {
     ).matchAll(/- (좋음|나쁨) "([^"]+)"/gu),
   ].map((m) => ({ good: m[1] === "좋음", text: m[2]! }));
 
-  it("예문은 좋음 5 · 나쁨 3이고 모두 근거 표가 있다", () => {
-    expect(examples.filter((e) => e.good)).toHaveLength(5);
+  it("예문은 좋음 4 · 나쁨 3이고 모두 근거 표가 있다(D55 ① — 한국 선수 예문을 뺐다)", () => {
+    expect(examples.filter((e) => e.good)).toHaveLength(4);
     expect(examples.filter((e) => !e.good)).toHaveLength(3);
     for (const e of examples)
       expect(EXAMPLE_REFS[e.text], e.text).toBeDefined();
@@ -642,6 +672,94 @@ describe("[문형] — 꼴마다 채운 참 문장은 모두 통과(지시문을
     expect(line.ok, `${text} → ${describeLineCheck(line)}`).toBe(true);
     expect(line.grammar).not.toBeNull();
   });
+});
+
+describe("입력 선택 키(D55 ①) — 키가 없는 입력에서는 그 문형이 꺼지고, 키가 들어오면 다시 켜진다(M2-03 prev · M3-03 korean)", () => {
+  const GATED_TYPES = new Set(["korean", "koreanTail", "move", "keep"]);
+  /** 키를 켠 합성 입력에서 입력 선택 키 문형으로 읽힌 줄 */
+  const gated = PATTERN_LINES.filter(([, text, refs]) =>
+    (judge(text, refs).line.grammar ?? "")
+      .split("+")
+      .some((t) => GATED_TYPES.has(t)),
+  );
+  const withoutKorean: BriefCheckInput = { ...SYN, korean: undefined };
+  const withoutPrev: BriefCheckInput = {
+    ...SYN,
+    standings: SYN.standings.map((t) => ({
+      ...t,
+      rows: t.rows.map(({ prev: _prev, ...row }) => {
+        void _prev;
+        return row;
+      }),
+    })),
+  };
+  const withoutBoth: BriefCheckInput = { ...withoutPrev, korean: undefined };
+
+  it("briefInputKeys — 한국 선수 블록 1건 이상이면 korean, 전일 순위 행이 1개 이상이면 prev. 골든셋 10일(지금 빌더 입력)은 둘 다 없다", () => {
+    expect([...briefInputKeys(SYN)].sort()).toEqual(["korean", "prev"]);
+    expect([...briefInputKeys(withoutKorean)]).toEqual(["prev"]);
+    expect([...briefInputKeys(withoutPrev)]).toEqual(["korean"]);
+    expect([...briefInputKeys({ ...SYN, korean: [] })]).toEqual(["prev"]);
+    const golden = readdirSync(path.join(ROOT, "fixtures/llm/golden/inputs"));
+    expect(golden).toHaveLength(10);
+    for (const file of golden) {
+      const input = JSON.parse(
+        read(`fixtures/llm/golden/inputs/${file}`),
+      ) as BriefCheckInput;
+      expect([...briefInputKeys(input)], file).toEqual([]);
+    }
+  });
+
+  it("키를 켠 입력의 출전·결장·'득점은 없었다'·순위 변동·유지 줄(11줄)은 통과한다 — 키가 들어오면 다시 켜진다", () => {
+    expect(gated.map(([name]) => name)).toEqual([
+      "교체 투입돼 뛰었다",
+      "선발 출전해 뛰고 교체됐다",
+      "팀 선발로 출전해 + 교체 아웃",
+      "결장했다",
+      "출전하지 않았다",
+      "득점은 없었다",
+      "올랐다(prev)",
+      "내려갔다(prev)",
+      "지켰다(prev)",
+      "결과 + 한국 선수(같은 경기)",
+      "순위 + 순위(같은 순위표)",
+    ]);
+    for (const [, text, refs] of gated) {
+      const { line, wholeOk } = judge(text, refs);
+      expect(wholeOk && line.ok, `${text} → ${describeLineCheck(line)}`).toBe(
+        true,
+      );
+    }
+  });
+
+  it.each([
+    ["korean 없음", withoutKorean, ["korean", "koreanTail"]],
+    ["prev 없음", withoutPrev, ["move", "keep"]],
+    [
+      "둘 다 없음(지금 입력)",
+      withoutBoth,
+      ["korean", "koreanTail", "move", "keep"],
+    ],
+  ] as const)(
+    "%s — 그 키의 문형 줄은 문법 밖(grammar-unknown만), 나머지 키의 문형과 다른 문형은 그대로 통과",
+    (_, input, off) => {
+      for (const [name, text, refs] of PATTERN_LINES) {
+        const types = (judge(text, refs).line.grammar ?? "").split("+");
+        const { line } = judge(text, refs, input);
+        if (types.some((t) => (off as readonly string[]).includes(t))) {
+          expect(line.ok, name).toBe(false);
+          // 이름 검사(한국 선수 블록 밖 이름)가 먼저 걸리는 줄도 있다 — 문형은 늘 문법 밖이다
+          expect(
+            line.reasons.map((r) => r.code),
+            `${text} → ${describeLineCheck(line)}`,
+          ).toContain("grammar-unknown");
+          expect(line.grammar, name).toBeNull();
+        } else {
+          expect(line.ok, `${text} → ${describeLineCheck(line)}`).toBe(true);
+        }
+      }
+    },
+  );
 });
 
 /** 같은 꼴에서 슬롯 하나를 틀리게 바꾼 문장 → 기대 사유 */

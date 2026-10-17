@@ -1,5 +1,5 @@
 /**
- * 브리핑 자동 사실성 검사기 (M1-23 → **닫힌 문법 재설계** — PRD FR-22·FR-29 §9.4, D24·D28·D40·D50·D53). LLM이 쓴 "오늘의 5줄"을
+ * 브리핑 자동 사실성 검사기 (M1-23 → **닫힌 문법 재설계** — PRD FR-22·FR-29 §9.4, D24·D28·D40·D50·D53·D55). LLM이 쓴 "오늘의 5줄"을
  * **보낸 정형 입력**과 코드로 대조한다. 비용 0·결정적 순수 함수 — I/O 없음(사전·대회 설정은 호출부가 읽어 넘긴다).
  *
  * FR-29 순서: 출력 스키마(brief.ts `parseBriefOutput` — 관용 파싱 D40 ⑤) → **코드 검증(여기)** → 출력 전체 실패면 1회 재시도
@@ -12,7 +12,8 @@
  *
  * ── 줄 단위 (실패 = 그 줄만 템플릿, 재시도 없음 — 호출 증가는 CLAUDE.md §1-3 승인 사항) ─────────
  *   원칙(사용자 결정 2026-10-17 — D50): **허용 문형만 통과**. 한 줄 = 허용 절 1~2개(brief-grammar.ts — 문형 목록 `PATTERNS`·
- *   `MODIFIERS` 한 곳에서 지시문 v0.3의 [문형] 블록과 문법을 함께 만든다, D53 ② — 양방향 일치는 tests/brief-grammar.test.ts).
+ *   `MODIFIERS` 한 곳에서 지시문 v0.4의 [문형] 블록과 문법을 함께 만든다, D53 ② — 양방향 일치는 tests/brief-grammar.test.ts).
+ *   입력에 없는 선택 키(한국 선수 블록 `korean`·전일 순위 `prev`)의 문형은 꺼진다(D55 ① — `briefInputKeys`).
  *   문형 밖의 낱말·술어·수식이 하나라도 있으면 `grammar-unknown`(근거 = 처음 읽지 못한 낱말)으로 강등한다 — 이전 판(틀린 표현
  *   목록)은 자유 문장의 새 표현('패배를 안겼다'·'웃었다'·'수비를 지켰다' …)이 계속 빠져나갔다(리뷰 1·2회차 약 270문장).
  *   순서: ① 문장 형식·문자·이름 사전 검사 ② 이름을 `⟨i⟩`로 바꾼 뼈대를 문법으로 분석 ③ 분석된 절마다 슬롯 값을 입력과 대조 —
@@ -29,7 +30,8 @@
  *            항목에 있어야 한다. 사전 밖 한글 낱말(모델 음역)은 이름으로 읽히지 않아 ②에서 문법 밖이 된다
  *   ③ 슬롯 대조(절 종류 — brief-grammar.ts 머리 주석)
  *     결과   주어가 실제 승자·패자(승부차기 경기의 승자는 승부차기 결과 — 그 경기는 '승부차기' 수식이 있어야 하고 '비겼다' 금지),
- *            목적어·짝은 그 경기 상대, 점수는 홈-원정 또는 주어 팀 먼저(D30 — 'A와 B의 경기는'은 앞 팀 먼저), 90분에 이미 앞선 연장
+ *            목적어·짝은 그 경기 상대, 승패 문장의 점수는 주어 팀 먼저만(D55 ② — D30 보강, 홈-원정 순서는 score-order), 'A와 B의
+ *            경기는'은 앞 팀 먼저, 승부차기 꼴의 승부차기 점수는 홈-원정 또는 승자 먼저(D30 그대로), 90분에 이미 앞선 연장
  *            승리·90분 점수가 없는 연장 승리는 이긴 것처럼 쓰지 않음(M1-20 — '경기는 연장까지 h-a로 끝났다'), '완파' = 3골 차 이상,
  *            '역전승' = ht 또는 득점 순서로 이긴 팀이 뒤진 적, '연장까지'·'연장 끝에' = 입력 aet, 수식(대회·홈/원정·{상대} 원정·
  *            라운드 — stage 우선 표기·연장 끝에·승부차기 끝에·{선수}의 결승골로(연장에서 갈리지 않은 연장 경기는 결승골 없음)·
@@ -39,10 +41,10 @@
  *     득점   그 선수의 근거 경기 골(자책골 득점자는 득점 꼴에 쓰지 않음)·분(0으로 시작하는 분 금지 — 분 목록 '{분}·{분}에'는 D53 ②에서 뺐다)·PK·도움 선수
  *            (도움 선수 ≠ 득점자), 선제골·결승골(이긴 팀의 (진 팀 점수+1)번째 골)·동점골(비긴 경기의 마지막 골이 동점을 만든 골 — 좁은
  *            정의)·만회골(넣은 뒤에도 진 팀이 뒤진 골), 골 수(1 이상)·멀티골(2 이상)·해트트릭(정확히 3), '{팀}의 {선수}' 소속
- *     한국 선수 블록 기록(선발·교체 투입 분·출전 분·교체 아웃·결장)과 일치, '득점은 없었다' = 골 0이고 출전 문형 뒤에만
+ *     한국 선수 블록 기록(선발·교체 투입 분·출전 분·교체 아웃·결장)과 일치(입력에 korean이 있을 때만 켜지는 문형 — D55 ①), '득점은 없었다' = 골 0이고 출전 문형 뒤에만
  *            ('벤치를 지켰다'는 D53 ②에서 뺐다 — 결장 꼴로 쓴다)
  *     순위   그 팀의 근거 순위표 행(순위·승점·공동 — 같은 순위 2팀 이상이면 '공동' 필수·아니면 금지, 목록·승점 차 꼴도 같다),
- *            변동·유지 꼴은 전일 순위(prev)가 있을 때만(D40 ③), 승점 차(D40 ②)는 1 이상·방향까지, 대회 이름은 그 순위표의 대회,
+ *            변동·유지 꼴은 전일 순위(prev)가 있을 때만(D40 ③ — 입력에 prev가 하나도 없으면 문형이 꺼진다, D55 ①), 승점 차(D40 ②)는 1 이상·방향까지, 대회 이름은 그 순위표의 대회,
  *            한 문장의 팀은 같은 순위표
  *     분     '전반'·'후반'·'연장'은 분과 맞아야 한다(전반 ≤ 45 · 후반 46~90 · 연장 ≥ 91 — 바꿔 계산한 분은 숫자가 달라 걸린다)
  *
@@ -72,6 +74,7 @@ import {
   parseBriefLine,
   skeletonWordAt,
   type Bag,
+  type BriefInputKey,
   type LineParse,
   type ParsedClause,
 } from "./brief-grammar";
@@ -372,6 +375,8 @@ interface CheckModel {
   refEntities: Map<string, Set<string>>;
   /** 모델이 보지 못한 근거 id(D51) — 이 id를 단 줄은 강등 */
   hidden: ReadonlySet<string>;
+  /** 입력에 있는 선택 키(D55 ① — 한국 선수 블록·전일 순위). 없는 키의 문형은 문법 밖 */
+  grammarKeys: ReadonlySet<BriefInputKey>;
 }
 
 function escapeRegExp(text: string): string {
@@ -639,7 +644,20 @@ function buildModel(
     koRe,
     refEntities,
     hidden,
+    grammarKeys: briefInputKeys(input),
   };
+}
+
+/**
+ * 입력에 있는 선택 키(D55 ①) — `korean`: 한국 선수 블록이 1건 이상 · `prev`: 전일 순위가 있는 순위 행이 1개 이상. 지금 빌더
+ * (M1-19) 입력에는 둘 다 없다(M3-03·M2-03이 더한다) — 그 키를 쓰는 문형(출전·결장·'득점은 없었다'·순위 변동·유지)은 켜지지 않는다.
+ */
+export function briefInputKeys(input: BriefCheckInput): Set<BriefInputKey> {
+  const keys = new Set<BriefInputKey>();
+  if ((input.korean?.length ?? 0) > 0) keys.add("korean");
+  if (input.standings.some((t) => t.rows.some((r) => r.prev !== undefined)))
+    keys.add("prev");
+  return keys;
 }
 
 // ─── 이름 찾기 ────────────────────────────────────────────────────────────
@@ -935,7 +953,10 @@ function pairEq(a: Pair, h: number, x: number): boolean {
   return a.home === h && a.away === x;
 }
 
-/** 'a-b'가 그 점수(홈-원정)와 맞는가 — 홈-원정 순서 또는 주어 쪽 먼저(D30) */
+/**
+ * 'a-b'가 그 점수(홈-원정)와 맞는가 — 홈-원정 순서 또는 주어 쪽 먼저(D30). 승부차기 꼴의 승부차기 점수(pens·endPens)만 쓴다 —
+ * 승패 문장은 주어 팀 먼저만(`orientedMatches`, D55 ②)
+ */
 function scoreMatches(
   pair: Pair,
   a: number,
@@ -948,7 +969,7 @@ function scoreMatches(
   return "mismatch";
 }
 
-/** 'A와 B의 경기는 a-b'처럼 앞 팀(first) 점수 먼저만 인정 */
+/** 'A와 B의 경기는 a-b'의 앞 팀·승패 문장의 주어 팀(D55 ②) — first 쪽 점수 먼저만 인정 */
 function orientedMatches(
   pair: Pair,
   a: number,
@@ -1184,6 +1205,8 @@ function vResult(
           bad(sub, "extra-time", "연장 승부");
         if (bag.et === true && !(f.aet && !f.pens && decidedInEt(f)))
           bad(sub, "extra-time", "연장 끝에");
+        // 승패 문장의 점수는 주어 팀 점수 먼저만(D55 ② — D30 보강: 원정 팀이 주어인데 홈 점수를 먼저 쓴 '…원정에서 2-3으로
+        // 이겼다'는 score-order). 승부차기 끝에 이긴 문장의 승부차기 점수도 같다
         const score = pairAt(bag, "score");
         if (score) {
           const pair = bag.shootout === true ? f.pens : f.ft;
@@ -1191,7 +1214,7 @@ function vResult(
           else
             scoreIssue(
               sub,
-              scoreMatches(pair, score[0], score[1], side),
+              orientedMatches(pair, score[0], score[1], side),
               score,
             );
         }
@@ -1966,6 +1989,7 @@ function lineGrammar(s: LineState): string | null {
   const { parses, furthest } = parseBriefLine(
     skeleton,
     spans.map((m) => m.kind),
+    { keys: s.model.grammarKeys },
   );
   if (parses.length === 0) {
     fail(s, "grammar-unknown", skeletonWordAt(skeleton, furthest, spans));
