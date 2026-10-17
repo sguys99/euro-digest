@@ -6,8 +6,10 @@
 # - 봇의 data 커밋은 GITHUB_TOKEN으로 push되므로 이 워크플로를 다시 트리거하지 않는다(GitHub 규칙).
 #   collect.yml·weekly.yml은 스스로 빌드·검증 후 deploy.yml을 호출한다(CLAUDE.md §6.1).
 # - 06:00~08:00 KST push 금지(계절 무관 — 여름 06:30 수집 → 07:00 공개, 겨울 07:10 수집 → 07:30 공개와 공개 허용 범위
-#   ±15분을 한 구간으로 덮는다. 계절은 src/lib/time.ts publishSlot이 판정)는 사람·봇 운영 규칙이라 여기서 강제하지 않는다
-#   (CLAUDE.md §10, PRD §15 D26). 그 시간에 push하면 collect 실행의 data 커밋 rebase·배포(concurrency: pages)와 겹친다.
+#   '목표 시각까지, 늦어도 +15분'(NFR-05, PRD §15 D48)을 한 구간으로 덮는다. 계절은 src/lib/time.ts publishSlot이 판정)는
+#   **사람 push** 운영 규칙이라 여기서 강제하지 않는다
+#   (CLAUDE.md §10, PRD §15 D26). 그 시간에 사람이 push하면 collect 실행의 data 커밋 rebase·배포(concurrency: pages)와 겹친다.
+#   봇(collect.yml)의 data 커밋은 바로 이 시간대에 하는 것이 정상이다 — 이 워크플로를 트리거하지도 않는다(위 항목).
 name: CI
 
 on:
@@ -58,8 +60,10 @@ jobs:
       - name: 서식 검사 (Prettier)
         run: npm run format:check
 
-      # configs/* zod 스키마·교차 참조 + data/* 스키마(M0-17). 잘못된 설정·데이터면 여기서 실패한다.
-      # 발행 검증 게이트(카드 수·링크 등)는 M1-25에서 같은 명령에 붙는다.
+      # configs/* zod 스키마·교차 참조 + data/* 스키마(M0-17) + 발행 검증 게이트(M1-25 — 카드 ai·요약 줄·링크 형식, 미래 날짜
+      # 파일, 남은 삭제 요청 카드·보존 기간 만료 출처). 잘못된 설정·데이터면 여기서 실패한다.
+      # --publish-date 없이 돌리므로 카드 수 하한은 검사 시각의 KST 오늘 파일이 있을 때만 본다(없으면 건너뜀 — 그날 발행 전 push가
+      # 막히지 않게). 발행 실행의 엄격 검사(그 발행일 파일이 없으면 실패)는 collect.yml이 수집 단계의 발행일로 한다(M1-26).
       - name: 설정·데이터 검증 (configs·data 스키마)
         run: npm run validate
 

@@ -17,11 +17,19 @@
  * 로컬 = dev → data/runs-dev.json (CLAUDE.md §6.3).
  * SOURCE_HEALTH_FILE(선택, Actions가 `$RUNNER_TEMP/source-health.json`으로 준다): 소스 건강도 사건(이슈 payload 배열)을
  * 쓸 파일 — 이슈는 collect.yml의 다음 단계가 만든다(M1-11). 없으면(로컬) 사건을 로그로만 남긴다.
+ * GITHUB_OUTPUT·GITHUB_STEP_SUMMARY(Actions 기본 제공 — M1-26): 실행이 끝나면 성공·실패와 상관없이 단계 출력(publish_date·run_id·
+ * status·run_recorded — scripts/lib/collect-outputs.ts)을 쓴다. collect.yml의 검증 게이트·data 커밋이 이 발행일을 쓴다.
+ * 단계 출력을 쓰지 못하면 exit 1(뒤 단계가 발행일을 몰라 검증할 수 없다 — 커밋하지 않는다). 로컬은 두 변수가 없어 쓰지 않는다.
  */
+import { appendFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { COLLECT_USAGE, parseCollectArgs } from "./lib/cli-args";
+import {
+  collectStepOutputsOf,
+  writeCollectOutputs,
+} from "./lib/collect-outputs";
 import {
   resolveCardLimit,
   resolveMaxItems,
@@ -85,6 +93,34 @@ async function main(): Promise<number> {
     healthReportPath: env.SOURCE_HEALTH_FILE?.trim() || null,
     runUrl: actionsRunUrl(env),
   });
+  // 단계 출력(M1-26) — 검증 게이트 `--publish-date`·data 커밋 메시지가 이 발행일을 쓴다. 수집이 실패한 실행(exit 1)도 쓴다.
+  const outputs = collectStepOutputsOf(outcome);
+  const written = writeCollectOutputs({
+    outputs,
+    outputFile: env.GITHUB_OUTPUT?.trim() || null,
+    summaryFile: env.GITHUB_STEP_SUMMARY?.trim() || null,
+    append: (file, text) => appendFileSync(file, text, "utf8"),
+  });
+  if (written.summaryError !== null) {
+    logger.warn("collect.outputs.summary.fail", {
+      error: written.summaryError,
+    });
+  }
+  if (!written.ok) {
+    logger.error("collect.outputs.fail", {
+      runId: outcome.runId,
+      error: written.error,
+    });
+    return 1;
+  }
+  if (written.wroteOutputs) {
+    logger.info("collect.outputs", {
+      publishDate: outputs.publishDate,
+      runId: outputs.runId,
+      status: outputs.status,
+      runRecorded: outputs.runRecorded,
+    });
+  }
   return outcome.exitCode;
 }
 

@@ -927,7 +927,7 @@ export interface PublishTimesKst {
   collect: string;
   /** collect.yml 백업 schedule (FR-150) */
   backup: string;
-  /** 공개 목표 (NFR-05 — ±15분) */
+  /** 공개 목표 (NFR-05 — 목표 시각까지 공개, 늦어도 +15분 — PRD §15 D48, 일찍 공개 허용) */
   publish: string;
 }
 

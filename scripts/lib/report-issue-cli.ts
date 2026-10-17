@@ -130,8 +130,8 @@ export interface NeedsJob {
 }
 
 /**
- * `${{ toJSON(needs) }}` → job 결과 목록. 출력값 중 `reason`(guard의 판단 사유)만 메모로 쓴다 —
- * 다른 출력(커밋 SHA 등)은 이슈에 옮기지 않는다.
+ * `${{ toJSON(needs) }}` → job 결과 목록. 출력값 중 job별 `reason`만 메모로 쓴다 — collect.yml에서는 guard의 판단 사유와
+ * collect의 실패 단계(M1-26 `실패 단계 기록`). 다른 출력(커밋 SHA·발행일 등)은 이슈에 옮기지 않는다.
  */
 export function parseNeedsJson(
   raw: string | undefined,
