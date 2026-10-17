@@ -14,8 +14,8 @@ disable-model-invocation: true
 ## 현재 상태 (M0-08 초안)
 - 지금: !`date -u +%Y-%m-%dT%H:%M:%SZ` (KST !`TZ=Asia/Seoul date +"%Y-%m-%d %H:%M"`)
 - 등록 파일: !`ls configs/takedowns.json 2>/dev/null || echo "(configs/takedowns.json 없음)"`
-- 완료: 스키마(M0-16, `handledAt`은 등록 시 null → 배포 확인 후 기록), validate(M0-17), 이슈 템플릿 `takedown`(M0-10), `ci.yml`(M0-12), `deploy.yml`(M0-13). 남은 것: **빌드 제외·다음 수집의 원본 삭제 M1-25**, 커맨드 완성 M1-29에서 구현 예정.
-- **M1-25 전에는** 발행된 카드가 없고 빌드가 takedowns를 읽지 않는다. 형식 검증·등록안까지만 하고 "실제 비공개 경로 미구현"으로 보고한다.
+- 완료: 스키마(M0-16, `handledAt`은 등록 시 null → 배포 확인 후 기록), validate(M0-17), 이슈 템플릿 `takedown`(M0-10), `ci.yml`(M0-12), `deploy.yml`(M0-13). 빌드 제외(`src/lib/data/news.ts` `withoutTakedowns`)·다음 수집 ⓪ 단계의 원본 삭제(`scripts/lib/purge-stage.ts` — 모든 날짜 파일에서 저장된 ID로, 지운 링크는 seen에 먼저 기록)·발행 검증 게이트(남은 카드·72시간 경고) **M1-25 완료(2026-10-17)**. 남은 것: 커맨드 완성 M1-29.
+- 등록 직후 `npm run validate`는 '남은 takedown 카드' 경고 1건을 내는 것이 정상이다(원본은 다음 수집 실행이 지운다). 카드 ID는 저장된 값으로만 찾는다 — URL에서 다시 계산하지 않는다(옛 규칙 ID, M1-16).
 
 ## 절차
 1. **ID 검증** — `^c_[0-9a-f]{10}$`에 맞아야 한다. 공유 URL(`…/news/2026-10-10/#c_8f3a1b2c4d`)을 받았으면 앵커에서 ID를 뽑는다. 맞지 않으면 즉시 중단하고 올바른 형식을 안내한다.
