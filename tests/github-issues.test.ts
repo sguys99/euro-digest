@@ -238,9 +238,10 @@ describe("defaultIssueKey", () => {
     );
   });
 
-  it("D35 ③: 별도 kind source-health는 없다 — 소스 사건은 모두 source-broken", () => {
+  it("D35 ③: 별도 kind source-health는 없다 — 소스 사건은 모두 source-broken (M1-27: 부분 실패 pipeline-partial 추가)", () => {
     expect([...ISSUE_KINDS]).toEqual([
       "pipeline-failure",
+      "pipeline-partial",
       "source-broken",
       "ops-report",
     ]);

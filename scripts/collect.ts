@@ -20,8 +20,11 @@
  * GITHUB_OUTPUT·GITHUB_STEP_SUMMARY(Actions 기본 제공 — M1-26): 실행이 끝나면 성공·실패와 상관없이 단계 출력(publish_date·run_id·
  * status·run_recorded — scripts/lib/collect-outputs.ts)을 쓴다. collect.yml의 검증 게이트·data 커밋이 이 발행일을 쓴다.
  * 단계 출력을 쓰지 못하면 exit 1(뒤 단계가 발행일을 몰라 검증할 수 없다 — 커밋하지 않는다). 로컬은 두 변수가 없어 쓰지 않는다.
+ * RUN_ISSUES_FILE(선택, Actions가 `$RUNNER_TEMP/run-issues.json`으로 준다 — M1-27): 부분 실패 이슈 사건(`pipeline-partial` payload
+ * 배열 — 삭제 단계·seen-urls·클러스터링·브리핑·브리핑 파일·runs 읽기·원장 오류, scripts/lib/run-issues.ts)을 쓸 파일. dry는 쓰지
+ * 않는다. 없으면(로컬) 로그로만 남긴다. 쓰기 실패는 경고만(종료 코드에 영향 없음).
  */
-import { appendFileSync } from "node:fs";
+import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -42,6 +45,7 @@ import { createLlmClient, resolveLlmModel } from "./lib/llm";
 import { createLogger } from "./lib/logger";
 import { resolveLedgerEnabled } from "./lib/match-ledger";
 import { feedUserAgent } from "./lib/rss";
+import { partialFindings, partialIssuePayloads } from "./lib/run-issues";
 
 const parsed = parseCollectArgs(process.argv.slice(2), process.env.LLM_MODE);
 
@@ -93,6 +97,49 @@ async function main(): Promise<number> {
     healthReportPath: env.SOURCE_HEALTH_FILE?.trim() || null,
     runUrl: actionsRunUrl(env),
   });
+  // 부분 실패 이슈 사건(M1-27, FR-152) — 수집 단계 안에서 실패했지만 실행은 계속된 단계 오류를 사유별 payload로. 이슈는 collect.yml 다음 단계가 만든다.
+  const findings = partialFindings({
+    purge: outcome.purge,
+    news: outcome.news,
+    brief: outcome.brief,
+    briefFile: outcome.briefFile,
+    ledger: outcome.matchData?.ledger ?? null,
+  });
+  for (const finding of findings) {
+    logger.warn("collect.run.issue", {
+      reason: finding.reason,
+      key: `collect:partial:${finding.reason}`,
+    });
+  }
+  const runIssuesFile = env.RUN_ISSUES_FILE?.trim() || null;
+  const runUrl = actionsRunUrl(env);
+  if (runIssuesFile !== null && !args.dry) {
+    const payloads = partialIssuePayloads(findings, {
+      workflow: "collect",
+      runId: outcome.runId,
+      publishDate: outcome.publishDate,
+      occurredAt: new Date().toISOString(),
+      ...(runUrl ? { runUrl } : {}),
+    });
+    try {
+      mkdirSync(path.dirname(runIssuesFile), { recursive: true });
+      writeFileSync(
+        runIssuesFile,
+        `${JSON.stringify(payloads, null, 2)}\n`,
+        "utf8",
+      );
+      logger.info("collect.run.issue.write", {
+        file: runIssuesFile,
+        events: payloads.length,
+      });
+    } catch (error) {
+      // 사건 파일을 못 쓰면 이번 실행의 부분 실패 이슈만 빠진다(같은 사유는 다음 실행이 다시 낸다)
+      logger.warn("collect.run.issue.fail", {
+        file: runIssuesFile,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
   // 단계 출력(M1-26) — 검증 게이트 `--publish-date`·data 커밋 메시지가 이 발행일을 쓴다. 수집이 실패한 실행(exit 1)도 쓴다.
   const outputs = collectStepOutputsOf(outcome);
   const written = writeCollectOutputs({

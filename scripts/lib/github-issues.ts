@@ -7,7 +7,13 @@
  *   - I/O: reportIssue(생성 또는 댓글) · tryReportIssue(던지지 않는 판) · previewReport(dry-run, 읽기만)
  *
  * "같은 원인" = 종류(kind) + 원인 키(key)
- *   - pipeline-failure  key `<워크플로>:<실패 job>` (예: `collect:collect`, `collect:deploy`) — job별로 다른 이슈
+ *   - pipeline-failure  key `<워크플로>:<실패 job>[/<멈춘 단계>]` (예: `collect:collect/validate`, `collect:guard`,
+ *                       `collect:deploy`) — job별·단계별로 다른 이슈(M1-27 — 검증 실패·빌드 실패·rebase 충돌이 한 이슈에 섞이지
+ *                       않게). 단계는 job 출력 `step`(collect.yml `실패 단계 기록`)이 있을 때만 붙는다 — 없으면 `<워크플로>:<job>`.
+ *   - pipeline-partial  key `<워크플로>:partial:<사유>` (예: `collect:partial:purge`) — 수집 단계 안에서 실패했지만 실행은 계속된
+ *                       (수집 판정 partial — 발행 여부는 뒤 단계에 달림) 사람이 손봐야 하는 단계 오류(M1-27, FR-152 — 사유 목록 PIPELINE_PARTIAL_REASONS). 사유별 이슈 하나,
+ *                       같은 사유는 댓글. 라벨은 pipeline-failure를 같이 쓴다(저장소에 미리 만든 라벨만 — fingerprint에 kind가
+ *                       들어가므로 실패 이슈와 섞이지 않는다). 소스·데이터 API 문제는 이 kind가 아니라 source-broken이 맡는다.
  *   - source-broken     key `source:<소스 ID>` — **소스별 이슈 하나**(PRD §15 D35 ③, M1-11). 이번 실행의 소스 실패
  *                       (PRD §10 "수집 일부 실패 → 이슈", FR-08), 실패·빈 피드 3회 연속(FR-11), 새 기사 없음 7회 연속이
  *                       모두 같은 이슈에 쌓인다(새 이슈 또는 댓글, FR-152). 사건 판정은 scripts/lib/source-health.ts.
@@ -57,6 +63,7 @@ import { createLogger, sanitizeText, type Logger } from "./logger";
 
 export const ISSUE_KINDS = [
   "pipeline-failure",
+  "pipeline-partial",
   "source-broken",
   "ops-report",
 ] as const;
@@ -73,6 +80,8 @@ export function isIssueKind(value: string): value is IssueKind {
  */
 export const ISSUE_LABELS: Readonly<Record<IssueKind, readonly string[]>> = {
   "pipeline-failure": ["pipeline-failure"],
+  // 부분 실패도 운영 실패 라벨을 같이 쓴다(새 라벨을 만들지 않는다 — M1-27)
+  "pipeline-partial": ["pipeline-failure"],
   "source-broken": ["source-broken"],
   "ops-report": ["ops-report"],
 };
@@ -80,6 +89,7 @@ export const ISSUE_LABELS: Readonly<Record<IssueKind, readonly string[]>> = {
 /** 열린 이슈를 찾을 때 거르는 라벨(종류마다 하나) */
 export const SEARCH_LABEL: Readonly<Record<IssueKind, string>> = {
   "pipeline-failure": "pipeline-failure",
+  "pipeline-partial": "pipeline-failure",
   "source-broken": "source-broken",
   "ops-report": "ops-report",
 };
@@ -96,6 +106,31 @@ export const SOURCE_EVENT_TYPES = [
   "stale-streak",
 ] as const;
 export type SourceEventType = (typeof SOURCE_EVENT_TYPES)[number];
+
+/**
+ * 부분 실패 사유 (M1-27, FR-152) — 수집 단계 안에서 실패했지만 실행은 계속된(수집 판정 partial) 사람이 손봐야 하는 단계 오류.
+ * 그 실행이 발행됐는지는 뒤 단계(검증·빌드·커밋)에 달려 있다 — 이슈 본문은 발행했다고 쓰지 않는다. 사유별로 이슈 하나
+ * (원인 키 `<워크플로>:partial:<사유>`). 판정은 scripts/lib/run-issues.ts `partialFindings`.
+ *   purge            data 원본 삭제 단계 오류(M1-25 — 삭제 요청·보존 기간 만료 카드가 data/에 남음)
+ *   seen             카드 URL 기억(data/cache/seen-urls.json) 읽기·쓰기 오류(M1-12)
+ *   cluster          같은 사건 클러스터링 오류(M1-13 — 합치지 않은 채 발행)
+ *   brief            브리핑 단계 실패(LLM·출력·설정 — 데이터 API 실패는 source-broken이 맡는다)
+ *   brief-file       브리핑 파일(data/briefs) 검증·쓰기 오류 또는 깨진 기존 파일(M1-19)
+ *   runs-unreadable  실행 기록(runs.json·runs-dev.json)을 읽지 못해 비용 가드가 판정 불가 → LLM 없이 템플릿(M1-22)
+ *   ledger           경기 기록 원장(data/matches) 쓰기 오류·형식 오류 항목(M1-48b)
+ * 이슈를 만들지 않는 partial: 소스 일부 실패(소스별 source-broken) · 데이터 API(football-data·API-Football — source-broken
+ * `source:football-data`·`source:api-football`) · API-Football 미완(이월로 다음 실행이 받는다 — 운영 리포트 M5-09).
+ */
+export const PIPELINE_PARTIAL_REASONS = [
+  "purge",
+  "seen",
+  "cluster",
+  "brief",
+  "brief-file",
+  "runs-unreadable",
+  "ledger",
+] as const;
+export type PipelinePartialReason = (typeof PIPELINE_PARTIAL_REASONS)[number];
 
 /**
  * 실행 1회에서 소스의 상태 (runs.json `sources[]` 한 줄을 분류한 값 — source-health.ts `classifySourceRun`).
@@ -234,11 +269,19 @@ const HttpsUrl = z.url({ protocol: /^https$/ });
 const KstDateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "YYYY-MM-DD");
 const ShortText = z.string().min(1).max(5_000);
 
+/** 단계 id — collect.yml step id(`install`·`collect`·`validate`·`build`·`commit`·`setup`) 형식 */
+const StepIdSchema = z
+  .string()
+  .regex(/^[a-z][a-z0-9-]*$/, "소문자·숫자·하이픈")
+  .max(40);
+
 const JobResultSchema = z.strictObject({
   job: z.string().min(1).max(100),
   result: z.string().min(1).max(40),
   /** 짧은 부가 정보(예: guard의 판단 사유) */
   note: z.string().max(200).optional(),
+  /** 실패한 job이 멈춘 단계 id(job 출력 `step`, M1-27) — 원인 키에 붙는다 */
+  step: StepIdSchema.optional(),
 });
 
 export const PipelineFailurePayloadSchema = z.strictObject({
@@ -252,6 +295,20 @@ export const PipelineFailurePayloadSchema = z.strictObject({
   event: z.string().max(60).optional(),
   occurredAt: IsoSchema.optional(),
   note: ShortText.optional(),
+});
+
+/** 부분 실패(M1-27) — 실행 1회의 사유 하나. 응답 본문·비밀값을 넣지 않는다(오류 요약만) */
+export const PipelinePartialPayloadSchema = z.strictObject({
+  workflow: z.string().regex(/^[a-z0-9][a-z0-9-]*$/, "소문자·숫자·하이픈"),
+  reason: z.enum(PIPELINE_PARTIAL_REASONS),
+  /** 짧은 오류 요약(예: `write(2026-10-15): EACCES`) */
+  detail: ShortText.optional(),
+  /** runs.json 실행 ID */
+  runId: z.string().max(100).optional(),
+  runUrl: HttpsUrl.optional(),
+  /** 발행일(KST) */
+  publishDate: KstDateString.optional(),
+  occurredAt: IsoSchema.optional(),
 });
 
 const Count = z.number().int().min(0);
@@ -362,6 +419,7 @@ export const OpsReportPayloadSchema = z.strictObject({
 
 export const ISSUE_PAYLOAD_SCHEMAS = {
   "pipeline-failure": PipelineFailurePayloadSchema,
+  "pipeline-partial": PipelinePartialPayloadSchema,
   "source-broken": SourceBrokenPayloadSchema,
   "ops-report": OpsReportPayloadSchema,
 } as const satisfies Record<IssueKind, z.ZodType>;
@@ -442,6 +500,27 @@ export function sourceIssueKey(sourceId: string): string {
   return `source:${sourceId}`;
 }
 
+/** 부분 실패 이슈의 원인 키 — `<워크플로>:partial:<사유>` (사유별 이슈 하나, M1-27) */
+export function partialIssueKey(
+  workflow: string,
+  reason: PipelinePartialReason,
+): string {
+  return `${workflow}:partial:${reason}`;
+}
+
+/**
+ * 실패 job별 원인 키 조각(정렬) — job 결과에 멈춘 단계(`step`)가 있으면 `<job>/<step>`, 없으면 `<job>`(M1-27 이전 키와 같다).
+ */
+function failedJobKeys(p: IssuePayload<"pipeline-failure">): string[] {
+  const stepOf = new Map(
+    p.jobs.flatMap((j) => (j.step ? [[j.job, j.step] as const] : [])),
+  );
+  return [...p.failedJobs].sort().map((job) => {
+    const step = stepOf.get(job);
+    return step ? `${job}/${step}` : job;
+  });
+}
+
 /** 종류별 기본 원인 키 — reportIssue에 key를 주지 않으면 이것을 쓴다. */
 export function defaultIssueKey<K extends IssueKind>(
   kind: K,
@@ -450,7 +529,11 @@ export function defaultIssueKey<K extends IssueKind>(
   switch (kind) {
     case "pipeline-failure": {
       const p = parseIssuePayload("pipeline-failure", payload);
-      return `${p.workflow}:${p.failedJobs.length ? [...p.failedJobs].sort().join("+") : "unknown"}`;
+      return `${p.workflow}:${p.failedJobs.length ? failedJobKeys(p).join("+") : "unknown"}`;
+    }
+    case "pipeline-partial": {
+      const p = parseIssuePayload("pipeline-partial", payload);
+      return partialIssueKey(p.workflow, p.reason);
     }
     case "source-broken":
       return sourceIssueKey(
@@ -603,9 +686,12 @@ function jobTable(jobs: IssuePayload<"pipeline-failure">["jobs"]): string[] {
   ];
 }
 
-function failedJobsText(failedJobs: readonly string[]): string {
-  return failedJobs.length
-    ? failedJobs.map((j) => inlineText(j, 100)).join(", ")
+/** 실패 job 표기 — 멈춘 단계가 있으면 `collect/validate`처럼 원인 키 조각과 같게(M1-27) */
+function failedJobsText(p: IssuePayload<"pipeline-failure">): string {
+  return p.failedJobs.length
+    ? failedJobKeys(p)
+        .map((j) => inlineText(j, 100))
+        .join(", ")
     : "알 수 없음";
 }
 
@@ -614,7 +700,7 @@ function buildPipelineFailure(
   occurredAt: string,
 ): { title: string; body: string[] } {
   const info = workflowInfo(p.workflow);
-  const failed = failedJobsText(p.failedJobs);
+  const failed = failedJobsText(p);
   const title = `[${p.workflow}] ${info.label} 실패 (${failed}) — ${kstDate(occurredAt)}`;
   const body = [
     `${p.workflow}.yml ${info.label} 실행이 실패했습니다.`,
@@ -637,6 +723,120 @@ function buildPipelineFailure(
     "- [ ] 정상 실행 확인 후 이 이슈 닫기",
   ];
   return { title, body };
+}
+
+// ── 부분 실패 (M1-27) ──
+
+interface PartialReasonInfo {
+  /** 제목·본문의 사유 이름 */
+  label: string;
+  /** 이번 실행에 생긴 일(발행은 됐다는 전제 아래) */
+  effect: string;
+  /** 확인할 것 */
+  checks: string[];
+}
+
+/** 사유별 문구 — 영향·확인할 것(코드 문구, LLM 미사용) */
+const PARTIAL_REASON_INFO: Readonly<
+  Record<PipelinePartialReason, PartialReasonInfo>
+> = {
+  purge: {
+    label: "data 원본 삭제 단계 오류",
+    effect:
+      "삭제 요청·보존 기간 만료 카드(출처)가 data/news에 남았을 수 있습니다. 공개 사이트는 빌드 제외(takedowns.json)로 보호되며, 다음 수집 실행이 다시 지웁니다.",
+    checks: [
+      "실행 로그 `collect.purge.*`에서 실패 단계(takedowns·sources·list·read·seen·write) 확인",
+      "삭제 요청 접수 72시간 기한이 다가오면 `/takedown` 절차로 수동 확인 (CLAUDE.md §12)",
+    ],
+  },
+  seen: {
+    label: "카드 URL 기억(seen-urls.json) 읽기·쓰기 오류",
+    effect:
+      "최근 발행 파일(3일)로 날짜 간 중복을 막고 계속 진행했습니다. 기억이 계속 고쳐지지 않으면 오래된 기사가 다시 카드가 될 수 있습니다.",
+    checks: [
+      "실행 로그 `collect.seen.*` 확인",
+      "`npm run validate`로 data/cache/seen-urls.json 형식 확인 (data/는 손으로 고치지 않는다 — 원인을 스크립트에서 고친다)",
+    ],
+  },
+  cluster: {
+    label: "같은 사건 클러스터링 오류",
+    effect:
+      "같은 사건 기사를 합치지 않은 채(같은 URL 중복 제거만) 카드를 만들었습니다 — 발행됐다면 비슷한 카드가 여러 장일 수 있습니다.",
+    checks: [
+      "실행 로그 `collect.cluster.*`의 오류 확인 — 코드 버그일 가능성이 큽니다",
+    ],
+  },
+  brief: {
+    label: "브리핑 단계 실패",
+    effect:
+      "오늘의 5줄은 코드 템플릿 문장으로 만들었거나(LLM 없이) 생략했습니다. 뉴스 카드 단계는 계속 진행했습니다.",
+    checks: [
+      "실행 로그 `summarize.brief.*`에서 실패 종류(llm·output·setup) 확인",
+      "LLM 오류가 며칠 이어지면 모델·키·요금 상태 확인, 출력 오류면 지시문(configs/prompts/summarize.md)·출력 스키마 확인",
+    ],
+  },
+  "brief-file": {
+    label: "브리핑 파일 검증·쓰기 오류",
+    effect:
+      "그날 data/briefs 파일을 쓰지 못했거나, 깨진 기존 파일을 새로 썼습니다 — 홈의 오늘의 5줄이 비었을 수 있습니다.",
+    checks: [
+      "실행 로그 `summarize.brief.publish.*` 확인",
+      "`npm run validate`로 data/briefs 파일 확인",
+    ],
+  },
+  "runs-unreadable": {
+    label: "실행 기록(runs 파일)을 읽지 못함",
+    effect:
+      "비용 가드가 이번 달·오늘 사용액을 확인하지 못해 브리핑을 LLM 없이 코드 템플릿으로 만들었습니다(FR-27). 고칠 때까지 매일 같습니다.",
+    checks: [
+      "`npm run validate`로 data/runs.json·data/runs-dev.json 형식 확인 — runs-dev.json은 개발자가 커밋한다",
+      "실행 로그 `summarize.brief.budget` 확인",
+    ],
+  },
+  ledger: {
+    label: "경기 기록 원장 쓰기·형식 오류",
+    effect:
+      "받은 경기 일부를 원장(data/matches)에 넣지 못해 이월 목록(af-pending)에 다시 넣었습니다 — 다음 실행이 다시 받습니다(API-Football 호출을 다시 씀).",
+    checks: [
+      "실행 로그 `collect.ledger.*` 확인",
+      "`npm run validate`로 data/matches 파일 확인",
+    ],
+  },
+};
+
+const PARTIAL_WORKFLOW_LABEL: Readonly<Record<string, string>> = {
+  collect: "일일 수집",
+};
+
+function buildPipelinePartial(
+  p: IssuePayload<"pipeline-partial">,
+  occurredAt: string,
+): { title: string; body: string[] } {
+  const info = PARTIAL_REASON_INFO[p.reason];
+  const workflowLabel =
+    PARTIAL_WORKFLOW_LABEL[p.workflow] ?? `${p.workflow} 워크플로`;
+  return {
+    title: `[${p.workflow} 부분 실패] ${info.label} — ${p.publishDate ?? kstDate(occurredAt)}`,
+    body: [
+      `${p.workflow}.yml ${workflowLabel} 실행 중 아래 단계가 실패했습니다(실행은 계속됨). 이번 실행이 발행됐는지는 실행 링크와 같은 시각의 실패 이슈(pipeline-failure — 있으면)로 확인하세요.`,
+      "",
+      "| 항목 | 값 |",
+      "|---|---|",
+      `| 실행 | ${runLink(p.runUrl)} |`,
+      `| 실행 ID | ${p.runId ? codeSpan(p.runId, 100) : "?"} |`,
+      `| 발행일 (KST) | ${p.publishDate ?? "?"} |`,
+      `| 시각 (KST) | ${kstDateTime(occurredAt)} |`,
+      `| 사유 | ${tableCell(info.label)} (\`${p.reason}\`) |`,
+      ...(p.detail ? [`| 오류 | ${codeSpan(p.detail)} |`] : []),
+      "",
+      `- ${info.effect}`,
+      "",
+      "### 확인할 것",
+      ...info.checks.map((c) => `- [ ] ${c}`),
+      "- [ ] 원인 수정 — 설정은 configs/, 코드는 scripts/ (data/는 손으로 고치지 않는다)",
+      "- [ ] 다음 실행에서 같은 사유가 다시 나오지 않으면 이 이슈 닫기",
+    ],
+  };
 }
 
 /** 이슈 폼과 같은 `### <라벨>` 블록 — 빈 값은 `_No response_` */
@@ -891,6 +1091,12 @@ export function buildIssue<K extends IssueKind>(
         occurredAt,
       );
       break;
+    case "pipeline-partial":
+      built = buildPipelinePartial(
+        parsed as IssuePayload<"pipeline-partial">,
+        occurredAt,
+      );
+      break;
     case "source-broken":
       built = buildSourceBroken(
         parsed as IssuePayload<"source-broken">,
@@ -946,9 +1152,21 @@ export function buildComment<K extends IssueKind>(
         "",
         `- 실행: ${runLink(p.runUrl, p.runAttempt)}`,
         `- 트리거: ${p.event ? inlineText(p.event, 60) : "?"}`,
-        `- 실패 job: ${failedJobsText(p.failedJobs)}`,
+        `- 실패 job: ${failedJobsText(p)}`,
         ...(p.jobs.length ? ["", ...jobTable(p.jobs)] : []),
         ...(p.note ? ["", noteText(p.note)] : []),
+      ];
+      break;
+    }
+    case "pipeline-partial": {
+      const p = parsed as IssuePayload<"pipeline-partial">;
+      lines = [
+        `### 다시 발생 — ${kstDateTime(occurredAt)}${nth}`,
+        "",
+        `- 실행: ${runLink(p.runUrl)}${p.runId ? ` · 실행 ID ${codeSpan(p.runId, 100)}` : ""}`,
+        ...(p.publishDate ? [`- 발행일: ${p.publishDate}`] : []),
+        `- 사유: ${inlineText(PARTIAL_REASON_INFO[p.reason].label)} (\`${p.reason}\`)`,
+        ...(p.detail ? [`- 오류: ${codeSpan(p.detail)}`] : []),
       ];
       break;
     }

@@ -7,12 +7,14 @@
  *   publish_date  KST 발행일(YYYY-MM-DD) = 수집 시작 시각의 KST 날짜(collect-run.ts runCollect) — 이번 실행이 쓴 data/news·data/briefs
  *                 파일 이름. 검증 게이트 `npm run validate -- --publish-date`와 data 커밋 메시지(`chore(data): <발행일> 발행`)가 쓴다.
  *                 검증·커밋 시각으로 날짜를 다시 계산하지 않는다 — 자정을 넘긴 실행에서 수집이 쓴 파일과 어긋난다(M1-25 이월).
- *   run_id        실행 기록 runId(data/runs.json) — 실패 이슈·Step Summary·실패 실행 기록(M1-27)이 같은 실행을 가리키게
- *   status        RunLog.status 판정값(success·partial·failed·skipped) — 기록하지 않은 실행도 값은 있다
+ *   run_id        실행 기록 runId(data/runs.json) — 실패 이슈·Step Summary·실패 실행 기록 보존(M1-27 — scripts/preserve-run.ts
+ *                 save --run-id)이 같은 실행을 가리키게
+ *   status        runStatus 판정값(success·partial·failed) — 기록하지 않은 실행도 값은 있다. 기록된 상태와 다를 수 있다(prod dry =
+ *                 skipped, 발행되지 않아 실패 실행 기록 보존이 커밋한 기록 = failed — M1-27)
  *   run_recorded  true = 이번 실행 기록을 runs.json(prod)·runs-dev.json(dev)에 썼다 · false = 쓰지 않았다(데이터·LLM 호출이
- *                 없는 mock·dry 실행이거나 기록 실패). 실패 실행 기록 보존(M1-27)이 "보존할 기록이 있는가"를 이 값으로 안다.
+ *                 없는 mock·dry 실행이거나 기록 실패). collect.yml `실패 실행 기록 보존` 단계의 실행 조건이다(M1-27).
  *
- * 출력은 수집 단계의 성공·실패와 상관없이 쓴다(exit 1 실행도 — 뒤의 실패 단계 기록·M1-27이 읽는다). 예상 밖 예외로 runCollect가
+ * 출력은 수집 단계의 성공·실패와 상관없이 쓴다(exit 1 실행도 — 뒤의 실패 실행 기록 보존·실패 단계 기록이 읽는다). 예상 밖 예외로 runCollect가
  * 결과를 돌려주지 못하면 출력이 없다(그때는 검증 단계가 돌지 않는다).
  */
 import { IsoDateSchema, type RunLog } from "@/lib/schema";

@@ -464,7 +464,7 @@ describe("일괄 보고 출력 문구", () => {
   });
 });
 
-describe("collect.yml 소스 이슈 단계와의 연결 (M1-11, D35)", () => {
+describe("collect.yml 실행 이슈 단계와의 연결 (M1-11·M1-27, D35)", () => {
   const workflow = readFileSync(
     fileURLToPath(new URL("../.github/workflows/collect.yml", import.meta.url)),
     "utf8",
@@ -480,12 +480,15 @@ describe("collect.yml 소스 이슈 단계와의 연결 (M1-11, D35)", () => {
     return found;
   };
   const collectStep = step("수집 · 정제·분류 · 브리핑");
-  const issueStep = step("소스 이슈 보고");
+  const issueStep = step("실행 이슈 보고");
 
   it("수집 단계는 사건 파일 경로만 받고 GitHub 토큰은 받지 않는다", () => {
     expect(collectStep).toContain("id: collect");
     expect(collectStep).toContain(
       "SOURCE_HEALTH_FILE: ${{ runner.temp }}/source-health.json",
+    );
+    expect(collectStep).toContain(
+      "RUN_ISSUES_FILE: ${{ runner.temp }}/run-issues.json",
     );
     expect(collectStep).not.toMatch(/GITHUB_TOKEN|GH_TOKEN|github\.token/);
   });
@@ -501,22 +504,36 @@ describe("collect.yml 소스 이슈 단계와의 연결 (M1-11, D35)", () => {
     expect(issueStep).toContain(
       "SOURCE_HEALTH_FILE: ${{ runner.temp }}/source-health.json",
     );
-    expect(issueStep).toContain('if [ ! -s "$SOURCE_HEALTH_FILE" ]; then');
-    // 빈 배열이면 셸에서 끝낸다 — 토큰을 가진 node를 띄우지 않는다
-    const emptyCheck = issueStep.indexOf(
-      `if [ "$(tr -d '[:space:]' < "$SOURCE_HEALTH_FILE")" = "[]" ]; then`,
-    );
-    expect(emptyCheck).toBeGreaterThan(0);
-    expect(emptyCheck).toBeLessThan(issueStep.indexOf("node --import tsx"));
     expect(issueStep).toContain(
-      'node --import tsx scripts/report-issue.ts --kind source-broken --payload-file "$SOURCE_HEALTH_FILE"',
+      "RUN_ISSUES_FILE: ${{ runner.temp }}/run-issues.json",
+    );
+    // 파일이 없거나 빈 배열이면 셸에서 넘어간다 — 토큰을 가진 node를 띄우지 않는다
+    const missingCheck = issueStep.indexOf('if [ ! -s "$file" ]; then');
+    const emptyCheck = issueStep.indexOf(
+      `if [ "$(tr -d '[:space:]' < "$file")" = "[]" ]; then`,
+    );
+    const call = issueStep.indexOf(
+      'node --import tsx scripts/report-issue.ts --kind "$kind" --payload-file "$file" || status=1',
+    );
+    expect(missingCheck).toBeGreaterThan(0);
+    expect(emptyCheck).toBeGreaterThan(missingCheck);
+    expect(call).toBeGreaterThan(emptyCheck);
+    // 두 사건 파일을 각각의 kind로 — 한쪽이 실패해도 다른 쪽을 보고하고 끝에 실패를 알린다
+    expect(issueStep).toContain(
+      'report source-broken "$SOURCE_HEALTH_FILE" "소스"',
+    );
+    expect(issueStep).toContain(
+      'report pipeline-partial "$RUN_ISSUES_FILE" "부분 실패"',
+    );
+    expect(issueStep.indexOf('exit "$status"')).toBeGreaterThan(
+      issueStep.indexOf('report pipeline-partial "$RUN_ISSUES_FILE"'),
     );
   });
 
-  it("단계 순서: 수집 → 소스 이슈 → 검증 → 빌드 → 커밋, 토큰은 이슈·커밋 단계에만", () => {
+  it("단계 순서: 수집 → 실행 이슈 → 검증 → 빌드 → 커밋, 토큰은 이슈·커밋·실패 실행 기록 보존 단계에만", () => {
     const order = [
       "수집 · 정제·분류 · 브리핑",
-      "소스 이슈 보고",
+      "실행 이슈 보고",
       "검증 게이트",
       "정적 빌드",
       "data 커밋",
@@ -527,8 +544,9 @@ describe("collect.yml 소스 이슈 단계와의 연결 (M1-11, D35)", () => {
       .filter((s) => /github\.token/.test(s))
       .map((s) => s.split("\n")[0]);
     expect(withToken).toEqual([
-      "소스 이슈 보고 (실패 · 건강도)",
+      "실행 이슈 보고 (소스 · 부분 실패)",
       "data 커밋 · push",
+      "실패 실행 기록 보존",
     ]);
   });
 

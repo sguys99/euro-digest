@@ -368,13 +368,14 @@ describe("assessSourceHealth — 이슈로 낼 사건 경계", () => {
     ];
     const [h] = assessSourceHealth({
       run: { runId: "now", startedAt: NOW },
-      current: [entry("failed")],
+      // 함께 성공한 소스(전체 실패가 아니게 — 전체 실패면 사건을 내지 않는다, M1-27)
+      current: [entry("failed"), entry("fresh", "companion")],
       history: runs,
     });
     expect(h!.event).toMatchObject({ type: "failing-streak", streak: 3 });
   });
 
-  it("전체 실패(성공 소스 0개 — budget은 성공이 아님)면 이번 실행 실패 사건만 뺀다, 연속 사건은 유지", () => {
+  it("전체 실패(성공 소스 0개 — budget은 성공이 아님)면 소스별 사건을 모두 뺀다 — 실패·연속 모두(M1-27: 실패 실행도 기록되므로 연속 사건을 남기면 전체 장애 3회째에 소스 수만큼 이슈)", () => {
     expect(isWholeRunFailure([])).toBe(false);
     expect(isWholeRunFailure([entry("failed"), entry("budget", "b")])).toBe(
       true,
@@ -401,9 +402,38 @@ describe("assessSourceHealth — 이슈로 낼 사건 경계", () => {
         h.suppressedEvent?.type ?? null,
       ]),
     ).toEqual([
-      ["a", "failing-streak", null],
+      ["a", null, "failing-streak"],
       ["b", null, "failed"],
       ["c", null, null],
+    ]);
+  });
+
+  it("전체 장애가 3회 이어져도(M1-27 — 실패 실행 기록 보존) 소스별 이슈를 내지 않고, 풀린 뒤 계속 실패하는 소스만 장애 기간까지 이어 센 연속으로 낸다", () => {
+    // 직전 두 실행 = 전체 실패(두 소스 모두 failed) — 실패 실행 기록 보존으로 runs.json에 있다
+    const outage = [
+      ...history(["failed", "failed"], "a"),
+      ...history(["failed", "failed"], "b"),
+    ];
+    const third = assessSourceHealth({
+      run: { runId: "now", startedAt: NOW },
+      current: [entry("failed", "a"), entry("failed", "b")],
+      history: outage,
+    });
+    expect(third.map((h) => [h.id, h.event, h.failStreak.count])).toEqual([
+      ["a", null, 3],
+      ["b", null, 3],
+    ]);
+    // 장애가 풀린 실행: b는 회복, a만 계속 실패 → a만 사건(연속 3 — 같은 source:a 이슈)
+    const recovered = assessSourceHealth({
+      run: { runId: "now", startedAt: NOW },
+      current: [entry("failed", "a"), entry("fresh", "b")],
+      history: outage,
+    });
+    expect(
+      recovered.map((h) => [h.id, h.event?.type ?? null, h.event?.streak]),
+    ).toEqual([
+      ["a", "failing-streak", 3],
+      ["b", null, undefined],
     ]);
   });
 
@@ -504,7 +534,11 @@ describe("healthIssuePayloads — 사건 → source-broken payload (소스별 �
   it("실패·빈 피드 3회 연속: 원인 키 source:<id>, 증상·처음 발생 날짜·연속 횟수·오류 종류·HTTP 상태·7일 집계·실행 링크", () => {
     const health = assessSourceHealth({
       run: { runId: "collect-prod-now", startedAt: NOW },
-      current: [{ ...entry("failed"), httpStatus: 503 }],
+      // 함께 성공한 소스(전체 실패가 아니게 — M1-27). 사건이 없는 소스는 payload가 없다
+      current: [
+        { ...entry("failed"), httpStatus: 503 },
+        entry("fresh", "companion"),
+      ],
       history: history(["fresh", "empty", "budget", "failed"]),
     });
     const [payload] = healthIssuePayloads(health, {
@@ -1087,7 +1121,7 @@ describe("runCollect — 소스 건강도 연결 (M1-11)", () => {
       expect.objectContaining({
         level: "warn",
         reason: "all-sources-failed",
-        healthEvent: "failed",
+        healthEvents: { failed: 2 },
         sources: 2,
         kept: 0,
       }),
@@ -1104,7 +1138,7 @@ describe("runCollect — 소스 건강도 연결 (M1-11)", () => {
     ]);
   });
 
-  it("모든 소스 실패여도 연속 사건(failing-streak)은 그대로 낸다", async () => {
+  it("모든 소스 실패면 연속 사건(failing-streak)도 내지 않는다 — pipeline-failure 이슈 하나가 맡는다(M1-27)", async () => {
     writeRuns(ESPN_FAILING);
     const file = path.join(tmpDir, "source-health.json");
     const { deps, records } = makeDeps({
@@ -1119,12 +1153,17 @@ describe("runCollect — 소스 건강도 연결 (M1-11)", () => {
     const written = (JSON.parse(readFileSync(file, "utf8")) as unknown[]).map(
       (p) => SourceBrokenPayloadSchema.parse(p),
     );
-    expect(written.map((p) => [p.sourceId, p.event, p.streak])).toEqual([
-      [ESPN, "failing-streak", 3],
+    expect(written).toEqual([]);
+    expect(
+      outcome.health!.sources.map((h) => [h.id, h.suppressedEvent?.type]),
+    ).toEqual([
+      [BBC, "failed"],
+      [ESPN, "failing-streak"],
     ]);
     expect(events(records, "collect.health.suppress")[0]).toMatchObject({
-      sources: 1,
-      kept: 1,
+      healthEvents: { failed: 1, "failing-streak": 1 },
+      sources: 2,
+      kept: 0,
     });
   });
 

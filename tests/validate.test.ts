@@ -518,7 +518,8 @@ describe("CI 연결 — 워크플로가 validate를 빌드·커밋 전에 실행
         // 발행 실행은 수집 단계가 출력한 발행일로 엄격 검사한다(M1-26 — 구조는 tests/collect-workflow.test.ts)
         'npm run validate -- --publish-date "$PUBLISH_DATE"',
         "run: npm run build",
-        "git commit",
+        // data 커밋 단계 — git 훅을 끈 채로 커밋한다(M1-27: `git "${git_nohooks[@]}" commit`)
+        'commit --quiet -m "$message"',
       ],
     ],
   ])("%s", (name, steps) => {

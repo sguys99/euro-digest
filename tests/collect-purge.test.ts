@@ -31,6 +31,7 @@ import { runCollect, type CollectDeps } from "../scripts/lib/collect-run";
 import { createLlmClient } from "../scripts/lib/llm";
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
 import { feedUserAgent, type FetchLike } from "../scripts/lib/rss";
+import { partialFindings } from "../scripts/lib/run-issues";
 import { urlHash } from "../scripts/lib/url-normalize";
 
 const REPO = fileURLToPath(new URL("../", import.meta.url));
@@ -219,6 +220,16 @@ describe("runCollect ⓪ — 삭제 요청 (FR-143)", () => {
     expect(outcome.purge.errors.map((e) => e.step)).toEqual(["takedowns"]);
     expect(outcome.status).toBe("partial");
     expect(readNews("2026-10-11").cards).toHaveLength(5);
+    // 부분 실패 이슈 사유(M1-27 — M1-25 이월: 삭제 단계 오류는 이슈가 없었다). football-data 키 없음은 source-broken 몫
+    const findings = partialFindings({
+      purge: outcome.purge,
+      news: outcome.news,
+      brief: outcome.brief,
+      briefFile: outcome.briefFile,
+      ledger: outcome.matchData?.ledger ?? null,
+    });
+    expect(findings.map((f) => f.reason)).toEqual(["purge"]);
+    expect(findings[0]!.detail).toMatch(/^takedowns: /);
   });
 });
 

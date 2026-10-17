@@ -11,7 +11,8 @@
  *                    50건(MAX_BATCH_PAYLOADS)을 넘으면 앞 50건만 보고하고 남은 건수를 경고한다.
  *                    collect.yml은 수집 단계가 쓴 소스 건강도 사건 파일(source-broken payload 배열, M1-11)을 이렇게 넘긴다.
  *   환경변수         pipeline-failure 전용 — Actions 기본 변수 + NEEDS_JSON(`${{ toJSON(needs) }}`)
- *                    · 실패 job = needs의 result가 failure인 job, 원인 키 기본값 = `<workflow>:<실패 job>`
+ *                    · 실패 job = needs의 result가 failure인 job, 원인 키 기본값 = `<workflow>:<실패 job>[/<멈춘 단계>]`
+ *                      (멈춘 단계 = 그 job의 출력 `step` — collect.yml `실패 단계 기록`, M1-27)
  *                    · 실행 URL = GITHUB_SERVER_URL/GITHUB_REPOSITORY/actions/runs/GITHUB_RUN_ID
  *
  * 그 밖의 환경변수: GITHUB_TOKEN(또는 GH_TOKEN, issues: write) · GITHUB_REPOSITORY(owner/name) ·
@@ -35,7 +36,7 @@ import {
 export const REPORT_ISSUE_USAGE = [
   "사용법: node --import tsx scripts/report-issue.ts --kind <kind> [옵션]",
   `  --kind <kind>          ${ISSUE_KINDS.join(" | ")}`,
-  "  --key <원인 키>        같은 원인 판단 키 (생략하면 kind별 기본값 — pipeline-failure는 <workflow>:<실패 job>)",
+  "  --key <원인 키>        같은 원인 판단 키 (생략하면 kind별 기본값 — pipeline-failure는 <workflow>:<실패 job>[/<멈춘 단계>], pipeline-partial은 <workflow>:partial:<사유>)",
   "  --payload-file <경로>  payload JSON 파일 — 배열이면 항목마다 따로 보고(일괄, --key 불가, 앞 50건까지). 생략하면 pipeline-failure만 Actions 환경변수로 구성",
   "  --workflow <이름>      pipeline-failure 환경변수 모드의 워크플로 이름 (예: collect)",
   "  --dry-run              만들 이슈·댓글을 출력만 (GitHub에는 GET만 — 생성·댓글 없음)",
@@ -127,11 +128,17 @@ export interface NeedsJob {
   job: string;
   result: string;
   note?: string;
+  /** 실패한 job이 멈춘 단계 id(job 출력 `step` — M1-27) — 원인 키에 붙는다 */
+  step?: string;
 }
 
+/** 단계 id 형식 — 이슈 스키마(github-issues.ts StepIdSchema)와 같다. 맞지 않으면 버린다(원인 키는 job 단위로) */
+const STEP_ID = /^[a-z][a-z0-9-]{0,39}$/;
+
 /**
- * `${{ toJSON(needs) }}` → job 결과 목록. 출력값 중 job별 `reason`만 메모로 쓴다 — collect.yml에서는 guard의 판단 사유와
- * collect의 실패 단계(M1-26 `실패 단계 기록`). 다른 출력(커밋 SHA·발행일 등)은 이슈에 옮기지 않는다.
+ * `${{ toJSON(needs) }}` → job 결과 목록. 출력값 중 job별 `reason`은 메모로, `step`은 원인 키 조각으로만 쓴다 — collect.yml에서는
+ * guard의 판단 사유와 collect의 실패 단계(M1-26 `실패 단계 기록` — reason 문구 + step id, M1-27). 다른 출력(커밋 SHA·발행일 등)은
+ * 이슈에 옮기지 않는다. step은 실패한 job에만 붙인다(성공·건너뜀 job의 step 출력은 원인이 아니다).
  */
 export function parseNeedsJson(
   raw: string | undefined,
@@ -155,9 +162,15 @@ export function parseNeedsJson(
     ok: true,
     value: Object.entries(parsed.data).map(([job, value]) => {
       const reason = value.outputs?.reason?.trim();
-      return reason
-        ? { job, result: value.result, note: reason.slice(0, 200) }
-        : { job, result: value.result };
+      const step = value.outputs?.step?.trim();
+      return {
+        job,
+        result: value.result,
+        ...(reason ? { note: reason.slice(0, 200) } : {}),
+        ...(step && value.result === "failure" && STEP_ID.test(step)
+          ? { step }
+          : {}),
+      };
     }),
   };
 }

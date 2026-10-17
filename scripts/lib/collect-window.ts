@@ -5,8 +5,9 @@
  *   창 = [시작, 현재 + 허용 오차], 양 끝 포함.
  *   시작 = max(현재 − 51시간, 직전 성공 실행 시작 − 겹침 3시간). 직전 성공 실행이 없으면(첫 실행) 현재 − 51시간.
  *   "직전 성공 실행" = `data/runs.json`(prod)에서 뉴스를 실제로 발행한 마지막 실행 — env prod · job collect ·
- *   status success|partial(= 뉴스 단계 성공, collect-run.ts `runStatus`) · 성공 소스 1개 이상. runs.json에는 커밋된
- *   실행만 남으므로(실패 실행은 Actions가 커밋하지 않는다) 실패한 날 다음 실행은 자연히 그 전 성공 시각부터 받는다.
+ *   status success|partial(= 뉴스 단계 성공, collect-run.ts `runStatus`) · 성공 소스 1개 이상. 발행되지 않은 실행(뉴스 실패·
+ *   검증·빌드·커밋 실패)의 기록은 collect.yml `실패 실행 기록 보존`이 상태 failed로 커밋하고(M1-27), prod dry 기록은 skipped라
+ *   (collect-run.ts recordedRunStatus) 둘 다 발행 실행이 아니다 — 실패한 날 다음 실행은 그 전 발행 시각부터 받는다.
  *   로컬 dev·dry 실행도 같은 규칙으로 prod runs.json을 본다(runs-dev.json은 보지 않는다 — dev 실행은 발행하지 않는다).
  *
  *   **소스별 시작**: 같은 규칙을 소스 단위로도 적용한다 — 소스 s의 시작은 "s가 성공(`sources[].ok`)한 마지막 발행

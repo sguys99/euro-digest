@@ -52,6 +52,9 @@
  *      출력하고 실행 시작 KST 날짜·달의 사용액(월 prod+dev, 일 prod 실행=prod만)과 비교한다. 초과 예상이거나 runs 파일을 읽지 못하면
  *      LLM 없이 `skipped`·reason `budget` → 같은 입력의 템플릿 게시(M1-19). 실행 시작에는 이번 달 누적과 dev 50% 초과 경고를 남긴다.
  *   ④ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
+ *      prod dry 실행의 기록 상태는 skipped(발행 기록으로 보지 않게 — recordedRunStatus, M1-27). 데이터 API 사건(football-data 실패·
+ *      키 없음·순위 실패, API-Football 실패)은 소스 이슈 사건 파일에 더한다(M1-27 — run-issues.ts). 부분 실패 이슈 사건은
+ *      진입점(scripts/collect.ts)이 결과로 만든다.
  *   (①보다 먼저) ⓪ data 원본 삭제(M1-25 — purge-stage.ts·purge-plan.ts): configs/takedowns.json 등록 카드(저장된 카드 ID, 모든 날짜
  *      파일)와 보존 기간이 지난 출처(Source.retentionDays — The Athletic 7일, 대표 출처면 카드)를 data/news에서 지우고 그 링크 해시를
  *      기억(seen-urls)에 남긴다. dry는 계획만 출력. 실패는 partial(발행 계속 — 빌드 제외가 공개 사이트를 지킨다).
@@ -67,15 +70,17 @@
  * 경기 데이터·브리핑 단계(프로바이더·브리핑 설정·예산·LLM·출력 형식)의 어떤 실패도 뉴스 발행을 멈추지 않는다(FR-26 정신).
  * 뉴스 단계가 통째로 실패하면(소스 설정 오류·수집 대상 0개·모든 소스 실패·기존 파일 손상) exitCode 1 — Actions가
  * 커밋하지 않고 이슈를 만든다.
- * 이때는 브리핑(LLM 호출)을 하지 않는다 — 커밋되지 않는 실행의 LLM 비용 기록이 사라지지 않게(M1-27까지). 병렬로 시작한
- * 경기 데이터는 취소 신호로 새 요청을 멈춘다(원장·이월 파일도 커밋되지 않으므로 API-Football 일 한도만 쓰게 된다).
+ * 이때는 브리핑(LLM 호출)을 하지 않는다 — 커밋되지 않을 브리핑에 비용을 쓰지 않게. 병렬로 시작한 경기 데이터는 취소 신호로
+ * 새 요청을 멈추고 원장·이월 파일을 쓰지 않는다(API-Football 일 한도만 쓴다 — 호출 수는 실행 기록에 남는다).
+ * 발행되지 않은 prod 실행(위 exit 1 · 검증·빌드·커밋 실패)의 실행 기록은 collect.yml `실패 실행 기록 보존` 단계가 상태 failed로
+ * runs.json에 커밋한다(M1-27 — 원장·이월은 검증을 통과하면 함께, 뉴스·브리핑·seen-urls는 커밋하지 않음: scripts/lib/run-preserve.ts).
  *
  * I/O(fetch·시각·파일 위치·LLM 클라이언트·출력)는 모두 주입한다 — 테스트는 fixtures와 임시 폴더로 네트워크 없이 돈다.
  * 공통 형식 정규화·검증(FR-03, 소스 `tz` — M1-09·D34)과 기자 채널 작성자 필터(`Source.author`, M1-04)는 feed-collect.ts가 한다.
  * 수집 시간 창(창 계산·항목 판정)은 scripts/lib/collect-window.ts(순수 함수)가 하고, 여기서는 prod runs.json을 읽어 넘긴다.
  * 다음 작업이 갈아끼울 자리: 분류(M1-17 — 선별 점수 → 중요도, 팀→리그
  * 대회 근거를 점수화 `comps`로) · 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
- * 검증·강등(M1-23·M1-45) · runs 기록(M1-27) ·
+ * 검증·강등(M1-23·M1-45) · 브리핑 줄 수 기록(summarized·downgraded = 게시 줄 기준 — M1-45) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
  */
 import { mkdir, writeFile } from "node:fs/promises";
@@ -203,7 +208,7 @@ import {
   type FeedPolicy,
   type SourceOutcome,
 } from "./feed-collect";
-import type { IssuePayloadInput } from "./github-issues";
+import type { IssuePayloadInput, PipelinePartialReason } from "./github-issues";
 import {
   DEFAULT_LLM_MODEL,
   LlmMockFixtureError,
@@ -325,6 +330,7 @@ import {
   healthLogFields,
   type SourceHealth,
 } from "./source-health";
+import { matchDataIssuePayloads } from "./run-issues";
 import {
   buildTeamIdIndex,
   EMPTY_TEAM_ID_INDEX,
@@ -3389,8 +3395,9 @@ async function recordUnknownNames(
  * 소스 건강도 — 소스별 한 줄 로그 + 이슈로 낼 사건 목록. 사건 파일은 `healthReportPath`가 있고 dry가 아닐 때만 쓴다
  * (파일 내용 = `source-broken` payload 배열, scripts/report-issue.ts --kind source-broken --payload-file로 넘긴다).
  * 판정은 scripts/lib/source-health.ts(순수). 이 단계의 실패는 수집·발행을 멈추지 않는다(호출부가 잡는다).
- * 연속 횟수는 커밋된 실행 기록(runs.json)만 센다 — 실패해 커밋되지 않은 실행은 빠진다(TODO(M1-27)에서 보완).
- * 전체 실패 실행(성공 소스 0개)은 소스별 `failed` 사건을 내지 않는다 — pipeline-failure 이슈 하나가 원인을 맡는다(FR-152).
+ * 연속 횟수는 커밋된 실행 기록(runs.json)을 센다 — 발행되지 않은 실행도 실패 실행 기록 보존(M1-27)으로 커밋된다.
+ * 전체 실패 실행(성공 소스 0개)은 소스별 사건(failed·failing-streak)을 내지 않는다 — pipeline-failure 이슈 하나가 원인을 맡는다
+ * (FR-152, M1-27).
  */
 async function runHealthStage(
   deps: CollectDeps,
@@ -3435,10 +3442,15 @@ async function runHealthStage(
   }
   const suppressed = health.filter((h) => h.suppressedEvent !== null);
   if (suppressed.length > 0) {
-    // 전체 실패 — 원인이 하나라 소스별 실패 이슈 대신 pipeline-failure 이슈 하나로 보고된다(FR-152)
+    // 전체 실패 — 원인이 하나라 소스별 이슈(실패·연속) 대신 pipeline-failure 이슈 하나로 보고된다(FR-152, M1-27)
+    const suppressedBy: Record<string, number> = {};
+    for (const h of suppressed) {
+      const type = h.suppressedEvent?.type ?? "unknown";
+      suppressedBy[type] = (suppressedBy[type] ?? 0) + 1;
+    }
     log.warn("collect.health.suppress", {
       reason: "all-sources-failed",
-      healthEvent: "failed",
+      healthEvents: suppressedBy,
       sources: suppressed.length,
       kept: health.filter((h) => h.event !== null).length,
     });
@@ -3494,25 +3506,43 @@ async function runHealthStage(
   return { sources: health, reports, file: target, historyError };
 }
 
-// ─── API-Football 이슈 사건 (M1-48) ───────────────────────────────────────
+// ─── 데이터 API 이슈 사건 (M1-48 · M1-27) ──────────────────────────────────
 
 /**
- * API-Football 사건(errors.plan → FR-65 강등 · 일 한도 · 그 밖의 errors)을 소스 이슈 사건 파일에 더한다 — M1-11 경로 재사용
- * (`source-broken`, 원인 키 `source:api-football`). 이슈 생성은 collect.yml의 다음 단계(쓰기 토큰을 받는 단계)가 한다.
+ * 데이터 API 사건을 소스 이슈 사건 파일에 더한다 — M1-11 경로 재사용(`source-broken`, 원인 키 `source:api-football`·
+ * `source:football-data`). ① API-Football 응답 사건(errors.plan → FR-65 강등 · 일 한도 · 그 밖의 errors — M1-48)
+ * ② 단계 자체의 실패(M1-27 — football-data 실패·키 없음·순위 일부 실패, API-Football 예상 밖 실패: run-issues.ts
+ * `matchDataIssuePayloads`). 이슈 생성은 collect.yml의 다음 단계(쓰기 토큰을 받는 단계)가 한다.
+ * **뉴스가 실패한 실행(전체 장애 — exit 1)은 ②를 내지 않는다** — 러너 네트워크 같은 한 원인이 football-data까지 실패시켰을 수
+ * 있고, 그 실행은 pipeline-failure 이슈 하나가 맡는다(FR-152 같은 원인은 하나 — 소스별 사건 억제와 같은 규칙). ①은 응답 본문이
+ * 알려 준 별도 원인(플랜 제한·한도·키)이라 그대로 낸다.
  * 건강도 단계가 이미 쓴 사건과 합쳐 다시 쓴다. dry·경로 없음(로컬)은 로그만 남긴다. 던지면 호출부가 잡는다.
  */
-async function reportApiFootballIssues(
+async function reportMatchDataIssues(
   deps: CollectDeps,
-  ctx: { runId: string; health: HealthOutcome | null },
+  ctx: { runId: string; health: HealthOutcome | null; newsOk: boolean },
   matchData: MatchDataOutcome | null,
 ): Promise<number> {
   const af = matchData?.apiFootball;
-  if (af?.state !== "done" || af.data.stage.issues.length === 0) return 0;
-  const payloads = apiFootballIssuePayloads(af.data.stage.issues, {
+  const issueCtx = {
     occurredAt: nowUtcIso(deps.now()),
     runId: ctx.runId,
     ...(deps.runUrl ? { runUrl: deps.runUrl } : {}),
-  });
+  };
+  const stageIssues = matchDataIssuePayloads(matchData, issueCtx);
+  if (!ctx.newsOk && stageIssues.length > 0) {
+    deps.logger.warn("collect.matchdata.issue.suppress", {
+      reason: "news-failed",
+      sources: stageIssues.map((p) => p.sourceId),
+    });
+  }
+  const payloads = [
+    ...(af?.state === "done" && af.data.stage.issues.length > 0
+      ? apiFootballIssuePayloads(af.data.stage.issues, issueCtx)
+      : []),
+    ...(ctx.newsOk ? stageIssues : []),
+  ];
+  if (payloads.length === 0) return 0;
   for (const payload of payloads) {
     deps.logger.warn("collect.matchdata.issue", {
       source: payload.sourceId,
@@ -3556,57 +3586,213 @@ export function apiFootballIncomplete(
 }
 
 /**
- * 실행 상태 — 뉴스 실패 = failed, 일부 소스 실패·브리핑 실패·키 없음·순위 일부 실패·API-Football 미완(apiFootballIncomplete)·
- * 원장 쓰기 오류·원장 형식 오류 항목(M1-48b)·seen-urls 기억 읽기·쓰기 오류(M1-12)·클러스터링 오류(M1-13)·브리핑 파일 쓰기 오류·깨진
- * 기존 브리핑 파일(M1-19) = partial, 그 밖 = success.
- * partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts).
+ * 기록하는 실행 상태(M1-27) — **prod dry 실행은 `skipped`**(발행하지 않은 실행). 판정값(runStatus)은 로그·단계 출력에 그대로 남는다.
+ * 이유(M1-10 이월): prod dry 실행이 LLM·데이터 API를 불러 runs.json에 기록되면, 판정값(success·partial) 그대로일 때 수집 시간 창이
+ * 그 실행을 '직전 발행 실행'으로 보아(collect-window.ts isPublishedNewsRun) 다음 실행이 dry가 본 기사를 건너뛴다(누락). 지금
+ * 워크플로에 dry 경로는 없지만(collect.yml) 향후 수동 실행에서 생길 수 있어 기록 단계에서 막는다. 비용·호출 수·소스 결과는 그대로다.
+ * dev 기록(runs-dev.json)은 판정값 그대로 둔다 — 수집 창·소스 건강도·성공률은 prod 기록만 보고, 개발자에게는 판정값이 쓸모 있다.
  */
-export function runStatus(
+export function recordedRunStatus(
+  status: RunLog["status"],
+  run: { env: RunEnv; dry: boolean },
+): RunLog["status"] {
+  return run.env === "prod" && run.dry ? "skipped" : status;
+}
+
+/** runStatus 입력 — 실행 결과 중 상태 판정에 쓰는 부분 */
+export interface RunStatusInput {
   news: {
     ok: boolean;
-    sources?: readonly { ok: boolean }[];
+    /** 소스별 결과 — `errorType`은 피드 수집 실패 종류(budget = 시간 예산 소진) */
+    sources?: readonly { ok: boolean; errorType?: string }[];
     seen?: Pick<SeenOutcome, "readError" | "writeError"> | null;
     clusterError?: string | null;
-  },
-  brief: BriefOutcome,
+  };
+  brief: BriefOutcome;
   matchData:
     | (Pick<MatchDataOutcome, "footballData"> &
         Partial<Pick<MatchDataOutcome, "apiFootball" | "ledger">>)
-    | null = null,
-  briefFile: Pick<BriefFileOutcome, "action" | "readError"> | null = null,
+    | null;
+  briefFile: Pick<BriefFileOutcome, "action" | "readError"> | null;
+}
+
+/**
+ * partial 조건이 어느 이슈로 보고되는가(M1-27 리뷰 권장 6 — 새 partial 조건이 이슈 없이 지나가지 않게 표로 고정한다)
+ *   pipeline-partial  부분 실패 이슈 사유(run-issues.ts partialFindings — 원인 키 `collect:partial:<사유>`)
+ *   source-broken     소스 이슈(feed = source-health.ts 소스별 · football-data·api-football = run-issues.ts matchDataIssuePayloads·
+ *                     api-football-stage.ts 응답 사건 — 원인 키 `source:<id>`)
+ *   none              이슈를 내지 않는 이유(의도된 멈춤·다음 실행이 스스로 메움) — 운영 리포트(M5-09)가 집계
+ */
+export type PartialIssueRoute =
+  | { kind: "pipeline-partial"; reason: PipelinePartialReason }
+  | { kind: "source-broken"; source: "feed" | "football-data" | "api-football" }
+  | { kind: "none"; why: string };
+
+export interface PartialCondition {
+  id: string;
+  route: PartialIssueRoute;
+  holds: (input: RunStatusInput) => boolean;
+}
+
+/** API-Football 단계 결과 — 끝난(done) 경우의 단계 결과 */
+function afStageOf(input: RunStatusInput): AfStageResult | null {
+  const af = input.matchData?.apiFootball;
+  return af?.state === "done" ? af.data.stage : null;
+}
+
+/**
+ * 실행 상태를 partial로 만드는 조건 표 — 뉴스 단계가 성공한(news.ok) 실행에서 하나라도 맞으면 partial. 표 밖에서 partial을 만드는
+ * 것은 삭제 단계 오류 하나뿐이다(purge-stage.ts withPurgeStatus — 이슈 사유 purge). 조건을 더하면 route(어느 이슈로 보고되는가)도
+ * 정해야 하고, tests/run-issues.test.ts의 표 테스트에 그 조건의 예시 실행을 더해야 한다(빠지면 테스트가 실패한다).
+ * partial도 뉴스는 발행된 실행이다(수집 창 기준 — collect-window.ts). 단 검증·빌드·커밋이 뒤에 있어 공개 여부는 그 단계에 달렸다.
+ */
+export const RUN_PARTIAL_CONDITIONS: readonly PartialCondition[] = [
+  {
+    // 일부 소스 받기·파싱 실패(소스 실패 격리, FR-08) — 소스별 source-broken
+    id: "source-failed",
+    route: { kind: "source-broken", source: "feed" },
+    holds: ({ news }) =>
+      news.sources?.some((s) => !s.ok && s.errorType !== "budget") ?? false,
+  },
+  {
+    id: "source-budget",
+    route: {
+      kind: "none",
+      why: "수집 시간 예산(90초) 소진으로 시작하지 못한 소스 — 소스 장애가 아니다(D35, 건강도 계산에서도 뺀다). 그 소스는 다음 실행이 소스별 창으로 다시 받는다",
+    },
+    holds: ({ news }) =>
+      news.sources?.some((s) => !s.ok && s.errorType === "budget") ?? false,
+  },
+  {
+    // 기억 파일이 깨졌거나(발행 파일로 다시 채워 진행) 쓰지 못했다(다음 실행은 최근 발행 파일로 중복을 막는다) — M1-12
+    id: "seen",
+    route: { kind: "pipeline-partial", reason: "seen" },
+    holds: ({ news }) => Boolean(news.seen?.readError || news.seen?.writeError),
+  },
+  {
+    // 클러스터링 실패 — 같은 사건을 합치지 않은 채 카드를 만들었다(M1-13)
+    id: "cluster",
+    route: { kind: "pipeline-partial", reason: "cluster" },
+    holds: ({ news }) => Boolean(news.clusterError),
+  },
+  {
+    id: "brief-failed",
+    route: { kind: "pipeline-partial", reason: "brief" },
+    holds: ({ brief }) =>
+      brief.state === "failed" && brief.reason !== "football-data",
+  },
+  {
+    // football-data 단계 실패로 브리핑 생략 — 데이터 API 문제라 source:football-data(시간 예산·취소는 이슈 아님)
+    id: "brief-football-data",
+    route: { kind: "source-broken", source: "football-data" },
+    holds: ({ brief }) =>
+      brief.state === "failed" && brief.reason === "football-data",
+  },
+  {
+    id: "standings-failed",
+    route: { kind: "source-broken", source: "football-data" },
+    holds: ({ matchData }) => {
+      const fd = matchData?.footballData;
+      return fd?.state === "done" && fd.data.standingsFailed.length > 0;
+    },
+  },
+  {
+    // FOOTBALL_DATA_API_KEY 없음(prod Secrets 미설정) — 브리핑 생략
+    id: "football-data-no-key",
+    route: { kind: "source-broken", source: "football-data" },
+    holds: ({ brief }) =>
+      brief.state === "skipped" && brief.reason === "no-api-key",
+  },
+  {
+    // 비용 기록(runs 파일)을 읽지 못해 예산을 확인할 수 없었다 — LLM 없이 진행했지만 기록 파일을 고쳐야 한다(M1-22).
+    // 예산 초과 예상(daily·monthly_exceeded)은 의도된 강등이라 조건이 아니다(success — FR-27).
+    id: "runs-unreadable",
+    route: { kind: "pipeline-partial", reason: "runs-unreadable" },
+    holds: ({ brief }) =>
+      brief.state === "skipped" &&
+      brief.reason === "budget" &&
+      brief.budget.verdict === "runs_unreadable",
+  },
+  {
+    // API-Football 단계 예상 밖 실패(isolateProvider)
+    id: "api-football-failed",
+    route: { kind: "source-broken", source: "api-football" },
+    holds: ({ matchData }) => matchData?.apiFootball?.state === "failed",
+  },
+  {
+    id: "api-football-daily-cap",
+    route: {
+      kind: "none",
+      why: "우리 쪽 일일 호출 상한(봇 60·개발 50 — D27)에 닿아 건너뜀 — 의도된 멈춤, 받지 못한 경기는 이월 목록으로 다음 실행이 받는다",
+    },
+    holds: ({ matchData }) => {
+      const af = matchData?.apiFootball;
+      return af?.state === "skipped" && af.reason === "daily-cap";
+    },
+  },
+  {
+    // errors.plan → FR-65 강등 — api-football-stage.ts 응답 사건(plan)이 source:api-football로 낸다
+    id: "api-football-degraded",
+    route: { kind: "source-broken", source: "api-football" },
+    holds: (input) => (afStageOf(input)?.degraded ?? null) !== null,
+  },
+  {
+    id: "api-football-incomplete",
+    route: {
+      kind: "none",
+      why: "날짜 조회 실패·단계 멈춤(시간 예산·호출 상한·일 한도·연속 실패)·경기 단건 실패 — 받지 못한 경기는 이월로 다음 실행이 다시 받는다. 응답 errors(일 한도·키·분당 초과)는 api-football-stage.ts가 source:api-football로 따로 낸다",
+    },
+    holds: (input) => {
+      const stage = afStageOf(input);
+      return (
+        stage !== null &&
+        stage.degraded === null &&
+        (stage.dates.some((d) => !d.ok) ||
+          (stage.stoppedBy !== null && stage.stoppedBy !== "cancelled") ||
+          stage.outcomes.some((o) => o.result.kind === "failed"))
+      );
+    },
+  },
+  {
+    // 원장 쓰기 오류(달 파일·메타) — 받은 경기는 이월 목록에 다시 넣었지만 실행 상태에 드러낸다(M1-48b)
+    id: "ledger-write",
+    route: { kind: "pipeline-partial", reason: "ledger" },
+    holds: ({ matchData }) =>
+      (matchData?.ledger?.applied?.errors.length ?? 0) > 0,
+  },
+  {
+    id: "ledger-invalid",
+    route: { kind: "pipeline-partial", reason: "ledger" },
+    holds: ({ matchData }) => (matchData?.ledger?.invalid.length ?? 0) > 0,
+  },
+  {
+    // 브리핑 파일 검증·쓰기 실패, 또는 깨진 기존 파일을 고쳐 썼다(M1-19)
+    id: "brief-file",
+    route: { kind: "pipeline-partial", reason: "brief-file" },
+    holds: ({ briefFile }) =>
+      briefFile?.action === "failed" || Boolean(briefFile?.readError),
+  },
+];
+
+/** 맞는 partial 조건 id(표 순서) — 뉴스 성공 여부와 무관하게 조건만 본다 */
+export function partialConditionsOf(input: RunStatusInput): string[] {
+  return RUN_PARTIAL_CONDITIONS.filter((c) => c.holds(input)).map((c) => c.id);
+}
+
+/**
+ * 실행 상태 — 뉴스 실패 = failed, 표(RUN_PARTIAL_CONDITIONS)의 조건이 하나라도 맞으면 partial, 그 밖 = success.
+ * 삭제 단계 오류(M1-25)는 호출부가 withPurgeStatus로 덧씌운다.
+ */
+export function runStatus(
+  news: RunStatusInput["news"],
+  brief: BriefOutcome,
+  matchData: RunStatusInput["matchData"] = null,
+  briefFile: RunStatusInput["briefFile"] = null,
 ): RunLog["status"] {
   if (!news.ok) return "failed";
-  if (news.sources?.some((source) => !source.ok)) return "partial";
-  // 기억 파일이 깨졌거나(발행 파일로 다시 채워 진행) 쓰지 못했다(다음 실행은 최근 발행 파일로 중복을 막는다) — M1-12
-  if (news.seen?.readError || news.seen?.writeError) return "partial";
-  // 클러스터링 실패 — 같은 사건을 합치지 않은 채 발행했다(M1-13)
-  if (news.clusterError) return "partial";
-  if (brief.state === "failed") return "partial";
-  const fd = matchData?.footballData;
-  if (fd?.state === "done" && fd.data.standingsFailed.length > 0) {
-    return "partial";
-  }
-  if (brief.state === "skipped" && brief.reason === "no-api-key") {
-    return "partial";
-  }
-  // 비용 기록(runs 파일)을 읽지 못해 예산을 확인할 수 없었다 — LLM 없이 진행했지만 기록 파일을 고쳐야 한다(M1-22).
-  // 예산 초과 예상(daily·monthly_exceeded)은 의도된 강등이라 success로 둔다(FR-27).
-  if (
-    brief.state === "skipped" &&
-    brief.reason === "budget" &&
-    brief.budget.verdict === "runs_unreadable"
-  ) {
-    return "partial";
-  }
-  if (matchData?.apiFootball && apiFootballIncomplete(matchData.apiFootball)) {
-    return "partial";
-  }
-  // 원장 쓰기 오류(달 파일·메타)·형식 오류 항목 — 받은 경기는 이월 목록에 다시 넣었지만 실행 상태에 드러낸다(M1-48b)
-  if ((matchData?.ledger?.applied?.errors.length ?? 0) > 0) return "partial";
-  if ((matchData?.ledger?.invalid.length ?? 0) > 0) return "partial";
-  // 브리핑 파일 검증·쓰기 실패, 또는 깨진 기존 파일을 고쳐 썼다(M1-19) — 뉴스는 발행됐다
-  if (briefFile?.action === "failed" || briefFile?.readError) return "partial";
-  return "success";
+  return partialConditionsOf({ news, brief, matchData, briefFile }).length > 0
+    ? "partial"
+    : "success";
 }
 
 /**
@@ -3614,8 +3800,9 @@ export function runStatus(
  *   ① 데이터 API를 한 번이라도 불렀으면 mock·dry·env와 무관하게 기록한다(M1-48 — `apiCalls`가 다음 실행의 API-Football 일일
  *      카운터다. 기록하지 않으면 개발 호출이 과소 집계돼 같은 UTC 날 봇이 일 한도 100을 넘길 수 있다). mock 실행은 LLM 비용 0.
  *   ② 그 밖에는 mock은 기록하지 않고, live는 LLM을 불렀으면(dry여도) 기록, prod는 dry가 아니면 항상 기록.
- * TODO(M1-27): prod에서 커밋되지 않는 실행(뉴스 실패 exit 1·검증·빌드 실패)은 runs.json 기록이 사라진다 — 백업 실행의 카운터가
- * 그만큼 적게 센다(계획 상한 60 + 유실분이 100 안이라 지금은 감수). 실패한 실행의 기록 보존 경로와 함께 정한다.
+ * prod에서 발행되지 않은 실행(뉴스 실패 exit 1·검증·빌드·커밋 실패)의 기록은 collect.yml `실패 실행 기록 보존` 단계가 runs.json만
+ * (+ 원장·이월) 커밋한다 — 상태는 failed로 바꿔서(M1-27, scripts/lib/run-preserve.ts). 그래서 카운터·비용 가드·소스 건강도가 그
+ * 실행을 센다.
  */
 export function shouldRecordRun(input: {
   llmMode: LlmMode;
@@ -3748,9 +3935,8 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   let briefStage: BriefStageRun | null = null;
   try {
     if (!news.ok) {
-      // 뉴스가 실패하면 exit 1 → Actions가 커밋하지 않아 이번 실행의 runs.json 기록(LLM 비용)이 사라지고, 백업 실행이
-      // 그 비용을 모른 채 다시 부를 수 있다(CLAUDE.md §1-4·§6.3). 그래서 브리핑(LLM 호출)을 하지 않는다(경기 데이터는 취소).
-      // TODO(M1-27): 실패한 실행의 runs 기록을 보존하는 경로(실패 시에도 runs.json 커밋 등)를 정한다.
+      // 뉴스가 실패하면 exit 1 → 뉴스·브리핑 파일은 커밋되지 않는다(실행 기록만 collect.yml 실패 실행 기록 보존 단계가 커밋 —
+      // M1-27). 커밋되지 않을 브리핑에 LLM 비용을 쓰지 않도록 브리핑을 하지 않는다(경기 데이터는 취소).
       log.warn("summarize.brief.skip", { reason: "news-failed" });
       brief = { state: "skipped", reason: "news-failed", inputMatches: 0 };
     } else {
@@ -3821,7 +4007,11 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     });
   }
   try {
-    await reportApiFootballIssues(deps, { runId, health }, matchData);
+    await reportMatchDataIssues(
+      deps,
+      { runId, health, newsOk: news.ok },
+      matchData,
+    );
   } catch (error) {
     log.error("collect.matchdata.issue.fail", { error: errorText(error) });
   }
@@ -3855,7 +4045,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
         startedAt,
         now: deps.now(),
         results: live ? sink.results : [],
-        status,
+        status: recordedRunStatus(status, deps),
         collected: news.feedItems,
         clusters: news.selected,
         // 슬라이스: 모델이 쓴(임시 스키마를 통과한) 줄 수. 아직 게시하지 않는다 — 검증·강등 뒤 기록은 M1-45.

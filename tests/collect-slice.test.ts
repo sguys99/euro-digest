@@ -55,6 +55,7 @@ import {
 import { cardIdFor } from "../scripts/lib/card-id";
 import { dedupeFeedItems } from "../scripts/lib/dedup";
 import {
+  recordedRunStatus,
   resolveCardLimit,
   resolveMaxItems,
   resolveRunEnv,
@@ -64,6 +65,7 @@ import {
   type BriefOutcome,
   type CollectDeps,
 } from "../scripts/lib/collect-run";
+import { isPublishedNewsRun } from "../scripts/lib/collect-window";
 import {
   createLlmClient,
   type LlmClient,
@@ -1657,6 +1659,42 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     );
     expect(runs[0]).toMatchObject({ runId: outcome.runId, env: "prod" });
     expect(readNews("2026-10-11").runId).toBe(outcome.runId);
+  });
+
+  it("prod + --dry(M1-10 이월 → M1-27): LLM 비용은 runs.json에 남기되 상태는 skipped — 수집 시간 창이 발행 실행으로 보지 않는다, data/news는 쓰지 않음", async () => {
+    const { deps } = liveDeps({ env: "prod", dry: true });
+    const outcome = await runCollect(deps);
+    expect(outcome.status).toBe("success"); // 판정값은 로그·단계 출력에 그대로
+    expect(newsFiles()).toEqual([]);
+    const runs = RunsFileSchema.parse(
+      JSON.parse(readFileSync(path.join(dataDir, "runs.json"), "utf8")),
+    );
+    expect(runs).toHaveLength(1);
+    expect(runs[0]).toMatchObject({
+      runId: outcome.runId,
+      env: "prod",
+      status: "skipped",
+      summarized: 2,
+      tokens: { in: 6590, out: 3231 },
+    });
+    expect(runs[0]!.costUsd).toBeGreaterThan(0);
+    expect(isPublishedNewsRun(runs[0]!)).toBe(false);
+    expect(outcome.run?.status).toBe("skipped");
+  });
+
+  it("기록 상태: prod dry만 skipped, dev dry·비dry는 판정값 그대로", () => {
+    expect(recordedRunStatus("success", { env: "prod", dry: true })).toBe(
+      "skipped",
+    );
+    expect(recordedRunStatus("partial", { env: "prod", dry: true })).toBe(
+      "skipped",
+    );
+    expect(recordedRunStatus("partial", { env: "prod", dry: false })).toBe(
+      "partial",
+    );
+    expect(recordedRunStatus("partial", { env: "dev", dry: true })).toBe(
+      "partial",
+    );
   });
 
   /** 저장소 사본(configs — 브리핑 지시문 configs/prompts/summarize.md 포함) — 사본의 사전을 고쳐도 실제 configs는 그대로 */

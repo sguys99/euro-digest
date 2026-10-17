@@ -20,8 +20,9 @@
  *     실패한 날은 새 기사가 있었는지 알 수 없고(다음 성공 실행이 소스별 창으로 그 기간을 다시 받는다, M1-10),
  *     빈 피드는 실패·빈 피드 규칙이 맡으며, `usable`이 없는 옛 기록은 새 기사 수를 모른다(D35).
  *   실행 단위로 센다("3회 연속" — 하루 1회 실행 기준 = FR-11의 3일). 같은 날 재실행(force)도 1회로 센다.
- *   **연속 횟수는 커밋된 실행 기록만 센다** — 실패해(exit 1) 커밋되지 않은 실행은 runs.json에 없으므로 빠진다
- *   (예: 모든 소스가 실패한 날). TODO(M1-27): 실패 실행의 기록을 보존하면 그날도 연속에 들어간다. 최근 7일 집계도 같다.
+ *   **연속 횟수는 runs.json에 커밋된 실행 기록을 센다** — 발행되지 않은 실행(뉴스 실패 exit 1·검증·빌드·커밋 실패)도
+ *   collect.yml `실패 실행 기록 보존` 단계가 상태 failed로 커밋하므로(M1-27) 그날도 연속·최근 7일 집계에 들어간다(실행 상태와
+ *   무관하게 소스별 기록만 본다). 그 단계까지 실패한 실행(드묾 — 실패 이슈 메모에 남는다)만 빠진다.
  *
  * ── 이슈로 낼 사건 (이번 실행의 상태로 정한다 — 소스마다 최대 1건) ───────────
  *   failed 상태    → 실패·빈 피드 연속 ≥ 3이면 `failing-streak`, 아니면 `failed`(PRD §10 "수집 일부 실패 → 이슈")
@@ -31,7 +32,11 @@
  *   연속이 기준 이상인 동안은 매 실행 사건을 낸다 — 열린 이슈에는 댓글로 쌓이고(FR-152), 이슈를 닫았는데 그대로면 새 이슈.
  *   **전체 실패 실행**(이번 실행에서 성공한 소스가 0개 — budget은 성공이 아니다): 원인이 하나(러너 네트워크 등)이고
  *   뉴스 단계가 실패해 pipeline-failure 이슈가 이미 생기므로(collect-run.ts exit 1), FR-152(같은 원인은 하나)에 따라
- *   소스별 `failed` 사건은 내지 않는다(`suppressedEvent`에 남김). 연속 사건(`failing-streak`·`stale-streak`)은 그대로 낸다.
+ *   소스별 사건은 **모두** 내지 않는다(`suppressedEvent`에 남김 — `failed`·`failing-streak`). M1-27 전에는 `failed`만 뺐다 —
+ *   전체 실패 실행이 커밋되지 않아 연속에 들어가지 않았기 때문이다. 이제 그 실행도 기록되므로 전체 장애가 3회 이어지면 모든
+ *   소스가 동시에 `failing-streak`이 되어 소스 수만큼 이슈가 생긴다(같은 원인 이슈 남발). 장애가 풀린 뒤에도 실패하는 소스는
+ *   다음 실행에서 전체 장애 기간까지 이어 센 연속으로 사건을 낸다(같은 `source:<id>` 이슈라 이슈 수는 늘지 않는다).
+ *   (`stale-streak`은 성공 상태(no-new)에서만 나므로 전체 실패 실행에는 생기지 않는다.)
  *
  * ── 최근 7일 집계 (`sourceStats`) ────────────────────────────────────────
  *   기간 = 이번 실행의 KST 날짜와 그 앞 6일(KST 날짜 7개), 이번 실행 포함. 성공률 = ok / 시도(budget 제외).
@@ -144,7 +149,7 @@ export interface SourceHealth {
   recent: SourceRunRecord[];
   /** 이슈로 낼 사건(없으면 null) */
   event: HealthEvent | null;
-  /** 전체 실패 실행이라 내지 않은 사건(`failed`만 해당, 없으면 null) */
+  /** 전체 실패 실행이라 내지 않은 사건(`failed`·`failing-streak`, 없으면 null — M1-27) */
   suppressedEvent: HealthEvent | null;
 }
 
@@ -381,8 +386,8 @@ export function assessSourceHealth(input: AssessInput): SourceHealth[] {
     const fail = failStreak(records);
     const stale = staleStreak(records);
     const event = healthEvent(current.state, fail, stale, input.run.startedAt);
-    // 전체 실패면 이번 실행 실패 사건(failed)만 뺀다 — 연속 사건은 그대로(파일 머리 주석)
-    const suppress = wholeRunFailed && event?.type === "failed";
+    // 전체 실패면 소스별 사건을 모두 뺀다 — pipeline-failure 이슈 하나가 맡는다(파일 머리 주석, M1-27)
+    const suppress = wholeRunFailed && event !== null;
     return {
       id: entry.id,
       current,

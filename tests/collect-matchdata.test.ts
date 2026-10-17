@@ -46,6 +46,7 @@ import { SourceBrokenPayloadSchema } from "../scripts/lib/github-issues";
 import { createLogger, type LogRecord } from "../scripts/lib/logger";
 import { isolateProvider } from "../scripts/lib/match-data";
 import { isIncompleteLedgerMatch } from "../scripts/lib/match-ledger";
+import { partialFindings } from "../scripts/lib/run-issues";
 import {
   FOOTBALL_DATA_BASE_URL,
   FOOTBALL_DATA_STAGE_BUDGET_MS,
@@ -173,6 +174,17 @@ function withApiFootball(
   };
 }
 
+/** 수집 결과 → 부분 실패 판정 입력(scripts/collect.ts와 같은 모양) */
+function outcomeFindingsInput(outcome: Awaited<ReturnType<typeof runCollect>>) {
+  return {
+    purge: outcome.purge,
+    news: outcome.news,
+    brief: outcome.brief,
+    briefFile: outcome.briefFile,
+    ledger: outcome.matchData?.ledger ?? null,
+  };
+}
+
 describe("runCollect — 경기 데이터 단계(M1-44)", () => {
   it("football-data 경기 1 + 순위 5요청, API-Football 키 없음은 건너뜀(success 유지), 브리핑 진행·success", async () => {
     const { deps, fdCalls, llmCalls, records } = makeDeps();
@@ -247,6 +259,84 @@ describe("runCollect — 경기 데이터 단계(M1-44)", () => {
     expect(outcome.news.path).not.toBeNull();
     expect(outcome.exitCode).toBe(0);
     expect(outcome.status).toBe("partial");
+  });
+
+  it("경기 요청 실패는 소스 이슈 사건 파일에 source-broken(football-data) 1건(M1-27) — 브리핑 실패(partial 사유 brief)로 따로 내지 않는다", async () => {
+    const reportDir = mkdtempSync(
+      path.join(os.tmpdir(), "euro-digest-fd-issue-"),
+    );
+    const file = path.join(reportDir, "source-health.json");
+    try {
+      const { deps, records } = makeDeps(
+        () => {
+          throw new TypeError("fetch failed");
+        },
+        { healthReportPath: file },
+      );
+      const outcome = await runCollect(deps);
+      const events = (JSON.parse(readFileSync(file, "utf8")) as unknown[]).map(
+        (e) => SourceBrokenPayloadSchema.parse(e),
+      );
+      expect(events.map((e) => [e.sourceId, e.errorType])).toEqual([
+        ["football-data", "network"],
+      ]);
+      expect(events[0]!.runId).toBe(outcome.runId);
+      expect(
+        records.filter((r) => r.event === "collect.matchdata.issue"),
+      ).toEqual([
+        expect.objectContaining({
+          source: "football-data",
+          key: "source:football-data",
+        }),
+      ]);
+      expect(partialFindings(outcomeFindingsInput(outcome))).toEqual([]);
+    } finally {
+      rmSync(reportDir, { recursive: true, force: true });
+    }
+  });
+
+  it("뉴스까지 실패한 실행(전체 장애 — exit 1)은 football-data 소스 이슈를 따로 내지 않는다 — pipeline-failure 하나가 맡는다(FR-152)", async () => {
+    const reportDir = mkdtempSync(
+      path.join(os.tmpdir(), "euro-digest-fd-outage-"),
+    );
+    const file = path.join(reportDir, "source-health.json");
+    try {
+      // 같은 원인(러너 네트워크)이 둘 다 끊는다 — football-data가 먼저 실패하고(취소 전) 뉴스 피드가 그 뒤 실패
+      let fdFailed: () => void = () => undefined;
+      const fdGate = new Promise<void>((resolve) => {
+        fdFailed = resolve;
+      });
+      const { deps, records } = makeDeps(undefined, {
+        healthReportPath: file,
+        fetch: async (url) => {
+          if (url.startsWith(FOOTBALL_DATA_BASE_URL)) {
+            fdFailed();
+            throw new TypeError("fetch failed");
+          }
+          if (url === BBC.url) {
+            await fdGate;
+            await new Promise((resolve) => setTimeout(resolve, 20));
+            throw new TypeError("fetch failed");
+          }
+          throw new Error(`테스트에서 예상하지 못한 URL: ${url}`);
+        },
+      });
+      const outcome = await runCollect(deps);
+      expect(outcome.exitCode).toBe(1);
+      expect(outcome.matchData?.footballData).toMatchObject({
+        state: "failed",
+        errorType: "network",
+      });
+      expect(JSON.parse(readFileSync(file, "utf8"))).toEqual([]);
+      expect(
+        records.find((r) => r.event === "collect.matchdata.issue.suppress"),
+      ).toMatchObject({ reason: "news-failed", sources: ["football-data"] });
+      expect(
+        records.filter((r) => r.event === "collect.matchdata.issue"),
+      ).toEqual([]);
+    } finally {
+      rmSync(reportDir, { recursive: true, force: true });
+    }
   });
 
   it("순위 일부 실패 → 그 대회 순위만 빠지고 브리핑은 진행, partial", async () => {

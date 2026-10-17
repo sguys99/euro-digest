@@ -9,7 +9,9 @@
 #      + 같은 입력의 코드 템플릿 → data/briefs/<발행일>.json(D38 — 경기가 없으면 empty), 실행 기록 → data/runs.json(prod —
 #      GITHUB_ACTIONS=true). 단계 출력(형식 scripts/lib/collect-outputs.ts): publish_date(KST 발행일 = 수집 시작 시각의 KST 날짜)
 #      · run_id · status · run_recorded — 실패한 실행(exit 1)도 쓴다.
-#   (보조) 소스 이슈 보고 — 수집이 쓴 소스 건강도 사건 파일로 source-broken 이슈(M1-11). 실패해도 뒤 단계를 막지 않는다.
+#   (보조) 실행 이슈 보고 — 수집이 쓴 사건 파일 두 개로 이슈(실패해도 뒤 단계를 막지 않는다): 소스 건강도·데이터 API 사건 →
+#      source-broken(M1-11·M1-27), 부분 실패(수집 단계 안에서 실패했지만 실행은 계속된 삭제 단계·seen-urls·클러스터링·브리핑·브리핑 파일·runs 읽기·원장 오류)
+#      → pipeline-partial(M1-27 — 사유별 이슈 하나, 같은 사유는 댓글).
 #   ④ 검증 게이트 `npm run validate -- --publish-date <publish_date>` (FR-153, M1-25): configs·data 스키마·교차 참조 + 발행 게이트
 #      (뉴스 카드 ai·요약 줄·링크 형식, 미래 날짜 파일, 그 발행일 파일의 카드 수 하한 10장 — 휴식기 5장, 파일이 없으면 실패 —,
 #      남은 삭제 요청 카드·보존 기간 만료 출처, 삭제 요청 72시간은 경고). 발행일은 수집 단계가 출력한 값만 쓴다 — 검증 시각의
@@ -18,7 +20,12 @@
 #   ⑥ data 커밋 · push — data/·public/ 변경분만 `chore(data): <publish_date> 발행`, `git pull --rebase` 뒤 push(rebase 충돌은
 #      push하지 않고 실패). 변경이 없으면 커밋·배포를 건너뛴다. rebase로 얹은 main의 새 커밋은 검증 게이트를 다시 거치지 않는다
 #      (deploy.yml은 빌드·번들·비밀값만 다시 본다 — 커밋 단계 주석).
-#   (보조) 실패 단계 기록 — 실패했을 때만. 멈춘 단계를 job output `reason`으로 넘겨 실패 이슈의 job 결과 행에 붙인다.
+#   (보조) 실패 실행 기록 보존 — 실패했고 수집 단계가 실행 기록을 남겼을 때만(M1-27, CLAUDE.md §1-4). main 최신을 별도 작업 트리
+#      (git worktree)로 받아 그 위에 이번 실행 기록(상태 failed)과 검증을 통과한 원장·이월만 커밋 → push(`chore(data): <publish_date>
+#      실행 기록 (발행 실패)`). 뉴스·브리핑·seen-urls는 커밋하지 않는다(커밋된 기억 ⊂ 커밋된 카드). 배포하지 않는다(사이트는 전날
+#      그대로). 규칙은 scripts/lib/run-preserve.ts.
+#   (보조) 실패 단계 기록 — 실패했을 때만. 멈춘 단계를 job output `reason`(문구 — 실행 기록 보존 결과 포함)·`step`(단계 id — 실패
+#      이슈 원인 키 `collect:collect/<step>`)으로 넘긴다.
 #   ⑦ 배포 — deploy job이 커밋 SHA로 deploy.yml(재사용 — concurrency pages)을 부른다.
 #
 # 봇 커밋 시각: ⑥은 06:00~08:00 KST(CLAUDE.md §10의 push 금지 시간대)에 도는 것이 정상이다. 그 금지는 **사람 push** 규칙이다 —
@@ -45,7 +52,8 @@
 #   성공 이력으로 세면 skip이 skip을 부르는 연쇄가 생기기 때문이다 — 자세한 근거는 scripts/lib/collect-guard.ts.
 #   그래서 collect job의 name을 바꾸면 scripts/lib/collect-guard.ts의 COLLECT_JOB_NAME도 바꿔야 한다(테스트가 확인).
 # - 검증·빌드가 실패하면 커밋하지 않는다: 커밋 단계는 if 조건 없이(= 앞 단계가 모두 성공했을 때만) validate·build 뒤에 있다.
-#   이때 collect job이 실패라 deploy는 skipped, report-failure가 실패 이슈를 만든다(원인 키 collect:collect — 멈춘 단계는 메모).
+#   이때 collect job이 실패라 deploy는 skipped, report-failure가 실패 이슈를 만든다(원인 키 collect:collect/<멈춘 단계> — 검증
+#   실패·빌드 실패·커밋(rebase 충돌) 실패가 서로 다른 이슈, M1-27). 실행 기록은 실패 실행 기록 보존 단계가 따로 커밋한다.
 # - 단계 구조는 tests/collect-workflow.test.ts가 고정한다(순서·조건·발행일 전달·커밋 경로·배포 연결).
 # - 소스 이슈(M1-11, FR-11·FR-152, PRD §10·§15 D35): 수집 단계가 소스 건강도 사건(source-broken payload 배열)을
 #   $RUNNER_TEMP 파일에 쓰고, 바로 다음 단계가 그 파일로 소스별 이슈 하나(fingerprint source:<id>)를 만들거나 댓글을 단다.
@@ -142,19 +150,25 @@ jobs:
     # (공개 목표 −10분 — 여름 06:50 · 겨울 07:20, FR-26)은 collect 스크립트가 발행일 슬롯(src/lib/time.ts publishSlot)으로
     # 계산해 경기 데이터 단계 예산·LLM 재시도를 그 안으로 묶는다(scripts/lib/collect-deadlines.ts, M1-47). 마감까지 성공하지
     # 못하면 코드 템플릿 게시는 M1-45. 마감이 이미 지났거나 3분도 남지 않은 실행(수동·지연 실행)은 시작 + 8분을 마감으로 쓴다.
-    # step 상한과의 관계: run 단계에는 모두 step 상한을 둔다(설치 4 · 수집 22 · 소스 이슈 3 · 검증 5 · 빌드 10 · 커밋 5 · 실패
-    # 기록 1분). step 시간 초과는 그 단계의 실패라 뒤의 실패 단계 기록·report-failure가 돈다. job 시간 초과는 job을 취소해
-    # 실패 단계 기록이 돌지 않으므로, "한 단계가 상한까지 걸리고 나머지는 평소 시간"인 경우가 job 상한 안에 들어가게 둔다:
-    # 가장 긴 수집 22분 + 그 밖의 단계 실측 1분 안팎(준비·설치 약 25초, 검증·빌드·커밋 약 20초) + 실패 기록 1분 ≈ 24분 < 30분.
-    # step 상한을 모두 더한 값(50분)은 job 상한보다 크다 — 둘 이상이 동시에 상한 가까이 걸리면 job 시간 초과로 끝날 수 있다.
-    # (tests/collect-workflow.test.ts가 "가장 큰 step 상한 + 5분 ≤ job 상한"을 확인한다.)
+    # step 상한과의 관계: run 단계에는 모두 step 상한을 둔다(기준 커밋 1 · 설치 4 · 수집 22 · 실행 이슈 3 · 검증 5 · 빌드 10 ·
+    # 커밋 5 · 실패 실행 기록 보존 3 · 실패 단계 기록 1분). step 시간 초과는 그 단계의 실패라 뒤의 실패 경로 단계·report-failure가
+    # 돈다. job 시간 초과는 job을 취소해 실패 경로 단계가 돌지 않으므로, "한 단계가 상한까지 걸리고 나머지는 평소 시간"인 경우가
+    # job 상한 안에 들어가게 둔다: 가장 긴 수집 22분 + 그 밖의 단계 실측 1분 안팎(준비·설치 약 25초, 검증·빌드·커밋 약 20초)
+    # + 실패 실행 기록 보존 3분 + 실패 단계 기록 1분 ≈ 27분 < 30분.
+    # step 상한을 모두 더한 값(54분)은 job 상한보다 크다 — 둘 이상이 동시에 상한 가까이 걸리면 job 시간 초과로 끝날 수 있다.
+    # (tests/collect-workflow.test.ts가 "가장 큰 step 상한 + 실패 경로 단계 상한 + 1분 ≤ job 상한"을 확인한다.)
     timeout-minutes: 30
     permissions:
       contents: write # data/·public/ 커밋 push
-      issues: write # 소스 이슈 보고 단계만 env로 토큰을 받는다(M1-11 — env 수준 격리, 한계는 그 단계 주석)
-    # committed·sha → deploy job. publish_date·run_id·status → 실행 기록·실패 이슈가 같은 실행을 가리키는 키(실패 실행 기록 보존
-    # M1-27이 이어받는다). reason → 실패했을 때 멈춘 단계(report-failure의 이슈 헬퍼가 needs.collect.outputs.reason을 메모로 쓴다).
-    # 실패한 job의 출력도 그때까지 돈 단계 값으로 넘어간다고 보고 쓴다(첫 실패 실행에서 확인할 것 — 안 넘어오면 이슈 메모만 빠진다).
+      issues: write # 실행 이슈 보고(소스·부분 실패) 단계가 쓴다(M1-11·M1-27)
+    # 토큰(github.token — job 권한 contents·issues write를 함께 가진 한 토큰)을 env로 받는 단계는 셋뿐이다: 실행 이슈 보고 · data 커밋 ·
+    # 실패 실행 기록 보존. 격리는 env 수준(한계는 실행 이슈 보고 단계 주석). 커밋·보존 단계는 토큰을 git 헤더로만 넘기고 git 훅을 끈다
+    # (`-c core.hooksPath=/dev/null` — `-c` 설정은 GIT_CONFIG_PARAMETERS로 훅 프로세스에도 전달되므로).
+    # committed·sha → deploy job(실패 실행 기록 보존 단계의 커밋은 여기에 쓰지 않는다 — 배포하지 않는다). publish_date·run_id·status
+    # → 실행 기록·실패 이슈가 같은 실행을 가리키는 키. reason·step → 실패했을 때 멈춘 단계(report-failure의 이슈 헬퍼가
+    # needs.collect.outputs.reason을 메모로, step을 원인 키 `collect:collect/<step>`으로 쓴다 — M1-27).
+    # 실패한 job의 출력도 그때까지 돈 단계 값으로 넘어간다고 보고 쓴다(첫 실패 실행에서 확인할 것 — 안 넘어오면 이슈 메모·단계 키만
+    # 빠지고 원인 키는 collect:collect가 된다).
     outputs:
       committed: ${{ steps.commit.outputs.committed }}
       sha: ${{ steps.commit.outputs.sha }}
@@ -162,6 +176,7 @@ jobs:
       run_id: ${{ steps.collect.outputs.run_id }}
       status: ${{ steps.collect.outputs.status }}
       reason: ${{ steps.stopped.outputs.reason }}
+      step: ${{ steps.stopped.outputs.step }}
     env:
       NEXT_TELEMETRY_DISABLED: 1
       LLM_MODE: live
@@ -182,6 +197,12 @@ jobs:
           ref: main
           persist-credentials: false
 
+      # 이 실행이 받은 main 커밋 — 실패 실행 기록 보존(M1-27)이 main의 원장·이월이 그 뒤 바뀌지 않았는지 이 값으로 본다.
+      - name: 기준 커밋 기록
+        id: base
+        timeout-minutes: 1
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
       - name: Node.js 설정 (.nvmrc)
         uses: actions/setup-node@v7
         with:
@@ -197,7 +218,8 @@ jobs:
       # 단계 출력 publish_date·run_id·status·run_recorded는 scripts/collect.ts가 $GITHUB_OUTPUT에 쓴다(실패 실행도 — 출력을 쓰지
       # 못하면 exit 1). 뒤 단계는 publish_date를 env로만 받는다.
       # limit 입력은 셸에 직접 펼치지 않고 env로 넘긴다(스크립트 주입 방지). 값 검증은 collect 스크립트가 한다.
-      # GitHub 토큰은 env로 넘기지 않는다 — 소스 건강도 사건은 SOURCE_HEALTH_FILE(JSON)로만 내보내고 이슈는 다음 단계가 만든다.
+      # GitHub 토큰은 env로 넘기지 않는다 — 소스 건강도·데이터 API 사건은 SOURCE_HEALTH_FILE, 부분 실패 사건은 RUN_ISSUES_FILE
+      # (JSON)로만 내보내고 이슈는 다음 단계가 만든다(M1-11·M1-27).
       # COLLECT_ENABLED(저장소 변수 — 정기 운영 켜짐): 경기 기록 원장 data/matches/(M1-48b, PRD §15 D33)는 이 값이 'true'일 때만
       # 쓴다 — 정기 운영 전 수동 실행(workflow_dispatch)이 원장을 시작하면 정기 실행 전까지 빈 날이 생겨 "집계 시작일 이후" 누적이
       # 부정확해진다. 켠 뒤에는 수동 실행(workflow_dispatch)도 원장을 쓴다 — COLLECT_ENABLED를 켠 뒤 처음 원장을 쓰는 실행(수동
@@ -212,6 +234,7 @@ jobs:
           COLLECT_ENABLED: ${{ vars.COLLECT_ENABLED }}
           LIMIT: ${{ inputs.limit }}
           SOURCE_HEALTH_FILE: ${{ runner.temp }}/source-health.json
+          RUN_ISSUES_FILE: ${{ runner.temp }}/run-issues.json
         run: |
           args=()
           if [ -n "$LIMIT" ]; then
@@ -219,13 +242,18 @@ jobs:
           fi
           npm run collect -- "${args[@]}"
 
-      # 소스 이슈 (M1-11 — FR-11·FR-152, PRD §10 "수집 일부 실패 → 이슈", §15 D35): 수집 단계가 쓴 사건 파일로 소스별 이슈
-      # 하나(라벨 source-broken, fingerprint source:<id>)를 새로 만들거나 열린 이슈에 댓글을 단다. 사건 = 이번 실행의 소스
-      # 실패(budget 제외) · 실패·빈 피드 3회 연속 · 새 기사 없음 7회 연속(판정 scripts/lib/source-health.ts).
+      # 실행 이슈 (M1-11·M1-27 — FR-11·FR-152, PRD §10 "수집 일부 실패 → 이슈", §15 D35): 수집 단계가 쓴 사건 파일 두 개로 이슈를
+      # 새로 만들거나 열린 이슈에 댓글을 단다(같은 원인은 하나 — FR-152).
+      #   ① SOURCE_HEALTH_FILE → source-broken(fingerprint source:<id>) — 소스 실패(budget 제외) · 실패·빈 피드 3회 연속 · 새 기사 없음
+      #      7회 연속(판정 scripts/lib/source-health.ts) + 데이터 API 사건(source:football-data·source:api-football — 단계 실패·키
+      #      없음·순위 실패·errors.plan·일 한도, scripts/lib/run-issues.ts·api-football-stage.ts).
+      #   ② RUN_ISSUES_FILE → pipeline-partial(fingerprint collect:partial:<사유>) — 수집 단계 안의 부분 오류(실행은 계속 — 발행 여부는 뒤 단계에 달림) 삭제 단계·seen-urls·
+      #      클러스터링·브리핑·브리핑 파일·runs 읽기·원장 오류(M1-27 — 이전에는 partial·exit 0이라 이슈가 없었다).
       # - 조건: 수집 단계가 실행됐으면 성공·실패와 상관없이 돈다(exit 1이어도 연속 사건은 남긴다 — 모든 소스가 실패한
-      #   실행은 원인이 하나라 소스별 실패 사건을 내지 않고 report-failure의 pipeline-failure 이슈 하나가 맡는다, FR-152).
+      #   실행은 원인이 하나라 소스별 사건을 내지 않고 report-failure의 pipeline-failure 이슈 하나가 맡는다, FR-152).
       #   수동 취소(cancelled)이거나 수집 단계가 돌지 않았으면(앞 단계 실패로 skipped) 돌지 않는다.
-      # - 사건 파일이 없거나 빈 배열(`[]`)이면 셸에서 끝낸다 — 토큰을 가진 node 프로세스를 띄우지 않는다(평소 대부분의 날).
+      # - 사건 파일이 없거나 빈 배열(`[]`)이면 셸에서 넘어간다 — 토큰을 가진 node 프로세스를 띄우지 않는다(평소 대부분의 날).
+      #   한쪽 보고가 실패해도 다른 쪽은 보고한다(끝에 exit 1).
       # - 위치: 수집 바로 뒤 — 토큰을 받는 단계 앞에서 도는 서드파티 코드를 줄이고(검증·빌드 전), 검증·빌드·커밋의
       #   성공 여부와 무관하게 보고한다. deploy job은 어차피 이 job 전체가 끝나기를 기다린다.
       # - 토큰 격리는 env 수준뿐이다: 토큰(issues: write — job 권한이라 contents: write도 같은 토큰)은 이 단계 env로만
@@ -233,24 +261,32 @@ jobs:
       #   이 단계가 그 코드를 토큰과 함께 실행하므로 막지 못한다. 커밋 단계의 contents: write와 같은 수준의 위험이다
       #   (완전히 나누려면 별도 job + 새 체크아웃 + 아티팩트로 사건 파일 전달 — report-failure job과 같은 구조).
       # - continue-on-error: 이슈 보고 실패가 검증·빌드·커밋·배포를 막거나 job 결과를 뒤집지 않게 한다. 실패는 error 주석과
-      #   로그로만 남는다(job은 성공이라 report-failure는 돌지 않는다) — 연속 사건은 다음 실행이 다시 낸다.
-      - name: 소스 이슈 보고 (실패 · 건강도)
+      #   로그로만 남는다(job은 성공이라 report-failure는 돌지 않는다) — 연속 사건·같은 사유는 다음 실행이 다시 낸다.
+      - name: 실행 이슈 보고 (소스 · 부분 실패)
         if: ${{ !cancelled() && steps.collect.outcome != 'skipped' }}
         continue-on-error: true
         timeout-minutes: 3
         env:
           GITHUB_TOKEN: ${{ github.token }}
           SOURCE_HEALTH_FILE: ${{ runner.temp }}/source-health.json
+          RUN_ISSUES_FILE: ${{ runner.temp }}/run-issues.json
         run: |
-          if [ ! -s "$SOURCE_HEALTH_FILE" ]; then
-            echo "소스 건강도 사건 파일 없음 — 수집 단계가 판정 전에 끝났거나 수집한 소스가 없습니다. 보고를 건너뜁니다."
-            exit 0
-          fi
-          if [ "$(tr -d '[:space:]' < "$SOURCE_HEALTH_FILE")" = "[]" ]; then
-            echo "보고할 소스 사건 없음(빈 배열) — 건너뜁니다."
-            exit 0
-          fi
-          node --import tsx scripts/report-issue.ts --kind source-broken --payload-file "$SOURCE_HEALTH_FILE"
+          status=0
+          report() {
+            local kind="$1" file="$2" label="$3"
+            if [ ! -s "$file" ]; then
+              echo "${label} 사건 파일 없음 — 수집 단계가 판정 전에 끝났거나 쓰지 않았습니다. 건너뜁니다."
+              return 0
+            fi
+            if [ "$(tr -d '[:space:]' < "$file")" = "[]" ]; then
+              echo "보고할 ${label} 사건 없음(빈 배열) — 건너뜁니다."
+              return 0
+            fi
+            node --import tsx scripts/report-issue.ts --kind "$kind" --payload-file "$file" || status=1
+          }
+          report source-broken "$SOURCE_HEALTH_FILE" "소스"
+          report pipeline-partial "$RUN_ISSUES_FILE" "부분 실패"
+          exit "$status"
 
       # ④ 발행 전 검증 게이트(FR-153 — configs·data 스키마·교차 참조 M0-17 + 발행 게이트 M1-25, 항목은 파일 머리 주석).
       #    실패하면 아래 빌드·커밋으로 가지 않는다 → 전날 사이트 유지 + 실패 이슈.
@@ -322,14 +358,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- "${paths[@]}"
+          # 이 단계의 git은 훅을 돌리지 않는다 — 앞 단계 코드가 .git/hooks를 심었어도 토큰(env GH_TOKEN·인증 헤더)을 보지 못하게(M1-27)
+          git_nohooks=(-c core.hooksPath=/dev/null)
           # 발행일 = 수집 단계 출력(KST — 아침 실행은 UTC로는 전날이다). 검증 단계가 형식을 확인했다.
           message="chore(data): ${PUBLISH_DATE} 발행"
-          git commit --quiet -m "$message"
+          git "${git_nohooks[@]}" commit --quiet -m "$message"
 
           # 인증은 actions/checkout과 같은 방식(http extraheader)으로 이 단계의 git 명령에만 붙인다(디스크에 남기지 않음).
           basic_auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
           echo "::add-mask::${basic_auth}"
-          git_auth=(-c "http.${GITHUB_SERVER_URL}/.extraheader=AUTHORIZATION: basic ${basic_auth}")
+          git_auth=("${git_nohooks[@]}" -c "http.${GITHUB_SERVER_URL}/.extraheader=AUTHORIZATION: basic ${basic_auth}")
 
           # 실행 중 main이 앞서 갔을 수 있다(사람 push·다른 워크플로) → rebase 후 push, 네트워크 오류·push 경합에 대비해 3번까지.
           # - rebase 충돌은 다시 해도 같으므로 재시도하지 않는다: rebase를 되돌리고(push 없음 → 배포 없음, 전날 사이트 유지) 충돌
@@ -344,7 +382,7 @@ jobs:
             if ! git "${git_auth[@]}" pull --rebase --autostash origin main; then
               if [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; then
                 conflicts="$(git diff --name-only --diff-filter=U | head -n 20)"
-                git rebase --abort || true
+                git "${git_nohooks[@]}" rebase --abort || true
                 echo "::error title=rebase 충돌::main의 새 커밋과 data 커밋이 충돌해 push하지 않았습니다 — 커밋·배포 없음(전날 사이트 유지). 충돌 파일은 로그 참고"
                 echo "충돌 파일:"
                 echo "$conflicts"
@@ -385,11 +423,143 @@ jobs:
             echo "| 변경 | $(git show --shortstat --format= HEAD | sed 's/^ *//') |"
           } >> "$GITHUB_STEP_SUMMARY" || echo "::warning title=요약 쓰기 실패::data 커밋 요약을 Step Summary에 쓰지 못했습니다 — push·배포는 계속합니다"
 
+      # 실패 실행 기록 보존 (M1-27 — FR-151·FR-152·FR-11, CLAUDE.md §1-4·§6.3): 위 단계 중 하나가 실패해 발행되지 않았고, 수집
+      # 단계가 이번 실행 기록을 러너의 runs.json에 남겼을 때만(run_recorded — 출력이 없으면 남길 기록을 모른다). 규칙은
+      # scripts/lib/run-preserve.ts(scripts/preserve-run.ts save·apply):
+      #   ⓪ 커밋 단계가 rebase 도중 멈췄으면(시간 초과 등) 먼저 되돌린다 — 충돌 표시가 남은 runs.json을 보관하지 않게
+      #   ① 러너 작업 트리 → 보관: 이번 실행 기록(상태 failed — 수집 시간 창이 이 실행을 발행 실행으로 보지 않게) + 레지스트리
+      #      스키마를 통과한 원장(data/matches)·이월(data/cache/af-pending.json)
+      #   ② main 최신을 **별도 작업 트리**(`git worktree add $RUNNER_TEMP/preserve-main FETCH_HEAD`)로 받는다. 러너 체크아웃은
+      #      건드리지 않는다 — 적용 스크립트는 러너 체크아웃의 코드로 돈다(이번 실행이 npm ci한 node_modules와 짝이 맞는 코드. 러너를
+      #      main 최신으로 reset하면 새 코드를 예전 node_modules로 돌리게 된다 — M1-27 리뷰 권장 2). 이번 실행의 뉴스·브리핑·
+      #      seen-urls·unknown-names와 push하지 못한 로컬 data 커밋은 그 작업 트리에 들어가지 않는다(커밋된 기억 ⊂ 커밋된 카드)
+      #   ③ main 작업 트리의 runs.json에 기록 1건을 더하고(이미 있으면 그대로 — 커밋 단계가 push까지 한 뒤 실패한 경우), main의
+      #      원장·이월이 기준 커밋(steps.base) 뒤로 바뀌지 않았으면 원장·이월도 덮는다(아니면 실행 기록만)
+      #   ④ 그 세 경로만 커밋 → push. push가 실패하면(main이 앞서 감·네트워크) ②부터 다시 만든다(3번까지 — 적용은 멱등이라 rebase
+      #      충돌이 생길 자리가 없다). 변경이 없으면 커밋하지 않는다.
+      # 배포하지 않는다 — committed·sha 출력을 쓰지 않고(deploy job은 커밋 단계 출력만 본다), collect job이 실패라 deploy는 어차피
+      # skipped. GITHUB_TOKEN push는 ci.yml을 트리거하지 않는다. 쓰기 토큰은 git 헤더로만 넘기고 node 프로세스 전에 변수를 지우며,
+      # git 훅은 끈다. 봇 커밋이라 06:00~08:00 KST(사람 push 금지 시간대)에 도는 것이 정상이다. 이 단계가 실패하면 실패 단계 기록이
+      # 이슈 메모에 "실행 기록 보존 실패"를 남긴다(그 실행의 비용·호출 수 기록은 사라진다 — 드묾).
+      - name: 실패 실행 기록 보존
+        id: preserve
+        if: failure() && steps.collect.outputs.run_recorded == 'true'
+        timeout-minutes: 3
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ steps.collect.outputs.run_id }}
+          PUBLISH_DATE: ${{ steps.collect.outputs.publish_date }}
+          BASE_SHA: ${{ steps.base.outputs.sha }}
+          PRESERVE_DIR: ${{ runner.temp }}/preserve
+          MAIN_DIR: ${{ runner.temp }}/preserve-main
+        run: |
+          # 토큰은 이 단계의 git 명령 헤더로만 — 아래 node 프로세스(보관·적용)에는 넘기지 않는다. git 훅은 끈다.
+          git_nohooks=(-c core.hooksPath=/dev/null)
+          basic_auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          echo "::add-mask::${basic_auth}"
+          git_auth=("${git_nohooks[@]}" -c "http.${GITHUB_SERVER_URL}/.extraheader=AUTHORIZATION: basic ${basic_auth}")
+          unset GH_TOKEN
+
+          if [[ ! "$RUN_ID" =~ ^[a-z]+-(prod|dev)-[0-9]{8}T[0-9]{6}Z-[0-9a-f]{4}$ ]] || [[ ! "$PUBLISH_DATE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "::error title=실행 기록 보존 불가::수집 단계 출력 run_id·publish_date가 형식에 맞지 않아 보존할 기록을 정할 수 없습니다"
+            exit 1
+          fi
+
+          # ⓪ 커밋 단계가 rebase 도중 멈췄으면 되돌린다(충돌 표시가 남은 runs.json을 보관하지 않게)
+          if [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; then
+            git "${git_nohooks[@]}" rebase --abort || true
+          fi
+
+          # ① 러너 작업 트리 → 보관(이번 실행 기록 상태 failed + 스키마를 통과한 원장·이월)
+          rm -rf "$PRESERVE_DIR"
+          node --import tsx scripts/preserve-run.ts save --run-id "$RUN_ID" --dir "$PRESERVE_DIR"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          message="chore(data): ${PUBLISH_DATE} 실행 기록 (발행 실패)"
+          pushed=false
+          for attempt in 1 2 3; do
+            # ② main 최신 → 별도 작업 트리(러너 체크아웃은 그대로)
+            if ! git "${git_auth[@]}" fetch --quiet origin main; then
+              if [ "$attempt" -eq 3 ]; then
+                echo "::error title=실행 기록 보존 — fetch 실패::3번 시도했지만 main을 받지 못했습니다"
+                exit 1
+              fi
+              sleep $((attempt * 5))
+              continue
+            fi
+            git "${git_nohooks[@]}" worktree remove --force "$MAIN_DIR" > /dev/null 2>&1 || true
+            rm -rf "$MAIN_DIR"
+            git "${git_nohooks[@]}" worktree prune
+            git "${git_nohooks[@]}" worktree add --quiet --detach "$MAIN_DIR" FETCH_HEAD
+
+            # ③ 실행 기록 1건 더하기(멱등) — main의 원장·이월이 기준 커밋 뒤로 그대로일 때만 원장·이월도 덮는다
+            ledger_flag=()
+            if [[ "$BASE_SHA" =~ ^[0-9a-f]{40}$ ]] && git diff --quiet "$BASE_SHA" FETCH_HEAD -- data/matches data/cache/af-pending.json; then
+              ledger_flag=(--with-ledger)
+            else
+              echo "::warning title=원장·이월 보존 안 함::main의 data/matches·af-pending이 기준 커밋 뒤로 바뀌었거나(이 실행의 data 커밋이 push된 경우 포함) 기준 커밋을 몰라 원장·이월은 덮지 않습니다"
+            fi
+            node --import tsx scripts/preserve-run.ts apply --dir "$PRESERVE_DIR" --root "$MAIN_DIR" --result "$PRESERVE_DIR/result.txt" "${ledger_flag[@]}"
+
+            # ④ 실행 기록·원장·이월만 커밋 — 있는 경로만(빈 pathspec은 저장소 전체가 되므로 경로가 없으면 끝낸다)
+            paths=()
+            for target in data/runs.json data/matches data/cache/af-pending.json; do
+              if [ -e "$MAIN_DIR/$target" ]; then
+                paths+=("$target")
+              fi
+            done
+            if [ "${#paths[@]}" -eq 0 ]; then
+              echo "보존할 경로 없음 — 커밋하지 않습니다."
+              break
+            fi
+            changes="$(git -C "$MAIN_DIR" status --porcelain --untracked-files=all -- "${paths[@]}")"
+            if [ -z "$changes" ]; then
+              echo "보존할 변경 없음 — 이번 실행 기록이 이미 main에 있거나(커밋 단계가 push함) 보관된 기록이 없습니다."
+              break
+            fi
+            git -C "$MAIN_DIR" add -A -- "${paths[@]}"
+            git -C "$MAIN_DIR" "${git_nohooks[@]}" commit --quiet -m "$message"
+            if git -C "$MAIN_DIR" "${git_auth[@]}" push --quiet origin HEAD:main; then
+              pushed=true
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "::error title=실행 기록 보존 — push 실패::3번 시도했지만 main에 push하지 못했습니다"
+              exit 1
+            fi
+            echo "push 실패 — main 최신으로 작업 트리를 다시 만들어 적용합니다(적용은 멱등)."
+            sleep $((attempt * 5))
+          done
+
+          {
+            echo "pushed=${pushed}"
+            if [ -s "$PRESERVE_DIR/result.txt" ]; then
+              cat "$PRESERVE_DIR/result.txt"
+            fi
+          } >> "$GITHUB_OUTPUT"
+          if [ "$pushed" = "true" ]; then
+            sha="$(git -C "$MAIN_DIR" rev-parse HEAD)"
+            {
+              echo "## 실패 실행 기록 보존"
+              echo ""
+              echo "| 항목 | 값 |"
+              echo "|---|---|"
+              echo "| 커밋 | [\`${sha:0:7}\`]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$sha) |"
+              echo "| 메시지 | ${message} |"
+              echo "| 변경 | $(git -C "$MAIN_DIR" show --shortstat --format= HEAD | sed 's/^ *//') |"
+              echo "| 배포 | 하지 않음 — 사이트는 전날 그대로 |"
+            } >> "$GITHUB_STEP_SUMMARY" || echo "::warning title=요약 쓰기 실패::실행 기록 보존 요약을 Step Summary에 쓰지 못했습니다"
+          fi
+          git "${git_nohooks[@]}" worktree remove --force "$MAIN_DIR" > /dev/null 2>&1 || true
+
       # 실패 단계 기록 — 위 단계 중 하나가 실패했을 때만(취소·시간 초과로 job이 끊기면 돌지 않는다). 멈춘 단계를 job output
-      # reason으로 넘기면 report-failure의 이슈 헬퍼가 job 결과 행의 메모로 붙인다(scripts/lib/report-issue-cli.ts parseNeedsJson
-      # — needs.<job>.outputs.reason). 원인 키(collect:collect)는 그대로라 같은 job의 실패는 한 이슈에 댓글로 쌓인다.
-      # 값은 아래 고정 문구 + 형식을 확인한 발행일만(입력값을 옮기지 않는다). 토큰을 받지 않는다. 소스 이슈 보고 단계의 실패
-      # (continue-on-error)는 failure()에 잡히지 않는다.
+      # reason(문구)·step(단계 id)으로 넘기면 report-failure의 이슈 헬퍼가 reason은 job 결과 행의 메모로, step은 원인 키
+      # `collect:collect/<step>`으로 쓴다(scripts/lib/report-issue-cli.ts parseNeedsJson — needs.<job>.outputs). 같은 단계의 실패는
+      # 한 이슈에 댓글로 쌓이고, 검증 실패·빌드 실패·커밋 실패(rebase 충돌)는 서로 다른 이슈가 된다(M1-27).
+      # 판정은 앞 단계부터 — 실패 실행 기록 보존 단계의 실패는 단계 키를 바꾸지 않고 문구에만 붙인다(원래 원인이 따로 있다).
+      # 값은 아래 고정 문구 + 형식을 확인한 발행일 + 고정 결과값만(입력값을 옮기지 않는다). 토큰을 받지 않는다. 실행 이슈 보고
+      # 단계의 실패(continue-on-error)는 failure()에 잡히지 않는다.
       - name: 실패 단계 기록
         id: stopped
         if: failure()
@@ -400,25 +570,52 @@ jobs:
           VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
           BUILD_OUTCOME: ${{ steps.build.outcome }}
           COMMIT_OUTCOME: ${{ steps.commit.outcome }}
+          PRESERVE_OUTCOME: ${{ steps.preserve.outcome }}
+          PRESERVE_PUSHED: ${{ steps.preserve.outputs.pushed }}
+          PRESERVE_RECORD: ${{ steps.preserve.outputs.record }}
+          PRESERVE_LEDGER: ${{ steps.preserve.outputs.ledger }}
           PUBLISH_DATE: ${{ steps.collect.outputs.publish_date }}
         run: |
           if [ "$INSTALL_OUTCOME" = "failure" ]; then
             reason="의존성 설치(npm ci) 실패 — 수집 안 함"
+            step="install"
           elif [ "$COLLECT_OUTCOME" = "failure" ]; then
             reason="수집 단계(npm run collect) 실패 — 검증·빌드·커밋·배포 안 함"
+            step="collect"
           elif [ "$VALIDATE_OUTCOME" = "failure" ]; then
             reason="검증 게이트(npm run validate) 실패 — 커밋·배포 안 함, 전날 사이트 유지"
+            step="validate"
           elif [ "$BUILD_OUTCOME" = "failure" ]; then
             reason="정적 빌드(npm run build) 실패 — 커밋·배포 안 함, 전날 사이트 유지"
+            step="build"
           elif [ "$COMMIT_OUTCOME" = "failure" ]; then
             reason="data 커밋·push 단계 실패 — 배포 안 함, 사이트는 전날 그대로(main에 push까지 됐는지는 로그 확인)"
+            step="commit"
           else
             reason="준비 단계(체크아웃·Node.js 설정) 실패 — 수집 안 함"
+            step="setup"
           fi
           if [[ "$PUBLISH_DATE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
             reason="${reason} (발행일 ${PUBLISH_DATE})"
           fi
-          echo "reason=${reason}" >> "$GITHUB_OUTPUT"
+          # 실패 실행 기록 보존 결과(M1-27) — 돌지 않았으면(남긴 기록 없음) 붙이지 않는다
+          if [ "$PRESERVE_OUTCOME" = "failure" ]; then
+            reason="${reason} · 실행 기록 보존 실패 — 이 실행의 비용·호출 수 기록이 커밋되지 않음(로그 확인)"
+          elif [ "$PRESERVE_OUTCOME" = "success" ]; then
+            if [ "$PRESERVE_PUSHED" = "true" ] && [ "$PRESERVE_LEDGER" = "copied" ]; then
+              reason="${reason} · 실행 기록(상태 failed)·원장·이월 커밋함"
+            elif [ "$PRESERVE_PUSHED" = "true" ]; then
+              reason="${reason} · 실행 기록(상태 failed) 커밋함"
+            elif [ "$PRESERVE_RECORD" = "already" ]; then
+              reason="${reason} · 실행 기록은 이미 main에 있음"
+            else
+              reason="${reason} · 보존할 실행 기록 없음"
+            fi
+          fi
+          {
+            echo "reason=${reason}"
+            echo "step=${step}"
+          } >> "$GITHUB_OUTPUT"
           {
             echo "## 실패 단계"
             echo ""
@@ -444,13 +641,14 @@ jobs:
   # 단계에는 step 수준 timeout-minutes를 둔다(step 시간 초과는 실패로 기록된다).
   #
   # 같은 원인 판단 (M0-22): scripts/report-issue.ts → scripts/lib/github-issues.ts
-  # - 원인 키 = `collect:<실패 job>`(needs 결과에서 계산) → fingerprint 마커를 이슈 본문에 숨겨 두고,
+  # - 원인 키 = `collect:<실패 job>[/<멈춘 단계>]`(needs 결과·collect job 출력 step에서 계산 — M1-27: 검증·빌드·커밋 실패가 서로
+  #   다른 이슈) → fingerprint 마커를 이슈 본문에 숨겨 두고,
   #   같은 마커의 열린 pipeline-failure 이슈가 있으면 댓글(누적 횟수 포함), 없으면 새 이슈. 닫힌 이슈는 해결로 본다.
   # - guard 실패와 deploy 실패처럼 원인이 다른 실패는 서로 다른 이슈가 된다.
   # - 헬퍼가 쓸 수 없을 때(npm ci 실패·레지스트리 장애 등)는 마지막 단계의 셸 폴백이 예전 방식
   #   ("열린 [collect] pipeline-failure 이슈가 있으면 댓글, 없으면 생성")으로 보고한다 — 보고 자체가 빠지지 않게.
-  # 비밀값·전체 로그는 본문에 넣지 않는다(실행 링크만). needs 출력 중 job별 reason만 이슈에 옮긴다 — guard의 판단 사유와
-  # collect의 멈춘 단계(실패 단계 기록 — 그 job 결과 행의 메모). 커밋 SHA·발행일 등 다른 출력은 옮기지 않는다.
+  # 비밀값·전체 로그는 본문에 넣지 않는다(실행 링크만). needs 출력 중 job별 reason(메모)·step(원인 키 조각)만 이슈에 옮긴다 —
+  # guard의 판단 사유와 collect의 멈춘 단계(실패 단계 기록). 커밋 SHA·발행일 등 다른 출력은 옮기지 않는다.
   report-failure:
     name: 실패 이슈 보고
     needs: [guard, collect, deploy]
