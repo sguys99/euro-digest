@@ -532,6 +532,8 @@ describe("runEvalPrompt — live 흐름(가짜 클라이언트, 임시 data/)", 
     expect(runs).toHaveLength(1);
     expect(runs[0]!.runId).toMatch(/^eval-dev-20261017T050000Z-[0-9a-f]{4}$/);
     expect(runs[0]!.env).toBe("dev");
+    // eval도 보낸 브리핑 요청 수를 남긴다(D56 — 하루 상한 합산에서는 eval-… 기록을 뺀다)
+    expect(runs[0]!.brief).toEqual({ requests: 2 });
     expect(runs[0]!.tokens.out).toBe(
       outcome.run!.days.reduce((n, x) => n + x.usage.out, 0),
     );

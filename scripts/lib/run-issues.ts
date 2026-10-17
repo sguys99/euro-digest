@@ -10,8 +10,10 @@
  *     seen             seen-urls.json 읽기·쓰기 오류(M1-12)
  *     cluster          클러스터링 예상 밖 오류(M1-13)
  *     classify         범위 판정·코드 분류·엔티티 병합 예상 밖 오류(M1-17 — 제외·병합 없이 최소 분류)
- *     brief            브리핑 단계 failed — reason llm·output·setup(M1-01 이월: partial·exit 0이라 이슈 없음). football-data는
- *                      데이터 API 문제라 아래 source-broken이 맡는다(같은 원인 이슈 둘 방지)
+ *     brief            브리핑 단계 failed — reason llm·output·setup(M1-01 이월: partial·exit 0이라 이슈 없음), 고유명사 사전을 읽지
+ *                      못해 LLM 없이 템플릿(skipped names-unreadable — M1-45). football-data는 데이터 API 문제라 아래 source-broken이
+ *                      맡는다(같은 원인 이슈 둘 방지). 브리핑 마감 강등(skipped deadline · failed cause deadline — FR-26 설계된 폴백,
+ *                      M1-45)·하루 요청 상한(skipped·cause daily-cap — FR-25 의도된 제한, D56)은 이슈를 만들지 않는다
  *     brief-file       브리핑 파일 검증·쓰기 실패 또는 깨진 기존 파일(M1-19)
  *     runs-unreadable  비용 가드가 runs 파일을 읽지 못함(M1-22 이월 — 기록 파일 수리 필요)
  *     ledger           원장 쓰기 오류·형식 오류 항목(M1-48b)
@@ -69,7 +71,7 @@ export interface PartialFindingsInput {
         reason: string;
         budget?: { verdict: string; message: string };
       }
-    | { state: "failed"; reason: string; detail: string };
+    | { state: "failed"; reason: string; detail: string; cause?: string };
   briefFile: {
     action: string;
     readError: string | null;
@@ -140,10 +142,23 @@ export function partialFindings(input: PartialFindingsInput): PartialFinding[] {
     });
   }
   const brief = input.brief;
-  if (brief.state === "failed" && brief.reason !== "football-data") {
+  if (
+    brief.state === "failed" &&
+    brief.reason !== "football-data" &&
+    brief.cause !== "deadline" &&
+    brief.cause !== "daily-cap"
+  ) {
     found.push({
       reason: "brief",
-      detail: oneLine(`${brief.reason}: ${brief.detail}`),
+      detail: oneLine(
+        `${brief.reason}${brief.cause ? `(${brief.cause})` : ""}: ${brief.detail}`,
+      ),
+    });
+  } else if (brief.state === "skipped" && brief.reason === "names-unreadable") {
+    found.push({
+      reason: "brief",
+      detail:
+        "고유명사 사전(configs/names.ko.json)을 읽지 못해 LLM 없이 템플릿 브리핑을 게시했다",
     });
   }
   const file = input.briefFile;

@@ -12,9 +12,12 @@ import {
   buildMessageParams,
   createLlmClient,
   CUSTOM_ID_PATTERN,
+  DEADLINE_CUT_SLACK_MS,
   DEFAULT_LLM_MODEL,
   DEFAULT_POLL_INTERVAL_MS,
+  DEFAULT_REQUEST_TIMEOUT_MS,
   DEFAULT_RETRY_POLICY,
+  isRetryableErrorType,
   LlmConfigError,
   LlmMockFixtureError,
   LlmRequestError,
@@ -32,6 +35,7 @@ import {
   validateRequests,
   ZERO_USAGE,
   type BatchRequestCounts,
+  type LlmClient,
   type LlmClientOptions,
   type LlmLogEvent,
   type LlmRequest,
@@ -166,7 +170,11 @@ function fakeTransport(script: FakeScript = {}) {
     retrieve: 0,
     results: 0,
     cancel: 0,
-    messages: [] as { params: MessageParams; customId: string }[],
+    messages: [] as {
+      params: MessageParams;
+      customId: string;
+      timeoutMs?: number;
+    }[],
   };
   const pick = <T>(list: T[] | undefined, index: number): T | undefined =>
     list && list.length > 0
@@ -176,7 +184,11 @@ function fakeTransport(script: FakeScript = {}) {
   const transport: LlmTransport = {
     async createMessage(params, meta) {
       const next = pick(script.messages, calls.messages.length);
-      calls.messages.push({ params, customId: meta.customId });
+      calls.messages.push({
+        params,
+        customId: meta.customId,
+        timeoutMs: meta.timeoutMs,
+      });
       if (next instanceof Error) throw next;
       if (!next)
         throw new Error("가짜 transport: 메시지 응답이 정의되지 않았다");
@@ -871,14 +883,144 @@ describe("callSingle (일일 브리핑 단건 일반 API — D28)", () => {
     expect(sleeps).toEqual([1_000, 2_000]);
   });
 
-  it("연결 오류·타임아웃은 중복 과금 위험 때문에 재시도하지 않는다", async () => {
+  it("연결 오류·타임아웃은 중복 과금 위험 때문에 재시도하지 않고, 결과의 retryable 힌트도 false다(M0-36 ② → M1-45)", async () => {
     const { transport, calls } = fakeTransport({
       messages: [connectionError()],
     });
     const { client } = harness(transport);
     const result = unwrapFail(await client.callSingle(request()));
     expect(result.errorType).toBe("connection_error");
+    expect(result.retryable).toBe(false);
+    expect(isRetryableErrorType("connection_error")).toBe(false);
     expect(calls.messages).toHaveLength(1);
+  });
+
+  it("마감이 있으면 요청마다 타임아웃 = min(requestTimeoutMs, 마감 − 현재) — 재시도 대기 뒤 요청은 그만큼 줄어든다(M0-36 ① → M1-45)", async () => {
+    const { transport, calls } = fakeTransport({
+      messages: [overloaded(), message("{}")],
+    });
+    const { client, sleeps, logs } = harness(transport);
+    const result = await client.callSingle(request(), {
+      deadline: new Date(START + 10_000),
+    });
+    expect(result.ok).toBe(true);
+    expect(sleeps).toEqual([1_000]);
+    expect(calls.messages.map((c) => c.timeoutMs)).toEqual([10_000, 9_000]);
+    expect(logs.find((l) => l.stage === "single.done")).toMatchObject({
+      attempts: 2,
+      timeoutMs: 9_000,
+    });
+  });
+
+  it("마감이 멀면 상한 그대로(기본 60초·requestTimeoutMs), 마감이 없으면 transport 기본 타임아웃(요청 옵션 없음)", async () => {
+    const far = new Date(START + 10 * 60_000);
+    const run = async (
+      options: Parameters<LlmClient["callSingle"]>[1],
+      over: Partial<LlmClientOptions> = {},
+    ) => {
+      const { transport, calls } = fakeTransport({ messages: [message("{}")] });
+      const { client } = harness(transport, over);
+      await client.callSingle(request(), options);
+      return calls.messages.map((c) => c.timeoutMs);
+    };
+    expect(await run({ deadline: far })).toEqual([DEFAULT_REQUEST_TIMEOUT_MS]);
+    expect(await run({ deadline: far }, { requestTimeoutMs: 20_000 })).toEqual([
+      20_000,
+    ]);
+    expect(await run(undefined)).toEqual([undefined]);
+  });
+
+  it("상대 마감 budgetMs = 호출 시작 + budgetMs(클라이언트 시계), deadline과 함께면 이른 쪽", async () => {
+    const run = async (options: Parameters<LlmClient["callSingle"]>[1]) => {
+      const { transport, calls } = fakeTransport({ messages: [message("{}")] });
+      const { client } = harness(transport);
+      await client.callSingle(request(), options);
+      return calls.messages.map((c) => c.timeoutMs);
+    };
+    expect(await run({ budgetMs: 5_000 })).toEqual([5_000]);
+    expect(
+      await run({ budgetMs: 5_000, deadline: new Date(START + 3_000) }),
+    ).toEqual([3_000]);
+    expect(
+      await run({ budgetMs: 90_000, deadline: new Date(START + 120_000) }),
+    ).toEqual([DEFAULT_REQUEST_TIMEOUT_MS]);
+  });
+
+  it("남은 시간이 minAttemptMs보다 짧거나 마감이 지났으면 보내지 않고 deadline 실패(과금 0, retryable false)", async () => {
+    for (const options of [
+      { deadline: new Date(START + 20_000), minAttemptMs: 30_000 },
+      { deadline: new Date(START - 1) },
+      { budgetMs: 0 },
+    ]) {
+      const { transport, calls } = fakeTransport({ messages: [message("{}")] });
+      const { client, logs } = harness(transport);
+      const result = unwrapFail(await client.callSingle(request(), options));
+      expect(result).toMatchObject({
+        errorType: "deadline",
+        retryable: false,
+        batch: false,
+      });
+      expect(result.usage).toEqual(ZERO_USAGE);
+      expect(calls.messages).toHaveLength(0);
+      expect(logs.some((l) => l.stage === "single.deadline")).toBe(true);
+    }
+  });
+
+  it("마감으로 줄인 타임아웃에 마감 1초 안에서 끊긴 연결 오류는 deadlineCut(호출부 마감 강등) — 상한 타임아웃·마감 전 연결 오류는 아님", async () => {
+    // 가짜 transport가 요청마다 시계를 민 뒤 연결 오류를 던진다(타임아웃 흉내)
+    const run = async (budgetMs: number, advanceMs: number) => {
+      const clock = { t: START };
+      const transport: LlmTransport = {
+        ...fakeTransport().transport,
+        async createMessage() {
+          clock.t += advanceMs;
+          throw connectionError();
+        },
+      };
+      const client = createLlmClient({
+        mode: "live",
+        env: {},
+        transport,
+        now: () => clock.t,
+        sleep: async () => undefined,
+        logger: () => undefined,
+      });
+      return unwrapFail(await client.callSingle(request(), { budgetMs }));
+    };
+    // 남은 45초(타임아웃 45초로 줄어듦) — 45초에 끊김, 타이머가 몇 ms 일찍 울린 경우도
+    expect((await run(45_000, 45_000)).deadlineCut).toBe(true);
+    expect((await run(45_000, 44_996)).deadlineCut).toBe(true);
+    // 마감 한참 전 연결 오류(10초에 끊김) — 마감 강등이 아니다
+    expect((await run(45_000, 10_000)).deadlineCut).toBeUndefined();
+    // 남은 10분(타임아웃은 상한 60초 그대로) — 60초에 끊긴 것은 마감 때문이 아니다
+    expect((await run(600_000, 60_000)).deadlineCut).toBeUndefined();
+    expect(DEADLINE_CUT_SLACK_MS).toBe(1_000);
+  });
+
+  it("429·5xx 재시도는 (대기 + minAttemptMs)가 마감 안일 때만 — 아니면 마지막 실패를 돌려준다", async () => {
+    // 남은 30.5초: 1초 대기 + 30초 > 30.5초 → 재시도 없음
+    const tight = fakeTransport({ messages: [overloaded()] });
+    const a = harness(tight.transport);
+    const first = unwrapFail(
+      await a.client.callSingle(request(), {
+        deadline: new Date(START + 30_500),
+        minAttemptMs: 30_000,
+      }),
+    );
+    expect(first.errorType).toBe("overloaded_error");
+    expect(tight.calls.messages).toHaveLength(1);
+    expect(a.sleeps).toEqual([]);
+    // 남은 32초: 1초 대기 뒤 1회(31초 < 32초), 다음 2초 대기는 33초 > 32초라 멈춘다
+    const roomy = fakeTransport({ messages: [overloaded()] });
+    const b = harness(roomy.transport);
+    await b.client.callSingle(request(), {
+      deadline: new Date(START + 32_000),
+      minAttemptMs: 30_000,
+    });
+    expect(roomy.calls.messages.map((c) => c.timeoutMs)).toEqual([
+      32_000, 31_000,
+    ]);
+    expect(b.sleeps).toEqual([1_000]);
   });
 
   it("재시도 대기가 마감을 넘기면 더 기다리지 않는다", async () => {

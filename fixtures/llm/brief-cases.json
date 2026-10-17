@@ -1144,10 +1144,10 @@
       "llm": {
         "ok": false,
         "errorType": "connection_error",
-        "retryable": true,
+        "retryable": false,
         "attempts": 1
       },
-      "note": "합성 — 연결 오류·요청 타임아웃(HTTP 응답 없음). llm.ts callSingle은 서버가 이미 처리했을 수 있어(중복 과금) 재시도하지 않는다(1회 시도). 단, 실패 결과의 retryable 힌트는 true다(배치 결과 수거 같은 읽기 맥락의 힌트) — M1-45는 이 힌트로 브리핑을 다시 보내면 안 된다. 기대(FR-26): downgrade-all."
+      "note": "합성 — 연결 오류·요청 타임아웃(HTTP 응답 없음). llm.ts callSingle은 서버가 이미 처리했을 수 있어(중복 과금) 재시도하지 않는다(1회 시도). 실패 결과의 retryable 힌트도 false다(M0-36 확인 ② → M1-45: 힌트는 다시 보내도 중복 과금이 없는 429·5xx·과금 없는 배치 결과만 true). 기대(FR-26): downgrade-all."
     }
   ]
 }

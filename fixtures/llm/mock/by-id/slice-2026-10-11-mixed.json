@@ -1,0 +1,6 @@
+{
+  "type": "succeeded",
+  "note": "합성 — M1-45 게시 경로(mixed) 시험용 입력 일치 응답: L3 'Leverkusen이 Mainz를 4-2로 꺾었다'는 입력 4-3과 다른 점수(score-mismatch) → 그 줄만 같은 근거(m565812)의 템플릿 줄로 교체, L5는 순위 줄(sBL) → mode mixed. 입력 = tests/collect-slice.test.ts 슬라이스 입력(fixtures/football/football-data/matches-6comps-2026-10-10.json 23경기 + fixture 순위 5개 대회, 발행일 2026-10-11, 득점자 없음 — API-Football 키 없음). 출력 형식은 M1-20 확정 스키마 {l:[{t,r}]}, 문장은 지시문 v0.4 [문형] 안의 꼴로 손으로 썼다(LLM 출력 아님). 테스트는 시도 customId(brief-2026-10-11 · brief-2026-10-11-r1)를 이 id로 바꿔 부른다(collect-slice.test.ts routedMock) — 발행일 id(brief-2026-10-11 = M0-34 입력 E 실측)와 겹치지 않게 slice- 접두사를 쓴다.",
+  "text": "{\"l\":[{\"t\":\"Augsburg와 Bayern이 2-2로 비겼다.\",\"r\":[\"m565819\"]},{\"t\":\"Atleti가 Alavés 원정에서 2-1로 이겼다.\",\"r\":[\"m564699\"]},{\"t\":\"Leverkusen이 Mainz를 4-2로 꺾었다.\",\"r\":[\"m565812\"]},{\"t\":\"Chelsea가 Bournemouth를 5-1로 완파했다.\",\"r\":[\"m560595\"]},{\"t\":\"Dortmund가 승점 13으로 Bundesliga 선두다.\",\"r\":[\"sBL\"]}]}",
+  "stop_reason": "end_turn"
+}

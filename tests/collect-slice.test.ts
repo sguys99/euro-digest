@@ -54,8 +54,10 @@ import {
   parseBriefOutput,
 } from "../scripts/lib/brief";
 import { cardIdFor } from "../scripts/lib/card-id";
+import { BRIEF_LLM_MIN_ATTEMPT_MS } from "../scripts/lib/collect-deadlines";
 import { dedupeFeedItems } from "../scripts/lib/dedup";
 import {
+  briefLineCounts,
   recordedRunStatus,
   resolveCardLimit,
   resolveMaxItems,
@@ -69,6 +71,8 @@ import {
 import { isPublishedNewsRun } from "../scripts/lib/collect-window";
 import {
   createLlmClient,
+  LlmTransportError,
+  type CallSingleOptions,
   type LlmClient,
   type LlmRequest,
   type LlmTransport,
@@ -104,6 +108,7 @@ import {
   parseFeedXml,
   type FetchLike,
 } from "../scripts/lib/rss";
+import { partialFindings } from "../scripts/lib/run-issues";
 import { scoreCluster, selectTopScored } from "../scripts/lib/score";
 import { readValidationSnapshot } from "../scripts/lib/validate-fs";
 import {
@@ -1157,8 +1162,8 @@ describe("runCollect — BBC 피드 → 원제목 카드 → data/news/<KST 발�
   });
 });
 
-describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력은 로그만) → 템플릿 브리핑 게시(M1-19)", () => {
-  it("mock: football-data 경기 1요청 + 순위 5요청 → 종료 23경기 입력 → callSingle 1회(D28 설정) → 줄 출력, data/briefs에는 템플릿", async () => {
+describe("runCollect — 전날 경기 결과 → 브리핑 단건(FR-29 판정) → data/briefs 게시(M1-19·M1-45)", () => {
+  it("mock: football-data 경기 1요청 + 순위 5요청 → 종료 23경기 입력 → callSingle 1회(D28 설정) → 줄 출력, 입력이 다른 mock(입력 E)은 줄마다 강등 → 전체 템플릿", async () => {
     const { deps, printed, fetcher, llmRequests } = makeDeps();
     const outcome = await runCollect(deps);
     expect(outcome.brief).toMatchObject({ state: "done", inputMatches: 23 });
@@ -1224,7 +1229,8 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
       "1. 아틀레티코 마드리드가 알라베스 원정에서 1-2로 이겼고 이강인은",
     );
     expect(out).toContain("   원문: Atleti가 Alavés 원정에서");
-    // 브리핑 파일(M1-19, D38): 검증(M1-23·M1-45) 전이라 LLM 줄은 저장하지 않고 같은 입력의 코드 템플릿을 게시한다.
+    // 브리핑 파일(M1-19·M1-45, D38): mock 출력(M0-34 입력 E 원문)은 이 입력과 근거가 맞지 않아 5줄 모두 줄 단위 강등 → 통과 줄이
+    // 없으면 같은 입력의 전체 템플릿(all-lines-downgraded — 줄마다 템플릿을 끼우는 것보다 경기 4줄 + 순위 줄 구성이 낫다).
     // 데이터 API를 불렀으므로 mock이어도 runs-dev.json에 호출 수를 비용 0으로 남긴다(M1-48). cache/ = seen-urls 기억(M1-12)
     expect(readdirSync(dataDir).sort()).toEqual([
       "briefs",
@@ -1247,12 +1253,12 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
     for (const line of briefFile.lines) {
       expect(line.ai).toBe(false);
       for (const ref of line.refs) expect(ids.has(ref), ref).toBe(true);
-      // 검증 안 된 LLM 줄은 파일에 없다(M1-45 전 — 이 동작을 고정한다)
+      // 강등된 LLM 줄은 파일에 없다
       expect(outcome.brief.lines).not.toContain(line.text);
     }
     expect(outcome.briefFile).toMatchObject({
       action: "written",
-      plan: { mode: "template", reason: "unverified" },
+      plan: { mode: "template", reason: "all-lines-downgraded" },
       existingMode: null,
       error: null,
     });
@@ -1285,7 +1291,7 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
     expect(outcome.status).toBe("success");
   });
 
-  it("코드 검증(M1-23): summarize.brief.done·dry 출력에 FR-29 판정과 줄별 사유 코드 — 저장은 여전히 템플릿(재시도·강등은 M1-45)", async () => {
+  it("코드 검증(M1-23): summarize.brief.done·dry 출력에 FR-29 판정과 줄별 사유 코드 — 통과 줄 0이면 전체 템플릿(M1-45)", async () => {
     const { deps, printed, records } = makeDeps();
     const outcome = await runCollect(deps);
     expect(outcome.brief).toMatchObject({ state: "done" });
@@ -1304,20 +1310,33 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
     const out = printed.find((p) => p.startsWith("── 브리핑 출력"))!;
     expect(out.split("\n")[0]).toContain("판정 downgrade-line:1,2,3,4,5");
     expect(out).toMatch(/1\. .+ → 강등 대상 — ref-unknown\(k927\)/u);
+    expect(out).toMatch(/1\. .+ → 강등 대상 — ref-unknown\(k927\).* ⇒ /u);
+    expect(done).toMatchObject({
+      attempts: 1,
+      publishedAi: 0,
+      grammar: {},
+    });
     expect(readBrief("2026-10-11")).toMatchObject({ mode: "template" });
     expect(outcome.briefFile).toMatchObject({
-      plan: { mode: "template", reason: "unverified" },
+      plan: { mode: "template", reason: "all-lines-downgraded" },
     });
   });
 
-  it("검사기가 예상 밖 오류를 내도 브리핑 단계는 멈추지 않는다 — 경고만 남기고 템플릿을 게시", async () => {
-    const { deps, printed, records } = makeDeps({
+  it("검사기가 예상 밖 오류를 내도 브리핑 단계는 멈추지 않는다 — 판정 없는 출력은 게시하지 않고(재시도 없음) 템플릿, partial(이슈 brief)", async () => {
+    const { deps, printed, records, llmRequests } = makeDeps({
       judgeBrief: () => {
         throw new Error("검사기 오류(시험)");
       },
     });
     const outcome = await runCollect(deps);
-    expect(outcome.brief).toMatchObject({ state: "done" });
+    // M1-45: 판정 없음 = downgrade-all(같은 코드가 다시 던지므로 재시도하지 않는다) → 같은 입력의 템플릿, 원인 check-error
+    expect(outcome.brief).toMatchObject({
+      state: "failed",
+      reason: "llm",
+      cause: "check-error",
+      attempts: 1,
+    });
+    expect(llmRequests).toHaveLength(1);
     expect(
       records.find((r) => r.event === "summarize.brief.check-fail"),
     ).toMatchObject({ error: expect.stringContaining("검사기 오류") });
@@ -1328,7 +1347,17 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
     expect(out).toContain("판정 없음(검사기 오류)");
     expect(out).toContain("1. 아틀레티코 마드리드가 알라베스 원정에서");
     expect(readBrief("2026-10-11")).toMatchObject({ mode: "template" });
-    expect(outcome.status).toBe("success");
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "check-failed" });
+    expect(outcome.status).toBe("partial");
+    expect(
+      partialFindings({
+        purge: outcome.purge,
+        news: outcome.news,
+        brief: outcome.brief,
+        briefFile: outcome.briefFile,
+        ledger: null,
+      }).map((f) => f.reason),
+    ).toEqual(["brief"]);
   });
 
   it("종료 경기가 없으면 LLM을 부르지 않는다(호출 생략), 뉴스는 발행", async () => {
@@ -1604,7 +1633,7 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
     expect(outcome.briefFile?.action).toBe("dry");
     const out = printed.find((p) =>
       p.startsWith(
-        "── [dry] data/briefs/2026-10-11.json (template · unverified, 5줄",
+        "── [dry] data/briefs/2026-10-11.json (template · all-lines-downgraded, 5줄",
       ),
     );
     expect(out).toBeDefined();
@@ -1659,8 +1688,9 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
       job: "collect",
       collected: 7,
       clusters: 5,
-      summarized: 2,
-      downgraded: 0,
+      // 게시 줄 기준(M1-45, FR-151): L1 통과(ai:true) · L2 '접전을 벌였다'는 문형 밖(grammar-unknown) → 같은 근거 템플릿 줄
+      summarized: 1,
+      downgraded: 1,
       tokens: { in: 6590, out: 3231, cacheRead: 0, cacheWrite: 0 },
       costUsd: 0.002275, // M0-34 실측과 같은 usage → 같은 비용
       apiCalls: { footballData: 6, apiFootball: 0 }, // 경기 1 + 순위 5(M1-44)
@@ -1744,7 +1774,8 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
       runId: outcome.runId,
       env: "prod",
       status: "skipped",
-      summarized: 2,
+      summarized: 1,
+      downgraded: 1,
       tokens: { in: 6590, out: 3231 },
     });
     expect(runs[0]!.costUsd).toBeGreaterThan(0);
@@ -1808,6 +1839,16 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(report.issues.filter((i) => i.severity === "error")).toEqual([]);
     expect(validationExitCode(report)).toBe(0);
     expect(report.counts.data).toBe(5); // news·briefs·runs.json·cache/seen-urls.json·cache/unknown-names.json 모두 스키마 검사 대상
+    // 검증 통과 줄 + 템플릿 강등이 섞인 브리핑(M1-45 — mixed)도 게이트를 통과한다
+    const brief = BriefFileSchema.parse(
+      JSON.parse(
+        readFileSync(
+          path.join(repo, "data", "briefs", "2026-10-11.json"),
+          "utf8",
+        ),
+      ),
+    );
+    expect(brief.mode).toBe("mixed");
     expect(readdirSync(path.join(repo, "data")).sort()).toEqual([
       "briefs",
       "cache",
@@ -1922,10 +1963,1014 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(file.lines.length).toBeGreaterThan(0);
     expect(file.lines.every((l) => !l.ai)).toBe(true);
     expect(outcome.briefFile?.plan).toMatchObject({ reason: "budget" });
+    // 예산 생략 실행도 게시한 템플릿 줄 수를 downgraded로 남긴다(M1-22 이월 → M1-45)
+    expect(outcome.run).toMatchObject({
+      summarized: 0,
+      downgraded: file.lines.length,
+      costUsd: 0,
+    });
+  });
+});
+
+// ─── M1-45 브리핑 게시 — FR-29 재시도·줄 강등·마감·예산·사전 실패 ─────────────────
+
+/**
+ * mock 클라이언트 + 시도 customId 경로(이 실행의 brief-2026-10-11 · brief-2026-10-11-r1 → fixture id). 입력 일치 mock(slice-*)과
+ * 실패 사례(brief-case-*)를 이 실행의 발행일 요청에 붙인다 — 경로에 없는 id는 그대로(없으면 LlmMockFixtureError).
+ */
+function routedMock(
+  routes: Readonly<Record<string, string>>,
+  requests: LlmRequest[],
+  options: CallSingleOptions[] = [],
+): Pick<LlmClient, "callSingle" | "model"> {
+  const client = createLlmClient({ mode: "mock", logger: () => undefined });
+  return {
+    model: client.model,
+    callSingle: (request, opts) => {
+      requests.push(request);
+      options.push(opts ?? {});
+      return client.callSingle(
+        { ...request, customId: routes[request.customId] ?? request.customId },
+        opts,
+      );
+    },
+  };
+}
+
+/** 단계별 응답을 돌려주는 가짜 live transport — 요청마다 customId·요청 타임아웃을 남기고, 시계를 밀 수 있다 */
+type ScriptStep =
+  | {
+      text: string;
+      stop?: "end_turn" | "max_tokens" | "refusal";
+      advanceMs?: number;
+    }
+  | { error: LlmTransportError; advanceMs?: number };
+
+function scriptedTransport(
+  steps: readonly ScriptStep[],
+  clock?: { t: number },
+): {
+  transport: LlmTransport;
+  calls: Array<{ customId: string; timeoutMs: number | undefined }>;
+} {
+  const calls: Array<{ customId: string; timeoutMs: number | undefined }> = [];
+  const unused = () => {
+    throw new Error("배치는 쓰지 않는다");
+  };
+  return {
+    calls,
+    transport: {
+      async createMessage(_params, meta) {
+        const step = steps[Math.min(calls.length, steps.length - 1)]!;
+        calls.push({ customId: meta.customId, timeoutMs: meta.timeoutMs });
+        if (clock && step.advanceMs) clock.t += step.advanceMs;
+        if ("error" in step) throw step.error;
+        return {
+          content: [{ type: "text", text: step.text }],
+          stop_reason: step.stop ?? "end_turn",
+          usage: {
+            input_tokens: 6590,
+            output_tokens: 3231,
+            cache_read_input_tokens: 0,
+            cache_creation_input_tokens: 0,
+          },
+        };
+      },
+      createBatch: unused,
+      retrieveBatch: unused,
+      cancelBatch: unused,
+      batchResults: unused,
+    },
+  };
+}
+
+const SLICE_LLM = JSON.parse(
+  read("fixtures/llm/mock/by-id/slice-2026-10-11-llm.json"),
+) as { text: string };
+const SLICE_MIXED = JSON.parse(
+  read("fixtures/llm/mock/by-id/slice-2026-10-11-mixed.json"),
+) as { text: string };
+const ENGLISH_OUTPUT = JSON.parse(
+  read("fixtures/llm/mock/by-id/brief-case-english.json"),
+) as { text: string };
+
+/** slice-2026-10-11-llm의 치환·조사 보정 뒤 문장(검사기가 80자를 잰 문장 = 게시 문장) */
+const SLICE_LLM_TEXTS = [
+  "아우크스부르크와 바이에른 뮌헨이 2-2로 비겼다.",
+  "아틀레티코 마드리드가 알라베스 원정에서 2-1로 이겼다.",
+  "맨체스터 유나이티드와 토트넘이 1-1로 비겼다.",
+  "레버쿠젠이 마인츠 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+  "첼시가 본머스를 5-1로 완파했다.",
+];
+
+/** 발행일 2026-10-11 여름 slot 실행 — 06:46 KST 시작(마감 06:50까지 4분 ≥ 3분 → slot 기준, D41) */
+const LATE_SLOT = Date.parse("2026-10-10T21:46:00.000Z");
+const SLOT_DEADLINE = Date.parse("2026-10-10T21:50:00.000Z");
+
+/** 움직이는 시계 + football-data 응답이 늦는 가짜 fetch — 경기 결과 응답에서 시계를 밀어 브리핑 시작 시 남은 시간을 정한다 */
+function lateClock(remainingAtBriefMs: number) {
+  const clock = { t: LATE_SLOT };
+  const fetcher = fakeFetch({
+    feed: BBC_XML,
+    fd: () => {
+      clock.t = SLOT_DEADLINE - remainingAtBriefMs;
+      return new Response(FD_MATCHES_1010, { status: 200 });
+    },
+  });
+  return { clock, fetch: fetcher.fetch, now: () => new Date(clock.t) };
+}
+
+/** 부분 실패 이슈 사유(collect.ts가 만드는 것과 같은 입력) */
+function issueReasons(outcome: Awaited<ReturnType<typeof runCollect>>) {
+  return partialFindings({
+    purge: outcome.purge,
+    news: outcome.news,
+    brief: outcome.brief,
+    briefFile: outcome.briefFile,
+    ledger: outcome.matchData?.ledger ?? null,
+  }).map((f) => f.reason);
+}
+
+describe("runCollect — 브리핑 게시(M1-45 — FR-29 재시도·줄 강등·마감)", () => {
+  it("llm: 입력 일치 응답(5줄 모두 통과) → mode llm, 줄 = 치환·조사 보정 뒤 문장(ai:true)·모델 근거, 실행 success", async () => {
+    const requests: LlmRequest[] = [];
+    const { deps, records, printed } = makeDeps({
+      createLlm: () =>
+        routedMock({ "brief-2026-10-11": "slice-2026-10-11-llm" }, requests),
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.brief).toMatchObject({
+      state: "done",
+      attempts: 1,
+      verdict: "ok",
+    });
+    expect(requests.map((r) => r.customId)).toEqual(["brief-2026-10-11"]);
+    const file = readBrief("2026-10-11");
+    expect(file.mode).toBe("llm");
+    expect(file.lines).toEqual(
+      SLICE_LLM_TEXTS.map((text, i) => ({
+        text,
+        ai: true,
+        refs: [["m565819", "m564699", "m560600", "m565812", "m560595"][i]!],
+      })),
+    );
+    expect(outcome.briefFile).toMatchObject({
+      action: "written",
+      plan: { mode: "llm", reason: "verified" },
+    });
+    expect(
+      records.find((r) => r.event === "summarize.brief.done"),
+    ).toMatchObject({
+      verdict: "ok",
+      attempts: 1,
+      publishedAi: 5,
+      publishedTemplate: 0,
+      droppedOutputLines: 0,
+      grammar: { draw: 2, win: 3 }, // 게시 줄 문형 분포(M1-23 이월)
+    });
+    expect(
+      records.find((r) => r.event === "summarize.brief.publish"),
+    ).toMatchObject({ mode: "llm", aiLines: 5, action: "written" });
+    expect(printed.find((p) => p.startsWith("── 브리핑 출력"))).toContain(
+      "1. 아우크스부르크와 바이에른 뮌헨이 2-2로 비겼다.  [m565819]  → 통과 ⇒ 게시(AI)",
+    );
+    expect(outcome.status).toBe("success");
+    // mock 줄은 LLM이 쓴 줄이 아니다 — 실행 기록 줄 수 0(live만 센다)
+    expect(outcome.run).toMatchObject({ summarized: 0, downgraded: 0 });
+  });
+
+  it("mixed(live·dry): 줄 단위 불일치(L3 점수)는 재시도 없이 그 줄만 같은 근거의 템플릿 줄 — runs-dev summarized 4·downgraded 1(게시 줄 기준)", async () => {
+    const script = scriptedTransport([{ text: SLICE_MIXED.text }]);
+    const { deps, printed } = makeDeps({
+      llmMode: "live",
+      dry: true,
+      createLlm: (model) =>
+        createLlmClient({
+          mode: "live",
+          model,
+          transport: script.transport,
+          logger: () => undefined,
+        }),
+    });
+    const outcome = await runCollect(deps);
+    expect(script.calls).toHaveLength(1);
+    expect(outcome.brief).toMatchObject({
+      state: "done",
+      verdict: "downgrade-line:3",
+    });
+    expect(outcome.briefFile?.action).toBe("dry");
+    const file = outcome.briefFile!.file!;
+    expect(file.mode).toBe("mixed");
+    expect(file.lines).toEqual([
+      {
+        text: "아우크스부르크와 바이에른 뮌헨이 2-2로 비겼다.",
+        ai: true,
+        refs: ["m565819"],
+      },
+      {
+        text: "아틀레티코 마드리드가 알라베스 원정에서 2-1로 이겼다.",
+        ai: true,
+        refs: ["m564699"],
+      },
+      // 'Leverkusen이 Mainz를 4-2로 꺾었다'(입력 4-3) → 같은 근거 m565812의 템플릿 줄
+      {
+        text: "레버쿠젠이 분데스리가 원정에서 마인츠를 4-3으로 꺾었다.",
+        ai: false,
+        refs: ["m565812"],
+      },
+      { text: "첼시가 본머스를 5-1로 완파했다.", ai: true, refs: ["m560595"] },
+      {
+        text: "도르트문트가 승점 13으로 분데스리가 선두다.",
+        ai: true,
+        refs: ["sBL"],
+      },
+    ]);
+    expect(BriefFileSchema.parse(file)).toEqual(file);
+    expect(
+      printed.find((p) =>
+        p.startsWith(
+          "── [dry] data/briefs/2026-10-11.json (mixed · verified, 5줄",
+        ),
+      ),
+    ).toBeDefined();
+    expect(briefFiles()).toEqual([]);
+    const runs = RunsDevFileSchema.parse(
+      JSON.parse(readFileSync(path.join(dataDir, "runs-dev.json"), "utf8")),
+    );
+    expect(runs[0]).toMatchObject({
+      summarized: 4,
+      downgraded: 1,
+      tokens: { in: 6590, out: 3231 },
+    });
+  });
+
+  it("FR-29 재시도: 출력 전체 실패(영어 출력) → 같은 입력·같은 지시문으로 brief-<날짜>-r1 1회 → 통과하면 그 출력 게시", async () => {
+    const requests: LlmRequest[] = [];
+    const { deps, records } = makeDeps({
+      createLlm: () =>
+        routedMock(
+          {
+            "brief-2026-10-11": "brief-case-english",
+            "brief-2026-10-11-r1": "slice-2026-10-11-llm",
+          },
+          requests,
+        ),
+    });
+    const outcome = await runCollect(deps);
+    expect(requests.map((r) => r.customId)).toEqual([
+      "brief-2026-10-11",
+      "brief-2026-10-11-r1",
+    ]);
+    expect(requests[1]!.system).toBe(requests[0]!.system);
+    expect(requests[1]!.user).toBe(requests[0]!.user);
+    expect(requests[1]!.maxTokens).toBe(BRIEF_MAX_TOKENS);
+    expect(outcome.brief).toMatchObject({
+      state: "done",
+      attempts: 2,
+      verdict: "ok",
+    });
+    expect(readBrief("2026-10-11").mode).toBe("llm");
+    expect(
+      records
+        .filter((r) => r.event === "summarize.brief.attempt")
+        .map((r) => [r.attempt, r.verdict, r.checkStage]),
+    ).toEqual([
+      [1, "retry", "whole"],
+      [2, "ok", "none"],
+    ]);
+    expect(
+      records.find((r) => r.event === "summarize.brief.retry"),
+    ).toMatchObject({ attempt: 2, customId: "brief-2026-10-11-r1" });
+    expect(outcome.status).toBe("success");
+  });
+
+  it("FR-29 재시도: zod 실패(JSON 아님)도 같은 1회 안에서 — r1이 줄 단위 강등이면 mixed", async () => {
+    const requests: LlmRequest[] = [];
+    const { deps } = makeDeps({
+      createLlm: () =>
+        routedMock(
+          {
+            "brief-2026-10-11": "brief-case-json-invalid",
+            "brief-2026-10-11-r1": "slice-2026-10-11-mixed",
+          },
+          requests,
+        ),
+    });
+    const outcome = await runCollect(deps);
+    expect(requests).toHaveLength(2);
+    expect(outcome.brief).toMatchObject({ state: "done", attempts: 2 });
+    expect(readBrief("2026-10-11").mode).toBe("mixed");
+  });
+
+  it("재시도도 출력 전체 실패면 템플릿(output-failed) — 요청은 BRIEF_MAX_ATTEMPTS(2)를 넘지 않고, partial·이슈 brief", async () => {
+    const requests: LlmRequest[] = [];
+    const { deps, records } = makeDeps({
+      createLlm: () =>
+        routedMock(
+          {
+            "brief-2026-10-11": "brief-case-english",
+            "brief-2026-10-11-r1": "brief-case-han",
+          },
+          requests,
+        ),
+    });
+    const outcome = await runCollect(deps);
+    expect(requests).toHaveLength(2);
+    expect(outcome.brief).toMatchObject({
+      state: "failed",
+      reason: "output",
+      cause: "output",
+      attempts: 2,
+    });
+    expect(
+      records
+        .filter((r) => r.event === "summarize.brief.attempt")
+        .map((r) => r.verdict),
+    ).toEqual(["retry", "downgrade-all"]);
+    expect(readBrief("2026-10-11").mode).toBe("template");
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "output-failed" });
+    expect(outcome.status).toBe("partial");
+    expect(issueReasons(outcome)).toEqual(["brief"]);
+  });
+
+  it("max_tokens(D40 ①·D53): 출력 전체 실패라 1회 재시도 — 같은 지시문이라 다시 잘리면 템플릿, 두 시도 토큰 모두 기록(live)", async () => {
+    const script = scriptedTransport([
+      { text: '{"l":[{"t":"', stop: "max_tokens" },
+    ]);
+    const { deps } = makeDeps({
+      llmMode: "live",
+      createLlm: (model) =>
+        createLlmClient({
+          mode: "live",
+          model,
+          transport: script.transport,
+          logger: () => undefined,
+        }),
+    });
+    const outcome = await runCollect(deps);
+    expect(script.calls.map((c) => c.customId)).toEqual([
+      "brief-2026-10-11",
+      "brief-2026-10-11-r1",
+    ]);
+    expect(outcome.brief).toMatchObject({
+      state: "failed",
+      reason: "output",
+      cause: "max-tokens",
+      attempts: 2,
+    });
+    const file = readBrief("2026-10-11");
+    expect(file.mode).toBe("template");
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "output-failed" });
+    // 잘린 출력도 과금된다 — 두 시도의 usage가 모두 기록되고, 게시 줄은 모두 템플릿
+    expect(outcome.run).toMatchObject({
+      tokens: { in: 6590 * 2, out: 3231 * 2 },
+      summarized: 0,
+      downgraded: file.lines.length,
+    });
+    expect(outcome.run!.costUsd).toBeGreaterThan(0);
+  });
+
+  it("max_tokens 뒤 재시도가 통과하면 그 출력을 게시한다", async () => {
+    const requests: LlmRequest[] = [];
+    const { deps } = makeDeps({
+      createLlm: () =>
+        routedMock(
+          {
+            "brief-2026-10-11": "brief-case-max-tokens",
+            "brief-2026-10-11-r1": "slice-2026-10-11-llm",
+          },
+          requests,
+        ),
+    });
+    const outcome = await runCollect(deps);
+    expect(requests).toHaveLength(2);
+    expect(outcome.brief).toMatchObject({ state: "done", attempts: 2 });
+    expect(readBrief("2026-10-11").mode).toBe("llm");
+  });
+
+  it("refusal(D40 ①): 재시도 없이 바로 템플릿(refusal) — partial·이슈 brief", async () => {
+    const requests: LlmRequest[] = [];
+    const { deps } = makeDeps({
+      createLlm: () =>
+        routedMock({ "brief-2026-10-11": "brief-case-refusal" }, requests),
+    });
+    const outcome = await runCollect(deps);
+    expect(requests).toHaveLength(1);
+    expect(outcome.brief).toMatchObject({
+      state: "failed",
+      reason: "llm",
+      cause: "refusal",
+      attempts: 1,
+    });
+    expect(readBrief("2026-10-11").mode).toBe("template");
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "refusal" });
+    expect(outcome.status).toBe("partial");
+    expect(issueReasons(outcome)).toEqual(["brief"]);
+  });
+
+  it("전송 실패(529 — llm.ts가 이미 재시도)·연결 오류는 FR-29 재시도 없이 템플릿(llm-failed)", async () => {
+    for (const id of [
+      "brief-case-errored-overloaded",
+      "brief-case-errored-timeout",
+    ]) {
+      const requests: LlmRequest[] = [];
+      const { deps, records } = makeDeps({
+        createLlm: () => routedMock({ "brief-2026-10-11": id }, requests),
+      });
+      const outcome = await runCollect(deps);
+      expect(requests, id).toHaveLength(1);
+      expect(outcome.brief, id).toMatchObject({
+        state: "failed",
+        reason: "llm",
+        cause: "transport",
+      });
+      // 응답 없는 연결 오류는 과금됐을 수 있다 — 추정(입력 어림 + max_tokens)을 경고로 남긴다(실측 비용은 0 그대로, 리뷰 권장 3)
+      const risk = records.find(
+        (r) => r.event === "summarize.brief.unbilled-risk",
+      );
+      if (id === "brief-case-errored-timeout") {
+        expect(risk, id).toMatchObject({
+          attempt: 1,
+          estimatedOutputTokensMax: BRIEF_MAX_TOKENS,
+        });
+        expect(Number(risk!.estimatedUsdMax)).toBeGreaterThan(0);
+      } else {
+        expect(risk, id).toBeUndefined(); // 529는 서버가 처리하지 않은 응답(과금 없음)
+      }
+      expect(outcome.briefFile?.plan, id).toMatchObject({
+        mode: "template",
+        reason: "llm-failed",
+      });
+      expect(issueReasons(outcome), id).toEqual(["brief"]);
+      rmSync(path.join(dataDir, "briefs"), { recursive: true, force: true });
+    }
+  });
+
+  it("재시도 mock이 없으면(개발 mock 실행) 템플릿(mock-missing) — 첫 시도 mock이 없으면 지금처럼 건너뜀", async () => {
+    const requests: LlmRequest[] = [];
+    const { deps } = makeDeps({
+      createLlm: () =>
+        routedMock({ "brief-2026-10-11": "brief-case-english" }, requests),
+    });
+    const outcome = await runCollect(deps);
+    expect(requests.map((r) => r.customId)).toEqual([
+      "brief-2026-10-11",
+      "brief-2026-10-11-r1",
+    ]);
+    expect(outcome.brief).toMatchObject({
+      state: "failed",
+      cause: "mock-missing",
+      attempts: 1,
+    });
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "mock-missing" });
+  });
+
+  it("마감 부족: 남은 35초(40초 미만 — 출력 상한 8,192 ≈ 36초)면 LLM을 부르지 않고, 남은 45초면 부른다(BRIEF_LLM_MIN_ATTEMPT_MS)", async () => {
+    for (const [remaining, called] of [
+      [35_000, false],
+      [45_000, true],
+    ] as const) {
+      const late = lateClock(remaining);
+      const requests: LlmRequest[] = [];
+      const { deps } = makeDeps({
+        now: late.now,
+        fetch: late.fetch,
+        createLlm: () =>
+          routedMock({ "brief-2026-10-11": "slice-2026-10-11-llm" }, requests),
+      });
+      const outcome = await runCollect(deps);
+      expect(requests.length > 0, String(remaining)).toBe(called);
+      expect(outcome.brief.state, String(remaining)).toBe(
+        called ? "done" : "skipped",
+      );
+      rmSync(path.join(dataDir, "briefs"), { recursive: true, force: true });
+    }
+    expect(BRIEF_LLM_MIN_ATTEMPT_MS).toBe(40_000);
+  });
+
+  it("마감 부족: 브리핑 시작 때 남은 시간이 40초 미만이면 LLM을 부르지 않는다 — 예산 판정은 먼저, 템플릿(deadline), partial이지만 이슈 없음", async () => {
+    const late = lateClock(20_000);
+    const { deps, params, llmCreated, printed, records } = (() => {
+      const fake = fakeLiveTransport(BRIEF_TEXT_OK);
+      const made = makeDeps({
+        llmMode: "live",
+        now: late.now,
+        fetch: late.fetch,
+        createLlm: () =>
+          createLlmClient({
+            mode: "live",
+            model: "claude-haiku-5-5",
+            transport: fake.transport,
+            logger: () => undefined,
+          }),
+      });
+      return { ...made, params: fake.params };
+    })();
+    const outcome = await runCollect(deps);
+    expect(records.find((r) => r.event === "collect.deadline")).toMatchObject({
+      basis: "slot",
+      briefDeadline: "2026-10-10T21:50:00.000Z",
+    });
+    expect(outcome.brief).toEqual({
+      state: "skipped",
+      reason: "deadline",
+      remainingMs: 20_000,
+      inputMatches: 23,
+    });
+    expect(params).toHaveLength(0);
+    expect(llmCreated()).toBe(0);
+    // 예산 판정(M1-22)이 마감 확인보다 먼저다 — 예상 비용을 출력한 뒤 마감으로 건너뛴다
+    expect(printed.some((p) => p.startsWith("[cost] 예상"))).toBe(true);
+    const file = readBrief("2026-10-11");
+    expect(file.mode).toBe("template");
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "deadline" });
+    expect(outcome.status).toBe("partial");
+    expect(issueReasons(outcome)).toEqual([]);
+    expect(outcome.run).toMatchObject({
+      summarized: 0,
+      downgraded: file.lines.length,
+    });
+  });
+
+  it("마감 부족과 예산 초과가 겹치면 예산 생략으로 기록한다(예산 판정이 먼저 — M1-22 이월)", async () => {
+    const late = lateClock(20_000);
+    const { deps } = makeDeps({
+      llmMode: "live",
+      now: late.now,
+      fetch: late.fetch,
+      resolveBriefConfig: () => ({
+        model: "claude-haiku-5-5",
+        budgets: { dailyBudgetUsd: 0, monthlyBudgetUsd: 3 },
+      }),
+      createLlm: () => {
+        throw new Error("부르면 안 된다");
+      },
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.brief).toMatchObject({ state: "skipped", reason: "budget" });
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "budget" });
+  });
+
+  it("요청 타임아웃 = min(60초, 마감 − 현재) — 여유 있는 정시 실행은 60초, 남은 시간 45초면 45초(M0-36 ①)", async () => {
+    for (const [remaining, expected] of [
+      [null, 60_000],
+      [45_000, 45_000],
+    ] as const) {
+      const late = remaining === null ? null : lateClock(remaining);
+      const script = scriptedTransport([{ text: SLICE_LLM.text }]);
+      const { deps } = makeDeps({
+        llmMode: "live",
+        ...(late ? { now: late.now, fetch: late.fetch } : {}),
+        createLlm: (model, clock) =>
+          createLlmClient({
+            mode: "live",
+            model,
+            transport: script.transport,
+            now: clock.now,
+            logger: () => undefined,
+          }),
+      });
+      const outcome = await runCollect(deps);
+      expect(script.calls.map((c) => c.timeoutMs)).toEqual([expected]);
+      expect(outcome.brief).toMatchObject({ state: "done" });
+      rmSync(path.join(dataDir, "briefs"), { recursive: true, force: true });
+      rmSync(path.join(dataDir, "runs-dev.json"), { force: true });
+    }
+  });
+
+  it("재시도도 마감 안에서만 — 첫 시도가 40초 걸려 남은 시간이 20초면 r1을 보내지 않고 템플릿(deadline, 이슈 없음)", async () => {
+    const late = lateClock(60_000);
+    const script = scriptedTransport(
+      [{ text: ENGLISH_OUTPUT.text, advanceMs: 40_000 }],
+      late.clock,
+    );
+    const { deps, records } = makeDeps({
+      llmMode: "live",
+      now: late.now,
+      fetch: late.fetch,
+      createLlm: (model, clock) =>
+        createLlmClient({
+          mode: "live",
+          model,
+          transport: script.transport,
+          now: clock.now,
+          logger: () => undefined,
+        }),
+    });
+    const outcome = await runCollect(deps);
+    expect(script.calls).toHaveLength(1);
+    expect(script.calls[0]!.timeoutMs).toBe(60_000); // 남은 60초 = 상한 60초
+    expect(
+      records.find((r) => r.event === "summarize.brief.retry.skip"),
+    ).toMatchObject({ reason: "deadline", attempt: 2, remainingMs: 20_000 });
+    expect(outcome.brief).toMatchObject({
+      state: "failed",
+      cause: "deadline",
+      attempts: 1,
+    });
+    expect(outcome.briefFile?.plan).toMatchObject({
+      mode: "template",
+      reason: "deadline",
+    });
+    expect(outcome.status).toBe("partial");
+    expect(issueReasons(outcome)).toEqual([]);
+  });
+
+  it("마감에 걸려 끊긴 요청(줄인 타임아웃 → 연결 오류)은 마감 강등 — 재시도 없음, 이슈 없음", async () => {
+    const late = lateClock(45_000);
+    const script = scriptedTransport(
+      [
+        {
+          error: new LlmTransportError({
+            errorType: "connection_error",
+            message: "요청 시간 초과",
+          }),
+          advanceMs: 45_000,
+        },
+      ],
+      late.clock,
+    );
+    const { deps } = makeDeps({
+      llmMode: "live",
+      now: late.now,
+      fetch: late.fetch,
+      createLlm: (model, clock) =>
+        createLlmClient({
+          mode: "live",
+          model,
+          transport: script.transport,
+          now: clock.now,
+          logger: () => undefined,
+        }),
+    });
+    const outcome = await runCollect(deps);
+    expect(script.calls).toEqual([
+      { customId: "brief-2026-10-11", timeoutMs: 45_000 },
+    ]);
+    expect(outcome.brief).toMatchObject({
+      state: "failed",
+      reason: "llm",
+      cause: "deadline",
+    });
+    expect(outcome.briefFile?.plan).toMatchObject({ reason: "deadline" });
+    expect(issueReasons(outcome)).toEqual([]);
+  });
+
+  it("사전 실패: configs/names.ko.json을 읽지 못하면 LLM을 부르지 않고 영문 이름 템플릿 — partial·이슈 brief(M1-45 결정)", async () => {
+    const repo = path.join(dataDir, "repo-broken-names");
+    cpSync(path.join(ROOT, "configs"), path.join(repo, "configs"), {
+      recursive: true,
+    });
+    writeFileSync(path.join(repo, "configs", "names.ko.json"), "{ broken");
+    const { deps, llmCreated } = makeDeps({
+      rootDir: repo,
+      dataDir: path.join(repo, "data"),
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(llmCreated()).toBe(0);
+    expect(outcome.brief).toEqual({
+      state: "skipped",
+      reason: "names-unreadable",
+      inputMatches: 23,
+    });
+    expect(outcome.briefFile).toMatchObject({
+      action: "written",
+      plan: { mode: "template", reason: "names-unreadable" },
+    });
+    // 사전 없이 만든 템플릿 — 영문 이름 그대로(M1-19 동작)
+    expect(outcome.briefFile!.file!.lines[0]!.text).toContain("Augsburg");
+    expect(outcome.status).toBe("partial");
+    expect(issueReasons(outcome)).toEqual(["brief"]);
+  });
+
+  it("같은 날 재실행: 아침 템플릿(refusal) 뒤 LLM이 통과하면 llm으로 갱신, 그 뒤 실행은 LLM을 부르지 않는다(kept)", async () => {
+    const first = await runCollect(
+      makeDeps({
+        createLlm: () =>
+          routedMock({ "brief-2026-10-11": "brief-case-refusal" }, []),
+      }).deps,
+    );
+    expect(first.briefFile).toMatchObject({
+      action: "written",
+      plan: { mode: "template" },
+    });
+    const later = () => new Date("2026-10-10T22:10:00.000Z"); // 같은 KST 날 07:10
+    // 두 번째 실행은 live(과금 토큰이 있는 기록) — mock이 쓴 llm 파일은 kept로 치지 않는다(아래 테스트)
+    const script = scriptedTransport([{ text: SLICE_LLM.text }]);
+    const second = await runCollect(
+      makeDeps({
+        now: later,
+        llmMode: "live",
+        createLlm: (model) =>
+          createLlmClient({
+            mode: "live",
+            model,
+            transport: script.transport,
+            logger: () => undefined,
+          }),
+      }).deps,
+    );
+    expect(second.briefFile).toMatchObject({
+      action: "written",
+      existingMode: "template",
+      plan: { mode: "llm" },
+    });
+    expect(readBrief("2026-10-11").mode).toBe("llm");
+    const third = makeDeps({ now: later });
+    const kept = await runCollect(third.deps);
+    expect(third.llmCreated()).toBe(0);
+    expect(kept.brief).toMatchObject({ state: "skipped", reason: "kept" });
+    expect(readBrief("2026-10-11").lines.map((l) => l.text)).toEqual(
+      SLICE_LLM_TEXTS,
+    );
+  });
+
+  it("mock 비dry 실행이 쓴 llm·mixed는 kept로 치지 않는다 — 쓸 때 경고, 같은 날 다음 live 실행이 LLM을 불러 덮는다(리뷰 권장 5)", async () => {
+    const first = makeDeps({
+      createLlm: () =>
+        routedMock({ "brief-2026-10-11": "slice-2026-10-11-llm" }, []),
+    });
+    const mocked = await runCollect(first.deps);
+    expect(mocked.briefFile).toMatchObject({
+      action: "written",
+      plan: { mode: "llm" },
+    });
+    expect(
+      first.records.find((r) => r.event === "summarize.brief.mock-ai-lines"),
+    ).toMatchObject({ mode: "llm", aiLines: 5 });
+    // mock 실행 기록(데이터 API 호출 수만, LLM 토큰 0)이 runs-dev.json에 있다
+    expect(mocked.run).toMatchObject({
+      runId: readBrief("2026-10-11").runId,
+      tokens: { in: 0, out: 0 },
+    });
+
+    const later = () => new Date("2026-10-10T22:10:00.000Z");
+    const script = scriptedTransport([{ text: SLICE_MIXED.text }]);
+    const second = makeDeps({
+      now: later,
+      llmMode: "live",
+      createLlm: (model) =>
+        createLlmClient({
+          mode: "live",
+          model,
+          transport: script.transport,
+          logger: () => undefined,
+        }),
+    });
+    const live = await runCollect(second.deps);
+    expect(script.calls).toHaveLength(1);
+    expect(
+      second.records.find((r) => r.event === "summarize.brief.mock-existing"),
+    ).toMatchObject({ existingMode: "llm" });
+    expect(live.briefFile).toMatchObject({
+      action: "written",
+      existingMode: "llm",
+      plan: { mode: "mixed" },
+    });
+    expect(readBrief("2026-10-11").runId).toBe(live.runId);
+    expect(
+      second.records.some((r) => r.event === "summarize.brief.mock-ai-lines"),
+    ).toBe(false);
+
+    // live가 쓴 mixed는 그다음 실행이 지킨다(kept)
+    const third = makeDeps({ now: later });
+    const kept = await runCollect(third.deps);
+    expect(third.llmCreated()).toBe(0);
+    expect(kept.brief).toMatchObject({ state: "skipped", reason: "kept" });
+  });
+});
+
+// ─── D56 하루 요청 상한·요청 기록 ──────────────────────────────────────────
+
+describe("runCollect — 하루 브리핑 요청 상한·요청 기록(D56 — FR-25 하루 1~3요청)", () => {
+  /** live 실행(가짜 transport, 전송 재시도 대기 없음) */
+  function liveRun(
+    steps: readonly ScriptStep[],
+    over: Partial<CollectDeps> = {},
+  ) {
+    const script = scriptedTransport(steps);
+    const made = makeDeps({
+      llmMode: "live",
+      createLlm: (model) =>
+        createLlmClient({
+          mode: "live",
+          model,
+          transport: script.transport,
+          sleep: async () => undefined,
+          logger: () => undefined,
+        }),
+      ...over,
+    });
+    return { ...made, script };
+  }
+  const devRuns = () =>
+    RunsDevFileSchema.parse(
+      JSON.parse(readFileSync(path.join(dataDir, "runs-dev.json"), "utf8")),
+    );
+  const ENGLISH = { text: ENGLISH_OUTPUT.text };
+
+  it("같은 날 두 실행이 2 + 1 = 3요청을 쓰면 세 번째 실행은 LLM 없이 템플릿(daily-cap) — 두 번째는 재시도 몫이 없어 1요청만, 이슈 없음", async () => {
+    // ① 06:30 — 영어 출력 → FR-29 재시도 → 또 영어 → 템플릿(2요청)
+    const first = liveRun([ENGLISH]);
+    const a = await runCollect(first.deps);
+    expect(first.script.calls).toHaveLength(2);
+    expect(a.run?.brief).toEqual({ requests: 2 });
+
+    // ② 07:10 — 남은 몫 1 → 시도 1회, 재시도가 필요하면 보내지 않고 템플릿(cause daily-cap)
+    const second = liveRun([ENGLISH], {
+      now: () => new Date("2026-10-10T22:10:00.000Z"),
+    });
+    const b = await runCollect(second.deps);
+    expect(second.script.calls).toHaveLength(1);
+    expect(
+      second.records.find((r) => r.event === "summarize.brief.daily-cap"),
+    ).toMatchObject({ used: 2, remaining: 1, attemptsAllowed: 1, cap: 3 });
+    expect(b.brief).toMatchObject({
+      state: "failed",
+      reason: "output",
+      cause: "daily-cap",
+      attempts: 1,
+    });
+    expect(b.briefFile?.plan).toMatchObject({
+      mode: "template",
+      reason: "daily-cap",
+    });
+    expect(b.status).toBe("success"); // 의도된 제한 — 예산 생략과 같다
+    expect(issueReasons(b)).toEqual([]);
+    expect(b.run?.brief).toEqual({ requests: 1 });
+
+    // ③ 08:30 — 3요청을 다 썼다 → LLM 클라이언트도 만들지 않는다
+    const third = liveRun([ENGLISH], {
+      now: () => new Date("2026-10-10T23:30:00.000Z"),
+    });
+    const c = await runCollect(third.deps);
+    expect(third.llmCreated()).toBe(0);
+    expect(third.script.calls).toHaveLength(0);
+    expect(c.brief).toEqual({
+      state: "skipped",
+      reason: "daily-cap",
+      used: 3,
+      cap: 3,
+      inputMatches: 23,
+    });
+    expect(
+      third.records.find((r) => r.event === "summarize.brief.daily-cap"),
+    ).toMatchObject({ used: 3, remaining: 0, attemptsAllowed: 0 });
+    expect(c.status).toBe("success");
+    expect(issueReasons(c)).toEqual([]);
+    expect(c.run?.brief).toBeUndefined(); // 보낸 요청 0건 = 필드 없음
+    expect(devRuns().map((r) => r.brief?.requests ?? 0)).toEqual([2, 1, 0]);
+
+    // 다른 날짜는 따로 센다 — tests/brief-publish.test.ts briefDailyAllowance(이 입력 fixture는 2026-10-11 발행일 경기뿐)
+  });
+
+  it("옛 기록(brief 필드 없음)은 0건 — 같은 날 LLM 토큰이 있는 옛 기록이 있어도 시도 2회를 그대로 쓴다", async () => {
+    const old = {
+      runId: "collect-dev-20261010T213000Z-0001",
+      env: "dev",
+      job: "collect",
+      startedAt: "2026-10-10T21:20:00.000Z",
+      finishedAt: "2026-10-10T21:25:00.000Z",
+      collected: 7,
+      clusters: 5,
+      summarized: 5,
+      downgraded: 0,
+      tokens: { in: 6590, out: 3231, cacheRead: 0, cacheWrite: 0 },
+      costUsd: 0.002275,
+      apiCalls: { footballData: 6, apiFootball: 0 },
+      sources: [],
+      status: "success",
+    };
+    writeFileSync(
+      path.join(dataDir, "runs-dev.json"),
+      `${JSON.stringify([old, { ...old, runId: "collect-dev-20261010T213000Z-0002" }])}\n`,
+    );
+    const run = liveRun([ENGLISH]);
+    await runCollect(run.deps);
+    expect(run.script.calls).toHaveLength(2);
+    expect(
+      run.records.find((r) => r.event === "summarize.brief.daily-cap"),
+    ).toMatchObject({ used: 0, attemptsAllowed: 2 });
+  });
+
+  it("runs 파일을 읽지 못하면 live에서는 비용 가드가 먼저 LLM을 생략한다(runs_unreadable) — 하루 상한 판정까지 가지 않는다", async () => {
+    writeFileSync(path.join(dataDir, "runs-dev.json"), "{ broken");
+    const run = liveRun([ENGLISH]);
+    const outcome = await runCollect(run.deps);
+    expect(run.script.calls).toHaveLength(0);
+    expect(outcome.brief).toMatchObject({
+      state: "skipped",
+      reason: "budget",
+      budget: { verdict: "runs_unreadable" },
+    });
+    expect(
+      run.records.some((r) => r.event === "summarize.brief.daily-cap"),
+    ).toBe(false);
+  });
+
+  it("전송 재시도(529 → 재전송 → 성공)는 요청 1건, 응답 없이 끊긴 연결 오류는 1건 + unbilledRisk(실측 비용 0과 따로)", async () => {
+    const overloaded = new LlmTransportError({
+      status: 529,
+      errorType: "overloaded_error",
+      message: "overloaded",
+    });
+    const retried = liveRun([{ error: overloaded }, { text: SLICE_LLM.text }]);
+    const ok = await runCollect(retried.deps);
+    expect(retried.script.calls).toHaveLength(2); // HTTP 2회(llm.ts 전송 재시도)
+    expect(ok.brief).toMatchObject({ state: "done", attempts: 1 });
+    expect(ok.run?.brief).toEqual({ requests: 1 });
+
+    rmSync(path.join(dataDir, "briefs"), { recursive: true, force: true });
+    const cut = liveRun([
+      {
+        error: new LlmTransportError({
+          errorType: "connection_error",
+          message: "요청 시간 초과",
+        }),
+      },
+    ]);
+    const lost = await runCollect(cut.deps);
+    expect(cut.script.calls).toHaveLength(1);
+    expect(lost.run?.costUsd).toBe(0);
+    expect(lost.run?.brief).toMatchObject({
+      requests: 1,
+      unbilledRisk: { requests: 1, outputTokensMax: BRIEF_MAX_TOKENS },
+    });
+    const risk = lost.run!.brief!.unbilledRisk!;
+    expect(risk.inputTokens).toBeGreaterThan(0);
+    expect(risk.usdMax).toBeGreaterThan(0);
+    // 저장된 기록도 같은 값(스키마가 새 필드를 받는다 — validate). 두 실행의 startedAt이 같아(deps.now 고정) 파일 순서는 runId의
+    // 무작위 접미사로 갈린다(cost.ts sortRuns) — 위치가 아니라 runId로 찾는다
+    const saved = devRuns();
+    expect(saved.map((r) => r.runId).sort()).toEqual(
+      [ok.runId, lost.runId].sort(),
+    );
+    expect(saved.find((r) => r.runId === ok.runId)!.brief).toEqual({
+      requests: 1,
+    });
+    expect(saved.find((r) => r.runId === lost.runId)!.brief).toEqual(
+      lost.run!.brief,
+    );
+  });
+
+  it("mock 실행은 요청을 기록하지 않고(LLM 비용 0 — mock 줄은 실제 요청이 아니다) 하루 상한도 보지 않는다", async () => {
+    const { deps, records } = makeDeps();
+    const outcome = await runCollect(deps);
+    expect(outcome.run?.brief).toBeUndefined();
+    expect(records.some((r) => r.event === "summarize.brief.daily-cap")).toBe(
+      false,
+    );
   });
 });
 
 describe("collect-run.ts — 설정 해석", () => {
+  it("실행 기록 브리핑 줄 수(M1-45, FR-151): 게시 줄 기준 — written·unchanged·dry만, live만, ai:true = summarized·ai:false = downgraded", () => {
+    const file = BriefFileSchema.parse({
+      date: "2026-10-11",
+      generatedAt: "2026-10-10T21:31:00.000Z",
+      runId: "collect-dev-20261010T213000Z-0000",
+      mode: "mixed",
+      lines: [
+        {
+          text: "첼시가 본머스를 5-1로 완파했다.",
+          ai: true,
+          refs: ["m560595"],
+        },
+        {
+          text: "아스널이 리즈 유나이티드를 2-1로 꺾었다.",
+          ai: false,
+          refs: ["m560593"],
+        },
+        {
+          text: "인테르가 파르마를 3-0으로 완파했다.",
+          ai: true,
+          refs: ["m558582"],
+        },
+      ],
+    });
+    for (const action of ["written", "unchanged", "dry"] as const) {
+      expect(briefLineCounts({ action, file }, true)).toEqual({
+        summarized: 2,
+        downgraded: 1,
+      });
+      expect(briefLineCounts({ action, file }, false)).toEqual({
+        summarized: 0,
+        downgraded: 0,
+      });
+    }
+    for (const action of ["kept", "none", "failed"] as const) {
+      expect(briefLineCounts({ action, file }, true)).toEqual({
+        summarized: 0,
+        downgraded: 0,
+      });
+    }
+    expect(briefLineCounts(null, true)).toEqual({
+      summarized: 0,
+      downgraded: 0,
+    });
+  });
+
   it("실행 환경: Actions면 prod, 아니면 dev", () => {
     expect(resolveRunEnv({ GITHUB_ACTIONS: "true" })).toBe("prod");
     expect(resolveRunEnv({})).toBe("dev");

@@ -5,7 +5,7 @@
  * (호스트별 병렬·재시도 1회·단계 시간 예산 90초, 소스별 실패 격리 — scripts/lib/feed-collect.ts) → 같은 URL 묶음(M1-12) → 같은 사건
  * 클러스터(M1-13 — 제목 유사도, 국내·해외 따로) → 점수화 상위 MAX_ITEMS_PER_RUN(기본 45, 소량 실행 `--limit` — M1-14, FR-06)
  * 원제목 카드 → data/news/<KST 발행일>.json,
- * M1-44 경기 데이터(football-data 전날 종료 경기 + 그 대회 순위, 프로바이더별 병렬·실패 격리) → 브리핑 1요청(출력은 로그만),
+ * M1-44 경기 데이터(football-data 전날 종료 경기 + 그 대회 순위, 프로바이더별 병렬·실패 격리) → 브리핑 단건(FR-29 재시도 1회 · 검증 통과 줄 + 템플릿 강등 게시 — M1-45),
  * M1-48 API-Football 경기 단건(날짜 조회 D-1·D → 대상 경기 상세, 브리핑 경기 먼저 · 이월 data/cache/af-pending.json —
  * 뉴스와 병렬로 시작, API_FOOTBALL_MAX_CALLS로 실행당 호출 상한을 걸 수 있다) · M1-48b 경기 기록 원장 data/matches/
  * (COLLECT_ENABLED == "true"인 prod·비dry 실행만 쓴다 — 로컬 dev·dry는 메모리에서 만들어 로그만).
@@ -91,7 +91,9 @@ async function main(): Promise<number> {
       model: resolveLlmModel(env),
       budgets: resolveBudgets(env),
     }),
-    createLlm: (model) => createLlmClient({ mode: args.llmMode, model, env }),
+    // LLM 클라이언트 시계 = 위 now와 같은 벽시계(브리핑 마감까지 남은 시간으로 요청 타임아웃·재시도 대기를 잰다 — M1-45)
+    createLlm: (model, clock) =>
+      createLlmClient({ mode: args.llmMode, model, env, now: clock.now }),
     logger,
     print: (text) => console.log(text),
     healthReportPath: env.SOURCE_HEALTH_FILE?.trim() || null,

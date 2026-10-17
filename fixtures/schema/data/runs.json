@@ -18,7 +18,16 @@
       { "id": "relevo", "ok": false, "items": 0, "error": "http-5xx" },
       { "id": "besteleven-all", "ok": false, "items": 0, "error": "budget" }
     ],
-    "status": "partial"
+    "status": "partial",
+    "brief": {
+      "requests": 2,
+      "unbilledRisk": {
+        "requests": 1,
+        "inputTokens": 6609,
+        "outputTokensMax": 8192,
+        "usdMax": 0.004757
+      }
+    }
   },
   {
     "runId": "2026-10-08T21-30-00Z-collect",

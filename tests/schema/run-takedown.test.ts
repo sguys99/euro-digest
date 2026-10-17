@@ -75,6 +75,51 @@ describe("RunLog — data/runs.json · data/runs-dev.json (부록 A, FR-151)", (
     ).toEqual(["sources.0.error"]);
   });
 
+  it("brief(D56 — 브리핑 요청 수·응답 없이 끊긴 요청의 추정 최대 사용량)는 선택 필드 — 옛 기록(필드 없음 = 0건)도 유효", () => {
+    const runs = validFixture(RunsFileSchema, "data/runs.json");
+    expect(at(runs, 0).brief).toEqual({
+      requests: 2,
+      unbilledRisk: {
+        requests: 1,
+        inputTokens: 6609,
+        outputTokensMax: 8192,
+        usdMax: 0.004757,
+      },
+    });
+    expect(at(runs, 1).brief).toBeUndefined();
+    expect(dev.brief).toEqual({ requests: 1 });
+    expect(passes(RunLogSchema, { ...prod, brief: { requests: 0 } })).toBe(
+      true,
+    );
+    expect(
+      issuePaths(RunLogSchema, { ...prod, brief: { requests: 1.5 } }),
+    ).toEqual(["brief.requests"]);
+    expect(
+      issuePaths(RunLogSchema, { ...prod, brief: { requests: -1 } }),
+    ).toEqual(["brief.requests"]);
+    expect(issuePaths(RunLogSchema, { ...prod, brief: {} })).toEqual([
+      "brief.requests",
+    ]);
+    const risk = {
+      requests: 1,
+      inputTokens: 10,
+      outputTokensMax: 8192,
+      usdMax: 0.01,
+    };
+    expect(
+      issuePaths(RunLogSchema, {
+        ...prod,
+        brief: { requests: 1, unbilledRisk: { ...risk, requests: 0 } },
+      }),
+    ).toEqual(["brief.unbilledRisk.requests"]);
+    expect(
+      issuePaths(RunLogSchema, {
+        ...prod,
+        brief: { requests: 1, unbilledRisk: { ...risk, usdMax: -1 } },
+      }),
+    ).toEqual(["brief.unbilledRisk.usdMax"]);
+  });
+
   it("job·status 열거값을 검사한다", () => {
     expect(issuePaths(RunLogSchema, { ...prod, job: "deploy" })).toEqual([
       "job",

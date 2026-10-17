@@ -8,12 +8,14 @@ import { TimeInputError } from "@/lib/time";
 
 import { API_FOOTBALL_BRIEF_CUTOFF_MS } from "../scripts/lib/api-football-stage";
 import {
+  BRIEF_LLM_MIN_ATTEMPT_MS,
   BRIEF_LLM_RESERVE_MS,
   deadlineLogFields,
   MIN_SLOT_WINDOW_MS,
   msUntil,
   OFF_SLOT_BRIEF_WINDOW_MS,
   planCollectDeadlines,
+  SLOT_LLM_MIN_MS,
   stageBudgets,
   type StageBudgets,
 } from "../scripts/lib/collect-deadlines";
@@ -29,6 +31,12 @@ describe("상수 — 정시 실행의 예산은 M1-47 전과 같다", () => {
     expect(MIN_SLOT_WINDOW_MS).toBeGreaterThanOrEqual(
       FOOTBALL_DATA_STAGE_BUDGET_MS,
     );
+    // 슬롯 판정(D41 3분 = 150초 + 30초)과 시도 최소 시간(40초 — M1-45, 출력 상한 8,192 ≈ 36초)은 따로다
+    expect(MIN_SLOT_WINDOW_MS).toBe(
+      FOOTBALL_DATA_STAGE_BUDGET_MS + SLOT_LLM_MIN_MS,
+    );
+    expect(SLOT_LLM_MIN_MS).toBe(30 * SEC);
+    expect(BRIEF_LLM_MIN_ATTEMPT_MS).toBe(40 * SEC);
     expect(OFF_SLOT_BRIEF_WINDOW_MS).toBe(8 * MIN);
     expect(OFF_SLOT_BRIEF_WINDOW_MS).toBe(
       API_FOOTBALL_BRIEF_CUTOFF_MS + BRIEF_LLM_RESERVE_MS,

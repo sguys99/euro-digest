@@ -23,6 +23,7 @@ import {
   CostConfigError,
   CostError,
   createRunRecorder,
+  isBriefRequestResult,
   DEFAULT_DAILY_BUDGET_USD,
   DEFAULT_MONTHLY_BUDGET_USD,
   envForRunsPath,
@@ -1060,6 +1061,106 @@ describe("recordRun / buildRunLog", () => {
         status: "success",
       }),
     ).toThrow(UnknownModelPricingError);
+  });
+});
+
+describe("brief.requests·unbilledRisk — 일일 브리핑 요청 기록(D56)", () => {
+  const now = new Date("2026-10-10T03:00:00Z");
+  const ok = (out: number) =>
+    ({ ok: true, usage: usage({ in: 6_000, out }), batch: false }) as const;
+  const fail = (errorType: string, out = 0) => ({
+    ok: false,
+    errorType,
+    usage: usage(out > 0 ? { in: 6_000, out } : {}),
+    batch: false,
+  });
+  const build = (
+    results: Parameters<typeof buildRunLog>[0]["results"],
+    over: Partial<Parameters<typeof buildRunLog>[0]> = {},
+  ) =>
+    buildRunLog({
+      env: "prod",
+      job: "collect",
+      model: MODEL,
+      startedAt: "2026-10-10T21:30:00.000Z",
+      runId: "collect-prod-test",
+      results,
+      status: "success",
+      now,
+      ...over,
+    });
+
+  it("isBriefRequestResult — 응답을 받았거나(성공·refusal·max_tokens·빈 출력) 응답 없이 끊긴(연결 오류) 단건만 요청 1건", () => {
+    expect(isBriefRequestResult(ok(3_000))).toBe(true);
+    for (const t of ["refusal", "max_tokens", "empty_output"]) {
+      expect(isBriefRequestResult(fail(t, 8_192)), t).toBe(true);
+    }
+    expect(isBriefRequestResult(fail("connection_error"))).toBe(true);
+    // 마감으로 보내지 않음·서버 오류 응답(429·5xx·4xx — llm.ts 전송 재시도 소진 포함)은 생성하지 않았다
+    for (const t of [
+      "deadline",
+      "rate_limit_error",
+      "overloaded_error",
+      "api_error",
+      "timeout_error",
+      "invalid_request_error",
+      "authentication_error",
+    ]) {
+      expect(isBriefRequestResult(fail(t)), t).toBe(false);
+    }
+    // 배치는 브리핑 요청이 아니다(D28 — 주간 호출), ok 정보가 없으면 과금 토큰으로
+    expect(isBriefRequestResult({ ...ok(1), batch: true })).toBe(false);
+    expect(isBriefRequestResult(result({ in: 10, out: 5 }, false))).toBe(true);
+    expect(isBriefRequestResult(result({}, false))).toBe(false);
+  });
+
+  it("collect 실행 — FR-29 재시도는 1건 더(2), 전송 재시도는 callSingle 결과 1개라 1건, 마감 미전송은 0건 — 0건이면 필드 없음", () => {
+    expect(build([fail("max_tokens", 8_192), ok(3_000)]).brief).toEqual({
+      requests: 2,
+    });
+    // llm.ts가 429를 두 번 다시 보낸 뒤 성공해도 결과는 1개(usage는 성공 응답 것) — 1건
+    expect(build([ok(3_000)]).brief).toEqual({ requests: 1 });
+    expect(build([fail("deadline")]).brief).toBeUndefined();
+    expect(build([fail("overloaded_error")]).brief).toBeUndefined();
+    expect(build([]).brief).toBeUndefined();
+    expect(build(undefined).brief).toBeUndefined();
+    // weekly(배치 — 주간 호출)는 브리핑 요청을 세지 않는다
+    expect(build([ok(3_000)], { job: "weekly" }).brief).toBeUndefined();
+  });
+
+  it("응답 없이 끊긴 요청의 추정 최대 사용량은 brief.unbilledRisk에 따로 — 실측 costUsd·tokens(0)와 섞지 않는다", () => {
+    const risk = {
+      requests: 1,
+      inputTokens: 6_609,
+      outputTokensMax: 8_192,
+      usdMax: 0.004757,
+    };
+    const run = build([fail("connection_error")], {
+      briefUnbilledRisk: risk,
+    });
+    expect(run.brief).toEqual({ requests: 1, unbilledRisk: risk });
+    expect(run.costUsd).toBe(0);
+    expect(run.tokens).toEqual(ZERO);
+  });
+
+  it("실행 기록기(eval-prompt 경로)도 결과의 ok·errorType으로 brief.requests를 남긴다", async () => {
+    const dataDir = tmpDataDir();
+    const rec = createRunRecorder({
+      env: "dev",
+      job: "collect",
+      model: MODEL,
+      mode: "live",
+      runId: "eval-dev-20261010T030000Z-0000",
+      dataDir,
+      clock: () => now,
+    });
+    rec.addResults([ok(2_000), fail("connection_error"), fail("deadline")]);
+    const done = await rec.finish({ status: "partial" });
+    expect(done.run.brief).toEqual({ requests: 2 });
+    const saved = RunsDevFileSchema.parse(
+      JSON.parse(readFileSync(path.join(dataDir, "runs-dev.json"), "utf8")),
+    );
+    expect(saved[0]!.brief).toEqual({ requests: 2 });
   });
 });
 

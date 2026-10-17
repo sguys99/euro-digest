@@ -41,25 +41,38 @@
  *      멈추고(보내는 중인 요청 1건까지) 브리핑(LLM)은 부르지 않는다 — 커밋되지 않는 실행의 LLM 비용·API-Football 한도 낭비를
  *      최소로 한다(낭비 상한 = 뉴스가 끝날 때까지 보낸 요청, 최대 약 12건).
  *   ③ 브리핑: football-data 종료 경기 + 현재 순위 → 정형 입력(M1-19 — brief-input.ts: 중요도 순 상한, 확정 순위표 상위 4위,
- *      연장·승부차기 표기) → `callSingle` 1요청(지시문 `configs/prompts/summarize.md` v0.1 — M1-20, 브리핑 마감까지 — 재시도
- *      대기만 묶음, 요청 타임아웃·마감 초과 템플릿은 M1-45) → 출력 스키마·관용 파싱(M1-20, D40 ⑤ — brief.ts)
- *      → **LLM 출력은 로그만** → `data/briefs/<KST 발행일>.json` 게시(M1-19, D38 — brief-file.ts). 검증(M1-23)·재시도·강등(M1-45)
- *      전이라 검증 안 된 LLM 줄은 저장하지 않고 같은 입력의 코드 템플릿 문장(brief-template.ts, `template`)을 게시한다. 경기가
+ *      연장·승부차기 표기) → `callSingle` 단건(D28 — 지시문 `configs/prompts/summarize.md`, 요청 본문은 앞 15경기 D51) →
+ *      FR-29 판정(brief-check.ts `judgeBriefResponse` — 출력 스키마·관용 파싱 D40 ⑤ → 코드 검증) → 출력 전체 실패(zod·한국어 비율·
+ *      한자·max_tokens)면 같은 입력으로 1회 재시도(`brief-<발행일>-r1`, BRIEF_MAX_ATTEMPTS 2) → 그래도 실패하면 템플릿. refusal·
+ *      전송 실패(llm.ts 429·5xx 재시도 뒤)·검사기 오류는 재시도 없이 템플릿(D40 ①·FR-26). 판정 ok·downgrade-line이면 통과 줄
+ *      (치환·조사 보정 뒤 문장, `ai:true`) + 강등 줄(같은 근거의 템플릿 줄, 같은 근거 중복은 버림 — brief-publish.ts)을
+ *      `data/briefs/<KST 발행일>.json`에 게시한다(M1-45, D38 — `llm`·`mixed`, 통과 줄이 없으면 전체 템플릿). 경기가
  *      없으면 `empty`(호출 생략), 정형 입력이 없으면(football-data 키 없음·실패) 파일 없음. 그날 파일이 이미 `llm`·`mixed`면
- *      LLM을 부르지 않고 덮지 않는다(재실행 판정 — brief-file.ts `decideBriefWrite`). 브리핑은
- *      football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층)을 기다린 뒤 시작하고, 둘을 이어(대응표 확인 + D37
- *      강한 증거 — team-ids.ts linkMatchDetails) 득점 목록이 완전한 경기만 입력 `goals`에 득점자를 넣는다(M1-48b). 같은 아침
+ *      LLM을 부르지 않고 덮지 않는다(재실행 판정 — brief-file.ts `decideBriefWrite`).
+ *      브리핑 마감(M1-47 — 공개 목표 −10분, 수동·지연 실행은 시작 + 8분 D41): 첫 호출·재시도 모두 남은 시간이
+ *      BRIEF_LLM_MIN_ATTEMPT_MS(40초) 이상일 때만 보내고, HTTP 요청 타임아웃은 min(60초, 마감 − 현재)(llm.ts — 남은 시간은 deps.now로
+ *      재서 callSingle 상대 예산 budgetMs로 넘긴다). 마감까지 성공하지 못하면 템플릿(FR-26) — 마감 강등은 설계된 폴백이라 이슈를
+ *      만들지 않는다(실행 상태 partial).
+ *      브리핑은 football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층)을 기다린 뒤 시작하고, 둘을 이어(대응표
+ *      확인 + D37 강한 증거 — team-ids.ts linkMatchDetails) 득점 목록이 완전한 경기만 입력 `goals`에 득점자를 넣는다(M1-48b). 같은 아침
  *      두 번째 실행은 브리핑 창 경기를 다시 받지 않으므로 원장(data/matches)의 같은 창 항목도 잇는다(M1-19 — M1-48 이월).
  *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
  *      football-data 단계가 실패하면 그날 브리핑만 생략하고 뉴스는 발행한다(D24). 순위 실패는 그 대회 순위만 빠진다(partial).
  *      고유명사(M1-21, FR-24 — names.ts): 입력의 득점자·도움을 configs/names.ko.json 대표 영문 표기로 바꿔 보내고(모델 축약 방지),
- *      템플릿은 같은 사전의 한글 이름 + 받침 기준 조사(josa.ts)로 쓴다. LLM 출력은 치환·조사 보정 뒤 문장을 출력에 남긴다(저장은
- *      M1-45). 사전에 없는 이름(입력의 팀·득점자·도움 + 치환 뒤 남은 출력 이름)은 data/cache/unknown-names.json에 적재한다 — prod·
- *      비dry만 쓰고 dev·dry는 로그만(unknown-names.ts). 사전을 읽지 못하면 영문 그대로·적재 생략(경고).
+ *      템플릿은 같은 사전의 한글 이름 + 받침 기준 조사(josa.ts)로 쓴다. LLM 출력은 치환·조사 보정 뒤 문장을 게시한다(M1-45).
+ *      사전에 없는 이름(입력의 팀·득점자·도움 + 치환 뒤 남은 출력 이름)은 data/cache/unknown-names.json에 적재한다 — prod·
+ *      비dry만 쓰고 dev·dry는 로그만(unknown-names.ts). 사전을 읽지 못하면 LLM을 부르지 않고 영문 이름 템플릿·적재 생략(경고 —
+ *      M1-45 결정, 부분 실패 이슈 brief).
  *      비용 가드(M1-22, FR-27 — budget-guard.ts): live 실행은 호출 전에 최악값 예상(첫 호출 + FR-29 재시도, 출력 = max_tokens)을
  *      출력하고 실행 시작 KST 날짜·달의 사용액(월 prod+dev, 일 prod 실행=prod만)과 비교한다. 초과 예상이거나 runs 파일을 읽지 못하면
  *      LLM 없이 `skipped`·reason `budget` → 같은 입력의 템플릿 게시(M1-19). 실행 시작에는 이번 달 누적과 dev 50% 초과 경고를 남긴다.
+ *      예산 판정은 마감 확인보다 먼저다(M1-22 이월 — 예산 생략 실행의 기록이 마감 때문에 사라지지 않게).
+ *      하루 요청 상한(D56 — FR-25 '하루 1~3요청', live만): 예산 판정 뒤·마감 확인 앞에서 같은 env·같은 브리핑 날짜의 collect 기록
+ *      brief.requests를 합산해 시도 수 = min(2, 3 − 사용), 0이면 LLM 없이 템플릿(`daily-cap` — success, 이슈 없음). 이번 실행이 보낸
+ *      요청 수와 응답 없이 끊긴 요청의 추정 최대 사용량은 실행 기록 `brief`에 남는다(cost.ts — 비용 가드에는 넣지 않는다).
  *   ④ 실행 기록: LLM 실호출이 있었으면 dry여도 기록(prod → runs.json, dev → runs-dev.json). prod는 dry가 아니면 항상 기록.
+ *      브리핑 줄 수(summarized = ai:true 줄 · downgraded = 템플릿 줄)는 **게시 줄 기준**이다 — 판정·치환·강등 뒤 이번 실행이 쓴
+ *      (또는 dry로 보인·같은 내용이라 다시 쓰지 않은) 브리핑 파일의 줄(M1-45, FR-151). live 실행만 센다(mock 줄은 LLM이 쓴 줄이 아니다).
  *      prod dry 실행의 기록 상태는 skipped(발행 기록으로 보지 않게 — recordedRunStatus, M1-27). 데이터 API 사건(football-data 실패·
  *      키 없음·순위 실패, API-Football 실패)은 소스 이슈 사건 파일에 더한다(M1-27 — run-issues.ts). 부분 실패 이슈 사건은
  *      진입점(scripts/collect.ts)이 결과로 만든다.
@@ -91,9 +104,10 @@
  * (`deps.filterOutOfScope`·`deps.classifyClusters`).
  * 이적 정보(M1-18 — transfer-extract.ts): 카테고리 '이적' 새 카드의 `transfer`(선수·출발·행선지·단계·tier)는 코드 분류가 채운다(classify.ts —
  * 확실할 때만, agreed 이상 승격 조건). 같은 날 재실행에서 오늘 카드에 붙인 새 출처로는 다시 판정하지 않는다(카드 id·제목처럼 유지).
- * 다음 작업이 갈아끼울 자리: 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력·템플릿(M1-19) ·
- * 검증·강등(M1-23·M1-45) · 브리핑 줄 수 기록(summarized·downgraded = 게시 줄 기준 — M1-45) ·
+ * 다음 작업이 갈아끼울 자리: 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력 순위 변동 prev(M2-03) ·
+ * 브리핑 요청 나누기(하루 2~3요청 — 그때 모든 요청을 guardBriefBudget에, 같은 지시문 캐싱 켬, D28) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
+ * 브리핑 게시 줄(검증 통과 줄 + 줄 단위 템플릿 강등)은 scripts/lib/brief-publish.ts(M1-45).
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -153,15 +167,19 @@ import {
   type BriefInputBuild,
 } from "./brief-input";
 import {
+  BRIEF_MAX_ATTEMPTS,
   briefLinesOverLimit,
+  estimateBriefCost,
   briefPromptId,
   buildBriefRequest,
   loadBriefPrompt,
   parseBriefOutput,
+  type BriefParseResult,
 } from "./brief";
 import {
   briefCheckLogFields,
   describeLineCheck,
+  isFinalBriefAttempt,
   judgeBriefResponse,
   substituteBriefLines,
   type BriefCheckContext,
@@ -171,6 +189,7 @@ import {
   buildBriefFile,
   decideBriefWrite,
   isKeptBriefMode,
+  isMockBriefFile,
   planBriefPublish,
   readBriefFile,
   serializeBriefFile,
@@ -178,6 +197,17 @@ import {
   type BriefFileRead,
   type BriefPublishPlan,
 } from "./brief-file";
+import {
+  BRIEF_DAILY_REQUEST_CAP,
+  briefAttemptCustomId,
+  briefFailCause,
+  briefFailReason,
+  briefGrammarCounts,
+  composeVerifiedBrief,
+  planBriefAttempts,
+  type BriefFailCause,
+  type VerifiedBrief,
+} from "./brief-publish";
 import {
   briefNamesFromIndex,
   ENGLISH_NAMES,
@@ -200,6 +230,7 @@ import {
 import { clusterDocs } from "./cluster";
 import { classifyClusters, type ClassifiedClusters } from "./cluster-classify";
 import {
+  BRIEF_LLM_MIN_ATTEMPT_MS,
   deadlineLogFields,
   msUntil,
   planCollectDeadlines,
@@ -225,6 +256,8 @@ import {
   readRuns,
   recordRun,
   runsPathFor,
+  sumUsd,
+  tryLoadRuns,
   type Budgets,
 } from "./cost";
 import {
@@ -236,6 +269,7 @@ import {
 } from "./feed-collect";
 import type { IssuePayloadInput, PipelinePartialReason } from "./github-issues";
 import {
+  DEADLINE_CUT_SLACK_MS,
   DEFAULT_LLM_MODEL,
   LlmMockFixtureError,
   type LlmClient,
@@ -484,8 +518,17 @@ export interface CollectDeps {
    * 값이 잘못돼 던져도 브리핑만 실패(partial)하고 뉴스 발행은 계속된다.
    */
   resolveBriefConfig: () => BriefConfig;
-  /** LLM 클라이언트 — 브리핑을 실제로 보낼 때만 만든다(키가 없으면 여기서 던져도 브리핑만 실패) */
-  createLlm: (model: string) => Pick<LlmClient, "callSingle" | "model">;
+  /**
+   * LLM 클라이언트 — 브리핑을 실제로 보낼 때만 만든다(키가 없으면 여기서 던져도 브리핑만 실패). `clock.now`는 deps.now와 같은
+   * 벽시계(ms)다 — 운영(scripts/collect.ts)은 클라이언트 시계(llm.ts createLlmClient `now`)로 넘겨 실행의 모든 시각을 한 시계로
+   * 맞춘다(M1-47 이월). 마감 판정 자체는 클라이언트 시계에 기대지 않는다 — 브리핑 단계가 deps.now로 남은 시간을 재서 callSingle에
+   * 상대 예산(budgetMs)으로 넘긴다(M1-45). 그래서 clock을 쓰지 않는 테스트 클라이언트(실제 Date.now)도 가짜 시각 실행에서 마감이
+   * 과거로 잡히지 않는다.
+   */
+  createLlm: (
+    model: string,
+    clock: { now: () => number },
+  ) => Pick<LlmClient, "callSingle" | "model">;
   logger: Logger;
   /** 사람이 읽는 출력(dry 산출물·브리핑 줄) — 구조화 로그와 분리 */
   print: (text: string) => void;
@@ -501,14 +544,22 @@ export interface CollectDeps {
 export type BriefOutcome =
   | {
       state: "skipped";
+      /**
+       * names-unreadable = 고유명사 사전(configs/names.ko.json)을 읽지 못해 LLM을 부르지 않았다(M1-45 결정 — 영문 이름 템플릿 게시,
+       * 부분 실패 이슈 brief)
+       */
       reason:
-        "news-failed" | "no-api-key" | "no-matches" | "mock-fixture-missing";
+        | "news-failed"
+        | "no-api-key"
+        | "no-matches"
+        | "mock-fixture-missing"
+        | "names-unreadable";
       inputMatches: number;
     }
   | {
       /**
        * 그날 브리핑 파일이 이미 검증 통과 LLM 브리핑(`llm`·`mixed`)이라 LLM을 부르지 않았다(M1-19 재실행 판정 — 덮지 않음,
-       * brief-file.ts). M1-45 전에는 이 mode를 쓰는 실행이 없어 생기지 않는다.
+       * brief-file.ts).
        */
       state: "skipped";
       reason: "kept";
@@ -518,7 +569,7 @@ export type BriefOutcome =
   | {
       /**
        * 비용 가드(M1-22, FR-27)가 LLM을 막았다 — 일·월 예산 초과 예상 또는 runs 파일을 읽지 못해 판정 불가.
-       * 같은 입력의 템플릿 브리핑(M1-19)을 게시하고(verdict 셋 다), 실행 기록(M1-45)이 사유를 잇는다.
+       * 같은 입력의 템플릿 브리핑(M1-19)을 게시하고(verdict 셋 다), 실행 기록의 downgraded가 템플릿 줄 수를 남긴다(M1-45).
        */
       state: "skipped";
       reason: "budget";
@@ -526,13 +577,55 @@ export type BriefOutcome =
       inputMatches: number;
     }
   | {
+      /**
+       * 하루 요청 상한(FR-25 '하루 1~3요청' — D56): 같은 env·같은 브리핑 날짜 기록이 이미 3요청을 써서 LLM을 부르지 않았다. 같은 입력의
+       * 템플릿을 게시한다(의도된 제한 — 예산 생략처럼 success, 이슈 없음)
+       */
+      state: "skipped";
+      reason: "daily-cap";
+      /** 그날 이미 보낸 요청 수 */
+      used: number;
+      cap: number;
+      inputMatches: number;
+    }
+  | {
+      /**
+       * 브리핑 마감(FR-26 — M1-45)까지 남은 시간이 요청 1건 최소 시간(BRIEF_LLM_MIN_ATTEMPT_MS 40초)보다 짧아 LLM을 부르지 않았다.
+       * 같은 입력의 템플릿을 게시한다(설계된 폴백 — 이슈 없음, 실행 상태 partial).
+       */
+      state: "skipped";
+      reason: "deadline";
+      /** 판정 시점에 마감까지 남은 ms(0 이상) */
+      remainingMs: number;
+      inputMatches: number;
+    }
+  | {
+      /**
+       * football-data = 경기 결과 없음(브리핑 생략) · setup = 입력·설정·지시문 오류 · llm·output = LLM을 불렀거나 부르려 했지만
+       * 게시할 LLM 줄이 없다(같은 입력의 템플릿 게시 — `cause`가 원인, output은 출력 전체 실패가 마지막 시도까지 간 경우).
+       */
       state: "failed";
       reason: "football-data" | "llm" | "output" | "setup";
       detail: string;
       inputMatches: number;
+      /** LLM 호출 수(FR-29 재시도 포함 — llm·output만) */
+      attempts?: number;
+      /** 템플릿 강등 원인(brief-publish.ts BriefFailCause — llm·output만). deadline이면 이슈를 만들지 않는다 */
+      cause?: BriefFailCause;
     }
-  /** LLM 출력이 임시 스키마를 통과했다 — 검증(M1-23·M1-45) 전이라 lines는 로그·dry 출력에만 쓰고 저장하지 않는다(M1-19) */
-  | { state: "done"; inputMatches: number; lines: string[] };
+  /**
+   * 마지막 시도의 LLM 출력이 FR-29 판정 ok·downgrade-line을 받았다(M1-45) — 게시 줄은 BriefStageRun.verified(통과 줄 + 줄 단위
+   * 템플릿 강등). lines는 마지막 시도의 모델 원문 줄(치환 전 — 로그·dry 출력용, 저장하지 않는다 D38)
+   */
+  | {
+      state: "done";
+      inputMatches: number;
+      lines: string[];
+      /** LLM 호출 수(FR-29 재시도 포함) */
+      attempts?: number;
+      /** 마지막 판정('ok' · 'downgrade-line:1,4') */
+      verdict?: string;
+    };
 
 /**
  * 브리핑 게시 결과(M1-19 — data/briefs/<KST 발행일>.json, D38). 브리핑 단계가 시작되지 않았으면(뉴스 실패) CollectOutcome.briefFile은
@@ -3009,16 +3102,23 @@ async function linkBriefGoals(
 /** 브리핑 단계 결과 — LLM 결과 + 게시(publishBrief)·미등록 이름 적재(recordUnknownNames)에 쓸 정형 입력·설정 */
 interface BriefStageRun {
   outcome: BriefOutcome;
-  /** 정형 입력(LLM에 보낸 그대로 — 득점자는 사전 대표 표기, M1-21) — 만들지 못했으면 null(football-data 키 없음·실패, 설정 읽기 실패) */
+  /**
+   * 정형 입력 전체(득점자는 사전 대표 표기, M1-21) — 검사기·템플릿(전체 강등·줄 강등)의 근거. LLM 요청 본문은 이 입력의 앞 15경기
+   * (D51 — briefLlmInput). 만들지 못했으면 null(football-data 키 없음·실패, 설정 읽기 실패)
+   */
   input: BriefInput | null;
   /** 대회 설정(템플릿 대회 표기) */
   competitions: CompetitionsFile | null;
   /** 그날 기존 브리핑 파일(입력을 만든 뒤 읽는다) */
   existing: BriefFileRead | null;
+  /** 기존 llm·mixed 파일이 mock 실행이 쓴 것(지키지 않고 덮는다 — brief-file.ts isMockBriefFile, M1-45 리뷰 권장 5) */
+  existingMock: boolean;
   /** 고유명사 사전 색인(M1-21) — 사전을 읽지 못했으면 null(이름은 영문 그대로, 미등록 적재 생략) */
   names: NameIndex | null;
   /** LLM 출력을 치환한 뒤에도 남은 이름 후보(미등록 적재 — M1-21). LLM이 돌지 않았으면 빈 배열 */
   outputNames: string[];
+  /** 검증 통과 게시 줄(M1-45 — outcome done일 때만, brief-publish.ts composeVerifiedBrief). 그 밖은 null */
+  verified: VerifiedBrief | null;
 }
 
 /**
@@ -3051,8 +3151,9 @@ function mostlyHangul(text: string): boolean {
 }
 
 /**
- * 브리핑 단계 — 정형 입력을 만들고 LLM 1요청을 보낸다(던지지 않는다 — 예상 밖 오류는 호출부 방어선). 출력은 로그·dry 출력에만
- * 남긴다(M1-19 — 검증·강등 M1-45 전). 게시는 publishBrief가 이 결과의 입력으로 한다.
+ * 브리핑 단계 — 정형 입력을 만들고 LLM 단건을 보낸다(FR-29 출력 재시도 포함 최대 BRIEF_MAX_ATTEMPTS회, 던지지 않는다 — 예상 밖
+ * 오류는 호출부 방어선). 판정 ok·downgrade-line이면 게시 줄(`verified` — 검증 통과 줄 + 줄 단위 템플릿 강등, M1-45)을 만들고,
+ * 게시는 publishBrief가 이 결과로 한다(통과 줄이 없거나 LLM을 쓰지 못했으면 같은 입력의 템플릿).
  */
 async function runBriefStage(
   deps: CollectDeps,
@@ -3062,6 +3163,12 @@ async function runBriefStage(
     results: LlmResult[];
     /** 브리핑 설정을 해석했으면 그 모델(실행 기록 단가용) */
     model: string | null;
+    /** 응답 없이 끊긴 요청의 추정 최대 사용량(D56 — RunLog.brief.unbilledRisk로 합산) */
+    unbilled: Array<{
+      inputTokens: number;
+      outputTokensMax: number;
+      usd: number;
+    }>;
   },
 ): Promise<BriefStageRun> {
   const log = deps.logger;
@@ -3071,8 +3178,10 @@ async function runBriefStage(
     input: null,
     competitions: null,
     existing: null,
+    existingMock: false,
     names: null,
     outputNames: [],
+    verified: null,
   });
   if (fd.state === "skipped") {
     log.warn("summarize.brief.skip", {
@@ -3169,18 +3278,30 @@ async function runBriefStage(
   const inputMatches = input.matches.length;
   // 그날 기존 브리핑 — 이미 검증 통과 LLM 브리핑(llm·mixed)이면 LLM을 부르지 않는다(덮지 않음 — brief-file.ts 재실행 판정)
   const existing = await readBriefFile(deps.dataDir, ctx.publishDate);
+  let existingMock = false;
   const withInput = (
     outcome: BriefOutcome,
     outputNames: string[] = [],
+    verified: VerifiedBrief | null = null,
   ): BriefStageRun => ({
     outcome,
     input,
     competitions,
     existing,
+    existingMock,
     names,
     outputNames,
+    verified,
   });
+  // mock 실행이 쓴 llm·mixed(M1-45 리뷰 권장 5)는 지키지 않는다 — 그 파일을 쓴 실행 기록의 LLM 토큰이 0이면 mock 줄이다(brief-file.ts
+  // isMockBriefFile). 기록을 읽지 못하면 live로 본다(보수적 — LLM을 다시 부르지 않고 덮지 않는다)
   if (existing.value && isKeptBriefMode(existing.value.mode)) {
+    const runs = await tryLoadRuns(deps.dataDir);
+    existingMock =
+      runs.ok &&
+      isMockBriefFile(existing.value, [...runs.prodRuns, ...runs.devRuns]);
+  }
+  if (existing.value && isKeptBriefMode(existing.value.mode) && !existingMock) {
     log.info("summarize.brief.skip", {
       reason: "kept",
       date: ctx.publishDate,
@@ -3191,6 +3312,14 @@ async function runBriefStage(
       reason: "kept",
       existingMode: existing.value.mode,
       inputMatches,
+    });
+  }
+  if (existingMock) {
+    log.warn("summarize.brief.mock-existing", {
+      date: ctx.publishDate,
+      existingMode: existing.value?.mode ?? null,
+      runId: existing.value?.runId ?? null,
+      note: "mock 실행이 쓴 llm·mixed 파일 — 지키지 않고 이번 결과로 덮는다",
     });
   }
   if (inputMatches === 0) {
@@ -3214,8 +3343,25 @@ async function runBriefStage(
     }
   }
 
+  // 사전 실패(M1-45 결정 — M1-23 이월): 고유명사 사전을 읽지 못하면 LLM을 부르지 않고 같은 입력의 템플릿(영문 이름)을 게시한다.
+  // 사전 없이는 검사기가 한글 이름 줄을 확인할 수 없어 강등하고 통과 줄도 영문 이름 그대로라 템플릿과 섞인다 — 비용을 쓰고 버리는
+  // 것보다 단순·안전하다. configs 오류라 검증 게이트(npm run validate)도 그날 발행을 막는다(부분 실패 이슈 brief).
+  if (names === null) {
+    log.warn("summarize.brief.skip", {
+      reason: "names-unreadable",
+      file: "configs/names.ko.json",
+    });
+    return withInput({
+      state: "skipped",
+      reason: "names-unreadable",
+      inputMatches,
+    });
+  }
+  const nameIndex: NameIndex = names;
+
   // 설정 해석 · 요청 준비 · 비용 가드(M1-22 — live만, mock은 비용 0): 최악값(첫 호출 + FR-29 재시도, 출력 = max_tokens) 예상을
   // 출력하고, 실행 시작 KST 날짜·달의 prod+dev 사용과 비교한다. runs 파일을 읽지 못하면 판정 불가로 LLM을 부르지 않는다.
+  // 하루 1요청이라 guardBriefBudget에 요청 하나 — 요청을 나누면(하루 2~3요청) 모든 요청을 넘기고 같은 지시문 캐싱을 켠다(D28).
   let request: LlmRequest;
   let config: BriefConfig;
   try {
@@ -3256,29 +3402,73 @@ async function runBriefStage(
     });
   }
 
-  // 단건 1요청 (D28). 재시도는 llm.ts 정책(429·5xx만)이고 브리핑 마감(M1-47 — 공개 목표 −10분, 수동·지연 실행은 시작 + 8분)을
-  // 넘길 재시도 대기는 하지 않는다. 요청 타임아웃을 남은 시간으로 줄이고 마감까지 실패하면 템플릿을 게시하는 것은 M1-45.
-  // deadline은 벽시계 기준이다 — createLlm이 만드는 클라이언트의 시계(llm.ts now, 운영은 Date.now)와 deps.now가 같아야 한다.
-  let result: LlmResult;
-  try {
-    const llm = deps.createLlm(config.model);
-    result = await llm.callSingle(request, {
-      deadline: parseUtcIso(ctx.briefDeadline),
-    });
-  } catch (error) {
-    if (error instanceof LlmMockFixtureError) {
-      log.warn("summarize.brief.skip", {
-        reason: "mock-fixture-missing",
-        customId: request.customId,
+  // 하루 요청 상한(FR-25 '하루 1~3요청' — D56, live만 — mock 요청은 실제 요청이 아니다): 같은 env·같은 브리핑 날짜의 collect 기록에
+  // 남은 brief.requests를 합산해 이번 실행의 시도 수 = min(BRIEF_MAX_ATTEMPTS, 3 − 사용). 0이면 LLM 없이 템플릿(daily-cap — 의도된
+  // 제한이라 success·이슈 없음, 예산 생략과 같다). runs 파일을 읽지 못하면 실행당 상한(2회)으로 진행하고 경고만 남긴다(발행을 멈추지
+  // 않음 — live에서는 비용 가드가 같은 파일을 먼저 읽어 판정 불가면 이미 LLM을 생략한다). 예산 판정 뒤·마감 확인 앞.
+  let attemptsAllowed = BRIEF_MAX_ATTEMPTS;
+  if (deps.llmMode === "live") {
+    const plan = planBriefAttempts(
+      await tryLoadRuns(deps.dataDir),
+      deps.env,
+      ctx.publishDate,
+    );
+    if (!plan.readable) {
+      log.warn("summarize.brief.daily-cap", {
+        readable: false,
+        file: plan.file,
+        error: plan.error,
+        cap: BRIEF_DAILY_REQUEST_CAP,
+        attemptsAllowed: plan.attempts,
       });
-      return withInput({
-        state: "skipped",
-        reason: "mock-fixture-missing",
-        inputMatches,
+    } else {
+      log[plan.attempts > 0 ? "info" : "warn"]("summarize.brief.daily-cap", {
+        readable: true,
+        date: ctx.publishDate,
+        env: deps.env,
+        used: plan.used,
+        remaining: plan.remaining,
+        cap: BRIEF_DAILY_REQUEST_CAP,
+        attemptsAllowed: plan.attempts,
       });
+      if (plan.attempts === 0) {
+        return withInput({
+          state: "skipped",
+          reason: "daily-cap",
+          used: plan.used,
+          cap: BRIEF_DAILY_REQUEST_CAP,
+          inputMatches,
+        });
+      }
     }
+    attemptsAllowed = plan.attempts;
+  }
+
+  // 브리핑 마감(FR-26·D28 — M1-45): 예산 판정 뒤(M1-22 이월) 남은 시간이 요청 1건 최소 시간보다 짧으면 부르지 않고 템플릿.
+  // 시각은 deps.now(벽시계) — 시도마다 같은 시계로 남은 시간을 재서 callSingle에 상대 예산(budgetMs)으로 넘긴다.
+  const remainingMs = msUntil(ctx.briefDeadline, deps.now());
+  if (remainingMs < BRIEF_LLM_MIN_ATTEMPT_MS) {
+    log.warn("summarize.brief.skip", {
+      reason: "deadline",
+      briefDeadline: ctx.briefDeadline,
+      remainingMs: Math.max(0, remainingMs),
+      minAttemptMs: BRIEF_LLM_MIN_ATTEMPT_MS,
+    });
+    return withInput({
+      state: "skipped",
+      reason: "deadline",
+      remainingMs: Math.max(0, remainingMs),
+      inputMatches,
+    });
+  }
+
+  let llm: Pick<LlmClient, "callSingle" | "model">;
+  try {
+    llm = deps.createLlm(config.model, { now: () => deps.now().getTime() });
+  } catch (error) {
     log.error("summarize.brief.fail", {
       stage: "llm",
+      cause: "client",
       error: errorText(error),
     });
     return withInput({
@@ -3286,167 +3476,433 @@ async function runBriefStage(
       reason: "llm",
       detail: errorText(error),
       inputMatches,
-    });
-  }
-  sink.results.push(result);
-  const usageFields = {
-    tokensIn: result.usage.in,
-    tokensOut: result.usage.out,
-    cacheRead: result.usage.cacheRead,
-    cacheWrite: result.usage.cacheWrite,
-    thinkingTokens: result.thinkingTokens,
-  };
-  // 코드 검증(M1-23 — FR-29 판정). 지금은 로그·dry 출력에만 남긴다 — 1회 재시도·줄 강등·게시는 M1-45가 이 판정을 그대로 쓴다.
-  // 사전을 읽지 못했으면 대회 별칭만 아는 색인(이름은 입력 영문만 허용 — 한글 이름은 확인할 수 없어 강등)
-  const checkCtx: BriefCheckContext = {
-    names: names ?? buildNameIndex(null, competitions),
-    competitions,
-  };
-  if (!result.ok) {
-    log.error("summarize.brief.fail", {
-      stage: "llm",
-      errorType: result.errorType,
-      // max_tokens = 출력 전체 실패(재시도) · refusal·errored = 템플릿(D40 ①, FR-26)
-      verdict: judgeBriefResponse(
-        { ok: false, errorType: result.errorType },
-        input,
-        checkCtx,
-        { hiddenRefs: llmView.hiddenRefs },
-      ).label,
-      ...usageFields,
-    });
-    return withInput({
-      state: "failed",
-      reason: "llm",
-      detail: `${result.errorType}: ${result.message}`,
-      inputMatches,
+      attempts: 0,
+      cause: "client",
     });
   }
 
-  // 출력 스키마(M1-20 확정) + 관용 파싱(D40 ⑤ — 전체 코드블록 벗김·앞 5줄)
-  const parsed = parseBriefOutput(result.text);
+  // FR-29 검사 문맥 — 입력은 전체 입력(템플릿과 같은 근거), 요청 본문에서 잘린 근거는 hiddenRefs(D51)
+  const checkCtx: BriefCheckContext = { names: nameIndex, competitions };
+  const templateCtx = {
+    competitions,
+    names: briefNamesFromIndex(nameIndex),
+  };
   const prompt = briefPromptId(request.system);
-  if (!parsed.ok) {
-    log.error("summarize.brief.fail", {
-      stage: "output",
-      reason: parsed.reason,
-      fenced: parsed.fenced,
+  const failed = (
+    cause: BriefFailCause,
+    detail: string,
+    attempts: number,
+    outputNames: string[] = [],
+  ): BriefStageRun => {
+    // 마감 강등은 설계된 폴백(FR-26)이라 경고, 그 밖은 오류(부분 실패 이슈 brief)
+    log[cause === "deadline" ? "warn" : "error"]("summarize.brief.fail", {
+      stage: "final",
+      cause,
+      attempts,
+      detail,
+    });
+    return withInput(
+      {
+        state: "failed",
+        reason: briefFailReason(cause),
+        detail,
+        inputMatches,
+        attempts,
+        cause,
+      },
+      outputNames,
+    );
+  };
+
+  // 단건(D28) 시도 루프 — 첫 호출 + FR-29 출력 재시도 1회(BRIEF_MAX_ATTEMPTS — 비용 가드의 최악값이 이 횟수로 계산됐다, M1-22 이월).
+  // 시도마다 남은 시간을 다시 보고(재시도도 마감 안에서만), 판정은 judgeBriefResponse 그대로(finalAttempt면 retry → downgrade-all).
+  for (let attempt = 1; attempt <= attemptsAllowed; attempt += 1) {
+    const customId = briefAttemptCustomId(input.briefDate, attempt);
+    if (attempt > 1) {
+      const left = msUntil(ctx.briefDeadline, deps.now());
+      if (left < BRIEF_LLM_MIN_ATTEMPT_MS) {
+        log.warn("summarize.brief.retry.skip", {
+          reason: "deadline",
+          attempt,
+          remainingMs: Math.max(0, left),
+          minAttemptMs: BRIEF_LLM_MIN_ATTEMPT_MS,
+        });
+        return failed(
+          "deadline",
+          `FR-29 재시도할 시간이 없다(마감까지 ${Math.max(0, left)}ms)`,
+          attempt - 1,
+        );
+      }
+      log.info("summarize.brief.retry", { attempt, customId });
+    }
+
+    let result: LlmResult;
+    try {
+      // 마감은 상대 예산으로 넘긴다(deps.now로 잰 남은 시간 — 클라이언트 시계가 달라도 같은 마감, llm.ts budgetMs).
+      // callSingle 안에서 HTTP 요청 타임아웃 = min(60초, 남은 시간), 429·5xx 재시도는 (대기 + 40초)가 남은 시간 안일 때만
+      result = await llm.callSingle(
+        { ...request, customId },
+        {
+          budgetMs: msUntil(ctx.briefDeadline, deps.now()),
+          minAttemptMs: BRIEF_LLM_MIN_ATTEMPT_MS,
+        },
+      );
+    } catch (error) {
+      if (error instanceof LlmMockFixtureError) {
+        if (attempt === 1) {
+          log.warn("summarize.brief.skip", {
+            reason: "mock-fixture-missing",
+            customId,
+          });
+          return withInput({
+            state: "skipped",
+            reason: "mock-fixture-missing",
+            inputMatches,
+          });
+        }
+        return failed(
+          "mock-missing",
+          `재시도 mock 응답 없음(${customId})`,
+          attempt - 1,
+        );
+      }
+      return failed("client", errorText(error), attempt - 1);
+    }
+    // 마감이라 보내지 않은 요청(llm.ts errorType deadline — 과금 0)은 호출 수·비용 기록에 넣지 않는다
+    const sent = result.ok || result.errorType !== "deadline";
+    if (sent) sink.results.push(result);
+    const usageFields = {
+      tokensIn: result.usage.in,
+      tokensOut: result.usage.out,
+      cacheRead: result.usage.cacheRead,
+      cacheWrite: result.usage.cacheWrite,
+      thinkingTokens: result.thinkingTokens,
+    };
+
+    // 코드 검증(M1-23 — FR-29 판정, 닫힌 문법 D50). 방어선 — 검사기와 판정에서 만드는 값(로그 필드·줄별 설명)의 예상 밖 오류는
+    // 판정 없음으로 다룬다: 판정 없는 출력은 게시하지 않고 재시도도 하지 않는다(같은 코드가 다시 던진다) → 템플릿
+    let view: {
+      judgement: BriefJudgement;
+      fields: ReturnType<typeof briefCheckLogFields>;
+      lineVerdicts: string[];
+    } | null = null;
+    try {
+      const judged = (deps.judgeBrief ?? judgeBriefResponse)(
+        result.ok
+          ? { ok: true, text: result.text }
+          : { ok: false, errorType: result.errorType },
+        input,
+        checkCtx,
+        {
+          finalAttempt: isFinalBriefAttempt(attempt),
+          hiddenRefs: llmView.hiddenRefs,
+        },
+      );
+      view = {
+        judgement: judged,
+        fields: briefCheckLogFields(judged),
+        lineVerdicts: (judged.check?.lines ?? []).map(describeLineCheck),
+      };
+    } catch (error) {
+      log.warn("summarize.brief.check-fail", {
+        attempt,
+        error: errorText(error),
+      });
+    }
+    const judgement = view?.judgement ?? null;
+    const verdict = judgement?.verdict.verdict ?? null;
+    // FR-29 재시도가 필요하지만 하루 상한(D56)이 이번 실행에 1회만 남겼다 — 보내지 않고 템플릿(daily-cap)
+    const retryDenied = verdict === "retry" && attempt >= attemptsAllowed;
+    log.info("summarize.brief.attempt", {
+      attempt,
+      customId,
+      ok: result.ok,
+      errorType: result.ok ? null : result.errorType,
+      // FR-29 판정(M1-23): ok · retry(출력 전체 실패) · downgrade-all · downgrade-line:n — 판정 없음(검사기 오류)은 null
+      verdict: view?.fields.verdict ?? null,
+      checkStage: view?.fields.stage ?? null,
+      reason: view?.fields.reason ?? null,
       prompt,
-      verdict: "retry", // 스키마 실패 = 출력 전체 실패(FR-29 1회 재시도 대상 — M1-45)
       ...usageFields,
     });
-    return withInput({
-      state: "failed",
-      reason: "output",
-      detail: `출력 형식 오류(${parsed.reason})`,
-      inputMatches,
+
+    if (!result.ok && result.errorType === "connection_error") {
+      // 응답을 받지 못한 시도(연결 오류·타임아웃)는 비용 0으로 기록되지만 서버가 처리해 과금했을 수 있다(M1-45 리뷰 권장 3). 실측
+      // costUsd는 그대로 두고 추정(입력 어림 + max_tokens 상한)을 경고 로그 + 실행 기록 brief.unbilledRisk(D56 — 비용 가드에는 넣지
+      // 않는다: 과금 여부를 알 수 없고, 가드는 시도마다 max_tokens 상한을 이미 최악값으로 잡는다)에 남긴다
+      const estimate = estimateBriefCost(request, config.model);
+      sink.unbilled.push({
+        inputTokens: estimate.tokens.in,
+        outputTokensMax: request.maxTokens,
+        usd: estimate.usd,
+      });
+      log.warn("summarize.brief.unbilled-risk", {
+        attempt,
+        customId,
+        deadlineCut: result.deadlineCut === true,
+        estimatedInputTokens: estimate.tokens.in,
+        estimatedOutputTokensMax: request.maxTokens,
+        estimatedUsdMax: estimate.usd,
+      });
+    }
+    if (!result.ok) {
+      deps.print(
+        `── 브리핑 시도 ${attempt}/${BRIEF_MAX_ATTEMPTS} 실패 (${ctx.publishDate}, ${deps.llmMode}) — ${result.errorType}: ${result.message} · 판정 ${judgement ? judgement.label : "없음(검사기 오류)"}`,
+      );
+      if (retryDenied) {
+        return failed(
+          "daily-cap",
+          `${result.errorType} — FR-29 재시도 몫 없음(하루 상한 ${BRIEF_DAILY_REQUEST_CAP})`,
+          sent ? attempt : attempt - 1,
+        );
+      }
+      if (verdict === "retry") continue; // max_tokens(D40 ①) — 같은 입력으로 1회 재시도
+      const cause = briefFailCause({
+        judgement,
+        errorType: result.errorType,
+        // 마감으로 줄인 타임아웃에 걸려 끊긴 요청(연결 오류)은 마감 강등으로 본다 — callSingle이 알려 준 deadlineCut(클라이언트 시계),
+        // 그 표시를 주지 않는 클라이언트는 deps.now로 마감 1초(DEADLINE_CUT_SLACK_MS) 안인지(타이머가 마감 직전에 울릴 수 있다)
+        deadlineReached:
+          result.deadlineCut === true ||
+          msUntil(ctx.briefDeadline, deps.now()) <= DEADLINE_CUT_SLACK_MS,
+      });
+      return failed(
+        cause,
+        `${result.errorType}: ${result.message}`,
+        sent ? attempt : attempt - 1,
+      );
+    }
+
+    // 출력 스키마(M1-20 확정) + 관용 파싱(D40 ⑤ — 전체 코드블록 벗김·앞 5줄). 검사기도 같은 함수로 판정한다
+    const parsed = parseBriefOutput(result.text);
+    if (!parsed.ok) {
+      log.warn("summarize.brief.output", {
+        attempt,
+        stage: "zod",
+        reason: parsed.reason,
+        fenced: parsed.fenced,
+        prompt,
+      });
+      deps.print(
+        `── 브리핑 시도 ${attempt}/${BRIEF_MAX_ATTEMPTS} 출력 형식 오류 (${ctx.publishDate}, ${deps.llmMode}) — ${parsed.reason} · 판정 ${judgement ? judgement.label : "없음(검사기 오류)"}`,
+      );
+      if (retryDenied) {
+        return failed(
+          "daily-cap",
+          `출력 형식 오류(${parsed.reason}) — FR-29 재시도 몫 없음(하루 상한 ${BRIEF_DAILY_REQUEST_CAP})`,
+          attempt,
+        );
+      }
+      if (verdict === "retry") continue; // 출력 전체 실패(FR-29) — 같은 입력으로 1회 재시도
+      return failed(
+        judgement ? "output" : "check-error",
+        `출력 형식 오류(${parsed.reason})`,
+        attempt,
+      );
+    }
+
+    const lines = parsed.lines.map((line) => line.t);
+    // 고유명사 치환 + 조사 보정(M1-21, FR-24)은 검사기가 같은 함수(substituteBriefLines — 대회 표기는 같은 입력의 템플릿과 같은
+    // 브리핑 단위 표기, D30·D45 ④)로 한 번 한다 — 80자 판정(D40 ⑤)을 잰 문장과 게시하는 문장이 같다.
+    const check = judgement?.check ?? null;
+    let substituted: SubstituteResult[];
+    try {
+      substituted =
+        check?.substitutions ?? substituteBriefLines(lines, input, checkCtx);
+    } catch {
+      substituted = lines.map((t) => ({
+        text: t,
+        masked: t,
+        replaced: [],
+        particleFixes: 0,
+      }));
+    }
+    // 치환 뒤에도 남은 이름 후보는 미등록 적재로(통째로 영어인 줄은 빼고 — recordUnknownNames). 마지막 시도의 출력만
+    const outputNames = [
+      ...new Set(
+        substituted
+          .filter((r) => mostlyHangul(r.text))
+          // 치환이 넣은 한글 표기('AC 밀란'·'UEFA 챔피언스리그') 속 라틴 낱말은 후보가 아니다 — 가린 텍스트에서 찾는다
+          .flatMap((r) => unknownNamesInText(r.masked, nameIndex)),
+      ),
+    ];
+    const overLimit = check
+      ? check.lines
+          .filter((l) => l.reasons.some((r) => r.code === "over-limit"))
+          .map((l) => l.n)
+      : briefLinesOverLimit(substituted.map((r) => r.text));
+
+    // 게시 줄(M1-45) — 판정 ok·downgrade-line만. 통과 줄이 없으면 publishBrief가 전체 템플릿으로 간다
+    let verified: VerifiedBrief | null = null;
+    let composeError: string | null = null;
+    if (check && (verdict === "ok" || verdict === "downgrade-line")) {
+      try {
+        verified = composeVerifiedBrief({
+          output: parsed.lines,
+          check,
+          input,
+          template: templateCtx,
+        });
+      } catch (error) {
+        // 방어선 — 게시 줄을 만들지 못하면 판정 없는 출력처럼 템플릿(재시도 없음)
+        composeError = errorText(error);
+        log.warn("summarize.brief.compose-fail", {
+          attempt,
+          error: composeError,
+        });
+      }
+    }
+
+    const checkFields = view?.fields ?? null;
+    const final = verdict !== "retry" || retryDenied;
+    if (final) {
+      log.info("summarize.brief.done", {
+        date: ctx.publishDate,
+        matches: inputMatches,
+        // LLM 요청 본문 경기 수(D51 — 앞 15경기) · 잘린 경기 수
+        llmMatches: llmView.input.matches.length,
+        llmDroppedMatches: llmView.dropped.matches,
+        attempts: attempt,
+        lines: lines.length,
+        prompt,
+        fenced: parsed.fenced,
+        droppedLines: parsed.droppedLines,
+        overLimitLines: overLimit.length,
+        namesReplaced: substituted.reduce((n, r) => n + r.replaced.length, 0),
+        particleFixes: substituted.reduce((n, r) => n + r.particleFixes, 0),
+        outputUnknownNames: outputNames.length,
+        // FR-29 판정(M1-23): ok · downgrade-all · downgrade-line:n — 줄별 사유 코드·경고(M1-43 검수·M1-24 회귀 비교)
+        verdict: checkFields?.verdict ?? null,
+        checkStage: checkFields?.stage ?? null,
+        wholeReasons: check?.whole.reasons ?? null,
+        lineReasons: checkFields?.lineReasons ?? null,
+        lineWarnings: checkFields?.lineWarnings ?? null,
+        // 게시 줄(M1-45): AI 통과 · 템플릿 강등 · 버림(같은 근거 중복 ⓐ·ⓑ·ⓑ'·ⓒ·템플릿 없음 — brief-publish.ts), 통과 줄 문형 분포(M1-23 이월)
+        publishedAi: verified?.ai ?? 0,
+        publishedTemplate: verified?.template ?? 0,
+        droppedOutputLines: verified?.dropped ?? 0,
+        grammar: verified ? briefGrammarCounts(verified) : null,
+        ...usageFields,
+      });
+    }
+    printBriefAttempt(deps, {
+      date: ctx.publishDate,
+      attempt,
+      judgement,
+      parsed,
+      substituted,
+      overLimit,
+      lineVerdicts: view?.lineVerdicts ?? [],
+      verified,
     });
-  }
-  const lines = parsed.lines.map((line) => line.t);
-  // 코드 검증(M1-23 — 닫힌 문법 D50) — 출력 전체(한국어 비율·한자)·줄 단위(허용 문형 + 슬롯 대조: 이름·점수·승패·파생 서술·순위·분·80자)
-  // 판정과 사유 코드.
-  // 고유명사 치환 + 조사 보정(M1-21, FR-24)도 검사기가 같은 함수(substituteBriefLines — 대회 표기는 같은 입력의 템플릿과 같은
-  // 브리핑 단위 표기, D30·D45 ④)로 한 번 한다 — 80자 판정(D40 ⑤ briefLinesOverLimit)과 M1-45가 게시할 문장이 같은 결과다.
-  // 방어선 — 검사기와 판정에서 만드는 값(로그 필드·줄별 설명)의 예상 밖 오류가 브리핑 단계(같은 입력의 템플릿 게시)를 멈추지
-  // 않게 한 곳에서 만든다. 실패하면 판정 없이 출력만 남긴다(M1-45는 판정 없는 출력을 게시하지 않는다)
-  let view: {
-    judgement: BriefJudgement;
-    fields: ReturnType<typeof briefCheckLogFields>;
-    lineVerdicts: string[];
-  } | null = null;
-  try {
-    const judged = (deps.judgeBrief ?? judgeBriefResponse)(
-      { ok: true, text: result.text },
-      input,
-      checkCtx,
-      { hiddenRefs: llmView.hiddenRefs },
+    if (!final) continue; // 출력 전체 실패(한국어 비율·한자 — FR-29) — 같은 입력으로 1회 재시도
+    if (retryDenied) {
+      return failed(
+        "daily-cap",
+        `출력 전체 실패(${judgement?.reason ?? "whole"}) — FR-29 재시도 몫 없음(하루 상한 ${BRIEF_DAILY_REQUEST_CAP})`,
+        attempt,
+        outputNames,
+      );
+    }
+
+    if (verified) {
+      return withInput(
+        {
+          state: "done",
+          inputMatches,
+          lines,
+          attempts: attempt,
+          verdict: judgement!.label,
+        },
+        outputNames,
+        verified,
+      );
+    }
+    if (composeError !== null) {
+      return failed(
+        "check-error",
+        `게시 줄 만들기 오류: ${composeError}`,
+        attempt,
+        outputNames,
+      );
+    }
+    // downgrade-all — 마지막 시도의 출력 전체 실패, 또는 판정 없음(검사기 오류)
+    return failed(
+      judgement ? "output" : "check-error",
+      judgement
+        ? `출력 전체 실패(${judgement.reason ?? judgement.stage})`
+        : "검사기 오류 — 판정 없음",
+      attempt,
+      outputNames,
     );
-    view = {
-      judgement: judged,
-      fields: briefCheckLogFields(judged),
-      lineVerdicts: (judged.check?.lines ?? []).map(describeLineCheck),
-    };
-  } catch (error) {
-    log.warn("summarize.brief.check-fail", { error: errorText(error) });
   }
-  const judgement = view?.judgement ?? null;
+  // 루프는 return으로만 끝난다(마지막 시도는 finalAttempt라 retry가 나오지 않고, 하루 상한으로 줄어든 시도는 retryDenied) — 방어선
+  return failed(
+    "output",
+    `FR-29 시도 ${attemptsAllowed}회 소진`,
+    attemptsAllowed,
+  );
+}
+
+/**
+ * 시도 1회의 사람용 출력(dry·개발 확인) — 줄마다 치환·조사 보정 뒤 문장 + 원문, 판정, 게시 결과(M1-45). 구조화 로그에는 문장을 넣지
+ * 않는다(사유 코드만 — summarize.brief.done).
+ */
+function printBriefAttempt(
+  deps: Pick<CollectDeps, "print" | "llmMode">,
+  view: {
+    date: string;
+    attempt: number;
+    judgement: BriefJudgement | null;
+    parsed: Extract<BriefParseResult, { ok: true }>;
+    substituted: readonly SubstituteResult[];
+    overLimit: readonly number[];
+    lineVerdicts: readonly string[];
+    verified: VerifiedBrief | null;
+  },
+): void {
+  const { judgement, parsed, substituted, verified } = view;
   const check = judgement?.check ?? null;
-  let substituted: SubstituteResult[];
-  try {
-    substituted =
-      check?.substitutions ?? substituteBriefLines(lines, input, checkCtx);
-  } catch {
-    substituted = lines.map((t) => ({
-      text: t,
-      masked: t,
-      replaced: [],
-      particleFixes: 0,
-    }));
-  }
-  // 치환 뒤에도 남은 이름 후보는 미등록 적재로(통째로 영어인 줄은 빼고 — recordUnknownNames)
-  const outputNames = names
-    ? [
-        ...new Set(
-          substituted
-            .filter((r) => mostlyHangul(r.text))
-            // 치환이 넣은 한글 표기('AC 밀란'·'UEFA 챔피언스리그') 속 라틴 낱말은 후보가 아니다 — 가린 텍스트에서 찾는다
-            .flatMap((r) => unknownNamesInText(r.masked, names)),
-        ),
-      ]
-    : [];
-  const overLimit = check
-    ? check.lines
-        .filter((l) => l.reasons.some((r) => r.code === "over-limit"))
-        .map((l) => l.n)
-    : briefLinesOverLimit(substituted.map((r) => r.text));
-  const checkFields = view?.fields ?? null;
-  log.info("summarize.brief.done", {
-    date: ctx.publishDate,
-    matches: inputMatches,
-    // LLM 요청 본문 경기 수(D51 — 앞 15경기) · 잘린 경기 수
-    llmMatches: llmView.input.matches.length,
-    llmDroppedMatches: llmView.dropped.matches,
-    lines: lines.length,
-    prompt,
-    fenced: parsed.fenced,
-    droppedLines: parsed.droppedLines,
-    overLimitLines: overLimit.length,
-    namesReplaced: substituted.reduce((n, r) => n + r.replaced.length, 0),
-    particleFixes: substituted.reduce((n, r) => n + r.particleFixes, 0),
-    outputUnknownNames: outputNames.length,
-    // FR-29 판정(M1-23): ok · retry(출력 전체 실패) · downgrade-line:n — 줄별 사유 코드·경고(M1-43 검수·M1-24 회귀 비교)
-    verdict: checkFields?.verdict ?? null,
-    checkStage: checkFields?.stage ?? null,
-    wholeReasons: check?.whole.reasons ?? null,
-    lineReasons: checkFields?.lineReasons ?? null,
-    lineWarnings: checkFields?.lineWarnings ?? null,
-    ...usageFields,
-  });
-  // 재시도·강등(M1-45) 전이라 사람이 읽는 출력으로만 남긴다 — data/briefs에는 같은 입력의 템플릿을 게시한다(publishBrief).
+  const publishOf = (n: number): string => {
+    const d = verified?.detail.find((x) => x.n === n);
+    if (!d) return "";
+    if (d.outcome === "ai") return " ⇒ 게시(AI)";
+    if (d.outcome === "template") return " ⇒ 템플릿 줄로 교체";
+    const WHY: ReadonlyArray<[string, string]> = [
+      ["duplicate-ai-result", "같은 경기 결과를 앞 통과 줄이 씀"],
+      ["duplicate-template", "앞 템플릿 줄과 같은 근거"],
+      ["duplicate-result", "같은 경기 결과 줄 있음"],
+      ["duplicate-rank", "같은 순위표 순위 줄 있음"],
+      ["over-max-lines", "5줄 초과"],
+    ];
+    const why =
+      WHY.find(([code]) => d.reasons.includes(code))?.[1] ?? "템플릿 줄 없음";
+    return ` ⇒ 버림(${why})`;
+  };
   deps.print(
     [
-      `── 브리핑 출력 (${ctx.publishDate}, ${deps.llmMode}, 저장 안 함 — 강등(M1-45) 전, 고유명사 치환·조사 보정 뒤 / 원문) · 판정 ${judgement ? judgement.label : "없음(검사기 오류)"}${!check || check.whole.ok ? "" : ` — 출력 전체 실패(${check.whole.reasons.join(",")}, 한글 ${check.whole.hangul}·라틴 ${check.whole.latin})`}`,
+      `── 브리핑 출력 (${view.date}, ${deps.llmMode}, 시도 ${view.attempt}/${BRIEF_MAX_ATTEMPTS} — 고유명사 치환·조사 보정 뒤 / 원문) · 판정 ${judgement ? judgement.label : "없음(검사기 오류)"}${!check || check.whole.ok ? "" : ` — 출력 전체 실패(${check.whole.reasons.join(",")}, 한글 ${check.whole.hangul}·라틴 ${check.whole.latin})`}`,
       ...(parsed.fenced ? ["   (코드블록을 벗겨 읽음 — D40 ⑤)"] : []),
       ...(parsed.droppedLines > 0
         ? [`   (5줄 넘는 ${parsed.droppedLines}줄은 버림 — D40 ⑤)`]
         : []),
       ...parsed.lines.map((line, i) => {
         const text = substituted[i]!.text;
-        const flag = overLimit.includes(i + 1)
+        const flag = view.overLimit.includes(i + 1)
           ? `  (${text.length}자 — 80자 초과, 강등 대상(D40 ⑤))`
           : "";
-        const described = view?.lineVerdicts[i];
-        const verdict = described ? `  → ${described}` : "";
+        const described = view.lineVerdicts[i];
+        const verdict = described ? `  → ${described}${publishOf(i + 1)}` : "";
         return `${i + 1}. ${text}  [${line.r.join(",")}]${flag}${verdict}\n   원문: ${line.t}`;
       }),
     ].join("\n"),
   );
-  return withInput({ state: "done", inputMatches, lines }, outputNames);
 }
 
 /**
- * 브리핑 게시(M1-19 — data/briefs/<KST 발행일>.json, D38). 계획은 brief-file.ts `planBriefPublish`(M1-45 전에는 LLM이 성공해도
- * 템플릿), 같은 날 재실행은 `decideBriefWrite`. dry는 내용만 출력한다. 던지지 않는다 — 검증·쓰기 오류는 failed(실행은 partial).
+ * 브리핑 게시(M1-19 — data/briefs/<KST 발행일>.json, D38). 계획은 brief-file.ts `planBriefPublish`(M1-45 — 검증 통과 줄이 있으면
+ * llm·mixed, 없으면 같은 입력의 템플릿), 같은 날 재실행은 `decideBriefWrite`. dry는 내용만 출력한다. 던지지 않는다 — 검증·쓰기
+ * 오류는 failed(실행은 partial).
  */
 async function publishBrief(
   deps: CollectDeps,
@@ -3466,6 +3922,7 @@ async function publishBrief(
     brief: stage.outcome,
     inputMatches: stage.input?.matches.length ?? null,
     templateLines,
+    verified: stage.verified,
   });
   const existing = stage.existing;
   const base = {
@@ -3517,6 +3974,7 @@ async function publishBrief(
     mode: file.mode,
     reason: plan.reason,
     lines: file.lines.length,
+    aiLines: file.lines.filter((l) => l.ai).length,
     existingMode: base.existingMode,
   };
   if (deps.dry) {
@@ -3526,7 +3984,9 @@ async function publishBrief(
     log.info("summarize.brief.publish", { ...fields, action: "dry" });
     return { ...base, action: "dry", file, path: null, error: null };
   }
-  const decision = decideBriefWrite(existing?.value ?? null, file);
+  const decision = decideBriefWrite(existing?.value ?? null, file, {
+    existingMock: stage.existingMock,
+  });
   if (decision.action !== "write") {
     const action = decision.action === "keep" ? "kept" : "unchanged";
     log.info("summarize.brief.publish", {
@@ -3543,6 +4003,15 @@ async function publishBrief(
       action: "written",
       file: `data/briefs/${ctx.publishDate}.json`,
     });
+    if (deps.llmMode === "mock" && fields.aiLines > 0) {
+      // mock 응답 줄(LLM이 쓴 줄이 아니다)을 ai:true로 썼다 — 커밋하지 말 것. 같은 날 다음 실행이 이 파일을 덮는다(isMockBriefFile)
+      log.warn("summarize.brief.mock-ai-lines", {
+        date: ctx.publishDate,
+        mode: file.mode,
+        aiLines: fields.aiLines,
+        file: `data/briefs/${ctx.publishDate}.json`,
+      });
+    }
     return { ...base, action: "written", file, path: written, error: null };
   } catch (error) {
     log.error("summarize.brief.publish.fail", {
@@ -3951,10 +4420,33 @@ export const RUN_PARTIAL_CONDITIONS: readonly PartialCondition[] = [
     holds: ({ news }) => Boolean(news.classifyError),
   },
   {
+    // 브리핑 단계 실패 — 설정·입력 오류, LLM 전송 실패(429·5xx 소진·연결·API 오류), refusal, 출력 전체 실패(FR-29 재시도 뒤),
+    // 검사기 오류. 같은 입력의 템플릿을 게시했지만(FR-26) 사람이 볼 원인이다. 마감 강등(cause deadline)은 아래 brief-deadline
     id: "brief-failed",
     route: { kind: "pipeline-partial", reason: "brief" },
     holds: ({ brief }) =>
-      brief.state === "failed" && brief.reason !== "football-data",
+      brief.state === "failed" &&
+      brief.reason !== "football-data" &&
+      brief.cause !== "deadline" &&
+      // 하루 상한으로 재시도를 막은 강등(D56)은 의도된 제한 — 예산 생략처럼 조건이 아니다(success)
+      brief.cause !== "daily-cap",
+  },
+  {
+    // 고유명사 사전(configs/names.ko.json)을 읽지 못해 LLM 없이 템플릿(M1-45 결정) — configs 수리 필요
+    id: "brief-names",
+    route: { kind: "pipeline-partial", reason: "brief" },
+    holds: ({ brief }) =>
+      brief.state === "skipped" && brief.reason === "names-unreadable",
+  },
+  {
+    id: "brief-deadline",
+    route: {
+      kind: "none",
+      why: "브리핑 마감(공개 목표 −10분, FR-26) 안에 LLM을 시도·재시도할 시간(40초)이 없었거나 마감에 걸린 요청이 끊겨 같은 입력의 템플릿을 게시했다 — 설계된 폴백(D28)이라 이슈를 만들지 않는다. 늦은 실행·지연은 M1-41 관찰·운영 리포트(M5-09)가 본다",
+    },
+    holds: ({ brief }) =>
+      (brief.state === "skipped" && brief.reason === "deadline") ||
+      (brief.state === "failed" && brief.cause === "deadline"),
   },
   {
     // football-data 단계 실패로 브리핑 생략 — 데이터 API 문제라 source:football-data(시간 예산·취소는 이슈 아님)
@@ -4097,6 +4589,42 @@ export function shouldRecordRun(input: {
   return input.env === "prod" && !input.dry;
 }
 
+/** 응답 없이 끊긴 요청들의 추정 최대 사용량 합(D56 — RunLog.brief.unbilledRisk) */
+export function sumUnbilled(
+  entries: ReadonlyArray<{
+    inputTokens: number;
+    outputTokensMax: number;
+    usd: number;
+  }>,
+): NonNullable<NonNullable<RunLog["brief"]>["unbilledRisk"]> {
+  return {
+    requests: entries.length,
+    inputTokens: entries.reduce((n, e) => n + e.inputTokens, 0),
+    outputTokensMax: entries.reduce((n, e) => n + e.outputTokensMax, 0),
+    usdMax: sumUsd(entries.map((e) => e.usd)),
+  };
+}
+
+/**
+ * 실행 기록의 브리핑 줄 수(M1-45 — FR-151, 게시 줄 기준): summarized = ai:true 줄, downgraded = 템플릿 줄(ai:false). 이번 실행이
+ * 쓴 파일(written)·같은 내용이라 다시 쓰지 않은 파일(unchanged)·dry로 보인 파일(dry)의 줄을 센다 — 기존 파일을 유지했거나(kept)
+ * 만들 파일이 없거나(none) 쓰기에 실패했으면(failed) 0. mock 실행은 0(mock 줄은 LLM이 쓴 줄이 아니다).
+ */
+export function briefLineCounts(
+  briefFile: Pick<BriefFileOutcome, "action" | "file"> | null,
+  live: boolean,
+): { summarized: number; downgraded: number } {
+  const counted =
+    live &&
+    briefFile?.file &&
+    (briefFile.action === "written" ||
+      briefFile.action === "unchanged" ||
+      briefFile.action === "dry");
+  if (!counted) return { summarized: 0, downgraded: 0 };
+  const ai = briefFile.file!.lines.filter((l) => l.ai).length;
+  return { summarized: ai, downgraded: briefFile.file!.lines.length - ai };
+}
+
 export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   const log = deps.logger;
   const startedAt = nowUtcIso(deps.now());
@@ -4152,6 +4680,11 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     results: [] as LlmResult[],
     apiCalls: { footballData: 0, apiFootball: 0 },
     model: null as string | null,
+    unbilled: [] as Array<{
+      inputTokens: number;
+      outputTokensMax: number;
+      usd: number;
+    }>,
   };
   const cancelMatchData = new AbortController();
   // 시작 여부는 콜백이 정하므로 객체에 둔다(지역 let 좁히기가 콜백 대입을 놓치지 않게)
@@ -4310,6 +4843,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   ) {
     // mock LLM 응답은 실제 호출이 아니다 — 비용·작성 줄 수 0으로 남긴다(데이터 API 호출 수만 의미가 있다)
     const live = deps.llmMode === "live";
+    const briefLines = briefLineCounts(briefFile, live);
     try {
       const recorded = await recordRun({
         env: deps.env,
@@ -4323,9 +4857,13 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
         status: recordedRunStatus(status, deps),
         collected: news.feedItems,
         clusters: news.selected,
-        // 슬라이스: 모델이 쓴(임시 스키마를 통과한) 줄 수. 아직 게시하지 않는다 — 검증·강등 뒤 기록은 M1-45.
-        summarized: live && brief.state === "done" ? brief.lines.length : 0,
-        downgraded: 0,
+        // 게시 줄 기준(M1-45, FR-151) — ai:true 줄 수 · 템플릿 줄 수(판정·치환·강등 뒤, 예산·마감 템플릿 포함)
+        summarized: briefLines.summarized,
+        downgraded: briefLines.downgraded,
+        // 브리핑 요청 수(brief.requests)는 cost.ts가 results에서 센다(D56). 응답 없이 끊긴 요청의 추정 최대 사용량만 넘긴다(live만)
+        ...(live && sink.unbilled.length > 0
+          ? { briefUnbilledRisk: sumUnbilled(sink.unbilled) }
+          : {}),
         apiCalls: {
           footballData: sink.apiCalls.footballData,
           apiFootball: sink.apiCalls.apiFootball,
@@ -4366,10 +4904,15 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     sourcesFailed: news.sources.filter((s) => !s.ok).length,
     brief: brief.state === "done" ? "done" : `${brief.state}:${brief.reason}`,
     briefMatches: brief.inputMatches,
-    briefLines: brief.state === "done" ? brief.lines.length : 0,
+    briefAttempts:
+      brief.state === "done" || brief.state === "failed"
+        ? (brief.attempts ?? null)
+        : null,
     briefFile: briefFile
       ? `${briefFile.plan?.mode ?? "none"}:${briefFile.action}`
       : null,
+    briefAiLines: briefFile?.file?.lines.filter((l) => l.ai).length ?? 0,
+    briefTemplateLines: briefFile?.file?.lines.filter((l) => !l.ai).length ?? 0,
     unknownNames: unknownNames
       ? `${unknownNames.observed.length}:${unknownNames.action}`
       : null,

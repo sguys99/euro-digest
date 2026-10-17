@@ -3,19 +3,23 @@
  *
  * 이 파일은 "보내고 받는" 일만 한다. 호출 지점(정형 데이터 기반 일일 브리핑 / 팀 한줄평+강점·약점 / 한국 선수
  * 주간 총평, CLAUDE.md §1-3 · PRD §15 D24)을 늘리지 않는다. 뉴스 기사(제목·설명 포함)는 어떤 호출에도 넣지 않는다(D23).
- * 무엇을 보낼지(입력 빌더), 출력 zod 검증과 1회 재시도·템플릿 강등, 브리핑 마감 폴백 결정(공개 목표 −10분 — 여름 06:50 ·
- * 겨울 07:20 KST, 계산은 src/lib/time.ts publishSlot·scripts/lib/collect-deadlines.ts), 비용 가드는
- * 호출부(M1-19~M1-23·M1-45·M1-47)와 cost.ts(M0-21)가 맡는다.
+ * 무엇을 보낼지(입력 빌더), 출력 zod·코드 검증과 FR-29 1회 재시도·템플릿 강등, 브리핑 마감 계산(공개 목표 −10분 —
+ * src/lib/time.ts publishSlot·scripts/lib/collect-deadlines.ts), 비용 가드는 호출부(collect-run.ts 브리핑 단계 — M1-45)와
+ * cost.ts·budget-guard.ts가 맡는다. 이 파일은 받은 마감 안에서만 보내고 기다린다(`callSingle` deadline).
  *
  * 구성
  *   - 요청 검증: customId(Batches API 제약 `^[a-zA-Z0-9_-]{1,64}$`, 배치 안에서 유일), maxTokens 필수·상한
  *   - 배치: submitBatch → pollBatch(마감 시각까지) → collectBatchResults, 한 번에 돌리는 runBatch
  *   - 단건: callSingle — 일반 Messages API 1건. 일일 브리핑(호출 지점 #1, 하루 1~3요청)의 호출 방식이다(D28). `deadline`
- *     (브리핑 마감 — collect-deadlines.ts)을 넘길 재시도 대기는 하지 않는다. 배치는 주간 2곳(팀 프로필·한국 선수 주간 총평)용
+ *     (브리핑 마감 — collect-deadlines.ts)을 주면 ① HTTP 요청마다 타임아웃 = min(requestTimeoutMs, 마감 − 현재)(M0-36 확인 ① —
+ *     M1-45) ② 재시도 대기 + `minAttemptMs`가 마감을 넘기면 더 기다리지 않는다 ③ 처음부터 남은 시간이 `minAttemptMs`보다 짧으면
+ *     보내지 않고 `deadline` 실패(과금 0)를 돌려준다 — 그래서 callSingle 전체가 마감 안에서 끝난다. 배치는 주간 2곳(팀 프로필·
+ *     한국 선수 주간 총평)용이다(일일 브리핑은 배치를 쓰지 않는다 — D28)
  *   - 재시도: 429·5xx(529 overloaded 포함)만 지수 백오프. 서버가 요청을 처리하지 않은 경우라 다시 보내도
  *     중복 과금이 없다. 연결 오류·타임아웃은 쓰기 요청(메시지 생성·배치 제출)에서 재시도하지 않는다
  *     (서버가 이미 처리했을 수 있어 중복 과금 위험). 읽기(배치 조회·결과)는 연결 오류도 재시도한다.
- *     SDK 자체 재시도는 끈다(maxRetries: 0) — 재시도가 두 겹으로 쌓이지 않게.
+ *     실패 결과의 `retryable` 힌트도 같은 기준이다 — 연결 오류는 false(M0-36 확인 ② — 힌트를 보고 다시 보내도 중복 과금이 없는
+ *     경우만 true). SDK 자체 재시도는 끈다(maxRetries: 0) — 재시도가 두 겹으로 쌓이지 않게.
  *   - usage: 응답 usage → RunLog.tokens 형태 `{ in, out, cacheRead, cacheWrite }`(plan.md 부록 A).
  *     배치/단건을 따로 합산해 cost.ts가 배치 50% 할인 단가를 나눠 적용할 수 있게 한다.
  *   - 모드: live(SDK) / mock(`fixtures/llm/mock/`, 결정적·무비용). 둘 다 같은 LlmTransport 뒤에 있어
@@ -41,6 +45,7 @@ import Anthropic, {
   APIConnectionError,
   APIConnectionTimeoutError,
   APIError,
+  APIUserAbortError,
 } from "@anthropic-ai/sdk";
 import { z } from "zod";
 
@@ -73,8 +78,17 @@ export const MAX_REQUESTS_PER_BATCH = 100;
 export const DEFAULT_POLL_INTERVAL_MS = 30_000;
 export const MIN_POLL_INTERVAL_MS = 5_000;
 
-/** live 모드 HTTP 요청 1회 타임아웃 (SDK 기본 10분은 브리핑 창 — 여름 06:30 → 06:50 · 겨울 07:10 → 07:20 KST — 에 비해 너무 길다). */
+/**
+ * live 모드 HTTP 요청 1회 타임아웃 상한 (SDK 기본 10분은 브리핑 창 — 수집 시작 → 브리핑 마감, 여름 약 20분 · 겨울 약 10분 — 에
+ * 비해 너무 길다). `callSingle`에 deadline을 주면 요청마다 min(이 값, 마감 − 현재)로 줄인다(M1-45).
+ */
 export const DEFAULT_REQUEST_TIMEOUT_MS = 60_000;
+
+/**
+ * 마감 판정 여유(ms) — 마감으로 줄인 타임아웃의 타이머는 마감 직전(수 ms)에 울릴 수 있어(리뷰 하네스 h2 — 60회 중 11회가 1~4ms
+ * 일찍) 끊긴 시각이 마감 이만큼 안이면 마감에 걸린 것으로 본다(callSingle `deadlineCut`, collect-run.ts 마감 강등 판정).
+ */
+export const DEADLINE_CUT_SLACK_MS = 1_000;
 
 export interface RetryPolicy {
   /** 첫 시도 뒤 추가 시도 횟수 (SDK 기본과 같은 2) */
@@ -145,6 +159,7 @@ export type ApiErrorType = (typeof API_ERROR_TYPES)[number];
  *   - canceled·expired: 배치 결과 상태(과금 없음)
  *   - refusal·max_tokens·empty_output: 응답은 왔지만 쓸 수 없는 출력(토큰은 과금됨)
  *   - missing_result: 배치 결과에서 해당 customId를 받지 못함
+ *   - deadline: 마감까지 남은 시간이 요청 1건 최소 시간보다 짧아 보내지 않음(단건 — 과금 없음, M1-45)
  */
 export type LlmErrorType =
   | ApiErrorType
@@ -154,15 +169,19 @@ export type LlmErrorType =
   | "refusal"
   | "max_tokens"
   | "empty_output"
-  | "missing_result";
+  | "missing_result"
+  | "deadline";
 
-/** 이 종류의 실패는 같은 요청을 다시 보내 볼 만하다(호출부 재시도 판단용 힌트, FR-29 판단은 호출부). */
+/**
+ * 이 종류의 실패는 같은 요청을 다시 보내도 중복 과금이 없다(호출부 재시도 판단용 힌트, FR-29 판단은 호출부) — 서버가 처리하지
+ * 않은 응답(429·5xx)과 과금되지 않은 배치 결과(canceled·expired·missing_result)만. **연결 오류·타임아웃은 넣지 않는다**: 응답을
+ * 받지 못했을 뿐 서버가 이미 처리했을 수 있다(M0-36 확인 ② — 이전에는 true였지만 llm.ts 단건 재시도 금지 정책과 어긋났다, M1-45).
+ */
 const RETRYABLE_ERROR_TYPES: ReadonlySet<LlmErrorType> = new Set<LlmErrorType>([
   "rate_limit_error",
   "timeout_error",
   "api_error",
   "overloaded_error",
-  "connection_error",
   "canceled",
   "expired",
   "missing_result",
@@ -500,6 +519,11 @@ export interface LlmFailure extends LlmResultBase {
   message: string;
   /** 같은 요청을 다시 보내 볼 만한지(힌트) */
   retryable: boolean;
+  /**
+   * 단건 호출이 **마감으로 줄인 요청 타임아웃**에 걸려 끊겼다(callSingle — 연결 오류 중 타임아웃이 requestTimeoutMs보다 짧았고
+   * 끊긴 시각이 마감 `DEADLINE_CUT_SLACK_MS` 안). 호출부는 이 실패를 마감 강등으로 본다(FR-26 — M1-45 리뷰 권장 2)
+   */
+  deadlineCut?: true;
 }
 
 export type LlmResult = LlmSuccess | LlmFailure;
@@ -618,9 +642,13 @@ export interface TransportBatchRequest {
  * 실패는 LlmTransportError로 던진다(그 밖의 오류는 버그로 보고 그대로 전파된다).
  */
 export interface LlmTransport {
+  /**
+   * 단건 메시지 생성. `meta.timeoutMs`가 있으면 이 요청 1건의 HTTP 타임아웃(SDK 요청 옵션 `timeout` — 클라이언트 기본값보다
+   * 우선)이다. 없으면 transport 기본 타임아웃. mock·가짜 transport는 시간을 쓰지 않으므로 무시해도 된다.
+   */
   createMessage(
     params: MessageParams,
-    meta: { customId: string },
+    meta: { customId: string; timeoutMs?: number },
   ): Promise<TransportMessage>;
   createBatch(
     requests: readonly TransportBatchRequest[],
@@ -672,8 +700,26 @@ export function parseRetryAfterMs(
   return Math.round(seconds * 1000);
 }
 
-/** SDK 오류 → LlmTransportError. SDK 오류가 아니면 그대로 돌려준다. */
+/** 요청별 타임아웃 신호(AbortSignal.timeout)로 끊긴 fetch·본문 읽기 오류 — DOMException AbortError·TimeoutError */
+function isAbortLike(error: unknown): boolean {
+  return (
+    isRecord(error) &&
+    (error.name === "AbortError" || error.name === "TimeoutError")
+  );
+}
+
+/**
+ * SDK 오류 → LlmTransportError. SDK 오류가 아니면 그대로 돌려준다. 우리가 넘기는 abort 신호는 요청별 타임아웃(AbortSignal.timeout —
+ * createSdkTransport)뿐이라 사용자 abort(APIUserAbortError)와 본문 읽기 중 끊김(DOMException)도 '요청 시간 초과'(연결 오류 —
+ * 재시도 안 함)로 본다.
+ */
 function fromSdkError(error: unknown): unknown {
+  if (error instanceof APIUserAbortError || isAbortLike(error)) {
+    return new LlmTransportError({
+      errorType: "connection_error",
+      message: "요청 시간 초과",
+    });
+  }
   // APIConnectionError는 APIError의 하위 클래스라 먼저 본다
   if (error instanceof APIConnectionError) {
     return new LlmTransportError({
@@ -752,7 +798,21 @@ export function createSdkTransport({
     ...(fetchImpl ? { fetch: fetchImpl } : {}),
   });
   return {
-    createMessage: (params) => sdkCall(() => client.messages.create(params)),
+    // 요청별 타임아웃(ms) — 브리핑 마감까지 남은 시간으로 줄인 값(callSingle, M1-45). SDK `timeout`은 응답 헤더가 오면 타이머를
+    // 지워(0.133 — 리뷰 확인) 본문 읽기를 묶지 못하므로 같은 시간의 abort 신호도 함께 넘긴다 — 헤더·본문 어느 쪽에서 늦어도 그 시각에
+    // 끊긴다(fromSdkError가 '요청 시간 초과'로 바꾼다)
+    createMessage: (params, meta) =>
+      sdkCall(() =>
+        client.messages.create(
+          params,
+          meta.timeoutMs !== undefined
+            ? {
+                timeout: meta.timeoutMs,
+                signal: AbortSignal.timeout(meta.timeoutMs),
+              }
+            : {},
+        ),
+      ),
     createBatch: (requests) =>
       sdkCall(() =>
         client.messages.batches.create({
@@ -1120,10 +1180,24 @@ export type RunBatchOutcome =
 
 export interface CallSingleOptions {
   /**
-   * 재시도 대기가 이 시각을 넘기면 더 기다리지 않고 실패로 돌려준다(일일 브리핑 = 브리핑 마감, scripts/lib/collect-deadlines.ts).
-   * 요청 타임아웃(requestTimeoutMs, 기본 60초)은 줄이지 않는다 — 남은 시간으로 줄이는 것은 M1-45(M0-36 확인 ①).
+   * 마감(일일 브리핑 = 브리핑 마감, scripts/lib/collect-deadlines.ts). 주면 callSingle 전체가 이 시각 안에서 끝난다(M1-45):
+   *   - HTTP 요청마다 타임아웃 = min(requestTimeoutMs(기본 60초), 마감 − 현재)(M0-36 확인 ①) — 마감에 걸린 요청은 끊기고
+   *     `connection_error`(요청 시간 초과)로 돌아온다. 연결 오류라 재시도하지 않는다(중복 과금 위험).
+   *   - 429·5xx 재시도는 (대기 + `minAttemptMs`)가 마감 안에 들어올 때만 — 아니면 마지막 실패를 그대로 돌려준다.
+   *   - 첫 요청 전에 남은 시간이 `minAttemptMs`보다 짧거나 마감이 지났으면 보내지 않고 `deadline` 실패(과금 0)를 돌려준다.
    */
   deadline?: Date;
+  /**
+   * 상대 마감 — 이 호출을 시작한 시각(클라이언트 시계)부터 쓸 수 있는 ms. 주면 마감 = 시작 + budgetMs(deadline도 있으면 이른 쪽)로
+   * 위 규칙을 그대로 쓴다. 일일 브리핑은 호출부가 자기 시계(collect-run.ts deps.now)로 브리핑 마감까지 남은 시간을 재서 넘긴다 —
+   * 클라이언트 시계가 호출부 시계와 달라도(가짜 시각 테스트 등) 마감이 어긋나지 않는다(M1-47 이월 → M1-45).
+   */
+  budgetMs?: number;
+  /**
+   * 요청 1건을 보낼 가치가 있는 최소 남은 시간(ms, 기본 0 — 마감이 없으면 무시). 일일 브리핑은 BRIEF_LLM_MIN_ATTEMPT_MS
+   * (40초 — collect-deadlines.ts)를 넘긴다: 이보다 짧은 타임아웃으로 보낸 요청은 끝나기 전에 끊겨 쓴 토큰만 과금될 수 있다.
+   */
+  minAttemptMs?: number;
 }
 
 export interface LlmClient {
@@ -1199,6 +1273,8 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
       stage: string;
       retryConnectionErrors: boolean;
       deadline?: Date;
+      /** 재시도 뒤 요청 1건에 남겨야 하는 시간 — 대기 + 이 값이 마감을 넘기면 포기한다(기본 0) */
+      minAttemptMs?: number;
       customId?: string;
     },
   ): Promise<T> {
@@ -1213,7 +1289,11 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
             error.errorType === "connection_error");
         if (!retryable || retryNumber > retry.maxRetries) throw error;
         const delayMs = backoffDelayMs(retryNumber, retry, error.retryAfterMs);
-        if (context.deadline && now() + delayMs >= context.deadline.getTime()) {
+        if (
+          context.deadline &&
+          now() + delayMs + (context.minAttemptMs ?? 0) >=
+            context.deadline.getTime()
+        ) {
           throw error;
         }
         log({
@@ -1405,38 +1485,91 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
 
   async function callSingle(
     request: LlmRequest,
-    { deadline }: CallSingleOptions = {},
+    { deadline: absolute, budgetMs, minAttemptMs = 0 }: CallSingleOptions = {},
   ): Promise<LlmResult> {
     const [valid] = validateRequests([request]);
     if (!valid) throw new LlmRequestError("요청이 0건이다");
     const customId = valid.customId;
     const params = buildMessageParams(valid, model);
     const startedAt = now();
+    // 마감 = 절대 마감과 상대 마감(시작 + budgetMs) 중 이른 쪽 — 둘 다 없으면 마감 없음(재시도·타임아웃 기본값)
+    const deadlineMs = Math.min(
+      absolute?.getTime() ?? Number.POSITIVE_INFINITY,
+      budgetMs !== undefined ? startedAt + budgetMs : Number.POSITIVE_INFINITY,
+    );
+    const deadline = Number.isFinite(deadlineMs)
+      ? new Date(deadlineMs)
+      : undefined;
+    const requestTimeoutMs =
+      options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
+    // 마감까지 요청 1건을 보낼 시간이 없으면 보내지 않는다(과금 0 — 호출부가 템플릿으로 간다, FR-26)
+    const remainingAtStart = deadline ? deadline.getTime() - startedAt : null;
+    if (
+      remainingAtStart !== null &&
+      (remainingAtStart <= 0 || remainingAtStart < minAttemptMs)
+    ) {
+      log({
+        stage: "single.deadline",
+        customId,
+        remainingMs: Math.max(0, remainingAtStart),
+        minAttemptMs,
+      });
+      return failure(
+        unbilled(customId, false),
+        "deadline",
+        `마감까지 남은 시간(${Math.max(0, remainingAtStart)}ms)이 요청 최소 시간(${minAttemptMs}ms)보다 짧아 보내지 않았다`,
+      );
+    }
     let attempts = 0;
+    // 마지막 HTTP 요청의 타임아웃(로그 — 마감으로 줄었는지 관찰)
+    let timeoutMs = requestTimeoutMs;
     let result: LlmResult;
     try {
       const message = await withRetry(
         () => {
           attempts += 1;
-          return transport.createMessage(params, { customId });
+          // 요청마다 남은 시간으로 타임아웃을 줄인다(M0-36 확인 ① — 재시도 대기 뒤의 요청도 마감을 넘기지 않게)
+          timeoutMs = deadline
+            ? Math.max(
+                1,
+                Math.min(requestTimeoutMs, deadline.getTime() - now()),
+              )
+            : requestTimeoutMs;
+          return transport.createMessage(params, {
+            customId,
+            ...(deadline ? { timeoutMs } : {}),
+          });
         },
-        { stage: "single", retryConnectionErrors: false, deadline, customId },
+        {
+          stage: "single",
+          retryConnectionErrors: false,
+          deadline,
+          minAttemptMs,
+          customId,
+        },
       );
       result = messageToResult(customId, message, false);
     } catch (error) {
       if (!(error instanceof LlmTransportError)) throw error;
-      result = failure(
-        unbilled(customId, false),
-        error.errorType,
-        error.message,
-      );
+      // 마감으로 줄인 타임아웃(requestTimeoutMs보다 짧음)에 마감 직전·직후 끊긴 연결 오류 = 마감 강등(호출부 FR-26)
+      const cut =
+        error.errorType === "connection_error" &&
+        deadline !== undefined &&
+        timeoutMs < requestTimeoutMs &&
+        deadline.getTime() - now() <= DEADLINE_CUT_SLACK_MS;
+      result = {
+        ...failure(unbilled(customId, false), error.errorType, error.message),
+        ...(cut ? { deadlineCut: true as const } : {}),
+      };
     }
     log({
       stage: "single.done",
       customId,
       ok: result.ok,
       errorType: result.ok ? null : result.errorType,
+      deadlineCut: !result.ok && result.deadlineCut === true,
       attempts,
+      timeoutMs,
       model,
       elapsedMs: now() - startedAt,
     });

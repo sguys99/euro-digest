@@ -113,6 +113,19 @@ const SCENARIOS: Record<string, Scenario> = {
       inputMatches: 3,
     },
   }),
+  // 고유명사 사전을 읽지 못해 LLM 없이 템플릿(M1-45 결정) — 부분 실패 이슈 brief
+  "brief-names": base({
+    brief: { state: "skipped", reason: "names-unreadable", inputMatches: 3 },
+  }),
+  // 브리핑 마감 강등(FR-26 — M1-45): 호출 전 시간 부족 · 마감에 걸린 요청 — 설계된 폴백이라 이슈 없음(partial만)
+  "brief-deadline": base({
+    brief: {
+      state: "skipped",
+      reason: "deadline",
+      remainingMs: 12_000,
+      inputMatches: 3,
+    },
+  }),
   "brief-football-data": base({
     brief: {
       state: "failed",
@@ -335,6 +348,73 @@ describe("partial 조건 표 ↔ 이슈 경로 (FR-152 — partial이 이슈 없
         ledger: null,
       }).map((f) => f.reason),
     ).toEqual(["purge"]);
+  });
+
+  it("브리핑 마감 강등(M1-45)은 skipped·failed 어느 모양이든 이슈가 없고, 마감이 아닌 실패(원인 output·transport·refusal)는 brief 이슈다", () => {
+    const deadlineFailed = base({
+      brief: {
+        state: "failed",
+        reason: "output",
+        detail: "FR-29 재시도할 시간이 없다",
+        inputMatches: 3,
+        attempts: 1,
+        cause: "deadline",
+      },
+    });
+    expect(partialConditionsOf(asInput(deadlineFailed))).toEqual([
+      "brief-deadline",
+    ]);
+    expect(issueKeysOf(deadlineFailed)).toEqual([]);
+    for (const cause of [
+      "output",
+      "transport",
+      "refusal",
+      "max-tokens",
+    ] as const) {
+      const scenario = base({
+        brief: {
+          state: "failed",
+          reason:
+            cause === "transport" || cause === "refusal" ? "llm" : "output",
+          detail: "x",
+          inputMatches: 3,
+          attempts: 2,
+          cause,
+        },
+      });
+      expect(partialConditionsOf(asInput(scenario)), cause).toEqual([
+        "brief-failed",
+      ]);
+      expect(issueKeysOf(scenario), cause).toEqual(["collect:partial:brief"]);
+    }
+  });
+
+  it("하루 요청 상한(D56 — skipped daily-cap · 재시도를 막은 failed cause daily-cap)은 의도된 제한 — success, 이슈 없음(예산 생략과 같다)", () => {
+    for (const brief of [
+      {
+        state: "skipped" as const,
+        reason: "daily-cap" as const,
+        used: 3,
+        cap: 3,
+        inputMatches: 3,
+      },
+      {
+        state: "failed" as const,
+        reason: "output" as const,
+        detail: "FR-29 재시도 몫 없음",
+        inputMatches: 3,
+        attempts: 1,
+        cause: "daily-cap" as const,
+      },
+    ]) {
+      const scenario = base({ brief });
+      const input = asInput(scenario);
+      expect(partialConditionsOf(input), brief.state).toEqual([]);
+      expect(
+        runStatus(input.news, input.brief, input.matchData, input.briefFile),
+      ).toBe("success");
+      expect(issueKeysOf(scenario)).toEqual([]);
+    }
   });
 
   it("모든 부분 실패 사유는 표(또는 삭제 단계)에서 쓰인다 — 쓰이지 않는 사유가 남지 않게", () => {

@@ -575,12 +575,12 @@ describe("llm.ts callSingle로 브리핑 mock 부르기 (LLM_MODE=mock)", () => 
     expect(attemptsOf(events)).toBe(3);
   });
 
-  it("연결 오류·타임아웃: 중복 과금 위험으로 재시도하지 않는다(결과의 retryable 힌트는 true)", async () => {
+  it("연결 오류·타임아웃: 중복 과금 위험으로 재시도하지 않는다(결과의 retryable 힌트도 false — M0-36 ② → M1-45)", async () => {
     const { result, events } = await call("brief-case-errored-timeout");
     const fail = unwrapFail(result);
     expect(fail).toMatchObject({
       errorType: "connection_error",
-      retryable: true,
+      retryable: false,
     });
     expect(events.filter((e) => e.stage === "single.retry")).toHaveLength(0);
     expect(attemptsOf(events)).toBe(1);

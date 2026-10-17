@@ -1,0 +1,6 @@
+{
+  "type": "succeeded",
+  "note": "합성 — M1-45 게시 경로(llm) 시험용 입력 일치 응답: 5줄 모두 검사기 통과(무승부 2 · 원정 승 주어 점수 먼저 · n골을 주고받은 끝에 · 완파) → mode llm. 입력 = tests/collect-slice.test.ts 슬라이스 입력(fixtures/football/football-data/matches-6comps-2026-10-10.json 23경기 + fixture 순위 5개 대회, 발행일 2026-10-11, 득점자 없음 — API-Football 키 없음). 출력 형식은 M1-20 확정 스키마 {l:[{t,r}]}, 문장은 지시문 v0.4 [문형] 안의 꼴로 손으로 썼다(LLM 출력 아님). 테스트는 시도 customId(brief-2026-10-11 · brief-2026-10-11-r1)를 이 id로 바꿔 부른다(collect-slice.test.ts routedMock) — 발행일 id(brief-2026-10-11 = M0-34 입력 E 실측)와 겹치지 않게 slice- 접두사를 쓴다.",
+  "text": "{\"l\":[{\"t\":\"Augsburg와 Bayern이 2-2로 비겼다.\",\"r\":[\"m565819\"]},{\"t\":\"Atleti가 Alavés 원정에서 2-1로 이겼다.\",\"r\":[\"m564699\"]},{\"t\":\"Man United와 Tottenham이 1-1로 비겼다.\",\"r\":[\"m560600\"]},{\"t\":\"Leverkusen이 Mainz 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.\",\"r\":[\"m565812\"]},{\"t\":\"Chelsea가 Bournemouth를 5-1로 완파했다.\",\"r\":[\"m560595\"]}]}",
+  "stop_reason": "end_turn"
+}

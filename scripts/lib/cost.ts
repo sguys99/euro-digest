@@ -1034,7 +1034,44 @@ export function makeRunId(input: {
   return `${input.job}-${input.env}-${compactUtc(input.startedAt)}-${suffix}`;
 }
 
-type BillableResult = Pick<LlmResult, "usage" | "batch">;
+/**
+ * 비용·요청 수 집계에 쓰는 LLM 결과 — usage·batch(비용) + ok·errorType(브리핑 요청 수 — D56, 없으면 usage로 판정). llm.ts
+ * LlmResult를 그대로 넣을 수 있다.
+ */
+type BillableResult = Pick<LlmResult, "usage" | "batch"> & {
+  ok?: boolean;
+  errorType?: string;
+};
+
+/** 응답 없이 끊긴 요청 — 서버가 처리했을 수 있다(과금 불확실, D56 unbilledRisk 대상) */
+const MAYBE_BILLED_ERROR_TYPES: ReadonlySet<string> = new Set([
+  "connection_error",
+]);
+/** 응답을 받았지만 쓸 수 없는 출력 — 과금됐다 */
+const BILLED_ERROR_TYPES: ReadonlySet<string> = new Set([
+  "refusal",
+  "max_tokens",
+  "empty_output",
+]);
+
+/**
+ * 이 결과가 브리핑 **요청 1건**인가(RunLog.brief.requests — PRD §15 D56, src/lib/schema/run.ts 주석): 단건(배치 아님)이고, 응답을
+ * 받았거나(성공·refusal·max_tokens·빈 출력) 응답 없이 끊겼다(연결 오류·타임아웃). 마감으로 보내지 않음(`deadline`)·서버 오류
+ * 응답(4xx·429·5xx — 생성하지 않음, llm.ts 전송 재시도도 여기 들어간다)은 세지 않는다. ok·errorType이 없는 결과는 과금 토큰이
+ * 있을 때만 센다.
+ */
+export function isBriefRequestResult(result: BillableResult): boolean {
+  if (result.batch) return false;
+  if (result.ok === true) return true;
+  if (result.ok === false && result.errorType !== undefined) {
+    return (
+      BILLED_ERROR_TYPES.has(result.errorType) ||
+      MAYBE_BILLED_ERROR_TYPES.has(result.errorType)
+    );
+  }
+  const u = result.usage;
+  return u.in + u.out + u.cacheRead + u.cacheWrite > 0;
+}
 
 /** RunLog 중 recordRun이 채우지 않는(호출부가 아는) 필드 */
 export interface RunFields {
@@ -1045,6 +1082,11 @@ export interface RunFields {
   downgraded?: number;
   apiCalls?: RunLog["apiCalls"];
   sources?: RunLog["sources"];
+  /**
+   * 응답 없이 끊긴 브리핑 요청의 추정 최대 사용량(D56 — RunLog.brief.unbilledRisk). 요청 수(brief.requests)는 results에서 센다
+   * (collect job의 단건 결과 = 일일 브리핑 요청 — LLM 호출 지점 #1만 단건이다, D28)
+   */
+  briefUnbilledRisk?: NonNullable<RunLog["brief"]>["unbilledRisk"];
 }
 
 export interface RecordRunInput extends RunFields {
@@ -1092,8 +1134,9 @@ export function buildRunLog(input: RecordRunInput): RunLog {
   const now = input.now ?? new Date();
   let tokens: TokenUsage;
   let costUsd: number;
-  if (input.results !== undefined) {
-    const results = [...input.results];
+  // 한 번만 펼친다 — 생성기(한 번만 도는 Iterable)도 비용·요청 수에 같이 쓸 수 있게
+  const results = input.results === undefined ? undefined : [...input.results];
+  if (results !== undefined) {
     costUsd = costFromResults(input.model, results, input);
     tokens = sumTokens(results.map((r) => r.usage));
   } else if (input.usage !== undefined) {
@@ -1105,6 +1148,21 @@ export function buildRunLog(input: RecordRunInput): RunLog {
     costUsd = 0;
     tokens = sumTokens([]);
   }
+  // 일일 브리핑 요청 기록(D56) — collect job의 단건 결과 중 요청 1건으로 세는 것(isBriefRequestResult). 0건이고 추정 위험도 없으면
+  // 필드를 남기지 않는다(없음 = 0건 — 옛 기록과 같은 뜻)
+  const briefRequests =
+    input.job === "collect" && results !== undefined
+      ? results.filter(isBriefRequestResult).length
+      : 0;
+  const brief: RunLog["brief"] =
+    briefRequests > 0 || input.briefUnbilledRisk
+      ? {
+          requests: briefRequests,
+          ...(input.briefUnbilledRisk
+            ? { unbilledRisk: input.briefUnbilledRisk }
+            : {}),
+        }
+      : undefined;
   const run: RunLog = {
     runId:
       input.runId ??
@@ -1122,6 +1180,7 @@ export function buildRunLog(input: RecordRunInput): RunLog {
     apiCalls: input.apiCalls ?? { footballData: 0, apiFootball: 0 },
     sources: input.sources ?? [],
     status: input.status,
+    ...(brief ? { brief } : {}),
   };
   return RunLogSchema.parse(run);
 }
@@ -1199,7 +1258,15 @@ export function createRunRecorder(options: RunRecorderOptions): RunRecorder {
       if (finished) throw new CostError("finish 뒤에는 결과를 더할 수 없다");
       for (const result of batch) {
         assertTokenUsage(result.usage, "result.usage");
-        results.push({ usage: { ...result.usage }, batch: result.batch });
+        // ok·errorType도 남긴다 — 브리핑 요청 수(D56 isBriefRequestResult)를 셀 수 있게(eval-prompt 기록도 brief.requests를 남긴다)
+        results.push({
+          usage: { ...result.usage },
+          batch: result.batch,
+          ...(result.ok !== undefined ? { ok: result.ok } : {}),
+          ...(result.errorType !== undefined
+            ? { errorType: result.errorType }
+            : {}),
+        });
       }
     },
     costSoFar() {

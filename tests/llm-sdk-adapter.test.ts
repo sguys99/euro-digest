@@ -245,6 +245,68 @@ describe("SDK 어댑터 (가짜 fetch)", () => {
     });
   });
 
+  it("요청별 타임아웃(meta.timeoutMs — 브리핑 마감까지 남은 시간, M1-45)을 SDK 요청 옵션으로 넘긴다 — 걸리면 connection_error(요청 시간 초과)", async () => {
+    // 응답하지 않는 fetch — SDK가 요청별 timeout으로 abort하면 끝난다(클라이언트 기본 60초면 테스트가 멈춘다)
+    const hanging = (_input: string | URL | Request, init?: RequestInit) =>
+      new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener("abort", () =>
+          reject(new DOMException("This operation was aborted", "AbortError")),
+        );
+      });
+    const transport = createSdkTransport({ apiKey: TEST_KEY, fetch: hanging });
+    const params = {
+      model: "claude-haiku-5-5",
+      max_tokens: 10,
+      messages: [{ role: "user" as const, content: "x" }],
+    };
+    const started = Date.now();
+    const error = await transport
+      .createMessage(params, { customId: "c_1", timeoutMs: 50 })
+      .catch((e: unknown) => e);
+    expect(Date.now() - started).toBeLessThan(5_000);
+    expect(error).toBeInstanceOf(LlmTransportError);
+    expect(error).toMatchObject({
+      status: undefined,
+      errorType: "connection_error",
+      retryable: false,
+      message: "요청 시간 초과",
+    });
+  });
+
+  it("헤더는 바로 오고 본문이 늦는 응답도 요청별 타임아웃에 끊긴다(SDK timeout은 헤더 뒤 타이머를 지움 → abort 신호 — 리뷰 h3)", async () => {
+    const slowBody = (_input: string | URL | Request, init?: RequestInit) => {
+      const body = JSON.stringify(messageBody('{"l":[]}'));
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          const timer = setTimeout(() => {
+            controller.enqueue(new TextEncoder().encode(body));
+            controller.close();
+          }, 2_000);
+          init?.signal?.addEventListener("abort", () => {
+            clearTimeout(timer);
+            controller.error(new DOMException("aborted", "AbortError"));
+          });
+        },
+      });
+      return Promise.resolve(
+        new Response(stream, {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      );
+    };
+    const { client } = clientWith(slowBody);
+    const started = Date.now();
+    const result = await client.callSingle(request, { budgetMs: 100 });
+    expect(Date.now() - started).toBeLessThan(1_500);
+    expect(result).toMatchObject({
+      ok: false,
+      errorType: "connection_error",
+      message: "요청 시간 초과",
+      retryable: false,
+    });
+  });
+
   it("배치: 제출 → 조회(진행 → 완료) → JSONL 결과를 끝까지 SDK로 처리한다", async () => {
     const resultLine = {
       custom_id: "c_0123456789",

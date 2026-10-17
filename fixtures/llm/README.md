@@ -24,9 +24,10 @@ mock/
 | 형식 | 뜻 |
 |---|---|
 | `brief-YYYY-MM-DD` | **발행일(KST) 정상 응답** — 그날 입력 `brief-inputs/YYYY-MM-DD.json`(briefDate)에 대한 실제 모델 출력. M1-45가 발행일로 customId를 만들면 mock 실행이 이 파일을 찾는다. 날짜 형식 id는 이 용도로만 쓴다(실패 사례에 날짜를 넣지 않는다). |
-| `brief-YYYY-MM-DD-r1` | 예약(아직 없음) — 재시도 응답. M1-45가 재시도 customId를 이렇게 정하면 "재시도 뒤 성공" 경로를 fixture로 시험할 수 있다. |
+| `brief-YYYY-MM-DD-r1` | FR-29 재시도 요청의 customId(M1-45 — brief-publish.ts `briefAttemptCustomId`, 첫 시도와 같은 지시문·입력). 파일은 아직 없다 — mock 실행에서 재시도가 나면 by-id·by-hash 모두 없어 템플릿(`mock-missing`)으로 간다. 테스트는 아래 `slice-*`·`brief-case-*`로 경로를 바꿔 부른다. |
 | `brief-case-<유형>` | 실패·경계 사례. 날짜가 없어 발행일 id와 겹치지 않는다. 같은 유형의 두 번째는 `-2`. |
-| `golden-YYYY-MM-DD` · `golden-pre-YYYY-MM-DD` | 골든셋(`golden/` — M1-24) 실측 응답. `npm run eval:prompt` live 실행의 `--update-mock`이 쓰고 `--mock`이 재생한다(base = 지시문 v0.1, pre = 🧪 사실 선계산 변형). note에 실행 라벨·지시문 판·thinking·지연 |
+| `golden-YYYY-MM-DD` · `golden-pre-YYYY-MM-DD` | 골든셋(`golden/` — M1-24) 실측 응답. `npm run eval:prompt` live 실행의 `--update-mock`이 쓰고 `--mock`이 재생한다(base = 지시문 v0.1, pre = 🧪 사실 선계산 변형). note에 실행 라벨·지시문 판·thinking·지연. 입력과 근거가 맞아 게시 줄 불변식 테스트에도 쓴다(tests/brief-publish.test.ts — M1-45) |
+| `slice-YYYY-MM-DD-<유형>` | **입력 일치 합성 응답**(M1-45) — `tests/collect-slice.test.ts` 슬라이스 입력(football-data fixture 23경기 + 순위, 발행일 2026-10-11, 득점자 없음)에 맞춰 지시문 [문형] 안의 꼴로 손으로 쓴 출력. 발행일 id(`brief-2026-10-11` = M0-34 입력 E 실측 — 슬라이스 입력과 근거가 맞지 않아 5줄 모두 강등)와 겹치지 않게 접두사를 따로 둔다. llm(5줄 통과)·mixed(L3 점수 오류 → 템플릿) 게시 경로 시험용 |
 
 단건 호출의 customId는 API로 보내지 않는다(mock 조회·로그에만 쓰인다). 형식 제약은 배치와 같은 `^[a-zA-Z0-9_-]{1,64}$`.
 
@@ -57,9 +58,10 @@ mock/
 | `succeeded` + `refusal` | `ok:false`, `errorType:"refusal"`, `retryable:false` | 없음 | 기록값(과금) |
 | `errored` 429·5xx 성격(`rate_limit_error`·`api_error`·`timeout_error`·`overloaded_error`) | `ok:false`, `retryable:true` | 최대 2회 더(마감을 넘기는 대기는 안 함) | 0 |
 | `errored` 4xx 성격(`invalid_request_error` 등) | `ok:false`, `retryable:false` | 없음 | 0 |
-| `errored` `connection_error` | `ok:false`, **`retryable:true`(힌트)** | **없음**(중복 과금 위험) | 0 |
+| `errored` `connection_error` | `ok:false`, `retryable:false` | **없음**(중복 과금 위험) | 0 |
 
-`retryable`은 호출부용 힌트다. 연결 오류는 llm.ts가 단건에서 재시도하지 않는데도 힌트가 true다(배치 결과 수거 같은 읽기 맥락 기준). 브리핑 호출부(M1-45)는 이 힌트만 보고 다시 보내지 않는다.
+`retryable`은 호출부용 힌트다 — 다시 보내도 중복 과금이 없는 실패(429·5xx·과금 없는 배치 결과)만 true다. 연결 오류는 서버가 이미 처리했을 수 있어 false다(M0-36 확인 ② — M1-45 전에는 true였다). 브리핑 호출부(M1-45 collect-run.ts)는 이 힌트로 다시 보내지 않고, FR-29 재시도는 검사기 판정(`retry` — 출력 전체 실패·max_tokens)으로만 한다.
+마감(`deadline`·`budgetMs` — M1-45)을 주면 요청마다 타임아웃 = min(60초, 남은 시간), 남은 시간이 `minAttemptMs`보다 짧으면 보내지 않고 `errorType:"deadline"`(과금 0)이다. mock은 시간을 쓰지 않으므로 타임아웃은 무시된다.
 
 ## 지금 있는 파일
 
@@ -73,6 +75,7 @@ mock/
 | `brief-inputs/` | 브리핑 정형 입력 6일치(M0-30 A~D · M0-34 E·F) + E 메타 + 임시 프롬프트 2개 + 임시 고유명사 사전 (M0-36, M1-24 골든셋 씨앗) |
 | `golden/` | 브리핑 골든셋 10일치 — 소스·확정 빌더 입력·실행 기록(`golden/README.md`, M1-24) |
 | `mock/by-id/golden-*.json` (20개) | 골든셋 실측 응답 — v0.1 10개 + 🧪 pre 변형 10개(2026-10-17, M1-24) |
+| `mock/by-id/slice-2026-10-11-llm.json` · `slice-2026-10-11-mixed.json` | 입력 일치 합성 응답(M1-45) — collect 슬라이스 입력의 llm·mixed 게시 경로 시험(위 customId 규칙) |
 
 골든셋(`golden/` — 브리핑 입력 10일치, `npm run eval:prompt`)은 M1-24에서 추가했다(`brief-inputs/` 5일 + football-data·API-Football 실응답 5일 — `golden/README.md`). 기사 텍스트(본문·제목·설명)·이미지·비밀값은 넣지 않는다.
 

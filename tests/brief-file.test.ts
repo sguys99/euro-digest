@@ -1,5 +1,6 @@
 /**
- * M1-19 브리핑 파일(scripts/lib/brief-file.ts) — 게시 계획(M1-45 전에는 LLM이 성공해도 템플릿 — 검증 안 된 LLM 줄 저장 금지),
+ * M1-19 브리핑 파일(scripts/lib/brief-file.ts) — 게시 계획(M1-45: 검증 통과 줄이 있으면 llm·mixed, 없으면 같은 입력의 템플릿 —
+ * 템플릿 이유는 단계 결과·원인별),
  * 같은 날 재실행 판정(llm·mixed 유지, template·empty 갱신, empty가 줄 있는 template을 지우지 않음, 같은 내용은 다시 쓰지 않음),
  * 읽기(없음·깨짐·스키마·파일명), 원자적 쓰기. 네트워크 없음 — 임시 폴더.
  */
@@ -24,6 +25,8 @@ import {
   buildBriefFile,
   decideBriefWrite,
   isKeptBriefMode,
+  isMockBriefFile,
+  briefTemplateReason,
   planBriefPublish,
   readBriefFile,
   serializeBriefFile,
@@ -63,11 +66,60 @@ afterEach(() => {
   rmSync(dataDir, { recursive: true, force: true });
 });
 
-describe("planBriefPublish — M1-45 전 게시 계획", () => {
+describe("planBriefPublish — 게시 계획(M1-45)", () => {
   const plan = (brief: BriefStageResult, inputMatches: number | null = 3) =>
     planBriefPublish({ brief, inputMatches, templateLines: LINES });
+  const AI_LINE: BriefLine = {
+    text: "아스널이 첼시를 2-1로 꺾었다.",
+    ai: true,
+    refs: ["m1"],
+  };
 
-  it("LLM이 성공해도(done) 검증(M1-23·M1-45) 전이라 템플릿을 게시한다 — 검증 안 된 LLM 줄은 저장하지 않는다", () => {
+  it("판정 ok·downgrade-line 출력(done + verified) → 모든 줄 AI면 llm, 섞이면 mixed — 줄은 검증 결과 그대로", () => {
+    expect(
+      planBriefPublish({
+        brief: { state: "done" },
+        inputMatches: 3,
+        templateLines: LINES,
+        verified: { lines: [AI_LINE], ai: 1 },
+      }),
+    ).toEqual({ mode: "llm", reason: "verified", lines: [AI_LINE] });
+    expect(
+      planBriefPublish({
+        brief: { state: "done" },
+        inputMatches: 3,
+        templateLines: LINES,
+        verified: { lines: [AI_LINE, LINES[1]!], ai: 1 },
+      }),
+    ).toEqual({
+      mode: "mixed",
+      reason: "verified",
+      lines: [AI_LINE, LINES[1]],
+    });
+    // 템플릿 줄을 만들 수 없는 입력이어도 통과 줄이 있으면 게시한다
+    expect(
+      planBriefPublish({
+        brief: { state: "done" },
+        inputMatches: 3,
+        templateLines: [],
+        verified: { lines: [AI_LINE], ai: 1 },
+      }),
+    ).toMatchObject({ mode: "llm" });
+  });
+
+  it("통과 줄이 하나도 없으면 같은 입력의 전체 템플릿(all-lines-downgraded), 검증 결과가 없으면 방어선(unverified)", () => {
+    expect(
+      planBriefPublish({
+        brief: { state: "done" },
+        inputMatches: 3,
+        templateLines: LINES,
+        verified: { lines: [LINES[0]!], ai: 0 },
+      }),
+    ).toEqual({
+      mode: "template",
+      reason: "all-lines-downgraded",
+      lines: LINES,
+    });
     expect(plan({ state: "done" })).toEqual({
       mode: "template",
       reason: "unverified",
@@ -75,26 +127,54 @@ describe("planBriefPublish — M1-45 전 게시 계획", () => {
     });
   });
 
-  it("예산 초과(verdict 무관)·mock 없음·LLM 실패·출력 형식 오류·설정 오류 → 같은 입력의 템플릿(FR-26·FR-27)", () => {
-    expect(plan({ state: "skipped", reason: "budget" })).toMatchObject({
-      mode: "template",
-      reason: "budget",
-    });
+  it("검증 결과는 done일 때만 쓴다 — 실패·생략 결과에 verified가 와도 템플릿", () => {
     expect(
-      plan({ state: "skipped", reason: "mock-fixture-missing" }),
-    ).toMatchObject({ mode: "template", reason: "mock-missing" });
-    expect(plan({ state: "failed", reason: "llm" })).toMatchObject({
-      mode: "template",
-      reason: "llm-failed",
-    });
-    expect(plan({ state: "failed", reason: "output" })).toMatchObject({
-      mode: "template",
-      reason: "output-failed",
-    });
-    expect(plan({ state: "failed", reason: "setup" })).toMatchObject({
-      mode: "template",
-      reason: "setup-failed",
-    });
+      planBriefPublish({
+        brief: { state: "failed", reason: "output", cause: "output" },
+        inputMatches: 3,
+        templateLines: LINES,
+        verified: { lines: [AI_LINE], ai: 1 },
+      }),
+    ).toMatchObject({ mode: "template", reason: "output-failed" });
+  });
+
+  it("예산 초과(verdict 무관)·마감·사전 실패·mock 없음·LLM 실패·출력 형식 오류·설정 오류 → 같은 입력의 템플릿(FR-26·FR-27·FR-29)", () => {
+    const cases: Array<[BriefStageResult, string]> = [
+      [{ state: "skipped", reason: "budget" }, "budget"],
+      [{ state: "skipped", reason: "deadline" }, "deadline"],
+      [{ state: "skipped", reason: "names-unreadable" }, "names-unreadable"],
+      [{ state: "skipped", reason: "mock-fixture-missing" }, "mock-missing"],
+      [{ state: "failed", reason: "llm" }, "llm-failed"],
+      [{ state: "failed", reason: "output" }, "output-failed"],
+      [{ state: "failed", reason: "setup" }, "setup-failed"],
+      // 원인(brief-publish.ts BriefFailCause)이 있으면 원인으로
+      [{ state: "failed", reason: "llm", cause: "refusal" }, "refusal"],
+      [{ state: "failed", reason: "llm", cause: "deadline" }, "deadline"],
+      [{ state: "failed", reason: "output", cause: "deadline" }, "deadline"],
+      [
+        { state: "failed", reason: "output", cause: "max-tokens" },
+        "output-failed",
+      ],
+      [{ state: "failed", reason: "output", cause: "output" }, "output-failed"],
+      [
+        { state: "failed", reason: "llm", cause: "check-error" },
+        "check-failed",
+      ],
+      [
+        { state: "failed", reason: "llm", cause: "mock-missing" },
+        "mock-missing",
+      ],
+      [{ state: "failed", reason: "llm", cause: "transport" }, "llm-failed"],
+      [{ state: "failed", reason: "llm", cause: "client" }, "llm-failed"],
+    ];
+    for (const [brief, reason] of cases) {
+      expect(plan(brief), JSON.stringify(brief)).toEqual({
+        mode: "template",
+        reason,
+        lines: LINES,
+      });
+      expect(briefTemplateReason(brief, null)).toBe(reason);
+    }
   });
 
   it("경기 0개 → empty(줄 0개), 정형 입력 없음 → 파일 없음, 기존 llm·mixed 유지 → 파일 없음", () => {
@@ -118,6 +198,26 @@ describe("planBriefPublish — M1-45 전 게시 계획", () => {
         templateLines: [],
       }),
     ).toEqual({ mode: null, reason: "no-lines" });
+  });
+
+  it("계획한 llm·mixed 줄은 파일 스키마(mode ↔ 줄 일관성)를 통과한다", () => {
+    for (const verified of [
+      { lines: [AI_LINE], ai: 1 },
+      { lines: [AI_LINE, LINES[1]!], ai: 1 },
+    ]) {
+      const planned = planBriefPublish({
+        brief: { state: "done" },
+        inputMatches: 3,
+        templateLines: LINES,
+        verified,
+      });
+      if (planned.mode !== "llm" && planned.mode !== "mixed") {
+        throw new Error("unreachable");
+      }
+      expect(() =>
+        file({ mode: planned.mode, lines: planned.lines }),
+      ).not.toThrow();
+    }
   });
 });
 
@@ -148,6 +248,39 @@ describe("decideBriefWrite — 같은 날 재실행", () => {
     expect(isKeptBriefMode("mixed")).toBe(true);
     expect(isKeptBriefMode("template")).toBe(false);
     expect(isKeptBriefMode("empty")).toBe(false);
+  });
+
+  it("mock 실행이 쓴 llm·mixed(existingMock)는 지키지 않는다 — 내용이 다르면 무엇으로든 덮고, 같으면 다시 쓰지 않는다(리뷰 권장 5)", () => {
+    for (const existing of [llm, mixed]) {
+      for (const next of [file(), file({ mode: "empty", lines: [] }), mixed]) {
+        if (next === existing) continue;
+        expect(
+          decideBriefWrite(existing, next, { existingMock: true }),
+        ).toEqual({ action: "write" });
+      }
+      expect(
+        decideBriefWrite(existing, existing, { existingMock: true }),
+      ).toEqual({ action: "unchanged" });
+    }
+  });
+
+  it("isMockBriefFile — 그 파일을 쓴 실행 기록의 LLM 토큰이 0이면 mock, 토큰이 있거나 기록을 못 찾으면 live(보수적)", () => {
+    const tokens = (n: number) => ({
+      in: n,
+      out: n,
+      cacheRead: 0,
+      cacheWrite: 0,
+    });
+    const run = (runId: string, n: number) => ({ runId, tokens: tokens(n) });
+    expect(isMockBriefFile(llm, [run(llm.runId, 0)])).toBe(true);
+    expect(isMockBriefFile(mixed, [run("other", 5), run(mixed.runId, 0)])).toBe(
+      true,
+    );
+    expect(isMockBriefFile(llm, [run(llm.runId, 6590)])).toBe(false);
+    expect(isMockBriefFile(llm, [run("other", 0)])).toBe(false);
+    expect(isMockBriefFile(llm, [])).toBe(false);
+    // template·empty는 지킬 대상이 아니라 판정하지 않는다
+    expect(isMockBriefFile(file(), [run(file().runId, 0)])).toBe(false);
   });
 
   it("줄 있는 template은 llm·mixed 또는 줄이 더 많은 template으로만 갱신 — 같거나 적은 줄·empty로는 바꾸지 않는다(공개 뒤 내용 고정)", () => {

@@ -629,7 +629,8 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
     const LATE = new Date("2026-10-10T21:45:00.000Z"); // 2026-10-11 06:45 KST
     let t = 0;
     const starts: number[] = [];
-    const deadlines: Array<Date | undefined> = [];
+    // 마감은 상대 예산으로 넘어간다(M1-45 — deps.now로 잰 남은 시간, 클라이언트 시계와 무관)
+    const budgets: Array<number | undefined> = [];
     const { deps, records } = makeDeps(
       undefined,
       withApiFootball({
@@ -647,7 +648,8 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
           return {
             model: client.model,
             callSingle: (request, options) => {
-              deadlines.push(options?.deadline);
+              budgets.push(options?.budgetMs);
+              expect(options?.minAttemptMs).toBe(40_000);
               return client.callSingle(request, options);
             },
           };
@@ -682,11 +684,12 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
     expect(Math.max(...starts)).toBeLessThan(300_000);
     expect(md.apiFootball.data.stage.pending.length).toBeGreaterThan(1);
     expect(outcome.brief.state).toBe("done");
-    expect(deadlines).toEqual([new Date("2026-10-10T21:50:00.000Z")]);
+    // 06:45 → 06:50 마감까지 5분(deps.now = LATE 고정)
+    expect(budgets).toEqual([300_000]);
   });
 
   it("계절별 마감(M1-47) — 마감이 지난 수동 실행(08:30 KST)은 off-slot: 시작 + 8분을 마감으로, 단계 예산은 상수 그대로", async () => {
-    const deadlines: Array<Date | undefined> = [];
+    const budgets: Array<number | undefined> = [];
     const { deps, records } = makeDeps(
       undefined,
       withApiFootball({
@@ -698,7 +701,8 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
           return {
             model: client.model,
             callSingle: (request, options) => {
-              deadlines.push(options?.deadline);
+              budgets.push(options?.budgetMs);
+              expect(options?.minAttemptMs).toBe(40_000);
               return client.callSingle(request, options);
             },
           };
@@ -715,7 +719,8 @@ describe("runCollect — API-Football 경기 단건 단계(M1-48)", () => {
       afStageBudgetMs: 360_000,
     });
     expect(outcome.matchData?.apiFootballBrief?.reason).toBe("complete");
-    expect(deadlines).toEqual([new Date("2026-10-10T23:38:00.000Z")]);
+    // 시작 + 8분 마감까지 남은 시간(deps.now 고정 = 시작)
+    expect(budgets).toEqual([480_000]);
   });
 
   it("football-data가 실패하면 브리핑은 생략되므로 API-Football 몫을 기다리지 않는다(API-Football은 끝까지 받는다)", async () => {
