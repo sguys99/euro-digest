@@ -1,34 +1,39 @@
 /**
- * 브리핑 코드 템플릿 문장 (M1-19 — PRD FR-26·FR-27·FR-29, D24·D30·D38). LLM 없이 정형 입력(brief-input.ts `BriefInput`)만으로
- * "오늘의 5줄"을 만든다. 결정적(같은 입력 → 같은 줄)이고 모든 줄이 `ai:false`(“AI 작성” 라벨 없음)·근거 id(`refs`)를 갖는다.
+ * 브리핑 코드 템플릿 문장 (M1-19 → **M1-21 문형 교체** — PRD FR-26·FR-27·FR-29, D24·D30·D38·D45 ④). LLM 없이 정형 입력
+ * (brief-input.ts `BriefInput`)만으로 "오늘의 5줄"을 만든다. 결정적(같은 입력 → 같은 줄)이고 모든 줄이 `ai:false`(“AI 작성” 라벨
+ * 없음)·근거 id(`refs`)를 갖는다.
  * 쓰는 곳(하나의 생성기 — FR-27 "같은 템플릿 생성기"): 예산 초과(M1-22)·LLM 실패·출력 전체 실패(FR-29)·브리핑 마감 초과(FR-26, M1-45)
  * 의 전체 강등(`templateBriefLines`)과 줄 단위 강등(`templateLineForRefs` — M1-45가 근거 id로 그 줄만 바꾼다).
  * football-data 데이터(결과·순위)만으로 모든 줄을 만들 수 있다 — 득점자(API-Football)는 있을 때만 서술을 더한다(M1-47 이월).
  *
- * ── 문형 (입력에 없는 사실은 쓰지 않는다 — CLAUDE.md §1-7) ─────────────────────────────────────────────
- *   경기: `{대회} {홈} h-a {원정}, {서술}.` — 스코어는 **홈-원정 고정**(D30: 템플릿·스코어 행은 홈-원정, '주어 팀 먼저'는 LLM 문장만).
- *     서술의 주어는 '홈팀이·원정팀이'(스코어 순서와 같은 기준 — 팀 이름을 되풀이하지 않는다). 중립 경기장 결승(round FINAL)만
- *     '{팀}의 승리로 끝났다'처럼 이긴 팀 이름을 쓴다. 서술은 입력에서 계산되는 것만 고른다:
- *       승리 — `홈팀이 이겼다` · 3골 차 이상 `홈팀이 n골 차로 이겼다`(n = 두 점수의 차 — D40 ② 파생 숫자 규칙과 같은 종류)
- *              · 이긴 팀이 뒤진 적이 있으면 `홈팀이 역전승을 거뒀다`(전반 스코어나 완전한 득점 순서로 확인될 때만)
- *       득점 목록이 완전하고 점수와 맞으면(goals 배열) — 해트트릭(이긴 팀 같은 선수 3골 이상) `{선수}의 해트트릭으로 홈팀이 이겼다`,
- *              2골 차 이내 승리는 결승골(이긴 팀의 (진 팀 점수 + 1)번째 골) `{선수}의 {분}분 결승골로 원정팀이 이겼다`(PK면 'PK 결승골',
- *              자책골이면 득점자 서술 없이), 무승부는 마지막 골(동점골) `{선수}의 {분}분 동점골로 두 팀이 비겼다`
- *       무승부 — `두 팀이 승부를 가리지 못했다` · 0-0 `득점 없이 비겼다`
- *       연장 — `연장 끝에 홈팀이 이겼다` · `연장 끝에 비겼다`(두 경기 합산은 입력에 없어 그 경기 결과만) / 승부차기 —
- *              `승부차기(h-a) 끝에 홈팀이 이겼다`(홈-원정)
- *   순위: `{대회} 순위는 1위 {팀}(승점 n), 2위 {팀}(승점 n) 순이다.` — 같은 순위는 `공동 n위 {팀}·{팀}`(응답 순서), 전일 순위가
- *     없으므로 변동(올랐다·내려갔다)은 쓰지 않는다(D40 ③). 진행 중 경기가 있는 대회는 입력에 순위가 없어 문장도 없다(M1-44 이월).
- *   길이: 목표 60자(FR-23 '60자 내외') 안에 드는 가장 자세한 문장을 고르고, 없으면 80자(D40 ⑤ 상한) 안의 첫 문장, 그것도 없으면
- *     스코어만(80자 안일 때), 그것도 넘으면 그 줄을 만들지 않는다(문장 중간 절단 안 함). 문장 변형 순서: 대회 nameKo로
- *     (득점자 + 분 → 득점자) → shortKo로 (같은 순서) → 기본 서술(nameKo → shortKo → 대회 생략).
+ * ── 문형 — LLM 줄과 같은 자연 뉴스 문장 (D45 ④: 강등된 날 한 블록 안에서 문체가 섞여 보이지 않게) ─────────────────
+ *   **주어 팀 점수 먼저**(D30 갱신 — 이긴 팀이 주어면 이긴 팀 점수 먼저), 이름 뒤 조사는 받침 기준(josa.ts), 입력에 없는 사실은
+ *   쓰지 않는다(CLAUDE.md §1-7). {승자}·{패자}·{홈}·{원정}은 한글 이름(names.ts 사전 — 없으면 영문), [대회]는 브리핑 단위 표기.
+ *   승리      `{승자}가 [대회 홈경기에서|대회 원정에서|원정에서] {패자}를 w-l로 꺾었다.` — 홈 승리는 대회가 없으면 장소를 쓰지 않는다
+ *     3골 차 이상 `… {패자}를 w-l로 완파했다.`(점수 차로 계산 — D40 ② 파생 사실과 같은 종류)
+ *     역전승      `… {패자}에 w-l 역전승을 거뒀다.`(전반 스코어 또는 완전한 득점 순서로 이긴 팀이 뒤진 적이 확인될 때만)
+ *     득점자(득점 목록이 완전하고 점수와 맞을 때만 — goals 배열):
+ *       결승골(2골 차 이내, 이긴 팀의 (진 팀 점수 + 1)번째 골·자책골 제외) `{승자}가 … {선수}의 {분}분 [PK ]결승골로 {패자}를 …`
+ *       해트트릭(이긴 팀 같은 선수 3골 이상 — 점수 차와 무관, 4골 이상은 'n골') `… {선수}의 해트트릭을 앞세워 …`
+ *   무승부    `{홈}과 {원정}이 [대회에서] h-a로 비겼다.`(0-0 포함 — 점수를 늘 쓴다)
+ *     동점골(마지막 골 — 자책골 제외) `{동점 팀}이 [장소] {선수}의 {분}분 동점골로 {상대}와 h-h로 비겼다.`
+ *   연장      `{승자}가 [장소] 연장 끝에 {패자}를 w-l로 꺾었다.` · `{홈}과 {원정}이 [대회에서] 연장 끝에 h-a로 비겼다.`
+ *   승부차기  `{승자}가 [장소] {패자}와 연장까지 1-1로 맞선 뒤 승부차기에서 w-l로 이겼다.` — 승부차기 점수도 이긴 팀 먼저,
+ *            승부차기 경기의 `ft` 동점을 '비겼다'로 쓰지 않는다(M1-19 이월 — 결과는 승부차기 승패)
+ *   중립 경기장 결승(round FINAL)은 장소 대신 `[대회 ]결승에서` — 홈·원정이 없다
+ *   순위      `{1위}가 승점 n으로 [대회] 선두, {2위}가 승점 m으로 2위[, {3위}가 승점 k로 3위]다.` — 같은 순위는
+ *            `{A}와 {B}가 승점 n으로 [대회] 공동 선두`·`A·B·C가 … 공동 n위`(응답 순서, 승점이 같을 때만). 전일 순위가 없으므로
+ *            변동(올랐다·내려갔다·지켰다)은 쓰지 않는다(D40 ③). 진행 중 경기가 있는 대회는 입력에 순위가 없어 문장도 없다(M1-44 이월).
  *
- * ── 고유명사·조사 (M1-21과의 경계) ──────────────────────────────────────────────────────────────────
- *   이름은 `BriefNames`로 바꾼다 — 기본은 영문 그대로(`ENGLISH_NAMES`), 수집 경로는 `configs/names.ko.json` 단순 대조
- *   (`namesKoResolver` — 미등록 이름은 영문 그대로, unknown-names 적재는 M1-21). **문형은 이름 바로 뒤에 받침에 따라 바뀌는 조사
- *   (이/가·은/는·을/를·과/와·으로/로)를 붙이지 않는다** — 이름 뒤에는 쉼표·괄호·'·'·공백·불변 조사 '의'만 온다. 그래서 템플릿 줄은
- *   이름을 바꾼 뒤 조사 보정이 필요 없고, 길이도 바꾼 이름으로 잰다(치환 뒤 길이 — PRD §9.4). 조사는 고정 낱말 뒤에만 쓴다
- *   ('홈팀이'·'결승골로'·'역전승을'·'두 팀이' …).
+ * ── 대회 표기 — 브리핑 단위로 하나 (D30·D45 ④, M1-19 이월) ─────────────────────────────────────
+ *   한 브리핑 안에서는 nameKo('프리미어리그')나 shortKo('EPL') 중 하나만 쓴다(`chooseBriefCompForm`): nameKo가 기본이고,
+ *   nameKo로는 대회 표기를 잃는 줄(60·80자 안에 대회와 함께 못 들어가 대회 없이 쓴 줄)이 shortKo보다 많을 때만 shortKo.
+ *   줄마다 고르던 M1-19 방식은 'EPL'과 '프리미어리그'가 한 블록에 섞였다. LLM 줄 치환(names.ts `substituteNames` competitionLabel)도 같은 표기를 쓸 것(M1-45).
+ *
+ * ── 길이 ───────────────────────────────────────────────────────────────────────────────
+ *   조사를 붙이고 이름을 바꾼 **뒤의** 문장 길이로 잰다(PRD §9.4 치환 후 길이). 목표 60자(FR-23 '60자 내외') 안에 드는 가장 자세한
+ *   문장을 고르고, 없으면 80자(D40 ⑤ 상한) 안의 첫 문장, 그것도 없으면 그 줄을 만들지 않는다(문장 중간 절단 안 함). 변형 순서:
+ *   대회 표기와 함께 (득점자 + 분 → 득점자 → 기본) → 대회 없이 기본.
  *
  * 순수 함수 모듈 — I/O 없음.
  */
@@ -45,6 +50,15 @@ import type {
   BriefInputMatch,
   BriefInputStandings,
 } from "./brief-input";
+import { withJosa } from "./josa";
+import {
+  buildNameIndex,
+  COMPETITION_EN_ALIASES,
+  koreanName,
+  PERSON_KINDS,
+  TEAM_KINDS,
+  type NameIndex,
+} from "./names";
 
 /** 줄 길이 목표(FR-23 '60자 내외') — 이 안에 드는 가장 자세한 변형을 고른다 */
 export const BRIEF_TEMPLATE_TARGET = 60;
@@ -54,7 +68,7 @@ export const TEMPLATE_MATCH_LINES_WITH_STANDINGS = 4;
 export const TEMPLATE_STANDINGS_LINES_MAX = 2;
 /** 해트트릭으로 쓰는 골 수(이보다 많으면 'n골') */
 const HAT_TRICK = 3;
-/** 'n골 차'로 쓰는 최소 점수 차 — 이보다 작으면 결승골을 쓴다 */
+/** '완파'로 쓰는 최소 점수 차 — 이보다 작으면 결승골을 쓴다 */
 const BIG_MARGIN = 3;
 /** 순위 줄의 한 순위에 넣는 최대 팀 수(공동 순위가 이보다 많으면 거기서 줄을 끝낸다) */
 const STANDINGS_GROUP_MAX = 3;
@@ -74,44 +88,61 @@ export interface BriefNames {
   person(name: string): string;
 }
 
-/** 영문 그대로(M1-21 치환 경로가 이어받을 때의 기본) */
+/** 영문 그대로(사전을 읽지 못했을 때의 기본) */
 export const ENGLISH_NAMES: BriefNames = Object.freeze({
   team: (name: string) => name,
   person: (name: string) => name,
 });
 
 /**
- * `configs/names.ko.json` 단순 대조 — 영문 표기(`en`, 대소문자 무시)가 정확히 같으면 한글 표기(`ko`). 팀은 kind team, 사람은
- * player·manager. 미등록 이름은 영문 그대로(적재는 M1-21).
+ * 사전 색인(names.ts) → 이름 표기 — 영문 표기(대표·별칭, 접기 기준 정확히 같음)가 있으면 한글. 팀은 kind team, 사람은
+ * player·manager. 미등록 이름은 영문 그대로(미등록 적재는 collect-run.ts → unknown-names.ts).
  */
-export function namesKoResolver(
-  file: Pick<NamesKoFile, "entries">,
-): BriefNames {
-  const teams = new Map<string, string>();
-  const people = new Map<string, string>();
-  for (const entry of file.entries) {
-    const target =
-      entry.kind === "team"
-        ? teams
-        : entry.kind === "player" || entry.kind === "manager"
-          ? people
-          : null;
-    if (!target) continue;
-    for (const en of entry.en) target.set(en.toLowerCase(), entry.ko);
-  }
+export function briefNamesFromIndex(index: NameIndex): BriefNames {
   return {
-    team: (name) => teams.get(name.toLowerCase()) ?? name,
-    person: (name) => people.get(name.toLowerCase()) ?? name,
+    team: (name) => koreanName(index, name, TEAM_KINDS) ?? name,
+    person: (name) => koreanName(index, name, PERSON_KINDS) ?? name,
   };
 }
 
+/** `configs/names.ko.json` → 이름 표기(색인을 만들어 `briefNamesFromIndex`) */
+export function namesKoResolver(
+  file: Pick<NamesKoFile, "entries"> & { ignore?: readonly string[] },
+): BriefNames {
+  return briefNamesFromIndex(buildNameIndex(file));
+}
+
+/** 브리핑 단위 대회 표기(D30) */
+export type BriefCompForm = "nameKo" | "shortKo";
+
 export interface BriefTemplateContext {
-  /** 대회 표기(competitions.json nameKo·shortKo — D30), 입력의 comp(nameEn)로 찾는다 */
+  /** 대회 표기(competitions.json nameKo·shortKo — D30), 입력의 comp(nameEn — 코드 별칭도 인정)로 찾는다 */
   competitions: readonly Pick<
     CompetitionConfig,
-    "nameEn" | "nameKo" | "shortKo"
+    "id" | "nameEn" | "nameKo" | "shortKo"
   >[];
   names?: BriefNames;
+  /**
+   * 브리핑 단위 대회 표기 — `templateBriefLines`·`templateLineForRefs`는 없으면 입력으로 고른다(`chooseBriefCompForm`),
+   * 줄 함수(`templateMatchLine`·`templateStandingsLine`)는 없으면 nameKo.
+   */
+  compForm?: BriefCompForm;
+}
+
+/**
+ * 입력 대회(nameEn, 또는 names.ts `COMPETITION_EN_ALIASES`의 별칭 — M0 입력의 'Champions League') → 그 표기의 이름.
+ * 설정에 없으면 입력 표기 그대로.
+ */
+export function briefCompLabel(
+  comp: string,
+  ctx: Pick<BriefTemplateContext, "competitions">,
+  form: BriefCompForm = "nameKo",
+): string {
+  const config =
+    ctx.competitions.find((c) => c.nameEn === comp) ??
+    ctx.competitions.find((c) => COMPETITION_EN_ALIASES[c.id].includes(comp));
+  if (!config) return comp;
+  return form === "shortKo" ? config.shortKo : config.nameKo;
 }
 
 // ─── 입력 해석 ───────────────────────────────────────────────────────────
@@ -122,6 +153,8 @@ interface Pair {
 }
 
 type Side = "home" | "away";
+
+const other = (side: Side): Side => (side === "home" ? "away" : "home");
 
 /** "h-a" → 점수 — 형식이 다르면 null */
 export function parseScorePair(text: string | undefined): Pair | null {
@@ -206,7 +239,7 @@ function matchFacts(match: BriefInputMatch): MatchFacts | null {
   const goals = goalFacts(match, ft);
   let comeback = false;
   if (byFt !== null) {
-    const loser: Side = byFt === "home" ? "away" : "home";
+    const loser = other(byFt);
     const ht = parseScorePair(match.ht);
     if (ht && ht[byFt] < ht[loser]) comeback = true;
     if (goals) {
@@ -228,20 +261,41 @@ function matchFacts(match: BriefInputMatch): MatchFacts | null {
   };
 }
 
-// ─── 경기 줄 ─────────────────────────────────────────────────────────────
-
-/** 서술 변형 — full(득점자 + 분) → mid(득점자) → base(득점자 없음). full·mid는 없을 수 있다 */
-interface Predicates {
-  full: string | null;
-  mid: string | null;
-  base: string;
+/** 점수를 `first` 쪽 먼저 — "2-1" */
+function scoreFrom(pair: Pair, first: Side): string {
+  return `${pair[first]}-${pair[other(first)]}`;
 }
 
-/** 이긴 팀의 득점자 서술(해트트릭·결승골) — 쓸 수 없으면 null */
+// ─── 경기 줄 ─────────────────────────────────────────────────────────────
+
+/** 조각을 공백 하나로 잇는다(빈 조각은 건너뜀) */
+function words(...parts: Array<string | null | undefined>): string {
+  return parts.filter((p): p is string => !!p).join(" ");
+}
+
+/** 장소 구 — 대회 표기(label)와 주어 쪽(side, 무승부 짝 주어면 null). 중립 경기장 결승은 '결승에서' */
+function venuePhrase(
+  label: string | null,
+  side: Side | null,
+  neutral: boolean,
+): string {
+  if (neutral) return label ? `${label} 결승에서` : "결승에서";
+  if (side === null) return label ? `${label}에서` : "";
+  if (side === "home") return label ? `${label} 홈경기에서` : "";
+  return label ? `${label} 원정에서` : "원정에서";
+}
+
+/** 득점자 구 — full(득점자 + 분)·mid(득점자) */
+interface Clause {
+  full: string;
+  mid: string;
+}
+
+/** 이긴 팀의 득점자 구(해트트릭·결승골) — 쓸 수 없으면 null */
 function winnerClause(
   facts: MatchFacts,
   person: (name: string) => string,
-): { full: string; mid: string } | null {
+): Clause | null {
   const winner = facts.winner;
   const goals = facts.goals;
   if (winner === null || goals === null) return null;
@@ -255,13 +309,13 @@ function winnerClause(
   let top: { player: string; n: number } | null = null;
   for (const [player, n] of tally) if (!top || n > top.n) top = { player, n };
   if (top && top.n >= HAT_TRICK) {
-    const feat = top.n === HAT_TRICK ? "해트트릭으로" : `${top.n}골로`;
-    const clause = `${person(top.player)}의 ${feat}`;
+    const feat = top.n === HAT_TRICK ? "해트트릭을" : `${top.n}골을`;
+    const clause = `${person(top.player)}의 ${feat} 앞세워`;
     return { full: clause, mid: clause };
   }
   if (facts.margin >= BIG_MARGIN) return null;
   // 결승골 — 이긴 팀의 (진 팀 점수 + 1)번째 골
-  const loserGoals = winner === "home" ? facts.ft.away : facts.ft.home;
+  const loserGoals = facts.ft[other(winner)];
   const decisive = goals.filter((g) => g.side === winner)[loserGoals];
   if (!decisive || decisive.ownGoal) return null;
   const kind = decisive.penalty ? "PK 결승골로" : "결승골로";
@@ -272,227 +326,373 @@ function winnerClause(
   };
 }
 
-function winPredicates(
-  facts: MatchFacts,
-  person: (name: string) => string,
-): Predicates {
-  const subject = facts.winner === "home" ? "홈팀이" : "원정팀이";
-  const verb = facts.comeback ? "역전승을 거뒀다" : "이겼다";
-  const base =
-    facts.margin >= BIG_MARGIN
-      ? facts.comeback
-        ? `${subject} ${facts.margin}골 차 역전승을 거뒀다`
-        : `${subject} ${facts.margin}골 차로 이겼다`
-      : `${subject} ${verb}`;
-  const clause = winnerClause(facts, person);
-  if (!clause) return { full: null, mid: null, base };
-  return {
-    full: `${clause.full} ${subject} ${verb}`,
-    mid: `${clause.mid} ${subject} ${verb}`,
-    base,
-  };
+/** 대회 표기 하나(label — null이면 대회 없이)로 만든 문장 변형(full·mid는 없을 수 있다) */
+interface Sentences {
+  full: string | null;
+  mid: string | null;
+  base: string;
 }
 
-function drawPredicates(
+function sentence(text: string): string {
+  return `${text}.`;
+}
+
+/** 승리 문장 — 이긴 팀이 주어, 이긴 팀 점수 먼저 */
+function winSentences(
+  match: BriefInputMatch,
   facts: MatchFacts,
-  person: (name: string) => string,
-): Predicates {
-  if (facts.ft.home === 0) {
-    return { full: null, mid: null, base: "득점 없이 비겼다" };
+  winner: Side,
+  names: BriefNames,
+  label: string | null,
+): Sentences {
+  const neutral = NEUTRAL_ROUNDS.has(match.round);
+  const W = names.team(winner === "home" ? match.home : match.away);
+  const L = names.team(winner === "home" ? match.away : match.home);
+  const venue = venuePhrase(label, winner, neutral);
+  const subject = withJosa(W, "이/가");
+  const score = scoreFrom(facts.ft, winner);
+  const only = (base: string): Sentences => ({ full: null, mid: null, base });
+  if (facts.pens) {
+    const pens = scoreFrom(facts.pens, winner);
+    return only(
+      sentence(
+        words(
+          subject,
+          venue,
+          withJosa(L, "과/와"),
+          facts.aet ? "연장까지" : null,
+          withJosa(score, "으로/로"),
+          "맞선 뒤 승부차기에서",
+          withJosa(pens, "으로/로"),
+          "이겼다",
+        ),
+      ),
+    );
   }
-  const base = "두 팀이 승부를 가리지 못했다";
-  const last = facts.goals?.at(-1);
-  if (!last || last.ownGoal) return { full: null, mid: null, base };
-  const who = person(last.player);
+  if (facts.aet) {
+    return only(
+      sentence(
+        words(
+          subject,
+          venue,
+          "연장 끝에",
+          withJosa(L, "을/를"),
+          withJosa(score, "으로/로"),
+          "꺾었다",
+        ),
+      ),
+    );
+  }
+  // 정규시간 승리 — 역전승 > 완파(3골 차 이상) > 꺾었다
+  const tail = facts.comeback
+    ? [`${L}에`, `${score} 역전승을 거뒀다`]
+    : [
+        withJosa(L, "을/를"),
+        withJosa(score, "으로/로"),
+        facts.margin >= BIG_MARGIN ? "완파했다" : "꺾었다",
+      ];
+  const build = (clause: string | null) =>
+    sentence(words(subject, venue, clause, ...tail));
+  const clause = winnerClause(facts, (n) => names.person(n));
   return {
-    full: `${who}의 ${last.min}분 동점골로 두 팀이 비겼다`,
-    mid: `${who}의 동점골로 두 팀이 비겼다`,
-    base,
+    full: clause ? build(clause.full) : null,
+    mid: clause ? build(clause.mid) : null,
+    base: build(null),
   };
 }
 
-function matchPredicates(
+/** 무승부 문장 — 동점골이 있으면 동점 팀이 주어, 없으면 '{홈}과 {원정}이' */
+function drawSentences(
   match: BriefInputMatch,
   facts: MatchFacts,
   names: BriefNames,
-): Predicates {
-  const person = (name: string) => names.person(name);
-  const only = (base: string): Predicates => ({ full: null, mid: null, base });
-  if (facts.winner === null) {
-    return facts.aet ? only("연장 끝에 비겼다") : drawPredicates(facts, person);
-  }
-  // 중립 경기장(결승) — 홈·원정 대신 이긴 팀 이름
-  if (NEUTRAL_ROUNDS.has(match.round)) {
-    const winnerName = names.team(
-      facts.winner === "home" ? match.home : match.away,
-    );
-    if (facts.pens) {
-      return only(
-        `${winnerName}의 승부차기(${facts.pens.home}-${facts.pens.away}) 승리로 끝났다`,
-      );
-    }
-    return only(
-      facts.aet
-        ? `${winnerName}의 연장 승리로 끝났다`
-        : `${winnerName}의 승리로 끝났다`,
-    );
-  }
-  const subject = facts.winner === "home" ? "홈팀이" : "원정팀이";
-  if (facts.pens) {
-    return only(
-      `승부차기(${facts.pens.home}-${facts.pens.away}) 끝에 ${subject} 이겼다`,
-    );
-  }
-  if (facts.aet) return only(`연장 끝에 ${subject} 이겼다`);
-  return winPredicates(facts, person);
-}
-
-function compLabels(comp: string, ctx: BriefTemplateContext): string[] {
-  const config = ctx.competitions.find((c) => c.nameEn === comp);
-  if (!config) return [comp];
-  return config.shortKo !== config.nameKo
-    ? [config.nameKo, config.shortKo]
-    : [config.nameKo];
-}
-
-/**
- * 후보 문장 중 목표 길이 안의 첫 문장, 없으면 상한 안의 첫 문장. 그것도 없으면 마지막 수단(`fallback` — 스코어만)이 상한 안이면
- * 그것, 아니면 null(문장 중간을 자르지 않는다).
- */
-function pickFitting(
-  candidates: readonly string[],
-  fallback: string | null = null,
-): string | null {
-  return (
-    candidates.find((t) => t.length <= BRIEF_TEMPLATE_TARGET) ??
-    candidates.find((t) => t.length <= BRIEF_LINE_MAX) ??
-    (fallback !== null && fallback.length <= BRIEF_LINE_MAX ? fallback : null)
+  label: string | null,
+): Sentences {
+  const neutral = NEUTRAL_ROUNDS.has(match.round);
+  const H = names.team(match.home);
+  const A = names.team(match.away);
+  const score = scoreFrom(facts.ft, "home");
+  const base = sentence(
+    words(
+      withJosa(H, "과/와"),
+      withJosa(A, "이/가"),
+      venuePhrase(label, null, neutral),
+      facts.aet ? "연장 끝에" : null,
+      withJosa(score, "으로/로"),
+      "비겼다",
+    ),
   );
+  const only: Sentences = { full: null, mid: null, base };
+  if (facts.aet || facts.ft.home === 0) return only;
+  const last = facts.goals?.at(-1);
+  if (!last || last.ownGoal) return only;
+  // 마지막 골 = 동점골(무승부에서 마지막 골은 늘 동점을 만든다) — 그 골을 넣은 팀이 주어
+  const E = names.team(last.side === "home" ? match.home : match.away);
+  const O = names.team(last.side === "home" ? match.away : match.home);
+  const who = names.person(last.player);
+  const build = (clause: string) =>
+    sentence(
+      words(
+        withJosa(E, "이/가"),
+        venuePhrase(label, last.side, neutral),
+        clause,
+        withJosa(O, "과/와"),
+        withJosa(score, "으로/로"),
+        "비겼다",
+      ),
+    );
+  return {
+    full: build(`${who}의 ${last.min}분 동점골로`),
+    mid: build(`${who}의 동점골로`),
+    base,
+  };
 }
 
-/** 경기 1건 → 템플릿 줄(순수 함수). 점수 형식이 다르면 null(입력 빌더가 만든 값이면 생기지 않는다) */
+function matchSentences(
+  match: BriefInputMatch,
+  facts: MatchFacts,
+  names: BriefNames,
+  label: string | null,
+): Sentences {
+  return facts.winner === null
+    ? drawSentences(match, facts, names, label)
+    : winSentences(match, facts, facts.winner, names, label);
+}
+
+/** 후보 문장 중 목표 길이 안의 첫 문장, 없으면 상한 안의 첫 문장, 없으면 null(문장 중간을 자르지 않는다) */
+function pickFitting(candidates: readonly string[]): { text: string } | null {
+  const text =
+    candidates.find((t) => t.length <= BRIEF_TEMPLATE_TARGET) ??
+    candidates.find((t) => t.length <= BRIEF_LINE_MAX);
+  return text === undefined ? null : { text };
+}
+
+interface LinePick {
+  line: BriefLine;
+  /** 고른 문장이 대회 표기를 담았나(대회 없이 기본 문장을 고르면 false) */
+  labeled: boolean;
+}
+
+function pickMatchLine(
+  match: BriefInputMatch,
+  ctx: BriefTemplateContext,
+  form: BriefCompForm,
+): LinePick | null {
+  const facts = matchFacts(match);
+  if (!facts) return null;
+  const names = ctx.names ?? ENGLISH_NAMES;
+  const label = briefCompLabel(match.comp, ctx, form);
+  const withLabel = matchSentences(match, facts, names, label);
+  const bare = matchSentences(match, facts, names, null);
+  // 대회와 함께 full → mid → base, 그다음 대회 없이 base
+  const candidates: string[] = [];
+  for (const t of [withLabel.full, withLabel.mid, withLabel.base, bare.base]) {
+    if (t !== null && !candidates.includes(t)) candidates.push(t);
+  }
+  const picked = pickFitting(candidates);
+  return picked === null
+    ? null
+    : {
+        line: { text: picked.text, ai: false, refs: [match.id] },
+        labeled: picked.text !== bare.base,
+      };
+}
+
+/** 경기 1건 → 템플릿 줄(순수 함수). 점수 형식이 다르거나 80자 안의 문장이 없으면 null */
 export function templateMatchLine(
   match: BriefInputMatch,
   ctx: BriefTemplateContext,
 ): BriefLine | null {
-  const facts = matchFacts(match);
-  if (!facts) return null;
-  const names = ctx.names ?? ENGLISH_NAMES;
-  const scoreline = `${names.team(match.home)} ${facts.ft.home}-${facts.ft.away} ${names.team(match.away)}`;
-  const comps = compLabels(match.comp, ctx);
-  const pred = matchPredicates(match, facts, names);
-  const sentence = (comp: string, predicate: string) =>
-    `${comp ? `${comp} ` : ""}${scoreline}, ${predicate}.`;
-  const candidates: string[] = [];
-  for (const comp of comps) {
-    for (const p of [pred.full, pred.mid]) {
-      if (p !== null) candidates.push(sentence(comp, p));
-    }
-  }
-  for (const comp of [...comps, ""]) candidates.push(sentence(comp, pred.base));
-  const text = pickFitting(candidates, scoreline);
-  return text === null ? null : { text, ai: false, refs: [match.id] };
+  return pickMatchLine(match, ctx, ctx.compForm ?? "nameKo")?.line ?? null;
 }
 
 // ─── 순위 줄 ─────────────────────────────────────────────────────────────
 
-/**
- * 순위표 → 템플릿 줄(순수 함수). 같은 순위(공동)는 한 묶음으로 쓴다. 두 팀 이상을 담지 못하거나(표가 1팀) 첫 순위의 공동 팀이
- * 3팀을 넘으면 null.
- */
-export function templateStandingsLine(
+type StandingRow = BriefInputStandings["rows"][number];
+
+/** 순위 묶음 1개의 구 — '{팀}이 승점 n으로 [대회 ]선두' · '{A}와 {B}가 승점 n으로 공동 2위' */
+function standingsPhrase(
+  group: readonly StandingRow[],
+  names: BriefNames,
+  label: string | null,
+): string {
+  const first = group[0]!;
+  const tied = group.length > 1;
+  const rank =
+    first.pos === 1
+      ? tied
+        ? "공동 선두"
+        : "선두"
+      : tied
+        ? `공동 ${first.pos}위`
+        : `${first.pos}위`;
+  const teams = group.map((r) => names.team(r.team));
+  const subject =
+    teams.length === 2
+      ? `${withJosa(teams[0]!, "과/와")} ${withJosa(teams[1]!, "이/가")}`
+      : withJosa(teams.join("·"), "이/가");
+  return words(
+    subject,
+    "승점",
+    withJosa(String(first.pts), "으로/로"),
+    label,
+    rank,
+  );
+}
+
+function pickStandingsLine(
   standings: BriefInputStandings,
   ctx: BriefTemplateContext,
-): BriefLine | null {
+  form: BriefCompForm,
+): LinePick | null {
   const names = ctx.names ?? ENGLISH_NAMES;
-  const groups: Array<Array<BriefInputStandings["rows"][number]>> = [];
+  const groups: StandingRow[][] = [];
   for (const row of standings.rows) {
     const last = groups.at(-1);
     if (last && last[0]!.pos === row.pos) last.push(row);
     else groups.push([row]);
   }
-  const labels: string[] = [];
+  // 같은 순위인데 승점이 다르면(응답 이상) 그 묶음부터 쓰지 않는다 — 공동 순위는 승점이 같을 때만(M1-23 '공동 n위' 규칙)
+  const usable: StandingRow[][] = [];
   let teams = 0;
   for (const group of groups) {
     if (group.length > STANDINGS_GROUP_MAX) break;
-    const first = group[0]!;
-    const samePts = group.every((r) => r.pts === first.pts);
-    const body = samePts
-      ? `${group.map((r) => names.team(r.team)).join("·")}(승점 ${first.pts})`
-      : group.map((r) => `${names.team(r.team)}(승점 ${r.pts})`).join("·");
-    labels.push(
-      group.length > 1
-        ? `공동 ${first.pos}위 ${body}`
-        : `${first.pos}위 ${body}`,
-    );
+    if (!group.every((r) => r.pts === group[0]!.pts)) break;
+    usable.push(group);
     teams += group.length;
-    if (labels.length >= STANDINGS_GROUPS_MAX) break;
+    if (usable.length >= STANDINGS_GROUPS_MAX) break;
   }
   if (teams < 2) return null;
   // 두 팀 이상을 담는 가장 짧은 묶음 수
-  let minGroups = 0;
-  for (let n = 0, count = 0; n < labels.length; n += 1) {
-    count += groups[n]!.length;
+  let minGroups = usable.length;
+  for (let n = 0, count = 0; n < usable.length; n += 1) {
+    count += usable[n]!.length;
     if (count >= 2) {
       minGroups = n + 1;
       break;
     }
   }
-  const comps = compLabels(standings.comp, ctx);
+  const label = briefCompLabel(standings.comp, ctx, form);
   const candidates: string[] = [];
-  for (let n = labels.length; n >= minGroups; n -= 1) {
-    for (const comp of comps) {
-      candidates.push(
-        `${comp} 순위는 ${labels.slice(0, n).join(", ")} 순이다.`,
-      );
-    }
+  for (let n = usable.length; n >= minGroups; n -= 1) {
+    const phrases = usable
+      .slice(0, n)
+      .map((g, i) => standingsPhrase(g, names, i === 0 ? label : null));
+    const lastPhrase = phrases.pop()!;
+    candidates.push(
+      sentence([...phrases, withJosa(lastPhrase, "이다/다")].join(", ")),
+    );
   }
-  const text = pickFitting(candidates);
-  return text === null ? null : { text, ai: false, refs: [standings.id] };
+  const picked = pickFitting(candidates);
+  return picked === null
+    ? null
+    : {
+        line: { text: picked.text, ai: false, refs: [standings.id] },
+        labeled: true,
+      };
+}
+
+/**
+ * 순위표 → 템플릿 줄(순수 함수). 같은 순위(공동)는 한 묶음으로 쓴다. 두 팀 이상을 담지 못하거나(표가 1팀) 첫 순위의 공동 팀이
+ * 3팀을 넘거나 80자 안의 문장이 없으면 null.
+ */
+export function templateStandingsLine(
+  standings: BriefInputStandings,
+  ctx: BriefTemplateContext,
+): BriefLine | null {
+  return (
+    pickStandingsLine(standings, ctx, ctx.compForm ?? "nameKo")?.line ?? null
+  );
 }
 
 // ─── 브리핑 ──────────────────────────────────────────────────────────────
 
+interface Composed {
+  lines: BriefLine[];
+  /** 대회 표기를 잃은 줄 수 — 대회 없이 기본 문장을 골랐거나 80자 안의 문장이 없어 빠진 입력 항목 */
+  unlabeled: number;
+}
+
+function compose(
+  input: Pick<BriefInput, "matches" | "standings">,
+  ctx: BriefTemplateContext,
+  form: BriefCompForm,
+): Composed {
+  const isPick = (p: LinePick | null): p is LinePick => p !== null;
+  const matchAll = input.matches.map((m) => pickMatchLine(m, ctx, form));
+  const matchPicks = matchAll.filter(isPick);
+  if (matchPicks.length === 0) return { lines: [], unlabeled: 0 };
+  const standingsPicks = input.standings
+    .map((s) => pickStandingsLine(s, ctx, form))
+    .filter(isPick)
+    .slice(0, TEMPLATE_STANDINGS_LINES_MAX);
+  let picks: LinePick[];
+  if (standingsPicks.length === 0) {
+    picks = matchPicks.slice(0, BRIEF_MAX_LINES);
+  } else {
+    const matches = matchPicks.slice(0, TEMPLATE_MATCH_LINES_WITH_STANDINGS);
+    picks = [
+      ...matches,
+      ...standingsPicks.slice(0, BRIEF_MAX_LINES - matches.length),
+    ];
+  }
+  // 게시되는 줄 중 대회를 잃은 줄 + 문장이 없어 빠진 경기(앞쪽 — 게시 범위 안)
+  const dropped = matchAll
+    .slice(0, picks.length)
+    .filter((p) => p === null).length;
+  return {
+    lines: picks.map((p) => p.line),
+    unlabeled: picks.filter((p) => !p.labeled).length + dropped,
+  };
+}
+
+/**
+ * 브리핑 단위 대회 표기(머리 주석) — `ctx.compForm`이 있으면 그것. 없으면 nameKo가 기본이고, shortKo로 만들 때 대회 표기를
+ * 잃는 줄이 더 적을 때만 shortKo(득점자 분 같은 세부를 살리려고 약칭을 쓰지는 않는다).
+ */
+export function chooseBriefCompForm(
+  input: Pick<BriefInput, "matches" | "standings">,
+  ctx: BriefTemplateContext,
+): BriefCompForm {
+  if (ctx.compForm) return ctx.compForm;
+  const long = compose(input, ctx, "nameKo");
+  const short = compose(input, ctx, "shortKo");
+  return short.unlabeled < long.unlabeled ? "shortKo" : "nameKo";
+}
+
 /**
  * 입력 전체 → 템플릿 브리핑 줄(최대 5줄, 순수 함수). 경기 줄은 입력 순서(중요도 순). 순위가 있으면 경기 4줄 + 순위 줄
  * (경기가 적으면 순위 줄 최대 2개로 채움), 없으면 경기 5줄. 경기가 없으면 빈 배열(`empty` 브리핑 — 호출 생략).
+ * 대회 표기는 브리핑 단위로 하나(`chooseBriefCompForm`).
  */
 export function templateBriefLines(
   input: Pick<BriefInput, "matches" | "standings">,
   ctx: BriefTemplateContext,
 ): BriefLine[] {
-  const matchLines = input.matches
-    .map((m) => templateMatchLine(m, ctx))
-    .filter((l): l is BriefLine => l !== null);
-  if (matchLines.length === 0) return [];
-  const standingsLines = input.standings
-    .map((s) => templateStandingsLine(s, ctx))
-    .filter((l): l is BriefLine => l !== null)
-    .slice(0, TEMPLATE_STANDINGS_LINES_MAX);
-  if (standingsLines.length === 0) return matchLines.slice(0, BRIEF_MAX_LINES);
-  const matches = matchLines.slice(0, TEMPLATE_MATCH_LINES_WITH_STANDINGS);
-  return [
-    ...matches,
-    ...standingsLines.slice(0, BRIEF_MAX_LINES - matches.length),
-  ];
+  return compose(input, ctx, chooseBriefCompForm(input, ctx)).lines;
 }
 
 /**
  * 근거 id → 그 항목의 템플릿 줄(줄 단위 강등 — M1-45가 LLM 줄의 `refs`로 부른다). 입력에 있는 첫 경기 id, 없으면 첫 순위 id의
- * 줄. 어느 것도 없으면 null(그 줄은 버린다). 같은 근거의 줄이 브리핑에 이미 있는지는 호출부가 본다.
+ * 줄. 어느 것도 없으면 null(그 줄은 버린다). 같은 근거의 줄이 브리핑에 이미 있는지는 호출부가 본다. 대회 표기는 같은 입력의
+ * 브리핑 단위 표기(`ctx.compForm` — 없으면 입력으로 고른다).
  */
 export function templateLineForRefs(
   input: Pick<BriefInput, "matches" | "standings">,
   refs: readonly string[],
   ctx: BriefTemplateContext,
 ): BriefLine | null {
+  const lineCtx: BriefTemplateContext = {
+    ...ctx,
+    compForm: chooseBriefCompForm(input, ctx),
+  };
   for (const ref of refs) {
     const match = input.matches.find((m) => m.id === ref);
-    if (match) return templateMatchLine(match, ctx);
+    if (match) return templateMatchLine(match, lineCtx);
   }
   for (const ref of refs) {
     const standings = input.standings.find((s) => s.id === ref);
-    if (standings) return templateStandingsLine(standings, ctx);
+    if (standings) return templateStandingsLine(standings, lineCtx);
   }
   return null;
 }

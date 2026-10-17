@@ -31,6 +31,7 @@ import {
   RunsDevFileSchema,
   RunsFileSchema,
   SourcesFileSchema,
+  UnknownNamesFileSchema,
   type BriefFile,
   type FeedItem,
   type NewsFile,
@@ -1177,8 +1178,13 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
       expect(request.user).not.toContain(card.t);
     }
 
+    // 출력은 줄마다 치환·조사 보정 뒤 문장 + 원문(M1-21) — 제목 1줄 + 5줄 × 2
     const out = printed.find((p) => p.startsWith("── 브리핑 출력"));
-    expect(out?.split("\n")).toHaveLength(6);
+    expect(out?.split("\n")).toHaveLength(11);
+    expect(out).toContain(
+      "1. 아틀레티코 마드리드가 알라베스 원정에서 1-2로 이겼고 이강인은",
+    );
+    expect(out).toContain("   원문: Atleti가 Alavés 원정에서");
     // 브리핑 파일(M1-19, D38): 검증(M1-23·M1-45) 전이라 LLM 줄은 저장하지 않고 같은 입력의 코드 템플릿을 게시한다.
     // 데이터 API를 불렀으므로 mock이어도 runs-dev.json에 호출 수를 비용 0으로 남긴다(M1-48). cache/ = seen-urls 기억(M1-12)
     expect(readdirSync(dataDir).sort()).toEqual([
@@ -1211,9 +1217,26 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
       existingMode: null,
       error: null,
     });
+    // 템플릿은 사전 한글 이름 + 받침 기준 조사, 주어 팀 점수 먼저(M1-21 — D39 ②·D45 ④)
+    // (중요도 순 — 한국 선수 소속팀 경기가 앞: 설영우 아우크스부르크·김민재 바이에른 뮌헨, 이강인 아틀레티코, 이재성 마인츠)
+    expect(briefFile.lines.map((l) => l.text)).toEqual([
+      "아우크스부르크와 바이에른 뮌헨이 분데스리가에서 2-2로 비겼다.",
+      "아틀레티코 마드리드가 라리가 원정에서 알라베스를 2-1로 꺾었다.",
+      "맨체스터 유나이티드와 토트넘이 프리미어리그에서 1-1로 비겼다.",
+      "레버쿠젠이 분데스리가 원정에서 마인츠를 4-3으로 꺾었다.",
+      "도르트문트가 승점 13으로 분데스리가 선두, 바이에른 뮌헨이 승점 11로 2위다.",
+    ]);
+    // dev 실행은 미등록 이름을 로그만 남긴다(unknown-names.json 없음 — M1-21)
     expect(readdirSync(path.join(dataDir, "cache"))).toEqual([
       "seen-urls.json",
     ]);
+    expect(outcome.unknownNames).toMatchObject({ action: "logged" });
+    expect(outcome.unknownNames!.observed).toEqual(
+      expect.arrayContaining([
+        { name: "Inter", kind: "team" },
+        { name: "Brighton Hove", kind: "team" },
+      ]),
+    );
     expect(outcome.run).toMatchObject({
       env: "dev",
       costUsd: 0,
@@ -1583,7 +1606,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(readNews("2026-10-11").runId).toBe(outcome.runId);
   });
 
-  it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·briefs·runs.json·cache/seen-urls.json)을 통과시킨다", async () => {
+  it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·briefs·runs.json·cache/seen-urls.json·cache/unknown-names.json)을 통과시킨다", async () => {
     const repo = path.join(dataDir, "repo");
     cpSync(path.join(ROOT, "configs"), path.join(repo, "configs"), {
       recursive: true,
@@ -1600,16 +1623,72 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     );
     expect(report.issues.filter((i) => i.severity === "error")).toEqual([]);
     expect(validationExitCode(report)).toBe(0);
-    expect(report.counts.data).toBe(4); // news·briefs·runs.json·cache/seen-urls.json 모두 스키마 검사 대상
+    expect(report.counts.data).toBe(5); // news·briefs·runs.json·cache/seen-urls.json·cache/unknown-names.json 모두 스키마 검사 대상
     expect(readdirSync(path.join(repo, "data")).sort()).toEqual([
       "briefs",
       "cache",
       "news",
       "runs.json",
     ]);
-    expect(readdirSync(path.join(repo, "data", "cache"))).toEqual([
+    expect(readdirSync(path.join(repo, "data", "cache")).sort()).toEqual([
       "seen-urls.json",
+      "unknown-names.json",
     ]);
+  });
+
+  it("prod: 미등록 고유명사를 data/cache/unknown-names.json에 적재 — 실행당 1회, 사전 등록 이름은 다음 실행이 뺀다(M1-21)", async () => {
+    const repo = path.join(dataDir, "repo-names");
+    cpSync(path.join(ROOT, "configs"), path.join(repo, "configs"), {
+      recursive: true,
+    });
+    const run = async () => {
+      const { deps } = liveDeps({
+        env: "prod",
+        rootDir: repo,
+        dataDir: path.join(repo, "data"),
+      });
+      return runCollect(deps);
+    };
+    const first = await run();
+    expect(first.exitCode).toBe(0);
+    expect(first.unknownNames).toMatchObject({ action: "written" });
+    const file = path.join(repo, "data", "cache", "unknown-names.json");
+    const read = () =>
+      UnknownNamesFileSchema.parse(JSON.parse(readFileSync(file, "utf8")));
+    const before = read();
+    // 데이터 API 이름(입력 팀) — 사전 확인 대기 팀은 미등록, 등록 팀(Man City 등)은 없다
+    expect(before.names.Inter).toEqual({
+      count: 1,
+      firstSeen: NOW.toISOString(),
+      lastSeen: NOW.toISOString(),
+      kind: "team",
+      cards: [],
+    });
+    expect(Object.keys(before.names)).toEqual(
+      expect.arrayContaining(["Inter", "Brighton Hove", "Aston Villa"]),
+    );
+    expect(before.names["Man City"]).toBeUndefined();
+    expect(Object.keys(before.names)).toEqual(
+      [...Object.keys(before.names)].sort(),
+    );
+
+    // 사람이 'Inter'를 사전에 넣으면 다음 실행이 캐시에서 뺀다
+    const namesPath = path.join(repo, "configs", "names.ko.json");
+    const names = JSON.parse(readFileSync(namesPath, "utf8")) as {
+      entries: object[];
+    };
+    names.entries.push({
+      ko: "테스트 인테르",
+      en: ["Inter"],
+      kind: "team",
+      slug: "test-inter",
+    });
+    writeFileSync(namesPath, JSON.stringify(names));
+    const second = await run();
+    expect(second.unknownNames?.pruned).toEqual(["Inter"]);
+    const after = read();
+    expect(after.names.Inter).toBeUndefined();
+    expect(after.names["Brighton Hove"]!.count).toBe(2);
   });
 
   it("prod는 LLM을 부르지 않은 실행도 기록한다(경기 없음), dev도 데이터 API를 불렀으면 비용 0으로 기록한다(M1-48 카운터)", async () => {

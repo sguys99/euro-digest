@@ -85,10 +85,10 @@
     },
     {
       "ko": "바이에른 뮌헨",
-      "en": ["FC Bayern München", "Bayern München", "Bayern Munich"],
+      "en": ["FC Bayern München", "Bayern München", "Bayern Munich", "Bayern"],
       "kind": "team",
       "slug": "bayern-munchen",
-      "note": "확실 — KFA 2026-03-17 '바이에른 뮌헨'(2026-09-14 기사는 붙여 씀 '바이에른뮌헨') · 영문: football-data 'FC Bayern München', API-Football 'Bayern München', bundesliga.com 'Bayern Munich'"
+      "note": "확실 — KFA 2026-03-17 '바이에른 뮌헨'(2026-09-14 기사는 붙여 씀 '바이에른뮌헨') · 영문: football-data 'FC Bayern München', API-Football 'Bayern München', bundesliga.com 'Bayern Munich' · 별칭 'Bayern'(football-data 짧은 이름 — PRD §15 D39 ② 'Bayern' → 바이에른 뮌헨)"
     },
     {
       "ko": "우니온 베를린",
@@ -136,6 +136,988 @@
       "kind": "team",
       "slug": "midtjylland",
       "note": "확실 — KFA 2026-09-14 '조규성(미트윌란, 덴마크)'(idx 28281) · 영문: fcm.dk 'FC Midtjylland'"
+    },
+    {
+      "ko": "맨체스터 시티",
+      "en": ["Manchester City FC", "Man City", "Manchester City"],
+      "kind": "team",
+      "slug": "manchester-city",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '맨체스터 시티 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Manchester City FC'·short 'Man City'"
+    },
+    {
+      "ko": "아스널",
+      "en": ["Arsenal FC", "Arsenal"],
+      "kind": "team",
+      "slug": "arsenal",
+      "note": "확실(규범·매체) — 위키백과 '아스널 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '아스널' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Arsenal FC'·short 'Arsenal', API-Football 'Arsenal'"
+    },
+    {
+      "ko": "첼시",
+      "en": ["Chelsea FC", "Chelsea"],
+      "kind": "team",
+      "slug": "chelsea",
+      "note": "확실(규범·매체) — 위키백과 '첼시 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '첼시' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Chelsea FC'·short 'Chelsea', API-Football 'Chelsea'"
+    },
+    {
+      "ko": "리즈 유나이티드",
+      "en": ["Leeds United FC", "Leeds United", "Leeds"],
+      "kind": "team",
+      "slug": "leeds-united",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '리즈 유나이티드 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Leeds United FC'·short 'Leeds United', API-Football 'Leeds'"
+    },
+    {
+      "ko": "리버풀",
+      "en": ["Liverpool FC", "Liverpool"],
+      "kind": "team",
+      "slug": "liverpool",
+      "note": "확실(규범·매체) — 위키백과 '리버풀 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '리버풀' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Liverpool FC'·short 'Liverpool'"
+    },
+    {
+      "ko": "입스위치 타운",
+      "en": ["Ipswich Town FC", "Ipswich Town", "Ipswich"],
+      "kind": "team",
+      "slug": "ipswich-town",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '입스위치 타운 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Ipswich Town FC'·short 'Ipswich Town', API-Football 'Ipswich'"
+    },
+    {
+      "ko": "헐 시티",
+      "en": ["Hull City AFC", "Hull City"],
+      "kind": "team",
+      "slug": "hull-city",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '헐 시티 AFC'(법인·형태 약칭 뺌) · 영문: football-data 'Hull City AFC'·short 'Hull City'"
+    },
+    {
+      "ko": "뉴캐슬 유나이티드",
+      "en": ["Newcastle United FC", "Newcastle", "Newcastle United"],
+      "kind": "team",
+      "slug": "newcastle-united",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '뉴캐슬 유나이티드 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Newcastle United FC'·short 'Newcastle'"
+    },
+    {
+      "ko": "맨체스터 유나이티드",
+      "en": [
+        "Manchester United FC",
+        "Man United",
+        "Manchester United",
+        "Man Utd"
+      ],
+      "kind": "team",
+      "slug": "manchester-united",
+      "note": "확실(규범·매체) — 위키백과 '맨체스터 유나이티드 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '맨체스터 유나이티드' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Manchester United FC'·short 'Man United', API-Football 'Manchester United'"
+    },
+    {
+      "ko": "선덜랜드",
+      "en": ["Sunderland AFC", "Sunderland"],
+      "kind": "team",
+      "slug": "sunderland",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '선덜랜드 AFC'(법인·형태 약칭 뺌) · 영문: football-data 'Sunderland AFC'·short 'Sunderland', API-Football 'Sunderland'"
+    },
+    {
+      "ko": "본머스",
+      "en": ["AFC Bournemouth", "Bournemouth"],
+      "kind": "team",
+      "slug": "bournemouth",
+      "note": "확실(규범·매체) — 위키백과 'AFC 본머스'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '본머스' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'AFC Bournemouth'·short 'Bournemouth', API-Football 'Bournemouth'"
+    },
+    {
+      "ko": "토트넘",
+      "en": ["Tottenham Hotspur FC", "Tottenham", "Tottenham Hotspur", "Spurs"],
+      "kind": "team",
+      "slug": "tottenham-hotspur",
+      "note": "통칭 — 위키 '토트넘 홋스퍼 FC'에서 '홋스퍼'를 뺀 국내 매체 통칭(KFA가 '울버햄프턴 원더러스'를 '울버햄프턴'으로 쓰는 방식 — idx 27813) · 국내 축구 매체 제목에 '토트넘' 4건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Tottenham Hotspur FC'·short 'Tottenham', API-Football 'Tottenham'"
+    },
+    {
+      "ko": "풀럼",
+      "en": ["Fulham FC", "Fulham"],
+      "kind": "team",
+      "slug": "fulham",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '풀럼 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Fulham FC'·short 'Fulham', API-Football 'Fulham'"
+    },
+    {
+      "ko": "바르셀로나",
+      "en": ["FC Barcelona", "Barça", "Barcelona"],
+      "kind": "team",
+      "slug": "barcelona",
+      "note": "확실(규범·매체) — 위키백과 'FC 바르셀로나'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '바르셀로나' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'FC Barcelona'·short 'Barça', API-Football 'Barcelona'"
+    },
+    {
+      "ko": "레알 마드리드",
+      "en": ["Real Madrid CF", "Real Madrid"],
+      "kind": "team",
+      "slug": "real-madrid",
+      "note": "확실(규범·매체) — 위키백과 '레알 마드리드 CF'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '레알 마드리드' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Real Madrid CF'·short 'Real Madrid', API-Football 'Real Madrid'"
+    },
+    {
+      "ko": "레알 베티스",
+      "en": ["Real Betis Balompié", "Real Betis", "Betis"],
+      "kind": "team",
+      "slug": "real-betis-balompie",
+      "note": "확실(규범·매체) — 위키백과 '레알 베티스' · 국내 축구 매체 제목에 '레알 베티스' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Real Betis Balompié'·short 'Real Betis'"
+    },
+    {
+      "ko": "세비야",
+      "en": ["Sevilla FC", "Sevilla"],
+      "kind": "team",
+      "slug": "sevilla",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '세비야 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Sevilla FC'"
+    },
+    {
+      "ko": "알라베스",
+      "en": ["Deportivo Alavés", "Alavés", "Alaves"],
+      "kind": "team",
+      "slug": "deportivo-alaves",
+      "note": "통칭 — 위키 '데포르티보 알라베스'의 국내 매체 통칭 · 국내 축구 매체 제목에 '알라베스' 3건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Deportivo Alavés'·short 'Alavés', API-Football 'Alaves'"
+    },
+    {
+      "ko": "레알 소시에다드",
+      "en": ["Real Sociedad de Fútbol", "Real Sociedad"],
+      "kind": "team",
+      "slug": "real-sociedad-de-futbol",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '레알 소시에다드' · 영문: football-data 'Real Sociedad de Fútbol'·short 'Real Sociedad'"
+    },
+    {
+      "ko": "아틀레틱 빌바오",
+      "en": ["Athletic Club", "Athletic", "Athletic Bilbao"],
+      "kind": "team",
+      "slug": "athletic",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '아틀레틱 빌바오' · 영문: football-data 'Athletic Club'·short 'Athletic', API-Football 'Athletic Club'"
+    },
+    {
+      "ko": "비야레알",
+      "en": ["Villarreal CF", "Villarreal"],
+      "kind": "team",
+      "slug": "villarreal",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '비야레알 CF'(법인·형태 약칭 뺌) · 영문: football-data 'Villarreal CF'·short 'Villarreal', API-Football 'Villarreal'"
+    },
+    {
+      "ko": "에스파뇰",
+      "en": ["RCD Espanyol de Barcelona", "Espanyol"],
+      "kind": "team",
+      "slug": "rcd-espanyol-de-barcelona",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'RCD 에스파뇰'(법인·형태 약칭 뺌) · 영문: football-data 'RCD Espanyol de Barcelona'·short 'Espanyol'"
+    },
+    {
+      "ko": "라요 바예카노",
+      "en": ["Rayo Vallecano de Madrid", "Rayo Vallecano"],
+      "kind": "team",
+      "slug": "rayo-vallecano-de-madrid",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '라요 바예카노' · 영문: football-data 'Rayo Vallecano de Madrid'·short 'Rayo Vallecano', API-Football 'Rayo Vallecano'"
+    },
+    {
+      "ko": "헤타페",
+      "en": ["Getafe CF", "Getafe"],
+      "kind": "team",
+      "slug": "getafe",
+      "note": "확실(규범·매체) — 위키백과 '헤타페 CF'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '헤타페' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Getafe CF'·short 'Getafe', API-Football 'Getafe'"
+    },
+    {
+      "ko": "오사수나",
+      "en": ["CA Osasuna", "Osasuna"],
+      "kind": "team",
+      "slug": "ca-osasuna",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'CA 오사수나'(법인·형태 약칭 뺌) · 영문: football-data 'CA Osasuna'·short 'Osasuna'"
+    },
+    {
+      "ko": "셀타 비고",
+      "en": ["RC Celta de Vigo", "Celta", "Celta Vigo"],
+      "kind": "team",
+      "slug": "rc-celta-de-vigo",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '셀타 비고' · 영문: football-data 'RC Celta de Vigo'·short 'Celta'"
+    },
+    {
+      "ko": "라싱 산탄데르",
+      "en": ["Real Racing Club de Santander", "Santander", "Racing Santander"],
+      "kind": "team",
+      "slug": "real-racing-club-de-santander",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '라싱 산탄데르' · 영문: football-data 'Real Racing Club de Santander'·short 'Santander'"
+    },
+    {
+      "ko": "레반테",
+      "en": ["Levante UD", "Levante"],
+      "kind": "team",
+      "slug": "levante-ud",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '레반테 UD'(법인·형태 약칭 뺌) · 영문: football-data 'Levante UD'·short 'Levante'"
+    },
+    {
+      "ko": "엘체",
+      "en": ["Elche CF", "Elche"],
+      "kind": "team",
+      "slug": "elche",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '엘체 CF'(법인·형태 약칭 뺌) · 영문: football-data 'Elche CF'·short 'Elche'"
+    },
+    {
+      "ko": "말라가",
+      "en": ["Málaga CF", "Málaga"],
+      "kind": "team",
+      "slug": "malaga",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '말라가 CF'(법인·형태 약칭 뺌) · 영문: football-data 'Málaga CF'·short 'Málaga'"
+    },
+    {
+      "ko": "발렌시아",
+      "en": ["Valencia CF", "Valencia"],
+      "kind": "team",
+      "slug": "valencia",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '발렌시아 CF'(법인·형태 약칭 뺌) · 영문: football-data 'Valencia CF'·short 'Valencia'"
+    },
+    {
+      "ko": "로마",
+      "en": ["AS Roma", "Roma"],
+      "kind": "team",
+      "slug": "as-roma",
+      "note": "통칭 — 위키 'AS 로마'의 국내 매체 통칭('AS'를 뺌) · 영문: football-data 'AS Roma'·short 'Roma'"
+    },
+    {
+      "ko": "라치오",
+      "en": ["SS Lazio", "Lazio"],
+      "kind": "team",
+      "slug": "ss-lazio",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'SS 라치오'(법인·형태 약칭 뺌) · 영문: football-data 'SS Lazio'·short 'Lazio'"
+    },
+    {
+      "ko": "칼리아리",
+      "en": ["Cagliari Calcio", "Cagliari"],
+      "kind": "team",
+      "slug": "cagliari-calcio",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '칼리아리 칼초'(법인·형태 약칭 뺌) · 영문: football-data 'Cagliari Calcio'·short 'Cagliari'"
+    },
+    {
+      "ko": "AC 밀란",
+      "en": ["AC Milan", "Milan"],
+      "kind": "team",
+      "slug": "ac-milan",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'AC 밀란' · 영문: football-data 'AC Milan'·short 'Milan'"
+    },
+    {
+      "ko": "나폴리",
+      "en": ["SSC Napoli", "Napoli"],
+      "kind": "team",
+      "slug": "ssc-napoli",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'SSC 나폴리'(법인·형태 약칭 뺌) · 영문: football-data 'SSC Napoli'·short 'Napoli', API-Football 'Napoli'"
+    },
+    {
+      "ko": "유벤투스",
+      "en": ["Juventus FC", "Juventus", "Juve"],
+      "kind": "team",
+      "slug": "juventus",
+      "note": "확실(규범·매체) — 위키백과 '유벤투스 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '유벤투스' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Juventus FC'·short 'Juventus'"
+    },
+    {
+      "ko": "코모",
+      "en": ["Como 1907", "Como"],
+      "kind": "team",
+      "slug": "como-1907",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '코모 1907'(법인·형태 약칭 뺌) · 영문: football-data 'Como 1907'"
+    },
+    {
+      "ko": "프로시노네",
+      "en": ["Frosinone Calcio", "Frosinone"],
+      "kind": "team",
+      "slug": "frosinone-calcio",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '프로시노네 칼초'(법인·형태 약칭 뺌) · 영문: football-data 'Frosinone Calcio'·short 'Frosinone', API-Football 'Frosinone'"
+    },
+    {
+      "ko": "사수올로",
+      "en": ["US Sassuolo Calcio", "Sassuolo"],
+      "kind": "team",
+      "slug": "us-sassuolo-calcio",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'US 사수올로 칼초'(법인·형태 약칭 뺌) · 영문: football-data 'US Sassuolo Calcio'·short 'Sassuolo'"
+    },
+    {
+      "ko": "아탈란타",
+      "en": ["Atalanta BC", "Atalanta"],
+      "kind": "team",
+      "slug": "atalanta-bc",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '아탈란타 BC'(법인·형태 약칭 뺌) · 영문: football-data 'Atalanta BC'·short 'Atalanta'"
+    },
+    {
+      "ko": "레체",
+      "en": ["US Lecce", "Lecce"],
+      "kind": "team",
+      "slug": "us-lecce",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'US 레체'(법인·형태 약칭 뺌) · 영문: football-data 'US Lecce'·short 'Lecce'"
+    },
+    {
+      "ko": "우디네세",
+      "en": ["Udinese Calcio", "Udinese"],
+      "kind": "team",
+      "slug": "udinese-calcio",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '우디네세 칼초'(법인·형태 약칭 뺌) · 영문: football-data 'Udinese Calcio'·short 'Udinese'"
+    },
+    {
+      "ko": "토리노",
+      "en": ["Torino FC", "Torino"],
+      "kind": "team",
+      "slug": "torino",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '토리노 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Torino FC'·short 'Torino'"
+    },
+    {
+      "ko": "몬차",
+      "en": ["AC Monza", "Monza"],
+      "kind": "team",
+      "slug": "ac-monza",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'AC 몬차'(법인·형태 약칭 뺌) · 영문: football-data 'AC Monza'·short 'Monza'"
+    },
+    {
+      "ko": "제노아",
+      "en": ["Genoa CFC", "Genoa"],
+      "kind": "team",
+      "slug": "genoa-cfc",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '제노아 CFC'(법인·형태 약칭 뺌) · 영문: football-data 'Genoa CFC'·short 'Genoa', API-Football 'Genoa'"
+    },
+    {
+      "ko": "파르마",
+      "en": ["Parma Calcio 1913", "Parma"],
+      "kind": "team",
+      "slug": "parma-calcio-1913",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '파르마 칼초 1913'(법인·형태 약칭 뺌) · 영문: football-data 'Parma Calcio 1913'·short 'Parma', API-Football 'Parma'"
+    },
+    {
+      "ko": "피오렌티나",
+      "en": ["ACF Fiorentina", "Fiorentina"],
+      "kind": "team",
+      "slug": "acf-fiorentina",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'ACF 피오렌티나'(법인·형태 약칭 뺌) · 영문: football-data 'ACF Fiorentina'·short 'Fiorentina', API-Football 'Fiorentina'"
+    },
+    {
+      "ko": "볼로냐",
+      "en": ["Bologna FC 1909", "Bologna"],
+      "kind": "team",
+      "slug": "bologna-fc-1909",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '볼로냐 FC 1909'(법인·형태 약칭 뺌) · 영문: football-data 'Bologna FC 1909'·short 'Bologna'"
+    },
+    {
+      "ko": "베네치아",
+      "en": ["Venezia FC", "Venezia"],
+      "kind": "team",
+      "slug": "venezia",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '베네치아 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Venezia FC'"
+    },
+    {
+      "ko": "도르트문트",
+      "en": ["Borussia Dortmund", "Dortmund", "BVB"],
+      "kind": "team",
+      "slug": "borussia-dortmund",
+      "note": "통칭 — 위키 '보루시아 도르트문트'의 국내 매체 통칭('보루시아'를 뺌 — KFA가 '보루시아 묀헨글라트바흐'를 '묀헨글라트바흐'로 쓰는 방식, idx 27813) · 영문: football-data 'Borussia Dortmund'·short 'Dortmund'"
+    },
+    {
+      "ko": "프라이부르크",
+      "en": ["SC Freiburg", "Freiburg"],
+      "kind": "team",
+      "slug": "freiburg",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'SC 프라이부르크'(법인·형태 약칭 뺌) · 영문: football-data 'SC Freiburg'·short 'Freiburg', API-Football 'SC Freiburg'"
+    },
+    {
+      "ko": "레버쿠젠",
+      "en": ["Bayer 04 Leverkusen", "Leverkusen", "Bayer Leverkusen"],
+      "kind": "team",
+      "slug": "bayer-04-leverkusen",
+      "note": "통칭 — 위키 '바이어 04 레버쿠젠'의 국내 매체 통칭 · 영문: football-data 'Bayer 04 Leverkusen'·short 'Leverkusen', API-Football 'Bayer Leverkusen'"
+    },
+    {
+      "ko": "라이프치히",
+      "en": ["RB Leipzig", "Leipzig"],
+      "kind": "team",
+      "slug": "rb-leipzig",
+      "note": "통칭 — 위키 'RB 라이프치히'의 국내 매체 통칭('RB'를 뺌) · 영문: football-data 'RB Leipzig', API-Football 'RB Leipzig'"
+    },
+    {
+      "ko": "브레멘",
+      "en": ["SV Werder Bremen", "Bremen", "Werder Bremen"],
+      "kind": "team",
+      "slug": "werder-bremen",
+      "note": "통칭 — 위키 'SV 베르더 브레멘'의 국내 매체 통칭 · 영문: football-data 'SV Werder Bremen'·short 'Bremen'"
+    },
+    {
+      "ko": "슈투트가르트",
+      "en": ["VfB Stuttgart", "Stuttgart"],
+      "kind": "team",
+      "slug": "vfb-stuttgart",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'VfB 슈투트가르트'(법인·형태 약칭 뺌) · 영문: football-data 'VfB Stuttgart'·short 'Stuttgart', API-Football 'VfB Stuttgart'"
+    },
+    {
+      "ko": "함부르크",
+      "en": ["Hamburger SV", "HSV", "Hamburg"],
+      "kind": "team",
+      "slug": "hamburger",
+      "note": "관용 — 위키 '함부르거 SV'와 다름 — 국내 매체 관례 '함부르크'(손흥민 소속 시절부터) · 영문: football-data 'Hamburger SV'·short 'HSV', API-Football 'Hamburger SV'"
+    },
+    {
+      "ko": "프랑크푸르트",
+      "en": ["Eintracht Frankfurt", "Frankfurt"],
+      "kind": "team",
+      "slug": "eintracht-frankfurt",
+      "note": "통칭 — 위키 '아인트라흐트 프랑크푸르트'의 국내 매체 통칭 · 영문: football-data 'Eintracht Frankfurt'·short 'Frankfurt', API-Football 'Eintracht Frankfurt'"
+    },
+    {
+      "ko": "쾰른",
+      "en": ["1. FC Köln", "FC Köln", "Köln", "Cologne"],
+      "kind": "team",
+      "slug": "koln",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '1. FC 쾰른'(법인·형태 약칭 뺌) · 영문: football-data '1. FC Köln', API-Football '1. FC Köln'"
+    },
+    {
+      "ko": "파더보른",
+      "en": ["SC Paderborn 07", "SC Paderborn", "Paderborn"],
+      "kind": "team",
+      "slug": "paderborn-07",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'SC 파더보른 07'(법인·형태 약칭 뺌) · 영문: football-data 'SC Paderborn 07'·short 'SC Paderborn', API-Football 'SC Paderborn 07'"
+    },
+    {
+      "ko": "호펜하임",
+      "en": [
+        "TSG 1899 Hoffenheim",
+        "Hoffenheim",
+        "1899 Hoffenheim",
+        "TSG Hoffenheim"
+      ],
+      "kind": "team",
+      "slug": "tsg-1899-hoffenheim",
+      "note": "확실(규범·매체) — 위키백과 'TSG 1899 호펜하임'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '호펜하임' 5건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'TSG 1899 Hoffenheim'·short 'Hoffenheim', API-Football '1899 Hoffenheim'"
+    },
+    {
+      "ko": "모나코",
+      "en": ["AS Monaco FC", "Monaco", "AS Monaco"],
+      "kind": "team",
+      "slug": "as-monaco",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'AS 모나코 FC'(법인·형태 약칭 뺌) · 영문: football-data 'AS Monaco FC'·short 'Monaco', API-Football 'Monaco'"
+    },
+    {
+      "ko": "릴",
+      "en": ["Lille OSC", "Lille", "LOSC"],
+      "kind": "team",
+      "slug": "lille-osc",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '릴 OSC'(법인·형태 약칭 뺌) · 영문: football-data 'Lille OSC'·short 'Lille', API-Football 'Lille'"
+    },
+    {
+      "ko": "리옹",
+      "en": ["Olympique Lyonnais", "Olympique Lyon", "Lyon"],
+      "kind": "team",
+      "slug": "olympique-lyonnais",
+      "note": "통칭 — 위키 '올랭피크 리옹'의 국내 매체 통칭 · 국내 축구 매체 제목에 '리옹' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: football-data 'Olympique Lyonnais'·short 'Olympique Lyon'"
+    },
+    {
+      "ko": "파리 FC",
+      "en": ["Paris FC"],
+      "kind": "team",
+      "slug": "paris",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '파리 FC' · 영문: football-data 'Paris FC', API-Football 'Paris FC'"
+    },
+    {
+      "ko": "파리 생제르맹",
+      "en": [
+        "Paris Saint-Germain FC",
+        "PSG",
+        "Paris Saint Germain",
+        "Paris Saint-Germain",
+        "Paris SG"
+      ],
+      "kind": "team",
+      "slug": "paris-saint-germain",
+      "note": "확실(KFA) — KFA 2026-03-17 소집 명단 '이강인(파리 생제르맹)'(idx 27813) · 위키백과 '파리 생제르맹 FC' · 영문: football-data 'Paris Saint-Germain FC'·short 'PSG', API-Football 'Paris Saint Germain'"
+    },
+    {
+      "ko": "렌",
+      "en": ["Stade Rennais FC 1901", "Stade Rennais", "Rennes"],
+      "kind": "team",
+      "slug": "stade-rennais-fc-1901",
+      "note": "통칭 — 위키 '스타드 렌 FC'의 국내 매체 통칭('스타드'를 뺌) · 영문: football-data 'Stade Rennais FC 1901'·short 'Stade Rennais'"
+    },
+    {
+      "ko": "브레스트",
+      "en": ["Stade Brestois 29", "Brest"],
+      "kind": "team",
+      "slug": "stade-brestois-29",
+      "note": "관용 — 위키 '스타드 브레스투아 29'와 다름 — 국내 매체 통칭 '브레스트'(구단 연고 도시명) · 영문: football-data 'Stade Brestois 29'·short 'Brest', API-Football 'Stade Brestois 29'"
+    },
+    {
+      "ko": "로리앙",
+      "en": ["FC Lorient", "Lorient"],
+      "kind": "team",
+      "slug": "lorient",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'FC 로리앙'(법인·형태 약칭 뺌) · 영문: football-data 'FC Lorient'·short 'Lorient', API-Football 'Lorient'"
+    },
+    {
+      "ko": "랑스",
+      "en": ["Racing Club de Lens", "RC Lens", "Lens"],
+      "kind": "team",
+      "slug": "racing-club-de-lens",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'RC 랑스'(법인·형태 약칭 뺌) · 영문: football-data 'Racing Club de Lens'·short 'RC Lens'"
+    },
+    {
+      "ko": "스트라스부르",
+      "en": ["RC Strasbourg Alsace", "Strasbourg", "RC Strasbourg"],
+      "kind": "team",
+      "slug": "rc-strasbourg-alsace",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'RC 스트라스부르'(법인·형태 약칭 뺌) · 영문: football-data 'RC Strasbourg Alsace'·short 'Strasbourg'"
+    },
+    {
+      "ko": "앙제",
+      "en": ["Angers SCO", "Angers"],
+      "kind": "team",
+      "slug": "angers-sco",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '앙제 SCO'(법인·형태 약칭 뺌) · 영문: football-data 'Angers SCO', API-Football 'Angers'"
+    },
+    {
+      "ko": "르망",
+      "en": ["Le Mans FC", "Le Mans"],
+      "kind": "team",
+      "slug": "le-mans",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '르망 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Le Mans FC'·short 'Le Mans', API-Football 'Le Mans'"
+    },
+    {
+      "ko": "툴루즈",
+      "en": ["Toulouse FC", "Toulouse"],
+      "kind": "team",
+      "slug": "toulouse",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '툴루즈 FC'(법인·형태 약칭 뺌) · 영문: football-data 'Toulouse FC'·short 'Toulouse', API-Football 'Toulouse'"
+    },
+    {
+      "ko": "오세르",
+      "en": ["AJ Auxerre", "Auxerre"],
+      "kind": "team",
+      "slug": "aj-auxerre",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'AJ 오세르'(법인·형태 약칭 뺌) · 영문: football-data 'AJ Auxerre'·short 'Auxerre'"
+    },
+    {
+      "ko": "니스",
+      "en": ["OGC Nice", "Nice"],
+      "kind": "team",
+      "slug": "ogc-nice",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'OGC 니스'(법인·형태 약칭 뺌) · 영문: football-data 'OGC Nice'·short 'Nice'"
+    },
+    {
+      "ko": "트루아",
+      "en": ["ES Troyes AC", "Troyes"],
+      "kind": "team",
+      "slug": "es-troyes-ac",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'ES 트루아 AC'(법인·형태 약칭 뺌) · 영문: football-data 'ES Troyes AC'·short 'Troyes'"
+    },
+    {
+      "ko": "마르세유",
+      "en": ["Olympique de Marseille", "Marseille"],
+      "kind": "team",
+      "slug": "olympique-de-marseille",
+      "note": "통칭 — 위키 '올랭피크 드 마르세유'의 국내 매체 통칭 · 영문: football-data 'Olympique de Marseille'·short 'Marseille'"
+    },
+    {
+      "ko": "르아브르",
+      "en": ["Le Havre AC", "Le Havre"],
+      "kind": "team",
+      "slug": "le-havre-ac",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '르아브르 AC'(법인·형태 약칭 뺌) · 영문: football-data 'Le Havre AC'·short 'Le Havre', API-Football 'Le Havre'"
+    },
+    {
+      "ko": "AEK 아테네",
+      "en": ["PAE AEK", "AEK Athens"],
+      "kind": "team",
+      "slug": "pae-aek",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'AEK 아테네 FC'(법인·형태 약칭 뺌) · 영문: football-data 'PAE AEK'"
+    },
+    {
+      "ko": "샤흐타르",
+      "en": ["FK Shakhtar Donetsk", "Shaktar", "Shakhtar Donetsk", "Shakhtar"],
+      "kind": "team",
+      "slug": "fk-shakhtar-donetsk",
+      "note": "통칭 — 위키 'FC 샤흐타르 도네츠크'의 국내 매체 통칭 · 영문: football-data 'FK Shakhtar Donetsk'·short 'Shaktar'"
+    },
+    {
+      "ko": "PSV 에인트호번",
+      "en": ["PSV", "PSV Eindhoven"],
+      "kind": "team",
+      "slug": "psv",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'PSV 에인트호번' · 영문: football-data 'PSV'"
+    },
+    {
+      "ko": "클뤼프 브뤼허",
+      "en": ["Club Brugge KV", "Club Brugge"],
+      "kind": "team",
+      "slug": "brugge-kv",
+      "note": "확실(KFA) — KFA 2026-09-14 소집 명단 '이한범(클뤼프 브뤼허, 벨기에)'(idx 28281) — 국내 매체 관례 '클럽 브뤼헤'와 다르지만 D39 ② KFA 우선 · 위키백과 '클뤼프 브뤼허 KV' · 영문: football-data 'Club Brugge KV'·short 'Club Brugge'"
+    },
+    {
+      "ko": "슬라비아 프라하",
+      "en": ["SK Slavia Praha", "Slavia Praha", "Slavia Prague"],
+      "kind": "team",
+      "slug": "sk-slavia-praha",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'SK 슬라비아 프라하'(법인·형태 약칭 뺌) · 영문: football-data 'SK Slavia Praha'·short 'Slavia Praha'"
+    },
+    {
+      "ko": "갈라타사라이",
+      "en": ["Galatasaray SK", "Galatasaray"],
+      "kind": "team",
+      "slug": "galatasaray-sk",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '갈라타사라이 SK (축구)'(법인·형태 약칭 뺌) · 영문: football-data 'Galatasaray SK'·short 'Galatasaray'"
+    },
+    {
+      "ko": "포르투",
+      "en": ["FC Porto", "Porto"],
+      "kind": "team",
+      "slug": "porto",
+      "note": "확실(KFA) — KFA 2026-09-14 소집 명단 '황인범(FC포르투, 포르투갈)'(idx 28281 — 'FC'를 뺌) · 위키백과 'FC 포르투' · 영문: football-data 'FC Porto'·short 'Porto'"
+    },
+    {
+      "ko": "페예노르트",
+      "en": ["Feyenoord Rotterdam", "Feyenoord"],
+      "kind": "team",
+      "slug": "feyenoord-rotterdam",
+      "note": "확실(KFA) — KFA 2026-03-17 소집 명단 '황인범(페예노르트)'(idx 27813) · 위키백과 '페예노르트' · 영문: football-data 'Feyenoord Rotterdam'·short 'Feyenoord'"
+    },
+    {
+      "ko": "슬로반 브라티슬라바",
+      "en": ["ŠK Slovan Bratislava", "Sl. Bratislava", "Slovan Bratislava"],
+      "kind": "team",
+      "slug": "sk-slovan-bratislava",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'ŠK 슬로반 브라티슬라바'(법인·형태 약칭 뺌) · 영문: football-data 'ŠK Slovan Bratislava'·short 'Sl. Bratislava'"
+    },
+    {
+      "ko": "보되/글림트",
+      "en": ["FK Bodø/Glimt", "Bodø/Glimt", "Bodo/Glimt"],
+      "kind": "team",
+      "slug": "fk-bodo-glimt",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'FK 보되/글림트'(법인·형태 약칭 뺌) · 영문: football-data 'FK Bodø/Glimt'·short 'Bodø/Glimt'"
+    },
+    {
+      "ko": "해리 케인",
+      "en": ["Harry Kane", "H. Kane"],
+      "kind": "player",
+      "slug": "harry-kane",
+      "note": "확실(규범·매체) — 위키백과 '해리 케인' · 국내 축구 매체 제목에 '케인' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: API-Football 경기 상세 'Harry Kane'·'H. Kane'(fixtures/football)"
+    },
+    {
+      "ko": "킬리안 음바페",
+      "en": ["Kylian Mbappé"],
+      "kind": "player",
+      "slug": "kylian-mbappe",
+      "note": "확실(규범·매체) — 위키백과 '킬리안 음바페' · 국내 축구 매체 제목에 '음바페' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "모하메드 살라",
+      "en": ["Mohamed Salah"],
+      "kind": "player",
+      "slug": "mohamed-salah",
+      "note": "확실(규범·매체) — 위키백과 '모하메드 살라' · 국내 축구 매체 제목에 '살라' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "주드 벨링엄",
+      "en": ["Jude Bellingham"],
+      "kind": "player",
+      "slug": "jude-bellingham",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '주드 벨링엄' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "비니시우스 주니오르",
+      "en": ["Vinícius Júnior", "Vini Jr.", "Vinícius Jr."],
+      "kind": "player",
+      "slug": "vinicius-junior",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '비니시우스 주니오르' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "라민 야말",
+      "en": ["Lamine Yamal"],
+      "kind": "player",
+      "slug": "lamine-yamal",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '라민 야말' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "부카요 사카",
+      "en": ["Bukayo Saka"],
+      "kind": "player",
+      "slug": "bukayo-saka",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '부카요 사카' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "자말 무시알라",
+      "en": ["Jamal Musiala", "J. Musiala"],
+      "kind": "player",
+      "slug": "jamal-musiala",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '자말 무시알라' · 영문: API-Football 경기 상세 'J. Musiala'(fixtures/football)"
+    },
+    {
+      "ko": "마이클 올리세",
+      "en": ["Michael Olise", "M. Olise"],
+      "kind": "player",
+      "slug": "michael-olise",
+      "note": "확실(규범·매체) — 위키백과 '마이클 올리세' · 국내 축구 매체 제목에 '올리세' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: API-Football 경기 상세 'M. Olise'(fixtures/football)"
+    },
+    {
+      "ko": "플로리안 비르츠",
+      "en": ["Florian Wirtz"],
+      "kind": "player",
+      "slug": "florian-wirtz",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '플로리안 비르츠' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "페드리",
+      "en": ["Pedri"],
+      "kind": "player",
+      "slug": "pedri",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '페드리' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "로베르트 레반도프스키",
+      "en": ["Robert Lewandowski"],
+      "kind": "player",
+      "slug": "robert-lewandowski",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '로베르트 레반도프스키' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "우스만 뎀벨레",
+      "en": ["Ousmane Dembélé"],
+      "kind": "player",
+      "slug": "ousmane-dembele",
+      "note": "확실(규범·매체) — 위키백과 '우스만 뎀벨레' · 국내 축구 매체 제목에 '뎀벨레' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "마르틴 외데고르",
+      "en": ["Martin Ødegaard", "Martin Odegaard"],
+      "kind": "player",
+      "slug": "martin-odegaard",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '마르틴 외데고르' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "필 포든",
+      "en": ["Phil Foden"],
+      "kind": "player",
+      "slug": "phil-foden",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '필 포든' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "알폰소 데이비스",
+      "en": ["Alphonso Davies", "A. Davies"],
+      "kind": "player",
+      "slug": "alphonso-davies",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '알폰소 데이비스' · 영문: API-Football 경기 상세 'A. Davies'(fixtures/football)"
+    },
+    {
+      "ko": "마누엘 노이어",
+      "en": ["Manuel Neuer"],
+      "kind": "player",
+      "slug": "manuel-neuer",
+      "note": "확실(규범·매체) — 위키백과 '마누엘 노이어' · 국내 축구 매체 제목에 '노이어' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "훌리안 알바레스",
+      "en": ["Julián Álvarez"],
+      "kind": "player",
+      "slug": "julian-alvarez",
+      "note": "확실(규범·매체) — 위키백과 '훌리안 알바레스' · 국내 축구 매체 제목에 '알바레스' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "데지레 두에",
+      "en": ["Désiré Doué"],
+      "kind": "player",
+      "slug": "desire-doue",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '데지레 두에' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "존 맥긴",
+      "en": ["John McGinn"],
+      "kind": "player",
+      "slug": "john-mcginn",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '존 맥긴' · 영문: API-Football 경기 상세 'John McGinn'(fixtures/football)"
+    },
+    {
+      "ko": "도미닉 솔란케",
+      "en": ["Dominic Solanke"],
+      "kind": "player",
+      "slug": "dominic-solanke",
+      "note": "확실(규범·매체) — 위키백과 '도미닉 솔란케' · 국내 축구 매체 제목에 '솔란케' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "리산드로 마르티네스",
+      "en": ["Lisandro Martínez"],
+      "kind": "player",
+      "slug": "lisandro-martinez",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '리산드로 마르티네스' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "라우타로 마르티네스",
+      "en": ["Lautaro Martínez"],
+      "kind": "player",
+      "slug": "lautaro-martinez",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '라우타로 마르티네스' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "제이든 산초",
+      "en": ["Jadon Sancho"],
+      "kind": "player",
+      "slug": "jadon-sancho",
+      "note": "확실(규범·매체) — 위키백과 '제이든 산초' · 국내 축구 매체 제목에 '산초' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "미켈 메리노",
+      "en": ["Mikel Merino"],
+      "kind": "player",
+      "slug": "mikel-merino",
+      "note": "확실(규범·매체) — 위키백과 '미켈 메리노' · 국내 축구 매체 제목에 '메리노' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "다니 카르바할",
+      "en": ["Dani Carvajal"],
+      "kind": "player",
+      "slug": "dani-carvajal",
+      "note": "확실(규범·매체) — 위키백과 '다니 카르바할' · 국내 축구 매체 제목에 '카르바할' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "크리스티안 로메로",
+      "en": ["Cristian Romero"],
+      "kind": "player",
+      "slug": "cristian-romero",
+      "note": "확실(규범·매체) — 위키백과 '크리스티안 로메로' · 국내 축구 매체 제목에 '로메로' 3건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: API-Football 경기 상세 'Cristian Romero'(fixtures/football)"
+    },
+    {
+      "ko": "로베르트 안드리히",
+      "en": ["Robert Andrich"],
+      "kind": "player",
+      "slug": "robert-andrich",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '로베르트 안드리히' · 영문: API-Football 경기 상세 'Robert Andrich'(fixtures/football)"
+    },
+    {
+      "ko": "무사 디아비",
+      "en": ["Moussa Diaby"],
+      "kind": "player",
+      "slug": "moussa-diaby",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '무사 디아비' · 영문: API-Football 경기 상세 'Moussa Diaby'(fixtures/football)"
+    },
+    {
+      "ko": "페데리코 발베르데",
+      "en": ["Federico Valverde"],
+      "kind": "player",
+      "slug": "federico-valverde",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '페데리코 발베르데' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "아슈라프 하키미",
+      "en": ["Achraf Hakimi"],
+      "kind": "player",
+      "slug": "achraf-hakimi",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '아슈라프 하키미' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "잔루이지 돈나룸마",
+      "en": ["Gianluigi Donnarumma"],
+      "kind": "player",
+      "slug": "gianluigi-donnarumma",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '잔루이지 돈나룸마' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "앙투안 그리즈만",
+      "en": ["Antoine Griezmann"],
+      "kind": "player",
+      "slug": "antoine-griezmann",
+      "note": "확실(규범·매체) — 위키백과 '앙투안 그리즈만' · 국내 축구 매체 제목에 '그리즈만' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "버질 반 다이크",
+      "en": ["Virgil van Dijk"],
+      "kind": "player",
+      "slug": "virgil-van-dijk",
+      "note": "관용 — 위키 '버질 판 데이크'(네덜란드어 표기법)와 다름 — 국내 매체 표기 '반 다이크'가 굳음 · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "로드리",
+      "en": ["Rodri"],
+      "kind": "player",
+      "slug": "rodri",
+      "note": "관용 — 위키 문서명은 본명 '로드리 에르난데스' — 국내 매체 표기 '로드리' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "엔드릭",
+      "en": ["Endrick"],
+      "kind": "player",
+      "slug": "endrick",
+      "note": "관용 — 위키 '엔드리키 펠리피'(포르투갈어 표기법)와 다름 — 국내 매체 표기 '엔드릭' · 국내 축구 매체 제목에 '엔드릭' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "로드리고 벤탄쿠르",
+      "en": ["Rodrigo Bentancur"],
+      "kind": "player",
+      "slug": "rodrigo-bentancur",
+      "note": "관용 — 위키 '로드리고 벤탕쿠르'와 다름 — 국내 매체 표기 '벤탄쿠르' · 국내 축구 매체 제목에 '벤탄쿠르' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "브루노 페르난데스",
+      "en": ["Bruno Fernandes"],
+      "kind": "player",
+      "slug": "bruno-fernandes",
+      "note": "관용 — 위키 '브루누 페르난드스'(포르투갈어 표기법)와 다름 — 국내 매체 표기 '브루노 페르난데스' · 국내 축구 매체 제목에 '페르난데스' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "마커스 래시포드",
+      "en": ["Marcus Rashford"],
+      "kind": "player",
+      "slug": "marcus-rashford",
+      "note": "관용 — 위키 '마커스 래시퍼드'와 다름 — 국내 매체 표기 '래시포드' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "펩 과르디올라",
+      "en": ["Pep Guardiola", "Josep Guardiola"],
+      "kind": "manager",
+      "slug": "pep-guardiola",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '펩 과르디올라' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "미켈 아르테타",
+      "en": ["Mikel Arteta"],
+      "kind": "manager",
+      "slug": "mikel-arteta",
+      "note": "확실(규범·매체) — 위키백과 '미켈 아르테타' · 국내 축구 매체 제목에 '아르테타' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "루이스 엔리케",
+      "en": ["Luis Enrique"],
+      "kind": "manager",
+      "slug": "luis-enrique",
+      "note": "관용 — 위키 문서명은 본명 전체 — 국내 매체 표기 '루이스 엔리케' · 국내 축구 매체 제목에 '엔리케' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: API-Football 경기 상세 'Luis Enrique'(fixtures/football)"
+    },
+    {
+      "ko": "디에고 시메오네",
+      "en": ["Diego Simeone", "D. Simeone"],
+      "kind": "manager",
+      "slug": "diego-simeone",
+      "note": "확실(규범·매체) — 위키백과 '디에고 시메오네' · 국내 축구 매체 제목에 '시메오네' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: API-Football 경기 상세 'D. Simeone'(fixtures/football)"
+    },
+    {
+      "ko": "우나이 에메리",
+      "en": ["Unai Emery"],
+      "kind": "manager",
+      "slug": "unai-emery",
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '우나이 에메리' · 영문: API-Football 경기 상세 'Unai Emery'(fixtures/football)"
+    },
+    {
+      "ko": "뱅상 콤파니",
+      "en": ["Vincent Kompany", "V. Kompany"],
+      "kind": "manager",
+      "slug": "vincent-kompany",
+      "note": "관용 — 위키 '뱅상 콩파니'와 다름 — 국내 매체 표기 '콤파니' · 영문: API-Football 경기 상세 'Vincent Kompany'·'V. Kompany'(fixtures/football)"
+    },
+    {
+      "ko": "마이클 캐릭",
+      "en": ["Michael Carrick"],
+      "kind": "manager",
+      "slug": "michael-carrick",
+      "note": "확실(규범·매체) — 위키백과 '마이클 캐릭' · 국내 축구 매체 제목에 '캐릭' 4건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "로베르토 데 제르비",
+      "en": ["Roberto De Zerbi"],
+      "kind": "manager",
+      "slug": "roberto-de-zerbi",
+      "note": "확실(규범·매체) — 위키백과 '로베르토 데 제르비' · 국내 축구 매체 제목에 '제르비' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16) · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "아르네 슬롯",
+      "en": ["Arne Slot"],
+      "kind": "manager",
+      "slug": "arne-slot",
+      "note": "관용 — 위키 '아르너 슬로트'(네덜란드어 표기법)와 다름 — 국내 매체 표기 '아르네 슬롯' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "사비 알론소",
+      "en": ["Xabi Alonso"],
+      "kind": "manager",
+      "slug": "xabi-alonso",
+      "note": "관용 — 위키 '샤비 알론소'와 다름 — 국내 매체 표기 '사비 알론소' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
     }
   ],
   "ignore": []

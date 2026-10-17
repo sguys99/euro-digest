@@ -177,12 +177,14 @@ M0-30은 엄격 `JSON.parse`가 실패하면 첫 `{`~마지막 `}`를 잘라 다
 
 **확정 아님 — M1-21 초기 사전 후보이고 `configs/names.ko.json`이 우선한다.** M0-30 임시 사전(55개)과 M0-34 추가분(75개)을 합쳤다(`teams`·`players`·`comps`, 영문 → 한글). 두 파일에 함께 있던 키(RB Leipzig·Bournemouth·Roma)는 값이 같았다. `/add-name` 절차로 확정한다.
 
+> **2026-10-16 M1-21 반영**: `configs/names.ko.json` 초기 사전(팀 98·선수 48·감독 10)이 생겨 이 파일은 **표시용 보조**로만 남는다 — `fixtures/brief-sample.json`의 LLM 줄은 configs 사전 → (없을 때만) 이 파일 순서로 다시 치환했다(`scripts/lib/names.ts` substituteNames + 받침 기준 조사 보정). 팀 표기는 D39 ②(KFA 기준)로 configs가 정하고(예: 바이에른 → **바이에른 뮌헨**, 맨시티 → **맨체스터 시티**, 리즈 → **리즈 유나이티드**), 선수는 configs가 성·이름 전체를 쓴다(예: 올리세 → **마이클 올리세**). 이 파일의 선수 값(성만)·확인 대기 팀(브라이턴·크리스털 팰리스·에버턴 등 — M1-21 보고)은 파이프라인이 쓰지 않는다.
+
 `configs/names.ko.json`과 겹치는 항목(2026-10-11 기준)
 
 | 영문 | 임시 사전 | configs/names.ko.json | 비고 |
 |---|---|---|---|
 | Brentford | 브렌트퍼드 | **브렌트포드** | 다름 — configs 우선(brief-sample도 브렌트포드로 맞춤) |
-| Bayern | 바이에른 | (키 없음) 같은 팀이 **바이에른 뮌헨**(FC Bayern München·Bayern München·Bayern Munich) | 입력은 football-data 짧은 이름 "Bayern" — M1-21에서 별칭 추가 시 표기(짧게 쓸지) 결정 필요 |
+| Bayern | 바이에른 | **바이에른 뮌헨**(M1-21에서 별칭 "Bayern" 추가 — D39 ②) | 다름 — configs 우선 |
 | Union Berlin | 우니온 베를린 | 우니온 베를린 | 같음 |
 | Atleti | 아틀레티코 마드리드 | 아틀레티코 마드리드 | 같음 |
 | Augsburg | 아우크스부르크 | 아우크스부르크 | 같음 |

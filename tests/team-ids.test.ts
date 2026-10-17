@@ -955,8 +955,12 @@ describe("buildTeamIdsDraft — fixtures 52쌍 + 한국 선수 소속팀", () =>
     ),
     pairing: suggestTeamIdPairs(FD.finished, AF),
     koreanTeams: koreanTeamsFrom(KOREAN),
+    // 초안을 만든 2026-10-13의 names.ko 팀 항목 = 한국 선수 소속팀뿐이었다. M1-21 초기 사전(6개 대회 팀 전체)이 생긴 뒤에도 이
+    // 표는 그날 입력으로 고정한다 — 사전 slug가 규칙 slug를 이기는 동작은 아래 '문제 감지'·소속팀 행이 따로 본다
     nameSlugs: NAMES.entries.flatMap((e) =>
-      e.kind === "team" && e.slug !== undefined
+      e.kind === "team" &&
+      e.slug !== undefined &&
+      KOREAN.some((p) => p.team === e.slug)
         ? [{ slug: e.slug, en: e.en }]
         : [],
     ),

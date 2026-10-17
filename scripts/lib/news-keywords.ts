@@ -420,8 +420,8 @@ export interface BigClub {
 
 /**
  * 빅클럽(FR-06 키워드) — 5대 리그 전통 강호 16곳. 범위·값은 코드 상수(transfer-windows.json `boost` 외 점수화 가중치는
- * 코드 상수 — configs.ts 주석). names.ko.json에 같은 slug 팀이 있으면 그 표기(en·ko)를 더한다(지금 바이에른 뮌헨·
- * 아틀레티코 마드리드). 짧은 별칭의 오탐은 제외 표현으로 막는다(Inter Miami·Inter Milan의 Milan·레알 소시에다드·
+ * 코드 상수 — configs.ts 주석). names.ko.json에 같은 slug 팀이 있으면 그 표기(en·ko)를 더한다(M1-21 초기 사전 — 16곳 중
+ * 표기 확인 대기인 인테르를 뺀 15곳). 짧은 별칭의 오탐은 제외 표현으로 막는다(Inter Miami·Inter Milan의 Milan·레알 소시에다드·
  * Juve Stabia). 여자팀('Arsenal Women'·'Barcelona Femení'·'첼시 위민')은 서비스 범위(남자 5대 리그·UCL) 밖이라 색인이 모든
  * 별칭에 여자팀 표현을 붙여 제외한다(`womenTeamExcludes`).
  */
@@ -504,7 +504,8 @@ export const BIG_CLUBS: readonly BigClub[] = [
     exclude: { latin: ["inter miami", "inter de miami"] },
   },
   {
-    slug: "milan",
+    // slug = football-data 'AC Milan'의 M0-32 규칙 결과(team-ids-draft.ts teamSlugFromName — 'AC'는 떼는 토큰이 아니다, M1-21)
+    slug: "ac-milan",
     terms: { latin: ["ac milan", "milan"], ko: ["ac 밀란", "밀란"] },
     exclude: { latin: ["inter milan"], ko: ["인터 밀란"] },
   },

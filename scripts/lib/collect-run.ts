@@ -43,6 +43,10 @@
  *      두 번째 실행은 브리핑 창 경기를 다시 받지 않으므로 원장(data/matches)의 같은 창 항목도 잇는다(M1-19 — M1-48 이월).
  *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
  *      football-data 단계가 실패하면 그날 브리핑만 생략하고 뉴스는 발행한다(D24). 순위 실패는 그 대회 순위만 빠진다(partial).
+ *      고유명사(M1-21, FR-24 — names.ts): 입력의 득점자·도움을 configs/names.ko.json 대표 영문 표기로 바꿔 보내고(모델 축약 방지),
+ *      템플릿은 같은 사전의 한글 이름 + 받침 기준 조사(josa.ts)로 쓴다. LLM 출력은 치환·조사 보정 뒤 문장을 출력에 남긴다(저장은
+ *      M1-45). 사전에 없는 이름(입력의 팀·득점자·도움 + 치환 뒤 남은 출력 이름)은 data/cache/unknown-names.json에 적재한다 — prod·
+ *      비dry만 쓰고 dev·dry는 로그만(unknown-names.ts). 사전을 읽지 못하면 영문 그대로·적재 생략(경고).
  *      비용 가드(M1-22, FR-27 — budget-guard.ts): live 실행은 호출 전에 최악값 예상(첫 호출 + FR-29 재시도, 출력 = max_tokens)을
  *      출력하고 실행 시작 KST 날짜·달의 사용액(월 prod+dev, 일 prod 실행=prod만)과 비교한다. 초과 예상이거나 runs 파일을 읽지 못하면
  *      LLM 없이 `skipped`·reason `budget` → 같은 입력의 템플릿 게시(M1-19). 실행 시작에는 이번 달 누적과 dev 50% 초과 경고를 남긴다.
@@ -83,6 +87,7 @@ import {
   type AfPendingEntry,
   type BriefFile,
   type BriefMode,
+  type CompId,
   type CompetitionsFile,
   type FeedItem,
   type LedgerMatch,
@@ -142,10 +147,11 @@ import {
   type BriefPublishPlan,
 } from "./brief-file";
 import {
+  briefCompLabel,
+  briefNamesFromIndex,
+  chooseBriefCompForm,
   ENGLISH_NAMES,
-  namesKoResolver,
   templateBriefLines,
-  type BriefNames,
 } from "./brief-template";
 import {
   announceBriefBudget,
@@ -199,6 +205,16 @@ import {
   type LlmResult,
 } from "./llm";
 import type { Logger } from "./logger";
+import {
+  buildNameIndex,
+  canonicalizeBriefInput,
+  foldName,
+  isKnownName,
+  substituteNames,
+  unknownBriefInputNames,
+  unknownNamesInText,
+  type NameIndex,
+} from "./names";
 import {
   isolateProvider,
   type MatchDetail,
@@ -316,6 +332,13 @@ import {
   type SourceExclusion,
   type SourceExclusionReason,
 } from "./sources";
+import {
+  mergeUnknownNames,
+  readUnknownNames,
+  unknownNamesPath,
+  writeUnknownNames,
+  type UnknownNameObservation,
+} from "./unknown-names";
 
 // ─── 설정 ────────────────────────────────────────────────────────────────
 
@@ -484,6 +507,23 @@ export interface BriefFileOutcome {
   /** 기존 파일 읽기 오류(깨진 파일 — 새 파일로 고쳤으면 written과 함께) */
   readError: string | null;
   /** 검증·쓰기 오류 */
+  error: string | null;
+}
+
+/** 미등록 고유명사 적재(M1-21 — data/cache/unknown-names.json, unknown-names.ts) */
+export interface UnknownNamesOutcome {
+  /** 이번 실행에서 본 미등록 이름(데이터 API 이름 → 브리핑 출력 이름 순, 같은 이름은 한 번) */
+  observed: UnknownNameObservation[];
+  /**
+   * written = 썼다 · unchanged = 내용이 같아 쓰지 않음 · logged = dev·dry 실행이라 로그만(파일을 쓰지 않음) ·
+   * skipped = 사전을 읽지 못해 판단 불가 · failed = 읽기·쓰기 오류(실행은 계속)
+   */
+  action: "written" | "unchanged" | "logged" | "skipped" | "failed";
+  /** 파일에 처음 들어간 이름 */
+  added: string[];
+  /** 사전·무시 목록에 올라 파일에서 뺀 이름 */
+  pruned: string[];
+  path: string | null;
   error: string | null;
 }
 
@@ -719,6 +759,8 @@ export interface CollectOutcome {
   brief: BriefOutcome;
   /** 브리핑 게시(M1-19) — 브리핑 단계가 돌지 않았으면(뉴스 실패) null */
   briefFile: BriefFileOutcome | null;
+  /** 미등록 고유명사 적재(M1-21) — 브리핑 단계가 돌지 않았으면(뉴스 실패) null */
+  unknownNames: UnknownNamesOutcome | null;
   /** 기록한 실행 로그(기록하지 않았으면 null) */
   run: RunLog | null;
   runPath: string | null;
@@ -2721,15 +2763,48 @@ async function linkBriefGoals(
   }
 }
 
-/** 브리핑 단계 결과 — LLM 결과 + 게시(publishBrief)에 쓸 정형 입력·설정 */
+/** 브리핑 단계 결과 — LLM 결과 + 게시(publishBrief)·미등록 이름 적재(recordUnknownNames)에 쓸 정형 입력·설정 */
 interface BriefStageRun {
   outcome: BriefOutcome;
-  /** 정형 입력 — 만들지 못했으면 null(football-data 키 없음·실패, 설정 읽기 실패) */
+  /** 정형 입력(LLM에 보낸 그대로 — 득점자는 사전 대표 표기, M1-21) — 만들지 못했으면 null(football-data 키 없음·실패, 설정 읽기 실패) */
   input: BriefInput | null;
   /** 대회 설정(템플릿 대회 표기) */
   competitions: CompetitionsFile | null;
   /** 그날 기존 브리핑 파일(입력을 만든 뒤 읽는다) */
   existing: BriefFileRead | null;
+  /** 고유명사 사전 색인(M1-21) — 사전을 읽지 못했으면 null(이름은 영문 그대로, 미등록 적재 생략) */
+  names: NameIndex | null;
+  /** LLM 출력을 치환한 뒤에도 남은 이름 후보(미등록 적재 — M1-21). LLM이 돌지 않았으면 빈 배열 */
+  outputNames: string[];
+}
+
+/**
+ * 고유명사 사전 색인(M1-21 — names.ts). 읽기·형식 오류는 경고하고 null — 브리핑은 영문 이름으로 계속(템플릿·입력 정리 없이),
+ * 미등록 이름 적재는 건너뛴다(무엇이 등록됐는지 판단할 수 없다). 던지지 않는다.
+ */
+async function loadBriefNameIndex(
+  deps: CollectDeps,
+  competitions: CompetitionsFile,
+): Promise<NameIndex | null> {
+  try {
+    return buildNameIndex(
+      await readConfigFile(deps.rootDir, "names.ko.json", NamesKoFileSchema),
+      competitions,
+    );
+  } catch (error) {
+    deps.logger.warn("summarize.brief.names-unreadable", {
+      file: "configs/names.ko.json",
+      error: errorText(error),
+    });
+    return null;
+  }
+}
+
+/** 한글 글자가 라틴 글자보다 적지 않은가 — 통째로 영어인 줄(M0-30)에서 미등록 이름을 거두지 않는다 */
+function mostlyHangul(text: string): boolean {
+  const hangul = text.match(/[가-힣]/g)?.length ?? 0;
+  const latin = text.match(/\p{Script=Latin}/gu)?.length ?? 0;
+  return hangul >= latin;
 }
 
 /**
@@ -2753,6 +2828,8 @@ async function runBriefStage(
     input: null,
     competitions: null,
     existing: null,
+    names: null,
+    outputNames: [],
   });
   if (fd.state === "skipped") {
     log.warn("summarize.brief.skip", {
@@ -2777,15 +2854,18 @@ async function runBriefStage(
   }
 
   // 전날 경기 결과 + 현재 순위 + 연결된 경기의 득점자(M1-48b, 원장 항목 M1-19) → 정형 입력(M1-19 — 중요도 순)
+  // → 득점자·도움을 사전 대표 영문 표기로(M1-21 — 모델이 입력 표기를 옮기면 사전 키와 같아 치환된다, M0-30)
   let input: BriefInput;
   let competitions: CompetitionsFile;
   let built: BriefInputBuild;
+  let names: NameIndex | null = null;
   try {
     competitions = await readConfigFile(
       deps.rootDir,
       "competitions.json",
       CompetitionsFileSchema,
     );
+    names = await loadBriefNameIndex(deps, competitions);
     const team = await loadBriefTeamIndex(deps);
     const goalLinks = await linkBriefGoals(
       deps,
@@ -2801,7 +2881,10 @@ async function runBriefStage(
       linked: goalLinks.byFd,
       koreanTeamIds: await briefKoreanTeamIds(deps, team.index),
     });
-    input = built.input;
+    const canonical = names
+      ? canonicalizeBriefInput(built.input, names)
+      : { input: built.input, replaced: 0 };
+    input = canonical.input;
     log.info("summarize.input.done", {
       date: ctx.publishDate,
       finished: fd.data.results.length,
@@ -2820,6 +2903,8 @@ async function runBriefStage(
       unconfirmed: goalLinks.unconfirmed,
       goalsFilled: built.goals.filled,
       goalsIncomplete: built.goals.incomplete,
+      // 득점자·도움을 사전 대표 표기로 바꾼 수(M1-21) — 사전을 읽지 못했으면 null
+      canonicalNames: names ? canonical.replaced : null,
       inputChars: serializeBriefInput(input).length,
     });
   } catch (error) {
@@ -2839,11 +2924,16 @@ async function runBriefStage(
   const inputMatches = input.matches.length;
   // 그날 기존 브리핑 — 이미 검증 통과 LLM 브리핑(llm·mixed)이면 LLM을 부르지 않는다(덮지 않음 — brief-file.ts 재실행 판정)
   const existing = await readBriefFile(deps.dataDir, ctx.publishDate);
-  const withInput = (outcome: BriefOutcome): BriefStageRun => ({
+  const withInput = (
+    outcome: BriefOutcome,
+    outputNames: string[] = [],
+  ): BriefStageRun => ({
     outcome,
     input,
     competitions,
     existing,
+    names,
+    outputNames,
   });
   if (existing.value && isKeptBriefMode(existing.value.mode)) {
     log.info("summarize.brief.skip", {
@@ -2983,37 +3073,52 @@ async function runBriefStage(
     });
   }
   const lines = parsed.lines.map((line) => line.t);
+  // 고유명사 치환 + 조사 보정(M1-21, FR-24) — 대회 표기는 같은 입력의 템플릿과 같은 브리핑 단위 표기(D30·D45 ④).
+  // 치환 뒤에도 남은 이름 후보는 미등록 적재로(통째로 영어인 줄은 빼고 — recordUnknownNames)
+  const form = chooseBriefCompForm(input, {
+    competitions,
+    names: names ? briefNamesFromIndex(names) : ENGLISH_NAMES,
+  });
+  const competitionLabel = (comp: CompId): string => {
+    const config = competitions.find((c) => c.id === comp);
+    return config
+      ? briefCompLabel(config.nameEn, { competitions }, form)
+      : comp;
+  };
+  const substituted = parsed.lines.map((line) =>
+    names
+      ? substituteNames(line.t, names, { competitionLabel })
+      : { text: line.t, replaced: [], particleFixes: 0 },
+  );
+  const outputNames = names
+    ? [
+        ...new Set(
+          substituted
+            .filter((r) => mostlyHangul(r.text))
+            .flatMap((r) => unknownNamesInText(r.text, names)),
+        ),
+      ]
+    : [];
   log.info("summarize.brief.done", {
     date: ctx.publishDate,
     matches: inputMatches,
     lines: lines.length,
+    namesReplaced: substituted.reduce((n, r) => n + r.replaced.length, 0),
+    particleFixes: substituted.reduce((n, r) => n + r.particleFixes, 0),
+    outputUnknownNames: outputNames.length,
     ...usageFields,
   });
   // 검증(M1-23)·강등(M1-45) 전이라 사람이 읽는 출력으로만 남긴다 — data/briefs에는 같은 입력의 템플릿을 게시한다(publishBrief).
   deps.print(
     [
-      `── 브리핑 출력 (${ctx.publishDate}, ${deps.llmMode}, 저장 안 함 — 검증(M1-23·M1-45) 전, 고유명사 치환 전 원문)`,
+      `── 브리핑 출력 (${ctx.publishDate}, ${deps.llmMode}, 저장 안 함 — 검증(M1-23·M1-45) 전, 고유명사 치환·조사 보정 뒤 / 원문)`,
       ...parsed.lines.map(
-        (line, i) => `${i + 1}. ${line.t}  [${line.r.join(",")}]`,
+        (line, i) =>
+          `${i + 1}. ${substituted[i]!.text}  [${line.r.join(",")}]\n   원문: ${line.t}`,
       ),
     ].join("\n"),
   );
-  return withInput({ state: "done", inputMatches, lines });
-}
-
-/** 템플릿 이름 표기 — configs/names.ko.json 단순 대조(읽지 못하면 영문 그대로 — 경고). 조사 보정·미등록 적재는 M1-21 */
-async function briefTemplateNames(deps: CollectDeps): Promise<BriefNames> {
-  try {
-    return namesKoResolver(
-      await readConfigFile(deps.rootDir, "names.ko.json", NamesKoFileSchema),
-    );
-  } catch (error) {
-    deps.logger.warn("summarize.brief.names-unreadable", {
-      file: "configs/names.ko.json",
-      error: errorText(error),
-    });
-    return ENGLISH_NAMES;
-  }
+  return withInput({ state: "done", inputMatches, lines }, outputNames);
 }
 
 /**
@@ -3030,7 +3135,8 @@ async function publishBrief(
     stage.input && stage.competitions && stage.input.matches.length > 0
       ? templateBriefLines(stage.input, {
           competitions: stage.competitions,
-          names: await briefTemplateNames(deps),
+          // 브리핑 단계가 읽은 사전(M1-21) — 읽지 못했으면 영문 그대로
+          names: stage.names ? briefNamesFromIndex(stage.names) : ENGLISH_NAMES,
         })
       : [];
   const plan = planBriefPublish({
@@ -3125,6 +3231,103 @@ async function publishBrief(
       ...base,
       action: "failed",
       file,
+      path: null,
+      error: errorText(error),
+    };
+  }
+}
+
+// ─── 미등록 고유명사 (M1-21) ───────────────────────────────────────────────
+
+/** 미등록 이름 로그에 남기는 최대 개수(전체 수는 따로) */
+const UNKNOWN_NAMES_LOG_MAX = 20;
+
+/**
+ * 미등록 고유명사 적재(M1-21, FR-24 — unknown-names.ts 머리 주석). 데이터 API 이름(브리핑 입력의 팀·득점자·도움 중 사전·무시 목록에
+ * 없는 것) + 브리핑 출력 이름(치환 뒤 남은 후보 — 입력 이름과 같으면 그 유형). **prod·비dry만 파일을 쓴다** — dev·dry는 로그만.
+ * 사전에 오른 이름은 이번 실행이 파일에서 뺀다. 던지지 않는다 — 실패해도 발행은 계속(캐시라 다음 실행이 다시 모은다).
+ */
+async function recordUnknownNames(
+  deps: CollectDeps,
+  ctx: { startedAt: string },
+  stage: BriefStageRun,
+): Promise<UnknownNamesOutcome> {
+  const log = deps.logger;
+  const names = stage.names;
+  const base = { added: [], pruned: [], path: null, error: null };
+  if (names === null) {
+    log.info("summarize.names.skip", { reason: "names-unreadable" });
+    return { ...base, observed: [], action: "skipped" };
+  }
+  const fromInput = stage.input
+    ? unknownBriefInputNames(stage.input, names)
+    : [];
+  const inputKind = new Map(fromInput.map((n) => [foldName(n.name), n.kind]));
+  const observed: UnknownNameObservation[] = [...fromInput];
+  for (const name of stage.outputNames) {
+    if (observed.some((o) => o.name === name)) continue;
+    const kind = inputKind.get(foldName(name));
+    observed.push(kind ? { name, kind } : { name });
+  }
+  const fields = {
+    observed: observed.length,
+    fromInput: fromInput.length,
+    fromOutput: observed.length - fromInput.length,
+    names: observed.slice(0, UNKNOWN_NAMES_LOG_MAX).map((o) => o.name),
+  };
+  // dev 실행이 횟수를 부풀리지 않게, dry는 data/를 쓰지 않으므로 — 로그만(af-pending 이월 목록과 같은 기준)
+  if (deps.env !== "prod" || deps.dry) {
+    log.info("summarize.names.unknown", { ...fields, action: "logged" });
+    if (deps.dry && observed.length > 0) {
+      deps.print(
+        `── [dry] 미등록 고유명사 ${observed.length}개 (data/cache/unknown-names.json — 쓰지 않음)\n${observed
+          .map((o) => `- ${o.name}${o.kind ? ` (${o.kind})` : ""}`)
+          .join("\n")}`,
+      );
+    }
+    return { ...base, observed, action: "logged" };
+  }
+  const read = await readUnknownNames(deps.dataDir);
+  if (read.error !== null) {
+    // 깨진 캐시는 새 파일로 고친다(검증 게이트가 깨진 파일의 커밋을 막으므로 드묾) — 누적 횟수는 잃는다
+    log.warn("summarize.names.file-unreadable", {
+      file: "data/cache/unknown-names.json",
+      error: read.error,
+    });
+  }
+  const merged = mergeUnknownNames(read.value, observed, {
+    now: ctx.startedAt,
+    isKnown: (name) => isKnownName(names, name),
+  });
+  const outcomeBase = {
+    observed,
+    added: merged.added,
+    pruned: merged.pruned,
+  };
+  if (merged.file === null || (!merged.changed && read.error === null)) {
+    log.info("summarize.names.unknown", { ...fields, action: "unchanged" });
+    return { ...outcomeBase, action: "unchanged", path: null, error: null };
+  }
+  try {
+    const written = await writeUnknownNames(deps.dataDir, merged.file);
+    log.info("summarize.names.unknown", {
+      ...fields,
+      action: "written",
+      added: merged.added.length,
+      seenAgain: merged.seenAgain.length,
+      pruned: merged.pruned.length,
+      total: Object.keys(merged.file.names).length,
+      file: "data/cache/unknown-names.json",
+    });
+    return { ...outcomeBase, action: "written", path: written, error: null };
+  } catch (error) {
+    log.error("summarize.names.fail", {
+      file: unknownNamesPath(deps.dataDir),
+      error: errorText(error),
+    });
+    return {
+      ...outcomeBase,
+      action: "failed",
       path: null,
       error: errorText(error),
     };
@@ -3543,6 +3746,20 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     }
   }
 
+  // 미등록 고유명사(M1-21) — 브리핑 입력·출력의 사전에 없는 이름. prod·비dry만 파일을 쓴다. 실패해도 발행은 계속
+  let unknownNames: UnknownNamesOutcome | null = null;
+  if (briefStage !== null) {
+    try {
+      unknownNames = await recordUnknownNames(deps, stageCtx, briefStage);
+    } catch (error) {
+      // 방어선 — recordUnknownNames는 던지지 않는다
+      log.error("summarize.names.fail", {
+        stage: "unexpected",
+        error: errorText(error),
+      });
+    }
+  }
+
   // 경기 데이터 마무리 — API-Football 나머지·이월 파일·짝짓기. 실행 기록(호출 수 = 다음 실행의 일일 카운터) 전에 기다린다.
   try {
     // 뉴스 설정 오류로 시작하지 않았으면 null(경기 데이터 요청 없음)
@@ -3639,6 +3856,9 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     briefFile: briefFile
       ? `${briefFile.plan?.mode ?? "none"}:${briefFile.action}`
       : null,
+    unknownNames: unknownNames
+      ? `${unknownNames.observed.length}:${unknownNames.action}`
+      : null,
     footballData: matchData?.footballData.state ?? null,
     apiFootball: matchData?.apiFootball.state ?? null,
     matchDataMs: matchData?.elapsedMs ?? null,
@@ -3658,6 +3878,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     matchData,
     brief,
     briefFile,
+    unknownNames,
     run,
     runPath,
     status,

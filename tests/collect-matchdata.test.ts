@@ -1281,6 +1281,8 @@ describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
       linkedByTeamIds: 23,
       linkedByEvidence: 0,
     });
+    // 득점자·도움은 사전 대표 표기로(M1-21 — 이 날 득점자는 사전에 없거나 이미 대표 표기라 0)
+    expect(done.canonicalNames).toBe(0);
     // 합성 상세(fixture 파일 없음 — events 없음)는 득점 불완전 → null. 0-0 경기는 빈 배열
     const filled = input.matches.filter((m) => m.goals !== null).length;
     expect(done.goalsFilled).toBe(filled);

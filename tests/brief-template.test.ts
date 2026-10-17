@@ -1,7 +1,8 @@
 /**
- * M1-19 브리핑 코드 템플릿 문장(scripts/lib/brief-template.ts) — 결정적·ai:false·refs, 스코어 홈-원정 고정(D30), 입력에서 계산되는
- * 서술만(결승골·동점골·해트트릭·역전승·n골 차·연장·승부차기), 순위 줄(공동 순위·변동 서술 없음), 길이(60자 목표·80자 상한), 이름 뒤
- * 가변 조사 없음(M1-21 경계), football-data만으로 5줄(M1-47 이월). 네트워크·LLM 없음.
+ * 브리핑 코드 템플릿 문장(scripts/lib/brief-template.ts) — M1-19 생성기 + **M1-21 문형 교체(D45 ④)**: 결정적·ai:false·refs, LLM 줄과
+ * 같은 자연 뉴스 문장(주어 팀 점수 먼저 — D30 갱신), 이름 뒤 조사는 받침 기준(josa.ts), 입력에서 계산되는 서술만(결승골·동점골·
+ * 해트트릭·역전승·완파·연장·승부차기 — 승부차기 동점을 '비겼다'로 쓰지 않음), 순위 줄(공동 순위·변동 서술 없음), 길이(조사를 붙인
+ * 뒤 60자 목표·80자 상한·절단 없음), 브리핑 단위 대회 표기, football-data만으로 5줄(M1-47 이월). 네트워크·LLM 없음.
  */
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -24,15 +25,17 @@ import type {
 import { buildBriefInput } from "../scripts/lib/brief-input";
 import {
   BRIEF_TEMPLATE_TARGET,
+  briefCompLabel,
+  chooseBriefCompForm,
   ENGLISH_NAMES,
   namesKoResolver,
   templateBriefLines,
   templateLineForRefs,
   templateMatchLine,
   templateStandingsLine,
-  type BriefNames,
   type BriefTemplateContext,
 } from "../scripts/lib/brief-template";
+import { finalSound } from "../scripts/lib/josa";
 import {
   toCompStandings,
   toFinishedResults,
@@ -46,6 +49,13 @@ const COMPETITIONS = CompetitionsFileSchema.parse(
   readJson("configs/competitions.json"),
 );
 const CTX: BriefTemplateContext = { competitions: COMPETITIONS };
+const KO_NAMES = namesKoResolver(
+  NamesKoFileSchema.parse(readJson("configs/names.ko.json")),
+);
+const KO: BriefTemplateContext = {
+  competitions: COMPETITIONS,
+  names: KO_NAMES,
+};
 
 /** 경기 1건(기본: 프리미어리그 Arsenal 2-1 Chelsea, 득점 데이터 없음) */
 function match(over: Partial<BriefInputMatch> = {}): BriefInputMatch {
@@ -105,18 +115,23 @@ const FD_ONLY_INPUT = buildBriefInput({
   ),
 }).input;
 
-describe("경기 줄 — 기본 서술(득점 데이터 없음)", () => {
-  it("홈 h-a 원정 고정(D30) · ai:false · refs = 경기 id · 문장 끝 마침표", () => {
+describe("경기 줄 — 주어 팀 점수 먼저(D45 ④, 득점 데이터 없음)", () => {
+  it("홈 승리 '{승자}가 [대회 홈경기에서] {패자}를 w-l로 꺾었다' · ai:false · refs = 경기 id · 마침표", () => {
     const line = templateMatchLine(match(), CTX)!;
     expect(line).toEqual({
-      text: "프리미어리그 Arsenal 2-1 Chelsea, 홈팀이 이겼다.",
+      text: "Arsenal이 프리미어리그 홈경기에서 Chelsea를 2-1로 꺾었다.",
       ai: false,
       refs: ["m1"],
     });
     expect(BriefLineSchema.safeParse(line).success).toBe(true);
-    // 원정 승리도 점수는 홈-원정 순서 그대로
+  });
+
+  it("원정 승리는 '원정에서' + 이긴 팀 점수 먼저(0-2 → 2-0)", () => {
     expect(textOf(match({ ft: "0-2" }))).toBe(
-      "프리미어리그 Arsenal 0-2 Chelsea, 원정팀이 이겼다.",
+      "Chelsea가 프리미어리그 원정에서 Arsenal을 2-0으로 꺾었다.",
+    );
+    expect(textOf(match({ ft: "1-3" }), KO)).toBe(
+      "첼시가 프리미어리그 원정에서 아스널을 3-1로 꺾었다.",
     );
   });
 
@@ -131,55 +146,58 @@ describe("경기 줄 — 기본 서술(득점 데이터 없음)", () => {
     expect(templateMatchLine(m, CTX)).toEqual(templateMatchLine(m, CTX));
   });
 
-  it("3골 차 이상 — n골 차(두 점수의 차)", () => {
+  it("3골 차 이상은 '완파했다'(점수 차로 계산)", () => {
     expect(textOf(match({ ft: "5-1" }))).toBe(
-      "프리미어리그 Arsenal 5-1 Chelsea, 홈팀이 4골 차로 이겼다.",
+      "Arsenal이 프리미어리그 홈경기에서 Chelsea를 5-1로 완파했다.",
     );
-    expect(textOf(match({ ft: "0-3" }))).toBe(
-      "프리미어리그 Arsenal 0-3 Chelsea, 원정팀이 3골 차로 이겼다.",
+    expect(textOf(match({ ft: "0-3" }), KO)).toBe(
+      "첼시가 프리미어리그 원정에서 아스널을 3-0으로 완파했다.",
     );
   });
 
   it("전반에 뒤졌다 이기면 역전승(전반 스코어로 확인) — 전반 동점·앞섬은 역전승이 아니다", () => {
-    expect(textOf(match({ ht: "0-1" }))).toBe(
-      "프리미어리그 Arsenal 2-1 Chelsea, 홈팀이 역전승을 거뒀다.",
+    expect(textOf(match({ ht: "0-1" }), KO)).toBe(
+      "아스널이 프리미어리그 홈경기에서 첼시에 2-1 역전승을 거뒀다.",
     );
-    expect(textOf(match({ ft: "1-4", ht: "1-0" }))).toBe(
-      "프리미어리그 Arsenal 1-4 Chelsea, 원정팀이 3골 차 역전승을 거뒀다.",
+    expect(textOf(match({ ft: "1-4", ht: "1-0" }), KO)).toBe(
+      "첼시가 프리미어리그 원정에서 아스널에 4-1 역전승을 거뒀다.",
     );
-    expect(textOf(match({ ht: "1-1" }))).toContain("홈팀이 이겼다.");
-    expect(textOf(match({ ht: "1-0" }))).toContain("홈팀이 이겼다.");
+    expect(textOf(match({ ht: "1-1" }))).toContain("2-1로 꺾었다.");
+    expect(textOf(match({ ht: "1-0" }))).toContain("2-1로 꺾었다.");
   });
 
-  it("무승부 — 0-0은 득점 없이, 그 밖은 승부를 가리지 못했다", () => {
-    expect(textOf(match({ ft: "0-0" }))).toBe(
-      "프리미어리그 Arsenal 0-0 Chelsea, 득점 없이 비겼다.",
+  it("무승부 '{홈}과 {원정}이 [대회에서] h-a로 비겼다' — 0-0도 점수를 쓴다", () => {
+    expect(textOf(match({ ft: "0-0" }), KO)).toBe(
+      "아스널과 첼시가 프리미어리그에서 0-0으로 비겼다.",
     );
     expect(textOf(match({ ft: "2-2" }))).toBe(
-      "프리미어리그 Arsenal 2-2 Chelsea, 두 팀이 승부를 가리지 못했다.",
+      "Arsenal과 Chelsea가 프리미어리그에서 2-2로 비겼다.",
     );
   });
 
-  it("연장·승부차기(M1-44 이월) — 연장 끝에·승부차기(h-a) 끝에, 승부차기 점수도 홈-원정", () => {
-    expect(textOf(match({ ft: "1-2", aet: true, regular: "1-1" }))).toBe(
-      "프리미어리그 Arsenal 1-2 Chelsea, 연장 끝에 원정팀이 이겼다.",
+  it("연장 '연장 끝에' · 승부차기 '…와 연장까지 1-1로 맞선 뒤 승부차기에서 w-l로 이겼다'(승부차기 점수도 이긴 팀 먼저, '비겼다' 아님)", () => {
+    expect(textOf(match({ ft: "1-2", aet: true, regular: "1-1" }), KO)).toBe(
+      "첼시가 프리미어리그 원정에서 연장 끝에 아스널을 2-1로 꺾었다.",
     );
+    const pens = textOf(
+      match({ ft: "1-1", aet: true, regular: "1-1", pens: "4-3" }),
+      KO,
+    );
+    expect(pens).toBe(
+      "아스널이 프리미어리그 홈경기에서 첼시와 연장까지 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다.",
+    );
+    expect(pens).not.toContain("비겼");
     expect(
-      textOf(match({ ft: "1-1", aet: true, regular: "1-1", pens: "4-3" })),
+      textOf(match({ ft: "0-0", aet: true, pens: "2-4", goals: [] }), KO),
     ).toBe(
-      "프리미어리그 Arsenal 1-1 Chelsea, 승부차기(4-3) 끝에 홈팀이 이겼다.",
+      "첼시가 프리미어리그 원정에서 아스널과 연장까지 0-0으로 맞선 뒤 승부차기에서 4-2로 이겼다.",
     );
-    expect(
-      textOf(match({ ft: "0-0", aet: true, pens: "2-4", goals: [] })),
-    ).toBe(
-      "프리미어리그 Arsenal 0-0 Chelsea, 승부차기(2-4) 끝에 원정팀이 이겼다.",
-    );
-    expect(textOf(match({ ft: "1-1", aet: true }))).toBe(
-      "프리미어리그 Arsenal 1-1 Chelsea, 연장 끝에 비겼다.",
+    expect(textOf(match({ ft: "1-1", aet: true }), KO)).toBe(
+      "아스널과 첼시가 프리미어리그에서 연장 끝에 1-1로 비겼다.",
     );
   });
 
-  it("중립 경기장 결승(round FINAL)은 홈·원정 대신 이긴 팀 이름", () => {
+  it("중립 경기장 결승(round FINAL)은 장소 대신 '결승에서'", () => {
     const final = match({
       comp: "UEFA Champions League",
       round: "FINAL",
@@ -187,12 +205,12 @@ describe("경기 줄 — 기본 서술(득점 데이터 없음)", () => {
       aet: true,
       pens: "3-4",
     });
-    expect(textOf(final)).toBe(
-      "UEFA 챔피언스리그 Arsenal 1-1 Chelsea, Chelsea의 승부차기(3-4) 승리로 끝났다.",
+    expect(textOf(final, KO)).toBe(
+      "첼시가 UEFA 챔피언스리그 결승에서 아스널과 연장까지 1-1로 맞선 뒤 승부차기에서 4-3으로 이겼다.",
     );
     expect(
-      textOf({ ...final, ft: "2-0", aet: undefined, pens: undefined }),
-    ).toBe("UEFA 챔피언스리그 Arsenal 2-0 Chelsea, Arsenal의 승리로 끝났다.");
+      textOf({ ...final, ft: "2-0", aet: undefined, pens: undefined }, KO),
+    ).toBe("아스널이 UEFA 챔피언스리그 결승에서 첼시를 2-0으로 꺾었다.");
   });
 });
 
@@ -214,23 +232,23 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
         goal("90+2", "Mainz", "Benedict Hollerbach"),
       ],
     });
-    expect(textOf(m)).toBe(
-      "분데스리가 Mainz 3-4 Leverkusen, Moussa Diaby의 65분 결승골로 원정팀이 이겼다.",
+    expect(textOf(m, KO)).toBe(
+      "레버쿠젠이 분데스리가 원정에서 무사 디아비의 65분 결승골로 마인츠를 4-3으로 꺾었다.",
     );
   });
 
   it("득점 순서로 뒤진 적이 확인되면 결승골 + 역전승(Arsenal 2-1 Leeds — 전반 0-0)", () => {
     const m = match({
-      away: "Leeds",
+      away: "Leeds United",
       ht: "0-0",
       goals: [
-        goal("55", "Leeds", "James Justin"),
+        goal("55", "Leeds United", "James Justin"),
         goal("62", "Arsenal", "Riccardo Calafiori"),
-        goal("70", "Arsenal", "Saka"),
+        goal("70", "Arsenal", "Bukayo Saka"),
       ],
     });
-    expect(textOf(m)).toBe(
-      "프리미어리그 Arsenal 2-1 Leeds, Saka의 70분 결승골로 홈팀이 역전승을 거뒀다.",
+    expect(textOf(m, KO)).toBe(
+      "아스널이 프리미어리그 홈경기에서 부카요 사카의 70분 결승골로 리즈 유나이티드에 2-1 역전승을 거뒀다.",
     );
   });
 
@@ -239,15 +257,19 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
       ft: "1-0",
       goals: [goal("45+6", "Arsenal", "Saka", "penalty")],
     });
+    // 분까지 넣으면 61자 — 60자 목표 안의 득점자 문장
     expect(textOf(pk)).toBe(
-      "프리미어리그 Arsenal 1-0 Chelsea, Saka의 45+6분 PK 결승골로 홈팀이 이겼다.",
+      "Arsenal이 프리미어리그 홈경기에서 Saka의 PK 결승골로 Chelsea를 1-0으로 꺾었다.",
+    );
+    expect(textOf(pk, KO)).toBe(
+      "아스널이 프리미어리그 홈경기에서 Saka의 45+6분 PK 결승골로 첼시를 1-0으로 꺾었다.",
     );
     const own = match({
       ft: "1-0",
       goals: [goal("30", "Arsenal", "Reece James", "own_goal")],
     });
     expect(textOf(own)).toBe(
-      "프리미어리그 Arsenal 1-0 Chelsea, 홈팀이 이겼다.",
+      "Arsenal이 프리미어리그 홈경기에서 Chelsea를 1-0으로 꺾었다.",
     );
     const unordered = match({
       ft: "2-1",
@@ -261,23 +283,23 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
     expect(textOf(unordered)).toContain("Saka의 46분 결승골로");
   });
 
-  it("해트트릭(이긴 팀 같은 선수 3골) · 4골 이상은 n골 — 3골 차 이상이어도 해트트릭을 쓴다", () => {
+  it("해트트릭(이긴 팀 같은 선수 3골) '해트트릭을 앞세워' · 4골 이상은 'n골을 앞세워' — 3골 차 이상이어도 해트트릭을 쓴다", () => {
     const hat = match({
       comp: "Bundesliga",
-      home: "Leipzig",
+      home: "RB Leipzig",
       away: "Frankfurt",
       ft: "6-0",
       goals: [
-        goal("1", "Leipzig", "Banzuzi"),
-        goal("5", "Leipzig", "Nkunku"),
-        goal("41", "Leipzig", "Nkunku"),
-        goal("44", "Leipzig", "Nkunku"),
-        goal("54", "Leipzig", "Nusa"),
-        goal("89", "Leipzig", "Gomis"),
+        goal("1", "RB Leipzig", "Banzuzi"),
+        goal("5", "RB Leipzig", "Nkunku"),
+        goal("41", "RB Leipzig", "Nkunku"),
+        goal("44", "RB Leipzig", "Nkunku"),
+        goal("54", "RB Leipzig", "Nusa"),
+        goal("89", "RB Leipzig", "Gomis"),
       ],
     });
-    expect(textOf(hat)).toBe(
-      "분데스리가 Leipzig 6-0 Frankfurt, Nkunku의 해트트릭으로 홈팀이 이겼다.",
+    expect(textOf(hat, KO)).toBe(
+      "라이프치히가 분데스리가 홈경기에서 Nkunku의 해트트릭을 앞세워 프랑크푸르트를 6-0으로 완파했다.",
     );
     const four = match({
       ft: "4-1",
@@ -289,7 +311,9 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
         goal("5", "Arsenal", "Saka"),
       ],
     });
-    expect(textOf(four)).toContain("Saka의 4골로 홈팀이 이겼다.");
+    expect(textOf(four)).toBe(
+      "Arsenal이 프리미어리그 홈경기에서 Saka의 4골을 앞세워 Chelsea를 4-1로 완파했다.",
+    );
     // 진 팀 선수의 3골은 해트트릭 서술을 하지 않는다
     const loserHat = match({
       ft: "4-3",
@@ -304,11 +328,11 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
       ],
     });
     expect(textOf(loserHat)).toBe(
-      "프리미어리그 Arsenal 4-3 Chelsea, D의 7분 결승골로 홈팀이 역전승을 거뒀다.",
+      "Arsenal이 프리미어리그 홈경기에서 D의 7분 결승골로 Chelsea에 4-3 역전승을 거뒀다.",
     );
   });
 
-  it("3골 차 이상 승리는 결승골 대신 점수 차", () => {
+  it("3골 차 이상 승리는 결승골 대신 '완파'", () => {
     const m = match({
       ft: "3-0",
       goals: [
@@ -318,11 +342,11 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
       ],
     });
     expect(textOf(m)).toBe(
-      "프리미어리그 Arsenal 3-0 Chelsea, 홈팀이 3골 차로 이겼다.",
+      "Arsenal이 프리미어리그 홈경기에서 Chelsea를 3-0으로 완파했다.",
     );
   });
 
-  it("무승부 — 마지막 골(동점골), 자책골이면 득점자 서술 없음, 0-0 빈 목록", () => {
+  it("무승부 — 마지막 골(동점골)을 넣은 팀이 주어 '{동점 팀}이 … {선수}의 n분 동점골로 {상대}와 비겼다', 자책골이면 득점자 없이", () => {
     const late = match({
       comp: "Bundesliga",
       home: "Dortmund",
@@ -335,8 +359,8 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
         goal("90+2", "Bremen", "Füllkrug"),
       ],
     });
-    expect(textOf(late)).toBe(
-      "분데스리가 Dortmund 2-2 Bremen, Füllkrug의 90+2분 동점골로 두 팀이 비겼다.",
+    expect(textOf(late, KO)).toBe(
+      "브레멘이 분데스리가 원정에서 Füllkrug의 90+2분 동점골로 도르트문트와 2-2로 비겼다.",
     );
     const own = match({
       ft: "1-1",
@@ -346,15 +370,15 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
       ],
     });
     expect(textOf(own)).toBe(
-      "프리미어리그 Arsenal 1-1 Chelsea, 두 팀이 승부를 가리지 못했다.",
+      "Arsenal과 Chelsea가 프리미어리그에서 1-1로 비겼다.",
     );
     expect(textOf(match({ ft: "0-0", goals: [] }))).toBe(
-      "프리미어리그 Arsenal 0-0 Chelsea, 득점 없이 비겼다.",
+      "Arsenal과 Chelsea가 프리미어리그에서 0-0으로 비겼다.",
     );
   });
 
   it("득점 목록이 점수와 맞지 않거나 팀·분 형식이 다르면 득점자를 쓰지 않는다(확인할 수 없는 사실 금지)", () => {
-    const base = "프리미어리그 Arsenal 2-1 Chelsea, 홈팀이 이겼다.";
+    const base = "Arsenal이 프리미어리그 홈경기에서 Chelsea를 2-1로 꺾었다.";
     const short = match({ goals: [goal("10", "Arsenal", "Saka")] });
     expect(textOf(short)).toBe(base);
     const wrongTeam = match({
@@ -386,7 +410,9 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
           ],
         }),
       ),
-    ).toBe("프리미어리그 Arsenal 2-1 Chelsea, 연장 끝에 홈팀이 이겼다.");
+    ).toBe(
+      "Arsenal이 프리미어리그 홈경기에서 연장 끝에 Chelsea를 2-1로 꺾었다.",
+    );
   });
 
   it("점수 형식이 틀린 입력은 줄을 만들지 않는다", () => {
@@ -395,42 +421,45 @@ describe("경기 줄 — 득점 목록이 완전할 때만 득점자 서술", ()
   });
 });
 
-describe("길이 — 60자 목표 안의 가장 자세한 변형, 80자 상한(D40 ⑤)", () => {
-  const long = (n: number) => "N".repeat(n);
+describe("길이 — 조사를 붙인 뒤 60자 목표 안의 가장 자세한 변형, 80자 상한(D40 ⑤)", () => {
+  /** 길이 조절용 이름(소문자 — 받침 없음으로 읽혀 '가'·'를'이 붙는다) */
+  const long = (n: number) => "x".repeat(n);
   const scorer = (name: string) =>
     match({
       ft: "1-0",
       goals: [goal("88", "Arsenal", name)],
     });
 
-  it("목표를 넘으면 분 → 대회 약칭(shortKo) → 득점자 → 대회 이름 순으로 줄인다", () => {
+  it("목표를 넘으면 분 → 득점자 → 대회 순으로 줄인다(대회 표기는 줄 함수 기본 nameKo)", () => {
     expect(textOf(scorer("Saka"))).toBe(
-      "프리미어리그 Arsenal 1-0 Chelsea, Saka의 88분 결승골로 홈팀이 이겼다.",
+      "Arsenal이 프리미어리그 홈경기에서 Saka의 88분 결승골로 Chelsea를 1-0으로 꺾었다.",
+    );
+    expect(textOf(scorer("Saka")).length).toBeLessThanOrEqual(
+      BRIEF_TEMPLATE_TARGET,
     );
     // 분을 빼야 60자 안
-    expect(textOf(scorer(long(16)))).toBe(
-      `프리미어리그 Arsenal 1-0 Chelsea, ${long(16)}의 결승골로 홈팀이 이겼다.`,
-    );
-    // 대회 약칭(EPL)이어야 60자 안
-    expect(textOf(scorer(long(19)))).toBe(
-      `EPL Arsenal 1-0 Chelsea, ${long(19)}의 결승골로 홈팀이 이겼다.`,
+    expect(textOf(scorer(long(10)))).toBe(
+      `Arsenal이 프리미어리그 홈경기에서 ${long(10)}의 결승골로 Chelsea를 1-0으로 꺾었다.`,
     );
     // 득점자 서술을 빼야 60자 안
-    expect(textOf(scorer(long(30)))).toBe(
-      "프리미어리그 Arsenal 1-0 Chelsea, 홈팀이 이겼다.",
+    expect(textOf(scorer(long(14)))).toBe(
+      "Arsenal이 프리미어리그 홈경기에서 Chelsea를 1-0으로 꺾었다.",
+    );
+    // 대회를 빼야 60자 안(긴 팀 이름)
+    expect(textOf(match({ home: long(20), away: long(16) }))).toBe(
+      `${long(20)}가 ${long(16)}를 2-1로 꺾었다.`,
     );
   });
 
-  it("60자 안의 문장이 없으면 80자 안의 첫 문장, 그다음 스코어만, 그것도 넘으면 줄 없음(문장 절단 안 함)", () => {
+  it("60자 안의 문장이 없으면 80자 안의 첫 문장, 그것도 넘으면 줄 없음(문장 절단 안 함)", () => {
     const wide = (n: number) => match({ home: long(n), away: long(n) });
-    // 스코어만(55자)이 60자 안이어도 80자 안의 문장을 먼저 고른다
-    const at72 = textOf(wide(25));
-    expect(at72).toBe(
-      `프리미어리그 ${long(25)} 2-1 ${long(25)}, 홈팀이 이겼다.`,
+    const at70 = textOf(wide(26));
+    expect(at70).toBe(
+      `${long(26)}가 프리미어리그 홈경기에서 ${long(26)}를 2-1로 꺾었다.`,
     );
-    expect(at72.length).toBeGreaterThan(BRIEF_TEMPLATE_TARGET);
-    expect(at72.length).toBeLessThanOrEqual(BRIEF_LINE_MAX);
-    expect(textOf(wide(37))).toBe(`${long(37)} 2-1 ${long(37)}`); // 스코어만(79자)
+    expect(at70.length).toBeGreaterThan(BRIEF_TEMPLATE_TARGET);
+    expect(at70.length).toBeLessThanOrEqual(BRIEF_LINE_MAX);
+    expect(textOf(wide(33))).toBe(`${long(33)}가 ${long(33)}를 2-1로 꺾었다.`); // 대회 없이 79자
     expect(templateMatchLine(wide(40), CTX)).toBeNull();
   });
 });
@@ -452,36 +481,38 @@ describe("순위 줄", () => {
     })),
   });
 
-  it("1위·2위(·3위) 승점 — 변동 서술 없음(전일 순위 없음, D40 ③)", () => {
+  it("'{1위}가 승점 n으로 [대회] 선두, {2위}가 승점 m으로 2위다' — 60자 안이면 3순위까지, 변동 서술 없음(D40 ③)", () => {
     const line = templateStandingsLine(
       table([
-        [1, "맨시티", 15],
-        [2, "아스널", 15],
-        [3, "브라이턴", 13],
-        [4, "브렌트포드", 10],
+        [1, "A", 7],
+        [2, "B", 6],
+        [3, "C", 5],
+        [4, "D", 4],
       ]),
       CTX,
     )!;
     expect(line).toEqual({
-      text: "프리미어리그 순위는 1위 맨시티(승점 15), 2위 아스널(승점 15), 3위 브라이턴(승점 13) 순이다.",
+      text: "A가 승점 7로 프리미어리그 선두, B가 승점 6으로 2위, C가 승점 5로 3위다.",
       ai: false,
       refs: ["sPL"],
     });
-    // 60자를 넘으면 두 순위만
-    const longer = templateStandingsLine(
-      table([
-        [1, "Manchester City", 15],
-        [2, "Arsenal", 15],
-        [3, "Brighton Hove", 13],
-      ]),
-      CTX,
-    )!;
-    expect(longer.text).toBe(
-      "프리미어리그 순위는 1위 Manchester City(승점 15), 2위 Arsenal(승점 15) 순이다.",
+    // 세 순위가 60자를 넘으면 두 순위(2026-10-11 실제 순위 — 3순위 문장은 62자)
+    expect(
+      templateStandingsLine(
+        table([
+          [1, "Man City", 15],
+          [2, "Arsenal", 15],
+          [3, "Brentford", 13],
+          [4, "Chelsea", 10],
+        ]),
+        KO,
+      )!.text,
+    ).toBe(
+      "맨체스터 시티가 승점 15로 프리미어리그 선두, 아스널이 승점 15로 2위다.",
     );
   });
 
-  it("공동 순위는 한 묶음(응답 순서) — 첫 순위 공동이 3팀을 넘거나 팀이 하나뿐이면 줄 없음", () => {
+  it("공동 순위는 한 묶음(응답 순서, 승점이 같을 때만) — '공동 선두'·'공동 n위', 첫 순위 공동이 3팀을 넘거나 팀이 하나뿐이면 줄 없음", () => {
     expect(
       templateStandingsLine(
         table([
@@ -491,7 +522,18 @@ describe("순위 줄", () => {
         ]),
         CTX,
       )!.text,
-    ).toBe("프리미어리그 순위는 공동 1위 A·B(승점 7), 3위 C(승점 6) 순이다.");
+    ).toBe("A와 B가 승점 7로 프리미어리그 공동 선두, C가 승점 6으로 3위다.");
+    expect(
+      templateStandingsLine(
+        table([
+          [1, "A", 9],
+          [2, "B", 7],
+          [2, "C", 7],
+          [2, "D", 7],
+        ]),
+        CTX,
+      )!.text,
+    ).toBe("A가 승점 9로 프리미어리그 선두, B·C·D가 승점 7로 공동 2위다.");
     expect(
       templateStandingsLine(
         table([
@@ -504,12 +546,23 @@ describe("순위 줄", () => {
       ),
     ).toBeNull();
     expect(templateStandingsLine(table([[1, "A", 3]]), CTX)).toBeNull();
+    // 같은 순위인데 승점이 다르면(응답 이상) 그 묶음부터 쓰지 않는다 — 남은 팀이 하나뿐이라 줄 없음
+    expect(
+      templateStandingsLine(
+        table([
+          [1, "A", 9],
+          [2, "B", 7],
+          [2, "C", 6],
+        ]),
+        CTX,
+      ),
+    ).toBeNull();
   });
 
-  it("어느 순위 줄에도 변동 서술(올랐·내려·상승·하락·유지)이 없다", () => {
+  it("어느 순위 줄에도 변동 서술(올랐·내려·상승·하락·유지·지켰)이 없다", () => {
     for (const input of [...M0_INPUTS, FD_ONLY_INPUT]) {
       for (const s of input.standings) {
-        const line = templateStandingsLine(s, CTX);
+        const line = templateStandingsLine(s, KO);
         if (line)
           expect(line.text).not.toMatch(/올랐|내려|상승|하락|유지|지켰/);
       }
@@ -519,7 +572,7 @@ describe("순위 줄", () => {
 
 describe("브리핑 구성 — templateBriefLines", () => {
   it("football-data만으로(득점자 없음) 경기 4줄 + 순위 1줄(M1-47 이월) — 모든 줄 스키마 통과·ai:false·60자 이내", () => {
-    const lines = templateBriefLines(FD_ONLY_INPUT, CTX);
+    const lines = templateBriefLines(FD_ONLY_INPUT, KO);
     expect(lines).toHaveLength(5);
     expect(lines.slice(0, 4).map((l) => l.refs[0])).toEqual(
       FD_ONLY_INPUT.matches.slice(0, 4).map((m) => m.id),
@@ -556,44 +609,132 @@ describe("브리핑 구성 — templateBriefLines", () => {
 
   it("templateLineForRefs — 첫 경기 id의 줄, 경기가 없으면 순위 id의 줄, 모르는 id면 null(줄 단위 강등용 — M1-45)", () => {
     const [first, second] = FD_ONLY_INPUT.matches;
+    const form = chooseBriefCompForm(FD_ONLY_INPUT, KO);
     expect(
-      templateLineForRefs(FD_ONLY_INPUT, ["sPL", second!.id, first!.id], CTX),
-    ).toEqual(templateMatchLine(second!, CTX));
+      templateLineForRefs(FD_ONLY_INPUT, ["sPL", second!.id, first!.id], KO),
+    ).toEqual(templateMatchLine(second!, { ...KO, compForm: form }));
     expect(
-      templateLineForRefs(FD_ONLY_INPUT, ["k927", "sPL"], CTX)?.refs,
+      templateLineForRefs(FD_ONLY_INPUT, ["k927", "sPL"], KO)?.refs,
     ).toEqual(["sPL"]);
-    expect(templateLineForRefs(FD_ONLY_INPUT, ["m0", "x1"], CTX)).toBeNull();
+    expect(templateLineForRefs(FD_ONLY_INPUT, ["m0", "x1"], KO)).toBeNull();
+  });
+});
+
+describe("대회 표기 — 브리핑 단위로 하나(D30·D45 ④)", () => {
+  const long = (n: number) => "x".repeat(n);
+
+  it("기본은 nameKo, nameKo로는 대회를 잃는 줄이 더 많을 때만 shortKo — 한 브리핑에 두 표기가 섞이지 않는다", () => {
+    const short = {
+      matches: [match({ id: "m1" }), match({ id: "m2", home: "Liverpool" })],
+      standings: [],
+    };
+    expect(chooseBriefCompForm(short, CTX)).toBe("nameKo");
+    // 프리미어리그(6자)로는 60자를 넘고 EPL(3자)로는 들어가는 줄
+    const tight = {
+      matches: [
+        match({ id: "m1", home: long(19), away: long(17) }),
+        match({ id: "m2" }),
+      ],
+      standings: [],
+    };
+    expect(chooseBriefCompForm(tight, CTX)).toBe("shortKo");
+    const lines = templateBriefLines(tight, CTX);
+    expect(lines.every((l) => l.text.includes("EPL"))).toBe(true);
+    expect(lines.some((l) => l.text.includes("프리미어리그"))).toBe(false);
+    // 주어진 표기를 그대로 쓴다
+    expect(chooseBriefCompForm(tight, { ...CTX, compForm: "nameKo" })).toBe(
+      "nameKo",
+    );
+  });
+
+  it("briefCompLabel — 설정 nameEn·코드 별칭(M0 입력의 'Champions League') → 표기, 모르면 입력 그대로", () => {
+    expect(briefCompLabel("Premier League", CTX)).toBe("프리미어리그");
+    expect(briefCompLabel("Premier League", CTX, "shortKo")).toBe("EPL");
+    expect(briefCompLabel("Champions League", CTX)).toBe("UEFA 챔피언스리그");
+    expect(briefCompLabel("Eredivisie", CTX)).toBe("Eredivisie");
+  });
+
+  it("실제 입력 전체에서 한 브리핑의 줄은 nameKo 또는 shortKo 중 하나만 쓴다", () => {
+    for (const input of [...M0_INPUTS, FD_ONLY_INPUT]) {
+      const text = templateBriefLines(input, KO)
+        .map((l) => l.text)
+        .join("\n");
+      const used = new Set<string>();
+      for (const c of COMPETITIONS) {
+        if (c.nameKo === c.shortKo) continue;
+        if (text.includes(c.nameKo)) used.add("nameKo");
+        if (!c.nameKo.includes(c.shortKo) && text.includes(c.shortKo)) {
+          used.add("shortKo");
+        }
+      }
+      expect(used.size, text).toBeLessThanOrEqual(1);
+    }
   });
 });
 
 describe("입력에 없는 사실·조사 — 실제 입력 전체(M0-30·M0-34 6일치 + 2026-10-10 football-data)", () => {
-  /** 이름을 표시로 감싼다 — 이름 바로 뒤 글자를 검사하려고 */
-  const MARKED: BriefNames = {
-    team: (n) => `⟨${n}⟩`,
-    person: (n) => `⟨${n}⟩`,
-  };
-
-  it("이름 바로 뒤에는 받침에 따라 바뀌는 조사가 오지 않는다 — 쉼표·괄호·'·'·공백·'의'·마침표만(M1-21 조사 보정 불필요)", () => {
-    let names = 0;
+  it("이름 바로 뒤 조사는 받침에 맞다(이/가·을/를·과/와) — 숫자 뒤 으로/로도(ㄹ 받침은 로)", () => {
+    let checked = 0;
+    const pairs: Record<string, [string, string]> = {
+      이: ["이", "가"],
+      가: ["이", "가"],
+      을: ["을", "를"],
+      를: ["을", "를"],
+      과: ["과", "와"],
+      와: ["과", "와"],
+    };
+    const escape = (t: string) => t.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&");
     for (const input of [...M0_INPUTS, FD_ONLY_INPUT]) {
-      for (const line of templateBriefLines(input, {
-        competitions: COMPETITIONS,
-        names: MARKED,
-      })) {
-        for (const m of line.text.matchAll(/⟩(.?)/g)) {
-          names += 1;
-          expect([",", "(", "·", " ", "의", ".", ""], line.text).toContain(
-            m[1],
-          );
+      const names = new Set<string>();
+      for (const m of input.matches) {
+        names.add(KO_NAMES.team(m.home));
+        names.add(KO_NAMES.team(m.away));
+      }
+      for (const s of input.standings) {
+        for (const r of s.rows) names.add(KO_NAMES.team(r.team));
+      }
+      // 긴 이름 먼저('바이에른 뮌헨'이 '뮌헨'보다)
+      const sorted = [...names].sort((a, b) => b.length - a.length);
+      const re = new RegExp(
+        `(${sorted.map(escape).join("|")})([이가을를과와])(?![가-힣])`,
+        "gu",
+      );
+      for (const line of templateBriefLines(input, KO)) {
+        for (const m of line.text.matchAll(re)) {
+          const [, name, particle] = m;
+          checked += 1;
+          const [consonant, vowel] = pairs[particle!]!;
+          const expected = finalSound(name!) === "none" ? vowel : consonant;
+          expect(particle, `${line.text} — ${name}`).toBe(expected);
+        }
+        for (const m of line.text.matchAll(/(\d+(?:-\d+)?)(으로|로) /g)) {
+          const ro = ["none", "rieul"].includes(finalSound(m[1]!));
+          expect(m[2], line.text).toBe(ro ? "로" : "으로");
         }
       }
     }
-    expect(names).toBeGreaterThan(30);
+    expect(checked).toBeGreaterThan(30);
   });
 
-  it("줄의 숫자는 모두 입력에서 나온다(점수·점수 차·득점 분·순위·승점, 이름 속 숫자)", () => {
+  it("주어 팀 점수 먼저 — 경기 줄의 점수는 주어(이긴 팀·동점 팀) 점수가 앞, 이긴 팀이 문장 첫머리", () => {
     for (const input of [...M0_INPUTS, FD_ONLY_INPUT]) {
-      const lines = templateBriefLines(input, CTX);
+      for (const line of templateBriefLines(input, KO)) {
+        const m = input.matches.find((x) => x.id === line.refs[0]);
+        if (!m) continue;
+        const [h, a] = m.ft.split("-").map(Number);
+        const score = /(\d+)-(\d+)/.exec(line.text)!;
+        expect(Number(score[1]) >= Number(score[2]), line.text).toBe(true);
+        if (h !== a) {
+          const winner = KO_NAMES.team(h! > a! ? m.home : m.away);
+          expect(line.text.startsWith(winner), line.text).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("줄의 숫자는 모두 입력에서 나온다(점수·득점 분·순위·승점, 이름 속 숫자)", () => {
+    for (const input of [...M0_INPUTS, FD_ONLY_INPUT]) {
+      const lines = templateBriefLines(input, KO);
       for (const line of lines) {
         const allowed = new Set<string>();
         const add = (text: string | undefined) => {
@@ -603,14 +744,20 @@ describe("입력에 없는 사실·조사 — 실제 입력 전체(M0-30·M0-34 
           const m = input.matches.find((x) => x.id === ref);
           if (m) {
             [m.ft, m.ht, m.pens, m.regular, m.home, m.away].forEach(add);
-            const [h, a] = m.ft.split("-").map(Number);
-            allowed.add(String(Math.abs(h! - a!)));
-            for (const g of m.goals ?? []) [g.min, g.player].forEach(add);
+            [m.home, m.away].map((t) => KO_NAMES.team(t)).forEach(add);
+            for (const g of m.goals ?? []) {
+              [g.min, g.player, KO_NAMES.person(g.player)].forEach(add);
+            }
           }
           const s = input.standings.find((x) => x.id === ref);
           if (s) {
             for (const r of s.rows) {
-              [String(r.pos), String(r.pts), r.team].forEach(add);
+              [
+                String(r.pos),
+                String(r.pts),
+                r.team,
+                KO_NAMES.team(r.team),
+              ].forEach(add);
             }
           }
         }
@@ -642,22 +789,21 @@ describe("입력에 없는 사실·조사 — 실제 입력 전체(M0-30·M0-34 
   });
 });
 
-describe("고유명사 — names.ko.json 단순 대조(M1-21 전)", () => {
-  it("등록된 영문 표기(대소문자 무시)는 한글, 미등록은 영문 그대로", () => {
-    const names = namesKoResolver(
-      NamesKoFileSchema.parse(readJson("configs/names.ko.json")),
-    );
-    expect(names.team("Atleti")).toBe("아틀레티코 마드리드");
-    expect(names.team("union berlin")).toBe("우니온 베를린");
-    expect(names.team("Leverkusen")).toBe("Leverkusen");
-    expect(names.person("Kang-in Lee")).toBe("이강인");
-    expect(names.person("Atleti")).toBe("Atleti"); // 팀 표기는 사람 이름으로 바꾸지 않는다
+describe("고유명사 — names.ko.json 색인(M1-21)", () => {
+  it("등록된 영문 표기(대표·별칭, 대소문자·악센트 무시)는 한글, 미등록은 영문 그대로", () => {
+    expect(KO_NAMES.team("Atleti")).toBe("아틀레티코 마드리드");
+    expect(KO_NAMES.team("union berlin")).toBe("우니온 베를린");
+    expect(KO_NAMES.team("Bayern")).toBe("바이에른 뮌헨");
+    expect(KO_NAMES.team("Leverkusen")).toBe("레버쿠젠");
+    expect(KO_NAMES.team("Sabah FK")).toBe("Sabah FK");
+    expect(KO_NAMES.person("Kang-in Lee")).toBe("이강인");
+    expect(KO_NAMES.person("Atleti")).toBe("Atleti"); // 팀 표기는 사람 이름으로 바꾸지 않는다
     expect(
       textOf(
         match({ comp: "LaLiga", home: "Alavés", away: "Atleti", ft: "1-2" }),
-        { competitions: COMPETITIONS, names },
+        KO,
       ),
-    ).toBe("라리가 Alavés 1-2 아틀레티코 마드리드, 원정팀이 이겼다.");
+    ).toBe("아틀레티코 마드리드가 라리가 원정에서 알라베스를 2-1로 꺾었다.");
   });
 
   it("기본은 영문 그대로(ENGLISH_NAMES)", () => {

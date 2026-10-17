@@ -106,11 +106,11 @@ describe("맞춤 규칙 — 단어 경계·부분 문자열·제외 표현", () 
       "internazionale-milano",
     ]);
     expect(hits("Milan, la probabile formazione", "it").bigClubs).toEqual([
-      "milan",
+      "ac-milan",
     ]);
     expect(hits("Inter e Milan, derby in vista", "it").bigClubs).toEqual([
       "internazionale-milano",
-      "milan",
+      "ac-milan",
     ]);
   });
 
