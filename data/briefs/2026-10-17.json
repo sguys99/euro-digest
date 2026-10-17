@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-17",
+  "generatedAt": "2026-10-17T12:57:47.412Z",
+  "runId": "collect-prod-20261017T125647Z-8161",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "프로시노네가 Antonio Raimondo의 해트트릭을 앞세워 사수올로를 4-2로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m558573"
+      ]
+    },
+    {
+      "text": "프로시노네는 승점 13으로 세리에 A 4위다.",
+      "ai": true,
+      "refs": [
+        "sSA"
+      ]
+    },
+    {
+      "text": "툴루즈가 르망을 3-0으로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m559661"
+      ]
+    },
+    {
+      "text": "프랑크푸르트가 Younes Ebnoutalib의 77분 결승골로 쾰른을 1-0으로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m565828"
+      ]
+    },
+    {
+      "text": "레반테가 Daniel Requena Sánchez의 82분 동점골로 Deportivo와 1-1로 비겼다.",
+      "ai": true,
+      "refs": [
+        "m564716"
+      ]
+    }
+  ]
+}
