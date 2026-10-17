@@ -1,45 +1,31 @@
 /**
- * 브리핑 닫힌 문법 (M1-23 재설계 — PRD §15 D50, FR-22·FR-29). "오늘의 5줄" 한 줄이 **허용 문형**으로만 이루어졌는지 가린다.
- * 문형 밖의 낱말·술어·수식이 하나라도 있으면 그 줄은 분석되지 않는다(`parseBriefLine` → 분석 0개 — 검사기가 `grammar-unknown`으로
- * 강등). 거부 목록(틀린 표현 목록)은 새 표현이 계속 빠져나가므로(M1-23 리뷰 1·2회차가 찾은 미탐 112 + 160문장) 알아본 꼴만 통과시킨다.
+ * 브리핑 닫힌 문법 (M1-23 재설계 — PRD §15 D50 → **D53 ② 문형 축소·지시문 [문형]과 한 출처**, FR-22·FR-29). "오늘의 5줄" 한 줄이
+ * **허용 문형**으로만 이루어졌는지 가린다. 문형 밖의 낱말·술어·수식이 하나라도 있으면 그 줄은 분석되지 않는다(`parseBriefLine` →
+ * 분석 0개 — 검사기가 `grammar-unknown`으로 강등). 거부 목록(틀린 표현 목록)은 새 표현이 계속 빠져나가므로(M1-23 리뷰 1·2회차가 찾은
+ * 미탐 112 + 160문장) 알아본 꼴만 통과시킨다.
  *
  * 이 모듈은 **문장 구조만** 본다(순수 함수, I/O 없음). 각 슬롯(팀·선수·점수·분·순위 …)이 입력과 맞는지는 brief-check.ts가 분석
- * 결과(`ParsedClause.bag`)로 대조한다. 지시문(configs/prompts/summarize.md v0.2)의 [문형] 목록이 이 문법과 같다 — 문형을 더하거나
- * 빼면 지시문도 고치고 tests/brief-grammar.test.ts(지시문 예문이 모두 분석되는지)를 돌린다.
+ * 결과(`ParsedClause.bag`)로 대조한다.
+ *
+ * ── 문형 목록 = 지시문 [문형] (D53 ②) ─────────────────────────────────────────
+ *   문형마다 지시문에 쓰는 표기(`text`)와 문법 요소(`el`)를 한 항목(`PATTERNS`·`MODIFIERS`)에 둔다. 지시문
+ *   configs/prompts/summarize.md의 [문형] 절은 `renderBriefPatterns()`가 만든 글과 글자까지 같다(tests/brief-grammar.test.ts).
+ *   양방향 고정: ① 표기 → 문법 — 표기를 펼친 모든 꼴(`expandPatternText`)이 분석된다 ② 문법 → 표기 — 문법 요소가 쓰는 낱말·술어·
+ *   자리표시자(`vocab` — 요소를 만들 때 모은다)가 모두 그 항목 표기에 있다. 문형을 더하거나 빼면 이 파일만 고치고 지시문 [문형]을
+ *   다시 붙인다(테스트가 차이를 알린다).
+ *   표기법: {팀}·{상대}·{선수}·{득점자}·{대회} 입력 이름, {점수} '2-1', {분} '62분'·'90+2분'·'후반 62분', {n} 수, {순위} '선두'·'2위' ·
+ *   [ ] 넣거나 뺄 수 있는 말 · ( / ) 그중 하나 · 낱말 안의 '·' 그중 하나 · [장소]·[수식]·[무승부 수식] 수식 묶음.
  *
  * ── 입력 = 뼈대 문자열 ─────────────────────────────────────────────────────
  *   검사기가 찾은 이름(팀·선수·대회 — 영문 원문이든 한글 공식 표기든)을 `⟨i⟩`로 바꾼 줄(`buildSkeleton`). 이름 뒤에 붙은 조사는
  *   그대로 남고, 문법은 조사의 **역할**(이/가·은/는 = 주어, 을/를 = 목적어, 과/와 = 짝, 에 = 상대 …)만 본다 — 받침에 맞는 형태는
  *   names.ts 치환 뒤 josa.ts가 고치므로('Bayern가' → '바이에른 뮌헨이') 영문 원문 단계와 치환 뒤 문장에 같은 문법이 맞는다.
- *   숫자 뒤 조사('2-1로'·'승점 13으로')는 치환이 고치지 않으므로 받침에 맞아야 한다.
+ *   숫자 뒤 조사('2-1로'·'승점 13으로')는 치환이 고치지 않으므로 받침에 맞아야 하고, 숫자는 앞자리 0을 쓰지 않는다('01-0' 금지).
  *
  * ── 줄 = 절 1~2개 ─────────────────────────────────────────────────────────
- *   절1 '다.'  |  절1(-고·-며) 절2 '다.'  |  절1(관형 -ㄴ) {팀}은/는 절2(순위) '다.'
- *   절2는 주어를 생략할 수 있다(순위·승점 꼴 — 절1의 주어 팀을 이어받는다). 쉼표는 순위 나열 꼴('A가 승점 n으로 선두, B가 …')에만.
- *
- * ── 절 종류 (`ClauseType`) ─────────────────────────────────────────────────
- *   win     {팀}이 [수식] {상대}를 [수식] [{점수}로] 꺾었다·이겼다·눌렀다·제압했다·완파했다 · {팀}이 [수식] [{점수}로] 이겼다 ·
- *           {팀}이 [수식] [{상대}에] [{점수}] 승리·역전승을 거뒀다 · … [{점수}로] 역전승했다
- *   loss    {팀}이 [수식] [{상대}에] [{점수}로] 졌다·패했다 · … [{점수}] 역전패를 당했다 · … 역전패했다
- *   draw    {팀}과 {상대}가 [수식] [{점수}로] 비겼다 · {팀}이 [수식] {상대}와 [수식] [{점수}로] 비겼다
- *   pens    {팀}이 [수식] {상대}와 [연장까지] {점수}로 맞선 뒤 승부차기에서 {승부차기 점수}로 이겼다
- *   end     {팀}과 {상대}의 [{대회}] [{라운드}] 경기는 [연장까지] {점수}로 끝났다 · … {점수} 무승부로 끝났다
- *   endPens (end 뒤) 승부차기에서 {팀}이 {승부차기 점수}로 이겼다
- *   goal    [{도움}의 도움으로] [{팀}의] {선수}가 [수식] [{분}] 골·선제골·결승골·동점골·만회골·PK 골을 넣었다·터뜨렸다·기록했다 ·
- *           {분}·{분}에 골을 넣었다 · [{분}] 자책골을 기록했다
- *   count   [{팀}의] {선수}가 [{분}·{분}에] {n}골을 넣었다 · 해트트릭을 기록했다 · 멀티골을 기록했다 · {n}골 {m}도움을 기록했다
- *   assist  {선수}가 도움 {n}개를·{n}도움을·도움을 기록했다 · {선수}가 {득점자}의 [{분}] 골을 도왔다
- *   korean  {한국 선수}는 [{상대}전에서] 선발 출전해·{분} 교체 투입돼 {n}분을 뛰었다 · … {n}분을 뛰고 교체됐다 · 결장했다 · 벤치를 지켰다 …
- *   koreanTail (korean 뒤) 득점은 없었다 · 공격포인트는 없었다
- *   rank    [{팀}이] [승점 {n}으로] [{대회}] 선두다·{n}위다·공동 {n}위다·선두를 달렸다·{n}위에 올라 있다
- *   rankList {팀}이 승점 {n}으로 [{대회}] 선두, {팀}이 승점 {m}으로 2위다(묶음 3개까지 — 템플릿 문형)
- *   move    [{팀}은] [{대회}] {p}위에서 {n}위로 올랐다·내려갔다 … (전일 순위 prev가 있을 때만 — 검사기)
- *   keep    [{팀}은] [{대회}] 선두를·{n}위를 지켰다·유지했다(prev가 있을 때만 — 검사기)
- *   gap     [{팀}은] [승점 {n}으로] [{순위}] {상대}에 승점 {d} 앞선·뒤진 {순위}다 · … {상대}보다 승점 {d} 앞섰다·뒤졌다
- *   points  (win·draw 뒤) 승점 3을 챙겼다 · 승점 1씩 나눠 가졌다
- *   결과 절 수식(종류마다 한 번, 순서 자유): {대회}에서 · {대회} 홈경기에서·원정에서·결승에서·8강에서 · 홈에서 · 원정에서 ·
- *   {상대} 원정에서 · 결승에서·4강에서·8강에서·16강에서·플레이오프에서 · 연장 끝에 · 승부차기 끝에·에서 · {선수}의 [{분}] [PK ]결승골로 ·
- *   {선수}의 해트트릭을·{n}골을·멀티골을 앞세워 · {n}골을 주고받은 끝에 · (무승부) {선수}의 [{분}] 동점골로 · (역전승) {점수}로 뒤지다
+ *   절1 '다.'  |  절1(-고·-며) 절2 '다.'  |  관형 앞절('{상대}를 3-0으로 꺾은') {팀}은 + 순위 절 '다.'
+ *   절2는 주어를 뺀 순위 꼴(앞 결과 절 주어 팀의 순위)·한국 선수 꼬리·승부차기 꼬리이거나 이름 주어가 있는 문형이다. 두 절은 같은
+ *   경기(순위 절끼리는 같은 순위표)여야 한다 — 검사기가 대조한다.
  */
 
 // ─── 뼈대 ────────────────────────────────────────────────────────────────
@@ -65,7 +51,7 @@ export function buildSkeleton(
   text: string,
   mentions: readonly SkeletonMention[],
 ): string {
-  const plain = (part: string) => part.replace(/[⟨⟩]/gu, "\uFFFD");
+  const plain = (part: string) => part.replace(/[⟨⟩]/gu, "�");
   let out = "";
   let last = 0;
   mentions.forEach((m, i) => {
@@ -92,7 +78,7 @@ export function skeletonWordAt(
 
 // ─── 분석 상태·결합자 ─────────────────────────────────────────────────────
 
-/** 슬롯 값 — 이름 순번(number)·숫자 쌍·분 목록·낱말 */
+/** 슬롯 값 — 이름 순번(number)·숫자 쌍·낱말 */
 export type BagValue =
   number | string | boolean | readonly number[] | readonly string[];
 /** 한 절의 슬롯 묶음(불변) */
@@ -119,6 +105,24 @@ function escapeRe(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\/]/gu, "\\$&");
 }
 
+// 문법 요소가 쓰는 낱말·술어·자리표시자 모으기(항목마다 — 머리 주석 "양방향 고정 ②")
+let vocabSink: Set<string> | null = null;
+
+function note(...items: string[]): void {
+  if (vocabSink) for (const item of items) vocabSink.add(item);
+}
+
+function collect<T>(build: () => T): { value: T; vocab: Set<string> } {
+  const prev = vocabSink;
+  const vocab = new Set<string>();
+  vocabSink = vocab;
+  try {
+    return { value: build(), vocab };
+  } finally {
+    vocabSink = prev;
+  }
+}
+
 /** 낱말(들) 하나 — 붙박이 정규식(sticky) + 경계. 뒤 공백 하나는 함께 먹는다. bind가 null이면 거부 */
 function tok(
   src: string,
@@ -139,6 +143,7 @@ function tok(
 
 /** 고정 낱말(값을 묶을 수 있다) */
 function w(text: string, set?: Record<string, BagValue>): El {
+  note(text);
   return tok(
     escapeRe(text),
     set
@@ -148,8 +153,16 @@ function w(text: string, set?: Record<string, BagValue>): El {
   );
 }
 
+/** 고정 낱말 중 하나 → key에 그 낱말의 값 */
+function choice(key: string, map: Readonly<Record<string, BagValue>>): El {
+  return alt(
+    ...Object.entries(map).map(([word, value]) => w(word, { [key]: value })),
+  );
+}
+
 /** 여러 고정 낱말 중 하나 → key에 그 낱말 */
 function words(key: string, list: readonly string[]): El {
+  note(...list);
   const sorted = [...list].sort((a, b) => b.length - a.length);
   return tok(`(${sorted.map(escapeRe).join("|")})`, (m, bag) =>
     key in bag ? null : { ...bag, [key]: m[1]! },
@@ -189,6 +202,16 @@ function alt(...els: El[]): El {
   return (cx, st) => dedupe(els.flatMap((el) => el(cx, st)));
 }
 
+/** 글자를 먹지 않고 값만 묶는다 */
+function put(values: Record<string, BagValue>): El {
+  return (_, st) =>
+    Object.keys(values).some((k) => k in st.bag)
+      ? []
+      : [{ pos: st.pos, bag: { ...st.bag, ...values } }];
+}
+
+const nothing: El = (_, st) => [st];
+
 /** 수식 묶음 — 0개 이상, 순서 자유(종류마다 한 번 — 수식이 이미 묶인 키를 거부한다) */
 function mods(list: readonly El[]): El {
   return (cx, st) => {
@@ -214,17 +237,19 @@ const P = {
   subj: "이|가|은|는",
   obj: "을|를",
   with: "과|와",
-  dat: "에게|에",
+  dat: "에",
   gen: "의",
   none: "",
 } as const;
 
-/** 이름 슬롯 — 종류가 맞는 이름 + 조사(역할). 조사 원문은 `${key}P`에 */
+/** 이름 슬롯 — 종류가 맞는 이름 + 조사(역할). 조사 원문은 `${key}P`에, 표기 자리표시자(ph)는 vocab에 */
 function slot(
   key: string,
   kinds: readonly MentionKind[],
   particle: string,
+  ph: string,
 ): El {
+  note(ph);
   return tok(`${MENTION}(${particle})`, (m, bag, cx) => {
     const i = Number(m[1]);
     const kind = cx.kinds[i];
@@ -233,13 +258,18 @@ function slot(
   });
 }
 
-const team = (key: string, particle: string) => slot(key, ["team"], particle);
-const player = (key: string, particle: string) =>
-  slot(key, ["player"], particle);
-const comp = (key: string, particle: string) => slot(key, ["comp"], particle);
+const team = (key: string, particle: string, ph = "{팀}") =>
+  slot(key, ["team"], particle, ph);
+const opponent = (key: string, particle: string) =>
+  slot(key, ["team"], particle, "{상대}");
+const player = (key: string, particle: string, ph = "{선수}") =>
+  slot(key, ["player"], particle, ph);
+const comp = (key: string, particle: string) =>
+  slot(key, ["comp"], particle, "{대회}");
 
 /** 이름 묶음 주어 — 'A가' · 'A와 B가' · 'A·B·C가'(템플릿 공동 순위) → key = 순번 목록 */
 function teamGroup(key: string, particle: string): El {
+  note("{팀}");
   return alt(
     tok(
       `${MENTION}·${MENTION}(?:·${MENTION})?(?:${particle})`,
@@ -270,22 +300,9 @@ function toGroup(key: string, el: El): El {
         });
 }
 
-/** 한국어 수사(세는 말 앞) */
-export const KOREAN_NUMERALS: Readonly<Record<string, number>> = Object.freeze({
-  한: 1,
-  두: 2,
-  세: 3,
-  네: 4,
-  다섯: 5,
-  여섯: 6,
-  일곱: 7,
-  여덟: 8,
-  아홉: 9,
-  열: 10,
-});
-const NUMERAL_WORDS = Object.keys(KOREAN_NUMERALS)
-  .sort((a, b) => b.length - a.length)
-  .join("|");
+/** 앞자리 0 없는 수 */
+const NUM = "(?:0|[1-9]\\d?)";
+const POS_NUM = "[1-9]\\d?";
 
 /** 숫자 뒤 으로/로 — 받침(josa.ts와 같은 규칙: 끝 0·3·6 = 받침, 1·7·8 = ㄹ → 로) */
 function roParticleOk(num: string, particle: string): boolean {
@@ -296,7 +313,8 @@ function roParticleOk(num: string, particle: string): boolean {
 
 /** 점수 'a-b' + 으로/로 → key = [a, b] */
 function score(key: string): El {
-  return tok("(\\d{1,2})-(\\d{1,2})(으로|로)", (m, bag) => {
+  note("{점수}");
+  return tok(`(${NUM})-(${NUM})(으로|로)`, (m, bag) => {
     if (key in bag || !roParticleOk(m[2]!, m[3]!)) return null;
     return { ...bag, [key]: [Number(m[1]), Number(m[2])] };
   });
@@ -304,18 +322,24 @@ function score(key: string): El {
 
 /** 조사 없는 점수('2-1 역전승을') */
 function bareScore(key: string): El {
-  return tok("(\\d{1,2})-(\\d{1,2})", (m, bag) =>
+  note("{점수}");
+  return tok(`(${NUM})-(${NUM})`, (m, bag) =>
     key in bag ? null : { ...bag, [key]: [Number(m[1]), Number(m[2])] },
   );
 }
 
-/** 구간 낱말 — 분과 맞아야 한다(검사기 halfOk). 긴 것 먼저 */
-const HALF_WORDS = "전반 추가시간|후반 추가시간|추가시간|전반|후반|연장";
+/** 구간 낱말 — 분과 맞아야 한다(검사기 halfOk). 지시문 [사실]의 '전반'·'후반'·'연장' */
+export const HALF_WORDS: readonly string[] = Object.freeze([
+  "전반",
+  "후반",
+  "연장",
+]);
 
 /** 분 — '[전반·후반·연장 ]62분'·'90+2분' → key = "90+2", `${key}H` = 구간 낱말 */
-function minute(key: string, tail = ""): El {
+function minute(key: string): El {
+  note("{분}");
   return tok(
-    `(?:(${HALF_WORDS}) )?(\\d{1,3}(?:\\+\\d{1,2})?)분${escapeRe(tail)}`,
+    `(?:(${HALF_WORDS.join("|")}) )?([1-9]\\d{0,2}(?:\\+[1-9]\\d?)?)분`,
     (m, bag) => {
       if (key in bag) return null;
       const next: Record<string, BagValue> = { ...bag, [key]: m[2]! };
@@ -325,51 +349,18 @@ function minute(key: string, tail = ""): El {
   );
 }
 
-/** 분 또는 구간 낱말만('후반 결승골'·'추가시간 동점골') — 구간 낱말만이면 `${key}H`만 묶는다 */
-function when(key: string): El {
-  return alt(
-    minute(key),
-    tok(`(${HALF_WORDS})`, (m, bag) =>
-      key in bag || `${key}H` in bag ? null : { ...bag, [`${key}H`]: m[1]! },
-    ),
-  );
-}
-
-/** 글자를 먹지 않고 값만 묶는다 */
-function put(values: Record<string, BagValue>): El {
-  return (_, st) =>
-    Object.keys(values).some((k) => k in st.bag)
-      ? []
-      : [{ pos: st.pos, bag: { ...st.bag, ...values } }];
-}
-
-/** 분 목록 + '에' — '43분에' · '5분·41분·44분에' · '73분과 76분에' → key = ["5", "41", "44"] */
-function minuteList(key: string): El {
-  const one = "\\d{1,3}(?:\\+\\d{1,2})?";
-  return tok(`(${one})분((?:(?:·|, |과 |와 )${one}분)*)에`, (m, bag) => {
-    if (key in bag) return null;
-    const rest = [...(m[2] ?? "").matchAll(new RegExp(`(${one})분`, "gu"))].map(
-      (x) => x[1]!,
-    );
-    return { ...bag, [key]: [m[1]!, ...rest] };
-  });
-}
-
-/** 골 수 — '3골' · '두 골' (+ 뒤 낱말) → key = n */
+/** 골 수 — '3골' + 뒤 낱말 → key = n(1 이상) */
 function goalCount(key: string, tail: string): El {
-  return tok(
-    `(?:(\\d{1,2})골|(${NUMERAL_WORDS}) 골)${escapeRe(tail)}`,
-    (m, bag) => {
-      if (key in bag) return null;
-      const n = m[1] !== undefined ? Number(m[1]) : KOREAN_NUMERALS[m[2]!]!;
-      return { ...bag, [key]: n };
-    },
+  note("{n}골");
+  return tok(`(${POS_NUM})골${escapeRe(tail)}`, (m, bag) =>
+    key in bag ? null : { ...bag, [key]: Number(m[1]) },
   );
 }
 
 /** '승점 n으로' → key = n */
 function pointsWith(key: string): El {
-  return tok("승점 (\\d{1,3})(으로|로)", (m, bag) => {
+  note("승점 {n}");
+  return tok("승점 (0|[1-9]\\d{0,2})(으로|로)", (m, bag) => {
     if (key in bag || !roParticleOk(m[1]!, m[2]!)) return null;
     return { ...bag, [key]: Number(m[1]) };
   });
@@ -377,7 +368,8 @@ function pointsWith(key: string): El {
 
 /** 순위 낱말 + 뒤 붙는 말 — '선두'·'2위'·'공동 선두'·'공동 3위' → key = 순위(선두 = 1), `${key}T` = 공동 여부 */
 function rank(key: string, suffix: string): El {
-  return tok(`(공동 )?(?:선두|(\\d{1,2})위)(?:${suffix})`, (m, bag) => {
+  note("{순위}", "공동");
+  return tok(`(공동 )?(?:선두|(${POS_NUM})위)(?:${suffix})`, (m, bag) => {
     if (key in bag) return null;
     return {
       ...bag,
@@ -396,7 +388,7 @@ interface Forms {
   adn?: readonly string[];
 }
 
-/** 허용 술어(원형 → 활용형). 여기 없는 술어는 문법 밖이다 */
+/** 허용 술어(원형 → 활용형). 여기 없는 술어는 문법 밖이다(D53 ② — v0.2 실측 분포로 줄였다) */
 export const PREDICATES: Readonly<Record<string, Forms>> = Object.freeze({
   꺾다: {
     final: ["꺾었다"],
@@ -408,101 +400,46 @@ export const PREDICATES: Readonly<Record<string, Forms>> = Object.freeze({
     conn: ["이겼고", "이기고", "이기며", "이겼으며"],
     adn: ["이긴"],
   },
-  누르다: {
-    final: ["눌렀다"],
-    conn: ["눌렀고", "누르고", "누르며"],
-    adn: ["누른"],
-  },
+  누르다: { final: ["눌렀다"], conn: ["눌렀고", "누르고", "누르며"] },
   제압하다: {
     final: ["제압했다"],
     conn: ["제압했고", "제압하고", "제압하며"],
-    adn: ["제압한"],
   },
   완파하다: {
     final: ["완파했다"],
     conn: ["완파했고", "완파하고", "완파하며"],
     adn: ["완파한"],
   },
-  거두다: {
-    final: ["거뒀다", "거두었다"],
-    conn: ["거뒀고", "거두고", "거두며", "거두었고"],
-    adn: ["거둔"],
-  },
-  역전승하다: {
-    final: ["역전승했다"],
-    conn: ["역전승했고", "역전승하고", "역전승하며"],
-    adn: ["역전승한"],
-  },
-  지다: { final: ["졌다"], conn: ["졌고", "지고", "지며"], adn: ["진"] },
-  패하다: {
-    final: ["패했다"],
-    conn: ["패했고", "패하고", "패하며"],
-    adn: ["패한"],
-  },
-  당하다: {
-    final: ["당했다"],
-    conn: ["당했고", "당하고", "당하며"],
-    adn: ["당한"],
-  },
-  역전패하다: {
-    final: ["역전패했다"],
-    conn: ["역전패했고", "역전패하고", "역전패하며"],
-    adn: ["역전패한"],
-  },
-  비기다: {
-    final: ["비겼다"],
-    conn: ["비겼고", "비기고", "비기며"],
-    adn: ["비긴"],
-  },
-  끝나다: { final: ["끝났다"], conn: ["끝났고", "끝나며"] },
+  거두다: { final: ["거뒀다"], conn: ["거뒀고", "거두고", "거두며"] },
+  지다: { final: ["졌다"], conn: ["졌고", "지고", "지며"] },
+  패하다: { final: ["패했다"], conn: ["패했고", "패하고", "패하며"] },
+  비기다: { final: ["비겼다"], conn: ["비겼고", "비기고", "비기며"] },
+  끝나다: { final: ["끝났다"], conn: ["끝났고"] },
   넣다: { final: ["넣었다"], conn: ["넣었고", "넣고", "넣으며"] },
   터뜨리다: { final: ["터뜨렸다"], conn: ["터뜨렸고", "터뜨리고", "터뜨리며"] },
   기록하다: { final: ["기록했다"], conn: ["기록했고", "기록하고", "기록하며"] },
-  몰아치다: { final: ["몰아쳤다"], conn: ["몰아쳤고", "몰아치고", "몰아치며"] },
-  달성하다: { final: ["달성했다"], conn: ["달성했고", "달성하고", "달성하며"] },
-  올리다: { final: ["올렸다"], conn: ["올렸고", "올리고", "올리며"] },
   돕다: { final: ["도왔다"], conn: ["도왔고", "도우며"] },
   뛰다: { final: ["뛰었다"], conn: ["뛰었고", "뛰며", "뛰었으며"] },
-  소화하다: { final: ["소화했다"], conn: ["소화했고", "소화하며"] },
-  교체되다: {
-    final: ["교체됐다", "교체되었다"],
-    conn: ["교체됐고", "교체됐으며"],
-  },
+  교체되다: { final: ["교체됐다"], conn: ["교체됐고", "교체됐으며"] },
   "교체 아웃되다": {
     final: ["교체 아웃됐다"],
     conn: ["교체 아웃됐고", "교체 아웃됐으며"],
   },
-  투입되다: { final: ["투입됐다"], conn: ["투입됐고", "투입됐으며"] },
-  출전하다: { final: ["출전했다"], conn: ["출전했고", "출전하며"] },
-  나서다: { final: ["나섰다"], conn: ["나섰고", "나서며"] },
   결장하다: { final: ["결장했다"], conn: ["결장했고", "결장하며"] },
-  지키다: { final: ["지켰다"], conn: ["지켰고", "지키며"] },
   않다: { final: ["않았다"], conn: ["않았고"] },
-  못하다: { final: ["못했다"], conn: ["못했고"] },
   달리다: {
-    final: ["달렸다", "달린다", "달리고 있다"],
+    final: ["달렸다", "달린다"],
     conn: ["달렸고", "달리고", "달리며"],
   },
   오르다: { final: ["올랐다"], conn: ["올랐고", "오르며"] },
-  올라서다: { final: ["올라섰다"], conn: ["올라섰고", "올라서며"] },
-  상승하다: { final: ["상승했다"], conn: ["상승했고", "상승하며"] },
   내려가다: { final: ["내려갔다"], conn: ["내려갔고", "내려가며"] },
-  밀려나다: { final: ["밀려났다"], conn: ["밀려났고", "밀려나며"] },
-  떨어지다: { final: ["떨어졌다"], conn: ["떨어졌고", "떨어지며"] },
-  하락하다: { final: ["하락했다"], conn: ["하락했고", "하락하며"] },
-  유지하다: { final: ["유지했다"], conn: ["유지했고", "유지하며"] },
-  앞서다: { final: ["앞섰다"], conn: ["앞섰고", "앞서며"] },
-  뒤지다: { final: ["뒤졌다"], conn: ["뒤졌고", "뒤지며"] },
-  챙기다: { final: ["챙겼다"], conn: ["챙겼고", "챙기며"] },
-  따내다: { final: ["따냈다"], conn: ["따냈고", "따내며"] },
-  가지다: { final: ["가졌다"], conn: ["가졌고"] },
+  지키다: { final: ["지켰다"], conn: ["지켰고", "지키며"] },
   없다: { final: ["없었다"] },
-  이다: { final: ["다", "이다"], conn: ["이고", "이며"] },
 });
 
 type End = "final" | "conn" | "adn";
 
-/** 술어 — 원형 목록 중 하나의 활용형. key `verb` = 원형, `end` = 활용 종류 */
+/** 술어 — 원형 목록 중 하나의 활용형. key `verb` = 원형, `end` = 활용 종류. vocab에는 끝(final)·관형(adn) 형태만(연결형은 잇기 규칙) */
 function pred(
   lemmas: readonly string[],
   ends: readonly End[] = ["final", "conn"],
@@ -512,7 +449,10 @@ function pred(
     const forms = PREDICATES[lemma];
     if (!forms) throw new Error(`술어 표에 없음: ${lemma}`);
     for (const end of ends) {
-      for (const form of forms[end] ?? []) table.set(form, { lemma, end });
+      for (const form of forms[end] ?? []) {
+        table.set(form, { lemma, end });
+        if (end !== "conn") note(form);
+      }
     }
   }
   const forms = [...table.keys()].sort((a, b) => b.length - a.length);
@@ -523,120 +463,157 @@ function pred(
   });
 }
 
-/** 순위 뒤 서술격 '다'(이다)·연결 '이고·이며' — rank 슬롯 바로 뒤에 붙는다 */
-const RANK_COPULA = "다|이다|이고|이며";
-
-function copulaEnd(m: RegExpExecArray | null, bag: Bag): Bag {
-  const tail = m?.[0] ?? "";
-  return {
-    ...bag,
-    verb: "이다",
-    end: /(?:이고|이며)$/u.test(tail) ? "conn" : "final",
-  };
-}
-
-/** 순위 + 서술격(순위 절 끝) — '선두다'·'3위이고' */
+/** 순위 + 서술격(순위 절 끝) — '선두다'·'3위다'·'공동 2위이고' */
 function rankCopula(key: string): El {
-  return tok(`(공동 )?(?:선두|(\\d{1,2})위)(?:${RANK_COPULA})`, (m, bag) => {
+  note("{순위}", "공동");
+  return tok(`(공동 )?(?:선두|(${POS_NUM})위)(다|이다|이고|이며)`, (m, bag) => {
     if (key in bag || "verb" in bag) return null;
-    return copulaEnd(m, {
+    return {
       ...bag,
       [key]: m[2] !== undefined ? Number(m[2]) : 1,
       [`${key}T`]: m[1] !== undefined,
-    });
+      verb: "이다",
+      end: m[3] === "이고" || m[3] === "이며" ? "conn" : "final",
+    };
   });
 }
 
-// ─── 결과 절 수식 ─────────────────────────────────────────────────────────
+// ─── 수식 (지시문 [문형]의 수식 묶음) ───────────────────────────────────────
+
+/** 수식 묶음 이름(지시문 표기 '[장소]'·'[수식]'·'[무승부 수식]') */
+export type ModifierGroup = "장소" | "수식" | "무승부 수식";
+
+export interface ModifierEntry {
+  id: string;
+  /** 이 수식이 들어가는 묶음 */
+  groups: readonly ModifierGroup[];
+  /** 지시문 표기 */
+  text: string;
+  /** 묶는 슬롯 — 같은 슬롯을 묶는 수식은 한 줄에 함께 못 온다(표기 펼치기가 그 조합을 뺀다) */
+  keys: readonly string[];
+  el: El;
+  /** 요소가 쓰는 낱말·자리표시자(표기와 대조 — 양방향 고정 ②) */
+  vocab: ReadonlySet<string>;
+}
 
 const ROUND_WORDS = ["결승", "4강", "8강", "16강", "플레이오프"] as const;
 
-/** 장소 낱말 → 주어 쪽 */
-const venueWord = tok("(홈경기에서|홈에서|원정 경기에서|원정에서)", (m, bag) =>
-  "venue" in bag
-    ? null
-    : { ...bag, venue: m[1]!.startsWith("홈") ? "home" : "away" },
-);
-
-/** 라운드 낱말 + '에서' */
-const roundWord = tok(`(${ROUND_WORDS.join("|")})에서`, (m, bag) =>
-  "round" in bag ? null : { ...bag, round: m[1]! },
-);
-
-/** {대회}에서 · {대회} 홈경기에서·원정에서 · {대회} 8강에서·결승에서 */
-const modComp = alt(
-  comp("comp", "에서"),
-  seq(comp("comp", P.none), alt(venueWord, roundWord)),
-);
-/** 홈에서·원정에서 · {상대} 원정에서 */
-const modVenue = alt(
-  venueWord,
-  seq(team("venueTeam", P.none), w("원정에서", { venue: "named" })),
-);
-const modEt = w("연장 끝에", { et: true });
-const modShootout = tok("승부차기(?: 끝에|에서)", (_, bag) =>
-  "shootout" in bag ? null : { ...bag, shootout: true },
-);
-/** {선수}의 [{분}] [PK ]결승골로 */
-function decisiveTail(ending: string): El {
-  return tok(`(PK )?결승골${ending}`, (m, bag) =>
-    "scorerKind" in bag
-      ? null
-      : { ...bag, scorerKind: "decisive", scorerPk: m[1] !== undefined },
-  );
+function modifier(
+  id: string,
+  groups: readonly ModifierGroup[],
+  keys: readonly string[],
+  text: string,
+  build: () => El,
+): ModifierEntry {
+  const { value, vocab } = collect(build);
+  return { id, groups, text, keys, el: value, vocab };
 }
-const modScorer = alt(
-  seq(player("scorer", P.gen), opt(when("scorerMin")), decisiveTail("로")),
-  // {분} {선수}의 결승골로
-  seq(minute("scorerMin"), player("scorer", P.gen), decisiveTail("로")),
-);
-/** 해트트릭을·멀티골을·{n}골을 + 앞세워·앞세운 — 수식(앞세워)은 '해트트릭으로'·'멀티골로'·'{n}골로'도 */
-function featTail(ending: "앞세워" | "앞세운"): El {
-  const short = ending === "앞세워" ? "|으로|로" : "";
-  return alt(
-    tok(`(해트트릭|멀티골)(?:을 ${ending}${short})`, (m, bag) =>
-      "featKind" in bag
-        ? null
-        : { ...bag, featKind: m[1] === "해트트릭" ? "hat" : "multi" },
-    ),
-    seq(goalCount("featN", `을 ${ending}`), put({ featKind: "n" })),
-    ...(ending === "앞세워"
-      ? [seq(goalCount("featN", "로"), put({ featKind: "n" }))]
-      : []),
-  );
-}
-/** {선수}의 해트트릭을·{n}골을·멀티골을 앞세워 · {선수}의 해트트릭으로 */
-const modFeat = seq(player("feat", P.gen), featTail("앞세워"));
-/** {n}골을 주고받은 끝에(두 팀 골 합 — D40 ②) */
-const modTotal = seq(goalCount("total", "을"), w("주고받은 끝에"));
-/** (무승부) {선수}의 [{분}] [PK ]동점골로 */
-const equaliserTail = tok("(PK )?동점골로", (m, bag) =>
-  "eqPk" in bag ? null : { ...bag, eqPk: m[1] !== undefined },
-);
-const modEqualiser = alt(
-  seq(player("eq", P.gen), opt(when("eqMin")), equaliserTail),
-  seq(minute("eqMin"), player("eq", P.gen), equaliserTail),
-);
-/** (역전승) {점수}로 뒤지다 */
-const modTrail = seq(score("trail"), w("뒤지다"));
 
-const WIN_MODS = [
-  modComp,
-  modVenue,
-  roundWord,
-  modEt,
-  modShootout,
-  modScorer,
-  modFeat,
-  modTotal,
+const PLACE: readonly ModifierGroup[] = ["장소", "수식", "무승부 수식"];
+
+/** 수식 목록 — 지시문 [문형]의 '장소'·'수식' 줄이 이 순서로 나온다 */
+export const MODIFIERS: readonly ModifierEntry[] = [
+  modifier("home", PLACE, ["venue"], "홈에서", () =>
+    w("홈에서", { venue: "home" }),
+  ),
+  modifier("away", PLACE, ["venue"], "원정에서", () =>
+    w("원정에서", { venue: "away" }),
+  ),
+  modifier("away-named", PLACE, ["venue"], "{상대} 원정에서", () =>
+    seq(opponent("venueTeam", P.none), w("원정에서", { venue: "named" })),
+  ),
+  modifier("comp", PLACE, ["comp"], "{대회}에서", () => comp("comp", "에서")),
+  modifier(
+    "comp-venue",
+    PLACE,
+    ["comp", "venue"],
+    "{대회} 홈경기에서·원정에서",
+    () =>
+      seq(
+        comp("comp", P.none),
+        alt(
+          w("홈경기에서", { venue: "home" }),
+          w("원정에서", { venue: "away" }),
+        ),
+      ),
+  ),
+  modifier(
+    "round",
+    PLACE,
+    ["comp", "round"],
+    "[{대회}] 결승에서·4강에서·8강에서·16강에서·플레이오프에서",
+    () =>
+      seq(
+        opt(comp("comp", P.none)),
+        words(
+          "round",
+          ROUND_WORDS.map((r) => `${r}에서`),
+        ),
+      ),
+  ),
+  modifier("et", ["수식", "무승부 수식"], ["et"], "연장 끝에", () =>
+    w("연장 끝에", { et: true }),
+  ),
+  modifier("shootout", ["수식"], ["shootout"], "승부차기 끝에", () =>
+    w("승부차기 끝에", { shootout: true }),
+  ),
+  modifier(
+    "total",
+    ["수식", "무승부 수식"],
+    ["total"],
+    "{n}골을 주고받은 끝에",
+    () => seq(goalCount("total", "을"), w("주고받은 끝에")),
+  ),
+  modifier(
+    "scorer",
+    ["수식"],
+    ["scorer"],
+    "{선수}의 [{분}] [PK] 결승골로",
+    () =>
+      seq(
+        player("scorer", P.gen),
+        opt(minute("scorerMin")),
+        opt(w("PK", { scorerPk: true })),
+        w("결승골로", { scorerKind: "decisive" }),
+      ),
+  ),
+  modifier(
+    "feat",
+    ["수식"],
+    ["feat"],
+    "{선수}의 해트트릭을·{n}골을 앞세워",
+    () =>
+      seq(
+        player("feat", P.gen),
+        alt(
+          w("해트트릭을", { featKind: "hat" }),
+          seq(goalCount("featN", "을"), put({ featKind: "n" })),
+        ),
+        w("앞세워"),
+      ),
+  ),
+  modifier(
+    "equaliser",
+    ["무승부 수식"],
+    ["eq"],
+    "{선수}의 [{분}] [PK] 동점골로",
+    () =>
+      seq(
+        player("eq", P.gen),
+        opt(minute("eqMin")),
+        opt(w("PK", { eqPk: true })),
+        w("동점골로", { eqKind: "equaliser" }),
+      ),
+  ),
 ];
-const COMEBACK_MODS = [...WIN_MODS, modTrail];
-const LOSS_MODS = [modComp, modVenue, roundWord, modEt, modShootout, modTotal];
-const DRAW_PAIR_MODS = [modComp, roundWord, modEt, modTotal];
-const DRAW_MODS = [modComp, modVenue, roundWord, modEt, modEqualiser, modTotal];
-const PENS_MODS = [modComp, modVenue, roundWord];
 
-// ─── 절 ──────────────────────────────────────────────────────────────────
+function group(name: ModifierGroup): El {
+  return mods(
+    MODIFIERS.filter((m) => m.groups.includes(name)).map((m) => m.el),
+  );
+}
+
+// ─── 문형 (절) ────────────────────────────────────────────────────────────
 
 export type ClauseType =
   | "win"
@@ -654,477 +631,532 @@ export type ClauseType =
   | "rankList"
   | "move"
   | "keep"
-  | "gap"
-  | "points";
+  | "gap";
 
-/** 주어 자리 — explicit 이름 주어 · none 생략(절2·관형절) */
-type Subject = "explicit" | "none";
+/** 문형이 줄 안에서 서는 자리 — first 절1(이름 주어) · second 절2만(앞 절에 이어) · adn 관형 앞절 + 순위 절 */
+export type PatternRole = "first" | "second" | "adn";
 
-const subjectTeam = (mode: Subject): El =>
-  mode === "explicit" ? team("subj", P.subj) : (_, st) => [st];
+/** 지시문 [문형]의 절(분류) — 렌더 순서 */
+export type PatternSection = "결과" | "득점" | "한국 선수" | "순위";
 
-const WIN_OBJECT_VERBS = ["꺾다", "이기다", "누르다", "제압하다", "완파하다"];
-
-/** 점수('2-1로') 또는 점수 차('한 골 차로' — D40 ② 파생) */
-const scoreOrMargin = opt(alt(score("score"), goalCount("margin", " 차로")));
-
-/** 앞세운 주어 — '{선수}의 [{분}] 결승골을 앞세운 {팀}이' · '{선수}의 해트트릭을 앞세운 {팀}이' */
-const winPrefix = alt(
-  seq(
-    player("scorer", P.gen),
-    opt(when("scorerMin")),
-    decisiveTail("을 앞세운"),
-  ),
-  seq(player("feat", P.gen), featTail("앞세운")),
-);
-
-function winClause(mode: Subject, ends: readonly End[]): El {
-  const s =
-    mode === "explicit"
-      ? alt(
-          seq(winPrefix, team("subj", P.subj)),
-          // {선수}의 결승골로·해트트릭으로 {팀}이 …
-          seq(mods([modScorer, modFeat]), team("subj", P.subj)),
-        )
-      : subjectTeam(mode);
-  return alt(
-    // {팀}이 [수식] {상대}를 [수식] [{점수}로] 꺾었다
-    seq(
-      s,
-      mods(WIN_MODS),
-      team("obj", P.obj),
-      mods(WIN_MODS),
-      scoreOrMargin,
-      pred(WIN_OBJECT_VERBS, ends),
-    ),
-    // {팀}이 [수식] [{상대}에] [{점수}로] 이겼다(상대 생략 — 장소 수식 또는 근거 경기)
-    seq(
-      s,
-      mods(WIN_MODS),
-      opt(team("obj", P.dat)),
-      mods(WIN_MODS),
-      scoreOrMargin,
-      pred(["이기다"], ends),
-    ),
-    // {팀}이 [수식] [{상대}에 | {상대}를 상대로] [수식] [{점수}] 승리를·역전승을 거뒀다
-    seq(
-      s,
-      mods(COMEBACK_MODS),
-      opt(alt(team("obj", P.dat), seq(team("obj", P.obj), w("상대로")))),
-      mods(COMEBACK_MODS),
-      opt(bareScore("score")),
-      tok("(승리|역전승)(?:을|를)", (m, bag) =>
-        "kind" in bag ? null : { ...bag, kind: m[1]! },
-      ),
-      pred(["거두다"], ends),
-    ),
-    // … [{점수}로] 역전승했다
-    seq(
-      s,
-      mods(COMEBACK_MODS),
-      opt(alt(team("obj", P.dat), seq(team("obj", P.obj), w("상대로")))),
-      mods(COMEBACK_MODS),
-      opt(score("score")),
-      pred(["역전승하다"], ends),
-    ),
-  );
+export interface PatternEntry {
+  id: string;
+  section: PatternSection;
+  type: ClauseType;
+  role: PatternRole;
+  /** 지시문 표기(앞의 '- ' 없이) — ' — '뒤는 설명(펼치지 않는다) */
+  text: string;
+  /** 시험용 앞절(뼈대) — second는 이 앞절 뒤에 붙여 분석한다 */
+  context?: string;
+  el: El;
+  /** adn — 관형 앞절 뒤 순위 절 */
+  tail?: El;
+  vocab: ReadonlySet<string>;
 }
 
-function lossClause(mode: Subject, ends: readonly End[]): El {
-  const s = subjectTeam(mode);
-  return alt(
-    seq(
-      s,
-      mods(LOSS_MODS),
-      opt(team("obj", P.dat)),
-      mods(LOSS_MODS),
-      scoreOrMargin,
-      pred(["지다", "패하다"], ends),
-    ),
-    seq(
-      s,
-      mods(LOSS_MODS),
-      opt(team("obj", P.dat)),
-      mods(LOSS_MODS),
-      opt(bareScore("score")),
-      w("역전패를", { kind: "역전패" }),
-      pred(["당하다"], ends),
-    ),
-    seq(
-      s,
-      mods(LOSS_MODS),
-      opt(team("obj", P.dat)),
-      mods(LOSS_MODS),
-      opt(score("score")),
-      pred(["역전패하다"], ends),
-    ),
-  );
+function pattern(
+  spec: Omit<PatternEntry, "el" | "vocab" | "tail"> & {
+    build: () => El;
+    tail?: () => El;
+  },
+): PatternEntry {
+  const head = collect(spec.build);
+  const tail = spec.tail ? collect(spec.tail) : null;
+  const vocab = new Set([...head.vocab, ...(tail?.vocab ?? [])]);
+  return {
+    id: spec.id,
+    section: spec.section,
+    type: spec.type,
+    role: spec.role,
+    text: spec.text,
+    ...(spec.context ? { context: spec.context } : {}),
+    el: head.value,
+    ...(tail ? { tail: tail.value } : {}),
+    vocab,
+  };
 }
 
-function drawClause(mode: Subject, ends: readonly End[]): El {
-  const single = seq(
-    mode === "explicit"
-      ? seq(mods([modEqualiser]), team("subj", P.subj))
-      : subjectTeam(mode),
-    mods(DRAW_MODS),
-    opt(team("obj", P.with)),
-    mods(DRAW_MODS),
-    opt(score("score")),
-    pred(["비기다"], ends),
-  );
-  if (mode === "none") return single;
-  return alt(
-    // {팀}과 {상대}가 [수식] [{점수}로] 비겼다
-    seq(
-      team("subj", P.with),
-      team("subj2", P.subj),
-      mods(DRAW_PAIR_MODS),
-      opt(score("score")),
-      pred(["비기다"], ends),
-    ),
-    single,
-  );
-}
+const subject = () => team("subj", P.subj);
 
-/** {팀}이 [수식] {상대}와 [연장까지] {점수}로 맞선 뒤 승부차기에서 {점수}로 이겼다 */
-const pensClause = seq(
-  team("subj", P.subj),
-  mods(PENS_MODS),
-  team("obj", P.with),
-  opt(w("연장까지", { etUntil: true })),
-  score("score"),
-  w("맞선 뒤 승부차기에서"),
-  score("pens"),
-  pred(["이기다"]),
-);
-
-/** {팀}과 {상대}의 [{대회}] [{라운드}] 경기는 [연장까지] {점수}로 끝났다 · {점수} 무승부로 끝났다 */
-const endClause = seq(
-  team("subj", P.with),
-  team("subj2", P.gen),
-  opt(comp("comp", P.none)),
-  opt(words("round", ROUND_WORDS)),
-  w("경기는"),
-  alt(
-    seq(
-      opt(w("연장까지", { etUntil: true })),
-      score("score"),
-      pred(["끝나다"]),
-    ),
-    seq(
-      bareScore("score"),
-      w("무승부로", { drawWord: true }),
-      pred(["끝나다"]),
-    ),
-  ),
-);
-
-/** (end 뒤) 승부차기에서 {팀}이 {점수}로 이겼다 */
-const endPensClause = seq(
-  w("승부차기에서"),
-  team("subj", P.subj),
-  score("pens"),
-  pred(["이기다"], ["final"]),
-);
-
-/** 득점 절 수식 — {도움}의 도움으로·도움을 받아 · {상대}전에서 · {상대}를 상대로 */
-const modAssistBy = seq(player("assistBy", P.gen), tok("도움으로|도움을 받아"));
-const modOpponent = alt(
-  team("opp", "전에서"),
-  seq(team("opp", P.obj), w("상대로")),
-);
-
-const GOAL_NOUNS = "골|선제골|결승골|동점골|만회골";
-
-/** 득점 절 머리 — [{도움}의 도움으로 | {도움}의 도움을 받은] [{팀}의] {선수}가 */
-const goalHead = seq(
-  opt(seq(player("assistBy", P.gen), tok("도움으로|도움을 받은"))),
-  opt(team("team", P.gen)),
-  player("subj", P.subj),
-);
-
-const goalClause = seq(
-  goalHead,
-  mods([modAssistBy, modOpponent]),
-  alt(
-    // [{분}] 골·선제골·결승골·동점골·만회골을 넣었다 · PK 골
-    seq(
-      opt(when("min")),
-      tok(`(PK )?(${GOAL_NOUNS})(?:을|를)`, (m, bag) => ({
-        ...bag,
-        noun: m[2]!,
-        pk: m[1] !== undefined,
-      })),
-      pred(["넣다", "터뜨리다", "기록하다"]),
-    ),
-    // {분}·{분}에 골을 넣었다
-    seq(
-      minuteList("mins"),
-      w("골을", { noun: "골" }),
-      pred(["넣다", "터뜨리다"]),
-    ),
-    // [{분}] 자책골을 기록했다
-    seq(
-      opt(minute("min")),
-      w("자책골을", { noun: "자책골" }),
-      pred(["기록하다"]),
-    ),
-  ),
-);
-
-const countClause = seq(
-  opt(team("team", P.gen)),
-  player("subj", P.subj),
-  mods([modOpponent]),
-  opt(minuteList("mins")),
-  alt(
-    seq(
-      goalCount("n", "을"),
-      pred(["넣다", "터뜨리다", "기록하다", "몰아치다"]),
-    ),
-    seq(w("해트트릭을", { feat: "hat" }), pred(["기록하다", "달성하다"])),
-    seq(w("멀티골을", { feat: "multi" }), pred(["기록하다", "터뜨리다"])),
-    seq(
-      tok("(\\d{1,2})골 (\\d{1,2})도움을", (m, bag) => ({
-        ...bag,
-        n: Number(m[1]),
-        assists: Number(m[2]),
-      })),
-      pred(["기록하다", "올리다"]),
-    ),
-  ),
-);
-
-const assistClause = seq(
-  opt(team("team", P.gen)),
-  player("subj", P.subj),
-  mods([modOpponent]),
-  alt(
-    seq(
-      tok("도움 (\\d{1,2})개를|(\\d{1,2})도움을|도움을", (m, bag) => ({
-        ...bag,
-        assists:
-          m[1] !== undefined
-            ? Number(m[1])
-            : m[2] !== undefined
-              ? Number(m[2])
-              : -1,
-      })),
-      pred(["기록하다", "올리다"]),
-    ),
-    seq(
-      player("target", P.gen),
-      opt(when("min")),
-      tok(`(${GOAL_NOUNS})(?:을|를)`, (m, bag) => ({ ...bag, noun: m[1]! })),
-      pred(["돕다"]),
-    ),
-  ),
-);
+const ENDS: readonly End[] = ["final", "conn"];
 
 /** 한국 선수 출전 꼴 — 선발·교체 */
-const START_WORDS = "선발 출전해|선발로 출전해|선발로 나서|선발로 나와";
+function appearance(): El {
+  return alt(
+    seq(opt(team("kTeam2", P.none)), w("선발로 출전해", { app: "start" })),
+    w("선발 출전해", { app: "start" }),
+    w("선발로 나와", { app: "start" }),
+    seq(opt(minute("subOn")), w("교체 투입돼", { app: "sub" })),
+  );
+}
 
-const appearance = alt(
-  tok(START_WORDS, (_, bag) => ({ ...bag, app: "start" })),
-  seq(
-    team("kTeam", P.none),
-    tok("선발로 (?:출전해|나서|나와)", (_, bag) => ({ ...bag, app: "start" })),
-  ),
-  seq(
-    opt(when("subOn")),
-    tok("교체 투입돼|교체 투입되어", (_, bag) => ({ ...bag, app: "sub" })),
-  ),
-  tok("교체로 (?:나서|나와|들어가)", (_, bag) => ({ ...bag, app: "sub" })),
-);
+/** 한국 선수 경기 수식 — [[{팀}의] {상대}전에서] */
+function koreanMatch(): El {
+  return opt(seq(opt(team("kTeam", P.gen)), opponent("kOpp", "전에서")));
+}
 
-/** 한국 선수 경기 수식 — {상대}전에서 · {팀}의 {상대}전에서 · {상대}와의 경기에서 */
-const koreanMatch = alt(
-  team("kOpp", "전에서|전에"),
-  seq(team("kTeam", P.gen), team("kOpp", "전에서")),
-  seq(team("kOpp", "과의|와의"), w("경기에서")),
-);
-
-const minutesPlayed = tok("(\\d{1,3})분을", (m, bag) =>
-  "minutes" in bag ? null : { ...bag, minutes: Number(m[1]) },
-);
-
-const koreanClause = seq(
-  player("subj", P.subj),
-  opt(koreanMatch),
-  alt(
-    // [선발 출전해·{분} 교체 투입돼] {n}분을 뛰었다·소화했다
-    seq(opt(appearance), minutesPlayed, pred(["뛰다", "소화하다"])),
-    // … {n}분을 뛰고 교체됐다 · 뛴 뒤 교체됐다
-    seq(
-      appearance,
-      minutesPlayed,
-      tok("뛰고|소화하고|뛴 뒤|소화한 뒤", (_, bag) => ({
-        ...bag,
-        subOff: true,
-      })),
-      pred(["교체되다", "교체 아웃되다"]),
-    ),
-    // … [{구간}] {분}까지 뛰었다 · {분}까지 뛰고 교체됐다
-    seq(
-      appearance,
-      minute("subOffMin", "까지"),
-      alt(
-        pred(["뛰다", "소화하다"]),
-        seq(tok("뛰고|뛴 뒤"), pred(["교체되다", "교체 아웃되다"])),
-      ),
-    ),
-    // [선발 출전해] 풀타임을 뛰었다
-    seq(
-      opt(tok(START_WORDS, (_, bag) => ({ ...bag, app: "start" }))),
-      w("풀타임을", { full: true }),
-      pred(["뛰다", "소화하다"]),
-    ),
-    // 선발 출전했다 · 선발로 나섰다
-    seq(
-      tok("선발로|선발", (_, bag) => ({ ...bag, app: "start" })),
-      pred(["출전하다", "나서다"]),
-    ),
-    // [{분}] 교체 투입됐다
-    seq(opt(minute("subOn")), w("교체", { app: "sub" }), pred(["투입되다"])),
-    // 결장했다 · 벤치를 지켰다 · 출전하지 않았다·못했다
-    seq(
-      (_, st) => [{ ...st, bag: { ...st.bag, app: "bench" } }],
-      alt(
-        pred(["결장하다"]),
-        seq(w("벤치를"), pred(["지키다"])),
-        seq(w("출전하지"), pred(["않다", "못하다"])),
-      ),
-    ),
-  ),
-);
-
-/** (korean 뒤) 득점은 없었다 · 공격포인트는 없었다 */
-const koreanTailClause = seq(
-  tok("(득점은|공격포인트는)", (m, bag) => ({ ...bag, tail: m[1]! })),
-  pred(["없다"], ["final"]),
-);
-
-// ─── 순위 절 ──────────────────────────────────────────────────────────────
-
-/** 순위 절 주어 — 생략(절2·관형절) 또는 이름 묶음 */
-const rankSubject = (mode: Subject): El =>
-  mode === "explicit" ? teamGroup("subj", P.subj) : (_, st) => [st];
-
-function rankClause(mode: Subject): El {
-  const s = rankSubject(mode);
+/** 순위 절 몸통(주어 다음) — [승점 n으로] [{대회}] [공동] {순위}다·를 달렸다·를 달린다[·에 올라 있다] */
+function rankBody(withState: boolean): El {
   return seq(
-    s,
     opt(pointsWith("pts")),
     opt(comp("comp", P.none)),
     alt(
       rankCopula("rank"),
-      seq(rank("rank", "을|를"), pred(["달리다"])),
-      seq(rank("rank", "에"), w("올라 있다", { verb: "이다", end: "final" })),
+      seq(rank("rank", "를|을"), pred(["달리다"])),
+      ...(withState
+        ? [
+            seq(
+              rank("rank", "에"),
+              w("올라 있다", { verb: "이다", end: "final" }),
+            ),
+          ]
+        : []),
     ),
   );
 }
 
-/** 템플릿 순위 나열 — {팀}이 승점 n으로 [{대회}] 선두, {팀}이 승점 m으로 2위[, …]다 */
+/** 순위 나열의 한 묶음 — {팀}이 승점 n으로 [{대회}] [공동] {순위}(,) */
 function rankPhrase(i: number, withComp: boolean, last: boolean): El {
   return seq(
     teamGroup(`g${i}`, P.subj),
     pointsWith(`pts${i}`),
-    withComp ? opt(comp("comp", P.none)) : (_, st) => [st],
+    withComp ? opt(comp("comp", P.none)) : nothing,
     last ? rankCopula(`rank${i}`) : seq(rank(`rank${i}`, ""), tok(",")),
   );
 }
 
-const rankListClause = alt(
-  seq(rankPhrase(1, true, false), rankPhrase(2, false, true)),
-  seq(
-    rankPhrase(1, true, false),
-    rankPhrase(2, false, false),
-    rankPhrase(3, false, true),
-  ),
-);
+const WIN_OBJECT = ["꺾다", "누르다", "제압하다", "완파하다"];
 
-const MOVE_VERBS = [
-  "오르다",
-  "올라서다",
-  "상승하다",
-  "내려가다",
-  "밀려나다",
-  "떨어지다",
-  "하락하다",
-];
-
-/** [{팀}은] [승점 n으로] [{대회}] [{p}위에서] {n}위로·선두로 올랐다 */
-function moveClause(mode: Subject): El {
-  return seq(
-    subjectTeam(mode),
-    opt(pointsWith("pts")),
-    opt(comp("comp", P.none)),
-    opt(tok("(\\d{1,2})위에서", (m, bag) => ({ ...bag, from: Number(m[1]) }))),
-    tok("(?:(\\d{1,2})위|선두)로", (m, bag) => ({
-      ...bag,
-      to: m[1] !== undefined ? Number(m[1]) : 1,
-    })),
-    pred(MOVE_VERBS),
-  );
-}
-
-/** [{팀}은] [승점 n으로] [{대회}] 선두를·{n}위를 지켰다·유지했다 */
-function keepClause(mode: Subject): El {
-  return seq(
-    subjectTeam(mode),
-    opt(pointsWith("pts")),
-    opt(comp("comp", P.none)),
-    rank("rank", "을|를"),
-    pred(["지키다", "유지하다"]),
-  );
-}
-
-/** [{팀}은] [승점 n으로] [{순위}] {상대}에·보다 승점 d 앞선·뒤진 [{대회}] {순위}다 · … 앞섰다·뒤졌다 */
-function gapClause(mode: Subject): El {
-  return seq(
-    subjectTeam(mode),
-    opt(pointsWith("pts")),
-    opt(rank("otherRank", "")),
-    team("other", "에|보다"),
-    tok("승점 (\\d{1,3})", (m, bag) => ({ ...bag, gap: Number(m[1]) })),
-    alt(
+/** 문형 목록 — 지시문 [문형]이 이 순서로 나온다 */
+export const PATTERNS: readonly PatternEntry[] = [
+  // ── 결과
+  pattern({
+    id: "win",
+    section: "결과",
+    type: "win",
+    role: "first",
+    text: "{팀}이 [수식] {상대}를 [수식] [{점수}로] 꺾었다·눌렀다·제압했다·완파했다",
+    build: () =>
       seq(
-        tok("(앞선|뒤진)", (m, bag) => ({
-          ...bag,
-          dir: m[1] === "앞선" ? "ahead" : "behind",
-        })),
+        subject(),
+        group("수식"),
+        opponent("obj", P.obj),
+        group("수식"),
+        opt(score("score")),
+        pred(WIN_OBJECT, ENDS),
+      ),
+  }),
+  pattern({
+    id: "win-beat",
+    section: "결과",
+    type: "win",
+    role: "first",
+    text: "{팀}이 [수식] [{상대}를] [수식] [{점수}로] 이겼다",
+    build: () =>
+      seq(
+        subject(),
+        group("수식"),
+        opt(opponent("obj", P.obj)),
+        group("수식"),
+        opt(score("score")),
+        pred(["이기다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "win-earn",
+    section: "결과",
+    type: "win",
+    role: "first",
+    text: "{팀}이 [수식] [{상대}에] [수식] [{점수}] 승리를·역전승을 거뒀다",
+    build: () =>
+      seq(
+        subject(),
+        group("수식"),
+        opt(opponent("obj", P.dat)),
+        group("수식"),
+        opt(bareScore("score")),
+        choice("kind", { 승리를: "승리", 역전승을: "역전승" }),
+        pred(["거두다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "loss",
+    section: "결과",
+    type: "loss",
+    role: "first",
+    text: "{팀}이 [장소] [{상대}에] [{점수}로] 졌다·패했다",
+    build: () =>
+      seq(
+        subject(),
+        group("장소"),
+        opt(opponent("obj", P.dat)),
+        opt(score("score")),
+        pred(["지다", "패하다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "draw-pair",
+    section: "결과",
+    type: "draw",
+    role: "first",
+    text: "{팀}과 {상대}가 [{대회}에서] [연장 끝에] [{점수}로] 비겼다",
+    build: () =>
+      seq(
+        team("subj", P.with),
+        opponent("subj2", P.subj),
+        opt(comp("comp", "에서")),
+        opt(w("연장 끝에", { et: true })),
+        opt(score("score")),
+        pred(["비기다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "draw",
+    section: "결과",
+    type: "draw",
+    role: "first",
+    text: "{팀}이 [무승부 수식] [{상대}와] [무승부 수식] [{점수}로] 비겼다",
+    build: () =>
+      seq(
+        subject(),
+        group("무승부 수식"),
+        opt(opponent("obj", P.with)),
+        group("무승부 수식"),
+        opt(score("score")),
+        pred(["비기다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "end",
+    section: "결과",
+    type: "end",
+    role: "first",
+    text: "{팀}과 {상대}의 [{대회}] 경기는 [연장까지] {점수}로 끝났다",
+    build: () =>
+      seq(
+        team("subj", P.with),
+        opponent("subj2", P.gen),
         opt(comp("comp", P.none)),
+        w("경기는"),
+        opt(w("연장까지", { etUntil: true })),
+        score("score"),
+        pred(["끝나다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "end-pens",
+    section: "결과",
+    type: "endPens",
+    role: "second",
+    text: "(승부차기 경기의 '경기는 … 끝났고' 뒤) 승부차기에서 {팀}이 {점수}로 이겼다",
+    context: `${OPEN}0${CLOSE}과 ${OPEN}1${CLOSE}의 경기는 1-1로 끝났고 `,
+    build: () =>
+      seq(
+        w("승부차기에서"),
+        subject(),
+        score("pens"),
+        pred(["이기다"], ["final"]),
+      ),
+  }),
+  pattern({
+    id: "pens",
+    section: "결과",
+    type: "pens",
+    role: "first",
+    text: "{팀}이 [장소] {상대}와 [연장까지] {점수}로 맞선 뒤 승부차기에서 {점수}로 이겼다",
+    build: () =>
+      seq(
+        subject(),
+        group("장소"),
+        opponent("obj", P.with),
+        opt(w("연장까지", { etUntil: true })),
+        score("score"),
+        w("맞선 뒤 승부차기에서"),
+        score("pens"),
+        pred(["이기다"], ENDS),
+      ),
+  }),
+  // ── 득점
+  pattern({
+    id: "goal",
+    section: "득점",
+    type: "goal",
+    role: "first",
+    text: "[{팀}의] {선수}가 [{분}] [PK] 골을·선제골을·결승골을·동점골을·만회골을 넣었다·터뜨렸다",
+    build: () =>
+      seq(
+        opt(team("team", P.gen)),
+        player("subj", P.subj),
+        opt(minute("min")),
+        opt(w("PK", { pk: true })),
+        choice("noun", {
+          골을: "골",
+          선제골을: "선제골",
+          결승골을: "결승골",
+          동점골을: "동점골",
+          만회골을: "만회골",
+        }),
+        pred(["넣다", "터뜨리다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "count",
+    section: "득점",
+    type: "count",
+    role: "first",
+    text: "[{팀}의] {선수}가 ({n}골을 넣었다 / 해트트릭을 기록했다 / 멀티골을 기록했다)",
+    build: () =>
+      seq(
+        opt(team("team", P.gen)),
+        player("subj", P.subj),
+        alt(
+          seq(goalCount("n", "을"), pred(["넣다"], ENDS)),
+          seq(
+            choice("feat", { 해트트릭을: "hat", 멀티골을: "multi" }),
+            pred(["기록하다"], ENDS),
+          ),
+        ),
+      ),
+  }),
+  pattern({
+    id: "assist",
+    section: "득점",
+    type: "assist",
+    role: "first",
+    text: "{선수}가 {득점자}의 [{분}] 골을·선제골을·결승골을·동점골을 도왔다",
+    build: () =>
+      seq(
+        player("subj", P.subj),
+        player("target", P.gen, "{득점자}"),
+        opt(minute("min")),
+        choice("noun", {
+          골을: "골",
+          선제골을: "선제골",
+          결승골을: "결승골",
+          동점골을: "동점골",
+        }),
+        pred(["돕다"], ENDS),
+      ),
+  }),
+  // ── 한국 선수
+  pattern({
+    id: "korean",
+    section: "한국 선수",
+    type: "korean",
+    role: "first",
+    text: "{선수}는 [[{팀}의] {상대}전에서] ([{팀}] 선발로 출전해 / 선발 출전해 / 선발로 나와 / [{분}] 교체 투입돼) {n}분을 (뛰었다 / 뛰고 교체됐다 / 뛰고 교체 아웃됐다)",
+    build: () =>
+      seq(
+        player("subj", P.subj),
+        koreanMatch(),
+        appearance(),
+        (() => {
+          note("{n}분");
+          return tok(`(${POS_NUM}\\d?)분을`, (m, bag) =>
+            "minutes" in bag ? null : { ...bag, minutes: Number(m[1]) },
+          );
+        })(),
+        alt(
+          pred(["뛰다"], ENDS),
+          seq(
+            w("뛰고", { subOff: true }),
+            pred(["교체되다", "교체 아웃되다"], ENDS),
+          ),
+        ),
+      ),
+  }),
+  pattern({
+    id: "korean-bench",
+    section: "한국 선수",
+    type: "korean",
+    role: "first",
+    text: "{선수}는 [[{팀}의] {상대}전에서] (결장했다 / 출전하지 않았다)",
+    build: () =>
+      seq(
+        player("subj", P.subj),
+        koreanMatch(),
+        put({ app: "bench" }),
+        alt(pred(["결장하다"], ENDS), seq(w("출전하지"), pred(["않다"], ENDS))),
+      ),
+  }),
+  pattern({
+    id: "korean-tail",
+    section: "한국 선수",
+    type: "koreanTail",
+    role: "second",
+    text: "(출전 문형 뒤) 득점은 없었다",
+    context: `${OPEN}2${CLOSE}는 선발 출전해 78분을 뛰었고 `,
+    build: () => seq(w("득점은"), pred(["없다"], ["final"])),
+  }),
+  // ── 순위
+  pattern({
+    id: "rank",
+    section: "순위",
+    type: "rank",
+    role: "first",
+    text: "({팀}이 / {팀}과 {팀}이) [승점 {n}으로] [{대회}] [공동] ({순위}다 / {순위}를 달렸다·달린다 / {순위}에 올라 있다)",
+    build: () => seq(teamGroup("subj", P.subj), rankBody(true)),
+  }),
+  pattern({
+    id: "rank-after",
+    section: "순위",
+    type: "rank",
+    role: "second",
+    text: "(결과 문형 뒤, 주어를 빼고 그 팀 순위) [승점 {n}으로] [{대회}] [공동] ({순위}다 / {순위}를 달렸다·달린다)",
+    context: `${OPEN}0${CLOSE}가 ${OPEN}1${CLOSE}를 2-1로 꺾고 `,
+    build: () => rankBody(false),
+  }),
+  pattern({
+    id: "rank-list",
+    section: "순위",
+    type: "rankList",
+    role: "first",
+    text: "{팀}이 승점 {n}으로 [{대회}] [공동] {순위}, {팀}이 승점 {n}으로 [공동] {순위}다 — 세 묶음까지",
+    build: () =>
+      alt(
+        seq(rankPhrase(1, true, false), rankPhrase(2, false, true)),
+        seq(
+          rankPhrase(1, true, false),
+          rankPhrase(2, false, false),
+          rankPhrase(3, false, true),
+        ),
+      ),
+  }),
+  pattern({
+    id: "gap",
+    section: "순위",
+    type: "gap",
+    role: "first",
+    text: "{팀}이 [[공동] {순위}] {상대}에 승점 {n} (앞선 / 뒤진) [공동] {순위}다",
+    build: () =>
+      seq(
+        subject(),
+        opt(rank("otherRank", "")),
+        opponent("other", P.dat),
+        (() => {
+          note("승점 {n}");
+          return tok(`승점 (${POS_NUM}\\d?)`, (m, bag) => ({
+            ...bag,
+            gap: Number(m[1]),
+          }));
+        })(),
+        alt(w("앞선", { dir: "ahead" }), w("뒤진", { dir: "behind" })),
         rankCopula("rank"),
       ),
-      seq(pred(["앞서다", "뒤지다"]), (_, st) => [
-        {
-          ...st,
-          bag: {
-            ...st.bag,
-            dir: st.bag.verb === "앞서다" ? "ahead" : "behind",
-          },
-        },
-      ]),
-    ),
-  );
-}
+  }),
+  pattern({
+    id: "move",
+    section: "순위",
+    type: "move",
+    role: "first",
+    text: "(prev 있을 때만) {팀}이 {n}위에서 {n}위로 올랐다·내려갔다",
+    build: () =>
+      seq(
+        subject(),
+        (() => {
+          note("{n}위에서", "{n}위로");
+          return seq(
+            tok(`(${POS_NUM})위에서`, (m, bag) => ({
+              ...bag,
+              from: Number(m[1]),
+            })),
+            tok(`(${POS_NUM})위로`, (m, bag) => ({ ...bag, to: Number(m[1]) })),
+          );
+        })(),
+        pred(["오르다", "내려가다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "keep",
+    section: "순위",
+    type: "keep",
+    role: "first",
+    text: "(prev 있을 때만) {팀}이 [승점 {n}으로] [{대회}] [공동] {순위}를 지켰다",
+    build: () =>
+      seq(
+        subject(),
+        opt(pointsWith("pts")),
+        opt(comp("comp", P.none)),
+        rank("rank", "를|을"),
+        pred(["지키다"], ENDS),
+      ),
+  }),
+  pattern({
+    id: "adn",
+    section: "순위",
+    type: "win",
+    role: "adn",
+    text: "{상대}를 [{점수}로] 꺾은·이긴·완파한 {팀}은 [승점 {n}으로] [{대회}] [공동] ({순위}다 / {순위}를 달렸다·달린다)",
+    build: () =>
+      seq(
+        opponent("obj", P.obj),
+        opt(score("score")),
+        pred(["꺾다", "이기다", "완파하다"], ["adn"]),
+      ),
+    tail: () => seq(team("adnSubject", P.subj), rankBody(false)),
+  }),
+];
 
-/** (win·draw 뒤) 승점 3을 챙겼다·따냈다 · 승점 1씩 나눠 가졌다 */
-const pointsClause = alt(
-  seq(w("승점 3을", { gained: 3 }), pred(["챙기다", "따내다"], ["final"])),
-  seq(
-    tok("승점 1(?:씩|을) 나눠|승점을 나눠", (_, bag) => ({
-      ...bag,
-      gained: 1,
-    })),
-    pred(["가지다"], ["final"]),
-  ),
-);
+// ─── 지시문 [문형] 렌더 ───────────────────────────────────────────────────
+
+const SECTIONS: readonly PatternSection[] = [
+  "결과",
+  "득점",
+  "한국 선수",
+  "순위",
+];
+
+/** 수식 묶음 줄 — 지시문 [문형] '장소: …'·'수식(장소 포함, 종류마다 한 번): …'·'무승부 수식(장소 포함): …' */
+const GROUP_LINES: ReadonlyArray<{
+  name: ModifierGroup;
+  lead: string;
+  /** 장소 수식을 모두 품는 묶음(줄에는 장소 밖 수식만 적는다) */
+  withPlace: boolean;
+}> = [
+  { name: "장소", lead: "장소", withPlace: false },
+  {
+    name: "수식",
+    lead: "수식(장소 포함, 종류마다 한 번)",
+    withPlace: true,
+  },
+  { name: "무승부 수식", lead: "무승부 수식(장소 포함)", withPlace: true },
+];
+
+/**
+ * 지시문 [문형] 절 — 문형 목록·수식 묶음을 지시문 표기로(머리 주석 "문형 목록 = 지시문 [문형]"). configs/prompts/summarize.md의
+ * '[문형]'부터 다음 절 앞까지가 이 글과 같아야 한다.
+ */
+export function renderBriefPatterns(): string {
+  const lines: string[] = [
+    "[문형] 이 꼴로만 쓴다. {팀}·{상대}·{선수}·{득점자}·{대회} 입력 이름 · {점수} '2-1' · {분} '62분'·'후반 62분' · {n} 수 · {순위} '선두'·'2위' · [ ] 넣거나 뺌 · ( / )와 '·' 그중 하나",
+  ];
+  for (const section of SECTIONS) {
+    lines.push(section);
+    for (const p of PATTERNS.filter((x) => x.section === section))
+      lines.push(`- ${p.text}`);
+    if (section === "결과") {
+      for (const g of GROUP_LINES) {
+        const own = MODIFIERS.filter(
+          (m) =>
+            m.groups.includes(g.name) &&
+            !(g.withPlace && m.groups.includes("장소")),
+        );
+        lines.push(`${g.lead}: ${own.map((m) => m.text).join(" · ")}`);
+      }
+    }
+  }
+  lines.push(
+    "잇기: 문형 둘을 '-고'·'-며'로 잇는다('꺾었고'·'꺾고'·'꺾으며'). 두 문형은 같은 경기(순위끼리는 같은 순위표)다.",
+  );
+  return lines.join("\n");
+}
 
 // ─── 줄 ──────────────────────────────────────────────────────────────────
 
 export interface ParsedClause {
   type: ClauseType;
+  /** 문형 id(PATTERNS) */
+  id: string;
   bag: Bag;
 }
 
@@ -1134,57 +1166,12 @@ export interface LineParse {
   adnSubject?: number;
 }
 
-interface ClauseDef {
-  type: ClauseType;
-  el: El;
-}
-
-/** 절1 — 이름 주어가 있는 절 */
-const FIRST: readonly ClauseDef[] = [
-  { type: "win", el: winClause("explicit", ["final", "conn"]) },
-  { type: "loss", el: lossClause("explicit", ["final", "conn"]) },
-  { type: "draw", el: drawClause("explicit", ["final", "conn"]) },
-  { type: "pens", el: pensClause },
-  { type: "end", el: endClause },
-  { type: "goal", el: goalClause },
-  { type: "count", el: countClause },
-  { type: "assist", el: assistClause },
-  { type: "korean", el: koreanClause },
-  { type: "rank", el: rankClause("explicit") },
-  { type: "rankList", el: rankListClause },
-  { type: "move", el: moveClause("explicit") },
-  { type: "keep", el: keepClause("explicit") },
-  { type: "gap", el: gapClause("explicit") },
-];
-
-/** 절2 — 절1과 같은 꼴 + 주어 생략 순위 꼴 + 이어 쓰는 꼬리 */
-const SECOND: readonly ClauseDef[] = [
-  ...FIRST.filter((c) => c.type !== "rankList"),
-  { type: "rank", el: rankClause("none") },
-  { type: "move", el: moveClause("none") },
-  { type: "keep", el: keepClause("none") },
-  { type: "gap", el: gapClause("none") },
-  { type: "points", el: pointsClause },
-  { type: "koreanTail", el: koreanTailClause },
-  { type: "endPens", el: endPensClause },
-];
-
-/** 관형 앞절 — '{상대}를 3-0으로 꺾은'·'{상대}에 1-2로 진'·'{상대}와 1-1로 비긴' */
-const ADNOMINAL: readonly ClauseDef[] = [
-  { type: "win", el: winClause("none", ["adn"]) },
-  { type: "loss", el: lossClause("none", ["adn"]) },
-  { type: "draw", el: drawClause("none", ["adn"]) },
-];
-
-/** 관형절 뒤 절2 — 주어 생략 순위 꼴 */
-const ADNOMINAL_TAIL: readonly ClauseDef[] = [
-  { type: "rank", el: rankClause("none") },
-  { type: "move", el: moveClause("none") },
-  { type: "keep", el: keepClause("none") },
-  { type: "gap", el: gapClause("none") },
-];
-
-const adnominalSubject = team("adnSubject", P.subj);
+const FIRST = PATTERNS.filter((p) => p.role === "first");
+const SECOND = PATTERNS.filter(
+  (p) => p.role === "first" || p.role === "second",
+);
+const ADNOMINAL = PATTERNS.filter((p) => p.role === "adn");
+const RANK_AFTER = PATTERNS.find((p) => p.id === "rank-after")!;
 
 function atLineEnd(s: string, pos: number): boolean {
   const rest = s.slice(pos);
@@ -1209,46 +1196,154 @@ export function parseBriefLine(
   const cx: Cx = { s: skeleton, kinds, furthest: 0 };
   const parses: LineParse[] = [];
   const start: State = { pos: 0, bag: {} };
-  const tails = (
-    defs: readonly ClauseDef[],
-    from: State,
-  ): Array<[ClauseDef, State]> =>
-    defs.flatMap((d) =>
-      d
-        .el(cx, { pos: from.pos, bag: {} })
-        .map((st) => [d, st] as [ClauseDef, State]),
-    );
   for (const first of FIRST) {
     for (const st of first.el(cx, start)) {
-      const c1: ParsedClause = { type: first.type, bag: st.bag };
+      const c1: ParsedClause = { type: first.type, id: first.id, bag: st.bag };
       if (st.bag.end === "final") {
         if (atLineEnd(skeleton, st.pos)) parses.push({ clauses: [c1] });
         continue;
       }
       if (st.bag.end !== "conn") continue;
-      for (const [second, st2] of tails(SECOND, st)) {
-        if (st2.bag.end === "final" && atLineEnd(skeleton, st2.pos))
-          parses.push({ clauses: [c1, { type: second.type, bag: st2.bag }] });
+      for (const second of SECOND) {
+        for (const st2 of second.el(cx, { pos: st.pos, bag: {} })) {
+          if (st2.bag.end === "final" && atLineEnd(skeleton, st2.pos))
+            parses.push({
+              clauses: [c1, { type: second.type, id: second.id, bag: st2.bag }],
+            });
+        }
       }
     }
   }
   for (const adn of ADNOMINAL) {
     for (const st of adn.el(cx, start)) {
-      if (st.bag.end !== "adn") continue;
-      for (const sj of adnominalSubject(cx, { pos: st.pos, bag: {} })) {
-        for (const [second, st2] of tails(ADNOMINAL_TAIL, sj)) {
-          if (st2.bag.end !== "final" || !atLineEnd(skeleton, st2.pos))
-            continue;
-          parses.push({
-            clauses: [
-              { type: adn.type, bag: st.bag },
-              { type: second.type, bag: st2.bag },
-            ],
-            adnSubject: sj.bag.adnSubject as number,
-          });
-        }
+      if (st.bag.end !== "adn" || !adn.tail) continue;
+      for (const st2 of adn.tail(cx, { pos: st.pos, bag: {} })) {
+        if (st2.bag.end !== "final" || !atLineEnd(skeleton, st2.pos)) continue;
+        const { adnSubject, adnSubjectP: _p, ...rest } = st2.bag;
+        void _p;
+        parses.push({
+          clauses: [
+            { type: adn.type, id: adn.id, bag: st.bag },
+            { type: RANK_AFTER.type, id: RANK_AFTER.id, bag: rest },
+          ],
+          adnSubject: adnSubject as number,
+        });
       }
     }
   }
   return { parses, furthest: cx.furthest };
+}
+
+// ─── 표기 펼치기(시험용 — 양방향 고정 ①) ──────────────────────────────────
+
+/** 자리표시자 → 뼈대(이름 순번은 `EXPAND_KINDS` 순서) */
+const PLACEHOLDER_SKELETON: ReadonlyArray<[string, string]> = Object.freeze([
+  ["{팀}", `${OPEN}0${CLOSE}`],
+  ["{상대}", `${OPEN}1${CLOSE}`],
+  ["{선수}", `${OPEN}2${CLOSE}`],
+  ["{득점자}", `${OPEN}3${CLOSE}`],
+  ["{대회}", `${OPEN}4${CLOSE}`],
+  ["{점수}", "2-1"],
+  ["{분}", "62분"],
+  ["{순위}", "2위"],
+]);
+
+/** 펼친 뼈대의 이름 종류(⟨0⟩ 팀 · ⟨1⟩ 상대 · ⟨2⟩ 선수 · ⟨3⟩ 득점자 · ⟨4⟩ 대회) */
+export const EXPAND_KINDS: readonly MentionKind[] = Object.freeze([
+  "team",
+  "team",
+  "player",
+  "player",
+  "comp",
+]);
+
+interface Expansion {
+  text: string;
+  used: readonly string[];
+}
+
+/** 표기 → 펼친 꼴(자리표시자 그대로). [묶음]은 비우거나 수식 하나씩, 같은 수식은 한 줄에 한 번만 */
+function expandRaw(src: string): Expansion[] {
+  let i = 0;
+  const readSeq = (stops: string): Expansion[] => {
+    let acc: Expansion[] = [{ text: "", used: [] }];
+    const join = (parts: readonly Expansion[]) => {
+      const next: Expansion[] = [];
+      for (const a of acc)
+        for (const b of parts) {
+          if (b.used.some((u) => a.used.includes(u))) continue;
+          next.push({
+            text: `${a.text} ${b.text}`,
+            used: [...a.used, ...b.used],
+          });
+        }
+      acc = next;
+    };
+    while (i < src.length && !stops.includes(src[i]!)) {
+      const ch = src[i]!;
+      if (ch === " ") {
+        i += 1;
+        continue;
+      }
+      if (ch === "[") {
+        const start = i + 1;
+        let depth = 1;
+        i += 1;
+        while (depth > 0 && i < src.length) {
+          if (src[i] === "[") depth += 1;
+          if (src[i] === "]") depth -= 1;
+          i += 1;
+        }
+        const inner = src.slice(start, i - 1);
+        const named = GROUP_LINES.find((g) => g.name === inner);
+        if (named) {
+          const opts: Expansion[] = [{ text: "", used: [] }];
+          for (const m of MODIFIERS.filter((x) =>
+            x.groups.includes(named.name),
+          ))
+            for (const e of expandRaw(m.text))
+              opts.push({ text: e.text, used: m.keys });
+          join(opts);
+        } else join([{ text: "", used: [] }, ...expandRaw(inner)]);
+        continue;
+      }
+      if (ch === "(") {
+        i += 1;
+        const alts: Expansion[] = [];
+        for (;;) {
+          alts.push(...readSeq("/)"));
+          const at = src[i];
+          i += 1;
+          if (at !== "/") break;
+        }
+        join(alts);
+        continue;
+      }
+      // 낱말 — 안의 '·'는 그중 하나(자리표시자 사이 '}·{'는 글자 그대로)
+      const start = i;
+      while (
+        i < src.length &&
+        !" [(".includes(src[i]!) &&
+        !stops.includes(src[i]!)
+      )
+        i += 1;
+      const word = src.slice(start, i);
+      join(word.split(/(?<!\})·|·(?!\{)/u).map((c) => ({ text: c, used: [] })));
+    }
+    return acc.map((a) => ({
+      text: a.text.replace(/\s+/gu, " ").trim(),
+      used: a.used,
+    }));
+  };
+  return readSeq("");
+}
+
+/** 지시문 표기 한 줄('- ' 없이) → 펼친 뼈대 목록. 앞 설명 괄호('(prev가 있을 때만)')와 ' — ' 뒤 설명은 펼치지 않는다 */
+export function expandPatternText(text: string): string[] {
+  const body = text.replace(/^\((?![^)]*\{)[^)]*\)\s*/u, "").split(" — ")[0]!;
+  return expandRaw(body).map((e) => {
+    let out = e.text.replace(/\{n\}(?=으로)/gu, "13").replace(/\{n\}/gu, "3");
+    for (const [ph, sk] of PLACEHOLDER_SKELETON) out = out.split(ph).join(sk);
+    return out;
+  });
 }

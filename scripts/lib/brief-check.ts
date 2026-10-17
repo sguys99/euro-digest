@@ -1,5 +1,5 @@
 /**
- * 브리핑 자동 사실성 검사기 (M1-23 → **닫힌 문법 재설계** — PRD FR-22·FR-29 §9.4, D24·D28·D40·D50). LLM이 쓴 "오늘의 5줄"을
+ * 브리핑 자동 사실성 검사기 (M1-23 → **닫힌 문법 재설계** — PRD FR-22·FR-29 §9.4, D24·D28·D40·D50·D53). LLM이 쓴 "오늘의 5줄"을
  * **보낸 정형 입력**과 코드로 대조한다. 비용 0·결정적 순수 함수 — I/O 없음(사전·대회 설정은 호출부가 읽어 넘긴다).
  *
  * FR-29 순서: 출력 스키마(brief.ts `parseBriefOutput` — 관용 파싱 D40 ⑤) → **코드 검증(여기)** → 출력 전체 실패면 1회 재시도
@@ -11,11 +11,14 @@
  *   한자·가나 혼입(M0-30 '出场') — 한 글자라도 있으면 실패
  *
  * ── 줄 단위 (실패 = 그 줄만 템플릿, 재시도 없음 — 호출 증가는 CLAUDE.md §1-3 승인 사항) ─────────
- *   원칙(사용자 결정 2026-10-17 — D50): **허용 문형만 통과**. 한 줄 = 허용 절 1~2개(brief-grammar.ts — 지시문 v0.2의 [문형] 목록과
- *   같다). 문형 밖의 낱말·술어·수식이 하나라도 있으면 `grammar-unknown`(근거 = 처음 읽지 못한 낱말)으로 강등한다 — 이전 판(틀린 표현
+ *   원칙(사용자 결정 2026-10-17 — D50): **허용 문형만 통과**. 한 줄 = 허용 절 1~2개(brief-grammar.ts — 문형 목록 `PATTERNS`·
+ *   `MODIFIERS` 한 곳에서 지시문 v0.3의 [문형] 블록과 문법을 함께 만든다, D53 ② — 양방향 일치는 tests/brief-grammar.test.ts).
+ *   문형 밖의 낱말·술어·수식이 하나라도 있으면 `grammar-unknown`(근거 = 처음 읽지 못한 낱말)으로 강등한다 — 이전 판(틀린 표현
  *   목록)은 자유 문장의 새 표현('패배를 안겼다'·'웃었다'·'수비를 지켰다' …)이 계속 빠져나갔다(리뷰 1·2회차 약 270문장).
  *   순서: ① 문장 형식·문자·이름 사전 검사 ② 이름을 `⟨i⟩`로 바꾼 뼈대를 문법으로 분석 ③ 분석된 절마다 슬롯 값을 입력과 대조 —
- *   분석이 여럿이면 입력과 맞는 분석이 하나라도 있으면 통과, 없으면 사유가 가장 적은 분석의 사유를 남긴다.
+ *   분석이 여럿이면 입력과 맞는 분석이 하나라도 있으면 통과, 없으면 사유가 가장 적은 분석의 사유를 남긴다. 한 절 안에서 이름이
+ *   여러 경기·선수에 맞으면 목적어·상대로 고정되는 후보만 고르고, 고정되지 않으면 후보 모두가 맞아야 통과한다(3회차 리뷰).
+ *   두 절은 같은 경기(순위끼리는 같은 순위표)여야 한다 — 다르면 `clause-mismatch`(경기)·`rank-table`(순위표).
  *   ① 사전 검사
  *     근거   r의 id가 입력에 있어야 한다
  *     문장   한 줄 한 문장('다.'로 끝남, 문장 안 마침표·느낌표·물음표 없음), 줄바꿈 없음, 치환 뒤 80자 이하(D40 ⑤ — brief.ts
@@ -28,20 +31,28 @@
  *     결과   주어가 실제 승자·패자(승부차기 경기의 승자는 승부차기 결과 — 그 경기는 '승부차기' 수식이 있어야 하고 '비겼다' 금지),
  *            목적어·짝은 그 경기 상대, 점수는 홈-원정 또는 주어 팀 먼저(D30 — 'A와 B의 경기는'은 앞 팀 먼저), 90분에 이미 앞선 연장
  *            승리·90분 점수가 없는 연장 승리는 이긴 것처럼 쓰지 않음(M1-20 — '경기는 연장까지 h-a로 끝났다'), '완파' = 3골 차 이상,
- *            '역전승'·'역전패' = ht 또는 득점 순서로 이긴 팀이 뒤진 적, 수식(대회·홈/원정·{상대} 원정·라운드·연장 끝에·승부차기·
- *            {선수}의 결승골로·해트트릭을 앞세워·n골을 주고받은 끝에·동점골로·n-m으로 뒤지다)은 정의대로
- *     득점   그 선수의 근거 경기 골(자책골은 '자책골' 꼴에서만)·분·PK·도움 선수, 선제골·결승골(이긴 팀의 (진 팀 점수+1)번째 골)·
- *            동점골(비긴 경기의 마지막 골)·만회골(진 팀이 뒤진 상태에서 넣은 골), 골·도움 수, '{팀}의 {선수}' 소속, '{상대}전에서'
- *     한국 선수 블록 기록(선발·교체 투입 분·출전 분·교체 아웃·풀타임·결장)과 일치, '득점은 없었다' = 골 0
- *     순위   그 팀의 근거 순위표 행(순위·승점·공동 — 같은 순위 2팀 이상), 변동·유지 꼴은 전일 순위(prev)가 있을 때만(D40 ③),
- *            승점 차(D40 ②)는 방향까지, 대회 이름은 그 순위표의 대회
+ *            '역전승' = ht 또는 득점 순서로 이긴 팀이 뒤진 적, '연장까지'·'연장 끝에' = 입력 aet, 수식(대회·홈/원정·{상대} 원정·
+ *            라운드 — stage 우선 표기·연장 끝에·승부차기 끝에·{선수}의 결승골로(연장에서 갈리지 않은 연장 경기는 결승골 없음)·
+ *            해트트릭(정확히 3골)·n골을 앞세워(2골 이상)·n골을 주고받은 끝에(두 팀 모두 득점)·동점골로)는 정의대로. 결과 뒤의 순위
+ *            꼬리는 그 팀이 있는 근거 순위표가 있을 때만('승점 3을 챙겼다' 같은 경기 승점 꼴은 D53 ②에서 뺐다 — 녹아웃 경기에는
+ *            승점이 없다, 3회차 차단 1)
+ *     득점   그 선수의 근거 경기 골(자책골 득점자는 득점 꼴에 쓰지 않음)·분(0으로 시작하는 분 금지 — 분 목록 '{분}·{분}에'는 D53 ②에서 뺐다)·PK·도움 선수
+ *            (도움 선수 ≠ 득점자), 선제골·결승골(이긴 팀의 (진 팀 점수+1)번째 골)·동점골(비긴 경기의 마지막 골이 동점을 만든 골 — 좁은
+ *            정의)·만회골(넣은 뒤에도 진 팀이 뒤진 골), 골 수(1 이상)·멀티골(2 이상)·해트트릭(정확히 3), '{팀}의 {선수}' 소속
+ *     한국 선수 블록 기록(선발·교체 투입 분·출전 분·교체 아웃·결장)과 일치, '득점은 없었다' = 골 0이고 출전 문형 뒤에만
+ *            ('벤치를 지켰다'는 D53 ②에서 뺐다 — 결장 꼴로 쓴다)
+ *     순위   그 팀의 근거 순위표 행(순위·승점·공동 — 같은 순위 2팀 이상이면 '공동' 필수·아니면 금지, 목록·승점 차 꼴도 같다),
+ *            변동·유지 꼴은 전일 순위(prev)가 있을 때만(D40 ③), 승점 차(D40 ②)는 1 이상·방향까지, 대회 이름은 그 순위표의 대회,
+ *            한 문장의 팀은 같은 순위표
  *     분     '전반'·'후반'·'연장'은 분과 맞아야 한다(전반 ≤ 45 · 후반 46~90 · 연장 ≥ 91 — 바꿔 계산한 분은 숫자가 달라 걸린다)
  *
  * ── 경고 (강등 아님 — 관찰 주간 M1-43 지표) ─────────────────────────────────
- *   마침표 없는 끝('…다' — 저장은 그대로) · 한 줄 두 경기(문법 안 두 절이 서로 다른 경기).
+ *   마침표 없는 끝('…다' — 저장은 그대로) · 한 줄 두 경기(문법 안 두 절이 서로 다른 경기 — 3회차부터 그 줄은 `clause-mismatch`로
+ *   강등되고 경고는 지표로 함께 남는다).
  *
  * 남은 한계(보고 — M1-43 관찰): 문법 안의 문장도 입력 대조가 근거 항목(r) 범위로만 이뤄진다(r에 없는 경기를 쓰면 이름 검사가 막는다) ·
- * 한국 선수 블록(`korean`)은 M0 입력 형식 기준(M3-03이 확정) · 허용 문형을 늘리면 지시문 v0.2 [문형]도 함께 고친다.
+ * 한국 선수 블록(`korean`)은 M0 입력 형식 기준(M3-03이 확정) · 허용 문형은 brief-grammar.ts 목록에서만 늘리고 지시문 [문형]을
+ * `renderBriefPatterns()` 출력으로 바꾼다(테스트가 둘의 일치를 강제).
  */
 import type { CompetitionConfig, CompId } from "@/lib/schema";
 
@@ -158,6 +169,10 @@ export type BriefLineReasonCode =
   | "ko-name-not-in-input"
   | "name-not-in-refs"
   | "grammar-unknown"
+  /** 두 절이 서로 다른 경기·순위표(리뷰 3회차 차단 5) — 절2는 절1과 같은 경기, 순위 절이면 절1 주어 팀의 순위 */
+  | "clause-mismatch"
+  /** 한 절·한 나열의 팀이 서로 다른 순위표(리뷰 3회차 차단 3) */
+  | "rank-table"
   | "subject-unknown"
   | "comp-mismatch"
   | "affiliation"
@@ -801,6 +816,31 @@ function bad(env: Env, code: BriefLineReasonCode, detail?: string): void {
   push(env.issues, code, detail);
 }
 
+/**
+ * 후보 여럿(같은 팀의 하루 두 경기·같은 이름의 두 선수·한 선수의 두 블록 — 리뷰 3회차 권장 6) 중 하나를 고른다. 줄이 어느 후보인지
+ * 가리는 슬롯(상대·소속·{상대}전 …)을 썼으면(`pinned`) 입력과 가장 잘 맞는 후보, 아니면 **모든 후보에서 참이어야** 한다(사유가 가장
+ * 많은 후보 — 독자는 어느 경기인지 알 수 없다, 안전한 쪽). 후보가 없으면 null.
+ */
+function bestOf<T, R>(
+  env: Env,
+  candidates: readonly T[],
+  run: (sub: Env, c: T) => R,
+  pinned = true,
+): R | null {
+  let best: { issues: Issues; r: R } | null = null;
+  for (const c of candidates) {
+    const sub: Env = { s: env.s, issues: [] };
+    const r = run(sub, c);
+    const better = pinned
+      ? !best || sub.issues.length < best.issues.length
+      : !best || sub.issues.length > best.issues.length;
+    if (better) best = { issues: sub.issues, r };
+    if (pinned && sub.issues.length === 0) break;
+  }
+  if (best) for (const i of best.issues) push(env.issues, i.code, i.detail);
+  return best?.r ?? null;
+}
+
 function mentionAt(env: Env, bag: Bag, key: string): Mention | null {
   const i = bag[key];
   return typeof i === "number" ? (env.s.mentions[i] ?? null) : null;
@@ -834,13 +874,6 @@ function strAt(bag: Bag, key: string): string | null {
   return typeof v === "string" ? v : null;
 }
 
-function strListAt(bag: Bag, key: string): string[] | null {
-  const v = bag[key];
-  return Array.isArray(v) && v.every((x) => typeof x === "string")
-    ? (v as string[])
-    : null;
-}
-
 /** 이름 묶음(순번 목록) → key 목록 */
 function groupKeys(env: Env, bag: Bag, key: string): string[] | null {
   const v = bag[key];
@@ -854,16 +887,17 @@ function groupKeys(env: Env, bag: Bag, key: string): string[] | null {
   return keys;
 }
 
-/** 근거 경기에서 그 팀의 경기·쪽 */
-function matchOfTeam(
+/** 근거 경기에서 그 팀의 경기·쪽(여럿일 수 있다 — 하루 두 대회) */
+function matchesOfTeam(
   s: LineState,
   team: string,
-): { match: MatchModel; side: Side } | null {
+): Array<{ match: MatchModel; side: Side }> {
+  const out: Array<{ match: MatchModel; side: Side }> = [];
   for (const match of s.refMatches) {
-    if (match.home === team) return { match, side: "home" };
-    if (match.away === team) return { match, side: "away" };
+    if (match.home === team) out.push({ match, side: "home" });
+    else if (match.away === team) out.push({ match, side: "away" });
   }
-  return null;
+  return out;
 }
 
 /** 두 팀이 맞붙은 근거 경기 — side = 앞 팀(a)의 쪽 */
@@ -877,6 +911,20 @@ function matchOfPair(
     if (match.away === a && match.home === b) return { match, side: "away" };
   }
   return null;
+}
+
+/** 주어 팀의 경기 — 상대(목적어·{상대} 원정)가 있으면 그 맞대결, 없으면 주어 팀이 뛴 근거 경기 후보 */
+function subjectMatches(
+  s: LineState,
+  team: string,
+  opponents: ReadonlyArray<string | null>,
+): Array<{ match: MatchModel; side: Side }> {
+  for (const o of opponents) {
+    if (o === null) continue;
+    const pair = matchOfPair(s, team, o);
+    if (pair) return [pair];
+  }
+  return matchesOfTeam(s, team);
 }
 
 function teamOn(match: MatchModel, side: Side): string {
@@ -921,24 +969,6 @@ function scoreIssue(
   if (r === "mismatch") bad(env, "score-mismatch", `${score[0]}-${score[1]}`);
 }
 
-function parseHt(ht: string | undefined): Pair | null {
-  const m = /^(\d{1,2})-(\d{1,2})$/.exec(ht ?? "");
-  return m ? { home: Number(m[1]), away: Number(m[2]) } : null;
-}
-
-/** 경기 중 거친 점수(홈-원정) — 전반 점수 + 득점 순서(득점 목록이 완전할 때)의 매 골 뒤 점수 */
-function runningScores(match: MatchModel): Pair[] {
-  const out: Pair[] = [];
-  const ht = parseHt(match.m.ht);
-  if (ht) out.push(ht);
-  const run: Pair = { home: 0, away: 0 };
-  for (const g of match.goals ?? []) {
-    run[g.side] += 1;
-    out.push({ ...run });
-  }
-  return out;
-}
-
 /** 연장에서 승부가 났다(90분 점수가 있고 이긴 팀이 90분에 앞서지 않음) */
 function decidedInEt(f: MatchFacts): boolean {
   return (
@@ -948,24 +978,28 @@ function decidedInEt(f: MatchFacts): boolean {
   );
 }
 
-/** 결승골 — 이긴 팀의 (진 팀 점수 + 1)번째 골(승부차기 경기 없음) */
+/**
+ * 결승골 — 이긴 팀의 (진 팀 점수 + 1)번째 골. 승부차기 경기와 이긴 것처럼 쓰지 않는 연장 경기(90분에 이미 앞섰거나 90분 점수가
+ * 없음 — 두 경기 합산 연장일 수 있다, M1-20)에는 결승골이 없다(리뷰 3회차 중요 2)
+ */
 function decisiveGoal(match: MatchModel): GoalRow | null {
   const f = match.facts;
   if (!f || f.pens || f.winner === null || !match.goals) return null;
+  if (f.aet && !decidedInEt(f)) return null;
   const winner = f.winner;
   return (
     match.goals.filter((g) => g.side === winner)[f.ft[other(winner)]] ?? null
   );
 }
 
-/** 동점골 — 비긴 경기(0-0 아님·승부차기 없음)의 마지막 골 */
+/** 동점골 — 비긴 경기(0-0 아님·승부차기 없음)의 마지막 골(좁은 정의 유지 — 오케스트레이터 결정 2026-10-17) */
 function equaliserGoal(match: MatchModel): GoalRow | null {
   const f = match.facts;
   if (!f || f.pens || f.ft.home !== f.ft.away || f.ft.home === 0) return null;
   return match.goals?.at(-1) ?? null;
 }
 
-/** 만회골 — 진 팀이 뒤진 상태에서 넣은 골 */
+/** 만회골 — 진 팀이 뒤진 채 넣었고 넣은 뒤에도 뒤진 골(동점을 만든 골은 아니다 — 리뷰 3회차 권장 3) */
 function consolationGoals(match: MatchModel): GoalRow[] {
   const f = match.facts;
   if (!f || f.winner === null || f.pens || !match.goals) return [];
@@ -974,36 +1008,23 @@ function consolationGoals(match: MatchModel): GoalRow[] {
   const out: GoalRow[] = [];
   const run: Pair = { home: 0, away: 0 };
   for (const g of match.goals) {
-    if (g.side === loser && run[loser] < run[winner]) out.push(g);
+    if (g.side === loser && !g.ownGoal && run[loser] + 1 < run[winner])
+      out.push(g);
     run[g.side] += 1;
   }
   return out;
 }
 
-/** 구간 낱말(전반·후반·연장·추가시간·전반 추가시간·후반 추가시간)이 그 분과 맞는가 */
+/** 구간 낱말(전반·후반·연장)이 그 분과 맞는가 */
 function halfOk(half: string | null, min: string): boolean {
   if (half === null) return true;
   const base = Number(/^\d+/u.exec(min)?.[0] ?? "0");
-  const added = min.includes("+");
-  switch (half) {
-    case "전반":
-      return base <= 45;
-    case "후반":
-      return base >= 46 && base <= 90;
-    case "연장":
-      return base >= 91;
-    case "추가시간":
-      return added;
-    case "전반 추가시간":
-      return added && base === 45;
-    case "후반 추가시간":
-      return added && base === 90;
-    default:
-      return false;
-  }
+  if (half === "전반") return base <= 45;
+  if (half === "후반") return base >= 46 && base <= 90;
+  if (half === "연장") return base >= 91;
+  return false;
 }
 
-/** 분 슬롯의 구간 낱말 — 분이 있으면 그 분, 구간 낱말만 있으면 실제 골 분(actual)으로 잰다 */
 function checkHalf(env: Env, bag: Bag, key: string, actual?: string): void {
   const half = strAt(bag, `${key}H`);
   if (half === null) return;
@@ -1013,24 +1034,36 @@ function checkHalf(env: Env, bag: Bag, key: string, actual?: string): void {
 }
 
 const ROUND_OF: Readonly<Record<string, string>> = Object.freeze({
-  결승: "FINAL",
-  "4강": "SEMI_FINALS",
-  "8강": "QUARTER_FINALS",
-  "16강": "LAST_16",
-  플레이오프: "PLAYOFFS",
+  결승에서: "FINAL",
+  "4강에서": "SEMI_FINALS",
+  "8강에서": "QUARTER_FINALS",
+  "16강에서": "LAST_16",
+  플레이오프에서: "PLAYOFFS",
 });
+
+// ─── ③ 절의 대상(두 절 대조 — 리뷰 3회차 차단 5) ─────────────────────────────
+
+/** 절이 다루는 대상 — 경기 절은 그 경기, 순위 절은 그 순위표, teams = 주어 쪽 팀(순위 절이 이어받는 팀) */
+interface Focus {
+  match: MatchModel | null;
+  table: StandingsModel | null;
+  teams: readonly string[];
+}
+
+const NO_FOCUS: Focus = { match: null, table: null, teams: [] };
+
+/** 두 절이 같은 대상인가 — 경기끼리 같은 경기, 순위끼리 같은 순위표, 경기와 순위면 순위 절 팀이 경기 절 주어 쪽 팀 */
+function sameFocus(a: Focus, b: Focus): boolean {
+  if (a.match && b.match) return a.match.id === b.match.id;
+  if (a.table && b.table) return a.table.id === b.table.id;
+  const [game, standing] = a.match ? [a, b] : [b, a];
+  if (!game.match || !standing.table) return true; // 대상을 정하지 못한 절은 다른 사유로 이미 걸렸다
+  return standing.teams.every((t) => game.teams.includes(t));
+}
 
 // ─── ③ 결과 절 ────────────────────────────────────────────────────────────
 
-/** 절의 주어 팀·경기 — 절2(주어 생략 순위·승점 꼴)가 이어받는다 */
-interface ClauseSubject {
-  team: string | null;
-  match: MatchModel | null;
-}
-
-const NO_SUBJECT: ClauseSubject = { team: null, match: null };
-
-/** 결과 절 공통 수식(대회·장소·라운드·결승골·해트트릭·골 합·동점골·뒤지다) */
+/** 결과 절 공통 수식(대회·장소·라운드·결승골·해트트릭·골 합·동점골) */
 function checkResultMods(
   env: Env,
   bag: Bag,
@@ -1053,10 +1086,14 @@ function checkResultMods(
   const round = strAt(bag, "round");
   if (round !== null && ROUND_OF[round] !== match.m.round)
     bad(env, "round", round);
+  // {n}골을 주고받은 끝에 — 두 팀 골 합(D40 ②), 두 팀이 모두 넣었을 때만(한쪽만 넣은 6-0·0-0은 '주고받지' 않았다 — 리뷰 3회차 차단 6)
   const total = numAt(bag, "total");
-  if (total !== null && f.ft.home + f.ft.away !== total)
+  if (
+    total !== null &&
+    !(f.ft.home > 0 && f.ft.away > 0 && f.ft.home + f.ft.away === total)
+  )
     bad(env, "goal-count", `${total}골을 주고받은`);
-  // {선수}의 [{분}] [PK ]결승골로
+  // {선수}의 [{분}] [PK] 결승골로
   if (bag.scorerKind === "decisive") {
     const g = decisiveGoal(match);
     const min = strAt(bag, "scorerMin");
@@ -1070,7 +1107,7 @@ function checkResultMods(
     if (!ok) bad(env, "decisive-goal", textAt(env, bag, "scorer"));
     checkHalf(env, bag, "scorerMin", g?.min);
   }
-  // {선수}의 해트트릭을·멀티골을·n골을 앞세워 — 주어 팀 선수의 자책골 아닌 골 수
+  // {선수}의 해트트릭을·{n}골을 앞세워 — 주어 팀 선수의 자책골 아닌 골 수(해트트릭 = 3골 — 지시문 정의, 권장 1)
   const featKind = strAt(bag, "featKind");
   if (featKind !== null) {
     const feat = keyAt(env, bag, "feat");
@@ -1079,14 +1116,10 @@ function checkResultMods(
     ).length;
     const ok =
       match.goals !== null &&
-      (featKind === "hat"
-        ? n >= 3
-        : featKind === "multi"
-          ? n >= 2
-          : n === numAt(bag, "featN") && n >= 2);
+      (featKind === "hat" ? n === 3 : n === numAt(bag, "featN") && n >= 2);
     if (!ok) bad(env, "goal-count", textAt(env, bag, "feat"));
   }
-  // (무승부) {선수}의 [{분}] [PK ]동점골로
+  // (무승부) {선수}의 [{분}] [PK] 동점골로
   if (typeof bag.eq === "number") {
     const g = equaliserGoal(match);
     const min = strAt(bag, "eqMin");
@@ -1100,16 +1133,6 @@ function checkResultMods(
     if (!ok) bad(env, "equaliser", textAt(env, bag, "eq"));
     checkHalf(env, bag, "eqMin", g?.min);
   }
-  // (역전승) {a-b}로 뒤지다 — 주어가 a, 상대가 b로 뒤진 적
-  const trail = pairAt(bag, "trail");
-  if (trail) {
-    const ok =
-      trail[0] < trail[1] &&
-      runningScores(match).some(
-        (p) => p[side] === trail[0] && p[other(side)] === trail[1],
-      );
-    if (!ok) bad(env, "score-mismatch", `${trail[0]}-${trail[1]}로 뒤지다`);
-  }
 }
 
 /** 이긴 경기(win)·진 경기(loss) — 주어 = 승자·패자 */
@@ -1118,160 +1141,195 @@ function vResult(
   bag: Bag,
   subject: string | null,
   role: "win" | "loss",
-): ClauseSubject {
+): Focus {
   if (subject === null) {
     bad(env, "subject-unknown");
-    return NO_SUBJECT;
-  }
-  const found = matchOfTeam(env.s, subject);
-  if (!found) {
-    bad(env, "name-not-in-refs", textAt(env, bag, "subj"));
-    return NO_SUBJECT;
-  }
-  const { match, side } = found;
-  const f = match.facts;
-  if (!f) {
-    bad(env, "score-mismatch", match.id);
-    return { team: subject, match };
+    return NO_FOCUS;
   }
   const obj = keyAt(env, bag, "obj");
-  if (obj !== null && obj !== teamOn(match, other(side)))
-    bad(env, "opponent-mismatch", textAt(env, bag, "obj"));
-  // 승부차기 경기의 승패는 승부차기 결과 — '승부차기' 수식이 있어야 한다(M1-19)
-  if (f.pens && bag.shootout !== true) bad(env, "shootout", "승부차기 경기");
-  if (!f.pens && bag.shootout === true) bad(env, "shootout", "승부차기");
-  const verb = strAt(bag, "verb") ?? "";
-  if (
-    role === "win" ? f.winner !== side : f.winner === null || f.winner === side
-  )
-    bad(env, "winner-mismatch", verb);
-  // 90분에 이미 앞섰거나 90분 점수가 없는 연장 승부 — 두 경기 합산 연장일 수 있어 이긴 것처럼 쓰지 않는다(M1-20)
-  if (f.aet && !f.pens && f.winner !== null && !decidedInEt(f))
-    bad(env, "extra-time", "연장 승부");
-  if (bag.et === true && !(f.aet && !f.pens && decidedInEt(f)))
-    bad(env, "extra-time", "연장 끝에");
-  const score = pairAt(bag, "score");
-  if (score) {
-    const pair = bag.shootout === true ? f.pens : f.ft;
-    if (!pair) bad(env, "shootout", "승부차기 점수");
-    else scoreIssue(env, scoreMatches(pair, score[0], score[1], side), score);
+  const candidates = subjectMatches(env.s, subject, [
+    obj,
+    keyAt(env, bag, "venueTeam"),
+  ]);
+  if (candidates.length === 0) {
+    bad(env, "name-not-in-refs", textAt(env, bag, "subj"));
+    return NO_FOCUS;
   }
-  if (verb === "완파하다" && !(f.margin >= 3 && !f.pens))
-    bad(env, "margin", "완파");
-  const margin = numAt(bag, "margin");
-  if (margin !== null && !(f.margin === margin && !f.pens))
-    bad(env, "margin", `${margin}골 차`);
-  const comeback =
-    bag.kind === "역전승" ||
-    bag.kind === "역전패" ||
-    verb === "역전승하다" ||
-    verb === "역전패하다";
-  if (comeback && !(f.comeback && !f.pens))
-    bad(env, "comeback", role === "win" ? "역전승" : "역전패");
-  checkResultMods(env, bag, match, side);
-  return { team: subject, match };
+  return (
+    bestOf(
+      env,
+      candidates,
+      (sub, { match, side }) => {
+        const focus: Focus = { match, table: null, teams: [subject] };
+        const f = match.facts;
+        if (!f) {
+          bad(sub, "score-mismatch", match.id);
+          return focus;
+        }
+        if (obj !== null && obj !== teamOn(match, other(side)))
+          bad(sub, "opponent-mismatch", textAt(env, bag, "obj"));
+        // 승부차기 경기의 승패는 승부차기 결과 — '승부차기' 수식이 있어야 한다(M1-19)
+        if (f.pens && bag.shootout !== true)
+          bad(sub, "shootout", "승부차기 경기");
+        if (!f.pens && bag.shootout === true) bad(sub, "shootout", "승부차기");
+        const verb = strAt(bag, "verb") ?? "";
+        if (
+          role === "win"
+            ? f.winner !== side
+            : f.winner === null || f.winner === side
+        )
+          bad(sub, "winner-mismatch", verb);
+        // 90분에 이미 앞섰거나 90분 점수가 없는 연장 승부 — 두 경기 합산 연장일 수 있어 이긴 것처럼 쓰지 않는다(M1-20)
+        if (f.aet && !f.pens && f.winner !== null && !decidedInEt(f))
+          bad(sub, "extra-time", "연장 승부");
+        if (bag.et === true && !(f.aet && !f.pens && decidedInEt(f)))
+          bad(sub, "extra-time", "연장 끝에");
+        const score = pairAt(bag, "score");
+        if (score) {
+          const pair = bag.shootout === true ? f.pens : f.ft;
+          if (!pair) bad(sub, "shootout", "승부차기 점수");
+          else
+            scoreIssue(
+              sub,
+              scoreMatches(pair, score[0], score[1], side),
+              score,
+            );
+        }
+        if (verb === "완파하다" && !(f.margin >= 3 && !f.pens))
+          bad(sub, "margin", "완파");
+        if (bag.kind === "역전승" && !(f.comeback && !f.pens))
+          bad(sub, "comeback", "역전승");
+        checkResultMods(sub, bag, match, side);
+        return focus;
+      },
+      obj !== null || keyAt(env, bag, "venueTeam") !== null,
+    ) ?? NO_FOCUS
+  );
 }
 
-/** 비긴 경기(draw) — 짝 주어('A와 B가') 또는 주어 + 짝 목적어 */
-function vDraw(env: Env, bag: Bag, subject: string | null): ClauseSubject {
+/** 비긴 경기(draw) — 짝 주어('A와 B가') 또는 주어 + [짝 목적어] */
+function vDraw(env: Env, bag: Bag, subject: string | null): Focus {
   const pair = typeof bag.subj2 === "number";
   const b = pair ? keyAt(env, bag, "subj2") : keyAt(env, bag, "obj");
   if (subject === null) {
     bad(env, "subject-unknown");
-    return NO_SUBJECT;
+    return NO_FOCUS;
   }
-  const found =
-    b !== null ? matchOfPair(env.s, subject, b) : matchOfTeam(env.s, subject);
-  if (!found) {
-    if (!matchOfTeam(env.s, subject))
+  const candidates =
+    b !== null
+      ? [matchOfPair(env.s, subject, b)].filter(
+          (x): x is { match: MatchModel; side: Side } => x !== null,
+        )
+      : subjectMatches(env.s, subject, [keyAt(env, bag, "venueTeam")]);
+  if (candidates.length === 0) {
+    if (matchesOfTeam(env.s, subject).length === 0)
       bad(env, "name-not-in-refs", textAt(env, bag, "subj"));
     else
       bad(env, "opponent-mismatch", textAt(env, bag, pair ? "subj2" : "obj"));
-    return NO_SUBJECT;
+    return NO_FOCUS;
   }
-  const { match, side } = found;
-  const f = match.facts;
-  if (!f) {
-    bad(env, "score-mismatch", match.id);
-    return NO_SUBJECT;
-  }
-  if (f.pens) bad(env, "shootout-draw", "비겼다");
-  else if (f.ft.home !== f.ft.away) bad(env, "draw-mismatch", "비겼다");
-  const score = pairAt(bag, "score");
-  if (
-    score &&
-    !(
-      score[0] === score[1] &&
-      score[0] === f.ft.home &&
-      f.ft.home === f.ft.away
-    )
-  )
-    bad(env, "score-mismatch", `${score[0]}-${score[1]}`);
-  if (bag.et === true && !(f.aet && !f.pens && f.ft.home === f.ft.away))
-    bad(env, "extra-time", "연장 끝에");
-  checkResultMods(env, bag, match, side);
-  return pair ? { team: null, match } : { team: subject, match };
+  return (
+    bestOf(
+      env,
+      candidates,
+      (sub, { match, side }) => {
+        const focus: Focus = {
+          match,
+          table: null,
+          teams: pair ? [match.home, match.away] : [subject],
+        };
+        const f = match.facts;
+        if (!f) {
+          bad(sub, "score-mismatch", match.id);
+          return focus;
+        }
+        if (f.pens) bad(sub, "shootout-draw", "비겼다");
+        else if (f.ft.home !== f.ft.away) bad(sub, "draw-mismatch", "비겼다");
+        const score = pairAt(bag, "score");
+        if (
+          score &&
+          !(
+            score[0] === score[1] &&
+            score[0] === f.ft.home &&
+            f.ft.home === f.ft.away
+          )
+        )
+          bad(sub, "score-mismatch", `${score[0]}-${score[1]}`);
+        if (bag.et === true && !(f.aet && !f.pens && f.ft.home === f.ft.away))
+          bad(sub, "extra-time", "연장 끝에");
+        checkResultMods(sub, bag, match, side);
+        return focus;
+      },
+      b !== null || keyAt(env, bag, "venueTeam") !== null,
+    ) ?? NO_FOCUS
+  );
 }
 
 /** 승부차기 맞선 뒤(pens) — ft 동점 + 승부차기 승자 */
-function vPens(env: Env, bag: Bag): ClauseSubject {
+function vPens(env: Env, bag: Bag): Focus {
   const subject = keyAt(env, bag, "subj");
   const obj = keyAt(env, bag, "obj");
   const found =
     subject !== null && obj !== null ? matchOfPair(env.s, subject, obj) : null;
-  if (!found) {
+  if (!found || subject === null) {
     bad(env, "opponent-mismatch", textAt(env, bag, "obj"));
-    return NO_SUBJECT;
+    return NO_FOCUS;
   }
   const { match, side } = found;
+  const focus: Focus = { match, table: null, teams: [subject] };
   const f = match.facts;
   if (!f || !f.pens) {
     bad(env, "shootout", "승부차기");
-    return { team: subject, match };
+    return focus;
   }
   if (f.ft.home !== f.ft.away) bad(env, "shootout", "경기 점수 동점 아님");
   if (f.winner !== side) bad(env, "winner-mismatch", "이겼다");
-  if (bag.etUntil === true && !f.aet) bad(env, "extra-time", "연장까지");
+  // '연장까지'는 입력 aet 값만 근거로 쓴다(승부차기에서 연장을 유도하지 않는다 — 권장 5)
+  if (bag.etUntil === true && match.m.aet !== true)
+    bad(env, "extra-time", "연장까지");
   const score = pairAt(bag, "score");
   if (score && !(score[0] === score[1] && score[0] === f.ft.home))
     bad(env, "score-mismatch", `${score[0]}-${score[1]}`);
   const pens = pairAt(bag, "pens");
   if (pens) scoreIssue(env, scoreMatches(f.pens, pens[0], pens[1], side), pens);
   checkResultMods(env, bag, match, side);
-  return { team: subject, match };
+  return focus;
 }
 
 /** 'A와 B의 경기는 … 끝났다'(end) — 앞 팀 점수 먼저. 승부차기 경기면 뒤 절(endPens)이 있어야 한다 */
-function vEnd(env: Env, bag: Bag, hasPensTail: boolean): ClauseSubject {
+function vEnd(env: Env, bag: Bag, hasPensTail: boolean): Focus {
   const a = keyAt(env, bag, "subj");
   const b = keyAt(env, bag, "subj2");
   const found = a !== null && b !== null ? matchOfPair(env.s, a, b) : null;
   if (!found) {
     bad(env, "opponent-mismatch", textAt(env, bag, "subj2"));
-    return NO_SUBJECT;
+    return NO_FOCUS;
   }
   const { match, side } = found;
+  const focus: Focus = { match, table: null, teams: [match.home, match.away] };
   const f = match.facts;
   if (!f) {
     bad(env, "score-mismatch", match.id);
-    return NO_SUBJECT;
+    return focus;
   }
   const score = pairAt(bag, "score");
   if (score)
     scoreIssue(env, orientedMatches(f.ft, score[0], score[1], side), score);
-  if (bag.etUntil === true && !f.aet) bad(env, "extra-time", "연장까지");
-  if (bag.drawWord === true) {
-    if (f.pens) bad(env, "shootout-draw", "무승부");
-    else if (f.ft.home !== f.ft.away) bad(env, "draw-mismatch", "무승부");
-  }
+  if (bag.etUntil === true && match.m.aet !== true)
+    bad(env, "extra-time", "연장까지");
   if (f.pens && !hasPensTail) bad(env, "shootout", "승부차기 결과 없음");
   checkResultMods(env, bag, match, side);
-  return { team: null, match };
+  return focus;
 }
 
 /** (end 뒤) 승부차기에서 {팀}이 {점수}로 이겼다 */
-function vEndPens(env: Env, bag: Bag, prev: ClauseSubject): void {
-  const match = prev.match;
+function vEndPens(
+  env: Env,
+  bag: Bag,
+  prev: Focus,
+  prevType: string | null,
+): void {
+  const match = prevType === "end" ? prev.match : null;
   const team = keyAt(env, bag, "subj");
   if (!match || team === null) {
     bad(env, "subject-unknown");
@@ -1295,70 +1353,64 @@ function vEndPens(env: Env, bag: Bag, prev: ClauseSubject): void {
 
 // ─── ③ 득점 절 ────────────────────────────────────────────────────────────
 
-/** 선수 key → 그 선수가 뛴 근거 경기의 팀 key(한국 선수 블록 → 득점·도움 목록 — 자책골은 상대 팀 소속) */
-function teamOfPlayer(s: LineState, player: string): string | null {
-  for (const k of s.refKorean) if (k.player === player) return k.team;
+/** 선수 key → 그 경기에서 그 선수의 팀 key(한국 선수 블록 → 득점·도움 목록 — 자책골은 상대 팀 소속) */
+function teamOfPlayerIn(
+  s: LineState,
+  player: string,
+  match: MatchModel,
+): string | null {
   for (const k of s.model.korean.values())
-    if (k.player === player) return k.team;
+    if (k.player === player && k.k.match === match.id) return k.team;
   const keyOf = (name: string | undefined) =>
     name ? s.model.latin.get(foldName(name))?.key : undefined;
-  for (const match of s.refMatches) {
-    for (const g of match.m.goals ?? []) {
-      const scorer = keyOf(g.player) === player;
-      if (!scorer && keyOf(g.assist) !== player) continue;
-      const scoringTeam = g.team === match.m.home ? match.home : match.away;
-      const own = scorer && g.type === "own_goal";
-      return own
-        ? scoringTeam === match.home
-          ? match.away
-          : match.home
-        : scoringTeam;
-    }
+  for (const g of match.m.goals ?? []) {
+    const scorer = keyOf(g.player) === player;
+    if (!scorer && keyOf(g.assist) !== player) continue;
+    const scoringTeam = g.team === match.m.home ? match.home : match.away;
+    const own = scorer && g.type === "own_goal";
+    return own
+      ? scoringTeam === match.home
+        ? match.away
+        : match.home
+      : scoringTeam;
   }
   return null;
 }
 
 interface PlayerData {
   match: MatchModel;
-  /** 그 선수 팀의 쪽(모르면 null) */
+  /** 그 선수 팀(모르면 null)과 쪽 */
+  team: string | null;
   side: Side | null;
   /** 자책골이 아닌 골 */
   goals: GoalRow[];
   own: GoalRow[];
-  assists: number;
   /** 득점 목록이 완전한가(false면 한국 선수 블록 수만 안다) */
   known: boolean;
   korean: KoreanModel | null;
 }
 
-/** 근거 경기에서 그 선수의 기록 — 득점 목록에 없고 한국 선수 블록도 없으면 null */
-function playerData(s: LineState, player: string): PlayerData | null {
+/** 근거 경기에서 그 선수의 기록 후보 — 득점·도움 목록 또는 한국 선수 블록(같은 이름이 두 경기에 있으면 둘 다) */
+function playerData(s: LineState, player: string): PlayerData[] {
   const keyOf = (name: string | undefined) =>
     name ? s.model.latin.get(foldName(name))?.key : undefined;
-  const sideOf = (match: MatchModel): Side | null => {
-    const team = teamOfPlayer(s, player);
-    return team === match.home ? "home" : team === match.away ? "away" : null;
-  };
-  const from = (match: MatchModel, korean: KoreanModel | null): PlayerData =>
-    match.goals
+  const from = (match: MatchModel, korean: KoreanModel | null): PlayerData => {
+    const team = teamOfPlayerIn(s, player, match);
+    const side: Side | null =
+      team === match.home ? "home" : team === match.away ? "away" : null;
+    return match.goals
       ? {
           match,
-          side: sideOf(match),
+          team,
+          side,
           goals: match.goals.filter((g) => g.player === player && !g.ownGoal),
           own: match.goals.filter((g) => g.player === player && g.ownGoal),
-          assists: match.assists?.get(player) ?? 0,
           known: true,
           korean,
         }
-      : {
-          match,
-          side: sideOf(match),
-          goals: [],
-          own: [],
-          assists: korean?.k.assists ?? 0,
-          known: false,
-          korean,
-        };
+      : { match, team, side, goals: [], own: [], known: false, korean };
+  };
+  const out: PlayerData[] = [];
   for (const match of s.refMatches) {
     const involved =
       match.m.goals?.some(
@@ -1367,12 +1419,15 @@ function playerData(s: LineState, player: string): PlayerData | null {
     const korean =
       s.refKorean.find((k) => k.player === player && k.k.match === match.id) ??
       null;
-    if (!involved && !korean) continue;
-    return from(match, korean);
+    if (involved || korean) out.push(from(match, korean));
   }
-  const k = s.refKorean.find((x) => x.player === player);
-  const match = k ? s.model.matches.get(k.k.match) : undefined;
-  return k && match ? from(match, k) : null;
+  for (const k of s.refKorean) {
+    if (k.player !== player || out.some((x) => x.match.id === k.k.match))
+      continue;
+    const match = s.model.matches.get(k.k.match);
+    if (match) out.push(from(match, k));
+  }
+  return out;
 }
 
 /** 골 수 — 목록을 모르면 한국 선수 블록 수, 그것도 없으면 null */
@@ -1381,30 +1436,19 @@ function goalTotal(pd: PlayerData): number | null {
   return pd.korean ? pd.korean.k.goals : null;
 }
 
-function assistTotal(pd: PlayerData): number | null {
-  if (pd.known) return pd.assists;
-  return pd.korean ? pd.korean.k.assists : null;
+function playerFocus(pd: PlayerData): Focus {
+  return { match: pd.match, table: null, teams: pd.team ? [pd.team] : [] };
 }
 
-/** 득점 절 공통 — '{팀}의 {선수}' 소속 · '{상대}전에서'·'{상대}를 상대로' */
-function checkPlayerMods(
-  env: Env,
-  bag: Bag,
-  player: string,
-  pd: PlayerData,
-): void {
+/** '{팀}의 {선수}' 소속 */
+function checkAffiliation(env: Env, bag: Bag, pd: PlayerData): void {
   const team = keyAt(env, bag, "team");
-  if (team !== null && teamOfPlayer(env.s, player) !== team)
+  if (team !== null && pd.team !== team)
     bad(
       env,
       "affiliation",
       `${textAt(env, bag, "team")} ${textAt(env, bag, "subj")}`,
     );
-  const opp = keyAt(env, bag, "opp");
-  if (opp !== null) {
-    const ok = pd.side !== null && teamOn(pd.match, other(pd.side)) === opp;
-    if (!ok) bad(env, "opponent-mismatch", textAt(env, bag, "opp"));
-  }
 }
 
 const NOUN_CODE: Readonly<Record<string, BriefLineReasonCode>> = Object.freeze({
@@ -1413,240 +1457,217 @@ const NOUN_CODE: Readonly<Record<string, BriefLineReasonCode>> = Object.freeze({
   결승골: "decisive-goal",
   동점골: "equaliser",
   만회골: "scorer",
-  자책골: "scorer",
 });
 
-/** 득점(goal) — 그 선수의 골(종류·분·PK·도움 선수) */
-function vGoal(env: Env, bag: Bag): void {
-  const player = keyAt(env, bag, "subj");
-  const pd = player !== null ? playerData(env.s, player) : null;
-  if (player === null || pd === null) {
-    bad(env, "scorer", textAt(env, bag, "subj"));
-    return;
-  }
-  checkPlayerMods(env, bag, player, pd);
-  const noun = strAt(bag, "noun") ?? "골";
-  const code = NOUN_CODE[noun] ?? "scorer";
-  const half = strAt(bag, "minH");
-  const min = strAt(bag, "min");
-  const mins = strListAt(bag, "mins");
-  const assistBy = keyAt(env, bag, "assistBy");
-  if (!pd.known) {
-    // 득점 목록이 없으면 한국 선수 블록의 골 수만 안다 — 분·종류·도움 선수는 확인할 수 없다
-    const plain =
-      noun === "골" &&
-      min === null &&
-      half === null &&
-      mins === null &&
-      assistBy === null &&
-      bag.pk !== true;
-    if (!plain || (goalTotal(pd) ?? 0) === 0)
-      bad(env, code, textAt(env, bag, "subj"));
-    return;
-  }
-  const match = pd.match;
-  let pool: GoalRow[];
-  if (noun === "자책골") pool = pd.own;
-  else if (noun === "선제골") {
-    const first = match.goals?.[0];
-    pool = first && !first.ownGoal && first.player === player ? [first] : [];
-  } else if (noun === "결승골") {
-    const g = decisiveGoal(match);
-    pool = g && !g.ownGoal && g.player === player ? [g] : [];
-  } else if (noun === "동점골") {
-    const g = equaliserGoal(match);
-    pool = g && !g.ownGoal && g.player === player ? [g] : [];
-  } else if (noun === "만회골") {
-    pool = consolationGoals(match).filter(
-      (g) => g.player === player && !g.ownGoal,
-    );
-  } else pool = pd.goals;
-  if (pool.length === 0) {
-    bad(env, code, textAt(env, bag, "subj"));
-    return;
-  }
-  if (mins) {
-    if (!mins.every((x) => pool.some((g) => g.min === x)))
-      bad(env, "minute", mins.join("·"));
-    return;
-  }
-  const byMin = min === null ? pool : pool.filter((g) => g.min === min);
-  if (byMin.length === 0) {
-    bad(env, "minute", `${min}분`);
-    return;
-  }
-  if (half !== null && !byMin.some((g) => halfOk(half, g.min))) {
-    bad(env, "minute-half", `${half}${min !== null ? ` ${min}분` : ""}`);
-    return;
-  }
-  const byPk = bag.pk === true ? byMin.filter((g) => g.penalty) : byMin;
-  if (byPk.length === 0) {
-    bad(env, "penalty", "PK");
-    return;
-  }
-  if (assistBy !== null && !byPk.some((g) => g.assist === assistBy))
-    bad(env, "assist-count", `${textAt(env, bag, "assistBy")} 도움`);
+/** 그 경기에서 그 종류의 골(득점자 player — 자책골 제외) */
+function goalsOfKind(
+  match: MatchModel,
+  player: string,
+  noun: string,
+): GoalRow[] {
+  const goals = match.goals ?? [];
+  const mine = (g: GoalRow | null | undefined): GoalRow[] =>
+    g && !g.ownGoal && g.player === player ? [g] : [];
+  if (noun === "선제골") return mine(goals[0]);
+  if (noun === "결승골") return mine(decisiveGoal(match));
+  if (noun === "동점골") return mine(equaliserGoal(match));
+  if (noun === "만회골")
+    return consolationGoals(match).filter((g) => g.player === player);
+  return goals.filter((g) => g.player === player && !g.ownGoal);
 }
 
-/** 골 수(count) — n골·해트트릭·멀티골·n골 m도움 */
-function vCount(env: Env, bag: Bag): void {
+/** 득점(goal) — 그 선수의 골(종류·분·PK) */
+function vGoal(env: Env, bag: Bag): Focus {
   const player = keyAt(env, bag, "subj");
-  const pd = player !== null ? playerData(env.s, player) : null;
-  if (player === null || pd === null) {
-    bad(env, "goal-count", textAt(env, bag, "subj"));
-    return;
+  const candidates = player !== null ? playerData(env.s, player) : [];
+  const noun = strAt(bag, "noun") ?? "골";
+  const code = NOUN_CODE[noun] ?? "scorer";
+  if (player === null || candidates.length === 0) {
+    bad(env, code, textAt(env, bag, "subj"));
+    return NO_FOCUS;
   }
-  checkPlayerMods(env, bag, player, pd);
-  const total = goalTotal(pd);
+  return (
+    bestOf(
+      env,
+      candidates,
+      (sub, pd) => {
+        checkAffiliation(sub, bag, pd);
+        const min = strAt(bag, "min");
+        if (!pd.known) {
+          // 득점 목록이 없으면 한국 선수 블록의 골 수만 안다 — 분·종류·PK는 확인할 수 없다
+          const plain = noun === "골" && min === null && bag.pk !== true;
+          if (!plain || (goalTotal(pd) ?? 0) === 0)
+            bad(sub, code, textAt(env, bag, "subj"));
+          return playerFocus(pd);
+        }
+        const pool = goalsOfKind(pd.match, player, noun);
+        if (pool.length === 0) {
+          bad(sub, code, textAt(env, bag, "subj"));
+          return playerFocus(pd);
+        }
+        const byMin = min === null ? pool : pool.filter((g) => g.min === min);
+        if (byMin.length === 0) bad(sub, "minute", `${min}분`);
+        else if (bag.pk === true && !byMin.some((g) => g.penalty))
+          bad(sub, "penalty", "PK");
+        checkHalf(sub, bag, "min");
+        return playerFocus(pd);
+      },
+      keyAt(env, bag, "team") !== null,
+    ) ?? NO_FOCUS
+  );
+}
+
+/** 골 수(count) — n골(1 이상)·해트트릭(3골)·멀티골(2골 이상) */
+function vCount(env: Env, bag: Bag): Focus {
+  const player = keyAt(env, bag, "subj");
+  const candidates = player !== null ? playerData(env.s, player) : [];
   const n = numAt(bag, "n");
   const feat = strAt(bag, "feat");
   const label = `${textAt(env, bag, "subj")} ${n !== null ? `${n}골` : feat === "hat" ? "해트트릭" : "멀티골"}`;
-  const ok =
-    total !== null &&
-    (n !== null ? total === n : feat === "hat" ? total >= 3 : total >= 2);
-  if (!ok) bad(env, "goal-count", label);
-  const assists = numAt(bag, "assists");
-  if (assists !== null && assistTotal(pd) !== assists)
-    bad(env, "assist-count", `${textAt(env, bag, "subj")} ${assists}도움`);
-  const mins = strListAt(bag, "mins");
-  if (mins) {
-    const okMins =
-      pd.known &&
-      new Set(mins).size === mins.length &&
-      mins.every((x) => pd.goals.some((g) => g.min === x)) &&
-      (total === null || mins.length <= total);
-    if (!okMins) bad(env, "minute", mins.join("·"));
+  if (player === null || candidates.length === 0) {
+    bad(env, "goal-count", label);
+    return NO_FOCUS;
   }
+  return (
+    bestOf(
+      env,
+      candidates,
+      (sub, pd) => {
+        checkAffiliation(sub, bag, pd);
+        const total = goalTotal(pd);
+        const ok =
+          total !== null &&
+          (n !== null
+            ? total === n && n >= 1
+            : feat === "hat"
+              ? total === 3
+              : total >= 2);
+        if (!ok) bad(sub, "goal-count", label);
+        return playerFocus(pd);
+      },
+      keyAt(env, bag, "team") !== null,
+    ) ?? NO_FOCUS
+  );
 }
 
-/** 도움(assist) — 도움 수 · '{득점자}의 골을 도왔다' */
-function vAssist(env: Env, bag: Bag): void {
+/** 도움(assist) — '{득점자}의 [{분}] 골·결승골…을 도왔다' = 그 골의 도움이 주어(자기 골 도움 없음) */
+function vAssist(env: Env, bag: Bag): Focus {
   const player = keyAt(env, bag, "subj");
-  const pd = player !== null ? playerData(env.s, player) : null;
-  if (player === null || pd === null) {
-    bad(env, "assist-count", textAt(env, bag, "subj"));
-    return;
-  }
-  checkPlayerMods(env, bag, player, pd);
   const target = keyAt(env, bag, "target");
-  if (target === null) {
-    const want = numAt(bag, "assists") ?? -1;
-    const have = assistTotal(pd);
-    const ok = have !== null && (want === -1 ? have >= 1 : have === want);
-    if (!ok) bad(env, "assist-count", `${textAt(env, bag, "subj")} 도움`);
-    return;
+  const candidates = player !== null ? playerData(env.s, player) : [];
+  const label = `${textAt(env, bag, "subj")} → ${textAt(env, bag, "target")}`;
+  if (player === null || target === null || candidates.length === 0) {
+    bad(env, "assist-count", label);
+    return NO_FOCUS;
   }
-  // {득점자}의 [{분}] 골·결승골…을 도왔다 — 그 골의 도움이 주어
-  const match = pd.match;
-  const goals = match.goals;
-  if (!goals) {
-    bad(env, "assist-count", `${textAt(env, bag, "subj")} 도움`);
-    return;
-  }
-  const noun = strAt(bag, "noun") ?? "골";
-  let pool = goals.filter((g) => g.player === target && !g.ownGoal);
-  if (noun === "결승골") pool = pool.filter((g) => g === decisiveGoal(match));
-  if (noun === "동점골") pool = pool.filter((g) => g === equaliserGoal(match));
-  if (noun === "선제골") pool = pool.filter((g) => g === goals[0]);
-  if (noun === "만회골")
-    pool = pool.filter((g) => consolationGoals(match).includes(g));
-  const min = strAt(bag, "min");
-  if (min !== null) pool = pool.filter((g) => g.min === min);
-  const half = strAt(bag, "minH");
-  if (half !== null) pool = pool.filter((g) => halfOk(half, g.min));
-  if (!pool.some((g) => g.assist === player))
-    bad(
+  return (
+    bestOf(
       env,
-      "assist-count",
-      `${textAt(env, bag, "subj")} → ${textAt(env, bag, "target")}`,
-    );
+      candidates,
+      (sub, pd) => {
+        if (!pd.match.goals || player === target) {
+          bad(sub, "assist-count", label);
+          return playerFocus(pd);
+        }
+        let pool = goalsOfKind(pd.match, target, strAt(bag, "noun") ?? "골");
+        const min = strAt(bag, "min");
+        if (min !== null) pool = pool.filter((g) => g.min === min);
+        if (!pool.some((g) => g.assist === player))
+          bad(sub, "assist-count", label);
+        checkHalf(sub, bag, "min");
+        return playerFocus(pd);
+      },
+      true,
+    ) ?? NO_FOCUS
+  );
 }
 
 // ─── ③ 한국 선수 절 ───────────────────────────────────────────────────────
 
-/** 한국 선수 출전(korean) — 블록 기록과 일치 */
-function vKorean(env: Env, bag: Bag): KoreanModel | null {
+/** 한국 선수 출전(korean) — 블록 기록과 일치(같은 선수 블록이 둘이면 맞는 쪽 — 권장 6) */
+function vKorean(env: Env, bag: Bag): { focus: Focus; k: KoreanModel | null } {
   const player = keyAt(env, bag, "subj");
-  const k = env.s.refKorean.find((x) => x.player === player) ?? null;
-  if (!k) {
+  const blocks = env.s.refKorean.filter((x) => x.player === player);
+  if (blocks.length === 0) {
     bad(env, "appearance", `${textAt(env, bag, "subj")} 기록 없음`);
-    return null;
+    return { focus: NO_FOCUS, k: null };
   }
-  const kk = k.k;
-  const match = env.s.model.matches.get(kk.match) ?? null;
-  const kTeam = keyAt(env, bag, "kTeam");
-  if (kTeam !== null && kTeam !== k.team)
-    bad(env, "affiliation", textAt(env, bag, "kTeam"));
-  const kOpp = keyAt(env, bag, "kOpp");
-  if (kOpp !== null) {
-    const opp = !match
-      ? null
-      : match.home === k.team
-        ? match.away
-        : match.away === k.team
-          ? match.home
-          : null;
-    if (opp !== kOpp) bad(env, "opponent-mismatch", textAt(env, bag, "kOpp"));
-  }
-  const app = strAt(bag, "app");
-  if (app === "bench") {
-    if (kk.minutes > 0) bad(env, "appearance", "결장");
-    return k;
-  }
-  if (kk.minutes <= 0) bad(env, "appearance", "출전");
-  if (app === "start" && !kk.started) bad(env, "appearance", "선발");
-  if (app === "sub" && (kk.started || kk.subOn === undefined))
-    bad(env, "appearance", "교체 투입");
-  const subOn = strAt(bag, "subOn");
-  if (subOn !== null && String(kk.subOn) !== subOn)
-    bad(env, "minute", `${subOn}분 투입`);
-  checkHalf(
-    env,
-    bag,
-    "subOn",
-    kk.subOn !== undefined ? String(kk.subOn) : undefined,
+  return (
+    bestOf(
+      env,
+      blocks,
+      (sub, k) => {
+        const kk = k.k;
+        const match = env.s.model.matches.get(kk.match) ?? null;
+        const focus: Focus = { match, table: null, teams: [k.team] };
+        for (const key of ["kTeam", "kTeam2"]) {
+          const t = keyAt(env, bag, key);
+          if (t !== null && t !== k.team)
+            bad(sub, "affiliation", textAt(env, bag, key));
+        }
+        const kOpp = keyAt(env, bag, "kOpp");
+        if (kOpp !== null) {
+          const opp = !match
+            ? null
+            : match.home === k.team
+              ? match.away
+              : match.away === k.team
+                ? match.home
+                : null;
+          if (opp !== kOpp)
+            bad(sub, "opponent-mismatch", textAt(env, bag, "kOpp"));
+        }
+        const app = strAt(bag, "app");
+        if (app === "bench") {
+          if (kk.minutes > 0) bad(sub, "appearance", "결장");
+          return { focus, k };
+        }
+        if (kk.minutes <= 0) bad(sub, "appearance", "출전");
+        if (app === "start" && !kk.started) bad(sub, "appearance", "선발");
+        if (app === "sub" && (kk.started || kk.subOn === undefined))
+          bad(sub, "appearance", "교체 투입");
+        const subOn = strAt(bag, "subOn");
+        if (subOn !== null && String(kk.subOn) !== subOn)
+          bad(sub, "minute", `${subOn}분 투입`);
+        checkHalf(
+          sub,
+          bag,
+          "subOn",
+          kk.subOn !== undefined ? String(kk.subOn) : undefined,
+        );
+        const minutes = numAt(bag, "minutes");
+        if (minutes !== null && minutes !== kk.minutes)
+          bad(sub, "minute", `${minutes}분 출전`);
+        if (bag.subOff === true && kk.subOff === undefined)
+          bad(sub, "appearance", "교체 아웃");
+        return { focus, k };
+      },
+      ["kOpp", "kTeam", "kTeam2"].some((key) => keyAt(env, bag, key) !== null),
+    ) ?? {
+      focus: NO_FOCUS,
+      k: null,
+    }
   );
-  const minutes = numAt(bag, "minutes");
-  if (minutes !== null && minutes !== kk.minutes)
-    bad(env, "minute", `${minutes}분 출전`);
-  if (bag.subOff === true && kk.subOff === undefined)
-    bad(env, "appearance", "교체 아웃");
-  // {분}까지 뛰었다 — 교체 아웃 분(교체 없이 끝까지면 출전 분)
-  const until = strAt(bag, "subOffMin");
-  if (until !== null) {
-    const end = kk.subOff ?? (kk.started ? kk.minutes : undefined);
-    if (end === undefined || String(end) !== until)
-      bad(env, "minute", `${until}분까지`);
-    if (
-      bag.verb !== "뛰다" &&
-      bag.verb !== "소화하다" &&
-      kk.subOff === undefined
-    )
-      bad(env, "appearance", "교체 아웃");
-    checkHalf(env, bag, "subOffMin");
-  }
-  if (
-    bag.full === true &&
-    !(kk.started && kk.subOff === undefined && kk.minutes >= 90)
-  )
-    bad(env, "appearance", "풀타임");
-  return k;
 }
 
-/** (korean 뒤) 득점은 없었다 · 공격포인트는 없었다 */
-function vKoreanTail(env: Env, bag: Bag, k: KoreanModel | null): void {
-  if (!k) {
+/** (출전한 한국 선수 문형 뒤) 득점은 없었다 — 결장 뒤 꼬리는 거부(권장 1) */
+function vKoreanTail(
+  env: Env,
+  k: KoreanModel | null,
+  prevBag: Bag | null,
+): void {
+  if (!k || prevBag === null) {
     bad(env, "subject-unknown");
     return;
   }
+  if (prevBag.app === "bench" || k.k.minutes <= 0)
+    bad(env, "appearance", "결장 뒤 득점 서술");
   if (k.k.goals !== 0) bad(env, "goal-count", "득점 없음");
-  if (bag.tail === "공격포인트는" && k.k.assists !== 0)
-    bad(env, "assist-count", "공격포인트 없음");
 }
 
 // ─── ③ 순위 절 ────────────────────────────────────────────────────────────
 
-/** 순위 절의 순위표 — 대회 이름이 있으면 그 대회 순위표만 */
+/** 순위 절의 순위표 후보 — 대회 이름이 있으면 그 대회 순위표만 */
 function tablesFor(env: Env, bag: Bag): StandingsModel[] {
   const comp = keyAt(env, bag, "comp");
   const tables = env.s.refStandings;
@@ -1656,18 +1677,61 @@ function tablesFor(env: Env, bag: Bag): StandingsModel[] {
   return picked;
 }
 
-function rowIn(
+/**
+ * 팀들이 모두 있는 한 순위표(리뷰 3회차 차단 3 — 한 절·한 나열의 팀은 같은 순위표에 있어야 한다). 한 팀이라도 없는 표밖에 없으면
+ * null(팀이 어느 표에도 없으면 rank-pos, 표가 갈리면 rank-table).
+ */
+function tableOf(
+  env: Env,
   tables: readonly StandingsModel[],
-  team: string,
-): { row: RowModel; table: StandingsModel } | null {
-  for (const table of tables) {
-    const row = table.rows.find((r) => r.team === team);
-    if (row) return { row, table };
-  }
+  teams: readonly string[],
+): StandingsModel | null {
+  const both = tables.find((t) =>
+    teams.every((team) => t.rows.some((r) => r.team === team)),
+  );
+  if (both) return both;
+  const anywhere = teams.every((team) =>
+    tables.some((t) => t.rows.some((r) => r.team === team)),
+  );
+  if (anywhere && teams.length > 1) bad(env, "rank-table", "다른 순위표");
+  else bad(env, "rank-pos", "순위표에 없음");
   return null;
 }
 
-/** 순위 묶음 하나(팀들 + 승점 + 순위) */
+function rowOf(table: StandingsModel, team: string): RowModel {
+  return table.rows.find((r) => r.team === team)!;
+}
+
+/** 그 행의 순위를 다른 팀과 함께 쓰는가(같은 pos 2팀 이상 — 승점이 같아도 pos가 다르면 공동이 아니다) */
+function sharedPos(table: StandingsModel, pos: number): boolean {
+  return table.rows.filter((r) => r.pos === pos).length >= 2;
+}
+
+/**
+ * 순위 서술 하나(그 팀 행 · 순위 n · 공동 여부) — pos가 같아야 하고, '공동'은 그 pos를 2팀 이상이 쓸 때만, pos를 여럿이 쓰는데
+ * '공동'을 빼면 단독처럼 읽혀 강등(리뷰 3회차 차단 4·리뷰 b2 '공동 2위인데 단독처럼').
+ */
+function checkPos(
+  env: Env,
+  table: StandingsModel,
+  row: RowModel,
+  rank: number | null,
+  tied: boolean,
+): void {
+  if (rank !== null && row.pos !== rank) {
+    bad(
+      env,
+      tied ? "rank-tie" : "rank-pos",
+      tied ? `공동 ${rank}위` : `${rank}위`,
+    );
+    return;
+  }
+  const shared = sharedPos(table, row.pos);
+  if (tied && !shared) bad(env, "rank-tie", `공동 ${rank ?? row.pos}위`);
+  if (!tied && shared) bad(env, "rank-tie", `${row.pos}위 공동 빠짐`);
+}
+
+/** 순위 묶음 하나(팀들 + 승점 + 순위) — 같은 순위표 */
 function checkRankGroup(
   env: Env,
   tables: readonly StandingsModel[],
@@ -1675,25 +1739,16 @@ function checkRankGroup(
   pts: number | null,
   rank: number | null,
   tied: boolean,
-): void {
+): StandingsModel | null {
+  const table = tableOf(env, tables, teams);
+  if (!table) return null;
   for (const team of teams) {
-    const hit = rowIn(tables, team);
-    if (!hit) {
-      bad(env, "rank-pos", "순위표에 없음");
-      continue;
-    }
-    const { row, table } = hit;
+    const row = rowOf(table, team);
     if (pts !== null && row.pts !== pts) bad(env, "points", `승점 ${pts}`);
-    if (rank !== null && row.pos !== rank)
-      bad(
-        env,
-        tied ? "rank-tie" : "rank-pos",
-        tied ? `공동 ${rank}위` : `${rank}위`,
-      );
-    if (tied && table.rows.filter((r) => r.pos === row.pos).length < 2)
-      bad(env, "rank-tie", `공동 ${rank ?? row.pos}위`);
+    checkPos(env, table, row, rank, tied);
   }
   if (teams.length > 1 && !tied) bad(env, "rank-tie", "공동 아님");
+  return table;
 }
 
 function subjectTeams(
@@ -1708,14 +1763,14 @@ function subjectTeams(
   return inherited !== null ? [inherited] : null;
 }
 
-/** 순위(rank) — [팀] [승점 n으로] [대회] 선두다·n위다 … */
-function vRank(env: Env, bag: Bag, inherited: string | null): string | null {
+/** 순위(rank) — [팀] [승점 n으로] [대회] [공동] 선두다·n위다 … */
+function vRank(env: Env, bag: Bag, inherited: string | null): Focus {
   const teams = subjectTeams(env, bag, inherited);
   if (!teams) {
     bad(env, "subject-unknown");
-    return null;
+    return NO_FOCUS;
   }
-  checkRankGroup(
+  const table = checkRankGroup(
     env,
     tablesFor(env, bag),
     teams,
@@ -1723,140 +1778,111 @@ function vRank(env: Env, bag: Bag, inherited: string | null): string | null {
     numAt(bag, "rank"),
     bag.rankT === true,
   );
-  return teams.length === 1 ? teams[0]! : null;
+  return { match: null, table, teams };
 }
 
-/** 순위 나열(rankList) — 묶음마다 */
-function vRankList(env: Env, bag: Bag): void {
-  const tables = tablesFor(env, bag);
-  for (const i of [1, 2, 3]) {
-    const teams = groupKeys(env, bag, `g${i}`);
-    if (!teams) continue;
+/** 순위 나열(rankList) — 모든 묶음이 같은 순위표 */
+function vRankList(env: Env, bag: Bag): Focus {
+  const groups = [1, 2, 3]
+    .map((i) => ({ i, teams: groupKeys(env, bag, `g${i}`) }))
+    .filter((g): g is { i: number; teams: string[] } => g.teams !== null);
+  const all = groups.flatMap((g) => g.teams);
+  const table = tableOf(env, tablesFor(env, bag), all);
+  if (!table) return NO_FOCUS;
+  for (const g of groups) {
     checkRankGroup(
       env,
-      tables,
-      teams,
-      numAt(bag, `pts${i}`),
-      numAt(bag, `rank${i}`),
-      bag[`rank${i}T`] === true,
+      [table],
+      g.teams,
+      numAt(bag, `pts${g.i}`),
+      numAt(bag, `rank${g.i}`),
+      bag[`rank${g.i}T`] === true,
     );
   }
+  return { match: null, table, teams: all };
 }
 
-const MOVE_UP: ReadonlySet<string> = new Set([
-  "오르다",
-  "올라서다",
-  "상승하다",
-]);
-
-/** 순위 변동(move) — prev가 있을 때만(D40 ③) */
-function vMove(env: Env, bag: Bag, inherited: string | null): string | null {
+/** 순위 변동(move) — prev가 있을 때만(D40 ③), 도착 순위를 다른 팀과 함께 쓰면 단독처럼 읽혀 강등 */
+function vMove(env: Env, bag: Bag, inherited: string | null): Focus {
   const team = keyAt(env, bag, "subj") ?? inherited;
   if (team === null) {
     bad(env, "subject-unknown");
-    return null;
+    return NO_FOCUS;
   }
-  const hit = rowIn(tablesFor(env, bag), team);
-  if (!hit) {
-    bad(env, "rank-pos", "순위표에 없음");
-    return team;
-  }
-  const { row } = hit;
+  const table = tableOf(env, tablesFor(env, bag), [team]);
+  if (!table) return NO_FOCUS;
+  const row = rowOf(table, team);
   const from = numAt(bag, "from");
   const to = numAt(bag, "to");
-  const pts = numAt(bag, "pts");
-  if (pts !== null && row.pts !== pts) bad(env, "points", `승점 ${pts}`);
-  const label = `${from !== null ? `${from}위에서 ` : ""}${to}위로`;
+  const label = `${from}위에서 ${to}위로`;
+  const focus: Focus = { match: null, table, teams: [team] };
   if (row.prev === undefined) {
     bad(env, "rank-move-no-prev", label);
-    return team;
+    return focus;
   }
-  // '{p}위에서'를 빼면('3위로 올라섰다') 전일 순위가 출발점이다
-  const start = from ?? row.prev;
-  const up = MOVE_UP.has(strAt(bag, "verb") ?? "");
-  const directionOk = to !== null && (up ? to < start : to > start);
-  if (row.prev !== start || row.pos !== to || !directionOk)
+  const up = bag.verb === "오르다";
+  const directionOk =
+    from !== null && to !== null && (up ? to < from : to > from);
+  if (row.prev !== from || row.pos !== to || !directionOk)
     bad(env, "rank-move", label);
-  return team;
+  else if (sharedPos(table, row.pos)) bad(env, "rank-tie", `${to}위 공동 빠짐`);
+  return focus;
 }
 
-/** 순위 유지(keep) — prev가 있고 같을 때만(D40 ③) */
-function vKeep(env: Env, bag: Bag, inherited: string | null): string | null {
+/** 순위 유지(keep) — prev가 있고 같을 때만(D40 ③), 공동은 rank와 같은 판정 */
+function vKeep(env: Env, bag: Bag, inherited: string | null): Focus {
   const team = keyAt(env, bag, "subj") ?? inherited;
   if (team === null) {
     bad(env, "subject-unknown");
-    return null;
+    return NO_FOCUS;
   }
-  const hit = rowIn(tablesFor(env, bag), team);
-  if (!hit) {
-    bad(env, "rank-pos", "순위표에 없음");
-    return team;
-  }
-  const { row } = hit;
+  const table = tableOf(env, tablesFor(env, bag), [team]);
+  if (!table) return NO_FOCUS;
+  const row = rowOf(table, team);
+  const pts = numAt(bag, "pts");
+  if (pts !== null && row.pts !== pts) bad(env, "points", `승점 ${pts}`);
   if (row.prev === undefined) bad(env, "rank-move-no-prev", "지켰다");
   else if (row.prev !== row.pos || row.pos !== numAt(bag, "rank"))
     bad(env, "rank-move", "지켰다");
-  return team;
+  else checkPos(env, table, row, numAt(bag, "rank"), bag.rankT === true);
+  return { match: null, table, teams: [team] };
 }
 
-/** 승점 차(gap) — 방향까지(D40 ②) */
-function vGap(env: Env, bag: Bag, inherited: string | null): string | null {
+/** 승점 차(gap) — 방향까지(D40 ②), 차는 1 이상(중요 1), 두 팀 순위의 공동은 rank와 같은 판정(차단 4) */
+function vGap(env: Env, bag: Bag, inherited: string | null): Focus {
   const team = keyAt(env, bag, "subj") ?? inherited;
   const otherTeam = keyAt(env, bag, "other");
   if (team === null || otherTeam === null) {
     bad(env, "subject-unknown");
-    return null;
+    return NO_FOCUS;
   }
-  const tables = tablesFor(env, bag);
-  const a = rowIn(tables, team);
-  const b = rowIn(tables, otherTeam);
-  if (!a || !b || a.table !== b.table) {
-    bad(env, "rank-pos", "순위표에 없음");
-    return team;
-  }
-  const pts = numAt(bag, "pts");
-  if (pts !== null && a.row.pts !== pts) bad(env, "points", `승점 ${pts}`);
+  const table = tableOf(env, tablesFor(env, bag), [team, otherTeam]);
+  if (!table) return NO_FOCUS;
+  const a = rowOf(table, team);
+  const b = rowOf(table, otherTeam);
   const gap = numAt(bag, "gap");
-  const diff =
-    bag.dir === "ahead" ? a.row.pts - b.row.pts : b.row.pts - a.row.pts;
-  if (gap === null || diff !== gap) bad(env, "points", `승점 ${gap} 차`);
+  const diff = bag.dir === "ahead" ? a.pts - b.pts : b.pts - a.pts;
+  if (gap === null || gap < 1 || diff !== gap)
+    bad(env, "points", `승점 ${gap} 차`);
   const otherRank = numAt(bag, "otherRank");
-  if (otherRank !== null && b.row.pos !== otherRank)
-    bad(env, "rank-pos", `${otherRank}위 ${textAt(env, bag, "other")}`);
-  const rank = numAt(bag, "rank");
-  if (rank !== null && a.row.pos !== rank) bad(env, "rank-pos", `${rank}위`);
-  return team;
-}
-
-/** (win·draw 뒤) 승점 3을 챙겼다 · 승점 1씩 나눠 가졌다 — 리그 경기(녹아웃·연장 없음)의 승리 3·무승부 1 */
-function vPoints(
-  env: Env,
-  bag: Bag,
-  prevType: string | null,
-  prev: ClauseSubject,
-): void {
-  const match = prev.match;
-  const f = match?.facts ?? null;
-  const league = !!match && /^(?:Matchday|League phase)/u.test(match.m.round);
-  const gained = numAt(bag, "gained");
-  const ok =
-    !!f &&
-    league &&
-    !f.aet &&
-    (gained === 3
-      ? prevType === "win"
-      : prevType === "draw" && f.winner === null);
-  if (!ok) bad(env, "points", `승점 ${gained}`);
+  if (otherRank !== null)
+    checkPos(env, table, b, otherRank, bag.otherRankT === true);
+  checkPos(env, table, a, numAt(bag, "rank"), bag.rankT === true);
+  return { match: null, table, teams: [team] };
 }
 
 // ─── ③ 분석 대조 ──────────────────────────────────────────────────────────
 
+/** 앞 절에 붙는 꼬리 — 대상 대조를 하지 않는다(앞 절이 정한다) */
+const TAIL_TYPES: ReadonlySet<string> = new Set(["endPens", "koreanTail"]);
+
 /** 분석 하나 → 사유 목록(빈 목록 = 입력과 맞음) */
 function validateParse(s: LineState, parse: LineParse): Issues {
   const env: Env = { s, issues: [] };
-  let prevSubject: ClauseSubject = NO_SUBJECT;
+  let prevFocus: Focus = NO_FOCUS;
   let prevType: string | null = null;
   let prevKorean: KoreanModel | null = null;
+  let prevBag: Bag | null = null;
   parse.clauses.forEach((c: ParsedClause, i) => {
     const bag = c.bag;
     const adn =
@@ -1864,61 +1890,66 @@ function validateParse(s: LineState, parse: LineParse): Issues {
         ? (s.mentions[parse.adnSubject]?.key ?? null)
         : null;
     const subject = adn ?? keyAt(env, bag, "subj");
-    const inherited = prevSubject.team;
-    let next: ClauseSubject = NO_SUBJECT;
+    const inherited = prevFocus.teams.length === 1 ? prevFocus.teams[0]! : null;
+    let focus: Focus = NO_FOCUS;
     switch (c.type) {
       case "win":
       case "loss":
-        next = vResult(env, bag, subject, c.type);
+        focus = vResult(env, bag, subject, c.type);
         break;
       case "draw":
-        next = vDraw(env, bag, subject);
+        focus = vDraw(env, bag, subject);
         break;
       case "pens":
-        next = vPens(env, bag);
+        focus = vPens(env, bag);
         break;
       case "end":
-        next = vEnd(env, bag, parse.clauses[i + 1]?.type === "endPens");
+        focus = vEnd(env, bag, parse.clauses[i + 1]?.type === "endPens");
         break;
       case "endPens":
-        vEndPens(env, bag, prevSubject);
+        vEndPens(env, bag, prevFocus, prevType);
+        focus = prevFocus;
         break;
       case "goal":
-        vGoal(env, bag);
+        focus = vGoal(env, bag);
         break;
       case "count":
-        vCount(env, bag);
+        focus = vCount(env, bag);
         break;
       case "assist":
-        vAssist(env, bag);
+        focus = vAssist(env, bag);
         break;
-      case "korean":
-        prevKorean = vKorean(env, bag);
+      case "korean": {
+        const r = vKorean(env, bag);
+        focus = r.focus;
+        prevKorean = r.k;
         break;
+      }
       case "koreanTail":
-        vKoreanTail(env, bag, prevType === "korean" ? prevKorean : null);
+        vKoreanTail(env, prevType === "korean" ? prevKorean : null, prevBag);
+        focus = prevFocus;
         break;
       case "rank":
-        next = { team: vRank(env, bag, inherited), match: null };
+        focus = vRank(env, bag, inherited);
         break;
       case "rankList":
-        vRankList(env, bag);
+        focus = vRankList(env, bag);
         break;
       case "move":
-        next = { team: vMove(env, bag, inherited), match: null };
+        focus = vMove(env, bag, inherited);
         break;
       case "keep":
-        next = { team: vKeep(env, bag, inherited), match: null };
+        focus = vKeep(env, bag, inherited);
         break;
       case "gap":
-        next = { team: vGap(env, bag, inherited), match: null };
-        break;
-      case "points":
-        vPoints(env, bag, prevType, prevSubject);
+        focus = vGap(env, bag, inherited);
         break;
     }
-    prevSubject = next;
+    if (i > 0 && !TAIL_TYPES.has(c.type) && !sameFocus(prevFocus, focus))
+      bad(env, "clause-mismatch", `${prevType}+${c.type}`);
+    prevFocus = focus;
     prevType = c.type;
+    prevBag = bag;
   });
   return env.issues;
 }
@@ -1984,11 +2015,12 @@ function checkLine(
   };
   lineRefs(s);
   lineSentence(s);
-  if (briefLinesOverLimit([substituted]).length > 0)
-    fail(s, "over-limit", String(substituted.length));
+  const overLimit = briefLinesOverLimit([substituted]).length > 0;
+  if (overLimit) fail(s, "over-limit", String(substituted.length));
   lineScripts(s);
   lineNames(s);
-  const grammar = lineGrammar(s);
+  // 80자를 넘는 줄은 이미 강등이다 — 긴 줄의 문법 분석(분석 수가 늘어난다)은 건너뛴다(리뷰 3회차 권장 7)
+  const grammar = overLimit ? null : lineGrammar(s);
   // 한 줄에 두 경기 이상(지시문 '한 줄에 한 경기') — 사실이 맞으면 경고만(관찰 주간 지표)
   const matchesNamed = new Set(
     mentions.flatMap((m) =>

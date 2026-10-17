@@ -877,12 +877,19 @@ describe("brief-input.ts — 정형 입력(M0-34 창)", () => {
     );
     expect(roundLabel({ stage: "LAST_16", matchday: null })).toBe("LAST_16");
   });
+
+  it("라운드 표기는 stage 우선 — 녹아웃 2차전(matchday 2)도 stage 원문, stage가 없으면 리그로 짐작하지 않는다(M1-23 리뷰 3회차 차단 1)", () => {
+    expect(roundLabel({ stage: "PLAYOFFS", matchday: 2 })).toBe("PLAYOFFS");
+    expect(roundLabel({ stage: "LAST_16", matchday: 1 })).toBe("LAST_16");
+    expect(roundLabel({ stage: "FINAL", matchday: null })).toBe("FINAL");
+    expect(roundLabel({ stage: null, matchday: 6 })).toBe("");
+  });
 });
 
 describe("brief.ts — 요청 설정(D28)·출력 파싱", () => {
   const input = { briefDate: "2026-10-11", matches: [], standings: [] };
 
-  it("단건 요청 — max_tokens 4096, thinking 적응형 + effort medium 명시, 1요청이라 캐싱 끔", () => {
+  it("단건 요청 — max_tokens 8192(D53), thinking 적응형 + effort medium 명시, 1요청이라 캐싱 끔", () => {
     const request = buildBriefRequest(input, "지시문");
     expect(request).toEqual({
       customId: "brief-2026-10-11",
@@ -892,14 +899,14 @@ describe("brief.ts — 요청 설정(D28)·출력 파싱", () => {
       effort: "medium",
       thinking: "adaptive",
     });
-    expect(BRIEF_MAX_TOKENS).toBe(4096);
+    expect(BRIEF_MAX_TOKENS).toBe(8192);
     expect(request.cacheSystem).toBeUndefined();
   });
 
   it("예상 비용은 출력 상한(max_tokens)으로 잡아 실측보다 크다", () => {
     const request = buildBriefRequest(input, "가".repeat(2000));
     const estimate = estimateBriefCost(request, "claude-haiku-5-5");
-    expect(estimate.tokens.out).toBe(4096);
+    expect(estimate.tokens.out).toBe(8192);
     expect(estimate.tokens.in).toBeGreaterThanOrEqual(2000);
     expect(estimate.usd).toBeGreaterThan(0);
     expect(estimate.usd).toBeLessThan(0.01);
@@ -1187,7 +1194,7 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
     const request = llmRequests[0]!;
     expect(request).toMatchObject({
       customId: "brief-2026-10-11",
-      maxTokens: 4096,
+      maxTokens: 8192,
       effort: "medium",
       thinking: "adaptive",
     });
@@ -1629,7 +1636,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(params).toHaveLength(1);
     expect(params[0]).toMatchObject({
       model: "claude-haiku-5-5",
-      max_tokens: 4096,
+      max_tokens: 8192,
       thinking: { type: "adaptive" },
       output_config: { effort: "medium" },
     });

@@ -50,11 +50,14 @@ const BUDGETS = {
   monthlyBudgetUsd: DEFAULT_MONTHLY_BUDGET_USD,
 };
 
-/** 입력 어림 = 지시문 2,000(글자당 1) + 사용자 3,000자 ÷ 1.5 = 4,000토큰, 출력 상한 4,096 */
+/**
+ * 입력 어림 = 지시문 2,000(글자당 1) + 사용자 3,000자 ÷ 1.5 = 4,000토큰, 출력 상한 4,096(고정 시험값 — 함수는 요청의 maxTokens를
+ * 쓴다. 실제 상한 BRIEF_MAX_TOKENS 8,192(D53)의 최악값은 아래 "D53" 시험)
+ */
 const REQUEST: BriefRequestShape = {
   system: "가".repeat(2000),
   user: "x".repeat(3000),
-  maxTokens: BRIEF_MAX_TOKENS,
+  maxTokens: 4_096,
 };
 /** 1회 = 4,000 × $0.10/M + 4,096 × $0.50/M = $0.002448 → 최악값(2회) $0.004896 */
 const ONE_CALL_USD = 0.002448;
@@ -141,6 +144,19 @@ const DEV_1020 = "2026-10-20T01:00:00.000Z";
 const DEV_1005 = "2026-10-05T05:00:00.000Z";
 
 // ─── 최악값 예상 ─────────────────────────────────────────────────────────
+
+describe("estimateBriefWorstCase — D53 max_tokens 8,192의 최악값", () => {
+  it("같은 요청을 실제 상한(BRIEF_MAX_TOKENS 8,192)으로 보면 1회 $0.004496 · 최악값 $0.008992(일 예산의 9.0% — 4,096일 때 4.9%)", () => {
+    expect(BRIEF_MAX_TOKENS).toBe(8_192);
+    const worst = estimateBriefWorstCase(
+      [{ ...REQUEST, maxTokens: BRIEF_MAX_TOKENS }],
+      MODEL,
+    );
+    expect(worst.usd).toBeCloseTo(0.008992, 9);
+    expect(worst.tokens).toMatchObject({ in: 8_000, out: 16_384 });
+    expect(worst.usd / DEFAULT_DAILY_BUDGET_USD).toBeCloseTo(0.08992, 6);
+  });
+});
 
 describe("estimateBriefWorstCase — 첫 호출 + FR-29 재시도 × 출력 상한(max_tokens)", () => {
   it("요청 1건이 최대 2번 과금된다고 본다 — 단건 예상의 정확히 2배", () => {

@@ -122,7 +122,7 @@ describe("요청 본문 = 앞 15경기(brief.ts buildBriefRequest · eval:prompt
     expect(user.matches).toHaveLength(15);
     expect(req.user).toBe(serializeBriefInput(briefLlmInput(BUSY).input));
     expect(req).toMatchObject({
-      maxTokens: 4096,
+      maxTokens: 8192,
       effort: "medium",
       thinking: "adaptive",
     });

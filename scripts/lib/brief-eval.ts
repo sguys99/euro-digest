@@ -1,7 +1,7 @@
 /**
  * 브리핑 골든셋 회귀 평가 — 순수 함수 (M1-24, `npm run eval:prompt` — CLAUDE.md §6.3·PRD §9.2).
  *
- * 한 번의 실행(run) = 골든셋 날짜마다 브리핑 요청 1건(D28 설정 그대로 — 단건·max_tokens 4,096·thinking 적응형·effort medium·
+ * 한 번의 실행(run) = 골든셋 날짜마다 브리핑 요청 1건(D28·D53 설정 그대로 — 단건·max_tokens 8,192·thinking 적응형·effort medium·
  * 캐싱 끔, 첫 시도만 — FR-29 재시도는 보내지 않는다) → 출력 원문 → M1-23 판정(`judgeBriefResponse` 첫 시도 기준)·고유명사 치환 뒤
  * 문장·줄별 사유 코드 → 같은 근거의 템플릿 줄(`templateLineForRefs`, 비교용). 실행 기록(`EvalRun`)은
  * `fixtures/llm/golden/runs/<라벨>/run.json`에 남고, 리포트는 기준 실행(이전 실행 또는 M0 출력)과 날짜별로 비교한다:

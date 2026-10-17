@@ -8,7 +8,7 @@
  * 브리핑 마감(공개 목표 −10분 — M1-47)은 collect-run.ts가 collect-deadlines.ts로 계산해
  * `callSingle` deadline으로 넘긴다(재시도 대기만 묶음 — 요청 타임아웃·마감 초과 템플릿은 M1-45).
  *
- * 요청 설정 (D28 — 바꾸려면 사용자 승인, CLAUDE.md §1-3): thinking 적응형 + `effort:"medium"` 명시, `max_tokens` 4,096,
+ * 요청 설정 (D28·D53 — 바꾸려면 사용자 승인, CLAUDE.md §1-3): thinking 적응형 + `effort:"medium"` 명시, `max_tokens` 8,192(D53),
  * 하루 1요청이라 지시문 캐싱(cacheSystem)은 끈다(B3 미발동 — 2요청 이상일 때만).
  *
  * 지시문 (M1-20): `configs/prompts/summarize.md`(파일명 유지 = 일일 브리핑 지시문, PRD §9.2) — 파일 내용 `.trim()`을 그대로
@@ -42,8 +42,13 @@ import {
 } from "./brief-input";
 import type { LlmRequest } from "./llm";
 
-/** D28 브리핑 max_tokens (thinking 포함) */
-export const BRIEF_MAX_TOKENS = 4_096;
+/**
+ * 브리핑 max_tokens (thinking 포함) — D28의 4,096에서 **8,192**(PRD §15 D53, 2026-10-17 사용자 결정): v0.2 골든셋에서 thinking이
+ * 늘어 4경기 날도 4,096에서 잘렸다(잘리면 쓴 토큰이 버려지고 FR-29 재시도 → 템플릿). 실제 비용은 쓴 출력만큼이라 거의 그대로이고,
+ * 비용 가드의 최악값 예상(budget-guard.ts — max_tokens × 시도 2회)만 커진다. D28의 나머지(단건·thinking 적응형·effort medium·
+ * 캐싱 끔)는 그대로다.
+ */
+export const BRIEF_MAX_TOKENS = 8_192;
 /**
  * 브리핑 요청 1건이 과금될 수 있는 최대 횟수 — 첫 호출 + FR-29 출력 재시도 1회(zod·코드 검증 실패를 합쳐 1회, D40 ①의
  * max_tokens 포함). 비용 가드(M1-22 budget-guard.ts)가 이 횟수 × (넉넉한 입력 어림 + 출력 상한)으로 판정한다 — M1-45 재시도 루프도
@@ -108,7 +113,7 @@ export function buildBriefRequest(
  * → 두 실측 합 6,594토큰에 대해 7,865토큰(약 +19%).
  * M1-19 확인(2026-10-16): 확정 입력은 M0-34 입력 E와 같은 구성(경기 + 득점 + 리그별 상위 4위 순위표, 영문 짧은 키 JSON)이라
  * 글자당 토큰 비율이 같다고 본다 — 2026-10-10 실응답 23경기 입력 6,618자(E 8,619자 — 한국 선수 블록 포함). 여유는 입력 부분 +26%·
- * 지시문 +4%라 경기가 적은 날은 전체 여유가 지시문 쪽(+4%)으로 줄지만, 판정은 출력 상한(4,096 × 2회)이 지배한다.
+ * 지시문 +4%라 경기가 적은 날은 전체 여유가 지시문 쪽(+4%)으로 줄지만, 판정은 출력 상한(8,192 × 2회 — D53)이 지배한다.
  * M1-20 확인(2026-10-17): 지시문 v0.1(`configs/prompts/summarize.md`)은 약 4,300자로 길어졌지만 글자 구성(한글 음절 비율 약 48%·
  * 라틴·공백·기호)이 M0-30 긴 판과 같아 글자당 약 0.96토큰 → 약 4,130토큰으로 본다(여유 약 +4% 유지 — tests/brief-prompt.test.ts가
  * 구성 비율을 지킨다). 실측 확인은 병합 뒤 dev 소량 실행(💰 M1-20).

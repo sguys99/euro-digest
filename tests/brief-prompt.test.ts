@@ -1,5 +1,5 @@
 /**
- * M1-20 일일 브리핑 지시문(`configs/prompts/summarize.md` — v0.1 → **v0.2 허용 문형 목록**, M1-23 재설계 D50) — 로딩, 필수 규칙
+ * M1-20 일일 브리핑 지시문(`configs/prompts/summarize.md` — v0.1 → v0.2 허용 문형 목록(D50) → **v0.3 문형 축소·문법과 한 출처(D53 ②)**) — 로딩, 필수 규칙
  * 가드, 입력 키 설명, 크기·글자 구성(비용 어림). 네트워크·LLM 없음. [문형] 목록과 검사기 문법(brief-grammar.ts)의 일치는
  * tests/brief-grammar.test.ts가 본다(지시문 예문·문형마다 채운 참 문장이 모두 통과).
  *
@@ -79,7 +79,7 @@ describe("지시문 로딩 (M1-01 이월 — 슬라이스 fixture 지시문에�
     await expect(loadBriefPrompt(tmpRoot())).rejects.toThrow();
   });
 
-  it("요청 system = 지시문, 설정은 D28 그대로(max_tokens 4,096·thinking 적응형·effort medium·캐싱 끔)", () => {
+  it("요청 system = 지시문, 설정은 D28·D53(max_tokens 8,192·thinking 적응형·effort medium·캐싱 끔)", () => {
     const input: BriefInput = {
       briefDate: "2026-10-11",
       matches: [],
@@ -87,7 +87,7 @@ describe("지시문 로딩 (M1-01 이월 — 슬라이스 fixture 지시문에�
     };
     expect(buildBriefRequest(input, PROMPT)).toMatchObject({
       system: PROMPT,
-      maxTokens: 4096,
+      maxTokens: 8192,
       thinking: "adaptive",
       effort: "medium",
     });
@@ -146,7 +146,7 @@ describe("지시문 내용 — 사용자 결정 가드", () => {
     ["결승골 정의", "이긴 팀의 (진 팀 점수 + 1)번째 골"],
     [
       "결승골이 자책골이면 득점자 이름으로 쓰지 않음",
-      "own_goal이면 득점자 이름으로 결승골을 쓰지 않는다",
+      "own_goal이면 득점자 이름으로 쓰지 않는다",
     ],
     [
       "역전승은 ht·득점 순서로 확인될 때만",
@@ -167,7 +167,13 @@ describe("지시문 내용 — 사용자 결정 가드", () => {
       "문형 밖의 동사·수식·평가가 들어간 줄은 버려진다",
     ],
     ["허용 문형 목록 절", "[문형]"],
-    ["두 문형 잇기는 -고·-며", "문형 두 개는 '-고'·'-며'로 잇고"],
+    ["두 문형 잇기는 -고·-며", "문형 둘을 '-고'·'-며'로 잇는다"],
+    // 2026-10-17 M1-23 3회차 리뷰 — 두 절은 같은 경기, 공동 순위·같은 순위표, '연장까지'는 aet만
+    ["두 문형은 같은 경기", "두 문형은 같은 경기"],
+    ["같은 pos면 '공동'", "pos가 같은 팀이 있으면 '공동'을 붙인다"],
+    ["한 문장의 팀은 같은 순위표", "한 문장의 팀은 같은 순위표에 있어야 한다"],
+    ["'연장까지'는 aet만", "'연장까지'는 aet가 있을 때만 쓴다"],
+    ["골 합은 두 팀이 모두 넣은 경기만", "두 팀이 모두 넣은 경기의 골 합"],
   ])("%s", (_, phrase) => {
     expect(PROMPT).toContain(phrase);
   });

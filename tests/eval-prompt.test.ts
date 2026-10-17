@@ -43,7 +43,9 @@ import {
 import {
   checkerFingerprint,
   configsFingerprint,
+  EVAL_OUTPUT_ALERT_TOKENS,
   evalPromptPathError,
+  evalStopReason,
   evalVersions,
   isValidEvalLabel,
   loadEvalContext,
@@ -581,6 +583,85 @@ describe("runEvalPrompt — live 흐름(가짜 클라이언트, 임시 data/)", 
     expect(outcome.exitCode).toBe(2);
     expect(calls).toHaveLength(0);
     expect(readdirSync(d.dataDir)).toEqual(["runs.json"]);
+  });
+
+  it.each([
+    [
+      "출력 6,000토큰 초과",
+      {
+        ok: true,
+        text: '{"l":[]}',
+        stopReason: "end_turn",
+        out: 6_001,
+      },
+      "출력 6001토큰 > 6000",
+    ],
+    [
+      "잘림(max_tokens)",
+      {
+        ok: false,
+        errorType: "max_tokens",
+        message: "max_tokens",
+        retryable: false,
+        out: 8_192,
+      },
+      "잘림(max_tokens)",
+    ],
+  ] as const)(
+    "%s면 남은 날을 보내지 않고 멈춘다(D53 — 멈추고 보고, live만)",
+    async (_, shape, reason) => {
+      const calls: LlmRequest[] = [];
+      const d = deps({
+        args: args({
+          llmMode: "live",
+          dates: ["2026-10-10", "2026-10-17"],
+          label: "stop-t",
+          baseline: "none",
+        }),
+        createLlm: (model: string) => ({
+          model,
+          async callSingle(request: LlmRequest): Promise<LlmResult> {
+            calls.push(request);
+            const { out, ...rest } = shape;
+            return {
+              ...rest,
+              customId: request.customId,
+              batch: false,
+              usage: { in: 5_000, out, cacheRead: 0, cacheWrite: 0 },
+              thinkingTokens: 100,
+            } as LlmResult;
+          },
+        }),
+      });
+      const outcome = await runEvalPrompt(d);
+      expect(outcome.exitCode).toBe(0);
+      expect(calls.map((c) => c.customId)).toEqual(["golden-2026-10-10"]);
+      expect(outcome.run!.days.map((x) => x.date)).toEqual(["2026-10-10"]);
+      const printed = d.out.join("\n");
+      expect(printed).toContain(`[eval] 멈춤: 2026-10-10 ${reason}`);
+      expect(printed).toContain("남은 1일은 보내지 않는다");
+      const runs = RunsDevFileSchema.parse(
+        readJson(path.join(d.dataDir, "runs-dev.json")),
+      );
+      expect(runs[0]!.status).toBe("partial");
+      expect(runs[0]!.tokens.out).toBe(shape.out);
+    },
+  );
+
+  it("evalStopReason — 6,000 이하·정상 종료면 멈추지 않는다", () => {
+    const day = (ok: boolean, out: number, errorType: string | null) => ({
+      ok,
+      errorType,
+      usage: { in: 1, out, cacheRead: 0, cacheWrite: 0 },
+    });
+    expect(evalStopReason(day(true, EVAL_OUTPUT_ALERT_TOKENS, null))).toBe(
+      null,
+    );
+    expect(evalStopReason(day(false, 10, "api_error"))).toBe(null);
+    expect(evalStopReason(day(true, 6_001, null))).toMatch(/^출력 6001토큰/);
+    expect(evalStopReason(day(false, 8_192, "max_tokens"))).toMatch(
+      /^잘림\(max_tokens\)/,
+    );
   });
 
   it("--dry는 예상만 출력하고 부르지 않는다", async () => {

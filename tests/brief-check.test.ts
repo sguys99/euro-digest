@@ -15,7 +15,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import {
@@ -62,6 +62,10 @@ import {
   toCompStandings,
   toFinishedResults,
 } from "../scripts/lib/providers/football-data";
+
+// 전수 검사(변형·재현 문장 수천 줄 × 23경기 입력) 테스트가 있어 이 파일만 시간 상한을 늘린다. 한 줄 검사가 입력 모형을 매번 새로
+// 만들어(실제 실행은 하루 1~2회라 캐시하지 않는다) 한 테스트가 단독 2초 안팎, 전체 스위트를 병렬로 돌리면 기본 5초를 넘을 때가 있다.
+vi.setConfig({ testTimeout: 30_000 });
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const readJson = (rel: string): unknown =>
@@ -234,8 +238,9 @@ describe("사람 검토 대비 — M0-30·M0-34 실제 출력 90줄", () => {
   });
 
   // D50(닫힌 문법) 뒤로 사실은 맞지만 문형 밖인 줄(쉼표 절·흐름 서술·목록 밖 술어·괄호·두 경기 나열 — M0-30·M0-34 지시문은 자유
-  // 문장이었다)이 grammar-unknown으로 강등된다: 21 → 35줄(정상 줄 83줄의 42.2%). 지시문 v0.2 출력의 실측은 M1-24 재실행
-  it("사실이 맞는데 막힌 35줄은 모두 정해진 규칙 때문이다(언어 10 · 이름 표기 5 · 두 문장·80자 3 · 문형 밖 17) — 규칙 밖 오탐 0", () => {
+  // 문장이었다)이 grammar-unknown으로 강등된다: 21 → 35줄(정상 줄 83줄의 42.2%) → D53 ② 문형 축소 뒤 37줄(44.6%). 지시문 v0.2·v0.3
+  // 출력의 실측은 골든셋(M1-24·D53 ③)
+  it("사실이 맞는데 막힌 37줄은 모두 정해진 규칙 때문이다(언어 10 · 이름 표기 5 · 두 문장·80자 3 · 문형 밖 19) — 규칙 밖 오탐 0", () => {
     const category = (codes: readonly string[]): string => {
       if (codes.includes("han") || codes.includes("korean-ratio"))
         return "language";
@@ -262,9 +267,9 @@ describe("사람 검토 대비 — M0-30·M0-34 실제 출력 90줄", () => {
       language: 10,
       "name-form": 5,
       sentence: 3,
-      grammar: 17,
+      grammar: 19,
     });
-    // 출력 전체 재시도(언어) 10줄을 빼면 줄 단위 강등 25/73(34.2%)
+    // 출력 전체 재시도(언어) 10줄을 빼면 줄 단위 강등 27/73(37.0%)
     const lineOnly = rows.filter(
       (r) =>
         r.human === "ok" &&
@@ -272,7 +277,7 @@ describe("사람 검토 대비 — M0-30·M0-34 실제 출력 90줄", () => {
         !r.codes.includes("korean-ratio"),
     );
     expect(lineOnly).toHaveLength(73);
-    expect(lineOnly.filter((r) => r.blocked)).toHaveLength(25);
+    expect(lineOnly.filter((r) => r.blocked)).toHaveLength(27);
   });
 });
 
@@ -760,7 +765,7 @@ function standingsReviewMutations(
   return out;
 }
 
-describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json) — 거짓은 모두 강등, 참은 문법 안이면 통과", () => {
+describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json — 1·2·3회차) — 거짓은 모두 강등, 참은 문법 안이면 통과", () => {
   const Probe = z.object({
     input: z.string(),
     /** 기대 판정 */
@@ -786,20 +791,26 @@ describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json) — 거짓�
       sent(typeof v === "string" ? readJson(`fixtures/llm/${v}`) : v),
     ]),
   );
-  const round2 = (p: z.infer<typeof Probe>) => p.group.startsWith("r2-");
+  const round = (p: z.infer<typeof Probe>) =>
+    p.group.startsWith("r3-") ? 3 : p.group.startsWith("r2-") ? 2 : 1;
 
-  it("문장 수 — 1회차 158(거짓 112 · 참 46), 2회차 511(거짓 348 · 참 163 — 판단 보류 40개 제외)", () => {
-    const r1 = file.probes.filter((p) => !round2(p));
-    const r2 = file.probes.filter(round2);
-    expect(r1.filter((p) => !p.truth)).toHaveLength(112);
-    expect(r1.filter((p) => p.truth)).toHaveLength(46);
-    expect(r2.filter((p) => !p.truth)).toHaveLength(348);
-    expect(r2.filter((p) => p.truth)).toHaveLength(163);
-    // 거짓은 늘 강등 기대, 참 중 문법 안 84 · 문법 밖 125(정의 차이 1 — 지시문 '동점골 = 비긴 경기의 마지막 골')
+  it("문장 수 — 1회차 158(거짓 112 · 참 46), 2회차 511(거짓 348 · 참 163), 3회차 788(재현 316 = 거짓 122 · 참 194, 이전 판을 통과한 변이 472 = 거짓 264 · 참 208)", () => {
+    const of = (n: number, truth: boolean) =>
+      file.probes.filter((p) => round(p) === n && p.truth === truth);
+    expect(of(1, false)).toHaveLength(112);
+    expect(of(1, true)).toHaveLength(46);
+    expect(of(2, false)).toHaveLength(348);
+    expect(of(2, true)).toHaveLength(163);
+    expect(of(3, false)).toHaveLength(386);
+    expect(of(3, true)).toHaveLength(402);
+    expect(
+      of(3, false).filter((p) => p.group.startsWith("r3-mut-")),
+    ).toHaveLength(264);
+    // 거짓은 늘 강등 기대. 참 611 중 문법 안 340 · 강등 271(문형 밖 257 + 안전한 쪽 규칙 14 — 좁은 동점골·두 절 다른 대상·문자 형식 …)
     expect(file.probes.filter((p) => !p.truth && p.pass)).toEqual([]);
-    expect(file.probes.filter((p) => p.truth && p.pass)).toHaveLength(84);
-    expect(file.probes.filter((p) => p.truth && !p.pass)).toHaveLength(125);
-    expect(file.probes.filter((p) => p.code !== undefined)).toHaveLength(1);
+    expect(file.probes.filter((p) => p.truth && p.pass)).toHaveLength(340);
+    expect(file.probes.filter((p) => p.truth && !p.pass)).toHaveLength(271);
+    expect(file.probes.filter((p) => p.code !== undefined)).toHaveLength(14);
   });
 
   it.each(
@@ -829,7 +840,7 @@ describe("리뷰 재현 문장(fixtures/llm/brief-check-probes.json) — 거짓�
 
 describe("리뷰 유형의 참 문장(문형 안)은 통과한다(오탐 기준선)", () => {
   it.each(TEMPLATE_CTXS)(
-    "실제 입력 7일치 모든 경기 — 맞는 장소·패자 주어 홈-원정 순서·완파·소속·n골·자책골·도움·'Y의 골을 도왔다' (%s)",
+    "실제 입력 7일치 모든 경기 — 맞는 장소·패자 주어 홈-원정 순서·완파·소속·n골·'Y의 골을 도왔다' (%s)",
     (_, tctx) => {
       const team = (n: string) => (tctx.names ? tctx.names.team(n) : n);
       const person = (n: string) => (tctx.names ? tctx.names.person(n) : n);
@@ -860,10 +871,8 @@ describe("리뷰 유형의 참 문장(문형 안)은 통과한다(오탐 기준�
           }
           for (const x of m.goals ?? []) {
             const P = person(x.player);
-            if (x.type === "own_goal") {
-              out.push(`${withJosa(P, "이/가")} ${x.min}분 자책골을 기록했다.`);
-              continue;
-            }
+            // 자책골·'도움을 기록했다' 꼴은 D53 ② 축소로 문형 밖(이 시험은 문형 안의 참 문장만)
+            if (x.type === "own_goal") continue;
             out.push(
               `${x.team === m.home ? H : A}의 ${withJosa(P, "이/가")} ${x.min}분 골을 넣었다.`,
             );
@@ -872,9 +881,6 @@ describe("리뷰 유형의 참 문장(문형 안)은 통과한다(오탐 기준�
             ).length;
             out.push(`${withJosa(P, "이/가")} ${n}골을 넣었다.`);
             if (x.assist) {
-              out.push(
-                `${withJosa(person(x.assist), "이/가")} 도움을 기록했다.`,
-              );
               out.push(
                 `${withJosa(person(x.assist), "이/가")} ${person(x.player)}의 ${x.min}분 골을 도왔다.`,
               );
@@ -1010,7 +1016,7 @@ const PROBES_E: Probe[] = [
   [
     "Chelsea가 João Pedro의 멀티골을 앞세워 Bournemouth를 5-1로 완파했다.",
     ["m560595"],
-    null,
+    "grammar-unknown",
   ],
   [
     "Napoli는 Kevin De Bruyne의 PK 포함 2골로 Frosinone을 3-0으로 꺾었다.",
@@ -1033,7 +1039,7 @@ const PROBES_E: Probe[] = [
   [
     "Arsenal은 Leeds United에 0-1로 뒤지다 2-1 역전승을 거뒀다.",
     ["m560593"],
-    null,
+    "grammar-unknown",
   ],
   [
     "Arsenal이 Riccardo Calafiori와 Bruno Guimarães의 연속골로 Leeds United에 2-1 역전승을 거뒀다.",
@@ -1064,7 +1070,7 @@ const PROBES_E: Probe[] = [
   [
     "Real Madrid가 Villarreal을 1-0으로 꺾고 승점 3을 챙겼다.",
     ["m564702"],
-    null,
+    "grammar-unknown",
   ],
   [
     "Napoli가 Frosinone을 무실점으로 3-0 완파했다.",
@@ -1081,7 +1087,7 @@ const PROBES_E: Probe[] = [
     ["m559672"],
     "grammar-unknown",
   ],
-  ["Christopher Nkunku는 두 골을 넣었다.", ["m565815"], "goal-count"], // 고유어 수사도 센다(입력 3골)
+  ["Christopher Nkunku는 두 골을 넣었다.", ["m565815"], "grammar-unknown"], // 고유어 수사도 센다(입력 3골)
   [
     "Real Madrid가 Yan Diomande의 61분 결승골로 Villarreal을 1-0으로 꺾었다.",
     ["m564702"],
@@ -1097,7 +1103,7 @@ const PROBES_E: Probe[] = [
   [
     "Inter가 Parma를 3-0으로 꺾고 Serie A 선두로 올라섰다.",
     ["m558582", "sSA"],
-    "rank-move-no-prev",
+    "grammar-unknown",
   ],
   ["Arsenal은 승점 15로 Premier League 선두다.", ["sPL"], "rank-pos"],
   ["Man City와 Arsenal이 승점 15로 공동 선두다.", ["sPL"], "rank-tie"],
@@ -1137,7 +1143,7 @@ const PROBES_E: Probe[] = [
   [
     "Chelsea는 João Pedro의 해트트릭으로 Bournemouth를 5-1로 꺾었다.",
     ["m560595"],
-    "goal-count",
+    "grammar-unknown",
   ],
   [
     "Bayern이 Augsburg 원정에서 2-2로 비기며 선두 Dortmund와 승점 차를 2로 좁혔다.",
@@ -1161,17 +1167,17 @@ const PROBES_E: Probe[] = [
   ],
   // 위 문형 밖 참 문장의 문형 안 대응(D50 — 지시문 v0.2 [문형])
   [
-    "Napoli가 Kevin De Bruyne의 멀티골을 앞세워 Frosinone을 3-0으로 완파했다.",
+    "Napoli가 Kevin De Bruyne의 2골을 앞세워 Frosinone을 3-0으로 완파했다.",
     ["m558586"],
     null,
   ],
-  ["Christopher Nkunku가 5분·41분·44분에 골을 넣었다.", ["m565815"], null],
+  ["Christopher Nkunku가 해트트릭을 기록했다.", ["m565815"], null],
   [
     "Real Madrid가 Yan Diomande의 전반 62분 결승골로 Villarreal을 1-0으로 꺾었다.",
     ["m564702"],
     "minute-half",
   ],
-  ["Christopher Nkunku가 4골을 몰아쳤다.", ["m565815"], "goal-count"],
+  ["Christopher Nkunku가 4골을 넣었다.", ["m565815"], "goal-count"],
 ];
 
 /** 토너먼트(연장·승부차기·결승) 합성 입력 */
@@ -1283,7 +1289,11 @@ const PROBES_KO: Probe[] = [
     ["m1"],
     "winner-mismatch",
   ],
-  ["Arsenal이 승부차기에서 Real Madrid를 3-4로 꺾었다.", ["m1"], "score-order"],
+  [
+    "Arsenal이 승부차기 끝에 Real Madrid를 3-4로 꺾었다.",
+    ["m1"],
+    "score-order",
+  ],
   ["PSG가 Barça를 1-0으로 꺾었다.", ["m3"], "winner-mismatch"], // 승부차기 승자는 Barça
   ["Liverpool이 홈에서 Man City를 2-0으로 꺾었다.", ["m4"], "venue"], // 결승 = 중립
   ["Liverpool이 4강에서 Man City를 2-0으로 꺾었다.", ["m4"], "round"],
@@ -1318,7 +1328,7 @@ const PROBES_A: Probe[] = [
   ],
   ["Jeong Woo-yeong은 선발 출전해 60분을 뛰고 교체됐다.", ["k512"], null],
   ["Brentford는 7위에서 3위로 올랐다.", ["sPL"], null],
-  ["Chelsea는 6위에서 7위로 밀려났다.", ["sPL"], null],
+  ["Chelsea는 6위에서 7위로 밀려났다.", ["sPL"], "grammar-unknown"],
   ["Arsenal이 승점 12로 Premier League 선두를 지켰다.", ["sPL"], null], // prev 1 = pos 1
   [
     "Bayern이 홈에서 Union Berlin을 7-0으로 완파했고 Michael Olise가 해트트릭을 기록했다.",
@@ -1330,7 +1340,7 @@ const PROBES_A: Probe[] = [
     ["m1575167"],
     "grammar-unknown",
   ],
-  ["Michael Olise는 3골 1도움을 기록했다.", ["m1575167"], null],
+  ["Michael Olise는 3골 1도움을 기록했다.", ["m1575167"], "grammar-unknown"], // D53 ② — n골 m도움 꼴 뺌
   [
     "Bayern이 Jamal Musiala의 18분 선제골로 앞서갔고 Union Berlin을 7-0으로 꺾었다.",
     ["m1575167"],
@@ -1344,7 +1354,7 @@ const PROBES_A: Probe[] = [
   ["김민재는 46분 교체 투입돼 45분을 뛰었다.", ["k2897"], null], // 사전 공식 표기(D40 ④)
   ["Kim Min-jae는 선발 출전해 45분을 뛰었다.", ["k2897"], "appearance"],
   ["Kim Min-jae는 60분 교체 투입돼 45분을 뛰었다.", ["k2897"], "minute"],
-  ["Jeong Woo-yeong은 풀타임을 뛰었다.", ["k512"], "appearance"],
+  ["Jeong Woo-yeong은 선발 출전해 90분을 뛰었다.", ["k512"], "minute"],
   ["Jeong Woo-yeong은 1골을 넣었다.", ["k512"], "goal-count"],
   ["Chelsea는 7위를 지켰다.", ["sPL"], "rank-move"],
   ["Brentford는 6위에서 3위로 올랐다.", ["sPL"], "rank-move"],
@@ -1358,12 +1368,8 @@ const PROBES_A: Probe[] = [
     ["m1575167"],
     "ko-name-unofficial",
   ],
-  ["Michael Olise는 3골 2도움을 기록했다.", ["m1575167"], "assist-count"],
-  [
-    "Harry Kane이 Union Berlin전에서 해트트릭을 기록했다.",
-    ["m1575167"],
-    "goal-count",
-  ],
+  ["Michael Olise는 3골 2도움을 기록했다.", ["m1575167"], "grammar-unknown"],
+  ["Harry Kane이 해트트릭을 기록했다.", ["m1575167"], "goal-count"],
   [
     "Bayern이 Union Berlin을 7-0으로 꺾었다. Michael Olise가 3골을 넣었다.",
     ["m1575167"],
@@ -1525,7 +1531,7 @@ describe("닫힌 문법(D50) — 문형 밖은 강등, 경고는 마침표 없�
       CTX,
     );
     expect(res.lines.map((l) => l.reasons)).toEqual([
-      [{ code: "grammar-unknown", detail: "," }],
+      [{ code: "grammar-unknown", detail: "소화했고," }],
       [{ code: "grammar-unknown", detail: "없었고" }],
       [{ code: "grammar-unknown", detail: "Union Berlin(분데스리가)을" }],
     ]);
@@ -1540,8 +1546,8 @@ describe("닫힌 문법(D50) — 문형 밖은 강등, 경고는 마침표 없�
           r: ["k512"],
         },
         {
-          t: "Brentford가 홈에서 Chelsea를 3-0으로 꺾고 7위에서 3위로 올랐다.",
-          r: ["m560591", "sPL"],
+          t: "Bayern이 홈에서 Union Berlin을 7-0으로 꺾었고 M. Olise가 3골을 넣었다.",
+          r: ["m1575167"],
         },
         {
           t: "Chelsea를 3-0으로 꺾은 Brentford는 승점 9로 3위다.",
@@ -1553,18 +1559,18 @@ describe("닫힌 문법(D50) — 문형 밖은 강등, 경고는 마침표 없�
     );
     expect(res.lines.map((l) => [l.ok, l.grammar])).toEqual([
       [true, "korean+koreanTail"],
-      [true, "win+move"],
+      [true, "win+count"],
       [true, "win+rank"],
     ]);
   });
 
-  it("두 경기를 문형 안의 두 절로 사실대로 쓰면 통과 + 경고(style-multi-match — 지시문 '한 줄에 한 경기'), 쉼표 나열은 문형 밖", () => {
+  it("두 절이 서로 다른 경기면 사실대로 써도 강등(clause-mismatch — 리뷰 3회차 차단 5, 경고 style-multi-match도 남는다), 쉼표 나열은 문형 밖", () => {
     const multi = one(
       "Real Madrid가 Villarreal을 1-0으로 꺾었고 Genoa가 Fiorentina를 2-1로 꺾었다.",
       ["m564702", "m558588"],
       INPUT_E,
     ).line;
-    expect(multi.ok, describeLineCheck(multi)).toBe(true);
+    expect(multi.reasons.map((r) => r.code)).toEqual(["clause-mismatch"]);
     expect(multi.warnings.map((w) => w.code)).toContain("style-multi-match");
     const listed = one(
       "Real Madrid가 1-0, Genoa가 2-1로 각각 이겼다.",
@@ -1618,11 +1624,10 @@ describe("닫힌 문법(D50) — 문형 밖은 강등, 경고는 마침표 없�
 });
 
 describe("파생 숫자(D40 ②) — 그 줄 근거 항목 숫자 두 개의 차·합", () => {
-  it("승점 차(sBL 13−10 = 3) — '2위 Bayern에 승점 3 앞선 선두다'·'Bayern보다 승점 3 앞섰다' 통과, 방향·값이 틀리면 강등('n점' 꼴은 문형 밖)", () => {
+  it("승점 차(sBL 13−10 = 3) — '2위 Bayern에 승점 3 앞선 선두다' 통과, 방향·값이 틀리면 강등('n점'·'보다 … 앞섰다' 꼴은 문형 밖 — D53 ②)", () => {
     const C = sent(readJson("fixtures/llm/brief-inputs/2026-10-10.json"));
     for (const t of [
       "Dortmund는 2위 Bayern에 승점 3 앞선 선두다.",
-      "Dortmund는 승점 13으로 2위 Bayern보다 승점 3 앞섰다.",
       "Bayern은 선두 Dortmund에 승점 3 뒤진 2위다.",
     ])
       expect(one(t, ["sBL"], C).line.ok, t).toBe(true);
@@ -1637,7 +1642,14 @@ describe("파생 숫자(D40 ②) — 그 줄 근거 항목 숫자 두 개의 차
     expect(
       one("Dortmund는 승점 13으로 2위 Bayern보다 3점 앞섰다.", ["sBL"], C).line
         .reasons,
-    ).toEqual([{ code: "grammar-unknown", detail: "3점" }]);
+    ).toEqual([{ code: "grammar-unknown", detail: "Bayern보다" }]);
+    expect(
+      one(
+        "Dortmund는 2위 Bayern에 승점 0 앞선 선두다.",
+        ["sBL"],
+        C,
+      ).line.reasons.map((r) => r.code),
+    ).toEqual(["grammar-unknown"]);
   });
 
   it("숫자 대조 범위는 그 줄 근거(r)다 — 다른 경기의 숫자로는 통과하지 않는다(brief-2026-10-11 L5)", () => {

@@ -4,7 +4,7 @@
     {
       "id": "m552065",
       "comp": "UEFA Champions League",
-      "round": "Matchday 2",
+      "round": "PLAYOFFS",
       "home": "Atalanta",
       "away": "Dortmund",
       "ft": "4-1",
@@ -14,7 +14,7 @@
     {
       "id": "m552063",
       "comp": "UEFA Champions League",
-      "round": "Matchday 2",
+      "round": "PLAYOFFS",
       "home": "Juventus",
       "away": "Galatasaray",
       "ft": "3-2",
@@ -26,7 +26,7 @@
     {
       "id": "m552060",
       "comp": "UEFA Champions League",
-      "round": "Matchday 2",
+      "round": "PLAYOFFS",
       "home": "Real Madrid",
       "away": "SL Benfica",
       "ft": "2-1",
@@ -36,7 +36,7 @@
     {
       "id": "m552061",
       "comp": "UEFA Champions League",
-      "round": "Matchday 2",
+      "round": "PLAYOFFS",
       "home": "PSG",
       "away": "Monaco",
       "ft": "2-2",

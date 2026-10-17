@@ -3,7 +3,7 @@
  *
  * 흐름(live): 골든셋·지시문 읽기 → 요청 계획 출력(날짜·경기 수·입력 어림) → 이번 달 사용 알림(`noticeMonthlyUsage` — dev 50%)
  *   → 비용 가드(`guardBriefBudget({env:"dev", requests: 고른 날짜 전부, attempts: 1})` — 예상 출력, 일·월 예산 초과면 부르지 않음 —
- *   M1-22 이월) → 날짜마다 단건 1요청(순서대로, D28 설정) → 실행 기록(`data/runs-dev.json` — cost.ts withRecordedRun, runId
+ *   M1-22 이월) → 날짜마다 단건 1요청(순서대로, D28 설정 — 출력 6,000토큰 초과·잘림이면 남은 날은 멈춤, D53) → 실행 기록(`data/runs-dev.json` — cost.ts withRecordedRun, runId
  *   `eval-dev-…`, job 칸은 스키마 enum상 "collect") → 판정·기록 `fixtures/llm/golden/runs/<라벨>/run.json` → 기준 실행과 비교 리포트.
  * mock: 같은 흐름에서 LLM 대신 `fixtures/llm/mock/by-id/golden[-pre]-<날짜>.json`(결정적·무비용), 비용 가드·runs 기록 없음,
  *   기본으로 run.json을 쓰지 않는다(`--save`로 쓴다).
@@ -742,8 +742,25 @@ export interface EvalOutcome {
   report: string | null;
 }
 
-/** 출력 토큰이 이 값을 넘는 날이 있으면 경고(D28 — max_tokens 4,096의 여유가 작다, M1-20 이월: 넘으면 멈추고 보고) */
-export const EVAL_OUTPUT_ALERT_TOKENS = 3_500;
+/**
+ * 출력 토큰이 이 값을 넘는 날이 있으면 경고 — max_tokens 8,192(D53)의 약 3/4. 넘으면 live 실행은 남은 날을 보내지 않고 멈춘다
+ * (`evalStopReason` — D53 재측정 기준 "넘거나 잘리면 멈추고 보고", 2026-10-17). D28(4,096) 때는 3,500이었다.
+ */
+export const EVAL_OUTPUT_ALERT_TOKENS = 6_000;
+
+/**
+ * live 실행에서 이 날 뒤의 요청을 멈춰야 하나 — 출력이 `EVAL_OUTPUT_ALERT_TOKENS`를 넘었거나 잘렸다(max_tokens). D53 재측정 기준
+ * "넘거나 잘리면 멈추고 보고"를 코드로 지킨다(남은 날을 보내지 않아 비용만 준다 — 호출 수 증가 없음).
+ */
+export function evalStopReason(
+  day: Pick<EvalDay, "usage" | "ok" | "errorType">,
+): string | null {
+  if (!day.ok && day.errorType === "max_tokens")
+    return `잘림(max_tokens) · 출력 ${day.usage.out}토큰`;
+  if (day.usage.out > EVAL_OUTPUT_ALERT_TOKENS)
+    return `출력 ${day.usage.out}토큰 > ${EVAL_OUTPUT_ALERT_TOKENS}`;
+  return null;
+}
 /** 실행 전 '보통' 예상에 쓰는 요청당 출력 토큰(M0-30·M0-34 실측 1,355~3,231 — thinking 포함) */
 export const EVAL_TYPICAL_OUTPUT_TOKENS = 2_500;
 
@@ -1070,6 +1087,8 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
     },
     async (recorder) => {
       const records: EvalDay[] = [];
+      /** 멈춤으로 보내지 않은 날 수(evalStopReason) */
+      let stopped = 0;
       for (const [i, day] of days.entries()) {
         const request = requests[i]!;
         const t0 = deps.clock();
@@ -1117,12 +1136,26 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
         deps.print(
           `[eval]   ${day.date} → ${record.ok ? record.verdict : `실패 ${record.errorType}`} · 출력 ${record.usage.out}${record.thinkingTokens === null ? "" : `(thinking ${record.thinkingTokens})`} · ${formatUsd(record.costUsd)}${record.latencyMs === null ? "" : ` · ${(record.latencyMs / 1000).toFixed(1)}s`}`,
         );
+        const stop =
+          args.llmMode === "live" && i < days.length - 1
+            ? evalStopReason(record)
+            : null;
+        if (stop) {
+          stopped = days.length - 1 - i;
+          deps.print(
+            `[eval] 멈춤: ${day.date} ${stop} — 남은 ${stopped}일은 보내지 않는다(D53 — 출력 ${EVAL_OUTPUT_ALERT_TOKENS}토큰 초과·잘림은 멈추고 보고)`,
+          );
+          break;
+        }
       }
       const summary = summarizeEvalRun({ days: records, model: deps.model });
       return {
         value: records,
         fields: {
-          status: summary.requestsOk === records.length ? "success" : "partial",
+          status:
+            stopped === 0 && summary.requestsOk === records.length
+              ? "success"
+              : "partial",
           summarized: summary.lines.passed,
           downgraded: summary.lines.downgraded,
         },
@@ -1200,7 +1233,7 @@ export async function runEvalPrompt(deps: EvalDeps): Promise<EvalOutcome> {
   const over = run.days.filter((d) => d.usage.out > EVAL_OUTPUT_ALERT_TOKENS);
   if (over.length > 0) {
     deps.print(
-      `[eval] 경고: 출력 토큰이 ${EVAL_OUTPUT_ALERT_TOKENS}을 넘은 날 ${over.map((d) => `${d.date}(${d.usage.out})`).join(", ")} — max_tokens ${requests[0]!.maxTokens} 여유가 작다(D28). 지시문 축소 또는 max_tokens 상향은 사용자 승인 사항`,
+      `[eval] 경고: 출력 토큰이 ${EVAL_OUTPUT_ALERT_TOKENS}을 넘은 날 ${over.map((d) => `${d.date}(${d.usage.out})`).join(", ")} — max_tokens ${requests[0]!.maxTokens} 여유가 작다(D53). 지시문 축소 또는 max_tokens 상향은 사용자 승인 사항`,
     );
   }
   if (recorded.record.persisted) {

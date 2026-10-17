@@ -1,12 +1,11 @@
 /**
- * M1-23 재설계 — 브리핑 닫힌 문법(scripts/lib/brief-grammar.ts, PRD §15 D50)과 지시문 v0.2 [문형]의 일치.
+ * M1-23 — 브리핑 닫힌 문법(scripts/lib/brief-grammar.ts, PRD §15 D50)과 지시문 [문형]의 **한 출처**(D53 ② — v0.3).
  * 네트워크·LLM 없음.
  *
  * - 뼈대(`buildSkeleton`)·분석(`parseBriefLine`)·깨진 낱말(`skeletonWordAt`) 단위
- * - 지시문(configs/prompts/summarize.md)의 [예] '좋음' 문장은 모두 문법 안이고 입력과 맞아 통과, '나쁨'은 모두 강등
- * - 지시문 [문형] 목록의 꼴을 하나씩 채운 참 문장(합성 입력)은 모두 통과 — 지시문이 허용한 꼴이 문법 밖이면 LLM이 지시를 따라도
- *   강등된다(오탐). 문형을 더하거나 빼면 이 목록과 지시문을 함께 고친다
- * - 문형을 하나씩 틀리게 바꾼 문장은 모두 강등(슬롯 대조)
+ * - 지시문 ↔ 문법 양방향 고정: ① 지시문 [문형] 절 = `renderBriefPatterns()`(글자까지) ② 표기 → 문법 — 문형마다 표기를 펼친 모든 꼴이
+ *   그 문형으로 분석된다 ③ 문법 → 표기 — 문법 요소가 쓰는 낱말·술어·자리표시자가 모두 그 문형(수식) 표기에 있다
+ * - 지시문 [예] '좋음'은 통과, '나쁨'은 강등 · 문형마다 채운 참 문장(합성 입력)은 통과 · 슬롯 하나를 틀리게 바꾼 문장은 강등
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -25,8 +24,13 @@ import {
 } from "../scripts/lib/brief-check";
 import {
   buildSkeleton,
+  EXPAND_KINDS,
+  expandPatternText,
+  MODIFIERS,
   parseBriefLine,
+  PATTERNS,
   PREDICATES,
+  renderBriefPatterns,
   skeletonWordAt,
   type MentionKind,
 } from "../scripts/lib/brief-grammar";
@@ -210,7 +214,18 @@ const SYN: BriefCheckInput = {
         { pos: 1, team: "TeamF", played: 6, pts: 24, gd: 12, prev: 1 },
         { pos: 2, team: "TeamA", played: 6, pts: 21, gd: 10, prev: 3 },
         { pos: 3, team: "TeamC", played: 6, pts: 18, gd: 6, prev: 5 },
-        { pos: 3, team: "TeamI", played: 6, pts: 18, gd: 6, prev: 2 },
+        { pos: 4, team: "TeamI", played: 6, pts: 17, gd: 6, prev: 2 },
+      ],
+    },
+    {
+      id: "sBL",
+      comp: "Bundesliga",
+      note: "current table, top 4 positions only",
+      rows: [
+        { pos: 1, team: "TeamO", played: 5, pts: 15, gd: 9 },
+        { pos: 2, team: "TeamS", played: 5, pts: 12, gd: 5 },
+        { pos: 2, team: "TeamT", played: 5, pts: 12, gd: 5 },
+        { pos: 4, team: "TeamU", played: 5, pts: 9, gd: 2 },
       ],
     },
   ],
@@ -261,7 +276,7 @@ describe("뼈대·분석 단위", () => {
   const T: MentionKind = "team";
   const P: MentionKind = "player";
 
-  it("buildSkeleton — 이름을 ⟨i⟩로, 조사는 그대로, 공백 연속은 하나로", () => {
+  it("buildSkeleton — 이름을 ⟨i⟩로, 조사는 그대로, 공백 연속은 하나로, 원문의 ⟨·⟩는 자리표시자로 읽히지 않게", () => {
     const text = "Real Madrid가  Villarreal을 1-0으로 꺾었다.";
     expect(
       buildSkeleton(text, [
@@ -269,6 +284,7 @@ describe("뼈대·분석 단위", () => {
         { start: 14, end: 24, text: "Villarreal", kind: T },
       ]),
     ).toBe("⟨0⟩가 ⟨1⟩을 1-0으로 꺾었다.");
+    expect(buildSkeleton("⟨0⟩가 이겼다.", [])).toBe("�0�가 이겼다.");
   });
 
   it("문형 안이면 분석이 나오고 슬롯이 묶인다", () => {
@@ -279,6 +295,7 @@ describe("뼈대·분석 단위", () => {
     expect(r.parses).toHaveLength(1);
     expect(r.parses[0]!.clauses[0]).toMatchObject({
       type: "win",
+      id: "win",
       bag: { subj: 0, scorer: 1, scorerMin: "62", obj: 2, score: [1, 0] },
     });
   });
@@ -292,6 +309,7 @@ describe("뼈대·분석 단위", () => {
       ["⟨0⟩이 ⟨1⟩에 1-0 패배를 안겼다.", "패배를"],
       ["⟨0⟩이 웃었다.", "웃었다."],
       ["⟨0⟩가 2-1로 꺾었다.", "꺾었다."],
+      ["⟨0⟩가 ⟨1⟩를 2-1로 꺾고 승점 3을 챙겼다.", "승점"],
     ] as const) {
       const r = parseBriefLine(skeleton, [T, T]);
       expect(r.parses, skeleton).toEqual([]);
@@ -306,13 +324,15 @@ describe("뼈대·분석 단위", () => {
     ).toEqual([]);
   });
 
-  it("숫자 뒤 조사는 받침에 맞아야 한다('1-0로'·'2-1으로'는 문법 밖)", () => {
-    expect(parseBriefLine("⟨0⟩가 ⟨1⟩을 1-0로 꺾었다.", [T, T]).parses).toEqual(
-      [],
-    );
-    expect(
-      parseBriefLine("⟨0⟩가 ⟨1⟩을 2-1으로 꺾었다.", [T, T]).parses,
-    ).toEqual([]);
+  it("숫자 뒤 조사는 받침에 맞아야 하고 앞자리 0은 쓰지 않는다('1-0로'·'01-0'·'승점 024'·'01위')", () => {
+    for (const bad of [
+      "⟨0⟩가 ⟨1⟩을 1-0로 꺾었다.",
+      "⟨0⟩가 ⟨1⟩을 2-1으로 꺾었다.",
+      "⟨0⟩가 ⟨1⟩을 01-0으로 꺾었다.",
+      "⟨0⟩는 승점 024로 선두다.",
+      "⟨0⟩는 01위다.",
+    ])
+      expect(parseBriefLine(bad, [T, T]).parses, bad).toEqual([]);
     expect(
       parseBriefLine("⟨0⟩가 ⟨1⟩을 2-1로 꺾었다.", [T, T]).parses,
     ).toHaveLength(1);
@@ -327,7 +347,7 @@ describe("뼈대·분석 단위", () => {
     ).toHaveLength(1);
   });
 
-  it("술어 표 — 활용형은 겹치지 않는다(한 활용형이 두 원형을 가리키지 않게)", () => {
+  it("술어 표 — 활용형은 겹치지 않고, 모든 술어를 어느 문형이 쓴다(쓰지 않는 술어 없음)", () => {
     const seen = new Map<string, string>();
     for (const [lemma, forms] of Object.entries(PREDICATES)) {
       for (const form of [
@@ -338,7 +358,73 @@ describe("뼈대·분석 단위", () => {
         expect(seen.get(form) ?? lemma, form).toBe(lemma);
         seen.set(form, lemma);
       }
+      const used = PATTERNS.some((p) =>
+        forms.final.some((f) => p.vocab.has(f)),
+      );
+      expect(used, lemma).toBe(true);
     }
+  });
+});
+
+// ─── 지시문 ↔ 문법 (D53 ②) ─────────────────────────────────────────────────
+
+describe("지시문 [문형] = 문법(D53 ② — 한 출처, 양방향)", () => {
+  it("지시문의 [문형] 절은 renderBriefPatterns()와 글자까지 같다", () => {
+    // 머리말의 '아래 [문형]에 있는 꼴로만' 말고 줄머리 절 제목부터
+    const start = PROMPT.indexOf("\n[문형]") + 1;
+    const end = PROMPT.indexOf("\n\n[", start);
+    expect(start).toBeGreaterThan(0);
+    expect(PROMPT.slice(start, end)).toBe(renderBriefPatterns());
+  });
+
+  it("[문형]은 문형 22개·수식 12개다(D53 ② 축소 — 문법에만 있던 꼴 약 25개를 뺐다)", () => {
+    expect(PATTERNS).toHaveLength(22);
+    expect(MODIFIERS).toHaveLength(12);
+    expect(PATTERNS.map((p) => p.id)).toEqual([
+      "win",
+      "win-beat",
+      "win-earn",
+      "loss",
+      "draw-pair",
+      "draw",
+      "end",
+      "end-pens",
+      "pens",
+      "goal",
+      "count",
+      "assist",
+      "korean",
+      "korean-bench",
+      "korean-tail",
+      "rank",
+      "rank-after",
+      "rank-list",
+      "gap",
+      "move",
+      "keep",
+      "adn",
+    ]);
+  });
+
+  it.each(PATTERNS.map((p) => [p.id, p] as const))(
+    "표기 → 문법: %s의 표기를 펼친 모든 꼴이 그 문형으로 분석된다",
+    (_, p) => {
+      const lines = expandPatternText(p.text);
+      expect(lines.length).toBeGreaterThan(0);
+      const missed = lines.filter((e) => {
+        const r = parseBriefLine(`${p.context ?? ""}${e}.`, EXPAND_KINDS);
+        return !r.parses.some((x) => x.clauses.some((c) => c.id === p.id));
+      });
+      expect(missed).toEqual([]);
+    },
+  );
+
+  it("문법 → 표기: 문형·수식 요소가 쓰는 낱말·술어·자리표시자는 모두 그 표기에 있다", () => {
+    const missing: string[] = [];
+    for (const e of [...PATTERNS, ...MODIFIERS])
+      for (const v of e.vocab)
+        if (!e.text.includes(v)) missing.push(`${e.id}: ${v}`);
+    expect(missing).toEqual([]);
   });
 });
 
@@ -361,7 +447,7 @@ const EXAMPLE_REFS: Record<string, string[]> = {
   "TeamC가 TeamD를 1-0으로 제치고 웃었다.": ["m2"],
 };
 
-describe("지시문 v0.2 [예] — 좋음은 통과, 나쁨은 강등", () => {
+describe("지시문 [예] — 좋음은 통과, 나쁨은 강등", () => {
   const examples = [
     ...PROMPT.slice(
       PROMPT.indexOf("[예]"),
@@ -388,7 +474,7 @@ describe("지시문 v0.2 [예] — 좋음은 통과, 나쁨은 강등", () => {
   );
 });
 
-// ─── 지시문 [문형] 목록 ───────────────────────────────────────────────────
+// ─── 문형마다 채운 참 문장 ─────────────────────────────────────────────────
 
 /** [문형]의 꼴마다 채운 참 문장(합성 입력 SYN) — 모두 통과해야 한다 */
 const PATTERN_LINES: Array<[pattern: string, text: string, refs: string[]]> = [
@@ -405,6 +491,7 @@ const PATTERN_LINES: Array<[pattern: string, text: string, refs: string[]]> = [
     "TeamC가 TeamD 원정에서 2-1로 이겼다.",
     ["m2"],
   ],
+  ["이겼다 + 상대를", "TeamC가 TeamD를 2-1로 이겼다.", ["m2"]],
   [
     "완파했다 + 해트트릭",
     "TeamA가 PlayerX의 해트트릭을 앞세워 TeamB를 6-0으로 완파했다.",
@@ -462,19 +549,21 @@ const PATTERN_LINES: Array<[pattern: string, text: string, refs: string[]]> = [
     "TeamG가 TeamH 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
     ["m4"],
   ],
-  ["PK 결승골로", "TeamU가 홈에서 TeamV를 1-0으로 꺾었다.", ["m11"]],
+  [
+    "n골을 앞세워",
+    "TeamW가 PlayerM의 2골을 앞세워 TeamX를 3-1로 꺾었다.",
+    ["m12"],
+  ],
   // 득점
-  ["골을 넣었다 + 소속", "TeamA의 PlayerQ가 60분 PK 골을 넣었다.", ["m1"]],
+  ["골을 넣었다 + 소속 + PK", "TeamA의 PlayerQ가 60분 PK 골을 넣었다.", ["m1"]],
   ["선제골", "PlayerW가 10분 선제골을 넣었다.", ["m2"]],
   ["결승골", "PlayerY가 90+2분 결승골을 터뜨렸다.", ["m2"]],
   ["동점골 + 후반", "PlayerT가 후반 85분 동점골을 넣었다.", ["m5"]],
   ["만회골", "PlayerP가 80분 만회골을 넣었다.", ["m12"]],
-  ["분 목록", "PlayerX가 10분·20분·30분에 골을 넣었다.", ["m1"]],
   ["n골", "PlayerM이 2골을 넣었다.", ["m12"]],
   ["해트트릭", "PlayerX가 해트트릭을 기록했다.", ["m1"]],
   ["멀티골", "PlayerQ가 멀티골을 기록했다.", ["m1"]],
   ["도왔다", "PlayerX가 PlayerQ의 50분 골을 도왔다.", ["m1"]],
-  ["자책골", "PlayerO가 30분 자책골을 기록했다.", ["m11"]],
   // 한국 선수
   [
     "교체 투입돼 뛰었다",
@@ -486,8 +575,13 @@ const PATTERN_LINES: Array<[pattern: string, text: string, refs: string[]]> = [
     "PlayerK는 선발 출전해 78분을 뛰고 교체됐다.",
     ["k2", "m1"],
   ],
-  ["벤치를 지켰다", "PlayerB는 벤치를 지켰다.", ["k3", "m1"]],
+  [
+    "팀 선발로 출전해 + 교체 아웃",
+    "PlayerK는 TeamA 선발로 출전해 78분을 뛰고 교체 아웃됐다.",
+    ["k2", "m1"],
+  ],
   ["결장했다", "PlayerB는 결장했다.", ["k3"]],
+  ["출전하지 않았다", "PlayerB는 TeamA전에서 출전하지 않았다.", ["k3", "m1"]],
   [
     "득점은 없었다",
     "PlayerZ는 57분 교체 투입돼 33분을 뛰었고 득점은 없었다.",
@@ -496,15 +590,22 @@ const PATTERN_LINES: Array<[pattern: string, text: string, refs: string[]]> = [
   // 순위
   ["선두다", "TeamF가 승점 24로 Premier League 선두다.", ["sPL"]],
   ["n위를 달렸다", "TeamA는 승점 21로 2위를 달렸다.", ["sPL"]],
-  ["공동 n위다", "TeamC와 TeamI가 승점 18로 공동 3위다.", ["sPL"]],
+  ["n위에 올라 있다", "TeamC는 3위에 올라 있다.", ["sPL"]],
+  ["공동 n위다", "TeamS와 TeamT가 승점 12로 공동 2위다.", ["sBL"]],
   [
     "순위 나열",
     "TeamF가 승점 24로 Premier League 선두, TeamA가 승점 21로 2위다.",
     ["sPL"],
   ],
+  [
+    "순위 나열 + 공동",
+    "TeamO가 승점 15로 선두, TeamS와 TeamT가 승점 12로 공동 2위다.",
+    ["sBL"],
+  ],
   ["앞선 n위다", "TeamF는 2위 TeamA에 승점 3 앞선 선두다.", ["sPL"]],
+  ["뒤진 공동 n위다", "TeamS는 선두 TeamO에 승점 3 뒤진 공동 2위다.", ["sBL"]],
   ["올랐다(prev)", "TeamC는 5위에서 3위로 올랐다.", ["sPL"]],
-  ["내려갔다(prev)", "TeamI는 2위에서 3위로 내려갔다.", ["sPL"]],
+  ["내려갔다(prev)", "TeamI는 2위에서 4위로 내려갔다.", ["sPL"]],
   ["지켰다(prev)", "TeamF는 선두를 지켰다.", ["sPL"]],
   // 잇기
   [
@@ -518,24 +619,23 @@ const PATTERN_LINES: Array<[pattern: string, text: string, refs: string[]]> = [
     ["m3", "sPL"],
   ],
   [
-    "결과 + 득점",
+    "결과 + 득점(같은 경기)",
     "TeamA가 TeamB를 6-0으로 완파했고 PlayerX가 3골을 넣었다.",
     ["m1"],
   ],
   [
-    "결과 + 한국 선수",
+    "결과 + 한국 선수(같은 경기)",
     "TeamI는 TeamJ와 1-1로 비겼고 PlayerZ는 57분 교체 투입돼 33분을 뛰었다.",
     ["m5", "k1"],
   ],
   [
-    "순위 + 순위",
-    "TeamC는 5위에서 3위로 올랐고 TeamI는 2위에서 3위로 내려갔다.",
+    "순위 + 순위(같은 순위표)",
+    "TeamC는 5위에서 3위로 올랐고 TeamI는 2위에서 4위로 내려갔다.",
     ["sPL"],
   ],
-  ["결과 + 승점", "TeamF가 TeamE를 3-0으로 꺾고 승점 3을 챙겼다.", ["m3"]],
 ];
 
-describe("지시문 v0.2 [문형] — 꼴마다 채운 참 문장은 모두 통과(지시문을 따른 줄의 오탐 0)", () => {
+describe("[문형] — 꼴마다 채운 참 문장은 모두 통과(지시문을 따른 줄의 오탐 0)", () => {
   it.each(PATTERN_LINES)("%s", (_, text, refs) => {
     const { line, wholeOk } = judge(text, refs);
     expect(wholeOk).toBe(true);
@@ -551,7 +651,6 @@ const WRONG_LINES: Array<[text: string, refs: string[], code: string]> = [
   ["TeamA가 TeamB를 6-1로 꺾었다.", ["m1"], "score-mismatch"],
   ["TeamA가 TeamB를 0-6으로 꺾었다.", ["m1"], "score-order"],
   ["TeamC가 TeamD를 2-1로 완파했다.", ["m2"], "margin"],
-  ["TeamC가 TeamD를 두 골 차로 꺾었다.", ["m2"], "margin"],
   ["TeamF가 TeamE에 3-0 역전승을 거뒀다.", ["m3"], "comeback"],
   ["TeamC가 PlayerV의 결승골로 TeamD를 2-1로 꺾었다.", ["m2"], "decisive-goal"],
   [
@@ -560,7 +659,7 @@ const WRONG_LINES: Array<[text: string, refs: string[], code: string]> = [
     "decisive-goal",
   ],
   [
-    "TeamC가 PlayerY의 전반 결승골로 TeamD를 2-1로 꺾었다.",
+    "TeamC가 PlayerY의 전반 90+2분 결승골로 TeamD를 2-1로 꺾었다.",
     ["m2"],
     "minute-half",
   ],
@@ -572,6 +671,11 @@ const WRONG_LINES: Array<[text: string, refs: string[], code: string]> = [
   [
     "TeamG가 TeamH 원정에서 8골을 주고받은 끝에 4-3으로 이겼다.",
     ["m4"],
+    "goal-count",
+  ],
+  [
+    "TeamA가 6골을 주고받은 끝에 TeamB를 6-0으로 완파했다.",
+    ["m1"],
     "goal-count",
   ],
   ["TeamI와 TeamJ가 2-2로 비겼다.", ["m5"], "score-mismatch"],
@@ -596,13 +700,11 @@ const WRONG_LINES: Array<[text: string, refs: string[], code: string]> = [
   ["PlayerS가 85분 동점골을 넣었다.", ["m5"], "equaliser"],
   ["PlayerW가 10분 만회골을 넣었다.", ["m2"], "scorer"],
   ["PlayerX가 11분 골을 넣었다.", ["m1"], "minute"],
-  ["PlayerX가 50분 PK 골을 넣었다.", ["m1"], "minute"],
   ["PlayerQ가 50분 PK 골을 넣었다.", ["m1"], "penalty"],
   ["TeamB의 PlayerQ가 60분 골을 넣었다.", ["m1"], "affiliation"],
   ["PlayerQ가 3골을 넣었다.", ["m1"], "goal-count"],
   ["PlayerR이 멀티골을 기록했다.", ["m1"], "goal-count"],
   ["PlayerR가 PlayerQ의 50분 골을 도왔다.", ["m1"], "assist-count"],
-  ["PlayerO가 30분 골을 넣었다.", ["m11"], "scorer"],
   ["PlayerZ는 선발 출전해 33분을 뛰었다.", ["k1"], "appearance"],
   ["PlayerZ는 60분 교체 투입돼 33분을 뛰었다.", ["k1"], "minute"],
   ["PlayerZ는 전반 57분 교체 투입돼 33분을 뛰었다.", ["k1"], "minute-half"],
@@ -612,17 +714,38 @@ const WRONG_LINES: Array<[text: string, refs: string[], code: string]> = [
     "opponent-mismatch",
   ],
   ["PlayerB는 선발 출전해 78분을 뛰었다.", ["k3"], "appearance"],
-  ["PlayerZ는 벤치를 지켰다.", ["k1"], "appearance"],
+  ["PlayerZ는 결장했다.", ["k1"], "appearance"],
   ["TeamA가 승점 21로 선두다.", ["sPL"], "rank-pos"],
   ["TeamA가 승점 24로 2위다.", ["sPL"], "points"],
   ["TeamF와 TeamA가 승점 24로 공동 선두다.", ["sPL"], "rank-tie"],
+  ["TeamS가 승점 12로 2위다.", ["sBL"], "rank-tie"],
   ["TeamF는 2위 TeamA에 승점 4 앞선 선두다.", ["sPL"], "points"],
+  ["TeamF는 2위 TeamA에 승점 3 앞선 공동 선두다.", ["sPL"], "rank-tie"],
+  ["TeamO는 2위 TeamS에 승점 3 앞선 선두다.", ["sBL"], "rank-tie"],
   ["TeamC는 6위에서 3위로 올랐다.", ["sPL"], "rank-move"],
   ["TeamA는 3위에서 2위로 내려갔다.", ["sPL"], "rank-move"],
   ["TeamA는 2위를 지켰다.", ["sPL"], "rank-move"],
+  [
+    "TeamF가 승점 24로 선두, TeamS가 승점 12로 공동 2위다.",
+    ["sPL", "sBL"],
+    "rank-table",
+  ],
   ["TeamE를 3-0으로 꺾은 TeamF는 승점 24로 2위다.", ["m3", "sPL"], "rank-pos"],
-  ["TeamF가 TeamE를 3-0으로 꺾고 승점 1을 챙겼다.", ["m3"], "grammar-unknown"],
-  ["TeamK가 TeamL을 승부차기 끝에 꺾고 승점 3을 챙겼다.", ["m6"], "points"],
+  [
+    "TeamA가 TeamB를 6-0으로 꺾었고 TeamC는 3위다.",
+    ["m1", "sPL"],
+    "clause-mismatch",
+  ],
+  [
+    "PlayerY가 90+2분 결승골을 넣었고 TeamA가 TeamB를 6-0으로 꺾었다.",
+    ["m2", "m1"],
+    "clause-mismatch",
+  ],
+  [
+    "PlayerZ는 57분 교체 투입돼 33분을 뛰었고 TeamA가 TeamB를 6-0으로 꺾었다.",
+    ["k1", "m1"],
+    "clause-mismatch",
+  ],
 ];
 
 describe("문형 안의 거짓 문장 — 슬롯 대조로 강등", () => {
