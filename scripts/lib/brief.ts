@@ -2,8 +2,9 @@
  * 일일 브리핑 요청·출력 (LLM 호출 지점 #1 "오늘의 5줄", PRD §15 D24·D28 — M1-01 수직 슬라이스 → **M1-20 지시문·출력 스키마 확정**).
  *
  * 지금 범위: 요청 1건을 `llm.ts` `callSingle`(일반 Messages API 단건)로 보내고, 출력은 **로그로만** 남긴다.
- * 코드 검증과 1회 재시도·템플릿 강등(M1-23·M1-45)은 아직 없다 — 그래서 `data/briefs`(M1-19, D38)에는 같은 입력의 코드
- * 템플릿(brief-template.ts)을 게시하고 LLM 줄은 저장하지 않는다(brief-file.ts).
+ * 코드 검증(M1-23 — brief-check.ts `judgeBriefResponse`)은 판정·사유 코드를 로그·dry 출력에 남기고, 1회 재시도·템플릿 강등은
+ * 아직 없다(M1-45) — 그래서 `data/briefs`(M1-19, D38)에는 같은 입력의 코드 템플릿(brief-template.ts)을 게시하고 LLM 줄은 저장하지
+ * 않는다(brief-file.ts).
  * 브리핑 마감(공개 목표 −10분 — M1-47)은 collect-run.ts가 collect-deadlines.ts로 계산해
  * `callSingle` deadline으로 넘긴다(재시도 대기만 묶음 — 요청 타임아웃·마감 초과 템플릿은 M1-45).
  *
@@ -20,7 +21,8 @@
  *   - **관용 파싱 (D40 ⑤, 비용 0)**: ① 출력 전체를 감싼 ```` ``` ````/```` ```json ```` 코드블록은 벗긴다(그 밖의 앞뒤 글은
  *     벗기지 않는다 — 실패) ② 6줄 이상이면 앞 5줄만 쓴다(`droppedLines`) ③ 줄 길이는 스키마가 막지 않는다 — 80자(`BRIEF_LINE_MAX`)
  *     초과 줄은 **줄 단위 강등 대상**이다. 길이는 고유명사 치환·조사 보정 **뒤의** 문장으로 잰다(PRD §9.4 — 영문 이름은 한글이
- *     되면 길이가 바뀐다). 그래서 파서가 아니라 `briefLinesOverLimit`(치환 뒤 문장)이 표시한다. 실제 강등·재시도는 M1-23·M1-45
+ *     되면 길이가 바뀐다). 그래서 파서가 아니라 `briefLinesOverLimit`(치환 뒤 문장)이 표시하고 검사기(brief-check.ts — M1-23)가 줄
+ *     판정(over-limit)에 합쳐 쓴다. 실제 강등·재시도는 M1-45
  *   - 문장 앞뒤 공백은 지우고(trim) 한 줄 안의 같은 근거 id는 하나로 합친다(BriefLine 스키마 — 줄 안 중복 금지). 내용은 바꾸지 않는다
  */
 import { createHash } from "node:crypto";

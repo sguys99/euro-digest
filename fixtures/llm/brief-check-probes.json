@@ -1,0 +1,1532 @@
+{
+  "_note": "M1-23 리뷰(2026-10-17) 재현 문장 — 검사기(scripts/lib/brief-check.ts)가 처음 놓친 거짓 문장(결과 동사 동의어·경기 중 점수 방향·숫자 없는 득점·도움·자책골·종류 모르는 숫자·prev 없는 순위 변동 동의어·장소·소속·대회)과 같은 입력의 참 문장. pass = 통과해야 하는 문장(오탐 함정), false = 강등돼야 하는 문장(미탐 함정). 입력은 LLM에 보낸 그대로 canonicalizeBriefInput을 거쳐 판정한다(tests/brief-check.test.ts). LLM 출력이 아니라 사람이 쓴 시험 문장이다 — 기사 텍스트·URL 없음.",
+  "task": "M1-23",
+  "inputs": {
+    "E": "brief-inputs/2026-10-11.json",
+    "A": "brief-inputs/2026-09-19.json",
+    "SYN": {
+      "briefDate": "2026-10-11",
+      "matches": [
+        {
+          "id": "og",
+          "comp": "Premier League",
+          "round": "Matchday 6",
+          "home": "Arsenal",
+          "away": "Chelsea",
+          "ft": "1-0",
+          "goals": [
+            {
+              "min": "30",
+              "team": "Arsenal",
+              "player": "Reece James",
+              "type": "own_goal"
+            }
+          ]
+        },
+        {
+          "id": "og2",
+          "comp": "Premier League",
+          "round": "Matchday 6",
+          "home": "Liverpool",
+          "away": "Everton",
+          "ft": "2-1",
+          "goals": [
+            {
+              "min": "10",
+              "team": "Everton",
+              "player": "Jarrad Branthwaite"
+            },
+            {
+              "min": "40",
+              "team": "Liverpool",
+              "player": "Mohamed Salah"
+            },
+            {
+              "min": "80",
+              "team": "Liverpool",
+              "player": "Jarrad Branthwaite",
+              "type": "own_goal"
+            }
+          ]
+        },
+        {
+          "id": "et",
+          "comp": "UEFA Champions League",
+          "round": "LAST_16",
+          "home": "Dortmund",
+          "away": "Napoli",
+          "ft": "2-0",
+          "ht": "1-0",
+          "aet": true,
+          "regular": "1-0",
+          "goals": null
+        },
+        {
+          "id": "pk",
+          "comp": "UEFA Champions League",
+          "round": "QUARTER_FINALS",
+          "home": "PSG",
+          "away": "Barça",
+          "ft": "1-1",
+          "ht": "0-0",
+          "aet": true,
+          "regular": "1-1",
+          "pens": "3-5",
+          "goals": null
+        }
+      ],
+      "standings": []
+    }
+  },
+  "probes": [
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Villarreal이 Real Madrid를 1-0으로 제쳤다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Villarreal이 Real Madrid를 1-0으로 따돌렸다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Villarreal이 Real Madrid를 1-0으로 울렸다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Villarreal이 Real Madrid를 상대로 1-0으로 웃었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Genoa가 Fiorentina에 2-1로 무너졌다.",
+      "r": [
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Genoa가 Fiorentina에 2-1로 발목을 잡혔다.",
+      "r": [
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Genoa가 Fiorentina에 2-1로 고개를 숙였다.",
+      "r": [
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Genoa가 Fiorentina에 2-1로 패배했다.",
+      "r": [
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Genoa가 Fiorentina에 2-1로 일격을 당했다.",
+      "r": [
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "running-direction",
+      "t": "Villarreal이 Real Madrid에 1-0으로 앞섰다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "running-direction",
+      "t": "Real Madrid가 Villarreal에 1-0으로 뒤졌다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "running-direction",
+      "t": "Leeds United가 0-1로 뒤지다 Arsenal에 졌다.",
+      "r": [
+        "m560593"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "running-direction",
+      "t": "Fiorentina가 전반을 2-0으로 앞섰다.",
+      "r": [
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Federico Valverde가 골을 넣어 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Federico Valverde가 득점했다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Kang-in Lee가 교체 투입돼 골을 넣었다.",
+      "r": [
+        "k927"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "이강인이 교체 투입돼 골을 넣었다.",
+      "r": [
+        "k927"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "assist",
+      "t": "Kang-in Lee가 도움을 올렸다.",
+      "r": [
+        "k927"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Kang-in Lee가 골망을 흔들었다.",
+      "r": [
+        "k927"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "appearance",
+      "t": "Min-jae Kim은 Bayern의 Augsburg 원정에 출전했다.",
+      "r": [
+        "k2897"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Min-jae Kim은 Augsburg전에 나섰다.",
+      "r": [
+        "k2897"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Woo-yeong Jeong이 78분을 뛰고 득점했다.",
+      "r": [
+        "k512"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "own-goal",
+      "t": "Reece James가 30분 골을 넣었다.",
+      "r": [
+        "og"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "own-goal",
+      "t": "Reece James의 골로 Arsenal이 Chelsea를 1-0으로 꺾었다.",
+      "r": [
+        "og"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": true,
+      "group": "own-goal",
+      "t": "Arsenal이 Reece James의 자책골로 Chelsea를 1-0으로 꺾었다.",
+      "r": [
+        "og"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "own-goal",
+      "t": "Reece James의 결승골로 Arsenal이 Chelsea를 1-0으로 꺾었다.",
+      "r": [
+        "og"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "own-goal",
+      "t": "Jarrad Branthwaite가 2골을 넣었다.",
+      "r": [
+        "og2"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "own-goal",
+      "t": "Liverpool이 Jarrad Branthwaite의 80분 결승골로 Everton을 2-1로 꺾었다.",
+      "r": [
+        "og2"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "own-goal",
+      "t": "Liverpool이 Jarrad Branthwaite의 80분 골로 Everton을 2-1로 꺾었다.",
+      "r": [
+        "og2"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "extra-time-shootout",
+      "t": "Dortmund가 연장전에서 Napoli를 2-0으로 꺾었다.",
+      "r": [
+        "et"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Dortmund가 Napoli를 2-0으로 이기고 8강에 올랐다.",
+      "r": [
+        "et"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "result",
+      "t": "Napoli가 Dortmund에 0-2로 졌다.",
+      "r": [
+        "et"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Dortmund가 Napoli를 상대로 2-0으로 웃었다.",
+      "r": [
+        "et"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "extra-time-shootout",
+      "t": "PSG와 Barça는 1-1 무승부를 기록했다.",
+      "r": [
+        "pk"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "extra-time-shootout",
+      "t": "PSG와 Barça가 연장까지 1-1로 비긴 뒤 승부차기에서 Barça가 5-3으로 이겼다.",
+      "r": [
+        "pk"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "extra-time-shootout",
+      "t": "PSG가 Barça와 1-1로 팽팽히 맞섰다.",
+      "r": [
+        "pk"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "PSG와 Barça는 1-1로 승부를 가리지 못했다.",
+      "r": [
+        "pk"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "gained-points",
+      "t": "PSG가 Barça와 1-1로 승점을 나눠 가졌다.",
+      "r": [
+        "pk"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "extra-time-shootout",
+      "t": "Barça가 승부차기에서 PSG에 3-5로 졌다.",
+      "r": [
+        "pk"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "running-direction",
+      "t": "Bayern은 Dortmund보다 2점 앞섰다.",
+      "r": [
+        "sBL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "running-direction",
+      "t": "Barça는 Real Madrid에 승점 6 뒤졌다.",
+      "r": [
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Man City가 Premier League 선두 자리를 꿰찼다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Man City가 Premier League 선두를 되찾았다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Man City가 Arsenal을 2위로 끌어내렸다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Arsenal은 2위로 한 계단 밀렸다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Man City가 Premier League 선두로 나섰다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "venue",
+      "t": "Hoffenheim이 원정길에서 HSV에 2-3으로 졌다.",
+      "r": [
+        "m565818"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "venue",
+      "t": "HSV가 홈 팬들 앞에서 Hoffenheim을 3-2로 꺾었다.",
+      "r": [
+        "m565818"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "venue",
+      "t": "HSV가 안방에서 Hoffenheim을 3-2로 꺾었다.",
+      "r": [
+        "m565818"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "number",
+      "t": "Yan Diomande의 시즌 2호골로 Real Madrid가 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "number",
+      "t": "Real Madrid가 슈팅 7개 끝에 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "number",
+      "t": "Real Madrid가 관중 9명 앞에서 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "number",
+      "t": "Yan Diomande가 데뷔 16경기 만에 골을 넣었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 리그 3위권에 들었다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "comeback",
+      "t": "Leverkusen이 Mainz에 4-3 역전승을 거뒀다.",
+      "r": [
+        "m565812"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "comeback",
+      "t": "Leverkusen이 Mainz를 상대로 경기를 뒤집었다.",
+      "r": [
+        "m565812"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Christopher Nkunku가 RB Leipzig의 6-0 승리에서 해트트릭을 기록했다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Antonio Nusa가 해트트릭을 기록했다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Jordan Henderson이 멀티골을 기록했다.",
+      "r": [
+        "m560595"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Morgan Rogers가 멀티골을 기록했다.",
+      "r": [
+        "m560595"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Chelsea가 João Pedro의 해트트릭으로 5-1 대승을 거뒀다.",
+      "r": [
+        "m560595"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Riccardo Calafiori의 결승골로 Arsenal이 Leeds United를 2-1로 꺾었다.",
+      "r": [
+        "m560593"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Bruno Guimarães의 결승골로 Arsenal이 Leeds United를 2-1로 꺾었다.",
+      "r": [
+        "m560593"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Bryan Mbeumo가 선제골을 넣었지만 Man United는 Tottenham과 1-1로 비겼다.",
+      "r": [
+        "m560600"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Dominic Solanke가 선제골을 넣었다.",
+      "r": [
+        "m560600"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Nathaniel Brown이 80분 동점골을 넣었다.",
+      "r": [
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Rodrigo Ribeiro가 동점골을 넣었다.",
+      "r": [
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "affiliation",
+      "t": "Villarreal의 Yan Diomande가 62분 골을 넣었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "affiliation",
+      "t": "Yan Diomande가 Villarreal 소속으로 62분 득점했다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Yan Diomande가 62분 골을 넣었지만 Real Madrid는 Villarreal에 1-0으로 졌다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "competition",
+      "t": "Real Madrid가 Premier League에서 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702",
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "competition",
+      "t": "Real Madrid가 프리미어리그에서 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702",
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 LaLiga 2위 Atleti를 승점 1 차로 추격했다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "rank-move",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 LaLiga 2위 Atleti에 승점 1 차로 따라붙었다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Fiorentina가 무실점으로 버텼다.",
+      "r": [
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "assist",
+      "t": "Harry Kane이 2도움을 기록했다.",
+      "r": [
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "assist",
+      "t": "Harry Kane이 도움 2개를 기록했다.",
+      "r": [
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "assist",
+      "t": "Harry Kane이 도움 3개를 기록했다.",
+      "r": [
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "number",
+      "t": "Christopher Nkunku가 골 4개를 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "number",
+      "t": "Christopher Nkunku가 네 골을 몰아쳤다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "number",
+      "t": "Christopher Nkunku가 4번 골망을 흔들었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Real Madrid가 Villarreal을 0-1로 꺾었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Real Madrid가 Villarreal에 1-0 승리를 거뒀다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Villarreal이 Real Madrid에 1-0 승리를 거뒀다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Real Madrid의 1-0 승리였다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Villarreal의 1-0 승리였다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "venue",
+      "t": "Villarreal은 Real Madrid 원정에서 0-1로 패했다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Real Madrid가 Villarreal을 2-1로, Genoa가 Fiorentina를 1-0으로 꺾었다.",
+      "r": [
+        "m564702",
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Real Madrid가 1-0, Genoa가 2-1로 각각 이겼다.",
+      "r": [
+        "m564702",
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Real Madrid가 2-1, Genoa가 1-0으로 각각 이겼다.",
+      "r": [
+        "m564702",
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Real Madrid와 Fiorentina가 나란히 이겼다.",
+      "r": [
+        "m564702",
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Real Madrid는 Villarreal을, Genoa는 Fiorentina를 꺾었다.",
+      "r": [
+        "m564702",
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Real Madrid는 Villarreal을, Fiorentina는 Genoa를 꺾었다.",
+      "r": [
+        "m564702",
+        "m558588"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Villarreal과 Real Madrid의 경기는 1-0으로 끝났다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Real Madrid와 Villarreal의 경기는 1-0으로 끝났다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "verb-synonym",
+      "t": "Real Madrid가 Villarreal과의 경기를 1-0으로 마쳤다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "verb-synonym",
+      "t": "Villarreal이 Real Madrid와의 경기를 1-0으로 마쳤다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Leverkusen이 Mainz를 4-3으로 꺾었다.",
+      "r": [
+        "m565812"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Leverkusen이 Mainz를 3-4로 꺾었다.",
+      "r": [
+        "m565812"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Mainz가 Leverkusen에 4-3으로 졌다.",
+      "r": [
+        "m565812"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Mainz가 Leverkusen에 3-4로 졌다.",
+      "r": [
+        "m565812"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Hoffenheim이 HSV에 3-2로 졌다.",
+      "r": [
+        "m565818"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Hoffenheim은 HSV에 2-3으로 졌다.",
+      "r": [
+        "m565818"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Man City가 승점 15로 Premier League 1위, Arsenal이 승점 15로 2위다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "standings",
+      "t": "Arsenal이 승점 15로 Premier League 1위, Man City가 승점 15로 2위다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Arsenal이 Man City와 승점 15로 동률이지만 골득실에서 밀려 2위다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "standings",
+      "t": "Man City가 Arsenal과 승점 15로 동률이지만 골득실에서 밀려 2위다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Brighton Hove는 득실차 +13으로 3위다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "standings",
+      "t": "Brighton Hove는 득실차 +12로 3위다.",
+      "r": [
+        "sPL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Inter가 승점 16으로 Serie A 선두를 달렸다.",
+      "r": [
+        "sSA"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Inter가 승점 16으로 Serie A 선두를 질주했다.",
+      "r": [
+        "sSA"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "standings",
+      "t": "Roma와 Lazio가 승점 13으로 공동 2위다.",
+      "r": [
+        "sSA"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Roma와 Lazio가 승점 13으로 나란히 2위와 3위다.",
+      "r": [
+        "sSA"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Christopher Nkunku의 해트트릭으로 RB Leipzig이 Frankfurt를 6-0으로 완파했다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Christopher Nkunku의 해트트릭으로 Frankfurt가 RB Leipzig을 6-0으로 완파했다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "RB Leipzig이 Frankfurt를 6-0으로 완파했고 Antonio Nusa가 2골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "RB Leipzig이 Frankfurt를 6-0으로 완파했고 Ezechiel Banzuzi가 1분 선제골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Ezechiel Banzuzi가 1분 만에 선제골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Ezechiel Banzuzi가 2분 만에 선제골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Tidiam Gomis가 89분 쐐기골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Tidiam Gomis가 89분 추가골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Tidiam Gomis가 88분 추가골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Tidiam Gomis가 추가골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Benjamin Henrichs가 추가골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Benjamin Henrichs가 만회골을 넣었다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Francisco Evanilson이 만회골을 넣었다.",
+      "r": [
+        "m560595"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "scorer",
+      "t": "Frankfurt는 만회골을 넣지 못했다.",
+      "r": [
+        "m565815"
+      ]
+    },
+    {
+      "input": "A",
+      "pass": false,
+      "group": "result",
+      "t": "Kim Min-jae가 결장했다.",
+      "r": [
+        "k2897"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "appearance",
+      "t": "Min-jae Kim은 벤치를 지켰다.",
+      "r": [
+        "k2897"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "rank-move",
+      "t": "Min-jae Kim은 교체 명단에 올랐지만 출전하지 못했다.",
+      "r": [
+        "k2897"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "appearance",
+      "t": "Woo-yeong Jeong은 선발 출전해 78분을 뛰었다.",
+      "r": [
+        "k512"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "appearance",
+      "t": "Woo-yeong Jeong은 선발 출전해 90분을 뛰었다.",
+      "r": [
+        "k512"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "appearance",
+      "t": "Woo-yeong Jeong은 선발 출전해 풀타임 가까이 뛰었다.",
+      "r": [
+        "k512"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "appearance",
+      "t": "Young-woo Seol은 Augsburg의 2-2 무승부에 선발로 나서 62분을 뛰었다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "appearance",
+      "t": "Young-woo Seol은 Augsburg의 2-1 승리에 선발로 나서 62분을 뛰었다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Young-woo Seol은 Augsburg의 승리에 힘을 보탰다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "result",
+      "t": "Young-woo Seol이 뛴 Augsburg가 Bayern을 꺾었다.",
+      "r": [
+        "k197985",
+        "m565819"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Real Madrid가 Villarreal을 1-0으로 꺾고 리그 3위를 달렸다.",
+      "r": [
+        "m564702",
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Barça가 승점 24로 리그 선두다.",
+      "r": [
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Barça가 승점 24로 LaLiga 선두다.",
+      "r": [
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Real Madrid가 Kang-in Lee의 결승골로 Villarreal을 1-0으로 꺾었다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "number",
+      "t": "Kang-in Lee가 시즌 2호골을 터뜨렸다.",
+      "r": [
+        "k927",
+        "m564699"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "scorer",
+      "t": "Kang-in Lee는 57분 교체 투입돼 시즌 첫 골을 넣었다.",
+      "r": [
+        "k927",
+        "m564699"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "comeback",
+      "t": "Kang-in Lee는 57분 교체 투입돼 Atleti의 역전승에 힘을 보탰다.",
+      "r": [
+        "k927",
+        "m564699"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "assist",
+      "t": "Kang-in Lee는 57분 교체 투입돼 결승골을 도왔다.",
+      "r": [
+        "k927",
+        "m564699"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "assist",
+      "t": "Kang-in Lee는 57분 교체 투입돼 Cristian Romero의 결승골을 도왔다.",
+      "r": [
+        "k927",
+        "m564699"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "venue",
+      "t": "Atleti가 Alavés 원정에서 2-1로 이겼다.",
+      "r": [
+        "m564699"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "venue",
+      "t": "Atleti가 Alavés 원정에서 2-1로 이겼고 Kang-in Lee는 33분을 뛰었다.",
+      "r": [
+        "m564699",
+        "k927"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "assist",
+      "t": "Atleti가 Alavés 원정에서 2-1로 이겼고 Kang-in Lee는 33분을 뛰며 도움을 기록했다.",
+      "r": [
+        "m564699",
+        "k927"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "assist",
+      "t": "Atleti가 Alavés 원정에서 2-1로 이겼고 Kang-in Lee는 33분을 뛰며 1도움을 기록했다.",
+      "r": [
+        "m564699",
+        "k927"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "gained-points",
+      "t": "Monaco와 Toulouse는 2-2로 비기며 승점을 나눠 가졌다.",
+      "r": [
+        "m559673"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "gained-points",
+      "t": "Real Madrid는 Villarreal을 1-0으로 꺾고 승점 3을 챙겼다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "gained-points",
+      "t": "Real Madrid는 Villarreal을 1-0으로 꺾고 승점을 챙겼다.",
+      "r": [
+        "m564702"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "gained-points",
+      "t": "Genoa는 Fiorentina를 2-1로 꺾고 승점을 나눠 가졌다.",
+      "r": [
+        "m558588"
+      ]
+    },
+    {
+      "input": "SYN",
+      "pass": false,
+      "group": "gained-points",
+      "t": "Dortmund는 연장 끝에 Napoli를 2-0으로 꺾고 승점 3을 챙겼다.",
+      "r": [
+        "et"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": false,
+      "group": "competition",
+      "t": "Arsenal은 승점 15로 LaLiga 2위다.",
+      "r": [
+        "sPL",
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "standings",
+      "t": "Arsenal은 승점 15로 Premier League 2위다.",
+      "r": [
+        "sPL",
+        "sLL"
+      ]
+    },
+    {
+      "input": "E",
+      "pass": true,
+      "group": "result",
+      "t": "Real Madrid가 1-0, Genoa가 2-1로 각각 이겼다.",
+      "r": [
+        "m564702",
+        "m558588"
+      ]
+    }
+  ]
+}

@@ -68,6 +68,7 @@ mock/
 | `mock/by-id/m0_sample_errored.json` | 전송 계층 테스트용 errored 응답 — M0-20 |
 | `mock/by-id/brief-*.json` (31개) | 일일 브리핑 mock — 발행일 정상 응답 5개 + 실패·경계 사례 26개 (M0-36, 아래 표) |
 | `brief-cases.json` | 브리핑 mock 기대 판정 표 — 케이스별 원천 입력·단계·FR-29 판정·줄별 근거 (M0-36) |
+| `brief-check-probes.json` | 사실성 검사기 회귀 문장 158개(거짓 112 · 참 46) — M1-23 리뷰가 찾은 미탐(결과 동사 동의어·경기 중 점수 방향·숫자 없는 득점·도움·자책골·종류 모르는 숫자·prev 없는 순위 변동 동의어·장소·소속·대회)과 같은 입력의 참 문장. 사람이 쓴 시험 문장이다(LLM 출력 아님) — `tests/brief-check.test.ts` (M1-23) |
 | `brief-inputs/` | 브리핑 정형 입력 6일치(M0-30 A~D · M0-34 E·F) + E 메타 + 임시 프롬프트 2개 + 임시 고유명사 사전 (M0-36, M1-24 골든셋 씨앗) |
 
 골든셋(`golden/` — 브리핑 입력 10일치, `npm run eval:prompt`)은 M1-24에서 추가한다(`brief-inputs/`가 출발점). 기사 텍스트(본문·제목·설명)·이미지·비밀값은 넣지 않는다.
@@ -85,16 +86,16 @@ mock/
 | `brief-2026-10-11` | 정상 · 사실 오류 1줄('2골' — 입력 3골) | 실제 | E | downgrade-line:5 |
 | `brief-case-han` | 한자 혼입('出场') | 실제 | A | retry |
 | `brief-case-english` | 영어 출력(effort low) | 실제 | A | retry |
-| `brief-case-translit` | 모델 음역(고유명사 전부 한글) | 실제 | A | downgrade-line:1~5 |
+| `brief-case-translit` | 모델 음역(고유명사 전부 한글) | 실제 | A | downgrade-line:1,2 (L3~L5 사전 공식 표기 — D40 ④, M1-23) |
 | `brief-case-rank-direction` | 순위 변동 방향 오류('7위에 머물렀다' — 6→7) | 실제 | A | downgrade-line:3,4 |
 | `brief-case-rank-tie` | 공동 순위 오해('공동 1위' — 1·2위) | 실제 | B | downgrade-line:5 |
 | `brief-case-rank-no-prev` | prev 없이 '선두를 유지' | 실제 | C | downgrade-line:5 |
-| `brief-case-translit-rank` | 음역 + 근거 없는 순위 서술 | 실제 | C | downgrade-line:1~5 |
+| `brief-case-translit-rank` | 음역 + 근거 없는 순위 서술 | 실제 | C | downgrade-line:1,2,3,4 (L5 사전 공식 표기 — D40 ④, M1-23) |
 | `brief-case-short-name-player` | 축약 선수 이름('Olise') | 실제 | A | downgrade-line:4 |
-| `brief-case-short-name-team` | 축약 팀 이름('Lens') | 실제 | B | downgrade-line:4 |
-| `brief-case-short-name-team-2` | 축약 팀 이름(effort low) | 실제 | B | downgrade-line:4,5 (L5 D40 ③ — M1-20) |
+| `brief-case-short-name-team` | 짧은 팀 이름('Lens' — 사전 별칭) | 실제 | B | ok (M1-21 별칭 — M1-23 재정의) |
+| `brief-case-short-name-team-2` | 짧은 팀 이름(effort low) | 실제 | B | downgrade-line:5 (L4 사전 별칭 — M1-23, L5 D40 ③ — M1-20) |
 | `brief-case-leftover-word` | 영문 일반어('Matchday') | 실제 | C | downgrade-line:1 (L5 파생 숫자 통과 — D40 ②) |
-| `brief-case-particle` | 조사 오류('Bayern가' — 보정 대상) + 축약 이름 | 실제 | A | downgrade-line:2 (L5 '프리미어리그' 통과 — D40 ④) |
+| `brief-case-particle` | 조사 오류('Bayern가' — 보정 대상) + 축약 이름 + 목록 밖 평가어('대파') | 실제 | A | downgrade-line:1,2 (L1 '대파' — 사용자 결정 2026-10-17, L5 '프리미어리그' 통과 — D40 ④) |
 | `brief-case-score-winner-first` | 이긴 팀 점수 먼저('1-0으로 이겼다' — ft 0-1) | 실제 | D | ok |
 | `brief-case-json-invalid` | JSON 파싱 불가 | 합성 | A | retry |
 | `brief-case-json-fenced` | 코드블록으로 감싼 JSON | 합성 | A | ok (코드블록 벗김 — D40 ⑤) |
@@ -115,6 +116,8 @@ mock/
 ### brief-cases.json
 
 FR-29 순서(zod → 출력 전체 코드 검증 → 1회 재시도 → 템플릿, 줄 단위 불일치는 재시도 없이 그 줄만 템플릿)에 맞춘 기대값이다. M1-23·M1-45 테스트가 그대로 읽는다.
+
+> **M1-23 확정 (2026-10-17)** — 코드 검증기 `scripts/lib/brief-check.ts`(`judgeBriefResponse`)의 판정이 31개 케이스의 `expected`·`stage`와 모두 같다(`tests/brief-check.test.ts`가 고정 — 입력은 `canonicalizeBriefInput`을 거친 입력). D40 ④(모델이 쓴 한글 고유명사는 사전 공식 표기와 같고 대상이 입력에 있으면 허용)와 M1-21 사전 별칭('Lens')으로 4건을 재정의했다: `brief-case-translit` 1~5 → 1,2 · `brief-case-translit-rank` 1~5 → 1~4 · `brief-case-short-name-team` 4 → ok · `brief-case-short-name-team-2` 4,5 → 5. 리뷰 반영(사용자 결정 2026-10-17 — 지시문 목록 밖 평가어 '대파'·'대승'·'신승' 등은 점수 차가 맞아도 그 줄 강등)으로 `brief-case-particle` 2 → 1,2. 사유 코드(`BriefLineReasonCode`)는 M1-24 회귀 비교·M1-43 검수의 기준이다.
 
 - `stage` — 처음 걸리는 단계: `none` · `transport`(llm.ts 실패) · `zod` · `whole`(한국어 비율·한자) · `line`
 - `expected` — `ok` · `retry`(같은 응답이 다시 오면 `downgrade-all`) · `downgrade-line:<n>[,<n>]` · `downgrade-all`

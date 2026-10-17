@@ -83,7 +83,7 @@ const STANDINGS_GROUPS_MAX = 3;
  * 중립 경기장 경기의 라운드 표기(football-data stage — brief-input.ts roundLabel). 결승은 matchday가 null이라 roundLabel이 stage
  * 원문("FINAL")을 돌려준다고 가정한다 — M2 실응답(녹아웃 경기)으로 확인할 것(M1-19 이월 메모).
  */
-const NEUTRAL_ROUNDS: ReadonlySet<string> = new Set(["FINAL"]);
+export const NEUTRAL_ROUNDS: ReadonlySet<string> = new Set(["FINAL"]);
 
 // ─── 고유명사 ────────────────────────────────────────────────────────────
 
@@ -152,14 +152,15 @@ export function briefCompLabel(
 
 // ─── 입력 해석 ───────────────────────────────────────────────────────────
 
-interface Pair {
+/** 점수 한 쌍(홈-원정) — 검사기(brief-check.ts, M1-23)도 같은 해석을 쓴다 */
+export interface Pair {
   home: number;
   away: number;
 }
 
-type Side = "home" | "away";
+export type Side = "home" | "away";
 
-const other = (side: Side): Side => (side === "home" ? "away" : "home");
+export const other = (side: Side): Side => (side === "home" ? "away" : "home");
 
 /** "h-a" → 점수 — 형식이 다르면 null */
 export function parseScorePair(text: string | undefined): Pair | null {
@@ -173,15 +174,17 @@ function minuteKey(min: string): [number, number] | null {
   return m ? [Number(m[1]), Number(m[2] ?? 0)] : null;
 }
 
-interface GoalFact {
+export interface GoalFact {
   side: Side;
   player: string;
+  /** 도움 선수(입력 표기) — 없으면 null(검사기가 'X의 결승골을 도왔다'를 대조한다 — M1-23) */
+  assist: string | null;
   min: string;
   penalty: boolean;
   ownGoal: boolean;
 }
 
-interface MatchFacts {
+export interface MatchFacts {
   ft: Pair;
   /**
    * 이긴 쪽 — 승부차기 경기는 **항상 승부차기 결과**(ft가 동점이 아니어도 — 두 경기 합산 동점 뒤 승부차기면 그 경기 점수의 승자와
@@ -219,6 +222,7 @@ function goalFacts(
       fact: {
         side,
         player: g.player,
+        assist: g.type === "own_goal" ? null : (g.assist ?? null),
         min: g.min,
         penalty: g.type === "penalty",
         ownGoal: g.type === "own_goal",
@@ -238,7 +242,11 @@ function sideByScore(p: Pair): Side | null {
   return p.home > p.away ? "home" : p.away > p.home ? "away" : null;
 }
 
-function matchFacts(match: BriefInputMatch): MatchFacts | null {
+/**
+ * 입력 경기 1건 → 승자·점수 차·연장·승부차기·역전 여부·시간 순 득점(순수 함수). 점수 형식이 틀리면 null. 템플릿 문장과 사실성
+ * 검사기(brief-check.ts — M1-23)가 같은 해석을 쓴다(템플릿이 쓰는 사실 = 검사기가 인정하는 사실).
+ */
+export function matchFacts(match: BriefInputMatch): MatchFacts | null {
   const ft = parseScorePair(match.ft);
   if (!ft) return null;
   const pens = match.pens !== undefined ? parseScorePair(match.pens) : null;

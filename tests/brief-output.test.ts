@@ -4,7 +4,7 @@
  * - 확정 스키마 `{ l: [{ t, r }] }`(M0-30 임시 스키마의 키 그대로) — strict, 줄 수·줄 길이 상한은 스키마가 아니라 파서·줄 판정이 다룬다.
  * - 관용: 출력 전체를 감싼 코드블록 벗김 · 6줄 이상은 앞 5줄 · 80자 초과 줄은 치환 뒤 문장으로 표시(강등은 M1-45).
  * - fixtures/llm/brief-cases.json 기대값 중 이 단계가 정할 수 있는 것(stage zod·transport, 80자 초과 줄)을 실제 파서·mock 호출로 확인한다.
- *   줄 단위 코드 검증(스코어·이름·순위 서술)은 M1-23 몫이라 여기서는 기대값을 믿는다.
+ *   줄 단위 코드 검증(스코어·이름·순위 서술)의 기대값 대조는 tests/brief-check.test.ts(M1-23).
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";

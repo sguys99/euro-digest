@@ -1276,6 +1276,52 @@ describe("runCollect — 전날 경기 결과 → 브리핑 1요청(LLM 출력�
     expect(outcome.status).toBe("success");
   });
 
+  it("코드 검증(M1-23): summarize.brief.done·dry 출력에 FR-29 판정과 줄별 사유 코드 — 저장은 여전히 템플릿(재시도·강등은 M1-45)", async () => {
+    const { deps, printed, records } = makeDeps();
+    const outcome = await runCollect(deps);
+    expect(outcome.brief).toMatchObject({ state: "done" });
+    const done = records.find((r) => r.event === "summarize.brief.done");
+    // mock 출력(M0-34 입력 E의 원문)은 이 실행의 입력(football-data만 — 한국 선수 블록·득점자 없음)과 근거가 맞지 않는다 → 모든 줄 강등
+    expect(done).toMatchObject({
+      verdict: "downgrade-line:1,2,3,4,5",
+      checkStage: "line",
+      wholeReasons: [],
+    });
+    const lineReasons = done?.lineReasons as Record<string, string[]>;
+    expect(lineReasons["1"]).toContain("ref-unknown"); // k927 — korean 블록 없음
+    expect(lineReasons["5"]).toContain("latin-token"); // Christopher Nkunku — 득점자 없는 입력
+    // 로그에는 문장 원문이 없다(사유 코드·짧은 근거만)
+    expect(JSON.stringify(done)).not.toContain("Nkunku는");
+    const out = printed.find((p) => p.startsWith("── 브리핑 출력"))!;
+    expect(out.split("\n")[0]).toContain("판정 downgrade-line:1,2,3,4,5");
+    expect(out).toMatch(/1\. .+ → 강등 대상 — ref-unknown\(k927\)/u);
+    expect(readBrief("2026-10-11")).toMatchObject({ mode: "template" });
+    expect(outcome.briefFile).toMatchObject({
+      plan: { mode: "template", reason: "unverified" },
+    });
+  });
+
+  it("검사기가 예상 밖 오류를 내도 브리핑 단계는 멈추지 않는다 — 경고만 남기고 템플릿을 게시", async () => {
+    const { deps, printed, records } = makeDeps({
+      judgeBrief: () => {
+        throw new Error("검사기 오류(시험)");
+      },
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.brief).toMatchObject({ state: "done" });
+    expect(
+      records.find((r) => r.event === "summarize.brief.check-fail"),
+    ).toMatchObject({ error: expect.stringContaining("검사기 오류") });
+    expect(
+      records.find((r) => r.event === "summarize.brief.done"),
+    ).toMatchObject({ verdict: null, lineReasons: null });
+    const out = printed.find((p) => p.startsWith("── 브리핑 출력"))!;
+    expect(out).toContain("판정 없음(검사기 오류)");
+    expect(out).toContain("1. 아틀레티코 마드리드가 알라베스 원정에서");
+    expect(readBrief("2026-10-11")).toMatchObject({ mode: "template" });
+    expect(outcome.status).toBe("success");
+  });
+
   it("종료 경기가 없으면 LLM을 부르지 않는다(호출 생략), 뉴스는 발행", async () => {
     for (const fd of [
       '{"matches":[]}',

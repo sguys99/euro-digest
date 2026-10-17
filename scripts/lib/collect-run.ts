@@ -103,7 +103,6 @@ import {
   type AfPendingEntry,
   type BriefFile,
   type BriefMode,
-  type CompId,
   type CompetitionsFile,
   type FeedItem,
   type LedgerMatch,
@@ -158,6 +157,14 @@ import {
   parseBriefOutput,
 } from "./brief";
 import {
+  briefCheckLogFields,
+  describeLineCheck,
+  judgeBriefResponse,
+  substituteBriefLines,
+  type BriefCheckContext,
+  type BriefJudgement,
+} from "./brief-check";
+import {
   buildBriefFile,
   decideBriefWrite,
   isKeptBriefMode,
@@ -169,9 +176,7 @@ import {
   type BriefPublishPlan,
 } from "./brief-file";
 import {
-  briefCompLabel,
   briefNamesFromIndex,
-  chooseBriefCompForm,
   ENGLISH_NAMES,
   templateBriefLines,
 } from "./brief-template";
@@ -241,10 +246,10 @@ import {
   foldName,
   playerTeamsFrom,
   isKnownName,
-  substituteNames,
   unknownBriefInputNames,
   unknownNamesInText,
   type NameIndex,
+  type SubstituteResult,
 } from "./names";
 import {
   isolateProvider,
@@ -442,6 +447,8 @@ export interface CollectDeps {
   classifyClusters?: typeof classifyClusters;
   /** 범위 밖 기사 제외 단계(M1-17) — 기본은 news-scope.ts `filterOutOfScope`. 테스트가 실패 경로를 주입한다 */
   filterOutOfScope?: typeof filterOutOfScope;
+  /** 브리핑 코드 검증(M1-23) — 기본은 brief-check.ts `judgeBriefResponse`. 테스트가 실패 경로를 주입한다 */
+  judgeBrief?: typeof judgeBriefResponse;
   now: () => Date;
   /** RSS·football-data 공용 fetch */
   fetch: FetchLike;
@@ -3265,10 +3272,22 @@ async function runBriefStage(
     cacheWrite: result.usage.cacheWrite,
     thinkingTokens: result.thinkingTokens,
   };
+  // 코드 검증(M1-23 — FR-29 판정). 지금은 로그·dry 출력에만 남긴다 — 1회 재시도·줄 강등·게시는 M1-45가 이 판정을 그대로 쓴다.
+  // 사전을 읽지 못했으면 대회 별칭만 아는 색인(이름은 입력 영문만 허용 — 한글 이름은 확인할 수 없어 강등)
+  const checkCtx: BriefCheckContext = {
+    names: names ?? buildNameIndex(null, competitions),
+    competitions,
+  };
   if (!result.ok) {
     log.error("summarize.brief.fail", {
       stage: "llm",
       errorType: result.errorType,
+      // max_tokens = 출력 전체 실패(재시도) · refusal·errored = 템플릿(D40 ①, FR-26)
+      verdict: judgeBriefResponse(
+        { ok: false, errorType: result.errorType },
+        input,
+        checkCtx,
+      ).label,
       ...usageFields,
     });
     return withInput({
@@ -3288,6 +3307,7 @@ async function runBriefStage(
       reason: parsed.reason,
       fenced: parsed.fenced,
       prompt,
+      verdict: "retry", // 스키마 실패 = 출력 전체 실패(FR-29 1회 재시도 대상 — M1-45)
       ...usageFields,
     });
     return withInput({
@@ -3298,23 +3318,45 @@ async function runBriefStage(
     });
   }
   const lines = parsed.lines.map((line) => line.t);
-  // 고유명사 치환 + 조사 보정(M1-21, FR-24) — 대회 표기는 같은 입력의 템플릿과 같은 브리핑 단위 표기(D30·D45 ④).
+  // 코드 검증(M1-23) — 출력 전체(한국어 비율·한자)·줄 단위(이름·점수·승패·파생 서술·순위·분·80자) 판정과 사유 코드.
+  // 고유명사 치환 + 조사 보정(M1-21, FR-24)도 검사기가 같은 함수(substituteBriefLines — 대회 표기는 같은 입력의 템플릿과 같은
+  // 브리핑 단위 표기, D30·D45 ④)로 한 번 한다 — 80자 판정(D40 ⑤ briefLinesOverLimit)과 M1-45가 게시할 문장이 같은 결과다.
+  // 방어선 — 검사기와 판정에서 만드는 값(로그 필드·줄별 설명)의 예상 밖 오류가 브리핑 단계(같은 입력의 템플릿 게시)를 멈추지
+  // 않게 한 곳에서 만든다. 실패하면 판정 없이 출력만 남긴다(M1-45는 판정 없는 출력을 게시하지 않는다)
+  let view: {
+    judgement: BriefJudgement;
+    fields: ReturnType<typeof briefCheckLogFields>;
+    lineVerdicts: string[];
+  } | null = null;
+  try {
+    const judged = (deps.judgeBrief ?? judgeBriefResponse)(
+      { ok: true, text: result.text },
+      input,
+      checkCtx,
+    );
+    view = {
+      judgement: judged,
+      fields: briefCheckLogFields(judged),
+      lineVerdicts: (judged.check?.lines ?? []).map(describeLineCheck),
+    };
+  } catch (error) {
+    log.warn("summarize.brief.check-fail", { error: errorText(error) });
+  }
+  const judgement = view?.judgement ?? null;
+  const check = judgement?.check ?? null;
+  let substituted: SubstituteResult[];
+  try {
+    substituted =
+      check?.substitutions ?? substituteBriefLines(lines, input, checkCtx);
+  } catch {
+    substituted = lines.map((t) => ({
+      text: t,
+      masked: t,
+      replaced: [],
+      particleFixes: 0,
+    }));
+  }
   // 치환 뒤에도 남은 이름 후보는 미등록 적재로(통째로 영어인 줄은 빼고 — recordUnknownNames)
-  const form = chooseBriefCompForm(input, {
-    competitions,
-    names: names ? briefNamesFromIndex(names) : ENGLISH_NAMES,
-  });
-  const competitionLabel = (comp: CompId): string => {
-    const config = competitions.find((c) => c.id === comp);
-    return config
-      ? briefCompLabel(config.nameEn, { competitions }, form)
-      : comp;
-  };
-  const substituted = parsed.lines.map((line) =>
-    names
-      ? substituteNames(line.t, names, { competitionLabel })
-      : { text: line.t, masked: line.t, replaced: [], particleFixes: 0 },
-  );
   const outputNames = names
     ? [
         ...new Set(
@@ -3325,8 +3367,12 @@ async function runBriefStage(
         ),
       ]
     : [];
-  // 80자 초과(D40 ⑤)는 치환·조사 보정 뒤 문장으로 잰다 — 강등 대상 표시만(실제 강등은 M1-45)
-  const overLimit = briefLinesOverLimit(substituted.map((r) => r.text));
+  const overLimit = check
+    ? check.lines
+        .filter((l) => l.reasons.some((r) => r.code === "over-limit"))
+        .map((l) => l.n)
+    : briefLinesOverLimit(substituted.map((r) => r.text));
+  const checkFields = view?.fields ?? null;
   log.info("summarize.brief.done", {
     date: ctx.publishDate,
     matches: inputMatches,
@@ -3338,12 +3384,18 @@ async function runBriefStage(
     namesReplaced: substituted.reduce((n, r) => n + r.replaced.length, 0),
     particleFixes: substituted.reduce((n, r) => n + r.particleFixes, 0),
     outputUnknownNames: outputNames.length,
+    // FR-29 판정(M1-23): ok · retry(출력 전체 실패) · downgrade-line:n — 줄별 사유 코드·경고(M1-43 검수·M1-24 회귀 비교)
+    verdict: checkFields?.verdict ?? null,
+    checkStage: checkFields?.stage ?? null,
+    wholeReasons: check?.whole.reasons ?? null,
+    lineReasons: checkFields?.lineReasons ?? null,
+    lineWarnings: checkFields?.lineWarnings ?? null,
     ...usageFields,
   });
-  // 검증(M1-23)·강등(M1-45) 전이라 사람이 읽는 출력으로만 남긴다 — data/briefs에는 같은 입력의 템플릿을 게시한다(publishBrief).
+  // 재시도·강등(M1-45) 전이라 사람이 읽는 출력으로만 남긴다 — data/briefs에는 같은 입력의 템플릿을 게시한다(publishBrief).
   deps.print(
     [
-      `── 브리핑 출력 (${ctx.publishDate}, ${deps.llmMode}, 저장 안 함 — 검증(M1-23·M1-45) 전, 고유명사 치환·조사 보정 뒤 / 원문)`,
+      `── 브리핑 출력 (${ctx.publishDate}, ${deps.llmMode}, 저장 안 함 — 강등(M1-45) 전, 고유명사 치환·조사 보정 뒤 / 원문) · 판정 ${judgement ? judgement.label : "없음(검사기 오류)"}${!check || check.whole.ok ? "" : ` — 출력 전체 실패(${check.whole.reasons.join(",")}, 한글 ${check.whole.hangul}·라틴 ${check.whole.latin})`}`,
       ...(parsed.fenced ? ["   (코드블록을 벗겨 읽음 — D40 ⑤)"] : []),
       ...(parsed.droppedLines > 0
         ? [`   (5줄 넘는 ${parsed.droppedLines}줄은 버림 — D40 ⑤)`]
@@ -3353,7 +3405,9 @@ async function runBriefStage(
         const flag = overLimit.includes(i + 1)
           ? `  (${text.length}자 — 80자 초과, 강등 대상(D40 ⑤))`
           : "";
-        return `${i + 1}. ${text}  [${line.r.join(",")}]${flag}\n   원문: ${line.t}`;
+        const described = view?.lineVerdicts[i];
+        const verdict = described ? `  → ${described}` : "";
+        return `${i + 1}. ${text}  [${line.r.join(",")}]${flag}${verdict}\n   원문: ${line.t}`;
       }),
     ].join("\n"),
   );

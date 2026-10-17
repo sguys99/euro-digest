@@ -11,7 +11,7 @@
  * - 대표 케이스를 `createLlmClient({ mode: "mock" }).callSingle`로 실제로 불러 llm.ts 경유 결과를 확인한다(통합).
  * - 비밀값 흔적·URL이 없다(CLAUDE.md §1-6·§1-8).
  *
- * 출력 판정 로직(M1-23)은 아직 없다. 여기서는 fixture 자체만 검사하고 판정은 brief-cases.json 값을 믿는다.
+ * 여기서는 fixture 자체만 검사한다. 판정(expected·stage·줄 코드)이 코드 검증기와 같은지는 tests/brief-check.test.ts(M1-23)가 본다.
  * M1-20: 출력 형식 {l:[{t,r}]}가 M0-30 임시 스키마의 키 그대로 확정돼 mock은 다시 만들지 않았다(note만 갱신). 확정 판정(D40)과
  * 관용 파싱 사례는 tests/brief-output.test.ts.
  */
