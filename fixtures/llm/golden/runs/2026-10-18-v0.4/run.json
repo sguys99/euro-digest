@@ -1,0 +1,149 @@
+{
+  "label": "2026-10-18-v0.4",
+  "variant": "base",
+  "mode": "live",
+  "model": "claude-haiku-5-5",
+  "promptId": "p_24543d78cd9a",
+  "prompt": "configs/prompts/summarize.md",
+  "promptChars": 4455,
+  "checker": {
+    "id": "c_5ceb8b24126b",
+    "files": [
+      "scripts/lib/brief-check-lexicon.ts",
+      "scripts/lib/brief-check.ts",
+      "scripts/lib/brief-grammar.ts",
+      "scripts/lib/brief-template.ts",
+      "scripts/lib/brief.ts",
+      "scripts/lib/josa.ts",
+      "scripts/lib/names.ts"
+    ]
+  },
+  "configs": {
+    "id": "g_a027a4250859",
+    "files": [
+      "configs/competitions.json",
+      "configs/korean-players.json",
+      "configs/names.ko.json",
+      "configs/team-ids.json"
+    ],
+    "llmMaxMatches": 15
+  },
+  "runId": "eval-dev-20261017T150256Z-fc71",
+  "startedAt": "2026-10-17T15:02:56.469Z",
+  "finishedAt": "2026-10-17T15:03:10.402Z",
+  "settings": {
+    "maxTokens": 8192,
+    "thinking": "adaptive",
+    "effort": "medium",
+    "cacheSystem": false,
+    "attempts": 1
+  },
+  "warnings": [],
+  "days": [
+    {
+      "date": "2026-10-15",
+      "customId": "golden-2026-10-15",
+      "inputHash": "i_dd058de5de55",
+      "matches": 9,
+      "userChars": 1690,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Aston Villa가 Fenerbahçe를 6-0으로 완파했다.\",\"r\":[\"m575355\"]},{\"t\":\"PSG가 Man City를 4-2로 꺾었다.\",\"r\":[\"m575353\"]},{\"t\":\"Real Madrid가 Roma 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.\",\"r\":[\"m575352\"]},{\"t\":\"Stuttgart가 Sl. Bratislava를 3-0으로 완파했다.\",\"r\":[\"m575358\"]},{\"t\":\"PSG가 승점 6으로 UEFA Champions League 선두다.\",\"r\":[\"sUCL\"]}]}",
+      "usage": {
+        "in": 5228,
+        "out": 3059,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 2828,
+      "latencyMs": 13768.344496,
+      "costUsd": 0.002052,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Aston Villa가 Fenerbahçe를 6-0으로 완파했다.",
+          "text": "애스턴 빌라가 페네르바체를 6-0으로 완파했다.",
+          "refs": [
+            "m575355"
+          ],
+          "chars": 26,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "애스턴 빌라가 UEFA 챔피언스리그 홈경기에서 페네르바체를 6-0으로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 2,
+          "raw": "PSG가 Man City를 4-2로 꺾었다.",
+          "text": "파리 생제르맹이 맨체스터 시티를 4-2로 꺾었다.",
+          "refs": [
+            "m575353"
+          ],
+          "chars": 27,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "파리 생제르맹이 UEFA 챔피언스리그 원정에서 맨체스터 시티를 4-2로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 3,
+          "raw": "Real Madrid가 Roma 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "text": "레알 마드리드가 로마 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "refs": [
+            "m575352"
+          ],
+          "chars": 39,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "레알 마드리드가 UEFA 챔피언스리그 원정에서 로마를 4-3으로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 4,
+          "raw": "Stuttgart가 Sl. Bratislava를 3-0으로 완파했다.",
+          "text": "슈투트가르트가 슬로반 브라티슬라바를 3-0으로 완파했다.",
+          "refs": [
+            "m575358"
+          ],
+          "chars": 31,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "슈투트가르트가 UEFA 챔피언스리그 원정에서 슬로반 브라티슬라바를 3-0으로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 5,
+          "raw": "PSG가 승점 6으로 UEFA Champions League 선두다.",
+          "text": "파리 생제르맹이 승점 6으로 UEFA 챔피언스리그 선두다.",
+          "refs": [
+            "sUCL"
+          ],
+          "chars": 32,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "파리 생제르맹이 승점 6으로 UEFA 챔피언스리그 선두, 바르셀로나가 승점 6으로 2위다.",
+          "grammar": "rank"
+        }
+      ],
+      "hiddenRefs": [],
+      "template": [
+        "파리 생제르맹이 UEFA 챔피언스리그 원정에서 맨체스터 시티를 4-2로 꺾었다.",
+        "리버풀이 UEFA 챔피언스리그 원정에서 LASK를 6-3으로 완파했다.",
+        "레알 마드리드가 UEFA 챔피언스리그 원정에서 로마를 4-3으로 꺾었다.",
+        "보되/글림트가 UEFA 챔피언스리그 홈경기에서 도르트문트를 1-0으로 꺾었다.",
+        "파리 생제르맹이 승점 6으로 UEFA 챔피언스리그 선두, 바르셀로나가 승점 6으로 2위다."
+      ]
+    }
+  ]
+}

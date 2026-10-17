@@ -473,5 +473,59 @@
     },
     "sources": [],
     "status": "success"
+  },
+  {
+    "runId": "eval-dev-20261017T150256Z-fc71",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T15:02:56.469Z",
+    "finishedAt": "2026-10-17T15:03:10.398Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": {
+      "in": 5228,
+      "out": 3059,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.002052,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success",
+    "brief": {
+      "requests": 1
+    }
+  },
+  {
+    "runId": "eval-dev-20261017T150335Z-48d6",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-17T15:03:35.451Z",
+    "finishedAt": "2026-10-17T15:04:49.585Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 15,
+    "downgraded": 0,
+    "tokens": {
+      "in": 18340,
+      "out": 17292,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.01048,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success",
+    "brief": {
+      "requests": 3
+    }
   }
 ]
