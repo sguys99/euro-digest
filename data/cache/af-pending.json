@@ -1,6 +1,87 @@
 {
-  "updatedAt": "2026-10-18T05:37:21.476Z",
+  "updatedAt": "2026-10-18T05:48:40.804Z",
   "fixtures": [
+    {
+      "id": 1552790,
+      "comp": "LIGUE1",
+      "leagueId": 61,
+      "kickoff": "2026-10-17T15:15:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
+    {
+      "id": 1550149,
+      "comp": "SERIEA",
+      "leagueId": 135,
+      "kickoff": "2026-10-17T16:00:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
+    {
+      "id": 1557434,
+      "comp": "EPL",
+      "leagueId": 39,
+      "kickoff": "2026-10-17T16:30:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
+    {
+      "id": 1570413,
+      "comp": "LALIGA",
+      "leagueId": 140,
+      "kickoff": "2026-10-17T16:30:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
+    {
+      "id": 1575185,
+      "comp": "BUNDESLIGA",
+      "leagueId": 78,
+      "kickoff": "2026-10-17T16:30:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
+    {
+      "id": 1550148,
+      "comp": "SERIEA",
+      "leagueId": 135,
+      "kickoff": "2026-10-17T18:45:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
+    {
+      "id": 1552786,
+      "comp": "LIGUE1",
+      "leagueId": 61,
+      "kickoff": "2026-10-17T18:45:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
+    {
+      "id": 1552791,
+      "comp": "LIGUE1",
+      "leagueId": 61,
+      "kickoff": "2026-10-17T18:45:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
+    {
+      "id": 1570421,
+      "comp": "LALIGA",
+      "leagueId": 140,
+      "kickoff": "2026-10-17T19:00:00.000Z",
+      "status": "FT",
+      "firstSeen": "2026-10-18T05:48:40.799Z",
+      "requeries": 0
+    },
     {
       "id": 1550155,
       "comp": "SERIEA",

@@ -670,5 +670,108 @@
       }
     ],
     "status": "success"
+  },
+  {
+    "runId": "collect-prod-20261018T054714Z-64c8",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-10-18T05:47:14.008Z",
+    "finishedAt": "2026-10-18T05:48:40.830Z",
+    "collected": 462,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 0,
+      "out": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0,
+    "apiCalls": {
+      "footballData": 6,
+      "apiFootball": 14
+    },
+    "sources": [
+      {
+        "id": "bbc-sport-football",
+        "ok": true,
+        "items": 75,
+        "usable": 0
+      },
+      {
+        "id": "bbc-sport-premier-league",
+        "ok": true,
+        "items": 43,
+        "usable": 0
+      },
+      {
+        "id": "bbc-sport-champions-league",
+        "ok": true,
+        "items": 12,
+        "usable": 0
+      },
+      {
+        "id": "bbc-sport-european",
+        "ok": true,
+        "items": 27,
+        "usable": 0
+      },
+      {
+        "id": "the-athletic-football",
+        "ok": true,
+        "items": 100,
+        "usable": 3
+      },
+      {
+        "id": "daily-briefing",
+        "ok": true,
+        "items": 20,
+        "usable": 0
+      },
+      {
+        "id": "di-marzio",
+        "ok": true,
+        "items": 10,
+        "usable": 0
+      },
+      {
+        "id": "relevo",
+        "ok": true,
+        "items": 15,
+        "usable": 0
+      },
+      {
+        "id": "interfootball-world",
+        "ok": true,
+        "items": 20,
+        "usable": 5
+      },
+      {
+        "id": "interfootball-all",
+        "ok": true,
+        "items": 50,
+        "usable": 8
+      },
+      {
+        "id": "footballist-football",
+        "ok": true,
+        "items": 20,
+        "usable": 2
+      },
+      {
+        "id": "besteleven-world",
+        "ok": true,
+        "items": 20,
+        "usable": 0
+      },
+      {
+        "id": "besteleven-all",
+        "ok": true,
+        "items": 50,
+        "usable": 0
+      }
+    ],
+    "status": "partial"
   }
 ]
