@@ -22,6 +22,13 @@ export const SITE_TAGLINE = "매일 아침, 밤사이 유럽 축구를 한눈에
 export const REPO_URL = "https://github.com/sguys99/euro-digest";
 
 /**
+ * 삭제·정정 요청 연락처 이메일 — 전용 메일 대신 운영자 메일을 쓴다(PRD FR-140·§15 D8, plan U-07). 비밀값이 아니다.
+ * `/about#contact`가 쓰고, 이슈 양식(.github/ISSUE_TEMPLATE/takedown.yml·config.yml)과 수집 User-Agent(collect.yml `CONTACT_EMAIL`)에도
+ * 같은 주소가 적혀 있다 — 바꾸면 함께 고친다.
+ */
+export const CONTACT_EMAIL = "sguys99@gmail.com";
+
+/**
  * football-data.org 약관 7.1 필수 표기 — 영문 원문 그대로 둔다(번역·대소문자 변경 금지, PRD FR-45·FR-140·FR-142, D27).
  * 뒤표지(푸터)·`/about`·오늘의 5줄 데이터 출처 줄이 같은 문자열을 쓴다.
  */

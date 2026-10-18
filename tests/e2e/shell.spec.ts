@@ -165,7 +165,7 @@ test.describe("마스트헤드·뒤표지 — 데이터에서 계산한 호수·
     if (meta.no !== null) await expect(footer).toContainText(`제 ${meta.no}호`);
   });
 
-  test("뒤표지: football-data 필수 문구 원문(lang=en) · API-Football 병기 · GitHub(새 창)만 링크", async ({
+  test("뒤표지: football-data 필수 문구 원문(lang=en) · API-Football 병기 · /about 링크 3개 + GitHub(새 창)", async ({
     page,
   }) => {
     await open(page, "./");
@@ -176,10 +176,11 @@ test.describe("마스트헤드·뒤표지 — 데이터에서 계산한 호수·
     await expect(footer).toContainText("API-Football");
     // 아직 화면에 없는 오늘의 5줄·AI 작성 고지는 설명하지 않는다(M1-32에서 더함)
     await expect(footer).not.toContainText("5줄");
+    // /about 링크(M1-36 — 순서·앵커는 tests/e2e/about.spec.ts) + GitHub. 개인정보 처리방침(/privacy/)은 M5-05
     const links = footer.getByRole("link");
-    await expect(links).toHaveCount(1);
-    await expect(links.first()).toHaveAttribute("href", REPO_URL);
-    await expect(links.first()).toHaveAttribute("target", "_blank");
+    await expect(links).toHaveCount(4);
+    await expect(links.last()).toHaveAttribute("href", REPO_URL);
+    await expect(links.last()).toHaveAttribute("target", "_blank");
   });
 });
 
@@ -480,8 +481,9 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           );
         }
       }
-      // 건너뛰기 · 워드마크 · 테마 토글 · (1024 이상 상단 내비 2) · GitHub · (1023 이하 하단 탭 2)
-      expect(checked).toBe(6);
+      // 건너뛰기 · 워드마크 · 테마 토글 · (1024 이상 상단 내비 2) · 뒤표지 4(AI 작성 고지 · 소개·출처 정책 · 삭제·정정 요청 — M1-36 ·
+      // GitHub) · (1023 이하 하단 탭 2)
+      expect(checked).toBe(9);
       expect(problems).toEqual([]);
     });
   }

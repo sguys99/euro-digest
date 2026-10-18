@@ -466,6 +466,19 @@ export const artifacts = {
 
 // ─── 외부 링크 (basePath 무관) ──────────────────────────────────────────────
 
+/** 사이트가 링크하는 GitHub 이슈 양식 — 파일은 `.github/ISSUE_TEMPLATE/`(tests/paths.test.ts가 있는지 확인한다) */
+export type IssueForm = "takedown.yml" | "summary-error.yml";
+
+/**
+ * 이슈 양식 링크(미리 채우는 값 없음) — `/about` 연락처(FR-140 삭제·정정 요청, FR-36 오류 신고 — M1-36).
+ * 카드·날짜를 채워 여는 카드 메뉴 링크는 `summaryErrorIssueUrl`.
+ * 예) https://github.com/sguys99/euro-digest/issues/new?template=takedown.yml
+ */
+export function issueFormUrl(form: IssueForm): string {
+  const query = new URLSearchParams({ template: form });
+  return `${REPO_URL}/issues/new?${query.toString()}`;
+}
+
 /**
  * 카드 "오류 신고" GitHub 이슈 폼 링크 (FR-36). 카드 ID·발행 날짜가 미리 채워진다.
  * 이름(`summaryError`·템플릿 `summary-error.yml`)은 옛 "요약 오류 신고"에서 왔고, 지금은 브리핑·분류 오류 신고 폼이다(D23·D24).

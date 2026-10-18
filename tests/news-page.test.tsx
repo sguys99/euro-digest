@@ -9,7 +9,7 @@ import NotFound from "@/app/not-found";
 import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
 import type { RunLog } from "@/lib/schema/run";
 
-// `/news/` 골격(M1-30)과 404 — 앱 셸 안에서 그 페이지 제목이 h1, 워드마크는 p. 필터는 M1-33, 404 본문 디자인은 M1-36.
+// `/news/` 골격(M1-30)과 404(본문 디자인 M1-36) — 앱 셸 안에서 그 페이지 제목이 h1, 워드마크는 p. 필터는 M1-33.
 const { loadLatestNews, loadProdRuns } = vi.hoisted(() => ({
   loadLatestNews: vi.fn<() => NewsFile | null>(),
   loadProdRuns: vi.fn<() => RunLog[]>(() => []),
@@ -61,15 +61,34 @@ describe("NewsPage(/news/)", () => {
 });
 
 describe("NotFound(404)", () => {
-  it("앱 셸 안 — h1 안내 하나, 현재 탭 없음, 홈으로 돌아가기 링크", () => {
+  it("앱 셸 안 — h1 안내 하나, 현재 탭 없음, 홈·뉴스 링크", () => {
     const { container } = render(<NotFound />);
     expect(
       screen.getAllByRole("heading", { level: 1 }).map((h) => h.textContent),
     ).toEqual(["페이지를 찾을 수 없습니다"]);
     expect(container.querySelector("[aria-current]")).toBeNull();
+    const main = screen.getByRole("main");
+    // 테스트 환경의 next/link는 trailingSlash를 모른다(끝 슬래시를 뗀다) — 빌드 HTML의 href는 e2e가 본다
     expect(
-      screen.getByRole("link", { name: "홈으로 돌아가기" }),
-    ).toHaveAttribute("href", "/");
+      ["홈으로 돌아가기", "뉴스 보기"].map((name) =>
+        within(main)
+          .getByRole("link", { name })
+          .getAttribute("href")
+          ?.replace(/\/?$/, "/"),
+      ),
+    ).toEqual(["/", "/news/"]);
     expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+  });
+
+  it("큰 '404'는 윤곽 숫자(장식 — aria-hidden), 안내는 UI 문구뿐(사실·숫자 없음)", () => {
+    render(<NotFound />);
+    const main = screen.getByRole("main");
+    const big = within(main).getByText("404");
+    expect(big).toHaveAttribute("aria-hidden", "true");
+    expect(big.className).toContain("text-transparent");
+    expect(big.className).toContain("[-webkit-text-stroke:2px_var(--ink-2)]");
+    expect(main).toHaveTextContent("요청한 주소에 페이지가 없습니다.");
+    // 404 말고는 숫자를 쓰지 않는다(경기·선수·날짜를 지어내지 않는다)
+    expect((main.textContent ?? "").replace("404", "")).not.toMatch(/\d/);
   });
 });

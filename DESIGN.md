@@ -396,6 +396,8 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 | 필터 머리 약칭 / 해제 | 14px / 13px | 같음 | 한글 800 |
 | 빈 상태 제목 / S4 이유 / 오류 제목·본문 / 오프라인 | 15px / 14px / 15px·13.5px / 13.5px | 같음 | 한글 800·400 |
 | 빈 상태 '0'(필터 0건) | 64px/0.8 | 64px/0.8 | Barlow 800, 2px 윤곽(`--ink-2`) |
+| 404 윤곽 숫자(M1-36) | 112px/0.8 | 176px/0.8 | Barlow 800, 속 빈 윤곽 `--ink-2` 2px(≥1024 2.5px) — 빈 상태 '0'을 키운 것 |
+| `/about` 본문 / 항목 이름(M1-36) | 16px/1.6 / 15px/1.5 | 같음 | 한글 400 / 800 — 본문 기본 16px에 행간만 5줄 문장(1.6)에 맞춤 |
 | 비시즌 날짜 | 34px | 34px | Barlow 800 |
 | 푸터 본문 / 브랜드 / football-data 문구 | 13px/1.6 / 17px / 15px | 같음 | 한글 400 / 800, −0.03em / Barlow 600, 0.03em |
 | 팀 배지 약어 | 15px | 15px | Barlow 800, 0.04em |
@@ -817,6 +819,9 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 내비 항목 (M1-30) | `src/components/shell/site-nav.ts` | 서버 | `NAV_ITEMS`(하단 탭·상단 내비 공통, M1 홈·뉴스) · `NavKey` |
 | 호 정보 (M1-30) | `src/lib/issue.ts` | 순수 함수 | `issueNumber(date)`(창간일 `FIRST_ISSUE_DATE` 2026-10-12) · `issueMeta(news, runs)` → `{ date, no, publishedAt, updatedAt }` |
 | 호 로더 (M1-30) | `src/lib/data/issue.ts` | 빌드 때(fs) | `loadLatestIssue()` · `loadIssue(date)`(M1-34 아카이브) → `{ news, issue }` — 페이지가 셸에 `issue`를 넘긴다 |
+| 소개 페이지 (M1-36) | `src/app/about/page.tsx` + `src/components/about/` | 서버(JS 0) | `<AboutToc variant="contents\|inline">`(차례 — 같은 페이지 앵커 `<a href="#id">`) · `<ScheduleTable schedule>`(계절별 발행 시각표) · `<TermList items>`(`<dl>` 항목 줄) · `<OutletList outlets showLang>`(매체 + 리더 점선 + Tier) · `<TierBadge tier>`(§9.3 Tier 배지 — M1-31 카드 배지와 합칠 것) · `<Leader>`(리더 점선) |
+| 소개 모델·앵커 (M1-36) | `src/lib/about.ts` · `src/lib/about-sections.ts` · `src/lib/data/about.ts` | 순수 함수 · 빌드 때(fs) | `publishSchedule(date)` → `{ current, next }`(계절·공개 시각·첫 호~마지막 호 — D26) · `seasonSpanOf` · `outletsFrom(sources)`(일일 수집 소스 → 매체명 묶음) · `ABOUT_SECTIONS`·`aboutHref(id?)`(의존성은 paths뿐 — 섬에서도 import 가능) · `loadSourcesConfig()`·`loadCompetitionsConfig()` |
+| 커스텀 404 (M1-36) | `src/app/not-found.tsx` | 서버 | 앱 셸(현재 탭 없음) + 섹션 머리 h1 "페이지를 찾을 수 없습니다"·NOT FOUND + 윤곽 "404"(장식) + 안내 2줄 + 홈·뉴스 텍스트 링크 → `out/404.html` |
 
 - **섬 크기(gzip, esbuild로 react 빼고 실측)**: Tabs 1.9KB · Toast 1.9KB · 테마 토글 1.9KB(토스트 호출 포함) · 셋을 함께 4.4KB(커밋 전 리뷰 전 1.6 · 1.7 · 1.8 · 3.8KB — Tabs Tab 순서 보정 +0.26KB, Toast 포커스 복귀 +0.19KB). D0-12 때는 섬을 레이아웃에 넣지 않아 홈 초기 JS가 135.7KB 그대로였고, M1-30 앱 셸이 테마 토글·`<Toaster>`를 모든 페이지에 넣어 138.0KB가 됐다(§11.5).
 - **클래스 합치기 — `cn`은 서버 전용**: tailwind-merge 기반 `cn`이 섬 번들에 들어가면 gzip 약 9KB가 붙는다(실측 Tabs 섬 11.0KB → `cx`로 1.6KB). 그래서 섬과 섬 안에서 쓰이는 컴포넌트(아이콘·버튼·칩·탭·토스트·테마 토글·필터 해제 버튼)는 병합 없는 `cx`(`src/lib/cx.ts`)로 합치고, `cn`은 서버 컴포넌트(카드·스켈레톤·섹션 머리·링크 탭·페이지)에서만 쓴다. `cx`는 같은 속성 클래스를 덮지 않으므로 변형 문자열 안에서 같은 속성이 겹치지 않게 적고, 바깥 `className`은 여백·배치만 준다. `tests/ui-source-rules.test.ts`가 `"use client"` 모듈과 섬이 가져다 쓸 서버 컴포넌트(버튼·칩·아이콘·대회 색·필터 해제 버튼)에서 닿는 import 그래프에 `src/lib/utils.ts`가 없는지 검사하고, `tests/ui-class-conflicts.test.tsx`가 cx 컴포넌트의 모든 변형·상태를 렌더해 한 요소에 같은 조건(변형)·같은 CSS 속성을 정하는 클래스가 둘 이상 없는지 본다(분류표에 없는 유틸리티도 실패). 이 검사로 버튼 공통 `no-underline`과 텍스트 링크 `underline`이 겹쳐 CSS 순서에 기대던 것을 찾아 `no-underline`을 주·보조·아이콘 변형으로 옮겼다(보이는 결과 같음).
@@ -936,6 +941,16 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - **의도한 차이**(시안 `?stage=m1` 견본과 같은 fixtures로 375·1024·1280 × 라이트·다크 요소 상자·글자 크기·행간·자간·색 실측 비교): ① 메타 줄이 5~8px 낮다 — 시안 메타 줄의 카드 메뉴 버튼(44px, margin −8/−10)이 M1-35라 아직 없다. 375에서 시안은 메뉴 때문에 시각이 둘째 줄로 내려가지만 지금은 한 줄에 든다 ② 한글 제목 링크 상자가 6px 높다(13px 패딩 — 글자 위치는 같다) ③ 태그 표기(사전) ④ 상대 시간이 칸 오른쪽에 붙어, "11시간 전"보다 짧은 글자는 출처와의 간격이 그만큼 넓다 ⑤ 피드 머리 "{n}건 · 중요도 순"(시안 그대로 — 필터 설명은 M1-33). 결과 가림 띠(변형 ⑤)는 M4-E — 제목 바로 아래 자리만 있다.
 - **검사**: (리뷰 반영 후) 단위 `tests/link-pairs.test.ts`(경계 35h59m·36h·36h01m, 팀 1개, 상대 2장, 다른 분류, fixtures 4쌍)·`feed-view.test.ts`·`news-feed.test.tsx`(변형 렌더·섬)·`card-labels.test.ts`, 견본 e2e `tests/e2e-specimen/news-cards.spec.ts`(375·1023·1024·1279·1280 넘침 0 · 머리기사 폭별 크기 · 연결 줄 앵커 이동·`:target` · '+N곳' 키보드 · 44px · 공유 앵커 CLS · axe 펼침 상태 라이트·다크), 일반 e2e `tests/e2e/news-cards.spec.ts`(실제 호 불변식).
 
+### 11.7 M1-36 (`/about` · 커스텀 404) — 구현 완료
+
+- **시안에 없는 화면 — 새 언어 없이 기존 문법으로**: 절 = 섹션 머리(3px 잉크 괘선 + h2 + 러닝 헤드 KICK-OFF·SOURCES·TIERS·AI NOTICE·MATCH DATA·CONTACT), 줄 = 괘선 사이의 한 줄(카드·5줄 행과 같은 `--rule` 구분), 이름과 값 = 리더 점선(목차 행·출처 목록과 같은 2px dotted `--ink-3`), 차례 = 1024 이상 목차 행 모양의 링크(이름 + 리더 + 절 번호 Barlow 600 17px `--ink-2`). 본문은 62ch(뒤표지 설명 문단과 같은 줄 길이). 큰 숫자는 발행 시각(`--num-score`, 지금 계절은 `--brand-accent` + "지금" 도장 — 색만으로 전하지 않음)과 처리 기한 "72"뿐이다(원칙 3).
+- **배치**: 1024 이상은 앱 셸 `contents` 슬롯에 차례(`<nav aria-label="소개 차례">`, sticky top 16px — 뉴스 목차와 같은 자리, 머리 "차례" + CONTENTS)를 넣어 2단, 1023 이하는 소개 아래 얇은 머리 + 2열 차례(세로 01~03 · 04~06). 마주 보는 면은 없다(1280 지면 984px). 매체 목록은 1024 이상 해외·국내 2열. 다루는 대회는 평탄 탭 범례(약칭과 이름이 같으면 이름은 화면 밖만).
+- **앵커**: `ABOUT_SECTIONS`(`#schedule`·`#sources`·`#tier`·`#ai`·`#data`·`#contact`). 절은 `scroll-margin-top` 16px(위에 고정 요소가 없어 여백만). 같은 페이지 앵커(차례·"요청 방법")는 `next/link`가 아니라 일반 `<a href="#id">` — 브라우저 기본 이동이라 `:target`이 걸려 절 머리 괘선이 `--brand-accent`로 바뀐다(색 면 전환 base). `next/link`(뒤표지·5줄 "AI 작성" 라벨)로 들어오면 위치는 맞지만 history.pushState라 `:target`이 갱신되지 않는다(감수 — 점진적 향상).
+- **404**: 빈 상태 '0'(64px 윤곽 `--ink-2`)을 숫자가 주인공이 되도록 키운 윤곽 "404"(112/176px, 장식 `aria-hidden` — h1이 같은 뜻) + 안내(UI 문구만) + 홈·뉴스 텍스트 링크. 1024 이상은 숫자 · 안내 2열(아래 맞춤). 링크·자산은 basePath 절대 경로라 깊은 경로에서도 깨지지 않는다(e2e).
+- **뒤표지 링크**: 혼합안 그대로 AI 작성 고지(`/about/#ai`) · 소개·출처 정책(`/about/` — 한 링크) · 삭제·정정 요청(`/about/#contact`) · GitHub↗. 개인정보 처리방침(`/privacy/`)은 M5-05에서 소개·출처 정책 뒤에. 짧은 "소개" 단독 링크는 폭 22px로 44px 터치 타깃에 못 미친다(셸 e2e).
+- **사실 출처**: 문구의 바뀌는 값은 모두 빌드 때 계산한다 — 발행 시각·계절 구간(time.ts D26 규칙, 기준일 = 최신 호), 매체·Tier(`configs/sources.json` 일일 수집 대상 — 파이프라인 `planDailySources().feeds`와 테스트 대조, 매체명은 카드와 같은 `publisherNameOf`), 대회(`competitions.json`), 연락처·필수 문구(`site.ts`). 모델 이름은 데이터에 기록이 없어 쓰지 않는다.
+- **남은 일**: M1-31 병합 뒤 Tier 배지 하나로(`src/components/about/tier-badge.tsx` ↔ 카드 이적 단계 줄의 배지 — 규격 같음), "AI 작성" 라벨 견본(`AiLabelSample`)과 M1-32 라벨 모양 맞추기, 대회 설정 로더 정리(card-labels).
+
 ---
 
 ## 12. 변경 이력
@@ -952,3 +967,4 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 2026-10-18 | M1-30 앱 셸: §9.3 호수 창간일 2026-10-12(사용자 결정), §9.4 셸 파일·API 5행, §11.4 남은 것 ① 완료, §11.5 구현 메모(셸 배치·데이터 로더·제목 단계·티켓 격자 줄 번호·천공 유틸리티 `perf-x`·`perf-y`·`notch-hole`·`--perf-inset`·열 슬롯·세로 배치·시각 출처·뒤표지 문구·의도한 차이), §10 건너뛰기 링크 7px 지면 테두리(커밋 전 리뷰 — 티켓 위 링 대비 2.32·2.87 → 6.04·7.11), §9.3 워드마크 h1은 홈만, §9.4 `CardTitle as`·`KstTime`·호 로더 행, 섬 크기 문장(138.0KB)·§11.4 ⑧(specimen 배포 조건). 토큰 값 변경 없음 | PRD DR-01·FR-142·FR-45, D29·D31, M1-30 |
 | 2026-10-18 | M1-31 뉴스 카드 변형 6종: §9.2 Card 본문 순서를 혼합안대로 바로잡음(이적 단계 줄은 태그 줄 다음·제목 위 — 옛 서술 '출처 목록 → 이적 단계 줄'은 시안과 달랐다), 제목 링크 패딩 한글 13px, §9.3 연결 줄 양쪽(국내 카드 '해외 보도 ↑')·'+N곳' = 서로 다른 출처명 − 1·출처 행 45px·상대 시간 칸 미리 잡기, §9.4 피드·카드·섬·화면 모델·로더 행과 `IndexTab lead`, §11.6 구현 메모(머리기사 제자리 배치·`<details>` 기각·CLS 실측·44px 겹침 우선순위·의도한 차이), §11.1 #10·§11.4 ② 완료. 토큰 값 변경 없음 | PRD FR-30, D23·D30, M1-31 |
 | 2026-10-19 | M1-31 리뷰·사용자 결정 반영: §9.3 출처 스택 '+N건'(추가 출처가 모두 같은 매체 — 사용자 결정 2026-10-19)·행 `min-h-11.25`, §9.4 피드 섬 `cardRelativeTime`(미래 시각 "방금")·화면 모델 `tag-labels.ts`(fs 없는 순수 모듈)·`IndexTab data-slot`, §11.6 44px 검사 허용 범위를 '+N곳' 버튼 가림으로 좁힘·'+N건'·순수성. 토큰 값 변경 없음 | PRD FR-30, M1-31 리뷰 |
+| 2026-10-19 | M1-36 `/about`·커스텀 404: §3.4 보조 크기 2행(404 윤곽 숫자 · `/about` 본문), §9.4 구현 3행(소개 페이지·모델·404), §11.7 구현 메모(기존 문법으로 구성·차례 배치·앵커와 `:target`·404·뒤표지 링크 혼합안 그대로·사실 출처·남은 일). 토큰 값 변경 없음 | PRD FR-140·FR-45·FR-143, D8·D23·D24·D26, M1-36 |
