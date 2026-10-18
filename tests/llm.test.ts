@@ -6,6 +6,11 @@ import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
+  BRIEF_MAX_TOKENS,
+  BRIEF_REQUEST_TIMEOUT_MS,
+  buildBriefRequest,
+} from "../scripts/lib/brief";
+import {
   addTokenUsage,
   backoffDelayMs,
   batchEntryToResult,
@@ -300,6 +305,19 @@ describe("validateRequests", () => {
     expect(() =>
       validateRequests([request({ maxTokens: MAX_TOKENS_CEILING })]),
     ).not.toThrow();
+  });
+
+  it("전송 계층 상한은 브리핑 max_tokens와 같은 16,384(D57) — 실제 브리핑 요청이 검증을 통과하고, 그보다 크면 거부한다", () => {
+    expect(MAX_TOKENS_CEILING).toBe(16_384);
+    expect(BRIEF_MAX_TOKENS).toBe(MAX_TOKENS_CEILING);
+    const brief = buildBriefRequest(
+      { briefDate: "2026-10-18", matches: [], standings: [] },
+      "지시문",
+    );
+    expect(validateRequests([brief])).toEqual([brief]);
+    expect(() => validateRequests([{ ...brief, maxTokens: 16_385 }])).toThrow(
+      /maxTokens는 16384 이하/,
+    );
   });
 
   it("0건과 상한 초과 건수를 거부한다", () => {
@@ -923,11 +941,98 @@ describe("callSingle (일일 브리핑 단건 일반 API — D28)", () => {
       await client.callSingle(request(), options);
       return calls.messages.map((c) => c.timeoutMs);
     };
+    // 다른 경로(배치·요청별 상한 없는 단건)의 기본값은 60초 그대로(D57은 브리핑 요청별 상한만 120초)
+    expect(DEFAULT_REQUEST_TIMEOUT_MS).toBe(60_000);
     expect(await run({ deadline: far })).toEqual([DEFAULT_REQUEST_TIMEOUT_MS]);
     expect(await run({ deadline: far }, { requestTimeoutMs: 20_000 })).toEqual([
       20_000,
     ]);
     expect(await run(undefined)).toEqual([undefined]);
+  });
+
+  it("요청별 상한 requestTimeoutMs(D57 — 브리핑 120초)는 클라이언트 상한보다 우선하고, 마감이 있으면 min(상한, 마감 − 현재), 마감이 없어도 transport에 넘긴다", async () => {
+    const run = async (
+      options: Parameters<LlmClient["callSingle"]>[1],
+      over: Partial<LlmClientOptions> = {},
+    ) => {
+      const { transport, calls } = fakeTransport({ messages: [message("{}")] });
+      const { client, logs } = harness(transport, over);
+      await client.callSingle(request(), options);
+      return {
+        timeouts: calls.messages.map((c) => c.timeoutMs),
+        logged: logs.find((l) => l.stage === "single.done")?.timeoutMs,
+      };
+    };
+    const far = new Date(START + 10 * 60_000);
+    // 마감이 멀면 요청별 상한 그대로(기본 60초가 아니라 120초)
+    expect(
+      await run({ deadline: far, requestTimeoutMs: BRIEF_REQUEST_TIMEOUT_MS }),
+    ).toEqual({ timeouts: [120_000], logged: 120_000 });
+    // 클라이언트 옵션(20초)보다 요청별 옵션이 우선
+    expect(
+      (
+        await run(
+          { deadline: far, requestTimeoutMs: 120_000 },
+          { requestTimeoutMs: 20_000 },
+        )
+      ).timeouts,
+    ).toEqual([120_000]);
+    // 마감까지 90초 — 60초 상한이면 60초였을 요청이 90초를 받는다
+    expect(
+      (await run({ budgetMs: 90_000, requestTimeoutMs: 120_000 })).timeouts,
+    ).toEqual([90_000]);
+    // 마감까지 45초 — 마감이 줄인다
+    expect(
+      (await run({ budgetMs: 45_000, requestTimeoutMs: 120_000 })).timeouts,
+    ).toEqual([45_000]);
+    // 마감 없음(eval) — 클라이언트 기본(60초)에 걸리지 않게 요청마다 넘긴다
+    expect((await run({ requestTimeoutMs: 120_000 })).timeouts).toEqual([
+      120_000,
+    ]);
+    // 요청별 상한이 없으면 그 전과 같다(마감 없음 → 요청 옵션 없음)
+    expect((await run({})).timeouts).toEqual([undefined]);
+  });
+
+  it("요청별 상한이 양의 정수가 아니면 보내지 않고 던진다(호출부 버그)", async () => {
+    for (const bad of [0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const { transport, calls } = fakeTransport({ messages: [message("{}")] });
+      const { client } = harness(transport);
+      await expect(
+        client.callSingle(request(), { requestTimeoutMs: bad }),
+      ).rejects.toThrow(LlmRequestError);
+      expect(calls.messages).toHaveLength(0);
+    }
+  });
+
+  it("요청별 상한 120초에서도 마감으로 줄인 타임아웃에 끊긴 연결 오류만 deadlineCut — 120초 상한 그대로 끊긴 것은 아님", async () => {
+    const run = async (budgetMs: number, advanceMs: number) => {
+      const clock = { t: START };
+      const transport: LlmTransport = {
+        ...fakeTransport().transport,
+        async createMessage() {
+          clock.t += advanceMs;
+          throw connectionError();
+        },
+      };
+      const client = createLlmClient({
+        mode: "live",
+        env: {},
+        transport,
+        now: () => clock.t,
+        sleep: async () => undefined,
+        logger: () => undefined,
+      });
+      return unwrapFail(
+        await client.callSingle(request(), {
+          budgetMs,
+          requestTimeoutMs: BRIEF_REQUEST_TIMEOUT_MS,
+        }),
+      );
+    };
+    // 남은 90초(타임아웃 90초로 줄어듦 — 60초 상한 때는 60초) — 90초에 끊김 = 마감 강등
+    expect((await run(90_000, 90_000)).deadlineCut).toBe(true);
+    // 남은 10분 — 상한 120초에 끊긴 것은 마감 때문이 아니다(응답 지연 — 브리핑 실패)
+    expect((await run(600_000, 120_000)).deadlineCut).toBeUndefined();
   });
 
   it("상대 마감 budgetMs = 호출 시작 + budgetMs(클라이언트 시계), deadline과 함께면 이른 쪽", async () => {

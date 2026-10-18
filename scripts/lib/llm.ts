@@ -12,9 +12,10 @@
  *   - 배치: submitBatch → pollBatch(마감 시각까지) → collectBatchResults, 한 번에 돌리는 runBatch
  *   - 단건: callSingle — 일반 Messages API 1건. 일일 브리핑(호출 지점 #1, 하루 1~3요청)의 호출 방식이다(D28). `deadline`
  *     (브리핑 마감 — collect-deadlines.ts)을 주면 ① HTTP 요청마다 타임아웃 = min(requestTimeoutMs, 마감 − 현재)(M0-36 확인 ① —
- *     M1-45) ② 재시도 대기 + `minAttemptMs`가 마감을 넘기면 더 기다리지 않는다 ③ 처음부터 남은 시간이 `minAttemptMs`보다 짧으면
- *     보내지 않고 `deadline` 실패(과금 0)를 돌려준다 — 그래서 callSingle 전체가 마감 안에서 끝난다. 배치는 주간 2곳(팀 프로필·
- *     한국 선수 주간 총평)용이다(일일 브리핑은 배치를 쓰지 않는다 — D28)
+ *     M1-45, 일일 브리핑은 요청별 상한 120초 — brief.ts BRIEF_REQUEST_TIMEOUT_MS, D57) ② 재시도 대기 + `minAttemptMs`가
+ *     마감을 넘기면 더 기다리지 않는다 ③ 처음부터 남은 시간이 `minAttemptMs`보다 짧으면 보내지 않고 `deadline` 실패(과금 0)를
+ *     돌려준다 — 그래서 callSingle 전체가 마감 안에서 끝난다. 배치는 주간 2곳(팀 프로필·한국 선수 주간 총평)용이다(일일 브리핑은
+ *     배치를 쓰지 않는다 — D28)
  *   - 재시도: 429·5xx(529 overloaded 포함)만 지수 백오프. 서버가 요청을 처리하지 않은 경우라 다시 보내도
  *     중복 과금이 없다. 연결 오류·타임아웃은 쓰기 요청(메시지 생성·배치 제출)에서 재시도하지 않는다
  *     (서버가 이미 처리했을 수 있어 중복 과금 위험). 읽기(배치 조회·결과)는 연결 오류도 재시도한다.
@@ -65,11 +66,13 @@ export const DEFAULT_LLM_MODEL = "claude-haiku-5-5";
 export const CUSTOM_ID_PATTERN = /^[a-zA-Z0-9_-]{1,64}$/;
 
 /**
- * 요청 1건의 max_tokens 절대 상한(전송 계층 안전망). 호출 지점별 실제 값은 브리핑 M1-20·주간 M3-07·M4-05에서
- * 정하며, 올리려면 사용자 승인이 필요하다(CLAUDE.md §1-3). 값은 M0-20 당시 뉴스 요약 묶음(10~20건 × 건당 ~150토큰)
- * + thinking 여유로 잡았고, 브리핑(최대 5줄)·주간 호출에는 넉넉한 상한이다.
+ * 요청 1건의 max_tokens 절대 상한(전송 계층 안전망). 호출 지점별 실제 값은 호출부가 정한다 — 일일 브리핑 brief.ts
+ * BRIEF_MAX_TOKENS 16,384(PRD §15 D57), 주간 2곳은 M3-07·M4-05에서(그때도 이 상한 안 — 각자 값은 사용자 승인). 상한이나
+ * 호출 지점별 값을 올리려면 사용자 승인이 필요하다(CLAUDE.md §1-3). M0-20 8,192(뉴스 요약 묶음 + thinking 여유) → D57에서 브리핑
+ * 값과 같은 16,384로 올렸다(10-18 prod 첫 요청이 8,192에서 thinking만으로 잘림). 16,384는 비스트리밍 단건으로 보낼 수 있는 크기다
+ * (SDK는 클라이언트 timeout을 주면 max_tokens로 스트리밍을 강요하지 않는다 — 이 파일은 항상 timeout을 준다).
  */
-export const MAX_TOKENS_CEILING = 8192;
+export const MAX_TOKENS_CEILING = 16_384;
 
 /** 배치 1회 요청 수 상한(안전망 — API 한도는 100,000). 일일 브리핑은 하루 1~3요청(FR-25), 주간 팀 프로필은 20팀 묶음(M4-06). */
 export const MAX_REQUESTS_PER_BATCH = 100;
@@ -79,8 +82,10 @@ export const DEFAULT_POLL_INTERVAL_MS = 30_000;
 export const MIN_POLL_INTERVAL_MS = 5_000;
 
 /**
- * live 모드 HTTP 요청 1회 타임아웃 상한 (SDK 기본 10분은 브리핑 창 — 수집 시작 → 브리핑 마감, 여름 약 20분 · 겨울 약 10분 — 에
- * 비해 너무 길다). `callSingle`에 deadline을 주면 요청마다 min(이 값, 마감 − 현재)로 줄인다(M1-45).
+ * live 모드 HTTP 요청 1회 타임아웃 기본 상한 (SDK 기본 10분은 브리핑 창 — 수집 시작 → 브리핑 마감, 여름 약 20분 · 겨울 약 10분 — 에
+ * 비해 너무 길다). `callSingle`에 deadline을 주면 요청마다 min(상한, 마감 − 현재)로 줄인다(M1-45). 일일 브리핑은 `callSingle`
+ * 요청별 옵션 `requestTimeoutMs`로 120초를 넘긴다(brief.ts BRIEF_REQUEST_TIMEOUT_MS — D57). 이 기본값(배치 제출·조회 등 다른
+ * 요청과 요청별 상한이 없는 단건)은 그대로 60초다.
  */
 export const DEFAULT_REQUEST_TIMEOUT_MS = 60_000;
 
@@ -1136,7 +1141,7 @@ export interface LlmClientOptions {
   /** 대기 — 테스트 주입용. mock 모드 기본값은 즉시 반환 */
   sleep?: (ms: number) => Promise<void>;
   retry?: Partial<RetryPolicy>;
-  /** live HTTP 요청 1회 타임아웃 */
+  /** live HTTP 요청 1회 타임아웃(클라이언트 기본 — 없으면 DEFAULT_REQUEST_TIMEOUT_MS). `callSingle`은 요청별 옵션이 우선한다 */
   requestTimeoutMs?: number;
 }
 
@@ -1181,8 +1186,8 @@ export type RunBatchOutcome =
 export interface CallSingleOptions {
   /**
    * 마감(일일 브리핑 = 브리핑 마감, scripts/lib/collect-deadlines.ts). 주면 callSingle 전체가 이 시각 안에서 끝난다(M1-45):
-   *   - HTTP 요청마다 타임아웃 = min(requestTimeoutMs(기본 60초), 마감 − 현재)(M0-36 확인 ①) — 마감에 걸린 요청은 끊기고
-   *     `connection_error`(요청 시간 초과)로 돌아온다. 연결 오류라 재시도하지 않는다(중복 과금 위험).
+   *   - HTTP 요청마다 타임아웃 = min(requestTimeoutMs(아래 요청별 옵션 → 클라이언트 옵션 → 기본 60초), 마감 − 현재)(M0-36 확인 ①)
+   *     — 마감에 걸린 요청은 끊기고 `connection_error`(요청 시간 초과)로 돌아온다. 연결 오류라 재시도하지 않는다(중복 과금 위험).
    *   - 429·5xx 재시도는 (대기 + `minAttemptMs`)가 마감 안에 들어올 때만 — 아니면 마지막 실패를 그대로 돌려준다.
    *   - 첫 요청 전에 남은 시간이 `minAttemptMs`보다 짧거나 마감이 지났으면 보내지 않고 `deadline` 실패(과금 0)를 돌려준다.
    */
@@ -1198,6 +1203,12 @@ export interface CallSingleOptions {
    * (40초 — collect-deadlines.ts)를 넘긴다: 이보다 짧은 타임아웃으로 보낸 요청은 끝나기 전에 끊겨 쓴 토큰만 과금될 수 있다.
    */
   minAttemptMs?: number;
+  /**
+   * 이 호출의 HTTP 요청 타임아웃 상한(ms) — 주면 클라이언트 옵션 `requestTimeoutMs`(기본 60초)보다 우선한다. 마감이 있으면
+   * min(이 값, 마감 − 현재), 마감이 없어도 요청마다 이 값을 transport에 넘긴다(클라이언트 기본 타임아웃에 걸리지 않게).
+   * 일일 브리핑은 BRIEF_REQUEST_TIMEOUT_MS(120초 — brief.ts, PRD §15 D57)를 넘긴다(파이프라인·eval 모두).
+   */
+  requestTimeoutMs?: number;
 }
 
 export interface LlmClient {
@@ -1485,10 +1496,23 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
 
   async function callSingle(
     request: LlmRequest,
-    { deadline: absolute, budgetMs, minAttemptMs = 0 }: CallSingleOptions = {},
+    {
+      deadline: absolute,
+      budgetMs,
+      minAttemptMs = 0,
+      requestTimeoutMs: callTimeoutMs,
+    }: CallSingleOptions = {},
   ): Promise<LlmResult> {
     const [valid] = validateRequests([request]);
     if (!valid) throw new LlmRequestError("요청이 0건이다");
+    if (
+      callTimeoutMs !== undefined &&
+      !(Number.isSafeInteger(callTimeoutMs) && callTimeoutMs > 0)
+    ) {
+      throw new LlmRequestError(
+        `requestTimeoutMs는 양의 정수(ms)여야 한다 (받은 값: ${callTimeoutMs})`,
+      );
+    }
     const customId = valid.customId;
     const params = buildMessageParams(valid, model);
     const startedAt = now();
@@ -1500,8 +1524,11 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
     const deadline = Number.isFinite(deadlineMs)
       ? new Date(deadlineMs)
       : undefined;
+    // 요청 타임아웃 상한 = 요청별 옵션 → 클라이언트 옵션 → 기본 60초(D57 — 브리핑은 요청별 120초)
     const requestTimeoutMs =
-      options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
+      callTimeoutMs ?? options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
+    // 마감이나 요청별 상한이 있으면 요청마다 타임아웃을 transport에 넘긴다(없으면 transport 기본 — 클라이언트 timeout)
+    const sendTimeout = deadline !== undefined || callTimeoutMs !== undefined;
     // 마감까지 요청 1건을 보낼 시간이 없으면 보내지 않는다(과금 0 — 호출부가 템플릿으로 간다, FR-26)
     const remainingAtStart = deadline ? deadline.getTime() - startedAt : null;
     if (
@@ -1537,7 +1564,7 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
             : requestTimeoutMs;
           return transport.createMessage(params, {
             customId,
-            ...(deadline ? { timeoutMs } : {}),
+            ...(sendTimeout ? { timeoutMs } : {}),
           });
         },
         {

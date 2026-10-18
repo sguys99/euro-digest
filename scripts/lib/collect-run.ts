@@ -50,7 +50,8 @@
  *      없으면 `empty`(호출 생략), 정형 입력이 없으면(football-data 키 없음·실패) 파일 없음. 그날 파일이 이미 `llm`·`mixed`면
  *      LLM을 부르지 않고 덮지 않는다(재실행 판정 — brief-file.ts `decideBriefWrite`).
  *      브리핑 마감(M1-47 — 공개 목표 −10분, 수동·지연 실행은 시작 + 8분 D41): 첫 호출·재시도 모두 남은 시간이
- *      BRIEF_LLM_MIN_ATTEMPT_MS(40초) 이상일 때만 보내고, HTTP 요청 타임아웃은 min(60초, 마감 − 현재)(llm.ts — 남은 시간은 deps.now로
+ *      BRIEF_LLM_MIN_ATTEMPT_MS(40초) 이상일 때만 보내고, HTTP 요청 타임아웃은 min(120초, 마감 − 현재)(D57 — brief.ts
+ *      BRIEF_REQUEST_TIMEOUT_MS를 callSingle 요청별 상한으로 넘긴다, llm.ts — 남은 시간은 deps.now로
  *      재서 callSingle 상대 예산 budgetMs로 넘긴다). 마감까지 성공하지 못하면 템플릿(FR-26) — 마감 강등은 설계된 폴백이라 이슈를
  *      만들지 않는다(실행 상태 partial).
  *      브리핑은 football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층)을 기다린 뒤 시작하고, 둘을 이어(대응표
@@ -168,6 +169,7 @@ import {
 } from "./brief-input";
 import {
   BRIEF_MAX_ATTEMPTS,
+  BRIEF_REQUEST_TIMEOUT_MS,
   briefLinesOverLimit,
   estimateBriefCost,
   briefPromptId,
@@ -3541,12 +3543,13 @@ async function runBriefStage(
     let result: LlmResult;
     try {
       // 마감은 상대 예산으로 넘긴다(deps.now로 잰 남은 시간 — 클라이언트 시계가 달라도 같은 마감, llm.ts budgetMs).
-      // callSingle 안에서 HTTP 요청 타임아웃 = min(60초, 남은 시간), 429·5xx 재시도는 (대기 + 40초)가 남은 시간 안일 때만
+      // callSingle 안에서 HTTP 요청 타임아웃 = min(120초(D57), 남은 시간), 429·5xx 재시도는 (대기 + 40초)가 남은 시간 안일 때만
       result = await llm.callSingle(
         { ...request, customId },
         {
           budgetMs: msUntil(ctx.briefDeadline, deps.now()),
           minAttemptMs: BRIEF_LLM_MIN_ATTEMPT_MS,
+          requestTimeoutMs: BRIEF_REQUEST_TIMEOUT_MS,
         },
       );
     } catch (error) {

@@ -61,7 +61,7 @@ mock/
 | `errored` `connection_error` | `ok:false`, `retryable:false` | **없음**(중복 과금 위험) | 0 |
 
 `retryable`은 호출부용 힌트다 — 다시 보내도 중복 과금이 없는 실패(429·5xx·과금 없는 배치 결과)만 true다. 연결 오류는 서버가 이미 처리했을 수 있어 false다(M0-36 확인 ② — M1-45 전에는 true였다). 브리핑 호출부(M1-45 collect-run.ts)는 이 힌트로 다시 보내지 않고, FR-29 재시도는 검사기 판정(`retry` — 출력 전체 실패·max_tokens)으로만 한다.
-마감(`deadline`·`budgetMs` — M1-45)을 주면 요청마다 타임아웃 = min(60초, 남은 시간), 남은 시간이 `minAttemptMs`보다 짧으면 보내지 않고 `errorType:"deadline"`(과금 0)이다. mock은 시간을 쓰지 않으므로 타임아웃은 무시된다.
+마감(`deadline`·`budgetMs` — M1-45)을 주면 요청마다 타임아웃 = min(상한, 남은 시간), 남은 시간이 `minAttemptMs`보다 짧으면 보내지 않고 `errorType:"deadline"`(과금 0)이다. 상한은 `callSingle` 요청별 옵션 `requestTimeoutMs` → 클라이언트 옵션 → 기본 60초 순이고, 일일 브리핑(collect·eval)은 요청별 120초를 넘긴다(`BRIEF_REQUEST_TIMEOUT_MS` — PRD §15 D57). mock은 시간을 쓰지 않으므로 타임아웃은 무시된다.
 
 ## 지금 있는 파일
 

@@ -48,6 +48,7 @@ import {
 } from "../scripts/lib/brief-input";
 import {
   BRIEF_MAX_TOKENS,
+  BRIEF_REQUEST_TIMEOUT_MS,
   buildBriefRequest,
   estimateBriefCost,
   BRIEF_PROMPT_PATH,
@@ -894,7 +895,7 @@ describe("brief-input.ts — 정형 입력(M0-34 창)", () => {
 describe("brief.ts — 요청 설정(D28)·출력 파싱", () => {
   const input = { briefDate: "2026-10-11", matches: [], standings: [] };
 
-  it("단건 요청 — max_tokens 8192(D53), thinking 적응형 + effort medium 명시, 1요청이라 캐싱 끔", () => {
+  it("단건 요청 — max_tokens 16,384(D57 — D53 8,192에서 상향), thinking 적응형 + effort medium 명시, 1요청이라 캐싱 끔", () => {
     const request = buildBriefRequest(input, "지시문");
     expect(request).toEqual({
       customId: "brief-2026-10-11",
@@ -904,16 +905,18 @@ describe("brief.ts — 요청 설정(D28)·출력 파싱", () => {
       effort: "medium",
       thinking: "adaptive",
     });
-    expect(BRIEF_MAX_TOKENS).toBe(8192);
+    expect(BRIEF_MAX_TOKENS).toBe(16_384);
+    expect(BRIEF_REQUEST_TIMEOUT_MS).toBe(120_000);
     expect(request.cacheSystem).toBeUndefined();
   });
 
   it("예상 비용은 출력 상한(max_tokens)으로 잡아 실측보다 크다", () => {
     const request = buildBriefRequest(input, "가".repeat(2000));
     const estimate = estimateBriefCost(request, "claude-haiku-5-5");
-    expect(estimate.tokens.out).toBe(8192);
+    expect(estimate.tokens.out).toBe(16_384);
     expect(estimate.tokens.in).toBeGreaterThanOrEqual(2000);
     expect(estimate.usd).toBeGreaterThan(0);
+    // 1회 최악값 = 입력 어림 + 출력 16,384 × $0.50/M($0.008192)
     expect(estimate.usd).toBeLessThan(0.01);
   });
 
@@ -1199,7 +1202,7 @@ describe("runCollect — 전날 경기 결과 → 브리핑 단건(FR-29 판정)
     const request = llmRequests[0]!;
     expect(request).toMatchObject({
       customId: "brief-2026-10-11",
-      maxTokens: 8192,
+      maxTokens: 16_384,
       effort: "medium",
       thinking: "adaptive",
     });
@@ -1665,7 +1668,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(params).toHaveLength(1);
     expect(params[0]).toMatchObject({
       model: "claude-haiku-5-5",
-      max_tokens: 8192,
+      max_tokens: 16_384,
       thinking: { type: "adaptive" },
       output_config: { effort: "medium" },
     });
@@ -2511,9 +2514,11 @@ describe("runCollect — 브리핑 게시(M1-45 — FR-29 재시도·줄 강등�
     expect(outcome.briefFile?.plan).toMatchObject({ reason: "budget" });
   });
 
-  it("요청 타임아웃 = min(60초, 마감 − 현재) — 여유 있는 정시 실행은 60초, 남은 시간 45초면 45초(M0-36 ①)", async () => {
+  it("요청 타임아웃 = min(120초(D57), 마감 − 현재) — 여유 있는 정시 실행은 120초, 남은 90초면 90초(D57 전 60초 상한이면 60초), 45초면 45초(M0-36 ①)", async () => {
     for (const [remaining, expected] of [
-      [null, 60_000],
+      [null, 120_000],
+      [120_000, 120_000],
+      [90_000, 90_000],
       [45_000, 45_000],
     ] as const) {
       const late = remaining === null ? null : lateClock(remaining);
@@ -2559,7 +2564,7 @@ describe("runCollect — 브리핑 게시(M1-45 — FR-29 재시도·줄 강등�
     });
     const outcome = await runCollect(deps);
     expect(script.calls).toHaveLength(1);
-    expect(script.calls[0]!.timeoutMs).toBe(60_000); // 남은 60초 = 상한 60초
+    expect(script.calls[0]!.timeoutMs).toBe(60_000); // 남은 60초 < 상한 120초(D57) — 마감이 타임아웃을 줄인다
     expect(
       records.find((r) => r.event === "summarize.brief.retry.skip"),
     ).toMatchObject({ reason: "deadline", attempt: 2, remainingMs: 20_000 });
@@ -2574,6 +2579,43 @@ describe("runCollect — 브리핑 게시(M1-45 — FR-29 재시도·줄 강등�
     });
     expect(outcome.status).toBe("partial");
     expect(issueReasons(outcome)).toEqual([]);
+  });
+
+  it("10-18 재현(D57): 첫 요청이 상한까지 thinking하다 잘려도(70초) 재시도 타임아웃 = min(120초, 남은 시간) — 겨울 정시 LLM 몫 4분이면 120초, 2분 30초면 80초", async () => {
+    for (const [remaining, retryTimeout] of [
+      [240_000, 120_000],
+      [150_000, 80_000],
+    ] as const) {
+      const late = lateClock(remaining);
+      const script = scriptedTransport(
+        [
+          { text: '{"l":[{"t":"', stop: "max_tokens", advanceMs: 70_000 },
+          { text: SLICE_LLM.text, advanceMs: 25_000 },
+        ],
+        late.clock,
+      );
+      const { deps } = makeDeps({
+        llmMode: "live",
+        now: late.now,
+        fetch: late.fetch,
+        createLlm: (model, clock) =>
+          createLlmClient({
+            mode: "live",
+            model,
+            transport: script.transport,
+            now: clock.now,
+            logger: () => undefined,
+          }),
+      });
+      const outcome = await runCollect(deps);
+      expect(script.calls).toEqual([
+        { customId: "brief-2026-10-11", timeoutMs: BRIEF_REQUEST_TIMEOUT_MS },
+        { customId: "brief-2026-10-11-r1", timeoutMs: retryTimeout },
+      ]);
+      expect(outcome.brief).toMatchObject({ state: "done", attempts: 2 });
+      rmSync(path.join(dataDir, "briefs"), { recursive: true, force: true });
+      rmSync(path.join(dataDir, "runs-dev.json"), { force: true });
+    }
   });
 
   it("마감에 걸려 끊긴 요청(줄인 타임아웃 → 연결 오류)은 마감 강등 — 재시도 없음, 이슈 없음", async () => {

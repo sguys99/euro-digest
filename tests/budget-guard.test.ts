@@ -5,10 +5,11 @@
  * (월 항상 합산·일 prod 실행=prod만), 예산과 정확히 같을 때 허용, dev 50% 경계, runs 파일 없음(사용 0)·손상(판정 불가 → LLM 없이),
  * 실행 시작 알림(dev = 눈에 띄는 출력, prod = Actions 주석, 던지지 않음).
  */
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import * as fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, it } from "vitest";
 
@@ -17,8 +18,12 @@ import type { RunEnv, RunLog } from "@/lib/schema";
 import {
   BRIEF_MAX_ATTEMPTS,
   BRIEF_MAX_TOKENS,
+  buildBriefRequest,
   estimateBriefCost,
+  loadBriefPrompt,
 } from "../scripts/lib/brief";
+import type { BriefInput } from "../scripts/lib/brief-input";
+import { BRIEF_DAILY_REQUEST_CAP } from "../scripts/lib/brief-publish";
 import {
   announceBriefBudget,
   briefBudgetLogFields,
@@ -52,7 +57,7 @@ const BUDGETS = {
 
 /**
  * 입력 어림 = 지시문 2,000(글자당 1) + 사용자 3,000자 ÷ 1.5 = 4,000토큰, 출력 상한 4,096(고정 시험값 — 함수는 요청의 maxTokens를
- * 쓴다. 실제 상한 BRIEF_MAX_TOKENS 8,192(D53)의 최악값은 아래 "D53" 시험)
+ * 쓴다. 실제 상한 BRIEF_MAX_TOKENS 16,384(D57)의 최악값은 아래 "D57" 시험)
  */
 const REQUEST: BriefRequestShape = {
   system: "가".repeat(2000),
@@ -145,16 +150,73 @@ const DEV_1005 = "2026-10-05T05:00:00.000Z";
 
 // ─── 최악값 예상 ─────────────────────────────────────────────────────────
 
-describe("estimateBriefWorstCase — D53 max_tokens 8,192의 최악값", () => {
-  it("같은 요청을 실제 상한(BRIEF_MAX_TOKENS 8,192)으로 보면 1회 $0.004496 · 최악값 $0.008992(일 예산의 9.0% — 4,096일 때 4.9%)", () => {
-    expect(BRIEF_MAX_TOKENS).toBe(8_192);
+const ROOT = fileURLToPath(new URL("../", import.meta.url));
+
+describe("estimateBriefWorstCase — D57 max_tokens 16,384의 최악값", () => {
+  it("같은 요청을 실제 상한(BRIEF_MAX_TOKENS 16,384)으로 보면 1회 $0.008592 · 최악값 $0.017184(일 예산의 17.2% — 8,192(D53)일 때 9.0%)", () => {
+    expect(BRIEF_MAX_TOKENS).toBe(16_384);
     const worst = estimateBriefWorstCase(
       [{ ...REQUEST, maxTokens: BRIEF_MAX_TOKENS }],
       MODEL,
     );
-    expect(worst.usd).toBeCloseTo(0.008992, 9);
-    expect(worst.tokens).toMatchObject({ in: 8_000, out: 16_384 });
-    expect(worst.usd / DEFAULT_DAILY_BUDGET_USD).toBeCloseTo(0.08992, 6);
+    expect(worst.usd).toBeCloseTo(0.017184, 9);
+    expect(worst.tokens).toMatchObject({ in: 8_000, out: 32_768 });
+    expect(worst.usd / DEFAULT_DAILY_BUDGET_USD).toBeCloseTo(0.17184, 6);
+    // 출력 몫만 — 16,384 × $0.50/M = 요청 1회 $0.008192
+    expect(
+      estimateBriefCost({ ...REQUEST, maxTokens: BRIEF_MAX_TOKENS }, MODEL).usd,
+    ).toBeCloseTo(0.000_4 + 0.008_192, 9);
+  });
+
+  it("실제 지시문 + 골든셋 가장 큰 입력(10-11, 23경기 → 본문 15경기)도 최악값이 일 예산의 20% 아래 — 하루 상한 3요청(D56)을 모두 상한까지 써도 $0.03 아래", async () => {
+    const system = await loadBriefPrompt(ROOT);
+    const input = JSON.parse(
+      readFileSync(
+        path.join(ROOT, "fixtures/llm/golden/inputs/2026-10-11.json"),
+        "utf8",
+      ),
+    ) as BriefInput;
+    expect(input.matches).toHaveLength(23);
+    const request = buildBriefRequest(input, system);
+    expect(request.maxTokens).toBe(16_384);
+    const worst = estimateBriefWorstCase([request], MODEL);
+    expect(worst.tokens.out).toBe(2 * 16_384);
+    expect(worst.usd).toBeLessThan(0.2 * DEFAULT_DAILY_BUDGET_USD);
+    const dayCap = estimateBriefWorstCase(
+      [request],
+      MODEL,
+      BRIEF_DAILY_REQUEST_CAP,
+    );
+    expect(dayCap.usd).toBeLessThan(0.03);
+  });
+
+  it("최악값이 커져도 가드가 브리핑을 막지 않는다 — 10-18처럼 prod가 이미 쓴 날(아침 2요청 $0.008195)·같은 날 재실행(앞 실행 2회가 모두 상한까지 쓴 경우)도 허용", () => {
+    const today = "2026-10-20T00:00:00.000Z"; // 10/20 09:00 KST
+    const at = new Date("2026-10-20T01:00:00.000Z");
+    const request = { ...REQUEST, maxTokens: BRIEF_MAX_TOKENS };
+    const typical = decide({
+      at,
+      requests: [request],
+      runs: loaded([run("prod", today, 0.008195)]),
+    });
+    expect(typical).toMatchObject({ allowed: true, verdict: "ok" });
+    const oneCallMax = estimateBriefCost(request, MODEL).usd;
+    const rerun = decide({
+      at,
+      requests: [request],
+      runs: loaded([run("prod", today, 2 * oneCallMax)]),
+    });
+    expect(rerun).toMatchObject({ allowed: true, verdict: "ok" });
+    // 막히는 지점: 그날 prod 사용 + 최악값($0.017184)이 일 예산을 넘을 때 — 사용 $0.083 이상
+    const blocked = decide({
+      at,
+      requests: [request],
+      runs: loaded([run("prod", today, 0.083)]),
+    });
+    expect(blocked).toMatchObject({
+      allowed: false,
+      verdict: "daily_exceeded",
+    });
   });
 });
 

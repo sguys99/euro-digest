@@ -72,7 +72,7 @@ export const BRIEF_MAX_MATCHES = 30;
  * **LLM 요청 본문**에 넣는 경기 수 상한(PRD §15 D51, 2026-10-17 사용자 결정) — 중요도 순 앞 15경기만 보낸다. 바쁜 날(23경기)
  * v0.1 실측에서 출력(thinking 포함)이 `max_tokens` 4,096을 다 쓴 표본이 나왔다(M1-24 반복 실측 — 2,922 · 3,941(선계산 변형) ·
  * 4,096 잘림). 5줄만 쓰는 브리핑이 앞쪽 15경기 밖을 쓸 일은 드물고, thinking·effort·호출 수(D28)는 그대로 둔다(`max_tokens`는
- * 그 뒤 D53으로 8,192).
+ * 그 뒤 D53으로 8,192, D57로 16,384).
  * 템플릿 줄·근거(refs) 대조·검사기 근거는 전체 입력(`BRIEF_MAX_MATCHES`) 기준이다 — `briefLlmInput`.
  */
 export const BRIEF_LLM_MAX_MATCHES = 15;

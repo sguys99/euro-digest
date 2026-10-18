@@ -1,8 +1,8 @@
 /**
  * 브리핑 골든셋 회귀 평가 — 순수 함수 (M1-24, `npm run eval:prompt` — CLAUDE.md §6.3·PRD §9.2).
  *
- * 한 번의 실행(run) = 골든셋 날짜마다 브리핑 요청 1건(D28·D53 설정 그대로 — 단건·max_tokens 8,192·thinking 적응형·effort medium·
- * 캐싱 끔, 첫 시도만 — FR-29 재시도는 보내지 않는다) → 출력 원문 → M1-23 판정(`judgeBriefResponse` 첫 시도 기준)·고유명사 치환 뒤
+ * 한 번의 실행(run) = 골든셋 날짜마다 브리핑 요청 1건(D28·D57 설정 그대로 — 단건·max_tokens 16,384·요청 타임아웃 120초·thinking
+ * 적응형·effort medium·캐싱 끔, 첫 시도만 — FR-29 재시도는 보내지 않는다) → 출력 원문 → M1-23 판정(`judgeBriefResponse` 첫 시도 기준)·고유명사 치환 뒤
  * 문장·줄별 사유 코드 → 같은 근거의 템플릿 줄(`templateLineForRefs`, 비교용). 실행 기록(`EvalRun`)은
  * `fixtures/llm/golden/runs/<라벨>/run.json`에 남고, 리포트는 기준 실행(이전 실행 또는 M0 출력)과 날짜별로 비교한다:
  * 줄 수·판정·사유 코드·길이(치환 뒤)·출력 토큰(thinking)·비용·지연, 줄별 문장(이전/이후/템플릿).
@@ -30,6 +30,7 @@ import {
   parseBriefOutput,
   BRIEF_EFFORT,
   BRIEF_MAX_TOKENS,
+  BRIEF_REQUEST_TIMEOUT_MS,
   BRIEF_THINKING,
 } from "./brief";
 import {
@@ -224,6 +225,8 @@ export const EvalRunSchema = z.strictObject({
   finishedAt: z.string(),
   settings: z.strictObject({
     maxTokens: z.number().int(),
+    /** HTTP 요청 타임아웃 상한(ms, D57 — 120초). 이 칸이 생기기 전 실행에는 없다(그때는 클라이언트 기본 60초) */
+    requestTimeoutMs: z.number().int().positive().optional(),
     thinking: z.string(),
     effort: z.string(),
     cacheSystem: z.boolean(),
@@ -350,10 +353,11 @@ export function evalDayRecord(
   };
 }
 
-/** 실행 설정 기록(D28 그대로 — 바꾸면 사용자 승인) */
+/** 실행 설정 기록(D28·D57 그대로 — 바꾸면 사용자 승인) */
 export function evalSettings(): EvalRun["settings"] {
   return {
     maxTokens: BRIEF_MAX_TOKENS,
+    requestTimeoutMs: BRIEF_REQUEST_TIMEOUT_MS,
     thinking: BRIEF_THINKING,
     effort: BRIEF_EFFORT,
     cacheSystem: false,

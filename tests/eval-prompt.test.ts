@@ -20,6 +20,7 @@ import { RunsDevFileSchema } from "@/lib/schema";
 import {
   BRIEF_EFFORT,
   BRIEF_MAX_TOKENS,
+  BRIEF_REQUEST_TIMEOUT_MS,
   BRIEF_THINKING,
   buildBriefRequest,
 } from "../scripts/lib/brief";
@@ -63,6 +64,7 @@ import {
   createLlmClient,
   CUSTOM_ID_PATTERN,
   MockFixtureSchema,
+  type CallSingleOptions,
   type LlmRequest,
   type LlmResult,
 } from "../scripts/lib/llm";
@@ -699,6 +701,55 @@ describe("runEvalPrompt — live 흐름(가짜 클라이언트, 임시 data/)", 
       readJson(path.join(d.dataDir, "runs-dev.json")),
     );
     expect(runs[0]!.status).toBe("success");
+  });
+
+  it("요청마다 파이프라인과 같은 요청 타임아웃 상한(120초 — D57)을 넘기고, run.json 설정에 max_tokens 16,384·타임아웃을 남긴다", async () => {
+    const options: Array<CallSingleOptions | undefined> = [];
+    const d = deps({
+      args: args({
+        llmMode: "live",
+        dates: ["2026-10-10", "2026-10-17"],
+        label: "timeout-t",
+        baseline: "none",
+      }),
+      createLlm: (model: string) => ({
+        model,
+        async callSingle(
+          request: LlmRequest,
+          opts?: CallSingleOptions,
+        ): Promise<LlmResult> {
+          options.push(opts);
+          return {
+            ok: true,
+            customId: request.customId,
+            batch: false,
+            text: '{"l":[]}',
+            stopReason: "end_turn",
+            usage: { in: 5_000, out: 3_000, cacheRead: 0, cacheWrite: 0 },
+            thinkingTokens: 100,
+          };
+        },
+      }),
+    });
+    const outcome = await runEvalPrompt(d);
+    expect(outcome.exitCode).toBe(0);
+    expect(BRIEF_REQUEST_TIMEOUT_MS).toBe(120_000);
+    // 마감 없음(eval은 브리핑 창 밖) — 요청별 상한만
+    expect(options).toEqual([
+      { requestTimeoutMs: 120_000 },
+      { requestTimeoutMs: 120_000 },
+    ]);
+    expect(outcome.run!.settings).toEqual({
+      maxTokens: 16_384,
+      requestTimeoutMs: 120_000,
+      thinking: "adaptive",
+      effort: "medium",
+      cacheSystem: false,
+      attempts: 1,
+    });
+    expect(d.out.join("\n")).toContain(
+      "max_tokens 16384 · thinking adaptive · effort medium · 요청 타임아웃 120초",
+    );
   });
 
   it("evalStopReason은 잘림만 · evalOutputWarning은 6,000 초과(같음은 경고 아님)", () => {

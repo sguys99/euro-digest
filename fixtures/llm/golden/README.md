@@ -48,10 +48,11 @@ npm run eval:prompt -- --mock                     # mock 재생(결정적·무�
 npm run eval:prompt -- --build-golden             # 빌더·configs가 바뀌었을 때 inputs 다시 쓰기(LLM 없음)
 ```
 
-- 설정은 파이프라인 그대로(단건·`max_tokens` 8,192(D53 — D28의 4,096에서 상향)·thinking 적응형·`effort` medium·캐싱 끔), 첫 시도만 보낸다(FR-29 재시도 없음).
+- 설정은 파이프라인 그대로(단건·`max_tokens` 16,384(D57 — D28 4,096 → D53 8,192 → D57)·요청 타임아웃 120초(D57)·thinking 적응형·`effort` medium·캐싱 끔), 첫 시도만 보낸다(FR-29 재시도 없음). 실행 기록 `settings.requestTimeoutMs`는 D57부터 남는다(그 전 실행은 클라이언트 기본 60초).
 - 요청 본문은 파이프라인과 같이 **중요도 순 앞 15경기**(D51 — `briefLlmInput`, 그 대회 경기가 모두 잘린 순위도 뺀다)이고, 판정·템플릿은 전체 입력으로 한다. 잘린 근거 id를 단 줄은 `ref-hidden`으로 강등한다. 상한은 실행 기록 `configs.llmMaxMatches`(설정 판 해시에 포함)에 남고, 상한 기록이 없는 D51 전 실행은 `--rejudge`에서 자르지 않은 입력으로 다시 판정한다.
 - 실행 전에 비용 가드(`guardBriefBudget({env:"dev", requests, attempts:1})` — 일 $0.10·월 $3, prod+dev 합산)와 이번 달 dev 사용 알림(50%)이 돈다. 넘으면 부르지 않는다 — `--dates`로 나눠 실행한다.
-- live 실행은 잘린 날(max_tokens)이 나오면 그 뒤의 요청을 보내지 않고 멈춘다(실행 기록 상태 `partial` — 사용자 결정 2026-10-17: 판단 기준은 8,192에서의 잘림률). 출력 토큰이 6,000을 넘은 날은 멈추지 않고 로그와 run.json `warnings`(`output-over-alert`)에 남긴다. 지시문 축소나 `max_tokens` 변경은 사용자 승인.
+- live 실행은 잘린 날(max_tokens)이 나오면 그 뒤의 요청을 보내지 않고 멈춘다(실행 기록 상태 `partial` — 사용자 결정 2026-10-17: 판단 기준은 상한에서의 잘림률 — 그때 8,192, D57부터 16,384). 출력 토큰이 6,000을 넘은 날은 멈추지 않고 로그와 run.json `warnings`(`output-over-alert`)에 남긴다 — D57 뒤에는 상한 여유가 아니라 thinking 증가 신호다. 지시문 축소나 `max_tokens` 변경은 사용자 승인.
+- D57로 요청 1건의 최악 예상이 약 $0.009가 되어(출력 16,384 × $0.50/M) 10일 전체 실행의 가드 예상이 약 $0.09로 일 예산($0.10)에 가깝다 — 그날 사용이 있으면 `--dates`로 나눠 실행한다.
 
 ## 다시 만들 때
 

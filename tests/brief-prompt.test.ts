@@ -88,7 +88,7 @@ describe("지시문 로딩 (M1-01 이월 — 슬라이스 fixture 지시문에�
     };
     expect(buildBriefRequest(input, PROMPT)).toMatchObject({
       system: PROMPT,
-      maxTokens: 8192,
+      maxTokens: 16_384,
       thinking: "adaptive",
       effort: "medium",
     });
