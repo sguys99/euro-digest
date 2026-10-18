@@ -48,3 +48,21 @@ for (const target of targets) {
     });
   }
 }
+
+// 제목 단계(best-practice heading-order — WCAG 태그 밖이라 위 검사에 들지 않는다). h1 → h3처럼 단계를 건너뛰지 않는다(M1-30 리뷰 —
+// `/news/`는 페이지 h1 바로 아래 카드 제목을 h2로). 색과 무관해 라이트 한 번만.
+for (const target of targets) {
+  test(`${target.name} — 제목 단계를 건너뛰지 않는다(axe heading-order)`, async ({
+    page,
+  }) => {
+    await page.goto(target.gotoPath);
+    const { violations } = await new AxeBuilder({ page })
+      .withRules(["heading-order"])
+      .analyze();
+    expect(
+      violations.flatMap((violation) =>
+        violation.nodes.map((node) => node.target.join(" ")),
+      ),
+    ).toEqual([]);
+  });
+}

@@ -21,8 +21,8 @@ export interface SectionHeadProps extends Omit<
 > {
   /** 제목 */
   heading: ReactNode;
-  /** 제목 요소(기본 h2) */
-  headingAs?: "h2" | "h3" | "p";
+  /** 제목 요소(기본 h2). 섹션 머리가 그 페이지의 제목이면 h1(예: `/news/` "뉴스" — 워드마크가 h1이 아닌 페이지) */
+  headingAs?: "h1" | "h2" | "h3" | "p";
   headingId?: string;
   /** 러닝 헤드(영문 대문자 원문 — STARTING FIVE·SQUAD …). 장식이라 `aria-hidden`·`lang="en"` */
   runningHead?: string;

@@ -18,6 +18,7 @@
  *                                    Tailwind가 @layer theme의 :root에 그대로 내보내므로 런타임 변수로도 쓸 수 있다
  * 4. @theme inline — 런타임 토큰을 Tailwind 유틸리티에 잇는다(값은 var()만, 새 값 없음)
  * 5. base — body·한글 규칙·포커스 링·숫자·모션 줄이기
+ * 6. 인쇄 무늬 유틸리티 — 천공 점(perf-x·perf-y)·노치 홈(notch-hole) (M1-30, DESIGN §5.3 천공)
  *
  * 테마 속성은 layout.tsx <head>의 초기 인라인 스크립트(src/lib/theme.ts)가 첫 페인트 전에 단다:
  * 시스템 = 속성 없음, 라이트 = data-theme="light", 다크 = data-theme="dark" (DESIGN §8).
@@ -617,4 +618,42 @@
       scroll-behavior: auto !important;
     }
   }
+}
+
+/* ── 6. 인쇄 무늬 유틸리티 (M1-30, DESIGN §5.1 --perf·--notch · §5.3 천공 · §9.3 티켓·뒤표지) ──────────────
+ * 티켓 마스트헤드·뒤표지의 천공 줄과 노치 홈. 색 그라디언트가 아니라 CSS 그라디언트 문법으로 그리는 무늬다(DESIGN §2.2 예외).
+ * 점·홈은 지면색(--paper)이라 색 면(티켓·뒤표지)에 뚫린 구멍처럼 보이고, 테마를 바꾸면 지면과 함께 바뀐다.
+ * 원을 border-radius로 만들지 않는다(src/components의 rounded-* 금지 검사 — DESIGN §9.1) — 원은 노치·천공·펀치 구멍뿐이다.
+ * - perf-x: 가로 천공 줄(9px 간격 점, 지름 --perf) — 375 티켓 가운데 · 뒤표지 위. 높이 4px 상자에 쓴다
+ * - perf-y: 세로 천공 줄 — 1024 이상 티켓의 스텁 열과 본면 사이. 폭 4px 상자에 쓴다
+ * - notch-hole: 천공 줄 양 끝의 반원 홈(지름 --notch × 2). 위치는 컴포넌트가 정한다(절반이 티켓 밖 지면에 걸쳐 보이지 않는다)
+ */
+@utility perf-x {
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    var(--paper) calc(var(--perf) / 2),
+    transparent calc(var(--perf) / 2 + 0.5px)
+  );
+  background-size: 9px 4px;
+  background-repeat: repeat-x;
+}
+
+@utility perf-y {
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    var(--paper) calc(var(--perf) / 2),
+    transparent calc(var(--perf) / 2 + 0.5px)
+  );
+  background-size: 4px 9px;
+  background-repeat: repeat-y;
+}
+
+@utility notch-hole {
+  width: calc(var(--notch) * 2);
+  height: calc(var(--notch) * 2);
+  background-image: radial-gradient(
+    circle closest-side,
+    var(--paper) calc(100% - 0.5px),
+    transparent 100%
+  );
 }

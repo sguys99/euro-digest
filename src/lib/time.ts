@@ -763,6 +763,16 @@ export function shiftDate(date: string, days: number): string {
 }
 
 /**
+ * 달력 날짜 두 개 "YYYY-MM-DD"의 일수 차이 `to − from`(음수 가능). `shiftDate(from, n) === to`인 n이다.
+ * 시간대와 무관한 순수 달력 계산 — 호수(제 N호 = 발행일 − 창간일 + 1, src/lib/issue.ts)에 쓴다.
+ */
+export function daysBetween(from: string, to: string): number {
+  const [fy, fm, fd] = parseDate(from);
+  const [ty, tm, td] = parseDate(to);
+  return epochDay(ty, tm, td) - epochDay(fy, fm, fd);
+}
+
+/**
  * KST 하루의 UTC 구간 [start, end) — end는 다음 날 KST 00:00(제외).
  * 예) "2026-10-25" → { start: 2026-10-24T15:00:00.000Z, end: 2026-10-25T15:00:00.000Z }
  */

@@ -17,6 +17,7 @@ import {
 } from "@/lib/schema";
 import {
   BRIEF_DEADLINE_LEAD_MINUTES,
+  daysBetween,
   europeanSummerTimeTransitions,
   formatIcsUtc,
   formatKst,
@@ -943,6 +944,29 @@ describe("shiftDate", () => {
   it("잘못된 입력은 TimeInputError", () => {
     expect(() => shiftDate("2026-10-10", 1.5)).toThrow(TimeInputError);
     expect(() => shiftDate("2026-13-01", 1)).toThrow(TimeInputError);
+  });
+});
+
+describe("daysBetween — 달력 날짜 차이 to − from", () => {
+  it.each([
+    ["2026-10-12", "2026-10-12", 0],
+    ["2026-10-12", "2026-10-18", 6],
+    ["2026-10-18", "2026-10-12", -6],
+    ["2026-12-31", "2027-01-01", 1],
+    ["2028-02-28", "2028-03-01", 2], // 윤년
+    ["2026-10-24", "2026-10-26", 2], // 서머타임 종료일을 지나도 달력 일수(23·25시간 날 없음)
+  ])("%s → %s = %i일", (from, to, expected) => {
+    expect(daysBetween(from, to)).toBe(expected);
+    expect(shiftDate(from, expected)).toBe(to);
+  });
+
+  it("잘못된 입력은 TimeInputError", () => {
+    expect(() => daysBetween("2026-10-1", "2026-10-12")).toThrow(
+      TimeInputError,
+    );
+    expect(() => daysBetween("2026-10-12", "2026-02-30")).toThrow(
+      TimeInputError,
+    );
   });
 });
 

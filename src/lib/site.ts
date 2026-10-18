@@ -22,6 +22,20 @@ export const SITE_TAGLINE = "매일 아침, 밤사이 유럽 축구를 한눈에
 export const REPO_URL = "https://github.com/sguys99/euro-digest";
 
 /**
+ * football-data.org 약관 7.1 필수 표기 — 영문 원문 그대로 둔다(번역·대소문자 변경 금지, PRD FR-45·FR-140·FR-142, D27).
+ * 뒤표지(푸터)·`/about`·오늘의 5줄 데이터 출처 줄이 같은 문자열을 쓴다.
+ */
+export const FOOTBALL_DATA_ATTRIBUTION =
+  "Football data provided by the Football-Data.org API";
+
+/**
+ * 창간일(KST 발행일) — 마스트헤드·뒤표지의 "제 N호"(N = 발행일 − 창간일 + 1, 결호가 나도 날짜만큼 증가, 빌드 시 계산 —
+ * PRD §15 D29·§14.1, DESIGN §9.3). 2026-10-18 사용자 결정: M1 첫 공개일(M1-01 첫 발행 2026-10-12)을 제 1호로 한다.
+ * 계산은 src/lib/issue.ts `issueNumber`.
+ */
+export const FIRST_ISSUE_DATE = "2026-10-12";
+
+/**
  * 화면 표시 시간대(IANA). 저장은 UTC, 표시는 KST(CLAUDE.md §8).
  * 변환 로직은 src/lib/time.ts(M0-18)에서만 구현한다 — 이 파일에는 값만 둔다.
  */

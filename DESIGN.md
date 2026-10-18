@@ -756,8 +756,8 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 
 | 컴포넌트 | 구조 · 토큰 | 접근성 |
 |---|---|---|
-| **티켓 마스트헤드** | 면 `--ticket`. 375 격자 `brand brand tools / perf perf perf / issue stub switch`. ≥1024 열 `232px 4px 1fr auto`(스텁 열 = 목차 폭), 최소 높이 160px, 천공 줄이 세로로 선다. 천공: 9px 간격 `--paper` 점, 양 끝 `--notch` 홈. 워드마크 `--text-wordmark` 800, 영문 "EURO DIGEST" Barlow 800 0.32em `--ticket-fg-2`, 태그라인 "매일 아침, 밤사이 유럽 축구를 한눈에."(D30) | 워드마크는 `<h1>` 안 홈 링크. 도구: 검색(자리, `aria-label` "검색 (단축키 /)", ≥1024 상자형 + "검색" + `/` 키), 테마 토글 |
-| **호수·스텁** | "제 N호": 글자 13/17px 800 + 숫자 `--num-issue`. N = 발행일 − 창간일 + 1(빌드 시 계산, D29). 스텁: 날짜 "2026년 10월 11일 (일)" 800, "발행 {HH:MM} KST" · "업데이트 {HH:MM} KST" `--ticket-fg-2`. 발행 시각은 계절별(D26 — 07:00 고정 문구 금지) | `<time datetime>` |
+| **티켓 마스트헤드** | 면 `--ticket`. 375 격자 `brand brand tools / perf perf perf / issue stub switch`. ≥1024 열 `232px 4px 1fr auto`(스텁 열 = 목차 폭), 최소 높이 160px, 천공 줄이 세로로 선다. 천공: 9px 간격 `--paper` 점, 양 끝 `--notch` 홈. 워드마크 `--text-wordmark` 800, 영문 "EURO DIGEST" Barlow 800 0.32em `--ticket-fg-2`, 태그라인 "매일 아침, 밤사이 유럽 축구를 한눈에."(D30) | 워드마크는 홈 링크 — 홈은 `<h1>` 안, 다른 페이지는 `<p>` 안(그 페이지 제목이 h1, §11.5). 도구: 검색(자리, `aria-label` "검색 (단축키 /)", ≥1024 상자형 + "검색" + `/` 키), 테마 토글 |
+| **호수·스텁** | "제 N호": 글자 13/17px 800 + 숫자 `--num-issue`. N = 발행일 − 창간일 + 1(빌드 시 계산, D29 — 창간일 2026-10-12, 2026-10-18 사용자 결정). 스텁: 날짜 "2026년 10월 11일 (일)" 800, "발행 {HH:MM} KST" · "업데이트 {HH:MM} KST" `--ticket-fg-2`. 발행 시각은 계절별(D26 — 07:00 고정 문구 금지) | `<time datetime>` |
 | **오늘의 5줄 행** | 섹션 머리 "오늘의 5줄" + STARTING FIVE, 부제 "{M월 D일} 경기 기준"(5줄 미만이면 "이날 N줄"). 행 `[--gutter │ 문장 │ --tab-w]`, 등번호 `--num-brief-no` `--brand-accent`(`aria-hidden`), 문장 `--text-brief`, 오른쪽 인덱스 탭. 하단: "데이터 football-data.org · API-Football" + "AI 작성 안내" + "브리핑 오류 신고↗"(날짜 채운 이슈 폼) | `<ol aria-label="5줄">`. Safari는 `list-style: none` 목록의 의미를 지울 수 있어 `role="list"`를 함께 둔다 |
 | **AI 작성 라벨** | `ai:true` 줄마다 문장 끝에 붙는 링크 → `/about/#ai`. 1px `--ink-2` 테두리, 11px 800 `--ink-2`, 왼쪽 8px, 터치 44px. hover 테두리·글자 `--ink`. 템플릿 줄·뉴스 카드에는 붙이지 않는다(D24) | 링크 텍스트 "AI 작성" |
 | **템플릿 줄** | `ai:false` 스코어 행: 팀 이름 `--text-brief` 800 + 스코어 `--num-score`(Barlow 800, 홈-원정 순서), 단어 간격 6px. 라벨 없음 | – |
@@ -796,7 +796,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 |---|---|---|---|
 | Button · Switch | `button.tsx`, 변형 문자열 `button-classes.ts` | 서버(JS 0) | `<Button variant="primary\|secondary\|link\|icon" box?>` · `buttonVariants({ variant, box })`(`<a>`·`next/link`에) · `<Switch checked aria-labelledby offLabel? onLabel?>`(`role="switch"`, 티켓 면) |
 | Chip 계열 | `chip.tsx`, 대회 색 클래스 `competition.ts` | 서버 | `<FilterChip pressed label count tone="category\|korean" disabled?>` · `<ContentsRow pressed label count marker>`(marker = 대회 `{ kind: "competition", comp, short }` · 분류 `{ kind: "category" }` · 한국 `{ kind: "korean" }`) · `<StampChip>` · `<FlatTab comp size="default\|contents" title>` · `<IndexTab comp title>` |
-| Card | `card.tsx` | 서버 | `<Card id aria-labelledby bleed?>` › `CardGutter`(`<CardNumber n>`) · `CardBody`(`CardTags` · `<CardTitle id href lang source linkProps?>` · `CardMeta`) · `CardTabs`. 격자 상수 `ROW_GRID`, `splitLastWord` |
+| Card | `card.tsx` | 서버 | `<Card id aria-labelledby bleed?>` › `CardGutter`(`<CardNumber n>`) · `CardBody`(`CardTags` · `<CardTitle id as? href lang source linkProps?>`(`as` = 제목 단계 h3 기본 · h2 — 페이지 h1 바로 아래 피드, M1-30) · `CardMeta`) · `CardTabs`. 격자 상수 `ROW_GRID`, `splitLastWord` |
 | Tabs(ARIA) | `tabs.tsx` | 클라이언트 섬 | `<Tabs value? defaultValue? onValueChange? activation="automatic\|manual">` › `<TabsList aria-label>` › `<TabsTrigger value competition?>` · `<TabsPanel value>` |
 | 링크 탭 | `nav-tabs.tsx` | 서버 | `<BottomTabs>` › `<BottomTab href icon current?>` · `<TopNav>` › `<TopNavLink href current?>`(`next/link`, `aria-current="page"`) |
 | 섹션 머리·필터 색 면 | `section-head.tsx` | 서버 | `<SectionHead heading headingAs? runningHead? thin? filter={{ comp, short, clear }}>` · `RunningHead` · `FilterBadge` |
@@ -805,8 +805,15 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | Toast | `toast.tsx` | 클라이언트 섬 | `toast({ message, kind?, action?, duration?, dismissible? })` → id · `dismissToast(id?)` · `<Toaster>`(페이지에 하나) · `<ToastView>`(모양만) |
 | 아이콘 | `icons.tsx` | 서버 | `SearchIcon` · `ThemeIcon` · `ShareIcon` · `MoreIcon` · `CloseIcon` · `ChevronDownIcon` · `HomeIcon` · `NewsIcon` · `LeagueIcon` · `KitIcon` · `BookmarkIcon`(`size` 기본 22) |
 | 테마 토글 | `src/components/theme-toggle.tsx` | 클라이언트 섬 | `<ThemeToggle announce?>`(§8) |
+| 앱 셸 (M1-30) | `src/components/shell/app-shell.tsx` | 서버 | `<AppShell current? issue contents? contentsLabel? facing? facingLabel?>` — 페이지마다 본문을 감싼다(마스트헤드 · 열 그리드 · 뒤표지 · 하단 탭 · `<Toaster>`). `layoutColumns(hasContents, hasFacing)` → `none`·`contents`·`facing`·`both` |
+| 마스트헤드 (M1-30) | `src/components/shell/masthead.tsx` | 서버(+ 테마 토글 섬) | `<Masthead issue current? wordmarkAs? search? spoilerSwitch?>` |
+| KST 시각 (M1-30) | `src/components/kst-time.tsx` | 서버 | `<KstTime iso>` → `<time datetime="{UTC ISO}">HH:MM KST</time>`(스텁·상단 내비·뒤표지) |
+| 뒤표지 (M1-30) | `src/components/shell/colophon.tsx` | 서버 | `<Colophon issue>` — 링크 목록 `LINKS`(있는 페이지만) |
+| 내비 항목 (M1-30) | `src/components/shell/site-nav.ts` | 서버 | `NAV_ITEMS`(하단 탭·상단 내비 공통, M1 홈·뉴스) · `NavKey` |
+| 호 정보 (M1-30) | `src/lib/issue.ts` | 순수 함수 | `issueNumber(date)`(창간일 `FIRST_ISSUE_DATE` 2026-10-12) · `issueMeta(news, runs)` → `{ date, no, publishedAt, updatedAt }` |
+| 호 로더 (M1-30) | `src/lib/data/issue.ts` | 빌드 때(fs) | `loadLatestIssue()` · `loadIssue(date)`(M1-34 아카이브) → `{ news, issue }` — 페이지가 셸에 `issue`를 넘긴다 |
 
-- **섬 크기(gzip, esbuild로 react 빼고 실측)**: Tabs 1.9KB · Toast 1.9KB · 테마 토글 1.9KB(토스트 호출 포함) · 셋을 함께 4.4KB(커밋 전 리뷰 전 1.6 · 1.7 · 1.8 · 3.8KB — Tabs Tab 순서 보정 +0.26KB, Toast 포커스 복귀 +0.19KB). 일반 빌드 홈의 초기 JS는 그대로다(135.7KB — 섬을 레이아웃에 넣지 않았다).
+- **섬 크기(gzip, esbuild로 react 빼고 실측)**: Tabs 1.9KB · Toast 1.9KB · 테마 토글 1.9KB(토스트 호출 포함) · 셋을 함께 4.4KB(커밋 전 리뷰 전 1.6 · 1.7 · 1.8 · 3.8KB — Tabs Tab 순서 보정 +0.26KB, Toast 포커스 복귀 +0.19KB). D0-12 때는 섬을 레이아웃에 넣지 않아 홈 초기 JS가 135.7KB 그대로였고, M1-30 앱 셸이 테마 토글·`<Toaster>`를 모든 페이지에 넣어 138.0KB가 됐다(§11.5).
 - **클래스 합치기 — `cn`은 서버 전용**: tailwind-merge 기반 `cn`이 섬 번들에 들어가면 gzip 약 9KB가 붙는다(실측 Tabs 섬 11.0KB → `cx`로 1.6KB). 그래서 섬과 섬 안에서 쓰이는 컴포넌트(아이콘·버튼·칩·탭·토스트·테마 토글·필터 해제 버튼)는 병합 없는 `cx`(`src/lib/cx.ts`)로 합치고, `cn`은 서버 컴포넌트(카드·스켈레톤·섹션 머리·링크 탭·페이지)에서만 쓴다. `cx`는 같은 속성 클래스를 덮지 않으므로 변형 문자열 안에서 같은 속성이 겹치지 않게 적고, 바깥 `className`은 여백·배치만 준다. `tests/ui-source-rules.test.ts`가 `"use client"` 모듈과 섬이 가져다 쓸 서버 컴포넌트(버튼·칩·아이콘·대회 색·필터 해제 버튼)에서 닿는 import 그래프에 `src/lib/utils.ts`가 없는지 검사하고, `tests/ui-class-conflicts.test.tsx`가 cx 컴포넌트의 모든 변형·상태를 렌더해 한 요소에 같은 조건(변형)·같은 CSS 속성을 정하는 클래스가 둘 이상 없는지 본다(분류표에 없는 유틸리티도 실패). 이 검사로 버튼 공통 `no-underline`과 텍스트 링크 `underline`이 겹쳐 CSS 순서에 기대던 것을 찾아 `no-underline`을 주·보조·아이콘 변형으로 옮겼다(보이는 결과 같음).
 - **공개 CSS에 견본 전용 유틸리티 — 감수**: globals.css `@import "tailwindcss" source("..")`가 `src/` 전체를 훑으므로 `*.specimen.tsx`에만 쓰인 유틸리티도 일반 빌드 CSS에 들어간다. 실측(oxide 스캐너로 견본 폴더를 빼고 다시 컴파일해 비교) 원본 약 3.0KB · gzip 약 0.5KB(공개 CSS 41KB · gzip 8.2KB 중), JS 영향 없음. 견본 폴더를 `@source not`으로 빼면 견본 빌드 CSS가 깨지고 빌드별 CSS 진입점을 나누는 복잡도가 더 커서 그대로 둔다. M1 화면이 같은 유틸리티를 쓰기 시작하면 차이는 줄어든다.
 - **값**: 색·간격·모서리·그림자·모션은 토큰만 쓴다(간격은 Tailwind 4px 단위 — `px-4.5` = 18px, `h-5.5` = 22px, `min-h-29.5` = 118px). 토큰이 아닌 컴포넌트 보조 글자 크기(§3.4 — 13.5px·11.5px·10.5px …)와 자간·행간은 그 값을 임의값(`text-[13.5px]`·`tracking-[0.06em]`)으로 적었다. 색 임의값은 없다(하드코딩 색 검사 테스트).
@@ -828,7 +835,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - [ ] **터치 타깃 44px**: §9.1 목록. 보이는 크기가 작으면 `::after` 확장.
 - [ ] **색 외 표식**: 승·무·패 = W/D/L 글자 · 순위 변동 = ▲▼ + 숫자 · 이적 단계 = 단계 글자 + 구멍 수 · Tier = "Tier n" + 채움/실선/점선 · 대회 = 약칭 글자 · 한국 선수 = "한국" 완장 + 굵은 태그 · 중요도 = 칸 수 + `aria-label` · 현재 탭 = 막대 + 굵기 + `aria-current` · 선택 칩 = ✓ + 반전 + `aria-pressed` · AI 작성 = 글자 라벨 · 비활성 = 점선 · 결과 가림 = 빗금 + "결과 가림" 글자.
 - [ ] **랜드마크**: `<header>`(티켓 + 상단 내비 `aria-label="주요 메뉴"`) · `<nav aria-label="뉴스 필터">`(목차) · `<main id="main" tabindex="-1">` · `<aside aria-label="오늘 밤 경기·한국 선수·순위">` · `<footer>` · `<nav aria-label="하단 탭">`.
-- [ ] **건너뛰기 링크**: `<body>` 첫 요소 "본문 바로가기" → `#main`. 평소 화면 밖(top −80px), 포커스 시 왼쪽 위 8px에 `--ink` 면 + `--paper` 글자로 나타남.
+- [ ] **건너뛰기 링크**: `<body>` 첫 요소 "본문 바로가기" → `#main`. 평소 화면 밖(top −80px), 포커스 시 왼쪽 위 8px에 `--ink` 면 + `--paper` 글자로 나타남. 그 자리는 티켓 위라서(라이트 티켓 = 잉크와 같은 네이비) 둘레에 7px `--paper` 테두리(번짐 없는 펼침 그림자 = 2px 띄움 + 3px 링 + 2px)를 둘러 상자·링이 늘 지면 위에 놓인다 — 실측 링 6.04·7.11, 상자 14.04·15.75(라이트·다크, 화면 픽셀 e2e — M1-30 리뷰).
 - [ ] **언어**: `<html lang="ko">`, 라틴 원제목·영문 출처명·러닝 헤드에 `lang` 속성.
 - [ ] **결과 가림**: 블러·투명도로 가리지 않고 `display: none`으로 보조기술에서도 숨긴다. 띠는 "결과 가림 · {n}번 줄 · 보기"로 읽히는 버튼, 펼치면 포커스 이동, 전역 스위치는 `role="switch"` + 보이는 라벨. 링크 미리보기(OG)는 가릴 수 없어 OG에 결과를 넣지 않는다(D30).
 - [ ] **장식 숨김**: 게재 번호·5줄 등번호·러닝 헤드·리더 점선·천공·외부 표식 ↗는 `aria-hidden`, 대신 목록 의미·화면 밖 텍스트로 정보를 준다.
@@ -838,7 +845,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 
 ---
 
-## 11. 구현 메모 (D0-10 ~ D0-12)
+## 11. 구현 메모 (D0-10 ~ D0-12 · M1-30)
 
 ### 11.1 DECISIONS §7에서 넘어온 것
 
@@ -888,11 +895,26 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - **의존성 없음**(사용자 결정 2026-10-12): 토스트·아이콘·탭 모두 직접 구현(cva·clsx만 — 이미 설치). shadcn CLI 미사용, `components.json` `iconLibrary: "none"`.
 - **`--animate-*`**: 인쇄형 모션 4종(§6.1)을 globals.css `@theme static`에 키프레임과 함께 더했다(토큰 대조·`cn` 키 대조 테스트 갱신).
 - **shadcn 기본값 제거 영향 확인**: 둥근 모서리·블러 그림자·투명도·`ring-ring/50`·반복 애니메이션·`dark:`·lg/xl 밖 브레이크포인트·아이콘 라이브러리가 `src/components/`에 없음을 `tests/ui-source-rules.test.ts`가 고정한다. 프리플라이트 버튼 커서 기본값만 base에서 되돌렸다(§9.4).
-- **남은 것**: ① 테마 토글·하단 탭·상단 내비·`<Toaster>`를 앱 셸에 배치(M1-30) ② 카드 내용(중요도 막대·완장·태그·출처 스택·카드 메뉴·머리기사·연결 줄 — 견본은 간이 마크업, M1-31) ③ 필터 섬(칩 줄 `role="group"`·`?cat=` 동기화·찍힘 모션, M1-33) ④ 상태 4종 화면(M1-37) ⑤ 결과 가리기 스위치 동작·뜯김 모션(M4-15) ⑥ 대회 탭 실제 패널(D1) ⑦ 세로쓰기 인덱스 탭 iOS Safari 실기기·4자 약칭(§11.1 #6) ⑧ CI에 `npm run test:specimen`을 넣을지(빌드 1회 + 약 15초 — 지금은 수동).
+- **남은 것**: ~~① 테마 토글·하단 탭·상단 내비·`<Toaster>`를 앱 셸에 배치(M1-30)~~ → M1-30 완료(§11.5) ② 카드 내용(중요도 막대·완장·태그·출처 스택·카드 메뉴·머리기사·연결 줄 — 견본은 간이 마크업, M1-31) ③ 필터 섬(칩 줄 `role="group"`·`?cat=` 동기화·찍힘 모션, M1-33) ④ 상태 4종 화면(M1-37) ⑤ 결과 가리기 스위치 동작·뜯김 모션(M4-15) ⑥ 대회 탭 실제 패널(D1) ⑦ 세로쓰기 인덱스 탭 iOS Safari 실기기·4자 약칭(§11.1 #6) ~~⑧ CI에 `npm run test:specimen`을 넣을지~~ → CI `specimen` job으로 돌고, M1-30부터 배포 조건(`deploy needs: [check, specimen]`).
 - 컴포넌트 보조 크기(§3.4)는 컴포넌트 안에서만 쓴다. 두 컴포넌트가 같은 역할로 쓰게 되면 §3.3 토큰으로 올린다.
 - **반응형은 `lg:`·`xl:` 변형으로만** 쓴다(§7.1). 예: 홈 그리드 `lg:grid lg:grid-cols-[var(--col-contents)_minmax(0,1fr)] xl:grid-cols-[var(--col-contents)_minmax(0,1fr)_var(--col-facing)]`, 목차 `hidden lg:block lg:sticky lg:top-4`, 마주 보는 면 `hidden xl:block`, 지면 안 위젯 `xl:hidden`, 분류 칩 줄 `lg:hidden`, 하단 탭 `lg:hidden`, 상단 내비 `hidden lg:flex`, 머리기사 크기 `lg:` 쪽. `md:`·`sm:`·`2xl:`·`max-*:` 변형과 임의 미디어 쿼리(`min-[…]:`)는 쓰지 않는다.
 - **위젯 두 자리**: 혼합안은 같은 위젯을 지면 안(1단·2단, `xl:hidden`)과 마주 보는 면(3단, `hidden xl:block`)에 한 번씩 두고 `display`로 고른다. `display: none`이라 보조기술에 두 번 읽히지 않고, 정적 데이터라 비용은 HTML 크기뿐이다. 3단 마주 보는 면의 순서(오늘 밤 → 한국 선수 → 순위 → 이적)가 1단 순서와 달라서, 한 번만 렌더하고 grid 배치로 옮기면 읽기 순서와 보이는 순서가 어긋난다. 실제 위젯이 생기는 M2·M3(D1·D2 디자인)에서 이 방식을 그대로 쓸지 다시 본다.
 - 2단(1024~1279)은 M1 공개 상태의 2단 틀과 같은 그리드다. M1 동안에는 위젯이 없으니 `lg` 이상이 모두 `232 · 1fr`로 보이고, `xl` 3단은 마주 보는 면 위젯이 처음 생길 때(M2) 켜진다(plan §2.3 미완성 섹션 숨김).
+
+### 11.5 M1-30 (앱 셸) — 구현 완료
+
+- **구조**: 페이지가 `<AppShell>`로 본문을 감싼다(§9.4). 루트 레이아웃에 두지 않은 이유 — 현재 탭 `aria-current`와 워드마크 h1(홈만, 다른 페이지는 그 페이지 제목이 h1)을 정적 HTML로 정하려면 경로를 알아야 하는데, 레이아웃에서는 클라이언트 섬(`usePathname`)이 필요하다. 건너뛰기 링크만 루트 레이아웃 `<body>` 첫 요소다(대상 `<main id="main" tabindex="-1">`은 셸). `<html>`에 `scroll-pb-16 lg:scroll-pb-0` — 1023 이하에서 키보드 포커스·앵커 스크롤이 sticky 하단 탭(58px + 괘선)에 가리지 않게(WCAG 2.4.11).
+- **데이터**: 페이지는 `loadLatestIssue()`(`src/lib/data/issue.ts` — 뉴스 로더 + `issueMeta(news, loadProdRuns())`)의 `{ news, issue }`를 받아 `issue`를 셸에 넘긴다. 날짜 아카이브(M1-34)는 `loadIssue(date)`. 시각 표시는 `<KstTime>`(`src/components/kst-time.tsx`).
+- **제목 단계**: 홈 = h1 워드마크 → h2 "주요 뉴스" → h3 카드, `/news/` = h1 "뉴스" → h2 카드(`<NewsFeed titleAs="h2">` → `<CardTitle as>`), 404 = h1 안내. 단계를 건너뛰지 않는다(e2e axe `heading-order`).
+- **티켓 격자**: 시안의 `grid-template-areas` 대신 같은 칸을 줄 번호(`col-start`·`col-end`·`row-start`·`row-end`, 375 3열 · `lg` 4열)로 놓았다 — 속기(`col-span`)와 섞지 않아 `cn` 병합·CSS 순서 문제가 없다. 시안 `?stage=m1`과 375·1024·1280 × 라이트·다크에서 티켓·브랜드·워드마크·호수·스텁·천공·상단 내비·뒤표지·하단 탭의 요소 상자(x·y·폭·높이)와 글자 크기·행간·자간·색이 같다(스크래치 측정 — 다른 값은 아래 의도한 차이뿐).
+- **천공·노치 = 유틸리티 3개**(globals.css §6 `@utility`): `perf-x`(가로 9px 간격 점, 지름 `--perf`) · `perf-y`(세로) · `notch-hole`(지름 `--notch` × 2 반원 홈, `radial-gradient(circle closest-side…)`). 티켓과 뒤표지가 같은 무늬를 쓰고, 원을 `border-radius`로 만들지 않는다(§9.1 `rounded-*` 금지 검사 그대로). 3배율 캡처에서 시안과 픽셀 단위로 같다. 천공 줄이 티켓 가장자리에서 들어온 거리 14px는 천공 요소의 지역 변수 `--perf-inset`(`--spacing(3.5)`) 하나로 두고 줄 여백(375 좌우 · 1024 이상 위아래)과 노치 위치가 함께 쓴다.
+- **열 구성**: 열은 페이지가 채운 슬롯만 생긴다(DECISIONS D0 §5 #22). M1-30 시점에는 목차(M1-32·M1-33)·마주 보는 면(M2·M3) 모두 없어 모든 폭에서 지면 한 열(티켓과 같은 폭)이다. 목차를 주면 `lg` `232 · 1fr`, 둘 다 주면 `xl` `232 · 1fr · 296`. 목차는 `<nav aria-label="뉴스 필터">`(1023 이하 숨김, `lg` sticky top 16px · 위 28px · 오른쪽 36px), 마주 보는 면은 `<aside>`(`xl`만, 왼쪽 1px 잉크 · 안쪽 32px · 위 28px). 셸 `<main>`이 첫 섹션 위 여백(24px · `lg` 28px — 시안 `.sf` 24px · `.page` 28px)을 준다.
+- **세로 배치**: 셸 바깥 상자는 `flex min-h-dvh flex-col`, 열 그리드가 `flex-1` — 본문이 짧은 페이지(404)에서도 뒤표지가 화면 아래에 붙는다(시안에는 짧은 페이지가 없음). 하단 탭은 셸의 마지막 흐름 요소(sticky bottom 0, z 20, `-mx-edge`, 아래 `env(safe-area-inset-bottom)`)라 끝까지 내리면 뒤표지 바로 아래에 놓인다.
+- **시각**: 스텁 발행·업데이트와 상단 내비·뒤표지의 마지막 업데이트는 `IssueMeta`(`src/lib/issue.ts`, DECISIONS D0 §5 #23)를 `formatKst(…, "time")` + " KST"로, `<time datetime="{UTC ISO}">`. 스텁 날짜는 `normal-nums`(시안 그대로 한글 날짜는 비례 숫자).
+- **뒤표지 문구**: football-data 필수 문구는 `FOOTBALL_DATA_ATTRIBUTION`(`src/lib/site.ts` — `/about`·5줄 데이터 출처 줄도 같은 상수). 설명 문단은 **지금 화면에 있는 것의 사실만** — 데이터 출처 문장 "경기·출전 데이터 football-data.org · API-Football."뿐이다. 시안 문단의 오늘의 5줄·AI 작성 고지(AI 줄에만 라벨, 검증 실패 줄은 코드 문장, 뉴스 카드는 원문 제목 그대로)는 5줄이 화면에 실리는 M1-32에서 더한다(M1-30 리뷰 — 없는 섹션을 설명하지 않는다). 링크는 있는 페이지만 — 지금은 GitHub↗(새 창, 화면 밖 "(새 창)")뿐이고 AI 작성 고지·소개·출처 정책·삭제·정정 요청은 M1-36, 개인정보 처리방침은 M5-05에서 `LINKS`에 더한다. 링크 목록은 `role="list"`(Safari), hover는 밑줄 2px(§9.1 텍스트 링크 규칙 — 시안에는 hover 규칙이 없었다).
+- **의도한 차이**(시안 `?stage=m1` 대비): ① 검색 버튼·결과 가리기 스위치 숨김(DECISIONS #21 — 도구 열이 토글 폭이라 375 스텁·1024 이상 브랜드 칸이 그만큼 넓다) ② 목차 열 없음(#22 — 지면이 티켓과 같은 폭에서 시작) ③ 뒤표지 링크 GitHub 하나, 설명 문단은 데이터 출처 한 줄(5줄·AI 고지 문장은 M1-32) ⑥ 건너뛰기 링크 둘레 7px 지면 테두리(§10 — 시안은 테두리 없이 티켓과 겹쳐 링 대비 2.32·2.87이었다) ④ 호수·시각·카드는 실제 데이터(시안은 fixture) ⑤ 5줄·카드 변형·인덱스 탭은 M1-31·M1-32.
+- **번들**: 테마 토글·토스트 섬이 모든 페이지에 들어가 초기 JS 135.7 → 138.0KB(gzip, 예산 160KB). 셸 자체는 서버 컴포넌트라 JS 0.
+- **검사**: `tests/app-shell.test.tsx`(내비 항목·aria-current·랜드마크·h1·열 구성·호수·스텁·뒤표지 문구), `tests/issue.test.ts`·`tests/data-runs.test.ts`, `tests/e2e/shell.spec.ts`(375·1023·1024·1279·1280 × 홈·뉴스·404 가로 넘침 0·내비 보임·현재 탭·h1 하나, 열 구성·티켓 격자, 데이터에서 계산한 호수·시각, 뒤표지, 건너뛰기 링크(Enter → main 포커스 · 포커스 링·상자 대비를 화면 픽셀로 375·1280 × 라이트·다크), 하단 탭 sticky, 44px·포커스 링 라이트·다크), `tests/e2e/a11y.spec.ts`에 axe `heading-order`(모든 페이지). CI `specimen` job은 배포 조건이 됐다.
 
 ---
 
@@ -907,3 +929,4 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 2026-10-14 | §11.3 남은 일 ③: M1-01 실제 홈의 폰트 지연 CLS 원인(CI 한글 글꼴 없음 · Linux Chromium의 size-adjust `local()` 정수 px 반올림 · 375/414 라틴 제목 경계 사례)과 e2e CLS 단언 조건(폴백 있음 + 크기 비례) 기록. 토큰·메트릭 값 변경 없음 | CLAUDE §7.2, D0-11, M1-39 |
 | 2026-10-12 | D0-12 기초 컴포넌트: §6.1 `--animate-stamp`·`tear`·`eject`·`arrive` 토큰 4개, §8 초기 스크립트에 theme-color 보정(저장 테마 메타만 `all`)·토글 표, §9.1 아이콘 라이브러리 없음(인라인 SVG), §9.4 구현(파일·API·`cx`/`cn` 분리·섬 크기·의도한 차이), §0.1 구현 견본 스크린샷, §11.4 완료·남은 일. 다른 토큰 값 변경 없음 | PRD DR-02·DR-08·DR-12, D0-12 |
 | 2026-10-12 | D0-12 커밋 전 리뷰 반영: §8 theme-color 메타를 Next `viewport.themeColor` 대신 루트 레이아웃 `<head>`에서 직접 렌더(클라이언트 이동에도 보정 유지), §9.4 필터 해제 버튼 파일 분리(`cx`)·cx 겹침 검사(버튼 `no-underline`을 변형으로)·Tabs Tab 순서 보정(선택 탭 없음·비활성)·Toast 포커스 복귀·견본 1024 검사·공개 CSS의 견본 전용 유틸리티 감수, §11.4. 토큰 값 변경 없음 | PRD DR-02·DR-12, D0-12 |
+| 2026-10-18 | M1-30 앱 셸: §9.3 호수 창간일 2026-10-12(사용자 결정), §9.4 셸 파일·API 5행, §11.4 남은 것 ① 완료, §11.5 구현 메모(셸 배치·데이터 로더·제목 단계·티켓 격자 줄 번호·천공 유틸리티 `perf-x`·`perf-y`·`notch-hole`·`--perf-inset`·열 슬롯·세로 배치·시각 출처·뒤표지 문구·의도한 차이), §10 건너뛰기 링크 7px 지면 테두리(커밋 전 리뷰 — 티켓 위 링 대비 2.32·2.87 → 6.04·7.11), §9.3 워드마크 h1은 홈만, §9.4 `CardTitle as`·`KstTime`·호 로더 행, 섬 크기 문장(138.0KB)·§11.4 ⑧(specimen 배포 조건). 토큰 값 변경 없음 | PRD DR-01·FR-142·FR-45, D29·D31, M1-30 |

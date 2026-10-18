@@ -6,13 +6,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import HomePage from "@/app/page";
 import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
+import type { RunLog } from "@/lib/schema/run";
 
 // 홈은 빌드 때 data/news의 최신 호를 읽는다. 저장소 data/는 파이프라인 실행에 따라 바뀌므로 로더를 바꿔 끼운다
 // (로더 자체는 tests/data-news.test.ts).
-const { loadLatestNews } = vi.hoisted(() => ({
+const { loadLatestNews, loadProdRuns } = vi.hoisted(() => ({
   loadLatestNews: vi.fn<() => NewsFile | null>(),
+  loadProdRuns: vi.fn<() => RunLog[]>(() => []),
 }));
 vi.mock("@/lib/data/news", () => ({ loadLatestNews }));
+// 마스트헤드 발행·업데이트 시각의 실행 기록(M1-30) — 저장소 data/runs.json 대신 빈 기록(→ 파일 generatedAt)
+vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -25,6 +29,8 @@ const fixture = NewsFileSchema.parse(
 
 beforeEach(() => {
   loadLatestNews.mockReset();
+  loadProdRuns.mockReset();
+  loadProdRuns.mockReturnValue([]);
 });
 
 describe("HomePage", () => {
@@ -107,7 +113,50 @@ describe("HomePage", () => {
     for (const line of summaries) {
       expect(screen.queryByText(line)).toBeNull();
     }
-    expect(screen.queryByText(/AI 작성/)).toBeNull();
+    // 'AI 작성' 라벨은 카드에 없다(뒤표지의 AI 작성 고지 문단은 라벨이 아니라 설명 — 앱 셸 테스트)
+    for (const article of screen.getAllByRole("article")) {
+      expect(within(article).queryByText(/AI 작성/)).toBeNull();
+    }
+  });
+
+  it("앱 셸 안에 싣는다 — 홈 탭이 현재, 스텁 발행·업데이트는 실행 기록(없으면 파일 generatedAt)에서(M1-30)", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    // 2026-10-09T21:30Z = KST 10-10 06:30 시작 → 발행일 10-10. 21:52:10Z(파일) 뒤 21:54:00Z에 끝남
+    loadProdRuns.mockReturnValue([
+      {
+        runId: fixture.runId,
+        env: "prod",
+        job: "collect",
+        startedAt: "2026-10-09T21:30:00.000Z",
+        finishedAt: "2026-10-09T21:54:00.000Z",
+        collected: 3,
+        clusters: 3,
+        summarized: 0,
+        downgraded: 0,
+        tokens: { in: 0, out: 0, cacheRead: 0, cacheWrite: 0 },
+        costUsd: 0,
+        apiCalls: { footballData: 0, apiFootball: 0 },
+        sources: [],
+        status: "success",
+      },
+    ]);
+    const { container } = render(<HomePage />);
+
+    const tabs = screen.getByRole("navigation", { name: "하단 탭" });
+    expect(within(tabs).getByRole("link", { name: "홈" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    const stub = container.querySelector('time[datetime="2026-10-10"]')
+      ?.parentElement as HTMLElement;
+    expect(stub).toHaveTextContent("발행 06:54 KST");
+    expect(stub).toHaveTextContent("업데이트 06:54 KST");
+
+    loadProdRuns.mockReturnValue([]);
+    const again = render(<HomePage />);
+    const stub2 = again.container.querySelector('time[datetime="2026-10-10"]')
+      ?.parentElement as HTMLElement;
+    expect(stub2).toHaveTextContent("발행 06:52 KST");
   });
 
   it("호는 있지만 카드가 0장이면 그 안내를 보여 준다", () => {

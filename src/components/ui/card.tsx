@@ -127,6 +127,11 @@ export interface CardTitleProps extends Omit<
 > {
   /** 제목 요소 id(카드의 `aria-labelledby`) */
   id: string;
+  /**
+   * 제목 단계(기본 h3 — 홈처럼 h2 섹션 머리 아래). 피드 바로 위가 페이지 h1이면 h2(`/news/` — 단계 건너뜀 방지, axe heading-order).
+   * 모양은 같다.
+   */
+  as?: "h2" | "h3";
   /** 원문 URL(새 창) */
   href: string;
   /** 원제목 언어(`ko`·`en`·`it`·`es` …). `ko`가 아니면 라틴 규칙(Barlow 600, --text-card-latin, word-break: normal) */
@@ -160,6 +165,7 @@ export function splitLastWord(title: string): [head: string, last: string] {
  */
 export function CardTitle({
   id,
+  as: Heading = "h3",
   href,
   lang,
   source,
@@ -171,7 +177,7 @@ export function CardTitle({
   const latin = lang !== "ko";
   const [head, last] = splitLastWord(children);
   return (
-    <h3
+    <Heading
       id={id}
       lang={lang}
       className={cn(
@@ -201,7 +207,7 @@ export function CardTitle({
         </span>
         <span className="sr-only">{`(원문 ${source}, 새 창)`}</span>
       </a>
-    </h3>
+    </Heading>
   );
 }
 

@@ -10,7 +10,8 @@ import { THEME_COLOR_METAS, THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: SITE_NAME,
+  // 홈은 서비스 이름 그대로, 다른 페이지는 "뉴스 · 유로 다이제스트"(페이지가 metadata.title을 준다)
+  title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
   description: SITE_TAGLINE,
 };
 
@@ -38,7 +39,12 @@ export default function RootLayout({
 
   return (
     // 초기 스크립트가 하이드레이션 전에 data-theme·data-spoiler를 단다 → 속성 불일치 경고를 끈다(이 요소만, DESIGN §8).
-    <html lang="ko" suppressHydrationWarning>
+    // scroll-padding-bottom: 1023 이하에서 키보드 포커스·앵커로 스크롤할 때 하단 탭(58px + 위 괘선, sticky)에 가리지 않게(WCAG 2.4.11)
+    <html
+      lang="ko"
+      suppressHydrationWarning
+      className="scroll-pb-16 lg:scroll-pb-0"
+    >
       <head>
         {/*
          * theme-color 2개(시스템 기준 미디어 쿼리 — 값·미디어 문자열은 theme.ts가 단일 출처). React 19는 <meta>를 끌어올려
@@ -66,7 +72,21 @@ export default function RootLayout({
          */}
         <style dangerouslySetInnerHTML={{ __html: FONT_FACE_CSS }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {/*
+         * 건너뛰기 링크(DESIGN §10) — <body> 첫 요소. 평소 화면 밖(top −80px), 포커스하면 왼쪽 위 8px에 잉크 면 + 지면 글자.
+         * 그 자리는 티켓(라이트 = 잉크와 같은 네이비, 다크 = 벽돌 레드) 위라서 둘레에 7px 지면 테두리(번짐 없는 펼침 그림자 —
+         * 2px 띄움 + 3px 링 + 2px)를 둘러 상자와 포커스 링이 늘 지면 위에 놓이게 한다(링 = --ring, 비텍스트 3:1 이상 — M1-30 리뷰).
+         * 대상 #main은 앱 셸(src/components/shell/app-shell.tsx)의 <main id="main" tabindex="-1">.
+         */}
+        <a
+          href="#main"
+          className="absolute -top-20 left-2 z-30 bg-ink px-4 py-3 font-extrabold text-paper no-underline shadow-[0_0_0_7px_var(--paper)] focus:top-2"
+        >
+          본문 바로가기
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

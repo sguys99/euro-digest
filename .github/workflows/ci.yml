@@ -104,8 +104,8 @@ jobs:
 
   # 기초 컴포넌트 견본 검사(D0-12) — SPECIMEN=1 빌드(out-specimen/)를 따로 만들어 실제 브라우저에서
   # axe·44px·포커스 링 대비·reduced-motion·탭 키보드·토스트·테마 토글·theme-color를 검사한다.
-  # M1-30에서 컴포넌트가 공개 페이지에 올라가기 전까지 이 컴포넌트들을 렌더하는 검사는 여기뿐이다.
-  # 배포 조건(deploy needs)에는 아직 넣지 않는다 — M1-30에서 공개 페이지가 쓰기 시작하면 승격한다.
+  # M1-30부터 공개 페이지(앱 셸)가 테마 토글·토스트·하단 탭·상단 내비를 쓰므로 배포 조건(deploy needs)에 넣었다 —
+  # 견본 검사가 실패하면 배포하지 않는다. 공개 페이지 자체의 셸 검사는 check job의 e2e(tests/e2e/shell.spec.ts).
   # .next/를 일반 빌드와 같이 쓰므로 check job과 다른 러너(별도 job)에서 돌린다.
   specimen:
     name: 견본 검사 (기초 컴포넌트 · SPECIMEN 빌드)
@@ -154,14 +154,14 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
-  # main push에서 검사를 통과하면 재사용 워크플로로 배포한다(M0-13, PRD §15 D20).
+  # main push에서 검사(check·견본 specimen — M1-30부터)를 통과하면 재사용 워크플로로 배포한다(M0-13, PRD §15 D20).
   # - workflow_dispatch(수동 검사)는 배포하지 않는다: 수동 배포·롤백은 deploy.yml 수동 실행 한 경로로 모은다(FR-154).
   # - PR·다른 브랜치 push는 검사만 한다.
   # - 배포에 필요한 Pages 권한은 이 job에만 준다(워크플로 기본 권한은 contents: read 유지).
   #   호출된 워크플로는 여기서 준 권한 이하로만 쓸 수 있다: build job contents·pages read, deploy job pages write·id-token write.
   deploy:
     name: 배포 (GitHub Pages)
-    needs: check
+    needs: [check, specimen]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
