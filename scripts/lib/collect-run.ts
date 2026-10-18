@@ -2047,6 +2047,8 @@ async function runFootballDataProvider(
     finished: data.results.length,
     skipped: data.skipped,
     inProgress: data.inProgress,
+    // 수집 시점 창 안 경기 상태(종료·진행 중·미시작 — 킥오프·상태만) — M1-41 관찰(npm run observe)이 점수 지연 의심을 센다(M0-28)
+    ...(data.windowStatus ? { windowStatus: data.windowStatus } : {}),
     standings: data.standings.map((s) => s.comp),
     standingsRows: data.standings.reduce(
       (sum, s) => sum + s.tables.reduce((n, t) => n + t.rows.length, 0),

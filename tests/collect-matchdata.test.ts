@@ -227,6 +227,17 @@ describe("runCollect — 경기 데이터 단계(M1-44)", () => {
       standingsRows: 96,
       standingsFailed: [],
     });
+    // 수집 시점 창 안 경기 상태(M1-41 관찰 — npm run observe가 읽는다): 종료 23 + 미종료 목록
+    const windowStatus = (
+      done as {
+        windowStatus?: {
+          statuses: Record<string, number>;
+          unfinished: unknown[];
+        };
+      }
+    ).windowStatus;
+    expect(windowStatus?.statuses.FINISHED).toBe(23);
+    expect(Array.isArray(windowStatus?.unfinished)).toBe(true);
     // 순위는 지금 브리핑 입력에 넣지 않는다(M1-19) — 입력 키는 그대로
     const input = records.find((r) => r.event === "summarize.input.done");
     expect(input).toMatchObject({ matches: 23 });

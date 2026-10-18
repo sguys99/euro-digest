@@ -759,6 +759,70 @@ export function toFinishedResults(
   return { results, skipped, inProgress, others };
 }
 
+/** 미종료 경기 목록 상한(로그 한 줄 크기 — 바쁜 날 창 경기는 25경기 안팎) */
+export const WINDOW_UNFINISHED_MAX = 30;
+
+/** 입력 창 안 대상 대회 경기의 상태 분포(수집 시점) — 로그 전용(M1-41 관찰, M0-28) */
+export interface WindowStatusSummary {
+  /** football-data 상태 원문별 건수(FINISHED·IN_PLAY·TIMED·POSTPONED …) */
+  statuses: Record<string, number>;
+  /** FINISHED·AWARDED가 아닌 경기 — 킥오프 순, 상한 WINDOW_UNFINISHED_MAX */
+  unfinished: Array<{ comp: CompId; kickoff: string; status: string }>;
+  /** 미종료 경기 전체 수(상한에 잘리기 전) */
+  unfinishedTotal: number;
+}
+
+/**
+ * 경기 원문 배열 → 창 [start, end) 안에 킥오프한 **대상 대회** 경기의 상태 분포. 형식이 틀린 항목·대상 밖 대회는 뺀다.
+ * 브리핑 입력(종료 경기만)에는 쓰지 않고, 수집 시점에 끝나지 않은 경기(진행 중·점수 지연 의심)를 관찰 도구가 세게 로그에만 남긴다
+ * (plan M1-41 "수집 시점의 경기 상태 분포(미종료·점수 지연)를 기록" — scripts/lib/observe.ts matchStatusFromLog).
+ */
+export function windowStatusSummary(
+  rawMatches: readonly unknown[],
+  competitions: readonly CompetitionConfig[],
+  window: UtcRange,
+): WindowStatusSummary {
+  const compByCode = new Map<string, CompId>(
+    competitions.map((c) => [c.footballDataCode, c.id]),
+  );
+  const start = Date.parse(window.start);
+  const end = Date.parse(window.end);
+  // 상태 원문은 외부 값이라 Map으로 센다(`__proto__` 같은 키가 객체 프로토타입을 건드리지 않게) — 출력은 fromEntries(자기 속성)
+  const statuses = new Map<string, number>();
+  const unfinished: WindowStatusSummary["unfinished"] = [];
+  for (const raw of rawMatches) {
+    const parsed = FdMatchSchema.safeParse(raw);
+    if (!parsed.success) continue;
+    const m = parsed.data;
+    const comp = compByCode.get(m.competition.code);
+    const kickoffMs = Date.parse(m.utcDate);
+    if (!comp || kickoffMs < start || kickoffMs >= end) continue;
+    statuses.set(m.status, (statuses.get(m.status) ?? 0) + 1);
+    if (m.status !== "FINISHED" && m.status !== "AWARDED") {
+      unfinished.push({ comp, kickoff: m.utcDate, status: m.status });
+    }
+  }
+  unfinished.sort((a, b) => Date.parse(a.kickoff) - Date.parse(b.kickoff));
+  return {
+    statuses: Object.fromEntries(statuses),
+    unfinished: unfinished.slice(0, WINDOW_UNFINISHED_MAX),
+    unfinishedTotal: unfinished.length,
+  };
+}
+
+/** `windowStatusSummary`를 던지지 않게 — 실패하면 undefined(로그 필드만 빠지고 그날 브리핑에는 영향 없음) */
+function safeWindowStatus(
+  rawMatches: readonly unknown[],
+  competitions: readonly CompetitionConfig[],
+  window: UtcRange,
+): WindowStatusSummary | undefined {
+  try {
+    return windowStatusSummary(rawMatches, competitions, window);
+  } catch {
+    return undefined;
+  }
+}
+
 /** 이 단계의 경기가 순위표를 바꾸는가 — 녹아웃(PLAYOFFS·LAST_16 …)은 아니다, stage가 없으면 바꾼다고 본다 */
 export function affectsStandings(stage: string | null): boolean {
   return stage === null || TABLE_STAGES.has(stage);
@@ -871,6 +935,8 @@ export interface FootballDataBriefData {
   inProgress: Partial<Record<CompId, number>>;
   /** results 밖의 대상 대회 경기 — 경기 연결(D37) 후보 수 세기용(ResultsSummary.others) */
   others: MatchSlot[];
+  /** 창 안 대상 대회 경기의 상태 분포 — 로그 전용(M1-41 관찰) */
+  windowStatus?: WindowStatusSummary;
   /** 받은 순위(설정 순서) */
   standings: CompStandings[];
   /** 순위를 받지 못한 대회 — 그 대회 순위만 빠지고 브리핑은 진행한다 */
@@ -932,6 +998,7 @@ export async function fetchBriefFootballData(
     skipped: summary.skipped,
     inProgress: summary.inProgress,
     others: summary.others,
+    windowStatus: safeWindowStatus(raw, competitions, window),
     standings,
     standingsFailed,
   };
