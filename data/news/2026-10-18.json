@@ -1,0 +1,1268 @@
+{
+  "date": "2026-10-18",
+  "generatedAt": "2026-10-18T05:34:58.472Z",
+  "runId": "collect-prod-20261018T053453Z-77c1",
+  "cards": [
+    {
+      "id": "c_c9f614fdf5",
+      "t": "[라리가 STAR] \"5억 유로(7518억 원) 선수다\"...이강인만큼 빛나는 아틀레티코 중원 핵심! 바리오스 향해 시메오네도 무한 신뢰",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-de-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 5,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696617",
+          "at": "2026-10-18T02:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_8de7a29f36",
+      "t": "[분데스 ISSUE] \"패스로 상대 무너뜨리고 노련한 수비 활약\" 김민재 호평 들은 날, 뜬금 콤파니 부상...\"고관절 아파 기자회견도 불참\"",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696624",
+          "at": "2026-10-18T02:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_80685b2dac",
+      "t": "[라리가 POINT] '5연승' 이강인이 웃지 못하는 이유...바르셀로나 또 5득점 폭발! 리그 9전 전승+공식전 11경기 48득점 폭주",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696615",
+          "at": "2026-10-18T02:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_9e28302ecb",
+      "t": "거액 주고 데려왔는데 EPL 출전 고작 56분… 하베르츠에 밀린 아스널 요케레스, 1년 만에 이적설 ‘이강인 동료’ 되나?",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "LALIGA"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313220",
+          "at": "2026-10-18T00:20:31.000Z",
+          "tier": 3
+        },
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313215",
+          "at": "2026-10-17T23:28:08.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_559b19cc45",
+      "t": "\"계속 선발! 시메오네 계획대로 뛰는 중\"...이강인 에스파뇰전 침묵에도 스페인 매체들은 호평→\"언제나 번뜩여\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "rcd-espanyol-de-barcelona"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696619",
+          "at": "2026-10-17T23:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_e8b2843878",
+      "t": "How 'dangerous' Man City maintained 100 per cent record",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cx7vpl5qd008o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T23:00:53.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_6b73b9706d",
+      "t": "Why Liverpool are still 'too easy' to play against",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c65ynpkjydemo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T23:00:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_be555aa984",
+      "t": "설영우, 뮌헨전 선발 활약→엘버스베르크전 벤치...아우크스부르크는 3-4 패배! 4경기 무승 수렁에",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen",
+        "augsburg"
+      ],
+      "players": [
+        "seol-young-woo"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696618",
+          "at": "2026-10-17T21:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_b0f3acf6f6",
+      "t": "Diaz hat-trick fires Bayern to win in Kane's 100th Bundesliga game",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmj47e479xg5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T20:55:25.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_d0f6650365",
+      "t": "Lamine Yamal opens scoring as Barcelona beat Real Betis",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona",
+        "real-betis-balompie"
+      ],
+      "players": [
+        "lamine-yamal"
+      ],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmewe0wq0wj1o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T20:49:36.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_417092aab3",
+      "t": "Gyokeres pushing for Arsenal exit - Sunday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c9gkv34kezdko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T20:37:25.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_4265df1905",
+      "t": "[라리가 STAR] 제2의 그리즈만, 이강인 아니었다...따로 있던 대체자→에스파뇰전 극장골, 5골 2도움 '압도적 활약' 바에나",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "rcd-espanyol-de-barcelona"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696610",
+          "at": "2026-10-17T21:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_95769b0e9b",
+      "t": "Villa's Manzambi shows Newcastle what they missed out on",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "newcastle-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck054652mv07o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T21:18:26.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cwdd897vvl8vo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T19:12:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_38491cf084",
+      "t": "“출전 시간과 체력 관리 때문” 시메오네가 밝히는 이강인 교체 이유…“활동량이 필요했다”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696606",
+          "at": "2026-10-17T20:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_45a1d434a5",
+      "t": "Wirtz delivers but remains Liverpool's conundrum",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c9j34rke27zjo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T20:07:40.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_b1f2312b3f",
+      "t": "Emery praises Manzambi's 'skills and intelligence'",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cw80zpzx3vxjo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T19:29:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_a9c8a524d6",
+      "t": "Liverpool come from behind to beat nine-man Brentford",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool",
+        "brentford"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c65yn28p859wo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T19:00:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_1519c03cf6",
+      "t": "Haaland nets double as Man City go six points clear at the top",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6pwgx89djn2o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T19:00:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_4150a6913c",
+      "t": "Iwobi delivers Fulham's first win of season",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "fulham"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6rmy7w1kdgeo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T19:00:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_3a48ea0d13",
+      "t": "Neto scores twice as Chelsea win at Everton",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea",
+        "everton"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cq146nz03k16o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T19:00:03.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c674pzzlz8zlo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T13:39:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_554e22b7c5",
+      "t": "“이강인 언제나 번뜩이는 모습 보였어” 공격 포인트 없어도 호평 쏟아졌다…“이런 선수들이 필요해”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696605",
+          "at": "2026-10-17T18:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_92604b159b",
+      "t": "Boos and bananas on day of defiance at Man City",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c9vgr6vj4mnyo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T18:02:39.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_059deef4f6",
+      "t": "Arsenal held at home by Birmingham",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c680zp4djprgo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T17:46:41.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_8c47a3018c",
+      "t": "Yarmoliuk red card changed game dynamic - Andrews",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6eq373g3vx9o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T17:14:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_7ccb3f91f6",
+      "t": "Man City's Maresca 'very happy' after Ipswich win",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city",
+        "ipswich-town"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmp3gkge7064o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T17:08:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_0fa11c755b",
+      "t": "Liverpool players in 'delicate' situation with 'demanding' schedule - Iraola",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ckgelqlz37w3o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T16:56:12.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_5023baf4eb",
+      "t": "'Men against boys' - Jakirovic criticises Hull City after Fulham defeat",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "hull-city",
+        "fulham"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cqkgj5jzvxldo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T16:48:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_295c3659f6",
+      "t": "“토트넘 희망 사라지고 있어” 김민재 영입 원하지만 아스널까지 참전…“경쟁 훨씬 치열해졌어”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696601",
+          "at": "2026-10-17T16:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_1305fe3ca5",
+      "t": "Chelsea's Martinez taken to hospital for 'precautionary tests'",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6rryqq00yp4o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T16:02:31.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_3a2615097a",
+      "t": "Alonso praises 'serious' Chelsea",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c5vgjny1082lo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T14:53:23.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_0b2e336319",
+      "t": "“맨유? 감독 바꾸더라도 5위보다 높은 순위로 못 마쳐” 前 토트넘 사령탑의 전망…“선수 영입이 부족해”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696630",
+          "at": "2026-10-18T04:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_a1e608610c",
+      "t": "When is a head-butt a red card? Is this the new normal for Man City?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7699223/2026/10/18/premier-league-manchester-city-red-card/",
+          "at": "2026-10-18T04:13:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_8595b47c88",
+      "t": "사실상 토트넘 커리어 끝났다…”감독 얼굴 때린 거 아니면 제외 안 해” 발언에 “당신의 말이 맞아” 반응",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696627",
+          "at": "2026-10-18T03:50:53.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_f077dc8f9a",
+      "t": "\"벨링엄-산초처럼 되고 싶어 영국 아닌 독일로\"...양민혁보다 어린 토트넘 유망주 무어의 똑똑한 임대",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696620",
+          "at": "2026-10-18T00:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_d1049d376b",
+      "t": "Roma, Gasperini: \"Grande soddisfazione. Gol di Castro? Non ne ho visti tanti così\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "as-roma"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/roma-gasperini-dichiarazioni-post-genoa-serie-a-498441",
+          "at": "2026-10-17T21:40:20.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/roma-genoa-lulli-gasperini-7a-giornata-serie-a-oggi-news-498440",
+          "at": "2026-10-17T20:25:41.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_49e0dbb1ae",
+      "t": "Newcastle made 'wrong decisions' in final third - Jaissle",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "newcastle-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmrryqykeelko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T19:38:28.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_3fc9638bcb",
+      "t": "Maresca nella storia: sette su sette in Premier. Altra doppietta di Haaland",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/interviste-e-storie/maresca-premier-league-haaland-498430",
+          "at": "2026-10-17T19:10:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_0da4fb7cfe",
+      "t": "Padova, la posizione di Calabro resta a rischio",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/padova-posizione-calabro-resta-rischio-498438",
+          "at": "2026-10-17T18:51:08.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_e777b4e760",
+      "t": "Inter, Kolarov: \"Nel secondo tempo abbiamo dominato. La nostra forza è il gruppo\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "internazionale-milano"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/bologna-inter-kolarov-post-partita-7a-giornata-serie-a-news-oggi-498437",
+          "at": "2026-10-17T18:30:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_4f6e27dcf6",
+      "t": "Inter, la panchina fa la differenza: i cambi di Chivu ribaltano il Bologna",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "internazionale-milano",
+        "bologna-fc-1909"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/bologna-inter-7a-giornata-serie-a-chivu-cambi-news-oggi-498434",
+          "at": "2026-10-17T18:00:26.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_364c3eb387",
+      "t": "O'Neil 'unbelievably proud' of Ipswich Town despite loss to Man City",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "ipswich-town",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c5x2vkvjer7vo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T17:18:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_b236929d5d",
+      "t": "“수준 높은 플레이, 언제나 번뜩이는 순간을 만든다” 韓 축구 에이스 이강인, 현지 매체 극찬 세례… “차이를 만들어내는 남다른 선수”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313209",
+          "at": "2026-10-17T16:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_fe56523cd6",
+      "t": "“극도로 적절하지 않은 시점” 황희찬, 국대 소집이 오히려 안 좋았다?...샬케 사령탑 “적응 위해 2~3주 필요했는데”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696600",
+          "at": "2026-10-17T15:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_9fb0279231",
+      "t": "Everton did not play well - Moyes",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "everton"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ck0j04346n70o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-17T14:42:46.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_4fa58f5594",
+      "t": "‘LEE 절친이 경기 끝냈다!‘… 바에나, 경기 막판 환상 중거리포 결승골로 에스파뇰전 1-0 승리→ 62분 소화한 이강인은 패스 성공률 93%·팀 내 최다 기회 창출 3회 기록",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "rcd-espanyol-de-barcelona"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313207",
+          "at": "2026-10-17T14:02:40.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    }
+  ]
+}
