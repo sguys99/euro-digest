@@ -117,3 +117,72 @@ export async function sameThemeColorMetas(page: Page): Promise<boolean> {
     );
   });
 }
+
+/**
+ * 터치 타깃 44px 검사(DESIGN §9.1·§10) — `selector`에 맞는 요소마다 가운데에서 위아래·좌우 21.5px(44px 안쪽, 반올림 여유 0.5px)를
+ * 눌러 그 요소(또는 그 안)가 맞는지 본다. 놓친 요소의 설명 목록을 돌려준다(빈 배열 = 통과).
+ * - 그려지지 않은 요소(닫힌 '+N곳' 목록 안 링크 등)는 누를 수 없으므로 건너뛴다.
+ * - 여러 줄 인라인 링크(카드 제목)는 줄 조각마다 본다 — 조각 높이 = 글꼴 내용 영역 + 위아래 패딩. 좌우 점은 44px 이상인 조각만 본다.
+ * - 겹침 허용은 좁게(M1-31 리뷰): 인라인 조각의 가운데 세로줄이 놓친 점이 **모두** `overlapAllow` 요소(기본 '+N곳' 버튼
+ *   `[data-src-toggle]` — 혼합안 간격에서 제목 마지막 줄의 빈 아래 패딩과 겹치고 그 자리는 작은 버튼이 이긴다, DESIGN §11.6)에
+ *   가려졌을 때만 왼쪽·오른쪽(가장자리에서 22px) 세로줄을 더 본다 — 그중 하나가 위아래 모두 맞아야 통과. 다른 요소에 가려지면 실패다.
+ */
+export async function touchTargetFailures(
+  page: Page,
+  selector: string,
+  overlapAllow = "[data-src-toggle]",
+): Promise<string[]> {
+  return page.evaluate(
+    ({ sel, allow }) => {
+      const out: string[] = [];
+      const half = 21.5;
+      const hitAt = (x: number, y: number) => document.elementFromPoint(x, y);
+      const hits = (el: Element, x: number, y: number) => {
+        const hit = hitAt(x, y);
+        return hit !== null && (hit === el || el.contains(hit));
+      };
+      const column = (el: Element, x: number, cy: number) =>
+        [cy - half, cy + half].filter((y) => !hits(el, x, y));
+      for (const el of document.querySelectorAll<HTMLElement>(sel)) {
+        if (el.getClientRects().length === 0) continue;
+        el.scrollIntoView({ block: "center", inline: "center" });
+        const inline = getComputedStyle(el).display === "inline";
+        const rects = inline
+          ? [...el.getClientRects()]
+          : [el.getBoundingClientRect()];
+        for (const r of rects) {
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const missed = column(el, cx, cy);
+          let vertical = missed.length === 0;
+          let note = "";
+          if (!vertical && inline) {
+            const blockers = missed.map((y) => hitAt(cx, y));
+            if (blockers.every((b) => b?.closest(allow))) {
+              const edge = Math.min(22, r.width / 2);
+              vertical = [r.left + edge, r.right - edge].some(
+                (x) => column(el, x, cy).length === 0,
+              );
+              note = " (허용 겹침 밖 세로줄도 놓침)";
+            } else {
+              note = ` (가림: ${blockers.map((b) => b?.tagName.toLowerCase() ?? "없음").join("·")})`;
+            }
+          }
+          const horizontal =
+            inline && r.width < 44
+              ? true
+              : hits(el, cx - half, cy) && hits(el, cx + half, cy);
+          if (!vertical || !horizontal) {
+            const name =
+              el.getAttribute("aria-label") ?? el.textContent?.trim() ?? "";
+            out.push(
+              `${el.closest("article")?.id ?? ""} ${el.tagName.toLowerCase()} "${name.slice(0, 20)}" ${Math.round(r.width)}×${Math.round(r.height)} — ${vertical ? "" : "위아래" + note}${horizontal ? "" : " 좌우"}`,
+            );
+          }
+        }
+      }
+      return out;
+    },
+    { sel: selector, allow: overlapAllow },
+  );
+}

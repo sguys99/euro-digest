@@ -221,7 +221,7 @@ const CASES: ReadonlyArray<[string, () => ReactElement]> = [
     ),
   ],
   [
-    "FlatTab·IndexTab 6대회 × 크기, StampChip",
+    "FlatTab·IndexTab 6대회 × 크기(머리기사 탭 포함), StampChip",
     () => (
       <>
         {COMPS.map((comp) => (
@@ -231,6 +231,9 @@ const CASES: ReadonlyArray<[string, () => ReactElement]> = [
               약칭
             </FlatTab>
             <IndexTab comp={comp}>약칭</IndexTab>
+            <IndexTab comp={comp} lead>
+              약칭
+            </IndexTab>
           </span>
         ))}
         <StampChip>이적</StampChip>

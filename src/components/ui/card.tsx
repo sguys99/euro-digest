@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
  * Card — 뉴스 카드 껍데기 (DESIGN.md §9.2 Card, D0-12)
  *
  * 카드는 면·테두리 상자가 아니라 괘선 사이의 한 줄(스쿼드 명단 한 줄)이다. shadcn Card의 `rounded-xl border shadow-sm`
- * 모양을 쓰지 않는다. 이 파일은 격자와 상태(hover·focus·:target)만 맡고, 내용(원제목 규칙의 세부·태그·출처 스택·
- * 중요도·완장·메뉴)은 M1-31이 슬롯에 채운다.
+ * 모양을 쓰지 않는다. 이 파일은 격자와 상태(hover·focus·:target)·원제목 링크 규칙만 맡고, 내용(태그·출처 스택·중요도·완장·
+ * 이적 단계·연결 줄·머리기사)은 src/components/news/feed-card.tsx(M1-31)가 슬롯에 채운다. 카드 메뉴는 M1-35.
  *
  * ```tsx
  * <Card id="c_d8ecc21d28" aria-labelledby="c_d8ecc21d28-t" bleed>
@@ -159,9 +159,41 @@ export function splitLastWord(title: string): [head: string, last: string] {
 }
 
 /**
- * 제목 + 원문 링크(카드의 포커스 대상). 링크는 위아래 10px 패딩으로 누르는 영역을 넓히고(인라인이라 줄 높이는 그대로),
+ * 짧은 하이픈 단어 — 공백으로 나뉜 한 낱말이 하이픈(또는 스코어의 en dash) 하나로 이어지고 양쪽이 8자 이하(`10-man`·`2-2`·`2–1`).
+ * 하이픈 뒤 줄바꿈("10-" / "man")을 막으려고 붙여 쓴다(DESIGN §3.6). 하이픈이 둘 이상인 낱말(`end-of-season`)·긴 낱말은 그대로 둔다 —
+ * 붙여 쓴 덩어리가 좁은 폭에서 넘치지 않게(최대 17자).
+ */
+const SHORT_HYPHEN_WORD_RE =
+  /(?<=^|\s)[^\s\-–]{1,8}[-–][^\s\-–]{1,8}(?=\s|$)/gu;
+
+/** 원제목 조각 — 이어 붙이면 원문과 같다(글자를 바꾸지 않는다, D23). `nobr`이면 줄바꿈 없이 붙여 쓴다 */
+export interface TitleSegment {
+  text: string;
+  nobr: boolean;
+}
+
+/** 원제목(마지막 단어 앞까지)을 짧은 하이픈 단어 기준으로 나눈다 */
+export function titleSegments(text: string): TitleSegment[] {
+  const out: TitleSegment[] = [];
+  let cursor = 0;
+  for (const match of text.matchAll(SHORT_HYPHEN_WORD_RE)) {
+    const start = match.index;
+    if (start > cursor)
+      out.push({ text: text.slice(cursor, start), nobr: false });
+    out.push({ text: match[0], nobr: true });
+    cursor = start + match[0].length;
+  }
+  if (cursor < text.length) out.push({ text: text.slice(cursor), nobr: false });
+  return out;
+}
+
+/**
+ * 제목 + 원문 링크(카드의 포커스 대상). 링크는 위아래 패딩으로 누르는 영역을 44px 이상으로 넓히고(인라인이라 줄 높이는 그대로),
  * hover면 밑줄 2px --brand-accent(3px 띄움). 끝에 외부 표식 ↗(`aria-hidden`) + 화면 밖 "(원문 {출처}, 새 창)".
- * 한글 제목은 46em에서 줄을 끊는다(DESIGN §4.3).
+ * 한글 제목은 46em에서 줄을 끊는다(DESIGN §4.3). 짧은 하이픈 단어와 마지막 단어 + ↗는 붙여 쓴다(DESIGN §3.6).
+ *
+ * 패딩(M1-31): 인라인 링크 상자의 높이 = 글꼴 내용 영역 + 위아래 패딩이다. 라틴(Barlow 1.2em) 21px → 25.2 + 20 = 45px이지만
+ * 한글(EuroDigest Sans 1.193em) 16.5px → 19.7 + 20 = 40px라 44px에 못 미쳤다(D0-12 이월) → 한글은 13px(45.7px · ≥1024 18px 47.5px).
  */
 export function CardTitle({
   id,
@@ -176,6 +208,7 @@ export function CardTitle({
 }: CardTitleProps) {
   const latin = lang !== "ko";
   const [head, last] = splitLastWord(children);
+  const segments = titleSegments(head);
   return (
     <Heading
       id={id}
@@ -195,12 +228,21 @@ export function CardTitle({
         target="_blank"
         rel="noopener"
         className={cn(
-          // relative: 위아래 패딩(10px)이 다음 메타 줄(위 9px)과 1px 겹친다 — 위치 지정 요소로 올려 그 패딩까지 누르는 영역으로 남긴다
-          "relative py-2.5 no-underline decoration-brand-accent decoration-2 underline-offset-3 hover:underline",
+          // relative: 위아래 패딩이 다음 메타 줄(위 9px)과 겹친다 — 위치 지정 요소로 올려 그 패딩까지 누르는 영역으로 남긴다
+          "relative no-underline decoration-brand-accent decoration-2 underline-offset-3 hover:underline",
+          latin ? "py-2.5" : "py-3.25",
           linkProps?.className,
         )}
       >
-        {head}
+        {segments.map((segment, index) =>
+          segment.nobr ? (
+            <span key={index} className="whitespace-nowrap">
+              {segment.text}
+            </span>
+          ) : (
+            segment.text
+          ),
+        )}
         <span className="whitespace-nowrap">
           {last}
           <ExternalMark />

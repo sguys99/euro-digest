@@ -27,6 +27,8 @@ import {
   TopNavLink,
 } from "@/components/ui/nav-tabs";
 import { FilterClearButton } from "@/components/ui/filter-clear-button";
+import { ImportanceBar } from "@/components/news/feed-card";
+import { NewsFeed } from "@/components/news-feed";
 import { SectionHead } from "@/components/ui/section-head";
 import { BriefRowSkeleton, CardSkeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,7 +36,11 @@ import { Toaster, ToastView } from "@/components/ui/toast";
 import { routes } from "@/lib/paths";
 import type { CompId } from "@/lib/schema/common";
 import { CompetitionsFileSchema } from "@/lib/schema/configs";
-import { NewsFileSchema } from "@/lib/schema/news";
+import {
+  NewsFileSchema,
+  type NewsCard,
+  type NewsFile,
+} from "@/lib/schema/news";
 import { formatKst, relativeKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
@@ -200,24 +206,7 @@ function NotApplicable({ children }: { children: ReactNode }) {
   );
 }
 
-// ─── 견본 카드(내용은 M1-31 도메인 컴포넌트 자리 — 여기서는 견본 전용 마크업) ──────────
-
-/** 중요도 막대(DESIGN §9.3) — 견본 전용 간이 구현. 정식 컴포넌트는 M1-31 */
-function ImportanceBar({ value }: { value: number }) {
-  return (
-    <span role="img" aria-label={`중요도 ${value}/5`} className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <i
-          key={i}
-          className={cn(
-            "h-2.25 w-1",
-            i <= value ? "bg-ink-2" : "inset-ring inset-ring-ink-3",
-          )}
-        />
-      ))}
-    </span>
-  );
-}
+// ─── 견본 카드(D0-12 Card 상태 매트릭스 — 껍데기 상태 견본. 실제 카드 변형은 아래 SpecimenFeeds, M1-31) ──────────
 
 function SpecimenCard({
   suffix,
@@ -295,6 +284,140 @@ function SpecimenCard({
         </IndexTab>
       </CardTabs>
     </Card>
+  );
+}
+
+// ─── 뉴스 카드 변형 견본 (M1-31) ────────────────────────────────────────────
+
+function fixtureCard(id: string): NewsCard {
+  const card = newsSample.cards.find((c) => c.id === id);
+  if (!card) throw new Error(`fixtures/news-sample.json에 ${id} 없음`);
+  return card;
+}
+
+/** 합성 출처(견본 전용 — example.com 링크) */
+function syntheticSource(
+  n: string,
+  minutesAgo: number,
+  tier: 1 | 2 | 3,
+): NewsCard["src"][number] {
+  return {
+    n,
+    u: `https://example.com/specimen/${encodeURIComponent(n)}/`,
+    at: new Date(Date.parse("2026-10-11T05:00:00Z") - minutesAgo * 60_000)
+      .toISOString()
+      .replace(".000Z", "Z"),
+    tier,
+  };
+}
+
+const TRANSFER_EDGES = [
+  ["rumor", 1],
+  ["negotiating", 2],
+  ["agreed", 3],
+  ["official", 1],
+  ["collapsed", 2],
+] as const;
+
+/**
+ * 경계 사례(시안에 없는 경우) — fixtures 카드를 바탕으로 한 합성 카드(견본 전용, 공개 빌드에 없음):
+ * 출처 8곳(같은 매체 중복 1건 포함 — '+N곳'은 서로 다른 매체 수) · 같은 매체 기사만 더 있는 카드('+N건') · 태그 0개(사전에 없는 slug만)·
+ * 대회 0개 · 이적 단계 5종 × Tier 1~3 ·
+ * 긴 라틴 매체명이 걸린 연결 줄(375에서 매체명이 그 칸 안에서 줄바꿈).
+ */
+const edgeNews: NewsFile = {
+  date: newsSample.date,
+  generatedAt: newsSample.generatedAt,
+  runId: "specimen-edge",
+  cards: [
+    {
+      ...fixtureCard("c_0110371250"),
+      id: "c_e000000001",
+      src: [
+        ...fixtureCard("c_0110371250").src,
+        syntheticSource("The Athletic", 20, 2),
+        syntheticSource("ESPN", 35, 2),
+        syntheticSource("Relevo", 50, 2),
+        syntheticSource("Gianluca Di Marzio", 65, 2),
+        syntheticSource("ESPN", 80, 2),
+        syntheticSource("the Daily Briefing", 95, 2),
+        syntheticSource("Premier League", 110, 2),
+      ],
+    },
+    {
+      // 추가 출처가 모두 같은 매체 → '+2건'(사용자 결정 2026-10-19)
+      ...fixtureCard("c_d8ecc21d28"),
+      id: "c_e000000003",
+      src: [
+        ...fixtureCard("c_d8ecc21d28").src,
+        syntheticSource("BBC Sport", 40, 2),
+        syntheticSource("BBC Sport", 90, 2),
+      ],
+    },
+    {
+      ...fixtureCard("c_4d28dc0b8f"),
+      id: "c_e000000002",
+      teams: ["specimen-unknown-fc"],
+      players: ["specimen-unknown-player"],
+      comp: [],
+    },
+    ...TRANSFER_EDGES.map(([status, tier], i) => {
+      const base = fixtureCard("c_c4f20b673e");
+      return {
+        ...base,
+        id: `c_e00000001${i}`,
+        imp: 2,
+        transfer: {
+          player: base.transfer?.player ?? "marcos-rojo",
+          status,
+          tier,
+        },
+      } satisfies NewsCard;
+    }),
+    { ...fixtureCard("c_114856ecfb"), id: "c_e000000020", imp: 2 },
+    {
+      ...fixtureCard("c_431b1523c4"),
+      id: "c_e000000021",
+      imp: 2,
+      cat: "other",
+    },
+  ],
+};
+
+/**
+ * 뉴스 카드 피드 견본(M1-31) — 실제 피드 컴포넌트(`NewsFeed`)를 홈과 같은 섹션 머리 아래에 싣는다.
+ * ① fixtures 23장(혼합안 홈 피드와 같은 카드·순서·게재 번호 — 머리기사 06, 연결 줄 4쌍, 변형 6종) ② 경계 사례.
+ * 1024 이상은 왼쪽 목차 열(232px)만큼 비워 혼합안 M1 지면 폭(728 @1024 · 984 @1280)과 같은 폭에서 비교한다.
+ * 상대 시간은 실제 시각으로 채워진다 — 캡처·e2e는 시계를 혼합안 기준 시각(2026-10-11 15:54 KST)에 고정한다.
+ */
+function SpecimenFeeds() {
+  return (
+    <div className="lg:pl-col-contents">
+      <section
+        aria-labelledby="specimen-feed-h"
+        className="mt-9 lg:mt-11"
+        data-specimen="feed"
+      >
+        <SectionHead
+          heading="주요 뉴스"
+          headingId="specimen-feed-h"
+          runningHead="SQUAD"
+        />
+        <NewsFeed news={newsSample} id="specimen-feed" />
+      </section>
+      <section
+        aria-labelledby="specimen-edge-h"
+        className="mt-9 lg:mt-11"
+        data-specimen="feed-edge"
+      >
+        <SectionHead
+          heading="경계 사례"
+          headingId="specimen-edge-h"
+          runningHead="EDGE"
+        />
+        <NewsFeed news={edgeNews} lead={false} id="specimen-edge" />
+      </section>
+    </div>
   );
 }
 
@@ -882,6 +1005,7 @@ export default function SpecimenPage() {
             />
           </Frame>
         </div>
+        <SpecimenFeeds />
       </main>
       <Toaster />
     </>

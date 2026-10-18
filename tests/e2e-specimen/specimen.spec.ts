@@ -14,6 +14,7 @@ import {
   SCREENSHOT_WIDTHS,
   SPECIMEN_PATH,
   staticizeFixed,
+  touchTargetFailures,
   VIEWPORTS,
   waitForFonts,
   waitForHydration,
@@ -196,45 +197,10 @@ for (const viewport of VIEWPORTS) {
       page,
     }) => {
       await openSpecimen(page);
-      const failures = await page.evaluate(() => {
-        const out: string[] = [];
-        const targets = document.querySelectorAll<HTMLElement>(
-          'main button, main a[href], main [role="tab"], main [role="switch"]',
-        );
-        const half = 21.5; // 44px 안쪽(경계 반올림 여유 0.5px)
-        for (const el of targets) {
-          el.scrollIntoView({ block: "center", inline: "center" });
-          // 여러 줄 인라인 링크(카드 제목)는 줄 조각마다 본다 — 조각 높이 = 줄 높이 + 위아래 패딩 10px
-          const inline = getComputedStyle(el).display === "inline";
-          const rects = inline
-            ? [...el.getClientRects()]
-            : [el.getBoundingClientRect()];
-          for (const r of rects) {
-            const cx = r.left + r.width / 2;
-            const cy = r.top + r.height / 2;
-            const points: Array<[number, number]> = [
-              [cx, cy - half],
-              [cx, cy + half],
-            ];
-            // 인라인 조각은 글자 길이만큼이라 가로는 44px 이상인 조각만 본다
-            if (!inline || r.width >= 44) {
-              points.push([cx - half, cy], [cx + half, cy]);
-            }
-            const missed = points.filter(([x, y]) => {
-              const hit = document.elementFromPoint(x, y);
-              return !hit || !(hit === el || el.contains(hit));
-            });
-            if (missed.length) {
-              const name =
-                el.getAttribute("aria-label") ?? el.textContent?.trim() ?? "";
-              out.push(
-                `${el.tagName.toLowerCase()} "${name.slice(0, 20)}" ${Math.round(r.width)}×${Math.round(r.height)} — 놓친 점 ${missed.length}`,
-              );
-            }
-          }
-        }
-        return out;
-      });
+      const failures = await touchTargetFailures(
+        page,
+        'main button, main a[href], main [role="tab"], main [role="switch"]',
+      );
       expect(failures).toEqual([]);
     });
 

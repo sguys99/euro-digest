@@ -151,18 +151,22 @@ export function FlatTab({
 /**
  * 인덱스 탭 — 카드·5줄 행 오른쪽 열의 세로 대회 탭(너비 --tab-w, 세로쓰기, 10.5px · ≥1024 11px 800).
  * `writing-mode`는 점진적 향상이다(지원하지 않으면 가로로 좁게 나온다). 약칭 글자가 접근 이름이다.
+ * `lead`(머리기사, M1-31): 1024 이상에서 카드 높이만큼 늘이고 12px(DESIGN §9.3 머리기사). 1023 이하는 일반 탭과 같다.
  */
 export function IndexTab({
   comp,
+  lead = false,
   className,
   children,
   ...props
-}: CompetitionMarkProps) {
+}: CompetitionMarkProps & { lead?: boolean }) {
   return (
     <span
+      data-slot="index-tab"
       className={cx(
         "flex w-tab-w items-center justify-center pt-1.75 pb-1.5 font-sans text-[10.5px] leading-[1.08] font-extrabold tracking-normal [text-orientation:upright] [writing-mode:vertical-rl]",
-        "transition-colors duration-base ease-print lg:pt-2.25 lg:pb-2 lg:text-[11px]",
+        "transition-colors duration-base ease-print lg:pt-2.25 lg:pb-2",
+        lead ? "lg:flex-1 lg:text-[12px]" : "lg:text-[11px]",
         COMPETITION_SURFACE[comp],
         className,
       )}

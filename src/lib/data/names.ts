@@ -19,32 +19,21 @@ import path from "node:path";
 
 import { z } from "zod";
 
+import { tagLabelsFrom, type TagLabels } from "@/lib/news/tag-labels";
 import { NamesKoFileSchema, type NamesKoFile } from "@/lib/schema/names";
 
 /** 표기 사전 위치(저장소 루트 기준). `next build`·Vitest 모두 루트에서 실행한다 */
 export const NAMES_KO_PATH = path.resolve("configs/names.ko.json");
 
-/** 태그 종류 — 카드 `teams`(kind team)·`players`(kind player) */
-export type TagKind = "team" | "player";
-
-/** slug → 한글 표시 이름(사전에 없으면 null) */
-export interface TagLabels {
-  label(kind: TagKind, slug: string): string | null;
-}
-
-/** 사전 내용 → 태그 표(순수 함수). 같은 유형·slug가 둘이면 앞 항목(스키마가 중복을 막는다) */
-export function tagLabelsFrom(file: Pick<NamesKoFile, "entries">): TagLabels {
-  const byKey = new Map<string, string>();
-  for (const entry of file.entries) {
-    if (entry.slug === undefined) continue;
-    if (entry.kind !== "team" && entry.kind !== "player") continue;
-    const key = `${entry.kind}:${entry.slug}`;
-    if (!byKey.has(key)) byKey.set(key, entry.ko);
-  }
-  return {
-    label: (kind, slug) => byKey.get(`${kind}:${slug}`) ?? null,
-  };
-}
+// 태그 표의 순수 부분(종류·표·slug → 표시 이름)은 fs 없는 src/lib/news/tag-labels.ts에 있다 — 화면 모델·클라이언트 섬도 쓸 수 있게(M1-31 리뷰).
+// 이 모듈은 파일을 읽어 그 표를 만드는 로더만 맡고, 예전 이름은 그대로 다시 내보낸다.
+export {
+  labelTags,
+  tagLabelsFrom,
+  type TagKind,
+  type TagLabel,
+  type TagLabels,
+} from "@/lib/news/tag-labels";
 
 const EMPTY: TagLabels = { label: () => null };
 const cache = new Map<string, TagLabels>();
@@ -73,29 +62,4 @@ function readNamesKo(file: string): NamesKoFile {
     );
   }
   return parsed.data;
-}
-
-/** 표시할 태그 1개 */
-export interface TagLabel {
-  slug: string;
-  label: string;
-}
-
-/**
- * 카드 태그 slug 목록 → 표시할 태그(입력 순서, 같은 slug는 한 번). 사전에 없는 slug는 뺀다 — slug 문자열을 화면에 보이지 않는다.
- */
-export function labelTags(
-  slugs: readonly string[],
-  kind: TagKind,
-  labels: TagLabels,
-): TagLabel[] {
-  const out: TagLabel[] = [];
-  const seen = new Set<string>();
-  for (const slug of slugs) {
-    if (seen.has(slug)) continue;
-    seen.add(slug);
-    const label = labels.label(kind, slug);
-    if (label !== null) out.push({ slug, label });
-  }
-  return out;
 }

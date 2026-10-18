@@ -689,7 +689,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 |---|---|
 | 구조 | `<article id="{카드 ID}" aria-labelledby="{제목 id}">`. 행 `[--gutter │ 본문 │ --tab-w]`, 열 간격 10px(≥1024 14px), 위 15px · 아래 13px(≥1024 18·15px), 아래 1px `--rule`. 면·테두리 상자·그림자 없음 |
 | 거터 | 게재 번호(`--num-card-no`, `--ink-2`, `aria-hidden`) → 중요도 막대 → 한국 완장(있을 때). 세로 간격 7px(≥1024 8px) |
-| 본문 | 태그 줄(도장 + 태그, 간격 5·8px) → 제목(위 8px, 링크 위아래 10px 패딩으로 터치 영역 확보) → 결과 가림 띠(가림 시) → 메타(위 9px: 출처명 800 `--ink` · '+N곳' · 상대 시간 + 절대 시각, 오른쪽 끝 메뉴 버튼) → 펼친 출처 목록 → 이적 단계 줄 → 연결 줄 |
+| 본문 | 태그 줄(도장 + 태그, 간격 5·8px) → 이적 단계 줄(위 8px, `transfer`가 있을 때) → 제목(위 8px, 링크 위아래 패딩으로 터치 영역 44px 확보 — 라틴 10px · 한글 13px, M1-31) → 결과 가림 띠(가림 시) → 메타(위 9px: 출처명 800 `--ink` · '+N곳' · 상대 시간 + 절대 시각, 오른쪽 끝 메뉴 버튼) → 펼친 출처 목록 → 연결 줄. 이적 단계 줄은 태그 영역(FR-30 '한국어 태그'의 이적 단계)이라 제목 위다 — 혼합안 그대로(M1-31에서 이 문서의 옛 순서 '메타 → 출처 목록 → 이적 단계 줄'을 바로잡음) |
 | 오른쪽 열 | 인덱스 탭(대회가 둘이면 2px 간격으로 쌓음). 대회 없는 카드(대표팀 등)는 빈 열 |
 
 | 상태 | 규칙 |
@@ -765,15 +765,15 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | **S4 경기 없는 날** | 5줄 블록을 두고 높이만 줄인다: 거터에 '0'(`--num-brief-no`, 2px `--brand-accent` 윤곽, 속 비움) + "오늘은 5줄을 쉽니다"(`--text-brief` 800) + 이유 1줄(14px `--ink-2`) + "주요 뉴스로 ↓" 텍스트 링크. 날짜를 단정하지 않는다(D30) | – |
 | **뉴스 카드 변형 6종** | ① 기본 원제목(해외, 라틴 규칙) ② 다출처 클러스터('+N곳') ③ 이적(도장 "이적" + 이적 단계 줄 + Tier) ④ 한국 선수(완장 + 굵은 태그) ⑤ 경기 결과(결과 가림 켬) ⑥ 한국어 보도(`lang="ko"`, 한글 제목 규칙). 한 카드가 여러 변형을 겸한다. 이적 분류인데 `transfer` 필드가 없으면 단계 줄 없이 도장만 | 제목 `lang` 속성(WCAG 3.1.2) |
 | **머리기사(≥1024)** | 피드에서 imp가 가장 높은 카드 1장(필터 결과에는 없음). 위 24 · 아래 22px, 아래 2px `--ink` 괘선, 제목 `--text-lead`/`--text-lead-latin`(위 12px), 메타 위 16px, 인덱스 탭은 카드 높이만큼 늘이고 12px. 고르는 규칙은 M1-14 점수화 확정 후 안정된다 | 일반 카드와 같은 구조 |
-| **연결 줄** | 해외 카드 아래 "같은 소식 국내 보도 ···· 14 인터풋볼 ↓": `--text-meta` `--ink-2` + 리더 점선 + 게재 번호(`--num-meta`, 0.06em) + 매체명 800 `--ink` + 화살표 `--brand-accent-text`(짝이 아래면 ↓, 위면 ↑). 최소 40px(터치 44px). hover 매체명 밑줄 2px `--brand-accent`. 짝은 빌드 시 엄격 규칙(같은 팀 2개 또는 같은 선수 + 같은 분류 + 36시간 이내 + 상대 1장, D30). 짝 카드가 필터로 숨으면 줄도 숨긴다 | `href="#{짝 카드 ID}"`, 번호 앞 화면 밖 텍스트 "게재 번호 " |
+| **연결 줄** | 해외 카드 아래 "같은 소식 국내 보도 ···· 14 인터풋볼 ↓", 짝인 국내 카드 아래 "같은 소식 해외 보도 ···· 06 BBC Sport ↑"(양쪽 — 혼합안 그대로): `--text-meta` `--ink-2` + 리더 점선 + 게재 번호(`--num-meta`, 0.06em) + 매체명 800 `--ink` + 화살표 `--brand-accent-text`(짝이 아래면 ↓, 위면 ↑). 최소 40px(터치 44px). hover 매체명 밑줄 2px `--brand-accent`. 짝은 빌드 시 엄격 규칙(같은 팀 2개 또는 같은 선수 + 같은 분류 + 대표 출처 시각 36시간 이내 + 양쪽 모두 상대 1장, D30 — `src/lib/news/link-pairs.ts`). 카드 아래 여백은 4px(머리기사 ≥1024 12px)로 줄여 연결 줄이 대신한다. 좁은 폭에서는 리더 점선(기본 72px)이 최소 12px까지 먼저 줄고 그다음 매체명이 낱말 단위로 줄을 바꾼다. 짝 카드가 필터로 숨으면 줄도 숨긴다(M1-33) | `href="#{짝 카드 ID}"`, 번호 앞 화면 밖 텍스트 "게재 번호 " |
 | **게재 번호** | `--num-card-no` `--ink-2`, 06부터(§3.5). "작은 번호는 이 호의 게재 번호(순위 아님)" 안내 12px를 피드 부제 오른쪽에 | `aria-hidden` |
 | **인덱스 탭** | 너비 `--tab-w`, 세로쓰기(`writing-mode: vertical-rl; text-orientation: upright`), 위아래 7·6px(≥1024 9·8px), 면 `--competition-x`, 글자 `-foreground` 800, 약칭. `writing-mode`는 점진적 향상, iOS Safari 실기기와 4자 약칭(세리에A) 길이를 확인 | `title` = 정식 대회명, 약칭 텍스트가 접근 이름 |
 | **평탄 탭** | 최소 46px(목차 42px) × 22px, 좌우 6px, 11.5px 800, 면 `--competition-x` + 글자 `-foreground` | 약칭 텍스트 |
 | **도장 칩(분류)** | 1px `--ink` 실선 테두리, `--ink` 글자, `--text-stamp` 800, 안쪽 3·6·2px. 분류 7종 라벨(경기 결과, 이적, 부상, 감독·구단, 대표팀, UCL, 기타). 상호작용 없음 | 텍스트 |
 | **태그 줄** | 한국어 태그(팀·선수 — `names.ko.json` 표기), `--text-tag` `--ink-2`, 사이 1px `--rule` 세로선(좌우 7px). 한국 선수 태그만 800 `--ink`. 넘치면 줄바꿈 | `<ul aria-label="태그">` |
-| **출처 스택 '+N곳'** | 대표 출처명(800 `--ink`, 텍스트만 — 로고 금지) + '+N곳' 버튼(13px 800, 아래 1px `--ink-2`, 열리면 `--brand-accent` 밑줄·`--brand-accent-text` 글자). 펼친 목록: 위 1px 점선 `--ink-3`, 행 최소 44px = 출처명 800 + 리더 점선 + 시각(Barlow 600 14.5px `--ink-2`) + ↗, 각 원문 링크 | `aria-expanded`·`aria-controls`, 화면 밖 텍스트 "출처 더 보기" |
+| **출처 스택 '+N곳'** | 대표 출처명(800 `--ink`, 텍스트만 — 로고 금지) + '+N곳' 버튼(13px 800, 아래 1px `--ink-2`, hover `--ink`, 열리면 `--brand-accent` 밑줄·`--brand-accent-text` 글자). 다른 매체가 1곳 이상이면 '+N곳'(N = 서로 다른 출처명 수 − 1 — 같은 매체의 다른 기사는 '곳'으로 세지 않음), 추가 출처가 모두 대표와 같은 매체면 '+N건'(N = 추가 기사 수, 화면 밖 "같은 매체 기사 더 보기" — 사용자 결정 2026-10-19). 두 버튼은 모양·펼침이 같고, 섞인 경우(다른 매체 + 같은 매체 기사)는 '+N곳'이되 목록에는 기사 전부. 출처 1건이면 버튼 없음. 펼친 목록: 위 1px 점선 `--ink-3`, 행 45px(`min-h-11.25`, 최소 44px — 맞붙은 행의 경계 반올림 여유) = 출처명 800 + 리더 점선 + 시각(Barlow 600 14.5px `--ink-2`) + ↗, 카드 출처 전부(파일 순서)가 각 원문 링크 | `aria-expanded`·`aria-controls`, 화면 밖 텍스트 "출처 더 보기"('+N곳') · "같은 매체 기사 더 보기"('+N건') |
 | **카드 메뉴** | 아이콘 버튼(가로 점 3개, `--ink-2`) → 메뉴(§2.3 popover): "공유하기"(모바일 Web Share, 데스크톱 링크 복사 → 토스트) · "오류 신고↗"(카드 ID·날짜를 채운 이슈 폼). 항목 최소 44px, 14px 800, 사이 1px `--rule`, hover `--paper-2` | `aria-haspopup`·`aria-expanded`, 열면 첫 항목으로 포커스, Esc로 닫고 버튼으로 복귀 |
-| **시각** | `<time datetime="{UTC ISO}">` 안에 상대 시간(13px, 클라이언트 계산) + 절대 시각(`--num-meta` "10.11 04:24", KST). 정적 HTML은 절대 시각을 폴백으로 갖는다 | – |
+| **시각** | `<time datetime="{UTC ISO}">` 안에 상대 시간(13px, 클라이언트 계산) + 절대 시각(`--num-meta` "10.11 04:24", KST). 정적 HTML은 절대 시각을 폴백으로 갖는다. 상대 시간 칸은 처음부터 "00시간 전" 폭·높이를 잡고(보이지 않는 가상 요소) 글자를 칸 오른쪽에 붙인다 — 채울 때 레이아웃이 움직이지 않게(M1-31) | – |
 | **중요도 막대** | 거터의 칸 5개(4×9px, 간격 2px): 채운 칸 `--ink-2` 면, 빈 칸 1px `--ink-3` 안쪽 테두리(3.89/4.08, 보조 지면 3.49/3.61) | `role="img" aria-label="중요도 n/5"` |
 | **한국 완장** | 거터의 "한국"(10.5px 800, 면 `--brand-accent`, 글자 `--brand-accent-foreground`) + 태그 줄의 한국 선수 이름 굵게. `kr` 데이터 기준(제목에 이름이 있어도 `kr:false`면 달지 않음) | 텍스트 "한국" + `title` "한국 선수 관련" |
 | **이적 단계** | 펀치 구멍 4개(지름 13px, 1.5px `--ink-2` 테두리, 간격 3px) + 단계 글자 800(12.5px). 채움은 §2.7. 결렬은 빈 구멍 위 2px 사선 | `role="img" aria-label="이적 단계: 공식 (4단계 중 4)"` / "이적 단계: 결렬" |
@@ -809,6 +809,11 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 마스트헤드 (M1-30) | `src/components/shell/masthead.tsx` | 서버(+ 테마 토글 섬) | `<Masthead issue current? wordmarkAs? search? spoilerSwitch?>` |
 | KST 시각 (M1-30) | `src/components/kst-time.tsx` | 서버 | `<KstTime iso>` → `<time datetime="{UTC ISO}">HH:MM KST</time>`(스텁·상단 내비·뒤표지) |
 | 뒤표지 (M1-30) | `src/components/shell/colophon.tsx` | 서버 | `<Colophon issue>` — 링크 목록 `LINKS`(있는 페이지만) |
+| 뉴스 피드 (M1-31) | `src/components/news-feed.tsx` | 서버(+ 피드 섬) | `<NewsFeed news titleAs? lead? id?>` — `lead` 머리기사(전체 피드 true · 필터 결과 false), `id` 카드 목록 요소(피드 섬 범위, 페이지 안에서 유일). 피드 머리 "{n}건 · 중요도 순" + 게재 번호 안내 |
+| 뉴스 카드 (M1-31) | `src/components/news/feed-card.tsx` | 서버 | `<FeedCard view titleAs>`(변형 6종·머리기사·연결 줄을 화면 모델로) · 부품 `ImportanceBar` · `KoreanArmband` · `TransferStage` · `TierBadge` · `CardTime` · `LinkLine` |
+| 피드 섬 (M1-31) | `src/components/news/feed-island.tsx` | 클라이언트 섬 | `<FeedIsland rootId>`(렌더 없음) — `fillRelativeTimes(root, now)`(1분마다) · `cardRelativeTime(iso, now)`(`relativeKst` + 기기 시계보다 미래면 "방금") · `toggleSourceStack(root, target)`(위임 클릭) |
+| 화면 모델 (M1-31) | `src/lib/news/feed-view.ts` · `link-pairs.ts` · `labels.ts` · `tag-labels.ts` | 순수 함수(fs·zod 없음 — 섬도 import 가능, 단위 테스트가 검사) | `buildFeed(cards, { lead, labels, firstNo? })` → `FeedCardView[]` · `leadIndex` · `sourceStack`(`more`·`unit` outlets\|articles) · `cardTags` · `cardCompetitions` · `linkPairs` · `CATEGORY_LABEL` · `TRANSFER_STAGE` · `labelTags`·`tagLabelsFrom`(src/lib/data/names.ts는 파일 로더 + 다시 내보내기) |
+| 표시 이름 로더 (M1-31) | `src/lib/data/card-labels.ts` | 빌드 때(fs) | `loadCardLabels()` — 태그 한글(names.ko) · 대회 약칭(competitions shortKo·nameKo) · 한국 선수(korean-players) |
 | 내비 항목 (M1-30) | `src/components/shell/site-nav.ts` | 서버 | `NAV_ITEMS`(하단 탭·상단 내비 공통, M1 홈·뉴스) · `NavKey` |
 | 호 정보 (M1-30) | `src/lib/issue.ts` | 순수 함수 | `issueNumber(date)`(창간일 `FIRST_ISSUE_DATE` 2026-10-12) · `issueMeta(news, runs)` → `{ date, no, publishedAt, updatedAt }` |
 | 호 로더 (M1-30) | `src/lib/data/issue.ts` | 빌드 때(fs) | `loadLatestIssue()` · `loadIssue(date)`(M1-34 아카이브) → `{ news, issue }` — 페이지가 셸에 `issue`를 넘긴다 |
@@ -821,7 +826,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - **버튼 커서**: Tailwind v4 프리플라이트 기본(`cursor: default`) 대신 globals.css base에서 `button`은 pointer, `:disabled`·`[aria-disabled="true"]`는 not-allowed.
 - **Tabs**: 자동 활성화가 기본(패널이 정적 데이터라 지연 없음 — APG). `aria-controls`는 짝 패널이 마운트된 뒤에만 단다(없는 id를 가리키지 않게). 선택 없음(`null`)은 견본용 상태라 모든 탭이 Tab 순서에 든다. 선택 값이 있는데 그 탭이 없거나(제어 `value`가 목록 밖) 비활성이면 활성인 첫 탭(문서 순서)을 Tab 순서에 넣는다(APG — 탭 목록에 키보드로 들어갈 수 있게, 탭이 마운트된 뒤 effect로 정해져 서버 HTML에는 없다).
 - **Toast**: 닫기 버튼(44×44 "알림 닫기")은 시안에 없어 선택(`dismissible`, 기본 꺼짐)으로 더했다. 포인터가 올라가 있거나 포커스가 안에 있으면 시간을 멈춘다(WCAG 2.2.1). 액션은 먼저 닫고 실행한다(액션이 띄운 토스트가 남게). 토스트 안(액션·닫기 버튼)에 포커스가 있는 채로 사라지면(버튼으로 닫음·교체·`dismissToast`) 토스트에 들어오기 전 요소로 포커스를 되돌리고, 그 요소가 없으면 `#main`(`tabindex="-1"`, §10)으로 보낸다 — `<body>`로 떨어지지 않게(지워지는 토스트의 layout effect 정리에서 처리). 오른쪽 끝이 버튼이면 안쪽 6px, 글자로 끝나면 16px.
-- **Card**: 제목 링크에 `relative` — 위아래 패딩 10px가 메타 줄(위 9px)과 1px 겹쳐 그만큼 메타 줄에 가려지던 것을 막는다(44px 터치 타깃, 견본 e2e). `:target` 막대는 블러 없는 안쪽 그림자 `shadow-[inset_4px_0_0_var(--brand-accent)]`.
+- **Card**: 제목 링크에 `relative` — 위아래 패딩이 메타 줄(위 9px)과 겹쳐 그만큼 메타 줄에 가려지던 것을 막는다(44px 터치 타깃, 견본 e2e). 패딩은 라틴 10px · 한글 13px(M1-31 — 한글 글꼴 내용 영역 1.193em이라 10px면 40px였다). 짧은 하이픈 단어(양쪽 8자 이하, 스코어의 en dash 포함)는 `titleSegments`가 붙여 쓴다. `:target` 막대는 블러 없는 안쪽 그림자 `shadow-[inset_4px_0_0_var(--brand-accent)]`. `IndexTab lead`(M1-31)는 1024 이상에서 카드 높이만큼 늘이고 12px. `IndexTab`에는 `data-slot="index-tab"`(테스트·필터가 완장 등 다른 `title` 요소와 구분).
 - **Skeleton**: 1024 이상 위아래 여백을 실제 카드(18·15px)·5줄 행(14·15px)과 같게 했다 — 시안 견본은 375 값 그대로였다. §9.2 "실제와 같은 높이"를 따른다.
 - **목차 행 ✓**: 대회 행이 선택되면 이름 뒤 " ✓"(`aria-hidden`, `--brand-accent-text`). 시안 견본 매트릭스는 `data-comp`가 빠져 ✓가 안 보였다 — 시안 목차의 실제 동작과 같게 했다.
 - **견본 라우트**: `src/app/specimen/page.specimen.tsx`(+ 동작 칸 섬 `specimen-controls.tsx`). `SPECIMEN=1` 빌드에서만 페이지 확장자 `specimen.tsx`를 켜고(next.config.ts `pageExtensions`) 결과를 `out-specimen/`에 낸다(`distDir`). 일반 `npm run build`의 out/에는 없다(`tests/next-config.test.ts`·`tests/e2e/smoke.spec.ts`). `npm run test:specimen` = 견본 빌드 → `playwright.specimen.config.ts`(375·1024·1280에서 axe 0 · 44px · 포커스 링 · 가로 넘침, 모션 · 토스트(키보드로 닫으면 포커스 복귀) · 탭 키보드 · 테마 토글 · theme-color 클라이언트 이동(견본 → 홈 → 뒤로) · 스크린샷 4장(375·1280 — 1024는 검사만)). hover·focus-visible·`:target` 칸은 시안처럼 강제 상태 클래스를 만들지 않고 캡처 때 CDP `CSS.forcePseudoState`로 실제 의사 클래스를 켠다(§11.1 #8).
@@ -845,7 +850,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 
 ---
 
-## 11. 구현 메모 (D0-10 ~ D0-12 · M1-30)
+## 11. 구현 메모 (D0-10 ~ D0-12 · M1-30 · M1-31)
 
 ### 11.1 DECISIONS §7에서 넘어온 것
 
@@ -860,7 +865,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 7 | 하단 탭은 1023 이하에서 sticky, 1024 이상 숨김(§4.4) | D0-12 |
 | 8 | 시안 전용 요소는 구현하지 않는다: 메타 띠, 견본 구분선(`divider`), 홈 단계 토글(`?stage=m1`), 견본 강제 상태 클래스(`.is-hover`·`.is-focus` 등), 자리 상자 | 전체 |
 | 9 | 기초 컴포넌트 6종 × 5상태 매트릭스가 D0-12 비교 기준. 브레이크포인트는 §7(D31 — `lg` 2단 · `xl` 3단) | D0-12 |
-| 10 | 머리기사(1024 이상)는 imp 데이터에 달려 있다 — M1-14 점수화 확정 필요 | M1-14·M1-31 |
+| 10 | 머리기사(1024 이상)는 imp 데이터에 달려 있다 — M1-14 점수화 확정 필요 → M1-17 imp 5 = 그날 1장, 파일은 중요도 순(첫 카드 = 머리기사, M1-31 §11.6) | M1-14·M1-31 |
 
 ### 11.2 D0-10 (토큰 → globals.css)
 
@@ -895,7 +900,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - **의존성 없음**(사용자 결정 2026-10-12): 토스트·아이콘·탭 모두 직접 구현(cva·clsx만 — 이미 설치). shadcn CLI 미사용, `components.json` `iconLibrary: "none"`.
 - **`--animate-*`**: 인쇄형 모션 4종(§6.1)을 globals.css `@theme static`에 키프레임과 함께 더했다(토큰 대조·`cn` 키 대조 테스트 갱신).
 - **shadcn 기본값 제거 영향 확인**: 둥근 모서리·블러 그림자·투명도·`ring-ring/50`·반복 애니메이션·`dark:`·lg/xl 밖 브레이크포인트·아이콘 라이브러리가 `src/components/`에 없음을 `tests/ui-source-rules.test.ts`가 고정한다. 프리플라이트 버튼 커서 기본값만 base에서 되돌렸다(§9.4).
-- **남은 것**: ~~① 테마 토글·하단 탭·상단 내비·`<Toaster>`를 앱 셸에 배치(M1-30)~~ → M1-30 완료(§11.5) ② 카드 내용(중요도 막대·완장·태그·출처 스택·카드 메뉴·머리기사·연결 줄 — 견본은 간이 마크업, M1-31) ③ 필터 섬(칩 줄 `role="group"`·`?cat=` 동기화·찍힘 모션, M1-33) ④ 상태 4종 화면(M1-37) ⑤ 결과 가리기 스위치 동작·뜯김 모션(M4-15) ⑥ 대회 탭 실제 패널(D1) ⑦ 세로쓰기 인덱스 탭 iOS Safari 실기기·4자 약칭(§11.1 #6) ~~⑧ CI에 `npm run test:specimen`을 넣을지~~ → CI `specimen` job으로 돌고, M1-30부터 배포 조건(`deploy needs: [check, specimen]`).
+- **남은 것**: ~~① 테마 토글·하단 탭·상단 내비·`<Toaster>`를 앱 셸에 배치(M1-30)~~ → M1-30 완료(§11.5) ~~② 카드 내용(중요도 막대·완장·태그·출처 스택·머리기사·연결 줄)~~ → M1-31 완료(§11.6, 카드 메뉴는 M1-35) ③ 필터 섬(칩 줄 `role="group"`·`?cat=` 동기화·찍힘 모션, M1-33) ④ 상태 4종 화면(M1-37) ⑤ 결과 가리기 스위치 동작·뜯김 모션(M4-15) ⑥ 대회 탭 실제 패널(D1) ⑦ 세로쓰기 인덱스 탭 iOS Safari 실기기·4자 약칭(§11.1 #6) ~~⑧ CI에 `npm run test:specimen`을 넣을지~~ → CI `specimen` job으로 돌고, M1-30부터 배포 조건(`deploy needs: [check, specimen]`).
 - 컴포넌트 보조 크기(§3.4)는 컴포넌트 안에서만 쓴다. 두 컴포넌트가 같은 역할로 쓰게 되면 §3.3 토큰으로 올린다.
 - **반응형은 `lg:`·`xl:` 변형으로만** 쓴다(§7.1). 예: 홈 그리드 `lg:grid lg:grid-cols-[var(--col-contents)_minmax(0,1fr)] xl:grid-cols-[var(--col-contents)_minmax(0,1fr)_var(--col-facing)]`, 목차 `hidden lg:block lg:sticky lg:top-4`, 마주 보는 면 `hidden xl:block`, 지면 안 위젯 `xl:hidden`, 분류 칩 줄 `lg:hidden`, 하단 탭 `lg:hidden`, 상단 내비 `hidden lg:flex`, 머리기사 크기 `lg:` 쪽. `md:`·`sm:`·`2xl:`·`max-*:` 변형과 임의 미디어 쿼리(`min-[…]:`)는 쓰지 않는다.
 - **위젯 두 자리**: 혼합안은 같은 위젯을 지면 안(1단·2단, `xl:hidden`)과 마주 보는 면(3단, `hidden xl:block`)에 한 번씩 두고 `display`로 고른다. `display: none`이라 보조기술에 두 번 읽히지 않고, 정적 데이터라 비용은 HTML 크기뿐이다. 3단 마주 보는 면의 순서(오늘 밤 → 한국 선수 → 순위 → 이적)가 1단 순서와 달라서, 한 번만 렌더하고 grid 배치로 옮기면 읽기 순서와 보이는 순서가 어긋난다. 실제 위젯이 생기는 M2·M3(D1·D2 디자인)에서 이 방식을 그대로 쓸지 다시 본다.
@@ -916,6 +921,21 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - **번들**: 테마 토글·토스트 섬이 모든 페이지에 들어가 초기 JS 135.7 → 138.0KB(gzip, 예산 160KB). 셸 자체는 서버 컴포넌트라 JS 0.
 - **검사**: `tests/app-shell.test.tsx`(내비 항목·aria-current·랜드마크·h1·열 구성·호수·스텁·뒤표지 문구), `tests/issue.test.ts`·`tests/data-runs.test.ts`, `tests/e2e/shell.spec.ts`(375·1023·1024·1279·1280 × 홈·뉴스·404 가로 넘침 0·내비 보임·현재 탭·h1 하나, 열 구성·티켓 격자, 데이터에서 계산한 호수·시각, 뒤표지, 건너뛰기 링크(Enter → main 포커스 · 포커스 링·상자 대비를 화면 픽셀로 375·1280 × 라이트·다크), 하단 탭 sticky, 44px·포커스 링 라이트·다크), `tests/e2e/a11y.spec.ts`에 axe `heading-order`(모든 페이지). CI `specimen` job은 배포 조건이 됐다.
 
+### 11.6 M1-31 (뉴스 카드 변형 6종) — 구현 완료
+
+- **구조**: 화면 모델(순수 함수 `src/lib/news/feed-view.ts`) → 카드(서버 컴포넌트 `feed-card.tsx`) → 피드마다 섬 하나(`feed-island.tsx`). 카드는 파일 순서 그대로 한 번씩만 그린다(게재 번호 06~ — 삭제 요청 카드는 로더가 이미 뺐다). 설정(names.ko·competitions·korean-players)은 `loadCardLabels()`가 빌드 때 읽고, 카드에는 고른 문자열만 넘어간다(섬에 사전·zod가 들어가지 않는다).
+- **머리기사 배치(≥1024)**: imp 최고 1장, 동점이면 파일 순서상 앞(`leadIndex`). 파이프라인 파일은 "중요도 내림차순 → 최신 출처 시각"(scripts/lib/news-file.ts `sortCards`)이라 늘 첫 카드다 — 그래서 카드를 옮기지 않고 **그 자리에서** `lg:` 변형으로만 크게 그린다(위 24 · 아래 22px, 아래 2px 잉크, 제목 `--text-lead*`, 메타 위 16px, 인덱스 탭 카드 높이·12px). DOM 순서 = 보이는 순서(CSS `order`로 옮기면 포커스 순서가 어긋남 — WCAG 2.4.3), 같은 카드를 두 번 그리지 않아 공유 앵커 ID가 하나다. 1023 이하는 같은 카드가 일반 모양. 필터 결과는 `NewsFeed lead={false}`(M1-33).
+- **출처 스택 펼침 — `<details>` 대신 섬**: '+N곳'은 메타 줄 안(출처명과 시각 사이)에, 목록은 메타 줄 아래에 놓여야 하는데 `<details>`는 `<summary>`와 내용이 한 상자라 `display: contents` + `order`로 떼어야 한다(엔진마다 UA 그림자 트리가 달라 불안정하고 DOM 순서와 보이는 순서가 어긋남). 명세의 `aria-expanded`·`aria-controls`도 `<summary>`에서는 속성으로 유지되지 않는다. 그래서 버튼 + `hidden` 목록 + 피드 섬의 위임 리스너 하나(혼합안 스크립트와 같은 방식)를 쓴다. 버튼은 네이티브라 Enter·Space가 그대로 동작한다. 모션 없음(시안도 없음).
+- **상대 시간 섬**: 피드 섬이 `time[data-rel] [data-rel-out]`에 `relativeKst`(src/lib/time.ts) 결과를 채우고 1분마다 다시 계산한다. 원문 시각이 기기 시계보다 미래면(기기 시계가 늦거나 피드 시각 오차) "방금" — `relativeKst`는 1분 넘는 미래를 긴 날짜 표기로 돌려 칸을 넘치고 절대 시각과 겹친다(`cardRelativeTime`, 공용 time.ts 동작은 그대로, 커밋 전 리뷰). 섬은 `rootId`로 받은 목록 안만 맡는다(한 페이지에 피드가 둘이어도 섞이지 않음). 섬 크기: 홈·뉴스 초기 JS 138.0 → **139.7KB**(gzip, +1.7KB — 시간 유틸 포함). 상대 시간 칸은 보이지 않는 가상 요소 "00시간 전"을 같은 격자 칸에 깔아 처음부터 높이·폭을 잡는다 — 잡지 않았을 때 공유 앵커(`#카드ID`)로 연 375 화면 CLS가 0.16(시각이 다음 줄로 넘어가며 아래 카드가 밀림), 1024·1280도 0.03(카드마다 1px)였다 → 0. 가상 요소라 DOM 글자·접근 이름·검색 색인에 들어가지 않는다. 7일이 넘은 날짜 표기만 칸보다 넓다(M1-34 아카이브에서 결정).
+- **터치 타깃(44px)**: 한글 제목 링크 패딩 13px(10px면 40px — D0-12 이월). '+N곳'은 위 12 · 아래 13px 넓혀 44.6px(아래 1px 밑줄 때문에 테두리 상자 가운데 기준). 혼합안 간격(제목 → 메타 9px · 메타 → 연결 줄 2px)에서는 '+N곳' 영역이 제목 마지막 줄의 빈 아래 패딩·연결 줄의 빈 윗부분과 겹친다 — 보이는 글자끼리는 겹치지 않으므로 작은 버튼이 이기게(`after:z-1`) 했다. 견본 e2e의 44px 검사(`touchTargetFailures`)는 여러 줄 인라인 링크 조각의 가운데 세로줄이 놓친 점이 **모두 허용 요소(기본 '+N곳' 버튼 `[data-src-toggle]`)에 가려졌을 때만** 양 끝 세로줄을 더 보고 그중 하나가 위아래 모두 맞아야 통과로 본다 — 다른 요소에 가려지면 실패(커밋 전 리뷰로 좁힘, 오케스트레이터 결정: 우선순위 규칙 유지). 펼친 출처 행은 45px(`min-h-11.25` — 맞붙은 44px 행은 소수점 위치에서 경계 0.5px가 옆 행으로 넘어갔다).
+- **이적 단계 펀치 구멍**: 원은 `border-radius`가 아니라 인라인 SVG `<circle>`(지름 13 · 테두리 1.5 · 간격 3, `fill-*`·`stroke-*` 토큰 색)로 그린다 — §9.1 `rounded-*` 금지 검사 그대로. 결렬 사선은 `::after`(2px, −8°). 단계 글자는 접근 이름("이적 단계: 공식 (4단계 중 4)")과 겹쳐 읽히지 않게 `aria-hidden`.
+- **출처 스택 '+N곳'·'+N건'**(사용자 결정 2026-10-19): 다른 매체가 있으면 '+N곳', 추가 출처가 모두 같은 매체면 '+N건' — 10-18 호의 다출처 4장(BBC Sport×2·베스트일레븐×2·Di Marzio×2)은 모두 '+1건'이 되어 추가 기사가 화면에 닿는다. 섞인 경우(10-17 `c_6daac59335` 인터풋볼·베스트일레븐·인터풋볼)는 '+1곳'에 행 3개.
+- **화면 모델 순수성**: `src/lib/news/`는 fs·zod·로더를 런타임 import하지 않는다 — 태그 표의 순수 부분은 `tag-labels.ts`로 옮기고 `src/lib/data/names.ts`는 파일 로더만(예전 이름은 다시 내보냄). M1-33 필터 섬이 화면 모델 함수를 써도 번들에 fs·zod가 들어가지 않는다(단위 테스트가 import를 검사, 커밋 전 리뷰).
+- **태그·출처명**: 사전에 없는 slug는 그리지 않는다(slug 노출 금지) — fixtures의 `marcos-rojo`·`cristiano-ronaldo`는 지금 사전에 없어 태그가 빠진다(/add-name). 혼합안의 짧은 표기('맨유'·'솔란케')와 달리 사전의 정식 표기('맨체스터 유나이티드'·'도미닉 솔란케', D39)라 태그 줄이 375에서 한 줄 더 내려가는 카드가 있다. 출처명 `lang`은 한글이면 ko, 라틴이면 카드 언어.
+- **연결 줄**: 짝은 `linkPairs`(D30 엄격 규칙), 양쪽 카드에 단다. 실제 데이터 10-17·10-18 호는 **0쌍**(근접 사례: 10-17 첼시 제임스 무릎 부상 해외·국내 카드 — 팀 1개만 같고 선수가 사전에 없어 짝 없음). fixtures는 혼합안의 4쌍(06↔14 · 07↔09 · 12↔25 · 19↔26)이 그대로 나온다.
+- **의도한 차이**(시안 `?stage=m1` 견본과 같은 fixtures로 375·1024·1280 × 라이트·다크 요소 상자·글자 크기·행간·자간·색 실측 비교): ① 메타 줄이 5~8px 낮다 — 시안 메타 줄의 카드 메뉴 버튼(44px, margin −8/−10)이 M1-35라 아직 없다. 375에서 시안은 메뉴 때문에 시각이 둘째 줄로 내려가지만 지금은 한 줄에 든다 ② 한글 제목 링크 상자가 6px 높다(13px 패딩 — 글자 위치는 같다) ③ 태그 표기(사전) ④ 상대 시간이 칸 오른쪽에 붙어, "11시간 전"보다 짧은 글자는 출처와의 간격이 그만큼 넓다 ⑤ 피드 머리 "{n}건 · 중요도 순"(시안 그대로 — 필터 설명은 M1-33). 결과 가림 띠(변형 ⑤)는 M4-E — 제목 바로 아래 자리만 있다.
+- **검사**: (리뷰 반영 후) 단위 `tests/link-pairs.test.ts`(경계 35h59m·36h·36h01m, 팀 1개, 상대 2장, 다른 분류, fixtures 4쌍)·`feed-view.test.ts`·`news-feed.test.tsx`(변형 렌더·섬)·`card-labels.test.ts`, 견본 e2e `tests/e2e-specimen/news-cards.spec.ts`(375·1023·1024·1279·1280 넘침 0 · 머리기사 폭별 크기 · 연결 줄 앵커 이동·`:target` · '+N곳' 키보드 · 44px · 공유 앵커 CLS · axe 펼침 상태 라이트·다크), 일반 e2e `tests/e2e/news-cards.spec.ts`(실제 호 불변식).
+
 ---
 
 ## 12. 변경 이력
@@ -930,3 +950,5 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 2026-10-12 | D0-12 기초 컴포넌트: §6.1 `--animate-stamp`·`tear`·`eject`·`arrive` 토큰 4개, §8 초기 스크립트에 theme-color 보정(저장 테마 메타만 `all`)·토글 표, §9.1 아이콘 라이브러리 없음(인라인 SVG), §9.4 구현(파일·API·`cx`/`cn` 분리·섬 크기·의도한 차이), §0.1 구현 견본 스크린샷, §11.4 완료·남은 일. 다른 토큰 값 변경 없음 | PRD DR-02·DR-08·DR-12, D0-12 |
 | 2026-10-12 | D0-12 커밋 전 리뷰 반영: §8 theme-color 메타를 Next `viewport.themeColor` 대신 루트 레이아웃 `<head>`에서 직접 렌더(클라이언트 이동에도 보정 유지), §9.4 필터 해제 버튼 파일 분리(`cx`)·cx 겹침 검사(버튼 `no-underline`을 변형으로)·Tabs Tab 순서 보정(선택 탭 없음·비활성)·Toast 포커스 복귀·견본 1024 검사·공개 CSS의 견본 전용 유틸리티 감수, §11.4. 토큰 값 변경 없음 | PRD DR-02·DR-12, D0-12 |
 | 2026-10-18 | M1-30 앱 셸: §9.3 호수 창간일 2026-10-12(사용자 결정), §9.4 셸 파일·API 5행, §11.4 남은 것 ① 완료, §11.5 구현 메모(셸 배치·데이터 로더·제목 단계·티켓 격자 줄 번호·천공 유틸리티 `perf-x`·`perf-y`·`notch-hole`·`--perf-inset`·열 슬롯·세로 배치·시각 출처·뒤표지 문구·의도한 차이), §10 건너뛰기 링크 7px 지면 테두리(커밋 전 리뷰 — 티켓 위 링 대비 2.32·2.87 → 6.04·7.11), §9.3 워드마크 h1은 홈만, §9.4 `CardTitle as`·`KstTime`·호 로더 행, 섬 크기 문장(138.0KB)·§11.4 ⑧(specimen 배포 조건). 토큰 값 변경 없음 | PRD DR-01·FR-142·FR-45, D29·D31, M1-30 |
+| 2026-10-18 | M1-31 뉴스 카드 변형 6종: §9.2 Card 본문 순서를 혼합안대로 바로잡음(이적 단계 줄은 태그 줄 다음·제목 위 — 옛 서술 '출처 목록 → 이적 단계 줄'은 시안과 달랐다), 제목 링크 패딩 한글 13px, §9.3 연결 줄 양쪽(국내 카드 '해외 보도 ↑')·'+N곳' = 서로 다른 출처명 − 1·출처 행 45px·상대 시간 칸 미리 잡기, §9.4 피드·카드·섬·화면 모델·로더 행과 `IndexTab lead`, §11.6 구현 메모(머리기사 제자리 배치·`<details>` 기각·CLS 실측·44px 겹침 우선순위·의도한 차이), §11.1 #10·§11.4 ② 완료. 토큰 값 변경 없음 | PRD FR-30, D23·D30, M1-31 |
+| 2026-10-19 | M1-31 리뷰·사용자 결정 반영: §9.3 출처 스택 '+N건'(추가 출처가 모두 같은 매체 — 사용자 결정 2026-10-19)·행 `min-h-11.25`, §9.4 피드 섬 `cardRelativeTime`(미래 시각 "방금")·화면 모델 `tag-labels.ts`(fs 없는 순수 모듈)·`IndexTab data-slot`, §11.6 44px 검사 허용 범위를 '+N곳' 버튼 가림으로 좁힘·'+N건'·순수성. 토큰 값 변경 없음 | PRD FR-30, M1-31 리뷰 |

@@ -87,13 +87,15 @@ describe("HomePage", () => {
       expect(title).toHaveAttribute("lang", card.lang);
       expect(title).toHaveTextContent(card.t);
 
-      const link = within(article).getByRole("link");
+      // 제목 링크(카드에는 '+N곳' 목록·연결 줄 링크도 있다 — M1-31)
+      const link = within(title).getByRole("link");
       expect(link).toHaveAttribute("href", source.u);
       expect(link).toHaveAttribute("target", "_blank");
       expect(link.getAttribute("rel")).toContain("noopener");
       expect(link).toHaveTextContent(`(원문 ${source.n}, 새 창)`);
 
-      expect(within(article).getByText(source.n)).toBeInTheDocument();
+      // 메타 줄의 대표 출처명 — 같은 이름이 펼친 출처 목록(닫힘)에도 있을 수 있다
+      expect(within(article).getAllByText(source.n)[0]).toBeVisible();
       const time = article.querySelector(`time[datetime="${source.at}"]`);
       expect(time).not.toBeNull();
     });
