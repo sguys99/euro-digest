@@ -99,6 +99,9 @@ npm run collect                      # 수집→정제·분류→데이터 브�
 npm run collect -- --limit 5 --dry   # 소량 실행, data/ 산출물 대신 출력만 (--mock: LLM 없이 fixtures 응답)
 npm run weekly                       # 팀 프로필·주간 리포트·운영 리포트
 npm run eval:prompt                  # 골든셋 회귀 평가 — 프롬프트 수정 전후 출력 diff (실제 LLM 호출, 소량)
+npm run observe -- [--date D]        # M1-41·42 발행 관찰(Actions 공개 시각·계절 가드·runs 비용·브리핑·경기 상태) → docs/research/m1-observation.md (--week: 주간 요약)
+npm run probe:gdelt                  # M1-46 GDELT 재측정 — 하루 1회·요청 ≤ 3건, 같은 문서 GDELT 표·7일 판정
+npm run quality:sample -- --from D1 --to D2   # M1-43 브리핑 20줄·카드 20건 검수표 → docs/research/m1-quality-review.md
 npm run validate                     # configs·data 스키마 + 발행 검증 게이트
 npm run check                        # typecheck + lint + test (커밋 전 필수)
 npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린샷 / 번들 크기 예산 + 비밀값 grep

@@ -42,6 +42,7 @@ import {
   kstParts,
   kstWindowRangeUtc,
   nowUtcIso,
+  parseBasicUtc,
   parseUtcIso,
   relativeKst,
   shiftDate,
@@ -151,6 +152,36 @@ describe("parseUtcIso / isUtcIso — Z로 끝나는 UTC ISO만", () => {
     ];
     for (const s of samples) {
       expect([s, isUtcIso(s)]).toEqual([s, IsoSchema.safeParse(s).success]);
+    }
+  });
+});
+
+describe("parseBasicUtc — ISO 8601 기본 형식 UTC(GDELT seendate, M1-46)", () => {
+  it("YYYYMMDDTHHMMSSZ → 저장 형식 UTC ISO(IsoSchema 통과)", () => {
+    expect(parseBasicUtc("20261010T064500Z")).toBe("2026-10-10T06:45:00.000Z");
+    // 서머타임 전환 순간(01:00Z)도 시간대 변환 없이 그대로
+    expect(parseBasicUtc("20261025T010000Z")).toBe("2026-10-25T01:00:00.000Z");
+    expect(parseBasicUtc(" 20261231T235959Z ")).toBe(
+      "2026-12-31T23:59:59.000Z",
+    );
+    expect(IsoSchema.safeParse(parseBasicUtc("20261010T064500Z")).success).toBe(
+      true,
+    );
+  });
+
+  it("형식·달력·시각이 맞지 않으면 null(던지지 않는다)", () => {
+    for (const raw of [
+      "2026-10-10T06:45:00Z", // 확장 형식
+      "20261010T064500", // Z 없음(현지 시각)
+      "20261010T064500+0900", // 오프셋
+      "20260230T000000Z", // 2월 30일
+      "20261010T246000Z", // 24시
+      "20261010T065960Z", // 60초
+      "",
+      null,
+      undefined,
+    ]) {
+      expect([raw, parseBasicUtc(raw)]).toEqual([raw, null]);
     }
   });
 });

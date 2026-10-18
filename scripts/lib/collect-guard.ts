@@ -179,8 +179,8 @@ export function parseFlag(value: string | undefined): boolean {
   return value?.trim().toLowerCase() === "true";
 }
 
-/** `owner/repo` 형식만 허용 */
-const REPOSITORY_PATTERN = /^[\w.-]+\/[\w.-]+$/;
+/** `owner/repo` 형식만 허용 — observe의 --repo 검사도 이것을 쓴다 */
+export const REPOSITORY_PATTERN = /^[\w.-]+\/[\w.-]+$/;
 
 /** cron 문자열 비교용 — 앞뒤 공백 제거, 필드 사이 공백 1칸 */
 export function normalizeCron(raw: string): string {

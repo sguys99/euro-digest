@@ -334,6 +334,28 @@ export function parseUtcIso(s: string): Date {
   return new Date(parseUtcIsoMs(s));
 }
 
+/** ISO 8601 기본 형식 UTC(`YYYYMMDDTHHMMSSZ`) — GDELT `seendate` 등 */
+const BASIC_UTC_RE = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/;
+
+/**
+ * ISO 8601 **기본 형식** UTC 시각 `YYYYMMDDTHHMMSSZ` → 저장 형식 UTC ISO(`toISOString()`). 외부 API 경계용(GDELT DOC API
+ * `seendate` — M0-27, scripts/lib/gdelt-probe.ts). `Z`가 없거나(오프셋·현지 시각) 형식·달력이 맞지 않으면 null(던지지 않는다 —
+ * 한 건의 이상한 값이 측정 전체를 멈추지 않게).
+ * 예) "20261010T064500Z" → "2026-10-10T06:45:00.000Z", "20260230T000000Z" → null, "2026-10-10T06:45:00Z" → null
+ */
+export function parseBasicUtc(raw: string | null | undefined): string | null {
+  const m = typeof raw === "string" ? BASIC_UTC_RE.exec(raw.trim()) : null;
+  if (!m) return null;
+  const y = group(m, 1);
+  const month = group(m, 2);
+  const day = group(m, 3);
+  const h = group(m, 4);
+  const mi = group(m, 5);
+  const s = group(m, 6);
+  if (!isValidYmd(y, month, day) || !isValidHms(h, mi, s)) return null;
+  return toIso(fieldsToMs(y, month, day, h, mi, s));
+}
+
 /** `parseUtcIso`가 받는 값인지(던지지 않는 판별). */
 export function isUtcIso(s: unknown): s is string {
   try {
