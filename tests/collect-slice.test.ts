@@ -1274,6 +1274,14 @@ describe("runCollect — 전날 경기 결과 → 브리핑 단건(FR-29 판정)
       "레버쿠젠이 분데스리가 원정에서 마인츠를 4-3으로 꺾었다.",
       "도르트문트가 승점 13으로 분데스리가 선두, 바이에른 뮌헨이 승점 11로 2위다.",
     ]);
+    // 템플릿 줄도 게시할 때 refs로 대회를 채운다(D58 — 경기 m… → 입력 경기 대회, 순위 s… → 약칭표)
+    expect(briefFile.lines.map((l) => l.comps)).toEqual([
+      ["BUNDESLIGA"],
+      ["LALIGA"],
+      ["EPL"],
+      ["BUNDESLIGA"],
+      ["BUNDESLIGA"],
+    ]);
     // dev 실행은 미등록 이름을 로그만 남긴다(unknown-names.json 없음 — M1-21)
     expect(readdirSync(path.join(dataDir, "cache"))).toEqual([
       "seen-urls.json",
@@ -2110,11 +2118,13 @@ describe("runCollect — 브리핑 게시(M1-45 — FR-29 재시도·줄 강등�
     expect(requests.map((r) => r.customId)).toEqual(["brief-2026-10-11"]);
     const file = readBrief("2026-10-11");
     expect(file.mode).toBe("llm");
+    // 줄 대회(D58)는 게시할 때 refs로 코드가 채운다(brief-comps.ts — mock 응답에는 comps가 없다)
     expect(file.lines).toEqual(
       SLICE_LLM_TEXTS.map((text, i) => ({
         text,
         ai: true,
         refs: [["m565819", "m564699", "m560600", "m565812", "m560595"][i]!],
+        comps: [["BUNDESLIGA", "LALIGA", "EPL", "BUNDESLIGA", "EPL"][i]!],
       })),
     );
     expect(outcome.briefFile).toMatchObject({
@@ -2169,23 +2179,32 @@ describe("runCollect — 브리핑 게시(M1-45 — FR-29 재시도·줄 강등�
         text: "아우크스부르크와 바이에른 뮌헨이 2-2로 비겼다.",
         ai: true,
         refs: ["m565819"],
+        comps: ["BUNDESLIGA"],
       },
       {
         text: "아틀레티코 마드리드가 알라베스 원정에서 2-1로 이겼다.",
         ai: true,
         refs: ["m564699"],
+        comps: ["LALIGA"],
       },
-      // 'Leverkusen이 Mainz를 4-2로 꺾었다'(입력 4-3) → 같은 근거 m565812의 템플릿 줄
+      // 'Leverkusen이 Mainz를 4-2로 꺾었다'(입력 4-3) → 같은 근거 m565812의 템플릿 줄 — 강등 줄도 같은 규칙으로 대회(D58)
       {
         text: "레버쿠젠이 분데스리가 원정에서 마인츠를 4-3으로 꺾었다.",
         ai: false,
         refs: ["m565812"],
+        comps: ["BUNDESLIGA"],
       },
-      { text: "첼시가 본머스를 5-1로 완파했다.", ai: true, refs: ["m560595"] },
+      {
+        text: "첼시가 본머스를 5-1로 완파했다.",
+        ai: true,
+        refs: ["m560595"],
+        comps: ["EPL"],
+      },
       {
         text: "도르트문트가 승점 13으로 분데스리가 선두다.",
         ai: true,
         refs: ["sBL"],
+        comps: ["BUNDESLIGA"],
       },
     ]);
     expect(BriefFileSchema.parse(file)).toEqual(file);

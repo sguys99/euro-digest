@@ -10,6 +10,9 @@
       "refs": [
         "m564699",
         "k927"
+      ],
+      "comps": [
+        "LALIGA"
       ]
     },
     {
@@ -18,6 +21,9 @@
       "refs": [
         "m565812",
         "k2906"
+      ],
+      "comps": [
+        "BUNDESLIGA"
       ]
     },
     {
@@ -26,6 +32,9 @@
       "refs": [
         "m565817",
         "k512"
+      ],
+      "comps": [
+        "BUNDESLIGA"
       ]
     },
     {
@@ -34,6 +43,9 @@
       "refs": [
         "m565819",
         "k197985"
+      ],
+      "comps": [
+        "BUNDESLIGA"
       ]
     },
     {
@@ -41,6 +53,9 @@
       "ai": false,
       "refs": [
         "m565815"
+      ],
+      "comps": [
+        "BUNDESLIGA"
       ]
     }
   ]

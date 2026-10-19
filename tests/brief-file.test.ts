@@ -336,6 +336,54 @@ describe("decideBriefWrite — 같은 날 재실행", () => {
 });
 
 describe("buildBriefFile · 읽기 · 쓰기", () => {
+  it("줄 대회 comps(D58)는 있으면 그대로 옮기고(키 순서 text·ai·refs·comps) 없으면 키를 만들지 않는다", () => {
+    const withComps = file({
+      lines: [{ ...LINES[0]!, comps: ["EPL"] }, LINES[1]!],
+    });
+    expect(Object.keys(withComps.lines[0]!)).toEqual([
+      "text",
+      "ai",
+      "refs",
+      "comps",
+    ]);
+    expect(withComps.lines[0]!.comps).toEqual(["EPL"]);
+    expect(withComps.lines[1]).not.toHaveProperty("comps");
+    expect(Object.keys(file().lines[0]!)).toEqual(["text", "ai", "refs"]);
+    // 스키마에 걸리는 comps(빈 배열·중복·모르는 대회)는 파일을 만들지 않는다 — 호출부(withBriefComps)는 빈 배열을 넣지 않는다
+    for (const comps of [[], ["EPL", "EPL"], ["OTHER"]]) {
+      expect(
+        () =>
+          file({
+            lines: [{ ...LINES[0]!, comps } as BriefLine],
+          }),
+        JSON.stringify(comps),
+      ).toThrow(BriefFileError);
+    }
+  });
+
+  it("D58 전환 — comps 없는 기존 파일은 같은 줄 + comps 결과로 덮지 않는다(llm·mixed 유지, 줄 있는 template은 줄 수가 같으면 유지)", () => {
+    const tagged = (lines: readonly BriefLine[]): BriefLine[] =>
+      lines.map((l) => ({ ...l, comps: ["EPL"] }));
+    const oldTemplate = file();
+    expect(
+      decideBriefWrite(oldTemplate, file({ lines: tagged(LINES) })),
+    ).toEqual({ action: "keep", reason: "kept-template" });
+    const llmLines = LINES.map((l) => ({ ...l, ai: true }));
+    expect(
+      decideBriefWrite(
+        file({ mode: "llm", lines: llmLines }),
+        file({ mode: "llm", lines: tagged(llmLines) }),
+      ),
+    ).toEqual({ action: "keep", reason: "kept-llm" });
+    // 같은 실행 규칙으로 다시 계산한 같은 comps면 내용이 같다(다시 쓰지 않음)
+    const next = file({ mode: "empty", lines: [] });
+    expect(decideBriefWrite(next, next)).toEqual({ action: "unchanged" });
+    const t = file({ lines: tagged(LINES) });
+    expect(decideBriefWrite(t, file({ lines: tagged(LINES) }))).toEqual({
+      action: "unchanged",
+    });
+  });
+
   it("검증을 통과한 파일만 만든다 — mode와 줄이 맞지 않으면 BriefFileError", () => {
     expect(BriefFileSchema.parse(file())).toEqual(file());
     expect(() => file({ mode: "llm" })).toThrow(BriefFileError);

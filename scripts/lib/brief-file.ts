@@ -99,7 +99,10 @@ export class BriefFileError extends Error {
   override name = "BriefFileError";
 }
 
-/** 브리핑 파일 만들기 — 스키마 검증(키 순서 고정). 통과하지 못하면 BriefFileError */
+/**
+ * 브리핑 파일 만들기 — 스키마 검증(키 순서 고정 — 줄은 text·ai·refs·comps). 통과하지 못하면 BriefFileError.
+ * 줄의 `comps`(D58)는 호출부가 채운 것을 그대로 옮긴다(brief-comps.ts `withBriefComps` — 없으면 키 없음).
+ */
 export function buildBriefFile(input: {
   date: string;
   generatedAt: string;
@@ -116,6 +119,7 @@ export function buildBriefFile(input: {
       text: l.text,
       ai: l.ai,
       refs: [...l.refs],
+      ...(l.comps ? { comps: [...l.comps] } : {}),
     })),
   });
   if (!parsed.success) {

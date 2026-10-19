@@ -1,5 +1,5 @@
 {
-  "_note": "M1-19 확정 형식(PRD §15 D38 — src/lib/schema/brief.ts BriefFileSchema). 데이터 브리핑(\"오늘의 5줄\") 샘플(D0 시안 입력, M0-34). 날짜별 { date, generatedAt, runId, mode, lines: [{ text, ai, refs }] }는 data/briefs/YYYY-MM-DD.json 한 파일씩을 한데 모은 것이다(각 날이 BriefFileSchema 통과 — 보조 필드는 스키마가 버린다). mode = llm(모든 줄 LLM)·mixed(일부 줄 템플릿 강등)·template(LLM 없음)·empty(전날 경기 없음). 보조 필드(표시·검토용, 실제 data/briefs에는 없음): textRaw = 치환 전 LLM 출력(LLM 줄만 — 템플릿 줄은 이름을 바꾼 채로 바로 만들어 원문 단계가 없다), lenKo = 치환 뒤 글자 수, _note·_downgrade = 설명. refs = 근거 id(m<football-data 경기 id — 예외: 2026-09-19의 m1575167은 API-Football 경기 id> · s<대회> 순위표 · k<API-Football 선수 id>). ai:true = LLM 작성(\"AI 작성\" 라벨), ai:false = 코드 템플릿(라벨 없음 — scripts/lib/brief-template.ts 생성기 출력, M1-21 문형). 고유명사 치환(M1-21 — scripts/lib/names.ts substituteNames, 2026-10-17 D46 사전으로 다시 만듦 — LLM 원문의 득점자 첫 글자 축약 표기(M. Olise)는 파이프라인 입력 정리(canonicalizeBriefInput — 소속팀 확인)와 같은 대표 표기로 읽음): configs/names.ko.json(대회는 그 브리핑의 nameKo·shortKo 표기) → 사전에 없는 이름만 fixtures/llm/brief-inputs/names-ko.tmp.json(M0-30·M0-34 임시 사전, 확정 아님 — 표시용) 순서 + 받침 기준 조사 보정(scripts/lib/josa.ts). 템플릿 줄은 같은 날 fixtures/llm/brief-inputs 입력으로 생성기를 다시 돌린 결과(이름은 같은 사전 순서).",
+  "_note": "M1-19 확정 형식(PRD §15 D38 — src/lib/schema/brief.ts BriefFileSchema). 데이터 브리핑(\"오늘의 5줄\") 샘플(D0 시안 입력, M0-34). 날짜별 { date, generatedAt, runId, mode, lines: [{ text, ai, refs, comps? }] }는 data/briefs/YYYY-MM-DD.json 한 파일씩을 한데 모은 것이다(각 날이 BriefFileSchema 통과 — 보조 필드는 스키마가 버린다). mode = llm(모든 줄 LLM)·mixed(일부 줄 템플릿 강등)·template(LLM 없음)·empty(전날 경기 없음). 보조 필드(표시·검토용, 실제 data/briefs에는 없음): textRaw = 치환 전 LLM 출력(LLM 줄만 — 템플릿 줄은 이름을 바꾼 채로 바로 만들어 원문 단계가 없다), lenKo = 치환 뒤 글자 수, _note·_downgrade = 설명. refs = 근거 id(m<football-data 경기 id — 예외: 2026-09-19의 m1575167은 API-Football 경기 id> · s<대회> 순위표 · k<API-Football 선수 id>). comps = 줄 대회(선택 — PRD §15 D58, 홈 5줄 대회 인덱스 탭용 — 파이프라인이 게시할 때 refs로 코드가 계산한다(scripts/lib/brief-comps.ts — LLM은 쓰지 않는다). 이 샘플의 comps는 같은 날 fixtures/llm/brief-inputs 입력으로 계산한 값이다). ai:true = LLM 작성(\"AI 작성\" 라벨), ai:false = 코드 템플릿(라벨 없음 — scripts/lib/brief-template.ts 생성기 출력, M1-21 문형). 고유명사 치환(M1-21 — scripts/lib/names.ts substituteNames, 2026-10-17 D46 사전으로 다시 만듦 — LLM 원문의 득점자 첫 글자 축약 표기(M. Olise)는 파이프라인 입력 정리(canonicalizeBriefInput — 소속팀 확인)와 같은 대표 표기로 읽음): configs/names.ko.json(대회는 그 브리핑의 nameKo·shortKo 표기) → 사전에 없는 이름만 fixtures/llm/brief-inputs/names-ko.tmp.json(M0-30·M0-34 임시 사전, 확정 아님 — 표시용) 순서 + 받침 기준 조사 보정(scripts/lib/josa.ts). 템플릿 줄은 같은 날 fixtures/llm/brief-inputs 입력으로 생성기를 다시 돌린 결과(이름은 같은 사전 순서).",
   "templateFormats": {
     "match": "주어 팀 점수 먼저(D30 갱신·D45-4 — LLM 줄과 같은 자연 뉴스 문장). 승리: {승자}가 [{대회} 홈경기에서|{대회} 원정에서|원정에서] {패자}를 w-l로 꺾었다 · 3골 차 이상 …를 w-l로 완파했다 · 뒤진 적이 확인되면 …에 w-l 역전승을 거뒀다 · 득점 목록이 완전하면 {선수}의 {분}분 [PK ]결승골로 …(2골 차 이내) / {선수}의 해트트릭을(n골을) 앞세워 … · 무승부: {홈}과 {원정}이 [{대회}에서] h-a로 비겼다 · 동점골이 확인되면 {동점 팀}이 [장소] {선수}의 {분}분 동점골로 {상대}와 h-h로 비겼다 · 연장: {승자}가 [장소] 연장 끝에 {패자}를 w-l로 꺾었다(90분 점수가 있고 이긴 팀이 90분에 앞서지 않았을 때만) / 90분에 이미 앞섰거나 90분 점수가 없으면(두 경기 합산 동점 뒤 연장일 수 있다 — 합산은 입력에 없다) 이긴 것처럼 쓰지 않고 {홈}과 {원정}의 [{대회} ]경기는 연장까지 h-a로 끝났다 · 승부차기(승자는 늘 승부차기 결과): 경기 점수가 동점이면 {승자}가 [장소] {패자}와 [연장까지 ]h-h로 맞선 뒤 승부차기에서 w-l로 이겼다('비겼다'로 쓰지 않음) / 동점이 아니면(두 경기 합산 동점 뒤 — 합산은 입력에 없다) {홈}과 {원정}의 [{대회} ]경기는 [연장까지 ]h-a로 끝났고 승부차기에서 {승자}가 w-l로 이겼다 / 승부차기 점수가 동점이면 줄 없음 · 중립 경기장 결승: 장소 대신 [{대회} ]결승에서",
     "standing": "{1위}가 승점 n으로 {대회} 선두, {2위}가 승점 m으로 2위[, {3위}가 승점 k로 3위]다. — 같은 순위(승점도 같을 때)는 {A}와 {B}가 승점 n으로 공동 선두 · A·B·C가 … 공동 n위, 전일 순위가 없어 변동 서술 없음(D40-3)",
@@ -20,6 +20,9 @@
             "m564699",
             "k927"
           ],
+          "comps": [
+            "LALIGA"
+          ],
           "textRaw": "Atleti가 Alavés 원정에서 1-2로 이겼고 Kang-in Lee는 후반 57분 교체 투입돼 33분을 뛰었다.",
           "lenKo": 59
         },
@@ -29,6 +32,9 @@
           "refs": [
             "m565812",
             "k2906"
+          ],
+          "comps": [
+            "BUNDESLIGA"
           ],
           "textRaw": "Mainz가 Leverkusen에 3-4로 졌고 Jae-sung Lee는 후반 70분 교체 투입돼 20분을 뛰었다.",
           "lenKo": 47
@@ -40,6 +46,9 @@
             "m565817",
             "k512"
           ],
+          "comps": [
+            "BUNDESLIGA"
+          ],
           "textRaw": "Union Berlin이 Elversberg를 1-0으로 꺾었고 Woo-yeong Jeong은 선발로 나와 78분을 뛰고 교체 아웃됐다.",
           "lenKo": 56
         },
@@ -50,6 +59,9 @@
             "m565819",
             "k197985"
           ],
+          "comps": [
+            "BUNDESLIGA"
+          ],
           "textRaw": "Augsburg와 Bayern이 2-2로 비겼고 Young-woo Seol은 선발로 나와 62분을 뛰고 교체 아웃됐다.",
           "lenKo": 55
         },
@@ -58,6 +70,9 @@
           "ai": false,
           "refs": [
             "m565815"
+          ],
+          "comps": [
+            "BUNDESLIGA"
           ],
           "lenKo": 59,
           "_downgrade": "LLM 줄 \"RB Leipzig이 Frankfurt를 6-0으로 완파했고 Christopher Nkunku는 2골을 넣었다.\" — 근거에 없는 숫자 2"
@@ -77,6 +92,9 @@
           "refs": [
             "m565820"
           ],
+          "comps": [
+            "BUNDESLIGA"
+          ],
           "textRaw": "Dortmund가 Bremen과 2-2로 비겼다. Bremen은 Ludovit Reis(88분)와 Niclas Füllkrug(90+2분)의 골로 막판에 동점을 만들었다.",
           "lenKo": 66
         },
@@ -85,6 +103,9 @@
           "ai": true,
           "refs": [
             "sBL"
+          ],
+          "comps": [
+            "BUNDESLIGA"
           ],
           "textRaw": "Dortmund는 승점 13으로 Bundesliga 1위에 올라 있다.",
           "lenKo": 31
@@ -95,6 +116,9 @@
           "refs": [
             "m559669"
           ],
+          "comps": [
+            "LIGUE1"
+          ],
           "textRaw": "RC Lens가 홈에서 Olympique Lyon을 2-1로 꺾었다.",
           "lenKo": 21
         },
@@ -104,6 +128,9 @@
           "refs": [
             "m564706"
           ],
+          "comps": [
+            "LALIGA"
+          ],
           "textRaw": "Málaga와 Espanyol은 1-1로 비겼다.",
           "lenKo": 20
         },
@@ -112,6 +139,9 @@
           "ai": true,
           "refs": [
             "sL1"
+          ],
+          "comps": [
+            "LIGUE1"
           ],
           "textRaw": "Monaco는 승점 13으로 Ligue 1 1위다.",
           "lenKo": 22
@@ -131,6 +161,9 @@
           "refs": [
             "m560590"
           ],
+          "comps": [
+            "EPL"
+          ],
           "textRaw": "Man City가 Sunderland를 5-3으로 꺾었다.",
           "lenKo": 25
         },
@@ -139,6 +172,9 @@
           "ai": true,
           "refs": [
             "m560582"
+          ],
+          "comps": [
+            "EPL"
           ],
           "textRaw": "Liverpool이 Bournemouth 원정에서 0-1로 이겼다.",
           "lenKo": 23
@@ -149,6 +185,9 @@
           "refs": [
             "sPL"
           ],
+          "comps": [
+            "EPL"
+          ],
           "textRaw": "Liverpool은 10위에서 6위로 올랐고 Man City는 선두를 지켰다.",
           "lenKo": 36
         },
@@ -158,6 +197,9 @@
           "refs": [
             "m560583"
           ],
+          "comps": [
+            "EPL"
+          ],
           "textRaw": "Fulham과 Man United는 1-1로 비겼다.",
           "lenKo": 25
         },
@@ -166,6 +208,9 @@
           "ai": true,
           "refs": [
             "m560585"
+          ],
+          "comps": [
+            "EPL"
           ],
           "textRaw": "Leeds United와 Crystal Palace는 0-0으로 비겼다.",
           "lenKo": 30
@@ -186,6 +231,9 @@
             "k2897",
             "m1575167"
           ],
+          "comps": [
+            "BUNDESLIGA"
+          ],
           "textRaw": "Kim Min-jae는 Bayern의 Union Berlin전에서 후반 46분 교체 투입돼 45분을 뛰었다.",
           "lenKo": 48
         },
@@ -196,6 +244,9 @@
             "k512",
             "m1575167"
           ],
+          "comps": [
+            "BUNDESLIGA"
+          ],
           "textRaw": "Jeong Woo-yeong은 Union Berlin 선발로 출전해 60분을 뛰고 교체 아웃됐으며 득점은 없었다.",
           "lenKo": 46
         },
@@ -204,6 +255,9 @@
           "ai": true,
           "refs": [
             "m1575167"
+          ],
+          "comps": [
+            "BUNDESLIGA"
           ],
           "textRaw": "Bayern이 홈에서 Union Berlin을 7-0으로 꺾었고 M. Olise가 3골을 넣었다.",
           "lenKo": 49
@@ -214,6 +268,9 @@
           "refs": [
             "m560591"
           ],
+          "comps": [
+            "EPL"
+          ],
           "textRaw": "Brentford가 홈에서 Chelsea를 3-0으로 꺾었다.",
           "lenKo": 25
         },
@@ -222,6 +279,9 @@
           "ai": true,
           "refs": [
             "sPL"
+          ],
+          "comps": [
+            "EPL"
           ],
           "textRaw": "Brentford는 7위에서 3위로 올랐고 Chelsea는 6위에서 7위로 내려갔다.",
           "lenKo": 38
@@ -241,6 +301,9 @@
           "refs": [
             "m564686"
           ],
+          "comps": [
+            "LALIGA"
+          ],
           "lenKo": 33
         },
         {
@@ -248,6 +311,9 @@
           "ai": false,
           "refs": [
             "m564683"
+          ],
+          "comps": [
+            "LALIGA"
           ],
           "lenKo": 29
         }
@@ -266,6 +332,9 @@
           "refs": [
             "m575337"
           ],
+          "comps": [
+            "UCL"
+          ],
           "textRaw": "Bayern이 홈에서 Bodø/Glimt를 5-0으로 꺾었다.",
           "lenKo": 31
         },
@@ -274,6 +343,9 @@
           "ai": true,
           "refs": [
             "m575338"
+          ],
+          "comps": [
+            "UCL"
           ],
           "textRaw": "Man United가 Sabah FK를 4-0으로 이겼다.",
           "lenKo": 27
@@ -284,6 +356,9 @@
           "refs": [
             "m575339"
           ],
+          "comps": [
+            "UCL"
+          ],
           "textRaw": "Como 1907이 RB Leipzig을 4-1로 꺾었다.",
           "lenKo": 20
         },
@@ -293,6 +368,9 @@
           "refs": [
             "m575340"
           ],
+          "comps": [
+            "UCL"
+          ],
           "textRaw": "RC Lens가 Slavia Praha 원정에서 2-3으로 이겼다.",
           "lenKo": 28
         },
@@ -301,6 +379,9 @@
           "ai": true,
           "refs": [
             "sUCL"
+          ],
+          "comps": [
+            "UCL"
           ],
           "textRaw": "1라운드 후 PSG, Bayern, Barça, Man United, Como 1907이 승점 3으로 상위 5위에 올랐다.",
           "lenKo": 66

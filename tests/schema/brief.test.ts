@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  BRIEF_COMPS_MAX,
   BRIEF_LINE_MAX,
   BRIEF_MAX_LINES,
   BriefFileSchema,
@@ -17,6 +18,44 @@ describe("BriefFile — data/briefs/YYYY-MM-DD.json (PRD §15 D38)", () => {
   it("fixture(mixed — LLM 4줄 + 템플릿 강등 1줄)가 통과한다", () => {
     expect(file.mode).toBe("mixed");
     expect(file.lines).toHaveLength(5);
+    // 줄 대회(D58) — 게시할 때 refs로 코드가 계산한 값(같은 날 입력 기준 — tests/brief-comps.test.ts가 대조)
+    expect(file.lines.map((l) => l.comps)).toEqual([
+      ["LALIGA"],
+      ["BUNDESLIGA"],
+      ["BUNDESLIGA"],
+      ["BUNDESLIGA"],
+      ["BUNDESLIGA"],
+    ]);
+  });
+
+  it("comps가 없는 옛 파일(D58 전 — data/briefs/2026-10-17·18 형식)도 통과하고 키를 만들지 않는다", () => {
+    const old = {
+      ...file,
+      lines: file.lines.map(({ text, ai, refs }) => ({ text, ai, refs })),
+    };
+    const parsed = BriefFileSchema.parse(old);
+    expect(parsed.lines.every((l) => !("comps" in l))).toBe(true);
+    // 2026-10-17 prod 발행 파일과 같은 모양(llm·줄 5개·comps 없음)
+    expect(
+      passes(BriefFileSchema, {
+        date: "2026-10-17",
+        generatedAt: "2026-10-17T12:57:47.412Z",
+        runId: "collect-prod-20261017T125647Z-8161",
+        mode: "llm",
+        lines: [
+          {
+            text: "툴루즈가 르망을 3-0으로 완파했다.",
+            ai: true,
+            refs: ["m559661"],
+          },
+          {
+            text: "프로시노네는 승점 13으로 세리에 A 4위다.",
+            ai: true,
+            refs: ["sSA"],
+          },
+        ],
+      }),
+    ).toBe(true);
   });
 
   it("mode ↔ 줄 일관성 — empty는 0줄, llm은 모두 ai:true, template은 모두 ai:false, mixed는 둘 다", () => {
@@ -129,5 +168,35 @@ describe("BriefLine", () => {
         refs: ["m1", "m2", "m3", "m4", "m5", "m6", "m7"],
       }),
     ).toEqual(["refs"]);
+  });
+
+  it(`comps(D58)는 선택 — 대회 id 1~${BRIEF_COMPS_MAX}개, 중복 금지, 6개 대회 id만`, () => {
+    expect(passes(BriefLineSchema, { ...llmLine, comps: ["EPL"] })).toBe(true);
+    expect(
+      passes(BriefLineSchema, {
+        ...llmLine,
+        comps: ["EPL", "LALIGA", "SERIEA", "BUNDESLIGA", "LIGUE1", "UCL"],
+      }),
+    ).toBe(true);
+    const { text, ai, refs } = llmLine;
+    expect(BriefLineSchema.parse({ text, ai, refs })).not.toHaveProperty(
+      "comps",
+    );
+    // 빈 배열은 저장하지 않는다(대회를 모르면 키 없음)
+    expect(issuePaths(BriefLineSchema, { ...llmLine, comps: [] })).toEqual([
+      "comps",
+    ]);
+    expect(
+      issuePaths(BriefLineSchema, { ...llmLine, comps: ["EPL", "EPL"] }),
+    ).toEqual(["comps.1"]);
+    for (const comp of ["epl", "OTHER", "Premier League", "PL", ""]) {
+      expect(
+        issuePaths(BriefLineSchema, { ...llmLine, comps: [comp] }),
+        comp,
+      ).toEqual(["comps.0"]);
+    }
+    expect(issuePaths(BriefLineSchema, { ...llmLine, comps: "EPL" })).toEqual([
+      "comps",
+    ]);
   });
 });

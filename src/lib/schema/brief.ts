@@ -1,6 +1,10 @@
 /**
  * v0.1 — 2026-10-15 사용자 결정(PRD §15 D38, plan M1-19) — 일일 브리핑 "오늘의 5줄" 파일.
- *   `data/briefs/YYYY-MM-DD.json` (발행일 KST = 파일명) → `{ date, generatedAt, runId, mode, lines: [{ text, ai, refs }] }`
+ *   `data/briefs/YYYY-MM-DD.json` (발행일 KST = 파일명) → `{ date, generatedAt, runId, mode, lines: [{ text, ai, refs, comps? }] }`
+ *
+ * 2026-10-19 사용자 결정(PRD §15 D58): 줄에 선택 필드 `comps`(대회 id 배열)를 더했다 — 홈 '오늘의 5줄' 행 오른쪽 대회 인덱스 탭용.
+ * 화면은 경기 원장(data/matches)을 읽지 않으므로(D33) 브리핑 파일이 대회를 들고 있다. 파이프라인이 게시할 때 그 줄의 refs에서 코드로
+ * 계산한다(scripts/lib/brief-comps.ts — LLM은 comps를 쓰지 않는다, 호출·지시문 불변). 키가 없는 옛 파일(2026-10-17·18)도 유효하다.
  *
  * PRD §8.2 초안에 `mode` 하나만 더했다(D38):
  *   - `llm` — 모든 줄을 LLM이 썼다(검증 통과 — M1-45). 줄마다 `ai:true`("AI 작성" 라벨, FR-35)
@@ -16,7 +20,7 @@
  */
 import { z } from "zod";
 
-import { IsoDateSchema, IsoSchema } from "./common";
+import { CompIdSchema, IsoDateSchema, IsoSchema } from "./common";
 
 /** 하루 브리핑 줄 수 상한 — "오늘의 5줄"(FR-23) */
 export const BRIEF_MAX_LINES = 5;
@@ -24,6 +28,25 @@ export const BRIEF_MAX_LINES = 5;
 export const BRIEF_LINE_MAX = 80;
 /** 줄 하나의 근거 id 상한 — M0-30 출력 스키마 `r`와 같다 */
 export const BRIEF_REFS_MAX = 6;
+/** 줄 하나의 대회 상한(D58) — 근거 1개가 대회 1개 이하로 정해지므로 근거 상한과 같다 */
+export const BRIEF_COMPS_MAX = BRIEF_REFS_MAX;
+
+/** 배열 안 중복 값을 이슈로 남긴다(근거 id·대회 id 공용 superRefine) */
+function noDuplicates(label: string) {
+  return (values: readonly string[], ctx: z.RefinementCtx) => {
+    const seen = new Set<string>();
+    values.forEach((value, index) => {
+      if (seen.has(value)) {
+        ctx.addIssue({
+          code: "custom",
+          path: [index],
+          message: `${label} 중복: "${value}"`,
+        });
+      }
+      seen.add(value);
+    });
+  };
+}
 
 export const BriefModeSchema = z.enum(["llm", "mixed", "template", "empty"]);
 export type BriefMode = z.infer<typeof BriefModeSchema>;
@@ -51,19 +74,17 @@ export const BriefLineSchema = z.object({
     .array(BriefRefSchema)
     .min(1)
     .max(BRIEF_REFS_MAX)
-    .superRefine((refs, ctx) => {
-      const seen = new Set<string>();
-      refs.forEach((ref, index) => {
-        if (seen.has(ref)) {
-          ctx.addIssue({
-            code: "custom",
-            path: [index],
-            message: `근거 id 중복: "${ref}"`,
-          });
-        }
-        seen.add(ref);
-      });
-    }),
+    .superRefine(noDuplicates("근거 id")),
+  /**
+   * 이 줄이 다루는 대회(선택 — D58). refs에서 코드로 계산한다(scripts/lib/brief-comps.ts): 순서 = refs에서 처음 나온 순, 중복 없음.
+   * 대회를 하나도 알 수 없으면 키를 넣지 않는다(빈 배열은 저장하지 않는다 — min 1). 키가 없는 옛 파일도 유효하다.
+   */
+  comps: z
+    .array(CompIdSchema)
+    .min(1)
+    .max(BRIEF_COMPS_MAX)
+    .superRefine(noDuplicates("대회 id"))
+    .optional(),
 });
 export type BriefLine = z.infer<typeof BriefLineSchema>;
 

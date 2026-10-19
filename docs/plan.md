@@ -313,6 +313,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [x] M1-31 뉴스 카드 + D0의 6개 변형 — 원제목(무수정)·한국어 태그 칩, 출처 스택(+N곳), 중요도, KST 상대 시간, 게재 번호(작게·보조색), 같은 사건 국내·해외 **연결 줄**(빌드 시 엄격 규칙 계산 — 같은 팀 2개 또는 같은 선수 + 같은 분류 + 36시간 이내 + 상대 카드 1장일 때만, 스키마 변경 없음 — D30), 1280 머리기사(imp 최고 1장, 필터 결과에는 없음) (FR-30, D23, D30) — 2026-10-18 완료: 화면 모델 순수 함수 `src/lib/news/feed-view.ts`(게재 번호 06~ · 머리기사 `leadIndex` = imp 최고·동점이면 앞 — 파일이 중요도 순이라 늘 첫 카드, 옮기지 않고 그 자리에서 1024 이상만 크게(DOM 순서 = 보이는 순서, 두 번 그리지 않음) · 태그(사전 밖 slug 제외·한국 선수 굵게) · 대회 탭 · '+N곳' = 서로 다른 출처명 수 − 1, 추가 출처가 모두 같은 매체면 '+N건'(2026-10-19 사용자 결정) · 이적 단계 — fs·zod 없는 순수 모듈, 태그 표는 `tag-labels.ts`) + 연결 줄 `src/lib/news/link-pairs.ts`(D30 엄격 규칙, 시안처럼 양쪽 — 해외 "국내 보도 ↓"·국내 "해외 보도 ↑") + 카드 `src/components/news/feed-card.tsx`(서버 컴포넌트) + 피드마다 섬 하나 `feed-island.tsx`(상대 시간 1분 갱신 + '+N곳' 위임 토글 — `<details>` 기각: 버튼은 메타 줄 안·목록은 메타 아래라 한 상자로 못 묶고 명세 `aria-expanded`를 못 지킴) + 표시 이름 로더 `src/lib/data/card-labels.ts`. 실측으로 고친 것: 상대 시간 칸 미리 잡기(가상 요소 치수 "00시간 전" — 채울 때 375 공유 앵커 CLS 0.16 → 0), 한글 제목 링크 패딩 13px(40 → 45.7px, M1-01 이월), 짧은 하이픈 단어 붙이기(M1-01 이월), '+N곳' 44px 영역 z 우선(혼합안 간격에서 제목 빈 패딩·연결 줄 빈 윗부분과 겹침), 출처 행 45px, 연결 줄 매체명은 리더 점선이 다 줄어든 뒤에만 줄바꿈. 실제 데이터 연결 줄 **0쌍**(10-17·10-18 — fixtures는 혼합안 4쌍 그대로), 견본(`SPECIMEN=1`)에 fixtures 23장 + 경계 사례(출처 8곳·태그 0·대회 0·이적 5단계 × Tier 1~3·긴 매체명 연결 줄). 초기 JS 138.0 → 139.7KB. 시안과 남은 차이는 메타 줄 5~8px(시안의 메뉴 버튼 — M1-35)·태그 표기(사전 D39 정식 표기), 검사 결과는 아래 이월 메모 끝
   - 🆕 M1-31 이월 메모: **M1-35** 카드 메뉴 버튼은 `CardMeta` 오른쪽 끝(시안 `ibtn--sm` 44px · margin −8 / −10)에 — 메타 줄이 시안 높이가 되고 375에서 시각이 둘째 줄로 내려간다(상대 시간 칸은 이미 자리를 잡아 CLS 없음), 메뉴 버튼 44px 영역도 '+N곳'처럼 위 제목 패딩과의 겹침을 견본 e2e로 확인 · **M1-33** 필터 결과는 `NewsFeed lead={false}`, 짝 카드가 숨으면 연결 줄도 숨김(`a[href="#짝 ID"]`), 피드 머리 "· 중요도 순"이 필터 설명 자리(news-feed.tsx), 상대 시간·'+N곳'은 `FeedIsland rootId`가 맡으므로 필터 섬과 역할을 나눔 · **M1-34** 7일이 넘은 카드의 상대 시간은 날짜 표기("10월 11일 (일)")라 치수 칸보다 넓다 — 아카이브에서 상대 시간을 뺄지 결정 · **M4-E** 결과 가림 띠는 feed-card.tsx 제목 바로 아래 자리 + 카드 `data-spoiler` · **M4-14** 치수 글자는 가상 요소라 Pagefind 색인에 들어가지 않음 · ~~사용자 결정 대기: 같은 매체 기사만 겹친 카드~~ → 2026-10-19 사용자 결정 '+N건'(추가 출처가 모두 같은 매체면 '+N건', 섞이면 '+N곳' + 기사 전부 — DECISIONS D0 §5 #30) 반영 · **/add-name** 사전에 없는 선수(marcos-rojo·cristiano-ronaldo 등)는 태그가 빠지고 연결 줄도 못 건다(10-17 리스 제임스 부상 해외·국내 카드 — 팀 1개만 같아 짝 없음) · 10-19 커밋 전 리뷰 반영: '+N건', 44px e2e 허용을 '+N곳' 버튼 가림으로만 좁힘(겹침 우선순위는 오케스트레이터 결정으로 유지), 미래 원문 시각은 "방금"(`cardRelativeTime`), `IndexTab data-slot`, 출처 행 `min-h-11.25` · 검사(리뷰 반영 후): 단위 4,773 · e2e 145(카드 16 신규) · 견본 53(카드 21 신규) 통과, axe 0, 홈 초기 JS 139.7KB
 - [ ] M1-32 홈: 오늘의 5줄(데이터 브리핑 — LLM 줄에 "AI 작성" 라벨, 템플릿 줄은 라벨 없음) + 주요 뉴스 피드 (다른 섹션은 해당 단계에서 노출) (FR-35, D24)
+  - 🆕 D58 메모(2026-10-19): **M1-32** 5줄 행 대회 탭은 `line.comps`(CompId 배열, 첫 값이 대표) — comps 없는 파일(10-17·18 등 D58 전 발행)·대회를 못 찾은 줄은 탭 생략. 표기는 competitions.json shortKo/nameKo. 10-18 경기 ref의 대회는 추가 API 호출 없이 10-20 첫 발행 파일로 확인
 - [ ] M1-33 `/news` 필터(대회·팀·카테고리·한국 선수) + URL 쿼리 동기화 (FR-31, FR-32)
 - [ ] M1-34 `/news/[date]` 아카이브: 이전/다음 날짜, 달력 점프, `generateStaticParams` (FR-33)
 - [ ] M1-35 카드 공유(Web Share/링크 복사, 카드 앵커) + 오류 신고 링크(카드 ID·브리핑 날짜 자동 입력) (FR-34, FR-36)
@@ -954,13 +955,14 @@ const MatchLedgerMeta = z.object({ season: Season, since: IsoDate,
   gaps: z.array(LedgerGap) });                                            // + playerSince·gaps ≥ since, (날짜, 사유) 순·중복 금지
   // gaps 치유: date-query·degraded·skipped는 나중 실행이 그 날짜를 받으면, dropped는 그 경기가 원장에 들어오면 지움
 
-// 16. data/briefs/YYYY-MM-DD.json  (FR-22~26·FR-35, PRD §15 D38·D45, M1-19, 2026-10-16) — KST 발행일 = 파일명, 무기한 보존(§8.4)
+// 16. data/briefs/YYYY-MM-DD.json  (FR-22~26·FR-35, PRD §15 D38·D45·D58, M1-19, 2026-10-16) — KST 발행일 = 파일명, 무기한 보존(§8.4)
 const BriefMode = z.enum(["llm", "mixed", "template", "empty"]);  // llm 모든 줄 LLM · mixed 일부 줄 템플릿 강등 · template LLM 없음(출력 전체 실패·예산·마감·약관·M1-45 전) · empty 전날 경기 없음(호출 생략)
 const BriefRef = z.string().regex(/^[a-z][A-Za-z0-9]{1,31}$/);   // 정형 입력 항목 id — m<fd 경기 id> · s<대회 약칭> · k<af 선수 id>
 const BriefLine = z.object({
   text: z.string().min(1).max(80).regex(/^\S(?:[^\r\n]*\S)?$/),  // 한 줄·앞뒤 공백 없음, 80자(D40 ⑤ — 목표 60자), 치환 뒤 문장
   ai: z.boolean(),                                               // true = LLM("AI 작성" 라벨) · false = 코드 템플릿
   refs: z.array(BriefRef).min(1).max(6),                         // 줄 안 중복 금지
+  comps: z.array(CompId).min(1).max(6).optional(),               // D58 — 줄 대회(게시 때 refs에서 코드 계산 · refs 처음 나온 순 · 중복 금지 · 모르면 키 없음)
 });
 const BriefFile = z.object({ date: IsoDate, generatedAt: Iso, runId: z.string().min(1), mode: BriefMode,
   lines: z.array(BriefLine).max(5) });
@@ -1037,3 +1039,4 @@ const BriefFile = z.object({ date: IsoDate, generatedAt: Iso, runId: z.string().
 | 2026-10-17 | 실행 기록 RunLog에 선택 필드 `brief?: { requests, unbilledRisk? }`(PRD §15 D56) — 브리핑 LLM 요청을 브리핑 날짜 단위 3회로 묶고(FR-25, 넘으면 `daily-cap` 템플릿), 연결 오류·타임아웃 시도의 추정 과금 위험을 따로 기록 (M1-45) | 사용자 결정 |
 | 2026-10-18 | 일일 브리핑 `max_tokens` 8,192 → 16,384·브리핑 HTTP 요청 타임아웃 60초 → 120초(PRD §15 D57 — 마감 안 min(120초, 마감 − 현재), thinking·effort·단건·모델 불변) · 비용 가드 최악값 요청당 약 $0.018 · M1-42 메모 | 사용자 결정 — 10-18 prod 첫 브리핑 요청 max_tokens 잘림(thinking 8,190) |
 | 2026-10-18 | 창간일 2026-10-12 확정 — 마스트헤드·뒤표지 "제 N호" N = 발행일 − 2026-10-12 + 1(결호가 나도 증가, 빌드 시 계산, D29) · M1 공개 상태는 검색·결과 가리기 토글을 숨김(M4-E·M4-15에서 노출 — 미완성 섹션 숨김) (M1-30) | 사용자 결정(창간일) · 오케스트레이터 결정(토글 숨김) |
+| 2026-10-19 | 일일 브리핑 줄에 선택 필드 `comps`(대회 ID 배열 — PRD §15 D58): 게시 때 refs에서 코드 계산(m… 입력 경기 대회 · s… 순위 약칭표 · k… 그 선수 경기), LLM 호출·지시문·비용 불변, 기존 data/briefs 손 편집 없음(10-20 발행부터) · 부록 A 16 갱신 (M1-32) | 사용자 결정 — 홈 5줄 대회 인덱스 탭(D0 선택 시안)에 줄 대회가 필요하고 화면은 원장을 읽지 않음(D33) |

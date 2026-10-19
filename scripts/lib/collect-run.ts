@@ -187,6 +187,7 @@ import {
   type BriefCheckContext,
   type BriefJudgement,
 } from "./brief-check";
+import { briefLinesWithComps, withoutBriefComps } from "./brief-comps";
 import {
   buildBriefFile,
   decideBriefWrite,
@@ -3906,8 +3907,8 @@ function printBriefAttempt(
 
 /**
  * 브리핑 게시(M1-19 — data/briefs/<KST 발행일>.json, D38). 계획은 brief-file.ts `planBriefPublish`(M1-45 — 검증 통과 줄이 있으면
- * llm·mixed, 없으면 같은 입력의 템플릿), 같은 날 재실행은 `decideBriefWrite`. dry는 내용만 출력한다. 던지지 않는다 — 검증·쓰기
- * 오류는 failed(실행은 partial).
+ * llm·mixed, 없으면 같은 입력의 템플릿), 줄 대회는 brief-comps.ts `withBriefComps`(D58 — refs로 코드 계산), 같은 날 재실행은
+ * `decideBriefWrite`. dry는 내용만 출력한다. 던지지 않는다 — 검증·쓰기 오류는 failed(실행은 partial).
  */
 async function publishBrief(
   deps: CollectDeps,
@@ -3953,13 +3954,39 @@ async function publishBrief(
   }
   let file: BriefFile;
   try {
-    file = buildBriefFile({
+    const header = {
       date: ctx.publishDate,
       generatedAt: nowUtcIso(deps.now()),
       runId: ctx.runId,
       mode: plan.mode,
-      lines: plan.lines,
-    });
+    };
+    // 줄 대회(D58) — LLM 줄·템플릿 줄 모두 같은 규칙으로 refs에서 계산(brief-comps.ts). 계획이 줄을 냈으면 입력이 있다.
+    // 대회 탭은 장식이라 계산 실패·comps 때문의 파일 검증 실패가 그날 브리핑 게시를 막지 않게 comps 없이 한 번 더 만든다(D58 리뷰)
+    const withComps = stage.input
+      ? briefLinesWithComps(plan.lines, stage.input, stage.competitions ?? [])
+      : { lines: plan.lines, error: null };
+    if (withComps.error !== null) {
+      log.warn("summarize.brief.comps-fail", {
+        date: ctx.publishDate,
+        stage: "compute",
+        error: errorText(withComps.error),
+      });
+    }
+    try {
+      file = buildBriefFile({ ...header, lines: withComps.lines });
+    } catch (error) {
+      if (!withComps.lines.some((line) => line.comps !== undefined))
+        throw error;
+      log.warn("summarize.brief.comps-fail", {
+        date: ctx.publishDate,
+        stage: "build",
+        error: errorText(error),
+      });
+      file = buildBriefFile({
+        ...header,
+        lines: withoutBriefComps(plan.lines),
+      });
+    }
   } catch (error) {
     log.error("summarize.brief.publish.fail", {
       date: ctx.publishDate,
