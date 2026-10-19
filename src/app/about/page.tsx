@@ -7,6 +7,7 @@ import { OutletList } from "@/components/about/outlet-list";
 import { ScheduleTable } from "@/components/about/schedule-table";
 import { TermList } from "@/components/about/term-list";
 import { AppShell } from "@/components/shell/app-shell";
+import { AiLabelMark } from "@/components/ui/ai-label";
 import { FlatTab } from "@/components/ui/chip";
 import { SectionHead } from "@/components/ui/section-head";
 import { TierBadge } from "@/components/ui/tier-badge";
@@ -334,7 +335,8 @@ export default function AboutPage() {
               term: "라벨",
               description: (
                 <>
-                  AI가 쓴 줄 끝에만 <AiLabelSample /> 라벨을 붙입니다.
+                  AI가 쓴 줄 끝에만 <AiLabelMark className="mx-0.5" /> 라벨을
+                  붙입니다.
                 </>
               ),
             },
@@ -355,7 +357,7 @@ export default function AboutPage() {
             },
             {
               term: "경기 없는 날",
-              description: "전날 경기가 없으면 AI를 부르지 않습니다.",
+              description: "전날 끝난 경기가 없으면 AI를 부르지 않습니다.",
             },
             {
               term: "뉴스 카드",
@@ -564,15 +566,6 @@ function Brand({ children }: { children: string }) {
   return (
     <span lang="en" className="whitespace-nowrap">
       {children}
-    </span>
-  );
-}
-
-/** "AI 작성" 라벨 견본 — 5줄 줄 끝 라벨(DESIGN §9.3)과 같은 모양, 여기서는 링크가 아니다 */
-function AiLabelSample() {
-  return (
-    <span className="mx-0.5 inline-block border border-ink-2 px-1.25 pt-0.5 pb-px align-[2px] text-[11px] leading-[1.35] font-extrabold tracking-[0.02em] whitespace-nowrap text-ink-2">
-      AI 작성
     </span>
   );
 }

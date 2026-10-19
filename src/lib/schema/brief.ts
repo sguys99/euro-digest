@@ -20,14 +20,16 @@
  */
 import { z } from "zod";
 
+import {
+  BRIEF_LINE_MAX,
+  BRIEF_MAX_LINES,
+  BRIEF_REFS_MAX,
+} from "../brief-limits";
+
 import { CompIdSchema, IsoDateSchema, IsoSchema } from "./common";
 
-/** 하루 브리핑 줄 수 상한 — "오늘의 5줄"(FR-23) */
-export const BRIEF_MAX_LINES = 5;
-/** 줄 길이 상한(JS 문자열 길이 — 한글 음절 1자) — D40 ⑤. 목표는 60자 내외(FR-23) */
-export const BRIEF_LINE_MAX = 80;
-/** 줄 하나의 근거 id 상한 — M0-30 출력 스키마 `r`와 같다 */
-export const BRIEF_REFS_MAX = 6;
+// 상한 값은 zod 없는 모듈(src/lib/brief-limits.ts)에 두고 여기서 다시 내보낸다(화면 모델·섬이 zod 없이 쓰게 — M1-32 리뷰)
+export { BRIEF_LINE_MAX, BRIEF_MAX_LINES, BRIEF_REFS_MAX };
 /** 줄 하나의 대회 상한(D58) — 근거 1개가 대회 1개 이하로 정해지므로 근거 상한과 같다 */
 export const BRIEF_COMPS_MAX = BRIEF_REFS_MAX;
 

@@ -5,18 +5,22 @@ import { render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import HomePage from "@/app/page";
+import { BriefFileSchema, type BriefFile } from "@/lib/schema/brief";
 import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
 import type { RunLog } from "@/lib/schema/run";
 
 // 홈은 빌드 때 data/news의 최신 호를 읽는다. 저장소 data/는 파이프라인 실행에 따라 바뀌므로 로더를 바꿔 끼운다
 // (로더 자체는 tests/data-news.test.ts).
-const { loadLatestNews, loadProdRuns } = vi.hoisted(() => ({
+const { loadLatestNews, loadProdRuns, loadBrief } = vi.hoisted(() => ({
   loadLatestNews: vi.fn<() => NewsFile | null>(),
   loadProdRuns: vi.fn<() => RunLog[]>(() => []),
+  loadBrief: vi.fn<(date: string) => BriefFile | null>(() => null),
 }));
 vi.mock("@/lib/data/news", () => ({ loadLatestNews }));
 // 마스트헤드 발행·업데이트 시각의 실행 기록(M1-30) — 저장소 data/runs.json 대신 빈 기록(→ 파일 generatedAt)
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
+// 오늘의 5줄(M1-32) — 저장소 data/briefs 대신 테스트가 정한 브리핑(기본 없음)
+vi.mock("@/lib/data/brief", () => ({ loadBrief }));
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -27,10 +31,21 @@ const fixture = NewsFileSchema.parse(
   ),
 );
 
+const briefFixture = BriefFileSchema.parse(
+  JSON.parse(
+    readFileSync(
+      path.resolve("fixtures/schema/data/briefs/2026-10-11.json"),
+      "utf8",
+    ),
+  ),
+);
+
 beforeEach(() => {
   loadLatestNews.mockReset();
   loadProdRuns.mockReset();
   loadProdRuns.mockReturnValue([]);
+  loadBrief.mockReset();
+  loadBrief.mockReturnValue(null);
 });
 
 describe("HomePage", () => {
@@ -169,5 +184,76 @@ describe("HomePage", () => {
       screen.getByText("이 호에는 실린 소식이 없어요."),
     ).toBeInTheDocument();
     expect(screen.queryAllByRole("article")).toEqual([]);
+  });
+});
+
+describe("HomePage — 오늘의 5줄(M1-32, PRD §4.2·D2·FR-35)", () => {
+  it("그 호 날짜의 브리핑을 읽어 맨 위(주요 뉴스 앞)에 싣는다", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadBrief.mockReturnValue({ ...briefFixture, date: fixture.date });
+    render(<HomePage />);
+
+    expect(loadBrief).toHaveBeenCalledWith(fixture.date);
+    const headings = screen
+      .getAllByRole("heading", { level: 2 })
+      .map((h) => h.textContent);
+    expect(headings.slice(0, 2)).toEqual(["오늘의 5줄", "주요 뉴스"]);
+    // main의 첫 섹션이 5줄
+    const main = screen.getByRole("main");
+    expect(main.firstElementChild).toHaveAttribute("data-slot", "today-brief");
+    // 주요 뉴스 섹션은 5줄 아래 36px(≥1024 44px) · S4 앵커 id
+    const news = screen.getByRole("region", { name: "주요 뉴스" });
+    expect(news).toHaveAttribute("id", "news");
+    expect(news.className).toContain("mt-9");
+    expect(news.className).toContain("lg:mt-11");
+  });
+
+  it("FR-35 — 5줄의 ai:true 줄에만 'AI 작성' 라벨, 뉴스 카드에는 없음", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadBrief.mockReturnValue({ ...briefFixture, date: fixture.date });
+    render(<HomePage />);
+
+    const labels = screen.getAllByRole("link", { name: "AI 작성" });
+    expect(labels).toHaveLength(briefFixture.lines.filter((l) => l.ai).length);
+    for (const article of screen.getAllByRole("article")) {
+      expect(within(article).queryByText("AI 작성")).toBeNull();
+    }
+  });
+
+  it("그 호의 브리핑 파일이 없으면(D38 전 호) 5줄 블록을 싣지 않는다 — 주요 뉴스가 맨 위", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    render(<HomePage />);
+
+    expect(screen.queryByRole("region", { name: "오늘의 5줄" })).toBeNull();
+    expect(screen.queryByText("오늘은 5줄을 쉽니다")).toBeNull();
+    const news = screen.getByRole("region", { name: "주요 뉴스" });
+    expect(screen.getByRole("main").firstElementChild).toBe(news);
+    expect(news.className).not.toContain("mt-9");
+  });
+
+  it("발행된 호가 없으면 브리핑을 읽지 않는다", () => {
+    loadLatestNews.mockReturnValue(null);
+    render(<HomePage />);
+    expect(loadBrief).not.toHaveBeenCalled();
+    expect(screen.queryByRole("region", { name: "오늘의 5줄" })).toBeNull();
+  });
+
+  it("경기 없는 날(mode empty) — 블록을 두고 S4 안내, '주요 뉴스로 ↓'는 #news", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadBrief.mockReturnValue({
+      date: fixture.date,
+      generatedAt: fixture.generatedAt,
+      runId: fixture.runId,
+      mode: "empty",
+      lines: [],
+    });
+    render(<HomePage />);
+
+    const brief = screen.getByRole("region", { name: "오늘의 5줄" });
+    expect(brief).toHaveTextContent("오늘은 5줄을 쉽니다");
+    expect(
+      within(brief).getByRole("link", { name: "주요 뉴스로" }),
+    ).toHaveAttribute("href", "#news");
+    expect(document.getElementById("news")).not.toBeNull();
   });
 });

@@ -482,7 +482,7 @@ export function issueFormUrl(form: IssueForm): string {
 /**
  * 카드 "오류 신고" GitHub 이슈 폼 링크 (FR-36). 카드 ID·발행 날짜가 미리 채워진다.
  * 이름(`summaryError`·템플릿 `summary-error.yml`)은 옛 "요약 오류 신고"에서 왔고, 지금은 브리핑·분류 오류 신고 폼이다(D23·D24).
- * 브리핑 신고(날짜만 채움) 링크는 M1-35에서 추가한다.
+ * 브리핑 신고(날짜만 채움) 링크는 `briefErrorIssueUrl`(M1-32).
  * 필드 id(card·date)는 .github/ISSUE_TEMPLATE/summary-error.yml과 맞춘다.
  * 예) https://github.com/sguys99/euro-digest/issues/new?template=summary-error.yml&card=c_8f3a1b2c4d&date=2026-10-10
  */
@@ -490,6 +490,19 @@ export function summaryErrorIssueUrl(cardId: string, date: string): string {
   const query = new URLSearchParams({
     template: "summary-error.yml",
     card: assertCardId(cardId),
+    date: assertDate(date),
+  });
+  return `${REPO_URL}/issues/new?${query.toString()}`;
+}
+
+/**
+ * 오늘의 5줄 "브리핑 오류 신고" GitHub 이슈 폼 링크 (FR-36, M1-32). 브리핑 발행 날짜(KST — 브리핑 파일의 `date`)만 채운다
+ * (카드 ID 칸은 비움 — 양식 안내 "브리핑 신고면 비워 두세요").
+ * 예) https://github.com/sguys99/euro-digest/issues/new?template=summary-error.yml&date=2026-10-18
+ */
+export function briefErrorIssueUrl(date: string): string {
+  const query = new URLSearchParams({
+    template: "summary-error.yml",
     date: assertDate(date),
   });
   return `${REPO_URL}/issues/new?${query.toString()}`;

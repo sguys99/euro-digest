@@ -254,7 +254,9 @@ describe("AI 작성 고지(#ai — 브리핑 'AI 작성' 라벨이 가리킴, D2
       "맞지 않는 줄은 코드가 정해진 문형으로 만든 문장으로 바꾸거나 빼고, 바꾼 줄에는 라벨을 붙이지 않습니다.",
     );
     expect(el).toHaveTextContent("발행 전 마감까지 답을 받지 못하거나");
-    expect(el).toHaveTextContent("전날 경기가 없으면 AI를 부르지 않습니다.");
+    expect(el).toHaveTextContent(
+      "전날 끝난 경기가 없으면 AI를 부르지 않습니다.",
+    );
     // 라벨 견본은 링크가 아니다
     expect(within(el).queryByRole("link", { name: "AI 작성" })).toBeNull();
   });

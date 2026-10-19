@@ -165,7 +165,7 @@ test.describe("마스트헤드·뒤표지 — 데이터에서 계산한 호수·
     if (meta.no !== null) await expect(footer).toContainText(`제 ${meta.no}호`);
   });
 
-  test("뒤표지: football-data 필수 문구 원문(lang=en) · API-Football 병기 · /about 링크 3개 + GitHub(새 창)", async ({
+  test("뒤표지: football-data 필수 문구 원문(lang=en) · API-Football 병기 · AI 작성 고지 문장 · /about 링크 3개 + GitHub(새 창)", async ({
     page,
   }) => {
     await open(page, "./");
@@ -174,8 +174,17 @@ test.describe("마스트헤드·뒤표지 — 데이터에서 계산한 호수·
       FOOTBALL_DATA_ATTRIBUTION,
     );
     await expect(footer).toContainText("API-Football");
-    // 설명 문단에는 아직 오늘의 5줄·AI 작성 고지 문장이 없다(M1-32에서 더함). 링크 "AI 작성 고지"(/about/#ai — M1-36)는 있다
-    await expect(footer).not.toContainText("5줄");
+    // 설명 문단의 오늘의 5줄 AI 작성 고지(M1-32 — /about#ai와 같은 사실). 라벨 링크("AI 작성")는 뒤표지에 없다
+    await expect(footer).toContainText(
+      "AI가 쓴 줄에만 ‘AI 작성’ 라벨을 붙입니다.",
+    );
+    await expect(footer).toContainText(
+      "AI 답을 쓸 수 없는 날은 모든 줄을 코드 문장으로 싣습니다.",
+    );
+    await expect(footer).toContainText("뉴스 카드는 AI 없이 원문 제목 그대로");
+    await expect(
+      footer.getByRole("link", { name: "AI 작성", exact: true }),
+    ).toHaveCount(0);
     // /about 링크(M1-36 — 순서·앵커는 tests/e2e/about.spec.ts) + GitHub. 개인정보 처리방침(/privacy/)은 M5-05
     const links = footer.getByRole("link");
     await expect(links).toHaveCount(4);

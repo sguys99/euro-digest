@@ -278,7 +278,7 @@ describe("뒤표지 — 데이터 출처·AI 고지·GitHub·마지막 업데이
     expect(footer).toHaveTextContent("football-data.org · API-Football");
   });
 
-  it("설명 문단은 지금 화면에 있는 것의 사실만 — 데이터 출처 문장. 아직 없는 오늘의 5줄·AI 작성 고지는 M1-32에서", () => {
+  it("설명 문단 — 데이터 출처 + 오늘의 5줄 AI 작성 고지(M1-32 — /about#ai와 같은 사실: AI 줄에만 라벨, 검증에 맞지 않는 줄은 라벨 없는 코드 문장·AI 답을 쓸 수 없는 날은 모든 줄 코드 문장, 뉴스 카드는 AI 없음)", () => {
     render(
       <AppShell current="home" issue={ISSUE}>
         본문
@@ -286,12 +286,14 @@ describe("뒤표지 — 데이터 출처·AI 고지·GitHub·마지막 업데이
     );
     const footer = screen.getByRole("contentinfo");
     const description = within(footer).getByText(
-      "경기·출전 데이터 football-data.org · API-Football.",
+      /^경기·출전 데이터 football-data.org · API-Football\./,
     );
-    expect(description).toBeInTheDocument();
-    // 설명 문단에는 아직 5줄·AI 고지 문장이 없다(링크 "AI 작성 고지"는 /about 안내 — M1-36)
-    expect(description).not.toHaveTextContent("5줄");
-    expect(description).not.toHaveTextContent("AI");
+    expect(description.tagName).toBe("P");
+    expect(description.textContent).toBe(
+      "경기·출전 데이터 football-data.org · API-Football. 오늘의 5줄은 이 데이터로 AI가 쓰고, AI가 쓴 줄에만 ‘AI 작성’ 라벨을 붙입니다. 검증에 맞지 않는 줄은 라벨 없는 코드 문장으로 바꾸거나 빼고, AI 답을 쓸 수 없는 날은 모든 줄을 코드 문장으로 싣습니다. 뉴스 카드는 AI 없이 원문 제목 그대로 싣습니다.",
+    );
+    // 뒤표지에는 라벨 링크가 없다(링크 "AI 작성 고지"는 /about 안내 — M1-36)
+    expect(within(footer).queryByRole("link", { name: "AI 작성" })).toBeNull();
   });
 
   it("호 줄 · 마지막 업데이트 HH:MM KST · /about 링크 3개 + GitHub 저장소(새 창)", () => {

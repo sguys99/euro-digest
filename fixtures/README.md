@@ -1,6 +1,6 @@
 # fixtures/
 
-개발·테스트·디자인 시안용 샘플(`rss/` RSS·OG 메타, `football/` 축구 API 응답, `llm/` 브리핑 LLM mock 응답, 뉴스 카드 `news-sample.json`·데이터 브리핑 `brief-sample.json` — M0-33~36, `cluster/` 제목 유사도 클러스터링 실데이터 제목 표본·사람 판정 — M1-13)을 둔다.
+개발·테스트·디자인 시안용 샘플(`rss/` RSS·OG 메타, `football/` 축구 API 응답, `llm/` 브리핑 LLM mock 응답, 뉴스 카드 `news-sample.json`·데이터 브리핑 `brief-sample.json` — M0-33~36, 오늘의 5줄 S4(경기 없는 날) 합성 파일 `brief-empty.json` — M1-32, `cluster/` 제목 유사도 클러스터링 실데이터 제목 표본·사람 판정 — M1-13)을 둔다.
 
 - 뉴스 카드 샘플은 원제목 카드다 — 피드 제목·링크를 고치지 않고, 요약 줄 없이(`s:[]`, `ai:false`) 코드 규칙 분류 태그만 붙인다. RSS 요약문(description)은 카드에 넣지 않는다 (PRD §15 D23, M0-25). AI가 쓴 문장은 브리핑 샘플에만 있다(D24).
 - 자동 테스트(Vitest·CI)는 `LLM_MODE=mock`으로 `llm/`의 응답을 쓴다. 결정적이고 비용이 없다 (CLAUDE.md §6.3).

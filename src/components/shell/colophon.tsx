@@ -12,8 +12,10 @@ import { formatKst, kstDayRangeUtc } from "@/lib/time";
  * - 면 --colophon, 위 천공 줄(--paper 점, 6px 내려 면 안쪽에 뚫린 구멍처럼). 1023 이하는 화면 폭 전체(좌우 --edge만큼 넘침),
  *   1024 이상은 지면 폭 안에서 2단(1.1fr · 1fr, 간격 48px): 왼쪽 football-data 문구·설명, 오른쪽 링크·마지막 업데이트.
  * - 내용은 지금 화면에 있는 것의 사실만: football-data.org 필수 문구(영문 원문, FR-45) · 데이터 출처(football-data.org · API-Football,
- *   D27) · GitHub 저장소 · 마지막 업데이트 HH:MM KST(FR-142). AI 작성 고지(오늘의 5줄의 AI 줄에만 라벨, 검증 실패 줄은 코드 문장 —
- *   D24·FR-29, 뉴스 카드는 원문 제목 그대로 — D23)는 5줄이 화면에 실리는 M1-32에서 설명 문단에 더한다(없는 섹션을 설명하지 않는다).
+ *   D27) · AI 작성 고지(M1-32 — 오늘의 5줄은 AI가 쓰고 AI 줄에만 'AI 작성' 라벨(FR-35·D24), 검증에 맞지 않는 줄은 라벨 없는 코드
+ *   문장으로 바꾸거나 뺀다(FR-29 — brief-publish 강등·dropped), AI 답을 쓸 수 없는 날(재시도 뒤 실패·마감·비용 상한 — FR-26·27·29)은
+ *   모든 줄이 코드 문장, 뉴스 카드는 AI 없이 원문 제목 그대로(D23). `/about#ai` 문구와 같은
+ *   사실) · GitHub 저장소 · 마지막 업데이트 HH:MM KST(FR-142).
  * - 링크는 있는 페이지만 건다(e2e 링크 검사). 순서·문구는 DESIGN §9.3·혼합안 뒤표지 그대로: AI 작성 고지(`/about/#ai`) ·
  *   소개·출처 정책(`/about/` — 한 링크) · [개인정보 처리방침(`/privacy/`) — M5-05에서 이 자리에] · 삭제·정정 요청(`/about/#contact`) ·
  *   GitHub↗. `/about` 앵커는 `ABOUT_SECTIONS`(src/lib/about-sections.ts — M1-36)가 정한다.
@@ -60,7 +62,11 @@ export function Colophon({ issue }: { issue: IssueMeta | null }) {
           {FOOTBALL_DATA_ATTRIBUTION}
         </p>
         <p className="max-w-[62ch] text-colophon-fg-2 lg:col-start-1">
-          경기·출전 데이터 football-data.org · API-Football.
+          경기·출전 데이터 football-data.org · API-Football. 오늘의 5줄은 이
+          데이터로 AI가 쓰고, AI가 쓴 줄에만 ‘AI 작성’ 라벨을 붙입니다. 검증에
+          맞지 않는 줄은 라벨 없는 코드 문장으로 바꾸거나 빼고, AI 답을 쓸 수
+          없는 날은 모든 줄을 코드 문장으로 싣습니다. 뉴스 카드는 AI 없이 원문
+          제목 그대로 싣습니다.
         </p>
         {/* list-style: none인 목록의 의미를 Safari가 지우지 않게 role="list"(DESIGN §9.3 5줄 행과 같은 처리) */}
         <ul role="list" className="flex flex-wrap gap-x-4.5 lg:col-start-2">

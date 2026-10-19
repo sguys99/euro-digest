@@ -121,6 +121,11 @@ const RULES: readonly Rule[] = [
   [/^justify-self-/, ["justify-self"]],
   [/^justify-/, ["justify-content"]],
   [/^items-/, ["align-items"]],
+  // vertical-align — 키워드(align-baseline·top·middle…)와 임의값(align-[2px] — "AI 작성" 라벨, M1-32)
+  [
+    /^align-(?:baseline|top|middle|bottom|text-top|text-bottom|sub|super|\[[^\]]+\])$/,
+    ["vertical-align"],
+  ],
   [/^self-/, ["align-self"]],
   [/^place-items-/, ["align-items", "justify-items"]],
   [/^place-content-/, ["align-content", "justify-content"]],

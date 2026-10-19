@@ -10,6 +10,7 @@ import type { ReactElement } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AiLabel, AiLabelMark } from "@/components/ui/ai-label";
 import { Button, buttonVariants, Switch } from "@/components/ui/button";
 import { BUTTON_VARIANTS, ICON_BUTTON } from "@/components/ui/button-classes";
 import {
@@ -293,6 +294,15 @@ const CASES: ReadonlyArray<[string, () => ReactElement]> = [
           문구
         </ToastView>
         <ToastView animated={false}>문구</ToastView>
+      </>
+    ),
+  ],
+  [
+    "AI 작성 라벨 — 링크(여백) · 견본 표식(M1-32)",
+    () => (
+      <>
+        <AiLabel className="ml-2" />
+        <AiLabelMark className="mx-0.5" />
       </>
     ),
   ],

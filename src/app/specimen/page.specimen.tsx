@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { TodayBrief } from "@/components/brief/today-brief";
 import { Button, Switch, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -34,6 +35,7 @@ import { BriefRowSkeleton, CardSkeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster, ToastView } from "@/components/ui/toast";
 import { routes } from "@/lib/paths";
+import { BriefFileSchema, type BriefFile } from "@/lib/schema/brief";
 import type { CompId } from "@/lib/schema/common";
 import { CompetitionsFileSchema } from "@/lib/schema/configs";
 import {
@@ -45,6 +47,8 @@ import { formatKst, relativeKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
 import competitionsJson from "../../../configs/competitions.json";
+import briefEmptyJson from "../../../fixtures/brief-empty.json";
+import briefSampleJson from "../../../fixtures/brief-sample.json";
 import newsSampleJson from "../../../fixtures/news-sample.json";
 
 import { SpecimenControls } from "./specimen-controls";
@@ -287,6 +291,71 @@ function SpecimenCard({
   );
 }
 
+// ─── 오늘의 5줄 상태 견본 (M1-32) ───────────────────────────────────────────
+
+// 브리핑 fixtures — brief-sample.json의 날짜별 파일(보조 필드 textRaw·lenKo·_note는 스키마가 버린다)·S4 합성 파일(brief-empty.json)
+const briefDays = new Map(
+  BriefFileSchema.array()
+    .parse(briefSampleJson.days)
+    .map((day) => [day.date, day]),
+);
+
+function briefDay(date: string): BriefFile {
+  const day = briefDays.get(date);
+  if (!day) throw new Error(`fixtures/brief-sample.json에 ${date} 없음`);
+  return day;
+}
+
+/** 혼합안 견본 "오늘의 5줄 상태"와 같은 4상태 — [id, 이름, 설명, 브리핑] */
+const BRIEF_STATES: ReadonlyArray<
+  readonly [string, string, string, BriefFile]
+> = [
+  [
+    "s2",
+    "S2",
+    "AI 4 + 템플릿 1(mixed) · 2026-10-11 발행 — 혼합안 홈",
+    briefDay("2026-10-11"),
+  ],
+  [
+    "s1",
+    "S1",
+    "5줄 모두 AI 작성(llm) · 2026-10-10 발행 · 대회 3개, 최장 66자",
+    briefDay("2026-10-10"),
+  ],
+  [
+    "s3",
+    "S3",
+    "5줄 미만 · 모두 템플릿(template — 라벨 없음) · 2026-09-18 발행",
+    briefDay("2026-09-18"),
+  ],
+  [
+    "s4",
+    "S4",
+    "경기 없는 날(empty) · 브리핑 호출 생략 · 블록 유지, 높이만 줄임 — 날짜를 단정하지 않는다",
+    BriefFileSchema.parse(briefEmptyJson),
+  ],
+];
+
+/**
+ * 오늘의 5줄 상태 견본(M1-32) — 실제 블록(`TodayBrief`)을 fixtures 브리핑으로 S1~S4 싣는다. 피드 견본처럼 1024 이상은 왼쪽 목차 열(232px)만큼
+ * 비워 혼합안 M1 지면 폭(728 @1024 · 984 @1280)에서 비교한다. S4 "주요 뉴스로 ↓"는 아래 피드 견본(`#news`)으로 간다.
+ */
+function SpecimenBriefs() {
+  return (
+    <div className="lg:pl-col-contents" data-specimen="briefs">
+      {BRIEF_STATES.map(([id, name, detail, brief]) => (
+        <div key={id} className="mt-9 lg:mt-11" data-specimen={`brief-${id}`}>
+          <p className="mb-3 text-[12.5px] leading-normal text-ink-2">
+            <b className="mr-1 font-extrabold text-ink">{name}</b>
+            {detail}
+          </p>
+          <TodayBrief brief={brief} headingId={`specimen-brief-${id}-h`} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─── 뉴스 카드 변형 견본 (M1-31) ────────────────────────────────────────────
 
 function fixtureCard(id: string): NewsCard {
@@ -394,8 +463,9 @@ function SpecimenFeeds() {
   return (
     <div className="lg:pl-col-contents">
       <section
+        id="news"
         aria-labelledby="specimen-feed-h"
-        className="mt-9 lg:mt-11"
+        className="mt-9 scroll-mt-4 lg:mt-11"
         data-specimen="feed"
       >
         <SectionHead
@@ -1005,6 +1075,7 @@ export default function SpecimenPage() {
             />
           </Frame>
         </div>
+        <SpecimenBriefs />
         <SpecimenFeeds />
       </main>
       <Toaster />

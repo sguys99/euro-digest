@@ -17,6 +17,7 @@ import {
   routes,
   siteLocationFromBuildEnv,
   summaryErrorIssueUrl,
+  briefErrorIssueUrl,
   type CalendarFeed,
   type OgImage,
   type RssFeed,
@@ -462,6 +463,22 @@ describe("summaryErrorIssueUrl (FR-36)", () => {
       PathInputError,
     );
     expect(() => summaryErrorIssueUrl(CARD, "")).toThrow(PathInputError);
+  });
+});
+
+describe("briefErrorIssueUrl (FR-36 — 오늘의 5줄 브리핑 오류 신고, M1-32)", () => {
+  it("발행 날짜만 채운 이슈 폼 링크(카드 ID 칸 비움)", () => {
+    expect(briefErrorIssueUrl("2026-10-18")).toBe(
+      "https://github.com/sguys99/euro-digest/issues/new?template=summary-error.yml&date=2026-10-18",
+    );
+    const url = new URL(briefErrorIssueUrl(DATE));
+    expect(url.searchParams.get("date")).toBe(DATE);
+    expect(url.searchParams.has("card")).toBe(false);
+  });
+
+  it("잘못된 날짜는 오류", () => {
+    expect(() => briefErrorIssueUrl("2026-02-30")).toThrow(PathInputError);
+    expect(() => briefErrorIssueUrl("")).toThrow(PathInputError);
   });
 });
 

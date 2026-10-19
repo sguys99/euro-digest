@@ -166,9 +166,10 @@ describe("shadcn 기본 모양 탈피 — src/components", () => {
     expect(roots.flatMap(pathsToUtils)).toEqual([]);
   });
 
-  it("섬이 import해 쓸 서버 컴포넌트(버튼·칩·아이콘·대회 색·필터 해제 버튼)도 cn에 닿지 않는다(DESIGN §9.4)", () => {
+  it("섬이 import해 쓸 서버 컴포넌트(버튼·칩·아이콘·대회 색·필터 해제 버튼·AI 작성 라벨)도 cn에 닿지 않는다(DESIGN §9.4)", () => {
     // 지금 섬이 쓰지 않아도 M1 필터 섬(M1-33)·앱 셸(M1-30)이 가져다 쓸 모듈 — cn을 쓰면 그때 섬 번들이 9KB 늘어난다
     const ISLAND_SAFE = [
+      "ai-label.tsx",
       "button.tsx",
       "button-classes.ts",
       "chip.tsx",
