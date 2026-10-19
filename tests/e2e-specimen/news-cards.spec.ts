@@ -281,31 +281,54 @@ test.describe("44px · 시각 안정성", () => {
     });
   }
 
-  test("공유 앵커로 연 375 화면 — 상대 시간이 채워져도 레이아웃 이동 0(CLS)", async ({
+  test("공유 앵커로 연 375 화면 — 상대 시간이 채워져도 카드 기하가 그대로(자리 예약)", async ({
+    browser,
     page,
   }) => {
+    // 정적 HTML(JS 없음 — 상대 시간 칸이 빈 채 \"00시간 전\" 자리만 잡힘)과 섬이 \"10시간 전\"을 채운 화면을, 웹폰트가 모두 적용된 뒤
+    // 같은 카드의 높이·시각 위치로 비교한다. 예전 PerformanceObserver CLS 측정은 CI처럼 한글 폴백 글꼴이 없는 환경에서 폰트 교체
+    // 이동까지 더해져 0.36~0.38로 실패했다(2026-10-19 CI — 폰트 지연 CLS는 tests/e2e/fonts.spec.ts 몫). 자리를 미리 잡지 않으면
+    // 긴 라틴 매체명 + +N곳 카드에서 시각이 다음 줄로 넘어가 카드가 커진다(M1-31 실측 0.16).
+    const ID = "#c_114856ecfb";
+    const geometry = (p: Page) =>
+      p.evaluate((id) => {
+        const card = document.querySelector<HTMLElement>(id);
+        const time = card?.querySelector<HTMLElement>("time[data-rel]");
+        if (!card || !time) return null;
+        const c = card.getBoundingClientRect();
+        const t = time.getBoundingClientRect();
+        return {
+          cardHeight: Math.round(c.height * 2) / 2,
+          timeTop: Math.round((t.top - c.top) * 2) / 2,
+          timeLeft: Math.round((t.left - c.left) * 2) / 2,
+        };
+      }, ID);
+
     await page.setViewportSize({ width: 375, height: 812 });
-    await page.addInitScript(() => {
-      const w = window as unknown as { __cls: number };
-      w.__cls = 0;
-      new PerformanceObserver((list) => {
-        for (const entry of list.getEntries() as Array<
-          PerformanceEntry & { value: number; hadRecentInput: boolean }
-        >) {
-          if (!entry.hadRecentInput) w.__cls += entry.value;
-        }
-      }).observe({ type: "layout-shift", buffered: true });
-    });
-    // 긴 라틴 매체명 + '+N곳' 카드 — 상대 시간 칸을 미리 잡지 않으면 시각이 다음 줄로 넘어가며 아래 카드가 밀렸다(0.16)
-    await openFeed(page, "#c_114856ecfb");
+    await openFeed(page, ID);
     await expect(
-      page.locator("#c_114856ecfb time[data-rel] [data-rel-out]"),
+      page.locator(`${ID} time[data-rel] [data-rel-out]`),
     ).toHaveText("10시간 전");
-    await page.waitForTimeout(300);
-    const cls = await page.evaluate(
-      () => (window as unknown as { __cls: number }).__cls,
-    );
-    expect(cls).toBeLessThan(0.01);
+    const filled = await geometry(page);
+
+    const still = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width: 375, height: 812 },
+    });
+    try {
+      const staticPage = await still.newPage();
+      const response = await staticPage.goto(page.url());
+      expect(response?.status()).toBe(200);
+      await waitForFonts(staticPage);
+      await expect(
+        staticPage.locator(`${ID} time[data-rel] [data-rel-out]`),
+      ).toHaveText("");
+      const empty = await geometry(staticPage);
+      expect(filled).not.toBeNull();
+      expect(filled).toEqual(empty);
+    } finally {
+      await still.close();
+    }
   });
 });
 
