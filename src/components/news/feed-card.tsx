@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { IndexTab, StampChip } from "@/components/ui/chip";
+import { TierBadge } from "@/components/ui/tier-badge";
 import type { Tier, TransferStatus } from "@/lib/schema/common";
 import type {
   CardTagView,
@@ -247,26 +248,6 @@ export function TransferStage({
       </span>
       <TierBadge tier={tier} />
     </div>
-  );
-}
-
-const TIER_CLASS: Readonly<Record<Tier, string>> = {
-  1: "bg-tier-1 text-paper",
-  2: "border-2 border-tier-2 text-ink",
-  3: "border border-dashed border-tier-3 text-ink-2",
-};
-
-/** 출처 Tier 배지 — 높이 20px, "Tier n" Barlow 600 13.5px 0.04em. 1 채운 면 · 2 2px 실선 · 3 1px 점선(색이 아니라 모양으로 구분) */
-export function TierBadge({ tier }: { tier: Tier }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex h-5 items-center px-1.5 font-numeric text-[13.5px] leading-none font-semibold tracking-[0.04em] tabular-nums",
-        TIER_CLASS[tier],
-      )}
-    >
-      <span className="sr-only">출처 </span>Tier {tier}
-    </span>
   );
 }
 

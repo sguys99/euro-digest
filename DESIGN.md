@@ -812,15 +812,17 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | KST 시각 (M1-30) | `src/components/kst-time.tsx` | 서버 | `<KstTime iso>` → `<time datetime="{UTC ISO}">HH:MM KST</time>`(스텁·상단 내비·뒤표지) |
 | 뒤표지 (M1-30) | `src/components/shell/colophon.tsx` | 서버 | `<Colophon issue>` — 링크 목록 `LINKS`(있는 페이지만) |
 | 뉴스 피드 (M1-31) | `src/components/news-feed.tsx` | 서버(+ 피드 섬) | `<NewsFeed news titleAs? lead? id?>` — `lead` 머리기사(전체 피드 true · 필터 결과 false), `id` 카드 목록 요소(피드 섬 범위, 페이지 안에서 유일). 피드 머리 "{n}건 · 중요도 순" + 게재 번호 안내 |
-| 뉴스 카드 (M1-31) | `src/components/news/feed-card.tsx` | 서버 | `<FeedCard view titleAs>`(변형 6종·머리기사·연결 줄을 화면 모델로) · 부품 `ImportanceBar` · `KoreanArmband` · `TransferStage` · `TierBadge` · `CardTime` · `LinkLine` |
+| 뉴스 카드 (M1-31) | `src/components/news/feed-card.tsx` | 서버 | `<FeedCard view titleAs>`(변형 6종·머리기사·연결 줄을 화면 모델로) · 부품 `ImportanceBar` · `KoreanArmband` · `TransferStage`(Tier 배지는 `ui/tier-badge.tsx`) · `CardTime` · `LinkLine` |
 | 피드 섬 (M1-31) | `src/components/news/feed-island.tsx` | 클라이언트 섬 | `<FeedIsland rootId>`(렌더 없음) — `fillRelativeTimes(root, now)`(1분마다) · `cardRelativeTime(iso, now)`(`relativeKst` + 기기 시계보다 미래면 "방금") · `toggleSourceStack(root, target)`(위임 클릭) |
 | 화면 모델 (M1-31) | `src/lib/news/feed-view.ts` · `link-pairs.ts` · `labels.ts` · `tag-labels.ts` | 순수 함수(fs·zod 없음 — 섬도 import 가능, 단위 테스트가 검사) | `buildFeed(cards, { lead, labels, firstNo? })` → `FeedCardView[]` · `leadIndex` · `sourceStack`(`more`·`unit` outlets\|articles) · `cardTags` · `cardCompetitions` · `linkPairs` · `CATEGORY_LABEL` · `TRANSFER_STAGE` · `labelTags`·`tagLabelsFrom`(src/lib/data/names.ts는 파일 로더 + 다시 내보내기) |
 | 표시 이름 로더 (M1-31) | `src/lib/data/card-labels.ts` | 빌드 때(fs) | `loadCardLabels()` — 태그 한글(names.ko) · 대회 약칭(competitions shortKo·nameKo) · 한국 선수(korean-players) |
+| 설정 파일 읽기 (M1-36 리뷰) | `src/lib/data/config-file.ts` · `src/lib/data/competitions.ts` | 빌드 때(fs) | `readConfigFile(file, schema, label, empty)`(없으면 `empty` · 깨지면 던짐 · 파일·label별 캐시) — card-labels·about·대회 로더가 쓴다 · `COMPETITIONS_PATH`·`loadCompetitionsConfig()`(대회 설정은 이 한 곳 — `loadCompetitionLabels`는 이것으로 Map) |
+| Tier 배지 (M1-31·M1-36) | `src/components/ui/tier-badge.tsx` | 서버(`cx`) | `<TierBadge tier className?>` — §9.3 Tier 배지(높이 20px, "Tier n", 1 채움 · 2 2px 실선 · 3 1px 점선, 화면 밖 "출처 "), `whitespace-nowrap`·`flex-none`. 카드 이적 단계 줄·`/about` 출처 목록·Tier 표 |
 | 내비 항목 (M1-30) | `src/components/shell/site-nav.ts` | 서버 | `NAV_ITEMS`(하단 탭·상단 내비 공통, M1 홈·뉴스) · `NavKey` |
 | 호 정보 (M1-30) | `src/lib/issue.ts` | 순수 함수 | `issueNumber(date)`(창간일 `FIRST_ISSUE_DATE` 2026-10-12) · `issueMeta(news, runs)` → `{ date, no, publishedAt, updatedAt }` |
 | 호 로더 (M1-30) | `src/lib/data/issue.ts` | 빌드 때(fs) | `loadLatestIssue()` · `loadIssue(date)`(M1-34 아카이브) → `{ news, issue }` — 페이지가 셸에 `issue`를 넘긴다 |
-| 소개 페이지 (M1-36) | `src/app/about/page.tsx` + `src/components/about/` | 서버(JS 0) | `<AboutToc variant="contents\|inline">`(차례 — 같은 페이지 앵커 `<a href="#id">`) · `<ScheduleTable schedule>`(계절별 발행 시각표) · `<TermList items>`(`<dl>` 항목 줄) · `<OutletList outlets showLang>`(매체 + 리더 점선 + Tier) · `<TierBadge tier>`(§9.3 Tier 배지 — M1-31 카드 배지와 합칠 것) · `<Leader>`(리더 점선) |
-| 소개 모델·앵커 (M1-36) | `src/lib/about.ts` · `src/lib/about-sections.ts` · `src/lib/data/about.ts` | 순수 함수 · 빌드 때(fs) | `publishSchedule(date)` → `{ current, next }`(계절·공개 시각·첫 호~마지막 호 — D26) · `seasonSpanOf` · `outletsFrom(sources)`(일일 수집 소스 → 매체명 묶음) · `ABOUT_SECTIONS`·`aboutHref(id?)`(의존성은 paths뿐 — 섬에서도 import 가능) · `loadSourcesConfig()`·`loadCompetitionsConfig()` |
+| 소개 페이지 (M1-36) | `src/app/about/page.tsx` + `src/components/about/` | 서버(JS 0) | `<AboutToc variant="contents\|inline">`(차례 — 같은 페이지 앵커 `<a href="#id">`) · `<ScheduleTable schedule>`(계절별 발행 시각표) · `<TermList items>`(`<dl>` 항목 줄) · `<OutletList outlets showLang>`(매체 + 리더 점선 + Tier 배지) · `<Leader>`(리더 점선) |
+| 소개 모델·앵커 (M1-36) | `src/lib/about.ts` · `src/lib/about-sections.ts` · `src/lib/data/about.ts` | 순수 함수 · 빌드 때(fs) | `publishSchedule(date, firstIssue?)` → `{ current, next }`(계절·공개 시각·첫 호~마지막 호 — D26, 지금 계절의 첫 호는 창간일 이후) · `seasonSpanOf` · `winterDelayMinutes()` · `issueDateLabel(date, base?)`(발행일 라벨 — 시각표·문장 공용) · `outletsFrom(sources)`(일일 수집 소스 → 매체명 묶음) · `ABOUT_SECTIONS`·`aboutHref(id?)`(의존성은 paths뿐 — 섬에서도 import 가능) · `loadSourcesConfig()`(대회는 `competitions.ts`) |
 | 커스텀 404 (M1-36) | `src/app/not-found.tsx` | 서버 | 앱 셸(현재 탭 없음) + 섹션 머리 h1 "페이지를 찾을 수 없습니다"·NOT FOUND + 윤곽 "404"(장식) + 안내 2줄 + 홈·뉴스 텍스트 링크 → `out/404.html` |
 
 - **섬 크기(gzip, esbuild로 react 빼고 실측)**: Tabs 1.9KB · Toast 1.9KB · 테마 토글 1.9KB(토스트 호출 포함) · 셋을 함께 4.4KB(커밋 전 리뷰 전 1.6 · 1.7 · 1.8 · 3.8KB — Tabs Tab 순서 보정 +0.26KB, Toast 포커스 복귀 +0.19KB). D0-12 때는 섬을 레이아웃에 넣지 않아 홈 초기 JS가 135.7KB 그대로였고, M1-30 앱 셸이 테마 토글·`<Toaster>`를 모든 페이지에 넣어 138.0KB가 됐다(§11.5).
@@ -855,7 +857,7 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 
 ---
 
-## 11. 구현 메모 (D0-10 ~ D0-12 · M1-30 · M1-31)
+## 11. 구현 메모 (D0-10 ~ D0-12 · M1-30 · M1-31 · M1-36)
 
 ### 11.1 DECISIONS §7에서 넘어온 것
 
@@ -944,12 +946,13 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 ### 11.7 M1-36 (`/about` · 커스텀 404) — 구현 완료
 
 - **시안에 없는 화면 — 새 언어 없이 기존 문법으로**: 절 = 섹션 머리(3px 잉크 괘선 + h2 + 러닝 헤드 KICK-OFF·SOURCES·TIERS·AI NOTICE·MATCH DATA·CONTACT), 줄 = 괘선 사이의 한 줄(카드·5줄 행과 같은 `--rule` 구분), 이름과 값 = 리더 점선(목차 행·출처 목록과 같은 2px dotted `--ink-3`), 차례 = 1024 이상 목차 행 모양의 링크(이름 + 리더 + 절 번호 Barlow 600 17px `--ink-2`). 본문은 62ch(뒤표지 설명 문단과 같은 줄 길이). 큰 숫자는 발행 시각(`--num-score`, 지금 계절은 `--brand-accent` + "지금" 도장 — 색만으로 전하지 않음)과 처리 기한 "72"뿐이다(원칙 3).
-- **배치**: 1024 이상은 앱 셸 `contents` 슬롯에 차례(`<nav aria-label="소개 차례">`, sticky top 16px — 뉴스 목차와 같은 자리, 머리 "차례" + CONTENTS)를 넣어 2단, 1023 이하는 소개 아래 얇은 머리 + 2열 차례(세로 01~03 · 04~06). 마주 보는 면은 없다(1280 지면 984px). 매체 목록은 1024 이상 해외·국내 2열. 다루는 대회는 평탄 탭 범례(약칭과 이름이 같으면 이름은 화면 밖만).
+- **배치**: 1024 이상은 앱 셸 `contents` 슬롯에 차례(`<nav aria-label="소개 차례">`, sticky top 16px — 뉴스 목차와 같은 자리, 머리 "차례" + CONTENTS)를 넣어 2단, 1023 이하는 소개 아래 얇은 머리 + 2열 차례(세로 01~03 · 04~06). 마주 보는 면은 없다(1280 지면 984px). 매체 목록은 1024 이상 해외·국내 2열. 다루는 대회는 평탄 탭 범례(약칭과 이름이 같으면 이름을 되풀이하지 않는다 — 화면 밖에도 두지 않아 스크린리더가 "라리가 라리가"로 읽지 않는다, 리뷰 반영).
 - **앵커**: `ABOUT_SECTIONS`(`#schedule`·`#sources`·`#tier`·`#ai`·`#data`·`#contact`). 절은 `scroll-margin-top` 16px(위에 고정 요소가 없어 여백만). 같은 페이지 앵커(차례·"요청 방법")는 `next/link`가 아니라 일반 `<a href="#id">` — 브라우저 기본 이동이라 `:target`이 걸려 절 머리 괘선이 `--brand-accent`로 바뀐다(색 면 전환 base). `next/link`(뒤표지·5줄 "AI 작성" 라벨)로 들어오면 위치는 맞지만 history.pushState라 `:target`이 갱신되지 않는다(감수 — 점진적 향상).
 - **404**: 빈 상태 '0'(64px 윤곽 `--ink-2`)을 숫자가 주인공이 되도록 키운 윤곽 "404"(112/176px, 장식 `aria-hidden` — h1이 같은 뜻) + 안내(UI 문구만) + 홈·뉴스 텍스트 링크. 1024 이상은 숫자 · 안내 2열(아래 맞춤). 링크·자산은 basePath 절대 경로라 깊은 경로에서도 깨지지 않는다(e2e).
-- **뒤표지 링크**: 혼합안 그대로 AI 작성 고지(`/about/#ai`) · 소개·출처 정책(`/about/` — 한 링크) · 삭제·정정 요청(`/about/#contact`) · GitHub↗. 개인정보 처리방침(`/privacy/`)은 M5-05에서 소개·출처 정책 뒤에. 짧은 "소개" 단독 링크는 폭 22px로 44px 터치 타깃에 못 미친다(셸 e2e).
-- **사실 출처**: 문구의 바뀌는 값은 모두 빌드 때 계산한다 — 발행 시각·계절 구간(time.ts D26 규칙, 기준일 = 최신 호), 매체·Tier(`configs/sources.json` 일일 수집 대상 — 파이프라인 `planDailySources().feeds`와 테스트 대조, 매체명은 카드와 같은 `publisherNameOf`), 대회(`competitions.json`), 연락처·필수 문구(`site.ts`). 모델 이름은 데이터에 기록이 없어 쓰지 않는다.
-- **남은 일**: M1-31 병합 뒤 Tier 배지 하나로(`src/components/about/tier-badge.tsx` ↔ 카드 이적 단계 줄의 배지 — 규격 같음), "AI 작성" 라벨 견본(`AiLabelSample`)과 M1-32 라벨 모양 맞추기, 대회 설정 로더 정리(card-labels).
+- **뒤표지 링크**: 혼합안 그대로 AI 작성 고지(`/about/#ai`) · 소개·출처 정책(`/about/` — 한 링크) · 삭제·정정 요청(`/about/#contact`) · GitHub↗. 개인정보 처리방침(`/privacy/`)은 M5-05에서 소개·출처 정책 뒤에. 짧은 "소개" 단독 링크는 폭 22px로 44px 터치 타깃에 못 미친다(셸 e2e). 혼합안 앵커 `#takedown`은 구현에서 `#contact`로 이름을 바꿨다(절이 삭제·정정 요청 이메일·이슈 양식·오류 신고 연락처 전체라서).
+- **사실 출처**: 문구의 바뀌는 값은 모두 빌드 때 계산한다 — 발행 시각·계절 구간(time.ts D26 규칙, 기준일 = 최신 호 — 지금 계절의 첫 호는 창간일 `FIRST_ISSUE_DATE`로 잘라 창간 전 날짜를 호가 있던 것처럼 쓰지 않는다, 리뷰 반영)·계절 간 지연 분(`winterDelayMinutes`), 매체·Tier(`configs/sources.json` 일일 수집 대상 — 파이프라인 `planDailySources().feeds`와 테스트 대조, 매체명은 카드와 같은 `publisherNameOf`), 대회(`competitions.json`), 연락처·필수 문구(`site.ts`). 모델 이름은 데이터에 기록이 없어 쓰지 않는다.
+- **리뷰 반영(병합 뒤)**: Tier 배지를 `src/components/ui/tier-badge.tsx` 하나로 모았다(카드 이적 단계 줄 · `/about` — `cx`, `whitespace-nowrap`·`flex-none`을 카드에도 적용, `ui-class-conflicts` 대상). 설정 읽기는 `readConfigFile`(config-file.ts) 하나, 대회 설정은 `competitions.ts` 한 곳. AI 고지 문구를 구현에 맞춤 — 검증에 걸린 줄은 "바꾸거나 빼고"(brief-publish `dropped`), 마감은 "발행 전 마감"(공개 −10분, D26·D28).
+- **남은 일**: "AI 작성" 라벨 견본(`AiLabelSample`)과 M1-32 라벨 모양 맞추기.
 
 ---
 

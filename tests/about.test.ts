@@ -12,16 +12,18 @@ import { publisherNameOf as scriptsPublisherNameOf } from "../scripts/lib/publis
 import {
   feedLabelOf,
   isDailyFeed,
+  issueDateLabel,
   outletCountByTier,
   outletsFrom,
   publishSchedule,
   seasonSpanOf,
+  winterDelayMinutes,
 } from "@/lib/about";
 import { ABOUT_SECTIONS, aboutHref } from "@/lib/about-sections";
 import { issueFormUrl } from "@/lib/paths";
 import { publisherNameOf } from "@/lib/publisher-name";
 import { SourcesFileSchema, type Source } from "@/lib/schema/source";
-import { REPO_URL } from "@/lib/site";
+import { FIRST_ISSUE_DATE, REPO_URL } from "@/lib/site";
 import { PUBLISH_TIMES_KST, publishSeason, shiftDate } from "@/lib/time";
 
 const SOURCES = SourcesFileSchema.parse(
@@ -101,6 +103,46 @@ describe("seasonSpanOf · publishSchedule — 계절별 발행 시각(D26)", () 
     expect(winter.next.from).toBe("2027-03-29");
     expect(winter.next.publish).toBe("07:00");
   });
+
+  it("지금 계절의 첫 호는 창간일(제 1호)보다 앞서지 않는다 — 창간 전 날짜를 호가 있던 것처럼 쓰지 않는다", () => {
+    expect(FIRST_ISSUE_DATE).toBe("2026-10-12");
+    // 창간이 든 서머타임 계절: 3월 30일이 아니라 창간일부터
+    expect(publishSchedule("2026-10-19").current).toEqual({
+      season: "summer",
+      publish: "07:00",
+      from: "2026-10-12",
+      to: "2026-10-25",
+    });
+    expect(publishSchedule("2026-10-12").current.from).toBe("2026-10-12");
+    // 다음 계절·창간 뒤 계절은 자르지 않는다
+    expect(publishSchedule("2026-10-19").next.from).toBe("2026-10-26");
+    expect(publishSchedule("2027-06-01").current.from).toBe("2027-03-29");
+    // 창간일을 바꿔 넣을 수 있다(창간일이 계절 끝보다 늦으면 그대로)
+    expect(publishSchedule("2026-10-19", "2026-10-01").current.from).toBe(
+      "2026-10-01",
+    );
+    expect(publishSchedule("2026-10-19", "2026-11-01").current.from).toBe(
+      "2026-03-30",
+    );
+  });
+
+  it("winterDelayMinutes — 표준시 공개가 서머타임보다 늦은 분(설정에서 계산)", () => {
+    expect(winterDelayMinutes()).toBe(30);
+    expect(
+      winterDelayMinutes({
+        summer: { publish: "06:45" },
+        winter: { publish: "07:30" },
+      }),
+    ).toBe(45);
+  });
+
+  it("issueDateLabel — 기준일과 해가 같으면 연도 생략, 없거나 다르면 연도", () => {
+    expect(issueDateLabel("2026-10-26")).toBe("2026년 10월 26일 (월)");
+    expect(issueDateLabel("2026-10-26", "2026-10-19")).toBe("10월 26일 (월)");
+    expect(issueDateLabel("2027-03-29", "2026-12-01")).toBe(
+      "2027년 3월 29일 (월)",
+    );
+  });
 });
 
 describe("outletsFrom — 지금 싣는 매체(configs/sources.json)", () => {
@@ -109,6 +151,8 @@ describe("outletsFrom — 지금 싣는 매체(configs/sources.json)", () => {
     expect(SOURCES.filter(isDailyFeed).map((s) => s.id)).toEqual(
       feeds.map((s) => s.id),
     );
+    // isDailyFeed는 crawl type을 싣지 않는다 — 크롤러가 생기면(M1-05) 이 가드가 깨져 /about 목록 규칙을 함께 고치게 한다
+    expect(planDailySources(SOURCES).crawls).toEqual([]);
     const names = [...new Set(feeds.map(scriptsPublisherNameOf))];
     expect(
       outletsFrom(SOURCES)

@@ -120,6 +120,9 @@ describe("AboutPage — 머리·차례·절", () => {
     const items = within(comps).getAllByRole("listitem");
     expect(items).toHaveLength(6);
     expect(items[0]).toHaveTextContent("EPL프리미어리그");
+    // 약칭이 곧 이름이면 이름을 되풀이하지 않는다(화면 밖에도 — 스크린리더 "라리가 라리가" 방지)
+    expect(items[1]?.textContent).toBe("라리가");
+    expect(items[2]?.textContent).toBe("세리에A");
     expect(items[5]).toHaveTextContent("UCLUEFA 챔피언스리그");
   });
 });
@@ -130,7 +133,8 @@ describe("발행 시각 — 계절별(D26), 빌드 때 계산", () => {
     const el = section("schedule");
     const rows = within(el).getAllByRole("listitem");
     expect(rows[0]).toHaveTextContent(
-      "07:00KST유럽 서머타임 기간지금2026년 3월 30일 (월) ~ 10월 25일 (일) 호",
+      // 지금 계절의 첫 호는 창간일(제 1호 2026-10-12)부터 — 3월 30일부터 호가 있던 것처럼 쓰지 않는다
+      "07:00KST유럽 서머타임 기간지금2026년 10월 12일 (월) ~ 10월 25일 (일) 호",
     );
     expect(rows[1]).toHaveTextContent(
       "07:30KST유럽 표준시 기간2026년 10월 26일 (월) ~ 2027년 3월 28일 (일) 호",
@@ -245,7 +249,11 @@ describe("AI 작성 고지(#ai — 브리핑 'AI 작성' 라벨이 가리킴, D2
     );
     expect(el).toHaveTextContent("기사 제목이나 내용은 넣지 않습니다.");
     expect(el).toHaveTextContent("AI가 쓴 줄 끝에만 AI 작성 라벨을 붙입니다.");
-    expect(el).toHaveTextContent("이 줄에는 라벨을 붙이지 않습니다.");
+    // 검증에 걸린 줄은 코드 문장으로 바꾸거나 뺀다(brief-publish dropped) · 마감은 공개 −10분(D26·D28)
+    expect(el).toHaveTextContent(
+      "맞지 않는 줄은 코드가 정해진 문형으로 만든 문장으로 바꾸거나 빼고, 바꾼 줄에는 라벨을 붙이지 않습니다.",
+    );
+    expect(el).toHaveTextContent("발행 전 마감까지 답을 받지 못하거나");
     expect(el).toHaveTextContent("전날 경기가 없으면 AI를 부르지 않습니다.");
     // 라벨 견본은 링크가 아니다
     expect(within(el).queryByRole("link", { name: "AI 작성" })).toBeNull();

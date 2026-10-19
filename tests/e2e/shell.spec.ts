@@ -174,7 +174,7 @@ test.describe("마스트헤드·뒤표지 — 데이터에서 계산한 호수·
       FOOTBALL_DATA_ATTRIBUTION,
     );
     await expect(footer).toContainText("API-Football");
-    // 아직 화면에 없는 오늘의 5줄·AI 작성 고지는 설명하지 않는다(M1-32에서 더함)
+    // 설명 문단에는 아직 오늘의 5줄·AI 작성 고지 문장이 없다(M1-32에서 더함). 링크 "AI 작성 고지"(/about/#ai — M1-36)는 있다
     await expect(footer).not.toContainText("5줄");
     // /about 링크(M1-36 — 순서·앵커는 tests/e2e/about.spec.ts) + GitHub. 개인정보 처리방침(/privacy/)은 M5-05
     const links = footer.getByRole("link");

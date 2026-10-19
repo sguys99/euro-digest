@@ -23,6 +23,7 @@ import { COMPETITION_SURFACE } from "@/components/ui/competition";
 import { FilterClearButton } from "@/components/ui/filter-clear-button";
 import * as Icons from "@/components/ui/icons";
 import { Tabs, TabsList, TabsPanel, TabsTrigger } from "@/components/ui/tabs";
+import { TierBadge } from "@/components/ui/tier-badge";
 import { dismissToast, toast, Toaster, ToastView } from "@/components/ui/toast";
 import type { CompId } from "@/lib/schema/common";
 
@@ -237,6 +238,16 @@ const CASES: ReadonlyArray<[string, () => ReactElement]> = [
           </span>
         ))}
         <StampChip>이적</StampChip>
+      </>
+    ),
+  ],
+  [
+    "TierBadge — Tier 1·2·3",
+    () => (
+      <>
+        <TierBadge tier={1} />
+        <TierBadge tier={2} />
+        <TierBadge tier={3} />
       </>
     ),
   ],

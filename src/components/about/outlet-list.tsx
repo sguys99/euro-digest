@@ -1,7 +1,7 @@
+import { TierBadge } from "@/components/ui/tier-badge";
 import { langLabel, type Outlet } from "@/lib/about";
 
 import { Leader } from "./leader";
-import { TierBadge } from "./tier-badge";
 
 /**
  * 지금 싣는 매체 목록 (M1-36 `/about#sources` — PRD FR-140 "출처", DESIGN §9.3 출처 스택 "매체 이름은 텍스트만 — 로고 금지")

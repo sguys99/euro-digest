@@ -15,6 +15,7 @@ import {
   loadCompetitionLabels,
   loadKoreanPlayerSlugs,
 } from "@/lib/data/card-labels";
+import { loadCompetitionsConfig } from "@/lib/data/competitions";
 
 const dir = mkdtempSync(path.join(tmpdir(), "card-labels-"));
 const missing = path.join(dir, "missing.json");
@@ -46,6 +47,19 @@ describe("loadCompetitionLabels", () => {
     expect(() =>
       loadCompetitionLabels(write("bad-comp-schema.json", '[{"id":"X"}]')),
     ).toThrow(/대회 설정 스키마 검증 실패/);
+  });
+});
+
+describe("loadCompetitionsConfig — 대회 설정은 한 로더(src/lib/data/competitions.ts)", () => {
+  it("약칭 표는 같은 설정에서 만든다 · 파일이 없으면 빈 배열, 깨졌으면 던진다", () => {
+    const config = loadCompetitionsConfig();
+    expect(config.map((c) => c.id)).toEqual([
+      ...loadCompetitionLabels().keys(),
+    ]);
+    expect(loadCompetitionsConfig(missing)).toEqual([]);
+    expect(() => loadCompetitionsConfig(write("bad-comp-2.json", "["))).toThrow(
+      /JSON을 읽을 수 없음/,
+    );
   });
 });
 

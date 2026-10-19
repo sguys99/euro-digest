@@ -12,9 +12,12 @@
 import { publisherNameOf } from "@/lib/publisher-name";
 import type { Tier } from "@/lib/schema/common";
 import type { Source } from "@/lib/schema/source";
+import { FIRST_ISSUE_DATE } from "@/lib/site";
 import {
   europeanSummerTimeTransitions,
+  formatKst,
   kstDate,
+  kstDayRangeUtc,
   PUBLISH_TIMES_KST,
   publishSeason,
   shiftDate,
@@ -79,14 +82,48 @@ export function seasonSpanOf(date: string): SeasonSpan {
 export interface PublishSchedule {
   /** 기준 발행일(KST) */
   date: string;
+  /** 지금 계절 — 첫 호는 창간일보다 앞서지 않는다(창간 전에는 호가 없었다) */
   current: SeasonSpan;
   next: SeasonSpan;
 }
 
-/** 기준 발행일(최신 호 날짜 — 없으면 빌드 날짜)의 시각표 */
-export function publishSchedule(date: string): PublishSchedule {
-  const current = seasonSpanOf(date);
-  return { date, current, next: seasonSpanOf(shiftDate(current.to, 1)) };
+/**
+ * 기준 발행일(최신 호 날짜 — 없으면 빌드 날짜)의 시각표. 지금 계절의 첫 호는 창간일(`FIRST_ISSUE_DATE` — 제 1호)로 자른다:
+ * 창간이 든 계절이면 "2026년 10월 12일 (월) ~ 10월 25일 (일) 호"(그 전 날짜는 호가 없었다). 창간일이 계절 끝보다 늦으면(기준일이
+ * 창간 전 — 실제로는 없음) 자르지 않는다.
+ */
+export function publishSchedule(
+  date: string,
+  firstIssue: string = FIRST_ISSUE_DATE,
+): PublishSchedule {
+  const span = seasonSpanOf(date);
+  const current =
+    span.from < firstIssue && firstIssue <= span.to
+      ? { ...span, from: firstIssue }
+      : span;
+  return { date, current, next: seasonSpanOf(shiftDate(span.to, 1)) };
+}
+
+/** 계절이 바뀔 때 공개 시각이 늦어지는 분 — 표준시 − 서머타임(`PUBLISH_TIMES_KST` 07:30 − 07:00 = 30) */
+export function winterDelayMinutes(
+  times: Readonly<
+    Record<PublishSeason, { publish: string }>
+  > = PUBLISH_TIMES_KST,
+): number {
+  const minutes = (hhmm: string): number => {
+    const [h = 0, m = 0] = hhmm.split(":").map(Number);
+    return h * 60 + m;
+  };
+  return minutes(times.winter.publish) - minutes(times.summer.publish);
+}
+
+/**
+ * 발행일(KST "YYYY-MM-DD") 라벨 — "10월 26일 (월)". 기준일이 없거나 기준일과 해가 다르면 연도를 붙인다("2027년 3월 29일 (월)").
+ * 날짜 라벨이라 그날 00:00 KST 순간으로 바꿔 `formatKst`에 넘긴다(시각표·문장이 같은 함수를 쓴다).
+ */
+export function issueDateLabel(date: string, base?: string): string {
+  const sameYear = base !== undefined && base.slice(0, 4) === date.slice(0, 4);
+  return formatKst(kstDayRangeUtc(date).start, sameYear ? "date" : "fullDate");
 }
 
 // ─── 지금 싣는 매체 ──────────────────────────────────────────────────────

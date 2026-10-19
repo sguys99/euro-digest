@@ -6,19 +6,22 @@ import { Leader } from "@/components/about/leader";
 import { OutletList } from "@/components/about/outlet-list";
 import { ScheduleTable } from "@/components/about/schedule-table";
 import { TermList } from "@/components/about/term-list";
-import { TierBadge } from "@/components/about/tier-badge";
 import { AppShell } from "@/components/shell/app-shell";
 import { FlatTab } from "@/components/ui/chip";
 import { SectionHead } from "@/components/ui/section-head";
+import { TierBadge } from "@/components/ui/tier-badge";
 import {
+  issueDateLabel,
   SEASON_LABEL,
   outletCountByTier,
   outletsFrom,
   publishSchedule,
+  winterDelayMinutes,
   type Outlet,
 } from "@/lib/about";
 import { ABOUT_SECTIONS, type AboutSectionId } from "@/lib/about-sections";
-import { loadCompetitionsConfig, loadSourcesConfig } from "@/lib/data/about";
+import { loadSourcesConfig } from "@/lib/data/about";
+import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { issueFormUrl } from "@/lib/paths";
 import type { Tier } from "@/lib/schema/common";
@@ -29,13 +32,7 @@ import {
   SITE_NAME,
   SITE_TAGLINE,
 } from "@/lib/site";
-import {
-  formatKst,
-  kstDate,
-  kstDayRangeUtc,
-  nowUtcIso,
-  PUBLISH_TIMES_KST,
-} from "@/lib/time";
+import { kstDate, nowUtcIso } from "@/lib/time";
 
 /*
  * `/about/` 소개·정책 (PRD FR-140 · §4 IA, plan M1-36) — 서비스 소개 · 발행 시각 · 출처·저작권 정책 · 출처 Tier · AI 작성 고지 ·
@@ -141,10 +138,8 @@ export default function AboutPage() {
                   <FlatTab comp={c.id} title={c.nameKo}>
                     {c.shortKo}
                   </FlatTab>
-                  {/* 약칭이 곧 이름이면(라리가·세리에A·리그1) 이름을 되풀이하지 않는다 — 화면 밖에는 정식 이름 */}
-                  {sameName(c.shortKo, c.nameKo) ? (
-                    <span className="sr-only">{c.nameKo}</span>
-                  ) : (
+                  {/* 약칭이 곧 이름이면(라리가·세리에A·리그1) 이름을 되풀이하지 않는다 — 화면 밖에도(스크린리더 "라리가 라리가" 방지) */}
+                  {sameName(c.shortKo, c.nameKo) ? null : (
                     <span>{c.nameKo}</span>
                   )}
                 </li>
@@ -174,7 +169,7 @@ export default function AboutPage() {
           지금은 {SEASON_LABEL[current.season]}이라 매일{" "}
           <Num>{current.publish}</Num> KST에 발행합니다.{" "}
           <time dateTime={next.from}>
-            {issueLabel(next.from, schedule.date)}
+            {issueDateLabel(next.from, schedule.date)}
           </time>{" "}
           호부터는 <Num>{next.publish}</Num> KST입니다.
         </p>
@@ -186,7 +181,7 @@ export default function AboutPage() {
         <p className={NOTE}>
           맨 위의 ‘제 N호’는{" "}
           <time dateTime={FIRST_ISSUE_DATE}>
-            {issueLabel(FIRST_ISSUE_DATE)}
+            {issueDateLabel(FIRST_ISSUE_DATE)}
           </time>{" "}
           제 1호부터 하루에 하나씩 늘어납니다. 발행하지 못한 날이 있어도
           날짜만큼 셉니다.
@@ -346,12 +341,12 @@ export default function AboutPage() {
             {
               term: "검증",
               description:
-                "문장 속 점수·이름·순위 표현을 코드가 입력 데이터와 맞춰 봅니다. 맞지 않는 줄은 코드가 정해진 문형으로 만든 문장으로 바꾸고, 이 줄에는 라벨을 붙이지 않습니다.",
+                "문장 속 점수·이름·순위 표현을 코드가 입력 데이터와 맞춰 봅니다. 맞지 않는 줄은 코드가 정해진 문형으로 만든 문장으로 바꾸거나 빼고, 바꾼 줄에는 라벨을 붙이지 않습니다.",
             },
             {
               term: "코드 문장",
               description:
-                "AI의 답 전체가 검증을 통과하지 못하면 한 번 다시 요청합니다. 그래도 통과하지 못하거나, 발행 시각까지 답을 받지 못하거나, 비용 상한을 넘을 것 같으면 모든 줄을 코드가 만든 문장으로 라벨 없이 싣습니다.",
+                "AI의 답 전체가 검증을 통과하지 못하면 한 번 다시 요청합니다. 그래도 통과하지 못하거나, 발행 전 마감까지 답을 받지 못하거나, 비용 상한을 넘을 것 같으면 모든 줄을 코드가 만든 문장으로 라벨 없이 싣습니다.",
             },
             {
               term: "이름 표기",
@@ -582,28 +577,7 @@ function AiLabelSample() {
   );
 }
 
-/** 표준시 기간 공개가 서머타임 기간보다 늦은 분(PUBLISH_TIMES_KST — 07:30 − 07:00 = 30) */
-function winterDelayMinutes(): number {
-  const minutes = (hhmm: string) => {
-    const [h = 0, m = 0] = hhmm.split(":").map(Number);
-    return h * 60 + m;
-  };
-  return (
-    minutes(PUBLISH_TIMES_KST.winter.publish) -
-    minutes(PUBLISH_TIMES_KST.summer.publish)
-  );
-}
-
 /** 약칭과 정식 이름이 띄어쓰기만 다른가(세리에A · 세리에 A) */
 function sameName(short: string, name: string): boolean {
   return short.replace(/\s/g, "") === name.replace(/\s/g, "");
-}
-
-/**
- * 발행일 라벨 "10월 26일 (월)" — 기준일(시각표 기준 호 날짜)과 해가 다르면 연도를 붙인다("2027년 3월 29일 (월)").
- * 기준일이 없으면 연도를 붙인다.
- */
-function issueLabel(date: string, base?: string): string {
-  const sameYear = base !== undefined && base.slice(0, 4) === date.slice(0, 4);
-  return formatKst(kstDayRangeUtc(date).start, sameYear ? "date" : "fullDate");
 }
