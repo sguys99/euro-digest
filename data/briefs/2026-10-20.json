@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-20",
+  "generatedAt": "2026-10-20T00:39:54.932Z",
+  "runId": "collect-prod-20261020T003904Z-f696",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "토트넘이 Omar Marmoush의 58분 결승골로 코번트리 시티를 3-1로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m560606"
+      ],
+      "comps": [
+        "EPL"
+      ]
+    },
+    {
+      "text": "몬차가 칼리아리를 4-0으로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m558576"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "토리노가 파르마를 3-0으로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m558578"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "헤타페가 Martin Satriano의 56분 동점골로 라요 바예카노와 1-1로 비겼다.",
+      "ai": true,
+      "refs": [
+        "m564717"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "토리노의 Giovanni Simeone이 멀티골을 기록했다.",
+      "ai": true,
+      "refs": [
+        "m558578"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    }
+  ]
+}

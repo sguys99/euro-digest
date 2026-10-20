@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-18T05:47:14.008Z",
+  "updatedAt": "2026-10-20T00:39:04.079Z",
   "names": {
     "Abde Ezzalzouli": {
       "count": 2,
@@ -50,6 +50,13 @@
       "kind": "player",
       "cards": []
     },
+    "Andrew Robertson": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Andrija Maksimović": {
       "count": 2,
       "firstSeen": "2026-10-18T05:34:53.361Z",
@@ -85,6 +92,13 @@
       "kind": "player",
       "cards": []
     },
+    "Ben Davies": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Bil Nsongo": {
       "count": 1,
       "firstSeen": "2026-10-17T12:56:47.182Z",
@@ -106,6 +120,13 @@
       "kind": "player",
       "cards": []
     },
+    "Brandon Thomas-Asante": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Carlos Augusto": {
       "count": 2,
       "firstSeen": "2026-10-18T05:34:53.361Z",
@@ -117,6 +138,13 @@
       "count": 1,
       "firstSeen": "2026-10-17T12:56:47.182Z",
       "lastSeen": "2026-10-17T12:56:47.182Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Che Adams": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
       "kind": "player",
       "cards": []
     },
@@ -148,6 +176,13 @@
       "kind": "player",
       "cards": []
     },
+    "Dany Mota": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Darryl Bakola": {
       "count": 1,
       "firstSeen": "2026-10-17T12:56:47.182Z",
@@ -173,6 +208,13 @@
       "count": 1,
       "firstSeen": "2026-10-17T12:56:47.182Z",
       "lastSeen": "2026-10-17T12:56:47.182Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Eddy Kouadio": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
       "kind": "player",
       "cards": []
     },
@@ -232,6 +274,20 @@
       "kind": "player",
       "cards": []
     },
+    "Foe Ondoa": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Francho Serrano Gracia": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Frederik Schmahl": {
       "count": 3,
       "firstSeen": "2026-10-18T05:34:53.361Z",
@@ -281,6 +337,20 @@
       "kind": "player",
       "cards": []
     },
+    "Giovanni Simeone": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Gustavo Varela": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Hennes Behrens": {
       "count": 3,
       "firstSeen": "2026-10-18T05:34:53.361Z",
@@ -316,6 +386,27 @@
       "kind": "player",
       "cards": []
     },
+    "Jack Rudoni": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
+    "James Maddison": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Jay Robinson": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Jeremy Doku": {
       "count": 3,
       "firstSeen": "2026-10-18T05:34:53.361Z",
@@ -327,6 +418,13 @@
       "count": 2,
       "firstSeen": "2026-10-18T05:34:53.361Z",
       "lastSeen": "2026-10-18T05:41:20.075Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Jorge De Frutos": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
       "kind": "player",
       "cards": []
     },
@@ -407,6 +505,13 @@
       "kind": "player",
       "cards": []
     },
+    "Martin Satriano": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Mateo Kovačić": {
       "count": 3,
       "firstSeen": "2026-10-18T05:34:53.361Z",
@@ -446,6 +551,13 @@
       "count": 3,
       "firstSeen": "2026-10-18T05:34:53.361Z",
       "lastSeen": "2026-10-18T05:47:14.008Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Mohammed Kudus": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
       "kind": "player",
       "cards": []
     },
@@ -491,6 +603,13 @@
       "kind": "player",
       "cards": []
     },
+    "Omar Marmoush": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
+      "kind": "player",
+      "cards": []
+    },
     "Pablo Fornals": {
       "count": 2,
       "firstSeen": "2026-10-18T05:34:53.361Z",
@@ -530,6 +649,13 @@
       "count": 2,
       "firstSeen": "2026-10-18T05:34:53.361Z",
       "lastSeen": "2026-10-18T05:41:20.075Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Rafik Belghali": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
       "kind": "player",
       "cards": []
     },
@@ -621,6 +747,13 @@
       "count": 3,
       "firstSeen": "2026-10-18T05:34:53.361Z",
       "lastSeen": "2026-10-18T05:47:14.008Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Álvaro García": {
+      "count": 1,
+      "firstSeen": "2026-10-20T00:39:04.079Z",
+      "lastSeen": "2026-10-20T00:39:04.079Z",
       "kind": "player",
       "cards": []
     }
