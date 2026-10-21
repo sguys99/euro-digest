@@ -1,85 +1,94 @@
 {
-  "updatedAt": "2026-10-20T00:42:47.824Z",
+  "updatedAt": "2026-10-21T00:09:26.083Z",
   "fixtures": [
     {
-      "id": 1635661,
+      "id": 1635647,
       "comp": "UCL",
       "leagueId": 2,
-      "kickoff": "2026-10-20T16:45:00.000Z",
+      "kickoff": "2026-10-21T16:45:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     },
     {
-      "id": 1635719,
+      "id": 1635684,
       "comp": "UCL",
       "leagueId": 2,
-      "kickoff": "2026-10-20T16:45:00.000Z",
+      "kickoff": "2026-10-21T16:45:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     },
     {
-      "id": 1635617,
-      "comp": "UCL",
-      "leagueId": 2,
-      "kickoff": "2026-10-20T19:00:00.000Z",
+      "id": 1570389,
+      "comp": "LALIGA",
+      "leagueId": 140,
+      "kickoff": "2026-10-21T18:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     },
     {
-      "id": 1635655,
+      "id": 1635621,
       "comp": "UCL",
       "leagueId": 2,
-      "kickoff": "2026-10-20T19:00:00.000Z",
+      "kickoff": "2026-10-21T19:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     },
     {
-      "id": 1635688,
+      "id": 1635630,
       "comp": "UCL",
       "leagueId": 2,
-      "kickoff": "2026-10-20T19:00:00.000Z",
+      "kickoff": "2026-10-21T19:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     },
     {
-      "id": 1635693,
+      "id": 1635636,
       "comp": "UCL",
       "leagueId": 2,
-      "kickoff": "2026-10-20T19:00:00.000Z",
+      "kickoff": "2026-10-21T19:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     },
     {
-      "id": 1635700,
+      "id": 1635645,
       "comp": "UCL",
       "leagueId": 2,
-      "kickoff": "2026-10-20T19:00:00.000Z",
+      "kickoff": "2026-10-21T19:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     },
     {
-      "id": 1635702,
+      "id": 1635672,
       "comp": "UCL",
       "leagueId": 2,
-      "kickoff": "2026-10-20T19:00:00.000Z",
+      "kickoff": "2026-10-21T19:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     },
     {
-      "id": 1635738,
+      "id": 1635716,
       "comp": "UCL",
       "leagueId": 2,
-      "kickoff": "2026-10-20T19:00:00.000Z",
+      "kickoff": "2026-10-21T19:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-20T00:39:11.543Z",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
+      "requeries": 0
+    },
+    {
+      "id": 1635737,
+      "comp": "UCL",
+      "leagueId": 2,
+      "kickoff": "2026-10-21T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-21T00:08:25.933Z",
       "requeries": 0
     }
   ]

@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-21",
+  "generatedAt": "2026-10-21T00:09:52.918Z",
+  "runId": "collect-prod-20261021T000818Z-5933",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "파리 생제르맹이 Vitinha의 81분 결승골로 바르셀로나를 4-2로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m575367"
+      ],
+      "comps": [
+        "UCL"
+      ]
+    },
+    {
+      "text": "맨체스터 시티가 필 포든의 해트트릭을 앞세워 AEK 아테네를 5-1로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m575361"
+      ],
+      "comps": [
+        "UCL"
+      ]
+    },
+    {
+      "text": "리버풀이 비야레알을 4-3으로 꺾었고 승점 9로 2위다.",
+      "ai": true,
+      "refs": [
+        "m575363",
+        "sUCL"
+      ],
+      "comps": [
+        "UCL"
+      ]
+    },
+    {
+      "text": "슬라비아 프라하가 Pavel Kacor의 90분 동점골로 페네르바체와 2-2로 비겼다.",
+      "ai": true,
+      "refs": [
+        "m575360"
+      ],
+      "comps": [
+        "UCL"
+      ]
+    },
+    {
+      "text": "도르트문트가 Serhou Guirassy의 53분 결승골로 Sabah FK를 2-1로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m575359"
+      ],
+      "comps": [
+        "UCL"
+      ]
+    }
+  ]
+}
