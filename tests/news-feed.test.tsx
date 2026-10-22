@@ -73,16 +73,23 @@ describe("NewsFeed — 카드 변형 6종(fixtures 23장)", () => {
     expect(container.textContent).not.toContain("AI 작성");
   });
 
-  it("머리기사는 첫 카드 1장(data-lead) — lead={false}(필터 결과)면 없다", () => {
+  it("머리기사는 첫 카드 1장(data-lead) — lead={false}(머리기사 없는 피드)면 없다", () => {
     const { unmount } = render(<NewsFeed news={sample} />);
     const leads = screen
       .getAllByRole("article")
       .filter((a) => a.hasAttribute("data-lead"));
     expect(leads.map((a) => a.id)).toEqual(["c_f598c95798"]);
-    // 1024 이상에서만 크게 — 클래스는 lg: 변형뿐(1023 이하 일반 카드 모양)
+    // 1024 이상에서만, 카드에 data-lead가 있을 때만 크게 — 필터 결과(M1-33)는 속성을 지운다. 1023 이하 일반 카드 모양
     const leadTitle = within(article("c_f598c95798")).getByRole("heading");
-    expect(leadTitle.className).toContain("lg:text-type-lead-latin");
-    expect(leadTitle.className).not.toMatch(/(^|\s)text-type-lead/);
+    expect(leadTitle.className).toContain(
+      "lg:group-data-lead/card:text-type-lead-latin",
+    );
+    expect(leadTitle.className).not.toMatch(/(^|\s)(lg:)?text-type-lead/);
+    expect(article("c_f598c95798").className).toContain(
+      "lg:data-lead:border-b-2",
+    );
+    // 필터가 걸리지 않는 피드에는 필터 표식이 없다
+    expect(document.querySelector("[data-nf-lead], [data-nf-card]")).toBeNull();
     unmount();
     render(<NewsFeed news={sample} lead={false} />);
     expect(document.querySelector("[data-lead]")).toBeNull();

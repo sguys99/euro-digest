@@ -17,7 +17,8 @@ import { COMPETITION_SURFACE } from "./competition";
  * | `FlatTab`     | `<span>`                | 대회 약칭 평탄 탭(목차·범례) — 대회 색 면 + 약칭 |
  * | `IndexTab`    | `<span>`                | 카드·5줄 오른쪽 세로 인덱스 탭 — 대회 색 면 + 약칭(세로쓰기) |
  *
- * - 모두 서버 컴포넌트(상태 없음)라 JS를 만들지 않는다. 눌림 상태(`pressed`)와 클릭 처리는 필터 섬(M1-33)이 넘긴다.
+ * - 모두 서버 컴포넌트(상태 없음)라 JS를 만들지 않는다. 눌림 상태는 서버가 처음 값(`pressed`)을 그리고, 필터 부트 스크립트·섬(M1-33)이
+ *   `aria-pressed`·`disabled` 속성만 바꾼다(클릭은 위임 리스너 — src/lib/news/filter-dom.ts). 개수 뒤 화면 밖 "건"(접근 이름 "이적 4건").
  *   섬 안에서도 쓰이므로 `cn`(tailwind-merge) 대신 `cx`(병합 없음)로 합친다 — 바깥 `className`은 여백·배치만 준다.
  * - 선택은 반전(잉크 면 + 지면 글자)이나 레드 면 + ✓ + 굵기다(색만으로 전하지 않는다, DESIGN §10).
  * - 비활성(0건)은 --ink-disabled 글자·점선(opacity 금지). 보이는 높이 36px인 칩은 `::after`로 누르는 영역을 46px로 넓힌다.
@@ -88,6 +89,7 @@ export function FilterChip({
       {label}
       <span className="font-numeric text-base leading-none font-semibold text-ink-2 tabular-nums group-disabled/chip:text-current group-aria-pressed/chip:text-current">
         {count}
+        <span className="sr-only">건</span>
       </span>
     </button>
   );
@@ -151,7 +153,8 @@ export function FlatTab({
 /**
  * 인덱스 탭 — 카드·5줄 행 오른쪽 열의 세로 대회 탭(너비 --tab-w, 세로쓰기, 10.5px · ≥1024 11px 800).
  * `writing-mode`는 점진적 향상이다(지원하지 않으면 가로로 좁게 나온다). 약칭 글자가 접근 이름이다.
- * `lead`(머리기사, M1-31): 1024 이상에서 카드 높이만큼 늘이고 12px(DESIGN §9.3 머리기사). 1023 이하는 일반 탭과 같다.
+ * `lead`(머리기사, M1-31): 1024 이상에서 카드 높이만큼 늘이고 12px(DESIGN §9.3 머리기사) — 카드에 `data-lead`가 있을 때만(M1-33 필터 결과는
+ * 속성을 지운다). 1023 이하는 일반 탭과 같다.
  */
 export function IndexTab({
   comp,
@@ -166,7 +169,10 @@ export function IndexTab({
       className={cx(
         "flex w-tab-w items-center justify-center pt-1.75 pb-1.5 font-sans text-[10.5px] leading-[1.08] font-extrabold tracking-normal [text-orientation:upright] [writing-mode:vertical-rl]",
         "transition-colors duration-base ease-print lg:pt-2.25 lg:pb-2",
-        lead ? "lg:flex-1 lg:text-[12px]" : "lg:text-[11px]",
+        // 머리기사: 카드(`group/card`)에 `data-lead`가 있을 때만 — 필터 결과(M1-33)는 속성을 지워 일반 탭으로 돌아간다
+        "lg:text-[11px]",
+        lead &&
+          "lg:group-data-lead/card:flex-1 lg:group-data-lead/card:text-[12px]",
         COMPETITION_SURFACE[comp],
         className,
       )}
@@ -214,8 +220,14 @@ export interface ContentsRowProps extends Omit<
 function ContentsMarkerView({ marker }: { marker: ContentsMarker }) {
   switch (marker.kind) {
     case "competition":
+      // 행 이름이 정식 대회명이라 약칭은 보이는 표식만(D29) — 접근 이름이 "라리가 라리가 6건"처럼 겹치지 않게 숨긴다(M1-33)
       return (
-        <FlatTab comp={marker.comp} size="contents" title={marker.title}>
+        <FlatTab
+          comp={marker.comp}
+          size="contents"
+          title={marker.title}
+          aria-hidden="true"
+        >
           {marker.short}
         </FlatTab>
       );
@@ -271,8 +283,12 @@ export function ContentsRow({
       <ContentsMarkerView marker={marker} />
       <span className="min-w-0 underline-offset-3 group-hover/row:underline">
         {label}
-        {marker.kind === "competition" && pressed ? (
-          <span aria-hidden="true" className="text-brand-accent-text">
+        {/* 대회 행 ✓는 늘 그려 두고 눌림(aria-pressed)에만 보인다 — 필터 섬이 속성만 바꿔도 따라온다(M1-33). 공백도 글자 안에 두어 숨으면 같이 빠진다 */}
+        {marker.kind === "competition" ? (
+          <span
+            aria-hidden="true"
+            className="hidden whitespace-pre text-brand-accent-text group-aria-pressed/row:inline"
+          >
             {" ✓"}
           </span>
         ) : null}
@@ -283,6 +299,7 @@ export function ContentsRow({
       />
       <span className="min-w-4.5 text-right font-numeric text-[17px] leading-none font-semibold text-ink-2 tabular-nums group-disabled/row:text-ink-disabled group-aria-pressed/row:text-ink">
         {count}
+        <span className="sr-only">건</span>
       </span>
     </button>
   );

@@ -3,7 +3,11 @@ import type { ComponentProps, ReactNode } from "react";
 import type { CompId } from "@/lib/schema/common";
 import { cn } from "@/lib/utils";
 
-import { COMPETITION_HEAD, COMPETITION_RING } from "./competition";
+import {
+  COMPETITION_HEAD,
+  COMPETITION_HEAD_LIVE,
+  COMPETITION_RING,
+} from "./competition";
 
 /**
  * 섹션 머리 + 필터 머리 색 면 (DESIGN.md §9.3 섹션 머리 · §9.2 Tabs "필터 머리 색 면", D0-12)
@@ -12,7 +16,11 @@ import { COMPETITION_HEAD, COMPETITION_RING } from "./competition";
  * 대회 필터(`filter`) — 1024 이상 목차·`?comp=`에서만: 면·위 괘선 = 대회 색, 글자 = 면 위 글자색, 러닝 헤드 숨김,
  * 오른쪽에 약칭 상자 + "해제" 버튼. 색 면 안 포커스 링은 면 위 글자색. 색 면 전환은 base(DESIGN §6.2 색 면).
  * 서버 컴포넌트 — "해제" 버튼은 `filter-clear-button.tsx`(`FilterClearButton`, `cx` — 섬이 import해도 tailwind-merge가
- * 들어가지 않게 이 파일과 나눴다)를 `filter.clear`로 넘기고, 클릭 처리는 필터 섬(M1-33)이 onClick으로 준다.
+ * 들어가지 않게 이 파일과 나눴다)를 `filter.clear`로 넘긴다.
+ *
+ * `liveFilter`(M1-33 뉴스 피드 머리): 서버 HTML은 기본 머리이고, 필터 부트 스크립트·섬이 머리 요소의 속성만 바꿔 모양을 고른다 —
+ * `data-comp="{대회 ID}"` = 대회 색 면(위 `filter`와 같은 값) + `liveFilter.comp` 칸, `data-team` = 팀 칸(색 면 없음 — 대회 색이
+ * 아니라서). 둘 다 켜지면 색 면에 두 칸. 칸이 켜지면 러닝 헤드는 숨기고, 좁은 폭에서 넘치면 다음 줄로 내려간다(flex-wrap).
  */
 
 export interface SectionHeadProps extends Omit<
@@ -30,6 +38,11 @@ export interface SectionHeadProps extends Omit<
   thin?: boolean;
   /** 대회 필터 색 면 — 약칭 상자 + 해제 버튼(`clear`) */
   filter?: { comp: CompId; short: string; clear: ReactNode };
+  /**
+   * 속성으로 바뀌는 필터 머리(M1-33) — `comp`: 머리에 `data-comp`가 붙으면 보이는 칸(약칭 상자 + 해제), `team`: `data-team`이면
+   * 보이는 칸(팀 상자 + 해제). 머리 요소의 속성은 부르는 쪽(필터 섬)이 바꾼다
+   */
+  liveFilter?: { comp: ReactNode; team: ReactNode };
 }
 
 export function SectionHead({
@@ -39,6 +52,7 @@ export function SectionHead({
   runningHead,
   thin = false,
   filter,
+  liveFilter,
   className,
   ...props
 }: SectionHeadProps) {
@@ -52,6 +66,13 @@ export function SectionHead({
           "items-center py-1.5 pr-1 pl-3",
           COMPETITION_HEAD[filter.comp],
           COMPETITION_RING[filter.comp],
+        ],
+        liveFilter && [
+          "group/head flex-wrap gap-y-1",
+          // 대회 색 면(위 `filter`와 같은 여백) · 팀 칸(색 면 없이 세로 가운데만)
+          "data-comp:items-center data-comp:py-1.5 data-comp:pr-1 data-comp:pl-3",
+          "data-team:items-center data-team:py-1.5 data-team:pr-1",
+          COMPETITION_HEAD_LIVE,
         ],
         className,
       )}
@@ -73,6 +94,22 @@ export function SectionHead({
           <FilterBadge>{filter.short}</FilterBadge>
           {filter.clear}
         </span>
+      ) : liveFilter ? (
+        <>
+          {runningHead ? (
+            <RunningHead className="group-data-comp/head:hidden group-data-team/head:hidden">
+              {runningHead}
+            </RunningHead>
+          ) : null}
+          <span className="hidden flex-wrap items-center justify-end gap-x-2 gap-y-1 group-data-comp/head:inline-flex group-data-team/head:inline-flex">
+            <span className="hidden items-center gap-1 group-data-comp/head:inline-flex">
+              {liveFilter.comp}
+            </span>
+            <span className="hidden items-center gap-1 group-data-team/head:inline-flex">
+              {liveFilter.team}
+            </span>
+          </span>
+        </>
       ) : runningHead ? (
         <RunningHead>{runningHead}</RunningHead>
       ) : null}

@@ -11,7 +11,7 @@ import { basePath } from "./support/site";
 // 폭별 1단·2단 경계(1023/1024 · 1279/1280)의 내비 보임·가로 넘침·열 구성, 마스트헤드 호수·시각(데이터에서 계산), 뒤표지 문구,
 // 건너뛰기 링크, 하단 탭 sticky, 터치 타깃·포커스 링을 본다. 기대 값은 data/와 src/lib에서 계산한다(하드코딩하지 않는다).
 
-/** 경계 폭 — 1023 이하 1단 · 1024~1279 2단 · 1280 이상 3단(M1은 열을 채우는 페이지가 없어 지면 한 열) */
+/** 경계 폭 — 1023 이하 1단 · 1024~1279 2단 · 1280 이상 3단(M1은 마주 보는 면이 없어 1280 이상도 목차 · 지면 2단, 404는 지면 한 열) */
 const WIDTHS = [375, 1023, 1024, 1279, 1280] as const;
 
 /** 셸을 쓰는 페이지 — [goto 경로, 현재 탭(없으면 null), h1] */
@@ -84,11 +84,42 @@ for (const width of WIDTHS) {
       });
     }
 
-    test("열 구성: 목차·마주 보는 면을 채우는 페이지가 없어 지면 한 열(M1-30) · 티켓 스텁 열 232px", async ({
+    test("열 구성: 홈·뉴스는 카드가 있으면 목차 열(M1-33) — 1024 이상 232 · 1fr 2단, 마주 보는 면 없음 · 404는 지면 한 열 · 티켓 스텁 열 232px", async ({
       page,
     }, testInfo) => {
       desktopOnly(testInfo.project.name);
-      await open(page, "./");
+      const hasCards = (loadLatestNews()?.cards.length ?? 0) > 0;
+      for (const path of ["./", "news/"]) {
+        await open(page, path);
+        const grid = await page.evaluate(() => {
+          const main = document.querySelector("main#main") as HTMLElement;
+          const ticket = document.querySelector("[data-ticket]") as HTMLElement;
+          return {
+            columns: main.parentElement?.getAttribute("data-columns"),
+            display: getComputedStyle(main.parentElement as HTMLElement)
+              .display,
+            mainLeft: main.getBoundingClientRect().left,
+            mainWidth: main.getBoundingClientRect().width,
+            ticketLeft: ticket.getBoundingClientRect().left,
+            ticketWidth: ticket.getBoundingClientRect().width,
+            aside: document.querySelectorAll("aside").length,
+          };
+        });
+        expect(grid.aside).toBe(0);
+        if (!hasCards) {
+          expect(grid.columns).toBe("none");
+          continue;
+        }
+        expect(grid.columns).toBe("contents");
+        // 1024 이상: 목차 232px 뒤 지면(728 @1024 · 984 @1280) · 1023 이하: 지면 한 열(목차 숨김)
+        expect(grid.display).toBe(wide ? "grid" : "block");
+        expect(grid.mainLeft).toBe(grid.ticketLeft + (wide ? 232 : 0));
+        expect(grid.mainWidth).toBe(grid.ticketWidth - (wide ? 232 : 0));
+        await expect(page.locator('nav[aria-label="뉴스 필터"]'))[
+          wide ? "toBeVisible" : "toBeHidden"
+        ]();
+      }
+      await open(page, "this-page-does-not-exist/");
       const layout = await page.evaluate(() => {
         const main = document.querySelector("main#main") as HTMLElement;
         const grid = main.parentElement as HTMLElement;
@@ -432,7 +463,9 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           w.__seen ??= new WeakSet();
           if (w.__seen.has(el)) return { done: true } as const;
           w.__seen.add(el);
-          if (el.closest("main")) return { skip: true } as const;
+          // 본문과 뉴스 필터 목차(M1-33 — 데이터에 따라 행 수가 달라 tests/e2e/news-filter.spec.ts가 따로 잰다)는 건너뛴다
+          if (el.closest("main, nav[aria-label='뉴스 필터']"))
+            return { skip: true } as const;
           const parse = (c: string) => {
             const m = /rgba?\(([^)]+)\)/.exec(c);
             const p = (m?.[1] ?? "0,0,0,0")

@@ -7,9 +7,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import NewsPage from "@/app/news/page";
 import NotFound from "@/app/not-found";
 import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
+import {
+  NEWS_FILTER_BOOT_SCRIPT,
+  NEWS_FILTER_PENDING_SCRIPT,
+} from "@/lib/news/filter-boot";
 import type { RunLog } from "@/lib/schema/run";
 
-// `/news/` 골격(M1-30)과 404(본문 디자인 M1-36) — 앱 셸 안에서 그 페이지 제목이 h1, 워드마크는 p. 필터는 M1-33.
+// `/news/`(M1-30 골격 · M1-33 필터)와 404(본문 디자인 M1-36) — 앱 셸 안에서 그 페이지 제목이 h1, 워드마크는 p.
+// 필터 그리기·부트 스크립트는 tests/news-filter-dom.test.tsx.
 const { loadLatestNews, loadProdRuns } = vi.hoisted(() => ({
   loadLatestNews: vi.fn<() => NewsFile | null>(),
   loadProdRuns: vi.fn<() => RunLog[]>(() => []),
@@ -53,10 +58,50 @@ describe("NewsPage(/news/)", () => {
     expect(screen.queryAllByRole("heading", { level: 3 })).toEqual([]);
   });
 
-  it("발행된 호가 없으면 빈 상태", () => {
+  it("목차가 있으면 설정 JSON·부트 스크립트도 있다(보류만 걸리고 풀 부트가 없는 페이지가 생기지 않게 — M1-34 대비)", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    const { container } = render(<NewsPage />);
+    const contents = screen.queryByRole("navigation", { name: "뉴스 필터" });
+    expect(contents).not.toBeNull();
+    expect(container.querySelector("#news-filter-config")).not.toBeNull();
+    const scripts = [...container.querySelectorAll("script:not([type])")].map(
+      (el) => el.textContent,
+    );
+    // 클라이언트 렌더(happy-dom)는 스크립트 innerHTML의 '<'를 태그로 읽어 글자가 달라진다 — 보류는 그대로, 부트는 머리로 대조
+    expect(scripts).toHaveLength(2);
+    expect(scripts[0]).toBe(NEWS_FILTER_PENDING_SCRIPT);
+    expect(scripts[1]?.slice(0, 80)).toBe(NEWS_FILTER_BOOT_SCRIPT.slice(0, 80));
+  });
+
+  it("필터(M1-33): 목차 열 '뉴스 필터'(대회 6 · 분류 8 · 한국 선수 1) + 1023 이하 분류 칩 줄, 피드 머리가 필터 머리 — 목차가 h1보다 앞이어도 제목 요소가 없다", () => {
+    const { container } = render(<NewsPage />);
+    const contents = screen.getByRole("navigation", { name: "뉴스 필터" });
+    expect(within(contents).getAllByRole("button")).toHaveLength(15);
+    expect(within(contents).queryAllByRole("heading")).toEqual([]);
+    expect(
+      within(contents).getByRole("button", { name: /전체/ }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(
+      screen
+        .getByRole("group", { name: "분류 필터" })
+        .querySelectorAll("button"),
+    ).toHaveLength(9);
+    expect(container.querySelector("[data-columns]")).toHaveAttribute(
+      "data-columns",
+      "contents",
+    );
+    expect(container.querySelector("[data-nf-head] h1")).toHaveTextContent(
+      "뉴스",
+    );
+    expect(container.querySelector("#news-filter-config")).not.toBeNull();
+  });
+
+  it("발행된 호가 없으면 빈 상태 — 필터·목차 열 없음", () => {
     loadLatestNews.mockReturnValue(null);
-    render(<NewsPage />);
+    const { container } = render(<NewsPage />);
     expect(screen.getByText("아직 발행된 소식이 없어요.")).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "뉴스 필터" })).toBeNull();
+    expect(container.querySelector("[data-nf-scope]")).toBeNull();
   });
 });
 

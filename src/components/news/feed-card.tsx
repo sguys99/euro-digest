@@ -37,8 +37,11 @@ import { cn } from "@/lib/utils";
  * | ④ 한국 선수 | `kr` | 거터 "한국" 완장 + 한국 선수 태그 800 --ink |
  * | ⑤ 경기 결과 | `cat === "result"` | 도장 "경기 결과". 결과 가림 띠·`data-spoiler`는 M4-E(결과 가리기 토글) — 제목 바로 아래 자리 |
  * | ⑥ 한국어 보도 | `lang === "ko"` | 한글 제목 규칙(800 · 46em 줄 길이) |
- * | 머리기사 | 화면 모델 `lead` | 1024 이상에서만 위 24 · 아래 22px, 아래 2px 잉크 괘선, 제목 한 단계 크게, 인덱스 탭 카드 높이 |
- * | 연결 줄 | 화면 모델 `link` | 본문 맨 아래 "같은 소식 국내(해외) 보도 ···· 14 인터풋볼 ↓", 카드 아래 여백 4px(머리기사 ≥1024 12px) |
+ * | 머리기사 | 화면 모델 `lead` → `data-lead` | 1024 이상에서만 위 24 · 아래 22px, 아래 2px 잉크 괘선, 제목 한 단계 크게, 인덱스 탭 카드 높이 |
+ * | 연결 줄 | 화면 모델 `link` → `data-paired` | 본문 맨 아래 "같은 소식 국내(해외) 보도 ···· 14 인터풋볼 ↓", 카드 아래 여백 4px(머리기사 ≥1024 12px) |
+ *
+ * 머리기사·연결 줄 모양은 카드 속성(`data-lead`·`data-paired`)에 건 변형이다 — 필터 결과(M1-33)에서는 필터 부트 스크립트·섬이 속성만 지워
+ * 머리기사 없이(DECISIONS #13), 짝이 숨은 카드는 보통 아래 여백으로 그린다(`filterable`).
  *
  * 본문 순서(혼합안 그대로): 태그 줄(도장 + 태그) → 이적 단계 줄 → 원제목 → (결과 가림 띠 — M4-E) → 메타(출처명 · '+N곳' · 상대 시간 +
  * 절대 시각) → 펼친 출처 목록 → 연결 줄. 카드 메뉴(공유·오류 신고)는 M1-35 — 지금은 자리도 두지 않는다.
@@ -54,9 +57,14 @@ export interface FeedCardProps {
   view: FeedCardView;
   /** 카드 제목 단계 — 피드 섹션 머리 바로 아래 단계 */
   titleAs: TitleAs;
+  /**
+   * 필터가 걸리는 피드(M1-33)인가 — 머리기사·연결 줄에 필터 표식(`data-nf-lead`·`data-nf-link`)을 단다. 필터 부트 스크립트·섬이
+   * 필터 결과에서 머리기사 모양(`data-lead`)과 짝이 숨은 연결 줄(`hidden`·카드 `data-paired`)을 끈다
+   */
+  filterable?: boolean;
 }
 
-export function FeedCard({ view, titleAs }: FeedCardProps) {
+export function FeedCard({ view, titleAs, filterable = false }: FeedCardProps) {
   const { card, lead, link, stack } = view;
   const titleId = `${card.id}-t`;
   const listId = `${card.id}-src`;
@@ -67,12 +75,21 @@ export function FeedCard({ view, titleAs }: FeedCardProps) {
       id={card.id}
       aria-labelledby={titleId}
       bleed
-      data-lead={lead ? "" : undefined}
+      // 값 없는 속성은 넘기지 않는다(RSC 페이로드에 카드마다 "$undefined"가 쌓이지 않게)
+      {...(lead ? { "data-lead": "" } : {})}
+      {...(lead && filterable ? { "data-nf-lead": "" } : {})}
+      {...(link ? { "data-paired": "" } : {})}
+      // 필터가 바꾸는 속성(data-lead·data-paired)이 있는 카드만
+      {...(filterable && (lead || link)
+        ? { suppressHydrationWarning: true }
+        : {})}
       className={cn(
-        lead && "lg:border-b-2 lg:border-ink lg:pt-6 lg:pb-5.5",
+        // 머리기사·연결 줄 모양은 속성(`data-lead`·`data-paired`)에 건다 — 필터가 속성만 끄고 켠다(M1-33)
+        lead &&
+          "lg:data-lead:border-b-2 lg:data-lead:border-ink lg:data-lead:pt-6 lg:data-lead:pb-5.5",
         // 연결 줄(최소 40px)이 카드 아래 여백을 대신한다 — 혼합안 .card--paired 4px · 머리기사 12px
-        link && "pb-1 lg:pb-1",
-        link && lead && "lg:pb-3",
+        link && "data-paired:pb-1 lg:data-paired:pb-1",
+        link && lead && "lg:data-lead:data-paired:pb-3",
       )}
     >
       <CardGutter>
@@ -100,18 +117,18 @@ export function FeedCard({ view, titleAs }: FeedCardProps) {
           className={cn(
             lead &&
               (latin
-                ? "lg:mt-3 lg:text-type-lead-latin lg:tracking-[-0.004em]"
-                : "lg:mt-3 lg:text-type-lead lg:tracking-[-0.03em]"),
+                ? "lg:group-data-lead/card:mt-3 lg:group-data-lead/card:text-type-lead-latin lg:group-data-lead/card:tracking-[-0.004em]"
+                : "lg:group-data-lead/card:mt-3 lg:group-data-lead/card:text-type-lead lg:group-data-lead/card:tracking-[-0.03em]"),
           )}
         >
           {card.t}
         </CardTitle>
         {/* 결과 가림 띠 자리(변형 ⑤ — M4-E 결과 가리기 토글이 여기에 띠를 끼우고 제목을 접는다) */}
-        <CardMeta className={cn(lead && "lg:mt-4")}>
+        <CardMeta className={cn(lead && "lg:group-data-lead/card:mt-4")}>
           <SourceLine stack={stack} listId={listId} />
         </CardMeta>
         {stack.more > 0 ? <SourceList id={listId} rows={stack.rows} /> : null}
-        {link ? <LinkLine link={link} /> : null}
+        {link ? <LinkLine link={link} filterable={filterable} /> : null}
       </CardBody>
       <CardTabs>
         {view.comps.map((comp) => (
@@ -386,10 +403,20 @@ function SourceList({ id, rows }: { id: string; rows: readonly SourceView[] }) {
  * 좁은 폭에서는 리더 점선(기본 72px)이 먼저 최소 12px까지 줄고(매체명 줄어듦 계수 0.001 — 혼합안처럼 매체명은 그대로), 그래도
  * 넘치면(긴 라틴 매체명) 매체명이 그 칸 안에서 낱말 단위로 줄을 바꾼다 — 가로로 넘치지 않는다.
  */
-export function LinkLine({ link }: { link: LinkLineView }) {
+export function LinkLine({
+  link,
+  filterable = false,
+}: {
+  link: LinkLineView;
+  /** 필터가 걸리는 피드 — 짝 카드가 숨으면 줄도 숨긴다(`data-nf-link`, M1-33) */
+  filterable?: boolean;
+}) {
   return (
     <a
       href={`#${link.targetId}`}
+      {...(filterable
+        ? { "data-nf-link": "", suppressHydrationWarning: true }
+        : {})}
       className={cn(
         "group/jump relative mt-0.5 flex min-h-10 items-center gap-2 text-type-meta text-ink-2 no-underline",
         "after:absolute after:inset-x-0 after:top-1/2 after:h-11 after:-translate-y-1/2 after:content-['']",

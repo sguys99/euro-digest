@@ -58,3 +58,15 @@ export const COMPETITION_SELECTED_TAB: Readonly<Record<CompId, string>> = {
     "aria-selected:border-competition-ligue1 aria-selected:bg-competition-ligue1 aria-selected:text-competition-ligue1-foreground",
   UCL: "aria-selected:border-competition-ucl aria-selected:bg-competition-ucl aria-selected:text-competition-ucl-foreground",
 };
+
+/**
+ * 필터 섬이 바꾸는 피드 머리(M1-33 — `SectionHead liveFilter`) — 머리 요소에 `data-comp="{대회 ID}"`가 붙으면 그 대회 색 면·위 괘선·글자·
+ * 포커스 링(`COMPETITION_HEAD` + `COMPETITION_RING`과 같은 값). 서버 HTML은 속성 없이 기본 머리이고, 부트 스크립트·섬이 속성만 바꾼다.
+ */
+export const COMPETITION_HEAD_LIVE =
+  "data-[comp=EPL]:border-t-competition-epl data-[comp=EPL]:bg-competition-epl data-[comp=EPL]:text-competition-epl-foreground data-[comp=EPL]:[--ring:var(--competition-epl-foreground)] " +
+  "data-[comp=LALIGA]:border-t-competition-laliga data-[comp=LALIGA]:bg-competition-laliga data-[comp=LALIGA]:text-competition-laliga-foreground data-[comp=LALIGA]:[--ring:var(--competition-laliga-foreground)] " +
+  "data-[comp=SERIEA]:border-t-competition-seriea data-[comp=SERIEA]:bg-competition-seriea data-[comp=SERIEA]:text-competition-seriea-foreground data-[comp=SERIEA]:[--ring:var(--competition-seriea-foreground)] " +
+  "data-[comp=BUNDESLIGA]:border-t-competition-bundesliga data-[comp=BUNDESLIGA]:bg-competition-bundesliga data-[comp=BUNDESLIGA]:text-competition-bundesliga-foreground data-[comp=BUNDESLIGA]:[--ring:var(--competition-bundesliga-foreground)] " +
+  "data-[comp=LIGUE1]:border-t-competition-ligue1 data-[comp=LIGUE1]:bg-competition-ligue1 data-[comp=LIGUE1]:text-competition-ligue1-foreground data-[comp=LIGUE1]:[--ring:var(--competition-ligue1-foreground)] " +
+  "data-[comp=UCL]:border-t-competition-ucl data-[comp=UCL]:bg-competition-ucl data-[comp=UCL]:text-competition-ucl-foreground data-[comp=UCL]:[--ring:var(--competition-ucl-foreground)]";

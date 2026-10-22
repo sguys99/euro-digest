@@ -202,6 +202,8 @@ describe("FilterChip", () => {
     expect(chip).toHaveAttribute("aria-pressed", "false");
     expect(chip).toHaveAttribute("type", "button");
     expect(chip).toHaveTextContent("이적4");
+    // 개수 뒤 화면 밖 "건"(접근 이름 "이적 4건", M1-33)
+    expect(chip).toHaveAccessibleName(/^이적\s?4\s?건$/);
     expect(classesOf(chip)).toEqual(
       expect.arrayContaining([
         "h-9",
@@ -332,6 +334,26 @@ describe("ContentsRow(대회 목차 행)", () => {
     );
     expect(within(row).getByText(/✓/)).toHaveAttribute("aria-hidden", "true");
     expect(within(row).getByText("6")).toBeInTheDocument();
+  });
+
+  it("대회 행 ✓는 늘 있고 눌림일 때만 보인다(필터 섬이 aria-pressed만 바꿔도 따라온다, M1-33), 약칭 상자는 장식", () => {
+    render(
+      <ContentsRow
+        pressed={false}
+        label="라리가"
+        count={6}
+        marker={{ kind: "competition", comp: "LALIGA", short: "라리가" }}
+      />,
+    );
+    // 이름에 약칭이 겹치지 않는다("라리가 라리가 6건" 아님)
+    const row = screen.getByRole("button", { name: /^라리가 6\s?건$/ });
+    expect(classesOf(within(row).getByText(/✓/))).toEqual(
+      expect.arrayContaining(["hidden", "group-aria-pressed/row:inline"]),
+    );
+    expect(within(row).getAllByText("라리가")[0]).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
   });
 
   it("선택이 아니면 ✓ 없음, 분류·한국 행은 칸 표식", () => {
@@ -559,6 +581,52 @@ describe("SectionHead · 필터 머리 색 면", () => {
     const clear = screen.getByRole("button", { name: "해제 대회 필터" });
     expect(classesOf(clear)).toEqual(
       expect.arrayContaining(["min-h-11", "min-w-11"]),
+    );
+  });
+
+  it("속성으로 바뀌는 필터 머리(liveFilter, M1-33): 6개 대회 색 면이 data-comp 변형, 칸·러닝 헤드는 group-data 변형", () => {
+    const { container } = render(
+      <SectionHead
+        heading="주요 뉴스"
+        runningHead="SQUAD"
+        liveFilter={{
+          comp: <FilterClearButton />,
+          team: <FilterClearButton target="팀 필터" />,
+        }}
+      />,
+    );
+    const head = container.firstElementChild as Element;
+    for (const id of [
+      "epl",
+      "laliga",
+      "seriea",
+      "bundesliga",
+      "ligue1",
+      "ucl",
+    ]) {
+      const comp = id.toUpperCase();
+      expect(classesOf(head)).toEqual(
+        expect.arrayContaining([
+          `data-[comp=${comp}]:bg-competition-${id}`,
+          `data-[comp=${comp}]:text-competition-${id}-foreground`,
+          `data-[comp=${comp}]:border-t-competition-${id}`,
+          `data-[comp=${comp}]:[--ring:var(--competition-${id}-foreground)]`,
+        ]),
+      );
+    }
+    expect(classesOf(head)).toEqual(
+      expect.arrayContaining(["group/head", "data-comp:pl-3", "flex-wrap"]),
+    );
+    // 처음엔 기본 머리 — 러닝 헤드가 보이고 칸은 숨김
+    expect(classesOf(screen.getByText("SQUAD"))).toEqual(
+      expect.arrayContaining([
+        "group-data-comp/head:hidden",
+        "group-data-team/head:hidden",
+      ]),
+    );
+    const teamClear = screen.getByRole("button", { name: "해제 팀 필터" });
+    expect(classesOf(teamClear.parentElement as Element)).toEqual(
+      expect.arrayContaining(["hidden", "group-data-team/head:inline-flex"]),
     );
   });
 });

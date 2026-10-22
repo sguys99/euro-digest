@@ -7,6 +7,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import HomePage from "@/app/page";
 import { BriefFileSchema, type BriefFile } from "@/lib/schema/brief";
 import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
+import {
+  NEWS_FILTER_BOOT_SCRIPT,
+  NEWS_FILTER_PENDING_SCRIPT,
+} from "@/lib/news/filter-boot";
 import type { RunLog } from "@/lib/schema/run";
 
 // 홈은 빌드 때 data/news의 최신 호를 읽는다. 저장소 data/는 파이프라인 실행에 따라 바뀌므로 로더를 바꿔 끼운다
@@ -85,6 +89,46 @@ describe("HomePage", () => {
     // 게재 번호는 06부터(DESIGN §3.5)
     expect(articles.map((article) => article.textContent?.slice(0, 2))).toEqual(
       ["06", "07", "08"],
+    );
+  });
+
+  it("목차가 있으면 설정 JSON·부트 스크립트도 있다(보류만 걸리고 풀 부트가 없는 페이지가 생기지 않게 — M1-34 대비)", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    const { container } = render(<HomePage />);
+    const contents = screen.queryByRole("navigation", { name: "뉴스 필터" });
+    expect(contents).not.toBeNull();
+    expect(container.querySelector("#news-filter-config")).not.toBeNull();
+    const scripts = [...container.querySelectorAll("script:not([type])")].map(
+      (el) => el.textContent,
+    );
+    // 클라이언트 렌더(happy-dom)는 스크립트 innerHTML의 '<'를 태그로 읽어 글자가 달라진다 — 보류는 그대로, 부트는 머리로 대조
+    expect(scripts).toHaveLength(2);
+    expect(scripts[0]).toBe(NEWS_FILTER_PENDING_SCRIPT);
+    expect(scripts[1]?.slice(0, 80)).toBe(NEWS_FILTER_BOOT_SCRIPT.slice(0, 80));
+  });
+
+  it("필터(M1-33) — 목차 열로 2단(5줄·피드 지면 폭), 5줄은 필터 범위 밖 맨 위, 피드만 거른다", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadBrief.mockReturnValue({ ...briefFixture, date: fixture.date });
+    const { container } = render(<HomePage />);
+    expect(container.querySelector("[data-columns]")).toHaveAttribute(
+      "data-columns",
+      "contents",
+    );
+    expect(
+      screen.getByRole("navigation", { name: "뉴스 필터" }),
+    ).toBeInTheDocument();
+    const main = container.querySelector("main") as HTMLElement;
+    const brief = main.querySelector("[data-slot='today-brief']");
+    expect(main.firstElementChild).toBe(brief);
+    expect(brief?.closest("[data-nf-scope]")).toBeNull();
+    const news = container.querySelector("section#news") as HTMLElement;
+    expect(news).toHaveAttribute("data-nf-scope");
+    expect(news.querySelector("[data-nf-head] h2")).toHaveTextContent(
+      "주요 뉴스",
+    );
+    expect(news.querySelectorAll("li[data-nf-card]")).toHaveLength(
+      fixture.cards.length,
     );
   });
 
