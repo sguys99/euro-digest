@@ -1,0 +1,1280 @@
+{
+  "date": "2026-10-22",
+  "generatedAt": "2026-10-22T00:12:41.348Z",
+  "runId": "collect-prod-20261022T001235Z-4d9e",
+  "cards": [
+    {
+      "id": "c_2f40041523",
+      "t": "PSG come out on top in six-goal thriller against Barcelona",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [
+        "paris-saint-germain",
+        "barcelona"
+      ],
+      "players": [],
+      "imp": 5,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cm74p9jd5zkko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:01:03.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7709191/2026/10/21/paris-saint-germain-barcelona-champions-league/",
+          "at": "2026-10-21T05:16:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_6ad1354131",
+      "t": "Goal, assist... goal-kick - Kane underlines Ballon d'Or credentials",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck79p7qq1q9ro?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T23:11:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_b42baac79b",
+      "t": "Saka injury 'does not look good' - how will Arsenal cope?",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ckg5j1zdn4m3o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T22:51:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_bcb95164c6",
+      "t": "Is it 'phenomenal' Kane's year to lift the Ballon d'Or?",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/crpdg21y070jo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T22:41:53.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_017baccbf6",
+      "t": "'Simply not good enough - Warnock on Man Utd's Como display",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c8040gdrdlwwo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T22:36:23.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_d4c5455b13",
+      "t": "Club Brugge ease to comfortable win over Lens",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "brugge-kv"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c50me40n871zo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T22:03:46.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_f1f72427ac",
+      "t": "[오피셜] 초비상! ‘황인범→김민재→이강인’ 코리안리거와 인연 깊은 PSG 윙어, 무릎 전방 십자인대 파열",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LALIGA",
+        "BUNDESLIGA",
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain"
+      ],
+      "players": [
+        "kim-min-jae",
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696877",
+          "at": "2026-10-21T21:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_ae91569892",
+      "t": "Real Madrid dominate Leipzig for third straight win",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "real-madrid",
+        "rb-leipzig"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c3qjnerzngkqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:38:23.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_18e7d44d49",
+      "t": "Villa maintain perfect Champions League start with Viking victory",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmj47yxry4k9o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:19:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_a0f099de04",
+      "t": "Guirassy double helps Dortmund past Sabah",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "borussia-dortmund"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c5j9kzlrynx1o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:12:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_de30a33d19",
+      "t": "Rice strikes to earn Arsenal draw at Bayern",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "arsenal",
+        "bayern-munchen"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/crx23nx0vp8jo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:09:36.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_b56bd417c7",
+      "t": "McTominay scores twice as Napoli beat Bodo/Glimt",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL",
+        "LALIGA",
+        "SERIEA",
+        "UCL"
+      ],
+      "teams": [
+        "liverpool",
+        "villarreal",
+        "ssc-napoli",
+        "fk-bodo-glimt"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cq99zg052g38o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:01:18.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmvg6qxp6lj7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:00:28.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_7ade5a84dd",
+      "t": "Foden nets hat-trick as Man City beat AEK Athens",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "manchester-city",
+        "pae-aek"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmrly5r1jp41o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:00:44.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_3152be17b9",
+      "t": "'What a goal, what a moment' - Rice snatches late equaliser against Bayern",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA",
+        "UCL"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cwvgd7nvrgp4o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:00:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_a8ea3e25e4",
+      "t": "Man Utd humbled by four-goal Como to pile pressure on Carrick",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmz7xr3z2vz7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T20:59:43.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_364bcbf1d0",
+      "t": "[UCL REVIEW] ‘김민재 전반만 뛰고 교체 OUT’ 바이에른 뮌헨, 홈에서 아스널과 2-2 무승부",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "bayern-munchen",
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696876",
+          "at": "2026-10-21T20:52:37.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_3be998756f",
+      "t": "Paz, Fabregas and Como teach Man Utd a lesson",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqrly2d6jnp7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T20:46:40.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_0a23b7563b",
+      "t": "Chelsea eye Brighton's Ayari - Thursday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea",
+        "brighton-hove-albion"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cme3xk2jkyv0o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T20:17:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_55df88f5ba",
+      "t": "Fernandes rounds on Carrick after Man Utd humiliation",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cq74pjn80x4wo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T19:59:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_ff072b000f",
+      "t": "‘벌써부터 에이스 관리 들어간다’ 이강인, 허벅지 타박→UCL 결장...뮌헨-바르사 '죽음의 2연전' 대비한 시메오네의 큰 그림",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "LALIGA",
+        "BUNDESLIGA",
+        "UCL"
+      ],
+      "teams": [
+        "bayern-munchen",
+        "barcelona"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696868",
+          "at": "2026-10-21T13:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_cd6b67f26f",
+      "t": "Barca condemn PSG tifo inciting 'violence and hatred'",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "LALIGA",
+        "LIGUE1",
+        "UCL"
+      ],
+      "teams": [
+        "barcelona",
+        "paris-saint-germain"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm4g1jwp9827o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T13:12:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_7514b0c55f",
+      "t": "Inter, Chivu: \"Spero che questa partita ci restituisca fiducia ed entusiasmo\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "internazionale-milano"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/inter-chivu-dichiarazioni-post-partita-champions-league-news-498594",
+          "at": "2026-10-21T21:40:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_7d0214a219",
+      "t": "Champions League 2026/27: la classifica e i risultati della League Phase",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "SERIEA",
+        "UCL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/champions-league-2026-2027-risultati-classifica-497336",
+          "at": "2026-10-21T21:30:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_906615e25c",
+      "t": "Isco the difference as Betis continue winning start against Feyenoord",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-betis-balompie",
+        "feyenoord-rotterdam"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ckp8gjl3epr7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T21:23:47.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_dbeb32ec58",
+      "t": "Ranking UEFA, la classifica dopo la Champions League: l'Italia guadagna posizioni",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA",
+        "UCL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/ranking-uefa-classifica-prime-partite-europee-italia-497055",
+          "at": "2026-10-21T21:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_cd326fa5bc",
+      "t": "Udinese, da domani squadra in ritiro per preparare la sfida contro il Milan",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "udinese-calcio",
+        "ac-milan"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/udinese-ritiro-serie-a-milan-news-498596",
+          "at": "2026-10-21T20:58:35.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_2cdd38939c",
+      "t": "Inter, succede tutto in 10 minuti: prima l'espulsione di Bastoni poi il gol di Carlos Augusto",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "internazionale-milano"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/inter-shakhtar-champions-rosso-bastoni-carlos-augusto-498595",
+          "at": "2026-10-21T20:30:34.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_85074ed2e6",
+      "t": "Marotta: \"Ciclo all'Inter? Continua ed è positivo. Manca la ciliegina sulla torta\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "internazionale-milano"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/inter-marotta-champions-league-obiettivo-498591",
+          "at": "2026-10-21T18:19:43.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_f204a0f016",
+      "t": "Inter-Shakhtar Donetsk, le formazioni ufficiali: prima da titolare per Spence",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "internazionale-milano",
+        "fk-shakhtar-donetsk"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/inter-shakhtar-donetsk-formazioni-ufficiali-498589",
+          "at": "2026-10-21T17:48:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_49e8879678",
+      "t": "‘옛날이랑 달라!’ 선수 시절 대표 유리몸이였는데...‘김민재 스승’ 콤파니, 바이러스 감염→복귀 유력",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696871",
+          "at": "2026-10-21T14:00:09.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_e05ed65266",
+      "t": "Why do Man City fans boo pre-match anthems?",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cvx28yk1j6z0o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T13:57:59.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_2125d99570",
+      "t": "Ipswich on 'inevitable' path to WSL - Boswell",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "ipswich-town"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqdjvr3mn0yno?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T13:18:35.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_3c0c18303b",
+      "t": "PSG's Kvaratskhelia to have surgery on ruptured ACL",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cxnv0ed5pz23o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T11:45:03.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_0ebc948fa7",
+      "t": "How England hopeful Acheampong is giving Chelsea a big decision to make",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck4g10n56jzqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-21T06:26:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_cc0f586d3e",
+      "t": "“변명의 여지가 없다”…맨유, 7경기 연속 무승→캐릭은 “실망스럽다는 말로 부족해, 모두가 책임져야 해”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696883",
+          "at": "2026-10-21T23:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_d7eaa3b337",
+      "t": "“여기는 엠티하드!” 맨시티 홈 경기 관중 수 ‘뚝’…축구 팬들은 “이게 챔피언스리그 경기다” 반응",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696879",
+          "at": "2026-10-21T22:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_9da3194ca4",
+      "t": "‘아스널전까지 3경기 연속 선발’ 김민재, 주전 자리 거의 회복! 45분 경기력은",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "풋볼리스트",
+          "u": "http://www.footballist.co.kr/news/articleView.html?idxno=216049",
+          "at": "2026-10-21T21:11:47.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_45a5de6cf2",
+      "t": "‘김민재 선발’ 케인 1골 1도움, 그러나 아스널도 강했다! 라이스 동점골로 2-2 무승부 [UCL 리뷰]",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA",
+        "UCL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "풋볼리스트",
+          "u": "http://www.footballist.co.kr/news/articleView.html?idxno=216047",
+          "at": "2026-10-21T20:56:08.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_b26d3f02de",
+      "t": "[UCL REVIEW] 또 못 이겼다! 맨유, 코모 원정서 1-4 대패…공식전 7경기 연속 무승",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696875",
+          "at": "2026-10-21T20:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_aa036e4223",
+      "t": "'이한범 동료' 트레솔디 향한 아스널의 구애...브뤼헤 \"1월 이적 절대 불가, 역대 최고액 내놔라\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696873",
+          "at": "2026-10-21T16:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_c6595ec289",
+      "t": "‘PSG 초비상!’ 막강 화력 바르셀로나 잡았지만...핵심 4명 이탈→‘흐비차 ‘시즌 아웃 가능성’ UCL 3연패 도전 먹구름",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "LALIGA",
+        "LIGUE1",
+        "UCL"
+      ],
+      "teams": [
+        "paris-saint-germain",
+        "barcelona"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696861",
+          "at": "2026-10-21T11:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_bcd3d50af3",
+      "t": "‘챔피언스리그인데 2만석이 텅텅’ 맨시티, 실력에 비해서 인기는 그닥?...마레스카는 “팬들의 응원 최고였다”",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696859",
+          "at": "2026-10-21T10:55:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_98ac133f5e",
+      "t": "이강인 데려온 아틀레티코 디렉터는 예언가?...\"훌리안 오늘 골 넣을 거야\" 말했는데 슈투트가르트전 시즌 첫 골",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "atletico-de-madrid",
+        "vfb-stuttgart"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696840",
+          "at": "2026-10-21T07:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_472f2f616e",
+      "t": "'이강인 스승' 아기레 오고 전력 외 구분, \"투자 망했다! 골칫거리 전락\" 혹평까지...이강인 발렌시아 日 후배, 단기간에 추락",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696829",
+          "at": "2026-10-21T04:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    },
+    {
+      "id": "c_793d94e87b",
+      "t": "“너 때문에 살라 팔았어!” 리버풀 18세 초특급 신성 맹활약, 팬들은 벌써 '살라 후계자 언급'...비야레알전 2도움→UCL 역대 3번째 ‘대기록’",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "LALIGA",
+        "UCL"
+      ],
+      "teams": [
+        "liverpool",
+        "villarreal"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696855",
+          "at": "2026-10-21T10:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-22T00:12:35.991Z"
+    }
+  ]
+}
