@@ -372,6 +372,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M2-09 `collect.yml`에 축구 데이터 단계 통합, API 호출 수 `runs.json` 기록
 
 ### M2-B 화면
+> 🆕 M1-38 이월(2026-10-23): 메타 문구 결과 노출 검사(`src/lib/seo.ts` `SCORE_LIKE_RE`)가 시즌 "2026-27"·시각 "06:50"·범위 "3–5줄"도 막는다 — 대회·팀 페이지 제목에 시즌을 넣기 전에 예외(연도-시즌·시각)를 두거나 검사 범위를 데이터 부분으로 좁힐 것(안 하면 빌드 실패)
 - [ ] M2-10 `/competitions/[comp]` 탭: 순위표 · 일정/결과(라운드 이동, KST) · 득점 순위 · 뉴스 (FR-40, FR-41, FR-44)
 - [ ] M2-11 순위표 컴포넌트: ▲▼ 변동, 폼 칩, 구간 표시(색 + 텍스트 병기) (FR-42)
 - [ ] M2-12 UCL 리그 페이즈 순위표 + 녹아웃 대진 자동 전환 구조 (FR-43)
@@ -476,8 +477,10 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 **목표**: PRD KPI(Lighthouse·접근성·SEO·운영)를 달성하고 정식 공개.
 
 - [ ] M5-01 OG 이미지 빌드 시 생성(날짜·대회·팀) — **Playwright로 템플릿 HTML 스크린샷**(확정, 새 의존성 없음) (DR-10) — ❓ 파일 경로는 M0-19 잠정안(`/og/default.png`·`/og/news/{date}.png`·`/og/competitions/{comp}.png`·`/og/teams/{team}.png`, `artifacts.ogImage`) — 공개 URL 구조라 착수 전 사용자 확인
+  - 🆕 M1-38 이월(2026-10-23): OG 이미지가 생기면 `src/lib/seo.ts` `pageMetadata`의 공통 OG 객체에 `images`만 추가(D3 — 워드마크·날짜·호수만, 결과 노출 0)
 - [ ] M5-02 앱 아이콘·테마 컬러 교체
 - [ ] M5-03 SEO: canonical, 구조화 데이터(NewsArticle·SportsTeam·SportsEvent), 전체 sitemap (NFR-03)
+  - 🆕 M1-38 이월(2026-10-23): Search Console은 URL 접두어 속성 `https://sguys99.github.io/euro-digest/` 등록 + sitemap URL 직접 제출(D59 — 블로그 저장소 robots.txt는 건드리지 않음, 오케스트레이터 추천 확정), robots.txt 결정, 새 라우트는 `src/lib/seo.ts` `sitemapEntries`에 추가(e2e가 빠뜨림을 잡음), og:type은 지금 모두 website — 구조화 데이터와 함께 날짜 페이지 article 여부 재검토, 삭제 요청으로 카드가 빠져도 lastmod(generatedAt)가 그대로라 재크롤 신호 없음 → 함께 검토
 - [ ] M5-04 GoatCounter 연동(계정 `euro-digest` — U-08) + 이벤트(원문 클릭·RSS/ics 클릭·PWA 설치·마이 팀 설정) (PRD §11.2)
 - [ ] M5-05 `/privacy` (FR-141)
 - [ ] M5-06 접근성 감사: WCAG AA(다크 포함)·키보드·스크린리더 라벨 → Lighthouse 접근성 ≥ 90 (NFR-02)
