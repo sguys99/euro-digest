@@ -373,7 +373,7 @@ describe("mock 사례 판정 — 이 단계(스키마·관용 파싱·길이)가
     expect(briefLinesOverLimit(texts)).toEqual([1]);
   });
 
-  it("brief-2026-10-10 L1(두 문장): 원문 95자 → 치환 뒤 86자로도 80자 초과(영문 원문 길이로 재지 않는다)", async () => {
+  it("brief-2026-10-10 L1(두 문장): 원문 95자 → 치환 뒤 80자라 길이 기준 안(영문 원문 길이로 재지 않는다) — 강등은 두 문장 때문", async () => {
     const c = caseOf("brief-2026-10-10");
     const result = await callMock(c.id);
     if (!result.ok) throw new Error("mock 실패");
@@ -384,8 +384,9 @@ describe("mock 사례 판정 — 이 단계(스키마·관용 파싱·길이)가
       parsed.lines.map((l) => l.t),
       c.input,
     );
-    expect(texts[0]).toHaveLength(86);
-    expect(briefLinesOverLimit(texts)).toEqual([1]);
+    // 2026-10-22 사전(니클라스 퓔크루크 등록) 기준 80자 — 등록 전에는 86자로 초과였다. 원문(95자)으로 재면 초과로 잘못 잡힌다
+    expect(texts[0]).toHaveLength(80);
+    expect(briefLinesOverLimit(texts)).toEqual([]);
     expect(downgradeLines(c.expected)).toEqual([1]);
   });
 

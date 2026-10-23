@@ -106,12 +106,13 @@ describe("briefLlmInput — 앞 15경기·남은 대회의 순위만·모델이 
     }
   });
 
-  it("골든셋 바쁜 날(23경기) — 본문 15경기·리그 1 순위 뺌, 본문 7,945자 → 5,876자", () => {
+  it("골든셋 바쁜 날(23경기) — 본문 15경기·리그 1 순위 뺌, 본문 7,930자 → 5,861자", () => {
     const view = briefLlmInput(BUSY);
     expect(view.input.matches).toHaveLength(15);
     expect(view.dropped).toEqual({ matches: 8, standings: ["sL1"] });
-    expect(serializeBriefInput(BUSY).length).toBe(7945);
-    expect(serializeBriefInput(view.input).length).toBe(5876);
+    // 2026-10-22 사전 — 도움 'Alejandro Baena Rodríguez'가 대표 표기 'Álex Baena'로(입력 정리) 15자 짧아졌다(그 전 7,945 → 5,876)
+    expect(serializeBriefInput(BUSY).length).toBe(7930);
+    expect(serializeBriefInput(view.input).length).toBe(5861);
   });
 });
 

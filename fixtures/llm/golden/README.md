@@ -10,7 +10,7 @@
 |---|---|
 | `index.json` | 10일 목록 — 발행일(KST)·한 줄 설명·태그·M0 입력 키(`m0`)·출처(`provenance`). zod `GoldenIndexSchema`(`scripts/lib/golden.ts`) |
 | `sources/<날짜>.json` | **빌더 입력**(내부 형식) — football-data 종료 경기(`FinishedMatch`), 순위(`BriefStandingsSource` — 빌더가 읽는 칸), 연결된 득점 목록(`MatchGoal[]`). 외부 API 원문이 아니라 어댑터(`toFinishedResults`·`toCompStandings`·`toMatchDetail` + `linkMatchDetails`)를 거친 값이다 |
-| `inputs/<날짜>.json` | **LLM에 보내는 입력** = `buildBriefInput`(M1-19 확정 빌더) → `canonicalizeBriefInput`(M1-21). 소스 + configs(competitions·names.ko·korean-players·team-ids)에서 결정적으로 다시 만든다 |
+| `inputs/<날짜>.json` | **LLM에 보내는 입력** = `buildBriefInput`(M1-19 확정 빌더) → `canonicalizeBriefInput`(M1-21 — 사전에 없는 팀 짧은 이름은 football-data 정식 이름으로, D46 보완 2026-10-22). 소스 + configs(competitions·names.ko·korean-players·team-ids)에서 결정적으로 다시 만든다 |
 | `runs/<라벨>/run.json` | 실행 기록 — 날짜마다 출력 원문·치환 뒤 문장·판정(`judgeBriefResponse` 첫 시도)·줄별 사유 코드·같은 근거의 템플릿 줄·토큰(thinking)·비용·지연, 지시문 판(`promptId`·`prompt`)·검사기 판(`checker.id` — 판정 코드 파일 해시). zod `EvalRunSchema`(`scripts/lib/brief-eval.ts`) |
 
 mock 응답은 `../mock/by-id/golden-<날짜>.json`(base)·`golden-pre-<날짜>.json`(🧪 pre 변형)이다 — live 실행의 `--update-mock`이 쓴다. by-id라 지시문이 바뀌어도 같은 출력을 재생한다(지시문 비교는 live로).
@@ -57,3 +57,4 @@ npm run eval:prompt -- --build-golden             # 빌더·configs가 바뀌었
 ## 다시 만들 때
 
 새 날짜를 넣으려면 소스를 같은 형식으로 만들고(외부 원문은 저장소 밖에서 어댑터를 거쳐 변환 — API-Football 지난 날짜는 날짜 조회로 다시 받을 수 없다), `index.json`에 출처를 적은 뒤 `--build-golden`. 테스트(`tests/golden.test.ts`)가 목록·소스·입력의 일치, 태그와 입력의 일치, 기사 텍스트·URL 없음을 확인한다.
+- 2026-10-22 고유명사 사전 반영·팀 짧은 이름 정리(D46 보완)로 09-21·10-11·10-17 입력을 `--build-golden`으로 다시 썼다 — 다음 `eval:prompt` 비교에서 이 3일에 '입력 다름'이 붙는 것은 정상이다(이름 표기만 바뀜).

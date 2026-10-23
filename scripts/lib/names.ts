@@ -23,7 +23,11 @@
  *   (`en[0]`)**로 바꾼다 — 모델이 입력 표기를 그대로 옮기면 사전 키와 같아 치환된다(M0-30: 'M. Olise' → 출력 'Olise'). 첫 글자
  *   축약 별칭은 득점 팀(자책골은 상대 팀)이 그 선수의 소속팀(`playerTeams` — 등록 한국 선수 + `KNOWN_PLAYER_TEAMS`)과 같을
  *   때만 바꾼다(다른 팀의 'A. Davies'를 알폰소 데이비스로 바꾸지 않게). 팀 이름은 football-data 짧은 이름 그대로 둔다(별칭으로
- *   등록 — 'Bayern'·'Man City'·'Barça', D39 ②). 사전에 없는 이름은 원문 그대로.
+ *   등록 — 'Bayern'·'Man City'·'Barça', D39 ②). **예외**: 짧은 이름이 사전 팀 별칭이 아니고(또는 다른 팀을 가리키고) 정식 이름
+ *   (football-data name — `teamFullNames`)이 사전 팀이면 정식 이름으로 보낸다 — D46이 다른 팀과 겹쳐 별칭에서 뺀 짧은 이름
+ *   ('Deportivo' → 'RC Deportivo La Coruña')이 출력에 영문으로 남지 않게(2026-10-17 브리핑). 경기 home·away·득점 team·순위 행 team을
+ *   같은 규칙으로 바꿔 득점 team = home·away 관계를 지킨다. 뉴스 태그 매칭(D46 오태그 방지)은 이 함수와 무관하다. 사전에 없는 이름은
+ *   원문 그대로.
  *
  * ── 미등록 이름 (FR-24 — data/cache/unknown-names.json, unknown-names.ts) ────────
  *   데이터 API 이름 = 브리핑 입력의 팀(경기·순위표)·득점자·도움 중 사전에도 무시 목록에도 없는 것(`briefInputNames`).
@@ -504,6 +508,36 @@ export interface CanonicalizeOptions {
    * 선수 slug → 소속팀 slug — 첫 글자 축약 별칭을 대표 표기로 바꿀 때만 확인한다(`playerTeamsFrom`). 없으면 축약 별칭은 바꾸지 않는다
    */
   playerTeams?: ReadonlyMap<string, string>;
+  /**
+   * 팀 짧은 이름 → 정식 이름(`teamFullNamesFrom` — football-data name). 짧은 이름이 사전 팀 별칭이 아니거나 다른 팀을 가리키고 정식
+   * 이름이 사전 팀이면 정식 이름으로 보낸다(머리 주석 "브리핑 입력"). 없으면 팀 이름은 바꾸지 않는다
+   */
+  teamFullNames?: ReadonlyMap<string, string>;
+}
+
+/**
+ * 팀 참조(football-data 짧은 이름·정식 이름 — match-data.ts TeamRef) → 짧은 이름 → 정식 이름(순수 함수). 정식 이름이 없거나 짧은
+ * 이름과 같으면 넣지 않는다. 같은 짧은 이름이 서로 다른 정식 이름을 가리키면 어느 팀인지 모르므로 넣지 않는다(그대로 둔다).
+ */
+export function teamFullNamesFrom(
+  teams: Iterable<{ name: string; fullName: string | null }>,
+): Map<string, string> {
+  const out = new Map<string, string>();
+  const ambiguous = new Set<string>();
+  for (const { name, fullName } of teams) {
+    const short = name.trim();
+    const full = fullName?.trim() ?? "";
+    if (short === "" || full === "" || full === short) continue;
+    if (ambiguous.has(short)) continue;
+    const prev = out.get(short);
+    if (prev !== undefined && prev !== full) {
+      out.delete(short);
+      ambiguous.add(short);
+      continue;
+    }
+    out.set(short, full);
+  }
+  return out;
 }
 
 /** 등록 한국 선수(korean-players.json의 slug·team) + `KNOWN_PLAYER_TEAMS` → 선수 slug → 소속팀 slug */
@@ -516,17 +550,29 @@ export function playerTeamsFrom(
 }
 
 /**
- * 득점자·도움을 사전 대표 영문 표기로(머리 주석 "브리핑 입력"). 순수 함수 — 새 입력과 바꾼 이름 수. 키 순서는 그대로.
+ * 득점자·도움을 사전 대표 영문 표기로, 사전에 없는 팀 짧은 이름을 정식 이름으로(머리 주석 "브리핑 입력"). 순수 함수 — 새 입력과
+ * 바꾼 선수 이름 수(`replaced`)·바꾼 팀 이름 수(`teams` — 서로 다른 이름 기준). 키 순서는 그대로.
  * 첫 글자 축약 별칭은 그 선수의 팀(득점자 = 득점 팀, 자책골 득점자 = 상대 팀, 도움 = 득점 팀)이 소속팀과 같을 때만.
  */
 export function canonicalizeBriefInput(
   input: BriefInput,
   index: NameIndex,
   options: CanonicalizeOptions = {},
-): { input: BriefInput; replaced: number } {
+): { input: BriefInput; replaced: number; teams: number } {
   let replaced = 0;
+  const renamedTeams = new Set<string>();
   const teamSlug = (name: string): string | null =>
     lookupName(index, name, TEAM_KINDS)?.slug ?? null;
+  /** 짧은 이름이 가리키는 사전 팀이 정식 이름의 사전 팀과 같으면(D39 ② 별칭) 그대로, 아니면 정식 이름(사전 팀일 때만) */
+  const teamName = (name: string): string => {
+    const full = options.teamFullNames?.get(name.trim());
+    if (full === undefined) return name;
+    const fullEntry = lookupName(index, full, TEAM_KINDS);
+    if (!fullEntry || lookupName(index, name, TEAM_KINDS) === fullEntry)
+      return name;
+    renamedTeams.add(name);
+    return full;
+  };
   const fix = (name: string, team: string): string => {
     const full = lookupName(index, name, PERSON_KINDS);
     let canonical = full?.en[0] ?? name;
@@ -551,18 +597,35 @@ export function canonicalizeBriefInput(
     return canonical;
   };
   const matches = input.matches.map((m) => {
-    if (m.goals === null) return m;
+    // 팀 이름을 먼저 바꾼다 — 득점 team은 home·away와 같은 문자열이라 같은 규칙으로 바뀌어 관계가 유지된다
+    const home = teamName(m.home);
+    const away = teamName(m.away);
+    if (m.goals === null) return { ...m, home, away };
     const goals = m.goals.map((g): BriefInputGoal => {
+      const team =
+        g.team === m.home ? home : g.team === m.away ? away : teamName(g.team);
       // 자책골의 team은 득점이 인정된 팀 — 자책한 선수는 상대 팀 소속
       const scorerTeam =
-        g.type === "own_goal" ? (g.team === m.home ? m.away : m.home) : g.team;
-      const next: BriefInputGoal = { ...g, player: fix(g.player, scorerTeam) };
-      if (g.assist !== undefined) next.assist = fix(g.assist, g.team);
+        g.type === "own_goal" ? (team === home ? away : home) : team;
+      const next: BriefInputGoal = {
+        ...g,
+        team,
+        player: fix(g.player, scorerTeam),
+      };
+      if (g.assist !== undefined) next.assist = fix(g.assist, team);
       return next;
     });
-    return { ...m, goals };
+    return { ...m, home, away, goals };
   });
-  return { input: { ...input, matches }, replaced };
+  const standings = input.standings.map((s) => ({
+    ...s,
+    rows: s.rows.map((r) => ({ ...r, team: teamName(r.team) })),
+  }));
+  return {
+    input: { ...input, matches, standings },
+    replaced,
+    teams: renamedTeams.size,
+  };
 }
 
 /**

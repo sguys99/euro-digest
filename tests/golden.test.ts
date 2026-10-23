@@ -88,6 +88,29 @@ describe("입력 = 확정 빌더 출력(소스 + configs)", () => {
       ).toBe(read(`inputs/${date}.json`));
     }
   });
+
+  it("사전에 없는 팀 짧은 이름은 정식 이름으로 — 2026-10-17 'Deportivo' → 'RC Deportivo La Coruña'(D46, 사용자 결정 2026-10-22)", () => {
+    const source = GoldenSourceSchema.parse(
+      readJson("sources/2026-10-17.json"),
+    );
+    expect(
+      source.results.some((r) => r.home.name === "Deportivo"),
+      "소스는 football-data 짧은 이름 그대로",
+    ).toBe(true);
+    const input = GoldenInputSchema.parse(
+      readJson("inputs/2026-10-17.json"),
+    ) as BriefInput;
+    const teams = [
+      ...input.matches.flatMap((m) => [
+        m.home,
+        m.away,
+        ...(m.goals ?? []).map((g) => g.team),
+      ]),
+      ...input.standings.flatMap((s) => s.rows.map((r) => r.team)),
+    ];
+    expect(teams).not.toContain("Deportivo");
+    expect(teams).toContain("RC Deportivo La Coruña");
+  });
 });
 
 describe("태그·덮는 유형", () => {

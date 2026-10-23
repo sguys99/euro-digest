@@ -1387,8 +1387,18 @@ describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
       linkedByTeamIds: 23,
       linkedByEvidence: 0,
     });
-    // 득점자·도움은 사전 대표 표기로(M1-21 — 이 날 득점자는 사전에 없거나 이미 대표 표기라 0)
-    expect(done.canonicalNames).toBe(0);
+    // 득점자·도움은 사전 대표 표기로(M1-21) — 이 날은 1570403(아틀레티코)의 API-Football 원문 'Alejandro Baena Rodríguez'만
+    // 사전 별칭이라 대표 표기 'Álex Baena'로 바뀐다(2026-10-22 사전). 나머지는 사전에 없거나 이미 대표 표기
+    expect(done.canonicalNames).toBe(1);
+    // 팀 짧은 이름 정리(D46 보완 — 2026-10-22): 이 날 입력 팀은 모두 짧은 이름이 사전 별칭이라 바뀌는 팀이 없다
+    expect(done.canonicalTeams).toBe(0);
+    const people = input.matches.flatMap((m) =>
+      ((m.goals ?? []) as Array<{ player: string; assist?: string }>).flatMap(
+        (g) => [g.player, g.assist ?? ""],
+      ),
+    );
+    expect(people).toContain("Álex Baena");
+    expect(people).not.toContain("Alejandro Baena Rodríguez");
     // 합성 상세(fixture 파일 없음 — events 없음)는 득점 불완전 → null. 0-0 경기는 빈 배열
     const filled = input.matches.filter((m) => m.goals !== null).length;
     expect(done.goalsFilled).toBe(filled);

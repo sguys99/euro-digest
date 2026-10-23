@@ -1,7 +1,7 @@
 /**
  * M1-21 고유명사 치환(scripts/lib/names.ts — PRD FR-24, D39 ②): 접기(대소문자·악센트, 길이 보존), 긴 이름 먼저·단어 경계·별칭, 치환
  * 뒤 조사 보정(M0-30 실제 출력 'Bayern가'·'Dortmund은'·'Dortmund과'), 대회 표기(브리핑 단위), 미등록 이름 후보, 브리핑 입력 정리
- * (득점자 → 사전 대표 표기), M1-23 영문 토큰 허용 목록. 네트워크·LLM 없음.
+ * (득점자 → 사전 대표 표기, 사전에 없는 팀 짧은 이름 → 정식 이름 — D46 'Deportivo'), M1-23 영문 토큰 허용 목록. 네트워크·LLM 없음.
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -16,7 +16,13 @@ import {
   type CompId,
 } from "@/lib/schema";
 
-import type { BriefInput, BriefInputMatch } from "../scripts/lib/brief-input";
+import {
+  briefTeamRefs,
+  type BriefInput,
+  type BriefInputMatch,
+  type BriefStandingsSource,
+} from "../scripts/lib/brief-input";
+import type { FinishedMatch } from "../scripts/lib/match-data";
 import {
   briefInputNames,
   briefNameAllowlist,
@@ -30,6 +36,7 @@ import {
   lookupName,
   playerTeamsFrom,
   substituteNames,
+  teamFullNamesFrom,
   unknownBriefInputNames,
   unknownNamesInText,
 } from "../scripts/lib/names";
@@ -451,5 +458,226 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
     );
     expect(ucl.has("ucl")).toBe(true);
     expect(ucl.has(foldName("Champions League"))).toBe(true);
+  });
+});
+
+describe("브리핑 입력 — 사전에 없는 팀 짧은 이름 → 정식 이름(D46 'Deportivo', 사용자 결정 2026-10-22)", () => {
+  /** 골든셋 2026-10-17을 본뜬 합성 경기(football-data 짧은 이름 'Deportivo'·'Levante' — id·분·대회 이름은 시험용 값) */
+  const deportivoMatch = (
+    over: Partial<BriefInputMatch> = {},
+  ): BriefInputMatch => ({
+    id: "m544441",
+    comp: "Primera Division",
+    round: "Matchday 9",
+    home: "Deportivo",
+    away: "Levante",
+    ft: "1-1",
+    ht: "0-0",
+    goals: [
+      { min: "50", team: "Deportivo", player: "Bil Nsongo" },
+      { min: "82", team: "Levante", player: "Daniel Requena Sánchez" },
+    ],
+    ...over,
+  });
+  const input: BriefInput = {
+    briefDate: "2026-10-17",
+    matches: [deportivoMatch()],
+    standings: [
+      {
+        id: "sLL",
+        comp: "Primera Division",
+        note: "current table, top 4 positions only",
+        rows: [
+          { pos: 1, team: "Real Madrid", played: 9, pts: 22, gd: 14 },
+          { pos: 2, team: "Deportivo", played: 9, pts: 20, gd: 8 },
+        ],
+      },
+    ],
+  };
+  const FULL = teamFullNamesFrom([
+    { name: "Deportivo", fullName: "RC Deportivo La Coruña" },
+    { name: "Levante", fullName: "Levante UD" },
+    { name: "Real Madrid", fullName: "Real Madrid CF" },
+  ]);
+
+  it("짧은 이름 'Deportivo'는 사전에 없고 정식 이름은 사전 팀 → 경기·득점 team·순위 행 모두 정식 이름(득점 team = home 관계 유지)", () => {
+    // 전제: D46 — 'Deportivo'는 별칭이 아니다(알라베스와 겹침), 정식 이름은 데포르티보 라코루냐
+    expect(lookupName(INDEX, "Deportivo")).toBeNull();
+    expect(koreanName(INDEX, "RC Deportivo La Coruña")).toBe(
+      "데포르티보 라코루냐",
+    );
+    const out = canonicalizeBriefInput(input, INDEX, { teamFullNames: FULL });
+    const m = out.input.matches[0]!;
+    expect(m.home).toBe("RC Deportivo La Coruña");
+    expect(m.away).toBe("Levante"); // 짧은 이름이 사전 별칭(D39 ②) — 그대로
+    expect(m.goals!.map((g) => g.team)).toEqual([
+      "RC Deportivo La Coruña",
+      "Levante",
+    ]);
+    expect(m.goals![1]!.player).toBe("Dani Requena"); // 선수 대표 표기는 그대로 동작
+    expect(out.input.standings[0]!.rows.map((r) => r.team)).toEqual([
+      "Real Madrid",
+      "RC Deportivo La Coruña",
+    ]);
+    expect(out.teams).toBe(1); // 서로 다른 이름 기준
+    expect(out.replaced).toBe(1);
+    // 키 순서 유지(직렬화가 봇·골든셋과 같게) · 원본은 그대로(순수 함수)
+    expect(Object.keys(m)).toEqual(Object.keys(input.matches[0]!));
+    expect(Object.keys(m.goals![0]!)).toEqual(["min", "team", "player"]);
+    expect(input.matches[0]!.home).toBe("Deportivo");
+    // 미등록 이름에서 빠지고, 모델이 정식 이름·별칭을 옮기면 한글로 치환된다
+    expect(
+      unknownBriefInputNames(out.input, INDEX).map((n) => n.name),
+    ).not.toContain("Deportivo");
+    expect(sub("Levante가 RC Deportivo La Coruña와 1-1로 비겼다.")).toBe(
+      "레반테가 데포르티보 라코루냐와 1-1로 비겼다.",
+    );
+    const allow = briefNameAllowlist(out.input, INDEX, COMPETITIONS);
+    expect(allow.has(foldName("Deportivo La Coruña"))).toBe(true);
+    expect(allow.has(foldName("Deportivo"))).toBe(false); // 짧은 이름 단독은 허용 토큰이 아니다(그 줄은 템플릿)
+  });
+
+  it("자책골 — 자책한 선수의 팀(상대 팀)도 바뀐 이름으로 판단한다", () => {
+    const own = canonicalizeBriefInput(
+      {
+        ...input,
+        matches: [
+          deportivoMatch({
+            goals: [
+              {
+                min: "10",
+                team: "Levante",
+                player: "Bil Nsongo",
+                type: "own_goal",
+              },
+            ],
+          }),
+        ],
+      },
+      INDEX,
+      { teamFullNames: FULL },
+    ).input.matches[0]!;
+    expect(own.home).toBe("RC Deportivo La Coruña");
+    expect(own.goals![0]).toEqual({
+      min: "10",
+      team: "Levante",
+      player: "Bil Nsongo",
+      type: "own_goal",
+    });
+  });
+
+  it("짧은 이름이 사전 팀 별칭이면 그대로('Bayern' — 정식 이름과 같은 항목), 둘 다 사전에 없으면 그대로('Viking'·'Viking FK' — D46 보류)", () => {
+    const out = canonicalizeBriefInput(
+      {
+        briefDate: "2026-10-22",
+        matches: [
+          deportivoMatch({
+            comp: "UEFA Champions League",
+            home: "Bayern",
+            away: "Viking",
+            ft: "3-0",
+            goals: [{ min: "5", team: "Bayern", player: "Harry Kane" }],
+          }),
+        ],
+        standings: [],
+      },
+      INDEX,
+      {
+        teamFullNames: teamFullNamesFrom([
+          { name: "Bayern", fullName: "FC Bayern München" },
+          { name: "Viking", fullName: "Viking FK" },
+        ]),
+      },
+    );
+    const m = out.input.matches[0]!;
+    expect([m.home, m.away, m.goals![0]!.team]).toEqual([
+      "Bayern",
+      "Viking",
+      "Bayern",
+    ]);
+    expect(out.teams).toBe(0);
+    // 표가 없으면(옵션 없음 — eval의 M0 입력) 팀 이름은 바꾸지 않는다
+    expect(canonicalizeBriefInput(input, INDEX).input.matches[0]!.home).toBe(
+      "Deportivo",
+    );
+  });
+
+  it("짧은 이름이 다른 사전 팀을 가리키면 정식 이름(작은 사전 — 'Dortmund'가 2군 정식 이름의 짧은 이름인 가상 사례)", () => {
+    const out = canonicalizeBriefInput(
+      {
+        briefDate: "2026-10-22",
+        matches: [
+          deportivoMatch({
+            comp: "Bundesliga",
+            home: "Dortmund",
+            away: "Arsenal",
+            ft: "0-0",
+            goals: [],
+          }),
+        ],
+        standings: [],
+      },
+      SMALL,
+      {
+        teamFullNames: teamFullNamesFrom([
+          { name: "Dortmund", fullName: "Borussia Dortmund II" },
+          { name: "Arsenal", fullName: "Arsenal FC" }, // 정식 이름이 사전에 없으면 그대로
+        ]),
+      },
+    );
+    const m = out.input.matches[0]!;
+    expect(m.home).toBe("Borussia Dortmund II");
+    expect(m.away).toBe("Arsenal");
+    expect(out.teams).toBe(1);
+  });
+
+  it("teamFullNamesFrom — 정식 이름 없음·같음은 빼고, 같은 짧은 이름이 서로 다른 정식 이름을 가리키면 모호해 뺀다", () => {
+    const table = teamFullNamesFrom([
+      { name: "Deportivo", fullName: "RC Deportivo La Coruña" },
+      { name: "Deportivo", fullName: "RC Deportivo La Coruña" }, // 같은 팀 반복은 그대로
+      { name: "Sabah FK", fullName: "Sabah FK" }, // 짧은 이름 = 정식 이름
+      { name: "Levante", fullName: null },
+      { name: "City", fullName: "Manchester City FC" },
+      { name: "City", fullName: "Bristol City FC" }, // 모호
+      { name: "City", fullName: "Manchester City FC" }, // 모호해진 뒤에는 다시 넣지 않는다
+    ]);
+    expect([...table]).toEqual([["Deportivo", "RC Deportivo La Coruña"]]);
+  });
+
+  it("briefTeamRefs — 빌더 재료(경기 home·away + 순위 행 team)의 짧은 이름·정식 이름", () => {
+    const team = (id: number, name: string, fullName: string | null) => ({
+      id,
+      name,
+      fullName,
+    });
+    const results = [
+      {
+        home: team(560, "Deportivo", "RC Deportivo La Coruña"),
+        away: team(88, "Levante", "Levante UD"),
+      },
+    ] as unknown as FinishedMatch[]; // 이 함수는 home·away만 읽는다
+    const standings: BriefStandingsSource[] = [
+      {
+        comp: "LALIGA",
+        inProgress: 0,
+        tables: [
+          {
+            rows: [
+              {
+                pos: 1,
+                team: team(86, "Real Madrid", "Real Madrid CF"),
+                played: 9,
+                pts: 22,
+                gd: 14,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    expect(
+      briefTeamRefs({ results, standings }).map((t) => t.fullName),
+    ).toEqual(["RC Deportivo La Coruña", "Levante UD", "Real Madrid CF"]);
+    expect(briefTeamRefs({ results })).toHaveLength(2);
   });
 });

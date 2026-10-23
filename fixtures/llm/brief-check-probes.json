@@ -11935,33 +11935,33 @@
       "pass": false,
       "truth": true,
       "group": "r3-b21",
-      "t": "Daniel Requena Sánchez의 82분 동점골로 Deportivo와 Levante가 1-1로 비겼다.",
+      "t": "Daniel Requena Sánchez의 82분 동점골로 RC Deportivo La Coruña와 Levante가 1-1로 비겼다.",
       "r": [
         "m564716"
       ],
-      "note": "21 지시문 허용 ↔ 문법 밖(참 문장) — T 실제 출력(-pre) — 짝 주어 + 동점골"
+      "note": "21 지시문 허용 ↔ 문법 밖(참 문장) — T 실제 출력(-pre) — 짝 주어 + 동점골 · 2026-10-22: 입력 정리가 사전에 없는 팀 짧은 이름 'Deportivo'를 정식 이름으로 보내(D46) 문장 속 표기도 입력 표기로 바꿈"
     },
     {
       "input": "golden-2026-10-17",
       "pass": false,
       "truth": true,
       "group": "r3-b21",
-      "t": "Deportivo와 Levante가 Daniel Requena Sánchez의 82분 동점골로 1-1로 비겼다.",
+      "t": "RC Deportivo La Coruña와 Levante가 Daniel Requena Sánchez의 82분 동점골로 1-1로 비겼다.",
       "r": [
         "m564716"
       ],
-      "note": "21 지시문 허용 ↔ 문법 밖(참 문장) — T"
+      "note": "21 지시문 허용 ↔ 문법 밖(참 문장) — T · 2026-10-22: 입력 정리가 사전에 없는 팀 짧은 이름 'Deportivo'를 정식 이름으로 보내(D46) 문장 속 표기도 입력 표기로 바꿈"
     },
     {
       "input": "golden-2026-10-17",
       "pass": true,
       "truth": true,
       "group": "r3-b21",
-      "t": "Levante가 Deportivo 원정에서 Daniel Requena Sánchez의 82분 동점골로 1-1로 비겼다.",
+      "t": "Levante가 RC Deportivo La Coruña 원정에서 Daniel Requena Sánchez의 82분 동점골로 1-1로 비겼다.",
       "r": [
         "m564716"
       ],
-      "note": "21 지시문 허용 ↔ 문법 밖(참 문장) — T"
+      "note": "21 지시문 허용 ↔ 문법 밖(참 문장) — T · 2026-10-22: 입력 정리가 사전에 없는 팀 짧은 이름 'Deportivo'를 정식 이름으로 보내(D46) 문장 속 표기도 입력 표기로 바꿈"
     },
     {
       "input": "golden-2026-10-11",
@@ -16392,11 +16392,11 @@
       "pass": true,
       "truth": true,
       "group": "r3-mut-noun",
-      "t": "Deportivo의 Bil Nsongo가 63분 선제골을 넣었다.",
+      "t": "RC Deportivo La Coruña의 Bil Nsongo가 63분 선제골을 넣었다.",
       "r": [
         "m564716"
       ],
-      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참"
+      "note": "리뷰 3회차 변이(이전 판 b06ce02 통과) — 독립 판정(오라클) 참 · 2026-10-22: 입력 정리가 사전에 없는 팀 짧은 이름 'Deportivo'를 정식 이름으로 보내(D46) 문장 속 표기도 입력 표기로 바꿈"
     },
     {
       "input": "golden-2026-10-17",

@@ -490,6 +490,21 @@ export function buildBriefInput(
   };
 }
 
+/**
+ * 빌더 재료의 팀 참조(경기 home·away + 순위 행 team — 짧은 이름·정식 이름). 입력 정리(names.ts `teamFullNamesFrom` →
+ * `canonicalizeBriefInput`)가 사전에 없는 짧은 이름을 정식 이름으로 바꿀 때 쓰는 표의 재료다. 순수 함수.
+ */
+export function briefTeamRefs(
+  options: Pick<BuildBriefInputOptions, "results" | "standings">,
+): Array<Pick<TeamRef, "name" | "fullName">> {
+  return [
+    ...options.results.flatMap((r) => [r.home, r.away]),
+    ...(options.standings ?? []).flatMap((s) =>
+      s.tables.flatMap((t) => t.rows.map((r) => r.team)),
+    ),
+  ];
+}
+
 /** LLM 요청 본문 입력(D51) — 전체 입력에서 잘라 낸 것과 모델이 보지 못한 근거 id */
 export interface BriefLlmInput {
   /** 요청 본문에 넣는 입력 — 경기는 중요도 순 앞 n개, 순위는 남은 경기의 대회만(입력 빌더와 같은 규칙) */

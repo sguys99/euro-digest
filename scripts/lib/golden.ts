@@ -6,7 +6,8 @@
  *   - `sources/<날짜>.json` — **빌더 입력**(내부 형식): football-data 종료 경기(`FinishedMatch`)·순위(`BriefStandingsSource`)·
  *                            연결된 득점 목록(`MatchGoal[]` — API-Football 경기 단건 또는 M0 입력에서 옮긴 것). 외부 API 원문이 아니다
  *   - `inputs/<날짜>.json`  — **LLM에 보내는 입력** = `buildBriefInput`(M1-19 확정 빌더 — 중요도 순·연장/승부차기 키·상위 4위 순위)
- *                            → `canonicalizeBriefInput`(M1-21 — 득점자 사전 대표 표기). 봇이 그날 보냈을 입력과 같은 형식이다
+ *                            → `canonicalizeBriefInput`(M1-21 — 득점자 사전 대표 표기 + 사전에 없는 팀 짧은 이름은 정식 이름 —
+ *                            D46 'Deportivo'). 봇이 그날 보냈을 입력과 같은 형식이다
  *   - `runs/<라벨>/run.json` — eval:prompt 실행 기록(출력 원문·판정·토큰·비용·지연)
  * 입력 파일은 소스 + 설정(configs/competitions·names.ko·korean-players·team-ids)에서 결정적으로 다시 만든다(`buildGoldenInput`) —
  * 빌더·설정이 바뀌면 테스트가 차이를 알리고 `npm run eval:prompt -- --build-golden`으로 다시 쓴다.
@@ -21,12 +22,17 @@ import { z } from "zod";
 import { CompIdSchema, IsoSchema, type CompetitionConfig } from "@/lib/schema";
 
 import {
+  briefTeamRefs,
   buildBriefInput,
   type BriefInput,
   type BriefStandingsSource,
 } from "./brief-input";
 import type { FinishedMatch, MatchDetail, MatchGoal } from "./match-data";
-import { canonicalizeBriefInput, type NameIndex } from "./names";
+import {
+  canonicalizeBriefInput,
+  teamFullNamesFrom,
+  type NameIndex,
+} from "./names";
 
 /** 저장소 루트 기준 골든셋 폴더 */
 export const GOLDEN_DIR_REL = path.join("fixtures", "llm", "golden");
@@ -265,17 +271,20 @@ export function buildGoldenInput(
       { goals: l.goals as MatchGoal[], goalsComplete: l.goalsComplete },
     ]),
   );
+  const results = source.results as FinishedMatch[];
+  const standings = source.standings.map(toStandingsSource);
   const built = buildBriefInput({
     briefDate: source.briefDate,
-    results: source.results as FinishedMatch[],
+    results,
     competitions: ctx.competitions,
-    standings: source.standings.map(toStandingsSource),
+    standings,
     linked,
     koreanTeamIds: ctx.koreanTeamIds,
   });
   if (!ctx.names) return built.input;
   return canonicalizeBriefInput(built.input, ctx.names, {
     playerTeams: ctx.playerTeams,
+    teamFullNames: teamFullNamesFrom(briefTeamRefs({ results, standings })),
   }).input;
 }
 

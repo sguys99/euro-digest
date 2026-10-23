@@ -92,20 +92,20 @@
       "id": "m564716",
       "comp": "LaLiga",
       "round": "Matchday 9",
-      "home": "Deportivo",
+      "home": "RC Deportivo La Coruña",
       "away": "Levante",
       "ft": "1-1",
       "ht": "0-0",
       "goals": [
         {
           "min": "63",
-          "team": "Deportivo",
+          "team": "RC Deportivo La Coruña",
           "player": "Bil Nsongo"
         },
         {
           "min": "82",
           "team": "Levante",
-          "player": "Daniel Requena Sánchez",
+          "player": "Dani Requena",
           "assist": "Petar Ratkov"
         }
       ]

@@ -161,6 +161,7 @@ import {
 import {
   briefInputWindow,
   briefLlmInput,
+  briefTeamRefs,
   buildBriefInput,
   mergeBriefDetails,
   serializeBriefInput,
@@ -286,6 +287,7 @@ import {
   foldName,
   playerTeamsFrom,
   isKnownName,
+  teamFullNamesFrom,
   unknownBriefInputNames,
   unknownNamesInText,
   type NameIndex,
@@ -3212,6 +3214,7 @@ async function runBriefStage(
 
   // 전날 경기 결과 + 현재 순위 + 연결된 경기의 득점자(M1-48b, 원장 항목 M1-19) → 정형 입력(M1-19 — 중요도 순)
   // → 득점자·도움을 사전 대표 영문 표기로(M1-21 — 모델이 입력 표기를 옮기면 사전 키와 같아 치환된다, M0-30)
+  //   + 사전에 없는 팀 짧은 이름은 정식 이름으로(D46 'Deportivo' — 짧은 이름을 별칭에서 뺀 팀이 영문으로 남지 않게)
   let input: BriefInput;
   let competitions: CompetitionsFile;
   let built: BriefInputBuild;
@@ -3241,8 +3244,14 @@ async function runBriefStage(
     const canonical = names
       ? canonicalizeBriefInput(built.input, names, {
           playerTeams: await briefPlayerTeams(deps),
+          teamFullNames: teamFullNamesFrom(
+            briefTeamRefs({
+              results: fd.data.results,
+              standings: fd.data.standings,
+            }),
+          ),
         })
-      : { input: built.input, replaced: 0 };
+      : { input: built.input, replaced: 0, teams: 0 };
     input = canonical.input;
     log.info("summarize.input.done", {
       date: ctx.publishDate,
@@ -3264,6 +3273,8 @@ async function runBriefStage(
       goalsIncomplete: built.goals.incomplete,
       // 득점자·도움을 사전 대표 표기로 바꾼 수(M1-21) — 사전을 읽지 못했으면 null
       canonicalNames: names ? canonical.replaced : null,
+      // 사전에 없는 팀 짧은 이름을 정식 이름으로 바꾼 수(서로 다른 이름 — D46 'Deportivo') — 사전을 읽지 못했으면 null
+      canonicalTeams: names ? canonical.teams : null,
       inputChars: serializeBriefInput(input).length,
     });
   } catch (error) {

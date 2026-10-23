@@ -1114,10 +1114,10 @@
     },
     {
       "ko": "로드리",
-      "en": ["Rodri"],
+      "en": ["Rodri", "Rodrigo Hernandez Cascante"],
       "kind": "player",
       "slug": "rodri",
-      "note": "관용 — 위키 문서명은 본명 '로드리 에르난데스' — 국내 매체 표기 '로드리' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+      "note": "관용 — 위키 문서명은 본명 '로드리 에르난데스' — 국내 매체 표기 '로드리' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지) · 별칭 'Rodrigo Hernandez Cascante'(데이터 API 득점·도움 입력의 법적 이름 — unknown-names 2026-10-18, 사용자 결정 2026-10-22)"
     },
     {
       "ko": "엔드릭",
@@ -1244,6 +1244,230 @@
       "kind": "player",
       "slug": "nicolas-jackson",
       "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안 — 위키 '니콜라 작송'과 다른 국내 매체 관례 '니콜라스 잭슨' · 위키백과 '니콜라 작송' · 영문: 대표 표기(이름 첫 글자 축약형은 fixtures에서 본 것만 — 동명이인 오매칭 방지)"
+    },
+    {
+      "ko": "알렉스 바에나",
+      "en": ["Álex Baena", "Alejandro Baena Rodríguez"],
+      "kind": "player",
+      "slug": "alex-baena",
+      "note": "확실(규범·매체) — 위키백과 '알렉스 바에나' · 국내 축구 매체 제목에 '바에나' 2건(베스트일레븐 RSS 2026-10-17 https://www.besteleven.com/news/articleView.html?idxno=313207 · 인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=696610) · 영문: API-Football 경기 이벤트 'Alejandro Baena Rodríguez'(fixtures/football/api-football/fixtures-id-1570403.json) — 대표 표기는 통칭 'Álex Baena'(en 위키 문서명)"
+    },
+    {
+      "ko": "루이스 디아스",
+      "en": ["Luis Díaz"],
+      "kind": "player",
+      "slug": "luis-diaz",
+      "note": "확실(규범·매체) — 위키백과 '루이스 디아스' · 풋볼리스트 제목 '디아스 해트트릭' https://www.footballist.co.kr/news/articleView.html?idxno=191398 · 스타뉴스·SPOTV 2026-10-18 라이프치히전 기사 본문 '루이스 디아스' · 영문: API-Football 경기 상세 'Luis Díaz'(fixtures-id-1575167·1575180, 바이에른 뮌헨)"
+    },
+    {
+      "ko": "빅토르 무뇨스",
+      "en": ["Víctor Muñoz"],
+      "kind": "player",
+      "slug": "victor-munoz",
+      "note": "확실(규범·매체) — 위키백과 '빅토르 무뇨스 (2003년)' · 베스트일레븐 제목 '무뇨스' https://www.besteleven.com/news/articleView.html?idxno=308581 · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 리버풀, 1957년생 동명이인과 다름)"
+    },
+    {
+      "ko": "마테오 코바치치",
+      "en": ["Mateo Kovačić"],
+      "kind": "player",
+      "slug": "mateo-kovacic",
+      "note": "확실(규범·매체) — 위키백과 '마테오 코바치치' · 국내 매체 제목 '코바치치'(인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=609002 · 베스트일레븐 https://www.besteleven.com/news/articleView.html?idxno=230521) · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18)"
+    },
+    {
+      "ko": "제레미 도쿠",
+      "en": ["Jeremy Doku"],
+      "kind": "player",
+      "slug": "jeremy-doku",
+      "note": "확실(규범·매체) — 위키백과 '제레미 도쿠' · 국내 매체 제목 '제레미 도쿠'(엑스포츠뉴스 https://www.xportsnews.com/article/1763070 · SPOTV https://www.spotvnews.co.kr/news/articleView.html?idxno=628026) · 영문: 데이터 API 득점·도움 입력 'Jeremy Doku'(위키 'Jérémy Doku' — 악센트 무시로 같이 맞음)"
+    },
+    {
+      "ko": "니클라스 퓔크루크",
+      "en": ["Niclas Füllkrug"],
+      "kind": "player",
+      "slug": "niclas-fullkrug",
+      "note": "확실(규범·매체) — 위키백과 '니클라스 퓔크루크' · 국내 매체 제목 '퓔크루크'(풋볼리스트 https://www.footballist.co.kr/news/articleView.html?idxno=184443 · SPOTV https://www.spotvnews.co.kr/news/articleView.html?idxno=675663) · 영문: football-data 득점 순위 'Niclas Füllkrug'(fixtures/football/football-data/scorers-bl1-2026-10-10.json, 베르더 브레멘)"
+    },
+    {
+      "ko": "마에다 다이젠",
+      "en": ["Daizen Maeda"],
+      "kind": "player",
+      "slug": "daizen-maeda",
+      "note": "확실(규범·매체) — 위키백과 '마에다 다이젠' · 국내 매체 제목 '마에다'(인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=691050 · 엑스포츠뉴스 https://www.xportsnews.com/article/2176196), 본문 '마에다 다이젠' · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 입스위치 타운)"
+    },
+    {
+      "ko": "파비안 리더",
+      "en": ["Fabian Rieder"],
+      "kind": "player",
+      "slug": "fabian-rieder",
+      "note": "확실(규범·매체) — 위키백과 '파비안 리더' · 국내 매체 본문 '파비안 리더'(OSEN https://www.osen.co.kr/article/G1112891045 · SPOTV https://www.spotvnews.co.kr/news/articleView.html?idxno=827123) · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 아우크스부르크)"
+    },
+    {
+      "ko": "미로 무하임",
+      "en": ["Miro Muheim"],
+      "kind": "player",
+      "slug": "miro-muheim",
+      "note": "확실(규범·매체) — 위키백과 '미로 무하임' · 풋볼리스트 본문 '미로 무하임' http://www.footballist.co.kr/news/articleView.html?idxno=206519 · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 함부르크)"
+    },
+    {
+      "ko": "미하엘 그레고리치",
+      "en": ["Michael Gregoritsch"],
+      "kind": "player",
+      "slug": "michael-gregoritsch",
+      "note": "확실(규범·매체) — 위키백과 '미하엘 그레고리치' · 베스트일레븐 제목 '그레고리치' https://www.besteleven.com/news/articleView.html?idxno=93910 · 풋볼리스트 본문 '미하엘 그레고리치' http://www.footballist.co.kr/news/articleView.html?idxno=214752 (SPOTV 본문은 '미카엘' 1건) · 영문: football-data 득점 순위·API-Football 이벤트 'Michael Gregoritsch'(scorers-bl1-2026-10-10.json·fixtures-id-1575180.json, 아우크스부르크)"
+    },
+    {
+      "ko": "페드로 네투",
+      "en": ["Pedro Neto"],
+      "kind": "player",
+      "slug": "pedro-neto",
+      "note": "확정(사용자 결정 2026-10-22) — 국내 매체 관용(근거: 베스트일레븐 제목·본문 '페드로 네투' 2건 — 2026-07-27 https://www.besteleven.com/news/articleView.html?idxno=310459 · 2026-09-12 https://www.besteleven.com/news/articleView.html?idxno=312098) — 대안(규범) 위키백과 '페드루 네투'(포르투갈어 표기법 — 엑스포츠뉴스 본문 2024-08-12 https://www.xportsnews.com/article/1892497, 풋볼리스트 제목은 성 '네투' https://www.footballist.co.kr/news/articleView.html?idxno=187990) · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 첼시)"
+    },
+    {
+      "ko": "이고르 티아고",
+      "en": ["Igor Thiago"],
+      "kind": "player",
+      "slug": "igor-thiago",
+      "note": "확정(사용자 결정 2026-10-22) — 국내 매체 관용(근거: 인터풋볼 제목·본문 '이고르 티아고' 2026-06-05 https://www.interfootball.co.kr/news/articleView.html?idxno=687953) — 대안(규범) 위키백과 '이고르 치아구'(브라질 포르투갈어 ti → 치 — 풋볼리스트 제목 '치아구' https://www.footballist.co.kr/news/articleView.html?idxno=205944) · 영문: API-Football 경기 이벤트 'Igor Thiago'(fixtures-id-1557418.json, 브렌트포드)"
+    },
+    {
+      "ko": "브래들리 바르콜라",
+      "en": ["Bradley Barcola"],
+      "kind": "player",
+      "slug": "bradley-barcola",
+      "note": "확정(사용자 결정 2026-10-22) — 국내 매체 관용(근거: 풋볼리스트 제목 '브래들리 바르콜라' https://www.footballist.co.kr/news/articleView.html?idxno=199981 · 제목 '바르콜라' 다수 — 인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=693472 · 베스트일레븐 https://www.besteleven.com/news/articleView.html?idxno=311574) — 대안(규범) 위키백과 '브라들레 바르콜라'(프랑스어 표기법) · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 리버풀)"
+    },
+    {
+      "ko": "알렉스 이워비",
+      "en": ["Alex Iwobi"],
+      "kind": "player",
+      "slug": "alex-iwobi",
+      "note": "확정(사용자 결정 2026-10-22) — 국내 매체 관용(근거: 본문 '알렉스 이워비'(스포탈코리아) · 제목 '이워비'(스타뉴스 https://www.starnewskorea.com/stview.php?no=2023090210101105069)) — 대안(규범) 위키백과 '앨릭스 이워비'(영어 표기법) · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 풀럼)"
+    },
+    {
+      "ko": "일리만 은디아예",
+      "en": ["Iliman Ndiaye"],
+      "kind": "player",
+      "slug": "iliman-ndiaye",
+      "note": "확정(사용자 결정 2026-10-22) — 국내 매체 관용(근거: 본문 '일리만 은디아예'(베스트일레븐 https://www.besteleven.com/news/articleView.html?idxno=312209) · 제목 '은디아예'(베스트일레븐 https://www.besteleven.com/news/articleView.html?idxno=307957 · 인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=683479)) — 대안(규범) 위키백과 '일리망 은디아예'(프랑스어 표기법) · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 맨체스터 시티)"
+    },
+    {
+      "ko": "산데르 베르게",
+      "en": ["Sander Berge"],
+      "kind": "player",
+      "slug": "sander-berge",
+      "note": "확정(사용자 결정 2026-10-22) — 국내 매체 관용(근거: 제목 '산데르 베르게'(인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=360794 · 엑스포츠뉴스 https://www.xportsnews.com/article/1200203/)) — 대안(규범) 위키백과 '사네르 베르게'(노르웨이어 표기법) · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 풀럼)"
+    },
+    {
+      "ko": "아코르 애덤스",
+      "en": ["Akor Adams"],
+      "kind": "player",
+      "slug": "akor-adams",
+      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용·규범 일치(근거: 최근 매체 본문 '아코르 애덤스' — 엑스포츠뉴스 2025-11-14 https://www.xportsnews.com/article/2078448 · 스타뉴스 2026-01-11 https://www.starnewskorea.com/sports/2026/01/11/2026011108005717578, 위키백과 '아코르 애덤스'(영어 표기법)) — 대안 '아코르 아담스'(엑스포츠뉴스 본문 2023-11-04 https://www.xportsnews.com/article/1789558 1건 — 2026-10-22 1차 결정은 이 근거를 오인해 정정) · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 베네치아)"
+    },
+    {
+      "ko": "헤네스 베렌스",
+      "en": ["Hennes Behrens"],
+      "kind": "player",
+      "slug": "hennes-behrens",
+      "note": "확실(규범·매체 — 위키 문서 없음) — 풋볼리스트 제목 '베렌스' http://www.footballist.co.kr/news/articleView.html?idxno=214913 · 본문 '헤네스 베렌스'(베스트일레븐 https://www.besteleven.com/news/articleView.html?idxno=312321 · OSEN https://www.osen.co.kr/article/G1112891045) · 독일어 표기법 일치 · 영문: API-Football 라인업·이벤트 'Hennes Behrens'(fixtures-id-1575180.json, 아우크스부르크)"
+    },
+    {
+      "ko": "펠릭스 카이델",
+      "en": ["Felix Keidel"],
+      "kind": "player",
+      "slug": "felix-keidel",
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 베스트일레븐 본문 '펠릭스 카이델(엘버스베르크)' https://www.besteleven.com/news/articleView.html?idxno=312321 · 독일어 표기법 일치 · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 엘페르스베르크)"
+    },
+    {
+      "ko": "유네스 에브누탈리브",
+      "en": ["Younes Ebnoutalib"],
+      "kind": "player",
+      "slug": "younes-ebnoutalib",
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 베스트일레븐 본문 '유네스 에브누탈리브(아인트라흐트 프랑크푸르트)' https://www.besteleven.com/news/articleView.html?idxno=312321 · 영문: football-data 득점 순위·API-Football 이벤트 'Younes Ebnoutalib'(scorers-bl1-2026-10-10.json·fixtures-id-1575177.json, 프랑크푸르트)"
+    },
+    {
+      "ko": "필리프 티츠",
+      "en": ["Phillip Tietz"],
+      "kind": "player",
+      "slug": "phillip-tietz",
+      "note": "확실(규범·매체 — 위키 문서 없음) — 본문 '필리프 티츠'(스타뉴스 https://www.starnewskorea.com/sports/2026/09/07/2026090709311491372 · SPOTV https://www.spotvnews.co.kr/news/articleView.html?idxno=1006089) · 독일어 표기법 일치 · 영문: football-data 득점 순위·API-Football 이벤트 'Phillip Tietz'(scorers-bl1-2026-10-10.json·fixtures-id-1575181.json, 마인츠)"
+    },
+    {
+      "ko": "킨 루이스-포터",
+      "en": ["Keane Lewis-Potter"],
+      "kind": "player",
+      "slug": "keane-lewis-potter",
+      "note": "확실(규범·매체 — 위키 문서 없음) — 인터풋볼 본문 '킨 루이스-포터'(https://www.interfootball.co.kr/news/articleView.html?idxno=679912 · https://www.interfootball.co.kr/news/articleView.html?idxno=669539) · 영문: API-Football 경기 이벤트 'Keane Lewis-Potter'(fixtures-id-1557418.json, 브렌트포드)"
+    },
+    {
+      "ko": "지안 플레밍",
+      "en": ["Zian Flemming"],
+      "kind": "player",
+      "slug": "zian-flemming",
+      "note": "확실(규범·매체 — 위키 문서 없음) — 본문 '지안 플레밍'(인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=693669 · SPOTV https://www.spotvnews.co.kr/news/articleView.html?idxno=1006059 — 일부 기사 '플러밍') · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 입스위치 타운)"
+    },
+    {
+      "ko": "에렌 딘크치",
+      "en": ["Eren Dinkci"],
+      "kind": "player",
+      "slug": "eren-dinkci",
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 엑스포츠뉴스 본문 '딘크치' https://www.xportsnews.com/article/2184991 · 튀르키예어 표기법(Eren 에렌·Dinkçi 딘크치) 일치 · 영문: 데이터 API 득점·도움 입력 'Eren Dinkci'(위키 'Eren Dinkçi' — 악센트 무시로 같이 맞음, 브레멘 임대)"
+    },
+    {
+      "ko": "안토니오 라이몬도",
+      "en": ["Antonio Raimondo"],
+      "kind": "player",
+      "slug": "antonio-raimondo",
+      "note": "확정(사용자 결정 2026-10-22) — 이탈리아어 외래어 표기법만(위키 한국어 문서·국내 매체 표기 없음 — 10-17 브리핑 노출) · 영문: football-data 득점 순위 'Antonio Raimondo'(scorers-sa-2026-10-10.json, 프로시노네)"
+    },
+    {
+      "ko": "다니 레케나",
+      "en": ["Dani Requena", "Daniel Requena Sánchez"],
+      "kind": "player",
+      "slug": "dani-requena",
+      "note": "확정(사용자 결정 2026-10-22) — 스페인어 외래어 표기법만(위키 한국어 문서·국내 매체 표기 없음 — 10-17 브리핑 노출) · 영문: 데이터 API 득점 입력 'Daniel Requena Sánchez'(대표 표기는 통칭 'Dani Requena' — en 위키 문서명, 레반테)"
+    },
+    {
+      "ko": "오마르 마르무시",
+      "en": ["Omar Marmoush"],
+      "kind": "player",
+      "slug": "omar-marmoush",
+      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 베스트일레븐 제목 '마르무시' 3건 https://www.besteleven.com/news/articleView.html?idxno=311685 · https://www.besteleven.com/news/articleView.html?idxno=311602 · https://www.besteleven.com/news/articleView.html?idxno=311579, 본문 '오마르 마르무시'(311579·311653) · 인터풋볼 본문 '오마르 마르무시' https://www.interfootball.co.kr/news/articleView.html?idxno=696642 · https://www.interfootball.co.kr/news/articleView.html?idxno=696088) — 위키백과 '오마르 마르무시'와 같음(규범·매체 일치) · 영문: 데이터 API 득점 입력 'Omar Marmoush'(unknown-names 2026-10-20 — 토트넘)"
+    },
+    {
+      "ko": "마르틴 사트리아노",
+      "en": ["Martín Satriano"],
+      "kind": "player",
+      "slug": "martin-satriano",
+      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 베스트일레븐 본문 '마르틴 사트리아노' 3건 — 2026-03 헤타페-레알 마드리드 https://www.besteleven.com/news/articleView.html?idxno=304736 · https://www.besteleven.com/news/articleView.html?idxno=304735 · https://www.besteleven.com/news/articleView.html?idxno=304718) — 위키 한국어 문서 없음, 스페인어 표기법과 일치 · 영문: 데이터 API 득점 입력 'Martin Satriano'(unknown-names 2026-10-20 — 헤타페, en 위키 'Martín Satriano' — 악센트 무시로 같이 맞음)"
+    },
+    {
+      "ko": "지오반니 시메오네",
+      "en": ["Giovanni Simeone"],
+      "kind": "player",
+      "slug": "giovanni-simeone",
+      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 인터풋볼 본문 '지오반니 시메오네' 2023~2026 6건 — https://www.interfootball.co.kr/news/articleView.html?idxno=681946 · https://www.interfootball.co.kr/news/articleView.html?idxno=637433 · https://www.interfootball.co.kr/news/articleView.html?idxno=619424, 제목 'G.시메오네' https://www.interfootball.co.kr/news/articleView.html?idxno=608145 · 풋볼리스트 본문 https://www.footballist.co.kr/news/articleView.html?idxno=157540, '조반니 시메오네' 표기는 검색 0건) — 대안(규범) 위키백과 '히오바니 시메오네'(스페인어 표기법) · 영문: 데이터 API 득점 입력 'Giovanni Simeone'(unknown-names 2026-10-20 — 토리노) · 감독 디에고 시메오네('Diego Simeone'·'D. Simeone')와 다른 항목"
+    },
+    {
+      "ko": "비티냐",
+      "en": ["Vitinha"],
+      "kind": "player",
+      "slug": "vitinha",
+      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 본문 '비티냐' — 인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=694827 · https://www.interfootball.co.kr/news/articleView.html?idxno=692416, 풋볼리스트 https://www.footballist.co.kr/news/articleView.html?idxno=211941) — 위키백과 '비티냐'와 같음(규범·매체 일치) · 영문: 데이터 API 득점 입력 'Vitinha'(unknown-names 2026-10-21 — 파리 생제르맹 미드필더, 본명 Vítor Machado Ferreira — en 위키 'Vitinha') · 주의: 같은 통칭의 다른 선수(공격수 Vítor Oliveira 'Vitinha')도 이 표기에 맞아 같은 한글·같은 태그 slug가 붙는다 — 본명 별칭은 데이터 API에서 본 적이 없어 넣지 않음"
+    },
+    {
+      "ko": "세루 기라시",
+      "en": ["Serhou Guirassy"],
+      "kind": "player",
+      "slug": "serhou-guirassy",
+      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 베스트일레븐 본문 '세루 기라시' 6건 — https://www.besteleven.com/news/articleView.html?idxno=312019 · https://www.besteleven.com/news/articleView.html?idxno=304861 · https://www.besteleven.com/news/articleView.html?idxno=229606 등) — 위키백과 '세루 기라시'와 같음(규범·매체 일치), 소수 매체 표기 '세르후 기라시'(베스트일레븐 302377·230880) · 영문: 데이터 API 득점 입력 'Serhou Guirassy'(unknown-names 2026-10-21 — 도르트문트)"
+    },
+    {
+      "ko": "조슈아 지르크지",
+      "en": ["Joshua Zirkzee"],
+      "kind": "player",
+      "slug": "joshua-zirkzee",
+      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 인터풋볼 제목 '지르크지'·본문 '조슈아 지르크지' 2026-09~10 다수 — https://www.interfootball.co.kr/news/articleView.html?idxno=695937 · https://www.interfootball.co.kr/news/articleView.html?idxno=695777 · https://www.interfootball.co.kr/news/articleView.html?idxno=695251, 베스트일레븐 제목 '지르크지' https://www.besteleven.com/news/articleView.html?idxno=311871 · https://www.besteleven.com/news/articleView.html?idxno=229075, 본문 '조슈아 지르크지' 307958, 저장 카드 인터풋볼 RSS 2026-10-17 '세슈코-지르크지', '지르크제이' 표기는 검색 0건) — 대안(규범) 위키백과 '조슈아 지르크제이'(네덜란드어 표기법) · 영문: 데이터 API 득점 입력 'Joshua Zirkzee'(unknown-names 2026-10-22 — 맨체스터 유나이티드)"
     },
     {
       "ko": "펩 과르디올라",
