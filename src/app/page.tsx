@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { TodayBrief } from "@/components/brief/today-brief";
 import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
@@ -5,6 +7,8 @@ import { AppShell } from "@/components/shell/app-shell";
 import { loadBrief } from "@/lib/data/brief";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
+import { routes } from "@/lib/paths";
+import { pageMetadata, SITE_DESCRIPTION } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 /*
@@ -17,6 +21,13 @@ import { cn } from "@/lib/utils";
  * 그 밖의 홈 섹션(한국 선수·오늘 밤·이적·순위)은 해당 단계에서 싣는다(미완성 섹션 숨김, plan §2.3). 목차가 생겨 1024 이상은
  * `232 · 1fr` 2단이다(5줄·피드 지면 728 @1024 · 984 @1280 — DECISIONS D0 §4 "A → 1280 M1 상태").
  */
+
+// 제목 = 서비스 이름 단독, 설명 = 사이트 기본 설명(매일 바뀌는 호 정보는 넣지 않는다 — 날짜 페이지가 맡는다), canonical = 홈 자신(M1-38)
+export const metadata: Metadata = pageMetadata({
+  title: null,
+  description: SITE_DESCRIPTION,
+  canonical: routes.home(),
+});
 
 const NEWS_HEADING_ID = "news-h";
 

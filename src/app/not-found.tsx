@@ -17,6 +17,8 @@ import { routes } from "@/lib/paths";
  * 사실(경기·선수·숫자)을 쓰지 않는다. "404"는 장식이라 `aria-hidden` — 제목(h1)이 같은 뜻을 전한다.
  */
 
+// 메타(M1-38): 제목만 — canonical·og:url 없음(레이아웃 OG 기본값을 물려받는다), 색인 제외(noindex)는 Next가 404에 넣는다
+// (`<meta name="robots" content="noindex"/>` — 직접 주면 같은 태그가 두 번 나온다, e2e tests/e2e/seo.spec.ts가 확인).
 export const metadata: Metadata = {
   title: "페이지를 찾을 수 없습니다",
 };

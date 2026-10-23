@@ -125,21 +125,70 @@ describe("generateStaticParams · dynamicParams", () => {
   });
 });
 
-describe("generateMetadata — 제목·canonical", () => {
-  it("제목 '2026년 10월 14일 (수) 뉴스 · 제 3호', canonical = 이 날짜 페이지 절대 URL(basePath·끝 슬래시)", async () => {
+describe("generateMetadata — 제목·설명·canonical·OG (M1-38)", () => {
+  it("제목 '2026년 10월 14일 (수) 뉴스 · 제 3호', canonical = og:url = 이 날짜 페이지 절대 URL(basePath·끝 슬래시)", async () => {
     const meta = await generateMetadata(props("2026-10-14"));
     expect(meta.title).toBe("2026년 10월 14일 (수) 뉴스 · 제 3호");
-    expect(meta.alternates?.canonical).toBe(
-      "https://sguys99.github.io/euro-digest/news/2026-10-14/",
-    );
+    const url = "https://sguys99.github.io/euro-digest/news/2026-10-14/";
+    expect(meta.alternates?.canonical).toBe(url);
+    expect(meta.openGraph).toMatchObject({
+      url,
+      title: "2026년 10월 14일 (수) 뉴스 · 제 3호 · 유로 다이제스트",
+      type: "website",
+      locale: "ko_KR",
+      siteName: "유로 다이제스트",
+    });
+    expect(meta.twitter).toMatchObject({ card: "summary" });
   });
 
-  it("/news/는 최신 호의 별칭 — canonical = 최신 날짜 페이지, 호가 없으면 canonical 없음", () => {
-    expect(newsMetadata().alternates?.canonical).toBe(
-      "https://sguys99.github.io/euro-digest/news/2026-10-22/",
+  it("설명 = 호수·날짜·카드 수(브리핑 파일이 없으면 브리핑 언급 없음) — 카드 원제목은 넣지 않는다", async () => {
+    const meta = await generateMetadata(props("2026-10-14"));
+    expect(meta.description).toBe(
+      `제 3호 · 2026년 10월 14일 (수) 지면 — 유럽 축구 소식 ${fixture.cards.length}건을 원문 링크와 함께 싣습니다.`,
+    );
+    for (const card of fixture.cards) {
+      expect(meta.description).not.toContain(card.t);
+    }
+    expect(meta.openGraph?.description).toBe(meta.description);
+  });
+
+  it("브리핑 줄이 있는 호는 '이날의 5줄'을 적는다(브리핑 문장·스코어는 넣지 않는다), 경기 없는 날(줄 0)은 적지 않는다", async () => {
+    loadBrief.mockReturnValue({ ...briefFixture, date: "2026-10-14" });
+    const meta = await generateMetadata(props("2026-10-14"));
+    expect(meta.description).toContain("‘이날의 5줄’과 유럽 축구 소식");
+    for (const line of briefFixture.lines) {
+      expect(meta.description).not.toContain(line.text);
+    }
+    expect(meta.description).not.toMatch(/\d\s*[-–—:]\s*\d/);
+
+    loadBrief.mockReturnValue({
+      ...briefFixture,
+      date: "2026-10-14",
+      mode: "empty",
+      lines: [],
+    });
+    expect(
+      (await generateMetadata(props("2026-10-14"))).description,
+    ).not.toContain("이날의 5줄");
+  });
+
+  it("/news/는 최신 호의 별칭 — canonical = og:url = 최신 날짜 페이지, 설명 = 최신 호 호수·날짜·카드 수, 호가 없으면 canonical 없음", () => {
+    const meta = newsMetadata();
+    const url = "https://sguys99.github.io/euro-digest/news/2026-10-22/";
+    expect(meta.title).toBe("뉴스");
+    expect(meta.alternates?.canonical).toBe(url);
+    expect(meta.openGraph).toMatchObject({
+      url,
+      title: "뉴스 · 유로 다이제스트",
+    });
+    expect(meta.description).toBe(
+      `최신 호(제 11호 · 2026년 10월 22일 (목))의 유럽 축구 소식 ${fixture.cards.length}건을 원문 링크와 함께 싣습니다. 지난 호는 날짜별 아카이브에 있습니다.`,
     );
     listNewsDates.mockReturnValue([]);
-    expect(newsMetadata().alternates).toBeUndefined();
+    loadLatestNews.mockReturnValue(null);
+    const empty = newsMetadata();
+    expect(empty.alternates).toBeUndefined();
+    expect(empty.openGraph).not.toHaveProperty("url");
   });
 });
 

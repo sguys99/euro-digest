@@ -55,9 +55,15 @@ beforeEach(() => {
 });
 
 describe("AboutPage — 머리·차례·절", () => {
-  it("제목 '소개 · 유로 다이제스트'(레이아웃 템플릿) · description", () => {
+  it("제목 '소개 · 유로 다이제스트'(레이아웃 템플릿) · description · canonical = og:url = 이 페이지(M1-38)", () => {
     expect(metadata.title).toBe("소개");
     expect(metadata.description).toContain("AI 작성 고지");
+    const url = "https://sguys99.github.io/euro-digest/about/";
+    expect(metadata.alternates?.canonical).toBe(url);
+    expect(metadata.openGraph).toMatchObject({
+      url,
+      title: "소개 · 유로 다이제스트",
+    });
   });
 
   it("h1 '소개' 하나, 현재 탭 없음(소개는 내비에 넣지 않는다 — PRD §4.1 하단 탭 5개 고정)", () => {

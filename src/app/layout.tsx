@@ -4,16 +4,14 @@ import { preload } from "react-dom";
 
 import { fontFaceCss, fontPreloadHrefs } from "@/lib/fonts";
 import { withBasePath } from "@/lib/paths";
-import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
+import { siteMetadata } from "@/lib/seo";
 import { THEME_COLOR_METAS, THEME_INIT_SCRIPT } from "@/lib/theme";
 
 import "./globals.css";
 
-export const metadata: Metadata = {
-  // 홈은 서비스 이름 그대로, 다른 페이지는 "뉴스 · 유로 다이제스트"(페이지가 metadata.title을 준다)
-  title: { default: SITE_NAME, template: `%s · ${SITE_NAME}` },
-  description: SITE_TAGLINE,
-};
+// 기본 SEO(M1-38, FR-124) — metadataBase(SITE_URL + basePath), 제목 템플릿("뉴스 · 유로 다이제스트" — 홈은 서비스 이름 그대로),
+// 기본 설명, OG·twitter 기본값. canonical·og:url은 페이지마다(`pageMetadata`) — 규칙은 src/lib/seo.ts 머리 주석.
+export const metadata: Metadata = siteMetadata();
 
 // 라이트·다크 둘 다 지원한다고 CSS보다 먼저 알린다(<meta name="color-scheme">).
 // theme-color(브라우저 UI 색 = 지면 --paper, DESIGN §2.1·§8)는 viewport.themeColor로 내보내지 않고 아래 <head>에 직접 렌더한다.

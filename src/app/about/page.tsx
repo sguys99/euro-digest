@@ -24,8 +24,9 @@ import { ABOUT_SECTIONS, type AboutSectionId } from "@/lib/about-sections";
 import { loadSourcesConfig } from "@/lib/data/about";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { loadLatestIssue } from "@/lib/data/issue";
-import { issueFormUrl } from "@/lib/paths";
+import { issueFormUrl, routes } from "@/lib/paths";
 import type { Tier } from "@/lib/schema/common";
+import { pageMetadata } from "@/lib/seo";
 import {
   CONTACT_EMAIL,
   FIRST_ISSUE_DATE,
@@ -50,11 +51,12 @@ import { kstDate, nowUtcIso } from "@/lib/time";
  * 서버 컴포넌트 — JS 0(앱 셸의 테마 토글·토스트 섬만).
  */
 
-export const metadata: Metadata = {
+// 메타(M1-38): canonical·og:url = 이 페이지 자신(src/lib/seo.ts)
+export const metadata: Metadata = pageMetadata({
   title: "소개",
-  description:
-    "유로 다이제스트의 발행 시각, 출처·저작권 정책, 출처 Tier, AI 작성 고지, 데이터 출처, 삭제·정정 요청 연락처.",
-};
+  description: `${SITE_NAME}의 발행 시각, 출처·저작권 정책, 출처 Tier, AI 작성 고지, 데이터 출처, 삭제·정정 요청 연락처.`,
+  canonical: routes.about(),
+});
 
 const INTRO_HEADING_ID = "about-h";
 

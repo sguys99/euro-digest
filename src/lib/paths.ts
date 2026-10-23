@@ -458,9 +458,12 @@ export const artifacts = {
   },
   /** `/manifest.webmanifest` (FR-120, Next 메타데이터 규칙과 같은 파일명) */
   manifest: (): string => "/manifest.webmanifest",
-  /** `/sitemap.xml` (FR-124) */
+  /** `/sitemap.xml` (FR-124) — src/app/sitemap.ts가 빌드 때 만든다(M1-38) */
   sitemap: (): string => "/sitemap.xml",
-  /** `/robots.txt` (FR-124) */
+  /**
+   * `/robots.txt` (FR-124) — **지금은 만들지 않는다**(M1-38): 프로젝트 사이트(basePath 아래)의 robots.txt는 크롤러가 읽지 않는다
+   * (호스트 루트 `https://sguys99.github.io/robots.txt`만 유효). Search Console 제출·색인 정책과 함께 M5에서 정한다.
+   */
   robots: (): string => "/robots.txt",
 } as const;
 
@@ -533,7 +536,7 @@ export interface SitePaths {
   ogImageUrl(image?: OgImage): string;
   /** Web App Manifest href */
   manifestPath(): string;
-  /** sitemap 절대 URL (robots.txt의 `Sitemap:`) */
+  /** sitemap 절대 URL (Search Console 제출·robots.txt의 `Sitemap:` — 둘 다 M5) */
   sitemapUrl(): string;
   /** 카드 공유 절대 URL (FR-34). 예) https://sguys99.github.io/euro-digest/news/2026-10-10/#c_8f3a1b2c4d */
   cardShareUrl(date: string, cardId: string): string;

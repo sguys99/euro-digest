@@ -15,7 +15,8 @@ import {
 } from "@/lib/data/issue";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
 import { archiveHeading, archiveTitle } from "@/lib/news/archive";
-import { absoluteUrl, routes } from "@/lib/paths";
+import { routes } from "@/lib/paths";
+import { archiveDescription, pageMetadata } from "@/lib/seo";
 import { FIRST_ISSUE_DATE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -50,16 +51,27 @@ export function generateStaticParams(): { date: string }[] {
   }));
 }
 
+/**
+ * 메타(M1-38): 제목 "2026년 10월 14일 (수) 뉴스 · 제 3호", 설명 = 호수·날짜·실린 것(브리핑 줄 유무·카드 수 — 사실만, 원제목·브리핑 문장·
+ * 스코어 없음 — 결과 노출 0), canonical·og:url = 이 날짜 페이지 자신. sitemap에 이 페이지가 실린다(src/app/sitemap.ts).
+ */
 export async function generateMetadata({
   params,
 }: PageProps<"/news/[date]">): Promise<Metadata> {
   const { date } = await params;
   // 발행된 호가 아니면(빈 data/news 빌드의 창간일 칸 — not-found) canonical을 두지 않는다
   if (!listIssueDates().includes(date)) return {};
-  return {
+  const { news } = loadIssue(date);
+  if (!news) return {};
+  return pageMetadata({
     title: archiveTitle(date),
-    alternates: { canonical: absoluteUrl(routes.newsArchive(date)) },
-  };
+    description: archiveDescription({
+      date,
+      cards: news.cards.length,
+      briefLines: loadBrief(date)?.lines.length ?? 0,
+    }),
+    canonical: routes.newsArchive(date),
+  });
 }
 
 export default async function NewsArchivePage({

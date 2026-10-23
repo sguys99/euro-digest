@@ -292,7 +292,7 @@
 | FR-121 | 서비스워커: 앱 셸 + 최근 3일 뉴스 오프라인 캐시, 새 버전 감지 시 "새 소식이 있어요" 토스트 |
 | FR-122 | `/rss.xml`(전체 상위 30건), `/rss/[comp].xml`, `/rss/korean.xml` 🆕 — 빌드 시 생성 |
 | FR-123 | `.ics` 캘린더: 팀별, 한국 선수 소속팀 묶음 — 빌드 시 생성, 비용 0 🆕 |
-| FR-124 | sitemap.xml, robots.txt |
+| FR-124 | sitemap.xml, robots.txt — robots.txt는 만들지 않는다(2026-10-18 사용자 결정, plan M1-38): 프로젝트 사이트(basePath 아래)의 robots.txt는 크롤러가 읽지 않는다(호스트 루트만 유효). sitemap.xml은 빌드 때 생성하고 Search Console 제출·색인 정책은 M5에서 정한다 |
 
 ### 5.13 F13 · 검색 (P1)
 | ID | 요구사항 |

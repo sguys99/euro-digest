@@ -4,7 +4,7 @@ import path from "node:path";
 import { render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import HomePage from "@/app/page";
+import HomePage, { metadata } from "@/app/page";
 import { BriefFileSchema, type BriefFile } from "@/lib/schema/brief";
 import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
 import {
@@ -53,6 +53,17 @@ beforeEach(() => {
 });
 
 describe("HomePage", () => {
+  it("메타(M1-38) — 제목 = 서비스 이름 단독, 설명 = 사이트 기본 설명(호 정보 없음), canonical = og:url = 사이트 루트", () => {
+    const url = "https://sguys99.github.io/euro-digest/";
+    expect(metadata.title).toEqual({ absolute: "유로 다이제스트" });
+    expect(metadata.description).toMatch(/^매일 아침, 밤사이 유럽 축구를/);
+    expect(metadata.alternates?.canonical).toBe(url);
+    expect(metadata.openGraph).toMatchObject({
+      url,
+      title: "유로 다이제스트",
+    });
+  });
+
   it("서비스 이름을 h1으로 보여 준다", () => {
     loadLatestNews.mockReturnValue(null);
     render(<HomePage />);
