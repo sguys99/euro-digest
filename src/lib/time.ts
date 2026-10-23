@@ -985,6 +985,12 @@ export const PUBLISH_TIMES_KST: Readonly<
 /** 브리핑 마감 = 공개 목표 − 10분 (FR-26, D26·D28) — 그 뒤 10분은 검증·빌드·커밋·배포 몫이다. */
 export const BRIEF_DEADLINE_LEAD_MINUTES = 10;
 
+/**
+ * 공개 허용 지연 = 목표 +15분 (NFR-05, PRD §15 D48 ② — 일찍 공개는 문제 아님). 발행 관찰(scripts/lib/observe.ts 판정)과
+ * 화면의 발행 지연 안내(src/lib/issue.ts `issueLateWindows`, M1-37)가 같은 값을 쓴다.
+ */
+export const PUBLISH_GRACE_MINUTES = 15;
+
 /** 발행일 하루의 슬롯 — 시각은 모두 UTC ISO(`toISOString()` 형식). */
 export interface PublishSlot {
   /** 발행일(KST) "YYYY-MM-DD" */

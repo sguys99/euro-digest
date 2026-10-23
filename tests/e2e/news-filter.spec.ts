@@ -396,11 +396,10 @@ test("홈 — 5줄은 필터와 무관하게 맨 위에 남고 피드만 거른�
   await open(page, `./?cat=${cat}`);
   if (hadBrief) {
     await expect(brief).toBeVisible();
+    // 첫 섹션(main 맨 앞의 발행 지연 안내 — M1-37, 평소 숨김 — 다음)
     expect(
       await page.evaluate(() =>
-        document
-          .querySelector("main")
-          ?.firstElementChild?.getAttribute("data-slot"),
+        document.querySelector("main > section")?.getAttribute("data-slot"),
       ),
     ).toBe("today-brief");
   }

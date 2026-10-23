@@ -22,7 +22,8 @@ import { CloseIcon } from "./icons";
  *   없이 모듈 안 구독자 목록(이벤트)으로 잇는다. 새 토스트가 오면 지금 것을 바꾼다(한 번에 하나).
  * - 모양: 최소 48px, 면 --ink · 글자 --paper 14px 800, 그림자 `--shadow-print-accent`, 직각. 왼쪽 키 칸(12px, 오른쪽 2px
  *   점선)에 종류("새 소식"·"공유"·"알림"). 액션은 텍스트 링크(글자 --paper), 포커스 링은 --paper(색 면 안 재정의).
- * - 위치: 화면 아래 가운데, 바닥에서 76px(1023 이하 — 하단 탭 위) / ≥1024 28px, z 40.
+ * - 위치: 화면 아래 가운데, 바닥에서 76px(1023 이하 — 하단 탭 위) / ≥1024 28px, z 40. 오프라인 띠(M1-37)가 보이면 띠 높이만큼
+ *   더 위(`data-slot="toaster"` — globals.css §8).
  * - 동작: 배출 모션(`animate-eject`, base — 모션 줄이기면 0), 2.4초 뒤 사라짐. 포인터가 올라가 있거나 토스트 안에 포커스가
  *   있으면 멈췄다가 벗어나면 처음부터 다시 잰다(WCAG 2.2.1 — 액션을 누를 시간을 준다).
  * - 접근성: `aria-live="polite" aria-atomic="true"` 영역 하나를 늘 DOM에 두고 내용만 바꾼다(영역을 새로 만들면 읽지 않는
@@ -127,6 +128,8 @@ export function Toaster({ className }: { className?: string }) {
     <div
       aria-live="polite"
       aria-atomic="true"
+      // 오프라인 띠가 보이면 그 높이만큼 위로 올린다(globals.css §8 — M1-37)
+      data-slot="toaster"
       className={cx(
         "pointer-events-none fixed inset-x-0 bottom-19 z-40 flex justify-center px-edge lg:bottom-7",
         className,

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { AiLabel } from "@/components/ui/ai-label";
 import { ROW_GRID } from "@/components/ui/card";
-import { IndexTab } from "@/components/ui/chip";
+import { FlatTab, IndexTab } from "@/components/ui/chip";
 import { SectionHead } from "@/components/ui/section-head";
 import { aboutHref } from "@/lib/about-sections";
 import {
@@ -14,6 +14,12 @@ import {
 import { loadCompetitionLabels } from "@/lib/data/card-labels";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { briefErrorIssueUrl } from "@/lib/paths";
+import {
+  offSeasonFeature,
+  seasonLabel,
+  type OffSeasonFeature,
+} from "@/lib/rest-period";
+import { formatKst, kstDayRangeUtc } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
 /**
@@ -25,6 +31,7 @@ import { cn } from "@/lib/utils";
  *   섹션 머리 "오늘의 5줄" + STARTING FIVE · 부제 "{M월 D일}(현지) 경기 기준"(+ "이날 N줄")
  *   ol(N줄) › li 행 [--gutter 등번호 │ 문장 + "AI 작성" │ --tab-w 인덱스 탭]     ← mode llm·mixed·template
  *   S4 [--gutter '0' 윤곽 │ "오늘은 5줄을 쉽니다" + 이유 + 주요 뉴스로 ↓]          ← mode empty(D30 — 블록을 두고 높이만 줄인다)
+ *   비시즌 [평탄 탭 + 시즌명 │ 날짜(Barlow 800 34px) + 개막·종료 │ 안내 + 주요 뉴스로 ↓] ← mode empty + 홈 + 모든 대회 시즌 밖(M1-37)
  *   하단: 데이터 football-data.org · API-Football │ AI 작성 안내 · 브리핑 오류 신고↗
  * ```
  * - 행 격자·여백은 카드와 같은 `ROW_GRID`(--gutter · 1fr · --tab-w, 열 간격 10/14px), 위아래 13·14px(≥1024 14·15px). 1023 이하는
@@ -40,7 +47,7 @@ const TEXT_LINK =
   "inline-flex min-h-11 items-center text-[13px] font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2";
 
 export interface TodayBriefProps {
-  /** 그 호의 브리핑 파일(`data/briefs/{발행일}.json`) — 파일이 없는 호는 부르는 쪽이 블록을 싣지 않는다 */
+  /** 그 호의 브리핑 파일(`data/briefs/{발행일}.json`) — 파일이 없는 호는 부르는 쪽이 정한다(블록 없음 · 확인된 실패면 `BriefMissing`, M1-37) */
   brief: BriefInput;
   /** 섹션 머리 제목 요소(홈 h2 — 워드마크 h1 아래) */
   headingAs?: "h2" | "h3";
@@ -88,6 +95,11 @@ export function TodayBrief({
   const view = buildBriefView(brief);
   const text = VARIANT_TEXT[variant];
   const empty = view.mode === "empty";
+  // 비시즌(M1-37 — DESIGN §9.3 상태 화면 ② 빈 상태): 홈(오늘 호)만. 지난 호는 지금 설정으로 그날 시즌을 다시 쓰지 않는다(S4 이유와 같은 원칙)
+  const offSeason =
+    empty && text.countComps
+      ? offSeasonFeature(view.date, loadCompetitionsConfig())
+      : null;
   return (
     <section
       aria-labelledby={headingId}
@@ -120,7 +132,11 @@ export function TodayBrief({
         ) : null}
       </p>
       {empty ? (
-        <BriefRest newsHref={newsHref} text={text} />
+        offSeason ? (
+          <BriefOffSeason feature={offSeason} newsHref={newsHref} text={text} />
+        ) : (
+          <BriefRest newsHref={newsHref} text={text} />
+        )
       ) : (
         <ol
           role="list"
@@ -265,5 +281,111 @@ function BriefRest({
         </a>
       </div>
     </div>
+  );
+}
+
+/** 비시즌 빈 상태 문구 — 날짜 옆 낱말 · 안내(UI 안내 — 경기·선수 사실 없음) */
+const OFF_SEASON_TEXT = {
+  ended: {
+    label: "종료",
+    note: "시즌이 끝났어요. 다음 시즌 일정이 나오면 이 자리에 다시 채워집니다.",
+  },
+  upcoming: {
+    label: "개막",
+    note: "아직 시즌 전이에요. 경기가 열리면 이 자리에 5줄이 채워집니다.",
+  },
+} as const;
+
+/**
+ * 비시즌 빈 상태(M1-37 — DESIGN §9.3 상태 화면 ② "평탄 탭 + 시즌명 + 종료일(실값만, Barlow 800 34px) + 안내", 혼합안 `.off`) — 경기 없는 날(S4)
+ * 중 **모든 대회가 시즌 밖인 날**(src/lib/rest-period.ts `offSeasonFeature`) S4 자리를 바꾼다. 대회 하나: 개막 전인 대회가 있으면 가장 먼저
+ * 개막하는 대회(개막일), 모두 끝났으면 가장 늦게 끝난 대회(종료일) — 날짜는 `configs/competitions.json` 값 그대로(만들어 내지 않는다).
+ * A매치 휴식기 문구는 근거 파일(national-team.json — M3-05)이 없어 쓰지 않는다.
+ */
+function BriefOffSeason({
+  feature,
+  newsHref,
+  text,
+}: {
+  feature: OffSeasonFeature;
+  newsHref: string;
+  text: VariantText;
+}) {
+  const { comp, phase, date } = feature;
+  const copy = OFF_SEASON_TEXT[phase];
+  return (
+    <div
+      data-slot="brief-off-season"
+      data-phase={phase}
+      className="mt-3 border-y border-rule pt-3 pb-0.5"
+    >
+      <p className="flex items-center gap-2 text-sm font-extrabold">
+        <FlatTab comp={comp.id} title={comp.nameKo}>
+          {comp.shortKo}
+        </FlatTab>
+        <span>
+          {comp.nameKo} {seasonLabel(comp.season)}
+        </span>
+      </p>
+      <p className="mt-2.5 text-sm text-ink-2">
+        <time dateTime={date}>
+          <span
+            aria-hidden="true"
+            className="mr-1.5 font-numeric text-[34px] leading-none font-extrabold text-ink lining-nums tabular-nums"
+          >
+            {date.replaceAll("-", ".")}
+          </span>
+          <span className="sr-only">
+            {formatKst(kstDayRangeUtc(date).start, "fullDate")}{" "}
+          </span>
+        </time>
+        {copy.label}
+      </p>
+      <p className="mt-3 mb-0.5 text-[15px] font-extrabold">{copy.note}</p>
+      <a href={newsHref} className={TEXT_LINK}>
+        {text.news}
+        <span aria-hidden="true">{" ↓"}</span>
+      </a>
+    </div>
+  );
+}
+
+/**
+ * 5줄 자리 오류 상태(M1-37 — DESIGN §9.3 상태 화면 ③ 오류 상자, M1-32 이월) — 브리핑 파일이 없는데 그 호를 게시한 실행 기록이 있는 호
+ * (src/lib/brief-slot.ts `missing`). 섹션 머리(오늘의 5줄 · 이날의 5줄) + `--paper-2` 면 · 1px `--ink` 상자: "{오늘은·이날은} 5줄을 싣지
+ * 못했어요"(15px 800) + 안내(13.5px `--ink-2`). 원인은 실행 기록에 없어 쓰지 않는다(CLAUDE §1-7) — 뉴스는 그대로 실렸다는 사실만.
+ * 하단(데이터 출처·AI 안내·오류 신고)은 싣지 않는다 — 보이는 브리핑 데이터가 없다.
+ */
+export function BriefMissing({
+  headingAs = "h2",
+  headingId = "brief-h",
+  variant = "today",
+}: Pick<TodayBriefProps, "headingAs" | "headingId" | "variant">) {
+  const text = VARIANT_TEXT[variant];
+  return (
+    <section
+      aria-labelledby={headingId}
+      data-brief-mode="missing"
+      data-slot="today-brief"
+    >
+      <SectionHead
+        heading={text.heading}
+        headingAs={headingAs}
+        headingId={headingId}
+        runningHead="STARTING FIVE"
+      />
+      <div
+        data-slot="brief-missing"
+        className="mt-3 border border-ink bg-paper-2 px-3.5 py-3"
+      >
+        <p className="text-[15px] font-extrabold">
+          {text.rest} 5줄을 싣지 못했어요
+        </p>
+        <p className="mt-1 text-[13.5px] text-ink-2">
+          이 호를 발행할 때 브리핑을 만들지 못했어요. 뉴스는 아래에 그대로
+          있어요.
+        </p>
+      </div>
+    </section>
   );
 }

@@ -12,19 +12,30 @@ import {
   NEWS_FILTER_PENDING_SCRIPT,
 } from "@/lib/news/filter-boot";
 import type { RunLog } from "@/lib/schema/run";
+import type { BriefSlot } from "@/lib/brief-slot";
+import { issueLateWindows } from "@/lib/issue";
+import { issueLateScript } from "@/lib/issue-late";
 
 // 홈은 빌드 때 data/news의 최신 호를 읽는다. 저장소 data/는 파이프라인 실행에 따라 바뀌므로 로더를 바꿔 끼운다
 // (로더 자체는 tests/data-news.test.ts).
-const { loadLatestNews, loadProdRuns, loadBrief } = vi.hoisted(() => ({
-  loadLatestNews: vi.fn<() => NewsFile | null>(),
-  loadProdRuns: vi.fn<() => RunLog[]>(() => []),
-  loadBrief: vi.fn<(date: string) => BriefFile | null>(() => null),
-}));
+const { loadLatestNews, loadProdRuns, loadBrief, loadBriefSlot } = vi.hoisted(
+  () => ({
+    loadLatestNews: vi.fn<() => NewsFile | null>(),
+    loadProdRuns: vi.fn<() => RunLog[]>(() => []),
+    loadBrief: vi.fn<(date: string) => BriefFile | null>(() => null),
+    loadBriefSlot: vi.fn<(date: string) => BriefSlot>(),
+  }),
+);
 vi.mock("@/lib/data/news", () => ({ loadLatestNews }));
 // 마스트헤드 발행·업데이트 시각의 실행 기록(M1-30) — 저장소 data/runs.json 대신 빈 기록(→ 파일 generatedAt)
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
 // 오늘의 5줄(M1-32) — 저장소 data/briefs 대신 테스트가 정한 브리핑(기본 없음)
-vi.mock("@/lib/data/brief", () => ({ loadBrief }));
+// 5줄 자리 상태(M1-37) — 기본은 위 loadBrief 결과 그대로(파일 있으면 브리핑, 없으면 블록 없음). 오류 상태는 테스트가 바꾼다
+vi.mock("@/lib/data/brief", () => ({ loadBrief, loadBriefSlot }));
+function slotFromBrief(date: string): BriefSlot {
+  const brief = loadBrief(date);
+  return brief ? { kind: "brief", brief } : { kind: "none" };
+}
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -50,6 +61,8 @@ beforeEach(() => {
   loadProdRuns.mockReturnValue([]);
   loadBrief.mockReset();
   loadBrief.mockReturnValue(null);
+  loadBriefSlot.mockReset();
+  loadBriefSlot.mockImplementation(slotFromBrief);
 });
 
 describe("HomePage", () => {
@@ -109,10 +122,11 @@ describe("HomePage", () => {
     const contents = screen.queryByRole("navigation", { name: "뉴스 필터" });
     expect(contents).not.toBeNull();
     expect(container.querySelector("#news-filter-config")).not.toBeNull();
-    const scripts = [...container.querySelectorAll("script:not([type])")].map(
-      (el) => el.textContent,
-    );
+    const scripts = [
+      ...container.querySelectorAll("script:not([type]):not([data-slot])"),
+    ].map((el) => el.textContent);
     // 클라이언트 렌더(happy-dom)는 스크립트 innerHTML의 '<'를 태그로 읽어 글자가 달라진다 — 보류는 그대로, 부트는 머리로 대조
+    // (발행 지연 안내 스크립트 — M1-37, data-slot — 는 따로 본다)
     expect(scripts).toHaveLength(2);
     expect(scripts[0]).toBe(NEWS_FILTER_PENDING_SCRIPT);
     expect(scripts[1]?.slice(0, 80)).toBe(NEWS_FILTER_BOOT_SCRIPT.slice(0, 80));
@@ -131,7 +145,8 @@ describe("HomePage", () => {
     ).toBeInTheDocument();
     const main = container.querySelector("main") as HTMLElement;
     const brief = main.querySelector("[data-slot='today-brief']");
-    expect(main.firstElementChild).toBe(brief);
+    // main 맨 앞은 발행 지연 안내(M1-37 — 평소 숨김), 첫 섹션이 5줄
+    expect(main.querySelector(":scope > section")).toBe(brief);
     expect(brief?.closest("[data-nf-scope]")).toBeNull();
     const news = container.querySelector("section#news") as HTMLElement;
     expect(news).toHaveAttribute("data-nf-scope");
@@ -248,14 +263,17 @@ describe("HomePage — 오늘의 5줄(M1-32, PRD §4.2·D2·FR-35)", () => {
     loadBrief.mockReturnValue({ ...briefFixture, date: fixture.date });
     render(<HomePage />);
 
-    expect(loadBrief).toHaveBeenCalledWith(fixture.date);
+    expect(loadBriefSlot).toHaveBeenCalledWith(fixture.date);
     const headings = screen
       .getAllByRole("heading", { level: 2 })
       .map((h) => h.textContent);
     expect(headings.slice(0, 2)).toEqual(["오늘의 5줄", "주요 뉴스"]);
-    // main의 첫 섹션이 5줄
+    // main의 첫 섹션이 5줄(맨 앞은 발행 지연 안내 — M1-37, 평소 숨김)
     const main = screen.getByRole("main");
-    expect(main.firstElementChild).toHaveAttribute("data-slot", "today-brief");
+    expect(main.querySelector(":scope > section")).toHaveAttribute(
+      "data-slot",
+      "today-brief",
+    );
     // 주요 뉴스 섹션은 5줄 아래 36px(≥1024 44px) · S4 앵커 id
     const news = screen.getByRole("region", { name: "주요 뉴스" });
     expect(news).toHaveAttribute("id", "news");
@@ -282,14 +300,16 @@ describe("HomePage — 오늘의 5줄(M1-32, PRD §4.2·D2·FR-35)", () => {
     expect(screen.queryByRole("region", { name: "오늘의 5줄" })).toBeNull();
     expect(screen.queryByText("오늘은 5줄을 쉽니다")).toBeNull();
     const news = screen.getByRole("region", { name: "주요 뉴스" });
-    expect(screen.getByRole("main").firstElementChild).toBe(news);
+    expect(screen.getByRole("main").querySelector(":scope > section")).toBe(
+      news,
+    );
     expect(news.className).not.toContain("mt-9");
   });
 
   it("발행된 호가 없으면 브리핑을 읽지 않는다", () => {
     loadLatestNews.mockReturnValue(null);
     render(<HomePage />);
-    expect(loadBrief).not.toHaveBeenCalled();
+    expect(loadBriefSlot).not.toHaveBeenCalled();
     expect(screen.queryByRole("region", { name: "오늘의 5줄" })).toBeNull();
   });
 
@@ -310,5 +330,39 @@ describe("HomePage — 오늘의 5줄(M1-32, PRD §4.2·D2·FR-35)", () => {
       within(brief).getByRole("link", { name: "주요 뉴스로" }),
     ).toHaveAttribute("href", "#news");
     expect(document.getElementById("news")).not.toBeNull();
+  });
+});
+
+describe("HomePage — 상태 화면(M1-37, DESIGN §9.3 ③)", () => {
+  it("5줄 자리 오류 — 파일 없음 + 그날 게시 실행 기록이면 '오늘은 5줄을 싣지 못했어요'(원인 없음), 주요 뉴스는 그 아래", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadBriefSlot.mockReturnValue({ kind: "missing" });
+    render(<HomePage />);
+    const brief = screen.getByRole("region", { name: "오늘의 5줄" });
+    expect(brief).toHaveAttribute("data-brief-mode", "missing");
+    expect(brief).toHaveTextContent("오늘은 5줄을 싣지 못했어요");
+    const news = screen.getByRole("region", { name: "주요 뉴스" });
+    expect(news.className).toContain("mt-9");
+    expect(
+      screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent),
+    ).toEqual(expect.arrayContaining(["오늘의 5줄", "주요 뉴스"]));
+  });
+
+  it("발행 지연 안내 — main 맨 앞(평소 숨김) + 인라인 스크립트, 구간은 최신 호 다음 날부터", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    const { container } = render(<HomePage />);
+    const main = screen.getByRole("main");
+    const notice = main.firstElementChild;
+    expect(notice).toHaveAttribute("data-slot", "issue-late");
+    expect(notice).toHaveAttribute("data-issue-date", fixture.date);
+    expect(
+      container.querySelector("[data-slot=issue-late-script]")?.textContent,
+    ).toBe(issueLateScript(issueLateWindows(fixture.date)));
+  });
+
+  it("발행된 호가 없으면 지연 안내도 없다", () => {
+    loadLatestNews.mockReturnValue(null);
+    render(<HomePage />);
+    expect(document.querySelector("[data-slot=issue-late]")).toBeNull();
   });
 });

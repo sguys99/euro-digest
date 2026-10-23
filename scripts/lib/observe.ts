@@ -30,6 +30,7 @@ import {
   kstDayRangeUtc,
   kstWindowRangeUtc,
   publishSlot,
+  PUBLISH_GRACE_MINUTES,
   type KstWindow,
   type UtcRange,
 } from "@/lib/time";
@@ -58,8 +59,8 @@ export const MORNING_WINDOW_KST: Readonly<KstWindow> = Object.freeze({
   toKst: "10:00",
 });
 
-/** 허용 지연(D48 ② — 목표 +15분) */
-export const PUBLISH_GRACE_MINUTES = 15;
+/** 허용 지연(D48 ② — 목표 +15분) — 단일 출처는 src/lib/time.ts(화면의 발행 지연 안내와 같은 값, M1-37) */
+export { PUBLISH_GRACE_MINUTES };
 
 /** 점수 지연 의심 — 미종료인데 킥오프 뒤 이만큼 지났다(정규 90분 + 하프타임 15분 + 추가 시간·여유) */
 export const OVERDUE_MINUTES = 130;

@@ -35,7 +35,8 @@ import type {
   SourcesFile,
   TakedownsFile,
 } from "@/lib/schema";
-import { kstDate, shiftDate } from "@/lib/time";
+import { restPeriodOf, type RestPeriod } from "@/lib/rest-period";
+import { kstDate } from "@/lib/time";
 
 import { LINK_PROBLEM_MESSAGES, linkFormatProblem } from "./link-check";
 import { publisherNameOf } from "./news-file";
@@ -48,8 +49,6 @@ import { formatIssuePath, type ValidationIssue } from "./validate-schema";
 export const CARD_FLOOR = 10;
 /** 비시즌·휴식기 하한(PRD §10) */
 export const CARD_FLOOR_REST = 5;
-/** A매치 기간 = 경기일 ±3일(FR-71) */
-export const NATIONAL_WINDOW_DAYS = 3;
 /** 삭제 요청 처리 기준(FR-143) */
 export const TAKEDOWN_SLA_HOURS = 72;
 
@@ -60,59 +59,14 @@ const TAKEDOWNS_FILE = "configs/takedowns.json";
 const SOURCES_FILE = "configs/sources.json";
 
 // ─── 휴식기 ──────────────────────────────────────────────────────────────
+// 판정은 src/lib/rest-period.ts(화면의 비시즌 빈 상태와 같은 규칙 — M1-37에서 옮김). 여기서는 다시 내보내기만 한다.
 
-export type RestReason = "off-season" | "international-window";
-
-export interface RestPeriod {
-  /** 휴식기 사유(없으면 평시) */
-  reasons: RestReason[];
-  /** 판정 근거(사람이 읽는 짧은 문구) */
-  basis: string[];
-}
-
-/**
- * 발행일(KST 날짜)의 휴식기 판정 — 머리 주석 ⑤. 순수 함수.
- * 비시즌: 대회가 하나 이상 있고 모든 대회가 그날 시즌 밖(startDate 전 또는 endDate 뒤). A매치 기간: 경기일(킥오프 KST 날짜) ±3일 안.
- */
-export function restPeriodOf(
-  date: string,
-  configs: { competitions?: CompetitionsFile; nationalTeam?: NationalTeamFile },
-): RestPeriod {
-  const reasons: RestReason[] = [];
-  const basis: string[] = [];
-  const { competitions, nationalTeam } = configs;
-  if (!competitions || competitions.length === 0) {
-    basis.push("competitions.json 없음 — 시즌 판정 불가");
-  } else {
-    const inSeason = competitions.filter(
-      (c) => c.startDate <= date && date <= c.endDate,
-    );
-    if (inSeason.length === 0) {
-      reasons.push("off-season");
-      basis.push("비시즌(모든 대회 시즌 밖)");
-    } else {
-      basis.push(`시즌 중(${inSeason.map((c) => c.id).join("·")})`);
-    }
-  }
-  if (!nationalTeam) {
-    basis.push("national-team.json 없음 — A매치 기간 판정 안 함");
-  } else {
-    const match = nationalTeam.matches.find((m) => {
-      const day = kstDate(m.kickoff);
-      return (
-        shiftDate(day, -NATIONAL_WINDOW_DAYS) <= date &&
-        date <= shiftDate(day, NATIONAL_WINDOW_DAYS)
-      );
-    });
-    if (match) {
-      reasons.push("international-window");
-      basis.push(`A매치 기간(${match.id} ±${NATIONAL_WINDOW_DAYS}일)`);
-    } else {
-      basis.push("A매치 기간 아님");
-    }
-  }
-  return { reasons, basis };
-}
+export {
+  NATIONAL_WINDOW_DAYS,
+  restPeriodOf,
+  type RestPeriod,
+  type RestReason,
+} from "@/lib/rest-period";
 
 export function cardFloorFor(rest: Pick<RestPeriod, "reasons">): number {
   return rest.reasons.length > 0 ? CARD_FLOOR_REST : CARD_FLOOR;

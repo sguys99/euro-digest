@@ -12,10 +12,18 @@
  * - runs.json에 그 발행일 실행이 없으면(기록 보존 기간 밖 등) 둘 다 뉴스 파일 generatedAt.
  * 발행 ≤ 업데이트가 늘 성립한다. 표시는 KST HH:MM(src/lib/time.ts formatKst).
  */
+import type { LateWindow } from "@/lib/issue-late";
 import type { NewsFile } from "@/lib/schema/news";
 import type { RunLog } from "@/lib/schema/run";
 import { FIRST_ISSUE_DATE } from "@/lib/site";
-import { daysBetween, kstDate } from "@/lib/time";
+import {
+  daysBetween,
+  kstDate,
+  kstDayRangeUtc,
+  publishSlot,
+  PUBLISH_GRACE_MINUTES,
+  shiftDate,
+} from "@/lib/time";
 
 /**
  * 발행일(KST "YYYY-MM-DD")의 호수. 창간일(`FIRST_ISSUE_DATE`) = 제 1호, 결호가 나도 날짜만큼 늘어난다(D29).
@@ -38,8 +46,8 @@ export interface IssueMeta {
   updatedAt: string;
 }
 
-/** 그 발행일 호를 게시한 실행인가 — prod collect, success·partial, 발행일 = startedAt의 KST 날짜 */
-function publishedIssue(run: RunLog, date: string): boolean {
+/** 그 발행일 호를 게시한 실행인가 — prod collect, success·partial, 발행일 = startedAt의 KST 날짜(5줄 자리 오류 판정도 쓴다 — brief-slot.ts) */
+export function isIssuePublishingRun(run: RunLog, date: string): boolean {
   return (
     run.env === "prod" &&
     run.job === "collect" &&
@@ -54,7 +62,7 @@ export function issueMeta(
   runs: readonly RunLog[],
 ): IssueMeta {
   const finished = runs
-    .filter((run) => publishedIssue(run, news.date))
+    .filter((run) => isIssuePublishingRun(run, news.date))
     .map((run) => run.finishedAt)
     .sort((a, b) => Date.parse(a) - Date.parse(b));
   const updatedAt = [...finished, news.generatedAt].reduce((late, iso) =>
@@ -66,4 +74,31 @@ export function issueMeta(
     publishedAt: finished[0] ?? news.generatedAt,
     updatedAt,
   };
+}
+
+/** 발행 지연 안내가 내다보는 날수(`issueLateWindows`) — 그 뒤는 모두 늦음(src/lib/issue-late.ts) */
+export const ISSUE_LATE_HORIZON_DAYS = 14;
+
+/**
+ * 발행 지연 안내 구간(M1-37 — DESIGN §9.3 상태 화면 ③, PRD §15 D26·D48·D49). 이 빌드의 최신 호가 `latestDate`(KST 발행일)일 때,
+ * 그다음 날부터 `days`일 동안 날마다 **[그날 공개 목표 + 15분, 다음 날 KST 00:00)** — 그날 호가 나왔어야 하는데 이 빌드에는 없는 시간.
+ * 공개 목표는 계절별(`publishSlot` — 여름 07:00 · 겨울 07:30, 발행일 00:00 KST의 유럽 서머타임 여부)이고 허용 지연은
+ * `PUBLISH_GRACE_MINUTES`(D48 ②). 자정부터 목표 + 15분 전까지는 늦음이 아니다(구간 밖). 최신 호 당일은 구간이 없다(오늘 호가 있다).
+ * 예) "2026-10-24" → 첫 구간 10-25(일, 전환일 — 여름) [10-24T22:15Z, 10-25T15:00Z) · 둘째 10-26(월, 겨울) [10-25T22:45Z, 10-26T15:00Z)
+ * 값은 UTC epoch ms(브라우저가 `Date.now()`와 바로 비교 — 시간대 계산을 브라우저에서 하지 않는다).
+ */
+export function issueLateWindows(
+  latestDate: string,
+  days: number = ISSUE_LATE_HORIZON_DAYS,
+): LateWindow[] {
+  if (!Number.isInteger(days) || days < 1) {
+    throw new RangeError(`내다볼 날수는 1 이상 정수여야 함: ${days}`);
+  }
+  const graceMs = PUBLISH_GRACE_MINUTES * 60_000;
+  return Array.from({ length: days }, (_, i) => {
+    const date = shiftDate(latestDate, i + 1);
+    const from = Date.parse(publishSlot(date).publishTarget) + graceMs;
+    const to = Date.parse(kstDayRangeUtc(date).end);
+    return [from, to] as const;
+  });
 }

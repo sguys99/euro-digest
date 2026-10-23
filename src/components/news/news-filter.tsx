@@ -218,11 +218,16 @@ export function NewsFilterHead({
 /**
  * 필터 0건(DESIGN §9.3 상태 화면 ② — 시안 `.empty`): 윤곽 '0'(Barlow 800 64px, 속 빈 2px --ink-2 — 장식) + 안내 15px 800 + "필터 해제"(보조 버튼).
  * 문구는 UI 안내만이다 — "오늘 호"가 아니라 "이 호"(발행 전·발행 실패일·날짜 아카이브에서 화면의 호가 오늘이 아닐 수 있다, D30 날짜 단정 금지 —
- * 2026-10-22 오케스트레이터 결정). 처음엔 `hidden` — 결과가 0건일 때 부트 스크립트·섬이 연다.
+ * 2026-10-22 오케스트레이터 결정). 처음엔 `hidden` — 결과가 0건일 때 부트 스크립트·섬이 연다. `visible`은 상태 화면 견본(M1-37)용.
  */
-export function FilterEmptyState() {
+export function FilterEmptyState({ visible = false }: { visible?: boolean }) {
   return (
-    <div data-nf-empty="" hidden suppressHydrationWarning className="pt-7 pb-2">
+    <div
+      data-nf-empty=""
+      hidden={!visible}
+      suppressHydrationWarning
+      className="pt-7 pb-2"
+    >
       <p
         aria-hidden="true"
         className="font-numeric text-[64px] leading-[0.8] font-extrabold text-transparent lining-nums tabular-nums [-webkit-text-stroke:2px_var(--ink-2)]"

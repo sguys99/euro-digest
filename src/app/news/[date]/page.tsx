@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { TodayBrief } from "@/components/brief/today-brief";
+import { BriefMissing, TodayBrief } from "@/components/brief/today-brief";
 import { counterfoilSlots } from "@/components/news/counterfoil";
 import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
 import { AppShell } from "@/components/shell/app-shell";
-import { loadBrief } from "@/lib/data/brief";
+import { loadBrief, loadBriefSlot } from "@/lib/data/brief";
 import {
   listIssueDates,
   loadArchiveView,
@@ -82,7 +82,8 @@ export default async function NewsArchivePage({
   const archive = loadArchiveView(date);
   if (!news || !issue || !archive) notFound();
   const site = archive.isLatest ? issue : loadLatestIssue().issue;
-  const brief = loadBrief(date);
+  // 이날의 5줄 자리(M1-37 — 브리핑 · 확인된 오류 · 없음, src/lib/brief-slot.ts)
+  const slot = loadBriefSlot(date);
   const filter = loadNewsFilterView(news);
 
   return (
@@ -95,7 +96,10 @@ export default async function NewsArchivePage({
       contents={filter ? <NewsFilterContents view={filter} /> : undefined}
     >
       <h1 className="sr-only">{archiveHeading(date)}</h1>
-      {brief ? <TodayBrief brief={brief} variant="issue" /> : null}
+      {slot.kind === "brief" ? (
+        <TodayBrief brief={slot.brief} variant="issue" />
+      ) : null}
+      {slot.kind === "missing" ? <BriefMissing variant="issue" /> : null}
       <NewsSection
         id="news"
         news={news}
@@ -104,7 +108,7 @@ export default async function NewsArchivePage({
         headingAs="h2"
         headingId="news-h"
         titleAs="h3"
-        className={cn("scroll-mt-4", brief && "mt-9 lg:mt-11")}
+        className={cn("scroll-mt-4", slot.kind !== "none" && "mt-9 lg:mt-11")}
       />
     </AppShell>
   );

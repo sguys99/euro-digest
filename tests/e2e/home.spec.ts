@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { loadBrief } from "../../src/lib/data/brief";
+import { loadBrief, loadBriefSlot } from "../../src/lib/data/brief";
 import { loadLatestNews } from "../../src/lib/data/news";
 import { briefErrorIssueUrl } from "../../src/lib/paths";
 import { basePath } from "./support/site";
@@ -12,6 +12,8 @@ import { basePath } from "./support/site";
 
 const latest = loadLatestNews();
 const brief = latest ? loadBrief(latest.date) : null;
+// 5줄 자리 상태(M1-37 — 파일 없음 + 그날 게시 실행 기록이면 오류 상태 블록, src/lib/brief-slot.ts)
+const slot = latest ? loadBriefSlot(latest.date) : null;
 
 async function open(page: Page): Promise<void> {
   await page.goto("./");
@@ -20,25 +22,29 @@ async function open(page: Page): Promise<void> {
   });
 }
 
-test("그 호의 브리핑 파일이 있으면 5줄이 main의 첫 섹션, 없으면 블록 없음(사실 없는 안내 금지)", async ({
+test("그 호의 브리핑 파일이 있으면 5줄이 main의 첫 섹션, 없으면 블록 없음(사실 없는 안내 금지) · 확인된 실패는 오류 상태", async ({
   page,
 }) => {
   await open(page);
   const block = page.locator("[data-slot=today-brief]");
-  if (!brief) {
+  if (!slot || slot.kind === "none") {
     await expect(block).toHaveCount(0);
     return;
   }
   await expect(block).toHaveCount(1);
+  // main 맨 앞은 발행 지연 안내(M1-37 — 평소 숨김 상자 + 인라인 스크립트)이고 첫 섹션이 5줄이다
   expect(
     await page.evaluate(
       () =>
         document
-          .querySelector("main#main")
-          ?.firstElementChild?.getAttribute("data-slot") ?? null,
+          .querySelector("main#main > section")
+          ?.getAttribute("data-slot") ?? null,
     ),
   ).toBe("today-brief");
-  await expect(block).toHaveAttribute("data-brief-mode", brief.mode);
+  await expect(block).toHaveAttribute(
+    "data-brief-mode",
+    slot.kind === "brief" ? slot.brief.mode : "missing",
+  );
   // 제목 순서: h1 워드마크 → h2 오늘의 5줄 → h2 주요 뉴스
   await expect(page.locator("main h2").first()).toHaveText("오늘의 5줄");
 });

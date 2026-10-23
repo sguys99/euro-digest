@@ -71,3 +71,43 @@ export function CardSkeleton({ className, ...props }: ComponentProps<"div">) {
     </div>
   );
 }
+
+/**
+ * 로딩 상태 화면(DESIGN §9.3 상태 화면 4종 ① — 혼합안 `.skel` "5줄 블록 + 카드 3장"): 섹션 머리 자리(3px 잉크 괘선 + 120×24 막대) + 5줄 행 3개 +
+ * 카드 3장. 둘레가 `role="status"` + 화면 밖 "불러오는 중"(조각은 모두 `aria-hidden`).
+ *
+ * 쓰는 곳(M1-37 결정): **견본뿐**. 정적 export에서 `app/loading.tsx`로 클라이언트 이동 대기 화면에 쓰려 했으나, 로딩 경계가 생기면 정적 HTML이
+ * 대기 화면을 먼저 내보내고 본문을 숨긴 채 인라인 스크립트로 바꿔 끼운다 — JS가 꺼진 브라우저에는 스켈레톤만 남았다(실측). 미리 받기(prefetch)
+ * 덕에 이동은 120~170ms(느린 응답 400ms 지연에서도 이전 지면 유지 → 바로 교체, CLS 0)라 대기 화면이 필요 없다. 클라이언트에서 데이터를 받는
+ * 화면(M4 검색 결과 등)이 생기면 그 자리에 쓴다.
+ */
+export function LoadingSkeleton({
+  rows = 3,
+  cards = 3,
+  headClassName,
+  className,
+  ...props
+}: ComponentProps<"div"> & {
+  rows?: number;
+  cards?: number;
+  /** 머리 자리 여백(견본 틀 — 혼합안 `.frame .skel>.sec-h` 오른쪽 14px) */
+  headClassName?: string;
+}) {
+  return (
+    <div role="status" className={className} {...props}>
+      <span className="sr-only">불러오는 중</span>
+      <div
+        aria-hidden="true"
+        className={cn("border-t-3 border-ink pt-2.5", headClassName)}
+      >
+        <Skeleton className="h-6 w-30" />
+      </div>
+      {Array.from({ length: rows }, (_, i) => (
+        <BriefRowSkeleton key={`r${i}`} />
+      ))}
+      {Array.from({ length: cards }, (_, i) => (
+        <CardSkeleton key={`c${i}`} />
+      ))}
+    </div>
+  );
+}

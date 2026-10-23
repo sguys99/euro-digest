@@ -3,11 +3,15 @@ import type { ReactNode } from "react";
 import { BottomTab, BottomTabs } from "@/components/ui/nav-tabs";
 import { Toaster } from "@/components/ui/toast";
 import type { IssueMeta } from "@/lib/issue";
+import type { LateWindow } from "@/lib/issue-late";
 import { cn } from "@/lib/utils";
 
 import { Colophon } from "./colophon";
+import { IssueLateNotice } from "./issue-late-notice";
 import { Masthead } from "./masthead";
+import { OfflineBand } from "./offline-band";
 import { NAV_ITEMS, type NavKey } from "./site-nav";
+import { StatusIsland } from "./status-island";
 
 /**
  * 앱 셸 (M1-30 — PRD DR-01·FR-142·§4.1, DESIGN.md §4.3 그리드 · §4.4 고정 요소 · §9.3 · §10 랜드마크)
@@ -21,9 +25,11 @@ import { NAV_ITEMS, type NavKey } from "./site-nav";
  *   header   티켓 마스트헤드 + 상단 내비(1024 이상)                  — Masthead
  *   div      [nav 뉴스 필터(목차, 1024 이상)] · main#main · [aside(1280 이상)]   (flex-1)
  *   footer   뒤표지(1023 이하 화면 폭 전체)                           — Colophon
+ *   div      오프라인 띠(평소 높이 0 — 끊기면 하단 탭 위·화면 아래 sticky, M1-37)  — OfflineBand
  *   nav      하단 탭(1023 이하, sticky bottom · z 20)
- * Toaster(aria-live 영역 하나)
+ * Toaster(aria-live 영역 하나) · StatusIsland(오프라인·발행 지연 속성, 그리는 것 없음)
  * ```
+ * 발행 지연 안내(M1-37 — `lateWindows`를 준 페이지만: 홈·`/news/`)는 main 맨 앞에 둔다(평소 숨김 — src/components/shell/issue-late-notice.tsx).
  *
  * 그리드(D31) — 1023 이하 1단 · 1024~1279 `--col-contents · 1fr` 2단 · 1280 이상 `… · --col-facing` 3단.
  * **미완성 섹션 숨김**(plan §2.3): 열은 페이지가 채울 때만 생긴다. 목차(`contents` — M1-32·M1-33)를 주지 않으면 1024 이상도
@@ -60,6 +66,11 @@ export interface AppShellProps {
   facing?: ReactNode;
   /** 마주 보는 면 랜드마크 이름(DESIGN §10) */
   facingLabel?: string;
+  /**
+   * 발행 지연 안내 구간(M1-37 — src/lib/issue.ts `issueLateWindows(최신 호 날짜)`). 주면 main 맨 앞에 안내 상자(평소 숨김)를 두고 지금 시각이
+   * 구간 안이면 보인다. 최신 호를 싣는 페이지(홈·`/news/`)만 준다 — 날짜 아카이브(지난 호)·소개·404에는 없다
+   */
+  lateWindows?: readonly LateWindow[];
   children: ReactNode;
 }
 
@@ -96,6 +107,7 @@ export function AppShell({
   contentsLabel = "뉴스 필터",
   facing,
   facingLabel = "오늘 밤 경기·한국 선수·순위",
+  lateWindows,
   children,
 }: AppShellProps) {
   const columns = layoutColumns(contents != null, facing != null);
@@ -125,6 +137,9 @@ export function AppShell({
             </nav>
           )}
           <main id="main" tabIndex={-1} className="min-w-0 pt-6 lg:pt-7">
+            {issue && lateWindows ? (
+              <IssueLateNotice issue={issue} windows={lateWindows} />
+            ) : null}
             {children}
           </main>
           {facing != null && (
@@ -137,9 +152,14 @@ export function AppShell({
           )}
         </div>
         <Colophon issue={issue} lastUpdated={siteUpdatedAt} />
+        {/* 오프라인 띠(M1-37) — 하단 탭 바로 앞. 평소 높이 0, 끊기면 하단 탭 위(1024 이상 화면 아래)에 sticky */}
+        <OfflineBand />
         {/* 하단 탭(1023 이하) — 화면 아래 sticky. 셸의 마지막 흐름 요소라 끝까지 내리면 뒤표지 바로 아래에 놓여 아무것도 가리지 않는다.
             홈 표시줄(safe area)만큼 아래 여백을 더한다(viewport-fit=cover가 아니면 0) */}
-        <BottomTabs className="sticky bottom-0 z-20 -mx-edge pb-[env(safe-area-inset-bottom)] lg:hidden">
+        <BottomTabs
+          data-slot="bottom-tabs"
+          className="sticky bottom-0 z-20 -mx-edge pb-[env(safe-area-inset-bottom)] lg:hidden"
+        >
           {NAV_ITEMS.map(({ key, label, href, Icon }) => (
             <BottomTab
               key={key}
@@ -156,6 +176,7 @@ export function AppShell({
         </BottomTabs>
       </div>
       <Toaster />
+      <StatusIsland late={issue && lateWindows ? lateWindows : undefined} />
     </>
   );
 }

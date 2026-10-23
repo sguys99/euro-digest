@@ -56,6 +56,14 @@
   }
 }
 
+/*
+ * 상태 화면 변형(M1-37, DESIGN §9.3 상태 화면 ③·④) — `<html>` 속성으로 켜는 화면 상태. 정적 HTML에 상자를 두고 숨겼다가 보인다.
+ * - issue-late: — 발행 지연 안내(`data-issue-late`). 첫 페인트 전 인라인 스크립트·셸 섬이 단다(src/lib/issue-late.ts)
+ * - offline:    — 오프라인 띠(`data-offline`). 셸 섬이 online·offline 이벤트로 단다(src/components/shell/status-island.tsx)
+ */
+@custom-variant issue-late (:root[data-issue-late] &);
+@custom-variant offline (:root[data-offline] &);
+
 /* ── 2. Tailwind 기본 테마 정리 ───────────────────────────────────────────────
  * 색: 토큰 색만(기본 팔레트·black·white 없음 — transparent·current는 그대로)
  * 모서리: 아래 shadcn 배율만(전부 0 — DESIGN §5.1). rounded-full·rounded-none은 그대로
@@ -681,4 +689,19 @@
 }
 :root[data-nf-pending] [data-nf-scope] * {
   transition: none !important;
+}
+
+/* ── 8. 오프라인 띠가 가리는 것 (M1-37, DESIGN §9.3 상태 화면 ④ · §4.4 · §10) ─────────────────────────────────────
+ * 띠는 하단 탭 바로 위(1023 이하)·화면 아래(1024 이상)에 붙는 sticky 요소다. 높이(줄 수에 따라 1~2줄)는 셸 섬이 재서
+ * `--offline-band-h`로 단다. 그만큼 ① 토스트를 띠 위로 올리고(§4.4 — 토스트가 띠를 덮지 않게) ② 키보드 포커스·앵커 스크롤이
+ * 띠 뒤에 숨지 않게 scroll-padding-bottom을 늘린다(WCAG 2.4.11 — 하단 탭 64px와 같은 방식, 루트 레이아웃 주석).
+ */
+:root[data-offline] {
+  scroll-padding-bottom: calc(4rem + var(--offline-band-h, 0px));
+  @variant lg {
+    scroll-padding-bottom: var(--offline-band-h, 0px);
+  }
+}
+:root[data-offline] [data-slot="toaster"] {
+  translate: 0 calc(-1 * var(--offline-band-h, 0px));
 }

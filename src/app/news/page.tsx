@@ -6,6 +6,7 @@ import { NewsSection } from "@/components/news/news-section";
 import { AppShell } from "@/components/shell/app-shell";
 import { loadArchiveView, loadLatestIssue } from "@/lib/data/issue";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
+import { issueLateWindows } from "@/lib/issue";
 import { routes } from "@/lib/paths";
 import { newsDescription, pageMetadata } from "@/lib/seo";
 
@@ -19,6 +20,7 @@ import { newsDescription, pageMetadata } from "@/lib/seo";
  * canonical을 그 날짜 페이지로 둔다 — 날짜 페이지는 내용이 바뀌지 않는 영구 주소(카드 공유 링크 FR-34가 가리키는 주소)이고, 이 주소는
  * 매일 다른 호를 싣는다. 반대(최신 날짜 페이지 → `/news/`)로 두면 그 날짜 페이지의 canonical이 다음 날 자기 자신으로 바뀐다.
  * 티켓에 꼬리표(이전 호 · 달력 · "최신 호예요")를 단다(시안 A — `/news/`·날짜 아카이브만, 홈에는 없음, 2026-10-23 사용자 결정).
+ * 최신 호를 싣는 페이지라 홈과 같이 발행 지연 안내(M1-37 — 평소 숨김)를 단다. 날짜 아카이브(영구 주소)에는 없다.
  */
 
 // 메타(M1-38): 설명 = 최신 호의 호수·날짜·카드 수(사실만 — 원제목·스코어 없음), canonical·og:url = 최신 날짜 페이지(위 별칭 관계).
@@ -47,6 +49,7 @@ export default function NewsPage() {
       issue={issue}
       counterfoil={archive ? counterfoilSlots(archive) : undefined}
       contents={filter ? <NewsFilterContents view={filter} /> : undefined}
+      lateWindows={issue ? issueLateWindows(issue.date) : undefined}
     >
       <NewsSection
         news={news}

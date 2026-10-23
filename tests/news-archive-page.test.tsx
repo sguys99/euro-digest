@@ -28,12 +28,15 @@ const {
   loadLatestNews,
   loadProdRuns,
   loadBrief,
+  missingBriefDates,
 } = vi.hoisted(() => ({
   listNewsDates: vi.fn<() => string[]>(),
   loadNewsIssue: vi.fn<(date: string) => NewsFile | null>(),
   loadLatestNews: vi.fn<() => NewsFile | null>(),
   loadProdRuns: vi.fn<() => RunLog[]>(() => []),
   loadBrief: vi.fn<(date: string) => BriefFile | null>(() => null),
+  /** 5줄 자리 오류로 볼 날짜(M1-37 — 실제 판정은 tests/brief-slot.test.ts) */
+  missingBriefDates: new Set<string>(),
 }));
 vi.mock("@/lib/data/news", () => ({
   listNewsDates,
@@ -41,7 +44,15 @@ vi.mock("@/lib/data/news", () => ({
   loadLatestNews,
 }));
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
-vi.mock("@/lib/data/brief", () => ({ loadBrief }));
+// 5줄 자리 상태(M1-37) — 기본은 loadBrief 결과 그대로(파일 있으면 브리핑, 없으면 블록 없음)
+vi.mock("@/lib/data/brief", () => ({
+  loadBrief,
+  loadBriefSlot: (date: string) => {
+    const brief = loadBrief(date);
+    if (brief) return { kind: "brief", brief };
+    return missingBriefDates.has(date) ? { kind: "missing" } : { kind: "none" };
+  },
+}));
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -90,6 +101,7 @@ beforeEach(() => {
   loadLatestNews.mockImplementation(() => issueOf(DATES.at(-1)!));
   loadBrief.mockReset();
   loadBrief.mockReturnValue(null);
+  missingBriefDates.clear();
 });
 
 const props = (date: string) => ({
@@ -268,6 +280,17 @@ describe("NewsArchivePage(/news/[date]/) — 지면", () => {
   it("브리핑 파일이 없는 호(10-12~14 — D38 전)는 5줄 블록이 없다(M1-32 규칙)", async () => {
     await renderArchive("2026-10-12");
     expect(screen.queryByRole("region", { name: "이날의 5줄" })).toBeNull();
+  });
+
+  it("5줄 자리 오류(M1-37) — 확인된 호는 '이날은 5줄을 싣지 못했어요' · 발행 지연 안내는 없다(지난 호)", async () => {
+    missingBriefDates.add("2026-10-20");
+    await renderArchive("2026-10-20");
+    const brief = screen.getByRole("region", { name: "이날의 5줄" });
+    expect(brief).toHaveTextContent("이날은 5줄을 싣지 못했어요");
+    expect(screen.getByRole("region", { name: "뉴스" }).className).toContain(
+      "mt-9",
+    );
+    expect(document.querySelector("[data-slot=issue-late]")).toBeNull();
   });
 
   it("발행된 호가 아닌 날짜는 not-found(정적 export에서는 그 경로 자체가 생기지 않는다)", async () => {

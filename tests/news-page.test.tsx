@@ -66,10 +66,11 @@ describe("NewsPage(/news/)", () => {
     const contents = screen.queryByRole("navigation", { name: "뉴스 필터" });
     expect(contents).not.toBeNull();
     expect(container.querySelector("#news-filter-config")).not.toBeNull();
-    const scripts = [...container.querySelectorAll("script:not([type])")].map(
-      (el) => el.textContent,
-    );
+    const scripts = [
+      ...container.querySelectorAll("script:not([type]):not([data-slot])"),
+    ].map((el) => el.textContent);
     // 클라이언트 렌더(happy-dom)는 스크립트 innerHTML의 '<'를 태그로 읽어 글자가 달라진다 — 보류는 그대로, 부트는 머리로 대조
+    // (발행 지연 안내 스크립트 — M1-37, data-slot — 는 따로 본다)
     expect(scripts).toHaveLength(2);
     expect(scripts[0]).toBe(NEWS_FILTER_PENDING_SCRIPT);
     expect(scripts[1]?.slice(0, 80)).toBe(NEWS_FILTER_BOOT_SCRIPT.slice(0, 80));
