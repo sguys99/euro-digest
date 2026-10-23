@@ -26,7 +26,7 @@ disable-model-invocation: true
   - 접수 후 72시간이 지났는데 handledAt이 아직 null이면 72시간 경고도 정상이다. 11단계에서 기록하면 사라진다.
   - 둘 다 경고라 CI를 막지 않는다. 카드 수 하한(≥10, 휴식기 5)도 삭제 요청 카드를 함께 세므로, 등록 push가 게이트에 막히지 않는다.
 - 카드 ID는 **저장된 값으로만** 찾는다. 원문 URL에서 `cardIdFor`로 다시 계산하지 않는다 — 2026-10-14까지 발행분은 옛 규칙 ID다(M1-16).
-- 지금 빌드되는 페이지는 홈(최신 호)뿐이다. 날짜 아카이브(M1-33)·RSS(M4-11)·검색(M4-14)·OG(M5-01)는 아직 없다. 이 경로들도 생기면 같은 로더를 거친다(`tests/takedown-build-guard.test.ts`).
+- 빌드되는 뉴스 페이지는 홈·`/news/`(최신 호)와 날짜 아카이브 `/news/<date>/`(M1-34 — 발행된 모든 호)다. RSS(M4-11)·검색(M4-14)·OG(M5-01)는 아직 없다. 이 경로들도 생기면 같은 로더를 거친다(`tests/takedown-build-guard.test.ts`).
 
 ## 절차
 1. **대상 확인** — 인자를 쉼표·공백으로 나눠 카드마다 2~5단계를 거친다. 커밋은 한 번에 한다.
@@ -67,7 +67,7 @@ disable-model-invocation: true
       curl -s -o /dev/null -w "%{http_code}\n" "https://sguys99.github.io/euro-digest/?v=$(date +%s)"    # 200이어야 한다
       curl -s "https://sguys99.github.io/euro-digest/?v=$(date +%s)" | grep -c "<card-id>"           # 0이어야 한다
       ```
-    - 날짜 아카이브(M1-33)가 생긴 뒤에는 `…/euro-digest/news/<date>/`도 같은 방식으로 본다. 200이 아니면 0건이어도 확인이 아니다.
+    - 날짜 아카이브(M1-34)도 본다: 그 카드가 실렸던 **모든 발행일**의 `…/euro-digest/news/<date>/`를 같은 방식으로 확인한다(같은 카드가 여러 호에 실릴 수 있다). 200이 아니면 0건이어도 확인이 아니다.
 11. **처리 시각 기록** — 확인한 시각(UTC `Z`)을 `handledAt`에 적는다. 커밋 `chore(takedown): <card-id> 처리 시각 기록 (FR-143)`을 9단계와 같은 방식으로 push한다. `handledAt - requestedAt`이 72시간을 넘었으면 보고서 맨 위에 적는다.
 12. **원본 삭제 확인**(다음 수집 실행 뒤)
     - 봇 발행 커밋 뒤 3단계 명령 결과가 0줄이어야 하고, `npm run validate`에 남은 카드 경고가 없어야 한다.
