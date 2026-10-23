@@ -559,7 +559,8 @@ test("/news/는 최신 호의 별칭 — canonical이 최신 날짜 페이지, �
 
 test.describe("카드 공유 앵커(FR-34) — /news/{날짜}/#c_…", () => {
   for (const pick of ["oldest", "latest"] as const) {
-    test(`${pick === "oldest" ? "가장 오래된" : "최신"} 호 — 앵커 카드가 화면 맨 위(:target), 상대 시간이 채워져도 레이아웃 이동 ≤ 0.05`, async ({
+    test(`${pick === "oldest" ? "가장 오래된" : "최신"} 호 — 앵커 카드가 화면 맨 위(:target), 상대 시간이 채워져도 카드 기하가 그대로(자리 예약)`, async ({
+      browser,
       page,
     }) => {
       test.skip(DATES.length === 0, "data/news에 발행된 호가 없다");
@@ -567,20 +568,28 @@ test.describe("카드 공유 앵커(FR-34) — /news/{날짜}/#c_…", () => {
       const cards = loadNewsIssue(date)!.cards;
       test.skip(cards.length === 0, "카드가 없는 호");
       const id = cards[Math.floor(cards.length / 2)]!.id;
-      await page.addInitScript(() => {
-        const w = window as unknown as { __cls: number };
-        w.__cls = 0;
-        new PerformanceObserver((list) => {
-          for (const e of list.getEntries() as (PerformanceEntry & {
-            value: number;
-            hadRecentInput: boolean;
-          })[])
-            if (!e.hadRecentInput) w.__cls += e.value;
-        }).observe({ type: "layout-shift", buffered: true });
-      });
+      // 상대 시간 채움의 레이아웃 영향은 PerformanceObserver CLS 대신 정적 HTML(JS 없음)과 채운 화면의 카드 기하로 비교한다 —
+      // CI처럼 한글 폴백 글꼴이 없는 환경에서는 폰트 교체 이동이 CLS에 섞여 0.27~0.42로 실패했다(2026-10-23 CI, 견본 테스트
+      // 35dce3c와 같은 원인 — 폰트 지연 CLS는 tests/e2e/fonts.spec.ts 몫).
+      const geometry = (p: Page) =>
+        p.evaluate(async (target) => {
+          await document.fonts.ready;
+          const card = document.getElementById(target);
+          const time = card?.querySelector<HTMLElement>("time[data-rel]");
+          if (!card || !time) return null;
+          const c = card.getBoundingClientRect();
+          const t = time.getBoundingClientRect();
+          return {
+            cardHeight: Math.round(c.height * 2) / 2,
+            timeTop: Math.round((t.top - c.top) * 2) / 2,
+            timeLeft: Math.round((t.left - c.left) * 2) / 2,
+          };
+        }, id);
+
       await open(page, `${archivePath(date)}#${id}`);
       await expect(page.locator("[data-rel-out]").first()).not.toHaveText("");
-      const state = await page.evaluate((target) => {
+      const state = await page.evaluate(async (target) => {
+        await document.fonts.ready;
         const el = document.getElementById(target);
         const doc = document.documentElement;
         return {
@@ -588,14 +597,28 @@ test.describe("카드 공유 앵커(FR-34) — /news/{날짜}/#c_…", () => {
           top: el ? Math.round(el.getBoundingClientRect().top) : null,
           // 카드가 적은 호는 문서 끝까지 내려도 카드가 맨 위에 오지 못한다(브라우저가 갈 수 있는 데까지 내린다)
           atEnd: window.scrollY + window.innerHeight >= doc.scrollHeight - 1,
-          cls: (window as unknown as { __cls: number }).__cls,
         };
       }, id);
       expect(state.target).toBe(id);
       if (state.atEnd)
         expect(state.top ?? 999).toBeLessThan(page.viewportSize()?.height ?? 0);
       else expect(Math.abs(state.top ?? 999)).toBeLessThanOrEqual(2);
-      expect(state.cls).toBeLessThanOrEqual(0.05);
+      const filled = await geometry(page);
+
+      const still = await browser.newContext({
+        javaScriptEnabled: false,
+        viewport: page.viewportSize() ?? { width: 1280, height: 800 },
+      });
+      try {
+        const staticPage = await still.newPage();
+        const response = await staticPage.goto(page.url());
+        expect(response?.status()).toBe(200);
+        const empty = await geometry(staticPage);
+        expect(filled).not.toBeNull();
+        expect(filled).toEqual(empty);
+      } finally {
+        await still.close();
+      }
     });
   }
 });
