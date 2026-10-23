@@ -31,3 +31,50 @@ export function sitePages(): SitePage[] {
 export function toGotoPath(urlPath: string): string {
   return urlPath.replace(/^\/+/, "") || "./";
 }
+
+// ─── 날짜 아카이브 표본 (M1-34 리뷰) ─────────────────────────────────────────
+
+const ARCHIVE_PAGE_RE = /^\/news\/(\d{4}-\d{2}-\d{2})\/$/;
+
+/** 두 달력 날짜가 하루 차이인가(UTC 달력 계산) */
+function nextDay(a: string, b: string): boolean {
+  return (
+    Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`) === 86_400_000
+  );
+}
+
+/**
+ * 날짜 아카이브 표본 — 날짜 페이지는 같은 틀이라 발행일이 늘수록 전수 검사(렌더 + axe)의 시간만 커진다. 상태가 갈리는 날만 고른다:
+ * 첫 호 · 최신 호 · 최근 `recent`개 · 가장 최근 결호의 앞뒤 호 · 가장 최근 월 경계의 앞뒤 호(오름차순, 중복 없음).
+ */
+export function archiveSample(dates: readonly string[], recent = 3): string[] {
+  const sorted = [...new Set(dates)].sort();
+  if (sorted.length === 0) return [];
+  const pick = new Set<string>([sorted[0]!, ...sorted.slice(-recent)]);
+  for (let i = sorted.length - 1; i > 0; i--) {
+    if (!nextDay(sorted[i - 1]!, sorted[i]!)) {
+      pick.add(sorted[i - 1]!).add(sorted[i]!);
+      break;
+    }
+  }
+  for (let i = sorted.length - 1; i > 0; i--) {
+    if (sorted[i - 1]!.slice(0, 7) !== sorted[i]!.slice(0, 7)) {
+      pick.add(sorted[i - 1]!).add(sorted[i]!);
+      break;
+    }
+  }
+  return [...pick].sort();
+}
+
+/** 페이지 목록에서 날짜 아카이브는 표본만 남긴다(다른 페이지는 모두) — 렌더·axe 검사용. 링크 검사(HTTP만)는 전수를 쓴다 */
+export function withArchiveSample(pages: SitePage[]): SitePage[] {
+  const dates = pages.flatMap((p) => {
+    const m = ARCHIVE_PAGE_RE.exec(p.urlPath);
+    return m ? [m[1]!] : [];
+  });
+  const keep = new Set(archiveSample(dates));
+  return pages.filter((p) => {
+    const m = ARCHIVE_PAGE_RE.exec(p.urlPath);
+    return !m || keep.has(m[1]!);
+  });
+}

@@ -60,6 +60,24 @@ describe("내비 항목 — M1은 홈·뉴스만(미완성 섹션 숨김, plan �
     expect(screen.queryByRole("link", { name: "마이" })).toBeNull();
   });
 
+  it("currentKind='section'(날짜 아카이브 — M1-34)이면 그 항목은 aria-current='true'(이 페이지가 /news/ 자신은 아니다), 같은 표시(막대·굵기)", () => {
+    render(
+      <AppShell current="news" currentKind="section" issue={ISSUE}>
+        본문
+      </AppShell>,
+    );
+    for (const name of ["하단 탭", "주요 메뉴"]) {
+      const links = within(
+        screen.getByRole("navigation", { name }),
+      ).getAllByRole("link");
+      expect(links.map((a) => a.getAttribute("aria-current"))).toEqual([
+        null,
+        "true",
+      ]);
+      expect(links[1]?.className).toContain("aria-[current=true]:text-ink");
+    }
+  });
+
   it("현재 항목이 없으면(404) aria-current 없음", () => {
     const { container } = render(<AppShell issue={ISSUE}>본문</AppShell>);
     expect(container.querySelector("[aria-current]")).toBeNull();

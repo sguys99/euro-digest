@@ -107,6 +107,35 @@ export function ChevronDownIcon(props: IconProps) {
   );
 }
 
+/** 왼쪽 꺾쇠(티켓 꼬리표 이전 호 · 달력 이전 달 — M1-34, `docs/design/m1-archive/concept-a.html`) */
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m14.5 6-6 6 6 6" />
+    </Icon>
+  );
+}
+
+/** 오른쪽 꺾쇠(티켓 꼬리표 다음 호 · 달력 다음 달 — M1-34) */
+export function ChevronRightIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m9.5 6 6 6-6 6" />
+    </Icon>
+  );
+}
+
+/** 달력(티켓 꼬리표 달력 버튼 — M1-34) */
+export function CalendarIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 6h16v14H4z" />
+      <path d="M4 10.5h16M8.5 3.5v4.5M15.5 3.5v4.5" />
+      <path d="M8 14h2M11 14h2M14 14h2M8 17h2M11 17h2" />
+    </Icon>
+  );
+}
+
 /** 하단 탭 · 홈 */
 export function HomeIcon(props: IconProps) {
   return (

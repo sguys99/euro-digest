@@ -48,15 +48,45 @@ export interface TodayBriefProps {
   headingId?: string;
   /** 경기 없는 날 "주요 뉴스로 ↓"가 가리키는 같은 페이지 앵커 */
   newsHref?: string;
+  /**
+   * 제목 변형 — `today`(홈 "오늘의 5줄") · `issue`(날짜 아카이브 "이날의 5줄" — 지난 호에서 날짜를 단정하지 않는다, 2026-10-23 사용자
+   * 결정 · DECISIONS D0 #36 "이 호에는"과 같은 원칙). S4 문구("오늘은/이날은 5줄을 쉽니다")와 피드로 가는 링크 이름(그 페이지 피드 머리 —
+   * 홈 "주요 뉴스" · 아카이브 "뉴스")도 함께 바뀐다. 부제 "(현지) 경기 기준"은 같다
+   */
+  variant?: "today" | "issue";
 }
+
+/** 변형별 글자 */
+/**
+ * 변형별 글자. `countComps` — S4 이유에 대회 수를 쓸지: 홈(오늘 호)은 지금 설정의 대회 수 그대로, 아카이브(지난 호)는 빼고 "전날 끝난 경기가
+ * 없었습니다." — 지난 호의 사실을 지금 설정(`configs/competitions.json`)으로 바꿔 쓰지 않는다(CLAUDE §1-7, M1-34 리뷰)
+ */
+const VARIANT_TEXT = {
+  today: {
+    heading: "오늘의 5줄",
+    rest: "오늘은",
+    news: "주요 뉴스로",
+    countComps: true,
+  },
+  issue: {
+    heading: "이날의 5줄",
+    rest: "이날은",
+    news: "뉴스로",
+    countComps: false,
+  },
+} as const;
+
+type VariantText = (typeof VARIANT_TEXT)[keyof typeof VARIANT_TEXT];
 
 export function TodayBrief({
   brief,
   headingAs = "h2",
   headingId = "brief-h",
   newsHref = "#news",
+  variant = "today",
 }: TodayBriefProps) {
   const view = buildBriefView(brief);
+  const text = VARIANT_TEXT[variant];
   const empty = view.mode === "empty";
   return (
     <section
@@ -65,7 +95,7 @@ export function TodayBrief({
       data-slot="today-brief"
     >
       <SectionHead
-        heading="오늘의 5줄"
+        heading={text.heading}
         headingAs={headingAs}
         headingId={headingId}
         runningHead="STARTING FIVE"
@@ -90,7 +120,7 @@ export function TodayBrief({
         ) : null}
       </p>
       {empty ? (
-        <BriefRest newsHref={newsHref} />
+        <BriefRest newsHref={newsHref} text={text} />
       ) : (
         <ol
           role="list"
@@ -200,7 +230,13 @@ function BriefText({ parts }: { parts: readonly BriefTextPart[] }) {
  * 장식) + "오늘은 5줄을 쉽니다" + 이유 1줄 + "주요 뉴스로 ↓". 이유는 파이프라인 규칙의 사실만(입력 경기 0 = 다루는 대회의 전날 종료
  * 경기 없음 — scripts/lib/brief-file.ts `planBriefPublish` empty), 날짜는 쓰지 않는다.
  */
-function BriefRest({ newsHref }: { newsHref: string }) {
+function BriefRest({
+  newsHref,
+  text,
+}: {
+  newsHref: string;
+  text: VariantText;
+}) {
   const comps = loadCompetitionsConfig().length;
   return (
     <div
@@ -215,16 +251,17 @@ function BriefRest({ newsHref }: { newsHref: string }) {
       </span>
       <div className="min-w-0">
         <p className="pt-0.5 text-type-brief leading-[1.4] font-extrabold">
-          오늘은 5줄을 쉽니다
+          {text.rest} 5줄을 쉽니다
         </p>
         <p className="mt-0.5 text-sm leading-[1.55] text-ink-2">
-          {comps > 0
+          {text.countComps && comps > 0
             ? `전날 ${comps}개 대회에 끝난 경기가 없었습니다.`
             : "전날 끝난 경기가 없었습니다."}
         </p>
         {/* 같은 페이지 앵커 — 일반 <a>(브라우저 기본 이동) */}
         <a href={newsHref} className={cn(TEXT_LINK, "mt-0.5")}>
-          주요 뉴스로<span aria-hidden="true">{" ↓"}</span>
+          {text.news}
+          <span aria-hidden="true">{" ↓"}</span>
         </a>
       </div>
     </div>

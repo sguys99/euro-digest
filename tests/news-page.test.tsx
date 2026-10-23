@@ -15,11 +15,13 @@ import type { RunLog } from "@/lib/schema/run";
 
 // `/news/`(M1-30 골격 · M1-33 필터)와 404(본문 디자인 M1-36) — 앱 셸 안에서 그 페이지 제목이 h1, 워드마크는 p.
 // 필터 그리기·부트 스크립트는 tests/news-filter-dom.test.tsx.
-const { loadLatestNews, loadProdRuns } = vi.hoisted(() => ({
+const { listNewsDates, loadLatestNews, loadProdRuns } = vi.hoisted(() => ({
+  // 아카이브 이전 호 링크·canonical(M1-34) — 발행일 목록. 아카이브 관계는 tests/news-archive-page.test.tsx
+  listNewsDates: vi.fn<() => string[]>(() => ["2026-10-10"]),
   loadLatestNews: vi.fn<() => NewsFile | null>(),
   loadProdRuns: vi.fn<() => RunLog[]>(() => []),
 }));
-vi.mock("@/lib/data/news", () => ({ loadLatestNews }));
+vi.mock("@/lib/data/news", () => ({ listNewsDates, loadLatestNews }));
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
 
 const fixture = NewsFileSchema.parse(

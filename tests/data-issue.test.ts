@@ -3,16 +3,27 @@
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { loadIssue, loadLatestIssue } from "@/lib/data/issue";
+import {
+  listIssueDates,
+  loadArchiveView,
+  loadIssue,
+  loadLatestIssue,
+} from "@/lib/data/issue";
 import type { NewsFile } from "@/lib/schema/news";
 import type { RunLog } from "@/lib/schema/run";
 
-const { loadLatestNews, loadNewsIssue, loadProdRuns } = vi.hoisted(() => ({
-  loadLatestNews: vi.fn<() => NewsFile | null>(),
-  loadNewsIssue: vi.fn<(date: string) => NewsFile | null>(),
-  loadProdRuns: vi.fn<() => RunLog[]>(),
+const { listNewsDates, loadLatestNews, loadNewsIssue, loadProdRuns } =
+  vi.hoisted(() => ({
+    listNewsDates: vi.fn<() => string[]>(),
+    loadLatestNews: vi.fn<() => NewsFile | null>(),
+    loadNewsIssue: vi.fn<(date: string) => NewsFile | null>(),
+    loadProdRuns: vi.fn<() => RunLog[]>(),
+  }));
+vi.mock("@/lib/data/news", () => ({
+  listNewsDates,
+  loadLatestNews,
+  loadNewsIssue,
 }));
-vi.mock("@/lib/data/news", () => ({ loadLatestNews, loadNewsIssue }));
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
 
 const NEWS: NewsFile = {
@@ -56,5 +67,22 @@ describe("loadLatestIssue · loadIssue", () => {
     expect(loadNewsIssue).toHaveBeenCalledWith("2026-10-17");
     loadNewsIssue.mockReturnValue(null);
     expect(loadIssue("2026-10-15")).toEqual({ news: null, issue: null });
+  });
+});
+
+describe("listIssueDates · loadArchiveView (M1-34)", () => {
+  it("발행일 목록은 뉴스 로더의 파일 목록 그대로, 아카이브 모델은 그 목록으로 만든다(결호 건너뜀)", () => {
+    listNewsDates.mockReturnValue(["2026-10-14", "2026-10-17", "2026-10-18"]);
+    expect(listIssueDates()).toEqual([
+      "2026-10-14",
+      "2026-10-17",
+      "2026-10-18",
+    ]);
+    const view = loadArchiveView("2026-10-17");
+    expect(view?.prev).toEqual({ date: "2026-10-14", no: 3 });
+    expect(view?.next).toEqual({ date: "2026-10-18", no: 7 });
+    expect(loadArchiveView("2026-10-15")).toBeNull();
+    // 파일 내용은 읽지 않는다(목록만)
+    expect(loadNewsIssue).not.toHaveBeenCalled();
   });
 });

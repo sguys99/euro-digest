@@ -34,8 +34,24 @@ import { NAV_ITEMS, type NavKey } from "./site-nav";
 export interface AppShellProps {
   /** 지금 페이지의 내비 항목 — 하단 탭·상단 내비 `aria-current="page"`. 홈이면 워드마크가 h1. 없으면(404 등) 현재 탭 없음 */
   current?: NavKey;
+  /**
+   * `current` 항목이 이 페이지 자신인가(`"page"`, 기본) · 그 섹션 안의 다른 페이지인가(`"section"` → `aria-current="true"` — 날짜 아카이브의
+   * "뉴스" 탭은 `/news/`로 가는 링크라 이 페이지가 아니다, M1-34)
+   */
+  currentKind?: "page" | "section";
   /** 마스트헤드·뒤표지의 호(제 N호·날짜·발행·업데이트) — 발행 전이면 null */
   issue: IssueMeta | null;
+  /**
+   * 상단 내비·뒤표지 "마지막 업데이트"(사이트 기준 = 최신 호의 업데이트 시각, FR-142). 페이지 호가 최신 호가 아닐 때(날짜 아카이브) 준다 —
+   * 주지 않으면 `issue.updatedAt`. 티켓 스텁의 발행·업데이트는 늘 그 호다(2026-10-23 오케스트레이터 결정)
+   */
+  siteUpdatedAt?: string;
+  /**
+   * 티켓 꼬리표 + 펼치는 판(M1-34 — `/news/`·날짜 아카이브만, 홈에는 없음). 페이지가 `counterfoilSlots(view)`
+   * (src/components/news/counterfoil.tsx)로 만들어 넘긴다 — 셸이 꼬리표 모듈을 import하지 않아야 달력 섬이 꼬리표 없는 페이지(홈·404·소개)의
+   * 초기 JS에 들어가지 않는다
+   */
+  counterfoil?: { strip: ReactNode; panel: ReactNode };
   /** 1024 이상 왼쪽 목차 열(232px, sticky top 16px) — 주지 않으면 열 없음 */
   contents?: ReactNode;
   /** 목차 랜드마크 이름(DESIGN §10 — 뉴스 화면은 "뉴스 필터") */
@@ -72,7 +88,10 @@ export function layoutColumns(
 
 export function AppShell({
   current,
+  currentKind = "page",
   issue,
+  siteUpdatedAt,
+  counterfoil,
   contents,
   contentsLabel = "뉴스 필터",
   facing,
@@ -87,7 +106,11 @@ export function AppShell({
         <Masthead
           issue={issue}
           current={current}
+          currentKind={currentKind}
           wordmarkAs={current === "home" ? "h1" : "p"}
+          lastUpdated={siteUpdatedAt}
+          counterfoil={counterfoil?.strip}
+          counterfoilPanel={counterfoil?.panel}
         />
         <div
           data-columns={columns}
@@ -113,7 +136,7 @@ export function AppShell({
             </aside>
           )}
         </div>
-        <Colophon issue={issue} />
+        <Colophon issue={issue} lastUpdated={siteUpdatedAt} />
         {/* 하단 탭(1023 이하) — 화면 아래 sticky. 셸의 마지막 흐름 요소라 끝까지 내리면 뒤표지 바로 아래에 놓여 아무것도 가리지 않는다.
             홈 표시줄(safe area)만큼 아래 여백을 더한다(viewport-fit=cover가 아니면 0) */}
         <BottomTabs className="sticky bottom-0 z-20 -mx-edge pb-[env(safe-area-inset-bottom)] lg:hidden">
@@ -122,7 +145,10 @@ export function AppShell({
               key={key}
               href={href}
               icon={<Icon />}
-              current={key === current}
+              current={
+                key === current &&
+                (currentKind === "section" ? "section" : true)
+              }
             >
               {label}
             </BottomTab>

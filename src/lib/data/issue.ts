@@ -5,9 +5,14 @@
  * 쓴다 — node:fs를 쓰는 로더들을 부르므로 `"use client"` 파일에서 import하지 않는다.
  * 카드는 뉴스 로더(src/lib/data/news.ts)를 거쳐 읽으므로 삭제 요청 카드는 이미 빠져 있다(FR-143). 호 정보 규칙은 src/lib/issue.ts.
  */
-import { loadLatestNews, loadNewsIssue } from "@/lib/data/news";
+import {
+  listNewsDates,
+  loadLatestNews,
+  loadNewsIssue,
+} from "@/lib/data/news";
 import { loadProdRuns } from "@/lib/data/runs";
 import { issueMeta, type IssueMeta } from "@/lib/issue";
+import { buildArchiveView, type ArchiveView } from "@/lib/news/archive";
 import type { NewsFile } from "@/lib/schema/news";
 
 export interface LoadedIssue {
@@ -29,4 +34,17 @@ export function loadLatestIssue(): LoadedIssue {
 /** 발행일(KST "YYYY-MM-DD") 하나의 호 — 날짜 아카이브 `/news/[date]/`(M1-34)용. 그 날짜 파일이 없으면 둘 다 null */
 export function loadIssue(date: string): LoadedIssue {
   return withMeta(loadNewsIssue(date));
+}
+
+/**
+ * 발행된 호의 발행일 전부(오름차순) — 날짜 아카이브의 `generateStaticParams`·이전·다음 호·달력(M1-34), `/news/`의 canonical.
+ * 파일 목록만 본다(내용은 읽지 않는다 — 깨진 파일은 그 날짜 페이지가 `loadIssue`로 읽을 때 빌드를 멈춘다).
+ */
+export function listIssueDates(): string[] {
+  return listNewsDates();
+}
+
+/** 그 호의 아카이브 이동 모델(이전·다음 호 + 달력 — src/lib/news/archive.ts). 발행된 호가 아니면 null */
+export function loadArchiveView(date: string): ArchiveView | null {
+  return buildArchiveView(listIssueDates(), date);
 }

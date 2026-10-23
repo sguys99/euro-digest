@@ -8,6 +8,8 @@ import { basePath, outDir, siteOrigins, sitePages } from "./support/site";
 // 빌드 후 링크 검사 (NFR-12). out/의 모든 HTML에서 내부 링크(a·area href)와 정적 자산(link href,
 // script·img src, srcset 등)을 모아 정적 서버(serve-out)에 요청하고 최종 200인지 확인한다.
 // - 디렉터리 → 끝 슬래시 301 같은 의도된 리다이렉트는 따라간 뒤 최종 상태를 본다.
+// - 날짜 아카이브(`/news/{date}/`)도 전수 검사한다 — 페이지마다 꼬리표·달력 링크(앞뒤 호·그 달 발행일·달 이동)가 다르고, 브라우저 없이
+//   HTTP 요청만이라 발행일이 늘어도 비용이 작다(렌더·axe는 a11y.spec이 표본만 — M1-34 리뷰).
 // - 외부 링크는 요청하지 않는다(CI 불안정 방지). basePath가 빠진 루트 경로(`/x`)는 GitHub Pages에서
 //   깨지므로 실패로 처리한다(CLAUDE.md §7.1).
 const pages = sitePages();

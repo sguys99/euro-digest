@@ -6,11 +6,19 @@ import { cn } from "@/lib/utils";
 /**
  * 링크 내비게이션 탭 — 하단 탭(1023 이하)·상단 내비(1024 이상) (DESIGN.md §9.2 Tabs, D0-12)
  *
- * ARIA 탭(`role="tablist"`)이 아니라 정적 페이지 사이를 오가는 `<nav>` + 링크다. 현재 페이지는 `aria-current="page"`이고
- * 색 외에 막대(3px --brand-accent)와 굵기로 표시한다. 비활성 상태는 없다 — 미완성 섹션은 탭을 숨긴다(plan §2.3).
+ * ARIA 탭(`role="tablist"`)이 아니라 정적 페이지 사이를 오가는 `<nav>` + 링크다. 현재 페이지는 `aria-current="page"`, 그 섹션 안의 다른
+ * 페이지(날짜 아카이브 `/news/{date}/`의 "뉴스" — M1-34)는 `aria-current="true"`이고 둘 다 색 외에 막대(3px --brand-accent)와 굵기로 표시한다. 비활성 상태는 없다 — 미완성 섹션은 탭을 숨긴다(plan §2.3).
  * 보이는 폭은 앱 셸(M1-30)이 정한다: 하단 탭 `lg:hidden`(sticky bottom, z 20), 상단 내비 `hidden lg:flex`.
  * 내부 링크는 `next/link`라 basePath가 붙는다(라우트는 `routes.*`로 만든다). 서버 컴포넌트.
  */
+
+/** `current` → `aria-current` 값 */
+function ariaCurrent(
+  current: boolean | "section",
+): "page" | "true" | undefined {
+  if (current === "section") return "true";
+  return current ? "page" : undefined;
+}
 
 // ─── 하단 탭 ────────────────────────────────────────────────────────────────
 
@@ -36,8 +44,8 @@ export interface NavTabProps extends Omit<
   ComponentProps<typeof Link>,
   "children"
 > {
-  /** 현재 페이지면 `aria-current="page"` */
-  current?: boolean;
+  /** 현재 페이지면 `true`(→ `aria-current="page"`), 그 섹션 안의 다른 페이지면 `"section"`(→ `aria-current="true"`) */
+  current?: boolean | "section";
   children: ReactNode;
 }
 
@@ -51,12 +59,12 @@ export function BottomTab({
 }: NavTabProps & { icon: ReactNode }) {
   return (
     <Link
-      aria-current={current ? "page" : undefined}
+      aria-current={ariaCurrent(current)}
       className={cn(
         "relative flex min-h-14.5 flex-col items-center justify-center gap-0.75 text-[11px] font-extrabold text-ink-2 no-underline",
-        "transition-colors duration-fast ease-print hover:text-ink aria-[current=page]:text-ink",
+        "transition-colors duration-fast ease-print hover:text-ink aria-[current=page]:text-ink aria-[current=true]:text-ink",
         "before:absolute before:inset-x-6/25 before:-top-px before:hidden before:h-0.75 before:bg-brand-accent before:content-['']",
-        "aria-[current=page]:before:block",
+        "aria-[current=page]:before:block aria-[current=true]:before:block",
         className,
       )}
       {...props}
@@ -96,12 +104,12 @@ export function TopNavLink({
 }: NavTabProps) {
   return (
     <Link
-      aria-current={current ? "page" : undefined}
+      aria-current={ariaCurrent(current)}
       className={cn(
         "relative flex min-h-12 min-w-11 items-center justify-center text-[15px] font-extrabold text-ink-2 no-underline",
-        "transition-colors duration-fast ease-print hover:text-ink aria-[current=page]:text-ink",
+        "transition-colors duration-fast ease-print hover:text-ink aria-[current=page]:text-ink aria-[current=true]:text-ink",
         "after:absolute after:inset-x-0 after:-bottom-px after:hidden after:h-0.75 after:bg-brand-accent after:content-['']",
-        "aria-[current=page]:after:block",
+        "aria-[current=page]:after:block aria-[current=true]:after:block",
         className,
       )}
       {...props}

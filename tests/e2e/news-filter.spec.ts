@@ -5,16 +5,23 @@ import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { listNewsDates } from "../../src/lib/data/news";
 import { basePath, outDir, sitePages } from "./support/site";
 
-// 뉴스 필터 e2e (M1-33 — PRD FR-31·FR-32, DESIGN §6.2·§9.2·§9.3, DECISIONS D0 §5 #11·#13) — 일반 빌드(out/)의 실제 최신 호.
+// 뉴스 필터 e2e (M1-33 — PRD FR-31·FR-32, DESIGN §6.2·§9.2·§9.3, DECISIONS D0 §5 #11·#13) — 일반 빌드(out/)의 실제 최신 호(홈·/news/)와 지난 호 하나(날짜 아카이브 — M1-34).
 // 실제 호는 날마다 바뀌므로 기대 값은 페이지의 카드 데이터 속성(`data-nf-*`)에서 계산한다(하드코딩하지 않는다). fixtures 23장으로
 // 건수·모양을 결정적으로 보는 검사는 견본 e2e(tests/e2e-specimen/news-filter.spec.ts). 카드가 없는 빌드(CI 초기)는 건너뛴다.
 
-const PAGES = [
+/** 날짜 아카이브(M1-34) — 최신 호가 아닌 날짜 페이지 하나(지난 호 — 호가 하나뿐이면 그 호). 같은 필터 지면·주소 동기화를 쓴다 */
+const ARCHIVE_DATE = listNewsDates().at(-2) ?? listNewsDates().at(-1);
+
+const PAGES: readonly { name: string; path: string }[] = [
   { name: "홈", path: "./" },
   { name: "뉴스", path: "news/" },
-] as const;
+  ...(ARCHIVE_DATE
+    ? [{ name: `아카이브 ${ARCHIVE_DATE}`, path: `news/${ARCHIVE_DATE}/` }]
+    : []),
+];
 
 const CATEGORIES = [
   "result",

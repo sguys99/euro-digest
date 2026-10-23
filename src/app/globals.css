@@ -628,6 +628,8 @@
  * - perf-x: 가로 천공 줄(9px 간격 점, 지름 --perf) — 375 티켓 가운데 · 뒤표지 위. 높이 4px 상자에 쓴다
  * - perf-y: 세로 천공 줄 — 1024 이상 티켓의 스텁 열과 본면 사이. 폭 4px 상자에 쓴다
  * - notch-hole: 천공 줄 양 끝의 반원 홈(지름 --notch × 2). 위치는 컴포넌트가 정한다(절반이 티켓 밖 지면에 걸쳐 보이지 않는다)
+ * - perf-edge: 뜯어낸 가장자리 — 위 끝에 걸친 반원 자국(9px 간격, 반지름 2.6px). 375 달력 시트(--paper-2)의 위 가장자리(M1-34 시안 A).
+ *   높이 6px 상자에 쓴다(시트 `::before`)
  */
 @utility perf-x {
   background-image: radial-gradient(
@@ -647,6 +649,16 @@
   );
   background-size: 4px 9px;
   background-repeat: repeat-y;
+}
+
+@utility perf-edge {
+  background-image: radial-gradient(
+    circle at 4.5px 0,
+    var(--paper) 2.6px,
+    transparent 3.1px
+  );
+  background-size: 9px 6px;
+  background-repeat: repeat-x;
 }
 
 @utility notch-hole {

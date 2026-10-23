@@ -4,7 +4,7 @@ import { KstTime } from "@/components/kst-time";
 import { aboutHref } from "@/lib/about-sections";
 import type { IssueMeta } from "@/lib/issue";
 import { FOOTBALL_DATA_ATTRIBUTION, REPO_URL, SITE_NAME } from "@/lib/site";
-import { formatKst, kstDayRangeUtc } from "@/lib/time";
+import { formatKst, kstDate, kstDayRangeUtc } from "@/lib/time";
 
 /**
  * 뒤표지(푸터) (DESIGN.md §9.3 뒤표지 · PRD FR-142·FR-45, M1-30)
@@ -40,7 +40,15 @@ const LINKS: readonly FooterLink[] = [
 const LINK =
   "inline-flex min-h-11 items-center font-extrabold underline decoration-1 underline-offset-4 hover:decoration-2";
 
-export function Colophon({ issue }: { issue: IssueMeta | null }) {
+export function Colophon({
+  issue,
+  lastUpdated,
+}: {
+  issue: IssueMeta | null;
+  /** 마지막 업데이트(사이트 기준 — 최신 호의 업데이트, FR-142). 주지 않으면 `issue.updatedAt`. 호의 발행일과 다른 날이면 날짜를 붙인다(M1-34) */
+  lastUpdated?: string;
+}) {
+  const updated = lastUpdated ?? issue?.updatedAt;
   return (
     <footer className="relative -mx-edge mt-14 bg-colophon text-colophon-fg transition-colors duration-base [--ring:var(--colophon-fg)] before:block before:h-1 before:translate-y-1.5 before:perf-x before:content-[''] lg:mx-0 lg:mt-18">
       <div className="grid gap-2.5 px-edge pt-6.5 pb-7 text-[13px] leading-[1.6] lg:grid-cols-[1.1fr_1fr] lg:gap-x-12 lg:px-9 lg:pt-8 lg:pb-8.5">
@@ -91,9 +99,10 @@ export function Colophon({ issue }: { issue: IssueMeta | null }) {
             </li>
           ))}
         </ul>
-        {issue && (
+        {issue && updated && (
           <p className="text-colophon-fg-2 lg:col-start-2">
-            마지막 업데이트 <KstTime iso={issue.updatedAt} />
+            마지막 업데이트{" "}
+            <KstTime iso={updated} withDate={kstDate(updated) !== issue.date} />
           </p>
         )}
       </div>

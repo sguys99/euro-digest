@@ -236,6 +236,36 @@ describe("S4 경기 없는 날(mode empty — D30 #7)", () => {
   });
 });
 
+describe("제목 변형 variant='issue' — 날짜 아카이브 '이날의 5줄'(M1-34, 2026-10-23 사용자 결정)", () => {
+  it("머리 '이날의 5줄', 부제 '(현지)' 원칙·행·라벨은 같다", () => {
+    const brief = day("2026-10-11");
+    render(<TodayBrief brief={brief} variant="issue" />);
+    const el = screen.getByRole("region", { name: "이날의 5줄" });
+    expect(within(el).getByRole("heading", { level: 2 })).toHaveTextContent(
+      "이날의 5줄",
+    );
+    expect(el).not.toHaveTextContent("오늘의 5줄");
+    expect(el).toHaveTextContent("(현지) 경기 기준");
+    expect(within(el).getByRole("list")).toBeInTheDocument();
+  });
+
+  it("S4 — '이날은 5줄을 쉽니다' + 이유는 대회 수 없이 + 그 페이지 피드 머리 이름 '뉴스로 ↓'(#news)", () => {
+    render(<TodayBrief brief={emptyBrief} variant="issue" />);
+    const rest = screen
+      .getByRole("region", { name: "이날의 5줄" })
+      .querySelector("[data-slot=brief-rest]") as HTMLElement;
+    expect(rest).toHaveTextContent("이날은 5줄을 쉽니다");
+    expect(rest).not.toHaveTextContent("오늘은");
+    // 지난 호의 사실을 지금 설정(대회 수)으로 바꿔 쓰지 않는다(CLAUDE §1-7)
+    expect(rest).toHaveTextContent("전날 끝난 경기가 없었습니다.");
+    expect(rest).not.toHaveTextContent("개 대회");
+    expect(within(rest).getByRole("link", { name: "뉴스로" })).toHaveAttribute(
+      "href",
+      "#news",
+    );
+  });
+});
+
 describe("AiLabel · AiLabelMark", () => {
   it("라벨 링크 — 이름 'AI 작성', /about/#ai, 44px 터치 확장(::after)", () => {
     render(<AiLabel />);
