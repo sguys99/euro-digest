@@ -1,4 +1,50 @@
 {
-  "updatedAt": "2026-10-22T00:13:50.613Z",
-  "fixtures": []
+  "updatedAt": "2026-10-23T00:10:07.596Z",
+  "fixtures": [
+    {
+      "id": 1575196,
+      "comp": "BUNDESLIGA",
+      "leagueId": 78,
+      "kickoff": "2026-10-23T18:30:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-23T00:10:07.590Z",
+      "requeries": 0
+    },
+    {
+      "id": 1550165,
+      "comp": "SERIEA",
+      "leagueId": 135,
+      "kickoff": "2026-10-23T18:45:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-23T00:10:07.590Z",
+      "requeries": 0
+    },
+    {
+      "id": 1552794,
+      "comp": "LIGUE1",
+      "leagueId": 61,
+      "kickoff": "2026-10-23T18:45:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-23T00:10:07.590Z",
+      "requeries": 0
+    },
+    {
+      "id": 1557443,
+      "comp": "EPL",
+      "leagueId": 39,
+      "kickoff": "2026-10-23T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-23T00:10:07.590Z",
+      "requeries": 0
+    },
+    {
+      "id": 1570423,
+      "comp": "LALIGA",
+      "leagueId": 140,
+      "kickoff": "2026-10-23T19:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-23T00:10:07.590Z",
+      "requeries": 0
+    }
+  ]
 }
