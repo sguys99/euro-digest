@@ -26,6 +26,8 @@ import {
 import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
+import { CardMenuButton } from "./card-menu";
+
 /**
  * 뉴스 카드 — D0 변형 6종을 한 컴포넌트로 (PRD FR-30, D23·D30, DESIGN.md §9.2 Card · §9.3, plan M1-31)
  *
@@ -44,10 +46,11 @@ import { cn } from "@/lib/utils";
  * 머리기사 없이(DECISIONS #13), 짝이 숨은 카드는 보통 아래 여백으로 그린다(`filterable`).
  *
  * 본문 순서(혼합안 그대로): 태그 줄(도장 + 태그) → 이적 단계 줄 → 원제목 → (결과 가림 띠 — M4-E) → 메타(출처명 · '+N곳' · 상대 시간 +
- * 절대 시각) → 펼친 출처 목록 → 연결 줄. 카드 메뉴(공유·오류 신고)는 M1-35 — 지금은 자리도 두지 않는다.
+ * 절대 시각, 오른쪽 끝 카드 메뉴 버튼) → 펼친 출처 목록 → 연결 줄. 카드 메뉴(M1-35)는 버튼만 카드마다 있고, 메뉴("공유하기" — 그 호 날짜
+ * 페이지 앵커, FR-34 · "오류 신고↗" — 카드 ID·발행 날짜를 채운 이슈 폼, FR-36)는 피드마다 하나를 섬이 연 카드로 옮긴다(src/components/news/card-menu.tsx).
  *
- * 서버 컴포넌트다(JS 0). 상대 시간과 '+N곳' 펼침은 피드 섬 하나가 맡는다(src/components/news/feed-island.tsx) — 여기서는 그 섬이
- * 찾는 표식(`time[data-rel]`·`button[data-src-toggle]`)과 정적 폴백(절대 시각, 닫힌 목록)만 그린다.
+ * 서버 컴포넌트다(JS 0). 상대 시간·'+N곳' 펼침·카드 메뉴는 피드 섬 하나가 맡는다(src/components/news/feed-island.tsx) — 여기서는 그 섬이
+ * 찾는 표식(`time[data-rel]`·`button[data-src-toggle]`·`button[data-menu-button]`)과 정적 폴백(절대 시각, 닫힌 목록·메뉴)만 그린다.
  * 원제목(`t`)·출처명(`src[].n`)은 고치지 않고, 요약 줄·"AI 작성" 라벨은 뉴스 카드에 없다(D23·D24).
  */
 
@@ -55,6 +58,8 @@ type TitleAs = "h2" | "h3";
 
 export interface FeedCardProps {
   view: FeedCardView;
+  /** 피드 카드 메뉴 id — 메뉴 버튼의 `aria-controls`(피드마다 메뉴 하나, M1-35) */
+  menuId: string;
   /** 카드 제목 단계 — 피드 섹션 머리 바로 아래 단계 */
   titleAs: TitleAs;
   /**
@@ -64,7 +69,12 @@ export interface FeedCardProps {
   filterable?: boolean;
 }
 
-export function FeedCard({ view, titleAs, filterable = false }: FeedCardProps) {
+export function FeedCard({
+  view,
+  menuId,
+  titleAs,
+  filterable = false,
+}: FeedCardProps) {
   const { card, lead, link, stack } = view;
   const titleId = `${card.id}-t`;
   const listId = `${card.id}-src`;
@@ -126,6 +136,7 @@ export function FeedCard({ view, titleAs, filterable = false }: FeedCardProps) {
         {/* 결과 가림 띠 자리(변형 ⑤ — M4-E 결과 가리기 토글이 여기에 띠를 끼우고 제목을 접는다) */}
         <CardMeta className={cn(lead && "lg:group-data-lead/card:mt-4")}>
           <SourceLine stack={stack} listId={listId} />
+          <CardMenuButton cardId={card.id} titleId={titleId} menuId={menuId} />
         </CardMeta>
         {stack.more > 0 ? <SourceList id={listId} rows={stack.rows} /> : null}
         {link ? <LinkLine link={link} filterable={filterable} /> : null}

@@ -29,6 +29,8 @@ import { CloseIcon } from "./icons";
  *   화면 낭독기가 있다).
  * - 닫기 버튼(선택, `dismissible`): 44×44 아이콘 버튼 "알림 닫기". 혼합안 시안에는 없고 D0-12에서 더했다 — 액션이 있는
  *   토스트를 기다리지 않고 닫고 싶을 때 쓴다(기본 꺼짐).
+ * - 액션 포커스(선택, `focusAction`): 띄우면 액션 버튼으로 포커스를 옮긴다 — 실패한 동작의 대체 경로만(M1-35). 평소 알림은 포커스를
+ *   옮기지 않는다(읽기만 — aria-live).
  * - 포커스 복귀: 토스트 안(액션·닫기 버튼)에 포커스가 있는 채로 토스트가 사라지면(버튼으로 닫음·교체·`dismissToast`)
  *   포커스가 `<body>`로 떨어지지 않게 토스트에 들어오기 전 요소로 되돌린다. 그 요소가 없거나 포커스를 못 받으면
  *   `<main id="main" tabindex="-1">`(DESIGN §10 건너뛰기 링크 대상)로 보낸다(D0-12 리뷰).
@@ -51,6 +53,11 @@ export interface ToastOptions {
   duration?: number;
   /** 닫기 버튼(기본 false) */
   dismissible?: boolean;
+  /**
+   * 띄우면 액션 버튼으로 포커스를 옮긴다(기본 false) — 실패한 동작의 대체 경로처럼 키보드로 바로 닿아야 할 때만(M1-35 복사 실패 "링크 열기").
+   * 포커스가 안에 있는 동안 시간이 멈추고, 닫히면 아래 포커스 복귀 규칙대로 들어오기 전 요소로 돌아간다
+   */
+  focusAction?: boolean;
 }
 
 interface ToastItem extends ToastOptions {
@@ -142,6 +149,7 @@ export function Toaster({ className }: { className?: string }) {
               : undefined
           }
           onDismiss={item.dismissible ? close : undefined}
+          focusAction={item.focusAction === true && item.action !== undefined}
           onPointerEnter={() => setPaused(true)}
           onPointerLeave={() => setPaused(false)}
           onFocus={() => setPaused(true)}
@@ -159,13 +167,22 @@ export function Toaster({ className }: { className?: string }) {
 }
 
 /**
- * `Toaster`가 띄운 토스트 한 장 — 안에 포커스가 있는 채로 사라지면 포커스를 되돌린다.
+ * `Toaster`가 띄운 토스트 한 장 — 안에 포커스가 있는 채로 사라지면 포커스를 되돌린다. `focusAction`이면 띄울 때 액션으로 포커스를 옮긴다.
  * 지워지는 컴포넌트의 layout effect 정리 함수는 DOM 노드를 떼기 전에 실행되므로, 이때는 아직 `activeElement`가 토스트 안이다.
  */
-function LiveToast({ onFocus, ...props }: ToastViewProps) {
+function LiveToast({
+  onFocus,
+  focusAction = false,
+  ...props
+}: ToastViewProps & { focusAction?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
-  /** 토스트에 들어오기 전 포커스(키보드로 Tab해 들어온 곳) */
+  /** 토스트에 들어오기 전 포커스(키보드로 Tab해 들어온 곳 · `focusAction`이 옮기기 전 요소) */
   const previous = useRef<HTMLElement | null>(null);
+
+  // 액션 포커스 — 액션 버튼(토스트의 첫 버튼)으로. 들어오기 전 요소는 onFocus의 relatedTarget으로 기록된다
+  useEffect(() => {
+    if (focusAction) ref.current?.querySelector<HTMLElement>("button")?.focus();
+  }, [focusAction]);
 
   useLayoutEffect(() => {
     const el = ref.current;

@@ -9,6 +9,7 @@ import { useEffect } from "react";
  * - 버튼: 펼침·접힘. 펼치면 보는 호 칸(`aria-current="page"`, 없으면 첫 발행 칸)으로 포커스, 뜯김 200ms(모션 줄이기면 없음).
  * - 닫기: 판의 닫기 버튼 → 닫고 달력 버튼으로 포커스 복귀. Esc(판이 열려 있을 때)는 포커스가 판 안·버튼에 있으면 닫고 버튼으로 복귀,
  *   그 밖이면 닫기만 한다(포커스를 옮기지 않는다 — 375 시트에서 화면이 튀지 않게, 카드 메뉴 등 다른 Esc와 다투지 않게, M1-34 리뷰).
+ *   다른 판이 이미 처리한 Esc(`defaultPrevented` — 카드 메뉴, M1-35 리뷰)는 건너뛴다.
  * - 1024 이상(팝오버)은 바깥 클릭 · **포커스가 판·버튼 밖으로 나가면**(Tab) 닫는다 — 팝오버가 덮은 요소에 포커스가 숨지 않게(WCAG 2.4.11).
  *   375 시트는 지면을 밀어내는 흐름 요소라(아무것도 덮지 않는다) 바깥 클릭·포커스 이동으로 닫지 않는다.
  * - 화살표 키(발행 칸 링크 위): ← → 앞뒤 발행 칸 · Home·End 처음·끝 · ↑ ↓ 7일 전·후(그날이 발행 칸일 때만 — 결호·발행 전 칸은 링크가 아니다).
@@ -102,6 +103,8 @@ export function CalendarIsland({ panelId }: { panelId: string }) {
     const onKey = (event: KeyboardEvent) => {
       if (panel.hidden) return;
       if (event.key === "Escape") {
+        // 다른 판(카드 메뉴 — M1-35)이 이미 처리한 Esc는 건너뛴다 — 375 시트가 같은 Esc로 함께 닫히지 않게(가장 위의 것 하나만)
+        if (event.defaultPrevented) return;
         if (inside(document.activeElement)) close();
         else set(false, false);
         return;

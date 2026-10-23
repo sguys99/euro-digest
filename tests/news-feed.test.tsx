@@ -188,8 +188,12 @@ describe("NewsFeed — 카드 변형 6종(fixtures 23장)", () => {
       byId.get("c_f598c95798")?.src.map((s) => s.u),
     );
     for (const row of rows) expect(row).toHaveAttribute("target", "_blank");
-    // 출처 1건 카드는 버튼이 없다
-    expect(within(article("c_c4f20b673e")).queryByRole("button")).toBeNull();
+    // 출처 1건 카드는 '+N곳' 버튼이 없다(버튼은 카드 메뉴 하나뿐 — M1-35)
+    expect(
+      within(article("c_c4f20b673e"))
+        .getAllByRole("button")
+        .map((b) => b.getAttribute("aria-label")),
+    ).toEqual(["카드 메뉴"]);
   });
 
   it("② '+N건' — 추가 출처가 모두 같은 매체면 '+N건'(화면 밖 '같은 매체 기사 더 보기'), 같은 펼침 목록(사용자 결정 2026-10-19)", () => {

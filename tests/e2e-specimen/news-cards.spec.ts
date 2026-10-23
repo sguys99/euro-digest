@@ -1,3 +1,6 @@
+import { mkdirSync } from "node:fs";
+import path from "node:path";
+
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
@@ -204,6 +207,11 @@ test.describe("변형 6종 · 연결 줄 · 출처 스택 (1280)", () => {
     expect(await button.evaluate((b) => getComputedStyle(b).color)).not.toBe(
       closedColor,
     );
+    // Tab 순서 = DOM 순서 = 보이는 순서: '+N곳' → 같은 메타 줄 오른쪽 끝 카드 메뉴 버튼(M1-35) → 펼친 출처 행
+    await page.keyboard.press("Tab");
+    await expect(
+      page.locator("#c_f598c95798").getByRole("button", { name: "카드 메뉴" }),
+    ).toBeFocused();
     await page.keyboard.press("Tab");
     const first = list.getByRole("link").first();
     await expect(first).toBeFocused();
@@ -351,4 +359,164 @@ for (const colorScheme of SCHEMES) {
       ),
     ).toEqual([]);
   });
+}
+
+// ─── 카드 메뉴 (M1-35) ──────────────────────────────────────────────────────
+// 혼합안 `?stage=m1`과 같은 fixtures(홈 견본 `/specimen/home/`)로 메타 줄·메뉴 버튼·메뉴 치수를 혼합안 실측값과 대조한다(DESIGN §11.11):
+// 메뉴 버튼이 들어오면서 메타 줄이 혼합안 높이가 된다(M1-31 의도한 차이 ① 해소 — 375 46.5px(시각이 둘째 줄) · ≥1024 29.9px).
+const SHOTS_DIR = path.resolve(
+  process.env.SPECIMEN_SHOTS_DIR ?? "test-results/specimen-shots",
+);
+
+test.describe("카드 메뉴 (M1-35)", () => {
+  const CARD = "#c_6fa142d217"; // 07 Bayern — 혼합안과 태그 표기가 같은 카드(사전 차이로 높이가 바뀌지 않는다)
+
+  async function openHome(page: Page): Promise<void> {
+    await page.clock.setFixedTime(NOW);
+    const response = await page.goto(`${SPECIMEN_PATH}home/`);
+    expect(response?.status()).toBe(200);
+    await waitForFonts(page);
+    await waitForHydration(page);
+  }
+
+  for (const [width, metaHeight] of [
+    [375, 46.5],
+    [1024, 29.9],
+    [1280, 29.9],
+  ] as const) {
+    test(`혼합안 치수 — 메타 줄 ${metaHeight}px · 버튼 44px(위 −8 · 오른쪽 −10) · 메뉴 160×90(버튼 아래 끝·오른쪽 맞춤) · 항목 44px (${width})`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await openHome(page);
+      const card = page.locator(CARD);
+      await card.getByRole("button", { name: "카드 메뉴" }).click();
+      const m = await card.evaluate((article) => {
+        const round = (v: number) => Math.round(v * 10) / 10;
+        const box = (el: Element | null) => {
+          const r = (el as Element).getBoundingClientRect();
+          return {
+            top: round(r.top),
+            right: round(r.right),
+            bottom: round(r.bottom),
+            width: round(r.width),
+            height: round(r.height),
+          };
+        };
+        const button = article.querySelector("[data-menu-button]");
+        const wrap = button?.closest("[data-card-menu]") ?? null;
+        const menu = article.querySelector('[role="menu"]');
+        return {
+          meta: box(wrap?.parentElement ?? null),
+          button: box(button),
+          menu: box(menu),
+          items: [...(menu?.querySelectorAll('[role="menuitem"]') ?? [])].map(
+            (el) => box(el).height,
+          ),
+          z: menu ? getComputedStyle(menu).zIndex : "",
+        };
+      });
+      expect(m.meta.height).toBe(metaHeight);
+      expect(m.button.width).toBe(44);
+      expect(m.button.height).toBe(44);
+      expect(round1(m.button.top - m.meta.top)).toBe(-8);
+      expect(round1(m.button.right - m.meta.right)).toBe(10);
+      expect(m.menu.top).toBe(m.button.bottom);
+      expect(m.menu.right).toBe(m.button.right);
+      expect([m.menu.width, m.menu.height]).toEqual([160, 90]);
+      expect(m.items).toEqual([44, 44]);
+      expect(m.z).toBe("5");
+      // 44px — 메뉴 항목은 맞붙은 44px 상자(혼합안 그대로)라 경계가 소수점 위치면 판정 점(가운데 ±21.5px)이 0.5px 안에서 옆 항목에 잡힌다 →
+      // 목차 행(DESIGN §11.9)과 같이 상자 크기로 보고, 누름 판정은 가운데와 위아래 ±21px(다음 카드 위에 떠 있어도 항목이 받는다)
+      const hits = await page.evaluate((sel) => {
+        const out: string[] = [];
+        for (const el of document.querySelectorAll<HTMLElement>(sel)) {
+          const r = el.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          for (const y of [cy - 21, cy, cy + 21]) {
+            const hit = document.elementFromPoint(cx, y);
+            if (!hit || !(hit === el || el.contains(hit)))
+              out.push(
+                `${el.textContent} ${Math.round(y - cy)} ← ${hit?.tagName}`,
+              );
+          }
+        }
+        return out;
+      }, `${CARD} [role="menu"]:not([hidden]) [role="menuitem"]`);
+      expect(hits).toEqual([]);
+    });
+  }
+
+  for (const colorScheme of SCHEMES) {
+    test(`axe 위반 0 — 메뉴를 연 채(${colorScheme})`, async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 800 });
+      await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+      await openFeed(page);
+      await page
+        .locator("#c_f598c95798")
+        .getByRole("button", { name: "카드 메뉴" })
+        .click();
+      const { violations } = await new AxeBuilder({ page })
+        .include([FEED, EDGE])
+        .withTags(WCAG_TAGS)
+        .analyze();
+      expect(
+        violations.map(
+          (v) =>
+            `${v.id}: ${v.help} — ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`,
+        ),
+      ).toEqual([]);
+    });
+  }
+
+  // 스크린샷 — 닫힘·열림·토스트 × 375·1024·1280 × 라이트·다크. 혼합안 같은 카드와 나란히 비교한다(DESIGN §11.11)
+  for (const width of [375, 1024, 1280] as const) {
+    for (const colorScheme of SCHEMES) {
+      test(`스크린샷 ${width}px ${colorScheme}`, async ({
+        browser,
+        baseURL,
+      }) => {
+        const context = await browser.newContext({
+          baseURL,
+          viewport: { width, height: 900 },
+          deviceScaleFactor: 1,
+          colorScheme,
+          reducedMotion: "reduce",
+        });
+        await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+        const page = await context.newPage();
+        await openHome(page);
+        mkdirSync(SHOTS_DIR, { recursive: true });
+        const card = page.locator(CARD);
+        await card.evaluate((el) => {
+          el.scrollIntoView({ block: "start" });
+          window.scrollBy(0, -120);
+        });
+        await page.mouse.move(0, 0);
+        const shot = (name: string) =>
+          page.screenshot({
+            path: path.join(
+              SHOTS_DIR,
+              `impl-card-menu-${name}-${width}-${colorScheme}.png`,
+            ),
+          });
+        await shot("closed");
+        const button = card.getByRole("button", { name: "카드 메뉴" });
+        await button.focus();
+        await page.keyboard.press("Enter");
+        await shot("open");
+        await page.keyboard.press("Enter"); // 공유하기 → 복사 → 토스트
+        await expect(
+          page.locator('[aria-live="polite"][aria-atomic="true"]'),
+        ).toHaveText("공유링크를 복사했어요");
+        await shot("toast");
+        await context.close();
+      });
+    }
+  }
+});
+
+function round1(v: number): number {
+  return Math.round(v * 10) / 10;
 }

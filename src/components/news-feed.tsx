@@ -1,3 +1,4 @@
+import { CardMenuPanel, cardMenuId } from "@/components/news/card-menu";
 import { FeedCard } from "@/components/news/feed-card";
 import { FeedIsland } from "@/components/news/feed-island";
 import {
@@ -8,6 +9,7 @@ import {
 import { loadCardLabels } from "@/lib/data/card-labels";
 import { buildFeed, FIRST_CARD_NO } from "@/lib/news/feed-view";
 import { FILTER_DESC_DEFAULT, type NewsFilterView } from "@/lib/news/filter";
+import { cardShareUrl, summaryErrorIssueUrl } from "@/lib/paths";
 import type { NewsCard, NewsFile } from "@/lib/schema/news";
 
 /**
@@ -21,7 +23,9 @@ import type { NewsCard, NewsFile } from "@/lib/schema/news";
  *
  * 머리기사(`lead`, 1024 이상)는 전체 피드에만 둔다 — 필터 결과(M1-33)에는 없다(DECISIONS D0 §5 #13): 필터가 걸리는 피드(`filter`)는
  * 머리기사를 그린 채 내보내고, 필터 부트 스크립트·섬이 필터가 켜지면 머리기사 모양을 끈다(카드 `data-lead`).
- * 상대 시간·'+N곳' 펼침은 피드마다 섬 하나(`FeedIsland`)가 `id`로 찾은 목록 안에서만 맡는다(한 페이지에 피드가 둘이어도 섞이지 않게).
+ * 상대 시간·'+N곳' 펼침·카드 메뉴(M1-35 — 공유·오류 신고)는 피드마다 섬 하나(`FeedIsland`)가 `id`로 찾은 목록 안에서만 맡는다(한 페이지에
+ * 피드가 둘이어도 섞이지 않게). 카드 메뉴는 버튼만 카드마다 있고 메뉴 마크업은 목록 뒤에 하나(`CardMenuPanel`)다 — 섬이 연 카드로 옮긴다.
+ * 공유 URL·오류 신고 날짜는 그 호의 발행일(`news.date`)이다(처음 값은 첫 카드 — 섬이 연 카드의 ID로 바꾼다).
  *
  * `filter`(M1-33 — 홈·`/news/`, 페이지에 하나): 부제의 건수·설명을 필터가 바꾸는 칸으로, 부제 아래 1023 이하 분류 칩 줄, 카드 `<li>`에
  * 필터 값(`data-nf-*`), 목록 뒤 0건 빈 상태 · 설정 JSON · 부트 스크립트 · 필터 섬(src/components/news/news-filter.tsx).
@@ -83,6 +87,8 @@ function Feed({
     labels: loadCardLabels(),
     firstNo: FIRST_CARD_NO,
   });
+  const menuId = cardMenuId(id);
+  const firstId = news.cards[0]?.id ?? "";
   return (
     <>
       <p className="mt-0.75 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-[13px] text-ink-2">
@@ -120,15 +126,26 @@ function Feed({
               suppressHydrationWarning
               className="data-nf-in:animate-stamp"
             >
-              <FeedCard view={view} titleAs={titleAs} filterable />
+              <FeedCard
+                view={view}
+                menuId={menuId}
+                titleAs={titleAs}
+                filterable
+              />
             </li>
           ) : (
             <li key={view.card.id}>
-              <FeedCard view={view} titleAs={titleAs} />
+              <FeedCard view={view} menuId={menuId} titleAs={titleAs} />
             </li>
           ),
         )}
       </ol>
+      {/* 카드 메뉴 하나(M1-35) — 처음 hidden, 섬이 연 카드의 메뉴 묶음으로 옮겨 그 카드 ID로 URL을 바꾼다 */}
+      <CardMenuPanel
+        id={menuId}
+        shareUrl={cardShareUrl(news.date, firstId)}
+        reportUrl={summaryErrorIssueUrl(firstId, news.date)}
+      />
       {filter ? <FilterEmptyState /> : null}
       <FeedIsland rootId={id} />
       {filter ? <NewsFilterBoot view={filter} /> : null}

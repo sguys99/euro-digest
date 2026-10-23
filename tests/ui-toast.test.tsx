@@ -226,6 +226,40 @@ describe("Toaster", () => {
     expect(document.getElementById("main")).toHaveFocus();
   });
 
+  it("focusAction(M1-35 — 실패의 대체 경로)이면 띄울 때 액션으로 포커스, 안에 있는 동안 멈추고, 닫으면 들어오기 전 요소로 · 없으면 포커스를 옮기지 않는다", () => {
+    render(
+      <>
+        <button type="button">공유</button>
+        <Toaster />
+      </>,
+    );
+    const trigger = screen.getByRole("button", { name: "공유" });
+    trigger.focus();
+    act(() => {
+      toast({ message: "알림만" });
+    });
+    expect(trigger).toHaveFocus();
+    act(() => {
+      toast({
+        message: "링크를 복사하지 못했어요",
+        action: { label: "링크 열기", onClick: () => {} },
+        dismissible: true,
+        focusAction: true,
+      });
+    });
+    const action = within(region()).getByRole("button", { name: "링크 열기" });
+    expect(action).toHaveFocus();
+    act(() => {
+      vi.advanceTimersByTime(TOAST_DURATION_MS * 3);
+    });
+    expect(region()).toHaveTextContent("링크를 복사하지 못했어요");
+    fireEvent.click(
+      within(region()).getByRole("button", { name: "알림 닫기" }),
+    );
+    expect(region()).toBeEmptyDOMElement();
+    expect(trigger).toHaveFocus();
+  });
+
   it("토스트 밖에 포커스가 있으면 사라질 때 포커스를 건드리지 않는다", () => {
     render(
       <>

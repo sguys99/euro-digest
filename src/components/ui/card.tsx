@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
  *
  * 카드는 면·테두리 상자가 아니라 괘선 사이의 한 줄(스쿼드 명단 한 줄)이다. shadcn Card의 `rounded-xl border shadow-sm`
  * 모양을 쓰지 않는다. 이 파일은 격자와 상태(hover·focus·:target)·원제목 링크 규칙만 맡고, 내용(태그·출처 스택·중요도·완장·
- * 이적 단계·연결 줄·머리기사)은 src/components/news/feed-card.tsx(M1-31)가 슬롯에 채운다. 카드 메뉴는 M1-35.
+ * 이적 단계·연결 줄·머리기사)은 src/components/news/feed-card.tsx(M1-31)가 슬롯에 채운다. 카드 메뉴는 메타 줄 오른쪽 끝(news/card-menu.tsx, M1-35).
  *
  * ```tsx
  * <Card id="c_d8ecc21d28" aria-labelledby="c_d8ecc21d28-t" bleed>

@@ -147,6 +147,24 @@ describe("펼침·닫기", () => {
     expect(panel.hidden).toBe(false);
   });
 
+  it("다른 판(카드 메뉴 — M1-35)이 이미 처리한 Esc(defaultPrevented)는 건너뛴다 — 375 시트가 같은 Esc로 함께 닫히지 않는다", () => {
+    wide = false;
+    const { button, panel } = setup();
+    fireEvent.click(button);
+    const outside = screen.getByTestId("outside");
+    outside.tabIndex = -1;
+    outside.focus();
+    // 카드 메뉴처럼 아래에서 먼저 처리하고 preventDefault
+    const handled = (event: KeyboardEvent) => event.preventDefault();
+    outside.addEventListener("keydown", handled);
+    fireEvent.keyDown(outside, { key: "Escape" });
+    expect(panel.hidden).toBe(false);
+    expect(button).toHaveAttribute("aria-expanded", "true");
+    outside.removeEventListener("keydown", handled);
+    fireEvent.keyDown(outside, { key: "Escape" });
+    expect(panel.hidden).toBe(true);
+  });
+
   it("닫혀 있을 때 Esc는 아무것도 하지 않는다(포커스를 뺏지 않는다)", () => {
     const { button } = setup();
     const outside = screen.getByTestId("outside");
