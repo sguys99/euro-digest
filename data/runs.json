@@ -1300,5 +1300,108 @@
     "brief": {
       "requests": 1
     }
+  },
+  {
+    "runId": "collect-prod-20261024T234231Z-2fdf",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-10-24T23:42:31.797Z",
+    "finishedAt": "2026-10-24T23:45:20.744Z",
+    "collected": 453,
+    "clusters": 45,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 0,
+      "out": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0,
+    "apiCalls": {
+      "footballData": 1,
+      "apiFootball": 26
+    },
+    "sources": [
+      {
+        "id": "bbc-sport-football",
+        "ok": true,
+        "items": 73,
+        "usable": 43
+      },
+      {
+        "id": "bbc-sport-premier-league",
+        "ok": true,
+        "items": 33,
+        "usable": 16
+      },
+      {
+        "id": "bbc-sport-champions-league",
+        "ok": true,
+        "items": 15,
+        "usable": 0
+      },
+      {
+        "id": "bbc-sport-european",
+        "ok": true,
+        "items": 27,
+        "usable": 0
+      },
+      {
+        "id": "the-athletic-football",
+        "ok": true,
+        "items": 100,
+        "usable": 9
+      },
+      {
+        "id": "daily-briefing",
+        "ok": true,
+        "items": 20,
+        "usable": 2
+      },
+      {
+        "id": "di-marzio",
+        "ok": true,
+        "items": 10,
+        "usable": 10
+      },
+      {
+        "id": "relevo",
+        "ok": true,
+        "items": 15,
+        "usable": 5
+      },
+      {
+        "id": "interfootball-world",
+        "ok": true,
+        "items": 20,
+        "usable": 20
+      },
+      {
+        "id": "interfootball-all",
+        "ok": true,
+        "items": 50,
+        "usable": 50
+      },
+      {
+        "id": "footballist-football",
+        "ok": true,
+        "items": 20,
+        "usable": 20
+      },
+      {
+        "id": "besteleven-world",
+        "ok": true,
+        "items": 20,
+        "usable": 20
+      },
+      {
+        "id": "besteleven-all",
+        "ok": true,
+        "items": 50,
+        "usable": 40
+      }
+    ],
+    "status": "success"
   }
 ]

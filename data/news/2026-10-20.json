@@ -1,7 +1,7 @@
 {
   "date": "2026-10-20",
-  "generatedAt": "2026-10-20T00:39:09.691Z",
-  "runId": "collect-prod-20261020T003904Z-f696",
+  "generatedAt": "2026-10-24T23:42:31.863Z",
+  "runId": "collect-prod-20261024T234231Z-2fdf",
   "cards": [
     {
       "id": "c_b1c9ee5296",
@@ -588,12 +588,6 @@
           "u": "https://www.bbc.co.uk/sport/football/videos/cm70px0l7p7no?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-18T18:59:06.000Z",
           "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7701031/2026/10/18/arsenal-forest-result-analysis/",
-          "at": "2026-10-18T17:25:01.000Z",
-          "tier": 2
         }
       ],
       "lang": "en",
@@ -621,12 +615,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/videos/cmlyl8yyzryeo?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-18T15:46:07.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7700784/2026/10/18/leeds-man-utd-premier-league-result-analysis/",
-          "at": "2026-10-18T14:53:35.000Z",
           "tier": 2
         }
       ],
