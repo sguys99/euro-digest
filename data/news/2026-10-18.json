@@ -1,7 +1,7 @@
 {
   "date": "2026-10-18",
-  "generatedAt": "2026-10-18T05:34:58.472Z",
-  "runId": "collect-prod-20261018T053453Z-77c1",
+  "generatedAt": "2026-10-23T23:59:54.008Z",
+  "runId": "collect-prod-20261023T235953Z-28c9",
   "cards": [
     {
       "id": "c_c9f614fdf5",
@@ -877,33 +877,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-10-18T05:34:53.361Z"
-    },
-    {
-      "id": "c_a1e608610c",
-      "t": "When is a head-butt a red card? Is this the new normal for Man City?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-city"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7699223/2026/10/18/premier-league-manchester-city-red-card/",
-          "at": "2026-10-18T04:13:45.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-10-18T05:34:53.361Z"
     },

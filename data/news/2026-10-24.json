@@ -1,0 +1,1253 @@
+{
+  "date": "2026-10-24",
+  "generatedAt": "2026-10-24T00:00:01.650Z",
+  "runId": "collect-prod-20261023T235953Z-28c9",
+  "cards": [
+    {
+      "id": "c_1caf153398",
+      "t": "“최근엔 KIM이 앞섰다” 김민재, 바이에른 뮌헨서 입지 달라졌다…“타는 두 번째 선택지에 불과”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 5,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697018",
+          "at": "2026-10-23T21:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_c12cdcbd20",
+      "t": "[오피셜] 이럴수가! ‘김민재 스승’ 콤파니, 훈련 참관 중 쓰러져 구급차 이송… 뮌헨은 “건강이 최우선, 필요한 시간 모두 보장할 것”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313370",
+          "at": "2026-10-23T23:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_7dfd32260e",
+      "t": "'울버햄튼서 26경기 2골→샬케 임대로 반등 도전' 황희찬, 5경기 만에 선발 보인다...\"제코 대신 HWANG 선발이 가장 유력\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697015",
+          "at": "2026-10-23T18:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_fec4db5359",
+      "t": "Former Man United chief Murtough joins Birmingham",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c9zrdkv775r1o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T11:20:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_e6ae8617d7",
+      "t": "‘이강인처럼!’ 시메오네, 허벅지 통증 털고 훈련 복귀한 LEE에 반색… “다쳐도 빠르게 돌아와야”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313368",
+          "at": "2026-10-23T22:49:14.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_13ad6905ab",
+      "t": "'We had to scrap' - O'Neil praises Ipswich resilience after Forest draw",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "ipswich-town"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ckrey3ndyyw0o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T22:21:51.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c9ly0dgy2r2eo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T21:54:54.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_cba42292ce",
+      "t": "Borussia M'gladbach finally get first win after five-goal thriller",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "borussia-monchengladbach"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ck87zl4v2ld8o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T21:37:41.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_fe62fdea6d",
+      "t": "Serie A, le probabili formazioni dell'8ª giornata",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "ac-milan",
+        "udinese-calcio",
+        "como-1907",
+        "us-sassuolo-calcio",
+        "ss-lazio",
+        "parma-calcio-1913",
+        "as-roma",
+        "ssc-napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/serie-a-probabili-formazioni-8a-giornata-498670",
+          "at": "2026-10-23T19:30:03.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/milan-probabile-formazione-udinese-serie-a-2026-2027-498663",
+          "at": "2026-10-23T18:30:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/como-probabile-formazione-sassuolo-8a-giornata-serie-a-news-498666",
+          "at": "2026-10-23T17:55:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/lazio-probabile-formazione-parma-serie-a-2026-2027-498664",
+          "at": "2026-10-23T17:50:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/roma-probabile-formazione-napoli-serie-a-2026-2027-498662",
+          "at": "2026-10-23T17:08:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_33af7ed621",
+      "t": "Manchester United, Carrick scuote la squadra: \"Abbiamo perso la nostra strada, la ritroveremo\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/manchester-united-carrick-conferenza-stampa-oggi-news-498667",
+          "at": "2026-10-23T17:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_d9cd7de0ad",
+      "t": "Kompany taken to hospital after collapsing at training",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck3r5792en7go?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T16:39:03.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_1d726aff70",
+      "t": "[오피셜] \"이강인을 문제아로 묘사했던\" 발렌시아 前 구단주, 19위 최악 부진 속에 구단 지분 42% 매각...\"계속해서 최대 주주 지위 유지\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697014",
+          "at": "2026-10-23T16:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_f1ed7abe95",
+      "t": "韓 축구 역사상 이런 수비수 없었다...김민재, '독일 국대' 조나단 타 밀고 \"주전 경쟁 우위 점했어, 큰 경기에서 꾸준히 선발\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697013",
+          "at": "2026-10-23T15:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_82ebe38836",
+      "t": "'韓 국가대표' 이강인이 시메오네의 한 줄기 빛이다...\"핵심 자원 대거 이탈 속, LEE 복귀는 반가운 소식\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697011",
+          "at": "2026-10-23T15:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_a10e0a0378",
+      "t": "Derby day - when Chelsea and Spurs meet, is chaos guaranteed?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea",
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c50mex301jjno?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T14:49:59.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_03536b355c",
+      "t": "PSG v Lyon moved as Paris prepares for more protests",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain",
+        "olympique-lyonnais"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cw8rz3eyn26po?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T14:18:41.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_4818e0f621",
+      "t": "Arsenal fear Saka could be out for two months",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmwyql6v5q82o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T14:09:36.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_bcabce3411",
+      "t": "Carrick refuses to rule out dropping Fernandes in emotional address",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cq78pv0073dlo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T13:55:37.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_38c9aebe38",
+      "t": "Conte plays down 'unfounded' Man Utd speculation",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmvg6j8jezn7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T12:15:53.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_ece94db57f",
+      "t": "Emery's Villa 2.0 reboot restores optimism before Man City meeting",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwg7xvz8e8dpo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T11:23:37.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_6da9566258",
+      "t": "Ex-Arsenal director of football Edu to advise Northampton",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqrky7n63l6po?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T10:27:27.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_3016a6e5c8",
+      "t": "Should Man Utd boss Carrick drop captain Fernandes?",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cked3x8452pdo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T08:28:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_b484b9f14a",
+      "t": "Have Man Utd become the unmanageable club?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6y0ek284pdgo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T05:56:04.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_5f58b59001",
+      "t": "“솜으로 감싸진 상태” 이강인이 돌아왔다! 팀 훈련 합류→“구상은 데포르티보전 출전 준비, 위험 감수 없다”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-de-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696969",
+          "at": "2026-10-23T04:15:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313333",
+          "at": "2026-10-23T01:41:17.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_6d6a1a0eac",
+      "t": "'It doesn't make sense' - Glasner confused after Diop avoids red card",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c8ly03l6klzpo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T22:15:29.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_7b31caf92d",
+      "t": "Villa could reconsider Garnacho deal - Saturday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwn73kzzr8veo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T21:32:04.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_16932d36b9",
+      "t": "Torino, Abate: \"Non abbiamo fatto ancora niente\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "torino"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/abate-torino-monza-dichiarazioni-post-partita-serie-a-2026-2027-498671",
+          "at": "2026-10-23T21:15:12.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_7c5eb08d35",
+      "t": "[오피셜] ‘한때 맨유 유망주였는데’ 추락엔 끝이 없다! 잉글랜드 4부리그 팀과 3개월 계약 체결",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697017",
+          "at": "2026-10-23T20:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_c4feea83e7",
+      "t": "'41경기에서 단 1승' 첼시 원정 떠나는 토트넘, 부상 악령 또 닥쳤다...\"매디슨-쿨루셉스키 훈련 불참→출전 여부 불투명\"",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea",
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697002",
+          "at": "2026-10-23T20:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_95a6c964cf",
+      "t": "FIGC, Malagò è tesserato: sarà dirigente accompagnatore dell'Aniene calcio a 5",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/malago-tesserato-figc-aniene-calcio-a-5-498668",
+          "at": "2026-10-23T19:17:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_a205d5c15e",
+      "t": "5개월 전까지만 해도 PL 최고의 선수였는데...'캐릭+팀 동료 저격' 브루노, 주장 박탈해야 한다는 주장까지 나왔다! \"맨유의 핵심 가치 좀먹는 선수\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697016",
+          "at": "2026-10-23T19:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_ca6ecd2df8",
+      "t": "'벼랑 끝' 캐릭, \"퍼거슨·긱스·루니 모두 맨유를 우선시했다\"라며 6분 일장 연설 \"선수들 많이 희생해야...길을 되찾을 수 있다고 확신\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697012",
+          "at": "2026-10-23T18:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_5a097ce87a",
+      "t": "Borussia Dortmund offers prizes to match-going fans who stay off phones during games",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "borussia-dortmund"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7717930/2026/10/23/borussia-dortmund-fans-mobile-phone-ban/",
+          "at": "2026-10-23T18:32:59.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_8270a4b1a7",
+      "t": "Gianluca Falsini a Sky Calcio Unplugged: \"Vogliamo giocatori adatti alla nostra filosofia\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/gianluca-falsini-sky-calcio-unplugged-vogliamo-giocatori-adatti-filosofia-498665",
+          "at": "2026-10-23T17:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_fe0a739c1f",
+      "t": "Torino-Monza, le formazioni ufficiali: la decisione su Varela",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "torino",
+        "ac-monza"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/torino-monza-formazioni-ufficiali-8a-giornata-serie-a-news-oggi-498661",
+          "at": "2026-10-23T17:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_fe575e76fb",
+      "t": "The spectre of Antonio Conte looms over Manchester United. Should they press the button?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7706188/2026/10/23/manchester-united-michael-carrick-future-antonio-conte/",
+          "at": "2026-10-23T13:00:55.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_de10293747",
+      "t": "🤡 Is Manchester United’s ‘banter era’ now officially worse than Arsenal’s?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/is-manchester-uniteds-banter-era",
+          "at": "2026-10-23T10:25:38.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_89c03a65b3",
+      "t": "🚨 Liverpool’s £47m transfer option, Arsenal eye Spanish winger, the numbers behind Nico Paz’s Man Utd demolition, Bournemouth stun Milan, & more",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool",
+        "arsenal",
+        "manchester-united",
+        "bournemouth"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/liverpools-47m-transfer-option-arsenal",
+          "at": "2026-10-23T07:11:28.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_faace1f2de",
+      "t": "What is going on at 'chaotic' Newcastle?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "newcastle-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c60qkpe0e54qo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T06:37:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_a283bc2025",
+      "t": "이강인 그렇게 챙겼는데 이제 같이 못 뛴다…직접 “ATM에서 내 시간 끝났다, 돌아가지 않을 거야” 고백",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-de-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696987",
+          "at": "2026-10-23T06:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_35ea1f9404",
+      "t": "Spygate put me in difficult position - Southampton technical director",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmjrwjl1j27do?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T17:23:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_cc584f66c4",
+      "t": "AFC Wimbledon's Skiverton diagnosed with cancer",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cve8r6z631lyo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T15:45:07.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_d8560b4db4",
+      "t": "세계 최고의 클럽인데 0고백 1차임 당했다...맨유 수뇌부 '브라이튼 돌풍' 휘르첼러 향해 호감→본인은 \"그런 루머 생각할 시간 없어\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697008",
+          "at": "2026-10-23T13:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_c8f18806ea",
+      "t": "[속보] '맨유 차기 감독 후보' 콘테 공식 입장...\"모든 보도 근거 없어, 감독직 복귀 충분히 고민할 것\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697009",
+          "at": "2026-10-23T12:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_5663f5e9d0",
+      "t": "Forest's start raises questions - but belief in Glasner remains",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cw3djpg15045o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-23T08:14:50.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    },
+    {
+      "id": "c_a2b28d5439",
+      "t": "🚨 “Like watching Maradona” - How Nico Paz dismantled Man United and why his unique profile matters",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/nico-paz-profile",
+          "at": "2026-10-23T07:04:03.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-23T23:59:53.958Z"
+    }
+  ]
+}
