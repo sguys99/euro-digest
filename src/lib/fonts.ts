@@ -3,13 +3,13 @@
  *
  * 무엇을 내보내나
  * - `fontFaceCss(withBase)` — `@font-face` 규칙 문자열. layout.tsx `<head>`의 인라인 `<style>`로 들어간다.
- * - `fontPreloadHrefs(withBase)` — `<link rel="preload" as="font">` href(DESIGN §11.3의 2개만).
+ * - `fontPreloadHrefs(withBase)` — `<link rel="preload" as="font">` href(`preload: true`인 면 — M1-39부터 없음, DESIGN §11.3).
  * 둘 다 같은 `withBase`(src/lib/paths.ts `withBasePath`)로 경로를 만들어서 preload와 실제 요청 URL이 어긋나지 않는다.
  *
  * 왜 next/font/local이 아니라 손으로 쓴 @font-face인가 (D0-11 결정 — DESIGN §11.3)
  * 1. 패밀리 이름: DESIGN §3.1·globals.css 토큰이 "EuroDigest Sans"·"Barlow Condensed"를 그대로 쓴다.
  *    next/font는 해시 이름(`__x_abc123`)을 만들어 토큰을 CSS 변수 참조로 바꿔야 한다.
- * 2. preload 단위: DESIGN §11.3은 한글 400 + Barlow 800 두 파일만 preload한다. next/font의 preload는 호출(패밀리) 단위라
+ * 2. preload 단위: 면(굵기)마다 preload를 고를 수 있어야 한다(D0-11은 한글 400 + Barlow 800, 2026-10-24 사용자 결정으로 0개 — DESIGN §11.3). next/font의 preload는 호출(패밀리) 단위라
  *    src 전부(4파일 418KB)를 받거나 하나도 안 받는다. 굵기마다 호출을 나누면 패밀리가 갈라져
  *    `font-synthesis: none`에서 800 글자가 400 면으로 그려진다.
  * 3. 폴백 메트릭: next/font의 adjustFontFallback은 Arial·Times New Roman 기준뿐이다. 한글은 Arial에 없어서
@@ -101,13 +101,17 @@ export const SPACE_RANGE = "U+0020,U+00A0";
 
 const FONT_DIR = "/fonts";
 
-/** self-host 웹폰트 4면(DR-11: 2패밀리·4파일). preload는 첫 화면용 한글 400 + Barlow 800(DESIGN §11.3) */
+/**
+ * self-host 웹폰트 4면(DR-11: 2패밀리·4파일). preload 없음(2026-10-24 사용자 결정 — PRD §15 D29 변경, DESIGN §11.3, M1-39): 4면 모두 첫 화면에
+ * 쓰이지만, preload한 폰트가 첫 페인트 전에 도착하면 모바일 4G에서 LCP가 0.12~0.4초 늦어졌다(조합 6가지 실측 — swap이라 LCP는 폰트를
+ * 기다리지 않는다). 바뀌는 동안의 줄 바뀜은 메트릭 폴백이 막는다(docs/research/m1-39-perf/)
+ */
 export const WEB_FONT_FACES: readonly WebFontFace[] = [
   {
     family: "EuroDigest Sans",
     weight: 400,
     path: `${FONT_DIR}/eurodigest-sans/eurodigest-sans-400.ksx.woff2`,
-    preload: true,
+    preload: false,
   },
   {
     family: "EuroDigest Sans",
@@ -126,7 +130,7 @@ export const WEB_FONT_FACES: readonly WebFontFace[] = [
     family: "Barlow Condensed",
     weight: 800,
     path: `${FONT_DIR}/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2`,
-    preload: true,
+    preload: false,
     unicodeRange: BARLOW_UNICODE_RANGE,
   },
 ];
@@ -362,7 +366,7 @@ export function fontFaceCss(withBase: (path: string) => string): string {
   return [...web, ...fallback].map((body) => `@font-face{${body}}`).join("\n");
 }
 
-/** preload할 폰트 href(basePath 포함) — DESIGN §11.3: 한글 400 + Barlow 800 */
+/** preload할 폰트 href(basePath 포함) — `preload: true`인 면. M1-39부터 빈 목록(DESIGN §11.3) */
 export function fontPreloadHrefs(withBase: (path: string) => string): string[] {
   return WEB_FONT_FACES.filter((face) => face.preload).map((face) =>
     withBase(face.path),

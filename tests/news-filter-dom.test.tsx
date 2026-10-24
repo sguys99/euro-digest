@@ -533,6 +533,48 @@ describe("필터 섬", () => {
     expect(document.activeElement).toBe(button("cat", "all"));
   });
 
+  it("키보드 포커스(:focus-visible)가 필터 컨트롤에 오면 스크롤 상자 안에서 마저 보이게 굴린다(nearest — 칩 줄·짧은 화면 목차, M1-39) · 누름 포커스·필터 밖 요소는 그대로", () => {
+    render(<Page />);
+    const calls: { el: Element; arg: unknown }[] = [];
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (this: Element, arg?: unknown) {
+      calls.push({ el: this, arg });
+    } as typeof Element.prototype.scrollIntoView;
+    /** 브라우저가 정하는 :focus-visible만 바꿔 끼운다(happy-dom은 포커스 방식(키보드·누름)을 모른다) */
+    const focusVisible = (el: Element, visible: boolean) =>
+      vi
+        .spyOn(el, "matches")
+        .mockImplementation((selector: string) =>
+          selector === ":focus-visible"
+            ? visible
+            : Element.prototype.matches.call(el, selector),
+        );
+    try {
+      // 누름·탭(mousedown 포커스) — 굴리지 않는다(굴리면 칩이 손가락 밑에서 빠져 click이 빗나간다)
+      const chip = button("cat", "transfer");
+      const pointer = focusVisible(chip, false);
+      fireEvent.focusIn(chip);
+      expect(calls).toEqual([]);
+      pointer.mockRestore();
+      // 키보드(Tab) — 굴린다
+      focusVisible(chip, true);
+      fireEvent.focusIn(chip);
+      expect(calls).toEqual([
+        { el: chip, arg: { block: "nearest", inline: "nearest" } },
+      ]);
+      // 필터 밖 요소는 키보드 포커스여도 그대로
+      const outside = document.createElement("button");
+      document.body.append(outside);
+      focusVisible(outside, true);
+      fireEvent.focusIn(outside);
+      expect(calls).toHaveLength(1);
+      outside.remove();
+    } finally {
+      Element.prototype.scrollIntoView = original;
+      vi.restoreAllMocks();
+    }
+  });
+
   it("0건 빈 상태의 '필터 해제' → 모두 풀림", () => {
     setUrl("?comp=ligue1&kr=1");
     render(<Page />);

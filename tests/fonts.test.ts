@@ -194,7 +194,7 @@ describe("웹폰트 파일 (public/fonts)", () => {
     }
   });
 
-  it("4파일 합계 ≤ 420KB · preload 합계 ≤ 210KB (DESIGN §3.1 417.9KB · 204.5KB — 서브셋을 늘리면 표와 함께 고친다)", () => {
+  it("4파일 합계 ≤ 420KB · preload 합계 0 (DESIGN §3.1 417.9KB · M1-39 preload 없음 — 서브셋을 늘리면 표와 함께 고친다)", () => {
     const size = (p: string) => statSync(path.join(PUBLIC_DIR, p)).size;
     const total = WEB_FONT_FACES.reduce((sum, f) => sum + size(f.path), 0);
     const preloaded = WEB_FONT_FACES.filter((f) => f.preload).reduce(
@@ -202,7 +202,7 @@ describe("웹폰트 파일 (public/fonts)", () => {
       0,
     );
     expect(total).toBeLessThanOrEqual(420 * 1024);
-    expect(preloaded).toBeLessThanOrEqual(210 * 1024);
+    expect(preloaded).toBe(0);
   });
 });
 
@@ -433,11 +433,8 @@ describe("@font-face CSS · preload", () => {
     }
   });
 
-  it("preload는 한글 400 + Barlow 800 두 파일뿐이다 (DESIGN §11.3)", () => {
-    expect(fontPreloadHrefs(prod.withBasePath)).toEqual([
-      "/euro-digest/fonts/eurodigest-sans/eurodigest-sans-400.ksx.woff2",
-      "/euro-digest/fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2",
-    ]);
+  it("웹폰트 preload는 없다 (DESIGN §11.3 — M1-39 실측: preload한 폰트가 첫 페인트 전에 오면 모바일 4G FCP·LCP가 늦어짐)", () => {
+    expect(fontPreloadHrefs(prod.withBasePath)).toEqual([]);
   });
 
   it("인라인 <style>을 깰 수 있는 문자(</style>·따옴표 밖 꺾쇠)가 없다", () => {

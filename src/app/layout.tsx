@@ -28,8 +28,8 @@ const FONT_PRELOAD_HREFS = fontPreloadHrefs(withBasePath);
 export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
-  // 첫 화면 웹폰트 2개만 미리 받는다(한글 400 · Barlow 800 — DESIGN §11.3). React가 <head> 앞쪽에
-  // <link rel="preload" as="font">를 한 번만 넣는다(JSX <link>로 쓰면 끌어올린 것과 제자리 것이 두 번 나온다).
+  // `preload: true`인 웹폰트만 미리 받는다 — 지금은 없음(2026-10-24 사용자 결정, DESIGN §11.3: preload한 폰트가 첫 페인트 전에 오면 모바일 4G LCP가 늦어짐).
+  // 다시 켜면 React가 <head> 앞쪽에 <link rel="preload" as="font">를 한 번만 넣는다(JSX <link>로 쓰면 끌어올린 것과 제자리 것이 두 번 나온다).
   // 폰트는 CORS 모드로 요청되므로 crossOrigin이 없으면 preload를 버리고 다시 받는다.
   for (const href of FONT_PRELOAD_HREFS) {
     preload(href, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });

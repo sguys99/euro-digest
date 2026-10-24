@@ -155,11 +155,26 @@ export function NewsFilterIsland() {
       )
         event.target.removeAttribute(NF.enter);
     };
+    // 키보드로 포커스한 칩·목차 행이 스크롤 상자(1023 이하 칩 줄 · 짧은 화면의 목차) 가장자리에 일부만 걸쳐 있으면 마저 보이게 굴린다 —
+    // Chrome은 가로 칩 줄에서 일부라도 보이는 칩에는 포커스 스크롤을 하지 않아 Tab으로 간 칩과 포커스 링이 가려졌다(M1-39 실측,
+    // WCAG 2.4.11 — 세로 목차는 Chrome이 굴리지만 다른 엔진을 위해 같은 처리).
+    // 여백은 각 상자의 scroll-padding(칩 줄 --edge · 목차 6px)을 따른다. 다 보이면 아무것도 하지 않는다.
+    // 키보드 포커스(:focus-visible)일 때만 — 누름·탭은 mousedown 포커스 → focusin이 click보다 먼저라, 여기서 굴리면 칩이 손가락 밑에서
+    // 빠져나가 click이 빗나간다(M1-39 리뷰 — 375 일부만 보이는 칩 탭이 눌리지 않던 회귀)
+    const onFocusIn = (event: FocusEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const control = event.target.closest<HTMLElement>(ACTIONABLE);
+      if (!control?.closest(`[${NF.scope}]`)) return;
+      if (!control.matches(":focus-visible")) return;
+      control.scrollIntoView({ block: "nearest", inline: "nearest" });
+    };
     document.addEventListener("click", onClick);
     document.addEventListener("animationend", onAnimationEnd);
+    document.addEventListener("focusin", onFocusIn);
     return () => {
       document.removeEventListener("click", onClick);
       document.removeEventListener("animationend", onAnimationEnd);
+      document.removeEventListener("focusin", onFocusIn);
     };
   }, []);
 

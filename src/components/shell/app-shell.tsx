@@ -129,9 +129,15 @@ export function AppShell({
           className={cn("flex-1", LAYOUT_GRID[columns])}
         >
           {contents != null && (
+            // 목차가 화면보다 길면(뉴스 필터 820px — 1280×800·1366×768·1024×768 노트북) sticky 상자 아래쪽 행(한국 선수 등)이 피드를
+            // 읽는 동안 화면 밖에 묶인다 → 높이를 화면 − 위아래 16px(sticky top-4 × 2 = --spacing(8)) − 오프라인 띠(끊겼을 때 1024 이상 화면
+            // 아래를 덮는 띠 — 셸 섬이 잰 --offline-band-h, 평소 0)까지만 두고 넘치면 목차 안에서 스크롤(M1-39). 넘치지 않으면 모양 변화 없음.
+            // 스크롤 상자는 포커스 링(3px + 2px 띄움)을 자르므로 좌우·아래 6px 안쪽 여백을 두고 같은 만큼 바깥 여백을 당겨 행 위치(왼쪽 끝 =
+            // 티켓 왼쪽)를 그대로 둔다(포커스로 굴릴 때도 6px 띄움 — scroll-padding, 필터 섬 focusin). 넘칠 때만 얇은 스크롤바(--ink-3 — 아래에
+            // 행이 더 있다는 단서, 오케스트레이터 결정 2026-10-24, globals.css scrollbar-thin-ink). 페이지 스크롤로 이어지게 overscroll은 기본값
             <nav
               aria-label={contentsLabel}
-              className="hidden lg:sticky lg:top-4 lg:mt-7 lg:mr-9 lg:block"
+              className="hidden lg:sticky lg:top-4 lg:mt-7 lg:mr-7.5 lg:-ml-1.5 lg:block lg:scrollbar-thin-ink lg:max-h-[calc(100dvh_-_--spacing(8)_-_var(--offline-band-h,0px))] lg:scroll-py-1.5 lg:overflow-y-auto lg:px-1.5 lg:pb-1.5"
             >
               {contents}
             </nav>

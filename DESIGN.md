@@ -28,6 +28,7 @@ D0-12 기초 컴포넌트와 M1-39 시각 검증은 아래 10장(`docs/design/d0
 - 캡처 조건: Chromium, `deviceScaleFactor` 1, `reducedMotion: reduce`, `localStorage` 비움(시스템 테마), 웹폰트 로드 확인 후. 첫 화면은 375×812·1024×800·1280×800 뷰포트 그대로(무손실 PNG), 전체 페이지는 sticky·fixed 요소를 캡처에서만 static으로 바꿔 찍고 256색으로 줄였다.
 - 1024 2단은 첫 화면 2장만 둔다. 2단 아래쪽(머리기사·피드·지면 안 위젯 자리)과 1024~1279 전체는 `concept-mix.html`을 그 폭으로 열어 확인한다.
 - **구현 견본(D0-12)**: `impl-components-{375,1280}-{light,dark}.png` — 기초 컴포넌트 견본 페이지(`SPECIMEN=1` 빌드 전용, §9.4) 전체 페이지를 같은 조건으로 찍었다(hover·focus-visible·`:target` 칸은 CDP로 실제 의사 클래스를 강제, 256색 혼합 팔레트로 줄임). 매트릭스 13행이 위 시안 견본과 같은 순서·배치다.
+- **구현 화면(M1-39)**: `impl-home-{375,1280}-{light,dark}-fold.png`(2026-10-23 제 12호 — 5줄 S4 '쉽니다' 날) · `impl-archive-{375,1280}-light-fold.png`(10-22 제 11호 — 5줄 다섯 줄이 실린 날짜 페이지). 위 첫 화면과 같은 조건(무손실, 375×812 · 1280×800)으로 찍었다. 전체 페이지·1024·소개·404·첫 호·결호 앞뒤는 저장소에 두지 않고 M1-39 때 비교만 했다(§11.13).
 
 ### 0.2 토큰을 바꾸는 절차
 
@@ -312,12 +313,12 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 
 | 패밀리 | 굵기 | 사이트 파일 (`public/` 기준) | 크기 | preload |
 |---|---|---|---|---|
-| EuroDigest Sans | 400 | `fonts/eurodigest-sans/eurodigest-sans-400.ksx.woff2` | 181,376 B (177.1KB) | O |
+| EuroDigest Sans | 400 | `fonts/eurodigest-sans/eurodigest-sans-400.ksx.woff2` | 181,376 B (177.1KB) | – |
 | EuroDigest Sans | 800 | `fonts/eurodigest-sans/eurodigest-sans-800.ksx.woff2` | 190,580 B (186.1KB) | – |
 | Barlow Condensed | 600 | `fonts/barlow-condensed/BarlowCondensed-SemiBold.latin.woff2` | 27,892 B (27.2KB) | – |
-| Barlow Condensed | 800 | `fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2` | 28,048 B (27.4KB) | O |
+| Barlow Condensed | 800 | `fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2` | 28,048 B (27.4KB) | – |
 
-합계 427,896바이트(약 417.9KB, DECISIONS의 417.8KB는 파일별 반올림 값의 합), preload 2파일 209,424바이트(약 204.5KB). 시안 파일(`docs/design/fonts/pretendard/`·`barlow-condensed/`)과 바이트 단위로 같다. 라이선스는 모두 OFL 1.1이고 원문은 같은 폴더(`LICENSE.txt`·`FONTLOG.txt`·`OFL.txt`)에 있다.
+합계 427,896바이트(약 417.9KB, DECISIONS의 417.8KB는 파일별 반올림 값의 합), preload 없음(2026-10-24 사용자 결정 — PRD §15 D29 변경: 4면 모두 첫 화면에 쓰이지만 preload가 모바일 4G LCP를 0.12~0.4초 늦춰서 뺐다, §11.3·§11.13. D0-11~M1-37은 한글 400 + Barlow 800 209,424바이트). 시안 파일(`docs/design/fonts/pretendard/`·`barlow-condensed/`)과 바이트 단위로 같다. 라이선스는 모두 OFL 1.1이고 원문은 같은 폴더(`LICENSE.txt`·`FONTLOG.txt`·`OFL.txt`)에 있다.
 
 **메트릭 폴백** — 웹폰트가 오기 전(swap 기간) 시스템 글꼴의 폭·세로 메트릭을 웹폰트에 맞춰 줄 바뀜(CLS)을 줄인다. 값은 `src/lib/fonts.ts`가 실측 메트릭으로 계산한다(size-adjust = 웹폰트 폭 ÷ 폴백 폭, 세로 override = 웹폰트 값 ÷ size-adjust — override도 size-adjust만큼 커진다). 같은 시스템 글꼴을 글자 범위별 면으로 나눠 범위마다 따로 맞춘다(한 패밀리·굵기 안에서 범위는 겹치지 않는다). 세로 override는 모두 웹폰트 값(EuroDigest Sans 0.952/0.241/0, Barlow 1.0/0.2/0)이 되게 계산한다.
 
@@ -424,6 +425,7 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 - fixtures의 비한글·비ASCII 글자 `“ ” … ‘ ’ → ò · á Á €`는 서브셋에 들어 있다.
 - **커버리지 테스트**(`tests/fonts-coverage.test.ts`, D0-11): KS X 1001 한글 2,350자, fixtures 3파일·`configs/*.json`의 표시 문자열(메모 필드 `note`·`notes`·`_*` 제외), `src/` 화면 문구(문자열 리터럴·JSX 텍스트), 라틴 원제목(Barlow 600·800)을 서브셋 cmap과 대조한다. 서브셋 밖은 이모지·⌘만 허용하고, 지금 fixtures에 나오는 예외는 🚨 하나다. 새 소스·문구로 테스트가 깨지면 서브셋을 다시 만들고 §3.1 크기 표·`FONTLOG.txt`를 함께 고친다(예외를 늘리려면 이 절을 먼저 고친다).
 - KS X 1001 밖 한글 음절(예: 똠·뷁·햏)은 서브셋에 없다. 국내 매체 원제목에 나오면 한글 폴백 면(맑은 고딕·Noto — 폭을 맞춘 면)이나 시스템 한글 글꼴로 그려진다.
+- **한자**는 서브셋에 없다(Pretendard에 CJK 한자가 없다). 국내 매체 원제목에 국가·시점 약자(`韓`·`獨`·`西`·`日`·`前`·`無` — M1-39 실측 data/news 9호에서 6자 19회)가 나오면 시스템 한글 글꼴(맑은 고딕·Apple SD Gothic Neo·Noto CJK)의 한자로 그려진다. 원제목은 고치지 않는다(D23). 한글 글꼴이 없는 Linux(CI·WSL)에서는 빈칸으로 찍힌다(캡처 환경 한정).
 
 ---
 
@@ -481,7 +483,7 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 |---|---|
 | 하단 탭 | 1023 이하에서만 보인다: 화면 아래 `position: sticky; bottom: 0`, 높이 58px + 위 1px `--ink` 괘선, 면 `--paper`. 1024 이상(`lg:hidden`)에서는 숨기고 티켓 아래 상단 내비를 쓴다(2단·3단 같음) |
 | 토스트 | `position: fixed`, 가운데. 바닥에서 76px(1023 이하, 하단 탭 위) / ≥1024 28px |
-| 목차 | ≥1024(2단·3단) `position: sticky; top: 16px` |
+| 목차 | ≥1024(2단·3단) `position: sticky; top: 16px`. 화면보다 길면(뉴스 필터 820px — 1280×800·1366×768·1024×768) 높이를 화면 − 32px(sticky 위 16px × 2) − 오프라인 띠 높이(끊겼을 때만 — `--offline-band-h`)로 묶고 목차 안에서 스크롤한다. 넘칠 때만 **얇은 스크롤바**(`scrollbar-thin-ink` — 썸 `--ink-3` · 트랙 투명 · 모서리 없음, 아래에 행이 더 있다는 단서 — 2026-10-24 오케스트레이터 결정; 클래식 스크롤바 환경은 막대 폭만큼 행 폭이 줄고 왼쪽 위치는 그대로), 포커스 링 자리 좌우·아래 6px 안쪽 여백(바깥 여백으로 상쇄 — 행 위치 그대로)·`scroll-padding` 6px(M1-39). 칩 줄은 스크롤바를 숨긴다(`scrollbar-none` — 화면 끝에 잘린 칩이 단서) |
 | 오프라인 띠(M1-37) | 셸 흐름 끝(뒤표지 뒤 · 하단 탭 앞)의 sticky — 1023 이하 `bottom: --bottom-tabs-h`(셸 섬이 잰 하단 탭 높이 — 홈 표시줄 포함, 글자 크기를 키워도 탭 바로 위. 재기 전 기본 59px + safe area), ≥1024 `bottom: 0`. 끊겼을 때만 높이가 생긴다(평소 0). 보이는 동안 토스트를 띠 높이만큼 올리고 scroll-padding-bottom에 띠 높이를 더한다(`--offline-band-h` — 셸 섬이 잰다) |
 | z-index | 카드 메뉴 5 · 달력 팝오버 6 · 하단 탭 20 · 오프라인 띠 20 · 건너뛰기 링크 30 · 토스트 40 (실측값, 토큰 아님) |
 
@@ -879,11 +881,11 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - [ ] **장식 숨김**: 게재 번호·5줄 등번호·러닝 헤드·리더 점선·천공·외부 표식 ↗는 `aria-hidden`, 대신 목록 의미·화면 밖 텍스트로 정보를 준다.
 - [ ] **모션**: `prefers-reduced-motion: reduce`에서 모든 애니메이션·전환 0(§6.3).
 - [ ] **실시간 알림**: 토스트는 `aria-live="polite"` 영역 하나.
-- [ ] **자동 검사**: Playwright + axe 위반 0, 가로 넘침 0 — 375(1단)·1024(2단)·1280(3단) 기준, 경계 1023·1279 포함(M0-12 e2e, M1-39).
+- [ ] **자동 검사**: Playwright + axe 위반 0, 가로 넘침 0 — 375(1단)·1024(2단)·1280(3단) 기준, 경계 1023·1279 포함(M0-12 e2e, M1-39). M1-39부터 페이지 전체 검사 2종을 더한다(`tests/e2e/a11y.spec.ts`): 모든 상호작용 요소의 실제 누름 영역(`elementFromPoint` — `::after` 확장 포함) 44px 이상(예외는 문단 속 인라인 링크뿐 — WCAG 2.5.8 inline, 예외 목록을 단언) · Tab으로 도는 모든 요소의 3px 실선 링·둘레 3:1·화면 안·가림 없음·스크롤 상자에 잘리지 않음(라이트·다크, 오프라인 띠 상태 포함).
 
 ---
 
-## 11. 구현 메모 (D0-10 ~ D0-12 · M1-30 · M1-31 · M1-36 · M1-32 · M1-33 · M1-34 · M1-35 · M1-37)
+## 11. 구현 메모 (D0-10 ~ D0-12 · M1-30 · M1-31 · M1-36 · M1-32 · M1-33 · M1-34 · M1-35 · M1-37 · M1-39)
 
 ### 11.1 DECISIONS §7에서 넘어온 것
 
@@ -914,15 +916,15 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 
 ### 11.3 D0-11 (웹폰트) — 구현 완료
 
-- **방식: 손으로 쓴 `@font-face` + `public/fonts/` self-host**(`next/font/local` 기각). 단일 출처는 `src/lib/fonts.ts`이고 `layout.tsx`가 `<head>`에 인라인 `<style>`(웹폰트 4면 + 메트릭 폴백 14면)과 React `preload()`(→ `<link rel="preload" as="font" type="font/woff2" crossorigin>`)를 넣는다. 경로는 모두 `withBasePath`(`/euro-digest/fonts/…`, 루트 배포면 `/fonts/…`)라 preload와 실제 요청이 같은 URL·같은 CORS 모드로 한 번만 받는다.
+- **방식: 손으로 쓴 `@font-face` + `public/fonts/` self-host**(`next/font/local` 기각). 단일 출처는 `src/lib/fonts.ts`이고 `layout.tsx`가 `<head>`에 인라인 `<style>`(웹폰트 4면 + 메트릭 폴백 14면)을 넣고, `preload: true`인 면만 React `preload()`(→ `<link rel="preload" as="font" type="font/woff2" crossorigin>`)로 미리 받는다 — **지금은 0개**(2026-10-24 사용자 결정, 아래 preload). 경로는 모두 `withBasePath`(`/euro-digest/fonts/…`, 루트 배포면 `/fonts/…`)라 preload를 다시 켜도 실제 요청과 같은 URL·같은 CORS 모드로 한 번만 받는다.
   - `next/font/local`을 고르지 않은 이유: ① 패밀리 이름이 해시(`__x_abc123`)가 되어 §3.1 스택·토큰 테스트를 CSS 변수 참조로 바꿔야 한다 ② preload가 호출(패밀리) 단위라 한 패밀리의 한 굵기만 preload할 수 없다(굵기를 호출로 나누면 패밀리가 갈라져 `font-synthesis: none`에서 800 글자가 400으로 그려진다) ③ `adjustFontFallback`은 Arial·Times New Roman 기준이라 한글 폴백(맑은 고딕 한글 폭 1em, Noto 0.92em vs Pretendard 0.864em)을 맞추지 못한다.
   - `@font-face`를 globals.css에 두지 않은 이유: CSS 파일의 `url("/fonts/…")`에는 basePath가 붙지 않고, 상대 경로는 번들러가 해시 파일로 바꿔 preload href를 알 수 없다. 인라인 `<style>`(6,456B, `@font-face` 18면)은 HTML에 두 번 들어간다 — `<style>` 한 번 + RSC 페이로드(`self.__next_f.push`) 한 번 → HTML 한 장에 원본 +13.1KB, gzip +1.08KB(index.html gzip 3.2KB 중), RSC `.txt`에도 약 6.7KB. 별도 `fonts.css`(렌더 차단 요청 +1, GitHub Pages `max-age=600`이라 캐시 이득 작음)보다 낫다고 판단해 유지(D0-11 리뷰).
   - 초기 JS 변화 없음(135.7KB / 160KB). `preload()`는 서버 렌더에서만 쓰여 클라이언트 번들에 들어가지 않는다.
 - **배치**: `public/fonts/eurodigest-sans/`(400·800 + `LICENSE.txt`·`FONTLOG.txt`), `public/fonts/barlow-condensed/`(600·800 + `OFL.txt`). 시안 폴더 `docs/design/fonts/`는 그대로 둔다(시안 HTML이 참조). Pretendard 공식 subset 파일 대신 직접 서브셋(이름 변경)을 유지한다(한글 2면 약 −180KB).
-- **preload**: 첫 화면용 한글 400(`eurodigest-sans-400`) + Barlow 800(`BarlowCondensed-ExtraBold`) 2파일 204.5KB(D29). 나머지 2면(한글 800 186KB · Barlow 600 27KB)은 쓰일 때 받고 swap. 지금 자리표시 홈은 Barlow를 쓰지 않아 Chrome 콘솔에 "preload했지만 쓰지 않음" 경고가 나온다(M1 홈에서 사라진다).
+- **preload — 없음(2026-10-24 사용자 결정 — PRD §15 D29 변경, M1-39 실측)**: D0-11은 첫 화면용 한글 400 + Barlow 800 2파일 204.5KB를 preload했다. M1-39에서 실제 화면을 재 보니 ① 첫 화면(375·412·1024·1280 × 홈·`/news/`·날짜·소개·404)이 **4면을 모두** 쓴다(CDP `getPlatformFontsForNode` — 넓이 기준 한글 800 > 400 > Barlow 600 ≈ 800: 워드마크·제목·카드 한글 제목 / 본문·5줄 / 러닝 헤드·시각·라틴 제목 / 호수·등번호) ② swap이라 LCP는 폰트를 기다리지 않는다(LCP = 폴백 글꼴로 처음 그린 시각) ③ 그런데 preload한 폰트가 첫 페인트 전에 도착하면 FCP·LCP가 늦어졌다 — 조합 6가지(없음 · 지금 2 · 4면 · +Barlow 600 · 800 셋 · Barlow 둘) × HTTP/2 × 모바일 4G 2조건 실측에서 preload가 하나라도 있으면 LCP +0.12~0.4초(Barlow 둘 55KB만 걸어도 같다). 그래서 4면 모두 쓰일 때 받는다(`WEB_FONT_FACES.preload` 모두 false — 다시 켤 때는 이 표와 fonts.test를 함께). 대가는 웹폰트로 바뀌는 시각이 늦어지는 것뿐(Slow 4G 4.34 → 4.87초 · Fast 4G 0.93 → 1.07초)이고, 바뀔 때의 줄 바뀜은 메트릭 폴백이 막는다(맑은 고딕·Noto 구성 CLS 0.0001~0.0098). 수치는 §11.13.
 - **메트릭 폴백**: §3.1 표. 실측(스크래치 하네스 — 빌드된 홈에 fixtures 5줄 6일치 × 카드 12장을 폰트 도착 전에 넣고 폰트 응답을 1.2~1.5초 늦춰 layout-shift 합을 잼, Chromium, 폭 360·375·390·414, 글꼴 환경 2종을 fontconfig로 구성): Noto CJK KR 환경 CLS 평균 0.102 → **0.0001**(최대 0.36 → 0.0016, 24/24 ≤ 0.05), 맑은 고딕 환경 평균 0.168 → **0.0085**(최대 0.37 → 0.20, 23/24 ≤ 0.05 — 남은 1건은 괄호 4개의 폭 차이로 한 줄이 넘어간 경우). 1280은 폴백 없이도 0.006~0.021, 폴백으로 0.0006. 실제 홈(자리표시)은 375·1280 모두 CLS 0, FCP 0.16~0.24초 < 폰트 도착 1.5초(swap 확인).
-- **검증 테스트**: `tests/fonts.test.ts`(woff2를 직접 읽어 패밀리·굵기·OFL 예약 글꼴명·라이선스 동봉·크기 상한·메트릭 기록값·폴백 계산·범위 겹침·CSS·preload·§3.1 스택 정합), `tests/fonts-coverage.test.ts`(§3.7), `tests/e2e/fonts.spec.ts`(폰트 요청 basePath 아래 200·한 번씩·외부 요청 0, 4면 `display: swap`·`document.fonts.check`, preload 2파일, 폰트 1.5초 지연 시 FCP < 폰트 도착·CLS ≤ 0.05). woff2 읽기는 Node 내장 brotli로 하는 `tests/support/woff2.ts`(새 의존성 없음).
-- **남은 일**: ① macOS·iOS 실기기에서 Apple SD Gothic Neo 한글·공백 폭을 재고 폴백 패밀리를 더할지 정한다 ② Android 실기기(삼성 기본 한글 글꼴이 Noto가 아닐 수 있음)·Roboto Bold 6% 차이 확인 ③ M1 실제 홈(5줄·카드·2단/3단)에서 같은 지연 CLS를 다시 잰다(M1-39). 2026-10-14 M1-01 홈(실제 카드 8장)에서 CI e2e CLS가 0.12(375)·0.28(1280)로 실패해 원인을 나눴다: (a) CI 러너(playwright `--with-deps`)의 한글은 WenQuanYi Zen Hei — 폴백 패밀리가 없어 한글 제목이 13~19% 넓다(1280 한 줄 → 두 줄) (b) Linux Chromium(기기 배율 1)은 size-adjust를 건 `local()` 글꼴을 정수 px 크기로 반올림해 그린다(Barlow 폴백 600 21px → 16px, 약 +3%) — 같은 글꼴을 size-adjust 없이 쓰면 비례한다 (c) 폴백 글꼴이 있는 구성(맑은 고딕·Arial, Noto CJK KR·Liberation)에서도 375에서 라틴 제목 1건이 4줄 → 3줄 — Barlow로 둘째 줄이 276.6~280.9/281px(여유 0.03~1.6%)인데 폴백이 그 줄에서 계산상 +0.5% 넓다(메트릭 오차 안의 경계 사례, 414에서도 1건). 메트릭 값은 바꾸지 않았다(라틴 원제목 29건 계산 평균 +0.5% — 말뭉치 최적값과 0.3% 차이 — 한글은 맑은 고딕·Noto 모두 줄 바뀜 0). e2e는 swap 단언을 따로 두고, CLS 단언은 폴백 그룹(한글·라틴)마다 `local()` 글꼴이 있고(FontFace `load()` = loaded) 크기에 비례해 그려질 때(20→21px 오차 ≤ 1%)만 한다 — 아니면 skip하고 측정 CLS·판정을 annotations에 남긴다(지금 CI·WSL은 skip). CI에 `fonts-noto-cjk`를 깔아도 (b) 때문에 단언하지 않는다 — 단언은 Windows·macOS 등 실기기 측정으로 넘긴다(M1-39) ④ 문장부호·숫자(한글 문장 속) 폭은 맞추지 않았다 — 실측에서 문제가 되면 면을 더 나눈다.
+- **검증 테스트**: `tests/fonts.test.ts`(woff2를 직접 읽어 패밀리·굵기·OFL 예약 글꼴명·라이선스 동봉·크기 상한·메트릭 기록값·폴백 계산·범위 겹침·CSS·preload·§3.1 스택 정합), `tests/fonts-coverage.test.ts`(§3.7), `tests/e2e/fonts.spec.ts`(폰트 요청 basePath 아래 200·한 번씩·외부 요청 0, 4면 `display: swap`·`document.fonts.check`, preload 0개(다시 켜면 woff2·crossorigin 검사) · 첫 화면 4면 요청, 폰트 1.5초 지연 시 홈·`/news/`·5줄 날짜 페이지에서 FCP·LCP < 폰트 도착·CLS ≤ 0.05 — M1-39). woff2 읽기는 Node 내장 brotli로 하는 `tests/support/woff2.ts`(새 의존성 없음).
+- **남은 일**: ① macOS·iOS 실기기에서 Apple SD Gothic Neo 한글·공백 폭을 재고 폴백 패밀리를 더할지 정한다 ② Android 실기기(삼성 기본 한글 글꼴이 Noto가 아닐 수 있음)·Roboto Bold 6% 차이 확인 ③ ~~M1 실제 홈(5줄·카드·2단/3단)에서 같은 지연 CLS를 다시 잰다(M1-39)~~ → M1-39 완료(§11.13 — e2e가 홈·`/news/`·5줄 날짜 페이지를 재고 LCP도 단언). 2026-10-14 M1-01 홈(실제 카드 8장)에서 CI e2e CLS가 0.12(375)·0.28(1280)로 실패해 원인을 나눴다: (a) CI 러너(playwright `--with-deps`)의 한글은 WenQuanYi Zen Hei — 폴백 패밀리가 없어 한글 제목이 13~19% 넓다(1280 한 줄 → 두 줄) (b) Linux Chromium(기기 배율 1)은 size-adjust를 건 `local()` 글꼴을 정수 px 크기로 반올림해 그린다(Barlow 폴백 600 21px → 16px, 약 +3%) — 같은 글꼴을 size-adjust 없이 쓰면 비례한다 (c) 폴백 글꼴이 있는 구성(맑은 고딕·Arial, Noto CJK KR·Liberation)에서도 375에서 라틴 제목 1건이 4줄 → 3줄 — Barlow로 둘째 줄이 276.6~280.9/281px(여유 0.03~1.6%)인데 폴백이 그 줄에서 계산상 +0.5% 넓다(메트릭 오차 안의 경계 사례, 414에서도 1건). 메트릭 값은 바꾸지 않았다(라틴 원제목 29건 계산 평균 +0.5% — 말뭉치 최적값과 0.3% 차이 — 한글은 맑은 고딕·Noto 모두 줄 바뀜 0). e2e는 swap 단언을 따로 두고, CLS 단언은 폴백 그룹(한글·라틴)마다 `local()` 글꼴이 있고(FontFace `load()` = loaded) 크기에 비례해 그려질 때(20→21px 오차 ≤ 1%)만 한다 — 아니면 skip하고 측정 CLS·판정을 annotations에 남긴다(지금 CI·WSL은 skip). CI에 `fonts-noto-cjk`를 깔아도 (b) 때문에 단언하지 않는다 — 단언은 Windows·macOS 등 실기기 측정으로 넘긴다(M1-39) ④ 문장부호·숫자(한글 문장 속) 폭은 맞추지 않았다 — 실측에서 문제가 되면 면을 더 나눈다.
 
 ### 11.4 D0-12 (기초 컴포넌트) — 구현 완료
 
@@ -1045,6 +1047,30 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 - **섬**: `StatusIsland`(렌더 없음, react + `issue-late.ts`만) 하나로 오프라인·지연을 함께 — 초기 JS 홈 143.1 → **143.4KB** · `/news/`·날짜 144.1 → **144.4KB** · 소개·404 138.2 → 138.5KB(+0.3).
 - **의도한 차이**(견본 대비): 문구 3곳(지연 안내 · 오프라인 — 사실만, DECISIONS M1-37 #3·#7), 오프라인 띠 위치, 비시즌이 5줄 블록 안(섹션 머리·부제·하단 유지 + "주요 뉴스로 ↓"), 오프라인 견본 지면에 피드 부제("2건 · 중요도 순" — `NewsFeed` 그대로)·게재 번호 06·07(견본 19·22), 필터 0건 부제 위 간격 6px(M1-33 피드 부제 그대로).
 
+### 11.13 M1-39 (시각 검증 · 접근성 · 성능 · 폰트) — 완료
+
+- **시각 대조**: 홈 · `/news/` · 날짜 페이지(최신 10-23 · 5줄 다섯 줄 10-22 · 결호 앞뒤 10-14·10-17·10-18 · 첫 호 10-12) · `/about/` · 404를 375·1024·1280 × 라이트·다크(첫 화면 + 전체 페이지) + 상태(지연 안내·오프라인 띠·견본 `/specimen/states/`)로 찍어 혼합안 `?stage=m1` 같은 폭과 나란히 봤다(스크래치). 티켓·내비·섹션 머리·5줄 행·카드·목차·뒤표지가 시안과 같은 자리·크기·색이다. 여러 작업이 나눠 만든 화면 사이도 맞다 — 섹션 머리는 모두 `SectionHead` 하나(3px 잉크 · 위 10px · h2 21/24px 800 · 러닝 헤드 Barlow 600 12.5px 자간 0.14em), 섹션 간격 5줄 → 뉴스 36 · ≥1024 44px(혼합안 실측과 같음), 6쪽 × 2폭 글자 목록(글꼴·크기·굵기·자간 전수)에서 같은 역할이 화면마다 다른 값으로 쓰인 곳 없음, 텍스트 링크 2종(본문 1px·4px 띄움·현재 글자색 / 카드 제목 hover 2px 레드)·버튼·빈 상태 숫자 윤곽(5줄 '0'·404)이 페이지마다 같다. 한글 `keep-all`·숫자 `nowrap` 줄바꿈 깨짐, 다크 대비 문제는 찾지 못했다.
+- **의도한 차이로 남긴 것**: ① `/about` 절 사이 48 · ≥1024 64px(홈 36·44보다 한 단계 넓음 — 긴 글 읽는 페이지, M1-36) ② 뒤표지 오른쪽 열 — 설명 문단이 4줄(M1-32 AI 고지)이라 '마지막 업데이트'가 링크 줄과 떨어진다(혼합안 2줄 문단 기준 격자 그대로) ③ 메타 줄 상대 시간 칸("00시간 전" 폭을 미리 잡음 — 공유 앵커 CLS 0, M1-31)이 짧은 값("어제"·"6시간 전")이면 출처명 뒤에 빈 폭이 생긴다 ④ 국내 원제목의 한자·🚨는 시스템 글꼴(§3.7).
+- **고친 것 ① 짧은 화면의 목차**(§4.4): 뉴스 필터 목차가 820px라 sticky top 16px에서 아래 끝이 836px — 1280×800·1366×768·1280×720·1024×768 노트북에서 '한국 선수'·분류 아래 행이 피드를 읽는 동안 화면 밖에 묶여 있었다(혼합안도 같음 — 목차가 이렇게 길어진 것은 실제 대회 6 + 분류 9 + 한국 선수). 목차 상자를 화면 높이 − 32px − 오프라인 띠(끊겼을 때 1024 이상 화면 아래를 덮는 띠 — 리뷰 반영)로 묶고 넘치면 안에서 스크롤, 넘칠 때만 얇은 스크롤바(`--ink-3` — 처음엔 숨겼다가 '아래에 더 있음' 단서가 없다는 리뷰로 오케스트레이터 결정 2026-10-24), 포커스 링 자리 6px(좌우 바깥 여백으로 상쇄 — 행 x 그대로, `scroll-padding` 6px). 큰 화면(≥ 852px 높이)은 모양 변화 없음. 재현·고정: e2e `news-filter.spec` '짧은 화면의 목차'(전/후 스크린샷은 M1-39 보고에만 — 저장소에 두지 않음).
+- **고친 것 ② 포커스 스크롤**: Chrome은 일부라도 보이는 요소에는 포커스 스크롤을 하지 않는다 — 375 칩 줄에서 Tab으로 간 '감독·구단'·'한국 선수만' 칩이 화면 끝에 28px만 보이고 링이 잘렸다(WCAG 2.4.11). 필터 섬이 필터 컨트롤 `focusin`에 `scrollIntoView({ block: "nearest", inline: "nearest" })`(각 상자의 scroll-padding을 따름 — 칩 줄 `--edge` · 목차 6px). 다 보이면 아무 일도 없다. **키보드 포커스(`:focus-visible`)일 때만** — 누름·탭은 mousedown 포커스 → focusin이 click보다 먼저라 굴리면 칩이 손가락 밑에서 빠져 click이 빗나갔다(리뷰 — 375 일부만 보이는 칩 탭 회귀, e2e). 세로 목차는 Chrome이 Tab 포커스로 스스로 굴린다(실측). 재현·고정: e2e `a11y.spec` 375 포커스 링(칩 줄에 잘림)·`news-filter.spec` 일부만 보이는 칩 탭.
+- **고친 것 ③ 폰트 preload 없음**(§11.3 — 2026-10-24 사용자 승인, PRD §15 D29 변경): 위 실측. HTML에 `<link rel="preload" as="font">`가 없다(e2e).
+- **접근성 자동 검사**(§10): 기존 컴포넌트별 e2e(셸·필터·카드 메뉴·꼬리표·달력·차례·상태) + axe 전 페이지 × 라이트·다크에 더해 **페이지 전체 검사 2종**을 넣었다 — 모든 상호작용 요소의 실제 누름 영역(`elementFromPoint`, `::after` 포함) 44px 이상(예외는 문단(p·dd) 속 인라인 `<a>`뿐이고 예외 목록 자체를 단언 — 지금 `/about` '요청 방법' 하나, 카드 제목 링크는 모두 검사 대상(리뷰 반영 — 처음 규칙은 카드 목록 `li`를 문단으로 보아 제목 링크를 뺐다)) · Tab으로 도는 모든 요소의 3px 실선 링·둘레 3:1·화면 안·위 요소(하단 탭·오프라인 띠)에 가리지 않음·스크롤 상자에 잘리지 않음, 400번 안에 한 바퀴 완료(홈·뉴스·최신 날짜·소개·404 × 라이트·다크 × 375·1280 + 홈 오프라인 띠 상태). ①②는 이 검사가 잡았다. 주요 상태의 axe(필터 색 면·0건·팀 · 달력 펼침 · 카드 메뉴 열림 · 지연 안내 + 오프라인 띠)와 가로 넘침 5폭(375·1023·1024·1279·1280)은 이미 각 spec에 있다.
+- **성능 실측**(측정 도구·원자료·재현 방법 `docs/research/m1-39-perf/` — WSL Chromium, 로컬 HTTP/2 + gzip 6(GitHub Pages처럼), CDP 스로틀링, 412×823 · 배율 1.75 모바일, 캐시 없음, 5회 중앙값, Windows 글꼴 구성(맑은 고딕·Arial)). "Slow 4G" = Lighthouse 모바일 기준(RTT 562.5ms · 1.47Mbps · CPU 4×), "Fast 4G" = DevTools 프리셋(RTT 165ms · 9Mbps · CPU 4×). 예산 LCP ≤ 2.0초 · CLS ≤ 0.05 — 모두 통과.
+
+  | 페이지 | LCP Slow 4G 전 → 후 | LCP Fast 4G 전 → 후 | CLS(최대) | TBT Slow 4G | HTML gzip |
+  |---|---|---|---|---|---|
+  | 홈 | 1.82 → **1.51**초 | 0.82 → **0.70**초 | 0.0001 | 205ms | 50.6KB |
+  | `/news/` | 1.81 → **1.55** | 0.85 → **0.69** | 0.0003 | 254ms | 55.8KB |
+  | 날짜 10-22(5줄) | 1.82 → **1.50** | 0.90 → **0.74** | 0.0001 | 246ms | 56.5KB |
+  | 같은 날짜 공유 앵커(`#c_…` 진입) | 1.84 → **1.47** | 0.87 → **0.69** | 0.0016 | 328ms | 56.5KB |
+  | `/about/` | 1.64 → **1.50** | 0.68 → **0.66** | 0.0099 | 118ms | 20.3KB |
+  | 404 | 1.58 → **1.40** | 0.61 → **0.53** | 0.0001 | 103ms | 8.5KB |
+
+  전 = HEAD(preload 2파일), 후 = preload 없음 + 목차·포커스 수정. LCP 요소는 머리 카드 제목(홈·뉴스)·5줄 첫 줄(날짜)·소개 첫 문단. 웹폰트로 다 바뀌는 시각 Slow 4G 4.34 → 4.87초 · Fast 4G 0.93 → 1.07초. 초기 JS 홈 143.4 → **143.5KB** · 뉴스·날짜 144.4KB(필터 섬 `focusin` +0.1). 소개 CLS 0.0098은 한글 800이 바뀔 때 본문이 한 번 밀리는 것(예산의 1/5).
+- **HTML 크기**: 홈 원본 651KB · gzip 50.6KB 중 RSC 페이로드(인라인 `self.__next_f.push`)가 원본 377KB · gzip 28.4KB(56%), 마크업 gzip 약 21KB. HTML 전송은 Slow 4G에서도 0.85~0.88초에 끝나 LCP 예산은 남지만, 4× CPU에서 HTML 파싱·하이드레이션 긴 작업이 최대 0.4초(TBT 205~328ms — Lighthouse 95점(M5-07) 기준 200ms 언저리). 줄이는 안은 plan M1-39 이월(제안).
+- **CLS 단언 환경**: Linux Chromium은 기기 배율 1·2·3 모두 `local()` + size-adjust 글꼴을 정수 px로 반올림해 그린다(라틴 폴백 600 +2.9% · 800 −4.8% — 배율 문제가 아님). 그래서 Windows 글꼴을 fontconfig로 넣은 WSL에서도 단언은 건너뛰고 측정만 남는다 — 맑은 고딕·Arial 구성 0.0001~0.0002, Noto Sans KR·Liberation 구성 0.0003~0.0005(홈·뉴스·5줄 날짜, 1.5초 지연). 선택지는 plan M1-39(지금은 skip + annotations 유지).
+- **검사**: e2e `a11y.spec`(+ 누름 영역 · 포커스 링 페이지 전체), `news-filter.spec`(짧은 화면 목차 3크기 + 큰 화면 스크롤 없음), `fonts.spec`(preload 없음 · 첫 화면 4면 요청 · 지연 폰트에서 FCP·**LCP < 첫 폰트 응답**(어디서나 단언) · 지연 CLS 3쪽), `about.spec`(목차 열 폭 = 상자 + 좌우 바깥 여백), 단위 `fonts.test`(preload 0)·`news-filter-dom.test`(focusin → nearest).
+
 ---
 
 ## 12. 변경 이력
@@ -1068,3 +1094,5 @@ DESIGN.md 작성(D0-09) 중 혼합안(1023 이하 1단 · 1024 이상 3단)과 P
 | 2026-10-23 | M1-34 날짜 아카이브 — 시안 A "스텁 넘김" 적용(2026-10-23 사용자 선택): §9.3 티켓 꼬리표·월 달력 행 신설, 오늘의 5줄 행에 아카이브 "이날의 5줄", §9.4 꼬리표·달력·섬·마스트헤드 칸·아카이브 모델 행(모양 확정)·5줄 `variant`·호 로더, §11.6 7일 넘은 호 상대 시간 유지, §11.10 구현 메모, globals.css `perf-edge` 유틸리티. 새 색·토큰 없음 | PRD FR-33·FR-34·FR-142, DECISIONS "M1-34 아카이브 날짜 이동", M1-34 |
 | 2026-10-23 | M1-35 카드 메뉴·공유·오류 신고: §9.3 카드 메뉴 행(치수·APG Menu Button·공유 URL = 호 날짜 페이지·복사 실패 대체), §9.4 피드 섬 메뉴 함수 + 카드 메뉴·DOM·공유 행·Toast `focusAction`, §11.6 의도한 차이 ① 해소, §11.11 구현 메모. 리뷰 반영: 메뉴 마크업 피드마다 하나(섬이 연 카드로 옮김 — 오케스트레이터 결정)·처리한 Esc `defaultPrevented`·복사 실패 액션 포커스·버튼 `aria-describedby`. 새 색·토큰 없음 | PRD FR-34·FR-36, DECISIONS D0 §5 #17·#29·#37, M1-35 |
 | 2026-10-23 | M1-37 상태 화면 4종: §4.4 오프라인 띠(sticky 위치·토스트·scroll-padding)·z-index(달력 6·띠 20), §9.3 상태 화면 4종 행에 구현(로딩 견본 전용 · 비시즌 = 홈 S4 자리 · 지연 안내 = 홈·`/news/` 맨 앞 · 5줄 자리 오류 · 오프라인 띠 위치·문구), §9.4 Skeleton `LoadingSkeleton` + 새 행 8(지연 안내·오프라인 띠·셸 섬·지연 판정·5줄 자리·비시즌·휴식기 판정·견본), §11.12 구현 메모, globals.css 변형 `issue-late:`·`offline:` + §8. 새 색·토큰 없음 | PRD DR-07·FR-153, D26·D38·D48·D49, DECISIONS "M1-37 상태 화면", M1-37 |
+| 2026-10-23 | M1-39 시각 검증: §0.1 구현 화면 스크린샷 6장(`impl-home-*`·`impl-archive-*`), §3.1 preload 없음(파일 표 preload 열·합계 문장), §3.7 한자, §4.4 목차 — 화면보다 길면 높이 화면 − 32px·안에서 스크롤·포커스 링 6px·포커스 스크롤, §10 자동 검사(페이지 전체 누름 영역·포커스 링), §11.3 preload 결정·남은 일 ③ 완료, §11.13 구현 메모(대조·의도한 차이·고친 것 3·성능 실측·HTML 크기·CLS 단언 환경). 새 색·토큰 없음 | CLAUDE §4·§7.2, PRD DR-03·DR-11·NFR-12, M1-39 |
+| 2026-10-24 | M1-39 리뷰 반영: §3.1·§11.3 preload 폐지를 **사용자 결정**(PRD §15 D29 변경)으로 표기·낡은 문장 정리, §4.4 목차 — 넘칠 때 얇은 스크롤바(`scrollbar-thin-ink` 썸 `--ink-3`·트랙 투명 — 오케스트레이터 결정)·높이에서 오프라인 띠 높이를 뺌·칩 줄 `scrollbar-none`(globals.css `@utility` 2개), §10·§11.13 포커스 스크롤은 키보드 포커스만(누름 회귀)·44px 예외 목록 단언·포커스 가림 검사, 측정 도구 `docs/research/m1-39-perf/`. 새 색·토큰 없음 | PRD §15 D29, M1-39 리뷰 |

@@ -137,7 +137,7 @@ export function NewsFilterChips({ view }: { view: NewsFilterView }) {
       role="group"
       aria-label="분류 필터"
       data-nf-chips=""
-      className="-mx-edge mt-2.5 flex snap-x snap-proximity scroll-px-edge [scrollbar-width:none] gap-1.5 overflow-x-auto px-edge pt-1 pb-2 lg:hidden [&::-webkit-scrollbar]:hidden"
+      className="-mx-edge mt-2.5 scrollbar-none flex snap-x snap-proximity scroll-px-edge gap-1.5 overflow-x-auto px-edge pt-1 pb-2 lg:hidden"
     >
       <FilterChip
         {...control("cat", ALL_CATEGORIES, view.total)}

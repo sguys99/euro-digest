@@ -67,9 +67,10 @@ for (const width of WIDTHS) {
         inMain: el.closest("main") !== null,
         position: getComputedStyle(el).position,
         top: getComputedStyle(el).top,
-        // 목차 열 폭(--col-contents 232px) = 목차 상자 + 오른쪽 여백 36px
+        // 목차 열 폭(--col-contents 232px) = 목차 상자 + 좌우 바깥 여백(포커스 링 자리 −6 · 오른쪽 30 — M1-39 목차 안 스크롤)
         column:
           el.getBoundingClientRect().width +
+          parseFloat(getComputedStyle(el).marginLeft) +
           parseFloat(getComputedStyle(el).marginRight),
       }));
       if (wide) {

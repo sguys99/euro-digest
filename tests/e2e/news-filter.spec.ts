@@ -687,3 +687,232 @@ test.describe("필터 컨트롤 — 44px · 포커스 링", () => {
     });
   }
 });
+
+// 목차가 화면보다 긴 노트북 화면(M1-39 실측: 뉴스 필터 목차 820px — sticky top 16px라 1280×800·1366×768·1024×768에서 아래 행이
+// 피드를 읽는 내내 화면 밖이었다). 목차는 화면 높이 − 32px(− 오프라인 띠)까지만 차지하고 넘치면 목차 안에서 스크롤한다(app-shell.tsx).
+test.describe("짧은 화면의 목차 — 마지막 행까지 닿는다(목차 안 스크롤)", () => {
+  /** 목차가 sticky로 화면 위 16px에 붙는 첫 스크롤 위치로 내린다. 지면이 짧아(카드가 적은 호) 붙지 않으면 false */
+  async function stickToc(page: Page): Promise<boolean> {
+    const nav = page.locator('nav[aria-label="뉴스 필터"]');
+    return nav.evaluate(async (el) => {
+      window.scrollTo(0, 0);
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo(0, top - 16 + 40);
+      await new Promise(requestAnimationFrame);
+      return Math.abs(el.getBoundingClientRect().top - 16) < 0.5;
+    });
+  }
+
+  for (const [width, height] of [
+    [1024, 768],
+    [1280, 720],
+    [1366, 768],
+  ] as const) {
+    test(`${width}×${height} — 목차가 붙은 채로 '한국 선수' 행까지 목차 안 스크롤로 닿는다 · 링 자리 · 행 위치 그대로 · Tab으로 일부만 보이는 행에 가면 마저 굴러온다`, async ({
+      page,
+    }, testInfo) => {
+      test.skip(
+        testInfo.project.name !== "desktop",
+        "폭별 검사는 desktop 프로젝트에서 한 번",
+      );
+      await page.setViewportSize({ width, height });
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await open(page, "news/");
+      const nav = page.locator('nav[aria-label="뉴스 필터"]');
+      test.skip((await nav.count()) === 0, "카드가 없는 호 — 목차 없음");
+      test.skip(
+        !(await stickToc(page)),
+        "카드가 적은 호 — 지면이 짧아 목차가 붙지 않는다",
+      );
+
+      // 목차가 붙은 채로 목차를 끝까지 굴리면 마지막 행이 화면 안에 온다
+      const geo = await nav.evaluate((el) => {
+        const before = el.getBoundingClientRect();
+        el.scrollTop = el.scrollHeight;
+        const rows = el.querySelectorAll("button");
+        const lastRow = rows[rows.length - 1]!.getBoundingClientRect();
+        return {
+          top: before.top,
+          bottom: before.bottom,
+          scrolls: el.scrollHeight > el.clientHeight,
+          lastBottom: lastRow.bottom,
+          // 행(196px)과 목차 안쪽 경계 사이 여백 — 포커스 링(3 + 2px) 자리
+          padLeft: lastRow.left - el.getBoundingClientRect().left,
+          padRight: el.getBoundingClientRect().right - lastRow.right,
+          rowLeft: lastRow.left,
+          rowWidth: lastRow.width,
+          ticketLeft:
+            document.querySelector("[data-ticket]")?.getBoundingClientRect()
+              .left ?? NaN,
+        };
+      });
+      expect(geo.top).toBe(16);
+      expect(geo.bottom).toBeLessThanOrEqual(height - 16 + 0.5);
+      expect(geo.scrolls).toBe(true);
+      expect(geo.lastBottom).toBeLessThanOrEqual(height);
+      expect(geo.padLeft).toBeGreaterThanOrEqual(5);
+      expect(geo.padRight).toBeGreaterThanOrEqual(5);
+      // 행 위치·폭은 목차 열(232 = 행 196 + 오른쪽 여백 36) 그대로 — 티켓 왼쪽 끝에서 시작
+      expect(geo.rowLeft).toBe(geo.ticketLeft);
+      expect(geo.rowWidth).toBe(196);
+
+      // 키보드: 마지막 행을 목차 아래 끝에 반쯤 걸치게 굴려 두고(일부만 보임 — 아래 setup.partial로 확인), 바로 앞 행에서 Tab →
+      // 행과 링(5px)이 목차 안쪽에 다 들어와야 한다. 세로 목차는 Chrome의 Tab 포커스 스크롤만으로도 굴러온다(2026-10-24 실측 — 필터 섬
+      // focusin을 끈 빌드에서도 통과, scroll-padding 6px가 링 자리). 가로 칩 줄은 Chrome이 굴리지 않아 섬이 맡는다(a11y.spec 375 포커스 링 검사)
+      const setup = await nav.evaluate((el) => {
+        const rows = [
+          ...el.querySelectorAll<HTMLButtonElement>("button"),
+        ].filter((b) => !b.disabled);
+        const last = rows.at(-1)!;
+        const prev = rows.at(-2)!;
+        el.scrollTop = el.scrollHeight;
+        const navBottom =
+          el.getBoundingClientRect().top + el.clientTop + el.clientHeight;
+        const r = last.getBoundingClientRect();
+        // 행 아래 끝이 목차 안쪽 아래 끝보다 행 높이 절반만큼 아래에 오게
+        el.scrollTop -= navBottom - r.bottom + r.height / 2;
+        const half = last.getBoundingClientRect();
+        prev.focus();
+        return {
+          partial: half.top < navBottom && half.bottom > navBottom,
+          prevVisible: prev.getBoundingClientRect().bottom <= navBottom,
+        };
+      });
+      expect(setup).toEqual({ partial: true, prevVisible: true });
+      await page.keyboard.press("Tab");
+      const after = await nav.evaluate((el) => {
+        const active = document.activeElement as HTMLElement;
+        const rows = [
+          ...el.querySelectorAll<HTMLButtonElement>("button"),
+        ].filter((b) => !b.disabled);
+        const r = active.getBoundingClientRect();
+        const box = el.getBoundingClientRect();
+        const innerTop = box.top + el.clientTop;
+        const innerBottom = innerTop + el.clientHeight;
+        return {
+          isLast: active === rows.at(-1),
+          focusVisible: active.matches(":focus-visible"),
+          ringInside:
+            r.top - 5 >= innerTop - 0.5 && r.bottom + 5 <= innerBottom + 0.5,
+        };
+      });
+      expect(after).toEqual({
+        isLast: true,
+        focusVisible: true,
+        ringInside: true,
+      });
+    });
+  }
+
+  test("1280×1000 — 목차가 다 들어가는 화면에서는 스크롤 없음(모양 변화 없음)", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== "desktop",
+      "폭별 검사는 desktop 프로젝트에서 한 번",
+    );
+    await page.setViewportSize({ width: 1280, height: 1000 });
+    await open(page, "news/");
+    const nav = page.locator('nav[aria-label="뉴스 필터"]');
+    test.skip((await nav.count()) === 0, "카드가 없는 호 — 목차 없음");
+    const scrolls = await nav.evaluate(
+      (el) => el.scrollHeight > el.clientHeight,
+    );
+    expect(scrolls).toBe(false);
+  });
+
+  test("오프라인 띠가 보이면(1024 이상 화면 아래) 목차 높이에서 띠 높이를 뺀다 — 끝 행이 띠에 가리지 않는다", async ({
+    page,
+    context,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== "desktop",
+      "폭별 검사는 desktop 프로젝트에서 한 번",
+    );
+    await page.setViewportSize({ width: 1280, height: 720 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await open(page, "news/");
+    const nav = page.locator('nav[aria-label="뉴스 필터"]');
+    test.skip((await nav.count()) === 0, "카드가 없는 호 — 목차 없음");
+    test.skip(
+      !(await stickToc(page)),
+      "카드가 적은 호 — 지면이 짧아 목차가 붙지 않는다",
+    );
+    await context.setOffline(true);
+    const band = page.locator('[data-slot="offline-band"]');
+    await expect(band.getByText("오프라인")).toBeVisible();
+    // 섬이 띠 높이를 재 변수로 달 때까지
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          parseFloat(
+            document.documentElement.style.getPropertyValue(
+              "--offline-band-h",
+            ) || "0",
+          ),
+        ),
+      )
+      .toBeGreaterThan(0);
+    const geo = await nav.evaluate((el) => {
+      el.scrollTop = el.scrollHeight;
+      const rows = el.querySelectorAll("button");
+      const last = rows[rows.length - 1]!.getBoundingClientRect();
+      const bandTop = document
+        .querySelector('[data-slot="offline-band"]')!
+        .getBoundingClientRect().top;
+      return {
+        navBottom: el.getBoundingClientRect().bottom,
+        lastBottom: last.bottom,
+        bandTop,
+      };
+    });
+    expect(geo.navBottom).toBeLessThanOrEqual(geo.bandTop - 16 + 0.5);
+    expect(geo.lastBottom).toBeLessThanOrEqual(geo.bandTop);
+    await context.setOffline(false);
+  });
+});
+
+// 1023 이하 칩 줄 — 화면 끝에 일부만 보이는 칩을 손가락으로 누르면 눌린다(M1-39 리뷰: 누름 포커스로 칩 줄을 굴리면 click이 빗나갔다).
+// 키보드로 간 칩은 굴러와 다 보인다(a11y.spec 포커스 링 검사 — 스크롤 상자에 잘리지 않음).
+test("375 — 칩 줄 끝에 일부만 보이는 칩을 탭하면 그 칩이 눌린다(누름에는 칩 줄을 굴리지 않는다)", async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name !== "mobile",
+    "터치 — mobile 프로젝트(375 · hasTouch)",
+  );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await open(page, "news/");
+  const target = await page.evaluate(() => {
+    const row = document.querySelector<HTMLElement>("[data-nf-chips]");
+    if (!row) return null;
+    const right = row.getBoundingClientRect().right;
+    const chip = [...row.querySelectorAll<HTMLButtonElement>("button")].find(
+      (b) => {
+        const r = b.getBoundingClientRect();
+        return !b.disabled && r.left < right - 12 && r.right > right;
+      },
+    );
+    if (!chip) return null;
+    chip.scrollIntoView({ block: "center", inline: "nearest" });
+    // 세로만 가운데로 — 가로 위치는 칩 줄의 처음 상태 그대로(위 scrollIntoView가 칩 줄을 굴렸으면 되돌린다)
+    row.scrollLeft = 0;
+    const r = chip.getBoundingClientRect();
+    return {
+      label: chip.textContent ?? "",
+      x: (r.left + right) / 2,
+      y: r.top + r.height / 2,
+      partial: r.left < right && r.right > right,
+    };
+  });
+  test.skip(
+    target === null,
+    "칩 줄이 화면 안에 다 들어온다 — 일부만 보이는 칩 없음",
+  );
+  expect(target!.partial).toBe(true);
+  await page.touchscreen.tap(target!.x, target!.y);
+  const chip = page
+    .locator("[data-nf-chips] button")
+    .filter({ hasText: target!.label.trim() });
+  await expect(chip).toHaveAttribute("aria-pressed", "true");
+});

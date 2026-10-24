@@ -679,6 +679,34 @@
   );
 }
 
+/* 스크롤바 두 가지 (M1-39 — DESIGN §4.3·§4.4). 모서리·그림자 없이 토큰 색만.
+ * - scrollbar-none: 숨김 — 1023 이하 분류 칩 줄(가로 스크롤·스냅, 화면 끝에 잘린 칩이 더 있음을 알린다)
+ * - scrollbar-thin-ink: 넘칠 때만 보이는 얇은 막대(썸 --ink-3 · 트랙 투명) — 짧은 화면의 목차(아래에 행이 더 있다는 단서).
+ *   표준 속성(Chrome 121+·Firefox)이 있으면 브라우저가 ::-webkit-scrollbar를 무시하고, Safari는 ::-webkit-scrollbar를 쓴다.
+ *   클래식 스크롤바(Windows)는 넘칠 때 막대 폭만큼 내용 폭을 줄인다(행 왼쪽 위치는 그대로)
+ */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility scrollbar-thin-ink {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-3) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--ink-3);
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
 /* ── 7. 뉴스 필터 첫 화면 보류 (M1-33, DESIGN §6.2 첫 로드 모션 없음 · §11.9) ───────────────────────────────
  * 주소에 필터 쿼리가 있는 첫 화면 — 목차 맨 앞 인라인 스크립트가 <html data-nf-pending>을 달고, 피드 뒤 부트 스크립트가 필터를 그린 뒤
  * 지운다(src/lib/news/filter-boot.ts). 그 사이 브라우저가 칠하더라도 거르기 전 카드·눌리지 않은 칩이 보이지 않게 필터 범위를 그리지 않고,

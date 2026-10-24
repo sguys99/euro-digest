@@ -1,0 +1,146 @@
+412x823 /: 62 text nodes in fold
+     234 glyphs  EuroDigest Sans (web) w400
+     201 glyphs  EuroDigest Sans ExtraBold (web) w800
+      38 glyphs  Barlow Condensed SemiBold (web) w600
+      14 glyphs  Barlow Condensed ExtraBold (web) w800
+       6 glyphs  Barlow Condensed SemiBold (web) w800
+       4 glyphs  EuroDigest Sans ExtraBold (web) w600
+       1 glyphs  EuroDigest Sans (web) w800
+412x823 /news/: 68 text nodes in fold
+     195 glyphs  EuroDigest Sans ExtraBold (web) w800
+     174 glyphs  Barlow Condensed SemiBold (web) w600
+     157 glyphs  EuroDigest Sans (web) w400
+      17 glyphs  Barlow Condensed ExtraBold (web) w800
+      14 glyphs  Barlow Condensed SemiBold (web) w800
+      13 glyphs  EuroDigest Sans ExtraBold (web) w600
+       2 glyphs  EuroDigest Sans (web) w600
+       1 glyphs  EuroDigest Sans (web) w800
+412x823 /news/2026-10-22/: 68 text nodes in fold
+     313 glyphs  EuroDigest Sans (web) w400
+     105 glyphs  EuroDigest Sans ExtraBold (web) w800
+      47 glyphs  Barlow Condensed SemiBold (web) w600
+      26 glyphs  Barlow Condensed ExtraBold (web) w800
+      25 glyphs  EuroDigest Sans ExtraBold (web) w400
+      18 glyphs  Barlow Condensed SemiBold (web) w400
+      16 glyphs  Barlow Condensed SemiBold (web) w800
+       2 glyphs  EuroDigest Sans ExtraBold (web) w600
+412x823 /about/: 44 text nodes in fold
+     292 glyphs  EuroDigest Sans (web) w400
+      81 glyphs  EuroDigest Sans ExtraBold (web) w800
+      17 glyphs  Barlow Condensed SemiBold (web) w600
+      13 glyphs  Barlow Condensed ExtraBold (web) w800
+412x823 /this-page-does-not-exist/: 34 text nodes in fold
+     327 glyphs  EuroDigest Sans (web) w400
+     121 glyphs  EuroDigest Sans ExtraBold (web) w800
+      60 glyphs  Barlow Condensed SemiBold (web) w600
+      16 glyphs  Barlow Condensed ExtraBold (web) w800
+       8 glyphs  EuroDigest Sans (web) w800
+375x812 /: 58 text nodes in fold
+     224 glyphs  EuroDigest Sans (web) w400
+     196 glyphs  EuroDigest Sans ExtraBold (web) w800
+      36 glyphs  Barlow Condensed SemiBold (web) w600
+      14 glyphs  Barlow Condensed ExtraBold (web) w800
+       6 glyphs  Barlow Condensed SemiBold (web) w800
+       4 glyphs  EuroDigest Sans ExtraBold (web) w600
+       1 glyphs  EuroDigest Sans (web) w800
+375x812 /news/: 67 text nodes in fold
+     195 glyphs  EuroDigest Sans ExtraBold (web) w800
+     174 glyphs  Barlow Condensed SemiBold (web) w600
+     156 glyphs  EuroDigest Sans (web) w400
+      17 glyphs  Barlow Condensed ExtraBold (web) w800
+      14 glyphs  Barlow Condensed SemiBold (web) w800
+      13 glyphs  EuroDigest Sans ExtraBold (web) w600
+       2 glyphs  EuroDigest Sans (web) w600
+       1 glyphs  EuroDigest Sans (web) w800
+375x812 /news/2026-10-22/: 64 text nodes in fold
+     246 glyphs  EuroDigest Sans (web) w400
+     105 glyphs  EuroDigest Sans ExtraBold (web) w800
+      47 glyphs  Barlow Condensed SemiBold (web) w600
+      26 glyphs  Barlow Condensed ExtraBold (web) w800
+      25 glyphs  EuroDigest Sans ExtraBold (web) w400
+      18 glyphs  Barlow Condensed SemiBold (web) w400
+      16 glyphs  Barlow Condensed SemiBold (web) w800
+       2 glyphs  EuroDigest Sans ExtraBold (web) w600
+375x812 /about/: 44 text nodes in fold
+     292 glyphs  EuroDigest Sans (web) w400
+      81 glyphs  EuroDigest Sans ExtraBold (web) w800
+      17 glyphs  Barlow Condensed SemiBold (web) w600
+      13 glyphs  Barlow Condensed ExtraBold (web) w800
+375x812 /this-page-does-not-exist/: 29 text nodes in fold
+     327 glyphs  EuroDigest Sans (web) w400
+      84 glyphs  EuroDigest Sans ExtraBold (web) w800
+      60 glyphs  Barlow Condensed SemiBold (web) w600
+      16 glyphs  Barlow Condensed ExtraBold (web) w800
+       8 glyphs  EuroDigest Sans (web) w800
+1280x800 /: 81 text nodes in fold
+     293 glyphs  EuroDigest Sans (web) w400
+     206 glyphs  EuroDigest Sans ExtraBold (web) w800
+      52 glyphs  Barlow Condensed SemiBold (web) w600
+      14 glyphs  Barlow Condensed ExtraBold (web) w800
+      10 glyphs  EuroDigest Sans ExtraBold (web) w600
+       1 glyphs  EuroDigest Sans (web) w800
+1280x800 /news/: 86 text nodes in fold
+     221 glyphs  EuroDigest Sans (web) w400
+     205 glyphs  EuroDigest Sans ExtraBold (web) w800
+     190 glyphs  Barlow Condensed SemiBold (web) w600
+      17 glyphs  Barlow Condensed ExtraBold (web) w800
+      17 glyphs  EuroDigest Sans ExtraBold (web) w600
+       8 glyphs  Barlow Condensed SemiBold (web) w800
+       2 glyphs  EuroDigest Sans (web) w600
+       1 glyphs  EuroDigest Sans (web) w800
+1280x800 /news/2026-10-22/: 92 text nodes in fold
+     342 glyphs  EuroDigest Sans (web) w400
+     127 glyphs  EuroDigest Sans ExtraBold (web) w800
+      67 glyphs  Barlow Condensed SemiBold (web) w600
+      26 glyphs  Barlow Condensed ExtraBold (web) w800
+      25 glyphs  EuroDigest Sans ExtraBold (web) w400
+      18 glyphs  Barlow Condensed SemiBold (web) w400
+      16 glyphs  Barlow Condensed SemiBold (web) w800
+      10 glyphs  EuroDigest Sans ExtraBold (web) w600
+1280x800 /about/: 54 text nodes in fold
+     362 glyphs  EuroDigest Sans (web) w400
+     100 glyphs  EuroDigest Sans ExtraBold (web) w800
+      33 glyphs  Barlow Condensed SemiBold (web) w600
+      18 glyphs  Barlow Condensed ExtraBold (web) w800
+1280x800 /this-page-does-not-exist/: 40 text nodes in fold
+     382 glyphs  EuroDigest Sans (web) w400
+     121 glyphs  EuroDigest Sans ExtraBold (web) w800
+      60 glyphs  Barlow Condensed SemiBold (web) w600
+      16 glyphs  Barlow Condensed ExtraBold (web) w800
+       8 glyphs  EuroDigest Sans (web) w800
+1024x768 /: 75 text nodes in fold
+     285 glyphs  EuroDigest Sans (web) w400
+     201 glyphs  EuroDigest Sans ExtraBold (web) w800
+      40 glyphs  Barlow Condensed SemiBold (web) w600
+      14 glyphs  Barlow Condensed ExtraBold (web) w800
+       9 glyphs  EuroDigest Sans ExtraBold (web) w600
+       1 glyphs  EuroDigest Sans (web) w800
+1024x768 /news/: 78 text nodes in fold
+     206 glyphs  EuroDigest Sans (web) w400
+     199 glyphs  EuroDigest Sans ExtraBold (web) w800
+     122 glyphs  Barlow Condensed SemiBold (web) w600
+      17 glyphs  Barlow Condensed ExtraBold (web) w800
+      12 glyphs  EuroDigest Sans ExtraBold (web) w600
+       8 glyphs  Barlow Condensed SemiBold (web) w800
+       1 glyphs  EuroDigest Sans (web) w800
+       1 glyphs  EuroDigest Sans (web) w600
+1024x768 /news/2026-10-22/: 85 text nodes in fold
+     315 glyphs  EuroDigest Sans (web) w400
+     124 glyphs  EuroDigest Sans ExtraBold (web) w800
+      62 glyphs  Barlow Condensed SemiBold (web) w600
+      25 glyphs  Barlow Condensed ExtraBold (web) w800
+      20 glyphs  EuroDigest Sans ExtraBold (web) w400
+      16 glyphs  Barlow Condensed SemiBold (web) w800
+      15 glyphs  Barlow Condensed SemiBold (web) w400
+       9 glyphs  EuroDigest Sans ExtraBold (web) w600
+1024x768 /about/: 51 text nodes in fold
+     362 glyphs  EuroDigest Sans (web) w400
+      86 glyphs  EuroDigest Sans ExtraBold (web) w800
+      33 glyphs  Barlow Condensed SemiBold (web) w600
+      13 glyphs  Barlow Condensed ExtraBold (web) w800
+1024x768 /this-page-does-not-exist/: 37 text nodes in fold
+     355 glyphs  EuroDigest Sans (web) w400
+     121 glyphs  EuroDigest Sans ExtraBold (web) w800
+      60 glyphs  Barlow Condensed SemiBold (web) w600
+      16 glyphs  Barlow Condensed ExtraBold (web) w800
+       8 glyphs  EuroDigest Sans (web) w800
