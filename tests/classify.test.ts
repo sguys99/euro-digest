@@ -45,7 +45,11 @@ import {
   type ClassifyItem,
 } from "../scripts/lib/classify";
 import { buildCard } from "../scripts/lib/news-file";
-import { buildKeywordIndex } from "../scripts/lib/news-keywords";
+import {
+  buildKeywordIndex,
+  managerNameTerms,
+  managerSpeechOf,
+} from "../scripts/lib/news-keywords";
 import { buildTagIndex } from "../scripts/lib/tag-names";
 
 import { namesWithExtras } from "./support/names-extras";
@@ -649,6 +653,223 @@ describe("M1-43 실데이터 — 오분류 회귀·'기타' 보강 (FR-21·FR-31
       expect(a.cat, title).not.toBe("result");
       expect(a.spoiler, title).toBe(true);
     }
+  });
+});
+
+describe("감독 발언 → 감독·구단 (PRD §15 D47 사용자 결정 A, 2026-10-25 — FR-21·FR-31)", () => {
+  const IF = "interfootball-world";
+  const DM = "di-marzio";
+  const BBC = "bbc-sport-football";
+  /** 같은 사전에서 감독 항목만 뺀 맥락 — 감독 발언 규칙 전후 비교(감독 항목은 태그 대상이 아니라 태그·kr은 같아야 한다) */
+  const CTX_NO_MANAGERS = contextOf({
+    ...NAMES,
+    entries: NAMES.entries.filter((e) => e.kind !== "manager"),
+  });
+  const without = (title: string, source: string) =>
+    analyzeItems([item(title, source)], CTX_NO_MANAGERS);
+  const speech = (title: string, lang: string) =>
+    managerSpeechOf(title, lang, CTX.keywords.managers);
+
+  /** M1-43 검수 기간(10-17~25) 실데이터 — 규칙 전 '기타'였던 감독 인터뷰 인용 제목 */
+  const REAL: ReadonlyArray<readonly [string, string, string]> = [
+    [
+      'Lazio, Gattuso: "Critiche nei miei confronti in questi anni? Non c\'è stata onestà nei miei confronti"',
+      DM,
+      "head",
+    ],
+    [
+      'Napoli, Allegri: "Non possiamo prendere gol con questa facilità. De Bruyne? Giocatore straordinario"',
+      DM,
+      "head",
+    ],
+    [
+      'Roma, Gasperini: "Queste prestazioni ci permettono di andare avanti con fiducia"',
+      DM,
+      "head",
+    ],
+    [
+      'Inter, Chivu: "Spero che questa partita ci restituisca fiducia ed entusiasmo"',
+      DM,
+      "head",
+    ],
+    ['Juventus, Spalletti: "Gol annullato? Ci sono rimasto male"', DM, "head"],
+    ['Atalanta, Sarri: "Abbiamo fatto una partita europea"', DM, "head"],
+    [
+      "Liverpool players in 'delicate' situation with 'demanding' schedule - Iraola",
+      BBC,
+      "tail",
+    ],
+    ["Newcastle made 'wrong decisions' in final third - Jaissle", BBC, "tail"],
+    ["Everton did not play well - Moyes", BBC, "tail"],
+    ["'Not about me' - Arbeloa dismisses future questions", BBC, "quoteTail"],
+    [
+      "'It doesn't make sense' - Glasner confused after Diop avoids red card",
+      BBC,
+      "quoteTail",
+    ],
+  ];
+
+  it("실데이터 오분류 회귀 — 사전 감독(성 단독 저위험 별칭 포함) + 인용 머리·출처 문형은 기타 → 감독·구단, spoiler·태그·kr·대회는 그대로", () => {
+    for (const [title, source, pattern] of REAL) {
+      const lang = SOURCE_BY_ID.get(source)!.lang;
+      expect(speech(title, lang), title).toBe(pattern);
+      const before = without(title, source);
+      const after = analyze(title, source);
+      expect(before.cat, title).toBe("other");
+      expect(after.cat, title).toBe("club");
+      expect(after.spoiler, title).toBe(before.spoiler);
+      expect(after.teams, title).toEqual(before.teams);
+      expect(after.players, title).toEqual(before.players);
+      expect(after.kr, title).toBe(before.kr);
+      expect(after.comp, title).toEqual(before.comp);
+    }
+  });
+
+  it("그 밖의 문형 — 전체 이름 머리 인용·보고 문형(이름 + 낱말 + 쌍점 + 따옴표)·발언 동사·국내 성 단독(3글자 이상) 인용", () => {
+    for (const [title, source, pattern] of [
+      [
+        'Antonio Conte: "Manchester United? Non ho parlato con nessuno"',
+        DM,
+        "head",
+      ],
+      // 이탈리아어 관사 생략('L'Atalanta')·영어 머리 인용
+      ["L'Atalanta, Sarri: «Abbiamo fatto una partita europea»", DM, "head"],
+      ["Iraola: Liverpool must cut out the errors", BBC, "head"],
+      [
+        'Lazio, Gattuso carica la squadra: "Ora non dobbiamo fermarci"',
+        DM,
+        "headSays",
+      ],
+      [
+        'Arbeloa, tras el entrenamiento: "Asumo la responsabilidad"',
+        "relevo",
+        "headSays",
+      ],
+      ["Liverpool boss Iraola says squad needs rest", BBC, "verb"],
+      ["Glasner confident Forest can turn the corner", BBC, "verb"],
+      ["Spalletti avverte la Juventus prima della sosta", DM, "verb"],
+      ["램파드 “선수들이 자랑스럽다”…코번트리 반등 이끈다", IF, "koQuote"],
+      [
+        "“우승 경쟁 충분히 가능하다”라고 말한 이라올라, 리버풀 반등 자신",
+        IF,
+        "koSaid",
+      ],
+      ["가스페리니가 밝힌 로마 상승세 비결", IF, "koSays"],
+    ] as const) {
+      const lang = SOURCE_BY_ID.get(source)!.lang;
+      expect(speech(title, lang), title).toBe(pattern);
+      expect(analyze(title, source).cat, title).toBe("club");
+    }
+  });
+
+  it("오탐 방지 — 선수 인용·동명 선수(시메오네 — 성 별칭 없음)·문형 없는 감독 이름·경기 전 기사·소문자·단어 안·중간 위험 성(별칭 없음)은 감독 발언이 아니다", () => {
+    for (const [title, source] of [
+      // 선수 인용(사전 감독이 아니다) — 인용 안의 감독 이름도 머리가 아니다
+      [
+        'Napoli, Politano: "Cerco sempre di assumermi le responsabilità. Dobbiamo continuare a vincere"',
+        DM,
+      ],
+      [
+        'Napoli, Manna: "Incomprensioni tra Allegri e De Bruyne? Sono state enfatizzate"',
+        DM,
+      ],
+      // 동명 선수 — 지오반니 시메오네(토리노)·국내 '시메오네'(성만 — 디에고 감독 항목은 전체 이름만)
+      [
+        'Torino, Simeone: "Ho avuto la possibilità di andare al River, ma qui c\'era bisogno di me"',
+        DM,
+      ],
+      [
+        "“출전 시간과 체력 관리 때문” 시메오네가 밝히는 이강인 교체 이유…“활동량이 필요했다”",
+        IF,
+      ],
+      // 감독 이름만 있고 문형이 없다(D47 '불확실하면 기타')
+      [
+        "Roma, la probabile formazione contro il Genoa: Gasperini verso un tridente inedito",
+        DM,
+      ],
+      ["Forest's start raises questions - but belief in Glasner remains", BBC],
+      [
+        "Lazio, 123 giorni dopo la diffidenza ha lasciato spazio alla voglia di sorprendere di Gattuso",
+        DM,
+      ],
+      ["Superman at Como & is Conte right for Man Utd?", BBC],
+      ["The spectre of Antonio Conte looms over Manchester United", BBC],
+      // 중간·고위험 성은 별칭이 없다(Amorim·Abate·Andrews — 사용자 결정 2026-10-25)
+      [
+        'Milan, Amorim: "Questa non è stata una partita, il rosso e i rigori hanno cambiato tutto"',
+        DM,
+      ],
+      ['Torino, Abate: "Non abbiamo fatto ancora niente"', DM],
+      ["Yarmoliuk red card changed game dynamic - Andrews", BBC],
+      // 붙여 쓴 대시·소문자·단어 안(Sarrià)
+      ["Gattuso-Sarri, la sfida dei maestri", DM],
+      ["Everton did not play well - moyes", BBC],
+      ["Festa nel quartiere di Sarrià: Barça in città", DM],
+      // 국내 두 글자 성(키부·사리 — 일반어 '사리')은 맞추지 않는다
+      ["사리 “오늘은 쉬어야 한다”", IF],
+      // 국내 작은따옴표는 별명·강조(fixtures 인터풋볼 제목) — 발언이 아니다(카테고리는 이적 그대로)
+      [
+        "1,780억 베팅하면 보내준다… 핵심 MF 스콧 매물로 내놓는 본머스, 리버풀 이라올라 감독 ‘애제자’ 영입 나서나",
+        IF,
+      ],
+    ] as const) {
+      const lang = SOURCE_BY_ID.get(source)!.lang;
+      expect(speech(title, lang), title).toBe(null);
+      expect(analyze(title, source).cat, title).toBe(
+        without(title, source).cat,
+      );
+    }
+  });
+
+  it("더 강한 신호가 먼저 — 결과(spoiler 그대로·엔티티 병합 대상 아님)·부상·이적·UCL·대표팀", () => {
+    // 결과: 인용 속 스코어 — 결과 카테고리·spoiler 그대로, 감독 발언이라 결과 카드 밑으로 합치지 않는다(D42 matchResult)
+    const result = analyze(
+      'Roma, Gasperini: "Soddisfatto della gara. Per come si era messa la partita sul 3-2, è andata bene così"',
+      DM,
+    );
+    expect(result.cat).toBe("result");
+    expect(result.spoiler).toBe(true);
+    expect(result.matchResult).toBe(false);
+    expect(analyze("Liverpool 2-1 Everton - Iraola", BBC).cat).toBe("result");
+    expect(analyze("Salah out for six weeks - Iraola", BBC).cat).toBe("injury");
+    expect(
+      analyze('Napoli, Allegri: "Mercato? Non serve nessuno"', DM).cat,
+    ).toBe("transfer");
+    expect(
+      analyze(
+        "Liverpool must be braver in Europe - Iraola",
+        "bbc-sport-champions-league",
+      ).cat,
+    ).toBe("ucl");
+    expect(
+      analyze('Gattuso: "La Nazionale? Ora penso solo alla Lazio"', DM).cat,
+    ).toBe("national");
+  });
+
+  it("이름 — 성 단독 영문 별칭이 있는 감독만 한글 성(3글자 이상)도 맞추고, 첫 글자 축약('D. Simeone')은 쓰지 않는다 · 사전이 없으면 문형 없음", () => {
+    const terms = managerNameTerms(NAMES);
+    expect(terms.ko).toContain("마시밀리아노 알레그리");
+    expect(terms.ko).toContain("알레그리");
+    expect(terms.ko).toContain("램파드");
+    expect(terms.ko).toContain("디에고 시메오네");
+    for (const short of [
+      "시메오네",
+      "키부",
+      "사리",
+      "콘테",
+      "앤드류스",
+      "캐릭",
+    ]) {
+      expect(terms.ko, short).not.toContain(short);
+    }
+    expect(terms.latin).toContain("Allegri");
+    expect(terms.latin).toContain("Fabregas"); // 발음 기호를 뗀 꼴
+    expect(terms.latin).not.toContain("D. Simeone");
+    expect(terms.latin).not.toContain("Simeone");
+    const bare = buildKeywordIndex({});
+    expect(
+      managerSpeechOf('Napoli, Allegri: "Bene così"', "it", bare.managers),
+    ).toBe(null);
   });
 });
 

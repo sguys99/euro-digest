@@ -33,6 +33,10 @@
  *                    추첨 → UCL, 컵 추첨 → 기타). 주어가 필요한 표현만 있고 재계약 표현이 있으면 결과가 아니다('살라 잡았다…재계약').
  *                    UCL 경기 결과도 여기(PRD §15 D47 ②).
  *                  - UCL: 결과가 아닌 UCL 소식(카드 대회에 UCL — 조 추첨·징계·UEFA 결정)
+ *                  - 감독·구단: 감독·구단 표현(`CLUB_TERMS` — 국내 '감독'·'boss') · 재계약 · **감독 발언**(PRD §15 D47 사용자 결정 A, 2026-10-25 —
+ *                    names.ko 감독 이름 + 인용 머리·출처 문형: 'Napoli, Allegri: "…"'·'… - Iraola'·"'…' - Glasner confused"·'알레그리
+ *                    “…”', news-keywords.ts `managerSpeechOf`). 감독 이름만 있고 문형이 없으면 아니다('Gasperini verso un tridente'·'belief in
+ *                    Glasner remains' — 기타). 이 자리가 감독·구단이라 앞선 카테고리(대표팀·이적·부상·결과·UCL)가 먼저다.
  *   spoiler        결과 카테고리 · 스코어 패턴 · 승패 표현(경기 전 기사여도) · 경기 중 사건(골·퇴장 — `MATCH_EVENT_TERMS`) 중
  *                  하나라도(제목 또는 요약문 — 위험 수용 소스는 요약문 없음, D48) → true(FR-21 보수적, FR-37).
  *   matchResult    엔티티 2단계 병합 대상(D42 — entity-merge.ts): '경기 결과'이고 모든 구성 제목이 경기 기사(`isMatchReportText` — 경기
@@ -73,6 +77,7 @@ import {
   PLAYER_CONTEXT_TERMS,
   isKoLang,
   INJURY_TERMS,
+  managerSpeechOf,
   MATCH_EVENT_TERMS,
   NATIONAL_COUNTRIES,
   NATIONAL_STRONG_TERMS,
@@ -296,6 +301,11 @@ export interface TextSignals {
   roundup: boolean;
   /** 묶음 제목의 이적 동사(want·target·eye …) */
   roundupTransfer: boolean;
+  /**
+   * 감독 발언 문형(news-keywords.ts `managerSpeechOf` — 사전 감독 이름이 필요해 `textSignals`는 채우지 않고 classify.ts `titleFacts`가
+   * 제목에만 채운다. 요약문에는 없다 — 요약문은 카테고리 근거가 아니다, D47 ①). 감독·구단 신호(`club`과 같은 자리)
+   */
+  managerSpeech?: boolean;
 }
 
 /**
@@ -410,14 +420,16 @@ export function categoryOf(
   }
   if (comps.includes("UCL")) return "ucl";
   if (any((s) => s.injury)) return "injury";
-  if (any((s) => s.club || s.renewal)) return "club";
+  if (any((s) => s.club || s.renewal || (s.managerSpeech ?? false))) {
+    return "club";
+  }
   return null;
 }
 
 /**
  * 엔티티 2단계 병합 대상 제목인가(D42 — M1-17 리뷰: 잘못 합치기 0이 최우선) — 결과 신호가 있고, 경기 전(약한 표현 'ahead of' 포함)·
- * 부상·이적·재계약·감독구단·여러 소식 묶음 신호가 **없다**(경기 전 기사·부상 소식·감독 발언 기사가 결과 카드 밑으로 숨지 않게). 병합은
- * 여기에 더해 스코어가 있어야 한다(entity-merge.ts `entityOf`).
+ * 부상·이적·재계약·감독구단(감독 발언 문형 포함)·여러 소식 묶음 신호가 **없다**(경기 전 기사·부상 소식·감독 발언 기사가 결과 카드 밑으로
+ * 숨지 않게). 병합은 여기에 더해 스코어가 있어야 한다(entity-merge.ts `entityOf`).
  */
 export function isMatchReportText(
   s: TextSignals,
@@ -431,6 +443,7 @@ export function isMatchReportText(
     !s.transfer &&
     !s.renewal &&
     !s.club &&
+    !s.managerSpeech &&
     !s.roundup
   );
 }
@@ -573,7 +586,12 @@ function titleFacts(item: ClassifyItem, ctx: ClassifyContext): TitleFacts {
   });
   // 국내 제목의 'T행'(팀 이름 + 행 — '김민재, 아스널행 임박')도 이적 화제다(이적 표에는 팀 이름 없이 넣을 수 없다 — M1-18)
   // 이적 높은 단계 닫힌 문형에 맞는 제목('Bukayo Saka completes move to Chelsea' — 이적 표에 'completes move'가 없다)도 이적 화제다(D54)
-  const s0 = textSignals(item.title, item.lang);
+  // 감독 발언(D47 사용자 결정 A) — 사전 감독 이름이 필요해 여기서 채운다
+  const s0: TextSignals = {
+    ...textSignals(item.title, item.lang),
+    managerSpeech:
+      managerSpeechOf(item.title, item.lang, ctx.keywords.managers) !== null,
+  };
   const s =
     !s0.transfer &&
     (koBoundForTeam(item.title, item.lang, tags.teams) ||
@@ -613,6 +631,7 @@ function titleFacts(item: ClassifyItem, ctx: ClassifyContext): TitleFacts {
           s.transfer ||
           s.injury ||
           s.club ||
+          (s.managerSpeech ?? false) ||
           s.nationalStrong ||
           s.nationalWeak ||
           isResultLike(s, true) ||

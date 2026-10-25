@@ -190,6 +190,21 @@ describe("substituteNames — 치환", () => {
     );
   });
 
+  it("감독 성 단독 별칭(사용자 결정 2026-10-25 — 저위험 14개)은 브리핑 치환에도 쓰이고, 단어 경계라 다른 낱말·이름 안에는 맞지 않는다 · 별칭 없는 성(Simeone·Conte·Amorim)은 그대로", () => {
+    expect(sub("Allegri가 이끄는 Napoli는 승점 16이다.")).toBe(
+      "마시밀리아노 알레그리가 이끄는 나폴리는 승점 16이다.",
+    );
+    expect(sub("Moyes의 Everton이 이겼다.")).toBe(
+      "데이비드 모예스의 에버턴이 이겼다.",
+    );
+    // 단어 안('Sarrià'·'Glasnerian')·붙은 라틴 글자는 아니다
+    expect(sub("Sarrià와 Glasnerian")).toBe("Sarrià와 Glasnerian");
+    // 성 별칭이 없는 감독·동명 선수 — 지오반니 시메오네(사전 선수 항목)는 전체 이름일 때만, 성만 쓰면 그대로
+    expect(sub("Simeone이 득점했다.")).toBe("Simeone이 득점했다.");
+    expect(sub("Conte와 Amorim")).toBe("Conte와 Amorim");
+    expect(sub("Hansi Flick의 Barça")).toBe("한지 플릭의 바르셀로나");
+  });
+
   it("사전이 비면 원문 그대로(NFC)", () => {
     const empty = buildNameIndex(null);
     expect(substituteNames("Bayern가", empty)).toEqual({

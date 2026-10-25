@@ -2869,6 +2869,309 @@ export const KO_OCCUPATION_NOUNS: readonly string[] = [
   "dj",
 ];
 
+// ─── 감독 발언 (PRD §15 D47 사용자 결정 A — 2026-10-25) ───────────────────────
+
+/**
+ * 감독 발언 제목 → 감독·구단(classify.ts — `CLUB_TERMS`와 같은 자리라 앞선 카테고리(대표팀·이적·부상·결과·UCL)가 먼저다). M1-43 검수에서
+ * '기타'로 남은 인터뷰 인용 제목('Napoli, Allegri: "…"'·'… - Iraola')을 국내 제목의 '감독' 키워드와 같은 기준으로 본다. 코드 규칙(토큰 0).
+ *
+ * ── 이름 ──────────────────────────────────────────────────────────────────
+ *   names.ko.json `kind: "manager"` 항목만(사람이 관리하는 표기 — `/add-name`).
+ *   라틴: 영문 표기 전부(대표 + 별칭). 성 단독 별칭은 사용자가 고른 저위험 성만 사전에 있다(2026-10-25 — 'Allegri'·'Iraola' 등 14개).
+ *     첫 글자 축약('D. Simeone')은 쓰지 않는다. 발음 기호를 떼고 **대소문자를 남겨** 맞춘다 — 사전 표기 그대로(첫 글자 대문자)일 때만이라
+ *     일반어·소문자('sarri')에 맞지 않는다, 단어 경계('Sarrià'는 아니다).
+ *   한국어: 한글 전체 이름 + 성 단독 영문 별칭이 있는 항목만 한글 성(마지막 낱말, 3글자 이상 — '알레그리'·'램파드', 두 글자 '키부'·'사리'는
+ *     아니다 — `koNameTerms`와 같은 길이 기준). 성 별칭이 없는 감독(시메오네 — 지오반니·줄리아노 시메오네 선수와 같은 성)은 전체 이름만.
+ *
+ * ── 문형 (M1-43 기간 10-17~25 실데이터) ─ 이름만 있고 문형이 없으면 아니다(D47 ① '불확실하면 기타') ──────────────
+ *   head       머리 인용: 'Allegri: "…"'·'Napoli, Allegri: "…"'·"L'Atalanta, Sarri: …"(쉼표 앞 팀·맥락 — 쌍점·큰따옴표 없음) — 이름 바로 뒤
+ *              쌍점
+ *   headSays   머리 보고: 'Manchester United, Carrick scuote la squadra: "…"'·'Simeone, tras el empate: "…"' — 이름 + 낱말 1~5개 +
+ *              쌍점 + **따옴표**('Roma, la probabile formazione …: Gasperini verso …'는 이름이 쌍점 뒤라 아니다)
+ *   tail       끝 출처: '… - Iraola'(공백 + 대시 + 이름으로 끝남 — 붙여 쓴 'Gattuso-Sarri'는 아니다)
+ *   quoteTail  인용 뒤 출처: "'It doesn't make sense' - Glasner confused after …"(닫는 따옴표 + 대시 + 이름)
+ *   verb       머리 주어 + 발언 동사: 'Glasner confident …'·'Liverpool boss Iraola says …'·'Spalletti avverte …'(`MANAGER_SPEECH_VERBS` —
+ *              문장형 제목의 소문자 동사만, 대소문자 구분)
+ *   koQuote    국내: 이름(+ 감독·조사) 바로 뒤 큰따옴표('알레그리 “…”' — 작은따옴표는 별명·강조에 흔해 아니다: "이라올라 감독 ‘애제자’ 영입")
+ *   koSaid     국내: 인용 뒤 '…라고 말한/밝힌 + 이름'
+ *   koSays     국내: '이름이 밝힌/말했다/강조했다 …'
+ *   국내 제목은 대부분 '감독' 키워드(`CLUB_TERMS`)로 이미 감독·구단이다 — 국내 문형은 성만 쓴 제목을 같은 기준으로 맞춘다.
+ */
+
+/** 감독 발언 문형 id(머리 주석) */
+export type ManagerSpeechPattern =
+  | "head"
+  | "headSays"
+  | "tail"
+  | "quoteTail"
+  | "verb"
+  | "koQuote"
+  | "koSaid"
+  | "koSays";
+
+/** 발언 동사 — 머리 주어(감독 이름) 바로 뒤(`verb` 문형). 발언·반응을 뜻하는 말만(일반 동사 'wants'·'leads'는 아니다) */
+export const MANAGER_SPEECH_VERBS: Readonly<
+  Record<"latin" | "ko", readonly string[]>
+> = {
+  latin: [
+    // en
+    "says",
+    "said",
+    "admits",
+    "admitted",
+    "insists",
+    "insisted",
+    "praises",
+    "praised",
+    "hails",
+    "hailed",
+    "defends",
+    "defended",
+    "dismisses",
+    "dismissed",
+    "plays down",
+    "played down",
+    "downplays",
+    "bemoans",
+    "laments",
+    "slams",
+    "blasts",
+    "hits out",
+    "criticises",
+    "criticizes",
+    "questions",
+    "warns",
+    "vows",
+    "urges",
+    "explains",
+    "reveals",
+    "responds",
+    "reacts",
+    "apologises",
+    "apologizes",
+    "refuses",
+    "rejects",
+    "denies",
+    "backs",
+    "tells",
+    "confident",
+    "confused",
+    "frustrated",
+    "delighted",
+    "proud",
+    "unhappy",
+    "furious",
+    "disappointed",
+    "relieved",
+    // it
+    "avverte",
+    "elogia",
+    "difende",
+    "spiega",
+    "risponde",
+    "replica",
+    "commenta",
+    "applaude",
+    "scuote",
+    "striglia",
+    "rassicura",
+    "ammette",
+    "sottolinea",
+    "carica",
+    "sprona",
+    "esalta",
+    // es
+    "habla",
+    "explica",
+    "advierte",
+    "defiende",
+    "responde",
+    "critica",
+    "reconoce",
+    "lamenta",
+    "asegura",
+    "insiste",
+  ],
+  ko: [
+    "밝힌",
+    "밝히는",
+    "밝혔다",
+    "말한",
+    "말하는",
+    "말했다",
+    "강조한",
+    "강조했다",
+    "인정한",
+    "인정했다",
+    "전했다",
+    "토로했다",
+    "답했다",
+    "일침",
+    "극찬",
+    "칭찬",
+    "호평",
+  ],
+};
+
+/** 머리 주어 앞 꾸밈('Liverpool boss Iraola says') — 팀 이름 + 감독 직함 */
+const MANAGER_TITLE_WORDS: readonly string[] = [
+  "boss",
+  "manager",
+  "head coach",
+  "coach",
+  "allenatore",
+  "tecnico",
+  "entrenador",
+];
+
+interface CompiledSpeechPattern {
+  id: ManagerSpeechPattern;
+  re: RegExp;
+}
+
+/** 감독 발언 색인(names.ko `manager` 항목 — `buildManagerIndex`) */
+export interface ManagerIndex {
+  latin: readonly CompiledSpeechPattern[];
+  ko: readonly CompiledSpeechPattern[];
+}
+
+/**
+ * 감독 발언 맞춤용 라틴 텍스트 — NFKD로 발음 기호를 떼고 따옴표·대시를 통일하고 공백을 하나로. **대소문자·문장부호는 남긴다**(쌍점·
+ * 대시·따옴표가 문형이다).
+ */
+export function speechText(text: string): string {
+  return text
+    .normalize("NFKD")
+    .replace(/\p{M}+/gu, "")
+    .replace(/[‘’‚‛′`´]/gu, "'")
+    .replace(/[“”„‟″«»]/gu, '"')
+    .replace(/[‐-―−]/gu, "-")
+    .replace(/\s+/gu, " ")
+    .trim();
+}
+
+/** 첫 글자 축약('D. Simeone') — 감독 발언에는 쓰지 않는다(names.ts `isInitialForm`과 같은 꼴) */
+const INITIAL_FORM = /^\p{Lu}\. \S/u;
+
+/** 사전 감독 이름(라틴·한국어 맞춤 표현) — 머리 주석 '이름' */
+export function managerNameTerms(names: NamesKoFile | null | undefined): {
+  latin: string[];
+  ko: string[];
+} {
+  const latin = new Set<string>();
+  const ko = new Set<string>();
+  for (const e of names?.entries ?? []) {
+    if (e.kind !== "manager") continue;
+    const forms = e.en.filter((n) => !INITIAL_FORM.test(n.trim()));
+    for (const n of forms) latin.add(speechText(n));
+    const koName = e.ko.normalize("NFKC").trim();
+    if (!/\p{Script=Hangul}/u.test(koName)) continue;
+    ko.add(koName);
+    // 성 단독 영문 별칭(한 단어)이 있는 항목만 한글 성도 — 3글자 이상
+    const words = koName.split(/\s+/u);
+    const last = words.at(-1) ?? "";
+    if (
+      forms.some((n) => !/\s/u.test(n.trim())) &&
+      words.length > 1 &&
+      [...last].length >= 3
+    ) {
+      ko.add(last);
+    }
+  }
+  const byLength = (a: string, b: string) =>
+    b.length - a.length || (a < b ? -1 : a > b ? 1 : 0);
+  return { latin: [...latin].sort(byLength), ko: [...ko].sort(byLength) };
+}
+
+/** 사전 감독 이름 → 감독 발언 색인(머리 주석 문형). 감독 항목이 없으면 빈 색인 */
+export function buildManagerIndex(
+  names: NamesKoFile | null | undefined,
+): ManagerIndex {
+  const terms = managerNameTerms(names);
+  const latin: CompiledSpeechPattern[] = [];
+  const ko: CompiledSpeechPattern[] = [];
+  if (terms.latin.length > 0) {
+    const alt = terms.latin
+      .map((n) => n.split(" ").map(escapeRe).join("\\s+"))
+      .join("|");
+    const name = `(?<![\\p{L}\\p{N}])(?:${alt})(?![\\p{L}\\p{N}])`;
+    // '팀, ' 머리 — 쉼표로 끝나고 쌍점·큰따옴표가 없는 짧은 덩어리(작은따옴표는 이탈리아어 생략 'L'Inter'에 쓰여 허용)
+    const prefix = `(?:[^:"\\n]{1,60}?,\\s*)?`;
+    const verbs = MANAGER_SPEECH_VERBS.latin
+      .map((v) => v.split(" ").map(escapeRe).join("\\s+"))
+      .join("|");
+    const titles = MANAGER_TITLE_WORDS.map((w) =>
+      w.split(" ").map(escapeRe).join("\\s+"),
+    ).join("|");
+    latin.push(
+      { id: "head", re: new RegExp(`^${prefix}${name}\\s*:`, "u") },
+      {
+        id: "headSays",
+        re: new RegExp(
+          `^${prefix}${name}(?:\\s*,)?(?:\\s+[^\\s:"]+){1,5}\\s*:\\s*["']`,
+          "u",
+        ),
+      },
+      { id: "tail", re: new RegExp(`\\s[-|]\\s*${name}\\s*[.!]?$`, "u") },
+      { id: "quoteTail", re: new RegExp(`["']\\s*-\\s*${name}`, "u") },
+      {
+        id: "verb",
+        re: new RegExp(
+          `^(?:[^:"\\n]{1,40}?\\s(?:${titles})\\s+)?${name}\\s+(?:${verbs})(?![\\p{L}\\p{N}])`,
+          "u",
+        ),
+      },
+    );
+  }
+  if (terms.ko.length > 0) {
+    const alt = terms.ko
+      .map((n) => n.split(/\s+/u).map(escapeRe).join("\\s?"))
+      .join("|");
+    const name = `(?<!\\p{Script=Hangul})(?:${alt})`;
+    // 이름 뒤 경계 — 감독·조사(최대 3개) 다음이 한글·라틴·숫자가 아니다
+    const after = `(?=(?:\\s?감독)?${KO_SUFFIX_PATTERN}(?![\\p{Script=Hangul}a-z0-9]))`;
+    const verbs = MANAGER_SPEECH_VERBS.ko.map(escapeRe).join("|");
+    ko.push(
+      {
+        id: "koQuote",
+        re: new RegExp(
+          `${name}(?:\\s?감독)?(?:은|는|이|가)?\\s?,?\\s?[“"]`,
+          "u",
+        ),
+      },
+      {
+        id: "koSaid",
+        re: new RegExp(
+          `[”"’']\\s?(?:이라고|라고|이라며|라며|며)?\\s?(?:말한|밝힌|강조한|전한|토로한|인정한|답한|덧붙인|털어놓은)\\s?${name}${after}`,
+          "u",
+        ),
+      },
+      {
+        id: "koSays",
+        re: new RegExp(
+          `${name}(?:\\s?감독)?(?:이|가|은|는)\\s?(?:${verbs})`,
+          "u",
+        ),
+      },
+    );
+  }
+  return { latin, ko };
+}
+
+/** 제목 1건의 감독 발언 문형(머리 주석) — 맞은 첫 문형 id, 없으면 null */
+export function managerSpeechOf(
+  title: string,
+  lang: string,
+  index: ManagerIndex,
+): ManagerSpeechPattern | null {
+  if (isKoLang(lang)) {
+    const text = koSpacedText(title);
+    return index.ko.find((p) => p.re.test(text))?.id ?? null;
+  }
+  const text = speechText(title);
+  return index.latin.find((p) => p.re.test(text))?.id ?? null;
+}
+
 // ─── 색인 ────────────────────────────────────────────────────────────────
 
 export interface SlugGroup {
@@ -2882,6 +3185,8 @@ export interface KeywordIndex {
   competitions: ReadonlyArray<{ comp: CompId; group: CompiledGroup }>;
   bigClubs: readonly SlugGroup[];
   koreanPlayers: readonly SlugGroup[];
+  /** 감독 발언 문형(names.ko `manager` 항목 — classify.ts 감독·구단, D47 사용자 결정 A) */
+  managers: ManagerIndex;
 }
 
 /** names.ko.json 항목 중 그 slug·유형의 표기(en·ko) */
@@ -2960,8 +3265,8 @@ export const KOREAN_HOMONYM_PLAYERS: ReadonlySet<string> = new Set([
 ]);
 
 /**
- * 키워드 색인을 만든다 — 한국 선수는 `koreanKeywordPlayers`(활성 등록 선수), 빅클럽·대회·이적은 코드 표 + names.ko 표기.
- * 설정이 없으면(null — 읽기 실패) 코드 표만 쓴다.
+ * 키워드 색인을 만든다 — 한국 선수는 `koreanKeywordPlayers`(활성 등록 선수), 빅클럽·대회·이적은 코드 표 + names.ko 표기, 감독 발언은
+ * names.ko 감독 항목(`buildManagerIndex`). 설정이 없으면(null — 읽기 실패) 코드 표만 쓴다(감독 발언 문형 없음).
  */
 export function buildKeywordIndex(input: {
   names?: NamesKoFile | null;
@@ -3006,6 +3311,7 @@ export function buildKeywordIndex(input: {
         }),
       };
     }),
+    managers: buildManagerIndex(names),
   };
 }
 
