@@ -1506,5 +1506,111 @@
       }
     ],
     "status": "success"
+  },
+  {
+    "runId": "collect-prod-20261025T131348Z-de30",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-10-25T13:13:48.390Z",
+    "finishedAt": "2026-10-25T13:14:51.655Z",
+    "collected": 458,
+    "clusters": 0,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": {
+      "in": 7641,
+      "out": 6415,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.003972,
+    "apiCalls": {
+      "footballData": 6,
+      "apiFootball": 2
+    },
+    "sources": [
+      {
+        "id": "bbc-sport-football",
+        "ok": true,
+        "items": 77,
+        "usable": 2
+      },
+      {
+        "id": "bbc-sport-premier-league",
+        "ok": true,
+        "items": 34,
+        "usable": 0
+      },
+      {
+        "id": "bbc-sport-champions-league",
+        "ok": true,
+        "items": 15,
+        "usable": 0
+      },
+      {
+        "id": "bbc-sport-european",
+        "ok": true,
+        "items": 27,
+        "usable": 0
+      },
+      {
+        "id": "the-athletic-football",
+        "ok": true,
+        "items": 100,
+        "usable": 1
+      },
+      {
+        "id": "daily-briefing",
+        "ok": true,
+        "items": 20,
+        "usable": 1
+      },
+      {
+        "id": "di-marzio",
+        "ok": true,
+        "items": 10,
+        "usable": 10
+      },
+      {
+        "id": "relevo",
+        "ok": true,
+        "items": 15,
+        "usable": 4
+      },
+      {
+        "id": "interfootball-world",
+        "ok": true,
+        "items": 20,
+        "usable": 5
+      },
+      {
+        "id": "interfootball-all",
+        "ok": true,
+        "items": 50,
+        "usable": 11
+      },
+      {
+        "id": "footballist-football",
+        "ok": true,
+        "items": 20,
+        "usable": 7
+      },
+      {
+        "id": "besteleven-world",
+        "ok": true,
+        "items": 20,
+        "usable": 4
+      },
+      {
+        "id": "besteleven-all",
+        "ok": true,
+        "items": 50,
+        "usable": 5
+      }
+    ],
+    "status": "success",
+    "brief": {
+      "requests": 1
+    }
   }
 ]

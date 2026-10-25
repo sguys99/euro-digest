@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-10-25T12:07:18.684Z",
+  "updatedAt": "2026-10-25T13:13:55.834Z",
   "fixtures": [
     {
       "id": 1550161,
       "comp": "SERIEA",
       "leagueId": 135,
       "kickoff": "2026-10-25T11:30:00.000Z",
-      "status": "1H",
+      "status": "2H",
       "firstSeen": "2026-10-25T12:07:18.676Z",
       "requeries": 0
     },
@@ -15,7 +15,7 @@
       "comp": "LALIGA",
       "leagueId": 140,
       "kickoff": "2026-10-25T13:00:00.000Z",
-      "status": "NS",
+      "status": "1H",
       "firstSeen": "2026-10-25T12:07:18.676Z",
       "requeries": 0
     },

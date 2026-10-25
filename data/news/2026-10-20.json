@@ -1,7 +1,7 @@
 {
   "date": "2026-10-20",
-  "generatedAt": "2026-10-25T12:07:10.877Z",
-  "runId": "collect-prod-20261025T120710Z-294b",
+  "generatedAt": "2026-10-25T13:13:48.462Z",
+  "runId": "collect-prod-20261025T131348Z-de30",
   "cards": [
     {
       "id": "c_b1c9ee5296",
@@ -278,12 +278,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/ck9qznlywy8no?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-19T21:34:06.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7705218/2026/10/19/cristiano-ronaldo-portugal-dispute-fine/",
-          "at": "2026-10-19T18:29:23.000Z",
           "tier": 2
         }
       ],

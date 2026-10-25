@@ -1,7 +1,58 @@
 {
   "date": "2026-10-25",
-  "generatedAt": "2026-10-24T23:44:47.203Z",
-  "runId": "collect-prod-20261024T234231Z-2fdf",
-  "mode": "empty",
-  "lines": []
+  "generatedAt": "2026-10-25T13:14:51.644Z",
+  "runId": "collect-prod-20261025T131348Z-de30",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "라이프치히가 엘페르스베르크를 4-0으로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m565832"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    },
+    {
+      "text": "엘체가 라요 바예카노를 3-0으로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m564718"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "애스턴 빌라가 니콜라스 잭슨의 60분 결승골로 맨체스터 시티를 2-1로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m560614"
+      ],
+      "comps": [
+        "EPL"
+      ]
+    },
+    {
+      "text": "아틀레티코 마드리드가 훌리안 알바레스의 48분 결승골로 데포르티보 라코루냐를 1-0으로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m564724"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "도르트문트는 승점 17로 분데스리가 선두다.",
+      "ai": true,
+      "refs": [
+        "sBL"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    }
+  ]
 }
