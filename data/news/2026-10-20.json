@@ -1,7 +1,7 @@
 {
   "date": "2026-10-20",
-  "generatedAt": "2026-10-24T23:42:31.863Z",
-  "runId": "collect-prod-20261024T234231Z-2fdf",
+  "generatedAt": "2026-10-25T12:07:10.877Z",
+  "runId": "collect-prod-20261025T120710Z-294b",
   "cards": [
     {
       "id": "c_b1c9ee5296",
@@ -519,12 +519,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cq62yd157rjeo?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-19T10:06:10.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7698304/2026/10/19/duncan-ferguson-manager-glentoran/",
-          "at": "2026-10-19T10:10:22.000Z",
           "tier": 2
         }
       ],

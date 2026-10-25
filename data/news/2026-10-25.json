@@ -1,7 +1,7 @@
 {
   "date": "2026-10-25",
-  "generatedAt": "2026-10-24T23:42:37.572Z",
-  "runId": "collect-prod-20261024T234231Z-2fdf",
+  "generatedAt": "2026-10-25T12:07:16.439Z",
+  "runId": "collect-prod-20261025T120710Z-294b",
   "cards": [
     {
       "id": "c_5583ab3ea4",
@@ -23,6 +23,12 @@
           "n": "인터풋볼",
           "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697087",
           "at": "2026-10-24T23:40:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313415",
+          "at": "2026-10-25T03:48:31.000Z",
           "tier": 3
         },
         {
