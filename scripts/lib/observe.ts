@@ -435,12 +435,15 @@ export function parseRunTrigger(
   };
 }
 
-/** 가드 job notice 주석 제목 `수집 건너뜀 (<사유>)`·오류 제목 `수집 가드 설정 오류 (<사유>)` → 사유 */
+/**
+ * 가드 job notice 주석 제목 `수집 건너뜀 (<사유>)`·재시도 제목 `수집 재시도 (results-pending-retry)`(결과 지연 백업 재시도 —
+ * PRD §15 D60)·오류 제목 `수집 가드 설정 오류 (<사유>)` → 사유
+ */
 export function guardReasonFromAnnotations(
   annotations: readonly GhAnnotation[],
 ): string | null {
   for (const a of annotations) {
-    const m = /^수집 (?:건너뜀|가드 설정 오류) \(([a-z-]+)\)$/.exec(
+    const m = /^수집 (?:건너뜀|재시도|가드 설정 오류) \(([a-z-]+)\)$/.exec(
       a.title?.trim() ?? "",
     );
     if (m) return m[1]!;
@@ -483,8 +486,13 @@ export function observeRun(input: RunInput, date: string): RunObs {
     else if (guardJob.conclusion !== "success") guard = "fail";
     else if (collectJob && collectJob.conclusion !== "skipped") {
       guard = "run";
-      // 가드가 진행시키는 사유는 force 아니면 12시간 이력 없음뿐(collect-guard.ts precheck·decideFromHistory)
-      guardReason = trigger.force ? "forced" : "no-recent-success";
+      // 가드가 진행시키는 사유는 force · 12시간 이력 없음 · 결과 지연 백업 재시도(collect-guard.ts precheck·decideFromHistory).
+      // 재시도만 주석(`수집 재시도 (results-pending-retry)`)을 남긴다 — 주석이 없으면(조회 안 함·실패 포함) 앞의 둘로 본다.
+      guardReason = trigger.force
+        ? "forced"
+        : annotated === "results-pending-retry"
+          ? annotated
+          : "no-recent-success";
     } else if (collectJob) guard = "skip";
   }
 
@@ -542,7 +550,10 @@ export function observeRun(input: RunInput, date: string): RunObs {
   };
 }
 
-/** 이 실행의 가드 사유를 알려면 주석을 봐야 하나(건너뜀·실패) — 진입점이 주석 조회 여부를 정한다 */
+/**
+ * 이 실행의 가드 사유를 알려면 주석을 봐야 하나 — 진입점이 주석 조회 여부를 정한다. 건너뜀·실패, 그리고 수집이 돈 실행(결과 지연
+ * 백업 재시도인지 — 재시도 주석이 있다, D60). 가드가 끝나지 않았으면(진행 중) 보지 않는다.
+ */
 export function needsGuardAnnotations(jobs: readonly GhJob[]): number | null {
   const guardJob = findJob(jobs, GUARD_JOB_NAME);
   const collectJob = findJob(jobs, COLLECT_JOB_NAME);
@@ -550,7 +561,7 @@ export function needsGuardAnnotations(jobs: readonly GhJob[]): number | null {
   if (guardJob.conclusion !== null && guardJob.conclusion !== "success") {
     return guardJob.id;
   }
-  return collectJob?.conclusion === "skipped" ? guardJob.id : null;
+  return guardJob.conclusion === "success" && collectJob ? guardJob.id : null;
 }
 
 /** 로그를 읽을 실행 — 공개한 실행, 없으면 처음 수집이 돈 실행. 그 collect job id */

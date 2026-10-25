@@ -147,6 +147,12 @@ describe("가드 판단·실행 관찰 — 2026-10-18 실제 응답", () => {
       ]),
     ).toBe("invalid-trigger");
     expect(guardReasonFromAnnotations([])).toBeNull();
+    // 결과 지연 백업 재시도(D60) — 실행 판단이지만 주석을 남긴다
+    expect(
+      guardReasonFromAnnotations([
+        { title: "수집 재시도 (results-pending-retry)", message: "…" },
+      ]),
+    ).toBe("results-pending-retry");
   });
 
   it("건너뛴 schedule: 가드 skip(schedule-disabled), 아침 창 안(08:24 KST), 배포 없음", () => {
@@ -168,7 +174,8 @@ describe("가드 판단·실행 관찰 — 2026-10-18 실제 응답", () => {
   });
 
   it("수동 dispatch: 가드 run(no-recent-success), 공개 = Pages 배포 단계 완료, 아침 창 밖", () => {
-    expect(needsGuardAnnotations(JOBS_RUN)).toBeNull();
+    // 수집이 돈 실행도 주석을 본다 — 결과 지연 백업 재시도(D60)인지 재시도 주석으로만 알 수 있다
+    expect(needsGuardAnnotations(JOBS_RUN)).toBe(117597063677);
     const obs = observeRun(
       { run: runById(39100995214), jobs: JOBS_RUN, annotations: null },
       "2026-10-18",
@@ -185,6 +192,33 @@ describe("가드 판단·실행 관찰 — 2026-10-18 실제 응답", () => {
     });
     const target = logTarget([obs], new Map([[obs.id, JOBS_RUN]]));
     expect(target).toEqual({ runId: 39100995214, jobId: 117597140997 });
+  });
+
+  it("결과 지연 백업 재시도(D60): 재시도 주석이 있으면 run 사유 results-pending-retry, 주석 없음·빈 주석은 no-recent-success, force가 먼저", () => {
+    const retry = [
+      { title: "수집 재시도 (results-pending-retry)", message: "…" },
+    ];
+    const base = runById(39100995214);
+    expect(
+      observeRun(
+        { run: base, jobs: JOBS_RUN, annotations: retry },
+        "2026-10-18",
+      ),
+    ).toMatchObject({ guard: "run", guardReason: "results-pending-retry" });
+    expect(
+      observeRun({ run: base, jobs: JOBS_RUN, annotations: [] }, "2026-10-18")
+        .guardReason,
+    ).toBe("no-recent-success");
+    const forced: GhRun = {
+      ...base,
+      display_title: "Collect (workflow_dispatch, force)",
+    };
+    expect(
+      observeRun(
+        { run: forced, jobs: JOBS_RUN, annotations: retry },
+        "2026-10-18",
+      ).guardReason,
+    ).toBe("forced");
   });
 
   it("계절에 맞지 않는 트리거가 수집하면 계절 위반 — 건너뛰면 ok", () => {

@@ -19,6 +19,16 @@
  *      겨울: 07:10 dispatch(winter)·07:20 schedule만 진행, 06:30 dispatch(summer)·06:40 schedule은 skip.
  *   5. workflow_dispatch + force → 실행 (12시간 가드 무시, 수동 재실행용)
  *   6. 최근 12시간 안에 "수집 job이 성공한" 실행이 있으면 실행 안 함, 없으면 실행
+ *      6a. 결과 지연 백업 재시도(PRD §15 D60 — 2026-10-25 사용자 결정): 오늘 발행일(KST)의 브리핑 파일
+ *          `data/briefs/<발행일>.json`이 mode `empty` + `emptyReason: "results-pending"`이면 **그 발행일의 수집 성공**을 성공
+ *          이력으로 세지 않는다 → 다음 트리거(계절에 맞는 백업 — 1~4를 통과한 것)가 한 번 더 수집해 보충·브리핑을 시도한다.
+ *          **한 번만**: 그 발행일의 수집 성공이 2건 이상(GitHub 이력)이거나 그 발행일 prod collect 실행 기록이 2건 이상
+ *          (`data/runs.json` — 실패로 보존된 재시도 기록 포함, dry 기록 skipped 제외)이면 재시도를 이미 한 것으로 보고 6을 그대로
+ *          적용한다(그 뒤엔 수동 force). 실행 기록을 읽지 못하면(시도 수를 모름) 재시도하지 않는다 — 중복 수집 쪽으로 열지 않는다.
+ *          다른 발행일의 성공은 그대로 센다. 브리핑·실행 기록은 CLI가 main 최신 체크아웃(collect.yml guard job `ref: main`)에서
+ *          읽는다 — concurrency로 기다리는 동안 앞 실행이 push한 data 커밋을 봐야 하므로 트리거 시점 SHA를 쓰지 않는다.
+ *          발행일 = 수집 job 시작 시각의 KST 날짜(collect.ts 발행일 = 수집 시작 시각의 KST 날짜와 같다 — 자정 직전 시작만 하루
+ *          어긋날 수 있다, 그때는 재시도하지 않는 쪽으로 어긋난다).
  *   계절 skip도 3의 skip과 같이 실행은 success, 수집 job은 skipped로 끝나 아래 정의상 성공 이력이 아니다.
  *
  * "성공 이력" 정의 — 실행(run) 결론만 보지 않는 이유
@@ -30,8 +40,10 @@
  *   run 결론이 failure라 빠진다(다음 실행이 다시 시도하고, 실패 이슈가 따로 남는다).
  *   성공 시각은 수집 job의 completed_at(없으면 실행의 updated_at)이다.
  */
+import type { BriefFile, RunLog } from "@/lib/schema";
 import {
   formatKst,
+  kstDate,
   nowUtcIso,
   PUBLISH_SEASONS,
   publishSlotAt,
@@ -93,7 +105,8 @@ export type GuardReason =
   | "off-season"
   | "forced"
   | "recent-success"
-  | "no-recent-success";
+  | "no-recent-success"
+  | "results-pending-retry";
 
 /** 트리거에 붙은 계절 슬롯 (M1-47) */
 export interface TriggerSlot {
@@ -129,6 +142,43 @@ export interface RecentSuccess {
   event: string;
   /** 수집 job 완료 시각 (ISO 8601, UTC) */
   completedAt: string;
+  /** 그 실행의 발행일(KST) — 수집 job 시작 시각(없으면 실행 시작 시각)의 KST 날짜. 결과 지연 재시도(6a)가 쓴다 */
+  publishDate: string;
+}
+
+/**
+ * 오늘 발행일 브리핑 파일 상태(6a — D60). CLI가 main 최신 체크아웃에서 읽은 결과(brief-file.ts `readBriefFile`)를
+ * `todayBriefState`로 바꾼다. results-pending = mode empty + emptyReason results-pending · other = 그 밖의 유효한 파일 ·
+ * missing = 파일 없음 · unreadable = 읽기·JSON·스키마 오류(재시도하지 않는다).
+ */
+export interface TodayBrief {
+  /** 발행일(KST) = 파일명 */
+  date: string;
+  state: "results-pending" | "other" | "missing" | "unreadable";
+  /** 사람이 읽는 설명(Step Summary) — "empty(results-pending)" · "mode llm" · "파일 없음" · 오류 문구 */
+  detail: string;
+}
+
+/** 결과 지연 재시도(6a) 판단 입력 — 오늘 브리핑 상태 + 그 발행일 prod collect 실행 기록 수 */
+export interface ResultsPendingCheck {
+  brief: TodayBrief;
+  /**
+   * `data/runs.json`의 그 발행일 prod collect 실행 기록 수(`countCollectAttempts` — 성공·부분·실패로 보존된 기록, dry 기록 skipped
+   * 제외). 읽지 못했으면 null — 시도 수를 몰라 재시도하지 않는다.
+   */
+  attempts: number | null;
+  /** 실행 기록 읽기 오류(attempts가 null일 때 — Step Summary) */
+  runsError?: string | null;
+}
+
+/** 결과 지연 재시도(6a) 판단 결과 — Step Summary·로그용 */
+export interface ResultsPendingNote {
+  /** 그 발행일 성공을 성공 이력에서 뺐는가(재시도) */
+  applied: boolean;
+  /** 사람이 읽는 설명 */
+  note: string;
+  /** 성공 이력에서 뺀 그 발행일 성공(applied일 때) */
+  ignored?: RecentSuccess;
 }
 
 export interface GuardDecision {
@@ -137,6 +187,10 @@ export interface GuardDecision {
   /** 사람이 읽는 설명 (Step Summary·로그) */
   message: string;
   recent?: RecentSuccess;
+  /** 오늘 브리핑 상태(6a 입력 — 이력까지 본 판단에만) */
+  brief?: TodayBrief;
+  /** 오늘 브리핑이 결과 지연일 때 재시도 판단(6a) */
+  pendingRetry?: ResultsPendingNote;
 }
 
 /** 실패로 끝내야 하는 판단인가 — CLI가 exit 1로 끝내 실패 이슈(report-failure)를 남긴다. 건너뛰기는 실패가 아니다. */
@@ -161,6 +215,8 @@ export interface WorkflowRun {
 export interface WorkflowJob {
   name: string;
   conclusion: string | null;
+  /** job 시작 시각 — 대기 중이거나 응답에 없으면 null */
+  startedAt: string | null;
   completedAt: string | null;
 }
 
@@ -455,6 +511,7 @@ export function parseWorkflowJobs(
       !isObject(item) ||
       typeof item.name !== "string" ||
       !isNullableString(item.conclusion) ||
+      !isOptionalTimestamp(item.started_at) ||
       !isOptionalTimestamp(item.completed_at)
     ) {
       return { ok: false, error: `jobs[${index}]의 형식이 예상과 다릅니다` };
@@ -462,6 +519,7 @@ export function parseWorkflowJobs(
     jobs.push({
       name: item.name,
       conclusion: item.conclusion,
+      startedAt: item.started_at ?? null,
       completedAt: item.completed_at ?? null,
     });
   }
@@ -524,28 +582,149 @@ export function findCollectSuccess(
     url: run.htmlUrl,
     event: run.event,
     completedAt,
+    publishDate: kstDateOf(job.startedAt ?? run.runStartedAt ?? run.createdAt),
   };
 }
 
-/** 이력 확인 결과로 최종 판단한다(판단 순서 5). 여러 건이면 가장 최근 성공을 근거로 든다. */
-export function decideFromHistory(
+/** GitHub 시각(검증된 ISO — 밀리초 없음 가능) → KST 날짜. time.ts가 받는 형식으로 한 번 정규화한다 */
+function kstDateOf(timestamp: string): string {
+  return kstDate(nowUtcIso(new Date(Date.parse(timestamp))));
+}
+
+// ─── 결과 지연 백업 재시도 (6a — PRD §15 D60) ──────────────────────────────
+
+/** 브리핑 파일 읽기 결과(brief-file.ts `BriefFileRead`와 같은 모양 — 필요한 필드만) → 6a 입력 상태 */
+export function todayBriefState(
+  date: string,
+  read: {
+    exists: boolean;
+    value: Pick<BriefFile, "mode" | "emptyReason"> | null;
+    error: string | null;
+  },
+): TodayBrief {
+  if (!read.exists) return { date, state: "missing", detail: "파일 없음" };
+  if (read.value === null) {
+    return {
+      date,
+      state: "unreadable",
+      detail: `읽기 오류 — ${read.error ?? "알 수 없음"}`,
+    };
+  }
+  const { mode, emptyReason } = read.value;
+  if (mode === "empty") {
+    // 키 없는 옛 empty는 no-matches(src/lib/schema/brief.ts)
+    const reason = emptyReason ?? "no-matches";
+    return {
+      date,
+      state: reason === "results-pending" ? "results-pending" : "other",
+      detail: `empty(${reason})`,
+    };
+  }
+  return { date, state: "other", detail: `mode ${mode}` };
+}
+
+/**
+ * 그 발행일(KST)의 prod collect 실행 기록 수 — 재시도를 이미 했는지(6a 한 번만) 판단용. 기록 시작 시각(startedAt)의 KST 날짜 =
+ * 발행일(src/lib/schema/run.ts). 성공·부분·실패로 보존된 기록(M1-27)을 모두 센다 — 실패한 재시도도 재시도다. dry 실행 기록
+ * (status skipped — collect-run.ts recordedRunStatus)은 발행 시도가 아니라 뺀다.
+ */
+export function countCollectAttempts(
+  runs: readonly Pick<RunLog, "env" | "job" | "status" | "startedAt">[],
+  date: string,
+): number {
+  return runs.filter(
+    (run) =>
+      run.env === "prod" &&
+      run.job === "collect" &&
+      run.status !== "skipped" &&
+      kstDate(run.startedAt) === date,
+  ).length;
+}
+
+/** 가장 최근 성공(완료 시각 기준) */
+function latestSuccess(
   successes: readonly RecentSuccess[],
-): GuardDecision {
-  const recent = [...successes].sort(
+): RecentSuccess | undefined {
+  return [...successes].sort(
     (a, b) => Date.parse(b.completedAt) - Date.parse(a.completedAt),
   )[0];
+}
+
+/**
+ * 결과 지연 재시도(6a)를 적용할지 — 오늘 브리핑이 results-pending이고 그 발행일의 성공이 있을 때만 판단한다(아니면 null).
+ * 적용 조건: 그 발행일 성공 1건 + 실행 기록 시도 수 ≤ 1(재시도 전). 실행 기록을 읽지 못하면 적용하지 않는다.
+ */
+function judgeResultsPending(
+  successes: readonly RecentSuccess[],
+  check: ResultsPendingCheck,
+): ResultsPendingNote | null {
+  const { date } = check.brief;
+  if (check.brief.state !== "results-pending") return null;
+  const sameDay = successes.filter((s) => s.publishDate === date);
+  const [ignored] = sameDay;
+  if (!ignored) return null;
+  if (check.attempts === null) {
+    return {
+      applied: false,
+      note: `발행일 ${date} 브리핑이 결과 지연(results-pending)이지만 실행 기록(data/runs.json)을 읽지 못해 재시도했는지 알 수 없다 — 재시도하지 않는다${check.runsError ? ` (${check.runsError})` : ""}`,
+    };
+  }
+  const tried = Math.max(sameDay.length, check.attempts);
+  if (tried >= 2) {
+    return {
+      applied: false,
+      note: `발행일 ${date} 브리핑이 결과 지연(results-pending)이지만 그날 수집을 이미 ${tried}번 시도했다(성공 ${sameDay.length} · 실행 기록 ${check.attempts}) — 백업 재시도는 한 번만, 더 돌리려면 force`,
+    };
+  }
+  return {
+    applied: true,
+    note: `발행일 ${date} 브리핑이 결과 지연(results-pending) — 그날 수집 성공(실행 #${ignored.runNumber})을 ${SUCCESS_WINDOW_HOURS}시간 가드의 성공 이력으로 세지 않는다(PRD §15 D60 백업 재시도 — 한 번만)`,
+    ignored,
+  };
+}
+
+/**
+ * 이력 확인 결과로 최종 판단한다(판단 순서 6·6a). 여러 건이면 가장 최근 성공을 근거로 든다.
+ * `check`(오늘 브리핑 상태·실행 기록 시도 수)가 있고 브리핑이 결과 지연이면 6a 규칙으로 그 발행일 성공을 뺄 수 있다.
+ */
+export function decideFromHistory(
+  successes: readonly RecentSuccess[],
+  check: ResultsPendingCheck | null = null,
+): GuardDecision {
+  const pendingRetry = check ? judgeResultsPending(successes, check) : null;
+  const ignoredDate = pendingRetry?.applied ? check?.brief.date : undefined;
+  const counted =
+    ignoredDate === undefined
+      ? successes
+      : successes.filter((s) => s.publishDate !== ignoredDate);
+  const extra = {
+    ...(check ? { brief: check.brief } : {}),
+    ...(pendingRetry ? { pendingRetry } : {}),
+  };
+  const recent = latestSuccess(counted);
   if (recent) {
+    const retryNote = pendingRetry ? ` · ${pendingRetry.note}` : "";
     return {
       run: false,
       reason: "recent-success",
-      message: `최근 ${SUCCESS_WINDOW_HOURS}시간 안에 수집 성공 이력이 있다(실행 #${recent.runNumber}, ${recent.completedAt} 완료) — 건너뛴다. 다시 돌리려면 force를 켜고 수동 실행할 것`,
+      message: `최근 ${SUCCESS_WINDOW_HOURS}시간 안에 수집 성공 이력이 있다(실행 #${recent.runNumber}, ${recent.completedAt} 완료) — 건너뛴다. 다시 돌리려면 force를 켜고 수동 실행할 것${retryNote}`,
       recent,
+      ...extra,
+    };
+  }
+  if (pendingRetry?.applied) {
+    return {
+      run: true,
+      reason: "results-pending-retry",
+      message: `${pendingRetry.note} → 한 번 다시 수집해 보충·브리핑을 시도한다`,
+      ...extra,
     };
   }
   return {
     run: true,
     reason: "no-recent-success",
     message: `최근 ${SUCCESS_WINDOW_HOURS}시간 안에 수집 성공 이력이 없다 — 실행한다`,
+    ...extra,
   };
 }
 
@@ -588,16 +767,29 @@ export function formatGuardSummary(
     ["COLLECT_ENABLED", String(trigger.collectEnabled)],
     ["force", String(trigger.force)],
   ];
+  const successCell = ({ runNumber, url, event, completedAt }: RecentSuccess) =>
+    `[#${runNumber}](${url}) · ${event} · ${completedAt} (UTC)`;
   if (decision.recent) {
-    const { runNumber, url, event, completedAt } = decision.recent;
+    rows.push(["최근 수집 성공", successCell(decision.recent)]);
+  }
+  if (decision.brief) {
     rows.push([
-      "최근 수집 성공",
-      `[#${runNumber}](${url}) · ${event} · ${completedAt} (UTC)`,
+      "발행일 브리핑",
+      `${decision.brief.date} · ${cell(decision.brief.detail)}`,
     ]);
+  }
+  if (decision.pendingRetry) {
+    rows.push([
+      "결과 지연 재시도 (D60)",
+      `${decision.pendingRetry.applied ? "**적용**" : "적용 안 함"} — ${cell(decision.pendingRetry.note)}`,
+    ]);
+    if (decision.pendingRetry.ignored) {
+      rows.push(["세지 않은 성공", successCell(decision.pendingRetry.ignored)]);
+    }
   }
   rows.push(["판단 시각 (UTC)", now.toISOString()]);
   return [
-    "## 수집 가드 (계절 슬롯 · 12시간 성공 이력)",
+    "## 수집 가드 (계절 슬롯 · 12시간 성공 이력 · 결과 지연 재시도)",
     "",
     "| 항목 | 값 |",
     "|---|---|",

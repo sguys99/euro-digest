@@ -8,6 +8,7 @@ import { publishSlot, utcDate, zonedToUtcIso } from "@/lib/time";
 import type { ParseResult } from "../scripts/lib/cli-args";
 import {
   COLLECT_JOB_NAME,
+  countCollectAttempts,
   decideFromHistory,
   findCollectSuccess,
   formatGuardOutputs,
@@ -24,9 +25,12 @@ import {
   runJobsUrl,
   SCHEDULE_SEASONS,
   selectCandidateRuns,
+  todayBriefState,
   workflowRunsUrl,
   type GuardTrigger,
   type RecentSuccess,
+  type ResultsPendingCheck,
+  type TodayBrief,
   type TriggerSlot,
   type WorkflowJob,
   type WorkflowRun,
@@ -105,6 +109,7 @@ function job(overrides: Partial<WorkflowJob> = {}): WorkflowJob {
   return {
     name: COLLECT_JOB_NAME,
     conclusion: "success",
+    startedAt: hoursAgo(0.9),
     completedAt: hoursAgo(0.6),
     ...overrides,
   };
@@ -568,6 +573,7 @@ describe("parseWorkflowJobs", () => {
               name: COLLECT_JOB_NAME,
               status: "completed",
               conclusion: "skipped",
+              started_at: "2026-10-10T21:40:28Z",
               completed_at: "2026-10-10T21:40:30Z",
             },
             {
@@ -583,9 +589,15 @@ describe("parseWorkflowJobs", () => {
       {
         name: COLLECT_JOB_NAME,
         conclusion: "skipped",
+        startedAt: "2026-10-10T21:40:28Z",
         completedAt: "2026-10-10T21:40:30Z",
       },
-      { name: "실패 이슈 보고", conclusion: null, completedAt: null },
+      {
+        name: "실패 이슈 보고",
+        conclusion: null,
+        startedAt: null,
+        completedAt: null,
+      },
     ]);
   });
 
@@ -594,6 +606,13 @@ describe("parseWorkflowJobs", () => {
     expect(errorOf(parseWorkflowJobs({ jobs: [{ name: 1 }] }))).toContain(
       "jobs[0]",
     );
+    expect(
+      errorOf(
+        parseWorkflowJobs({
+          jobs: [{ name: "x", conclusion: null, started_at: "어제" }],
+        }),
+      ),
+    ).toContain("jobs[0]");
   });
 });
 
@@ -640,7 +659,38 @@ describe("findCollectSuccess", () => {
       url: "https://github.com/sguys99/euro-digest/actions/runs/100",
       event: "workflow_dispatch",
       completedAt: hoursAgo(11.9),
+      publishDate: "2026-10-11", // 수집 job 시작 05:51 KST
     });
+  });
+
+  it("발행일 = 수집 job 시작 시각의 KST 날짜 — 없으면 실행 시작(재실행이면 그 시도) → 생성 시각 (6a 결과 지연 재시도용)", () => {
+    // 수집 job 시작 2026-10-10 23:50 KST(14:50Z) → 완료 다음 날 00:10이어도 발행일은 시작 쪽(collect.ts 발행일 규칙)
+    expect(
+      findCollectSuccess(
+        run({ runStartedAt: "2026-10-10T14:40:00Z" }),
+        [
+          job({
+            startedAt: "2026-10-10T14:50:00Z",
+            completedAt: "2026-10-10T15:10:00Z",
+          }),
+        ],
+        NOW,
+      )?.publishDate,
+    ).toBe("2026-10-10");
+    expect(
+      findCollectSuccess(
+        run({ runStartedAt: "2026-10-10T21:30:00Z" }),
+        [job({ startedAt: null })],
+        NOW,
+      )?.publishDate,
+    ).toBe("2026-10-11");
+    expect(
+      findCollectSuccess(
+        run({ runStartedAt: null, createdAt: "2026-10-10T14:00:00Z" }),
+        [job({ startedAt: null })],
+        NOW,
+      )?.publishDate,
+    ).toBe("2026-10-10");
   });
 
   it("가드가 건너뛴 실행(수집 job skipped)은 실행이 success여도 성공 이력이 아니다", () => {
@@ -689,6 +739,7 @@ describe("decideFromHistory", () => {
     url: `https://github.com/sguys99/euro-digest/actions/runs/${runNumber * 10}`,
     event: "workflow_dispatch",
     completedAt: hoursAgo(hours),
+    publishDate: "2026-10-11",
   });
 
   it("성공 이력이 없으면 실행", () => {
@@ -811,6 +862,357 @@ describe("12시간 가드 시나리오", () => {
   });
 });
 
+describe("결과 지연 백업 재시도 — 입력 (판단 순서 6a, PRD §15 D60)", () => {
+  it("todayBriefState: results-pending만 재시도 대상, 키 없는 옛 empty는 no-matches, 없음·깨짐은 따로", () => {
+    const date = "2026-10-11";
+    expect(
+      todayBriefState(date, { exists: false, value: null, error: null }),
+    ).toEqual<TodayBrief>({ date, state: "missing", detail: "파일 없음" });
+    expect(
+      todayBriefState(date, {
+        exists: true,
+        value: null,
+        error: "JSON 형식 오류",
+      }),
+    ).toEqual<TodayBrief>({
+      date,
+      state: "unreadable",
+      detail: "읽기 오류 — JSON 형식 오류",
+    });
+    expect(
+      todayBriefState(date, {
+        exists: true,
+        value: { mode: "empty", emptyReason: "results-pending" },
+        error: null,
+      }),
+    ).toEqual<TodayBrief>({
+      date,
+      state: "results-pending",
+      detail: "empty(results-pending)",
+    });
+    expect(
+      todayBriefState(date, {
+        exists: true,
+        value: { mode: "empty", emptyReason: "no-matches" },
+        error: null,
+      }).state,
+    ).toBe("other");
+    expect(
+      todayBriefState(date, {
+        exists: true,
+        value: { mode: "empty" },
+        error: null,
+      }),
+    ).toMatchObject({ state: "other", detail: "empty(no-matches)" });
+    for (const mode of ["llm", "mixed", "template"] as const) {
+      expect(
+        todayBriefState(date, { exists: true, value: { mode }, error: null }),
+      ).toMatchObject({ state: "other", detail: `mode ${mode}` });
+    }
+  });
+
+  it("countCollectAttempts: 그 발행일(startedAt의 KST 날짜) prod collect 기록 — 실패 보존 기록은 세고 dry(skipped)·weekly는 뺀다", () => {
+    const rec = (
+      startedAt: string,
+      status: "success" | "partial" | "failed" | "skipped" = "success",
+      job: "collect" | "weekly" = "collect",
+    ) => ({ env: "prod" as const, job, status, startedAt });
+    const runs = [
+      rec("2026-10-10T21:31:00Z"), // 10-11 06:31 KST — 정기 실행
+      rec("2026-10-10T21:48:00Z", "failed"), // 10-11 06:48 — 실패한 재시도(M1-27 보존)
+      rec("2026-10-10T22:00:00Z", "partial"),
+      rec("2026-10-10T22:10:00Z", "skipped"), // dry
+      rec("2026-10-10T22:20:00Z", "success", "weekly"),
+      rec("2026-10-10T15:00:00Z"), // 10-11 00:00 KST — 그날 첫 순간
+      rec("2026-10-10T14:59:59Z"), // 10-10 23:59:59 KST — 전날
+    ];
+    expect(countCollectAttempts(runs, "2026-10-11")).toBe(4);
+    expect(countCollectAttempts(runs, "2026-10-10")).toBe(1);
+    expect(countCollectAttempts([], "2026-10-11")).toBe(0);
+  });
+});
+
+describe("결과 지연 백업 재시도 — 판단 (6a)", () => {
+  const DATE = "2026-10-11"; // NOW = 10-11 06:45 KST(여름)
+  const success = (
+    runNumber: number,
+    hours: number,
+    publishDate = DATE,
+  ): RecentSuccess => ({
+    runId: runNumber * 10,
+    runNumber,
+    url: `https://github.com/sguys99/euro-digest/actions/runs/${runNumber * 10}`,
+    event: "workflow_dispatch",
+    completedAt: hoursAgo(hours),
+    publishDate,
+  });
+  const brief = (
+    state: TodayBrief["state"],
+    detail = state === "results-pending"
+      ? "empty(results-pending)"
+      : "mode llm",
+  ): TodayBrief => ({ date: DATE, state, detail });
+  const check = (
+    state: TodayBrief["state"],
+    attempts: number | null = 1,
+  ): ResultsPendingCheck => ({ brief: brief(state), attempts });
+
+  it("그날 브리핑이 results-pending이고 그날 성공 1건·실행 기록 1건이면 그 성공을 세지 않고 실행한다", () => {
+    const primary = success(41, 0.05);
+    const decision = decideFromHistory([primary], check("results-pending"));
+    expect(decision).toMatchObject({
+      run: true,
+      reason: "results-pending-retry",
+      brief: { date: DATE, state: "results-pending" },
+      pendingRetry: { applied: true, ignored: { runNumber: 41 } },
+    });
+    expect(decision.recent).toBeUndefined();
+    expect(decision.message).toContain("#41");
+    expect(decision.message).toContain("D60");
+    expect(decision.message).toContain("한 번 다시 수집");
+    expect(isFailureDecision(decision)).toBe(false);
+  });
+
+  it("no-matches·줄 있는 브리핑·파일 없음·깨진 파일이면 예외 없이 12시간 가드 그대로(건너뜀)", () => {
+    const primary = success(41, 0.05);
+    for (const state of ["other", "missing", "unreadable"] as const) {
+      const decision = decideFromHistory([primary], check(state));
+      expect([state, decision.run, decision.reason]).toEqual([
+        state,
+        false,
+        "recent-success",
+      ]);
+      expect(decision.pendingRetry).toBeUndefined();
+      expect(decision.brief?.state).toBe(state);
+    }
+  });
+
+  it("한 번만: 재시도가 성공으로 끝났으면(그날 성공 2건) 브리핑이 여전히 결과 지연이어도 건너뛴다 — 그 뒤엔 force", () => {
+    const decision = decideFromHistory(
+      [success(41, 0.4), success(42, 0.05)],
+      check("results-pending", 2),
+    );
+    expect(decision).toMatchObject({
+      run: false,
+      reason: "recent-success",
+      recent: { runNumber: 42 },
+      pendingRetry: { applied: false },
+    });
+    expect(decision.pendingRetry?.note).toContain("force");
+    expect(decision.message).toContain("이미 2번 시도");
+  });
+
+  it("한 번만: 재시도가 실패했어도(그날 성공 1건 + 실패 보존 기록 → 실행 기록 2건) 다시 재시도하지 않는다", () => {
+    const decision = decideFromHistory(
+      [success(41, 0.4)],
+      check("results-pending", 2),
+    );
+    expect(decision).toMatchObject({
+      run: false,
+      reason: "recent-success",
+      recent: { runNumber: 41 },
+      pendingRetry: { applied: false },
+    });
+  });
+
+  it("한 번만: 실행 기록이 1건이어도 그날 성공이 2건(GitHub 이력)이면 건너뛴다", () => {
+    expect(
+      decideFromHistory(
+        [success(41, 0.4), success(42, 0.05)],
+        check("results-pending", 1),
+      ),
+    ).toMatchObject({
+      run: false,
+      reason: "recent-success",
+      pendingRetry: { applied: false },
+    });
+  });
+
+  it("실행 기록을 읽지 못하면(시도 수 모름) 재시도하지 않는다 — 중복 수집 쪽으로 열지 않는다", () => {
+    const decision = decideFromHistory([success(41, 0.05)], {
+      brief: brief("results-pending"),
+      attempts: null,
+      runsError: "runs.json: JSON 파싱 실패",
+    });
+    expect(decision).toMatchObject({
+      run: false,
+      reason: "recent-success",
+      pendingRetry: { applied: false },
+    });
+    expect(decision.pendingRetry?.note).toContain("runs.json: JSON 파싱 실패");
+  });
+
+  it("다른 발행일의 성공은 그대로 센다 — 전날 저녁(9.75시간 전) 성공이 있으면 그날 성공을 빼도 건너뛴다", () => {
+    const decision = decideFromHistory(
+      [success(40, 9.75, "2026-10-10"), success(41, 0.05)],
+      check("results-pending"),
+    );
+    expect(decision).toMatchObject({
+      run: false,
+      reason: "recent-success",
+      recent: { runNumber: 40 },
+      pendingRetry: { applied: true, ignored: { runNumber: 41 } },
+    });
+  });
+
+  it("그날 성공이 없으면 예외를 볼 것도 없다 — 성공 이력이 없으면 평소처럼 실행(no-recent-success)", () => {
+    const decision = decideFromHistory([], check("results-pending"));
+    expect(decision).toMatchObject({
+      run: true,
+      reason: "no-recent-success",
+    });
+    expect(decision.pendingRetry).toBeUndefined();
+  });
+
+  it("check 없이 부르면 이전과 같다(brief·pendingRetry 없음)", () => {
+    const decision = decideFromHistory([success(41, 0.05)]);
+    expect(decision.reason).toBe("recent-success");
+    expect(decision.brief).toBeUndefined();
+    expect(decision.pendingRetry).toBeUndefined();
+  });
+});
+
+describe("결과 지연 백업 재시도 — 시나리오 (precheck → 이력, D26·D60)", () => {
+  /** CLI와 같은 순서: precheck가 결정하면 이력은 보지 않는다 */
+  function guard(
+    t: GuardTrigger,
+    now: Date,
+    history: { run: WorkflowRun; jobs: WorkflowJob[] }[],
+    currentRunId: number,
+    pending: ResultsPendingCheck | null,
+  ) {
+    const pre = precheck(t, now);
+    if (pre) return pre;
+    const successes = selectCandidateRuns(
+      history.map((h) => h.run),
+      { now, currentRunId },
+    )
+      .map((candidate) => {
+        const entry = history.find((h) => h.run.id === candidate.id);
+        return entry ? findCollectSuccess(entry.run, entry.jobs, now) : null;
+      })
+      .filter((s): s is RecentSuccess => s !== null);
+    return decideFromHistory(successes, pending);
+  }
+
+  // 여름 10-11: 06:30 cron-job.org(slot summer) 수집 성공 → 브리핑 results-pending. NOW 06:45 = 06:40 백업(concurrency 대기 뒤)
+  const primary = {
+    run: run({
+      id: 1,
+      runNumber: 51,
+      createdAt: "2026-10-10T21:30:05Z",
+      runStartedAt: "2026-10-10T21:30:05Z",
+      updatedAt: "2026-10-10T21:43:00Z",
+    }),
+    jobs: [
+      job({
+        name: "실행 판단 (계절 · 12시간 가드)",
+        startedAt: "2026-10-10T21:30:10Z",
+        completedAt: "2026-10-10T21:30:50Z",
+      }),
+      job({
+        startedAt: "2026-10-10T21:31:00Z",
+        completedAt: "2026-10-10T21:41:00Z",
+      }),
+    ],
+  };
+  const backup = trigger({
+    eventName: "schedule",
+    collectEnabled: true,
+    slot: SUMMER_SCHEDULE,
+  });
+  const pendingOnce: ResultsPendingCheck = {
+    brief: {
+      date: "2026-10-11",
+      state: "results-pending",
+      detail: "empty(results-pending)",
+    },
+    attempts: 1,
+  };
+
+  it("06:40 백업이 결과 지연 날에 한 번 더 수집한다(results-pending-retry)", () => {
+    expect(guard(backup, NOW, [primary], 2, pendingOnce)).toMatchObject({
+      run: true,
+      reason: "results-pending-retry",
+      pendingRetry: { ignored: { runNumber: 51, publishDate: "2026-10-11" } },
+    });
+  });
+
+  it("같은 날 브리핑이 결과 지연이 아니면(no-matches) 06:40 백업은 평소처럼 건너뛴다", () => {
+    expect(
+      guard(backup, NOW, [primary], 2, {
+        brief: {
+          date: "2026-10-11",
+          state: "other",
+          detail: "empty(no-matches)",
+        },
+        attempts: 1,
+      }),
+    ).toMatchObject({ run: false, reason: "recent-success" });
+  });
+
+  it("재시도 뒤 세 번째 트리거(cron-job.org 백업·늦은 schedule)는 건너뛴다 — 그날 성공 2건", () => {
+    const retry = {
+      run: run({
+        id: 2,
+        runNumber: 52,
+        event: "schedule",
+        createdAt: "2026-10-10T21:40:02Z",
+        runStartedAt: "2026-10-10T21:43:10Z",
+        updatedAt: "2026-10-10T21:55:00Z",
+      }),
+      jobs: [
+        job({
+          startedAt: "2026-10-10T21:44:00Z",
+          completedAt: "2026-10-10T21:53:00Z",
+        }),
+      ],
+    };
+    const later = new Date("2026-10-10T22:30:00Z"); // 07:30 KST
+    expect(
+      guard(backup, later, [retry, primary], 3, {
+        ...pendingOnce,
+        attempts: 2,
+      }),
+    ).toMatchObject({
+      run: false,
+      reason: "recent-success",
+      recent: { runNumber: 52 },
+      pendingRetry: { applied: false },
+    });
+  });
+
+  it("계절 판정이 먼저다 — 여름에 겨울 슬롯 트리거(07:20 schedule·07:10 dispatch)는 결과 지연이어도 off-season으로 건너뛴다", () => {
+    for (const slot of [WINTER_SCHEDULE, WINTER_DISPATCH]) {
+      const t = trigger({
+        eventName:
+          slot.source === "schedule" ? "schedule" : "workflow_dispatch",
+        collectEnabled: true,
+        slot,
+      });
+      expect(guard(t, NOW, [primary], 2, pendingOnce)).toMatchObject({
+        run: false,
+        reason: "off-season",
+      });
+    }
+  });
+
+  it("COLLECT_ENABLED가 꺼진 schedule은 결과 지연이어도 건너뛴다(schedule-disabled), force는 이력 없이 실행(forced)", () => {
+    expect(
+      guard(
+        { ...backup, collectEnabled: false },
+        NOW,
+        [primary],
+        2,
+        pendingOnce,
+      ),
+    ).toMatchObject({ run: false, reason: "schedule-disabled" });
+    expect(
+      guard(trigger({ force: true }), NOW, [primary], 2, pendingOnce),
+    ).toMatchObject({ run: true, reason: "forced" });
+  });
+});
+
 describe("출력 형식", () => {
   it("GITHUB_OUTPUT에 run·reason 두 줄", () => {
     expect(
@@ -834,6 +1236,7 @@ describe("출력 형식", () => {
           url: "https://github.com/sguys99/euro-digest/actions/runs/100",
           event: "workflow_dispatch",
           completedAt: "2026-10-10T21:44:00Z",
+          publishDate: "2026-10-11",
         },
       },
       trigger({
@@ -869,6 +1272,47 @@ describe("출력 형식", () => {
     );
     expect(summary).toContain(
       "2026-10-26 · 겨울(유럽 표준시) 07:10 수집 → 07:30 공개 · 브리핑 마감 07:20 (KST)",
+    );
+  });
+
+  it("Step Summary — 결과 지연 재시도(6a): 발행일 브리핑·재시도 적용·세지 않은 성공 행", () => {
+    const ignored: RecentSuccess = {
+      runId: 100,
+      runNumber: 7,
+      url: "https://github.com/sguys99/euro-digest/actions/runs/100",
+      event: "workflow_dispatch",
+      completedAt: "2026-10-10T21:41:00Z",
+      publishDate: "2026-10-11",
+    };
+    const decision = decideFromHistory([ignored], {
+      brief: {
+        date: "2026-10-11",
+        state: "results-pending",
+        detail: "empty(results-pending)",
+      },
+      attempts: 1,
+    });
+    const summary = formatGuardSummary(
+      decision,
+      trigger({
+        eventName: "schedule",
+        collectEnabled: true,
+        slot: SUMMER_SCHEDULE,
+      }),
+      NOW,
+    );
+    expect(summary).toContain("| 결과 | **실행** |");
+    expect(summary).toContain("`results-pending-retry` — ");
+    expect(summary).toContain(
+      "| 발행일 브리핑 | 2026-10-11 · empty(results-pending) |",
+    );
+    expect(summary).toContain("| 결과 지연 재시도 (D60) | **적용** — ");
+    expect(summary).toContain(
+      "| 세지 않은 성공 | [#7](https://github.com/sguys99/euro-digest/actions/runs/100) · workflow_dispatch · 2026-10-10T21:41:00Z (UTC) |",
+    );
+    expect(summary).not.toContain("| 최근 수집 성공 |");
+    expect(formatGuardOutputs(decision)).toBe(
+      "run=true\nreason=results-pending-retry\n",
     );
   });
 
@@ -930,6 +1374,16 @@ describe("collect.yml과의 동기화", () => {
       ]);
       expect(utcDate(slot.backupStart) < slot.date).toBe(true);
     }
+  });
+
+  it("guard job은 main 최신을 체크아웃한다 — 결과 지연 재시도(6a)가 앞 실행이 push한 data/briefs·runs.json을 읽게", () => {
+    const guard = workflow.slice(
+      workflow.indexOf("  guard:"),
+      workflow.indexOf("  collect:\n"),
+    );
+    expect(guard).toMatch(
+      /- name: 저장소 체크아웃 \(main\)\n {8}uses: actions\/checkout@v\d+\n {8}with:\n {10}ref: main\n {10}persist-credentials: false/,
+    );
   });
 
   it("guard 단계가 SCHEDULE(github.event.schedule)·SLOT(inputs.slot)을 env로 넘기고, dispatch 입력 slot이 있다", () => {

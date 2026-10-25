@@ -109,7 +109,7 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
 ```
 
 ## 6. 파이프라인 · LLM
-**6.1 흐름 (PRD §10)**: `cron-job.org(여름 06:30 · 겨울 07:10 KST) → workflow_dispatch(collect.yml)` → ① 수집(뉴스 + 전날 경기 데이터) → ② 정제·분류(코드: URL 정규화·해시 중복제거·클러스터링·점수화·상위 45건 · 카테고리·태그·이적 단계·spoiler 규칙) → ③ 데이터 브리핑(단건 Messages API — D28) → ④ 검증 게이트 → ⑤ 빌드 → ⑥ `data/` 커밋 → ⑦ 배포(`deploy.yml`). 검증이나 빌드가 실패하면 발행 산출물(뉴스·브리핑·기억 파일)은 커밋하지 않는다 — 실행 기록(`runs.json` 상태 failed)·경기 원장·이월만 '실행 기록 (발행 실패)' 커밋으로 남기고 배포하지 않는다(PRD §15 D49). `weekly.yml`도 끝에서 빌드 → 커밋 → `deploy.yml`. 백업 `schedule`(여름 06:40 · 겨울 07:20 KST)은 12시간 내 성공 이력이 있으면 skip, `concurrency: collect`.
+**6.1 흐름 (PRD §10)**: `cron-job.org(여름 06:30 · 겨울 07:10 KST) → workflow_dispatch(collect.yml)` → ① 수집(뉴스 + 전날 경기 데이터) → ② 정제·분류(코드: URL 정규화·해시 중복제거·클러스터링·점수화·상위 45건 · 카테고리·태그·이적 단계·spoiler 규칙) → ③ 데이터 브리핑(단건 Messages API — D28) → ④ 검증 게이트 → ⑤ 빌드 → ⑥ `data/` 커밋 → ⑦ 배포(`deploy.yml`). 검증이나 빌드가 실패하면 발행 산출물(뉴스·브리핑·기억 파일)은 커밋하지 않는다 — 실행 기록(`runs.json` 상태 failed)·경기 원장·이월만 '실행 기록 (발행 실패)' 커밋으로 남기고 배포하지 않는다(PRD §15 D49). `weekly.yml`도 끝에서 빌드 → 커밋 → `deploy.yml`. 백업 `schedule`(여름 06:40 · 겨울 07:20 KST)은 12시간 내 성공 이력이 있으면 skip, `concurrency: collect`. 그날 브리핑이 결과 지연(`results-pending`)이면 백업이 한 번 다시 수집한다(가드 예외 — PRD §15 D60).
 **계절별 발행 시각 (PRD §15 D26)**: 유럽 서머타임 기간(여름) 06:30 수집 → 07:00 공개, 유럽 표준시 기간(겨울) 07:10 수집 → 07:30 공개. 계절은 `src/lib/time.ts`의 `europeanSummerTimeTransitions`로 코드가 판정하고, 가드가 계절에 맞지 않는 트리거를 skip한다(성공 이력으로 세지 않음). 시각을 코드·문서에 새로 적을 때 07:00 하나로 고정하지 않는다.
 
 ### 6.2 LLM 구현

@@ -1662,7 +1662,7 @@ describe("runCollect — 브리핑 결과 보충·결과 지연(PRD §15 D60, 10
       lines: [],
     });
 
-    // 같은 발행일 수동(force) 재실행 — 운영의 백업 schedule은 12시간 가드(collect-guard.ts)가 건너뛴다. API-Football 결과로 보충 → 결과 지연 파일을 줄 있는 브리핑으로 덮는다
+    // 같은 발행일 재실행 — 운영에서는 백업 실행의 1회 재시도(12시간 가드 예외 — collect-guard.ts 6a, D60) 또는 그 뒤 수동 force. API-Football 결과로 보충 → 결과 지연 파일을 줄 있는 브리핑으로 덮는다
     const second = makeDeps(staleFd, withApiFootball());
     const rerun = await runCollect(second.deps);
     expect(rerun.publishDate).toBe("2026-10-11");

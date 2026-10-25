@@ -1,7 +1,11 @@
 /**
  * collect.yml `guard` job 진입점 (M0-14, FR-150, M1-47) — 이번 실행에서 수집을 진행할지 판단해
- * `$GITHUB_OUTPUT`(run·reason)과 Step Summary에 남긴다. 판단 규칙(계절 슬롯 · 12시간 가드)은 scripts/lib/collect-guard.ts의
- * 순수 함수.
+ * `$GITHUB_OUTPUT`(run·reason)과 Step Summary에 남긴다. 판단 규칙(계절 슬롯 · 12시간 가드 · 결과 지연 백업 재시도)은
+ * scripts/lib/collect-guard.ts의 순수 함수.
+ *
+ * 결과 지연 백업 재시도(판단 순서 6a — PRD §15 D60): 이력까지 볼 때 저장소 data/의 오늘 발행일 브리핑
+ * (`data/briefs/<발행일>.json`)과 실행 기록(`data/runs.json`)을 읽는다. collect.yml guard job은 main 최신을 체크아웃한다(`ref:
+ * main` — concurrency로 기다린 백업 실행이 앞 실행의 data 커밋을 보게). 읽기 오류는 던지지 않고 "재시도 안 함"으로 판단한다.
  *
  * 환경변수
  *   GITHUB_EVENT_NAME · GITHUB_REF · GITHUB_REPOSITORY · GITHUB_RUN_ID · GITHUB_API_URL
@@ -26,7 +30,11 @@
  */
 import { appendFileSync } from "node:fs";
 
+import { nowUtcIso, publishSlotAt } from "@/lib/time";
+
+import { readBriefFile } from "./lib/brief-file";
 import {
+  countCollectAttempts,
   decideFromHistory,
   findCollectSuccess,
   formatGuardOutputs,
@@ -38,11 +46,14 @@ import {
   readGuardEnv,
   runJobsUrl,
   selectCandidateRuns,
+  todayBriefState,
   workflowRunsUrl,
   type GuardDecision,
   type GuardEnv,
   type RecentSuccess,
+  type ResultsPendingCheck,
 } from "./lib/collect-guard";
+import { DEFAULT_DATA_DIR, readRuns, runsPathFor } from "./lib/cost";
 
 const TAG = "[collect-guard]";
 const TIMEOUT_MS = 15_000;
@@ -135,6 +146,25 @@ async function loadRecentSuccesses(
   return successes;
 }
 
+/**
+ * 결과 지연 재시도(6a) 입력 — 체크아웃(main 최신)의 오늘 발행일 브리핑 상태와 그 발행일 prod collect 실행 기록 수.
+ * 던지지 않는다: 브리핑 읽기 오류는 unreadable, 실행 기록 읽기 오류는 attempts null(둘 다 재시도하지 않는 쪽).
+ */
+async function loadResultsPendingCheck(
+  now: Date,
+  dataDir: string = DEFAULT_DATA_DIR,
+): Promise<ResultsPendingCheck> {
+  const date = publishSlotAt(nowUtcIso(now)).date;
+  const brief = todayBriefState(date, await readBriefFile(dataDir, date));
+  try {
+    const runs = await readRuns(runsPathFor("prod", dataDir));
+    return { brief, attempts: countCollectAttempts(runs, date) };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { brief, attempts: null, runsError: message.split("\n")[0] };
+  }
+}
+
 function writeResult(decision: GuardDecision, env: GuardEnv, now: Date): void {
   const outputs = formatGuardOutputs(decision);
   const summary = formatGuardSummary(decision, env.trigger, now);
@@ -158,9 +188,16 @@ async function main(): Promise<number> {
   let decision = precheck(env.trigger, now);
   if (!decision) {
     try {
-      decision = decideFromHistory(
-        await loadRecentSuccesses(env, process.env.GH_TOKEN, now),
+      const successes = await loadRecentSuccesses(
+        env,
+        process.env.GH_TOKEN,
+        now,
       );
+      const check = await loadResultsPendingCheck(now);
+      console.log(
+        `${TAG} 발행일 ${check.brief.date} 브리핑: ${check.brief.detail} · 그날 실행 기록 ${check.attempts ?? "읽기 실패"}건`,
+      );
+      decision = decideFromHistory(successes, check);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(
@@ -178,10 +215,13 @@ async function main(): Promise<number> {
     writeResult(decision, env, now);
     return 1;
   }
+  // 결과 지연 재시도(6a)는 실행이지만 주석으로 남긴다 — 관찰 도구(observe.ts)가 주석 제목에서 사유를 읽는다
   console.log(
-    decision.run
-      ? `${TAG} 실행 — ${decision.reason}: ${decision.message}`
-      : `::notice title=수집 건너뜀 (${decision.reason})::${decision.message}`,
+    decision.reason === "results-pending-retry"
+      ? `::notice title=수집 재시도 (${decision.reason})::${decision.message}`
+      : decision.run
+        ? `${TAG} 실행 — ${decision.reason}: ${decision.message}`
+        : `::notice title=수집 건너뜀 (${decision.reason})::${decision.message}`,
   );
   writeResult(decision, env, now);
   return 0;

@@ -40,16 +40,23 @@
 #   cron-job.org 정기 실행 활성화·본문 갱신은 M1-40 리허설 후(M0-15는 호출 테스트만 — 지금 본문 {"ref":"main"}은 slot이 없어
 #   수동 실행처럼 12시간 가드만 본다).
 # - 백업: schedule 2개 — 06:40 KST(`40 21 * * *`, 여름) · 07:20 KST(`20 22 * * *`, 겨울). 같은 계절의 주 경로 실행이
-#   진행 중이면 concurrency로 기다렸다가 12시간 가드로 건너뛴다. 저장소 변수 COLLECT_ENABLED == 'true'일 때만 진행한다
+#   진행 중이면 concurrency로 기다렸다가 12시간 가드로 건너뛴다(그날 브리핑이 결과 지연이면 한 번 다시 수집 — 아래 "결과 지연
+#   백업 재시도"). 저장소 변수 COLLECT_ENABLED == 'true'일 때만 진행한다
 #   (M1-40 리허설 전에는 매일 빈 실행을 하지 않게). workflow_dispatch는 이 변수와 무관하게 진행한다.
 # - 계절 가드: 여름에는 07:10 dispatch(slot=winter)·07:20 schedule, 겨울에는 06:30 dispatch(slot=summer)·06:40 schedule을
 #   skip한다(실패 아님 — collect job이 skipped라 12시간 가드의 성공 이력에도 들어가지 않는다). slot 입력 없는 수동 실행은
 #   계절 판정 없이 12시간 가드만, force는 12시간 가드도 건너뛴다(이전과 같다). 판단 순서는 scripts/lib/collect-guard.ts.
+# - 결과 지연 백업 재시도(PRD §15 D60 — 2026-10-25 사용자 결정): 그날 발행일 브리핑(data/briefs/<발행일>.json)이 결과 지연
+#   (mode empty + emptyReason results-pending)이면 guard가 그 발행일의 수집 성공을 12시간 가드의 성공 이력으로 세지 않는다 →
+#   다음 계절 맞는 트리거(백업)가 한 번 더 수집해 보충·브리핑을 시도한다(reason results-pending-retry). 한 번만 — 그 발행일 수집
+#   성공 2건 이상 또는 data/runs.json 그 발행일 실행 기록 2건 이상(실패 보존 기록 포함)이면 평소대로 건너뛴다(그 뒤엔 수동 force).
+#   그래서 guard job은 main 최신을 체크아웃한다(concurrency로 기다리는 동안 앞 실행이 push한 data 커밋을 읽게).
 #
 # job 흐름: guard(판단) → collect(수집·검증·빌드·커밋) → deploy(deploy.yml 재사용) / 어느 하나라도 실패 → report-failure
 # - guard가 건너뛰기로 판단하면 collect·deploy는 skipped, 실행은 성공으로 끝난다(skip은 실패가 아니다).
 # - 12시간 가드는 "collect job이 success로 끝난 실행"만 성공 이력으로 센다. skip된 실행(collect skipped)을
 #   성공 이력으로 세면 skip이 skip을 부르는 연쇄가 생기기 때문이다 — 자세한 근거는 scripts/lib/collect-guard.ts.
+#   예외: 그날 브리핑이 결과 지연이면 그 발행일 성공을 한 번 세지 않는다(위 트리거 절 "결과 지연 백업 재시도").
 #   그래서 collect job의 name을 바꾸면 scripts/lib/collect-guard.ts의 COLLECT_JOB_NAME도 바꿔야 한다(테스트가 확인).
 # - 검증·빌드가 실패하면 커밋하지 않는다: 커밋 단계는 if 조건 없이(= 앞 단계가 모두 성공했을 때만) validate·build 뒤에 있다.
 #   이때 collect job이 실패라 deploy는 skipped, report-failure가 실패 이슈를 만든다(원인 키 collect:collect/<멈춘 단계> — 검증
@@ -111,9 +118,12 @@ jobs:
       run: ${{ steps.decide.outputs.run }}
       reason: ${{ steps.decide.outputs.reason }}
     steps:
-      - name: 저장소 체크아웃
+      # main 최신을 받는다 — 결과 지연 백업 재시도(판단 순서 6a)가 data/briefs·data/runs.json을 읽는데, concurrency로 기다린
+      # 실행의 트리거 시점 SHA(schedule은 트리거 때의 기본 브랜치 끝)에는 앞 실행이 그 사이 push한 data 커밋이 없다.
+      - name: 저장소 체크아웃 (main)
         uses: actions/checkout@v7
         with:
+          ref: main
           persist-credentials: false
 
       - name: Node.js 설정 (.nvmrc)
