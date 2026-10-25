@@ -24,7 +24,8 @@
  *
  * `linkPendingMatches`(PRD §15 D60 — 2026-10-25 호 사건): football-data가 아직 종료로 주지 않은(점수 없는) 창 안 경기를 API-Football
  * 종료 상세에 잇는다 — 브리핑 결과 보충(brief-supplement.ts). 점수 비교를 할 수 없으므로 대응표가 팀을 확인하는 쌍만(두 팀 → team-ids,
- * 한쪽 팀 + 다른 쪽 어긋나지 않음 + 같은 칸 후보 하나 → evidence). 함수 주석 참고.
+ * 한쪽 팀 + 다른 쪽 어긋나지 않음 + 같은 칸 후보 하나 → evidence) + 대응표가 확인한 쪽의 팀 이름 교차 확인(`teamNamesAgree` — 대응표
+ * 항목 오류 방어). 함수 주석 참고.
  */
 import {
   TeamIdsFileSchema,
@@ -555,6 +556,11 @@ export function linkMatchDetails(
 
 // ─── 미종료 경기 보충 연결 (PRD §15 D60) ───────────────────────────────
 
+/** 보충 연결 입력의 팀 — 짧은 이름(name)과 정식 이름(fullName, football-data `name`)을 이름 교차 확인에 함께 쓴다 */
+export interface PendingTeam extends PairingTeam {
+  fullName?: string | null;
+}
+
 /**
  * 보충 연결 입력 — football-data가 아직 종료로 주지 않은 창 안 경기(점수 없음 — match-data.ts `UnsettledMatch`가 그대로 들어간다)
  */
@@ -563,8 +569,103 @@ export interface PendingPairing {
   comp: CompId;
   /** 킥오프(UTC ISO) */
   kickoff: string;
-  home: PairingTeam;
-  away: PairingTeam;
+  home: PendingTeam;
+  away: PendingTeam;
+}
+
+// ─── 팀 이름 교차 확인 (D60 보충 연결 안전장치) ──────────────────────────
+
+/**
+ * 이름 비교에서 빼는 낱말 — 법인·종목 표기 접두·접미(FC·CF·AC·SV …)와 관사 de·del(팀을 구별하지 않는다). 숫자 낱말(창단 연도·
+ * 등번호 '04'·'1899')도 뺀다. 근거: configs/team-ids.json 52팀 메모의 fd·af 원문 이름 쌍(tests/brief-supplement.test.ts가 모두 대조).
+ */
+const TEAM_NAME_AFFIXES: ReadonlySet<string> = new Set([
+  "fc",
+  "cf",
+  "afc",
+  "cfc",
+  "ac",
+  "sc",
+  "sv",
+  "ssc",
+  "as",
+  "us",
+  "ss",
+  "cd",
+  "ud",
+  "rcd",
+  "rc",
+  "ca",
+  "fk",
+  "sk",
+  "bk",
+  "vfb",
+  "vfl",
+  "tsg",
+  "bsc",
+  "rb",
+  "ogc",
+  "osc",
+  "sco",
+  "club",
+  "calcio",
+  "de",
+  "del",
+]);
+
+/** 포함 관계로 같은 팀이라 볼 짧은 쪽 최소 길이 — 그보다 짧으면(PSG·HSV) 같을 때만 */
+export const TEAM_NAME_MIN_CONTAIN = 4;
+
+/**
+ * 팀 이름 비교 키(순수 함수) — 악센트 제거·소문자·영숫자 낱말로 자르고 접두·접미(`TEAM_NAME_AFFIXES`)·숫자 낱말을 뺀 뒤 공백 없이
+ * 잇는다('1. FC Köln' → 'koln', 'Club Atlético de Madrid' → 'atleticomadrid'). 다 빠지면 원래 낱말을 모두 잇는다.
+ */
+export function compactTeamName(name: string): string {
+  const tokens = name
+    .normalize("NFKD")
+    .replace(/\p{M}+/gu, "")
+    .toLowerCase()
+    .replace(/ß/g, "ss")
+    .split(/[^a-z0-9]+/)
+    .filter((t) => t.length > 0);
+  const kept = tokens.filter(
+    (t) => !/^\d+$/.test(t) && !TEAM_NAME_AFFIXES.has(t),
+  );
+  return (kept.length > 0 ? kept : tokens).join("");
+}
+
+/**
+ * football-data 팀(짧은 이름·정식 이름)과 API-Football 팀 이름이 같은 팀을 가리키는가(순수 함수 — D60 보충 연결 안전장치).
+ *   - `dictionaryKey`(configs/names.ko.json 팀 항목 — 호출부가 넘긴다)가 af 이름과 fd 이름 하나 이상을 알면 **사전으로만** 판정한다
+ *     (같은 항목이면 같은 팀). 'Paris FC'·'Paris Saint Germain'처럼 포함 관계인 다른 팀을 가른다.
+ *   - 사전이 모르면 비교 키(`compactTeamName`)가 같거나, 짧은 쪽이 `TEAM_NAME_MIN_CONTAIN`자 이상이고 긴 쪽에 들어 있으면 같은 팀
+ *     ('Inter' ⊂ 'Internazionale Milano', 'Brighton' ⊂ 'Brighton & Hove Albion').
+ * 한계: 사전에 없는 두 팀이 포함 관계 이름이면('Milan' ⊂ 'Internazionale Milano') 가르지 못한다 — 대응표 오류와 그런 이름이 같은 칸에
+ * 겹쳐야 문제가 된다.
+ */
+export function teamNamesAgree(
+  fd: Pick<PendingTeam, "name" | "fullName">,
+  af: Pick<PairingTeam, "name">,
+  dictionaryKey?: (name: string) => string | null,
+): boolean {
+  const fdNames = [fd.name, fd.fullName].filter(
+    (n): n is string => typeof n === "string" && n.trim().length > 0,
+  );
+  if (dictionaryKey) {
+    const afKey = dictionaryKey(af.name);
+    const fdKeys = fdNames
+      .map((n) => dictionaryKey(n))
+      .filter((k): k is string => k !== null);
+    if (afKey !== null && fdKeys.length > 0) return fdKeys.includes(afKey);
+  }
+  const b = compactTeamName(af.name);
+  return fdNames.some((n) => {
+    const a = compactTeamName(n);
+    if (a.length === 0 || b.length === 0) return false;
+    if (a === b) return true;
+    const [short, long] = a.length <= b.length ? [a, b] : [b, a];
+    return short.length >= TEAM_NAME_MIN_CONTAIN && long.includes(short);
+  });
 }
 
 /** 보충 연결하지 않은 이유 */
@@ -577,6 +678,10 @@ export type PendingUnlinkedReason =
   | "table"
   /** 같은 af 경기를 다른 fd 경기도 가리킨다 */
   | "conflict"
+  /**
+   * 대응표가 확인한 쪽의 팀 이름이 fd·af에서 다르다(`teamNamesAgree` — 대응표 항목 오류로 다른 팀 경기가 붙을 수 있다, D60 리뷰)
+   */
+  | "name-mismatch"
   /** 한쪽 팀 확인 연결(evidence)을 껐다(options.autoLink false — 대응표를 읽지 못함) */
   | "disabled";
 
@@ -607,6 +712,11 @@ export interface PendingLinkOptions extends PairingOptions {
   excludeAf?: ReadonlySet<number>;
   /** 한쪽 팀 확인 연결(evidence) — 기본 true. 대응표를 읽지 못했으면 호출부가 끈다 */
   autoLink?: boolean;
+  /**
+   * 팀 이름 → 고유명사 사전 팀 항목 키(같은 팀이면 같은 값, 모르면 null) — 이름 교차 확인(`teamNamesAgree`)에 쓴다. 없으면 이름
+   * 정규화만(사전을 읽지 못한 실행)
+   */
+  dictionaryKey?: (name: string) => string | null;
 }
 
 /**
@@ -618,6 +728,9 @@ export interface PendingLinkOptions extends PairingOptions {
  *   - 그 밖은 잇지 않는다: 대응표가 두 팀을 모두 모르면 `unconfirmed`(같은 칸 경기가 하나뿐이어도 홈·원정 방향을 확인할 수 없어
  *     스코어가 뒤집힐 수 있다), 후보가 둘 이상이면 `af-candidates`, 모두 어긋나면 `table`, 같은 af 경기를 두 fd 경기가 가리키면
  *     둘 다 `conflict`.
+ *   - **이름 교차 확인**(D60 리뷰 — 대응표 한 항목이 틀려 af id가 같은 칸의 다른 팀을 가리키면 다른 경기 스코어가 붙는다): 고른
+ *     af 경기에서 대응표가 확인한 쪽(team-ids는 두 쪽, evidence는 확인된 쪽)의 팀 이름이 fd 이름과 같은 팀이어야 한다
+ *     (`teamNamesAgree` — 사전 `dictionaryKey` 우선, 없으면 이름 정규화 포함 관계). 어긋나면 `name-mismatch`로 잇지 않는다.
  * af 상세는 6개 대회(comp 있음) 종료 경기만 본다. 입력 순서와 무관하게 결과는 결정적이다(킥오프·id 순).
  */
 export function linkPendingMatches<T extends PendingPairing>(
@@ -629,6 +742,12 @@ export function linkPendingMatches<T extends PendingPairing>(
   const tolerance = options.kickoffToleranceMs ?? PAIRING_KICKOFF_TOLERANCE_MS;
   const autoLink = options.autoLink ?? true;
   const excluded = options.excludeAf ?? new Set<number>();
+  /** 대응표가 확인한 쪽의 팀 이름이 같은 팀인가(`sides` — 확인한 쪽) */
+  const namesAgree = (
+    fd: PendingPairing,
+    af: MatchDetail,
+    sides: readonly ("home" | "away")[],
+  ) => sides.every((s) => teamNamesAgree(fd[s], af[s], options.dictionaryKey));
   const byKickoff = (
     a: { kickoff: string; matchId: number },
     b: { kickoff: string; matchId: number },
@@ -651,7 +770,16 @@ export function linkPendingMatches<T extends PendingPairing>(
     }
     const both = near.filter((d) => confirmedByTable(fd, d, index));
     if (both.length === 1) {
-      tentative.push({ fd, af: both[0]!, linkedBy: "team-ids" });
+      const af = both[0]!;
+      if (namesAgree(fd, af, ["home", "away"])) {
+        tentative.push({ fd, af, linkedBy: "team-ids" });
+      } else {
+        unlinked.push({
+          fdMatchId: fd.matchId,
+          afMatchId: af.matchId,
+          reason: "name-mismatch",
+        });
+      }
       continue;
     }
     if (both.length > 1) {
@@ -676,6 +804,11 @@ export function linkPendingMatches<T extends PendingPairing>(
         sameTeamByTable(fd.home.id, d.home.id, index) ||
         sameTeamByTable(fd.away.id, d.away.id, index),
     );
+    /** 고른 af 경기에서 대응표가 확인한 쪽 */
+    const confirmedSides = (af: MatchDetail): Array<"home" | "away"> =>
+      (["home", "away"] as const).filter((s) =>
+        sameTeamByTable(fd[s].id, af[s].id, index),
+      );
     const reason: PendingUnlinkedReason | null =
       oneSide.length === 0
         ? "unconfirmed"
@@ -683,7 +816,9 @@ export function linkPendingMatches<T extends PendingPairing>(
           ? "af-candidates"
           : !autoLink
             ? "disabled"
-            : null;
+            : !namesAgree(fd, oneSide[0]!, confirmedSides(oneSide[0]!))
+              ? "name-mismatch"
+              : null;
     if (reason === null) {
       tentative.push({ fd, af: oneSide[0]!, linkedBy: "evidence" });
     } else {

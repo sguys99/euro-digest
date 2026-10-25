@@ -60,7 +60,7 @@
  *      두 번째 실행은 브리핑 창 경기를 다시 받지 않으므로 원장(data/matches)의 같은 창 항목도 잇는다(M1-19 — M1-48 이월).
  *      결과 보충(D60 — 2026-10-25 호 사건, brief-supplement.ts): football-data가 결과를 기다리는 상태(예정·진행 중)로 준 창 안 경기는
  *      같은 상세 목록(이번 실행 몫 + 원장)의 API-Football 종료 결과로 채운다 — 추가 API 호출·LLM 비용 0, 연결은 대응표가 팀을 확인하는
- *      쌍만(team-ids.ts linkPendingMatches), 스코어는 football-data FINISHED와 같은 내부 형식(providers/api-football.ts afResultScore),
+ *      쌍만 + 확인된 쪽 팀 이름 교차 확인(team-ids.ts linkPendingMatches·teamNamesAgree), 스코어는 football-data FINISHED와 같은 내부 형식(providers/api-football.ts afResultScore),
  *      그 대회 순위는 넣지 않는다. 보충 수는 로그(`summarize.input.done` supplemented…)에만 남긴다(RunLog 스키마 불변).
  *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
  *      football-data 단계가 실패하면 그날 브리핑만 생략하고 뉴스는 발행한다(D24). 순위 실패는 그 대회 순위만 빠진다(partial).
@@ -178,6 +178,7 @@ import {
   afFinishedInWindow,
   briefEmptyReason,
   supplementBriefResults,
+  teamDictionaryKey,
   type BriefSupplement,
 } from "./brief-supplement";
 import {
@@ -3150,7 +3151,8 @@ interface BriefSupplementRun {
 
 /**
  * football-data가 결과를 기다리는 상태로 준 창 안 경기를 브리핑 상세(이번 실행 몫 + 원장)의 API-Football 종료 결과로 보충한다(D60 —
- * brief-supplement.ts). 추가 API 호출 없음. 이미 football-data 종료 경기에 연결된 af 경기는 쓰지 않는다. 대응표를 읽지 못했으면
+ * brief-supplement.ts). 추가 API 호출 없음. 이미 football-data 종료 경기에 연결된 af 경기는 쓰지 않는다. 대응표가 확인한 쪽의 팀
+ * 이름은 사전 팀 항목(names — 읽지 못했으면 이름 정규화만)으로 교차 확인한다(D60 리뷰 — 대응표 항목 오류 방어). 대응표를 읽지 못했으면
  * 한쪽 팀 확인 연결을 끈다(두 팀 확인도 빈 색인이라 사실상 보충 없음). 던지지 않는다 — 실패하면 보충 없이(결과 지연 판정은 계속).
  */
 function supplementBrief(
@@ -3159,6 +3161,7 @@ function supplementBrief(
   team: BriefTeamIndex,
   merged: { details: readonly MatchDetail[] },
   goalLinks: Pick<BriefGoalLinks, "byFd">,
+  names: NameIndex | null,
 ): BriefSupplementRun {
   const unsettled = fd.unsettled;
   const afFinished = afFinishedInWindow(merged.details, fd.window);
@@ -3170,6 +3173,8 @@ function supplementBrief(
         usedAf: new Set([...goalLinks.byFd.values()].map((d) => d.matchId)),
         index: team.index,
         autoLink: team.autoLink,
+        // 이름 교차 확인 — 사전 팀 항목 우선(사전을 읽지 못했으면 이름 정규화만)
+        ...(names ? { dictionaryKey: teamDictionaryKey(names) } : {}),
       }),
       afFinished,
     };
@@ -3336,6 +3341,7 @@ async function runBriefStage(
       team,
       merged,
       goalLinks,
+      names,
     );
     const results = [...fd.data.results, ...supplement.results];
     built = buildBriefInput({
@@ -3462,7 +3468,8 @@ async function runBriefStage(
   }
   if (inputMatches === 0) {
     // 종료 경기가 없으면 LLM을 부르지 않는다(D24) — 게시는 empty. 창 안에 결과를 기다리는 경기가 있으면(보충 뒤에도) 이유를
-    // results-pending으로 남긴다(D60 — 화면이 "끝난 경기가 없었습니다"를 쓰지 않게, 같은 날 다음 실행이 덮을 수 있게)
+    // results-pending으로 남긴다(D60 — 화면이 "끝난 경기가 없었습니다"를 쓰지 않게, 같은 날 수동 force 재실행이 덮을 수 있게 — 이 실행도
+    // 수집 job은 성공이라 백업 schedule·force 없는 dispatch는 12시간 가드(collect-guard.ts)가 건너뛴다)
     if (emptyReason === "results-pending") {
       log.warn("summarize.brief.skip", {
         reason: "results-pending",

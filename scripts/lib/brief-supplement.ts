@@ -10,7 +10,8 @@
  *    LLM 비용 0. API-Football 계획(api-football-plan.ts)은 football-data와 무관하게 브리핑 창의 6개 대회 종료 경기를 brief 계층으로
  *    먼저 받으므로 보충 대상 경기의 단건 조회는 이미 잡혀 있다.
  *    - 연결: team-ids.ts `linkPendingMatches` — `linkMatchDetails`(D33·D37) 규칙을 football-data 점수 없이 적용(두 팀 대응표 확인
- *      `team-ids` · 한쪽 팀 대응표 확인 + 다른 쪽 어긋나지 않음 + 후보 하나 `evidence`). 이미 football-data 종료 경기에 연결된 af
+ *      `team-ids` · 한쪽 팀 대응표 확인 + 다른 쪽 어긋나지 않음 + 후보 하나 `evidence`) + 대응표가 확인한 쪽의 팀 이름 교차 확인
+ *      (`teamNamesAgree` — 사전 팀 항목 `teamDictionaryKey` 우선, 대응표 항목 오류 방어). 이미 football-data 종료 경기에 연결된 af
  *      경기는 다시 쓰지 않는다.
  *    - 스코어: providers/api-football.ts `afResultScore` — football-data FINISHED 결과와 같은 내부 형식(정규·연장·승부차기 — match-data.ts
  *      스코어 규칙). 경기 id·팀 표기·라운드는 football-data 그대로라 브리핑 근거 id(`m<football-data id>`)·대회 계산(D58)·검사기 스코어
@@ -24,6 +25,7 @@
 import type { BriefEmptyReason, CompId } from "@/lib/schema";
 
 import type { FinishedMatch, MatchDetail, UnsettledMatch } from "./match-data";
+import { lookupName, TEAM_KINDS, type NameIndex } from "./names";
 import { afResultScore } from "./providers/api-football";
 import {
   linkPendingMatches,
@@ -85,6 +87,21 @@ export interface SupplementInput {
   index: TeamIdIndex;
   /** 한쪽 팀 확인 연결 — 대응표를 읽지 못했으면 false */
   autoLink: boolean;
+  /** 이름 교차 확인용 사전 팀 키(`teamDictionaryKey`) — 사전을 읽지 못했으면 없음(이름 정규화만) */
+  dictionaryKey?: (name: string) => string | null;
+}
+
+/**
+ * 고유명사 사전(configs/names.ko.json)의 팀 항목 → 이름 교차 확인 키(team-ids.ts `teamNamesAgree`). 같은 항목이면 같은 키
+ * (`team:<slug>` — slug가 없으면 한글 표기), 사전에 없는 이름은 null. 순수 함수.
+ */
+export function teamDictionaryKey(
+  index: NameIndex,
+): (name: string) => string | null {
+  return (name) => {
+    const entry = lookupName(index, name, TEAM_KINDS);
+    return entry ? `${entry.kind}:${entry.slug ?? entry.ko}` : null;
+  };
 }
 
 /**
@@ -98,6 +115,7 @@ export function supplementBriefResults(
   const linked = linkPendingMatches(awaiting, input.details, input.index, {
     excludeAf: input.usedAf,
     autoLink: input.autoLink,
+    ...(input.dictionaryKey ? { dictionaryKey: input.dictionaryKey } : {}),
   });
   const results: FinishedMatch[] = [];
   const byFd = new Map<number, MatchDetail>();

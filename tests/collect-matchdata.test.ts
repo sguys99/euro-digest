@@ -1634,7 +1634,7 @@ describe("runCollect — 브리핑 결과 보충·결과 지연(PRD §15 D60, 10
     expect(outcome.status).toBe("success");
   });
 
-  it("API-Football 결과도 없으면(키 없음) results-pending — empty + emptyReason, LLM 0·success, 같은 날 다음 실행이 보충에 성공하면 덮는다", async () => {
+  it("API-Football 결과도 없으면(키 없음) results-pending — empty + emptyReason, LLM 0·success, 같은 날 수동(force) 재실행이 보충에 성공하면 덮는다", async () => {
     const first = makeDeps(staleFd);
     const outcome = await runCollect(first.deps);
     expect(outcome.brief).toMatchObject({
@@ -1662,7 +1662,7 @@ describe("runCollect — 브리핑 결과 보충·결과 지연(PRD §15 D60, 10
       lines: [],
     });
 
-    // 같은 발행일 다음 실행(백업·수동) — API-Football 결과로 보충 → 결과 지연 파일을 줄 있는 브리핑으로 덮는다
+    // 같은 발행일 수동(force) 재실행 — 운영의 백업 schedule은 12시간 가드(collect-guard.ts)가 건너뛴다. API-Football 결과로 보충 → 결과 지연 파일을 줄 있는 브리핑으로 덮는다
     const second = makeDeps(staleFd, withApiFootball());
     const rerun = await runCollect(second.deps);
     expect(rerun.publishDate).toBe("2026-10-11");

@@ -15,7 +15,9 @@
  *   줄이 있는 `template`은 새 결과가 `llm`·`mixed`이거나 줄 수가 더 많은 `template`일 때만 갱신한다(뒤 실행이 LLM에 성공했거나
  *   경기를 더 받은 경우) — 줄 수가 같거나 적은 template·empty로는 바꾸지 않는다(공개된 브리핑의 내용이 바뀌거나 줄지 않게,
  *   오케스트레이터 결정 2026-10-16). `empty`는 줄 있는 결과와 이유(`emptyReason` — D60)가 다른 empty로 갱신한다 — 결과 지연
- *   (`results-pending`) 파일은 다음 실행(백업·수동)이 보충에 성공하면 그 브리핑으로 덮인다. 내용(mode·줄·empty 이유 — 키 없는 옛
+ *   (`results-pending`) 파일은 같은 날 **수동 재실행(force dispatch)**이 보충에 성공하면 그 브리핑으로 덮인다 — 결과 지연 실행도
+ *   수집 job이 성공으로 끝나므로 백업 schedule·force 없는 dispatch는 12시간 가드(scripts/lib/collect-guard.ts)가 건너뛴다.
+ *   내용(mode·줄·empty 이유 — 키 없는 옛
  *   empty는 no-matches)이 같으면 다시 쓰지 않는다(generatedAt만 바뀌는 data 커밋 방지). 기존 파일이 깨져 있으면 경고하고 새 파일로
  *   고친다(브리핑이 발행을 막지 않게).
  * - 쓰기: 스키마 검증 → 임시 파일 → rename(원자적). 검증에 걸리는 파일은 쓰지 않는다 — 검증 게이트(`npm run validate`)가 브리핑
@@ -191,7 +193,8 @@ function sameBriefContent(
 /**
  * 같은 날 재실행 판정(순수 함수) — 머리 주석. `existingMock`이면(isMockBriefFile — mock 실행이 쓴 llm·mixed) 기존 파일을 지키지
  * 않고 새 결과로 덮는다(다음 live 실행이 mock 줄을 바꾼다 — M1-45 리뷰 권장 5). empty는 이유(D60 — `results-pending`·`no-matches`)까지
- * 같아야 unchanged — 결과 지연(results-pending) 파일은 다음 실행이 보충에 성공하면 줄 있는 브리핑으로, 이유가 바뀌면 그 이유로 덮인다.
+ * 같아야 unchanged — 결과 지연(results-pending) 파일은 그날 다시 도는 실행(운영에서는 수동 force 재실행뿐 — 백업 schedule은 12시간
+ * 가드가 건너뛴다, 머리 주석)이 보충에 성공하면 줄 있는 브리핑으로, 이유가 바뀌면 그 이유로 덮인다.
  */
 export function decideBriefWrite(
   existing: Pick<BriefFile, "mode" | "lines" | "emptyReason"> | null,

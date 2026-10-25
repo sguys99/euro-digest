@@ -32,6 +32,7 @@ import {
   afFinishedInWindow,
   briefEmptyReason,
   supplementBriefResults,
+  teamDictionaryKey,
   toSupplementedResult,
 } from "../scripts/lib/brief-supplement";
 import {
@@ -61,8 +62,10 @@ import {
 } from "../scripts/lib/providers/football-data";
 import {
   buildTeamIdIndex,
+  compactTeamName,
   EMPTY_TEAM_ID_INDEX,
   linkPendingMatches,
+  teamNamesAgree,
 } from "../scripts/lib/team-ids";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -488,7 +491,7 @@ describe("linkPendingMatches — 점수 없이 대응표가 팀을 확인하는 
     });
     const af = detail({
       matchId: 11,
-      home: { id: 101, name: "H", fullName: null },
+      home: { id: 101, name: "Home", fullName: null },
       away: { id: 999, name: "?", fullName: null },
     });
     // a·b 모두 홈 home-fc 확인(같은 시각 같은 팀 — 데이터 오류) — 둘 다 같은 af 경기 11
@@ -511,6 +514,108 @@ describe("linkPendingMatches — 점수 없이 대응표가 팀을 확인하는 
     ]);
   });
 
+  it("리뷰 재현 — 대응표 항목 오류(af 101이 같은 칸 다른 팀): 확인된 쪽 팀 이름이 다르면 evidence로 잇지 않는다(name-mismatch)", () => {
+    const fd = pending({
+      matchId: 1,
+      away: { id: 900, name: "Unknown", fullName: null },
+    });
+    // 대응표는 home-fc = af 101이라 하지만 af 101 경기의 홈 팀 이름은 'Rival Town' — 이전에는 [1, 11, "evidence"]로 이어졌다
+    const wrong = detail({
+      matchId: 11,
+      home: { id: 101, name: "Rival Town", fullName: null },
+      away: { id: 999, name: "?", fullName: null },
+    });
+    const r = linkPendingMatches([fd], [wrong], MINI_INDEX);
+    expect(
+      r.links.map((l) => [l.fd.matchId, l.af.matchId, l.linkedBy]),
+    ).not.toContainEqual([1, 11, "evidence"]);
+    expect(r.links).toEqual([]);
+    expect(r.unlinked).toEqual([
+      { fdMatchId: 1, afMatchId: 11, reason: "name-mismatch" },
+    ]);
+    // 같은 팀 이름이면(접미 FC 차이) 그대로 잇는다
+    const right = { ...wrong, home: { ...wrong.home, name: "Home" } };
+    expect(
+      linkPendingMatches([fd], [right], MINI_INDEX).links.map((l) => [
+        l.fd.matchId,
+        l.af.matchId,
+        l.linkedBy,
+      ]),
+    ).toEqual([[1, 11, "evidence"]]);
+  });
+
+  it("두 팀 대응표 확인(team-ids)도 이름을 교차 확인한다 — 한쪽이라도 다른 팀 이름이면 name-mismatch", () => {
+    const fd = pending({ matchId: 1 });
+    for (const side of ["home", "away"] as const) {
+      const af = detail({ matchId: 11 });
+      af[side] = { ...af[side], name: "Rival Town" };
+      const r = linkPendingMatches([fd], [af], MINI_INDEX);
+      expect(r.links, side).toEqual([]);
+      expect(r.unlinked, side).toEqual([
+        { fdMatchId: 1, afMatchId: 11, reason: "name-mismatch" },
+      ]);
+    }
+  });
+
+  it("홈·원정이 뒤집힌 짝(fd A–B ↔ af B–A)은 잇지 않는다 — 대응표가 두 팀·한 팀을 알든 모르든", () => {
+    const fd = pending({ matchId: 1 }); // 홈 home-fc(1) · 원정 away-fc(2)
+    // 두 팀 모두 대응표에 있음 — 홈 쪽부터 어긋난다(table)
+    expect(
+      linkPendingMatches(
+        [fd],
+        [
+          detail({
+            matchId: 11,
+            home: { id: 102, name: "Away", fullName: null },
+            away: { id: 101, name: "Home", fullName: null },
+          }),
+        ],
+        MINI_INDEX,
+      ),
+    ).toEqual({
+      links: [],
+      unlinked: [{ fdMatchId: 1, afMatchId: null, reason: "table" }],
+      noCandidate: [],
+    });
+    // 한 팀(home-fc)만 대응표에 있음 — af 원정이 home-fc라 fd 홈과 어긋난다(table)
+    const oneKnown = pending({
+      matchId: 2,
+      away: { id: 900, name: "Unknown", fullName: null },
+    });
+    expect(
+      linkPendingMatches(
+        [oneKnown],
+        [
+          detail({
+            matchId: 12,
+            home: { id: 999, name: "Unknown", fullName: null },
+            away: { id: 101, name: "Home", fullName: null },
+          }),
+        ],
+        MINI_INDEX,
+      ).unlinked,
+    ).toEqual([{ fdMatchId: 2, afMatchId: null, reason: "table" }]);
+    // 두 팀 모두 대응표 밖 — 같은 칸 경기가 하나뿐이어도 방향을 확인할 수 없어 잇지 않는다(unconfirmed)
+    const unknown = pending({
+      matchId: 3,
+      home: { id: 800, name: "Alpha", fullName: null },
+      away: { id: 801, name: "Beta", fullName: null },
+    });
+    expect(
+      linkPendingMatches(
+        [unknown],
+        [
+          detail({
+            matchId: 13,
+            home: { id: 901, name: "Beta", fullName: null },
+            away: { id: 900, name: "Alpha", fullName: null },
+          }),
+        ],
+        MINI_INDEX,
+      ).unlinked,
+    ).toEqual([{ fdMatchId: 3, afMatchId: null, reason: "unconfirmed" }]);
+  });
+
   it("빈 대응표면 아무것도 잇지 않는다(대응표를 읽지 못한 실행)", () => {
     const r = linkPendingMatches(
       STALE.unsettled,
@@ -524,13 +629,88 @@ describe("linkPendingMatches — 점수 없이 대응표가 팀을 확인하는 
 
 // ─── 10-25 호 재현 ───────────────────────────────────────────────────────
 
+// ─── 팀 이름 교차 확인 ───────────────────────────────────────────────────
+
+describe("teamNamesAgree — 대응표가 확인한 쪽 팀 이름 교차 확인(D60 리뷰)", () => {
+  /** configs/team-ids.json 메모의 실제 원문 이름 쌍(fd 정식 이름 · af 이름) */
+  const PAIRS: Array<[string, string, string]> = Object.entries(
+    TeamIdsFileSchema.parse(readJson("configs/team-ids.json")),
+  ).flatMap(([slug, e]) => {
+    const m = /fd "([^"]+)" · af "([^"]+)"/.exec(e.note ?? "");
+    return m ? [[slug, m[1]!, m[2]!] as [string, string, string]] : [];
+  });
+  const DICT = teamDictionaryKey(NAMES);
+
+  it("대응표 52팀의 실제 fd·af 이름 쌍은 모두 같은 팀 — 이름 정규화만으로도, 사전과 함께도", () => {
+    expect(PAIRS.length).toBe(52);
+    for (const [slug, fdName, afName] of PAIRS) {
+      expect(
+        teamNamesAgree({ name: fdName, fullName: null }, { name: afName }),
+        `${slug}: ${fdName} ↔ ${afName}`,
+      ).toBe(true);
+      expect(
+        teamNamesAgree(
+          { name: fdName, fullName: null },
+          { name: afName },
+          DICT,
+        ),
+        `${slug} (사전): ${fdName} ↔ ${afName}`,
+      ).toBe(true);
+    }
+  });
+
+  it("비교 키 — 악센트·대소문자·접두·접미(FC·CF·AC·SV …)·숫자 낱말을 뺀다", () => {
+    expect(compactTeamName("1. FC Köln")).toBe("koln");
+    expect(compactTeamName("Club Atlético de Madrid")).toBe("atleticomadrid");
+    expect(compactTeamName("TSG 1899 Hoffenheim")).toBe("hoffenheim");
+    expect(compactTeamName("Brighton & Hove Albion FC")).toBe(
+      "brightonhovealbion",
+    );
+    expect(compactTeamName("FC")).toBe("fc");
+  });
+
+  it("다른 팀은 가른다 — 같은 도시 다른 팀·짧은 약칭(4자 미만은 같을 때만)", () => {
+    const no = (fd: string, af: string) =>
+      expect(
+        teamNamesAgree({ name: fd, fullName: null }, { name: af }),
+        `${fd} ↔ ${af}`,
+      ).toBe(false);
+    no("Manchester United FC", "Manchester City");
+    no("Real Madrid CF", "Atletico Madrid");
+    no("Arsenal FC", "Everton");
+    no("Inter", "AC Milan");
+    no("HSV", "Hamburger SV");
+    // 짧은 이름이 달라도 정식 이름이 맞으면 같은 팀(fd shortName·name 둘 다 본다)
+    expect(
+      teamNamesAgree(
+        { name: "HSV", fullName: "Hamburger SV" },
+        { name: "Hamburger SV" },
+      ),
+    ).toBe(true);
+  });
+
+  it("사전이 양쪽을 알면 사전으로만 판정 — 포함 관계인 다른 팀(Paris FC ⊂ Paris Saint Germain)을 가른다", () => {
+    const fd = { name: "Paris FC", fullName: null };
+    const af = { name: "Paris Saint Germain" };
+    // 이름 정규화만이면 포함 관계로 같다고 본다(한계 — 사전이 없는 실행)
+    expect(teamNamesAgree(fd, af)).toBe(true);
+    const dict = (name: string) =>
+      ({ "Paris FC": "team:paris", "Paris Saint Germain": "team:psg" })[name] ??
+      null;
+    expect(teamNamesAgree(fd, af, dict)).toBe(false);
+    expect(teamNamesAgree(fd, { name: "Paris FC" }, dict)).toBe(true);
+  });
+});
+
 describe("10-25 호 재현 — football-data 19경기 미종료 + 원장의 API-Football 종료 결과(추가 호출 0)", () => {
+  // 운영과 같이 사전 팀 항목으로 이름을 교차 확인한다(collect-run.ts supplementBrief)
   const supplement = supplementBriefResults({
     unsettled: STALE.unsettled,
     details: AF_DETAILS_1024,
     usedAf: new Set(),
     index: TEAM_INDEX,
     autoLink: true,
+    dictionaryKey: teamDictionaryKey(NAMES),
   });
   const built = buildBriefInput({
     briefDate: "2026-10-25",
