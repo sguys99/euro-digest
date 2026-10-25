@@ -98,6 +98,7 @@ import {
   titleText,
   type CompiledGroup,
   type KeywordIndex,
+  type ManagerIndex,
   type TitleText,
 } from "./news-keywords";
 import type { NewsScore } from "./score";
@@ -302,8 +303,8 @@ export interface TextSignals {
   /** 묶음 제목의 이적 동사(want·target·eye …) */
   roundupTransfer: boolean;
   /**
-   * 감독 발언 문형(news-keywords.ts `managerSpeechOf` — 사전 감독 이름이 필요해 `textSignals`는 채우지 않고 classify.ts `titleFacts`가
-   * 제목에만 채운다. 요약문에는 없다 — 요약문은 카테고리 근거가 아니다, D47 ①). 감독·구단 신호(`club`과 같은 자리)
+   * 감독 발언 문형(news-keywords.ts `managerSpeechOf` — 사전 감독 이름이 필요해 `textSignals`는 채우지 않고 `titleSignals`가 제목에만
+   * 채운다. 요약문에는 없다 — 요약문은 카테고리 근거가 아니다, D47 ①). 감독·구단 신호(`club`과 같은 자리)
    */
   managerSpeech?: boolean;
 }
@@ -339,6 +340,21 @@ export function textSignals(text: string, lang: string): TextSignals {
     club: has(TABLES.club),
     roundup: isMultiStoryTitle(text, lang),
     roundupTransfer: has(TABLES.roundupTransfer),
+  };
+}
+
+/**
+ * 제목 1건의 분류 신호 — `textSignals` + 감독 발언 문형(사전 감독 이름 — news-keywords.ts `ManagerIndex`). 새 클러스터(`titleFacts`)와
+ * 저장된 오늘 카드의 엔티티 열쇠(cluster-classify.ts `todayCardEntity` — 같은 날 재실행)가 같은 조건을 쓴다.
+ */
+export function titleSignals(
+  title: string,
+  lang: string,
+  managers: ManagerIndex,
+): TextSignals {
+  return {
+    ...textSignals(title, lang),
+    managerSpeech: managerSpeechOf(title, lang, managers) !== null,
   };
 }
 
@@ -586,12 +602,8 @@ function titleFacts(item: ClassifyItem, ctx: ClassifyContext): TitleFacts {
   });
   // 국내 제목의 'T행'(팀 이름 + 행 — '김민재, 아스널행 임박')도 이적 화제다(이적 표에는 팀 이름 없이 넣을 수 없다 — M1-18)
   // 이적 높은 단계 닫힌 문형에 맞는 제목('Bukayo Saka completes move to Chelsea' — 이적 표에 'completes move'가 없다)도 이적 화제다(D54)
-  // 감독 발언(D47 사용자 결정 A) — 사전 감독 이름이 필요해 여기서 채운다
-  const s0: TextSignals = {
-    ...textSignals(item.title, item.lang),
-    managerSpeech:
-      managerSpeechOf(item.title, item.lang, ctx.keywords.managers) !== null,
-  };
+  // 감독 발언(D47 사용자 결정 A)까지 — 사전 감독 이름이 필요하다(`titleSignals`)
+  const s0 = titleSignals(item.title, item.lang, ctx.keywords.managers);
   const s =
     !s0.transfer &&
     (koBoundForTeam(item.title, item.lang, tags.teams) ||

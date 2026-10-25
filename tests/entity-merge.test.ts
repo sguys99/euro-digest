@@ -330,7 +330,7 @@ describe("classifyClusters — 분석 → 병합 → 다시 분석", () => {
         },
       ],
     } satisfies Partial<NewsCard>;
-    expect(todayCardEntity(card)).toMatchObject({
+    expect(todayCardEntity(card, CTX.keywords.managers)).toMatchObject({
       pair: "arsenal|chelsea",
       scores: ["1-2"],
     });
@@ -343,15 +343,60 @@ describe("classifyClusters — 분석 → 병합 → 다시 분석", () => {
     expect(out.fresh).toEqual([]);
     expect(out.attachments).toEqual([{ cardId: "c_00000000aa", groups }]);
     // M1-17 전 카드(teams []·cat other)·경기 결과가 아닌 카드는 대상이 아니다
-    expect(todayCardEntity({ ...card, teams: [] })).toBeNull();
-    expect(todayCardEntity({ ...card, cat: "other" })).toBeNull();
+    expect(
+      todayCardEntity({ ...card, teams: [] }, CTX.keywords.managers),
+    ).toBeNull();
+    expect(
+      todayCardEntity({ ...card, cat: "other" }, CTX.keywords.managers),
+    ).toBeNull();
     // 아침의 경기 전 카드(결과 동사가 있어도 경기 전 표현) — 대상이 아니다(결과 기사가 그 밑으로 숨지 않게)
     expect(
-      todayCardEntity({
-        ...card,
-        t: "Arteta: Arsenal can beat Chelsea without Odegaard",
-      }),
+      todayCardEntity(
+        {
+          ...card,
+          t: "Arteta: Arsenal can beat Chelsea without Odegaard",
+        },
+        CTX.keywords.managers,
+      ),
     ).toBeNull();
+  });
+
+  it("감독 발언 오늘 카드(D47 사용자 결정 A — '… - Iraola')는 결과 카드여도 열쇠가 없다 — 새 클러스터와 같은 조건, 같은 경기 새 결과 기사가 그 밑으로 숨지 않는다", () => {
+    const speech = {
+      id: "c_00000000bb",
+      t: "Liverpool 2-1 Everton: we showed character - Iraola",
+      lang: "en",
+      cat: "result" as const,
+      teams: ["liverpool", "everton"],
+      src: [
+        {
+          n: "BBC Sport",
+          u: "https://www.bbc.co.uk/y",
+          at: "2026-10-10T21:10:00.000Z",
+          tier: 2 as const,
+        },
+      ],
+    } satisfies Partial<NewsCard>;
+    expect(todayCardEntity(speech, CTX.keywords.managers)).toBeNull();
+    // 감독 사전이 없으면(감독 발언 문형 없음) 같은 카드가 열쇠를 받는다 — 조건이 감독 색인에서 온다
+    expect(
+      todayCardEntity(speech, buildKeywordIndex({}).managers),
+    ).toMatchObject({ pair: "everton|liverpool", scores: ["1-2"] });
+    const groups = [
+      group(
+        "Liverpool 2-1 Everton: Salah winner settles derby",
+        "bbc-sport-football",
+        "2026-10-10T21:30:00.000Z",
+      ),
+    ];
+    const out = classifyClusters({
+      fresh: singletons(groups),
+      todayCards: [speech as NewsCard],
+      ctx: CTX,
+      groupOrder: orderOf(groups),
+    });
+    expect(out.attachments).toEqual([]);
+    expect(out.fresh).toHaveLength(1);
   });
 });
 

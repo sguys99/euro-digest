@@ -60,7 +60,7 @@ import {
   buildNameIndex,
   COMPETITION_EN_ALIASES,
   koreanName,
-  PERSON_KINDS,
+  SCORER_KINDS,
   TEAM_KINDS,
   type NameIndex,
 } from "./names";
@@ -106,7 +106,8 @@ export const ENGLISH_NAMES: BriefNames = Object.freeze({
 export function briefNamesFromIndex(index: NameIndex): BriefNames {
   return {
     team: (name) => koreanName(index, name, TEAM_KINDS) ?? name,
-    person: (name) => koreanName(index, name, PERSON_KINDS) ?? name,
+    // 템플릿 사람 이름은 득점자·도움뿐 — 선수 항목만(감독 이름이 득점자 자리에 붙지 않게)
+    person: (name) => koreanName(index, name, SCORER_KINDS) ?? name,
   };
 }
 

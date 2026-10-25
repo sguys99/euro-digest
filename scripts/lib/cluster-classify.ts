@@ -13,7 +13,7 @@ import type { NewsCard } from "@/lib/schema";
 import {
   analyzeCluster,
   isMatchReportText,
-  textSignals,
+  titleSignals,
   type ClassifyContext,
   type ClusterAnalysis,
 } from "./classify";
@@ -26,6 +26,7 @@ import {
   type EntityMergeStats,
 } from "./entity-merge";
 import { toCluster, type NewsCluster } from "./news-cluster";
+import type { ManagerIndex } from "./news-keywords";
 
 /** 분류·병합 결과 */
 export interface ClassifiedClusters {
@@ -40,14 +41,15 @@ export interface ClassifiedClusters {
 
 /**
  * 오늘 카드(저장된 값)의 엔티티 열쇠 — 저장된 카테고리가 '경기 결과'이고 원제목이 경기 기사(classify.ts `isMatchReportText` — 경기 전·
- * 부상·이적·감독구단·묶음 신호 없음)이고 원제목에 스코어가 있을 때만, 저장된 팀 태그 + 원제목 스코어, 가장 이른 출처 시각. 새
- * 클러스터와 같은 조건이다(D42 ⑥).
+ * 부상·이적·감독구단(감독 발언 문형 포함 — `managers`, D47 사용자 결정 A)·묶음 신호 없음)이고 원제목에 스코어가 있을 때만, 저장된 팀
+ * 태그 + 원제목 스코어, 가장 이른 출처 시각. 새 클러스터와 같은 조건이다(D42 ⑥ — 신호는 classify.ts `titleSignals` 공용).
  */
 export function todayCardEntity(
   card: Pick<NewsCard, "t" | "lang" | "teams" | "src" | "cat">,
+  managers: ManagerIndex,
 ): EntityKey | null {
   if (card.cat !== "result") return null;
-  const s = textSignals(card.t, card.lang);
+  const s = titleSignals(card.t, card.lang, managers);
   return entityOf(
     {
       matchResult: isMatchReportText(s, card.teams.length > 0),
@@ -79,7 +81,7 @@ export function classifyClusters(input: {
     fresh: first.map((a) => entityOf(a, a.earliestMs)),
     today: input.todayCards.map((card) => ({
       cardId: card.id,
-      key: todayCardEntity(card),
+      key: todayCardEntity(card, ctx.keywords.managers),
     })),
   });
 

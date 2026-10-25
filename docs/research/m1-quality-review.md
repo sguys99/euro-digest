@@ -161,39 +161,42 @@
 **반영 내용**
 
 - **감독 표기**(`configs/names.ko.json`, `/add-name` 표기안 → 사용자 확인): 감독 13 → 32명. 현직 17명(알레그리·가스페리니·스팔레티·가투소·아모림·키부·아바테·파브레가스·글라스너·게리 오닐·램파드·휘르첼러·이라올라·모예스·야이슬레·사리·아르벨로아)과 키스 앤드류스·안토니오 콘테(현직 아님 — 맨유 감독설 빈출)를 국내 매체 관용 표기로 넣었다. 기존 '한지 플리크'는 '한지 플릭'으로 바꿨다(slug 그대로 — 태그 표시는 소급, 저장된 브리핑은 소급 안 됨). note 머리말은 `확정(사용자 결정 2026-10-25)`.
-- **성 단독 별칭**: '기본 미반영'(/add-name·D46 표기 정책)의 사용자 예외로 저위험 성 14개만 넣었다 — Allegri·Gasperini·Spalletti·Gattuso·Chivu·Fàbregas·Glasner·Lampard·Hürzeler·Iraola·Moyes·Jaissle·Arbeloa·Sarri. 중간·고위험 성(Amorim·Abate·Conte·O'Neil·Andrews)과 기존 감독(Simeone·Slot·Flick·Alonso·Enrique·Carrick 등)은 넣지 않았다.
+- **성 단독 별칭**: /add-name '성 단독 기본 미반영' 정책의 사용자 예외로 저위험 성 14개만 넣었다(뉴스 감독 발언 분류 전용 — 브리핑 치환·이름 찾기에는 쓰지 않는다, 아래 '브리핑 치환 영향') — Allegri·Gasperini·Spalletti·Gattuso·Chivu·Fàbregas·Glasner·Lampard·Hürzeler·Iraola·Moyes·Jaissle·Arbeloa·Sarri. 중간·고위험 성(Amorim·Abate·Conte·O'Neil·Andrews)과 기존 감독(Simeone·Slot·Flick·Alonso·Enrique·Carrick 등)은 넣지 않았다.
 - **규칙**(`scripts/lib/news-keywords.ts` `managerSpeechOf` → `classify.ts` 감독·구단 자리): 사전 감독 이름 + 문형일 때만 감독·구단이다. 앞선 카테고리(대표팀·이적·부상·결과·UCL)가 먼저 정해지고, 이름만 있고 문형이 없으면 기타 그대로다(D47 ①).
 
 | 문형 | 예(실데이터) | 비고 |
 |---|---|---|
 | head | `Napoli, Allegri: "…"` · `Allegri: "…"` | 쉼표 앞 팀·맥락(큰따옴표·쌍점 없음) + 이름 + 쌍점 |
 | headSays | `Manchester United, Carrick scuote la squadra: "…"` | 이름 + 낱말 1~5개 + 쌍점 + 따옴표 |
-| tail | `… - Iraola` | 공백 + 대시 + 이름으로 끝남('Gattuso-Sarri'는 아니다) |
+| tail | `… - Iraola` · `…, says Iraola` · `…, Iraola says` | 공백 + 대시 + 이름으로 끝남('Gattuso-Sarri'는 아니다)·쉼표 뒤 끝 출처 |
 | quoteTail | `'It doesn't make sense' - Glasner confused …` | 닫는 따옴표 + 대시 + 이름 |
-| verb | `Glasner confident …` · `Liverpool boss Iraola says …` | 머리 주어 + 발언 동사(소문자, 표 `MANAGER_SPEECH_VERBS`) |
-| koQuote · koSaid · koSays | `램파드 “…”` · `“…”라고 말한 이라올라` · `가스페리니가 밝힌 …` | 국내 — 큰따옴표만(작은따옴표는 별명·강조: '이라올라 감독 ‘애제자’'), 한글 성은 3글자 이상(키부·사리 제외) |
+| verb | `Glasner confident …` · `Liverpool boss Iraola says …` | 머리 주어 + 발언 동사(소문자 현재형, 표 `MANAGER_SPEECH_VERBS` — 수동태와 겹치는 과거분사 'praised'·'dismissed'(경질)·'admitted'(입원)·'said'(소문 'said to be')와 명사로 흔한 'questions'는 뺐다) |
+| koQuote · koSaid · koSays | `램파드 “…”` · `“…”라고 말한 이라올라` · `가스페리니가 밝힌 …` | 국내 — 큰따옴표만(작은따옴표는 별명·강조: '이라올라 감독 ‘애제자’'), 한글 성은 3글자 이상(키부·사리 제외), 발언 동사는 `MANAGER_SPEECH_VERBS.ko` 하나 |
 
-- 이름 맞춤: 라틴은 발음 기호를 떼고 대소문자를 남겨 사전 표기 그대로(첫 글자 대문자)·단어 경계일 때만 맞춘다('sarri'·'Sarrià'는 아니다). 첫 글자 축약('D. Simeone')은 쓰지 않는다. 성 별칭이 없는 시메오네는 전체 이름일 때만 맞는다 — 'Torino, Simeone: "…"'(지오반니)·'시메오네가 밝히는'은 기타 그대로다.
-- 감독 발언 제목은 엔티티 병합 대상(D42 `isMatchReportText`)에서도 뺀다 — 감독 발언 기사가 결과 카드 밑으로 숨지 않게(기존 `CLUB_TERMS`와 같은 취급).
+- 이름 맞춤: 라틴은 발음 기호를 떼고 대소문자를 남겨 사전 표기 그대로(첫 글자 대문자)·단어 경계일 때만 맞춘다('sarri'·'Sarrià'는 아니다). 이 대소문자 구분은 분류에만 있다 — 브리핑 치환은 대소문자를 무시한다. 첫 글자 축약('D. Simeone')은 쓰지 않는다. 성 별칭이 없는 시메오네는 전체 이름일 때만 맞는다 — 'Torino, Simeone: "…"'(지오반니)·'시메오네가 밝히는'은 기타 그대로다.
+- 감독 발언 제목은 엔티티 병합 대상(D42 `isMatchReportText`)에서도 뺀다 — 감독 발언 기사가 결과 카드 밑으로 숨지 않게(기존 `CLUB_TERMS`와 같은 취급). 같은 날 재실행에서 저장된 오늘 카드의 열쇠(`cluster-classify.ts` `todayCardEntity`)도 같은 신호(`classify.ts` `titleSignals` — 감독 색인 포함)를 쓴다(리뷰 반영).
 
 **재분류**(10-17~25 8개 호 359장 — §3과 같은 근사: 대표 제목 + 출처 대회, 요약문 없음 · 보강 전 = origin/main 코드·사전)
 
 - **기타 148 → 136장(41.2% → 37.9%)** — 언어별 en 70 → 65 · it 42 → 35 · ko 34 → 34 · es 2 → 2. 발행분 저장값은 164장(45.7% — 대부분 M1-43 보정 전 규칙).
 - 바뀐 카드 **12장, 모두 기타 → 감독·구단**, 하나씩 확인 — **새 오분류 0**: Gattuso(10-17 Lazio) · Arbeloa('Not about me') · Iraola('delicate' situation) · Gasperini(10-18 'Grande soddisfazione') · Jaissle('wrong decisions') · Moyes('did not play well') · Allegri(10-21) · Gasperini(10-21) · Chivu(10-22) · Spalletti(10-23) · Sarri(10-23) · Glasner('It doesn't make sense').
-- spoiler·태그·kr·이적 정보 변화 **0**. 엔티티 병합 대상 변화 1장 — 'Roma, Gasperini: "… sul 3-2 …"'(카테고리 결과·spoiler 그대로, 감독 발언이라 병합에서 빠짐 — 의도). 기간 밖(10-12~14, 18장) 변화 0.
+- spoiler·태그·kr·이적 정보 변화 **0**. `matchResult` 플래그만 바뀐 카드 1장 — 'Roma, Gasperini: "… sul 3-2 …"'(카테고리 결과·spoiler 그대로, 팀 태그가 로마 하나라 원래도 병합 열쇠가 없다 — 실제 병합 변화 0). 기간 밖(10-12~14, 18장) 변화 0.
 - 기간 안 문형 적중 16장 중 4장은 이미 감독·구단(국내 '감독' 키워드 등) 또는 결과(위 Gasperini)였다 — 앞선 카테고리 우선 확인. fixtures RSS·클러스터 표본 321제목에서도 적중 3장 모두 감독 발언(작은따옴표 별명 오탐 1건은 국내 문형을 큰따옴표로 좁혀 없앰).
 
-**≤ 30% 미달 — 남은 기타 136장**
+**남은 기타 136장 — 목표 재설정(사용자 결정 2026-10-25: ≤ 40%, 37.9%로 충족)**
+
+- **결론**: D47 기타 비율 목표를 **≤ 40%로 재설정**했다(사용자 결정 2026-10-25 — §3의 B). '불확실하면 기타'(D47 ①·FR-21) 원칙이 비율보다 앞선다. 남은 기타는 대부분 프리뷰·선발 명단·해설·선수 인터뷰처럼 기타가 아닌 6개 카테고리(경기 결과·이적·부상·감독·구단·대표팀·UCL) 어디에도 맞지 않는 기사다 — 억지로 넣으면 필터 칩의 뜻이 흐려진다. 발행분 기준 값은 M5-09 운영 리포트에서 계속 본다.
 
 - 감독 발언인데 성 별칭이 없어 남은 제목 13장(스크래치 가정 사전으로 같은 재분류 — 저장소 반영 아님): 기존 감독 저위험 성(Carrick 4·Mourinho·Emery·Arteta·De Zerbi) 8장 → 별칭을 넣으면 **35.7%**, 중간·고위험 성(Abate 2·Amorim·Conte·Andrews) 5장까지 → **34.3%**.
 - 나머지는 감독 발언 규칙으로 안 줄어든다 — 경기 전 기사·예상 선발·공식 선발 명단(it 'le formazioni ufficiali'·'probabili formazioni'·국내 'LINE UP'), 해설·기획('Why Liverpool are still too easy…'·'What we learnt…'), 선수 인터뷰 인용('Napoli, Politano: "…"'), 감독 이름만 있는 기사('belief in Glasner remains'·'Riflessioni su Amorim' — 감독 거취인데 문형이 없다), 국내 선수 호평·근황 기사.
 - §3의 예상(−35~43장 → 29~31%)은 인터뷰 인용 제목 23장과 사전 감독 이름이 든 제목 24장(겹침 빼고 43장 — 선수 인터뷰·감독 이름만 있는 제목 포함)을 대부분 감독·구단으로 보는 가정이었다. 이번 규칙은 D47 ① 보수 원칙대로 사전 감독 + 인용 문형이 있어야 하고 성 별칭이 저위험 14개뿐이라 그 차이만큼 남았다.
-- 🙋 다음 결정 후보: ① 기존 감독 저위험 성 별칭(Carrick·Mourinho·Emery·Arteta·De Zerbi 등 — /add-name 표기 확인 불필요, 별칭만) → 약 35.7% ② 목표 재설정(§3 B — ≤ 40%: 이미 충족) ③ 프리뷰·선발 명단 제목을 별도 판정(카테고리 추가는 D47 범위 밖 — 스키마·필터 변경).
+- 남은 선택지(필요할 때): 기존 감독 저위험 성 별칭(Carrick·Mourinho·Emery·Arteta·De Zerbi 등 — 별칭만) → 약 35.7% · 프리뷰·선발 명단 제목 별도 판정(카테고리 추가는 D47 범위 밖 — 스키마·필터 변경).
 
 **브리핑 치환 영향**
 
-- 사전 변경은 브리핑 치환(names.ts `substituteNames`)에도 쓰인다. 성 별칭은 단어 경계로만 맞는다(테스트: 'Sarrià'·'Glasnerian'은 그대로, 성 별칭 없는 'Simeone'·'Conte'·'Amorim'도 그대로). 브리핑 입력은 경기 결과·득점자·순위뿐이라 감독 이름이 들어가지 않고, 원장(`data/matches`)·저장된 브리핑·`data/cache`·fixtures(football·llm)에 14개 성과 같은 선수 이름은 0건이었다.
+- **감독 한 단어 성 별칭은 브리핑에 쓰지 않는다**(리뷰 반영 — names.ts `isManagerSurnameAlias`): 치환(`substituteNames`)은 대소문자를 무시하므로, 별칭을 치환 색인에 두면 미등록 선수 'Giacomo Sarri'가 'Giacomo 마우리치오 사리'로 바뀌어 검사기를 통과하고, 득점자 'Sarri'가 입력 정리·템플릿에서 감독 이름이 되는 경로가 생긴다(CLAUDE §1-7). 그래서 치환·이름 찾기 색인(`buildNameIndex` — byEn·치환 정규식)에서 감독의 한 단어 별칭을 빼고(감독 전체 이름 'Maurizio Sarri'는 그대로 치환), 입력 정리(`canonicalizeBriefInput`)·템플릿 사람 이름(brief-template.ts)은 선수 항목만(`SCORER_KINDS`) 본다. 분류(`managerNameTerms`)는 names.ko를 직접 읽어 영향이 없다(재분류 수치 불변 확인).
+- 테스트: 'Giacomo Sarri'·'Sarri' 문장과 득점자는 그대로, 'Maurizio Sarri'·'Hansi Flick'은 치환, `lookupName('Sarri')` = null. 원장(`data/matches`)·저장된 브리핑·`data/cache`·fixtures(football·llm)에 14개 성과 같은 선수 이름은 0건이었다.
 - 골든 입력 `npm run eval:prompt -- --check-golden` — 소스와 다른 날 0일(`--build-golden` 불필요). LLM 호출 0.
-- 남은 위험: 나중에 같은 성의 미등록 선수(예: 'X Sarri')가 득점자로 나오면 그 성 부분이 감독 한글 이름으로 바뀔 수 있다 — `/add-name`에서 그 선수를 전체 이름으로 등록하면 긴 이름 먼저 규칙으로 막힌다.
+- 같은 성의 미등록 선수가 나와도 브리핑에는 영향이 없다(위). 뉴스 분류에서는 그 선수의 인용 머리('Team, Sarri: "…"')가 감독 발언으로 보일 수 있다 — 감독·구단으로 갈 뿐 spoiler·태그는 그대로다. 그런 선수가 생기면 그 성을 별칭에서 빼거나 선수 전체 이름을 등록한다.
 
 **검사**: `npm run check` · `npm run validate` · `npm run build` 통과(커밋 보고 참고). 데이터 API·LLM 호출 0.

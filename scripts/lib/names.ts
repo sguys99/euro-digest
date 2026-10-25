@@ -16,6 +16,10 @@
  *     색인에 '그대로 둠' 대상으로 넣어 긴 이름 먼저 규칙으로 막는다('Inter Miami'의 Inter가 인테르로 바뀌지 않게).
  *   첫 글자 축약 별칭('H. Kane'·'A. Davies' — `X. 성` 형태): 동명이인 오매칭 위험이 커서 **치환·이름 찾기에 쓰지 않는다**.
  *     입력 정리(`canonicalizeBriefInput`)에서 득점 팀이 그 선수 소속팀과 같을 때만 대표 표기로 바꾼다.
+ *   감독의 한 단어 성 별칭('Allegri'·'Sarri' — 사용자 결정 2026-10-25, 뉴스 감독 발언 분류 전용 — news-keywords.ts `managerNameTerms`가
+ *     names.ko를 직접 읽는다)도 **치환·이름 찾기에 쓰지 않는다**(`isManagerSurnameAlias`) — 미등록 선수 'Giacomo Sarri'가 'Giacomo 마우리치오
+ *     사리'로, 득점자 'Sarri'가 감독 이름으로 바뀌어 입력에 없는 사실이 되지 않게(CLAUDE §1-7). 감독 전체 이름('Maurizio Sarri')은 그대로 치환.
+ *     분류는 대소문자를 구분하지만(첫 글자 대문자일 때만) 치환은 대소문자를 무시하므로(`foldName`) 한 단어 성은 치환에 특히 위험하다.
  *   이름 찾기(`lookupName`): 영문 표기 정확히 같음(접기 기준) + 유형 — 템플릿·입력 정리용(부분 일치 없음).
  *
  * ── 브리핑 입력 (M0-30 — 모델 축약 방지) ────────────────────────────────────
@@ -148,6 +152,16 @@ export function isInitialForm(name: string): boolean {
   return /^\p{Lu}\. \S/u.test(name.trim());
 }
 
+/**
+ * 감독 항목의 한 단어 성 별칭인가('Allegri'·'Fàbregas' — 머리 주석 "맞추기"). 브리핑 치환·이름 찾기 색인에서 뺀다(뉴스 감독 발언 분류 전용).
+ */
+export function isManagerSurnameAlias(
+  entry: Pick<NameEntry, "kind">,
+  name: string,
+): boolean {
+  return entry.kind === "manager" && !/\s/u.test(name.trim());
+}
+
 // ─── 색인 ─────────────────────────────────────────────────────────────────
 
 type Target =
@@ -201,6 +215,8 @@ export function buildNameIndex(
         if (!initials.has(folded)) initials.set(folded, entry);
         continue;
       }
+      // 감독 한 단어 성 별칭 — 분류 전용(머리 주석), 치환·이름 찾기에 쓰지 않는다
+      if (isManagerSurnameAlias(entry, en)) continue;
       if (byEn.has(folded)) continue;
       byEn.set(folded, entry);
       targets.set(folded, { type: "entry", entry });
@@ -284,6 +300,8 @@ export const PERSON_KINDS: readonly NameKind[] = Object.freeze([
   "player",
   "manager",
 ]);
+/** 득점자·도움 유형 — 브리핑 입력 정리·템플릿 사람 이름(감독은 득점하지 않는다 — 감독 이름이 득점자 자리에 붙지 않게) */
+export const SCORER_KINDS: readonly NameKind[] = Object.freeze(["player"]);
 export const TEAM_KINDS: readonly NameKind[] = Object.freeze(["team"]);
 
 // ─── 치환 ─────────────────────────────────────────────────────────────────
@@ -574,7 +592,7 @@ export function canonicalizeBriefInput(
     return full;
   };
   const fix = (name: string, team: string): string => {
-    const full = lookupName(index, name, PERSON_KINDS);
+    const full = lookupName(index, name, SCORER_KINDS);
     let canonical = full?.en[0] ?? name;
     if (!full) {
       const entry = index.initials.get(foldName(name.trim()));
@@ -585,7 +603,7 @@ export function canonicalizeBriefInput(
       const actual = teamSlug(team);
       if (
         entry &&
-        PERSON_KINDS.includes(entry.kind) &&
+        SCORER_KINDS.includes(entry.kind) &&
         expected !== null &&
         actual !== null &&
         expected === actual

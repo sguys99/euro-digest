@@ -2879,7 +2879,8 @@ export const KO_OCCUPATION_NOUNS: readonly string[] = [
  *   names.ko.json `kind: "manager"` 항목만(사람이 관리하는 표기 — `/add-name`).
  *   라틴: 영문 표기 전부(대표 + 별칭). 성 단독 별칭은 사용자가 고른 저위험 성만 사전에 있다(2026-10-25 — 'Allegri'·'Iraola' 등 14개).
  *     첫 글자 축약('D. Simeone')은 쓰지 않는다. 발음 기호를 떼고 **대소문자를 남겨** 맞춘다 — 사전 표기 그대로(첫 글자 대문자)일 때만이라
- *     일반어·소문자('sarri')에 맞지 않는다, 단어 경계('Sarrià'는 아니다).
+ *     일반어·소문자('sarri')에 맞지 않는다, 단어 경계('Sarrià'는 아니다). 이 대소문자 구분은 **분류에만** 있다 — 브리핑 치환(names.ts
+ *     `substituteNames`)은 대소문자를 무시하므로 감독 한 단어 성 별칭은 치환·이름 찾기 색인에서 뺀다(names.ts `isManagerSurnameAlias`).
  *   한국어: 한글 전체 이름 + 성 단독 영문 별칭이 있는 항목만 한글 성(마지막 낱말, 3글자 이상 — '알레그리'·'램파드', 두 글자 '키부'·'사리'는
  *     아니다 — `koNameTerms`와 같은 길이 기준). 성 별칭이 없는 감독(시메오네 — 지오반니·줄리아노 시메오네 선수와 같은 성)은 전체 이름만.
  *
@@ -2888,12 +2889,13 @@ export const KO_OCCUPATION_NOUNS: readonly string[] = [
  *              쌍점
  *   headSays   머리 보고: 'Manchester United, Carrick scuote la squadra: "…"'·'Simeone, tras el empate: "…"' — 이름 + 낱말 1~5개 +
  *              쌍점 + **따옴표**('Roma, la probabile formazione …: Gasperini verso …'는 이름이 쌍점 뒤라 아니다)
- *   tail       끝 출처: '… - Iraola'(공백 + 대시 + 이름으로 끝남 — 붙여 쓴 'Gattuso-Sarri'는 아니다)
+ *   tail       끝 출처: '… - Iraola'(공백 + 대시 + 이름으로 끝남 — 붙여 쓴 'Gattuso-Sarri'는 아니다)·'…, says Iraola'·'…, Iraola says'(쉼표 뒤
+ *              — 끝 출처의 'said'는 수동태가 아니다)
  *   quoteTail  인용 뒤 출처: "'It doesn't make sense' - Glasner confused after …"(닫는 따옴표 + 대시 + 이름)
  *   verb       머리 주어 + 발언 동사: 'Glasner confident …'·'Liverpool boss Iraola says …'·'Spalletti avverte …'(`MANAGER_SPEECH_VERBS` —
- *              문장형 제목의 소문자 동사만, 대소문자 구분)
+ *              문장형 제목의 소문자 현재형 동사만, 대소문자 구분 — 수동태 'Glasner praised for …'·명사 'Moyes questions remain'은 아니다)
  *   koQuote    국내: 이름(+ 감독·조사) 바로 뒤 큰따옴표('알레그리 “…”' — 작은따옴표는 별명·강조에 흔해 아니다: "이라올라 감독 ‘애제자’ 영입")
- *   koSaid     국내: 인용 뒤 '…라고 말한/밝힌 + 이름'
+ *   koSaid     국내: 인용 뒤 '…라고 말한/밝힌 + 이름'(동사는 `MANAGER_SPEECH_VERBS.ko` 공용)
  *   koSays     국내: '이름이 밝힌/말했다/강조했다 …'
  *   국내 제목은 대부분 '감독' 키워드(`CLUB_TERMS`)로 이미 감독·구단이다 — 국내 문형은 성만 쓴 제목을 같은 기준으로 맞춘다.
  */
@@ -2909,28 +2911,24 @@ export type ManagerSpeechPattern =
   | "koSaid"
   | "koSays";
 
-/** 발언 동사 — 머리 주어(감독 이름) 바로 뒤(`verb` 문형). 발언·반응을 뜻하는 말만(일반 동사 'wants'·'leads'는 아니다) */
+/**
+ * 발언 동사 — 라틴은 머리 주어(감독 이름) 바로 뒤(`verb` 문형)·끝 출처('…, says Iraola' — `tail`), 국내는 `koSays`·`koSaid`. 발언·반응을 뜻하는
+ * 말만(일반 동사 'wants'·'leads'는 아니다).
+ */
 export const MANAGER_SPEECH_VERBS: Readonly<
   Record<"latin" | "ko", readonly string[]>
 > = {
   latin: [
-    // en
+    // en — 현재형만. 과거분사 꼴(praised·hailed·dismissed·admitted·said …)은 수동태('Glasner praised for …'·'Arbeloa dismissed by
+    // Fulham' = 경질·'admitted to hospital'·'said to be …' 소문)와 겹쳐 넣지 않는다, 'questions'는 명사('Moyes questions remain')와 겹쳐 뺀다
     "says",
-    "said",
     "admits",
-    "admitted",
     "insists",
-    "insisted",
     "praises",
-    "praised",
     "hails",
-    "hailed",
     "defends",
-    "defended",
     "dismisses",
-    "dismissed",
     "plays down",
-    "played down",
     "downplays",
     "bemoans",
     "laments",
@@ -2939,7 +2937,6 @@ export const MANAGER_SPEECH_VERBS: Readonly<
     "hits out",
     "criticises",
     "criticizes",
-    "questions",
     "warns",
     "vows",
     "urges",
@@ -2992,20 +2989,26 @@ export const MANAGER_SPEECH_VERBS: Readonly<
     "asegura",
     "insiste",
   ],
+  // 국내 — `koSays`('이름이 밝힌')·`koSaid`('“…”라고 말한 이름') 공용
   ko: [
-    "밝힌",
-    "밝히는",
-    "밝혔다",
     "말한",
     "말하는",
     "말했다",
+    "밝힌",
+    "밝히는",
+    "밝혔다",
     "강조한",
     "강조했다",
     "인정한",
     "인정했다",
+    "전한",
     "전했다",
+    "토로한",
     "토로했다",
+    "답한",
     "답했다",
+    "덧붙인",
+    "털어놓은",
     "일침",
     "극찬",
     "칭찬",
@@ -3112,7 +3115,13 @@ export function buildManagerIndex(
           "u",
         ),
       },
-      { id: "tail", re: new RegExp(`\\s[-|]\\s*${name}\\s*[.!]?$`, "u") },
+      {
+        id: "tail",
+        re: new RegExp(
+          `(?:\\s[-|]\\s*${name}|,\\s*(?:says|said)\\s+${name}|,\\s*${name}\\s+(?:says|said))\\s*[.!]?$`,
+          "u",
+        ),
+      },
       { id: "quoteTail", re: new RegExp(`["']\\s*-\\s*${name}`, "u") },
       {
         id: "verb",
@@ -3142,7 +3151,7 @@ export function buildManagerIndex(
       {
         id: "koSaid",
         re: new RegExp(
-          `[”"’']\\s?(?:이라고|라고|이라며|라며|며)?\\s?(?:말한|밝힌|강조한|전한|토로한|인정한|답한|덧붙인|털어놓은)\\s?${name}${after}`,
+          `[”"’']\\s?(?:이라고|라고|이라며|라며|며)?\\s?(?:${verbs})\\s?${name}${after}`,
           "u",
         ),
       },

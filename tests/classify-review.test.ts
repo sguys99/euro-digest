@@ -503,7 +503,10 @@ describe.each([
       analyses,
       plan: planEntityMerges({
         fresh: analyses.map((a) => entityOf(a, a.earliestMs)),
-        today: today.map((c) => ({ cardId: c.id, key: todayCardEntity(c) })),
+        today: today.map((c) => ({
+          cardId: c.id,
+          key: todayCardEntity(c, ctx.keywords.managers),
+        })),
       }),
     };
   };

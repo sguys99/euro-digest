@@ -159,19 +159,16 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
   });
 
   it("D46 사용자 확정 항목은 note에 결정이 남아 있다 — Club Brugge는 KFA 대신 매체 관례 '클럽 브뤼헤'(D39 ② 예외)", () => {
-    // D46 항목 = note 머리말이 D46 확정인 것(다른 항목 note는 D46 표기 정책을 근거로 말할 수 있다 — 2026-10-25 감독 성 별칭 예외)
-    const d46 = NAMES.entries.filter((e) =>
-      e.note?.startsWith("확정(PRD §15 D46"),
-    );
-    // 팀 13(Club Brugge 포함) · 선수 14 · 감독 2 — 한지 플리크는 2026-10-25 사용자 결정으로 '한지 플릭'(국내 매체 관용)
-    expect(d46.length).toBe(29);
+    const d46 = NAMES.entries.filter((e) => e.note?.includes("D46"));
+    // 팀 13(Club Brugge 포함) · 선수 14 · 감독 3 — 한지 플릭(2026-10-25 사용자 결정으로 '한지 플리크'에서 바꿈)도 note에 D46 확정 이력이 남는다
+    expect(d46.length).toBe(30);
     expect(d46.every((e) => e.note!.includes("2026-10-17"))).toBe(true);
     const brugge = teamEntries.find((e) => e.slug === "brugge-kv")!;
     expect(brugge.ko).toBe("클럽 브뤼헤");
     expect(brugge.note).toContain("D39 ②(KFA 우선)의 예외");
   });
 
-  it("감독 표기 확장(사용자 결정 2026-10-25 — D47 감독 발언 규칙): 32명, 성 단독 별칭은 저위험 성 14개만(D46 '성 단독 기본 미반영'의 예외)", () => {
+  it("감독 표기 확장(사용자 결정 2026-10-25 — D47 감독 발언 규칙): 32명, 성 단독 별칭은 저위험 성 14개만(/add-name '성 단독 기본 미반영' 정책의 예외 — 브리핑 치환에는 안 씀)", () => {
     const managers = NAMES.entries.filter((e) => e.kind === "manager");
     expect(managers.length).toBe(32); // D46까지 13 + A 17 + 키스 앤드류스·안토니오 콘테
     const decided = managers.filter((e) =>
@@ -227,7 +224,10 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
     );
     for (const [e, n] of surnameAliases) {
       expect(e.note, e.ko).toContain(`성 단독 별칭 '${n}'`);
-      expect(e.note, e.ko).toContain("사용자 예외");
+      expect(e.note, e.ko).toContain(
+        "/add-name '성 단독 기본 미반영' 정책의 사용자 예외(2026-10-25",
+      );
+      expect(e.note, e.ko).not.toContain("D46"); // D46 항목 수 가드(위)와 섞이지 않게
       // 성 별칭은 대표 표기의 마지막 낱말이다(다른 사람 이름을 별칭으로 넣지 않는다)
       expect(e.en[0]!.split(/\s+/u).at(-1), e.ko).toBe(n);
     }

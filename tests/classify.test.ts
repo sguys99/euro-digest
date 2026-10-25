@@ -748,6 +748,9 @@ describe("감독 발언 → 감독·구단 (PRD §15 D47 사용자 결정 A, 202
       ["Liverpool boss Iraola says squad needs rest", BBC, "verb"],
       ["Glasner confident Forest can turn the corner", BBC, "verb"],
       ["Spalletti avverte la Juventus prima della sosta", DM, "verb"],
+      // 끝 출처 — 쉼표 뒤 'says/said + 이름'·'이름 + says'
+      ["Salah fit to face Arsenal, Iraola says", BBC, "tail"],
+      ["We have to be braver, says Iraola", BBC, "tail"],
       ["램파드 “선수들이 자랑스럽다”…코번트리 반등 이끈다", IF, "koQuote"],
       [
         "“우승 경쟁 충분히 가능하다”라고 말한 이라올라, 리버풀 반등 자신",
@@ -801,6 +804,11 @@ describe("감독 발언 → 감독·구단 (PRD §15 D47 사용자 결정 A, 202
       ],
       ['Torino, Abate: "Non abbiamo fatto ancora niente"', DM],
       ["Yarmoliuk red card changed game dynamic - Andrews", BBC],
+      // 발언 동사 문형은 현재형만 — 수동태('praised for'·'dismissed by' = 경질·'admitted to hospital')·명사 'questions'는 아니다
+      ["Glasner praised for Forest turnaround", BBC],
+      ["Arbeloa dismissed by Fulham after poor run", BBC],
+      ["Allegri admitted to hospital for checks", BBC],
+      ["Moyes questions remain after Everton slump", BBC],
       // 붙여 쓴 대시·소문자·단어 안(Sarrià)
       ["Gattuso-Sarri, la sfida dei maestri", DM],
       ["Everton did not play well - moyes", BBC],

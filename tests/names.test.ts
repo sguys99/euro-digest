@@ -22,6 +22,7 @@ import {
   type BriefInputMatch,
   type BriefStandingsSource,
 } from "../scripts/lib/brief-input";
+import { namesKoResolver } from "../scripts/lib/brief-template";
 import type { FinishedMatch } from "../scripts/lib/match-data";
 import {
   briefInputNames,
@@ -190,19 +191,21 @@ describe("substituteNames — 치환", () => {
     );
   });
 
-  it("감독 성 단독 별칭(사용자 결정 2026-10-25 — 저위험 14개)은 브리핑 치환에도 쓰이고, 단어 경계라 다른 낱말·이름 안에는 맞지 않는다 · 별칭 없는 성(Simeone·Conte·Amorim)은 그대로", () => {
-    expect(sub("Allegri가 이끄는 Napoli는 승점 16이다.")).toBe(
-      "마시밀리아노 알레그리가 이끄는 나폴리는 승점 16이다.",
+  it("감독 한 단어 성 별칭(사용자 결정 2026-10-25 — 뉴스 감독 발언 분류 전용)은 브리핑 치환·이름 찾기에 쓰지 않는다 — 미등록 선수 'Giacomo Sarri'·득점자 'Sarri'는 그대로(CLAUDE §1-7), 감독 전체 이름은 치환", () => {
+    // 같은 성의 미등록 선수 — 성 부분만 감독 이름으로 바뀌지 않는다(대소문자 무시 치환이라 특히 위험)
+    expect(sub("Giacomo Sarri가 결승골을 넣었다.")).toBe(
+      "Giacomo Sarri가 결승골을 넣었다.",
     );
-    expect(sub("Moyes의 Everton이 이겼다.")).toBe(
-      "데이비드 모예스의 에버턴이 이겼다.",
-    );
-    // 단어 안('Sarrià'·'Glasnerian')·붙은 라틴 글자는 아니다
-    expect(sub("Sarrià와 Glasnerian")).toBe("Sarrià와 Glasnerian");
-    // 성 별칭이 없는 감독·동명 선수 — 지오반니 시메오네(사전 선수 항목)는 전체 이름일 때만, 성만 쓰면 그대로
+    expect(sub("Sarri가 득점했다.")).toBe("Sarri가 득점했다.");
+    expect(sub("Allegri와 Moyes")).toBe("Allegri와 Moyes");
+    expect(lookupName(INDEX, "Sarri")).toBeNull();
+    expect(isKnownName(INDEX, "Allegri")).toBe(false);
+    // 감독 전체 이름은 그대로 치환된다
+    expect(sub("Maurizio Sarri의 Atalanta")).toBe("마우리치오 사리의 아탈란타");
+    expect(sub("Hansi Flick의 Barça")).toBe("한지 플릭의 바르셀로나");
+    // 성 별칭이 없는 감독·동명 선수(지오반니 시메오네 — 사전 선수 항목은 전체 이름일 때만)도 그대로
     expect(sub("Simeone이 득점했다.")).toBe("Simeone이 득점했다.");
     expect(sub("Conte와 Amorim")).toBe("Conte와 Amorim");
-    expect(sub("Hansi Flick의 Barça")).toBe("한지 플릭의 바르셀로나");
   });
 
   it("사전이 비면 원문 그대로(NFC)", () => {
@@ -348,6 +351,36 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
         INDEX,
       ).input.matches[0]!.goals,
     ).toBeNull();
+  });
+
+  it("득점자·도움 정리는 선수 항목만 — 감독 이름(전체·성 별칭)이 득점자 자리에 붙지 않는다(사용자 결정 2026-10-25 감독 성 별칭, CLAUDE §1-7)", () => {
+    const out = canonicalizeBriefInput(
+      {
+        ...input,
+        matches: [
+          match({
+            goals: [
+              { min: "12", team: "Bayern", player: "Sarri" },
+              { min: "40", team: "Bayern", player: "Giacomo Sarri" },
+              { min: "77", team: "Bayern", player: "Maurizio Sarri" },
+            ],
+          }),
+        ],
+      },
+      INDEX,
+      { playerTeams: PLAYER_TEAMS },
+    );
+    expect(out.replaced).toBe(0);
+    expect(out.input.matches[0]!.goals!.map((g) => g.player)).toEqual([
+      "Sarri",
+      "Giacomo Sarri",
+      "Maurizio Sarri",
+    ]);
+    // 템플릿 사람 이름도 선수 항목만
+    const names = namesKoResolver(NAMES);
+    expect(names.person("Sarri")).toBe("Sarri");
+    expect(names.person("Maurizio Sarri")).toBe("Maurizio Sarri");
+    expect(names.person("Harry Kane")).toBe("해리 케인");
   });
 
   it("첫 글자 축약 별칭('A. Davies')은 소속팀이 맞을 때만 대표 표기로 — 다른 팀의 같은 축약 이름·소속팀 정보 없음은 그대로", () => {
