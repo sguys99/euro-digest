@@ -4,7 +4,8 @@
  * - 게시 계획(`planBriefPublish`, 순수): 이번 실행의 브리핑 결과(collect-run.ts `BriefOutcome`) + 정형 입력 → mode·줄.
  *   LLM 출력이 FR-29 판정 ok·downgrade-line을 받으면(M1-45) 검증 통과 줄 + 줄 단위 템플릿 강등(brief-publish.ts
  *   `composeVerifiedBrief`)을 게시한다 — 모든 줄 AI면 `llm`, 섞이면 `mixed`. 통과 줄이 하나도 없으면 같은 입력의 전체 템플릿
- *   (`template`, reason all-lines-downgraded). 경기가 없으면 `empty`(줄 0개 — 호출 생략, D30 5줄 블록 유지). 예산 초과(M1-22 —
+ *   (`template`, reason all-lines-downgraded). 경기가 없으면 `empty`(줄 0개 — 호출 생략, D30 5줄 블록 유지) + 이유 `emptyReason`
+ *   (D60 — `no-matches` 끝난 경기 없음 · `results-pending` 경기는 있었지만 결과를 받지 못함, brief-supplement.ts). 예산 초과(M1-22 —
  *   verdict 셋 다)·마감(FR-26)·LLM 실패·refusal·출력 전체 실패(재시도 뒤)·검사기 오류·사전 읽기 실패·mock 응답 없음·브리핑 설정
  *   오류도 같은 템플릿(FR-26·FR-27·FR-29). 정형 입력이 없으면(football-data 키 없음·실패, 설정 읽기 실패) 파일을 만들지 않는다 —
  *   전날 파일이 아니라 그날 파일이 없는 상태 — 화면(M1-32)은 그 호의 5줄 블록을 싣지 않는다(전날 파일로 대신하지 않음, 오류 상태 표시는 M1-37).
@@ -13,8 +14,10 @@
  *   공개 뒤 문장이 바뀌지 않게, 백업·수동 실행이 LLM을 다시 부르지도 않는다 — collect-run.ts가 LLM 전에 같은 판정으로 건너뜀).
  *   줄이 있는 `template`은 새 결과가 `llm`·`mixed`이거나 줄 수가 더 많은 `template`일 때만 갱신한다(뒤 실행이 LLM에 성공했거나
  *   경기를 더 받은 경우) — 줄 수가 같거나 적은 template·empty로는 바꾸지 않는다(공개된 브리핑의 내용이 바뀌거나 줄지 않게,
- *   오케스트레이터 결정 2026-10-16). `empty`는 줄 있는 결과로 갱신한다. 내용(mode·줄)이 같으면 다시 쓰지 않는다(generatedAt만
- *   바뀌는 data 커밋 방지). 기존 파일이 깨져 있으면 경고하고 새 파일로 고친다(브리핑이 발행을 막지 않게).
+ *   오케스트레이터 결정 2026-10-16). `empty`는 줄 있는 결과와 이유(`emptyReason` — D60)가 다른 empty로 갱신한다 — 결과 지연
+ *   (`results-pending`) 파일은 다음 실행(백업·수동)이 보충에 성공하면 그 브리핑으로 덮인다. 내용(mode·줄·empty 이유 — 키 없는 옛
+ *   empty는 no-matches)이 같으면 다시 쓰지 않는다(generatedAt만 바뀌는 data 커밋 방지). 기존 파일이 깨져 있으면 경고하고 새 파일로
+ *   고친다(브리핑이 발행을 막지 않게).
  * - 쓰기: 스키마 검증 → 임시 파일 → rename(원자적). 검증에 걸리는 파일은 쓰지 않는다 — 검증 게이트(`npm run validate`)가 브리핑
  *   하나 때문에 그날 발행 전체를 막지 않게.
  */
@@ -24,6 +27,7 @@ import path from "node:path";
 
 import {
   BriefFileSchema,
+  type BriefEmptyReason,
   type BriefFile,
   type BriefLine,
   type BriefMode,
@@ -100,14 +104,16 @@ export class BriefFileError extends Error {
 }
 
 /**
- * 브리핑 파일 만들기 — 스키마 검증(키 순서 고정 — 줄은 text·ai·refs·comps). 통과하지 못하면 BriefFileError.
- * 줄의 `comps`(D58)는 호출부가 채운 것을 그대로 옮긴다(brief-comps.ts `withBriefComps` — 없으면 키 없음).
+ * 브리핑 파일 만들기 — 스키마 검증(키 순서 고정 — date·generatedAt·runId·mode·emptyReason·lines, 줄은 text·ai·refs·comps). 통과하지
+ * 못하면 BriefFileError. 줄의 `comps`(D58)는 호출부가 채운 것을 그대로 옮긴다(brief-comps.ts `withBriefComps` — 없으면 키 없음).
+ * `emptyReason`(D60)은 mode empty일 때만 넣는다 — empty인데 주지 않으면 no-matches(새 파일은 늘 이유를 적는다).
  */
 export function buildBriefFile(input: {
   date: string;
   generatedAt: string;
   runId: string;
   mode: BriefMode;
+  emptyReason?: BriefEmptyReason;
   lines: readonly BriefLine[];
 }): BriefFile {
   const parsed = BriefFileSchema.safeParse({
@@ -115,6 +121,9 @@ export function buildBriefFile(input: {
     generatedAt: input.generatedAt,
     runId: input.runId,
     mode: input.mode,
+    ...(input.mode === "empty"
+      ? { emptyReason: input.emptyReason ?? "no-matches" }
+      : {}),
     lines: input.lines.map((l) => ({
       text: l.text,
       ai: l.ai,
@@ -160,29 +169,45 @@ export function isMockBriefFile(
   return t.in + t.out + t.cacheRead + t.cacheWrite === 0;
 }
 
+/** empty 파일의 이유 — 키가 없는 옛 empty는 no-matches(D60), empty가 아니면 null */
+export function briefEmptyReasonOf(
+  file: Pick<BriefFile, "mode" | "emptyReason">,
+): BriefEmptyReason | null {
+  return file.mode === "empty" ? (file.emptyReason ?? "no-matches") : null;
+}
+
+/** mode·줄·empty 이유가 같은가(다시 쓰지 않을 내용) */
+function sameBriefContent(
+  a: Pick<BriefFile, "mode" | "lines" | "emptyReason">,
+  b: Pick<BriefFile, "mode" | "lines" | "emptyReason">,
+): boolean {
+  return (
+    a.mode === b.mode &&
+    briefEmptyReasonOf(a) === briefEmptyReasonOf(b) &&
+    JSON.stringify(a.lines) === JSON.stringify(b.lines)
+  );
+}
+
 /**
  * 같은 날 재실행 판정(순수 함수) — 머리 주석. `existingMock`이면(isMockBriefFile — mock 실행이 쓴 llm·mixed) 기존 파일을 지키지
- * 않고 새 결과로 덮는다(다음 live 실행이 mock 줄을 바꾼다 — M1-45 리뷰 권장 5).
+ * 않고 새 결과로 덮는다(다음 live 실행이 mock 줄을 바꾼다 — M1-45 리뷰 권장 5). empty는 이유(D60 — `results-pending`·`no-matches`)까지
+ * 같아야 unchanged — 결과 지연(results-pending) 파일은 다음 실행이 보충에 성공하면 줄 있는 브리핑으로, 이유가 바뀌면 그 이유로 덮인다.
  */
 export function decideBriefWrite(
-  existing: Pick<BriefFile, "mode" | "lines"> | null,
-  next: Pick<BriefFile, "mode" | "lines">,
+  existing: Pick<BriefFile, "mode" | "lines" | "emptyReason"> | null,
+  next: Pick<BriefFile, "mode" | "lines" | "emptyReason">,
   options: { existingMock?: boolean } = {},
 ): BriefWriteDecision {
   if (existing === null) return { action: "write" };
   if (isKeptBriefMode(existing.mode) && options.existingMock) {
-    return existing.mode === next.mode &&
-      JSON.stringify(existing.lines) === JSON.stringify(next.lines)
+    return sameBriefContent(existing, next)
       ? { action: "unchanged" }
       : { action: "write" };
   }
   if (isKeptBriefMode(existing.mode)) {
     return { action: "keep", reason: "kept-llm" };
   }
-  if (
-    existing.mode === next.mode &&
-    JSON.stringify(existing.lines) === JSON.stringify(next.lines)
-  ) {
+  if (sameBriefContent(existing, next)) {
     return { action: "unchanged" };
   }
   if (existing.mode === "template" && existing.lines.length > 0) {
@@ -261,7 +286,8 @@ export interface VerifiedBriefLines {
 }
 
 export type BriefPublishPlan =
-  | { mode: "empty"; reason: "no-matches"; lines: [] }
+  /** 입력 경기 0 — reason = 파일 `emptyReason`(D60: no-matches 끝난 경기 없음 · results-pending 경기는 있었지만 결과를 받지 못함) */
+  | { mode: "empty"; reason: BriefEmptyReason; lines: [] }
   /** 검증 통과 LLM 줄(+ 줄 단위 템플릿 강등) — M1-45 */
   | { mode: "llm" | "mixed"; reason: "verified"; lines: BriefLine[] }
   | { mode: "template"; reason: BriefTemplateReason; lines: BriefLine[] }
@@ -314,7 +340,8 @@ export function briefTemplateReason(
 /**
  * 게시 계획(순수 함수) — 머리 주석. `templateLines`는 같은 입력의 템플릿 줄(brief-template.ts `templateBriefLines`),
  * `inputMatches`는 입력 경기 수(정형 입력이 없으면 null), `verified`는 FR-29 판정 ok·downgrade-line 출력의 게시 줄(M1-45 —
- * brief-publish.ts `composeVerifiedBrief`, done일 때만).
+ * brief-publish.ts `composeVerifiedBrief`, done일 때만). 입력 경기가 0이면 empty — 브리핑 단계가 `results-pending`으로 건너뛰었으면
+ * (보충 뒤에도 결과를 기다리는 경기가 있음 — collect-run.ts, brief-supplement.ts `briefEmptyReason`) 그 이유, 그 밖은 no-matches(D60).
  */
 export function planBriefPublish(input: {
   brief: BriefStageResult;
@@ -328,8 +355,15 @@ export function planBriefPublish(input: {
     return { mode: null, reason: "kept" };
   }
   if (inputMatches === null) return { mode: null, reason: "no-input" };
-  if (inputMatches === 0)
-    return { mode: "empty", reason: "no-matches", lines: [] };
+  if (inputMatches === 0) {
+    const pending =
+      brief.state === "skipped" && brief.reason === "results-pending";
+    return {
+      mode: "empty",
+      reason: pending ? "results-pending" : "no-matches",
+      lines: [],
+    };
+  }
   if (brief.state === "done" && verified && verified.ai > 0) {
     return {
       mode: verified.ai === verified.lines.length ? "llm" : "mixed",

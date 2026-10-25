@@ -37,6 +37,8 @@
  *   - 교차 `/v4/matches`는 `dateTo` 당일을 빼고 준다 → 창의 UTC 시작일·끝 날짜를 dateFrom·dateTo로 보내고, 받은 뒤 킥오프로
  *     창을 다시 거른다(`footballDataDateRange`).
  *   - `IN_PLAY`·`CANCELLED`에도 `score.fullTime`이 채워져 온다 → status로 거른다.
+ *   - 결과 반영이 늦을 때가 있다(2026-10-25 호 — 킥오프 10시간 뒤에도 창 안 19경기가 IN_PLAY 5·TIMED 14). 창 안인데 종료 결과로 쓰지
+ *     못한 대상 대회 경기는 `unsettled`(awaiting·void 분류)로 넘긴다 — API-Football 종료 결과 보충·결과 지연 판정(PRD §15 D60).
  *   - 승부차기 경기는 `score.fullTime`에 승부차기 골이 들어가고 `penalties`가 따로 붙는다(API-Football과 반대) → 내부 `ft`는
  *     승부차기 골을 뺀 값(match-data.ts 스코어 규칙). `penalties`가 없으면 ft를 알 수 없어 그 경기를 쓰지 않는다.
  *   - 순위표는 진행 중 경기 점수까지 반영한다 → 받은 시점의 진행 중 경기 수를 `CompStandings.inProgress`로 넘긴다.
@@ -57,6 +59,8 @@ import type {
   StandingsRow,
   StandingsTable,
   TeamRef,
+  UnsettledMatch,
+  UnsettledState,
 } from "../match-data";
 import { parseRetryAfterMs, type FetchLike } from "../rss";
 
@@ -95,6 +99,17 @@ const IN_PROGRESS_STATUSES: ReadonlySet<string> = new Set([
   "LIVE",
   "EXTRA_TIME",
   "PENALTY_SHOOTOUT",
+]);
+
+/**
+ * 결과를 기다리는 상태(PRD §15 D60) — 예정(SCHEDULED·TIMED)·진행 중. 브리핑 입력 창(어제 UTC 하루)에 킥오프한 경기가 수집 때 이 상태면
+ * football-data 쪽 결과가 아직 반영되지 않은 것이다(2026-10-25 호 — 킥오프 10시간 뒤에도 IN_PLAY 5·TIMED 14). 그 밖의 미종료 상태
+ * (POSTPONED·CANCELLED·SUSPENDED·AWARDED, 모르는 상태)는 결과가 나지 않거나 곧 나지 않는 경기로 본다(`UnsettledState` void).
+ */
+const AWAITING_RESULT_STATUSES: ReadonlySet<string> = new Set([
+  "SCHEDULED",
+  "TIMED",
+  ...IN_PROGRESS_STATUSES,
 ]);
 
 /** 순위표에 반영되는 단계 — 이 밖(PLAYOFFS·LAST_16 …)은 녹아웃이라 순위 호출 대상이 아니다. stage가 없으면 반영으로 본다 */
@@ -614,6 +629,18 @@ export interface ResultsSummary {
    * "그 af 경기에 맞는 fd 경기가 하나"인지 셀 때 쓴다(M1-48b 리뷰 — 점수를 모르는 같은 칸 경기가 있으면 자동 연결하지 않는다).
    */
   others: MatchSlot[];
+  /**
+   * 창 안에 킥오프했지만 종료 결과로 쓰지 못한 대상 대회 경기(킥오프·id 순, D60) — 미종료 상태이거나 FINISHED인데 스코어를 쓸 수 없는
+   * 경기. 팀 id·이름이 없는 항목(대진 미정)은 넣지 않는다. 상태는 `state`(awaiting·void)로 분류해 넘긴다 — 원문은 로그용 `status`만.
+   */
+  unsettled: UnsettledMatch[];
+}
+
+/** football-data 상태 → 결과 상태 분류(D60). FINISHED는 스코어를 쓸 수 없을 때만 여기 온다(그때는 awaiting — 결과는 났다) */
+export function unsettledStateOf(status: string): UnsettledState {
+  return status === "FINISHED" || AWAITING_RESULT_STATUSES.has(status)
+    ? "awaiting"
+    : "void";
 }
 
 function teamRef(team: z.infer<typeof TeamSchema>): TeamRef | null {
@@ -696,6 +723,7 @@ export function toFinishedResults(
   const inProgress: Partial<Record<CompId, number>> = {};
   const results: FinishedMatch[] = [];
   const others: MatchSlot[] = [];
+  const unsettled: UnsettledMatch[] = [];
   /** 점수를 쓸 수 있으면 최종 스코어, 아니면 null */
   const ftOf = (m: FdMatch): Score | null =>
     m.status === "FINISHED" ? (toMatchScore(m.score)?.ft ?? null) : null;
@@ -707,10 +735,31 @@ export function toFinishedResults(
     }
     const m = parsed.data;
     const comp = compByCode.get(m.competition.code);
+    const kickoffMs = Date.parse(m.utcDate);
+    const inWindow = kickoffMs >= start && kickoffMs < end;
     const other = (): void => {
       if (comp) {
         others.push({ matchId: m.id, comp, kickoff: m.utcDate, ft: ftOf(m) });
       }
+    };
+    /** 창 안 대상 대회 경기인데 종료 결과로 쓰지 못함(D60) — 팀을 알 때만 */
+    const unsettle = (): void => {
+      if (!comp || !inWindow) return;
+      const home = teamRef(m.homeTeam);
+      const away = teamRef(m.awayTeam);
+      if (!home || !away) return;
+      unsettled.push({
+        provider: "football-data",
+        matchId: m.id,
+        comp,
+        kickoff: m.utcDate,
+        matchday: m.matchday ?? null,
+        stage: m.stage ?? null,
+        home,
+        away,
+        state: unsettledStateOf(m.status),
+        status: m.status,
+      });
     };
     if (m.status !== "FINISHED") {
       skipped.notFinished += 1;
@@ -718,10 +767,10 @@ export function toFinishedResults(
         inProgress[comp] = (inProgress[comp] ?? 0) + 1;
       }
       other();
+      unsettle();
       continue;
     }
-    const kickoffMs = Date.parse(m.utcDate);
-    if (kickoffMs < start || kickoffMs >= end) {
+    if (!inWindow) {
       skipped.outOfWindow += 1;
       other();
       continue;
@@ -736,6 +785,7 @@ export function toFinishedResults(
     if (!home || !away || !score) {
       skipped.invalid += 1;
       other();
+      unsettle();
       continue;
     }
     results.push({
@@ -756,7 +806,8 @@ export function toFinishedResults(
   ) => Date.parse(a.kickoff) - Date.parse(b.kickoff) || a.matchId - b.matchId;
   results.sort(byKickoffId);
   others.sort(byKickoffId);
-  return { results, skipped, inProgress, others };
+  unsettled.sort(byKickoffId);
+  return { results, skipped, inProgress, others, unsettled };
 }
 
 /** 미종료 경기 목록 상한(로그 한 줄 크기 — 바쁜 날 창 경기는 25경기 안팎) */
@@ -935,6 +986,8 @@ export interface FootballDataBriefData {
   inProgress: Partial<Record<CompId, number>>;
   /** results 밖의 대상 대회 경기 — 경기 연결(D37) 후보 수 세기용(ResultsSummary.others) */
   others: MatchSlot[];
+  /** 창 안인데 종료 결과로 쓰지 못한 대상 대회 경기(D60 — ResultsSummary.unsettled). API-Football 보충·결과 지연 판정용 */
+  unsettled: UnsettledMatch[];
   /** 창 안 대상 대회 경기의 상태 분포 — 로그 전용(M1-41 관찰) */
   windowStatus?: WindowStatusSummary;
   /** 받은 순위(설정 순서) */
@@ -998,6 +1051,7 @@ export async function fetchBriefFootballData(
     skipped: summary.skipped,
     inProgress: summary.inProgress,
     others: summary.others,
+    unsettled: summary.unsettled,
     windowStatus: safeWindowStatus(raw, competitions, window),
     standings,
     standingsFailed,

@@ -1371,23 +1371,27 @@ describe("runCollect — 전날 경기 결과 → 브리핑 단건(FR-29 판정)
     ).toEqual(["brief"]);
   });
 
-  it("종료 경기가 없으면 LLM을 부르지 않는다(호출 생략), 뉴스는 발행", async () => {
-    for (const fd of [
-      '{"matches":[]}',
-      JSON.stringify({
-        matches: JSON.parse(FD_MATCHES_1010).matches.map((m: object) => ({
-          ...m,
-          status: "TIMED",
-        })),
-      }),
-    ]) {
+  it("종료 경기가 없으면 LLM을 부르지 않는다(호출 생략), 뉴스는 발행 — 창 안 경기가 없으면 no-matches, 모두 미종료면 results-pending(D60)", async () => {
+    for (const [fd, reason] of [
+      ['{"matches":[]}', "no-matches"],
+      // 10-25 호 사건과 같은 모양 — 창 안 경기가 모두 TIMED(API-Football 키 없음 → 보충 불가). "끝난 경기가 없었다"가 아니다(D60)
+      [
+        JSON.stringify({
+          matches: JSON.parse(FD_MATCHES_1010).matches.map((m: object) => ({
+            ...m,
+            status: "TIMED",
+          })),
+        }),
+        "results-pending",
+      ],
+    ] as const) {
       const { deps, llmCreated, records } = makeDeps({
         fetch: fakeFetch({ feed: BBC_XML, fd }).fetch,
       });
       const outcome = await runCollect(deps);
       expect(outcome.brief).toEqual({
         state: "skipped",
-        reason: "no-matches",
+        reason,
         inputMatches: 0,
       });
       expect(llmCreated()).toBe(0);
@@ -1395,12 +1399,11 @@ describe("runCollect — 전날 경기 결과 → 브리핑 단건(FR-29 판정)
       expect(outcome.status).toBe("success");
       expect(
         records.find((r) => r.event === "summarize.brief.skip"),
-      ).toMatchObject({
-        reason: "no-matches",
-      });
-      // 경기 없는 날도 5줄 블록을 유지할 수 있게 empty 브리핑을 게시한다(D30·D38)
+      ).toMatchObject({ reason });
+      // 경기 없는 날도 5줄 블록을 유지할 수 있게 empty 브리핑을 게시한다(D30·D38) — 이유는 emptyReason(D60)
       expect(readBrief("2026-10-11")).toMatchObject({
         mode: "empty",
+        emptyReason: reason,
         lines: [],
       });
     }

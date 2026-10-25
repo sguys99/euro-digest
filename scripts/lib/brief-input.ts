@@ -11,7 +11,8 @@
  *   `{ briefDate, matches: [{ id, comp, round, home, away, ft, ht?, aet?, regular?, pens?, goals }],
  *      standings: [{ id, comp, note, rows: [{ pos, team, played, pts, gd }] }] }`
  *   - matches — **중요도 순**(`matchImportance` 내림차순 → 킥오프 → id), 상한 `BRIEF_MAX_MATCHES`. LLM은 앞쪽 경기를 먼저 쓰고
- *     템플릿도 앞에서부터 고른다.
+ *     템플릿도 앞에서부터 고른다. football-data가 아직 종료로 주지 않은 경기를 API-Football 종료 결과로 보충한 경기도 같은 형식으로
+ *     들어간다(D60 — brief-supplement.ts: id·팀·라운드는 football-data, 스코어·득점자는 API-Football — 입력에서는 구별하지 않는다).
  *     · id = `m` + football-data 경기 id(출력 근거 id `r`로 돌아온다) · comp = 대회 영문 이름(competitions.json nameEn)
  *     · ft = 최종 점수 "h-a"(**홈-원정**, 정규시간 + 연장, 승부차기 제외 — match-data.ts 공통 규칙)
  *     · 연장·승부차기 경기(M1-44 이월 — 슬라이스는 뺐다): `aet: true`, `regular` = 90분 점수(응답에 있을 때만),
@@ -23,7 +24,8 @@
  *       승부차기 킥은 득점이 아니다. 0-0 경기는 빈 배열. 같은 아침 두 번째 실행은 원장(data/matches)의 항목도 쓴다(M1-48 이월 —
  *       `mergeBriefDetails`).
  *   - standings — 입력 경기가 있는 대회의 **현재 순위 상위 4위까지**(공동 순위면 같은 순위 팀 모두 — 응답 순서 유지, M1-44 이월).
- *     **진행 중 경기가 있는 대회(`inProgress > 0`)는 넣지 않는다**(순위가 확정이 아니라 순위 문장 금지 — M1-44 이월). 표가 여러 개인
+ *     **진행 중 경기가 있는 대회(`inProgress > 0`)와 창 안에 결과를 기다리는 football-data 경기가 있는 대회(`unsettledComps` —
+ *     API-Football 결과로 보충한 경기 포함, D60)는 넣지 않는다**(순위가 확정이 아니라 순위 문장 금지 — M1-44 이월). 표가 여러 개인
  *     대회(그룹 스테이지)도 넣지 않는다. 순서는 그 대회의 첫 경기 순(중요도). id = `s` + 대회 약칭(sPL·sLL·sSA·sBL·sL1·sUCL — M0-30).
  *     전일 순위(`prev`)는 M2-03이 더한다 — 지금은 없으므로 순위 변동을 서술할 수 없다(D40 ③).
  *   - 한국 선수 출전(`korean`)은 M3-03 이후 — 키가 없으면 한국 선수를 언급하지 않는다(M0-30 지시문).
@@ -224,14 +226,23 @@ export function isBigClub(team: Pick<TeamRef, "name" | "fullName">): boolean {
   });
 }
 
-/** 확정 순위표(진행 중 경기 없음·표 1개)의 팀 id → 순위 */
+/**
+ * 확정 순위표(진행 중 경기 없음·결과를 기다리는 창 안 경기 없음(D60)·표 1개)의 팀 id → 순위
+ */
 export function standingsPositions(
   standings: readonly BriefStandingsSource[],
+  unsettledComps: ReadonlySet<CompId> = new Set(),
 ): Map<CompId, Map<number, number>> {
   const out = new Map<CompId, Map<number, number>>();
   for (const s of standings) {
     const [table] = s.tables;
-    if (s.inProgress > 0 || s.tables.length !== 1 || !table) continue;
+    if (
+      s.inProgress > 0 ||
+      unsettledComps.has(s.comp) ||
+      s.tables.length !== 1 ||
+      !table
+    )
+      continue;
     out.set(
       s.comp,
       new Map(table.rows.map((r) => [r.team.id, r.pos] as const)),
@@ -285,6 +296,10 @@ export interface BriefInputBuild {
     included: CompId[];
     /** 진행 중 경기가 있어 뺀 대회(순위 문장 금지) */
     inProgress: CompId[];
+    /**
+     * 창 안에 결과를 기다리는 football-data 경기가 있어(보충했든 안 했든 — D60) 뺀 대회. football-data 순위표에 그 결과가 아직 없다
+     */
+    unsettled: CompId[];
     /** 표가 여러 개라 뺀 대회 */
     multiTable: CompId[];
   };
@@ -354,8 +369,16 @@ export function mergeBriefDetails(
 
 export interface BuildBriefInputOptions {
   briefDate: string;
-  /** football-data 종료 경기(창 안) */
+  /**
+   * 창 안 종료 경기 — football-data FINISHED + API-Football 종료 결과로 보충한 football-data 미종료 경기(D60 — brief-supplement.ts,
+   * 경기 id·팀은 football-data, 스코어만 API-Football)
+   */
   results: readonly FinishedMatch[];
+  /**
+   * 창 안에 결과를 기다리는 football-data 경기가 있는 대회(D60 — brief-supplement.ts `unsettledComps`). football-data 순위표에 그
+   * 결과가 아직 없어 순위를 넣지 않는다(진행 중 경기가 있는 대회와 같은 규칙). 없으면 빈 집합
+   */
+  unsettledComps?: ReadonlySet<CompId>;
   competitions: readonly CompetitionConfig[];
   /** 현재 순위(football-data `CompStandings` — 빌더는 `BriefStandingsSource` 필드만 읽는다) — 없으면 standings 빈 배열 */
   standings?: readonly BriefStandingsSource[];
@@ -419,6 +442,7 @@ export function buildBriefInput(
     standings = [],
     linked = new Map<number, Pick<MatchDetail, "goals" | "goalsComplete">>(),
     koreanTeamIds = new Set<number>(),
+    unsettledComps = new Set<CompId>(),
     maxMatches = BRIEF_MAX_MATCHES,
   } = options;
   const nameOf = new Map<string, string>(
@@ -426,7 +450,7 @@ export function buildBriefInput(
   );
   const ctx: BriefImportanceContext = {
     koreanTeamIds,
-    positions: standingsPositions(standings),
+    positions: standingsPositions(standings, unsettledComps),
   };
   const kept = results
     .map((match) => ({ match, score: matchImportance(match, ctx) }))
@@ -449,6 +473,7 @@ export function buildBriefInput(
   const stats: BriefInputBuild["standings"] = {
     included: [],
     inProgress: [],
+    unsettled: [],
     multiTable: [],
   };
   const inputStandings: BriefInputStandings[] = [];
@@ -457,6 +482,10 @@ export function buildBriefInput(
     if (!s) continue;
     if (s.inProgress > 0) {
       stats.inProgress.push(comp);
+      continue;
+    }
+    if (unsettledComps.has(comp)) {
+      stats.unsettled.push(comp);
       continue;
     }
     const [table] = s.tables;

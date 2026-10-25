@@ -1113,6 +1113,58 @@ export function afFixtureToPairing(
   };
 }
 
+// ─── 브리핑 결과 보충 (PRD §15 D60) ──────────────────────────────────────
+
+/** 스코어 쌍이 0 이상 정수인가 */
+function validScore(score: Score | null): score is Score {
+  return (
+    score !== null &&
+    Number.isInteger(score.home) &&
+    Number.isInteger(score.away) &&
+    score.home >= 0 &&
+    score.away >= 0
+  );
+}
+
+/**
+ * 종료 경기 상세(FT·AET·PEN) → 브리핑 종료 결과 스코어(D60 — football-data가 아직 종료로 주지 않은 경기를 이 결과로 보충한다,
+ * scripts/lib/brief-supplement.ts). 상세 스코어는 이 어댑터가 받을 때 이미 공통 규칙(match-data.ts — `ft` = 정규시간 + 연장,
+ * 승부차기 골 제외 · 승부차기는 `pens`)으로 바꿨다(`toAfMatchScore`, 원장 항목은 match-ledger.ts `ledgerMatchToDetail`). 그래서
+ * football-data FINISHED 결과(`toMatchScore`)와 같은 형식이 되도록 확인만 한 복사본을 돌려준다:
+ *   - 종료 상태와 끝난 방식이 맞는다(FT 정규 · AET 연장 · PEN 승부차기)
+ *   - 정규시간 경기는 90분 스코어 = 최종 스코어, 승부차기 스코어 없음 · 연장 경기는 승부차기 스코어 없음(90분 스코어는 있을 때만)
+ *   - 승부차기 경기는 승부차기 스코어가 있다(두 경기 합산 녹아웃 2차전은 그 경기 스코어가 동점이 아니어도 승부차기로 간다 —
+ *     football-data 어댑터와 같이 동점 여부는 보지 않는다)
+ * 어긋나면 null — 그 경기는 보충하지 않는다(입력에 없는 사실 금지, CLAUDE.md §1-7).
+ */
+export function afResultScore(
+  detail: Pick<MatchDetail, "status" | "score">,
+): MatchScore | null {
+  const duration = durationOf(detail.status);
+  const { ft, ht, regular, pens } = detail.score;
+  if (duration === null || detail.score.duration !== duration) return null;
+  if (!validScore(ft)) return null;
+  const copy = (s: Score): Score => ({ home: s.home, away: s.away });
+  const half = validScore(ht) ? copy(ht) : null;
+  if (duration === "REGULAR") {
+    if (pens !== null) return null;
+    return { ft: copy(ft), ht: half, regular: copy(ft), pens: null, duration };
+  }
+  const ninety = validScore(regular) ? copy(regular) : null;
+  if (duration === "EXTRA_TIME") {
+    if (pens !== null) return null;
+    return { ft: copy(ft), ht: half, regular: ninety, pens: null, duration };
+  }
+  if (!validScore(pens)) return null;
+  return {
+    ft: copy(ft),
+    ht: half,
+    regular: ninety,
+    pens: copy(pens),
+    duration,
+  };
+}
+
 /** 경기 상세 → 짝짓기 입력(6개 대회 경기만) */
 export function matchDetailToPairing(detail: MatchDetail): PairingMatch | null {
   if (detail.comp === null) return null;

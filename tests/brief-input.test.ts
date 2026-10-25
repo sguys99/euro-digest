@@ -217,6 +217,7 @@ describe("현재 순위(standings)", () => {
     expect(standings).toEqual({
       included: ["BUNDESLIGA", "LALIGA", "EPL", "SERIEA", "LIGUE1"],
       inProgress: [],
+      unsettled: [],
       multiTable: [],
     });
     const pl = input.standings.find((s) => s.id === "sPL")!;
@@ -263,6 +264,24 @@ describe("현재 순위(standings)", () => {
     expect(built.standings.inProgress).toEqual(["EPL"]);
     // 진행 중 표는 중요도의 맞대결 가점에도 쓰지 않는다
     expect(standingsPositions(live).has("EPL")).toBe(false);
+  });
+
+  it("결과를 기다리는 football-data 경기가 있는 대회(unsettledComps — 보충 포함, D60)는 순위를 넣지 않고 맞대결 가점에도 쓰지 않는다", () => {
+    const unsettledComps = new Set<CompId>(["LALIGA"]);
+    const built = build({ unsettledComps });
+    expect(built.input.standings.map((s) => s.id)).not.toContain("sLL");
+    expect(built.standings.unsettled).toEqual(["LALIGA"]);
+    expect(built.standings.included).not.toContain("LALIGA");
+    expect(standingsPositions(STANDINGS, unsettledComps).has("LALIGA")).toBe(
+      false,
+    );
+    // 진행 중 판정이 먼저 — 두 조건이 겹치면 inProgress로 센다
+    const live = STANDINGS.map((s) =>
+      s.comp === "LALIGA" ? { ...s, inProgress: 1 } : s,
+    );
+    const both = build({ standings: live, unsettledComps });
+    expect(both.standings.inProgress).toEqual(["LALIGA"]);
+    expect(both.standings.unsettled).toEqual([]);
   });
 
   it("표가 여러 개인 대회(그룹 스테이지)는 넣지 않는다", () => {

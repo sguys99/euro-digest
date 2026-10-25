@@ -133,6 +133,18 @@ describe("buildBriefView", () => {
     expect(view.shortCount).toBeNull();
     expect(view.hasAi).toBe(false);
     expect(view.date).toBe(empty.date);
+    // 키 없는 옛 empty는 no-matches(D60)
+    expect(view.emptyReason).toBe("no-matches");
+  });
+
+  it("empty 이유(D60) — 파일의 emptyReason 그대로, empty가 아니면 null", () => {
+    expect(
+      buildBriefView({ ...empty, emptyReason: "results-pending" }).emptyReason,
+    ).toBe("results-pending");
+    expect(
+      buildBriefView({ ...empty, emptyReason: "no-matches" }).emptyReason,
+    ).toBe("no-matches");
+    expect(buildBriefView(day("2026-10-10")).emptyReason).toBeNull();
   });
 
   it("comps가 없는 옛 파일 줄(2026-10-17·18 형식)은 탭 없음", () => {

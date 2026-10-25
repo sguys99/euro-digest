@@ -183,6 +183,12 @@ describe("planBriefPublish — 게시 계획(M1-45)", () => {
       reason: "no-matches",
       lines: [],
     });
+    // 결과 지연(D60) — 브리핑 단계가 results-pending으로 건너뛰었으면 empty의 이유도 그것
+    expect(plan({ state: "skipped", reason: "results-pending" }, 0)).toEqual({
+      mode: "empty",
+      reason: "results-pending",
+      lines: [],
+    });
     expect(plan({ state: "failed", reason: "football-data" }, null)).toEqual({
       mode: null,
       reason: "no-input",
@@ -323,6 +329,49 @@ describe("decideBriefWrite — 같은 날 재실행", () => {
     expect(decideBriefWrite(empty, llm)).toEqual({ action: "write" });
   });
 
+  it("결과 지연(results-pending — D60) empty는 다음 실행이 덮는다 — 보충 성공(줄 있는 결과)·이유가 바뀐 empty, 같은 이유면 unchanged", () => {
+    const pending = file({
+      mode: "empty",
+      emptyReason: "results-pending",
+      lines: [],
+    });
+    const noMatches = file({
+      mode: "empty",
+      emptyReason: "no-matches",
+      lines: [],
+    });
+    // 키 없는 옛 empty(2026-10-25 아침 파일과 같은 모양) = no-matches
+    const legacy = BriefFileSchema.parse({
+      date: "2026-10-11",
+      generatedAt: "2026-10-10T21:31:00.000Z",
+      runId: "collect-prod-20261010T213000Z-ab12",
+      mode: "empty",
+      lines: [],
+    });
+    expect(decideBriefWrite(pending, file())).toEqual({ action: "write" });
+    expect(decideBriefWrite(pending, llm)).toEqual({ action: "write" });
+    expect(decideBriefWrite(pending, mixed)).toEqual({ action: "write" });
+    expect(decideBriefWrite(pending, noMatches)).toEqual({ action: "write" });
+    expect(decideBriefWrite(noMatches, pending)).toEqual({ action: "write" });
+    expect(decideBriefWrite(legacy, pending)).toEqual({ action: "write" });
+    const pendingAgain: BriefFile = { ...pending, runId: "collect-prod-r2" };
+    expect(decideBriefWrite(pending, pendingAgain)).toEqual({
+      action: "unchanged",
+    });
+    expect(decideBriefWrite(legacy, noMatches)).toEqual({
+      action: "unchanged",
+    });
+    // 줄 있는 template은 결과 지연 empty로 지우지 않는다(공개 뒤 내용 고정 — 기존 규칙)
+    expect(decideBriefWrite(file(), pending)).toEqual({
+      action: "keep",
+      reason: "kept-template",
+    });
+    expect(decideBriefWrite(llm, pending)).toEqual({
+      action: "keep",
+      reason: "kept-llm",
+    });
+  });
+
   it("mode·줄이 같으면 다시 쓰지 않는다(generatedAt·runId만 다른 data 커밋 방지)", () => {
     expect(
       decideBriefWrite(
@@ -382,6 +431,29 @@ describe("buildBriefFile · 읽기 · 쓰기", () => {
     expect(decideBriefWrite(t, file({ lines: tagged(LINES) }))).toEqual({
       action: "unchanged",
     });
+  });
+
+  it("emptyReason(D60)은 empty에만 — 키 순서 date·generatedAt·runId·mode·emptyReason·lines, empty인데 주지 않으면 no-matches", () => {
+    const pending = file({
+      mode: "empty",
+      emptyReason: "results-pending",
+      lines: [],
+    });
+    expect(Object.keys(pending)).toEqual([
+      "date",
+      "generatedAt",
+      "runId",
+      "mode",
+      "emptyReason",
+      "lines",
+    ]);
+    expect(pending.emptyReason).toBe("results-pending");
+    expect(file({ mode: "empty", lines: [] }).emptyReason).toBe("no-matches");
+    // empty가 아닌 mode에는 넘겨도 넣지 않는다
+    expect(file({ emptyReason: "results-pending" })).not.toHaveProperty(
+      "emptyReason",
+    );
+    expect(BriefFileSchema.parse(pending)).toEqual(pending);
   });
 
   it("검증을 통과한 파일만 만든다 — mode와 줄이 맞지 않으면 BriefFileError", () => {

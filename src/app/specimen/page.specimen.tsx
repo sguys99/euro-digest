@@ -306,7 +306,7 @@ function briefDay(date: string): BriefFile {
   return day;
 }
 
-/** 혼합안 견본 "오늘의 5줄 상태"와 같은 4상태 — [id, 이름, 설명, 브리핑] */
+/** 혼합안 견본 "오늘의 5줄 상태"와 같은 4상태 + 결과 지연(D60 — S4 자리 변형) — [id, 이름, 설명, 브리핑] */
 const BRIEF_STATES: ReadonlyArray<
   readonly [string, string, string, BriefFile]
 > = [
@@ -334,10 +334,19 @@ const BRIEF_STATES: ReadonlyArray<
     "경기 없는 날(empty) · 브리핑 호출 생략 · 블록 유지, 높이만 줄임 — 날짜를 단정하지 않는다",
     BriefFileSchema.parse(briefEmptyJson),
   ],
+  [
+    "s4-pending",
+    "S4 결과 지연",
+    "경기는 있었지만 결과를 받지 못한 날(empty + emptyReason results-pending — D60) · S4 대신 5줄 자리 오류 상자 · 원인 단정 없음",
+    BriefFileSchema.parse({
+      ...briefEmptyJson,
+      emptyReason: "results-pending",
+    }),
+  ],
 ];
 
 /**
- * 오늘의 5줄 상태 견본(M1-32) — 실제 블록(`TodayBrief`)을 fixtures 브리핑으로 S1~S4 싣는다. 피드 견본처럼 1024 이상은 왼쪽 목차 열(232px)만큼
+ * 오늘의 5줄 상태 견본(M1-32) — 실제 블록(`TodayBrief`)을 fixtures 브리핑으로 S1~S4(+ S4 결과 지연 — D60) 싣는다. 피드 견본처럼 1024 이상은 왼쪽 목차 열(232px)만큼
  * 비워 혼합안 M1 지면 폭(728 @1024 · 984 @1280)에서 비교한다. S4 "주요 뉴스로 ↓"는 아래 피드 견본(`#news`)으로 간다.
  */
 function SpecimenBriefs() {

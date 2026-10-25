@@ -47,7 +47,8 @@
  *      전송 실패(llm.ts 429·5xx 재시도 뒤)·검사기 오류는 재시도 없이 템플릿(D40 ①·FR-26). 판정 ok·downgrade-line이면 통과 줄
  *      (치환·조사 보정 뒤 문장, `ai:true`) + 강등 줄(같은 근거의 템플릿 줄, 같은 근거 중복은 버림 — brief-publish.ts)을
  *      `data/briefs/<KST 발행일>.json`에 게시한다(M1-45, D38 — `llm`·`mixed`, 통과 줄이 없으면 전체 템플릿). 경기가
- *      없으면 `empty`(호출 생략), 정형 입력이 없으면(football-data 키 없음·실패) 파일 없음. 그날 파일이 이미 `llm`·`mixed`면
+ *      없으면 `empty`(호출 생략) + 이유 `emptyReason`(D60 — 아래 보충 뒤에도 창 안에 결과를 기다리는 경기가 있으면 `results-pending`,
+ *      없으면 `no-matches`), 정형 입력이 없으면(football-data 키 없음·실패) 파일 없음. 그날 파일이 이미 `llm`·`mixed`면
  *      LLM을 부르지 않고 덮지 않는다(재실행 판정 — brief-file.ts `decideBriefWrite`).
  *      브리핑 마감(M1-47 — 공개 목표 −10분, 수동·지연 실행은 시작 + 8분 D41): 첫 호출·재시도 모두 남은 시간이
  *      BRIEF_LLM_MIN_ATTEMPT_MS(40초) 이상일 때만 보내고, HTTP 요청 타임아웃은 min(120초, 마감 − 현재)(D57 — brief.ts
@@ -57,6 +58,10 @@
  *      브리핑은 football-data 결과 + API-Football 브리핑 몫(컷오프까지 받은 brief 계층)을 기다린 뒤 시작하고, 둘을 이어(대응표
  *      확인 + D37 강한 증거 — team-ids.ts linkMatchDetails) 득점 목록이 완전한 경기만 입력 `goals`에 득점자를 넣는다(M1-48b). 같은 아침
  *      두 번째 실행은 브리핑 창 경기를 다시 받지 않으므로 원장(data/matches)의 같은 창 항목도 잇는다(M1-19 — M1-48 이월).
+ *      결과 보충(D60 — 2026-10-25 호 사건, brief-supplement.ts): football-data가 결과를 기다리는 상태(예정·진행 중)로 준 창 안 경기는
+ *      같은 상세 목록(이번 실행 몫 + 원장)의 API-Football 종료 결과로 채운다 — 추가 API 호출·LLM 비용 0, 연결은 대응표가 팀을 확인하는
+ *      쌍만(team-ids.ts linkPendingMatches), 스코어는 football-data FINISHED와 같은 내부 형식(providers/api-football.ts afResultScore),
+ *      그 대회 순위는 넣지 않는다. 보충 수는 로그(`summarize.input.done` supplemented…)에만 남긴다(RunLog 스키마 불변).
  *      API-Football 나머지는 브리핑과 동시에 계속 받는다. 실행 기록·이월 파일은 두 프로바이더가 모두 끝난 뒤 쓴다.
  *      football-data 단계가 실패하면 그날 브리핑만 생략하고 뉴스는 발행한다(D24). 순위 실패는 그 대회 순위만 빠진다(partial).
  *      고유명사(M1-21, FR-24 — names.ts): 입력의 득점자·도움을 configs/names.ko.json 대표 영문 표기로 바꿔 보내고(모델 축약 방지),
@@ -118,6 +123,7 @@ import {
   KoreanPlayersFileSchema,
   NamesKoFileSchema,
   type AfPendingEntry,
+  type BriefEmptyReason,
   type BriefFile,
   type BriefMode,
   type CompetitionsFile,
@@ -168,6 +174,12 @@ import {
   type BriefInput,
   type BriefInputBuild,
 } from "./brief-input";
+import {
+  afFinishedInWindow,
+  briefEmptyReason,
+  supplementBriefResults,
+  type BriefSupplement,
+} from "./brief-supplement";
 import {
   BRIEF_MAX_ATTEMPTS,
   BRIEF_REQUEST_TIMEOUT_MS,
@@ -551,12 +563,15 @@ export type BriefOutcome =
       state: "skipped";
       /**
        * names-unreadable = 고유명사 사전(configs/names.ko.json)을 읽지 못해 LLM을 부르지 않았다(M1-45 결정 — 영문 이름 템플릿 게시,
-       * 부분 실패 이슈 brief)
+       * 부분 실패 이슈 brief) · no-matches = 입력 창에 끝난 경기가 없다(empty 게시) · results-pending = 입력 경기는 0인데 창 안에
+       * 결과를 기다리는 경기가 있다(football-data 미종료를 API-Football로도 보충하지 못함 — D60, empty + emptyReason results-pending 게시.
+       * 설계된 폴백이라 실행 상태는 success)
        */
       reason:
         | "news-failed"
         | "no-api-key"
         | "no-matches"
+        | "results-pending"
         | "mock-fixture-missing"
         | "names-unreadable";
       inputMatches: number;
@@ -3055,16 +3070,40 @@ async function readBriefLedgerDetails(
 }
 
 /**
- * 브리핑 몫(컷오프까지 받은 brief 계층 상세) + 원장의 같은 창 항목을 football-data 종료 경기에 잇는다 — 대응표 확인 + D37 강한
- * 증거(후보 수는 날짜 조회 목록·football-data 결과 밖 경기까지 센다). 대응표를 읽지 못했거나 API-Football 단계가 돌지 않아 날짜
- * 조회 목록이 없으면(원장 항목만) 자동 연결을 끈다 — 그날은 대응표로 확인된 경기만. 던지지 않는다 — 실패하면 득점자 없이(goals null).
+ * 브리핑이 쓰는 API-Football 종료 상세 — 브리핑 몫(컷오프까지 받은 brief 계층) + 원장(data/matches)의 같은 창 항목(같은 경기 id는
+ * 이번 실행 쪽 — brief-input.ts `mergeBriefDetails`). 득점자 연결과 미종료 경기 보충(D60)이 같은 목록을 쓴다. 던지지 않는다 —
+ * 원장을 읽지 못하면 이번 실행 몫만.
  */
-async function linkBriefGoals(
+async function loadBriefDetails(
+  deps: CollectDeps,
+  window: { start: string; end: string },
+  snapshot: AfBriefSnapshot | null,
+): Promise<{ details: MatchDetail[]; fromLedger: number }> {
+  try {
+    return mergeBriefDetails(
+      snapshot?.details ?? [],
+      await readBriefLedgerDetails(deps, window),
+    );
+  } catch (error) {
+    deps.logger.warn("summarize.input.ledger-unreadable", {
+      error: errorText(error),
+    });
+    return { details: [...(snapshot?.details ?? [])], fromLedger: 0 };
+  }
+}
+
+/**
+ * 브리핑 상세(`loadBriefDetails`)를 football-data 종료 경기에 잇는다 — 대응표 확인 + D37 강한 증거(후보 수는 날짜 조회 목록·
+ * football-data 결과 밖 경기까지 센다). 대응표를 읽지 못했거나 API-Football 단계가 돌지 않아 날짜 조회 목록이 없으면(원장 항목만)
+ * 자동 연결을 끈다 — 그날은 대응표로 확인된 경기만. 던지지 않는다 — 실패하면 득점자 없이(goals null).
+ */
+function linkBriefGoals(
   deps: CollectDeps,
   fd: Pick<FootballDataBriefData, "results" | "others" | "window">,
   snapshot: AfBriefSnapshot | null,
   team: BriefTeamIndex,
-): Promise<BriefGoalLinks> {
+  merged: { details: readonly MatchDetail[]; fromLedger: number },
+): BriefGoalLinks {
   const empty: BriefGoalLinks = {
     byFd: new Map(),
     byTeamIds: 0,
@@ -3073,10 +3112,6 @@ async function linkBriefGoals(
     fromLedger: 0,
   };
   try {
-    const merged = mergeBriefDetails(
-      snapshot?.details ?? [],
-      await readBriefLedgerDetails(deps, fd.window),
-    );
     if (merged.details.length === 0) return empty;
     // API-Football 단계가 돌지 않았으면(snapshot null — 키 없음·일 한도·실패) 날짜 조회 목록이 없어 D37의 '같은 칸에 점수 모르는
     // 후보가 있으면 차단'을 확인할 수 없다 → 자동 연결을 끄고 대응표로 확인된 경기만 잇는다(M1-48b 원칙)
@@ -3103,6 +3138,59 @@ async function linkBriefGoals(
   } catch (error) {
     deps.logger.warn("summarize.input.goals-fail", { error: errorText(error) });
     return empty;
+  }
+}
+
+/** 미종료 경기 보충(D60) 결과 + 결과 지연 판정 재료 */
+interface BriefSupplementRun {
+  supplement: BriefSupplement;
+  /** 창 안 6개 대회 API-Football 종료 상세 수(football-data가 경기를 아예 모를 때의 결과 지연 근거) */
+  afFinished: number;
+}
+
+/**
+ * football-data가 결과를 기다리는 상태로 준 창 안 경기를 브리핑 상세(이번 실행 몫 + 원장)의 API-Football 종료 결과로 보충한다(D60 —
+ * brief-supplement.ts). 추가 API 호출 없음. 이미 football-data 종료 경기에 연결된 af 경기는 쓰지 않는다. 대응표를 읽지 못했으면
+ * 한쪽 팀 확인 연결을 끈다(두 팀 확인도 빈 색인이라 사실상 보충 없음). 던지지 않는다 — 실패하면 보충 없이(결과 지연 판정은 계속).
+ */
+function supplementBrief(
+  deps: CollectDeps,
+  fd: Pick<FootballDataBriefData, "unsettled" | "window">,
+  team: BriefTeamIndex,
+  merged: { details: readonly MatchDetail[] },
+  goalLinks: Pick<BriefGoalLinks, "byFd">,
+): BriefSupplementRun {
+  const unsettled = fd.unsettled;
+  const afFinished = afFinishedInWindow(merged.details, fd.window);
+  try {
+    return {
+      supplement: supplementBriefResults({
+        unsettled,
+        details: merged.details,
+        usedAf: new Set([...goalLinks.byFd.values()].map((d) => d.matchId)),
+        index: team.index,
+        autoLink: team.autoLink,
+      }),
+      afFinished,
+    };
+  } catch (error) {
+    deps.logger.warn("summarize.input.supplement-fail", {
+      error: errorText(error),
+    });
+    const awaiting = unsettled.filter((m) => m.state === "awaiting");
+    return {
+      supplement: {
+        results: [],
+        linked: new Map(),
+        by: { "team-ids": 0, evidence: 0 },
+        unlinked: [],
+        noCandidate: 0,
+        invalidScore: [],
+        awaiting: awaiting.length,
+        unsettledComps: new Set(awaiting.map((m) => m.comp)),
+      },
+      afFinished,
+    };
   }
 }
 
@@ -3213,12 +3301,15 @@ async function runBriefStage(
   }
 
   // 전날 경기 결과 + 현재 순위 + 연결된 경기의 득점자(M1-48b, 원장 항목 M1-19) → 정형 입력(M1-19 — 중요도 순)
+  //   + football-data가 아직 종료로 주지 않은 창 안 경기는 API-Football 종료 결과로 보충(D60 — 추가 호출 없음, brief-supplement.ts)
   // → 득점자·도움을 사전 대표 영문 표기로(M1-21 — 모델이 입력 표기를 옮기면 사전 키와 같아 치환된다, M0-30)
   //   + 사전에 없는 팀 짧은 이름은 정식 이름으로(D46 'Deportivo' — 짧은 이름을 별칭에서 뺀 팀이 영문으로 남지 않게)
   let input: BriefInput;
   let competitions: CompetitionsFile;
   let built: BriefInputBuild;
   let names: NameIndex | null = null;
+  /** 입력 경기가 0일 때 empty의 이유(D60) — 입력 경기가 있으면 null */
+  let emptyReason: BriefEmptyReason | null = null;
   try {
     competitions = await readConfigFile(
       deps.rootDir,
@@ -3227,41 +3318,72 @@ async function runBriefStage(
     );
     names = await loadBriefNameIndex(deps, competitions);
     const team = await loadBriefTeamIndex(deps);
-    const goalLinks = await linkBriefGoals(
+    const merged = await loadBriefDetails(
+      deps,
+      fd.data.window,
+      matchData.apiFootballBrief,
+    );
+    const goalLinks = linkBriefGoals(
       deps,
       fd.data,
       matchData.apiFootballBrief,
       team,
+      merged,
     );
+    const { supplement, afFinished } = supplementBrief(
+      deps,
+      fd.data,
+      team,
+      merged,
+      goalLinks,
+    );
+    const results = [...fd.data.results, ...supplement.results];
     built = buildBriefInput({
       briefDate: ctx.publishDate,
-      results: fd.data.results,
+      results,
       competitions,
       standings: fd.data.standings,
-      linked: goalLinks.byFd,
+      linked: new Map([...goalLinks.byFd, ...supplement.linked]),
+      unsettledComps: supplement.unsettledComps,
       koreanTeamIds: await briefKoreanTeamIds(deps, team.index),
     });
     const canonical = names
       ? canonicalizeBriefInput(built.input, names, {
           playerTeams: await briefPlayerTeams(deps),
           teamFullNames: teamFullNamesFrom(
-            briefTeamRefs({
-              results: fd.data.results,
-              standings: fd.data.standings,
-            }),
+            briefTeamRefs({ results, standings: fd.data.standings }),
           ),
         })
       : { input: built.input, replaced: 0, teams: 0 };
     input = canonical.input;
+    emptyReason = briefEmptyReason({
+      inputMatches: input.matches.length,
+      awaiting: supplement.awaiting,
+      afFinished,
+    });
     log.info("summarize.input.done", {
       date: ctx.publishDate,
       finished: fd.data.results.length,
       matches: input.matches.length,
       excluded: built.excluded,
       extraTime: built.extraTime,
-      // 순위 — 확정 순위표만(진행 중 경기가 있는 대회는 빼서 순위 문장 금지), 상위 4위
+      // 보충(D60) — football-data 창 안 미종료(결과 없음) 경기 · 그중 결과를 기다리는 경기 · API-Football 종료 결과로 보충한 경기
+      // (근거별) · 잇지 못한 경기(이유) · 보충 뒤에도 기다리는 경기 · 창 안 API-Football 종료 상세
+      fdUnsettled: fd.data.unsettled.length,
+      fdAwaiting: fd.data.unsettled.filter((m) => m.state === "awaiting")
+        .length,
+      supplemented: supplement.results.length,
+      supplementedByTeamIds: supplement.by["team-ids"],
+      supplementedByEvidence: supplement.by.evidence,
+      supplementUnlinked: supplement.unlinked,
+      supplementNoCandidate: supplement.noCandidate,
+      supplementInvalidScore: supplement.invalidScore,
+      awaitingAfterSupplement: supplement.awaiting,
+      afFinishedInWindow: afFinished,
+      // 순위 — 확정 순위표만(진행 중 경기·결과를 기다리는 경기가 있는 대회는 빼서 순위 문장 금지), 상위 4위
       standings: built.standings.included,
       standingsInProgress: built.standings.inProgress,
+      standingsUnsettled: built.standings.unsettled,
       standingsMultiTable: built.standings.multiTable,
       // 득점자 — 연결(대응표·증거) 중 득점 목록이 완전한 경기만 goals 배열, 나머지는 null
       afBriefDetails: matchData.apiFootballBrief?.details.length ?? null,
@@ -3339,7 +3461,19 @@ async function runBriefStage(
     });
   }
   if (inputMatches === 0) {
-    // 종료 경기가 없으면 LLM을 부르지 않는다(D24) — 게시는 empty
+    // 종료 경기가 없으면 LLM을 부르지 않는다(D24) — 게시는 empty. 창 안에 결과를 기다리는 경기가 있으면(보충 뒤에도) 이유를
+    // results-pending으로 남긴다(D60 — 화면이 "끝난 경기가 없었습니다"를 쓰지 않게, 같은 날 다음 실행이 덮을 수 있게)
+    if (emptyReason === "results-pending") {
+      log.warn("summarize.brief.skip", {
+        reason: "results-pending",
+        date: ctx.publishDate,
+      });
+      return withInput({
+        state: "skipped",
+        reason: "results-pending",
+        inputMatches,
+      });
+    }
     log.info("summarize.brief.skip", {
       reason: "no-matches",
       date: ctx.publishDate,
@@ -3970,6 +4104,8 @@ async function publishBrief(
       generatedAt: nowUtcIso(deps.now()),
       runId: ctx.runId,
       mode: plan.mode,
+      // empty의 이유(D60 — no-matches · results-pending). 다른 mode에는 없다
+      ...(plan.mode === "empty" ? { emptyReason: plan.reason } : {}),
     };
     // 줄 대회(D58) — LLM 줄·템플릿 줄 모두 같은 규칙으로 refs에서 계산(brief-comps.ts). 계획이 줄을 냈으면 입력이 있다.
     // 대회 탭은 장식이라 계산 실패·comps 때문의 파일 검증 실패가 그날 브리핑 게시를 막지 않게 comps 없이 한 번 더 만든다(D58 리뷰)

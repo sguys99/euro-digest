@@ -15,9 +15,11 @@
  *   화면은 "{M월 D일}(현지) 경기 기준"으로 현지 경기일임을 밝힌다(2026-10-19 사용자 결정 — 유럽 저녁 경기는 KST로 발행일 새벽이다).
  *   경기가 없는 날(`empty`)은 날짜를 단정하지 않는다(D30 #7 — "전날(현지) 경기 기준").
  * - 인덱스 탭 = 줄의 선택 필드 `comps`(대회 id 배열 — D58, 파이프라인이 refs에서 계산)의 첫 값. 키가 없는 옛 파일 줄은 탭 없음.
+ * - empty의 이유 = 파일의 선택 필드 `emptyReason`(D60) — `no-matches`면 S4("끝난 경기가 없었습니다"), `results-pending`이면 S4 대신
+ *   "5줄을 싣지 못했어요" 안내(경기는 있었지만 결과를 받지 못한 날 — S4 문구는 사실이 아니다). 키가 없는 옛 empty는 no-matches.
  */
 import { BRIEF_MAX_LINES } from "@/lib/brief-limits";
-import type { BriefMode } from "@/lib/schema/brief";
+import type { BriefEmptyReason, BriefMode } from "@/lib/schema/brief";
 import type { CompId } from "@/lib/schema/common";
 import { kstDayRangeUtc, kstParts, shiftDate } from "@/lib/time";
 
@@ -32,6 +34,8 @@ export interface BriefInput {
   /** 발행일(KST) = 파일명 */
   date: string;
   mode: BriefMode;
+  /** empty의 이유(D60 선택 필드) — 없으면 no-matches */
+  emptyReason?: BriefEmptyReason;
   lines: readonly BriefLineInput[];
 }
 
@@ -57,6 +61,8 @@ export interface BriefView {
   /** 발행일(KST) — 브리핑 오류 신고 이슈 양식에 채운다(FR-36) */
   date: string;
   mode: BriefMode;
+  /** empty의 이유(D60 — 키 없는 옛 empty는 no-matches). empty가 아니면 null */
+  emptyReason: BriefEmptyReason | null;
   /** 경기일 = 발행일 − 1(브리핑 입력 창 UTC 하루 D−1 = 유럽 현지 경기일 — 머리 주석). empty면 null(날짜를 단정하지 않는다, D30 #7) */
   matchDate: string | null;
   /** 경기일 라벨 "10월 17일" — empty면 null */
@@ -108,6 +114,7 @@ export function buildBriefView(brief: BriefInput): BriefView {
   return {
     date: brief.date,
     mode: brief.mode,
+    emptyReason: empty ? (brief.emptyReason ?? "no-matches") : null,
     matchDate,
     matchDateLabel: matchDate === null ? null : monthDayLabel(matchDate),
     rows,

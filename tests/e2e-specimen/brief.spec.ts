@@ -73,6 +73,29 @@ test.describe("상태 S1~S4", () => {
     });
   }
 
+  test("S4 결과 지연(empty + results-pending — D60) — S4 대신 5줄 자리 오류 상자, 줄·라벨·부제·하단 없음", async ({
+    page,
+  }) => {
+    await open(page);
+    const el = page.locator(block("s4-pending"));
+    await expect(el).toHaveAttribute("data-brief-mode", "empty");
+    await expect(el).toHaveAttribute("data-empty-reason", "results-pending");
+    await expect(el.getByRole("heading", { name: "오늘의 5줄" })).toHaveCount(
+      1,
+    );
+    const box = el.locator("[data-slot=brief-pending]");
+    await expect(box).toContainText("오늘은 5줄을 싣지 못했어요");
+    await expect(box).toContainText("경기 결과 집계가 늦어");
+    await expect(box).toContainText("뉴스는 아래에 그대로 있어요");
+    // S4 문구("끝난 경기가 없었습니다")·줄·AI 라벨·부제·하단은 없다
+    await expect(el).not.toContainText("끝난 경기가 없었습니다");
+    await expect(el.locator("[data-slot=brief-rest]")).toHaveCount(0);
+    await expect(el.getByRole("list")).toHaveCount(0);
+    await expect(el.locator("[data-slot=ai-label]")).toHaveCount(0);
+    await expect(el.locator("[data-slot=brief-foot]")).toHaveCount(0);
+    await expect(el.locator(":scope > p")).toHaveCount(0);
+  });
+
   test("S4 '주요 뉴스로 ↓' → 주요 뉴스(#news) 머리가 화면 위 16px", async ({
     page,
   }) => {

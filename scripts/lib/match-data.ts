@@ -81,6 +81,37 @@ export interface FinishedMatch {
   home: TeamRef;
   away: TeamRef;
   score: MatchScore;
+  /**
+   * 스코어를 API-Football 종료 결과로 보충한 경기면 그 API-Football 경기 id(PRD §15 D60 — scripts/lib/brief-supplement.ts). 경기 id·팀·
+   * 라운드는 football-data 그대로(브리핑 근거 id `m<football-data id>`가 한 체계로 남는다). 메모리 안에서만 쓰고 저장하지 않는다.
+   */
+  supplementedFrom?: number;
+}
+
+/**
+ * football-data 결과 상태 분류(D60) — awaiting = 결과를 기다린다(예정·진행 중, 또는 FINISHED인데 스코어를 쓸 수 없음) · void = 결과가
+ * 나지 않거나 곧 나지 않는다(연기·취소·중단·몰수, 모르는 상태). 상태 원문은 어댑터(providers/football-data.ts)만 안다.
+ */
+export type UnsettledState = "awaiting" | "void";
+
+/**
+ * 브리핑 입력 창 안에 킥오프했지만 football-data가 종료 결과로 주지 않은 대상 대회 경기 1건(D60 — 2026-10-25 호 사건: 킥오프 10시간
+ * 뒤에도 football-data가 19경기를 IN_PLAY·TIMED로 줬다). 점수는 없다. awaiting 경기는 같은 실행(또는 원장)의 API-Football 종료
+ * 결과로 보충할 수 있고(scripts/lib/brief-supplement.ts), 보충 뒤에도 남으면 브리핑 mode empty의 이유가 `results-pending`이 된다.
+ */
+export interface UnsettledMatch {
+  provider: "football-data";
+  matchId: number;
+  comp: CompId;
+  /** 킥오프(UTC ISO, `Z`) */
+  kickoff: string;
+  matchday: number | null;
+  stage: string | null;
+  home: TeamRef;
+  away: TeamRef;
+  state: UnsettledState;
+  /** football-data 상태 원문(로그용 — TIMED·IN_PLAY·POSTPONED …) */
+  status: string;
 }
 
 // ─── 경기 상세 (API-Football 경기 단건 — M1-48) ──────────────────────────

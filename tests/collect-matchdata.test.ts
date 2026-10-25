@@ -27,6 +27,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   AfPendingFileSchema,
+  BriefFileSchema,
   MatchLedgerFileSchema,
   MatchLedgerMetaSchema,
   RunsDevFileSchema,
@@ -60,7 +61,11 @@ import {
   readAfFixture,
 } from "./support/api-football-fake";
 import { cancelGate } from "./support/cancel-gate";
-import { fdFixtureResponse, fdPath } from "./support/football-data-fake";
+import {
+  FD_MATCHES_1010,
+  fdFixtureResponse,
+  fdPath,
+} from "./support/football-data-fake";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
@@ -485,6 +490,7 @@ describe("isolateProvider·runStatus — 프로바이더 실패 격리", () => {
           },
           inProgress: {},
           others: [],
+          unsettled: [],
           standings: [],
           standingsFailed: Array.from({ length: failed }, () => ({
             comp: "EPL" as const,
@@ -1540,5 +1546,149 @@ describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+});
+
+describe("runCollect — 브리핑 결과 보충·결과 지연(PRD §15 D60, 10-25 호 사건)", () => {
+  /**
+   * 10-25 호 재현(fixture 2026-10-10판) — football-data가 창 안 종료 23경기를 모두 미종료(IN_PLAY·TIMED, 점수 없음)로 준다.
+   * 취소 1경기(CANCELLED)는 그대로(void). API-Football fixture는 같은 날 23경기 종료 상세를 그대로 준다.
+   */
+  function staleMatchesBody(): string {
+    const body = JSON.parse(FD_MATCHES_1010) as {
+      matches: Array<{ status: string } & Record<string, unknown>>;
+    };
+    let i = 0;
+    return JSON.stringify({
+      ...body,
+      matches: body.matches.map((m) =>
+        m.status !== "FINISHED"
+          ? m
+          : {
+              ...m,
+              status: i++ % 4 === 0 ? "IN_PLAY" : "TIMED",
+              score: {
+                winner: null,
+                duration: "REGULAR",
+                fullTime: { home: null, away: null },
+                halfTime: { home: null, away: null },
+              },
+            },
+      ),
+    });
+  }
+  const STALE_BODY = staleMatchesBody();
+  const staleFd: FdHandler = (url) => fdFixtureResponse(url, STALE_BODY)!;
+  const briefFileOf = (date: string) =>
+    BriefFileSchema.parse(
+      JSON.parse(
+        readFileSync(path.join(dataDir, "briefs", `${date}.json`), "utf8"),
+      ),
+    );
+
+  it("football-data 23경기 미종료 + 같은 실행의 API-Football 종료 상세 → 23경기 보충(추가 호출 0 — 순위 요청 없음·API-Football 25요청 그대로), 브리핑 진행", async () => {
+    const { deps, fdCalls, afCalls, records, llmCalls } = makeDeps(
+      staleFd,
+      withApiFootball(),
+    );
+    const outcome = await runCollect(deps);
+    // football-data는 경기 1요청뿐 — 종료 경기가 없어 순위를 부르지 않는다(보충 대회 순위는 어차피 넣지 않는다)
+    expect(fdCalls).toEqual([
+      "/matches?competitions=PL,PD,SA,BL1,FL1,CL&dateFrom=2026-10-10&dateTo=2026-10-11",
+    ]);
+    // API-Football 요청 수는 football-data가 정상일 때와 같다(날짜 2 + 단건 23)
+    expect(afCalls).toHaveLength(25);
+    const input = records.find((r) => r.event === "summarize.input.done");
+    expect(input).toMatchObject({
+      finished: 0,
+      matches: 23,
+      fdUnsettled: 24,
+      fdAwaiting: 23,
+      supplemented: 23,
+      supplementedByTeamIds: 23,
+      supplementedByEvidence: 0,
+      supplementUnlinked: [],
+      supplementNoCandidate: 0,
+      awaitingAfterSupplement: 0,
+      afFinishedInWindow: 23,
+      standings: [],
+      goalsFilled: 7,
+    });
+    expect(outcome.brief.inputMatches).toBe(23);
+    expect(outcome.brief.state).not.toBe("skipped");
+    expect(llmCalls()).toBe(1);
+    const file = briefFileOf("2026-10-11");
+    expect(file.mode).not.toBe("empty");
+    expect(file).not.toHaveProperty("emptyReason");
+    expect(file.lines.length).toBeGreaterThan(0);
+    // 근거 id는 football-data 경기 id(m…) — 보충 경기도 같은 체계, 줄 대회(D58)도 계산된다
+    const fdIds = new Set(
+      (
+        JSON.parse(FD_MATCHES_1010) as { matches: Array<{ id: number }> }
+      ).matches.map((m) => `m${m.id}`),
+    );
+    for (const line of file.lines) {
+      expect(line.refs.every((r) => fdIds.has(r))).toBe(true);
+      expect(line.comps?.length ?? 0).toBeGreaterThan(0);
+    }
+    expect(outcome.status).toBe("success");
+  });
+
+  it("API-Football 결과도 없으면(키 없음) results-pending — empty + emptyReason, LLM 0·success, 같은 날 다음 실행이 보충에 성공하면 덮는다", async () => {
+    const first = makeDeps(staleFd);
+    const outcome = await runCollect(first.deps);
+    expect(outcome.brief).toMatchObject({
+      state: "skipped",
+      reason: "results-pending",
+      inputMatches: 0,
+    });
+    expect(first.llmCalls()).toBe(0);
+    expect(outcome.status).toBe("success");
+    expect(
+      first.records.find(
+        (r) => r.event === "summarize.brief.skip" && r.level === "warn",
+      ),
+    ).toMatchObject({ reason: "results-pending", date: "2026-10-11" });
+    expect(
+      first.records.find((r) => r.event === "summarize.brief.publish"),
+    ).toMatchObject({
+      mode: "empty",
+      reason: "results-pending",
+      action: "written",
+    });
+    expect(briefFileOf("2026-10-11")).toMatchObject({
+      mode: "empty",
+      emptyReason: "results-pending",
+      lines: [],
+    });
+
+    // 같은 발행일 다음 실행(백업·수동) — API-Football 결과로 보충 → 결과 지연 파일을 줄 있는 브리핑으로 덮는다
+    const second = makeDeps(staleFd, withApiFootball());
+    const rerun = await runCollect(second.deps);
+    expect(rerun.publishDate).toBe("2026-10-11");
+    expect(rerun.briefFile).toMatchObject({
+      action: "written",
+      existingMode: "empty",
+    });
+    const file = briefFileOf("2026-10-11");
+    expect(file.mode).not.toBe("empty");
+    expect(file.lines.length).toBeGreaterThan(0);
+  });
+
+  it("창 안 경기가 없으면 no-matches — emptyReason no-matches(화면 S4)", async () => {
+    const { deps } = makeDeps((url) =>
+      fdPath(url)!.startsWith("/matches?")
+        ? new Response('{"matches":[]}', { status: 200 })
+        : fdFixtureResponse(url)!,
+    );
+    const outcome = await runCollect(deps);
+    expect(outcome.brief).toMatchObject({
+      state: "skipped",
+      reason: "no-matches",
+    });
+    expect(briefFileOf("2026-10-11")).toMatchObject({
+      mode: "empty",
+      emptyReason: "no-matches",
+    });
   });
 });

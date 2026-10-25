@@ -92,6 +92,45 @@ describe("BriefFile — data/briefs/YYYY-MM-DD.json (PRD §15 D38)", () => {
     ]);
   });
 
+  it("emptyReason(D60)은 선택 — empty에만, no-matches·results-pending만. 키 없는 옛 empty(2026-10-25 이전)도 통과", () => {
+    const empty = { ...file, mode: "empty", lines: [] };
+    // 옛 empty(키 없음) — 2026-10-25 prod 발행 파일과 같은 모양
+    expect(
+      passes(BriefFileSchema, {
+        date: "2026-10-25",
+        generatedAt: "2026-10-24T23:44:47.203Z",
+        runId: "collect-prod-20261024T234231Z-2fdf",
+        mode: "empty",
+        lines: [],
+      }),
+    ).toBe(true);
+    expect(BriefFileSchema.parse(empty)).not.toHaveProperty("emptyReason");
+    for (const emptyReason of ["no-matches", "results-pending"] as const) {
+      expect(BriefFileSchema.parse({ ...empty, emptyReason })).toMatchObject({
+        mode: "empty",
+        emptyReason,
+      });
+    }
+    // 잘못된 값 · empty가 아닌 mode
+    expect(
+      issuePaths(BriefFileSchema, { ...empty, emptyReason: "late" }),
+    ).toEqual(["emptyReason"]);
+    expect(issuePaths(BriefFileSchema, { ...empty, emptyReason: "" })).toEqual([
+      "emptyReason",
+    ]);
+    expect(
+      issuePaths(BriefFileSchema, {
+        ...file,
+        mode: "llm",
+        lines: [llmLine],
+        emptyReason: "results-pending",
+      }),
+    ).toEqual(["emptyReason"]);
+    expect(
+      issuePaths(BriefFileSchema, { ...file, emptyReason: "no-matches" }),
+    ).toEqual(["emptyReason"]);
+  });
+
   it(`줄은 최대 ${BRIEF_MAX_LINES}개`, () => {
     const six = Array.from({ length: 6 }, () => templateLine);
     expect(

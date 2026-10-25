@@ -236,6 +236,68 @@ describe("S4 경기 없는 날(mode empty — D30 #7)", () => {
   });
 });
 
+describe("결과 지연(mode empty + emptyReason results-pending — PRD §15 D60, 10-25 호 사건)", () => {
+  const pending: BriefFile = { ...emptyBrief, emptyReason: "results-pending" };
+
+  it("S4 대신 5줄 자리 오류와 같은 상자 — '오늘은 5줄을 싣지 못했어요' + 사실 안내, 끝난 경기가 없었다고 쓰지 않는다", () => {
+    render(<TodayBrief brief={pending} />);
+    const el = block();
+    expect(el).toHaveAttribute("data-brief-mode", "empty");
+    expect(el).toHaveAttribute("data-empty-reason", "results-pending");
+    expect(within(el).getByRole("heading", { level: 2 })).toHaveTextContent(
+      "오늘의 5줄",
+    );
+    const box = el.querySelector("[data-slot=brief-pending]") as HTMLElement;
+    expect(box).toHaveTextContent("오늘은 5줄을 싣지 못했어요");
+    expect(box).toHaveTextContent(
+      "경기 결과 집계가 늦어 브리핑을 만들지 못했어요. 뉴스는 아래에 그대로 있어요.",
+    );
+    // 5줄 자리 오류(BriefMissing)와 같은 상자 모양 — 새 모티프 없음(DESIGN §9.3 ③)
+    expect(box.className).toBe("mt-3 border border-ink bg-paper-2 px-3.5 py-3");
+    expect(el).not.toHaveTextContent("끝난 경기가 없었습니다");
+    expect(el).not.toHaveTextContent("쉽니다");
+    expect(el.querySelector("[data-slot=brief-rest]")).toBeNull();
+    // 줄·AI 라벨·부제·하단(데이터 출처·AI 안내·오류 신고) 없음 — 보이는 브리핑 데이터가 없다
+    expect(within(el).queryByRole("list")).toBeNull();
+    expect(el.querySelectorAll("[data-slot=ai-label]")).toHaveLength(0);
+    expect(el.querySelector("[data-slot=brief-foot]")).toBeNull();
+    expect(el).not.toHaveTextContent("경기 기준");
+    expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("아카이브(variant='issue')는 '이날은 5줄을 싣지 못했어요' — 머리 '이날의 5줄'", () => {
+    render(<TodayBrief brief={pending} variant="issue" />);
+    const el = screen.getByRole("region", { name: "이날의 5줄" });
+    expect(el.querySelector("[data-slot=brief-pending]")).toHaveTextContent(
+      "이날은 5줄을 싣지 못했어요",
+    );
+    expect(el).not.toHaveTextContent("오늘은");
+  });
+
+  it("비시즌 날짜여도 비시즌 안내로 바꾸지 않는다 — 경기가 있었던 날이다", () => {
+    render(<TodayBrief brief={{ ...pending, date: "2027-06-10" }} />);
+    const el = block();
+    expect(el.querySelector("[data-slot=brief-off-season]")).toBeNull();
+    expect(el.querySelector("[data-slot=brief-pending]")).not.toBeNull();
+  });
+
+  it("emptyReason no-matches·키 없는 옛 empty는 지금처럼 S4", () => {
+    for (const brief of [
+      emptyBrief,
+      { ...emptyBrief, emptyReason: "no-matches" as const },
+    ]) {
+      const { unmount } = render(<TodayBrief brief={brief} />);
+      const el = block();
+      expect(el).not.toHaveAttribute("data-empty-reason");
+      expect(el.querySelector("[data-slot=brief-rest]")).toHaveTextContent(
+        "오늘은 5줄을 쉽니다",
+      );
+      expect(el.querySelector("[data-slot=brief-pending]")).toBeNull();
+      unmount();
+    }
+  });
+});
+
 describe("제목 변형 variant='issue' — 날짜 아카이브 '이날의 5줄'(M1-34, 2026-10-23 사용자 결정)", () => {
   it("머리 '이날의 5줄', 부제 '(현지)' 원칙·행·라벨은 같다", () => {
     const brief = day("2026-10-11");

@@ -13,6 +13,12 @@
  *   - `empty` — 전날 경기가 없어 LLM을 부르지 않았다(D24·D30 — 화면은 5줄 블록을 유지하고 높이만 줄인다). 줄 0개
  * 치환 전 LLM 원문(`textRaw`)은 저장하지 않는다(실행 로그·dev 출력에서만 — D38).
  *
+ * 2026-10-25 사용자 결정(PRD §15 D60 — 10-25 호 사건): 파일에 선택 필드 `emptyReason`을 더했다 — **mode `empty`일 때만** 둘 수 있다.
+ *   - `no-matches` — 창 안에 끝난 경기가 없었다(화면 S4 "끝난 경기가 없었습니다")
+ *   - `results-pending` — 창 안에 경기는 있었지만 수집 때 결과를 받지 못했다(football-data 미종료 + API-Football 보충 불가 —
+ *     scripts/lib/brief-supplement.ts). 화면은 S4 대신 "5줄을 싣지 못했어요" 안내(원인을 단정하지 않는 사실만)
+ * 키가 없는 empty(옛 파일 — 2026-10-25 이전)는 `no-matches`로 읽는다(마이그레이션 없음 — 그때 규칙의 뜻이 그것이었다).
+ *
  * 줄 길이 상한 80자는 D40 ⑤(‘60자 내외’, 80자 초과 줄은 템플릿 강등 — 한국어 문장 중간 절단 안 함)이다. 파이프라인은 쓰기 전에
  * 이 스키마로 검증하므로(scripts/lib/brief-file.ts) 상한을 넘는 줄은 파일에 들어가지 않는다 — 검증 게이트가 브리핑 하나 때문에
  * 그날 발행 전체를 막지 않게 하는 것은 파이프라인 몫이다(FR-26 정신).
@@ -52,6 +58,10 @@ function noDuplicates(label: string) {
 
 export const BriefModeSchema = z.enum(["llm", "mixed", "template", "empty"]);
 export type BriefMode = z.infer<typeof BriefModeSchema>;
+
+/** mode empty의 이유(D60 — 위 머리 주석). 키가 없는 empty는 no-matches */
+export const BriefEmptyReasonSchema = z.enum(["no-matches", "results-pending"]);
+export type BriefEmptyReason = z.infer<typeof BriefEmptyReasonSchema>;
 
 /**
  * 근거 id — 브리핑 정형 입력(scripts/lib/brief-input.ts)의 항목 id. 접두사 소문자 1자 + 영숫자:
@@ -93,6 +103,7 @@ export type BriefLine = z.infer<typeof BriefLineSchema>;
 /**
  * 일일 브리핑 파일. mode ↔ lines 일관성:
  * empty ⇔ 줄 0개 · llm ⇒ 모든 줄 ai:true · template ⇒ 모든 줄 ai:false · mixed ⇒ ai:true와 ai:false가 모두 있음.
+ * `emptyReason`(D60)은 empty일 때만 — 다른 mode에 있으면 오류.
  */
 export const BriefFileSchema = z
   .object({
@@ -100,6 +111,8 @@ export const BriefFileSchema = z
     generatedAt: IsoSchema, // 파일을 마지막으로 쓴 시각(UTC)
     runId: z.string().min(1), // 이 파일을 쓴 실행의 RunLog.runId
     mode: BriefModeSchema,
+    /** empty의 이유(선택 — D60). 없으면 no-matches로 읽는다 */
+    emptyReason: BriefEmptyReasonSchema.optional(),
     lines: z.array(BriefLineSchema).max(BRIEF_MAX_LINES),
   })
   .superRefine((file, ctx) => {
@@ -107,6 +120,13 @@ export const BriefFileSchema = z
     const template = file.lines.length - ai;
     const fail = (message: string) =>
       ctx.addIssue({ code: "custom", path: ["mode"], message });
+    if (file.emptyReason !== undefined && file.mode !== "empty") {
+      ctx.addIssue({
+        code: "custom",
+        path: ["emptyReason"],
+        message: "emptyReason은 mode empty일 때만 둔다",
+      });
+    }
     switch (file.mode) {
       case "empty":
         if (file.lines.length > 0) fail("empty 브리핑에는 줄이 없어야 한다");

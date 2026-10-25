@@ -33,6 +33,9 @@ import { cn } from "@/lib/utils";
  *   S4 [--gutter '0' 윤곽 │ "오늘은 5줄을 쉽니다" + 이유 + 주요 뉴스로 ↓]          ← mode empty(D30 — 블록을 두고 높이만 줄인다)
  *   비시즌 [평탄 탭 + 시즌명 │ 날짜(Barlow 800 34px) + 개막·종료 │ 안내 + 주요 뉴스로 ↓] ← mode empty + 홈 + 모든 대회 시즌 밖(M1-37)
  *   하단: 데이터 football-data.org · API-Football │ AI 작성 안내 · 브리핑 오류 신고↗
+ *
+ *   결과 지연(D60 — mode empty + emptyReason results-pending): 섹션 머리 + 5줄 자리 오류(`BriefMissing`)와 같은 상자
+ *   ["{오늘은·이날은} 5줄을 싣지 못했어요" + "경기 결과 집계가 늦어 …"] — 부제·하단 없음(보이는 브리핑 데이터가 없다)
  * ```
  * - 행 격자·여백은 카드와 같은 `ROW_GRID`(--gutter · 1fr · --tab-w, 열 간격 10/14px), 위아래 13·14px(≥1024 14·15px). 1023 이하는
  *   오른쪽으로 --edge만큼 넘쳐 인덱스 탭이 화면 가장자리에 붙는다(카드 `bleed`와 같다).
@@ -94,6 +97,21 @@ export function TodayBrief({
 }: TodayBriefProps) {
   const view = buildBriefView(brief);
   const text = VARIANT_TEXT[variant];
+  if (view.emptyReason === "results-pending") {
+    // 경기는 있었지만 수집 때 결과를 받지 못한 날(D60) — S4("끝난 경기가 없었습니다")는 사실이 아니라 쓰지 않고, 비시즌 판정도 하지
+    // 않는다(경기가 있었다). 5줄 자리 오류와 같은 상자에 사실만 — 원인을 단정하지 않는다
+    return (
+      <BriefNoticeSection
+        headingAs={headingAs}
+        headingId={headingId}
+        text={text}
+        mode="empty"
+        emptyReason="results-pending"
+        slot="brief-pending"
+        body="경기 결과 집계가 늦어 브리핑을 만들지 못했어요. 뉴스는 아래에 그대로 있어요."
+      />
+    );
+  }
   const empty = view.mode === "empty";
   // 비시즌(M1-37 — DESIGN §9.3 상태 화면 ② 빈 상태): 홈(오늘 호)만. 지난 호는 지금 설정으로 그날 시즌을 다시 쓰지 않는다(S4 이유와 같은 원칙)
   const offSeason =
@@ -243,8 +261,9 @@ function BriefText({ parts }: { parts: readonly BriefTextPart[] }) {
 
 /**
  * S4 경기 없는 날 — 블록을 두고 높이만 줄인다(D30 #7, DESIGN §9.3): 거터 '0'(--num-brief-no, 2px --brand-accent 윤곽, 속 비움 —
- * 장식) + "오늘은 5줄을 쉽니다" + 이유 1줄 + "주요 뉴스로 ↓". 이유는 파이프라인 규칙의 사실만(입력 경기 0 = 다루는 대회의 전날 종료
- * 경기 없음 — scripts/lib/brief-file.ts `planBriefPublish` empty), 날짜는 쓰지 않는다.
+ * 장식) + "오늘은 5줄을 쉽니다" + 이유 1줄 + "주요 뉴스로 ↓". 이유는 파이프라인 규칙의 사실만(입력 경기 0 + 창 안에 결과를 기다리는
+ * 경기도 없음 = 다루는 대회의 전날 종료 경기 없음 — scripts/lib/brief-file.ts `planBriefPublish` empty·`emptyReason` no-matches. 결과
+ * 지연(results-pending — D60)은 S4를 쓰지 않는다), 날짜는 쓰지 않는다.
  */
 function BriefRest({
   newsHref,
@@ -361,11 +380,45 @@ export function BriefMissing({
   headingId = "brief-h",
   variant = "today",
 }: Pick<TodayBriefProps, "headingAs" | "headingId" | "variant">) {
-  const text = VARIANT_TEXT[variant];
+  return (
+    <BriefNoticeSection
+      headingAs={headingAs}
+      headingId={headingId}
+      text={VARIANT_TEXT[variant]}
+      mode="missing"
+      slot="brief-missing"
+      body="이 호를 발행할 때 브리핑을 만들지 못했어요. 뉴스는 아래에 그대로 있어요."
+    />
+  );
+}
+
+/**
+ * 5줄을 싣지 못한 호의 안내 섹션 — 5줄 자리 오류(`BriefMissing`, M1-37)와 결과 지연(D60 — `TodayBrief`의 empty + results-pending)이
+ * 같은 모양을 쓴다(DESIGN §9.3 상태 화면 ③ 오류 상자 — 새 모티프 없음): 섹션 머리 + `--paper-2` 면 · 1px `--ink` 상자, 제목
+ * "{오늘은·이날은} 5줄을 싣지 못했어요"(15px 800) + 안내(13.5px `--ink-2`). 부제·하단은 싣지 않는다.
+ */
+function BriefNoticeSection({
+  headingAs = "h2",
+  headingId = "brief-h",
+  text,
+  mode,
+  emptyReason,
+  slot,
+  body,
+}: Pick<TodayBriefProps, "headingAs" | "headingId"> & {
+  text: VariantText;
+  /** 섹션 `data-brief-mode` — 파일 없음은 missing, 결과 지연은 파일의 mode(empty) */
+  mode: "missing" | "empty";
+  /** 섹션 `data-empty-reason`(결과 지연만) */
+  emptyReason?: "results-pending";
+  slot: "brief-missing" | "brief-pending";
+  body: string;
+}) {
   return (
     <section
       aria-labelledby={headingId}
-      data-brief-mode="missing"
+      data-brief-mode={mode}
+      data-empty-reason={emptyReason}
       data-slot="today-brief"
     >
       <SectionHead
@@ -375,16 +428,13 @@ export function BriefMissing({
         runningHead="STARTING FIVE"
       />
       <div
-        data-slot="brief-missing"
+        data-slot={slot}
         className="mt-3 border border-ink bg-paper-2 px-3.5 py-3"
       >
         <p className="text-[15px] font-extrabold">
           {text.rest} 5줄을 싣지 못했어요
         </p>
-        <p className="mt-1 text-[13.5px] text-ink-2">
-          이 호를 발행할 때 브리핑을 만들지 못했어요. 뉴스는 아래에 그대로
-          있어요.
-        </p>
+        <p className="mt-1 text-[13.5px] text-ink-2">{body}</p>
       </div>
     </section>
   );

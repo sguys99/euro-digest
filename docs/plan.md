@@ -335,6 +335,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 🆕 M1-40 진행(2026-10-18): **수동 dispatch 3회 연속 성공** — run 39100995214(카드 45장·브리핑 llm 2요청(FR-29 재시도)·$0.0082·API-Football 23회) → 39101357630(force, 새 카드 0·브리핑 생략·API-Football 23회) → 39101698305(force, API-Football 14회 = 그 UTC 날 봇 상한 60 도달 → 실행 상태 partial, 상한 경로 정상 동작) — 세 번 모두 수집·검증·빌드·커밋·배포 성공. **정기 실행 활성화는 10-19(09:00 KST 한도 리셋 뒤)로 미룸**(오케스트레이터 결정): 오늘 낮 dispatch가 쓴 UTC 10-18 한도를 10-19 06:30 첫 봇 실행이 나눠 쓰지 않게 → 첫 정기 발행 10-20, 7일 관찰 10-20~10-26(전환일 10-25·겨울 첫 발행 10-26 포함). 남은 일: `COLLECT_ENABLED=true`(오케스트레이터, 10-19) · 🙋 cron-job.org 본 작업 2개 본문 slot 갱신·활성화 + 백업 작업 2개(06:40 summer·07:20 winter) 추가 → 첫 실행 Step Summary 계절 슬롯 확인. 발견: 같은 발행일 재실행이 브리핑 게시 뒤에도 API-Football 상세를 다시 받음(②에서 23회) → M1-41 관찰 메모·개선 후보(브리핑이 이미 게시된 날은 원장 갱신에 필요한 미종료 경기만 재조회)
   - 🆕 M1-40 진행(2026-10-19 20:16 KST): 저장소 변수 `COLLECT_ENABLED=true` 설정(오케스트레이터 — 10-19 낮 dispatch 없음, 첫 봇 실행 10-20 06:30 KST가 UTC 10-19 한도를 온전히 씀). 남은 일: 🙋 cron-job.org 본 작업 2개 본문 slot·활성화 + 백업 2개 추가 → 10-20 첫 실행 Step Summary 계절 슬롯 확인 후 M1-40 완료 처리
 - [ ] M1-41 7일 연속 정시 발행 관찰 — 그날 계절의 목표 시각(유럽 서머타임 07:00 · 표준시 07:30 KST)까지, 늦어도 +15분 기준(D48 — 일찍 공개 허용) (D26). 계절에 맞지 않는 트리거가 skip되는지 확인하고, 관찰 기간이 서머타임 전환일과 겹치면 전환 다음 날 발행 시각 변경과 경기 시각 KST 표시도 확인. 수집 시점의 경기 상태 분포(미종료·점수 지연)를 기록(M0-28) · 🆕 ESPN 피드(2026-10-14 러너 202 빈 응답으로 비활성)를 관찰 기간에 러너에서 1회 재확인 → 정상이면 재활성
+  - 🆕 2026-10-25 사건·D60(사용자 결정): 10-25 호 08:42 KST 수집(run 40143777845)에서 football-data가 브리핑 창(UTC 10-24) 19경기를 킥오프 10시간 뒤에도 IN_PLAY 5·TIMED 14로 줌 → 종료 0 → mode empty → 홈 S4 "전날 6개 대회에 끝난 경기가 없었습니다" 오게시(21:07 재수집 40191669281도 같음, API-Football 19경기 상세는 아침에 모두 받아 원장에 있음). 조치: ① football-data 미종료(awaiting) 경기를 같은 실행·원장의 API-Football 종료 결과로 보충(추가 호출·LLM 0 — `scripts/lib/brief-supplement.ts`, 연결은 대응표가 팀을 확인하는 쌍만 `team-ids.ts linkPendingMatches`, 그 대회 순위 제외, 로그 `summarize.input.done` supplemented…) ② 보충 뒤에도 입력 0이고 창 안에 기다리는 경기가 있으면 `emptyReason: "results-pending"`(BriefFile 선택 필드) → 5줄 블록은 S4 대신 '5줄을 싣지 못했어요' 상자, 같은 날 다음 실행이 덮음. 10-25 원장 재현: 19경기 중 16경기 보충(대응표 두 팀 5·한쪽 11), 3경기 대응표 밖 미보충. 관찰: `summarize.input.done` fdAwaiting·supplemented·awaitingAfterSupplement·supplementUnlinked(unconfirmed 빈도 → team-ids.json 보강 후보), `summarize.brief.skip reason results-pending` 빈도. 10-25 파일(키 없는 empty)은 다음 수집이 덮지 않으면 S4 그대로 — 재수집(force dispatch)은 오케스트레이터 판단
 - [x] M1-42 💰 첫 주 실측 비용(단건 브리핑, thinking 포함) 확인 → PRD §9.3 비용표 갱신. 캐싱 코드는 유지(B3 미발동 — D28)하고 요청 2개 이상인 날의 캐시 적중만 확인 — 2026-10-25 완료(사용자 결정 2026-10-24: 정시 관찰과 별개로 첫 주 정기 발행 10-18~24 기준): D57 이후 하루 평균 $0.0025·30일 환산 약 $0.074(월 예산 2.5%)·잘림 0·2요청 이상인 날 없음(캐시 적중 대상 없음 — 캐싱 코드 유지) → PRD §9.3 비용표 실측 행. 근거: `npm run observe -- --week --from 2026-10-17 --to 2026-10-24`(docs/research/m1-observation.md 주간 요약)
   - 🆕 2026-10-18 D57(사용자 결정): 10-18 prod 첫 브리핑 요청이 `max_tokens` 8,192에서 잘림(thinking 8,190·34.8초 → FR-29 재시도 4,963으로 성공) → `max_tokens` 16,384·브리핑 요청 타임아웃 120초(마감 안 min(120초, 마감 − 현재) — thinking·effort·단건·모델 불변). 💰 dev 확인 eval 2요청(`eval-dev-20261018T064719Z-01b6`, $0.008719): 10-11 골든 출력 9,483(thinking 9,206)·37초(8,192였다면 잘림)·10-10 5,446·22초, 잘림 0/2 · 가드 최악값 요청당 약 $0.018(일 예산 18%) · 첫 주 실측에서 잘림·마감 강등(남은 40~70초 구간)을 함께 본다 · `MAX_TOKENS_CEILING`(llm.ts 전역 상한)도 16,384라 주간 배치 2곳(M3-07·M4-05) 착수 때 호출 지점별 `max_tokens`를 따로 정한다(사용자 승인 — CLAUDE §1-3)
 - [x] M1-46 🆕 GDELT 소량 재측정 — 7일 관찰 기간(M1-41)에 하루 1회, 쿼리 2개·요청 3건 이내. 재활성 기준: 7일 성공률 ≥ 80% · 한국어 24시간 결과 수백 건 · seendate 지연 ≤ 1시간 · 허용 도메인 결과 주 1건 이상 → 충족 시 허용 도메인 OR 쿼리 1개만 켬 ❓ (M0-27) — 2026-10-25 종결 **재활성 안 함**(사용자 결정 2026-10-24): 10-18 시험 측정 요청 3건 중 429 2건·최신 seendate 지연 91분(기준 ≤ 60분)·허용 도메인 0건, 10-22부터 이 개발 머신에서 api.gdeltproject.org 연결 시간 초과(www는 정상) — 재활성 기준 4개 중 2개(지연·허용 도메인) 미달이 확인됐고 측정 환경도 불안정. `gdelt-doc` 비활성 유지, M1-05·07 보류 그대로, 측정 도구(`npm run probe:gdelt`)는 남겨 M5 이후 필요하면 러너에서 재측정
@@ -970,8 +971,9 @@ const MatchLedgerMeta = z.object({ season: Season, since: IsoDate,
   gaps: z.array(LedgerGap) });                                            // + playerSince·gaps ≥ since, (날짜, 사유) 순·중복 금지
   // gaps 치유: date-query·degraded·skipped는 나중 실행이 그 날짜를 받으면, dropped는 그 경기가 원장에 들어오면 지움
 
-// 16. data/briefs/YYYY-MM-DD.json  (FR-22~26·FR-35, PRD §15 D38·D45·D58, M1-19, 2026-10-16) — KST 발행일 = 파일명, 무기한 보존(§8.4)
-const BriefMode = z.enum(["llm", "mixed", "template", "empty"]);  // llm 모든 줄 LLM · mixed 일부 줄 템플릿 강등 · template LLM 없음(출력 전체 실패·예산·마감·약관·M1-45 전) · empty 전날 경기 없음(호출 생략)
+// 16. data/briefs/YYYY-MM-DD.json  (FR-22~26·FR-35, PRD §15 D38·D45·D58·D60, M1-19, 2026-10-16) — KST 발행일 = 파일명, 무기한 보존(§8.4)
+const BriefMode = z.enum(["llm", "mixed", "template", "empty"]);  // llm 모든 줄 LLM · mixed 일부 줄 템플릿 강등 · template LLM 없음(출력 전체 실패·예산·마감·약관·M1-45 전) · empty 입력 경기 0(호출 생략)
+const BriefEmptyReason = z.enum(["no-matches", "results-pending"]); // D60 — no-matches 창 안에 끝난 경기 없음 · results-pending 경기는 있었지만 결과를 받지 못함(football-data 미종료 + API-Football 보충 불가)
 const BriefRef = z.string().regex(/^[a-z][A-Za-z0-9]{1,31}$/);   // 정형 입력 항목 id — m<fd 경기 id> · s<대회 약칭> · k<af 선수 id>
 const BriefLine = z.object({
   text: z.string().min(1).max(80).regex(/^\S(?:[^\r\n]*\S)?$/),  // 한 줄·앞뒤 공백 없음, 80자(D40 ⑤ — 목표 60자), 치환 뒤 문장
@@ -980,10 +982,11 @@ const BriefLine = z.object({
   comps: z.array(CompId).min(1).max(6).optional(),               // D58 — 줄 대회(게시 때 refs에서 코드 계산 · refs 처음 나온 순 · 중복 금지 · 모르면 키 없음)
 });
 const BriefFile = z.object({ date: IsoDate, generatedAt: Iso, runId: z.string().min(1), mode: BriefMode,
+  emptyReason: BriefEmptyReason.optional(),                      // D60 — mode empty일 때만(그 밖 mode에 있으면 오류) · 키 없는 옛 empty = no-matches
   lines: z.array(BriefLine).max(5) });
-  // + empty ⇔ 줄 0개 · llm ⇒ 모두 ai:true · template ⇒ 모두 ai:false · mixed ⇒ 둘 다. 치환 전 원문(textRaw)은 저장 안 함
+  // + empty ⇔ 줄 0개 · llm ⇒ 모두 ai:true · template ⇒ 모두 ai:false · mixed ⇒ 둘 다 · emptyReason ⇒ empty. 치환 전 원문(textRaw)은 저장 안 함
   // 같은 날 재실행: llm·mixed는 덮지 않음(LLM도 부르지 않음) · 줄 있는 template은 llm·mixed 또는 줄이 더 많은 template으로만 갱신 ·
-  //   empty는 줄 있는 결과로 갱신 · 내용 같으면 안 씀
+  //   empty는 줄 있는 결과·이유(emptyReason)가 다른 empty로 갱신(results-pending은 보충 성공 실행이 덮는다) · 내용(mode·줄·empty 이유) 같으면 안 씀
 ```
 
 **PRD 초안 대비 변경점**: `src[].tier`·`spoiler`·`ai`·`transfer.player/from/to`는 PRD 그대로 확정. 추가된 필드는 `Transfer.quiet`(FR-106), `RunLog.env`·`job`·`downgraded`·`sources`(소스 건강도 FR-11), `Team.alsoIn`(UCL 외부 팀·이중 소속 표현), `KoreanPlayer.active`(FR-64). 바뀐 구조는 `RunLog.tokens.cached` → `cacheRead`·`cacheWrite`(캐시 쓰기 단가가 따로 있음), `RunLog.failedSources` → `sources[]`(실패 소스는 `ok:false`로 도출), 뉴스 파일 최상위를 카드 배열 대신 `{ date, generatedAt, runId, cards }` 객체로. 카드 ID를 16진수 6자리에서 10자리로, 제목 상한을 AI 80자 / 원제목·한국어 원문 200자로 분리(PRD §15 D15).
@@ -1055,3 +1058,4 @@ const BriefFile = z.object({ date: IsoDate, generatedAt: Iso, runId: z.string().
 | 2026-10-18 | 일일 브리핑 `max_tokens` 8,192 → 16,384·브리핑 HTTP 요청 타임아웃 60초 → 120초(PRD §15 D57 — 마감 안 min(120초, 마감 − 현재), thinking·effort·단건·모델 불변) · 비용 가드 최악값 요청당 약 $0.018 · M1-42 메모 | 사용자 결정 — 10-18 prod 첫 브리핑 요청 max_tokens 잘림(thinking 8,190) |
 | 2026-10-18 | 창간일 2026-10-12 확정 — 마스트헤드·뒤표지 "제 N호" N = 발행일 − 2026-10-12 + 1(결호가 나도 증가, 빌드 시 계산, D29) · M1 공개 상태는 검색·결과 가리기 토글을 숨김(M4-E·M4-15에서 노출 — 미완성 섹션 숨김) (M1-30) | 사용자 결정(창간일) · 오케스트레이터 결정(토글 숨김) |
 | 2026-10-19 | 일일 브리핑 줄에 선택 필드 `comps`(대회 ID 배열 — PRD §15 D58): 게시 때 refs에서 코드 계산(m… 입력 경기 대회 · s… 순위 약칭표 · k… 그 선수 경기), LLM 호출·지시문·비용 불변, 기존 data/briefs 손 편집 없음(10-20 발행부터) · 부록 A 16 갱신 (M1-32) | 사용자 결정 — 홈 5줄 대회 인덱스 탭(D0 선택 시안)에 줄 대회가 필요하고 화면은 원장을 읽지 않음(D33) |
+| 2026-10-25 | 브리핑 결과 보충·결과 지연 구분(PRD §15 D60 — 10-25 호 사건): football-data 미종료 창 안 경기를 같은 실행·원장의 API-Football 종료 결과로 보충(추가 호출·LLM 0, 대응표가 팀을 확인하는 쌍만, 그 대회 순위 제외), 보충 뒤에도 입력 0 + 기다리는 경기 → BriefFile 선택 필드 `emptyReason: "results-pending"`(empty일 때만, 옛 파일 유효) → 5줄 블록은 S4 대신 '5줄을 싣지 못했어요' · 부록 A 16 갱신 · M1-41 메모 | 사용자 결정 — 10-25 홈 S4 오게시 |

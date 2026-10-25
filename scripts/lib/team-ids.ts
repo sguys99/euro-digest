@@ -21,6 +21,10 @@
  *     `configs/team-ids.json`은 고치지 않는다(사람이 관리 — D33 유지). 자동 연결한 팀 쌍은 `autoLinked`로 돌려주고 호출부가
  *     로그로 남긴다(운영 리포트 M5-09 후보 — 사람이 모아서 configs에 옮긴다).
  * 그 밖(증거가 약하거나 후보가 여럿·스코어 불일치)은 `unconfirmed`로 두고 득점자 없이 진행한다.
+ *
+ * `linkPendingMatches`(PRD §15 D60 — 2026-10-25 호 사건): football-data가 아직 종료로 주지 않은(점수 없는) 창 안 경기를 API-Football
+ * 종료 상세에 잇는다 — 브리핑 결과 보충(brief-supplement.ts). 점수 비교를 할 수 없으므로 대응표가 팀을 확인하는 쌍만(두 팀 → team-ids,
+ * 한쪽 팀 + 다른 쪽 어긋나지 않음 + 같은 칸 후보 하나 → evidence). 함수 주석 참고.
  */
 import {
   TeamIdsFileSchema,
@@ -165,8 +169,8 @@ function sideConsistent(
 }
 
 function matchConsistent(
-  fd: PairingMatch,
-  af: PairingMatch,
+  fd: Pick<PairingMatch, "home" | "away">,
+  af: Pick<PairingMatch, "home" | "away">,
   index: TeamIdIndex,
 ): boolean {
   return (
@@ -400,17 +404,32 @@ export interface MatchLinkOptions extends PairingOptions {
   autoLink?: boolean;
 }
 
-/** 경기 쌍의 두 팀이 대응표로 확인되는가(fd·af 둘 다 같은 slug) */
-function confirmedByTable(
-  fd: Pick<FinishedMatch, "home" | "away">,
-  af: Pick<MatchDetail, "home" | "away">,
+/** 팀 id만 보는 경기 쌍 한쪽 */
+interface SidedTeams {
+  home: { id: number };
+  away: { id: number };
+}
+
+/** 같은 쪽 두 팀(fd·af)이 대응표로 같은 slug인가 */
+function sameTeamByTable(
+  fdId: number,
+  afId: number,
   index: TeamIdIndex,
 ): boolean {
-  const same = (fdId: number, afId: number) => {
-    const slug = index.byFd.get(fdId);
-    return slug !== undefined && slug === index.byAf.get(afId);
-  };
-  return same(fd.home.id, af.home.id) && same(fd.away.id, af.away.id);
+  const slug = index.byFd.get(fdId);
+  return slug !== undefined && slug === index.byAf.get(afId);
+}
+
+/** 경기 쌍의 두 팀이 대응표로 확인되는가(fd·af 둘 다 같은 slug) */
+function confirmedByTable(
+  fd: SidedTeams,
+  af: SidedTeams,
+  index: TeamIdIndex,
+): boolean {
+  return (
+    sameTeamByTable(fd.home.id, af.home.id, index) &&
+    sameTeamByTable(fd.away.id, af.away.id, index)
+  );
 }
 
 /** 같은 칸 후보 수 — scored = 대회·킥오프(±허용 차)·최종 스코어가 맞는 경기, unknown = 같은 칸인데 점수를 모르는 경기 */
@@ -532,4 +551,166 @@ export function linkMatchDetails(
       : [];
   });
   return { links, unconfirmed, autoLinked, report };
+}
+
+// ─── 미종료 경기 보충 연결 (PRD §15 D60) ───────────────────────────────
+
+/**
+ * 보충 연결 입력 — football-data가 아직 종료로 주지 않은 창 안 경기(점수 없음 — match-data.ts `UnsettledMatch`가 그대로 들어간다)
+ */
+export interface PendingPairing {
+  matchId: number;
+  comp: CompId;
+  /** 킥오프(UTC ISO) */
+  kickoff: string;
+  home: PairingTeam;
+  away: PairingTeam;
+}
+
+/** 보충 연결하지 않은 이유 */
+export type PendingUnlinkedReason =
+  /** 같은 칸(대회·킥오프 ±허용 차)에 대응표가 확인하는 af 경기가 둘 이상 */
+  | "af-candidates"
+  /** 같은 칸 af 경기 중 대응표가 확인하는 팀이 하나도 없다 — 점수 없이는 고르지 않는다 */
+  | "unconfirmed"
+  /** 같은 칸 af 경기가 모두 대응표와 어긋난다 */
+  | "table"
+  /** 같은 af 경기를 다른 fd 경기도 가리킨다 */
+  | "conflict"
+  /** 한쪽 팀 확인 연결(evidence)을 껐다(options.autoLink false — 대응표를 읽지 못함) */
+  | "disabled";
+
+export interface PendingLink<T extends PendingPairing> {
+  fd: T;
+  af: MatchDetail;
+  linkedBy: MatchLinkSource;
+}
+
+export interface PendingUnlinked {
+  fdMatchId: number;
+  /** 가리킨 af 경기(하나로 좁혀졌을 때만) — 없으면 null */
+  afMatchId: number | null;
+  reason: PendingUnlinkedReason;
+}
+
+export interface PendingLinkResult<T extends PendingPairing> {
+  /** 보충해도 되는 쌍(fd 킥오프·id 순) */
+  links: Array<PendingLink<T>>;
+  /** 같은 칸에 af 후보는 있지만 연결하지 않은 fd 경기(fd id 순) */
+  unlinked: PendingUnlinked[];
+  /** 같은 칸에 af 종료 상세가 없는 fd 경기 id(아직 안 받음·API-Football도 미종료·대상 밖) */
+  noCandidate: number[];
+}
+
+export interface PendingLinkOptions extends PairingOptions {
+  /** 이미 football-data 종료 경기에 연결된 af 경기 id — 같은 af 경기를 두 번 쓰지 않는다 */
+  excludeAf?: ReadonlySet<number>;
+  /** 한쪽 팀 확인 연결(evidence) — 기본 true. 대응표를 읽지 못했으면 호출부가 끈다 */
+  autoLink?: boolean;
+}
+
+/**
+ * football-data 미종료(점수 없음) 경기 ↔ API-Football 종료 상세 연결(순수 함수 — D60 보충). `linkMatchDetails`(D33·D37)의 규칙을
+ * football-data 점수 없이 적용한다 — D37 강한 증거의 '스코어 일치'를 쓸 수 없으므로 **대응표가 팀을 확인하는 쌍만** 잇는다:
+ *   - `team-ids`: 같은 대회 · 킥오프 ±허용 차 · 두 팀 모두 대응표로 확인(D33) — 그런 af 경기가 하나
+ *   - `evidence`: 두 팀 확인 쌍이 없을 때, 같은 칸 af 경기 중 **한쪽 팀이 대응표로 확인되고 다른 쪽이 대응표와 어긋나지 않는** 경기가
+ *     하나(D37 변형 — 한 팀은 같은 시각에 한 경기만 뛰므로 확인된 팀이 경기를 정하고, 확인된 쪽이 홈↔홈·원정↔원정 방향도 정한다)
+ *   - 그 밖은 잇지 않는다: 대응표가 두 팀을 모두 모르면 `unconfirmed`(같은 칸 경기가 하나뿐이어도 홈·원정 방향을 확인할 수 없어
+ *     스코어가 뒤집힐 수 있다), 후보가 둘 이상이면 `af-candidates`, 모두 어긋나면 `table`, 같은 af 경기를 두 fd 경기가 가리키면
+ *     둘 다 `conflict`.
+ * af 상세는 6개 대회(comp 있음) 종료 경기만 본다. 입력 순서와 무관하게 결과는 결정적이다(킥오프·id 순).
+ */
+export function linkPendingMatches<T extends PendingPairing>(
+  fdPending: readonly T[],
+  afDetails: readonly MatchDetail[],
+  index: TeamIdIndex = EMPTY_TEAM_ID_INDEX,
+  options: PendingLinkOptions = {},
+): PendingLinkResult<T> {
+  const tolerance = options.kickoffToleranceMs ?? PAIRING_KICKOFF_TOLERANCE_MS;
+  const autoLink = options.autoLink ?? true;
+  const excluded = options.excludeAf ?? new Set<number>();
+  const byKickoff = (
+    a: { kickoff: string; matchId: number },
+    b: { kickoff: string; matchId: number },
+  ) => Date.parse(a.kickoff) - Date.parse(b.kickoff) || a.matchId - b.matchId;
+  const pool = afDetails
+    .filter((d) => d.comp !== null && !excluded.has(d.matchId))
+    .sort(byKickoff);
+  const tentative: Array<PendingLink<T>> = [];
+  const unlinked: PendingUnlinked[] = [];
+  const noCandidate: number[] = [];
+  for (const fd of [...fdPending].sort(byKickoff)) {
+    const at = Date.parse(fd.kickoff);
+    const near = pool.filter(
+      (d) =>
+        d.comp === fd.comp && Math.abs(Date.parse(d.kickoff) - at) <= tolerance,
+    );
+    if (near.length === 0) {
+      noCandidate.push(fd.matchId);
+      continue;
+    }
+    const both = near.filter((d) => confirmedByTable(fd, d, index));
+    if (both.length === 1) {
+      tentative.push({ fd, af: both[0]!, linkedBy: "team-ids" });
+      continue;
+    }
+    if (both.length > 1) {
+      unlinked.push({
+        fdMatchId: fd.matchId,
+        afMatchId: null,
+        reason: "af-candidates",
+      });
+      continue;
+    }
+    const consistent = near.filter((d) => matchConsistent(fd, d, index));
+    if (consistent.length === 0) {
+      unlinked.push({
+        fdMatchId: fd.matchId,
+        afMatchId: null,
+        reason: "table",
+      });
+      continue;
+    }
+    const oneSide = consistent.filter(
+      (d) =>
+        sameTeamByTable(fd.home.id, d.home.id, index) ||
+        sameTeamByTable(fd.away.id, d.away.id, index),
+    );
+    const reason: PendingUnlinkedReason | null =
+      oneSide.length === 0
+        ? "unconfirmed"
+        : oneSide.length > 1
+          ? "af-candidates"
+          : !autoLink
+            ? "disabled"
+            : null;
+    if (reason === null) {
+      tentative.push({ fd, af: oneSide[0]!, linkedBy: "evidence" });
+    } else {
+      unlinked.push({
+        fdMatchId: fd.matchId,
+        afMatchId: oneSide.length === 1 ? oneSide[0]!.matchId : null,
+        reason,
+      });
+    }
+  }
+  // 같은 af 경기를 둘 이상의 fd 경기가 가리키면 모두 뺀다(어느 쪽이 맞는지 모른다)
+  const claims = new Map<number, number>();
+  for (const l of tentative) {
+    claims.set(l.af.matchId, (claims.get(l.af.matchId) ?? 0) + 1);
+  }
+  const links: Array<PendingLink<T>> = [];
+  for (const l of tentative) {
+    if ((claims.get(l.af.matchId) ?? 0) > 1) {
+      unlinked.push({
+        fdMatchId: l.fd.matchId,
+        afMatchId: l.af.matchId,
+        reason: "conflict",
+      });
+    } else {
+      links.push(l);
+    }
+  }
+  unlinked.sort((a, b) => a.fdMatchId - b.fdMatchId);
+  return { links, unlinked, noCandidate };
 }
