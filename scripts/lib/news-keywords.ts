@@ -426,6 +426,9 @@ export const TRANSFER_TERMS: KeywordGroup = {
       "agreed terms",
       "agreed fee",
       "gossip", // BBC 'gossip' = 이적설 모음
+      // 성사된 이적('All done deals in September & October 2026' — M1-43 실데이터)
+      "done deal",
+      "done deals",
     ],
     it: [
       "calciomercato",
@@ -481,6 +484,8 @@ export const TRANSFER_TERMS: KeywordGroup = {
       "자유계약",
       "러브콜",
       "입단",
+      // 친정 복귀 이적설('아놀드, 리버풀 리턴설?' — M1-43 실데이터, '구단'으로 감독·구단이 됐다)
+      "리턴설",
     ],
   },
   // 붙여 쓴 합성어('이강인, 완전이적 임박'·'맨유, 전격영입 발표') — 낱말 앞 경계로는 맞지 않는다(M1-17 재리뷰)
@@ -497,6 +502,25 @@ export const TRANSFER_TERMS: KeywordGroup = {
       "bid to host",
       "shows signs",
       "signs of",
+      // '... a sign of Premier League power'(조짐) — M1-43 실데이터, 결과 기사가 이적이 됐다
+      "sign of",
+      // 중계권 입찰('SPFL invites bids for new Scottish Premiership TV deal' — M1-43 실데이터). 'Man Utd invite bids for Rashford'(선수
+      // 입찰 받기)는 이적이라 중계권·새 계약 문형만 지운다(M1-43 리뷰)
+      "invites bids for new",
+      "invite bids for new",
+      "invited bids for new",
+      "bids for tv rights",
+      "bids for broadcast rights",
+      "bids for broadcasting rights",
+      "bids for media rights",
+      "tv rights bids",
+      "broadcast rights bids",
+      // 성사 부정('far from a done deal'·'not a done deal' — M1-43 리뷰)
+      "far from a done deal",
+      "not a done deal",
+      "not yet a done deal",
+      "isn t a done deal",
+      "no done deal",
       "medical staff",
       "medical team",
       "medical emergency",
@@ -514,7 +538,19 @@ export const TRANSFER_TERMS: KeywordGroup = {
     ],
     // '리버풀 이적 후 첫 골' — 이적한 뒤의 활약(이적 소식이 아니다)
     // '나폴리, 김민재 영입 당시 이적료 공개' — 지난 이적의 이적료(M1-18 리뷰)
-    ko: ["이적 후", "이적 이후", "이적 뒤", "당시 이적료"],
+    // M1-43 실데이터: '이른 교체엔 “사전에 합의된 것”'(경기 운영 합의) · '영입생이 선수단 수준 끌어올렸어'(새로 온 선수 — 지금 이적
+    // 소식이 아니다)
+    ko: [
+      "이적 후",
+      "이적 이후",
+      "이적 뒤",
+      "당시 이적료",
+      // 경기 운영 합의만('사전에 합의된 것'·'사전에 합의한 교체') — '보스만 사전 합의'(자유계약 선수 사전 계약)는 이적이다(M1-43 리뷰)
+      "사전에 합의된",
+      "사전에 합의한",
+      "영입생",
+      "이적생",
+    ],
     it: [
       "firma il gol",
       "firma la rete",
@@ -1434,6 +1470,10 @@ export const RESULT_TERMS: KeywordGroup = {
       "rally to",
       "from two goals down",
       "bragging rights",
+      // M1-43 실데이터('PSG come out on top in six-goal thriller against Barcelona')
+      "come out on top",
+      "comes out on top",
+      "came out on top",
     ],
     it: [
       "vince",
@@ -1509,6 +1549,11 @@ export const RESULT_TERMS: KeywordGroup = {
       "연승",
       "승전고",
       "무승 탈출",
+      // 무승 행진(지난 경기에서도 못 이겼다 — M1-43 실데이터 '맨유, 7경기 연속 무승→캐릭은 …'). 경기 전 기사 표현과 함께면 약한
+      // 표현이다(`RESULT_WEAK_TERMS` — '연승'과 같다)
+      "연속 무승",
+      "무승 수렁",
+      "무승 늪",
       "리뷰",
       "review",
     ],
@@ -1600,6 +1645,32 @@ export function maskDrawLottery(title: string): string {
 }
 
 /**
+ * 'humbled by' + 감사 대상(지지·팬·후보 지명·수상·환대 …) — 겸손한 감사 표현이지 패배가 아니다('humbled by the support', M1-43 리뷰).
+ * 'humbled by' 바로 뒤가 팀 이름이면 결과다('Man Utd humbled by four-goal Como').
+ */
+const HUMBLED_GRATITUDE_EXCLUDES: readonly string[] = (() => {
+  const determiners = ["", "the", "all the", "his", "her", "their", "such"];
+  const nouns = [
+    "support",
+    "fans",
+    "nomination",
+    "award",
+    "reception",
+    "response",
+    "messages",
+    "tributes",
+    "gesture",
+    "honour",
+    "honor",
+    "love",
+    "recognition",
+  ];
+  return determiners.flatMap((det) =>
+    nouns.map((noun) => ["humbled by", det, noun].filter(Boolean).join(" ")),
+  );
+})();
+
+/**
  * 주어가 있어야 결과로 보는 승패 표현 — 혼자서는 다른 뜻이 흔하다('down'·'sink'·'overcome'·'hold'·'cade'·'잡았다'·'패'). 같은 제목에 팀
  * 태그 또는 등록 한국 선수가 있을 때만 결과(classify.ts — 'Bayern sink Dortmund'·'Arsenal down Chelsea to go top'·'Liverpool hold
  * Arsenal'·'Tottenham held by Chelsea'·'Il Napoli cade a Torino'·'El Madrid se impone al Betis'·'이강인 PSG, 리옹에 덜미'·'뮌헨, 원정서
@@ -1639,6 +1710,14 @@ export const RESULT_CONTEXT_TERMS: KeywordGroup = {
       "move top",
       "moves top",
       "moved top",
+      // M1-43 실데이터 — 'Arsenal held at home by Birmingham'·'Man Utd humbled by four-goal Como'·'Haaland nets double as Man City go …'·
+      // 'Guirassy double helps Dortmund past Sabah'
+      "held at home",
+      "humbled by",
+      "nets double",
+      "nets brace",
+      "double helps",
+      "brace helps",
     ],
     it: [
       "cade",
@@ -1649,6 +1728,12 @@ export const RESULT_CONTEXT_TERMS: KeywordGroup = {
       "si impongono",
       "ferma",
       "fermano",
+      // 뒤집다·승점 3을 안기다(M1-43 실데이터 — 'i cambi di Chivu ribaltano il Bologna'·'Simeone … regala tre punti al Torino').
+      // '(torna) alla ribalta'(주목받다)는 제외
+      "ribalta",
+      "ribaltano",
+      "regala tre punti",
+      "regala i tre punti",
     ],
     es: ["se impone", "se imponen", "cae", "caen", "frena", "se lleva"],
     // 다른 뜻도 있는 승패 동사 — 주어(팀·등록 선수)가 있을 때만('메시 제치고 도움 1위'·'머리채 잡고 퇴장'은 주어가 없다, M1-17 3차 리뷰)
@@ -1667,6 +1752,10 @@ export const RESULT_CONTEXT_TERMS: KeywordGroup = {
       "물리쳐",
       "물리쳤다",
       "쓴맛",
+      // 결승골·극장골은 경기가 끝난 뒤의 말(M1-43 실데이터 — '마두에케, 아스널 구한 극장 결승골'). 주어가 있어야 결과, 경기 전 기사
+      // 표현('노린다')이면 아니다. spoiler는 경기 중 사건 표(`MATCH_EVENT_TERMS`)가 이미 본다
+      "결승골",
+      "극장골",
     ],
   },
   // 낱말 전체 — '패스'·'패배'는 아니다
@@ -1674,7 +1763,32 @@ export const RESULT_CONTEXT_TERMS: KeywordGroup = {
   // '김민재, 팬들에게 웃었다'(사람에게 웃다 — 결과가 아니다). '원정서 웃었다'·'막판에 웃었다'는 결과
   excludeKoRe: [/(?<=에게|에게도|한테|께)\s?웃었다/gu],
   exclude: {
+    // '(torna) alla ribalta'(주목받다)·판결·결정 뒤집기('ribalta la sentenza' — M1-43 리뷰)
+    it: [
+      "alla ribalta",
+      "ribalta la sentenza",
+      "ribalta il verdetto",
+      "ribalta la decisione",
+      "ribaltano la sentenza",
+      "ribaltano il verdetto",
+      "ribaltano la decisione",
+    ],
     en: [
+      // 감사 표현('humbled by the support'·'humbled by nomination' — M1-43 리뷰)
+      ...HUMBLED_GRATITUDE_EXCLUDES,
+      // 분석·해설('Breaking down Man Utd's tactics after …' — M1-43 실데이터, 결과가 됐다)·협상 결렬은 구로만 지운다 — 맨 'break down'은
+      // 결과 숙어다('Arsenal finally break down stubborn Burnley' — M1-43 리뷰)
+      "breaking down",
+      "broken down",
+      "talks break down",
+      "talks breaks down",
+      "talks broke down",
+      "negotiations break down",
+      "negotiations broke down",
+      "deal breaks down",
+      "deal broke down",
+      "move breaks down",
+      "move broke down",
       "two goals down",
       "down to ten",
       "down to 10",
@@ -1826,6 +1940,8 @@ const MODAL_RESULT_PHRASES: readonly string[] = [
     "draw",
     "hold",
     "go top",
+    // 'Arsenal can come out on top' — 경기 전 기사(M1-43 리뷰 — 'come out on top'을 결과 표에 넣으며)
+    "come out on top",
   ].map((verb) => `${modal} ${verb}`),
 );
 
@@ -1913,7 +2029,7 @@ export const RESULT_WEAK_TERMS: Readonly<
     "comeback",
     "triumph",
   ],
-  ko: ["승리", "무승부", "패배", "연승"],
+  ko: ["승리", "무승부", "패배", "연승", "연속 무승", "무승 수렁", "무승 늪"],
 };
 
 /**
@@ -2006,6 +2122,26 @@ export const INJURY_TERMS: KeywordGroup = {
       "fracture",
       "concussion",
       "fitness",
+      // M1-43 실데이터 — 'Chelsea's Martinez taken to hospital …'·'Arsenal fear Saka could be out for two months'·'Haaland a doubt,
+      // Semenyo out'. 'out for'만으로는 넣지 않는다('out for revenge') — 기간·조동사가 붙은 꼴만
+      "taken to hospital",
+      "hospitalised",
+      "hospitalized",
+      "could be out for",
+      "will be out for",
+      "out for two",
+      "out for three",
+      "out for four",
+      "out for five",
+      "out for six",
+      "out for eight",
+      "out for several",
+      "out for up to",
+      "out for weeks",
+      "out for months",
+      "out for the season",
+      "out for the rest of",
+      "a doubt",
     ],
     it: [
       "infortunio",
@@ -2016,6 +2152,18 @@ export const INJURY_TERMS: KeywordGroup = {
       "crociato",
       "operazione",
       "operato",
+      // M1-43 실데이터 — 'Atalanta, Giacomo Raspadori fuori per 20 giorni'·'Problemi alla coscia per Dembele'
+      "fuori per",
+      "coscia",
+      "polpaccio",
+      "flessore",
+      "flessori",
+      "adduttore",
+      "affaticamento",
+      "distorsione",
+      "contusione",
+      "problema muscolare",
+      "problemi muscolari",
     ],
     es: [
       "lesion",
@@ -2037,6 +2185,17 @@ export const INJURY_TERMS: KeywordGroup = {
       "골절",
       "재활",
       "전치",
+      // M1-43 실데이터 — '허벅지 타박상에 출전 불발'·'허벅지 타박→UCL 결장'·'허벅지 통증 털고'·'흐비차 시즌 아웃 가능성'·'콤파니, 바이러스
+      // 감염'·'쓰러져 구급차 이송'('타박'만은 '타박하다'(나무라다)와 겹쳐 부위를 붙인 꼴만)
+      "타박상",
+      "허벅지 타박",
+      "무릎 타박",
+      "발목 타박",
+      "통증",
+      "시즌 아웃", // 띄어쓰기 자리는 공백이 없어도 맞는다('시즌아웃')
+      "감염",
+      "구급차",
+      "병원 이송",
     ],
   },
   // 붙여 쓴 합성어('김민재, 무릎부상으로 이탈'·'황희찬 발목부상 회복') — '부상'을 합성어 안에서 통째로 맞추면 '세부상황'·'내부상황'과
@@ -2056,10 +2215,49 @@ export const INJURY_TERMS: KeywordGroup = {
     "머리부상",
     "갈비뼈부상",
     "장기부상",
+    // 여러 선수 부상('PSG 핵심 선수 3명 줄부상' — M1-43 실데이터, '감독'으로 감독·구단이 됐다)
+    "줄부상",
   ],
   // 떠오르다(浮上) — '급부상', '차기 사령탑 후보로 부상'·'PSG 핵심으로 부상했다'(조사 '(으)로' 바로 뒤, 낱말 앞 경계로는 적을 수
   // 없어 정규식 — M1-17 재리뷰). 뒤에 부상 소식 말('부상을 당해'·'부상 이탈'·'부상으로')이 오면 다친 것이다('태클로 부상을 당했다')
-  exclude: { ko: ["급부상"] },
+  exclude: {
+    ko: ["급부상"],
+    // 무릎 꿇기(인종차별 반대 의식 — 'Guehi among players not to take knee' M1-43 실데이터) · 확신·의심 표현 · 각오('out for revenge') ·
+    // 징계·전술·개인 사유 결장(M1-43 리뷰)
+    en: [
+      "take knee",
+      "take the knee",
+      "take a knee",
+      "takes the knee",
+      "takes a knee",
+      "taking the knee",
+      "taking a knee",
+      "took the knee",
+      "took a knee",
+      "taken the knee",
+      "without a doubt",
+      "beyond a doubt",
+      "shadow of a doubt",
+      "never a doubt",
+      "not a doubt",
+      "cast a doubt",
+      "casts a doubt",
+      "casting a doubt",
+      "out for revenge",
+      "out for blood",
+      "out for redemption",
+    ],
+    it: [
+      "fuori per scelta",
+      "fuori per squalifica",
+      "fuori per somma",
+      "fuori per turnover",
+      "fuori per mano",
+      "fuori per motivi",
+      "fuori per un soffio",
+      "fuori per lutto",
+    ],
+  },
   excludeKoRe: [
     /(?<=로)\s?부상(?!\s?(?:을|이|으로|당|이탈|교체|악화|우려|공백|결장|아웃|회복|복귀|재발|치료|여파|부위))/gu,
   ],
@@ -2104,6 +2302,26 @@ export const CLUB_TERMS: KeywordGroup = {
       "supporters",
       "academy",
       "job cuts",
+      // M1-43 실데이터 — 'Real demand Tebas resign'·'Turkish FA bans 147 officials'·'Ronaldo given 30-day suspension'·'Ex-Arsenal
+      // director of football Edu'·'Southampton technical director'·'Ferguson returns to management'·'Fernandes to stay captain'
+      "resign",
+      "bans",
+      "suspension",
+      "suspended",
+      "director of football",
+      "football director",
+      "technical director",
+      // 감독 일(구만 — 'game/load/squad/time management'는 아니다, M1-43 리뷰)
+      "returns to management",
+      "return to management",
+      "returned to management",
+      "returning to management",
+      "back into management",
+      "into management",
+      "management career",
+      "captaincy",
+      "stay captain",
+      "remain captain",
     ],
     it: [
       "allenatore",
@@ -2121,6 +2339,11 @@ export const CLUB_TERMS: KeywordGroup = {
       "multa",
       "tifosi",
       "dirigenza",
+      // 감독 신임(M1-43 실데이터 — 'Udinese, confermata la fiducia a Kosta Runjaic'·'Juventus, fiducia a Spalletti dopo il ko'). 'con
+      // fiducia'(자신 있게)는 아니다
+      "fiducia a",
+      "fiducia al",
+      "direttore sportivo",
     ],
     es: [
       "entrenador",
@@ -2168,6 +2391,17 @@ export const CLUB_TERMS: KeywordGroup = {
       "출전 정지",
       "선수단",
       "저격",
+    ],
+  },
+  // 경기 중단·형사 집행유예는 징계가 아니다('match suspended'·'suspension of play'·'suspended sentence' — M1-43 리뷰)
+  exclude: {
+    en: [
+      "match suspended",
+      "game suspended",
+      "play suspended",
+      "temporarily suspended",
+      "suspension of play",
+      "suspended sentence",
     ],
   },
 };

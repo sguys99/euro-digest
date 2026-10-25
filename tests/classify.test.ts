@@ -287,6 +287,371 @@ describe("textSignals·categoryOf — 언어별 카테고리 (FR-31)", () => {
   });
 });
 
+// ─── M1-43 첫 주간 품질 검수 — 실데이터(2026-10-17~24 발행분) 오분류 회귀 · '기타' 키워드 보강 ──────────────
+// D47 ① '불확실하면 기타'는 유지한다 — 뜻이 분명한 표현만 넣고(오탐보다 미탐), 같은 낱말의 다른 쓰임을 함께 고정한다.
+
+describe("M1-43 실데이터 — 오분류 회귀·'기타' 보강 (FR-21·FR-31, D47 ①)", () => {
+  const cat = (title: string, lang: string, comps: CompId[] = []) =>
+    categoryOf([{ s: textSignals(title, lang), teams: 0 }], comps);
+  const IF = "interfootball-world";
+  const DM = "di-marzio";
+
+  it("오분류 회귀 — 무릎 꿇기 의식('take knee')은 부상이 아니다, 'breaking down'은 결과가 아니다, 'a sign of'·중계권 입찰·'사전에 합의'·'영입생'은 이적이 아니다", () => {
+    expect(
+      cat(
+        "Guehi among players not to take knee - is it time to 'move campaign along'?",
+        "en",
+      ),
+    ).toBe(null);
+    const tactics = analyze(
+      "Breaking down Man Utd's tactics after Fernandes' criticism",
+    );
+    expect(tactics.cat).toBe("other");
+    expect(tactics.spoiler).toBe(false);
+    expect(
+      analyze(
+        "Dream night for Bournemouth - win over Milan a sign of Premier League power",
+      ).cat,
+    ).toBe("result");
+    expect(
+      cat("SPFL invites bids for new Scottish Premiership TV deal", "en"),
+    ).toBe(null);
+    expect(
+      cat(
+        "‘엘 클라시코’ 앞두고 4실점 패배에도 “전혀 영향 없다”는 바르셀로나 주장 하피냐, 이른 교체엔 “사전에 합의된 것”",
+        "ko",
+      ),
+    ).not.toBe("transfer");
+    expect(
+      cat(
+        "“그리즈만 이탈 후 창의적인 역할 맡았어”…이강인이 ATM 7번 후계자 맞다! “영입생이 선수단 수준 끌어올렸어”",
+        "ko",
+      ),
+    ).not.toBe("transfer");
+    // 진짜 이적 소식은 그대로 — 합의·무릎 수술·협상 결렬
+    expect(cat("토트넘, 이적료 합의…메디컬 앞둬", "ko")).toBe("transfer");
+    expect(cat("Wolves striker Jimenez to have knee surgery", "en")).toBe(
+      "injury",
+    );
+    expect(
+      analyze("Talks break down over Arsenal move for striker").cat,
+    ).not.toBe("result");
+  });
+
+  it("이적 보강 — 친정 '리턴설'·'done deals'", () => {
+    expect(
+      cat(
+        "‘나 다시 돌아갈래!’ 아놀드, 리버풀 리턴설?...출전시간 불만 폭발→리버풀 등 4개 구단 ‘예의 주시’",
+        "ko",
+      ),
+    ).toBe("transfer");
+    expect(cat("All done deals in September & October 2026", "en")).toBe(
+      "transfer",
+    );
+  });
+
+  it("부상 보강 — 타박상·통증·줄부상·시즌 아웃·감염·구급차 / taken to hospital·could be out for·a doubt / fuori per·coscia — 다른 쓰임('타박당한'·'without a doubt'·'out for revenge'·'fuori per scelta')은 아니다", () => {
+    expect(
+      cat(
+        "[속보] 이강인 UCL 결장 이유 밝혀졌다! 허벅지 타박상에 출전 불발…“예방 차원에서 워밍업조차 하지 않았다”",
+        "ko",
+        ["UCL"],
+      ),
+    ).toBe("injury");
+    // '감독'(감독·구단)보다 부상이 앞이다(스코어 없음)
+    expect(
+      cat(
+        "'떠난 이강인도 걱정할 정도인데’…PSG 핵심 선수 3명 줄부상에 엔리케 감독 근심 폭발 “오늘 경기에서 가장 나쁜 일”",
+        "ko",
+      ),
+    ).toBe("injury");
+    expect(
+      analyze(
+        "‘PSG 초비상!’ 막강 화력 바르셀로나 잡았지만...핵심 4명 이탈→‘흐비차 ‘시즌 아웃 가능성’ UCL 3연패 도전 먹구름",
+        IF,
+      ).cat,
+    ).toBe("injury");
+    expect(
+      cat(
+        "[오피셜] 이럴수가! ‘김민재 스승’ 콤파니, 훈련 참관 중 쓰러져 구급차 이송… 뮌헨은 “건강이 최우선”",
+        "ko",
+      ),
+    ).toBe("injury");
+    expect(
+      cat(
+        "‘이강인처럼!’ 시메오네, 허벅지 통증 털고 훈련 복귀한 LEE에 반색… “다쳐도 빠르게 돌아와야”",
+        "ko",
+      ),
+    ).toBe("injury");
+    expect(
+      cat(
+        "‘옛날이랑 달라!’ 선수 시절 대표 유리몸이였는데...‘김민재 스승’ 콤파니, 바이러스 감염→복귀 유력",
+        "ko",
+      ),
+    ).toBe("injury");
+    expect(
+      cat(
+        "Chelsea's Martinez taken to hospital for 'precautionary tests'",
+        "en",
+      ),
+    ).toBe("injury");
+    expect(cat("Arsenal fear Saka could be out for two months", "en")).toBe(
+      "injury",
+    );
+    expect(
+      cat("Haaland a doubt, Semenyo out - what are Man City's options?", "en"),
+    ).toBe("injury");
+    expect(cat("Atalanta, Giacomo Raspadori fuori per 20 giorni", "it")).toBe(
+      "injury",
+    );
+    expect(
+      cat(
+        "Problemi alla coscia per Dembele: al suo posto entra Ferran Torres",
+        "it",
+      ),
+    ).toBe("injury");
+    // 다른 쓰임 — 부상이 아니다
+    expect(cat("감독에게 타박당한 수비수, 다음 경기 선발", "ko")).not.toBe(
+      "injury",
+    );
+    expect(
+      cat("Saka is without a doubt Arsenal's most important player", "en"),
+    ).toBe(null);
+    expect(cat("Rashford out for revenge against his old club", "en")).toBe(
+      null,
+    );
+    expect(cat("Inter, Barella fuori per scelta tecnica", "it")).toBe(null);
+  });
+
+  it("감독·구단 보강 — resign·bans·suspension·director of football·technical director·management·captaincy / fiducia a — 'con fiducia'·감독 인용 제목은 기타 그대로", () => {
+    expect(cat("Real demand Tebas resign over Goebbels comparison", "en")).toBe(
+      "club",
+    );
+    expect(
+      cat("Turkish FA bans 147 officials for breaching betting rules", "en"),
+    ).toBe("club");
+    expect(
+      cat("Ex-Arsenal director of football Edu to advise Northampton", "en"),
+    ).toBe("club");
+    expect(
+      cat(
+        "Spygate put me in difficult position - Southampton technical director",
+        "en",
+      ),
+    ).toBe("club");
+    expect(
+      cat(
+        "Everton legend Ferguson returns to management in Irish League",
+        "en",
+      ),
+    ).toBe("club");
+    expect(
+      cat(
+        "Fernandes to stay captain as Rooney calls Man Utd players babies",
+        "en",
+      ),
+    ).toBe("club");
+    expect(
+      cat("Udinese, confermata la fiducia a Kosta Runjaic: le ultime", "it"),
+    ).toBe("club");
+    expect(
+      cat("Juventus, fiducia a Spalletti dopo il ko contro la Lazio", "it"),
+    ).toBe("club");
+    // 대표팀 징계는 대표팀이 앞선다(기존 판정 유지)
+    expect(
+      cat("Ronaldo suspended by Portugal as disciplinary case opens", "en"),
+    ).toBe("national");
+    // 'con fiducia'(자신 있게)·감독 인용 제목은 키워드로 정하지 않는다(D47 ① — 기타)
+    expect(
+      cat(
+        'Roma, Gasperini: "Queste prestazioni ci permettono di andare avanti con fiducia"',
+        "it",
+      ),
+    ).toBe(null);
+    expect(
+      cat(
+        'Napoli, Allegri: "Non possiamo prendere gol con questa facilità"',
+        "it",
+      ),
+    ).toBe(null);
+  });
+
+  it("결과 보강 — come out on top·held at home·humbled by·nets double·double helps / ribaltano·regala tre punti / 연속 무승·결승골(주어 필요) — 경기 전 기사·주어 없는 제목은 아니다", () => {
+    expect(
+      cat("PSG come out on top in six-goal thriller against Barcelona", "en"),
+    ).toBe("result");
+    for (const title of [
+      "Arsenal held at home by Birmingham",
+      "Man Utd humbled by four-goal Como to pile pressure on Carrick",
+      "Haaland nets double as Man City go six points clear at the top",
+      "Guirassy double helps Dortmund past Sabah",
+    ]) {
+      const a = analyze(title);
+      expect(a.cat, title).toBe("result");
+      expect(a.spoiler, title).toBe(true);
+    }
+    expect(
+      analyze(
+        "Inter, la panchina fa la differenza: i cambi di Chivu ribaltano il Bologna",
+        DM,
+      ).cat,
+    ).toBe("result");
+    expect(
+      analyze("Simeone rompe il digiuno e regala tre punti al Torino", DM).cat,
+    ).toBe("result");
+    expect(
+      analyze(
+        "“변명의 여지가 없다”…맨유, 7경기 연속 무승→캐릭은 “실망스럽다는 말로 부족해, 모두가 책임져야 해”",
+        IF,
+      ).cat,
+    ).toBe("result");
+    expect(
+      analyze(
+        "잉글랜드 대표팀 탈락하더니 제대로 각성했다! 마두에케, 아스널 구한 극장 결승골…아르테타 “다른 수준의 분노 보여주고 있다”",
+        IF,
+      ).cat,
+    ).toBe("result");
+    // 아니다 — '(torna) alla ribalta'(주목받다)·경기 전 기사('노린다')·주어 없는 결승골
+    expect(analyze("Torino, torna alla ribalta Ilic", DM).cat).not.toBe(
+      "result",
+    );
+    expect(analyze("맨유, 7경기 연속 무승 탈출 노린다", IF).cat).not.toBe(
+      "result",
+    );
+    expect(analyze("이강인, 마요르카전 결승골 노린다", IF).cat).not.toBe(
+      "result",
+    );
+    expect(analyze("결승골 터뜨린 무명 공격수의 사연", IF).cat).not.toBe(
+      "result",
+    );
+  });
+
+  it("리뷰 회귀 — 결과 숙어 'break down'·협상 결렬 구, 각오('out for revenge'), 흔한 낱말(management·suspended·done deal·a doubt·fuori per·humbled by·ribalta), 좁힌 제외('사전 합의'·'invite bids'), 무릎 꿇기 변형", () => {
+    // 'break down'은 결과 숙어 — 결과·spoiler(맨 'break down' 제외가 지웠던 회귀)
+    const burnley = analyze("Arsenal finally break down stubborn Burnley");
+    expect(burnley.cat).toBe("result");
+    expect(burnley.spoiler).toBe(true);
+    // 협상 결렬 구는 결과가 아니다
+    expect(
+      analyze("Talks break down over Arsenal move for striker").cat,
+    ).not.toBe("result");
+    expect(
+      analyze("Chelsea talks broke down over fee for winger").cat,
+    ).not.toBe("result");
+    // 각오 — 부상이 아니다(조동사 꼴 'will be out for'보다 제외가 먼저)
+    for (const title of [
+      "Rashford will be out for revenge against Man Utd",
+      "Spurs out for blood after derby defeat",
+      "Sterling out for redemption at Chelsea",
+    ]) {
+      expect(analyze(title).cat, title).not.toBe("injury");
+    }
+    // management — 감독 일 구만 감독·구단
+    for (const title of [
+      "Arsenal's load management of Saka explained",
+      "Liverpool squad management under scrutiny",
+      "Why time management cost Spurs",
+    ]) {
+      expect(analyze(title).cat, title).not.toBe("club");
+    }
+    expect(
+      cat(
+        "Everton legend Ferguson returns to management in Irish League",
+        "en",
+      ),
+    ).toBe("club");
+    // suspended·suspension — 경기 중단·집행유예는 징계가 아니다
+    for (const title of [
+      "Match suspended after fan medical emergency at Everton",
+      "Play suspended at Spurs after floodlight failure",
+      "Liverpool v Arsenal temporarily suspended due to fog",
+      "Former Chelsea player given suspended sentence",
+      "Suspension of play as storm hits Anfield",
+    ]) {
+      expect(analyze(title).cat, title).not.toBe("club");
+    }
+    expect(
+      cat(
+        "Ronaldo given 30-day suspension and £215 fine by Portuguese FA",
+        "en",
+      ),
+    ).toBe("club");
+    // done deal 부정형
+    expect(cat("Isak to Liverpool far from a done deal", "en")).not.toBe(
+      "transfer",
+    );
+    expect(cat("Saliba move is not a done deal yet", "en")).not.toBe(
+      "transfer",
+    );
+    // a doubt — 의심·확신 표현
+    expect(
+      cat("There was never a doubt about Saka's quality - Arteta", "en"),
+    ).toBe(null);
+    expect(cat("Arteta casts a doubt over title race", "en")).toBe(null);
+    expect(cat("Not a doubt in my mind - Slot", "en")).toBe(null);
+    // fuori per — 핸드볼·개인 사유·간발·애도
+    for (const title of [
+      "Napoli, Lukaku fuori per motivi familiari",
+      "Juventus, Vlahovic fuori per un soffio dalla lista",
+      "Torino, Ricci fuori per lutto",
+      "Inter, gol annullato: fuori per mano di Bastoni",
+    ]) {
+      expect(analyze(title, DM).cat, title).not.toBe("injury");
+    }
+    // humbled by — 감사 표현은 결과가 아니다, 팀 이름이 오면 결과
+    expect(
+      analyze("Salah humbled by the support from Liverpool fans").cat,
+    ).not.toBe("result");
+    expect(analyze("Arsenal humbled by nomination for award").cat).not.toBe(
+      "result",
+    );
+    expect(
+      analyze("Man Utd humbled by four-goal Como to pile pressure on Carrick")
+        .cat,
+    ).toBe("result");
+    // ribalta — 판결·결정 뒤집기는 결과가 아니다
+    expect(
+      analyze("Juventus, il Tar ribalta la sentenza sulla penalizzazione", DM)
+        .cat,
+    ).not.toBe("result");
+    expect(
+      analyze("Lazio, la Corte d'Appello ribalta la decisione", DM).cat,
+    ).not.toBe("result");
+    expect(analyze("Lazio, la Corte ribalta il verdetto", DM).cat).not.toBe(
+      "result",
+    );
+    // 좁힌 제외 — 보스만 사전 합의·선수 입찰 받기는 이적 그대로
+    expect(cat("토트넘, 보스만 사전 합의 마쳐…내년 여름 합류", "ko")).toBe(
+      "transfer",
+    );
+    expect(cat("Man Utd invite bids for Rashford", "en")).toBe("transfer");
+    expect(
+      cat("SPFL invites bids for new Scottish Premiership TV deal", "en"),
+    ).toBe(null);
+    // 무릎 꿇기 변형
+    expect(cat("Players took a knee before Arsenal v Chelsea", "en")).not.toBe(
+      "injury",
+    );
+    expect(cat("Every player takes a knee at Wembley", "en")).not.toBe(
+      "injury",
+    );
+    // 붙여 쓴 '시즌아웃'도 '시즌 아웃' 한 표현으로 맞는다
+    expect(cat("‘PSG 초비상!’ 흐비차 ‘시즌아웃 가능성’", "ko")).toBe("injury");
+  });
+
+  it("경기 전 기사 — 카테고리는 결과가 아니고 spoiler는 보수적으로 true(승패·경기 사건 표현이 원제목에 있다 — FR-21)", () => {
+    for (const [title, source] of [
+      ["Arsenal can come out on top against Man City", "bbc-sport-football"],
+      ["맨유, 7경기 연속 무승 탈출 노린다", IF],
+      ["이강인, 마요르카전 결승골 노린다", IF],
+    ] as const) {
+      const a = analyze(title, source);
+      expect(a.cat, title).not.toBe("result");
+      expect(a.spoiler, title).toBe(true);
+    }
+  });
+});
+
 // ─── 클러스터 분석 ─────────────────────────────────────────────────────────
 
 describe("analyzeItems — 대회·팀·kr·spoiler", () => {
