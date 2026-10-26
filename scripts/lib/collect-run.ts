@@ -3469,7 +3469,7 @@ async function runBriefStage(
   if (inputMatches === 0) {
     // 종료 경기가 없으면 LLM을 부르지 않는다(D24) — 게시는 empty. 창 안에 결과를 기다리는 경기가 있으면(보충 뒤에도) 이유를
     // results-pending으로 남긴다(D60 — 화면이 "끝난 경기가 없었습니다"를 쓰지 않게, 같은 날 다시 도는 실행이 덮을 수 있게 — 12시간
-    // 가드(collect-guard.ts 판단 순서 6a)가 이 파일을 보고 그 성공을 세지 않아 백업 실행이 한 번 다시 수집한다, 그 뒤엔 수동 force)
+    // 가드(collect-guard.ts 판단 순서 6a)가 이 파일을 보고 그 성공을 세지 않아 다음 트리거(백업 또는 force 없는 수동 실행)가 한 번 다시 수집한다, 그 뒤엔 수동 force)
     if (emptyReason === "results-pending") {
       log.warn("summarize.brief.skip", {
         reason: "results-pending",

@@ -13,6 +13,8 @@ import {
   zonedToUtcIso,
 } from "../../src/lib/time";
 
+import { basePath } from "./support/site";
+
 // 상태 화면 e2e (M1-37 — PRD DR-07, DESIGN §9.3 상태 화면 ③ 발행 지연 안내 · ④ 오프라인 띠) — 일반 빌드(out/)의 실제 최신 호.
 // 지연 판정은 가짜 시계(page.clock — Date만 고정)로 본다: 최신 호 다음 날의 계절별 공개 목표(07:00/07:30) + 15분 경계를 data/에서 계산한다
 // (실데이터는 날마다 바뀐다 — 하드코딩하지 않는다). 오프라인은 context.setOffline(브라우저 online·offline 이벤트).
@@ -50,6 +52,15 @@ async function trackCls(page: Page): Promise<void> {
 const cls = (page: Page) =>
   page.evaluate(() => (window as unknown as { __cls: number }).__cls);
 
+/**
+ * 웹폰트 요청을 막는다(abort) — 폴백 글꼴로만 그려 폰트 교체 이동 없이 지연 안내 자체의 레이아웃 이동만 잰다. 한글 폴백 글꼴이 없는
+ * CI 러너에서는 웹폰트가 늦게 도착하며 바뀌는 이동(0.166 — run 40200106751)이 CLS에 섞여 타이밍에 따라 흔들렸다. 폰트 교체 이동은
+ * fonts.spec.ts가 따로 본다.
+ */
+async function blockWebFonts(page: Page): Promise<void> {
+  await page.route(`**${basePath}/fonts/**`, (route) => route.abort());
+}
+
 async function openAt(page: Page, url: string, at: Date): Promise<void> {
   await page.clock.setFixedTime(at);
   await page.goto(url);
@@ -65,6 +76,8 @@ test.describe("발행 지연 안내(DESIGN §9.3 ③ — 오늘 공개 목표 + 
     test(`${url} — 목표 + 15분 경계 전 숨김 · 경계부터 보임(문구 = 최신 호 날짜·호수) · 첫 로드 CLS ≤ 0.05`, async ({
       page,
     }) => {
+      // 첫 탐색부터 막는다 — 앞 탐색이 받은 폰트가 캐시에서 늦게 적용되는 경우도 없게
+      await blockWebFonts(page);
       await openAt(page, url, new Date(LATE_FROM - 1000));
       await expect(notice(page)).toBeHidden();
       await expect(page.locator("html")).not.toHaveAttribute("data-issue-late");
@@ -90,7 +103,7 @@ test.describe("발행 지연 안내(DESIGN §9.3 ③ — 오늘 공개 목표 + 
         };
       });
       expect(first).toEqual({ role: "status", first: true });
-      // 인라인 스크립트가 첫 페인트 전에 정한다 — 상자가 들어오며 지면을 밀지 않는다
+      // 인라인 스크립트가 첫 페인트 전에 정한다 — 상자가 들어오며 지면을 밀지 않는다(웹폰트는 막았다 — 폰트 교체 이동 제외)
       await page.waitForTimeout(300);
       expect(await cls(page)).toBeLessThanOrEqual(0.05);
     });
