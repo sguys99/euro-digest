@@ -1,123 +1,6 @@
 {
-  "updatedAt": "2026-10-25T13:13:55.834Z",
+  "updatedAt": "2026-10-27T01:33:40.501Z",
   "fixtures": [
-    {
-      "id": 1550161,
-      "comp": "SERIEA",
-      "leagueId": 135,
-      "kickoff": "2026-10-25T11:30:00.000Z",
-      "status": "2H",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1570424,
-      "comp": "LALIGA",
-      "leagueId": 140,
-      "kickoff": "2026-10-25T13:00:00.000Z",
-      "status": "1H",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1550157,
-      "comp": "SERIEA",
-      "leagueId": 135,
-      "kickoff": "2026-10-25T14:00:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1550160,
-      "comp": "SERIEA",
-      "leagueId": 135,
-      "kickoff": "2026-10-25T14:00:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1552797,
-      "comp": "LIGUE1",
-      "leagueId": 61,
-      "kickoff": "2026-10-25T14:00:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1557441,
-      "comp": "EPL",
-      "leagueId": 39,
-      "kickoff": "2026-10-25T14:00:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1557442,
-      "comp": "EPL",
-      "leagueId": 39,
-      "kickoff": "2026-10-25T14:00:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1557444,
-      "comp": "EPL",
-      "leagueId": 39,
-      "kickoff": "2026-10-25T14:00:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1557445,
-      "comp": "EPL",
-      "leagueId": 39,
-      "kickoff": "2026-10-25T14:00:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1575197,
-      "comp": "BUNDESLIGA",
-      "leagueId": 78,
-      "kickoff": "2026-10-25T14:30:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1570427,
-      "comp": "LALIGA",
-      "leagueId": 140,
-      "kickoff": "2026-10-25T15:15:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1552792,
-      "comp": "LIGUE1",
-      "leagueId": 61,
-      "kickoff": "2026-10-25T16:15:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1552793,
-      "comp": "LIGUE1",
-      "leagueId": 61,
-      "kickoff": "2026-10-25T16:15:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
     {
       "id": 1552796,
       "comp": "LIGUE1",
@@ -125,78 +8,69 @@
       "kickoff": "2026-10-25T16:15:00.000Z",
       "status": "NS",
       "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
+      "requeries": 1
     },
     {
-      "id": 1552798,
-      "comp": "LIGUE1",
-      "leagueId": 61,
-      "kickoff": "2026-10-25T16:15:00.000Z",
+      "id": 1638560,
+      "comp": null,
+      "leagueId": 81,
+      "kickoff": "2026-10-27T17:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
+      "firstSeen": "2026-10-27T01:30:59.465Z",
       "requeries": 0
     },
     {
-      "id": 1552799,
-      "comp": "LIGUE1",
-      "leagueId": 61,
-      "kickoff": "2026-10-25T16:15:00.000Z",
+      "id": 1638565,
+      "comp": null,
+      "leagueId": 81,
+      "kickoff": "2026-10-27T17:00:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
+      "firstSeen": "2026-10-27T01:30:59.465Z",
       "requeries": 0
     },
     {
-      "id": 1557446,
-      "comp": "EPL",
-      "leagueId": 39,
-      "kickoff": "2026-10-25T16:30:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1575198,
-      "comp": "BUNDESLIGA",
-      "leagueId": 78,
-      "kickoff": "2026-10-25T16:30:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1550163,
+      "id": 1550174,
       "comp": "SERIEA",
       "leagueId": 135,
-      "kickoff": "2026-10-25T17:00:00.000Z",
+      "kickoff": "2026-10-27T17:30:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
+      "firstSeen": "2026-10-27T01:30:59.465Z",
       "requeries": 0
     },
     {
-      "id": 1570430,
-      "comp": "LALIGA",
-      "leagueId": 140,
-      "kickoff": "2026-10-25T17:30:00.000Z",
-      "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 0
-    },
-    {
-      "id": 1550166,
+      "id": 1550168,
       "comp": "SERIEA",
       "leagueId": 135,
-      "kickoff": "2026-10-25T19:45:00.000Z",
+      "kickoff": "2026-10-27T19:45:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
+      "firstSeen": "2026-10-27T01:30:59.465Z",
       "requeries": 0
     },
     {
-      "id": 1570426,
-      "comp": "LALIGA",
-      "leagueId": 140,
-      "kickoff": "2026-10-25T20:00:00.000Z",
+      "id": 1550175,
+      "comp": "SERIEA",
+      "leagueId": 135,
+      "kickoff": "2026-10-27T19:45:00.000Z",
       "status": "NS",
-      "firstSeen": "2026-10-25T12:07:18.676Z",
+      "firstSeen": "2026-10-27T01:30:59.465Z",
+      "requeries": 0
+    },
+    {
+      "id": 1638559,
+      "comp": null,
+      "leagueId": 81,
+      "kickoff": "2026-10-27T19:45:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-27T01:30:59.465Z",
+      "requeries": 0
+    },
+    {
+      "id": 1638563,
+      "comp": null,
+      "leagueId": 81,
+      "kickoff": "2026-10-27T19:45:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-27T01:30:59.465Z",
       "requeries": 0
     }
   ]

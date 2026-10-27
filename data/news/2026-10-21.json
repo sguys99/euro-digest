@@ -1,7 +1,7 @@
 {
   "date": "2026-10-21",
-  "generatedAt": "2026-10-21T00:08:25.112Z",
-  "runId": "collect-prod-20261021T000818Z-5933",
+  "generatedAt": "2026-10-27T01:30:51.950Z",
+  "runId": "collect-prod-20261027T013051Z-a2cd",
   "cards": [
     {
       "id": "c_cca24eda35",
@@ -660,31 +660,6 @@
       "created": "2026-10-21T00:08:18.672Z"
     },
     {
-      "id": "c_edb30fe19d",
-      "t": "Premier League front-of-shirt gambling sponsor ban 'barely scratched the surface', study finds",
-      "s": [],
-      "cat": "club",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7708262/2026/10/20/premier-league-gambling-sponsors-study/",
-          "at": "2026-10-20T23:01:09.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-21T00:08:18.672Z"
-    },
-    {
       "id": "c_f5a00865ce",
       "t": "‘멀티골 폭발’ 맥 알리스터, 지난 시즌 리버풀 내부 문제 고백…“무언가 제대로 돌아가지 않았지만 지금 감독이 바꿨다”",
       "s": [],
@@ -796,32 +771,6 @@
       "created": "2026-10-21T00:08:18.672Z"
     },
     {
-      "id": "c_7d8ed5f674",
-      "t": "PSG 4 Barcelona 2: Yamal and Vitinha wondergoals, Ballon d'Or stardust and the performance of champions",
-      "s": [],
-      "cat": "result",
-      "comp": [],
-      "teams": [
-        "paris-saint-germain",
-        "barcelona"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7704354/2026/10/20/psg-4-barcelona-2-champions-league-ballon-dor-analysis/",
-          "at": "2026-10-20T21:11:23.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-21T00:08:18.672Z"
-    },
-    {
       "id": "c_bd7069ef91",
       "t": "Como, domani la decisione Uefa sull'inserimento di Caqueret nella lista: presentata tutta la documentazione",
       "s": [],
@@ -922,61 +871,6 @@
         }
       ],
       "lang": "it",
-      "ai": false,
-      "created": "2026-10-21T00:08:18.672Z"
-    },
-    {
-      "id": "c_1efc19bfd2",
-      "t": "De Jong at centre-back? Hansi Flick's options for Barcelona's injury-hit defence",
-      "s": [],
-      "cat": "injury",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7707216/2026/10/20/barcelona-psg-champions-league-clasico-defence/",
-          "at": "2026-10-20T11:49:58.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-21T00:08:18.672Z"
-    },
-    {
-      "id": "c_59eda21c29",
-      "t": "Real Madrid want six Premier League clubs to pay their share of costs of failed Super League",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL",
-        "LALIGA"
-      ],
-      "teams": [
-        "real-madrid"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7704272/2026/10/20/super-league-costs-real-madrid/",
-          "at": "2026-10-20T11:14:12.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-10-21T00:08:18.672Z"
     },
@@ -1241,33 +1135,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cm93z0x939leo?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-20T10:44:11.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-21T00:08:18.672Z"
-    },
-    {
-      "id": "c_c63f5139ab",
-      "t": "Erik ten Hag interview: Man United's broken 'promises', wanting Kane, Ronaldo tension, FA Cup glory",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7701054/2026/10/20/ten-hag-ronaldo-man-utd/",
-          "at": "2026-10-20T06:45:03.000Z",
           "tier": 2
         }
       ],

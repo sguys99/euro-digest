@@ -1,7 +1,7 @@
 {
   "date": "2026-10-22",
-  "generatedAt": "2026-10-22T00:12:41.348Z",
-  "runId": "collect-prod-20261022T001235Z-4d9e",
+  "generatedAt": "2026-10-27T01:30:51.953Z",
+  "runId": "collect-prod-20261027T013051Z-a2cd",
   "cards": [
     {
       "id": "c_2f40041523",
@@ -22,12 +22,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/videos/cm74p9jd5zkko?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-21T21:01:03.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7709191/2026/10/21/paris-saint-germain-barcelona-champions-league/",
-          "at": "2026-10-21T05:16:58.000Z",
           "tier": 2
         }
       ],

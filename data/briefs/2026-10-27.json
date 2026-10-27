@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-27",
+  "generatedAt": "2026-10-27T01:31:23.530Z",
+  "runId": "collect-prod-20261027T013051Z-a2cd",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "파리 생제르맹이 리옹을 2-0으로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m559648"
+      ],
+      "comps": [
+        "LIGUE1"
+      ]
+    },
+    {
+      "text": "세비야가 오사수나를 2-0으로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m564721"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "세비야의 Isaac Romero가 24분 선제골을 넣었다.",
+      "ai": true,
+      "refs": [
+        "m564721"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "파리 생제르맹이 승점 17로 리그 1 선두다.",
+      "ai": true,
+      "refs": [
+        "m559648",
+        "sL1"
+      ],
+      "comps": [
+        "LIGUE1"
+      ]
+    },
+    {
+      "text": "바르셀로나는 승점 27로 라리가 선두다.",
+      "ai": true,
+      "refs": [
+        "sLL"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    }
+  ]
+}
