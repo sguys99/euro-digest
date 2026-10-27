@@ -1,0 +1,1170 @@
+{
+  "date": "2026-10-28",
+  "generatedAt": "2026-10-27T22:11:11.161Z",
+  "runId": "collect-prod-20261027T221105Z-cba2",
+  "cards": [
+    {
+      "id": "c_6609cba790",
+      "t": "Liverpool keen on Stuttgart defender Jeltsch - Wednesday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "liverpool",
+        "vfb-stuttgart"
+      ],
+      "players": [],
+      "imp": 5,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck7vpjqyd4pmo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T21:10:47.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_2c44f326f9",
+      "t": "Barcelona fined £503 over approach for Alvarez",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmpwg0lqxkd4o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T21:38:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_c8fd4e9080",
+      "t": "Carrick stays at Man Utd & Kane wins Ballon d’Or",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sounds/play/p0pjy46g?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T20:46:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/crlykgeqzypyo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T12:10:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_709279a422",
+      "t": "Fleetwood-Arsenal halted for eight minutes because of drone",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmqlngxw6lv3o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T20:26:31.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_7517a03252",
+      "t": "이강인은 이미 알고 있었다…PSG 떠난 뒤 엔리케 감독 입에서 나온 씁쓸한 현실 “이 팀에서 항상 뛰는 것은 어렵다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA",
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697278",
+          "at": "2026-10-27T19:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_74e5be28bd",
+      "t": "Man Utd stick with Carrick - inside a turbulent 48 hours at Old Trafford",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwz0vgj35k7mo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T18:56:36.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_6ceab707f0",
+      "t": "Milan derby to be shown live on BBC Two",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/crvg93zvgjzzo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T16:38:17.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_a163085d3c",
+      "t": "Man City players can block out 'noise' of away fans - Maresca",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6jrwqd7jl3yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T15:27:27.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_4e35c86b1f",
+      "t": "‘이강인 떠났어도 여전히 우리 선수!’ PSG, 2년 연속 올해의 클럽 선정→이강인 잊지 않았다…공식 게시물에 깜짝 등장",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA",
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697271",
+          "at": "2026-10-27T12:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_7b702c7adb",
+      "t": "Fleetwood-Arsenal, un drone sorvola il campo: gara prima sospesa poi ripresa, la ricostruzione",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/fleetwood-arsenal-sospesa-drone-news-498818",
+          "at": "2026-10-27T20:36:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_8178b7c9ac",
+      "t": "How Kane's Ballon d'Or win could boost the Bundesliga",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/crgqwge88z84o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T14:24:23.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_b9e0a4c769",
+      "t": "‘韓 국가대표 공격수’ 황희찬, 11월 명단 발표 앞두고 주전 입지 굳히기 나선다…2경기 연속 선발 전망→감독도 “골이라는 보상 받을 것”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697274",
+          "at": "2026-10-27T13:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_826b263c5d",
+      "t": "Un tempo al buio, poi la luce: Nico Paz illumina la rimonta del Como a Torino",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "como-1907"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/interviste-e-storie/nico-paz-torino-como-serie-a-news-498825",
+          "at": "2026-10-27T21:45:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_23457cee71",
+      "t": "Trepy torna in campo dopo il coma: subentrato nel finale di Roma-Cagliari",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "as-roma",
+        "cagliari-calcio"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/trepy-torna-roma-cagliari-498824",
+          "at": "2026-10-27T21:35:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_d6f582726d",
+      "t": "Il cinismo di Bonazzoli, la prima volta di Nasti e la risposta in inferiorità: così la Cremonese ha espugnato Mantova",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/interviste-e-storie/cremonese-mantova-bonazzoli-nasti-serie-b-2026-2027-498823",
+          "at": "2026-10-27T21:21:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_0646a84ce5",
+      "t": "“믿기 어려울 정도로 우연” 발롱도르 조작설 등장…前 레알 선수 “오랫동안 이 상에 대해 생각했어”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697282",
+          "at": "2026-10-27T21:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_273825fed7",
+      "t": "Il Modena corre ancora: a Vicenza la decide Ambrosino nel finale",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/interviste-e-storie/modena-vicenza-vittoria-news-498822",
+          "at": "2026-10-27T21:01:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_468ee74477",
+      "t": "Cristian esulta, Stiven causa l'autogol e viene espulso: la serata opposta dei fratelli Shpendi",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/cristian-stiven-shpendi-cesena-empoli-serie-b-news-27-ottobre-2026-498821",
+          "at": "2026-10-27T20:57:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_8d9f8d876a",
+      "t": "Mantova-Cremonese, espulso Barbieri: l'episodio",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/mantova-cremonese-barbieri-espulsione-serie-b-498819",
+          "at": "2026-10-27T20:45:11.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_3cb01a0941",
+      "t": "Entella-Avellino, annullato il gol di Di Maggio dopo OFR: cos'è successo",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/entella-avellino-gol-di-maggio-annullato-498817",
+          "at": "2026-10-27T20:36:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_1042ac6de4",
+      "t": "‘공신력 최강’ BBC 떴다! 캐릭 경질은 없다…“맨유 상황 반전시킬 기회 부여받을 거야” 전망",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697281",
+          "at": "2026-10-27T20:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_1370dd4cb4",
+      "t": "Lazio, Gattuso dopo il 2-6 al Sassuolo: \"Le mazzate non vanno dimenticate: c'è solo la strada del lavoro\"",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "ss-lazio",
+        "us-sassuolo-calcio"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/lazio-gattuso-intervista-sassuolo-498816",
+          "at": "2026-10-27T20:12:06.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/sassuolo-aquilani-lazio-intervista-news-498815",
+          "at": "2026-10-27T20:11:46.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_d81e40c1e4",
+      "t": "Ballon d'Or in London - the most chaotic ever?",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6y8lgg21l89o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T19:06:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_f4a8a5180c",
+      "t": "Wenger's 'daylight' offside trial unlikely to be extended",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwj342p373vzo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T17:21:26.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_55dc270076",
+      "t": "Where are Celtic & O'Neill a year after Rodgers exit?",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmj47zzy4778o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T17:15:11.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_46b7a5d497",
+      "t": "Ask the Ref: Is Arteta being unfairly targeted at Arsenal? Did Palmer deserve a straight red?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7729009/2026/10/27/mikel-arteta-technical-area-referee/",
+          "at": "2026-10-27T12:30:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_1096bda184",
+      "t": "Michael Carrick to be given more time to turn Manchester United form around",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7726768/2026/10/27/michael-carrick-stays-manchester-united/",
+          "at": "2026-10-27T12:06:24.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_74f526e9dc",
+      "t": "결국 中에 고개 숙였다! 음바페, 3개 국어로 사과…“중국 국민과 역사에 깊은 존경심 가지고 있어”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697283",
+          "at": "2026-10-27T21:45:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697272",
+          "at": "2026-10-27T12:34:48.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_6d0fdd9281",
+      "t": "‘모레노호 손흥민-오현규 투톱 기대감 더욱 커진다!’ 결승골 터뜨린 오현규의 자신감…“한 명으로도, 두 명의 스트라이커로도 뛸 수 있다”",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697279",
+          "at": "2026-10-27T17:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_ac56402ba5",
+      "t": "Captain Xhaka allowed to play for Switzerland again",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck3wvl2ygd77o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T17:00:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_ad38bebe7f",
+      "t": "When is the EFL Cup quarter-final draw?",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/clyegmmvr4vo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T16:55:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_bf073b6780",
+      "t": "‘韓 최고 유망주’ 박승수에게 찾아온 절호의 기회, 놓치지 않았다! 뉴캐슬 1군 감독·수뇌부 앞에서 환상골 작렬…“선덜랜드도 막는 데 어려움 겪었다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "sunderland"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697280",
+          "at": "2026-10-27T16:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_67f8e09878",
+      "t": "McInnes admits feeling 'guilt' over leaving Hearts for Rangers",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cjr4y51g6zvvo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T15:31:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_2cea3426b3",
+      "t": "FAW boss renews call for Infantino to step down",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cw054vdz9g7mo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T15:20:51.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_6ea4374d88",
+      "t": "RB Leipzig fan section sealed shut with concrete in stunt before German Cup tie",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "rb-leipzig"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7729456/2026/10/27/rb-leipzig-fans-german-cup/",
+          "at": "2026-10-27T15:16:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_d8aa1fe2a4",
+      "t": "How have 'best team north or south of border' last season lost six in a row?",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6lylnkzp772o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T15:12:57.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_ac02c07343",
+      "t": "‘韓 국가대표 유망주’ 양민혁, 감독에게 공개 저격 당하더니 보란 듯이 활약! 추가시간 PK 유도→“극적인 경기에서 존재감 발휘”",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697277",
+          "at": "2026-10-27T15:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_fb54c0b60a",
+      "t": "‘8경기 무승+하위권 추락’ 맨유, 최악의 부진에도 캐릭 감독 경질 보류…팬들 지지에 “작별 인사가 아니었다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697276",
+          "at": "2026-10-27T14:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_d436e8d7df",
+      "t": "[ACLE 리뷰] ‘시작은 완벽했지만 끝내 승리는 없었다!’ 전북, 모따 전반 2분 만에 선제골→이영재 천금 동점골에도 베이징과 2-2 무승부",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697275",
+          "at": "2026-10-27T14:17:10.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_64c2e44084",
+      "t": "Milne out for season as Hearts' injury woes continue",
+      "s": [],
+      "cat": "injury",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6gr8zzewz5ko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T13:58:04.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_44019b5073",
+      "t": "Chinese brands drop Mbappe as backlash grows over Mao joke",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/cv62yg0erp8zo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T13:25:54.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_533398d6f8",
+      "t": "‘이게 손흥민한테 할 짓인가!’ 심지어 자기 팀 팬에게 인종차별 당했다…“니하오” 반복 외침→“무례하고 인종차별적 공격”",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697273",
+          "at": "2026-10-27T13:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_8c11ee7d8e",
+      "t": "맨체스터 유나이티드 수뇌부, 일단 캐릭에게 목숨 더 줬다!… 31일 첼시전에도 지휘 맡기기로 결정",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313515",
+          "at": "2026-10-27T12:28:02.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_01b68f0918",
+      "t": "[오피셜] “中 팬들께 사과합니다”… ‘마오쩌둥 합성’ 음바페 논란에 라리가 회장까지 나섰다→ 재발 방지책도 예고",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313514",
+          "at": "2026-10-27T12:00:31.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    },
+    {
+      "id": "c_2ba70a3d68",
+      "t": "“손흥민, 약속했잖아!” 日 국가대표 레전드 요시다 마야, 서운함 토로…“한국 음식 먹으러 데려가 주지 않았다”",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697268",
+          "at": "2026-10-27T11:40:46.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-27T22:11:05.549Z"
+    }
+  ]
+}

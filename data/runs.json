@@ -1821,5 +1821,111 @@
       }
     ],
     "status": "success"
+  },
+  {
+    "runId": "collect-prod-20261027T221105Z-cba2",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-10-27T22:11:05.549Z",
+    "finishedAt": "2026-10-27T22:12:05.910Z",
+    "collected": 468,
+    "clusters": 45,
+    "summarized": 5,
+    "downgraded": 0,
+    "tokens": {
+      "in": 5487,
+      "out": 4324,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.002711,
+    "apiCalls": {
+      "footballData": 2,
+      "apiFootball": 10
+    },
+    "sources": [
+      {
+        "id": "bbc-sport-football",
+        "ok": true,
+        "items": 84,
+        "usable": 26
+      },
+      {
+        "id": "bbc-sport-premier-league",
+        "ok": true,
+        "items": 38,
+        "usable": 2
+      },
+      {
+        "id": "bbc-sport-champions-league",
+        "ok": true,
+        "items": 15,
+        "usable": 0
+      },
+      {
+        "id": "bbc-sport-european",
+        "ok": true,
+        "items": 26,
+        "usable": 3
+      },
+      {
+        "id": "the-athletic-football",
+        "ok": true,
+        "items": 100,
+        "usable": 5
+      },
+      {
+        "id": "daily-briefing",
+        "ok": true,
+        "items": 20,
+        "usable": 0
+      },
+      {
+        "id": "di-marzio",
+        "ok": true,
+        "items": 10,
+        "usable": 10
+      },
+      {
+        "id": "relevo",
+        "ok": true,
+        "items": 15,
+        "usable": 5
+      },
+      {
+        "id": "interfootball-world",
+        "ok": true,
+        "items": 20,
+        "usable": 13
+      },
+      {
+        "id": "interfootball-all",
+        "ok": true,
+        "items": 50,
+        "usable": 17
+      },
+      {
+        "id": "footballist-football",
+        "ok": true,
+        "items": 20,
+        "usable": 0
+      },
+      {
+        "id": "besteleven-world",
+        "ok": true,
+        "items": 20,
+        "usable": 2
+      },
+      {
+        "id": "besteleven-all",
+        "ok": true,
+        "items": 50,
+        "usable": 3
+      }
+    ],
+    "status": "success",
+    "brief": {
+      "requests": 1
+    }
   }
 ]

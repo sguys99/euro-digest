@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-28",
+  "generatedAt": "2026-10-27T22:11:52.177Z",
+  "runId": "collect-prod-20261027T221105Z-cba2",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "라치오가 사수올로를 6-2로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m558556"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "코모가 토리노 원정에서 3-1 역전승을 거뒀다.",
+      "ai": true,
+      "refs": [
+        "m558557"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "로마가 홈에서 칼리아리를 4-2로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m558555"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "라치오의 Tijjani Noslin이 멀티골을 기록했다.",
+      "ai": true,
+      "refs": [
+        "m558556"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "라치오가 승점 25로 세리에 A 선두다.",
+      "ai": true,
+      "refs": [
+        "sSA"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    }
+  ]
+}
