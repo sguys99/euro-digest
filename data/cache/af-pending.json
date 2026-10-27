@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-27T01:33:40.501Z",
+  "updatedAt": "2026-10-27T14:39:17.123Z",
   "fixtures": [
     {
       "id": 1552796,
@@ -8,7 +8,7 @@
       "kickoff": "2026-10-25T16:15:00.000Z",
       "status": "NS",
       "firstSeen": "2026-10-25T12:07:18.676Z",
-      "requeries": 1
+      "requeries": 2
     },
     {
       "id": 1638560,

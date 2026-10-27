@@ -1,7 +1,7 @@
 {
   "date": "2026-10-27",
-  "generatedAt": "2026-10-27T01:30:58.235Z",
-  "runId": "collect-prod-20261027T013051Z-a2cd",
+  "generatedAt": "2026-10-27T14:39:09.149Z",
+  "runId": "collect-prod-20261027T143902Z-7a87",
   "cards": [
     {
       "id": "c_896eec63e3",
@@ -96,6 +96,61 @@
       "created": "2026-10-27T01:30:51.881Z"
     },
     {
+      "id": "c_a16206808e",
+      "t": "Kane prematurely announced as Ballon d'Or winner - but he wasn't only one",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmly0g2y7q2zo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-26T23:35:27.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7728871/2026/10/27/ballon-dor-winner-harry-kane-analysis-bayern-england/",
+          "at": "2026-10-27T13:00:56.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cwg7xevnyrjpo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T08:53:55.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ckx2qdxgzzz7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-27T06:20:58.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7721009/2026/10/27/ballon-dor-harry-kane/",
+          "at": "2026-10-27T05:10:50.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmd93gqn8119o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-26T19:29:35.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T01:30:51.881Z"
+    },
+    {
       "id": "c_d11c6ba02a",
       "t": "\"토트넘 없었다면 지금의 나 없었다, 토트넘 팬들에 감사\"...발롱도르 받은 케인, 친정 향한 의리-애정 드러내",
       "s": [],
@@ -125,37 +180,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-10-27T01:30:51.881Z"
-    },
-    {
-      "id": "c_a16206808e",
-      "t": "Kane prematurely announced as Ballon d'Or winner - but he wasn't only one",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "BUNDESLIGA"
-      ],
-      "teams": [],
-      "players": [],
-      "imp": 3,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "BBC Sport",
-          "u": "https://www.bbc.co.uk/sport/football/articles/cmly0g2y7q2zo?at_medium=RSS&at_campaign=rss",
-          "at": "2026-10-26T23:35:27.000Z",
-          "tier": 2
-        },
-        {
-          "n": "BBC Sport",
-          "u": "https://www.bbc.co.uk/sport/football/videos/cmd93gqn8119o?at_medium=RSS&at_campaign=rss",
-          "at": "2026-10-26T19:29:35.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-10-27T01:30:51.881Z"
     },
@@ -392,6 +416,57 @@
       "created": "2026-10-27T01:30:51.881Z"
     },
     {
+      "id": "c_ead6d2d35c",
+      "t": "Harry Kane vince il suo primo Pallone d'Oro",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [
+        "harry-kane"
+      ],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/harry-kane-vince-pallone-oro-498783",
+          "at": "2026-10-26T22:50:35.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/interviste-e-storie/kane-livorno-trasferimento-storia-retroscena-498794",
+          "at": "2026-10-27T10:40:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/pallone-d-oro-classifica-live-498775",
+          "at": "2026-10-26T22:40:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/harry-kane-pallone-d-oro-bayern-monaco-498780",
+          "at": "2026-10-26T22:30:46.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/lista-premi-pallone-d-oro-2026-498784",
+          "at": "2026-10-26T22:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-10-27T01:30:51.881Z"
+    },
+    {
       "id": "c_9dc81e70e4",
       "t": "[속보] '손흥민 영혼의 파트너' 케인, 월드컵-UCL 우승 없이 순수 활약으로 2026 발롱도르 수상...英 선수로 25년 만에",
       "s": [],
@@ -409,6 +484,18 @@
           "n": "인터풋볼",
           "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697222",
           "at": "2026-10-26T23:15:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "풋볼리스트",
+          "u": "http://www.footballist.co.kr/news/articleView.html?idxno=216246",
+          "at": "2026-10-27T06:15:31.000Z",
+          "tier": 3
+        },
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313494",
+          "at": "2026-10-27T01:33:34.000Z",
           "tier": 3
         }
       ],
@@ -488,51 +575,6 @@
         }
       ],
       "lang": "en",
-      "ai": false,
-      "created": "2026-10-27T01:30:51.881Z"
-    },
-    {
-      "id": "c_ead6d2d35c",
-      "t": "Harry Kane vince il suo primo Pallone d'Oro",
-      "s": [],
-      "cat": "result",
-      "comp": [
-        "SERIEA"
-      ],
-      "teams": [],
-      "players": [
-        "harry-kane"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "Gianluca Di Marzio",
-          "u": "https://www.gianlucadimarzio.com/news-calcio/harry-kane-vince-pallone-oro-498783",
-          "at": "2026-10-26T22:50:35.000Z",
-          "tier": 2
-        },
-        {
-          "n": "Gianluca Di Marzio",
-          "u": "https://www.gianlucadimarzio.com/news-calcio/pallone-d-oro-classifica-live-498775",
-          "at": "2026-10-26T22:40:00.000Z",
-          "tier": 2
-        },
-        {
-          "n": "Gianluca Di Marzio",
-          "u": "https://www.gianlucadimarzio.com/news-calcio/harry-kane-pallone-d-oro-bayern-monaco-498780",
-          "at": "2026-10-26T22:30:46.000Z",
-          "tier": 2
-        },
-        {
-          "n": "Gianluca Di Marzio",
-          "u": "https://www.gianlucadimarzio.com/news-calcio/lista-premi-pallone-d-oro-2026-498784",
-          "at": "2026-10-26T22:00:00.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "it",
       "ai": false,
       "created": "2026-10-27T01:30:51.881Z"
     },
