@@ -1,0 +1,1368 @@
+<!doctype html>
+<!--
+  D1 시안 B — 「B 팀시트」
+  한 줄 설명: D0가 예고한 "팀시트" 은유 — 팀 화면은 포메이션 피치와 선발·교체 명단이 주인공, 순위는 사다리처럼 이어지는 2줄 카드 행(모바일·데스크톱 모두 카드, 1280은 두 단).
+  장점: 팀 화면 첫인상이 가장 강하다 — 키트 색 등번호 칸이 피치에 서고, 교체 명단의 한국 선수(김민재)까지 한 장에 보인다 / 순위 카드 2줄째에 폼·득실·변동이 늘 보여 375에서도 누르지 않고 비교할 수 있다(가로 스크롤 없음) / 카드 = 팀 화면 링크 하나라 상호작용이 단순하다(펼침·스크롤 상태 없음)
+  단점: 순위 카드가 행당 약 72px — 20팀이 375에서 약 1,410px로 가장 길고, 승·무·패·득실점 개별 숫자는 팀 화면에서만 보인다 / 피치가 라인업 데이터에 크게 기댄다 — 집계 경기가 적거나 포메이션이 갈리는 팀(우니온 베를린 1:1)은 히어로가 약해진다(최빈값 동률 규칙 필요) / 1280 두 단 사다리는 11위가 오른쪽 위로 올라가 위아래 순서를 한 번 끊는다
+  구현 난이도: 중상 — 사다리 카드(서버) + 1280 두 단 그리드 + 피치 방향 전환(375 세로 · 1024+ 가로, 같은 DOM에 CSS 변수 좌표) + 명단 ↔ 피치 하이라이트 섬. 라인업 집계(M1-48)·최빈값·동률 규칙이 화면 품질을 좌우
+  번들/폰트 영향: 폰트 변화 0 — 417.8KB 2패밀리 그대로. 새 섬 JS 추정 gzip 약 0.9KB(탭 약 0.6 · 하이라이트 약 0.3, 미니 탭 공용) → 초기 JS 약 145KB / 160KB. 시안 인라인 JS 실측 2,861B(gzip 1,299B, 테마·토스트 포함)
+  데이터: 순위 football-data 10.11 06:45 UTC · ▲▼ 10.10 대비(EPL·라리가만) · 라인업 API-Football 2경기(1575167·1575180) — 둘 다 4-2-3-1, 선수 표기는 names.ko.json 등록분만 한글 · 폼 = fixtures 결과만 · 구간 = competitions.json zones 실값 · 유럽 대항전 구간 자리 · 팀 컬러 임시(M2-05) · 기준 시각 10.11 (일) 15:46 KST
+  생성: scratchpad d1/gen.mjs (fixtures·configs를 읽어 정적 HTML로 출력). 외부 의존 0, 폰트는 ../fonts/ 상대 경로. LLM 호출 0.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>D1 시안 B · B 팀시트 · 유로 다이제스트</title>
+<script>(function(){var d=document.documentElement,t;try{t=localStorage.getItem('ed-theme')}catch(e){}if(t==='light'||t==='dark')d.setAttribute('data-theme',t)})();</script>
+<style>
+
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-400.ksx.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-800.ksx.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-SemiBold.latin.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+:root{
+  color-scheme:light;
+  --paper:#F3F0EA;--paper-2:#E8E4DB;--paper-3:#E1DFDC;
+  --ink:#14213D;--ink-2:#4A5670;--ink-3:#727886;--ink-disabled:#727886;--rule:#CFCFCE;--hatch:#DFDDDA;
+  --brand-accent:#B32F25;--brand-accent-text:#A92B22;--brand-accent-foreground:#F3F0EA;
+  --ticket:#14213D;--ticket-fg:#F3F0EA;--ticket-fg-2:#C2C2C4;
+  --colophon:#14213D;--colophon-fg:#F3F0EA;--colophon-fg-2:#C2C2C4;
+  --ring:#A92B22;
+  --competition-epl:#3D1E5C;--competition-laliga:#7F5300;--competition-seriea:#0A6390;
+  --competition-bundesliga:#A8122B;--competition-ligue1:#2A7035;--competition-ucl:#4A5263;
+  --competition-foreground:#F3F0EA;
+  --result-win:#1F6B45;--result-draw:#4A5670;--result-loss:#A92B22;--trend-up:#1F6B45;--trend-down:#A92B22;
+  --font-sans:"EuroDigest Sans",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --font-numeric:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-latin:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;
+  --radius:0px;--notch:10px;--perf:3.2px;
+  --shadow-print:4px 4px 0 var(--ink);--shadow-print-accent:4px 4px 0 var(--brand-accent);--shadow-none:none;
+  --duration-fast:150ms;--duration-base:200ms;--duration-slow:250ms;--ease:cubic-bezier(.2,.8,.2,1);
+  --gutter:40px;--tab-w:18px;--edge:16px;--col-contents:232px;--col-facing:296px;--container:1280px;
+  --text-wordmark:30px;--lh-wordmark:1.1;--text-h2:21px;--lh-h2:1.3;--text-brief:17px;--lh-brief:1.62;--text-card:16.5px;--lh-card:1.45;--text-tag:13px;--lh-tag:1.35;--text-stamp:11.5px;--lh-stamp:1.3;--text-meta:13px;--lh-meta:1.3;--text-rh:12.5px;--lh-rh:1;--num-issue:40px;--num-brief-no:40px;--num-score:30px;--num-card-no:14px;--num-meta:14.5px;
+}
+[data-theme="dark"]{color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}}
+@media (min-width:1024px){:root{--text-wordmark:52px;--text-h2:24px;--text-brief:19px;--lh-brief:1.6;--text-card:18px;--num-issue:88px;--num-brief-no:54px;--num-score:34px;--num-card-no:15px;--tab-w:22px;--gutter:64px}}
+
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:16px;line-height:1.55;word-break:keep-all;overflow-wrap:anywhere;font-synthesis:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;transition:background-color var(--duration-base) var(--ease),color var(--duration-base) var(--ease)}
+h1,h2,h3,h4,p,ul,ol,dl,dd,figure,table{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+table{border-collapse:collapse;border-spacing:0}
+th{font-weight:inherit;text-align:inherit}
+.n,time,.c{font-variant-numeric:tabular-nums lining-nums}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-80px;z-index:30;background:var(--ink);color:var(--paper);padding:12px 16px;font-weight:800;text-decoration:none;box-shadow:0 0 0 7px var(--paper)}
+.skip:focus{top:8px}
+.ic{display:block;flex:none}
+[lang="en"]{word-break:normal}
+.hit{position:relative}
+.hit::after{content:"";position:absolute;left:-6px;right:-6px;top:50%;height:44px;transform:translateY(-50%)}
+
+/* 시안 메타 띠 (문서용) */
+.meta{background:var(--paper-2);border-bottom:1px solid var(--rule);font-size:13px;line-height:1.55}
+.meta summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;max-width:1280px;margin:0 auto;padding:12px var(--edge);cursor:pointer;list-style:none;min-height:44px}
+.meta summary::-webkit-details-marker{display:none}
+.meta summary b{font-size:15px;font-weight:800}
+.meta__tag{font:600 12px/1 var(--font-numeric);letter-spacing:.12em;border:1px solid var(--ink-2);padding:4px 6px 3px;color:var(--ink-2)}
+.meta__one{color:var(--ink-2)}
+.meta__more{margin-left:auto;font-weight:800;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.meta__more::before{content:"펼치기"}
+.meta[open] .meta__more::before{content:"접기"}
+.meta__grid{display:grid;gap:12px 32px;max-width:1280px;margin:0 auto;padding:0 var(--edge) 16px}
+.meta .meta__h{font-size:12px;font-weight:800;margin:8px 0 2px;color:var(--ink)}
+.meta li{padding-left:12px;position:relative;color:var(--ink-2)}
+.meta li::before{content:"";position:absolute;left:0;top:.7em;width:5px;height:1px;background:var(--ink-2)}
+.meta p{color:var(--ink-2)}
+.axes{width:100%;font-size:12.5px}
+.axes th,.axes td{border-bottom:1px solid var(--rule);padding:5px 8px 5px 0;vertical-align:top;text-align:left}
+.axes thead th{font-weight:800;border-bottom:1px solid var(--ink);color:var(--ink)}
+.axes td{color:var(--ink-2)}
+.axes td.me{color:var(--ink);font-weight:800}
+@media (min-width:1024px){.meta summary{padding:12px 32px}.meta__grid{grid-template-columns:1fr 1fr 1fr;padding:0 32px 18px}.meta__grid>.span3{grid-column:1/-1}}
+@media (max-width:1023px){.meta:not([open]) .meta__one{display:none}}
+
+.divider{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;max-width:1280px;margin:0 auto;padding:10px var(--edge);font-size:12px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.divider b{font-weight:800;color:var(--ink)}
+.divider code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
+.divider--screen{border-top:3px double var(--ink);margin-top:64px;padding-top:14px}
+@media (min-width:1024px){.divider{padding:10px 32px}}
+@media (max-width:1023px){.divider__info{flex-basis:100%}}
+
+.shell{max-width:1280px;margin:0 auto;padding:12px var(--edge) 0}
+@media (min-width:1024px){.shell{padding:24px 32px 0;--edge:32px}}
+
+/* 마스트헤드 = 티켓 (M1 공개 상태 — 도구는 테마 토글만) */
+.ticket{--ring:var(--ticket-fg);position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"brand brand tools" "perf perf perf" "issue stub stub";background:var(--ticket);color:var(--ticket-fg);transition:background-color var(--duration-base) var(--ease)}
+.ticket__brand{grid-area:brand;padding:16px 0 14px 18px;min-width:0}
+.wordmark{font-size:var(--text-wordmark);font-weight:800;line-height:var(--lh-wordmark);letter-spacing:-.045em}
+.wordmark a{display:inline-block;padding:6px 0;margin:-6px 0;text-decoration:none}
+.wordmark-en{font:800 12px/1 var(--font-numeric);letter-spacing:.32em;margin-top:8px;color:var(--ticket-fg-2)}
+.tagline{font-size:13px;line-height:1.45;margin-top:10px;color:var(--ticket-fg-2)}
+.ticket__tools{grid-area:tools;display:flex;align-items:flex-start;padding:6px 6px 0 0}
+.ibtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:44px;height:44px;padding:0 10px;background:transparent;border:0;color:inherit;transition:background-color var(--duration-fast) var(--ease)}
+.ibtn:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
+.ticket__perf{grid-area:perf;position:relative;height:4px;margin:0 14px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x}
+.ticket__perf::before,.ticket__perf::after{content:"";position:absolute;top:50%;width:calc(var(--notch)*2);height:calc(var(--notch)*2);margin-top:calc(var(--notch)*-1);border-radius:50%;background:var(--paper)}
+.ticket__perf::before{left:calc(-14px - var(--notch))}
+.ticket__perf::after{right:calc(-14px - var(--notch))}
+.issue{grid-area:issue;display:flex;align-items:baseline;gap:3px;padding:12px 0 12px 18px}
+.issue__k{font-size:13px;font-weight:800}
+.issue__n{font:800 var(--num-issue)/.82 var(--font-numeric);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stub{grid-area:stub;display:flex;flex-direction:column;justify-content:center;padding:10px 8px 10px 14px;font-size:12.5px;line-height:1.45;min-width:0}
+.stub time{font-weight:800;font-variant-numeric:normal}
+.stub span{display:block;color:var(--ticket-fg-2);font-size:11.5px;line-height:1.4}
+.topnav{display:none}
+@media (min-width:1024px){
+  .ticket{grid-template-columns:232px 4px minmax(0,1fr) auto;grid-template-rows:1fr auto;grid-template-areas:"issue perf brand tools" "stub perf brand tools";min-height:160px}
+  .ticket__brand{padding:22px 0 20px 36px;align-self:center}
+  .wordmark{letter-spacing:-.05em}
+  .wordmark-en{font-size:13px;margin-top:12px}
+  .tagline{font-size:15px;margin-top:12px}
+  .ticket__tools{padding:14px 14px 0 0}
+  .ticket__perf{height:auto;width:4px;margin:14px 0;background-size:4px 9px;background-repeat:repeat-y}
+  .ticket__perf::before,.ticket__perf::after{left:50%;right:auto;margin:0 0 0 calc(var(--notch)*-1)}
+  .ticket__perf::before{top:calc(-14px - var(--notch))}
+  .ticket__perf::after{top:auto;bottom:calc(-14px - var(--notch))}
+  .issue{padding:18px 0 0 28px;align-self:start;gap:6px}
+  .issue__k{font-size:17px}
+  .issue__n{line-height:.78}
+  .stub{padding:0 16px 18px 28px;justify-content:flex-end;font-size:13px}
+  .stub span{font-size:12.5px}
+  .topnav{display:flex;align-items:center;gap:28px;border-bottom:1px solid var(--rule);padding:0 4px}
+  .topnav a{position:relative;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;font-size:15px;font-weight:800;color:var(--ink-2);text-decoration:none}
+  .topnav a:hover{color:var(--ink)}
+  .topnav a[aria-current]{color:var(--ink)}
+  .topnav a[aria-current]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--brand-accent)}
+  .topnav__upd{margin-left:auto;font-size:13px;color:var(--ink-2)}
+}
+
+/* 레이아웃 3구간 (D31): ≤1023 1단 · ≥1024 목차 + 지면(마주 보는 면이 없는 페이지는 2단) */
+.layout{display:block}
+.contents,.facing{display:none}
+@media (min-width:1024px){
+  .layout{display:grid;grid-template-columns:var(--col-contents) minmax(0,1fr);align-items:start}
+  .contents{display:block;position:sticky;top:16px;margin:28px 36px 0 0}
+  .page{padding-top:28px;min-width:0}
+}
+@media (min-width:1280px){
+  .layout--3{grid-template-columns:var(--col-contents) minmax(0,1fr) var(--col-facing)}
+  .layout--3 .facing{display:block;border-left:1px solid var(--ink);padding:0 0 0 32px;margin-top:28px;align-self:stretch}
+  .layout--3 .in-flow{display:none}
+}
+
+/* 섹션 머리 · 러닝 헤드 */
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-top:3px solid var(--ink);padding-top:10px}
+.sec-h h2,.sec-h h3,.sec-h .h{font-size:var(--text-h2);font-weight:800;line-height:var(--lh-h2);letter-spacing:-.025em}
+.sec-h--thin{border-top-width:1px}
+.sec-h--thin h2,.sec-h--thin h3{font-size:16px}
+@media (min-width:1024px){.sec-h--thin h2,.sec-h--thin h3{font-size:17px}}
+.rh{flex:none;font:600 var(--text-rh)/1 var(--font-numeric);letter-spacing:.14em;color:var(--brand-accent-text)}
+.sub{font-size:13px;color:var(--ink-2);margin-top:3px}
+
+/* 대회 표식 — 인덱스 탭(세로) · 평탄 탭 */
+.tab{display:flex;align-items:center;justify-content:center;width:var(--tab-w);padding:7px 0 6px;background:var(--c);color:var(--competition-foreground);font:800 10.5px/1.08 var(--font-sans);writing-mode:vertical-rl;text-orientation:upright;letter-spacing:0;transition:background-color var(--duration-base) var(--ease)}
+@media (min-width:1024px){.tab{font-size:11px;padding:9px 0 8px}}
+.ftab{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:22px;padding:0 6px;background:var(--c);color:var(--competition-foreground);font-size:11.5px;font-weight:800;line-height:1;letter-spacing:-.01em;flex:none}
+.tab--epl{--c:var(--competition-epl)}.tab--laliga{--c:var(--competition-laliga)}.tab--seriea{--c:var(--competition-seriea)}
+.tab--bundesliga{--c:var(--competition-bundesliga)}.tab--ligue1{--c:var(--competition-ligue1)}.tab--ucl{--c:var(--competition-ucl)}
+
+/* 대회 탭 (DESIGN §9.2 Tabs — D1 순위 미니 모양) */
+.ctab{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;padding:0 10px;border:1px solid var(--ink-2);background:transparent;font-size:13px;font-weight:800;color:var(--ink);text-decoration:none;transition:background-color var(--duration-base) var(--ease),color var(--duration-base) var(--ease),border-color var(--duration-base) var(--ease)}
+.ctab:hover{border-color:var(--ink);background:var(--paper-2)}
+.ctab[aria-selected="true"],.ctab[aria-current="page"]{background:var(--c);border-color:var(--c);color:var(--competition-foreground);--ring:var(--ink)}
+
+/* 도장 · 완장 · 자리 */
+.stamp{flex:none;display:inline-flex;align-items:center;gap:4px;padding:3px 6px 2px;border:1px solid var(--ink);color:var(--ink);font-size:var(--text-stamp);font-weight:800;line-height:1.3;letter-spacing:.01em}
+.stamp--ph{border:1px dashed var(--ink-3);color:var(--ink-2)}
+.arm{display:inline-block;padding:3px 3px 2px;background:var(--brand-accent);color:var(--brand-accent-foreground);font-size:10.5px;font-weight:800;line-height:1.2;letter-spacing:-.02em;flex:none}
+.ph-box{padding:12px 14px;border:1.5px dashed var(--ink-3);font-size:12.5px;color:var(--ink-2)}
+.ph-box b{color:var(--ink);font-weight:800;margin-right:6px}
+.ph-box .id{font:600 13.5px/1.3 var(--font-numeric);letter-spacing:.04em;margin-left:6px}
+
+/* 팀 배지 (DR-05) */
+.bdg{position:relative;display:inline-grid;grid-template-rows:3fr 2fr;flex:none;background:var(--k2);outline:1px solid var(--rule);outline-offset:-1px;vertical-align:middle}
+.bdg b{grid-row:1;display:grid;place-items:center;background:var(--k1);color:var(--kf);font-family:var(--font-numeric);font-weight:800;font-variant-numeric:tabular-nums lining-nums;letter-spacing:.04em;line-height:1}
+.bdg--m{width:40px;height:44px}.bdg--m b{font-size:15px}
+.bdg--s{width:30px;height:33px}.bdg--s b{font-size:12px;letter-spacing:.02em}
+.bdg--xs{width:24px;height:27px}.bdg--xs b{font-size:10.5px;letter-spacing:0}
+.bdg--none{background:transparent;outline:1px dashed var(--ink-2)}
+.bdg--none b{background:transparent;color:var(--ink-2);box-shadow:none;border-bottom:1px dashed var(--ink-2)}
+.bdg--none::after{content:"";grid-row:2;background:repeating-linear-gradient(-45deg,var(--hatch) 0 3px,transparent 3px 6px)}
+
+/* 폼 칩 W/D/L — 글자 + 색 (색만으로 전달하지 않음) */
+.form{display:inline-flex;gap:3px;flex:none;vertical-align:middle}
+.fm{display:inline-grid;place-items:center;width:20px;height:20px;font:800 12.5px/1 var(--font-numeric);font-style:normal;letter-spacing:0;border:1.5px solid currentColor}
+.fm--W{color:var(--result-win)}.fm--D{color:var(--result-draw)}.fm--L{color:var(--result-loss)}
+.fm--x{border:0;color:transparent;background:linear-gradient(var(--ink-3),var(--ink-3)) center/8px 2px no-repeat}
+
+/* 순위 변동 ▲▼ — CSS 도형 + 숫자 */
+.tr{display:inline-flex;align-items:center;gap:2px;font:600 13px/1 var(--font-numeric);letter-spacing:.02em;white-space:nowrap}
+.tr i{display:block;width:8px;height:7px;background:currentColor}
+.tr--up{color:var(--trend-up)}.tr--up i{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.tr--down{color:var(--trend-down)}.tr--down i{clip-path:polygon(0 0,100% 0,50% 100%)}
+.tr--eq{color:var(--ink-2)}
+.tr--na{color:var(--ink-2)}
+
+/* 버튼 · 링크 */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;font-size:14px;font-weight:800;border:1px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;transition:background-color var(--duration-fast) var(--ease),color var(--duration-fast) var(--ease)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.tlink{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:44px;min-width:44px;font-size:13px;font-weight:800;color:var(--brand-accent-text);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.tlink:hover{text-decoration-thickness:2px}
+.tlink .ic{width:16px;height:16px}
+.src-note{font-size:12.5px;color:var(--ink-2);margin-top:14px;line-height:1.5}
+.src-note b{color:var(--ink);font-weight:800}
+.note{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.krl{display:inline-flex!important;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+
+/* 뒤표지 · 하단 탭 · 토스트 */
+.colophon{position:relative;margin:64px calc(var(--edge)*-1) 0;background:var(--colophon);color:var(--colophon-fg);--ring:var(--colophon-fg)}
+.colophon::before{content:"";display:block;height:4px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x;transform:translateY(6px)}
+.colophon__in{padding:26px var(--edge) 28px;display:grid;gap:10px;font-size:13px;line-height:1.6}
+.colophon__brand{font-size:17px;font-weight:800;letter-spacing:-.03em}
+.colophon__brand span{font-size:12.5px;font-weight:400;letter-spacing:0;color:var(--colophon-fg-2);margin-left:6px}
+.colophon__fd{font:600 15px/1.3 var(--font-numeric);letter-spacing:.03em}
+.colophon__p{color:var(--colophon-fg-2);max-width:62ch}
+.colophon__links{display:flex;flex-wrap:wrap;column-gap:18px}
+.colophon__links a{display:inline-flex;align-items:center;min-height:44px;font-weight:800;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+@media (min-width:1024px){.colophon{margin:72px 0 0}.colophon__in{grid-template-columns:1.1fr 1fr;column-gap:48px;padding:32px 36px 34px}.colophon__links{grid-column:2;grid-row:2/4}.colophon__brand{grid-column:1/-1}}
+.tabbar{position:sticky;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(3,1fr);margin:0;background:var(--paper);border-top:1px solid var(--ink)}
+.tabbar a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;font-size:11px;font-weight:800;color:var(--ink-2);text-decoration:none}
+.tabbar a:hover{color:var(--ink)}
+.tabbar a[aria-current]{color:var(--ink)}
+.tabbar a[aria-current]::before{content:"";position:absolute;top:-1px;left:24%;right:24%;height:3px;background:var(--brand-accent)}
+@media (min-width:1024px){.tabbar{display:none}}
+.toast-region{position:fixed;left:0;right:0;bottom:76px;z-index:40;display:flex;justify-content:center;pointer-events:none}
+.toast{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 16px 0 0;background:var(--ink);color:var(--paper);font-size:14px;font-weight:800;pointer-events:auto;box-shadow:var(--shadow-print-accent);animation:eject var(--duration-base) var(--ease) both}
+.toast[hidden]{display:none}
+.toast__k{align-self:stretch;display:grid;place-items:center;padding:0 10px;border-right:2px dotted color-mix(in srgb,var(--paper) 55%,transparent);font-size:12px}
+@keyframes eject{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes tear{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes stamp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes arrive{from{background-color:transparent}}
+@media (min-width:1024px){.toast-region{bottom:28px}}
+
+/* 견본 */
+.spec{margin-top:48px}
+.spec-grid{display:grid;gap:24px;margin-top:14px}
+@media (min-width:1024px){.spec-grid{grid-template-columns:1fr 1fr}}
+.frame{border:1px solid var(--rule);padding:14px;min-width:0}
+.cap{font-size:12.5px;color:var(--ink-2);margin-bottom:10px;line-height:1.5}
+.cap b{font-weight:800;color:var(--ink);margin-right:4px}
+.bdg-row{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.bdg-row span.l{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.legend>span{display:inline-flex;align-items:center;gap:6px}
+.legend b{color:var(--ink);font-weight:800}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0s!important;animation-delay:0s!important;transition-duration:0s!important;scroll-behavior:auto!important}
+}
+
+
+/* ── B: 대회 머리 ── */
+.bh{padding-top:8px}
+.bh__k{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+.bh h1{font-size:34px;font-weight:800;letter-spacing:-.045em;line-height:1.1;margin-top:8px}
+@media (min-width:1024px){.bh h1{font-size:52px}}
+.ct{margin-top:8px}
+.ct-row{display:flex;align-items:center;gap:8px;min-height:44px;border-bottom:1px solid var(--rule);font-size:14px;text-decoration:none;color:var(--ink)}
+.ct-row .ftab{min-width:42px}
+.ct-row[aria-current]{font-weight:800}
+.ct-row[aria-current] .ct-l::after{content:" ✓";color:var(--brand-accent-text)}
+.bsw{display:flex;gap:6px;overflow-x:auto;margin:14px calc(var(--edge)*-1) 0;padding:2px var(--edge) 6px;scroll-snap-type:x proximity;scroll-padding-inline:var(--edge);scrollbar-width:none}
+.bsw::-webkit-scrollbar{display:none}
+.bsw .ctab{flex:none;scroll-snap-align:start}
+@media (min-width:1024px){.bsw{display:none}}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px;border:1px solid var(--ink)}
+.seg [role=tab]{min-height:44px;background:transparent;border:0;border-left:1px solid var(--ink);font-size:14px;font-weight:800;color:var(--ink);transition:background-color var(--duration-fast) var(--ease),color var(--duration-fast) var(--ease)}
+.seg [role=tab]:first-child{border-left:0}
+.seg [role=tab]:hover{background:var(--paper-2)}
+.seg [role=tab][aria-selected=true]{background:var(--ink);color:var(--paper);--ring:var(--brand-accent)}
+@media (min-width:1024px){.seg{max-width:440px}}
+.pn.is-in{animation:stamp var(--duration-fast) var(--ease) both}
+.ld-h{margin-top:14px}
+
+/* ── B: 사다리 카드 ── */
+.ld{margin-top:6px;border-top:1px solid var(--rule)}
+.ld__i{position:relative;border-bottom:1px solid var(--rule)}
+.ld__i::before{content:"";position:absolute;left:19px;top:0;bottom:0;width:2px;background:var(--ink-3)}
+.ld__i.z-rel::before{background:var(--brand-accent);width:4px;left:18px}
+.ld__i.z-relpo::before{width:4px;left:18px;background:repeating-linear-gradient(to bottom,var(--brand-accent) 0 6px,transparent 6px 10px)}
+.ld__i.z-ko::before{background:var(--ink);width:4px;left:18px}
+.ld__i.z-po::before{width:4px;left:18px;background:repeating-linear-gradient(to bottom,var(--ink-2) 0 6px,transparent 6px 10px)}
+.ld__c{position:relative;display:grid;grid-template-columns:40px 40px minmax(0,1fr) auto;grid-template-areas:"rk bd nm pt" "rk bd l2 pt";column-gap:12px;row-gap:6px;align-items:center;padding:12px 0;text-decoration:none;color:var(--ink);transition:background-color var(--duration-fast) var(--ease)}
+.ld__c:hover .ld__nm>span:first-child{text-decoration:underline;text-decoration-color:var(--brand-accent);text-decoration-thickness:2px;text-underline-offset:3px}
+.ld__rk{grid-area:rk;display:grid;justify-items:center;gap:3px;align-self:center}
+.ld__rk b{display:block;min-width:30px;padding:4px 0;background:var(--paper);text-align:center;font:800 22px/1 var(--font-numeric);letter-spacing:-.01em;transition:background-color var(--duration-fast) var(--ease)}
+.ld__c:hover .ld__rk b{box-shadow:inset 0 -2px 0 var(--brand-accent)}
+.ld__z{padding:1px 2px;background:var(--paper);font-size:10.5px;font-weight:800;line-height:1.2;color:var(--brand-accent-text);white-space:nowrap}
+.z-ko .ld__z,.z-po .ld__z{color:var(--ink)}
+.ld__c .bdg{grid-area:bd}
+.ld__nm{grid-area:nm;display:flex;align-items:center;flex-wrap:wrap;gap:2px 8px;font-size:16.5px;font-weight:800;letter-spacing:-.025em;line-height:1.2;align-self:end}
+.ld__pt{grid-area:pt;display:flex;align-items:baseline;gap:2px;font-size:12px;color:var(--ink-2);padding-right:4px}
+.ld__pt b{font:800 30px/1 var(--font-numeric);color:var(--ink);letter-spacing:-.01em}
+.ld__l2{grid-area:l2;display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;align-self:start;font-size:12.5px;color:var(--ink-2)}
+.ld__l2 .fm{width:17px;height:17px;font-size:11px}
+.ld__gd .n,.ld__p .n{font:600 14.5px/1 var(--font-numeric);color:var(--ink);margin-right:1px}
+@media (min-width:1024px){
+  .ld{display:grid;grid-template-columns:1fr 1fr;grid-auto-flow:column;grid-template-rows:repeat(10,auto);column-gap:40px;border-top:0}
+  .ld>.ld__i:nth-child(1),.ld>.ld__i:nth-child(11){border-top:1px solid var(--rule)}
+  .ld__nm{font-size:18px}
+  .ld--mini,.ld--spec{display:block;border-top:1px solid var(--rule)}
+}
+.ld--mini .ld__c{padding:9px 0}
+.ld--mini .ld__pt b{font-size:24px}
+.ld--mini .ld__nm{font-size:15px}
+.b-legend{margin-top:14px}
+.rail{display:inline-block;width:4px;height:18px;background:var(--brand-accent)}
+.rail--ph{background:repeating-linear-gradient(to bottom,var(--ink-3) 0 3px,transparent 3px 6px)}
+.b-sec{margin-top:44px}
+.mcs{display:grid;gap:0;margin-top:8px;border-top:1px solid var(--rule)}
+@media (min-width:1024px){.mcs{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:28px;border-top:0}.mcs .mc{border-top:1px solid var(--rule)}.mcs--team{grid-template-columns:1fr}}
+.mc{display:grid;gap:6px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.mc__k{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2)}
+.mc__k time{font:600 14px/1 var(--font-numeric);color:var(--ink);letter-spacing:.02em}
+.mc__st{font-weight:800}
+.mc__k .fm{margin-left:auto}
+.mc__t{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:15px;font-weight:800;line-height:1.25}
+.mc__tm{display:flex;align-items:center;gap:10px;min-width:0}
+.mc__t>b{font:800 26px/1 var(--font-numeric);color:var(--ink-2)}
+.mc__t.is-w>b{color:var(--ink)}
+.mc__vs{font:800 11.5px/1 var(--font-sans);color:var(--ink-2);border:1px dashed var(--ink-3);padding:3px 5px 2px}
+.mc--sched .mc__k time{font-weight:800;font-size:16px}
+.bsc{margin-top:8px;border-top:1px solid var(--rule)}
+.bsc li{display:grid;grid-template-columns:32px auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.bsc__no{font:800 22px/1 var(--font-numeric);text-align:center}
+.bsc--nb li{grid-template-columns:32px minmax(0,1fr) auto}
+.bsc__n{display:grid;gap:3px;font-weight:800;font-size:15px;line-height:1.25}
+.bsc__t{font-size:12.5px;font-weight:400;color:var(--ink-2)}
+.bsc__g{font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.bsc__g b{font:800 26px/1 var(--font-numeric);color:var(--ink);margin-right:2px}
+@media (min-width:1024px){#s1 .b-sec .bsc{display:grid;grid-template-columns:1fr 1fr;column-gap:28px;border-top:0}#s1 .b-sec .bsc li{border-top:1px solid var(--rule);border-bottom:0}}
+
+/* ── B: 팀 히어로 = 팀시트 ── */
+.tbh{display:flex;align-items:center;gap:14px;padding-top:4px}
+.tbh .bdg--m{width:56px;height:62px}.tbh .bdg--m b{font-size:20px}
+.tbh__k{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--ink-2)}
+.tbh__k b{font-family:var(--font-numeric);font-weight:800;font-size:16px;color:var(--ink)}
+.tbh h1{font-size:30px;font-weight:800;letter-spacing:-.045em;line-height:1.1;margin-top:6px}
+.tbh__row{display:grid;margin-top:14px;border-top:1px solid var(--ink)}
+.tbh__row div{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 12px;min-height:46px;padding:6px 0;border-bottom:1px solid var(--rule)}
+.tbh__row dt{font-size:12.5px;font-weight:800}
+.tbh__row dt span{font-weight:400;color:var(--ink-2);margin-left:4px}
+.tbh__row dd{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:14px;font-weight:800}
+.tbh__row dd time{font:600 15px/1 var(--font-numeric)}
+.tbh__row dd .n{font-family:var(--font-numeric);font-size:15px}
+.tbh__row a{display:inline-flex;align-items:center;min-height:44px;text-decoration:underline;text-underline-offset:4px}
+@media (min-width:1024px){.tbh h1{font-size:52px}.tbh .bdg--m{width:80px;height:88px}.tbh .bdg--m b{font-size:28px}.tbh__row{grid-template-columns:repeat(4,auto);column-gap:0}.tbh__row div{display:grid;align-content:start;justify-content:start;padding:10px 18px;border-bottom:0;border-left:1px solid var(--rule)}.tbh__row div:first-child{border-left:0;padding-left:0}}
+.ts{margin-top:28px}
+.ts__fm{display:grid;grid-template-columns:1fr;row-gap:6px;margin-top:10px}
+@media (min-width:1024px){.ts__fm{grid-template-columns:auto 1fr;align-items:end;column-gap:18px}}
+.ts__k{grid-column:1/-1;font-size:13px;font-weight:800;color:var(--ink-2)}
+.ts__n{font:800 56px/.9 var(--font-numeric);letter-spacing:.01em}
+.ts__s{font-size:12.5px;color:var(--ink-2);line-height:1.5;padding-bottom:4px}
+.ts__s time{font:600 13px/1 var(--font-numeric)}
+.ts__grid{display:grid;gap:18px;margin-top:14px}
+@media (min-width:1024px){.ts__grid{grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:32px;align-items:start}.ts__n{font-size:88px}}
+.bp{position:relative;aspect-ratio:68/105;background:var(--paper-2);color:var(--ink-3)}
+.bp__v,.bp__h{position:absolute;inset:0}
+.bp__h{display:none}
+.bp svg{width:100%;height:100%}
+.bp__m{position:absolute;inset:0}
+.bm{position:absolute;left:calc(var(--c)*1%);top:calc(var(--a)*1%);display:grid;justify-items:center;gap:4px;width:84px;transform:translate(-50%,-17px);text-align:center;transition:transform var(--duration-fast) var(--ease)}
+.bm__no{display:grid;place-items:center;width:34px;height:34px;background:var(--k1);color:var(--kf);font:800 17px/1 var(--font-numeric);outline:1px solid var(--rule);outline-offset:-1px;transition:box-shadow var(--duration-fast) var(--ease)}
+.bm--gk .bm__no{background:var(--paper);color:var(--ink);outline:1.5px solid var(--ink)}
+.bm__nm{font-size:12px;font-weight:800;line-height:1.2;color:var(--ink)}
+.bm.is-hl .bm__no{box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--ink)}
+.bm.is-hl .bm__nm{text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:var(--brand-accent);text-underline-offset:3px}
+.bm--spec{position:static;transform:none;width:auto}
+@media (min-width:1024px){
+  .bp{aspect-ratio:105/68}
+  .bp__v{display:none}.bp__h{display:block}
+  .bm{left:calc(100% - var(--a)*1%);top:calc(var(--c)*1%)}
+}
+.sh__h{display:flex;justify-content:space-between;font-size:13px;font-weight:800;padding:8px 0 5px;border-bottom:1px solid var(--ink)}
+.sh__h .n{font-family:var(--font-numeric);color:var(--ink-2)}
+.sh{margin-bottom:14px}
+.sh li{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:36px;border-bottom:1px solid var(--rule);font-size:14px;transition:background-color var(--duration-fast) var(--ease)}
+.sh li.is-hl{background:var(--paper-2)}
+.sh__no{font:800 17px/1 var(--font-numeric);text-align:right}
+.sh__n{font-weight:800;line-height:1.25;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sh__p{font:600 12.5px/1 var(--font-numeric);letter-spacing:.06em;color:var(--ink-2)}
+.sh li.is-kr{box-shadow:inset 4px 0 0 var(--brand-accent);background:var(--paper-2)}
+.sh--subs li{min-height:32px;font-size:13.5px}
+@media (min-width:1024px){.sheet{columns:1}}
+.b2{display:grid;gap:40px;margin-top:44px}
+@media (min-width:1024px){.b2{grid-template-columns:1.3fr 1fr;gap:40px}}
+
+/* ── B: 홈 위젯 ── */
+.home-ph{margin-top:28px}
+.wg{margin-top:36px}
+.facing .wg:first-child{margin-top:0}
+.tcs{margin-top:8px;border-top:1px solid var(--rule)}
+.tc{display:grid;gap:7px;padding:12px 0 14px;border-bottom:1px solid var(--rule)}
+.tc__k{display:flex;align-items:baseline;gap:8px}
+.tc__t{font:800 26px/1 var(--font-numeric);letter-spacing:-.01em}
+.tc__d{font:600 13px/1 var(--font-numeric);color:var(--ink-2)}
+.tc__k .ftab{margin-left:auto;align-self:center}
+.tc__tm{display:flex;align-items:center;gap:10px;font-size:15.5px;font-weight:800}
+.tc__why{display:flex;flex-wrap:wrap;gap:5px 6px;margin-top:2px}
+.why{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:800}
+.bmt{display:flex;gap:4px;overflow-x:auto;margin-top:12px;padding:2px 2px 6px;scrollbar-width:none}
+.bmt::-webkit-scrollbar{display:none}
+.bmt .ctab{flex:none;min-width:52px;padding:0 8px}
+.facing .bmt{flex-wrap:wrap;overflow:visible}
+.mp.is-in{animation:stamp var(--duration-fast) var(--ease) both}
+.mp__f{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 12px;margin-top:4px}
+.ld--mini .ld__l2 .form{display:none}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문 바로가기</a>
+<aside class="meta-w" aria-label="시안 정보"><details class="meta">
+  <summary><span class="meta__tag">시안 정보</span><b>B 팀시트</b><span class="meta__one">D0가 예고한 &quot;팀시트&quot; 은유 — 팀 화면은 포메이션 피치와 선발·교체 명단이 주인공, 순위는 사다리처럼 이어지는 2줄 카드 행(모바일·데스크톱 모두 카드, 1280은 두 단).</span><span class="meta__more" aria-hidden="true"></span></summary>
+  <div class="meta__grid">
+    <div><p class="meta__h">장점</p><ul><li>팀 화면 첫인상이 가장 강하다 — 키트 색 등번호 칸이 피치에 서고, 교체 명단의 한국 선수(김민재)까지 한 장에 보인다</li><li>순위 카드 2줄째에 폼·득실·변동이 늘 보여 375에서도 누르지 않고 비교할 수 있다(가로 스크롤 없음)</li><li>카드 = 팀 화면 링크 하나라 상호작용이 단순하다(펼침·스크롤 상태 없음)</li></ul><p class="meta__h">단점</p><ul><li>순위 카드가 행당 약 72px — 20팀이 375에서 약 1,410px로 가장 길고, 승·무·패·득실점 개별 숫자는 팀 화면에서만 보인다</li><li>피치가 라인업 데이터에 크게 기댄다 — 집계 경기가 적거나 포메이션이 갈리는 팀(우니온 베를린 1:1)은 히어로가 약해진다(최빈값 동률 규칙 필요)</li><li>1280 두 단 사다리는 11위가 오른쪽 위로 올라가 위아래 순서를 한 번 끊는다</li></ul></div>
+    <div><p class="meta__h">구현 난이도</p><p><b>중상</b> — 사다리 카드(서버) + 1280 두 단 그리드 + 피치 방향 전환(375 세로 · 1024+ 가로, 같은 DOM에 CSS 변수 좌표) + 명단 ↔ 피치 하이라이트 섬. 라인업 집계(M1-48)·최빈값·동률 규칙이 화면 품질을 좌우</p><p class="meta__h">번들·폰트 영향</p><p>폰트 변화 0 — 417.8KB 2패밀리 그대로. 새 섬 JS 추정 gzip 약 0.9KB(탭 약 0.6 · 하이라이트 약 0.3, 미니 탭 공용) → 초기 JS 약 145KB / 160KB. 시안 인라인 JS 실측 2,861B(gzip 1,299B, 테마·토스트 포함)</p></div>
+    <div><p class="meta__h">데이터·가정</p><ul><li>순위 football-data 10.11 06:45 UTC · ▲▼ 10.10 대비(EPL·라리가만)</li><li>라인업 API-Football 2경기(1575167·1575180) — 둘 다 4-2-3-1, 선수 표기는 names.ko.json 등록분만 한글</li><li>폼 = fixtures 결과만 · 구간 = competitions.json zones 실값 · 유럽 대항전 구간 자리</li><li>팀 컬러 임시(M2-05) · 기준 시각 10.11 (일) 15:46 KST</li></ul></div>
+    <div class="span3"><p class="meta__h">축 매트릭스 (시안 × 5축)</p><table class="axes"><thead><tr><th>축</th><th>A 프로그램 리그표</th><th>B 팀시트</th><th>C 경기 원장</th></tr></thead><tbody>
+<tr><th>레이아웃 구조</th><td class="me">표 한 장이 주인공 · 1024+ 표 전폭 + 아래 라운드·득점 2단 · 팀 = 티켓 헤더 + 3단</td><td>사다리 카드 목록(1280 두 단) · 팀 = 피치·명단 히어로</td><td>라운드 원장이 주축 · 1280 원장 | 표 펼침면 · 팀 = 시즌 원장</td></tr>
+<tr><th>타이포 성격</th><td class="me">거터 큰 순위 숫자 Barlow 800(26/40px) · 팀명 15/17px 800</td><td>팀명 한글 800 크게 · 승점 큰 숫자 · 포메이션 숫자 56px</td><td>작은 Barlow 600 숫자 촘촘 · 날짜 머리 · 큰 숫자 없음</td></tr>
+<tr><th>색 전략</th><td class="me">잉크 + 구간 거터 띠(레드·잉크) · 키트 색은 배지·티켓 스텁만</td><td>키트 색이 피치 위 선수 칸까지 — 팀 색이 화면 주연</td><td>거의 단색 · 변동 리본과 ▲▼만 색 · 구간은 머리 줄 글자</td></tr>
+<tr><th>정보 밀도</th><td class="me">중 — 375 5열 + 펼침 / 1024+ 전체 열</td><td>중 — 2줄 카드(폼·득실·변동 2줄째)</td><td>높음 — 전체 열 유지 + 팀 열 고정 가로 스크롤</td></tr>
+<tr><th>모션 언어</th><td class="me">행 펼침 = 뜯김(200ms) · 탭 패널 찍힘</td><td>카드 hover·명단 ↔ 피치 칸 하이라이트(150ms)</td><td>변동 리본 → 행 도착(250ms) · 모션 최소</td></tr>
+</tbody></table></div>
+  </div>
+</details></aside>
+<aside class="divider" aria-label="시안 설명 — 화면 1 · 대회"><span><b>화면 1 · 대회</b> <code>/competitions/epl/</code></span><span class="divider__info">순위 탭 · 기준 10.11 15:46 KST · 팀 컬러 임시(M2-05) · 카드 = 팀 화면 링크</span></aside>
+<div class="shell" id="s1">
+<header class="mast">
+  <div class="ticket">
+    <div class="ticket__brand">
+      <p class="wordmark"><a href="/euro-digest/">유로 다이제스트</a></p>
+      <p class="wordmark-en" lang="en">EURO DIGEST</p>
+      <p class="tagline">매일 아침, 밤사이 유럽 축구를 한눈에.</p>
+    </div>
+    <div class="ticket__tools"><button class="ibtn" type="button" data-theme-toggle aria-label="테마: 시스템 설정 (눌러서 바꾸기)"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button></div>
+    <span class="ticket__perf" aria-hidden="true"></span>
+    <p class="issue"><span class="issue__k">제</span><span class="issue__n">1</span><span class="issue__k">호</span></p>
+    <p class="stub"><time datetime="2026-10-11">2026년 10월 11일 (일)</time><span>발행 07:00 KST</span><span>업데이트 15:46 KST</span></p>
+  </div>
+  <nav class="topnav" aria-label="주요 메뉴"><a href="/euro-digest/">홈</a><a href="/euro-digest/news/">뉴스</a><a href="/euro-digest/competitions/epl/" aria-current="page">리그</a><span class="topnav__upd">마지막 업데이트 <time datetime="2026-10-11T06:46:00Z">15:46 KST</time></span></nav>
+</header>
+<div class="layout">
+<nav class="contents" aria-label="대회">
+  <div class="sec-h"><h2>대회</h2><span class="rh" lang="en" aria-hidden="true">COMPETITIONS</span></div>
+  <ul class="ct"><li><a class="ct-row" href="/euro-digest/competitions/epl/" aria-current="page"><span class="ftab tab--epl " title="프리미어리그">EPL</span><span class="ct-l">프리미어리그</span></a></li><li><a class="ct-row" href="/euro-digest/competitions/laliga/"><span class="ftab tab--laliga " title="라리가">라리가</span><span class="ct-l">라리가</span></a></li><li><a class="ct-row" href="/euro-digest/competitions/seriea/"><span class="ftab tab--seriea " title="세리에 A">세리에A</span><span class="ct-l">세리에 A</span></a></li><li><a class="ct-row" href="/euro-digest/competitions/bundesliga/"><span class="ftab tab--bundesliga " title="분데스리가">분데스</span><span class="ct-l">분데스리가</span></a></li><li><a class="ct-row" href="/euro-digest/competitions/ligue1/"><span class="ftab tab--ligue1 " title="리그 1">리그1</span><span class="ct-l">리그 1</span></a></li><li><a class="ct-row" href="/euro-digest/competitions/ucl/"><span class="ftab tab--ucl " title="UEFA 챔피언스리그">UCL</span><span class="ct-l">UEFA 챔피언스리그</span></a></li></ul>
+</nav>
+<main class="page" id="main" tabindex="-1">
+<section aria-labelledby="b-cp-h">
+  <header class="bh">
+    <p class="bh__k"><span class="ftab tab--epl " title="프리미어리그">EPL</span><span>2026-27 시즌 · <span class="n">6</span>라운드 진행 중</span></p>
+    <h1 id="b-cp-h">프리미어리그</h1>
+  </header>
+  <nav class="bsw" aria-label="대회 이동"><a class="ctab tab--epl" href="/euro-digest/competitions/epl/" aria-current="page">EPL</a><a class="ctab tab--laliga" href="/euro-digest/competitions/laliga/">라리가</a><a class="ctab tab--seriea" href="/euro-digest/competitions/seriea/">세리에A</a><a class="ctab tab--bundesliga" href="/euro-digest/competitions/bundesliga/">분데스</a><a class="ctab tab--ligue1" href="/euro-digest/competitions/ligue1/">리그1</a><a class="ctab tab--ucl" href="/euro-digest/competitions/ucl/">UCL</a></nav>
+  <div class="seg" role="tablist" aria-label="프리미어리그 보기">
+    <button role="tab" type="button" id="b-tb-1" aria-controls="b-pn-1" aria-selected="true">순위</button>
+    <button role="tab" type="button" id="b-tb-2" aria-controls="b-pn-2" aria-selected="false" tabindex="-1">일정</button>
+    <button role="tab" type="button" id="b-tb-3" aria-controls="b-pn-3" aria-selected="false" tabindex="-1">득점</button>
+    <button role="tab" type="button" id="b-tb-4" aria-controls="b-pn-4" aria-selected="false" tabindex="-1">뉴스</button>
+  </div>
+  <div role="tabpanel" id="b-pn-1" aria-labelledby="b-tb-1" class="pn">
+    <div class="ld-h"><p class="note">순위 <time datetime="2026-10-11T06:45:00Z">10.11 15:45 KST</time> · 변동 10.10 대비 · 카드를 누르면 팀 화면</p></div>
+    <ol class="ld" aria-label="프리미어리그 순위 20팀"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/manchester-city/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span>
+<span class="ld__nm"><span>맨체스터 시티</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">15</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+8</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/arsenal/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span>
+<span class="ld__nm"><span>아스널</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">15</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/brighton-hove-albion/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#0057B8;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BHA</b></span>
+<span class="ld__nm"><span>브라이턴</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+13</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/brentford/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D50612;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BRE</b></span>
+<span class="ld__nm"><span>브렌트포드</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+6</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/chelsea/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span>
+<span class="ld__nm"><span>첼시</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">5</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+2</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/leeds-united/">
+<span class="ld__rk"><b class="n">6</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#1D428A;--kf:#14213D" aria-hidden="true"><b>LEE</b></span>
+<span class="ld__nm"><span>리즈 유나이티드</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">2</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">9</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 무, 패 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/liverpool/">
+<span class="ld__rk"><b class="n">7</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#C8102E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIV</b></span>
+<span class="ld__nm"><span>리버풀</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">9</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/everton/">
+<span class="ld__rk"><b class="n">8</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#003399;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>EVE</b></span>
+<span class="ld__nm"><span>에버턴</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">9</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/ipswich-town/">
+<span class="ld__rk"><b class="n">9</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#0044A9;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>IPS</b></span>
+<span class="ld__nm"><span>입스위치 타운</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">2</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">9</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−3</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/hull-city/">
+<span class="ld__rk"><b class="n">10</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#F5A12D;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>HUL</b></span>
+<span class="ld__nm"><span>헐 시티</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">2</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">8</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+2</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/newcastle-united/">
+<span class="ld__rk"><b class="n">11</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#241F20;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>NEW</b></span>
+<span class="ld__nm"><span>뉴캐슬 유나이티드</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">2</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">8</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">0</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/manchester-united/">
+<span class="ld__rk"><b class="n">12</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#CD271A;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MUN</b></span>
+<span class="ld__nm"><span>맨체스터 유나이티드</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">6</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 무, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">0</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/nottingham-forest/">
+<span class="ld__rk"><b class="n">13</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D90000;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>NOT</b></span>
+<span class="ld__nm"><span>노팅엄 포레스트</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">5</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−1</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/aston-villa/">
+<span class="ld__rk"><b class="n">14</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#670E36;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>AVL</b></span>
+<span class="ld__nm"><span>애스턴 빌라</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">2</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">5</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 무 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−5</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/crystal-palace/">
+<span class="ld__rk"><b class="n">15</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#C4122E;--k2:#1B458F;--kf:#FFFFFF" aria-hidden="true"><b>CRY</b></span>
+<span class="ld__nm"><span>크리스털 팰리스</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">4</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 무 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−5</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/sunderland/">
+<span class="ld__rk"><b class="n">16</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D31527;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>SUN</b></span>
+<span class="ld__nm"><span>선덜랜드</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">2</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">4</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 패 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−6</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/bournemouth/">
+<span class="ld__rk"><b class="n">17</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#CD271A;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BOU</b></span>
+<span class="ld__nm"><span>본머스</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 패 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−6</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i z-rel"><a class="ld__c" href="/euro-digest/teams/tottenham-hotspur/">
+<span class="ld__rk"><b class="n">18</b><span class="ld__z">강등</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#132257;--kf:#14213D" aria-hidden="true"><b>TOT</b></span>
+<span class="ld__nm"><span>토트넘</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">2</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 무 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−6</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i z-rel"><a class="ld__c" href="/euro-digest/teams/coventry-city/">
+<span class="ld__rk"><b class="n">19</b><span class="ld__z">강등</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#59CBE8;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>COV</b></span>
+<span class="ld__nm"><span>코번트리 시티</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−9</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i z-rel"><a class="ld__c" href="/euro-digest/teams/fulham/">
+<span class="ld__rk"><b class="n">20</b><span class="ld__z">강등</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>FUL</b></span>
+<span class="ld__nm"><span>풀럼</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">2</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 무, 패 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−4</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li></ol>
+    <div class="legend b-legend"><span><i class="rail rail--rel" aria-hidden="true"></i><b>강등</b> 18–20위 · 사다리 기둥 + 순위 아래 글자</span><span><i class="rail rail--ph" aria-hidden="true"></i><b>유럽 대항전 진출</b> 자리(M2-01)</span><span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 상승</span></span> <span class="tr tr--down "><i aria-hidden="true"></i><span class="n">2</span><span class="sr">계단 하락</span></span> <b>변동</b></span><span><i class="fm fm--W" aria-hidden="true">W</i><i class="fm fm--D" aria-hidden="true">D</i><i class="fm fm--L" aria-hidden="true">L</i><b>승·무·패</b> <i class="fm fm--x" aria-hidden="true"></i>자료 없음</span></div>
+    <section class="b-sec" aria-labelledby="b-rd-h">
+      <div class="sec-h"><h2 id="b-rd-h"><span class="n">6</span>라운드</h2><span class="rh" lang="en" aria-hidden="true">MATCHDAY</span></div>
+      <p class="sub">10.10–10.13 · 킥오프 KST · 스코어는 홈 위 · 원정 아래</p>
+      <ul class="mcs "><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T11:30:00Z">10.10 (토) 20:30</time><span class="mc__st">종료</span></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span><span>아스널</span></span><b class="n">2</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#1D428A;--kf:#14213D" aria-hidden="true"><b>LEE</b></span><span>리즈 유나이티드</span></span><b class="n">1</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T14:00:00Z">10.10 (토) 23:00</time><span class="mc__st">종료</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#D31527;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>SUN</b></span><span>선덜랜드</span></span><b class="n">0</b></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#0057B8;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BHA</b></span><span>브라이턴</span></span><b class="n">2</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T14:00:00Z">10.10 (토) 23:00</time><span class="mc__st">종료</span></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span><span>첼시</span></span><b class="n">5</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#CD271A;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BOU</b></span><span>본머스</span></span><b class="n">1</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T14:00:00Z">10.10 (토) 23:00</time><span class="mc__st">종료</span></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#0044A9;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>IPS</b></span><span>입스위치 타운</span></span><b class="n">2</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>FUL</b></span><span>풀럼</span></span><b class="n">1</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T14:00:00Z">10.10 (토) 23:00</time><span class="mc__st">종료</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#670E36;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>AVL</b></span><span>애스턴 빌라</span></span><b class="n">2</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#D50612;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BRE</b></span><span>브렌트포드</span></span><b class="n">2</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T16:30:00Z">10.11 (일) 01:30</time><span class="mc__st">종료</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#CD271A;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MUN</b></span><span>맨체스터 유나이티드</span></span><b class="n">1</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#132257;--kf:#14213D" aria-hidden="true"><b>TOT</b></span><span>토트넘</span></span><b class="n">1</b></p>
+</li><li class="mc mc--sched">
+<p class="mc__k"><time class="" datetime="2026-10-11T13:00:00Z">10.11 (일) 22:00</time><span class="mc__st">예정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#F5A12D;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>HUL</b></span><span>헐 시티</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#003399;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>EVE</b></span><span>에버턴</span></span><span class="mc__vs">KST</span></p>
+</li><li class="mc mc--sched">
+<p class="mc__k"><time class="" datetime="2026-10-11T13:00:00Z">10.11 (일) 22:00</time><span class="mc__st">예정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#C4122E;--k2:#1B458F;--kf:#FFFFFF" aria-hidden="true"><b>CRY</b></span><span>크리스털 팰리스</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#D90000;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>NOT</b></span><span>노팅엄 포레스트</span></span><span class="mc__vs">KST</span></p>
+</li><li class="mc mc--sched">
+<p class="mc__k"><time class="" datetime="2026-10-11T15:30:00Z">10.12 (월) 00:30</time><span class="mc__st">예정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#C8102E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIV</b></span><span>리버풀</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span><span>맨체스터 시티</span></span><span class="mc__vs">KST</span></p>
+</li><li class="mc mc--sched">
+<p class="mc__k"><time class="" datetime="2026-10-12T19:00:00Z">10.13 (화) 04:00</time><span class="mc__st">예정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#59CBE8;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>COV</b></span><span>코번트리 시티</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#241F20;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>NEW</b></span><span>뉴캐슬 유나이티드</span></span><span class="mc__vs">KST</span></p>
+</li></ul>
+    </section>
+    <section class="b-sec" aria-labelledby="b-sc-h">
+      <div class="sec-h"><h2 id="b-sc-h">득점 순위</h2><span class="rh" lang="en" aria-hidden="true">SCORERS</span></div>
+      <ol class="bsc"><li><span class="bsc__no n" aria-hidden="true">1</span><span class="sr">1위</span><span class="bdg bdg--s" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span><span class="bsc__n"><span>엘링 홀란</span><span class="bsc__t">맨체스터 시티</span></span><span class="bsc__g"><b class="n">5</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">2</span><span class="sr">2위</span><span class="bdg bdg--s" style="--k1:#C8102E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIV</b></span><span class="bsc__n"><span>알렉산더 이삭</span><span class="bsc__t">리버풀</span></span><span class="bsc__g"><b class="n">4</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span><span class="bsc__n"><span>부카요 사카</span><span class="bsc__t">아스널</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#CD271A;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BOU</b></span><span class="bsc__n"><span lang="en">Marcus Tavernier</span><span class="bsc__t">본머스</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span><span class="bsc__n"><span lang="en">João Pedro</span><span class="bsc__t">첼시</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span><span class="bsc__n"><span lang="en">Morgan Rogers</span><span class="bsc__t">첼시</span></span><span class="bsc__g"><b class="n">3</b>골</span></li></ol>
+      <p class="note">10.10 기준 · 공동 3위 8명 중 4명 · 전체는 득점 탭</p>
+    </section>
+  </div>
+  <div role="tabpanel" id="b-pn-2" aria-labelledby="b-tb-2" class="pn" hidden><ul class="mcs "><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T11:30:00Z">10.10 (토) 20:30</time><span class="mc__st">종료</span></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span><span>아스널</span></span><b class="n">2</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#1D428A;--kf:#14213D" aria-hidden="true"><b>LEE</b></span><span>리즈 유나이티드</span></span><b class="n">1</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T14:00:00Z">10.10 (토) 23:00</time><span class="mc__st">종료</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#D31527;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>SUN</b></span><span>선덜랜드</span></span><b class="n">0</b></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#0057B8;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BHA</b></span><span>브라이턴</span></span><b class="n">2</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T14:00:00Z">10.10 (토) 23:00</time><span class="mc__st">종료</span></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span><span>첼시</span></span><b class="n">5</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#CD271A;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BOU</b></span><span>본머스</span></span><b class="n">1</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T14:00:00Z">10.10 (토) 23:00</time><span class="mc__st">종료</span></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#0044A9;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>IPS</b></span><span>입스위치 타운</span></span><b class="n">2</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>FUL</b></span><span>풀럼</span></span><b class="n">1</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T14:00:00Z">10.10 (토) 23:00</time><span class="mc__st">종료</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#670E36;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>AVL</b></span><span>애스턴 빌라</span></span><b class="n">2</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#D50612;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BRE</b></span><span>브렌트포드</span></span><b class="n">2</b></p>
+</li><li class="mc">
+<p class="mc__k"><time class="" datetime="2026-10-10T16:30:00Z">10.11 (일) 01:30</time><span class="mc__st">종료</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#CD271A;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MUN</b></span><span>맨체스터 유나이티드</span></span><b class="n">1</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#132257;--kf:#14213D" aria-hidden="true"><b>TOT</b></span><span>토트넘</span></span><b class="n">1</b></p>
+</li><li class="mc mc--sched">
+<p class="mc__k"><time class="" datetime="2026-10-11T13:00:00Z">10.11 (일) 22:00</time><span class="mc__st">예정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#F5A12D;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>HUL</b></span><span>헐 시티</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#003399;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>EVE</b></span><span>에버턴</span></span><span class="mc__vs">KST</span></p>
+</li><li class="mc mc--sched">
+<p class="mc__k"><time class="" datetime="2026-10-11T13:00:00Z">10.11 (일) 22:00</time><span class="mc__st">예정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#C4122E;--k2:#1B458F;--kf:#FFFFFF" aria-hidden="true"><b>CRY</b></span><span>크리스털 팰리스</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#D90000;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>NOT</b></span><span>노팅엄 포레스트</span></span><span class="mc__vs">KST</span></p>
+</li><li class="mc mc--sched">
+<p class="mc__k"><time class="" datetime="2026-10-11T15:30:00Z">10.12 (월) 00:30</time><span class="mc__st">예정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#C8102E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIV</b></span><span>리버풀</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span><span>맨체스터 시티</span></span><span class="mc__vs">KST</span></p>
+</li><li class="mc mc--sched">
+<p class="mc__k"><time class="" datetime="2026-10-12T19:00:00Z">10.13 (화) 04:00</time><span class="mc__st">예정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#59CBE8;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>COV</b></span><span>코번트리 시티</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--m" style="--k1:#241F20;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>NEW</b></span><span>뉴캐슬 유나이티드</span></span><span class="mc__vs">KST</span></p>
+</li></ul><p class="note" style="margin-top:12px">7라운드 이후 — 자리(M2-02)</p></div>
+  <div role="tabpanel" id="b-pn-3" aria-labelledby="b-tb-3" class="pn" hidden><ol class="bsc"><li><span class="bsc__no n" aria-hidden="true">1</span><span class="sr">1위</span><span class="bdg bdg--s" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span><span class="bsc__n"><span>엘링 홀란</span><span class="bsc__t">맨체스터 시티 · 도움 – · 5경기</span></span><span class="bsc__g"><b class="n">5</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">2</span><span class="sr">2위</span><span class="bdg bdg--s" style="--k1:#C8102E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIV</b></span><span class="bsc__n"><span>알렉산더 이삭</span><span class="bsc__t">리버풀 · 도움 – · 5경기</span></span><span class="bsc__g"><b class="n">4</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span><span class="bsc__n"><span>부카요 사카</span><span class="bsc__t">아스널 · 도움 – · 6경기</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#CD271A;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BOU</b></span><span class="bsc__n"><span lang="en">Marcus Tavernier</span><span class="bsc__t">본머스 · 도움 – · 5경기</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span><span class="bsc__n"><span lang="en">João Pedro</span><span class="bsc__t">첼시 · 도움 3 · 4경기</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span><span class="bsc__n"><span lang="en">Morgan Rogers</span><span class="bsc__t">첼시 · 도움 1 · 5경기</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span><span class="bsc__n"><span lang="en">Rayan Cherki</span><span class="bsc__t">맨체스터 시티 · 도움 2 · 5경기</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#0057B8;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BHA</b></span><span class="bsc__n"><span lang="en">Pascal Groß</span><span class="bsc__t">브라이턴 · 도움 3 · 5경기</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#D50612;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BRE</b></span><span class="bsc__n"><span lang="en">Kevin Schade</span><span class="bsc__t">브렌트포드 · 도움 – · 5경기</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bdg bdg--s" style="--k1:#CD271A;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MUN</b></span><span class="bsc__n"><span>브루노 페르난데스</span><span class="bsc__t">맨체스터 유나이티드 · 도움 1 · 5경기</span></span><span class="bsc__g"><b class="n">3</b>골</span></li></ol></div>
+  <div role="tabpanel" id="b-pn-4" aria-labelledby="b-tb-4" class="pn" hidden><p class="ph-box"><b>자리</b>뉴스 탭 = /news/?comp=EPL 필터 결과(D0 카드)<span class="id">M2-10</span></p></div>
+  <p class="src-note"><b>데이터</b> football-data.org · 순위 10.11 15:45 KST · <span lang="en">Football data provided by the Football-Data.org API</span></p>
+</section>
+</main>
+</div>
+</div>
+<aside class="divider divider--screen" aria-label="시안 설명 — 화면 2 · 팀"><span><b>화면 2 · 팀</b> <code>/teams/bayern-munchen/</code></span><span class="divider__info">마스트헤드·상단 내비 생략 · 팀시트(피치 + 선발·교체)가 첫 화면 · 375 세로 피치 / 1024+ 가로 피치</span></aside>
+<div class="shell" id="s2">
+<section class="tb" aria-labelledby="b-tp-h">
+  <header class="tbh">
+    <span class="bdg bdg--m" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" role="img" aria-label="바이에른 뮌헨 배지 FCB"><b>FCB</b></span>
+    <div class="tbh__b">
+      <p class="tbh__k"><span class="ftab tab--bundesliga " title="분데스리가">분데스</span><span>분데스리가 <b class="n">2</b>위 · 승점 <b class="n">11</b></span></p>
+      <h1 id="b-tp-h">바이에른 뮌헨</h1>
+    </div>
+  </header>
+  <dl class="tbh__row">
+    <div><dt>최근 경기 <span>전 대회 · 자료 3</span></dt><dd><span class="form " role="img" aria-label="최근 경기(전 대회) 자료 3경기 (오래된 순): 승, 승, 무 — 나머지 2경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span></dd></div>
+    <div><dt>다음 경기</dt><dd><time class="" datetime="2026-10-13T19:00:00Z">10.14 (수) 04:00</time> <span class="ftab tab--ucl " title="UEFA 챔피언스리그">UCL</span> 원정 <span lang="en">Viking</span></dd></div>
+    <div><dt>한국 선수</dt><dd><span class="arm">한국</span> <a class="krl" href="/euro-digest/korean-players/kim-min-jae/">김민재</a> DF</dd></div>
+    <div><dt>시즌</dt><dd><span><span class="n">5</span>경기 <span class="n">3</span>승 <span class="n">2</span>무 <span class="n">0</span>패 · 득실 <span class="n">+12</span> · UCL <span class="n">2</span>위</span></dd></div>
+  </dl>
+  <section class="ts" aria-labelledby="b-ts-h">
+    <div class="sec-h"><h2 id="b-ts-h">팀시트</h2><span class="rh" lang="en" aria-hidden="true">TEAM SHEET</span></div>
+    <div class="ts__fm"><p class="ts__k">주 포메이션</p><p class="ts__n n">4-2-3-1</p><p class="ts__s">집계 <span class="n">2</span>경기 중 <span class="n">2</span>경기 · 선수는 최근 선발 <time class="" datetime="2026-10-10T13:30:00Z">10.10 (토) 22:30</time> 아우크스부르크 원정 <span class="n">2-2</span> · API-Football</p></div>
+    <div class="ts__grid">
+      <div class="bp" aria-hidden="true">
+        <div class="bp__v"><svg class="pitch__lines" viewBox="0 0 68 105" preserveAspectRatio="none" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"><rect x="0.5" y="0.5" width="67" height="104" vector-effect="non-scaling-stroke"/><path d="M0.5 52.5H67.5" vector-effect="non-scaling-stroke"/><circle cx="34" cy="52.5" r="9.15" vector-effect="non-scaling-stroke"/><rect x="13.85" y="0.5" width="40.3" height="16.5" vector-effect="non-scaling-stroke"/><rect x="24.85" y="0.5" width="18.3" height="5.5" vector-effect="non-scaling-stroke"/><rect x="13.85" y="88" width="40.3" height="16.5" vector-effect="non-scaling-stroke"/><rect x="24.85" y="99" width="18.3" height="5.5" vector-effect="non-scaling-stroke"/></g></svg></div><div class="bp__h"><svg class="pitch__lines" viewBox="0 0 105 68" preserveAspectRatio="none" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="104" height="67" vector-effect="non-scaling-stroke"/><path d="M52.5 0.5V67.5" vector-effect="non-scaling-stroke"/><circle cx="52.5" cy="34" r="9.15" vector-effect="non-scaling-stroke"/><rect x="0.5" y="13.85" width="16.5" height="40.3" vector-effect="non-scaling-stroke"/><rect x="0.5" y="24.85" width="5.5" height="18.3" vector-effect="non-scaling-stroke"/><rect x="88" y="13.85" width="16.5" height="40.3" vector-effect="non-scaling-stroke"/><rect x="99" y="24.85" width="5.5" height="18.3" vector-effect="non-scaling-stroke"/></g></svg></div>
+        <ul class="bp__m"><li class="bm bm--gk" data-no="1" style="--a:91.0;--c:50.0;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">1</span><span class="bm__nm">M. Neuer</span></li><li class="bm" data-no="19" style="--a:71.5;--c:18.5;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">19</span><span class="bm__nm">알폰소 데이비스</span></li><li class="bm" data-no="4" style="--a:71.5;--c:39.5;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">4</span><span class="bm__nm">J. Tah</span></li><li class="bm" data-no="2" style="--a:71.5;--c:60.5;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">2</span><span class="bm__nm">D. Upamecano</span></li><li class="bm" data-no="44" style="--a:71.5;--c:81.5;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">44</span><span class="bm__nm">J. Stanišić</span></li><li class="bm" data-no="45" style="--a:52.0;--c:29.0;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">45</span><span class="bm__nm">A. Pavlović</span></li><li class="bm" data-no="6" style="--a:52.0;--c:71.0;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">6</span><span class="bm__nm">J. Kimmich</span></li><li class="bm" data-no="14" style="--a:32.5;--c:22.0;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">14</span><span class="bm__nm">L. Díaz</span></li><li class="bm" data-no="34" style="--a:32.5;--c:50.0;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">34</span><span class="bm__nm">I. Saibari</span></li><li class="bm" data-no="17" style="--a:32.5;--c:78.0;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">17</span><span class="bm__nm">마이클 올리세</span></li><li class="bm" data-no="9" style="--a:13.0;--c:50.0;--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">9</span><span class="bm__nm">해리 케인</span></li></ul>
+      </div>
+      <div class="sheet">
+        <h3 class="sh__h">선발 <span class="n">11</span></h3>
+        <ol class="sh"><li data-no="1"><span class="sh__no n" aria-hidden="true">1</span><span class="sr">등번호 1</span><span class="sh__n"><span lang="en">M. Neuer</span></span><span class="sh__p">GK</span></li><li data-no="44"><span class="sh__no n" aria-hidden="true">44</span><span class="sr">등번호 44</span><span class="sh__n"><span lang="en">J. Stanišić</span></span><span class="sh__p">DF</span></li><li data-no="2"><span class="sh__no n" aria-hidden="true">2</span><span class="sr">등번호 2</span><span class="sh__n"><span lang="en">D. Upamecano</span></span><span class="sh__p">DF</span></li><li data-no="4"><span class="sh__no n" aria-hidden="true">4</span><span class="sr">등번호 4</span><span class="sh__n"><span lang="en">J. Tah</span></span><span class="sh__p">DF</span></li><li data-no="19"><span class="sh__no n" aria-hidden="true">19</span><span class="sr">등번호 19</span><span class="sh__n"><span>알폰소 데이비스</span></span><span class="sh__p">DF</span></li><li data-no="6"><span class="sh__no n" aria-hidden="true">6</span><span class="sr">등번호 6</span><span class="sh__n"><span lang="en">J. Kimmich</span></span><span class="sh__p">MF</span></li><li data-no="45"><span class="sh__no n" aria-hidden="true">45</span><span class="sr">등번호 45</span><span class="sh__n"><span lang="en">A. Pavlović</span></span><span class="sh__p">MF</span></li><li data-no="17"><span class="sh__no n" aria-hidden="true">17</span><span class="sr">등번호 17</span><span class="sh__n"><span>마이클 올리세</span></span><span class="sh__p">MF</span></li><li data-no="34"><span class="sh__no n" aria-hidden="true">34</span><span class="sr">등번호 34</span><span class="sh__n"><span lang="en">I. Saibari</span></span><span class="sh__p">MF</span></li><li data-no="14"><span class="sh__no n" aria-hidden="true">14</span><span class="sr">등번호 14</span><span class="sh__n"><span lang="en">L. Díaz</span></span><span class="sh__p">MF</span></li><li data-no="9"><span class="sh__no n" aria-hidden="true">9</span><span class="sr">등번호 9</span><span class="sh__n"><span>해리 케인</span></span><span class="sh__p">FW</span></li></ol>
+        <h3 class="sh__h">교체 <span class="n">9</span></h3>
+        <ol class="sh sh--subs"><li data-no="23"><span class="sh__no n" aria-hidden="true">23</span><span class="sr">등번호 23</span><span class="sh__n"><span lang="en">S. Boey</span></span><span class="sh__p">DF</span></li><li data-no="11"><span class="sh__no n" aria-hidden="true">11</span><span class="sr">등번호 11</span><span class="sh__n"><span lang="en">N. Brown</span></span><span class="sh__p">DF</span></li><li data-no="7"><span class="sh__no n" aria-hidden="true">7</span><span class="sr">등번호 7</span><span class="sh__n"><span lang="en">S. Gnabry</span></span><span class="sh__p">FW</span></li><li data-no="21"><span class="sh__no n" aria-hidden="true">21</span><span class="sr">등번호 21</span><span class="sh__n"><span lang="en">H. Ito</span></span><span class="sh__p">DF</span></li><li data-no="42"><span class="sh__no n" aria-hidden="true">42</span><span class="sr">등번호 42</span><span class="sh__n"><span lang="en">L. Karl</span></span><span class="sh__p">MF</span></li><li data-no="3" class="is-kr"><span class="sh__no n" aria-hidden="true">3</span><span class="sr">등번호 3</span><span class="sh__n"><span>김민재</span> <span class="arm" title="한국 선수">한국</span></span><span class="sh__p">DF</span></li><li data-no="39"><span class="sh__no n" aria-hidden="true">39</span><span class="sr">등번호 39</span><span class="sh__n"><span lang="en">Bara Ndiaye</span></span><span class="sh__p">MF</span></li><li data-no="40"><span class="sh__no n" aria-hidden="true">40</span><span class="sr">등번호 40</span><span class="sh__n"><span lang="en">J. Urbig</span></span><span class="sh__p">GK</span></li><li data-no="8"><span class="sh__no n" aria-hidden="true">8</span><span class="sr">등번호 8</span><span class="sh__n"><span lang="en">T. Bischof</span></span><span class="sh__p">MF</span></li></ol>
+        <p class="note">한글은 names.ko.json 등록 선수만 · 한국 선수는 API 선수 ID로 매칭(김민재 2897)</p>
+      </div>
+    </div>
+  </section>
+  <div class="b2">
+    <section aria-labelledby="b-fx-h">
+      <div class="sec-h"><h2 id="b-fx-h">일정·결과</h2><span class="rh" lang="en" aria-hidden="true">FIXTURES</span></div>
+      <p class="sub">KST · fixtures에 있는 경기만 · 10.14 뒤는 자리(M2-02)</p>
+      <ul class="mcs mcs--team"><li class="mc"><p class="mc__k"><time class="" datetime="2026-09-10T19:00:00Z">09.11 (금) 04:00</time><span class="ftab tab--ucl " title="UEFA 챔피언스리그">UCL</span><span class="mc__st">홈</span><i class="fm fm--W" aria-hidden="true">W</i><span class="sr">승</span></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--s" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span><span >바이에른 뮌헨</span></span><b class="n">5</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--s bdg--none" aria-hidden="true"><b>FK</b></span><span >보되/글림트</span></span><b class="n">0</b></p></li><li class="mc"><p class="mc__k"><time class="" datetime="2026-09-18T18:30:00Z">09.19 (토) 03:30</time><span class="ftab tab--bundesliga " title="분데스리가">분데스</span><span class="mc__st">홈</span><i class="fm fm--W" aria-hidden="true">W</i><span class="sr">승</span></p>
+<p class="mc__t is-w"><span class="mc__tm"><span class="bdg bdg--s" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span><span >바이에른 뮌헨</span></span><b class="n">7</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--s" style="--k1:#D4011D;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>UNB</b></span><span >우니온 베를린</span></span><b class="n">0</b></p></li><li class="mc"><p class="mc__k"><time class="" datetime="2026-10-10T13:30:00Z">10.10 (토) 22:30</time><span class="ftab tab--bundesliga " title="분데스리가">분데스</span><span class="mc__st">원정</span><i class="fm fm--D" aria-hidden="true">D</i><span class="sr">무</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--s bdg--none" aria-hidden="true"><b>FCA</b></span><span >아우크스부르크</span></span><b class="n">2</b></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--s" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span><span >바이에른 뮌헨</span></span><b class="n">2</b></p></li><li class="mc mc--sched"><p class="mc__k"><time class="" datetime="2026-10-13T19:00:00Z">10.14 (수) 04:00</time><span class="ftab tab--ucl " title="UEFA 챔피언스리그">UCL</span><span class="mc__st">원정</span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--s bdg--none" aria-hidden="true"><b>VIK</b></span><span lang="en">Viking</span></span></p>
+<p class="mc__t"><span class="mc__tm"><span class="bdg bdg--s" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span><span >바이에른 뮌헨</span></span><span class="mc__vs">예정</span></p></li></ul>
+    </section>
+    <section aria-labelledby="b-kp-h">
+      <div class="sec-h"><h2 id="b-kp-h">득점·도움</h2><span class="rh" lang="en" aria-hidden="true">KEY PLAYERS</span></div>
+      <p class="sub">09.19 이후 집계 · 분데스리가 <span class="n">2</span>경기</p>
+      <ol class="bsc bsc--nb"><li><span class="bsc__no n" aria-hidden="true">1</span><span class="sr">1위</span><span class="bsc__n"><span>마이클 올리세</span><span class="bsc__t">도움 1</span></span><span class="bsc__g"><b class="n">3</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">2</span><span class="sr">2위</span><span class="bsc__n"><span>해리 케인</span><span class="bsc__t">도움 2</span></span><span class="bsc__g"><b class="n">2</b>골</span></li><li><span class="bsc__no n" aria-hidden="true">3</span><span class="sr">3위</span><span class="bsc__n"><span lang="en">I. Saibari</span><span class="bsc__t">도움 0</span></span><span class="bsc__g"><b class="n">2</b>골</span></li></ol>
+      <div class="sec-h sec-h--thin" style="margin-top:28px"><h3>분데스리가 순위</h3></div>
+      <ol class="ld ld--mini" aria-label="분데스리가 1~4위"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/borussia-dortmund/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FDE100;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BVB</b></span>
+<span class="ld__nm"><span>도르트문트</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 무 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+7</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/bayern-munchen/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바이에른 뮌헨</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+12</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/freiburg/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D40018;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SCF</b></span>
+<span class="ld__nm"><span>프라이부르크</span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+9</span></span><span class="ld__p"><span class="n">4</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/bayer-04-leverkusen/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D11F1E;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>B04</b></span>
+<span class="ld__nm"><span>레버쿠젠</span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+6</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li></ol>
+    </section>
+  </div>
+</section>
+</div>
+<aside class="divider divider--screen" aria-label="시안 설명 — 화면 3 · 홈 위젯"><span><b>화면 3 · 홈 위젯</b> <code>/</code></span><span class="divider__info">오늘 밤 볼 경기 · 리그 순위 미니 — 1280 마주 보는 면 / 1279 이하 지면 안</span></aside>
+<section class="shell" id="s3" aria-label="화면 3 — 홈 위젯">
+<div class="layout layout--3">
+  <div class="contents"><p class="ph-box"><b>목차</b>D0 그대로</p></div>
+  <div class="page">
+    <p class="ph-box home-ph"><b>지면</b>오늘의 5줄 · 한국 선수 · 주요 뉴스 — D0 혼합안 그대로(생략). 1279 이하에서는 위젯이 이 아래 지면 안에 온다</p>
+    <div class="in-flow"><section class="wg" aria-labelledby="b-w1-tn-h">
+  <div class="sec-h sec-h--thin"><h2 id="b-w1-tn-h">오늘 밤 볼 경기</h2><span class="rh" lang="en" aria-hidden="true">TONIGHT</span></div>
+  <p class="sub">10.11 18:00 ~ 10.12 07:00 KST</p>
+  <ul class="tcs"><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T13:00:00Z">22:00</time><span class="tc__d n">10.11 (일)</span><span class="ftab tab--epl " title="프리미어리그">EPL</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#F5A12D;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>HUL</b></span><span>헐 시티</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#003399;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>EVE</b></span><span>에버턴</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="stamp">승점 차 1 · 8·10위</li></ul></li><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T13:30:00Z">22:30</time><span class="tc__d n">10.11 (일)</span><span class="ftab tab--bundesliga " title="분데스리가">분데스</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#ED1C24;--kf:#14213D" aria-hidden="true"><b>KOE</b></span><span>쾰른</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BMG</b></span><span>묀헨글라트바흐</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="why"><span class="arm">한국</span> 옌스 카스트로프 소속</li></ul></li><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T14:15:00Z">23:15</time><span class="tc__d n">10.11 (일)</span><span class="ftab tab--laliga " title="라리가">라리가</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#0067B1;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>RSO</b></span><span>레알 소시에다드</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#0055A4;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>DEP</b></span><span>데포르티보 라코루냐</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="stamp">승점 차 0 · 7·8위</li></ul></li><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T15:30:00Z">00:30</time><span class="tc__d n">10.12 (월)</span><span class="ftab tab--epl " title="프리미어리그">EPL</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#C8102E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIV</b></span><span>리버풀</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span><span>맨체스터 시티</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="stamp stamp--ph">이유 자리 · M2-08</li></ul></li><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T15:30:00Z">00:30</time><span class="tc__d n">10.12 (월)</span><span class="ftab tab--bundesliga " title="분데스리가">분데스</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#D40018;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SCF</b></span><span>프라이부르크</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#004D9D;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>S04</b></span><span>샬케04</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="why"><span class="arm">한국</span> 황희찬 소속</li></ul></li></ul>
+</section><section class="wg" aria-labelledby="b-w1-mn-h">
+  <div class="sec-h sec-h--thin"><h2 id="b-w1-mn-h">리그 순위</h2><span class="rh" lang="en" aria-hidden="true">LEAGUE TABLE</span></div>
+  <div class="bmt" role="tablist" aria-label="대회 선택"><button class="ctab tab--epl" role="tab" type="button" id="b-w1-mt-0" aria-controls="b-w1-mp-0" aria-selected="true">EPL</button><button class="ctab tab--laliga" role="tab" type="button" id="b-w1-mt-1" aria-controls="b-w1-mp-1" aria-selected="false" tabindex="-1">라리가</button><button class="ctab tab--seriea" role="tab" type="button" id="b-w1-mt-2" aria-controls="b-w1-mp-2" aria-selected="false" tabindex="-1">세리에A</button><button class="ctab tab--bundesliga" role="tab" type="button" id="b-w1-mt-3" aria-controls="b-w1-mp-3" aria-selected="false" tabindex="-1">분데스</button><button class="ctab tab--ligue1" role="tab" type="button" id="b-w1-mt-4" aria-controls="b-w1-mp-4" aria-selected="false" tabindex="-1">리그1</button><button class="ctab tab--ucl" role="tab" type="button" id="b-w1-mt-5" aria-controls="b-w1-mp-5" aria-selected="false" tabindex="-1">UCL</button></div>
+  <div class="mp" role="tabpanel" id="b-w1-mp-0" aria-labelledby="b-w1-mt-0"><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/manchester-city/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span>
+<span class="ld__nm"><span>맨체스터 시티</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">15</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+8</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/arsenal/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span>
+<span class="ld__nm"><span>아스널</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">15</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/brighton-hove-albion/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#0057B8;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BHA</b></span>
+<span class="ld__nm"><span>브라이턴</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+13</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/brentford/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D50612;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BRE</b></span>
+<span class="ld__nm"><span>브렌트포드</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+6</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/chelsea/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span>
+<span class="ld__nm"><span>첼시</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">5</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+2</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준 · 변동 전날 대비</span><a class="tlink" href="/euro-digest/competitions/epl/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w1-mp-1" aria-labelledby="b-w1-mt-1" hidden><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/barcelona/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#A50044;--k2:#004D98;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바르셀로나</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">24</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+27</span></span><span class="ld__p"><span class="n">8</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/atletico-de-madrid/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#C73423;--k2:#272E61;--kf:#FFFFFF" aria-hidden="true"><b>ATL</b></span>
+<span class="ld__nm"><span>아틀레티코 마드리드</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">19</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+10</span></span><span class="ld__p"><span class="n">8</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/real-madrid/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#FEBE10;--kf:#14213D" aria-hidden="true"><b>RMA</b></span>
+<span class="ld__nm"><span>레알 마드리드</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">18</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+11</span></span><span class="ld__p"><span class="n">8</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/real-betis-balompie/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#007A3E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BET</b></span>
+<span class="ld__nm"><span>레알 베티스</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">16</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+2</span></span><span class="ld__p"><span class="n">7</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/sevilla/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#D81920;--kf:#14213D" aria-hidden="true"><b>SEV</b></span>
+<span class="ld__nm"><span>세비야</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+1</span></span><span class="ld__p"><span class="n">7</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준 · 변동 전날 대비</span><a class="tlink" href="/euro-digest/competitions/laliga/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w1-mp-2" aria-labelledby="b-w1-mt-2" hidden><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/internazionale-milano/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#0068A8;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>INT</b></span>
+<span class="ld__nm"><span>인테르</span></span>
+<span class="ld__pt"><b class="n">16</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+10</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/as-roma/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#8E1F2F;--k2:#F0BC42;--kf:#FFFFFF" aria-hidden="true"><b>ROM</b></span>
+<span class="ld__nm"><span>로마</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+11</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/ss-lazio/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#87D8F7;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>LAZ</b></span>
+<span class="ld__nm"><span>라치오</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/cagliari-calcio/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#A80C2F;--k2:#002350;--kf:#FFFFFF" aria-hidden="true"><b>CAG</b></span>
+<span class="ld__nm"><span>칼리아리</span></span>
+<span class="ld__pt"><b class="n">12</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/ac-milan/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D80809;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MIL</b></span>
+<span class="ld__nm"><span>AC 밀란</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+6</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준</span><a class="tlink" href="/euro-digest/competitions/seriea/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w1-mp-3" aria-labelledby="b-w1-mt-3" hidden><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/borussia-dortmund/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FDE100;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BVB</b></span>
+<span class="ld__nm"><span>도르트문트</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 무 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+7</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/bayern-munchen/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바이에른 뮌헨</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+12</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/freiburg/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D40018;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SCF</b></span>
+<span class="ld__nm"><span>프라이부르크</span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+9</span></span><span class="ld__p"><span class="n">4</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/bayer-04-leverkusen/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D11F1E;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>B04</b></span>
+<span class="ld__nm"><span>레버쿠젠</span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+6</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/rb-leipzig/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#DD0741;--kf:#14213D" aria-hidden="true"><b>RBL</b></span>
+<span class="ld__nm"><span>라이프치히</span></span>
+<span class="ld__pt"><b class="n">9</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+10</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준</span><a class="tlink" href="/euro-digest/competitions/bundesliga/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w1-mp-4" aria-labelledby="b-w1-mt-4" hidden><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/as-monaco/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D5151C;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ASM</b></span>
+<span class="ld__nm"><span>모나코</span></span>
+<span class="ld__pt"><b class="n">14</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/lille-osc/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D31C12;--k2:#1B2B4D;--kf:#FFFFFF" aria-hidden="true"><b>LIL</b></span>
+<span class="ld__nm"><span>릴</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/olympique-lyonnais/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#14387F;--kf:#14213D" aria-hidden="true"><b>LYO</b></span>
+<span class="ld__nm"><span>리옹</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+7</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/paris/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m bdg--none" aria-hidden="true"><b>PFC</b></span>
+<span class="ld__nm"><span>파리 FC</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+4</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/paris-saint-germain/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#004170;--k2:#DA291C;--kf:#FFFFFF" aria-hidden="true"><b>PSG</b></span>
+<span class="ld__nm"><span>파리 생제르맹</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준</span><a class="tlink" href="/euro-digest/competitions/ligue1/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w1-mp-5" aria-labelledby="b-w1-mt-5" hidden><ol class="ld ld--mini"><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/paris-saint-germain/">
+<span class="ld__rk"><b class="n">1</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#004170;--k2:#DA291C;--kf:#FFFFFF" aria-hidden="true"><b>PSG</b></span>
+<span class="ld__nm"><span>파리 생제르맹</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 3경기 (오래된 순): 무, 무, 승 — 나머지 2경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i><i class="fm fm--D">D</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/bayern-munchen/">
+<span class="ld__rk"><b class="n">2</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바이에른 뮌헨</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/barcelona/">
+<span class="ld__rk"><b class="n">3</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#A50044;--k2:#004D98;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바르셀로나</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+4</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/manchester-united/">
+<span class="ld__rk"><b class="n">4</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#CD271A;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MUN</b></span>
+<span class="ld__nm"><span>맨체스터 유나이티드</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+4</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/como-1907/">
+<span class="ld__rk"><b class="n">5</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m bdg--none" aria-hidden="true"><b>COM</b></span>
+<span class="ld__nm"><span>코모</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.10 기준</span><a class="tlink" href="/euro-digest/competitions/ucl/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div>
+</section></div>
+  </div>
+  <div class="facing"><section class="wg" aria-labelledby="b-w2-tn-h">
+  <div class="sec-h sec-h--thin"><h2 id="b-w2-tn-h">오늘 밤 볼 경기</h2><span class="rh" lang="en" aria-hidden="true">TONIGHT</span></div>
+  <p class="sub">10.11 18:00 ~ 10.12 07:00 KST</p>
+  <ul class="tcs"><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T13:00:00Z">22:00</time><span class="tc__d n">10.11 (일)</span><span class="ftab tab--epl " title="프리미어리그">EPL</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#F5A12D;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>HUL</b></span><span>헐 시티</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#003399;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>EVE</b></span><span>에버턴</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="stamp">승점 차 1 · 8·10위</li></ul></li><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T13:30:00Z">22:30</time><span class="tc__d n">10.11 (일)</span><span class="ftab tab--bundesliga " title="분데스리가">분데스</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#ED1C24;--kf:#14213D" aria-hidden="true"><b>KOE</b></span><span>쾰른</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BMG</b></span><span>묀헨글라트바흐</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="why"><span class="arm">한국</span> 옌스 카스트로프 소속</li></ul></li><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T14:15:00Z">23:15</time><span class="tc__d n">10.11 (일)</span><span class="ftab tab--laliga " title="라리가">라리가</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#0067B1;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>RSO</b></span><span>레알 소시에다드</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#0055A4;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>DEP</b></span><span>데포르티보 라코루냐</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="stamp">승점 차 0 · 7·8위</li></ul></li><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T15:30:00Z">00:30</time><span class="tc__d n">10.12 (월)</span><span class="ftab tab--epl " title="프리미어리그">EPL</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#C8102E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIV</b></span><span>리버풀</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span><span>맨체스터 시티</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="stamp stamp--ph">이유 자리 · M2-08</li></ul></li><li class="tc"><p class="tc__k"><time class="tc__t n" datetime="2026-10-11T15:30:00Z">00:30</time><span class="tc__d n">10.12 (월)</span><span class="ftab tab--bundesliga " title="분데스리가">분데스</span></p>
+<p class="tc__tm"><span class="bdg bdg--m" style="--k1:#D40018;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SCF</b></span><span>프라이부르크</span></p><p class="tc__tm"><span class="bdg bdg--m" style="--k1:#004D9D;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>S04</b></span><span>샬케04</span></p>
+<ul class="tc__why" aria-label="선정 이유"><li class="why"><span class="arm">한국</span> 황희찬 소속</li></ul></li></ul>
+</section><section class="wg" aria-labelledby="b-w2-mn-h">
+  <div class="sec-h sec-h--thin"><h2 id="b-w2-mn-h">리그 순위</h2><span class="rh" lang="en" aria-hidden="true">LEAGUE TABLE</span></div>
+  <div class="bmt" role="tablist" aria-label="대회 선택"><button class="ctab tab--epl" role="tab" type="button" id="b-w2-mt-0" aria-controls="b-w2-mp-0" aria-selected="true">EPL</button><button class="ctab tab--laliga" role="tab" type="button" id="b-w2-mt-1" aria-controls="b-w2-mp-1" aria-selected="false" tabindex="-1">라리가</button><button class="ctab tab--seriea" role="tab" type="button" id="b-w2-mt-2" aria-controls="b-w2-mp-2" aria-selected="false" tabindex="-1">세리에A</button><button class="ctab tab--bundesliga" role="tab" type="button" id="b-w2-mt-3" aria-controls="b-w2-mp-3" aria-selected="false" tabindex="-1">분데스</button><button class="ctab tab--ligue1" role="tab" type="button" id="b-w2-mt-4" aria-controls="b-w2-mp-4" aria-selected="false" tabindex="-1">리그1</button><button class="ctab tab--ucl" role="tab" type="button" id="b-w2-mt-5" aria-controls="b-w2-mp-5" aria-selected="false" tabindex="-1">UCL</button></div>
+  <div class="mp" role="tabpanel" id="b-w2-mp-0" aria-labelledby="b-w2-mt-0"><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/manchester-city/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span>
+<span class="ld__nm"><span>맨체스터 시티</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">15</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+8</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/arsenal/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span>
+<span class="ld__nm"><span>아스널</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">15</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/brighton-hove-albion/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#0057B8;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BHA</b></span>
+<span class="ld__nm"><span>브라이턴</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+13</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/brentford/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D50612;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BRE</b></span>
+<span class="ld__nm"><span>브렌트포드</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+6</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/chelsea/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span>
+<span class="ld__nm"><span>첼시</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">5</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+2</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준 · 변동 전날 대비</span><a class="tlink" href="/euro-digest/competitions/epl/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w2-mp-1" aria-labelledby="b-w2-mt-1" hidden><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/barcelona/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#A50044;--k2:#004D98;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바르셀로나</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">24</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+27</span></span><span class="ld__p"><span class="n">8</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/atletico-de-madrid/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#C73423;--k2:#272E61;--kf:#FFFFFF" aria-hidden="true"><b>ATL</b></span>
+<span class="ld__nm"><span>아틀레티코 마드리드</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">19</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+10</span></span><span class="ld__p"><span class="n">8</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/real-madrid/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#FEBE10;--kf:#14213D" aria-hidden="true"><b>RMA</b></span>
+<span class="ld__nm"><span>레알 마드리드</span><span class="tr tr--up "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 상승</span></span></span>
+<span class="ld__pt"><b class="n">18</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+11</span></span><span class="ld__p"><span class="n">8</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/real-betis-balompie/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#007A3E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BET</b></span>
+<span class="ld__nm"><span>레알 베티스</span><span class="tr tr--down "><i aria-hidden="true"></i><span class="n">1</span><span class="sr">계단 하락</span></span></span>
+<span class="ld__pt"><b class="n">16</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+2</span></span><span class="ld__p"><span class="n">7</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/sevilla/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#D81920;--kf:#14213D" aria-hidden="true"><b>SEV</b></span>
+<span class="ld__nm"><span>세비야</span><span class="tr tr--eq " aria-hidden="false"><span aria-hidden="true">–</span><span class="sr">변동 없음</span></span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+1</span></span><span class="ld__p"><span class="n">7</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준 · 변동 전날 대비</span><a class="tlink" href="/euro-digest/competitions/laliga/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w2-mp-2" aria-labelledby="b-w2-mt-2" hidden><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/internazionale-milano/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#0068A8;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>INT</b></span>
+<span class="ld__nm"><span>인테르</span></span>
+<span class="ld__pt"><b class="n">16</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+10</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/as-roma/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#8E1F2F;--k2:#F0BC42;--kf:#FFFFFF" aria-hidden="true"><b>ROM</b></span>
+<span class="ld__nm"><span>로마</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+11</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/ss-lazio/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#87D8F7;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>LAZ</b></span>
+<span class="ld__nm"><span>라치오</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/cagliari-calcio/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#A80C2F;--k2:#002350;--kf:#FFFFFF" aria-hidden="true"><b>CAG</b></span>
+<span class="ld__nm"><span>칼리아리</span></span>
+<span class="ld__pt"><b class="n">12</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/ac-milan/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D80809;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MIL</b></span>
+<span class="ld__nm"><span>AC 밀란</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+6</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준</span><a class="tlink" href="/euro-digest/competitions/seriea/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w2-mp-3" aria-labelledby="b-w2-mt-3" hidden><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/borussia-dortmund/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FDE100;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BVB</b></span>
+<span class="ld__nm"><span>도르트문트</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 무 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+7</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/bayern-munchen/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바이에른 뮌헨</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+12</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/freiburg/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D40018;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SCF</b></span>
+<span class="ld__nm"><span>프라이부르크</span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+9</span></span><span class="ld__p"><span class="n">4</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/bayer-04-leverkusen/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D11F1E;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>B04</b></span>
+<span class="ld__nm"><span>레버쿠젠</span></span>
+<span class="ld__pt"><b class="n">10</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+6</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/rb-leipzig/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#DD0741;--kf:#14213D" aria-hidden="true"><b>RBL</b></span>
+<span class="ld__nm"><span>라이프치히</span></span>
+<span class="ld__pt"><b class="n">9</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+10</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준</span><a class="tlink" href="/euro-digest/competitions/bundesliga/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w2-mp-4" aria-labelledby="b-w2-mt-4" hidden><ol class="ld ld--mini"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/as-monaco/">
+<span class="ld__rk"><b class="n">1</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D5151C;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ASM</b></span>
+<span class="ld__nm"><span>모나코</span></span>
+<span class="ld__pt"><b class="n">14</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 무 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--D">D</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/lille-osc/">
+<span class="ld__rk"><b class="n">2</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D31C12;--k2:#1B2B4D;--kf:#FFFFFF" aria-hidden="true"><b>LIL</b></span>
+<span class="ld__nm"><span>릴</span></span>
+<span class="ld__pt"><b class="n">13</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/olympique-lyonnais/">
+<span class="ld__rk"><b class="n">3</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#14387F;--kf:#14213D" aria-hidden="true"><b>LYO</b></span>
+<span class="ld__nm"><span>리옹</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+7</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/paris/">
+<span class="ld__rk"><b class="n">4</b><span class="sr">위</span></span>
+<span class="bdg bdg--m bdg--none" aria-hidden="true"><b>PFC</b></span>
+<span class="ld__nm"><span>파리 FC</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+4</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/paris-saint-germain/">
+<span class="ld__rk"><b class="n">5</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#004170;--k2:#DA291C;--kf:#FFFFFF" aria-hidden="true"><b>PSG</b></span>
+<span class="ld__nm"><span>파리 생제르맹</span></span>
+<span class="ld__pt"><b class="n">11</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">6</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.11 기준</span><a class="tlink" href="/euro-digest/competitions/ligue1/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div><div class="mp" role="tabpanel" id="b-w2-mp-5" aria-labelledby="b-w2-mt-5" hidden><ol class="ld ld--mini"><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/paris-saint-germain/">
+<span class="ld__rk"><b class="n">1</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#004170;--k2:#DA291C;--kf:#FFFFFF" aria-hidden="true"><b>PSG</b></span>
+<span class="ld__nm"><span>파리 생제르맹</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 3경기 (오래된 순): 무, 무, 승 — 나머지 2경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--D">D</i><i class="fm fm--D">D</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/bayern-munchen/">
+<span class="ld__rk"><b class="n">2</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바이에른 뮌헨</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+5</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/barcelona/">
+<span class="ld__rk"><b class="n">3</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#A50044;--k2:#004D98;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span>
+<span class="ld__nm"><span>바르셀로나</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+4</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/manchester-united/">
+<span class="ld__rk"><b class="n">4</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#CD271A;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MUN</b></span>
+<span class="ld__nm"><span>맨체스터 유나이티드</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+4</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/como-1907/">
+<span class="ld__rk"><b class="n">5</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m bdg--none" aria-hidden="true"><b>COM</b></span>
+<span class="ld__nm"><span>코모</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+3</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li></ol><p class="mp__f"><span class="note">10.10 기준</span><a class="tlink" href="/euro-digest/competitions/ucl/">전체 순위 <svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p></div>
+</section></div>
+</div>
+</section>
+<aside class="divider divider--screen" aria-label="시안 설명 — 견본"><span><b>견본</b> <code>구간 · 배지 · 피치 칸</code></span><span class="divider__info">competitions.json zones 실값 · 임시 키트 · 폴백</span></aside>
+<div class="shell" id="s4">
+<section class="spec" aria-labelledby="b-sp-h">
+  <div class="sec-h"><h2 id="b-sp-h">견본 — 구간 · 배지</h2><span class="rh" lang="en" aria-hidden="true">SPECIMENS</span></div>
+  <p class="sub">구간 = 사다리 기둥 색(실선 확정 · 점선 PO) + 순위 아래 구간 글자. competitions.json zones 실값</p>
+  <div class="spec-grid">
+    <figure class="frame"><figcaption class="cap"><b>분데스리가 14–18위</b> 강등 PO 16 · 강등 17–18</figcaption><ol class="ld ld--spec"><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/koln/">
+<span class="ld__rk"><b class="n">14</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#ED1C24;--kf:#14213D" aria-hidden="true"><b>KOE</b></span>
+<span class="ld__nm"><span>쾰른</span></span>
+<span class="ld__pt"><b class="n">4</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−3</span></span><span class="ld__p"><span class="n">4</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/paderborn-07/">
+<span class="ld__rk"><b class="n">15</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#005CA9;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>SCP</b></span>
+<span class="ld__nm"><span>파더보른</span></span>
+<span class="ld__pt"><b class="n">4</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 승, 패 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−4</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i z-relpo"><a class="ld__c" href="/euro-digest/teams/union-berlin/">
+<span class="ld__rk"><b class="n">16</b><span class="ld__z">강등 PO</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D4011D;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>UNB</b></span>
+<span class="ld__nm"><span>우니온 베를린</span></span>
+<span class="ld__pt"><b class="n">4</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 승 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−12</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i z-rel"><a class="ld__c" href="/euro-digest/teams/tsg-1899-hoffenheim/">
+<span class="ld__rk"><b class="n">17</b><span class="ld__z">강등</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#1C63B7;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>TSG</b></span>
+<span class="ld__nm"><span>호펜하임</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 2경기 (오래된 순): 패, 패 — 나머지 3경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−4</span></span><span class="ld__p"><span class="n">5</span>경기</span></span>
+</a></li><li class="ld__i z-rel"><a class="ld__c" href="/euro-digest/teams/borussia-monchengladbach/">
+<span class="ld__rk"><b class="n">18</b><span class="ld__z">강등</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BMG</b></span>
+<span class="ld__nm"><span>묀헨글라트바흐</span></span>
+<span class="ld__pt"><b class="n">0</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−10</span></span><span class="ld__p"><span class="n">4</span>경기</span></span>
+</a></li></ol></figure>
+    <figure class="frame"><figcaption class="cap"><b>UCL 7–11 · 21–26위</b> 16강 직행 · PO · 동순위 — 10.10</figcaption><ol class="ld ld--spec"><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/vfb-stuttgart/">
+<span class="ld__rk"><b class="n">6</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#E32219;--kf:#14213D" aria-hidden="true"><b>VFB</b></span>
+<span class="ld__nm"><span>슈투트가르트</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+2</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-ko"><a class="ld__c" href="/euro-digest/teams/manchester-city/">
+<span class="ld__rk"><b class="n">8</b><span class="ld__z">16강 직행</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span>
+<span class="ld__nm"><span>맨체스터 시티</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+2</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-po"><a class="ld__c" href="/euro-digest/teams/aston-villa/">
+<span class="ld__rk"><b class="n">9</b><span class="ld__z">PO</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#670E36;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>AVL</b></span>
+<span class="ld__nm"><span>애스턴 빌라</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-po"><a class="ld__c" href="/euro-digest/teams/racing-club-de-lens/">
+<span class="ld__rk"><b class="n">9</b><span class="ld__z">PO</span><span class="sr">위</span></span>
+<span class="bdg bdg--m bdg--none" aria-hidden="true"><b>RCL</b></span>
+<span class="ld__nm"><span>랑스</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-po"><a class="ld__c" href="/euro-digest/teams/real-betis-balompie/">
+<span class="ld__rk"><b class="n">9</b><span class="ld__z">PO</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#007A3E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BET</b></span>
+<span class="ld__nm"><span>레알 베티스</span></span>
+<span class="ld__pt"><b class="n">3</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 승 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--W">W</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">+1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li></ol><ol class="ld ld--spec" style="margin-top:14px"><li class="ld__i z-po"><a class="ld__c" href="/euro-digest/teams/villarreal/">
+<span class="ld__rk"><b class="n">21</b><span class="ld__z">PO</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#FFE667;--k2:#005187;--kf:#14213D" aria-hidden="true"><b>VIL</b></span>
+<span class="ld__nm"><span>비야레알</span></span>
+<span class="ld__pt"><b class="n">0</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-po"><a class="ld__c" href="/euro-digest/teams/brugge-kv/">
+<span class="ld__rk"><b class="n">22</b><span class="ld__z">PO</span><span class="sr">위</span></span>
+<span class="bdg bdg--m bdg--none" aria-hidden="true"><b>BRU</b></span>
+<span class="ld__nm"><span>클럽 브뤼헤</span></span>
+<span class="ld__pt"><b class="n">0</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-po"><a class="ld__c" href="/euro-digest/teams/lille-osc/">
+<span class="ld__rk"><b class="n">22</b><span class="ld__z">PO</span><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#D31C12;--k2:#1B2B4D;--kf:#FFFFFF" aria-hidden="true"><b>LIL</b></span>
+<span class="ld__nm"><span>릴</span></span>
+<span class="ld__pt"><b class="n">0</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i z-po"><a class="ld__c" href="/euro-digest/teams/sk-slavia-praha/">
+<span class="ld__rk"><b class="n">22</b><span class="ld__z">PO</span><span class="sr">위</span></span>
+<span class="bdg bdg--m bdg--none" aria-hidden="true"><b>SLP</b></span>
+<span class="ld__nm"><span>슬라비아 프라하</span></span>
+<span class="ld__pt"><b class="n">0</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/atletico-de-madrid/">
+<span class="ld__rk"><b class="n">25</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#C73423;--k2:#272E61;--kf:#FFFFFF" aria-hidden="true"><b>ATL</b></span>
+<span class="ld__nm"><span>아틀레티코 마드리드</span></span>
+<span class="ld__pt"><b class="n">0</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li><li class="ld__i"><a class="ld__c" href="/euro-digest/teams/internazionale-milano/">
+<span class="ld__rk"><b class="n">25</b><span class="sr">위</span></span>
+<span class="bdg bdg--m" style="--k1:#0068A8;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>INT</b></span>
+<span class="ld__nm"><span>인테르</span></span>
+<span class="ld__pt"><b class="n">0</b><span>점</span></span>
+<span class="ld__l2"><span class="form " role="img" aria-label="최근 리그 경기 자료 1경기 (오래된 순): 패 — 나머지 4경기 자료 없음"><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--x"></i><i class="fm fm--L">L</i></span><span class="ld__gd"><span class="sr">득실 </span><span class="n">−1</span></span><span class="ld__p"><span class="n">1</span>경기</span></span>
+</a></li></ol></figure>
+    <figure class="frame"><figcaption class="cap"><b>팀 배지</b> m 40×44 하나로 통일 · FCB 충돌은 한글 팀명으로 · 키트 미지정 폴백</figcaption><div class="bdg-row"><span class="l"><span class="bdg bdg--m" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" role="img" aria-label="바이에른 뮌헨 배지 FCB"><b>FCB</b></span> 바이에른 뮌헨</span><span class="l"><span class="bdg bdg--m" style="--k1:#A50044;--k2:#004D98;--kf:#FFFFFF" role="img" aria-label="바르셀로나 배지 FCB"><b>FCB</b></span> 바르셀로나</span><span class="l"><span class="bdg bdg--m bdg--none" role="img" aria-label="Viking 배지 VIK (팀 컬러 미지정)"><b>VIK</b></span> <span lang="en">Viking</span></span></div></figure>
+    <figure class="frame"><figcaption class="cap"><b>피치 칸</b> 키트 상의 색 + 등번호 · 골키퍼는 잉크 테두리(GK 키트 자료 없음)</figcaption><div class="bdg-row"><span class="bm bm--spec" style="--k1:#D3052B;--kf:#FFFFFF"><span class="bm__no">9</span></span><span class="bm bm--gk bm--spec"><span class="bm__no">1</span></span><span class="note">칸 34×34 · 글자 Barlow 800 · 대비는 배지와 같은 값</span></div></figure>
+  </div>
+</section>
+</div>
+<div class="shell"><footer class="colophon">
+  <div class="colophon__in">
+    <p class="colophon__brand">유로 다이제스트 <span>제 1호 · 2026년 10월 11일 (일)</span></p>
+    <p class="colophon__fd" lang="en">Football data provided by the Football-Data.org API</p>
+    <p class="colophon__p">순위·경기 데이터 football-data.org · 라인업·득점 기록 API-Football. 대회·팀 화면은 이 데이터를 그대로 보여 주며 AI가 쓰지 않습니다.</p>
+    <ul class="colophon__links"><li><a href="/euro-digest/about/">소개·출처 정책</a></li><li><a href="/euro-digest/about/#data">데이터 출처</a></li><li><a href="/euro-digest/privacy/">개인정보 처리방침</a></li></ul>
+    <p class="colophon__p">마지막 업데이트 <time datetime="2026-10-11T06:46:00Z">15:46 KST</time></p>
+  </div>
+</footer></div>
+<nav class="tabbar" aria-label="하단 탭"><a href="/euro-digest/"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M3.5 10.5 12 4l8.5 6.5V20h-5.5v-6h-6v6H3.5z"/></svg><span>홈</span></a><a href="/euro-digest/news/"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 12.5h8M8 16h5"/></svg><span>뉴스</span></a><a href="/euro-digest/competitions/epl/" aria-current="page"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 5h16M4 10h16M4 15h16M4 20h16"/><path d="M8.5 5v15"/></svg><span>리그</span></a></nav>
+<div class="toast-region" aria-live="polite" aria-atomic="true"><div class="toast" data-toast hidden><span class="toast__k">알림</span><span data-toast-t></span></div></div>
+<script>
+
+(function(){
+  var d=document.documentElement;
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{if(v==null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}}};
+  window.__ed={$:$,$$:$$,reduce:window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches};
+  var toastEl=$('[data-toast]'),toastT=$('[data-toast-t]'),timer;
+  function toast(m){if(!toastEl)return;toastT.textContent=m;toastEl.hidden=false;toastEl.style.animation='none';void toastEl.offsetWidth;toastEl.style.animation='';clearTimeout(timer);timer=setTimeout(function(){toastEl.hidden=true},2400)}
+  var L={system:'시스템 설정',light:'라이트',dark:'다크'};
+  function cur(){return d.getAttribute('data-theme')||'system'}
+  function set(t){if(t==='system')d.removeAttribute('data-theme');else d.setAttribute('data-theme',t);store.set('ed-theme',t==='system'?null:t);$$('[data-theme-toggle]').forEach(function(b){b.setAttribute('aria-label','테마: '+L[t]+' (눌러서 바꾸기)')})}
+  $$('[data-theme-toggle]').forEach(function(b){b.addEventListener('click',function(){var o=['system','light','dark'];var nx=o[(o.indexOf(cur())+1)%3];set(nx);toast('테마: '+L[nx])})});
+  set(cur());
+  /* ARIA 탭 — 자동 활성화, ← → Home End */
+  $$('[role="tablist"]').forEach(function(list){
+    var tabs=$$('[role="tab"]',list);
+    function sel(t,focus){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;var p=document.getElementById(x.getAttribute('aria-controls'));if(p){p.hidden=!on;if(on&&!window.__ed.reduce){p.classList.remove('is-in');void p.offsetWidth;p.classList.add('is-in')}}});if(focus)t.focus()}
+    tabs.forEach(function(t,i){t.addEventListener('click',function(){sel(t)});t.addEventListener('keydown',function(e){var k=e.key,j=null;if(k==='ArrowRight'||k==='ArrowDown')j=(i+1)%tabs.length;else if(k==='ArrowLeft'||k==='ArrowUp')j=(i-1+tabs.length)%tabs.length;else if(k==='Home')j=0;else if(k==='End')j=tabs.length-1;if(j!==null){e.preventDefault();sel(tabs[j],true)}})});
+  });
+})();
+
+
+(function(){
+  var ts=document.querySelectorAll('.ts');
+  Array.prototype.forEach.call(ts,function(box){
+    function hl(no){Array.prototype.forEach.call(box.querySelectorAll('[data-no]'),function(el){el.classList.toggle('is-hl',no!==null&&el.getAttribute('data-no')===no)})}
+    box.addEventListener('mouseover',function(e){var el=e.target.closest('[data-no]');hl(el?el.getAttribute('data-no'):null)});
+    box.addEventListener('mouseleave',function(){hl(null)});
+  });
+})();
+
+</script>
+</body>
+</html>
