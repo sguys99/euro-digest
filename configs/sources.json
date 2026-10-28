@@ -118,7 +118,7 @@
     "competitions": [],
     "terms_checked": true,
     "robots_checked": true,
-    "note": "2026-10-10 확인(M0-23) · 사용자 결정 2026-10-10(PRD §15 D22). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거: ESPN RSS Terms(https://www.espn.com/espn/news/story?page=rssinfo) — 피드 내용만 그대로 표시, espn.com 원문 링크 필수, ESPN 제공 표기, 광고 금지, 제목·요약·URL 수정 금지. 조건: 제목 무수정·번역 금지, 링크는 피드 URL 원문 그대로(정규화 URL은 중복 판정 해시에만), 출처 'ESPN' 표기, 광고 없음. 피드 17건, pubDate 'EST' 고정 표기·일괄 갱신 시각(17건 중 9건 동일)이라 최신성 가중 주의, 미국·사우디 리그 혼입. robots: 피드 경로 허용(GPTBot·anthropic-ai·Google-Extended 등 차단). · 2026-10-14 비활성(사용자 결정): GitHub Actions 러너에만 HTTP 202·text/html·0바이트 응답(클라우드 IP 봇 차단 추정 — 로컬은 200 정상 RSS, 3회 연속, 이슈 #3). 차단 회피(UA 위장·프록시)는 하지 않음. M1-41 관찰 기간에 러너에서 재확인 후 재활성 판단."
+    "note": "2026-10-10 확인(M0-23) · 사용자 결정 2026-10-10(PRD §15 D22). 이용 방식: 원제목+링크 전용(LLM 미전송). 근거: ESPN RSS Terms(https://www.espn.com/espn/news/story?page=rssinfo) — 피드 내용만 그대로 표시, espn.com 원문 링크 필수, ESPN 제공 표기, 광고 금지, 제목·요약·URL 수정 금지. 조건: 제목 무수정·번역 금지, 링크는 피드 URL 원문 그대로(정규화 URL은 중복 판정 해시에만), 출처 'ESPN' 표기, 광고 없음. 피드 17건, pubDate 'EST' 고정 표기·일괄 갱신 시각(17건 중 9건 동일)이라 최신성 가중 주의, 미국·사우디 리그 혼입. robots: 피드 경로 허용(GPTBot·anthropic-ai·Google-Extended 등 차단). · 2026-10-14 비활성(사용자 결정): GitHub Actions 러너에만 HTTP 202·text/html·0바이트 응답(클라우드 IP 봇 차단 추정 — 로컬은 200 정상 RSS, 3회 연속, 이슈 #3). 차단 회피(UA 위장·프록시)는 하지 않음. M1-41 관찰 기간에 러너에서 재확인 후 재활성 판단. · 2026-10-29 러너 재확인(일회성 진단 워크플로 run 40784461576, 수집기와 같은 User-Agent·요청 1회): 여전히 HTTP 202·text/html·0바이트(같은 시각 로컬은 200·RSS 20건) → 비활성 유지(사용자 결정 2026-10-29 — 차단이면 유지)."
   },
   {
     "id": "daily-briefing",
