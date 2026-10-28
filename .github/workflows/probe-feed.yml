@@ -1,0 +1,59 @@
+# M1-41 ESPN 러너 재확인용 일회성 — 확인 뒤 삭제(2026-10-29 사용자 결정)
+#
+# 피드 진단 워크플로 (plan M1-41) — Actions 러너에서 피드 1개를 수집기와 같은 받기 경로·User-Agent로 **요청 1회**만 받아
+# HTTP 상태·미디어 타입·바이트 수·본문 형태·파싱 성공 여부·item 수·최신 pubDate·판정(ok·blocked·error)을 로그와 Step Summary에
+# 남긴다(scripts/probe-feed.ts → scripts/lib/probe-feed.ts). espn-soccer는 2026-10-14 러너에만 HTTP 202·text/html·0바이트를 받아
+# 비활성했다(configs/sources.json note, 이슈 #3). 차단 회피(UA 위장·프록시)는 하지 않는다.
+#
+# 발행에 영향 없음: 수동 실행(workflow_dispatch)만, 읽기 권한만(contents: read), secrets 없음, configs·data를 쓰지 않고 커밋·배포하지
+# 않는다. 재활성(configs/sources.json enabled)은 이 결과를 보고 사람이 따로 한다. 판정이 blocked·error여도 실행은 성공(exit 0) —
+# 인자·설정 오류만 실패.
+name: Probe feed (M1-41 일회성)
+run-name: "Probe feed (${{ inputs.source }})"
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "configs/sources.json 소스 id(terms_checked: true인 RSS형 소스만)"
+        type: string
+        required: true
+        default: espn-soccer
+
+# collect·pages·ci-*와 겹치지 않는 그룹 — 진단끼리만 한 번에 하나(같은 피드에 연달아 요청하지 않게).
+concurrency:
+  group: probe-feed
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: 피드 진단 (요청 1회)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Node.js 설정 (.nvmrc)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 의존성 설치
+        timeout-minutes: 4
+        run: npm ci
+
+      # 입력은 셸에 펼치지 않고 env로만 넘긴다(주입 방지 — 값 검증은 스크립트가 한다).
+      # CONTACT_EMAIL은 collect.yml collect job과 같은 값 — User-Agent를 수집기와 똑같이 맞춘다(비밀값 아님).
+      - name: 피드 진단
+        timeout-minutes: 2
+        env:
+          SOURCE: ${{ inputs.source }}
+          CONTACT_EMAIL: sguys99@gmail.com
+        run: npx tsx scripts/probe-feed.ts --source "$SOURCE"
