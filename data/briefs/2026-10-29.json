@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-29",
+  "generatedAt": "2026-10-28T22:12:06.151Z",
+  "runId": "collect-prod-20261028T221107Z-7f0f",
+  "mode": "mixed",
+  "lines": [
+    {
+      "text": "볼로냐가 Samuel Mbangula Tshifunda의 해트트릭을 앞세워 AC 밀란 원정에서 4-2 역전승을 거뒀다.",
+      "ai": true,
+      "refs": [
+        "m558549"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "나폴리가 몬차를 4-1로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m558554"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "인테르가 베네치아 원정에서 2-0으로 이겼다.",
+      "ai": true,
+      "refs": [
+        "m558550"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "인테르가 승점 25로 세리에 A 선두, 라치오가 승점 25로 2위, 로마가 승점 21로 3위다.",
+      "ai": false,
+      "refs": [
+        "sSA"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "제노아가 유벤투스를 2-0으로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m558552"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    }
+  ]
+}

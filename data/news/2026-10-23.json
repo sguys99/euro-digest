@@ -1,7 +1,7 @@
 {
   "date": "2026-10-23",
-  "generatedAt": "2026-10-23T00:10:07.307Z",
-  "runId": "collect-prod-20261023T001000Z-3f28",
+  "generatedAt": "2026-10-28T22:11:07.571Z",
+  "runId": "collect-prod-20261028T221107Z-7f0f",
   "cards": [
     {
       "id": "c_0f4b5de9ef",
@@ -496,12 +496,6 @@
           "n": "the Daily Briefing",
           "u": "https://thedailybriefing.io/p/6310-vs-como-is-it-time-for-man-united",
           "at": "2026-10-22T11:07:04.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7713552/2026/10/22/bruno-fernandes-man-utd-interview-carrick/",
-          "at": "2026-10-22T14:35:43.000Z",
           "tier": 2
         }
       ],
@@ -1020,45 +1014,6 @@
           "u": "https://www.bbc.co.uk/sport/football/articles/c6n9r7wgp9q0o?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-22T17:49:08.000Z",
           "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7692640/2026/10/22/club-world-cup-womens-2028/",
-          "at": "2026-10-22T16:11:27.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-23T00:10:00.356Z"
-    },
-    {
-      "id": "c_d94e2007bf",
-      "t": "What we learnt from PSG, Barcelona, Bayern Munich and Arsenal facing each other",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL",
-        "LALIGA",
-        "BUNDESLIGA",
-        "LIGUE1"
-      ],
-      "teams": [
-        "paris-saint-germain",
-        "barcelona",
-        "bayern-munchen",
-        "arsenal"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7713779/2026/10/22/psg-barcelona-bayern-arsenal-champions-league-analysis/",
-          "at": "2026-10-22T14:41:04.000Z",
-          "tier": 2
         }
       ],
       "lang": "en",
@@ -1257,33 +1212,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-10-23T00:10:00.356Z"
-    },
-    {
-      "id": "c_1a2f269364",
-      "t": "Trent Alexander-Arnold's Real Madrid adventure is not working out",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "real-madrid"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7710420/2026/10/22/alexander-arnold-real-madrid-liverpool-transfer-mourinho/",
-          "at": "2026-10-22T10:00:31.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-10-23T00:10:00.356Z"
     }
