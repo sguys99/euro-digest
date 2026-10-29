@@ -598,11 +598,11 @@
       "note": "통칭 — 위키 'SV 베르더 브레멘'의 국내 매체 통칭 · 영문: football-data 'SV Werder Bremen'·short 'Bremen'"
     },
     {
-      "ko": "엘페르스베르크",
+      "ko": "엘버스베르크",
       "en": ["SV 07 Elversberg", "Elversberg", "SV Elversberg"],
       "kind": "team",
       "slug": "07-elversberg",
-      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(엘페르스베르크/엘버스베르크 중 위키 문서명·독일어 발음) · 위키백과 'SV 엘페르스베르크' · 영문: football-data 'SV 07 Elversberg'·short 'Elversberg', API-Football 'SV Elversberg'"
+      "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용 통일(/add-name 3차 — 근거: 스포츠경향 본문 '엘버스베르크' 2026-08-31 https://sports.khan.co.kr/article/202608310314003/ · 2026-05-18 https://sports.khan.co.kr/article/202605181330003 · 뉴스1 https://www.news1.kr/amp/sports/overseas-soccer/6170247 · 베스트일레븐 본문 '펠릭스 카이델(엘버스베르크)' https://www.besteleven.com/news/articleView.html?idxno=312321) — 대안(규범) 위키백과 'SV 엘페르스베르크'(PRD §15 D46 확정 2026-10-17 표기에서 변경, slug 그대로) · 영문: football-data 'SV 07 Elversberg'·short 'Elversberg', API-Football 'SV Elversberg'"
     },
     {
       "ko": "슈투트가르트",
@@ -873,6 +873,13 @@
       "kind": "team",
       "slug": "fk-bodo-glimt",
       "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'FK 보되/글림트'(법인·형태 약칭 뺌) · 영문: football-data 'FK Bodø/Glimt'·short 'Bodø/Glimt'"
+    },
+    {
+      "ko": "사바",
+      "en": ["Sabah FK", "Sabah FA"],
+      "kind": "team",
+      "slug": "sabah-fk",
+      "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용·통칭(근거: 포포투 본문 '사바 FK' https://www.fourfourtwo.co.kr/news/articleView.html?idxno=99642 — 법인·형태 말 'FK'를 뺀 통칭, 'FK'는 표기 라틴 허용 약칭 밖) — 대안 '사바흐'(아제르바이잔어 원음, 매체 근거 없음) · 위키백과 한국어 문서 없음 · M1-21 확인 목록 보류에서 해제(/add-name 3차) · 영문: football-data 'Sabah FK'·short 'Sabah FK', API-Football 'Sabah FA'(경기 기록 원장 UCL 2026-10-20 도르트문트전)"
     },
     {
       "ko": "해리 케인",
@@ -1376,7 +1383,7 @@
       "en": ["Felix Keidel"],
       "kind": "player",
       "slug": "felix-keidel",
-      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 베스트일레븐 본문 '펠릭스 카이델(엘버스베르크)' https://www.besteleven.com/news/articleView.html?idxno=312321 · 독일어 표기법 일치 · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 엘페르스베르크)"
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 베스트일레븐 본문 '펠릭스 카이델(엘버스베르크)' https://www.besteleven.com/news/articleView.html?idxno=312321 · 독일어 표기법 일치 · 영문: 데이터 API 득점·도움 입력(unknown-names 2026-10-18 — 엘버스베르크)"
     },
     {
       "ko": "유네스 에브누탈리브",
@@ -1468,6 +1475,125 @@
       "kind": "player",
       "slug": "joshua-zirkzee",
       "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 인터풋볼 제목 '지르크지'·본문 '조슈아 지르크지' 2026-09~10 다수 — https://www.interfootball.co.kr/news/articleView.html?idxno=695937 · https://www.interfootball.co.kr/news/articleView.html?idxno=695777 · https://www.interfootball.co.kr/news/articleView.html?idxno=695251, 베스트일레븐 제목 '지르크지' https://www.besteleven.com/news/articleView.html?idxno=311871 · https://www.besteleven.com/news/articleView.html?idxno=229075, 본문 '조슈아 지르크지' 307958, 저장 카드 인터풋볼 RSS 2026-10-17 '세슈코-지르크지', '지르크제이' 표기는 검색 0건) — 대안(규범) 위키백과 '조슈아 지르크제이'(네덜란드어 표기법) · 영문: 데이터 API 득점 입력 'Joshua Zirkzee'(unknown-names 2026-10-22 — 맨체스터 유나이티드)"
+    },
+    {
+      "ko": "사무엘 음방굴라",
+      "en": ["Samuel Mbangula", "Samuel Mbangula Tshifunda"],
+      "kind": "player",
+      "slug": "samuel-mbangula",
+      "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용(근거: 일간스포츠 2026-10-29 본문 '사무엘 음방굴라' https://isplus.com/article/view/isp202610290002 · Flashscore 한국어 '사무엘 음방굴라' https://www.flashscore.co.kr/player/mbangula-tshifunda-samuel/0EjeWH5q/transfers/) — 대안(규범) 위키백과 '사뮈엘 음방굴라'(프랑스어 표기법) · 영문: 대표 표기 en 위키 'Samuel Mbangula' · 별칭 데이터 API 득점 입력 'Samuel Mbangula Tshifunda'(unknown-names 2026-10-28 — 볼로냐, 10-29 브리핑 노출)"
+    },
+    {
+      "ko": "티자니 노슬린",
+      "en": ["Tijjani Noslin"],
+      "kind": "player",
+      "slug": "tijjani-noslin",
+      "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용(근거: 마이데일리 2026-10-28 본문 '티자니 노슬린' https://www.mydaily.co.kr/page/view/2026102809552971113 · 풋볼리스트 본문 '티자니 노슬린' https://www.footballist.co.kr/news/articleView.html?idxno=196077) — 대안 이투데이 '티야니 노슬린' https://www.etoday.co.kr/news/view/2641030 · 위키백과 한국어 문서 없음 · 영문: 데이터 API 득점 입력 'Tijjani Noslin'(unknown-names 2026-10-27 — 라치오, 10-28 브리핑 노출)"
+    },
+    {
+      "ko": "이삭 로메로",
+      "en": ["Isaac Romero"],
+      "kind": "player",
+      "slug": "isaac-romero",
+      "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용(근거: 이투데이 본문 '이삭 로메로' https://www.etoday.co.kr/news/view/2640443 · Flashscore 한국어 '이삭 로메로' https://www.flashscore.co.kr/player/romero-isaac/OK0Lcg44/) — 대안(규범) '이사크 로메로'(스페인어 표기법), 같은 이투데이 기사 사진 설명은 '아이작' · 위키백과 한국어 문서 없음 · 영문: 데이터 API 득점 입력 'Isaac Romero'(unknown-names 2026-10-27 — 세비야, 10-27 브리핑 노출)"
+    },
+    {
+      "ko": "후안 미란다",
+      "en": ["Juan Miranda"],
+      "kind": "player",
+      "slug": "juan-miranda",
+      "note": "확실(규범·매체) — 위키백과 '후안 미란다' https://ko.wikipedia.org/wiki/%ED%9B%84%EC%95%88_%EB%AF%B8%EB%9E%80%EB%8B%A4 · 일간스포츠 2026-10-29 본문 '후안 미란다' https://isplus.com/article/view/isp202610290002 · 영문: 데이터 API 도움 입력 'Juan Miranda'(unknown-names 2026-10-28 — 볼로냐)"
+    },
+    {
+      "ko": "앙토니 카시",
+      "en": ["Anthony Caci"],
+      "kind": "player",
+      "slug": "anthony-caci",
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 마이데일리 2026-10-25 본문 '앙토니 카시' https://www.mydaily.co.kr/page/view/2026102500190854156 · 프랑스어 표기법 일치 · 영문: 데이터 API 득점·도움 입력 'Anthony Caci'(unknown-names 2026-10-25 — 마인츠)"
+    },
+    {
+      "ko": "산티아고 카스트로",
+      "en": ["Santiago Castro", "Santiago Thomas Castro"],
+      "kind": "player",
+      "slug": "santiago-castro",
+      "note": "확실(규범·매체) — 위키백과 '산티아고 카스트로 (2004년)' · 스타뉴스 2025-05-15 본문 '산티아고 카스트로' https://www.starnewskorea.com/sports/2025/05/15/2025051506423950262 · 영문: 대표 표기 en 위키 'Santiago Castro' · 별칭 데이터 API 도움 입력 'Santiago Thomas Castro'(unknown-names 2026-10-25 — AS 로마)"
+    },
+    {
+      "ko": "브라얀 그루다",
+      "en": ["Brajan Gruda"],
+      "kind": "player",
+      "slug": "brajan-gruda",
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 베스트일레븐 본문 '브라얀 그루다(RB 라이프치히)' https://www.besteleven.com/news/articleView.html?idxno=312321 · 영문: 데이터 API 도움 입력 'Brajan Gruda'(unknown-names 2026-10-25 — 라이프치히)"
+    },
+    {
+      "ko": "페르민 로페스",
+      "en": ["Fermín López"],
+      "kind": "player",
+      "slug": "fermin-lopez",
+      "note": "확실(규범·매체) — 위키백과 '페르민 로페스' · 베스트일레븐 본문 '페르민 로페스' https://www.besteleven.com/news/articleView.html?idxno=306971 · 영문: 데이터 API 도움 입력 'Fermín López'(unknown-names 2026-10-21 — 바르셀로나)"
+    },
+    {
+      "ko": "메르트 쾨뮈르",
+      "en": ["Mert Kömür"],
+      "kind": "player",
+      "slug": "mert-komur",
+      "note": "확실(규범·매체 — 위키 선수 문서 없음) — 위키백과 'FC 아우크스부르크' 선수 명단 '메르트 쾨뮈르' https://ko.wikipedia.org/wiki/FC_%EC%95%84%EC%9A%B0%ED%81%AC%EC%8A%A4%EB%B6%80%EB%A5%B4%ED%81%AC · MHN스포츠 본문 '메르트 쾨뮈르' https://mhnse.com/news/articleView.html?idxno=1634004 · 영문: 데이터 API 득점 입력 'Mert Kömür'(unknown-names 2026-10-18 — 아우크스부르크, API-Football 라인업 'M. Kömür' fixtures-id-1575180.json)"
+    },
+    {
+      "ko": "마테오 폴리타노",
+      "en": ["Matteo Politano"],
+      "kind": "player",
+      "slug": "matteo-politano",
+      "note": "확실(규범·매체) — 위키백과 '마테오 폴리타노' · 풋볼리스트 본문 '마테오 폴리타노' https://www.footballist.co.kr/news/articleView.html?idxno=153696 · 영문: 데이터 API 득점·도움 입력 'Matteo Politano'(unknown-names 2026-10-28 — 나폴리)"
+    },
+    {
+      "ko": "도니얼 말런",
+      "en": ["Donyell Malen"],
+      "kind": "player",
+      "slug": "donyell-malen",
+      "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용(근거: 풋볼리스트 본문 '말런' https://www.footballist.co.kr/news/articleView.html?idxno=214818 · 이투데이 본문 '도니얼 말런' https://www.etoday.co.kr/news/view/2641008) — 위키백과 '도니얼 말런'과 같음 · 대안 '도니엘/도넬 말렌'(2020~2024 기사 — 베스트일레븐 https://www.besteleven.com/news/articleView.html?idxno=111198 · 인터풋볼 https://www.interfootball.co.kr/news/articleView.html?idxno=615232) · 영문: 데이터 API 득점·도움 입력 'Donyell Malen'(unknown-names 2026-10-27 — AS 로마)"
+    },
+    {
+      "ko": "플로리앙 토뱅",
+      "en": ["Florian Thauvin"],
+      "kind": "player",
+      "slug": "florian-thauvin",
+      "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용(근거: 스타뉴스 2026-08-17 본문 '플로리앙 토뱅' https://www.starnewskorea.com/sports/2026/08/17/2026081711381249889) — 위키백과 '플로리앙 토뱅'과 같음(규범·매체 일치) · 대안 '플로리안 토뱅'(OSEN https://www.osen.co.kr/article/G1112858812 · 풋볼리스트 https://www.footballist.co.kr/news/articleView.html?idxno=205310) · 영문: 데이터 API 득점·도움 입력 'Florian Thauvin'(unknown-names 2026-10-25 — 랑스)"
+    },
+    {
+      "ko": "에마누엘레 룰리",
+      "en": ["Emanuele Lulli"],
+      "kind": "player",
+      "slug": "emanuele-lulli",
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 이투데이 본문 '에마누엘레 룰리' https://www.etoday.co.kr/news/view/2641008 · 이탈리아어 표기법 일치 · 영문: 데이터 API 득점·도움 입력 'Emanuele Lulli'(unknown-names 2026-10-27 — AS 로마)"
+    },
+    {
+      "ko": "구스타보 바렐라",
+      "en": ["Gustavo Varela"],
+      "kind": "player",
+      "slug": "gustavo-varela",
+      "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용(근거: 이투데이 본문 '구스타보 바렐라' https://www.etoday.co.kr/news/view/2637755 · All Football 한국어판 제목 '구스타보 바렐라' https://www.allfootballapp.com/es/articles/5646852-6-5) — 대안(규범) '구스타부 바렐라'(포르투갈어 표기법 — 같은 이투데이 기사 한 곳) · 위키백과 한국어 문서 없음 · 영문: 데이터 API 득점·도움 입력 'Gustavo Varela'(unknown-names 2026-10-28 — 몬차)"
+    },
+    {
+      "ko": "제이 로빈슨",
+      "en": ["Jay Robinson"],
+      "kind": "player",
+      "slug": "jay-robinson",
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 이투데이 본문 '제이 로빈슨' https://www.etoday.co.kr/news/view/2637755 · 영어 표기 일치 · 영문: 데이터 API 득점·도움 입력 'Jay Robinson'(unknown-names 2026-10-28 — 몬차)"
+    },
+    {
+      "ko": "압둘 와타라",
+      "en": ["Abdoul Ouattara"],
+      "kind": "player",
+      "slug": "abdoul-ouattara",
+      "note": "확실(규범·구단 한국어 채널 — 위키 문서 없음) — 맨체스터 시티 한국어 공식 사이트 경기 리포트(2026-10 입스위치전, 검색 결과 기준 — 직접 열람 403) https://kr.mancity.com/news/mens/man-city-ipswich-premier-league-match-report-october-2026-63927854 · 나무위키 '입스위치 타운 FC/2026-27 시즌' · 영문: 데이터 API 도움 입력 'Abdoul Ouattara'(unknown-names 2026-10-18 — 입스위치 타운(웹 보도))"
+    },
+    {
+      "ko": "루카스 페트코프",
+      "en": ["Lukas Petkov"],
+      "kind": "player",
+      "slug": "lukas-petkov",
+      "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 스포츠경향 2026-08-31 본문 '루카스 페트코프' https://sports.khan.co.kr/article/202608310314003/ · 독일어 표기법 일치 · 영문: 데이터 API 득점 입력 'Lukas Petkov'(unknown-names 2026-10-18 — 엘버스베르크, API-Football 라인업 'L. Petkov' fixtures-id-1575182.json)"
     },
     {
       "ko": "펩 과르디올라",

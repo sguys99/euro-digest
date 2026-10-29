@@ -266,16 +266,16 @@ describe("미등록 이름 후보 — unknownNamesInText", () => {
 
   it("치환이 넣은 한글 표기 속 라틴 낱말('AC 밀란'·'파리 FC'·'AEK 아테네'·'UEFA 챔피언스리그')은 후보가 아니다 — masked에서 찾는다", () => {
     const r = substituteNames(
-      "Milan과 Paris FC, PAE AEK가 Champions League에서 Sabah FK와 만났다",
+      "Milan과 Paris FC, PAE AEK가 Champions League에서 Viking FK와 만났다",
       INDEX,
       { competitionLabel: nameKo },
     );
     expect(r.text).toBe(
-      "AC 밀란과 파리 FC, AEK 아테네가 UEFA 챔피언스리그에서 Sabah FK와 만났다",
+      "AC 밀란과 파리 FC, AEK 아테네가 UEFA 챔피언스리그에서 Viking FK와 만났다",
     );
-    expect(unknownNamesInText(r.masked, INDEX)).toEqual(["Sabah FK"]);
+    expect(unknownNamesInText(r.masked, INDEX)).toEqual(["Viking FK"]);
     // 가리지 않은 텍스트에서는 'AC'·'FC'·'AEK'가 섞여 나온다(이 때문에 masked를 쓴다)
-    expect(unknownNamesInText(r.text, INDEX)).not.toEqual(["Sabah FK"]);
+    expect(unknownNamesInText(r.text, INDEX)).not.toEqual(["Viking FK"]);
   });
 });
 
@@ -304,7 +304,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
       match(),
       match({
         id: "m2",
-        home: "Sabah FK",
+        home: "Viking FK",
         away: "Arsenal",
         ft: "0-1",
         goals: [{ min: "5", team: "Arsenal", player: "Noni Madueke" }],
@@ -448,7 +448,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
     expect(briefInputNames(input).map((n) => `${n.kind}:${n.name}`)).toEqual([
       "team:Bayern",
       "team:Union Berlin",
-      "team:Sabah FK",
+      "team:Viking FK",
       "team:Arsenal",
       "team:Dortmund",
       "player:H. Kane",
@@ -458,7 +458,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
     ]);
     // 첫 글자 축약 별칭은 등록 이름으로 치지 않는다 — 입력 정리를 거치지 않은 'H. Kane'·'J. Musiala'는 미등록 후보
     expect(unknownBriefInputNames(input, INDEX)).toEqual([
-      { name: "Sabah FK", kind: "team" },
+      { name: "Viking FK", kind: "team" },
       { name: "H. Kane", kind: "player" },
       { name: "J. Musiala", kind: "player" },
       { name: "Noni Madueke", kind: "player" },
@@ -467,7 +467,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
       playerTeams: PLAYER_TEAMS,
     }).input;
     expect(unknownBriefInputNames(canonical, INDEX)).toEqual([
-      { name: "Sabah FK", kind: "team" },
+      { name: "Viking FK", kind: "team" },
       { name: "Noni Madueke", kind: "player" },
     ]);
   });
@@ -482,7 +482,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
       "Bayern",
       "FC Bayern München",
       "Union Berlin",
-      "Sabah FK",
+      "Viking FK",
       "Kim Min-Jae",
       "Min-jae Kim",
       "Harry Kane",

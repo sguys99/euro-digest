@@ -42,10 +42,10 @@ const COMPETITIONS = CompetitionsFileSchema.parse(
 /**
  * 표기 확인 대기 — football-data 정식 이름. M1-21 보고의 확인 목록은 2026-10-17 사용자가 추천 표기를 일괄 확정했고(PRD §15 D46),
  * 국내 매체 표기 근거가 없는 두 팀만 보류로 남았다. 사용자 결정 뒤 사전에 넣으면 여기서 뺀다.
+ * Sabah FK는 2026-10-29 사용자 결정으로 '사바'(포포투 '사바 FK'의 통칭 — /add-name 3차) 등록, 보류에서 뺐다.
  */
 const PENDING: readonly string[] = [
   "Viking FK", // 국내 매체 표기 근거 없음(D46 보류)
-  "Sabah FK", // 국내 매체 표기 근거 없음 — 위키 문서 없음(D46 보류)
 ];
 
 /** football-data 짧은 이름을 별칭으로 넣지 않는 팀 — 다른 팀과 겹침(D46: 'Deportivo'는 Deportivo Alavés와 겹친다) */
@@ -160,9 +160,13 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
 
   it("D46 사용자 확정 항목은 note에 결정이 남아 있다 — Club Brugge는 KFA 대신 매체 관례 '클럽 브뤼헤'(D39 ② 예외)", () => {
     const d46 = NAMES.entries.filter((e) => e.note?.includes("D46"));
-    // 팀 13(Club Brugge 포함) · 선수 14 · 감독 3 — 한지 플릭(2026-10-25 사용자 결정으로 '한지 플리크'에서 바꿈)도 note에 D46 확정 이력이 남는다
+    // 팀 13(Club Brugge 포함) · 선수 14 · 감독 3 — 한지 플릭(2026-10-25 사용자 결정으로 '한지 플리크'에서 바꿈)·
+    // 엘버스베르크(2026-10-29 사용자 결정으로 '엘페르스베르크'에서 바꿈 — 매체 관용 통일, /add-name 3차)도 note에 D46 확정 이력이 남는다
     expect(d46.length).toBe(30);
     expect(d46.every((e) => e.note!.includes("2026-10-17"))).toBe(true);
+    const elversberg = teamEntries.find((e) => e.slug === "07-elversberg")!;
+    expect(elversberg.ko).toBe("엘버스베르크");
+    expect(elversberg.note).toMatch(/^확정\(사용자 결정 2026-10-29\)/);
     const brugge = teamEntries.find((e) => e.slug === "brugge-kv")!;
     expect(brugge.ko).toBe("클럽 브뤼헤");
     expect(brugge.note).toContain("D39 ②(KFA 우선)의 예외");
