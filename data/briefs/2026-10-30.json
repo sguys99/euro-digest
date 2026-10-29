@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-30",
+  "generatedAt": "2026-10-29T22:11:47.261Z",
+  "runId": "collect-prod-20261029T221108Z-f98b",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "프로시노네가 홈에서 레체를 5-1로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m558558"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "프로시노네의 Daniel Birligea가 멀티골을 기록했다.",
+      "ai": true,
+      "refs": [
+        "m558558"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "피오렌티나가 4골을 주고받은 끝에 아탈란타와 2-2로 비겼다.",
+      "ai": true,
+      "refs": [
+        "m558551"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "아탈란타의 Nicola Zalewski가 후반 74분 동점골을 넣었다.",
+      "ai": true,
+      "refs": [
+        "m558551"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "인테르가 승점 25로 세리에 A 1위다.",
+      "ai": true,
+      "refs": [
+        "sSA"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    }
+  ]
+}

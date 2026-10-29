@@ -1,7 +1,7 @@
 {
   "date": "2026-10-24",
-  "generatedAt": "2026-10-24T00:00:01.650Z",
-  "runId": "collect-prod-20261023T235953Z-28c9",
+  "generatedAt": "2026-10-29T22:11:08.611Z",
+  "runId": "collect-prod-20261029T221108Z-f98b",
   "cards": [
     {
       "id": "c_1caf153398",
@@ -877,33 +877,6 @@
       "created": "2026-10-23T23:59:53.958Z"
     },
     {
-      "id": "c_5a097ce87a",
-      "t": "Borussia Dortmund offers prizes to match-going fans who stay off phones during games",
-      "s": [],
-      "cat": "club",
-      "comp": [
-        "BUNDESLIGA"
-      ],
-      "teams": [
-        "borussia-dortmund"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7717930/2026/10/23/borussia-dortmund-fans-mobile-phone-ban/",
-          "at": "2026-10-23T18:32:59.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-23T23:59:53.958Z"
-    },
-    {
       "id": "c_8270a4b1a7",
       "t": "Gianluca Falsini a Sky Calcio Unplugged: \"Vogliamo giocatori adatti alla nostra filosofia\"",
       "s": [],
@@ -953,33 +926,6 @@
         }
       ],
       "lang": "it",
-      "ai": false,
-      "created": "2026-10-23T23:59:53.958Z"
-    },
-    {
-      "id": "c_fe575e76fb",
-      "t": "The spectre of Antonio Conte looms over Manchester United. Should they press the button?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7706188/2026/10/23/manchester-united-michael-carrick-future-antonio-conte/",
-          "at": "2026-10-23T13:00:55.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-10-23T23:59:53.958Z"
     },
