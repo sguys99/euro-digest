@@ -176,6 +176,7 @@ import {
 } from "./brief-input";
 import {
   afFinishedInWindow,
+  afOutOfFdScopeInWindow,
   briefEmptyReason,
   supplementBriefResults,
   teamDictionaryKey,
@@ -3145,8 +3146,10 @@ function linkBriefGoals(
 /** 미종료 경기 보충(D60) 결과 + 결과 지연 판정 재료 */
 interface BriefSupplementRun {
   supplement: BriefSupplement;
-  /** 창 안 6개 대회 API-Football 종료 상세 수(football-data가 경기를 아예 모를 때의 결과 지연 근거) */
+  /** 창 안 6개 대회 API-Football 종료 상세 수(football-data가 경기를 아예 모를 때의 결과 지연 근거 — 범위 안 단계만) */
   afFinished: number;
+  /** 창 안 6개 대회 API-Football 종료 상세 중 football-data 범위 밖 단계(UCL 예선 등 — 결과 지연 근거에서 뺀 수, D60 이월) */
+  afOutOfScope: number;
 }
 
 /**
@@ -3165,6 +3168,7 @@ function supplementBrief(
 ): BriefSupplementRun {
   const unsettled = fd.unsettled;
   const afFinished = afFinishedInWindow(merged.details, fd.window);
+  const afOutOfScope = afOutOfFdScopeInWindow(merged.details, fd.window);
   try {
     return {
       supplement: supplementBriefResults({
@@ -3177,6 +3181,7 @@ function supplementBrief(
         ...(names ? { dictionaryKey: teamDictionaryKey(names) } : {}),
       }),
       afFinished,
+      afOutOfScope,
     };
   } catch (error) {
     deps.logger.warn("summarize.input.supplement-fail", {
@@ -3195,6 +3200,7 @@ function supplementBrief(
         unsettledComps: new Set(awaiting.map((m) => m.comp)),
       },
       afFinished,
+      afOutOfScope,
     };
   }
 }
@@ -3335,7 +3341,7 @@ async function runBriefStage(
       team,
       merged,
     );
-    const { supplement, afFinished } = supplementBrief(
+    const { supplement, afFinished, afOutOfScope } = supplementBrief(
       deps,
       fd.data,
       team,
@@ -3374,7 +3380,8 @@ async function runBriefStage(
       excluded: built.excluded,
       extraTime: built.extraTime,
       // 보충(D60) — football-data 창 안 미종료(결과 없음) 경기 · 그중 결과를 기다리는 경기 · API-Football 종료 결과로 보충한 경기
-      // (근거별) · 잇지 못한 경기(이유) · 보충 뒤에도 기다리는 경기 · 창 안 API-Football 종료 상세
+      // (근거별) · 잇지 못한 경기(이유) · 보충 뒤에도 기다리는 경기 · 창 안 API-Football 종료 상세(football-data 범위 안 단계 ·
+      // 범위 밖 단계 — UCL 예선 등, 결과 지연 근거에서 뺌, D60 이월)
       fdUnsettled: fd.data.unsettled.length,
       fdAwaiting: fd.data.unsettled.filter((m) => m.state === "awaiting")
         .length,
@@ -3386,6 +3393,7 @@ async function runBriefStage(
       supplementInvalidScore: supplement.invalidScore,
       awaitingAfterSupplement: supplement.awaiting,
       afFinishedInWindow: afFinished,
+      afOutOfFdScopeInWindow: afOutOfScope,
       // 순위 — 확정 순위표만(진행 중 경기·결과를 기다리는 경기가 있는 대회는 빼서 순위 문장 금지), 상위 4위
       standings: built.standings.included,
       standingsInProgress: built.standings.inProgress,

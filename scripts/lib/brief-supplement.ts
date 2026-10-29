@@ -21,6 +21,11 @@
  * ② 결과 지연(`briefEmptyReason`): 보충 뒤에도 입력 경기가 0인데 창 안에 결과를 기다리는 football-data 경기가 있거나 API-Football
  *    종료 상세가 있으면 `results-pending`, 정말로 끝난 경기가 없으면 `no-matches`. 브리핑 파일 `emptyReason`(src/lib/schema/brief.ts)이
  *    화면 문구를 가른다 — S4 "끝난 경기가 없었습니다"는 `no-matches`일 때만(사실만).
+ *    - football-data 범위 밖 단계(D60 이월 — M2-01, 2026-10-30 확인): football-data 무료 플랜은 UCL 예선·플레이오프 단계(7~8월)와
+ *      리그 강등 플레이오프(분데스 강등 PO·리그1 바라주)를 주지 않는다 — UCL 2026 시즌이 리그 페이즈 첫날(09-08)부터이고
+ *      2026-07-07~16(1차 예선)·08-18~27(플레이오프) 경기 조회가 0건, BL1·FL1 지난 시즌 끝 날짜가 정규 라운드 마지막 날
+ *      (BL1 2026-05-16·FL1 2025-05-18). 그 단계의 API-Football 경기는 결과 지연의 근거가 아니라 범위 밖이므로 세지 않는다
+ *      (`afRoundInFdScope`). 그러지 않으면 예선 기간 내내 매일 결과 지연('5줄을 싣지 못했어요')으로 판정된다.
  */
 import type { BriefEmptyReason, CompId } from "@/lib/schema";
 
@@ -151,17 +156,66 @@ export function supplementBriefResults(
   };
 }
 
-/** 창 [start, end) 안에 킥오프한 6개 대회 API-Football 종료 상세 수 — 결과 지연 판정 재료(football-data가 경기를 아예 모를 때) */
-export function afFinishedInWindow(
-  details: readonly Pick<MatchDetail, "comp" | "kickoff">[],
+/** UCL 예선 단계 라운드 원문 — "Preliminary Round"·"1st Qualifying Round"… (API-Football) */
+const AF_QUALIFYING_ROUND = /\b(?:qualifying|preliminary)\b/i;
+/** UCL 예선 플레이오프 라운드 원문 "Play-offs" — 녹아웃 플레이오프("Knockout Round Play-offs")와 구별해 전체 일치만 */
+const AF_QUALIFYING_PLAYOFF_ROUND = /^\s*play-?offs?\s*$/i;
+/** 리그 정규 라운드 원문 "Regular Season - 8" — football-data는 리그를 REGULAR_SEASON 단계로만 준다 */
+const AF_REGULAR_SEASON_ROUND = /^\s*regular season\b/i;
+
+/**
+ * API-Football 경기 라운드가 football-data 무료 플랜이 주는 단계인가(순수 함수 — 머리 주석 ②, D60 이월).
+ * - 리그(UCL 밖 5개): 정규 라운드("Regular Season - N")만 범위 안 — 강등 플레이오프 등 그 밖 라운드는 범위 밖.
+ * - UCL: 예선("Preliminary Round"·"Nth Qualifying Round")·예선 플레이오프("Play-offs")는 범위 밖, 리그 페이즈·녹아웃
+ *   ("Knockout Round Play-offs"·"Round of 16"…·"Final")은 범위 안.
+ * - 라운드를 모르면(null·빈 문자열) 범위 안으로 본다 — 결과 지연을 놓쳐 "끝난 경기가 없었습니다"를 잘못 쓰지 않게(§1-7).
+ * - 6개 대회 밖(comp null)은 false.
+ */
+export function afRoundInFdScope(
+  d: Pick<MatchDetail, "comp" | "round">,
+): boolean {
+  if (d.comp === null) return false;
+  const round = d.round?.trim() ?? "";
+  if (round === "") return true;
+  if (d.comp === "UCL") {
+    return !(
+      AF_QUALIFYING_ROUND.test(round) || AF_QUALIFYING_PLAYOFF_ROUND.test(round)
+    );
+  }
+  return AF_REGULAR_SEASON_ROUND.test(round);
+}
+
+/** 창 [start, end) 안에 킥오프한 6개 대회 API-Football 종료 상세 */
+function afDetailsInWindow<T extends Pick<MatchDetail, "comp" | "kickoff">>(
+  details: readonly T[],
   window: { start: string; end: string },
-): number {
+): T[] {
   const start = Date.parse(window.start);
   const end = Date.parse(window.end);
   return details.filter((d) => {
     const at = Date.parse(d.kickoff);
     return d.comp !== null && at >= start && at < end;
-  }).length;
+  });
+}
+
+/**
+ * 창 [start, end) 안에 킥오프한 6개 대회 API-Football 종료 상세 중 football-data 범위 안 단계(`afRoundInFdScope`)의 수 —
+ * 결과 지연 판정 재료(football-data가 경기를 아예 모를 때). 범위 밖 단계(UCL 예선 등)는 세지 않는다(D60 이월).
+ */
+export function afFinishedInWindow(
+  details: readonly Pick<MatchDetail, "comp" | "kickoff" | "round">[],
+  window: { start: string; end: string },
+): number {
+  return afDetailsInWindow(details, window).filter(afRoundInFdScope).length;
+}
+
+/** 창 안 6개 대회 API-Football 종료 상세 중 football-data 범위 밖 단계의 수 — 관찰 로그용(`afOutOfFdScopeInWindow`) */
+export function afOutOfFdScopeInWindow(
+  details: readonly Pick<MatchDetail, "comp" | "kickoff" | "round">[],
+  window: { start: string; end: string },
+): number {
+  return afDetailsInWindow(details, window).filter((d) => !afRoundInFdScope(d))
+    .length;
 }
 
 /**

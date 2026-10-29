@@ -30,6 +30,8 @@ import { briefLinesWithComps } from "../scripts/lib/brief-comps";
 import { buildBriefInput, type BriefInput } from "../scripts/lib/brief-input";
 import {
   afFinishedInWindow,
+  afOutOfFdScopeInWindow,
+  afRoundInFdScope,
   briefEmptyReason,
   supplementBriefResults,
   teamDictionaryKey,
@@ -931,6 +933,88 @@ describe("briefEmptyReason · afFinishedInWindow — empty의 이유", () => {
         WINDOW_1024,
       ),
     ).toBe(1);
+  });
+
+  // D60 이월(M2-01, 2026-10-30) — football-data 무료 플랜이 주지 않는 단계(UCL 예선·예선 PO, 리그 강등 PO)는 범위 밖
+  it("football-data 범위 밖 라운드 판정 — UCL 예선·예선 플레이오프·리그 비정규 라운드는 범위 밖, 리그 페이즈·녹아웃·정규 라운드·라운드 모름은 범위 안", () => {
+    const ucl = (round: string | null) =>
+      afRoundInFdScope({ comp: "UCL", round });
+    expect(ucl("Preliminary Round")).toBe(false);
+    expect(ucl("1st Qualifying Round")).toBe(false);
+    expect(ucl("2nd Qualifying Round")).toBe(false);
+    expect(ucl("3rd Qualifying Round")).toBe(false);
+    expect(ucl("Play-offs")).toBe(false);
+    expect(ucl("League Stage - 3")).toBe(true);
+    expect(ucl("Knockout Round Play-offs")).toBe(true);
+    expect(ucl("Round of 16")).toBe(true);
+    expect(ucl("Quarter-finals")).toBe(true);
+    expect(ucl("Semi-finals")).toBe(true);
+    expect(ucl("Final")).toBe(true);
+    expect(ucl(null)).toBe(true);
+    expect(ucl("  ")).toBe(true);
+    expect(
+      afRoundInFdScope({ comp: "BUNDESLIGA", round: "Regular Season - 34" }),
+    ).toBe(true);
+    expect(
+      afRoundInFdScope({ comp: "BUNDESLIGA", round: "Relegation Round" }),
+    ).toBe(false);
+    expect(
+      afRoundInFdScope({ comp: "LIGUE1", round: "Relegation Play-offs" }),
+    ).toBe(false);
+    expect(afRoundInFdScope({ comp: "EPL", round: null })).toBe(true);
+    expect(afRoundInFdScope({ comp: null, round: "Regular Season - 8" })).toBe(
+      false,
+    );
+  });
+
+  it("UCL 예선 경기만 API-Football에 있으면 결과 지연이 아니다 → no-matches (범위 밖으로 따로 센다)", () => {
+    // 7월 UCL 1차 예선 날: football-data는 경기를 주지 않고(2026-07-07~16 조회 0건) API-Football만 종료 상세가 있다
+    const qualifiers = [
+      detail({
+        matchId: 1,
+        leagueId: 2,
+        leagueName: "UEFA Champions League",
+        comp: "UCL",
+        round: "1st Qualifying Round",
+      }),
+      detail({
+        matchId: 2,
+        leagueId: 2,
+        leagueName: "UEFA Champions League",
+        comp: "UCL",
+        round: "Play-offs",
+      }),
+      detail({ matchId: 3, comp: null, round: "Round of 32" }),
+    ];
+    expect(afFinishedInWindow(qualifiers, WINDOW_1024)).toBe(0);
+    expect(afOutOfFdScopeInWindow(qualifiers, WINDOW_1024)).toBe(2);
+    expect(
+      briefEmptyReason({
+        inputMatches: 0,
+        awaiting: 0,
+        afFinished: afFinishedInWindow(qualifiers, WINDOW_1024),
+      }),
+    ).toBe("no-matches");
+    // 범위 안 경기(리그 페이즈)가 하나라도 섞이면 그대로 결과 지연
+    const mixed = [
+      ...qualifiers,
+      detail({
+        matchId: 4,
+        leagueId: 2,
+        leagueName: "UEFA Champions League",
+        comp: "UCL",
+        round: "League Stage - 1",
+      }),
+    ];
+    expect(afFinishedInWindow(mixed, WINDOW_1024)).toBe(1);
+    expect(afOutOfFdScopeInWindow(mixed, WINDOW_1024)).toBe(2);
+    expect(
+      briefEmptyReason({
+        inputMatches: 0,
+        awaiting: 0,
+        afFinished: afFinishedInWindow(mixed, WINDOW_1024),
+      }),
+    ).toBe("results-pending");
   });
 
   it("void 경기(연기·취소)만 있으면 보충하지 않고 결과 지연으로도 세지 않는다 → no-matches", () => {
