@@ -554,5 +554,29 @@
     "brief": {
       "requests": 2
     }
+  },
+  {
+    "runId": "collect-dev-20261030T023100Z-5221",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-10-30T02:31:00.000Z",
+    "finishedAt": "2026-10-30T02:36:00.000Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 0,
+      "out": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 41
+    },
+    "sources": [],
+    "status": "skipped"
   }
 ]

@@ -385,7 +385,8 @@ describe("⑥ data 파일 검증", () => {
     ]);
     expect(exitCode).toBe(1);
     // + data/cache/af-pending.json (M1-48) · data/matches/2026-10.json·meta.json (M1-48b) · data/briefs/2026-10-11.json (M1-19)
-    expect(report.counts.data).toBe(15);
+    // + data/cache/lineup-backfill.json (M2-09)
+    expect(report.counts.data).toBe(16);
   });
 
   it("같은 fixture의 뉴스 카드를 원제목+링크 형식(ai:false·s:[])으로 바꾸면 통과한다", () => {

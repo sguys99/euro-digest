@@ -63,6 +63,26 @@ type Scenario = Omit<RunStatusInput, "matchData"> & {
   matchData: Record<string, unknown> | null;
 };
 
+/** 대회 단계(M2-09) 끝남 — EPL 1개 대회, 조각 실패 목록 */
+function competitionsDone(
+  failures: Array<{ part: string; errorType: string; error: string }>,
+) {
+  return {
+    state: "done" as const,
+    results: [{ comp: "EPL", action: "write", failures }],
+  };
+}
+
+const TEAMS_OK = {
+  state: "done" as const,
+  problems: [] as string[],
+  writeErrors: [] as string[],
+  backfill: {
+    errors: [] as Array<{ errorType: string }>,
+    cacheWriteError: null,
+  },
+};
+
 function base(over: Partial<Scenario> = {}): Scenario {
   return {
     news: {
@@ -239,6 +259,44 @@ const SCENARIOS: Record<string, Scenario> = {
     },
   }),
   "brief-file": base({ briefFile: { action: "failed", readError: null } }),
+  // M2-09 축구 데이터 단계 — 대회 조각의 football-data 응답 실패는 브리핑 쪽과 같은 원인 키(source:football-data)
+  "competitions-api": base({
+    football: {
+      competitions: competitionsDone([
+        { part: "matches", errorType: "http", error: "HTTP 500" },
+      ]),
+      teams: TEAMS_OK,
+    },
+  }),
+  "competitions-budget": base({
+    football: {
+      competitions: competitionsDone([
+        { part: "scorers", errorType: "budget", error: "예산 소진" },
+      ]),
+      teams: TEAMS_OK,
+    },
+  }),
+  "football-stage": base({
+    football: {
+      competitions: competitionsDone([]),
+      teams: {
+        ...TEAMS_OK,
+        problems: ["foo: names.ko.json 팀 항목(slug) 없음"],
+      },
+    },
+  }),
+  "lineup-backfill": base({
+    football: {
+      competitions: competitionsDone([]),
+      teams: {
+        ...TEAMS_OK,
+        backfill: {
+          errors: [{ errorType: "timeout" }],
+          cacheWriteError: null,
+        },
+      },
+    },
+  }),
 };
 
 const asInput = (s: Scenario) => s as unknown as RunStatusInput;
@@ -262,10 +320,16 @@ function issueKeysOf(s: Scenario): string[] {
         }
       : null,
     ledger: md?.ledger ?? null,
+    football: input.football ?? null,
   }).map((f) => `collect:partial:${f.reason}`);
   const af = md?.apiFootball;
   const dataApi = [
-    ...matchDataIssuePayloads(md, CTX),
+    ...matchDataIssuePayloads(
+      md === null
+        ? null
+        : { ...md, competitions: input.football?.competitions ?? null },
+      CTX,
+    ),
     ...(af?.state === "done"
       ? apiFootballIssuePayloads(af.data.stage.issues, CTX)
       : []),
@@ -305,7 +369,13 @@ describe("partial 조건 표 ↔ 이슈 경로 (FR-152 — partial이 이슈 없
       const input = asInput(scenario);
       expect(partialConditionsOf(input)).toEqual([id]);
       expect(
-        runStatus(input.news, input.brief, input.matchData, input.briefFile),
+        runStatus(
+          input.news,
+          input.brief,
+          input.matchData,
+          input.briefFile,
+          input.football,
+        ),
       ).toBe("partial");
       const keys = issueKeysOf(scenario);
       const route = condition.route;

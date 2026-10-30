@@ -10,44 +10,29 @@
  *                    포메이션 경기의 선발·교체 명단을 채운다. 먼저 `/status`로 오늘(UTC) 쓴 요청 수를 확인하고 봇 몫(--reserve, 기본
  *                    60)을 남길 수 없으면 줄이거나 멈춘다. 06:00~08:00 KST(봇 수집 시간대)에는 실행하지 않는다. 동시 1개·응답 후
  *                    6.5초 간격(클라이언트 정책). 상한 BACKFILL_MAX(40 — 개발 호출 하루 50건 이내, CLAUDE §6.4)
+ *                    호출 수(`/status` 포함)는 성공·실패와 상관없이 실행 기록에 남긴다(로컬 = data/runs-dev.json, job collect·status
+ *                    skipped — M2-09). 봇 일일 카운터가 같은 UTC 날의 개발 사용을 합산한다. 기록 실패면 종료 코드 1
  *   --reserve <n>    백필 때 남겨 둘 오늘 일 한도(기본 60 — 다음 봇 수집 계획 상한)
  *
  * 키는 API_FOOTBALL_KEY 환경변수로만 받고 출력하지 않는다. 응답 본문은 저장·로그하지 않는다(라인업에서 이름·등번호·포지션·grid만
  * 팀 파일에 남긴다 — D63 ②). 종료 코드: 설정이 어긋나 만들지 못한 팀이 있으면 1.
  */
-import {
-  readdir,
-  readFile,
-  rename,
-  rm,
-  writeFile,
-  mkdir,
-} from "node:fs/promises";
-import { randomBytes } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 
 import {
   CompetitionsFileSchema,
-  FormationsFileSchema,
   KoreanPlayersFileSchema,
   NamesKoFileSchema,
   TeamColorsFileSchema,
-  TeamSchema,
   type CompId,
-  type CompetitionFile,
-  type FormationsFile,
-  type LedgerMatch,
-  type Team,
 } from "@/lib/schema";
 import { kstParts, nowUtcIso } from "@/lib/time";
 
-import { readCompetitionFile } from "./lib/competition-file";
 import { readConfigFile } from "./lib/config-files";
 import { createLogger } from "./lib/logger";
 import type { MatchDetail } from "./lib/match-data";
-import { readLedgerMeta, readLedgerMonth } from "./lib/match-ledger";
 import {
   ApiFootballError,
   createApiFootballClient,
@@ -59,10 +44,18 @@ import {
   koreanByAfIdOf,
   lineupBackfillPriority,
   planLineupBackfill,
-  serializeTeamFile,
   teamSheetsFromDetails,
   type TeamFilesInput,
 } from "./lib/team-files";
+import {
+  readCompetitionFiles,
+  readFormations,
+  readLedgerAll,
+  readPreviousTeams,
+  recordBackfillApiCalls,
+  writeTeamFileIfChanged,
+} from "./lib/team-files-io";
+import { resolveRunEnv } from "./lib/collect-run";
 import { loadTeamIds } from "./lib/team-ids";
 import { allTeamSlugs } from "./lib/team-leagues";
 
@@ -71,7 +64,6 @@ const ROOT_DIR = path.resolve(
   "..",
 );
 const DATA_DIR = path.join(ROOT_DIR, "data");
-const TEAMS_DIR = path.join(DATA_DIR, "teams");
 
 /** 백필 한 번의 상한 — 개발 호출 하루 50건 이내(CLAUDE §6.4), `/status` 1건 포함 여유 */
 const BACKFILL_MAX = 40;
@@ -87,15 +79,6 @@ const USAGE = [
   "  --help, -h       이 도움말",
 ].join("\n");
 
-const COMP_IDS: readonly CompId[] = [
-  "EPL",
-  "LALIGA",
-  "SERIEA",
-  "BUNDESLIGA",
-  "LIGUE1",
-  "UCL",
-];
-
 function parseCount(raw: string | undefined, name: string): number | null {
   if (raw === undefined) return null;
   const n = Number(raw);
@@ -103,90 +86,6 @@ function parseCount(raw: string | undefined, name: string): number | null {
     throw new Error(`--${name}는 0 이상의 정수`);
   }
   return n;
-}
-
-async function readLedger(): Promise<{
-  matches: LedgerMatch[];
-  season: number | null;
-}> {
-  const meta = await readLedgerMeta(DATA_DIR);
-  if (meta.error) throw new Error(`data/matches/meta.json ${meta.error}`);
-  let names: string[] = [];
-  try {
-    names = await readdir(path.join(DATA_DIR, "matches"));
-  } catch {
-    names = [];
-  }
-  const matches: LedgerMatch[] = [];
-  for (const name of names.sort()) {
-    const m = /^(\d{4}-\d{2})\.json$/.exec(name);
-    if (!m) continue;
-    const read = await readLedgerMonth(DATA_DIR, m[1]!);
-    if (read.error) throw new Error(`data/matches/${name} ${read.error}`);
-    if (read.value) matches.push(...read.value.matches);
-  }
-  return { matches, season: meta.value?.season ?? null };
-}
-
-async function readPreviousTeams(
-  warn: (event: string, fields: Record<string, unknown>) => void,
-): Promise<Map<string, Team>> {
-  const previous = new Map<string, Team>();
-  let names: string[] = [];
-  try {
-    names = await readdir(TEAMS_DIR);
-  } catch {
-    return previous;
-  }
-  for (const name of names) {
-    if (!name.endsWith(".json")) continue;
-    try {
-      const parsed = TeamSchema.safeParse(
-        JSON.parse(await readFile(path.join(TEAMS_DIR, name), "utf8")),
-      );
-      if (parsed.success) previous.set(parsed.data.slug, parsed.data);
-      else warn("teams.previous-invalid", { file: name });
-    } catch {
-      warn("teams.previous-invalid", { file: name });
-    }
-  }
-  return previous;
-}
-
-async function readFormations(): Promise<FormationsFile> {
-  try {
-    return await readConfigFile(
-      ROOT_DIR,
-      "formations.json",
-      FormationsFileSchema,
-    );
-  } catch (error) {
-    // 파일이 없으면 수동 보조 없음 — 형식 오류는 그대로 멈춘다
-    if (error instanceof Error && /ENOENT|no such file/i.test(error.message)) {
-      return {};
-    }
-    throw error;
-  }
-}
-
-async function writeIfChanged(team: Team): Promise<boolean> {
-  const target = path.join(TEAMS_DIR, `${team.slug}.json`);
-  const text = serializeTeamFile(team);
-  try {
-    if ((await readFile(target, "utf8")) === text) return false;
-  } catch {
-    // 없으면 새로 쓴다
-  }
-  await mkdir(TEAMS_DIR, { recursive: true });
-  const tmp = `${target}.${process.pid}.${randomBytes(4).toString("hex")}.tmp`;
-  try {
-    await writeFile(tmp, text, "utf8");
-    await rename(tmp, target);
-  } catch (error) {
-    await rm(tmp, { force: true }).catch(() => undefined);
-    throw error;
-  }
-  return true;
 }
 
 async function main(): Promise<number> {
@@ -220,16 +119,13 @@ async function main(): Promise<number> {
       readConfigFile(ROOT_DIR, "team-colors.json", TeamColorsFileSchema),
       readConfigFile(ROOT_DIR, "korean-players.json", KoreanPlayersFileSchema),
       readConfigFile(ROOT_DIR, "competitions.json", CompetitionsFileSchema),
-      readFormations(),
+      readFormations(ROOT_DIR),
     ]);
-  const ledger = await readLedger();
-  const competitions: Partial<Record<CompId, CompetitionFile>> = {};
-  for (const comp of COMP_IDS) {
-    const read = await readCompetitionFile(DATA_DIR, comp);
-    if (read.status === "ok") competitions[comp] = read.file;
-    else log.warn("teams.competition-missing", { comp, status: read.status });
-  }
-  const previous = await readPreviousTeams((e, f) => log.warn(e, f));
+  const ledger = await readLedgerAll(DATA_DIR);
+  const competitions = await readCompetitionFiles(DATA_DIR, (e, f) =>
+    log.warn(e, f),
+  );
+  const previous = await readPreviousTeams(DATA_DIR, (e, f) => log.warn(e, f));
   const slugs = allTeamSlugs();
 
   const baseInput: TeamFilesInput = {
@@ -271,6 +167,7 @@ async function main(): Promise<number> {
   }
 
   const details: MatchDetail[] = [];
+  let recordFailed = false;
   let apiCalls = 0;
   if (backfill > 0) {
     const hour = kstParts(nowUtcIso()).hour;
@@ -282,6 +179,7 @@ async function main(): Promise<number> {
     if (!apiKey) {
       log.warn("teams.backfill.skip", { reason: "no-api-key" });
     } else {
+      const backfillStartedAt = nowUtcIso();
       const client = createApiFootballClient({
         apiKey,
         fetch,
@@ -294,68 +192,94 @@ async function main(): Promise<number> {
             status: e.error.status ?? null,
           }),
       });
-      const status = await client.getStatus();
-      const remaining =
-        status.current !== null && status.limitDay !== null
-          ? status.limitDay - status.current
-          : null;
-      const allowed =
-        remaining === null
-          ? 0
-          : Math.max(0, Math.min(backfill, remaining - reserve));
-      log.info("teams.backfill.status", {
-        current: status.current,
-        limitDay: status.limitDay,
-        reserve,
-        allowed,
-      });
-      const plan = planLineupBackfill({
-        teams: first.teams,
-        uses: first.uses,
-        priority,
-        limit: allowed,
-      });
-      const compByLeague = new Map<number, CompId>(
-        competitionsCfg.map((c) => [c.apiFootballLeagueId, c.id]),
-      );
-      for (const target of plan.targets) {
-        try {
-          const raw = await client.getFixtureById(target.matchId);
-          const converted =
-            raw === null || raw === undefined
-              ? null
-              : toMatchDetail(raw, { compByLeague, fetchedAt: nowUtcIso() });
-          if (converted?.kind === "finished") details.push(converted.detail);
-          log.info("teams.backfill.fixture", {
-            match: target.matchId,
-            teams: target.teams,
-            result: converted?.kind ?? "missing",
-          });
-        } catch (error) {
-          const kind =
-            error instanceof ApiFootballError ? error.kind : "unexpected";
-          log.warn("teams.backfill.error", {
-            match: target.matchId,
-            errorType: kind,
-          });
-          // 한도·키·플랜·상한 오류는 남은 요청을 보내지 않는다
-          if (
-            error instanceof ApiFootballError &&
-            ["plan", "quota", "auth", "cap", "budget", "rate"].includes(
-              error.kind,
-            )
-          ) {
-            break;
+      // 호출 수는 성공·실패와 상관없이 실행 기록에 남긴다(finally) — 봇 일일 카운터가 같은 UTC 날의 개발 사용을 합산한다(M2-09)
+      try {
+        const status = await client.getStatus();
+        const remaining =
+          status.current !== null && status.limitDay !== null
+            ? status.limitDay - status.current
+            : null;
+        const allowed =
+          remaining === null
+            ? 0
+            : Math.max(0, Math.min(backfill, remaining - reserve));
+        log.info("teams.backfill.status", {
+          current: status.current,
+          limitDay: status.limitDay,
+          reserve,
+          allowed,
+        });
+        const plan = planLineupBackfill({
+          teams: first.teams,
+          uses: first.uses,
+          priority,
+          limit: allowed,
+        });
+        const compByLeague = new Map<number, CompId>(
+          competitionsCfg.map((c) => [c.apiFootballLeagueId, c.id]),
+        );
+        for (const target of plan.targets) {
+          try {
+            const raw = await client.getFixtureById(target.matchId);
+            const converted =
+              raw === null || raw === undefined
+                ? null
+                : toMatchDetail(raw, { compByLeague, fetchedAt: nowUtcIso() });
+            if (converted?.kind === "finished") details.push(converted.detail);
+            log.info("teams.backfill.fixture", {
+              match: target.matchId,
+              teams: target.teams,
+              result: converted?.kind ?? "missing",
+            });
+          } catch (error) {
+            const kind =
+              error instanceof ApiFootballError ? error.kind : "unexpected";
+            log.warn("teams.backfill.error", {
+              match: target.matchId,
+              errorType: kind,
+            });
+            // 한도·키·플랜·상한 오류는 남은 요청을 보내지 않는다
+            if (
+              error instanceof ApiFootballError &&
+              ["plan", "quota", "auth", "cap", "budget", "rate"].includes(
+                error.kind,
+              )
+            ) {
+              break;
+            }
           }
         }
+        apiCalls = client.calls;
+        log.info("teams.backfill.summary", {
+          planned: plan.targets.length,
+          fetched: details.length,
+          pending: plan.pending.length,
+          apiCalls,
+        });
+      } finally {
+        try {
+          const recorded = await recordBackfillApiCalls({
+            env: resolveRunEnv(process.env),
+            dataDir: DATA_DIR,
+            startedAt: backfillStartedAt,
+            apiFootballCalls: client.calls,
+          });
+          if (recorded !== null) {
+            log.info("teams.backfill.record", {
+              runId: recorded.run.runId,
+              apiFootball: recorded.run.apiCalls.apiFootball,
+              file: path.relative(ROOT_DIR, recorded.path),
+            });
+          }
+        } catch (error) {
+          // 기록 실패는 조용히 넘기지 않는다 — 봇 카운터가 이 호출을 모른다(CLAUDE.md §1-4)
+          log.error("teams.backfill.record.fail", {
+            apiFootball: client.calls,
+            error: error instanceof Error ? error.message : String(error),
+          });
+          recordFailed = true;
+        }
       }
-      apiCalls = client.calls;
-      log.info("teams.backfill.summary", {
-        planned: plan.targets.length,
-        fetched: details.length,
-        pending: plan.pending.length,
-        apiCalls,
-      });
     }
   }
 
@@ -373,7 +297,7 @@ async function main(): Promise<number> {
   let written = 0;
   if (!values.dry) {
     for (const team of result.teams) {
-      if (await writeIfChanged(team)) written += 1;
+      if (await writeTeamFileIfChanged(DATA_DIR, team)) written += 1;
     }
   }
   const stale = [...previous.keys()].filter((s) => !slugs.includes(s));
@@ -385,7 +309,7 @@ async function main(): Promise<number> {
     dry: values.dry,
     apiCalls,
   });
-  return result.problems.length > 0 ? 1 : 0;
+  return result.problems.length > 0 || recordFailed ? 1 : 0;
 }
 
 main().then(

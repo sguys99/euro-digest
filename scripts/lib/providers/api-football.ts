@@ -327,6 +327,11 @@ export interface ApiFootballClientOptions {
   maxCalls?: number | null;
   /** 이 신호가 켜지면 새 요청을 보내지 않는다(`cancelled`) — 보내는 중인 요청은 끝까지 기다린다 */
   signal?: AbortSignal;
+  /**
+   * 첫 요청을 이 시각(now 기준 ms) 전에는 보내지 않는다 — 앞서 같은 키를 쓴 클라이언트의 마지막 응답 + 간격(6.5초)을 넘겨 동시 1개·
+   * 분당 10회 간격을 잇는다(M2-09 — 경기 단건 단계 뒤 라인업 백필). 없으면 바로 보낸다
+   */
+  notBefore?: number | null;
   baseUrl?: string;
   /** 재시도 직전에 부른다(로그용) */
   onRetry?: (event: ApiFootballRetryEvent) => void;
@@ -420,8 +425,8 @@ export function createApiFootballClient(
   const maxCalls = options.maxCalls ?? null;
   const baseUrl = options.baseUrl ?? API_FOOTBALL_BASE_URL;
   let lastResponseAt: number | null = null;
-  /** 분당 남은 수 0 가드 — 이 시각 전에는 보내지 않는다 */
-  let guardUntil = 0;
+  /** 분당 남은 수 0 가드 — 이 시각 전에는 보내지 않는다(앞 클라이언트의 간격 `notBefore`로 시작) */
+  let guardUntil = options.notBefore ?? 0;
   let calls = 0;
   let retries = 0;
   /** 연속으로 받은 분당 초과 응답 수 — 초과가 아닌 응답을 받으면 0 */

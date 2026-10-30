@@ -62,6 +62,12 @@ import {
 /** API-Football 무료 플랜 일 한도(00:00 UTC 리셋 — M0-29) */
 export const API_FOOTBALL_DAILY_LIMIT = 100;
 
+/**
+ * 일 한도 여유 — 기록되지 않는 호출(개발 `/status` 확인·실행 기록 실패 등)을 위해 일 한도에서 남겨 둔다(M2-09 — 2026-10-30 사용자 결정:
+ * 봇 상한 = min(60 − 오늘 봇 사용, 100 − 오늘 prod·dev 사용 − 여유))
+ */
+export const API_FOOTBALL_DAILY_MARGIN = 5;
+
 /** 봇(prod) 일일 계획 상한 — 예상 최대 약 35건(D27) */
 export const API_FOOTBALL_BOT_DAILY_CAP = 60;
 
@@ -207,7 +213,7 @@ export interface AfCallAllowance {
 }
 
 /**
- * 이번 실행의 API-Football 호출 허용량 — min(env 상한 − 오늘 env 사용, 일 한도 − 오늘 전체 사용, 실행당 상한).
+ * 이번 실행의 API-Football 호출 허용량 — min(env 상한 − 오늘 env 사용, 일 한도 − 여유(5) − 오늘 전체 사용, 실행당 상한).
  * 실행 기록(runs.json·runs-dev.json)을 하나라도 읽지 못하면 오늘 사용량을 모르므로 **fail-closed**로 작은 상한
  * (`API_FOOTBALL_RUNS_UNREADABLE_CAP`)을 더 건다 — 읽은 기록만 세면 실제보다 적게 잡혀 일 한도를 넘길 수 있다.
  */
@@ -231,7 +237,11 @@ export function apiFootballCallAllowance(input: {
   const perRunCap = input.perRunCap ?? null;
   const candidates: Array<[AfCallAllowance["limitedBy"], number]> = [
     ["env-cap", cap - usedOwn],
-    ["api-limit", API_FOOTBALL_DAILY_LIMIT - usedTotal],
+    // prod·dev 합이 일 한도 − 여유를 넘지 않게(runs.json + runs-dev.json 같은 UTC 날 합)
+    [
+      "api-limit",
+      API_FOOTBALL_DAILY_LIMIT - API_FOOTBALL_DAILY_MARGIN - usedTotal,
+    ],
   ];
   if (perRunCap !== null) candidates.push(["per-run", perRunCap]);
   const runsUnreadable = input.runsUnreadable ?? false;

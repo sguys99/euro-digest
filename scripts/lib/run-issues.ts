@@ -17,6 +17,7 @@
  *     brief-file       브리핑 파일 검증·쓰기 실패 또는 깨진 기존 파일(M1-19)
  *     runs-unreadable  비용 가드가 runs 파일을 읽지 못함(M1-22 이월 — 기록 파일 수리 필요)
  *     ledger           원장 쓰기 오류·형식 오류 항목(M1-48b)
+ *     football         대회·팀 데이터 단계 실패·조립·설정·쓰기 오류(M2-09 — 아래 footballStageErrors)
  *   사유마다 이슈 하나 — 같은 사유가 다시 나오면 열린 이슈에 댓글(FR-152, 남발 금지). 여러 사유가 함께 나면 사유별로 따로 낸다
  *   (원인이 다르면 다른 이슈 — 닫는 시점도 다르다).
  *   이슈를 만들지 않는 partial: 소스 일부 실패(source-health.ts가 소스별 source-broken) · API-Football 미완(날짜 조회 실패·시간
@@ -24,8 +25,8 @@
  *   source-broken으로 낸다) · 예산 초과 예상(daily·monthly_exceeded — 의도된 강등, FR-27).
  *
  * ── 데이터 API 소스 이슈 (`source-broken`, 원인 키 `source:football-data`·`source:api-football`) ──────────────
- *   football-data: 단계 실패(시간 예산·취소 제외) · 키 없음(prod Secrets 미설정) · 순위 일부 실패 → 하나(우선순위 실패 > 키 없음 >
- *   순위). API-Football: 단계가 예상 밖 오류로 실패(isolateProvider) — errors.plan 등 응답 사건은 기존 경로가 낸다.
+ *   football-data: 단계 실패(시간 예산·취소 제외) · 키 없음(prod Secrets 미설정) · 순위 일부 실패 · 대회 단계(M2-09) 조각 응답
+ *   실패 → 하나(우선순위 실패 > 키 없음 > 순위 > 대회 단계 — 같은 키·같은 호스트라 원인 키 하나). API-Football: 단계가 예상 밖 오류로 실패(isolateProvider) — errors.plan 등 응답 사건은 기존 경로가 낸다.
  *   collect-run.ts가 소스 건강도 사건 파일(SOURCE_HEALTH_FILE)에 함께 쓴다(collect.yml 이슈 단계가 보고).
  *
  * 문구는 오류 요약만 — 응답 본문·비밀값·기사 원문을 넣지 않는다(이슈 헬퍼가 한 번 더 가리고 자른다).
@@ -81,6 +82,77 @@ export interface PartialFindingsInput {
     applied: { errors: readonly string[] } | null;
     invalid: ReadonlyArray<{ id: number; error: string }>;
   } | null;
+  /** 축구 데이터 단계(M2-09) — 없으면 생략 */
+  football?: FootballStatusView | null;
+}
+
+/** 실행 상태·이슈 판정에 쓰는 축구 데이터 단계 결과(구조 타입 — football-stages.ts FootballStagesOutcome의 일부) */
+export interface FootballStatusView {
+  competitions:
+    | { state: "skipped" | "failed" }
+    | {
+        state: "done";
+        results: ReadonlyArray<{
+          comp: string;
+          action: string;
+          failures: ReadonlyArray<{
+            part: string;
+            errorType: string;
+            error: string;
+          }>;
+        }>;
+      };
+  teams:
+    | { state: "skipped" | "failed" }
+    | {
+        state: "done";
+        problems: readonly string[];
+        writeErrors: readonly string[];
+        backfill: {
+          errors: ReadonlyArray<{ errorType: string }>;
+          cacheWriteError: string | null;
+        };
+      };
+}
+
+/** 대회 단계 조각 실패 중 데이터 API 문제(시간 예산·취소 제외 — 이슈 source:football-data) */
+export function competitionApiFailures(
+  football: FootballStatusView | null | undefined,
+): number {
+  const c = football?.competitions;
+  if (c?.state !== "done") return 0;
+  return c.results.reduce(
+    (n, r) =>
+      n +
+      r.failures.filter(
+        (f) => f.errorType !== "budget" && f.errorType !== "cancelled",
+      ).length,
+    0,
+  );
+}
+
+/** 축구 데이터 단계의 코드·설정·쓰기 오류(이슈 pipeline-partial football) — 단계 실패·조립 오류·팀 설정 문제·쓰기 실패 */
+export function footballStageErrors(
+  football: FootballStatusView | null | undefined,
+): string[] {
+  if (!football) return [];
+  const out: string[] = [];
+  const c = football.competitions;
+  if (c.state === "failed") out.push("대회 단계 실패");
+  if (c.state === "done") {
+    const broken = c.results.filter((r) => r.action === "error").length;
+    if (broken > 0) out.push(`대회 파일 조립·쓰기 오류 ${broken}개`);
+  }
+  const t = football.teams;
+  if (t.state === "failed") out.push("팀 단계 실패");
+  if (t.state === "done") {
+    if (t.problems.length > 0) out.push(`팀 설정 문제 ${t.problems.length}개`);
+    if (t.writeErrors.length > 0) {
+      out.push(`팀 파일 쓰기 오류 ${t.writeErrors.length}개`);
+    }
+    if (t.backfill.cacheWriteError !== null) out.push("백필 캐시 쓰기 오류");
+  }
+  return out;
 }
 
 /** 부분 실패 사유 하나 */
@@ -207,6 +279,13 @@ export function partialFindings(input: PartialFindingsInput): PartialFinding[] {
       ),
     });
   }
+  const footballErrors = footballStageErrors(input.football);
+  if (footballErrors.length > 0) {
+    found.push({
+      reason: "football",
+      detail: oneLine(footballErrors.join(" · ")),
+    });
+  }
   return found;
 }
 
@@ -258,6 +337,21 @@ export interface MatchDataIssueInput {
     }>;
   }> | null;
   apiFootball?: ProviderOutcome<unknown> | null;
+  /** 대회 단계(M2-09) — 조각 실패(football-data 응답) */
+  competitions?:
+    | { state: "skipped" | "failed" }
+    | {
+        state: "done";
+        results: ReadonlyArray<{
+          comp: string;
+          failures: ReadonlyArray<{
+            part: string;
+            errorType: string;
+            error: string;
+          }>;
+        }>;
+      }
+    | null;
 }
 
 interface MatchIssueEvent {
@@ -266,11 +360,36 @@ interface MatchIssueEvent {
   note: string;
 }
 
+/** 대회 단계 조각 실패(시간 예산·취소 제외) → 사건(우선순위 가장 낮음) */
+function competitionsEvent(
+  competitions: MatchDataIssueInput["competitions"],
+): MatchIssueEvent | null {
+  if (competitions?.state !== "done") return null;
+  const failed = competitions.results.flatMap((r) =>
+    r.failures
+      .filter((f) => !NON_ISSUE_ERROR_TYPES.has(f.errorType))
+      .map((f) => ({ comp: r.comp, ...f })),
+  );
+  const first = failed[0];
+  if (!first) return null;
+  const comps = [...new Set(failed.map((f) => f.comp))];
+  return {
+    errorType: "competitions",
+    error: oneLine(
+      `대회 데이터 ${failed.length}개 조각 실패(${comps.join(", ")}) — ${first.comp} ${first.part} ${first.errorType}: ${first.error}`,
+    ),
+    note: "그 대회·조각은 전일 값을 유지했습니다(순위·일정·득점 순위가 하루 늦을 수 있음 — 뉴스·브리핑은 영향 없음). 며칠 이어지면 football-data.org 대회 엔드포인트 응답·요금제를 확인하세요.",
+  };
+}
+
 function footballDataEvent(
   fd: NonNullable<MatchDataIssueInput["footballData"]>,
+  competitions: MatchDataIssueInput["competitions"] = null,
 ): MatchIssueEvent | null {
   if (fd.state === "failed") {
-    if (NON_ISSUE_ERROR_TYPES.has(fd.errorType)) return null;
+    if (NON_ISSUE_ERROR_TYPES.has(fd.errorType)) {
+      return competitionsEvent(competitions);
+    }
     return {
       errorType: issueErrorType(fd.errorType),
       error: oneLine(fd.error),
@@ -278,7 +397,7 @@ function footballDataEvent(
     };
   }
   if (fd.state === "skipped") {
-    if (fd.reason !== "no-api-key") return null;
+    if (fd.reason !== "no-api-key") return competitionsEvent(competitions);
     return {
       errorType: "no-api-key",
       error: "FOOTBALL_DATA_API_KEY가 없다",
@@ -289,7 +408,7 @@ function footballDataEvent(
     (s) => !NON_ISSUE_ERROR_TYPES.has(s.errorType),
   );
   const first = failed[0];
-  if (!first) return null;
+  if (!first) return competitionsEvent(competitions);
   return {
     errorType: "standings",
     error: oneLine(
@@ -324,7 +443,9 @@ export function matchDataIssuePayloads(
   const events: Array<[MatchProvider, MatchIssueEvent | null]> = [
     [
       "football-data",
-      matchData.footballData ? footballDataEvent(matchData.footballData) : null,
+      matchData.footballData
+        ? footballDataEvent(matchData.footballData, matchData.competitions)
+        : competitionsEvent(matchData.competitions),
     ],
     [
       "api-football",

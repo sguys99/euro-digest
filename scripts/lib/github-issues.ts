@@ -119,6 +119,7 @@ export type SourceEventType = (typeof SOURCE_EVENT_TYPES)[number];
  *   brief-file       브리핑 파일(data/briefs) 검증·쓰기 오류 또는 깨진 기존 파일(M1-19)
  *   runs-unreadable  실행 기록(runs.json·runs-dev.json)을 읽지 못해 비용 가드가 판정 불가 → LLM 없이 템플릿(M1-22)
  *   ledger           경기 기록 원장(data/matches) 쓰기 오류·형식 오류 항목(M1-48b)
+ *   football         대회·팀 데이터 단계(data/competitions·data/teams — M2-09)의 단계 실패·조립·설정·쓰기 오류
  * 이슈를 만들지 않는 partial: 소스 일부 실패(소스별 source-broken) · 데이터 API(football-data·API-Football — source-broken
  * `source:football-data`·`source:api-football`) · API-Football 미완(이월로 다음 실행이 받는다 — 운영 리포트 M5-09).
  */
@@ -131,6 +132,7 @@ export const PIPELINE_PARTIAL_REASONS = [
   "brief-file",
   "runs-unreadable",
   "ledger",
+  "football",
 ] as const;
 export type PipelinePartialReason = (typeof PIPELINE_PARTIAL_REASONS)[number];
 
@@ -811,6 +813,16 @@ const PARTIAL_REASON_INFO: Readonly<
     checks: [
       "실행 로그 `collect.ledger.*` 확인",
       "`npm run validate`로 data/matches 파일 확인",
+    ],
+  },
+  football: {
+    label: "대회·팀 데이터 단계 오류",
+    effect:
+      "대회 파일(data/competitions)이나 팀 파일(data/teams) 일부를 갱신하지 못해 전일 값을 그대로 두었습니다 — 순위·일정·팀 화면이 하루 늦을 수 있습니다. 뉴스·브리핑은 영향이 없습니다.",
+    checks: [
+      "실행 로그 `collect.competitions.*`·`collect.competition.*`·`collect.teams.*` 확인",
+      "팀 설정 문제(`collect.teams.problem`)면 configs/team-ids·names.ko·team-colors를 맞춘 뒤 `npm run build:teams`로 확인",
+      "`npm run validate`로 data/competitions·data/teams 파일 확인",
     ],
   },
 };

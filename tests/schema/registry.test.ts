@@ -74,7 +74,8 @@ describe("schemaRegistry ↔ fixtures/schema", () => {
     // + configs/team-ids.json (PRD §15 D33, M1-44) · data/cache/af-pending.json (D27·D33, M1-48)
     // + data/matches/????-??.json · data/matches/meta.json (경기 기록 원장 D33, M1-48b)
     // + data/briefs/????-??-??.json (일일 브리핑 D38, M1-19)
-    expect(schemaRegistry).toHaveLength(27);
+    // + data/cache/lineup-backfill.json (M2-09 — 2026-10-30 사용자 확인)
+    expect(schemaRegistry).toHaveLength(28);
   });
 
   it("configs/ 항목은 알 수 없는 키를 거부하고 data/ 항목은 버린다 (결정 Q5)", () => {

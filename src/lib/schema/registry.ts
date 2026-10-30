@@ -15,6 +15,7 @@ import type { z } from "zod";
 import { BriefFileSchema } from "./brief";
 import {
   AfPendingFileSchema,
+  LineupBackfillFileSchema,
   SeenUrlsFileSchema,
   UnknownNamesFileSchema,
 } from "./cache";
@@ -264,6 +265,14 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
     schema: AfPendingFileSchema,
     description:
       "API-Football 상세 미수신 대상 경기 — 다음 실행 재조회 (PRD §15 D27·D33, M1-48)",
+  }),
+  entry({
+    pattern: "data/cache/lineup-backfill.json",
+    kind: "data",
+    status: "confirmed",
+    schema: LineupBackfillFileSchema,
+    description:
+      "팀시트 백필로 받아 본 API-Football 경기 id — 다음 실행 백필 제외 (M2-09, 2026-10-30 사용자 확인)",
   }),
   entry({
     pattern: "data/matches/????-??.json",

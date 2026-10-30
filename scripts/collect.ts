@@ -8,7 +8,9 @@
  * M1-44 경기 데이터(football-data 전날 종료 경기 + 그 대회 순위, 프로바이더별 병렬·실패 격리) → 브리핑 단건(FR-29 재시도 1회 · 검증 통과 줄 + 템플릿 강등 게시 — M1-45),
  * M1-48 API-Football 경기 단건(날짜 조회 D-1·D → 대상 경기 상세, 브리핑 경기 먼저 · 이월 data/cache/af-pending.json —
  * 뉴스와 병렬로 시작, API_FOOTBALL_MAX_CALLS로 실행당 호출 상한을 걸 수 있다) · M1-48b 경기 기록 원장 data/matches/
- * (COLLECT_ENABLED == "true"인 prod·비dry 실행만 쓴다 — 로컬 dev·dry는 메모리에서 만들어 로그만).
+ * (COLLECT_ENABLED == "true"인 prod·비dry 실행만 쓴다 — 로컬 dev·dry는 메모리에서 만들어 로그만),
+ * M2-09 축구 데이터 단계(브리핑 뒤 — 대회 파일 data/competitions(football-data 18요청, prod·비dry·09:00 KST 전) ‖ API-Football 나머지 →
+ * 팀 파일 data/teams + 라인업 백필 ≤ 5건, scripts/lib/football-stages.ts — COLLECT_FOOTBALL_STAGES=off면 끈다).
  * 파이프라인 본체는 scripts/lib/collect-run.ts(I/O 주입).
  * 이 파일은 인자·환경변수를 읽어 의존성을 꾸리고 종료 코드만 정한다.
  *
@@ -41,6 +43,7 @@ import {
 } from "./lib/collect-run";
 import { resolveBudgets } from "./lib/cost";
 import { actionsRunUrl } from "./lib/github-issues";
+import { resolveFootballStagesEnabled } from "./lib/football-stages";
 import { createLlmClient, resolveLlmModel } from "./lib/llm";
 import { createLogger } from "./lib/logger";
 import { resolveLedgerEnabled } from "./lib/match-ledger";
@@ -86,6 +89,9 @@ async function main(): Promise<number> {
     apiFootballMaxCalls: env.API_FOOTBALL_MAX_CALLS,
     // 정기 운영(저장소 변수 COLLECT_ENABLED == 'true') — 경기 기록 원장(data/matches)은 이때의 prod·비dry 실행만 쓴다(M1-48b)
     ledgerEnabled: resolveLedgerEnabled(env.COLLECT_ENABLED),
+    // 축구 데이터 단계(M2-09 — 대회·팀 파일·라인업 백필). 저장소 변수 COLLECT_FOOTBALL_STAGES='off'면 끈다(기본 켬 — 아침 봇
+    // 시간대에 코드 수정 없이 끌 수 있는 스위치). 켜져 있어도 대회 단계는 prod·비dry·09:00 KST 전만, 팀 파일 쓰기는 prod·비dry만
+    footballStages: resolveFootballStagesEnabled(env.COLLECT_FOOTBALL_STAGES),
     // 브리핑 전용 설정은 브리핑 단계 안에서 해석한다(잘못된 값이면 브리핑만 실패, 뉴스는 발행).
     resolveBriefConfig: () => ({
       model: resolveLlmModel(env),
@@ -106,6 +112,7 @@ async function main(): Promise<number> {
     brief: outcome.brief,
     briefFile: outcome.briefFile,
     ledger: outcome.matchData?.ledger ?? null,
+    football: outcome.football,
   });
   for (const finding of findings) {
     logger.warn("collect.run.issue", {

@@ -101,3 +101,25 @@ export const AfPendingFileSchema = z.object({
     .superRefine(uniqueBy((e) => String(e.id), "id", "경기 id")),
 });
 export type AfPendingFile = z.infer<typeof AfPendingFileSchema>;
+
+// ─── lineup-backfill (M2-09 — 2026-10-30 사용자 확인) ───────────────────────────
+
+/** 팀시트 백필로 한 번 받아 본 경기 1건 (M2-09 — scripts/lib/football-stages.ts) */
+export const LineupBackfillEntrySchema = z.object({
+  id: z.number().int().positive(), // API-Football 경기(fixture) id — 원장 키 `af-<id>`와 같은 숫자
+  at: IsoSchema, // 받아 본 시각(UTC) — 보존 기간(30일)이 지나면 수집 실행이 지운다
+});
+export type LineupBackfillEntry = z.infer<typeof LineupBackfillEntrySchema>;
+
+/**
+ * `data/cache/lineup-backfill.json` — 봇의 팀시트 백필(M2-09, plan M2-06·07 이월)이 `/fixtures?id=`로 이미 받아 본 경기 id. 다음
+ * 실행의 백필 계획(`planLineupBackfill` `exclude`)이 다시 고르지 않게 한다 — 재조회 응답의 포메이션이 원장과 달라 팀시트가 채워지지
+ * 않는 경기를 매일 다시 받지 않게(2026-10-30 실측 80팀 중 2팀). 수집 실행(prod·비dry·정기 운영)만 쓴다. 항목은 id 순.
+ */
+export const LineupBackfillFileSchema = z.object({
+  updatedAt: IsoSchema, // 마지막으로 쓴 시각
+  fixtures: z
+    .array(LineupBackfillEntrySchema)
+    .superRefine(uniqueBy((e) => String(e.id), "id", "경기 id")),
+});
+export type LineupBackfillFile = z.infer<typeof LineupBackfillFileSchema>;

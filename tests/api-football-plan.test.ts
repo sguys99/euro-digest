@@ -30,6 +30,7 @@ import {
   API_FOOTBALL_BOT_DAILY_CAP,
   API_FOOTBALL_DEV_DAILY_CAP,
   apiFootballCallAllowance,
+  API_FOOTBALL_DAILY_MARGIN,
   apiFootballUsedOn,
   buildAfPendingFile,
   buildAfTargetConfig,
@@ -269,14 +270,27 @@ describe("일일 호출 카운터 — 실행 기록 apiCalls.apiFootball의 같�
       remaining: 34,
       limitedBy: "env-cap",
     });
-    // 개발 호출이 많은 날 — 일 한도(100)가 먼저 막는다
+    // 개발 호출이 많은 날 — 일 한도(100 − 여유 5)가 먼저 막는다(runs-dev.json의 같은 UTC 날 dev 사용을 합산)
+    expect(API_FOOTBALL_DAILY_MARGIN).toBe(5);
     const busy = apiFootballCallAllowance({
       env: "prod",
       prodRuns: [],
       devRuns: [run("2026-10-10T10:00:00.000Z", 55)],
       now: NOW,
     });
-    expect(busy).toMatchObject({ remaining: 45, limitedBy: "api-limit" });
+    expect(busy).toMatchObject({ remaining: 40, limitedBy: "api-limit" });
+    // 2026-10-30 사례 — 개발 백필 41건(UTC 같은 날) 뒤 봇: min(60, 100 − 5 − 41 = 54) = 54
+    const afterDevBackfill = apiFootballCallAllowance({
+      env: "prod",
+      prodRuns: [],
+      devRuns: [run("2026-10-10T02:31:00.000Z", 41)],
+      now: NOW,
+    });
+    expect(afterDevBackfill).toMatchObject({
+      usedTotal: 41,
+      remaining: 54,
+      limitedBy: "api-limit",
+    });
     const dev = apiFootballCallAllowance({
       env: "dev",
       prodRuns: [],

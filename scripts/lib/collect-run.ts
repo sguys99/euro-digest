@@ -365,6 +365,21 @@ import {
 } from "./news-keywords";
 import { filterOutOfScope, type ScopeFilterResult } from "./news-scope";
 import {
+  footballStagesCapAt,
+  footballStagesLogFields,
+  formatFootballStagesSummary,
+  lineupBackfillAllowance,
+  nextClientNotBefore,
+  planFootballStages,
+  runCompetitionsCollectStage,
+  runTeamsCollectStage,
+  scorerNameObservations,
+  skippedCompetitions,
+  type CompetitionsCollectOutcome,
+  type FootballStagesOutcome,
+  type TeamsCollectOutcome,
+} from "./football-stages";
+import {
   purgeSummary,
   runPurgeStage,
   withPurgeStatus,
@@ -418,7 +433,12 @@ import {
   healthLogFields,
   type SourceHealth,
 } from "./source-health";
-import { matchDataIssuePayloads } from "./run-issues";
+import {
+  competitionApiFailures,
+  footballStageErrors,
+  matchDataIssuePayloads,
+  type FootballStatusView,
+} from "./run-issues";
 import {
   buildTeamIdIndex,
   EMPTY_TEAM_ID_INDEX,
@@ -566,6 +586,11 @@ export interface CollectDeps {
   healthReportPath?: string | null;
   /** 이번 Actions 실행 URL — 이슈 본문의 실행 링크(로컬이면 없음) */
   runUrl?: string;
+  /**
+   * 축구 데이터 단계(M2-09 — 대회 파일·팀 파일·라인업 백필, scripts/lib/football-stages.ts)를 돌리나. 진입점(scripts/collect.ts)이
+   * 저장소 변수 `COLLECT_FOOTBALL_STAGES`(기본 켬, `off`면 끔)로 정한다. 기본 false — 주입 deps(테스트)는 켤 때만 돈다.
+   */
+  footballStages?: boolean;
 }
 
 export type BriefOutcome =
@@ -956,6 +981,8 @@ export interface CollectOutcome {
   briefFile: BriefFileOutcome | null;
   /** 미등록 고유명사 적재(M1-21) — 브리핑 단계가 돌지 않았으면(뉴스 실패) null */
   unknownNames: UnknownNamesOutcome | null;
+  /** 축구 데이터 단계(M2-09 — 대회·팀 파일) — 예상 밖 오류로 결과가 없으면 null */
+  football: FootballStagesOutcome | null;
   /** 기록한 실행 로그(기록하지 않았으면 null) */
   run: RunLog | null;
   runPath: string | null;
@@ -2791,6 +2818,10 @@ interface MatchDataStage {
   briefView: Promise<MatchDataBriefView>;
   /** 두 프로바이더가 모두 끝난 최종 결과(짝짓기 포함) */
   done: Promise<MatchDataOutcome>;
+  /** football-data 브리핑 단계가 끝난 시각(football-data 시계 ms) — 대회 단계 첫 요청 하한(M2-09) */
+  footballDataSettledAt: Promise<number>;
+  /** API-Football 단계가 끝난 시각(API-Football 시계 ms) — 라인업 백필 첫 요청 하한(M2-09) */
+  apiFootballSettledAt: Promise<number>;
 }
 
 /**
@@ -2850,7 +2881,19 @@ function startMatchDataStage(
       return outcome;
     },
   );
-  return { briefView, done };
+  const afNow = deps.apiFootballNow ?? Date.now;
+  return {
+    briefView,
+    done,
+    footballDataSettledAt: footballData.then(
+      () => now(),
+      () => now(),
+    ),
+    apiFootballSettledAt: apiFootball.then(
+      () => afNow(),
+      () => afNow(),
+    ),
+  };
 }
 
 /** 사람이 읽는 경기 데이터 요약(dry 출력) */
@@ -4307,6 +4350,8 @@ async function recordUnknownNames(
   deps: CollectDeps,
   ctx: { startedAt: string },
   stage: BriefStageRun,
+  /** 브리핑 밖 데이터 API 이름(M2-09 — 대회 득점 순위 상위, football-stages.ts `scorerNameObservations`) */
+  extra: readonly UnknownNameObservation[] = [],
 ): Promise<UnknownNamesOutcome> {
   const log = deps.logger;
   const names = stage.names;
@@ -4325,10 +4370,18 @@ async function recordUnknownNames(
     const kind = inputKind.get(foldName(name));
     observed.push(kind ? { name, kind } : { name });
   }
+  const fromBrief = observed.length;
+  // 대회 득점 순위 이름 — 사전·무시 목록에 있으면 넣지 않는다(브리핑 입력 이름과 같은 판정)
+  for (const o of extra) {
+    if (isKnownName(names, o.name)) continue;
+    if (observed.some((p) => p.name === o.name)) continue;
+    observed.push(o);
+  }
   const fields = {
     observed: observed.length,
     fromInput: fromInput.length,
-    fromOutput: observed.length - fromInput.length,
+    fromOutput: fromBrief - fromInput.length,
+    fromCompetitions: observed.length - fromBrief,
     names: observed.slice(0, UNKNOWN_NAMES_LOG_MAX).map((o) => o.name),
   };
   // dev 실행이 횟수를 부풀리지 않게, dry는 data/를 쓰지 않으므로 — 로그만(af-pending 이월 목록과 같은 기준)
@@ -4523,6 +4576,7 @@ async function reportMatchDataIssues(
   deps: CollectDeps,
   ctx: { runId: string; health: HealthOutcome | null; newsOk: boolean },
   matchData: MatchDataOutcome | null,
+  football: FootballStagesOutcome | null = null,
 ): Promise<number> {
   const af = matchData?.apiFootball;
   const issueCtx = {
@@ -4530,7 +4584,12 @@ async function reportMatchDataIssues(
     runId: ctx.runId,
     ...(deps.runUrl ? { runUrl: deps.runUrl } : {}),
   };
-  const stageIssues = matchDataIssuePayloads(matchData, issueCtx);
+  const stageIssues = matchDataIssuePayloads(
+    matchData === null
+      ? null
+      : { ...matchData, competitions: football?.competitions ?? null },
+    issueCtx,
+  );
   if (!ctx.newsOk && stageIssues.length > 0) {
     deps.logger.warn("collect.matchdata.issue.suppress", {
       reason: "news-failed",
@@ -4616,6 +4675,8 @@ export interface RunStatusInput {
         Partial<Pick<MatchDataOutcome, "apiFootball" | "ledger">>)
     | null;
   briefFile: Pick<BriefFileOutcome, "action" | "readError"> | null;
+  /** 축구 데이터 단계(M2-09) — 돌지 않았거나 결과가 없으면 null·생략 */
+  football?: FootballStatusView | null;
 }
 
 /**
@@ -4803,6 +4864,47 @@ export const RUN_PARTIAL_CONDITIONS: readonly PartialCondition[] = [
     holds: ({ briefFile }) =>
       briefFile?.action === "failed" || Boolean(briefFile?.readError),
   },
+  {
+    // 대회 단계(M2-09)의 football-data 응답 실패(HTTP·형식·타임아웃) — 그 조각·대회는 전일 값 유지. 브리핑 쪽과 같은 원인 키
+    id: "competitions-api",
+    route: { kind: "source-broken", source: "football-data" },
+    holds: ({ football }) => competitionApiFailures(football) > 0,
+  },
+  {
+    id: "competitions-budget",
+    route: {
+      kind: "none",
+      why: "대회 단계 시간 예산(4분 · 브리핑 마감 + 3분 상한) 소진 — 받지 못한 대회·조각은 전일 값을 유지하고 다음 실행이 다시 받는다(늦은 실행·지연 — 운영 리포트 M5-09)",
+    },
+    holds: ({ football }) => {
+      const c = football?.competitions;
+      return (
+        c?.state === "done" &&
+        c.results.some((r) =>
+          r.failures.some(
+            (f) => f.errorType === "budget" || f.errorType === "cancelled",
+          ),
+        )
+      );
+    },
+  },
+  {
+    // 대회·팀 단계의 코드·설정·쓰기 오류(M2-09) — 그 파일은 전일 값 유지, 발행은 계속
+    id: "football-stage",
+    route: { kind: "pipeline-partial", reason: "football" },
+    holds: ({ football }) => footballStageErrors(football).length > 0,
+  },
+  {
+    id: "lineup-backfill",
+    route: {
+      kind: "none",
+      why: "라인업 백필(M2-09) 요청 일부 실패 — 받아 본 id로 남기지 않아 다음 실행이 다시 고른다. 응답 errors(일 한도·키·플랜)는 같은 실행의 경기 단건 단계가 source:api-football로 먼저 낸다",
+    },
+    holds: ({ football }) => {
+      const t = football?.teams;
+      return t?.state === "done" && t.backfill.errors.length > 0;
+    },
+  },
 ];
 
 /** 맞는 partial 조건 id(표 순서) — 뉴스 성공 여부와 무관하게 조건만 본다 */
@@ -4819,9 +4921,11 @@ export function runStatus(
   brief: BriefOutcome,
   matchData: RunStatusInput["matchData"] = null,
   briefFile: RunStatusInput["briefFile"] = null,
+  football: RunStatusInput["football"] = null,
 ): RunLog["status"] {
   if (!news.ok) return "failed";
-  return partialConditionsOf({ news, brief, matchData, briefFile }).length > 0
+  return partialConditionsOf({ news, brief, matchData, briefFile, football })
+    .length > 0
     ? "partial"
     : "success";
 }
@@ -5053,19 +5157,57 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     }
   }
 
-  // 미등록 고유명사(M1-21) — 브리핑 입력·출력의 사전에 없는 이름. prod·비dry만 파일을 쓴다. 실패해도 발행은 계속
-  let unknownNames: UnknownNamesOutcome | null = null;
-  if (briefStage !== null) {
-    try {
-      unknownNames = await recordUnknownNames(deps, stageCtx, briefStage);
-    } catch (error) {
-      // 방어선 — recordUnknownNames는 던지지 않는다
-      log.error("summarize.names.fail", {
-        stage: "unexpected",
-        error: errorText(error),
-      });
-    }
-  }
+  // ⑤ 축구 데이터 단계(M2-09 — scripts/lib/football-stages.ts): 브리핑 게시 뒤 대회 단계(football-data)를 시작해 API-Football 나머지와
+  // 병렬로 돌리고, 원장이 끝나면 팀 단계(+ 라인업 백필). 던지지 않는다 — 어떤 실패도 뉴스·브리핑 발행을 멈추지 않는다.
+  const footballPlan = planFootballStages({
+    enabled: deps.footballStages === true,
+    newsOk: news.ok && match.stage !== null,
+    env: deps.env,
+    dry: deps.dry,
+    startedAt,
+    hasFootballDataKey: Boolean(deps.footballDataApiKey?.trim()),
+  });
+  const footballCapAt = footballStagesCapAt(stageCtx.briefDeadline);
+  log.info("collect.football.plan", {
+    competitions: footballPlan.competitions.run
+      ? "run"
+      : `skip:${footballPlan.competitions.reason}`,
+    teams: footballPlan.teams.run
+      ? footballPlan.teams.mode
+      : `skip:${footballPlan.teams.reason}`,
+    capAt: footballCapAt,
+  });
+  const competitionsRun: Promise<CompetitionsCollectOutcome> =
+    footballPlan.competitions.run && match.stage !== null
+      ? match.stage.footballDataSettledAt
+          .then((settledAt) =>
+            runCompetitionsCollectStage(deps, {
+              notBefore: nextClientNotBefore(settledAt),
+              capAt: footballCapAt,
+              sink,
+            }),
+          )
+          .catch((error: unknown): CompetitionsCollectOutcome => {
+            // 방어선 — runCompetitionsCollectStage는 던지지 않는다
+            log.error("collect.competitions.fail", {
+              stage: "unexpected",
+              error: errorText(error),
+            });
+            return {
+              state: "failed",
+              errorType: "unexpected",
+              error: errorText(error),
+              apiCalls: 0,
+              elapsedMs: 0,
+            };
+          })
+      : Promise.resolve(
+          skippedCompetitions(
+            footballPlan.competitions.run
+              ? "news-failed"
+              : footballPlan.competitions.reason,
+          ),
+        );
 
   // 경기 데이터 마무리 — API-Football 나머지·이월 파일·짝짓기. 실행 기록(호출 수 = 다음 실행의 일일 카운터) 전에 기다린다.
   try {
@@ -5078,11 +5220,79 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
       error: errorText(error),
     });
   }
+
+  // 팀 단계(원장·대회 파일 뒤) + 라인업 백필(API-Football 단계 뒤 — 남은 일일 몫 안에서)
+  let football: FootballStagesOutcome | null = null;
+  try {
+    const competitions = await competitionsRun;
+    let teams: TeamsCollectOutcome;
+    if (!footballPlan.teams.run) {
+      teams = { state: "skipped", reason: footballPlan.teams.reason };
+    } else {
+      const af = matchData?.apiFootball ?? null;
+      const allowance = lineupBackfillAllowance({
+        env: deps.env,
+        dry: deps.dry,
+        ledgerEnabled: deps.ledgerEnabled === true,
+        hasApiKey: Boolean(deps.apiFootballApiKey?.trim()),
+        apiFootball: af,
+      });
+      const afSettledAt =
+        match.stage === null ? null : await match.stage.apiFootballSettledAt;
+      teams = await runTeamsCollectStage(deps, {
+        mode: footballPlan.teams.mode,
+        details: af?.state === "done" ? af.data.stage.details : [],
+        // 원장을 쓰지 않은 실행(dry·dev·정기 운영 전)은 이번 실행 항목을 메모리에서 더한다(쓴 실행은 디스크와 같다)
+        ledgerExtra:
+          matchData?.ledger && matchData.ledger.mode !== "write"
+            ? matchData.ledger.entries
+            : [],
+        backfill: allowance,
+        afNotBefore: nextClientNotBefore(afSettledAt),
+        capAt: footballCapAt,
+        sink,
+      });
+    }
+    football = { plan: footballPlan, competitions, teams };
+    if (deps.dry) deps.print(formatFootballStagesSummary(football));
+  } catch (error) {
+    // 방어선 — 두 단계는 던지지 않는다
+    log.error("collect.football.fail", {
+      stage: "unexpected",
+      error: errorText(error),
+    });
+  }
+
+  // 미등록 고유명사(M1-21) — 브리핑 입력·출력의 사전에 없는 이름 + 대회 득점 순위 상위(M2-09, 대회별 20명). prod·비dry만 파일을
+  // 쓴다. 실패해도 발행은 계속
+  let unknownNames: UnknownNamesOutcome | null = null;
+  if (briefStage !== null) {
+    try {
+      const competitionNames =
+        football?.competitions.state === "done"
+          ? scorerNameObservations(football.competitions.files)
+          : [];
+      unknownNames = await recordUnknownNames(
+        deps,
+        stageCtx,
+        briefStage,
+        competitionNames,
+      );
+    } catch (error) {
+      // 방어선 — recordUnknownNames는 던지지 않는다
+      log.error("summarize.names.fail", {
+        stage: "unexpected",
+        error: errorText(error),
+      });
+    }
+  }
+
   try {
     await reportMatchDataIssues(
       deps,
       { runId, health, newsOk: news.ok },
       matchData,
+      football,
     );
   } catch (error) {
     log.error("collect.matchdata.issue.fail", { error: errorText(error) });
@@ -5090,7 +5300,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
 
   // 삭제 단계 오류(M1-25)는 runStatus 바깥에서 partial로 덧씌운다
   const status = withPurgeStatus(
-    runStatus(news, brief, matchData, briefFile),
+    runStatus(news, brief, matchData, briefFile, football),
     purge,
   );
   let exitCode = news.ok ? 0 : 1;
@@ -5183,6 +5393,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     footballData: matchData?.footballData.state ?? null,
     apiFootball: matchData?.apiFootball.state ?? null,
     matchDataMs: matchData?.elapsedMs ?? null,
+    ...footballStagesLogFields(football),
     apiCalls: sink.apiCalls.footballData,
     apiFootballCalls: sink.apiCalls.apiFootball,
     llmCalls: sink.results.length,
@@ -5200,6 +5411,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     brief,
     briefFile,
     unknownNames,
+    football,
     run,
     runPath,
     status,

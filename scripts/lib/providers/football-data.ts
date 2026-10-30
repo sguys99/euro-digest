@@ -243,6 +243,11 @@ export interface FootballDataClientOptions {
   deadline?: number | null;
   /** 이 신호가 켜지면 새 요청을 보내지 않는다(`cancelled`) — 보내는 중인 요청은 끝까지 기다린다 */
   signal?: AbortSignal;
+  /**
+   * 첫 요청을 이 시각(now 기준 ms) 전에는 보내지 않는다 — 같은 키·같은 호스트를 앞서 쓴 클라이언트의 마지막 응답 + 간격(6.5초)을
+   * 넘겨 클라이언트가 바뀌어도 분당 10회 간격을 잇는다(M2-09 — 브리핑 단계 뒤 대회 단계). 없으면 바로 보낸다
+   */
+  notBefore?: number | null;
   baseUrl?: string;
   /** 재시도 직전에 부른다(로그용) */
   onRetry?: (event: FootballDataRetryEvent) => void;
@@ -366,8 +371,8 @@ export function createFootballDataClient(
   const deadline = options.deadline ?? null;
   const baseUrl = options.baseUrl ?? FOOTBALL_DATA_BASE_URL;
   let lastResponseAt: number | null = null;
-  /** 레이트 리밋 헤더 가드 — 이 시각 전에는 보내지 않는다 */
-  let guardUntil = 0;
+  /** 레이트 리밋 헤더 가드 — 이 시각 전에는 보내지 않는다(앞 클라이언트의 간격 `notBefore`로 시작) */
+  let guardUntil = options.notBefore ?? 0;
   let calls = 0;
   let retries = 0;
   // 동시 1개 — 요청을 한 줄로 세운다.
