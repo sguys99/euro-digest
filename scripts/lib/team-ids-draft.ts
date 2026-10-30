@@ -8,10 +8,9 @@
  *   - 기존 팀 slug(`configs/names.ko.json` team 항목) — 있으면 그 slug를 그대로 쓴다
  * 출력: 대응표(slug 순) + 사람이 확인할 표의 행(근거·확인 필요 표시) + 문제 목록.
  *
- * slug 규칙(M0-32 "팀 slug 제안 규칙" — 최종은 M2-04): football-data 정식 이름(`team.name`) 기준
- *   ① 악센트를 없앤다(ü→u, é→e, ø→o, ß→ss) ② 법인·형태 토큰(FC·AFC·CF·SC·SV·FSV·1.·Club)을 앞뒤에서 뗀다
- *   ③ 나머지를 소문자 kebab으로. 숫자(05·04)는 구단 정체성이라 남긴다. 규칙이 어색한 결과를 내는 행은 표시만 하고 고치지 않는다
- *   (규칙 확정은 M2-04 — 팀 페이지 URL이 생기기 전에 바꿀 수 있다).
+ * slug 규칙: scripts/lib/team-slugs.ts(PRD §15 D63 ③ — 통용 영문 통칭 kebab + 예외표, M2-04에서 M0-32 규칙을 대체).
+ * 2026-10-13 초안은 M0-32 규칙(숫자 남김·FC 등 8개 토큰만 뗌)으로 만들었고, M2-04가 전 팀 대응표를 다시 만들었다
+ * (scripts/build-team-ids.ts `--roster`, scripts/lib/team-roster.ts). 규칙이 어색한 결과를 내는 행은 표시만 하고 고치지 않는다.
  */
 import { z } from "zod";
 
@@ -25,90 +24,28 @@ import type {
 import { afFixtureToPairing, toAfFixture } from "./providers/api-football";
 import { toFinishedResults } from "./providers/football-data";
 import type { PairingMatch, PairingReport } from "./team-ids";
+import {
+  stripAccents,
+  teamSlugFor,
+  teamSlugFromName,
+  TEAM_SLUG_FORM_TOKENS,
+  TEAM_SLUG_OVERRIDES,
+} from "./team-slugs";
 
-// ─── slug 규칙 ───────────────────────────────────────────────────────────
+// ─── slug 규칙 (scripts/lib/team-slugs.ts — PRD §15 D63 ③, M2-04) ──────────────
 
-/** M0-32 규칙의 법인·형태 토큰(앞뒤에서만 뗀다) */
-export const SLUG_STRIP_TOKENS: readonly string[] = [
-  "fc",
-  "afc",
-  "cf",
-  "sc",
-  "sv",
-  "fsv",
-  "1.",
-  "club",
-];
+export { stripAccents, teamSlugFromName } from "./team-slugs";
 
-/** 규칙 밖이지만 법인·형태로 보이는 토큰 — slug에 남으면 "규칙 검토" 표시(M2-04 판단 자료) */
+/** 규칙 밖이지만 법인·형태로 보이는 토큰 — slug에 남으면 "규칙 검토" 표시(사람 확인 자료) */
 const FORM_LIKE_TOKENS: ReadonlySet<string> = new Set([
-  "ac",
-  "acf",
-  "as",
+  ...TEAM_SLUG_FORM_TOKENS,
   "bv",
-  "calcio",
-  "cfc",
-  "osc",
-  "rc",
-  "sco",
-  "ssc",
-  "tsg",
-  "us",
-  "vfb",
   "vfl",
 ]);
 
-const SPECIAL_LETTERS: Readonly<Record<string, string>> = {
-  ø: "o",
-  Ø: "O",
-  ß: "ss",
-  æ: "ae",
-  Æ: "AE",
-  œ: "oe",
-  Œ: "OE",
-  đ: "d",
-  Đ: "D",
-  ł: "l",
-  Ł: "L",
-};
-
-/** 악센트 제거(NFKD + 결합 문자 제거, 분해되지 않는 글자는 표로) */
-export function stripAccents(text: string): string {
-  return text
-    .replace(/[øØßæÆœŒđĐłŁ]/g, (ch) => SPECIAL_LETTERS[ch] ?? ch)
-    .normalize("NFKD")
-    .replace(/\p{M}+/gu, "");
-}
-
-export interface SlugRuleResult {
-  slug: string;
-  /** 앞뒤에서 뗀 토큰(원문 표기) */
-  stripped: string[];
-}
-
-/** football-data 정식 이름 → slug(M0-32 규칙) */
-export function teamSlugFromName(fullName: string): SlugRuleResult {
-  const tokens = stripAccents(fullName).trim().split(/\s+/).filter(Boolean);
-  const stripped: string[] = [];
-  const isStrip = (token: string | undefined) =>
-    token !== undefined && SLUG_STRIP_TOKENS.includes(token.toLowerCase());
-  while (tokens.length > 1 && isStrip(tokens[0])) {
-    stripped.push(tokens.shift()!);
-  }
-  while (tokens.length > 1 && isStrip(tokens.at(-1))) {
-    stripped.push(tokens.pop()!);
-  }
-  const slug = tokens
-    .join(" ")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return { slug, stripped };
-}
-
 /** 이름 비교용 의미 토큰(악센트·형태 토큰·두 글자 이하 제거, 소문자) */
 export function significantTokens(name: string): Set<string> {
-  const generic = new Set([...SLUG_STRIP_TOKENS, ...FORM_LIKE_TOKENS, "de"]);
+  const generic = new Set([...FORM_LIKE_TOKENS, "de"]);
   return new Set(
     stripAccents(name)
       .toLowerCase()
@@ -137,13 +74,13 @@ export function namesLookSame(
  */
 export const M0_32_SQUAD_TEAM_IDS: Readonly<Record<string, number>> = {
   brentford: 55,
-  "atletico-de-madrid": 530,
+  "atletico-madrid": 530,
   "bayern-munchen": 157,
   "union-berlin": 182,
-  "mainz-05": 164,
+  mainz: 164,
   "borussia-monchengladbach": 163,
   augsburg: 170,
-  "schalke-04": 174,
+  schalke: 174,
 };
 
 /** 활성 한국 선수 → 소속팀별 묶음(설정 순서) + M0-32 af id */
@@ -463,7 +400,7 @@ export function buildTeamIdsDraft(inputs: DraftInputs): TeamIdsDraft {
       }
     } else {
       const rule = teamSlugFromName(fdName);
-      slug = rule.slug;
+      slug = teamSlugFor({ fd: pair.fd, name: fdName });
       slugSource = "rule";
       if (/^\d/.test(slug)) {
         flags.push(
@@ -473,18 +410,21 @@ export function buildTeamIdsDraft(inputs: DraftInputs): TeamIdsDraft {
       const shortTokens = new Set(
         (fdShort ?? "").toLowerCase().split(/\s+/).filter(Boolean),
       );
-      const identity = rule.stripped.filter((t) =>
-        shortTokens.has(t.toLowerCase()),
-      );
+      // 예외표(통칭·충돌)로 정한 팀은 규칙 결과를 쓰지 않으므로 표시하지 않는다
+      const identity = Object.hasOwn(TEAM_SLUG_OVERRIDES, pair.fd)
+        ? []
+        : rule.stripped.filter((t) => shortTokens.has(t.toLowerCase()));
       if (identity.length > 0) {
         flags.push(
           `규칙이 뗀 "${identity.join(" ")}"가 football-data 짧은 이름 "${fdShort}"에 남아 있음 — 이름의 일부일 수 있음`,
         );
       }
-      const leftover = slug.split("-").filter((t) => FORM_LIKE_TOKENS.has(t));
+      const leftover = Object.hasOwn(TEAM_SLUG_OVERRIDES, pair.fd)
+        ? []
+        : slug.split("-").filter((t) => FORM_LIKE_TOKENS.has(t));
       if (leftover.length > 0) {
         flags.push(
-          `규칙 밖 법인·형태 토큰이 남음(${leftover.join("·")}) — M2-04 규칙 확정 때 검토`,
+          `규칙 밖 법인·형태 토큰이 남음(${leftover.join("·")}) — 예외표(team-slugs.ts) 검토`,
         );
       }
     }

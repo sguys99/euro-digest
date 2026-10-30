@@ -673,7 +673,7 @@ export const BIG_CLUBS: readonly BigClub[] = [
     },
   },
   {
-    slug: "atletico-de-madrid",
+    slug: "atletico-madrid",
     terms: {
       latin: ["atletico madrid", "atletico de madrid", "atleti"],
       ko: ["아틀레티코", "at 마드리드", "atm"],
@@ -722,7 +722,7 @@ export const BIG_CLUBS: readonly BigClub[] = [
     exclude: { latin: ["juve stabia"] },
   },
   {
-    slug: "internazionale-milano",
+    slug: "inter",
     terms: {
       latin: ["inter milan", "internazionale", "inter"],
       ko: ["인터 밀란", "인테르"],
@@ -730,12 +730,12 @@ export const BIG_CLUBS: readonly BigClub[] = [
     exclude: { latin: ["inter miami", "inter de miami"] },
   },
   {
-    // slug = football-data 'AC Milan'의 M0-32 규칙 결과(team-ids-draft.ts teamSlugFromName — 'AC'는 떼는 토큰이 아니다, M1-21)
-    slug: "ac-milan",
+    // slug = football-data 'AC Milan'의 D63 ③ 규칙 결과(team-slugs.ts — 'AC'는 떼는 법인 토큰, M2-04에서 ac-milan → milan)
+    slug: "milan",
     terms: { latin: ["ac milan", "milan"], ko: ["ac 밀란", "밀란"] },
     exclude: { latin: ["inter milan"], ko: ["인터 밀란"] },
   },
-  { slug: "ssc-napoli", terms: { latin: ["napoli"], ko: ["나폴리"] } },
+  { slug: "napoli", terms: { latin: ["napoli"], ko: ["나폴리"] } },
 ];
 
 // ─── 표: 분류 카테고리 (M1-17, FR-21·FR-31) ──────────────────────────────────

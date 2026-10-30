@@ -15,6 +15,7 @@
 |---|---|---|
 | `af-ledger-2026-10-24.json` | 경기 기록 원장 형식(`MatchLedgerFileSchema`)의 UTC 2026-10-24 19경기 — 상태 FT·스코어·득점 | `data/matches/2026-10.json`(그날 prod 실행이 쓴 원장)에서 그대로 발췌 |
 | `fd-matches-2026-10-24-stale.json` | football-data `/v4/matches` 응답 모양의 **합성** 19경기 — 모두 미종료 | 아래 규칙으로 만든 합성 값 |
+| `team-ids-2026-10-25.json` | 그날의 `configs/team-ids.json`(52팀) — 합성 팀 id 900001~가 이 표 기준이라 재현 테스트는 이 사본을 쓴다 | M2-04(2026-10-30)에 전 팀(111) 대응표로 바뀌기 전 파일, slug만 D63 ③ 새 slug로 바꿈(id·note 그대로) |
 
 `fd-matches-2026-10-24-stale.json` 합성 규칙 (football-data 원본 응답은 저장하지 않았다):
 
@@ -22,7 +23,7 @@
   로그에 경기 구별이 없어 원장 id 순 마지막 경기(파더보른–함부르크)로 두었다.
 - 점수는 비웠다(`null`) — 미종료 경기의 점수는 어댑터가 읽지 않는다.
 - 경기 id는 합성 값(990001~990019, 킥오프·원장 id 순). 실제 football-data id가 아니다.
-- 팀 id: `configs/team-ids.json`에 있는 팀(af id로 찾음)은 그 표의 football-data id, 없는 팀은 합성 값 900001~900017. 팀 이름은
+- 팀 id: 그날 `configs/team-ids.json`(= `team-ids-2026-10-25.json`)에 있는 팀(af id로 찾음)은 그 표의 football-data id, 없는 팀은 합성 값 900001~900017. 팀 이름은
   API-Football 원장 표기를 그대로 썼다(football-data 표기 아님).
 
 합성 값이 섞여 있으므로 디자인 시안·문서의 사실 근거로 쓰지 않는다.

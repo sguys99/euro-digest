@@ -102,15 +102,13 @@ describe("맞춤 규칙 — 단어 경계·부분 문자열·제외 표현", () 
     expect(
       hits("Inter Miami beat Inter Miami II in friendly", "en").bigClubs,
     ).toEqual([]);
-    expect(hits("Inter Milan sign striker", "en").bigClubs).toEqual([
-      "internazionale-milano",
-    ]);
+    expect(hits("Inter Milan sign striker", "en").bigClubs).toEqual(["inter"]);
     expect(hits("Milan, la probabile formazione", "it").bigClubs).toEqual([
-      "ac-milan",
+      "milan",
     ]);
     expect(hits("Inter e Milan, derby in vista", "it").bigClubs).toEqual([
-      "internazionale-milano",
-      "ac-milan",
+      "inter",
+      "milan",
     ]);
   });
 
@@ -121,7 +119,7 @@ describe("맞춤 규칙 — 단어 경계·부분 문자열·제외 표현", () 
     });
     expect(
       hits("AT 마드리드전 패배에 뿔난 캐릭 맨유 감독", "ko").bigClubs,
-    ).toEqual(["atletico-de-madrid", "manchester-united"]);
+    ).toEqual(["atletico-madrid", "manchester-united"]);
     expect(hits("레알 소시에다드, 셀타와 비겨", "ko").bigClubs).toEqual([]);
     expect(hits("레알 소시에다드 꺾은 레알, 리그 선두", "ko").bigClubs).toEqual(
       ["real-madrid"],
@@ -255,7 +253,7 @@ describe("설정 색인 — korean-players.json(FR-60 등록 선수만) + names.
       "bayern-munchen",
     ]);
     expect(hits("Club Atlético de Madrid announce", "es").bigClubs).toEqual([
-      "atletico-de-madrid",
+      "atletico-madrid",
     ]);
   });
 
@@ -305,7 +303,7 @@ describe("리뷰 반영 — 국내 약칭 'PL'·라틴 경계·제외 표현·�
     expect(hits("Liverpool want PL winger", "en").comps).toEqual(["EPL"]);
     // 다른 약칭도 같은 규칙 — 'ATM과'는 맞고 'ATMOSPHERE'는 아니다
     expect(hits("NBA 스타, ATM과 파트너십", "ko").bigClubs).toEqual([
-      "atletico-de-madrid",
+      "atletico-madrid",
     ]);
     expect(hits("‘ATMOSPHERE’ 콘서트 개최", "ko").bigClubs).toEqual([]);
   });
@@ -429,7 +427,7 @@ describe("실데이터 제목 — fixtures/cluster(2026-10-15 수집)", () => {
       { comps: ["UCL"], bigClubs: ["manchester-city", "paris-saint-germain"] },
     ],
     // 해외: BBC 이적설 묶음(gossip) + 나폴리 · 'Real links'는 레알 마드리드로 보지 않는다(보수적)
-    ["t046", { bigClubs: ["ssc-napoli"], transfer: true }],
+    ["t046", { bigClubs: ["napoli"], transfer: true }],
     // 스페인어 UCL
     ["t072", { comps: ["UCL"], bigClubs: [] }],
     // 럭비 Champions Cup — 범위 대회 아님

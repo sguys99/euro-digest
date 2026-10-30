@@ -42,6 +42,7 @@ const KindSchema = z.enum([
   "fd-scorers",
   "fd-matches",
   "fd-match",
+  "fd-teams",
   "af-fixtures",
   "af-error",
   "af-status",
@@ -132,6 +133,12 @@ const FdScorersSchema = z.object({
   scorers: z.array(z.object({ player: z.object({ id: Id }) })),
 });
 const FdCompetitionSchema = z.object({ id: Id, code: z.string() });
+/** `/competitions/{code}/teams`(M2-04 — 축약: 팀 목록 필드만) */
+const FdTeamsSchema = z.object({
+  count: Id,
+  competition: z.object({ code: z.string() }),
+  teams: z.array(z.object({ id: Id, name: z.string(), tla: z.string() })),
+});
 const AfEnvelopeSchema = z.object({
   get: z.string(),
   parameters: z.record(z.string(), z.string()),
@@ -226,6 +233,8 @@ function idsInFile(f: IndexFile): number[] {
       return FdScorersSchema.parse(data).scorers.map((s) => s.player.id);
     case "fd-competition":
       return [FdCompetitionSchema.parse(data).id];
+    case "fd-teams":
+      return FdTeamsSchema.parse(data).teams.map((t) => t.id);
     case "af-fixtures":
       return afFixtures(f.path).map((r) => r.fixture.id);
     case "af-error":
@@ -316,6 +325,12 @@ describe("fixtures/football — index.json과 실제 파일", () => {
         if (list.resultSet)
           expect(list.resultSet.count, f.path).toBe(list.matches.length);
         if (f.trimmed) expect(list.matches.length).toBe(f.trimmed.kept);
+      } else if (f.kind === "fd-teams") {
+        // 팀 항목은 그대로 두고 필드만 줄였다(M2-04) — 건수는 원본과 같아야 한다
+        const teams = FdTeamsSchema.parse(data);
+        expect(teams.count, f.path).toBe(teams.teams.length);
+        expect(f.trimmed?.kept, f.path).toBe(teams.teams.length);
+        expect(f.trimmed?.original.teams, f.path).toBe(teams.teams.length);
       } else {
         expect(f.trimmed, f.path).toBeNull();
       }

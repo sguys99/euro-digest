@@ -14,7 +14,7 @@
       ],
       "teams": [
         "paris-saint-germain",
-        "olympique-lyonnais"
+        "lyon"
       ],
       "players": [
         "lee-kang-in"
@@ -215,7 +215,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ac-milan"
+        "milan"
       ],
       "players": [],
       "imp": 3,
@@ -272,12 +272,12 @@
         "SERIEA"
       ],
       "teams": [
-        "as-roma",
-        "cagliari-calcio",
-        "como-1907",
+        "roma",
+        "cagliari",
+        "como",
         "torino",
-        "ssc-napoli",
-        "ac-monza"
+        "napoli",
+        "monza"
       ],
       "players": [],
       "imp": 3,
@@ -847,7 +847,7 @@
       ],
       "teams": [
         "liverpool",
-        "brighton-hove-albion"
+        "brighton"
       ],
       "players": [],
       "imp": 2,

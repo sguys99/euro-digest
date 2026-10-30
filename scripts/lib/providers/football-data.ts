@@ -258,6 +258,8 @@ export interface FootballDataClient {
   getMatches(query: MatchesQuery): Promise<unknown[]>;
   /** `/v4/competitions/{code}/standings` — 응답 원문(검증은 `toCompStandings`) */
   getStandings(code: string): Promise<unknown>;
+  /** `/v4/competitions/{code}/teams?season=` — 응답 원문(검증은 `toCompetitionTeams`, M2-04 팀 목록 — 정기 실행은 부르지 않는다) */
+  getTeams(code: string, season: number): Promise<unknown>;
   /** 이 클라이언트가 보낸 요청 수(실패·재시도 포함) — runs.json apiCalls.footballData */
   readonly calls: number;
   /** 재시도 횟수(calls에 포함) */
@@ -281,6 +283,11 @@ export function matchesPath(query: MatchesQuery): string {
 /** 순위 경로(시즌 파라미터 없음 = 현재 시즌) */
 export function standingsPath(code: string): string {
   return `/competitions/${encodeURIComponent(code)}/standings`;
+}
+
+/** 대회 참가 팀 경로(M2-04) — `season`은 시즌 시작 연도(competitions.json `season`) */
+export function teamsPath(code: string, season: number): string {
+  return `/competitions/${encodeURIComponent(code)}/teams?season=${season}`;
 }
 
 /** UTC ISO → UTC 날짜 "YYYY-MM-DD" (시간대 변환 없음) */
@@ -520,6 +527,9 @@ export function createFootballDataClient(
     getStandings(code) {
       return enqueue(() => request(standingsPath(code)));
     },
+    getTeams(code, season) {
+      return enqueue(() => request(teamsPath(code, season)));
+    },
     get calls() {
       return calls;
     },
@@ -604,6 +614,96 @@ export const FdStandingsResponseSchema = z.object({
     }),
   ),
 });
+
+/** `/v4/competitions/{code}/teams` 팀 1개 — 팀 목록에 필요한 필드만(crest·squad·coach·주소 등은 버린다) */
+export const FdTeamEntrySchema = z.object({
+  id: z.number().int().positive(),
+  name: z.string().min(1),
+  shortName: z.string().nullable().optional(),
+  tla: z.string().nullable().optional(),
+  area: z
+    .object({ name: z.string().nullable().optional() })
+    .nullable()
+    .optional(),
+});
+
+/** `/v4/competitions/{code}/teams?season=` 응답 — 팀 항목은 하나씩 검증한다 */
+export const FdTeamsResponseSchema = z.object({
+  competition: z.object({ code: z.string() }),
+  season: z
+    .object({ startDate: z.string().nullable().optional() })
+    .nullable()
+    .optional(),
+  teams: z.array(z.unknown()),
+});
+
+/** 대회 참가 팀 1개(내부 형식 — M2-04 팀 목록) */
+export interface CompetitionTeam {
+  /** football-data 팀 id */
+  fd: number;
+  /** 정식 이름(예: "FC Internazionale Milano") */
+  name: string;
+  /** 짧은 이름(예: "Inter") — 비어 있으면 null */
+  shortName: string | null;
+  /** 세 글자 약어 — 앞뒤 공백을 뗀 값(스트라스부르는 원문 `"RC "`), 비어 있으면 null */
+  tla: string | null;
+  /** 원문 tla에 앞뒤 공백이 있었는가(데이터 품질 기록용) */
+  tlaPadded: boolean;
+  /** 나라(지역) 이름 — UCL 5대 리그 외 팀 구분용 */
+  area: string | null;
+}
+
+export interface CompetitionTeams {
+  /** football-data 대회 코드(PL·PD·SA·BL1·FL1·CL) */
+  code: string;
+  /** 응답 시즌 시작일(YYYY-MM-DD) — 요청한 시즌이 맞는지 확인용 */
+  seasonStart: string | null;
+  teams: CompetitionTeam[];
+  /** 형식이 맞지 않아 버린 항목 수 */
+  dropped: number;
+}
+
+function blankToNull(value: string | null | undefined): string | null {
+  const trimmed = value?.trim() ?? "";
+  return trimmed === "" ? null : trimmed;
+}
+
+/** 팀 목록 응답 → 내부 형식(id 순). 껍데기가 틀리면 던진다, 항목이 틀리면 그 항목만 버린다 */
+export function toCompetitionTeams(json: unknown): CompetitionTeams {
+  const parsed = FdTeamsResponseSchema.safeParse(json);
+  if (!parsed.success) {
+    throw new FootballDataError(
+      "format",
+      "football-data 팀 목록 응답 형식이 다르다(teams 배열 없음)",
+    );
+  }
+  const teams: CompetitionTeam[] = [];
+  let dropped = 0;
+  for (const raw of parsed.data.teams) {
+    const entry = FdTeamEntrySchema.safeParse(raw);
+    if (!entry.success) {
+      dropped += 1;
+      continue;
+    }
+    const t = entry.data;
+    const tla = blankToNull(t.tla);
+    teams.push({
+      fd: t.id,
+      name: t.name.trim(),
+      shortName: blankToNull(t.shortName),
+      tla,
+      tlaPadded: tla !== null && t.tla !== tla,
+      area: blankToNull(t.area?.name),
+    });
+  }
+  teams.sort((a, b) => a.fd - b.fd);
+  return {
+    code: parsed.data.competition.code,
+    seasonStart: parsed.data.season?.startDate ?? null,
+    teams,
+    dropped,
+  };
+}
 
 // ─── 내부 형식 변환 (순수 함수) ──────────────────────────────────────────
 

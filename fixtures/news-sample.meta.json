@@ -36,11 +36,11 @@
         "ko": "리즈",
         "source": "provisional"
       },
-      "atletico-de-madrid": {
+      "atletico-madrid": {
         "ko": "아틀레티코 마드리드",
         "source": "names.ko"
       },
-      "deportivo-alaves": {
+      "alaves": {
         "ko": "알라베스",
         "source": "provisional"
       },
@@ -52,11 +52,11 @@
         "ko": "바르셀로나",
         "source": "provisional"
       },
-      "ac-milan": {
+      "milan": {
         "ko": "AC 밀란",
         "source": "provisional"
       },
-      "ssc-napoli": {
+      "napoli": {
         "ko": "나폴리",
         "source": "provisional"
       },
@@ -64,7 +64,7 @@
         "ko": "첼시",
         "source": "provisional"
       },
-      "us-sassuolo-calcio": {
+      "sassuolo": {
         "ko": "사수올로",
         "source": "provisional"
       },

@@ -1002,10 +1002,10 @@ describe.each([
   it("권장 1 — 같은 리그의 겹치는 별칭 둘이 스코어를 사이에 두면 서로가 확인 근거(BBC European 실데이터 꼴), 스코어가 없으면 아니다", () => {
     const cases: Array<[string, string[]]> = [
       ["Valencia 1-1 Sevilla", ["valencia", "sevilla"]],
-      ["Roma 1-0 Torino", ["as-roma", "torino"]],
-      ["Monaco 0-0 Nice", ["as-monaco", "ogc-nice"]],
-      ["Lens 2-1 Brest", ["racing-club-de-lens", "stade-brestois-29"]],
-      ["Roma-Torino 1-0", ["as-roma", "torino"]],
+      ["Roma 1-0 Torino", ["roma", "torino"]],
+      ["Monaco 0-0 Nice", ["monaco", "nice"]],
+      ["Lens 2-1 Brest", ["lens", "brest"]],
+      ["Roma-Torino 1-0", ["roma", "torino"]],
     ];
     for (const [title, teams] of cases) {
       const a = analyze(title, "en", "bbc-sport-european");

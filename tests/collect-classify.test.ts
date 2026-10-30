@@ -342,7 +342,7 @@ describe("runCollect — 분류 결과가 카드에 (FR-21)", () => {
     const { deps, lines, records } = makeDeps(NOW, { [DIMARZIO.id]: [dm] });
     await runCollect(deps);
     const card = readNews("2026-10-11").cards.find((c) => c.t === dm.title)!;
-    expect(card).toMatchObject({ spoiler: false, teams: ["ssc-napoli"] });
+    expect(card).toMatchObject({ spoiler: false, teams: ["napoli"] });
     expect(allDataText()).not.toContain(MARKER);
     expect(lines.join("\n")).not.toContain(MARKER);
     expect(JSON.stringify(records)).not.toContain(MARKER);

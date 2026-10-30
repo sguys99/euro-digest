@@ -14,6 +14,7 @@ football-data.org v4와 API-Football v3 무료 플랜의 **실제 응답**에서
 | API-Football v3 | M0-34 | 2026-10-11 06:47~06:49 | 날짜 응답 2개(트리밍)·경기 단건 7개 |
 | API-Football v3 | M1-48 | 2026-10-12 23:01~23:04 | `/status`(계정·요금제 제거)·경기 단건 5개(승부차기 1639860·중단 재조회 1570410·자책골 1552779·카스트로프 1575183·황희찬 1575179) |
 | football-data.org v4 | M1-48 | 2026-10-12 23:04 | 분데스리가 2026-10-11 종료 2경기(근거 약한 팀 id 쌍 확인용) |
+| football-data.org v4 | M2-04 | 2026-10-30 00:01~00:02 | 6개 대회 참가 팀 목록 `teams-<code>-2026.json`(축약 — 팀 항목은 area·id·name·shortName·tla·crest(null)·clubColors만, `scripts/fetch-competition-teams.ts --write`) |
 
 - M0-35에서는 **새 API 호출을 하지 않았다.** 위 작업들이 받아 둔 원본에서 골랐다. M1-48 보강분(위 표 마지막 두 줄)은 06:00~08:00 KST를 피해 API-Football 6요청·football-data 1요청을 새로 받았다(동시 1개, 응답 후 7초 간격).
 - 파일별 엔드포인트(키 없는 경로)·요청 시각·기준일·포함 경기 id·경계 사례 태그는 `index.json`의 `files[]`에 있다. 태그 뜻은 `tagLegend`, 없는 경계 사례는 `missing`에 있다.
@@ -51,6 +52,7 @@ football-data.org v4와 API-Football v3 무료 플랜의 **실제 응답**에서
 - **football-data 순위표**: `TOTAL`만 있고 `form`은 항상 `null`이다. `prevPos`는 없어 전날 스냅숏과 비교해 계산한다(`standings-pl·pd-2026-10-10` ↔ `-2026-10-11`). 진행 중 경기도 순위표에 반영된다(2026-10-10 스냅숏). UCL은 36팀 단일 테이블이다(`LEAGUE_STAGE`, `"League phase"`).
 - **football-data 엔드포인트**: 교차 `/v4/matches`는 `dateTo` 당일을 빼고 준다(`matches-6comps-2026-10-10.json` — dateTo=10-11 요청, 10-10만 옴). 대회별 엔드포인트를 쓴다. 무료 경기 상세에는 `goals`·`lineups`가 없다(`match-564706.json`). 먼 라운드의 `TIMED` 시각은 임시값이다(`season-pl-md13.json`). UCL 대회 메타 `endDate`는 리그 페이즈 끝이다(`competition-cl.json`).
 - 득점 순위의 `assists`·`penalties` `null`은 0으로 바꾸지 않는다.
+- **팀 목록 `tla`**(M2-04): 스트라스부르는 원문이 `"RC "`(끝 공백)이고 보되/글림트는 두 글자 `"FK"`다. 같은 tla가 두 팀에 있다 — `FCB`(바르셀로나·바이에른 뮌헨), `BRE`(브렌트퍼드·브레스트). 어댑터(`toCompetitionTeams`)는 공백을 떼고 `tlaPadded`로 표시만 한다. 배지 약어는 `configs/team-colors.json`(M2-05)이 정한다.
 
 ## 다시 만들 때
 

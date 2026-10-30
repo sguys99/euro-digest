@@ -348,35 +348,35 @@ describe("① 닫힌 문형 표(D54) — 언어 × 단계 × 문형 × 꼬리, �
       "Il Milan ufficializza Harry Kane",
       "it",
       KANE,
-      { to: "ac-milan", explicit: true },
+      { to: "milan", explicit: true },
     ],
     [
       "it.official.ufficialmente",
       "Harry Kane è ufficialmente del Milan",
       "it",
       KANE,
-      { to: "ac-milan", explicit: true },
+      { to: "milan", explicit: true },
     ],
     [
       "it.official.nuovo-giocatore",
       "Harry Kane è un nuovo giocatore del Milan",
       "it",
       KANE,
-      { to: "ac-milan", explicit: false },
+      { to: "milan", explicit: false },
     ],
     [
       "it.agreed.accordo-tra",
       "Accordo raggiunto tra il Milan e Harry Kane in prestito dal Bayern",
       "it",
       KANE,
-      { to: "ac-milan", from: "bayern-munchen", moved: true },
+      { to: "milan", from: "bayern-munchen", moved: true },
     ],
     [
       "it.negotiating.trattativa",
       "Milan, trattativa con il Bayern per Harry Kane",
       "it",
       KANE,
-      { to: "ac-milan", from: "bayern-munchen", moved: true },
+      { to: "milan", from: "bayern-munchen", moved: true },
     ],
     [
       "es.official.oficializa",
@@ -714,7 +714,7 @@ describe("② 문턱·선수 — 확실할 때만", () => {
       tr("AC Milan keen on Scott - Sunday's gossip", "en", CTX_EXT),
     ).toEqual({
       player: "test-scott",
-      to: "ac-milan",
+      to: "milan",
       status: "rumor",
       tier: 2,
     });
@@ -1017,17 +1017,17 @@ describe("③ 방향 — 언어별, 확실할 때만(잘못된 방향 0)", () =>
       tr("Harry Kane al Milan, accordo raggiunto per il trasferimento", "it"),
     ).toEqual({
       player: "harry-kane",
-      to: "ac-milan",
+      to: "milan",
       status: "rumor",
       tier: 2,
     });
     expect(tr("Calciomercato, Harry Kane verso il Milan", "it")).toMatchObject({
-      to: "ac-milan",
+      to: "milan",
       status: "rumor",
     });
     expect(
       tr("Calciomercato, Milan su Harry Kane: offerta pronta", "it"),
-    ).toMatchObject({ to: "ac-milan" });
+    ).toMatchObject({ to: "milan" });
     expect(
       tr(
         "Calciomercato, Harry Kane lascia il Bayern: trattativa con il Milan",
@@ -1036,10 +1036,10 @@ describe("③ 방향 — 언어별, 확실할 때만(잘못된 방향 0)", () =>
     ).toMatchObject({ from: "bayern-munchen" });
     expect(
       tr("Calciomercato, Harry Kane dal Bayern al Milan: è ufficiale", "it"),
-    ).toMatchObject({ from: "bayern-munchen", to: "ac-milan" });
+    ).toMatchObject({ from: "bayern-munchen", to: "milan" });
     expect(
       tr("Calciomercato, Harry Kane potrebbe arrivare al Milan", "it"),
-    ).toMatchObject({ to: "ac-milan", status: "rumor" });
+    ).toMatchObject({ to: "milan", status: "rumor" });
     // 등위('Inter e Milan su Kane')는 방향이 아니다
     expect(
       tr("Calciomercato, Inter e Milan su Harry Kane", "it")?.to,
@@ -1111,7 +1111,7 @@ describe("③ 방향 — 언어별, 확실할 때만(잘못된 방향 0)", () =>
     });
     expect(tr("엔드릭, 리옹 임대 이적 합의", "ko")).toMatchObject({
       player: "endrick",
-      to: "olympique-lyonnais",
+      to: "lyon",
     });
   });
 
@@ -1622,7 +1622,7 @@ describe("⑥ fixtures 손 판정 대비 — 오탐·잘못된 방향·과대 �
       },
       "bbc-sport-football#2": {
         player: "test-scott",
-        to: "ac-milan",
+        to: "milan",
         status: "rumor",
         tier: 2,
       },
@@ -2285,9 +2285,9 @@ describe("⑧ 리뷰 2회차 회귀(D54 — 높은 단계는 닫힌 문형만) �
       matchTitleTags("Inter Milan eye Rafael Leão", "en", CTX.tags).teams.map(
         (t) => t.slug,
       ),
-    ).toEqual(["internazionale-milano"]);
+    ).toEqual(["inter"]);
     expect(tr("Rafael Leão joins Inter Milan", "en")).toMatchObject({
-      to: "internazionale-milano",
+      to: "inter",
     });
   });
 

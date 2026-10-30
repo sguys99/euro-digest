@@ -105,7 +105,7 @@
         "BUNDESLIGA"
       ],
       "teams": [
-        "mainz-05"
+        "mainz"
       ],
       "players": [
         "lee-jae-sung"
@@ -535,7 +535,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -616,7 +616,7 @@
         "EPL"
       ],
       "teams": [
-        "brighton-hove-albion"
+        "brighton"
       ],
       "players": [],
       "imp": 3,
@@ -644,7 +644,7 @@
       ],
       "teams": [
         "juventus",
-        "us-lecce"
+        "lecce"
       ],
       "players": [],
       "imp": 3,
@@ -698,7 +698,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -752,7 +752,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -834,8 +834,8 @@
         "SERIEA"
       ],
       "teams": [
-        "as-roma",
-        "ssc-napoli"
+        "roma",
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -887,7 +887,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -914,8 +914,8 @@
         "SERIEA"
       ],
       "teams": [
-        "ssc-napoli",
-        "as-roma"
+        "napoli",
+        "roma"
       ],
       "players": [],
       "imp": 3,
@@ -942,7 +942,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ac-milan"
+        "milan"
       ],
       "players": [],
       "imp": 3,
@@ -969,7 +969,7 @@
         "BUNDESLIGA"
       ],
       "teams": [
-        "mainz-05",
+        "mainz",
         "werder-bremen"
       ],
       "players": [
@@ -1090,7 +1090,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -1146,7 +1146,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ss-lazio"
+        "lazio"
       ],
       "players": [],
       "imp": 2,
@@ -1173,7 +1173,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ss-lazio"
+        "lazio"
       ],
       "players": [],
       "imp": 2,
@@ -1225,7 +1225,7 @@
         "SERIEA"
       ],
       "teams": [
-        "as-roma"
+        "roma"
       ],
       "players": [],
       "imp": 2,

@@ -1,262 +1,557 @@
 {
-  "07-elversberg": {
-    "fd": 719,
-    "af": 1660,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565817↔1575182) · fd \"SV 07 Elversberg\" · af \"SV Elversberg\" (M0 fixtures, 초안 2026-10-13)"
+  "aek-athens": {
+    "fd": 1899,
+    "af": 575,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575361↔1635693) · fd \"PAE AEK\" · af \"AEK Athens FC\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "acf-fiorentina": {
-    "fd": 99,
-    "af": 502,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558588↔1550140) · fd \"ACF Fiorentina\" · af \"Fiorentina\" (M0 fixtures, 초안 2026-10-13)"
+  "alaves": {
+    "fd": 263,
+    "af": 542,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564699↔1570403) · fd \"Deportivo Alavés\" · af \"Alaves\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug deportivo-alaves)"
   },
-  "angers-sco": {
+  "angers": {
     "fd": 532,
     "af": 77,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559666↔1552774) · fd \"Angers SCO\" · af \"Angers\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559666↔1552774) · fd \"Angers SCO\" · af \"Angers\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug angers-sco)"
   },
   "arsenal": {
     "fd": 57,
     "af": 42,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560593↔1557417) · fd \"Arsenal FC\" · af \"Arsenal\" (M0 fixtures, 초안 2026-10-13)"
-  },
-  "as-monaco": {
-    "fd": 548,
-    "af": 91,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559673↔1552778) · fd \"AS Monaco FC\" · af \"Monaco\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560593↔1557417) · fd \"Arsenal FC\" · af \"Arsenal\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "aston-villa": {
     "fd": 58,
     "af": 66,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560601↔1557418) · fd \"Aston Villa FC\" · af \"Aston Villa\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560601↔1557418) · fd \"Aston Villa FC\" · af \"Aston Villa\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "atalanta": {
+    "fd": 102,
+    "af": 499,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558562↔1550157, 558551↔1550169) · fd \"Atalanta BC\" · af \"Atalanta\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "athletic": {
     "fd": 77,
     "af": 531,
-    "note": "확인 필요 · 근거 약함 — 경기 564698↔1570410(CANCELLED/INT) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · fd \"Athletic Club\" · af \"Athletic Club\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 약함 — 경기 564698↔1570410(CANCELLED/INT) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · fd \"Athletic Club\" · af \"Athletic Club\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "atletico-de-madrid": {
+  "atletico-madrid": {
     "fd": 78,
     "af": 530,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564699↔1570403) · M0-32 /players/squads 팀 id 530 확인(lee-kang-in) · fd \"Club Atlético de Madrid\" · af \"Atletico Madrid\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564699↔1570403) · M0-32 /players/squads 팀 id 530 확인(lee-kang-in) · fd \"Club Atlético de Madrid\" · af \"Atletico Madrid\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug atletico-de-madrid)"
   },
   "augsburg": {
     "fd": 16,
     "af": 170,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565819↔1575180) · M0-32 /players/squads 팀 id 170 확인(seol-young-woo) · fd \"FC Augsburg\" · af \"FC Augsburg\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565819↔1575180) · M0-32 /players/squads 팀 id 170 확인(seol-young-woo) · fd \"FC Augsburg\" · af \"FC Augsburg\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "auxerre": {
+    "fd": 519,
+    "af": 108,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559656↔1552793) · fd \"AJ Auxerre\" · af \"Auxerre\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "barcelona": {
     "fd": 81,
     "af": 529,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564700↔1570404) · fd \"FC Barcelona\" · af \"Barcelona\" (M0 fixtures, 초안 2026-10-13)"
-  },
-  "bayer-04-leverkusen": {
-    "fd": 3,
-    "af": 168,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565812↔1575181) · fd \"Bayer 04 Leverkusen\" · af \"Bayer Leverkusen\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564700↔1570404) · fd \"FC Barcelona\" · af \"Barcelona\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "bayern-munchen": {
     "fd": 5,
     "af": 157,
-    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(565804↔1575167, 565819↔1575180) · M0-32 /players/squads 팀 id 157 확인(kim-min-jae) · fd \"FC Bayern München\" · af \"Bayern München\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(565804↔1575167, 565819↔1575180) · M0-32 /players/squads 팀 id 157 확인(kim-min-jae) · fd \"FC Bayern München\" · af \"Bayern München\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "bodo-glimt": {
+    "fd": 5721,
+    "af": 327,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575366↔1635700) · fd \"FK Bodø/Glimt\" · af \"Bodo/Glimt\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "bologna": {
+    "fd": 103,
+    "af": 500,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558560↔1550158, 558549↔1550167) · fd \"Bologna FC 1909\" · af \"Bologna\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "borussia-dortmund": {
+    "fd": 4,
+    "af": 165,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(575359↔1635719, 565837↔1575194) · fd \"Borussia Dortmund\" · af \"Borussia Dortmund\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "borussia-monchengladbach": {
     "fd": 18,
     "af": 163,
-    "note": "근거 강함 — 경기 565814↔1575183(TIMED/NS) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · M0-32 /players/squads 팀 id 163 확인(jens-castrop) · fd \"Borussia Mönchengladbach\" · af \"Borussia Mönchengladbach\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 경기 565814↔1575183(TIMED/NS) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · M0-32 /players/squads 팀 id 163 확인(jens-castrop) · fd \"Borussia Mönchengladbach\" · af \"Borussia Mönchengladbach\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "bournemouth": {
     "fd": 1044,
     "af": 35,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560595↔1557419) · fd \"AFC Bournemouth\" · af \"Bournemouth\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560595↔1557419) · fd \"AFC Bournemouth\" · af \"Bournemouth\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "brentford": {
     "fd": 402,
     "af": 55,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560601↔1557418) · M0-32 /players/squads 팀 id 55 확인(kim-ji-soo) · fd \"Brentford FC\" · af \"Brentford\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560601↔1557418) · M0-32 /players/squads 팀 id 55 확인(kim-ji-soo) · fd \"Brentford FC\" · af \"Brentford\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "brighton-hove-albion": {
+  "brest": {
+    "fd": 512,
+    "af": 106,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559666↔1552774) · fd \"Stade Brestois 29\" · af \"Stade Brestois 29\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug stade-brestois-29)"
+  },
+  "brighton": {
     "fd": 397,
     "af": 51,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560592↔1557426) · fd \"Brighton & Hove Albion FC\" · af \"Brighton\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560592↔1557426) · fd \"Brighton & Hove Albion FC\" · af \"Brighton\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug brighton-hove-albion)"
+  },
+  "cagliari": {
+    "fd": 104,
+    "af": 490,
+    "note": "근거 강함 — 종료 경기 3건 대회·킥오프·스코어 일치(558576↔1550153, 558560↔1550158, 558555↔1550168) · fd \"Cagliari Calcio\" · af \"Cagliari\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "celta-vigo": {
+    "fd": 558,
+    "af": 538,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564725↔1570427) · fd \"RC Celta de Vigo\" · af \"Celta Vigo\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "chelsea": {
     "fd": 61,
     "af": 49,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560595↔1557419) · fd \"Chelsea FC\" · af \"Chelsea\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560595↔1557419) · fd \"Chelsea FC\" · af \"Chelsea\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "deportivo-alaves": {
-    "fd": 263,
-    "af": 542,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564699↔1570403) · fd \"Deportivo Alavés\" · af \"Alaves\" (M0 fixtures, 초안 2026-10-13)"
+  "club-brugge": {
+    "fd": 851,
+    "af": 569,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575373↔1635645) · fd \"Club Brugge KV\" · af \"Club Brugge KV\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "como": {
+    "fd": 7397,
+    "af": 895,
+    "note": "근거 강함 — 종료 경기 3건 대회·킥오프·스코어 일치(575368↔1635647, 558561↔1550159, 558557↔1550175) · fd \"Como 1907\" · af \"Como\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "coventry-city": {
+    "fd": 1076,
+    "af": 1346,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(560606↔1557436, 560618↔1557440) · fd \"Coventry City FC\" · af \"Coventry\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "crystal-palace": {
+    "fd": 354,
+    "af": 52,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560613↔1557441) · fd \"Crystal Palace FC\" · af \"Crystal Palace\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "deportivo-la-coruna": {
+    "fd": 560,
+    "af": 544,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564724↔1570425) · fd \"RC Deportivo La Coruña\" · af \"Deportivo La Coruna\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "eintracht-frankfurt": {
     "fd": 19,
     "af": 169,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565815↔1575177) · fd \"Eintracht Frankfurt\" · af \"Eintracht Frankfurt\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565815↔1575177) · fd \"Eintracht Frankfurt\" · af \"Eintracht Frankfurt\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "elche": {
+    "fd": 285,
+    "af": 797,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564718↔1570429) · fd \"Elche CF\" · af \"Elche\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "elversberg": {
+    "fd": 719,
+    "af": 1660,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565817↔1575182) · fd \"SV 07 Elversberg\" · af \"SV Elversberg\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug 07-elversberg)"
+  },
+  "espanyol": {
+    "fd": 80,
+    "af": 540,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564727↔1570428) · fd \"RCD Espanyol de Barcelona\" · af \"Espanyol\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "everton": {
+    "fd": 62,
+    "af": 45,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560616↔1557437) · fd \"Everton FC\" · af \"Everton\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "fenerbahce": {
+    "fd": 613,
+    "af": 611,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575360↔1635661) · fd \"Fenerbahçe SK\" · af \"Fenerbahçe\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "feyenoord": {
+    "fd": 675,
+    "af": 209,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575376↔1635636) · fd \"Feyenoord Rotterdam\" · af \"Feyenoord\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "fiorentina": {
+    "fd": 99,
+    "af": 502,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558588↔1550140) · fd \"ACF Fiorentina\" · af \"Fiorentina\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug acf-fiorentina)"
   },
   "freiburg": {
     "fd": 17,
     "af": 160,
-    "note": "근거 강함 — 2026-10-11 종료 경기 대회·킥오프·스코어 일치로 확인(M1-48a 실측, 2026-10-13) · fd \"SC Freiburg\" · af \"SC Freiburg\""
+    "note": "근거 강함 — 2026-10-11 종료 경기 대회·킥오프·스코어 일치로 확인(M1-48a 실측, 2026-10-13) · fd \"SC Freiburg\" · af \"SC Freiburg\" · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "frosinone-calcio": {
+  "frosinone": {
     "fd": 470,
     "af": 512,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558586↔1550144) · fd \"Frosinone Calcio\" · af \"Frosinone\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558586↔1550144) · fd \"Frosinone Calcio\" · af \"Frosinone\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug frosinone-calcio)"
   },
   "fulham": {
     "fd": 63,
     "af": 36,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560599↔1557423) · fd \"Fulham FC\" · af \"Fulham\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560599↔1557423) · fd \"Fulham FC\" · af \"Fulham\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "genoa-cfc": {
+  "galatasaray": {
+    "fd": 610,
+    "af": 645,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575369↔1635684) · fd \"Galatasaray SK\" · af \"Galatasaray\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "genoa": {
     "fd": 107,
     "af": 495,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558588↔1550140) · fd \"Genoa CFC\" · af \"Genoa\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558588↔1550140) · fd \"Genoa CFC\" · af \"Genoa\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug genoa-cfc)"
   },
   "getafe": {
     "fd": 82,
     "af": 546,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564700↔1570404) · fd \"Getafe CF\" · af \"Getafe\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564700↔1570404) · fd \"Getafe CF\" · af \"Getafe\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "hamburger": {
+  "hamburg": {
     "fd": 7,
     "af": 175,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565818↔1575178) · fd \"Hamburger SV\" · af \"Hamburger SV\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565818↔1575178) · fd \"Hamburger SV\" · af \"Hamburger SV\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug hamburger)"
   },
-  "internazionale-milano": {
+  "hoffenheim": {
+    "fd": 2,
+    "af": 167,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565818↔1575178) · fd \"TSG 1899 Hoffenheim\" · af \"1899 Hoffenheim\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug tsg-1899-hoffenheim)"
+  },
+  "hull-city": {
+    "fd": 322,
+    "af": 64,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560619↔1557442) · fd \"Hull City AFC\" · af \"Hull City\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "inter": {
     "fd": 108,
     "af": 505,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558582↔1550141) · fd \"FC Internazionale Milano\" · af \"Inter\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558582↔1550141) · fd \"FC Internazionale Milano\" · af \"Inter\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug internazionale-milano)"
   },
   "ipswich-town": {
     "fd": 349,
     "af": 57,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560599↔1557423) · fd \"Ipswich Town FC\" · af \"Ipswich\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560599↔1557423) · fd \"Ipswich Town FC\" · af \"Ipswich\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "juventus": {
+    "fd": 109,
+    "af": 496,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558566↔1550163, 558552↔1550171) · fd \"Juventus FC\" · af \"Juventus\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "koln": {
     "fd": 1,
     "af": 192,
-    "note": "근거 강함 — 2026-10-11 종료 경기 대회·킥오프·스코어 일치로 확인(M1-48a 실측, 2026-10-13) · fd \"1. FC Köln\" · af \"1. FC Köln\""
+    "note": "근거 강함 — 2026-10-11 종료 경기 대회·킥오프·스코어 일치로 확인(M1-48a 실측, 2026-10-13) · fd \"1. FC Köln\" · af \"1. FC Köln\" · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "le-havre-ac": {
+  "lask": {
+    "fd": 2016,
+    "af": 1026,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575375↔1635737) · fd \"LASK Linz\" · af \"Lask Linz\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "lazio": {
+    "fd": 110,
+    "af": 487,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558565↔1550162, 558556↔1550174) · fd \"SS Lazio\" · af \"Lazio\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "le-havre": {
     "fd": 533,
     "af": 111,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559674↔1552776) · fd \"Le Havre AC\" · af \"Le Havre\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559674↔1552776) · fd \"Le Havre AC\" · af \"Le Havre\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug le-havre-ac)"
   },
   "le-mans": {
     "fd": 535,
     "af": 1298,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559672↔1552780) · fd \"Le Mans FC\" · af \"Le Mans\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559672↔1552780) · fd \"Le Mans FC\" · af \"Le Mans\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "lecce": {
+    "fd": 5890,
+    "af": 867,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558566↔1550163, 558558↔1550170) · fd \"US Lecce\" · af \"Lecce\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "leeds-united": {
     "fd": 341,
     "af": 63,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560593↔1557417) · fd \"Leeds United FC\" · af \"Leeds\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560593↔1557417) · fd \"Leeds United FC\" · af \"Leeds\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "lille-osc": {
+  "lens": {
+    "fd": 546,
+    "af": 116,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(575373↔1635645, 559652↔1552795) · fd \"Racing Club de Lens\" · af \"Lens\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "levante": {
+    "fd": 88,
+    "af": 539,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(564685↔1570389, 564726↔1570430) · fd \"Levante UD\" · af \"Levante\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "leverkusen": {
+    "fd": 3,
+    "af": 168,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565812↔1575181) · fd \"Bayer 04 Leverkusen\" · af \"Bayer Leverkusen\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug bayer-04-leverkusen)"
+  },
+  "lille": {
     "fd": 521,
     "af": 79,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559674↔1552776) · fd \"Lille OSC\" · af \"Lille\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559674↔1552776) · fd \"Lille OSC\" · af \"Lille\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug lille-osc)"
+  },
+  "liverpool": {
+    "fd": 64,
+    "af": 40,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(575363↔1635688, 560612↔1557444) · fd \"Liverpool FC\" · af \"Liverpool\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "lorient": {
     "fd": 525,
     "af": 97,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559668↔1552777) · fd \"FC Lorient\" · af \"Lorient\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559668↔1552777) · fd \"FC Lorient\" · af \"Lorient\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "mainz-05": {
+  "lyon": {
+    "fd": 523,
+    "af": 80,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559648↔1552800) · fd \"Olympique Lyonnais\" · af \"Lyon\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "mainz": {
     "fd": 15,
     "af": 164,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565812↔1575181) · M0-32 /players/squads 팀 id 164 확인(lee-jae-sung) · fd \"1. FSV Mainz 05\" · af \"FSV Mainz 05\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565812↔1575181) · M0-32 /players/squads 팀 id 164 확인(lee-jae-sung) · fd \"1. FSV Mainz 05\" · af \"FSV Mainz 05\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug mainz-05)"
+  },
+  "malaga": {
+    "fd": 84,
+    "af": 535,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564719↔1570423) · fd \"Málaga CF\" · af \"Malaga\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "manchester-city": {
+    "fd": 65,
+    "af": 50,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(575361↔1635693, 560614↔1557438) · fd \"Manchester City FC\" · af \"Manchester City\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "manchester-united": {
     "fd": 66,
     "af": 33,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560600↔1557425) · fd \"Manchester United FC\" · af \"Manchester United\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560600↔1557425) · fd \"Manchester United FC\" · af \"Manchester United\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "paderborn-07": {
+  "marseille": {
+    "fd": 516,
+    "af": 81,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559649↔1552796) · fd \"Olympique de Marseille\" · af \"Marseille\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "milan": {
+    "fd": 98,
+    "af": 489,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558559↔1550166, 558549↔1550167) · fd \"AC Milan\" · af \"AC Milan\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "monaco": {
+    "fd": 548,
+    "af": 91,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559673↔1552778) · fd \"AS Monaco FC\" · af \"Monaco\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug as-monaco)"
+  },
+  "monza": {
+    "fd": 5911,
+    "af": 1579,
+    "note": "근거 강함 — 종료 경기 3건 대회·킥오프·스코어 일치(558576↔1550153, 558567↔1550165, 558554↔1550172) · fd \"AC Monza\" · af \"Monza\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "napoli": {
+    "fd": 113,
+    "af": 492,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558586↔1550144) · fd \"SSC Napoli\" · af \"Napoli\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug ssc-napoli)"
+  },
+  "newcastle-united": {
+    "fd": 67,
+    "af": 34,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560613↔1557441) · fd \"Newcastle United FC\" · af \"Newcastle\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "nice": {
+    "fd": 522,
+    "af": 84,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559654↔1552794) · fd \"OGC Nice\" · af \"Nice\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "nottingham-forest": {
+    "fd": 351,
+    "af": 65,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560620↔1557443) · fd \"Nottingham Forest FC\" · af \"Nottingham Forest\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "osasuna": {
+    "fd": 79,
+    "af": 727,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564721↔1570431) · fd \"CA Osasuna\" · af \"Osasuna\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "paderborn": {
     "fd": 29,
     "af": 185,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565813↔1575184) · fd \"SC Paderborn 07\" · af \"SC Paderborn 07\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565813↔1575184) · fd \"SC Paderborn 07\" · af \"SC Paderborn 07\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug paderborn-07)"
   },
-  "paris": {
+  "paris-fc": {
     "fd": 1045,
     "af": 114,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559668↔1552777) · fd \"Paris FC\" · af \"Paris FC\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559668↔1552777) · fd \"Paris FC\" · af \"Paris FC\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug paris)"
   },
   "paris-saint-germain": {
     "fd": 524,
     "af": 85,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559672↔1552780) · fd \"Paris Saint-Germain FC\" · af \"Paris Saint Germain\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559672↔1552780) · fd \"Paris Saint-Germain FC\" · af \"Paris Saint Germain\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "parma-calcio-1913": {
+  "parma": {
     "fd": 112,
     "af": 523,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558582↔1550141) · fd \"Parma Calcio 1913\" · af \"Parma\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558582↔1550141) · fd \"Parma Calcio 1913\" · af \"Parma\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug parma-calcio-1913)"
   },
-  "rayo-vallecano-de-madrid": {
+  "porto": {
+    "fd": 503,
+    "af": 212,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575365↔1635655) · fd \"FC Porto\" · af \"FC Porto\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "psv": {
+    "fd": 674,
+    "af": 197,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575365↔1635655) · fd \"PSV\" · af \"PSV Eindhoven\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "racing-santander": {
+    "fd": 5335,
+    "af": 4665,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564727↔1570428) · fd \"Real Racing Club de Santander\" · af \"Racing Santander\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "rayo-vallecano": {
     "fd": 87,
     "af": 728,
-    "note": "확인 필요 · 근거 약함 — 경기 564698↔1570410(CANCELLED/INT) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · fd \"Rayo Vallecano de Madrid\" · af \"Rayo Vallecano\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 약함 — 경기 564698↔1570410(CANCELLED/INT) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · fd \"Rayo Vallecano de Madrid\" · af \"Rayo Vallecano\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug rayo-vallecano-de-madrid)"
   },
   "rb-leipzig": {
     "fd": 721,
     "af": 173,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565815↔1575177) · fd \"RB Leipzig\" · af \"RB Leipzig\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565815↔1575177) · fd \"RB Leipzig\" · af \"RB Leipzig\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "real-betis": {
+    "fd": 90,
+    "af": 543,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(575376↔1635636, 564725↔1570427) · fd \"Real Betis Balompié\" · af \"Real Betis\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "real-madrid": {
     "fd": 86,
     "af": 541,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564702↔1570411) · fd \"Real Madrid CF\" · af \"Real Madrid\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564702↔1570411) · fd \"Real Madrid CF\" · af \"Real Madrid\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "schalke-04": {
+  "real-sociedad": {
+    "fd": 92,
+    "af": 548,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564726↔1570430) · fd \"Real Sociedad de Fútbol\" · af \"Real Sociedad\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "rennes": {
+    "fd": 529,
+    "af": 94,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559651↔1552798) · fd \"Stade Rennais FC 1901\" · af \"Rennes\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "roma": {
+    "fd": 100,
+    "af": 497,
+    "note": "근거 강함 — 종료 경기 3건 대회·킥오프·스코어 일치(575364↔1635617, 558564↔1550164, 558555↔1550168) · fd \"AS Roma\" · af \"AS Roma\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "sabah": {
+    "fd": 10233,
+    "af": 13976,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575359↔1635719) · fd \"Sabah FK\" · af \"Sabah FA\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "sassuolo": {
+    "fd": 471,
+    "af": 488,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558561↔1550159, 558556↔1550174) · fd \"US Sassuolo Calcio\" · af \"Sassuolo\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "schalke": {
     "fd": 6,
     "af": 174,
-    "note": "근거 강함 — 경기 565816↔1575179(TIMED/NS) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · M0-32 /players/squads 팀 id 174 확인(hwang-hee-chan) · fd \"FC Schalke 04\" · af \"FC Schalke 04\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 경기 565816↔1575179(TIMED/NS) 대회·킥오프·팀 이름 일치만 — 스코어 대조 없음 · M0-32 /players/squads 팀 id 174 확인(hwang-hee-chan) · fd \"FC Schalke 04\" · af \"FC Schalke 04\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug schalke-04)"
   },
-  "ssc-napoli": {
-    "fd": 113,
-    "af": 492,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(558586↔1550144) · fd \"SSC Napoli\" · af \"Napoli\" (M0 fixtures, 초안 2026-10-13)"
+  "sevilla": {
+    "fd": 559,
+    "af": 536,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564721↔1570431) · fd \"Sevilla FC\" · af \"Sevilla\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "stade-brestois-29": {
-    "fd": 512,
-    "af": 106,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559666↔1552774) · fd \"Stade Brestois 29\" · af \"Stade Brestois 29\" (M0 fixtures, 초안 2026-10-13)"
+  "shakhtar-donetsk": {
+    "fd": 1887,
+    "af": 550,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575371↔1635672) · fd \"FK Shakhtar Donetsk\" · af \"Shakhtar Donetsk\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "slavia-praha": {
+    "fd": 930,
+    "af": 560,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575360↔1635661) · fd \"SK Slavia Praha\" · af \"Slavia Praha\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "slovan-bratislava": {
+    "fd": 7509,
+    "af": 656,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575364↔1635617) · fd \"ŠK Slovan Bratislava\" · af \"Slovan Bratislava\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "sporting-cp": {
+    "fd": 498,
+    "af": 228,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575375↔1635737) · fd \"Sporting Clube de Portugal\" · af \"Sporting CP\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "strasbourg": {
+    "fd": 576,
+    "af": 95,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559651↔1552798) · fd \"RC Strasbourg Alsace\" · af \"Strasbourg\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "stuttgart": {
+    "fd": 10,
+    "af": 172,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565813↔1575184) · fd \"VfB Stuttgart\" · af \"VfB Stuttgart\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30 · 옛 slug vfb-stuttgart)"
   },
   "sunderland": {
     "fd": 71,
     "af": 746,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560592↔1557426) · fd \"Sunderland AFC\" · af \"Sunderland\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560592↔1557426) · fd \"Sunderland AFC\" · af \"Sunderland\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "torino": {
+    "fd": 586,
+    "af": 503,
+    "note": "근거 강함 — 종료 경기 3건 대회·킥오프·스코어 일치(558578↔1550154, 558567↔1550165, 558557↔1550175) · fd \"Torino FC\" · af \"Torino\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "tottenham-hotspur": {
     "fd": 73,
     "af": 47,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560600↔1557425) · fd \"Tottenham Hotspur FC\" · af \"Tottenham\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(560600↔1557425) · fd \"Tottenham Hotspur FC\" · af \"Tottenham\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "toulouse": {
     "fd": 511,
     "af": 96,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559673↔1552778) · fd \"Toulouse FC\" · af \"Toulouse\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559673↔1552778) · fd \"Toulouse FC\" · af \"Toulouse\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "tsg-1899-hoffenheim": {
-    "fd": 2,
-    "af": 167,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565818↔1575178) · fd \"TSG 1899 Hoffenheim\" · af \"1899 Hoffenheim\" (M0 fixtures, 초안 2026-10-13)"
+  "troyes": {
+    "fd": 531,
+    "af": 110,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(559655↔1552799) · fd \"ES Troyes AC\" · af \"Estac Troyes\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "udinese": {
+    "fd": 115,
+    "af": 494,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558559↔1550166, 558553↔1550173) · fd \"Udinese Calcio\" · af \"Udinese\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "union-berlin": {
     "fd": 28,
     "af": 182,
-    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(565804↔1575167, 565817↔1575182) · M0-32 /players/squads 팀 id 182 확인(jeong-woo-yeong) · fd \"1. FC Union Berlin\" · af \"Union Berlin\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(565804↔1575167, 565817↔1575182) · M0-32 /players/squads 팀 id 182 확인(jeong-woo-yeong) · fd \"1. FC Union Berlin\" · af \"Union Berlin\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
-  "vfb-stuttgart": {
-    "fd": 10,
-    "af": 172,
-    "note": "확인 필요 · 근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565813↔1575184) · fd \"VfB Stuttgart\" · af \"VfB Stuttgart\" (M0 fixtures, 초안 2026-10-13)"
+  "valencia": {
+    "fd": 95,
+    "af": 532,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564722↔1570432) · fd \"Valencia CF\" · af \"Valencia\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "venezia": {
+    "fd": 454,
+    "af": 517,
+    "note": "근거 강함 — 종료 경기 2건 대회·킥오프·스코어 일치(558568↔1550160, 558550↔1550176) · fd \"Venezia FC\" · af \"Venezia\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "viking": {
+    "fd": 5720,
+    "af": 759,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(575374↔1635621) · fd \"Viking FK\" · af \"Viking\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   },
   "villarreal": {
     "fd": 94,
     "af": 533,
-    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564702↔1570411) · fd \"Villarreal CF\" · af \"Villarreal\" (M0 fixtures, 초안 2026-10-13)"
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(564702↔1570411) · fd \"Villarreal CF\" · af \"Villarreal\" (M0 fixtures, 초안 2026-10-13) · slug D63 ③ 확정(M2-04 2026-10-30)"
+  },
+  "werder-bremen": {
+    "fd": 12,
+    "af": 162,
+    "note": "근거 강함 — 종료 경기 1건 대회·킥오프·스코어 일치(565830↔1575200) · fd \"SV Werder Bremen\" · af \"Werder Bremen\" (경기 원장 data/matches/2026-10 ↔ football-data 2026-10-19~29 종료 경기, 2026-10-30) · slug D63 ③ 확정(M2-04 2026-10-30)"
   }
 }

@@ -874,19 +874,19 @@ export const REVIEW_PROBES: ReviewProbe[] = [
     g: "LEAK",
     t: "Rafael Leão lascia il Milan per l'Inter",
     l: "it",
-    exp: { notTo: "ac-milan" },
+    exp: { notTo: "milan" },
   },
   {
     g: "LEAK",
     t: "Inter Milan eye Rafael Leão",
     l: "en",
-    exp: { notTo: "ac-milan" },
+    exp: { notTo: "milan" },
   },
   {
     g: "LEAK",
     t: "Rafael Leão: Inter and Milan battle for star",
     l: "en",
-    exp: { notTo: "ac-milan" },
+    exp: { notTo: "milan" },
   },
   {
     g: "LEAK",
@@ -899,13 +899,13 @@ export const REVIEW_PROBES: ReviewProbe[] = [
     g: "LEAK",
     t: "Atletico Madrid eye Real Madrid's Jude Bellingham",
     l: "en",
-    exp: { to: "atletico-de-madrid" },
+    exp: { to: "atletico-madrid" },
     note: "정상 — 같은 도시",
   },
   {
     g: "LEAK",
     items: [{ title: "인터밀란, 김민재 영입 추진", lang: "ko", source: KO2 }],
-    exp: { to: "internazionale-milano" },
+    exp: { to: "inter" },
     note: "인터밀란 붙여 씀 → AC밀란 아님",
   },
   {

@@ -1047,6 +1047,246 @@
       ],
       "removed": { "odds": 2, "imageUrls": 9 },
       "bytes": 1817
+    },
+    {
+      "path": "football-data/teams-pl-2026.json",
+      "api": "football-data",
+      "kind": "fd-teams",
+      "endpoint": "/v4/competitions/PL/teams?season=2026",
+      "fetchedAt": "2026-10-30T00:01:49.809Z",
+      "asOf": "2026-10-30",
+      "comp": "EPL",
+      "origin": "M2-04",
+      "trimmed": {
+        "rule": "팀 항목은 area(id·name·code·flag)·id·name·shortName·tla·crest·clubColors만 남김(squad·coach·staff·address·website·founded·venue·runningCompetitions·lastUpdated 등 삭제), filters 삭제",
+        "kept": 20,
+        "original": {
+          "teams": 20,
+          "teamKeys": [
+            "address",
+            "area",
+            "clubColors",
+            "coach",
+            "crest",
+            "founded",
+            "id",
+            "lastUpdated",
+            "name",
+            "runningCompetitions",
+            "shortName",
+            "squad",
+            "staff",
+            "tla",
+            "venue",
+            "website"
+          ]
+        }
+      },
+      "cases": [],
+      "removed": {
+        "imageUrls": 41
+      },
+      "bytes": 3735
+    },
+    {
+      "path": "football-data/teams-pd-2026.json",
+      "api": "football-data",
+      "kind": "fd-teams",
+      "endpoint": "/v4/competitions/PD/teams?season=2026",
+      "fetchedAt": "2026-10-30T00:01:58.795Z",
+      "asOf": "2026-10-30",
+      "comp": "LALIGA",
+      "origin": "M2-04",
+      "trimmed": {
+        "rule": "팀 항목은 area(id·name·code·flag)·id·name·shortName·tla·crest·clubColors만 남김(squad·coach·staff·address·website·founded·venue·runningCompetitions·lastUpdated 등 삭제), filters 삭제",
+        "kept": 20,
+        "original": {
+          "teams": 20,
+          "teamKeys": [
+            "address",
+            "area",
+            "clubColors",
+            "coach",
+            "crest",
+            "founded",
+            "id",
+            "lastUpdated",
+            "name",
+            "runningCompetitions",
+            "shortName",
+            "squad",
+            "staff",
+            "tla",
+            "venue",
+            "website"
+          ]
+        }
+      },
+      "cases": [],
+      "removed": {
+        "imageUrls": 41
+      },
+      "bytes": 3711
+    },
+    {
+      "path": "football-data/teams-sa-2026.json",
+      "api": "football-data",
+      "kind": "fd-teams",
+      "endpoint": "/v4/competitions/SA/teams?season=2026",
+      "fetchedAt": "2026-10-30T00:02:06.430Z",
+      "asOf": "2026-10-30",
+      "comp": "SERIEA",
+      "origin": "M2-04",
+      "trimmed": {
+        "rule": "팀 항목은 area(id·name·code·flag)·id·name·shortName·tla·crest·clubColors만 남김(squad·coach·staff·address·website·founded·venue·runningCompetitions·lastUpdated 등 삭제), filters 삭제",
+        "kept": 20,
+        "original": {
+          "teams": 20,
+          "teamKeys": [
+            "address",
+            "area",
+            "clubColors",
+            "coach",
+            "crest",
+            "founded",
+            "id",
+            "lastUpdated",
+            "name",
+            "runningCompetitions",
+            "shortName",
+            "squad",
+            "staff",
+            "tla",
+            "venue",
+            "website"
+          ]
+        }
+      },
+      "cases": [],
+      "removed": {
+        "imageUrls": 41
+      },
+      "bytes": 3618
+    },
+    {
+      "path": "football-data/teams-bl1-2026.json",
+      "api": "football-data",
+      "kind": "fd-teams",
+      "endpoint": "/v4/competitions/BL1/teams?season=2026",
+      "fetchedAt": "2026-10-30T00:02:14.067Z",
+      "asOf": "2026-10-30",
+      "comp": "BUNDESLIGA",
+      "origin": "M2-04",
+      "trimmed": {
+        "rule": "팀 항목은 area(id·name·code·flag)·id·name·shortName·tla·crest·clubColors만 남김(squad·coach·staff·address·website·founded·venue·runningCompetitions·lastUpdated 등 삭제), filters 삭제",
+        "kept": 18,
+        "original": {
+          "teams": 18,
+          "teamKeys": [
+            "address",
+            "area",
+            "clubColors",
+            "coach",
+            "crest",
+            "founded",
+            "id",
+            "lastUpdated",
+            "name",
+            "runningCompetitions",
+            "shortName",
+            "squad",
+            "staff",
+            "tla",
+            "venue",
+            "website"
+          ]
+        }
+      },
+      "cases": [],
+      "removed": {
+        "imageUrls": 37
+      },
+      "bytes": 3355
+    },
+    {
+      "path": "football-data/teams-fl1-2026.json",
+      "api": "football-data",
+      "kind": "fd-teams",
+      "endpoint": "/v4/competitions/FL1/teams?season=2026",
+      "fetchedAt": "2026-10-30T00:02:21.459Z",
+      "asOf": "2026-10-30",
+      "comp": "LIGUE1",
+      "origin": "M2-04",
+      "trimmed": {
+        "rule": "팀 항목은 area(id·name·code·flag)·id·name·shortName·tla·crest·clubColors만 남김(squad·coach·staff·address·website·founded·venue·runningCompetitions·lastUpdated 등 삭제), filters 삭제",
+        "kept": 18,
+        "original": {
+          "teams": 18,
+          "teamKeys": [
+            "address",
+            "area",
+            "clubColors",
+            "coach",
+            "crest",
+            "founded",
+            "id",
+            "lastUpdated",
+            "name",
+            "runningCompetitions",
+            "shortName",
+            "squad",
+            "staff",
+            "tla",
+            "venue",
+            "website"
+          ]
+        }
+      },
+      "cases": [],
+      "removed": {
+        "imageUrls": 36
+      },
+      "bytes": 3316
+    },
+    {
+      "path": "football-data/teams-cl-2026.json",
+      "api": "football-data",
+      "kind": "fd-teams",
+      "endpoint": "/v4/competitions/CL/teams?season=2026",
+      "fetchedAt": "2026-10-30T00:02:31.189Z",
+      "asOf": "2026-10-30",
+      "comp": "UCL",
+      "origin": "M2-04",
+      "trimmed": {
+        "rule": "팀 항목은 area(id·name·code·flag)·id·name·shortName·tla·crest·clubColors만 남김(squad·coach·staff·address·website·founded·venue·runningCompetitions·lastUpdated 등 삭제), filters 삭제",
+        "kept": 36,
+        "original": {
+          "teams": 36,
+          "teamKeys": [
+            "address",
+            "area",
+            "clubColors",
+            "coach",
+            "crest",
+            "founded",
+            "id",
+            "lastUpdated",
+            "name",
+            "runningCompetitions",
+            "shortName",
+            "squad",
+            "staff",
+            "tla",
+            "venue",
+            "website"
+          ]
+        }
+      },
+      "cases": [],
+      "removed": {
+        "imageUrls": 72
+      },
+      "bytes": 6487
     }
   ],
   "matchIdPairs": {

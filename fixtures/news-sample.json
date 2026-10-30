@@ -170,8 +170,8 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid",
-        "deportivo-alaves"
+        "atletico-madrid",
+        "alaves"
       ],
       "players": [
         "lee-kang-in"
@@ -380,7 +380,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ac-milan"
+        "milan"
       ],
       "players": [],
       "imp": 3,
@@ -407,7 +407,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [
         "kevin-de-bruyne",
@@ -491,8 +491,8 @@
         "SERIEA"
       ],
       "teams": [
-        "ac-milan",
-        "us-sassuolo-calcio"
+        "milan",
+        "sassuolo"
       ],
       "players": [
         "christian-pulisic"

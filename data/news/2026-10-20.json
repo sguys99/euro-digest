@@ -189,7 +189,7 @@
         "BUNDESLIGA"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [
         "kim-min-jae"
@@ -244,7 +244,7 @@
       ],
       "teams": [
         "juventus",
-        "ss-lazio"
+        "lazio"
       ],
       "players": [],
       "imp": 3,
@@ -423,7 +423,7 @@
         "EPL"
       ],
       "teams": [
-        "brighton-hove-albion"
+        "brighton"
       ],
       "players": [],
       "imp": 3,
@@ -787,7 +787,7 @@
         "SERIEA"
       ],
       "teams": [
-        "cagliari-calcio"
+        "cagliari"
       ],
       "players": [],
       "imp": 2,
@@ -890,7 +890,7 @@
         "SERIEA"
       ],
       "teams": [
-        "udinese-calcio"
+        "udinese"
       ],
       "players": [],
       "imp": 2,
@@ -917,7 +917,7 @@
         "SERIEA"
       ],
       "teams": [
-        "parma-calcio-1913",
+        "parma",
         "torino"
       ],
       "players": [],
@@ -979,7 +979,7 @@
         "real-madrid",
         "sevilla",
         "manchester-city",
-        "brighton-hove-albion"
+        "brighton"
       ],
       "players": [],
       "imp": 2,
@@ -1048,7 +1048,7 @@
       ],
       "teams": [
         "barcelona",
-        "brighton-hove-albion"
+        "brighton"
       ],
       "players": [],
       "imp": 2,

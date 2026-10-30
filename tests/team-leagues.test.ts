@@ -1,5 +1,6 @@
 /**
- * M1-17 — 팀 → 리그 표 (scripts/lib/team-leagues.ts) — 2026-27 시즌 5대 리그 96팀.
+ * M1-17 — 팀 → 리그 표 (scripts/lib/team-leagues.ts) — 2026-27 시즌 5대 리그 96팀. M2-04 — UCL 36팀·teamCompetitions·allTeamSlugs와
+ * teams fixtures(football-data `/competitions/{code}/teams?season=2026`) 대조.
  *
  * 순위표 fixture(football-data 2026-10-11)와 대조한다: 리그별 팀 수 = competitions.json `teamCount`, 순위표의 모든 팀이 표에 있고
  * (slug = 영문 표기가 football-data 이름과 같은 사전 항목 → team-ids.json → M0-32 slug 규칙), 사전 팀 항목의 slug가 표와 어긋나지 않는다
@@ -17,16 +18,19 @@ import {
   TeamIdsFileSchema,
 } from "@/lib/schema";
 
-import { teamSlugFromName } from "../scripts/lib/team-ids-draft";
 import {
   LEAGUE_IDS,
   TEAM_LEAGUE_INDEX,
   TEAM_LEAGUES,
   TEAM_LEAGUES_SEASON,
+  UCL_TEAMS,
+  allTeamSlugs,
   buildTeamLeagueIndex,
   isLeagueId,
+  teamCompetitions,
   type LeagueId,
 } from "../scripts/lib/team-leagues";
+import { teamSlugFromName } from "../scripts/lib/team-slugs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const readJson = (rel: string): unknown =>
@@ -121,5 +125,57 @@ describe("TEAM_LEAGUES — 2026-27 시즌 5대 리그", () => {
       ["a", "EPL"],
       ["b", "LALIGA"],
     ]);
+  });
+});
+
+/** teams fixture(M2-04)의 팀 id */
+const fixtureTeamIds = (code: string): number[] =>
+  (
+    readJson(
+      `fixtures/football/football-data/teams-${code}-${TEAM_LEAGUES_SEASON}.json`,
+    ) as { teams: Array<{ id: number }> }
+  ).teams.map((t) => t.id);
+
+describe("팀 목록(M2-04) — teams fixtures·team-ids.json과 같다", () => {
+  it.each(LEAGUE_IDS.map((l) => [l] as const))(
+    "%s: TEAM_LEAGUES = teams fixture의 팀(team-ids.json fd → slug)",
+    (league) => {
+      const expected = fixtureTeamIds(STANDINGS_CODE[league]).map(
+        (id) => slugByFd.get(id) ?? `fd:${id}`,
+      );
+      expect([...TEAM_LEAGUES[league]].sort()).toEqual(expected.sort());
+    },
+  );
+
+  it("UCL_TEAMS = UCL teams fixture 36팀(slug 순) — 5대 리그 21 + 그 밖 15", () => {
+    const expected = fixtureTeamIds("cl").map(
+      (id) => slugByFd.get(id) ?? `fd:${id}`,
+    );
+    expect([...UCL_TEAMS]).toEqual([...expected].sort());
+    expect(UCL_TEAMS).toHaveLength(36);
+    expect(UCL_TEAMS.filter((s) => TEAM_LEAGUE_INDEX.has(s))).toHaveLength(21);
+  });
+
+  it("allTeamSlugs = team-ids.json 111팀(6개 대회 팀만 대응표에 있다)", () => {
+    const all = allTeamSlugs();
+    expect(all).toHaveLength(111);
+    expect(new Set(all).size).toBe(111);
+    expect([...all].sort()).toEqual(Object.keys(TEAM_IDS).sort());
+  });
+
+  it("teamCompetitions — 리그 팀은 리그(+UCL), 5대 리그 밖 UCL 팀은 UCL, 6개 대회 밖은 null", () => {
+    expect(teamCompetitions("inter")).toEqual({
+      comp: "SERIEA",
+      alsoIn: ["UCL"],
+    });
+    expect(teamCompetitions("tottenham-hotspur")).toEqual({
+      comp: "EPL",
+      alsoIn: [],
+    });
+    expect(teamCompetitions("club-brugge")).toEqual({
+      comp: "UCL",
+      alsoIn: [],
+    });
+    expect(teamCompetitions("midtjylland")).toBeNull();
   });
 });

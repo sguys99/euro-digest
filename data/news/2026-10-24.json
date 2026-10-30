@@ -211,14 +211,14 @@
         "SERIEA"
       ],
       "teams": [
-        "ac-milan",
-        "udinese-calcio",
-        "como-1907",
-        "us-sassuolo-calcio",
-        "ss-lazio",
-        "parma-calcio-1913",
-        "as-roma",
-        "ssc-napoli"
+        "milan",
+        "udinese",
+        "como",
+        "sassuolo",
+        "lazio",
+        "parma",
+        "roma",
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -429,7 +429,7 @@
       ],
       "teams": [
         "paris-saint-germain",
-        "olympique-lyonnais"
+        "lyon"
       ],
       "players": [],
       "imp": 3,
@@ -643,7 +643,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -911,7 +911,7 @@
       ],
       "teams": [
         "torino",
-        "ac-monza"
+        "monza"
       ],
       "players": [],
       "imp": 2,
@@ -1023,7 +1023,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"

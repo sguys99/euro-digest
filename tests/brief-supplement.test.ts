@@ -19,6 +19,7 @@ import {
   MatchLedgerFileSchema,
   NamesKoFileSchema,
   TeamIdsFileSchema,
+  type TeamIdsFile,
 } from "@/lib/schema";
 
 import {
@@ -77,9 +78,16 @@ const readJson = (rel: string): unknown =>
 const COMPETITIONS = CompetitionsFileSchema.parse(
   readJson("configs/competitions.json"),
 );
-const TEAM_INDEX = buildTeamIdIndex(
-  TeamIdsFileSchema.parse(readJson("configs/team-ids.json")),
+/**
+ * 10-25 호 재현은 그날의 대응표(52팀 — fixtures/brief-pending/team-ids-2026-10-25.json)로 한다. 합성 fd 팀 id(900001~)가 그 표 기준이라
+ * M2-04의 전 팀(111) 대응표로는 af 쪽이 대응표와 어긋난다(table).
+ */
+const TEAM_IDS_1025 = TeamIdsFileSchema.parse(
+  readJson("fixtures/brief-pending/team-ids-2026-10-25.json"),
 );
+const TEAM_INDEX = buildTeamIdIndex(TEAM_IDS_1025);
+/** 지금의 configs/team-ids.json(M2-04 — 6개 대회 111팀) */
+const TEAM_IDS_NOW = TeamIdsFileSchema.parse(readJson("configs/team-ids.json"));
 const NAMES = buildNameIndex(
   NamesKoFileSchema.parse(readJson("configs/names.ko.json")),
   COMPETITIONS,
@@ -634,16 +642,16 @@ describe("linkPendingMatches — 점수 없이 대응표가 팀을 확인하는 
 // ─── 팀 이름 교차 확인 ───────────────────────────────────────────────────
 
 describe("teamNamesAgree — 대응표가 확인한 쪽 팀 이름 교차 확인(D60 리뷰)", () => {
-  /** configs/team-ids.json 메모의 실제 원문 이름 쌍(fd 정식 이름 · af 이름) */
-  const PAIRS: Array<[string, string, string]> = Object.entries(
-    TeamIdsFileSchema.parse(readJson("configs/team-ids.json")),
-  ).flatMap(([slug, e]) => {
-    const m = /fd "([^"]+)" · af "([^"]+)"/.exec(e.note ?? "");
-    return m ? [[slug, m[1]!, m[2]!] as [string, string, string]] : [];
-  });
+  /** 대응표 메모의 실제 원문 이름 쌍(fd 정식 이름 · af 이름) */
+  const pairsOf = (file: TeamIdsFile): Array<[string, string, string]> =>
+    Object.entries(file).flatMap(([slug, e]) => {
+      const m = /fd "([^"]+)" · af "([^"]+)"/.exec(e.note ?? "");
+      return m ? [[slug, m[1]!, m[2]!] as [string, string, string]] : [];
+    });
+  const PAIRS = pairsOf(TEAM_IDS_1025);
   const DICT = teamDictionaryKey(NAMES);
 
-  it("대응표 52팀의 실제 fd·af 이름 쌍은 모두 같은 팀 — 이름 정규화만으로도, 사전과 함께도", () => {
+  it("2026-10-25 대응표 52팀의 실제 fd·af 이름 쌍은 모두 같은 팀 — 이름 정규화만으로도, 사전과 함께도", () => {
     expect(PAIRS.length).toBe(52);
     for (const [slug, fdName, afName] of PAIRS) {
       expect(
@@ -659,6 +667,26 @@ describe("teamNamesAgree — 대응표가 확인한 쪽 팀 이름 교차 확인
         `${slug} (사전): ${fdName} ↔ ${afName}`,
       ).toBe(true);
     }
+  });
+
+  it("M2-04 전 팀(111) 대응표 — 사전과 함께면 같은 팀, 알려진 예외 2팀은 af 이름이 사전 별칭에 없다(/add-name 후보)", () => {
+    const all = pairsOf(TEAM_IDS_NOW);
+    expect(all).toHaveLength(111);
+    const disagree = all
+      .filter(
+        ([, fdName, afName]) =>
+          !teamNamesAgree(
+            { name: fdName, fullName: null },
+            { name: afName },
+            DICT,
+          ),
+      )
+      .map(([slug, , afName]) => `${slug}:${afName}`);
+    // 'AEK Athens FC'·'Estac Troyes'를 names.ko 별칭에 넣으면(사용자 확인 — /add-name) 이 목록이 빈다 — 그때 기대값을 []로 바꾼다
+    expect(disagree).toEqual([
+      "aek-athens:AEK Athens FC",
+      "troyes:Estac Troyes",
+    ]);
   });
 
   it("비교 키 — 악센트·대소문자·접두·접미(FC·CF·AC·SV …)·숫자 낱말을 뺀다", () => {

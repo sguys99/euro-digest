@@ -155,7 +155,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -184,7 +184,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -238,7 +238,7 @@
         "SERIEA"
       ],
       "teams": [
-        "internazionale-milano",
+        "inter",
         "venezia"
       ],
       "players": [],
@@ -267,7 +267,7 @@
       ],
       "teams": [
         "juventus",
-        "genoa-cfc"
+        "genoa"
       ],
       "players": [],
       "imp": 3,
@@ -294,8 +294,8 @@
         "SERIEA"
       ],
       "teams": [
-        "ac-milan",
-        "bologna-fc-1909"
+        "milan",
+        "bologna"
       ],
       "players": [],
       "imp": 3,
@@ -322,7 +322,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ac-milan"
+        "milan"
       ],
       "players": [],
       "imp": 3,
@@ -349,7 +349,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -563,7 +563,7 @@
         "EPL"
       ],
       "teams": [
-        "fenerbahce-sk",
+        "fenerbahce",
         "liverpool"
       ],
       "players": [],
@@ -671,7 +671,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ac-monza"
+        "monza"
       ],
       "players": [],
       "imp": 2,
@@ -901,8 +901,8 @@
         "LIGUE1"
       ],
       "teams": [
-        "racing-club-de-lens",
-        "lille-osc"
+        "lens",
+        "lille"
       ],
       "players": [],
       "imp": 2,

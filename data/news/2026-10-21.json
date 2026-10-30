@@ -12,8 +12,8 @@
         "UCL"
       ],
       "teams": [
-        "atletico-de-madrid",
-        "vfb-stuttgart"
+        "atletico-madrid",
+        "stuttgart"
       ],
       "players": [
         "lee-kang-in"
@@ -157,7 +157,7 @@
         "BUNDESLIGA"
       ],
       "teams": [
-        "ac-milan"
+        "milan"
       ],
       "players": [
         "kim-min-jae"
@@ -322,8 +322,8 @@
       "cat": "result",
       "comp": [],
       "teams": [
-        "ssc-napoli",
-        "fk-bodo-glimt"
+        "napoli",
+        "bodo-glimt"
       ],
       "players": [],
       "imp": 4,
@@ -381,7 +381,7 @@
         "UCL"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -410,7 +410,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -437,7 +437,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -465,8 +465,8 @@
         "UCL"
       ],
       "teams": [
-        "ssc-napoli",
-        "fk-bodo-glimt"
+        "napoli",
+        "bodo-glimt"
       ],
       "players": [],
       "imp": 3,
@@ -500,7 +500,7 @@
         "UCL"
       ],
       "teams": [
-        "as-roma"
+        "roma"
       ],
       "players": [],
       "imp": 3,
@@ -528,7 +528,7 @@
         "UCL"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -633,7 +633,7 @@
         "BUNDESLIGA"
       ],
       "teams": [
-        "vfb-stuttgart"
+        "stuttgart"
       ],
       "players": [
         "lee-kang-in"
@@ -723,7 +723,7 @@
         "SERIEA"
       ],
       "teams": [
-        "as-roma"
+        "roma"
       ],
       "players": [],
       "imp": 2,
@@ -750,7 +750,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -779,7 +779,7 @@
         "SERIEA"
       ],
       "teams": [
-        "como-1907"
+        "como"
       ],
       "players": [],
       "imp": 2,
@@ -973,8 +973,8 @@
         "BUNDESLIGA"
       ],
       "teams": [
-        "vfb-stuttgart",
-        "atletico-de-madrid"
+        "stuttgart",
+        "atletico-madrid"
       ],
       "players": [],
       "imp": 1,

@@ -428,30 +428,46 @@ describe("suggestTeamIdPairs — 대회·킥오프(±5분)·스코어 + 후보 1
 
 // ─── 초안 ────────────────────────────────────────────────────────────────
 
-describe("teamSlugFromName — M0-32 규칙(정식 이름 → 악센트 제거 → FC·AFC·CF·SC·SV·FSV·1.·Club 앞뒤 제거 → kebab)", () => {
+describe("teamSlugFromName — D63 ③ 규칙(정식 이름 → 악센트 제거 → 숫자 토큰 제거 → 법인·형태 토큰 앞뒤 제거 → kebab)", () => {
   it.each([
     ["FC Bayern München", "bayern-munchen"],
-    ["1. FSV Mainz 05", "mainz-05"],
-    ["Club Atlético de Madrid", "atletico-de-madrid"],
+    ["1. FSV Mainz 05", "mainz"],
+    ["Club Atlético de Madrid", "atletico-de-madrid"], // 예외표가 atletico-madrid로 바꾼다
     ["Brentford FC", "brentford"],
     ["1. FC Union Berlin", "union-berlin"],
     ["Borussia Mönchengladbach", "borussia-monchengladbach"],
-    ["FC Schalke 04", "schalke-04"],
+    ["FC Schalke 04", "schalke"],
     ["FC Augsburg", "augsburg"],
-    ["Brighton & Hove Albion FC", "brighton-hove-albion"],
+    ["Brighton & Hove Albion FC", "brighton-hove-albion"], // 예외표 → brighton
     ["Paris Saint-Germain FC", "paris-saint-germain"],
     ["1. FC Köln", "koln"],
-    ["SV 07 Elversberg", "07-elversberg"],
-    ["FK Bodø/Glimt", "fk-bodo-glimt"],
+    ["SV 07 Elversberg", "elversberg"],
+    ["TSG 1899 Hoffenheim", "hoffenheim"],
+    ["Parma Calcio 1913", "parma"],
+    ["Stade Rennais FC 1901", "stade-rennais"], // 예외표 → rennes
+    ["SSC Napoli", "napoli"],
+    ["AC Milan", "milan"],
+    ["Le Havre AC", "le-havre"],
+    ["ES Troyes AC", "troyes"],
+    ["Athletic Club", "athletic"],
+    ["RC Deportivo La Coruña", "deportivo-la-coruna"],
+    ["FK Bodø/Glimt", "bodo-glimt"],
+    ["ŠK Slovan Bratislava", "slovan-bratislava"],
+    ["RB Leipzig", "rb-leipzig"], // RB는 형태 토큰이 아니다(통칭 'RB Leipzig')
+    ["Tottenham Hotspur FC", "tottenham-hotspur"],
     ["FC", "fc"],
   ])("%s → %s", (name, slug) => {
     expect(teamSlugFromName(name).slug).toBe(slug);
   });
 
-  it("뗀 토큰을 돌려준다 · 악센트 제거", () => {
+  it("뗀 토큰을 돌려준다(숫자 먼저, 앞 → 뒤) · 악센트 제거", () => {
     expect(teamSlugFromName("Paris FC")).toEqual({
       slug: "paris",
       stripped: ["FC"],
+    });
+    expect(teamSlugFromName("1. FSV Mainz 05")).toEqual({
+      slug: "mainz",
+      stripped: ["1.", "05", "FSV"],
     });
     expect(stripAccents("Alavés Barça Fenerbahçe Bodø Straße")).toBe(
       "Alaves Barca Fenerbahce Bodo Strasse",
@@ -995,18 +1011,21 @@ describe("buildTeamIdsDraft — fixtures 52쌍 + 한국 선수 소속팀", () =>
         .map((r) => r.fd)
         .sort((a, b) => a - b),
     ).toEqual([1, 17, 77, 87]); // 쾰른·프라이부르크·아틀레틱·라요
-    expect(row("schalke-04").basis).toContain("TIMED/NS");
-    expect(row("schalke-04").strength).toBe("strong");
+    expect(row("schalke").basis).toContain("TIMED/NS");
+    expect(row("schalke").strength).toBe("strong");
     for (const r of draft.rows.filter((x) => x.strength === "weak")) {
       expect(r.flags[0]).toContain("근거 약함");
       expect(draft.file[r.slug]!.note).toContain("근거 약함");
     }
   });
 
-  it("규칙이 어색한 slug는 표시만 한다(숫자 시작·이름 일부를 뗌·형태 토큰 남음)", () => {
-    expect(row("07-elversberg").flags.join()).toContain("숫자로 시작");
-    expect(row("paris").flags.join()).toContain('"FC"');
-    expect(row("ssc-napoli").flags.join()).toContain("ssc");
+  it("D63 ③ 규칙·예외표로 slug를 정하고, 규칙이 뗀 토큰이 짧은 이름에 남으면 표시만 한다(M2-04)", () => {
+    // 옛 M0-32 규칙에서 표시되던 07-elversberg·paris·ssc-napoli는 새 규칙·예외표로 정리됐다
+    expect(row("elversberg").flags).toEqual([]);
+    expect(row("paris-fc").flags).toEqual([]); // 예외표(충돌 — 'paris'는 PSG와 헷갈림)
+    expect(row("napoli").flags).toEqual([]);
+    expect(row("angers").flags.join()).toContain('"SCO"'); // football-data 짧은 이름 "Angers SCO"
+    expect(draft.rows.every((r) => !/^\d/.test(r.slug))).toBe(true);
     expect(row("arsenal").flags).toEqual([]);
     expect(row("arsenal").basis).toContain("560593↔1557417");
   });

@@ -144,7 +144,7 @@
         "UCL"
       ],
       "teams": [
-        "brugge-kv"
+        "club-brugge"
       ],
       "players": [],
       "imp": 4,
@@ -316,8 +316,8 @@
       "teams": [
         "liverpool",
         "villarreal",
-        "ssc-napoli",
-        "fk-bodo-glimt"
+        "napoli",
+        "bodo-glimt"
       ],
       "players": [],
       "imp": 4,
@@ -351,7 +351,7 @@
       ],
       "teams": [
         "manchester-city",
-        "pae-aek"
+        "aek-athens"
       ],
       "players": [],
       "imp": 4,
@@ -493,7 +493,7 @@
       ],
       "teams": [
         "chelsea",
-        "brighton-hove-albion"
+        "brighton"
       ],
       "players": [],
       "imp": 4,
@@ -610,7 +610,7 @@
         "SERIEA"
       ],
       "teams": [
-        "internazionale-milano"
+        "inter"
       ],
       "players": [],
       "imp": 3,
@@ -663,8 +663,8 @@
         "LALIGA"
       ],
       "teams": [
-        "real-betis-balompie",
-        "feyenoord-rotterdam"
+        "real-betis",
+        "feyenoord"
       ],
       "players": [],
       "imp": 3,
@@ -717,8 +717,8 @@
         "SERIEA"
       ],
       "teams": [
-        "udinese-calcio",
-        "ac-milan"
+        "udinese",
+        "milan"
       ],
       "players": [],
       "imp": 3,
@@ -745,7 +745,7 @@
         "SERIEA"
       ],
       "teams": [
-        "internazionale-milano"
+        "inter"
       ],
       "players": [],
       "imp": 3,
@@ -772,7 +772,7 @@
         "SERIEA"
       ],
       "teams": [
-        "internazionale-milano"
+        "inter"
       ],
       "players": [],
       "imp": 3,
@@ -799,8 +799,8 @@
         "SERIEA"
       ],
       "teams": [
-        "internazionale-milano",
-        "fk-shakhtar-donetsk"
+        "inter",
+        "shakhtar-donetsk"
       ],
       "players": [],
       "imp": 3,
@@ -1192,8 +1192,8 @@
         "BUNDESLIGA"
       ],
       "teams": [
-        "atletico-de-madrid",
-        "vfb-stuttgart"
+        "atletico-madrid",
+        "stuttgart"
       ],
       "players": [
         "lee-kang-in"

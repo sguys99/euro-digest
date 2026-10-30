@@ -241,8 +241,8 @@
         "SERIEA"
       ],
       "teams": [
-        "frosinone-calcio",
-        "us-lecce",
+        "frosinone",
+        "lecce",
         "juventus"
       ],
       "players": [],
@@ -769,8 +769,8 @@
         "SERIEA"
       ],
       "teams": [
-        "acf-fiorentina",
-        "atalanta-bc"
+        "fiorentina",
+        "atalanta"
       ],
       "players": [],
       "imp": 2,
@@ -853,7 +853,7 @@
         "SERIEA"
       ],
       "teams": [
-        "como-1907"
+        "como"
       ],
       "players": [],
       "imp": 2,
@@ -880,7 +880,7 @@
         "SERIEA"
       ],
       "teams": [
-        "frosinone-calcio"
+        "frosinone"
       ],
       "players": [],
       "imp": 2,
@@ -1026,8 +1026,8 @@
         "SERIEA"
       ],
       "teams": [
-        "frosinone-calcio",
-        "us-lecce"
+        "frosinone",
+        "lecce"
       ],
       "players": [],
       "imp": 2,

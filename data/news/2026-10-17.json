@@ -12,8 +12,8 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid",
-        "rcd-espanyol-de-barcelona"
+        "atletico-madrid",
+        "espanyol"
       ],
       "players": [
         "lee-kang-in"
@@ -146,7 +146,7 @@
       ],
       "teams": [
         "juventus",
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -234,7 +234,7 @@
         "LALIGA"
       ],
       "teams": [
-        "rcd-espanyol-de-barcelona"
+        "espanyol"
       ],
       "players": [
         "lee-kang-in"
@@ -263,7 +263,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -291,7 +291,7 @@
       ],
       "teams": [
         "venezia",
-        "ssc-napoli"
+        "napoli"
       ],
       "players": [],
       "imp": 3,
@@ -559,7 +559,7 @@
         "SERIEA"
       ],
       "teams": [
-        "atalanta-bc"
+        "atalanta"
       ],
       "players": [],
       "imp": 2,
@@ -613,7 +613,7 @@
         "SERIEA"
       ],
       "teams": [
-        "frosinone-calcio"
+        "frosinone"
       ],
       "players": [],
       "imp": 2,
@@ -640,7 +640,7 @@
         "SERIEA"
       ],
       "teams": [
-        "ss-lazio"
+        "lazio"
       ],
       "players": [],
       "imp": 2,
@@ -830,8 +830,8 @@
         "SERIEA"
       ],
       "teams": [
-        "as-roma",
-        "genoa-cfc"
+        "roma",
+        "genoa"
       ],
       "players": [],
       "imp": 2,
@@ -859,7 +859,7 @@
         "UCL"
       ],
       "teams": [
-        "internazionale-milano"
+        "inter"
       ],
       "players": [],
       "imp": 2,
@@ -958,7 +958,7 @@
         "LALIGA"
       ],
       "teams": [
-        "rcd-espanyol-de-barcelona"
+        "espanyol"
       ],
       "players": [
         "lee-kang-in"
@@ -1012,7 +1012,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -1145,7 +1145,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"
@@ -1174,7 +1174,7 @@
         "LALIGA"
       ],
       "teams": [
-        "atletico-de-madrid"
+        "atletico-madrid"
       ],
       "players": [
         "lee-kang-in"

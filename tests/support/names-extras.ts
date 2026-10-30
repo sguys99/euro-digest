@@ -14,7 +14,7 @@ const EXTRA_TEAM_ALIASES: ReadonlyArray<{
 }> = [
   // D46 확정 표기(사전에 이미 있으면 그대로 — 영문 표기 중복은 건너뛴다)
   {
-    slug: "internazionale-milano",
+    slug: "inter",
     ko: "인테르",
     en: ["FC Internazionale Milano", "Inter", "Inter Milan"],
   },

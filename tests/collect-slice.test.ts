@@ -1837,7 +1837,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
   it("npm run validate(configs·data 스키마·교차 검사)가 새 data 파일(news·briefs·runs.json·cache/seen-urls.json·cache/unknown-names.json)을 통과시킨다", async () => {
     const repo = path.join(dataDir, "repo");
     copyRepo(repo);
-    dropTeams(repo, ["internazionale-milano"]); // 미등록 이름 1개(Inter) → unknown-names.json이 생긴다
+    dropTeams(repo, ["inter"]); // 미등록 이름 1개(Inter) → unknown-names.json이 생긴다
     const { deps, params } = liveDeps({
       env: "prod",
       rootDir: repo,
@@ -1879,8 +1879,8 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     const repo = path.join(dataDir, "repo-names");
     copyRepo(repo);
     // 사본 사전에서 인테르·브라이턴을 빼 미등록 이름을 만든다
-    const [inter] = dropTeams(repo, ["internazionale-milano"]);
-    dropTeams(repo, ["brighton-hove-albion"]);
+    const [inter] = dropTeams(repo, ["inter"]);
+    dropTeams(repo, ["brighton"]);
     const run = async () => {
       const { deps } = liveDeps({
         env: "prod",

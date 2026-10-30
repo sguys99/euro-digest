@@ -1126,9 +1126,9 @@ const SAMPLE = (
 ).cards;
 /** news-sample(M0-34)의 옛 slug → 사전 slug(M1-21) */
 const OLD_SLUG: Record<string, string> = {
-  milan: "ac-milan",
-  napoli: "ssc-napoli",
-  sassuolo: "us-sassuolo-calcio",
+  milan: "milan",
+  napoli: "napoli",
+  sassuolo: "sassuolo",
 };
 
 function rssItems() {

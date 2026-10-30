@@ -1,7 +1,7 @@
 /**
  * M1-21 초기 표기 사전(configs/names.ko.json) 가드 + 태그 한글 표시 도우미(src/lib/data/names.ts — FR-24):
  *   - 등록 한국 선수 전원·빅클럽(news-keywords.ts BIG_CLUBS — 같은 slug로 별칭 합류)·6개 대회 이번 시즌 팀(fixtures 순위표)
- *   - 팀 slug = team-ids.json slug 또는 M0-32 규칙(team-ids-draft.ts teamSlugFromName) — 팀 페이지 URL이 갈라지지 않게
+ *   - 팀 slug = team-ids.json slug(M2-04 — 6개 대회 111팀 전부, D63 ③ 규칙) 또는 같은 규칙(team-slugs.ts teamSlugFromName) — 팀 페이지 URL이 갈라지지 않게
  *   - 표기가 갈리는 이름(확인 대기 — 오케스트레이터가 사용자에게 묻는다)은 사전에 없다(`/add-name` 원칙: 확인분만 반영)
  *   - 모든 항목에 근거(note) · football-data 정식·짧은 이름 별칭
  * 확인 대기 목록이 바뀌면(사용자 결정) PENDING을 함께 고친다.
@@ -24,7 +24,7 @@ import {
 
 import { isInitialForm, KNOWN_PLAYER_TEAMS } from "../scripts/lib/names";
 import { BIG_CLUBS } from "../scripts/lib/news-keywords";
-import { teamSlugFromName } from "../scripts/lib/team-ids-draft";
+import { teamSlugFromName } from "../scripts/lib/team-slugs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const readJson = (rel: string): unknown =>
@@ -125,7 +125,7 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
     expect(seen.size).toBe(111); // 5대 리그 96팀 + UCL 리그 페이즈의 그 밖 15팀
   });
 
-  it("팀 slug는 team-ids.json slug 또는 M0-32 규칙(football-data 정식 이름) — 확인 대기 팀은 team-ids에만", () => {
+  it("팀 slug는 team-ids.json slug 또는 D63 ③ 규칙(football-data 정식 이름) — 확인 대기 팀은 team-ids에만", () => {
     const fdNameBySlug = new Map(
       Object.entries(TEAM_IDS).map(([slug, v]) => [
         slug,
@@ -164,10 +164,10 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
     // 엘버스베르크(2026-10-29 사용자 결정으로 '엘페르스베르크'에서 바꿈 — 매체 관용 통일, /add-name 3차)도 note에 D46 확정 이력이 남는다
     expect(d46.length).toBe(30);
     expect(d46.every((e) => e.note!.includes("2026-10-17"))).toBe(true);
-    const elversberg = teamEntries.find((e) => e.slug === "07-elversberg")!;
+    const elversberg = teamEntries.find((e) => e.slug === "elversberg")!;
     expect(elversberg.ko).toBe("엘버스베르크");
     expect(elversberg.note).toMatch(/^확정\(사용자 결정 2026-10-29\)/);
-    const brugge = teamEntries.find((e) => e.slug === "brugge-kv")!;
+    const brugge = teamEntries.find((e) => e.slug === "club-brugge")!;
     expect(brugge.ko).toBe("클럽 브뤼헤");
     expect(brugge.note).toContain("D39 ②(KFA 우선)의 예외");
   });

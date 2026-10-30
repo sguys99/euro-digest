@@ -92,7 +92,7 @@ describe("라틴 제목 — 단어 경계·발음 기호·제목 안 순서", ()
       "vinicius-junior",
     ]);
     expect(tags("Kang-in Lee shines for Atleti", "en")).toMatchObject({
-      teams: ["atletico-de-madrid"],
+      teams: ["atletico-madrid"],
       players: ["lee-kang-in"],
     });
     // 성만 — 사전에 'Kane'·'Romero' 표기가 없다(같은 성의 다른 선수가 흔하다)
@@ -148,7 +148,7 @@ describe("일반어·도시와 겹치는 별칭 (M1-21 리뷰 — 코드 상수 
       "barcelona",
     ]);
     expect(tags("Inter Milan fans in Milan protest", "en").teams).toEqual([
-      "internazionale-milano",
+      "inter",
     ]);
     expect(tags("El Barça viaja a Roma sin Lewandowski", "es").teams).toEqual([
       "barcelona",
@@ -176,17 +176,17 @@ describe("일반어·도시와 겹치는 별칭 (M1-21 리뷰 — 코드 상수 
   it("확인 근거 — 같은 리그의 다른 팀 · 그 팀 리그의 대회 표현 · 한 리그만 다루는 소스의 그 리그(다른 리그 팀·여러 리그 소스는 아니다)", () => {
     // 같은 리그의 다른 팀(겹치지 않는 표기)
     expect(tags("Inter, il Milan e la Roma", "it").teams).toEqual([
-      "internazionale-milano",
-      "ac-milan",
-      "as-roma",
+      "inter",
+      "milan",
+      "roma",
     ]);
     expect(tags("Lens and Lille share points", "en").teams).toEqual([
-      "racing-club-de-lens",
-      "lille-osc",
+      "lens",
+      "lille",
     ]);
     // 다른 리그 팀은 근거가 아니다(M1-17 리뷰 — 잘못 붙이기보다 안 붙이기)
     expect(tags("Feyenoord come from behind to beat Como", "en").teams).toEqual(
-      ["feyenoord-rotterdam"],
+      ["feyenoord"],
     );
     expect(
       tags("Real Madrid stun Roma after late comeback", "en").teams,
@@ -205,22 +205,20 @@ describe("일반어·도시와 겹치는 별칭 (M1-21 리뷰 — 코드 상수 
     ).toEqual(["bayern-munchen"]);
     // 리그 대회 표현
     expect(tags("Nice climb to third in Ligue 1", "en").teams).toEqual([
-      "ogc-nice",
+      "nice",
     ]);
     // 소스 대회(Di Marzio = 세리에 A)
     expect(
       tags("Roma, Gasperini: «Siamo pronti»", "it", INDEX, {
         sourceComps: ["SERIEA"],
       }).teams,
-    ).toEqual(["as-roma"]);
+    ).toEqual(["roma"]);
     expect(tags("Roma, Gasperini: «Siamo pronti»", "it").teams).toEqual([]);
     // 겹치지 않는 표기는 근거 없이도 맞는다
     expect(
       tags("AC Milan keen on Scott - Sunday's gossip", "en").teams,
-    ).toEqual(["ac-milan"]);
-    expect(tags("Como 1907 appoint new coach", "en").teams).toEqual([
-      "como-1907",
-    ]);
+    ).toEqual(["milan"]);
+    expect(tags("Como 1907 appoint new coach", "en").teams).toEqual(["como"]);
   });
 
   it("Milan, la probabile formazione contro il Sassuolo — 사수올로가 근거(Di Marzio 실데이터)", () => {
@@ -229,7 +227,7 @@ describe("일반어·도시와 겹치는 별칭 (M1-21 리뷰 — 코드 상수 
         "Milan, la probabile formazione contro il Sassuolo: Pulisic dietro a Ramos",
         "it",
       ).teams,
-    ).toEqual(["ac-milan", "us-sassuolo-calcio"]);
+    ).toEqual(["milan", "sassuolo"]);
   });
 });
 
@@ -245,7 +243,7 @@ describe("국내 제목 — 조사 경계(부분 문자열 금지)", () => {
     expect(
       tags("‘이강인 컴백’ 아틀레티코, 알라베스 잡고 2위", "ko"),
     ).toMatchObject({
-      teams: ["atletico-de-madrid", "deportivo-alaves"],
+      teams: ["atletico-madrid", "alaves"],
       players: ["lee-kang-in"],
     });
   });
@@ -278,8 +276,8 @@ describe("국내 제목 — 조사 경계(부분 문자열 금지)", () => {
 
   it("짧은 겹치는 이름(로마·니스·렌·릴)은 같은 리그의 다른 팀·리그 표현이 있을 때만 — 다른 리그 팀(레알 마드리드)은 근거가 아니다", () => {
     expect(tags("프랑스 리그1 니스, 마르세유 격파", "ko").teams).toEqual([
-      "ogc-nice",
-      "olympique-de-marseille",
+      "nice",
+      "marseille",
     ]);
     expect(
       tags("[UCL REVIEW] 레알 마드리드의 챔스 DNA…로마 원정서 극장승", "ko")
@@ -290,7 +288,7 @@ describe("국내 제목 — 조사 경계(부분 문자열 금지)", () => {
 
   it("빅클럽 제외 표현 — 레알 소시에다드는 레알 마드리드가 아니다, 뮌헨글라트바흐는 바이에른이 아니다", () => {
     expect(tags("레알 소시에다드, 셀타 꺾고 3연승", "ko").teams).toEqual([
-      "real-sociedad-de-futbol",
+      "real-sociedad",
     ]);
     expect(tags("뮌헨글라트바흐 카스트로프 선발", "ko")).toMatchObject({
       teams: [],
@@ -304,7 +302,7 @@ describe("국내 제목 — 조사 경계(부분 문자열 금지)", () => {
       "manchester-city",
     ]);
     expect(tags("ATM과 파트너십 체결", "ko").teams).toEqual([
-      "atletico-de-madrid",
+      "atletico-madrid",
     ]);
   });
 });
@@ -316,15 +314,13 @@ describe("색인 — 사전 slug·리그·사전 확장", () => {
     );
     for (const tag of INDEX.players) expect(slugs.has(tag.slug)).toBe(true);
     for (const tag of INDEX.teams) {
-      expect(slugs.has(tag.slug) || tag.slug === "internazionale-milano").toBe(
-        true,
-      );
+      expect(slugs.has(tag.slug) || tag.slug === "inter").toBe(true);
     }
   });
 
   it("tagLeagues: 팀 → 리그(team-leagues.ts), 활성 등록 한국 선수 → 소속 리그(비활성은 아니다)", () => {
     expect(
-      tagLeagues(["arsenal", "brugge-kv"], ["kim-min-jae"], INDEX),
+      tagLeagues(["arsenal", "club-brugge"], ["kim-min-jae"], INDEX),
     ).toEqual(["EPL", "BUNDESLIGA"]);
     expect(tagLeagues([], ["hong-hyun-seok"], INDEX)).toEqual([]); // 미트윌란(active false)
   });
@@ -395,13 +391,13 @@ describe("색인 — 사전 slug·리그·사전 확장", () => {
     ]);
     expect(
       tags("Brighton seafront: Brentford fans travel", "en").teams,
-    ).toEqual(["brighton-hove-albion", "brentford"]);
+    ).toEqual(["brighton", "brentford"]);
     expect(tags("Real Sociedad 2-1 Real Madrid", "en").teams).toEqual([
-      "real-sociedad-de-futbol",
+      "real-sociedad",
       "real-madrid",
     ]);
     expect(tags("Atletico Madrid vs Real Madrid", "en").teams).toEqual([
-      "atletico-de-madrid",
+      "atletico-madrid",
       "real-madrid",
     ]);
     expect(tags("Manchester derby: United v City", "en").teams).toEqual([]);

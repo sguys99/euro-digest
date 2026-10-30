@@ -1,18 +1,20 @@
 /**
- * 팀 → 리그 표 (2026-27 시즌, plan M1-17 — 코드 분류의 대회 태그·점수화 범위 근거) — 순수 데이터.
+ * 팀 → 대회 표 (2026-27 시즌, plan M1-17 → M2-04) — 순수 데이터. 코드 분류의 대회 태그·점수화 범위 근거이자, 팀 목록(M2-04)의
+ * 대회 소속 정보 단일 출처다(팀 slug·두 API id는 `configs/team-ids.json`).
  *
  * 뉴스 카드의 대회 태그는 소스 대회(`Source.competitions`)만으로는 넓다 — BBC European 피드는 4개 리그가 붙고(라리가 기사에
  * 세리에 A·분데스·리그 1까지), BBC Football·국내 피드는 대회가 없다. 제목에서 찾은 팀(tag-names.ts — `configs/names.ko.json`·
  * 빅클럽 표)의 리그로 좁힌다(classify.ts). 점수화(score.ts)는 이 리그를 서비스 범위 근거로 쓴다(M1-14 이월 — 빅클럽 밖 EPL 기사의
  * 범위 감점 해제).
  *
- * 값: football-data.org 5대 리그 순위표(fixtures/football/football-data/standings-*-2026-10-11.json, 2026-27 시즌 96팀). slug는
- * `configs/names.ko.json` 팀 항목(영문 표기가 football-data 이름과 같은 항목) → `configs/team-ids.json` → M0-32 slug 규칙
- * (team-ids-draft.ts `teamSlugFromName`) 순으로 정했다 — 사전에 아직 없는 팀도 사전에 들어오면(같은 slug) 바로 쓰인다.
- * tests/team-leagues.test.ts가 순위표 fixture·사전과 대조한다(사전 항목의 slug가 이 표와 다르면 실패 — 표를 함께 고친다).
+ * 값: football-data.org `/v4/competitions/{code}/teams?season=2026`(fixtures/football/football-data/teams-*-2026.json, M2-04 —
+ * 5대 리그 96팀 + UCL 36팀 중 5대 리그 밖 15팀 = 111팀). 리그 표의 순서는 2026-10-11 순위표 순서(M1-17)를 유지한다. slug는
+ * `configs/team-ids.json`(PRD §15 D63 ③ 규칙 — scripts/lib/team-slugs.ts)과 같다. tests/team-leagues.test.ts가 teams fixtures·
+ * team-ids·사전과 대조한다(어긋나면 실패 — 표를 함께 고친다).
  *
- * UCL은 리그가 아니라 넣지 않는다(UCL 태그는 제목 표현·소스 대회로만). 시즌 전환(`/new-season` — 승강 팀) 때 이 표를 갱신한다.
- * 리그 팀 목록을 담는 설정·데이터 파일(M2 data/competitions·teams)이 생기면 그쪽에서 읽는 것으로 옮길 후보다.
+ * 팀 파일(`data/teams/<slug>.json` — TeamSchema `comp`·`alsoIn`)은 `teamCompetitions`로 대회를 정한다: 리그 팀은 리그 + (UCL 참가면)
+ * alsoIn ["UCL"], 5대 리그 밖 UCL 팀은 comp "UCL". 시즌 전환(`/new-season` — 승강 팀·UCL 참가 팀) 때 이 표를 갱신한다
+ * (scripts/fetch-competition-teams.ts → scripts/build-team-ids.ts --roster).
  */
 import type { CompId } from "@/lib/schema";
 
@@ -22,12 +24,12 @@ export type LeagueId = Exclude<CompId, "UCL">;
 /** 이 표의 시즌(시작 연도 — competitions.json `season`과 같다) */
 export const TEAM_LEAGUES_SEASON = 2026;
 
-/** 리그 → 팀 slug(순위표 순서 그대로 — 2026-10-11) */
+/** 리그 → 팀 slug(2026-10-11 순위표 순서) */
 export const TEAM_LEAGUES: Readonly<Record<LeagueId, readonly string[]>> = {
   EPL: [
     "manchester-city",
     "arsenal",
-    "brighton-hove-albion",
+    "brighton",
     "brentford",
     "chelsea",
     "leeds-united",
@@ -48,89 +50,129 @@ export const TEAM_LEAGUES: Readonly<Record<LeagueId, readonly string[]>> = {
   ],
   LALIGA: [
     "barcelona",
-    "atletico-de-madrid",
+    "atletico-madrid",
     "real-madrid",
-    "real-betis-balompie",
+    "real-betis",
     "sevilla",
-    "deportivo-alaves",
-    "rc-deportivo-la-coruna",
-    "real-sociedad-de-futbol",
+    "alaves",
+    "deportivo-la-coruna",
+    "real-sociedad",
     "athletic",
     "villarreal",
-    "rcd-espanyol-de-barcelona",
-    "rayo-vallecano-de-madrid",
+    "espanyol",
+    "rayo-vallecano",
     "getafe",
-    "ca-osasuna",
-    "rc-celta-de-vigo",
-    "real-racing-club-de-santander",
-    "levante-ud",
+    "osasuna",
+    "celta-vigo",
+    "racing-santander",
+    "levante",
     "elche",
     "malaga",
     "valencia",
   ],
   SERIEA: [
-    "internazionale-milano",
-    "as-roma",
-    "ss-lazio",
-    "cagliari-calcio",
-    "ac-milan",
-    "ssc-napoli",
+    "inter",
+    "roma",
+    "lazio",
+    "cagliari",
+    "milan",
+    "napoli",
     "juventus",
-    "como-1907",
-    "frosinone-calcio",
-    "us-sassuolo-calcio",
-    "atalanta-bc",
-    "us-lecce",
-    "udinese-calcio",
+    "como",
+    "frosinone",
+    "sassuolo",
+    "atalanta",
+    "lecce",
+    "udinese",
     "torino",
-    "ac-monza",
-    "genoa-cfc",
-    "parma-calcio-1913",
-    "acf-fiorentina",
-    "bologna-fc-1909",
+    "monza",
+    "genoa",
+    "parma",
+    "fiorentina",
+    "bologna",
     "venezia",
   ],
   BUNDESLIGA: [
     "borussia-dortmund",
     "bayern-munchen",
     "freiburg",
-    "bayer-04-leverkusen",
+    "leverkusen",
     "rb-leipzig",
     "augsburg",
     "werder-bremen",
-    "mainz-05",
-    "07-elversberg",
-    "vfb-stuttgart",
-    "hamburger",
-    "schalke-04",
+    "mainz",
+    "elversberg",
+    "stuttgart",
+    "hamburg",
+    "schalke",
     "eintracht-frankfurt",
     "koln",
-    "paderborn-07",
+    "paderborn",
     "union-berlin",
-    "tsg-1899-hoffenheim",
+    "hoffenheim",
     "borussia-monchengladbach",
   ],
   LIGUE1: [
-    "as-monaco",
-    "lille-osc",
-    "olympique-lyonnais",
-    "paris",
+    "monaco",
+    "lille",
+    "lyon",
+    "paris-fc",
     "paris-saint-germain",
-    "stade-rennais-fc-1901",
-    "stade-brestois-29",
+    "rennes",
+    "brest",
     "lorient",
-    "racing-club-de-lens",
-    "rc-strasbourg-alsace",
-    "angers-sco",
+    "lens",
+    "strasbourg",
+    "angers",
     "le-mans",
     "toulouse",
-    "aj-auxerre",
-    "ogc-nice",
-    "es-troyes-ac",
-    "olympique-de-marseille",
-    "le-havre-ac",
+    "auxerre",
+    "nice",
+    "troyes",
+    "marseille",
+    "le-havre",
   ],
 };
+
+/** UCL 2026-27 리그 페이즈 참가 36팀(slug 순) — 5대 리그 21팀 + 그 밖 15팀 */
+export const UCL_TEAMS: readonly string[] = [
+  "aek-athens",
+  "arsenal",
+  "aston-villa",
+  "atletico-madrid",
+  "barcelona",
+  "bayern-munchen",
+  "bodo-glimt",
+  "borussia-dortmund",
+  "club-brugge",
+  "como",
+  "fenerbahce",
+  "feyenoord",
+  "galatasaray",
+  "inter",
+  "lask",
+  "lens",
+  "lille",
+  "liverpool",
+  "manchester-city",
+  "manchester-united",
+  "napoli",
+  "paris-saint-germain",
+  "porto",
+  "psv",
+  "rb-leipzig",
+  "real-betis",
+  "real-madrid",
+  "roma",
+  "sabah",
+  "shakhtar-donetsk",
+  "slavia-praha",
+  "slovan-bratislava",
+  "sporting-cp",
+  "stuttgart",
+  "viking",
+  "villarreal",
+];
 
 /** 표의 리그 id 목록 */
 export const LEAGUE_IDS: readonly LeagueId[] = [
@@ -162,3 +204,35 @@ export function buildTeamLeagueIndex(
 /** 기본 색인(TEAM_LEAGUES) */
 export const TEAM_LEAGUE_INDEX: ReadonlyMap<string, LeagueId> =
   buildTeamLeagueIndex();
+
+export interface TeamCompetitions {
+  /** 대표 대회 — 리그 팀은 리그, 5대 리그 밖 UCL 팀은 UCL */
+  comp: CompId;
+  /** 함께 뛰는 대회(리그 팀의 UCL) */
+  alsoIn: CompId[];
+}
+
+/** 팀 slug → 대표 대회·함께 뛰는 대회(TeamSchema `comp`·`alsoIn`). 6개 대회 밖 팀이면 null */
+export function teamCompetitions(
+  slug: string,
+  leagueIndex: ReadonlyMap<string, LeagueId> = TEAM_LEAGUE_INDEX,
+  uclTeams: readonly string[] = UCL_TEAMS,
+): TeamCompetitions | null {
+  const league = leagueIndex.get(slug);
+  const inUcl = uclTeams.includes(slug);
+  if (league !== undefined)
+    return { comp: league, alsoIn: inUcl ? ["UCL"] : [] };
+  return inUcl ? { comp: "UCL", alsoIn: [] } : null;
+}
+
+/** 6개 대회 전 팀 slug(리그 순 → UCL 밖 팀, 중복 없음) — 팀 목록(M2-04) */
+export function allTeamSlugs(
+  table: Readonly<Record<LeagueId, readonly string[]>> = TEAM_LEAGUES,
+  uclTeams: readonly string[] = UCL_TEAMS,
+): string[] {
+  const seen = new Set<string>();
+  for (const league of LEAGUE_IDS)
+    for (const slug of table[league]) seen.add(slug);
+  for (const slug of uclTeams) seen.add(slug);
+  return [...seen];
+}
