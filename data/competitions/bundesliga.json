@@ -2,11 +2,11 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-10-30T02:18:39.937Z",
+  "updatedAt": "2026-10-30T22:13:37.223Z",
   "standings": [
     {
       "pos": 1,
-      "prevPos": null,
+      "prevPos": 1,
       "team": "bayern-munchen",
       "played": 7,
       "w": 5,
@@ -26,7 +26,7 @@
     },
     {
       "pos": 2,
-      "prevPos": null,
+      "prevPos": 2,
       "team": "borussia-dortmund",
       "played": 7,
       "w": 5,
@@ -46,7 +46,7 @@
     },
     {
       "pos": 3,
-      "prevPos": null,
+      "prevPos": 3,
       "team": "freiburg",
       "played": 7,
       "w": 4,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": null,
+      "prevPos": 4,
       "team": "leverkusen",
       "played": 7,
       "w": 4,
@@ -86,7 +86,27 @@
     },
     {
       "pos": 5,
-      "prevPos": null,
+      "prevPos": 8,
+      "team": "elversberg",
+      "played": 8,
+      "w": 4,
+      "d": 1,
+      "l": 3,
+      "gf": 16,
+      "ga": 16,
+      "pts": 13,
+      "form": [
+        "D",
+        "L",
+        "W",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
+      "prevPos": 5,
       "team": "rb-leipzig",
       "played": 7,
       "w": 4,
@@ -105,8 +125,8 @@
       "zone": "none"
     },
     {
-      "pos": 6,
-      "prevPos": null,
+      "pos": 7,
+      "prevPos": 6,
       "team": "werder-bremen",
       "played": 7,
       "w": 3,
@@ -125,48 +145,28 @@
       "zone": "none"
     },
     {
-      "pos": 7,
-      "prevPos": null,
-      "team": "mainz",
-      "played": 7,
-      "w": 3,
-      "d": 1,
-      "l": 3,
-      "gf": 16,
-      "ga": 13,
-      "pts": 10,
-      "form": [
-        "L",
-        "W",
-        "L",
-        "W",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 8,
-      "prevPos": null,
-      "team": "elversberg",
-      "played": 7,
+      "prevPos": 7,
+      "team": "mainz",
+      "played": 8,
       "w": 3,
       "d": 1,
-      "l": 3,
-      "gf": 12,
-      "ga": 15,
+      "l": 4,
+      "gf": 17,
+      "ga": 17,
       "pts": 10,
       "form": [
-        "L",
-        "D",
+        "W",
         "L",
         "W",
+        "L",
         "L"
       ],
       "zone": "none"
     },
     {
       "pos": 9,
-      "prevPos": null,
+      "prevPos": 9,
       "team": "augsburg",
       "played": 7,
       "w": 2,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": null,
+      "prevPos": 10,
       "team": "hoffenheim",
       "played": 7,
       "w": 3,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": null,
+      "prevPos": 11,
       "team": "hamburg",
       "played": 7,
       "w": 3,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": null,
+      "prevPos": 12,
       "team": "koln",
       "played": 7,
       "w": 2,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": null,
+      "prevPos": 13,
       "team": "paderborn",
       "played": 7,
       "w": 2,
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": null,
+      "prevPos": 14,
       "team": "eintracht-frankfurt",
       "played": 7,
       "w": 2,
@@ -286,7 +286,7 @@
     },
     {
       "pos": 15,
-      "prevPos": null,
+      "prevPos": 15,
       "team": "stuttgart",
       "played": 7,
       "w": 2,
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": null,
+      "prevPos": 16,
       "team": "schalke",
       "played": 7,
       "w": 1,
@@ -326,7 +326,7 @@
     },
     {
       "pos": 17,
-      "prevPos": null,
+      "prevPos": 17,
       "team": "union-berlin",
       "played": 7,
       "w": 1,
@@ -346,7 +346,7 @@
     },
     {
       "pos": 18,
-      "prevPos": null,
+      "prevPos": 18,
       "team": "borussia-monchengladbach",
       "played": 7,
       "w": 1,
@@ -1192,8 +1192,11 @@
       "kickoff": "2026-10-30T19:30:00Z",
       "home": "elversberg",
       "away": "mainz",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565839",
@@ -3853,7 +3856,7 @@
       "goals": 5,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Luis Díaz",
@@ -3878,6 +3881,14 @@
       "assists": null,
       "penalties": 1,
       "played": 7
+    },
+    {
+      "player": "Maurice Krattenmacher",
+      "team": "elversberg",
+      "goals": 4,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
     },
     {
       "player": "Christopher Nkunku",
@@ -3922,14 +3933,6 @@
     {
       "player": "Joseph Scally",
       "team": "borussia-monchengladbach",
-      "goals": 3,
-      "assists": 1,
-      "penalties": null,
-      "played": 7
-    },
-    {
-      "player": "Maurice Krattenmacher",
-      "team": "elversberg",
       "goals": 3,
       "assists": 1,
       "penalties": null,
@@ -3981,7 +3984,7 @@
       "goals": 3,
       "assists": 3,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Dayot Upamecano",
@@ -4029,15 +4032,23 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Cole Campbell",
+      "team": "elversberg",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
       "played": 7
     },
     {
       "player": "David Mokwa Ntusu",
       "team": "elversberg",
       "goals": 2,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Christian Kofane",
@@ -4120,12 +4131,20 @@
       "played": 7
     },
     {
+      "player": "Felix Keidel",
+      "team": "elversberg",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
       "player": "Sheraldo Becker",
       "team": "mainz",
       "goals": 2,
       "assists": 4,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Fabian Rieder",
@@ -4232,6 +4251,14 @@
       "played": 7
     },
     {
+      "player": "Benedict Hollerbach",
+      "team": "mainz",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
       "player": "Bambase Conte",
       "team": "hoffenheim",
       "goals": 2,
@@ -4286,14 +4313,6 @@
       "assists": 1,
       "penalties": null,
       "played": 7
-    },
-    {
-      "player": "Cole Campbell",
-      "team": "elversberg",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 6
     },
     {
       "player": "Ozan Kabak",
@@ -4384,20 +4403,12 @@
       "played": 7
     },
     {
-      "player": "Felix Keidel",
-      "team": "elversberg",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 7
-    },
-    {
       "player": "Philipp Mwene",
       "team": "mainz",
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Ransford Königsdörffer",
@@ -4405,7 +4416,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Arijon Ibrahimovic",
@@ -4525,7 +4536,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Danny da Costa",
@@ -4533,7 +4544,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Calvin Brackelmann",
@@ -4602,14 +4613,6 @@
     {
       "player": "Moussa Diaby",
       "team": "leverkusen",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 6
-    },
-    {
-      "player": "Benedict Hollerbach",
-      "team": "mainz",
       "goals": 1,
       "assists": null,
       "penalties": null,

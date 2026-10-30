@@ -34,5 +34,148 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1550169",
+    "kickoff": "2026-10-29T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "home",
+    "opponent": "atalanta",
+    "startXI": [
+      {
+        "name": "David de Gea",
+        "number": 43,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Álex Jiménez",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "R. Drăgușin",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Viery",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "João Mário",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "C. Ndour",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "N. Fagioli",
+        "number": 44,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "M. Brescianini",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Franco Mastantuono",
+        "number": 30,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "Mateo Pellegrino",
+        "number": 32,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Njie",
+        "number": 25,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "O. Christensen",
+        "number": 53,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Dodô",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "W. Gnonto",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Beto",
+        "number": 23,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Valde",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Antonio Pirrò",
+        "number": 73,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Pote",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Mazzeo",
+        "number": 72,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Lezzerini",
+        "number": 19,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "C. Inao OulaÃ¯",
+        "number": 42,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Beldenti",
+        "number": 75,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
 }

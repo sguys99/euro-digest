@@ -2,11 +2,11 @@
   "comp": "SERIEA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-10-30T02:18:17.891Z",
+  "updatedAt": "2026-10-30T22:13:05.398Z",
   "standings": [
     {
       "pos": 1,
-      "prevPos": null,
+      "prevPos": 1,
       "team": "inter",
       "played": 9,
       "w": 8,
@@ -26,7 +26,7 @@
     },
     {
       "pos": 2,
-      "prevPos": null,
+      "prevPos": 2,
       "team": "lazio",
       "played": 9,
       "w": 8,
@@ -46,7 +46,7 @@
     },
     {
       "pos": 3,
-      "prevPos": null,
+      "prevPos": 3,
       "team": "roma",
       "played": 9,
       "w": 6,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": null,
+      "prevPos": 4,
       "team": "como",
       "played": 9,
       "w": 6,
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": null,
+      "prevPos": 5,
       "team": "milan",
       "played": 9,
       "w": 5,
@@ -106,7 +106,7 @@
     },
     {
       "pos": 6,
-      "prevPos": null,
+      "prevPos": 6,
       "team": "frosinone",
       "played": 9,
       "w": 5,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": null,
+      "prevPos": 7,
       "team": "napoli",
       "played": 9,
       "w": 4,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": null,
+      "prevPos": 8,
       "team": "juventus",
       "played": 9,
       "w": 4,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": null,
+      "prevPos": 9,
       "team": "torino",
       "played": 9,
       "w": 4,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": null,
+      "prevPos": 10,
       "team": "cagliari",
       "played": 9,
       "w": 4,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": null,
+      "prevPos": 11,
       "team": "bologna",
       "played": 9,
       "w": 3,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": null,
+      "prevPos": 12,
       "team": "atalanta",
       "played": 9,
       "w": 3,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": null,
+      "prevPos": 13,
       "team": "genoa",
       "played": 9,
       "w": 3,
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": null,
+      "prevPos": 14,
       "team": "lecce",
       "played": 9,
       "w": 3,
@@ -286,7 +286,7 @@
     },
     {
       "pos": 15,
-      "prevPos": null,
+      "prevPos": 15,
       "team": "sassuolo",
       "played": 9,
       "w": 2,
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": null,
+      "prevPos": 16,
       "team": "monza",
       "played": 9,
       "w": 2,
@@ -326,7 +326,7 @@
     },
     {
       "pos": 17,
-      "prevPos": null,
+      "prevPos": 17,
       "team": "udinese",
       "played": 9,
       "w": 1,
@@ -346,7 +346,7 @@
     },
     {
       "pos": 18,
-      "prevPos": null,
+      "prevPos": 18,
       "team": "fiorentina",
       "played": 9,
       "w": 1,
@@ -366,7 +366,7 @@
     },
     {
       "pos": 19,
-      "prevPos": null,
+      "prevPos": 19,
       "team": "parma",
       "played": 9,
       "w": 1,
@@ -386,7 +386,7 @@
     },
     {
       "pos": 20,
-      "prevPos": null,
+      "prevPos": 20,
       "team": "venezia",
       "played": 9,
       "w": 1,

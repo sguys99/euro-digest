@@ -29,5 +29,136 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1552793",
+    "kickoff": "2026-10-25T16:15:00.000Z",
+    "comp": "LIGUE1",
+    "side": "home",
+    "opponent": "le-mans",
+    "startXI": [
+      {
+        "name": "P. Nardi",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "C. Makosso",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "A. Tuanzebe",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "C. Akpa",
+        "number": 92,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Sy",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "N. Ahamada",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "K. Danois",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "F. Oppegård",
+        "number": 22,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "R. Faivre",
+        "number": 21,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "D. Namaso",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "C. Archer",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Aristide Zossou",
+        "number": 77,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Diop",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "S. Diomandé",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Dioubate",
+        "number": 34,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Ekwah",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Youssef Khoudda",
+        "number": 47,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Mandengue",
+        "number": 32,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Legros",
+        "number": 35,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Piedfort",
+        "number": 46,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
 }

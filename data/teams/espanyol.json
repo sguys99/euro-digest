@@ -10,9 +10,9 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-4-2",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T14:15:00.000Z"
+    "updated": "2026-10-30T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -24,5 +24,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1570442",
+    "kickoff": "2026-10-30T20:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "villarreal",
+    "startXI": [
+      {
+        "name": "Ángel Fortuño",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "O. El Hilali",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "V. Drkušić",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "L. Cabrera",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Roger Hinojo",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Rafel Bauzà",
+        "number": 26,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Edu Expósito",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Alejandro Santiago Vargas",
+        "number": 36,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Javier Hernandez",
+        "number": 28,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Bryan Zaragoza",
+        "number": 15,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Roberto Fernández",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "T. Dolan",
+        "number": 24,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Marcos Fernández",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Gabriel Moscardo",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Q. Hartman",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. A. Lopez",
+        "number": 32,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Pol Lozano",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Pere Milla",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Unai Núñez",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Javi Puado",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Adama Timera",
+        "number": 27,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Dmitrović",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Jan Peries Duran",
+        "number": 33,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }

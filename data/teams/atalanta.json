@@ -29,5 +29,136 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1550169",
+    "kickoff": "2026-10-29T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "away",
+    "opponent": "fiorentina",
+    "startXI": [
+      {
+        "name": "M. Carnesecchi",
+        "number": 29,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "D. Zappacosta",
+        "number": 77,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "T. Kristensen",
+        "number": 31,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "R. ObriÄ",
+        "number": 40,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "L. Bernasconi",
+        "number": 47,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "G. Gaetano",
+        "number": 70,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Éderson",
+        "number": 13,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "E. Elmas",
+        "number": 99,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "C. De Ketelaere",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "N. Zalewski",
+        "number": 59,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "N. Krstović",
+        "number": 90,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "J. Rowe",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "K. Sulemana",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Sportiello",
+        "number": 57,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Sonzogni",
+        "number": 51,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "G. Scalvini",
+        "number": 42,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Samardžić",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Plaia",
+        "number": 53,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Mario Pasalic",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Idele",
+        "number": 41,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
 }

@@ -1,7 +1,7 @@
 {
   "date": "2026-10-25",
-  "generatedAt": "2026-10-25T12:07:16.439Z",
-  "runId": "collect-prod-20261025T120710Z-294b",
+  "generatedAt": "2026-10-30T22:10:59.661Z",
+  "runId": "collect-prod-20261030T221059Z-6510",
   "cards": [
     {
       "id": "c_5583ab3ea4",
@@ -316,12 +316,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/ck4g14j85y9xo?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-24T13:25:59.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7719637/2026/10/24/man-city-villa-guehi-jackson/",
-          "at": "2026-10-24T13:22:50.000Z",
           "tier": 2
         }
       ],

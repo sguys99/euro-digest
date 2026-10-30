@@ -14,13 +14,18 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-26T19:30:00.000Z"
+    "updated": "2026-10-30T18:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Ferrán Torres",
       "goals": 4,
       "assists": 1
+    },
+    {
+      "name": "Achraf Hakimi",
+      "goals": 3,
+      "assists": 2
     },
     {
       "name": "Marquinhos",
@@ -33,11 +38,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1552800",
-    "kickoff": "2026-10-26T19:30:00.000Z",
+    "match": "af-1552801",
+    "kickoff": "2026-10-30T18:00:00.000Z",
     "comp": "LIGUE1",
-    "side": "home",
-    "opponent": "lyon",
+    "side": "away",
+    "opponent": "le-havre",
     "startXI": [
       {
         "name": "M. Safonov",
@@ -58,58 +63,94 @@
         "grid": "2:3"
       },
       {
-        "name": "W. Pacho",
-        "number": 51,
+        "name": "L. Hernández",
+        "number": 21,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "W. Zaïre-Emery",
-        "number": 33,
+        "name": "L. Digne",
+        "number": 12,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "João Neves",
-        "number": 87,
+        "name": "W. Zaïre-Emery",
+        "number": 33,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "Vitinha",
-        "number": 17,
+        "name": "M. Akliouche",
+        "number": 11,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Fabián Ruiz",
-        "number": 8,
+        "name": "Pedro Fernández",
+        "number": 27,
         "pos": "M",
         "grid": "3:1"
-      },
-      {
-        "name": "M. Akliouche",
-        "number": 11,
-        "pos": "F",
-        "grid": "4:3"
       },
       {
         "name": "Ferran Torres",
         "number": 9,
         "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "Senny Mayulu",
+        "number": 24,
+        "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "D. Doué",
-        "number": 14,
+        "name": "M. Godts",
+        "number": 22,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
+        "name": "L. Chevalier",
+        "number": 30,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Doué",
+        "number": 14,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "João Neves",
+        "number": 87,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "Beraldo",
         "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Vitinha",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Quentin Ndjantou Mbitcha",
+        "number": 47,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "W. Pacho",
+        "number": 51,
         "pos": "D",
         "grid": null
       },
@@ -120,45 +161,9 @@
         "grid": null
       },
       {
-        "name": "L. Chevalier",
-        "number": 30,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "L. Digne",
-        "number": 12,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Pedro Fernández",
-        "number": 27,
+        "name": "Fabián Ruiz",
+        "number": 8,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Godts",
-        "number": 22,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "L. Hernández",
-        "number": 21,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Senny Mayulu",
-        "number": 24,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Quentin Ndjantou Mbitcha",
-        "number": 47,
-        "pos": "F",
         "grid": null
       }
     ]

@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-31",
+  "generatedAt": "2026-10-30T22:12:05.216Z",
+  "runId": "collect-prod-20261030T221059Z-6510",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "엘버스베르크가 마인츠를 4-1로 눌렀다.",
+      "ai": true,
+      "refs": [
+        "m565846"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    },
+    {
+      "text": "파리 생제르맹이 아슈라프 하키미의 해트트릭을 앞세워 르아브르를 5-1로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m559644"
+      ],
+      "comps": [
+        "LIGUE1"
+      ]
+    },
+    {
+      "text": "니스가 렌을 5-2로 제압했다.",
+      "ai": true,
+      "refs": [
+        "m559646"
+      ],
+      "comps": [
+        "LIGUE1"
+      ]
+    },
+    {
+      "text": "에스파뇰이 Leandro Cabrera의 60분 결승골로 비야레알을 1-0으로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m564737"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "릴이 Olivier Giroud의 86분 결승골로 랑스를 1-0으로 이겼다.",
+      "ai": true,
+      "refs": [
+        "m559639"
+      ],
+      "comps": [
+        "LIGUE1"
+      ]
+    }
+  ]
+}

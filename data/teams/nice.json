@@ -12,12 +12,22 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-23T18:45:00.000Z"
+    "updated": "2026-10-30T18:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Sepe Elye Wahi",
-      "goals": 3,
+      "goals": 6,
+      "assists": 2
+    },
+    {
+      "name": "Jonathan Clauss",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Mohammed Amoura",
+      "goals": 2,
       "assists": 1
     }
   ],
@@ -26,11 +36,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1552794",
-    "kickoff": "2026-10-23T18:45:00.000Z",
+    "match": "af-1552806",
+    "kickoff": "2026-10-30T18:00:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "brest",
+    "side": "home",
+    "opponent": "rennes",
     "startXI": [
       {
         "name": "Y. Diouf",
@@ -39,8 +49,8 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Seidu",
-        "number": 36,
+        "name": "Mohamed Abdelmonem",
+        "number": 5,
         "pos": "D",
         "grid": "2:3"
       },
@@ -51,8 +61,8 @@
         "grid": "2:2"
       },
       {
-        "name": "Mohamed Abdelmonem",
-        "number": 5,
+        "name": "X. Mandza Tsiendi",
+        "number": 35,
         "pos": "D",
         "grid": "2:1"
       },
@@ -63,8 +73,8 @@
         "grid": "3:4"
       },
       {
-        "name": "A. Witsel",
-        "number": 28,
+        "name": "D. Coulibaly",
+        "number": 39,
         "pos": "M",
         "grid": "3:3"
       },
@@ -81,8 +91,8 @@
         "grid": "3:1"
       },
       {
-        "name": "G. Hein",
-        "number": 7,
+        "name": "S. Diop",
+        "number": 10,
         "pos": "M",
         "grid": "4:2"
       },
@@ -101,14 +111,26 @@
     ],
     "substitutes": [
       {
-        "name": "D. Coulibaly",
-        "number": 39,
+        "name": "M. Sanson",
+        "number": 8,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "S. Diop",
-        "number": 10,
+        "name": "I. Camara",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Boulhendi",
+        "number": 77,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "G. Hein",
+        "number": 7,
         "pos": "M",
         "grid": null
       },
@@ -125,12 +147,6 @@
         "grid": null
       },
       {
-        "name": "X. Mandza Tsiendi",
-        "number": 35,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "D. Morana",
         "number": 41,
         "pos": "F",
@@ -143,14 +159,8 @@
         "grid": null
       },
       {
-        "name": "T. Boulhendi",
-        "number": 77,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. Sanson",
-        "number": 8,
+        "name": "E. Pereira",
+        "number": 87,
         "pos": "M",
         "grid": null
       }

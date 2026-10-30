@@ -14,12 +14,12 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-25T14:00:00.000Z"
+    "updated": "2026-10-30T20:05:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Olivier Giroud",
-      "goals": 2,
+      "goals": 3,
       "assists": 2
     },
     {
@@ -38,11 +38,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1552797",
-    "kickoff": "2026-10-25T14:00:00.000Z",
+    "match": "af-1552802",
+    "kickoff": "2026-10-30T20:05:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "monaco",
+    "side": "home",
+    "opponent": "lens",
     "startXI": [
       {
         "name": "B. Özer",
@@ -51,14 +51,14 @@
         "grid": "1:1"
       },
       {
-        "name": "N. Ngoy",
-        "number": 3,
+        "name": "M. Goffi",
+        "number": 38,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "T. Nianzou",
-        "number": 23,
+        "name": "N. Ngoy",
+        "number": 3,
         "pos": "D",
         "grid": "2:3"
       },
@@ -113,15 +113,9 @@
     ],
     "substitutes": [
       {
-        "name": "D. Bakwa",
-        "number": 7,
+        "name": "O. Giroud",
+        "number": 9,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "I. Cossier",
-        "number": 26,
-        "pos": "D",
         "grid": null
       },
       {
@@ -131,14 +125,8 @@
         "grid": null
       },
       {
-        "name": "O. Giroud",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Goffi",
-        "number": 38,
+        "name": "I. Cossier",
+        "number": 26,
         "pos": "D",
         "grid": null
       },
@@ -155,14 +143,26 @@
         "grid": null
       },
       {
+        "name": "D. Bakwa",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "O. Sahraoui",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "C. Verdonk",
         "number": 24,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Matah Yondjio",
-        "number": 33,
+        "name": "B. Önal",
+        "number": 19,
         "pos": "F",
         "grid": null
       }

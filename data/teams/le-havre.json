@@ -9,20 +9,24 @@
     "#8CC6EB",
     "#00205B"
   ],
-  "formation": null,
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-30T18:00:00.000Z"
+  },
   "topPlayers": [
     {
       "name": "Josh Maja",
-      "goals": 3,
-      "assists": null
-    },
-    {
-      "name": "Mbwana Samatta",
-      "goals": 2,
+      "goals": 4,
       "assists": null
     },
     {
       "name": "Rayan Fofana",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Mbwana Samatta",
       "goals": 2,
       "assists": null
     }
@@ -30,5 +34,136 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1552801",
+    "kickoff": "2026-10-30T18:00:00.000Z",
+    "comp": "LIGUE1",
+    "side": "home",
+    "opponent": "paris-saint-germain",
+    "startXI": [
+      {
+        "name": "A. Bodart",
+        "number": 16,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "A. Seko",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "J. Mwanga",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "A. Touba",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "D. Ouziad",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "S. Ebonog",
+        "number": 26,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "A. Richardson",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Lamine N'Diaye",
+        "number": 97,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "R. Fofana",
+        "number": 38,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "S. Nakamura",
+        "number": 30,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "J. Maja",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "G. Zohouri",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Ndiaye",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. Gallon",
+        "number": 93,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Hakim Dongopandji",
+        "number": 33,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Koffi Vinette",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "K. Mizuta",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Mosengo",
+        "number": 78,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Samatta",
+        "number": 25,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "V. Sasso",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
 }

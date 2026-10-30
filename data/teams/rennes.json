@@ -10,9 +10,9 @@
     "#000000"
   ],
   "formation": {
-    "shape": "5-3-2",
+    "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-10-25T16:15:00.000Z"
+    "updated": "2026-10-30T18:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -22,12 +22,12 @@
     },
     {
       "name": "Sebastian Szymański",
-      "goals": 3,
+      "goals": 4,
       "assists": 1
     },
     {
       "name": "Boulaye Dia",
-      "goals": 3,
+      "goals": 4,
       "assists": null
     }
   ],
@@ -35,64 +35,64 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "5-3-2",
-    "match": "af-1552798",
-    "kickoff": "2026-10-25T16:15:00.000Z",
+    "formation": "3-5-2",
+    "match": "af-1552806",
+    "kickoff": "2026-10-30T18:00:00.000Z",
     "comp": "LIGUE1",
-    "side": "home",
-    "opponent": "strasbourg",
+    "side": "away",
+    "opponent": "nice",
     "startXI": [
       {
-        "name": "B. Samba",
-        "number": 30,
+        "name": "N. Lemaître",
+        "number": 16,
         "pos": "G",
         "grid": "1:1"
-      },
-      {
-        "name": "P. Frankowski",
-        "number": 95,
-        "pos": "D",
-        "grid": "2:5"
       },
       {
         "name": "A. Ait Boudlal",
         "number": 48,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:3"
       },
       {
         "name": "C. Cresswell",
         "number": 4,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:2"
       },
       {
         "name": "A. Rouault",
         "number": 24,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:1"
       },
       {
-        "name": "M. Nagida",
-        "number": 18,
-        "pos": "D",
-        "grid": "2:1"
+        "name": "P. Frankowski",
+        "number": 95,
+        "pos": "M",
+        "grid": "3:5"
       },
       {
         "name": "S. Szymański",
         "number": 17,
         "pos": "M",
-        "grid": "3:3"
+        "grid": "3:4"
       },
       {
         "name": "V. Rongier",
         "number": 21,
         "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "A. Thomasson",
+        "number": 28,
+        "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "M. Camara",
-        "number": 45,
+        "name": "M. Nagida",
+        "number": 18,
         "pos": "M",
         "grid": "3:1"
       },
@@ -117,14 +117,32 @@
         "grid": null
       },
       {
-        "name": "Q. Merlin",
-        "number": 26,
+        "name": "Gonçalo Oliveira",
+        "number": 5,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Gonçalo Oliveira",
-        "number": 5,
+        "name": "M. Camara",
+        "number": 45,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Cissé",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Eliezer Mayenda",
+        "number": 12,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Q. Merlin",
+        "number": 26,
         "pos": "D",
         "grid": null
       },
@@ -135,32 +153,14 @@
         "grid": null
       },
       {
-        "name": "A. Thomasson",
-        "number": 28,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "L. Blas",
         "number": 10,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "D. Cissé",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "I. Soumaré",
         "number": 90,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Eliezer Mayenda",
-        "number": 12,
         "pos": "F",
         "grid": null
       }

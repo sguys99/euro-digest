@@ -31,5 +31,136 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557445",
+    "kickoff": "2026-10-25T14:00:00.000Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "bournemouth",
+    "startXI": [
+      {
+        "name": "Senne Lammens",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Leny Yoro",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Harry Maguire",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Ayden Heaven",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Diogo Dalot",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Andrey Santos",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Carlos Baleba",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Amad Diallo",
+        "number": 16,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Youri Tielemans",
+        "number": 18,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Mason Mount",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Bryan Mbeumo",
+        "number": 19,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Matheus Cunha",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Lisandro Martínez",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Joshua Zirkzee",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Shea Lacey",
+        "number": 31,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Karl Darlow",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Matthijs de Ligt",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Noussair Mazraoui",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Bruno Fernandes",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Tyler Fletcher",
+        "number": 39,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
 }

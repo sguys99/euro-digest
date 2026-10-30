@@ -29,5 +29,136 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "3-5-2",
+    "match": "af-1552793",
+    "kickoff": "2026-10-25T16:15:00.000Z",
+    "comp": "LIGUE1",
+    "side": "away",
+    "opponent": "auxerre",
+    "startXI": [
+      {
+        "name": "N. Kocik",
+        "number": 98,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "D. Sidibé",
+        "number": 19,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "S. Yohou",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Raúl Torrente",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Buadés",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "A. Rabillard",
+        "number": 9,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "L. Bretelle",
+        "number": 29,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "A. Lauray",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "L. Calodat",
+        "number": 22,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "L. Mafouta",
+        "number": 14,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "H. Diallo",
+        "number": 13,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "R. Bamba",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Boissé",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "B. Brahimi",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "D. Guèye",
+        "number": 25,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "W. Harhouz",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Hatfout",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Traoré",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Vercruysse",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Lenny Videira",
+        "number": 36,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
 }

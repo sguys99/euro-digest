@@ -14,7 +14,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-24T18:45:00.000Z"
+    "updated": "2026-10-30T20:05:00.000Z"
   },
   "topPlayers": [
     {
@@ -38,11 +38,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1552795",
-    "kickoff": "2026-10-24T18:45:00.000Z",
+    "match": "af-1552802",
+    "kickoff": "2026-10-30T20:05:00.000Z",
     "comp": "LIGUE1",
-    "side": "home",
-    "opponent": "paris-fc",
+    "side": "away",
+    "opponent": "lille",
     "startXI": [
       {
         "name": "R. Risser",
@@ -75,14 +75,14 @@
         "grid": "3:4"
       },
       {
-        "name": "M. Cuisance",
-        "number": 27,
+        "name": "A. Haidara",
+        "number": 21,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "A. Haidara",
-        "number": 21,
+        "name": "M. Cuisance",
+        "number": 27,
         "pos": "M",
         "grid": "3:2"
       },
@@ -105,49 +105,13 @@
         "grid": "4:1"
       },
       {
-        "name": "F. Ivanović",
-        "number": 29,
+        "name": "T. Hazard",
+        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
-      {
-        "name": "T. Hazard",
-        "number": 9,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Gorgelin",
-        "number": 16,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. Soares",
-        "number": 38,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Y. Titraoui",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "N. Äelik",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Kadile",
-        "number": 28,
-        "pos": "F",
-        "grid": null
-      },
       {
         "name": "K. Antonio",
         "number": 32,
@@ -161,9 +125,45 @@
         "grid": null
       },
       {
+        "name": "M. Gorgelin",
+        "number": 16,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "J. Gradit",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "F. Ivanović",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Kadile",
+        "number": 28,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Soares",
+        "number": 38,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "M. Skóraś",
         "number": 22,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Y. Titraoui",
+        "number": 8,
+        "pos": "M",
         "grid": null
       }
     ]
