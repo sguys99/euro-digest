@@ -260,3 +260,107 @@ describe("CompetitionPage — 데이터 없음·다른 대회", () => {
     );
   });
 });
+
+describe("CompetitionPage — UCL 단계 자동 전환 (M2-12, FR-43)", () => {
+  const knockoutFixture = JSON.parse(
+    readFileSync(
+      path.resolve("fixtures/competitions/ucl-knockout.json"),
+      "utf8",
+    ),
+  ) as { now: string; file: unknown };
+  const knockout = CompetitionFileSchema.parse(knockoutFixture.file);
+
+  it("녹아웃 단계 — '대진' 탭이 맨 앞·선택, 리그 페이즈 순위표는 두 번째 탭으로 남는다", async () => {
+    vi.setSystemTime(new Date(knockoutFixture.now));
+    loadCompetitionData.mockImplementation((comp) =>
+      comp === "UCL" ? knockout : null,
+    );
+    const { container } = await renderPage("ucl");
+    const tabs = within(
+      screen.getByRole("tablist", { name: "UEFA 챔피언스리그 보기" }),
+    ).getAllByRole("tab");
+    expect(
+      tabs.map((t) => [t.textContent, t.getAttribute("aria-selected")]),
+    ).toEqual([
+      ["대진", "true"],
+      ["순위표", "false"],
+      ["일정·결과", "false"],
+      ["득점 순위", "false"],
+      ["뉴스", "false"],
+    ]);
+    expect(
+      container.querySelector("[data-slot=competition-page]"),
+    ).toHaveAttribute("data-phase", "knockout");
+    // 단계 = 최신부터(16강 → PO), 대진 = 합산 줄 + 차전 줄
+    const stages = container.querySelectorAll<HTMLElement>("[data-stage]");
+    expect([...stages].map((s) => s.dataset.stage)).toEqual([
+      "ko-r16",
+      "ko-playoff",
+    ]);
+    const ties = stages[0]!.querySelectorAll<HTMLElement>("[data-tie]");
+    expect(ties).toHaveLength(8);
+    const first = ties[0]!;
+    expect(first.querySelector("[data-aggregate] [data-t]")?.textContent).toBe(
+      "합산",
+    );
+    expect(
+      [...first.querySelectorAll(".match-row:not([data-aggregate])")].length,
+    ).toBe(2);
+    // 진출은 글자로(색만으로 뜻을 전하지 않는다)
+    expect(first.querySelector("[data-tie-note]")?.textContent).toMatch(
+      /진출$/,
+    );
+    // 배지는 장식 — 팀 이름이 옆 글자
+    expect(first.querySelector("[data-aggregate] .kit")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+  });
+
+  it("리그 페이즈(지금 실데이터와 같은 상태) — 대진 탭 없음, 순위표가 기본", async () => {
+    const league = CompetitionFileSchema.parse({
+      ...knockout,
+      matches: knockout.matches
+        .filter((m) => !m.round.startsWith("ko-"))
+        .map((m) => ({ ...m, score: null, status: "scheduled" })),
+    });
+    vi.setSystemTime(new Date("2027-01-20T00:00:00Z"));
+    loadCompetitionData.mockImplementation((comp) =>
+      comp === "UCL" ? league : null,
+    );
+    const { container } = await renderPage("ucl");
+    const tabs = within(
+      screen.getByRole("tablist", { name: "UEFA 챔피언스리그 보기" }),
+    ).getAllByRole("tab");
+    expect(tabs.map((t) => t.textContent)).toEqual([
+      "순위표",
+      "일정·결과",
+      "득점 순위",
+      "뉴스",
+    ]);
+    expect(container.querySelector("[data-slot=knockout]")).toBeNull();
+    expect(
+      container.querySelector("[data-slot=competition-page]"),
+    ).toHaveAttribute("data-phase", "league");
+  });
+
+  it("리그 페이즈 종료 · 대진 발표 전 — 순위표 기본 + 머리 부제", async () => {
+    const between = CompetitionFileSchema.parse({
+      ...knockout,
+      matches: knockout.matches.filter((m) => !m.round.startsWith("ko-")),
+    });
+    vi.setSystemTime(new Date("2027-01-29T00:00:00Z"));
+    loadCompetitionData.mockImplementation((comp) =>
+      comp === "UCL" ? between : null,
+    );
+    await renderPage("ucl");
+    expect(
+      screen.getByText(/리그 페이즈 종료 · 녹아웃 대진 발표 전/),
+    ).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByRole("tablist", { name: "UEFA 챔피언스리그 보기" }),
+      ).getAllByRole("tab")[0],
+    ).toHaveTextContent("순위표");
+  });
+});

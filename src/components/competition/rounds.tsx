@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { TeamBadge } from "@/components/team/team-badge";
 import { TeamLink, TeamName } from "@/components/team/team-link";
@@ -19,8 +21,17 @@ import { Score } from "./marks";
  * - 팀 칸(이름 + 배지)은 팀 화면 링크(M2-13 — `TeamLink`, 팀 페이지가 있는 팀만, 누름 영역 위아래 44px). 배지는 `aria-hidden`(옆 한글 팀명이 이름).
  */
 
-/** 경기 줄 — 모양은 globals.css §10 `match-row`(시즌 380경기가 반복돼 짧은 유틸리티로 묶었다 — 자식 칸은 data-t·h·s·a·x) */
-function MatchRow({ view, full }: { view: MatchView; full: boolean }) {
+/** 경기 줄 — 모양은 globals.css §10 `match-row`(시즌 380경기가 반복돼 짧은 유틸리티로 묶었다 — 자식 칸은 data-t·h·s·a·x). 녹아웃 대진 차전 줄도 쓴다(M2-12) */
+export function MatchRow({
+  view,
+  full,
+  lead,
+}: {
+  view: MatchView;
+  full: boolean;
+  /** 킥오프 칸 대신 둘 내용(녹아웃 차전 줄 "1차전" + 날짜 — M2-12). 없으면 킥오프 시각·"임시" */
+  lead?: ReactNode;
+}) {
   const { match, state } = view;
   const badge = full ? "s" : "xs";
   return (
@@ -28,7 +39,9 @@ function MatchRow({ view, full }: { view: MatchView; full: boolean }) {
       data-state={state}
       className={full ? "match-row match-row-full" : "match-row"}
     >
-      {view.time === null ? (
+      {lead !== undefined ? (
+        lead
+      ) : view.time === null ? (
         <span data-t="tbc">
           임시<span className="sr-only"> 일정 — 킥오프 시각 미정</span>
         </span>

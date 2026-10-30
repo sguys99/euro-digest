@@ -1,0 +1,1483 @@
+{
+ "_note": "합성 데이터(M2-12 녹아웃 견본·테스트용) — 순위표·리그 페이즈 8라운드 대진·득점 순위는 2026-10-30 실제 UCL 파일에서 가져왔고, 경기 스코어와 녹아웃 대진·결과는 모두 지어낸 값이다. 실제 결과가 아니다.",
+ "now": "2027-03-17T12:00:00Z",
+ "file": {
+  "comp": "UCL",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2027-03-17T02:00:00Z",
+  "standings": [
+   {
+    "pos": 1,
+    "prevPos": null,
+    "team": "paris-saint-germain",
+    "played": 3,
+    "w": 3,
+    "d": 0,
+    "l": 0,
+    "gf": 14,
+    "ga": 5,
+    "pts": 9,
+    "form": [
+     "W",
+     "W",
+     "W"
+    ],
+    "zone": "knockout"
+   },
+   {
+    "pos": 2,
+    "prevPos": null,
+    "team": "aston-villa",
+    "played": 3,
+    "w": 3,
+    "d": 0,
+    "l": 0,
+    "gf": 12,
+    "ga": 3,
+    "pts": 9,
+    "form": [
+     "W",
+     "W",
+     "W"
+    ],
+    "zone": "knockout"
+   },
+   {
+    "pos": 3,
+    "prevPos": null,
+    "team": "liverpool",
+    "played": 3,
+    "w": 3,
+    "d": 0,
+    "l": 0,
+    "gf": 12,
+    "ga": 7,
+    "pts": 9,
+    "form": [
+     "W",
+     "W",
+     "W"
+    ],
+    "zone": "knockout"
+   },
+   {
+    "pos": 4,
+    "prevPos": null,
+    "team": "real-madrid",
+    "played": 3,
+    "w": 3,
+    "d": 0,
+    "l": 0,
+    "gf": 10,
+    "ga": 5,
+    "pts": 9,
+    "form": [
+     "W",
+     "W",
+     "W"
+    ],
+    "zone": "knockout"
+   },
+   {
+    "pos": 5,
+    "prevPos": null,
+    "team": "real-betis",
+    "played": 3,
+    "w": 3,
+    "d": 0,
+    "l": 0,
+    "gf": 7,
+    "ga": 4,
+    "pts": 9,
+    "form": [
+     "W",
+     "W",
+     "W"
+    ],
+    "zone": "knockout"
+   },
+   {
+    "pos": 6,
+    "prevPos": null,
+    "team": "stuttgart",
+    "played": 3,
+    "w": 2,
+    "d": 1,
+    "l": 0,
+    "gf": 7,
+    "ga": 2,
+    "pts": 7,
+    "form": [
+     "W",
+     "W",
+     "D"
+    ],
+    "zone": "knockout"
+   },
+   {
+    "pos": 7,
+    "prevPos": null,
+    "team": "arsenal",
+    "played": 3,
+    "w": 2,
+    "d": 1,
+    "l": 0,
+    "gf": 6,
+    "ga": 2,
+    "pts": 7,
+    "form": [
+     "W",
+     "W",
+     "D"
+    ],
+    "zone": "knockout"
+   },
+   {
+    "pos": 8,
+    "prevPos": null,
+    "team": "barcelona",
+    "played": 3,
+    "w": 2,
+    "d": 0,
+    "l": 1,
+    "gf": 11,
+    "ga": 6,
+    "pts": 6,
+    "form": [
+     "W",
+     "W",
+     "L"
+    ],
+    "zone": "knockout"
+   },
+   {
+    "pos": 9,
+    "prevPos": null,
+    "team": "como",
+    "played": 3,
+    "w": 2,
+    "d": 0,
+    "l": 1,
+    "gf": 10,
+    "ga": 5,
+    "pts": 6,
+    "form": [
+     "W",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 10,
+    "prevPos": null,
+    "team": "manchester-city",
+    "played": 3,
+    "w": 2,
+    "d": 0,
+    "l": 1,
+    "gf": 9,
+    "ga": 5,
+    "pts": 6,
+    "form": [
+     "W",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 11,
+    "prevPos": null,
+    "team": "club-brugge",
+    "played": 3,
+    "w": 2,
+    "d": 0,
+    "l": 1,
+    "gf": 9,
+    "ga": 6,
+    "pts": 6,
+    "form": [
+     "L",
+     "W",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 12,
+    "prevPos": null,
+    "team": "sporting-cp",
+    "played": 3,
+    "w": 2,
+    "d": 0,
+    "l": 1,
+    "gf": 7,
+    "ga": 4,
+    "pts": 6,
+    "form": [
+     "W",
+     "W",
+     "L"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 13,
+    "prevPos": null,
+    "team": "borussia-dortmund",
+    "played": 3,
+    "w": 2,
+    "d": 0,
+    "l": 1,
+    "gf": 5,
+    "ga": 4,
+    "pts": 6,
+    "form": [
+     "W",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 14,
+    "prevPos": null,
+    "team": "bayern-munchen",
+    "played": 3,
+    "w": 1,
+    "d": 2,
+    "l": 0,
+    "gf": 10,
+    "ga": 5,
+    "pts": 5,
+    "form": [
+     "W",
+     "D",
+     "D"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 15,
+    "prevPos": null,
+    "team": "roma",
+    "played": 3,
+    "w": 1,
+    "d": 1,
+    "l": 1,
+    "gf": 8,
+    "ga": 5,
+    "pts": 4,
+    "form": [
+     "D",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 16,
+    "prevPos": null,
+    "team": "atletico-madrid",
+    "played": 3,
+    "w": 1,
+    "d": 1,
+    "l": 1,
+    "gf": 4,
+    "ga": 3,
+    "pts": 4,
+    "form": [
+     "L",
+     "W",
+     "D"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 17,
+    "prevPos": null,
+    "team": "shakhtar-donetsk",
+    "played": 3,
+    "w": 1,
+    "d": 1,
+    "l": 1,
+    "gf": 4,
+    "ga": 3,
+    "pts": 4,
+    "form": [
+     "D",
+     "W",
+     "L"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 18,
+    "prevPos": null,
+    "team": "psv",
+    "played": 3,
+    "w": 1,
+    "d": 1,
+    "l": 1,
+    "gf": 2,
+    "ga": 2,
+    "pts": 4,
+    "form": [
+     "D",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 19,
+    "prevPos": null,
+    "team": "villarreal",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 8,
+    "ga": 8,
+    "pts": 3,
+    "form": [
+     "L",
+     "W",
+     "L"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 20,
+    "prevPos": null,
+    "team": "inter",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 5,
+    "ga": 6,
+    "pts": 3,
+    "form": [
+     "L",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 20,
+    "prevPos": null,
+    "team": "manchester-united",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 5,
+    "ga": 6,
+    "pts": 3,
+    "form": [
+     "W",
+     "L",
+     "L"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 22,
+    "prevPos": null,
+    "team": "napoli",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 5,
+    "ga": 7,
+    "pts": 3,
+    "form": [
+     "L",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 23,
+    "prevPos": null,
+    "team": "galatasaray",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 6,
+    "ga": 9,
+    "pts": 3,
+    "form": [
+     "L",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 24,
+    "prevPos": null,
+    "team": "lask",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 6,
+    "ga": 9,
+    "pts": 3,
+    "form": [
+     "L",
+     "L",
+     "W"
+    ],
+    "zone": "playoff"
+   },
+   {
+    "pos": 25,
+    "prevPos": null,
+    "team": "sabah",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 3,
+    "ga": 6,
+    "pts": 3,
+    "form": [
+     "L",
+     "W",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 26,
+    "prevPos": null,
+    "team": "feyenoord",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 4,
+    "ga": 8,
+    "pts": 3,
+    "form": [
+     "L",
+     "W",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 27,
+    "prevPos": null,
+    "team": "lens",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 3,
+    "ga": 7,
+    "pts": 3,
+    "form": [
+     "W",
+     "L",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 28,
+    "prevPos": null,
+    "team": "bodo-glimt",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 4,
+    "ga": 9,
+    "pts": 3,
+    "form": [
+     "L",
+     "W",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 29,
+    "prevPos": null,
+    "team": "aek-athens",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 3,
+    "ga": 8,
+    "pts": 3,
+    "form": [
+     "W",
+     "L",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 29,
+    "prevPos": null,
+    "team": "rb-leipzig",
+    "played": 3,
+    "w": 1,
+    "d": 0,
+    "l": 2,
+    "gf": 3,
+    "ga": 8,
+    "pts": 3,
+    "form": [
+     "L",
+     "W",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 31,
+    "prevPos": null,
+    "team": "fenerbahce",
+    "played": 3,
+    "w": 0,
+    "d": 2,
+    "l": 1,
+    "gf": 3,
+    "ga": 9,
+    "pts": 2,
+    "form": [
+     "D",
+     "L",
+     "D"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 32,
+    "prevPos": null,
+    "team": "slavia-praha",
+    "played": 3,
+    "w": 0,
+    "d": 1,
+    "l": 2,
+    "gf": 4,
+    "ga": 7,
+    "pts": 1,
+    "form": [
+     "L",
+     "L",
+     "D"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 33,
+    "prevPos": null,
+    "team": "viking",
+    "played": 3,
+    "w": 0,
+    "d": 1,
+    "l": 2,
+    "gf": 5,
+    "ga": 9,
+    "pts": 1,
+    "form": [
+     "L",
+     "D",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 34,
+    "prevPos": null,
+    "team": "porto",
+    "played": 3,
+    "w": 0,
+    "d": 0,
+    "l": 3,
+    "gf": 2,
+    "ga": 6,
+    "pts": 0,
+    "form": [
+     "L",
+     "L",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 35,
+    "prevPos": null,
+    "team": "lille",
+    "played": 3,
+    "w": 0,
+    "d": 0,
+    "l": 3,
+    "gf": 4,
+    "ga": 10,
+    "pts": 0,
+    "form": [
+     "L",
+     "L",
+     "L"
+    ],
+    "zone": "none"
+   },
+   {
+    "pos": 36,
+    "prevPos": null,
+    "team": "slovan-bratislava",
+    "played": 3,
+    "w": 0,
+    "d": 0,
+    "l": 3,
+    "gf": 1,
+    "ga": 13,
+    "pts": 0,
+    "form": [
+     "L",
+     "L",
+     "L"
+    ],
+    "zone": "none"
+   }
+  ],
+  "matches": [
+   {
+    "id": "syn-1000",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "shakhtar-donetsk",
+    "away": "real-madrid",
+    "score": {
+     "h": 0,
+     "a": 2
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1001",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "manchester-city",
+    "away": "sporting-cp",
+    "score": {
+     "h": 1,
+     "a": 3
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1002",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "slovan-bratislava",
+    "away": "inter",
+    "score": {
+     "h": 2,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1003",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "barcelona",
+    "away": "como",
+    "score": {
+     "h": 3,
+     "a": 3
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1004",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "atletico-madrid",
+    "away": "fenerbahce",
+    "score": {
+     "h": 0,
+     "a": 3
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1005",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "paris-saint-germain",
+    "away": "galatasaray",
+    "score": {
+     "h": 2,
+     "a": 3
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1006",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "liverpool",
+    "away": "lens",
+    "score": {
+     "h": 3,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1007",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "arsenal",
+    "away": "sabah",
+    "score": {
+     "h": 0,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1008",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "bayern-munchen",
+    "away": "real-betis",
+    "score": {
+     "h": 0,
+     "a": 3
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1009",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "club-brugge",
+    "away": "bodo-glimt",
+    "score": {
+     "h": 1,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1010",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "borussia-dortmund",
+    "away": "aek-athens",
+    "score": {
+     "h": 1,
+     "a": 3
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1011",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "slavia-praha",
+    "away": "aston-villa",
+    "score": {
+     "h": 1,
+     "a": 3
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1012",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "roma",
+    "away": "lille",
+    "score": {
+     "h": 2,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1013",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "lask",
+    "away": "porto",
+    "score": {
+     "h": 3,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1014",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "villarreal",
+    "away": "manchester-united",
+    "score": {
+     "h": 0,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1015",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "psv",
+    "away": "stuttgart",
+    "score": {
+     "h": 1,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1016",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "feyenoord",
+    "away": "rb-leipzig",
+    "score": {
+     "h": 1,
+     "a": 2
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-1017",
+    "comp": "UCL",
+    "round": "8",
+    "kickoff": "2027-01-27T20:00:00Z",
+    "home": "napoli",
+    "away": "viking",
+    "score": {
+     "h": 2,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2000",
+    "comp": "UCL",
+    "round": "ko-playoff-1",
+    "kickoff": "2027-02-16T17:45:00Z",
+    "home": "lask",
+    "away": "como",
+    "score": {
+     "h": 1,
+     "a": 2
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2001",
+    "comp": "UCL",
+    "round": "ko-playoff-2",
+    "kickoff": "2027-02-23T20:00:00Z",
+    "home": "como",
+    "away": "lask",
+    "score": {
+     "h": 3,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2002",
+    "comp": "UCL",
+    "round": "ko-playoff-1",
+    "kickoff": "2027-02-16T20:00:00Z",
+    "home": "galatasaray",
+    "away": "manchester-city",
+    "score": {
+     "h": 0,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2003",
+    "comp": "UCL",
+    "round": "ko-playoff-2",
+    "kickoff": "2027-02-23T20:00:00Z",
+    "home": "manchester-city",
+    "away": "galatasaray",
+    "score": {
+     "h": 2,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2004",
+    "comp": "UCL",
+    "round": "ko-playoff-1",
+    "kickoff": "2027-02-16T20:00:00Z",
+    "home": "napoli",
+    "away": "club-brugge",
+    "score": {
+     "h": 2,
+     "a": 2
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2005",
+    "comp": "UCL",
+    "round": "ko-playoff-2",
+    "kickoff": "2027-02-23T20:00:00Z",
+    "home": "club-brugge",
+    "away": "napoli",
+    "score": {
+     "h": 1,
+     "a": 1,
+     "aet": true,
+     "pens": {
+      "h": 5,
+      "a": 4
+     }
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2006",
+    "comp": "UCL",
+    "round": "ko-playoff-1",
+    "kickoff": "2027-02-16T20:00:00Z",
+    "home": "manchester-united",
+    "away": "sporting-cp",
+    "score": {
+     "h": 1,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2007",
+    "comp": "UCL",
+    "round": "ko-playoff-2",
+    "kickoff": "2027-02-23T20:00:00Z",
+    "home": "sporting-cp",
+    "away": "manchester-united",
+    "score": {
+     "h": 2,
+     "a": 0,
+     "aet": true
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2008",
+    "comp": "UCL",
+    "round": "ko-playoff-1",
+    "kickoff": "2027-02-17T17:45:00Z",
+    "home": "inter",
+    "away": "borussia-dortmund",
+    "score": {
+     "h": 0,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2009",
+    "comp": "UCL",
+    "round": "ko-playoff-2",
+    "kickoff": "2027-02-24T20:00:00Z",
+    "home": "borussia-dortmund",
+    "away": "inter",
+    "score": {
+     "h": 1,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2010",
+    "comp": "UCL",
+    "round": "ko-playoff-1",
+    "kickoff": "2027-02-17T20:00:00Z",
+    "home": "villarreal",
+    "away": "bayern-munchen",
+    "score": {
+     "h": 3,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2011",
+    "comp": "UCL",
+    "round": "ko-playoff-2",
+    "kickoff": "2027-02-24T20:00:00Z",
+    "home": "bayern-munchen",
+    "away": "villarreal",
+    "score": {
+     "h": 0,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2012",
+    "comp": "UCL",
+    "round": "ko-playoff-1",
+    "kickoff": "2027-02-17T20:00:00Z",
+    "home": "psv",
+    "away": "roma",
+    "score": {
+     "h": 1,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2013",
+    "comp": "UCL",
+    "round": "ko-playoff-2",
+    "kickoff": "2027-02-24T20:00:00Z",
+    "home": "roma",
+    "away": "psv",
+    "score": {
+     "h": 2,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2014",
+    "comp": "UCL",
+    "round": "ko-playoff-1",
+    "kickoff": "2027-02-17T20:00:00Z",
+    "home": "shakhtar-donetsk",
+    "away": "atletico-madrid",
+    "score": {
+     "h": 0,
+     "a": 2
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2015",
+    "comp": "UCL",
+    "round": "ko-playoff-2",
+    "kickoff": "2027-02-24T20:00:00Z",
+    "home": "atletico-madrid",
+    "away": "shakhtar-donetsk",
+    "score": {
+     "h": 1,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2016",
+    "comp": "UCL",
+    "round": "ko-r16-1",
+    "kickoff": "2027-03-09T20:00:00Z",
+    "home": "atletico-madrid",
+    "away": "paris-saint-germain",
+    "score": {
+     "h": 1,
+     "a": 2
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2017",
+    "comp": "UCL",
+    "round": "ko-r16-2",
+    "kickoff": "2027-03-16T20:00:00Z",
+    "home": "paris-saint-germain",
+    "away": "atletico-madrid",
+    "score": {
+     "h": 2,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2018",
+    "comp": "UCL",
+    "round": "ko-r16-1",
+    "kickoff": "2027-03-09T20:00:00Z",
+    "home": "roma",
+    "away": "aston-villa",
+    "score": {
+     "h": 2,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2019",
+    "comp": "UCL",
+    "round": "ko-r16-2",
+    "kickoff": "2027-03-16T20:00:00Z",
+    "home": "aston-villa",
+    "away": "roma",
+    "score": {
+     "h": 3,
+     "a": 1,
+     "aet": true
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2020",
+    "comp": "UCL",
+    "round": "ko-r16-1",
+    "kickoff": "2027-03-09T20:00:00Z",
+    "home": "villarreal",
+    "away": "liverpool",
+    "score": {
+     "h": 0,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2021",
+    "comp": "UCL",
+    "round": "ko-r16-2",
+    "kickoff": "2027-03-16T20:00:00Z",
+    "home": "liverpool",
+    "away": "villarreal",
+    "score": {
+     "h": 1,
+     "a": 1,
+     "aet": true,
+     "pens": {
+      "h": 3,
+      "a": 4
+     }
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2022",
+    "comp": "UCL",
+    "round": "ko-r16-1",
+    "kickoff": "2027-03-09T20:00:00Z",
+    "home": "borussia-dortmund",
+    "away": "real-madrid",
+    "score": {
+     "h": 1,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2023",
+    "comp": "UCL",
+    "round": "ko-r16-2",
+    "kickoff": "2027-03-16T20:00:00Z",
+    "home": "real-madrid",
+    "away": "borussia-dortmund",
+    "score": null,
+    "status": "scheduled"
+   },
+   {
+    "id": "syn-2024",
+    "comp": "UCL",
+    "round": "ko-r16-1",
+    "kickoff": "2027-03-10T20:00:00Z",
+    "home": "sporting-cp",
+    "away": "real-betis",
+    "score": {
+     "h": 0,
+     "a": 3
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2025",
+    "comp": "UCL",
+    "round": "ko-r16-2",
+    "kickoff": "2027-03-17T20:00:00Z",
+    "home": "real-betis",
+    "away": "sporting-cp",
+    "score": null,
+    "status": "scheduled"
+   },
+   {
+    "id": "syn-2026",
+    "comp": "UCL",
+    "round": "ko-r16-1",
+    "kickoff": "2027-03-10T20:00:00Z",
+    "home": "club-brugge",
+    "away": "stuttgart",
+    "score": {
+     "h": 2,
+     "a": 2
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2027",
+    "comp": "UCL",
+    "round": "ko-r16-2",
+    "kickoff": "2027-03-17T20:00:00Z",
+    "home": "stuttgart",
+    "away": "club-brugge",
+    "score": null,
+    "status": "scheduled"
+   },
+   {
+    "id": "syn-2028",
+    "comp": "UCL",
+    "round": "ko-r16-1",
+    "kickoff": "2027-03-10T20:00:00Z",
+    "home": "manchester-city",
+    "away": "arsenal",
+    "score": {
+     "h": 1,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2029",
+    "comp": "UCL",
+    "round": "ko-r16-2",
+    "kickoff": "2027-03-17T20:00:00Z",
+    "home": "arsenal",
+    "away": "manchester-city",
+    "score": null,
+    "status": "postponed"
+   },
+   {
+    "id": "syn-2030",
+    "comp": "UCL",
+    "round": "ko-r16-1",
+    "kickoff": "2027-03-10T20:00:00Z",
+    "home": "como",
+    "away": "barcelona",
+    "score": {
+     "h": 0,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-2031",
+    "comp": "UCL",
+    "round": "ko-r16-2",
+    "kickoff": "2027-03-17T20:00:00Z",
+    "home": "barcelona",
+    "away": "como",
+    "score": null,
+    "status": "scheduled"
+   }
+  ],
+  "scorers": [
+   {
+    "player": "Nicolo Tresoldi",
+    "team": "club-brugge",
+    "goals": 4,
+    "assists": null,
+    "penalties": 2,
+    "played": 3
+   },
+   {
+    "player": "Erling Haaland",
+    "team": "manchester-city",
+    "goals": 4,
+    "assists": null,
+    "penalties": null,
+    "played": 3
+   },
+   {
+    "player": "Sehrou Guirassy",
+    "team": "borussia-dortmund",
+    "goals": 4,
+    "assists": null,
+    "penalties": 1,
+    "played": 3
+   },
+   {
+    "player": "Ermedin Demirovic",
+    "team": "stuttgart",
+    "goals": 4,
+    "assists": null,
+    "penalties": null,
+    "played": 3
+   },
+   {
+    "player": "Luis Suárez",
+    "team": "sporting-cp",
+    "goals": 4,
+    "assists": null,
+    "penalties": 2,
+    "played": 3
+   },
+   {
+    "player": "Harry Kane",
+    "team": "bayern-munchen",
+    "goals": 4,
+    "assists": 2,
+    "penalties": 2,
+    "played": 3
+   },
+   {
+    "player": "Nicolas Jackson",
+    "team": "aston-villa",
+    "goals": 3,
+    "assists": null,
+    "penalties": null,
+    "played": 3
+   },
+   {
+    "player": "Kylian Mbappé",
+    "team": "real-madrid",
+    "goals": 3,
+    "assists": 1,
+    "penalties": null,
+    "played": 3
+   },
+   {
+    "player": "Alexis Mac Allister",
+    "team": "liverpool",
+    "goals": 3,
+    "assists": null,
+    "penalties": null,
+    "played": 3
+   },
+   {
+    "player": "Ousmane Dembélé",
+    "team": "paris-saint-germain",
+    "goals": 3,
+    "assists": 3,
+    "penalties": null,
+    "played": 3
+   },
+   {
+    "player": "Ferrán Torres",
+    "team": "paris-saint-germain",
+    "goals": 3,
+    "assists": null,
+    "penalties": null,
+    "played": 3
+   },
+   {
+    "player": "Anastasios Douvikas",
+    "team": "como",
+    "goals": 3,
+    "assists": null,
+    "penalties": null,
+    "played": 3
+   }
+  ]
+ },
+ "final": {
+  "now": "2027-05-30T03:00:00Z",
+  "matches": [
+   {
+    "id": "syn-3000",
+    "comp": "UCL",
+    "round": "ko-sf-1",
+    "kickoff": "2027-04-27T19:00:00Z",
+    "home": "real-madrid",
+    "away": "paris-saint-germain",
+    "score": {
+     "h": 1,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-3001",
+    "comp": "UCL",
+    "round": "ko-sf-2",
+    "kickoff": "2027-05-04T19:00:00Z",
+    "home": "paris-saint-germain",
+    "away": "real-madrid",
+    "score": {
+     "h": 2,
+     "a": 0
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-3002",
+    "comp": "UCL",
+    "round": "ko-sf-1",
+    "kickoff": "2027-04-28T19:00:00Z",
+    "home": "arsenal",
+    "away": "liverpool",
+    "score": {
+     "h": 0,
+     "a": 1
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-3003",
+    "comp": "UCL",
+    "round": "ko-sf-2",
+    "kickoff": "2027-05-05T19:00:00Z",
+    "home": "liverpool",
+    "away": "arsenal",
+    "score": {
+     "h": 1,
+     "a": 3,
+     "aet": true
+    },
+    "status": "finished"
+   },
+   {
+    "id": "syn-3004",
+    "comp": "UCL",
+    "round": "ko-final",
+    "kickoff": "2027-05-29T19:00:00Z",
+    "home": "paris-saint-germain",
+    "away": "arsenal",
+    "score": {
+     "h": 1,
+     "a": 1,
+     "aet": true,
+     "pens": {
+      "h": 4,
+      "a": 3
+     }
+    },
+    "status": "finished"
+   }
+  ]
+ }
+}
