@@ -1,4 +1,50 @@
 {
-  "updatedAt": "2026-10-27T22:12:05.905Z",
-  "fixtures": []
+  "updatedAt": "2026-10-30T15:33:13.812Z",
+  "fixtures": [
+    {
+      "id": 1552801,
+      "comp": "LIGUE1",
+      "leagueId": 61,
+      "kickoff": "2026-10-30T18:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-30T15:33:13.807Z",
+      "requeries": 0
+    },
+    {
+      "id": 1552806,
+      "comp": "LIGUE1",
+      "leagueId": 61,
+      "kickoff": "2026-10-30T18:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-30T15:33:13.807Z",
+      "requeries": 0
+    },
+    {
+      "id": 1575211,
+      "comp": "BUNDESLIGA",
+      "leagueId": 78,
+      "kickoff": "2026-10-30T19:30:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-30T15:33:13.807Z",
+      "requeries": 0
+    },
+    {
+      "id": 1570442,
+      "comp": "LALIGA",
+      "leagueId": 140,
+      "kickoff": "2026-10-30T20:00:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-30T15:33:13.807Z",
+      "requeries": 0
+    },
+    {
+      "id": 1552802,
+      "comp": "LIGUE1",
+      "leagueId": 61,
+      "kickoff": "2026-10-30T20:05:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-10-30T15:33:13.807Z",
+      "requeries": 0
+    }
+  ]
 }
