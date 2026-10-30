@@ -55,8 +55,26 @@ export const MatchSchema = z.object({
   kickoff: IsoSchema,
   home: z.string(), // 팀 slug
   away: z.string(), // 팀 slug
-  score: z.object({ h: z.number(), a: z.number() }).nullable(),
+  /**
+   * 최종 스코어 — h·a는 **승부차기 골 제외**(연장 포함). 2026-10-30 사용자 결정(M2-02, UCL 녹아웃 대비 FR-43):
+   *   pens = 승부차기 스코어(승부차기로 끝난 경기만), aet = 연장전을 치렀음(연장 종료·승부차기 경기 — 승부차기는 연장 뒤에만 온다).
+   *   정규 시간 종료 경기는 두 키를 생략한다.
+   */
+  score: z
+    .object({
+      h: z.number(),
+      a: z.number(),
+      pens: z.object({ h: z.number(), a: z.number() }).optional(),
+      aet: z.literal(true).optional(),
+    })
+    .nullable(),
   status: MatchStatusSchema,
+  /**
+   * 킥오프 미확정(2026-10-30 사용자 결정 A안, M2-02). true면 화면은 시각 대신 날짜 + "임시"를 표시한다(FR-44).
+   * 근거: football-data SCHEDULED(날짜만 — 시각 00:00Z 자리값) 또는 라운드 전체가 같은 킥오프인 먼 라운드(기본 슬롯).
+   * 확정 경기는 키를 생략한다(파일 크기 — 시즌 1,800여 경기).
+   */
+  tbc: z.literal(true).optional(),
 });
 export type Match = z.infer<typeof MatchSchema>;
 

@@ -1,0 +1,5302 @@
+{
+  "comp": "EPL",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-30T02:17:27.762Z",
+  "standings": [
+    {
+      "pos": 1,
+      "prevPos": null,
+      "team": "manchester-city",
+      "played": 8,
+      "w": 7,
+      "d": 0,
+      "l": 1,
+      "gf": 20,
+      "ga": 9,
+      "pts": 21,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
+      "prevPos": null,
+      "team": "arsenal",
+      "played": 8,
+      "w": 7,
+      "d": 0,
+      "l": 1,
+      "gf": 13,
+      "ga": 5,
+      "pts": 21,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": null,
+      "team": "brighton",
+      "played": 8,
+      "w": 5,
+      "d": 1,
+      "l": 2,
+      "gf": 23,
+      "ga": 7,
+      "pts": 16,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 4,
+      "prevPos": null,
+      "team": "liverpool",
+      "played": 8,
+      "w": 4,
+      "d": 3,
+      "l": 1,
+      "gf": 11,
+      "ga": 8,
+      "pts": 15,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 5,
+      "prevPos": null,
+      "team": "chelsea",
+      "played": 8,
+      "w": 4,
+      "d": 1,
+      "l": 3,
+      "gf": 17,
+      "ga": 15,
+      "pts": 13,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
+      "prevPos": null,
+      "team": "brentford",
+      "played": 8,
+      "w": 2,
+      "d": 5,
+      "l": 1,
+      "gf": 14,
+      "ga": 9,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
+      "prevPos": null,
+      "team": "leeds-united",
+      "played": 8,
+      "w": 2,
+      "d": 5,
+      "l": 1,
+      "gf": 9,
+      "ga": 6,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 8,
+      "prevPos": null,
+      "team": "newcastle-united",
+      "played": 8,
+      "w": 3,
+      "d": 2,
+      "l": 3,
+      "gf": 12,
+      "ga": 14,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": null,
+      "team": "aston-villa",
+      "played": 8,
+      "w": 3,
+      "d": 2,
+      "l": 3,
+      "gf": 9,
+      "ga": 12,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
+      "prevPos": null,
+      "team": "hull-city",
+      "played": 8,
+      "w": 2,
+      "d": 4,
+      "l": 2,
+      "gf": 9,
+      "ga": 8,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
+      "prevPos": null,
+      "team": "everton",
+      "played": 8,
+      "w": 2,
+      "d": 4,
+      "l": 2,
+      "gf": 8,
+      "ga": 9,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
+      "prevPos": null,
+      "team": "ipswich-town",
+      "played": 8,
+      "w": 3,
+      "d": 1,
+      "l": 4,
+      "gf": 12,
+      "ga": 16,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 13,
+      "prevPos": null,
+      "team": "bournemouth",
+      "played": 8,
+      "w": 2,
+      "d": 3,
+      "l": 3,
+      "gf": 12,
+      "ga": 13,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
+      "prevPos": null,
+      "team": "tottenham-hotspur",
+      "played": 8,
+      "w": 2,
+      "d": 3,
+      "l": 3,
+      "gf": 8,
+      "ga": 10,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
+      "prevPos": null,
+      "team": "fulham",
+      "played": 8,
+      "w": 2,
+      "d": 2,
+      "l": 4,
+      "gf": 8,
+      "ga": 10,
+      "pts": 8,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 16,
+      "prevPos": null,
+      "team": "manchester-united",
+      "played": 8,
+      "w": 1,
+      "d": 4,
+      "l": 3,
+      "gf": 10,
+      "ga": 13,
+      "pts": 7,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 17,
+      "prevPos": null,
+      "team": "crystal-palace",
+      "played": 8,
+      "w": 2,
+      "d": 1,
+      "l": 5,
+      "gf": 9,
+      "ga": 19,
+      "pts": 7,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 18,
+      "prevPos": null,
+      "team": "nottingham-forest",
+      "played": 8,
+      "w": 1,
+      "d": 3,
+      "l": 4,
+      "gf": 6,
+      "ga": 10,
+      "pts": 6,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 19,
+      "prevPos": null,
+      "team": "coventry-city",
+      "played": 8,
+      "w": 2,
+      "d": 0,
+      "l": 6,
+      "gf": 6,
+      "ga": 15,
+      "pts": 6,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 20,
+      "prevPos": null,
+      "team": "sunderland",
+      "played": 8,
+      "w": 1,
+      "d": 2,
+      "l": 5,
+      "gf": 6,
+      "ga": 14,
+      "pts": 5,
+      "form": [],
+      "zone": "relegation"
+    }
+  ],
+  "matches": [
+    {
+      "id": "fd-560542",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-21T19:00:00Z",
+      "home": "arsenal",
+      "away": "coventry-city",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560543",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-22T11:30:00Z",
+      "home": "hull-city",
+      "away": "manchester-united",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560544",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-22T14:00:00Z",
+      "home": "ipswich-town",
+      "away": "sunderland",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560545",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-22T14:00:00Z",
+      "home": "nottingham-forest",
+      "away": "leeds-united",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560546",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-22T14:00:00Z",
+      "home": "everton",
+      "away": "crystal-palace",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560547",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-22T16:30:00Z",
+      "home": "brentford",
+      "away": "tottenham-hotspur",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560548",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-23T13:00:00Z",
+      "home": "manchester-city",
+      "away": "bournemouth",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560549",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-23T13:00:00Z",
+      "home": "brighton",
+      "away": "aston-villa",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560550",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-23T15:30:00Z",
+      "home": "newcastle-united",
+      "away": "liverpool",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560551",
+      "comp": "EPL",
+      "round": "1",
+      "kickoff": "2026-08-24T19:00:00Z",
+      "home": "fulham",
+      "away": "chelsea",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560555",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-28T19:00:00Z",
+      "home": "crystal-palace",
+      "away": "manchester-city",
+      "score": {
+        "h": 1,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560552",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-29T11:30:00Z",
+      "home": "liverpool",
+      "away": "nottingham-forest",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560560",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-29T14:00:00Z",
+      "home": "bournemouth",
+      "away": "everton",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560561",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-29T14:00:00Z",
+      "home": "coventry-city",
+      "away": "hull-city",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560558",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-29T16:30:00Z",
+      "home": "tottenham-hotspur",
+      "away": "newcastle-united",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560554",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-30T13:00:00Z",
+      "home": "sunderland",
+      "away": "fulham",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560556",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-30T13:00:00Z",
+      "home": "chelsea",
+      "away": "brighton",
+      "score": {
+        "h": 4,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560559",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-30T13:00:00Z",
+      "home": "leeds-united",
+      "away": "brentford",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560553",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-30T15:30:00Z",
+      "home": "manchester-united",
+      "away": "ipswich-town",
+      "score": {
+        "h": 5,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560557",
+      "comp": "EPL",
+      "round": "2",
+      "kickoff": "2026-08-31T19:00:00Z",
+      "home": "aston-villa",
+      "away": "arsenal",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560566",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-04T19:00:00Z",
+      "home": "ipswich-town",
+      "away": "liverpool",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560571",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-05T11:30:00Z",
+      "home": "newcastle-united",
+      "away": "bournemouth",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560562",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-05T14:00:00Z",
+      "home": "nottingham-forest",
+      "away": "tottenham-hotspur",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560563",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-05T14:00:00Z",
+      "home": "manchester-city",
+      "away": "coventry-city",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560564",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-05T14:00:00Z",
+      "home": "brighton",
+      "away": "leeds-united",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560565",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-05T14:00:00Z",
+      "home": "brentford",
+      "away": "sunderland",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560568",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-05T14:00:00Z",
+      "home": "fulham",
+      "away": "crystal-palace",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560569",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-05T16:30:00Z",
+      "home": "hull-city",
+      "away": "aston-villa",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560567",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-06T13:00:00Z",
+      "home": "everton",
+      "away": "manchester-united",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560570",
+      "comp": "EPL",
+      "round": "3",
+      "kickoff": "2026-09-06T15:30:00Z",
+      "home": "arsenal",
+      "away": "chelsea",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560572",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-12T14:00:00Z",
+      "home": "crystal-palace",
+      "away": "ipswich-town",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560573",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-12T14:00:00Z",
+      "home": "liverpool",
+      "away": "fulham",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560574",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-12T14:00:00Z",
+      "home": "aston-villa",
+      "away": "nottingham-forest",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560576",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-12T14:00:00Z",
+      "home": "bournemouth",
+      "away": "brentford",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560581",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-12T14:00:00Z",
+      "home": "chelsea",
+      "away": "hull-city",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560575",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-12T16:30:00Z",
+      "home": "tottenham-hotspur",
+      "away": "everton",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560577",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-12T19:00:00Z",
+      "home": "sunderland",
+      "away": "arsenal",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560578",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-13T13:00:00Z",
+      "home": "coventry-city",
+      "away": "brighton",
+      "score": {
+        "h": 0,
+        "a": 5
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560580",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-13T15:30:00Z",
+      "home": "manchester-united",
+      "away": "manchester-city",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560579",
+      "comp": "EPL",
+      "round": "4",
+      "kickoff": "2026-09-14T19:00:00Z",
+      "home": "leeds-united",
+      "away": "newcastle-united",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560591",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-18T19:00:00Z",
+      "home": "brentford",
+      "away": "chelsea",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560587",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-19T11:30:00Z",
+      "home": "tottenham-hotspur",
+      "away": "aston-villa",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560584",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-19T14:00:00Z",
+      "home": "everton",
+      "away": "ipswich-town",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560586",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-19T14:00:00Z",
+      "home": "brighton",
+      "away": "arsenal",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560588",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-19T14:00:00Z",
+      "home": "newcastle-united",
+      "away": "hull-city",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560589",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-19T16:30:00Z",
+      "home": "nottingham-forest",
+      "away": "coventry-city",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560582",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "home": "bournemouth",
+      "away": "liverpool",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560585",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "home": "leeds-united",
+      "away": "crystal-palace",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560590",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "home": "manchester-city",
+      "away": "sunderland",
+      "score": {
+        "h": 5,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560583",
+      "comp": "EPL",
+      "round": "5",
+      "kickoff": "2026-09-20T15:30:00Z",
+      "home": "fulham",
+      "away": "manchester-united",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560593",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-10T11:30:00Z",
+      "home": "arsenal",
+      "away": "leeds-united",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560592",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-10T14:00:00Z",
+      "home": "sunderland",
+      "away": "brighton",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560595",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-10T14:00:00Z",
+      "home": "chelsea",
+      "away": "bournemouth",
+      "score": {
+        "h": 5,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560599",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-10T14:00:00Z",
+      "home": "ipswich-town",
+      "away": "fulham",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560601",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-10T14:00:00Z",
+      "home": "aston-villa",
+      "away": "brentford",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560600",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-10T16:30:00Z",
+      "home": "manchester-united",
+      "away": "tottenham-hotspur",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560594",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "home": "hull-city",
+      "away": "everton",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560596",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "home": "crystal-palace",
+      "away": "nottingham-forest",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560598",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-11T15:30:00Z",
+      "home": "liverpool",
+      "away": "manchester-city",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560597",
+      "comp": "EPL",
+      "round": "6",
+      "kickoff": "2026-10-12T19:00:00Z",
+      "home": "coventry-city",
+      "away": "newcastle-united",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560603",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-17T11:30:00Z",
+      "home": "everton",
+      "away": "chelsea",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560602",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-17T14:00:00Z",
+      "home": "fulham",
+      "away": "hull-city",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560610",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-17T14:00:00Z",
+      "home": "manchester-city",
+      "away": "ipswich-town",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560611",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-17T14:00:00Z",
+      "home": "brentford",
+      "away": "liverpool",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560607",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-17T16:30:00Z",
+      "home": "newcastle-united",
+      "away": "aston-villa",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560604",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-18T13:00:00Z",
+      "home": "bournemouth",
+      "away": "sunderland",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560605",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-18T13:00:00Z",
+      "home": "leeds-united",
+      "away": "manchester-united",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560609",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-18T13:00:00Z",
+      "home": "brighton",
+      "away": "crystal-palace",
+      "score": {
+        "h": 5,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560608",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-18T15:30:00Z",
+      "home": "nottingham-forest",
+      "away": "arsenal",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560606",
+      "comp": "EPL",
+      "round": "7",
+      "kickoff": "2026-10-19T19:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "coventry-city",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560620",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-23T19:00:00Z",
+      "home": "ipswich-town",
+      "away": "nottingham-forest",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560614",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-24T11:30:00Z",
+      "home": "aston-villa",
+      "away": "manchester-city",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560616",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-24T14:00:00Z",
+      "home": "arsenal",
+      "away": "everton",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560618",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-24T14:00:00Z",
+      "home": "coventry-city",
+      "away": "fulham",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560617",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-24T16:30:00Z",
+      "home": "chelsea",
+      "away": "tottenham-hotspur",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560612",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "home": "liverpool",
+      "away": "brighton",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560613",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "home": "crystal-palace",
+      "away": "newcastle-united",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560615",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "home": "manchester-united",
+      "away": "bournemouth",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560619",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "home": "hull-city",
+      "away": "brentford",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560621",
+      "comp": "EPL",
+      "round": "8",
+      "kickoff": "2026-10-25T16:30:00Z",
+      "home": "sunderland",
+      "away": "leeds-united",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-560626",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-10-31T12:30:00Z",
+      "home": "chelsea",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560623",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "home": "manchester-city",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560624",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "home": "bournemouth",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560625",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "home": "coventry-city",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560629",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "home": "hull-city",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560630",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "home": "brentford",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560627",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-10-31T17:30:00Z",
+      "home": "tottenham-hotspur",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560628",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-10-31T20:00:00Z",
+      "home": "aston-villa",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560631",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-11-01T16:30:00Z",
+      "home": "liverpool",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560622",
+      "comp": "EPL",
+      "round": "9",
+      "kickoff": "2026-11-02T20:00:00Z",
+      "home": "newcastle-united",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560634",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-06T20:00:00Z",
+      "home": "everton",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560632",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-07T12:30:00Z",
+      "home": "leeds-united",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560633",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-07T15:00:00Z",
+      "home": "fulham",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560640",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-07T15:00:00Z",
+      "home": "arsenal",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560641",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-07T17:30:00Z",
+      "home": "nottingham-forest",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560635",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-08T14:00:00Z",
+      "home": "crystal-palace",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560636",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-08T14:00:00Z",
+      "home": "sunderland",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560637",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-08T14:00:00Z",
+      "home": "ipswich-town",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560638",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-08T14:00:00Z",
+      "home": "brighton",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560639",
+      "comp": "EPL",
+      "round": "10",
+      "kickoff": "2026-11-08T16:30:00Z",
+      "home": "manchester-united",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560643",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-21T12:30:00Z",
+      "home": "manchester-city",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560642",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-21T15:00:00Z",
+      "home": "chelsea",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560644",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-21T15:00:00Z",
+      "home": "aston-villa",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560647",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-21T15:00:00Z",
+      "home": "bournemouth",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560648",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-21T15:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560650",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-21T15:00:00Z",
+      "home": "coventry-city",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560651",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-21T17:30:00Z",
+      "home": "newcastle-united",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560646",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-22T14:00:00Z",
+      "home": "hull-city",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560645",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-22T16:30:00Z",
+      "home": "liverpool",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560649",
+      "comp": "EPL",
+      "round": "11",
+      "kickoff": "2026-11-23T20:00:00Z",
+      "home": "brentford",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560658",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-27T20:00:00Z",
+      "home": "nottingham-forest",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560652",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-28T15:00:00Z",
+      "home": "leeds-united",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560655",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-28T15:00:00Z",
+      "home": "manchester-united",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560653",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-28T17:30:00Z",
+      "home": "ipswich-town",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560656",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-29T12:00:00Z",
+      "home": "everton",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560657",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-29T14:05:00Z",
+      "home": "fulham",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560659",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-29T14:05:00Z",
+      "home": "brighton",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560660",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-29T14:05:00Z",
+      "home": "sunderland",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560661",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-29T14:05:00Z",
+      "home": "crystal-palace",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560654",
+      "comp": "EPL",
+      "round": "12",
+      "kickoff": "2026-11-29T16:30:00Z",
+      "home": "arsenal",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560668",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-01T20:00:00Z",
+      "home": "coventry-city",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560663",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-02T19:30:00Z",
+      "home": "liverpool",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560664",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-02T19:30:00Z",
+      "home": "hull-city",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560665",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-02T19:30:00Z",
+      "home": "chelsea",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560669",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-02T19:30:00Z",
+      "home": "manchester-city",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560666",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-02T20:15:00Z",
+      "home": "aston-villa",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560667",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-02T20:15:00Z",
+      "home": "brentford",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560670",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-02T20:15:00Z",
+      "home": "newcastle-united",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560671",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-02T20:15:00Z",
+      "home": "bournemouth",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560662",
+      "comp": "EPL",
+      "round": "13",
+      "kickoff": "2026-12-03T20:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560676",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-05T12:30:00Z",
+      "home": "chelsea",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560673",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-05T15:00:00Z",
+      "home": "manchester-united",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560674",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-05T15:00:00Z",
+      "home": "leeds-united",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560678",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-05T15:00:00Z",
+      "home": "bournemouth",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560679",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-05T15:00:00Z",
+      "home": "aston-villa",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560680",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-05T17:30:00Z",
+      "home": "nottingham-forest",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560677",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-05T20:00:00Z",
+      "home": "brentford",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560675",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-06T14:00:00Z",
+      "home": "newcastle-united",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560681",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-06T14:00:00Z",
+      "home": "everton",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560672",
+      "comp": "EPL",
+      "round": "14",
+      "kickoff": "2026-12-06T16:30:00Z",
+      "home": "tottenham-hotspur",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560686",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-12T15:00:00Z",
+      "home": "ipswich-town",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560690",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-12T15:00:00Z",
+      "home": "liverpool",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560691",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-12T15:00:00Z",
+      "home": "fulham",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560689",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-12T17:30:00Z",
+      "home": "manchester-city",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560682",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-13T14:00:00Z",
+      "home": "sunderland",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560685",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-13T14:00:00Z",
+      "home": "brighton",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560688",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-13T14:00:00Z",
+      "home": "arsenal",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560687",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-13T16:30:00Z",
+      "home": "coventry-city",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560683",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-13T19:00:00Z",
+      "home": "crystal-palace",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560684",
+      "comp": "EPL",
+      "round": "15",
+      "kickoff": "2026-12-14T20:00:00Z",
+      "home": "hull-city",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560695",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-19T12:30:00Z",
+      "home": "brentford",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560692",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-19T15:00:00Z",
+      "home": "leeds-united",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560694",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-19T15:00:00Z",
+      "home": "nottingham-forest",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560696",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-19T15:00:00Z",
+      "home": "manchester-city",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560698",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-19T15:00:00Z",
+      "home": "bournemouth",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560700",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-19T17:30:00Z",
+      "home": "liverpool",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560693",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-20T14:00:00Z",
+      "home": "brighton",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560697",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-20T14:00:00Z",
+      "home": "sunderland",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560699",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-20T16:30:00Z",
+      "home": "arsenal",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560701",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-21T20:00:00Z",
+      "home": "chelsea",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560702",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-26T12:30:00Z",
+      "home": "aston-villa",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560705",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-26T15:00:00Z",
+      "home": "everton",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560708",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-26T15:00:00Z",
+      "home": "fulham",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560709",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-26T15:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560711",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-26T15:00:00Z",
+      "home": "ipswich-town",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560710",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-26T17:30:00Z",
+      "home": "hull-city",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560707",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-26T20:00:00Z",
+      "home": "newcastle-united",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560706",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-27T14:00:00Z",
+      "home": "coventry-city",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560703",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-27T16:30:00Z",
+      "home": "manchester-united",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560704",
+      "comp": "EPL",
+      "round": "17",
+      "kickoff": "2026-12-27T19:00:00Z",
+      "home": "crystal-palace",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560716",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-29T19:30:00Z",
+      "home": "hull-city",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560719",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-29T19:30:00Z",
+      "home": "tottenham-hotspur",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560720",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-29T20:15:00Z",
+      "home": "everton",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560712",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-30T19:30:00Z",
+      "home": "fulham",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560713",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-30T19:30:00Z",
+      "home": "coventry-city",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560715",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-30T19:30:00Z",
+      "home": "newcastle-united",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560717",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-30T19:30:00Z",
+      "home": "manchester-united",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560721",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-30T19:30:00Z",
+      "home": "crystal-palace",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560714",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-30T20:15:00Z",
+      "home": "aston-villa",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560718",
+      "comp": "EPL",
+      "round": "18",
+      "kickoff": "2026-12-30T20:15:00Z",
+      "home": "ipswich-town",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560724",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-01T20:00:00Z",
+      "home": "leeds-united",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560730",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-02T12:30:00Z",
+      "home": "brighton",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560723",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-02T15:00:00Z",
+      "home": "brentford",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560725",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-02T15:00:00Z",
+      "home": "arsenal",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560726",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-02T15:00:00Z",
+      "home": "sunderland",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560727",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-02T15:00:00Z",
+      "home": "liverpool",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560729",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-02T15:00:00Z",
+      "home": "nottingham-forest",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560722",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-02T17:30:00Z",
+      "home": "bournemouth",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560728",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-03T14:00:00Z",
+      "home": "chelsea",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560731",
+      "comp": "EPL",
+      "round": "19",
+      "kickoff": "2027-01-03T16:30:00Z",
+      "home": "manchester-city",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560732",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-05T19:30:00Z",
+      "home": "arsenal",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560735",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-05T19:30:00Z",
+      "home": "brighton",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560736",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-05T19:30:00Z",
+      "home": "nottingham-forest",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560738",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-05T19:30:00Z",
+      "home": "everton",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560739",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-05T20:15:00Z",
+      "home": "sunderland",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560737",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-06T19:30:00Z",
+      "home": "fulham",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560740",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-06T19:30:00Z",
+      "home": "crystal-palace",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560741",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-06T19:30:00Z",
+      "home": "ipswich-town",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560733",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-06T20:15:00Z",
+      "home": "leeds-united",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560734",
+      "comp": "EPL",
+      "round": "20",
+      "kickoff": "2027-01-07T20:00:00Z",
+      "home": "manchester-united",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560742",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "bournemouth",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560743",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "manchester-city",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560744",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "chelsea",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560745",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "brentford",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560746",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "aston-villa",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560747",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560748",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "coventry-city",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560749",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "liverpool",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560750",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "hull-city",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560751",
+      "comp": "EPL",
+      "round": "21",
+      "kickoff": "2027-01-16T15:00:00Z",
+      "home": "newcastle-united",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560752",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "ipswich-town",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560753",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "everton",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560754",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "sunderland",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560755",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "nottingham-forest",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560756",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "arsenal",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560757",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "leeds-united",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560758",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "fulham",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560759",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "manchester-united",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560760",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "brighton",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560761",
+      "comp": "EPL",
+      "round": "22",
+      "kickoff": "2027-01-23T15:00:00Z",
+      "home": "crystal-palace",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560762",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560763",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "brentford",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560764",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "newcastle-united",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560765",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "hull-city",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560766",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "coventry-city",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560767",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "bournemouth",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560768",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "chelsea",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560769",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "liverpool",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560770",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "manchester-city",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560771",
+      "comp": "EPL",
+      "round": "23",
+      "kickoff": "2027-01-30T15:00:00Z",
+      "home": "aston-villa",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560772",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "arsenal",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560773",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "brighton",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560774",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "sunderland",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560775",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "crystal-palace",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560776",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "ipswich-town",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560777",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "everton",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560778",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "fulham",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560779",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "leeds-united",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560780",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "manchester-united",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560781",
+      "comp": "EPL",
+      "round": "24",
+      "kickoff": "2027-02-06T15:00:00Z",
+      "home": "nottingham-forest",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560782",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "everton",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560783",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "coventry-city",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560784",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "hull-city",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560785",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "aston-villa",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560786",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "crystal-palace",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560787",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "newcastle-united",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560788",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "fulham",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560789",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560790",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "manchester-united",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560791",
+      "comp": "EPL",
+      "round": "25",
+      "kickoff": "2027-02-10T20:00:00Z",
+      "home": "ipswich-town",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560792",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "manchester-city",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560793",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "bournemouth",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560794",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "brentford",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560795",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "chelsea",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560796",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "liverpool",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560797",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "arsenal",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560798",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "nottingham-forest",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560799",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "brighton",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560800",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "sunderland",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560801",
+      "comp": "EPL",
+      "round": "26",
+      "kickoff": "2027-02-20T15:00:00Z",
+      "home": "leeds-united",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560802",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "crystal-palace",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560803",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "manchester-united",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560804",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "ipswich-town",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560805",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "coventry-city",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560806",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "everton",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560807",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "fulham",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560808",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "aston-villa",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560809",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560810",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "newcastle-united",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560811",
+      "comp": "EPL",
+      "round": "27",
+      "kickoff": "2027-02-27T15:00:00Z",
+      "home": "hull-city",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560812",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "nottingham-forest",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560813",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "bournemouth",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560814",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "manchester-city",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560815",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "arsenal",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560816",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "leeds-united",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560817",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "sunderland",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560818",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "liverpool",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560819",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "brighton",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560820",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "brentford",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560821",
+      "comp": "EPL",
+      "round": "28",
+      "kickoff": "2027-03-03T20:00:00Z",
+      "home": "chelsea",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560822",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "leeds-united",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560823",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560824",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "crystal-palace",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560825",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "liverpool",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560826",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "coventry-city",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560827",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "bournemouth",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560828",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "chelsea",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560829",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "aston-villa",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560830",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "manchester-united",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560831",
+      "comp": "EPL",
+      "round": "29",
+      "kickoff": "2027-03-13T15:00:00Z",
+      "home": "sunderland",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560832",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "brentford",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560833",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "brighton",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560834",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "manchester-city",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560835",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "ipswich-town",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560836",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "arsenal",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560837",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "fulham",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560838",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "hull-city",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560839",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "nottingham-forest",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560840",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "everton",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560841",
+      "comp": "EPL",
+      "round": "30",
+      "kickoff": "2027-03-20T15:00:00Z",
+      "home": "newcastle-united",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560842",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "sunderland",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560843",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "leeds-united",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560844",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "manchester-united",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560845",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "chelsea",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560846",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "liverpool",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560847",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "coventry-city",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560848",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "bournemouth",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560849",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "crystal-palace",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560850",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560851",
+      "comp": "EPL",
+      "round": "31",
+      "kickoff": "2027-04-10T14:00:00Z",
+      "home": "aston-villa",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560852",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "brighton",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560853",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "fulham",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560854",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "brentford",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560855",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "nottingham-forest",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560856",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "hull-city",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560857",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "arsenal",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560858",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "ipswich-town",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560859",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "manchester-city",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560860",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "newcastle-united",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560861",
+      "comp": "EPL",
+      "round": "32",
+      "kickoff": "2027-04-17T14:00:00Z",
+      "home": "everton",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560862",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "chelsea",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560863",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "bournemouth",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560864",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560865",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "manchester-united",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560866",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "everton",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560867",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "nottingham-forest",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560868",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "newcastle-united",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560869",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "aston-villa",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560870",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "brentford",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560871",
+      "comp": "EPL",
+      "round": "33",
+      "kickoff": "2027-04-24T14:00:00Z",
+      "home": "leeds-united",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560872",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "sunderland",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560873",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "brighton",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560874",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "coventry-city",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560875",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "hull-city",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560876",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "manchester-city",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560877",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "fulham",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560878",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "liverpool",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560879",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "arsenal",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560880",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "crystal-palace",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560881",
+      "comp": "EPL",
+      "round": "34",
+      "kickoff": "2027-05-01T14:00:00Z",
+      "home": "ipswich-town",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560882",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "manchester-city",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560883",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "leeds-united",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560884",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "fulham",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560885",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "nottingham-forest",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560886",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "brentford",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560887",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "newcastle-united",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560888",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "brighton",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560889",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560890",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "everton",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560891",
+      "comp": "EPL",
+      "round": "35",
+      "kickoff": "2027-05-08T14:00:00Z",
+      "home": "bournemouth",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560892",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "sunderland",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560893",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "liverpool",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560894",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "ipswich-town",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560895",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "arsenal",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560896",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "hull-city",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560897",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "manchester-united",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560898",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "crystal-palace",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560899",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "aston-villa",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560900",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "chelsea",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560901",
+      "comp": "EPL",
+      "round": "36",
+      "kickoff": "2027-05-15T14:00:00Z",
+      "home": "coventry-city",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560902",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "brentford",
+      "away": "hull-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560903",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "newcastle-united",
+      "away": "crystal-palace",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560904",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "tottenham-hotspur",
+      "away": "manchester-united",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560905",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "leeds-united",
+      "away": "sunderland",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560906",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "brighton",
+      "away": "liverpool",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560907",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "nottingham-forest",
+      "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560908",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "bournemouth",
+      "away": "chelsea",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560909",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "fulham",
+      "away": "coventry-city",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560910",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "everton",
+      "away": "arsenal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560911",
+      "comp": "EPL",
+      "round": "37",
+      "kickoff": "2027-05-23T14:00:00Z",
+      "home": "manchester-city",
+      "away": "aston-villa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-560912",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "ipswich-town",
+      "away": "everton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560913",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "arsenal",
+      "away": "brighton",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560914",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "liverpool",
+      "away": "bournemouth",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560915",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "coventry-city",
+      "away": "nottingham-forest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560916",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "aston-villa",
+      "away": "tottenham-hotspur",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560917",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "hull-city",
+      "away": "newcastle-united",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560918",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "manchester-united",
+      "away": "fulham",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560919",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "sunderland",
+      "away": "manchester-city",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560920",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "chelsea",
+      "away": "brentford",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560921",
+      "comp": "EPL",
+      "round": "38",
+      "kickoff": "2027-05-30T15:00:00Z",
+      "home": "crystal-palace",
+      "away": "leeds-united",
+      "score": null,
+      "status": "scheduled"
+    }
+  ],
+  "scorers": [
+    {
+      "player": "Erling Haaland",
+      "team": "manchester-city",
+      "goals": 9,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Alexander Isak",
+      "team": "liverpool",
+      "goals": 6,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Marcus Tavernier",
+      "team": "bournemouth",
+      "goals": 5,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "João Pedro",
+      "team": "chelsea",
+      "goals": 5,
+      "assists": 3,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Morgan Rogers",
+      "team": "chelsea",
+      "goals": 4,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Rayan Cherki",
+      "team": "manchester-city",
+      "goals": 4,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Bryan Mbeumo",
+      "team": "manchester-united",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Nicolas Jackson",
+      "team": "aston-villa",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Bukayo Saka",
+      "team": "arsenal",
+      "goals": 3,
+      "assists": null,
+      "penalties": 1,
+      "played": 7
+    },
+    {
+      "player": "Thierno Barry",
+      "team": "everton",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jack Hinshelwood",
+      "team": "brighton",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Pedro Neto",
+      "team": "chelsea",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Pascal Groß",
+      "team": "brighton",
+      "goals": 3,
+      "assists": 4,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Kevin Schade",
+      "team": "brentford",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Dominic Calvert-Lewin",
+      "team": "leeds-united",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Bruno Fernandes",
+      "team": "manchester-united",
+      "goals": 3,
+      "assists": 1,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Mohamed Belloumi",
+      "team": "hull-city",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Charalampos Kostoulas",
+      "team": "brighton",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Brian Brobbey",
+      "team": "sunderland",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Evanilson",
+      "team": "bournemouth",
+      "goals": 3,
+      "assists": 4,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Kai Havertz",
+      "team": "arsenal",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Martin Ødegaard",
+      "team": "arsenal",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Emersonn",
+      "team": "ipswich-town",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Kiernan Dewsbury Hall",
+      "team": "everton",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Keane Lewis-Potter",
+      "team": "brentford",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Vitaly Janelt",
+      "team": "brentford",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Maxim De Cuyper",
+      "team": "brighton",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Anthony Elanga",
+      "team": "newcastle-united",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Joe Willock",
+      "team": "newcastle-united",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Joshua King",
+      "team": "fulham",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Cole Palmer",
+      "team": "chelsea",
+      "goals": 2,
+      "assists": 3,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Dan Ndoye",
+      "team": "nottingham-forest",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Víctor Muñoz",
+      "team": "liverpool",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Malick Yalcouyé",
+      "team": "brighton",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Leif Davis",
+      "team": "ipswich-town",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Harvey Barnes",
+      "team": "newcastle-united",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jayden Bogle",
+      "team": "leeds-united",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Tyrick Mitchell",
+      "team": "crystal-palace",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Zian Flemming",
+      "team": "ipswich-town",
+      "goals": 2,
+      "assists": null,
+      "penalties": 1,
+      "played": 6
+    },
+    {
+      "player": "Bruno Guimarães",
+      "team": "arsenal",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Yasin Ayari",
+      "team": "brighton",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Johan Manzambi",
+      "team": "aston-villa",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Antoine Semenyo",
+      "team": "manchester-city",
+      "goals": 2,
+      "assists": 3,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Jordan Henderson",
+      "team": "chelsea",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Jack Rudoni",
+      "team": "coventry-city",
+      "goals": 2,
+      "assists": null,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Semi Ajayi",
+      "team": "hull-city",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Nobel Mendy",
+      "team": "hull-city",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Nilson Angulo",
+      "team": "sunderland",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jack Clarke",
+      "team": "ipswich-town",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Anton Stach",
+      "team": "leeds-united",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Michael Kayode",
+      "team": "brentford",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Marc Guéhi",
+      "team": "manchester-city",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Joško Gvardiol",
+      "team": "manchester-city",
+      "goals": 1,
+      "assists": 3,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Cody Gakpo",
+      "team": "liverpool",
+      "goals": 1,
+      "assists": 3,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Dominik Szoboszlai",
+      "team": "liverpool",
+      "goals": 1,
+      "assists": null,
+      "penalties": 1,
+      "played": 6
+    },
+    {
+      "player": "Gonzalo García",
+      "team": "fulham",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Morgan Gibbs-White",
+      "team": "nottingham-forest",
+      "goals": 1,
+      "assists": 2,
+      "penalties": 1,
+      "played": 7
+    },
+    {
+      "player": "Alex Scott",
+      "team": "bournemouth",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "James Tarkowski",
+      "team": "everton",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Liam Millar",
+      "team": "hull-city",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 2
+    },
+    {
+      "player": "Yoane Wissa",
+      "team": "newcastle-united",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Wilson Isidor",
+      "team": "sunderland",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Romeo Lavia",
+      "team": "chelsea",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Chuba Akpom",
+      "team": "ipswich-town",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Jacob Ramsey",
+      "team": "newcastle-united",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Luka Vušković",
+      "team": "brighton",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Enzo Le Fée",
+      "team": "sunderland",
+      "goals": 1,
+      "assists": 1,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "César Palacios",
+      "team": "fulham",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Ben Chilwell",
+      "team": "crystal-palace",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Tyrique George",
+      "team": "everton",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Benjamin Šeško",
+      "team": "manchester-united",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Ainsley Maitland-Niles",
+      "team": "everton",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Anan Khalaili",
+      "team": "crystal-palace",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jørgen Strand Larsen",
+      "team": "crystal-palace",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Liam Delap",
+      "team": "nottingham-forest",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Alysson",
+      "team": "aston-villa",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Igor Jesus",
+      "team": "nottingham-forest",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Justin Kluivert",
+      "team": "bournemouth",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Lewis Dunk",
+      "team": "brighton",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Noah Okafor",
+      "team": "leeds-united",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Bazoumana Touré",
+      "team": "newcastle-united",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jaidon Anthony",
+      "team": "brentford",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Thiago",
+      "team": "brentford",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Fabio Carvalho",
+      "team": "brentford",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Emiliano Buendía",
+      "team": "aston-villa",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Conor Gallagher",
+      "team": "tottenham-hotspur",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jan Paul van Hecke",
+      "team": "tottenham-hotspur",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Chema Andrés",
+      "team": "brighton",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Lewis Hall",
+      "team": "newcastle-united",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Mohamed Cho",
+      "team": "hull-city",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Jay Dasilva",
+      "team": "coventry-city",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Enzo Fernández",
+      "team": "manchester-city",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Matheus Cunha",
+      "team": "manchester-united",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "James Justin",
+      "team": "leeds-united",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Riccardo Calafiori",
+      "team": "arsenal",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jaouen Hadjam",
+      "team": "brighton",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Ryan Sessegnon",
+      "team": "fulham",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Abdoul Ouattara",
+      "team": "ipswich-town",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Dara O'Shea",
+      "team": "ipswich-town",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Yegor Yarmolyuk",
+      "team": "brentford",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    }
+  ]
+}

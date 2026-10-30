@@ -1287,6 +1287,98 @@
         "imageUrls": 72
       },
       "bytes": 6487
+    },
+    {
+      "path": "football-data/season-pl-2026-10-30.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/PL/matches?season=2026",
+      "fetchedAt": "2026-10-30T00:25:29.000Z",
+      "asOf": "2026-10-30",
+      "covers": "EPL 13·21·38라운드 (2026-12-01~2027-05-30 예정)",
+      "comp": "EPL",
+      "origin": "M2-02",
+      "trimmed": {
+        "rule": "시즌 전체 경기 중 경계 사례 라운드만(아래 cases). resultSet은 남긴 경기 기준으로 다시 셌다",
+        "kept": 30,
+        "original": {
+          "resultSet": {
+            "count": 380,
+            "first": "2026-08-21",
+            "last": "2027-05-30",
+            "played": 80
+          }
+        }
+      },
+      "matchIds": [560668, 560663, 560664, 560665, 560669, 560666, 560667, 560670, 560671, 560662, 560742, 560743, 560744, 560745, 560746, 560747, 560748, 560749, 560750, 560751, 560912, 560913, 560914, 560915, 560916, 560917, 560918, 560919, 560920, 560921],
+      "cases": [
+        {
+          "tag": "status-quirk-datetime",
+          "ids": [560668, 560663, 560664, 560665, 560669, 560666, 560667, 560670, 560671, 560662],
+          "note": "status 자리에 옛 킥오프 문자열(\"2026-12-02 20:00:00Z\")이 왔다 — utcDate는 새 시각(TV 중계 확정). 09:25 KST 응답에만 있었고 09:34 재요청에서는 정상 상태값으로 돌아왔다(모르는 상태 0건). 어댑터는 모르는 상태 → scheduled + 로그"
+        },
+        {
+          "tag": "placeholder-kickoff",
+          "ids": [560742, 560743, 560744, 560745, 560746, 560747, 560748, 560749, 560750, 560751],
+          "note": "21라운드 10경기 모두 TIMED·2027-01-16T15:00:00Z — 중계 배정 전 기본 슬롯(토 15:00 영국). 어댑터 provisional \"time\""
+        },
+        {
+          "tag": "final-round-simultaneous",
+          "ids": [560912, 560913, 560914, 560915, 560916, 560917, 560918, 560919, 560920, 560921],
+          "note": "38라운드(마지막) 10경기 동시 킥오프 2027-05-30T15:00:00Z — 규정상 동시라 자리값으로 보지 않는다"
+        }
+      ],
+      "removed": {
+        "imageUrls": 121,
+        "odds": 30
+      },
+      "bytes": 22411
+    },
+    {
+      "path": "football-data/season-pd-2026-10-30.json",
+      "api": "football-data",
+      "kind": "fd-matches",
+      "endpoint": "/v4/competitions/PD/matches?season=2026",
+      "fetchedAt": "2026-10-30T00:25:55.000Z",
+      "asOf": "2026-10-30",
+      "covers": "라리가 1라운드 일부·8라운드 취소 1경기·11·14라운드",
+      "comp": "LALIGA",
+      "origin": "M2-02",
+      "trimmed": {
+        "rule": "시즌 전체 경기 중 경계 사례 라운드만(아래 cases). resultSet은 남긴 경기 기준으로 다시 셌다",
+        "kept": 23,
+        "original": {
+          "resultSet": {
+            "count": 380,
+            "first": "2026-08-15",
+            "last": "2027-05-30",
+            "played": 99
+          }
+        }
+      },
+      "matchIds": [564635, 564630, 564698, 564737, 564730, 564735, 564736, 564732, 564733, 564734, 564728, 564729, 564731, 564758, 564759, 564760, 564761, 564762, 564763, 564764, 564765, 564766, 564767],
+      "cases": [
+        {
+          "tag": "status:SCHEDULED",
+          "ids": [564758, 564759, 564760, 564761, 564762, 564763, 564764, 564765, 564766, 564767],
+          "note": "14라운드 10경기 SCHEDULED·2026-11-29T00:00:00Z — 날짜만 정해짐(시각 00:00Z 자리값). 어댑터 provisional \"date\""
+        },
+        {
+          "tag": "status:CANCELLED",
+          "ids": [564698],
+          "note": "취소 경기에 fullTime 0:0·winner DRAW가 채워져 온다 — 어댑터는 postponed·score null"
+        },
+        {
+          "tag": "status:TIMED",
+          "ids": [564737, 564730, 564735, 564736, 564732, 564733, 564734, 564728, 564729, 564731],
+          "note": "11라운드 — 시각 확정(킥오프가 서로 다름)"
+        }
+      ],
+      "removed": {
+        "imageUrls": 93,
+        "odds": 23
+      },
+      "bytes": 17302
     }
   ],
   "matchIdPairs": {
@@ -1426,6 +1518,8 @@
     "assists-null / penalties-null": "football-data 득점 순위 null 값",
     "ucl-league-phase / ucl-league-phase-36 / ucl-enddate-league-phase": "UCL 리그 페이즈 경기 / 36팀 단일 순위표 / 대회 메타 endDate",
     "season-structure": "대회 메타의 시즌 목록 구조",
-    "outside-date-window": "날짜 창 밖 경기를 id 단건으로 받은 사례"
+    "outside-date-window": "날짜 창 밖 경기를 id 단건으로 받은 사례",
+    "status-quirk-datetime": "football-data status에 상태 대신 시각 문자열이 온 응답(일시적) — 모르는 상태 처리 시험",
+    "final-round-simultaneous": "대회 마지막 라운드의 규정상 동시 킥오프(자리값 아님)"
   }
 }

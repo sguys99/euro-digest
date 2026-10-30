@@ -381,8 +381,9 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 > 🆕 2026-10-30 사용자 결정(PRD §15 **D63**): ① 선수명 — 목록(득점 순위·주요 선수)은 FR-24 혼합, 팀시트는 원어 고정 + 한국 선수만 한글 ② 팀시트 라인업은 `data/teams/<slug>.json`에 포메이션별 최근 1경기 선발·교체만(원장 D33 범위 불변) ③ slug = 통용 통칭 kebab + 발행 카드 옛 slug 마이그레이션 ④ UCL 녹아웃·`/tonight`은 D1 컴포넌트로 조립(대진표 그래픽은 2027-02 전 미니 시안)
 > 🆕 D60 이월(2026-10-25): 결과 지연 판정(`briefEmptyReason`)은 창 안 6개 대회 API-Football 종료 상세가 있으면 football-data가 경기를 모를 때도 `results-pending`이다 — UCL 예선 등 football-data 무료 플랜이 주지 않는 경기를 API-Football만 가지면 매일 결과 지연으로 판정된다(S4 대신 '5줄을 싣지 못했어요'). M2 전에 football-data 대회 포함 범위(예선·플레이오프 단계)를 확인하고, 빠지는 단계는 판정에서 제외할 것 — 2026-10-30 처리(M2-01): football-data 무료 플랜은 UCL 예선·예선 PO(CL 2026 시즌 09-08 시작, 07-07~16·08-18~27 조회 0건)와 리그 강등 PO를 주지 않음(호출 3회) → `brief-supplement.ts` `afRoundInFdScope`가 범위 밖 라운드를 결과 지연 근거에서 빼고 로그 `afOutOfFdScopeInWindow`로만 셈(라운드를 모르면 범위 안). API-Football 실제 라운드 문자열은 2027-05(강등 PO)·2027-07(UCL 예선) 첫 실데이터 로그로 확인 · 제안(미구현): 7~8월 범위 밖 UCL 예선 경기를 API-Football brief 계층에서 내려 호출 수 절약 — 7월 전 검토
 - [x] M2-01 `configs/competitions.json` 마무리 — 6개 대회·`apiFootballLeagueId`·시즌·UCL 구간·리그 강등 구간은 M0-29에서 1차 출처로 작성했다. M2에서는 순위표 구간 표시(FR-42)가 이 값으로 동작하는지 확인한다. 남은 것은 **유럽 대항전(챔스·유로파·컨퍼런스) 진출 구간**뿐이다 — 2027-28 UEFA 액세스 리스트·2026-27 국가 계수(EPS)·국내 컵 우승팀 반영 규칙이 확정되는 시즌 후반(2027-03 전후)에 1차 출처로만 추가한다(관행값 금지 — §16 시즌·이벤트) — 2026-10-30 완료: 구간 판정 순수 함수 `src/lib/standing-zone.ts` `standingZoneOf`(순위 숫자 기준·라벨 반환) — 6개 대회 fixtures로 zones 그대로 동작(라리가 19위 2팀 강등, UCL 직행 8·PO 16·none 12, 분데스·리그1 16위 "강등 PO"), 유럽 대항전 구간은 §16(2027-03)대로 미추가 — 규칙이 없으면 화면은 숨김(M2-11)
-- [ ] M2-02 football-data 어댑터(`scripts/lib/providers/`, M1-44 최소 어댑터를 확장): 순위·경기·득점, 분당 10회 지연, 실패 시 전일 데이터 유지 + "업데이트 지연" 표시
+- [x] M2-02 football-data 어댑터(`scripts/lib/providers/`, M1-44 최소 어댑터를 확장): 순위·경기·득점, 분당 10회 지연, 실패 시 전일 데이터 유지 + "업데이트 지연" 표시 — 2026-10-30 완료: 대회당 3요청(순위·시즌 경기·득점 limit=100), 6개 대회 18건/일 실측 약 2분 16초·재시도 0 → `data/competitions` 6개 파일(팀 132·경기 1,896·득점자 600, 미등록 팀 0, `scripts/fetch-competitions.ts` `--dry`·`--comp`). 실패 시 대회 단위 keep·조각 단위 이전 값 유지(부분 실패면 `updatedAt` 유지 — 파일당 시각 1개, 오케스트레이터 결정). UCL 녹아웃 라운드 `ko-*`. **사용자 결정(2026-10-30)**: `Match.tbc` 948건(날짜만 SCHEDULED + EPL 21~37R 기본 슬롯, 마지막 라운드 제외) · `score.pens`/`aet` 추가(부록 A). 상태 enum 유지(CANCELLED→postponed, 진행 중→scheduled)
 - [ ] M2-03 순위 변동(전일 대비)·최근 5경기 폼 계산 + 단위 테스트 → 브리핑 입력(M1-19)에 순위 변동 추가 (D24)
+  - 🆕 M2-02 이월 메모(2026-10-30): `competitions-stage.ts`의 `enrichStandings({rows, previous, matches})` 자리를 구현 — 이전 파일은 같은 시즌일 때만 넘어오고 보강은 이번에 받은 순위에만. 진행 중 경기가 있으면 순위표가 진행 중 점수를 반영(로그 `inProgress`)
 - [x] M2-04 팀 목록 생성: 5대 리그 96팀 + UCL 외부 팀 → `data/teams/*.json`, slug 규칙 확정 · 🆕 slug 규칙 확정 때 `configs/team-ids.json`(M1-44, D33)의 어색한 slug 14개를 함께 정리(`07-elversberg`·`acf-fiorentina`·`ssc-napoli`·`genoa-cfc`·`parma-calcio-1913`·`frosinone-calcio`·`tsg-1899-hoffenheim`·`vfb-stuttgart`·`angers-sco`·`as-monaco`·`le-havre-ac`·`lille-osc`·`paris`·`koln`·`paderborn-07`, `hamburger`·`internazionale-milano` 검토 — 2026-10-13 사용자 결정), 대응표에서 팀 목록을 시작 — 2026-10-30 완료: football-data 팀 목록 6요청으로 111팀(5대 리그 96 + UCL 외 15) 확정 → `configs/team-ids.json` 111팀(af 52 유지 + 원장 대조 59, 근거 경기 note), slug 규칙 D63 ③(`team-slugs.ts` — 숫자·법인 토큰 제거 + 예외표 24팀, `configs/README`. `milan`·`leverkusen`·`paris-fc`·`club-brugge` 등) · 옛 slug 63건 이전(`migrate-team-slugs.ts` — data/news 161곳·names.ko 63·korean-players 3, 카드 ID 불변) · tla 충돌 FCB·BRE, 스트라스부르 "RC "(어댑터 trim) · 팀 목록 단일 출처 = team-ids.json + `team-leagues.ts` `teamCompetitions`, data/teams 생성은 M2-05 뒤
 - [x] M2-05 `names.ko.json` 팀명 전체(~110팀) + `team-colors.json`(2색 + 영문 약어) — Claude Code가 초안 작성 → 🙋 사용자 검토 (DR-05) — 2026-10-30 완료: names.ko 111팀(별칭 보충 4 — 'AEK Athens FC'·'Estac Troyes'(M2-04 이월, 테스트 예외 해제)·'Malaga'·'Deportivo La Coruna', Viking FK = '비킹' 추가로 확인 대기 0) · `team-colors.json` 111팀 = 원본 `docs/design/d1/team-colors-source.json`(원색 2색·tla·확신도 확실 58/추정 53·출처) → `scripts/build-team-colors.ts --write`(D62 ④ 보정 `src/lib/kit-contrast.ts` — 29팀 보정 · 최저 대비 5.30 스포르팅 CP · 최저 f 0.74 사수올로 · 남색 글자 39팀), 약어 = tla trim + 예외 BOD(보되/글림트 'FK')·STR(스트라스부르 'RC '), FCB·BRE 충돌 유지(D62 ②) · validate 교차 참조 6(키 ⊂ team-ids · 빠진 팀 경고 · 대비 5.3) · 검토 시트 `docs/design/d1/team-colors-review.html`(`scripts/build-team-colors-review.ts`). 🙋 사용자 결정: 초안 승인(추정 포함 확정 — 틀린 색은 운영 중 원본만 고쳐 재생성) · 비킹 · BOD·STR·LIN · **약어 글자색은 화면 빌드 때 `kitTextColor`로 계산**(Team 스키마·토큰 변경 없음 — DESIGN §11.14, DECISIONS D1 §5 #4) · 원색은 원본 JSON(스키마 변경 없음)·추정 색도 일반 배지(오케스트레이터 결정)
   - 🆕 M2-04 이월 메모(2026-10-30): 대상 111팀(team-ids.json). names.ko 영문 별칭 누락 'AEK Athens FC'·'Estac Troyes' 2건 — D60 결과 보충 이름 교차 확인이 연결하지 못함(테스트에 알려진 예외로 고정, 별칭 추가 후 해제). teams fixtures `clubColors`(예 "Red / White")를 2색 초안 힌트로 사용 가능. 팀 파일 생성기는 순수 함수 `scripts/lib/team-files.ts` 권장
@@ -393,10 +394,12 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M2-08 `bigmatch-rules.json`(더비 목록·가중치) + "오늘 밤 볼 경기" 선별 로직 + 테스트 (FR-80~82, FR-84)
   - 🆕 D1 이월 메모(2026-10-28, D62): 이유 태그는 데이터로 확인되는 사실만 — "{선수} 소속"(라인업 발표 전 출전 예상 금지)·"승점 차 n"·더비(목록에 있을 때)
 - [ ] M2-09 `collect.yml`에 축구 데이터 단계 통합, API 호출 수 `runs.json` 기록
+  - 🆕 M2-02 이월 메모(2026-10-30): 대회 단계는 약 140초·브리핑과 같은 football-data 큐 → 브리핑 마감 뒤 실행 권장, `apiCalls`를 runs.json `footballData`에 합산, 득점자 600명의 미등록 이름 적재는 대회별 상위 N명으로 제한 제안, npm 스크립트 `fetch:competitions` 추가
 
 ### M2-B 화면
 > 🆕 M1-38 이월(2026-10-23): 메타 문구 결과 노출 검사(`src/lib/seo.ts` `SCORE_LIKE_RE`)가 시즌 "2026-27"·시각 "06:50"·범위 "3–5줄"도 막는다 — 대회·팀 페이지 제목에 시즌을 넣기 전에 예외(연도-시즌·시각)를 두거나 검사 범위를 데이터 부분으로 좁힐 것(안 하면 빌드 실패)
 - [ ] M2-10 `/competitions/[comp]` 탭: 순위표 · 일정/결과(라운드 이동, KST) · 득점 순위 · 뉴스 (FR-40, FR-41, FR-44)
+  - 🆕 M2-02 이월 메모(2026-10-30): `tbc`면 시각 대신 날짜 + "임시" · 킥오프가 지났는데 scheduled면 "결과 대기"(D60) · `pens`면 "(승부차기 4–3)", `aet`면 "연장" 텍스트 병기 · "업데이트 지연"은 `updatedAt`과 빌드 시각 차이(M2-16)
 - [ ] M2-11 순위표 컴포넌트: ▲▼ 변동, 폼 칩, 구간 표시(색 + 텍스트 병기) (FR-42)
 - [ ] M2-12 UCL 리그 페이즈 순위표 + 녹아웃 대진 자동 전환 구조 (FR-43)
 - [ ] M2-13 `/teams/[team]`: 헤더(배지·순위·폼·다음 경기), 일정·결과, 득점 상위, 주요 선수, 포메이션 피치, 관련 뉴스(30일), 소속 한국 선수 자리 (FR-50~52, FR-54~58)
@@ -685,10 +688,17 @@ const StandingRow = z.object({
   zone: z.enum(["ucl", "uel", "uecl", "knockout", "playoff", "relegation", "none"]), // knockout·playoff = UCL 리그 페이즈 1~8위·9~24위 (결정 Q4)
 });
 const Match = z.object({
-  id: z.string(), comp: CompId, round: z.string(), kickoff: Iso,
+  id: z.string(), comp: CompId,
+  round: z.string(),  // 리그·UCL 리그 페이즈 = matchday 숫자 문자열, UCL 녹아웃 = `ko-playoff|r16|qf|sf-<차전>`·`ko-final` (M2-02)
+  kickoff: Iso,
   home: z.string(), away: z.string(),
-  score: z.object({ h: z.number(), a: z.number() }).nullable(),
-  status: z.enum(["scheduled", "finished", "postponed"]),
+  score: z.object({
+    h: z.number(), a: z.number(),                              // 승부차기 골 제외(연장 포함)
+    pens: z.object({ h: z.number(), a: z.number() }).optional(), // 승부차기 스코어 — 승부차기로 끝난 경기만
+    aet: z.literal(true).optional(),                           // 연장전을 치름(연장 종료·승부차기) — 정규 종료는 생략
+  }).nullable(),
+  status: z.enum(["scheduled", "finished", "postponed"]),     // CANCELLED → postponed, 진행 중 → scheduled (M2-02)
+  tbc: z.literal(true).optional(), // 킥오프 미확정(football-data SCHEDULED 또는 먼 라운드 동일 킥오프 기본 슬롯, 마지막 라운드 제외) — 화면은 날짜 + "임시", 확정 경기는 생략 (2026-10-30 사용자 결정, M2-02)
 });
 
 // data/teams/{team}.json

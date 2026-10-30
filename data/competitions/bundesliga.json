@@ -1,0 +1,4511 @@
+{
+  "comp": "BUNDESLIGA",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-30T02:18:39.937Z",
+  "standings": [
+    {
+      "pos": 1,
+      "prevPos": null,
+      "team": "bayern-munchen",
+      "played": 7,
+      "w": 5,
+      "d": 2,
+      "l": 0,
+      "gf": 25,
+      "ga": 6,
+      "pts": 17,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
+      "prevPos": null,
+      "team": "borussia-dortmund",
+      "played": 7,
+      "w": 5,
+      "d": 2,
+      "l": 0,
+      "gf": 12,
+      "ga": 4,
+      "pts": 17,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": null,
+      "team": "freiburg",
+      "played": 7,
+      "w": 4,
+      "d": 1,
+      "l": 2,
+      "gf": 16,
+      "ga": 9,
+      "pts": 13,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 4,
+      "prevPos": null,
+      "team": "leverkusen",
+      "played": 7,
+      "w": 4,
+      "d": 1,
+      "l": 2,
+      "gf": 16,
+      "ga": 12,
+      "pts": 13,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 5,
+      "prevPos": null,
+      "team": "rb-leipzig",
+      "played": 7,
+      "w": 4,
+      "d": 0,
+      "l": 3,
+      "gf": 20,
+      "ga": 11,
+      "pts": 12,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
+      "prevPos": null,
+      "team": "werder-bremen",
+      "played": 7,
+      "w": 3,
+      "d": 3,
+      "l": 1,
+      "gf": 15,
+      "ga": 14,
+      "pts": 12,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
+      "prevPos": null,
+      "team": "mainz",
+      "played": 7,
+      "w": 3,
+      "d": 1,
+      "l": 3,
+      "gf": 16,
+      "ga": 13,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 8,
+      "prevPos": null,
+      "team": "elversberg",
+      "played": 7,
+      "w": 3,
+      "d": 1,
+      "l": 3,
+      "gf": 12,
+      "ga": 15,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": null,
+      "team": "augsburg",
+      "played": 7,
+      "w": 2,
+      "d": 3,
+      "l": 2,
+      "gf": 17,
+      "ga": 13,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
+      "prevPos": null,
+      "team": "hoffenheim",
+      "played": 7,
+      "w": 3,
+      "d": 0,
+      "l": 4,
+      "gf": 14,
+      "ga": 14,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
+      "prevPos": null,
+      "team": "hamburg",
+      "played": 7,
+      "w": 3,
+      "d": 0,
+      "l": 4,
+      "gf": 6,
+      "ga": 16,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
+      "prevPos": null,
+      "team": "koln",
+      "played": 7,
+      "w": 2,
+      "d": 2,
+      "l": 3,
+      "gf": 8,
+      "ga": 11,
+      "pts": 8,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 13,
+      "prevPos": null,
+      "team": "paderborn",
+      "played": 7,
+      "w": 2,
+      "d": 2,
+      "l": 3,
+      "gf": 6,
+      "ga": 9,
+      "pts": 8,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
+      "prevPos": null,
+      "team": "eintracht-frankfurt",
+      "played": 7,
+      "w": 2,
+      "d": 2,
+      "l": 3,
+      "gf": 10,
+      "ga": 17,
+      "pts": 8,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
+      "prevPos": null,
+      "team": "stuttgart",
+      "played": 7,
+      "w": 2,
+      "d": 0,
+      "l": 5,
+      "gf": 10,
+      "ga": 13,
+      "pts": 6,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 16,
+      "prevPos": null,
+      "team": "schalke",
+      "played": 7,
+      "w": 1,
+      "d": 3,
+      "l": 3,
+      "gf": 4,
+      "ga": 7,
+      "pts": 6,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 17,
+      "prevPos": null,
+      "team": "union-berlin",
+      "played": 7,
+      "w": 1,
+      "d": 3,
+      "l": 3,
+      "gf": 6,
+      "ga": 18,
+      "pts": 6,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 18,
+      "prevPos": null,
+      "team": "borussia-monchengladbach",
+      "played": 7,
+      "w": 1,
+      "d": 0,
+      "l": 6,
+      "gf": 11,
+      "ga": 22,
+      "pts": 3,
+      "form": [],
+      "zone": "relegation"
+    }
+  ],
+  "matches": [
+    {
+      "id": "fd-565776",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-28T18:30:00Z",
+      "home": "bayern-munchen",
+      "away": "stuttgart",
+      "score": {
+        "h": 5,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565777",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-29T13:30:00Z",
+      "home": "rb-leipzig",
+      "away": "borussia-monchengladbach",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565778",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-29T13:30:00Z",
+      "home": "mainz",
+      "away": "paderborn",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565779",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-29T13:30:00Z",
+      "home": "union-berlin",
+      "away": "eintracht-frankfurt",
+      "score": {
+        "h": 3,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565780",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-29T13:30:00Z",
+      "home": "elversberg",
+      "away": "leverkusen",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565783",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-29T13:30:00Z",
+      "home": "koln",
+      "away": "hoffenheim",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565781",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-29T16:30:00Z",
+      "home": "borussia-dortmund",
+      "away": "hamburg",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565784",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-30T13:30:00Z",
+      "home": "freiburg",
+      "away": "werder-bremen",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565782",
+      "comp": "BUNDESLIGA",
+      "round": "1",
+      "kickoff": "2026-08-30T15:30:00Z",
+      "home": "augsburg",
+      "away": "schalke",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565791",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-04T18:30:00Z",
+      "home": "stuttgart",
+      "away": "koln",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565785",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-05T13:30:00Z",
+      "home": "werder-bremen",
+      "away": "rb-leipzig",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565787",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-05T13:30:00Z",
+      "home": "hoffenheim",
+      "away": "borussia-dortmund",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565790",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-05T13:30:00Z",
+      "home": "leverkusen",
+      "away": "union-berlin",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565792",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-05T13:30:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "elversberg",
+      "score": {
+        "h": 3,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565793",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-05T13:30:00Z",
+      "home": "paderborn",
+      "away": "freiburg",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565789",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-05T16:30:00Z",
+      "home": "schalke",
+      "away": "bayern-munchen",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565788",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-06T13:30:00Z",
+      "home": "hamburg",
+      "away": "mainz",
+      "score": {
+        "h": 0,
+        "a": 5
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565786",
+      "comp": "BUNDESLIGA",
+      "round": "2",
+      "kickoff": "2026-09-06T15:30:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "augsburg",
+      "score": {
+        "h": 1,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565797",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-11T18:30:00Z",
+      "home": "union-berlin",
+      "away": "schalke",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565794",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-12T13:30:00Z",
+      "home": "hoffenheim",
+      "away": "stuttgart",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565795",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-12T13:30:00Z",
+      "home": "borussia-dortmund",
+      "away": "paderborn",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565796",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-12T13:30:00Z",
+      "home": "augsburg",
+      "away": "leverkusen",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565801",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-12T13:30:00Z",
+      "home": "mainz",
+      "away": "eintracht-frankfurt",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565802",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-12T13:30:00Z",
+      "home": "freiburg",
+      "away": "borussia-monchengladbach",
+      "score": {
+        "h": 5,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565798",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-12T16:30:00Z",
+      "home": "koln",
+      "away": "werder-bremen",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565799",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-13T13:30:00Z",
+      "home": "rb-leipzig",
+      "away": "hamburg",
+      "score": {
+        "h": 5,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565800",
+      "comp": "BUNDESLIGA",
+      "round": "3",
+      "kickoff": "2026-09-13T15:30:00Z",
+      "home": "elversberg",
+      "away": "bayern-munchen",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565804",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-18T18:30:00Z",
+      "home": "bayern-munchen",
+      "away": "union-berlin",
+      "score": {
+        "h": 7,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565808",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-19T13:30:00Z",
+      "home": "hamburg",
+      "away": "koln",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565809",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-19T13:30:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "mainz",
+      "score": {
+        "h": 3,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565810",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-19T13:30:00Z",
+      "home": "werder-bremen",
+      "away": "augsburg",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565811",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-19T13:30:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "freiburg",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565806",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-19T16:30:00Z",
+      "home": "stuttgart",
+      "away": "borussia-dortmund",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565807",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-20T13:30:00Z",
+      "home": "leverkusen",
+      "away": "rb-leipzig",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565805",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-20T15:30:00Z",
+      "home": "schalke",
+      "away": "elversberg",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565803",
+      "comp": "BUNDESLIGA",
+      "round": "4",
+      "kickoff": "2026-09-20T17:30:00Z",
+      "home": "paderborn",
+      "away": "hoffenheim",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565820",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-09T18:30:00Z",
+      "home": "borussia-dortmund",
+      "away": "werder-bremen",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565812",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-10T13:30:00Z",
+      "home": "mainz",
+      "away": "leverkusen",
+      "score": {
+        "h": 3,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565813",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-10T13:30:00Z",
+      "home": "paderborn",
+      "away": "stuttgart",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565817",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-10T13:30:00Z",
+      "home": "union-berlin",
+      "away": "elversberg",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565818",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-10T13:30:00Z",
+      "home": "hoffenheim",
+      "away": "hamburg",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565819",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-10T13:30:00Z",
+      "home": "augsburg",
+      "away": "bayern-munchen",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565815",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-10T16:30:00Z",
+      "home": "rb-leipzig",
+      "away": "eintracht-frankfurt",
+      "score": {
+        "h": 6,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565814",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-11T13:30:00Z",
+      "home": "koln",
+      "away": "borussia-monchengladbach",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565816",
+      "comp": "BUNDESLIGA",
+      "round": "5",
+      "kickoff": "2026-10-11T15:30:00Z",
+      "home": "freiburg",
+      "away": "schalke",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565828",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-16T18:30:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "koln",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565821",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-17T13:30:00Z",
+      "home": "union-berlin",
+      "away": "borussia-dortmund",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565822",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-17T13:30:00Z",
+      "home": "hamburg",
+      "away": "stuttgart",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565823",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-17T13:30:00Z",
+      "home": "werder-bremen",
+      "away": "paderborn",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565824",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-17T13:30:00Z",
+      "home": "elversberg",
+      "away": "augsburg",
+      "score": {
+        "h": 4,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565829",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-17T13:30:00Z",
+      "home": "schalke",
+      "away": "mainz",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565825",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-17T16:30:00Z",
+      "home": "bayern-munchen",
+      "away": "rb-leipzig",
+      "score": {
+        "h": 6,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565827",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-18T13:30:00Z",
+      "home": "leverkusen",
+      "away": "freiburg",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565826",
+      "comp": "BUNDESLIGA",
+      "round": "6",
+      "kickoff": "2026-10-18T15:30:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "hoffenheim",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565833",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-23T18:30:00Z",
+      "home": "stuttgart",
+      "away": "borussia-monchengladbach",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565830",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-24T13:30:00Z",
+      "home": "mainz",
+      "away": "werder-bremen",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565831",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-24T13:30:00Z",
+      "home": "koln",
+      "away": "schalke",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565832",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-24T13:30:00Z",
+      "home": "rb-leipzig",
+      "away": "elversberg",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565834",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-24T13:30:00Z",
+      "home": "paderborn",
+      "away": "hamburg",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565838",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-24T13:30:00Z",
+      "home": "augsburg",
+      "away": "union-berlin",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565837",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-24T16:30:00Z",
+      "home": "borussia-dortmund",
+      "away": "eintracht-frankfurt",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565835",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-25T14:30:00Z",
+      "home": "hoffenheim",
+      "away": "leverkusen",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565836",
+      "comp": "BUNDESLIGA",
+      "round": "7",
+      "kickoff": "2026-10-25T16:30:00Z",
+      "home": "freiburg",
+      "away": "bayern-munchen",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-565846",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-10-30T19:30:00Z",
+      "home": "elversberg",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565839",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565840",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "home": "schalke",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565842",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "home": "augsburg",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565843",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "home": "werder-bremen",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565847",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "home": "leverkusen",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565845",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-10-31T17:30:00Z",
+      "home": "bayern-munchen",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565841",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-11-01T14:30:00Z",
+      "home": "union-berlin",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565844",
+      "comp": "BUNDESLIGA",
+      "round": "8",
+      "kickoff": "2026-11-01T16:30:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565852",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-06T19:30:00Z",
+      "home": "hamburg",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565848",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-07T14:30:00Z",
+      "home": "rb-leipzig",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565850",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-07T14:30:00Z",
+      "home": "borussia-dortmund",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565851",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-07T14:30:00Z",
+      "home": "mainz",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565853",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-07T14:30:00Z",
+      "home": "paderborn",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565849",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-07T17:30:00Z",
+      "home": "stuttgart",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565855",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-08T14:30:00Z",
+      "home": "koln",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565854",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-08T16:30:00Z",
+      "home": "freiburg",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565856",
+      "comp": "BUNDESLIGA",
+      "round": "9",
+      "kickoff": "2026-11-08T18:30:00Z",
+      "home": "hoffenheim",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565859",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-20T19:30:00Z",
+      "home": "bayern-munchen",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565857",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-21T14:30:00Z",
+      "home": "leverkusen",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565858",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-21T14:30:00Z",
+      "home": "union-berlin",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565860",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-21T14:30:00Z",
+      "home": "elversberg",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565862",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-21T14:30:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565865",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-21T14:30:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565861",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-21T17:30:00Z",
+      "home": "schalke",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565864",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-22T14:30:00Z",
+      "home": "augsburg",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565863",
+      "comp": "BUNDESLIGA",
+      "round": "10",
+      "kickoff": "2026-11-22T16:30:00Z",
+      "home": "werder-bremen",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565869",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-27T19:30:00Z",
+      "home": "werder-bremen",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565866",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-28T14:30:00Z",
+      "home": "koln",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565867",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-28T14:30:00Z",
+      "home": "mainz",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565868",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-28T14:30:00Z",
+      "home": "paderborn",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565874",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-28T14:30:00Z",
+      "home": "hamburg",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565870",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-28T17:30:00Z",
+      "home": "stuttgart",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565873",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-29T14:30:00Z",
+      "home": "freiburg",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565871",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-29T16:30:00Z",
+      "home": "hoffenheim",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565872",
+      "comp": "BUNDESLIGA",
+      "round": "11",
+      "kickoff": "2026-11-29T18:30:00Z",
+      "home": "borussia-dortmund",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-565875",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "union-berlin",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565876",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "schalke",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565877",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "leverkusen",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565878",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565879",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565880",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "elversberg",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565881",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "freiburg",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565882",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565883",
+      "comp": "BUNDESLIGA",
+      "round": "12",
+      "kickoff": "2026-12-05T00:00:00Z",
+      "home": "augsburg",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565884",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "paderborn",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565885",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565886",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "stuttgart",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565887",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565888",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "hamburg",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565889",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "mainz",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565890",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "koln",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565891",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565892",
+      "comp": "BUNDESLIGA",
+      "round": "13",
+      "kickoff": "2026-12-12T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565893",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "schalke",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565894",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565895",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "elversberg",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565896",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "leverkusen",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565897",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "freiburg",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565898",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565899",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "mainz",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565900",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "union-berlin",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565901",
+      "comp": "BUNDESLIGA",
+      "round": "14",
+      "kickoff": "2026-12-19T00:00:00Z",
+      "home": "augsburg",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565902",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "stuttgart",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565903",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "hamburg",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565904",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "koln",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565905",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565906",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565907",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565908",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565909",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565910",
+      "comp": "BUNDESLIGA",
+      "round": "15",
+      "kickoff": "2027-01-09T00:00:00Z",
+      "home": "paderborn",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565911",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "mainz",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565912",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "freiburg",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565913",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "schalke",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565914",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565915",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "union-berlin",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565916",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565917",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "augsburg",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565918",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "elversberg",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565919",
+      "comp": "BUNDESLIGA",
+      "round": "16",
+      "kickoff": "2027-01-13T00:00:00Z",
+      "home": "koln",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565920",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565921",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565922",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "paderborn",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565923",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565924",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "leverkusen",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565925",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "stuttgart",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565926",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "hamburg",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565927",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565928",
+      "comp": "BUNDESLIGA",
+      "round": "17",
+      "kickoff": "2027-01-16T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565929",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565930",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "hamburg",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565931",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "paderborn",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565932",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "schalke",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565933",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565934",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "stuttgart",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565935",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565936",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565937",
+      "comp": "BUNDESLIGA",
+      "round": "18",
+      "kickoff": "2027-01-23T00:00:00Z",
+      "home": "leverkusen",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565938",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "elversberg",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565939",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "augsburg",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565940",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "mainz",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565941",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565942",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "koln",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565943",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "union-berlin",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565944",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "freiburg",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565945",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565946",
+      "comp": "BUNDESLIGA",
+      "round": "19",
+      "kickoff": "2027-01-30T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565947",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565948",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565949",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "schalke",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565950",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "hamburg",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565951",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "leverkusen",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565952",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565953",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "stuttgart",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565954",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565955",
+      "comp": "BUNDESLIGA",
+      "round": "20",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "paderborn",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565956",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "koln",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565957",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "mainz",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565958",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "union-berlin",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565959",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "elversberg",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565960",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565961",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565962",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "freiburg",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565963",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "augsburg",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565964",
+      "comp": "BUNDESLIGA",
+      "round": "21",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565965",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "schalke",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565966",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "stuttgart",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565967",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565968",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565969",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "hamburg",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565970",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "leverkusen",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565971",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565972",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565973",
+      "comp": "BUNDESLIGA",
+      "round": "22",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "elversberg",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565974",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "stuttgart",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565975",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "koln",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565976",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "freiburg",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565977",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "augsburg",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565978",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "mainz",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565979",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565980",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "paderborn",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565981",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565982",
+      "comp": "BUNDESLIGA",
+      "round": "23",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565983",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565984",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "schalke",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565985",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "leverkusen",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565986",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565987",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565988",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "union-berlin",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565989",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "elversberg",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565990",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565991",
+      "comp": "BUNDESLIGA",
+      "round": "24",
+      "kickoff": "2027-03-03T00:00:00Z",
+      "home": "hamburg",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565992",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565993",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "freiburg",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565994",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "mainz",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565995",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "hamburg",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565996",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "stuttgart",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565997",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565998",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "paderborn",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565999",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "koln",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566000",
+      "comp": "BUNDESLIGA",
+      "round": "25",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566001",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "union-berlin",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566002",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "elversberg",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566003",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566004",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "augsburg",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566005",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566006",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566007",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "schalke",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566008",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566009",
+      "comp": "BUNDESLIGA",
+      "round": "26",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "leverkusen",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566010",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "mainz",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566011",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "stuttgart",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566012",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566013",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "freiburg",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566014",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "hamburg",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566015",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "paderborn",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566016",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "koln",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566017",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566018",
+      "comp": "BUNDESLIGA",
+      "round": "27",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566019",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566020",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "elversberg",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566021",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566022",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "augsburg",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566023",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566024",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566025",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "union-berlin",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566026",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "leverkusen",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566027",
+      "comp": "BUNDESLIGA",
+      "round": "28",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "schalke",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566028",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "stuttgart",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566029",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "paderborn",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566030",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566031",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "mainz",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566032",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566033",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566034",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "hamburg",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566035",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566036",
+      "comp": "BUNDESLIGA",
+      "round": "29",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "koln",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566037",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "leverkusen",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566038",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566039",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "union-berlin",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566040",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566041",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "schalke",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566042",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "elversberg",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566043",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "augsburg",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566044",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "freiburg",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566045",
+      "comp": "BUNDESLIGA",
+      "round": "30",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566046",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566047",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "koln",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566048",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "hamburg",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566049",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566050",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566051",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "paderborn",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566052",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "stuttgart",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566053",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566054",
+      "comp": "BUNDESLIGA",
+      "round": "31",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566055",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "schalke",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566056",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "rb-leipzig",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566057",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "freiburg",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566058",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "mainz",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566059",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "augsburg",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566060",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "union-berlin",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566061",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "elversberg",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566062",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "leverkusen",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566063",
+      "comp": "BUNDESLIGA",
+      "round": "32",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "bayern-munchen",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566064",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "eintracht-frankfurt",
+      "away": "elversberg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566065",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "paderborn",
+      "away": "union-berlin",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566066",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "stuttgart",
+      "away": "rb-leipzig",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566067",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "borussia-dortmund",
+      "away": "koln",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566068",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "hamburg",
+      "away": "freiburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566069",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "leverkusen",
+      "away": "bayern-munchen",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566070",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "werder-bremen",
+      "away": "schalke",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566071",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "borussia-monchengladbach",
+      "away": "augsburg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566072",
+      "comp": "BUNDESLIGA",
+      "round": "33",
+      "kickoff": "2027-05-15T00:00:00Z",
+      "home": "hoffenheim",
+      "away": "mainz",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-566073",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "rb-leipzig",
+      "away": "hoffenheim",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-566074",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "union-berlin",
+      "away": "borussia-monchengladbach",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-566075",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "mainz",
+      "away": "stuttgart",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-566076",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "schalke",
+      "away": "leverkusen",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-566077",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "elversberg",
+      "away": "werder-bremen",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-566078",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "bayern-munchen",
+      "away": "eintracht-frankfurt",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-566079",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "augsburg",
+      "away": "hamburg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-566080",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "freiburg",
+      "away": "borussia-dortmund",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-566081",
+      "comp": "BUNDESLIGA",
+      "round": "34",
+      "kickoff": "2027-05-22T13:30:00Z",
+      "home": "koln",
+      "away": "paderborn",
+      "score": null,
+      "status": "scheduled"
+    }
+  ],
+  "scorers": [
+    {
+      "player": "Niclas Füllkrug",
+      "team": "werder-bremen",
+      "goals": 8,
+      "assists": null,
+      "penalties": 3,
+      "played": 7
+    },
+    {
+      "player": "Michael Olise",
+      "team": "bayern-munchen",
+      "goals": 6,
+      "assists": 3,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Patrik Schick",
+      "team": "leverkusen",
+      "goals": 6,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Younes Ebnoutalib",
+      "team": "eintracht-frankfurt",
+      "goals": 5,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Phillip Tietz",
+      "team": "mainz",
+      "goals": 5,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Luis Díaz",
+      "team": "bayern-munchen",
+      "goals": 4,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Yuito Suzuki",
+      "team": "freiburg",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Michael Gregoritsch",
+      "team": "augsburg",
+      "goals": 4,
+      "assists": null,
+      "penalties": 1,
+      "played": 7
+    },
+    {
+      "player": "Christopher Nkunku",
+      "team": "rb-leipzig",
+      "goals": 4,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Harry Kane",
+      "team": "bayern-munchen",
+      "goals": 4,
+      "assists": 4,
+      "penalties": 1,
+      "played": 7
+    },
+    {
+      "player": "Antonio Nusa",
+      "team": "rb-leipzig",
+      "goals": 3,
+      "assists": 5,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Igor Matanovic",
+      "team": "freiburg",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Ermedin Demirovic",
+      "team": "stuttgart",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Joseph Scally",
+      "team": "borussia-monchengladbach",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Maurice Krattenmacher",
+      "team": "elversberg",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Maximilian Eggestein",
+      "team": "freiburg",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Jonathan Burkardt",
+      "team": "eintracht-frankfurt",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Robin Fellhauer",
+      "team": "augsburg",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Tidiam Gomis",
+      "team": "rb-leipzig",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Romulo Cruz",
+      "team": "rb-leipzig",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Anthony Caci",
+      "team": "mainz",
+      "goals": 3,
+      "assists": 3,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Dayot Upamecano",
+      "team": "bayern-munchen",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Josha Vagnoman",
+      "team": "stuttgart",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Aleksandar Pavlović",
+      "team": "bayern-munchen",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Ridle Baku",
+      "team": "rb-leipzig",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Tim Skarke",
+      "team": "union-berlin",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Lukas Petkov",
+      "team": "elversberg",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "David Mokwa Ntusu",
+      "team": "elversberg",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Christian Kofane",
+      "team": "leverkusen",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Adam Daghim",
+      "team": "hoffenheim",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Said El Mala",
+      "team": "koln",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Thijs Dallinga",
+      "team": "koln",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Sehrou Guirassy",
+      "team": "borussia-dortmund",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Rodrigo Ribeiro",
+      "team": "augsburg",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Marco Grüll",
+      "team": "werder-bremen",
+      "goals": 2,
+      "assists": 5,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Fábio Silva",
+      "team": "borussia-dortmund",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Ibrahim Maza",
+      "team": "leverkusen",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Hugo Bolin",
+      "team": "borussia-monchengladbach",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Sheraldo Becker",
+      "team": "mainz",
+      "goals": 2,
+      "assists": 4,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Fabian Rieder",
+      "team": "augsburg",
+      "goals": 2,
+      "assists": 4,
+      "penalties": 1,
+      "played": 7
+    },
+    {
+      "player": "Adam Hložek",
+      "team": "hoffenheim",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Felix Kalu Nmecha",
+      "team": "borussia-dortmund",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Can Uzun",
+      "team": "eintracht-frankfurt",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Yannik Engelhardt",
+      "team": "freiburg",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Ismael Saibari",
+      "team": "bayern-munchen",
+      "goals": 2,
+      "assists": 3,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Yussuf Poulsen",
+      "team": "hamburg",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Shuto Machino",
+      "team": "borussia-monchengladbach",
+      "goals": 2,
+      "assists": null,
+      "penalties": 1,
+      "played": 7
+    },
+    {
+      "player": "Derry Scherhant",
+      "team": "freiburg",
+      "goals": 2,
+      "assists": 3,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Maximilian Beier",
+      "team": "borussia-dortmund",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Stefano Marino",
+      "team": "paderborn",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Steffen Tigges",
+      "team": "paderborn",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Ludovit Reis",
+      "team": "werder-bremen",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Bambase Conte",
+      "team": "hoffenheim",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Miro Muheim",
+      "team": "hamburg",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Wael Mohya",
+      "team": "borussia-monchengladbach",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Alexander Prass",
+      "team": "hoffenheim",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Rocco Reitz",
+      "team": "rb-leipzig",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Emmanuel Latte Lath",
+      "team": "union-berlin",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Leopold Querfeld",
+      "team": "union-berlin",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Cole Campbell",
+      "team": "elversberg",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Ozan Kabak",
+      "team": "hoffenheim",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Ioannis Konstantelias",
+      "team": "borussia-dortmund",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 1
+    },
+    {
+      "player": "Dariusz Stalmach",
+      "team": "werder-bremen",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Anton Kade",
+      "team": "augsburg",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Bilal El Khannouss",
+      "team": "stuttgart",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Grischa Prömel",
+      "team": "stuttgart",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Eren Dinkci",
+      "team": "werder-bremen",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Leon Avdullahu",
+      "team": "hoffenheim",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Tim Lemperle",
+      "team": "hoffenheim",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Nicolás Ezequiel Fernández",
+      "team": "leverkusen",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Facundo Medina",
+      "team": "leverkusen",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Felix Keidel",
+      "team": "elversberg",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Philipp Mwene",
+      "team": "mainz",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Ransford Königsdörffer",
+      "team": "mainz",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Arijon Ibrahimovic",
+      "team": "augsburg",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Alexis Claude Maurice",
+      "team": "augsburg",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Robin Gosens",
+      "team": "schalke",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Adil Aouchiche",
+      "team": "schalke",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Maximilian Wöber",
+      "team": "schalke",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Maximilian Mittelstädt",
+      "team": "stuttgart",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Linton Maina",
+      "team": "koln",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Willi Orban",
+      "team": "rb-leipzig",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Lennart Karl",
+      "team": "bayern-munchen",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Jamal Musiala",
+      "team": "bayern-munchen",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Nicolás Capaldo",
+      "team": "hamburg",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Ragnar Ache",
+      "team": "koln",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Florian Neuhaus",
+      "team": "borussia-monchengladbach",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Isac Lidberg",
+      "team": "borussia-monchengladbach",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Eric Martel",
+      "team": "mainz",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Danny da Costa",
+      "team": "mainz",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Calvin Brackelmann",
+      "team": "augsburg",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Mitchell Weiser",
+      "team": "werder-bremen",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Miguel Gutiérrez",
+      "team": "leverkusen",
+      "goals": 1,
+      "assists": 3,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Santiago Castaneda",
+      "team": "paderborn",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Daniel Svensson",
+      "team": "borussia-dortmund",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Nico Schlotterbeck",
+      "team": "borussia-dortmund",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Robert Andrich",
+      "team": "leverkusen",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Jarell Quansah",
+      "team": "leverkusen",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Moussa Diaby",
+      "team": "leverkusen",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Benedict Hollerbach",
+      "team": "mainz",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    }
+  ]
+}

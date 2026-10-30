@@ -22,10 +22,22 @@
   ],
   "matches": [
     {
-      "id": "fd-600101", "comp": "UCL", "round": "LEAGUE_STAGE_2",
+      "id": "fd-600101", "comp": "UCL", "round": "2",
       "kickoff": "2026-09-30T19:00:00Z",
       "home": "sample-united", "away": "sample-athletic",
       "score": { "h": 3, "a": 0 }, "status": "finished"
+    },
+    {
+      "id": "fd-600201", "comp": "UCL", "round": "ko-r16-2",
+      "kickoff": "2027-03-17T20:00:00Z",
+      "home": "sample-athletic", "away": "sample-united",
+      "score": { "h": 2, "a": 2, "pens": { "h": 4, "a": 3 }, "aet": true }, "status": "finished"
+    },
+    {
+      "id": "fd-600202", "comp": "UCL", "round": "ko-qf-2",
+      "kickoff": "2027-04-14T19:00:00Z",
+      "home": "sample-united", "away": "sample-athletic",
+      "score": { "h": 1, "a": 0, "aet": true }, "status": "finished"
     }
   ]
 }

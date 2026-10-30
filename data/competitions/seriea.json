@@ -1,0 +1,5352 @@
+{
+  "comp": "SERIEA",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-30T02:18:17.891Z",
+  "standings": [
+    {
+      "pos": 1,
+      "prevPos": null,
+      "team": "inter",
+      "played": 9,
+      "w": 8,
+      "d": 1,
+      "l": 0,
+      "gf": 25,
+      "ga": 10,
+      "pts": 25,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
+      "prevPos": null,
+      "team": "lazio",
+      "played": 9,
+      "w": 8,
+      "d": 1,
+      "l": 0,
+      "gf": 22,
+      "ga": 7,
+      "pts": 25,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": null,
+      "team": "roma",
+      "played": 9,
+      "w": 6,
+      "d": 3,
+      "l": 0,
+      "gf": 23,
+      "ga": 8,
+      "pts": 21,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 4,
+      "prevPos": null,
+      "team": "como",
+      "played": 9,
+      "w": 6,
+      "d": 2,
+      "l": 1,
+      "gf": 17,
+      "ga": 8,
+      "pts": 20,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 5,
+      "prevPos": null,
+      "team": "milan",
+      "played": 9,
+      "w": 5,
+      "d": 3,
+      "l": 1,
+      "gf": 18,
+      "ga": 11,
+      "pts": 18,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
+      "prevPos": null,
+      "team": "frosinone",
+      "played": 9,
+      "w": 5,
+      "d": 2,
+      "l": 2,
+      "gf": 22,
+      "ga": 14,
+      "pts": 17,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
+      "prevPos": null,
+      "team": "napoli",
+      "played": 9,
+      "w": 4,
+      "d": 2,
+      "l": 3,
+      "gf": 17,
+      "ga": 11,
+      "pts": 14,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 8,
+      "prevPos": null,
+      "team": "juventus",
+      "played": 9,
+      "w": 4,
+      "d": 2,
+      "l": 3,
+      "gf": 11,
+      "ga": 10,
+      "pts": 14,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": null,
+      "team": "torino",
+      "played": 9,
+      "w": 4,
+      "d": 1,
+      "l": 4,
+      "gf": 14,
+      "ga": 14,
+      "pts": 13,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
+      "prevPos": null,
+      "team": "cagliari",
+      "played": 9,
+      "w": 4,
+      "d": 1,
+      "l": 4,
+      "gf": 8,
+      "ga": 13,
+      "pts": 13,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
+      "prevPos": null,
+      "team": "bologna",
+      "played": 9,
+      "w": 3,
+      "d": 2,
+      "l": 4,
+      "gf": 12,
+      "ga": 12,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
+      "prevPos": null,
+      "team": "atalanta",
+      "played": 9,
+      "w": 3,
+      "d": 2,
+      "l": 4,
+      "gf": 16,
+      "ga": 17,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 13,
+      "prevPos": null,
+      "team": "genoa",
+      "played": 9,
+      "w": 3,
+      "d": 1,
+      "l": 5,
+      "gf": 8,
+      "ga": 13,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
+      "prevPos": null,
+      "team": "lecce",
+      "played": 9,
+      "w": 3,
+      "d": 0,
+      "l": 6,
+      "gf": 10,
+      "ga": 19,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
+      "prevPos": null,
+      "team": "sassuolo",
+      "played": 9,
+      "w": 2,
+      "d": 2,
+      "l": 5,
+      "gf": 14,
+      "ga": 22,
+      "pts": 8,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 16,
+      "prevPos": null,
+      "team": "monza",
+      "played": 9,
+      "w": 2,
+      "d": 1,
+      "l": 6,
+      "gf": 16,
+      "ga": 22,
+      "pts": 7,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 17,
+      "prevPos": null,
+      "team": "udinese",
+      "played": 9,
+      "w": 1,
+      "d": 2,
+      "l": 6,
+      "gf": 9,
+      "ga": 18,
+      "pts": 5,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 18,
+      "prevPos": null,
+      "team": "fiorentina",
+      "played": 9,
+      "w": 1,
+      "d": 2,
+      "l": 6,
+      "gf": 11,
+      "ga": 21,
+      "pts": 5,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 19,
+      "prevPos": null,
+      "team": "parma",
+      "played": 9,
+      "w": 1,
+      "d": 2,
+      "l": 6,
+      "gf": 5,
+      "ga": 15,
+      "pts": 5,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 20,
+      "prevPos": null,
+      "team": "venezia",
+      "played": 9,
+      "w": 1,
+      "d": 0,
+      "l": 8,
+      "gf": 6,
+      "ga": 19,
+      "pts": 3,
+      "form": [],
+      "zone": "relegation"
+    }
+  ],
+  "matches": [
+    {
+      "id": "fd-558629",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-22T16:30:00Z",
+      "home": "udinese",
+      "away": "como",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558632",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-22T16:30:00Z",
+      "home": "inter",
+      "away": "monza",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558631",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-22T18:45:00Z",
+      "home": "genoa",
+      "away": "napoli",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558636",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-22T18:45:00Z",
+      "home": "parma",
+      "away": "cagliari",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558635",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-23T16:30:00Z",
+      "home": "frosinone",
+      "away": "juventus",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558637",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-23T16:30:00Z",
+      "home": "venezia",
+      "away": "lecce",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558633",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-23T18:45:00Z",
+      "home": "atalanta",
+      "away": "sassuolo",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558634",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-23T18:45:00Z",
+      "home": "torino",
+      "away": "milan",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558630",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-24T16:30:00Z",
+      "home": "bologna",
+      "away": "lazio",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558638",
+      "comp": "SERIEA",
+      "round": "1",
+      "kickoff": "2026-08-24T18:45:00Z",
+      "home": "roma",
+      "away": "fiorentina",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558625",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-28T18:45:00Z",
+      "home": "milan",
+      "away": "venezia",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558620",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-29T16:30:00Z",
+      "home": "sassuolo",
+      "away": "torino",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558624",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-29T16:30:00Z",
+      "home": "monza",
+      "away": "udinese",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558627",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-29T16:30:00Z",
+      "home": "fiorentina",
+      "away": "frosinone",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558619",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-29T18:45:00Z",
+      "home": "juventus",
+      "away": "parma",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558626",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-30T16:30:00Z",
+      "home": "napoli",
+      "away": "como",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558622",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-30T18:45:00Z",
+      "home": "lazio",
+      "away": "genoa",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558623",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-30T18:45:00Z",
+      "home": "cagliari",
+      "away": "inter",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558621",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-31T16:30:00Z",
+      "home": "lecce",
+      "away": "roma",
+      "score": {
+        "h": 0,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558628",
+      "comp": "SERIEA",
+      "round": "2",
+      "kickoff": "2026-08-31T18:45:00Z",
+      "home": "atalanta",
+      "away": "bologna",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558609",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-04T18:45:00Z",
+      "home": "genoa",
+      "away": "como",
+      "score": {
+        "h": 1,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558616",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-05T13:00:00Z",
+      "home": "fiorentina",
+      "away": "torino",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558614",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-05T16:00:00Z",
+      "home": "inter",
+      "away": "napoli",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558611",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-05T18:45:00Z",
+      "home": "roma",
+      "away": "atalanta",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558612",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-06T13:00:00Z",
+      "home": "parma",
+      "away": "monza",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558615",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-06T13:00:00Z",
+      "home": "frosinone",
+      "away": "venezia",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558613",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-06T16:00:00Z",
+      "home": "bologna",
+      "away": "sassuolo",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558618",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-06T18:45:00Z",
+      "home": "juventus",
+      "away": "milan",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558610",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-07T16:30:00Z",
+      "home": "cagliari",
+      "away": "lecce",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558617",
+      "comp": "SERIEA",
+      "round": "3",
+      "kickoff": "2026-09-07T18:45:00Z",
+      "home": "udinese",
+      "away": "lazio",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558606",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-11T18:45:00Z",
+      "home": "venezia",
+      "away": "fiorentina",
+      "score": {
+        "h": 2,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558604",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-12T13:00:00Z",
+      "home": "genoa",
+      "away": "frosinone",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558600",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-12T16:00:00Z",
+      "home": "lazio",
+      "away": "milan",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558607",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-12T18:45:00Z",
+      "home": "atalanta",
+      "away": "cagliari",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558605",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-13T13:00:00Z",
+      "home": "lecce",
+      "away": "monza",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558599",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-13T16:00:00Z",
+      "home": "napoli",
+      "away": "bologna",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558608",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-13T18:45:00Z",
+      "home": "sassuolo",
+      "away": "juventus",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558602",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-14T16:30:00Z",
+      "home": "como",
+      "away": "parma",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558603",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-14T16:30:00Z",
+      "home": "torino",
+      "away": "roma",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558601",
+      "comp": "SERIEA",
+      "round": "4",
+      "kickoff": "2026-09-14T18:45:00Z",
+      "home": "inter",
+      "away": "udinese",
+      "score": {
+        "h": 5,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558596",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-18T18:45:00Z",
+      "home": "monza",
+      "away": "sassuolo",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558589",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-19T13:00:00Z",
+      "home": "udinese",
+      "away": "cagliari",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558598",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-19T13:00:00Z",
+      "home": "bologna",
+      "away": "torino",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558593",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-19T16:00:00Z",
+      "home": "roma",
+      "away": "inter",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558594",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-19T18:45:00Z",
+      "home": "venezia",
+      "away": "lazio",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558591",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-20T10:30:00Z",
+      "home": "fiorentina",
+      "away": "napoli",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558590",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "home": "parma",
+      "away": "genoa",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558592",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "home": "frosinone",
+      "away": "como",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558595",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-20T16:00:00Z",
+      "home": "juventus",
+      "away": "atalanta",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558597",
+      "comp": "SERIEA",
+      "round": "5",
+      "kickoff": "2026-09-20T18:45:00Z",
+      "home": "milan",
+      "away": "lecce",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558588",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-10T13:00:00Z",
+      "home": "genoa",
+      "away": "fiorentina",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558582",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-10T16:00:00Z",
+      "home": "inter",
+      "away": "parma",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558586",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-10T18:45:00Z",
+      "home": "napoli",
+      "away": "frosinone",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558585",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-11T10:30:00Z",
+      "home": "como",
+      "away": "roma",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558581",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "home": "lecce",
+      "away": "bologna",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558583",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "home": "lazio",
+      "away": "monza",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558580",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-11T16:00:00Z",
+      "home": "sassuolo",
+      "away": "milan",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558584",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-11T18:45:00Z",
+      "home": "cagliari",
+      "away": "juventus",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558579",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-12T16:30:00Z",
+      "home": "atalanta",
+      "away": "venezia",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558587",
+      "comp": "SERIEA",
+      "round": "6",
+      "kickoff": "2026-10-12T18:45:00Z",
+      "home": "torino",
+      "away": "udinese",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558573",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-16T18:45:00Z",
+      "home": "frosinone",
+      "away": "sassuolo",
+      "score": {
+        "h": 4,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558575",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-17T13:00:00Z",
+      "home": "venezia",
+      "away": "napoli",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558571",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-17T16:00:00Z",
+      "home": "bologna",
+      "away": "inter",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558572",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-17T18:45:00Z",
+      "home": "roma",
+      "away": "genoa",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558574",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-18T10:30:00Z",
+      "home": "udinese",
+      "away": "lecce",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558577",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-18T13:00:00Z",
+      "home": "fiorentina",
+      "away": "como",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558569",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-18T16:00:00Z",
+      "home": "milan",
+      "away": "atalanta",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558570",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-18T18:45:00Z",
+      "home": "juventus",
+      "away": "lazio",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558576",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-19T16:30:00Z",
+      "home": "monza",
+      "away": "cagliari",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558578",
+      "comp": "SERIEA",
+      "round": "7",
+      "kickoff": "2026-10-19T18:45:00Z",
+      "home": "parma",
+      "away": "torino",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558567",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-23T18:45:00Z",
+      "home": "torino",
+      "away": "monza",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558560",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-24T13:00:00Z",
+      "home": "cagliari",
+      "away": "bologna",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558561",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-24T13:00:00Z",
+      "home": "como",
+      "away": "sassuolo",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558564",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-24T16:00:00Z",
+      "home": "napoli",
+      "away": "roma",
+      "score": {
+        "h": 3,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558565",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-24T18:45:00Z",
+      "home": "lazio",
+      "away": "parma",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558563",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-25T11:30:00Z",
+      "home": "inter",
+      "away": "fiorentina",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558562",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "home": "atalanta",
+      "away": "frosinone",
+      "score": {
+        "h": 4,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558568",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "home": "genoa",
+      "away": "venezia",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558566",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-25T17:00:00Z",
+      "home": "lecce",
+      "away": "juventus",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558559",
+      "comp": "SERIEA",
+      "round": "8",
+      "kickoff": "2026-10-25T19:45:00Z",
+      "home": "udinese",
+      "away": "milan",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558556",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-27T17:30:00Z",
+      "home": "sassuolo",
+      "away": "lazio",
+      "score": {
+        "h": 2,
+        "a": 6
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558555",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-27T19:45:00Z",
+      "home": "roma",
+      "away": "cagliari",
+      "score": {
+        "h": 4,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558557",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-27T19:45:00Z",
+      "home": "torino",
+      "away": "como",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558549",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-28T17:30:00Z",
+      "home": "milan",
+      "away": "bologna",
+      "score": {
+        "h": 2,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558550",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-28T17:30:00Z",
+      "home": "venezia",
+      "away": "inter",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558553",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-28T17:30:00Z",
+      "home": "parma",
+      "away": "udinese",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558552",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-28T19:45:00Z",
+      "home": "genoa",
+      "away": "juventus",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558554",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-28T19:45:00Z",
+      "home": "monza",
+      "away": "napoli",
+      "score": {
+        "h": 1,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558558",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-29T17:30:00Z",
+      "home": "frosinone",
+      "away": "lecce",
+      "score": {
+        "h": 5,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558551",
+      "comp": "SERIEA",
+      "round": "9",
+      "kickoff": "2026-10-29T19:45:00Z",
+      "home": "fiorentina",
+      "away": "atalanta",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-558539",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-10-31T14:00:00Z",
+      "home": "bologna",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558542",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-10-31T17:00:00Z",
+      "home": "udinese",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558548",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-10-31T19:45:00Z",
+      "home": "milan",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558543",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-11-01T11:30:00Z",
+      "home": "como",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558544",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-11-01T14:00:00Z",
+      "home": "frosinone",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558546",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-11-01T14:00:00Z",
+      "home": "lazio",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558540",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-11-01T17:00:00Z",
+      "home": "lecce",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558547",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-11-01T19:45:00Z",
+      "home": "juventus",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558541",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-11-02T17:30:00Z",
+      "home": "sassuolo",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558545",
+      "comp": "SERIEA",
+      "round": "10",
+      "kickoff": "2026-11-02T19:45:00Z",
+      "home": "atalanta",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558537",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-06T19:45:00Z",
+      "home": "venezia",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558532",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-07T14:00:00Z",
+      "home": "torino",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558534",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-07T14:00:00Z",
+      "home": "cagliari",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558535",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-07T17:00:00Z",
+      "home": "parma",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558531",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-07T19:45:00Z",
+      "home": "roma",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558533",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-08T11:30:00Z",
+      "home": "napoli",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558536",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-08T14:00:00Z",
+      "home": "genoa",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558538",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-08T14:00:00Z",
+      "home": "monza",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558530",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-08T17:00:00Z",
+      "home": "inter",
+      "away": "como",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558529",
+      "comp": "SERIEA",
+      "round": "11",
+      "kickoff": "2026-11-08T19:45:00Z",
+      "home": "fiorentina",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558525",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-21T14:00:00Z",
+      "home": "como",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558528",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-21T14:00:00Z",
+      "home": "lazio",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558526",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-21T17:00:00Z",
+      "home": "parma",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558527",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-21T19:45:00Z",
+      "home": "napoli",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558521",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-22T11:30:00Z",
+      "home": "juventus",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558522",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-22T14:00:00Z",
+      "home": "bologna",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558524",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-22T14:00:00Z",
+      "home": "sassuolo",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558523",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-22T17:00:00Z",
+      "home": "milan",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558520",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-22T19:45:00Z",
+      "home": "atalanta",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558519",
+      "comp": "SERIEA",
+      "round": "12",
+      "kickoff": "2026-11-23T19:45:00Z",
+      "home": "monza",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558515",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-27T19:45:00Z",
+      "home": "venezia",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558513",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-28T14:00:00Z",
+      "home": "frosinone",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558514",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-28T17:00:00Z",
+      "home": "torino",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558518",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-28T19:45:00Z",
+      "home": "inter",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558517",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-29T11:30:00Z",
+      "home": "udinese",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558509",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-29T14:00:00Z",
+      "home": "sassuolo",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558512",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-29T17:00:00Z",
+      "home": "roma",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558511",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-29T19:45:00Z",
+      "home": "como",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558516",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-30T17:30:00Z",
+      "home": "lecce",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558510",
+      "comp": "SERIEA",
+      "round": "13",
+      "kickoff": "2026-11-30T19:45:00Z",
+      "home": "cagliari",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558502",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-04T19:45:00Z",
+      "home": "bologna",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558507",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-05T14:00:00Z",
+      "home": "monza",
+      "away": "como",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558501",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-05T17:00:00Z",
+      "home": "frosinone",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558508",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-05T19:45:00Z",
+      "home": "napoli",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558499",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-06T11:30:00Z",
+      "home": "genoa",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558504",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-06T14:00:00Z",
+      "home": "lazio",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558500",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-06T17:00:00Z",
+      "home": "juventus",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558505",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-06T19:45:00Z",
+      "home": "milan",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558506",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-07T17:30:00Z",
+      "home": "venezia",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558503",
+      "comp": "SERIEA",
+      "round": "14",
+      "kickoff": "2026-12-07T19:45:00Z",
+      "home": "fiorentina",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558491",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-11T19:45:00Z",
+      "home": "udinese",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558494",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-12T14:00:00Z",
+      "home": "cagliari",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558492",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-12T17:00:00Z",
+      "home": "lecce",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558490",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-12T19:45:00Z",
+      "home": "como",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558498",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-13T11:30:00Z",
+      "home": "lazio",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558495",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-13T14:00:00Z",
+      "home": "inter",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558493",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-13T17:00:00Z",
+      "home": "parma",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558489",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-13T19:45:00Z",
+      "home": "napoli",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558497",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-14T17:30:00Z",
+      "home": "atalanta",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558496",
+      "comp": "SERIEA",
+      "round": "15",
+      "kickoff": "2026-12-14T19:45:00Z",
+      "home": "juventus",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558482",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-18T17:30:00Z",
+      "home": "frosinone",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558486",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-18T19:45:00Z",
+      "home": "lecce",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558480",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-19T14:00:00Z",
+      "home": "sassuolo",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558479",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-19T17:00:00Z",
+      "home": "milan",
+      "away": "como",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558481",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-19T19:45:00Z",
+      "home": "roma",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558484",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-20T11:30:00Z",
+      "home": "fiorentina",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558487",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-20T14:00:00Z",
+      "home": "torino",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558488",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-20T14:00:00Z",
+      "home": "venezia",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558485",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-20T17:00:00Z",
+      "home": "genoa",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558483",
+      "comp": "SERIEA",
+      "round": "16",
+      "kickoff": "2026-12-20T19:45:00Z",
+      "home": "atalanta",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558473",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-02T11:30:00Z",
+      "home": "cagliari",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558474",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-02T14:00:00Z",
+      "home": "torino",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558478",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-02T14:00:00Z",
+      "home": "fiorentina",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558471",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-02T17:00:00Z",
+      "home": "roma",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558475",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-02T19:45:00Z",
+      "home": "monza",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558476",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-03T11:30:00Z",
+      "home": "inter",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558469",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-03T14:00:00Z",
+      "home": "udinese",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558470",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-03T14:00:00Z",
+      "home": "como",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558472",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-03T17:00:00Z",
+      "home": "parma",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558477",
+      "comp": "SERIEA",
+      "round": "17",
+      "kickoff": "2027-01-03T19:45:00Z",
+      "home": "bologna",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558461",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-05T17:30:00Z",
+      "home": "genoa",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558462",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-05T17:30:00Z",
+      "home": "venezia",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558464",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-05T19:45:00Z",
+      "home": "milan",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558465",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-06T11:30:00Z",
+      "home": "juventus",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558459",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-06T14:00:00Z",
+      "home": "frosinone",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558468",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-06T14:00:00Z",
+      "home": "lecce",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558466",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-06T17:00:00Z",
+      "home": "atalanta",
+      "away": "como",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558467",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-06T19:45:00Z",
+      "home": "lazio",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558460",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-07T17:30:00Z",
+      "home": "sassuolo",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558463",
+      "comp": "SERIEA",
+      "round": "18",
+      "kickoff": "2027-01-07T19:45:00Z",
+      "home": "napoli",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558452",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-09T14:00:00Z",
+      "home": "monza",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558458",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-09T17:00:00Z",
+      "home": "roma",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558455",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-09T19:45:00Z",
+      "home": "bologna",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558457",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-10T11:30:00Z",
+      "home": "como",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558449",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-10T14:00:00Z",
+      "home": "fiorentina",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558454",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-10T14:00:00Z",
+      "home": "parma",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558451",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-10T17:00:00Z",
+      "home": "torino",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558453",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-10T19:45:00Z",
+      "home": "inter",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558456",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-11T17:30:00Z",
+      "home": "cagliari",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558450",
+      "comp": "SERIEA",
+      "round": "19",
+      "kickoff": "2027-01-11T19:45:00Z",
+      "home": "udinese",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-558439",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "milan",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558440",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "parma",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558441",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "juventus",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558442",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "lecce",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558443",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "cagliari",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558444",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "sassuolo",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558445",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "napoli",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558446",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "lazio",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558447",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "venezia",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558448",
+      "comp": "SERIEA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "atalanta",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558429",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "lecce",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558430",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "juventus",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558431",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "inter",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558432",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "fiorentina",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558433",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "frosinone",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558434",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "roma",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558435",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "bologna",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558436",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "genoa",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558437",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "como",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558438",
+      "comp": "SERIEA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "monza",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558419",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "milan",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558420",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "monza",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558421",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "torino",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558422",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "udinese",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558423",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "sassuolo",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558424",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "genoa",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558425",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "cagliari",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558426",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "atalanta",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558427",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "lazio",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558428",
+      "comp": "SERIEA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "napoli",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558409",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "juventus",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558410",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "inter",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558411",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "como",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558412",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "lecce",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558413",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "venezia",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558414",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "roma",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558415",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "atalanta",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558416",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "parma",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558417",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "bologna",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558418",
+      "comp": "SERIEA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "fiorentina",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558399",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "napoli",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558400",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "monza",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558401",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "torino",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558402",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "frosinone",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558403",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "bologna",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558404",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "roma",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558405",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "udinese",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558406",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "genoa",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558407",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "cagliari",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558408",
+      "comp": "SERIEA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "inter",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558389",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "como",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558390",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "atalanta",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558391",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "udinese",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558392",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "juventus",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558393",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "fiorentina",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558394",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "sassuolo",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558395",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "milan",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558396",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "venezia",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558397",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "lecce",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558398",
+      "comp": "SERIEA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "lazio",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558379",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "inter",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558380",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "cagliari",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558381",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "parma",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558382",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "genoa",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558383",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "roma",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558384",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "como",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558385",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "torino",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558386",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "bologna",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558387",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "monza",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558388",
+      "comp": "SERIEA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "frosinone",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558369",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "udinese",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558370",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "atalanta",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558371",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "napoli",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558372",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "lecce",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558373",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "lazio",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558374",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "sassuolo",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558375",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "monza",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558376",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "fiorentina",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558377",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "milan",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558378",
+      "comp": "SERIEA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "juventus",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558359",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "bologna",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558360",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "cagliari",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558361",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "milan",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558362",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "genoa",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558363",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "parma",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558364",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "torino",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558365",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "frosinone",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558366",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "como",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558367",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "lazio",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558368",
+      "comp": "SERIEA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "venezia",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558349",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "napoli",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558350",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "udinese",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558351",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "juventus",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558352",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "fiorentina",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558353",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "parma",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558354",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "sassuolo",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558355",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "monza",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558356",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "inter",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558357",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "roma",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558358",
+      "comp": "SERIEA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "atalanta",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558339",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "lecce",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558340",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "cagliari",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558341",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "como",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558342",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "sassuolo",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558343",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "roma",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558344",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "milan",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558345",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "genoa",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558346",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "torino",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558347",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "venezia",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558348",
+      "comp": "SERIEA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "frosinone",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558329",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "lazio",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558330",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "cagliari",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558331",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "parma",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558332",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "bologna",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558333",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "frosinone",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558334",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "inter",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558335",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "udinese",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558336",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "juventus",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558337",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "napoli",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558338",
+      "comp": "SERIEA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "fiorentina",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558319",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "monza",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558320",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "fiorentina",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558321",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "roma",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558322",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "como",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558323",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "sassuolo",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558324",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "bologna",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558325",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "atalanta",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558326",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "venezia",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558327",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "milan",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558328",
+      "comp": "SERIEA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "torino",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558309",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "frosinone",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558310",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "cagliari",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558311",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "napoli",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558312",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "parma",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558313",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "lazio",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558314",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "juventus",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558315",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "genoa",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558316",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "lecce",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558317",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "venezia",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558318",
+      "comp": "SERIEA",
+      "round": "33",
+      "kickoff": "2027-04-25T00:00:00Z",
+      "home": "inter",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558299",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "atalanta",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558300",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "torino",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558301",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "milan",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558302",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "udinese",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558303",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "sassuolo",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558304",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "bologna",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558305",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "como",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558306",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "monza",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558307",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "lecce",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558308",
+      "comp": "SERIEA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "roma",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558289",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "parma",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558290",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "genoa",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558291",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "lazio",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558292",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "napoli",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558293",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "inter",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558294",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "venezia",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558295",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "udinese",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558296",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "torino",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558297",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "frosinone",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558298",
+      "comp": "SERIEA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "fiorentina",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558279",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "napoli",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558280",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "lecce",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558281",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "lazio",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558282",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "bologna",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558283",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "como",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558284",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "juventus",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558285",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "sassuolo",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558286",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "monza",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558287",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "milan",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558288",
+      "comp": "SERIEA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "cagliari",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558269",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "roma",
+      "away": "como",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558270",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "parma",
+      "away": "juventus",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558271",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "torino",
+      "away": "napoli",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558272",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "atalanta",
+      "away": "lecce",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558273",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "inter",
+      "away": "lazio",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558274",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "udinese",
+      "away": "sassuolo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558275",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "frosinone",
+      "away": "cagliari",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558276",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "fiorentina",
+      "away": "monza",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558277",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "venezia",
+      "away": "milan",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558278",
+      "comp": "SERIEA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "genoa",
+      "away": "bologna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558259",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "milan",
+      "away": "udinese",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558260",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "juventus",
+      "away": "frosinone",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558261",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "monza",
+      "away": "torino",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558262",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "sassuolo",
+      "away": "inter",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558263",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "cagliari",
+      "away": "roma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558264",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "lazio",
+      "away": "fiorentina",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558265",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "como",
+      "away": "genoa",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558266",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "napoli",
+      "away": "atalanta",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558267",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "lecce",
+      "away": "venezia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-558268",
+      "comp": "SERIEA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "bologna",
+      "away": "parma",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    }
+  ],
+  "scorers": [
+    {
+      "player": "Gustavo Varela",
+      "team": "monza",
+      "goals": 8,
+      "assists": 1,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Antonio Raimondo",
+      "team": "frosinone",
+      "goals": 8,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Donyell Malen",
+      "team": "roma",
+      "goals": 7,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Nikola Krstović",
+      "team": "atalanta",
+      "goals": 6,
+      "assists": 2,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Anastasios Douvikas",
+      "team": "como",
+      "goals": 5,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Marcus Thuram-Ulien",
+      "team": "inter",
+      "goals": 5,
+      "assists": 2,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Daniel Maldini",
+      "team": "cagliari",
+      "goals": 5,
+      "assists": null,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Kevin De Bruyne",
+      "team": "napoli",
+      "goals": 4,
+      "assists": 1,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Alphadjo Cisse",
+      "team": "milan",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Adrien Rabiot",
+      "team": "milan",
+      "goals": 4,
+      "assists": 3,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Che Adams",
+      "team": "torino",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Lautaro Martínez",
+      "team": "inter",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Tijjani Noslin",
+      "team": "lazio",
+      "goals": 4,
+      "assists": 2,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Giacomo Calò",
+      "team": "frosinone",
+      "goals": 4,
+      "assists": 1,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Hakan Çalhanoğlu",
+      "team": "inter",
+      "goals": 3,
+      "assists": null,
+      "penalties": 1,
+      "played": 7
+    },
+    {
+      "player": "Davide Frattesi",
+      "team": "lazio",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Niccolo Pisilli",
+      "team": "roma",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Jurgen Ekkelenkamp",
+      "team": "udinese",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Martin Baturina",
+      "team": "como",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Rasmus Højlund",
+      "team": "napoli",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Matias Soule",
+      "team": "roma",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Milutin Osmajić",
+      "team": "genoa",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Nico Paz",
+      "team": "como",
+      "goals": 3,
+      "assists": 3,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Giorgi Kvernadze",
+      "team": "frosinone",
+      "goals": 3,
+      "assists": 3,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Vasilije Adzic",
+      "team": "sassuolo",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Franco Mastantuono",
+      "team": "fiorentina",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Diego Moreira",
+      "team": "milan",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Gustav Isaksen",
+      "team": "lazio",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Samuel Mbangula",
+      "team": "bologna",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Hassane Kamara",
+      "team": "udinese",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Piotr Zieliński",
+      "team": "inter",
+      "goals": 2,
+      "assists": 2,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Francesco Esposito",
+      "team": "inter",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Bremer",
+      "team": "juventus",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Tiago Gabriel",
+      "team": "lecce",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Cas Odenthal",
+      "team": "sassuolo",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Gonçalo Ramos",
+      "team": "milan",
+      "goals": 2,
+      "assists": 1,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Domenico Berardi",
+      "team": "sassuolo",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Rodrigo Mora",
+      "team": "roma",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Assane Diao",
+      "team": "como",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Mateo Pellegrino",
+      "team": "fiorentina",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Matteo Politano",
+      "team": "napoli",
+      "goals": 2,
+      "assists": 3,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Éderson",
+      "team": "atalanta",
+      "goals": 2,
+      "assists": null,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Jay Robinson",
+      "team": "monza",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Simone Lontani",
+      "team": "parma",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Akor Adams",
+      "team": "venezia",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Antoine Hainaut",
+      "team": "venezia",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Lassana Coulibaly",
+      "team": "lecce",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Sebastiano Esposito",
+      "team": "sassuolo",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Edon Zhegrova",
+      "team": "juventus",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jacobo Ramón",
+      "team": "como",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "José Romero",
+      "team": "parma",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Carlos Augusto Lobaton",
+      "team": "inter",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Ange-Yoan Bonny",
+      "team": "inter",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Federico Bernardeschi",
+      "team": "bologna",
+      "goals": 2,
+      "assists": null,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Sandro Kulenović",
+      "team": "torino",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Manu Koné",
+      "team": "roma",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Mattia Zaccagni",
+      "team": "lazio",
+      "goals": 2,
+      "assists": 5,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Álex Jiménez",
+      "team": "fiorentina",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Christian Pulisic",
+      "team": "milan",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Kristian Thorstvedt",
+      "team": "sassuolo",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Emanuele Lulli",
+      "team": "roma",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Giovanni Simeone",
+      "team": "torino",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Scott McTominay",
+      "team": "napoli",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Leonardo Balerdi",
+      "team": "roma",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Kenneth Taylor",
+      "team": "lazio",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Romano Schmid",
+      "team": "frosinone",
+      "goals": 2,
+      "assists": 4,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Daniel Birligea",
+      "team": "frosinone",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Yann Aurel Bisseck",
+      "team": "inter",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Antonio Vergara",
+      "team": "napoli",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Alessandro Romano",
+      "team": "cagliari",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Olaf Gorter",
+      "team": "lecce",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Giacomo Raspadori",
+      "team": "atalanta",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Cristian Volpato",
+      "team": "sassuolo",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Pietro Comuzzo",
+      "team": "torino",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Jakub Piotrowski",
+      "team": "udinese",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Andrea Colpani",
+      "team": "monza",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Gabriele Bracaglia",
+      "team": "frosinone",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Nicolás González",
+      "team": "juventus",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Teun Koopmeiners",
+      "team": "juventus",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Lazar Samardzic",
+      "team": "atalanta",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Rolando Mandragora",
+      "team": "torino",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Mario Hermoso",
+      "team": "roma",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "John Yeboah",
+      "team": "venezia",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Richie Sagrado",
+      "team": "venezia",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Josh Doig",
+      "team": "sassuolo",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Roberto Piccoli",
+      "team": "bologna",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Artem Dovbyk",
+      "team": "bologna",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Federico Gatti",
+      "team": "juventus",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jesper Karlström",
+      "team": "udinese",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Albert Guðmundsson",
+      "team": "lazio",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Johan Vásquez",
+      "team": "genoa",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Matteo Cancellieri",
+      "team": "lazio",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Paul Mendy",
+      "team": "cagliari",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Gianluca Scamacca",
+      "team": "atalanta",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Ricardo Mangas",
+      "team": "monza",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Exequiel Zeballos",
+      "team": "monza",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Stanislav Lobotka",
+      "team": "napoli",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Kieron Bowie",
+      "team": "sassuolo",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Kaiki Bruno",
+      "team": "como",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "James Abankwah",
+      "team": "udinese",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    }
+  ]
+}

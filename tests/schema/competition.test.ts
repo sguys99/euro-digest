@@ -68,6 +68,39 @@ describe("Match (부록 A, FR-44)", () => {
   });
 });
 
+describe("Match 선택 필드 — tbc·score.pens·score.aet (2026-10-30 사용자 결정, M2-02)", () => {
+  const ucl = validFixture(CompetitionFileSchema, "data/competitions/ucl.json");
+
+  it("킥오프 미확정은 tbc: true, 확정 경기는 키 생략", () => {
+    expect(at(file.matches, 1).tbc).toBe(true);
+    expect("tbc" in match).toBe(false);
+    expect(issuePaths(MatchSchema, { ...match, tbc: false })).toEqual(["tbc"]);
+  });
+
+  it("승부차기 경기는 pens + aet, 연장 종료는 aet만 — h·a는 승부차기 골 제외", () => {
+    expect(at(ucl.matches, 1).score).toEqual({
+      h: 2,
+      a: 2,
+      pens: { h: 4, a: 3 },
+      aet: true,
+    });
+    expect(at(ucl.matches, 2).score).toEqual({ h: 1, a: 0, aet: true });
+    expect(at(ucl.matches, 0).score).toEqual({ h: 3, a: 0 });
+  });
+
+  it("aet는 true만, pens는 h·a 숫자", () => {
+    expect(
+      issuePaths(MatchSchema, { ...match, score: { h: 1, a: 1, aet: false } }),
+    ).toEqual(["score.aet"]);
+    expect(
+      issuePaths(MatchSchema, {
+        ...match,
+        score: { h: 1, a: 1, pens: { h: 4 } },
+      }),
+    ).toEqual(["score.pens.a"]);
+  });
+});
+
 describe("CompetitionFile — data/competitions/{comp}.json (초안)", () => {
   it("fixture가 통과한다", () => {
     expect(file.comp).toBe("EPL");

@@ -1,0 +1,4480 @@
+{
+  "comp": "LIGUE1",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-30T02:19:04.063Z",
+  "standings": [
+    {
+      "pos": 1,
+      "prevPos": null,
+      "team": "paris-saint-germain",
+      "played": 8,
+      "w": 5,
+      "d": 2,
+      "l": 1,
+      "gf": 16,
+      "ga": 9,
+      "pts": 17,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
+      "prevPos": null,
+      "team": "rennes",
+      "played": 8,
+      "w": 5,
+      "d": 1,
+      "l": 2,
+      "gf": 18,
+      "ga": 14,
+      "pts": 16,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": null,
+      "team": "lille",
+      "played": 8,
+      "w": 4,
+      "d": 3,
+      "l": 1,
+      "gf": 11,
+      "ga": 6,
+      "pts": 15,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 4,
+      "prevPos": null,
+      "team": "monaco",
+      "played": 8,
+      "w": 4,
+      "d": 3,
+      "l": 1,
+      "gf": 11,
+      "ga": 7,
+      "pts": 15,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 5,
+      "prevPos": null,
+      "team": "lyon",
+      "played": 8,
+      "w": 4,
+      "d": 2,
+      "l": 2,
+      "gf": 13,
+      "ga": 7,
+      "pts": 14,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
+      "prevPos": null,
+      "team": "paris-fc",
+      "played": 8,
+      "w": 4,
+      "d": 2,
+      "l": 2,
+      "gf": 13,
+      "ga": 9,
+      "pts": 14,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
+      "prevPos": null,
+      "team": "lens",
+      "played": 8,
+      "w": 4,
+      "d": 1,
+      "l": 3,
+      "gf": 16,
+      "ga": 12,
+      "pts": 13,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 8,
+      "prevPos": null,
+      "team": "marseille",
+      "played": 8,
+      "w": 4,
+      "d": 0,
+      "l": 4,
+      "gf": 18,
+      "ga": 13,
+      "pts": 12,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": null,
+      "team": "lorient",
+      "played": 8,
+      "w": 3,
+      "d": 3,
+      "l": 2,
+      "gf": 7,
+      "ga": 6,
+      "pts": 12,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
+      "prevPos": null,
+      "team": "nice",
+      "played": 8,
+      "w": 3,
+      "d": 2,
+      "l": 3,
+      "gf": 8,
+      "ga": 10,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
+      "prevPos": null,
+      "team": "toulouse",
+      "played": 8,
+      "w": 2,
+      "d": 4,
+      "l": 2,
+      "gf": 12,
+      "ga": 11,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
+      "prevPos": null,
+      "team": "auxerre",
+      "played": 8,
+      "w": 3,
+      "d": 1,
+      "l": 4,
+      "gf": 12,
+      "ga": 18,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 13,
+      "prevPos": null,
+      "team": "brest",
+      "played": 8,
+      "w": 2,
+      "d": 3,
+      "l": 3,
+      "gf": 14,
+      "ga": 12,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
+      "prevPos": null,
+      "team": "angers",
+      "played": 8,
+      "w": 2,
+      "d": 2,
+      "l": 4,
+      "gf": 9,
+      "ga": 15,
+      "pts": 8,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
+      "prevPos": null,
+      "team": "le-mans",
+      "played": 8,
+      "w": 1,
+      "d": 4,
+      "l": 3,
+      "gf": 11,
+      "ga": 16,
+      "pts": 7,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 16,
+      "prevPos": null,
+      "team": "strasbourg",
+      "played": 8,
+      "w": 2,
+      "d": 1,
+      "l": 5,
+      "gf": 12,
+      "ga": 18,
+      "pts": 7,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 17,
+      "prevPos": null,
+      "team": "troyes",
+      "played": 8,
+      "w": 1,
+      "d": 2,
+      "l": 5,
+      "gf": 5,
+      "ga": 16,
+      "pts": 5,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 18,
+      "prevPos": null,
+      "team": "le-havre",
+      "played": 8,
+      "w": 0,
+      "d": 2,
+      "l": 6,
+      "gf": 8,
+      "ga": 15,
+      "pts": 2,
+      "form": [],
+      "zone": "relegation"
+    }
+  ],
+  "matches": [
+    {
+      "id": "fd-559715",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-21T18:45:00Z",
+      "home": "marseille",
+      "away": "strasbourg",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559712",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-22T15:15:00Z",
+      "home": "lens",
+      "away": "auxerre",
+      "score": {
+        "h": 5,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559711",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-22T18:45:00Z",
+      "home": "le-mans",
+      "away": "brest",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559714",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-22T18:45:00Z",
+      "home": "troyes",
+      "away": "paris-fc",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559716",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-22T18:45:00Z",
+      "home": "nice",
+      "away": "lorient",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559718",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-22T18:45:00Z",
+      "home": "toulouse",
+      "away": "lyon",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559717",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-23T13:00:00Z",
+      "home": "angers",
+      "away": "lille",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559719",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-23T15:15:00Z",
+      "home": "le-havre",
+      "away": "monaco",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559713",
+      "comp": "LIGUE1",
+      "round": "1",
+      "kickoff": "2026-08-23T18:45:00Z",
+      "home": "rennes",
+      "away": "paris-saint-germain",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559702",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-28T18:45:00Z",
+      "home": "lille",
+      "away": "paris-saint-germain",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559704",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-29T15:15:00Z",
+      "home": "strasbourg",
+      "away": "lens",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559705",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-29T18:45:00Z",
+      "home": "lorient",
+      "away": "troyes",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559706",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-29T18:45:00Z",
+      "home": "lyon",
+      "away": "le-havre",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559708",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-29T18:45:00Z",
+      "home": "auxerre",
+      "away": "angers",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559710",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-29T18:45:00Z",
+      "home": "brest",
+      "away": "toulouse",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559707",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-30T13:00:00Z",
+      "home": "paris-fc",
+      "away": "nice",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559709",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-30T15:15:00Z",
+      "home": "rennes",
+      "away": "le-mans",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559703",
+      "comp": "LIGUE1",
+      "round": "2",
+      "kickoff": "2026-08-30T18:45:00Z",
+      "home": "monaco",
+      "away": "marseille",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559696",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-03T18:45:00Z",
+      "home": "toulouse",
+      "away": "lille",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559699",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-04T17:00:00Z",
+      "home": "lyon",
+      "away": "auxerre",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559697",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-04T19:05:00Z",
+      "home": "paris-saint-germain",
+      "away": "monaco",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559695",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-05T15:15:00Z",
+      "home": "lens",
+      "away": "lorient",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559693",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-05T18:45:00Z",
+      "home": "le-havre",
+      "away": "brest",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559701",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-05T18:45:00Z",
+      "home": "nice",
+      "away": "le-mans",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559700",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-06T13:00:00Z",
+      "home": "troyes",
+      "away": "strasbourg",
+      "score": {
+        "h": 2,
+        "a": 6
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559698",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-06T15:15:00Z",
+      "home": "angers",
+      "away": "rennes",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559694",
+      "comp": "LIGUE1",
+      "round": "3",
+      "kickoff": "2026-09-06T18:45:00Z",
+      "home": "marseille",
+      "away": "paris-fc",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559689",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-11T18:45:00Z",
+      "home": "rennes",
+      "away": "marseille",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559687",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-12T15:15:00Z",
+      "home": "strasbourg",
+      "away": "monaco",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559684",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-12T18:45:00Z",
+      "home": "lorient",
+      "away": "toulouse",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559688",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-12T18:45:00Z",
+      "home": "auxerre",
+      "away": "nice",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559690",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-12T18:45:00Z",
+      "home": "le-havre",
+      "away": "angers",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559692",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-12T18:45:00Z",
+      "home": "paris-fc",
+      "away": "lyon",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559685",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-13T13:00:00Z",
+      "home": "lille",
+      "away": "troyes",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559686",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-13T15:15:00Z",
+      "home": "le-mans",
+      "away": "lens",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559691",
+      "comp": "LIGUE1",
+      "round": "4",
+      "kickoff": "2026-09-13T18:45:00Z",
+      "home": "brest",
+      "away": "paris-saint-germain",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559682",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-18T18:45:00Z",
+      "home": "monaco",
+      "away": "lens",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559679",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-19T15:15:00Z",
+      "home": "paris-fc",
+      "away": "strasbourg",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559677",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-19T18:45:00Z",
+      "home": "le-mans",
+      "away": "lorient",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559680",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-19T18:45:00Z",
+      "home": "toulouse",
+      "away": "le-havre",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559681",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-19T18:45:00Z",
+      "home": "angers",
+      "away": "troyes",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559683",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-19T18:45:00Z",
+      "home": "lyon",
+      "away": "rennes",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559676",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-20T13:00:00Z",
+      "home": "auxerre",
+      "away": "brest",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559678",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-20T15:15:00Z",
+      "home": "nice",
+      "away": "lille",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559675",
+      "comp": "LIGUE1",
+      "round": "5",
+      "kickoff": "2026-09-20T18:45:00Z",
+      "home": "marseille",
+      "away": "paris-saint-germain",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559669",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-09T18:45:00Z",
+      "home": "lens",
+      "away": "lyon",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559674",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-10T15:15:00Z",
+      "home": "lille",
+      "away": "le-havre",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559666",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-10T18:45:00Z",
+      "home": "brest",
+      "away": "angers",
+      "score": {
+        "h": 5,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559668",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-10T18:45:00Z",
+      "home": "lorient",
+      "away": "paris-fc",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559672",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-10T18:45:00Z",
+      "home": "paris-saint-germain",
+      "away": "le-mans",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559673",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-10T18:45:00Z",
+      "home": "monaco",
+      "away": "toulouse",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559670",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-11T13:00:00Z",
+      "home": "nice",
+      "away": "strasbourg",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559667",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-11T15:15:00Z",
+      "home": "rennes",
+      "away": "auxerre",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559671",
+      "comp": "LIGUE1",
+      "round": "6",
+      "kickoff": "2026-10-11T18:45:00Z",
+      "home": "troyes",
+      "away": "marseille",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559661",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-16T18:45:00Z",
+      "home": "le-mans",
+      "away": "toulouse",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559662",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-17T15:15:00Z",
+      "home": "strasbourg",
+      "away": "paris-saint-germain",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559659",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-17T18:45:00Z",
+      "home": "troyes",
+      "away": "lens",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559660",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-17T18:45:00Z",
+      "home": "lille",
+      "away": "brest",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559664",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-18T13:00:00Z",
+      "home": "angers",
+      "away": "marseille",
+      "score": {
+        "h": 2,
+        "a": 5
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559657",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-18T15:15:00Z",
+      "home": "lorient",
+      "away": "monaco",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559658",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-18T15:15:00Z",
+      "home": "paris-fc",
+      "away": "rennes",
+      "score": {
+        "h": 4,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559663",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-18T15:15:00Z",
+      "home": "le-havre",
+      "away": "auxerre",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559665",
+      "comp": "LIGUE1",
+      "round": "7",
+      "kickoff": "2026-10-18T18:45:00Z",
+      "home": "lyon",
+      "away": "nice",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559654",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-23T18:45:00Z",
+      "home": "brest",
+      "away": "nice",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559652",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-24T18:45:00Z",
+      "home": "lens",
+      "away": "paris-fc",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559650",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-25T14:00:00Z",
+      "home": "monaco",
+      "away": "lille",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559649",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "home": "marseille",
+      "away": "le-havre",
+      "score": {
+        "h": 4,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559651",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "home": "rennes",
+      "away": "strasbourg",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559653",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "home": "angers",
+      "away": "lorient",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559655",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "home": "toulouse",
+      "away": "troyes",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559656",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-25T16:15:00Z",
+      "home": "auxerre",
+      "away": "le-mans",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559648",
+      "comp": "LIGUE1",
+      "round": "8",
+      "kickoff": "2026-10-26T19:30:00Z",
+      "home": "paris-saint-germain",
+      "away": "lyon",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-559644",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-10-30T18:00:00Z",
+      "home": "le-havre",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559646",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-10-30T18:00:00Z",
+      "home": "nice",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559639",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-10-30T20:05:00Z",
+      "home": "lille",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559643",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-10-31T19:45:00Z",
+      "home": "troyes",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559647",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-11-01T14:00:00Z",
+      "home": "strasbourg",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559640",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-11-01T16:15:00Z",
+      "home": "lyon",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559642",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-11-01T16:15:00Z",
+      "home": "paris-fc",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559645",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-11-01T19:45:00Z",
+      "home": "marseille",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559641",
+      "comp": "LIGUE1",
+      "round": "9",
+      "kickoff": "2026-11-02T19:45:00Z",
+      "home": "lorient",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559638",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-06T19:45:00Z",
+      "home": "toulouse",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559637",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-07T16:15:00Z",
+      "home": "auxerre",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559635",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-07T19:45:00Z",
+      "home": "paris-saint-germain",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559636",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-08T14:00:00Z",
+      "home": "rennes",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559631",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-08T16:15:00Z",
+      "home": "le-mans",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559632",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-08T16:15:00Z",
+      "home": "brest",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559633",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-08T16:15:00Z",
+      "home": "le-havre",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559634",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-08T16:15:00Z",
+      "home": "angers",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559630",
+      "comp": "LIGUE1",
+      "round": "10",
+      "kickoff": "2026-11-08T19:45:00Z",
+      "home": "lens",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559622",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-20T19:45:00Z",
+      "home": "troyes",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559628",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-21T16:15:00Z",
+      "home": "nice",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559621",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-21T19:45:00Z",
+      "home": "monaco",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559623",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-21T19:45:00Z",
+      "home": "lens",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559624",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-21T19:45:00Z",
+      "home": "lille",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559627",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-21T19:45:00Z",
+      "home": "strasbourg",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559625",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-22T14:00:00Z",
+      "home": "paris-fc",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559626",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-22T16:15:00Z",
+      "home": "lorient",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559629",
+      "comp": "LIGUE1",
+      "round": "11",
+      "kickoff": "2026-11-22T19:45:00Z",
+      "home": "marseille",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559616",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-27T19:45:00Z",
+      "home": "brest",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559612",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-28T16:15:00Z",
+      "home": "angers",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559613",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-28T19:45:00Z",
+      "home": "le-havre",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559614",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-28T19:45:00Z",
+      "home": "paris-saint-germain",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559617",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-28T19:45:00Z",
+      "home": "le-mans",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559620",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-28T19:45:00Z",
+      "home": "nice",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559619",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-29T14:00:00Z",
+      "home": "auxerre",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559618",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-29T16:15:00Z",
+      "home": "toulouse",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559615",
+      "comp": "LIGUE1",
+      "round": "12",
+      "kickoff": "2026-11-29T19:45:00Z",
+      "home": "lyon",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559609",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-04T19:45:00Z",
+      "home": "toulouse",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559606",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-05T16:15:00Z",
+      "home": "lille",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559604",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-05T19:45:00Z",
+      "home": "monaco",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559605",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-05T19:45:00Z",
+      "home": "lens",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559610",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-05T19:45:00Z",
+      "home": "strasbourg",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559611",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-05T19:45:00Z",
+      "home": "paris-fc",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559603",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-06T14:00:00Z",
+      "home": "troyes",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559608",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-06T16:15:00Z",
+      "home": "rennes",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559607",
+      "comp": "LIGUE1",
+      "round": "13",
+      "kickoff": "2026-12-06T19:45:00Z",
+      "home": "marseille",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559602",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-11T19:45:00Z",
+      "home": "auxerre",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559596",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-12T16:15:00Z",
+      "home": "paris-saint-germain",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559595",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-12T19:45:00Z",
+      "home": "nice",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559597",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-12T19:45:00Z",
+      "home": "angers",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559598",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-12T19:45:00Z",
+      "home": "brest",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559599",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-12T19:45:00Z",
+      "home": "le-havre",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559601",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-13T14:00:00Z",
+      "home": "lorient",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559600",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-13T16:15:00Z",
+      "home": "rennes",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559594",
+      "comp": "LIGUE1",
+      "round": "14",
+      "kickoff": "2026-12-13T19:45:00Z",
+      "home": "lyon",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559587",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-02T16:00:00Z",
+      "home": "brest",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559588",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-02T20:00:00Z",
+      "home": "troyes",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559589",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-02T20:00:00Z",
+      "home": "toulouse",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559590",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-02T20:00:00Z",
+      "home": "monaco",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559591",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-02T20:00:00Z",
+      "home": "paris-fc",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559592",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-02T20:00:00Z",
+      "home": "lorient",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559586",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-03T14:00:00Z",
+      "home": "le-mans",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559593",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-03T16:15:00Z",
+      "home": "lille",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559585",
+      "comp": "LIGUE1",
+      "round": "15",
+      "kickoff": "2027-01-03T19:45:00Z",
+      "home": "lens",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559576",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-15T19:45:00Z",
+      "home": "marseille",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559584",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-16T16:15:00Z",
+      "home": "angers",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559579",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-16T19:45:00Z",
+      "home": "rennes",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559580",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-16T19:45:00Z",
+      "home": "nice",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559581",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-16T19:45:00Z",
+      "home": "auxerre",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559582",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-16T19:45:00Z",
+      "home": "strasbourg",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559578",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-17T14:00:00Z",
+      "home": "paris-fc",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559583",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-17T16:15:00Z",
+      "home": "monaco",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559577",
+      "comp": "LIGUE1",
+      "round": "16",
+      "kickoff": "2027-01-17T19:45:00Z",
+      "home": "lyon",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559572",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-22T19:45:00Z",
+      "home": "troyes",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559569",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-23T16:15:00Z",
+      "home": "lille",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559570",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-23T19:45:00Z",
+      "home": "lens",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559571",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-23T19:45:00Z",
+      "home": "paris-saint-germain",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559574",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-23T19:45:00Z",
+      "home": "le-mans",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559575",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-23T19:45:00Z",
+      "home": "toulouse",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559567",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-24T14:00:00Z",
+      "home": "le-havre",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559573",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-24T16:15:00Z",
+      "home": "lorient",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559568",
+      "comp": "LIGUE1",
+      "round": "17",
+      "kickoff": "2027-01-24T19:45:00Z",
+      "home": "strasbourg",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559564",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-29T19:45:00Z",
+      "home": "brest",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559565",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-30T16:15:00Z",
+      "home": "monaco",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559558",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-30T19:45:00Z",
+      "home": "paris-fc",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559561",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-30T19:45:00Z",
+      "home": "le-mans",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559563",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-30T19:45:00Z",
+      "home": "angers",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559566",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-30T19:45:00Z",
+      "home": "toulouse",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559560",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-31T14:00:00Z",
+      "home": "rennes",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559562",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-31T16:15:00Z",
+      "home": "marseille",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559559",
+      "comp": "LIGUE1",
+      "round": "18",
+      "kickoff": "2027-01-31T19:45:00Z",
+      "home": "lyon",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559550",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "troyes",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559551",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "lens",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559552",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "le-havre",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559553",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "lorient",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559554",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "nice",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559555",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "rennes",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559556",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "strasbourg",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559557",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-06T00:00:00Z",
+      "home": "auxerre",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559549",
+      "comp": "LIGUE1",
+      "round": "19",
+      "kickoff": "2027-02-07T19:45:00Z",
+      "home": "paris-saint-germain",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559540",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "brest",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559541",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "paris-fc",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559542",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "le-mans",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559543",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "lorient",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559544",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "auxerre",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559545",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "toulouse",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559546",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "marseille",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559547",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "lille",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559548",
+      "comp": "LIGUE1",
+      "round": "20",
+      "kickoff": "2027-02-13T00:00:00Z",
+      "home": "lyon",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559531",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "angers",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559532",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "rennes",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559533",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "paris-saint-germain",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559534",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "strasbourg",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559535",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "nice",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559536",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "le-havre",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559537",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "monaco",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559538",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "lille",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559539",
+      "comp": "LIGUE1",
+      "round": "21",
+      "kickoff": "2027-02-20T00:00:00Z",
+      "home": "lens",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559523",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "strasbourg",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559524",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "auxerre",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559525",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "troyes",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559526",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "brest",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559527",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "lorient",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559528",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "marseille",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559529",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "lyon",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559530",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-27T00:00:00Z",
+      "home": "le-mans",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559522",
+      "comp": "LIGUE1",
+      "round": "22",
+      "kickoff": "2027-02-28T19:45:00Z",
+      "home": "paris-saint-germain",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559513",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "le-havre",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559514",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "paris-saint-germain",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559515",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "lens",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559516",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "toulouse",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559517",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "troyes",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559518",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "angers",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559519",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "monaco",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559520",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "paris-fc",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559521",
+      "comp": "LIGUE1",
+      "round": "23",
+      "kickoff": "2027-03-06T00:00:00Z",
+      "home": "lille",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559504",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "nice",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559505",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "paris-fc",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559506",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "strasbourg",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559507",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "le-mans",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559508",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "brest",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559509",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "le-havre",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559510",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "marseille",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559511",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "auxerre",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559512",
+      "comp": "LIGUE1",
+      "round": "24",
+      "kickoff": "2027-03-13T00:00:00Z",
+      "home": "lyon",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559496",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "angers",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559497",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "toulouse",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559498",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "troyes",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559499",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "rennes",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559500",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "monaco",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559501",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "paris-saint-germain",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559502",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "lens",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559503",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-20T00:00:00Z",
+      "home": "lorient",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559495",
+      "comp": "LIGUE1",
+      "round": "25",
+      "kickoff": "2027-03-21T19:45:00Z",
+      "home": "marseille",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559486",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "le-havre",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559487",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "angers",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559488",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "le-mans",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559489",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "auxerre",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559490",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "lille",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559491",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "brest",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559492",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "strasbourg",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559493",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "paris-fc",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559494",
+      "comp": "LIGUE1",
+      "round": "26",
+      "kickoff": "2027-04-03T00:00:00Z",
+      "home": "nice",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559477",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "lorient",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559478",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "marseille",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559479",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "monaco",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559480",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "troyes",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559481",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "paris-saint-germain",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559482",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "lyon",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559483",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "le-mans",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559484",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "lille",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559485",
+      "comp": "LIGUE1",
+      "round": "27",
+      "kickoff": "2027-04-10T00:00:00Z",
+      "home": "nice",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559468",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "auxerre",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559469",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "brest",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559470",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "monaco",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559471",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "angers",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559472",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "lens",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559473",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "rennes",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559474",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "le-havre",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559475",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "paris-saint-germain",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559476",
+      "comp": "LIGUE1",
+      "round": "28",
+      "kickoff": "2027-04-17T00:00:00Z",
+      "home": "toulouse",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559459",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "paris-fc",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559460",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "marseille",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559461",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "lille",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559462",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "lorient",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559463",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "troyes",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559464",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "nice",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559465",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "lyon",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559466",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "le-mans",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559467",
+      "comp": "LIGUE1",
+      "round": "29",
+      "kickoff": "2027-04-24T00:00:00Z",
+      "home": "strasbourg",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559450",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "strasbourg",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559451",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "monaco",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559452",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "troyes",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559453",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "lens",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559454",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "paris-saint-germain",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559455",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "le-havre",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559456",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "auxerre",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559457",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "rennes",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559458",
+      "comp": "LIGUE1",
+      "round": "30",
+      "kickoff": "2027-05-01T00:00:00Z",
+      "home": "toulouse",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559442",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "paris-fc",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559443",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "lorient",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559444",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "brest",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559445",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "le-mans",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559446",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "rennes",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559447",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "lens",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559448",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "angers",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559449",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-08T00:00:00Z",
+      "home": "nice",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559441",
+      "comp": "LIGUE1",
+      "round": "31",
+      "kickoff": "2027-05-09T18:45:00Z",
+      "home": "lyon",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-559432",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "monaco",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559433",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "lyon",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559434",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "paris-saint-germain",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559435",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "toulouse",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559436",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "brest",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559437",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "marseille",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559438",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "lille",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559439",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "auxerre",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559440",
+      "comp": "LIGUE1",
+      "round": "32",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "strasbourg",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559423",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "nice",
+      "away": "monaco",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559424",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "angers",
+      "away": "brest",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559425",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "lorient",
+      "away": "lyon",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559426",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "troyes",
+      "away": "paris-saint-germain",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559427",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "le-mans",
+      "away": "strasbourg",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559428",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "toulouse",
+      "away": "auxerre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559429",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "le-havre",
+      "away": "lille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559430",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "paris-fc",
+      "away": "marseille",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559431",
+      "comp": "LIGUE1",
+      "round": "33",
+      "kickoff": "2027-05-22T00:00:00Z",
+      "home": "lens",
+      "away": "rennes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559414",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "monaco",
+      "away": "troyes",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559415",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "paris-saint-germain",
+      "away": "toulouse",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559416",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "lille",
+      "away": "le-mans",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559417",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "brest",
+      "away": "lens",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559418",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "marseille",
+      "away": "lorient",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559419",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "rennes",
+      "away": "angers",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559420",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "lyon",
+      "away": "paris-fc",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559421",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "auxerre",
+      "away": "le-havre",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-559422",
+      "comp": "LIGUE1",
+      "round": "34",
+      "kickoff": "2027-05-29T00:00:00Z",
+      "home": "strasbourg",
+      "away": "nice",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    }
+  ],
+  "scorers": [
+    {
+      "player": "Esteban Lepaul",
+      "team": "rennes",
+      "goals": 7,
+      "assists": null,
+      "penalties": 4,
+      "played": 7
+    },
+    {
+      "player": "Lassine Sinayoko",
+      "team": "paris-fc",
+      "goals": 6,
+      "assists": 4,
+      "penalties": 3,
+      "played": 8
+    },
+    {
+      "player": "Amine Gouiri",
+      "team": "marseille",
+      "goals": 5,
+      "assists": 2,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Cameron Archer",
+      "team": "auxerre",
+      "goals": 5,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Casper Tengstedt",
+      "team": "toulouse",
+      "goals": 5,
+      "assists": 1,
+      "penalties": 2,
+      "played": 6
+    },
+    {
+      "player": "Florian Thauvin",
+      "team": "lens",
+      "goals": 4,
+      "assists": 8,
+      "penalties": 3,
+      "played": 8
+    },
+    {
+      "player": "Louis Mafouta",
+      "team": "le-mans",
+      "goals": 4,
+      "assists": null,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Kamory Doumbia",
+      "team": "brest",
+      "goals": 4,
+      "assists": 1,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Ferrán Torres",
+      "team": "paris-saint-germain",
+      "goals": 4,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Paris Brunner",
+      "team": "monaco",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Daniel Namaso",
+      "team": "auxerre",
+      "goals": 3,
+      "assists": 2,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Sebastian Szymański",
+      "team": "rennes",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Marquinhos",
+      "team": "paris-saint-germain",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Ludovic Ajorque",
+      "team": "brest",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Ernest Nuamah",
+      "team": "lyon",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Adil Bourabaa",
+      "team": "le-mans",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Sepe Elye Wahi",
+      "team": "nice",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Josh Maja",
+      "team": "le-havre",
+      "goals": 3,
+      "assists": null,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Boulaye Dia",
+      "team": "rennes",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Himad Abdelli",
+      "team": "marseille",
+      "goals": 3,
+      "assists": null,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Franjo Ivanovic",
+      "team": "lens",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Olivier Giroud",
+      "team": "lille",
+      "goals": 2,
+      "assists": 2,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Tiago Santos",
+      "team": "lille",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Dilane Bakwa",
+      "team": "lille",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Gessime Yassine",
+      "team": "strasbourg",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Mbwana Samatta",
+      "team": "le-havre",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Amine El Ouazzani",
+      "team": "angers",
+      "goals": 2,
+      "assists": 1,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Jacen Russell-Rowe",
+      "team": "toulouse",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Ayase Ueda",
+      "team": "lille",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Zachary Athekame",
+      "team": "lyon",
+      "goals": 2,
+      "assists": 3,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Rayan Fofana",
+      "team": "le-havre",
+      "goals": 2,
+      "assists": null,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Gio Reyna",
+      "team": "strasbourg",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Samuel Amo-Ameyaw",
+      "team": "strasbourg",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Adrien Thomasson",
+      "team": "rennes",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Thomas Jørgensen",
+      "team": "toulouse",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Ethan Mbappé",
+      "team": "lille",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Matthieu Udol",
+      "team": "lens",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Prosper Peter",
+      "team": "angers",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Pathé Mboup",
+      "team": "brest",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Mama Baldé",
+      "team": "brest",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Edan Diop",
+      "team": "monaco",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Amine Harit",
+      "team": "marseille",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Igor Paixão",
+      "team": "marseille",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Maxime López",
+      "team": "paris-fc",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Keyliane Abdallah",
+      "team": "marseille",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Pierre Emile Højbjerg",
+      "team": "marseille",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Saud Abdulhamid",
+      "team": "lens",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Pierre Ganiou",
+      "team": "lens",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Lamine Sy",
+      "team": "auxerre",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Romain Del Castillo",
+      "team": "brest",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 2
+    },
+    {
+      "player": "Dame Guèye",
+      "team": "le-mans",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Noah Nartey",
+      "team": "lyon",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Malick Fofana",
+      "team": "lyon",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 2
+    },
+    {
+      "player": "Eric Dier",
+      "team": "monaco",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Hákon Haraldsson",
+      "team": "lille",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Vitinha",
+      "team": "paris-saint-germain",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Renaud Ripart",
+      "team": "troyes",
+      "goals": 1,
+      "assists": null,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Lucas Maronnier",
+      "team": "troyes",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jean-Victor Makengo",
+      "team": "lorient",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Loïs Openda",
+      "team": "lyon",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Branco van den Boomen",
+      "team": "angers",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Rémy Labeau Lascary",
+      "team": "auxerre",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Harouna Djibirin",
+      "team": "angers",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Christ Tapé",
+      "team": "toulouse",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Samir Chergui",
+      "team": "paris-fc",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Vincent Marchetti",
+      "team": "paris-fc",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Valentin Rongier",
+      "team": "rennes",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Felix Bacher",
+      "team": "lyon",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Flávio Nazinho",
+      "team": "monaco",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Stanis Idumbo-Muzambo",
+      "team": "monaco",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Mamadou Koné",
+      "team": "lorient",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Antoine Mille",
+      "team": "troyes",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jacobo Ortega",
+      "team": "strasbourg",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Diogo Lobão",
+      "team": "strasbourg",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Conrad Harder",
+      "team": "strasbourg",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Jérémy Le Douaron",
+      "team": "troyes",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Przemysław Frankowski",
+      "team": "rennes",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Carlens Arcus",
+      "team": "angers",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Ibrahima Baldé",
+      "team": "lorient",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Noah Mbamba",
+      "team": "lorient",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Lucas Calodat",
+      "team": "le-mans",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Abdallah Sima",
+      "team": "lens",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Ilan Kebbal",
+      "team": "paris-fc",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Pablo Pagis",
+      "team": "paris-fc",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Habib Diallo",
+      "team": "le-mans",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Isak Jensen",
+      "team": "lorient",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Amine Sbaï",
+      "team": "angers",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Corentin Tolisso",
+      "team": "lyon",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Mohammed Amoura",
+      "team": "nice",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Angel Gomes",
+      "team": "marseille",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Florian Sotoca",
+      "team": "lens",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Khalis Merah",
+      "team": "lyon",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Lucas Tousart",
+      "team": "brest",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Kenny Lala",
+      "team": "brest",
+      "goals": 1,
+      "assists": null,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Gabin Bernardeau",
+      "team": "lorient",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Lucas Beraldo",
+      "team": "paris-saint-germain",
+      "goals": 1,
+      "assists": null,
+      "penalties": 1,
+      "played": 8
+    },
+    {
+      "player": "Khvicha Kvaratskhelia",
+      "team": "paris-saint-germain",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Maghnes Akliouche",
+      "team": "paris-saint-germain",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Matthis Abline",
+      "team": "monaco",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Sion Oppong",
+      "team": "toulouse",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    }
+  ]
+}

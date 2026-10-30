@@ -1,0 +1,5439 @@
+{
+  "comp": "LALIGA",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-30T02:17:53.008Z",
+  "standings": [
+    {
+      "pos": 1,
+      "prevPos": null,
+      "team": "barcelona",
+      "played": 10,
+      "w": 9,
+      "d": 0,
+      "l": 1,
+      "gf": 40,
+      "ga": 11,
+      "pts": 27,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
+      "prevPos": null,
+      "team": "atletico-madrid",
+      "played": 10,
+      "w": 8,
+      "d": 1,
+      "l": 1,
+      "gf": 20,
+      "ga": 8,
+      "pts": 25,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": null,
+      "team": "real-madrid",
+      "played": 10,
+      "w": 8,
+      "d": 0,
+      "l": 2,
+      "gf": 25,
+      "ga": 10,
+      "pts": 24,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 4,
+      "prevPos": null,
+      "team": "real-betis",
+      "played": 10,
+      "w": 6,
+      "d": 2,
+      "l": 2,
+      "gf": 16,
+      "ga": 14,
+      "pts": 20,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 5,
+      "prevPos": null,
+      "team": "real-sociedad",
+      "played": 10,
+      "w": 6,
+      "d": 1,
+      "l": 3,
+      "gf": 19,
+      "ga": 18,
+      "pts": 19,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
+      "prevPos": null,
+      "team": "sevilla",
+      "played": 10,
+      "w": 5,
+      "d": 2,
+      "l": 3,
+      "gf": 16,
+      "ga": 16,
+      "pts": 17,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
+      "prevPos": null,
+      "team": "alaves",
+      "played": 10,
+      "w": 3,
+      "d": 3,
+      "l": 4,
+      "gf": 14,
+      "ga": 11,
+      "pts": 12,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 8,
+      "prevPos": null,
+      "team": "athletic",
+      "played": 9,
+      "w": 3,
+      "d": 3,
+      "l": 3,
+      "gf": 12,
+      "ga": 9,
+      "pts": 12,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": null,
+      "team": "celta-vigo",
+      "played": 10,
+      "w": 2,
+      "d": 6,
+      "l": 2,
+      "gf": 10,
+      "ga": 7,
+      "pts": 12,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
+      "prevPos": null,
+      "team": "villarreal",
+      "played": 10,
+      "w": 3,
+      "d": 3,
+      "l": 4,
+      "gf": 15,
+      "ga": 14,
+      "pts": 12,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
+      "prevPos": null,
+      "team": "deportivo-la-coruna",
+      "played": 10,
+      "w": 2,
+      "d": 5,
+      "l": 3,
+      "gf": 13,
+      "ga": 13,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
+      "prevPos": null,
+      "team": "osasuna",
+      "played": 10,
+      "w": 3,
+      "d": 2,
+      "l": 5,
+      "gf": 10,
+      "ga": 20,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 13,
+      "prevPos": null,
+      "team": "racing-santander",
+      "played": 10,
+      "w": 3,
+      "d": 2,
+      "l": 5,
+      "gf": 15,
+      "ga": 26,
+      "pts": 11,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
+      "prevPos": null,
+      "team": "levante",
+      "played": 10,
+      "w": 2,
+      "d": 4,
+      "l": 4,
+      "gf": 16,
+      "ga": 19,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
+      "prevPos": null,
+      "team": "elche",
+      "played": 10,
+      "w": 2,
+      "d": 4,
+      "l": 4,
+      "gf": 14,
+      "ga": 17,
+      "pts": 10,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 16,
+      "prevPos": null,
+      "team": "rayo-vallecano",
+      "played": 9,
+      "w": 2,
+      "d": 3,
+      "l": 4,
+      "gf": 12,
+      "ga": 20,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 17,
+      "prevPos": null,
+      "team": "getafe",
+      "played": 10,
+      "w": 2,
+      "d": 3,
+      "l": 5,
+      "gf": 5,
+      "ga": 15,
+      "pts": 9,
+      "form": [],
+      "zone": "none"
+    },
+    {
+      "pos": 18,
+      "prevPos": null,
+      "team": "espanyol",
+      "played": 10,
+      "w": 2,
+      "d": 2,
+      "l": 6,
+      "gf": 12,
+      "ga": 14,
+      "pts": 8,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 19,
+      "prevPos": null,
+      "team": "valencia",
+      "played": 10,
+      "w": 1,
+      "d": 3,
+      "l": 6,
+      "gf": 7,
+      "ga": 17,
+      "pts": 6,
+      "form": [],
+      "zone": "relegation"
+    },
+    {
+      "pos": 20,
+      "prevPos": null,
+      "team": "malaga",
+      "played": 10,
+      "w": 0,
+      "d": 5,
+      "l": 5,
+      "gf": 7,
+      "ga": 19,
+      "pts": 5,
+      "form": [],
+      "zone": "relegation"
+    }
+  ],
+  "matches": [
+    {
+      "id": "fd-564634",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-15T17:30:00Z",
+      "home": "alaves",
+      "away": "getafe",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564633",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-15T19:30:00Z",
+      "home": "sevilla",
+      "away": "rayo-vallecano",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564629",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-16T15:00:00Z",
+      "home": "racing-santander",
+      "away": "villarreal",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564632",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-16T17:00:00Z",
+      "home": "espanyol",
+      "away": "levante",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564635",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-17T19:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "elche",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564628",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-19T19:00:00Z",
+      "home": "atletico-madrid",
+      "away": "malaga",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564638",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-20T19:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "alaves",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564647",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-21T19:00:00Z",
+      "home": "real-betis",
+      "away": "real-sociedad",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564641",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-22T15:00:00Z",
+      "home": "athletic",
+      "away": "sevilla",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564643",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-22T17:30:00Z",
+      "home": "valencia",
+      "away": "celta-vigo",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564645",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-22T19:30:00Z",
+      "home": "espanyol",
+      "away": "real-madrid",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564646",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-23T15:00:00Z",
+      "home": "atletico-madrid",
+      "away": "villarreal",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564644",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-23T17:30:00Z",
+      "home": "getafe",
+      "away": "racing-santander",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564642",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-23T19:30:00Z",
+      "home": "elche",
+      "away": "barcelona",
+      "score": {
+        "h": 0,
+        "a": 5
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564639",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-24T17:30:00Z",
+      "home": "osasuna",
+      "away": "levante",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564640",
+      "comp": "LALIGA",
+      "round": "2",
+      "kickoff": "2026-08-24T19:30:00Z",
+      "home": "malaga",
+      "away": "deportivo-la-coruna",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564637",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-25T19:00:00Z",
+      "home": "valencia",
+      "away": "real-betis",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564631",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-26T19:00:00Z",
+      "home": "real-madrid",
+      "away": "real-sociedad",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564636",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-27T18:30:00Z",
+      "home": "celta-vigo",
+      "away": "osasuna",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564630",
+      "comp": "LALIGA",
+      "round": "1",
+      "kickoff": "2026-08-27T19:00:00Z",
+      "home": "barcelona",
+      "away": "athletic",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564654",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-28T17:00:00Z",
+      "home": "racing-santander",
+      "away": "elche",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564648",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-28T19:30:00Z",
+      "home": "alaves",
+      "away": "villarreal",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564655",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-29T15:00:00Z",
+      "home": "levante",
+      "away": "real-betis",
+      "score": {
+        "h": 5,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564653",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-29T17:00:00Z",
+      "home": "real-sociedad",
+      "away": "espanyol",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564649",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-29T19:30:00Z",
+      "home": "sevilla",
+      "away": "atletico-madrid",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564656",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-30T15:00:00Z",
+      "home": "real-madrid",
+      "away": "malaga",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564651",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-30T17:30:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "valencia",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564652",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-30T19:30:00Z",
+      "home": "celta-vigo",
+      "away": "athletic",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564657",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-31T17:30:00Z",
+      "home": "osasuna",
+      "away": "getafe",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564650",
+      "comp": "LALIGA",
+      "round": "3",
+      "kickoff": "2026-08-31T19:30:00Z",
+      "home": "barcelona",
+      "away": "rayo-vallecano",
+      "score": {
+        "h": 5,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564682",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-03T19:00:00Z",
+      "home": "real-sociedad",
+      "away": "celta-vigo",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564667",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-04T19:00:00Z",
+      "home": "real-betis",
+      "away": "real-madrid",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564663",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-05T14:15:00Z",
+      "home": "athletic",
+      "away": "atletico-madrid",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564660",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-05T16:30:00Z",
+      "home": "rayo-vallecano",
+      "away": "racing-santander",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564662",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-05T19:00:00Z",
+      "home": "villarreal",
+      "away": "deportivo-la-coruna",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564659",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-06T14:15:00Z",
+      "home": "valencia",
+      "away": "barcelona",
+      "score": {
+        "h": 0,
+        "a": 5
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564664",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-06T16:30:00Z",
+      "home": "alaves",
+      "away": "osasuna",
+      "score": {
+        "h": 5,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564666",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-06T16:30:00Z",
+      "home": "malaga",
+      "away": "levante",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564661",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-06T19:00:00Z",
+      "home": "espanyol",
+      "away": "sevilla",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564665",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-07T17:00:00Z",
+      "home": "getafe",
+      "away": "celta-vigo",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564658",
+      "comp": "LALIGA",
+      "round": "4",
+      "kickoff": "2026-09-07T19:30:00Z",
+      "home": "elche",
+      "away": "real-sociedad",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564669",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-11T19:00:00Z",
+      "home": "sevilla",
+      "away": "valencia",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564670",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-12T12:00:00Z",
+      "home": "racing-santander",
+      "away": "alaves",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564673",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-12T14:15:00Z",
+      "home": "osasuna",
+      "away": "espanyol",
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564676",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-12T16:30:00Z",
+      "home": "athletic",
+      "away": "elche",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564677",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-12T19:00:00Z",
+      "home": "real-madrid",
+      "away": "rayo-vallecano",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564672",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-13T12:00:00Z",
+      "home": "celta-vigo",
+      "away": "malaga",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564675",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-13T14:15:00Z",
+      "home": "levante",
+      "away": "barcelona",
+      "score": {
+        "h": 2,
+        "a": 4
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564668",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-13T16:30:00Z",
+      "home": "getafe",
+      "away": "deportivo-la-coruna",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564674",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-13T19:00:00Z",
+      "home": "real-sociedad",
+      "away": "atletico-madrid",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564671",
+      "comp": "LALIGA",
+      "round": "5",
+      "kickoff": "2026-09-14T19:00:00Z",
+      "home": "villarreal",
+      "away": "real-betis",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564678",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-15T17:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "espanyol",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564680",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-15T18:00:00Z",
+      "home": "alaves",
+      "away": "valencia",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564681",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-15T19:30:00Z",
+      "home": "elche",
+      "away": "real-madrid",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564679",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-16T17:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "sevilla",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564684",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-16T17:00:00Z",
+      "home": "atletico-madrid",
+      "away": "osasuna",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564687",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-16T19:30:00Z",
+      "home": "barcelona",
+      "away": "racing-santander",
+      "score": {
+        "h": 7,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564686",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-17T17:00:00Z",
+      "home": "real-betis",
+      "away": "getafe",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564683",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-09-17T19:30:00Z",
+      "home": "malaga",
+      "away": "villarreal",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564692",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-18T19:00:00Z",
+      "home": "espanyol",
+      "away": "elche",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564693",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-19T12:00:00Z",
+      "home": "osasuna",
+      "away": "rayo-vallecano",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564691",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-19T14:15:00Z",
+      "home": "athletic",
+      "away": "alaves",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564694",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-19T16:30:00Z",
+      "home": "celta-vigo",
+      "away": "racing-santander",
+      "score": {
+        "h": 5,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564690",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-19T19:00:00Z",
+      "home": "sevilla",
+      "away": "barcelona",
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564697",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-20T12:00:00Z",
+      "home": "getafe",
+      "away": "malaga",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564688",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-20T14:15:00Z",
+      "home": "atletico-madrid",
+      "away": "real-madrid",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564695",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-20T16:30:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "real-betis",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564696",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-20T16:30:00Z",
+      "home": "villarreal",
+      "away": "levante",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564689",
+      "comp": "LALIGA",
+      "round": "7",
+      "kickoff": "2026-09-20T19:00:00Z",
+      "home": "valencia",
+      "away": "real-sociedad",
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564706",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-09T19:00:00Z",
+      "home": "malaga",
+      "away": "espanyol",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564698",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-10T12:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "athletic",
+      "score": null,
+      "status": "postponed"
+    },
+    {
+      "id": "fd-564699",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-10T14:15:00Z",
+      "home": "alaves",
+      "away": "atletico-madrid",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564700",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-10T16:30:00Z",
+      "home": "barcelona",
+      "away": "getafe",
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564702",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-10T19:00:00Z",
+      "home": "real-madrid",
+      "away": "villarreal",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564703",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-11T12:00:00Z",
+      "home": "elche",
+      "away": "celta-vigo",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564707",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-11T14:15:00Z",
+      "home": "real-sociedad",
+      "away": "deportivo-la-coruna",
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564701",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-11T16:30:00Z",
+      "home": "real-betis",
+      "away": "osasuna",
+      "score": {
+        "h": 5,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564705",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-11T19:00:00Z",
+      "home": "racing-santander",
+      "away": "valencia",
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564704",
+      "comp": "LALIGA",
+      "round": "8",
+      "kickoff": "2026-10-12T19:00:00Z",
+      "home": "levante",
+      "away": "sevilla",
+      "score": {
+        "h": 3,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564716",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-16T19:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "levante",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564710",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-17T12:00:00Z",
+      "home": "espanyol",
+      "away": "atletico-madrid",
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564708",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-17T14:15:00Z",
+      "home": "villarreal",
+      "away": "elche",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564713",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-17T16:30:00Z",
+      "home": "real-betis",
+      "away": "barcelona",
+      "score": {
+        "h": 2,
+        "a": 5
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564711",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-17T19:00:00Z",
+      "home": "valencia",
+      "away": "athletic",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564715",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-18T12:00:00Z",
+      "home": "osasuna",
+      "away": "racing-santander",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564712",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-18T14:15:00Z",
+      "home": "celta-vigo",
+      "away": "alaves",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564714",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-18T16:30:00Z",
+      "home": "malaga",
+      "away": "real-sociedad",
+      "score": {
+        "h": 2,
+        "a": 5
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564709",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-18T19:00:00Z",
+      "home": "real-madrid",
+      "away": "sevilla",
+      "score": {
+        "h": 4,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564717",
+      "comp": "LALIGA",
+      "round": "9",
+      "kickoff": "2026-10-19T19:00:00Z",
+      "home": "getafe",
+      "away": "rayo-vallecano",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564685",
+      "comp": "LALIGA",
+      "round": "6",
+      "kickoff": "2026-10-21T18:00:00Z",
+      "home": "levante",
+      "away": "athletic",
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564719",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-23T19:00:00Z",
+      "home": "alaves",
+      "away": "malaga",
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564718",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-24T12:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "elche",
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564727",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-24T14:15:00Z",
+      "home": "racing-santander",
+      "away": "espanyol",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564722",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-24T16:30:00Z",
+      "home": "valencia",
+      "away": "villarreal",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564724",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-24T19:00:00Z",
+      "home": "atletico-madrid",
+      "away": "deportivo-la-coruna",
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564720",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-25T13:00:00Z",
+      "home": "athletic",
+      "away": "getafe",
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564725",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-25T15:15:00Z",
+      "home": "celta-vigo",
+      "away": "real-betis",
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564726",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-25T17:30:00Z",
+      "home": "real-sociedad",
+      "away": "levante",
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564723",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-25T20:00:00Z",
+      "home": "barcelona",
+      "away": "real-madrid",
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564721",
+      "comp": "LALIGA",
+      "round": "10",
+      "kickoff": "2026-10-26T20:00:00Z",
+      "home": "sevilla",
+      "away": "osasuna",
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
+    },
+    {
+      "id": "fd-564737",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-10-30T20:00:00Z",
+      "home": "villarreal",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564730",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-10-31T13:00:00Z",
+      "home": "levante",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564735",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-10-31T15:15:00Z",
+      "home": "rayo-vallecano",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564736",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-10-31T17:30:00Z",
+      "home": "real-betis",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564732",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-10-31T20:00:00Z",
+      "home": "barcelona",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564733",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-11-01T13:00:00Z",
+      "home": "getafe",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564734",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-11-01T15:15:00Z",
+      "home": "racing-santander",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564728",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-11-01T17:30:00Z",
+      "home": "elche",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564729",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-11-01T20:00:00Z",
+      "home": "athletic",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564731",
+      "comp": "LALIGA",
+      "round": "11",
+      "kickoff": "2026-11-02T20:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564740",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-06T20:00:00Z",
+      "home": "sevilla",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564744",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-07T13:00:00Z",
+      "home": "malaga",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564745",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-07T15:15:00Z",
+      "home": "espanyol",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564739",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-07T17:30:00Z",
+      "home": "osasuna",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564741",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-07T20:00:00Z",
+      "home": "valencia",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564738",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-08T13:00:00Z",
+      "home": "elche",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564743",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-08T15:15:00Z",
+      "home": "real-sociedad",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564742",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-08T17:30:00Z",
+      "home": "celta-vigo",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564747",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-08T17:30:00Z",
+      "home": "villarreal",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564746",
+      "comp": "LALIGA",
+      "round": "12",
+      "kickoff": "2026-11-08T20:00:00Z",
+      "home": "atletico-madrid",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564748",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-20T20:00:00Z",
+      "home": "athletic",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564755",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-21T13:00:00Z",
+      "home": "alaves",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564751",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-21T15:15:00Z",
+      "home": "rayo-vallecano",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564756",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-21T17:30:00Z",
+      "home": "sevilla",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564754",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-21T20:00:00Z",
+      "home": "real-madrid",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564749",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-22T13:00:00Z",
+      "home": "barcelona",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564750",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-22T15:15:00Z",
+      "home": "racing-santander",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564752",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-22T17:30:00Z",
+      "home": "osasuna",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564753",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-22T20:00:00Z",
+      "home": "getafe",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564757",
+      "comp": "LALIGA",
+      "round": "13",
+      "kickoff": "2026-11-23T20:00:00Z",
+      "home": "levante",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564758",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564759",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "elche",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564760",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "real-betis",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564761",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "valencia",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564762",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "real-madrid",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564763",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "espanyol",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564764",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564765",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "levante",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564766",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564767",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T00:00:00Z",
+      "home": "malaga",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564768",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "osasuna",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564769",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "sevilla",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564770",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "alaves",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564771",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564772",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "racing-santander",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564773",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "barcelona",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564774",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "getafe",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564775",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "athletic",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564776",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "villarreal",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564777",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564778",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "espanyol",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564779",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "malaga",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564780",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "real-madrid",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564781",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564782",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "levante",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564783",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "elche",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564784",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "villarreal",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564785",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "real-betis",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564786",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564787",
+      "comp": "LALIGA",
+      "round": "16",
+      "kickoff": "2026-12-13T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564788",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "athletic",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564789",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "getafe",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564790",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "alaves",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564791",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "valencia",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564792",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "osasuna",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564793",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "barcelona",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564794",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564795",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564796",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564797",
+      "comp": "LALIGA",
+      "round": "17",
+      "kickoff": "2026-12-20T00:00:00Z",
+      "home": "sevilla",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564798",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "real-madrid",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564799",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564800",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "levante",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564801",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "racing-santander",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564802",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "malaga",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564803",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "real-betis",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564804",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564805",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "espanyol",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564806",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "villarreal",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564807",
+      "comp": "LALIGA",
+      "round": "18",
+      "kickoff": "2027-01-03T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564808",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "athletic",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564809",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "elche",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564810",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "real-madrid",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564811",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "osasuna",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564812",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564813",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564814",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "alaves",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564815",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "sevilla",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564816",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "espanyol",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564817",
+      "comp": "LALIGA",
+      "round": "19",
+      "kickoff": "2027-01-10T00:00:00Z",
+      "home": "valencia",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564818",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "malaga",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564819",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "barcelona",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564820",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "villarreal",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564821",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "racing-santander",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564822",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "levante",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564823",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564824",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "getafe",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564825",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564826",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "real-betis",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564827",
+      "comp": "LALIGA",
+      "round": "20",
+      "kickoff": "2027-01-17T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564828",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "real-madrid",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564829",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "getafe",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564830",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "valencia",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564831",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "elche",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564832",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "alaves",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564833",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564834",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "racing-santander",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564835",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "athletic",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564836",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "espanyol",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564837",
+      "comp": "LALIGA",
+      "round": "21",
+      "kickoff": "2027-01-24T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564838",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "real-betis",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564839",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564840",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564841",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564842",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "villarreal",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564843",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "levante",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564844",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "barcelona",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564845",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "sevilla",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564846",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "osasuna",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564847",
+      "comp": "LALIGA",
+      "round": "22",
+      "kickoff": "2027-01-31T00:00:00Z",
+      "home": "malaga",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564848",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "athletic",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564849",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "alaves",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564850",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "real-betis",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564851",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "elche",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564852",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "espanyol",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564853",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "getafe",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564854",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564855",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564856",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "valencia",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564857",
+      "comp": "LALIGA",
+      "round": "23",
+      "kickoff": "2027-02-07T00:00:00Z",
+      "home": "barcelona",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564858",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "sevilla",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564859",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "osasuna",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564860",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564861",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "villarreal",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564862",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564863",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "elche",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564864",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "valencia",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564865",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "levante",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564866",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "racing-santander",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564867",
+      "comp": "LALIGA",
+      "round": "24",
+      "kickoff": "2027-02-14T00:00:00Z",
+      "home": "real-madrid",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564868",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "alaves",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564869",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "malaga",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564870",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "villarreal",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564871",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "barcelona",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564872",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "athletic",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564873",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "espanyol",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564874",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "sevilla",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564875",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564876",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564877",
+      "comp": "LALIGA",
+      "round": "25",
+      "kickoff": "2027-02-21T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564878",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564879",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "levante",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564880",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "malaga",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564881",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "osasuna",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564882",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "real-madrid",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564883",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "getafe",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564884",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "athletic",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564885",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "racing-santander",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564886",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "real-betis",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564887",
+      "comp": "LALIGA",
+      "round": "26",
+      "kickoff": "2027-02-28T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564888",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "barcelona",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564889",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "elche",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564890",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "alaves",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564891",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564892",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "sevilla",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564893",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564894",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "villarreal",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564895",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "valencia",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564896",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564897",
+      "comp": "LALIGA",
+      "round": "27",
+      "kickoff": "2027-03-07T00:00:00Z",
+      "home": "espanyol",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564898",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "osasuna",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564899",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "elche",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564900",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "alaves",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564901",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "athletic",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564902",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "real-betis",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564903",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "racing-santander",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564904",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "malaga",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564905",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "getafe",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564906",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "barcelona",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564907",
+      "comp": "LALIGA",
+      "round": "28",
+      "kickoff": "2027-03-14T00:00:00Z",
+      "home": "real-madrid",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564908",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "villarreal",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564909",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "sevilla",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564910",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "levante",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564911",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564912",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564913",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564914",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "espanyol",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564915",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "racing-santander",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564916",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "valencia",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564917",
+      "comp": "LALIGA",
+      "round": "29",
+      "kickoff": "2027-03-21T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564918",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "levante",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564919",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "barcelona",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564920",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "malaga",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564921",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "athletic",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564922",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564923",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564924",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "elche",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564925",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "real-madrid",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564926",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "getafe",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564927",
+      "comp": "LALIGA",
+      "round": "30",
+      "kickoff": "2027-04-04T00:00:00Z",
+      "home": "real-betis",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564928",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564929",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "espanyol",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564930",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "villarreal",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564931",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "alaves",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564932",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "valencia",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564933",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "sevilla",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564934",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564935",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "racing-santander",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564936",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "osasuna",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564937",
+      "comp": "LALIGA",
+      "round": "31",
+      "kickoff": "2027-04-11T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564938",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564939",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "barcelona",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564940",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "levante",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564941",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564942",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "malaga",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564943",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564944",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "elche",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564945",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "alaves",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564946",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "real-betis",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564947",
+      "comp": "LALIGA",
+      "round": "32",
+      "kickoff": "2027-04-18T00:00:00Z",
+      "home": "getafe",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564948",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "getafe",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564949",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "valencia",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564950",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564951",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "osasuna",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564952",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "real-madrid",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564953",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "athletic",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564954",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "racing-santander",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564955",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "villarreal",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564956",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "sevilla",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564957",
+      "comp": "LALIGA",
+      "round": "33",
+      "kickoff": "2027-04-21T00:00:00Z",
+      "home": "espanyol",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564958",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564959",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564960",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564961",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "barcelona",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564962",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564963",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "malaga",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564964",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "real-betis",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564965",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "elche",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564966",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "levante",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564967",
+      "comp": "LALIGA",
+      "round": "34",
+      "kickoff": "2027-05-02T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564968",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "valencia",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564969",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "osasuna",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564970",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "alaves",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564971",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "athletic",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564972",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "racing-santander",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564973",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564974",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "real-betis",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564975",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "real-madrid",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564976",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "getafe",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564977",
+      "comp": "LALIGA",
+      "round": "35",
+      "kickoff": "2027-05-09T00:00:00Z",
+      "home": "villarreal",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564978",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564979",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "sevilla",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564980",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564981",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "elche",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564982",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "malaga",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564983",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564984",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "levante",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564985",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "espanyol",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564986",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "real-madrid",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564987",
+      "comp": "LALIGA",
+      "round": "36",
+      "kickoff": "2027-05-16T00:00:00Z",
+      "home": "osasuna",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564988",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "rayo-vallecano",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564989",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "barcelona",
+      "away": "malaga",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564990",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "valencia",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564991",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "celta-vigo",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564992",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "atletico-madrid",
+      "away": "athletic",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564993",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "alaves",
+      "away": "real-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564994",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "sevilla",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564995",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "villarreal",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564996",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "racing-santander",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564997",
+      "comp": "LALIGA",
+      "round": "37",
+      "kickoff": "2027-05-23T00:00:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "espanyol",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564998",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "levante",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-564999",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "real-madrid",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565000",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "real-betis",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565001",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "real-sociedad",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565002",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "malaga",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565003",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "elche",
+      "away": "racing-santander",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565004",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "athletic",
+      "away": "rayo-vallecano",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565005",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "espanyol",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565006",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "getafe",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    },
+    {
+      "id": "fd-565007",
+      "comp": "LALIGA",
+      "round": "38",
+      "kickoff": "2027-05-30T00:00:00Z",
+      "home": "osasuna",
+      "away": "valencia",
+      "score": null,
+      "status": "scheduled",
+      "tbc": true
+    }
+  ],
+  "scorers": [
+    {
+      "player": "Raphinha",
+      "team": "barcelona",
+      "goals": 13,
+      "assists": 2,
+      "penalties": 3,
+      "played": 9
+    },
+    {
+      "player": "Kylian Mbappé",
+      "team": "real-madrid",
+      "goals": 11,
+      "assists": 2,
+      "penalties": 2,
+      "played": 10
+    },
+    {
+      "player": "Yassir Zabiri",
+      "team": "racing-santander",
+      "goals": 8,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Lamine Yamal",
+      "team": "barcelona",
+      "goals": 8,
+      "assists": 6,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Sergio Camello",
+      "team": "rayo-vallecano",
+      "goals": 7,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Ante Budimir",
+      "team": "osasuna",
+      "goals": 7,
+      "assists": null,
+      "penalties": 4,
+      "played": 10
+    },
+    {
+      "player": "Roberto Fernández",
+      "team": "espanyol",
+      "goals": 6,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Fer Niño",
+      "team": "elche",
+      "goals": 6,
+      "assists": null,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Pierre-Emerick Aubameyang",
+      "team": "deportivo-la-coruna",
+      "goals": 5,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Álex Baena",
+      "team": "atletico-madrid",
+      "goals": 5,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Lucas Boyé",
+      "team": "alaves",
+      "goals": 5,
+      "assists": null,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Brugui",
+      "team": "levante",
+      "goals": 5,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Fermín López",
+      "team": "barcelona",
+      "goals": 4,
+      "assists": 3,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Adrián",
+      "team": "malaga",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Mariano Díaz",
+      "team": "alaves",
+      "goals": 3,
+      "assists": 4,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Álvaro García",
+      "team": "rayo-vallecano",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Pape Gueye",
+      "team": "villarreal",
+      "goals": 3,
+      "assists": null,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Isaac",
+      "team": "sevilla",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Jude Bellingham",
+      "team": "real-madrid",
+      "goals": 3,
+      "assists": 3,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Georges Mikautadze",
+      "team": "villarreal",
+      "goals": 3,
+      "assists": 1,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Luka Sučić",
+      "team": "real-sociedad",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Orri Oskarsson",
+      "team": "real-sociedad",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Álex Berenguer",
+      "team": "athletic",
+      "goals": 3,
+      "assists": 4,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Iván Romero",
+      "team": "levante",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Alejandro Grimaldo",
+      "team": "atletico-madrid",
+      "goals": 3,
+      "assists": 2,
+      "penalties": 2,
+      "played": 10
+    },
+    {
+      "player": "Jonathan David",
+      "team": "atletico-madrid",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Gabriel Jesus",
+      "team": "barcelona",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Abdessamad Ezzalzouli",
+      "team": "real-betis",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Nicolas Pépé",
+      "team": "villarreal",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Kang-in Lee",
+      "team": "atletico-madrid",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Rodrigo Riquelme",
+      "team": "real-betis",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Aitor Paredes Casamichana",
+      "team": "athletic",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Carlos Espí",
+      "team": "real-madrid",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Gerard Moreno",
+      "team": "villarreal",
+      "goals": 2,
+      "assists": null,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Giuliano Simeone",
+      "team": "atletico-madrid",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Karim Adeyemi",
+      "team": "barcelona",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Pablo García",
+      "team": "racing-santander",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Adrián de la Fuente",
+      "team": "levante",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Ander Barrenetxea",
+      "team": "real-sociedad",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Miguel Ángel Sierra",
+      "team": "sevilla",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Arda Guler",
+      "team": "real-madrid",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Roberto Navarro",
+      "team": "athletic",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Martin Satriano",
+      "team": "getafe",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Iñaki Williams",
+      "team": "athletic",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Ferran Jutglà",
+      "team": "celta-vigo",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Cucho Hernández",
+      "team": "real-betis",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Alberto Moleiro",
+      "team": "villarreal",
+      "goals": 2,
+      "assists": 4,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Germán Valera",
+      "team": "elche",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Pablo Duran",
+      "team": "celta-vigo",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Yan Diomandé",
+      "team": "real-madrid",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Gonçalo Guedes",
+      "team": "real-sociedad",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Isco",
+      "team": "real-betis",
+      "goals": 2,
+      "assists": null,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Félix Correia",
+      "team": "sevilla",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Mikel Oyarzabal",
+      "team": "real-sociedad",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Nahuel Tenaglia",
+      "team": "alaves",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Mikel Rodríguez",
+      "team": "alaves",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Jon Guridi",
+      "team": "sevilla",
+      "goals": 1,
+      "assists": null,
+      "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Peque",
+      "team": "sevilla",
+      "goals": 1,
+      "assists": null,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Andrés Martín",
+      "team": "racing-santander",
+      "goals": 1,
+      "assists": null,
+      "penalties": 1,
+      "played": 6
+    },
+    {
+      "player": "Sergio Martínez",
+      "team": "racing-santander",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 4
+    },
+    {
+      "player": "Tyrhys Dolan",
+      "team": "espanyol",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Marc Aguado",
+      "team": "elche",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Oso",
+      "team": "sevilla",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 2
+    },
+    {
+      "player": "Chidera Ejuke",
+      "team": "sevilla",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Álex Calatrava",
+      "team": "espanyol",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Marc Pubill",
+      "team": "atletico-madrid",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Enes Ünal",
+      "team": "getafe",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Chupete",
+      "team": "malaga",
+      "goals": 1,
+      "assists": null,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Vinicius Junior",
+      "team": "real-madrid",
+      "goals": 1,
+      "assists": 3,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Iago Aspas",
+      "team": "celta-vigo",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Kike Barja",
+      "team": "osasuna",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Buba",
+      "team": "elche",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Bartra",
+      "team": "real-betis",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Enzo Bardeli",
+      "team": "levante",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Jon Olasagasti",
+      "team": "levante",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Ademola Lookman",
+      "team": "atletico-madrid",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Umar Sadiq",
+      "team": "valencia",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Troy Parrott",
+      "team": "real-betis",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Nico Williams",
+      "team": "athletic",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Oihan Sancet",
+      "team": "athletic",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 6
+    },
+    {
+      "player": "Canales",
+      "team": "racing-santander",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Andrei Rațiu",
+      "team": "rayo-vallecano",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Luismi Cruz",
+      "team": "deportivo-la-coruna",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Zakaria Eddahchouri",
+      "team": "deportivo-la-coruna",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Pedri",
+      "team": "barcelona",
+      "goals": 1,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Pablo Ibáñez Tébar",
+      "team": "alaves",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Lucas Stassin",
+      "team": "sevilla",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Marcos Fernández",
+      "team": "espanyol",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Carl Starfelt",
+      "team": "celta-vigo",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Ochieng",
+      "team": "real-sociedad",
+      "goals": 1,
+      "assists": 3,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Yangel Herrera",
+      "team": "real-sociedad",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Thomas Lemar",
+      "team": "elche",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 7
+    },
+    {
+      "player": "Juan Iglesias",
+      "team": "sevilla",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Ville Koski",
+      "team": "alaves",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Facundo Buonanotte",
+      "team": "elche",
+      "goals": 1,
+      "assists": 1,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Álvaro Carreras",
+      "team": "real-madrid",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Xavi Espart",
+      "team": "barcelona",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "RamónTerrats Espacio",
+      "team": "getafe",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Natan",
+      "team": "real-betis",
+      "goals": 1,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Adrià Pedrosa",
+      "team": "rayo-vallecano",
+      "goals": 1,
+      "assists": 1,
+      "penalties": null,
+      "played": 8
+    }
+  ]
+}

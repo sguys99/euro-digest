@@ -10,6 +10,10 @@
  *      UCL 녹아웃(PLAYOFFS·LAST_16 …) 경기만 있는 날은 순위표가 바뀌지 않아 부르지 않는다.
  *   경기별 득점자는 무료 플랜에 없다(M0-28) — API-Football 경기 단건 어댑터(M1-48)가 맡는다.
  *
+ * 대회 페이지 요청 (M2-02 — 대회당 3건, 6개 대회 18건/일. 변환은 providers/football-data-competition.ts)
+ *   `/competitions/{code}/standings` · `/competitions/{code}/matches?season=` · `/competitions/{code}/scorers?season=&limit=`
+ *   — 같은 클라이언트(같은 큐·간격·재시도 정책)를 쓴다. 단계 묶음은 scripts/lib/competitions-stage.ts.
+ *
  * 호출 정책 (M0-28 "레이트 리밋 설계", CLAUDE.md §6.4)
  *   - 분당 10회 → 동시 1개, **응답 후 6.5초 간격**. 응답 헤더 `X-Requests-Available-Minute`가 1 이하이면
  *     `X-RequestCounter-Reset` + 1초까지 기다린다(키 하나를 개발 호출과 나눠 쓰는 경우의 가드).
@@ -260,6 +264,10 @@ export interface FootballDataClient {
   getStandings(code: string): Promise<unknown>;
   /** `/v4/competitions/{code}/teams?season=` — 응답 원문(검증은 `toCompetitionTeams`, M2-04 팀 목록 — 정기 실행은 부르지 않는다) */
   getTeams(code: string, season: number): Promise<unknown>;
+  /** `/v4/competitions/{code}/matches?season=` — 시즌 전체 경기 응답 원문(검증은 `toCompetitionMatches`, M2-02) */
+  getCompetitionMatches(code: string, season: number): Promise<unknown>;
+  /** `/v4/competitions/{code}/scorers?season=&limit=` — 득점 순위 응답 원문(검증은 `toCompetitionScorers`, M2-02) */
+  getScorers(code: string, season: number, limit: number): Promise<unknown>;
   /** 이 클라이언트가 보낸 요청 수(실패·재시도 포함) — runs.json apiCalls.footballData */
   readonly calls: number;
   /** 재시도 횟수(calls에 포함) */
@@ -288,6 +296,20 @@ export function standingsPath(code: string): string {
 /** 대회 참가 팀 경로(M2-04) — `season`은 시즌 시작 연도(competitions.json `season`) */
 export function teamsPath(code: string, season: number): string {
   return `/competitions/${encodeURIComponent(code)}/teams?season=${season}`;
+}
+
+/** 대회 시즌 전체 경기 경로(M2-02) — 상태·날짜 필터 없이 시즌 전체(결과·일정·폼 계산을 한 번에, M0-28 권고) */
+export function competitionMatchesPath(code: string, season: number): string {
+  return `/competitions/${encodeURIComponent(code)}/matches?season=${season}`;
+}
+
+/** 득점 순위 경로(M2-02) — `limit` 기본값은 10명이라 늘려 받는다(무료 플랜 limit=100 실측 2026-10-30) */
+export function scorersPath(
+  code: string,
+  season: number,
+  limit: number,
+): string {
+  return `/competitions/${encodeURIComponent(code)}/scorers?season=${season}&limit=${limit}`;
 }
 
 /** UTC ISO → UTC 날짜 "YYYY-MM-DD" (시간대 변환 없음) */
@@ -529,6 +551,12 @@ export function createFootballDataClient(
     },
     getTeams(code, season) {
       return enqueue(() => request(teamsPath(code, season)));
+    },
+    getCompetitionMatches(code, season) {
+      return enqueue(() => request(competitionMatchesPath(code, season)));
+    },
+    getScorers(code, season, limit) {
+      return enqueue(() => request(scorersPath(code, season, limit)));
     },
     get calls() {
       return calls;
@@ -972,6 +1000,11 @@ function safeWindowStatus(
   } catch {
     return undefined;
   }
+}
+
+/** 진행 중 상태인가(IN_PLAY·PAUSED·LIVE·EXTRA_TIME·PENALTY_SHOOTOUT) — 대회 파일 변환(M2-02)이 함께 쓴다 */
+export function isInProgressStatus(status: string): boolean {
+  return IN_PROGRESS_STATUSES.has(status);
 }
 
 /** 이 단계의 경기가 순위표를 바꾸는가 — 녹아웃(PLAYOFFS·LAST_16 …)은 아니다, stage가 없으면 바꾼다고 본다 */
