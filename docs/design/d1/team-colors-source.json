@@ -1,0 +1,1338 @@
+{
+  "_about": "M2-05 팀 키트 원색·약어(2026-10-30 초안 → 같은 날 사용자 승인 — 추정 포함 전부 확정, 틀린 색은 운영 중 이 파일만 고쳐 다시 생성). kit = [상의 주색 원색, 하의(상의와 같으면 키트 둘째 색)]. configs/team-colors.json은 이 파일에서 scripts/build-team-colors.ts가 D62 ④ 대비 보정(src/lib/kit-contrast.ts)을 적용해 만들고, 검토 시트는 scripts/build-team-colors-review.ts가 만든다. confidence: 확실 = 색 계열 이견 없음 + 널리 인용되는 브랜드 hex / 추정 = 색상명·키트 사진 계열에 맞춘 근사 hex 또는 키트 배치 불확실. source: 'D1 시안값'(concept-mix 임시값) · '브랜드 관용값'(구단 브랜드 색으로 널리 인용되는 hex — 이번에 구단 원문 재조회 안 함) · '색상명 근사'(football-data clubColors·키트 색 계열) · '웹 확인'(조회한 출처). short = football-data tla trim, shortBasis가 있으면 그 근거로 정한 값.",
+  "teams": {
+    "aek-athens": {
+      "kit": [
+        "#FFD700",
+        "#000000"
+      ],
+      "tla": "AEK",
+      "short": "AEK",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "노랑 상의 · 검정 하의",
+      "fdClubColors": "Yellow / Black"
+    },
+    "alaves": {
+      "kit": [
+        "#0761AF",
+        "#FFFFFF"
+      ],
+      "tla": "ALA",
+      "short": "ALA",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색",
+      "fdClubColors": "Blue / White"
+    },
+    "angers": {
+      "kit": [
+        "#000000",
+        "#FFFFFF"
+      ],
+      "tla": "ANG",
+      "short": "ANG",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "검정·흰 세로줄 · 검정 하의 → 둘째 색 흰색",
+      "fdClubColors": "Black / White / Gold"
+    },
+    "arsenal": {
+      "kit": [
+        "#EF0107",
+        "#FFFFFF"
+      ],
+      "tla": "ARS",
+      "short": "ARS",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강 상의(흰 소매) · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "aston-villa": {
+      "kit": [
+        "#670E36",
+        "#FFFFFF"
+      ],
+      "tla": "AVL",
+      "short": "AVL",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "클라렛 상의(하늘색 소매) · 흰 하의",
+      "fdClubColors": "Claret / Sky Blue"
+    },
+    "atalanta": {
+      "kit": [
+        "#1E71B8",
+        "#000000"
+      ],
+      "tla": "ATA",
+      "short": "ATA",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "검정·파랑 세로줄(주색 파랑) · 검정 하의",
+      "fdClubColors": "Black / Blue"
+    },
+    "athletic": {
+      "kit": [
+        "#EE2523",
+        "#000000"
+      ],
+      "tla": "ATH",
+      "short": "ATH",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "빨강·흰 세로줄 · 검정 하의",
+      "fdClubColors": "Red / White / Black"
+    },
+    "atletico-madrid": {
+      "kit": [
+        "#CB3524",
+        "#272E61"
+      ],
+      "tla": "ATL",
+      "short": "ATL",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·흰 세로줄 · 남색 하의",
+      "fdClubColors": "Red / White / Blue"
+    },
+    "augsburg": {
+      "kit": [
+        "#BA3733",
+        "#46714D"
+      ],
+      "tla": "FCA",
+      "short": "FCA",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강 상의(2026-27은 대리석 무늬 — 색 미확인) · 둘째 색 초록",
+      "fdClubColors": "Red / Green / White"
+    },
+    "auxerre": {
+      "kit": [
+        "#FFFFFF",
+        "#0057A6"
+      ],
+      "tla": "AJA",
+      "short": "AJA",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "흰 상의 · 둘째 색 파랑",
+      "fdClubColors": "White / Blue"
+    },
+    "barcelona": {
+      "kit": [
+        "#A50044",
+        "#004D98"
+      ],
+      "tla": "FCB",
+      "short": "FCB",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "블라우그라나 세로줄 — 주색 가르나 · 둘째 색 파랑",
+      "fdClubColors": "Red / Navy Blue / Orange"
+    },
+    "bayern-munchen": {
+      "kit": [
+        "#DC052D",
+        "#FFFFFF"
+      ],
+      "tla": "FCB",
+      "short": "FCB",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강 상의 · 흰 하의",
+      "fdClubColors": "Red / White / Blue"
+    },
+    "bodo-glimt": {
+      "kit": [
+        "#FFE600",
+        "#000000"
+      ],
+      "tla": "FK",
+      "short": "BOD",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "노랑 상의 · 검정 하의",
+      "fdClubColors": "Yellow / Black",
+      "shortBasis": "football-data tla 'FK'는 법인 형태 약칭(Fotballklubb)이라 팀을 가리키지 못함 → 도시명 Bodø 앞 3자(ESPN 표기 'BODO'·API-Football 'Bodo/Glimt')"
+    },
+    "bologna": {
+      "kit": [
+        "#A21C26",
+        "#1A2F48"
+      ],
+      "tla": "BOL",
+      "short": "BOL",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강·남색 세로줄 · 흰 하의 → 둘째 색 남색(키트 둘째 색 우선)",
+      "fdClubColors": "Red / Blue / White"
+    },
+    "borussia-dortmund": {
+      "kit": [
+        "#FDE100",
+        "#000000"
+      ],
+      "tla": "BVB",
+      "short": "BVB",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "노랑 상의 · 검정 하의",
+      "fdClubColors": "Black / Yellow"
+    },
+    "borussia-monchengladbach": {
+      "kit": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "tla": "BMG",
+      "short": "BMG",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상의(초록·검정 장식) · 검정 하의",
+      "fdClubColors": "Black / White / Green"
+    },
+    "bournemouth": {
+      "kit": [
+        "#DA291C",
+        "#000000"
+      ],
+      "tla": "BOU",
+      "short": "BOU",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·검정 세로줄 · 검정 하의",
+      "fdClubColors": "Red / Black"
+    },
+    "brentford": {
+      "kit": [
+        "#E30613",
+        "#000000"
+      ],
+      "tla": "BRE",
+      "short": "BRE",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·흰 세로줄 · 검정 하의",
+      "fdClubColors": "Red / White / Black"
+    },
+    "brest": {
+      "kit": [
+        "#E30613",
+        "#FFFFFF"
+      ],
+      "tla": "BRE",
+      "short": "BRE",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강 상의 · 흰 하의",
+      "fdClubColors": "White / Red"
+    },
+    "brighton": {
+      "kit": [
+        "#0057B8",
+        "#FFFFFF"
+      ],
+      "tla": "BHA",
+      "short": "BHA",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "파랑·흰 세로줄 · 흰 하의",
+      "fdClubColors": "Blue / White"
+    },
+    "cagliari": {
+      "kit": [
+        "#A80C2F",
+        "#002350"
+      ],
+      "tla": "CAG",
+      "short": "CAG",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·남색 반반 · 남색 하의",
+      "fdClubColors": "Red / Navy Blue / White"
+    },
+    "celta-vigo": {
+      "kit": [
+        "#8AC3EE",
+        "#FFFFFF"
+      ],
+      "tla": "CEL",
+      "short": "CEL",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "하늘색 상의 · 흰 하의",
+      "fdClubColors": "Sky Blue / White"
+    },
+    "chelsea": {
+      "kit": [
+        "#034694",
+        "#FFFFFF"
+      ],
+      "tla": "CHE",
+      "short": "CHE",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "파랑 상·하의 → 둘째 색 흰색",
+      "fdClubColors": "Royal Blue / White"
+    },
+    "club-brugge": {
+      "kit": [
+        "#0067CE",
+        "#000000"
+      ],
+      "tla": "BRU",
+      "short": "BRU",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑·검정 세로줄 · 검정 하의",
+      "fdClubColors": "Blue / Black"
+    },
+    "como": {
+      "kit": [
+        "#003F7F",
+        "#FFFFFF"
+      ],
+      "tla": "COM",
+      "short": "COM",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑 상의 · 흰 하의",
+      "fdClubColors": "Sky Blue / White"
+    },
+    "coventry-city": {
+      "kit": [
+        "#59CBE8",
+        "#FFFFFF"
+      ],
+      "tla": "COV",
+      "short": "COV",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "하늘색 상의 · 흰 하의",
+      "fdClubColors": "Sky Blue / White"
+    },
+    "crystal-palace": {
+      "kit": [
+        "#C4122E",
+        "#1B458F"
+      ],
+      "tla": "CRY",
+      "short": "CRY",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·파랑 세로줄 · 파랑 하의",
+      "fdClubColors": "Red / Blue"
+    },
+    "deportivo-la-coruna": {
+      "kit": [
+        "#0055A4",
+        "#FFFFFF"
+      ],
+      "tla": "DEP",
+      "short": "DEP",
+      "confidence": "추정",
+      "source": "D1 시안값",
+      "kitNote": "파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색",
+      "fdClubColors": "Blue / White"
+    },
+    "eintracht-frankfurt": {
+      "kit": [
+        "#E1000F",
+        "#000000"
+      ],
+      "tla": "SGE",
+      "short": "SGE",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "빨강·검정 · 검정 하의",
+      "fdClubColors": "Red / Black"
+    },
+    "elche": {
+      "kit": [
+        "#FFFFFF",
+        "#05642C"
+      ],
+      "tla": "ELC",
+      "short": "ELC",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "흰 상의 초록 띠 · 흰 하의 → 둘째 색 초록",
+      "fdClubColors": "White / Green"
+    },
+    "elversberg": {
+      "kit": [
+        "#000000",
+        "#FFFFFF"
+      ],
+      "tla": "ELV",
+      "short": "ELV",
+      "confidence": "추정",
+      "source": "색상명 근사·웹 확인(2026-27 홈 '검정·흰' — footyheadlines)",
+      "kitNote": "검정·흰 상의 배치 미확인 → 주색 검정",
+      "fdClubColors": "Black / White"
+    },
+    "espanyol": {
+      "kit": [
+        "#007FC8",
+        "#FFFFFF"
+      ],
+      "tla": "ESP",
+      "short": "ESP",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색",
+      "fdClubColors": "Blue / White"
+    },
+    "everton": {
+      "kit": [
+        "#003399",
+        "#FFFFFF"
+      ],
+      "tla": "EVE",
+      "short": "EVE",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "파랑 상의 · 흰 하의",
+      "fdClubColors": "Blue / White"
+    },
+    "fenerbahce": {
+      "kit": [
+        "#FFED00",
+        "#00205B"
+      ],
+      "tla": "FEN",
+      "short": "FEN",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "노랑·남색 세로줄 · 남색 하의(구단 남색 #163962 계열)",
+      "fdClubColors": "Yellow / Blue"
+    },
+    "feyenoord": {
+      "kit": [
+        "#E30613",
+        "#000000"
+      ],
+      "tla": "FEY",
+      "short": "FEY",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강·흰 반반 · 검정 하의",
+      "fdClubColors": "Red / White / Black"
+    },
+    "fiorentina": {
+      "kit": [
+        "#482E92",
+        "#FFFFFF"
+      ],
+      "tla": "FIO",
+      "short": "FIO",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "보라 상의 · 흰 하의",
+      "fdClubColors": "Purple / White"
+    },
+    "freiburg": {
+      "kit": [
+        "#E2001A",
+        "#FFFFFF"
+      ],
+      "tla": "SCF",
+      "short": "SCF",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강 상의 · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "frosinone": {
+      "kit": [
+        "#FFD200",
+        "#00428E"
+      ],
+      "tla": "FRO",
+      "short": "FRO",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "노랑 상의 · 파랑 하의",
+      "fdClubColors": "Yellow / Blue"
+    },
+    "fulham": {
+      "kit": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "tla": "FUL",
+      "short": "FUL",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상의 · 검정 하의",
+      "fdClubColors": "White / Black"
+    },
+    "galatasaray": {
+      "kit": [
+        "#A90432",
+        "#FDB912"
+      ],
+      "tla": "GAL",
+      "short": "GAL",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "빨강·노랑 반반 · 둘째 색 노랑",
+      "fdClubColors": "Red / Yellow"
+    },
+    "genoa": {
+      "kit": [
+        "#A51C30",
+        "#002D62"
+      ],
+      "tla": "GEN",
+      "short": "GEN",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강·남색 반반 · 남색 하의",
+      "fdClubColors": "Red / Navy Blue"
+    },
+    "getafe": {
+      "kit": [
+        "#005999",
+        "#FFFFFF"
+      ],
+      "tla": "GET",
+      "short": "GET",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑 상·하의 → 둘째 색 흰색",
+      "fdClubColors": "Blue / White"
+    },
+    "hamburg": {
+      "kit": [
+        "#FFFFFF",
+        "#E3000F"
+      ],
+      "tla": "HSV",
+      "short": "HSV",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "흰 상의 · 빨강 하의",
+      "fdClubColors": "White / Red / Blue"
+    },
+    "hoffenheim": {
+      "kit": [
+        "#1C63B7",
+        "#FFFFFF"
+      ],
+      "tla": "TSG",
+      "short": "TSG",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "파랑 상의 · 흰 하의",
+      "fdClubColors": "Blue / White"
+    },
+    "hull-city": {
+      "kit": [
+        "#F5A12D",
+        "#000000"
+      ],
+      "tla": "HUL",
+      "short": "HUL",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "호박색 상의 · 검정 하의",
+      "fdClubColors": "Orange / Black"
+    },
+    "inter": {
+      "kit": [
+        "#0068A8",
+        "#000000"
+      ],
+      "tla": "INT",
+      "short": "INT",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "파랑·검정 세로줄 · 검정 하의",
+      "fdClubColors": "Blue / Black"
+    },
+    "ipswich-town": {
+      "kit": [
+        "#0044A9",
+        "#FFFFFF"
+      ],
+      "tla": "IPS",
+      "short": "IPS",
+      "confidence": "추정",
+      "source": "D1 시안값",
+      "kitNote": "파랑 상의 · 흰 하의",
+      "fdClubColors": "Blue / White"
+    },
+    "juventus": {
+      "kit": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "tla": "JUV",
+      "short": "JUV",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "흰·검정 세로줄(주색 흰색) · 검정 하의",
+      "fdClubColors": "White / Black"
+    },
+    "koln": {
+      "kit": [
+        "#FFFFFF",
+        "#ED1C24"
+      ],
+      "tla": "KOE",
+      "short": "KOE",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상의 · 흰 하의 → 둘째 색 빨강",
+      "fdClubColors": "Red / White"
+    },
+    "lask": {
+      "kit": [
+        "#000000",
+        "#FFFFFF"
+      ],
+      "tla": "LIN",
+      "short": "LIN",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "검정·흰 세로줄 · 검정 하의 → 둘째 색 흰색",
+      "fdClubColors": "Black / White"
+    },
+    "lazio": {
+      "kit": [
+        "#87D8F7",
+        "#FFFFFF"
+      ],
+      "tla": "LAZ",
+      "short": "LAZ",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "하늘색 상의 · 흰 하의",
+      "fdClubColors": "White / Sky Blue"
+    },
+    "le-havre": {
+      "kit": [
+        "#8CC6EB",
+        "#00205B"
+      ],
+      "tla": "HAC",
+      "short": "HAC",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "하늘색·남색 반반 · 남색 하의",
+      "fdClubColors": "Sky Blue / Navy Blue"
+    },
+    "le-mans": {
+      "kit": [
+        "#E2001A",
+        "#FFD300"
+      ],
+      "tla": "LMF",
+      "short": "LMF",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강 상의 · 둘째 색 노랑",
+      "fdClubColors": "Red / Yellow"
+    },
+    "lecce": {
+      "kit": [
+        "#FFD700",
+        "#D4021D"
+      ],
+      "tla": "USL",
+      "short": "USL",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "노랑·빨강 세로줄 · 남색 하의 → 둘째 색 빨강",
+      "fdClubColors": "Yellow / Red / Navy Blue"
+    },
+    "leeds-united": {
+      "kit": [
+        "#FFFFFF",
+        "#1D428A"
+      ],
+      "tla": "LEE",
+      "short": "LEE",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상·하의 → 둘째 색 파랑",
+      "fdClubColors": "White / Blue"
+    },
+    "lens": {
+      "kit": [
+        "#FFD200",
+        "#E2001A"
+      ],
+      "tla": "RCL",
+      "short": "RCL",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "노랑 상의(빨강 소매) · 검정 하의 → 둘째 색 빨강(키트 상징 '피와 금')",
+      "fdClubColors": "Red / Yellow"
+    },
+    "levante": {
+      "kit": [
+        "#B4053F",
+        "#004F9F"
+      ],
+      "tla": "LEV",
+      "short": "LEV",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "석류색·파랑 세로줄 · 파랑 하의",
+      "fdClubColors": "Crimson / Blue"
+    },
+    "leverkusen": {
+      "kit": [
+        "#E32221",
+        "#000000"
+      ],
+      "tla": "B04",
+      "short": "B04",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·검정 · 검정 하의",
+      "fdClubColors": "Red / White / Black"
+    },
+    "lille": {
+      "kit": [
+        "#E01E13",
+        "#1B2B4D"
+      ],
+      "tla": "LIL",
+      "short": "LIL",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강 상의 · 남색 하의",
+      "fdClubColors": "White / Red"
+    },
+    "liverpool": {
+      "kit": [
+        "#C8102E",
+        "#FFFFFF"
+      ],
+      "tla": "LIV",
+      "short": "LIV",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강 상·하의 → 둘째 색 흰색",
+      "fdClubColors": "Red / White"
+    },
+    "lorient": {
+      "kit": [
+        "#F58113",
+        "#000000"
+      ],
+      "tla": "FCL",
+      "short": "FCL",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "주황 상의 · 검정 하의",
+      "fdClubColors": "Orange / Black"
+    },
+    "lyon": {
+      "kit": [
+        "#FFFFFF",
+        "#14387F"
+      ],
+      "tla": "LYO",
+      "short": "LYO",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상·하의 → 둘째 색 파랑",
+      "fdClubColors": "White / Red / Blue"
+    },
+    "mainz": {
+      "kit": [
+        "#C3141E",
+        "#FFFFFF"
+      ],
+      "tla": "M05",
+      "short": "M05",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "빨강 상의 · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "malaga": {
+      "kit": [
+        "#0B5FA5",
+        "#FFFFFF"
+      ],
+      "tla": "MAL",
+      "short": "MAL",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색",
+      "fdClubColors": "Blue / White"
+    },
+    "manchester-city": {
+      "kit": [
+        "#6CABDD",
+        "#FFFFFF"
+      ],
+      "tla": "MCI",
+      "short": "MCI",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "하늘색 상의 · 흰 하의",
+      "fdClubColors": "Sky Blue / White"
+    },
+    "manchester-united": {
+      "kit": [
+        "#DA291C",
+        "#FFFFFF"
+      ],
+      "tla": "MUN",
+      "short": "MUN",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강 상의 · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "marseille": {
+      "kit": [
+        "#FFFFFF",
+        "#2FAEE0"
+      ],
+      "tla": "MAR",
+      "short": "MAR",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "흰 상·하의 → 둘째 색 하늘색",
+      "fdClubColors": "White / Blue"
+    },
+    "milan": {
+      "kit": [
+        "#FB090B",
+        "#FFFFFF"
+      ],
+      "tla": "MIL",
+      "short": "MIL",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·검정 세로줄(주색 빨강) · 흰 하의",
+      "fdClubColors": "Red / Black"
+    },
+    "monaco": {
+      "kit": [
+        "#E7171E",
+        "#FFFFFF"
+      ],
+      "tla": "ASM",
+      "short": "ASM",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·흰 대각 · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "monza": {
+      "kit": [
+        "#E30613",
+        "#FFFFFF"
+      ],
+      "tla": "MON",
+      "short": "MON",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강 상의 · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "napoli": {
+      "kit": [
+        "#12A0D7",
+        "#FFFFFF"
+      ],
+      "tla": "NAP",
+      "short": "NAP",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "하늘색 상의 · 흰 하의",
+      "fdClubColors": "Sky Blue / White"
+    },
+    "newcastle-united": {
+      "kit": [
+        "#241F20",
+        "#FFFFFF"
+      ],
+      "tla": "NEW",
+      "short": "NEW",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "검정·흰 세로줄 · 검정 하의 → 둘째 색 흰색",
+      "fdClubColors": "Black / White"
+    },
+    "nice": {
+      "kit": [
+        "#C8102E",
+        "#000000"
+      ],
+      "tla": "NIC",
+      "short": "NIC",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강·검정 세로줄 · 검정 하의",
+      "fdClubColors": "Red / Black"
+    },
+    "nottingham-forest": {
+      "kit": [
+        "#DD0000",
+        "#FFFFFF"
+      ],
+      "tla": "NOT",
+      "short": "NOT",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강 상의 · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "osasuna": {
+      "kit": [
+        "#D91A21",
+        "#0A346F"
+      ],
+      "tla": "OSA",
+      "short": "OSA",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강 상의 · 남색 하의",
+      "fdClubColors": "Red / Navy Blue"
+    },
+    "paderborn": {
+      "kit": [
+        "#005CA9",
+        "#000000"
+      ],
+      "tla": "SCP",
+      "short": "SCP",
+      "confidence": "추정",
+      "source": "D1 시안값",
+      "kitNote": "파랑 상의 · 검정 하의",
+      "fdClubColors": "Black / Blue"
+    },
+    "paris-fc": {
+      "kit": [
+        "#11234A",
+        "#6CB4E4"
+      ],
+      "tla": "PFC",
+      "short": "PFC",
+      "confidence": "추정",
+      "source": "색상명 근사·웹 확인(2026-27 홈 '남색 + 하늘색 줄' — parisfc.fr)",
+      "kitNote": "남색 상의 · 둘째 색 하늘색",
+      "fdClubColors": "Navy Blue / Sky Blue"
+    },
+    "paris-saint-germain": {
+      "kit": [
+        "#004170",
+        "#DA291C"
+      ],
+      "tla": "PSG",
+      "short": "PSG",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "남색 상의(빨강 띠) · 둘째 색 빨강",
+      "fdClubColors": "Red / Blue / White"
+    },
+    "parma": {
+      "kit": [
+        "#FFFFFF",
+        "#FFD200"
+      ],
+      "tla": "PAR",
+      "short": "PAR",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "흰 상의 노랑·파랑 십자 · 흰 하의 → 둘째 색 노랑",
+      "fdClubColors": "White / Black"
+    },
+    "porto": {
+      "kit": [
+        "#003893",
+        "#FFFFFF"
+      ],
+      "tla": "FCP",
+      "short": "FCP",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색",
+      "fdClubColors": "Blue / White"
+    },
+    "psv": {
+      "kit": [
+        "#ED1C24",
+        "#FFFFFF"
+      ],
+      "tla": "PSV",
+      "short": "PSV",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강·흰 세로줄 · 검정 하의 → 둘째 색 흰색(키트 둘째 색 우선)",
+      "fdClubColors": "Red / White"
+    },
+    "racing-santander": {
+      "kit": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "tla": "SAN",
+      "short": "SAN",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "흰 상의 · 검정 하의(초록 장식)",
+      "fdClubColors": "White / Black / Green"
+    },
+    "rayo-vallecano": {
+      "kit": [
+        "#FFFFFF",
+        "#E53027"
+      ],
+      "tla": "RAY",
+      "short": "RAY",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "흰 상의 빨강 띠 · 흰 하의 → 둘째 색 빨강",
+      "fdClubColors": "White / Red"
+    },
+    "rb-leipzig": {
+      "kit": [
+        "#FFFFFF",
+        "#DD0741"
+      ],
+      "tla": "RBL",
+      "short": "RBL",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상·하의 → 둘째 색 빨강",
+      "fdClubColors": "White / Red"
+    },
+    "real-betis": {
+      "kit": [
+        "#00954C",
+        "#FFFFFF"
+      ],
+      "tla": "BET",
+      "short": "BET",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "초록·흰 세로줄 · 흰 하의",
+      "fdClubColors": "Green / White"
+    },
+    "real-madrid": {
+      "kit": [
+        "#FFFFFF",
+        "#FEBE10"
+      ],
+      "tla": "RMA",
+      "short": "RMA",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상·하의 → 둘째 색 금색",
+      "fdClubColors": "White / Purple"
+    },
+    "real-sociedad": {
+      "kit": [
+        "#0067B1",
+        "#FFFFFF"
+      ],
+      "tla": "RSO",
+      "short": "RSO",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "파랑·흰 세로줄 · 흰 하의",
+      "fdClubColors": "Blue / White"
+    },
+    "rennes": {
+      "kit": [
+        "#E13327",
+        "#000000"
+      ],
+      "tla": "REN",
+      "short": "REN",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강 상의 · 검정 하의",
+      "fdClubColors": "Red / Black"
+    },
+    "roma": {
+      "kit": [
+        "#8E1F2F",
+        "#F0BC42"
+      ],
+      "tla": "ROM",
+      "short": "ROM",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "자홍색 상·하의 → 둘째 색 주황 금색",
+      "fdClubColors": "Maroon / Orange / White"
+    },
+    "sabah": {
+      "kit": [
+        "#000000",
+        "#E5007E"
+      ],
+      "tla": "SAB",
+      "short": "SAB",
+      "confidence": "추정",
+      "source": "색상명 근사·웹 확인(검정·분홍 — 위키백과 Sabah FC, footyheadlines 2026-27 홈 검정)",
+      "kitNote": "검정 상의 · 둘째 색 분홍"
+    },
+    "sassuolo": {
+      "kit": [
+        "#00A752",
+        "#000000"
+      ],
+      "tla": "SAS",
+      "short": "SAS",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "초록·검정 세로줄 · 검정 하의",
+      "fdClubColors": "Green / Black"
+    },
+    "schalke": {
+      "kit": [
+        "#004D9D",
+        "#FFFFFF"
+      ],
+      "tla": "S04",
+      "short": "S04",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "파랑 상의 · 흰 하의",
+      "fdClubColors": "Blue / White"
+    },
+    "sevilla": {
+      "kit": [
+        "#FFFFFF",
+        "#D81920"
+      ],
+      "tla": "SEV",
+      "short": "SEV",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상·하의 → 둘째 색 빨강",
+      "fdClubColors": "White / Red"
+    },
+    "shakhtar-donetsk": {
+      "kit": [
+        "#F37021",
+        "#000000"
+      ],
+      "tla": "SHD",
+      "short": "SHD",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "주황 상의 · 검정 하의",
+      "fdClubColors": "Orange / Black"
+    },
+    "slavia-praha": {
+      "kit": [
+        "#E4002B",
+        "#FFFFFF"
+      ],
+      "tla": "SLP",
+      "short": "SLP",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "빨강·흰 반반 · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "slovan-bratislava": {
+      "kit": [
+        "#5CB4E8",
+        "#FFFFFF"
+      ],
+      "tla": "SBA",
+      "short": "SBA",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "하늘색 상의 · 흰 하의",
+      "fdClubColors": "Light Blue / White"
+    },
+    "sporting-cp": {
+      "kit": [
+        "#008057",
+        "#FFFFFF"
+      ],
+      "tla": "SPO",
+      "short": "SPO",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "초록·흰 가로줄 · 흰 하의",
+      "fdClubColors": "Green / White"
+    },
+    "strasbourg": {
+      "kit": [
+        "#009FE3",
+        "#FFFFFF"
+      ],
+      "tla": "RC ",
+      "short": "STR",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑 상의 · 흰 하의",
+      "fdClubColors": "Blue / White",
+      "shortBasis": "football-data tla 'RC '(끝 공백)는 법인 접두 'RC'(Racing Club)뿐 — trim하면 'RC'로 랑스(RCL)·라싱과 헷갈림 → 도시명 앞 3자"
+    },
+    "stuttgart": {
+      "kit": [
+        "#FFFFFF",
+        "#E32219"
+      ],
+      "tla": "VFB",
+      "short": "VFB",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상의 빨강 가슴띠 · 흰 하의 → 둘째 색 빨강",
+      "fdClubColors": "White / Red"
+    },
+    "sunderland": {
+      "kit": [
+        "#EB172B",
+        "#000000"
+      ],
+      "tla": "SUN",
+      "short": "SUN",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "빨강·흰 세로줄 · 검정 하의",
+      "fdClubColors": "Red / White"
+    },
+    "torino": {
+      "kit": [
+        "#8A1E03",
+        "#FFFFFF"
+      ],
+      "tla": "TOR",
+      "short": "TOR",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "그라나타 상의 · 흰 하의",
+      "fdClubColors": "Brown / White"
+    },
+    "tottenham-hotspur": {
+      "kit": [
+        "#FFFFFF",
+        "#132257"
+      ],
+      "tla": "TOT",
+      "short": "TOT",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "흰 상의 · 남색 하의",
+      "fdClubColors": "Navy Blue / White"
+    },
+    "toulouse": {
+      "kit": [
+        "#3E2C56",
+        "#FFFFFF"
+      ],
+      "tla": "TOU",
+      "short": "TOU",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "보라 상의 · 흰 하의",
+      "fdClubColors": "Violet / White"
+    },
+    "troyes": {
+      "kit": [
+        "#005CAB",
+        "#FFFFFF"
+      ],
+      "tla": "ETR",
+      "short": "ETR",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "파랑 상의 · 흰 하의",
+      "fdClubColors": "Blue / White"
+    },
+    "udinese": {
+      "kit": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "tla": "UDI",
+      "short": "UDI",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "흰·검정 세로줄(주색 흰색) · 검정 하의",
+      "fdClubColors": "White / Black"
+    },
+    "union-berlin": {
+      "kit": [
+        "#D4011D",
+        "#FFFFFF"
+      ],
+      "tla": "UNB",
+      "short": "UNB",
+      "confidence": "추정",
+      "source": "D1 시안값",
+      "kitNote": "빨강 상의 · 흰 하의",
+      "fdClubColors": "Red / White"
+    },
+    "valencia": {
+      "kit": [
+        "#FFFFFF",
+        "#000000"
+      ],
+      "tla": "VAL",
+      "short": "VAL",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "흰 상의 · 검정 하의",
+      "fdClubColors": "White / Orange / Black"
+    },
+    "venezia": {
+      "kit": [
+        "#000000",
+        "#F37021"
+      ],
+      "tla": "VEN",
+      "short": "VEN",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "검정 상의 주황·초록 띠 · 검정 하의 → 둘째 색 주황",
+      "fdClubColors": "Orange / Black / Green"
+    },
+    "viking": {
+      "kit": [
+        "#002B5C",
+        "#FFFFFF"
+      ],
+      "tla": "VIK",
+      "short": "VIK",
+      "confidence": "추정",
+      "source": "색상명 근사",
+      "kitNote": "진한 파랑 상의 · 흰 하의(football-data 'Dark Blue / White')",
+      "fdClubColors": "Dark Blue / White"
+    },
+    "villarreal": {
+      "kit": [
+        "#FFE667",
+        "#005187"
+      ],
+      "tla": "VIL",
+      "short": "VIL",
+      "confidence": "확실",
+      "source": "D1 시안값·브랜드 관용값",
+      "kitNote": "노랑 상·하의 → 둘째 색 파랑",
+      "fdClubColors": "Yellow / Blue"
+    },
+    "werder-bremen": {
+      "kit": [
+        "#1D9053",
+        "#FFFFFF"
+      ],
+      "tla": "SVW",
+      "short": "SVW",
+      "confidence": "확실",
+      "source": "브랜드 관용값",
+      "kitNote": "초록 상의 · 흰 하의",
+      "fdClubColors": "Green / White"
+    }
+  }
+}

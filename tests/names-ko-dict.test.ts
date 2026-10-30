@@ -43,10 +43,9 @@ const COMPETITIONS = CompetitionsFileSchema.parse(
  * 표기 확인 대기 — football-data 정식 이름. M1-21 보고의 확인 목록은 2026-10-17 사용자가 추천 표기를 일괄 확정했고(PRD §15 D46),
  * 국내 매체 표기 근거가 없는 두 팀만 보류로 남았다. 사용자 결정 뒤 사전에 넣으면 여기서 뺀다.
  * Sabah FK는 2026-10-29 사용자 결정으로 '사바'(포포투 '사바 FK'의 통칭 — /add-name 3차) 등록, 보류에서 뺐다.
+ * Viking FK는 2026-10-30 사용자 결정으로 '비킹'(노컷뉴스 '비킹 FK'의 통칭 — M2-05 검토) 등록, 보류가 비었다.
  */
-const PENDING: readonly string[] = [
-  "Viking FK", // 국내 매체 표기 근거 없음(D46 보류)
-];
+const PENDING: readonly string[] = [];
 
 /** football-data 짧은 이름을 별칭으로 넣지 않는 팀 — 다른 팀과 겹침(D46: 'Deportivo'는 Deportivo Alavés와 겹친다) */
 const SHORT_NAME_NOT_ALIAS: readonly string[] = ["RC Deportivo La Coruña"];
@@ -148,9 +147,9 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
     }
   });
 
-  it("모든 항목에 근거(note)가 있고, 표기는 앞뒤 공백 없는 한글 중심(라틴은 약칭 PSV·AEK·AC·FC·CP·LASK만)", () => {
+  it("모든 항목에 근거(note — 확신도 확실·관용·통칭·확정·추정)가 있고, 표기는 앞뒤 공백 없는 한글 중심(라틴은 약칭 PSV·AEK·AC·FC·CP·LASK만)", () => {
     for (const e of NAMES.entries) {
-      expect(e.note, e.ko).toMatch(/^(확실|관용|통칭|확정)/);
+      expect(e.note, e.ko).toMatch(/^(확실|관용|통칭|확정|추정)/); // 추정 = 초안(사용자 검토 대기 — M2-05)
       const latin = e.ko.match(/[A-Za-z]+/g) ?? [];
       for (const word of latin) {
         expect(["PSV", "AEK", "AC", "FC", "CP", "LASK"], e.ko).toContain(word);

@@ -94,14 +94,14 @@ describe("① 전부 유효", () => {
     );
   });
 
-  it("fixtures/schema/configs를 그대로 복사하면 통과하고 교차 참조 5종을 모두 실행한다", () => {
+  it("fixtures/schema/configs를 그대로 복사하면 통과하고 교차 참조 6종을 모두 실행한다", () => {
     copyFixtures("configs");
     const { exitCode, errors, infos, report } = run();
 
     expect(errors).toEqual([]);
     expect(exitCode).toBe(0);
     expect(report.counts.configs).toBe(13);
-    expect(report.crossRef.checked).toHaveLength(5);
+    expect(report.crossRef.checked).toHaveLength(6);
     expect(report.crossRef.skipped).toEqual([]);
     expect(infos.every((i) => i.startsWith("configs/prompts/"))).toBe(true);
   });
@@ -293,7 +293,7 @@ describe("⑤ 교차 참조 실패", () => {
       'configs/national-team.json:squads[0].playerSlugs[1] — korean-players.json에 없는 선수 slug "ghost"',
     ]);
     expect(lines).toContain(
-      "[validate] 교차 참조: 5건 실행 · 건너뜀 0건(관련 파일 없음) · 오류 4건",
+      "[validate] 교차 참조: 6건 실행 · 건너뜀 0건(관련 파일 없음) · 오류 4건",
     );
   });
 
@@ -301,6 +301,10 @@ describe("⑤ 교차 참조 실패", () => {
     copyFixtures("configs");
     write("configs/team-ids.json", {
       "sample-united": { fd: 9001, af: null },
+    });
+    // team-colors의 팀도 team-ids에 맞춘다(없는 팀 키는 교차 참조 6 오류 — 이 테스트의 대상이 아니다)
+    write("configs/team-colors.json", {
+      "sample-united": { colors: ["#C8102E", "#FFFFFF"], short: "SMU" },
     });
     const { exitCode, errors } = run();
 

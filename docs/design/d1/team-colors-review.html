@@ -1,0 +1,1919 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>팀 키트 색 검토</title>
+<!--
+  M2-05 팀 키트 색·약어·한글 표기 검토 시트 (2026-10-30 초안 → 같은 날 사용자 승인). 외부 의존 없음, 웹폰트는 docs/design/fonts 로컬 파일만.
+  데이터: docs/design/d1/team-colors-source.json(원색·확신도·출처) → scripts/build-team-colors.ts → configs/team-colors.json(보정 값)
+  · configs/names.ko.json(한글 표기·별칭) · configs/team-ids.json(fd·af 원문 이름). 색·간격은 D0 토큰(concept-mix와 같은 값), 키트 색만 데이터.
+  보정 규칙: PRD §15 D62 ④ — scripts/lib/kit-contrast.ts. 이 파일은 생성물이다(scripts/build-team-colors-review.ts) — 고칠 것은 원본 JSON에.
+-->
+<script>(function(){var d=document.documentElement,t;try{t=localStorage.getItem('ed-theme')}catch(e){}if(t==='light'||t==='dark')d.setAttribute('data-theme',t)})();</script>
+<style>
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-400.ksx.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-800.ksx.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-SemiBold.latin.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+:root{
+  color-scheme:light;
+  --paper:#F3F0EA;--paper-2:#E8E4DB;--paper-3:#E1DFDC;
+  --ink:#14213D;--ink-2:#4A5670;--ink-3:#727886;--ink-disabled:#727886;--rule:#CFCFCE;--hatch:#DFDDDA;
+  --brand-accent:#B32F25;--brand-accent-text:#A92B22;--brand-accent-foreground:#F3F0EA;
+  --ticket:#14213D;--ticket-fg:#F3F0EA;--ticket-fg-2:#C2C2C4;
+  --colophon:#14213D;--colophon-fg:#F3F0EA;--colophon-fg-2:#C2C2C4;
+  --ring:#A92B22;
+  --competition-epl:#3D1E5C;--competition-laliga:#7F5300;--competition-seriea:#0A6390;
+  --competition-bundesliga:#A8122B;--competition-ligue1:#2A7035;--competition-ucl:#4A5263;
+  --competition-foreground:#F3F0EA;
+  --result-win:#1F6B45;--result-draw:#4A5670;--result-loss:#A92B22;--trend-up:#1F6B45;--trend-down:#A92B22;
+  --font-sans:"EuroDigest Sans",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --font-numeric:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-latin:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;
+  --radius:0px;--notch:10px;--perf:3.2px;
+  --shadow-print:4px 4px 0 var(--ink);--shadow-print-accent:4px 4px 0 var(--brand-accent);--shadow-none:none;
+  --duration-fast:150ms;--duration-base:200ms;--duration-slow:250ms;--ease:cubic-bezier(.2,.8,.2,1);
+  --gutter:40px;--tab-w:18px;--edge:16px;--col-contents:232px;--col-facing:296px;--container:1280px;
+  --text-wordmark:30px;--lh-wordmark:1.1;--text-h2:21px;--lh-h2:1.3;--text-brief:17px;--lh-brief:1.62;--text-card:16.5px;--lh-card:1.45;--text-tag:13px;--lh-tag:1.35;--text-stamp:11.5px;--lh-stamp:1.3;--text-meta:13px;--lh-meta:1.3;--text-rh:12.5px;--lh-rh:1;--num-issue:40px;--num-brief-no:40px;--num-score:30px;--num-card-no:14px;--num-meta:14.5px;
+}
+[data-theme="dark"]{color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:15px;line-height:1.5;word-break:keep-all;overflow-wrap:anywhere;font-synthesis:none;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ul{margin:0}ul{padding:0;list-style:none}
+button{font:inherit;color:inherit;cursor:pointer}
+code{font-family:var(--font-numeric);font-weight:600;letter-spacing:.02em}
+.n,code{font-variant-numeric:tabular-nums lining-nums}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.wrap{max-width:var(--container);margin:0 auto;padding:0 var(--edge)}
+@media (min-width:1024px){.wrap{padding:0 40px}}
+
+/* 머리 — 티켓 스텁 */
+.mast{border-bottom:3px double var(--ink);padding:var(--space-5) 0 var(--space-4)}
+.mast__top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4)}
+.kick{font:600 12px/1 var(--font-numeric);letter-spacing:.14em;color:var(--ink-2);text-transform:uppercase}
+.mast h1{font-weight:800;font-size:26px;line-height:1.15;letter-spacing:-.01em;margin-top:var(--space-2)}
+.mast__lead{color:var(--ink-2);font-size:14px;margin-top:var(--space-2);max-width:62ch}
+.ibtn{display:inline-grid;place-items:center;min-width:44px;min-height:44px;border:1px solid var(--ink-2);background:transparent;padding:0 12px;font-size:13px;font-weight:800}
+.ibtn:hover{background:var(--paper-2)}
+@media (min-width:1024px){.mast h1{font-size:40px}}
+
+/* 요약 수치 */
+.sum{display:grid;grid-template-columns:repeat(2,1fr);border-bottom:1px solid var(--rule)}
+.sum div{padding:var(--space-3) 0;border-top:1px solid var(--rule)}
+.sum div:nth-child(odd){padding-right:var(--space-3);border-right:1px solid var(--rule)}
+.sum div:nth-child(even){padding-left:var(--space-3)}
+.sum dt{font-size:12px;color:var(--ink-2);font-weight:800}
+.sum dd{margin:2px 0 0;font:800 30px/1 var(--font-numeric)}
+.sum dd small{font:400 12px/1.3 var(--font-sans);color:var(--ink-2);display:block;margin-top:4px}
+@media (min-width:1024px){.sum{grid-template-columns:repeat(6,1fr)}.sum div,.sum div:nth-child(odd),.sum div:nth-child(even){padding:var(--space-4) var(--space-4) var(--space-4) 0;border-right:1px solid var(--rule);border-top:0}.sum div+div{padding-left:var(--space-4)}.sum div:last-child{border-right:0}.sum dd{font-size:40px}}
+
+.notes{display:grid;gap:var(--space-4);padding:var(--space-5) 0;border-bottom:1px solid var(--rule);font-size:13.5px;color:var(--ink-2)}
+.notes h2{font-size:13px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.notes li{position:relative;padding-left:12px}.notes li::before{content:"";position:absolute;left:0;top:.75em;width:6px;height:1px;background:var(--ink-2)}
+.notes b{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:var(--space-3) var(--space-5);align-items:center}
+.legend span.l{display:inline-flex;align-items:center;gap:8px;font-size:13px}
+@media (min-width:1024px){.notes{grid-template-columns:1.1fr 1fr 1fr;gap:var(--space-6)}}
+
+/* 필터 */
+.filt{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;gap:var(--space-2);padding:var(--space-2) 0;overflow-x:auto}
+.filt button{min-height:44px;padding:0 14px;border:1px solid var(--ink-2);background:transparent;font-size:13.5px;font-weight:800;white-space:nowrap}
+.filt button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.filt a{display:inline-grid;place-items:center;min-height:44px;min-width:44px;padding:0 10px;font:600 14px/1 var(--font-numeric);letter-spacing:.06em;color:var(--ink-2);text-decoration:none;white-space:nowrap}
+.filt a:hover{color:var(--ink)}
+.filt .sep{flex:none;width:1px;background:var(--rule);margin:6px 4px}
+
+/* 배지 — D1 혼합안과 같은 규칙 */
+.bdg{position:relative;display:inline-grid;grid-template-rows:3fr 2fr;flex:none;background:var(--k2);outline:1px solid var(--rule);outline-offset:-1px;vertical-align:middle}
+.bdg b{grid-row:1;display:grid;place-items:center;background:var(--k1);color:var(--kf);font-family:var(--font-numeric);font-weight:800;font-variant-numeric:tabular-nums lining-nums;letter-spacing:.04em;line-height:1}
+.bdg--m{width:40px;height:44px}.bdg--m b{font-size:15px}
+.bdg--s{width:30px;height:33px}.bdg--s b{font-size:12px;letter-spacing:.02em}
+.bdg--none{background:transparent;outline:1px dashed var(--ink-2)}
+.bdg--none b{background:transparent;color:var(--ink-2);border-bottom:1px dashed var(--ink-2)}
+.bdg--none::after{content:"";grid-row:2;background:repeating-linear-gradient(-45deg,var(--hatch) 0 3px,transparent 3px 6px)}
+
+/* 대회 절 */
+.comp{padding-top:var(--space-6)}
+.comp__h{display:flex;align-items:baseline;gap:var(--space-3);border-bottom:2px solid var(--ink);padding-bottom:var(--space-2);flex-wrap:wrap}
+.comp__tab{align-self:center;font:800 12px/1 var(--font-numeric);letter-spacing:.1em;background:var(--cc);color:var(--competition-foreground);padding:5px 7px 4px}
+.comp h2{font-size:21px;font-weight:800}
+.comp__m{margin-left:auto;font:600 14px/1 var(--font-numeric);letter-spacing:.04em;color:var(--ink-2)}
+
+/* 팀 행 */
+.tr{position:relative;display:grid;grid-template-columns:40px 1fr;grid-template-areas:"b n" "c c" "s s";gap:var(--space-2) var(--space-3);padding:var(--space-4) 0 var(--space-4) var(--space-3);border-bottom:1px solid var(--rule)}
+.tr::before{content:"";position:absolute;left:0;top:var(--space-4);bottom:var(--space-4);width:3px;background:transparent}
+.tr.is-fix::before{background:var(--brand-accent)}
+.tr.is-est:not(.is-fix)::before{background:repeating-linear-gradient(180deg,var(--ink-2) 0 5px,transparent 5px 9px)}
+.tr__b{grid-area:b}.tr__n{grid-area:n;min-width:0}.tr__c{grid-area:c}.tr__s{grid-area:s}
+.tr h3{font-size:17px;font-weight:800;line-height:1.25}
+.en{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.flags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{font-size:11.5px;font-weight:800;line-height:1;padding:4px 6px;border:1px solid var(--ink-2);color:var(--ink-2)}
+.tag--fix{background:var(--brand-accent);border-color:var(--brand-accent);color:var(--brand-accent-foreground)}
+.tag--est{border-style:dashed;color:var(--ink)}
+.ln{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;font-size:13px;line-height:1.45}
+.ln+.ln{margin-top:3px}
+.k{flex:none;width:30px;font-size:11.5px;font-weight:800;color:var(--ink-2)}
+.ln>span:not(.k){flex:1 1 0;min-width:0}
+.tr__c .ln>span:not(.k),.tr__c .ln>.sw{flex:none}
+.mut{color:var(--ink-2)}
+.sw{display:inline-flex;align-items:center;gap:5px}
+.sw i{display:inline-block;width:14px;height:14px;background:var(--c);outline:1px solid var(--rule);outline-offset:-1px}
+.sw code{font-size:14px}
+.sw em{font-style:normal;color:var(--ink-2);font-size:12px}
+.arr{color:var(--brand-accent-text);font-weight:800}
+.tr__c b{font:800 15px/1 var(--font-numeric)}
+.cf{font-weight:800;color:var(--ink)}
+.cf--est{border-bottom:1px dashed var(--ink)}
+.chg{font-weight:800;color:var(--brand-accent-text)}
+@media (min-width:1024px){
+  .tl{display:block}
+  .tr{grid-template-columns:40px minmax(180px,1.1fr) minmax(250px,1.15fr) 2fr;grid-template-areas:"b n c s";gap:0 var(--space-5);align-items:start;padding:var(--space-3) 0 var(--space-3) var(--space-3)}
+  .tr::before{top:var(--space-3);bottom:var(--space-3)}
+}
+.tr[hidden]{display:none}
+.foot{padding:var(--space-7) 0 var(--space-8);color:var(--ink-2);font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="mast">
+  <div class="mast__top">
+    <div>
+      <p class="kick">M2-05 · 2026-10-30 · 사용자 승인</p>
+      <h1>팀 키트 색 · 약어 · 한글 표기</h1>
+    </div>
+    <button class="ibtn" type="button" data-theme-toggle aria-label="테마 바꾸기 (현재: 시스템 설정)">테마</button>
+  </div>
+  <p class="mast__lead">6개 대회 111팀의 배지(상의 3/5 + 약어, 하의 2/5)를 실제 크기 40×44로 그렸다. 상의 색은 D62 ④ 대비 보정 뒤 값이고, 원색과 보정 값·비율 f·약어 글자 대비를 함께 적었다. <b>왼쪽 레드 띠 = 보정한 팀</b>, <b>점선 띠 = 추정(색·표기·약어) 포함</b>.</p>
+</header>
+
+<dl class="sum">
+  <div><dt>팀</dt><dd class="n">111<small>5대 리그 96 + UCL 밖 15</small></dd></div>
+  <div><dt>보정</dt><dd class="n">29<small>최저 f 0.74 사수올로</small></dd></div>
+  <div><dt>색 추정</dt><dd class="n">53<small>확실 58</small></dd></div>
+  <div><dt>최저 대비</dt><dd class="n">5.30<small>스포르팅 CP · 하한 5.3</small></dd></div>
+  <div><dt>약어 예외</dt><dd class="n">2<small>보되/글림트 FK→BOD · 스트라스부르 "RC "→STR</small></dd></div>
+  <div><dt>약어 충돌</dt><dd class="n">2<small>FCB · BRE — 한글 팀명 병기</small></dd></div>
+</dl>
+
+<div class="notes">
+  <div>
+    <h2>규칙 (PRD §15 D62 ②④)</h2>
+    <ul>
+      <li>글자색 = <code>#FFFFFF</code>·<code>#14213D</code> 중 상의와 대비가 큰 쪽 (남색 글자 39팀)</li>
+      <li>대비 &lt; 5.3이면 상의 R·G·B × f (1.00에서 0.02씩, 채널 반올림) — 흰 글자 5.3 이상 되는 첫 f. 하의는 원색 그대로</li>
+      <li>약어 충돌 <code>FCB</code> 바르셀로나·바이에른 뮌헨 / <code>BRE</code> 브렌트포드·브레스트은 약어를 바꾸지 않고 이름으로 구분</li>
+    </ul>
+  </div>
+  <div>
+    <h2>확신도·출처</h2>
+    <ul>
+      <li><b>확실</b> — 색 계열에 이견이 없고 널리 인용되는 브랜드 hex(D1 시안값 포함). 구단 원문은 이번에 다시 조회하지 않았다</li>
+      <li><b>추정</b> — football-data clubColors·키트 색 계열에 맞춘 근사 hex이거나 키트 배치(어느 색이 상의인지)가 불확실</li>
+      <li>표기: 확실·관용·통칭·확정 = 기존 사전 근거, <b>추정</b> = 이번 초안 확신도(사용자 확정 뒤에도 근거로 남김)</li>
+    </ul>
+  </div>
+  <div>
+    <h2>배지 견본</h2>
+    <div class="legend">
+      <span class="l"><span class="bdg bdg--m" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span> 보정 뒤</span>
+      <span class="l"><span class="bdg bdg--m" style="--k1:#EF0107;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span> 원색 4.49</span>
+      <span class="l"><span class="bdg bdg--m bdg--none" aria-hidden="true"><b>XXX</b></span> 폴백(색 없음)</span>
+    </div>
+    <p style="margin-top:8px">폴백 배지는 team-colors.json에 없는 팀만 쓴다 — 지금은 111팀 모두 색이 있어 쓰이지 않는다.</p>
+  </div>
+</div>
+
+<nav class="filt" aria-label="보기">
+  <button type="button" data-f="all" aria-pressed="true">전체 111</button>
+  <button type="button" data-f="fix" aria-pressed="false">보정 29</button>
+  <button type="button" data-f="est" aria-pressed="false">추정 포함 53</button>
+  <span class="sep" aria-hidden="true"></span>
+  <a href="#epl">EPL</a><a href="#laliga">LALIGA</a><a href="#seriea">SERIEA</a><a href="#bundesliga">BUNDESLIGA</a><a href="#ligue1">LIGUE1</a><a href="#ucl">UCL</a>
+</nav>
+
+<section class="comp" id="epl" aria-labelledby="h-epl" style="--cc:var(--competition-epl)">
+  <header class="comp__h"><span class="comp__tab" aria-hidden="true">EPL</span><h2 id="h-epl">프리미어리그</h2><p class="comp__m n">20팀 · 보정 6 · 색 추정 1</p></header>
+  <ul class="tl"><li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#6CABDD;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>MCI</b></span></div>
+  <div class="tr__n"><h3>맨체스터 시티</h3><p class="en">Manchester City FC · Manchester City · Man City</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#6CABDD" aria-hidden="true"></i><code>#6CABDD</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.47</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">MCI</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>하늘색 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Sky Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '맨체스터 시티 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D70106;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ARS</b></span></div>
+  <div class="tr__n"><h3>아스널</h3><p class="en">Arsenal FC · Arsenal</p><p class="flags"><span class="tag tag--fix">보정 f 0.90</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#EF0107" aria-hidden="true"></i><code>#EF0107</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D70106" aria-hidden="true"></i><code>#D70106</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.49 → <b>5.39</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ARS</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의(흰 소매) · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '아스널 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '아스널' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0057B8;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BHA</b></span></div>
+  <div class="tr__n"><h3>브라이턴</h3><p class="en">Brighton &amp; Hove Albion FC · Brighton · Brighton Hove · Brighton &amp; Hove Albion</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#0057B8" aria-hidden="true"></i><code>#0057B8</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.87</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BHA</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·흰 세로줄 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(브라이턴/브라이튼 중 규범·위키 표기) · 위키백과 '브라이턴 &amp; 호브 앨비언 FC'</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D50612;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BRE</b></span></div>
+  <div class="tr__n"><h3>브렌트포드</h3><p class="en">Brentford FC · Brentford</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span><span class="tag">약어 충돌 · 이름 병기</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E30613" aria-hidden="true"></i><code>#E30613</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D50612" aria-hidden="true"></i><code>#D50612</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.88 → <b>5.43</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BRE</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·흰 세로줄 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-09-15 '브렌트포드FC'(idx 28286)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#034694;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>CHE</b></span></div>
+  <div class="tr__n"><h3>첼시</h3><p class="en">Chelsea FC · Chelsea</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#034694" aria-hidden="true"></i><code>#034694</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>9.10</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">CHE</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상·하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Royal Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '첼시 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '첼시' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#1D428A;--kf:#14213D" aria-hidden="true"><b>LEE</b></span></div>
+  <div class="tr__n"><h3>리즈 유나이티드</h3><p class="en">Leeds United FC · Leeds · Leeds United</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#1D428A" aria-hidden="true"></i><code>#1D428A</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">LEE</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상·하의 → 둘째 색 파랑</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '리즈 유나이티드 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#C8102E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIV</b></span></div>
+  <div class="tr__n"><h3>리버풀</h3><p class="en">Liverpool FC · Liverpool</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#C8102E" aria-hidden="true"></i><code>#C8102E</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.88</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">LIV</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상·하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '리버풀 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '리버풀' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#003399;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>EVE</b></span></div>
+  <div class="tr__n"><h3>에버턴</h3><p class="en">Everton FC · Everton</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#003399" aria-hidden="true"></i><code>#003399</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>10.86</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">EVE</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(에버턴/에버튼 중 위키 문서명 표기) · 위키백과 '에버턴 FC'</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0044A9;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>IPS</b></span></div>
+  <div class="tr__n"><h3>입스위치 타운</h3><p class="en">Ipswich Town FC · Ipswich · Ipswich Town</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#0044A9" aria-hidden="true"></i><code>#0044A9</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>8.75</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">IPS</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> D1 시안값 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '입스위치 타운 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#F5A12D;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>HUL</b></span></div>
+  <div class="tr__n"><h3>헐 시티</h3><p class="en">Hull City AFC · Hull City</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#F5A12D" aria-hidden="true"></i><code>#F5A12D</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>7.62</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">HUL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>호박색 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Orange / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '헐 시티 AFC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#241F20;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>NEW</b></span></div>
+  <div class="tr__n"><h3>뉴캐슬 유나이티드</h3><p class="en">Newcastle United FC · Newcastle · Newcastle United</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#241F20" aria-hidden="true"></i><code>#241F20</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>16.26</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">NEW</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>검정·흰 세로줄 · 검정 하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Black / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '뉴캐슬 유나이티드 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#CD271A;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MUN</b></span></div>
+  <div class="tr__n"><h3>맨체스터 유나이티드</h3><p class="en">Manchester United FC · Manchester United · Man United · Man Utd</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#DA291C" aria-hidden="true"></i><code>#DA291C</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#CD271A" aria-hidden="true"></i><code>#CD271A</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.87 → <b>5.38</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">MUN</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '맨체스터 유나이티드 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '맨체스터 유나이티드' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D90000;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>NOT</b></span></div>
+  <div class="tr__n"><h3>노팅엄 포레스트</h3><p class="en">Nottingham Forest FC · Nottingham Forest · Nottingham</p><p class="flags"><span class="tag tag--fix">보정 f 0.98</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#DD0000" aria-hidden="true"></i><code>#DD0000</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D90000" aria-hidden="true"></i><code>#D90000</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">5.15 → <b>5.32</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">NOT</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안 — 위키 '노팅엄 포리스트'와 다른 국내 매체 관례 '포레스트' · 위키백과 '노팅엄 포리스트 FC'</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#670E36;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>AVL</b></span></div>
+  <div class="tr__n"><h3>애스턴 빌라</h3><p class="en">Aston Villa FC · Aston Villa</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#670E36" aria-hidden="true"></i><code>#670E36</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>12.41</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">AVL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>클라렛 상의(하늘색 소매) · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Claret / Sky Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(애스턴/아스톤 중 위키 문서명 표기) · 위키백과 '애스턴 빌라 FC'</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#C4122E;--k2:#1B458F;--kf:#FFFFFF" aria-hidden="true"><b>CRY</b></span></div>
+  <div class="tr__n"><h3>크리스털 팰리스</h3><p class="en">Crystal Palace FC · Crystal Palace</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#C4122E" aria-hidden="true"></i><code>#C4122E</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#1B458F" aria-hidden="true"></i><code>#1B458F</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.05</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">CRY</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·파랑 세로줄 · 파랑 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(크리스털/크리스탈 중 위키 문서명 표기) · 위키백과 '크리스털 팰리스 FC'</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D41527;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>SUN</b></span></div>
+  <div class="tr__n"><h3>선덜랜드</h3><p class="en">Sunderland AFC · Sunderland</p><p class="flags"><span class="tag tag--fix">보정 f 0.90</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#EB172B" aria-hidden="true"></i><code>#EB172B</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D41527" aria-hidden="true"></i><code>#D41527</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.48 → <b>5.34</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SUN</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·흰 세로줄 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '선덜랜드 AFC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#CD271A;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BOU</b></span></div>
+  <div class="tr__n"><h3>본머스</h3><p class="en">AFC Bournemouth · Bournemouth</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#DA291C" aria-hidden="true"></i><code>#DA291C</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#CD271A" aria-hidden="true"></i><code>#CD271A</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.87 → <b>5.38</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BOU</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·검정 세로줄 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'AFC 본머스'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '본머스' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#132257;--kf:#14213D" aria-hidden="true"><b>TOT</b></span></div>
+  <div class="tr__n"><h3>토트넘</h3><p class="en">Tottenham Hotspur FC · Tottenham · Tottenham Hotspur · Spurs</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#132257" aria-hidden="true"></i><code>#132257</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">TOT</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 · 남색 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Navy Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 '토트넘 홋스퍼 FC'에서 '홋스퍼'를 뺀 국내 매체 통칭(KFA가 '울버햄프턴 원더러스'를 '울버햄프턴'으로 쓰는 방식 — idx 27813) · 국내 축구 매체 제목에 '토트넘' 4건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#59CBE8;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>COV</b></span></div>
+  <div class="tr__n"><h3>코번트리 시티</h3><p class="en">Coventry City FC · Coventry · Coventry City</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#59CBE8" aria-hidden="true"></i><code>#59CBE8</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>8.47</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">COV</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>하늘색 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Sky Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(코번트리/코벤트리 중 위키 문서명 표기) · 위키백과 '코번트리 시티 FC'</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>FUL</b></span></div>
+  <div class="tr__n"><h3>풀럼</h3><p class="en">Fulham FC · Fulham</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FUL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '풀럼 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li></ul>
+</section>
+<section class="comp" id="laliga" aria-labelledby="h-laliga" style="--cc:var(--competition-laliga)">
+  <header class="comp__h"><span class="comp__tab" aria-hidden="true">LALIGA</span><h2 id="h-laliga">라리가</h2><p class="comp__m n">20팀 · 보정 5 · 색 추정 11</p></header>
+  <ul class="tl"><li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#A50044;--k2:#004D98;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span></div>
+  <div class="tr__n"><h3>바르셀로나</h3><p class="en">FC Barcelona · Barcelona · Barça</p><p class="flags"><span class="tag">약어 충돌 · 이름 병기</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#A50044" aria-hidden="true"></i><code>#A50044</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#004D98" aria-hidden="true"></i><code>#004D98</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>7.83</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FCB</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>블라우그라나 세로줄 — 주색 가르나 · 둘째 색 파랑</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / Navy Blue / Orange"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'FC 바르셀로나'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '바르셀로나' 2건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#C73423;--k2:#272E61;--kf:#FFFFFF" aria-hidden="true"><b>ATL</b></span></div>
+  <div class="tr__n"><h3>아틀레티코 마드리드</h3><p class="en">Club Atlético de Madrid · Atletico Madrid · Atlético de Madrid · Atlético Madrid · Atleti</p><p class="flags"><span class="tag tag--fix">보정 f 0.98</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#CB3524" aria-hidden="true"></i><code>#CB3524</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#C73423" aria-hidden="true"></i><code>#C73423</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#272E61" aria-hidden="true"></i><code>#272E61</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">5.15 → <b>5.32</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ATL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·흰 세로줄 · 남색 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-09-14 '아틀레티코 마드리드'(idx 28281)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#FEBE10;--kf:#14213D" aria-hidden="true"><b>RMA</b></span></div>
+  <div class="tr__n"><h3>레알 마드리드</h3><p class="en">Real Madrid CF · Real Madrid</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FEBE10" aria-hidden="true"></i><code>#FEBE10</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">RMA</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상·하의 → 둘째 색 금색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Purple"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '레알 마드리드 CF'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '레알 마드리드' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#007A3E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BET</b></span></div>
+  <div class="tr__n"><h3>레알 베티스</h3><p class="en">Real Betis Balompié · Real Betis · Betis</p><p class="flags"><span class="tag tag--fix">보정 f 0.82</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#00954C" aria-hidden="true"></i><code>#00954C</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#007A3E" aria-hidden="true"></i><code>#007A3E</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.11 → <b>5.45</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BET</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>초록·흰 세로줄 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Green / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '레알 베티스' · 국내 축구 매체 제목에 '레알 베티스' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#D81920;--kf:#14213D" aria-hidden="true"><b>SEV</b></span></div>
+  <div class="tr__n"><h3>세비야</h3><p class="en">Sevilla FC · Sevilla</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#D81920" aria-hidden="true"></i><code>#D81920</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SEV</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상·하의 → 둘째 색 빨강</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Red"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '세비야 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0761AF;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ALA</b></span></div>
+  <div class="tr__n"><h3>알라베스</h3><p class="en">Deportivo Alavés · Alaves · Alavés</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#0761AF" aria-hidden="true"></i><code>#0761AF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.29</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ALA</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 '데포르티보 알라베스'의 국내 매체 통칭 · 국내 축구 매체 제목에 '알라베스' 3건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0055A4;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>DEP</b></span></div>
+  <div class="tr__n"><h3>데포르티보 라코루냐</h3><p class="en">RC Deportivo La Coruña · Deportivo La Coruna · Deportivo La Coruña · Deportivo de La Coruña</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#0055A4" aria-hidden="true"></i><code>#0055A4</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>7.41</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">DEP</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> D1 시안값 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(위키 문서명). football-data 짧은 이름 'Deportivo'는 알라베스(Deportivo Alavés)와 겹쳐 별칭으로 넣지 않는다 · 위키백과 '데포르티보 라코루냐' <b class="chg">별칭 +'Deportivo La Coruna'</b></span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0067B1;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>RSO</b></span></div>
+  <div class="tr__n"><h3>레알 소시에다드</h3><p class="en">Real Sociedad de Fútbol · Real Sociedad</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#0067B1" aria-hidden="true"></i><code>#0067B1</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.87</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">RSO</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·흰 세로줄 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '레알 소시에다드'</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D1211F;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>ATH</b></span></div>
+  <div class="tr__n"><h3>아틀레틱 빌바오</h3><p class="en">Athletic Club · Athletic · Athletic Bilbao</p><p class="flags"><span class="tag tag--fix">보정 f 0.88</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#EE2523" aria-hidden="true"></i><code>#EE2523</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D1211F" aria-hidden="true"></i><code>#D1211F</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.26 → <b>5.32</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ATH</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·흰 세로줄 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "Red / White / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '아틀레틱 빌바오'</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFE667;--k2:#005187;--kf:#14213D" aria-hidden="true"><b>VIL</b></span></div>
+  <div class="tr__n"><h3>비야레알</h3><p class="en">Villarreal CF · Villarreal</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFE667" aria-hidden="true"></i><code>#FFE667</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#005187" aria-hidden="true"></i><code>#005187</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>12.75</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">VIL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>노랑 상·하의 → 둘째 색 파랑</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Yellow / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '비야레알 CF'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0070B0;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ESP</b></span></div>
+  <div class="tr__n"><h3>에스파뇰</h3><p class="en">RCD Espanyol de Barcelona · Espanyol</p><p class="flags"><span class="tag tag--fix">보정 f 0.88</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#007FC8" aria-hidden="true"></i><code>#007FC8</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#0070B0" aria-hidden="true"></i><code>#0070B0</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.31 → <b>5.32</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ESP</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'RCD 에스파뇰'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#E53027;--kf:#14213D" aria-hidden="true"><b>RAY</b></span></div>
+  <div class="tr__n"><h3>라요 바예카노</h3><p class="en">Rayo Vallecano de Madrid · Rayo Vallecano</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#E53027" aria-hidden="true"></i><code>#E53027</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">RAY</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 빨강 띠 · 흰 하의 → 둘째 색 빨강</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "White / Red"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '라요 바예카노'</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#005999;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>GET</b></span></div>
+  <div class="tr__n"><h3>헤타페</h3><p class="en">Getafe CF · Getafe</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#005999" aria-hidden="true"></i><code>#005999</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>7.27</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">GET</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상·하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '헤타페 CF'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '헤타페' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D01920;--k2:#0A346F;--kf:#FFFFFF" aria-hidden="true"><b>OSA</b></span></div>
+  <div class="tr__n"><h3>오사수나</h3><p class="en">CA Osasuna · Osasuna</p><p class="flags"><span class="tag tag--fix">보정 f 0.96</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#D91A21" aria-hidden="true"></i><code>#D91A21</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D01920" aria-hidden="true"></i><code>#D01920</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#0A346F" aria-hidden="true"></i><code>#0A346F</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">5.10 → <b>5.47</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">OSA</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 남색 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / Navy Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'CA 오사수나'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#8AC3EE;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>CEL</b></span></div>
+  <div class="tr__n"><h3>셀타 비고</h3><p class="en">RC Celta de Vigo · Celta Vigo · Celta</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#8AC3EE" aria-hidden="true"></i><code>#8AC3EE</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>8.46</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">CEL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>하늘색 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Sky Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '셀타 비고'</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>SAN</b></span></div>
+  <div class="tr__n"><h3>라싱 산탄데르</h3><p class="en">Real Racing Club de Santander · Racing Santander · Santander</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SAN</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 · 검정 하의(초록 장식)</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "White / Black / Green"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '라싱 산탄데르'</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#B4053F;--k2:#004F9F;--kf:#FFFFFF" aria-hidden="true"><b>LEV</b></span></div>
+  <div class="tr__n"><h3>레반테</h3><p class="en">Levante UD · Levante</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#B4053F" aria-hidden="true"></i><code>#B4053F</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#004F9F" aria-hidden="true"></i><code>#004F9F</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.92</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">LEV</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>석류색·파랑 세로줄 · 파랑 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Crimson / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '레반테 UD'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#05642C;--kf:#14213D" aria-hidden="true"><b>ELC</b></span></div>
+  <div class="tr__n"><h3>엘체</h3><p class="en">Elche CF · Elche</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#05642C" aria-hidden="true"></i><code>#05642C</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ELC</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 초록 띠 · 흰 하의 → 둘째 색 초록</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "White / Green"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '엘체 CF'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0B5FA5;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MAL</b></span></div>
+  <div class="tr__n"><h3>말라가</h3><p class="en">Málaga CF · Malaga · Málaga</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#0B5FA5" aria-hidden="true"></i><code>#0B5FA5</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.57</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">MAL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '말라가 CF'(법인·형태 약칭 뺌) <b class="chg">별칭 +'Malaga'</b></span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>VAL</b></span></div>
+  <div class="tr__n"><h3>발렌시아</h3><p class="en">Valencia CF · Valencia</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">VAL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "White / Orange / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '발렌시아 CF'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li></ul>
+</section>
+<section class="comp" id="seriea" aria-labelledby="h-seriea" style="--cc:var(--competition-seriea)">
+  <header class="comp__h"><span class="comp__tab" aria-hidden="true">SERIEA</span><h2 id="h-seriea">세리에 A</h2><p class="comp__m n">20팀 · 보정 4 · 색 추정 9</p></header>
+  <ul class="tl"><li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0068A8;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>INT</b></span></div>
+  <div class="tr__n"><h3>인테르</h3><p class="en">FC Internazionale Milano · Inter · Inter Milan · Internazionale</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#0068A8" aria-hidden="true"></i><code>#0068A8</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.92</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">INT</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·검정 세로줄 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Blue / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(인테르/인터 밀란 중 최근 국내 축구 매체 관례·짧은 표기) · 위키백과 'FC 인테르나치오날레 밀라노'</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#8E1F2F;--k2:#F0BC42;--kf:#FFFFFF" aria-hidden="true"><b>ROM</b></span></div>
+  <div class="tr__n"><h3>로마</h3><p class="en">AS Roma · Roma</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#8E1F2F" aria-hidden="true"></i><code>#8E1F2F</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#F0BC42" aria-hidden="true"></i><code>#F0BC42</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>8.80</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ROM</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>자홍색 상·하의 → 둘째 색 주황 금색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Maroon / Orange / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 'AS 로마'의 국내 매체 통칭('AS'를 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#87D8F7;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>LAZ</b></span></div>
+  <div class="tr__n"><h3>라치오</h3><p class="en">SS Lazio · Lazio</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#87D8F7" aria-hidden="true"></i><code>#87D8F7</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>10.04</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">LAZ</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>하늘색 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Sky Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'SS 라치오'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#A80C2F;--k2:#002350;--kf:#FFFFFF" aria-hidden="true"><b>CAG</b></span></div>
+  <div class="tr__n"><h3>칼리아리</h3><p class="en">Cagliari Calcio · Cagliari</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#A80C2F" aria-hidden="true"></i><code>#A80C2F</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#002350" aria-hidden="true"></i><code>#002350</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>7.61</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">CAG</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·남색 반반 · 남색 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / Navy Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '칼리아리 칼초'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D80809;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MIL</b></span></div>
+  <div class="tr__n"><h3>AC 밀란</h3><p class="en">AC Milan · Milan</p><p class="flags"><span class="tag tag--fix">보정 f 0.86</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FB090B" aria-hidden="true"></i><code>#FB090B</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D80809" aria-hidden="true"></i><code>#D80809</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.08 → <b>5.31</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">MIL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·검정 세로줄(주색 빨강) · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'AC 밀란'</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#12A0D7;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>NAP</b></span></div>
+  <div class="tr__n"><h3>나폴리</h3><p class="en">SSC Napoli · Napoli</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#12A0D7" aria-hidden="true"></i><code>#12A0D7</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.35</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">NAP</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>하늘색 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Sky Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'SSC 나폴리'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>JUV</b></span></div>
+  <div class="tr__n"><h3>유벤투스</h3><p class="en">Juventus FC · Juventus · Juve</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">JUV</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰·검정 세로줄(주색 흰색) · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "White / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '유벤투스 FC'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '유벤투스' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#003F7F;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>COM</b></span></div>
+  <div class="tr__n"><h3>코모</h3><p class="en">Como 1907 · Como</p><p class="flags"><span class="tag tag--est">색 추정</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#003F7F" aria-hidden="true"></i><code>#003F7F</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>10.41</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">COM</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Sky Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '코모 1907'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFD200;--k2:#00428E;--kf:#14213D" aria-hidden="true"><b>FRO</b></span></div>
+  <div class="tr__n"><h3>프로시노네</h3><p class="en">Frosinone Calcio · Frosinone</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFD200" aria-hidden="true"></i><code>#FFD200</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#00428E" aria-hidden="true"></i><code>#00428E</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>11.01</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FRO</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>노랑 상의 · 파랑 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Yellow / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '프로시노네 칼초'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#007C3D;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>SAS</b></span></div>
+  <div class="tr__n"><h3>사수올로</h3><p class="en">US Sassuolo Calcio · Sassuolo</p><p class="flags"><span class="tag tag--fix">보정 f 0.74</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#00A752" aria-hidden="true"></i><code>#00A752</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#007C3D" aria-hidden="true"></i><code>#007C3D</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">5.06 → <b>5.32</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SAS</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>초록·검정 세로줄 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Green / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'US 사수올로 칼초'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#1D6CB1;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>ATA</b></span></div>
+  <div class="tr__n"><h3>아탈란타</h3><p class="en">Atalanta BC · Atalanta</p><p class="flags"><span class="tag tag--fix">보정 f 0.96</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#1E71B8" aria-hidden="true"></i><code>#1E71B8</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#1D6CB1" aria-hidden="true"></i><code>#1D6CB1</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">5.11 → <b>5.48</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ATA</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>검정·파랑 세로줄(주색 파랑) · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "Black / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '아탈란타 BC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFD700;--k2:#D4021D;--kf:#14213D" aria-hidden="true"><b>USL</b></span></div>
+  <div class="tr__n"><h3>레체</h3><p class="en">US Lecce · Lecce</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFD700" aria-hidden="true"></i><code>#FFD700</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#D4021D" aria-hidden="true"></i><code>#D4021D</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>11.39</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">USL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>노랑·빨강 세로줄 · 남색 하의 → 둘째 색 빨강</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Yellow / Red / Navy Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'US 레체'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>UDI</b></span></div>
+  <div class="tr__n"><h3>우디네세</h3><p class="en">Udinese Calcio · Udinese</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">UDI</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰·검정 세로줄(주색 흰색) · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "White / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '우디네세 칼초'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#8A1E03;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>TOR</b></span></div>
+  <div class="tr__n"><h3>토리노</h3><p class="en">Torino FC · Torino</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#8A1E03" aria-hidden="true"></i><code>#8A1E03</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>9.26</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">TOR</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>그라나타 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "Brown / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '토리노 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D50612;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>MON</b></span></div>
+  <div class="tr__n"><h3>몬차</h3><p class="en">AC Monza · Monza</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E30613" aria-hidden="true"></i><code>#E30613</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D50612" aria-hidden="true"></i><code>#D50612</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.88 → <b>5.43</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">MON</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'AC 몬차'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#A51C30;--k2:#002D62;--kf:#FFFFFF" aria-hidden="true"><b>GEN</b></span></div>
+  <div class="tr__n"><h3>제노아</h3><p class="en">Genoa CFC · Genoa</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#A51C30" aria-hidden="true"></i><code>#A51C30</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#002D62" aria-hidden="true"></i><code>#002D62</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>7.48</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">GEN</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·남색 반반 · 남색 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / Navy Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '제노아 CFC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#FFD200;--kf:#14213D" aria-hidden="true"><b>PAR</b></span></div>
+  <div class="tr__n"><h3>파르마</h3><p class="en">Parma Calcio 1913 · Parma</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFD200" aria-hidden="true"></i><code>#FFD200</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">PAR</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 노랑·파랑 십자 · 흰 하의 → 둘째 색 노랑</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "White / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '파르마 칼초 1913'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#482E92;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FIO</b></span></div>
+  <div class="tr__n"><h3>피오렌티나</h3><p class="en">ACF Fiorentina · Fiorentina</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#482E92" aria-hidden="true"></i><code>#482E92</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>10.09</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FIO</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>보라 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "Purple / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'ACF 피오렌티나'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#A21C26;--k2:#1A2F48;--kf:#FFFFFF" aria-hidden="true"><b>BOL</b></span></div>
+  <div class="tr__n"><h3>볼로냐</h3><p class="en">Bologna FC 1909 · Bologna</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#A21C26" aria-hidden="true"></i><code>#A21C26</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#1A2F48" aria-hidden="true"></i><code>#1A2F48</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>7.69</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BOL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·남색 세로줄 · 흰 하의 → 둘째 색 남색(키트 둘째 색 우선)</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '볼로냐 FC 1909'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#000000;--k2:#F37021;--kf:#FFFFFF" aria-hidden="true"><b>VEN</b></span></div>
+  <div class="tr__n"><h3>베네치아</h3><p class="en">Venezia FC · Venezia</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#F37021" aria-hidden="true"></i><code>#F37021</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>21.00</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">VEN</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>검정 상의 주황·초록 띠 · 검정 하의 → 둘째 색 주황</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Orange / Black / Green"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '베네치아 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li></ul>
+</section>
+<section class="comp" id="bundesliga" aria-labelledby="h-bundesliga" style="--cc:var(--competition-bundesliga)">
+  <header class="comp__h"><span class="comp__tab" aria-hidden="true">BUNDESLIGA</span><h2 id="h-bundesliga">분데스리가</h2><p class="comp__m n">18팀 · 보정 5 · 색 추정 5</p></header>
+  <ul class="tl"><li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FDE100;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BVB</b></span></div>
+  <div class="tr__n"><h3>도르트문트</h3><p class="en">Borussia Dortmund · Dortmund · BVB</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FDE100" aria-hidden="true"></i><code>#FDE100</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>12.13</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BVB</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>노랑 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Black / Yellow"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 '보루시아 도르트문트'의 국내 매체 통칭('보루시아'를 뺌 — KFA가 '보루시아 묀헨글라트바흐'를 '묀헨글라트바흐'로 쓰는 방식, idx 27813)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCB</b></span></div>
+  <div class="tr__n"><h3>바이에른 뮌헨</h3><p class="en">FC Bayern München · Bayern München · Bayern Munich · Bayern</p><p class="flags"><span class="tag tag--fix">보정 f 0.96</span><span class="tag">약어 충돌 · 이름 병기</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#DC052D" aria-hidden="true"></i><code>#DC052D</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D3052B" aria-hidden="true"></i><code>#D3052B</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">5.12 → <b>5.49</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FCB</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-03-17 '바이에른 뮌헨'(2026-09-14 기사는 붙여 씀 '바이에른뮌헨')</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D40018;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SCF</b></span></div>
+  <div class="tr__n"><h3>프라이부르크</h3><p class="en">SC Freiburg · Freiburg</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E2001A" aria-hidden="true"></i><code>#E2001A</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D40018" aria-hidden="true"></i><code>#D40018</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.94 → <b>5.51</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SCF</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'SC 프라이부르크'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D11F1E;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>B04</b></span></div>
+  <div class="tr__n"><h3>레버쿠젠</h3><p class="en">Bayer 04 Leverkusen · Bayer Leverkusen · Leverkusen</p><p class="flags"><span class="tag tag--fix">보정 f 0.92</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E32221" aria-hidden="true"></i><code>#E32221</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D11F1E" aria-hidden="true"></i><code>#D11F1E</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.65 → <b>5.35</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">B04</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·검정 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 '바이어 04 레버쿠젠'의 국내 매체 통칭</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#DD0741;--kf:#14213D" aria-hidden="true"><b>RBL</b></span></div>
+  <div class="tr__n"><h3>라이프치히</h3><p class="en">RB Leipzig · Leipzig</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#DD0741" aria-hidden="true"></i><code>#DD0741</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">RBL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상·하의 → 둘째 색 빨강</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Red"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 'RB 라이프치히'의 국내 매체 통칭('RB'를 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#BA3733;--k2:#46714D;--kf:#FFFFFF" aria-hidden="true"><b>FCA</b></span></div>
+  <div class="tr__n"><h3>아우크스부르크</h3><p class="en">FC Augsburg · Augsburg</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#BA3733" aria-hidden="true"></i><code>#BA3733</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#46714D" aria-hidden="true"></i><code>#46714D</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.70</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FCA</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의(2026-27은 대리석 무늬 — 색 미확인) · 둘째 색 초록</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / Green / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-09-14 '아우크스부르크'(idx 28281)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#187946;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SVW</b></span></div>
+  <div class="tr__n"><h3>브레멘</h3><p class="en">SV Werder Bremen · Werder Bremen · Bremen</p><p class="flags"><span class="tag tag--fix">보정 f 0.84</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#1D9053" aria-hidden="true"></i><code>#1D9053</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#187946" aria-hidden="true"></i><code>#187946</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.06 → <b>5.44</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SVW</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>초록 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "Green / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 'SV 베르더 브레멘'의 국내 매체 통칭</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#C3141E;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>M05</b></span></div>
+  <div class="tr__n"><h3>마인츠</h3><p class="en">1. FSV Mainz 05 · FSV Mainz 05 · Mainz 05 · Mainz</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#C3141E" aria-hidden="true"></i><code>#C3141E</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.11</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">M05</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-09-14 '마인츠'(idx 28281)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#000000;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ELV</b></span></div>
+  <div class="tr__n"><h3>엘버스베르크</h3><p class="en">SV 07 Elversberg · SV Elversberg · Elversberg</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>21.00</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ELV</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>검정·흰 상의 배치 미확인 → 주색 검정</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사·웹 확인(2026-27 홈 '검정·흰' — footyheadlines) · fd "Black / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 국내 매체 관용 통일(/add-name 3차 — 근거: 스포츠경향 본문 '엘버스베르크' 2026-08-31 https://sports.khan.co.kr/article/202608310314003/ · 2026-05-18 …</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#E32219;--kf:#14213D" aria-hidden="true"><b>VFB</b></span></div>
+  <div class="tr__n"><h3>슈투트가르트</h3><p class="en">VfB Stuttgart · Stuttgart</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#E32219" aria-hidden="true"></i><code>#E32219</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">VFB</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 빨강 가슴띠 · 흰 하의 → 둘째 색 빨강</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Red"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'VfB 슈투트가르트'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#E3000F;--kf:#14213D" aria-hidden="true"><b>HSV</b></span></div>
+  <div class="tr__n"><h3>함부르크</h3><p class="en">Hamburger SV · HSV · Hamburg</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#E3000F" aria-hidden="true"></i><code>#E3000F</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">HSV</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 · 빨강 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "White / Red / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">관용</b> 위키 '함부르거 SV'와 다름 — 국내 매체 관례 '함부르크'(손흥민 소속 시절부터)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#004D9D;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>S04</b></span></div>
+  <div class="tr__n"><h3>샬케04</h3><p class="en">FC Schalke 04 · Schalke 04 · Schalke</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#004D9D" aria-hidden="true"></i><code>#004D9D</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>8.24</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">S04</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-09-14 '샬케04'(idx 28281, 붙여 씀 — 띄어 쓸지는 사용자 결정)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D8000E;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>SGE</b></span></div>
+  <div class="tr__n"><h3>프랑크푸르트</h3><p class="en">Eintracht Frankfurt · Frankfurt</p><p class="flags"><span class="tag tag--fix">보정 f 0.96</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E1000F" aria-hidden="true"></i><code>#E1000F</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D8000E" aria-hidden="true"></i><code>#D8000E</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.99 → <b>5.35</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SGE</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·검정 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "Red / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 '아인트라흐트 프랑크푸르트'의 국내 매체 통칭</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#ED1C24;--kf:#14213D" aria-hidden="true"><b>KOE</b></span></div>
+  <div class="tr__n"><h3>쾰른</h3><p class="en">1. FC Köln · FC Köln · Köln · Cologne</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#ED1C24" aria-hidden="true"></i><code>#ED1C24</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">KOE</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 · 흰 하의 → 둘째 색 빨강</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '1. FC 쾰른'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#005CA9;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>SCP</b></span></div>
+  <div class="tr__n"><h3>파더보른</h3><p class="en">SC Paderborn 07 · SC Paderborn · Paderborn</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#005CA9" aria-hidden="true"></i><code>#005CA9</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.77</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SCP</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> D1 시안값 · fd "Black / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'SC 파더보른 07'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D4011D;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>UNB</b></span></div>
+  <div class="tr__n"><h3>우니온 베를린</h3><p class="en">1. FC Union Berlin · Union Berlin</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#D4011D" aria-hidden="true"></i><code>#D4011D</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.50</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">UNB</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> D1 시안값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">관용</b> KFA·구단 한국어 표기 출처 이번에 미확인('우니온'/'유니온' 혼용 가능)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#1C63B7;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>TSG</b></span></div>
+  <div class="tr__n"><h3>호펜하임</h3><p class="en">TSG 1899 Hoffenheim · 1899 Hoffenheim · Hoffenheim · TSG Hoffenheim</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#1C63B7" aria-hidden="true"></i><code>#1C63B7</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.97</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">TSG</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'TSG 1899 호펜하임'(법인·형태 약칭 뺌) · 국내 축구 매체 제목에 '호펜하임' 5건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BMG</b></span></div>
+  <div class="tr__n"><h3>묀헨글라트바흐</h3><p class="en">Borussia Mönchengladbach · M'gladbach · Borussia Monchengladbach · Gladbach</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BMG</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의(초록·검정 장식) · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Black / White / Green"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-03-17 '묀헨글라트바흐'(idx 27813), FIFA 한국어 기사는 '보루시아 묀헨글라트바흐'</span></p>
+  </div>
+</li></ul>
+</section>
+<section class="comp" id="ligue1" aria-labelledby="h-ligue1" style="--cc:var(--competition-ligue1)">
+  <header class="comp__h"><span class="comp__tab" aria-hidden="true">LIGUE1</span><h2 id="h-ligue1">리그 1</h2><p class="comp__m n">18팀 · 보정 5 · 색 추정 13</p></header>
+  <ul class="tl"><li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D5151C;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ASM</b></span></div>
+  <div class="tr__n"><h3>모나코</h3><p class="en">AS Monaco FC · Monaco · AS Monaco</p><p class="flags"><span class="tag tag--fix">보정 f 0.92</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E7171E" aria-hidden="true"></i><code>#E7171E</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D5151C" aria-hidden="true"></i><code>#D5151C</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.63 → <b>5.31</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ASM</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·흰 대각 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'AS 모나코 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix" data-fix="1" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D31C12;--k2:#1B2B4D;--kf:#FFFFFF" aria-hidden="true"><b>LIL</b></span></div>
+  <div class="tr__n"><h3>릴</h3><p class="en">Lille OSC · Lille · LOSC</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E01E13" aria-hidden="true"></i><code>#E01E13</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D31C12" aria-hidden="true"></i><code>#D31C12</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#1B2B4D" aria-hidden="true"></i><code>#1B2B4D</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.81 → <b>5.32</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">LIL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 남색 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Red"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '릴 OSC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#14387F;--kf:#14213D" aria-hidden="true"><b>LYO</b></span></div>
+  <div class="tr__n"><h3>리옹</h3><p class="en">Olympique Lyonnais · Lyon · Olympique Lyon</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#14387F" aria-hidden="true"></i><code>#14387F</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">LYO</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상·하의 → 둘째 색 파랑</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "White / Red / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 '올랭피크 리옹'의 국내 매체 통칭 · 국내 축구 매체 제목에 '리옹' 1건(인터풋볼·풋볼리스트·베스트일레븐 RSS 2026-10-12~16)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#11234A;--k2:#6CB4E4;--kf:#FFFFFF" aria-hidden="true"><b>PFC</b></span></div>
+  <div class="tr__n"><h3>파리 FC</h3><p class="en">Paris FC</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#11234A" aria-hidden="true"></i><code>#11234A</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#6CB4E4" aria-hidden="true"></i><code>#6CB4E4</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.41</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">PFC</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>남색 상의 · 둘째 색 하늘색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사·웹 확인(2026-27 홈 '남색 + 하늘색 줄' — parisfc.fr) · fd "Navy Blue / Sky Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '파리 FC'</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#004170;--k2:#DA291C;--kf:#FFFFFF" aria-hidden="true"><b>PSG</b></span></div>
+  <div class="tr__n"><h3>파리 생제르맹</h3><p class="en">Paris Saint-Germain FC · Paris Saint Germain · PSG · Paris Saint-Germain · Paris SG</p><p class="flags"><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#004170" aria-hidden="true"></i><code>#004170</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#DA291C" aria-hidden="true"></i><code>#DA291C</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>10.55</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">PSG</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>남색 상의(빨강 띠) · 둘째 색 빨강</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> D1 시안값·브랜드 관용값 · fd "Red / Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-03-17 소집 명단 '이강인(파리 생제르맹)'(idx 27813) · 위키백과 '파리 생제르맹 FC'</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#CB2E23;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>REN</b></span></div>
+  <div class="tr__n"><h3>렌</h3><p class="en">Stade Rennais FC 1901 · Rennes · Stade Rennais</p><p class="flags"><span class="tag tag--fix">보정 f 0.90</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E13327" aria-hidden="true"></i><code>#E13327</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#CB2E23" aria-hidden="true"></i><code>#CB2E23</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.46 → <b>5.31</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">REN</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 '스타드 렌 FC'의 국내 매체 통칭('스타드'를 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D50612;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>BRE</b></span></div>
+  <div class="tr__n"><h3>브레스트</h3><p class="en">Stade Brestois 29 · Brest</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span><span class="tag tag--est">색 추정</span><span class="tag">약어 충돌 · 이름 병기</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E30613" aria-hidden="true"></i><code>#E30613</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D50612" aria-hidden="true"></i><code>#D50612</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.88 → <b>5.43</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BRE</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "White / Red"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">관용</b> 위키 '스타드 브레스투아 29'와 다름 — 국내 매체 통칭 '브레스트'(구단 연고 도시명)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#F58113;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>FCL</b></span></div>
+  <div class="tr__n"><h3>로리앙</h3><p class="en">FC Lorient · Lorient</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#F58113" aria-hidden="true"></i><code>#F58113</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.11</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FCL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>주황 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Orange / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'FC 로리앙'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFD200;--k2:#E2001A;--kf:#14213D" aria-hidden="true"><b>RCL</b></span></div>
+  <div class="tr__n"><h3>랑스</h3><p class="en">Racing Club de Lens · Lens · RC Lens</p><p class="flags"><span class="tag tag--est">색 추정</span><span class="tag">UCL</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFD200" aria-hidden="true"></i><code>#FFD200</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#E2001A" aria-hidden="true"></i><code>#E2001A</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>11.01</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">RCL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>노랑 상의(빨강 소매) · 검정 하의 → 둘째 색 빨강(키트 상징 '피와 금')</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / Yellow"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'RC 랑스'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#009FE3;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>STR</b></span></div>
+  <div class="tr__n"><h3>스트라스부르</h3><p class="en">RC Strasbourg Alsace · Strasbourg · RC Strasbourg</p><p class="flags"><span class="tag tag--est">색 추정</span><span class="tag tag--est">약어 예외</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#009FE3" aria-hidden="true"></i><code>#009FE3</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.38</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">STR</code> <span class="mut">tla <code>"RC "</code> — football-data tla 'RC '(끝 공백)는 법인 접두 'RC'(Racing Club)뿐 — trim하면 'RC'로 랑스(RCL)·라싱과 헷갈림 → 도시명 앞 3자</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'RC 스트라스부르'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#000000;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ANG</b></span></div>
+  <div class="tr__n"><h3>앙제</h3><p class="en">Angers SCO · Angers</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>21.00</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ANG</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>검정·흰 세로줄 · 검정 하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Black / White / Gold"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '앙제 SCO'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D40018;--k2:#FFD300;--kf:#FFFFFF" aria-hidden="true"><b>LMF</b></span></div>
+  <div class="tr__n"><h3>르망</h3><p class="en">Le Mans FC · Le Mans</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E2001A" aria-hidden="true"></i><code>#E2001A</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D40018" aria-hidden="true"></i><code>#D40018</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFD300" aria-hidden="true"></i><code>#FFD300</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.94 → <b>5.51</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">LMF</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강 상의 · 둘째 색 노랑</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / Yellow"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '르망 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#3E2C56;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>TOU</b></span></div>
+  <div class="tr__n"><h3>툴루즈</h3><p class="en">Toulouse FC · Toulouse</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#3E2C56" aria-hidden="true"></i><code>#3E2C56</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>12.36</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">TOU</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>보라 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Violet / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '툴루즈 FC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#0057A6;--kf:#14213D" aria-hidden="true"><b>AJA</b></span></div>
+  <div class="tr__n"><h3>오세르</h3><p class="en">AJ Auxerre · Auxerre</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#0057A6" aria-hidden="true"></i><code>#0057A6</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">AJA</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상의 · 둘째 색 파랑</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "White / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'AJ 오세르'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#C8102E;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>NIC</b></span></div>
+  <div class="tr__n"><h3>니스</h3><p class="en">OGC Nice · Nice</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#C8102E" aria-hidden="true"></i><code>#C8102E</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.88</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">NIC</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·검정 세로줄 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'OGC 니스'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#005CAB;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>ETR</b></span></div>
+  <div class="tr__n"><h3>트루아</h3><p class="en">ES Troyes AC · Estac Troyes · Troyes</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#005CAB" aria-hidden="true"></i><code>#005CAB</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.73</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">ETR</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'ES 트루아 AC'(법인·형태 약칭 뺌) <b class="chg">별칭 +'Estac Troyes'</b></span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFFFFF;--k2:#2FAEE0;--kf:#14213D" aria-hidden="true"><b>MAR</b></span></div>
+  <div class="tr__n"><h3>마르세유</h3><p class="en">Olympique de Marseille · Marseille</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#2FAEE0" aria-hidden="true"></i><code>#2FAEE0</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>15.97</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">MAR</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>흰 상·하의 → 둘째 색 하늘색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "White / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 '올랭피크 드 마르세유'의 국내 매체 통칭</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#8CC6EB;--k2:#00205B;--kf:#14213D" aria-hidden="true"><b>HAC</b></span></div>
+  <div class="tr__n"><h3>르아브르</h3><p class="en">Le Havre AC · Le Havre</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#8CC6EB" aria-hidden="true"></i><code>#8CC6EB</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#00205B" aria-hidden="true"></i><code>#00205B</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>8.67</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">HAC</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>하늘색·남색 반반 · 남색 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Sky Blue / Navy Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '르아브르 AC'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li></ul>
+</section>
+<section class="comp" id="ucl" aria-labelledby="h-ucl" style="--cc:var(--competition-ucl)">
+  <header class="comp__h"><span class="comp__tab" aria-hidden="true">UCL</span><h2 id="h-ucl">챔피언스리그 — 5대 리그 밖</h2><p class="comp__m n">15팀 · 보정 4 · 색 추정 14</p></header>
+  <ul class="tl"><li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFD700;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>AEK</b></span></div>
+  <div class="tr__n"><h3>AEK 아테네</h3><p class="en">PAE AEK · AEK Athens FC · AEK Athens</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFD700" aria-hidden="true"></i><code>#FFD700</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>11.39</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">AEK</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>노랑 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Yellow / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'AEK 아테네 FC'(법인·형태 약칭 뺌) <b class="chg">별칭 +'AEK Athens FC'</b></span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFE600;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>BOD</b></span></div>
+  <div class="tr__n"><h3>보되/글림트</h3><p class="en">FK Bodø/Glimt · Bodo/Glimt · Bodø/Glimt</p><p class="flags"><span class="tag tag--est">색 추정</span><span class="tag tag--est">약어 예외</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFE600" aria-hidden="true"></i><code>#FFE600</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>12.60</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BOD</code> <span class="mut">tla <code>"FK"</code> — football-data tla 'FK'는 법인 형태 약칭(Fotballklubb)이라 팀을 가리키지 못함 → 도시명 Bodø 앞 3자(ESPN 표기 'BODO'·API-Football 'Bodo/Glimt')</span></p>
+    <p class="ln"><span class="k">키트</span><span>노랑 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Yellow / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'FK 보되/글림트'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#0067CE;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>BRU</b></span></div>
+  <div class="tr__n"><h3>클럽 브뤼헤</h3><p class="en">Club Brugge KV · Club Brugge</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#0067CE" aria-hidden="true"></i><code>#0067CE</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.48</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">BRU</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·검정 세로줄 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Blue / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> D39 ②(KFA 우선)의 예외 — KFA 소집 명단은 '클뤼프 브뤼허'(idx 28281)지만 국내 매체 관례 '클럽 브뤼헤'를 쓴다 · 위키백과 '클뤼프 브뤼허 KV'</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#FFED00;--k2:#00205B;--kf:#14213D" aria-hidden="true"><b>FEN</b></span></div>
+  <div class="tr__n"><h3>페네르바체</h3><p class="en">Fenerbahçe SK · Fenerbahçe</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#FFED00" aria-hidden="true"></i><code>#FFED00</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#00205B" aria-hidden="true"></i><code>#00205B</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>13.21</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FEN</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>노랑·남색 세로줄 · 남색 하의(구단 남색 #163962 계열)</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Yellow / Blue"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안 — 위키 '페네르바흐체'와 다른 국내 매체 관례 '페네르바체'(김민재 소속 시절부터) · 위키백과 '페네르바흐체 SK (축구)'</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D50612;--k2:#000000;--kf:#FFFFFF" aria-hidden="true"><b>FEY</b></span></div>
+  <div class="tr__n"><h3>페예노르트</h3><p class="en">Feyenoord Rotterdam · Feyenoord</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E30613" aria-hidden="true"></i><code>#E30613</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D50612" aria-hidden="true"></i><code>#D50612</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.88 → <b>5.43</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FEY</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·흰 반반 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / White / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-03-17 소집 명단 '황인범(페예노르트)'(idx 27813) · 위키백과 '페예노르트'</span></p>
+  </div>
+</li>
+<li class="tr" data-fix="0" data-est="0">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#A90432;--k2:#FDB912;--kf:#FFFFFF" aria-hidden="true"><b>GAL</b></span></div>
+  <div class="tr__n"><h3>갈라타사라이</h3><p class="en">Galatasaray SK · Galatasaray</p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#A90432" aria-hidden="true"></i><code>#A90432</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FDB912" aria-hidden="true"></i><code>#FDB912</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>7.64</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">GAL</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·노랑 반반 · 둘째 색 노랑</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf">확실</b> 브랜드 관용값 · fd "Red / Yellow"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 '갈라타사라이 SK (축구)'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#000000;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>LIN</b></span></div>
+  <div class="tr__n"><h3>LASK</h3><p class="en">LASK Linz · Lask Linz · LASK</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>21.00</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">LIN</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>검정·흰 세로줄 · 검정 하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Black / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(위키 문서명 그대로 라틴 약칭) · 위키백과 'LASK'</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#003893;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>FCP</b></span></div>
+  <div class="tr__n"><h3>포르투</h3><p class="en">FC Porto · Porto</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#003893" aria-hidden="true"></i><code>#003893</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>10.57</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">FCP</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>파랑·흰 세로줄 · 파랑 하의 → 둘째 색 흰색</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> KFA 2026-09-14 소집 명단 '황인범(FC포르투, 포르투갈)'(idx 28281 — 'FC'를 뺌) · 위키백과 'FC 포르투'</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D11920;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>PSV</b></span></div>
+  <div class="tr__n"><h3>PSV 에인트호번</h3><p class="en">PSV · PSV Eindhoven</p><p class="flags"><span class="tag tag--fix">보정 f 0.88</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#ED1C24" aria-hidden="true"></i><code>#ED1C24</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D11920" aria-hidden="true"></i><code>#D11920</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.38 → <b>5.42</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">PSV</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·흰 세로줄 · 검정 하의 → 둘째 색 흰색(키트 둘째 색 우선)</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'PSV 에인트호번'</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#000000;--k2:#E5007E;--kf:#FFFFFF" aria-hidden="true"><b>SAB</b></span></div>
+  <div class="tr__n"><h3>사바</h3><p class="en">Sabah FK · Sabah FA</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#E5007E" aria-hidden="true"></i><code>#E5007E</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>21.00</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SAB</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>검정 상의 · 둘째 색 분홍</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사·웹 확인(검정·분홍 — 위키백과 Sabah FC, footyheadlines 2026-27 홈 검정)</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 국내 매체 관용·통칭(근거: 포포투 본문 '사바 FK' https://www.fourfourtwo.co.kr/news/articleView.html?idxno=99642 — 법인·형태 말 'FK'를 뺀 통칭, 'FK'는 표…</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#F37021;--k2:#000000;--kf:#14213D" aria-hidden="true"><b>SHD</b></span></div>
+  <div class="tr__n"><h3>샤흐타르</h3><p class="en">FK Shakhtar Donetsk · Shakhtar Donetsk · Shaktar · Shakhtar</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#F37021" aria-hidden="true"></i><code>#F37021</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#000000" aria-hidden="true"></i><code>#000000</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>5.44</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SHD</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>주황 상의 · 검정 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Orange / Black"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">통칭</b> 위키 'FC 샤흐타르 도네츠크'의 국내 매체 통칭</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#D60028;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SLP</b></span></div>
+  <div class="tr__n"><h3>슬라비아 프라하</h3><p class="en">SK Slavia Praha · Slavia Praha · Slavia Prague</p><p class="flags"><span class="tag tag--fix">보정 f 0.94</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#E4002B" aria-hidden="true"></i><code>#E4002B</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#D60028" aria-hidden="true"></i><code>#D60028</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.85 → <b>5.40</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SLP</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>빨강·흰 반반 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Red / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'SK 슬라비아 프라하'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-est" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#5CB4E8;--k2:#FFFFFF;--kf:#14213D" aria-hidden="true"><b>SBA</b></span></div>
+  <div class="tr__n"><h3>슬로반 브라티슬라바</h3><p class="en">ŠK Slovan Bratislava · Slovan Bratislava · Sl. Bratislava</p><p class="flags"><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#5CB4E8" aria-hidden="true"></i><code>#5CB4E8</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>6.96</b></span> <span class="mut">글자 남색 #14213D</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SBA</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>하늘색 상의 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Light Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확실</b> 위키백과 'ŠK 슬로반 브라티슬라바'(법인·형태 약칭 뺌)</span></p>
+  </div>
+</li>
+<li class="tr is-fix is-est" data-fix="1" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#007B54;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>SPO</b></span></div>
+  <div class="tr__n"><h3>스포르팅 CP</h3><p class="en">Sporting Clube de Portugal · Sporting CP</p><p class="flags"><span class="tag tag--fix">보정 f 0.96</span><span class="tag tag--est">색 추정</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#008057" aria-hidden="true"></i><code>#008057</code></span><span class="arr" aria-label="보정">→</span><span class="sw"><i style="--c:#007B54" aria-hidden="true"></i><code>#007B54</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n">4.97 → <b>5.30</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">SPO</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>초록·흰 가로줄 · 흰 하의</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Green / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 확인 목록 추천안(위키 문서명·구단 정식 약칭) · 위키백과 '스포르팅 CP'</span></p>
+  </div>
+</li>
+<li class="tr is-est is-name" data-fix="0" data-est="1">
+  <div class="tr__b"><span class="bdg bdg--m" style="--k1:#002B5C;--k2:#FFFFFF;--kf:#FFFFFF" aria-hidden="true"><b>VIK</b></span></div>
+  <div class="tr__n"><h3>비킹</h3><p class="en">Viking FK · Viking</p><p class="flags"><span class="tag tag--est">색 추정</span><span class="tag tag--est">표기 새로 정함</span></p></div>
+  <div class="tr__c">
+    <p class="ln"><span class="k">상의</span><span class="sw"><i style="--c:#002B5C" aria-hidden="true"></i><code>#002B5C</code></span></p>
+    <p class="ln"><span class="k">하의</span><span class="sw"><i style="--c:#FFFFFF" aria-hidden="true"></i><code>#FFFFFF</code></span></p>
+    <p class="ln"><span class="k">대비</span><span class="n"><b>14.00</b></span> <span class="mut">글자 흰색</span></p>
+  </div>
+  <div class="tr__s">
+    <p class="ln"><span class="k">약어</span><code class="n">VIK</code> <span class="mut">= tla</span></p>
+    <p class="ln"><span class="k">키트</span><span>진한 파랑 상의 · 흰 하의(football-data 'Dark Blue / White')</span></p>
+    <p class="ln"><span class="k">출처</span><span class="mut"><b class="cf cf--est">추정</b> 색상명 근사 · fd "Dark Blue / White"</span></p>
+    <p class="ln"><span class="k">표기</span><span class="mut"><b class="cf">확정</b> 초안 확신도 추정: 국내 매체 본문 '비킹 FK' 1건(노컷뉴스 UCL 리그 페이즈 2차전 바이에른 3-3 기사 https://www.nocutnews.co.kr/new… <b class="chg">새 항목(2026-10-30 사용자 확정)</b></span></p>
+  </div>
+</li></ul>
+</section>
+
+<p class="foot">점검: ink-2/paper 라이트 6.46 · 다크 7.44 (D0 토큰 쌍 — 시트 글자) · 키트 글자 대비는 모두 테마 무관. 수정은 <code>docs/design/d1/team-colors-source.json</code>(색·약어)·<code>configs/names.ko.json</code>(표기)에 하고 <code>npx tsx scripts/build-team-colors.ts --write</code>로 다시 만든다.</p>
+</div>
+<script>
+(function(){
+  var d=document.documentElement,L={system:'시스템 설정',light:'라이트',dark:'다크'};
+  function cur(){return d.getAttribute('data-theme')||'system'}
+  var b=document.querySelector('[data-theme-toggle]');
+  b.addEventListener('click',function(){var o=['system','light','dark'],nx=o[(o.indexOf(cur())+1)%3];if(nx==='system')d.removeAttribute('data-theme');else d.setAttribute('data-theme',nx);try{if(nx==='system')localStorage.removeItem('ed-theme');else localStorage.setItem('ed-theme',nx)}catch(e){}b.setAttribute('aria-label','테마 바꾸기 (현재: '+L[nx]+')')});
+  var btns=document.querySelectorAll('[data-f]'),rows=document.querySelectorAll('.tr');
+  btns.forEach(function(x){x.addEventListener('click',function(){var f=x.getAttribute('data-f');btns.forEach(function(y){y.setAttribute('aria-pressed',String(y===x))});rows.forEach(function(r){r.hidden=f==='fix'?r.getAttribute('data-fix')!=='1':f==='est'?r.getAttribute('data-est')!=='1':false})})});
+})();
+</script>
+</body>
+</html>

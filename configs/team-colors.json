@@ -1,0 +1,446 @@
+{
+  "aek-athens": {
+    "colors": ["#FFD700", "#000000"],
+    "short": "AEK"
+  },
+  "alaves": {
+    "colors": ["#0761AF", "#FFFFFF"],
+    "short": "ALA"
+  },
+  "angers": {
+    "colors": ["#000000", "#FFFFFF"],
+    "short": "ANG"
+  },
+  "arsenal": {
+    "colors": ["#D70106", "#FFFFFF"],
+    "short": "ARS"
+  },
+  "aston-villa": {
+    "colors": ["#670E36", "#FFFFFF"],
+    "short": "AVL"
+  },
+  "atalanta": {
+    "colors": ["#1D6CB1", "#000000"],
+    "short": "ATA"
+  },
+  "athletic": {
+    "colors": ["#D1211F", "#000000"],
+    "short": "ATH"
+  },
+  "atletico-madrid": {
+    "colors": ["#C73423", "#272E61"],
+    "short": "ATL"
+  },
+  "augsburg": {
+    "colors": ["#BA3733", "#46714D"],
+    "short": "FCA"
+  },
+  "auxerre": {
+    "colors": ["#FFFFFF", "#0057A6"],
+    "short": "AJA"
+  },
+  "barcelona": {
+    "colors": ["#A50044", "#004D98"],
+    "short": "FCB"
+  },
+  "bayern-munchen": {
+    "colors": ["#D3052B", "#FFFFFF"],
+    "short": "FCB"
+  },
+  "bodo-glimt": {
+    "colors": ["#FFE600", "#000000"],
+    "short": "BOD"
+  },
+  "bologna": {
+    "colors": ["#A21C26", "#1A2F48"],
+    "short": "BOL"
+  },
+  "borussia-dortmund": {
+    "colors": ["#FDE100", "#000000"],
+    "short": "BVB"
+  },
+  "borussia-monchengladbach": {
+    "colors": ["#FFFFFF", "#000000"],
+    "short": "BMG"
+  },
+  "bournemouth": {
+    "colors": ["#CD271A", "#000000"],
+    "short": "BOU"
+  },
+  "brentford": {
+    "colors": ["#D50612", "#000000"],
+    "short": "BRE"
+  },
+  "brest": {
+    "colors": ["#D50612", "#FFFFFF"],
+    "short": "BRE"
+  },
+  "brighton": {
+    "colors": ["#0057B8", "#FFFFFF"],
+    "short": "BHA"
+  },
+  "cagliari": {
+    "colors": ["#A80C2F", "#002350"],
+    "short": "CAG"
+  },
+  "celta-vigo": {
+    "colors": ["#8AC3EE", "#FFFFFF"],
+    "short": "CEL"
+  },
+  "chelsea": {
+    "colors": ["#034694", "#FFFFFF"],
+    "short": "CHE"
+  },
+  "club-brugge": {
+    "colors": ["#0067CE", "#000000"],
+    "short": "BRU"
+  },
+  "como": {
+    "colors": ["#003F7F", "#FFFFFF"],
+    "short": "COM"
+  },
+  "coventry-city": {
+    "colors": ["#59CBE8", "#FFFFFF"],
+    "short": "COV"
+  },
+  "crystal-palace": {
+    "colors": ["#C4122E", "#1B458F"],
+    "short": "CRY"
+  },
+  "deportivo-la-coruna": {
+    "colors": ["#0055A4", "#FFFFFF"],
+    "short": "DEP"
+  },
+  "eintracht-frankfurt": {
+    "colors": ["#D8000E", "#000000"],
+    "short": "SGE"
+  },
+  "elche": {
+    "colors": ["#FFFFFF", "#05642C"],
+    "short": "ELC"
+  },
+  "elversberg": {
+    "colors": ["#000000", "#FFFFFF"],
+    "short": "ELV"
+  },
+  "espanyol": {
+    "colors": ["#0070B0", "#FFFFFF"],
+    "short": "ESP"
+  },
+  "everton": {
+    "colors": ["#003399", "#FFFFFF"],
+    "short": "EVE"
+  },
+  "fenerbahce": {
+    "colors": ["#FFED00", "#00205B"],
+    "short": "FEN"
+  },
+  "feyenoord": {
+    "colors": ["#D50612", "#000000"],
+    "short": "FEY"
+  },
+  "fiorentina": {
+    "colors": ["#482E92", "#FFFFFF"],
+    "short": "FIO"
+  },
+  "freiburg": {
+    "colors": ["#D40018", "#FFFFFF"],
+    "short": "SCF"
+  },
+  "frosinone": {
+    "colors": ["#FFD200", "#00428E"],
+    "short": "FRO"
+  },
+  "fulham": {
+    "colors": ["#FFFFFF", "#000000"],
+    "short": "FUL"
+  },
+  "galatasaray": {
+    "colors": ["#A90432", "#FDB912"],
+    "short": "GAL"
+  },
+  "genoa": {
+    "colors": ["#A51C30", "#002D62"],
+    "short": "GEN"
+  },
+  "getafe": {
+    "colors": ["#005999", "#FFFFFF"],
+    "short": "GET"
+  },
+  "hamburg": {
+    "colors": ["#FFFFFF", "#E3000F"],
+    "short": "HSV"
+  },
+  "hoffenheim": {
+    "colors": ["#1C63B7", "#FFFFFF"],
+    "short": "TSG"
+  },
+  "hull-city": {
+    "colors": ["#F5A12D", "#000000"],
+    "short": "HUL"
+  },
+  "inter": {
+    "colors": ["#0068A8", "#000000"],
+    "short": "INT"
+  },
+  "ipswich-town": {
+    "colors": ["#0044A9", "#FFFFFF"],
+    "short": "IPS"
+  },
+  "juventus": {
+    "colors": ["#FFFFFF", "#000000"],
+    "short": "JUV"
+  },
+  "koln": {
+    "colors": ["#FFFFFF", "#ED1C24"],
+    "short": "KOE"
+  },
+  "lask": {
+    "colors": ["#000000", "#FFFFFF"],
+    "short": "LIN"
+  },
+  "lazio": {
+    "colors": ["#87D8F7", "#FFFFFF"],
+    "short": "LAZ"
+  },
+  "le-havre": {
+    "colors": ["#8CC6EB", "#00205B"],
+    "short": "HAC"
+  },
+  "le-mans": {
+    "colors": ["#D40018", "#FFD300"],
+    "short": "LMF"
+  },
+  "lecce": {
+    "colors": ["#FFD700", "#D4021D"],
+    "short": "USL"
+  },
+  "leeds-united": {
+    "colors": ["#FFFFFF", "#1D428A"],
+    "short": "LEE"
+  },
+  "lens": {
+    "colors": ["#FFD200", "#E2001A"],
+    "short": "RCL"
+  },
+  "levante": {
+    "colors": ["#B4053F", "#004F9F"],
+    "short": "LEV"
+  },
+  "leverkusen": {
+    "colors": ["#D11F1E", "#000000"],
+    "short": "B04"
+  },
+  "lille": {
+    "colors": ["#D31C12", "#1B2B4D"],
+    "short": "LIL"
+  },
+  "liverpool": {
+    "colors": ["#C8102E", "#FFFFFF"],
+    "short": "LIV"
+  },
+  "lorient": {
+    "colors": ["#F58113", "#000000"],
+    "short": "FCL"
+  },
+  "lyon": {
+    "colors": ["#FFFFFF", "#14387F"],
+    "short": "LYO"
+  },
+  "mainz": {
+    "colors": ["#C3141E", "#FFFFFF"],
+    "short": "M05"
+  },
+  "malaga": {
+    "colors": ["#0B5FA5", "#FFFFFF"],
+    "short": "MAL"
+  },
+  "manchester-city": {
+    "colors": ["#6CABDD", "#FFFFFF"],
+    "short": "MCI"
+  },
+  "manchester-united": {
+    "colors": ["#CD271A", "#FFFFFF"],
+    "short": "MUN"
+  },
+  "marseille": {
+    "colors": ["#FFFFFF", "#2FAEE0"],
+    "short": "MAR"
+  },
+  "milan": {
+    "colors": ["#D80809", "#FFFFFF"],
+    "short": "MIL"
+  },
+  "monaco": {
+    "colors": ["#D5151C", "#FFFFFF"],
+    "short": "ASM"
+  },
+  "monza": {
+    "colors": ["#D50612", "#FFFFFF"],
+    "short": "MON"
+  },
+  "napoli": {
+    "colors": ["#12A0D7", "#FFFFFF"],
+    "short": "NAP"
+  },
+  "newcastle-united": {
+    "colors": ["#241F20", "#FFFFFF"],
+    "short": "NEW"
+  },
+  "nice": {
+    "colors": ["#C8102E", "#000000"],
+    "short": "NIC"
+  },
+  "nottingham-forest": {
+    "colors": ["#D90000", "#FFFFFF"],
+    "short": "NOT"
+  },
+  "osasuna": {
+    "colors": ["#D01920", "#0A346F"],
+    "short": "OSA"
+  },
+  "paderborn": {
+    "colors": ["#005CA9", "#000000"],
+    "short": "SCP"
+  },
+  "paris-fc": {
+    "colors": ["#11234A", "#6CB4E4"],
+    "short": "PFC"
+  },
+  "paris-saint-germain": {
+    "colors": ["#004170", "#DA291C"],
+    "short": "PSG"
+  },
+  "parma": {
+    "colors": ["#FFFFFF", "#FFD200"],
+    "short": "PAR"
+  },
+  "porto": {
+    "colors": ["#003893", "#FFFFFF"],
+    "short": "FCP"
+  },
+  "psv": {
+    "colors": ["#D11920", "#FFFFFF"],
+    "short": "PSV"
+  },
+  "racing-santander": {
+    "colors": ["#FFFFFF", "#000000"],
+    "short": "SAN"
+  },
+  "rayo-vallecano": {
+    "colors": ["#FFFFFF", "#E53027"],
+    "short": "RAY"
+  },
+  "rb-leipzig": {
+    "colors": ["#FFFFFF", "#DD0741"],
+    "short": "RBL"
+  },
+  "real-betis": {
+    "colors": ["#007A3E", "#FFFFFF"],
+    "short": "BET"
+  },
+  "real-madrid": {
+    "colors": ["#FFFFFF", "#FEBE10"],
+    "short": "RMA"
+  },
+  "real-sociedad": {
+    "colors": ["#0067B1", "#FFFFFF"],
+    "short": "RSO"
+  },
+  "rennes": {
+    "colors": ["#CB2E23", "#000000"],
+    "short": "REN"
+  },
+  "roma": {
+    "colors": ["#8E1F2F", "#F0BC42"],
+    "short": "ROM"
+  },
+  "sabah": {
+    "colors": ["#000000", "#E5007E"],
+    "short": "SAB"
+  },
+  "sassuolo": {
+    "colors": ["#007C3D", "#000000"],
+    "short": "SAS"
+  },
+  "schalke": {
+    "colors": ["#004D9D", "#FFFFFF"],
+    "short": "S04"
+  },
+  "sevilla": {
+    "colors": ["#FFFFFF", "#D81920"],
+    "short": "SEV"
+  },
+  "shakhtar-donetsk": {
+    "colors": ["#F37021", "#000000"],
+    "short": "SHD"
+  },
+  "slavia-praha": {
+    "colors": ["#D60028", "#FFFFFF"],
+    "short": "SLP"
+  },
+  "slovan-bratislava": {
+    "colors": ["#5CB4E8", "#FFFFFF"],
+    "short": "SBA"
+  },
+  "sporting-cp": {
+    "colors": ["#007B54", "#FFFFFF"],
+    "short": "SPO"
+  },
+  "strasbourg": {
+    "colors": ["#009FE3", "#FFFFFF"],
+    "short": "STR"
+  },
+  "stuttgart": {
+    "colors": ["#FFFFFF", "#E32219"],
+    "short": "VFB"
+  },
+  "sunderland": {
+    "colors": ["#D41527", "#000000"],
+    "short": "SUN"
+  },
+  "torino": {
+    "colors": ["#8A1E03", "#FFFFFF"],
+    "short": "TOR"
+  },
+  "tottenham-hotspur": {
+    "colors": ["#FFFFFF", "#132257"],
+    "short": "TOT"
+  },
+  "toulouse": {
+    "colors": ["#3E2C56", "#FFFFFF"],
+    "short": "TOU"
+  },
+  "troyes": {
+    "colors": ["#005CAB", "#FFFFFF"],
+    "short": "ETR"
+  },
+  "udinese": {
+    "colors": ["#FFFFFF", "#000000"],
+    "short": "UDI"
+  },
+  "union-berlin": {
+    "colors": ["#D4011D", "#FFFFFF"],
+    "short": "UNB"
+  },
+  "valencia": {
+    "colors": ["#FFFFFF", "#000000"],
+    "short": "VAL"
+  },
+  "venezia": {
+    "colors": ["#000000", "#F37021"],
+    "short": "VEN"
+  },
+  "viking": {
+    "colors": ["#002B5C", "#FFFFFF"],
+    "short": "VIK"
+  },
+  "villarreal": {
+    "colors": ["#FFE667", "#005187"],
+    "short": "VIL"
+  },
+  "werder-bremen": {
+    "colors": ["#187946", "#FFFFFF"],
+    "short": "SVW"
+  }
+}

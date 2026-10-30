@@ -394,10 +394,10 @@
     },
     {
       "ko": "말라가",
-      "en": ["Málaga CF", "Málaga"],
+      "en": ["Málaga CF", "Málaga", "Malaga"],
       "kind": "team",
       "slug": "malaga",
-      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '말라가 CF'(법인·형태 약칭 뺌) · 영문: football-data 'Málaga CF'·short 'Málaga'"
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 '말라가 CF'(법인·형태 약칭 뺌) · 영문: football-data 'Málaga CF'·short 'Málaga', API-Football 'Malaga'(경기 기록 원장 — 악센트 없는 원문 그대로 별칭 추가, M2-05 2026-10-30)"
     },
     {
       "ko": "발렌시아",
@@ -411,11 +411,12 @@
       "en": [
         "RC Deportivo La Coruña",
         "Deportivo La Coruña",
-        "Deportivo de La Coruña"
+        "Deportivo de La Coruña",
+        "Deportivo La Coruna"
       ],
       "kind": "team",
       "slug": "deportivo-la-coruna",
-      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(위키 문서명). football-data 짧은 이름 'Deportivo'는 알라베스(Deportivo Alavés)와 겹쳐 별칭으로 넣지 않는다 · 위키백과 '데포르티보 라코루냐' · 영문: football-data 'RC Deportivo La Coruña'"
+      "note": "확정(PRD §15 D46 사용자 확정 2026-10-17) — 확인 목록 추천안(위키 문서명). football-data 짧은 이름 'Deportivo'는 알라베스(Deportivo Alavés)와 겹쳐 별칭으로 넣지 않는다 · 위키백과 '데포르티보 라코루냐' · 영문: football-data 'RC Deportivo La Coruña', API-Football 'Deportivo La Coruna'(경기 기록 원장 — 악센트 없는 원문 그대로 별칭 추가, M2-05 2026-10-30)"
     },
     {
       "ko": "인테르",
@@ -764,10 +765,10 @@
     },
     {
       "ko": "트루아",
-      "en": ["ES Troyes AC", "Troyes"],
+      "en": ["ES Troyes AC", "Troyes", "Estac Troyes"],
       "kind": "team",
       "slug": "troyes",
-      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'ES 트루아 AC'(법인·형태 약칭 뺌) · 영문: football-data 'ES Troyes AC'·short 'Troyes'"
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'ES 트루아 AC'(법인·형태 약칭 뺌) · 영문: football-data 'ES Troyes AC'·short 'Troyes', API-Football 'Estac Troyes'(구단 통칭 ESTAC — 대응표 fd 525·af 110 근거 강함, M2-04 이월 별칭 추가 M2-05 2026-10-30)"
     },
     {
       "ko": "마르세유",
@@ -785,10 +786,10 @@
     },
     {
       "ko": "AEK 아테네",
-      "en": ["PAE AEK", "AEK Athens"],
+      "en": ["PAE AEK", "AEK Athens", "AEK Athens FC"],
       "kind": "team",
       "slug": "aek-athens",
-      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'AEK 아테네 FC'(법인·형태 약칭 뺌) · 영문: football-data 'PAE AEK'"
+      "note": "확실(규범 — 매체 제목 대조는 이번 수집분에 없음) — 위키백과 'AEK 아테네 FC'(법인·형태 약칭 뺌) · 영문: football-data 'PAE AEK', API-Football 'AEK Athens FC'(대응표 fd 1899·af 575 근거 강함, M2-04 이월 별칭 추가 M2-05 2026-10-30)"
     },
     {
       "ko": "샤흐타르",
@@ -880,6 +881,13 @@
       "kind": "team",
       "slug": "sabah",
       "note": "확정(사용자 결정 2026-10-29) — 국내 매체 관용·통칭(근거: 포포투 본문 '사바 FK' https://www.fourfourtwo.co.kr/news/articleView.html?idxno=99642 — 법인·형태 말 'FK'를 뺀 통칭, 'FK'는 표기 라틴 허용 약칭 밖) — 대안 '사바흐'(아제르바이잔어 원음, 매체 근거 없음) · 위키백과 한국어 문서 없음 · M1-21 확인 목록 보류에서 해제(/add-name 3차) · 영문: football-data 'Sabah FK'·short 'Sabah FK', API-Football 'Sabah FA'(경기 기록 원장 UCL 2026-10-20 도르트문트전)"
+    },
+    {
+      "ko": "비킹",
+      "en": ["Viking FK", "Viking"],
+      "kind": "team",
+      "slug": "viking",
+      "note": "확정(사용자 결정 2026-10-30 — M2-05 검토, M1-21 확인 목록 보류 해제) — 초안 확신도 추정: 국내 매체 본문 '비킹 FK' 1건(노컷뉴스 UCL 리그 페이즈 2차전 바이에른 3-3 기사 https://www.nocutnews.co.kr/news/6131362 — 법인·형태 말 'FK'를 뺀 통칭, 사바와 같은 방식) · 노르웨이어 원음 [ˈʋìːkɪŋ] · KFA·위키백과 한국어 표기는 이번에 미확인, 대안 '바이킹'(영어식) · 영문: football-data 'Viking FK'·short 'Viking', API-Football 'Viking'(경기 기록 원장 UCL)"
     },
     {
       "ko": "해리 케인",

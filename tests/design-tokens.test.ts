@@ -487,11 +487,13 @@ describe("하드코딩 색 금지", () => {
     ).toEqual([]);
   });
 
-  it("src/ 아래 색 리터럴(hex·색 함수)은 globals.css와 theme-color(src/lib/theme.ts)뿐이다", () => {
+  it("src/ 아래 색 리터럴(hex·색 함수)은 globals.css·theme-color(src/lib/theme.ts)·키트 글자색(src/lib/kit-contrast.ts)뿐이다", () => {
     const srcDir = path.dirname(path.dirname(GLOBALS_CSS_PATH));
     const allowed = new Set([
       GLOBALS_CSS_PATH,
       path.join(srcDir, "lib", "theme.ts"),
+      // 팀 배지 약어 글자색 #FFFFFF·#14213D — 테마와 무관한 데이터 색 위 고정 값(PRD §15 D62 ④, M2-05 — 토큰 아님)
+      path.join(srcDir, "lib", "kit-contrast.ts"),
     ]);
     const files: string[] = [];
     const collect = (dir: string): void => {

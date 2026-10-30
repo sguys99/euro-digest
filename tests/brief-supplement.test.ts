@@ -669,7 +669,7 @@ describe("teamNamesAgree — 대응표가 확인한 쪽 팀 이름 교차 확인
     }
   });
 
-  it("M2-04 전 팀(111) 대응표 — 사전과 함께면 같은 팀, 알려진 예외 2팀은 af 이름이 사전 별칭에 없다(/add-name 후보)", () => {
+  it("M2-04 전 팀(111) 대응표 — 사전과 함께면 모두 같은 팀(M2-05에서 'AEK Athens FC'·'Estac Troyes' 별칭 추가로 예외 0)", () => {
     const all = pairsOf(TEAM_IDS_NOW);
     expect(all).toHaveLength(111);
     const disagree = all
@@ -682,11 +682,8 @@ describe("teamNamesAgree — 대응표가 확인한 쪽 팀 이름 교차 확인
           ),
       )
       .map(([slug, , afName]) => `${slug}:${afName}`);
-    // 'AEK Athens FC'·'Estac Troyes'를 names.ko 별칭에 넣으면(사용자 확인 — /add-name) 이 목록이 빈다 — 그때 기대값을 []로 바꾼다
-    expect(disagree).toEqual([
-      "aek-athens:AEK Athens FC",
-      "troyes:Estac Troyes",
-    ]);
+    // M2-04 때 알려진 예외 2팀('AEK Athens FC'·'Estac Troyes' — af 이름이 사전 별칭에 없음)은 M2-05 별칭 추가로 풀렸다
+    expect(disagree).toEqual([]);
   });
 
   it("비교 키 — 악센트·대소문자·접두·접미(FC·CF·AC·SV …)·숫자 낱말을 뺀다", () => {

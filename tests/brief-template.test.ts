@@ -843,7 +843,7 @@ describe("고유명사 — names.ko.json 색인(M1-21)", () => {
     expect(KO_NAMES.team("union berlin")).toBe("우니온 베를린");
     expect(KO_NAMES.team("Bayern")).toBe("바이에른 뮌헨");
     expect(KO_NAMES.team("Leverkusen")).toBe("레버쿠젠");
-    expect(KO_NAMES.team("Viking FK")).toBe("Viking FK");
+    expect(KO_NAMES.team("Rosenborg BK")).toBe("Rosenborg BK");
     expect(KO_NAMES.person("Kang-in Lee")).toBe("이강인");
     expect(KO_NAMES.person("Atleti")).toBe("Atleti"); // 팀 표기는 사람 이름으로 바꾸지 않는다
     expect(

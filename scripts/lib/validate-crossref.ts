@@ -13,6 +13,8 @@
  *      **오류로 둔다**: af가 없으면 M1-48이 그 팀의 다른 대회 경기(컵·UCL 등)를 날짜 응답에서 고르지 못해 그 선수의 경기 기록이
  *      조용히 빠지고, 지난 날짜는 다시 받을 수 없다(백필 불가 — D27). 이 오류는 사람이 configs를 고친 push의 CI에서만 나므로
  *      아침 무인 발행을 막지 않는다(`/add-player`가 team-ids 항목도 함께 확인한다).
+ *   6. team-colors.json 키 → team-ids.json 팀(없는 팀은 오류) · team-ids 팀이 team-colors에 없으면 경고(화면은 폴백 배지 —
+ *      DESIGN §9.3 D1) · 상의 색 위 약어 글자 대비 ≥ 5.3(PRD §15 D62 ④ — 보정은 scripts/build-team-colors.ts, M2-05)
  *
  * formations.json·team-colors.json의 키 형식(slug)은 스키마(`z.record(SlugSchema, …)`)가 이미 검사한다.
  */
@@ -23,9 +25,11 @@ import {
   type PublisherDomainsFile,
   type SearchQueriesFile,
   type SourcesFile,
+  type TeamColorsFile,
   type TeamIdsFile,
 } from "@/lib/schema";
 
+import { KIT_MIN_CONTRAST, kitShirtContrast } from "@/lib/kit-contrast";
 import { formatIssuePath, type ValidationIssue } from "./validate-schema";
 
 /** 교차 참조에 쓰는 configs 경로 (레지스트리 패턴과 같은 값) */
@@ -36,6 +40,7 @@ export const CROSSREF_FILES = {
   nationalTeam: "configs/national-team.json",
   publisherDomains: "configs/publisher-domains.json",
   teamIds: "configs/team-ids.json",
+  teamColors: "configs/team-colors.json",
 } as const;
 
 type CrossRefKey = keyof typeof CROSSREF_FILES;
@@ -48,6 +53,7 @@ export interface CrossRefInput {
   nationalTeam?: NationalTeamFile;
   publisherDomains?: PublisherDomainsFile;
   teamIds?: TeamIdsFile;
+  teamColors?: TeamColorsFile;
 }
 
 export interface CrossRefResult {
@@ -239,6 +245,51 @@ export function checkKoreanPlayerTeamIds(
   return issues;
 }
 
+/**
+ * 6. team-colors.json ↔ team-ids.json · 약어 글자 대비 (D62 ④, M2-05).
+ * team-ids에 없는 키는 오류(오타·옛 slug), team-colors에 없는 팀은 경고(폴백 배지로 그려진다), 대비 미달은 오류.
+ */
+export function checkTeamColors(
+  teamColors: TeamColorsFile,
+  teamIds: TeamIdsFile,
+): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  const file = CROSSREF_FILES.teamColors;
+  for (const [slug, entry] of Object.entries(teamColors)) {
+    if (!Object.hasOwn(teamIds, slug)) {
+      issues.push(
+        crossRefError(
+          file,
+          [slug],
+          `팀 "${slug}"가 team-ids.json에 없음 — 팀 slug를 확인할 것`,
+        ),
+      );
+    }
+    const { text, contrast } = kitShirtContrast(entry.colors[0]);
+    if (contrast < KIT_MIN_CONTRAST) {
+      issues.push(
+        crossRefError(
+          file,
+          [slug, "colors", 0],
+          `상의 색 ${entry.colors[0]} 위 약어 글자(${text}) 대비 ${contrast.toFixed(2)} < ${KIT_MIN_CONTRAST} — scripts/build-team-colors.ts로 보정 값을 다시 만들 것(D62 ④)`,
+        ),
+      );
+    }
+  }
+  for (const slug of Object.keys(teamIds)) {
+    if (!Object.hasOwn(teamColors, slug)) {
+      issues.push({
+        severity: "warn",
+        stage: "crossref",
+        file,
+        path: formatIssuePath([slug]),
+        message: `team-ids.json 팀 "${slug}"의 키트 색이 없음 — 화면은 폴백 배지(점선·빗금)로 그린다`,
+      });
+    }
+  }
+  return issues;
+}
+
 interface CrossRefCheck {
   name: string;
   /** 필요한 파일이 모두 있으면 이슈 목록, 하나라도 없으면 null(건너뜀) */
@@ -281,6 +332,11 @@ const CHECKS: readonly CrossRefCheck[] = [
         ? checkKoreanPlayerTeamIds(koreanPlayers, teamIds)
         : null,
   },
+  {
+    name: "team-colors → team-ids · 약어 대비 5.3",
+    run: ({ teamColors, teamIds }) =>
+      teamColors && teamIds ? checkTeamColors(teamColors, teamIds) : null,
+  },
 ];
 
 /** 교차 참조 검사 전체를 실행한다. */
@@ -317,5 +373,6 @@ export function pickCrossRefInput(
   pick("nationalTeam");
   pick("publisherDomains");
   pick("teamIds");
+  pick("teamColors");
   return input;
 }

@@ -7,6 +7,7 @@ import {
   PublisherDomainsFileSchema,
   SearchQueriesFileSchema,
   SourcesFileSchema,
+  TeamColorsFileSchema,
   TeamIdsFileSchema,
   schemaRegistry,
 } from "@/lib/schema";
@@ -18,6 +19,7 @@ import {
   checkSearchQueryPlayers,
   checkSearchQuerySources,
   checkSquadPlayers,
+  checkTeamColors,
   pickCrossRefInput,
   runCrossRefChecks,
 } from "../scripts/lib/validate-crossref";
@@ -42,6 +44,10 @@ const publisherDomains = validFixture(
   "configs/publisher-domains.json",
 );
 const teamIds = validFixture(TeamIdsFileSchema, "configs/team-ids.json");
+const teamColors = validFixture(
+  TeamColorsFileSchema,
+  "configs/team-colors.json",
+);
 const query = at(searchQueries.queries, 0);
 const squad = at(nationalTeam.squads, 0);
 
@@ -279,11 +285,53 @@ describe("checkKoreanPlayerTeamIds — 활성 선수 소속팀 → team-ids(af) 
   });
 });
 
+describe("checkTeamColors — team-colors ↔ team-ids · 약어 대비 5.3 (D62 ④, M2-05)", () => {
+  it("fixture는 통과", () => {
+    expect(checkTeamColors(teamColors, teamIds)).toEqual([]);
+  });
+
+  it("team-ids에 없는 팀은 오류, team-colors에 없는 팀은 경고(폴백 배지)", () => {
+    const issues = checkTeamColors(
+      {
+        "sample-united": teamColors["sample-united"]!,
+        "old-slug": { colors: ["#034694", "#FFFFFF"], short: "OLD" },
+      },
+      teamIds,
+    );
+    expect(issues.map((i) => [i.severity, i.path])).toEqual([
+      ["error", "old-slug"],
+      ["warn", "example-city"],
+    ]);
+  });
+
+  it("보정 전 원색(아스널 #EF0107 — 흰 글자 4.49)은 오류, 보정 값(#D70106)은 통과", () => {
+    const raw = checkTeamColors(
+      {
+        ...teamColors,
+        "sample-united": { colors: ["#EF0107", "#FFFFFF"], short: "SMU" },
+      },
+      teamIds,
+    );
+    expect(raw).toHaveLength(1);
+    expect(raw[0]!.path).toBe("sample-united.colors[0]");
+    expect(raw[0]!.message).toContain("4.49");
+    expect(
+      checkTeamColors(
+        {
+          ...teamColors,
+          "sample-united": { colors: ["#D70106", "#FFFFFF"], short: "SMU" },
+        },
+        teamIds,
+      ),
+    ).toEqual([]);
+  });
+});
+
 describe("runCrossRefChecks — 관련 파일이 모두 있을 때만 실행", () => {
-  it("아무 파일도 없으면 5건 모두 건너뛴다", () => {
+  it("아무 파일도 없으면 6건 모두 건너뛴다", () => {
     const result = runCrossRefChecks({});
     expect(result.checked).toEqual([]);
-    expect(result.skipped).toHaveLength(5);
+    expect(result.skipped).toHaveLength(6);
     expect(result.issues).toEqual([]);
   });
 
@@ -297,6 +345,7 @@ describe("runCrossRefChecks — 관련 파일이 모두 있을 때만 실행", (
       "national-team.squads.playerSlugs → korean-players",
       "publisher-domains.sourceIds → sources",
       "korean-players.team(활성) → team-ids(af)",
+      "team-colors → team-ids · 약어 대비 5.3",
     ]);
   });
 

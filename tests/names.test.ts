@@ -266,16 +266,16 @@ describe("미등록 이름 후보 — unknownNamesInText", () => {
 
   it("치환이 넣은 한글 표기 속 라틴 낱말('AC 밀란'·'파리 FC'·'AEK 아테네'·'UEFA 챔피언스리그')은 후보가 아니다 — masked에서 찾는다", () => {
     const r = substituteNames(
-      "Milan과 Paris FC, PAE AEK가 Champions League에서 Viking FK와 만났다",
+      "Milan과 Paris FC, PAE AEK가 Champions League에서 Rosenborg BK와 만났다",
       INDEX,
       { competitionLabel: nameKo },
     );
     expect(r.text).toBe(
-      "AC 밀란과 파리 FC, AEK 아테네가 UEFA 챔피언스리그에서 Viking FK와 만났다",
+      "AC 밀란과 파리 FC, AEK 아테네가 UEFA 챔피언스리그에서 Rosenborg BK와 만났다",
     );
-    expect(unknownNamesInText(r.masked, INDEX)).toEqual(["Viking FK"]);
+    expect(unknownNamesInText(r.masked, INDEX)).toEqual(["Rosenborg BK"]);
     // 가리지 않은 텍스트에서는 'AC'·'FC'·'AEK'가 섞여 나온다(이 때문에 masked를 쓴다)
-    expect(unknownNamesInText(r.text, INDEX)).not.toEqual(["Viking FK"]);
+    expect(unknownNamesInText(r.text, INDEX)).not.toEqual(["Rosenborg BK"]);
   });
 });
 
@@ -304,7 +304,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
       match(),
       match({
         id: "m2",
-        home: "Viking FK",
+        home: "Rosenborg BK",
         away: "Arsenal",
         ft: "0-1",
         goals: [{ min: "5", team: "Arsenal", player: "Noni Madueke" }],
@@ -448,7 +448,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
     expect(briefInputNames(input).map((n) => `${n.kind}:${n.name}`)).toEqual([
       "team:Bayern",
       "team:Union Berlin",
-      "team:Viking FK",
+      "team:Rosenborg BK",
       "team:Arsenal",
       "team:Dortmund",
       "player:H. Kane",
@@ -458,7 +458,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
     ]);
     // 첫 글자 축약 별칭은 등록 이름으로 치지 않는다 — 입력 정리를 거치지 않은 'H. Kane'·'J. Musiala'는 미등록 후보
     expect(unknownBriefInputNames(input, INDEX)).toEqual([
-      { name: "Viking FK", kind: "team" },
+      { name: "Rosenborg BK", kind: "team" },
       { name: "H. Kane", kind: "player" },
       { name: "J. Musiala", kind: "player" },
       { name: "Noni Madueke", kind: "player" },
@@ -467,7 +467,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
       playerTeams: PLAYER_TEAMS,
     }).input;
     expect(unknownBriefInputNames(canonical, INDEX)).toEqual([
-      { name: "Viking FK", kind: "team" },
+      { name: "Rosenborg BK", kind: "team" },
       { name: "Noni Madueke", kind: "player" },
     ]);
   });
@@ -482,7 +482,7 @@ describe("브리핑 입력 — 득점자 대표 표기·데이터 API 이름·�
       "Bayern",
       "FC Bayern München",
       "Union Berlin",
-      "Viking FK",
+      "Rosenborg BK",
       "Kim Min-Jae",
       "Min-jae Kim",
       "Harry Kane",
@@ -614,7 +614,7 @@ describe("브리핑 입력 — 사전에 없는 팀 짧은 이름 → 정식 이
     });
   });
 
-  it("짧은 이름이 사전 팀 별칭이면 그대로('Bayern' — 정식 이름과 같은 항목), 둘 다 사전에 없으면 그대로('Viking'·'Viking FK' — D46 보류)", () => {
+  it("짧은 이름이 사전 팀 별칭이면 그대로('Bayern' — 정식 이름과 같은 항목), 둘 다 사전에 없으면 그대로('Rosenborg'·'Rosenborg BK' — 6개 대회 밖 미등록 팀)", () => {
     const out = canonicalizeBriefInput(
       {
         briefDate: "2026-10-22",
@@ -622,7 +622,7 @@ describe("브리핑 입력 — 사전에 없는 팀 짧은 이름 → 정식 이
           deportivoMatch({
             comp: "UEFA Champions League",
             home: "Bayern",
-            away: "Viking",
+            away: "Rosenborg",
             ft: "3-0",
             goals: [{ min: "5", team: "Bayern", player: "Harry Kane" }],
           }),
@@ -633,14 +633,14 @@ describe("브리핑 입력 — 사전에 없는 팀 짧은 이름 → 정식 이
       {
         teamFullNames: teamFullNamesFrom([
           { name: "Bayern", fullName: "FC Bayern München" },
-          { name: "Viking", fullName: "Viking FK" },
+          { name: "Rosenborg", fullName: "Rosenborg BK" },
         ]),
       },
     );
     const m = out.input.matches[0]!;
     expect([m.home, m.away, m.goals![0]!.team]).toEqual([
       "Bayern",
-      "Viking",
+      "Rosenborg",
       "Bayern",
     ]);
     expect(out.teams).toBe(0);
