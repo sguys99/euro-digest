@@ -219,6 +219,7 @@ describe("현재 순위(standings)", () => {
       inProgress: [],
       unsettled: [],
       multiTable: [],
+      prevRows: 0,
     });
     const pl = input.standings.find((s) => s.id === "sPL")!;
     expect(pl).toEqual({

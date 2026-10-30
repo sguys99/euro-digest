@@ -375,6 +375,21 @@ describe("fetchCompetitionFiles — 대회당 3요청, 실패 격리", () => {
     expect(
       [...lal.provisional.values()].filter((v) => v === "date"),
     ).toHaveLength(10);
+    // 순위 보강 기본값(M2-03 standings-enrich.ts) — 폼은 그 대회 종료 경기에서, 첫 수집이라 prevPos는 모두 null
+    for (const res of r.results) {
+      if (res.outcome.action !== "write") continue;
+      const { standings, matches } = res.outcome.file;
+      expect(
+        standings.every((s) => s.prevPos === null),
+        res.comp,
+      ).toBe(true);
+      if (matches.some((m) => m.status === "finished")) {
+        expect(
+          standings.some((s) => s.form.length > 0),
+          res.comp,
+        ).toBe(true);
+      }
+    }
   });
 
   it("한 대회 조각 실패는 그 조각만 이전 값, 다른 대회는 영향 없음", async () => {

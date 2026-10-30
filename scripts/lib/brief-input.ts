@@ -9,7 +9,7 @@
  *
  * 형식 (짧은 키, 공백 없는 JSON — `serializeBriefInput`):
  *   `{ briefDate, matches: [{ id, comp, round, home, away, ft, ht?, aet?, regular?, pens?, goals }],
- *      standings: [{ id, comp, note, rows: [{ pos, team, played, pts, gd }] }] }`
+ *      standings: [{ id, comp, note, rows: [{ pos, team, played, pts, gd, prev? }] }] }`
  *   - matches — **중요도 순**(`matchImportance` 내림차순 → 킥오프 → id), 상한 `BRIEF_MAX_MATCHES`. LLM은 앞쪽 경기를 먼저 쓰고
  *     템플릿도 앞에서부터 고른다. football-data가 아직 종료로 주지 않은 경기를 API-Football 종료 결과로 보충한 경기도 같은 형식으로
  *     들어간다(D60 — brief-supplement.ts: id·팀·라운드는 football-data, 스코어·득점자는 API-Football — 입력에서는 구별하지 않는다).
@@ -27,7 +27,10 @@
  *     **진행 중 경기가 있는 대회(`inProgress > 0`)와 창 안에 결과를 기다리는 football-data 경기가 있는 대회(`unsettledComps` —
  *     API-Football 결과로 보충한 경기 포함, D60)는 넣지 않는다**(순위가 확정이 아니라 순위 문장 금지 — M1-44 이월). 표가 여러 개인
  *     대회(그룹 스테이지)도 넣지 않는다. 순서는 그 대회의 첫 경기 순(중요도). id = `s` + 대회 약칭(sPL·sLL·sSA·sBL·sL1·sUCL — M0-30).
- *     전일 순위(`prev`)는 M2-03이 더한다 — 지금은 없으므로 순위 변동을 서술할 수 없다(D40 ③).
+ *     · prev(M2-03, 선택) = 전일 순위 — 대회 파일(`data/competitions`)의 스냅숏으로 잰 기준 순위(`briefPrevPositions` — 아래 규칙).
+ *       기준을 믿을 수 없는 대회·팀은 키 없음 → 그 팀 순위 변동은 서술할 수 없다(D40 ③). **지금은 넣지 않는다**(`BRIEF_PREV_ENABLED`
+ *       false) — 지시문 v0.4가 prev를 설명하지 않는다(D55 ① — 입력 키·문법·지시문 [문형]은 함께 켠다). 켜는 것은 지시문 v0.5 +
+ *       골든셋 회귀(eval:prompt) 뒤 오케스트레이터·사용자 결정.
  *   - 한국 선수 출전(`korean`)은 M3-03 이후 — 키가 없으면 한국 선수를 언급하지 않는다(M0-30 지시문).
  *
  * 중요도(`matchImportance` — 코드 규칙, LLM 미사용): 활성 한국 선수 소속팀(korean-players.json → team-ids.json fd id) +3 ·
@@ -35,8 +38,9 @@
  * 두 팀 모두 현재 순위 4위 안 +1 · 총 5골 이상 또는 3골 차 이상 +1. "오늘 밤 볼 경기"(FR-81 bigmatch-rules)와 같은 축이다 —
  * 그 설정 파일이 생기면(M2-08) 옮길 후보.
  */
-import type { CompId, CompetitionConfig } from "@/lib/schema";
+import type { CompId, CompetitionConfig, CompetitionFile } from "@/lib/schema";
 import {
+  kstDate,
   kstWindowRangeUtc,
   shiftDate,
   type KstWindow,
@@ -57,6 +61,7 @@ import {
   titleText,
   type CompiledGroup,
 } from "./news-keywords";
+import { standingsBaseline } from "./standings-enrich";
 
 /** 입력 창 — KST 09:00 ~ 다음 날 09:00 (= UTC 하루) */
 export const BRIEF_INPUT_WINDOW: Readonly<KstWindow> = Object.freeze({
@@ -149,6 +154,8 @@ export interface BriefInputStandingRow {
   pts: number;
   /** 득실차 */
   gd: number;
+  /** 전일 순위(M2-03 — `briefPrevPositions`) — 기준이 없으면 키 없음 */
+  prev?: number;
 }
 
 export interface BriefInputStandings {
@@ -302,6 +309,8 @@ export interface BriefInputBuild {
     unsettled: CompId[];
     /** 표가 여러 개라 뺀 대회 */
     multiTable: CompId[];
+    /** 입력 순위 행 중 전일 순위(prev)를 넣은 행 수(M2-03) */
+    prevRows: number;
   };
   /** 입력 경기 중 득점자를 넣은 경기 수(goals 배열) · 연결은 됐지만 득점 목록이 불완전해 null로 둔 경기 수 */
   goals: { filled: number; incomplete: number };
@@ -382,6 +391,11 @@ export interface BuildBriefInputOptions {
   competitions: readonly CompetitionConfig[];
   /** 현재 순위(football-data `CompStandings` — 빌더는 `BriefStandingsSource` 필드만 읽는다) — 없으면 standings 빈 배열 */
   standings?: readonly BriefStandingsSource[];
+  /**
+   * 대회별 football-data 팀 id → 전일 순위(M2-03 — `briefPrevPositions`). 있는 팀의 순위 행에만 `prev`를 넣는다. 없으면 prev 없음
+   * (지금 정기 실행은 `BRIEF_PREV_ENABLED`가 false라 넘기지 않는다)
+   */
+  prevPositions?: ReadonlyMap<CompId, ReadonlyMap<number, number>>;
   /** football-data 경기 id → 연결된 API-Football 상세(득점자) */
   linked?: ReadonlyMap<number, Pick<MatchDetail, "goals" | "goalsComplete">>;
   /** 활성 한국 선수 소속팀 football-data 팀 id(중요도) */
@@ -444,6 +458,7 @@ export function buildBriefInput(
     koreanTeamIds = new Set<number>(),
     unsettledComps = new Set<CompId>(),
     maxMatches = BRIEF_MAX_MATCHES,
+    prevPositions,
   } = options;
   const nameOf = new Map<string, string>(
     competitions.map((c) => [c.id, c.nameEn]),
@@ -475,6 +490,7 @@ export function buildBriefInput(
     inProgress: [],
     unsettled: [],
     multiTable: [],
+    prevRows: 0,
   };
   const inputStandings: BriefInputStandings[] = [];
   for (const comp of compOrder) {
@@ -496,17 +512,24 @@ export function buildBriefInput(
     const rows = table.rows.filter((r) => r.pos <= BRIEF_STANDINGS_TOP_POS);
     if (rows.length === 0) continue;
     stats.included.push(comp);
+    const prevOf = prevPositions?.get(comp);
     inputStandings.push({
       id: standingsRefId(comp),
       comp: nameOf.get(comp) ?? comp,
       note: STANDINGS_NOTE,
-      rows: rows.map((r) => ({
-        pos: r.pos,
-        team: r.team.name,
-        played: r.played,
-        pts: r.pts,
-        gd: r.gd,
-      })),
+      rows: rows.map((r) => {
+        // 키 순서 pos·team·played·pts·gd·prev — M0-30 입력(fixtures/llm/brief-inputs)과 같다
+        const prev = prevOf?.get(r.team.id);
+        if (prev !== undefined) stats.prevRows += 1;
+        return {
+          pos: r.pos,
+          team: r.team.name,
+          played: r.played,
+          pts: r.pts,
+          gd: r.gd,
+          ...(prev !== undefined ? { prev } : {}),
+        };
+      }),
     });
   }
 
@@ -517,6 +540,128 @@ export function buildBriefInput(
     standings: stats,
     goals: goalStats,
   };
+}
+
+// ─── 전일 순위(prev — M2-03) ─────────────────────────────────────────────
+
+/**
+ * 정기 실행이 브리핑 입력에 전일 순위(prev)를 넣는가. **false** — 지시문 v0.4는 prev 키와 순위 변동 문형(move·keep)을 뺐다(D55 ①).
+ * 입력에만 넣으면 지시문이 모르는 키를 받고('전날 순위는 입력에 없으니' 지시와 어긋남), 검사기는 입력 키로 변동 문형을 켠다
+ * (`briefInputKeys`). 켤 때 함께 할 일: 지시문 [문형]을 `renderBriefPatterns({ keys: ["prev"] })`로·standings 설명에 prev·변동 금지
+ * 줄 교체 → 골든셋 입력에 prev → eval:prompt 회귀(프롬프트 수정 절차, CLAUDE §6.3). 계산·로그(`summarize.input.done` prevRows)는
+ * 꺼져 있어도 돈다(관찰용).
+ */
+export const BRIEF_PREV_ENABLED = false;
+
+/** 대회별 전일 순위 판정 — ok 넣음 · no-file 대회 파일 없음 · season 다른 시즌 · stale 기준 스냅숏을 믿을 수 없음 · multi-table 표 여러 개 */
+export type BriefPrevState =
+  "ok" | "no-file" | "season" | "stale" | "multi-table";
+
+export type BriefPrevFile = Pick<
+  CompetitionFile,
+  "comp" | "season" | "updatedAt" | "standings"
+>;
+
+export interface BriefPrevOptions {
+  /** 발행일(KST) D */
+  briefDate: string;
+  /** 지금 받은 순위(브리핑 입력과 같은 값) */
+  standings: readonly BriefStandingsSource[];
+  /** 대회 파일(`data/competitions/{comp}.json` — 대회 단계가 마지막으로 쓴 값). 읽지 못했으면 null·키 없음 */
+  files: ReadonlyMap<CompId, BriefPrevFile | null>;
+  /** 대회 설정(시즌 대조) */
+  competitions: readonly Pick<CompetitionConfig, "id" | "season">[];
+  /** football-data 팀 id → 팀 slug(configs/team-ids.json — 대회 파일은 slug, 브리핑 순위는 fd id) */
+  teamSlugByFd: ReadonlyMap<number, string>;
+}
+
+export interface BriefPrevResult {
+  /** 대회별 fd 팀 id → 전일 순위(기준이 있는 팀만) */
+  positions: Map<CompId, Map<number, number>>;
+  states: Partial<Record<CompId, BriefPrevState>>;
+}
+
+/**
+ * 브리핑 입력의 전일 순위(순수 함수, M2-03). 기준은 대회 페이지 ▲▼와 같은 스냅숏 규칙(standings-enrich.ts `standingsBaseline` —
+ * DECISIONS D1 §6 #4)이되, 브리핑은 '어제 경기로 바뀐 순위'를 말하므로 기준 스냅숏이 **입력 창(UTC 하루 D-1 = KST [D-1 09:00,
+ * D 09:00)) 시작 전**이어야 한다:
+ *   - 대회 파일 `updatedAt`이 발행일 D(KST)와 같은 날 → 그 파일의 `prevPos`(그 파일을 쓴 실행이 같은 규칙으로 잡은 기준 — 정기
+ *     순서는 브리핑 뒤 대회 단계라 같은 아침 백업 실행에서만 생긴다)
+ *   - D-1(KST)이고 창 시작(D-1 09:00 KST) 전 → 그 파일의 `pos`(D-1 아침 정기 수집 스냅숏)
+ *   - 그 밖(이틀 이상 묵은 파일·창 안에서 받은 파일 — 수동 실행·부분 실패로 `updatedAt`이 남은 파일)은 stale → 그 대회 prev 없음.
+ *     창 안 스냅숏은 어제 경기 일부가 이미 반영돼 변동을 잘못 셀 수 있다.
+ * 대회 파일이 없거나 시즌이 다르면 prev 없음(첫 수집·시즌 전환). 대회 파일에 없는 팀·대응표에 없는 팀도 prev 없음.
+ */
+export function briefPrevPositions(options: BriefPrevOptions): BriefPrevResult {
+  const { briefDate } = options;
+  const seasonOf = new Map(
+    options.competitions.map((c) => [c.id, c.season] as const),
+  );
+  const inputWindow = briefInputWindow(briefDate);
+  const windowStart = Date.parse(inputWindow.start);
+  const yesterday = shiftDate(briefDate, -1);
+  const positions = new Map<CompId, Map<number, number>>();
+  const states: BriefPrevResult["states"] = {};
+  for (const s of options.standings) {
+    const file = options.files.get(s.comp) ?? null;
+    if (file === null) {
+      states[s.comp] = "no-file";
+      continue;
+    }
+    if (file.comp !== s.comp || file.season !== seasonOf.get(s.comp)) {
+      states[s.comp] = "season";
+      continue;
+    }
+    const [table] = s.tables;
+    if (s.tables.length !== 1 || !table) {
+      states[s.comp] = "multi-table";
+      continue;
+    }
+    const fileDay = kstDate(file.updatedAt);
+    const usable =
+      fileDay === briefDate ||
+      (fileDay === yesterday && Date.parse(file.updatedAt) < windowStart);
+    if (!usable) {
+      states[s.comp] = "stale";
+      continue;
+    }
+    // 기준 시각 = 창 끝(발행일 D 09:00 KST) — 같은 날 파일이면 prevPos, D-1 파일이면 pos(standingsBaseline 규칙 그대로)
+    const baseline = standingsBaseline(file, inputWindow.end);
+    const byFd = new Map<number, number>();
+    for (const r of table.rows) {
+      const slug = options.teamSlugByFd.get(r.team.id);
+      const base = slug === undefined ? undefined : baseline.get(slug);
+      if (typeof base === "number") byFd.set(r.team.id, base);
+    }
+    positions.set(s.comp, byFd);
+    states[s.comp] = "ok";
+  }
+  return { positions, states };
+}
+
+/**
+ * 전일 순위 관찰 집계(순수 함수, 로그용) — 입력에 들어간 대회의 상위 4위 행 중 전일 순위가 잡힌 행 수·그중 순위가 바뀐 행 수.
+ * `BRIEF_PREV_ENABLED`가 false여도 켰을 때 입력에 무엇이 들어갈지 본다(M2-03 → 지시문 v0.5 판단 재료).
+ */
+export function briefPrevSummary(
+  included: readonly CompId[],
+  standings: readonly BriefStandingsSource[],
+  positions: ReadonlyMap<CompId, ReadonlyMap<number, number>>,
+): { rows: number; moved: number } {
+  let rows = 0;
+  let moved = 0;
+  for (const s of standings) {
+    if (!included.includes(s.comp)) continue;
+    const prev = positions.get(s.comp);
+    for (const r of s.tables[0]?.rows ?? []) {
+      if (r.pos > BRIEF_STANDINGS_TOP_POS) continue;
+      const p = prev?.get(r.team.id);
+      if (p === undefined) continue;
+      rows += 1;
+      if (p !== r.pos) moved += 1;
+    }
+  }
+  return { rows, moved };
 }
 
 /**

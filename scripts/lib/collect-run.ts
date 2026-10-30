@@ -126,6 +126,7 @@ import {
   type BriefEmptyReason,
   type BriefFile,
   type BriefMode,
+  type CompId,
   type CompetitionsFile,
   type FeedItem,
   type LedgerMatch,
@@ -165,15 +166,21 @@ import {
 } from "./api-football-stage";
 
 import {
+  BRIEF_PREV_ENABLED,
   briefInputWindow,
   briefLlmInput,
+  briefPrevPositions,
+  briefPrevSummary,
   briefTeamRefs,
   buildBriefInput,
   mergeBriefDetails,
   serializeBriefInput,
   type BriefInput,
   type BriefInputBuild,
+  type BriefPrevFile,
+  type BriefPrevResult,
 } from "./brief-input";
+import { readCompetitionFile } from "./competition-file";
 import {
   afFinishedInWindow,
   afOutOfFdScopeInWindow,
@@ -309,6 +316,7 @@ import {
 } from "./names";
 import {
   isolateProvider,
+  type CompStandings,
   type MatchDetail,
   type ProviderOutcome,
 } from "./match-data";
@@ -2967,6 +2975,45 @@ interface BriefTeamIndex {
   autoLink: boolean;
 }
 
+/**
+ * 브리핑 전일 순위(M2-03) — 순위를 받은 대회의 `data/competitions/{comp}.json`을 읽어 `briefPrevPositions`로 잰다. 읽지 못한 파일은
+ * 그 대회만 no-file(경고 — 브리핑은 prev 없이 진행).
+ */
+async function loadBriefPrev(
+  deps: CollectDeps,
+  briefDate: string,
+  standings: readonly CompStandings[],
+  competitions: CompetitionsFile,
+  teamSlugByFd: ReadonlyMap<number, string>,
+): Promise<BriefPrevResult> {
+  const files = new Map<CompId, BriefPrevFile | null>();
+  for (const s of standings) {
+    try {
+      const read = await readCompetitionFile(deps.dataDir, s.comp);
+      if (read.status === "invalid") {
+        deps.logger.warn("summarize.input.competition-file-invalid", {
+          comp: s.comp,
+          error: read.error,
+        });
+      }
+      files.set(s.comp, read.status === "ok" ? read.file : null);
+    } catch (error) {
+      deps.logger.warn("summarize.input.competition-file-unreadable", {
+        comp: s.comp,
+        error: errorText(error),
+      });
+      files.set(s.comp, null);
+    }
+  }
+  return briefPrevPositions({
+    briefDate,
+    standings,
+    files,
+    competitions,
+    teamSlugByFd,
+  });
+}
+
 async function loadBriefTeamIndex(deps: CollectDeps): Promise<BriefTeamIndex> {
   try {
     return {
@@ -3319,6 +3366,7 @@ async function runBriefStage(
   let competitions: CompetitionsFile;
   let built: BriefInputBuild;
   let names: NameIndex | null = null;
+  let prev: BriefPrevResult = { positions: new Map(), states: {} };
   /** 입력 경기가 0일 때 empty의 이유(D60) — 입력 경기가 있으면 null */
   let emptyReason: BriefEmptyReason | null = null;
   try {
@@ -3350,6 +3398,14 @@ async function runBriefStage(
       names,
     );
     const results = [...fd.data.results, ...supplement.results];
+    // 전일 순위(M2-03) — 대회 파일 스냅숏 기준. 계산·로그는 늘 하고, 입력에는 BRIEF_PREV_ENABLED일 때만(지시문 v0.5 전까지 끔)
+    prev = await loadBriefPrev(
+      deps,
+      ctx.publishDate,
+      fd.data.standings,
+      competitions,
+      team.index.byFd,
+    );
     built = buildBriefInput({
       briefDate: ctx.publishDate,
       results,
@@ -3358,6 +3414,7 @@ async function runBriefStage(
       linked: new Map([...goalLinks.byFd, ...supplement.linked]),
       unsettledComps: supplement.unsettledComps,
       koreanTeamIds: await briefKoreanTeamIds(deps, team.index),
+      ...(BRIEF_PREV_ENABLED ? { prevPositions: prev.positions } : {}),
     });
     const canonical = names
       ? canonicalizeBriefInput(built.input, names, {
@@ -3399,6 +3456,19 @@ async function runBriefStage(
       standingsInProgress: built.standings.inProgress,
       standingsUnsettled: built.standings.unsettled,
       standingsMultiTable: built.standings.multiTable,
+      // 전일 순위(M2-03) — 대회별 판정(ok·no-file·season·stale·multi-table) · 입력 상위 4위 행 중 기준이 잡힌 행·순위가 바뀐 행
+      // (켜졌을 때 들어갈 값 — 관찰용) · 실제 입력에 넣은 행(BRIEF_PREV_ENABLED false면 0)
+      prevEnabled: BRIEF_PREV_ENABLED,
+      prevStates: prev.states,
+      ...(() => {
+        const sum = briefPrevSummary(
+          built.standings.included,
+          fd.data.standings,
+          prev.positions,
+        );
+        return { prevAvailable: sum.rows, prevMoved: sum.moved };
+      })(),
+      prevRows: built.standings.prevRows,
       // 득점자 — 연결(대응표·증거) 중 득점 목록이 완전한 경기만 goals 배열, 나머지는 null
       afBriefDetails: matchData.apiFootballBrief?.details.length ?? null,
       linkedByTeamIds: goalLinks.byTeamIds,

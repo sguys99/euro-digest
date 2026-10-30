@@ -29,6 +29,7 @@ import {
   type StandingsEnricher,
 } from "./competition-file";
 import type { Logger } from "./logger";
+import { enrichStandings } from "./standings-enrich";
 import {
   FootballDataError,
   type FootballDataClient,
@@ -62,6 +63,7 @@ export interface CompetitionsStageInput {
   readPrevious: (comp: CompId) => Promise<CompetitionFile | null>;
   now: () => Date;
   log?: Logger;
+  /** 순위 보강(M2-03) — 기본 standings-enrich.ts `enrichStandings`(전일 대비 prevPos·최근 5경기 폼) */
   enrichStandings?: StandingsEnricher;
   scorersLimit?: number;
 }
@@ -206,7 +208,7 @@ async function fetchOne(
       previous,
       parts,
       fetchedAt: input.now().toISOString(),
-      enrichStandings: input.enrichStandings,
+      enrichStandings: input.enrichStandings ?? enrichStandings,
     });
     return { ...base, outcome, unknownTeams };
   } catch (error) {

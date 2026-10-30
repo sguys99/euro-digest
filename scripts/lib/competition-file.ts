@@ -7,8 +7,9 @@
  *   - **조각 단위 유지**: 일부만 실패하면 그 조각만 이전 파일 값을 쓴다(이전 파일이 없거나 시즌이 다르면 빈 배열).
  *   - `updatedAt`은 세 조각이 모두 이번에 받은 값일 때만 이번 시각으로 바꾼다. 하나라도 이전 값이면 이전 `updatedAt`을 둔다 —
  *     파일에 시각이 하나뿐이라, 새 시각을 쓰면 묵은 조각이 새것처럼 보인다(보수적으로 "지연" 쪽). 이전 파일이 없으면 이번 시각.
- *   - 순위 보강(`enrichStandings` — 전일 대비 변동·최근 5경기 폼, M2-03)은 **이번에 받은 순위에만** 적용한다. 이전 값을 유지한
- *     순위는 이미 보강된 값이다. 기본값은 그대로 둔다(prevPos null·form []).
+ *   - 순위 보강(`enrichStandings` — 전일 대비 변동·최근 5경기 폼, M2-03 standings-enrich.ts)은 **이번에 받은 순위에만** 적용한다.
+ *     이전 값을 유지한 순위는 이미 보강된 값이다. 보강 함수를 넘기지 않으면 어댑터 기본값 그대로(prevPos null·form []) —
+ *     대회 단계(competitions-stage.ts)는 기본으로 standings-enrich.ts를 넘긴다.
  * 쓰기는 스키마 검증 → 임시 파일 → rename(원자적). 검증에 걸리는 파일은 쓰지 않는다.
  */
 import { randomBytes } from "node:crypto";
@@ -38,13 +39,14 @@ export interface CompetitionParts {
 }
 
 /**
- * 순위 보강 자리(M2-03) — 이번에 받은 순위 행 + 이전 파일(같은 대회·시즌일 때만) + 이번 경기 목록 → 보강한 행.
- * 행 순서·팀·숫자는 바꾸지 않고 prevPos·form만 채우는 것이 계약이다.
+ * 순위 보강(M2-03 — 기본 구현 standings-enrich.ts `enrichStandings`) — 이번에 받은 순위 행 + 이전 파일(같은 대회·시즌일 때만) +
+ * 이번 경기 목록 + 이번 수집 시각(같은 KST 날짜 판정) → 보강한 행. 행 순서·팀·숫자는 바꾸지 않고 prevPos·form만 채우는 것이 계약이다.
  */
 export type StandingsEnricher = (input: {
   rows: readonly StandingRow[];
   previous: CompetitionFile | null;
   matches: readonly Match[];
+  fetchedAt: string;
 }) => StandingRow[];
 
 export interface MergeCompetitionInput {
@@ -114,7 +116,12 @@ export function mergeCompetitionFile(
   let standings = pick("standings", parts.standings, previous?.standings);
   const scorers = pick("scorers", parts.scorers, previous?.scorers);
   if (parts.standings.ok && input.enrichStandings) {
-    standings = input.enrichStandings({ rows: standings, previous, matches });
+    standings = input.enrichStandings({
+      rows: standings,
+      previous,
+      matches,
+      fetchedAt,
+    });
   }
   const allFresh = fresh.length === COMPETITION_PARTS.length;
   const file = CompetitionFileSchema.parse({
