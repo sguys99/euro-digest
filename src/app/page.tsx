@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 
 import { BriefMissing, TodayBrief } from "@/components/brief/today-brief";
+import { LeagueMini } from "@/components/home/league-mini";
+import { TonightSection } from "@/components/home/tonight";
 import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
 import { AppShell } from "@/components/shell/app-shell";
 import { loadBriefSlot } from "@/lib/data/brief";
+import { loadLeagueMini, loadTonightWidget } from "@/lib/data/home-widgets";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
 import { issueLateWindows } from "@/lib/issue";
@@ -21,8 +24,12 @@ import { cn } from "@/lib/utils";
  *   2. 주요 뉴스 피드(M1-31 카드) — 5줄 아래 36px(≥1024 44px, DESIGN §4.3). id="news"는 S4 "주요 뉴스로 ↓"의 앵커.
  *      필터(M1-33 — 피드만 거른다): 1024 이상은 앱 셸 목차 열(대회·분류·한국 선수), 1023 이하는 부제 아래 분류 칩 줄. 주소 쿼리
  *      (`?comp=epl&cat=transfer`)와 같이 움직인다 — 혼합안 홈이 URL을 갱신하고 `/news/`와 같은 지면이라 홈도 공유·새로고침 때 유지한다.
- * 그 밖의 홈 섹션(한국 선수·오늘 밤·이적·순위)은 해당 단계에서 싣는다(미완성 섹션 숨김, plan §2.3). 목차가 생겨 1024 이상은
- * `232 · 1fr` 2단이다(5줄·피드 지면 728 @1024 · 984 @1280 — DECISIONS D0 §4 "A → 1280 M1 상태").
+ *   3. 오늘 밤 볼 경기(M2-14) → 리그 순위 미니(M2-15) — D1 확정 시안 화면 3(DESIGN §9.3). **위젯 두 자리**(DESIGN §11.4): 1279 이하는 지면 안
+ *      피드 다음(`xl:hidden` — DECISIONS D0 §5 #16 순서 5줄 → 한국 선수 → 피드 → 오늘 밤 → 이적·순위), 1280 이상은 마주 보는 면(앱 셸 `facing`
+ *      — 오늘 밤 → 순위). 같은 위젯을 두 번 그리고 `display`로 고른다(보조기술에는 한 번만 — 머리 id만 다르게).
+ *      기준 시각 = 빌드 시각(오늘 밤 창은 빌드 시각의 KST 날짜 18:00 ~ 다음 날 07:00 — src/lib/tonight.ts).
+ * 그 밖의 홈 섹션(한국 선수·이적)은 해당 단계에서 싣는다(미완성 섹션 숨김, plan §2.3 — 자리를 그리지 않는다). 1024~1279는 목차 + 지면 2단,
+ * 1280 이상은 목차 + 지면(688) + 마주 보는 면(296) 3단이다(DESIGN §4.3).
  */
 
 // 제목 = 서비스 이름 단독, 설명 = 사이트 기본 설명(매일 바뀌는 호 정보는 넣지 않는다 — 날짜 페이지가 맡는다), canonical = 홈 자신(M1-38)
@@ -38,6 +45,22 @@ export default function HomePage() {
   const { news, issue } = loadLatestIssue();
   const slot = issue ? loadBriefSlot(issue.date) : null;
   const filter = loadNewsFilterView(news);
+  const tonight = loadTonightWidget();
+  const league = loadLeagueMini();
+  const widgets = (where: "flow" | "facing") => (
+    <>
+      <TonightSection
+        widget={tonight}
+        headingId={`tonight-${where}-h`}
+        className={where === "flow" ? "mt-9 lg:mt-11" : undefined}
+      />
+      <LeagueMini
+        panels={league}
+        headingId={`league-mini-${where}-h`}
+        className="mt-9"
+      />
+    </>
+  );
 
   return (
     <AppShell
@@ -45,6 +68,8 @@ export default function HomePage() {
       issue={issue}
       contents={filter ? <NewsFilterContents view={filter} /> : undefined}
       lateWindows={issue ? issueLateWindows(issue.date) : undefined}
+      facing={widgets("facing")}
+      facingLabel="오늘 밤 경기·리그 순위"
     >
       {slot?.kind === "brief" ? <TodayBrief brief={slot.brief} /> : null}
       {slot?.kind === "missing" ? <BriefMissing /> : null}
@@ -61,6 +86,10 @@ export default function HomePage() {
           slot && slot.kind !== "none" && "mt-9 lg:mt-11",
         )}
       />
+      {/* 1279 이하 — 지면 안 피드 다음(1280 이상은 마주 보는 면) */}
+      <div data-slot="home-widgets" className="xl:hidden">
+        {widgets("flow")}
+      </div>
     </AppShell>
   );
 }

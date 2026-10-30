@@ -206,9 +206,10 @@ export function Tabs({
 
 /**
  * 탭 모양 — `box`(기본, 대회 탭·상자형 — DESIGN §9.2) · `view`(D1 대회 화면 보기 탭 — 글자 15px 800 `--ink-2`, 선택 `--ink` + 아래 3px
- * `--brand-accent` 막대, 목록 아래 1px `--rule`, 간격 16px · 최소 46px — DESIGN §9.3 대회 화면 틀, M2-10)
+ * `--brand-accent` 막대, 목록 아래 1px `--rule`, 간격 16px · 최소 46px — DESIGN §9.3 대회 화면 틀, M2-10) · `grid`(D1 홈 리그 순위 미니 —
+ * `box`와 같은 상자를 3열 격자에 채운다: 목록 `repeat(3, minmax(0,1fr))` 간격 4px, 탭 최소 폭 없음 · 좌우 4px — DESIGN §9.3 순위 미니, M2-15)
  */
-export type TabsVariant = "box" | "view";
+export type TabsVariant = "box" | "view" | "grid";
 
 /** 탭 목록(`role="tablist"`) — 접근 이름(`aria-label` 또는 `aria-labelledby`)을 꼭 준다 */
 export function TabsList({
@@ -264,7 +265,9 @@ export function TabsList({
       className={cx(
         variant === "view"
           ? "flex gap-4 border-b border-rule"
-          : "flex flex-wrap gap-1",
+          : variant === "grid"
+            ? "grid grid-cols-3 gap-1"
+            : "flex flex-wrap gap-1",
         className,
       )}
       onKeyDown={handleKeyDown}
@@ -333,7 +336,9 @@ export function TabsTrigger({
         variant === "view"
           ? VIEW_TAB
           : cx(
-              "relative inline-flex min-h-11 min-w-14 items-center justify-center border border-ink-2 bg-transparent px-2.5 text-[13px] font-extrabold text-ink",
+              "relative inline-flex min-h-11 items-center justify-center border border-ink-2 bg-transparent text-[13px] font-extrabold text-ink",
+              // 상자 크기 — 격자(순위 미니)는 칸 폭을 격자가 정한다
+              variant === "grid" ? "min-w-0 px-1" : "min-w-14 px-2.5",
               "transition-colors duration-base ease-print",
               "hover:border-ink hover:bg-paper-2",
               "disabled:border-dashed disabled:border-ink-disabled disabled:bg-transparent disabled:text-ink-disabled",

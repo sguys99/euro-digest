@@ -282,6 +282,26 @@ const CASES: ReadonlyArray<[string, () => ReactElement]> = [
     ),
   ],
   [
+    "Tabs grid — 순위 미니 3열 격자(M2-15)",
+    () => (
+      <Tabs defaultValue="EPL">
+        <TabsList aria-label="대회 선택" variant="grid">
+          {COMPS.map((comp) => (
+            <TabsTrigger
+              key={comp}
+              value={comp}
+              competition={comp}
+              variant="grid"
+            >
+              {comp}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <TabsPanel value="EPL">패널</TabsPanel>
+      </Tabs>
+    ),
+  ],
+  [
     "ToastView — 글자로 끝남·액션·닫기·액션+닫기·정적",
     () => (
       <>

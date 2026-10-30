@@ -232,10 +232,11 @@ describe("sitemapEntries — sitemap.xml 항목", () => {
     { date: "2026-10-23", generatedAt: "2026-10-23T00:10:07.307Z" },
   ];
 
-  it("홈(lastmod = 최신 호) · /about/(lastmod 없음) · 날짜 페이지 전부(오름차순, lastmod = 그 호 generatedAt) — /news/는 없다", () => {
+  it("홈(lastmod = 최신 호) · /about/(lastmod 없음) · /tonight/(lastmod = 최신 호, M2-14) · 날짜 페이지 전부(오름차순, lastmod = 그 호 generatedAt) — /news/는 없다", () => {
     expect(sitemapEntries(issues)).toEqual([
       { url: `${SITE}/`, lastModified: "2026-10-23T00:10:07.307Z" },
       { url: `${SITE}/about/` },
+      { url: `${SITE}/tonight/`, lastModified: "2026-10-23T00:10:07.307Z" },
       {
         url: `${SITE}/news/2026-10-12/`,
         lastModified: "2026-10-12T11:28:11.166Z",
@@ -251,13 +252,13 @@ describe("sitemapEntries — sitemap.xml 항목", () => {
     ]);
   });
 
-  it("대회 페이지(M2-10) — /about/ 다음에 넘긴 순서대로, lastmod = 데이터 updatedAt", () => {
+  it("대회 페이지(M2-10) — /tonight/ 다음에 넘긴 순서대로, lastmod = 데이터 updatedAt", () => {
     const entries = sitemapEntries(issues, [
       { comp: "EPL", updatedAt: "2026-10-30T02:17:27.762Z" },
       { comp: "UCL", updatedAt: "2026-10-30T02:19:28.728Z" },
     ]);
-    expect(entries.slice(1, 4)).toEqual([
-      { url: `${SITE}/about/` },
+    expect(entries.slice(2, 5)).toEqual([
+      { url: `${SITE}/tonight/`, lastModified: "2026-10-23T00:10:07.307Z" },
       {
         url: `${SITE}/competitions/epl/`,
         lastModified: "2026-10-30T02:17:27.762Z",
@@ -279,10 +280,11 @@ describe("sitemapEntries — sitemap.xml 항목", () => {
     expect(urls).not.toContain(`${SITE}/news/`);
   });
 
-  it("발행된 호가 없으면 홈(lastmod 없음)·/about/만", () => {
+  it("발행된 호가 없으면 홈·/about/·/tonight/(lastmod 없음)만", () => {
     expect(sitemapEntries([])).toEqual([
       { url: `${SITE}/` },
       { url: `${SITE}/about/` },
+      { url: `${SITE}/tonight/` },
     ]);
   });
 

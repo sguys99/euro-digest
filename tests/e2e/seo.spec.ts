@@ -110,12 +110,13 @@ test("빌드 결과 — out/sitemap.xml이 있고 robots.txt는 없다(M5 결정
   expect(existsSync(path.join(outDir, "robots.txt"))).toBe(false);
 });
 
-test("sitemap.xml — 홈 · /about/ · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
+test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
   const entries = readSitemap();
   const locs = entries.map((e) => e.loc);
   expect(locs).toEqual([
     `${SITE}/`,
     `${SITE}/about/`,
+    `${SITE}/tonight/`,
     ...COMPETITION_SEGMENTS.map((c) => `${SITE}/competitions/${c}/`),
     ...TEAM_SLUGS.map((t) => `${SITE}/teams/${t}/`),
     ...DATES.map((date) => `${SITE}/news/${date}/`),
@@ -137,6 +138,8 @@ test("sitemap.xml lastmod — 날짜 페이지 = 그 호 generatedAt, 홈 = 최�
     LATEST ? loadNewsIssue(LATEST)?.generatedAt : null,
   );
   expect(byLoc.get(`${SITE}/about/`)).toBeNull();
+  // /tonight/(M2-14)는 발행 빌드마다 다시 고른다 — 홈과 같은 lastmod
+  expect(byLoc.get(`${SITE}/tonight/`)).toBe(byLoc.get(`${SITE}/`));
 });
 
 test("sitemap.xml의 모든 URL이 200으로 열리고, 그 페이지의 canonical이 자기 URL이다", async ({

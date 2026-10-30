@@ -15,6 +15,8 @@ import type { RunLog } from "@/lib/schema/run";
 import type { BriefSlot } from "@/lib/brief-slot";
 import { issueLateWindows } from "@/lib/issue";
 import { issueLateScript } from "@/lib/issue-late";
+import type { TonightWidget } from "@/lib/data/home-widgets";
+import type { LeagueMiniPanelView } from "@/lib/home-widgets";
 
 // 홈은 빌드 때 data/news의 최신 호를 읽는다. 저장소 data/는 파이프라인 실행에 따라 바뀌므로 로더를 바꿔 끼운다
 // (로더 자체는 tests/data-news.test.ts).
@@ -32,6 +34,16 @@ vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
 // 오늘의 5줄(M1-32) — 저장소 data/briefs 대신 테스트가 정한 브리핑(기본 없음)
 // 5줄 자리 상태(M1-37) — 기본은 위 loadBrief 결과 그대로(파일 있으면 브리핑, 없으면 블록 없음). 오류 상태는 테스트가 바꾼다
 vi.mock("@/lib/data/brief", () => ({ loadBrief, loadBriefSlot }));
+// 홈 위젯(M2-14·M2-15) — 저장소 configs·data/competitions와 빌드 시각 대신 테스트가 정한 값(기본: 오늘 밤 빈 상태 · 순위 미니 없음).
+// 위젯 그리기·화면 모델은 tests/home-widgets.test.tsx
+const { loadTonightWidget, loadLeagueMini } = vi.hoisted(() => ({
+  loadTonightWidget: vi.fn<() => TonightWidget>(),
+  loadLeagueMini: vi.fn<() => LeagueMiniPanelView[]>(),
+}));
+vi.mock("@/lib/data/home-widgets", () => ({
+  loadTonightWidget,
+  loadLeagueMini,
+}));
 function slotFromBrief(date: string): BriefSlot {
   const brief = loadBrief(date);
   return brief ? { kind: "brief", brief } : { kind: "none" };
@@ -63,6 +75,14 @@ beforeEach(() => {
   loadBrief.mockReturnValue(null);
   loadBriefSlot.mockReset();
   loadBriefSlot.mockImplementation(slotFromBrief);
+  loadTonightWidget.mockReset();
+  loadTonightWidget.mockReturnValue({
+    baseKstDate: "2026-10-10",
+    window: null,
+    cards: [],
+  });
+  loadLeagueMini.mockReset();
+  loadLeagueMini.mockReturnValue([]);
 });
 
 describe("HomePage", () => {
@@ -132,13 +152,13 @@ describe("HomePage", () => {
     expect(scripts[1]?.slice(0, 80)).toBe(NEWS_FILTER_BOOT_SCRIPT.slice(0, 80));
   });
 
-  it("필터(M1-33) — 목차 열로 2단(5줄·피드 지면 폭), 5줄은 필터 범위 밖 맨 위, 피드만 거른다", () => {
+  it("필터(M1-33) — 목차 열 + 지면 + 마주 보는 면(M2-14 위젯 — 3단), 5줄은 필터 범위 밖 맨 위, 피드만 거른다", () => {
     loadLatestNews.mockReturnValue(fixture);
     loadBrief.mockReturnValue({ ...briefFixture, date: fixture.date });
     const { container } = render(<HomePage />);
     expect(container.querySelector("[data-columns]")).toHaveAttribute(
       "data-columns",
-      "contents",
+      "both",
     );
     expect(
       screen.getByRole("navigation", { name: "뉴스 필터" }),
@@ -358,6 +378,48 @@ describe("HomePage — 상태 화면(M1-37, DESIGN §9.3 ③)", () => {
     expect(
       container.querySelector("[data-slot=issue-late-script]")?.textContent,
     ).toBe(issueLateScript(issueLateWindows(fixture.date)));
+  });
+
+  it("홈 위젯(M2-14·M2-15) — 두 자리: 지면 안(피드 다음, xl:hidden)과 마주 보는 면(aside)에 오늘 밤 → 리그 순위, 머리 id는 서로 다르다", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadLeagueMini.mockReturnValue([
+      {
+        comp: "EPL",
+        short: "EPL",
+        name: "프리미어리그",
+        rows: [],
+        note: null,
+        updatedAt: null,
+        href: "/competitions/epl/",
+      },
+    ]);
+    const { container } = render(<HomePage />);
+    const flow = container.querySelector(
+      "main [data-slot=home-widgets]",
+    ) as HTMLElement;
+    expect(flow.className).toContain("xl:hidden");
+    // 지면 안: 주요 뉴스 바로 다음
+    expect(container.querySelector("section#news")?.nextElementSibling).toBe(
+      flow,
+    );
+    const aside = container.querySelector("aside") as HTMLElement;
+    expect(aside).toHaveAttribute("aria-label", "오늘 밤 경기·리그 순위");
+    for (const root of [flow, aside]) {
+      expect(
+        [...root.querySelectorAll("section")].map((el) =>
+          el.getAttribute("data-slot"),
+        ),
+      ).toEqual(["tonight", "league-mini"]);
+    }
+    const ids = [
+      ...container.querySelectorAll(
+        "[data-slot=tonight] h2, [data-slot=league-mini] h2",
+      ),
+    ].map((h) => h.id);
+    expect(ids).toHaveLength(4);
+    expect(new Set(ids).size).toBe(4);
+    // 오늘 밤 빈 상태(창 없음) — 부제 없이 빈 상태 문구
+    expect(flow.querySelector("[data-slot=tonight-empty]")).not.toBeNull();
   });
 
   it("발행된 호가 없으면 지연 안내도 없다", () => {

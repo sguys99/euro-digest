@@ -18,6 +18,8 @@ const WIDTHS = [375, 1023, 1024, 1279, 1280] as const;
 const PAGES = [
   { path: "./", current: "홈", h1: "유로 다이제스트" },
   { path: "news/", current: "뉴스", h1: "뉴스" },
+  // 오늘 밤(M2-14) — 내비 항목이 없는 페이지(홈 섹션에서 진입 — PRD §4.1)
+  { path: "tonight/", current: null, h1: "오늘 밤 볼 경기" },
   {
     path: "this-page-does-not-exist/",
     current: null,
@@ -84,7 +86,7 @@ for (const width of WIDTHS) {
       });
     }
 
-    test("열 구성: 홈·뉴스는 카드가 있으면 목차 열(M1-33) — 1024 이상 232 · 1fr 2단, 마주 보는 면 없음 · 404는 지면 한 열 · 티켓 스텁 열 232px", async ({
+    test("열 구성: 홈·뉴스는 카드가 있으면 목차 열(M1-33) — 1024 이상 232 · 1fr 2단, 홈만 1280 이상 마주 보는 면 296(M2-14 위젯 — 3단) · 404는 지면 한 열 · 티켓 스텁 열 232px", async ({
       page,
     }, testInfo) => {
       desktopOnly(testInfo.project.name);
@@ -103,18 +105,27 @@ for (const width of WIDTHS) {
             ticketLeft: ticket.getBoundingClientRect().left,
             ticketWidth: ticket.getBoundingClientRect().width,
             aside: document.querySelectorAll("aside").length,
+            asideShown:
+              getComputedStyle(document.querySelector("aside") ?? document.body)
+                .display !== "none" && document.querySelector("aside") !== null,
           };
         });
-        expect(grid.aside).toBe(0);
+        // 홈은 오늘 밤·리그 순위 위젯(M2-14·M2-15)이 마주 보는 면에 있다(1280 이상만 보임), 뉴스는 없다
+        const home = path === "./";
+        expect(grid.aside).toBe(home ? 1 : 0);
+        expect(grid.asideShown).toBe(home && width >= 1280);
+        const facing = home && width >= 1280 ? 296 : 0;
         if (!hasCards) {
-          expect(grid.columns).toBe("none");
+          expect(grid.columns).toBe(home ? "facing" : "none");
           continue;
         }
-        expect(grid.columns).toBe("contents");
-        // 1024 이상: 목차 232px 뒤 지면(728 @1024 · 984 @1280) · 1023 이하: 지면 한 열(목차 숨김)
+        expect(grid.columns).toBe(home ? "both" : "contents");
+        // 1024 이상: 목차 232px 뒤 지면(728 @1024 · 983 @1279 · 홈 688 @1280 · 뉴스 984 @1280) · 1023 이하: 지면 한 열(목차 숨김)
         expect(grid.display).toBe(wide ? "grid" : "block");
         expect(grid.mainLeft).toBe(grid.ticketLeft + (wide ? 232 : 0));
-        expect(grid.mainWidth).toBe(grid.ticketWidth - (wide ? 232 : 0));
+        expect(grid.mainWidth).toBe(
+          grid.ticketWidth - (wide ? 232 : 0) - facing,
+        );
         await expect(page.locator('nav[aria-label="뉴스 필터"]'))[
           wide ? "toBeVisible" : "toBeHidden"
         ]();
@@ -463,8 +474,9 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           w.__seen ??= new WeakSet();
           if (w.__seen.has(el)) return { done: true } as const;
           w.__seen.add(el);
-          // 본문과 뉴스 필터 목차(M1-33 — 데이터에 따라 행 수가 달라 tests/e2e/news-filter.spec.ts가 따로 잰다)는 건너뛴다
-          if (el.closest("main, nav[aria-label='뉴스 필터']"))
+          // 본문·마주 보는 면(M2-14 홈 위젯 — tests/e2e/tonight.spec.ts)과 뉴스 필터 목차(M1-33 — 데이터에 따라 행 수가 달라
+          // tests/e2e/news-filter.spec.ts가 따로 잰다)는 건너뛴다
+          if (el.closest("main, aside, nav[aria-label='뉴스 필터']"))
             return { skip: true } as const;
           const parse = (c: string) => {
             const m = /rgba?\(([^)]+)\)/.exec(c);

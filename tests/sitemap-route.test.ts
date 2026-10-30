@@ -66,10 +66,11 @@ describe("sitemap 라우트", () => {
     expect(dynamic).toBe("force-static");
   });
 
-  it("홈 · /about/ · 발행된 날짜 페이지 전부(lastmod = 그 호 generatedAt), /news/ 없음", () => {
+  it("홈 · /about/ · /tonight/ · 발행된 날짜 페이지 전부(lastmod = 그 호 generatedAt), /news/ 없음", () => {
     expect(sitemap()).toEqual([
       { url: `${SITE}/`, lastModified: "2026-10-17T00:17:00.000Z" },
       { url: `${SITE}/about/` },
+      { url: `${SITE}/tonight/`, lastModified: "2026-10-17T00:17:00.000Z" },
       ...DATES.map((date) => ({
         url: `${SITE}/news/${date}/`,
         lastModified: issueOf(date).generatedAt,
@@ -77,13 +78,13 @@ describe("sitemap 라우트", () => {
     ]);
   });
 
-  it("대회 데이터가 있으면 /about/ 다음에 대회 페이지(lastmod = updatedAt)", () => {
+  it("대회 데이터가 있으면 /tonight/ 다음에 대회 페이지(lastmod = updatedAt)", () => {
     loadAllCompetitionData.mockReturnValueOnce([
       { comp: "EPL", updatedAt: "2026-10-30T02:17:27.762Z" },
       { comp: "UCL", updatedAt: "2026-10-30T02:19:28.728Z" },
     ]);
-    expect(sitemap().slice(1, 4)).toEqual([
-      { url: `${SITE}/about/` },
+    expect(sitemap().slice(2, 5)).toEqual([
+      { url: `${SITE}/tonight/`, lastModified: "2026-10-17T00:17:00.000Z" },
       {
         url: `${SITE}/competitions/epl/`,
         lastModified: "2026-10-30T02:17:27.762Z",
@@ -95,9 +96,13 @@ describe("sitemap 라우트", () => {
     ]);
   });
 
-  it("발행된 호가 없으면(빈 data/news) 홈·/about/만", () => {
+  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/tonight/만", () => {
     listNewsDates.mockReturnValue([]);
-    expect(sitemap()).toEqual([{ url: `${SITE}/` }, { url: `${SITE}/about/` }]);
+    expect(sitemap()).toEqual([
+      { url: `${SITE}/` },
+      { url: `${SITE}/about/` },
+      { url: `${SITE}/tonight/` },
+    ]);
   });
 
   it("팀 파일이 있으면 대회 다음에 팀 페이지(lastmod = 대표 대회 updatedAt, 데이터가 없으면 생략)", () => {

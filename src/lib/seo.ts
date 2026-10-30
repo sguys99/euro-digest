@@ -31,6 +31,12 @@ export const TITLE_TEMPLATE = `%s · ${SITE_NAME}`;
 /** 사이트 기본 설명(홈·레이아웃 기본값) — 화면에 있는 사실만(오늘의 5줄 + 원문 링크 카드, `/about` 소개와 같은 내용) */
 export const SITE_DESCRIPTION = `${SITE_TAGLINE} 전날 경기를 정리한 한국어 브리핑 ‘오늘의 5줄’과 유럽 축구 소식을 원문 링크와 함께 한 호로 묶습니다.`;
 
+/**
+ * `/tonight/` 설명(M2-14) — 화면의 사실만(선정 범위·기준). 시각("18:00")은 스코어 모양 검사에 걸려 넣지 않는다(머리 주석 — 남은 오탐).
+ */
+export const TONIGHT_DESCRIPTION =
+  "오늘 저녁부터 다음 날 아침까지(KST) 유럽 6개 대회 경기 가운데 한국 선수 소속팀·UCL·순위 경쟁·더비 기준으로 고른 볼 만한 경기와 선정 이유.";
+
 /** og:locale */
 export const OG_LOCALE = "ko_KR";
 
@@ -233,6 +239,7 @@ export interface SitemapIssue {
 /**
  * sitemap.xml 항목 — 색인할 페이지의 canonical 절대 URL만(PRD FR-124).
  * - 홈(`lastModified` = 최신 호 generatedAt — 홈은 최신 호를 싣는다), `/about/`(lastModified 없음 — 설정이 바뀔 때만 바뀐다),
+ *   `/tonight/`(M2-14 — 발행 빌드마다 다시 고르므로 홈과 같은 lastModified),
  *   대회 페이지(M2-10 — 데이터 파일이 있는 대회, 설정 순서, `lastModified` = 그 파일 updatedAt), 팀 페이지(M2-13 — 팀 파일이 있는 팀,
  *   slug 순, `lastModified` = 대표 대회 데이터 updatedAt), 발행된 날짜 아카이브 전부
  *   (`lastModified` = 그 호 generatedAt, 날짜 오름차순).
@@ -253,6 +260,11 @@ export function sitemapEntries(
       ...(latest ? { lastModified: latest.generatedAt } : {}),
     },
     { url: absoluteUrl(routes.about()) },
+    // 오늘 밤 볼 경기(M2-14) — 빌드마다 다시 고른다(lastmod = 홈과 같은 최신 호)
+    {
+      url: absoluteUrl(routes.tonight()),
+      ...(latest ? { lastModified: latest.generatedAt } : {}),
+    },
     ...competitions.map((c) => ({
       url: absoluteUrl(routes.competition(c.comp)),
       lastModified: c.updatedAt,
