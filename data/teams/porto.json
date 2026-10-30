@@ -1,0 +1,22 @@
+{
+  "slug": "porto",
+  "nameKo": "포르투",
+  "nameEn": "FC Porto",
+  "short": "FCP",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#003893",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-20T19:00:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

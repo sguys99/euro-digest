@@ -1,0 +1,189 @@
+{
+  "slug": "real-betis",
+  "nameKo": "레알 베티스",
+  "nameEn": "Real Betis Balompié",
+  "short": "BET",
+  "comp": "LALIGA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#007A3E",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T15:15:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Abdessamad Ezzalzouli",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Cucho Hernández",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Isco",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1570427",
+    "kickoff": "2026-10-25T15:15:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "celta-vigo",
+    "startXI": [
+      {
+        "name": "A. Valles",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "A. Ortiz",
+        "number": 12,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "D. Llorente",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Natan",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "V. Gomez",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "M. Roca",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "D. Ceballos",
+        "number": 25,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Antony",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Isco",
+        "number": 22,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Ezzalzouli",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "N. Deossa",
+        "number": 18,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "D. Conde",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Gonzalez",
+        "number": 31,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Bartra",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "H. Bellerin",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "F. Garcia",
+        "number": 11,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Fidalgo",
+        "number": 15,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. Lo Celso",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Fornals",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Ruibal",
+        "number": 24,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Riquelme",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Parrott",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Morante",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

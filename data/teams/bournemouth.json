@@ -1,0 +1,33 @@
+{
+  "slug": "bournemouth",
+  "nameKo": "본머스",
+  "nameEn": "AFC Bournemouth",
+  "short": "BOU",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#CD271A",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Marcus Tavernier",
+      "goals": 5,
+      "assists": null
+    },
+    {
+      "name": "Evanilson",
+      "goals": 3,
+      "assists": 4
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

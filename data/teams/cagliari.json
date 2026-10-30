@@ -1,0 +1,189 @@
+{
+  "slug": "cagliari",
+  "nameKo": "칼리아리",
+  "nameEn": "Cagliari Calcio",
+  "short": "CAG",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#A80C2F",
+    "#002350"
+  ],
+  "formation": {
+    "shape": "3-5-1-1",
+    "source": "api",
+    "updated": "2026-10-27T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Daniel Maldini",
+      "goals": 5,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-5-1-1",
+    "match": "af-1550168",
+    "kickoff": "2026-10-27T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "away",
+    "opponent": "roma",
+    "startXI": [
+      {
+        "name": "E. Caprile",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Zé Pedro",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Y. Mina",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "J. Rodríguez",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Y. Sugawara",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "M. Adopo",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "A. Romano",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "A. Deiola",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "A. Obert",
+        "number": 33,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "A. Fadera",
+        "number": 39,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "M&apos;Bala Nzola",
+        "number": 18,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "J. Fazzini",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Y. Trepy",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Gagliardini",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Kevin Carlos",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Kofler",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Liteta",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Maldini",
+        "number": 70,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Y. Massolin",
+        "number": 79,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Mendy",
+        "number": 31,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "B. Radunović",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Sherri",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Ivan Stoyanov Sulev",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Ciervo",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "G. Aurelio",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

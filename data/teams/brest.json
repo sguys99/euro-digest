@@ -1,0 +1,169 @@
+{
+  "slug": "brest",
+  "nameKo": "브레스트",
+  "nameEn": "Stade Brestois 29",
+  "short": "BRE",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#D50612",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-23T18:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Kamory Doumbia",
+      "goals": 4,
+      "assists": 1
+    },
+    {
+      "name": "Ludovic Ajorque",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Mama Baldé",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1552794",
+    "kickoff": "2026-10-23T18:45:00.000Z",
+    "comp": "LIGUE1",
+    "side": "home",
+    "opponent": "nice",
+    "startXI": [
+      {
+        "name": "E. Selvik",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "K. Lala",
+        "number": 70,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "L. Tousart",
+        "number": 29,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "G. Lloris",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "B. Locko",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "J. Chotard",
+        "number": 13,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "H. Magnetti",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Mama Baldé",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "K. Doumbia",
+        "number": 23,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "P. Mboup",
+        "number": 9,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "L. Ajorque",
+        "number": 19,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "J. Bourgault",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. N´Guessan",
+        "number": 39,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Nonge Boende",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Patouillet",
+        "number": 30,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "L. Zogbe",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ibrahim Yayiya Kante",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "N. Edjouma",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Diambou",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. C. Laine M.",
+        "number": 32,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

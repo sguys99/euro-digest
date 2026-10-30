@@ -1,0 +1,194 @@
+{
+  "slug": "monza",
+  "nameKo": "몬차",
+  "nameEn": "AC Monza",
+  "short": "MON",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#D50612",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-28T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Gustavo Varela",
+      "goals": 8,
+      "assists": 1
+    },
+    {
+      "name": "Jay Robinson",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1550172",
+    "kickoff": "2026-10-28T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "home",
+    "opponent": "napoli",
+    "startXI": [
+      {
+        "name": "N. Törnqvist",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "S. Birindelli",
+        "number": 19,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "S. Goglichidze",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "L. Lucchesi",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "A. Bakoune",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "M. Ondoa",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "L. Colombo",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Ricardo Mangas",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "C. Ngonge",
+        "number": 16,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Jay Robinson",
+        "number": 46,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Gustavo Varela",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "I. Touré",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Akinsanmiro",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Zeballos",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "D. Thiam",
+        "number": 20,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "V. Antov",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Carboni",
+        "number": 44,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "P. Ciurria",
+        "number": 26,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Colpani",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Cutrone",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "O. Forson",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Kouadio",
+        "number": 60,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Dany Mota",
+        "number": 47,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Mout",
+        "number": 80,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Strajnar",
+        "number": 43,
+        "pos": "G",
+        "grid": null
+      }
+    ]
+  }
+}

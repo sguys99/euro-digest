@@ -1,0 +1,22 @@
+{
+  "slug": "sabah",
+  "nameKo": "사바",
+  "nameEn": "Sabah FK",
+  "short": "SAB",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#000000",
+    "#E5007E"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-20T16:45:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

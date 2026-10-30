@@ -9,7 +9,9 @@ import {
   SourcesFileSchema,
   TeamColorsFileSchema,
   TeamIdsFileSchema,
+  TeamSchema,
   schemaRegistry,
+  type Team,
 } from "@/lib/schema";
 
 import {
@@ -20,6 +22,7 @@ import {
   checkSearchQuerySources,
   checkSquadPlayers,
   checkTeamColors,
+  checkTeamFiles,
   pickCrossRefInput,
   runCrossRefChecks,
 } from "../scripts/lib/validate-crossref";
@@ -324,6 +327,99 @@ describe("checkTeamColors — team-colors ↔ team-ids · 약어 대비 5.3 (D62
         teamIds,
       ),
     ).toEqual([]);
+  });
+});
+
+describe("checkTeamFiles — data/teams ↔ team-ids·team-colors·korean-players (M2-06·M2-07)", () => {
+  const sample = validFixture(TeamSchema, "data/teams/sample-united.json");
+  const city: Team = {
+    ...sample,
+    slug: "example-city",
+    short: "EXC",
+    colors: ["#6CABDD", "#1C2C5B"],
+    koreanPlayers: [],
+    lineup: null,
+  };
+  const files = (...teams: Team[]) =>
+    new Map(teams.map((t) => [`data/teams/${t.slug}.json`, t]));
+
+  it("fixture 두 팀은 통과", () => {
+    expect(
+      checkTeamFiles(files(sample, city), teamIds, teamColors, koreanPlayers),
+    ).toEqual([]);
+  });
+
+  it("팀 파일이 없는 team-ids 팀·team-ids에 없는 파일·색 복사본 불일치는 오류", () => {
+    const issues = checkTeamFiles(
+      files({ ...sample, short: "SAM" }, { ...city, slug: "old-city" }),
+      teamIds,
+      teamColors,
+      koreanPlayers,
+    );
+    expect(issues.map((i) => [i.severity, i.file, i.path])).toEqual([
+      ["error", "data/teams/sample-united.json", "colors"],
+      ["error", "data/teams/old-city.json", "slug"],
+      ["error", "data/teams/example-city.json", undefined],
+    ]);
+  });
+
+  it("한국 선수 slug — 설정에 없거나 소속이 다르면 오류, 활성 선수가 소속 팀 파일에 없으면 경고", () => {
+    const lineup = sample.lineup!;
+    const issues = checkTeamFiles(
+      files(
+        {
+          ...sample,
+          koreanPlayers: [],
+          lineup: {
+            ...lineup,
+            opponent: "nowhere-fc",
+            substitutes: [
+              { name: "X", number: 99, pos: "F", grid: null, korean: "ghost" },
+            ],
+          },
+        },
+        { ...city, koreanPlayers: ["hong-gil-dong"] },
+      ),
+      teamIds,
+      teamColors,
+      koreanPlayers,
+    );
+    expect(issues.map((i) => [i.severity, i.file, i.path])).toEqual([
+      ["error", "data/teams/sample-united.json", "lineup.opponent"],
+      [
+        "error",
+        "data/teams/sample-united.json",
+        "lineup.substitutes[0].korean",
+      ],
+      ["error", "data/teams/example-city.json", "koreanPlayers[0]"],
+      ["warn", "data/teams/sample-united.json", "koreanPlayers"],
+    ]);
+  });
+
+  it("data 범위 검사는 팀 파일이 있을 때만 실행 — pickCrossRefInput이 data/teams 경로를 모은다", () => {
+    expect(
+      runCrossRefChecks({ teamIds, teamColors, koreanPlayers }, "data"),
+    ).toMatchObject({
+      checked: [],
+      skipped: ["data/teams → team-ids · team-colors · korean-players"],
+    });
+    const input = pickCrossRefInput(
+      new Map<string, unknown>([
+        ["configs/team-ids.json", teamIds],
+        ["configs/team-colors.json", teamColors],
+        ["configs/korean-players.json", koreanPlayers],
+        ["data/teams/sample-united.json", sample],
+        ["data/teams/example-city.json", city],
+      ]),
+    );
+    expect([...(input.teams?.keys() ?? [])]).toEqual([
+      "data/teams/sample-united.json",
+      "data/teams/example-city.json",
+    ]);
+    expect(runCrossRefChecks(input, "data")).toMatchObject({
+      checked: ["data/teams → team-ids · team-colors · korean-players"],
+      issues: [],
+    });
   });
 });
 

@@ -1,0 +1,22 @@
+{
+  "slug": "feyenoord",
+  "nameKo": "페예노르트",
+  "nameEn": "Feyenoord Rotterdam",
+  "short": "FEY",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#D50612",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-21T19:00:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

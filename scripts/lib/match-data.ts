@@ -143,10 +143,22 @@ export interface MatchGoal {
   assist: PersonRef | null;
 }
 
-/** 라인업 선수 — 출전 시간은 선수 기록(statistics[0].games.minutes), 기록이 없으면 null */
+/**
+ * 라인업 선수 — 출전 시간은 선수 기록(statistics[0].games.minutes), 기록이 없으면 null.
+ * 등번호·포지션·grid는 라인업 원문 그대로(형식이 다르면 null) — 팀시트(M2-07, PRD §15 D63 ②)가 쓴다. 원장(D33)에는 넣지 않는다.
+ */
 export interface LineupPlayer extends PersonRef {
   minutes: number | null;
+  /** 등번호(player.number) */
+  number: number | null;
+  /** 포지션 G·D·M·F(player.pos) */
+  pos: LineupPos | null;
+  /** 피치 위치 "줄:칸"(player.grid, 선발만 — 1:1 = 골키퍼). 교체 명단은 null */
+  grid: string | null;
 }
+
+/** 라인업 포지션 — API-Football `player.pos` (G 골키퍼·D 수비·M 미드필더·F 공격) */
+export type LineupPos = "G" | "D" | "M" | "F";
 
 /** 팀 라인업 1개 — 선발은 `startXI`로만 판정한다(선수 기록의 `games.substitute`는 응답마다 달라 믿을 수 없다, M0-29) */
 export interface TeamLineup {

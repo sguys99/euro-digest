@@ -1,0 +1,22 @@
+{
+  "slug": "aek-athens",
+  "nameKo": "AEK 아테네",
+  "nameEn": "PAE AEK",
+  "short": "AEK",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#FFD700",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-4-2",
+    "source": "api",
+    "updated": "2026-10-20T19:00:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

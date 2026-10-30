@@ -1,0 +1,169 @@
+{
+  "slug": "toulouse",
+  "nameKo": "툴루즈",
+  "nameEn": "Toulouse FC",
+  "short": "TOU",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#3E2C56",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-4-2",
+    "source": "api",
+    "updated": "2026-10-25T16:15:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Casper Tengstedt",
+      "goals": 5,
+      "assists": 1
+    },
+    {
+      "name": "Thomas Jørgensen",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Jacen Russell-Rowe",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-4-2",
+    "match": "af-1552799",
+    "kickoff": "2026-10-25T16:15:00.000Z",
+    "comp": "LIGUE1",
+    "side": "home",
+    "opponent": "troyes",
+    "startXI": [
+      {
+        "name": "G. Restes",
+        "number": 16,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "R. Messali",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "M. McKenzie",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "R. Nicolaisen",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "C. Tapé",
+        "number": 12,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "A. Dønnum",
+        "number": 15,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "C. Cásseres",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "N. Sigur",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "T. Jørgensen",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "J. Russell-Rowe",
+        "number": 13,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "C. Tengstedt",
+        "number": 20,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Vossah",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Collin",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Y. Azizi",
+        "number": 37,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Amougou",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "I. Diallo",
+        "number": 94,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Hidalgo",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Koumbassa",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Schmidt",
+        "number": 31,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Julián Vignolo",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

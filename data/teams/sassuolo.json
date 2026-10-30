@@ -1,0 +1,205 @@
+{
+  "slug": "sassuolo",
+  "nameKo": "사수올로",
+  "nameEn": "US Sassuolo Calcio",
+  "short": "SAS",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#007C3D",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-27T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Vasilije Adzic",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Sebastiano Esposito",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Cas Odenthal",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1550174",
+    "kickoff": "2026-10-27T17:30:00.000Z",
+    "comp": "SERIEA",
+    "side": "home",
+    "opponent": "lazio",
+    "startXI": [
+      {
+        "name": "S. Turati",
+        "number": 80,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "S. Cinquegrano",
+        "number": 46,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "C. Odenthal",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "D. Ćaleta-Car",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "J. Doig",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "K. Thorstvedt",
+        "number": 42,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "L. Lipani",
+        "number": 35,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "D. Bakola",
+        "number": 50,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "D. Berardi",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "S. Esposito",
+        "number": 94,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Laurienté",
+        "number": 45,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "B. Domínguez",
+        "number": 25,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Walukiewicz",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Ghion",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Idzes",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Matić",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Murić",
+        "number": 49,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Rafael Obrador",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Pierini",
+        "number": 77,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "G. Satalino",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "I. Sulemana",
+        "number": 55,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "I. Van der Brempt",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "C. Volpato",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Fali Candé",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Bowie",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Vasilije Adžić",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

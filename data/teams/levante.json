@@ -1,0 +1,187 @@
+{
+  "slug": "levante",
+  "nameKo": "레반테",
+  "nameEn": "Levante UD",
+  "short": "LEV",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#B4053F",
+    "#004F9F"
+  ],
+  "formation": {
+    "shape": "4-4-2",
+    "source": "api",
+    "updated": "2026-10-25T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Brugui",
+      "goals": 5,
+      "assists": 1
+    },
+    {
+      "name": "Iván Romero",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Adrián de la Fuente",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-4-2",
+    "match": "af-1570430",
+    "kickoff": "2026-10-25T17:30:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "real-sociedad",
+    "startXI": [
+      {
+        "name": "M. Ryan",
+        "number": 13,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "N. Perez",
+        "number": 29,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "A. Mandi",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "I. Ndukwe",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "M. Sanchez",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "R. Brugue",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "J. A. Olasagasti",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "D. Requena",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "T. Fernandez",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "I. Romero",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "P. Ratkov",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "P. Cunat",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Primo",
+        "number": 32,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "J. Toljan",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Cabello",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. Rey",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Cortes",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "H. Sotelo",
+        "number": 5,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Tape",
+        "number": 16,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "V. Garcia",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Y. Musuayi",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "K. Etta Eyong",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Santos",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "slug": "aston-villa",
+  "nameKo": "애스턴 빌라",
+  "nameEn": "Aston Villa FC",
+  "short": "AVL",
+  "comp": "EPL",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#670E36",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T11:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Nicolas Jackson",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Johan Manzambi",
+      "goals": 2,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557438",
+    "kickoff": "2026-10-24T11:30:00.000Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "manchester-city",
+    "startXI": [
+      {
+        "name": "Zion Suzuki",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Matty Cash",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Victor Lindelöf",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Pau Torres",
+        "number": 14,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Ian Maatsen",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Boubacar Kamara",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "João Gomes",
+        "number": 35,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Alysson",
+        "number": 47,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "John McGinn",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Johan Manzambi",
+        "number": 44,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Nicolas Jackson",
+        "number": 11,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Ibrahim Mbaye",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Ross Barkley",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Emiliano Buendía",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Leon Goretzka",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Brian Madjo",
+        "number": 39,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Marco Bizot",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Tyrone Mings",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Lamare Bogarde",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "George Hemmings",
+        "number": 53,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "slug": "eintracht-frankfurt",
+  "nameKo": "프랑크푸르트",
+  "nameEn": "Eintracht Frankfurt",
+  "short": "SGE",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#D8000E",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-4-2",
+    "source": "api",
+    "updated": "2026-10-24T16:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Younes Ebnoutalib",
+      "goals": 5,
+      "assists": 1
+    },
+    {
+      "name": "Jonathan Burkardt",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Can Uzun",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-4-2",
+    "match": "af-1575194",
+    "kickoff": "2026-10-24T16:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "away",
+    "opponent": "borussia-dortmund",
+    "startXI": [
+      {
+        "name": "N. Atubolu",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "N. Collins",
+        "number": 34,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "R. Koch",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "L. Brassier",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Elias Baum",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "R. Dōan",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "N. Aséko Nkili",
+        "number": 15,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "R. Onyedika",
+        "number": 25,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "F. Chaïbi",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Y. Ebnoutalib",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "J. Burkardt",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "C. Uzun",
+        "number": 42,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Maluze",
+        "number": 37,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Kosugi",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Knauff",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Kauã Santos",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "O. HÃ¸jlund",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Götze",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. Arrhov",
+        "number": 31,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Amaimouni",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

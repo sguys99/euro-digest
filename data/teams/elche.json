@@ -1,0 +1,33 @@
+{
+  "slug": "elche",
+  "nameKo": "엘체",
+  "nameEn": "Elche CF",
+  "short": "ELC",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#05642C"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-24T12:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Fer Niño",
+      "goals": 6,
+      "assists": null
+    },
+    {
+      "name": "Germán Valera",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

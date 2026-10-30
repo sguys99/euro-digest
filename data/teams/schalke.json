@@ -1,0 +1,24 @@
+{
+  "slug": "schalke",
+  "nameKo": "샬케04",
+  "nameEn": "FC Schalke 04",
+  "short": "S04",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#004D9D",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [
+    "hwang-hee-chan"
+  ],
+  "reading": [],
+  "lineup": null
+}

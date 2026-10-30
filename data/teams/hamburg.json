@@ -1,0 +1,164 @@
+{
+  "slug": "hamburg",
+  "nameKo": "함부르크",
+  "nameEn": "Hamburger SV",
+  "short": "HSV",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#E3000F"
+  ],
+  "formation": {
+    "shape": "3-5-2",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Miro Muheim",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Yussuf Poulsen",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-5-2",
+    "match": "af-1575202",
+    "kickoff": "2026-10-24T13:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "away",
+    "opponent": "paderborn",
+    "startXI": [
+      {
+        "name": "Daniel Heuer Fernandes",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "S. Nandja",
+        "number": 43,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "S. Bornauw",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "W. Omari",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Z. El Ouahdi",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "M. Adeline",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "B. Nadir",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "M. Muheim",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "D. Møller Wolfe",
+        "number": 3,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Y. Poulsen",
+        "number": 15,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "Fábio Vieira",
+        "number": 20,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Alexander Røssing-Lelesiit",
+        "number": 38,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Otto Emerson Stange",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Tangvik",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "T. Moffi",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Sambi Lokonga",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. Lemke",
+        "number": 37,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Grønbæk",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Bissi Mouelle",
+        "number": 48,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Kofi Jeremy Amoako",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

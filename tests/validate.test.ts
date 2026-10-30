@@ -94,7 +94,7 @@ describe("① 전부 유효", () => {
     );
   });
 
-  it("fixtures/schema/configs를 그대로 복사하면 통과하고 교차 참조 6종을 모두 실행한다", () => {
+  it("fixtures/schema/configs를 그대로 복사하면 통과하고 configs 교차 참조 6종을 모두 실행한다(팀 파일 검사는 data/teams가 없어 건너뜀)", () => {
     copyFixtures("configs");
     const { exitCode, errors, infos, report } = run();
 
@@ -102,7 +102,9 @@ describe("① 전부 유효", () => {
     expect(exitCode).toBe(0);
     expect(report.counts.configs).toBe(13);
     expect(report.crossRef.checked).toHaveLength(6);
-    expect(report.crossRef.skipped).toEqual([]);
+    expect(report.crossRef.skipped).toEqual([
+      "data/teams → team-ids · team-colors · korean-players",
+    ]);
     expect(infos.every((i) => i.startsWith("configs/prompts/"))).toBe(true);
   });
 
@@ -293,7 +295,7 @@ describe("⑤ 교차 참조 실패", () => {
       'configs/national-team.json:squads[0].playerSlugs[1] — korean-players.json에 없는 선수 slug "ghost"',
     ]);
     expect(lines).toContain(
-      "[validate] 교차 참조: 6건 실행 · 건너뜀 0건(관련 파일 없음) · 오류 4건",
+      "[validate] 교차 참조: 6건 실행 · 건너뜀 1건(관련 파일 없음) · 오류 4건",
     );
   });
 
@@ -337,9 +339,31 @@ describe("⑤ 교차 참조 실패", () => {
     expect(report.crossRef.skipped).toEqual([
       "search-queries.source → sources(type search)",
       "publisher-domains.sourceIds → sources",
+      "data/teams → team-ids · team-colors · korean-players",
     ]);
     expect(errors.every((e) => e.startsWith("configs/sources.json:"))).toBe(
       true,
+    );
+  });
+});
+
+describe("⑤-2 팀 파일 교차 참조 (M2-06·M2-07)", () => {
+  it("configs + 팀 파일 1개 — team-ids의 다른 팀 파일이 없으면 오류, --configs-only면 건너뛴다", () => {
+    copyFixtures("configs");
+    cpSync(
+      path.join(FIXTURE_ROOT, "data/teams"),
+      path.join(root, "data/teams"),
+      { recursive: true },
+    );
+    const { errors, report } = run();
+    expect(report.crossRef.checked).toContain(
+      "data/teams → team-ids · team-colors · korean-players",
+    );
+    expect(errors).toEqual([
+      'data/teams/example-city.json — team-ids.json 팀 "example-city"의 팀 파일이 없음 — scripts/build-teams.ts로 다시 만들 것',
+    ]);
+    expect(run(true).report.crossRef.skipped).toContain(
+      "data/teams → team-ids · team-colors · korean-players",
     );
   });
 });

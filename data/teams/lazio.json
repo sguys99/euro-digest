@@ -1,0 +1,205 @@
+{
+  "slug": "lazio",
+  "nameKo": "라치오",
+  "nameEn": "SS Lazio",
+  "short": "LAZ",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#87D8F7",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-27T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Tijjani Noslin",
+      "goals": 4,
+      "assists": 2
+    },
+    {
+      "name": "Gustav Isaksen",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Davide Frattesi",
+      "goals": 3,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1550174",
+    "kickoff": "2026-10-27T17:30:00.000Z",
+    "comp": "SERIEA",
+    "side": "away",
+    "opponent": "sassuolo",
+    "startXI": [
+      {
+        "name": "C. Mandas",
+        "number": 35,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "R. Floriani Mussolini",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "J. Šutalo",
+        "number": 37,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Diogo Leite",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Nuno Tavares",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "D. Frattesi",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "R. Belahyane",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "K. Taylor",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "G. Isaksen",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "T. Noslin",
+        "number": 14,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "M. Zaccagni",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "F. Serra",
+        "number": 63,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Ricardo Bordon",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Cancellieri",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "D. Cataldi",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Dele-Bashiru",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Doekhi",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Renzetti",
+        "number": 47,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Przyborek",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "O. Provstgaard",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Pinamonti",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Pellegrini",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Pedraza",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Motta",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Lazzari",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "V. Farcomeni",
+        "number": 71,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

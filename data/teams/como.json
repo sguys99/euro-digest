@@ -1,0 +1,183 @@
+{
+  "slug": "como",
+  "nameKo": "코모",
+  "nameEn": "Como 1907",
+  "short": "COM",
+  "comp": "SERIEA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#003F7F",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-27T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Anastasios Douvikas",
+      "goals": 5,
+      "assists": null
+    },
+    {
+      "name": "Nico Paz",
+      "goals": 3,
+      "assists": 3
+    },
+    {
+      "name": "Martin Baturina",
+      "goals": 3,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1550175",
+    "kickoff": "2026-10-27T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "away",
+    "opponent": "torino",
+    "startXI": [
+      {
+        "name": "Robert Sánchez",
+        "number": 97,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Yan Couto",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Jacobo Ramón Naveros",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "M. Kempf",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Álex Valle",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "M. Perrone",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Luis Milla",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "L. da Cunha",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "N. Paz",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "M. Caqueret",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "T. Douvikas",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "E. Goldaniga",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Kaiki",
+        "number": 16,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Vigorito",
+        "number": 22,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "S. Ricci",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Addai",
+        "number": 42,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Matteo Oliveira Papaccioli",
+        "number": 54,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Lahdo",
+        "number": 15,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Willy Kambwala Ndengushi",
+        "number": 53,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Dossena",
+        "number": 13,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Butez",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Baturina",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

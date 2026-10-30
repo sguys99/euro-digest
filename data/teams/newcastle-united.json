@@ -1,0 +1,169 @@
+{
+  "slug": "newcastle-united",
+  "nameKo": "뉴캐슬 유나이티드",
+  "nameEn": "Newcastle United FC",
+  "short": "NEW",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#241F20",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Harvey Barnes",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Anthony Elanga",
+      "goals": 2,
+      "assists": null
+    },
+    {
+      "name": "Joe Willock",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557441",
+    "kickoff": "2026-10-25T14:00:00.000Z",
+    "comp": "EPL",
+    "side": "away",
+    "opponent": "crystal-palace",
+    "startXI": [
+      {
+        "name": "Lukáš Horníček",
+        "number": 21,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Amar Dedić",
+        "number": 37,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Fabian Schär",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Dan Burn",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Lewis Hall",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Nico González",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Joelinton",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Jacob Murphy",
+        "number": 23,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Joe Willock",
+        "number": 28,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Harvey Barnes",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "William Osula",
+        "number": 10,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Jacob Ramsey",
+        "number": 41,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Yoane Wissa",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Anthony Elanga",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Sean Steur",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Malick Thiaw",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Nick Pope",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Sven Botman",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Aladji Bamba",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Bazoumana Touré",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

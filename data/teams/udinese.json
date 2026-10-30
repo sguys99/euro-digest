@@ -1,0 +1,33 @@
+{
+  "slug": "udinese",
+  "nameKo": "우디네세",
+  "nameEn": "Udinese Calcio",
+  "short": "UDI",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-28T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Jurgen Ekkelenkamp",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Hassane Kamara",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

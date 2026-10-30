@@ -1,0 +1,195 @@
+{
+  "slug": "genoa",
+  "nameKo": "제노아",
+  "nameEn": "Genoa CFC",
+  "short": "GEN",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#A51C30",
+    "#002D62"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-28T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Milutin Osmajić",
+      "goals": 3,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1550171",
+    "kickoff": "2026-10-28T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "home",
+    "opponent": "juventus",
+    "startXI": [
+      {
+        "name": "J. Bijlow",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "A. Marcandalli",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "L. Østigård",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "J. Vásquez",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "K. Ehizibue",
+        "number": 3,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "M. Frendrup",
+        "number": 32,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Alexsandro Amorim",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "M. Ellertsson",
+        "number": 77,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Vítinha",
+        "number": 9,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "T. Baldanzi",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "M. Osmajić",
+        "number": 18,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "H. Traorè",
+        "number": 25,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Wiafe",
+        "number": 71,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. El Shaarawy",
+        "number": 92,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Colombo",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Junior Messias",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Meichtry",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Mitaj",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Otoa",
+        "number": 34,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Puczka",
+        "number": 31,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Nikita Solodchenko",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Sabelli",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Sommariva",
+        "number": 39,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Sow",
+        "number": 97,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Stolz",
+        "number": 99,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Lukas Klišys",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

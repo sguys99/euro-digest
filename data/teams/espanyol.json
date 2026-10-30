@@ -1,0 +1,28 @@
+{
+  "slug": "espanyol",
+  "nameKo": "에스파뇰",
+  "nameEn": "RCD Espanyol de Barcelona",
+  "short": "ESP",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#0070B0",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-4-2",
+    "source": "api",
+    "updated": "2026-10-24T14:15:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Roberto Fernández",
+      "goals": 6,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

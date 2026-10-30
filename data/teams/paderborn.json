@@ -1,0 +1,164 @@
+{
+  "slug": "paderborn",
+  "nameKo": "파더보른",
+  "nameEn": "SC Paderborn 07",
+  "short": "SCP",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#005CA9",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "3-5-2",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Steffen Tigges",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Stefano Marino",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-5-2",
+    "match": "af-1575202",
+    "kickoff": "2026-10-24T13:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "hamburg",
+    "startXI": [
+      {
+        "name": "N. Noll",
+        "number": 15,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "J. ter Horst",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "T. Scheller",
+        "number": 25,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "M. Hansen",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Curda",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "L. Ulrich",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "S. Castañeda",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "G. Vidović",
+        "number": 40,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "R. Obermair",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "S. Marino",
+        "number": 30,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "S. Tigges",
+        "number": 27,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "T. Baack",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Götze",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Michel",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Ruben Müller",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "R. Philippe",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Pieringer",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Schubert",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Jonah Benedict Sticker",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Zeitler",
+        "number": 38,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

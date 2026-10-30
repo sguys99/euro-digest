@@ -1,0 +1,33 @@
+{
+  "slug": "atalanta",
+  "nameKo": "아탈란타",
+  "nameEn": "Atalanta BC",
+  "short": "ATA",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#1D6CB1",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-29T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Nikola Krstović",
+      "goals": 6,
+      "assists": 2
+    },
+    {
+      "name": "Éderson",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

@@ -1,0 +1,205 @@
+{
+  "slug": "frosinone",
+  "nameKo": "프로시노네",
+  "nameEn": "Frosinone Calcio",
+  "short": "FRO",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#FFD200",
+    "#00428E"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-29T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Antonio Raimondo",
+      "goals": 8,
+      "assists": null
+    },
+    {
+      "name": "Giacomo Calò",
+      "goals": 4,
+      "assists": 1
+    },
+    {
+      "name": "Giorgi Kvernadze",
+      "goals": 3,
+      "assists": 3
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1550170",
+    "kickoff": "2026-10-29T17:30:00.000Z",
+    "comp": "SERIEA",
+    "side": "home",
+    "opponent": "lecce",
+    "startXI": [
+      {
+        "name": "L. Palmisani",
+        "number": 22,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "A. Oyono",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "G. Calvani",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "I. Monterisi",
+        "number": 30,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "A. Terzić",
+        "number": 71,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "G. Calò",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Matteo Cichella",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "F. Ghedjemis",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "R. Schmid",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "G. Kvernadze",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "A. Raimondo",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "E. Tchato",
+        "number": 90,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Zerbin",
+        "number": 24,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "W. Amey",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Akpoguma",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Bîrligea",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Bobček",
+        "number": 89,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "G. Bracaglia",
+        "number": 79,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Cittadini",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Desplanches",
+        "number": 91,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. El Azzouzi",
+        "number": 34,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Omar Fayed",
+        "number": 74,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Fini",
+        "number": 40,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Hasa",
+        "number": 70,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Masini",
+        "number": 73,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Pisseri",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      }
+    ]
+  }
+}

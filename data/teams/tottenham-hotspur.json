@@ -1,0 +1,153 @@
+{
+  "slug": "tottenham-hotspur",
+  "nameKo": "토트넘",
+  "nameEn": "Tottenham Hotspur FC",
+  "short": "TOT",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#132257"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T16:30:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557439",
+    "kickoff": "2026-10-24T16:30:00.000Z",
+    "comp": "EPL",
+    "side": "away",
+    "opponent": "chelsea",
+    "startXI": [
+      {
+        "name": "Antonín Kinský",
+        "number": 31,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Archie Gray",
+        "number": 14,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Jan Paul van Hecke",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Micky van de Ven",
+        "number": 37,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Andy Robertson",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Sandro Tonali",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Mateus Fernandes",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Mohammed Kudus",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "James Maddison",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Mathys Tel",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Omar Marmoush",
+        "number": 22,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Conor Gallagher",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Pedro Porro",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Dominic Solanke",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Ben Davies",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Dejan Kulusevski",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Martin Dúbravka",
+        "number": 39,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Marcos Senesi",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Callum Olusesi",
+        "number": 52,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Luca Williams-Barnett",
+        "number": 68,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "slug": "paris-fc",
+  "nameKo": "파리 FC",
+  "nameEn": "Paris FC",
+  "short": "PFC",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#11234A",
+    "#6CB4E4"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T18:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Lassine Sinayoko",
+      "goals": 6,
+      "assists": 4
+    },
+    {
+      "name": "Maxime López",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1552795",
+    "kickoff": "2026-10-24T18:45:00.000Z",
+    "comp": "LIGUE1",
+    "side": "away",
+    "opponent": "lens",
+    "startXI": [
+      {
+        "name": "O. Nkambadio",
+        "number": 16,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "A. Camara",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "M. Mbow",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "D. Coppola",
+        "number": 42,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Otávio",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "M. Lopez",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "P. Lees-Melou",
+        "number": 33,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "I. Kebbal",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "P. Pagis",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "L. Koleosho",
+        "number": 15,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "L. Sinayoko",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "E. Zabi",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. De Smet",
+        "number": 28,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Krasso",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Mbemba",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ibrahim Meïté",
+        "number": 50,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "R. Matondo",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Simon",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "O. Sissoko",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Y. Koré",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

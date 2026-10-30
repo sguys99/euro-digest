@@ -88,6 +88,8 @@ const COMP_BY_LEAGUE = new Map<number, CompId>([
   [2, "UCL"],
 ]);
 const FETCHED_AT = "2026-10-11T22:12:00.000Z";
+/** 주입한 교체 선수의 등번호·포지션·grid(이 테스트는 이름 매칭만 본다) */
+const NO_SHIRT = { number: null, pos: null, grid: null } as const;
 const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
 
 function detailOf(id: number, mutate?: (raw: Record<string, unknown>) => void) {
@@ -335,9 +337,9 @@ describe("이름 후보 — apiFootballId 없는 활성 선수(김지수)", () =
           ...away,
           substitutes: [
             ...away.substitutes,
-            { id: 999001, name: "Kim Ji-Soo", minutes: 12 },
-            { id: 999002, name: "J. Kim", minutes: null },
-            { id: 2897, name: "J. Kim", minutes: null }, // 추적 중 id — 빼야 한다
+            { id: 999001, name: "Kim Ji-Soo", minutes: 12, ...NO_SHIRT },
+            { id: 999002, name: "J. Kim", minutes: null, ...NO_SHIRT },
+            { id: 2897, name: "J. Kim", minutes: null, ...NO_SHIRT }, // 추적 중 id — 빼야 한다
           ],
         },
       },

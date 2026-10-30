@@ -1,0 +1,34 @@
+{
+  "slug": "marseille",
+  "nameKo": "마르세유",
+  "nameEn": "Olympique de Marseille",
+  "short": "MAR",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#2FAEE0"
+  ],
+  "formation": null,
+  "topPlayers": [
+    {
+      "name": "Amine Gouiri",
+      "goals": 5,
+      "assists": 2
+    },
+    {
+      "name": "Himad Abdelli",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Amine Harit",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

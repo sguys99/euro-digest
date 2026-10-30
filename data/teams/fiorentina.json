@@ -1,0 +1,38 @@
+{
+  "slug": "fiorentina",
+  "nameKo": "피오렌티나",
+  "nameEn": "ACF Fiorentina",
+  "short": "FIO",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#482E92",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-29T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Franco Mastantuono",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Álex Jiménez",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Mateo Pellegrino",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

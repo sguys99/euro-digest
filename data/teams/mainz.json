@@ -1,0 +1,172 @@
+{
+  "slug": "mainz",
+  "nameKo": "마인츠",
+  "nameEn": "1. FSV Mainz 05",
+  "short": "M05",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#C3141E",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "3-5-2",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Phillip Tietz",
+      "goals": 5,
+      "assists": null
+    },
+    {
+      "name": "Anthony Caci",
+      "goals": 3,
+      "assists": 3
+    },
+    {
+      "name": "Sheraldo Becker",
+      "goals": 2,
+      "assists": 4
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [
+    "lee-jae-sung"
+  ],
+  "reading": [],
+  "lineup": {
+    "formation": "3-5-2",
+    "match": "af-1575200",
+    "kickoff": "2026-10-24T13:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "werder-bremen",
+    "startXI": [
+      {
+        "name": "A. Schwolow",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "D. da Costa",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "S. Posch",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "K. Potulski",
+        "number": 48,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "A. Caci",
+        "number": 19,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "Lee Jae-Sung",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:4",
+        "korean": "lee-jae-sung"
+      },
+      {
+        "name": "K. Sano",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "N. Amiri",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "P. Mwene",
+        "number": 2,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "S. Becker",
+        "number": 23,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "P. Tietz",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "F. Gruber",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "B. Hollerbach",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Kinzig",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "R. Königsdörffer",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Maloney",
+        "number": 15,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Martel",
+        "number": 5,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Nakuzola",
+        "number": 47,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "P. Nebel",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Widmer",
+        "number": 30,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

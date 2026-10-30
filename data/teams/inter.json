@@ -1,0 +1,189 @@
+{
+  "slug": "inter",
+  "nameKo": "인테르",
+  "nameEn": "FC Internazionale Milano",
+  "short": "INT",
+  "comp": "SERIEA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#0068A8",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "3-5-2",
+    "source": "api",
+    "updated": "2026-10-28T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Marcus Thuram-Ulien",
+      "goals": 5,
+      "assists": 2
+    },
+    {
+      "name": "Lautaro Martínez",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Hakan Çalhanoğlu",
+      "goals": 3,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-5-2",
+    "match": "af-1550176",
+    "kickoff": "2026-10-28T17:30:00.000Z",
+    "comp": "SERIEA",
+    "side": "away",
+    "opponent": "venezia",
+    "startXI": [
+      {
+        "name": "I. Provedel",
+        "number": 49,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Y. Bisseck",
+        "number": 31,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "A. Bastoni",
+        "number": 95,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Carlos Augusto",
+        "number": 30,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "A. Diouf",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "P. Sučić",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "A. Stanković",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "P. Zieliński",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "F. Dimarco",
+        "number": 32,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Thuram",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Bonny",
+        "number": 14,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "D. Spence",
+        "number": 99,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Mosconi",
+        "number": 48,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "H. Mkhitaryan",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Josep Martínez",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Lavelli",
+        "number": 53,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Jakirović",
+        "number": 51,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "F. Esposito",
+        "number": 94,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Di Gennaro",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "H. Çalhanoğlu",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. Bovio",
+        "number": 46,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Barella",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Akanji",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

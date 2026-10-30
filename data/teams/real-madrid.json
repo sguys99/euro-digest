@@ -1,0 +1,189 @@
+{
+  "slug": "real-madrid",
+  "nameKo": "레알 마드리드",
+  "nameEn": "Real Madrid CF",
+  "short": "RMA",
+  "comp": "LALIGA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#FFFFFF",
+    "#FEBE10"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T20:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Kylian Mbappé",
+      "goals": 11,
+      "assists": 2
+    },
+    {
+      "name": "Jude Bellingham",
+      "goals": 3,
+      "assists": 3
+    },
+    {
+      "name": "Arda Guler",
+      "goals": 2,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1570426",
+    "kickoff": "2026-10-25T20:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "barcelona",
+    "startXI": [
+      {
+        "name": "A. Lunin",
+        "number": 13,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "F. Valverde",
+        "number": 8,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "I. Konate",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "D. Huijsen",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "M. Cucurella",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "B. Silva",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "A. Tchouameni",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "A. Guler",
+        "number": 15,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "J. Bellingham",
+        "number": 5,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Y. Diomande",
+        "number": 25,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "K. Mbappe",
+        "number": 10,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "S. Mestre",
+        "number": 26,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "I. Voloshyn",
+        "number": 39,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Rudiger",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Dumfries",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Eder Militao",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Carreras",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Alexander-Arnold",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Camavinga",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Pitarch",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Diaz",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Endrick",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Espi",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

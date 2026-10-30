@@ -1,0 +1,172 @@
+{
+  "slug": "augsburg",
+  "nameKo": "아우크스부르크",
+  "nameEn": "FC Augsburg",
+  "short": "FCA",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#BA3733",
+    "#46714D"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Michael Gregoritsch",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Robin Fellhauer",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Fabian Rieder",
+      "goals": 2,
+      "assists": 4
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [
+    "seol-young-woo"
+  ],
+  "reading": [],
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1575199",
+    "kickoff": "2026-10-24T13:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "union-berlin",
+    "startXI": [
+      {
+        "name": "F. Dahmen",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Abdulay Bah",
+        "number": 35,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "C. Matsima",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "C. Brackelmann",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "M. Wolf",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "H. Massengo",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "F. Rieder",
+        "number": 32,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Hennes Behrens",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "A. Kade",
+        "number": 30,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Ibrahimović",
+        "number": 21,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "M. Gregoritsch",
+        "number": 11,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Seol Young-Woo",
+        "number": 7,
+        "pos": "D",
+        "grid": null,
+        "korean": "seol-young-woo"
+      },
+      {
+        "name": "T. Schnitzer",
+        "number": 37,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Rodrigo Ribeiro",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "U. Ogundu",
+        "number": 39,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "N. Labrović",
+        "number": 22,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Kömür",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Y. Keitel",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Gouweleeuw",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "R. Fellhauer",
+        "number": 19,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

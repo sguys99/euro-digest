@@ -1,0 +1,171 @@
+{
+  "slug": "napoli",
+  "nameKo": "나폴리",
+  "nameEn": "SSC Napoli",
+  "short": "NAP",
+  "comp": "SERIEA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#12A0D7",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-28T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Kevin De Bruyne",
+      "goals": 4,
+      "assists": 1
+    },
+    {
+      "name": "Rasmus Højlund",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Matteo Politano",
+      "goals": 2,
+      "assists": 3
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1550172",
+    "kickoff": "2026-10-28T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "away",
+    "opponent": "monza",
+    "startXI": [
+      {
+        "name": "V. Milinković-Savić",
+        "number": 32,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "G. Di Lorenzo",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Amir Rrahmani",
+        "number": 13,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Rafa Marín",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "M. Olivera",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "A. Zambo Anguissa",
+        "number": 99,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "S. Lobotka",
+        "number": 68,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "S. McTominay",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Politano",
+        "number": 21,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "R. Højlund",
+        "number": 19,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "N. Lang",
+        "number": 70,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Meret",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Luca Marianucci",
+        "number": 35,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Lucca",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Giovane",
+        "number": 23,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "B. Gilmour",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. De Bruyne",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Contini",
+        "number": 14,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "S. Beukema",
+        "number": 31,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Vergara",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

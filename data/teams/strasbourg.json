@@ -1,0 +1,169 @@
+{
+  "slug": "strasbourg",
+  "nameKo": "스트라스부르",
+  "nameEn": "RC Strasbourg Alsace",
+  "short": "STR",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#009FE3",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T16:15:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Gessime Yassine",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Gio Reyna",
+      "goals": 2,
+      "assists": null
+    },
+    {
+      "name": "Samuel Amo-Ameyaw",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1552798",
+    "kickoff": "2026-10-25T16:15:00.000Z",
+    "comp": "LIGUE1",
+    "side": "away",
+    "opponent": "rennes",
+    "startXI": [
+      {
+        "name": "F. Jörgensen",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "G. Antwi",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "J. Mitchell",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Abdoul Karim Coulibaly",
+        "number": 31,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Oso",
+        "number": 36,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "P. Diop",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Dário Essugo",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Gessime Yassine",
+        "number": 80,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Diogo Sousa",
+        "number": 23,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "G. Reyna",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "C. Harder",
+        "number": 40,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "M. Piekutowski",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Y. Becker",
+        "number": 43,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Høgsberg",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. El Mourabet",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Tyrese Noubissie",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Godo",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "O. Kellyman",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Ortega",
+        "number": 30,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Yaya Dieme",
+        "number": 35,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

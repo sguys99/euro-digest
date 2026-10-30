@@ -1,0 +1,171 @@
+{
+  "slug": "borussia-dortmund",
+  "nameKo": "도르트문트",
+  "nameEn": "Borussia Dortmund",
+  "short": "BVB",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#FDE100",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-24T16:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Maximilian Beier",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Sehrou Guirassy",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Fábio Silva",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1575194",
+    "kickoff": "2026-10-24T16:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "eintracht-frankfurt",
+    "startXI": [
+      {
+        "name": "G. Kobel",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "W. Anton",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "N. Schlotterbeck",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "R. Bensebaïni",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "J. Ryerson",
+        "number": 26,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "J. Veerman",
+        "number": 25,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "F. Nmecha",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "D. Svensson",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Sabitzer",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Fábio Silva",
+        "number": 21,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "S. Guirassy",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "E. Nwaneri",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Meyer",
+        "number": 33,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "F. Mané",
+        "number": 39,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Inacio",
+        "number": 40,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Kouakou Joane Gadou",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. de Pina Duarte dos Santos",
+        "number": 44,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "C. Chukwuemeka",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Bellingham",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Beier",
+        "number": 14,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "slug": "real-sociedad",
+  "nameKo": "레알 소시에다드",
+  "nameEn": "Real Sociedad de Fútbol",
+  "short": "RSO",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#0067B1",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-4-2",
+    "source": "api",
+    "updated": "2026-10-25T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Luka Sučić",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Orri Oskarsson",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Mikel Oyarzabal",
+      "goals": 2,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-4-2",
+    "match": "af-1570430",
+    "kickoff": "2026-10-25T17:30:00.000Z",
+    "comp": "LALIGA",
+    "side": "home",
+    "opponent": "levante",
+    "startXI": [
+      {
+        "name": "A. Remiro",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "H. Fort",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "J. Martin",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "M. Sarr",
+        "number": 19,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "S. Gomez",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Sucic",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "J. Gorrotxategi",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "B. Turrientes",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "G. Guedes",
+        "number": 11,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Oyarzabal",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "O. Oskarsson",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "U. Marrero",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "J. Aramburu",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "I. Zubeldia",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Pacheco",
+        "number": 16,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Munoz",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "C. Soler",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Zakharyan",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Y. Herrera",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Marin",
+        "number": 15,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Barrenetxea",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Ochieng",
+        "number": 12,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Kubo",
+        "number": 14,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

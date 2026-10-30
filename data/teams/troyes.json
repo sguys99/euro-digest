@@ -1,0 +1,153 @@
+{
+  "slug": "troyes",
+  "nameKo": "트루아",
+  "nameEn": "ES Troyes AC",
+  "short": "ETR",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#005CAB",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-25T16:15:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1552799",
+    "kickoff": "2026-10-25T16:15:00.000Z",
+    "comp": "LIGUE1",
+    "side": "away",
+    "opponent": "toulouse",
+    "startXI": [
+      {
+        "name": "H. Konaté",
+        "number": 40,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "L. Maronnier",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "A. Monfray",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "M. Diaz",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "P. Gozzi",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "A. Mille",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "D. Karim",
+        "number": 29,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "M. Diop",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Ifnaoui",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "R. Ripart",
+        "number": 20,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "T. Nkada",
+        "number": 23,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "P. Beach",
+        "number": 33,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "K. Diawara",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "I. Gomis",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "H. Picard",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Phliponeau",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Le Douaron",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "I. Soukouna",
+        "number": 36,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Noah Donkor",
+        "number": 31,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Lassana Simakha",
+        "number": 34,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

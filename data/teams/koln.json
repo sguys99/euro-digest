@@ -1,0 +1,164 @@
+{
+  "slug": "koln",
+  "nameKo": "쾰른",
+  "nameEn": "1. FC Köln",
+  "short": "KOE",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#ED1C24"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Said El Mala",
+      "goals": 2,
+      "assists": null
+    },
+    {
+      "name": "Thijs Dallinga",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1575201",
+    "kickoff": "2026-10-24T13:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "schalke",
+    "startXI": [
+      {
+        "name": "Marvin Schwäbe",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Sebastian Sebulonsen",
+        "number": 28,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Jahmai Simpson-Pusey",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Luka Lochoshvili",
+        "number": 24,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Borna Sosa",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Ísak Bergmann Jóhannesson",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Tom Krauß",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Linton Maina",
+        "number": 37,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Mikey Moore",
+        "number": 47,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Said El Mala",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Marius Bülter",
+        "number": 30,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Luca Waldschmidt",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Paul Okon-Engstler",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Reigan Heskey",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Joel Schmied",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Jan Uwe Thielmann",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ron-Robert Zieler",
+        "number": 20,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Gideon Mensah",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Alessio Castro-Montes",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Malek El Mala",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

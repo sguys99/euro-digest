@@ -1,0 +1,177 @@
+{
+  "slug": "malaga",
+  "nameKo": "말라가",
+  "nameEn": "Málaga CF",
+  "short": "MAL",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#0B5FA5",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-1-4-1",
+    "source": "api",
+    "updated": "2026-10-23T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Adrián",
+      "goals": 4,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-1-4-1",
+    "match": "af-1570423",
+    "kickoff": "2026-10-23T19:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "alaves",
+    "startXI": [
+      {
+        "name": "A. Herrero",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "C. Puga",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "A. Recio",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "E. Galilea",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Rafita",
+        "number": 31,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "R. Enriquez",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "D. Larrubia",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:4"
+      },
+      {
+        "name": "C. Dotor",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "D. Lorenzo",
+        "number": 22,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Aznou",
+        "number": 39,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "A. Nino",
+        "number": 21,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "C. Lopez",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "F. Calero",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Pastor",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Salinas",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Berrocal",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "I. Merino",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Cajuste",
+        "number": 2,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Rodriguez",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "H. Abaida",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Jauregi",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Chupe",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Fernandez",
+        "number": 32,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

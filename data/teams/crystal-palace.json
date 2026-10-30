@@ -1,0 +1,159 @@
+{
+  "slug": "crystal-palace",
+  "nameKo": "크리스털 팰리스",
+  "nameEn": "Crystal Palace FC",
+  "short": "CRY",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#C4122E",
+    "#1B458F"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-25T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Tyrick Mitchell",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1557441",
+    "kickoff": "2026-10-25T14:00:00.000Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "newcastle-united",
+    "startXI": [
+      {
+        "name": "Walter Benítez",
+        "number": 44,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Chris Richards",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Axel Disasi",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Jaydee Canvot",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Anan Khalaili",
+        "number": 25,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Adam Wharton",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Daichi Kamada",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Tyrick Mitchell",
+        "number": 3,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Dwight McNeil",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "Yéremy Pino",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "Jean-Philippe Mateta",
+        "number": 14,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Eddie Nketiah",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Darío Osorio",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Remi Matthews",
+        "number": 31,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Ben Chilwell",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Jefferson Lerma",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Óscar Mingueza",
+        "number": 30,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Will Hughes",
+        "number": 19,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Cheick Doucouré",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Evann Guessand",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

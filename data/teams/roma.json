@@ -1,0 +1,183 @@
+{
+  "slug": "roma",
+  "nameKo": "로마",
+  "nameEn": "AS Roma",
+  "short": "ROM",
+  "comp": "SERIEA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#8E1F2F",
+    "#F0BC42"
+  ],
+  "formation": {
+    "shape": "3-5-2",
+    "source": "api",
+    "updated": "2026-10-27T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Donyell Malen",
+      "goals": 7,
+      "assists": 1
+    },
+    {
+      "name": "Matias Soule",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Niccolo Pisilli",
+      "goals": 3,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-5-2",
+    "match": "af-1550168",
+    "kickoff": "2026-10-27T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "home",
+    "opponent": "cagliari",
+    "startXI": [
+      {
+        "name": "P. Gollini",
+        "number": 95,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "G. Mancini",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "E. Ndicka",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "K. Koulierakis",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "E. Lulli",
+        "number": 77,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "B. Cristante",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "M. de Roon",
+        "number": 15,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "N. Pisilli",
+        "number": 61,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "N. Molina",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Soulé",
+        "number": 18,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "S. Castro",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Wesley",
+        "number": 43,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Vásquez",
+        "number": 32,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Rensch",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Malen",
+        "number": 14,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Hermoso",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Ghilardi",
+        "number": 87,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Alessandro Di Nunzio",
+        "number": 63,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. De Marzi",
+        "number": 70,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Mandjou Camara",
+        "number": 78,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Balerdi",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Rodrigo Mora",
+        "number": 86,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

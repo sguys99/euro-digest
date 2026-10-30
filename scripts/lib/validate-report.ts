@@ -258,6 +258,15 @@ export function buildValidationReport(
   // ⑤ data 스키마
   if (!configsOnly) checkFiles(snapshot.dataFiles, "data");
 
+  // ⑤-2 data 교차 참조(팀 파일 ↔ configs — M2-06·M2-07). 결과는 ③ 교차 참조 집계에 합친다
+  const dataCrossRef = runCrossRefChecks(
+    pickCrossRefInput(parsedByPath),
+    "data",
+  );
+  crossRef.checked.push(...dataCrossRef.checked);
+  crossRef.skipped.push(...dataCrossRef.skipped);
+  issues.push(...dataCrossRef.issues);
+
   // ⑥ 발행 검증 게이트(M1-25) — 스키마를 통과한 data·configs 값만
   let gate: GateSummary | undefined;
   if (!configsOnly) {

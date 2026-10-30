@@ -1,0 +1,22 @@
+{
+  "slug": "bodo-glimt",
+  "nameKo": "보되/글림트",
+  "nameEn": "FK Bodø/Glimt",
+  "short": "BOD",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#FFE600",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-4-2",
+    "source": "api",
+    "updated": "2026-10-20T19:00:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

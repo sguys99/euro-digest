@@ -1,0 +1,164 @@
+{
+  "slug": "monaco",
+  "nameKo": "모나코",
+  "nameEn": "AS Monaco FC",
+  "short": "ASM",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#D5151C",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Paris Brunner",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Edan Diop",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1552797",
+    "kickoff": "2026-10-25T14:00:00.000Z",
+    "comp": "LIGUE1",
+    "side": "home",
+    "opponent": "lille",
+    "startXI": [
+      {
+        "name": "L. Hrádecký",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Vanderson",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Sadibou Sané",
+        "number": 72,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "J. Teze",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Flávio Nazinho",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Camara",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "D. Zakaria",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Coulibaly",
+        "number": 28,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "A. Golovin",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Ansu Fati",
+        "number": 31,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Paris Josua  Brunner",
+        "number": 29,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "I. Touré",
+        "number": 49,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Detourbet",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "F. Balogun",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Abline",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Diop",
+        "number": 37,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Köhn",
+        "number": 16,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "C. Mawissa Elebi",
+        "number": 13,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Minamino",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Salisu",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

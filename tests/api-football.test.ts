@@ -32,6 +32,8 @@ import {
   readAfRateHeaders,
   toAfFixture,
   toAfMatchScore,
+  toAfStatus,
+  toLineups,
   toMatchDetail,
   type ApiFootballClientOptions,
 } from "../scripts/lib/providers/api-football";
@@ -687,6 +689,71 @@ describe("playerAppearance — 선발 = startXI, apiFootballId로만 매칭", ()
   });
 });
 
+describe("toLineups — 등번호·포지션·grid 원문(팀시트 M2-07, D63 ②)", () => {
+  it('1575167: 선발 grid "줄:칸"·교체 grid null, 등번호·포지션 그대로', () => {
+    const d = detailOf("fixtures-id-1575167.json");
+    expect(d.lineups.home?.startXI[0]).toMatchObject({
+      id: 497,
+      name: "M. Neuer",
+      number: 1,
+      pos: "G",
+      grid: "1:1",
+    });
+    expect(
+      d.lineups.home?.substitutes.find((p) => p.id === 2897),
+    ).toMatchObject({
+      name: "Kim Min-Jae",
+      number: 3,
+      pos: "D",
+      grid: null,
+      minutes: 45,
+    });
+  });
+
+  it("형식이 다른 값은 그 값만 null — 선수는 버리지 않는다", () => {
+    const lineups = toLineups(
+      [
+        {
+          team: { id: 1 },
+          formation: "4-3-3",
+          startXI: [
+            {
+              player: {
+                id: 10,
+                name: "A",
+                number: 100,
+                pos: "GK",
+                grid: "1-1",
+              },
+            },
+            { player: { id: 11, name: "B" } },
+          ],
+          substitutes: [],
+        },
+      ],
+      [],
+      1,
+      2,
+    );
+    expect(lineups.home?.startXI).toEqual([
+      { id: 10, name: "A", minutes: null, number: null, pos: null, grid: null },
+      { id: 11, name: "B", minutes: null, number: null, pos: null, grid: null },
+    ]);
+  });
+});
+
+describe("toAfStatus — /status 요청 수만(계정·요금제 키는 읽지 않는다)", () => {
+  it("fixture status.json → current·limitDay, 형식이 다르면 null", () => {
+    const status = readAfJson<{ response: unknown }>("status.json").response;
+    expect(toAfStatus(status)).toEqual({ current: 0, limitDay: 100 });
+    expect(toAfStatus([])).toEqual({ current: null, limitDay: null });
+    expect(toAfStatus({ requests: { current: "x" } })).toEqual({
+      current: null,
+      limitDay: null,
+    });
+  });
+});
+
 // ─── 클라이언트 (호출 정책) ──────────────────────────────────────────────
 
 describe("createApiFootballClient — 호출 정책", () => {
@@ -709,6 +776,21 @@ describe("createApiFootballClient — 호출 정책", () => {
     expect(() =>
       createApiFootballClient({ ...h.options(), apiKey: "  " }),
     ).toThrow(ApiFootballError);
+  });
+
+  it("getStatus — /status 1요청(calls에 센다), 요청 수만 돌려준다", async () => {
+    const h = harness(
+      () => new Response(readAfFixture("status.json"), { status: 200 }),
+    );
+    const client = createApiFootballClient(h.options());
+    await expect(client.getStatus()).resolves.toEqual({
+      current: 0,
+      limitDay: 100,
+    });
+    expect(h.calls.map((c) => c.url)).toEqual([
+      `${API_FOOTBALL_BASE_URL}/status`,
+    ]);
+    expect(client.calls).toBe(1);
   });
 
   it("HTTP 200 + errors.plan → 재시도 없이 plan(호출 1회)", async () => {

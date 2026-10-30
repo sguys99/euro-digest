@@ -1,0 +1,33 @@
+{
+  "slug": "racing-santander",
+  "nameKo": "라싱 산탄데르",
+  "nameEn": "Real Racing Club de Santander",
+  "short": "SAN",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T14:15:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Yassir Zabiri",
+      "goals": 8,
+      "assists": null
+    },
+    {
+      "name": "Pablo García",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

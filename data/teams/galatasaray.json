@@ -1,0 +1,28 @@
+{
+  "slug": "galatasaray",
+  "nameKo": "갈라타사라이",
+  "nameEn": "Galatasaray SK",
+  "short": "GAL",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#A90432",
+    "#FDB912"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-21T16:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Aleksey Batrakov",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

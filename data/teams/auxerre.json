@@ -1,0 +1,33 @@
+{
+  "slug": "auxerre",
+  "nameKo": "오세르",
+  "nameEn": "AJ Auxerre",
+  "short": "AJA",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#0057A6"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-25T16:15:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Cameron Archer",
+      "goals": 5,
+      "assists": null
+    },
+    {
+      "name": "Daniel Namaso",
+      "goals": 3,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

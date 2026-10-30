@@ -1,0 +1,166 @@
+{
+  "slug": "stuttgart",
+  "nameKo": "슈투트가르트",
+  "nameEn": "VfB Stuttgart",
+  "short": "VFB",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#FFFFFF",
+    "#E32219"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-23T18:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Ermedin Demirovic",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Josha Vagnoman",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1575196",
+    "kickoff": "2026-10-23T18:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "borussia-monchengladbach",
+    "startXI": [
+      {
+        "name": "D. Seimen",
+        "number": 41,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "L. Assignon",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Finn Jeltsch",
+        "number": 29,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "R. Hendriks",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "M. Mittelstädt",
+        "number": 7,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "A. Stiller",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "A. Karazor",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "L. Sauer",
+        "number": 44,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "D. Pejčinović",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "C. Führich",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "E. Demirović",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Al Dakhil",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "F. Bredlow",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "J. Chabot",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Leweling",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "G. Prömel",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Y. Spalt",
+        "number": 47,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Stergiou",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Undav",
+        "number": 26,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "B. El Khannouss",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

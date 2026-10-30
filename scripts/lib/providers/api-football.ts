@@ -337,12 +337,44 @@ export interface ApiFootballClient {
   getFixturesByDate(date: string): Promise<unknown[]>;
   /** `/fixtures?id=` — 경기 1건 원문(없으면 null). 연결 오류는 재시도하지 않는다 */
   getFixtureById(id: number): Promise<unknown>;
+  /**
+   * `/status` — 오늘(UTC) 쓴 요청 수·일 한도(계정·요금제는 읽지 않는다). 개발 백필 전 남은 한도 확인용(M2-07). 값이 일관되지 않을
+   * 수 있어 상한은 여전히 우리 쪽 카운터(`maxCalls`)로 지킨다(M0-29). 요청 수(calls)에 센다
+   */
+  getStatus(): Promise<AfStatus>;
   /** 이 클라이언트가 보낸 요청 수(실패·재시도 포함) — runs.json apiCalls.apiFootball */
   readonly calls: number;
   /** 재시도 횟수(calls에 포함) */
   readonly retries: number;
   /** 마지막으로 받은 레이트 리밋 헤더(받은 적 없으면 모두 null) */
   readonly rate: AfRateHeaders;
+}
+
+/** `/status` 응답의 요청 수 — 형식이 다르면 null */
+export interface AfStatus {
+  /** 오늘(UTC) 쓴 요청 수 */
+  current: number | null;
+  /** 일 한도 */
+  limitDay: number | null;
+}
+
+const AfStatusResponseSchema = z.object({
+  requests: z
+    .object({
+      current: z.number().int().nonnegative().nullable().catch(null),
+      limit_day: z.number().int().nonnegative().nullable().catch(null),
+    })
+    .partial(),
+});
+
+/** `/status` response 원문 → 요청 수(계정·요금제 키는 읽지 않는다) */
+export function toAfStatus(raw: unknown): AfStatus {
+  const parsed = AfStatusResponseSchema.safeParse(raw);
+  if (!parsed.success) return { current: null, limitDay: null };
+  return {
+    current: parsed.data.requests.current ?? null,
+    limitDay: parsed.data.requests.limit_day ?? null,
+  };
 }
 
 const realSleep = (ms: number): Promise<void> =>
@@ -618,6 +650,12 @@ export function createApiFootballClient(
       }
       return response[0] ?? null;
     },
+    async getStatus() {
+      const response = await enqueue(() =>
+        request("/status", "상태 조회", true),
+      );
+      return toAfStatus(response);
+    },
     get calls() {
       return calls;
     },
@@ -696,9 +734,24 @@ export const AfEventSchema = z.object({
   comments: z.string().nullable().optional(),
 });
 
+/** 라인업 선수의 등번호·포지션·grid — 형식이 다르면 그 값만 null(선수는 버리지 않는다 — 팀시트 M2-07) */
+const AfShirtNumber = z.number().int().min(0).max(99).nullable().catch(null);
+const AfLineupPos = z.enum(["G", "D", "M", "F"]).nullable().catch(null);
+const AfGrid = z
+  .string()
+  .regex(/^[1-9]\d?:[1-9]\d?$/)
+  .nullable()
+  .catch(null);
+
 const AfLineupPlayersSchema = z.array(
   z.object({
-    player: z.object({ id: NullableId, name: z.string().nullable() }),
+    player: z.object({
+      id: NullableId,
+      name: z.string().nullable(),
+      number: AfShirtNumber.optional(),
+      pos: AfLineupPos.optional(),
+      grid: AfGrid.optional(),
+    }),
   }),
 );
 
@@ -973,6 +1026,9 @@ function lineupPlayers(
         id: player.id,
         name,
         minutes: player.id === null ? null : (minutes.get(player.id) ?? null),
+        number: player.number ?? null,
+        pos: player.pos ?? null,
+        grid: player.grid ?? null,
       },
     ];
   });

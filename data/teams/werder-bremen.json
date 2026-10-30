@@ -1,0 +1,169 @@
+{
+  "slug": "werder-bremen",
+  "nameKo": "브레멘",
+  "nameEn": "SV Werder Bremen",
+  "short": "SVW",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#187946",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Niclas Füllkrug",
+      "goals": 8,
+      "assists": null
+    },
+    {
+      "name": "Marco Grüll",
+      "goals": 2,
+      "assists": 5
+    },
+    {
+      "name": "Ludovit Reis",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1575200",
+    "kickoff": "2026-10-24T13:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "away",
+    "opponent": "mainz",
+    "startXI": [
+      {
+        "name": "K. Hein",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Arthur",
+        "number": 13,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "A. Pieper",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "M. Friedl",
+        "number": 32,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "O. Deman",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Reis",
+        "number": 15,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Y. Regeer",
+        "number": 44,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Weiser",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Chuky San José",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "M. Grüll",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "N. Füllkrug",
+        "number": 10,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "E. Dinkçi",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "P. Erevbenagie",
+        "number": 38,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Itten",
+        "number": 26,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Lynen",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Quetant",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Schlager",
+        "number": 30,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Mick Schmetgens",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Dariusz Stalmach",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "O. Wójcik",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "slug": "parma",
+  "nameKo": "파르마",
+  "nameEn": "Parma Calcio 1913",
+  "short": "PAR",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#FFD200"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-28T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "José Romero",
+      "goals": 2,
+      "assists": null
+    },
+    {
+      "name": "Simone Lontani",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

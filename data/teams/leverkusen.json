@@ -1,0 +1,169 @@
+{
+  "slug": "leverkusen",
+  "nameKo": "레버쿠젠",
+  "nameEn": "Bayer 04 Leverkusen",
+  "short": "B04",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#D11F1E",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T14:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Patrik Schick",
+      "goals": 6,
+      "assists": 2
+    },
+    {
+      "name": "Ibrahim Maza",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Christian Kofane",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1575197",
+    "kickoff": "2026-10-25T14:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "away",
+    "opponent": "hoffenheim",
+    "startXI": [
+      {
+        "name": "Mark Flekken",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Jarell Quansah",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Edmond Tapsoba",
+        "number": 12,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Facundo Medina",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Miguel Gutiérrez",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Ezequiel Fernández",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Aleix García",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Moussa Diaby",
+        "number": 19,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Ibrahim Maza",
+        "number": 30,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Nathan Tella",
+        "number": 23,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Patrik Schick",
+        "number": 14,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Malik Tillman",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Loïc Badé",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Robert Andrich",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Afonso Moreira",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Jonas Hofmann",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Janis Blaswich",
+        "number": 28,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Tim Oermann",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Lucas Vázquez",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Victor Okoh Boniface",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

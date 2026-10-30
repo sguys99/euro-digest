@@ -1,0 +1,33 @@
+{
+  "slug": "rayo-vallecano",
+  "nameKo": "라요 바예카노",
+  "nameEn": "Rayo Vallecano de Madrid",
+  "short": "RAY",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#E53027"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-24T12:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Sergio Camello",
+      "goals": 7,
+      "assists": 1
+    },
+    {
+      "name": "Álvaro García",
+      "goals": 3,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

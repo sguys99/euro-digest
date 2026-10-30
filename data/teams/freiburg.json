@@ -1,0 +1,169 @@
+{
+  "slug": "freiburg",
+  "nameKo": "프라이부르크",
+  "nameEn": "SC Freiburg",
+  "short": "SCF",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#D40018",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T16:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Yuito Suzuki",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Igor Matanovic",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Maximilian Eggestein",
+      "goals": 3,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1575198",
+    "kickoff": "2026-10-25T16:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "bayern-munchen",
+    "startXI": [
+      {
+        "name": "Mio Backhaus",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Philipp Treu",
+        "number": 29,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Matthias Ginter",
+        "number": 28,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Philipp Lienhart",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Jordy Makengo",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Maximilian Eggestein",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Patrick Osterhage",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Jan-Niklas Beste",
+        "number": 19,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Yuito Suzuki",
+        "number": 14,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Derry Scherhant",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Lucas Höler",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Igor Matanović",
+        "number": 31,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Rihito Yamamoto",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Cyriaque Irié",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Maximilian Rosenfelder",
+        "number": 37,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Vincenzo Grifo",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Florian Müller",
+        "number": 21,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Christian Günter",
+        "number": 30,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Lukas Kübler",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Keisuke Goto",
+        "number": 42,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

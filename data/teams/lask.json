@@ -1,0 +1,28 @@
+{
+  "slug": "lask",
+  "nameKo": "LASK",
+  "nameEn": "LASK Linz",
+  "short": "LIN",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#000000",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "3-4-3",
+    "source": "api",
+    "updated": "2026-10-21T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Florian Flecker",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

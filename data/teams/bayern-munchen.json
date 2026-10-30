@@ -1,0 +1,173 @@
+{
+  "slug": "bayern-munchen",
+  "nameKo": "바이에른 뮌헨",
+  "nameEn": "FC Bayern München",
+  "short": "FCB",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#D3052B",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T16:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Michael Olise",
+      "goals": 6,
+      "assists": 3
+    },
+    {
+      "name": "Harry Kane",
+      "goals": 4,
+      "assists": 4
+    },
+    {
+      "name": "Luis Díaz",
+      "goals": 4,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [
+    "kim-min-jae"
+  ],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1575198",
+    "kickoff": "2026-10-25T16:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "away",
+    "opponent": "freiburg",
+    "startXI": [
+      {
+        "name": "Jonas Urbig",
+        "number": 40,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Josip Stanišić",
+        "number": 44,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Dayot Upamecano",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Jonathan Tah",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Nathaniel Brown",
+        "number": 11,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Konrad Laimer",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Tom Bischof",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Michael Olise",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Lennart Karl",
+        "number": 42,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Serge Gnabry",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Harry Kane",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Sacha Boey",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ismael Saibari",
+        "number": 34,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Alphonso Davies",
+        "number": 19,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Hiroki Itō",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Sven Ulreich",
+        "number": 26,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Jannis Bartl",
+        "number": 35,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Cassiano Kiala",
+        "number": 30,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "David Daiber",
+        "number": 47,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Tim Binder",
+        "number": 46,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

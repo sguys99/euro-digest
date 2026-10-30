@@ -1,0 +1,28 @@
+{
+  "slug": "slavia-praha",
+  "nameKo": "슬라비아 프라하",
+  "nameEn": "SK Slavia Praha",
+  "short": "SLP",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#D60028",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-20T16:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Danijel Sturm",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

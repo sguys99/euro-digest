@@ -1,0 +1,28 @@
+{
+  "slug": "shakhtar-donetsk",
+  "nameKo": "샤흐타르",
+  "nameEn": "FK Shakhtar Donetsk",
+  "short": "SHD",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#F37021",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-1-4-1",
+    "source": "api",
+    "updated": "2026-10-21T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Gleiker Mendoza",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

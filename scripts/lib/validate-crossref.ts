@@ -16,6 +16,11 @@
  *   6. team-colors.json 키 → team-ids.json 팀(없는 팀은 오류) · team-ids 팀이 team-colors에 없으면 경고(화면은 폴백 배지 —
  *      DESIGN §9.3 D1) · 상의 색 위 약어 글자 대비 ≥ 5.3(PRD §15 D62 ④ — 보정은 scripts/build-team-colors.ts, M2-05)
  *
+ *   7. data/teams/*.json(파생 — scripts/build-teams.ts, M2-06·M2-07) ↔ configs — 팀 파일이 하나라도 있을 때만(`--configs-only`는 건너뜀):
+ *      팀 slug ⊂ team-ids · team-ids 팀마다 파일 · `colors`·`short` = team-colors(복사본) · `koreanPlayers`·팀시트 `korean` slug ⊂
+ *      korean-players(소속 팀 일치) · 팀시트 상대 ⊂ team-ids는 오류. 활성 한국 선수가 소속 팀 파일 `koreanPlayers`에 없으면 경고
+ *      (설정만 바꾸고 팀 파일을 다시 만들지 않은 경우 — 다음 생성에서 들어간다)
+ *
  * formations.json·team-colors.json의 키 형식(slug)은 스키마(`z.record(SlugSchema, …)`)가 이미 검사한다.
  */
 import {
@@ -25,6 +30,7 @@ import {
   type PublisherDomainsFile,
   type SearchQueriesFile,
   type SourcesFile,
+  type Team,
   type TeamColorsFile,
   type TeamIdsFile,
 } from "@/lib/schema";
@@ -45,8 +51,13 @@ export const CROSSREF_FILES = {
 
 type CrossRefKey = keyof typeof CROSSREF_FILES;
 
+/** 팀 파일 경로 접두사(레지스트리 `data/teams/*.json`) */
+export const TEAM_FILES_PREFIX = "data/teams/";
+
 /** 스키마를 통과한 configs 값. 없거나 스키마 오류인 파일은 비워 둔다. */
 export interface CrossRefInput {
+  /** 스키마를 통과한 팀 파일(경로 → 값) — 하나도 없으면 비워 둔다 */
+  teams?: ReadonlyMap<string, Team>;
   sources?: SourcesFile;
   searchQueries?: SearchQueriesFile;
   koreanPlayers?: KoreanPlayersFile;
@@ -290,6 +301,109 @@ export function checkTeamColors(
   return issues;
 }
 
+/**
+ * 7. data/teams/*.json ↔ team-ids·team-colors·korean-players (M2-06·M2-07). 팀 파일은 configs에서 만든 파생 파일이라 어긋나면
+ * `scripts/build-teams.ts`로 다시 만든다.
+ */
+export function checkTeamFiles(
+  teams: ReadonlyMap<string, Team>,
+  teamIds: TeamIdsFile,
+  teamColors: TeamColorsFile,
+  koreanPlayers: KoreanPlayersFile,
+): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  const regen = "scripts/build-teams.ts로 다시 만들 것";
+  const playerBySlug = new Map(koreanPlayers.map((p) => [p.slug, p]));
+  const seen = new Set<string>();
+  for (const [file, team] of teams) {
+    seen.add(team.slug);
+    if (!Object.hasOwn(teamIds, team.slug)) {
+      issues.push(
+        crossRefError(
+          file,
+          ["slug"],
+          `팀 "${team.slug}"가 team-ids.json에 없음 — 옛 slug 파일이면 지울 것`,
+        ),
+      );
+    }
+    const color = teamColors[team.slug];
+    if (
+      color !== undefined &&
+      (color.short !== team.short ||
+        color.colors[0] !== team.colors[0] ||
+        color.colors[1] !== team.colors[1])
+    ) {
+      issues.push(
+        crossRefError(
+          file,
+          ["colors"],
+          `colors·short가 team-colors.json과 다름 — ${regen}`,
+        ),
+      );
+    }
+    team.koreanPlayers.forEach((slug, i) => {
+      const player = playerBySlug.get(slug);
+      if (player === undefined || player.team !== team.slug) {
+        issues.push(
+          crossRefError(
+            file,
+            ["koreanPlayers", i],
+            `한국 선수 "${slug}"가 korean-players.json에 없거나 소속 팀이 다름 — ${regen}`,
+          ),
+        );
+      }
+    });
+    if (team.lineup !== null) {
+      if (!Object.hasOwn(teamIds, team.lineup.opponent)) {
+        issues.push(
+          crossRefError(
+            file,
+            ["lineup", "opponent"],
+            `상대 팀 "${team.lineup.opponent}"가 team-ids.json에 없음 — ${regen}`,
+          ),
+        );
+      }
+      for (const list of ["startXI", "substitutes"] as const) {
+        team.lineup[list].forEach((p, i) => {
+          if (p.korean !== undefined && !playerBySlug.has(p.korean)) {
+            issues.push(
+              crossRefError(
+                file,
+                ["lineup", list, i, "korean"],
+                `한국 선수 "${p.korean}"가 korean-players.json에 없음 — ${regen}`,
+              ),
+            );
+          }
+        });
+      }
+    }
+  }
+  for (const slug of Object.keys(teamIds)) {
+    if (!seen.has(slug)) {
+      issues.push({
+        severity: "error",
+        stage: "crossref",
+        file: `${TEAM_FILES_PREFIX}${slug}.json`,
+        message: `team-ids.json 팀 "${slug}"의 팀 파일이 없음 — ${regen}`,
+      });
+    }
+  }
+  for (const p of koreanPlayers) {
+    if (!p.active) continue;
+    const team = [...teams.values()].find((t) => t.slug === p.team);
+    if (team !== undefined && !team.koreanPlayers.includes(p.slug)) {
+      issues.push({
+        severity: "warn",
+        stage: "crossref",
+        file: `${TEAM_FILES_PREFIX}${p.team}.json`,
+        path: formatIssuePath(["koreanPlayers"]),
+        message: `활성 한국 선수 "${p.slug}"가 팀 파일에 없음 — ${regen}`,
+      });
+    }
+  }
+  return issues;
+}
+
 interface CrossRefCheck {
   name: string;
   /** 필요한 파일이 모두 있으면 이슈 목록, 하나라도 없으면 null(건너뜀) */
@@ -339,10 +453,24 @@ const CHECKS: readonly CrossRefCheck[] = [
   },
 ];
 
-/** 교차 참조 검사 전체를 실행한다. */
-export function runCrossRefChecks(input: CrossRefInput): CrossRefResult {
+/** data 파일이 걸린 교차 참조 — data 스키마 검사(⑤) 뒤에 실행한다(`--configs-only`면 팀 파일이 없어 건너뛴다) */
+const DATA_CHECKS: readonly CrossRefCheck[] = [
+  {
+    name: "data/teams → team-ids · team-colors · korean-players",
+    run: ({ teams, teamIds, teamColors, koreanPlayers }) =>
+      teams && teams.size > 0 && teamIds && teamColors && koreanPlayers
+        ? checkTeamFiles(teams, teamIds, teamColors, koreanPlayers)
+        : null,
+  },
+];
+
+/** 교차 참조 검사 전체를 실행한다(`scope` "data"면 data 파일이 걸린 검사만). */
+export function runCrossRefChecks(
+  input: CrossRefInput,
+  scope: "configs" | "data" = "configs",
+): CrossRefResult {
   const result: CrossRefResult = { checked: [], skipped: [], issues: [] };
-  for (const check of CHECKS) {
+  for (const check of scope === "configs" ? CHECKS : DATA_CHECKS) {
     const issues = check.run(input);
     if (issues === null) {
       result.skipped.push(check.name);
@@ -374,5 +502,12 @@ export function pickCrossRefInput(
   pick("publisherDomains");
   pick("teamIds");
   pick("teamColors");
+  const teams = new Map<string, Team>();
+  for (const [file, value] of parsedByPath) {
+    if (file.startsWith(TEAM_FILES_PREFIX) && file.endsWith(".json")) {
+      teams.set(file, value as Team); // 레지스트리 TeamSchema 통과 값(호출 규약)
+    }
+  }
+  if (teams.size > 0) input.teams = teams;
   return input;
 }

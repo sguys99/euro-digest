@@ -48,9 +48,14 @@ describe("Transfer — data/transfers.json (부록 A, FR-100~106)", () => {
 describe("Team — data/teams/{team}.json (부록 A, F5)", () => {
   const team = validFixture(TeamSchema, "data/teams/sample-united.json");
 
-  it("fixture가 통과하고 formation·profile은 null을 허용한다", () => {
+  it("fixture가 통과하고 formation·profile·lineup은 null을 허용한다", () => {
     expect(
-      passes(TeamSchema, { ...team, formation: null, profile: null }),
+      passes(TeamSchema, {
+        ...team,
+        formation: null,
+        profile: null,
+        lineup: null,
+      }),
     ).toBe(true);
   });
 
@@ -136,6 +141,90 @@ describe("Team — data/teams/{team}.json (부록 A, F5)", () => {
     ).toEqual(["colors.0"]);
   });
 
+  describe("팀시트 lineup (초안 M2-07 — PRD §15 D63 ②)", () => {
+    const lineup = team.lineup;
+    if (!lineup) throw new Error("fixture 팀시트 없음");
+
+    it("fixture 팀시트가 통과한다 — 선발 11·교체 명단, 한국 선수만 korean slug", () => {
+      expect(lineup.startXI).toHaveLength(11);
+      expect(lineup.startXI.filter((p) => p.korean)).toEqual([
+        expect.objectContaining({
+          name: "Hong Gil-dong",
+          korean: "hong-gil-dong",
+        }),
+      ]);
+      expect(lineup.substitutes.every((p) => p.grid === null)).toBe(true);
+    });
+
+    it("없으면 null로 채운다(이전 파일 호환)", () => {
+      const rest: Record<string, unknown> = { ...team };
+      delete rest.lineup;
+      expect(TeamSchema.parse(rest).lineup).toBeNull();
+    });
+
+    it("팀시트 포메이션은 formation.shape와 같아야 한다 — formation이 null이면 팀시트도 둘 수 없다", () => {
+      expect(
+        issuePaths(TeamSchema, {
+          ...team,
+          lineup: { ...lineup, formation: "4-3-3" },
+        }),
+      ).toEqual(["lineup.formation"]);
+      expect(issuePaths(TeamSchema, { ...team, formation: null })).toEqual([
+        "lineup.formation",
+      ]);
+    });
+
+    it('선발은 정확히 11명, grid는 "줄:칸", 포지션 G·D·M·F, 경기 키 af-<id>, 상대가 자기 팀이면 거부', () => {
+      expect(
+        issuePaths(TeamSchema, {
+          ...team,
+          lineup: { ...lineup, startXI: lineup.startXI.slice(0, 10) },
+        }),
+      ).toEqual(["lineup.startXI"]);
+      const p0 = at(lineup.startXI, 0);
+      expect(
+        issuePaths(TeamSchema, {
+          ...team,
+          lineup: {
+            ...lineup,
+            startXI: [
+              { ...p0, grid: "1-1", pos: "GK" },
+              ...lineup.startXI.slice(1),
+            ],
+          },
+        }),
+      ).toEqual(["lineup.startXI.0.pos", "lineup.startXI.0.grid"]);
+      expect(
+        issuePaths(TeamSchema, {
+          ...team,
+          lineup: { ...lineup, match: "1557439" },
+        }),
+      ).toEqual(["lineup.match"]);
+      expect(
+        issuePaths(TeamSchema, {
+          ...team,
+          lineup: { ...lineup, opponent: team.slug },
+        }),
+      ).toEqual(["lineup.opponent"]);
+    });
+
+    it("출전 시간 같은 선수 기록 키는 저장하지 않는다(D63 ② — 파싱 결과에서 빠진다)", () => {
+      const parsed = TeamSchema.parse({
+        ...team,
+        lineup: {
+          ...lineup,
+          startXI: [
+            { ...p0Of(lineup), minutes: 90 },
+            ...lineup.startXI.slice(1),
+          ],
+        },
+      });
+      expect(Object.keys(at(parsed.lineup!.startXI, 0))).not.toContain(
+        "minutes",
+      );
+    });
+  });
+
   it.each(REJECTED_URLS)(
     "더 읽을거리 URL은 http/https만 (결정 Q3): %s",
     (url) => {
@@ -146,3 +235,7 @@ describe("Team — data/teams/{team}.json (부록 A, F5)", () => {
     },
   );
 });
+
+function p0Of(lineup: { startXI: readonly unknown[] }): object {
+  return at(lineup.startXI, 0) as object;
+}

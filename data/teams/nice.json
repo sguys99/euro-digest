@@ -1,0 +1,159 @@
+{
+  "slug": "nice",
+  "nameKo": "니스",
+  "nameEn": "OGC Nice",
+  "short": "NIC",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#C8102E",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-23T18:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Sepe Elye Wahi",
+      "goals": 3,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1552794",
+    "kickoff": "2026-10-23T18:45:00.000Z",
+    "comp": "LIGUE1",
+    "side": "away",
+    "opponent": "brest",
+    "startXI": [
+      {
+        "name": "Y. Diouf",
+        "number": 23,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "A. Seidu",
+        "number": 36,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Y. Ndayishimiye",
+        "number": 55,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Mohamed Abdelmonem",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "J. Clauss",
+        "number": 92,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "A. Witsel",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "H. Boudaoui",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "N. Nkounkou",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "G. Hein",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "M. Amoura",
+        "number": 9,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "E. Wahi",
+        "number": 11,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "D. Coulibaly",
+        "number": 39,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Diop",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "I. Jansson",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "H. Koutoune",
+        "number": 84,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "X. Mandza Tsiendi",
+        "number": 35,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Morana",
+        "number": 41,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "N. Ngoumou",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Boulhendi",
+        "number": 77,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Sanson",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "slug": "le-havre",
+  "nameKo": "르아브르",
+  "nameEn": "Le Havre AC",
+  "short": "HAC",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#8CC6EB",
+    "#00205B"
+  ],
+  "formation": null,
+  "topPlayers": [
+    {
+      "name": "Josh Maja",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Mbwana Samatta",
+      "goals": 2,
+      "assists": null
+    },
+    {
+      "name": "Rayan Fofana",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

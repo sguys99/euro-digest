@@ -1,0 +1,169 @@
+{
+  "slug": "ipswich-town",
+  "nameKo": "입스위치 타운",
+  "nameEn": "Ipswich Town FC",
+  "short": "IPS",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#0044A9",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-23T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Emersonn",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Leif Davis",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Zian Flemming",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557443",
+    "kickoff": "2026-10-23T19:00:00.000Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "nottingham-forest",
+    "startXI": [
+      {
+        "name": "Christian Walton",
+        "number": 28,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Abdoul Ouattara",
+        "number": 42,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Issa Diop",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Dara O'Shea",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Leif Davis",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Exequiel Palacios",
+        "number": 25,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Florentino Luís",
+        "number": 12,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Abdul Fatawu Issahaku",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Julio Enciso",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Jaden Philogene-Bidace",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Emersonn",
+        "number": 19,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Zian Flemming",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Jack Clarke",
+        "number": 47,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Daizen Maeda",
+        "number": 38,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Azor Matusiwa",
+        "number": 5,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Chuba Akpom",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Kjell Scherpen",
+        "number": 37,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Darnell Furlong",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Jacob Greaves",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Marcelino Núñez",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

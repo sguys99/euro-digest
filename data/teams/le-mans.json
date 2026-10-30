@@ -1,0 +1,33 @@
+{
+  "slug": "le-mans",
+  "nameKo": "르망",
+  "nameEn": "Le Mans FC",
+  "short": "LMF",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#D40018",
+    "#FFD300"
+  ],
+  "formation": {
+    "shape": "3-5-2",
+    "source": "api",
+    "updated": "2026-10-25T16:15:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Louis Mafouta",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Adil Bourabaa",
+      "goals": 3,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

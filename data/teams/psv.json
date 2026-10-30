@@ -1,0 +1,22 @@
+{
+  "slug": "psv",
+  "nameKo": "PSV 에인트호번",
+  "nameEn": "PSV",
+  "short": "PSV",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#D11920",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-20T19:00:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

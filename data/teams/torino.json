@@ -1,0 +1,193 @@
+{
+  "slug": "torino",
+  "nameKo": "토리노",
+  "nameEn": "Torino FC",
+  "short": "TOR",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#8A1E03",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "3-5-2",
+    "source": "api",
+    "updated": "2026-10-27T19:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Che Adams",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Giovanni Simeone",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Sandro Kulenović",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-5-2",
+    "match": "af-1550175",
+    "kickoff": "2026-10-27T19:45:00.000Z",
+    "comp": "SERIEA",
+    "side": "home",
+    "opponent": "como",
+    "startXI": [
+      {
+        "name": "Lucas Perri",
+        "number": 20,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Saúl Coco",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "A. Ismajli",
+        "number": 44,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "P. Comuzzo",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "R. Belghali",
+        "number": 45,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "N. Vlašić",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Daniel Bragança",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "K. Fitz-Jim",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "A. Cacciamani",
+        "number": 77,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "G. Simeone",
+        "number": 18,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "C. Adams",
+        "number": 19,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "D. Mascardi",
+        "number": 26,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "C. Biraghi",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "C. Casadei",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Cömert",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Gineitis",
+        "number": 66,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Kulenović",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. İlkhan",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Zapata",
+        "number": 91,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Siviero",
+        "number": 76,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "P. Pellegri",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "N. Patterson",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Oristanio",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Z. Aboukhlal",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

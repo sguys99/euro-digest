@@ -1,0 +1,38 @@
+{
+  "slug": "chelsea",
+  "nameKo": "첼시",
+  "nameEn": "Chelsea FC",
+  "short": "CHE",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#034694",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-24T16:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "João Pedro",
+      "goals": 5,
+      "assists": 3
+    },
+    {
+      "name": "Morgan Rogers",
+      "goals": 4,
+      "assists": 1
+    },
+    {
+      "name": "Pedro Neto",
+      "goals": 3,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

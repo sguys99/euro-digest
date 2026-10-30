@@ -20,5 +20,31 @@
   "koreanPlayers": ["hong-gil-dong"],
   "reading": [
     { "title": "[예시] 샘플 유나이티드 전술 분석", "url": "https://example.com/analysis/42", "source": "Example Analysis" }
-  ]
+  ],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1000001",
+    "kickoff": "2026-10-04T14:00:00Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "example-city",
+    "startXI": [
+      {"name": "Sample Keeper", "number": 1, "pos": "G", "grid": "1:1"},
+      {"name": "A. Right", "number": 2, "pos": "D", "grid": "2:4"},
+      {"name": "B. Centre", "number": 4, "pos": "D", "grid": "2:3"},
+      {"name": "C. Centre", "number": 5, "pos": "D", "grid": "2:2"},
+      {"name": "D. Left", "number": 3, "pos": "D", "grid": "2:1"},
+      {"name": "E. Pivot", "number": 6, "pos": "M", "grid": "3:2"},
+      {"name": "F. Pivot", "number": 8, "pos": "M", "grid": "3:1"},
+      {"name": "G. Wide", "number": 7, "pos": "M", "grid": "4:3"},
+      {"name": "Hong Gil-dong", "number": 10, "pos": "M", "grid": "4:2", "korean": "hong-gil-dong"},
+      {"name": "H. Wide", "number": 11, "pos": "M", "grid": "4:1"},
+      {"name": "I. Striker", "number": 9, "pos": "F", "grid": "5:1"}
+    ],
+    "substitutes": [
+      {"name": "J. Backup", "number": 13, "pos": "G", "grid": null},
+      {"name": "K. Bench", "number": 17, "pos": "M", "grid": null},
+      {"name": "Sample Winger", "number": 20, "pos": "F", "grid": null}
+    ]
+  }
 }

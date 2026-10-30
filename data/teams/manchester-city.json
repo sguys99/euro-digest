@@ -1,0 +1,171 @@
+{
+  "slug": "manchester-city",
+  "nameKo": "맨체스터 시티",
+  "nameEn": "Manchester City FC",
+  "short": "MCI",
+  "comp": "EPL",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#6CABDD",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T11:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Erling Haaland",
+      "goals": 9,
+      "assists": null
+    },
+    {
+      "name": "Rayan Cherki",
+      "goals": 4,
+      "assists": 2
+    },
+    {
+      "name": "Antoine Semenyo",
+      "goals": 2,
+      "assists": 3
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557438",
+    "kickoff": "2026-10-24T11:30:00.000Z",
+    "comp": "EPL",
+    "side": "away",
+    "opponent": "aston-villa",
+    "startXI": [
+      {
+        "name": "Gianluigi Donnarumma",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Abdukodir Khusanov",
+        "number": 45,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Marc Guéhi",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Rúben Dias",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Joško Gvardiol",
+        "number": 24,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Elliot Anderson",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Enzo Fernández",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Iliman Ndiaye",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Rayan Cherki",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Jérémy Doku",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Erling Haaland",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Rico Lewis",
+        "number": 82,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Phil Foden",
+        "number": 47,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ryan McAidoo",
+        "number": 56,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Gerónimo Rulli",
+        "number": 28,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Rayan Aït-Nouri",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Vitor Reis",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Nico O'Reilly",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Mateo Kovačić",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ayyoub Bouaddi",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

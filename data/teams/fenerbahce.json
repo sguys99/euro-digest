@@ -1,0 +1,22 @@
+{
+  "slug": "fenerbahce",
+  "nameKo": "페네르바체",
+  "nameEn": "Fenerbahçe SK",
+  "short": "FEN",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#FFED00",
+    "#00205B"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-20T16:45:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

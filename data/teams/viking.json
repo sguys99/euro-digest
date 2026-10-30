@@ -1,0 +1,28 @@
+{
+  "slug": "viking",
+  "nameKo": "비킹",
+  "nameEn": "Viking FK",
+  "short": "VIK",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#002B5C",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-21T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Peter Christiansen",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

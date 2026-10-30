@@ -1,0 +1,169 @@
+{
+  "slug": "elversberg",
+  "nameKo": "엘버스베르크",
+  "nameEn": "SV 07 Elversberg",
+  "short": "ELV",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [],
+  "colors": [
+    "#000000",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Maurice Krattenmacher",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Lukas Petkov",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "David Mokwa Ntusu",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1575195",
+    "kickoff": "2026-10-24T13:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "away",
+    "opponent": "rb-leipzig",
+    "startXI": [
+      {
+        "name": "Nicolas Kristof",
+        "number": 20,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Jan Gyamerah",
+        "number": 30,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Lukas Finn Pinckert",
+        "number": 19,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Maximilian Rohr",
+        "number": 31,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Lasse Günther",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Felix Keidel",
+        "number": 43,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Łukasz Poręba",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Lukas Petkov",
+        "number": 25,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Frederik Schmahl",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Maurice Krattenmacher",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "David Mokwa",
+        "number": 42,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Luca Sirch",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Raif Adam",
+        "number": 15,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Francis Onyeka",
+        "number": 40,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Noel Futkeu",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Cole Campbell",
+        "number": 39,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Tim Boss",
+        "number": 28,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Nicholas Mickelson",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Florian Yves Le Joncour",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Amara Condé",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

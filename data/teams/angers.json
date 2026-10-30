@@ -1,0 +1,164 @@
+{
+  "slug": "angers",
+  "nameKo": "앙제",
+  "nameEn": "Angers SCO",
+  "short": "ANG",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#000000",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "5-3-2",
+    "source": "api",
+    "updated": "2026-10-25T16:15:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Amine El Ouazzani",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Prosper Peter",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "5-3-2",
+    "match": "af-1552792",
+    "kickoff": "2026-10-25T16:15:00.000Z",
+    "comp": "LIGUE1",
+    "side": "home",
+    "opponent": "lorient",
+    "startXI": [
+      {
+        "name": "Anthony Lopes",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "L. Rao-Lisoa",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:5"
+      },
+      {
+        "name": "C. Arcus",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "O. Camara",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "J. Lefort",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "J. Kalulu",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Y. Belkhdim",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "B. van den Boomen",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "A. Sbaï",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "P. Peter",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. El Ouazzani",
+        "number": 19,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "H. Belkebla",
+        "number": 93,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Bermont",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Djibirin Harouna",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Gernigon",
+        "number": 34,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Marius Louër",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "U. Simbakoli",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Mouton",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Allevinah",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Zinga",
+        "number": 16,
+        "pos": "G",
+        "grid": null
+      }
+    ]
+  }
+}

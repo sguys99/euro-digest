@@ -1,0 +1,164 @@
+{
+  "slug": "lyon",
+  "nameKo": "리옹",
+  "nameEn": "Olympique Lyonnais",
+  "short": "LYO",
+  "comp": "LIGUE1",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#14387F"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-26T19:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Ernest Nuamah",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Zachary Athekame",
+      "goals": 2,
+      "assists": 3
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1552800",
+    "kickoff": "2026-10-26T19:30:00.000Z",
+    "comp": "LIGUE1",
+    "side": "away",
+    "opponent": "paris-saint-germain",
+    "startXI": [
+      {
+        "name": "D. Greif",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Z. Athekame",
+        "number": 13,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "F. Bacher",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "M. Niakhaté",
+        "number": 19,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Abner",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "T. Tessmann",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "T. Morton",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "C. Tolisso",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "E. Nuamah",
+        "number": 7,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "K. Merah",
+        "number": 18,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "J. Duranville",
+        "number": 24,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "N. Nartey",
+        "number": 99,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Kluivert",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Boudache",
+        "number": 26,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Bidstrup",
+        "number": 2,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Descamps",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Hamdani",
+        "number": 44,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Himbert",
+        "number": 45,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "N. Kamara",
+        "number": 85,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Clinton Mata",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "slug": "rb-leipzig",
+  "nameKo": "라이프치히",
+  "nameEn": "RB Leipzig",
+  "short": "RBL",
+  "comp": "BUNDESLIGA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#FFFFFF",
+    "#DD0741"
+  ],
+  "formation": {
+    "shape": "4-5-1",
+    "source": "api",
+    "updated": "2026-10-24T13:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Christopher Nkunku",
+      "goals": 4,
+      "assists": 1
+    },
+    {
+      "name": "Antonio Nusa",
+      "goals": 3,
+      "assists": 5
+    },
+    {
+      "name": "Tidiam Gomis",
+      "goals": 3,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-5-1",
+    "match": "af-1575195",
+    "kickoff": "2026-10-24T13:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "elversberg",
+    "startXI": [
+      {
+        "name": "Ørjan Nyland",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Benjamin Henrichs",
+        "number": 39,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Willi Orbán",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Maxime Estève",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Max Finkgräfe",
+        "number": 35,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Andrija Maksimović",
+        "number": 30,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "Rocco Reitz",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Neil El Aynaoui",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Ezechiel Banzuzi",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Antonio Nusa",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Tidiam Gomis",
+        "number": 27,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Rômulo",
+        "number": 40,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Brajan Gruda",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Nicolas Seiwald",
+        "number": 13,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Christoph Baumgartner",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Abdoul Kone",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Maarten Vandevoordt",
+        "number": 26,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "David Raum",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ridle Baku",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Castello Lukeba",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

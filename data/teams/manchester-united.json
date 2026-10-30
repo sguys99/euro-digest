@@ -1,0 +1,35 @@
+{
+  "slug": "manchester-united",
+  "nameKo": "맨체스터 유나이티드",
+  "nameEn": "Manchester United FC",
+  "short": "MUN",
+  "comp": "EPL",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#CD271A",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Bryan Mbeumo",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Bruno Fernandes",
+      "goals": 3,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

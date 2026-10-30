@@ -388,12 +388,13 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [x] M2-05 `names.ko.json` 팀명 전체(~110팀) + `team-colors.json`(2색 + 영문 약어) — Claude Code가 초안 작성 → 🙋 사용자 검토 (DR-05) — 2026-10-30 완료: names.ko 111팀(별칭 보충 4 — 'AEK Athens FC'·'Estac Troyes'(M2-04 이월, 테스트 예외 해제)·'Malaga'·'Deportivo La Coruna', Viking FK = '비킹' 추가로 확인 대기 0) · `team-colors.json` 111팀 = 원본 `docs/design/d1/team-colors-source.json`(원색 2색·tla·확신도 확실 58/추정 53·출처) → `scripts/build-team-colors.ts --write`(D62 ④ 보정 `src/lib/kit-contrast.ts` — 29팀 보정 · 최저 대비 5.30 스포르팅 CP · 최저 f 0.74 사수올로 · 남색 글자 39팀), 약어 = tla trim + 예외 BOD(보되/글림트 'FK')·STR(스트라스부르 'RC '), FCB·BRE 충돌 유지(D62 ②) · validate 교차 참조 6(키 ⊂ team-ids · 빠진 팀 경고 · 대비 5.3) · 검토 시트 `docs/design/d1/team-colors-review.html`(`scripts/build-team-colors-review.ts`). 🙋 사용자 결정: 초안 승인(추정 포함 확정 — 틀린 색은 운영 중 원본만 고쳐 재생성) · 비킹 · BOD·STR·LIN · **약어 글자색은 화면 빌드 때 `kitTextColor`로 계산**(Team 스키마·토큰 변경 없음 — DESIGN §11.14, DECISIONS D1 §5 #4) · 원색은 원본 JSON(스키마 변경 없음)·추정 색도 일반 배지(오케스트레이터 결정)
   - 🆕 M2-04 이월 메모(2026-10-30): 대상 111팀(team-ids.json). names.ko 영문 별칭 누락 'AEK Athens FC'·'Estac Troyes' 2건 — D60 결과 보충 이름 교차 확인이 연결하지 못함(테스트에 알려진 예외로 고정, 별칭 추가 후 해제). teams fixtures `clubColors`(예 "Red / White")를 2색 초안 힌트로 사용 가능. 팀 파일 생성기는 순수 함수 `scripts/lib/team-files.ts` 권장
   - 🆕 D1 이월 메모(2026-10-28, D62): 키트 색은 약어 글자 대비 하한 5.3 보정 규칙으로 넣는다(`docs/design/d1/scope.md` §4 — 시안 기준 50팀 중 14팀 보정). 약어 충돌(FCB·BRE)은 한글 팀명 병기로 구분 — 표시 약어 필드 추가 없음. 스트라스부르 tla `"RC "` 끝 공백 정리. 🙋 **팀시트 선수명 표기 결정 필요**: 라인업 선수를 사전에 일괄 등록 vs 미등록 선수가 있으면 그 팀 명단 전체 원어 표기(시안은 한글 3명 + 영문 원문 혼합)
-- [ ] M2-06 주요 선수: 팀 내 득점·도움 상위 3명 (FR-54)
-- [ ] M2-07 포메이션 (D27): M1-48이 쌓은 라인업(`lineups[].formation`)의 최빈값 — 추가 API 호출 없음. `formations.json` 수동은 보조(수집 초기 경기 수 부족·데이터 누락 팀), 둘 다 없으면 미표시. `Team.formation.source`는 `api`/`manual` (FR-55)
+- [x] M2-06 주요 선수: 팀 내 득점·도움 상위 3명 (FR-54) — 2026-10-30 완료: `scripts/lib/team-files.ts` `topPlayersOf` — football-data 대표 대회(comp) 득점 순위만(시즌 누적, 원장과 섞지 않음 — 오케스트레이터 결정), 골↓→도움↓(null 뒤)→이름, 100명 잘림이면 최솟값 골 제외 → 98/111팀(빈 13팀 — UCL만 8·토트넘·발렌시아·샬케·로리앙·트루아), 이름은 원문 저장·표시 때 names.ko(D63 ①), 화면 표기 "리그 시즌 누적"
+- [x] M2-07 포메이션 (D27): M1-48이 쌓은 라인업(`lineups[].formation`)의 최빈값 — 추가 API 호출 없음. `formations.json` 수동은 보조(수집 초기 경기 수 부족·데이터 누락 팀), 둘 다 없으면 미표시. `Team.formation.source`는 `api`/`manual` (FR-55) — 2026-10-30 완료: 원장 최빈값(6개 대회 경기만·동률 = 최근 사용 우선·updated = 센 경기 마지막 킥오프) → api 109·none 2(le-havre·marseille — 원장 포메이션 null), `configs/formations.json` 빈 파일(원장 3경기 미만이면 수동 우선) · 팀시트 `Team.lineup`(D63 ② — 단일 lineup, 부록 A) — `scripts/build-teams.ts --backfill`로 API-Football `/fixtures?id=` 40경기(+`/status` 1) → 78팀, 재조회 포메이션이 원장과 다르면 팀시트 숨김(첼시·샬케) · 111팀 `data/teams` 생성(결정적 — 재실행 쓰기 0) · validate 팀 파일 교차 참조 추가 · 남은 백필 21경기/31팀(UCL만 뛰는 팀 위주) → M2-09
   - 🆕 D1 이월 메모(2026-10-28): 팀시트(D1 혼합안 B 구역)는 최빈 포메이션 + 그 포메이션의 최근 선발 11·교체 명단을 쓴다 — 최빈값 동률 규칙 필요(시안 데이터에서 우니온 베를린 1:1)
 - [x] M2-08 `bigmatch-rules.json`(더비 목록·가중치) + "오늘 밤 볼 경기" 선별 로직 + 테스트 (FR-80~82, FR-84) — 2026-10-30 완료: `configs/bigmatch-rules.json`(가중치 FR-81 순서 한국 5·UCL 4·상위 6위 맞대결 4·더비 4·승점 차 3 이내 2·빅클럽 1, minScore 0, 더비 22개 — 같은 리그·team-ids slug 테스트, 빅클럽 16곳, 근거 `configs/README`) + `src/lib/tonight.ts` 순수 선별(창 18:00~익일 07:00 KST — 기준 날짜 = 빌드 시각 KST 날짜, tbc·연기 제외, ③⑤ 리그 순위만·1경기 이상, 동점 = 킥오프 → 대회 순서 → id, 상위 5) + `src/lib/data/tonight.ts` 로더(새 data 파일 없음). 이유 태그 = 사실만(D62 ③): "{선수} 소속"·더비 이름·"a·b위 맞대결"·"승점 차 n · a·b위", UCL·빅클럽은 태그 없음. 실데이터 10-30~11-05 선별 5·5·5·5·5·5·0(11-05 목은 6개 대회 경기 없음 → 빈 상태). 테스트 30개(창 경계·서머타임 10-25·03-28·tbc·동점·비활성 선수) · 🙋 가중치(한국 5가 주말 상위 독점 — 예 11-01 리버풀–아스널 3위)·더비 한글 이름은 관찰 후 사용자 검토
   - 🆕 D1 이월 메모(2026-10-28, D62): 이유 태그는 데이터로 확인되는 사실만 — "{선수} 소속"(라인업 발표 전 출전 예상 금지)·"승점 차 n"·더비(목록에 있을 때)
 - [ ] M2-09 `collect.yml`에 축구 데이터 단계 통합, API 호출 수 `runs.json` 기록
+  - 🆕 M2-06·07 이월 메모(2026-10-30): API-Football 단계 다음 `teamSheetsFromDetails(afResult.details)` → 원장·대회 단계 뒤 `buildTeamFiles({previous, sheets})` → 봇 커밋 경로에 `data/teams` 추가(configs가 바뀌면 검증 게이트 전에 재생성 — 팀 파일 교차 참조). 봇 백필 제안: 브리핑 뒤 `min(60 − 사용, 5)`건, 받은 id는 캐시(예 `data/cache/lineup-backfill.json`)로 `exclude` — 비용 0, 약 5일. npm 스크립트 `build:teams`
   - 🆕 M2-03 이월 메모(2026-10-30): 대회 단계는 브리핑 뒤·08:00 KST 전에 돌려야 다음 날 브리핑 기준(D-1 아침 스냅숏)이 된다. 보강은 단계 기본값. 연결 후 로그 `prevStates`가 `ok`인지 확인, `prevAvailable`·`prevMoved`를 모아 지시문 v0.5 결정 재료로
   - 🆕 M2-02 이월 메모(2026-10-30): 대회 단계는 약 140초·브리핑과 같은 football-data 큐 → 브리핑 마감 뒤 실행 권장, `apiCalls`를 runs.json `footballData`에 합산, 득점자 600명의 미등록 이름 적재는 대회별 상위 N명으로 제한 제안, npm 스크립트 `fetch:competitions` 추가
 
@@ -405,6 +406,7 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 🆕 M2-03 이월 메모(2026-10-30): `prevPos` null이면 ▲▼ 대신 '–'(첫 수집·승격 팀 — 텍스트 병기), `form` 0~5칸 오른쪽이 최근, 승부차기 경기 D, UCL은 UCL 경기만
 - [ ] M2-12 UCL 리그 페이즈 순위표 + 녹아웃 대진 자동 전환 구조 (FR-43)
 - [ ] M2-13 `/teams/[team]`: 헤더(배지·순위·폼·다음 경기), 일정·결과, 득점 상위, 주요 선수, 포메이션 피치, 관련 뉴스(30일), 소속 한국 선수 자리 (FR-50~52, FR-54~58)
+  - 🆕 M2-06·07 이월 메모(2026-10-30): `lineup` null이면 피치·명단 숨김, grid가 11개 모두 있을 때만 피치(아니면 명단만), 이름은 원문·`korean` slug 선수만 korean-players nameKo. `formation` null이면 숨김. topPlayers는 names.ko 치환 + "리그 시즌 누적", API-Football 출처 병기(FR-45)
   - 🆕 M2-05 이월 메모(2026-10-30): 팀 배지·팀 티켓 스텁·피치 등번호 칸의 `--kf`는 서버 컴포넌트가 `kitTextColor(colors[0])`(`src/lib/kit-contrast.ts`)로 계산해 인라인 변수로 넣는다(DESIGN §11.14 — 데이터·토큰에 글자색 없음). `data/teams/<slug>.json`의 `colors`·`short`는 `configs/team-colors.json`에서 복사(M2-11·M2-14·M2-15 배지도 같은 함수)
 - [ ] M2-14 `/tonight` + 홈 "오늘 밤 볼 경기" 섹션 (FR-80~82; ics 버튼은 M4)
   - 🆕 M2-08 이월 메모(2026-10-30): 서버 컴포넌트에서 `loadTonight()` → `picks` 순서 그대로, window null·picks 빈 배열 = 빈 상태. 태그는 `reasons[].label` 그대로, `kind:"korean"`이면 한국 완장, reasons 없으면 태그 줄 숨김. 저녁 빌드에서는 `finished` 경기가 섞일 수 있음(스코어·스포일러 처리). 대회 데이터 로더가 `src/lib/data/tonight.ts` 안에 있음 — M2-10 공용 로더로 빼면 교체
@@ -704,6 +706,14 @@ const Match = z.object({
   tbc: z.literal(true).optional(), // 킥오프 미확정(football-data SCHEDULED 또는 먼 라운드 동일 킥오프 기본 슬롯, 마지막 라운드 제외) — 화면은 날짜 + "임시", 확정 경기는 생략 (2026-10-30 사용자 결정, M2-02)
 });
 
+// M2-07 팀시트 (D63 ②) — 이름은 API-Football 원문(D63 ① 팀시트 원어 고정), 한국 선수만 korean slug
+const TeamSheetPlayer = z.object({ name: z.string(), number: z.number().int().min(0).max(99).nullable(),
+  pos: z.enum(["G", "D", "M", "F"]).nullable(), grid: z.string().regex(/^\d+:\d+$/).nullable(),  // grid "줄:칸", 교체는 null
+  korean: Slug.optional() });
+const TeamLineup = z.object({ formation: FormationShape, match: z.string().regex(/^af-[1-9]\d*$/), kickoff: Iso,
+  comp: CompId, side: z.enum(["home", "away"]), opponent: Slug,
+  startXI: z.array(TeamSheetPlayer).length(11), substitutes: z.array(TeamSheetPlayer).max(30) });
+
 // data/teams/{team}.json
 const Team = z.object({
   slug: Slug, nameKo: z.string(), nameEn: z.string(), short: z.string().max(4),
@@ -718,6 +728,7 @@ const Team = z.object({
   }).nullable(),
   koreanPlayers: z.array(Slug),
   reading: z.array(z.object({ title: z.string(), url: HttpUrl, source: z.string() })),
+  lineup: TeamLineup.nullable().default(null),  // 팀시트 — 주 포메이션을 쓴 최근 1경기(lineup.formation = formation.shape, opponent ≠ slug). 출전 시간 등 선수 기록 저장 안 함 (D63 ②, 2026-10-30 — 단일 lineup은 오케스트레이터 결정: 최빈값은 새 경기의 포메이션으로만 바뀌므로 포메이션별 보관과 결과가 같다)
 });
 
 // configs/team-ids.json (PRD §15 D33 ⑤, M1-44, 2026-10-13) — 팀 slug → 두 데이터 API 팀 id

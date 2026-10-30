@@ -1,0 +1,28 @@
+{
+  "slug": "sporting-cp",
+  "nameKo": "스포르팅 CP",
+  "nameEn": "Sporting Clube de Portugal",
+  "short": "SPO",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#007B54",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-21T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Luis Suárez",
+      "goals": 4,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

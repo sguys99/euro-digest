@@ -1,0 +1,171 @@
+{
+  "slug": "lille",
+  "nameKo": "릴",
+  "nameEn": "Lille OSC",
+  "short": "LIL",
+  "comp": "LIGUE1",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#D31C12",
+    "#1B2B4D"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-25T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Olivier Giroud",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Dilane Bakwa",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Ayase Ueda",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1552797",
+    "kickoff": "2026-10-25T14:00:00.000Z",
+    "comp": "LIGUE1",
+    "side": "away",
+    "opponent": "monaco",
+    "startXI": [
+      {
+        "name": "B. Özer",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "N. Ngoy",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "T. Nianzou",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Alexsandro Ribeiro",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "R. Perraud",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "N. Mukau",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "N. Bentaleb",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "B. André",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "E. Mbappé",
+        "number": 8,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "H. Haraldsson",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "S. Diaoune",
+        "number": 35,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "D. Bakwa",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "I. Cossier",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. Gill",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "O. Giroud",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Goffi",
+        "number": 38,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Kjærgaard",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. Perrin",
+        "number": 28,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Verdonk",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Matah Yondjio",
+        "number": 33,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "slug": "slovan-bratislava",
+  "nameKo": "슬로반 브라티슬라바",
+  "nameEn": "ŠK Slovan Bratislava",
+  "short": "SBA",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#5CB4E8",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-1-4-1",
+    "source": "api",
+    "updated": "2026-10-20T19:00:00.000Z"
+  },
+  "topPlayers": [],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

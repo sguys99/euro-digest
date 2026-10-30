@@ -1,0 +1,28 @@
+{
+  "slug": "club-brugge",
+  "nameKo": "클럽 브뤼헤",
+  "nameEn": "Club Brugge KV",
+  "short": "BRU",
+  "comp": "UCL",
+  "alsoIn": [],
+  "colors": [
+    "#0067CE",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-21T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Nicolo Tresoldi",
+      "goals": 4,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

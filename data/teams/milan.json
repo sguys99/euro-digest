@@ -1,0 +1,199 @@
+{
+  "slug": "milan",
+  "nameKo": "AC 밀란",
+  "nameEn": "AC Milan",
+  "short": "MIL",
+  "comp": "SERIEA",
+  "alsoIn": [],
+  "colors": [
+    "#D80809",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-28T17:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Adrien Rabiot",
+      "goals": 4,
+      "assists": 3
+    },
+    {
+      "name": "Alphadjo Cisse",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Diego Moreira",
+      "goals": 3,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1550167",
+    "kickoff": "2026-10-28T17:30:00.000Z",
+    "comp": "SERIEA",
+    "side": "home",
+    "opponent": "bologna",
+    "startXI": [
+      {
+        "name": "M. Maignan",
+        "number": 16,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "F. Tomori",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "K. De Winter",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "S. Pavlović",
+        "number": 31,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "P. Estupiñán",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Y. Musah",
+        "number": 80,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "A. Jashari",
+        "number": 30,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "O. Hutchinson",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "A. Cissè",
+        "number": 70,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "D. Bartesaghi",
+        "number": 33,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Gonçalo Ramos",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Silvano Vos",
+        "number": 55,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Camarda",
+        "number": 73,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. P. Bouyer",
+        "number": 41,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "C. Comotto",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Bocoum",
+        "number": 13,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Modrić",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. Ossola",
+        "number": 40,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "C. Pulišić",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Terracciano",
+        "number": 42,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Torriani",
+        "number": 96,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "V. Vladimirov",
+        "number": 35,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Perera",
+        "number": 47,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Luka Menon",
+        "number": 49,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "El Hadji Malick Cissé",
+        "number": 48,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "slug": "osasuna",
+  "nameKo": "오사수나",
+  "nameEn": "CA Osasuna",
+  "short": "OSA",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#D01920",
+    "#0A346F"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-26T20:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Ante Budimir",
+      "goals": 7,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1570431",
+    "kickoff": "2026-10-26T20:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "sevilla",
+    "startXI": [
+      {
+        "name": "Aitor Fernández",
+        "number": 13,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "V. Rosier",
+        "number": 19,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Catena",
+        "number": 24,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "F. Boyomo",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Abel Bretones",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Moncayola",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Lucas Torró",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Moi Gómez",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Rubén García",
+        "number": 14,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "A. Budimir",
+        "number": 17,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "Jonathan Dubasin",
+        "number": 21,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Sergio Herrera",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Rafa Fernández",
+        "number": 31,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Íñigo Arguibide",
+        "number": 27,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "U. Santos",
+        "number": 35,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Asier Osambela",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Yeboah",
+        "number": 48,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Diego Rico",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Mauro Echegoyen",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Raul Moro",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Iker Muñoz",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Raúl García",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Kike Barja",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "slug": "lens",
+  "nameKo": "랑스",
+  "nameEn": "Racing Club de Lens",
+  "short": "RCL",
+  "comp": "LIGUE1",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#FFD200",
+    "#E2001A"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-24T18:45:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Florian Thauvin",
+      "goals": 4,
+      "assists": 8
+    },
+    {
+      "name": "Franjo Ivanovic",
+      "goals": 2,
+      "assists": null
+    },
+    {
+      "name": "Matthieu Udol",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1552795",
+    "kickoff": "2026-10-24T18:45:00.000Z",
+    "comp": "LIGUE1",
+    "side": "home",
+    "opponent": "paris-fc",
+    "startXI": [
+      {
+        "name": "R. Risser",
+        "number": 40,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "R. Aguilar",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "S. Baidoo",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "J. Todibo",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Saud Abdulhamid",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "M. Cuisance",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "A. Haidara",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "M. Udol",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "F. Thauvin",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "F. Sotoca",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "F. Ivanović",
+        "number": 29,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "T. Hazard",
+        "number": 9,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Gorgelin",
+        "number": 16,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Soares",
+        "number": 38,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Y. Titraoui",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Äelik",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Kadile",
+        "number": 28,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "K. Antonio",
+        "number": 32,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Bulatović",
+        "number": 5,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Skóraś",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}
