@@ -51,6 +51,7 @@ export function NewsFeed({
   id = "feed",
   filter,
   scope,
+  meta = true,
 }: {
   news: NewsFile | null;
   /** 카드 제목 단계 — 섹션 머리 바로 아래 단계(기본 h3) */
@@ -63,6 +64,8 @@ export function NewsFeed({
   filter?: NewsFilterView;
   /** 범위 피드(대회 페이지 — 위 `FeedScope`). `filter`와 함께 쓰지 않는다 */
   scope?: FeedScope;
+  /** 건수·설명 부제 줄을 둘지(기본 true). 팀 화면 관련 뉴스(M2-13)는 호별 묶음이라 부제를 섹션에 한 번만 둔다 */
+  meta?: boolean;
 }) {
   if (scope && news && !news.cards.some(scope.match)) {
     return <EmptyState hasIssue message={scope.empty} />;
@@ -75,6 +78,7 @@ export function NewsFeed({
       id={id}
       filter={filter}
       scope={scope}
+      meta={meta}
     />
   ) : (
     <EmptyState hasIssue={news !== null} />
@@ -110,6 +114,7 @@ function Feed({
   id,
   filter,
   scope,
+  meta,
 }: {
   news: NewsFile;
   titleAs: TitleAs;
@@ -117,6 +122,7 @@ function Feed({
   id: string;
   filter: NewsFilterView | undefined;
   scope: FeedScope | undefined;
+  meta: boolean;
 }) {
   // 번호는 그 호 전체 순서로 매긴 뒤 범위로 거른다(게재 번호 유지 — FeedScope)
   const all = buildFeed(news.cards, {
@@ -129,30 +135,32 @@ function Feed({
   const menuId = cardMenuId(id);
   return (
     <>
-      <p className="mt-0.75 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-[13px] text-ink-2">
-        <span>
-          {/* 건수·설명 — 필터가 "4건 · 이적", "8건 · 프리미어리그 · 이적"처럼 바꾼다. 전체 피드는 파일 순서 = 중요도 순 */}
-          <span
-            className="tabular-nums"
-            {...(filter
-              ? { "data-nf-count": "", suppressHydrationWarning: true }
-              : {})}
-          >
-            {items.length}
+      {meta ? (
+        <p className="mt-0.75 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-[13px] text-ink-2">
+          <span>
+            {/* 건수·설명 — 필터가 "4건 · 이적", "8건 · 프리미어리그 · 이적"처럼 바꾼다. 전체 피드는 파일 순서 = 중요도 순 */}
+            <span
+              className="tabular-nums"
+              {...(filter
+                ? { "data-nf-count": "", suppressHydrationWarning: true }
+                : {})}
+            >
+              {items.length}
+            </span>
+            건 ·{" "}
+            <span
+              {...(filter
+                ? { "data-nf-desc": "", suppressHydrationWarning: true }
+                : {})}
+            >
+              {scope ? scope.desc : FILTER_DESC_DEFAULT}
+            </span>
           </span>
-          건 ·{" "}
-          <span
-            {...(filter
-              ? { "data-nf-desc": "", suppressHydrationWarning: true }
-              : {})}
-          >
-            {scope ? scope.desc : FILTER_DESC_DEFAULT}
+          <span className="text-xs">
+            작은 번호는 이 호의 게재 번호(순위 아님)
           </span>
-        </span>
-        <span className="text-xs">
-          작은 번호는 이 호의 게재 번호(순위 아님)
-        </span>
-      </p>
+        </p>
+      ) : null}
       {filter ? <NewsFilterChips view={filter} /> : null}
       {/* list-style: none인 목록의 의미를 Safari가 지우지 않게 role="list"(DESIGN §9.3 5줄 행과 같은 처리) */}
       <ol id={id} role="list" className="mt-1.5 border-t border-rule">

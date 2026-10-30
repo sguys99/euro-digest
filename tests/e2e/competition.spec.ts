@@ -68,7 +68,11 @@ test.describe("보기 탭 · 라운드 이동 · 행 펼침", () => {
     const visible = page.locator("[data-rounds] > [data-round]:visible");
     await expect(visible).toHaveCount(1);
     const current = await visible.getAttribute("id");
-    const next = visible.getByRole("link").last();
+    // 팀 이름도 링크라(M2-13) 라운드 이동 내비 안의 링크만
+    const next = visible
+      .getByRole("navigation", { name: "라운드 이동" })
+      .getByRole("link")
+      .last();
     const target = (await next.getAttribute("href"))!.slice(1);
     await next.click();
     await expect(page).toHaveURL(new RegExp(`#${target}$`));
@@ -98,8 +102,8 @@ test.describe("보기 탭 · 라운드 이동 · 행 펼침", () => {
     await button.click();
     await expect(button).toHaveAttribute("aria-expanded", "true");
     await expect(page.locator(`#${detailId}`)).toBeVisible();
-    // 행(팀 칸)을 눌러도 같은 버튼 — 다시 닫힌다
-    await page.locator("tr[data-row]").first().locator("th").click();
+    // 행(경기 수 칸)을 눌러도 같은 버튼 — 다시 닫힌다(팀 이름은 팀 화면 링크라 행 누름에서 빠진다 — M2-13)
+    await page.locator("tr[data-row]").first().locator("td").nth(1).click();
     await expect(button).toHaveAttribute("aria-expanded", "false");
     await expect(page.locator(`#${detailId}`)).toBeHidden();
   });

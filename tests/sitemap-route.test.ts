@@ -29,6 +29,12 @@ const { loadAllCompetitionData } = vi.hoisted(() => ({
   >(() => []),
 }));
 vi.mock("@/lib/data/competition-data", () => ({ loadAllCompetitionData }));
+// 팀 페이지(M2-13) — 저장소 data/teams 대신 테스트가 정한 팀(기본 없음)
+const { listTeamSlugs, loadTeam } = vi.hoisted(() => ({
+  listTeamSlugs: vi.fn<() => string[]>(() => []),
+  loadTeam: vi.fn((slug: string) => ({ slug, comp: "EPL" })),
+}));
+vi.mock("@/lib/data/teams", () => ({ listTeamSlugs, loadTeam }));
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -92,5 +98,24 @@ describe("sitemap 라우트", () => {
   it("발행된 호가 없으면(빈 data/news) 홈·/about/만", () => {
     listNewsDates.mockReturnValue([]);
     expect(sitemap()).toEqual([{ url: `${SITE}/` }, { url: `${SITE}/about/` }]);
+  });
+
+  it("팀 파일이 있으면 대회 다음에 팀 페이지(lastmod = 대표 대회 updatedAt, 데이터가 없으면 생략)", () => {
+    loadAllCompetitionData.mockReturnValueOnce([
+      { comp: "EPL", updatedAt: "2026-10-30T02:17:27.762Z" },
+    ]);
+    listTeamSlugs.mockReturnValueOnce(["arsenal", "club-brugge"]);
+    loadTeam.mockImplementation((slug: string) => ({
+      slug,
+      comp: slug === "arsenal" ? "EPL" : "UCL",
+    }));
+    const teams = sitemap().filter((e) => e.url.includes("/teams/"));
+    expect(teams).toEqual([
+      {
+        url: `${SITE}/teams/arsenal/`,
+        lastModified: "2026-10-30T02:17:27.762Z",
+      },
+      { url: `${SITE}/teams/club-brugge/` },
+    ]);
   });
 });

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { expect, test } from "@playwright/test";
@@ -36,6 +36,13 @@ const COMPETITION_SEGMENTS = [
   "ligue1",
   "ucl",
 ].filter((c) => existsSync(path.resolve("data/competitions", `${c}.json`)));
+/** 팀 페이지(M2-13) — 팀 파일(data/teams)마다, slug 순 */
+const TEAM_SLUGS = existsSync(path.resolve("data/teams"))
+  ? readdirSync(path.resolve("data/teams"))
+      .filter((f) => f.endsWith(".json"))
+      .map((f) => f.slice(0, -5))
+      .sort()
+  : [];
 
 interface HeadMeta {
   urlPath: string;
@@ -103,13 +110,14 @@ test("빌드 결과 — out/sitemap.xml이 있고 robots.txt는 없다(M5 결정
   expect(existsSync(path.join(outDir, "robots.txt"))).toBe(false);
 });
 
-test("sitemap.xml — 홈 · /about/ · 대회 페이지(M2-10) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
+test("sitemap.xml — 홈 · /about/ · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
   const entries = readSitemap();
   const locs = entries.map((e) => e.loc);
   expect(locs).toEqual([
     `${SITE}/`,
     `${SITE}/about/`,
     ...COMPETITION_SEGMENTS.map((c) => `${SITE}/competitions/${c}/`),
+    ...TEAM_SLUGS.map((t) => `${SITE}/teams/${t}/`),
     ...DATES.map((date) => `${SITE}/news/${date}/`),
   ]);
   expect(locs).not.toContain(`${SITE}/news/`);

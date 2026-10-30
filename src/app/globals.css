@@ -892,6 +892,12 @@
     line-height: 1;
     font-variant-numeric: tabular-nums lining-nums;
   }
+  /* 팀 칸이 팀 화면 링크(M2-13 — team-link)면 줄 높이 전체(위아래 안쪽 여백 포함 46/54px)를 누름 영역으로 */
+  & > a[data-h],
+  & > a[data-a] {
+    align-self: stretch;
+    margin-block: -6px;
+  }
   & > [data-x] {
     grid-column: 1 / -1;
     padding-top: 2px;
@@ -934,5 +940,43 @@
   @variant lg {
     padding-inline: 8px;
     font-size: 16px;
+  }
+}
+
+/* ── 11. 팀 이름 링크 · 팀시트 피치 (M2-13, DESIGN §9.3 "팀 화면 틀"·"팀시트" · §10 터치 타깃 44px) ─────────────────────
+ * - team-link: 순위표 팀 칸·라운드 경기 줄·팀 화면의 팀 이름 → `/teams/{slug}/`. 줄마다(시즌 380경기 × 2) 반복돼 짧은 유틸리티로 묶었다.
+ *   누름 영역은 `::after`로 위아래 가운데 44px 이상(줄 높이 46px 안 — 이웃 줄과 겹치지 않는다), hover는 글자에 2px --brand-accent 밑줄
+ *   (3px 띄움 — 배지는 inline-grid라 밑줄이 번지지 않는다). 포커스 링은 전역 :focus-visible 규칙.
+ * - pitch-spot: 피치 선수 칸 — 좌표는 빌드 때 계산한 `--a`(행 위치 %, 골문 → 공격)·`--c`(열 위치 %, 왼쪽 → 오른쪽) 두 변수. 1023 이하 세로
+ *   (left = c · top = a), 1024 이상 가로(left = 100% − a · top = c) — 같은 DOM을 CSS가 돌린다(DESIGN §9.3 팀시트). 등번호 상자 가운데가 좌표.
+ */
+@utility team-link {
+  position: relative;
+  color: inherit;
+  text-decoration-line: none;
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: max(100%, 44px);
+    translate: 0 -50%;
+  }
+  &:hover {
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--brand-accent);
+    text-underline-offset: 3px;
+  }
+}
+
+@utility pitch-spot {
+  position: absolute;
+  left: calc(var(--c) * 1%);
+  top: calc(var(--a) * 1%);
+  translate: -50% -17px;
+  @variant lg {
+    left: calc(100% - var(--a) * 1%);
+    top: calc(var(--c) * 1%);
   }
 }

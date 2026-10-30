@@ -102,10 +102,12 @@ for (const target of targets) {
       const small: string[] = [];
       const inline: string[] = [];
       let checked = 0;
+      // 닫힌 <details>의 내용(summary 밖)은 그리지 않아 누를 수 없다(Chrome — content-visibility: hidden, 팀 화면 접힌 일정 M2-13)
       const visible = (el: Element) =>
         el.getClientRects().length > 0 &&
         getComputedStyle(el).visibility !== "hidden" &&
-        !el.closest(".sr-only");
+        !el.closest(".sr-only") &&
+        !el.closest("details:not([open]) > :not(summary)");
       const nameOf = (el: Element) =>
         (el.getAttribute("aria-label") ?? el.textContent ?? "")
           .trim()

@@ -42,6 +42,8 @@ export interface TeamView {
   short: string;
   /** [상의, 하의] — 없으면 폴백 배지 */
   colors: readonly [string, string] | null;
+  /** 팀 페이지(`/teams/{slug}/` — M2-13)가 있다 — 이름을 팀 화면 링크로 그린다. 없거나 false면 글자만(없는 페이지로 가는 링크 금지) */
+  page?: boolean;
 }
 
 /** 팀 slug → 화면 팀(이름·배지) — 호출부가 사전·색 표로 만든다 */

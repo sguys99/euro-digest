@@ -12,6 +12,7 @@ import {
   sitemapEntries,
   TITLE_TEMPLATE,
   competitionDescription,
+  teamDescription,
 } from "@/lib/seo";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
@@ -289,5 +290,37 @@ describe("sitemapEntries — sitemap.xml 항목", () => {
     expect(() =>
       sitemapEntries([{ date: "2026-13-01", generatedAt: "x" }]),
     ).toThrow();
+  });
+});
+
+describe("teamDescription — 팀 페이지 설명(M2-13)", () => {
+  it("팀명·리그·시즌과 실린 것·출처만 — 스코어 모양 없음", () => {
+    const text = teamDescription("바이에른 뮌헨", "분데스리가", "2026-27 시즌");
+    expect(text.startsWith("바이에른 뮌헨(분데스리가) 2026-27 시즌 ")).toBe(
+      true,
+    );
+    expect(text).toContain("API-Football");
+    expect(hasScoreLike(text)).toBe(false);
+    expect(teamDescription("클뤼프 브뤼허", null, "2026-27 시즌")).toMatch(
+      /^클뤼프 브뤼허 2026-27 시즌 /,
+    );
+  });
+
+  it("sitemapEntries — 팀 페이지는 대회 다음, lastmod 없으면 생략", () => {
+    const urls = sitemapEntries(
+      [],
+      [{ comp: "EPL", updatedAt: "2026-10-30T00:00:00Z" }],
+      [
+        { slug: "arsenal", updatedAt: "2026-10-30T00:00:00Z" },
+        { slug: "club-brugge", updatedAt: null },
+      ],
+    ).filter((e) => e.url.includes("/teams/"));
+    expect(urls).toEqual([
+      {
+        url: "https://sguys99.github.io/euro-digest/teams/arsenal/",
+        lastModified: "2026-10-30T00:00:00Z",
+      },
+      { url: "https://sguys99.github.io/euro-digest/teams/club-brugge/" },
+    ]);
   });
 });

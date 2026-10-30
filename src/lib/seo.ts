@@ -200,6 +200,24 @@ export function competitionDescription(name: string, season: string): string {
   return `${name} ${season} 순위표(순위 변동·최근 5경기), 라운드별 일정과 결과(한국 시간), 득점 순위, 관련 소식을 한 화면에 모았습니다. 순위·경기 데이터 football-data.org.`;
 }
 
+/**
+ * 팀 페이지 설명(M2-13) — 팀명·리그·시즌과 페이지에 실린 것·데이터 출처만. 순위·스코어는 넣지 않는다(결과 노출 0 — 대회 페이지와 같은 이유).
+ * 예) "바이에른 뮌헨(분데스리가) 2026-27 시즌 순위와 최근 경기, 일정과 결과(한국 시간), 주 포메이션과 팀시트, 득점 상위 선수, 관련 소식을 한 화면에 모았습니다. 데이터 football-data.org · API-Football."
+ */
+export function teamDescription(
+  name: string,
+  league: string | null,
+  season: string,
+): string {
+  return `${name}${league ? `(${league})` : ""} ${season} 순위와 최근 경기, 일정과 결과(한국 시간), 주 포메이션과 팀시트, 득점 상위 선수, 관련 소식을 한 화면에 모았습니다. 데이터 football-data.org · API-Football.`;
+}
+
+/** sitemap 팀 페이지(M2-13) — 팀 slug와 lastModified(그 팀 대표 대회 데이터 updatedAt — 없으면 생략) */
+export interface SitemapTeam {
+  slug: string;
+  updatedAt: string | null;
+}
+
 /** sitemap 대회 페이지 — 대회 ID와 그 데이터 파일의 updatedAt(API에서 마지막으로 받은 시각, UTC ISO) */
 export interface SitemapCompetition {
   comp: CompId;
@@ -215,7 +233,8 @@ export interface SitemapIssue {
 /**
  * sitemap.xml 항목 — 색인할 페이지의 canonical 절대 URL만(PRD FR-124).
  * - 홈(`lastModified` = 최신 호 generatedAt — 홈은 최신 호를 싣는다), `/about/`(lastModified 없음 — 설정이 바뀔 때만 바뀐다),
- *   대회 페이지(M2-10 — 데이터 파일이 있는 대회, 설정 순서, `lastModified` = 그 파일 updatedAt), 발행된 날짜 아카이브 전부
+ *   대회 페이지(M2-10 — 데이터 파일이 있는 대회, 설정 순서, `lastModified` = 그 파일 updatedAt), 팀 페이지(M2-13 — 팀 파일이 있는 팀,
+ *   slug 순, `lastModified` = 대표 대회 데이터 updatedAt), 발행된 날짜 아카이브 전부
  *   (`lastModified` = 그 호 generatedAt, 날짜 오름차순).
  * - `/news/`는 넣지 않는다 — 최신 날짜 페이지의 별칭(canonical이 그 날짜 페이지). 404·견본도 없다.
  * - 새 라우트(M2 대회·팀 등)를 만들면 여기에 넣는다 — e2e `tests/e2e/seo.spec.ts`가 out/의 색인 대상 페이지가 모두 sitemap에 있는지
@@ -224,6 +243,7 @@ export interface SitemapIssue {
 export function sitemapEntries(
   issues: readonly SitemapIssue[],
   competitions: readonly SitemapCompetition[] = [],
+  teams: readonly SitemapTeam[] = [],
 ): MetadataRoute.Sitemap {
   const sorted = [...issues].sort((a, b) => a.date.localeCompare(b.date));
   const latest = sorted.at(-1);
@@ -236,6 +256,10 @@ export function sitemapEntries(
     ...competitions.map((c) => ({
       url: absoluteUrl(routes.competition(c.comp)),
       lastModified: c.updatedAt,
+    })),
+    ...teams.map((t) => ({
+      url: absoluteUrl(routes.team(t.slug)),
+      ...(t.updatedAt ? { lastModified: t.updatedAt } : {}),
     })),
     ...sorted.map((issue) => ({
       url: absoluteUrl(routes.newsArchive(issue.date)),

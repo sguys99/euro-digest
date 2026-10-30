@@ -17,6 +17,7 @@ import { loadCompetitionData } from "@/lib/data/competition-data";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { readConfigFile } from "@/lib/data/config-file";
 import { loadTagLabels, NAMES_KO_PATH } from "@/lib/data/names";
+import { hasTeamPage, TEAMS_DIR } from "@/lib/data/teams";
 import {
   fallbackTeamName,
   type TeamLookup,
@@ -38,10 +39,14 @@ import { NamesKoFileSchema } from "@/lib/schema/names";
 /** 팀 배지 설정 위치(저장소 루트 기준) */
 export const TEAM_COLORS_PATH = path.resolve("configs/team-colors.json");
 
-/** 팀 slug → 한글명 + 배지(머리 주석). 색 표에 없는 팀은 폴백 배지(색·약어 없음), 사전에 없는 팀은 slug를 편 원어 */
+/**
+ * 팀 slug → 한글명 + 배지(머리 주석). 색 표에 없는 팀은 폴백 배지(색·약어 없음), 사전에 없는 팀은 slug를 편 원어.
+ * `page` = 팀 파일(`data/teams/{slug}.json`)이 있어 팀 페이지가 생기는 팀(M2-13 — 순위표·라운드의 팀 이름 링크)
+ */
 export function loadTeamLookup(
   colorsFile: string = TEAM_COLORS_PATH,
   namesFile: string = NAMES_KO_PATH,
+  teamsDir: string = TEAMS_DIR,
 ): TeamLookup {
   const colors = readConfigFile(
     colorsFile,
@@ -62,6 +67,7 @@ export function loadTeamLookup(
       latin: ko === null,
       short: badge?.short ?? "",
       colors: badge ? badge.colors : null,
+      page: hasTeamPage(slug, teamsDir),
     };
     cache.set(slug, view);
     return view;

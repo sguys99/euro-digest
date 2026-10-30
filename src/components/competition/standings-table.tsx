@@ -1,5 +1,8 @@
-import { ChevronDownIcon } from "@/components/ui/icons";
+import Link from "next/link";
+
+import { ChevronDownIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { TeamBadge } from "@/components/team/team-badge";
+import { TeamLink, TeamName } from "@/components/team/team-link";
 import {
   formView,
   goalDiffText,
@@ -10,6 +13,7 @@ import {
   type TeamLookup,
   type ZoneBand,
 } from "@/lib/competition-view";
+import { routes } from "@/lib/paths";
 import type { Match } from "@/lib/schema/competition";
 import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
@@ -28,8 +32,8 @@ import { StandingsIsland } from "./standings-island";
  * - 행 id = 팀 slug — 다른 화면에서 오는 링크(`/competitions/<comp>/#<팀>` — 홈 순위 미니 M2-15·팀 화면 리그 맥락 M2-13)는 도착
  *   강조(`:target`, slow — DECISIONS D1 §5 #9)를 받는다. 강조 면 `--paper-2`는 순위 칸(▲ 초록)·폼 칸(W 초록)에는 칠하지 않는다
  *   (초록 글자는 `--paper` 위에만 — D1 §5 #8).
- * - **팀 이름은 아직 링크가 아니다** — 팀 페이지(`/teams/[team]/`)는 M2-13에서 생긴다(없는 페이지로 가는 링크를 만들지 않는다 — plan §2.3).
- *   M2-13에서 팀 칸을 `next/link`로, 펼침 행 끝에 "{팀} 팀 화면 ›"을 더한다(이월 메모).
+ * - 팀 칸(배지 + 한글 팀명)은 팀 화면(`/teams/[team]/`, M2-13) 링크이고, 375 펼침 끝에 "{팀} 팀 화면 ›" 텍스트 링크가 있다(혼합안). 팀 파일이
+ *   없는 팀은 글자만(`TeamLink` — 없는 페이지로 가는 링크를 만들지 않는다). 행 누름(펼침)은 링크 클릭을 건드리지 않는다(섬).
  * - 배지는 옆 한글 팀명이 이름이라 `aria-hidden`(D1 §5 #5).
  */
 
@@ -238,10 +242,13 @@ function StandingRowLines({
           {...HL}
           className="border-b border-rule pl-0.5 text-left align-middle font-normal"
         >
-          <span className="flex min-h-13.5 items-center gap-2.25 py-2 text-[15px] leading-[1.25] font-extrabold tracking-[-0.02em] lg:min-h-15 lg:gap-3 lg:text-[17px]">
+          <TeamLink
+            team={view.team}
+            className="inline-flex min-h-13.5 items-center gap-2.25 py-2 text-[15px] leading-[1.25] font-extrabold tracking-[-0.02em] lg:min-h-15 lg:gap-3 lg:text-[17px]"
+          >
             <TeamBadge team={view.team} size="table" />
-            <span lang={view.team.latin ? "en" : undefined}>{name}</span>
-          </span>
+            <TeamName team={view.team} />
+          </TeamLink>
         </th>
         <td {...HL} className={NUM}>
           {row.played}
@@ -390,6 +397,15 @@ function RowDetail({
           </ul>
         ) : null}
       </div>
+      {view.team.page ? (
+        <Link
+          href={routes.team(row.team)}
+          className="inline-flex min-h-11 items-center gap-1 justify-self-start text-[13px] font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2"
+        >
+          <TeamName team={view.team} /> 팀 화면
+          <ChevronRightIcon size={16} />
+        </Link>
+      ) : null}
     </div>
   );
 }

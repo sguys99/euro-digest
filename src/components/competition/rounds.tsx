@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { TeamBadge } from "@/components/team/team-badge";
-import type { MatchView, RoundView, TeamView } from "@/lib/competition-view";
+import { TeamLink, TeamName } from "@/components/team/team-link";
+import type { MatchView, RoundView } from "@/lib/competition-view";
 import { cn } from "@/lib/utils";
 
 import { Score } from "./marks";
@@ -15,12 +16,8 @@ import { Score } from "./marks";
  *   (점선 상자 — 같은 모양). 임시 킥오프(`tbc`)는 시각 대신 "임시"(M2-02 이월). 연장·승부차기는 줄 아래 글자로 병기.
  * - `RoundBook`(일정·결과 탭): 모든 라운드를 그리고 CSS가 하나만 보인다 — 지금 라운드(`data-current`) 또는 주소 `#round-n`이 가리키는
  *   라운드(`:target` — globals.css §9). 라운드 이동은 앵커 링크라 JS 없이도 동작한다(FR-44). 탭 섬이 앵커가 가리키는 패널을 연다.
- * - 팀 이름은 아직 링크가 아니다(팀 페이지 M2-13 — 이월). 배지는 `aria-hidden`(옆 한글 팀명이 이름).
+ * - 팀 칸(이름 + 배지)은 팀 화면 링크(M2-13 — `TeamLink`, 팀 페이지가 있는 팀만, 누름 영역 위아래 44px). 배지는 `aria-hidden`(옆 한글 팀명이 이름).
  */
-
-function TeamName({ team }: { team: TeamView }) {
-  return <span lang={team.latin ? "en" : undefined}>{team.name}</span>;
-}
 
 /** 경기 줄 — 모양은 globals.css §10 `match-row`(시즌 380경기가 반복돼 짧은 유틸리티로 묶었다 — 자식 칸은 data-t·h·s·a·x) */
 function MatchRow({ view, full }: { view: MatchView; full: boolean }) {
@@ -43,10 +40,10 @@ function MatchRow({ view, full }: { view: MatchView; full: boolean }) {
           {view.time}
         </time>
       )}
-      <span data-h="">
+      <TeamLink team={view.home} data-h="">
         <TeamName team={view.home} />
         <TeamBadge team={view.home} size={badge} />
-      </span>
+      </TeamLink>
       <span data-s="">
         {state === "finished" && match.score ? (
           <Score h={match.score.h} a={match.score.a} />
@@ -54,10 +51,10 @@ function MatchRow({ view, full }: { view: MatchView; full: boolean }) {
           <span className="match-state">{STATE_TEXT[state]}</span>
         )}
       </span>
-      <span data-a="">
+      <TeamLink team={view.away} data-a="">
         <TeamBadge team={view.away} size={badge} />
         <TeamName team={view.away} />
-      </span>
+      </TeamLink>
       {view.extra ? <span data-x="">{view.extra}</span> : null}
     </li>
   );

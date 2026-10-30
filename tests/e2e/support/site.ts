@@ -66,15 +66,55 @@ export function archiveSample(dates: readonly string[], recent = 3): string[] {
   return [...pick].sort();
 }
 
-/** 페이지 목록에서 날짜 아카이브는 표본만 남긴다(다른 페이지는 모두) — 렌더·axe 검사용. 링크 검사(HTTP만)는 전수를 쓴다 */
+// ─── 팀 페이지 표본 (M2-13) ─────────────────────────────────────────────────
+
+const TEAM_PAGE_RE = /^\/teams\/([a-z0-9-]+)\/$/;
+
+/**
+ * 팀 페이지 표본 — 111팀이 같은 틀이라 상태가 갈리는 팀만 고른다: 시안 기준 팀(바이에른 — 피치·교체 명단·한국 선수) · 포메이션 없는 팀
+ * (르아브르·마르세유) · UCL만 뛰는 팀(클뤼프 브뤼허) · 한국 선수가 선발·교체에 있는 팀(우니온 베를린·아우크스부르크) · 라인업 없는 한국 선수 팀
+ * (샬케) + 목록 처음·끝. 없는 slug는 건너뛴다(데이터가 바뀌어도 표본이 비지 않게 처음·끝은 늘 든다).
+ */
+export const TEAM_SAMPLE = [
+  "bayern-munchen",
+  "le-havre",
+  "marseille",
+  "club-brugge",
+  "union-berlin",
+  "augsburg",
+  "schalke",
+];
+
+export function teamSample(slugs: readonly string[]): string[] {
+  const sorted = [...new Set(slugs)].sort();
+  if (sorted.length === 0) return [];
+  const pick = new Set<string>([sorted[0]!, sorted.at(-1)!]);
+  for (const slug of TEAM_SAMPLE) if (sorted.includes(slug)) pick.add(slug);
+  return [...pick].sort();
+}
+
+/**
+ * 페이지 목록에서 날짜 아카이브·팀 페이지는 표본만 남긴다(다른 페이지는 모두) — 렌더·axe 검사용. 링크 검사(HTTP만)는 전수를 쓴다
+ * (이름은 M1-34 때 정했다 — 팀 표본은 M2-13에서 더했다)
+ */
 export function withArchiveSample(pages: SitePage[]): SitePage[] {
   const dates = pages.flatMap((p) => {
     const m = ARCHIVE_PAGE_RE.exec(p.urlPath);
     return m ? [m[1]!] : [];
   });
   const keep = new Set(archiveSample(dates));
+  const teams = new Set(
+    teamSample(
+      pages.flatMap((p) => {
+        const m = TEAM_PAGE_RE.exec(p.urlPath);
+        return m ? [m[1]!] : [];
+      }),
+    ),
+  );
   return pages.filter((p) => {
     const m = ARCHIVE_PAGE_RE.exec(p.urlPath);
-    return !m || keep.has(m[1]!);
+    if (m) return keep.has(m[1]!);
+    const t = TEAM_PAGE_RE.exec(p.urlPath);
+    return !t || teams.has(t[1]!);
   });
 }
