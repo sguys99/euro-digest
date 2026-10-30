@@ -11,6 +11,7 @@ import {
   siteMetadata,
   sitemapEntries,
   TITLE_TEMPLATE,
+  competitionDescription,
 } from "@/lib/seo";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
@@ -145,8 +146,15 @@ describe("hasScoreLike", () => {
     "2대1",
     "2 대 1",
     "승부차기 4-3",
+    // 이어지지 않는 연도 쌍은 시즌이 아니다 — 그대로 걸린다(M2-10)
+    "2026-28",
+    "프리미어리그 2026-27 시즌 3-1",
   ])("스코어 모양: %s", (text) => expect(hasScoreLike(text)).toBe(true));
   it.each([
+    // 시즌 표기 — 이어지는 해(M2-10 대회 페이지 제목·설명)
+    "프리미어리그 2026-27 시즌",
+    "UEFA 챔피언스리그 2099–00 시즌",
+    competitionDescription("프리미어리그", "2026-27 시즌"),
     "2026년 10월 14일 (수) 뉴스 · 제 3호",
     "제 3호 · 2026년 10월 14일 (수) 지면 — 유럽 축구 소식 8건",
     "유로 다이제스트",
@@ -238,6 +246,24 @@ describe("sitemapEntries — sitemap.xml 항목", () => {
       {
         url: `${SITE}/news/2026-10-23/`,
         lastModified: "2026-10-23T00:10:07.307Z",
+      },
+    ]);
+  });
+
+  it("대회 페이지(M2-10) — /about/ 다음에 넘긴 순서대로, lastmod = 데이터 updatedAt", () => {
+    const entries = sitemapEntries(issues, [
+      { comp: "EPL", updatedAt: "2026-10-30T02:17:27.762Z" },
+      { comp: "UCL", updatedAt: "2026-10-30T02:19:28.728Z" },
+    ]);
+    expect(entries.slice(1, 4)).toEqual([
+      { url: `${SITE}/about/` },
+      {
+        url: `${SITE}/competitions/epl/`,
+        lastModified: "2026-10-30T02:17:27.762Z",
+      },
+      {
+        url: `${SITE}/competitions/ucl/`,
+        lastModified: "2026-10-30T02:19:28.728Z",
       },
     ]);
   });

@@ -70,3 +70,20 @@ export const COMPETITION_HEAD_LIVE =
   "data-[comp=BUNDESLIGA]:border-t-competition-bundesliga data-[comp=BUNDESLIGA]:bg-competition-bundesliga data-[comp=BUNDESLIGA]:text-competition-bundesliga-foreground data-[comp=BUNDESLIGA]:[--ring:var(--competition-bundesliga-foreground)] " +
   "data-[comp=LIGUE1]:border-t-competition-ligue1 data-[comp=LIGUE1]:bg-competition-ligue1 data-[comp=LIGUE1]:text-competition-ligue1-foreground data-[comp=LIGUE1]:[--ring:var(--competition-ligue1-foreground)] " +
   "data-[comp=UCL]:border-t-competition-ucl data-[comp=UCL]:bg-competition-ucl data-[comp=UCL]:text-competition-ucl-foreground data-[comp=UCL]:[--ring:var(--competition-ucl-foreground)]";
+
+/**
+ * 지금 페이지인 대회 링크(대회 이동 6칸 — `/competitions/[comp]/`, D1 대회 화면 틀) — `aria-current="page"`면 면·테두리 대회 색, 글자 면 위
+ * 글자색. 모양은 선택된 대회 탭(`COMPETITION_SELECTED_TAB`)과 같고 상태 속성만 다르다(링크라 ARIA 탭이 아니다 — DESIGN §9.2).
+ */
+export const COMPETITION_CURRENT_LINK: Readonly<Record<CompId, string>> = {
+  EPL: "aria-[current=page]:border-competition-epl aria-[current=page]:bg-competition-epl aria-[current=page]:text-competition-epl-foreground",
+  LALIGA:
+    "aria-[current=page]:border-competition-laliga aria-[current=page]:bg-competition-laliga aria-[current=page]:text-competition-laliga-foreground",
+  SERIEA:
+    "aria-[current=page]:border-competition-seriea aria-[current=page]:bg-competition-seriea aria-[current=page]:text-competition-seriea-foreground",
+  BUNDESLIGA:
+    "aria-[current=page]:border-competition-bundesliga aria-[current=page]:bg-competition-bundesliga aria-[current=page]:text-competition-bundesliga-foreground",
+  LIGUE1:
+    "aria-[current=page]:border-competition-ligue1 aria-[current=page]:bg-competition-ligue1 aria-[current=page]:text-competition-ligue1-foreground",
+  UCL: "aria-[current=page]:border-competition-ucl aria-[current=page]:bg-competition-ucl aria-[current=page]:text-competition-ucl-foreground",
+};

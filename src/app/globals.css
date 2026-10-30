@@ -733,3 +733,206 @@
 :root[data-offline] [data-slot="toaster"] {
   translate: 0 calc(-1 * var(--offline-band-h, 0px));
 }
+
+/* ── 9. 대회 라운드 이동 (M2-10, PRD FR-44, DESIGN §9.3 일정·결과 목록 · §11.14) ─────────────────────────────────────
+ * 일정·결과 탭은 모든 라운드를 정적 HTML로 싣고 하나만 보인다 — 지금 라운드(`data-current`) 또는 주소 `#round-n`이 가리키는 라운드
+ * (`:target`). 라운드 이동 버튼은 앵커 링크라 JS 없이도 동작한다(src/components/competition/rounds.tsx `RoundBook`).
+ */
+[data-rounds] > [data-round] {
+  display: none;
+}
+[data-rounds] > [data-round][data-current],
+[data-rounds] > [data-round]:target {
+  display: block;
+}
+[data-rounds]:has(> [data-round]:target)
+  > [data-round][data-current]:not(:target) {
+  display: none;
+}
+
+/* ── 10. D1 반복 요소 유틸리티 (M2-10·M2-11, DESIGN §9.3 "D1 — 대회·팀 화면") ─────────────────────────────────
+ * 대회 페이지는 순위표 20행 + 시즌 라운드 380경기를 정적 HTML(+ 같은 양의 RSC 페이로드)로 싣는다. 경기·배지·폼 칩마다 Tailwind 클래스
+ * 묶음을 반복하면 페이지가 2.5MB(원본)까지 커져서(M2-10 실측), 반복이 많은 요소만 짧은 유틸리티로 묶는다. 값은 DESIGN §9.3 D1 보조 값과
+ * 토큰(var())뿐이고 새 색은 없다. 변형(lg:)이 그대로 붙는다.
+ * - kit · kit-m/s/xs · kit-none: 팀 배지(위 3/5 상의 --k1 + 약어 --kf, 아래 2/5 하의 --k2 — 값은 컴포넌트 인라인 변수, D62 ④)
+ * - form-chip · form-chip-none: 폼 칩 W/D/L(20×20, 1.5px 현재 글자색 테두리) · 자료 없음(가운데 8×2 --ink-3 짧은 선)
+ * - match-row · match-row-full: 대회 라운드 경기 줄(킥오프 · 홈 · 스코어 · 원정 — 자식은 data-t·data-h·data-s·data-a)
+ */
+@utility kit {
+  display: inline-grid;
+  flex: none;
+  grid-template-rows: 3fr 2fr;
+  vertical-align: middle;
+  background-color: var(--k2, transparent);
+  outline: 1px var(--kit-line-style, solid) var(--kit-line, var(--rule));
+  outline-offset: -1px;
+  & > b {
+    display: grid;
+    place-items: center;
+    background-color: var(--k1, transparent);
+    color: var(--kf, var(--ink-2));
+    font-family: var(--font-numeric);
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}
+
+@utility kit-m {
+  width: 40px;
+  height: 44px;
+  & > b {
+    font-size: 15px;
+    letter-spacing: 0.04em;
+  }
+}
+
+@utility kit-s {
+  width: 30px;
+  height: 33px;
+  & > b {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+}
+
+@utility kit-xs {
+  width: 24px;
+  height: 27px;
+  & > b {
+    font-size: 10.5px;
+    letter-spacing: 0;
+  }
+}
+
+/* 폴백(색 없는 팀) — 상의·하의 변수가 없어 kit의 기본값(투명 면 · --ink-2 약어)이 쓰이고, 여기서는 선 모양과 빗금만 더한다 */
+@utility kit-none {
+  --kit-line-style: dashed;
+  --kit-line: var(--ink-2);
+  & > b {
+    border-bottom: 1px dashed var(--ink-2);
+  }
+  &::after {
+    content: "";
+    background-image: repeating-linear-gradient(
+      -45deg,
+      var(--hatch) 0 3px,
+      transparent 3px 6px
+    );
+  }
+}
+
+@utility form-chip {
+  display: inline-grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  font-family: var(--font-numeric);
+  font-size: 12.5px;
+  font-weight: 800;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: 0;
+  border: 1.5px solid var(--chip-line, currentColor);
+}
+
+/* 자료 없음 — 테두리는 투명 변수로 끈다(유틸리티 순서와 무관하게) */
+@utility form-chip-none {
+  --chip-line: transparent;
+  background: linear-gradient(var(--ink-3), var(--ink-3)) center / 8px 2px
+    no-repeat;
+}
+
+@utility match-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 48px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+  min-height: var(--match-row-h, 46px);
+  padding-block: 6px;
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--match-row-fs, 13.5px);
+  font-weight: 800;
+  line-height: 1.25;
+  & > [data-t] {
+    font-family: var(--font-numeric);
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums lining-nums;
+    color: var(--ink);
+  }
+  & > [data-t="done"] {
+    color: var(--ink-2);
+  }
+  & > [data-t="tbc"] {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 800;
+    color: var(--ink-2);
+  }
+  & > [data-h] {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 7px;
+    text-align: right;
+  }
+  & > [data-a] {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  & > [data-s] {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    font-family: var(--font-numeric);
+    font-size: 19px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  & > [data-x] {
+    grid-column: 1 / -1;
+    padding-top: 2px;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--ink-2);
+  }
+}
+
+@utility match-row-full {
+  --match-row-h: 54px;
+  --match-row-fs: 14.5px;
+}
+
+/* 경기 상태 상자(예정·결과 대기·연기 — 1px dashed --ink-3, 11.5px 800 --ink-2) */
+@utility match-state {
+  border: 1px dashed var(--ink-3);
+  padding: 3px 5px 2px;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--ink-2);
+}
+
+/* 순위표 숫자 칸(경기·승·무·패·득점·실점·득실 — 20행 × 7칸) — Barlow 600 15px, 1024 이상 16px · 좌우 8px */
+@utility standing-num {
+  border-bottom: 1px solid var(--rule);
+  padding-inline: 4px;
+  text-align: right;
+  vertical-align: middle;
+  font-family: var(--font-numeric);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums lining-nums;
+  @variant lg {
+    padding-inline: 8px;
+    font-size: 16px;
+  }
+}

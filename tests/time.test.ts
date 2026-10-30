@@ -335,6 +335,8 @@ describe("formatKst — 한국어 24시간제", () => {
     ["time", "04:00"],
     ["datetime", "10월 25일 (일) 04:00"],
     ["short", "10.25 04:00"],
+    ["dayShort", "10.25 (일)"],
+    ["monthDay", "10.25"],
   ])("%s → %s", (style, expected) => {
     expect(formatKst("2026-10-24T19:00:00Z", style)).toBe(expected);
   });

@@ -21,6 +21,21 @@ const DATES = listNewsDates();
 const LATEST = DATES.at(-1);
 /** 스코어 모양 — 숫자 사이의 하이픈·대시·쌍점·"대"(구현과 따로 둔 검사식) */
 const SCORE_RE = /\d\s*[-–—:]\s*\d|\d\s*대\s*\d/;
+/** 시즌 표기 "2026-27"(이어지는 해만 — M2-10 대회 페이지 제목)은 스코어가 아니다 — 검사 전에 지운다 */
+function withoutSeasons(text: string): string {
+  return text.replace(/(?<!\d)(\d{4})[-–](\d{2})(?!\d)/g, (whole, a, b) =>
+    (Number(a) + 1) % 100 === Number(b) ? " " : whole,
+  );
+}
+/** 대회 페이지(M2-10) — 데이터 파일이 있는 대회만 sitemap에 든다(설정 순서) */
+const COMPETITION_SEGMENTS = [
+  "epl",
+  "laliga",
+  "seriea",
+  "bundesliga",
+  "ligue1",
+  "ucl",
+].filter((c) => existsSync(path.resolve("data/competitions", `${c}.json`)));
 
 interface HeadMeta {
   urlPath: string;
@@ -88,12 +103,13 @@ test("빌드 결과 — out/sitemap.xml이 있고 robots.txt는 없다(M5 결정
   expect(existsSync(path.join(outDir, "robots.txt"))).toBe(false);
 });
 
-test("sitemap.xml — 홈 · /about/ · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
+test("sitemap.xml — 홈 · /about/ · 대회 페이지(M2-10) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
   const entries = readSitemap();
   const locs = entries.map((e) => e.loc);
   expect(locs).toEqual([
     `${SITE}/`,
     `${SITE}/about/`,
+    ...COMPETITION_SEGMENTS.map((c) => `${SITE}/competitions/${c}/`),
     ...DATES.map((date) => `${SITE}/news/${date}/`),
   ]);
   expect(locs).not.toContain(`${SITE}/news/`);
@@ -203,7 +219,10 @@ test("결과 노출 0 — 모든 페이지의 title·description·OG·twitter �
     ];
     expect(texts.length, head.urlPath).toBeGreaterThan(0);
     for (const text of texts) {
-      expect(SCORE_RE.test(text), `${head.urlPath}: ${text}`).toBe(false);
+      expect(
+        SCORE_RE.test(withoutSeasons(text)),
+        `${head.urlPath}: ${text}`,
+      ).toBe(false);
     }
     for (const key of ["og:image", "twitter:image"]) {
       expect(head.meta.get(key), `${head.urlPath} ${key}`).toBeUndefined();

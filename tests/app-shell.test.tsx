@@ -27,15 +27,16 @@ function ticket(container: HTMLElement): HTMLElement {
   return el;
 }
 
-describe("내비 항목 — M1은 홈·뉴스만(미완성 섹션 숨김, plan §2.3)", () => {
-  it("홈·뉴스 두 항목, 있는 라우트로만 간다", () => {
+describe("내비 항목 — M2는 홈·뉴스·리그(미완성 섹션 숨김, plan §2.3)", () => {
+  it("홈·뉴스·리그 세 항목, 있는 라우트로만 간다(리그 = 첫 대회 EPL — M2-10)", () => {
     expect(NAV_ITEMS.map((item) => [item.key, item.label, item.href])).toEqual([
       ["home", "홈", routes.home()],
       ["news", "뉴스", routes.news()],
+      ["league", "리그", routes.competition("EPL")],
     ]);
   });
 
-  it("하단 탭·상단 내비 모두 같은 두 항목, 현재 페이지만 aria-current", () => {
+  it("하단 탭·상단 내비 모두 같은 세 항목, 현재 페이지만 aria-current", () => {
     render(
       <AppShell current="news" issue={ISSUE}>
         본문
@@ -44,18 +45,18 @@ describe("내비 항목 — M1은 홈·뉴스만(미완성 섹션 숨김, plan �
     for (const name of ["하단 탭", "주요 메뉴"]) {
       const nav = screen.getByRole("navigation", { name });
       const links = within(nav).getAllByRole("link");
-      expect(links.map((a) => a.textContent)).toEqual(["홈", "뉴스"]);
+      expect(links.map((a) => a.textContent)).toEqual(["홈", "뉴스", "리그"]);
       // 테스트 환경의 next/link는 trailingSlash 설정을 모른다(끝 슬래시를 뗀다) — 빌드 HTML의 href는 e2e가 본다
       expect(
         links.map((a) => a.getAttribute("href")?.replace(/\/?$/, "/")),
-      ).toEqual(["/", "/news/"]);
+      ).toEqual(["/", "/news/", "/competitions/epl/"]);
       expect(links.map((a) => a.getAttribute("aria-current"))).toEqual([
         null,
         "page",
+        null,
       ]);
     }
-    // 리그·한국 선수·마이는 아직 없다
-    expect(screen.queryByRole("link", { name: "리그" })).toBeNull();
+    // 한국 선수·마이는 아직 없다
     expect(screen.queryByRole("link", { name: "한국 선수" })).toBeNull();
     expect(screen.queryByRole("link", { name: "마이" })).toBeNull();
   });
@@ -73,6 +74,7 @@ describe("내비 항목 — M1은 홈·뉴스만(미완성 섹션 숨김, plan �
       expect(links.map((a) => a.getAttribute("aria-current"))).toEqual([
         null,
         "true",
+        null,
       ]);
       expect(links[1]?.className).toContain("aria-[current=true]:text-ink");
     }

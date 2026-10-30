@@ -22,6 +22,7 @@ import type { Metadata, MetadataRoute } from "next";
 import { archiveDateLabel } from "@/lib/news/archive";
 import { issueNumber } from "@/lib/issue";
 import { absoluteUrl, routes } from "@/lib/paths";
+import type { CompId } from "@/lib/schema/common";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
 /** 문서 제목 템플릿 — 페이지 제목 뒤에 사이트 이름(홈은 사이트 이름 단독) */
@@ -36,14 +37,23 @@ export const OG_LOCALE = "ko_KR";
 /**
  * 스코어 모양 — 숫자 사이의 하이픈·대시·쌍점·"대"("2-1"·"2–1"·"2:1"·"2 대 1"). 메타 문구에 이 모양이 있으면 결과 노출이다.
  * URL(og:url의 날짜 "2026-10-14")에는 쓰지 않는다 — 제목·설명 문구만 검사한다.
- * 알려진 오탐(리뷰 2026-10-23): 시즌 "2026-27"·시각 "06:50"·범위 "3–5줄"·"5대 1부 리그"도 걸린다 — 지금 메타 문구에는 없지만
- * M2 대회 페이지 제목(시즌) 전에 예외(연도-시즌·시각)를 두거나 검사 범위를 데이터에서 온 부분으로 좁힌다(plan M2 이월 메모).
+ * 시즌 표기("2026-27" — 시작 연도 네 자리 + 다음 해 두 자리, M2-10 대회 페이지 제목)는 `SEASON_LIKE_RE`로 먼저 지운 뒤 검사한다
+ * (연도가 이어지지 않는 "2026-28"·스코어 "3-1"은 그대로 걸린다). 남은 알려진 오탐(리뷰 2026-10-23): 시각 "06:50"·범위 "3–5줄"·
+ * "5대 1부 리그" — 메타 문구에 넣을 일이 생기면 같은 방식으로 예외를 더한다.
  */
 export const SCORE_LIKE_RE = /\d\s*(?:[-–—:]|대)\s*\d/;
 
-/** 메타 문구에 스코어 모양이 있는가 */
+/** 시즌 표기 — "2026-27"·"2026–27"(앞뒤에 숫자가 붙지 않음). 이어지는 해인지는 `hasScoreLike`가 본다 */
+export const SEASON_LIKE_RE = /(?<!\d)(\d{4})[-–](\d{2})(?!\d)/g;
+
+/** 메타 문구에 스코어 모양이 있는가 — 이어지는 해의 시즌 표기("2026-27")는 빼고 본다 */
 export function hasScoreLike(text: string): boolean {
-  return SCORE_LIKE_RE.test(text);
+  const withoutSeasons = text.replace(
+    SEASON_LIKE_RE,
+    (whole, start: string, end: string) =>
+      (Number(start) + 1) % 100 === Number(end) ? " " : whole,
+  );
+  return SCORE_LIKE_RE.test(withoutSeasons);
 }
 
 /** 페이지 제목 → 문서 제목. `null`이면 사이트 이름 단독(홈). 예) "뉴스" → "뉴스 · 유로 다이제스트" */
@@ -181,6 +191,21 @@ export function newsDescription(
   return `${body} 지난 호는 날짜별 아카이브에 있습니다.`;
 }
 
+/**
+ * 대회 페이지 설명(M2-10) — 대회명·시즌("2026-27 시즌" — `seasonLabel`)과 페이지에 실린 것(순위표·라운드 일정과 결과·득점 순위·소식)·데이터 출처만. 스코어·팀 순위는 넣지 않는다
+ * (결과 노출 0 — 링크 미리보기는 결과 가리기로 막을 수 없다).
+ * 예) "프리미어리그 2026-27 시즌 순위표(순위 변동·최근 5경기), 라운드별 일정과 결과(한국 시간), 득점 순위, 관련 소식을 한 화면에 모았습니다. 순위·경기 데이터 football-data.org."
+ */
+export function competitionDescription(name: string, season: string): string {
+  return `${name} ${season} 순위표(순위 변동·최근 5경기), 라운드별 일정과 결과(한국 시간), 득점 순위, 관련 소식을 한 화면에 모았습니다. 순위·경기 데이터 football-data.org.`;
+}
+
+/** sitemap 대회 페이지 — 대회 ID와 그 데이터 파일의 updatedAt(API에서 마지막으로 받은 시각, UTC ISO) */
+export interface SitemapCompetition {
+  comp: CompId;
+  updatedAt: string;
+}
+
 /** sitemap 한 호 — 발행일과 그 뉴스 파일의 generatedAt(파일을 마지막으로 쓴 시각, UTC ISO) */
 export interface SitemapIssue {
   date: string;
@@ -190,13 +215,15 @@ export interface SitemapIssue {
 /**
  * sitemap.xml 항목 — 색인할 페이지의 canonical 절대 URL만(PRD FR-124).
  * - 홈(`lastModified` = 최신 호 generatedAt — 홈은 최신 호를 싣는다), `/about/`(lastModified 없음 — 설정이 바뀔 때만 바뀐다),
- *   발행된 날짜 아카이브 전부(`lastModified` = 그 호 generatedAt, 날짜 오름차순).
+ *   대회 페이지(M2-10 — 데이터 파일이 있는 대회, 설정 순서, `lastModified` = 그 파일 updatedAt), 발행된 날짜 아카이브 전부
+ *   (`lastModified` = 그 호 generatedAt, 날짜 오름차순).
  * - `/news/`는 넣지 않는다 — 최신 날짜 페이지의 별칭(canonical이 그 날짜 페이지). 404·견본도 없다.
  * - 새 라우트(M2 대회·팀 등)를 만들면 여기에 넣는다 — e2e `tests/e2e/seo.spec.ts`가 out/의 색인 대상 페이지가 모두 sitemap에 있는지
  *   (또는 canonical이 sitemap 안을 가리키는지) 확인한다.
  */
 export function sitemapEntries(
   issues: readonly SitemapIssue[],
+  competitions: readonly SitemapCompetition[] = [],
 ): MetadataRoute.Sitemap {
   const sorted = [...issues].sort((a, b) => a.date.localeCompare(b.date));
   const latest = sorted.at(-1);
@@ -206,6 +233,10 @@ export function sitemapEntries(
       ...(latest ? { lastModified: latest.generatedAt } : {}),
     },
     { url: absoluteUrl(routes.about()) },
+    ...competitions.map((c) => ({
+      url: absoluteUrl(routes.competition(c.comp)),
+      lastModified: c.updatedAt,
+    })),
     ...sorted.map((issue) => ({
       url: absoluteUrl(routes.newsArchive(issue.date)),
       lastModified: issue.generatedAt,

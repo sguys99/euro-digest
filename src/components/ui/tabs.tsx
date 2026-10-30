@@ -204,12 +204,19 @@ export function Tabs({
   );
 }
 
+/**
+ * 탭 모양 — `box`(기본, 대회 탭·상자형 — DESIGN §9.2) · `view`(D1 대회 화면 보기 탭 — 글자 15px 800 `--ink-2`, 선택 `--ink` + 아래 3px
+ * `--brand-accent` 막대, 목록 아래 1px `--rule`, 간격 16px · 최소 46px — DESIGN §9.3 대회 화면 틀, M2-10)
+ */
+export type TabsVariant = "box" | "view";
+
 /** 탭 목록(`role="tablist"`) — 접근 이름(`aria-label` 또는 `aria-labelledby`)을 꼭 준다 */
 export function TabsList({
   className,
   onKeyDown,
+  variant = "box",
   ...props
-}: ComponentProps<"div">) {
+}: ComponentProps<"div"> & { variant?: TabsVariant }) {
   const ctx = useTabs("TabsList");
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -254,7 +261,12 @@ export function TabsList({
   return (
     <div
       role="tablist"
-      className={cx("flex flex-wrap gap-1", className)}
+      className={cx(
+        variant === "view"
+          ? "flex gap-4 border-b border-rule"
+          : "flex flex-wrap gap-1",
+        className,
+      )}
       onKeyDown={handleKeyDown}
       {...props}
     />
@@ -266,13 +278,23 @@ export interface TabsTriggerProps extends Omit<
   "value" | "role"
 > {
   value: string;
-  /** 대회 탭이면 선택 면을 그 대회 색으로. 없으면 잉크 면 반전 */
+  /** 대회 탭이면 선택 면을 그 대회 색으로. 없으면 잉크 면 반전(`box`만) */
   competition?: CompId;
+  /** 모양(`TabsList`의 `variant`와 같은 값을 준다) */
+  variant?: TabsVariant;
 }
+
+/** 보기 탭(`view`) — 글자 탭 + 선택 막대(DESIGN §9.3 대회 화면 틀) */
+const VIEW_TAB = [
+  "relative inline-flex min-h-11.5 min-w-11 flex-none items-center justify-center border-0 bg-transparent px-1 text-[15px] font-extrabold text-ink-2",
+  "transition-colors duration-fast ease-print hover:text-ink aria-selected:text-ink",
+  "after:absolute after:inset-x-0 after:-bottom-px after:hidden after:h-0.75 after:bg-brand-accent after:content-[''] aria-selected:after:block",
+].join(" ");
 
 export function TabsTrigger({
   value,
   competition,
+  variant = "box",
   className,
   onClick,
   type = "button",
@@ -308,15 +330,19 @@ export function TabsTrigger({
       disabled={disabled}
       data-value={value}
       className={cx(
-        "relative inline-flex min-h-11 min-w-14 items-center justify-center border border-ink-2 bg-transparent px-2.5 text-[13px] font-extrabold text-ink",
-        "transition-colors duration-base ease-print",
-        "hover:border-ink hover:bg-paper-2",
-        "disabled:border-dashed disabled:border-ink-disabled disabled:bg-transparent disabled:text-ink-disabled",
-        // 선택 — 색 면 위 포커스 링은 --ink(DESIGN §9.1)
-        "aria-selected:[--ring:var(--ink)]",
-        competition
-          ? COMPETITION_SELECTED_TAB[competition]
-          : "aria-selected:border-ink aria-selected:bg-ink aria-selected:text-paper",
+        variant === "view"
+          ? VIEW_TAB
+          : cx(
+              "relative inline-flex min-h-11 min-w-14 items-center justify-center border border-ink-2 bg-transparent px-2.5 text-[13px] font-extrabold text-ink",
+              "transition-colors duration-base ease-print",
+              "hover:border-ink hover:bg-paper-2",
+              "disabled:border-dashed disabled:border-ink-disabled disabled:bg-transparent disabled:text-ink-disabled",
+              // 선택 — 색 면 위 포커스 링은 --ink(DESIGN §9.1)
+              "aria-selected:[--ring:var(--ink)]",
+              competition
+                ? COMPETITION_SELECTED_TAB[competition]
+                : "aria-selected:border-ink aria-selected:bg-ink aria-selected:text-paper",
+            ),
         className,
       )}
       onClick={handleClick}

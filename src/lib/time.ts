@@ -69,9 +69,11 @@ export interface TimeParts {
  * - `time`     → `04:00`
  * - `datetime` → `10월 25일 (일) 04:00`
  * - `short`    → `10.25 04:00`             (월·일·시를 두 자리로 맞춤 — 표에서 tabular-nums 정렬)
+ * - `dayShort` → `10.25 (일)`              (대회 라운드 날짜 머리·펼침 경기 줄 — M2-10)
+ * - `monthDay` → `10.25`                   (라운드 기간 "10.24–10.27" — M2-10)
  */
 export type KstFormatStyle =
-  "date" | "fullDate" | "time" | "datetime" | "short";
+  "date" | "fullDate" | "time" | "datetime" | "short" | "dayShort" | "monthDay";
 
 /**
  * 현지 시각이 서머타임 전환 때문에 없거나(봄 gap) 두 번 있을 때(가을 fold) 고르는 규칙.
@@ -632,6 +634,10 @@ export function formatKst(iso: string, style: KstFormatStyle): string {
       return `${date} ${time}`;
     case "short":
       return `${pad2(p.month)}.${pad2(p.day)} ${time}`;
+    case "dayShort":
+      return `${pad2(p.month)}.${pad2(p.day)} (${weekday})`;
+    case "monthDay":
+      return `${pad2(p.month)}.${pad2(p.day)}`;
     default: {
       // 타입상 도달 불가 — 런타임 문자열(JSON 등)이 들어온 경우를 막는다.
       const unknownStyle: never = style;

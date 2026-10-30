@@ -49,40 +49,15 @@ import type {
   NameKind,
   NamesKoFile,
 } from "@/lib/schema";
+import { foldName, isInitialForm } from "@/lib/name-fold";
 
 import type { BriefInput, BriefInputGoal } from "./brief-input";
 import { fixAttachedParticle } from "./josa";
 
 // ─── 접기 ─────────────────────────────────────────────────────────────────
 
-const QUOTE_CHARS = new Set(["\u2018", "\u2019", "\u02bc", "\u0060", "\u00b4"]);
-const DASH_CHARS = new Set([
-  "\u2010",
-  "\u2011",
-  "\u2012",
-  "\u2013",
-  "\u2014",
-  "\u2015",
-  "\u2212",
-]);
-
-function foldChar(ch: string): string {
-  if (ch.length !== 1) return ch; // 보조 평면 글자(이모지 등) — 그대로(코드 단위 2개 유지)
-  if (QUOTE_CHARS.has(ch)) return "'";
-  if (DASH_CHARS.has(ch)) return "-";
-  if (ch === "\u00a0") return " ";
-  const base = ch.normalize("NFKD").replace(/\p{M}+/gu, "");
-  const pick = base.length === 1 ? base : ch;
-  const lower = pick.toLowerCase();
-  return lower.length === 1 ? lower : pick;
-}
-
-/** 이름 비교용 접기(머리 주석) — 입력을 NFC로 바꾼 뒤 글자마다 접는다. 결과 길이 = NFC 입력 길이 */
-export function foldName(text: string): string {
-  let out = "";
-  for (const ch of text.normalize("NFC")) out += foldChar(ch);
-  return out;
-}
+// 구현은 src/lib/name-fold.ts — 화면(득점 순위 선수명, M2-10)이 같은 접기 규칙으로 사전을 찾도록 src/lib에 둔다(publisher-name과 같은 방식).
+export { foldName };
 
 // ─── 대회 별칭 ─────────────────────────────────────────────────────────────
 
@@ -147,10 +122,8 @@ export const KNOWN_PLAYER_TEAMS: Readonly<Record<string, string>> =
     "alphonso-davies": "bayern-munchen",
   });
 
-/** `X. 성` 첫 글자 축약 표기인가('H. Kane'·'J. Castrop' — 'Sl. Bratislava'·'1. FC Köln'은 아니다) */
-export function isInitialForm(name: string): boolean {
-  return /^\p{Lu}\. \S/u.test(name.trim());
-}
+/** `X. 성` 첫 글자 축약 표기인가 — 구현은 src/lib/name-fold.ts(화면 이름 찾기와 같은 규칙) */
+export { isInitialForm };
 
 /**
  * 감독 항목의 한 단어 성 별칭인가('Allegri'·'Fàbregas' — 머리 주석 "맞추기"). 브리핑 치환·이름 찾기 색인에서 뺀다(뉴스 감독 발언 분류 전용).

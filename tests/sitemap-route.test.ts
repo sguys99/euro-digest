@@ -22,6 +22,13 @@ vi.mock("@/lib/data/news", () => ({
   loadLatestNews,
 }));
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
+// 대회 페이지(M2-10) — 저장소 data/competitions 대신 테스트가 정한 대회 데이터(기본 없음)
+const { loadAllCompetitionData } = vi.hoisted(() => ({
+  loadAllCompetitionData: vi.fn<
+    () => Array<{ comp: "EPL" | "UCL"; updatedAt: string }>
+  >(() => []),
+}));
+vi.mock("@/lib/data/competition-data", () => ({ loadAllCompetitionData }));
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -61,6 +68,24 @@ describe("sitemap 라우트", () => {
         url: `${SITE}/news/${date}/`,
         lastModified: issueOf(date).generatedAt,
       })),
+    ]);
+  });
+
+  it("대회 데이터가 있으면 /about/ 다음에 대회 페이지(lastmod = updatedAt)", () => {
+    loadAllCompetitionData.mockReturnValueOnce([
+      { comp: "EPL", updatedAt: "2026-10-30T02:17:27.762Z" },
+      { comp: "UCL", updatedAt: "2026-10-30T02:19:28.728Z" },
+    ]);
+    expect(sitemap().slice(1, 4)).toEqual([
+      { url: `${SITE}/about/` },
+      {
+        url: `${SITE}/competitions/epl/`,
+        lastModified: "2026-10-30T02:17:27.762Z",
+      },
+      {
+        url: `${SITE}/competitions/ucl/`,
+        lastModified: "2026-10-30T02:19:28.728Z",
+      },
     ]);
   });
 

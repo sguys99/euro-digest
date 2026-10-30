@@ -33,6 +33,16 @@ import type { NewsCard, NewsFile } from "@/lib/schema/news";
 
 type TitleAs = "h2" | "h3";
 
+/**
+ * 피드 범위(M2-10 대회 페이지 뉴스 탭) — 한 호의 카드 중 `match`에 맞는 것만 싣는다. 게재 번호는 그 호 전체 순서 그대로(필터 결과와
+ * 같은 규칙 — 번호는 "이 호의 게재 번호"), 부제 설명은 `desc`, 맞는 카드가 없으면 `empty` 문구의 빈 상태.
+ */
+export interface FeedScope {
+  match: (card: NewsCard) => boolean;
+  desc: string;
+  empty: string;
+}
+
 /** 호가 없거나(발행 전) 카드가 0장이면 빈 상태 */
 export function NewsFeed({
   news,
@@ -40,6 +50,7 @@ export function NewsFeed({
   lead = true,
   id = "feed",
   filter,
+  scope,
 }: {
   news: NewsFile | null;
   /** 카드 제목 단계 — 섹션 머리 바로 아래 단계(기본 h3) */
@@ -50,11 +61,34 @@ export function NewsFeed({
   id?: string;
   /** 필터가 걸리는 피드의 목차·칩 건수와 설정(M1-33 — 페이지에 하나) */
   filter?: NewsFilterView;
+  /** 범위 피드(대회 페이지 — 위 `FeedScope`). `filter`와 함께 쓰지 않는다 */
+  scope?: FeedScope;
 }) {
+  if (scope && news && !news.cards.some(scope.match)) {
+    return <EmptyState hasIssue message={scope.empty} />;
+  }
   return news && news.cards.length > 0 ? (
-    <Feed news={news} titleAs={titleAs} lead={lead} id={id} filter={filter} />
+    <Feed
+      news={news}
+      titleAs={titleAs}
+      lead={lead}
+      id={id}
+      filter={filter}
+      scope={scope}
+    />
   ) : (
     <EmptyState hasIssue={news !== null} />
+  );
+}
+
+/** 범위 안 카드만 — 짝 카드가 범위 밖인 연결 줄은 뗀다(없는 카드로 가는 앵커를 만들지 않게) */
+function scopeItems<
+  T extends { card: NewsCard; link: { targetId: string } | null },
+>(all: readonly T[], scope: FeedScope): T[] {
+  const inScope = all.filter((view) => scope.match(view.card));
+  const ids = new Set(inScope.map((view) => view.card.id));
+  return inScope.map((view) =>
+    view.link && !ids.has(view.link.targetId) ? { ...view, link: null } : view,
   );
 }
 
@@ -75,20 +109,24 @@ function Feed({
   lead,
   id,
   filter,
+  scope,
 }: {
   news: NewsFile;
   titleAs: TitleAs;
   lead: boolean;
   id: string;
   filter: NewsFilterView | undefined;
+  scope: FeedScope | undefined;
 }) {
-  const items = buildFeed(news.cards, {
+  // 번호는 그 호 전체 순서로 매긴 뒤 범위로 거른다(게재 번호 유지 — FeedScope)
+  const all = buildFeed(news.cards, {
     lead,
     labels: loadCardLabels(),
     firstNo: FIRST_CARD_NO,
   });
+  const items = scope ? scopeItems(all, scope) : all;
+  const firstId = items[0]?.card.id ?? "";
   const menuId = cardMenuId(id);
-  const firstId = news.cards[0]?.id ?? "";
   return (
     <>
       <p className="mt-0.75 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-[13px] text-ink-2">
@@ -100,7 +138,7 @@ function Feed({
               ? { "data-nf-count": "", suppressHydrationWarning: true }
               : {})}
           >
-            {news.cards.length}
+            {items.length}
           </span>
           건 ·{" "}
           <span
@@ -108,7 +146,7 @@ function Feed({
               ? { "data-nf-desc": "", suppressHydrationWarning: true }
               : {})}
           >
-            {FILTER_DESC_DEFAULT}
+            {scope ? scope.desc : FILTER_DESC_DEFAULT}
           </span>
         </span>
         <span className="text-xs">
@@ -154,13 +192,21 @@ function Feed({
 }
 
 /** 빈 상태 — 아직 발행된 호가 없거나(CI 빌드 등 data/news가 빔) 그날 호에 카드가 0장일 때. UI 안내 문구만 쓴다 */
-function EmptyState({ hasIssue }: { hasIssue: boolean }) {
+function EmptyState({
+  hasIssue,
+  message,
+}: {
+  hasIssue: boolean;
+  /** 범위 피드의 빈 상태 문구(FeedScope.empty) */
+  message?: string;
+}) {
   return (
     <div className="pt-7 pb-2">
       <p className="text-[15px] font-extrabold">
-        {hasIssue
-          ? "이 호에는 실린 소식이 없어요."
-          : "아직 발행된 소식이 없어요."}
+        {message ??
+          (hasIssue
+            ? "이 호에는 실린 소식이 없어요."
+            : "아직 발행된 소식이 없어요.")}
       </p>
       {!hasIssue && (
         <p className="mt-2 text-[13.5px] text-ink-2">

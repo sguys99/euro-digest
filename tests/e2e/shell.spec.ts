@@ -25,7 +25,7 @@ const PAGES = [
   },
 ] as const;
 
-const NAV_LABELS = ["홈", "뉴스"];
+const NAV_LABELS = ["홈", "뉴스", "리그"];
 
 // 폭은 테스트가 정하므로 desktop 프로젝트에서 한 번만 돈다(모바일 에뮬레이션이 필요한 sticky 검사는 아래 따로)
 function desktopOnly(projectName: string): void {
@@ -48,7 +48,7 @@ for (const width of WIDTHS) {
     test.use({ viewport: { width, height: 800 } });
 
     for (const target of PAGES) {
-      test(`${target.path} — 가로 넘침 0 · ${wide ? "상단 내비" : "하단 탭"}만 보임(홈·뉴스) · 현재 탭 · h1 하나`, async ({
+      test(`${target.path} — 가로 넘침 0 · ${wide ? "상단 내비" : "하단 탭"}만 보임(홈·뉴스·리그 — M2-10) · 현재 탭 · h1 하나`, async ({
         page,
       }, testInfo) => {
         desktopOnly(testInfo.project.name);
@@ -523,9 +523,9 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           );
         }
       }
-      // 건너뛰기 · 워드마크 · 테마 토글 · (1024 이상 상단 내비 2) · 뒤표지 4(AI 작성 고지 · 소개·출처 정책 · 삭제·정정 요청 — M1-36 ·
-      // GitHub) · (1023 이하 하단 탭 2)
-      expect(checked).toBe(9);
+      // 건너뛰기 · 워드마크 · 테마 토글 · (1024 이상 상단 내비 3 — 리그 M2-10) · 뒤표지 4(AI 작성 고지 · 소개·출처 정책 · 삭제·정정 요청 —
+      // M1-36 · GitHub) · (1023 이하 하단 탭 3)
+      expect(checked).toBe(10);
       expect(problems).toEqual([]);
     });
   }
