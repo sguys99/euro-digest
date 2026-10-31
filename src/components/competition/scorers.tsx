@@ -64,10 +64,12 @@ export function ScorerList({
   );
 }
 
+// 머리 글자("도움"·"PK")와 숫자 칸은 줄을 바꾸지 않는다 — 375에서 긴 선수명 칸이 표 폭을 가져가면 본문의 overflow-wrap: anywhere가
+// "1/3"·"도/움"처럼 숫자·낱말을 쪼갰다(M2-16)
 const TH =
-  "border-b border-ink px-1.5 py-2.5 text-left text-xs font-extrabold text-ink-2";
+  "border-b border-ink px-1.5 py-2.5 text-left text-xs font-extrabold whitespace-nowrap text-ink-2";
 const TD_NUM =
-  "border-b border-rule px-1.5 py-2.5 text-right align-middle font-numeric text-[15px] leading-none font-semibold tabular-nums";
+  "border-b border-rule px-1.5 py-2.5 text-right align-middle font-numeric text-[15px] leading-none font-semibold whitespace-nowrap tabular-nums";
 
 export function ScorerTable({
   rows,
@@ -105,7 +107,7 @@ export function ScorerTable({
       <tbody>
         {rows.map((view) => (
           <tr key={`${view.scorer.player}-${view.scorer.team}`}>
-            <td className="border-b border-rule px-1.5 py-2.5 text-left align-middle font-numeric text-lg leading-none font-extrabold tabular-nums">
+            <td className="border-b border-rule px-1.5 py-2.5 text-left align-middle font-numeric text-lg leading-none font-extrabold whitespace-nowrap tabular-nums">
               {view.rank}
             </td>
             <th

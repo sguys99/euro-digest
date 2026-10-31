@@ -10,6 +10,7 @@ import { loadAllCompetitionData } from "@/lib/data/competition-data";
 import { loadTeamLookup } from "@/lib/data/competition-page";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { readConfigFile } from "@/lib/data/config-file";
+import { dataSourceOf, type DataSourceView } from "@/lib/data-source";
 import { BIGMATCH_RULES_PATH, loadTonight } from "@/lib/data/tonight";
 import {
   leagueMiniPanel,
@@ -27,7 +28,7 @@ export interface TonightWidget {
   baseKstDate: string;
   /** 대상 창(UTC) — 선별 규칙 파일이 없으면 null(빈 상태) */
   window: UtcRange | null;
-  /** 카드(선별 순서, 0~5개 — 0개 = 빈 상태) */
+  /** 카드(킥오프 순, 0~5개 — 0개 = 빈 상태) */
   cards: TonightCardView[];
 }
 
@@ -67,5 +68,16 @@ export function loadLeagueMini(): LeagueMiniPanelView[] {
   const data = new Map(loadAllCompetitionData().map((d) => [d.comp, d]));
   return loadCompetitionsConfig().map((config) =>
     leagueMiniPanel(config, data.get(config.id) ?? null, team),
+  );
+}
+
+/**
+ * 홈 위젯·`/tonight` 데이터 출처 줄(FR-45 — src/lib/data-source.ts): 두 위젯 모두 6개 대회 파일을 읽으므로 그 가운데 가장 오래된
+ * `updatedAt`이 기준이다. 파일이 하나도 없으면 시각 없이 출처만.
+ */
+export function loadWidgetsSource(now: Date = new Date()): DataSourceView {
+  return dataSourceOf(
+    loadAllCompetitionData().map((d) => d.updatedAt),
+    now.getTime(),
   );
 }

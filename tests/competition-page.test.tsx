@@ -226,7 +226,9 @@ describe("CompetitionPage — EPL fixtures", () => {
 
   it("데이터 출처 줄 — 필수 영문 문구(lang=en)·갱신 시각, 36시간 안이면 지연 없음", async () => {
     const { container } = await renderPage("epl");
-    const note = container.querySelector('[data-slot="competition-source"]')!;
+    const note = container.querySelector(
+      '[data-slot="data-source"][data-scope="competition"]',
+    )!;
     expect(note.textContent).toContain("10.10 06:35 KST");
     expect(note.querySelector('[lang="en"]')?.textContent).toBe(
       FOOTBALL_DATA_ATTRIBUTION,
@@ -238,7 +240,9 @@ describe("CompetitionPage — EPL fixtures", () => {
     vi.setSystemTime(new Date("2026-10-12T00:00:00Z"));
     const { container } = await renderPage("epl");
     expect(
-      container.querySelector('[data-slot="competition-source"]')?.textContent,
+      container.querySelector(
+        '[data-slot="data-source"][data-scope="competition"]',
+      )?.textContent,
     ).toContain("업데이트 지연");
   });
 });

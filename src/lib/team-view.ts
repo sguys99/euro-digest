@@ -187,6 +187,8 @@ export interface PitchSpot {
   a: number;
   /** 열 위치 % — 왼쪽 → 오른쪽, 가운데 50 */
   c: number;
+  /** 같은 줄 이웃과의 간격 %(피치 폭 기준 — 84 / 그 줄 인원). 1023 이하 세로 피치에서 이름 칸 폭 상한(5명 줄은 70px 칸이 서로 겹친다 — M2-16) */
+  w: number;
 }
 
 const PITCH_GK = 91;
@@ -216,6 +218,7 @@ export function pitchSpots(
     return {
       a: round1(PITCH_GK - (r - 1) * step),
       c: round1(50 + (c - (n + 1) / 2) * (PITCH_SPREAD / n)),
+      w: round1(PITCH_SPREAD / n),
     };
   });
 }

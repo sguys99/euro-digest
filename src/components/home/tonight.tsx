@@ -249,7 +249,8 @@ export function TonightCriteriaSection({
       <p className="mt-2 max-w-[46em] text-[13.5px] leading-normal break-keep text-ink-2">
         {windowText}에 킥오프하는 6개 대회 경기 가운데, 걸린 규칙의 점수를 더해
         높은 순으로 {maxMatches}경기까지 골라요. 점수가 같으면 킥오프가 이른
-        경기부터예요. 킥오프 시각이 정해지지 않았거나 연기된 경기는 빼요.
+        경기부터예요. 킥오프 시각이 정해지지 않았거나 연기된 경기는 빼요. 고른
+        경기는 킥오프 순으로 보여 줘요.
       </p>
       <ol role="list" className="mt-3 border-t border-rule">
         {criteria.map((c) => (

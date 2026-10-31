@@ -242,19 +242,19 @@ describe("팀시트 피치 좌표 — API-Football grid(행 = 골문 → 공격,
     grid: player.grid,
   }));
 
-  it("혼합안 좌표와 같다(GK 91 · 수비 71.5 · 18.5/39.5/60.5/81.5 · 최전방 13)", () => {
+  it("혼합안 좌표와 같다(GK 91 · 수비 71.5 · 18.5/39.5/60.5/81.5 · 최전방 13) + 같은 줄 간격 w = 84 / 인원", () => {
     const spots = pitchSpots(startXI)!;
     const byName = Object.fromEntries(
       startXI.map((p, i) => [p.name, spots[i]]),
     );
-    expect(byName["M. Neuer"]).toEqual({ a: 91, c: 50 });
-    expect(byName["A. Davies"]).toEqual({ a: 71.5, c: 18.5 });
-    expect(byName["J. Tah"]).toEqual({ a: 71.5, c: 39.5 });
-    expect(byName["J. Stanišić"]).toEqual({ a: 71.5, c: 81.5 });
-    expect(byName["A. Pavlović"]).toEqual({ a: 52, c: 29 });
-    expect(byName["L. Díaz"]).toEqual({ a: 32.5, c: 22 });
-    expect(byName["M. Olise"]).toEqual({ a: 32.5, c: 78 });
-    expect(byName["H. Kane"]).toEqual({ a: 13, c: 50 });
+    expect(byName["M. Neuer"]).toEqual({ a: 91, c: 50, w: 84 });
+    expect(byName["A. Davies"]).toEqual({ a: 71.5, c: 18.5, w: 21 });
+    expect(byName["J. Tah"]).toEqual({ a: 71.5, c: 39.5, w: 21 });
+    expect(byName["J. Stanišić"]).toEqual({ a: 71.5, c: 81.5, w: 21 });
+    expect(byName["A. Pavlović"]).toEqual({ a: 52, c: 29, w: 42 });
+    expect(byName["L. Díaz"]).toEqual({ a: 32.5, c: 22, w: 28 });
+    expect(byName["M. Olise"]).toEqual({ a: 32.5, c: 78, w: 28 });
+    expect(byName["H. Kane"]).toEqual({ a: 13, c: 50, w: 84 });
   });
 
   it("grid가 하나라도 없으면 null(피치 없이 명단만)", () => {

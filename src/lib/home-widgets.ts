@@ -6,7 +6,8 @@
  * 시각 — 테스트는 고정 값). 시각 표시는 src/lib/time.ts만 쓴다(CLAUDE §8 — 저장 UTC · 표시 KST).
  *
  * ── 오늘 밤 카드 ───────────────────────────────────────────────────────────
- *   선별(`src/lib/tonight.ts` — M2-08) 순서 그대로. 카드 = 킥오프 KST(시각 + 날짜) · 이유 태그(`reasons[].label` 그대로, `korean`이면 한국 완장) ·
+ *   선별(`src/lib/tonight.ts` — M2-08)은 점수 상위 5경기 그대로 두고 **화면 순서만 킥오프 순**(편성표처럼 읽힌다 — 2026-10-31 사용자 결정,
+ *   DECISIONS D1 §8). 킥오프가 같으면 선별 순서(점수 순)를 유지한다(안정 정렬). 카드 = 킥오프 KST(시각 + 날짜) · 이유 태그(`reasons[].label` 그대로, `korean`이면 한국 완장) ·
  *   대진(홈 / 원정, 한글 팀명 + 배지) · 대회 인덱스 탭. 저녁 빌드에서는 창 안의 이미 끝난 경기가 섞일 수 있다(선별은 빌드 시각에 따라 바뀌지
  *   않게 끝난 경기를 남긴다) — **스코어는 싣지 않고** 거터에 "종료"만 적는다(결과 가리기 M4-15 전이라 홈에서 결과를 드러내지 않는다 —
  *   결과는 대회 페이지 일정·결과에 있다). 킥오프 + 3시간이 지났는데 `scheduled`면 "결과 대기"(대회 라운드와 같은 규칙 — D60).
@@ -35,7 +36,7 @@ import type {
   CompetitionConfig,
 } from "@/lib/schema/configs";
 import type { TonightPick, TonightReason } from "@/lib/tonight";
-import { formatKst, type UtcRange } from "@/lib/time";
+import { formatKst, parseUtcIso, type UtcRange } from "@/lib/time";
 
 // ─── 오늘 밤 ────────────────────────────────────────────────────────────────
 
@@ -79,14 +80,22 @@ const STATE_TEXT: Readonly<Record<TonightState, string | null>> = {
   pending: "결과 대기",
 };
 
-/** 선별 결과 → 카드(순서 그대로) */
+/** 선별 결과 → 카드(킥오프 순 — 같은 킥오프는 선별 순서 그대로, 머리 주석) */
 export function tonightCards(
   picks: readonly TonightPick[],
   team: TeamLookup,
   comps: ReadonlyMap<CompId, CompLabel>,
   nowMs: number,
 ): TonightCardView[] {
-  return picks.map(({ match, reasons }) => {
+  const byKickoff = picks
+    .map((pick, order) => ({
+      pick,
+      order,
+      at: parseUtcIso(pick.match.kickoff).getTime(),
+    }))
+    .sort((a, b) => a.at - b.at || a.order - b.order)
+    .map(({ pick }) => pick);
+  return byKickoff.map(({ match, reasons }) => {
     const raw = matchStateOf(match, nowMs);
     // 선별은 연기 경기를 빼므로 postponed는 오지 않는다 — 와도 예정처럼 그린다(결과를 지어내지 않는다)
     const state: TonightState = raw === "postponed" ? "scheduled" : raw;

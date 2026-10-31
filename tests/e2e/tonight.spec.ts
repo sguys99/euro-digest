@@ -77,7 +77,7 @@ test.describe("홈 위젯 — 두 자리", () => {
 });
 
 test.describe("오늘 밤 볼 경기", () => {
-  test("카드 = 선별 순서 그대로(킥오프·대회 탭·이유 태그 label), 이유 없으면 태그 줄 없음, 끝난 경기에 스코어 없음 · 빈 날은 빈 상태", async ({
+  test("카드 = 킥오프 순(선별은 점수 순 — 킥오프·대회 탭·이유 태그 label), 이유 없으면 태그 줄 없음, 끝난 경기에 스코어 없음 · 빈 날은 빈 상태", async ({
     page,
   }) => {
     await open(page, "./");
@@ -89,6 +89,13 @@ test.describe("오늘 밤 볼 경기", () => {
     test.skip(!(await sameBase(page)), "빌드 뒤 KST 날짜가 바뀌었다");
     const rows = section.locator("[data-slot=tonight-row]");
     await expect(rows).toHaveCount(tonight.cards.length);
+    // 화면 순서 = 킥오프 순(2026-10-31 사용자 결정 — DECISIONS D1 §8)
+    const kickoffs = await rows
+      .locator("time")
+      .evaluateAll((ts) =>
+        ts.map((t) => Date.parse(t.getAttribute("datetime")!)),
+      );
+    expect(kickoffs).toEqual([...kickoffs].sort((a, b) => a - b));
     for (const [i, card] of tonight.cards.entries()) {
       const row = rows.nth(i);
       await expect(row.locator("time")).toHaveAttribute(
@@ -138,6 +145,26 @@ test.describe("오늘 밤 볼 경기", () => {
       "한국 선수 소속팀 경기",
     );
     await expect(criteria).toContainText("18:00 ~ 다음 날 07:00 KST");
+  });
+
+  test("데이터 출처 줄(FR-45 — M2-16): 홈 위젯 아래·/tonight/ 맨 아래, 필수 영문 문구 · KST 갱신 시각 · API-Football 병기 없음", async ({
+    page,
+  }) => {
+    for (const [path, scope] of [
+      ["./", "home"],
+      ["tonight/", "tonight"],
+    ] as const) {
+      await open(page, path);
+      const note = page.locator(
+        `[data-slot=data-source][data-scope=${scope}]:visible`,
+      );
+      await expect(note).toHaveCount(1);
+      await expect(note.locator("[lang=en]")).toHaveText(
+        "Football data provided by the Football-Data.org API",
+      );
+      await expect(note).toContainText(/\d\d\.\d\d \d\d:\d\d KST 갱신/);
+      await expect(note).not.toContainText("API-Football");
+    }
   });
 });
 

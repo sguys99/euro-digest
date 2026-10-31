@@ -388,7 +388,7 @@ describe("팀 페이지 — 티켓 · 팀시트 · 일정 · 주요 선수 · �
       document.querySelector("[data-slot=team-news]")!.textContent,
     ).toContain("최근 30일 동안 이 팀 소식이 없어요.");
     const source = document.querySelector<HTMLElement>(
-      "[data-slot=team-source]",
+      "[data-slot=data-source][data-scope=team]",
     )!;
     expect(source.textContent).toContain("팀시트·포메이션 API-Football");
     expect(source.querySelector("[lang=en]")!.textContent).toBe(

@@ -9,12 +9,12 @@ import {
   LeagueContext,
   Reading,
   RelatedNews,
-  TeamSource,
   type KoreanKeyPlayer,
 } from "@/components/team/team-parts";
 import { TeamSheet, type SheetPlayerView } from "@/components/team/team-sheet";
 import { TeamTicket } from "@/components/team/team-ticket";
-import { isCompetitionStale } from "@/lib/competition-view";
+import { DataSourceNote } from "@/components/data-source";
+import { dataSourceOf } from "@/lib/data-source";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadTeamPage, type TeamPageData } from "@/lib/data/team-page";
 import { listTeamSlugs } from "@/lib/data/teams";
@@ -115,7 +115,11 @@ export default async function TeamPage({ params }: PageProps<"/teams/[team]">) {
   const koreanKey = koreanKeyPlayers(page);
   const leagueName = config?.nameKo ?? null;
   const updatedAt = data?.updatedAt ?? null;
-  const stale = updatedAt ? isCompetitionStale(updatedAt, nowMs) : false;
+  // 출처 줄 = 이 화면이 읽은 대회 파일(이 팀이 뛰는 대회 전부) 가운데 가장 오래된 갱신 시각(src/lib/data-source.ts — M2-16)
+  const source = dataSourceOf(
+    page.competitions.map((c) => c.updatedAt),
+    nowMs,
+  );
 
   return (
     <AppShell current="league" currentKind="section" issue={issue}>
@@ -201,10 +205,16 @@ export default async function TeamPage({ params }: PageProps<"/teams/[team]">) {
             ) : null}
           </div>
         </div>
-        <TeamSource
-          updatedAt={updatedAt}
-          stale={stale}
-          apiFootball={team.formation?.source === "api" || team.lineup !== null}
+        <DataSourceNote
+          source={source}
+          covers="순위·경기·득점"
+          apiFootball={
+            team.formation?.source === "api" || team.lineup !== null
+              ? "팀시트·포메이션"
+              : null
+          }
+          scope="team"
+          className="mt-9"
         />
       </article>
     </AppShell>

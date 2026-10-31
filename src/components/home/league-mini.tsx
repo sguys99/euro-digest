@@ -1,11 +1,10 @@
 import Link from "next/link";
 
-import { TrendMark } from "@/components/competition/marks";
+import { TrendMark, ZONE_BAND } from "@/components/competition/marks";
 import { TeamBadge } from "@/components/team/team-badge";
 import { FlatTab } from "@/components/ui/chip";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { SectionHead } from "@/components/ui/section-head";
-import type { ZoneBand } from "@/lib/competition-view";
 import type { LeagueMiniPanelView } from "@/lib/home-widgets";
 import { withBasePath } from "@/lib/paths";
 import { cn } from "@/lib/utils";
@@ -21,20 +20,11 @@ import { LeagueMiniTabs } from "./league-mini-tabs";
  * - 행 = 대회 페이지 순위표의 그 팀 행 링크(`/competitions/{comp}/#{slug}` — `:target` 도착 강조, DECISIONS D1 §5 #9 — 보통 `<a>`:
  *   next/link 클라이언트 이동은 `:target`을 바꾸지 않는다). 격자 `30px · auto · 1fr ·
  *   auto · auto`(간격 8px, 최소 48px, 왼쪽 8px, 아래 1px `--rule`, 800 14.5px): 순위(Barlow 800 20px) · 배지 s · 팀명 · ▲▼ · 승점(Barlow 800 20px).
- *   hover = 팀명 밑줄 2px `--brand-accent`(3px 띄움 — 순위표 팀명과 같다). 구간 띠는 순위표와 같은 규칙(왼쪽 안쪽 4px).
+ *   hover = 팀명 밑줄 2px `--brand-accent`(3px 띄움 — 순위표 팀명과 같다). 구간 띠는 순위표와 같은 클래스(`ZONE_BAND` — marks.tsx, 왼쪽 안쪽 4px).
  * - 접근성: 목록 `aria-label="{대회} 상위 5위"`, 순위 뒤 화면 밖 "위", 승점 뒤 화면 밖 "점", 배지 `aria-hidden`, ▲▼ 화면 밖 글자(TrendMark).
  * - JS가 없으면 `<noscript>` 스타일이 탭 목록을 숨기고 패널 6개를 모두 펼친다(패널마다 평탄 탭 + 대회명 머리가 나타난다 — 진보적 향상).
  * - 자료가 없는 대회(첫 수집 전·개막 전 빈 순위표)는 그 패널만 빈 상태 문구.
  */
-
-/** 구간 띠(순위표 standings-table.tsx BAND와 같은 값 — DESIGN §9.3 구간 표시, 4px · 점선 = 5px 선 · 4px 틈) */
-const BAND: Readonly<Record<ZoneBand, string>> = {
-  rel: "shadow-[inset_4px_0_0_var(--brand-accent)]",
-  relpo:
-    "bg-[repeating-linear-gradient(to_bottom,var(--brand-accent)_0_5px,transparent_5px_9px)] bg-size-[4px_100%] bg-no-repeat",
-  ko: "shadow-[inset_4px_0_0_var(--ink)]",
-  po: "bg-[repeating-linear-gradient(to_bottom,var(--ink-2)_0_5px,transparent_5px_9px)] bg-size-[4px_100%] bg-no-repeat",
-};
 
 /** JS가 없으면 탭 목록을 숨기고 패널을 모두 펼친다(머리 주석) */
 const NOSCRIPT_STYLE =
@@ -69,7 +59,7 @@ function MiniPanel({ panel }: { panel: LeagueMiniPanelView }) {
                 data-zone={row.band ?? undefined}
                 className={cn(
                   "group/row grid min-h-12 grid-cols-[30px_auto_minmax(0,1fr)_auto_auto] items-center gap-2 border-b border-rule pl-2 text-[14.5px] font-extrabold",
-                  row.band && BAND[row.band],
+                  row.band && ZONE_BAND[row.band],
                 )}
               >
                 <span className="font-numeric text-[20px] leading-none font-extrabold tabular-nums">

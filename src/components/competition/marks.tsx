@@ -1,4 +1,9 @@
-import type { FormResult, FormView, TrendView } from "@/lib/competition-view";
+import type {
+  FormResult,
+  FormView,
+  TrendView,
+  ZoneBand,
+} from "@/lib/competition-view";
 import { FORM_WORD } from "@/lib/competition-view";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +13,18 @@ import { cn } from "@/lib/utils";
  * 서버 컴포넌트. 색만으로 뜻을 전하지 않는다 — ▲▼는 도형 + 숫자(+ 화면 밖 "계단 상승/하락"), 폼은 W·D·L 글자 + 색, 자료 없음은 짧은 선.
  * 승 초록(`--result-win`·`--trend-up`)은 `--paper` 위에만 둔다(DECISIONS D1 §5 #8 — `--paper-2` 위 5.10).
  */
+
+/**
+ * 구간 띠(DESIGN §9.3 구간 표시 — 순위 칸 왼쪽 안쪽 4px, 실선 = 확정 · 점선 = 5px 선 · 4px 틈 플레이오프). 순위표 순위 칸·구간 머리 줄
+ * (standings-table.tsx)과 홈 순위 미니 행(league-mini.tsx)이 같은 값을 쓴다(M2-16에서 한 곳으로 — 바꿀 때 여기만).
+ */
+export const ZONE_BAND: Readonly<Record<ZoneBand, string>> = {
+  rel: "shadow-[inset_4px_0_0_var(--brand-accent)]",
+  relpo:
+    "bg-[repeating-linear-gradient(to_bottom,var(--brand-accent)_0_5px,transparent_5px_9px)] bg-size-[4px_100%] bg-no-repeat",
+  ko: "shadow-[inset_4px_0_0_var(--ink)]",
+  po: "bg-[repeating-linear-gradient(to_bottom,var(--ink-2)_0_5px,transparent_5px_9px)] bg-size-[4px_100%] bg-no-repeat",
+};
 
 const TREND_SHAPE =
   "block h-1.75 w-2 bg-current [clip-path:polygon(50%_0,100%_100%,0_100%)]";

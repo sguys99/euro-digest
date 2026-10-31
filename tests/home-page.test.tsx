@@ -43,6 +43,11 @@ const { loadTonightWidget, loadLeagueMini } = vi.hoisted(() => ({
 vi.mock("@/lib/data/home-widgets", () => ({
   loadTonightWidget,
   loadLeagueMini,
+  // 출처 줄(M2-16) — 규칙은 tests/data-source.test.tsx
+  loadWidgetsSource: () => ({
+    updatedAt: "2026-10-09T22:15:00Z",
+    stale: false,
+  }),
 }));
 function slotFromBrief(date: string): BriefSlot {
   const brief = loadBrief(date);
@@ -97,6 +102,20 @@ describe("HomePage", () => {
     });
   });
 
+  it("홈 위젯 아래 데이터 출처 줄(M2-16 — FR-45, 위젯 두 자리마다 하나, 필수 영문 문구·KST 갱신 시각·API-Football 병기 없음)", () => {
+    loadLatestNews.mockReturnValue(null);
+    const { container } = render(<HomePage />);
+    const notes = container.querySelectorAll(
+      "[data-slot=data-source][data-scope=home]",
+    );
+    expect(notes).toHaveLength(2);
+    expect(notes[0]?.textContent).toContain("일정·순위 10.10 07:15 KST 갱신");
+    expect(notes[0]?.textContent).not.toContain("API-Football");
+    expect(notes[0]?.querySelector("[lang=en]")?.textContent).toBe(
+      "Football data provided by the Football-Data.org API",
+    );
+  });
+
   it("서비스 이름을 h1으로 보여 준다", () => {
     loadLatestNews.mockReturnValue(null);
     render(<HomePage />);
@@ -115,7 +134,12 @@ describe("HomePage", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("아직 발행된 소식이 없어요.")).toBeInTheDocument();
     expect(screen.queryAllByRole("article")).toEqual([]);
-    expect(container.querySelector("time")).toBeNull();
+    // 호 날짜 시각이 없다(위젯 데이터 출처 줄의 갱신 시각은 호와 무관 — M2-16)
+    expect(
+      [...container.querySelectorAll("time")].filter(
+        (t) => !t.closest("[data-slot=data-source]"),
+      ),
+    ).toEqual([]);
   });
 
   it("최신 호의 KST 발행일과 카드 목록을 보여 준다", () => {

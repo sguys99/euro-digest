@@ -8,7 +8,6 @@ import {
 import {
   CompetitionContents,
   CompetitionHead,
-  CompetitionSource,
   CompetitionSwitch,
   StandingsLegend,
 } from "@/components/competition/competition-parts";
@@ -16,6 +15,7 @@ import { KnockoutStages } from "@/components/competition/knockout";
 import { RoundBook, RoundDays } from "@/components/competition/rounds";
 import { ScorerList, ScorerTable } from "@/components/competition/scorers";
 import { StandingsTable } from "@/components/competition/standings-table";
+import { DataSourceNote } from "@/components/data-source";
 import { NewsFeed } from "@/components/news-feed";
 import { AppShell } from "@/components/shell/app-shell";
 import { LEAGUE_NAV_COMP } from "@/components/shell/site-nav";
@@ -24,7 +24,6 @@ import {
   currentRoundOf,
   cutScorers,
   formScopeOf,
-  isCompetitionStale,
   roundStatusText,
   roundsOf,
   scorerViews,
@@ -32,6 +31,7 @@ import {
   trendLegendText,
   type TeamLookup,
 } from "@/lib/competition-view";
+import { dataSourceOf } from "@/lib/data-source";
 import type { IssueMeta } from "@/lib/issue";
 import {
   BETWEEN_STATUS_TEXT,
@@ -170,7 +170,7 @@ export function CompetitionScreen({
   const scorerSummary = cutScorers(scorers, SCORER_SUMMARY);
   const scorerTable = cutScorers(scorers, SCORER_TABLE_MAX, SCORER_TABLE_RANK);
   const scorerDate = formatKst(data.updatedAt, "monthDay");
-  const stale = isCompetitionStale(data.updatedAt, nowMs);
+  const source = dataSourceOf([data.updatedAt], nowMs);
 
   const standingsPanel = (
     <>
@@ -309,7 +309,12 @@ export function CompetitionScreen({
   return shell(
     <>
       <CompetitionViews label={`${config.nameKo} 보기`} views={views} />
-      <CompetitionSource updatedAt={data.updatedAt} stale={stale} />
+      <DataSourceNote
+        source={source}
+        covers="순위·경기·득점"
+        scope="competition"
+        className="mt-3.5"
+      />
       <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_STYLE }} />
     </>,
   );

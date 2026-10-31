@@ -1,6 +1,6 @@
 /**
  * M2-14·M2-15 — 홈 위젯 화면 모델(src/lib/home-widgets.ts)과 그리기(src/components/home/*), `/tonight` 페이지.
- *   - 오늘 밤 카드: 선별 순서 그대로 · 킥오프 KST(서머타임 전후) · 이유 태그 label 그대로(한국 = 완장) · 이유 없으면 태그 줄 없음 ·
+ *   - 오늘 밤 카드: 화면 순서 = 킥오프 순(같은 킥오프는 선별 순서 — 2026-10-31 사용자 결정) · 킥오프 KST(서머타임 전후) · 이유 태그 label 그대로(한국 = 완장) · 이유 없으면 태그 줄 없음 ·
  *     끝난 경기 = "종료"(스코어 없음) · 킥오프 + 3시간 지난 scheduled = "결과 대기" · 창 문구 · 빈 상태
  *   - 순위 미니: 상위 5행 · ▲▼(prevPos null = 빈칸) · 구간 띠(UCL 16강 직행) · 팀 행 앵커 링크 · 기준 날짜 줄 · 탭 6개 · 빈 패널
  *   - 선정 기준: bigmatch-rules 값 그대로 · weight 0 규칙 제외
@@ -118,7 +118,7 @@ const MORNING = Date.parse("2026-10-30T23:00:00Z");
 // ─── 오늘 밤 화면 모델 ───────────────────────────────────────────────────────
 
 describe("tonightCards — 선별 결과 → 카드", () => {
-  it("선별 순서 그대로, 킥오프 KST(시각·날짜), 대회 약칭·정식명, 이유 label 그대로", () => {
+  it("킥오프 KST(시각·날짜), 대회 약칭·정식명, 이유 label 그대로", () => {
     const cards = tonightCards(PICKS, team, COMPS, MORNING);
     expect(cards.map((c) => c.id)).toEqual(["m1", "m2"]);
     expect(cards[0]).toMatchObject({
@@ -136,6 +136,32 @@ describe("tonightCards — 선별 결과 → 카드", () => {
     });
     expect(cards[0]?.home.name).toBe("바이에른 뮌헨");
     expect(cards[1]?.reasons).toEqual([]);
+  });
+
+  it("화면 순서는 킥오프 순 — 선별(점수 순)은 그대로 두고, 같은 킥오프는 선별 순서를 유지", () => {
+    const pick = (id: string, kickoff: string, score: number): TonightPick => ({
+      match: match(id, "UCL", "arsenal", "milan", kickoff),
+      score,
+      rules: ["ucl"],
+      reasons: [],
+    });
+    // 점수 순 선별 결과(높은 점수가 늦은 킥오프)
+    const picks = [
+      pick("late-top", "2026-10-31T20:00:00Z", 13),
+      pick("early-a", "2026-10-31T17:30:00Z", 9),
+      pick("mid", "2026-10-31T19:45:00Z", 8),
+      pick("early-b", "2026-10-31T17:30:00Z", 5),
+      pick("early-c", "2026-10-31T17:30:00.000Z", 4),
+    ];
+    expect(tonightCards(picks, team, COMPS, MORNING).map((c) => c.id)).toEqual([
+      "early-a",
+      "early-b",
+      "early-c",
+      "mid",
+      "late-top",
+    ]);
+    // 입력 배열은 바꾸지 않는다
+    expect(picks.map((p) => p.match.id)[0]).toBe("late-top");
   });
 
   it("유럽 서머타임 종료(2026-10-25) 전후 — 킥오프 KST는 UTC + 9 그대로", () => {

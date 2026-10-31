@@ -3,14 +3,12 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import {
-  COMPETITION_STALE_HOURS,
   currentRoundOf,
   cutScorers,
   fallbackTeamName,
   formScopeOf,
   formView,
   goalDiffText,
-  isCompetitionStale,
   matchExtraText,
   matchStateOf,
   recentMatchesOf,
@@ -477,14 +475,6 @@ describe("득점 순위 — 공동 순위·자르기·선수명(D63 ①)", () =>
     expect(cutScorers(views, 5).tieNote).toBeNull();
     expect(cutScorers(views, 20, 3).rows).toHaveLength(5);
     expect(cutScorers([], 5)).toEqual({ rows: [], tieNote: null });
-  });
-});
-
-describe("데이터 신선도 — '업데이트 지연'(M2-02)", () => {
-  it(`updatedAt이 빌드 시각보다 ${COMPETITION_STALE_HOURS}시간 이상 오래되면 지연`, () => {
-    const at = "2026-10-30T02:17:27.762Z";
-    expect(isCompetitionStale(at, ms("2026-10-30T22:00:00Z"))).toBe(false);
-    expect(isCompetitionStale(at, ms("2026-10-31T14:17:27.762Z"))).toBe(true);
   });
 });
 

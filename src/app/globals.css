@@ -846,9 +846,15 @@
 
 @utility match-row {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) 48px minmax(0, 1fr);
+  /* 1023 이하는 킥오프 40 · 스코어 44 · 간격 6px(1024 이상 44 · 48 · 8px — 혼합안) — 375에서 팀명 칸을 7px 넓혀 한글 팀명 가장 긴 어절
+     (7자 "묀헨글라트바흐" 84px @13.5px)이 한 줄에 들어가게 한다(M2-16 — 한글 어절 중간 줄바꿈 금지, DESIGN §3.6) */
+  grid-template-columns: 40px minmax(0, 1fr) 44px minmax(0, 1fr);
   align-items: center;
-  column-gap: 8px;
+  column-gap: 6px;
+  @variant lg {
+    grid-template-columns: 44px minmax(0, 1fr) 48px minmax(0, 1fr);
+    column-gap: 8px;
+  }
   min-height: var(--match-row-h, 46px);
   padding-block: 6px;
   border-bottom: 1px solid var(--rule);
@@ -877,13 +883,28 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 7px;
+    gap: 5px;
     text-align: right;
   }
   & > [data-a] {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 5px;
+  }
+  @variant lg {
+    & > [data-h],
+    & > [data-a] {
+      gap: 7px;
+    }
+  }
+  /* 팀명은 어절 중간에서 끊지 않는다(본문의 overflow-wrap: anywhere를 끈다 — "슈투트가르/트" 금지). 칸보다 긴 어절이 생기면(360 이하 폭 ·
+     새 팀) 그 줄 끝을 말줄임으로 자른다 — 접근 이름은 DOM 글자 전체 그대로(M2-16) */
+  & > [data-h] > span:not(.kit),
+  & > [data-a] > span:not(.kit) {
+    min-width: 0;
+    overflow: hidden;
+    overflow-wrap: normal;
+    text-overflow: ellipsis;
   }
   & > [data-s] {
     display: flex;
@@ -917,7 +938,11 @@
 
 @utility match-row-full {
   --match-row-h: 54px;
-  --match-row-fs: 14.5px;
+  /* 1023 이하 13.5px(기본 줄과 같은 크기) · 1024 이상 14.5px(혼합안) — 375 팀명 칸에 7자 어절이 들어가게(위 match-row 주석, M2-16) */
+  --match-row-fs: 13.5px;
+  @variant lg {
+    --match-row-fs: 14.5px;
+  }
 }
 
 /* 경기 상태 상자(예정·결과 대기·연기 — 1px dashed --ink-3, 11.5px 800 --ink-2) */

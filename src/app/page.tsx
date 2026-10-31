@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
 
 import { BriefMissing, TodayBrief } from "@/components/brief/today-brief";
+import { DataSourceNote } from "@/components/data-source";
 import { LeagueMini } from "@/components/home/league-mini";
 import { TonightSection } from "@/components/home/tonight";
 import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
 import { AppShell } from "@/components/shell/app-shell";
 import { loadBriefSlot } from "@/lib/data/brief";
-import { loadLeagueMini, loadTonightWidget } from "@/lib/data/home-widgets";
+import {
+  loadLeagueMini,
+  loadTonightWidget,
+  loadWidgetsSource,
+} from "@/lib/data/home-widgets";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
 import { issueLateWindows } from "@/lib/issue";
@@ -27,7 +32,8 @@ import { cn } from "@/lib/utils";
  *   3. 오늘 밤 볼 경기(M2-14) → 리그 순위 미니(M2-15) — D1 확정 시안 화면 3(DESIGN §9.3). **위젯 두 자리**(DESIGN §11.4): 1279 이하는 지면 안
  *      피드 다음(`xl:hidden` — DECISIONS D0 §5 #16 순서 5줄 → 한국 선수 → 피드 → 오늘 밤 → 이적·순위), 1280 이상은 마주 보는 면(앱 셸 `facing`
  *      — 오늘 밤 → 순위). 같은 위젯을 두 번 그리고 `display`로 고른다(보조기술에는 한 번만 — 머리 id만 다르게).
- *      기준 시각 = 빌드 시각(오늘 밤 창은 빌드 시각의 KST 날짜 18:00 ~ 다음 날 07:00 — src/lib/tonight.ts).
+ *      기준 시각 = 빌드 시각(오늘 밤 창은 빌드 시각의 KST 날짜 18:00 ~ 다음 날 07:00 — src/lib/tonight.ts). 두 위젯 아래 데이터 출처 줄
+ *      하나(FR-45 — src/components/data-source.tsx, 갱신 시각 = 6개 대회 파일 중 가장 오래된 것, M2-16).
  * 그 밖의 홈 섹션(한국 선수·이적)은 해당 단계에서 싣는다(미완성 섹션 숨김, plan §2.3 — 자리를 그리지 않는다). 1024~1279는 목차 + 지면 2단,
  * 1280 이상은 목차 + 지면(688) + 마주 보는 면(296) 3단이다(DESIGN §4.3).
  */
@@ -47,6 +53,7 @@ export default function HomePage() {
   const filter = loadNewsFilterView(news);
   const tonight = loadTonightWidget();
   const league = loadLeagueMini();
+  const source = loadWidgetsSource();
   const widgets = (where: "flow" | "facing") => (
     <>
       <TonightSection
@@ -58,6 +65,13 @@ export default function HomePage() {
         panels={league}
         headingId={`league-mini-${where}-h`}
         className="mt-9"
+      />
+      {/* 두 위젯의 데이터 출처(FR-45 — 6개 대회 파일 중 가장 오래된 갱신 시각, M2-16) */}
+      <DataSourceNote
+        source={source}
+        covers="일정·순위"
+        scope="home"
+        className="mt-4"
       />
     </>
   );

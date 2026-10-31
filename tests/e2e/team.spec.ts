@@ -81,7 +81,9 @@ test.describe("팀 페이지 — 표본 팀 렌더", () => {
         page.locator("[data-slot=team-ticket] [role=img]").first(),
       ).toHaveAttribute("aria-label", / 배지/);
       await expect(
-        page.locator('[data-slot="team-source"] [lang="en"]'),
+        page.locator(
+          '[data-slot="data-source"][data-scope="team"] [lang="en"]',
+        ),
       ).toHaveText("Football data provided by the Football-Data.org API");
       await noOverflow(page);
     });

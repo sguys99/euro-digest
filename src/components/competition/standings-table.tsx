@@ -18,7 +18,7 @@ import type { Match } from "@/lib/schema/competition";
 import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
-import { FormChips, ResultChip, Score, TrendMark } from "./marks";
+import { FormChips, ResultChip, Score, TrendMark, ZONE_BAND } from "./marks";
 import { StandingsIsland } from "./standings-island";
 
 /**
@@ -36,15 +36,6 @@ import { StandingsIsland } from "./standings-island";
  *   없는 팀은 글자만(`TeamLink` — 없는 페이지로 가는 링크를 만들지 않는다). 행 누름(펼침)은 링크 클릭을 건드리지 않는다(섬).
  * - 배지는 옆 한글 팀명이 이름이라 `aria-hidden`(D1 §5 #5).
  */
-
-/** 순위 칸·구간 머리 줄의 띠(DESIGN §9.3 구간 표시 — 4px, 점선 = 5px 선 · 4px 틈) */
-const BAND: Readonly<Record<ZoneBand, string>> = {
-  rel: "shadow-[inset_4px_0_0_var(--brand-accent)]",
-  relpo:
-    "bg-[repeating-linear-gradient(to_bottom,var(--brand-accent)_0_5px,transparent_5px_9px)] bg-size-[4px_100%] bg-no-repeat",
-  ko: "shadow-[inset_4px_0_0_var(--ink)]",
-  po: "bg-[repeating-linear-gradient(to_bottom,var(--ink-2)_0_5px,transparent_5px_9px)] bg-size-[4px_100%] bg-no-repeat",
-};
 
 /** 구간 머리 줄 위 괘선·글자 */
 const ZONE_HEAD: Readonly<Record<ZoneBand | "none", string>> = {
@@ -166,7 +157,7 @@ export function StandingsTable({
                   className={cn(
                     "pt-3 pb-1.25 pl-3 text-left text-xs font-extrabold",
                     ZONE_HEAD[line.band],
-                    line.band !== "none" && BAND[line.band],
+                    line.band !== "none" && ZONE_BAND[line.band],
                   )}
                 >
                   {line.title}
@@ -223,7 +214,7 @@ function StandingRowLines({
         <td
           className={cn(
             "w-11.5 border-b border-rule pl-3 text-left align-middle lg:w-24 lg:pl-4",
-            band && BAND[band],
+            band && ZONE_BAND[band],
           )}
         >
           <span className="block lg:flex lg:items-start lg:gap-1.5">
@@ -302,7 +293,7 @@ function StandingRowLines({
       <tr id={detailId} hidden className="lg:hidden" data-detail="">
         <td
           colSpan={COLUMNS}
-          className={cn("pb-4 pl-3 text-left", band && BAND[band])}
+          className={cn("pb-4 pl-3 text-left", band && ZONE_BAND[band])}
         >
           <RowDetail
             view={view}

@@ -12,8 +12,6 @@ import {
 import { routes } from "@/lib/paths";
 import type { CompId } from "@/lib/schema/common";
 import type { CompetitionConfig, ZoneRule } from "@/lib/schema/configs";
-import { FOOTBALL_DATA_ATTRIBUTION } from "@/lib/site";
-import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
 import { FormChip } from "./marks";
@@ -196,36 +194,5 @@ export function StandingsLegend({
         자료 없음
       </span>
     </div>
-  );
-}
-
-/**
- * 데이터 출처 줄(FR-45 — 페이지 하단, M2-16 범위를 당겨 넣음): "데이터" + 제공처 + 갱신 시각 KST + 필수 영문 문구(약관 7.1 원문, `lang="en"`).
- * `updatedAt`이 오래됐으면(src/lib/competition-view.ts `isCompetitionStale` — 36시간) "업데이트 지연"을 붙인다(M2-02 — 실패 시 전일 데이터 유지).
- */
-export function CompetitionSource({
-  updatedAt,
-  stale,
-}: {
-  updatedAt: string;
-  stale: boolean;
-}) {
-  return (
-    <p
-      data-slot="competition-source"
-      className="mt-3.5 text-[12.5px] leading-normal text-ink-2"
-    >
-      <b className="font-extrabold text-ink">데이터</b> football-data.org —
-      순위·경기·득점{" "}
-      <time dateTime={updatedAt}>{formatKst(updatedAt, "short")} KST</time> 갱신
-      {stale ? (
-        <>
-          {" "}
-          ·{" "}
-          <b className="font-extrabold text-brand-accent-text">업데이트 지연</b>
-        </>
-      ) : null}{" "}
-      · <span lang="en">{FOOTBALL_DATA_ATTRIBUTION}</span>
-    </p>
   );
 }

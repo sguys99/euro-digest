@@ -171,8 +171,11 @@ function Pitch({
             <li
               key={p.key}
               data-no={p.key}
-              style={{ "--a": spot.a, "--c": spot.c } as CSSProperties}
-              className="group/spot pitch-spot grid w-17.5 justify-items-center gap-1 text-center lg:w-21"
+              style={
+                { "--a": spot.a, "--c": spot.c, "--w": spot.w } as CSSProperties
+              }
+              // 1023 이하 칸 폭 = min(70px, 같은 줄 간격 − 4px) — 5명 줄(간격 약 58px @375)에서 이웃 이름이 맞닿지 않게(M2-16)
+              className="group/spot pitch-spot grid w-[min(70px,calc(var(--w)*1%-4px))] justify-items-center gap-1 text-center lg:w-21"
             >
               <span
                 className={cn(
@@ -187,7 +190,12 @@ function Pitch({
               >
                 {p.number ?? ""}
               </span>
-              <span className="text-[11px] leading-[1.2] font-extrabold text-ink decoration-brand-accent decoration-2 underline-offset-3 group-data-hl/spot:underline lg:text-xs">
+              {/* 원어 이름은 칸(70/84px)보다 긴 성이 있다 — 글자 단위로 끊지 않고(혼합안 `.pm__nm` overflow-wrap: normal) 영어 하이픈 규칙이
+                  있는 브라우저는 하이픈으로 나누고, 없으면 칸 밖으로 조금 넘친다(가장 긴 성 약 82px — 이웃 칸과 겹치지 않음, M2-16) */}
+              <span
+                lang={p.latin ? "en" : undefined}
+                className="text-[11px] leading-[1.2] font-extrabold wrap-normal hyphens-auto text-ink decoration-brand-accent decoration-2 underline-offset-3 group-data-hl/spot:underline lg:text-xs"
+              >
                 {p.name}
               </span>
             </li>

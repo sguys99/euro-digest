@@ -568,16 +568,3 @@ export function cutScorers(
 export function statText(value: number | null): string {
   return value === null ? "–" : String(value);
 }
-
-// ─── 데이터 신선도 ──────────────────────────────────────────────────────────
-
-/** `updatedAt`이 빌드 시각보다 이만큼 이상 오래되면 "업데이트 지연"(하루 1회 갱신 — 한 번 거르면 약 48시간이 된다) */
-export const COMPETITION_STALE_HOURS = 36;
-
-/** 대회 데이터가 지연됐는가(빌드 시각 기준) */
-export function isCompetitionStale(updatedAt: string, nowMs: number): boolean {
-  return (
-    nowMs - parseUtcIso(updatedAt).getTime() >=
-    COMPETITION_STALE_HOURS * 60 * 60 * 1000
-  );
-}

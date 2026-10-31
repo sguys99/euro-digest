@@ -26,7 +26,9 @@ test.describe("대회 페이지 — 6개 정적 생성 · 기본 배치", () => 
         await page.locator("table[data-slot=standings] tr[data-row]").count(),
       ).toBeGreaterThan(0);
       await expect(
-        page.locator('[data-slot="competition-source"] [lang="en"]'),
+        page.locator(
+          '[data-slot="data-source"][data-scope="competition"] [lang="en"]',
+        ),
       ).toHaveText("Football data provided by the Football-Data.org API");
       await noOverflow(page);
     });
@@ -119,6 +121,35 @@ test.describe("보기 탭 · 라운드 이동 · 행 펼침", () => {
       .evaluate((el) => getComputedStyle(el).backgroundColor);
     expect(bg).not.toBe("rgba(0, 0, 0, 0)");
   });
+});
+
+test("375 — 경기 줄 팀명은 어절 중간에서 줄을 바꾸지 않는다(한글 keep-all — M2-16)", async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== "mobile", "375 기준");
+  for (const comp of COMPS) {
+    await page.goto(`competitions/${comp}/#fixtures`);
+    await page.evaluate(() => document.fonts.ready);
+    // 모든 라운드를 보이게 한 뒤 공백 없는 팀명(한 어절)이 한 줄보다 높으면 어절 중간 줄바꿈
+    await page.addStyleTag({
+      content: "[data-rounds] > [data-round]{display:block!important}",
+    });
+    const broken = await page.evaluate(() =>
+      [
+        ...document.querySelectorAll<HTMLElement>(
+          ".match-row > [data-h] > span:not(.kit), .match-row > [data-a] > span:not(.kit)",
+        ),
+      ]
+        .filter((e) => e.offsetParent !== null && !/\s/.test(e.textContent!))
+        .filter(
+          (e) =>
+            e.getBoundingClientRect().height >
+            parseFloat(getComputedStyle(e).lineHeight) * 1.5,
+        )
+        .map((e) => e.textContent),
+    );
+    expect(broken, comp).toEqual([]);
+  }
 });
 
 test("누를 수 있는 것은 44px 이상(대회 이동·목차·탭·펼침·라운드 이동)", async ({

@@ -12,7 +12,6 @@ import type { CompId } from "@/lib/schema/common";
 import type { StandingRow } from "@/lib/schema/competition";
 import type { NewsFile } from "@/lib/schema/news";
 import type { Team } from "@/lib/schema/team";
-import { FOOTBALL_DATA_ATTRIBUTION } from "@/lib/site";
 import type { KeyPlayerView, RelatedIssue } from "@/lib/team-view";
 import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
@@ -320,50 +319,5 @@ export function Reading({
         ))}
       </ul>
     </section>
-  );
-}
-
-// ─── 데이터 출처 줄 (FR-45) ─────────────────────────────────────────────────
-
-/**
- * 팀 화면 출처 줄 — 대회 페이지(`CompetitionSource`)와 같은 문구 + 팀시트·포메이션 API-Football 병기(FR-45 권장, D27). `updatedAt`이 36시간
- * 이상 지났으면 "업데이트 지연"(대회 페이지와 같은 기준 — M2-16에서 확정).
- */
-export function TeamSource({
-  updatedAt,
-  stale,
-  apiFootball,
-}: {
-  updatedAt: string | null;
-  stale: boolean;
-  /** 팀시트·포메이션(API-Football 라인업)을 실었는가 */
-  apiFootball: boolean;
-}) {
-  return (
-    <p
-      data-slot="team-source"
-      className="mt-9 text-[12.5px] leading-normal text-ink-2"
-    >
-      <b className="font-extrabold text-ink">데이터</b> football-data.org —
-      순위·경기·득점
-      {updatedAt ? (
-        <>
-          {" "}
-          <time dateTime={updatedAt}>
-            {formatKst(updatedAt, "short")} KST
-          </time>{" "}
-          갱신
-        </>
-      ) : null}
-      {stale ? (
-        <>
-          {" "}
-          ·{" "}
-          <b className="font-extrabold text-brand-accent-text">업데이트 지연</b>
-        </>
-      ) : null}
-      {apiFootball ? <> · 팀시트·포메이션 API-Football</> : null} ·{" "}
-      <span lang="en">{FOOTBALL_DATA_ATTRIBUTION}</span>
-    </p>
   );
 }
