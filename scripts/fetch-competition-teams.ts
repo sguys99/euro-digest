@@ -19,7 +19,7 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 
 import { CompetitionsFileSchema } from "@/lib/schema";
-import { nowUtcIso } from "@/lib/time";
+import { nowUtcIso, utcDate } from "@/lib/time";
 
 import { readConfigFile } from "./lib/config-files";
 import {
@@ -141,7 +141,7 @@ async function main(): Promise<number> {
       kind: "fd-teams",
       endpoint,
       fetchedAt,
-      asOf: fetchedAt.slice(0, 10),
+      asOf: utcDate(fetchedAt),
       comp: comp.id,
       origin: "M2-04",
       trimmed: {

@@ -15,7 +15,7 @@
  *   수동 보조 `configs/formations.json`은 원장 경기가 MIN_API_USES_OVER_MANUAL(3)경기 미만일 때 원장보다 앞선다(수집 초기 경기 수
  *   부족·데이터 누락 팀). 둘 다 없으면 null(화면 미표시).
  *
- * 팀시트 라인업 (D63 ② — 초안 스키마 `Team.lineup`)
+ * 팀시트 라인업 (D63 ② — `Team.lineup`, 단일 lineup은 오케스트레이터 결정 — DECISIONS D1 §8 #12)
  *   주 포메이션을 쓴 가장 최근 경기 1개의 선발 11·교체 명단(이름·등번호·포지션·grid만 — 출전 시간 등 선수 기록은 넣지 않는다).
  *   라인업은 원장에 없어(D33 ② 불변) API-Football 경기 단건 응답(`MatchDetail.lineups`)에서 뽑는다(`teamSheetsFromDetails`) —
  *   collect의 API-Football 단계(`AfStageResult.details`, M2-09에서 배선)와 초기 백필(build-teams.ts `--backfill`)이 같은 함수를 쓴다.

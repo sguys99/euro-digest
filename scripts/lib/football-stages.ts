@@ -13,7 +13,8 @@
  * ── 언제 도나 (`planFootballStages`) ──────────────────────────────────────────────────────────────
  *   - 스위치: CollectDeps.footballStages(진입점 scripts/collect.ts가 `COLLECT_FOOTBALL_STAGES` — 저장소 변수 — 로 정한다. 기본 켬,
  *     `off`면 끔: 아침 봇 시간대(사람 push 금지)에 코드 수정 없이 끌 수 있게). 테스트 주입 deps는 기본 꺼짐.
- *   - 뉴스 단계가 실패한 실행(exit 1 — 커밋되지 않음)은 돌지 않는다(호출·시간 낭비 방지).
+ *   - 뉴스 단계가 실패한 실행(exit 1 — 커밋되지 않음)은 돌지 않는다(호출·시간 낭비 방지). 뉴스는 성공했지만 경기 데이터 단계가
+ *     시작되지 않은 실행도 돌지 않는다(이유 `no-match-stage` — 원장·API-Football 결과가 없다).
  *   - 대회 단계: **prod·비dry**이고 실행 시각이 **09:00 KST 전**일 때만(대회 파일 `updatedAt`이 하나라 늦은 실행이 다음 날 ▲▼ 기준을
  *     바꾼다 — M2-03 운영 규칙). 개발(dev)·dry 실행은 football-data 18요청을 쓰지 않는다(단독 실행 `npm run fetch:competitions`).
  *   - 팀 단계: prod·비dry면 data/teams를 쓰고(write), 그 밖은 계산만 하고 로그로 남긴다(preview — API 호출 없음).
@@ -148,7 +149,14 @@ function errorText(error: unknown): string {
 // ─── 계획 (순수) ─────────────────────────────────────────────────────────
 
 export type FootballStageSkipReason =
-  "disabled" | "news-failed" | "dev" | "dry" | "after-cutoff" | "no-api-key";
+  | "disabled"
+  | "news-failed"
+  /** 뉴스는 성공했지만 경기 데이터 단계가 시작되지 않았다(원장·API-Football 결과 없음 — 대회·팀 단계의 입력이 없다) */
+  | "no-match-stage"
+  | "dev"
+  | "dry"
+  | "after-cutoff"
+  | "no-api-key";
 
 export interface FootballStagesPlan {
   competitions: { run: true } | { run: false; reason: FootballStageSkipReason };
@@ -161,6 +169,8 @@ export interface FootballStagesPlan {
 export function planFootballStages(input: {
   enabled: boolean;
   newsOk: boolean;
+  /** 경기 데이터 단계가 시작됐나(collect-run.ts `match.stage !== null`) */
+  hasMatchStage: boolean;
   env: RunEnv;
   dry: boolean;
   /** 실행 시작(UTC ISO) — 09:00 KST 판정 */
@@ -177,6 +187,12 @@ export function planFootballStages(input: {
     return {
       competitions: { run: false, reason: "news-failed" },
       teams: { run: false, reason: "news-failed" },
+    };
+  }
+  if (!input.hasMatchStage) {
+    return {
+      competitions: { run: false, reason: "no-match-stage" },
+      teams: { run: false, reason: "no-match-stage" },
     };
   }
   const write = input.env === "prod" && !input.dry;

@@ -17,6 +17,19 @@ import { Tabs, TabsList, TabsPanel, TabsTrigger } from "@/components/ui/tabs";
  * `cn`(tailwind-merge)을 쓰지 않는다(섬 번들, DESIGN §9.4).
  */
 
+/**
+ * 주소 해시 → 요소 id. 깨진 퍼센트 인코딩(`#%E0%A4%A`)은 `decodeURIComponent`가 URIError를 던지므로 원문 그대로 쓴다
+ * (그런 id의 요소는 없어 무시된다 — 섬이 죽지 않는 것이 목적, M2 리뷰).
+ */
+function hashId(hash: string): string {
+  const raw = hash.slice(1);
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
 export interface CompetitionView {
   /** 패널 값 — 패널 요소 `data-view`(앵커로 패널을 찾는다) */
   value: string;
@@ -39,7 +52,7 @@ export function CompetitionViews({
 
   useEffect(() => {
     function openFromHash() {
-      const id = decodeURIComponent(window.location.hash.slice(1));
+      const id = hashId(window.location.hash);
       if (!id) return;
       const target = document.getElementById(id);
       const panel = target?.closest<HTMLElement>("[data-view]");

@@ -19,7 +19,11 @@
  *     하나라도 어긋나면 원장·이월은 빼고 실행 기록만 커밋한다.
  *   - 커밋하지 않는 것(`NOT_PRESERVED_PATHS`): data/news·data/briefs(검증·빌드를 통과하지 못한 발행물), data/cache/seen-urls.json
  *     (커밋된 기억 ⊂ 커밋된 카드 — M1-12 이월: 카드 없이 기억만 남으면 그 기사가 다시는 카드가 되지 않는다),
- *     data/cache/unknown-names.json(다음 실행이 다시 관찰한다). 삭제 단계(M1-25)가 지운 카드·기억도 다음 실행이 다시 지운다.
+ *     data/cache/unknown-names.json(다음 실행이 다시 관찰한다), data/cache/lineup-backfill.json(M2-09 — seen-urls와 같은 이유:
+ *     '받아 본 경기 id' 기억이고 그 결과인 팀시트는 data/teams — 발행 산출물이라 실패 커밋에 없다. 기억만 남기면 다음 실행이 그 경기를
+ *     `exclude`해 그 팀의 팀시트가 다음 경기까지 비어 있다. 버리면 다음 실행이 ≤ 5건을 다시 받는다 — 호출 수는 실행 기록에 남아 일일
+ *     카운터는 지켜진다. af-pending과 다르다: af-pending은 받은 결과(원장)와 함께 보존된다). 삭제 단계(M1-25)가 지운 카드·기억도 다음
+ *     실행이 다시 지운다.
  *
  * 같은 실행이 이미 main에 있으면(커밋 단계가 push까지 한 뒤 실패) 아무것도 하지 않는다 — 그 커밋에 실행 기록·원장이 이미 있다.
  *
@@ -62,6 +66,7 @@ export const NOT_PRESERVED_PATHS = [
   "data/briefs",
   "data/cache/seen-urls.json",
   "data/cache/unknown-names.json",
+  "data/cache/lineup-backfill.json",
 ] as const;
 
 /** cost.ts makeRunId 형식 — `<job>-<env>-<시작 UTC>-<4자리 16진수>` */

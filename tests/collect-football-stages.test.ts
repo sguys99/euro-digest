@@ -101,6 +101,7 @@ describe("planFootballStages — 언제 도나", () => {
   const prod = {
     enabled: true,
     newsOk: true,
+    hasMatchStage: true,
     env: "prod" as const,
     dry: false,
     startedAt: "2026-10-30T22:10:00.000Z", // 07:10 KST(겨울 정시)
@@ -120,6 +121,20 @@ describe("planFootballStages — 언제 도나", () => {
       teams: { run: false, reason: "disabled" },
     });
     expect(planFootballStages({ ...prod, newsOk: false })).toEqual({
+      competitions: { run: false, reason: "news-failed" },
+      teams: { run: false, reason: "news-failed" },
+    });
+  });
+
+  it("뉴스는 성공했지만 경기 데이터 단계가 없으면 no-match-stage(news-failed로 찍지 않는다)", () => {
+    expect(planFootballStages({ ...prod, hasMatchStage: false })).toEqual({
+      competitions: { run: false, reason: "no-match-stage" },
+      teams: { run: false, reason: "no-match-stage" },
+    });
+    // 뉴스 실패가 먼저 — 둘 다 아니면 news-failed
+    expect(
+      planFootballStages({ ...prod, newsOk: false, hasMatchStage: false }),
+    ).toEqual({
       competitions: { run: false, reason: "news-failed" },
       teams: { run: false, reason: "news-failed" },
     });

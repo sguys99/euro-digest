@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, CSSProperties, ReactNode } from "react";
 
 import type { CompId } from "@/lib/schema/common";
 import { cx } from "@/lib/cx";
@@ -180,10 +180,10 @@ export function IndexTab({
     >
       {/* 세로쓰기 글자 줄 길이를 글꼴과 무관하게 고정한다 — 웹폰트(EuroDigest Sans)는 세로 메트릭(vmtx)이 없어 글자마다 ascent + descent
           (약 1.19em, 화면에서 1.24em 안팎으로 반올림)를 쓰고, 메트릭 폴백(맑은 고딕·Noto)은 1em × size-adjust라 웹폰트가 오면 탭이 약 11px
-          길어져 5줄 행 전체가 밀렸다(홈 CLS 0.15 — M2-16). 글자 수 × 1.25em 상자 안에서 가운데 정렬 */}
+          길어져 5줄 행 전체가 밀렸다(홈 CLS 0.15 — M2-16). 글자 수(`--chars`) × 1.25em 상자 안에서 가운데 정렬 */}
       <span
-        className="block text-center"
-        style={{ height: `${[...children].length * 1.25}em` }}
+        className="block h-[calc(var(--chars)*1.25em)] text-center"
+        style={{ "--chars": [...children].length } as CSSProperties}
       >
         {children}
       </span>

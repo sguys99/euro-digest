@@ -90,6 +90,24 @@ test.describe("보기 탭 · 라운드 이동 · 행 펼침", () => {
     await expect(visible).toHaveAttribute("id", "round-1");
   });
 
+  test("깨진 해시(#%E0%A4%A) — 첫 진입·hashchange 모두 섬이 죽지 않고 탭이 계속 동작한다", async ({
+    page,
+  }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto("competitions/epl/#%E0%A4%A");
+    const firstTab = page.getByRole("tab", { name: "순위표" });
+    await expect(firstTab).toHaveAttribute("aria-selected", "true");
+    await page.evaluate(() => {
+      window.location.hash = "%E0%A4%B";
+    });
+    await page.getByRole("tab", { name: "득점 순위" }).click();
+    await expect(
+      page.getByRole("tab", { name: "득점 순위" }),
+    ).toHaveAttribute("aria-selected", "true");
+    expect(errors).toEqual([]);
+  });
+
   test("1023 이하 — 승점 칸 버튼·행 누름으로 펼침, 1024 이상은 버튼 없음", async ({
     page,
   }) => {

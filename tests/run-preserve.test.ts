@@ -123,6 +123,15 @@ function seedRunner(root: string): void {
   seedBase(root);
   write(root, "data/runs.json", json([prev, current]));
   write(root, "data/matches/2026-10.json", fixture("matches/2026-10.json"));
+  // M2-09 팀시트 백필 기억 — 결과(data/teams)가 보존되지 않으므로 기억도 보존하지 않는다(NOT_PRESERVED_PATHS)
+  write(
+    root,
+    "data/cache/lineup-backfill.json",
+    json({
+      updatedAt: "2026-10-30T22:12:00Z",
+      fixtures: [{ id: 1639860, at: "2026-10-30T22:12:00Z" }],
+    }),
+  );
   write(root, "data/news/2026-10-17.json", fixture("news/2026-10-10.json"));
   write(root, "data/briefs/2026-10-17.json", '{"date":"2026-10-17"}\n');
   write(root, "data/cache/seen-urls.json", '{"changed":true}\n');

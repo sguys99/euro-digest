@@ -2,7 +2,8 @@
  * 팀 페이지 데이터 — `data/teams/{team}.json` (plan.md 부록 A, PRD F5 FR-50~59).
  * 파일 1개 = 팀 1개. 파일명은 slug와 같다.
  * v0.1 — 2026-10-10 사용자 확인: slug·koreanPlayers는 slug 형식, colors는 #RRGGBB(Q7), 더 읽을거리 URL은 http/https만(Q3).
- * 초안(M2-07, 2026-10-30 — 사용자 확인 전): `lineup` 팀시트 1경기(PRD §15 D63 ②). 생성 규칙은 scripts/lib/team-files.ts.
+ * `lineup` 팀시트 1경기(M2-07) — 저장 방침은 PRD §15 D63 ②(사용자 결정 2026-10-30), 포메이션별 보관 대신 단일 lineup 형태는
+ * 오케스트레이터 결정(plan 부록 A · DECISIONS D1 §8). 생성 규칙은 scripts/lib/team-files.ts.
  */
 import { z } from "zod";
 

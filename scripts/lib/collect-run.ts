@@ -5161,7 +5161,8 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   // 병렬로 돌리고, 원장이 끝나면 팀 단계(+ 라인업 백필). 던지지 않는다 — 어떤 실패도 뉴스·브리핑 발행을 멈추지 않는다.
   const footballPlan = planFootballStages({
     enabled: deps.footballStages === true,
-    newsOk: news.ok && match.stage !== null,
+    newsOk: news.ok,
+    hasMatchStage: match.stage !== null,
     env: deps.env,
     dry: deps.dry,
     startedAt,
@@ -5203,8 +5204,9 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
           })
       : Promise.resolve(
           skippedCompetitions(
+            // run인데 여기 오는 경우는 없다(계획이 hasMatchStage를 본다) — 좁히기용
             footballPlan.competitions.run
-              ? "news-failed"
+              ? "no-match-stage"
               : footballPlan.competitions.reason,
           ),
         );
