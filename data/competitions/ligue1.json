@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-10-30T22:13:58.664Z",
+  "updatedAt": "2026-10-31T22:17:46.219Z",
   "standings": [
     {
       "pos": 1,
@@ -26,7 +26,7 @@
     },
     {
       "pos": 2,
-      "prevPos": 3,
+      "prevPos": 2,
       "team": "lille",
       "played": 9,
       "w": 5,
@@ -46,7 +46,7 @@
     },
     {
       "pos": 3,
-      "prevPos": 2,
+      "prevPos": 3,
       "team": "rennes",
       "played": 9,
       "w": 5,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 10,
+      "prevPos": 7,
       "team": "nice",
       "played": 9,
       "w": 4,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 7,
+      "prevPos": 8,
       "team": "lens",
       "played": 9,
       "w": 4,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 8,
+      "prevPos": 9,
       "team": "marseille",
       "played": 8,
       "w": 4,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 9,
+      "prevPos": 10,
       "team": "lorient",
       "played": 8,
       "w": 3,
@@ -286,21 +286,21 @@
     },
     {
       "pos": 15,
-      "prevPos": 15,
-      "team": "le-mans",
-      "played": 8,
-      "w": 1,
-      "d": 4,
-      "l": 3,
-      "gf": 11,
+      "prevPos": 17,
+      "team": "troyes",
+      "played": 9,
+      "w": 2,
+      "d": 2,
+      "l": 5,
+      "gf": 7,
       "ga": 16,
-      "pts": 7,
+      "pts": 8,
       "form": [
+        "L",
+        "L",
+        "L",
         "D",
-        "W",
-        "L",
-        "L",
-        "D"
+        "W"
       ],
       "zone": "none"
     },
@@ -326,21 +326,21 @@
     },
     {
       "pos": 17,
-      "prevPos": 17,
-      "team": "troyes",
-      "played": 8,
+      "prevPos": 15,
+      "team": "le-mans",
+      "played": 9,
       "w": 1,
-      "d": 2,
-      "l": 5,
-      "gf": 5,
-      "ga": 16,
-      "pts": 5,
+      "d": 4,
+      "l": 4,
+      "gf": 11,
+      "ga": 18,
+      "pts": 7,
       "form": [
+        "W",
         "L",
         "L",
-        "L",
-        "L",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "relegation"
     },
@@ -1348,8 +1348,11 @@
       "kickoff": "2026-10-31T19:45:00Z",
       "home": "troyes",
       "away": "le-mans",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559647",
@@ -3855,7 +3858,7 @@
       "goals": 4,
       "assists": null,
       "penalties": 1,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Kamory Doumbia",
@@ -4239,7 +4242,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Noah Nartey",
@@ -4287,7 +4290,7 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Lucas Maronnier",
@@ -4295,7 +4298,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Jean-Victor Makengo",
@@ -4407,7 +4410,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Jacobo Ortega",
@@ -4439,7 +4442,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Przemysław Frankowski",
@@ -4479,7 +4482,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Abdallah Sima",
@@ -4511,7 +4514,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Isak Jensen",

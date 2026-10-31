@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T14:00:00.000Z"
+    "updated": "2026-10-31T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -24,5 +24,136 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557447",
+    "kickoff": "2026-10-31T20:00:00.000Z",
+    "comp": "EPL",
+    "side": "away",
+    "opponent": "aston-villa",
+    "startXI": [
+      {
+        "name": "B. Leno",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "T. Castagne",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "D. Affengruber",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "C. Bassey",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "A. Robinson",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "S. Berge",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "S. Charles",
+        "number": 19,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Oscar Bobb",
+        "number": 14,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Joshua King",
+        "number": 24,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Iwobi",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Gonzalo García",
+        "number": 7,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "K. Tete",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Andersen",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Cairney",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Manuel Ángel",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "H. Larsson",
+        "number": 15,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "César Palacios",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Kevin",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "B. Lecomte",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Rodrigo Muniz",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }

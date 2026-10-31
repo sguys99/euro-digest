@@ -1,7 +1,7 @@
 {
   "date": "2026-10-27",
-  "generatedAt": "2026-10-27T14:39:09.149Z",
-  "runId": "collect-prod-20261027T143902Z-7a87",
+  "generatedAt": "2026-10-31T22:12:53.999Z",
+  "runId": "collect-prod-20261031T221253Z-aeb3",
   "cards": [
     {
       "id": "c_896eec63e3",
@@ -82,12 +82,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/videos/crje5zewk52no?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-26T09:41:25.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7724100/2026/10/25/barcelona-real-madrid-clasico-result-analysis/",
-          "at": "2026-10-25T22:07:18.000Z",
           "tier": 2
         }
       ],

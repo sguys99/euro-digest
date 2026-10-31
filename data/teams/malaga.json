@@ -12,12 +12,12 @@
   "formation": {
     "shape": "4-1-4-1",
     "source": "api",
-    "updated": "2026-10-23T19:00:00.000Z"
+    "updated": "2026-10-31T17:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Adrián",
-      "goals": 4,
+      "goals": 5,
       "assists": null
     }
   ],
@@ -26,32 +26,32 @@
   "reading": [],
   "lineup": {
     "formation": "4-1-4-1",
-    "match": "af-1570423",
-    "kickoff": "2026-10-23T19:00:00.000Z",
+    "match": "af-1570435",
+    "kickoff": "2026-10-31T17:30:00.000Z",
     "comp": "LALIGA",
     "side": "away",
-    "opponent": "alaves",
+    "opponent": "real-betis",
     "startXI": [
       {
-        "name": "A. Herrero",
+        "name": "Alfonso Herrero",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "C. Puga",
+        "name": "Puga",
         "number": 3,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "A. Recio",
-        "number": 15,
+        "name": "Fernando Calero",
+        "number": 20,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "E. Galilea",
+        "name": "Einar Galilea",
         "number": 4,
         "pos": "D",
         "grid": "2:2"
@@ -63,37 +63,37 @@
         "grid": "2:1"
       },
       {
-        "name": "R. Enriquez",
+        "name": "Ramón Enríquez",
         "number": 6,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "D. Larrubia",
+        "name": "David Larrubia",
         "number": 10,
         "pos": "M",
         "grid": "4:4"
       },
       {
-        "name": "C. Dotor",
+        "name": "Carlos Dotor",
         "number": 8,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "D. Lorenzo",
+        "name": "Dani Lorenzo",
         "number": 22,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "A. Aznou",
+        "name": "Adam Aznou Ben Cheikh",
         "number": 39,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "A. Nino",
+        "name": "Adrián Niño Heredia",
         "number": 21,
         "pos": "F",
         "grid": "5:1"
@@ -101,39 +101,15 @@
     ],
     "substitutes": [
       {
-        "name": "C. Lopez",
-        "number": 13,
-        "pos": "G",
+        "name": "H. Abaida",
+        "number": 7,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "F. Calero",
-        "number": 20,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Pastor",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Salinas",
-        "number": 12,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Berrocal",
+        "name": "Juan Berrocal",
         "number": 25,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "I. Merino",
-        "number": 23,
-        "pos": "M",
         "grid": null
       },
       {
@@ -143,21 +119,45 @@
         "grid": null
       },
       {
-        "name": "R. Rodriguez",
-        "number": 14,
+        "name": "Andrés Céspedes",
+        "number": 30,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "J. Fernandez",
+        "number": 32,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Eneko Jauregi",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Carlos López",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Izan Merino",
+        "number": 23,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "H. Abaida",
-        "number": 7,
-        "pos": "F",
+        "name": "Álex Pastor",
+        "number": 5,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "E. Jauregi",
-        "number": 17,
-        "pos": "F",
+        "name": "Rafa Rodríguez",
+        "number": 14,
+        "pos": "M",
         "grid": null
       },
       {
@@ -167,9 +167,9 @@
         "grid": null
       },
       {
-        "name": "J. Fernandez",
-        "number": 32,
-        "pos": "F",
+        "name": "José Salinas",
+        "number": 12,
+        "pos": "D",
         "grid": null
       }
     ]

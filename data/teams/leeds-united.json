@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-25T16:30:00.000Z"
+    "updated": "2026-10-31T15:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -31,74 +31,74 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1557446",
-    "kickoff": "2026-10-25T16:30:00.000Z",
+    "match": "af-1557448",
+    "kickoff": "2026-10-31T15:00:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "sunderland",
+    "opponent": "bournemouth",
     "startXI": [
       {
-        "name": "James Trafford",
+        "name": "J. Trafford",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "James Justin",
+        "name": "J. Justin",
         "number": 24,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Jaka Bijol",
-        "number": 15,
+        "name": "N. Elvedi",
+        "number": 30,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Tarik Muharemović",
+        "name": "T. Muharemović",
         "number": 5,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Jayden Bogle",
+        "name": "J. Bogle",
         "number": 2,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "Ethan Ampadu",
+        "name": "E. Ampadu",
         "number": 4,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "Ao Tanaka",
+        "name": "A. Tanaka",
         "number": 22,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Gabriel Gudmundsson",
+        "name": "G. Gudmundsson",
         "number": 3,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Harry Wilson",
+        "name": "H. Wilson",
         "number": 10,
-        "pos": "F",
+        "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Brenden Aaronson",
-        "number": 11,
-        "pos": "F",
+        "name": "D. James",
+        "number": 7,
+        "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Dominic Calvert-Lewin",
+        "name": "D. Calvert-Lewin",
         "number": 9,
         "pos": "F",
         "grid": "5:1"
@@ -106,57 +106,57 @@
     ],
     "substitutes": [
       {
-        "name": "Noah Okafor",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Anton Stach",
-        "number": 18,
+        "name": "B. Aaronson",
+        "number": 11,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Lukas Nmecha",
-        "number": 14,
+        "name": "J. Bahoya",
+        "number": 23,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Sean Longstaff",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Michael Zetterer",
-        "number": 16,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Melvin Bard",
+        "name": "M. Bard",
         "number": 26,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Alfie Cresswell",
-        "number": 50,
-        "pos": "M",
+        "name": "J. Bijol",
+        "number": 15,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "Ilia Gruev",
+        "name": "I. Gruev",
         "number": 44,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Jean-Mattéo Bahoya",
-        "number": 23,
+        "name": "S. Longstaff",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. Nmecha",
+        "number": 14,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Stach",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Zetterer",
+        "number": 16,
+        "pos": "G",
         "grid": null
       }
     ]

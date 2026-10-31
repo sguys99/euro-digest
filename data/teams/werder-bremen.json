@@ -12,23 +12,23 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T13:30:00.000Z"
+    "updated": "2026-10-31T14:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Niclas Füllkrug",
-      "goals": 8,
+      "goals": 9,
       "assists": null
     },
     {
       "name": "Marco Grüll",
       "goals": 2,
-      "assists": 5
+      "assists": 6
     },
     {
-      "name": "Ludovit Reis",
+      "name": "Eren Dinkci",
       "goals": 2,
-      "assists": null
+      "assists": 1
     }
   ],
   "profile": null,
@@ -36,11 +36,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1575200",
-    "kickoff": "2026-10-24T13:30:00.000Z",
+    "match": "af-1575209",
+    "kickoff": "2026-10-31T14:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "away",
-    "opponent": "mainz",
+    "side": "home",
+    "opponent": "hoffenheim",
     "startXI": [
       {
         "name": "K. Hein",
@@ -117,12 +117,6 @@
         "grid": null
       },
       {
-        "name": "P. Erevbenagie",
-        "number": 38,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "C. Itten",
         "number": 26,
         "pos": "F",
@@ -132,6 +126,12 @@
         "name": "S. Lynen",
         "number": 14,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Njinmah",
+        "number": 11,
+        "pos": "F",
         "grid": null
       },
       {

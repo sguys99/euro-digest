@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-23T19:00:00.000Z"
+    "updated": "2026-10-31T15:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -26,14 +26,14 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1557443",
-    "kickoff": "2026-10-23T19:00:00.000Z",
+    "match": "af-1557449",
+    "kickoff": "2026-10-31T15:00:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "ipswich-town",
+    "opponent": "brentford",
     "startXI": [
       {
-        "name": "Matz Sels",
+        "name": "M. Sels",
         "number": 26,
         "pos": "G",
         "grid": "1:1"
@@ -45,7 +45,7 @@
         "grid": "2:3"
       },
       {
-        "name": "Nikola Milenković",
+        "name": "N. Milenković",
         "number": 31,
         "pos": "D",
         "grid": "2:2"
@@ -57,43 +57,43 @@
         "grid": "2:1"
       },
       {
-        "name": "Daniel Muñoz",
-        "number": 27,
+        "name": "O. Aina",
+        "number": 34,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "James McAtee",
+        "name": "J. McAtee",
         "number": 24,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "Xaver Schlager",
+        "name": "X. Schlager",
         "number": 21,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Neco Williams",
+        "name": "N. Williams",
         "number": 3,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Morgan Gibbs-White",
+        "name": "M. Gibbs-White",
         "number": 10,
-        "pos": "F",
+        "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Dan Ndoye",
+        "name": "D. Ndoye",
         "number": 14,
-        "pos": "F",
+        "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Liam Delap",
+        "name": "L. Delap",
         "number": 19,
         "pos": "F",
         "grid": "5:1"
@@ -101,57 +101,57 @@
     ],
     "substitutes": [
       {
-        "name": "Callum Hudson Odoi",
-        "number": 7,
+        "name": "A. Kalimuendo",
+        "number": 15,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Luca Netz",
-        "number": 25,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Chris Wood",
+        "name": "C. Wood",
         "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "John Victor",
-        "number": 12,
-        "pos": "G",
+        "name": "C. Hudson-Odoi",
+        "number": 7,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "Ousmane Diomande",
-        "number": 2,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Ola Aina",
-        "number": 34,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Ibrahim Sangaré",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Ryan Yates",
+        "name": "R. Yates",
         "number": 22,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Arnaud Kalimuendo",
-        "number": 15,
-        "pos": "F",
+        "name": "I. Sangaré",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Muñoz",
+        "number": 27,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Netz",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. Diomande",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "John",
+        "number": 12,
+        "pos": "G",
         "grid": null
       }
     ]

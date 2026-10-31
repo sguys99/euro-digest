@@ -12,18 +12,18 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T16:30:00.000Z"
+    "updated": "2026-10-31T14:30:00.000Z"
   },
   "topPlayers": [
+    {
+      "name": "Igor Matanovic",
+      "goals": 4,
+      "assists": 1
+    },
     {
       "name": "Yuito Suzuki",
       "goals": 4,
       "assists": null
-    },
-    {
-      "name": "Igor Matanovic",
-      "goals": 3,
-      "assists": 1
     },
     {
       "name": "Maximilian Eggestein",
@@ -36,74 +36,74 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1575198",
-    "kickoff": "2026-10-25T16:30:00.000Z",
+    "match": "af-1575206",
+    "kickoff": "2026-10-31T14:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "home",
-    "opponent": "bayern-munchen",
+    "side": "away",
+    "opponent": "augsburg",
     "startXI": [
       {
-        "name": "Mio Backhaus",
+        "name": "M. Backhaus",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Philipp Treu",
-        "number": 29,
+        "name": "L. Kübler",
+        "number": 17,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Matthias Ginter",
+        "name": "M. Ginter",
         "number": 28,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Philipp Lienhart",
+        "name": "P. Lienhart",
         "number": 3,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Jordy Makengo",
+        "name": "J. Makengo",
         "number": 33,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Maximilian Eggestein",
+        "name": "M. Eggestein",
         "number": 8,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Patrick Osterhage",
-        "number": 6,
+        "name": "Y. Engelhardt",
+        "number": 16,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Jan-Niklas Beste",
+        "name": "J. Beste",
         "number": 19,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "Yuito Suzuki",
+        "name": "Y. Suzuki",
         "number": 14,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Derry Scherhant",
+        "name": "D. Scherhant",
         "number": 7,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Lucas Höler",
+        "name": "L. Höler",
         "number": 9,
         "pos": "F",
         "grid": "5:1"
@@ -111,57 +111,57 @@
     ],
     "substitutes": [
       {
-        "name": "Igor Matanović",
-        "number": 31,
+        "name": "K. Goto",
+        "number": 42,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Rihito Yamamoto",
-        "number": 20,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Cyriaque Irié",
-        "number": 22,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Maximilian Rosenfelder",
-        "number": 37,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Vincenzo Grifo",
+        "name": "V. Grifo",
         "number": 32,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Florian Müller",
-        "number": 21,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Christian Günter",
+        "name": "C. Günter",
         "number": 30,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Lukas Kübler",
-        "number": 17,
+        "name": "J. Huth",
+        "number": 24,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Cyriaque Kalou Irié",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Jung",
+        "number": 5,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Keisuke Goto",
-        "number": 42,
+        "name": "I. Matanović",
+        "number": 31,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "P. Osterhage",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Rosenfelder",
+        "number": 37,
+        "pos": "D",
         "grid": null
       }
     ]

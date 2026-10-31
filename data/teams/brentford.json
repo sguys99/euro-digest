@@ -10,9 +10,9 @@
     "#000000"
   ],
   "formation": {
-    "shape": "4-2-3-1",
+    "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-25T14:00:00.000Z"
+    "updated": "2026-10-31T15:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -21,14 +21,14 @@
       "assists": null
     },
     {
+      "name": "Thiago",
+      "goals": 2,
+      "assists": 2
+    },
+    {
       "name": "Keane Lewis-Potter",
       "goals": 2,
       "assists": 1
-    },
-    {
-      "name": "Vitaly Janelt",
-      "goals": 2,
-      "assists": null
     }
   ],
   "profile": null,
@@ -37,120 +37,102 @@
   ],
   "reading": [],
   "lineup": {
-    "formation": "4-2-3-1",
-    "match": "af-1557442",
-    "kickoff": "2026-10-25T14:00:00.000Z",
+    "formation": "4-3-3",
+    "match": "af-1557449",
+    "kickoff": "2026-10-31T15:00:00.000Z",
     "comp": "EPL",
-    "side": "away",
-    "opponent": "hull-city",
+    "side": "home",
+    "opponent": "nottingham-forest",
     "startXI": [
       {
-        "name": "Caoimhin Kelleher",
+        "name": "C. Kelleher",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Michael Kayode",
+        "name": "M. Kayode",
         "number": 33,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Sepp van den Berg",
-        "number": 4,
+        "name": "K. Ajer",
+        "number": 20,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Kristoffer Ajer",
-        "number": 20,
+        "name": "S. van den Berg",
+        "number": 4,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Keane Lewis-Potter",
+        "name": "K. Lewis-Potter",
         "number": 23,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Mamadou Sangare",
+        "name": "M. Sangaré",
         "number": 18,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "V. Janelt",
+        "number": 27,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Aaron Hickey",
-        "number": 2,
+        "name": "M. Jensen",
+        "number": 8,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Dango Ouattara",
+        "name": "D. Ouattara",
         "number": 11,
-        "pos": "M",
+        "pos": "F",
         "grid": "4:3"
       },
       {
-        "name": "Mathias Jensen",
-        "number": 8,
-        "pos": "M",
+        "name": "Thiago",
+        "number": 9,
+        "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "Kevin Schade",
+        "name": "K. Schade",
         "number": 7,
-        "pos": "M",
-        "grid": "4:1"
-      },
-      {
-        "name": "Igor Thiago",
-        "number": 9,
         "pos": "F",
-        "grid": "5:1"
+        "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "Jaidon Anthony",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Mikkel Damsgaard",
-        "number": 24,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "El Hadji Malick Diouf",
-        "number": 25,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Callum Wilson",
-        "number": 13,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Hákon Rafn Valdimarsson",
+        "name": "H. Valdimarsson",
         "number": 12,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "Nathan Collins",
+        "name": "A. Hickey",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Collins",
         "number": 22,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Benjamin Fredrick",
-        "number": 48,
+        "name": "E. Diouf",
+        "number": 25,
         "pos": "D",
         "grid": null
       },
@@ -161,7 +143,25 @@
         "grid": null
       },
       {
-        "name": "Gustavo Nunes",
+        "name": "M. Damsgaard",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Anthony",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Wilson",
+        "number": 13,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Gustavo Gomes",
         "number": 39,
         "pos": "F",
         "grid": null

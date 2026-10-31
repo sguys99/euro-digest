@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-23T18:30:00.000Z"
+    "updated": "2026-10-31T14:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -38,15 +38,15 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1575196",
-    "kickoff": "2026-10-23T18:30:00.000Z",
+    "match": "af-1575208",
+    "kickoff": "2026-10-31T14:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "away",
-    "opponent": "stuttgart",
+    "side": "home",
+    "opponent": "paderborn",
     "startXI": [
       {
-        "name": "M. Nicolas",
-        "number": 1,
+        "name": "D. Batz",
+        "number": 33,
         "pos": "G",
         "grid": "1:1"
       },
@@ -93,8 +93,8 @@
         "grid": "3:1"
       },
       {
-        "name": "H. Bolin",
-        "number": 38,
+        "name": "R. Hack",
+        "number": 25,
         "pos": "M",
         "grid": "4:2"
       },
@@ -113,15 +113,27 @@
     ],
     "substitutes": [
       {
+        "name": "Y. Konoplya",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Olschowsky",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      },
+      {
         "name": "K. Stöger",
         "number": 7,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Lion Schweers",
-        "number": 48,
-        "pos": "D",
+        "name": "N. Kühn",
+        "number": 19,
+        "pos": "F",
         "grid": null
       },
       {
@@ -131,10 +143,17 @@
         "grid": null
       },
       {
-        "name": "Y. Konoplya",
-        "number": 22,
-        "pos": "D",
+        "name": "I. Lidberg",
+        "number": 3,
+        "pos": "F",
         "grid": null
+      },
+      {
+        "name": "J. Castrop",
+        "number": 17,
+        "pos": "M",
+        "grid": null,
+        "korean": "jens-castrop"
       },
       {
         "name": "D. Herold",
@@ -143,27 +162,9 @@
         "grid": null
       },
       {
-        "name": "R. Hack",
-        "number": 25,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "I. M. Danfa",
-        "number": 39,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "D. Batz",
-        "number": 33,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "J. Uwakhonye",
-        "number": 35,
-        "pos": "F",
+        "name": "K. Itakura",
+        "number": 6,
+        "pos": "D",
         "grid": null
       }
     ]

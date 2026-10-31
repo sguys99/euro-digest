@@ -14,18 +14,18 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T11:30:00.000Z"
+    "updated": "2026-10-31T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Nicolas Jackson",
-      "goals": 4,
+      "goals": 5,
       "assists": null
     },
     {
       "name": "Johan Manzambi",
       "goals": 2,
-      "assists": 2
+      "assists": 3
     }
   ],
   "profile": null,
@@ -33,26 +33,26 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557438",
-    "kickoff": "2026-10-24T11:30:00.000Z",
+    "match": "af-1557447",
+    "kickoff": "2026-10-31T20:00:00.000Z",
     "comp": "EPL",
     "side": "home",
-    "opponent": "manchester-city",
+    "opponent": "fulham",
     "startXI": [
       {
-        "name": "Zion Suzuki",
+        "name": "Z. Suzuki",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Matty Cash",
+        "name": "M. Cash",
         "number": 2,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Victor Lindelöf",
+        "name": "V. Lindelöf",
         "number": 3,
         "pos": "D",
         "grid": "2:3"
@@ -64,43 +64,43 @@
         "grid": "2:2"
       },
       {
-        "name": "Ian Maatsen",
+        "name": "I. Maatsen",
         "number": 22,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Boubacar Kamara",
+        "name": "B. Kamara",
         "number": 8,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "João Gomes",
-        "number": 35,
+        "name": "L. Goretzka",
+        "number": 27,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Alysson",
+        "name": "Alysson Edward",
         "number": 47,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "John McGinn",
+        "name": "J.  McGinn",
         "number": 7,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Johan Manzambi",
+        "name": "J. Manzambi",
         "number": 44,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Nicolas Jackson",
+        "name": "N. Jackson",
         "number": 11,
         "pos": "F",
         "grid": "5:1"
@@ -108,27 +108,15 @@
     ],
     "substitutes": [
       {
-        "name": "Ibrahim Mbaye",
-        "number": 19,
+        "name": "João Gomes",
+        "number": 35,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Garnacho",
+        "number": 17,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Ross Barkley",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Emiliano Buendía",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Leon Goretzka",
-        "number": 27,
-        "pos": "M",
         "grid": null
       },
       {
@@ -138,26 +126,38 @@
         "grid": null
       },
       {
-        "name": "Marco Bizot",
+        "name": "I. Mbaye",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Bizot",
         "number": 40,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "Tyrone Mings",
+        "name": "T. Harwood-Bellis",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Mings",
         "number": 5,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Lamare Bogarde",
-        "number": 26,
+        "name": "R. Barkley",
+        "number": 6,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "George Hemmings",
-        "number": 53,
+        "name": "E. Buendía",
+        "number": 10,
         "pos": "M",
         "grid": null
       }

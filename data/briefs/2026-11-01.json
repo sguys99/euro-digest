@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-01",
+  "generatedAt": "2026-10-31T22:15:51.377Z",
+  "runId": "collect-prod-20261031T221253Z-aeb3",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "바르셀로나가 알라베스를 6-1로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m564732"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "바르셀로나가 승점 30으로 라리가 선두다.",
+      "ai": true,
+      "refs": [
+        "sLL"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "도르트문트가 Fábio Silva의 89분 동점골로 바이에른 뮌헨과 2-2로 비겼다.",
+      "ai": true,
+      "refs": [
+        "m565845"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    },
+    {
+      "text": "프라이부르크가 아우크스부르크 원정에서 2-1 역전승을 거뒀다.",
+      "ai": true,
+      "refs": [
+        "m565842"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    },
+    {
+      "text": "슈투트가르트가 레버쿠젠을 4-2로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m565847"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    }
+  ]
+}

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T14:00:00.000Z"
+    "updated": "2026-10-31T15:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -26,9 +26,9 @@
       "assists": 2
     },
     {
-      "name": "Jack Hinshelwood",
+      "name": "Yasin Ayari",
       "goals": 3,
-      "assists": null
+      "assists": 1
     }
   ],
   "profile": null,
@@ -36,74 +36,74 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557444",
-    "kickoff": "2026-10-25T14:00:00.000Z",
+    "match": "af-1557454",
+    "kickoff": "2026-10-31T15:00:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "liverpool",
+    "opponent": "manchester-city",
     "startXI": [
       {
-        "name": "Bart Verbruggen",
+        "name": "B. Verbruggen",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Ferdi Kadıoğlu",
-        "number": 24,
+        "name": "Costinha",
+        "number": 20,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Luka Vušković",
+        "name": "L. Vušković",
         "number": 44,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Lewis Dunk",
+        "name": "L. Dunk",
         "number": 5,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Olivier Boscagli",
+        "name": "O. Boscagli",
         "number": 21,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Pascal Groß",
+        "name": "P. Groß",
         "number": 13,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Chema Andrés",
+        "name": "José María Andrés Baixauli",
         "number": 14,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Diego Gómez",
+        "name": "D. Gómez",
         "number": 25,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "Yasin Ayari",
+        "name": "Y. Ayari",
         "number": 26,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Maxim De Cuyper",
+        "name": "M. De Cuyper",
         "number": 29,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Charalampos Kostoulas",
+        "name": "C. Kostoulas",
         "number": 19,
         "pos": "F",
         "grid": "5:1"
@@ -111,57 +111,57 @@
     ],
     "substitutes": [
       {
-        "name": "Costinha",
-        "number": 20,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Jack Hinshelwood",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Malick Yalcouyé",
-        "number": 35,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Georginio Rutter",
-        "number": 10,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Jason Steele",
-        "number": 23,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Jaouen Hadjam",
+        "name": "J. Hadjam",
         "number": 3,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Matt O'Riley",
+        "name": "M. Wieffer",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Svoboda",
+        "number": 30,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Hinshelwood",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. Rutter",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Y. Minteh",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. O&apos;Riley",
         "number": 33,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Ibrahim Osman",
-        "number": 15,
-        "pos": "F",
+        "name": "J. Steele",
+        "number": 23,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "Promise David",
-        "number": 12,
-        "pos": "F",
+        "name": "M. Yalcouyé",
+        "number": 35,
+        "pos": "M",
         "grid": null
       }
     ]

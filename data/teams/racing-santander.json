@@ -29,5 +29,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1570428",
+    "kickoff": "2026-10-24T14:15:00.000Z",
+    "comp": "LALIGA",
+    "side": "home",
+    "opponent": "espanyol",
+    "startXI": [
+      {
+        "name": "J. Agirrezabala",
+        "number": 13,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "A. Mantilla",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "P. Ramon",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "J. Belocian",
+        "number": 24,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "J. Salinas",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "M. Prati",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "I. Martin",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "A. Martin",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "S. Canales",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "I. Vicente",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Y. Zabiri",
+        "number": 21,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "L. Gomez Rodriguez",
+        "number": 31,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "F. Gonzalez",
+        "number": 16,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Pedro Felipe",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Martin",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Almeida",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "I. Sainz-Maza",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Gueye",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Villalibre",
+        "number": 12,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "G. Guliashvili",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Arana",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "I. Luque",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "P. Garcia",
+        "number": 15,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }

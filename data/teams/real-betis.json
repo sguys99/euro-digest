@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T15:15:00.000Z"
+    "updated": "2026-10-31T17:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -30,7 +30,7 @@
     {
       "name": "Isco",
       "goals": 2,
-      "assists": null
+      "assists": 1
     }
   ],
   "profile": null,
@@ -38,27 +38,27 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1570427",
-    "kickoff": "2026-10-25T15:15:00.000Z",
+    "match": "af-1570435",
+    "kickoff": "2026-10-31T17:30:00.000Z",
     "comp": "LALIGA",
-    "side": "away",
-    "opponent": "celta-vigo",
+    "side": "home",
+    "opponent": "malaga",
     "startXI": [
       {
-        "name": "A. Valles",
+        "name": "Álvaro Vallés",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "A. Ortiz",
-        "number": 12,
+        "name": "Héctor Bellerín",
+        "number": 2,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "D. Llorente",
-        "number": 3,
+        "name": "Marc Bartra",
+        "number": 5,
         "pos": "D",
         "grid": "2:3"
       },
@@ -69,26 +69,26 @@
         "grid": "2:2"
       },
       {
-        "name": "V. Gomez",
-        "number": 16,
+        "name": "Fran García",
+        "number": 11,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "M. Roca",
-        "number": 21,
+        "name": "Pablo Fornals",
+        "number": 8,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "D. Ceballos",
-        "number": 25,
+        "name": "Marc Roca",
+        "number": 21,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Antony",
-        "number": 7,
+        "name": "Rodrigo Riquelme",
+        "number": 17,
         "pos": "M",
         "grid": "4:3"
       },
@@ -105,47 +105,17 @@
         "grid": "4:1"
       },
       {
-        "name": "N. Deossa",
-        "number": 18,
+        "name": "T. Parrott",
+        "number": 19,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "D. Conde",
-        "number": 13,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. Gonzalez",
-        "number": 31,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. Bartra",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "H. Bellerin",
-        "number": 2,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "F. Garcia",
-        "number": 11,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Fidalgo",
-        "number": 15,
-        "pos": "M",
+        "name": "J. A. Morante",
+        "number": 27,
+        "pos": "F",
         "grid": null
       },
       {
@@ -155,33 +125,63 @@
         "grid": null
       },
       {
-        "name": "P. Fornals",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Ruibal",
+        "name": "Aitor Ruibal",
         "number": 24,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "R. Riquelme",
-        "number": 17,
+        "name": "Ángel Ortiz",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Antony",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Dani Ceballos",
+        "number": 25,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "T. Parrott",
-        "number": 19,
-        "pos": "F",
+        "name": "Diego Conde",
+        "number": 13,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "J. Morante",
-        "number": 27,
-        "pos": "F",
+        "name": "N. Deossa",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Álvaro Fidalgo",
+        "number": 15,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Manu González",
+        "number": 31,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "V. Gómez",
+        "number": 16,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Diego Llorente",
+        "number": 3,
+        "pos": "D",
         "grid": null
       }
     ]

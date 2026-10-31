@@ -12,12 +12,12 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-28T19:45:00.000Z"
+    "updated": "2026-10-31T14:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Gustavo Varela",
-      "goals": 8,
+      "goals": 9,
       "assists": 1
     },
     {
@@ -31,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1550172",
-    "kickoff": "2026-10-28T19:45:00.000Z",
+    "match": "af-1550179",
+    "kickoff": "2026-10-31T14:00:00.000Z",
     "comp": "SERIEA",
-    "side": "home",
-    "opponent": "napoli",
+    "side": "away",
+    "opponent": "bologna",
     "startXI": [
       {
         "name": "N. Törnqvist",
@@ -44,8 +44,8 @@
         "grid": "1:1"
       },
       {
-        "name": "S. Birindelli",
-        "number": 19,
+        "name": "E. Kouadio",
+        "number": 60,
         "pos": "D",
         "grid": "2:3"
       },
@@ -62,8 +62,8 @@
         "grid": "2:1"
       },
       {
-        "name": "A. Bakoune",
-        "number": 24,
+        "name": "S. Birindelli",
+        "number": 19,
         "pos": "M",
         "grid": "3:4"
       },
@@ -86,14 +86,14 @@
         "grid": "3:1"
       },
       {
-        "name": "C. Ngonge",
-        "number": 16,
+        "name": "Dany Mota",
+        "number": 47,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Jay Robinson",
-        "number": 46,
+        "name": "E. Zeballos",
+        "number": 22,
         "pos": "M",
         "grid": "4:1"
       },
@@ -106,33 +106,15 @@
     ],
     "substitutes": [
       {
+        "name": "A. Bakoune",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "I. Touré",
         "number": 27,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "E. Akinsanmiro",
-        "number": 14,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "E. Zeballos",
-        "number": 22,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "D. Thiam",
-        "number": 20,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "V. Antov",
-        "number": 6,
-        "pos": "D",
         "grid": null
       },
       {
@@ -166,27 +148,45 @@
         "grid": null
       },
       {
-        "name": "E. Kouadio",
-        "number": 60,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Dany Mota",
-        "number": 47,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "M. Mout",
         "number": 80,
         "pos": "M",
         "grid": null
       },
       {
+        "name": "C. Ngonge",
+        "number": 16,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Jay Robinson",
+        "number": 46,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "A. Strajnar",
         "number": 43,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Thiam",
+        "number": 20,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "V. Antov",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Akinsanmiro",
+        "number": 14,
+        "pos": "M",
         "grid": null
       }
     ]

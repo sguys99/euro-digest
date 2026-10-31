@@ -12,12 +12,17 @@
   "formation": {
     "shape": "5-4-1",
     "source": "api",
-    "updated": "2026-10-25T14:00:00.000Z"
+    "updated": "2026-10-31T15:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Mohamed Belloumi",
       "goals": 3,
+      "assists": 2
+    },
+    {
+      "name": "Oliver McBurnie",
+      "goals": 2,
       "assists": 2
     }
   ],
@@ -26,74 +31,74 @@
   "reading": [],
   "lineup": {
     "formation": "5-4-1",
-    "match": "af-1557442",
-    "kickoff": "2026-10-25T14:00:00.000Z",
+    "match": "af-1557452",
+    "kickoff": "2026-10-31T15:00:00.000Z",
     "comp": "EPL",
     "side": "home",
-    "opponent": "brentford",
+    "opponent": "ipswich-town",
     "startXI": [
       {
-        "name": "Konstantinos Tzolakis",
+        "name": "K. Tzolakis",
         "number": 19,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Lewie Coyle",
+        "name": "L. Coyle",
         "number": 2,
         "pos": "D",
         "grid": "2:5"
       },
       {
-        "name": "Semi Ajayi",
+        "name": "S. Ajayi",
         "number": 6,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "John Egan",
+        "name": "J. Egan",
         "number": 15,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Lucas Herrington",
-        "number": 22,
+        "name": "N. Mendy",
+        "number": 32,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Ryan Giles",
+        "name": "R. Giles",
         "number": 3,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Mohamed Belloumi",
+        "name": "M. Belloumi",
         "number": 10,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "Tim Iroegbunam",
+        "name": "T. Iroegbunam",
         "number": 42,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "Regan Slater",
+        "name": "R. Slater",
         "number": 27,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Elliot Stroud",
+        "name": "E. Stroud",
         "number": 21,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Oliver McBurnie",
+        "name": "O. McBurnie",
         "number": 9,
         "pos": "F",
         "grid": "4:1"
@@ -101,57 +106,57 @@
     ],
     "substitutes": [
       {
-        "name": "Brooke Norton-Cuffy",
-        "number": 18,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Mohamed Ali Cho",
+        "name": "M. Cho",
         "number": 50,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Hidemasa Morita",
-        "number": 5,
+        "name": "C. Mouzakitis",
+        "number": 36,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Joe Gelhardt",
+        "name": "M. Crooks",
+        "number": 25,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Norton-Cuffy",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Gelhardt",
         "number": 11,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Robinio Vaz",
-        "number": 47,
-        "pos": "F",
+        "name": "H. Morita",
+        "number": 5,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "Dillon Phillips",
-        "number": 12,
-        "pos": "G",
+        "name": "L. Herrington",
+        "number": 22,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "Paddy McNair",
+        "name": "P. McNair",
         "number": 17,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Sorba Thomas",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Matt Crooks",
-        "number": 25,
-        "pos": "M",
+        "name": "D. Phillips",
+        "number": 12,
+        "pos": "G",
         "grid": null
       }
     ]

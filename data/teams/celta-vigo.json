@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-3",
     "source": "api",
-    "updated": "2026-10-25T15:15:00.000Z"
+    "updated": "2026-10-31T15:15:00.000Z"
   },
   "topPlayers": [
     {
@@ -31,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-3",
-    "match": "af-1570427",
-    "kickoff": "2026-10-25T15:15:00.000Z",
+    "match": "af-1570441",
+    "kickoff": "2026-10-31T15:15:00.000Z",
     "comp": "LALIGA",
-    "side": "home",
-    "opponent": "real-betis",
+    "side": "away",
+    "opponent": "rayo-vallecano",
     "startXI": [
       {
         "name": "I. Radu",
@@ -44,25 +44,25 @@
         "grid": "1:1"
       },
       {
-        "name": "J. Rodriguez",
+        "name": "Javi Rodríguez",
         "number": 20,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Y. Lago",
+        "name": "Yoel Lago",
         "number": 18,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "M. Alonso",
-        "number": 3,
+        "name": "S. Cáceres",
+        "number": 21,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "J. Rueda",
+        "name": "Javi Rueda",
         "number": 17,
         "pos": "M",
         "grid": "3:4"
@@ -74,71 +74,59 @@
         "grid": "3:3"
       },
       {
-        "name": "A. Febas",
+        "name": "Aleix Febas",
         "number": 14,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "J. Galan",
+        "name": "Javi Galán",
         "number": 22,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "H. Gonzalez",
-        "number": 16,
+        "name": "Hugo Álvarez",
+        "number": 23,
         "pos": "F",
         "grid": "4:3"
       },
       {
-        "name": "P. Duran",
-        "number": 11,
+        "name": "Ferran Jutglà",
+        "number": 9,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "H. Alvarez",
-        "number": 23,
+        "name": "Hugo González",
+        "number": 16,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "I. Villar",
-        "number": 25,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "A. Bayindir",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "S. Caceres",
-        "number": 21,
+        "name": "Marcos Alonso",
+        "number": 3,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "S. Carreira",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Faye",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Antanon",
+        "name": "Andrés Antañón",
         "number": 28,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Iago Aspas",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Bayındır",
+        "number": 1,
+        "pos": "G",
         "grid": null
       },
       {
@@ -148,27 +136,39 @@
         "grid": null
       },
       {
-        "name": "W. Swedberg",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "I. Aspas",
-        "number": 10,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "F. Jutgla",
-        "number": 9,
-        "pos": "F",
+        "name": "Sergio Carreira",
+        "number": 5,
+        "pos": "D",
         "grid": null
       },
       {
         "name": "C. Driouech",
         "number": 24,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Pablo Durán",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Faye",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "W. Swedberg",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Iván Villar",
+        "number": 25,
+        "pos": "G",
         "grid": null
       }
     ]

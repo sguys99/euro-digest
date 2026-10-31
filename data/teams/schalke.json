@@ -10,9 +10,9 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "3-4-2-1",
+    "shape": "4-3-2-1",
     "source": "api",
-    "updated": "2026-10-24T13:30:00.000Z"
+    "updated": "2026-10-31T14:30:00.000Z"
   },
   "topPlayers": [],
   "profile": null,
@@ -20,5 +20,137 @@
     "hwang-hee-chan"
   ],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-3-2-1",
+    "match": "af-1575210",
+    "kickoff": "2026-10-31T14:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "rb-leipzig",
+    "startXI": [
+      {
+        "name": "L. Karius",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "T. Becker",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "N. Katić",
+        "number": 25,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "H. Kuruçay",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Vitalie  Becker",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "S. Tanaka",
+        "number": 13,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "M. Ayhan",
+        "number": 43,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "A. Aouchiche",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "J. Adamu",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "K. Karaman",
+        "number": 19,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Hwang Hee-Chan",
+        "number": 7,
+        "pos": "F",
+        "grid": "5:1",
+        "korean": "hwang-hee-chan"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "J. Dina Ebimbe",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Džeko",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Gashi",
+        "number": 40,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Lasme",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "D. Ljubičić",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Müller",
+        "number": 22,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Jean-Paul N'Diaye",
+        "number": 35,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "F. Porath",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Johannes Simon Siebeking",
+        "number": 36,
+        "pos": "G",
+        "grid": null
+      }
+    ]
+  }
 }

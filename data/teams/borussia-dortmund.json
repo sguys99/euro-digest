@@ -14,23 +14,23 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-24T16:30:00.000Z"
+    "updated": "2026-10-31T17:30:00.000Z"
   },
   "topPlayers": [
     {
-      "name": "Maximilian Beier",
-      "goals": 2,
-      "assists": 2
-    },
-    {
       "name": "Sehrou Guirassy",
-      "goals": 2,
+      "goals": 3,
       "assists": 2
     },
     {
       "name": "Fábio Silva",
-      "goals": 2,
+      "goals": 3,
       "assists": 1
+    },
+    {
+      "name": "Maximilian Beier",
+      "goals": 2,
+      "assists": 2
     }
   ],
   "profile": null,
@@ -38,11 +38,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1575194",
-    "kickoff": "2026-10-24T16:30:00.000Z",
+    "match": "af-1575203",
+    "kickoff": "2026-10-31T17:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "home",
-    "opponent": "eintracht-frankfurt",
+    "side": "away",
+    "opponent": "bayern-munchen",
     "startXI": [
       {
         "name": "G. Kobel",
@@ -51,26 +51,26 @@
         "grid": "1:1"
       },
       {
+        "name": "Kouakou Joane Gadou",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
         "name": "W. Anton",
         "number": 3,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:2"
       },
       {
         "name": "N. Schlotterbeck",
         "number": 4,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "R. Bensebaïni",
-        "number": 5,
-        "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "J. Ryerson",
-        "number": 26,
+        "name": "M. Beier",
+        "number": 14,
         "pos": "M",
         "grid": "3:4"
       },
@@ -93,14 +93,14 @@
         "grid": "3:1"
       },
       {
-        "name": "M. Sabitzer",
-        "number": 20,
+        "name": "J. Bellingham",
+        "number": 7,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Fábio Silva",
-        "number": 21,
+        "name": "C. Chukwuemeka",
+        "number": 17,
         "pos": "M",
         "grid": "4:1"
       },
@@ -112,6 +112,24 @@
       }
     ],
     "substitutes": [
+      {
+        "name": "Fábio Silva",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Sabitzer",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Ryerson",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
       {
         "name": "E. Nwaneri",
         "number": 18,
@@ -131,39 +149,21 @@
         "grid": null
       },
       {
+        "name": "K. Karetsas",
+        "number": 19,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "S. Inacio",
         "number": 40,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Kouakou Joane Gadou",
-        "number": 22,
+        "name": "R. Bensebaïni",
+        "number": 5,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "E. de Pina Duarte dos Santos",
-        "number": 44,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "C. Chukwuemeka",
-        "number": 17,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "J. Bellingham",
-        "number": 7,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Beier",
-        "number": 14,
-        "pos": "F",
         "grid": null
       }
     ]

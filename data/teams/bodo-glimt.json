@@ -18,5 +18,130 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-4-2",
+    "match": "af-1635700",
+    "kickoff": "2026-10-20T19:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "napoli",
+    "startXI": [
+      {
+        "name": "N. Haikin",
+        "number": 12,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "F. Sjøvold",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "J. Gundersen",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "O. Bjørtuft",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "F. Bjørkan",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "S. Auklend",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "P. Berg",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "S. Fet",
+        "number": 19,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "J. Hauge",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "O. Didrik Blomberg",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Helmersen",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "O. Brynhildsen",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Kitolano",
+        "number": 16,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Faye Lund",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "I. Määttä",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Mvuka",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "V. Nielsen",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "U. Saltnes",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "H. Aleesami",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
 }

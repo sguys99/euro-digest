@@ -12,17 +12,17 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T14:30:00.000Z"
+    "updated": "2026-10-31T14:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Patrik Schick",
-      "goals": 6,
+      "goals": 7,
       "assists": 2
     },
     {
       "name": "Ibrahim Maza",
-      "goals": 2,
+      "goals": 3,
       "assists": 2
     },
     {
@@ -36,32 +36,32 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1575197",
-    "kickoff": "2026-10-25T14:30:00.000Z",
+    "match": "af-1575204",
+    "kickoff": "2026-10-31T14:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "away",
-    "opponent": "hoffenheim",
+    "side": "home",
+    "opponent": "stuttgart",
     "startXI": [
       {
-        "name": "Mark Flekken",
+        "name": "M. Flekken",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Jarell Quansah",
+        "name": "J. Quansah",
         "number": 4,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Edmond Tapsoba",
+        "name": "E. Tapsoba",
         "number": 12,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Facundo Medina",
+        "name": "F. Medina",
         "number": 2,
         "pos": "D",
         "grid": "2:2"
@@ -73,7 +73,7 @@
         "grid": "2:1"
       },
       {
-        "name": "Ezequiel Fernández",
+        "name": "E. Fernández",
         "number": 6,
         "pos": "M",
         "grid": "3:2"
@@ -85,25 +85,25 @@
         "grid": "3:1"
       },
       {
-        "name": "Moussa Diaby",
-        "number": 19,
+        "name": "Lucas Vázquez",
+        "number": 17,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "Ibrahim Maza",
+        "name": "I. Maza",
         "number": 30,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Nathan Tella",
-        "number": 23,
+        "name": "Afonso Moreira",
+        "number": 9,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Patrik Schick",
+        "name": "P. Schick",
         "number": 14,
         "pos": "F",
         "grid": "5:1"
@@ -111,56 +111,56 @@
     ],
     "substitutes": [
       {
-        "name": "Malik Tillman",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Loïc Badé",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Robert Andrich",
+        "name": "R. Andrich",
         "number": 8,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Afonso Moreira",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Jonas Hofmann",
-        "number": 7,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Janis Blaswich",
+        "name": "J. Blaswich",
         "number": 28,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "Tim Oermann",
+        "name": "V. Boniface",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Culbreath",
+        "number": 42,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Doganay",
+        "number": 39,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Hofmann",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Oermann",
         "number": 15,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Lucas Vázquez",
-        "number": 17,
-        "pos": "D",
+        "name": "M. Tillman",
+        "number": 10,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "Victor Okoh Boniface",
-        "number": 22,
+        "name": "D. Buck",
+        "number": 37,
         "pos": "F",
         "grid": null
       }

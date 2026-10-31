@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-25T14:00:00.000Z"
+    "updated": "2026-10-31T17:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -26,74 +26,74 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1557441",
-    "kickoff": "2026-10-25T14:00:00.000Z",
+    "match": "af-1557456",
+    "kickoff": "2026-10-31T17:30:00.000Z",
     "comp": "EPL",
-    "side": "home",
-    "opponent": "newcastle-united",
+    "side": "away",
+    "opponent": "tottenham-hotspur",
     "startXI": [
       {
-        "name": "Walter Benítez",
-        "number": 44,
+        "name": "D. Henderson",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Chris Richards",
+        "name": "C. Richards",
         "number": 26,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Axel Disasi",
+        "name": "A. Disasi",
         "number": 5,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Jaydee Canvot",
+        "name": "J. Canvot",
         "number": 6,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Anan Khalaili",
-        "number": 25,
+        "name": "Óscar Mingueza",
+        "number": 30,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "Adam Wharton",
+        "name": "A. Wharton",
         "number": 20,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "Daichi Kamada",
+        "name": "D. Kamada",
         "number": 18,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Tyrick Mitchell",
+        "name": "T. Mitchell",
         "number": 3,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Dwight McNeil",
+        "name": "D. McNeil",
         "number": 11,
-        "pos": "F",
+        "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Yéremy Pino",
+        "name": "Yeremy Pino",
         "number": 10,
-        "pos": "F",
+        "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Jean-Philippe Mateta",
+        "name": "J. Mateta",
         "number": 14,
         "pos": "F",
         "grid": "5:1"
@@ -101,57 +101,57 @@
     ],
     "substitutes": [
       {
-        "name": "Eddie Nketiah",
+        "name": "E. Guessand",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Nketiah",
         "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Darío Osorio",
+        "name": "D. Osorio",
         "number": 24,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Remi Matthews",
-        "number": 31,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Ben Chilwell",
-        "number": 33,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Jefferson Lerma",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Óscar Mingueza",
-        "number": 30,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Will Hughes",
-        "number": 19,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Cheick Doucouré",
+        "name": "C. Doucouré",
         "number": 28,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Evann Guessand",
-        "number": 29,
-        "pos": "F",
+        "name": "W. Hughes",
+        "number": 19,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Khalaili",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Lerma",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Chilwell",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "W. Benítez",
+        "number": 44,
+        "pos": "G",
         "grid": null
       }
     ]

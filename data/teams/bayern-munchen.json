@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T16:30:00.000Z"
+    "updated": "2026-10-31T17:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -25,7 +25,7 @@
     {
       "name": "Harry Kane",
       "goals": 4,
-      "assists": 4
+      "assists": 5
     },
     {
       "name": "Luis Díaz",
@@ -40,74 +40,75 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1575198",
-    "kickoff": "2026-10-25T16:30:00.000Z",
+    "match": "af-1575203",
+    "kickoff": "2026-10-31T17:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "away",
-    "opponent": "freiburg",
+    "side": "home",
+    "opponent": "borussia-dortmund",
     "startXI": [
       {
-        "name": "Jonas Urbig",
+        "name": "J. Urbig",
         "number": 40,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Josip Stanišić",
-        "number": 44,
+        "name": "K. Laimer",
+        "number": 27,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Dayot Upamecano",
+        "name": "D. Upamecano",
         "number": 2,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Jonathan Tah",
-        "number": 4,
+        "name": "Kim Min-Jae",
+        "number": 3,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:2",
+        "korean": "kim-min-jae"
       },
       {
-        "name": "Nathaniel Brown",
-        "number": 11,
+        "name": "A. Davies",
+        "number": 19,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Konrad Laimer",
-        "number": 27,
+        "name": "J. Kimmich",
+        "number": 6,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Tom Bischof",
-        "number": 8,
+        "name": "A. Pavlović",
+        "number": 45,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Michael Olise",
+        "name": "M. Olise",
         "number": 17,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "Lennart Karl",
-        "number": 42,
+        "name": "I. Saibari",
+        "number": 34,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Serge Gnabry",
+        "name": "S. Gnabry",
         "number": 7,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Harry Kane",
+        "name": "H. Kane",
         "number": 9,
         "pos": "F",
         "grid": "5:1"
@@ -115,55 +116,55 @@
     ],
     "substitutes": [
       {
-        "name": "Sacha Boey",
-        "number": 23,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Ismael Saibari",
-        "number": 34,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Alphonso Davies",
-        "number": 19,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Hiroki Itō",
-        "number": 21,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Sven Ulreich",
+        "name": "S. Ulreich",
         "number": 26,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "Jannis Bartl",
-        "number": 35,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Cassiano Kiala",
-        "number": 30,
+        "name": "J. Tah",
+        "number": 4,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "David Daiber",
-        "number": 47,
+        "name": "J. Stanišić",
+        "number": 44,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Karl",
+        "number": 42,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Tim Binder",
+        "name": "H. Ito",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Brown",
+        "number": 11,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Boey",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Bischof",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Binder",
         "number": 46,
         "pos": "F",
         "grid": null

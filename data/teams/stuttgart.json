@@ -14,18 +14,23 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-23T18:30:00.000Z"
+    "updated": "2026-10-31T14:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Ermedin Demirovic",
-      "goals": 3,
+      "goals": 5,
       "assists": null
     },
     {
       "name": "Josha Vagnoman",
       "goals": 2,
       "assists": 1
+    },
+    {
+      "name": "Bilal El Khannouss",
+      "goals": 2,
+      "assists": null
     }
   ],
   "profile": null,

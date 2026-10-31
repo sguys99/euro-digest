@@ -10,9 +10,9 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "3-4-2-1",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T16:30:00.000Z"
+    "updated": "2026-10-31T12:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -22,17 +22,148 @@
     },
     {
       "name": "Morgan Rogers",
-      "goals": 4,
+      "goals": 5,
       "assists": 1
     },
     {
-      "name": "Pedro Neto",
+      "name": "Cole Palmer",
       "goals": 3,
-      "assists": 1
+      "assists": 3
     }
   ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557450",
+    "kickoff": "2026-10-31T12:30:00.000Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "manchester-united",
+    "startXI": [
+      {
+        "name": "M. Penders",
+        "number": 39,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Joshua Kofi Acheampong",
+        "number": 34,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "W. Fofana",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "L. Colwill",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "M. Palestra",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "R. Lavia",
+        "number": 45,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "M. Caicedo",
+        "number": 25,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Estêvão",
+        "number": 41,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "C. Palmer",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "M. Rogers",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Pedro Neto",
+        "number": 7,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "D. Welbeck",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Emegha",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Geovany Tcherno Quenda",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Nicoll-Jazuli",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "V. Barco",
+        "number": 4,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Pep Chavarría",
+        "number": 29,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Gusto",
+        "number": 27,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Sharman-Lowe",
+        "number": 28,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "O. Subuloye",
+        "number": 37,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
 }

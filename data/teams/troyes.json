@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-25T16:15:00.000Z"
+    "updated": "2026-10-31T19:45:00.000Z"
   },
   "topPlayers": [],
   "profile": null,
@@ -20,11 +20,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1552799",
-    "kickoff": "2026-10-25T16:15:00.000Z",
+    "match": "af-1552809",
+    "kickoff": "2026-10-31T19:45:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "toulouse",
+    "side": "home",
+    "opponent": "le-mans",
     "startXI": [
       {
         "name": "H. Konaté",
@@ -95,32 +95,26 @@
     ],
     "substitutes": [
       {
-        "name": "P. Beach",
-        "number": 33,
-        "pos": "G",
-        "grid": null
-      },
-      {
         "name": "K. Diawara",
         "number": 7,
         "pos": "F",
         "grid": null
       },
       {
+        "name": "I. Boura",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "P. Beach",
+        "number": 33,
+        "pos": "G",
+        "grid": null
+      },
+      {
         "name": "I. Gomis",
         "number": 11,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "H. Picard",
-        "number": 22,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Phliponeau",
-        "number": 26,
         "pos": "M",
         "grid": null
       },
@@ -131,20 +125,26 @@
         "grid": null
       },
       {
+        "name": "A. Phliponeau",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "H. Picard",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "I. Soukouna",
         "number": 36,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Noah Donkor",
-        "number": 31,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Lassana Simakha",
-        "number": 34,
+        "name": "Y. Titi",
+        "number": 44,
         "pos": "D",
         "grid": null
       }

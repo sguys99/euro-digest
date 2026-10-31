@@ -29,5 +29,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1570429",
+    "kickoff": "2026-10-24T12:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "rayo-vallecano",
+    "startXI": [
+      {
+        "name": "M. Dituro",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Buba Sangare",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "F. Redondo Solari",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "V. Chust",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "R. Revivo",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "G. Villar",
+        "number": 12,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "J. Morcillo",
+        "number": 47,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "T. Lemar",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "L. Cepeda",
+        "number": 21,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "F. Nino",
+        "number": 14,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "G. Valera",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Iturbe",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "K. Lomonaco",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Barzic",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "P. Bigas",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "R. Sanchez",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Diangana",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Neto",
+        "number": 16,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Buonanotte",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Ponce",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Josan",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Osorio",
+        "number": 24,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Tete Morente",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }
