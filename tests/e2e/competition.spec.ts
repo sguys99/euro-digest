@@ -102,9 +102,10 @@ test.describe("보기 탭 · 라운드 이동 · 행 펼침", () => {
       window.location.hash = "%E0%A4%B";
     });
     await page.getByRole("tab", { name: "득점 순위" }).click();
-    await expect(
-      page.getByRole("tab", { name: "득점 순위" }),
-    ).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByRole("tab", { name: "득점 순위" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
     expect(errors).toEqual([]);
   });
 
