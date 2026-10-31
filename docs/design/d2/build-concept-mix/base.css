@@ -1,0 +1,269 @@
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-400.ksx.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-800.ksx.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-SemiBold.latin.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+:root{
+  color-scheme:light;
+  --paper:#F3F0EA;--paper-2:#E8E4DB;--paper-3:#E1DFDC;
+  --ink:#14213D;--ink-2:#4A5670;--ink-3:#727886;--ink-disabled:#727886;--rule:#CFCFCE;--hatch:#DFDDDA;
+  --brand-accent:#B32F25;--brand-accent-text:#A92B22;--brand-accent-foreground:#F3F0EA;
+  --ticket:#14213D;--ticket-fg:#F3F0EA;--ticket-fg-2:#C2C2C4;
+  --colophon:#14213D;--colophon-fg:#F3F0EA;--colophon-fg-2:#C2C2C4;
+  --ring:#A92B22;
+  --competition-epl:#3D1E5C;--competition-laliga:#7F5300;--competition-seriea:#0A6390;
+  --competition-bundesliga:#A8122B;--competition-ligue1:#2A7035;--competition-ucl:#4A5263;
+  --competition-foreground:#F3F0EA;
+  --result-win:#1F6B45;--result-draw:#4A5670;--result-loss:#A92B22;--trend-up:#1F6B45;--trend-down:#A92B22;
+  --font-sans:"EuroDigest Sans",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --font-numeric:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-latin:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;
+  --radius:0px;--notch:10px;--perf:3.2px;
+  --shadow-print:4px 4px 0 var(--ink);--shadow-print-accent:4px 4px 0 var(--brand-accent);--shadow-none:none;
+  --duration-fast:150ms;--duration-base:200ms;--duration-slow:250ms;--ease:cubic-bezier(.2,.8,.2,1);
+  --gutter:40px;--tab-w:18px;--edge:16px;--col-contents:232px;--col-facing:296px;--container:1280px;
+  --text-wordmark:30px;--lh-wordmark:1.1;--text-h2:21px;--lh-h2:1.3;--text-brief:17px;--lh-brief:1.62;--text-card:16.5px;--lh-card:1.45;--text-tag:13px;--lh-tag:1.35;--text-stamp:11.5px;--lh-stamp:1.3;--text-meta:13px;--lh-meta:1.3;--text-rh:12.5px;--lh-rh:1;--num-issue:40px;--num-brief-no:40px;--num-score:30px;--num-card-no:14px;--num-meta:14.5px;
+}
+[data-theme="dark"]{color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}}
+@media (min-width:1024px){:root{--text-wordmark:52px;--text-h2:24px;--text-brief:19px;--lh-brief:1.6;--text-card:18px;--num-issue:88px;--num-brief-no:54px;--num-score:34px;--num-card-no:15px;--tab-w:22px;--gutter:64px}}
+
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:16px;line-height:1.55;word-break:keep-all;overflow-wrap:anywhere;font-synthesis:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;transition:background-color var(--duration-base) var(--ease),color var(--duration-base) var(--ease)}
+h1,h2,h3,h4,p,ul,ol,dl,dd,figure,table{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+table{border-collapse:collapse;border-spacing:0}
+th{font-weight:inherit;text-align:inherit}
+.n,time,.c{font-variant-numeric:tabular-nums lining-nums}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-80px;z-index:30;background:var(--ink);color:var(--paper);padding:12px 16px;font-weight:800;text-decoration:none;box-shadow:0 0 0 7px var(--paper)}
+.skip:focus{top:8px}
+.ic{display:block;flex:none}
+[lang="en"]{word-break:normal}
+.hit{position:relative}
+.hit::after{content:"";position:absolute;left:-6px;right:-6px;top:50%;height:44px;transform:translateY(-50%)}
+
+/* 시안 메타 띠 (문서용) */
+.meta{background:var(--paper-2);border-bottom:1px solid var(--rule);font-size:13px;line-height:1.55}
+.meta summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;max-width:1280px;margin:0 auto;padding:12px var(--edge);cursor:pointer;list-style:none;min-height:44px}
+.meta summary::-webkit-details-marker{display:none}
+.meta summary b{font-size:15px;font-weight:800}
+.meta__tag{font:600 12px/1 var(--font-numeric);letter-spacing:.12em;border:1px solid var(--ink-2);padding:4px 6px 3px;color:var(--ink-2)}
+.meta__one{color:var(--ink-2)}
+.meta__more{margin-left:auto;font-weight:800;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.meta__more::before{content:"펼치기"}
+.meta[open] .meta__more::before{content:"접기"}
+.meta__grid{display:grid;gap:12px 32px;max-width:1280px;margin:0 auto;padding:0 var(--edge) 16px}
+.meta .meta__h{font-size:12px;font-weight:800;margin:8px 0 2px;color:var(--ink)}
+.meta li{padding-left:12px;position:relative;color:var(--ink-2)}
+.meta li::before{content:"";position:absolute;left:0;top:.7em;width:5px;height:1px;background:var(--ink-2)}
+.meta p{color:var(--ink-2)}
+.axes{width:100%;font-size:12.5px}
+.axes th,.axes td{border-bottom:1px solid var(--rule);padding:5px 8px 5px 0;vertical-align:top;text-align:left}
+.axes thead th{font-weight:800;border-bottom:1px solid var(--ink);color:var(--ink)}
+.axes td{color:var(--ink-2)}
+.axes td.me{color:var(--ink);font-weight:800}
+@media (min-width:1024px){.meta summary{padding:12px 32px}.meta__grid{grid-template-columns:1fr 1fr 1fr;padding:0 32px 18px}.meta__grid>.span3{grid-column:1/-1}}
+@media (max-width:1023px){.meta:not([open]) .meta__one{display:none}}
+
+.divider{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;max-width:1280px;margin:0 auto;padding:10px var(--edge);font-size:12px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.divider b{font-weight:800;color:var(--ink)}
+.divider code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
+.divider--screen{border-top:3px double var(--ink);margin-top:64px;padding-top:14px}
+@media (min-width:1024px){.divider{padding:10px 32px}}
+@media (max-width:1023px){.divider__info{flex-basis:100%}}
+
+.shell{max-width:1280px;margin:0 auto;padding:12px var(--edge) 0}
+@media (min-width:1024px){.shell{padding:24px 32px 0;--edge:32px}}
+
+/* 마스트헤드 = 티켓 (M1 공개 상태 — 도구는 테마 토글만) */
+.ticket{--ring:var(--ticket-fg);position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"brand brand tools" "perf perf perf" "issue stub stub";background:var(--ticket);color:var(--ticket-fg);transition:background-color var(--duration-base) var(--ease)}
+.ticket__brand{grid-area:brand;padding:16px 0 14px 18px;min-width:0}
+.wordmark{font-size:var(--text-wordmark);font-weight:800;line-height:var(--lh-wordmark);letter-spacing:-.045em}
+.wordmark a{display:inline-block;padding:6px 0;margin:-6px 0;text-decoration:none}
+.wordmark-en{font:800 12px/1 var(--font-numeric);letter-spacing:.32em;margin-top:8px;color:var(--ticket-fg-2)}
+.tagline{font-size:13px;line-height:1.45;margin-top:10px;color:var(--ticket-fg-2)}
+.ticket__tools{grid-area:tools;display:flex;align-items:flex-start;padding:6px 6px 0 0}
+.ibtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:44px;height:44px;padding:0 10px;background:transparent;border:0;color:inherit;transition:background-color var(--duration-fast) var(--ease)}
+.ibtn:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
+.ticket__perf{grid-area:perf;position:relative;height:4px;margin:0 14px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x}
+.ticket__perf::before,.ticket__perf::after{content:"";position:absolute;top:50%;width:calc(var(--notch)*2);height:calc(var(--notch)*2);margin-top:calc(var(--notch)*-1);border-radius:50%;background:var(--paper)}
+.ticket__perf::before{left:calc(-14px - var(--notch))}
+.ticket__perf::after{right:calc(-14px - var(--notch))}
+.issue{grid-area:issue;display:flex;align-items:baseline;gap:3px;padding:12px 0 12px 18px}
+.issue__k{font-size:13px;font-weight:800}
+.issue__n{font:800 var(--num-issue)/.82 var(--font-numeric);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stub{grid-area:stub;display:flex;flex-direction:column;justify-content:center;padding:10px 8px 10px 14px;font-size:12.5px;line-height:1.45;min-width:0}
+.stub time{font-weight:800;font-variant-numeric:normal}
+.stub span{display:block;color:var(--ticket-fg-2);font-size:11.5px;line-height:1.4}
+.topnav{display:none}
+@media (min-width:1024px){
+  .ticket{grid-template-columns:232px 4px minmax(0,1fr) auto;grid-template-rows:1fr auto;grid-template-areas:"issue perf brand tools" "stub perf brand tools";min-height:160px}
+  .ticket__brand{padding:22px 0 20px 36px;align-self:center}
+  .wordmark{letter-spacing:-.05em}
+  .wordmark-en{font-size:13px;margin-top:12px}
+  .tagline{font-size:15px;margin-top:12px}
+  .ticket__tools{padding:14px 14px 0 0}
+  .ticket__perf{height:auto;width:4px;margin:14px 0;background-size:4px 9px;background-repeat:repeat-y}
+  .ticket__perf::before,.ticket__perf::after{left:50%;right:auto;margin:0 0 0 calc(var(--notch)*-1)}
+  .ticket__perf::before{top:calc(-14px - var(--notch))}
+  .ticket__perf::after{top:auto;bottom:calc(-14px - var(--notch))}
+  .issue{padding:18px 0 0 28px;align-self:start;gap:6px}
+  .issue__k{font-size:17px}
+  .issue__n{line-height:.78}
+  .stub{padding:0 16px 18px 28px;justify-content:flex-end;font-size:13px}
+  .stub span{font-size:12.5px}
+  .topnav{display:flex;align-items:center;gap:28px;border-bottom:1px solid var(--rule);padding:0 4px}
+  .topnav a{position:relative;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;font-size:15px;font-weight:800;color:var(--ink-2);text-decoration:none}
+  .topnav a:hover{color:var(--ink)}
+  .topnav a[aria-current]{color:var(--ink)}
+  .topnav a[aria-current]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--brand-accent)}
+  .topnav__upd{margin-left:auto;font-size:13px;color:var(--ink-2)}
+}
+
+/* 레이아웃 3구간 (D31): ≤1023 1단 · ≥1024 목차 + 지면(마주 보는 면이 없는 페이지는 2단) */
+.layout{display:block}
+.contents,.facing{display:none}
+@media (min-width:1024px){
+  .layout{display:grid;grid-template-columns:var(--col-contents) minmax(0,1fr);align-items:start}
+  .contents{display:block;position:sticky;top:16px;margin:28px 36px 0 0}
+  .page{padding-top:28px;min-width:0}
+}
+@media (min-width:1280px){
+  .layout--3{grid-template-columns:var(--col-contents) minmax(0,1fr) var(--col-facing)}
+  .layout--3 .facing{display:block;border-left:1px solid var(--ink);padding:0 0 0 32px;margin-top:28px;align-self:stretch}
+  .layout--3 .in-flow{display:none}
+}
+
+/* 섹션 머리 · 러닝 헤드 */
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-top:3px solid var(--ink);padding-top:10px}
+.sec-h h2,.sec-h h3,.sec-h .h{font-size:var(--text-h2);font-weight:800;line-height:var(--lh-h2);letter-spacing:-.025em}
+.sec-h--thin{border-top-width:1px}
+.sec-h--thin h2,.sec-h--thin h3{font-size:16px}
+@media (min-width:1024px){.sec-h--thin h2,.sec-h--thin h3{font-size:17px}}
+.rh{flex:none;font:600 var(--text-rh)/1 var(--font-numeric);letter-spacing:.14em;color:var(--brand-accent-text)}
+.sub{font-size:13px;color:var(--ink-2);margin-top:3px}
+
+/* 대회 표식 — 인덱스 탭(세로) · 평탄 탭 */
+.tab{display:flex;align-items:center;justify-content:center;width:var(--tab-w);padding:7px 0 6px;background:var(--c);color:var(--competition-foreground);font:800 10.5px/1.08 var(--font-sans);writing-mode:vertical-rl;text-orientation:upright;letter-spacing:0;transition:background-color var(--duration-base) var(--ease)}
+@media (min-width:1024px){.tab{font-size:11px;padding:9px 0 8px}}
+.ftab{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:22px;padding:0 6px;background:var(--c);color:var(--competition-foreground);font-size:11.5px;font-weight:800;line-height:1;letter-spacing:-.01em;flex:none}
+.tab--epl{--c:var(--competition-epl)}.tab--laliga{--c:var(--competition-laliga)}.tab--seriea{--c:var(--competition-seriea)}
+.tab--bundesliga{--c:var(--competition-bundesliga)}.tab--ligue1{--c:var(--competition-ligue1)}.tab--ucl{--c:var(--competition-ucl)}
+
+/* 대회 탭 (DESIGN §9.2 Tabs — D1 순위 미니 모양) */
+.ctab{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;padding:0 10px;border:1px solid var(--ink-2);background:transparent;font-size:13px;font-weight:800;color:var(--ink);text-decoration:none;transition:background-color var(--duration-base) var(--ease),color var(--duration-base) var(--ease),border-color var(--duration-base) var(--ease)}
+.ctab:hover{border-color:var(--ink);background:var(--paper-2)}
+.ctab[aria-selected="true"],.ctab[aria-current="page"]{background:var(--c);border-color:var(--c);color:var(--competition-foreground);--ring:var(--ink)}
+
+/* 도장 · 완장 · 자리 */
+.stamp{flex:none;display:inline-flex;align-items:center;gap:4px;padding:3px 6px 2px;border:1px solid var(--ink);color:var(--ink);font-size:var(--text-stamp);font-weight:800;line-height:1.3;letter-spacing:.01em}
+.stamp--ph{border:1px dashed var(--ink-3);color:var(--ink-2)}
+.arm{display:inline-block;padding:3px 3px 2px;background:var(--brand-accent);color:var(--brand-accent-foreground);font-size:10.5px;font-weight:800;line-height:1.2;letter-spacing:-.02em;flex:none}
+.ph-box{padding:12px 14px;border:1.5px dashed var(--ink-3);font-size:12.5px;color:var(--ink-2)}
+.ph-box b{color:var(--ink);font-weight:800;margin-right:6px}
+.ph-box .id{font:600 13.5px/1.3 var(--font-numeric);letter-spacing:.04em;margin-left:6px}
+
+/* 팀 배지 (DR-05) */
+.bdg{position:relative;display:inline-grid;grid-template-rows:3fr 2fr;flex:none;background:var(--k2);outline:1px solid var(--rule);outline-offset:-1px;vertical-align:middle}
+.bdg b{grid-row:1;display:grid;place-items:center;background:var(--k1);color:var(--kf);font-family:var(--font-numeric);font-weight:800;font-variant-numeric:tabular-nums lining-nums;letter-spacing:.04em;line-height:1}
+.bdg--m{width:40px;height:44px}.bdg--m b{font-size:15px}
+.bdg--s{width:30px;height:33px}.bdg--s b{font-size:12px;letter-spacing:.02em}
+.bdg--xs{width:24px;height:27px}.bdg--xs b{font-size:10.5px;letter-spacing:0}
+.bdg--none{background:transparent;outline:1px dashed var(--ink-2)}
+.bdg--none b{background:transparent;color:var(--ink-2);box-shadow:none;border-bottom:1px dashed var(--ink-2)}
+.bdg--none::after{content:"";grid-row:2;background:repeating-linear-gradient(-45deg,var(--hatch) 0 3px,transparent 3px 6px)}
+
+/* 폼 칩 W/D/L — 글자 + 색 (색만으로 전달하지 않음) */
+.form{display:inline-flex;gap:3px;flex:none;vertical-align:middle}
+.fm{display:inline-grid;place-items:center;width:20px;height:20px;font:800 12.5px/1 var(--font-numeric);font-style:normal;letter-spacing:0;border:1.5px solid currentColor}
+.fm--W{color:var(--result-win)}.fm--D{color:var(--result-draw)}.fm--L{color:var(--result-loss)}
+.fm--x{border:0;color:transparent;background:linear-gradient(var(--ink-3),var(--ink-3)) center/8px 2px no-repeat}
+
+/* 순위 변동 ▲▼ — CSS 도형 + 숫자 */
+.tr{display:inline-flex;align-items:center;gap:2px;font:600 13px/1 var(--font-numeric);letter-spacing:.02em;white-space:nowrap}
+.tr i{display:block;width:8px;height:7px;background:currentColor}
+.tr--up{color:var(--trend-up)}.tr--up i{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.tr--down{color:var(--trend-down)}.tr--down i{clip-path:polygon(0 0,100% 0,50% 100%)}
+.tr--eq{color:var(--ink-2)}
+.tr--na{color:var(--ink-2)}
+
+/* 버튼 · 링크 */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;font-size:14px;font-weight:800;border:1px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;transition:background-color var(--duration-fast) var(--ease),color var(--duration-fast) var(--ease)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.tlink{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:44px;min-width:44px;font-size:13px;font-weight:800;color:var(--brand-accent-text);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.tlink:hover{text-decoration-thickness:2px}
+.tlink .ic{width:16px;height:16px}
+.src-note{font-size:12.5px;color:var(--ink-2);margin-top:14px;line-height:1.5}
+.src-note b{color:var(--ink);font-weight:800}
+.note{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.krl{display:inline-flex!important;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+
+/* 뒤표지 · 하단 탭 · 토스트 */
+.colophon{position:relative;margin:64px calc(var(--edge)*-1) 0;background:var(--colophon);color:var(--colophon-fg);--ring:var(--colophon-fg)}
+.colophon::before{content:"";display:block;height:4px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x;transform:translateY(6px)}
+.colophon__in{padding:26px var(--edge) 28px;display:grid;gap:10px;font-size:13px;line-height:1.6}
+.colophon__brand{font-size:17px;font-weight:800;letter-spacing:-.03em}
+.colophon__brand span{font-size:12.5px;font-weight:400;letter-spacing:0;color:var(--colophon-fg-2);margin-left:6px}
+.colophon__fd{font:600 15px/1.3 var(--font-numeric);letter-spacing:.03em}
+.colophon__p{color:var(--colophon-fg-2);max-width:62ch}
+.colophon__links{display:flex;flex-wrap:wrap;column-gap:18px}
+.colophon__links a{display:inline-flex;align-items:center;min-height:44px;font-weight:800;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+@media (min-width:1024px){.colophon{margin:72px 0 0}.colophon__in{grid-template-columns:1.1fr 1fr;column-gap:48px;padding:32px 36px 34px}.colophon__links{grid-column:2;grid-row:2/4}.colophon__brand{grid-column:1/-1}}
+.tabbar{position:sticky;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(3,1fr);margin:0;background:var(--paper);border-top:1px solid var(--ink)}
+.tabbar a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;font-size:11px;font-weight:800;color:var(--ink-2);text-decoration:none}
+.tabbar a:hover{color:var(--ink)}
+.tabbar a[aria-current]{color:var(--ink)}
+.tabbar a[aria-current]::before{content:"";position:absolute;top:-1px;left:24%;right:24%;height:3px;background:var(--brand-accent)}
+@media (min-width:1024px){.tabbar{display:none}}
+.toast-region{position:fixed;left:0;right:0;bottom:76px;z-index:40;display:flex;justify-content:center;pointer-events:none}
+.toast{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 16px 0 0;background:var(--ink);color:var(--paper);font-size:14px;font-weight:800;pointer-events:auto;box-shadow:var(--shadow-print-accent);animation:eject var(--duration-base) var(--ease) both}
+.toast[hidden]{display:none}
+.toast__k{align-self:stretch;display:grid;place-items:center;padding:0 10px;border-right:2px dotted color-mix(in srgb,var(--paper) 55%,transparent);font-size:12px}
+@keyframes eject{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes tear{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes stamp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes arrive{from{background-color:transparent}}
+@media (min-width:1024px){.toast-region{bottom:28px}}
+
+/* 견본 */
+.spec{margin-top:48px}
+.spec-grid{display:grid;gap:24px;margin-top:14px}
+@media (min-width:1024px){.spec-grid{grid-template-columns:1fr 1fr}}
+.frame{border:1px solid var(--rule);padding:14px;min-width:0}
+.cap{font-size:12.5px;color:var(--ink-2);margin-bottom:10px;line-height:1.5}
+.cap b{font-weight:800;color:var(--ink);margin-right:4px}
+.bdg-row{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.bdg-row span.l{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.legend>span{display:inline-flex;align-items:center;gap:6px}
+.legend b{color:var(--ink);font-weight:800}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0s!important;animation-delay:0s!important;transition-duration:0s!important;scroll-behavior:auto!important}
+}
