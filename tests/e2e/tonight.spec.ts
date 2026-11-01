@@ -44,11 +44,16 @@ test.describe("홈 위젯 — 두 자리", () => {
     await expect(wide ? aside : flow).toBeVisible();
     await expect(wide ? flow : aside).toBeHidden();
     const visible = wide ? aside : flow;
-    await expect(visible.locator("section")).toHaveCount(2);
-    await expect(visible.locator("section h2")).toHaveText([
+    // 1280 마주 보는 면에는 '어젯밤 한국 선수'(M3-11 — 경기가 있던 날만)가 오늘 밤과 리그 순위 사이에 낀다
+    const widgets = visible.locator("section:not([data-slot=last-night])");
+    await expect(widgets).toHaveCount(2);
+    await expect(widgets.locator("h2")).toHaveText([
       "오늘 밤 볼 경기",
       "리그 순위",
     ]);
+    if (!wide) {
+      await expect(flow.locator("[data-slot=last-night]")).toHaveCount(0);
+    }
     // 보조기술에는 한 벌만(숨은 쪽은 display: none)
     await expect(
       page.getByRole("heading", { level: 2, name: "오늘 밤 볼 경기" }),
@@ -147,7 +152,7 @@ test.describe("오늘 밤 볼 경기", () => {
     await expect(criteria).toContainText("18:00 ~ 다음 날 07:00 KST");
   });
 
-  test("데이터 출처 줄(FR-45 — M2-16): 홈 위젯 아래·/tonight/ 맨 아래, 필수 영문 문구 · KST 갱신 시각 · API-Football 병기 없음", async ({
+  test("데이터 출처 줄(FR-45 — M2-16): 홈 위젯 아래·/tonight/ 맨 아래, 필수 영문 문구 · KST 갱신 시각 · API-Football 병기는 홈의 한국 선수 출전 데이터에만(M3-11)", async ({
     page,
   }) => {
     for (const [path, scope] of [
@@ -163,7 +168,16 @@ test.describe("오늘 밤 볼 경기", () => {
         "Football data provided by the Football-Data.org API",
       );
       await expect(note).toContainText(/\d\d\.\d\d \d\d:\d\d KST 갱신/);
-      await expect(note).not.toContainText("API-Football");
+      if (scope === "tonight") {
+        await expect(note).not.toContainText("API-Football");
+      } else {
+        // 홈은 '어젯밤 한국 선수'(출전·결과 = API-Football)가 있는 날 병기한다(M3-11)
+        const lastNight = await page.locator("[data-slot=last-night]").count();
+        if (lastNight === 0)
+          await expect(note).not.toContainText("API-Football");
+        else
+          await expect(note).toContainText("한국 선수 출전·결과 API-Football");
+      }
     }
   });
 });
