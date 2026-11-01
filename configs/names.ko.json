@@ -1826,6 +1826,46 @@
       "kind": "manager",
       "slug": "antonio-conte",
       "note": "확정(사용자 결정 2026-10-25) — 국내 매체 관용(근거: 수집 카드 제목 '콘테 공식 입장' 인터풋볼 2026-10-24 https://www.interfootball.co.kr/news/articleView.html?idxno=697009 · 베스트일레븐 RSS 2026-10-25 '콘테·나겔스만' https://www.besteleven.com/news/articleView.html?idxno=313432) — 위키백과 '안토니오 콘테'와 같음(규범·매체 일치) · 2026-27 현직 감독 아님(나폴리 후임 알레그리) — 감독설 빈출로 등록(원제목 5건 — BBC·The Athletic·the Daily Briefing·인터풋볼 2026-10-23~24, 맨유 차기 감독설) · 성 단독 별칭 없음('conte'는 이탈리아어 일반명사 '백작' — 중간 위험) · 영문: 대표 표기"
+    },
+    {
+      "ko": "마그데부르크",
+      "en": ["1. FC Magdeburg", "FC Magdeburg", "Magdeburg"],
+      "kind": "team",
+      "slug": "magdeburg",
+      "note": "확정(사용자 승인 2026-11-01, M3-01 컵 상대 표기) — 위키백과 '1. FC 마그데부르크' https://ko.wikipedia.org/wiki/1._FC_마그데부르크 (법인·형태 약칭 뺌) · 원장 DFB Pokal 'Round of 32'(Bayern München 6-1 1. FC Magdeburg, 2026-10-28) · slug D63 ③ · 영문: API-Football '1. FC Magdeburg'(data/matches/2026-10 af 팀 179)"
+    },
+    {
+      "ko": "카를스루에",
+      "en": ["Karlsruher SC", "Karlsruhe"],
+      "kind": "team",
+      "slug": "karlsruher",
+      "note": "확정(사용자 승인 2026-11-01, M3-01 컵 상대 표기) — 위키백과 '카를스루에 SC' https://ko.wikipedia.org/wiki/카를스루에_SC (법인·형태 약칭 뺌) · 원장 DFB Pokal 'Round of 32'(Borussia Mönchengladbach 2-0 Karlsruher SC, 2026-10-27) · slug D63 ③(규칙 slug — teamSlugFromName('Karlsruher SC')) · 영문: API-Football 'Karlsruher SC'(af 팀 785)"
+    },
+    {
+      "ko": "디나모 드레스덴",
+      "en": ["Dynamo Dresden", "SG Dynamo Dresden"],
+      "kind": "team",
+      "slug": "dynamo-dresden",
+      "note": "확정(사용자 승인 2026-11-01, M3-01 컵 상대 표기) — 위키백과 '디나모 드레스덴' https://ko.wikipedia.org/wiki/디나모_드레스덴 · 원장 DFB Pokal 'Round of 32'(Dynamo Dresden 2-0 FC Schalke 04, 2026-10-28) · slug D63 ③ · 영문: API-Football 'Dynamo Dresden'(af 팀 183)"
+    },
+    {
+      "ko": "보훔",
+      "en": ["VfL Bochum", "VfL Bochum 1848", "Bochum"],
+      "kind": "team",
+      "slug": "vfl-bochum",
+      "note": "확정(사용자 승인 2026-11-01, M3-01 컵 상대 표기) — 위키백과 'VfL 보훔' https://ko.wikipedia.org/wiki/VfL_보훔 (법인·형태 약칭 뺌) · 원장 DFB Pokal 'Round of 32'(VfL Bochum 2-0 FSV Mainz 05, 2026-10-27) · slug D63 ③ 규칙 slug(teamSlugFromName — VfL은 접두 제거 목록 밖) · 영문: API-Football 'VfL Bochum'(af 팀 176)"
+    },
+    {
+      "ko": "존넨호프 그로사스파흐",
+      "en": [
+        "SG Sonnenhof Grossaspach",
+        "SG Sonnenhof Großaspach",
+        "Sonnenhof Grossaspach",
+        "Sonnenhof Großaspach"
+      ],
+      "kind": "team",
+      "slug": "sg-sonnenhof-grossaspach",
+      "note": "확정(사용자 승인 2026-11-01, M3-01 컵 상대 표기) — 대안(규범) 위키백과 'SG 소넨호프 그로스아스파흐'(ko.wikipedia 검색 2026-11-01) — 사용자 지정 표기 우선 · 원장 DFB Pokal 'Round of 32'(SG Sonnenhof Grossaspach 2-4 FC Augsburg, 2026-10-27) · slug D63 ③ 규칙 slug(teamSlugFromName — SG는 접두 제거 목록 밖) · 영문: API-Football 'SG Sonnenhof Grossaspach'(af 팀 1317)"
     }
   ],
   "ignore": []
