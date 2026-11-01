@@ -15,7 +15,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
-  workers: isCI ? 1 : undefined,
+  // CI 러너(4 vCPU)에서 worker 1개로는 M3 이후 e2e(약 1,200건)가 job 제한을 넘는다 — 3개로 병렬(2026-11-01)
+  workers: isCI ? 3 : undefined,
   reporter: isCI ? [["github"], ["html", { open: "never" }]] : "list",
   use: {
     // basePath가 붙은 주소. 테스트에서는 앞에 `/` 없이 상대 경로로 이동한다(예: page.goto("./")).
