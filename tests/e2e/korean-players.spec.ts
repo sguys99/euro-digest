@@ -72,6 +72,38 @@ test.describe("한국 선수 목록 — 명단 구성", () => {
   });
 });
 
+// 375 보기 탭 — 키보드만으로(M3-14): Tab으로 선택된 탭에 들어가 ←→ Home End로 보기를 바꾼다(자동 활성화 — §9.2 Tabs),
+// 포커스가 탭을 따라가고 표 열 묶음이 바뀐다. 탭 다음 Tab은 표 안 첫 선수 링크(탭 순서 = 시각 순서)
+test("375 보기 탭 — ←→ Home End로 보기 전환 · 포커스 이동 · 다음 Tab은 명단 첫 선수", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "375 보기 탭은 모바일");
+  await page.goto("korean-players/");
+  const tabs = page.getByRole("tab");
+  await expect(tabs).toHaveCount(3);
+  await tabs.first().focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(tabs.nth(1)).toBeFocused();
+  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
+  expect(await visibleHeads(page)).toContain("도움");
+  await page.keyboard.press("End");
+  await expect(tabs.nth(2)).toBeFocused();
+  expect(await visibleHeads(page)).toContain("일시 · 상대");
+  await page.keyboard.press("ArrowRight");
+  await expect(tabs.first()).toBeFocused();
+  await page.keyboard.press("ArrowLeft");
+  await expect(tabs.nth(2)).toBeFocused();
+  await page.keyboard.press("Home");
+  await expect(tabs.first()).toBeFocused();
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+  expect(await visibleHeads(page)).toEqual(["분", "선수 · 소속", "결과"]);
+  // 고른 탭 하나만 Tab 순서에 있다(roving tabindex) → 다음 Tab은 명단 첫 선수 이름
+  await page.keyboard.press("Tab");
+  const first = view.groups[0]?.rows[0];
+  expect(first).toBeDefined();
+  await expect(page.locator(":focus")).toContainText(first?.nameKo ?? "");
+});
+
 test.describe("한국 선수 목록 — 폭별 열 구성 · 가로 넘침", () => {
   for (const width of [375, 768, 1024, 1280]) {
     for (const colorScheme of ["light", "dark"] as const) {

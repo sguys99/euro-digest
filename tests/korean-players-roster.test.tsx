@@ -128,6 +128,11 @@ describe("결과 칸 — 스코어 맥락 규칙(D64 ③)", () => {
     expect(container.textContent).toContain("홈");
     expect([...values].some((v) => v.textContent?.includes("홈"))).toBe(false);
     expect(values[1]?.textContent).toBe("1골2도움");
+    // 스코어는 혼합안 `.sc` 그대로 붙여 쓴다(자간 0.04em, 간격 0 — D1 대진 스코어의 3px 간격 아님, M3-14)
+    const score = values[0]?.querySelector("span.font-numeric");
+    expect(score?.className).toMatch(/(^| )gap-0( |$)/);
+    expect(score?.className).toContain("tracking-[0.04em]");
+    expect(score?.className).not.toContain("gap-0.75");
   });
 
   it("승부차기 — 무 칩 + 정규·연장 스코어 + '승부차기 4–3'(소속팀 먼저, 화면 밖 '대')", () => {

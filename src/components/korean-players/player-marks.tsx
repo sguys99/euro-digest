@@ -126,7 +126,7 @@ export function ResultCell({
             <Score
               h={result.for}
               a={result.against}
-              className="font-numeric text-lg leading-none tabular-nums"
+              className="gap-0 font-numeric text-lg leading-none tracking-[0.04em] tabular-nums"
             />
           </span>
         ) : (

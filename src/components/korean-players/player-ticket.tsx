@@ -191,12 +191,19 @@ export function PlayerTicket({
             {view.standing ? (
               <>
                 {" "}
-                <span className="font-numeric text-sm font-semibold text-ink tabular-nums">
-                  {view.standing.pos}
-                </span>
-                위 · 승점{" "}
-                <span className="font-numeric text-sm font-semibold text-ink tabular-nums">
-                  {view.standing.pts}
+                {/* "1위" · "승점 18"은 한 덩어리로 줄바꿈(360에서 "승점 / 18"로 갈라졌다 — M3-14) */}
+                <span className="whitespace-nowrap">
+                  <span className="font-numeric text-sm font-semibold text-ink tabular-nums">
+                    {view.standing.pos}
+                  </span>
+                  위
+                </span>{" "}
+                ·{" "}
+                <span className="whitespace-nowrap">
+                  승점{" "}
+                  <span className="font-numeric text-sm font-semibold text-ink tabular-nums">
+                    {view.standing.pts}
+                  </span>
                 </span>
               </>
             ) : null}
@@ -224,7 +231,8 @@ export function PlayerTicket({
             <Num>{view.birthYear}</Num>년생
           </span>
           {view.total ? (
-            <span>
+            // 1023 이하는 늘 둘째 줄(혼합안 375 사실 줄도 두 줄) — 360 폭에서 웹폰트 교체 전후로 줄 수가 바뀌어 티켓 아래가 밀렸다(M3-14)
+            <span className="basis-full lg:basis-auto">
               출전 <Num>{view.total.apps}</Num> · 골{" "}
               <Num>{view.total.goals}</Num> · 도움{" "}
               <Num>{view.total.assists ?? "–"}</Num>

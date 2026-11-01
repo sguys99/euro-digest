@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   BoxScore,
+  RunnersUp,
   WeeklyArchiveList,
   WeeklyContents,
   WeeklyEmpty,
@@ -267,6 +268,35 @@ describe("BoxScore — 출전 기록 박스", () => {
     );
     // 집계값(골 열)은 결과 묶음이 아니다 — 가리지 않는다(D64 ④)
     expect(container.querySelector('[data-slot="result-value"]')).toBeNull();
+  });
+});
+
+describe("BoxScore — 경기 줄 · 다음 순위 모양(혼합안 `.wt__ms` · `.ru` — M3-14)", () => {
+  it("경기 줄은 한 줄 글자 — 대회는 평탄 탭이 아니라 글자, 상태 글자만 800(분은 400)", () => {
+    const { container } = render(<BoxScore view={VIEW} headingId="tb" />);
+    const lines = [
+      ...container.querySelectorAll('[data-slot="weekly-match-lines"] li'),
+    ];
+    expect(lines.map((li) => li.textContent)).toEqual([
+      "10.24 (토) 분데스 · 브레멘 · 선발 75분",
+      "10.24 (토) DFB 포칼 · Stuttgart · 명단 제외",
+    ]);
+    expect(lines[0]?.querySelector("b")?.textContent).toBe("선발");
+    // 평탄 탭(색 면) 없음 — 대회 정식 이름은 마우스 올림 설명
+    expect(
+      lines[0]?.querySelector('[title="분데스리가"]')?.className ?? "",
+    ).toBe("");
+  });
+
+  it("다음 순위 '점'은 숫자에 붙는다(-6px) · 11.5px `--ink-2`", () => {
+    const { container } = render(
+      <RunnersUp rows={VIEW.runnersUp} headingId="ru" />,
+    );
+    const unit = container.querySelector('[data-slot="points-unit"]');
+    expect(unit?.textContent).toBe("점");
+    expect(unit?.className).toContain("-ml-1.5");
+    expect(unit?.className).toContain("text-[11.5px]");
+    expect(unit?.className).toContain("text-ink-2");
   });
 });
 

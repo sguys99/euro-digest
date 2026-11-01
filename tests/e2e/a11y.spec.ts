@@ -177,13 +177,24 @@ const FOCUS_TARGETS = (() => {
   const archives = targets.filter((t) =>
     /^news\/\d{4}-\d{2}-\d{2}\/$/.test(t.gotoPath),
   );
+  // M3 화면(M3-14): 한국 선수 목록(375 보기 탭) · 선수 상세(티켓 꼬리표 · 로그 · 옆단) · 주간 리포트(주 넘기기 · 목차) · 대표팀(근거 링크 새 창)
+  const weeklies = targets.filter((t) =>
+    /^korean-players\/weekly\/\d{4}-\d{2}\/$/.test(t.gotoPath),
+  );
   return [
     ...targets.filter((t) =>
-      ["./", "news/", "about/", "this-page-does-not-exist/"].includes(
-        t.gotoPath,
-      ),
+      [
+        "./",
+        "news/",
+        "about/",
+        "this-page-does-not-exist/",
+        "korean-players/",
+        "korean-players/kim-min-jae/",
+        "national-team/",
+      ].includes(t.gotoPath),
     ),
     ...archives.slice(-1),
+    ...weeklies.slice(-1),
   ];
 })();
 

@@ -29,6 +29,45 @@ async function overflow(page: Page): Promise<number> {
   );
 }
 
+// 선수 티켓 사실 줄 — 1023 이하는 '출전 · 골 · 도움'이 늘 둘째 줄(360에서 웹폰트 교체 전후로 줄 수가 바뀌어 티켓 아래가 밀렸다, M3-14),
+// 1024 이상은 포지션 · 출생 연도와 한 줄
+for (const [width, ownLine] of [
+  [360, true],
+  [768, true],
+  [1280, false],
+] as const) {
+  test(`선수 티켓 사실 줄 — ${width}px 출전 묶음 ${ownLine ? "둘째 줄" : "한 줄"}`, async ({
+    page,
+  }) => {
+    // 기록 연결 선수(시즌 누적이 있는 티켓)
+    const slug = "kim-min-jae";
+    test.skip(!SLUGS.includes(slug), "설정에 없음");
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto(`korean-players/${slug}/`);
+    const pos = await page
+      .locator('[data-slot="player-ticket"] p')
+      .filter({ hasText: "년생" })
+      .first()
+      .evaluate((p) => {
+        const [first, , stats] = [...p.children].map((c) =>
+          c.getBoundingClientRect(),
+        );
+        return { firstBottom: first?.bottom ?? 0, statsTop: stats?.top ?? 0 };
+      });
+    if (ownLine) expect(pos.statsTop).toBeGreaterThanOrEqual(pos.firstBottom);
+    else expect(pos.statsTop).toBeLessThan(pos.firstBottom);
+    // 대회 줄 "1위" · "승점 18"은 숫자와 라벨이 갈라지지 않는다(360에서 "승점 / 18" — M3-14)
+    const units = page
+      .locator('[data-slot="player-ticket"] span.whitespace-nowrap')
+      .filter({ hasText: /^(\d+위|승점 \d+)$/ });
+    await expect(units).toHaveCount(2);
+    for (const unit of await units.all()) {
+      const lines = await unit.evaluate((el) => el.getClientRects().length);
+      expect(lines).toBe(1);
+    }
+  });
+}
+
 test.describe("선수 상세 — 구성", () => {
   test("설정의 선수 전원이 정적 생성된다 · 각 페이지 h1 = 한글 이름", async ({
     page,

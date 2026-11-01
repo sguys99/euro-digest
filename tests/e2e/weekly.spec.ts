@@ -39,6 +39,38 @@ test.describe("주간 리포트 색인", () => {
     await expect(rows.first()).toContainText("경기일 기준");
   });
 
+  // 폭 400~420px에서 '경기일 기준'이 웹폰트 교체 중에만 다음 줄로 넘어가 행이 20px 밀렸다(slow 4G CLS 0.16, M3-14) →
+  // 1023 이하는 늘 다음 줄, 1024 이상은 기간과 같은 줄
+  for (const [width, ownLine] of [
+    [360, true],
+    [412, true],
+    [768, true],
+    [1280, false],
+  ] as const) {
+    test(`색인 행 '경기일 기준' — ${width}px ${ownLine ? "늘 다음 줄" : "기간과 같은 줄"}`, async ({
+      page,
+    }) => {
+      test.skip(weeks.length === 0, "발행된 주 없음");
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto("korean-players/weekly/");
+      const tops = await page
+        .locator('[data-slot="weekly-archive"] li a')
+        .first()
+        .evaluate((a) => {
+          const basis = [...a.querySelectorAll("span")].find(
+            (el) => el.textContent?.trim() === "경기일 기준",
+          );
+          const range = basis?.previousElementSibling;
+          return {
+            basis: basis?.getBoundingClientRect().top ?? 0,
+            rangeBottom: range?.getBoundingClientRect().bottom ?? 0,
+          };
+        });
+      if (ownLine) expect(tops.basis).toBeGreaterThanOrEqual(tops.rangeBottom);
+      else expect(tops.basis).toBeLessThan(tops.rangeBottom);
+    });
+  }
+
   test("목록 화면에서 들어온다 — 375 머리 링크 · 1280 목차 행", async ({
     page,
   }) => {

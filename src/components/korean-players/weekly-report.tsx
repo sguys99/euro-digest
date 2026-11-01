@@ -24,7 +24,7 @@ import type {
   WeeklyUpcomingView,
 } from "@/lib/weekly-report-view";
 
-import { CompTag, OpponentName, PlayerLink } from "./player-marks";
+import { OpponentName, PlayerLink } from "./player-marks";
 
 /**
  * 한국 선수 주간 리포트 — C 주간 지면 + B 90분 막대 (PRD FR-90~93, D64 ③④⑥, D65 ①~③, DESIGN §9.3 D2 주간 지면 틀 · 주간 MVP 머리기사 ·
@@ -177,7 +177,10 @@ export function WeeklyArchiveList({
                   <span className={NUM}>{e.range.fromLabel}</span> ~{" "}
                   <span className={NUM}>{e.range.toLabel}</span>
                 </span>
-                <span className="text-xs text-ink-2">경기일 기준</span>
+                {/* 1023 이하는 늘 다음 줄(375에서도 그 자리) — 폭 400~420px에서 웹폰트 교체 중에만 줄이 바뀌어 행이 20px 밀렸다(CLS 0.16, M3-14) */}
+                <span className="w-full text-xs text-ink-2 lg:w-auto">
+                  경기일 기준
+                </span>
               </span>
               <span className="text-[13.5px] text-ink-2">
                 {e.mvpName ? (
@@ -323,7 +326,7 @@ function EvidenceLine({ evidence }: { evidence: EvidenceView }) {
                   a={result.against}
                   className={cx(
                     NUM,
-                    "text-[1.15em] leading-none tracking-[0.04em]",
+                    "gap-0 text-[1.15em] leading-none tracking-[0.04em]",
                   )}
                 />
                 {result.pens ? (
@@ -640,7 +643,13 @@ export function RunnersUp({
             <b className={cx(NUM, "text-lg leading-none font-extrabold")}>
               {r.points}
             </b>
-            <span className="text-xs">점</span>
+            {/* 혼합안 `.ru__u` — 숫자에 붙인다(간격 8 − 6 = 2px), 11.5px `--ink-2` */}
+            <span
+              data-slot="points-unit"
+              className="-ml-1.5 text-[11.5px] text-ink-2"
+            >
+              점
+            </span>
           </li>
         ))}
       </ol>
@@ -717,27 +726,34 @@ function MinuteBars({ matches }: { matches: readonly WeeklyMatchView[] }) {
   );
 }
 
-/** 경기 줄(1024 이상) — "10.24 (토) [분데스] 브레멘 · 선발 75분". 날짜 = 경기일(UTC 날짜, 시각 없음 — 기간 표기와 같은 기준, D2 §8 #31) */
+/**
+ * 경기 줄(1024 이상) — "10.24 (토) 분데스 · 브레멘 · **선발** 75분"(혼합안 `.wt__ms` — 한 줄 글자, 상태 글자만 800).
+ * 대회는 평탄 탭이 아니라 글자(6개 대회 = 줄임 이름, 컵 = 대회 이름) — 표 행마다 색 면이 쌓이지 않게(M3-14).
+ * 날짜 = 경기일(UTC 날짜, 시각 없음 — 기간 표기와 같은 기준, D2 §8 #31)
+ */
 function MatchLines({ matches }: { matches: readonly WeeklyMatchView[] }) {
   return (
     <ul
       role="list"
-      className="mt-1.5 hidden gap-1 text-xs leading-[1.45] font-normal tracking-normal text-ink-2 lg:grid"
+      data-slot="weekly-match-lines"
+      className="mt-1.5 hidden gap-0.5 text-xs leading-[1.45] font-normal tracking-normal text-ink-2 lg:grid"
     >
       {matches.map((m) => (
-        <li
-          key={m.key}
-          className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5"
-        >
+        <li key={m.key}>
           <time
             dateTime={m.kickoff}
             className={cx(NUM, "text-[12.5px] font-semibold")}
           >
             {formatUtcDayShort(m.kickoff)}
-          </time>
-          <CompTag comp={m.comp} />
+          </time>{" "}
+          {m.comp.kind === "comp" ? (
+            <span title={m.comp.name}>{m.comp.short}</span>
+          ) : (
+            <span lang={m.comp.latin ? "en" : undefined}>{m.comp.name}</span>
+          )}
+          {" · "}
           <OpponentName opponent={m.opponent} badge={false} />
-          <span aria-hidden="true">·</span>
+          {" · "}
           <b
             className={cx(
               "font-extrabold",
@@ -745,13 +761,13 @@ function MatchLines({ matches }: { matches: readonly WeeklyMatchView[] }) {
             )}
           >
             {m.appearance.label}
-            {m.appearance.tone === "on" ? (
-              <>
-                {" "}
-                <span className={NUM}>{m.appearance.text}</span>분
-              </>
-            ) : null}
           </b>
+          {m.appearance.tone === "on" ? (
+            <>
+              {" "}
+              <span className={NUM}>{m.appearance.text}</span>분
+            </>
+          ) : null}
         </li>
       ))}
     </ul>
