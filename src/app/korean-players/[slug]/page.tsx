@@ -32,13 +32,12 @@ import { koreanPlayerDescription, pageMetadata } from "@/lib/seo";
  *
  * 확정 시안 `docs/design/d2/concept-mix.html` 화면 1 상세 — B 선수 티켓 · A 시즌 기록 표 · C 최근 5경기 로그 · B 다음 경기 입장권 · 1280 옆단.
  * 설정(`configs/korean-players.json`)의 선수 전원을 정적 생성한다(비활성 · 기록 연결 전 포함 — 상태에 맞게 숨기고 상태 문장을 쓴다).
- * - **DOM 순서 = 1279 이하 순서**(DECISIONS D2 §6 #6): 쪽 머리 → 선수 티켓 → 시즌 기록 → 최근 5경기 → 다음 경기 → 관련 뉴스 → 이적설 →
- *   대표팀 소식 → 출처 줄. `display: contents` · `order`는 쓰지 않는다 — 접근성 트리 순서 = 1279 이하 화면 순서. 1280 이상은 grid 2열
- *   (`1fr · --col-facing`, 옆단 왼쪽 1px `--ink` 세로 괘선)에 **이어지는 형제만 묶은 두 묶음**(머리 묶음 = 쪽 머리 · 티켓 · 시즌 · 로그, 아래 옆단
- *   묶음 = 이적설 · 대표팀 — 1279 이하 순서는 그대로)과 다음 경기 · 관련 뉴스 · 출처 줄을 행에 놓는다. 서로 끼어 있는 두 열을 각자 높이로 쌓는
- *   것은 CSS만으로 안 되므로(masonry — float도 앞 요소 위로 못 올라간다) 행 배치를 상태로 고른다: 기록 연결 선수는 다음 경기를 머리 묶음 행에
- *   붙이고(sticky — 머리 묶음을 읽는 동안 남는다) 이적설 · 대표팀을 관련 뉴스 옆에, 연결 전 · 기타 리그는 다음 경기를 머리 묶음 + 관련 뉴스 행에
- *   걸치고 아래 묶음을 그다음 행에 둔다(DESIGN §11.21). 옆단 항목이 하나도 없으면 1280도 지면 한 열.
+ * - **DOM 순서 = 1279 이하 순서**(DECISIONS D2 §6 #6 · §8 #20 — 2026-11-01 사용자 결정으로 바꾼 순서): 쪽 머리 → 선수 티켓 → 시즌 기록 →
+ *   최근 5경기 → 다음 경기 → 이적설 → 대표팀 소식 → 관련 뉴스 → 출처 줄. `display: contents` · `order`는 쓰지 않는다 — 접근성 트리 순서 =
+ *   1279 이하 화면 순서. 1280 이상은 grid 2열(`1fr · --col-facing`, 옆단 왼쪽 1px `--ink` 세로 괘선)에 **이어지는 형제만 묶은 두 묶음**
+ *   — 머리 묶음(쪽 머리 · 티켓 · 시즌 · 로그)과 옆단 묶음(다음 경기 · 이적설 · 대표팀) — 을 놓는다. 지면 열 = 1행 머리 묶음 · 2행 관련 뉴스 ·
+ *   3행 출처 줄, 옆단 묶음은 1행부터 마지막 `1fr` 행(4행)까지 걸친다 — 옆단이 지면보다 길어도 남는 높이는 빈 4행이 받아 지면 행 사이가
+ *   벌어지지 않고, 옆단 세 구역은 시안처럼 빈틈 없이 붙어 쌓인다(DESIGN §11.21). 옆단 항목이 하나도 없으면 1280도 지면 한 열.
  * - 데이터가 없으면 그 구역을 숨긴다(자리 상자 없음 — DECISIONS D2 §6 #8). 관련 뉴스만 0건이면 빈 상태 문장(DESIGN §9.3 화면별 배치).
  * - 팔로우 버튼(M4-08) · .ics(M4-12) · 결과 가리기(M4-15 — 결과 칸 구조만)는 범위 밖. 시각은 빌드 시각 기준(다음 경기 · 업데이트 지연).
  */
@@ -70,7 +69,7 @@ export async function generateMetadata({
 
 /** 1280 이상 두 열(머리 주석) — 시안 그대로: 옆단 열 = `--col-facing`(296px — 왼쪽 1px 괘선 + 안쪽 32px 포함), 지면 오른쪽 32px */
 const GRID =
-  "xl:relative xl:grid xl:grid-cols-[minmax(0,1fr)_var(--col-facing)] xl:items-start xl:before:absolute xl:before:inset-y-0 xl:before:right-[calc(var(--col-facing)-1px)] xl:before:w-px xl:before:bg-ink xl:before:content-['']";
+  "xl:relative xl:grid xl:grid-cols-[minmax(0,1fr)_var(--col-facing)] xl:grid-rows-[auto_auto_auto_1fr] xl:items-start xl:before:absolute xl:before:inset-y-0 xl:before:right-[calc(var(--col-facing)-1px)] xl:before:w-px xl:before:bg-ink xl:before:content-['']";
 const MAIN = "xl:col-start-1 xl:pr-8";
 const SIDE = "xl:col-start-2 xl:min-w-0 xl:pl-[33px]";
 
@@ -89,20 +88,7 @@ export default async function KoreanPlayerPage({
   const hasNext = view.upcoming.length > 0;
   const hasTransfers = news.transfer.items.length > 0;
   const hasNational = callUp !== null || news.national.items.length > 0;
-  const hasLower = hasTransfers || hasNational;
-  const hasSide = hasNext || hasLower;
-  // 1280 이상 행 배치(머리 주석): 지면 1행 = 머리 묶음(쪽 머리 · 티켓 · 시즌 · 로그), 2행 = 관련 뉴스, 3행 = 출처 줄.
-  // 기록이 연결된 선수는 머리 묶음이 다음 경기보다 늘 길어 다음 경기를 1행에 붙이고(sticky — 머리 묶음을 읽는 동안 남는다) 이적설 ·
-  // 대표팀을 관련 뉴스 옆(2~3행)에 둔다. 연결 전 · 기타 리그는 머리 묶음이 짧아 다음 경기를 1~2행에 걸치고 아래 묶음을 3행에 둔다.
-  const tall = view.state === "linked";
-  const nextRows = tall
-    ? "xl:sticky xl:top-4 xl:row-start-1"
-    : "xl:row-span-2 xl:row-start-1";
-  const lowerRows = !hasNext
-    ? "xl:row-span-3 xl:row-start-1 xl:[&>div:first-child>section]:mt-0"
-    : tall
-      ? "xl:row-span-2 xl:row-start-2"
-      : "xl:row-start-3";
+  const hasSide = hasNext || hasTransfers || hasNational;
 
   return (
     <AppShell
@@ -159,9 +145,34 @@ export default async function KoreanPlayerPage({
             />
           ) : null}
         </div>
-        {hasNext ? (
-          <div className={cx(SIDE, nextRows)}>
-            <NextMatches headingId="pd-next-h" rows={view.upcoming} />
+        {/* 옆단 묶음 — 다음 경기 · 이적설 · 대표팀 소식(1279 이하 순서 그대로 이어지는 형제를 감쌌다). 1280 이상은 오른쪽 열 1행부터
+            마지막 1fr 행까지 걸쳐 세 구역이 빈틈 없이 붙어 쌓인다(머리 주석) */}
+        {hasSide ? (
+          <div
+            data-slot="player-side"
+            className={cx(
+              SIDE,
+              "xl:row-span-4 xl:row-start-1 xl:[&>section:first-child]:mt-0",
+            )}
+          >
+            {hasNext ? (
+              <NextMatches headingId="pd-next-h" rows={view.upcoming} />
+            ) : null}
+            {hasTransfers ? (
+              <TransferNews
+                id={TRANSFERS_ID}
+                items={news.transfer.items}
+                total={news.transfer.total}
+              />
+            ) : null}
+            {hasNational ? (
+              <NationalNews
+                id={NATIONAL_ID}
+                callUp={callUp}
+                items={news.national.items}
+                total={news.national.total}
+              />
+            ) : null}
           </div>
         ) : null}
         <div className={cx(hasSide && MAIN, hasSide && "xl:row-start-2")}>
@@ -172,30 +183,6 @@ export default async function KoreanPlayerPage({
             name={view.nameKo}
           />
         </div>
-        {/* 아래 옆단 묶음 — 이적설 · 대표팀 소식(이어지는 형제를 감쌌다) */}
-        {hasLower ? (
-          <div className={cx(SIDE, lowerRows)}>
-            {hasTransfers ? (
-              <div>
-                <TransferNews
-                  id={TRANSFERS_ID}
-                  items={news.transfer.items}
-                  total={news.transfer.total}
-                />
-              </div>
-            ) : null}
-            {hasNational ? (
-              <div>
-                <NationalNews
-                  id={NATIONAL_ID}
-                  callUp={callUp}
-                  items={news.national.items}
-                  total={news.national.total}
-                />
-              </div>
-            ) : null}
-          </div>
-        ) : null}
         {/* 출처 줄 — football-data(순위 · 일정)나 API-Football(출전 기록)을 실은 선수만(기타 리그 선수는 실은 데이터가 없다) */}
         {view.standing || hasNext || view.state === "linked" ? (
           <div

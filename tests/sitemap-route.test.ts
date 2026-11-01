@@ -47,6 +47,18 @@ const { listKoreanPlayerSlugs } = vi.hoisted(() => ({
   listKoreanPlayerSlugs: vi.fn<() => string[]>(() => []),
 }));
 vi.mock("@/lib/data/player-page", () => ({ listKoreanPlayerSlugs }));
+// 주간 리포트(M3-12) — 저장소 data/players/weekly 대신 테스트가 정한 주(기본 없음 → 색인만)
+const { listWeeklyWeeks, loadWeeklyReport } = vi.hoisted(() => ({
+  listWeeklyWeeks: vi.fn<() => string[]>(() => []),
+  loadWeeklyReport: vi.fn((week: string) => ({
+    week,
+    generatedAt: `${week === "2026-43" ? "2026-11-01" : "2026-11-08"}T07:00:00.000Z`,
+  })),
+}));
+vi.mock("@/lib/data/weekly-report", () => ({
+  listWeeklyWeeks,
+  loadWeeklyReport,
+}));
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -84,6 +96,12 @@ describe("sitemap 라우트", () => {
       { url: `${SITE}/about/` },
       { url: `${SITE}/tonight/`, lastModified: "2026-10-17T00:17:00.000Z" },
       { url: `${SITE}/korean-players/` },
+      { url: `${SITE}/korean-players/weekly/` },
+      // 대표팀(M3-13) — lastmod = 최신 호
+      {
+        url: `${SITE}/national-team/`,
+        lastModified: "2026-10-17T00:17:00.000Z",
+      },
       ...DATES.map((date) => ({
         url: `${SITE}/news/${date}/`,
         lastModified: issueOf(date).generatedAt,
@@ -109,13 +127,15 @@ describe("sitemap 라우트", () => {
     ]);
   });
 
-  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/tonight/·/korean-players/만", () => {
+  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/tonight/·/korean-players/·/national-team/만", () => {
     listNewsDates.mockReturnValue([]);
     expect(sitemap()).toEqual([
       { url: `${SITE}/` },
       { url: `${SITE}/about/` },
       { url: `${SITE}/tonight/` },
       { url: `${SITE}/korean-players/` },
+      { url: `${SITE}/korean-players/weekly/` },
+      { url: `${SITE}/national-team/` },
     ]);
   });
 
@@ -129,6 +149,25 @@ describe("sitemap 라우트", () => {
       `${SITE}/korean-players/`,
       `${SITE}/korean-players/kim-ji-soo/`,
       `${SITE}/korean-players/kim-min-jae/`,
+      `${SITE}/korean-players/weekly/`,
+    ]);
+  });
+
+  it("주간 리포트(M3-12) — 상세 뒤에 색인(lastmod = 최신 주) + 발행된 주", () => {
+    listWeeklyWeeks.mockReturnValueOnce(["2026-43", "2026-44"]);
+    expect(sitemap().filter((e) => e.url.includes("/weekly/"))).toEqual([
+      {
+        url: `${SITE}/korean-players/weekly/`,
+        lastModified: "2026-11-08T07:00:00.000Z",
+      },
+      {
+        url: `${SITE}/korean-players/weekly/2026-43/`,
+        lastModified: "2026-11-01T07:00:00.000Z",
+      },
+      {
+        url: `${SITE}/korean-players/weekly/2026-44/`,
+        lastModified: "2026-11-08T07:00:00.000Z",
+      },
     ]);
   });
 

@@ -15,6 +15,8 @@ import {
   teamDescription,
   koreanPlayerDescription,
   koreanPlayersDescription,
+  weeklyReportDescription,
+  NATIONAL_TEAM_DESCRIPTION,
 } from "@/lib/seo";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
@@ -374,5 +376,78 @@ describe("koreanPlayerDescription · sitemap 선수 상세(M3-10)", () => {
         lastModified: "2026-11-01T04:56:14.815Z",
       },
     ]);
+  });
+});
+
+describe("weeklyReportDescription · sitemap 주간 리포트(M3-12)", () => {
+  it("주차 · 기간(경기일 기준) · 실린 것, 스코어 모양 없음", () => {
+    const text = weeklyReportDescription(
+      "2026년 43주",
+      "10.19 (월) ~ 10.25 (일)",
+    );
+    expect(text).toContain("2026년 43주(10.19 (월) ~ 10.25 (일) 경기일 기준)");
+    expect(hasScoreLike(text)).toBe(false);
+  });
+
+  it("sitemapEntries — 상세 뒤에 색인(최신 주 lastModified) + 주 페이지 오름차순, 주가 없어도 색인", () => {
+    const urls = sitemapEntries([], [], [], {
+      updatedAt: null,
+      players: [],
+      weekly: [
+        { week: "2026-44", generatedAt: "2026-11-01T23:05:00.000Z" },
+        { week: "2026-43", generatedAt: "2026-11-01T07:09:25.458Z" },
+      ],
+    }).slice(4);
+    expect(urls).toEqual([
+      {
+        url: "https://sguys99.github.io/euro-digest/korean-players/weekly/",
+        lastModified: "2026-11-01T23:05:00.000Z",
+      },
+      {
+        url: "https://sguys99.github.io/euro-digest/korean-players/weekly/2026-43/",
+        lastModified: "2026-11-01T07:09:25.458Z",
+      },
+      {
+        url: "https://sguys99.github.io/euro-digest/korean-players/weekly/2026-44/",
+        lastModified: "2026-11-01T23:05:00.000Z",
+      },
+    ]);
+    expect(
+      sitemapEntries([], [], [], { updatedAt: null, weekly: [] })
+        .map((e) => e.url)
+        .filter((u) => u.includes("weekly")),
+    ).toEqual(["https://sguys99.github.io/euro-digest/korean-players/weekly/"]);
+  });
+});
+
+describe("대표팀(M3-13) — 설명 · sitemap", () => {
+  it("설명에 스코어 모양이 없다(pageMetadata가 받는다)", () => {
+    expect(() =>
+      pageMetadata({
+        title: "대표팀",
+        description: NATIONAL_TEAM_DESCRIPTION,
+        canonical: "/national-team/",
+      }),
+    ).not.toThrow();
+  });
+
+  it("sitemapEntries — nationalTeam이면 날짜 페이지 앞에 /national-team/(lastmod = 최신 호), 아니면 없다", () => {
+    const issues = [
+      { date: "2026-10-12", generatedAt: "2026-10-12T11:28:11.166Z" },
+      { date: "2026-10-23", generatedAt: "2026-10-23T00:10:07.307Z" },
+    ];
+    const urls = sitemapEntries(issues, [], [], null, true);
+    const at = urls.findIndex((e) => e.url === `${SITE}/national-team/`);
+    expect(urls[at]).toEqual({
+      url: `${SITE}/national-team/`,
+      lastModified: "2026-10-23T00:10:07.307Z",
+    });
+    expect(urls[at + 1]!.url).toBe(`${SITE}/news/2026-10-12/`);
+    expect(
+      sitemapEntries(issues).some((e) => e.url.includes("national-team")),
+    ).toBe(false);
+    expect(sitemapEntries([], [], [], null, true).at(-1)).toEqual({
+      url: `${SITE}/national-team/`,
+    });
   });
 });

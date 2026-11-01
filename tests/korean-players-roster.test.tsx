@@ -255,4 +255,29 @@ describe("명단 표", () => {
       screen.getByText("10월 19일 이후 집계 — 그 전 경기는 기록에 없어요"),
     ).toBeInTheDocument();
   });
+
+  it("목차 아래 묶음 — '주간 리포트' · '대표팀' 행(M3-12 · M3-13), 값이 없으면 글자", () => {
+    const { container, rerender } = render(
+      <RosterContents
+        view={VIEW}
+        weekly={{ latest: "W43" }}
+        national={{ label: "11월 소집" }}
+      />,
+    );
+    // next/link는 테스트 환경에서 끝 슬래시를 붙이지 않는다(빌드 결과는 trailingSlash — e2e가 본다)
+    const links = screen.getAllByRole("link").slice(2);
+    expect(links.map((a) => [a.getAttribute("href"), a.textContent])).toEqual([
+      ["/korean-players/weekly", "주간 리포트W43"],
+      ["/national-team", "대표팀11월 소집"],
+    ]);
+    // 주간 행 바로 아래 이어 붙는다(위 선 없음 — 주간 행 아래 선을 같이 쓴다)
+    expect(links[1]?.className).not.toContain("border-t");
+    expect(
+      container.querySelector('[data-slot="roster-national-link"]')?.className,
+    ).toBeFalsy();
+    rerender(<RosterContents view={VIEW} national={{ label: null }} />);
+    const national = screen.getByRole("link", { name: /대표팀/ });
+    expect(national).toHaveTextContent("대표팀A매치 일정");
+    expect(national.className).toContain("border-t");
+  });
 });

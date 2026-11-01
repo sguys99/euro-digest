@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { DataSourceNote } from "@/components/data-source";
 import {
@@ -6,12 +7,17 @@ import {
   RosterTable,
 } from "@/components/korean-players/roster";
 import { AppShell } from "@/components/shell/app-shell";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { RunningHead } from "@/components/ui/section-head";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadRosterSource, loadRosterView } from "@/lib/data/korean-players";
+import { loadNationalTeamConfig } from "@/lib/data/national-team";
+import { listWeeklyWeeks } from "@/lib/data/weekly-report";
+import { latestSquad, squadLabel } from "@/lib/national-team-view";
 import { routes } from "@/lib/paths";
 import { koreanPlayersDescription, pageMetadata } from "@/lib/seo";
 import { formatKst } from "@/lib/time";
+import { weekName } from "@/lib/weekly-report-view";
 
 /*
  * `/korean-players/` 한국 선수 목록 (PRD FR-61·FR-64·FR-65, DESIGN §9.3 "D2 — 한국 선수·이적·마이 팀 화면" 선수 명단 행, DECISIONS D2 §4 A,
@@ -38,12 +44,21 @@ export default function KoreanPlayersPage() {
   const view = loadRosterView();
   const { issue } = loadLatestIssue();
   const source = loadRosterSource(view);
+  // 주간 리포트 진입(M3-12) — 1024 이상 목차 행 · 1023 이하 머리 아래 한 줄. 최신 주차가 없으면 색인(빈 상태)으로
+  const latestWeek = listWeeklyWeeks().at(-1) ?? null;
+  const weekly = { latest: latestWeek ? weekName(latestWeek).short : null };
+  // 대표팀 진입(M3-13) — 같은 두 자리. `/national-team/`은 설정 유무와 관계없이 늘 생긴다 — 값은 최신 소집 명단 이름(없으면 null)
+  const config = loadNationalTeamConfig();
+  const squad = config ? latestSquad(config) : null;
+  const national = { label: squad ? squadLabel(squad) : null };
   return (
     <AppShell
       current="korean"
       issue={issue}
       contents={
-        view.groups.length > 0 ? <RosterContents view={view} /> : undefined
+        view.groups.length > 0 ? (
+          <RosterContents view={view} weekly={weekly} national={national} />
+        ) : undefined
       }
       contentsLabel="한국 선수 목차"
     >
@@ -80,6 +95,32 @@ export default function KoreanPlayersPage() {
               ) : null}
             </p>
           ) : null}
+          <p className="flex flex-wrap gap-x-5 lg:hidden">
+            <Link
+              href={routes.weeklyReport()}
+              data-slot="korean-players-weekly-link"
+              className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-sm font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2"
+            >
+              주간 리포트
+              {weekly.latest ? (
+                <span className="font-numeric tabular-nums">
+                  {weekly.latest}
+                </span>
+              ) : null}
+              <ChevronRightIcon size={16} />
+            </Link>
+            <Link
+              href={routes.nationalTeam()}
+              data-slot="korean-players-national-link"
+              className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-sm font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2"
+            >
+              대표팀
+              {national.label ? (
+                <span className="font-normal">{national.label}</span>
+              ) : null}
+              <ChevronRightIcon size={16} />
+            </Link>
+          </p>
         </header>
         {view.groups.length > 0 ? (
           <RosterTable view={view} headingId={HEADING_ID} />

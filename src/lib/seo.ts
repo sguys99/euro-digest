@@ -37,6 +37,10 @@ export const SITE_DESCRIPTION = `${SITE_TAGLINE} 전날 경기를 정리한 한�
 export const TONIGHT_DESCRIPTION =
   "오늘 저녁부터 다음 날 아침까지(KST) 유럽 6개 대회 경기 가운데 한국 선수 소속팀·UCL·순위 경쟁·더비 기준으로 고른 볼 만한 경기와 선정 이유.";
 
+/** `/national-team/` 설명(M3-13) — 화면에 실린 것만(상대 · 스코어 없음 — 결과 노출 0) */
+export const NATIONAL_TEAM_DESCRIPTION =
+  "한국 축구 대표팀의 A매치 일정과 결과(한국 시간), 소집된 등록 한국 선수, 대표팀 소식과 주요국 A매치 뉴스를 원문 링크와 함께 한 화면에 모았습니다.";
+
 /** og:locale */
 export const OG_LOCALE = "ko_KR";
 
@@ -233,6 +237,19 @@ export function koreanPlayerDescription(
 }
 
 /**
+ * 한국 선수 주간 리포트 한 주 설명(M3-12) — 주차 · 기간(경기일 기준)과 실린 것 · 데이터 출처만(MVP 이름 · 출전 · 결과 수치는 넣지 않는다 —
+ * 다른 한국 선수 화면 설명과 같은 이유).
+ * 예) "2026년 43주(10.19 (월) ~ 10.25 (일) 경기일 기준) 유럽 리그 한국 선수의 출전 · 분 · 골 · 도움과 이번 주 MVP(골×3 + 도움×2 + 출전), 총평을 한 장에 모았습니다. 데이터 API-Football."
+ */
+export function weeklyReportDescription(week: string, range: string): string {
+  return `${week}(${range} 경기일 기준) 유럽 리그 한국 선수의 출전·분·골·도움과 이번 주 MVP(골×3 + 도움×2 + 출전), 총평을 한 장에 모았습니다. 데이터 API-Football.`;
+}
+
+/** 주간 리포트 색인 설명(M3-12) — 발행 주기 · 실린 것만 */
+export const WEEKLY_INDEX_DESCRIPTION =
+  "매주 월요일 아침, 지난 월~일 경기일 기준으로 유럽 리그 한국 선수의 출전·분·골·도움과 이번 주 MVP, 총평을 정리한 주간 리포트 모음입니다. 데이터 API-Football.";
+
+/**
  * 팀 페이지 설명(M2-13) — 팀명·리그·시즌과 페이지에 실린 것·데이터 출처만. 순위·스코어는 넣지 않는다(결과 노출 0 — 대회 페이지와 같은 이유).
  * 예) "바이에른 뮌헨(분데스리가) 2026-27 시즌 순위와 최근 경기, 일정과 결과(한국 시간), 주 포메이션과 팀시트, 득점 상위 선수, 관련 소식을 한 화면에 모았습니다. 데이터 football-data.org · API-Football."
  */
@@ -257,6 +274,8 @@ export interface SitemapTeam {
 export interface SitemapKoreanPlayers {
   updatedAt: string | null;
   players?: readonly string[];
+  /** 주간 리포트(M3-12) — 발행된 주차와 그 파일 generatedAt. 주면 색인(`/korean-players/weekly/`)도 싣는다(lastModified = 최신 주) */
+  weekly?: ReadonlyArray<{ week: string; generatedAt: string }>;
 }
 
 /** sitemap 대회 페이지 — 대회 ID와 그 데이터 파일의 updatedAt(API에서 마지막으로 받은 시각, UTC ISO) */
@@ -271,12 +290,32 @@ export interface SitemapIssue {
   generatedAt: string;
 }
 
+/** 주간 리포트 항목(M3-12) — 색인(늘, lastModified = 최신 주 파일 generatedAt) + 발행된 주(오름차순). weekly가 없으면 없다 */
+function weeklyEntries(
+  weekly: SitemapKoreanPlayers["weekly"],
+): MetadataRoute.Sitemap {
+  if (!weekly) return [];
+  const sorted = [...weekly].sort((a, b) => a.week.localeCompare(b.week));
+  const latest = sorted.at(-1);
+  return [
+    {
+      url: absoluteUrl(routes.weeklyReport()),
+      ...(latest ? { lastModified: latest.generatedAt } : {}),
+    },
+    ...sorted.map((w) => ({
+      url: absoluteUrl(routes.weeklyReportArchive(w.week)),
+      lastModified: w.generatedAt,
+    })),
+  ];
+}
+
 /**
  * sitemap.xml 항목 — 색인할 페이지의 canonical 절대 URL만(PRD FR-124).
  * - 홈(`lastModified` = 최신 호 generatedAt — 홈은 최신 호를 싣는다), `/about/`(lastModified 없음 — 설정이 바뀔 때만 바뀐다),
  *   `/tonight/`(M2-14 — 발행 빌드마다 다시 고르므로 홈과 같은 lastModified),
  *   대회 페이지(M2-10 — 데이터 파일이 있는 대회, 설정 순서, `lastModified` = 그 파일 updatedAt), 팀 페이지(M2-13 — 팀 파일이 있는 팀,
- *   slug 순, `lastModified` = 대표 대회 데이터 updatedAt), 한국 선수 목록(M3-09)·상세(M3-10 — 설정 순서, `lastModified` = 현황 파일 generatedAt), 발행된 날짜 아카이브 전부
+ *   slug 순, `lastModified` = 대표 대회 데이터 updatedAt), 한국 선수 목록(M3-09)·상세(M3-10 — 설정 순서, `lastModified` = 현황 파일 generatedAt),
+ *   주간 리포트 색인·발행된 주(M3-12 — 주 오름차순), 대표팀(M3-13 — `lastModified` = 최신 호), 발행된 날짜 아카이브 전부
  *   (`lastModified` = 그 호 generatedAt, 날짜 오름차순).
  * - `/news/`는 넣지 않는다 — 최신 날짜 페이지의 별칭(canonical이 그 날짜 페이지). 404·견본도 없다.
  * - 새 라우트(M2 대회·팀 등)를 만들면 여기에 넣는다 — e2e `tests/e2e/seo.spec.ts`가 out/의 색인 대상 페이지가 모두 sitemap에 있는지
@@ -287,6 +326,8 @@ export function sitemapEntries(
   competitions: readonly SitemapCompetition[] = [],
   teams: readonly SitemapTeam[] = [],
   koreanPlayers: SitemapKoreanPlayers | null = null,
+  /** 대표팀 화면(M3-13) — 늘 생기는 페이지라 있으면 싣는다(lastModified = 최신 호 — 대표팀 소식이 호마다 바뀐다) */
+  nationalTeam: boolean = false,
 ): MetadataRoute.Sitemap {
   const sorted = [...issues].sort((a, b) => a.date.localeCompare(b.date));
   const latest = sorted.at(-1);
@@ -320,6 +361,17 @@ export function sitemapEntries(
             ? { lastModified: koreanPlayers.updatedAt }
             : {}),
         }))
+      : []),
+    // 주간 리포트(M3-12) — 색인 + 발행된 주(오름차순). 색인 lastModified = 최신 주 파일 generatedAt
+    ...weeklyEntries(koreanPlayers?.weekly),
+    // 대표팀(M3-13) — 일정 · 소집 명단 · 대표팀 소식(최근 30일) · 주요국 A매치 뉴스(최신 호)
+    ...(nationalTeam
+      ? [
+          {
+            url: absoluteUrl(routes.nationalTeam()),
+            ...(latest ? { lastModified: latest.generatedAt } : {}),
+          },
+        ]
       : []),
     ...sorted.map((issue) => ({
       url: absoluteUrl(routes.newsArchive(issue.date)),

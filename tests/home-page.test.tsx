@@ -17,6 +17,8 @@ import { issueLateWindows } from "@/lib/issue";
 import { issueLateScript } from "@/lib/issue-late";
 import type { TonightWidget } from "@/lib/data/home-widgets";
 import type { LeagueMiniPanelView } from "@/lib/home-widgets";
+import type { NationalHomeData } from "@/lib/data/national-page";
+import { nationalMatchRows } from "@/lib/national-team-view";
 
 // 홈은 빌드 때 data/news의 최신 호를 읽는다. 저장소 data/는 파이프라인 실행에 따라 바뀌므로 로더를 바꿔 끼운다
 // (로더 자체는 tests/data-news.test.ts).
@@ -48,6 +50,15 @@ vi.mock("@/lib/data/home-widgets", () => ({
     updatedAt: "2026-10-09T22:15:00Z",
     stale: false,
   }),
+}));
+// 홈 A매치 섹션(M3-13 — FR-71) — 빌드 시각이 A매치 기간일 때만. 저장소 설정·오늘 날짜 대신 테스트가 정한 값(기본: 기간 밖 → 숨김).
+// 판정·구성은 tests/national-team-page.test.tsx
+const { loadNationalHome } = vi.hoisted(() => ({
+  loadNationalHome: vi.fn<(now: Date) => NationalHomeData | null>(() => null),
+}));
+vi.mock("@/lib/data/national-page", () => ({
+  loadNationalHome,
+  nationalNewsTags: () => () => [],
 }));
 function slotFromBrief(date: string): BriefSlot {
   const brief = loadBrief(date);
@@ -88,6 +99,8 @@ beforeEach(() => {
   });
   loadLeagueMini.mockReset();
   loadLeagueMini.mockReturnValue([]);
+  loadNationalHome.mockReset();
+  loadNationalHome.mockReturnValue(null);
 });
 
 describe("HomePage", () => {
@@ -323,6 +336,49 @@ describe("HomePage — 오늘의 5줄(M1-32, PRD §4.2·D2·FR-35)", () => {
     expect(news).toHaveAttribute("id", "news");
     expect(news.className).toContain("mt-9");
     expect(news.className).toContain("lg:mt-11");
+  });
+
+  it("A매치 기간(M3-13 — FR-71)이면 5줄 바로 아래 A매치 섹션, 기간 밖이면 없다", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadBrief.mockReturnValue({ ...briefFixture, date: fixture.date });
+    const { unmount } = render(<HomePage />);
+    expect(screen.queryByRole("region", { name: "A매치" })).toBeNull();
+    unmount();
+    loadNationalHome.mockReturnValue({
+      window: {
+        from: "2026-11-10",
+        to: "2026-11-20",
+        matchIds: ["2026-11-13-saudi-arabia"],
+      },
+      rows: nationalMatchRows(
+        [
+          {
+            id: "2026-11-13-saudi-arabia",
+            kickoff: "2026-11-13T14:30:00.000Z",
+            kickoffTbd: false,
+            opponent: "사우디아라비아",
+            home: false,
+            venue: "도하 (카타르)",
+            competition: "친선경기",
+            status: "scheduled",
+            result: null,
+          },
+        ],
+        Date.parse("2026-11-12T00:00:00Z"),
+      ),
+      squad: null,
+      news: { items: [], total: 0 },
+    });
+    render(<HomePage />);
+    const headings = screen
+      .getAllByRole("heading", { level: 2 })
+      .map((h) => h.textContent);
+    expect(headings.slice(0, 3)).toEqual(["오늘의 5줄", "A매치", "주요 뉴스"]);
+    const section = screen.getByRole("region", { name: "A매치" });
+    expect(section.className).toContain("mt-9");
+    expect(
+      screen.getByRole("region", { name: "주요 뉴스" }).className,
+    ).toContain("mt-9");
   });
 
   it("FR-35 — 5줄의 ai:true 줄에만 'AI 작성' 라벨, 뉴스 카드에는 없음", () => {

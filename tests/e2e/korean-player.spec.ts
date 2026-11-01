@@ -65,22 +65,23 @@ test.describe("선수 상세 — 구성", () => {
       );
       // 팔로우 버튼(M4-08)은 없다
       await expect(page.locator("[aria-pressed]")).toHaveCount(0);
-      // DOM 순서 = 1279 이하 순서
+      // DOM 순서 = 1279 이하 순서(2026-11-01 사용자 결정 — 다음 경기 → 이적설 → 대표팀 → 관련 뉴스, DECISIONS D2 §8 #20)
       const order = await page
         .locator('[data-slot="player-page"] [data-slot^="player-"]')
         .evaluateAll((els) =>
           els
             .map((e) => e.getAttribute("data-slot"))
-            .filter((s) => s !== "player-ticket-tail"),
+            // 꼬리표 · 옆단 묶음(1280 grid용 감싸개)은 구역이 아니다
+            .filter((s) => s !== "player-ticket-tail" && s !== "player-side"),
         );
       const want = [
         "player-ticket",
         "player-season",
         "player-log",
         "player-next",
-        "player-news",
         "player-transfers",
         "player-national",
+        "player-news",
       ];
       expect(order).toEqual(want.filter((s) => order.includes(s)));
       if (view.state === "linked") {
@@ -144,6 +145,36 @@ test.describe("선수 상세 — 폭별 배치 · 가로 넘침 · 접근성", (
           if (width >= 1280)
             expect(box!.x).toBeGreaterThan(ticket!.x + ticket!.width);
           else expect(box!.y).toBeGreaterThan(ticket!.y + ticket!.height);
+        }
+        if (width >= 1280) {
+          // 옆단 세 구역(다음 경기 · 이적설 · 대표팀)은 빈틈 없이 붙어 쌓인다 — 앞 구역 끝 + 44px(mt-11) = 다음 구역 머리
+          const side = await page
+            .locator('[data-slot="player-side"] > section')
+            .evaluateAll((els) =>
+              els.map((e) => {
+                const r = e.getBoundingClientRect();
+                return { top: r.top, bottom: r.bottom };
+              }),
+            );
+          for (let i = 1; i < side.length; i++) {
+            expect(
+              Math.abs(side[i]!.top - side[i - 1]!.bottom - 44),
+            ).toBeLessThan(1.5);
+          }
+          // 지면 열도 옆단 높이에 끌려 벌어지지 않는다 — 머리 묶음 끝 + 44px = 관련 뉴스 머리(옆단이 더 길어도)
+          const gap = await page.evaluate(() => {
+            const news = document.querySelector('[data-slot="player-news"]')!;
+            const head = news.parentElement!.previousElementSibling!;
+            const main =
+              head.getAttribute("data-slot") === "player-side"
+                ? head.previousElementSibling!
+                : head;
+            return (
+              news.getBoundingClientRect().top -
+              main.getBoundingClientRect().bottom
+            );
+          });
+          expect(Math.abs(gap - 44)).toBeLessThan(1.5);
         }
         const cells = page.locator('[data-slot="player-ticket-tail"] > div');
         if ((await cells.count()) > 1) {

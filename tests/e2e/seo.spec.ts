@@ -6,6 +6,7 @@ import { expect, test } from "@playwright/test";
 import { decodeHtmlEntities, parseTags } from "../../scripts/lib/site-refs";
 import { listNewsDates, loadNewsIssue } from "../../src/lib/data/news";
 import { listKoreanPlayerSlugs } from "../../src/lib/data/player-page";
+import { listWeeklyWeeks } from "../../src/lib/data/weekly-report";
 import { SITE_NAME } from "../../src/lib/site";
 import { basePath, outDir, siteOrigins, sitePages } from "./support/site";
 
@@ -22,6 +23,8 @@ const DATES = listNewsDates();
 const LATEST = DATES.at(-1);
 // 한국 선수 상세(M3-10) — 설정의 선수 전원(설정 순서)
 const PLAYER_SLUGS = listKoreanPlayerSlugs();
+// 주간 리포트(M3-12) — 색인은 늘, 주 페이지는 발행된 주(오름차순)
+const WEEKS = listWeeklyWeeks();
 /** 스코어 모양 — 숫자 사이의 하이픈·대시·쌍점·"대"(구현과 따로 둔 검사식) */
 const SCORE_RE = /\d\s*[-–—:]\s*\d|\d\s*대\s*\d/;
 /** 시즌 표기 "2026-27"(이어지는 해만 — M2-10 대회 페이지 제목)은 스코어가 아니다 — 검사 전에 지운다 */
@@ -113,7 +116,7 @@ test("빌드 결과 — out/sitemap.xml이 있고 robots.txt는 없다(M5 결정
   expect(existsSync(path.join(outDir, "robots.txt"))).toBe(false);
 });
 
-test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 한국 선수 목록(M3-09)·상세(M3-10) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
+test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 한국 선수 목록(M3-09)·상세(M3-10)·주간 리포트(M3-12) · 대표팀(M3-13) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
   const entries = readSitemap();
   const locs = entries.map((e) => e.loc);
   expect(locs).toEqual([
@@ -124,6 +127,10 @@ test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-
     ...TEAM_SLUGS.map((t) => `${SITE}/teams/${t}/`),
     `${SITE}/korean-players/`,
     ...PLAYER_SLUGS.map((p) => `${SITE}/korean-players/${p}/`),
+    `${SITE}/korean-players/weekly/`,
+    ...WEEKS.map((w) => `${SITE}/korean-players/weekly/${w}/`),
+    // 대표팀(M3-13)
+    `${SITE}/national-team/`,
     ...DATES.map((date) => `${SITE}/news/${date}/`),
   ]);
   expect(locs).not.toContain(`${SITE}/news/`);

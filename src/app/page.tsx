@@ -4,6 +4,7 @@ import { BriefMissing, TodayBrief } from "@/components/brief/today-brief";
 import { DataSourceNote } from "@/components/data-source";
 import { KoreanLastNight } from "@/components/home/korean-last-night";
 import { LeagueMini } from "@/components/home/league-mini";
+import { NationalHome } from "@/components/national-team/national-team";
 import { TonightSection } from "@/components/home/tonight";
 import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
@@ -18,6 +19,7 @@ import { loadLatestIssue } from "@/lib/data/issue";
 import { loadLastNight } from "@/lib/data/korean-players";
 import { loadKoreanPlayers } from "@/lib/data/team-page";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
+import { loadNationalHome, nationalNewsTags } from "@/lib/data/national-page";
 import { issueLateWindows, issueNumber } from "@/lib/issue";
 import { routes } from "@/lib/paths";
 import { pageMetadata, SITE_DESCRIPTION } from "@/lib/seo";
@@ -39,6 +41,9 @@ import { cn } from "@/lib/utils";
  *      하나(FR-45 — src/components/data-source.tsx, 갱신 시각 = 6개 대회 파일 중 가장 오래된 것, M2-16).
  *   4. 어젯밤 한국 선수(M3-11 — FR-58, DESIGN §9.3 D2 홈 위젯): 오늘의 5줄과 같은 경기일(발행일 − 1 UTC 하루)에 경기가 있던 등록 선수만,
  *      없으면 숨김. 1279 이하는 5줄 바로 아래(D0 #16), 1280 이상은 마주 보는 면 오늘 밤 다음(→ 순위). 같은 위젯을 두 번 그리고 `display`로 고른다.
+ *   5. A매치(M3-13 — FR-71, DESIGN §9.3 D2 홈 위젯 A매치, PRD §4.2 순서 3): 빌드 시각의 KST 날짜가 A매치 기간(경기일 ±3일 —
+ *      src/lib/national-team.ts)일 때만 — 그 기간 경기 · 소집 선수 · 대표팀 뉴스 행 3장. 위치는 모든 폭에서 지면 안 5줄 바로 아래(혼합안 화면 5 —
+ *      내 팀 소식(M4) 다음 · 한국 선수 앞). 기간이 아니면 그리지 않는다(자리 없음). 매일 아침 발행 빌드가 판정을 다시 굳힌다.
  * 그 밖의 홈 섹션(이적)은 해당 단계에서 싣는다(미완성 섹션 숨김, plan §2.3 — 자리를 그리지 않는다). 1024~1279는 목차 + 지면 2단,
  * 1280 이상은 목차 + 지면(688) + 마주 보는 면(296) 3단이다(DESIGN §4.3).
  */
@@ -60,6 +65,8 @@ export default function HomePage() {
   const league = loadLeagueMini();
   const source = loadWidgetsSource();
   const lastNight = loadLastNight(issue?.date ?? null);
+  const national = loadNationalHome(new Date());
+  const hasBrief = slot !== null && slot.kind !== "none";
   const korean = (where: "flow" | "facing", className: string) =>
     lastNight ? (
       <KoreanLastNight
@@ -106,10 +113,19 @@ export default function HomePage() {
     >
       {slot?.kind === "brief" ? <TodayBrief brief={slot.brief} /> : null}
       {slot?.kind === "missing" ? <BriefMissing /> : null}
+      {/* A매치 기간에만(FR-71) — 모든 폭에서 5줄 바로 아래(PRD §4.2 순서 3) */}
+      {national ? (
+        <NationalHome
+          data={national}
+          headingId="home-national-h"
+          tagsOf={nationalNewsTags()}
+          className={hasBrief ? "mt-9 lg:mt-11" : undefined}
+        />
+      ) : null}
       {/* 1279 이하 — 5줄 바로 아래 어젯밤 한국 선수(D0 #16 흐름 5줄 → 한국 선수 → 피드, M3-11). 1280 이상은 마주 보는 면 */}
       {lastNight ? (
         <div data-slot="home-korean-flow" className="xl:hidden">
-          {korean("flow", slot && slot.kind !== "none" ? "mt-9 lg:mt-11" : "")}
+          {korean("flow", hasBrief || national ? "mt-9 lg:mt-11" : "")}
         </div>
       ) : null}
       <NewsSection
@@ -122,9 +138,9 @@ export default function HomePage() {
         titleAs="h3"
         className={cn(
           "scroll-mt-4",
-          ((slot && slot.kind !== "none") || lastNight) && "mt-9 lg:mt-11",
-          // 1280 이상은 한국 선수 위젯이 마주 보는 면에 있어 5줄 바로 아래가 피드다(5줄이 없으면 위 여백 없음)
-          lastNight && !(slot && slot.kind !== "none") && "xl:mt-0",
+          (hasBrief || national || lastNight) && "mt-9 lg:mt-11",
+          // 1280 이상은 한국 선수 위젯이 마주 보는 면에 있어 5줄 · A매치 바로 아래가 피드다(둘 다 없으면 위 여백 없음)
+          lastNight && !(hasBrief || national) && "xl:mt-0",
         )}
       />
       {/* 1279 이하 — 지면 안 피드 다음(1280 이상은 마주 보는 면) */}

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { FormChip } from "@/components/competition/marks";
 import { Leader } from "@/components/about/leader";
 import { TeamBadge } from "@/components/team/team-badge";
@@ -9,6 +11,7 @@ import type {
   RosterView,
 } from "@/lib/korean-players-view";
 import { cx } from "@/lib/cx";
+import { routes } from "@/lib/paths";
 import { formatKst } from "@/lib/time";
 
 import {
@@ -526,8 +529,22 @@ function RosterLegend() {
   );
 }
 
-/** 1024 이상 왼쪽 목차 — 리그별 구간 앵커(평탄 탭 + 리그명 + 리더 점선 + 인원) + 집계 시작 안내 */
-export function RosterContents({ view }: { view: RosterView }) {
+/**
+ * 1024 이상 왼쪽 목차 — 리그별 구간 앵커(평탄 탭 + 리그명 + 리더 점선 + 인원) + 집계 시작 안내 + (주면) 아래 떨어진 묶음에
+ * '주간 리포트' 행(M3-12 — 최신 주차, 색인 페이지로) · '대표팀' 행(M3-13 — 최신 소집 명단 이름, `/national-team/`로).
+ * 이적 행은 페이지(M4-04) 전이라 넣지 않는다(DECISIONS D2 §8 #10).
+ */
+export function RosterContents({
+  view,
+  weekly = null,
+  national = null,
+}: {
+  view: RosterView;
+  /** 최신 주간 리포트 주차 이름("W43") — 없으면 null(행 대신 '월요일 발행' 글자) */
+  weekly?: { latest: string | null } | null;
+  /** 최신 소집 명단 이름("11월 소집") — 없으면 null(값 대신 'A매치 일정' 글자) */
+  national?: { label: string | null } | null;
+}) {
   return (
     <>
       <SectionHead heading="리그별" headingAs="p" runningHead="INDEX" />
@@ -568,6 +585,53 @@ export function RosterContents({ view }: { view: RosterView }) {
         <p className="mt-3 text-[12.5px] leading-normal text-ink-2">
           {view.sinceLabel} — 그 전 경기는 기록에 없어요
         </p>
+      ) : null}
+      {weekly ? (
+        <ul role="list" data-slot="roster-weekly-link" className="mt-4.5">
+          <li>
+            <Link
+              href={routes.weeklyReport()}
+              className="group/row flex min-h-11 items-center gap-2 border-t border-b border-rule text-sm text-ink no-underline"
+            >
+              <span className="min-w-0 font-extrabold underline-offset-3 group-hover/row:underline">
+                주간 리포트
+              </span>
+              <Leader />
+              <span className="font-numeric text-[17px] leading-none font-semibold text-ink-2 tabular-nums">
+                {weekly.latest ?? (
+                  <span className="font-sans text-[12.5px] font-normal">
+                    월요일 발행
+                  </span>
+                )}
+              </span>
+            </Link>
+          </li>
+        </ul>
+      ) : null}
+      {national ? (
+        <ul
+          role="list"
+          data-slot="roster-national-link"
+          className={weekly ? undefined : "mt-4.5"}
+        >
+          <li>
+            <Link
+              href={routes.nationalTeam()}
+              className={cx(
+                "group/row flex min-h-11 items-center gap-2 border-b border-rule text-sm text-ink no-underline",
+                !weekly && "border-t",
+              )}
+            >
+              <span className="min-w-0 font-extrabold underline-offset-3 group-hover/row:underline">
+                대표팀
+              </span>
+              <Leader />
+              <span className="text-[12.5px] leading-none text-ink-2">
+                {national.label ?? "A매치 일정"}
+              </span>
+            </Link>
+          </li>
+        </ul>
       ) : null}
     </>
   );

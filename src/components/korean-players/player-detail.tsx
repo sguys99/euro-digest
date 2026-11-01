@@ -1,17 +1,13 @@
 import Link from "next/link";
 
 import { NewsFeed } from "@/components/news-feed";
-import { TransferStage } from "@/components/news/feed-card";
+import { NewsRows } from "@/components/news/news-row";
 import { TeamBadge } from "@/components/team/team-badge";
 import { Leader } from "@/components/about/leader";
-import { CardTitle } from "@/components/ui/card";
-import { StampChip } from "@/components/ui/chip";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { SectionHead } from "@/components/ui/section-head";
 import { issueNumber } from "@/lib/issue";
 import type { RosterView } from "@/lib/korean-players-view";
-import { CATEGORY_LABEL } from "@/lib/news/labels";
-import { sourceNameLang } from "@/lib/news/feed-view";
 import { routes } from "@/lib/paths";
 import type {
   FixtureRowView,
@@ -40,6 +36,10 @@ import { Perforation } from "./ticket-parts";
  */
 
 const SUB = "mt-0.75 text-[13px] leading-normal text-ink-2";
+
+/** 구역 끝 텍스트 링크 — 홈 위젯 링크와 같은 모양(13px 800 `--brand-accent-text` 밑줄, 누름 영역 44px) */
+const TEXT_LINK =
+  "inline-flex min-h-11 items-center gap-1 text-[13px] font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2";
 
 // ─── 시즌 기록 표 ───────────────────────────────────────────────────────────
 
@@ -601,91 +601,7 @@ export function RelatedNews({
   );
 }
 
-// ─── 옆단 뉴스 행(이적설 · 대표팀 소식) ─────────────────────────────────────
-
-/**
- * 뉴스 행(A) — `[날짜 거터 │ 본문]`: 대표 출처 날짜(KST) · 분류 도장 · (코드가 판정한 이적 단계 + Tier) · 원제목(원문 링크, 새 창) · 출처명 + 시각.
- * 카드 그대로(원제목 · 출처명 · 원문 링크 — D23). 같은 카드가 관련 뉴스 피드에 나오지 않으므로 카드 ID 앵커는 두지 않는다.
- */
-function NewsRow({
-  item,
-  idPrefix,
-}: {
-  item: PlayerNewsItem;
-  idPrefix: string;
-}) {
-  const { card } = item;
-  const lead = card.src[0]!;
-  const titleId = `${idPrefix}-${card.id}-t`;
-  return (
-    <li className="grid grid-cols-[var(--gutter-date)_minmax(0,1fr)] gap-x-2.5 border-b border-rule pt-3.25 pb-3 lg:gap-x-3.5 xl:grid-cols-[48px_minmax(0,1fr)] xl:gap-x-2.5">
-      <time
-        dateTime={lead.at}
-        className="pt-0.75 font-numeric text-sm leading-none font-semibold tracking-[0.04em] text-ink-2 tabular-nums"
-      >
-        {formatKst(lead.at, "monthDay")}
-      </time>
-      <div className="min-w-0">
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1.25 text-type-tag text-ink-2">
-          <StampChip>{CATEGORY_LABEL[card.cat]}</StampChip>
-        </p>
-        {card.transfer ? (
-          <TransferStage
-            status={card.transfer.status}
-            tier={card.transfer.tier}
-          />
-        ) : null}
-        <CardTitle
-          id={titleId}
-          as="h3"
-          href={lead.u}
-          lang={card.lang}
-          source={lead.n}
-          className={card.lang === "ko" ? "text-[15px]" : "text-lg"}
-        >
-          {card.t}
-        </CardTitle>
-        <p className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] leading-[1.3] text-ink-2">
-          <span
-            lang={sourceNameLang(lead.n, card.lang)}
-            className="font-extrabold text-ink"
-          >
-            {lead.n}
-          </span>
-          {card.src.length > 1 ? (
-            <span>
-              외 <span className="tabular-nums">{card.src.length - 1}</span>건
-            </span>
-          ) : null}
-          <time
-            dateTime={lead.at}
-            className="font-numeric text-[13.5px] font-semibold tracking-[0.02em] tabular-nums"
-          >
-            {formatKst(lead.at, "short")}
-          </time>
-        </p>
-      </div>
-    </li>
-  );
-}
-
-function SideNews({
-  items,
-  idPrefix,
-  label,
-}: {
-  items: readonly PlayerNewsItem[];
-  idPrefix: string;
-  label: string;
-}) {
-  return (
-    <ol aria-label={label} className="mt-2 border-t border-rule">
-      {items.map((item) => (
-        <NewsRow key={item.card.id} item={item} idPrefix={idPrefix} />
-      ))}
-    </ol>
-  );
-}
+// ─── 옆단 뉴스 행(이적설 · 대표팀 소식) — 뉴스 행은 src/components/news/news-row.tsx ─────────────
 
 /** 이적설 — 이 선수 태그 + 이적 분류 카드(원제목 그대로 — 루머는 보도 형식 그대로). 0건이면 페이지가 숨긴다 */
 export function TransferNews({
@@ -719,7 +635,7 @@ export function TransferNews({
           ? `최근 30일 ${total}건 중 ${items.length}건`
           : `${total}건`}
       </p>
-      <SideNews items={items} idPrefix="pd-tr" label="이적설 기사 — 최신순" />
+      <NewsRows items={items} idPrefix="pd-tr" label="이적설 기사 — 최신순" />
     </section>
   );
 }
@@ -795,13 +711,20 @@ export function NationalNews({
               ? `최근 30일 ${total}건 중 ${items.length}건`
               : `${total}건`}
           </p>
-          <SideNews
+          <NewsRows
             items={items}
             idPrefix="pd-nt"
             label="대표팀 소식 기사 — 최신순"
           />
         </>
       ) : null}
+      {/* 대표팀 화면(M3-13 — 일정 · 결과 · 소집 명단 · 대표팀 소식 모아 보기) */}
+      <p className="mt-1">
+        <Link href={routes.nationalTeam()} className={TEXT_LINK}>
+          대표팀 일정·소집 명단
+          <ChevronRightIcon size={16} />
+        </Link>
+      </p>
     </section>
   );
 }

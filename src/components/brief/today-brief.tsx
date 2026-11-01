@@ -319,7 +319,8 @@ const OFF_SEASON_TEXT = {
  * 비시즌 빈 상태(M1-37 — DESIGN §9.3 상태 화면 ② "평탄 탭 + 시즌명 + 종료일(실값만, Barlow 800 34px) + 안내", 혼합안 `.off`) — 경기 없는 날(S4)
  * 중 **모든 대회가 시즌 밖인 날**(src/lib/rest-period.ts `offSeasonFeature`) S4 자리를 바꾼다. 대회 하나: 개막 전인 대회가 있으면 가장 먼저
  * 개막하는 대회(개막일), 모두 끝났으면 가장 늦게 끝난 대회(종료일) — 날짜는 `configs/competitions.json` 값 그대로(만들어 내지 않는다).
- * A매치 휴식기 문구는 근거 파일(national-team.json — M3-05)이 없어 쓰지 않는다.
+ * A매치 기간은 홈 A매치 섹션(M3-13 — src/lib/national-team.ts 판정, 5줄 바로 아래)이 맡는다. 5줄 블록에는 A매치 휴식기 문구가 없고(D0 시안 ·
+ * DESIGN 상태 화면에 문구 없음) 새로 만들지 않는다 — 경기 없는 A매치 기간 아침은 S4 그대로.
  */
 function BriefOffSeason({
   feature,

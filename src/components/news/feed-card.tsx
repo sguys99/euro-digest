@@ -190,8 +190,8 @@ export function KoreanArmband({
 
 // ─── 태그 줄 ────────────────────────────────────────────────────────────────
 
-/** 한국어 태그(팀·선수) — 사이 1px --rule 세로선(좌우 7px), 한국 선수만 800 --ink. 넘치면 줄바꿈 */
-function TagList({ tags }: { tags: readonly CardTagView[] }) {
+/** 한국어 태그(팀·선수) — 사이 1px --rule 세로선(좌우 7px), 한국 선수만 800 --ink. 넘치면 줄바꿈. 뉴스 행(news-row.tsx)도 쓴다 */
+export function TagList({ tags }: { tags: readonly CardTagView[] }) {
   return (
     // list-style: none인 목록의 의미를 Safari가 지우지 않게 role="list"
     <ul role="list" aria-label="태그" className="flex flex-wrap gap-y-0.5">
