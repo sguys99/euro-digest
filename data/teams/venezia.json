@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-10-28T17:30:00.000Z"
+    "updated": "2026-11-01T11:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -31,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-5-2",
-    "match": "af-1550176",
-    "kickoff": "2026-10-28T17:30:00.000Z",
+    "match": "af-1550180",
+    "kickoff": "2026-11-01T11:30:00.000Z",
     "comp": "SERIEA",
-    "side": "home",
-    "opponent": "inter",
+    "side": "away",
+    "opponent": "como",
     "startXI": [
       {
         "name": "F. Stanković",
@@ -68,8 +68,8 @@
         "grid": "3:5"
       },
       {
-        "name": "Kike Pérez",
-        "number": 71,
+        "name": "Þ. Helgason",
+        "number": 21,
         "pos": "M",
         "grid": "3:4"
       },
@@ -80,8 +80,8 @@
         "grid": "3:3"
       },
       {
-        "name": "Þ. Helgason",
-        "number": 21,
+        "name": "G. Busio",
+        "number": 6,
         "pos": "M",
         "grid": "3:2"
       },
@@ -106,9 +106,15 @@
     ],
     "substitutes": [
       {
-        "name": "J. Yeboah",
-        "number": 10,
-        "pos": "F",
+        "name": "R. Sagrado",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Schingtienne",
+        "number": 3,
+        "pos": "D",
         "grid": null
       },
       {
@@ -124,38 +130,26 @@
         "grid": null
       },
       {
-        "name": "G. Busio",
-        "number": 6,
+        "name": "A. Rrahmani",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Kike Pérez",
+        "number": 71,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Dagasso",
-        "number": 30,
-        "pos": "M",
+        "name": "L. Montipò",
+        "number": 96,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "A. Duncan",
-        "number": 32,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Lamine Dabo",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Toni Fernández",
-        "number": 77,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "R. Haps",
-        "number": 5,
+        "name": "R. Mohammed",
+        "number": 16,
         "pos": "D",
         "grid": null
       },
@@ -166,27 +160,39 @@
         "grid": null
       },
       {
-        "name": "L. Montipò",
-        "number": 96,
-        "pos": "G",
+        "name": "R. Haps",
+        "number": 5,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Rrahmani",
-        "number": 7,
+        "name": "Toni Fernández",
+        "number": 77,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Lamine Dabo",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Duncan",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Yeboah",
+        "number": 10,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "R. Sagrado",
-        "number": 20,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Schingtienne",
-        "number": 3,
-        "pos": "D",
+        "name": "M. Dagasso",
+        "number": 30,
+        "pos": "M",
         "grid": null
       }
     ]

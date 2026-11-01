@@ -12,12 +12,12 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-25T16:15:00.000Z"
+    "updated": "2026-11-01T14:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Cameron Archer",
-      "goals": 5,
+      "goals": 6,
       "assists": null
     },
     {
@@ -31,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1552793",
-    "kickoff": "2026-10-25T16:15:00.000Z",
+    "match": "af-1552808",
+    "kickoff": "2026-11-01T14:00:00.000Z",
     "comp": "LIGUE1",
-    "side": "home",
-    "opponent": "le-mans",
+    "side": "away",
+    "opponent": "strasbourg",
     "startXI": [
       {
         "name": "P. Nardi",
@@ -106,21 +106,9 @@
     ],
     "substitutes": [
       {
-        "name": "Aristide Zossou",
-        "number": 77,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "M. Diop",
         "number": 23,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "S. Diomandé",
-        "number": 20,
-        "pos": "D",
         "grid": null
       },
       {
@@ -130,9 +118,9 @@
         "grid": null
       },
       {
-        "name": "P. Ekwah",
-        "number": 17,
-        "pos": "M",
+        "name": "S. Diomandé",
+        "number": 20,
+        "pos": "D",
         "grid": null
       },
       {
@@ -148,14 +136,26 @@
         "grid": null
       },
       {
-        "name": "E. Legros",
-        "number": 35,
+        "name": "A. Piedfort",
+        "number": 46,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Senaya",
+        "number": 29,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Piedfort",
-        "number": 46,
+        "name": "T. Siwe",
+        "number": 13,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Aristide Zossou",
+        "number": 77,
         "pos": "M",
         "grid": null
       }

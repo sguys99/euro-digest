@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-10-27T19:45:00.000Z"
+    "updated": "2026-11-01T14:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -36,11 +36,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-5-2",
-    "match": "af-1550175",
-    "kickoff": "2026-10-27T19:45:00.000Z",
+    "match": "af-1550181",
+    "kickoff": "2026-11-01T14:00:00.000Z",
     "comp": "SERIEA",
-    "side": "home",
-    "opponent": "como",
+    "side": "away",
+    "opponent": "frosinone",
     "startXI": [
       {
         "name": "Lucas Perri",
@@ -85,14 +85,14 @@
         "grid": "3:3"
       },
       {
-        "name": "K. Fitz-Jim",
-        "number": 28,
+        "name": "G. Gineitis",
+        "number": 66,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "A. Cacciamani",
-        "number": 77,
+        "name": "Z. Aboukhlal",
+        "number": 7,
         "pos": "M",
         "grid": "3:1"
       },
@@ -111,14 +111,14 @@
     ],
     "substitutes": [
       {
-        "name": "D. Mascardi",
-        "number": 26,
-        "pos": "G",
+        "name": "D. Zapata",
+        "number": 91,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "C. Biraghi",
-        "number": 3,
+        "name": "Manuel Carrascosa",
+        "number": 63,
         "pos": "D",
         "grid": null
       },
@@ -126,36 +126,6 @@
         "name": "C. Casadei",
         "number": 22,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "E. Cömert",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "G. Gineitis",
-        "number": 66,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "S. Kulenović",
-        "number": 17,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "E. İlkhan",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "D. Zapata",
-        "number": 91,
-        "pos": "F",
         "grid": null
       },
       {
@@ -183,9 +153,33 @@
         "grid": null
       },
       {
-        "name": "Z. Aboukhlal",
-        "number": 7,
+        "name": "D. Mascardi",
+        "number": 26,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "S. Kulenović",
+        "number": 17,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. İlkhan",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Fitz-Jim",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Cömert",
+        "number": 5,
+        "pos": "D",
         "grid": null
       }
     ]

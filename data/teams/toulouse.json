@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-25T16:15:00.000Z"
+    "updated": "2026-11-01T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -36,11 +36,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1552799",
-    "kickoff": "2026-10-25T16:15:00.000Z",
+    "match": "af-1552805",
+    "kickoff": "2026-11-01T19:45:00.000Z",
     "comp": "LIGUE1",
-    "side": "home",
-    "opponent": "troyes",
+    "side": "away",
+    "opponent": "marseille",
     "startXI": [
       {
         "name": "G. Restes",
@@ -49,8 +49,8 @@
         "grid": "1:1"
       },
       {
-        "name": "R. Messali",
-        "number": 22,
+        "name": "I. Diallo",
+        "number": 94,
         "pos": "D",
         "grid": "2:4"
       },
@@ -73,26 +73,26 @@
         "grid": "2:1"
       },
       {
-        "name": "A. Dønnum",
-        "number": 15,
+        "name": "T. Jørgensen",
+        "number": 8,
         "pos": "M",
         "grid": "3:4"
-      },
-      {
-        "name": "C. Cásseres",
-        "number": 23,
-        "pos": "M",
-        "grid": "3:3"
       },
       {
         "name": "N. Sigur",
         "number": 14,
         "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "C. Cásseres",
+        "number": 23,
+        "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "T. Jørgensen",
-        "number": 8,
+        "name": "A. Dønnum",
+        "number": 15,
         "pos": "M",
         "grid": "3:1"
       },
@@ -111,9 +111,15 @@
     ],
     "substitutes": [
       {
-        "name": "A. Vossah",
-        "number": 6,
-        "pos": "M",
+        "name": "S. Koumbassa",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Hidalgo",
+        "number": 9,
+        "pos": "F",
         "grid": null
       },
       {
@@ -135,26 +141,20 @@
         "grid": null
       },
       {
-        "name": "I. Diallo",
-        "number": 94,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "S. Hidalgo",
-        "number": 9,
+        "name": "S. Oppong",
+        "number": 11,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "S. Koumbassa",
-        "number": 5,
-        "pos": "D",
         "grid": null
       },
       {
         "name": "N. Schmidt",
         "number": 31,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Vossah",
+        "number": 6,
         "pos": "M",
         "grid": null
       },

@@ -9,26 +9,161 @@
     "#FFFFFF",
     "#2FAEE0"
   ],
-  "formation": null,
+  "formation": {
+    "shape": "4-1-4-1",
+    "source": "api",
+    "updated": "2026-11-01T19:45:00.000Z"
+  },
   "topPlayers": [
     {
       "name": "Amine Gouiri",
-      "goals": 5,
-      "assists": 2
+      "goals": 6,
+      "assists": 3
+    },
+    {
+      "name": "Amine Harit",
+      "goals": 3,
+      "assists": 1
     },
     {
       "name": "Himad Abdelli",
       "goals": 3,
       "assists": null
-    },
-    {
-      "name": "Amine Harit",
-      "goals": 2,
-      "assists": 1
     }
   ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-1-4-1",
+    "match": "af-1552805",
+    "kickoff": "2026-11-01T19:45:00.000Z",
+    "comp": "LIGUE1",
+    "side": "home",
+    "opponent": "toulouse",
+    "startXI": [
+      {
+        "name": "J. de Lange",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "T. Weah",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "C. Egan-Riley",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "N. Aguerd",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Emerson",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "P. Højbjerg",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "A. Harit",
+        "number": 77,
+        "pos": "M",
+        "grid": "4:4"
+      },
+      {
+        "name": "H. Abdelli",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "T. Nnadi",
+        "number": 6,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Igor Paixão",
+        "number": 14,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "A. Gouiri",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "T. Vermot",
+        "number": 92,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "K. Bezahaf",
+        "number": 74,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Gomes",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "U. Garcia",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Nouhoum Kamissoko",
+        "number": 42,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. Kondogbia",
+        "number": 19,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Meité",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Maupay",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Mmadi",
+        "number": 43,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }

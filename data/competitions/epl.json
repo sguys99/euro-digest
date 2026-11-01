@@ -2,10 +2,30 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-10-31T22:16:07.446Z",
+  "updatedAt": "2026-11-01T22:15:08.393Z",
   "standings": [
     {
       "pos": 1,
+      "prevPos": 2,
+      "team": "arsenal",
+      "played": 9,
+      "w": 8,
+      "d": 0,
+      "l": 1,
+      "gf": 14,
+      "ga": 5,
+      "pts": 24,
+      "form": [
+        "L",
+        "W",
+        "W",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
       "prevPos": 1,
       "team": "manchester-city",
       "played": 9,
@@ -21,26 +41,6 @@
         "W",
         "L",
         "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 2,
-      "prevPos": 2,
-      "team": "arsenal",
-      "played": 8,
-      "w": 7,
-      "d": 0,
-      "l": 1,
-      "gf": 13,
-      "ga": 5,
-      "pts": 21,
-      "form": [
-        "W",
-        "L",
-        "W",
-        "W",
-        "W"
       ],
       "zone": "none"
     },
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": 5,
+      "prevPos": 4,
       "team": "chelsea",
       "played": 9,
       "w": 5,
@@ -86,21 +86,21 @@
     },
     {
       "pos": 5,
-      "prevPos": 4,
+      "prevPos": 5,
       "team": "liverpool",
-      "played": 8,
+      "played": 9,
       "w": 4,
       "d": 3,
-      "l": 1,
+      "l": 2,
       "gf": 11,
-      "ga": 8,
+      "ga": 9,
       "pts": 15,
       "form": [
-        "D",
         "W",
         "L",
         "W",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "none"
     },
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 13,
+      "prevPos": 7,
       "team": "bournemouth",
       "played": 9,
       "w": 3,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 14,
+      "prevPos": 8,
       "team": "tottenham-hotspur",
       "played": 9,
       "w": 3,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 7,
+      "prevPos": 11,
       "team": "leeds-united",
       "played": 9,
       "w": 2,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 8,
+      "prevPos": 12,
       "team": "newcastle-united",
       "played": 8,
       "w": 3,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 12,
+      "prevPos": 13,
       "team": "ipswich-town",
       "played": 9,
       "w": 3,
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": 11,
+      "prevPos": 14,
       "team": "everton",
       "played": 8,
       "w": 2,
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": 19,
+      "prevPos": 16,
       "team": "coventry-city",
       "played": 9,
       "w": 3,
@@ -326,7 +326,7 @@
     },
     {
       "pos": 17,
-      "prevPos": 16,
+      "prevPos": 17,
       "team": "manchester-united",
       "played": 9,
       "w": 1,
@@ -346,7 +346,7 @@
     },
     {
       "pos": 18,
-      "prevPos": 17,
+      "prevPos": 18,
       "team": "crystal-palace",
       "played": 9,
       "w": 2,
@@ -366,7 +366,7 @@
     },
     {
       "pos": 19,
-      "prevPos": 18,
+      "prevPos": 19,
       "team": "nottingham-forest",
       "played": 9,
       "w": 1,
@@ -1557,8 +1557,11 @@
       "kickoff": "2026-11-01T16:30:00Z",
       "home": "liverpool",
       "away": "arsenal",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560622",
@@ -4656,7 +4659,7 @@
       "goals": 6,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Marcus Tavernier",
@@ -4711,6 +4714,14 @@
       "team": "bournemouth",
       "goals": 4,
       "assists": 4,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Kai Havertz",
+      "team": "arsenal",
+      "goals": 3,
+      "assists": null,
       "penalties": null,
       "played": 9
     },
@@ -4827,20 +4838,12 @@
       "played": 9
     },
     {
-      "player": "Kai Havertz",
-      "team": "arsenal",
-      "goals": 2,
-      "assists": null,
-      "penalties": null,
-      "played": 8
-    },
-    {
       "player": "Martin Ødegaard",
       "team": "arsenal",
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Emersonn",
@@ -4920,7 +4923,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Malick Yalcouyé",
@@ -4984,7 +4987,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Thiago",
@@ -5112,7 +5115,7 @@
       "goals": 1,
       "assists": 3,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Dominik Szoboszlai",
@@ -5120,7 +5123,7 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Gonzalo García",
@@ -5416,7 +5419,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Jaouen Hadjam",

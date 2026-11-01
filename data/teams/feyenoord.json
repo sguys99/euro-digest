@@ -18,5 +18,148 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1635636",
+    "kickoff": "2026-10-21T19:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "real-betis",
+    "startXI": [
+      {
+        "name": "T. Ernst",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "G. Read",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "J. St. Juste",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Mika Màrmol",
+        "number": 35,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Javi López",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "G. Zechiël",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "C. Vanhoutte",
+        "number": 34,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "O. Targhalline",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "A. Hadj-Moussa",
+        "number": 23,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "Nacho Ferri",
+        "number": 19,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "L. Valente",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "T. Wessels",
+        "number": 32,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Watanabe",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. van den Elshout",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Steijn",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Schaken",
+        "number": 57,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Kraaijeveld",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Kastenmeier",
+        "number": 33,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "G. Diarra",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Deijl",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Bossin",
+        "number": 39,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Gonçalo Borges",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }

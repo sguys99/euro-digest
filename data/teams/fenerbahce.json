@@ -18,5 +18,148 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1635661",
+    "kickoff": "2026-10-20T16:45:00.000Z",
+    "comp": "UCL",
+    "side": "home",
+    "opponent": "slavia-praha",
+    "startXI": [
+      {
+        "name": "Ederson",
+        "number": 31,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Nélson Semedo",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "M. Škriniar",
+        "number": 37,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "N. Aké",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "A. Brown",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "N. Kanté",
+        "number": 91,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "M. Guendouzi",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "O. Aydın",
+        "number": 70,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "M. Greenwood",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "K. Aktürkoğlu",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "V. Muriqi",
+        "number": 19,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "B. Elmaz",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Günok",
+        "number": 34,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "İ. Kahveci",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Lukaku",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Mercan",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. MimoviÄ",
+        "number": 77,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Dorgeles",
+        "number": 45,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "K. Peprah Oppong",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "İ. Yüksek",
+        "number": 5,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Çetin",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Y. Demir",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
 }

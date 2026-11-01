@@ -12,19 +12,25 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-24T16:30:00.000Z"
+    "updated": "2026-11-01T17:30:00.000Z"
   },
-  "topPlayers": [],
+  "topPlayers": [
+    {
+      "name": "Umar Sadiq",
+      "goals": 2,
+      "assists": null
+    }
+  ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1570432",
-    "kickoff": "2026-10-24T16:30:00.000Z",
+    "match": "af-1570437",
+    "kickoff": "2026-11-01T17:30:00.000Z",
     "comp": "LALIGA",
-    "side": "home",
-    "opponent": "villarreal",
+    "side": "away",
+    "opponent": "elche",
     "startXI": [
       {
         "name": "S. Dimitrievski",
@@ -33,55 +39,55 @@
         "grid": "1:1"
       },
       {
-        "name": "P. Maffeo",
-        "number": 24,
+        "name": "Arnau Martínez",
+        "number": 22,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "C. Tarrega",
+        "name": "César Tárrega",
         "number": 5,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "J. De Haas",
-        "number": 12,
+        "name": "Pepelu",
+        "number": 18,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "J. Gaya",
+        "name": "José Gayà",
         "number": 14,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "D. Otorbi",
-        "number": 27,
+        "name": "Pablo Maffeo",
+        "number": 24,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "G. Rodriguez",
-        "number": 2,
+        "name": "Aaron Mayol",
+        "number": 33,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "Pepelu",
-        "number": 18,
+        "name": "G. Rodríguez",
+        "number": 2,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "L. Rioja",
+        "name": "Luis Rioja",
         "number": 11,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "J. Guerra",
+        "name": "Javi Guerra",
         "number": 8,
         "pos": "F",
         "grid": "4:2"
@@ -95,9 +101,9 @@
     ],
     "substitutes": [
       {
-        "name": "K. van Oevelen",
-        "number": 25,
-        "pos": "G",
+        "name": "Aimar Blázquez",
+        "number": 37,
+        "pos": "F",
         "grid": null
       },
       {
@@ -107,26 +113,44 @@
         "grid": null
       },
       {
-        "name": "J. Vazquez",
-        "number": 21,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Martinez",
-        "number": 22,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Mayol",
-        "number": 33,
+        "name": "A. Dieng",
+        "number": 15,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "A. Dieng",
-        "number": 15,
+        "name": "Hugo Duro",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "D. Foulquier",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Dani Raba",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Cristian Rivero",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "U. Sadiq",
+        "number": 6,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Sato",
+        "number": 39,
         "pos": "M",
         "grid": null
       },
@@ -137,33 +161,15 @@
         "grid": null
       },
       {
-        "name": "H. Elliott",
-        "number": 10,
-        "pos": "M",
+        "name": "Jesús Vázquez",
+        "number": 21,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "R. Sato",
-        "number": 39,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "D. Raba",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "H. Duro",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "A. Blazquez",
-        "number": 37,
-        "pos": "F",
+        "name": "J. de Haas",
+        "number": 12,
+        "pos": "D",
         "grid": null
       }
     ]

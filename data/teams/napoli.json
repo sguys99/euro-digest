@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-28T19:45:00.000Z"
+    "updated": "2026-11-01T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -38,15 +38,15 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1550172",
-    "kickoff": "2026-10-28T19:45:00.000Z",
+    "match": "af-1550182",
+    "kickoff": "2026-11-01T19:45:00.000Z",
     "comp": "SERIEA",
     "side": "away",
-    "opponent": "monza",
+    "opponent": "juventus",
     "startXI": [
       {
-        "name": "V. Milinković-Savić",
-        "number": 32,
+        "name": "A. Meret",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
@@ -57,8 +57,8 @@
         "grid": "2:4"
       },
       {
-        "name": "Amir Rrahmani",
-        "number": 13,
+        "name": "Luca Marianucci",
+        "number": 35,
         "pos": "D",
         "grid": "2:3"
       },
@@ -75,14 +75,14 @@
         "grid": "2:1"
       },
       {
-        "name": "A. Zambo Anguissa",
-        "number": 99,
+        "name": "K. De Bruyne",
+        "number": 11,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "S. Lobotka",
-        "number": 68,
+        "name": "A. Zambo Anguissa",
+        "number": 99,
         "pos": "M",
         "grid": "3:2"
       },
@@ -99,8 +99,8 @@
         "grid": "4:3"
       },
       {
-        "name": "R. Højlund",
-        "number": 19,
+        "name": "L. Lucca",
+        "number": 20,
         "pos": "F",
         "grid": "4:2"
       },
@@ -113,38 +113,8 @@
     ],
     "substitutes": [
       {
-        "name": "A. Meret",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Luca Marianucci",
-        "number": 35,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "L. Lucca",
-        "number": 20,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Giovane",
-        "number": 23,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "B. Gilmour",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "K. De Bruyne",
-        "number": 11,
+        "name": "A. Vergara",
+        "number": 26,
         "pos": "M",
         "grid": null
       },
@@ -155,15 +125,63 @@
         "grid": null
       },
       {
+        "name": "B. Gilmour",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Giovane",
+        "number": 23,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Amir Rrahmani",
+        "number": 13,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "S. Beukema",
         "number": 31,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Vergara",
-        "number": 26,
+        "name": "D. Spinelli",
+        "number": 41,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "F. Barido",
+        "number": 18,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Chiummariello",
+        "number": 38,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "C. Lieto",
+        "number": 40,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Nikita Melnyk",
+        "number": 39,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Milton Agustín Pereyra",
+        "number": 36,
+        "pos": "F",
         "grid": null
       }
     ]

@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-02",
+  "generatedAt": "2026-11-01T22:14:50.675Z",
+  "runId": "collect-prod-20261101T221234Z-e780",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "아스널이 리버풀 원정에서 Kai Havertz의 16분 결승골로 1-0으로 이겼다.",
+      "ai": true,
+      "refs": [
+        "m560631"
+      ],
+      "comps": [
+        "EPL"
+      ]
+    },
+    {
+      "text": "라치오가 Andrea Pinamonti의 83분 결승골로 칼리아리를 2-1로 꺾었다.",
+      "ai": true,
+      "refs": [
+        "m558546"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "헤타페가 홈에서 세비야에 3-1 역전승을 거뒀다.",
+      "ai": true,
+      "refs": [
+        "m564733"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "레알 마드리드가 라싱 산탄데르를 3-0으로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m564734"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "아스널이 승점 24로 프리미어리그 선두다.",
+      "ai": true,
+      "refs": [
+        "sPL"
+      ],
+      "comps": [
+        "EPL"
+      ]
+    }
+  ]
+}

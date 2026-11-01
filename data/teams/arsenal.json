@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T14:00:00.000Z"
+    "updated": "2026-11-01T16:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -23,12 +23,12 @@
       "assists": null
     },
     {
-      "name": "Bruno Guimarães",
-      "goals": 2,
+      "name": "Kai Havertz",
+      "goals": 3,
       "assists": null
     },
     {
-      "name": "Kai Havertz",
+      "name": "Bruno Guimarães",
       "goals": 2,
       "assists": null
     }
@@ -44,11 +44,11 @@
   ],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557437",
-    "kickoff": "2026-10-24T14:00:00.000Z",
+    "match": "af-1557453",
+    "kickoff": "2026-11-01T16:30:00.000Z",
     "comp": "EPL",
-    "side": "home",
-    "opponent": "everton",
+    "side": "away",
+    "opponent": "liverpool",
     "startXI": [
       {
         "name": "David Raya",
@@ -57,13 +57,13 @@
         "grid": "1:1"
       },
       {
-        "name": "Ben White",
-        "number": 4,
+        "name": "J. Timber",
+        "number": 12,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Ezri Konsa",
+        "name": "E. Konsa",
         "number": 15,
         "pos": "D",
         "grid": "2:3"
@@ -75,67 +75,49 @@
         "grid": "2:2"
       },
       {
-        "name": "Myles Lewis-Skelly",
-        "number": 49,
+        "name": "R. Calafiori",
+        "number": 33,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Declan Rice",
+        "name": "D. Rice",
         "number": 41,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Mikel Merino",
-        "number": 23,
+        "name": "Bruno Guimarães",
+        "number": 39,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Noni Madueke",
+        "name": "N. Madueke",
         "number": 20,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "Martin Ødegaard",
+        "name": "M. Ødegaard",
         "number": 8,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Eberechi Eze",
-        "number": 10,
+        "name": "C. Tzolis",
+        "number": 17,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Viktor Gyökeres",
-        "number": 14,
+        "name": "K. Havertz",
+        "number": 29,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
-      {
-        "name": "Riccardo Calafiori",
-        "number": 33,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Bruno Guimarães",
-        "number": 39,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Kai Havertz",
-        "number": 29,
-        "pos": "F",
-        "grid": null
-      },
       {
         "name": "Martín Zubimendi",
         "number": 36,
@@ -143,13 +125,13 @@
         "grid": null
       },
       {
-        "name": "Max Dowman",
-        "number": 56,
+        "name": "V. Gyökeres",
+        "number": 14,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Kepa Arrizabalaga",
+        "name": "Kepa",
         "number": 13,
         "pos": "G",
         "grid": null
@@ -161,15 +143,33 @@
         "grid": null
       },
       {
-        "name": "Piero Hincapié",
+        "name": "B. White",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "P. Hincapié",
         "number": 5,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Jurriën Timber",
-        "number": 12,
+        "name": "M. Lewis-Skelly",
+        "number": 49,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Eze",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Mikel Merino",
+        "number": 23,
+        "pos": "M",
         "grid": null
       }
     ]

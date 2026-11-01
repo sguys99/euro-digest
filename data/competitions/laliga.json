@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-10-31T22:16:30.016Z",
+  "updatedAt": "2026-11-01T22:15:30.428Z",
   "standings": [
     {
       "pos": 1,
@@ -48,16 +48,16 @@
       "pos": 3,
       "prevPos": 3,
       "team": "real-madrid",
-      "played": 10,
-      "w": 8,
+      "played": 11,
+      "w": 9,
       "d": 0,
       "l": 2,
-      "gf": 25,
+      "gf": 28,
       "ga": 10,
-      "pts": 24,
+      "pts": 27,
       "form": [
-        "W",
         "L",
+        "W",
         "W",
         "W",
         "W"
@@ -88,19 +88,19 @@
       "pos": 5,
       "prevPos": 5,
       "team": "real-sociedad",
-      "played": 10,
+      "played": 11,
       "w": 6,
       "d": 1,
-      "l": 3,
-      "gf": 19,
-      "ga": 18,
+      "l": 4,
+      "gf": 20,
+      "ga": 20,
       "pts": 19,
       "form": [
-        "L",
         "W",
         "W",
         "W",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "none"
     },
@@ -108,45 +108,45 @@
       "pos": 6,
       "prevPos": 6,
       "team": "sevilla",
-      "played": 10,
+      "played": 11,
       "w": 5,
       "d": 2,
-      "l": 3,
-      "gf": 16,
-      "ga": 16,
+      "l": 4,
+      "gf": 17,
+      "ga": 19,
       "pts": 17,
       "form": [
-        "W",
         "L",
         "D",
         "L",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "none"
     },
     {
       "pos": 7,
-      "prevPos": 8,
+      "prevPos": 7,
       "team": "athletic",
-      "played": 9,
-      "w": 3,
+      "played": 10,
+      "w": 4,
       "d": 3,
       "l": 3,
-      "gf": 12,
-      "ga": 9,
-      "pts": 12,
+      "gf": 14,
+      "ga": 10,
+      "pts": 15,
       "form": [
         "D",
         "D",
-        "D",
         "L",
+        "W",
         "W"
       ],
       "zone": "none"
     },
     {
       "pos": 8,
-      "prevPos": 10,
+      "prevPos": 8,
       "team": "villarreal",
       "played": 11,
       "w": 3,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 7,
+      "prevPos": 10,
       "team": "alaves",
       "played": 11,
       "w": 3,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 17,
+      "prevPos": 11,
       "team": "rayo-vallecano",
       "played": 10,
       "w": 3,
@@ -226,7 +226,27 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 18,
+      "team": "getafe",
+      "played": 11,
+      "w": 3,
+      "d": 3,
+      "l": 5,
+      "gf": 8,
+      "ga": 16,
+      "pts": 12,
+      "form": [
+        "W",
+        "L",
+        "D",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 13,
+      "prevPos": 12,
       "team": "deportivo-la-coruna",
       "played": 10,
       "w": 2,
@@ -245,8 +265,8 @@
       "zone": "none"
     },
     {
-      "pos": 13,
-      "prevPos": 12,
+      "pos": 14,
+      "prevPos": 13,
       "team": "espanyol",
       "played": 11,
       "w": 3,
@@ -265,8 +285,8 @@
       "zone": "none"
     },
     {
-      "pos": 14,
-      "prevPos": 13,
+      "pos": 15,
+      "prevPos": 14,
       "team": "osasuna",
       "played": 10,
       "w": 3,
@@ -285,48 +305,48 @@
       "zone": "none"
     },
     {
-      "pos": 15,
-      "prevPos": 14,
+      "pos": 16,
+      "prevPos": 15,
       "team": "racing-santander",
-      "played": 10,
+      "played": 11,
       "w": 3,
       "d": 2,
-      "l": 5,
+      "l": 6,
       "gf": 15,
-      "ga": 26,
+      "ga": 29,
       "pts": 11,
       "form": [
         "L",
-        "L",
         "D",
-        "L",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 16,
-      "prevPos": 16,
-      "team": "elche",
-      "played": 10,
-      "w": 2,
-      "d": 4,
-      "l": 4,
-      "gf": 14,
-      "ga": 17,
-      "pts": 10,
-      "form": [
         "L",
         "W",
-        "D",
-        "D",
-        "W"
+        "L"
       ],
       "zone": "none"
     },
     {
       "pos": 17,
-      "prevPos": 15,
+      "prevPos": 16,
+      "team": "elche",
+      "played": 11,
+      "w": 2,
+      "d": 4,
+      "l": 5,
+      "gf": 14,
+      "ga": 18,
+      "pts": 10,
+      "form": [
+        "W",
+        "D",
+        "D",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 18,
+      "prevPos": 17,
       "team": "levante",
       "played": 11,
       "w": 2,
@@ -342,45 +362,25 @@
         "L",
         "L"
       ],
-      "zone": "none"
-    },
-    {
-      "pos": 18,
-      "prevPos": 18,
-      "team": "getafe",
-      "played": 10,
-      "w": 2,
-      "d": 3,
-      "l": 5,
-      "gf": 5,
-      "ga": 15,
-      "pts": 9,
-      "form": [
-        "L",
-        "W",
-        "L",
-        "D",
-        "L"
-      ],
       "zone": "relegation"
     },
     {
       "pos": 19,
       "prevPos": 19,
       "team": "valencia",
-      "played": 10,
-      "w": 1,
+      "played": 11,
+      "w": 2,
       "d": 3,
       "l": 6,
-      "gf": 7,
+      "gf": 8,
       "ga": 17,
-      "pts": 6,
+      "pts": 9,
       "form": [
-        "W",
         "L",
         "D",
         "D",
-        "L"
+        "L",
+        "W"
       ],
       "zone": "relegation"
     },
@@ -1765,8 +1765,11 @@
       "kickoff": "2026-11-01T13:00:00Z",
       "home": "getafe",
       "away": "sevilla",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564734",
@@ -1775,8 +1778,11 @@
       "kickoff": "2026-11-01T15:15:00Z",
       "home": "racing-santander",
       "away": "real-madrid",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564728",
@@ -1785,8 +1791,11 @@
       "kickoff": "2026-11-01T17:30:00Z",
       "home": "elche",
       "away": "valencia",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564729",
@@ -1795,8 +1804,11 @@
       "kickoff": "2026-11-01T20:00:00Z",
       "home": "athletic",
       "away": "real-sociedad",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564731",
@@ -4781,10 +4793,10 @@
     {
       "player": "Kylian Mbappé",
       "team": "real-madrid",
-      "goals": 11,
+      "goals": 12,
       "assists": 2,
-      "penalties": 2,
-      "played": 10
+      "penalties": 3,
+      "played": 11
     },
     {
       "player": "Lamine Yamal",
@@ -4800,7 +4812,7 @@
       "goals": 8,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Sergio Camello",
@@ -4832,7 +4844,7 @@
       "goals": 6,
       "assists": null,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Pierre-Emerick Aubameyang",
@@ -4891,6 +4903,30 @@
       "played": 11
     },
     {
+      "player": "Jude Bellingham",
+      "team": "real-madrid",
+      "goals": 4,
+      "assists": 3,
+      "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Luka Sučić",
+      "team": "real-sociedad",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Álex Berenguer",
+      "team": "athletic",
+      "goals": 4,
+      "assists": 4,
+      "penalties": 2,
+      "played": 11
+    },
+    {
       "player": "Alejandro Grimaldo",
       "team": "atletico-madrid",
       "goals": 4,
@@ -4920,14 +4956,6 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Jude Bellingham",
-      "team": "real-madrid",
-      "goals": 3,
-      "assists": 3,
-      "penalties": null,
       "played": 10
     },
     {
@@ -4947,28 +4975,28 @@
       "played": 11
     },
     {
-      "player": "Luka Sučić",
-      "team": "real-sociedad",
-      "goals": 3,
-      "assists": null,
-      "penalties": null,
-      "played": 10
-    },
-    {
       "player": "Orri Oskarsson",
       "team": "real-sociedad",
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
-      "player": "Álex Berenguer",
+      "player": "Martin Satriano",
+      "team": "getafe",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Iñaki Williams",
       "team": "athletic",
       "goals": 3,
-      "assists": 4,
-      "penalties": 1,
-      "played": 10
+      "assists": 2,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Iván Romero",
@@ -5003,6 +5031,14 @@
       "played": 8
     },
     {
+      "player": "Yan Diomandé",
+      "team": "real-madrid",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 11
+    },
+    {
       "player": "Nicolas Pépé",
       "team": "villarreal",
       "goals": 2,
@@ -5032,7 +5068,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Carlos Espí",
@@ -5040,7 +5076,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Gerard Moreno",
@@ -5049,6 +5085,14 @@
       "assists": null,
       "penalties": 1,
       "played": 11
+    },
+    {
+      "player": "Enes Ünal",
+      "team": "getafe",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Karim Adeyemi",
@@ -5064,7 +5108,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Adrián de la Fuente",
@@ -5088,7 +5132,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Miguel Ángel Sierra",
@@ -5102,9 +5146,17 @@
       "player": "Arda Guler",
       "team": "real-madrid",
       "goals": 2,
-      "assists": 2,
+      "assists": 3,
       "penalties": null,
-      "played": 10
+      "played": 11
+    },
+    {
+      "player": "Umar Sadiq",
+      "team": "valencia",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 4
     },
     {
       "player": "Roberto Navarro",
@@ -5112,23 +5164,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Martin Satriano",
-      "team": "getafe",
-      "goals": 2,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Iñaki Williams",
-      "team": "athletic",
-      "goals": 2,
-      "assists": 2,
-      "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Ferran Jutglà",
@@ -5160,7 +5196,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Pablo Duran",
@@ -5179,20 +5215,12 @@
       "played": 11
     },
     {
-      "player": "Yan Diomandé",
-      "team": "real-madrid",
-      "goals": 2,
-      "assists": 2,
-      "penalties": null,
-      "played": 10
-    },
-    {
       "player": "Gonçalo Guedes",
       "team": "real-sociedad",
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Isco",
@@ -5206,9 +5234,9 @@
       "player": "Félix Correia",
       "team": "sevilla",
       "goals": 2,
-      "assists": 1,
+      "assists": 2,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Mikel Oyarzabal",
@@ -5216,7 +5244,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Jorge de Frutos",
@@ -5248,7 +5276,7 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Peque",
@@ -5256,7 +5284,7 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Andrés Martín",
@@ -5304,7 +5332,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Álex Calatrava",
@@ -5321,14 +5349,6 @@
       "assists": null,
       "penalties": null,
       "played": 11
-    },
-    {
-      "player": "Enes Ünal",
-      "team": "getafe",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 9
     },
     {
       "player": "Chupete",
@@ -5368,7 +5388,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Enzo Bardeli",
@@ -5395,14 +5415,6 @@
       "played": 11
     },
     {
-      "player": "Umar Sadiq",
-      "team": "valencia",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 3
-    },
-    {
       "player": "Troy Parrott",
       "team": "real-betis",
       "goals": 1,
@@ -5414,9 +5426,9 @@
       "player": "Nico Williams",
       "team": "athletic",
       "goals": 1,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Oihan Sancet",
@@ -5424,7 +5436,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Canales",
@@ -5432,7 +5444,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Andrei Rațiu",
@@ -5480,7 +5492,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 5
+      "played": 6
     },
     {
       "player": "Marcos Fernández",
@@ -5504,7 +5516,7 @@
       "goals": 1,
       "assists": 3,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Yangel Herrera",
@@ -5512,7 +5524,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Thomas Lemar",
@@ -5520,7 +5532,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Juan Iglesias",
@@ -5528,7 +5540,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Ville Koski",
@@ -5544,7 +5556,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Álvaro Carreras",
@@ -5552,7 +5564,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Xavi Espart",
@@ -5568,7 +5580,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     }
   ]
 }

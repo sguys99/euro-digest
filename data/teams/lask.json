@@ -24,5 +24,148 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "3-4-3",
+    "match": "af-1635737",
+    "kickoff": "2026-10-21T19:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "sporting-cp",
+    "startXI": [
+      {
+        "name": "L. Jungwirth",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "X. Mbuyamba",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Alemão",
+        "number": 43,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "A. Andrade",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "K. Jørgensen",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "R. Ljubičić",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "S. Horvath",
+        "number": 30,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Y. Dibango",
+        "number": 25,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "K. Daněk",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "S. Kalajdzic",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "C. Lang",
+        "number": 27,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "M. Verhaeghe",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Adeniran",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Bogarde",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Daniel Elfadli",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Flecker",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Freckleton",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Kane",
+        "number": 45,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Christof Katzmayr",
+        "number": 39,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Schöpf",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Schützenauer",
+        "number": 33,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Usor",
+        "number": 8,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }

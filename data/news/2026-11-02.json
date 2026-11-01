@@ -1,0 +1,1258 @@
+{
+  "date": "2026-11-02",
+  "generatedAt": "2026-11-01T22:12:40.340Z",
+  "runId": "collect-prod-20261101T221234Z-e780",
+  "cards": [
+    {
+      "id": "c_287a6c6dfb",
+      "t": "Warnock hid seizures from Liverpool as a youngster",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 5,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6rry8pxwkdpo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T20:32:44.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_f1f7b69f3f",
+      "t": "Arsenal move clear at the top with a rare win at Liverpool",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal",
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmly09yv9xl6o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T20:00:18.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_b7d53a7e01",
+      "t": "Rice rewarded, Wirtz must do more - Liverpool and Arsenal player ratings",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool",
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqj9kgyww478o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T18:38:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_5135a03313",
+      "t": "Bellingham & Mbappe score as Real Madrid earn statement win",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cv0ldye7k4g3o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T18:37:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_9e92fbc821",
+      "t": "Clinical Man City edge past London City in WSL thriller",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cm4g1rgey8j7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T17:54:43.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6wyrgydvx0lo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T17:10:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_d3fd411823",
+      "t": "Russo rescues late point for Arsenal against Villa",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c678pe84l97go?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T17:54:40.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_3312a7d1e8",
+      "t": "'이강인 있는 아틀레티코 어쩌나' 라 마시아에서 또 유망주 등장!...'MF 출신' 파리냐스, 데뷔전부터 플릭 사로잡아 \"앞으로 주목해야 할 선수\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697581",
+          "at": "2026-11-01T08:58:40.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_423200284b",
+      "t": "Napoli, Landucci: \"Bisogna lavorare. Quando si perde si sta zitti e si va a casa\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/landucci-intervista-juventus-napoli-serie-a-1-novembre-2026-499021",
+          "at": "2026-11-01T21:55:53.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_be360687f5",
+      "t": "La giostra di Alajbegović fa ripartire la Juventus: magia al Napoli nel giorno del compleanno",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus",
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/interviste-e-storie/juventus-napoli-alajbegovi-boga-serie-a-news-499024",
+          "at": "2026-11-01T21:23:29.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/marianucci-espulsione-juventus-napoli-499020",
+          "at": "2026-11-01T21:18:21.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/juventus-napoli-alajbegovic-serie-a-news-499019",
+          "at": "2026-11-01T21:13:47.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_84366adaaf",
+      "t": "I'll tell my players to dive in future - Iraola",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cvp8grpjk4leo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T21:00:26.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_2fbd462cc0",
+      "t": "Fastidio all'adduttore per McKennie in Juventus-Napoli: il texano sostituito all'intervallo",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus",
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/mckennie-juventus-napoli-infortunio-serie-a-news-499017",
+          "at": "2026-11-01T20:55:03.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_98f1fb0146",
+      "t": "From Fleetwood embarrassment to 'magical' Anfield win 14 years in making",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c39wz2epven4o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T20:16:46.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cx2d2yxv84zo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T19:21:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_1d35a394a5",
+      "t": "'Everyone saw it' - Iraola confused by Isak penalty decision",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cjdx3dpvevngo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T19:37:44.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_ab4fafc526",
+      "t": "Juventus, Spalletti: \"A me non dà fastidio nulla, solo non fare risultati\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/juventus-pre-dichiarazioni-napoli-serie-a-499012",
+          "at": "2026-11-01T19:25:03.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_e8afbb9f17",
+      "t": "Napoli, Manna: \"Bisogna avere pazienza con Lucca, ma neanche troppa\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/napoli-dichiarazioni-pre-juventus-serie-a-499013",
+          "at": "2026-11-01T19:10:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_8a8cda6113",
+      "t": "Juventus-Napoli, le formazioni ufficiali: Lucca titolare al posto di Højlund influenzato",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus",
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/juventus-napoli-formazioni-ufficiali-serie-a-2026-2027-499010",
+          "at": "2026-11-01T18:45:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_07750d32d4",
+      "t": "“내가 그를 밀친 건 너무 가까이 다가오지 못하게 하려고”…황희찬, 대기심 밀침 논란에 직접 해명 “그가 매우 공격적으로 다가왔다”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697593",
+          "at": "2026-11-01T15:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_741a75c2ce",
+      "t": "“김민재 선발 선택은 별다른 성과를 거두지 못했다”…조나단 타 제치고 선발 출격했지만 실점 빌미 제공→공동 최저 평점 굴욕",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697588",
+          "at": "2026-11-01T12:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_3c40fa9b9b",
+      "t": "‘韓 에이스’ 이강인 때문에 모레노도, 시메오네도 고민 깊어진다…“경기에 더 많이 관여할 수 있는 포지션 찾는 중”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697586",
+          "at": "2026-11-01T11:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_3ab6e83cad",
+      "t": "감독이 징계 대신 기회 줬는데 보답 못했다…‘韓 국가대표’ 황희찬, 83분 동안 슈팅 0개→“어설프게 넘어지고 부정확한 플레이 반복”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697583",
+          "at": "2026-11-01T10:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_ce6b5cf302",
+      "t": "‘韓 국가대표에서는 붙박이 주전 풀백인데’…설영우, 3부리그 상대 최저 평점 굴욕→리그 2경기 연속 결장, 주전 경쟁 적신호",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "seol-young-woo"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697582",
+          "at": "2026-11-01T09:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_1b4375dcde",
+      "t": "'대한민국 국대 풀백' 설영우는 벤치였는데...'특급 조커' 고토, 교체로 나와 역전승 기여!→아우크스부르크에 7개월 만에 홈 패배 안겨",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "augsburg"
+      ],
+      "players": [
+        "seol-young-woo"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697579",
+          "at": "2026-11-01T08:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_32c1bc6db0",
+      "t": "How 'brave & balanced' Brighton beat Man City",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "brighton",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmx23wyk769eo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T23:59:24.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_a4ec266a89",
+      "t": "Has Martinez become a liability for Man Utd?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c9vgrjej28dvo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T23:59:22.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_d501a7191e",
+      "t": "Are Manchester United really at risk of a relegation scrap?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c8g47wl06vkqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T23:52:28.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_cde27d1139",
+      "t": "Kane misses Bayern penalty before late Dortmund goal earns draw",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "ipswich-town",
+        "bayern-munchen",
+        "borussia-dortmund"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ckpdg3eq06z5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T23:05:55.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c8qln4qq2656o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T22:29:40.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_c47d599541",
+      "t": "Man Utd enquire about Toney - Sunday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/crz98lwn3pvzo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T22:14:36.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_9cec2fd2ab",
+      "t": "“난 맨유에서 꽤 잘했지, 사실 잘한 것 이상이었어”…‘前 사령탑’ 텐 하흐의 자신감",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697599",
+          "at": "2026-11-01T20:56:18.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_e2b819dbf5",
+      "t": "Rui Borges lascerà lo Sporting: il comunicato del club",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/sporting-esonerato-allenatore-rui-borges-comunicato-club-499018",
+          "at": "2026-11-01T20:54:38.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_9e8cc087ca",
+      "t": "Nel segno di Harroui: l'Hellas Verona supera la Carrarese e sale al quinto posto",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/interviste-e-storie/harroui-hellas-verona-carrarese-serie-b-2026-2027-499015",
+          "at": "2026-11-01T19:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_a37fe93b5a",
+      "t": "[PL REVIEW] 14년 만에 안필드에서 드디어 웃었다…아스널, 하베르츠 결승골로 리버풀 1-0 제압→리그 선두 등극",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal",
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697598",
+          "at": "2026-11-01T18:27:32.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_0f68ea2a58",
+      "t": "Liverpool 0 Arsenal 1: What does this mean for title race? Why wasn't shirt-pull on Isak a pen?",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool",
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7741258/2026/11/01/liverpool-arsenal-isak-timber-havertz/",
+          "at": "2026-11-01T18:26:53.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_ebc562287f",
+      "t": "[라리가 REVIEW] 비니시우스 빠진 레알 마드리드, 오히려 더 강해졌다…음바페·벨링엄·디오망데 골 폭발→라싱 산탄데르 3-0 완파",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid",
+        "racing-santander"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697597",
+          "at": "2026-11-01T17:16:51.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_ea1fd343e9",
+      "t": "Retired Sheff Utd legend Sharp signs for Rushden",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c820vylvxwxlo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T16:51:07.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_70c67da999",
+      "t": "How Jobe Bellingham shone against star-studded Bayern in best performance since joining Dortmund",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen",
+        "borussia-dortmund"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7743435/2026/11/01/jobe-bellingham-borussia-dortmund-bayern-munich/",
+          "at": "2026-11-01T16:12:28.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_068b1c956a",
+      "t": "‘토트넘 시절 제자 사랑 여전했다!’ 무리뉴, 케인 발롱도르 수상에 진심 어린 축하…“그와 함께 일할 수 있었던 것은 특권”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697594",
+          "at": "2026-11-01T16:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_51a4a3eb7d",
+      "t": "Third choice? Inside Alexander-Arnold's struggles in Madrid",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c9e8lp357je7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-01T07:42:08.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_424dec00bd",
+      "t": "\"훌륭한 경기 펼쳤다\"...'韓 국대 에이스' 이강인, 공격P 없어도 경기 영향력 입증! \"존재감 드러낼 때면 언제나 날카로워\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697575",
+          "at": "2026-11-01T06:47:25.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_9af050c0da",
+      "t": "잘한다는 평가 듣자마자 흔들렸다...실점 관여한 김민재, 수비진 최하위 평점! \"불필요한 실수 저질렀고, 상대 ST 제대로 견제 못 했어\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697567",
+          "at": "2026-11-01T03:55:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_e2d5a87334",
+      "t": "\"과감함과 자신감 부족하다\"...샬케, '韓 국가대표' 황희찬 있는데 공격력 최악! 주전 골키퍼도 \"골 좀 넣어야 한다\" 일침",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697566",
+          "at": "2026-11-01T03:27:37.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_8094dcae77",
+      "t": "이강인 골대 강타 불운에도, 아틀레티코 7연승 질주...감격한 시메오네 \"14년 동안 한 팀 이끄는 거 쉽지 않아, 아직 갈 길이 멀다\"",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697550",
+          "at": "2026-10-31T23:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_b8e64b4a47",
+      "t": "Coventry, Ipswich, Hull - promoted trio enjoy positive starts",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "coventry-city",
+        "ipswich-town"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck5ynzv8404ro?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T23:08:07.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_55bc8abd29",
+      "t": "Chelsea beat 10-man Man Utd to pile more pressure on Carrick",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea",
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ckn8w20nn9g7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T22:30:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_9c3d30d8e9",
+      "t": "Brighton pick up first away league victory over Man City",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "brighton",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cqx28l2gdepxo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T22:30:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    },
+    {
+      "id": "c_fca50e4896",
+      "t": "Spurs revival continues with victory over 10-man Crystal Palace",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "crystal-palace"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cxvgdrg33m72o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-10-31T22:29:29.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T22:12:34.762Z"
+    }
+  ]
+}

@@ -12,12 +12,12 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-25T17:30:00.000Z"
+    "updated": "2026-11-01T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Luka Sučić",
-      "goals": 3,
+      "goals": 4,
       "assists": null
     },
     {
@@ -36,26 +36,26 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1570430",
-    "kickoff": "2026-10-25T17:30:00.000Z",
+    "match": "af-1570433",
+    "kickoff": "2026-11-01T20:00:00.000Z",
     "comp": "LALIGA",
-    "side": "home",
-    "opponent": "levante",
+    "side": "away",
+    "opponent": "athletic",
     "startXI": [
       {
-        "name": "A. Remiro",
+        "name": "Álex Remiro",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "H. Fort",
-        "number": 22,
+        "name": "J. Aramburu",
+        "number": 2,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "J. Martin",
+        "name": "Jon Martín",
         "number": 6,
         "pos": "D",
         "grid": "2:3"
@@ -67,89 +67,59 @@
         "grid": "2:2"
       },
       {
-        "name": "S. Gomez",
+        "name": "Sergio Gómez",
         "number": 17,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "L. Sucic",
-        "number": 24,
+        "name": "Gonçalo Guedes",
+        "number": 11,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "J. Gorrotxategi",
+        "name": "Jon Gorrotxategi",
         "number": 4,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "B. Turrientes",
-        "number": 8,
+        "name": "Carlos Soler",
+        "number": 18,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "G. Guedes",
-        "number": 11,
+        "name": "Barrenetxea",
+        "number": 7,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "M. Oyarzabal",
-        "number": 10,
+        "name": "L. Sučić",
+        "number": 24,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "O. Oskarsson",
-        "number": 9,
+        "name": "Mikel Oyarzabal",
+        "number": 10,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "U. Marrero",
-        "number": 13,
+        "name": "Héctor Fort",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Aitor Fraga",
+        "number": 32,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "J. Aramburu",
-        "number": 2,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "I. Zubeldia",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Pacheco",
-        "number": 16,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Munoz",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "C. Soler",
-        "number": 18,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Zakharyan",
-        "number": 23,
-        "pos": "M",
         "grid": null
       },
       {
@@ -159,15 +129,27 @@
         "grid": null
       },
       {
-        "name": "P. Marin",
+        "name": "T. Kubo",
+        "number": 14,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Unai Marrero",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Pablo Marín",
         "number": 15,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "A. Barrenetxea",
-        "number": 7,
-        "pos": "F",
+        "name": "Aihen Muñoz",
+        "number": 3,
+        "pos": "D",
         "grid": null
       },
       {
@@ -177,8 +159,26 @@
         "grid": null
       },
       {
-        "name": "T. Kubo",
-        "number": 14,
+        "name": "Jon Pacheco",
+        "number": 16,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Beñat Turrientes",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Zubeldia",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. Óskarsson",
+        "number": 9,
         "pos": "F",
         "grid": null
       }

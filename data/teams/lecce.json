@@ -10,9 +10,9 @@
     "#D4021D"
   ],
   "formation": {
-    "shape": "3-4-2-1",
+    "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-29T17:30:00.000Z"
+    "updated": "2026-11-01T17:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -30,18 +30,24 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-4-2-1",
-    "match": "af-1550170",
-    "kickoff": "2026-10-29T17:30:00.000Z",
+    "formation": "4-3-3",
+    "match": "af-1550184",
+    "kickoff": "2026-11-01T17:00:00.000Z",
     "comp": "SERIEA",
-    "side": "away",
-    "opponent": "frosinone",
+    "side": "home",
+    "opponent": "genoa",
     "startXI": [
       {
         "name": "W. Falcone",
         "number": 30,
         "pos": "G",
         "grid": "1:1"
+      },
+      {
+        "name": "Danilo Veiga",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "J. Siebert",
@@ -56,20 +62,14 @@
         "grid": "2:2"
       },
       {
-        "name": "C. Ndaba",
-        "number": 3,
+        "name": "A. Gallo",
+        "number": 25,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Danilo Veiga",
-        "number": 17,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Y. Maleh",
-        "number": 14,
+        "name": "Olaf Gorter",
+        "number": 28,
         "pos": "M",
         "grid": "3:3"
       },
@@ -80,46 +80,76 @@
         "grid": "3:2"
       },
       {
-        "name": "A. Gallo",
-        "number": 25,
+        "name": "Y. Maleh",
+        "number": 14,
         "pos": "M",
         "grid": "3:1"
-      },
-      {
-        "name": "O. Gandelman",
-        "number": 16,
-        "pos": "M",
-        "grid": "4:2"
-      },
-      {
-        "name": "Joël Monteiro",
-        "number": 99,
-        "pos": "M",
-        "grid": "4:1"
-      },
-      {
-        "name": "Paco Esteban",
-        "number": 22,
-        "pos": "F",
-        "grid": "5:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "E. Scott",
-        "number": 31,
-        "pos": "D",
-        "grid": null
       },
       {
         "name": "K. N’Dri",
         "number": 11,
         "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "N. Štulić",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "Joël Monteiro",
+        "number": 99,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Dembélé",
+        "number": 2,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "M. Kaba",
-        "number": 77,
+        "name": "A. Ahmed Fatah",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Ndaba",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Bleve",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Borbei",
+        "number": 32,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Paco Esteban",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Fofana",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "O. Gandelman",
+        "number": 16,
         "pos": "M",
         "grid": null
       },
@@ -130,45 +160,15 @@
         "grid": null
       },
       {
-        "name": "Olaf Gorter",
-        "number": 28,
+        "name": "M. Kaba",
+        "number": 77,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "S. Fofana",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Ahmed Fatah",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "A. Dembélé",
-        "number": 2,
+        "name": "E. Scott",
+        "number": 31,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Borbei",
-        "number": 32,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. Bleve",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "N. Štulić",
-        "number": 9,
-        "pos": "F",
         "grid": null
       }
     ]

@@ -12,16 +12,21 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T18:45:00.000Z"
+    "updated": "2026-11-01T16:15:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Lassine Sinayoko",
-      "goals": 6,
-      "assists": 4
+      "goals": 8,
+      "assists": 5
     },
     {
       "name": "Maxime López",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Pablo Pagis",
       "goals": 2,
       "assists": 1
     }
@@ -31,27 +36,27 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1552795",
-    "kickoff": "2026-10-24T18:45:00.000Z",
+    "match": "af-1552807",
+    "kickoff": "2026-11-01T16:15:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "lens",
+    "side": "home",
+    "opponent": "monaco",
     "startXI": [
       {
-        "name": "O. Nkambadio",
-        "number": 16,
+        "name": "K. Trapp",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "A. Camara",
-        "number": 17,
+        "name": "H. Traoré",
+        "number": 14,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "M. Mbow",
-        "number": 5,
+        "name": "S. Chergui",
+        "number": 31,
         "pos": "D",
         "grid": "2:3"
       },
@@ -92,8 +97,8 @@
         "grid": "4:2"
       },
       {
-        "name": "L. Koleosho",
-        "number": 15,
+        "name": "M. Simon",
+        "number": 27,
         "pos": "M",
         "grid": "4:1"
       },
@@ -106,15 +111,45 @@
     ],
     "substitutes": [
       {
-        "name": "E. Zabi",
-        "number": 8,
-        "pos": "M",
+        "name": "O. Nkambadio",
+        "number": 16,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Mbow",
+        "number": 5,
+        "pos": "D",
         "grid": null
       },
       {
         "name": "T. De Smet",
         "number": 28,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "R. Matondo",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Zabi",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "V. Marchetti",
+        "number": 4,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "O. Sissoko",
+        "number": 18,
+        "pos": "F",
         "grid": null
       },
       {
@@ -126,36 +161,6 @@
       {
         "name": "E. Mbemba",
         "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Ibrahim Meïté",
-        "number": 50,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "R. Matondo",
-        "number": 23,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Simon",
-        "number": 27,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "O. Sissoko",
-        "number": 18,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Y. Koré",
-        "number": 25,
         "pos": "D",
         "grid": null
       }

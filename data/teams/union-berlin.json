@@ -10,13 +10,18 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-2-3-1",
+    "shape": "3-4-1-2",
     "source": "api",
-    "updated": "2026-10-24T13:30:00.000Z"
+    "updated": "2026-11-01T14:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Tim Skarke",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Janik Haberer",
       "goals": 2,
       "assists": null
     }
@@ -27,12 +32,12 @@
   ],
   "reading": [],
   "lineup": {
-    "formation": "4-2-3-1",
-    "match": "af-1575199",
-    "kickoff": "2026-10-24T13:30:00.000Z",
+    "formation": "3-4-1-2",
+    "match": "af-1575207",
+    "kickoff": "2026-11-01T14:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "away",
-    "opponent": "augsburg",
+    "side": "home",
+    "opponent": "koln",
     "startXI": [
       {
         "name": "F. Rønnow",
@@ -41,57 +46,50 @@
         "grid": "1:1"
       },
       {
-        "name": "J. Haberer",
-        "number": 19,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
         "name": "Z. Van Den Bosch",
         "number": 4,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "F. Uduokhai",
-        "number": 2,
+        "name": "M. Friedrich",
+        "number": 5,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "T. Rothe",
-        "number": 15,
+        "name": "R. Khedira",
+        "number": 8,
         "pos": "D",
         "grid": "2:1"
+      },
+      {
+        "name": "J. Haberer",
+        "number": 19,
+        "pos": "M",
+        "grid": "3:4"
       },
       {
         "name": "A. Schäfer",
         "number": 13,
         "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "R. Khedira",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "Jeong Woo-Yeong",
-        "number": 11,
-        "pos": "M",
-        "grid": "4:3",
-        "korean": "jeong-woo-yeong"
+        "grid": "3:3"
       },
       {
         "name": "M. Aebischer",
         "number": 20,
         "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
-        "name": "Livan Burcu",
-        "number": 9,
+        "name": "D. Köhn",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "K. Imeri",
+        "number": 30,
         "pos": "M",
         "grid": "4:1"
       },
@@ -99,13 +97,50 @@
         "name": "T. Skarke",
         "number": 21,
         "pos": "F",
+        "grid": "5:2"
+      },
+      {
+        "name": "Livan Burcu",
+        "number": 9,
+        "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "C. Trimmel",
-        "number": 28,
+        "name": "O. Burke",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Jeong Woo-Yeong",
+        "number": 11,
+        "pos": "M",
+        "grid": null,
+        "korean": "jeong-woo-yeong"
+      },
+      {
+        "name": "M. Gray",
+        "number": 32,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Kemlein",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Latte Lath",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Querfeld",
+        "number": 14,
         "pos": "D",
         "grid": null
       },
@@ -116,45 +151,15 @@
         "grid": null
       },
       {
-        "name": "L. Querfeld",
-        "number": 14,
+        "name": "T. Rothe",
+        "number": 15,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "M. LjubiÄiÄ",
-        "number": 27,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "E. Latte Lath",
-        "number": 29,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "D. Köhn",
-        "number": 17,
+        "name": "C. Trimmel",
+        "number": 28,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Kemlein",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Gray",
-        "number": 32,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "O. Burke",
-        "number": 7,
-        "pos": "F",
         "grid": null
       }
     ]

@@ -12,17 +12,17 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T13:00:00.000Z"
+    "updated": "2026-11-01T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Álex Berenguer",
-      "goals": 3,
+      "goals": 4,
       "assists": 4
     },
     {
       "name": "Iñaki Williams",
-      "goals": 2,
+      "goals": 3,
       "assists": 2
     },
     {

@@ -1,7 +1,7 @@
 {
   "date": "2026-10-27",
-  "generatedAt": "2026-10-31T22:12:53.999Z",
-  "runId": "collect-prod-20261031T221253Z-aeb3",
+  "generatedAt": "2026-11-01T22:12:34.817Z",
+  "runId": "collect-prod-20261101T221234Z-e780",
   "cards": [
     {
       "id": "c_896eec63e3",
@@ -110,12 +110,6 @@
           "tier": 2
         },
         {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7728871/2026/10/27/ballon-dor-winner-harry-kane-analysis-bayern-england/",
-          "at": "2026-10-27T13:00:56.000Z",
-          "tier": 2
-        },
-        {
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/videos/cwg7xevnyrjpo?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-27T08:53:55.000Z",
@@ -125,12 +119,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/ckx2qdxgzzz7o?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-27T06:20:58.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7721009/2026/10/27/ballon-dor-harry-kane/",
-          "at": "2026-10-27T05:10:50.000Z",
           "tier": 2
         },
         {
@@ -544,35 +532,6 @@
       "created": "2026-10-27T01:30:51.881Z"
     },
     {
-      "id": "c_b0de66aa64",
-      "t": "Harry Kane wins men's Ballon d'Or after excellent season for Bayern Munich, England",
-      "s": [],
-      "cat": "result",
-      "comp": [
-        "BUNDESLIGA"
-      ],
-      "teams": [
-        "bayern-munchen"
-      ],
-      "players": [
-        "harry-kane"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7710586/2026/10/26/harry-kane-ballon-dor-winner-2026/",
-          "at": "2026-10-26T22:51:39.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-27T01:30:51.881Z"
-    },
-    {
       "id": "c_337f85b84f",
       "t": "Zanotti, Moncada e un allenatore che vendeva parquet: alla scoperta del Lugano",
       "s": [],
@@ -694,33 +653,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-10-27T01:30:51.881Z"
-    },
-    {
-      "id": "c_7a5f6a2fd6",
-      "t": "Barcelona's Xavi Espart set to miss seven weeks with ankle injury",
-      "s": [],
-      "cat": "injury",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7726473/2026/10/26/barcelona-injury-news-xavi-espart/",
-          "at": "2026-10-26T13:11:16.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-10-27T01:30:51.881Z"
     },

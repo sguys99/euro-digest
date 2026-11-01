@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T14:00:00.000Z"
+    "updated": "2026-11-01T16:15:00.000Z"
   },
   "topPlayers": [
     {
@@ -31,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1552797",
-    "kickoff": "2026-10-25T14:00:00.000Z",
+    "match": "af-1552807",
+    "kickoff": "2026-11-01T16:15:00.000Z",
     "comp": "LIGUE1",
-    "side": "home",
-    "opponent": "lille",
+    "side": "away",
+    "opponent": "paris-fc",
     "startXI": [
       {
         "name": "L. Hrádecký",
@@ -56,8 +56,8 @@
         "grid": "2:3"
       },
       {
-        "name": "J. Teze",
-        "number": 4,
+        "name": "E. Dier",
+        "number": 15,
         "pos": "D",
         "grid": "2:2"
       },
@@ -80,8 +80,8 @@
         "grid": "3:1"
       },
       {
-        "name": "M. Coulibaly",
-        "number": 28,
+        "name": "E. Diop",
+        "number": 37,
         "pos": "M",
         "grid": "4:3"
       },
@@ -92,8 +92,8 @@
         "grid": "4:2"
       },
       {
-        "name": "Ansu Fati",
-        "number": 31,
+        "name": "M. Abline",
+        "number": 11,
         "pos": "M",
         "grid": "4:1"
       },
@@ -106,8 +106,32 @@
     ],
     "substitutes": [
       {
+        "name": "F. Balogun",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Pape Cabral",
+        "number": 19,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "I. Touré",
         "number": 49,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Minamino",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Coulibaly",
+        "number": 28,
         "pos": "M",
         "grid": null
       },
@@ -118,27 +142,9 @@
         "grid": null
       },
       {
-        "name": "F. Balogun",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Abline",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "E. Diop",
-        "number": 37,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "P. Köhn",
-        "number": 16,
-        "pos": "G",
+        "name": "J. Teze",
+        "number": 4,
+        "pos": "D",
         "grid": null
       },
       {
@@ -148,15 +154,9 @@
         "grid": null
       },
       {
-        "name": "T. Minamino",
-        "number": 18,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Salisu",
-        "number": 22,
-        "pos": "D",
+        "name": "P. Köhn",
+        "number": 16,
+        "pos": "G",
         "grid": null
       }
     ]

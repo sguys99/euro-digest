@@ -2,7 +2,7 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-10-31T22:17:24.558Z",
+  "updatedAt": "2026-11-01T22:16:14.261Z",
   "standings": [
     {
       "pos": 1,
@@ -17,10 +17,10 @@
       "pts": 18,
       "form": [
         "W",
-        "W",
         "D",
         "W",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "none"
     },
@@ -37,10 +37,10 @@
       "pts": 18,
       "form": [
         "W",
+        "D",
+        "D",
         "W",
-        "D",
-        "D",
-        "W"
+        "D"
       ],
       "zone": "none"
     },
@@ -56,17 +56,17 @@
       "ga": 10,
       "pts": 16,
       "form": [
-        "W",
         "D",
         "W",
         "L",
-        "L"
+        "L",
+        "W"
       ],
       "zone": "none"
     },
     {
       "pos": 4,
-      "prevPos": 6,
+      "prevPos": 4,
       "team": "rb-leipzig",
       "played": 8,
       "w": 5,
@@ -76,17 +76,17 @@
       "ga": 11,
       "pts": 15,
       "form": [
-        "W",
         "L",
         "W",
         "L",
+        "W",
         "W"
       ],
       "zone": "none"
     },
     {
       "pos": 5,
-      "prevPos": 7,
+      "prevPos": 5,
       "team": "werder-bremen",
       "played": 8,
       "w": 4,
@@ -96,17 +96,17 @@
       "ga": 14,
       "pts": 15,
       "form": [
-        "D",
         "W",
         "D",
         "D",
+        "W",
         "W"
       ],
       "zone": "none"
     },
     {
       "pos": 6,
-      "prevPos": 4,
+      "prevPos": 6,
       "team": "leverkusen",
       "played": 8,
       "w": 4,
@@ -116,17 +116,17 @@
       "ga": 16,
       "pts": 13,
       "form": [
-        "D",
         "W",
         "W",
         "W",
+        "L",
         "L"
       ],
       "zone": "none"
     },
     {
       "pos": 7,
-      "prevPos": 5,
+      "prevPos": 7,
       "team": "elversberg",
       "played": 8,
       "w": 4,
@@ -146,6 +146,26 @@
     },
     {
       "pos": 8,
+      "prevPos": 15,
+      "team": "eintracht-frankfurt",
+      "played": 8,
+      "w": 3,
+      "d": 2,
+      "l": 3,
+      "gf": 13,
+      "ga": 18,
+      "pts": 11,
+      "form": [
+        "W",
+        "D",
+        "L",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
       "prevPos": 8,
       "team": "mainz",
       "played": 8,
@@ -165,7 +185,7 @@
       "zone": "none"
     },
     {
-      "pos": 9,
+      "pos": 10,
       "prevPos": 9,
       "team": "augsburg",
       "played": 8,
@@ -176,17 +196,17 @@
       "ga": 15,
       "pts": 9,
       "form": [
-        "D",
         "L",
         "D",
         "L",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "none"
     },
     {
-      "pos": 10,
-      "prevPos": 15,
+      "pos": 11,
+      "prevPos": 10,
       "team": "stuttgart",
       "played": 8,
       "w": 3,
@@ -197,16 +217,16 @@
       "pts": 9,
       "form": [
         "L",
-        "L",
         "W",
         "L",
-        "L"
+        "L",
+        "W"
       ],
       "zone": "none"
     },
     {
-      "pos": 11,
-      "prevPos": 10,
+      "pos": 12,
+      "prevPos": 11,
       "team": "hoffenheim",
       "played": 8,
       "w": 3,
@@ -216,48 +236,8 @@
       "ga": 16,
       "pts": 9,
       "form": [
-        "W",
         "L",
         "L",
-        "W",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 12,
-      "prevPos": 13,
-      "team": "paderborn",
-      "played": 8,
-      "w": 2,
-      "d": 3,
-      "l": 3,
-      "gf": 6,
-      "ga": 9,
-      "pts": 9,
-      "form": [
-        "L",
-        "W",
-        "L",
-        "D",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 13,
-      "prevPos": 11,
-      "team": "hamburg",
-      "played": 7,
-      "w": 3,
-      "d": 0,
-      "l": 4,
-      "gf": 6,
-      "ga": 16,
-      "pts": 9,
-      "form": [
-        "L",
-        "W",
         "W",
         "W",
         "L"
@@ -265,16 +245,16 @@
       "zone": "none"
     },
     {
-      "pos": 14,
-      "prevPos": 12,
+      "pos": 13,
+      "prevPos": 14,
       "team": "koln",
-      "played": 7,
+      "played": 8,
       "w": 2,
-      "d": 2,
+      "d": 3,
       "l": 3,
-      "gf": 8,
-      "ga": 11,
-      "pts": 8,
+      "gf": 9,
+      "ga": 12,
+      "pts": 9,
       "form": [
         "D",
         "L",
@@ -285,20 +265,40 @@
       "zone": "none"
     },
     {
-      "pos": 15,
-      "prevPos": 14,
-      "team": "eintracht-frankfurt",
-      "played": 7,
+      "pos": 14,
+      "prevPos": 12,
+      "team": "paderborn",
+      "played": 8,
       "w": 2,
-      "d": 2,
+      "d": 3,
       "l": 3,
-      "gf": 10,
-      "ga": 17,
-      "pts": 8,
+      "gf": 6,
+      "ga": 9,
+      "pts": 9,
       "form": [
         "W",
-        "D",
         "L",
+        "D",
+        "W",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
+      "prevPos": 13,
+      "team": "hamburg",
+      "played": 8,
+      "w": 3,
+      "d": 0,
+      "l": 5,
+      "gf": 7,
+      "ga": 19,
+      "pts": 9,
+      "form": [
+        "L",
+        "W",
+        "W",
         "W",
         "L"
       ],
@@ -306,6 +306,26 @@
     },
     {
       "pos": 16,
+      "prevPos": 17,
+      "team": "union-berlin",
+      "played": 8,
+      "w": 1,
+      "d": 4,
+      "l": 3,
+      "gf": 7,
+      "ga": 19,
+      "pts": 7,
+      "form": [
+        "L",
+        "L",
+        "W",
+        "D",
+        "D"
+      ],
+      "zone": "relegation"
+    },
+    {
+      "pos": 17,
       "prevPos": 16,
       "team": "schalke",
       "played": 8,
@@ -316,31 +336,11 @@
       "ga": 9,
       "pts": 6,
       "form": [
-        "W",
         "D",
         "L",
         "L",
-        "D"
-      ],
-      "zone": "relegation"
-    },
-    {
-      "pos": 17,
-      "prevPos": 17,
-      "team": "union-berlin",
-      "played": 7,
-      "w": 1,
-      "d": 3,
-      "l": 3,
-      "gf": 6,
-      "ga": 18,
-      "pts": 6,
-      "form": [
-        "L",
-        "L",
-        "W",
         "D",
-        "D"
+        "L"
       ],
       "zone": "relegation"
     },
@@ -359,8 +359,8 @@
         "L",
         "L",
         "L",
-        "L",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "relegation"
     }
@@ -1205,8 +1205,11 @@
       "kickoff": "2026-10-31T14:30:00Z",
       "home": "borussia-monchengladbach",
       "away": "paderborn",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565840",
@@ -1215,8 +1218,11 @@
       "kickoff": "2026-10-31T14:30:00Z",
       "home": "schalke",
       "away": "rb-leipzig",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565842",
@@ -1225,8 +1231,11 @@
       "kickoff": "2026-10-31T14:30:00Z",
       "home": "augsburg",
       "away": "freiburg",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565843",
@@ -1235,8 +1244,11 @@
       "kickoff": "2026-10-31T14:30:00Z",
       "home": "werder-bremen",
       "away": "hoffenheim",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565847",
@@ -1245,8 +1257,11 @@
       "kickoff": "2026-10-31T14:30:00Z",
       "home": "leverkusen",
       "away": "stuttgart",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 4
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565845",
@@ -1255,8 +1270,11 @@
       "kickoff": "2026-10-31T17:30:00Z",
       "home": "bayern-munchen",
       "away": "borussia-dortmund",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565841",
@@ -3845,10 +3863,10 @@
     {
       "player": "Younes Ebnoutalib",
       "team": "eintracht-frankfurt",
-      "goals": 5,
+      "goals": 6,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Michael Gregoritsch",
@@ -3992,7 +4010,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Robin Fellhauer",
@@ -4046,9 +4064,9 @@
       "player": "Tim Skarke",
       "team": "union-berlin",
       "goals": 2,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Lukas Petkov",
@@ -4096,7 +4114,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Thijs Dallinga",
@@ -4190,9 +4208,9 @@
       "player": "Can Uzun",
       "team": "eintracht-frankfurt",
       "goals": 2,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Yannik Engelhardt",
@@ -4283,12 +4301,20 @@
       "played": 7
     },
     {
+      "player": "Terem Moffi",
+      "team": "hamburg",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
       "player": "Miro Muheim",
       "team": "hamburg",
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 3
+      "played": 4
     },
     {
       "player": "Wael Mohya",
@@ -4307,6 +4333,14 @@
       "played": 3
     },
     {
+      "player": "Janik Haberer",
+      "team": "union-berlin",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
       "player": "Rocco Reitz",
       "team": "rb-leipzig",
       "goals": 1,
@@ -4320,7 +4354,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Leopold Querfeld",
@@ -4328,7 +4362,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Ozan Kabak",
@@ -4472,7 +4506,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Willi Orban",
@@ -4601,22 +4635,6 @@
       "assists": null,
       "penalties": null,
       "played": 8
-    },
-    {
-      "player": "Jarell Quansah",
-      "team": "leverkusen",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 8
-    },
-    {
-      "player": "Moussa Diaby",
-      "team": "leverkusen",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 6
     }
   ]
 }

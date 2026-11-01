@@ -10,15 +10,15 @@
     "#000000"
   ],
   "formation": {
-    "shape": "3-4-2-1",
+    "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-28T19:45:00.000Z"
+    "updated": "2026-11-01T19:45:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Edon Zhegrova",
       "goals": 2,
-      "assists": 1
+      "assists": 2
     },
     {
       "name": "Bremer",
@@ -30,12 +30,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-4-2-1",
-    "match": "af-1550171",
-    "kickoff": "2026-10-28T19:45:00.000Z",
+    "formation": "4-4-2",
+    "match": "af-1550182",
+    "kickoff": "2026-11-01T19:45:00.000Z",
     "comp": "SERIEA",
-    "side": "away",
-    "opponent": "genoa",
+    "side": "home",
+    "opponent": "napoli",
     "startXI": [
       {
         "name": "G. Vicario",
@@ -44,26 +44,32 @@
         "grid": "1:1"
       },
       {
-        "name": "F. Gatti",
-        "number": 4,
+        "name": "P. Kalulu",
+        "number": 15,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:4"
       },
       {
         "name": "Bremer",
         "number": 3,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:3"
       },
       {
         "name": "J. Lucumí",
         "number": 26,
         "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "J. Cabal",
+        "number": 32,
+        "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "P. Kalulu",
-        "number": 15,
+        "name": "W. McKennie",
+        "number": 22,
         "pos": "M",
         "grid": "3:4"
       },
@@ -74,77 +80,53 @@
         "grid": "3:3"
       },
       {
-        "name": "P. Sarr",
-        "number": 29,
+        "name": "T. Koopmeiners",
+        "number": 8,
         "pos": "M",
         "grid": "3:2"
-      },
-      {
-        "name": "A. Cambiaso",
-        "number": 20,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "W. McKennie",
-        "number": 22,
-        "pos": "M",
-        "grid": "4:2"
       },
       {
         "name": "Kerim-Sam Alajbegović",
         "number": 17,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "3:1"
       },
       {
         "name": "R. Kolo Muani",
         "number": 9,
         "pos": "F",
-        "grid": "5:1"
-      }
-    ],
-    "substitutes": [
+        "grid": "4:2"
+      },
       {
         "name": "N. Woltemade",
         "number": 27,
         "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "J. Ekhator",
+        "number": 18,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "D. Rugani",
-        "number": 24,
+        "name": "A. Cambiaso",
+        "number": 20,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "C. Pinsoglio",
-        "number": 23,
-        "pos": "G",
+        "name": "J. Boga",
+        "number": 13,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "F. Pagnucco",
-        "number": 43,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Owusu",
-        "number": 41,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Neto",
-        "number": 33,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "T. Koopmeiners",
-        "number": 8,
-        "pos": "M",
+        "name": "F. Gatti",
+        "number": 4,
+        "pos": "D",
         "grid": null
       },
       {
@@ -154,21 +136,27 @@
         "grid": null
       },
       {
-        "name": "A. Durmiši",
-        "number": 47,
-        "pos": "F",
+        "name": "Neto",
+        "number": 33,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "J. Cabal",
-        "number": 32,
+        "name": "C. Pinsoglio",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Rugani",
+        "number": 24,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "J. Boga",
-        "number": 13,
-        "pos": "F",
+        "name": "P. Sarr",
+        "number": 29,
+        "pos": "M",
         "grid": null
       },
       {

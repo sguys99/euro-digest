@@ -10,15 +10,20 @@
     "#E3000F"
   ],
   "formation": {
-    "shape": "3-5-2",
+    "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-24T13:30:00.000Z"
+    "updated": "2026-11-01T16:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Miro Muheim",
       "goals": 2,
       "assists": 1
+    },
+    {
+      "name": "Terem Moffi",
+      "goals": 2,
+      "assists": null
     },
     {
       "name": "Yussuf Poulsen",
@@ -30,12 +35,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-5-2",
-    "match": "af-1575202",
-    "kickoff": "2026-10-24T13:30:00.000Z",
+    "formation": "3-4-2-1",
+    "match": "af-1575205",
+    "kickoff": "2026-11-01T16:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "away",
-    "opponent": "paderborn",
+    "opponent": "eintracht-frankfurt",
     "startXI": [
       {
         "name": "Daniel Heuer Fernandes",
@@ -50,8 +55,8 @@
         "grid": "2:3"
       },
       {
-        "name": "S. Bornauw",
-        "number": 33,
+        "name": "J. Torunarigha",
+        "number": 23,
         "pos": "D",
         "grid": "2:2"
       },
@@ -62,20 +67,14 @@
         "grid": "2:1"
       },
       {
-        "name": "Z. El Ouahdi",
-        "number": 7,
-        "pos": "M",
-        "grid": "3:5"
-      },
-      {
-        "name": "M. Adeline",
-        "number": 5,
+        "name": "D. Møller Wolfe",
+        "number": 3,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "B. Nadir",
-        "number": 4,
+        "name": "A. Sambi Lokonga",
+        "number": 6,
         "pos": "M",
         "grid": "3:3"
       },
@@ -86,31 +85,31 @@
         "grid": "3:2"
       },
       {
-        "name": "D. Møller Wolfe",
-        "number": 3,
+        "name": "L. Lemke",
+        "number": 37,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Y. Poulsen",
-        "number": 15,
-        "pos": "F",
+        "name": "M. Adeline",
+        "number": 5,
+        "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Fábio Vieira",
-        "number": 20,
-        "pos": "F",
+        "name": "A. Grønbæk",
+        "number": 11,
+        "pos": "M",
         "grid": "4:1"
+      },
+      {
+        "name": "T. Moffi",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
       }
     ],
     "substitutes": [
-      {
-        "name": "Alexander Røssing-Lelesiit",
-        "number": 38,
-        "pos": "F",
-        "grid": null
-      },
       {
         "name": "Otto Emerson Stange",
         "number": 19,
@@ -118,33 +117,33 @@
         "grid": null
       },
       {
-        "name": "S. Tangvik",
-        "number": 12,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "T. Moffi",
-        "number": 9,
+        "name": "Alexander Røssing-Lelesiit",
+        "number": 38,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "A. Sambi Lokonga",
-        "number": 6,
+        "name": "I. Pherai",
+        "number": 10,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "L. Lemke",
-        "number": 37,
+        "name": "B. Jatta",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Z. El Ouahdi",
+        "number": 7,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Grønbæk",
-        "number": 11,
-        "pos": "M",
+        "name": "P. Daka",
+        "number": 27,
+        "pos": "F",
         "grid": null
       },
       {
@@ -157,6 +156,12 @@
         "name": "Kofi Jeremy Amoako",
         "number": 22,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Tangvik",
+        "number": 12,
+        "pos": "G",
         "grid": null
       }
     ]

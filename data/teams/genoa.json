@@ -12,12 +12,17 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-28T19:45:00.000Z"
+    "updated": "2026-11-01T17:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Milutin Osmajić",
-      "goals": 3,
+      "goals": 4,
+      "assists": 1
+    },
+    {
+      "name": "Junior Messias",
+      "goals": 2,
       "assists": 1
     }
   ],
@@ -26,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1550171",
-    "kickoff": "2026-10-28T19:45:00.000Z",
+    "match": "af-1550184",
+    "kickoff": "2026-11-01T17:00:00.000Z",
     "comp": "SERIEA",
-    "side": "home",
-    "opponent": "juventus",
+    "side": "away",
+    "opponent": "lecce",
     "startXI": [
       {
         "name": "J. Bijlow",
@@ -57,8 +62,8 @@
         "grid": "2:1"
       },
       {
-        "name": "K. Ehizibue",
-        "number": 3,
+        "name": "M. Ellertsson",
+        "number": 77,
         "pos": "M",
         "grid": "3:4"
       },
@@ -69,26 +74,26 @@
         "grid": "3:3"
       },
       {
-        "name": "Alexsandro Amorim",
-        "number": 4,
+        "name": "H. Traorè",
+        "number": 25,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "M. Ellertsson",
-        "number": 77,
+        "name": "S. El Shaarawy",
+        "number": 92,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Vítinha",
-        "number": 9,
+        "name": "S. Wiafe",
+        "number": 71,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "T. Baldanzi",
-        "number": 8,
+        "name": "Junior Messias",
+        "number": 10,
         "pos": "M",
         "grid": "4:1"
       },
@@ -101,20 +106,20 @@
     ],
     "substitutes": [
       {
-        "name": "H. Traorè",
-        "number": 25,
+        "name": "Alexsandro Amorim",
+        "number": 4,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "S. Wiafe",
-        "number": 71,
+        "name": "T. Baldanzi",
+        "number": 8,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "S. El Shaarawy",
-        "number": 92,
+        "name": "Vítinha",
+        "number": 9,
         "pos": "F",
         "grid": null
       },
@@ -125,9 +130,27 @@
         "grid": null
       },
       {
-        "name": "Junior Messias",
-        "number": 10,
-        "pos": "F",
+        "name": "C. Drameh",
+        "number": 16,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Ehizibue",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Lukas Klišys",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Otoa",
+        "number": 34,
+        "pos": "D",
         "grid": null
       },
       {
@@ -143,21 +166,9 @@
         "grid": null
       },
       {
-        "name": "S. Otoa",
-        "number": 34,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "D. Puczka",
         "number": 31,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Nikita Solodchenko",
-        "number": 21,
-        "pos": "F",
         "grid": null
       },
       {
@@ -167,8 +178,8 @@
         "grid": null
       },
       {
-        "name": "D. Sommariva",
-        "number": 39,
+        "name": "F. Stolz",
+        "number": 99,
         "pos": "G",
         "grid": null
       },
@@ -179,15 +190,9 @@
         "grid": null
       },
       {
-        "name": "F. Stolz",
-        "number": 99,
+        "name": "D. Sommariva",
+        "number": 39,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Lukas Klišys",
-        "number": 14,
-        "pos": "D",
         "grid": null
       }
     ]

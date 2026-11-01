@@ -10,9 +10,9 @@
     "#05642C"
   ],
   "formation": {
-    "shape": "4-3-3",
+    "shape": "5-3-2",
     "source": "api",
-    "updated": "2026-10-24T12:00:00.000Z"
+    "updated": "2026-11-01T17:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -30,12 +30,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-3-3",
-    "match": "af-1570429",
-    "kickoff": "2026-10-24T12:00:00.000Z",
+    "formation": "5-3-2",
+    "match": "af-1570437",
+    "kickoff": "2026-11-01T17:30:00.000Z",
     "comp": "LALIGA",
-    "side": "away",
-    "opponent": "rayo-vallecano",
+    "side": "home",
+    "opponent": "valencia",
     "startXI": [
       {
         "name": "M. Dituro",
@@ -44,31 +44,37 @@
         "grid": "1:1"
       },
       {
-        "name": "Buba Sangare",
+        "name": "Buba Sangaré",
         "number": 2,
+        "pos": "D",
+        "grid": "2:5"
+      },
+      {
+        "name": "F. Redondo",
+        "number": 5,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "F. Redondo Solari",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "V. Chust",
+        "name": "Víctor Chust",
         "number": 23,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:3"
       },
       {
         "name": "R. Revivo",
         "number": 3,
         "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Germán Valera",
+        "number": 11,
+        "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "G. Villar",
+        "name": "Gonzalo Villar",
         "number": 12,
         "pos": "M",
         "grid": "3:3"
@@ -89,49 +95,37 @@
         "name": "L. Cepeda",
         "number": 21,
         "pos": "F",
-        "grid": "4:3"
-      },
-      {
-        "name": "F. Nino",
-        "number": 14,
-        "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "G. Valera",
-        "number": 11,
+        "name": "Fer Niño",
+        "number": 14,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "A. Iturbe",
-        "number": 13,
-        "pos": "G",
+        "name": "F. Buonanotte",
+        "number": 10,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "K. Lomonaco",
-        "number": 15,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Barzic",
-        "number": 26,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "P. Bigas",
-        "number": 6,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "R. Sanchez",
+        "name": "Rubén Sánchez",
         "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Martim Neto",
+        "number": 16,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Bigas",
+        "number": 6,
         "pos": "D",
         "grid": null
       },
@@ -142,27 +136,33 @@
         "grid": null
       },
       {
-        "name": "M. Neto",
-        "number": 16,
+        "name": "Josan",
+        "number": 17,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "F. Buonanotte",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "E. Ponce",
-        "number": 9,
+        "name": "Ali Houary",
+        "number": 29,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Josan",
-        "number": 17,
-        "pos": "M",
+        "name": "Alejandro Iturbe",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "K. Lomónaco",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Tete Morente",
+        "number": 20,
+        "pos": "F",
         "grid": null
       },
       {
@@ -172,8 +172,8 @@
         "grid": null
       },
       {
-        "name": "Tete Morente",
-        "number": 20,
+        "name": "E. Ponce",
+        "number": 9,
         "pos": "F",
         "grid": null
       }

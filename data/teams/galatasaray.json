@@ -24,5 +24,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1635684",
+    "kickoff": "2026-10-21T16:45:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "lille",
+    "startXI": [
+      {
+        "name": "U. Çakır",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "R. Sallai",
+        "number": 7,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "D. Sánchez",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "A. Bardakcı",
+        "number": 42,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "I. Jakobs",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Torreira",
+        "number": 34,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Gabriel Sara",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Y. Akgün",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "A. Batrakov",
+        "number": 83,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "B. Yılmaz",
+        "number": 53,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "V. Osimhen",
+        "number": 45,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "E. Elmalı",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "İ. Gündoğan",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. Güvenç",
+        "number": 19,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Lemina",
+        "number": 99,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Berat Luş",
+        "number": 73,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Renato Nhaga",
+        "number": 74,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. Sané",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "W. Singo",
+        "number": 90,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Ugochukwu",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Yılmaz",
+        "number": 24,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "E. Bitshiabu",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Gül",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }

@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T14:00:00.000Z"
+    "updated": "2026-11-01T16:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -33,74 +33,74 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557444",
-    "kickoff": "2026-10-25T14:00:00.000Z",
+    "match": "af-1557453",
+    "kickoff": "2026-11-01T16:30:00.000Z",
     "comp": "EPL",
     "side": "home",
-    "opponent": "brighton",
+    "opponent": "arsenal",
     "startXI": [
       {
-        "name": "Alisson",
+        "name": "Alisson Becker",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Ronald Araújo",
+        "name": "R. Araújo",
         "number": 33,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Jérémy Jacquet",
+        "name": "J. Jacquet",
         "number": 5,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Virgil van Dijk",
+        "name": "V. van Dijk",
         "number": 4,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Miloš Kerkez",
+        "name": "M. Kerkez",
         "number": 6,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Ryan Gravenberch",
-        "number": 38,
+        "name": "A. Mac Allister",
+        "number": 10,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Alexis Mac Allister",
-        "number": 10,
+        "name": "T. Nyoni",
+        "number": 42,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Bradley Barcola",
-        "number": 29,
+        "name": "C. Gakpo",
+        "number": 18,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "Florian Wirtz",
+        "name": "F. Wirtz",
         "number": 7,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Cody Gakpo",
-        "number": 18,
+        "name": "B. Barcola",
+        "number": 29,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "Alexander Isak",
+        "name": "A. Isak",
         "number": 9,
         "pos": "F",
         "grid": "5:1"
@@ -108,57 +108,57 @@
     ],
     "substitutes": [
       {
-        "name": "Trey Nyoni",
-        "number": 42,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Lewis Koumas",
-        "number": 67,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Rio Ngumoha",
+        "name": "R. Ngumoha",
         "number": 73,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Kostas Tsimikas",
-        "number": 21,
-        "pos": "D",
+        "name": "L. Koumas",
+        "number": 67,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "Giorgi Mamardashvili",
-        "number": 25,
-        "pos": "G",
+        "name": "Víctor Muñoz",
+        "number": 23,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "Joe Gomez",
-        "number": 2,
-        "pos": "D",
+        "name": "D. Szoboszlai",
+        "number": 8,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "Wataru Endo",
+        "name": "R. Gravenberch",
+        "number": 38,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "W. Endo",
         "number": 3,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "James McConnell",
-        "number": 53,
-        "pos": "M",
+        "name": "K. Tsimikas",
+        "number": 21,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "Federico Chiesa",
-        "number": 14,
-        "pos": "F",
+        "name": "J. Gomez",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Mamardashvili",
+        "number": 25,
+        "pos": "G",
         "grid": null
       }
     ]

@@ -24,5 +24,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1635661",
+    "kickoff": "2026-10-20T16:45:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "fenerbahce",
+    "startXI": [
+      {
+        "name": "J. Markovič",
+        "number": 35,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "T. Vlček",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "D. Zima",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "A. N&apos;Guessan",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "M. E. Suleiman",
+        "number": 15,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "D. Moses",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "W. Nowak",
+        "number": 30,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "O. Kubiak",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "E. Ayaosi",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "D. Šturm",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "L. Provod",
+        "number": 17,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "M. Chytil",
+        "number": 13,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "D. Barcot",
+        "number": 47,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Pavel Kacor",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Konečný",
+        "number": 42,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Matěj Kotrba",
+        "number": 53,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Petr Potměšil",
+        "number": 60,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Adam Rezek",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Sadílek",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Diakité",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Domchak",
+        "number": 29,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "T. Holeš",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Isife",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
 }

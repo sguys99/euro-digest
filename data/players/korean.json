@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-01T04:56:14.815Z",
+  "generatedAt": "2026-11-01T22:18:18.461Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -26,7 +26,7 @@
       "slug": "park-seung-soo",
       "team": "newcastle-united",
       "provider": "api-football",
-      "since": null,
+      "since": "2026-10-31",
       "season": [],
       "recent": [],
       "next": {
@@ -39,7 +39,7 @@
         },
         "home": true
       },
-      "updatedAt": "2026-11-01T04:56:14.815Z"
+      "updatedAt": "2026-11-01T22:18:18.461Z"
     },
     {
       "slug": "lee-kang-in",
@@ -261,8 +261,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 1,
-          "minutes": 76,
+          "apps": 2,
+          "minutes": 92,
           "goals": 0,
           "assists": 0
         },
@@ -276,6 +276,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565841",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-01T14:30:00.000Z",
+          "opponent": {
+            "slug": "koln",
+            "name": "1. FC Köln"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "sub",
+          "started": false,
+          "minutes": 16,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "af-1638563",
           "comp": "OTHER",
@@ -317,16 +336,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-565841",
+        "matchId": "fd-565854",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-01T14:30:00Z",
+        "kickoff": "2026-11-08T16:30:00Z",
         "opponent": {
-          "slug": "koln",
-          "name": "1. FC Köln"
+          "slug": "freiburg",
+          "name": "SC Freiburg"
         },
-        "home": true
+        "home": false
       },
-      "updatedAt": "2026-11-01T04:56:14.815Z"
+      "updatedAt": "2026-11-01T22:18:18.461Z"
     },
     {
       "slug": "lee-jae-sung",

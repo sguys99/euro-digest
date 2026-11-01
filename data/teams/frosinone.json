@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-29T17:30:00.000Z"
+    "updated": "2026-11-01T14:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -22,13 +22,13 @@
     },
     {
       "name": "Giacomo Calò",
-      "goals": 4,
+      "goals": 5,
       "assists": 1
     },
     {
       "name": "Giorgi Kvernadze",
       "goals": 3,
-      "assists": 3
+      "assists": 4
     }
   ],
   "profile": null,
@@ -36,11 +36,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1550170",
-    "kickoff": "2026-10-29T17:30:00.000Z",
+    "match": "af-1550181",
+    "kickoff": "2026-11-01T14:00:00.000Z",
     "comp": "SERIEA",
     "side": "home",
-    "opponent": "lecce",
+    "opponent": "torino",
     "startXI": [
       {
         "name": "L. Palmisani",
@@ -49,8 +49,8 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Oyono",
-        "number": 20,
+        "name": "E. Tchato",
+        "number": 90,
         "pos": "D",
         "grid": "2:4"
       },
@@ -67,20 +67,20 @@
         "grid": "2:2"
       },
       {
-        "name": "A. Terzić",
-        "number": 71,
+        "name": "G. Bracaglia",
+        "number": 79,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "G. Calò",
-        "number": 14,
+        "name": "P. Masini",
+        "number": 73,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Matteo Cichella",
-        "number": 16,
+        "name": "G. Calò",
+        "number": 14,
         "pos": "M",
         "grid": "3:1"
       },
@@ -111,9 +111,9 @@
     ],
     "substitutes": [
       {
-        "name": "E. Tchato",
-        "number": 90,
-        "pos": "D",
+        "name": "D. Bîrligea",
+        "number": 11,
+        "pos": "F",
         "grid": null
       },
       {
@@ -123,8 +123,38 @@
         "grid": null
       },
       {
-        "name": "W. Amey",
-        "number": 5,
+        "name": "A. Terzić",
+        "number": 71,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Pisseri",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Oyono",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Hasa",
+        "number": 70,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Fini",
+        "number": 40,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Omar Fayed",
+        "number": 74,
         "pos": "D",
         "grid": null
       },
@@ -135,9 +165,9 @@
         "grid": null
       },
       {
-        "name": "D. Bîrligea",
-        "number": 11,
-        "pos": "F",
+        "name": "W. Amey",
+        "number": 5,
+        "pos": "D",
         "grid": null
       },
       {
@@ -147,9 +177,9 @@
         "grid": null
       },
       {
-        "name": "G. Bracaglia",
-        "number": 79,
-        "pos": "D",
+        "name": "Matteo Cichella",
+        "number": 16,
+        "pos": "M",
         "grid": null
       },
       {
@@ -168,36 +198,6 @@
         "name": "A. El Azzouzi",
         "number": 34,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Omar Fayed",
-        "number": 74,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "S. Fini",
-        "number": 40,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "L. Hasa",
-        "number": 70,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "P. Masini",
-        "number": 73,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Pisseri",
-        "number": 12,
-        "pos": "G",
         "grid": null
       }
     ]

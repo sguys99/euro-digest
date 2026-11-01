@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-26T20:00:00.000Z"
+    "updated": "2026-11-01T13:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -23,7 +23,7 @@
     {
       "name": "Félix Correia",
       "goals": 2,
-      "assists": 1
+      "assists": 2
     },
     {
       "name": "Miguel Ángel Sierra",
@@ -36,11 +36,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1570431",
-    "kickoff": "2026-10-26T20:00:00.000Z",
+    "match": "af-1570438",
+    "kickoff": "2026-11-01T13:00:00.000Z",
     "comp": "LALIGA",
-    "side": "home",
-    "opponent": "osasuna",
+    "side": "away",
+    "opponent": "getafe",
     "startXI": [
       {
         "name": "O. Vlachodimos",
@@ -97,28 +97,34 @@
         "grid": "3:1"
       },
       {
-        "name": "Isaac",
-        "number": 16,
+        "name": "L. Stassin",
+        "number": 19,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "L. Stassin",
-        "number": 19,
+        "name": "Isaac",
+        "number": 16,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "José Ángel Carmona",
-        "number": 22,
-        "pos": "D",
+        "name": "R. Vargas",
+        "number": 11,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "Julio Díaz del Romo",
-        "number": 3,
+        "name": "R. Ure",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Sangante",
+        "number": 12,
         "pos": "D",
         "grid": null
       },
@@ -126,6 +132,18 @@
         "name": "Peque Fernández",
         "number": 10,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "G. Kochorashvili",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Jon Guridi",
+        "number": 18,
+        "pos": "M",
         "grid": null
       },
       {
@@ -141,14 +159,20 @@
         "grid": null
       },
       {
-        "name": "Jon Guridi",
-        "number": 18,
-        "pos": "M",
+        "name": "Julio Díaz del Romo",
+        "number": 3,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "G. Kochorashvili",
-        "number": 8,
+        "name": "José Ángel Carmona",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Manu Bueno",
+        "number": 14,
         "pos": "M",
         "grid": null
       },
@@ -156,30 +180,6 @@
         "name": "Fábio Cardoso",
         "number": 15,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Sangante",
-        "number": 12,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "R. Ure",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "R. Vargas",
-        "number": 11,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Manu Bueno",
-        "number": 14,
-        "pos": "M",
         "grid": null
       }
     ]

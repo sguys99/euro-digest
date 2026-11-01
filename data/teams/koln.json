@@ -10,9 +10,9 @@
     "#ED1C24"
   ],
   "formation": {
-    "shape": "4-2-3-1",
+    "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-24T13:30:00.000Z"
+    "updated": "2026-11-01T14:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -30,90 +30,90 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-2-3-1",
-    "match": "af-1575201",
-    "kickoff": "2026-10-24T13:30:00.000Z",
+    "formation": "4-4-2",
+    "match": "af-1575207",
+    "kickoff": "2026-11-01T14:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "home",
-    "opponent": "schalke",
+    "side": "away",
+    "opponent": "union-berlin",
     "startXI": [
       {
-        "name": "Marvin Schwäbe",
+        "name": "M. Schwäbe",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Sebastian Sebulonsen",
+        "name": "S. Sebulonsen",
         "number": 28,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Jahmai Simpson-Pusey",
-        "number": 22,
+        "name": "J. Schmied",
+        "number": 2,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Luka Lochoshvili",
-        "number": 24,
+        "name": "Jahmai Simpson-Pusey",
+        "number": 22,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Borna Sosa",
+        "name": "B. Sosa",
         "number": 3,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Ísak Bergmann Jóhannesson",
-        "number": 8,
+        "name": "L. Maina",
+        "number": 37,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Paul Michael Junior Okon-Engstler",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "T. Krauß",
+        "number": 5,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Tom Krauß",
-        "number": 5,
+        "name": "Í. Bergmann Jóhannesson",
+        "number": 8,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Linton Maina",
-        "number": 37,
-        "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "Mikey Moore",
-        "number": 47,
-        "pos": "M",
+        "name": "M. Bülter",
+        "number": 30,
+        "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "Said El Mala",
+        "name": "S. El Mala",
         "number": 10,
-        "pos": "M",
-        "grid": "4:1"
-      },
-      {
-        "name": "Marius Bülter",
-        "number": 30,
         "pos": "F",
-        "grid": "5:1"
+        "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "Luca Waldschmidt",
-        "number": 7,
-        "pos": "F",
+        "name": "R. Zieler",
+        "number": 20,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "Paul Okon-Engstler",
-        "number": 23,
+        "name": "A. Castro-Montes",
+        "number": 17,
         "pos": "M",
         "grid": null
       },
@@ -124,37 +124,37 @@
         "grid": null
       },
       {
-        "name": "Joel Schmied",
-        "number": 2,
+        "name": "L. Lochoshvili",
+        "number": 24,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Jan Uwe Thielmann",
-        "number": 29,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Ron-Robert Zieler",
-        "number": 20,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Gideon Mensah",
+        "name": "G. Mensah",
         "number": 14,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Alessio Castro-Montes",
-        "number": 17,
+        "name": "M. Moore",
+        "number": 47,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Thielmann",
+        "number": 29,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Malek El Mala",
+        "name": "L. Waldschmidt",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. El Mala",
         "number": 19,
         "pos": "F",
         "grid": null

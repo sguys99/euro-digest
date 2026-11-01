@@ -10,14 +10,14 @@
     "#000000"
   ],
   "formation": {
-    "shape": "4-4-2",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T16:30:00.000Z"
+    "updated": "2026-11-01T16:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Younes Ebnoutalib",
-      "goals": 5,
+      "goals": 6,
       "assists": 1
     },
     {
@@ -28,19 +28,19 @@
     {
       "name": "Can Uzun",
       "goals": 2,
-      "assists": null
+      "assists": 1
     }
   ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-4-2",
-    "match": "af-1575194",
-    "kickoff": "2026-10-24T16:30:00.000Z",
+    "formation": "4-2-3-1",
+    "match": "af-1575205",
+    "kickoff": "2026-11-01T16:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "away",
-    "opponent": "borussia-dortmund",
+    "side": "home",
+    "opponent": "hamburg",
     "startXI": [
       {
         "name": "N. Atubolu",
@@ -49,8 +49,8 @@
         "grid": "1:1"
       },
       {
-        "name": "N. Collins",
-        "number": 34,
+        "name": "Elias Baum",
+        "number": 2,
         "pos": "D",
         "grid": "2:4"
       },
@@ -67,22 +67,10 @@
         "grid": "2:2"
       },
       {
-        "name": "Elias Baum",
-        "number": 2,
+        "name": "K. Kosugi",
+        "number": 26,
         "pos": "D",
         "grid": "2:1"
-      },
-      {
-        "name": "R. Dōan",
-        "number": 20,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "N. Aséko Nkili",
-        "number": 15,
-        "pos": "M",
-        "grid": "3:3"
       },
       {
         "name": "R. Onyedika",
@@ -91,59 +79,59 @@
         "grid": "3:2"
       },
       {
+        "name": "N. Aséko Nkili",
+        "number": 15,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "R. Dōan",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "C. Uzun",
+        "number": 42,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
         "name": "F. Chaïbi",
         "number": 8,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "4:1"
       },
       {
         "name": "Y. Ebnoutalib",
         "number": 11,
         "pos": "F",
-        "grid": "4:2"
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Amaimouni",
+        "number": 29,
+        "pos": "F",
+        "grid": null
       },
       {
         "name": "J. Burkardt",
         "number": 9,
         "pos": "F",
-        "grid": "4:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "C. Uzun",
-        "number": 42,
-        "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Maluze",
-        "number": 37,
+        "name": "T. Chandler",
+        "number": 22,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "K. Kosugi",
-        "number": 26,
+        "name": "N. Collins",
+        "number": 34,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Knauff",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Kauã Santos",
-        "number": 40,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "O. HÃ¸jlund",
-        "number": 6,
-        "pos": "M",
         "grid": null
       },
       {
@@ -153,15 +141,27 @@
         "grid": null
       },
       {
-        "name": "L. Arrhov",
-        "number": 31,
+        "name": "N. Ilicevic",
+        "number": 23,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "A. Amaimouni",
-        "number": 29,
+        "name": "A. Knauff",
+        "number": 7,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Maluze",
+        "number": 37,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Kauã Santos",
+        "number": 40,
+        "pos": "G",
         "grid": null
       }
     ]

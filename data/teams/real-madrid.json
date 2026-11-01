@@ -14,22 +14,22 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T20:00:00.000Z"
+    "updated": "2026-11-01T15:15:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Kylian Mbappé",
-      "goals": 11,
+      "goals": 12,
       "assists": 2
     },
     {
       "name": "Jude Bellingham",
-      "goals": 3,
+      "goals": 4,
       "assists": 3
     },
     {
-      "name": "Arda Guler",
-      "goals": 2,
+      "name": "Yan Diomandé",
+      "goals": 3,
       "assists": 2
     }
   ],
@@ -38,56 +38,56 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1570426",
-    "kickoff": "2026-10-25T20:00:00.000Z",
+    "match": "af-1570440",
+    "kickoff": "2026-11-01T15:15:00.000Z",
     "comp": "LALIGA",
     "side": "away",
-    "opponent": "barcelona",
+    "opponent": "racing-santander",
     "startXI": [
       {
-        "name": "A. Lunin",
-        "number": 13,
+        "name": "T. Courtois",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "F. Valverde",
-        "number": 8,
+        "name": "T. Alexander-Arnold",
+        "number": 12,
         "pos": "D",
         "grid": "2:4"
-      },
-      {
-        "name": "I. Konate",
-        "number": 16,
-        "pos": "D",
-        "grid": "2:3"
       },
       {
         "name": "D. Huijsen",
         "number": 4,
         "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "I. Konaté",
+        "number": 16,
+        "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "M. Cucurella",
+        "name": "Marc Cucurella",
         "number": 17,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "B. Silva",
-        "number": 20,
+        "name": "A. Tchouaméni",
+        "number": 14,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "A. Tchouameni",
-        "number": 14,
+        "name": "Bernardo Silva",
+        "number": 20,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "A. Guler",
+        "name": "A. Güler",
         "number": 15,
         "pos": "M",
         "grid": "4:3"
@@ -105,7 +105,7 @@
         "grid": "4:1"
       },
       {
-        "name": "K. Mbappe",
+        "name": "Kylian Mbappé",
         "number": 10,
         "pos": "F",
         "grid": "5:1"
@@ -113,21 +113,15 @@
     ],
     "substitutes": [
       {
-        "name": "S. Mestre",
-        "number": 26,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "I. Voloshyn",
-        "number": 39,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "A. Rudiger",
-        "number": 22,
+        "name": "Álvaro Fernández",
+        "number": 18,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Brahim Díaz",
+        "number": 21,
+        "pos": "M",
         "grid": null
       },
       {
@@ -137,39 +131,9 @@
         "grid": null
       },
       {
-        "name": "Eder Militao",
+        "name": "Éder Militão",
         "number": 3,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Carreras",
-        "number": 18,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "T. Alexander-Arnold",
-        "number": 12,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "E. Camavinga",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "T. Pitarch",
-        "number": 27,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "B. Diaz",
-        "number": 21,
-        "pos": "M",
         "grid": null
       },
       {
@@ -179,9 +143,39 @@
         "grid": null
       },
       {
-        "name": "C. Espi",
+        "name": "Carlos Espí",
         "number": 19,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Lunin",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Sergio Mestre",
+        "number": 26,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Thiago Pitarch",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Rüdiger",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Camavinga",
+        "number": 6,
+        "pos": "M",
         "grid": null
       }
     ]

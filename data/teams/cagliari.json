@@ -10,14 +10,19 @@
     "#002350"
   ],
   "formation": {
-    "shape": "3-5-1-1",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-27T19:45:00.000Z"
+    "updated": "2026-11-01T14:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Daniel Maldini",
       "goals": 5,
+      "assists": null
+    },
+    {
+      "name": "M'Bala Nzola",
+      "goals": 2,
       "assists": null
     }
   ],
@@ -25,12 +30,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-5-1-1",
-    "match": "af-1550168",
-    "kickoff": "2026-10-27T19:45:00.000Z",
+    "formation": "4-2-3-1",
+    "match": "af-1550183",
+    "kickoff": "2026-11-01T14:00:00.000Z",
     "comp": "SERIEA",
     "side": "away",
-    "opponent": "roma",
+    "opponent": "lazio",
     "startXI": [
       {
         "name": "E. Caprile",
@@ -42,53 +47,53 @@
         "name": "Zé Pedro",
         "number": 2,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:4"
       },
       {
-        "name": "Y. Mina",
-        "number": 26,
+        "name": "A. Deiola",
+        "number": 14,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:3"
       },
       {
         "name": "J. Rodríguez",
         "number": 15,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:2"
       },
       {
-        "name": "Y. Sugawara",
-        "number": 28,
-        "pos": "M",
-        "grid": "3:5"
+        "name": "A. Obert",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:1"
       },
       {
         "name": "M. Adopo",
         "number": 8,
         "pos": "M",
-        "grid": "3:4"
+        "grid": "3:2"
       },
       {
         "name": "A. Romano",
         "number": 4,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "A. Deiola",
-        "number": 14,
-        "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "A. Obert",
-        "number": 33,
         "pos": "M",
         "grid": "3:1"
       },
       {
         "name": "A. Fadera",
         "number": 39,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "D. Maldini",
+        "number": 70,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "J. Fazzini",
+        "number": 10,
         "pos": "M",
         "grid": "4:1"
       },
@@ -100,24 +105,6 @@
       }
     ],
     "substitutes": [
-      {
-        "name": "J. Fazzini",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Y. Trepy",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "R. Gagliardini",
-        "number": 21,
-        "pos": "M",
-        "grid": null
-      },
       {
         "name": "Kevin Carlos",
         "number": 9,
@@ -137,12 +124,6 @@
         "grid": null
       },
       {
-        "name": "D. Maldini",
-        "number": 70,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "Y. Massolin",
         "number": 79,
         "pos": "M",
@@ -152,6 +133,12 @@
         "name": "P. Mendy",
         "number": 31,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Y. Mina",
+        "number": 26,
+        "pos": "D",
         "grid": null
       },
       {
@@ -167,8 +154,26 @@
         "grid": null
       },
       {
+        "name": "Y. Sugawara",
+        "number": 28,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "Ivan Stoyanov Sulev",
         "number": 32,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Y. Trepy",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "H. Winks",
+        "number": 6,
         "pos": "M",
         "grid": null
       },
@@ -182,6 +187,12 @@
         "name": "G. Aurelio",
         "number": 24,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "R. Gagliardini",
+        "number": 21,
+        "pos": "M",
         "grid": null
       }
     ]

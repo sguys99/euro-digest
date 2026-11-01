@@ -12,13 +12,18 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-26T19:30:00.000Z"
+    "updated": "2026-11-01T16:15:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Ernest Nuamah",
-      "goals": 3,
+      "goals": 4,
       "assists": 1
+    },
+    {
+      "name": "Corentin Tolisso",
+      "goals": 2,
+      "assists": 3
     },
     {
       "name": "Zachary Athekame",
@@ -31,11 +36,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1552800",
-    "kickoff": "2026-10-26T19:30:00.000Z",
+    "match": "af-1552804",
+    "kickoff": "2026-11-01T16:15:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "paris-saint-germain",
+    "side": "home",
+    "opponent": "angers",
     "startXI": [
       {
         "name": "D. Greif",
@@ -68,14 +73,14 @@
         "grid": "2:1"
       },
       {
-        "name": "T. Tessmann",
-        "number": 6,
+        "name": "M. Bidstrup",
+        "number": 2,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "T. Morton",
-        "number": 23,
+        "name": "T. Tessmann",
+        "number": 6,
         "pos": "M",
         "grid": "3:2"
       },
@@ -86,47 +91,29 @@
         "grid": "3:1"
       },
       {
-        "name": "E. Nuamah",
-        "number": 7,
+        "name": "J. Duranville",
+        "number": 24,
         "pos": "F",
         "grid": "4:3"
       },
       {
-        "name": "K. Merah",
-        "number": 18,
+        "name": "E. Nuamah",
+        "number": 7,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "J. Duranville",
-        "number": 24,
+        "name": "Keito Nakamura",
+        "number": 11,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "N. Nartey",
-        "number": 99,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "R. Kluivert",
-        "number": 21,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "K. Boudache",
         "number": 26,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Bidstrup",
-        "number": 2,
-        "pos": "M",
         "grid": null
       },
       {
@@ -136,20 +123,14 @@
         "grid": null
       },
       {
-        "name": "A. Hamdani",
-        "number": 44,
+        "name": "Alejandro Gomes Rodriguez",
+        "number": 32,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "R. Himbert",
-        "number": 45,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "N. Kamara",
-        "number": 85,
+        "name": "R. Kluivert",
+        "number": 21,
         "pos": "D",
         "grid": null
       },
@@ -157,6 +138,30 @@
         "name": "Clinton Mata",
         "number": 22,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Merah",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Nartey",
+        "number": 99,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Tagliafico",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Cluver Sambi Mbungu",
+        "number": 33,
+        "pos": "M",
         "grid": null
       }
     ]

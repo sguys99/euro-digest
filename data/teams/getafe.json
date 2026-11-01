@@ -10,13 +10,18 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "5-4-1",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T13:00:00.000Z"
+    "updated": "2026-11-01T13:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Martin Satriano",
+      "goals": 3,
+      "assists": 2
+    },
+    {
+      "name": "Enes Ünal",
       "goals": 2,
       "assists": 1
     }
@@ -25,97 +30,97 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "5-4-1",
-    "match": "af-1570424",
-    "kickoff": "2026-10-25T13:00:00.000Z",
+    "formation": "4-2-3-1",
+    "match": "af-1570438",
+    "kickoff": "2026-11-01T13:00:00.000Z",
     "comp": "LALIGA",
-    "side": "away",
-    "opponent": "athletic",
+    "side": "home",
+    "opponent": "sevilla",
     "startXI": [
       {
-        "name": "D. Soria",
+        "name": "David Soria",
         "number": 13,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Kiko Femenia",
-        "number": 17,
-        "pos": "D",
-        "grid": "2:5"
-      },
-      {
-        "name": "D. Carvajal",
+        "name": "Daniel Carvajal",
         "number": 14,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "N. Gudelj",
-        "number": 8,
+        "name": "S. Boselli",
+        "number": 15,
         "pos": "D",
         "grid": "2:3"
+      },
+      {
+        "name": "D. Dakonam",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "J. Valou",
         "number": 26,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "J. Mojica",
-        "number": 22,
-        "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "R. Terrats",
-        "number": 11,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Francho",
-        "number": 16,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "M. Martin",
-        "number": 6,
+        "name": "N. Gudelj",
+        "number": 8,
         "pos": "M",
         "grid": "3:2"
+      },
+      {
+        "name": "Francho Serrano",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Andrés García",
+        "number": 21,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Ramón Terrats",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:2"
       },
       {
         "name": "M. Satriano",
         "number": 10,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "4:1"
       },
       {
-        "name": "I. Azon",
-        "number": 20,
+        "name": "E. Ünal",
+        "number": 19,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "J. Letacek",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "D. Ferrer",
-        "number": 35,
-        "pos": "G",
-        "grid": null
-      },
-      {
         "name": "A. Abqar",
         "number": 5,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Iván Azón",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "I. K. Danfakha",
+        "number": 36,
+        "pos": "F",
         "grid": null
       },
       {
@@ -125,39 +130,45 @@
         "grid": null
       },
       {
-        "name": "S. Sazonov",
-        "number": 4,
+        "name": "Diego Ferrer",
+        "number": 35,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Kiko Femenía",
+        "number": 17,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "S. Boselli",
-        "number": 15,
-        "pos": "D",
+        "name": "J. Letáček",
+        "number": 1,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "A. Garcia",
-        "number": 21,
-        "pos": "D",
+        "name": "O. Mangala",
+        "number": 23,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "A. Risco",
+        "name": "Borja Mayoral",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Alberto Risco",
         "number": 28,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "E. Unal",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "B. Mayoral",
-        "number": 9,
-        "pos": "F",
+        "name": "S. Sazonov",
+        "number": 4,
+        "pos": "D",
         "grid": null
       }
     ]
