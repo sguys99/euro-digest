@@ -1,0 +1,502 @@
+{
+  "label": "2026-11-01-v0.5-r",
+  "variant": "base",
+  "mode": "live",
+  "model": "claude-haiku-5-5",
+  "promptId": "p_e725c16c76f0",
+  "prompt": "configs/prompts/summarize.md",
+  "promptChars": 5162,
+  "checker": {
+    "id": "c_b061ceda7d60",
+    "files": [
+      "scripts/lib/brief-check-lexicon.ts",
+      "scripts/lib/brief-check.ts",
+      "scripts/lib/brief-grammar.ts",
+      "scripts/lib/brief-template.ts",
+      "scripts/lib/brief.ts",
+      "scripts/lib/josa.ts",
+      "scripts/lib/names.ts"
+    ]
+  },
+  "configs": {
+    "id": "g_e2475aa54111",
+    "files": [
+      "configs/competitions.json",
+      "configs/korean-players.json",
+      "configs/names.ko.json",
+      "configs/team-ids.json"
+    ],
+    "llmMaxMatches": 15
+  },
+  "runId": "eval-dev-20261101T093043Z-f899",
+  "startedAt": "2026-11-01T09:30:43.147Z",
+  "finishedAt": "2026-11-01T09:32:18.109Z",
+  "settings": {
+    "maxTokens": 16384,
+    "requestTimeoutMs": 120000,
+    "thinking": "adaptive",
+    "effort": "medium",
+    "cacheSystem": false,
+    "attempts": 1
+  },
+  "warnings": [
+    {
+      "date": "2026-10-25",
+      "code": "output-over-alert",
+      "out": 6432,
+      "limit": 6000
+    }
+  ],
+  "days": [
+    {
+      "date": "2026-09-19",
+      "customId": "golden-2026-09-19",
+      "inputHash": "i_d859745d3bd8",
+      "matches": 5,
+      "userChars": 1793,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Brentford가 홈에서 Chelsea를 3-0으로 완파했고 승점 9로 3위다.\",\"r\":[\"m560591\",\"sPL\"]},{\"t\":\"Bayern이 Michael Olise의 해트트릭을 앞세워 Union Berlin을 7-0으로 완파했다.\",\"r\":[\"m565804\"]},{\"t\":\"Woo-yeong Jeong은 Union Berlin의 Bayern전에서 선발로 나와 60분을 뛰었다.\",\"r\":[\"k512\",\"m565804\"]},{\"t\":\"Elche가 Espanyol을 3-1로 꺾었다.\",\"r\":[\"m564692\"]},{\"t\":\"Monza가 홈에서 Sassuolo를 2-1로 꺾었다.\",\"r\":[\"m558596\"]}]}",
+      "usage": {
+        "in": 5753,
+        "out": 5541,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 5268,
+      "latencyMs": 23417.839763,
+      "costUsd": 0.003346,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Brentford가 홈에서 Chelsea를 3-0으로 완파했고 승점 9로 3위다.",
+          "text": "브렌트포드가 홈에서 첼시를 3-0으로 완파했고 승점 9로 3위다.",
+          "refs": [
+            "m560591",
+            "sPL"
+          ],
+          "chars": 36,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "브렌트포드가 프리미어리그 홈경기에서 첼시를 3-0으로 완파했다.",
+          "grammar": "win+rank"
+        },
+        {
+          "n": 2,
+          "raw": "Bayern이 Michael Olise의 해트트릭을 앞세워 Union Berlin을 7-0으로 완파했다.",
+          "text": "바이에른 뮌헨이 마이클 올리세의 해트트릭을 앞세워 우니온 베를린을 7-0으로 완파했다.",
+          "refs": [
+            "m565804"
+          ],
+          "chars": 48,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바이에른 뮌헨이 분데스리가 홈경기에서 마이클 올리세의 해트트릭을 앞세워 우니온 베를린을 7-0으로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 3,
+          "raw": "Woo-yeong Jeong은 Union Berlin의 Bayern전에서 선발로 나와 60분을 뛰었다.",
+          "text": "정우영은 우니온 베를린의 바이에른 뮌헨전에서 선발로 나와 60분을 뛰었다.",
+          "refs": [
+            "k512",
+            "m565804"
+          ],
+          "chars": 41,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바이에른 뮌헨이 분데스리가 홈경기에서 마이클 올리세의 해트트릭을 앞세워 우니온 베를린을 7-0으로 완파했다.",
+          "grammar": "korean"
+        },
+        {
+          "n": 4,
+          "raw": "Elche가 Espanyol을 3-1로 꺾었다.",
+          "text": "엘체가 에스파뇰을 3-1로 꺾었다.",
+          "refs": [
+            "m564692"
+          ],
+          "chars": 19,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "엘체가 라리가 원정에서 에스파뇰을 3-1로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 5,
+          "raw": "Monza가 홈에서 Sassuolo를 2-1로 꺾었다.",
+          "text": "몬차가 홈에서 사수올로를 2-1로 꺾었다.",
+          "refs": [
+            "m558596"
+          ],
+          "chars": 23,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "몬차가 세리에 A 홈경기에서 사수올로를 2-1로 꺾었다.",
+          "grammar": "win"
+        }
+      ],
+      "hiddenRefs": [],
+      "template": [
+        "브렌트포드가 프리미어리그 홈경기에서 첼시를 3-0으로 완파했다.",
+        "바이에른 뮌헨이 분데스리가 홈경기에서 마이클 올리세의 해트트릭을 앞세워 우니온 베를린을 7-0으로 완파했다.",
+        "엘체가 라리가 원정에서 에스파뇰을 3-1로 꺾었다.",
+        "몬차가 세리에 A 홈경기에서 사수올로를 2-1로 꺾었다.",
+        "아스널이 승점 12로 프리미어리그 선두, 맨체스터 시티가 승점 12로 2위, 브렌트포드가 승점 9로 3위다."
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "customId": "golden-2026-10-11",
+      "inputHash": "i_42b2e27ecb5b",
+      "matches": 23,
+      "userChars": 6377,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Atleti가 Alavés 원정에서 Cristian Romero의 87분 결승골로 2-1 승리를 거뒀다.\",\"r\":[\"m564699\"]},{\"t\":\"Chelsea가 Bournemouth를 5-1로 완파했다.\",\"r\":[\"m560595\"]},{\"t\":\"Leverkusen가 Mainz 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.\",\"r\":[\"m565812\"]},{\"t\":\"Bayern이 Augsburg와 Nathaniel Brown의 80분 동점골로 2-2로 비겼다.\",\"r\":[\"m565819\"]},{\"t\":\"Young-woo Seol는 Augsburg의 Bayern전에서 선발로 나와 62분을 뛰었다.\",\"r\":[\"k197985\",\"m565819\"]}]}",
+      "usage": {
+        "in": 8155,
+        "out": 5898,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 5612,
+      "latencyMs": 24064.255975,
+      "costUsd": 0.003765,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Atleti가 Alavés 원정에서 Cristian Romero의 87분 결승골로 2-1 승리를 거뒀다.",
+          "text": "아틀레티코 마드리드가 알라베스 원정에서 크리스티안 로메로의 87분 결승골로 2-1 승리를 거뒀다.",
+          "refs": [
+            "m564699"
+          ],
+          "chars": 54,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "아틀레티코 마드리드가 라리가 원정에서 크리스티안 로메로의 87분 결승골로 알라베스를 2-1로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 2,
+          "raw": "Chelsea가 Bournemouth를 5-1로 완파했다.",
+          "text": "첼시가 본머스를 5-1로 완파했다.",
+          "refs": [
+            "m560595"
+          ],
+          "chars": 19,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "첼시가 프리미어리그 홈경기에서 본머스를 5-1로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 3,
+          "raw": "Leverkusen가 Mainz 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "text": "레버쿠젠이 마인츠 원정에서 7골을 주고받은 끝에 4-3으로 이겼다.",
+          "refs": [
+            "m565812"
+          ],
+          "chars": 37,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "레버쿠젠이 분데스리가 원정에서 무사 디아비의 65분 결승골로 마인츠를 4-3으로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 4,
+          "raw": "Bayern이 Augsburg와 Nathaniel Brown의 80분 동점골로 2-2로 비겼다.",
+          "text": "바이에른 뮌헨이 아우크스부르크와 Nathaniel Brown의 80분 동점골로 2-2로 비겼다.",
+          "refs": [
+            "m565819"
+          ],
+          "chars": 53,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바이에른 뮌헨이 분데스리가 원정에서 Nathaniel Brown의 동점골로 아우크스부르크와 2-2로 비겼다.",
+          "grammar": "draw"
+        },
+        {
+          "n": 5,
+          "raw": "Young-woo Seol는 Augsburg의 Bayern전에서 선발로 나와 62분을 뛰었다.",
+          "text": "설영우는 아우크스부르크의 바이에른 뮌헨전에서 선발로 나와 62분을 뛰었다.",
+          "refs": [
+            "k197985",
+            "m565819"
+          ],
+          "chars": 41,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바이에른 뮌헨이 분데스리가 원정에서 Nathaniel Brown의 동점골로 아우크스부르크와 2-2로 비겼다.",
+          "grammar": "korean"
+        }
+      ],
+      "hiddenRefs": [
+        "m565815",
+        "m559672",
+        "m558588",
+        "m565813",
+        "m559666",
+        "m559674",
+        "m559668",
+        "m559673",
+        "sL1"
+      ],
+      "template": [
+        "바이에른 뮌헨이 분데스리가 원정에서 Nathaniel Brown의 동점골로 아우크스부르크와 2-2로 비겼다.",
+        "아틀레티코 마드리드가 라리가 원정에서 크리스티안 로메로의 87분 결승골로 알라베스를 2-1로 꺾었다.",
+        "토트넘이 프리미어리그 원정에서 도미닉 솔란케의 90+2분 동점골로 맨체스터 유나이티드와 1-1로 비겼다.",
+        "레버쿠젠이 분데스리가 원정에서 무사 디아비의 65분 결승골로 마인츠를 4-3으로 꺾었다.",
+        "도르트문트가 승점 13으로 분데스리가 선두, 바이에른 뮌헨이 승점 11로 2위다."
+      ]
+    },
+    {
+      "date": "2026-10-25",
+      "customId": "golden-2026-10-25",
+      "inputHash": "i_045cbb143cd8",
+      "matches": 19,
+      "userChars": 5481,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Napoli가 6골을 주고받은 끝에 Roma와 3-3으로 비겼다.\",\"r\":[\"m558564\"]},{\"t\":\"Elche가 Rayo Vallecano를 3-0으로 완파했다.\",\"r\":[\"m564718\"]},{\"t\":\"Atleti가 Julián Álvarez의 48분 결승골로 RC Deportivo La Coruña를 1-0으로 꺾었다.\",\"r\":[\"m564724\"]},{\"t\":\"Aston Villa가 Nicolas Jackson의 60분 결승골로 Man City를 2-1로 꺾었다.\",\"r\":[\"m560614\"]},{\"t\":\"Jae-sung Lee는 Mainz의 Bremen전에서 선발로 나와 75분을 뛰었다.\",\"r\":[\"k2906\",\"m565830\"]}]}",
+      "usage": {
+        "in": 7667,
+        "out": 6432,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 6147,
+      "latencyMs": 26400.204204999995,
+      "costUsd": 0.003983,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Napoli가 6골을 주고받은 끝에 Roma와 3-3으로 비겼다.",
+          "text": "나폴리가 6골을 주고받은 끝에 로마와 3-3으로 비겼다.",
+          "refs": [
+            "m558564"
+          ],
+          "chars": 31,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "로마가 세리에 A 원정에서 Leonardo Balerdi의 89분 동점골로 나폴리와 3-3으로 비겼다.",
+          "grammar": "draw"
+        },
+        {
+          "n": 2,
+          "raw": "Elche가 Rayo Vallecano를 3-0으로 완파했다.",
+          "text": "엘체가 라요 바예카노를 3-0으로 완파했다.",
+          "refs": [
+            "m564718"
+          ],
+          "chars": 24,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "엘체가 라리가 원정에서 라요 바예카노를 3-0으로 완파했다.",
+          "grammar": "win"
+        },
+        {
+          "n": 3,
+          "raw": "Atleti가 Julián Álvarez의 48분 결승골로 RC Deportivo La Coruña를 1-0으로 꺾었다.",
+          "text": "아틀레티코 마드리드가 훌리안 알바레스의 48분 결승골로 데포르티보 라코루냐를 1-0으로 꺾었다.",
+          "refs": [
+            "m564724"
+          ],
+          "chars": 53,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "아틀레티코 마드리드가 라리가 홈경기에서 훌리안 알바레스의 결승골로 데포르티보 라코루냐를 1-0으로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 4,
+          "raw": "Aston Villa가 Nicolas Jackson의 60분 결승골로 Man City를 2-1로 꺾었다.",
+          "text": "애스턴 빌라가 니콜라스 잭슨의 60분 결승골로 맨체스터 시티를 2-1로 꺾었다.",
+          "refs": [
+            "m560614"
+          ],
+          "chars": 44,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "애스턴 빌라가 프리미어리그 홈경기에서 니콜라스 잭슨의 60분 결승골로 맨체스터 시티를 2-1로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 5,
+          "raw": "Jae-sung Lee는 Mainz의 Bremen전에서 선발로 나와 75분을 뛰었다.",
+          "text": "이재성은 마인츠의 브레멘전에서 선발로 나와 75분을 뛰었다.",
+          "refs": [
+            "k2906",
+            "m565830"
+          ],
+          "chars": 33,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "브레멘이 분데스리가 원정에서 Ludovit Reis의 61분 결승골로 마인츠를 3-2로 꺾었다.",
+          "grammar": "korean"
+        }
+      ],
+      "hiddenRefs": [
+        "m565834",
+        "m564722",
+        "m558565",
+        "m559652"
+      ],
+      "template": [
+        "토트넘이 프리미어리그 원정에서 첼시를 2-0으로 꺾었다.",
+        "아틀레티코 마드리드가 라리가 홈경기에서 훌리안 알바레스의 결승골로 데포르티보 라코루냐를 1-0으로 꺾었다.",
+        "브레멘이 분데스리가 원정에서 Ludovit Reis의 61분 결승골로 마인츠를 3-2로 꺾었다.",
+        "애스턴 빌라가 프리미어리그 홈경기에서 니콜라스 잭슨의 60분 결승골로 맨체스터 시티를 2-1로 꺾었다.",
+        "쾰른과 샬케04가 분데스리가에서 0-0으로 비겼다."
+      ]
+    },
+    {
+      "date": "2026-11-01",
+      "customId": "golden-2026-11-01",
+      "inputHash": "i_3f2be307488a",
+      "matches": 22,
+      "userChars": 6867,
+      "ok": true,
+      "stopReason": "end_turn",
+      "errorType": null,
+      "text": "{\"l\":[{\"t\":\"Alavés를 6-1로 완파한 Barça는 승점 30으로 LaLiga 선두다.\",\"r\":[\"m564732\",\"sLL\"]},{\"t\":\"Chelsea가 Morgan Rogers의 50분 결승골로 Man United를 2-0으로 꺾었다.\",\"r\":[\"m560626\"]},{\"t\":\"Dortmund가 Fábio Silva의 89분 동점골로 Bayern과 2-2로 비겼다.\",\"r\":[\"m565845\"]},{\"t\":\"Stuttgart가 Leverkusen 원정에서 4-2로 이겼다.\",\"r\":[\"m565847\"]},{\"t\":\"Kang-in Lee는 Levante전에서 선발로 나와 67분을 뛰었다.\",\"r\":[\"k927\",\"m564730\"]}]}",
+      "usage": {
+        "in": 8387,
+        "out": 4977,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "thinkingTokens": 4703,
+      "latencyMs": 20477.43131,
+      "costUsd": 0.003327,
+      "verdict": "ok",
+      "stage": "none",
+      "reason": null,
+      "lineReasons": {},
+      "lineWarnings": {},
+      "lines": [
+        {
+          "n": 1,
+          "raw": "Alavés를 6-1로 완파한 Barça는 승점 30으로 LaLiga 선두다.",
+          "text": "알라베스를 6-1로 완파한 바르셀로나는 승점 30으로 라리가 선두다.",
+          "refs": [
+            "m564732",
+            "sLL"
+          ],
+          "chars": 38,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "바르셀로나가 라리가 홈경기에서 알라베스를 6-1로 완파했다.",
+          "grammar": "win+rank"
+        },
+        {
+          "n": 2,
+          "raw": "Chelsea가 Morgan Rogers의 50분 결승골로 Man United를 2-0으로 꺾었다.",
+          "text": "첼시가 Morgan Rogers의 50분 결승골로 맨체스터 유나이티드를 2-0으로 꺾었다.",
+          "refs": [
+            "m560626"
+          ],
+          "chars": 50,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "첼시가 프리미어리그 홈경기에서 Morgan Rogers의 결승골로 맨체스터 유나이티드를 2-0으로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 3,
+          "raw": "Dortmund가 Fábio Silva의 89분 동점골로 Bayern과 2-2로 비겼다.",
+          "text": "도르트문트가 Fábio Silva의 89분 동점골로 바이에른 뮌헨과 2-2로 비겼다.",
+          "refs": [
+            "m565845"
+          ],
+          "chars": 47,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "도르트문트가 분데스리가 원정에서 Fábio Silva의 89분 동점골로 바이에른 뮌헨과 2-2로 비겼다.",
+          "grammar": "draw"
+        },
+        {
+          "n": 4,
+          "raw": "Stuttgart가 Leverkusen 원정에서 4-2로 이겼다.",
+          "text": "슈투트가르트가 레버쿠젠 원정에서 4-2로 이겼다.",
+          "refs": [
+            "m565847"
+          ],
+          "chars": 27,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "슈투트가르트가 분데스리가 원정에서 Bilal El Khannouss의 결승골로 레버쿠젠을 4-2로 꺾었다.",
+          "grammar": "win"
+        },
+        {
+          "n": 5,
+          "raw": "Kang-in Lee는 Levante전에서 선발로 나와 67분을 뛰었다.",
+          "text": "이강인은 레반테전에서 선발로 나와 67분을 뛰었다.",
+          "refs": [
+            "k927",
+            "m564730"
+          ],
+          "chars": 28,
+          "ok": true,
+          "reasons": [],
+          "warnings": [],
+          "template": "아틀레티코 마드리드가 라리가 원정에서 알레한드로 그리말도의 36분 결승골로 레반테를 2-0으로 꺾었다.",
+          "grammar": "korean"
+        }
+      ],
+      "hiddenRefs": [
+        "m564735",
+        "m558542",
+        "m560628",
+        "m558539",
+        "m565843",
+        "m564736",
+        "m559643",
+        "sL1"
+      ],
+      "template": [
+        "도르트문트가 분데스리가 원정에서 Fábio Silva의 89분 동점골로 바이에른 뮌헨과 2-2로 비겼다.",
+        "첼시가 프리미어리그 홈경기에서 Morgan Rogers의 결승골로 맨체스터 유나이티드를 2-0으로 꺾었다.",
+        "아틀레티코 마드리드가 라리가 원정에서 알레한드로 그리말도의 36분 결승골로 레반테를 2-0으로 꺾었다.",
+        "AC 밀란이 세리에 A 홈경기에서 Adrien Rabiot의 10분 결승골로 인테르를 3-1로 꺾었다.",
+        "맨체스터 시티가 승점 21로 프리미어리그 선두, 아스널이 승점 21로 2위, 브라이턴이 승점 19로 3위다."
+      ]
+    }
+  ]
+}

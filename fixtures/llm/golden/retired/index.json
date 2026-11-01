@@ -1,0 +1,37 @@
+{
+  "note": "골든셋에서 뺀 날(2026-11-01 M3-03b — 10일 유지를 위해 한국 선수 날 10-25·11-01로 바꿈). 입력·소스는 검사기 회귀 문장(fixtures/llm/brief-check-probes.json)의 입력으로 남긴다 — eval:prompt는 읽지 않는다.",
+  "days": [
+    {
+      "date": "2026-10-14",
+      "title": "UCL 리그 페이즈 2차전 첫날 9경기 — 비킹 3-3 바이에른(전반 2-0), 인테르 3-4 브뤼헤, 갈라타사라이 1-4 바르셀로나, 순위 없음",
+      "tags": [
+        "ucl",
+        "big-win",
+        "draw",
+        "korean-team",
+        "no-standings"
+      ],
+      "m0": null,
+      "provenance": {
+        "results": "football-data /v4/matches?competitions=PL,PD,SA,BL1,FL1,CL&dateFrom=2026-10-11&dateTo=2026-10-17 (2026-10-17T05:12:51Z, M1-24) 중 2026-10-13 UTC 9경기",
+        "standings": "없음 — MD2 9경기만 끝난 표는 다시 받을 수 없다(현재 표는 MD2 전부 반영)",
+        "goals": "없음 — 지난 날짜 API-Football 날짜 조회 불가"
+      }
+    },
+    {
+      "date": "2026-10-15",
+      "title": "UCL 리그 페이즈 2차전 둘째 날 9경기 + MD2 뒤 순위 — 맨시티 2-4 PSG(전반 0-3), LASK 3-6 리버풀, 애스턴 빌라 6-0",
+      "tags": [
+        "ucl",
+        "big-win",
+        "standings"
+      ],
+      "m0": null,
+      "provenance": {
+        "results": "football-data /v4/matches …dateFrom=2026-10-11&dateTo=2026-10-17 (2026-10-17T05:12:51Z) 중 2026-10-14 UTC 9경기",
+        "standings": "football-data /v4/competitions/CL/standings (2026-10-17T05:15:44Z — MD2 뒤, 그 뒤 UCL 경기 없음)",
+        "goals": "없음 — 지난 날짜 API-Football 날짜 조회 불가"
+      }
+    }
+  ]
+}

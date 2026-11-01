@@ -53,6 +53,7 @@ import {
   estimateBriefCost,
   BRIEF_PROMPT_PATH,
   parseBriefOutput,
+  renderBriefPrompt,
 } from "../scripts/lib/brief";
 import { cardIdFor } from "../scripts/lib/card-id";
 import { BRIEF_LLM_MIN_ATTEMPT_MS } from "../scripts/lib/collect-deadlines";
@@ -1207,8 +1208,11 @@ describe("runCollect — 전날 경기 결과 → 브리핑 단건(FR-29 판정)
       thinking: "adaptive",
     });
     expect(request.cacheSystem).toBeUndefined();
-    // 지시문 = configs/prompts/summarize.md(M1-20 — M1-01 이월: 슬라이스 fixture 지시문에서 교체)
-    expect(request.system).toBe(read(BRIEF_PROMPT_PATH).trim());
+    // 지시문 = configs/prompts/summarize.md(M1-20 — M1-01 이월: 슬라이스 fixture 지시문에서 교체) — 한국 선수 블록이 없는 입력이라
+    // 조건 절을 펼치지 않은 판(M3-03b — BRIEF_KOREAN_ENABLED false)
+    expect(request.system).toBe(
+      renderBriefPrompt(read(BRIEF_PROMPT_PATH).trim(), []),
+    );
     // 기사 텍스트(제목·링크)는 브리핑 입력에 없다(D23·D24). 현재 순위는 입력 경기 대회의 확정 순위표(M1-19 — 중요도 순)
     // LLM 요청 본문은 중요도 순 앞 15경기(D51) — 23경기 중 리그 1 경기는 모두 잘려 리그 1 순위(sL1)도 본문에서 빠진다(템플릿·검사기는 전체 입력)
     const user = JSON.parse(request.user) as BriefInput;
@@ -1686,7 +1690,7 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
     expect(params[0]!.system).toEqual([
       {
         type: "text",
-        text: read(BRIEF_PROMPT_PATH).trim(),
+        text: renderBriefPrompt(read(BRIEF_PROMPT_PATH).trim(), []),
       },
     ]); // cache_control 없음(1요청)
     expect(newsFiles()).toEqual([]);

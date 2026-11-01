@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-11-01-v0.5, 변형 base, 지시문 p_e725c16c76f0) — thinking 6290토큰, 지연 27616ms, 판정 downgrade-line:1,2",
+  "text": "{\"l\":[{\"t\":\"Nicolas Jackson의 60분 결승골로 Aston Villa가 Man City를 2-1로 꺾었다.\",\"r\":[\"m560614\"]},{\"t\":\"Ludovit Reis의 61분 결승골로 Bremen이 Mainz를 3-2로 꺾었다.\",\"r\":[\"m565830\"]},{\"t\":\"Napoli가 Roma와 6골을 주고받은 끝에 3-3으로 비겼다.\",\"r\":[\"m558564\"]},{\"t\":\"Elche가 Rayo Vallecano를 3-0으로 완파했다.\",\"r\":[\"m564718\"]},{\"t\":\"Mainz의 Jae-sung Lee가 63분 골을 넣었다.\",\"r\":[\"k2906\",\"m565830\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 7667,
+    "output_tokens": 6552,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

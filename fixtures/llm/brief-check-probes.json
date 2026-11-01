@@ -661,8 +661,8 @@
     "golden-2026-09-19": "golden/inputs/2026-09-19.json",
     "golden-2026-09-21": "golden/inputs/2026-09-21.json",
     "golden-2026-10-10": "golden/inputs/2026-10-10.json",
-    "golden-2026-10-14": "golden/inputs/2026-10-14.json",
-    "golden-2026-10-15": "golden/inputs/2026-10-15.json",
+    "golden-2026-10-14": "golden/retired/inputs/2026-10-14.json",
+    "golden-2026-10-15": "golden/retired/inputs/2026-10-15.json",
     "r4-syn-1723020c": {
       "briefDate": "2026-10-11",
       "matches": [

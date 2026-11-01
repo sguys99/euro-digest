@@ -585,6 +585,37 @@ describe("브리핑 입력 — 사전에 없는 팀 짧은 이름 → 정식 이
     expect(allow.has(foldName("Deportivo"))).toBe(false); // 짧은 이름 단독은 허용 토큰이 아니다(그 줄은 템플릿)
   });
 
+  it("한국 선수 블록(korean — M3-03b)의 team도 같은 규칙으로 바꿔 그 경기 home·away와 같은 문자열을 유지한다(키 없으면 키 없음)", () => {
+    const k = {
+      id: "k1",
+      player: "Test Player",
+      team: "Deportivo",
+      match: "m544441",
+      started: true,
+      minutes: 90,
+      goals: 0,
+      assists: 0,
+    };
+    const out = canonicalizeBriefInput(
+      { ...input, korean: [k, { ...k, id: "k2", team: "Levante" }] },
+      INDEX,
+      { teamFullNames: FULL },
+    ).input;
+    expect(out.korean!.map((x) => x.team)).toEqual([
+      "RC Deportivo La Coruña",
+      "Levante",
+    ]);
+    expect(out.korean!.map((x) => x.team)).toEqual([
+      out.matches[0]!.home,
+      out.matches[0]!.away,
+    ]);
+    expect(Object.keys(out.korean![0]!)).toEqual(Object.keys(k));
+    expect(
+      "korean" in
+        canonicalizeBriefInput(input, INDEX, { teamFullNames: FULL }).input,
+    ).toBe(false);
+  });
+
   it("자책골 — 자책한 선수의 팀(상대 팀)도 바뀐 이름으로 판단한다", () => {
     const own = canonicalizeBriefInput(
       {

@@ -9,8 +9,8 @@
 | 경로 | 내용 |
 |---|---|
 | `index.json` | 10일 목록 — 발행일(KST)·한 줄 설명·태그·M0 입력 키(`m0`)·출처(`provenance`). zod `GoldenIndexSchema`(`scripts/lib/golden.ts`) |
-| `sources/<날짜>.json` | **빌더 입력**(내부 형식) — football-data 종료 경기(`FinishedMatch`), 순위(`BriefStandingsSource` — 빌더가 읽는 칸), 연결된 득점 목록(`MatchGoal[]`). 외부 API 원문이 아니라 어댑터(`toFinishedResults`·`toCompStandings`·`toMatchDetail` + `linkMatchDetails`)를 거친 값이다 |
-| `inputs/<날짜>.json` | **LLM에 보내는 입력** = `buildBriefInput`(M1-19 확정 빌더) → `canonicalizeBriefInput`(M1-21 — 사전에 없는 팀 짧은 이름은 football-data 정식 이름으로, D46 보완 2026-10-22). 소스 + configs(competitions·names.ko·korean-players·team-ids)에서 결정적으로 다시 만든다 |
+| `sources/<날짜>.json` | **빌더 입력**(내부 형식) — football-data 종료 경기(`FinishedMatch`), 순위(`BriefStandingsSource` — 빌더가 읽는 칸), 연결된 득점 목록(`MatchGoal[]`), 연결된 경기의 등록 한국 선수 행(`korean` — 선택, 부록 A `LedgerKoreanRow`와 같은 칸, M3-03b). 외부 API 원문이 아니라 어댑터(`toFinishedResults`·`toCompStandings`·`toMatchDetail` + `linkMatchDetails`·`koreanRowsOf`)를 거친 값이다 |
+| `inputs/<날짜>.json` | **LLM에 보내는 입력** = `buildBriefInput`(M1-19 확정 빌더 — 소스에 한국 선수 행이 있으면 한국 선수 블록 `korean`, 정기 실행의 `BRIEF_KOREAN_ENABLED`와 무관) → `canonicalizeBriefInput`(M1-21 — 사전에 없는 팀 짧은 이름은 football-data 정식 이름으로, D46 보완 2026-10-22). 소스 + configs(competitions·names.ko·korean-players·team-ids)에서 결정적으로 다시 만든다 |
 | `runs/<라벨>/run.json` | 실행 기록 — 날짜마다 출력 원문·치환 뒤 문장·판정(`judgeBriefResponse` 첫 시도)·줄별 사유 코드·같은 근거의 템플릿 줄·토큰(thinking)·비용·지연, 지시문 판(`promptId`·`prompt`)·검사기 판(`checker.id` — 판정 코드 파일 해시). zod `EvalRunSchema`(`scripts/lib/brief-eval.ts`) |
 
 mock 응답은 `../mock/by-id/golden-<날짜>.json`(base)·`golden-pre-<날짜>.json`(🧪 pre 변형)이다 — live 실행의 `--update-mock`이 쓴다. by-id라 지시문이 바뀌어도 같은 출력을 재생한다(지시문 비교는 live로).
@@ -26,11 +26,14 @@ mock 응답은 `../mock/by-id/golden-<날짜>.json`(base)·`golden-pre-<날짜>.
 | 2026-09-21 | 20 | 바쁜 날(득점 데이터 없음, 입력 D는 EPL 4경기만) | D |
 | 2026-10-10 | 3 | 적은 날, 막판 동점골(입력 C) | C |
 | 2026-10-11 | 23 | 경기 많은 날, 득점 13경기·5대 리그 순위(입력 E) | E |
-| 2026-10-14 | 9 | UCL MD2 첫날 — 3-3·3-4·1-4, 순위 없음 | — |
-| 2026-10-15 | 9 | UCL MD2 둘째 날 + 순위 — 6-0·3-6·2-4 | — |
 | 2026-10-17 | 4 | 금요일 4경기, 득점·4개 리그 순위(봇과 같은 경로로 받은 날) | — |
+| 2026-10-25 | 19 | 🆕 한국 선수 4명 출전(이재성 골·선발 3), 설영우 벤치(블록에 없음), 순위 없음 — 원장 기반 | — |
+| 2026-11-01 | 22 | 🆕 한국 선수 4명 출전(교체 13분 1), 설영우 벤치, 분데스리가 결과 보충(D60 — 순위 뺌) — 원장 기반 | — |
 
 - 입력 창은 봇과 같다 — 발행일 D의 입력 = UTC 하루 D-1에 킥오프한 종료 경기(M1-19).
+- **한국 선수 블록(M3-03b, 2026-11-01)**: 09-19·10-11·10-25·11-01 입력에 `korean`이 있다(태그 `korean`). 09-19·10-11은 저장소의 API-Football 단건 fixture 라인업에서 `koreanRowsOf`(지금 korean-players.json 기준)로 행을 더했고, 10-25·11-01은 경기 원장(`data/matches/2026-10.json` — 정기 실행이 쌓은 API-Football 기록)에서 만들었다. 정기 실행은 `BRIEF_KOREAN_ENABLED`(false)로 블록을 넣지 않지만 골든셋은 넣은 입력으로 지시문 v0.5의 한국 선수 절을 잰다. 지시문 조건 절(`<!-- korean -->`)은 보내는 본문에 블록이 있는 날만 펼쳐지므로 다른 6일의 지시문은 v0.4와 글자까지 같다(판 `p_24543d78cd9a`).
+- 10-25·11-01 결과는 `data/competitions/*.json`(커밋 52368be — football-data 경기 id·팀·라운드·점수) + 팀 이름 `fixtures/football/football-data/teams-*-2026.json`(team-ids 대응)이고, football-data가 아직 SCHEDULED였던 11-01 분데스리가 6경기는 원장 점수로 보충했다(D60과 같은 방식 — 그 대회 순위는 넣지 않음). 전반 점수 = 원장 득점 목록(완전한 경기만, 45분 + 추가시간까지). 10-25는 그날 아침 순위표 스냅숏이 저장소에 없어 순위가 없다. 지난 날짜는 football-data·API-Football 모두 다시 받지 않았다(저장소 데이터만).
+- **뺀 날(2026-11-01)**: 10-14·10-15(UCL MD2)는 10일을 유지하려고 10-25·11-01로 바꿨다. 입력·소스는 `retired/`에 남긴다 — 검사기 회귀 문장(`../brief-check-probes.json`)의 입력이고 eval:prompt는 읽지 않는다. UCL은 02-26·05-31·09-11이 덮는다.
 - 순위는 그날 아침 표를 다시 받을 수 없는 날이 있다: 2026-09-19·09-21·10-10은 M0-30 입력(fixtures/llm/brief-inputs)의 순위 행(M0-30이 시즌 경기 목록에서 계산)을 옮겼고 승·무·패 수가 없다(빌더는 읽지 않는다). 10-10 리그 1은 M0 행이 1~3위 + 7위뿐이라 입력이 3행이다. 2026-10-14는 MD2 절반만 끝난 표를 받을 수 없어 순위가 없다.
 - 2026-10-11 득점은 API-Football 단건 7경기(저장소 fixture) + M0-34 입력 E goals 6경기(같은 응답에서 옮긴 것, 원문은 저장소에 없음).
 - 2026-02-26의 round는 `PLAYOFFS`다 — football-data가 토너먼트 2차전에도 matchday 2를 주지만 `roundLabel`은 stage를 먼저 본다(M1-23 3회차 리뷰 버그 수정 — 리그 페이즈·정규 리그만 matchday 표기, 결승은 `FINAL`). 이 수정으로 이날 입력 해시가 바뀌어 이전 실행과의 비교에 '입력 다름'이 붙는다.

@@ -84,12 +84,72 @@ export function briefCustomId(briefDate: string): string {
   return `brief-${briefDate}`;
 }
 
-/** 지시문 읽기 — 파일 내용 `.trim()`(M0-30·M0-34와 같다). 비어 있으면 던진다(호출부가 setup 실패로 템플릿) */
+/**
+ * 지시문 조건 절(M3-03b — D55 ① '입력 키·문법·지시문 [문형]은 함께 켠다'): 지시문 파일에서 `<!-- korean -->` 줄과
+ * `<!-- /korean -->` 줄 사이는 **보내는 입력에 그 키가 있을 때만** 남긴다(표시 줄 자체는 늘 지운다). 키가 없는 날의 지시문은 조건 절이
+ * 생기기 전 판(v0.4)과 글자까지 같다 — 한국 선수가 뛰지 않은 날(또는 `BRIEF_KOREAN_ENABLED` false)에는 지시문이 늘지 않는다
+ * (thinking·입력 토큰 불변). [문형]의 한국 선수 절은 `renderBriefPatterns({ keys: ["korean"] })`와 같다(tests/brief-grammar.test.ts).
+ */
+export const BRIEF_PROMPT_KEYS = ["korean"] as const;
+export type BriefPromptKey = (typeof BRIEF_PROMPT_KEYS)[number];
+
+const PROMPT_OPEN = /^<!-- ([a-z]+) -->$/u;
+const PROMPT_CLOSE = /^<!-- \/([a-z]+) -->$/u;
+
+/**
+ * 지시문 파일 → 보낼 지시문(순수 함수 — 머리 주석 "지시문 조건 절"). 조건 절은 겹치지 않고 줄 단위다. 모르는 키·닫히지 않은 절·
+ * 짝이 맞지 않는 닫힘은 던진다(파일 오류 — 호출부가 setup 실패로 템플릿).
+ */
+export function renderBriefPrompt(
+  template: string,
+  keys: Iterable<BriefPromptKey>,
+): string {
+  const on = new Set<string>(keys);
+  const known = new Set<string>(BRIEF_PROMPT_KEYS);
+  const out: string[] = [];
+  let open: string | null = null;
+  for (const line of template.split("\n")) {
+    const o = PROMPT_OPEN.exec(line);
+    const c = PROMPT_CLOSE.exec(line);
+    if (o) {
+      if (open !== null || !known.has(o[1]!)) {
+        throw new Error(`${BRIEF_PROMPT_PATH} 조건 절 오류: ${line}`);
+      }
+      open = o[1]!;
+      continue;
+    }
+    if (c) {
+      if (open !== c[1]) {
+        throw new Error(`${BRIEF_PROMPT_PATH} 조건 절 오류: ${line}`);
+      }
+      open = null;
+      continue;
+    }
+    if (open === null || on.has(open)) out.push(line);
+  }
+  if (open !== null) {
+    throw new Error(`${BRIEF_PROMPT_PATH} 조건 절이 닫히지 않았다: ${open}`);
+  }
+  return out.join("\n");
+}
+
+/** 보내는 입력에 있는 지시문 조건 키 — korean: 한국 선수 블록 1건 이상 */
+export function briefPromptKeys(
+  input: Pick<BriefInput, "korean">,
+): BriefPromptKey[] {
+  return (input.korean?.length ?? 0) > 0 ? ["korean"] : [];
+}
+
+/**
+ * 지시문 읽기 — 파일 내용 `.trim()`(M0-30·M0-34와 같다). 비어 있거나 조건 절이 깨졌으면 던진다(호출부가 setup 실패로 템플릿).
+ * 돌려주는 값은 **파일 그대로**(조건 절 표시 포함) — 요청마다 `buildBriefRequest`가 입력 키로 펼친다.
+ */
 export async function loadBriefPrompt(rootDir: string): Promise<string> {
   const text = (
     await readFile(path.join(rootDir, BRIEF_PROMPT_PATH), "utf8")
   ).trim();
   if (!text) throw new Error(`${BRIEF_PROMPT_PATH}가 비어 있다`);
+  renderBriefPrompt(text, BRIEF_PROMPT_KEYS);
   return text;
 }
 
@@ -102,7 +162,8 @@ export function briefPromptId(system: string): string {
 }
 
 /**
- * 브리핑 요청 1건(순수 함수). user 본문은 **전체 입력의 앞 `llmMaxMatches`경기**(D51 — `briefLlmInput`, 기본 15)다 — 모델이 보지
+ * 브리핑 요청 1건(순수 함수). system = 지시문 파일을 보내는 본문의 키로 펼친 것(`renderBriefPrompt` — M3-03b).
+ * user 본문은 **전체 입력의 앞 `llmMaxMatches`경기**(D51 — `briefLlmInput`, 기본 15)다 — 모델이 보지
  * 못한 근거 id는 `briefLlmInput(input).hiddenRefs`로 검사기에 넘긴다(JudgeOptions.hiddenRefs). 템플릿·검사기 근거는 전체 입력.
  */
 export function buildBriefRequest(
@@ -110,10 +171,12 @@ export function buildBriefRequest(
   system: string,
   llmMaxMatches: number = BRIEF_LLM_MAX_MATCHES,
 ): LlmRequest {
+  const sent = briefLlmInput(input, llmMaxMatches).input;
   return {
     customId: briefCustomId(input.briefDate),
-    system,
-    user: serializeBriefInput(briefLlmInput(input, llmMaxMatches).input),
+    // 조건 절(M3-03b)은 보내는 본문(앞 15경기 — D51)에 그 키가 있을 때만 펼친다
+    system: renderBriefPrompt(system, briefPromptKeys(sent)),
+    user: serializeBriefInput(sent),
     maxTokens: BRIEF_MAX_TOKENS,
     effort: BRIEF_EFFORT,
     thinking: BRIEF_THINKING,

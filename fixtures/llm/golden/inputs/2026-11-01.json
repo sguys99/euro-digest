@@ -1,0 +1,817 @@
+{
+  "briefDate": "2026-11-01",
+  "matches": [
+    {
+      "id": "m565845",
+      "comp": "Bundesliga",
+      "round": "Matchday 8",
+      "home": "Bayern",
+      "away": "Dortmund",
+      "ft": "2-2",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "38",
+          "team": "Bayern",
+          "player": "Konrad Laimer"
+        },
+        {
+          "min": "60",
+          "team": "Dortmund",
+          "player": "Serhou Guirassy",
+          "assist": "Carney Chukwuemeka"
+        },
+        {
+          "min": "66",
+          "team": "Bayern",
+          "player": "Dayot Upamecano",
+          "assist": "Harry Kane"
+        },
+        {
+          "min": "89",
+          "team": "Dortmund",
+          "player": "Fábio Silva",
+          "assist": "Konstantinos Karetsas"
+        }
+      ]
+    },
+    {
+      "id": "m560626",
+      "comp": "Premier League",
+      "round": "Matchday 9",
+      "home": "Chelsea",
+      "away": "Man United",
+      "ft": "2-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "50",
+          "team": "Chelsea",
+          "player": "Morgan Rogers",
+          "assist": "Romeo Lavia"
+        },
+        {
+          "min": "64",
+          "team": "Chelsea",
+          "player": "Cole Palmer",
+          "type": "penalty"
+        }
+      ]
+    },
+    {
+      "id": "m564730",
+      "comp": "LaLiga",
+      "round": "Matchday 11",
+      "home": "Levante",
+      "away": "Atleti",
+      "ft": "0-2",
+      "ht": "0-1",
+      "goals": [
+        {
+          "min": "36",
+          "team": "Atleti",
+          "player": "Alejandro Grimaldo"
+        },
+        {
+          "min": "62",
+          "team": "Atleti",
+          "player": "Giuliano Simeone Baldini",
+          "assist": "Álex Baena"
+        }
+      ]
+    },
+    {
+      "id": "m558548",
+      "comp": "Serie A",
+      "round": "Matchday 10",
+      "home": "Milan",
+      "away": "Inter",
+      "ft": "3-1",
+      "ht": "3-1",
+      "goals": [
+        {
+          "min": "4",
+          "team": "Milan",
+          "player": "Christian Pulisic",
+          "assist": "Diego Moreira"
+        },
+        {
+          "min": "10",
+          "team": "Milan",
+          "player": "Adrien Rabiot",
+          "assist": "Diego Moreira"
+        },
+        {
+          "min": "22",
+          "team": "Inter",
+          "player": "Alessandro Bastoni"
+        },
+        {
+          "min": "43",
+          "team": "Milan",
+          "player": "Diego Moreira"
+        }
+      ]
+    },
+    {
+      "id": "m560623",
+      "comp": "Premier League",
+      "round": "Matchday 9",
+      "home": "Man City",
+      "away": "Brighton Hove",
+      "ft": "0-1",
+      "ht": "0-1",
+      "goals": [
+        {
+          "min": "11",
+          "team": "Brighton Hove",
+          "player": "Yasin Ayari",
+          "assist": "Maxim De Cuyper"
+        }
+      ]
+    },
+    {
+      "id": "m560630",
+      "comp": "Premier League",
+      "round": "Matchday 9",
+      "home": "Brentford",
+      "away": "Nottingham",
+      "ft": "2-0",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "30",
+          "team": "Brentford",
+          "player": "Nikola Milenković",
+          "type": "own_goal"
+        },
+        {
+          "min": "76",
+          "team": "Brentford",
+          "player": "Igor Thiago",
+          "assist": "Jaidon Anthony"
+        }
+      ]
+    },
+    {
+      "id": "m565839",
+      "comp": "Bundesliga",
+      "round": "Matchday 8",
+      "home": "M'gladbach",
+      "away": "SC Paderborn",
+      "ft": "0-0",
+      "ht": "0-0",
+      "goals": []
+    },
+    {
+      "id": "m565840",
+      "comp": "Bundesliga",
+      "round": "Matchday 8",
+      "home": "Schalke",
+      "away": "RB Leipzig",
+      "ft": "0-2",
+      "ht": "0-1",
+      "goals": [
+        {
+          "min": "37",
+          "team": "RB Leipzig",
+          "player": "Antonio Nusa",
+          "type": "penalty"
+        },
+        {
+          "min": "78",
+          "team": "RB Leipzig",
+          "player": "Rômulo José Cardoso da Cruz",
+          "assist": "Antonio Nusa"
+        }
+      ]
+    },
+    {
+      "id": "m565842",
+      "comp": "Bundesliga",
+      "round": "Matchday 8",
+      "home": "Augsburg",
+      "away": "Freiburg",
+      "ft": "1-2",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "18",
+          "team": "Augsburg",
+          "player": "Michael Gregoritsch",
+          "assist": "Arijon Ibrahimovic"
+        },
+        {
+          "min": "65",
+          "team": "Freiburg",
+          "player": "Igor Matanović",
+          "assist": "Yannick Engelhardt"
+        },
+        {
+          "min": "85",
+          "team": "Freiburg",
+          "player": "Cyriaque Irié",
+          "assist": "Vincenzo Grifo"
+        }
+      ]
+    },
+    {
+      "id": "m560627",
+      "comp": "Premier League",
+      "round": "Matchday 9",
+      "home": "Tottenham",
+      "away": "Crystal Palace",
+      "ft": "2-0",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "25",
+          "team": "Tottenham",
+          "player": "Archie Gray",
+          "assist": "Mohammed Kudus"
+        },
+        {
+          "min": "73",
+          "team": "Tottenham",
+          "player": "Jan Paul van Hecke"
+        }
+      ]
+    },
+    {
+      "id": "m564732",
+      "comp": "LaLiga",
+      "round": "Matchday 11",
+      "home": "Barça",
+      "away": "Alavés",
+      "ft": "6-1",
+      "ht": "4-0",
+      "goals": [
+        {
+          "min": "8",
+          "team": "Barça",
+          "player": "Raphael Dias Belloli",
+          "assist": "Fermín López"
+        },
+        {
+          "min": "23",
+          "team": "Barça",
+          "player": "Fermín López",
+          "assist": "Lamine Yamal"
+        },
+        {
+          "min": "41",
+          "team": "Barça",
+          "player": "Raphael Dias Belloli",
+          "assist": "Fermín López"
+        },
+        {
+          "min": "45+1",
+          "team": "Barça",
+          "player": "Lamine Yamal",
+          "assist": "João Cancelo"
+        },
+        {
+          "min": "64",
+          "team": "Barça",
+          "player": "Lamine Yamal",
+          "assist": "Gabriel Jesus"
+        },
+        {
+          "min": "81",
+          "team": "Barça",
+          "player": "Anthony Gordon",
+          "assist": "Rodri"
+        },
+        {
+          "min": "84",
+          "team": "Alavés",
+          "player": "Mariano Díaz"
+        }
+      ]
+    },
+    {
+      "id": "m565847",
+      "comp": "Bundesliga",
+      "round": "Matchday 8",
+      "home": "Leverkusen",
+      "away": "Stuttgart",
+      "ft": "2-4",
+      "ht": "1-2",
+      "goals": [
+        {
+          "min": "14",
+          "team": "Stuttgart",
+          "player": "Ermedin Demirović"
+        },
+        {
+          "min": "22",
+          "team": "Stuttgart",
+          "player": "Jamie Leweling"
+        },
+        {
+          "min": "28",
+          "team": "Leverkusen",
+          "player": "Patrik Schick",
+          "assist": "Aleix García"
+        },
+        {
+          "min": "51",
+          "team": "Stuttgart",
+          "player": "Bilal El Khannouss",
+          "assist": "Chris Führich"
+        },
+        {
+          "min": "65",
+          "team": "Stuttgart",
+          "player": "Ermedin Demirović",
+          "assist": "Deniz Undav"
+        },
+        {
+          "min": "79",
+          "team": "Leverkusen",
+          "player": "Ibrahim Maza",
+          "assist": "Miguel Gutiérrez"
+        }
+      ]
+    },
+    {
+      "id": "m560624",
+      "comp": "Premier League",
+      "round": "Matchday 9",
+      "home": "Bournemouth",
+      "away": "Leeds United",
+      "ft": "2-0",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "31",
+          "team": "Bournemouth",
+          "player": "Francisco Evanilson",
+          "assist": "Justin Kluivert"
+        },
+        {
+          "min": "90+4",
+          "team": "Bournemouth",
+          "player": "Amine Adli",
+          "assist": "Eli Kroupi"
+        }
+      ]
+    },
+    {
+      "id": "m560625",
+      "comp": "Premier League",
+      "round": "Matchday 9",
+      "home": "Coventry City",
+      "away": "Sunderland",
+      "ft": "3-1",
+      "ht": "2-0",
+      "goals": [
+        {
+          "min": "17",
+          "team": "Coventry City",
+          "player": "Tatsuhiro Sakamoto"
+        },
+        {
+          "min": "37",
+          "team": "Coventry City",
+          "player": "Taiwo Awoniyi"
+        },
+        {
+          "min": "52",
+          "team": "Coventry City",
+          "player": "Jack Rudoni",
+          "assist": "Victor Torp"
+        },
+        {
+          "min": "67",
+          "team": "Sunderland",
+          "player": "Enzo Le Fée",
+          "type": "penalty"
+        }
+      ]
+    },
+    {
+      "id": "m560629",
+      "comp": "Premier League",
+      "round": "Matchday 9",
+      "home": "Hull City",
+      "away": "Ipswich Town",
+      "ft": "2-2",
+      "ht": "0-1",
+      "goals": [
+        {
+          "min": "22",
+          "team": "Ipswich Town",
+          "player": "Florentino Luís",
+          "assist": "Abdoul Ouattara"
+        },
+        {
+          "min": "58",
+          "team": "Hull City",
+          "player": "Tim Iroegbunam",
+          "assist": "Oliver McBurnie"
+        },
+        {
+          "min": "68",
+          "team": "Hull City",
+          "player": "Oliver McBurnie"
+        },
+        {
+          "min": "74",
+          "team": "Ipswich Town",
+          "player": "Julio Enciso",
+          "assist": "Azor Matusiwa"
+        }
+      ]
+    },
+    {
+      "id": "m564735",
+      "comp": "LaLiga",
+      "round": "Matchday 11",
+      "home": "Rayo Vallecano",
+      "away": "Celta",
+      "ft": "3-0",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "36",
+          "team": "Rayo Vallecano",
+          "player": "Jorge De Frutos",
+          "assist": "Sergio Camello"
+        },
+        {
+          "min": "55",
+          "team": "Rayo Vallecano",
+          "player": "Jorge De Frutos",
+          "assist": "Andrei Rațiu"
+        },
+        {
+          "min": "73",
+          "team": "Rayo Vallecano",
+          "player": "Unai López",
+          "assist": "Gnangoro Bouare"
+        }
+      ]
+    },
+    {
+      "id": "m558542",
+      "comp": "Serie A",
+      "round": "Matchday 10",
+      "home": "Udinese",
+      "away": "Roma",
+      "ft": "2-5",
+      "ht": "0-4",
+      "goals": [
+        {
+          "min": "10",
+          "team": "Roma",
+          "player": "Bryan Cristante",
+          "assist": "Wesley Vinícius França Lima"
+        },
+        {
+          "min": "31",
+          "team": "Roma",
+          "player": "Rodrigo Mora",
+          "assist": "Bryan Cristante"
+        },
+        {
+          "min": "33",
+          "team": "Roma",
+          "player": "Donyell Malen",
+          "assist": "Matias Soule"
+        },
+        {
+          "min": "37",
+          "team": "Roma",
+          "player": "Evan Ndicka",
+          "assist": "Matias Soule"
+        },
+        {
+          "min": "50",
+          "team": "Udinese",
+          "player": "Nicolo Zaniolo"
+        },
+        {
+          "min": "78",
+          "team": "Udinese",
+          "player": "Matteo Palma",
+          "assist": "Hassane Kamara"
+        },
+        {
+          "min": "90+2",
+          "team": "Roma",
+          "player": "Daniele Ghilardi",
+          "assist": "Santiago Castro"
+        }
+      ]
+    },
+    {
+      "id": "m560628",
+      "comp": "Premier League",
+      "round": "Matchday 9",
+      "home": "Aston Villa",
+      "away": "Fulham",
+      "ft": "1-1",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "39",
+          "team": "Aston Villa",
+          "player": "Nicolas Jackson",
+          "assist": "Johan Manzambi"
+        },
+        {
+          "min": "64",
+          "team": "Fulham",
+          "player": "Zion Suzuki",
+          "type": "own_goal"
+        }
+      ]
+    },
+    {
+      "id": "m558539",
+      "comp": "Serie A",
+      "round": "Matchday 10",
+      "home": "Bologna",
+      "away": "Monza",
+      "ft": "2-1",
+      "ht": "1-1",
+      "goals": [
+        {
+          "min": "6",
+          "team": "Monza",
+          "player": "Gustavo Varela",
+          "type": "penalty"
+        },
+        {
+          "min": "33",
+          "team": "Bologna",
+          "player": "Tommaso Pobega",
+          "assist": "Juan Miranda"
+        },
+        {
+          "min": "59",
+          "team": "Bologna",
+          "player": "Federico Bernardeschi",
+          "type": "penalty"
+        }
+      ]
+    },
+    {
+      "id": "m565843",
+      "comp": "Bundesliga",
+      "round": "Matchday 8",
+      "home": "Bremen",
+      "away": "Hoffenheim",
+      "ft": "2-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "57",
+          "team": "Bremen",
+          "player": "Niclas Füllkrug",
+          "assist": "Karl Hein"
+        },
+        {
+          "min": "82",
+          "team": "Bremen",
+          "player": "Eren Dinkci",
+          "assist": "Marco Grüll"
+        }
+      ]
+    },
+    {
+      "id": "m564736",
+      "comp": "LaLiga",
+      "round": "Matchday 11",
+      "home": "Real Betis",
+      "away": "Málaga",
+      "ft": "2-1",
+      "ht": "2-0",
+      "goals": [
+        {
+          "min": "38",
+          "team": "Real Betis",
+          "player": "Marc Bartra",
+          "assist": "Isco"
+        },
+        {
+          "min": "45+2",
+          "team": "Real Betis",
+          "player": "Pablo Fornals"
+        },
+        {
+          "min": "68",
+          "team": "Málaga",
+          "player": "Adrian Nino"
+        }
+      ]
+    },
+    {
+      "id": "m559643",
+      "comp": "Ligue 1",
+      "round": "Matchday 9",
+      "home": "Troyes",
+      "away": "Le Mans",
+      "ft": "2-0",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "33",
+          "team": "Troyes",
+          "player": "Mouhamed Diop",
+          "assist": "Timothee Nkada"
+        },
+        {
+          "min": "71",
+          "team": "Troyes",
+          "player": "Ismaël Boura"
+        }
+      ]
+    }
+  ],
+  "standings": [
+    {
+      "id": "sPL",
+      "comp": "Premier League",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Man City",
+          "played": 9,
+          "pts": 21,
+          "gd": 10
+        },
+        {
+          "pos": 2,
+          "team": "Arsenal",
+          "played": 8,
+          "pts": 21,
+          "gd": 8
+        },
+        {
+          "pos": 3,
+          "team": "Brighton Hove",
+          "played": 9,
+          "pts": 19,
+          "gd": 17
+        },
+        {
+          "pos": 4,
+          "team": "Chelsea",
+          "played": 9,
+          "pts": 16,
+          "gd": 4
+        }
+      ]
+    },
+    {
+      "id": "sLL",
+      "comp": "LaLiga",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Barça",
+          "played": 11,
+          "pts": 30,
+          "gd": 34
+        },
+        {
+          "pos": 2,
+          "team": "Atleti",
+          "played": 11,
+          "pts": 28,
+          "gd": 14
+        },
+        {
+          "pos": 3,
+          "team": "Real Madrid",
+          "played": 10,
+          "pts": 24,
+          "gd": 15
+        },
+        {
+          "pos": 4,
+          "team": "Real Betis",
+          "played": 11,
+          "pts": 23,
+          "gd": 3
+        }
+      ]
+    },
+    {
+      "id": "sSA",
+      "comp": "Serie A",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "Lazio",
+          "played": 9,
+          "pts": 25,
+          "gd": 15
+        },
+        {
+          "pos": 2,
+          "team": "Inter",
+          "played": 10,
+          "pts": 25,
+          "gd": 13
+        },
+        {
+          "pos": 3,
+          "team": "Roma",
+          "played": 10,
+          "pts": 24,
+          "gd": 18
+        },
+        {
+          "pos": 4,
+          "team": "Milan",
+          "played": 10,
+          "pts": 21,
+          "gd": 9
+        }
+      ]
+    },
+    {
+      "id": "sL1",
+      "comp": "Ligue 1",
+      "note": "current table, top 4 positions only",
+      "rows": [
+        {
+          "pos": 1,
+          "team": "PSG",
+          "played": 9,
+          "pts": 20,
+          "gd": 11
+        },
+        {
+          "pos": 2,
+          "team": "Lille",
+          "played": 9,
+          "pts": 18,
+          "gd": 6
+        },
+        {
+          "pos": 3,
+          "team": "Stade Rennais",
+          "played": 9,
+          "pts": 16,
+          "gd": 1
+        },
+        {
+          "pos": 4,
+          "team": "Monaco",
+          "played": 8,
+          "pts": 15,
+          "gd": 4
+        }
+      ]
+    }
+  ],
+  "korean": [
+    {
+      "id": "k2897",
+      "player": "Min-jae Kim",
+      "team": "Bayern",
+      "match": "m565845",
+      "started": true,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k927",
+      "player": "Kang-in Lee",
+      "team": "Atleti",
+      "match": "m564730",
+      "started": true,
+      "minutes": 67,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k280358",
+      "player": "Jens Castrop",
+      "team": "M'gladbach",
+      "match": "m565839",
+      "started": false,
+      "minutes": 13,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k24888",
+      "player": "Hee-chan Hwang",
+      "team": "Schalke",
+      "match": "m565840",
+      "started": true,
+      "minutes": 83,
+      "goals": 0,
+      "assists": 0
+    }
+  ]
+}

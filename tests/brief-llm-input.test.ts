@@ -106,13 +106,15 @@ describe("briefLlmInput — 앞 15경기·남은 대회의 순위만·모델이 
     }
   });
 
-  it("골든셋 바쁜 날(23경기) — 본문 15경기·리그 1 순위 뺌, 본문 7,930자 → 5,861자", () => {
+  it("골든셋 바쁜 날(23경기) — 본문 15경기·리그 1 순위 뺌, 본문 8,446자 → 6,377자", () => {
     const view = briefLlmInput(BUSY);
     expect(view.input.matches).toHaveLength(15);
     expect(view.dropped).toEqual({ matches: 8, standings: ["sL1"] });
     // 2026-10-22 사전 — 도움 'Alejandro Baena Rodríguez'가 대표 표기 'Álex Baena'로(입력 정리) 15자 짧아졌다(그 전 7,945 → 5,876)
-    expect(serializeBriefInput(BUSY).length).toBe(7930);
-    expect(serializeBriefInput(view.input).length).toBe(5861);
+    // 2026-11-01 M3-03b — 한국 선수 블록 4건(+516자, 네 경기 모두 본문 15경기 안이라 본문에도 남는다)이 더해졌다(그 전 7,930 → 5,861)
+    expect(serializeBriefInput(BUSY).length).toBe(8446);
+    expect(serializeBriefInput(view.input).length).toBe(6377);
+    expect(view.input.korean).toHaveLength(4);
   });
 });
 

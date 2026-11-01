@@ -4,8 +4,12 @@
  * 폴더 `fixtures/llm/golden/` (형식은 그 폴더 README.md)
  *   - `index.json`        — 날짜별 제목·태그(경기 많은 날·적은 날·UCL·대승·무승부·연장·승부차기 …)·출처·M0 입력 키
  *   - `sources/<날짜>.json` — **빌더 입력**(내부 형식): football-data 종료 경기(`FinishedMatch`)·순위(`BriefStandingsSource`)·
- *                            연결된 득점 목록(`MatchGoal[]` — API-Football 경기 단건 또는 M0 입력에서 옮긴 것). 외부 API 원문이 아니다
- *   - `inputs/<날짜>.json`  — **LLM에 보내는 입력** = `buildBriefInput`(M1-19 확정 빌더 — 중요도 순·연장/승부차기 키·상위 4위 순위)
+ *                            연결된 득점 목록(`MatchGoal[]` — API-Football 경기 단건 또는 M0 입력에서 옮긴 것)·연결된 경기의 등록
+ *                            한국 선수 행(`LedgerKoreanRow` — 선택, M3-03b: 원장 data/matches 행 또는 API-Football 단건 라인업에서
+ *                            `koreanRowsOf`로 만든 행). 외부 API 원문이 아니다
+ *   - `inputs/<날짜>.json`  — **LLM에 보내는 입력** = `buildBriefInput`(M1-19 확정 빌더 — 중요도 순·연장/승부차기 키·상위 4위 순위·
+ *                            한국 선수 블록 korean — 소스에 한국 선수 행이 있을 때. 정기 실행은 `BRIEF_KOREAN_ENABLED`로 끄지만 골든셋은
+ *                            그 키를 켠 입력으로 지시문을 잰다 — M3-03b)
  *                            → `canonicalizeBriefInput`(M1-21 — 득점자 사전 대표 표기 + 사전에 없는 팀 짧은 이름은 정식 이름 —
  *                            D46 'Deportivo'). 봇이 그날 보냈을 입력과 같은 형식이다
  *   - `runs/<라벨>/run.json` — eval:prompt 실행 기록(출력 원문·판정·토큰·비용·지연)
@@ -19,7 +23,13 @@ import path from "node:path";
 
 import { z } from "zod";
 
-import { CompIdSchema, IsoSchema, type CompetitionConfig } from "@/lib/schema";
+import {
+  CompIdSchema,
+  IsoSchema,
+  LedgerAppearanceSchema,
+  type CompetitionConfig,
+  type LedgerKoreanRow,
+} from "@/lib/schema";
 
 import {
   briefTeamRefs,
@@ -117,17 +127,34 @@ const GoldenGoalSourceSchema = z.strictObject({
   assist: PersonRefSchema.nullable(),
 });
 
-/** football-data 경기 1건에 연결된 득점 목록 */
-const GoldenLinkSchema = z.strictObject({
-  /** football-data 경기 id */
-  fd: Int.positive(),
-  /** 출처 — API-Football 경기 단건(어댑터 `toMatchDetail`) 또는 M0 입력의 goals를 옮긴 것 */
-  from: z.enum(["api-football", "m0-input"]),
-  /** API-Football 경기 id(from api-football일 때) */
-  af: Int.positive().nullable(),
-  goals: z.array(GoldenGoalSourceSchema),
-  goalsComplete: z.boolean(),
+/** 등록 한국 선수 행(부록 A `LedgerKoreanRow`와 같은 칸 — M3-03b) */
+const GoldenKoreanRowSchema = z.strictObject({
+  player: Int.positive(),
+  side: z.enum(["home", "away"]),
+  status: LedgerAppearanceSchema,
+  minutes: NonNegInt.nullable(),
+  goals: NonNegInt,
+  assists: NonNegInt,
 });
+
+/** football-data 경기 1건에 연결된 득점 목록 */
+const GoldenLinkSchema = z
+  .strictObject({
+    /** football-data 경기 id */
+    fd: Int.positive(),
+    /** 출처 — API-Football 경기 단건(어댑터 `toMatchDetail`) 또는 M0 입력의 goals를 옮긴 것 */
+    from: z.enum(["api-football", "m0-input"]),
+    /** API-Football 경기 id(from api-football일 때) */
+    af: Int.positive().nullable(),
+    goals: z.array(GoldenGoalSourceSchema),
+    goalsComplete: z.boolean(),
+    /** 그 경기의 등록 한국 선수 행(선택 — af가 있을 때만, M3-03b). 없으면 한국 선수 블록 재료가 아니다 */
+    korean: z.array(GoldenKoreanRowSchema).optional(),
+  })
+  .refine((l) => l.korean === undefined || l.af !== null, {
+    message: "한국 선수 행은 API-Football 경기(af)에만",
+    path: ["korean"],
+  });
 
 export const GoldenSourceSchema = z.strictObject({
   briefDate: DateSchema,
@@ -177,10 +204,21 @@ const GoldenInputStandingsSchema = z.strictObject({
     )
     .min(1),
 });
+const GoldenInputKoreanSchema = z.strictObject({
+  id: z.string().regex(/^k\d+$/),
+  player: z.string().min(1),
+  team: z.string().min(1),
+  match: z.string().regex(/^m\d+$/),
+  started: z.boolean(),
+  minutes: Int.positive(),
+  goals: NonNegInt,
+  assists: NonNegInt,
+});
 export const GoldenInputSchema = z.strictObject({
   briefDate: DateSchema,
   matches: z.array(GoldenInputMatchSchema).min(1),
   standings: z.array(GoldenInputStandingsSchema),
+  korean: z.array(GoldenInputKoreanSchema).min(1).optional(),
 });
 
 // ─── 목록 ───────────────────────────────────────────────────────────────
@@ -201,6 +239,7 @@ export const GOLDEN_TAGS = [
   "standings", // 순위표 포함
   "no-standings", // 순위표 없음
   "korean-team", // 한국 선수 소속팀 경기
+  "korean", // 한국 선수 블록(출전 기록)이 입력에 있다(M3-03b)
 ] as const;
 export type GoldenTag = (typeof GOLDEN_TAGS)[number];
 
@@ -249,6 +288,8 @@ export interface GoldenBuildContext {
   names: NameIndex | null;
   /** 선수 slug → 소속팀 slug(names.ts playerTeamsFrom) */
   playerTeams: ReadonlyMap<string, string>;
+  /** API-Football 선수 id → 영문 이름(korean-players.json 활성 선수 nameEn — 한국 선수 블록, M3-03b) */
+  koreanNames: ReadonlyMap<number, string>;
 }
 
 /** 소스 → 순위 원천(빌더 형식) */
@@ -260,17 +301,28 @@ function toStandingsSource(
 
 /**
  * 소스 → LLM에 보내는 입력(순수 함수) — collect-run.ts 브리핑 단계와 같은 순서: `buildBriefInput` → `canonicalizeBriefInput`.
+ * 소스 링크에 한국 선수 행이 있으면 한국 선수 블록 재료로 넘긴다(collect-run.ts `loadBriefKoreanSource`와 같은 형식 — M3-03b).
  */
 export function buildGoldenInput(
   source: GoldenSource,
   ctx: GoldenBuildContext,
 ): BriefInput {
-  const linked = new Map<number, Pick<MatchDetail, "goals" | "goalsComplete">>(
+  const linked = new Map<
+    number,
+    Pick<MatchDetail, "goals" | "goalsComplete"> & { matchId?: number }
+  >(
     source.links.map((l) => [
       l.fd,
-      { goals: l.goals as MatchGoal[], goalsComplete: l.goalsComplete },
+      {
+        goals: l.goals as MatchGoal[],
+        goalsComplete: l.goalsComplete,
+        ...(l.af !== null ? { matchId: l.af } : {}),
+      },
     ]),
   );
+  const rowsByAf = new Map<number, readonly LedgerKoreanRow[]>();
+  for (const l of source.links)
+    if (l.af !== null && l.korean !== undefined) rowsByAf.set(l.af, l.korean);
   const results = source.results as FinishedMatch[];
   const standings = source.standings.map(toStandingsSource);
   const built = buildBriefInput({
@@ -280,6 +332,9 @@ export function buildGoldenInput(
     standings,
     linked,
     koreanTeamIds: ctx.koreanTeamIds,
+    ...(rowsByAf.size > 0
+      ? { korean: { rowsByAf, names: ctx.koreanNames } }
+      : {}),
   });
   if (!ctx.names) return built.input;
   return canonicalizeBriefInput(built.input, ctx.names, {

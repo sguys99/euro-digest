@@ -1,6 +1,7 @@
 /**
  * M1-20 일일 브리핑 지시문(`configs/prompts/summarize.md` — v0.1 → v0.2 허용 문형 목록(D50) → v0.3 문형 축소·문법과 한 출처(D53 ②)
- * → **v0.4 지금 입력에 없는 키(korean·prev) 문형 뺌·승패 문장 주어 팀 점수 먼저(D55)**) — 로딩, 필수 규칙
+ * → **v0.4 지금 입력에 없는 키(korean·prev) 문형 뺌·승패 문장 주어 팀 점수 먼저(D55)** → v0.5 한국 선수 조건 절(M3-03b —
+ * `<!-- korean -->` 절은 보내는 입력에 korean 블록이 있을 때만 펼친다. 키 없는 날은 v0.4와 글자까지 같다)) — 로딩, 필수 규칙
  * 가드, 입력 키 설명, 크기·글자 구성(비용 어림). 네트워크·LLM 없음. [문형] 목록과 검사기 문법(brief-grammar.ts)의 일치는
  * tests/brief-grammar.test.ts가 본다(지시문 예문·문형마다 채운 참 문장이 모두 통과).
  *
@@ -23,9 +24,11 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   BRIEF_PROMPT_PATH,
   briefPromptId,
+  briefPromptKeys,
   buildBriefRequest,
   estimateBriefInputTokens,
   loadBriefPrompt,
+  renderBriefPrompt,
 } from "../scripts/lib/brief";
 import { NamesKoFileSchema } from "@/lib/schema";
 
@@ -35,7 +38,13 @@ import { PROMPT_FILES, PROMPTS_DIR } from "../scripts/lib/validate-report";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
-const PROMPT = read(BRIEF_PROMPT_PATH).trim();
+/** 지시문 파일(조건 절 표시 포함) */
+const PROMPT_FILE = read(BRIEF_PROMPT_PATH).trim();
+/** 키 없는 날 보내는 지시문(= v0.4) · 한국 선수 블록이 있는 날 보내는 지시문(v0.5 한국 선수 절 — M3-03b) */
+const PROMPT = renderBriefPrompt(PROMPT_FILE, []);
+const PROMPT_KR = renderBriefPrompt(PROMPT_FILE, ["korean"]);
+/** v0.4 지시문 판 식별자(2026-10-17 D55 — 골든 runs 2026-10-18-v0.4 promptId). 키 없는 날 prod 지시문이 바뀌지 않았다는 고정값 */
+const V04_PROMPT_ID = "p_24543d78cd9a";
 /** M0-30 임시 프롬프트 긴 판 — 실측 2,119자 → 2,034토큰(fixtures/llm/README.md) */
 const M0_LONG = read("fixtures/llm/brief-inputs/prompt-m0-30-long.md").trim();
 const M0_LONG_TOKENS = 2034;
@@ -63,7 +72,7 @@ describe("지시문 로딩 (M1-01 이월 — 슬라이스 fixture 지시문에�
 
   it("저장소 지시문을 파일 내용 .trim() 그대로 읽는다(머리말·주석 처리 없음)", async () => {
     const text = await loadBriefPrompt(ROOT);
-    expect(text).toBe(PROMPT);
+    expect(text).toBe(PROMPT_FILE);
     expect(text.length).toBeGreaterThan(1000);
   });
 
@@ -86,13 +95,81 @@ describe("지시문 로딩 (M1-01 이월 — 슬라이스 fixture 지시문에�
       matches: [],
       standings: [],
     };
-    expect(buildBriefRequest(input, PROMPT)).toMatchObject({
+    expect(buildBriefRequest(input, PROMPT_FILE)).toMatchObject({
       system: PROMPT,
       maxTokens: 16_384,
       thinking: "adaptive",
       effort: "medium",
     });
-    expect(buildBriefRequest(input, PROMPT).cacheSystem).toBeUndefined();
+    expect(buildBriefRequest(input, PROMPT_FILE).cacheSystem).toBeUndefined();
+  });
+
+  it("조건 절(M3-03b) — 보내는 본문에 korean 블록이 있을 때만 한국 선수 절을 펼치고, 표시 줄은 늘 지운다. 키 없는 날은 v0.4와 같다", () => {
+    const match = {
+      id: "m1",
+      comp: "Bundesliga",
+      round: "Matchday 7",
+      home: "TeamA",
+      away: "TeamB",
+      ft: "1-0",
+      goals: null,
+    };
+    const k = {
+      id: "k1",
+      player: "PlayerZ",
+      team: "TeamA",
+      match: "m1",
+      started: true,
+      minutes: 90,
+      goals: 0,
+      assists: 0,
+    };
+    const plain: BriefInput = {
+      briefDate: "2026-10-25",
+      matches: [match],
+      standings: [],
+    };
+    expect(briefPromptId(PROMPT)).toBe(V04_PROMPT_ID);
+    expect(briefPromptKeys(plain)).toEqual([]);
+    expect(briefPromptKeys({ korean: [k] })).toEqual(["korean"]);
+    expect(buildBriefRequest(plain, PROMPT_FILE).system).toBe(PROMPT);
+    expect(
+      buildBriefRequest({ ...plain, korean: [k] }, PROMPT_FILE).system,
+    ).toBe(PROMPT_KR);
+    // 본문에서 잘린 경기(D51)의 한국 선수만 있으면 펼치지 않는다
+    const cut = buildBriefRequest(
+      {
+        ...plain,
+        matches: [match, { ...match, id: "m2" }],
+        korean: [{ ...k, match: "m2" }],
+      },
+      PROMPT_FILE,
+      1,
+    );
+    expect(cut.system).toBe(PROMPT);
+    for (const p of [PROMPT, PROMPT_KR]) expect(p).not.toContain("<!--");
+    expect(PROMPT_KR.length).toBeGreaterThan(PROMPT.length);
+  });
+
+  it("조건 절 형식 오류 — 모르는 키·겹침·짝 없는 닫힘·닫히지 않음은 던진다(loadBriefPrompt도)", async () => {
+    expect(
+      renderBriefPrompt("a\n<!-- korean -->\nb\n<!-- /korean -->\nc", []),
+    ).toBe("a\nc");
+    expect(
+      renderBriefPrompt("a\n<!-- korean -->\nb\n<!-- /korean -->\nc", [
+        "korean",
+      ]),
+    ).toBe("a\nb\nc");
+    for (const bad of [
+      "<!-- prev -->\nx\n<!-- /prev -->",
+      "<!-- korean -->\n<!-- korean -->\nx\n<!-- /korean -->",
+      "x\n<!-- /korean -->",
+      "<!-- korean -->\nx",
+    ])
+      expect(() => renderBriefPrompt(bad, ["korean"]), bad).toThrow();
+    await expect(
+      loadBriefPrompt(tmpRoot("지시문\n<!-- korean -->\n한국")),
+    ).rejects.toThrow("조건 절");
   });
 
   it("지시문 판 식별자는 내용의 결정적 해시(로그용)", () => {
@@ -228,6 +305,22 @@ describe("지시문 내용 — 사용자 결정 가드", () => {
       }
     };
     walk(full);
+    // 선택 키 korean(M3-03b)은 한국 선수 절을 펼친 지시문이 설명한다
+    const kFull = {
+      id: "k1",
+      player: "PlayerZ",
+      team: "TeamA",
+      match: "m1",
+      started: true,
+      minutes: 90,
+      goals: 0,
+      assists: 0,
+    };
+    const kKeys = new Set(["korean", ...Object.keys(kFull)]);
+    const kMissing = [...kKeys].filter(
+      (k) => !new RegExp(`(?<![A-Za-z_])${k}(?![A-Za-z_])`).test(PROMPT_KR),
+    );
+    expect(kMissing).toEqual([]);
     const structural = new Set(["briefDate", "rows"]);
     const missing = [...keys, "penalty", "own_goal"]
       .filter((k) => !structural.has(k))
@@ -237,12 +330,18 @@ describe("지시문 내용 — 사용자 결정 가드", () => {
     expect(missing).toEqual([]);
   });
 
-  it("지금 입력에 없는 키(전일 순위 prev·한국 선수 korean)는 설명하지 않는다(D55 ① — M2-03·M3-03이 키를 더할 때 문형과 함께 되살린다)", () => {
-    for (const key of ["prev", "korean"])
-      expect(PROMPT).not.toMatch(
-        new RegExp(`(?<![A-Za-z_])${key}(?![A-Za-z_])`),
-      );
+  it("입력에 없는 키(전일 순위 prev·한국 선수 korean)는 설명하지 않는다(D55 ① — M2-03이 prev를 더할 때 문형과 함께 되살린다). korean은 그 블록이 있는 날만(M3-03b)", () => {
+    const has = (p: string, key: string) =>
+      new RegExp(`(?<![A-Za-z_])${key}(?![A-Za-z_])`).test(p);
+    for (const key of ["prev", "korean"]) expect(has(PROMPT, key)).toBe(false);
     expect(PROMPT).not.toContain("한국 선수");
+    expect(has(PROMPT_KR, "prev")).toBe(false);
+    expect(has(PROMPT_KR, "korean")).toBe(true);
+    // 원장에 없는 교체 투입·아웃 분 꼴은 한국 선수 절에도 없다(M3-03b)
+    expect(PROMPT_KR).not.toContain("교체됐다");
+    expect(PROMPT_KR).not.toContain("{분} 교체 투입돼");
+    expect(PROMPT_KR).not.toContain("결장했다");
+    expect(PROMPT_KR).toContain("교체 시각, korean에 없는 선수의 출전·결장");
   });
 
   it("토너먼트 라운드만 한국어로 옮기고 라운드 영어 낱말을 남기지 않게 한다(brief-case-leftover-word 'Matchday')", () => {
@@ -271,15 +370,17 @@ describe("지시문 내용 — 사용자 결정 가드", () => {
       .flatMap((e) => e.en)
       .filter((en) => en.length >= 3)
       .filter((en) =>
-        new RegExp(`(?<![\\p{L}])${escape(en)}(?![\\p{L}])`, "u").test(PROMPT),
+        new RegExp(`(?<![\\p{L}])${escape(en)}(?![\\p{L}])`, "u").test(
+          PROMPT_FILE,
+        ),
       );
     expect(found).toEqual([]);
   });
 
   it("예시는 자리표시자 이름만 쓴다(실제 팀 이름이 예시 문장에 섞이지 않게)", () => {
-    const examples = PROMPT.slice(
-      PROMPT.indexOf("[예]"),
-      PROMPT.indexOf("[쓰기 전 확인]"),
+    const examples = PROMPT_FILE.slice(
+      PROMPT_FILE.indexOf("[예]"),
+      PROMPT_FILE.indexOf("[쓰기 전 확인]"),
     );
     expect(examples.length).toBeGreaterThan(100);
     const latin = examples.match(/\b[A-Z][A-Za-z]+\b/g) ?? [];
@@ -287,8 +388,8 @@ describe("지시문 내용 — 사용자 결정 가드", () => {
   });
 
   it("비밀값·URL이 없다", () => {
-    expect(scanTextForSecrets(PROMPT, BRIEF_PROMPT_PATH)).toEqual([]);
-    expect(PROMPT).not.toMatch(/https?:\/\//);
+    expect(scanTextForSecrets(PROMPT_FILE, BRIEF_PROMPT_PATH)).toEqual([]);
+    expect(PROMPT_FILE).not.toMatch(/https?:\/\//);
   });
 });
 
@@ -297,16 +398,23 @@ describe("지시문 크기 — 비용·입력 어림(M1-22 이월)", () => {
   const hangulShare = (text: string) =>
     (text.match(/\p{Script=Hangul}/gu) ?? []).length / text.length;
 
-  it("5,000자 이하(약 4,800토큰 — 요청당 입력 약 $0.0005). 넘기면 비용 영향을 보고할 것", () => {
+  it("5,000자 이하(약 4,800토큰 — 요청당 입력 약 $0.0005). 넘기면 비용 영향을 보고할 것 — 한국 선수 절을 펼친 판도(M3-03b)", () => {
     expect(PROMPT.length).toBeLessThanOrEqual(5000);
+    expect(PROMPT_KR.length).toBeLessThanOrEqual(5000);
   });
 
-  it("글자 구성이 M0-30 긴 판(실측 0.96토큰/자)과 같아(한글 비율 ±3%p) 글자당 1토큰 어림이 넉넉하다", () => {
-    expect(Math.abs(hangulShare(PROMPT) - hangulShare(M0_LONG))).toBeLessThan(
-      0.03,
-    );
-    const measuredLike = PROMPT.length * (M0_LONG_TOKENS / M0_LONG.length);
-    const estimate = estimateBriefInputTokens({ system: PROMPT, user: "" });
-    expect(estimate).toBeGreaterThan(measuredLike * 1.03);
-  });
+  it.each([
+    ["키 없는 날", PROMPT],
+    ["한국 선수 절", PROMPT_KR],
+  ])(
+    "글자 구성이 M0-30 긴 판(실측 0.96토큰/자)과 같아(한글 비율 ±3%%p) 글자당 1토큰 어림이 넉넉하다 — %s",
+    (_, prompt) => {
+      expect(Math.abs(hangulShare(prompt) - hangulShare(M0_LONG))).toBeLessThan(
+        0.03,
+      );
+      const measuredLike = prompt.length * (M0_LONG_TOKENS / M0_LONG.length);
+      const estimate = estimateBriefInputTokens({ system: prompt, user: "" });
+      expect(estimate).toBeGreaterThan(measuredLike * 1.03);
+    },
+  );
 });

@@ -686,5 +686,47 @@
         }
       ]
     }
+  ],
+  "korean": [
+    {
+      "id": "k197985",
+      "player": "Young-woo Seol",
+      "team": "Augsburg",
+      "match": "m565819",
+      "started": true,
+      "minutes": 62,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k927",
+      "player": "Kang-in Lee",
+      "team": "Atleti",
+      "match": "m564699",
+      "started": false,
+      "minutes": 33,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k2906",
+      "player": "Jae-sung Lee",
+      "team": "Mainz",
+      "match": "m565812",
+      "started": false,
+      "minutes": 20,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k512",
+      "player": "Woo-yeong Jeong",
+      "team": "Union Berlin",
+      "match": "m565817",
+      "started": true,
+      "minutes": 78,
+      "goals": 0,
+      "assists": 0
+    }
   ]
 }

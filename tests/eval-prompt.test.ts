@@ -23,6 +23,7 @@ import {
   BRIEF_REQUEST_TIMEOUT_MS,
   BRIEF_THINKING,
   buildBriefRequest,
+  renderBriefPrompt,
 } from "../scripts/lib/brief";
 import {
   buildEvalRequest,
@@ -206,7 +207,10 @@ describe("buildEvalRequest — 브리핑 요청(D28)과 같고 customId·변형�
     const req = buildEvalRequest(day, system, "pre");
     expect(req.customId).toBe(evalCustomId(day.date, "pre"));
     expect(req.system.endsWith(PRECOMPUTE_PROMPT_ADDENDUM)).toBe(true);
-    expect(req.system.startsWith(system)).toBe(true);
+    // 10-11은 한국 선수 블록이 있는 날 — 조건 절을 펼친 지시문 뒤에 x 설명(M3-03b)
+    expect(req.system.startsWith(renderBriefPrompt(system, ["korean"]))).toBe(
+      true,
+    );
     const sent = JSON.parse(req.user) as { matches: Array<{ x: unknown }> };
     expect(sent.matches.every((m) => typeof m.x === "object")).toBe(true);
     expect(req.maxTokens).toBe(BRIEF_MAX_TOKENS);
@@ -327,24 +331,30 @@ describe("runEvalPrompt — mock(결정적·무비용)", () => {
     ["base", BASE_RUN],
     ["pre", PRE_RUN],
   ] as const)(
-    "%s — 10일 모두 저장 실측과 출력 원문·토큰이 같고, 두 번 재생해도 같다 · 검사기·설정 판이 같으면 판정까지 같다",
+    "%s — 저장 실측의 날짜(지금 골든셋에 남은 8일) 모두 출력 원문·토큰이 같고, 두 번 재생해도 같다 · 검사기·설정 판이 같으면 판정까지 같다",
     async (variant, label) => {
+      // 2026-11-01 M3-03b — 10-14·10-15를 한국 선수 날(10-25·11-01)로 바꿨다. 저장 실측(10-17 v0.1)에 있는 날짜만 재생해 비교한다
+      const set = await loadGoldenSet(GOLDEN);
+      const current = new Set(set.days.map((x) => x.date));
+      const saved = savedRun(label);
+      const dates = saved.days.map((x) => x.date).filter((x) => current.has(x));
+      expect(dates).toHaveLength(8);
       const run1 = await runEvalPrompt(
-        deps({ args: args({ variant, baseline: label, summaryOnly: true }) }),
+        deps({
+          args: args({ variant, baseline: label, summaryOnly: true, dates }),
+        }),
       );
       const d = deps({
-        args: args({ variant, baseline: label, summaryOnly: true }),
+        args: args({ variant, baseline: label, summaryOnly: true, dates }),
       });
       const outcome = await runEvalPrompt(d);
       expect(outcome.exitCode).toBe(0);
       expect(outcome.runFile).toBeNull(); // mock 기본은 저장 안 함
       expect(readdirSync(d.dataDir)).toEqual([]); // runs-dev.json을 쓰지 않는다
-      const saved = savedRun(label);
+      const savedDays = saved.days.filter((x) => current.has(x.date));
       const run = outcome.run!;
       expect(run.mode).toBe("mock");
-      expect(run.days.map((x) => x.date)).toEqual(
-        saved.days.map((x) => x.date),
-      );
+      expect(run.days.map((x) => x.date)).toEqual(dates);
       // 결정성 — 같은 설정으로 두 번 재생하면 판정·문장이 같다(설정·검사기와 무관하게 성립)
       expect(
         run.days.map((x) => [
@@ -359,9 +369,9 @@ describe("runEvalPrompt — mock(결정적·무비용)", () => {
           x.lines.map((l) => l.text),
         ]),
       );
-      // 출력 원문·토큰은 by-id 재생이라 판정 판과 무관하게 10일 모두 저장 실측과 같다
+      // 출력 원문·토큰은 by-id 재생이라 판정 판과 무관하게 모두 저장 실측과 같다
       run.days.forEach((day, i) => {
-        const prev = saved.days[i]!;
+        const prev = savedDays[i]!;
         expect(day.text, day.date).toBe(prev.text);
         expect(day.usage, day.date).toEqual(prev.usage);
         expect(day.thinkingTokens).toBeNull(); // mock은 thinking을 모른다
@@ -373,7 +383,7 @@ describe("runEvalPrompt — mock(결정적·무비용)", () => {
       let compared = 0;
       if (sameVersions) {
         run.days.forEach((day, i) => {
-          const prev = saved.days[i]!;
+          const prev = savedDays[i]!;
           expect(day.inputHash, day.date).toBe(prev.inputHash);
           expect(day.verdict, day.date).toBe(prev.verdict);
           expect(day.lineReasons, day.date).toEqual(prev.lineReasons);
@@ -385,9 +395,9 @@ describe("runEvalPrompt — mock(결정적·무비용)", () => {
         });
       }
       console.info(
-        `[eval-prompt.test] ${label}: 판정 비교 ${compared}/10일 (검사기 ${run.checker.id}${run.checker.id === saved.checker.id ? "=" : "≠"}${saved.checker.id}, 설정 ${run.configs.id}${run.configs.id === saved.configs.id ? "=" : "≠"}${saved.configs.id})`,
+        `[eval-prompt.test] ${label}: 판정 비교 ${compared}/${dates.length}일 (검사기 ${run.checker.id}${run.checker.id === saved.checker.id ? "=" : "≠"}${saved.checker.id}, 설정 ${run.configs.id}${run.configs.id === saved.configs.id ? "=" : "≠"}${saved.configs.id})`,
       );
-      expect(compared).toBe(sameVersions ? 10 : 0);
+      expect(compared).toBe(sameVersions ? dates.length : 0);
       expect(outcome.baseline?.label).toBe(label);
       expect(outcome.report).toContain("골든셋 회귀 비교");
     },

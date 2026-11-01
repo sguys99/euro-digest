@@ -343,7 +343,25 @@
           }
         }
       ],
-      "goalsComplete": true
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 512,
+          "side": "away",
+          "status": "start",
+          "minutes": 60,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "player": 2897,
+          "side": "home",
+          "status": "sub",
+          "minutes": 45,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
     }
   ]
 }

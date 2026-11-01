@@ -316,10 +316,13 @@ export async function loadEvalContext(rootDir: string): Promise<EvalContext> {
   );
   const team = buildTeamIdIndex(await loadTeamIds(rootDir));
   const koreanTeamIds = new Set<number>();
+  // 한국 선수 블록 이름(M3-03b) — collect-run.ts loadBriefKoreanSource와 같다(활성 선수 + API-Football id)
+  const koreanNames = new Map<number, string>();
   for (const p of players) {
     if (!p.active) continue;
     const fd = team.bySlug.get(p.team)?.fd;
     if (fd !== null && fd !== undefined) koreanTeamIds.add(fd);
+    if (p.apiFootballId !== null) koreanNames.set(p.apiFootballId, p.nameEn);
   }
   return {
     competitions,
@@ -329,6 +332,7 @@ export async function loadEvalContext(rootDir: string): Promise<EvalContext> {
       koreanTeamIds,
       names,
       playerTeams: playerTeamsFrom(players),
+      koreanNames,
     },
   };
 }

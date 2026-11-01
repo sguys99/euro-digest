@@ -650,12 +650,18 @@ function buildModel(
 }
 
 /**
- * 입력에 있는 선택 키(D55 ①) — `korean`: 한국 선수 블록이 1건 이상 · `prev`: 전일 순위가 있는 순위 행이 1개 이상. 지금 빌더
- * (M1-19) 입력에는 둘 다 없다(M3-03·M2-03이 더한다) — 그 키를 쓰는 문형(출전·결장·'득점은 없었다'·순위 변동·유지)은 켜지지 않는다.
+ * 입력에 있는 선택 키(D55 ①) — `korean`: 한국 선수 블록이 1건 이상(`koreanSub`: 그중 subOn·subOff가 있는 행 · `koreanBench`: 출전 0분
+ * 행 — M3-03b, M0 입력 형식만) · `prev`: 전일 순위가 있는 순위 행이 1개 이상. 정기 실행 입력에는 지금 korean·prev가 없다
+ * (`BRIEF_KOREAN_ENABLED`·`BRIEF_PREV_ENABLED` false) — 그 키를 쓰는 문형(출전·'득점은 없었다'·순위 변동·유지)은 켜지지 않는다.
  */
 export function briefInputKeys(input: BriefCheckInput): Set<BriefInputKey> {
   const keys = new Set<BriefInputKey>();
-  if ((input.korean?.length ?? 0) > 0) keys.add("korean");
+  const korean = input.korean ?? [];
+  if (korean.length > 0) keys.add("korean");
+  // 한국 선수 블록 세부 키(M3-03b) — 교체 투입·아웃 분, 출전하지 않은 행. 확정 입력에는 없다(M0-30 입력 형식만)
+  if (korean.some((k) => k.subOn !== undefined || k.subOff !== undefined))
+    keys.add("koreanSub");
+  if (korean.some((k) => k.minutes <= 0)) keys.add("koreanBench");
   if (input.standings.some((t) => t.rows.some((r) => r.prev !== undefined)))
     keys.add("prev");
   return keys;

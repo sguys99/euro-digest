@@ -131,5 +131,27 @@
         }
       ]
     }
+  ],
+  "korean": [
+    {
+      "id": "k512",
+      "player": "Woo-yeong Jeong",
+      "team": "Union Berlin",
+      "match": "m565804",
+      "started": true,
+      "minutes": 60,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k2897",
+      "player": "Min-jae Kim",
+      "team": "Bayern",
+      "match": "m565804",
+      "started": false,
+      "minutes": 45,
+      "goals": 0,
+      "assists": 0
+    }
   ]
 }

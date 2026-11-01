@@ -13,8 +13,9 @@
  *   양방향 고정: ① 표기 → 문법 — 표기를 펼친 모든 꼴(`expandPatternText`)이 분석된다 ② 문법 → 표기 — 문법 요소가 쓰는 낱말·술어·
  *   자리표시자(`vocab` — 요소를 만들 때 모은다)가 모두 그 항목 표기에 있다. 문형을 더하거나 빼면 이 파일만 고치고 지시문 [문형]을
  *   다시 붙인다(테스트가 차이를 알린다).
- *   입력 선택 키(D55 ①, `BriefInputKey`): 한국 선수 출전(korean·korean-bench·korean-tail — 키 `korean`, M3-03)과 순위 변동·유지
- *   (move·keep — 키 `prev`, M2-03)는 지금 입력에 그 키가 없어 꺼 둔다. 꺼진 문형은 분석되지 않고(`parseBriefLine` options.keys)
+ *   입력 선택 키(D55 ①, `BriefInputKey`): 한국 선수 출전(korean·korean-tail — 키 `korean`, M3-03 · 교체 투입·아웃 분 꼴 korean-sub —
+ *   키 `koreanSub` · 결장 꼴 korean-bench — 키 `koreanBench`, M3-03b: 확정 입력에는 subOn·subOff·출전 0분 행이 없어 늘 꺼진다)과 순위
+ *   변동·유지(move·keep — 키 `prev`, M2-03)는 입력에 그 키가 없으면 꺼 둔다. 꺼진 문형은 분석되지 않고(`parseBriefLine` options.keys)
  *   지시문 [문형]에도 나오지 않는다(`renderBriefPatterns()` — 키 없이). 키가 입력에 들어오면 검사기가 그 문형을 켠다
  *   (brief-check.ts `briefInputKeys`). 되살릴 때는 지시문 [문형]을 `renderBriefPatterns({ keys })`로 다시 붙이고 [입력]에 키 설명을 더한다.
  *   표기법: {팀}·{상대}·{선수}·{득점자}·{대회} 입력 이름, {점수} '2-1', {분} '62분'·'90+2분'·'후반 62분', {n} 수, {순위} '선두'·'2위' ·
@@ -654,10 +655,17 @@ export type PatternSection = "결과" | "득점" | "한국 선수" | "순위";
  * `korean`은 M3-03, 전일 순위 `prev`는 M2-03이 더한다. 꺼진 문형은 분석되지 않고(문법 밖 — `grammar-unknown`) 지시문 [문형]에도
  * 나오지 않는다. 키가 생기면 `parseBriefLine`·`renderBriefPatterns`의 `keys`로 켠다(검사기는 입력에서 키를 읽는다).
  */
-export type BriefInputKey = "korean" | "prev";
+export type BriefInputKey = "korean" | "koreanSub" | "koreanBench" | "prev";
 
+/**
+ * 입력 선택 키 순서(렌더·시험용). `koreanSub`·`koreanBench`는 한국 선수 블록 안의 세부 키다(M3-03b) — 확정 입력(brief-input.ts
+ * `briefKoreanBlock`)은 교체 투입·아웃 분(subOn·subOff)이 원장에 없어 넣지 않고 출전하지 않은 선수(minutes 0)도 넣지 않으므로 늘
+ * 꺼진다. M0-30 입력 형식(fixtures/llm/brief-inputs — subOn·subOff·minutes 0 행)에서만 켜진다(기준선 'm0' 판정이 그대로 남게).
+ */
 export const BRIEF_INPUT_KEYS: readonly BriefInputKey[] = Object.freeze([
   "korean",
+  "koreanSub",
+  "koreanBench",
   "prev",
 ]);
 
@@ -726,13 +734,33 @@ const RESULT_ONE_SUBJECT: readonly string[] = Object.freeze([
   "pens",
 ]);
 
-/** 한국 선수 출전 꼴 — 선발·교체 */
-function appearance(): El {
-  return alt(
+/** 한국 선수 선발 출전 꼴 */
+function startAppearance(): El[] {
+  return [
     seq(opt(team("kTeam2", P.none)), w("선발로 출전해", { app: "start" })),
     w("선발 출전해", { app: "start" }),
     w("선발로 나와", { app: "start" }),
-    seq(opt(minute("subOn")), w("교체 투입돼", { app: "sub" })),
+  ];
+}
+
+/**
+ * 한국 선수 출전 꼴 — 선발·교체. `withSubOn`이면 교체 투입 분('57분 교체 투입돼')도 받는다(입력에 subOn이 있을 때만 — 키
+ * `koreanSub`, M3-03b)
+ */
+function appearance(withSubOn: boolean): El {
+  return alt(
+    ...startAppearance(),
+    withSubOn
+      ? seq(opt(minute("subOn")), w("교체 투입돼", { app: "sub" }))
+      : w("교체 투입돼", { app: "sub" }),
+  );
+}
+
+/** '{n}분을' — 출전 분 */
+function minutesPlayed(): El {
+  note("{n}분");
+  return tok(`(${POS_NUM}\\d?)분을`, (m, bag) =>
+    "minutes" in bag ? null : { ...bag, minutes: Number(m[1]) },
   );
 }
 
@@ -992,30 +1020,48 @@ export const PATTERNS: readonly PatternEntry[] = [
     section: "한국 선수",
     type: "korean",
     role: "first",
-    text: "{선수}는 [[{팀}의] {상대}전에서] ([{팀}] 선발로 출전해 / 선발 출전해 / 선발로 나와 / [{분}] 교체 투입돼) {n}분을 (뛰었다 / 뛰고 교체됐다 / 뛰고 교체 아웃됐다)",
+    text: "{선수}는 [[{팀}의] {상대}전에서] ([{팀}] 선발로 출전해 / 선발 출전해 / 선발로 나와 / 교체 투입돼) {n}분을 뛰었다",
     build: () =>
       seq(
         player("subj", P.subj),
         koreanMatch(),
-        appearance(),
-        (() => {
-          note("{n}분");
-          return tok(`(${POS_NUM}\\d?)분을`, (m, bag) =>
-            "minutes" in bag ? null : { ...bag, minutes: Number(m[1]) },
-          );
-        })(),
+        appearance(false),
+        minutesPlayed(),
+        pred(["뛰다"], ENDS),
+      ),
+  }),
+  // 교체 투입·아웃 분 꼴 — 입력에 subOn·subOff가 있을 때만(키 koreanSub — M0-30 입력 형식. 확정 입력에는 없다, M3-03b)
+  pattern({
+    id: "korean-sub",
+    requires: "koreanSub",
+    section: "한국 선수",
+    type: "korean",
+    role: "first",
+    text: "{선수}는 [[{팀}의] {상대}전에서] ({분} 교체 투입돼 {n}분을 뛰었다 / ([{팀}] 선발로 출전해 / 선발 출전해 / 선발로 나와 / [{분}] 교체 투입돼) {n}분을 (뛰고 교체됐다 / 뛰고 교체 아웃됐다))",
+    build: () =>
+      seq(
+        player("subj", P.subj),
+        koreanMatch(),
         alt(
-          pred(["뛰다"], ENDS),
           seq(
+            minute("subOn"),
+            w("교체 투입돼", { app: "sub" }),
+            minutesPlayed(),
+            pred(["뛰다"], ENDS),
+          ),
+          seq(
+            appearance(true),
+            minutesPlayed(),
             w("뛰고", { subOff: true }),
             pred(["교체되다", "교체 아웃되다"], ENDS),
           ),
         ),
       ),
   }),
+  // 결장 꼴 — 입력에 출전하지 않은 행(minutes 0)이 있을 때만(키 koreanBench — M0-30 입력 형식. 확정 입력은 출전한 선수만, M3-03b)
   pattern({
     id: "korean-bench",
-    requires: "korean",
+    requires: "koreanBench",
     section: "한국 선수",
     type: "korean",
     role: "first",
@@ -1034,7 +1080,7 @@ export const PATTERNS: readonly PatternEntry[] = [
     section: "한국 선수",
     type: "koreanTail",
     role: "second",
-    after: ["korean"],
+    after: ["korean", "korean-sub"],
     text: "(출전 문형 뒤) 득점은 없었다",
     context: `${OPEN}2${CLOSE}는 선발 출전해 78분을 뛰었고 `,
     build: () => seq(w("득점은"), pred(["없다"], ["final"])),

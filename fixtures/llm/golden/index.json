@@ -1,6 +1,6 @@
 {
   "task": "M1-24",
-  "note": "브리핑 골든셋 10일치(PRD §9.2) — 입력(inputs/)은 소스(sources/) + configs에서 확정 빌더(buildBriefInput → canonicalizeBriefInput)로 만든다(scripts/lib/golden.ts). 날짜는 발행일(KST), 입력 창은 UTC 하루 D-1. 기사 텍스트 없음 — football-data 결과·순위 + API-Football 득점만. 2026-02-26·05-31은 2025-26 시즌 UCL 토너먼트(연장·승부차기 사례 — 6개 대회 2026-27 시즌에는 아직 없다).",
+  "note": "브리핑 골든셋 10일치(PRD §9.2) — 입력(inputs/)은 소스(sources/) + configs에서 확정 빌더(buildBriefInput → canonicalizeBriefInput)로 만든다(scripts/lib/golden.ts). 날짜는 발행일(KST), 입력 창은 UTC 하루 D-1. 기사 텍스트 없음 — football-data 결과·순위 + API-Football 득점만. 2026-02-26·05-31은 2025-26 시즌 UCL 토너먼트(연장·승부차기 사례 — 6개 대회 2026-27 시즌에는 아직 없다). 한국 선수 블록(korean — M3-03b): 09-19·10-11은 저장소의 API-Football 단건 fixture 라인업에서(koreanRowsOf), 10-25·11-01은 경기 원장에서 — 정기 실행은 BRIEF_KOREAN_ENABLED로 끄지만 골든셋 입력에는 넣어 지시문을 잰다. 10-14·10-15(UCL MD2)는 2026-11-01 10-25·11-01로 바꿨다(10일 유지).",
   "days": [
     {
       "date": "2026-02-26",
@@ -38,7 +38,7 @@
     {
       "date": "2026-09-19",
       "title": "09-18 UTC 5경기 전부(입력 A는 2경기만) — 바이에른 7-0 우니온 베를린(득점 7), 브렌트포드 3-0 첼시",
-      "tags": ["big-win", "goals", "korean-team", "standings"],
+      "tags": ["big-win", "goals", "korean-team", "standings", "korean"],
       "m0": "A",
       "provenance": {
         "results": "fixtures/football/football-data/matches-6comps-2026-09-17-18-20.json 중 2026-09-18 UTC 5경기",
@@ -71,34 +71,12 @@
     {
       "date": "2026-10-11",
       "title": "10-10 UTC 23경기(입력 E) — 경기 많은 날, 득점 13경기·5대 리그 순위, 한국 선수 소속팀 5경기",
-      "tags": ["busy", "big-win", "draw", "comeback", "goals", "korean-team", "standings"],
+      "tags": ["busy", "big-win", "draw", "comeback", "goals", "korean-team", "standings", "korean"],
       "m0": "E",
       "provenance": {
         "results": "fixtures/football/football-data/matches-6comps-2026-10-10.json 중 종료 23경기(취소 1 제외)",
         "standings": "fixtures/football/football-data/standings-{pl,pd,sa,bl1,fl1}-2026-10-11.json",
         "goals": "API-Football 단건 7경기(fixtures/football/api-football/fixtures-id-*.json — 대응표 연결) + M0-34 입력 E goals 6경기(저장소에 원문이 없는 경기 — 같은 API-Football 응답에서 옮긴 것)"
-      }
-    },
-    {
-      "date": "2026-10-14",
-      "title": "UCL 리그 페이즈 2차전 첫날 9경기 — 비킹 3-3 바이에른(전반 2-0), 인테르 3-4 브뤼헤, 갈라타사라이 1-4 바르셀로나, 순위 없음",
-      "tags": ["ucl", "big-win", "draw", "korean-team", "no-standings"],
-      "m0": null,
-      "provenance": {
-        "results": "football-data /v4/matches?competitions=PL,PD,SA,BL1,FL1,CL&dateFrom=2026-10-11&dateTo=2026-10-17 (2026-10-17T05:12:51Z, M1-24) 중 2026-10-13 UTC 9경기",
-        "standings": "없음 — MD2 9경기만 끝난 표는 다시 받을 수 없다(현재 표는 MD2 전부 반영)",
-        "goals": "없음 — 지난 날짜 API-Football 날짜 조회 불가"
-      }
-    },
-    {
-      "date": "2026-10-15",
-      "title": "UCL 리그 페이즈 2차전 둘째 날 9경기 + MD2 뒤 순위 — 맨시티 2-4 PSG(전반 0-3), LASK 3-6 리버풀, 애스턴 빌라 6-0",
-      "tags": ["ucl", "big-win", "standings"],
-      "m0": null,
-      "provenance": {
-        "results": "football-data /v4/matches …dateFrom=2026-10-11&dateTo=2026-10-17 (2026-10-17T05:12:51Z) 중 2026-10-14 UTC 9경기",
-        "standings": "football-data /v4/competitions/CL/standings (2026-10-17T05:15:44Z — MD2 뒤, 그 뒤 UCL 경기 없음)",
-        "goals": "없음 — 지난 날짜 API-Football 날짜 조회 불가"
       }
     },
     {
@@ -110,6 +88,28 @@
         "results": "football-data /v4/matches …dateFrom=2026-10-11&dateTo=2026-10-17 (2026-10-17T05:12:51Z) 중 2026-10-16 UTC 4경기",
         "standings": "football-data /v4/competitions/{BL1,FL1,SA,PD}/standings (2026-10-17T05:15:52~16:17Z — 10-16 경기 뒤, 진행 중 경기 없음)",
         "goals": "API-Football /fixtures?date=2026-10-16 → /fixtures?id= 4경기(2026-10-17T05:16Z, M1-24) — toMatchDetail → linkMatchDetails(대응표 2·증거 2)"
+      }
+    },
+    {
+      "date": "2026-10-25",
+      "title": "10-24 UTC 19경기 — 한국 선수 5명 소속팀(이재성 골·마인츠 2-3 브레멘, 정우영·황희찬·이강인 선발, 설영우 벤치), 라이프치히 4-0·엘체 3-0, 순위 없음",
+      "tags": ["busy", "big-win", "draw", "comeback", "goals", "korean-team", "korean", "no-standings"],
+      "m0": null,
+      "provenance": {
+        "results": "data/competitions/*.json(52368be — football-data 시즌 경기: 경기 id·팀·라운드·최종 점수) 중 2026-10-24 UTC 킥오프 종료 경기, 팀 이름 = fixtures/football/football-data/teams-*-2026.json(team-ids 대응), 전반 점수 = 원장 득점 목록(완전한 경기만 — 45분 + 추가시간)",
+        "standings": "없음 — 그날 아침 순위표 스냅숏이 저장소에 없다(data/competitions는 2026-10-30부터)",
+        "goals": "경기 원장 data/matches/2026-10.json(API-Football 경기 단건 — 정기 실행이 쌓은 것) → ledgerMatchToDetail → linkMatchDetails(대응표만), 한국 선수 행 = 원장 korean(벤치 포함 — 빌더가 출전한 선수만 넣는다)"
+      }
+    },
+    {
+      "date": "2026-11-01",
+      "title": "10-31 UTC 22경기 — 한국 선수 5명(김민재·황희찬·이강인 선발, 카스트로프 교체 13분, 설영우 벤치), 바이에른 2-2 도르트문트·바르셀로나 6-1, 분데스리가 결과 지연 보충",
+      "tags": ["busy", "big-win", "draw", "comeback", "goals", "korean-team", "korean", "standings"],
+      "m0": null,
+      "provenance": {
+        "results": "data/competitions/*.json(52368be) 중 2026-10-31 UTC 킥오프 경기 — 분데스리가 6경기는 football-data가 아직 SCHEDULED라 원장(API-Football) 최종 점수로 보충(D60과 같은 방식 — id·팀·라운드는 football-data), 팀 이름 = fixtures/football/football-data/teams-*-2026.json, 전반 점수 = 원장 득점 목록",
+        "standings": "data/competitions/{epl,laliga,seriea,ligue1}.json(52368be — 2026-11-01 아침 정기 실행이 2026-10-31T22:16~18Z에 받은 표, 진행 중 경기 없음), 분데스리가는 결과 보충 대회라 없음(D60 — 정기 실행과 같다)",
+        "goals": "경기 원장 data/matches/2026-10.json → ledgerMatchToDetail → linkMatchDetails(대응표만), 한국 선수 행 = 원장 korean"
       }
     }
   ]

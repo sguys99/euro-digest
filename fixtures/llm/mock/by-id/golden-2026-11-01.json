@@ -1,0 +1,12 @@
+{
+  "type": "succeeded",
+  "note": "골든셋 실측(npm run eval:prompt — run 2026-11-01-v0.5, 변형 base, 지시문 p_e725c16c76f0) — thinking 4753토큰, 지연 28632ms, 판정 downgrade-line:4",
+  "text": "{\"l\":[{\"t\":\"Alavés를 6-1로 완파한 Barça는 승점 30으로 LaLiga 선두다.\",\"r\":[\"m564732\",\"sLL\"]},{\"t\":\"Inter를 3-1로 꺾은 Milan은 승점 21로 Serie A 4위다.\",\"r\":[\"m558548\",\"sSA\"]},{\"t\":\"Man United를 2-0으로 꺾은 Chelsea는 승점 16으로 Premier League 4위다.\",\"r\":[\"m560626\",\"sPL\"]},{\"t\":\"Bundesliga에서 Bayern과 Dortmund가 2-2로 비겼다.\",\"r\":[\"m565845\"]},{\"t\":\"Hee-chan Hwang은 Schalke의 RB Leipzig전에서 선발로 나와 83분을 뛰었다.\",\"r\":[\"k24888\",\"m565840\"]}]}",
+  "stop_reason": "end_turn",
+  "usage": {
+    "input_tokens": 8387,
+    "output_tokens": 5042,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  }
+}

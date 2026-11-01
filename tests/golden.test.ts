@@ -160,6 +160,7 @@ describe("태그·덮는 유형", () => {
         )
       )
         expected.add("korean-team");
+      if ((input.korean?.length ?? 0) > 0) expected.add("korean");
       expect([...day.tags].sort(), day.date).toEqual([...expected].sort());
     }
   });
@@ -176,9 +177,14 @@ describe("태그·덮는 유형", () => {
       "penalties",
       "goals",
       "standings",
+      "korean",
     ] as const) {
       expect(all.has(tag), tag).toBe(true);
     }
+    // M3-03b — 한국 선수 블록이 있는 날 3일 이상(지시문 v0.5 한국 선수 절 회귀)
+    expect(
+      INDEX.days.filter((d) => d.tags.includes("korean")).length,
+    ).toBeGreaterThanOrEqual(3);
     const most = Math.max(...[...inputs.values()].map((i) => i.matches.length));
     expect(most).toBeGreaterThanOrEqual(23);
   });

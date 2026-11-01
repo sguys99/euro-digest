@@ -616,8 +616,15 @@ export function canonicalizeBriefInput(
     ...s,
     rows: s.rows.map((r) => ({ ...r, team: teamName(r.team) })),
   }));
+  // 한국 선수 블록(M3-03b)의 team도 같은 규칙 — 그 경기 home·away와 같은 문자열로 남아야 검사기·LLM이 같은 팀으로 읽는다
+  const korean = input.korean?.map((k) => ({ ...k, team: teamName(k.team) }));
   return {
-    input: { ...input, matches, standings },
+    input: {
+      ...input,
+      matches,
+      standings,
+      ...(korean !== undefined ? { korean } : {}),
+    },
     replaced,
     teams: renamedTeams.size,
   };

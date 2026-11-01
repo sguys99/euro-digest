@@ -1,6 +1,6 @@
 /**
  * M3-03 브리핑 입력 한국 선수 블록(scripts/lib/brief-input.ts `briefKoreanBlock` — D24, D55 ①) + 검사기(brief-check.ts)가 확정
- * 형식(subOn·subOff 없음)의 한국 선수 줄을 거르지 않는지. 네트워크·LLM 없음 — M0-30 입력 A(fixtures/llm/brief-inputs/2026-09-19.json).
+ * 형식(subOn·subOff 없음)의 한국 선수 줄을 거르지 않는지. 네트워크·LLM 없음 — M0-30 입력 A(fixtures/llm/brief-inputs/2026-09-19.json)·골든 2026-10-25(M3-03b).
  * 정기 실행은 아직 블록을 넣지 않는다(`BRIEF_KOREAN_ENABLED` false — 지시문 v0.5 뒤에 켠다).
  */
 import { readFileSync } from "node:fs";
@@ -304,8 +304,106 @@ describe("검사기 — 확정 형식(subOn·subOff 없음) 한국 선수 줄", 
     expect(
       check("Woo-yeong Jeong은 선발 출전해 90분을 뛰었다.", ["k512"]).codes,
     ).toEqual(["minute"]);
+    // 결장 꼴은 출전하지 않은 행(minutes 0)이 입력에 있을 때만 켜진다(키 koreanBench, M3-03b) — 확정 입력에는 없어 문법 밖
     expect(check("Min-jae Kim은 결장했다.", ["k2897"]).codes).toEqual([
-      "appearance",
+      "grammar-unknown",
     ]);
+  });
+});
+
+describe("검사기 — 골든 2026-10-25(원장 한국 선수 행 → 확정 빌더 입력, M3-03b) 한국 선수 줄의 사실 대조", () => {
+  const input = readJson(
+    "fixtures/llm/golden/inputs/2026-10-25.json",
+  ) as BriefCheckInput;
+  const check = (t: string, r: string[]) => {
+    const res = checkBriefOutput([{ t, r }], input, CTX);
+    const line = res.lines[0]!;
+    return {
+      ok: res.whole.ok && line.ok,
+      codes: line.reasons.map((x) => x.code),
+    };
+  };
+
+  it("전제 — 블록은 출전한 선수만(설영우 벤치 제외), 이재성 1골(그 경기 득점 목록에도 있다)", () => {
+    expect(
+      input.korean!.map((k) => [k.id, k.started, k.minutes, k.goals]),
+    ).toEqual([
+      ["k927", true, 67, 0],
+      ["k2906", true, 75, 1],
+      ["k24888", true, 90, 0],
+      ["k512", true, 76, 0],
+    ]);
+    const mainz = input.matches.find((m) => m.id === "m565830")!;
+    expect(mainz.goals!.some((g) => g.player === "Jae-sung Lee")).toBe(true);
+  });
+
+  it.each([
+    ["Jae-sung Lee가 63분 골을 넣었다.", ["k2906"]],
+    ["Mainz의 Jae-sung Lee가 63분 골을 넣었다.", ["k2906"]],
+    [
+      "Mainz가 Bremen에 2-3으로 졌고 Jae-sung Lee가 63분 골을 넣었다.",
+      ["m565830", "k2906"],
+    ],
+    ["Jae-sung Lee는 Bremen전에서 선발 출전해 75분을 뛰었다.", ["k2906"]],
+    [
+      "Hee-chan Hwang은 1. FC Köln전에서 선발 출전해 90분을 뛰었고 득점은 없었다.",
+      ["k24888"],
+    ],
+    ["Kang-in Lee는 Atleti 선발로 출전해 67분을 뛰었다.", ["k927"]],
+    ["Woo-yeong Jeong은 Augsburg전에서 선발로 나와 76분을 뛰었다.", ["k512"]],
+  ])("참: %s", (t, r) => {
+    expect(check(t, r)).toEqual({ ok: true, codes: [] });
+  });
+
+  it.each([
+    // 골·도움 — 블록·득점 목록과 다르다
+    ["Kang-in Lee가 골을 넣었다.", ["k927"], "scorer"],
+    ["Jae-sung Lee가 70분 골을 넣었다.", ["k2906"], "minute"],
+    ["Jae-sung Lee가 멀티골을 기록했다.", ["k2906"], "goal-count"],
+    [
+      "Jae-sung Lee는 선발 출전해 75분을 뛰었고 득점은 없었다.",
+      ["k2906"],
+      "goal-count",
+    ],
+    // 출전 — 선발 여부·분·팀·상대
+    ["Woo-yeong Jeong은 교체 투입돼 76분을 뛰었다.", ["k512"], "appearance"],
+    ["Hee-chan Hwang은 선발 출전해 85분을 뛰었다.", ["k24888"], "minute"],
+    [
+      "Jae-sung Lee는 Schalke 선발로 출전해 75분을 뛰었다.",
+      ["k2906"],
+      "affiliation",
+    ],
+    ["Bremen의 Jae-sung Lee가 63분 골을 넣었다.", ["k2906"], "affiliation"],
+    [
+      "Woo-yeong Jeong은 Bremen전에서 선발 출전해 76분을 뛰었다.",
+      ["k512"],
+      "opponent-mismatch",
+    ],
+    // 다른 경기 결과와 잇기
+    [
+      "Atleti가 RC Deportivo La Coruña를 1-0으로 꺾었고 Jae-sung Lee가 63분 골을 넣었다.",
+      ["m564724", "k2906"],
+      "clause-mismatch",
+    ],
+  ])("거짓: %s → %s", (t, r, code) => {
+    const res = check(t, r);
+    expect(res.ok).toBe(false);
+    expect(res.codes, t).toContain(code);
+  });
+
+  it.each([
+    // 원장에 없는 교체 시각·교체 아웃, 블록에 없는 선수(벤치)의 결장 — 문형 밖(지시문 v0.5 [문형]에도 없다)
+    ["Kang-in Lee는 선발 출전해 67분을 뛰고 교체됐다.", ["k927"]],
+    ["Jae-sung Lee는 60분 교체 투입돼 15분을 뛰었다.", ["k2906"]],
+    ["Young-woo Seol은 Union Berlin전에서 결장했다.", ["m565838"]],
+  ])("문형 밖: %s", (t, r) => {
+    const res = check(t, r);
+    expect(res.ok).toBe(false);
+    expect(res.codes, t).toContain("grammar-unknown");
+  });
+
+  it("블록에 없는 선수(벤치 — 설영우)의 출전 서술은 근거가 없다", () => {
+    const res = check("Young-woo Seol은 교체 투입돼 10분을 뛰었다.", ["k512"]);
+    expect(res.ok).toBe(false);
   });
 });

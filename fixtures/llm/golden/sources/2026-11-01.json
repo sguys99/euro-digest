@@ -1,0 +1,3150 @@
+{
+  "briefDate": "2026-11-01",
+  "results": [
+    {
+      "provider": "football-data",
+      "matchId": 560626,
+      "comp": "EPL",
+      "kickoff": "2026-10-31T12:30:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 61,
+        "name": "Chelsea",
+        "fullName": "Chelsea FC"
+      },
+      "away": {
+        "id": 66,
+        "name": "Man United",
+        "fullName": "Manchester United FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564730,
+      "comp": "LALIGA",
+      "kickoff": "2026-10-31T13:00:00Z",
+      "matchday": 11,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 88,
+        "name": "Levante",
+        "fullName": "Levante UD"
+      },
+      "away": {
+        "id": 78,
+        "name": "Atleti",
+        "fullName": "Club Atlético de Madrid"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 2
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 0,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 558539,
+      "comp": "SERIEA",
+      "kickoff": "2026-10-31T14:00:00Z",
+      "matchday": 10,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 103,
+        "name": "Bologna",
+        "fullName": "Bologna FC 1909"
+      },
+      "away": {
+        "id": 5911,
+        "name": "Monza",
+        "fullName": "AC Monza"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 1
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565839,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "matchday": 8,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 18,
+        "name": "M'gladbach",
+        "fullName": "Borussia Mönchengladbach"
+      },
+      "away": {
+        "id": 29,
+        "name": "SC Paderborn",
+        "fullName": "SC Paderborn 07"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 0,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565840,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "matchday": 8,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 6,
+        "name": "Schalke",
+        "fullName": "FC Schalke 04"
+      },
+      "away": {
+        "id": 721,
+        "name": "RB Leipzig",
+        "fullName": "RB Leipzig"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 2
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 0,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565842,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "matchday": 8,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 16,
+        "name": "Augsburg",
+        "fullName": "FC Augsburg"
+      },
+      "away": {
+        "id": 17,
+        "name": "Freiburg",
+        "fullName": "SC Freiburg"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 2
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 1,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565843,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "matchday": 8,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 12,
+        "name": "Bremen",
+        "fullName": "SV Werder Bremen"
+      },
+      "away": {
+        "id": 2,
+        "name": "Hoffenheim",
+        "fullName": "TSG 1899 Hoffenheim"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 0,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565847,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-10-31T14:30:00Z",
+      "matchday": 8,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 3,
+        "name": "Leverkusen",
+        "fullName": "Bayer 04 Leverkusen"
+      },
+      "away": {
+        "id": 10,
+        "name": "Stuttgart",
+        "fullName": "VfB Stuttgart"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 4
+        },
+        "ht": {
+          "home": 1,
+          "away": 2
+        },
+        "regular": {
+          "home": 2,
+          "away": 4
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560623,
+      "comp": "EPL",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 65,
+        "name": "Man City",
+        "fullName": "Manchester City FC"
+      },
+      "away": {
+        "id": 397,
+        "name": "Brighton Hove",
+        "fullName": "Brighton & Hove Albion FC"
+      },
+      "score": {
+        "ft": {
+          "home": 0,
+          "away": 1
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 0,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560624,
+      "comp": "EPL",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 1044,
+        "name": "Bournemouth",
+        "fullName": "AFC Bournemouth"
+      },
+      "away": {
+        "id": 341,
+        "name": "Leeds United",
+        "fullName": "Leeds United FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560625,
+      "comp": "EPL",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 1076,
+        "name": "Coventry City",
+        "fullName": "Coventry City FC"
+      },
+      "away": {
+        "id": 71,
+        "name": "Sunderland",
+        "fullName": "Sunderland AFC"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 1
+        },
+        "ht": {
+          "home": 2,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560629,
+      "comp": "EPL",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 322,
+        "name": "Hull City",
+        "fullName": "Hull City AFC"
+      },
+      "away": {
+        "id": 349,
+        "name": "Ipswich Town",
+        "fullName": "Ipswich Town FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 2
+        },
+        "ht": {
+          "home": 0,
+          "away": 1
+        },
+        "regular": {
+          "home": 2,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560630,
+      "comp": "EPL",
+      "kickoff": "2026-10-31T15:00:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 402,
+        "name": "Brentford",
+        "fullName": "Brentford FC"
+      },
+      "away": {
+        "id": 351,
+        "name": "Nottingham",
+        "fullName": "Nottingham Forest FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564735,
+      "comp": "LALIGA",
+      "kickoff": "2026-10-31T15:15:00Z",
+      "matchday": 11,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 87,
+        "name": "Rayo Vallecano",
+        "fullName": "Rayo Vallecano de Madrid"
+      },
+      "away": {
+        "id": 558,
+        "name": "Celta",
+        "fullName": "RC Celta de Vigo"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 3,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 558542,
+      "comp": "SERIEA",
+      "kickoff": "2026-10-31T17:00:00Z",
+      "matchday": 10,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 115,
+        "name": "Udinese",
+        "fullName": "Udinese Calcio"
+      },
+      "away": {
+        "id": 100,
+        "name": "Roma",
+        "fullName": "AS Roma"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 5
+        },
+        "ht": {
+          "home": 0,
+          "away": 4
+        },
+        "regular": {
+          "home": 2,
+          "away": 5
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560627,
+      "comp": "EPL",
+      "kickoff": "2026-10-31T17:30:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 73,
+        "name": "Tottenham",
+        "fullName": "Tottenham Hotspur FC"
+      },
+      "away": {
+        "id": 354,
+        "name": "Crystal Palace",
+        "fullName": "Crystal Palace FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564736,
+      "comp": "LALIGA",
+      "kickoff": "2026-10-31T17:30:00Z",
+      "matchday": 11,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 90,
+        "name": "Real Betis",
+        "fullName": "Real Betis Balompié"
+      },
+      "away": {
+        "id": 84,
+        "name": "Málaga",
+        "fullName": "Málaga CF"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 1
+        },
+        "ht": {
+          "home": 2,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 565845,
+      "comp": "BUNDESLIGA",
+      "kickoff": "2026-10-31T17:30:00Z",
+      "matchday": 8,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 5,
+        "name": "Bayern",
+        "fullName": "FC Bayern München"
+      },
+      "away": {
+        "id": 4,
+        "name": "Dortmund",
+        "fullName": "Borussia Dortmund"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 2
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 2
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 558548,
+      "comp": "SERIEA",
+      "kickoff": "2026-10-31T19:45:00Z",
+      "matchday": 10,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 98,
+        "name": "Milan",
+        "fullName": "AC Milan"
+      },
+      "away": {
+        "id": 108,
+        "name": "Inter",
+        "fullName": "FC Internazionale Milano"
+      },
+      "score": {
+        "ft": {
+          "home": 3,
+          "away": 1
+        },
+        "ht": {
+          "home": 3,
+          "away": 1
+        },
+        "regular": {
+          "home": 3,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 559643,
+      "comp": "LIGUE1",
+      "kickoff": "2026-10-31T19:45:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 531,
+        "name": "Troyes",
+        "fullName": "ES Troyes AC"
+      },
+      "away": {
+        "id": 535,
+        "name": "Le Mans",
+        "fullName": "Le Mans FC"
+      },
+      "score": {
+        "ft": {
+          "home": 2,
+          "away": 0
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 2,
+          "away": 0
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 560628,
+      "comp": "EPL",
+      "kickoff": "2026-10-31T20:00:00Z",
+      "matchday": 9,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 58,
+        "name": "Aston Villa",
+        "fullName": "Aston Villa FC"
+      },
+      "away": {
+        "id": 63,
+        "name": "Fulham",
+        "fullName": "Fulham FC"
+      },
+      "score": {
+        "ft": {
+          "home": 1,
+          "away": 1
+        },
+        "ht": {
+          "home": 1,
+          "away": 0
+        },
+        "regular": {
+          "home": 1,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    },
+    {
+      "provider": "football-data",
+      "matchId": 564732,
+      "comp": "LALIGA",
+      "kickoff": "2026-10-31T20:00:00Z",
+      "matchday": 11,
+      "stage": "REGULAR_SEASON",
+      "home": {
+        "id": 81,
+        "name": "Barça",
+        "fullName": "FC Barcelona"
+      },
+      "away": {
+        "id": 263,
+        "name": "Alavés",
+        "fullName": "Deportivo Alavés"
+      },
+      "score": {
+        "ft": {
+          "home": 6,
+          "away": 1
+        },
+        "ht": {
+          "home": 4,
+          "away": 0
+        },
+        "regular": {
+          "home": 6,
+          "away": 1
+        },
+        "pens": null,
+        "duration": "REGULAR"
+      }
+    }
+  ],
+  "standings": [
+    {
+      "comp": "EPL",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "REGULAR_SEASON",
+          "group": null,
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 65,
+                "name": "Man City",
+                "fullName": "Manchester City FC"
+              },
+              "played": 9,
+              "pts": 21,
+              "gd": 10,
+              "w": 7,
+              "d": 0,
+              "l": 2,
+              "gf": 20,
+              "ga": 10
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 57,
+                "name": "Arsenal",
+                "fullName": "Arsenal FC"
+              },
+              "played": 8,
+              "pts": 21,
+              "gd": 8,
+              "w": 7,
+              "d": 0,
+              "l": 1,
+              "gf": 13,
+              "ga": 5
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 397,
+                "name": "Brighton Hove",
+                "fullName": "Brighton & Hove Albion FC"
+              },
+              "played": 9,
+              "pts": 19,
+              "gd": 17,
+              "w": 6,
+              "d": 1,
+              "l": 2,
+              "gf": 24,
+              "ga": 7
+            },
+            {
+              "pos": 4,
+              "team": {
+                "id": 61,
+                "name": "Chelsea",
+                "fullName": "Chelsea FC"
+              },
+              "played": 9,
+              "pts": 16,
+              "gd": 4,
+              "w": 5,
+              "d": 1,
+              "l": 3,
+              "gf": 19,
+              "ga": 15
+            },
+            {
+              "pos": 5,
+              "team": {
+                "id": 64,
+                "name": "Liverpool",
+                "fullName": "Liverpool FC"
+              },
+              "played": 8,
+              "pts": 15,
+              "gd": 3,
+              "w": 4,
+              "d": 3,
+              "l": 1,
+              "gf": 11,
+              "ga": 8
+            },
+            {
+              "pos": 6,
+              "team": {
+                "id": 402,
+                "name": "Brentford",
+                "fullName": "Brentford FC"
+              },
+              "played": 9,
+              "pts": 14,
+              "gd": 7,
+              "w": 3,
+              "d": 5,
+              "l": 1,
+              "gf": 16,
+              "ga": 9
+            },
+            {
+              "pos": 7,
+              "team": {
+                "id": 1044,
+                "name": "Bournemouth",
+                "fullName": "AFC Bournemouth"
+              },
+              "played": 9,
+              "pts": 12,
+              "gd": 1,
+              "w": 3,
+              "d": 3,
+              "l": 3,
+              "gf": 14,
+              "ga": 13
+            },
+            {
+              "pos": 8,
+              "team": {
+                "id": 73,
+                "name": "Tottenham",
+                "fullName": "Tottenham Hotspur FC"
+              },
+              "played": 9,
+              "pts": 12,
+              "gd": 0,
+              "w": 3,
+              "d": 3,
+              "l": 3,
+              "gf": 10,
+              "ga": 10
+            },
+            {
+              "pos": 9,
+              "team": {
+                "id": 58,
+                "name": "Aston Villa",
+                "fullName": "Aston Villa FC"
+              },
+              "played": 9,
+              "pts": 12,
+              "gd": -3,
+              "w": 3,
+              "d": 3,
+              "l": 3,
+              "gf": 10,
+              "ga": 13
+            },
+            {
+              "pos": 10,
+              "team": {
+                "id": 322,
+                "name": "Hull City",
+                "fullName": "Hull City AFC"
+              },
+              "played": 9,
+              "pts": 11,
+              "gd": 1,
+              "w": 2,
+              "d": 5,
+              "l": 2,
+              "gf": 11,
+              "ga": 10
+            },
+            {
+              "pos": 11,
+              "team": {
+                "id": 341,
+                "name": "Leeds United",
+                "fullName": "Leeds United FC"
+              },
+              "played": 9,
+              "pts": 11,
+              "gd": 1,
+              "w": 2,
+              "d": 5,
+              "l": 2,
+              "gf": 9,
+              "ga": 8
+            },
+            {
+              "pos": 12,
+              "team": {
+                "id": 67,
+                "name": "Newcastle",
+                "fullName": "Newcastle United FC"
+              },
+              "played": 8,
+              "pts": 11,
+              "gd": -2,
+              "w": 3,
+              "d": 2,
+              "l": 3,
+              "gf": 12,
+              "ga": 14
+            },
+            {
+              "pos": 13,
+              "team": {
+                "id": 349,
+                "name": "Ipswich Town",
+                "fullName": "Ipswich Town FC"
+              },
+              "played": 9,
+              "pts": 11,
+              "gd": -4,
+              "w": 3,
+              "d": 2,
+              "l": 4,
+              "gf": 14,
+              "ga": 18
+            },
+            {
+              "pos": 14,
+              "team": {
+                "id": 62,
+                "name": "Everton",
+                "fullName": "Everton FC"
+              },
+              "played": 8,
+              "pts": 10,
+              "gd": -1,
+              "w": 2,
+              "d": 4,
+              "l": 2,
+              "gf": 8,
+              "ga": 9
+            },
+            {
+              "pos": 15,
+              "team": {
+                "id": 63,
+                "name": "Fulham",
+                "fullName": "Fulham FC"
+              },
+              "played": 9,
+              "pts": 9,
+              "gd": -2,
+              "w": 2,
+              "d": 3,
+              "l": 4,
+              "gf": 9,
+              "ga": 11
+            },
+            {
+              "pos": 16,
+              "team": {
+                "id": 1076,
+                "name": "Coventry City",
+                "fullName": "Coventry City FC"
+              },
+              "played": 9,
+              "pts": 9,
+              "gd": -7,
+              "w": 3,
+              "d": 0,
+              "l": 6,
+              "gf": 9,
+              "ga": 16
+            },
+            {
+              "pos": 17,
+              "team": {
+                "id": 66,
+                "name": "Man United",
+                "fullName": "Manchester United FC"
+              },
+              "played": 9,
+              "pts": 7,
+              "gd": -5,
+              "w": 1,
+              "d": 4,
+              "l": 4,
+              "gf": 10,
+              "ga": 15
+            },
+            {
+              "pos": 18,
+              "team": {
+                "id": 354,
+                "name": "Crystal Palace",
+                "fullName": "Crystal Palace FC"
+              },
+              "played": 9,
+              "pts": 7,
+              "gd": -12,
+              "w": 2,
+              "d": 1,
+              "l": 6,
+              "gf": 9,
+              "ga": 21
+            },
+            {
+              "pos": 19,
+              "team": {
+                "id": 351,
+                "name": "Nottingham",
+                "fullName": "Nottingham Forest FC"
+              },
+              "played": 9,
+              "pts": 6,
+              "gd": -6,
+              "w": 1,
+              "d": 3,
+              "l": 5,
+              "gf": 6,
+              "ga": 12
+            },
+            {
+              "pos": 20,
+              "team": {
+                "id": 71,
+                "name": "Sunderland",
+                "fullName": "Sunderland AFC"
+              },
+              "played": 9,
+              "pts": 5,
+              "gd": -10,
+              "w": 1,
+              "d": 2,
+              "l": 6,
+              "gf": 7,
+              "ga": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "comp": "LALIGA",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "REGULAR_SEASON",
+          "group": null,
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 81,
+                "name": "Barça",
+                "fullName": "FC Barcelona"
+              },
+              "played": 11,
+              "pts": 30,
+              "gd": 34,
+              "w": 10,
+              "d": 0,
+              "l": 1,
+              "gf": 46,
+              "ga": 12
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 78,
+                "name": "Atleti",
+                "fullName": "Club Atlético de Madrid"
+              },
+              "played": 11,
+              "pts": 28,
+              "gd": 14,
+              "w": 9,
+              "d": 1,
+              "l": 1,
+              "gf": 22,
+              "ga": 8
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 86,
+                "name": "Real Madrid",
+                "fullName": "Real Madrid CF"
+              },
+              "played": 10,
+              "pts": 24,
+              "gd": 15,
+              "w": 8,
+              "d": 0,
+              "l": 2,
+              "gf": 25,
+              "ga": 10
+            },
+            {
+              "pos": 4,
+              "team": {
+                "id": 90,
+                "name": "Real Betis",
+                "fullName": "Real Betis Balompié"
+              },
+              "played": 11,
+              "pts": 23,
+              "gd": 3,
+              "w": 7,
+              "d": 2,
+              "l": 2,
+              "gf": 18,
+              "ga": 15
+            },
+            {
+              "pos": 5,
+              "team": {
+                "id": 92,
+                "name": "Real Sociedad",
+                "fullName": "Real Sociedad de Fútbol"
+              },
+              "played": 10,
+              "pts": 19,
+              "gd": 1,
+              "w": 6,
+              "d": 1,
+              "l": 3,
+              "gf": 19,
+              "ga": 18
+            },
+            {
+              "pos": 6,
+              "team": {
+                "id": 559,
+                "name": "Sevilla FC",
+                "fullName": "Sevilla FC"
+              },
+              "played": 10,
+              "pts": 17,
+              "gd": 0,
+              "w": 5,
+              "d": 2,
+              "l": 3,
+              "gf": 16,
+              "ga": 16
+            },
+            {
+              "pos": 7,
+              "team": {
+                "id": 77,
+                "name": "Athletic",
+                "fullName": "Athletic Club"
+              },
+              "played": 9,
+              "pts": 12,
+              "gd": 3,
+              "w": 3,
+              "d": 3,
+              "l": 3,
+              "gf": 12,
+              "ga": 9
+            },
+            {
+              "pos": 8,
+              "team": {
+                "id": 94,
+                "name": "Villarreal",
+                "fullName": "Villarreal CF"
+              },
+              "played": 11,
+              "pts": 12,
+              "gd": 0,
+              "w": 3,
+              "d": 3,
+              "l": 5,
+              "gf": 15,
+              "ga": 15
+            },
+            {
+              "pos": 9,
+              "team": {
+                "id": 558,
+                "name": "Celta",
+                "fullName": "RC Celta de Vigo"
+              },
+              "played": 11,
+              "pts": 12,
+              "gd": 0,
+              "w": 2,
+              "d": 6,
+              "l": 3,
+              "gf": 10,
+              "ga": 10
+            },
+            {
+              "pos": 10,
+              "team": {
+                "id": 263,
+                "name": "Alavés",
+                "fullName": "Deportivo Alavés"
+              },
+              "played": 11,
+              "pts": 12,
+              "gd": -2,
+              "w": 3,
+              "d": 3,
+              "l": 5,
+              "gf": 15,
+              "ga": 17
+            },
+            {
+              "pos": 11,
+              "team": {
+                "id": 87,
+                "name": "Rayo Vallecano",
+                "fullName": "Rayo Vallecano de Madrid"
+              },
+              "played": 10,
+              "pts": 12,
+              "gd": -5,
+              "w": 3,
+              "d": 3,
+              "l": 4,
+              "gf": 15,
+              "ga": 20
+            },
+            {
+              "pos": 12,
+              "team": {
+                "id": 560,
+                "name": "Deportivo",
+                "fullName": "RC Deportivo La Coruña"
+              },
+              "played": 10,
+              "pts": 11,
+              "gd": 0,
+              "w": 2,
+              "d": 5,
+              "l": 3,
+              "gf": 13,
+              "ga": 13
+            },
+            {
+              "pos": 13,
+              "team": {
+                "id": 80,
+                "name": "Espanyol",
+                "fullName": "RCD Espanyol de Barcelona"
+              },
+              "played": 11,
+              "pts": 11,
+              "gd": -1,
+              "w": 3,
+              "d": 2,
+              "l": 6,
+              "gf": 13,
+              "ga": 14
+            },
+            {
+              "pos": 14,
+              "team": {
+                "id": 79,
+                "name": "Osasuna",
+                "fullName": "CA Osasuna"
+              },
+              "played": 10,
+              "pts": 11,
+              "gd": -10,
+              "w": 3,
+              "d": 2,
+              "l": 5,
+              "gf": 10,
+              "ga": 20
+            },
+            {
+              "pos": 15,
+              "team": {
+                "id": 5335,
+                "name": "Santander",
+                "fullName": "Real Racing Club de Santander"
+              },
+              "played": 10,
+              "pts": 11,
+              "gd": -11,
+              "w": 3,
+              "d": 2,
+              "l": 5,
+              "gf": 15,
+              "ga": 26
+            },
+            {
+              "pos": 16,
+              "team": {
+                "id": 285,
+                "name": "Elche",
+                "fullName": "Elche CF"
+              },
+              "played": 10,
+              "pts": 10,
+              "gd": -3,
+              "w": 2,
+              "d": 4,
+              "l": 4,
+              "gf": 14,
+              "ga": 17
+            },
+            {
+              "pos": 17,
+              "team": {
+                "id": 88,
+                "name": "Levante",
+                "fullName": "Levante UD"
+              },
+              "played": 11,
+              "pts": 10,
+              "gd": -5,
+              "w": 2,
+              "d": 4,
+              "l": 5,
+              "gf": 16,
+              "ga": 21
+            },
+            {
+              "pos": 18,
+              "team": {
+                "id": 82,
+                "name": "Getafe",
+                "fullName": "Getafe CF"
+              },
+              "played": 10,
+              "pts": 9,
+              "gd": -10,
+              "w": 2,
+              "d": 3,
+              "l": 5,
+              "gf": 5,
+              "ga": 15
+            },
+            {
+              "pos": 19,
+              "team": {
+                "id": 95,
+                "name": "Valencia",
+                "fullName": "Valencia CF"
+              },
+              "played": 10,
+              "pts": 6,
+              "gd": -10,
+              "w": 1,
+              "d": 3,
+              "l": 6,
+              "gf": 7,
+              "ga": 17
+            },
+            {
+              "pos": 20,
+              "team": {
+                "id": 84,
+                "name": "Málaga",
+                "fullName": "Málaga CF"
+              },
+              "played": 11,
+              "pts": 5,
+              "gd": -13,
+              "w": 0,
+              "d": 5,
+              "l": 6,
+              "gf": 8,
+              "ga": 21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "comp": "SERIEA",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "REGULAR_SEASON",
+          "group": null,
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 110,
+                "name": "Lazio",
+                "fullName": "SS Lazio"
+              },
+              "played": 9,
+              "pts": 25,
+              "gd": 15,
+              "w": 8,
+              "d": 1,
+              "l": 0,
+              "gf": 22,
+              "ga": 7
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 108,
+                "name": "Inter",
+                "fullName": "FC Internazionale Milano"
+              },
+              "played": 10,
+              "pts": 25,
+              "gd": 13,
+              "w": 8,
+              "d": 1,
+              "l": 1,
+              "gf": 26,
+              "ga": 13
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 100,
+                "name": "Roma",
+                "fullName": "AS Roma"
+              },
+              "played": 10,
+              "pts": 24,
+              "gd": 18,
+              "w": 7,
+              "d": 3,
+              "l": 0,
+              "gf": 28,
+              "ga": 10
+            },
+            {
+              "pos": 4,
+              "team": {
+                "id": 98,
+                "name": "Milan",
+                "fullName": "AC Milan"
+              },
+              "played": 10,
+              "pts": 21,
+              "gd": 9,
+              "w": 6,
+              "d": 3,
+              "l": 1,
+              "gf": 21,
+              "ga": 12
+            },
+            {
+              "pos": 5,
+              "team": {
+                "id": 7397,
+                "name": "Como 1907",
+                "fullName": "Como 1907"
+              },
+              "played": 9,
+              "pts": 20,
+              "gd": 9,
+              "w": 6,
+              "d": 2,
+              "l": 1,
+              "gf": 17,
+              "ga": 8
+            },
+            {
+              "pos": 6,
+              "team": {
+                "id": 470,
+                "name": "Frosinone",
+                "fullName": "Frosinone Calcio"
+              },
+              "played": 9,
+              "pts": 17,
+              "gd": 8,
+              "w": 5,
+              "d": 2,
+              "l": 2,
+              "gf": 22,
+              "ga": 14
+            },
+            {
+              "pos": 7,
+              "team": {
+                "id": 113,
+                "name": "Napoli",
+                "fullName": "SSC Napoli"
+              },
+              "played": 9,
+              "pts": 14,
+              "gd": 6,
+              "w": 4,
+              "d": 2,
+              "l": 3,
+              "gf": 17,
+              "ga": 11
+            },
+            {
+              "pos": 8,
+              "team": {
+                "id": 103,
+                "name": "Bologna",
+                "fullName": "Bologna FC 1909"
+              },
+              "played": 10,
+              "pts": 14,
+              "gd": 1,
+              "w": 4,
+              "d": 2,
+              "l": 4,
+              "gf": 14,
+              "ga": 13
+            },
+            {
+              "pos": 9,
+              "team": {
+                "id": 109,
+                "name": "Juventus",
+                "fullName": "Juventus FC"
+              },
+              "played": 9,
+              "pts": 14,
+              "gd": 1,
+              "w": 4,
+              "d": 2,
+              "l": 3,
+              "gf": 11,
+              "ga": 10
+            },
+            {
+              "pos": 10,
+              "team": {
+                "id": 586,
+                "name": "Torino",
+                "fullName": "Torino FC"
+              },
+              "played": 9,
+              "pts": 13,
+              "gd": 0,
+              "w": 4,
+              "d": 1,
+              "l": 4,
+              "gf": 14,
+              "ga": 14
+            },
+            {
+              "pos": 11,
+              "team": {
+                "id": 104,
+                "name": "Cagliari",
+                "fullName": "Cagliari Calcio"
+              },
+              "played": 9,
+              "pts": 13,
+              "gd": -5,
+              "w": 4,
+              "d": 1,
+              "l": 4,
+              "gf": 8,
+              "ga": 13
+            },
+            {
+              "pos": 12,
+              "team": {
+                "id": 102,
+                "name": "Atalanta",
+                "fullName": "Atalanta BC"
+              },
+              "played": 9,
+              "pts": 11,
+              "gd": -1,
+              "w": 3,
+              "d": 2,
+              "l": 4,
+              "gf": 16,
+              "ga": 17
+            },
+            {
+              "pos": 13,
+              "team": {
+                "id": 107,
+                "name": "Genoa",
+                "fullName": "Genoa CFC"
+              },
+              "played": 9,
+              "pts": 10,
+              "gd": -5,
+              "w": 3,
+              "d": 1,
+              "l": 5,
+              "gf": 8,
+              "ga": 13
+            },
+            {
+              "pos": 14,
+              "team": {
+                "id": 5890,
+                "name": "Lecce",
+                "fullName": "US Lecce"
+              },
+              "played": 9,
+              "pts": 9,
+              "gd": -9,
+              "w": 3,
+              "d": 0,
+              "l": 6,
+              "gf": 10,
+              "ga": 19
+            },
+            {
+              "pos": 15,
+              "team": {
+                "id": 471,
+                "name": "Sassuolo",
+                "fullName": "US Sassuolo Calcio"
+              },
+              "played": 9,
+              "pts": 8,
+              "gd": -8,
+              "w": 2,
+              "d": 2,
+              "l": 5,
+              "gf": 14,
+              "ga": 22
+            },
+            {
+              "pos": 16,
+              "team": {
+                "id": 5911,
+                "name": "Monza",
+                "fullName": "AC Monza"
+              },
+              "played": 10,
+              "pts": 7,
+              "gd": -7,
+              "w": 2,
+              "d": 1,
+              "l": 7,
+              "gf": 17,
+              "ga": 24
+            },
+            {
+              "pos": 17,
+              "team": {
+                "id": 99,
+                "name": "Fiorentina",
+                "fullName": "ACF Fiorentina"
+              },
+              "played": 9,
+              "pts": 5,
+              "gd": -10,
+              "w": 1,
+              "d": 2,
+              "l": 6,
+              "gf": 11,
+              "ga": 21
+            },
+            {
+              "pos": 18,
+              "team": {
+                "id": 112,
+                "name": "Parma",
+                "fullName": "Parma Calcio 1913"
+              },
+              "played": 9,
+              "pts": 5,
+              "gd": -10,
+              "w": 1,
+              "d": 2,
+              "l": 6,
+              "gf": 5,
+              "ga": 15
+            },
+            {
+              "pos": 19,
+              "team": {
+                "id": 115,
+                "name": "Udinese",
+                "fullName": "Udinese Calcio"
+              },
+              "played": 10,
+              "pts": 5,
+              "gd": -12,
+              "w": 1,
+              "d": 2,
+              "l": 7,
+              "gf": 11,
+              "ga": 23
+            },
+            {
+              "pos": 20,
+              "team": {
+                "id": 454,
+                "name": "Venezia FC",
+                "fullName": "Venezia FC"
+              },
+              "played": 9,
+              "pts": 3,
+              "gd": -13,
+              "w": 1,
+              "d": 0,
+              "l": 8,
+              "gf": 6,
+              "ga": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "comp": "LIGUE1",
+      "inProgress": 0,
+      "tables": [
+        {
+          "stage": "REGULAR_SEASON",
+          "group": null,
+          "rows": [
+            {
+              "pos": 1,
+              "team": {
+                "id": 524,
+                "name": "PSG",
+                "fullName": "Paris Saint-Germain FC"
+              },
+              "played": 9,
+              "pts": 20,
+              "gd": 11,
+              "w": 6,
+              "d": 2,
+              "l": 1,
+              "gf": 21,
+              "ga": 10
+            },
+            {
+              "pos": 2,
+              "team": {
+                "id": 521,
+                "name": "Lille",
+                "fullName": "Lille OSC"
+              },
+              "played": 9,
+              "pts": 18,
+              "gd": 6,
+              "w": 5,
+              "d": 3,
+              "l": 1,
+              "gf": 12,
+              "ga": 6
+            },
+            {
+              "pos": 3,
+              "team": {
+                "id": 529,
+                "name": "Stade Rennais",
+                "fullName": "Stade Rennais FC 1901"
+              },
+              "played": 9,
+              "pts": 16,
+              "gd": 1,
+              "w": 5,
+              "d": 1,
+              "l": 3,
+              "gf": 20,
+              "ga": 19
+            },
+            {
+              "pos": 4,
+              "team": {
+                "id": 548,
+                "name": "Monaco",
+                "fullName": "AS Monaco FC"
+              },
+              "played": 8,
+              "pts": 15,
+              "gd": 4,
+              "w": 4,
+              "d": 3,
+              "l": 1,
+              "gf": 11,
+              "ga": 7
+            },
+            {
+              "pos": 5,
+              "team": {
+                "id": 523,
+                "name": "Olympique Lyon",
+                "fullName": "Olympique Lyonnais"
+              },
+              "played": 8,
+              "pts": 14,
+              "gd": 6,
+              "w": 4,
+              "d": 2,
+              "l": 2,
+              "gf": 13,
+              "ga": 7
+            },
+            {
+              "pos": 6,
+              "team": {
+                "id": 1045,
+                "name": "Paris FC",
+                "fullName": "Paris FC"
+              },
+              "played": 8,
+              "pts": 14,
+              "gd": 4,
+              "w": 4,
+              "d": 2,
+              "l": 2,
+              "gf": 13,
+              "ga": 9
+            },
+            {
+              "pos": 7,
+              "team": {
+                "id": 522,
+                "name": "Nice",
+                "fullName": "OGC Nice"
+              },
+              "played": 9,
+              "pts": 14,
+              "gd": 1,
+              "w": 4,
+              "d": 2,
+              "l": 3,
+              "gf": 13,
+              "ga": 12
+            },
+            {
+              "pos": 8,
+              "team": {
+                "id": 546,
+                "name": "RC Lens",
+                "fullName": "Racing Club de Lens"
+              },
+              "played": 9,
+              "pts": 13,
+              "gd": 3,
+              "w": 4,
+              "d": 1,
+              "l": 4,
+              "gf": 16,
+              "ga": 13
+            },
+            {
+              "pos": 9,
+              "team": {
+                "id": 516,
+                "name": "Marseille",
+                "fullName": "Olympique de Marseille"
+              },
+              "played": 8,
+              "pts": 12,
+              "gd": 5,
+              "w": 4,
+              "d": 0,
+              "l": 4,
+              "gf": 18,
+              "ga": 13
+            },
+            {
+              "pos": 10,
+              "team": {
+                "id": 525,
+                "name": "Lorient",
+                "fullName": "FC Lorient"
+              },
+              "played": 8,
+              "pts": 12,
+              "gd": 1,
+              "w": 3,
+              "d": 3,
+              "l": 2,
+              "gf": 7,
+              "ga": 6
+            },
+            {
+              "pos": 11,
+              "team": {
+                "id": 511,
+                "name": "Toulouse",
+                "fullName": "Toulouse FC"
+              },
+              "played": 8,
+              "pts": 10,
+              "gd": 1,
+              "w": 2,
+              "d": 4,
+              "l": 2,
+              "gf": 12,
+              "ga": 11
+            },
+            {
+              "pos": 12,
+              "team": {
+                "id": 519,
+                "name": "Auxerre",
+                "fullName": "AJ Auxerre"
+              },
+              "played": 8,
+              "pts": 10,
+              "gd": -6,
+              "w": 3,
+              "d": 1,
+              "l": 4,
+              "gf": 12,
+              "ga": 18
+            },
+            {
+              "pos": 13,
+              "team": {
+                "id": 512,
+                "name": "Brest",
+                "fullName": "Stade Brestois 29"
+              },
+              "played": 8,
+              "pts": 9,
+              "gd": 2,
+              "w": 2,
+              "d": 3,
+              "l": 3,
+              "gf": 14,
+              "ga": 12
+            },
+            {
+              "pos": 14,
+              "team": {
+                "id": 532,
+                "name": "Angers SCO",
+                "fullName": "Angers SCO"
+              },
+              "played": 8,
+              "pts": 8,
+              "gd": -6,
+              "w": 2,
+              "d": 2,
+              "l": 4,
+              "gf": 9,
+              "ga": 15
+            },
+            {
+              "pos": 15,
+              "team": {
+                "id": 531,
+                "name": "Troyes",
+                "fullName": "ES Troyes AC"
+              },
+              "played": 9,
+              "pts": 8,
+              "gd": -9,
+              "w": 2,
+              "d": 2,
+              "l": 5,
+              "gf": 7,
+              "ga": 16
+            },
+            {
+              "pos": 16,
+              "team": {
+                "id": 576,
+                "name": "Strasbourg",
+                "fullName": "RC Strasbourg Alsace"
+              },
+              "played": 8,
+              "pts": 7,
+              "gd": -6,
+              "w": 2,
+              "d": 1,
+              "l": 5,
+              "gf": 12,
+              "ga": 18
+            },
+            {
+              "pos": 17,
+              "team": {
+                "id": 535,
+                "name": "Le Mans",
+                "fullName": "Le Mans FC"
+              },
+              "played": 9,
+              "pts": 7,
+              "gd": -7,
+              "w": 1,
+              "d": 4,
+              "l": 4,
+              "gf": 11,
+              "ga": 18
+            },
+            {
+              "pos": 18,
+              "team": {
+                "id": 533,
+                "name": "Le Havre",
+                "fullName": "Le Havre AC"
+              },
+              "played": 9,
+              "pts": 2,
+              "gd": -11,
+              "w": 0,
+              "d": 2,
+              "l": 7,
+              "gf": 9,
+              "ga": 20
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "fd": 558539,
+      "from": "api-football",
+      "af": 1550179,
+      "goals": [
+        {
+          "minute": 6,
+          "extra": null,
+          "side": "away",
+          "kind": "penalty",
+          "scorer": {
+            "id": 340547,
+            "name": "Gustavo Varela"
+          },
+          "assist": null
+        },
+        {
+          "minute": 33,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 31273,
+            "name": "Tommaso Pobega"
+          },
+          "assist": {
+            "id": 134,
+            "name": "Juan Miranda"
+          }
+        },
+        {
+          "minute": 59,
+          "extra": null,
+          "side": "home",
+          "kind": "penalty",
+          "scorer": {
+            "id": 873,
+            "name": "Federico Bernardeschi"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 558542,
+      "from": "api-football",
+      "af": 1550186,
+      "goals": [
+        {
+          "minute": 10,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 778,
+            "name": "Bryan Cristante"
+          },
+          "assist": {
+            "id": 349001,
+            "name": "Wesley Vinícius França Lima"
+          }
+        },
+        {
+          "minute": 31,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 404097,
+            "name": "Rodrigo Mora"
+          },
+          "assist": {
+            "id": 778,
+            "name": "Bryan Cristante"
+          }
+        },
+        {
+          "minute": 33,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 249,
+            "name": "Donyell Malen"
+          },
+          "assist": {
+            "id": 323936,
+            "name": "Matias Soule"
+          }
+        },
+        {
+          "minute": 37,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 1807,
+            "name": "Evan Ndicka"
+          },
+          "assist": {
+            "id": 323936,
+            "name": "Matias Soule"
+          }
+        },
+        {
+          "minute": 50,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 786,
+            "name": "Nicolo Zaniolo"
+          },
+          "assist": null
+        },
+        {
+          "minute": 78,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 422156,
+            "name": "Matteo Palma"
+          },
+          "assist": {
+            "id": 22007,
+            "name": "Hassane Kamara"
+          }
+        },
+        {
+          "minute": 90,
+          "extra": 2,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 342019,
+            "name": "Daniele Ghilardi"
+          },
+          "assist": {
+            "id": 311067,
+            "name": "Santiago Thomas Castro"
+          }
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 558548,
+      "from": "api-football",
+      "af": 1550177,
+      "goals": [
+        {
+          "minute": 4,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 17,
+            "name": "Christian Pulisic"
+          },
+          "assist": {
+            "id": 335056,
+            "name": "Diego Moreira"
+          }
+        },
+        {
+          "minute": 10,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 272,
+            "name": "Adrien Rabiot"
+          },
+          "assist": {
+            "id": 335056,
+            "name": "Diego Moreira"
+          }
+        },
+        {
+          "minute": 22,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 31009,
+            "name": "Alessandro Bastoni"
+          },
+          "assist": null
+        },
+        {
+          "minute": 43,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 335056,
+            "name": "Diego Moreira"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 559643,
+      "from": "api-football",
+      "af": 1552809,
+      "goals": [
+        {
+          "minute": 33,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 335162,
+            "name": "Mouhamed Diop"
+          },
+          "assist": {
+            "id": 2217,
+            "name": "Timothee Nkada"
+          }
+        },
+        {
+          "minute": 71,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 174596,
+            "name": "Ismaël Boura"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 560623,
+      "from": "api-football",
+      "af": 1557454,
+      "goals": [
+        {
+          "minute": 11,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 265820,
+            "name": "Yasin Ayari"
+          },
+          "assist": {
+            "id": 162007,
+            "name": "Maxim De Cuyper"
+          }
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 560624,
+      "from": "api-football",
+      "af": 1557448,
+      "goals": [
+        {
+          "minute": 31,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 152856,
+            "name": "Francisco Evanilson"
+          },
+          "assist": {
+            "id": 792,
+            "name": "Justin Kluivert"
+          }
+        },
+        {
+          "minute": 90,
+          "extra": 4,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 129682,
+            "name": "Amine Adli"
+          },
+          "assist": {
+            "id": 368030,
+            "name": "Eli Kroupi"
+          }
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 560625,
+      "from": "api-football",
+      "af": 1557451,
+      "goals": [
+        {
+          "minute": 17,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 33462,
+            "name": "Tatsuhiro Sakamoto"
+          },
+          "assist": null
+        },
+        {
+          "minute": 37,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 8598,
+            "name": "Taiwo Awoniyi"
+          },
+          "assist": null
+        },
+        {
+          "minute": 52,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 20372,
+            "name": "Jack Rudoni"
+          },
+          "assist": {
+            "id": 16046,
+            "name": "Victor Torp"
+          }
+        },
+        {
+          "minute": 67,
+          "extra": null,
+          "side": "away",
+          "kind": "penalty",
+          "scorer": {
+            "id": 20638,
+            "name": "Enzo Le Fée"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 560626,
+      "from": "api-football",
+      "af": 1557450,
+      "goals": [
+        {
+          "minute": 50,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 19170,
+            "name": "Morgan Rogers"
+          },
+          "assist": {
+            "id": 282125,
+            "name": "Romeo Lavia"
+          }
+        },
+        {
+          "minute": 64,
+          "extra": null,
+          "side": "home",
+          "kind": "penalty",
+          "scorer": {
+            "id": 152982,
+            "name": "Cole Palmer"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 560627,
+      "from": "api-football",
+      "af": 1557456,
+      "goals": [
+        {
+          "minute": 25,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 328089,
+            "name": "Archie Gray"
+          },
+          "assist": {
+            "id": 15911,
+            "name": "Mohammed Kudus"
+          }
+        },
+        {
+          "minute": 73,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 38695,
+            "name": "Jan Paul van Hecke"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 560628,
+      "from": "api-football",
+      "af": 1557447,
+      "goals": [
+        {
+          "minute": 39,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 283058,
+            "name": "Nicolas Jackson"
+          },
+          "assist": {
+            "id": 406244,
+            "name": "Johan Manzambi"
+          }
+        },
+        {
+          "minute": 64,
+          "extra": null,
+          "side": "away",
+          "kind": "own-goal",
+          "scorer": {
+            "id": 199578,
+            "name": "Zion Suzuki"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 560629,
+      "from": "api-football",
+      "af": 1557452,
+      "goals": [
+        {
+          "minute": 22,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 575,
+            "name": "Florentino Luís"
+          },
+          "assist": {
+            "id": 358166,
+            "name": "Abdoul Ouattara"
+          }
+        },
+        {
+          "minute": 58,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 284500,
+            "name": "Tim Iroegbunam"
+          },
+          "assist": {
+            "id": 19337,
+            "name": "Oliver McBurnie"
+          }
+        },
+        {
+          "minute": 68,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 19337,
+            "name": "Oliver McBurnie"
+          },
+          "assist": null
+        },
+        {
+          "minute": 74,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 70747,
+            "name": "Julio Enciso"
+          },
+          "assist": {
+            "id": 37236,
+            "name": "Azor Matusiwa"
+          }
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 560630,
+      "from": "api-football",
+      "af": 1557449,
+      "goals": [
+        {
+          "minute": 30,
+          "extra": null,
+          "side": "home",
+          "kind": "own-goal",
+          "scorer": {
+            "id": 2817,
+            "name": "Nikola Milenković"
+          },
+          "assist": null
+        },
+        {
+          "minute": 76,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 196156,
+            "name": "Igor Thiago"
+          },
+          "assist": {
+            "id": 196855,
+            "name": "Jaidon Anthony"
+          }
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 564730,
+      "from": "api-football",
+      "af": 1570439,
+      "goals": [
+        {
+          "minute": 36,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 563,
+            "name": "Alejandro Grimaldo"
+          },
+          "assist": null
+        },
+        {
+          "minute": 62,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 323935,
+            "name": "Giuliano Simeone Baldini"
+          },
+          "assist": {
+            "id": 182219,
+            "name": "Alejandro Baena Rodríguez"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 927,
+          "side": "away",
+          "status": "start",
+          "minutes": 67,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "fd": 564732,
+      "from": "api-football",
+      "af": 1570434,
+      "goals": [
+        {
+          "minute": 8,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 1496,
+            "name": "Raphael Dias Belloli"
+          },
+          "assist": {
+            "id": 340626,
+            "name": "Fermín López"
+          }
+        },
+        {
+          "minute": 23,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 340626,
+            "name": "Fermín López"
+          },
+          "assist": {
+            "id": 386828,
+            "name": "Lamine Yamal"
+          }
+        },
+        {
+          "minute": 41,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 1496,
+            "name": "Raphael Dias Belloli"
+          },
+          "assist": {
+            "id": 340626,
+            "name": "Fermín López"
+          }
+        },
+        {
+          "minute": 45,
+          "extra": 1,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 386828,
+            "name": "Lamine Yamal"
+          },
+          "assist": {
+            "id": 855,
+            "name": "João Cancelo"
+          }
+        },
+        {
+          "minute": 64,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 386828,
+            "name": "Lamine Yamal"
+          },
+          "assist": {
+            "id": 643,
+            "name": "Gabriel Jesus"
+          }
+        },
+        {
+          "minute": 81,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 138787,
+            "name": "Anthony Gordon"
+          },
+          "assist": {
+            "id": 44,
+            "name": "Rodrigo Hernandez Cascante"
+          }
+        },
+        {
+          "minute": 84,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 760,
+            "name": "Mariano Díaz"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 564735,
+      "from": "api-football",
+      "af": 1570441,
+      "goals": [
+        {
+          "minute": 36,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 128582,
+            "name": "Jorge De Frutos"
+          },
+          "assist": {
+            "id": 52,
+            "name": "Sergio Camello"
+          }
+        },
+        {
+          "minute": 55,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 128582,
+            "name": "Jorge De Frutos"
+          },
+          "assist": {
+            "id": 1703,
+            "name": "Andrei Rațiu"
+          }
+        },
+        {
+          "minute": 73,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 47285,
+            "name": "Unai López"
+          },
+          "assist": {
+            "id": 548809,
+            "name": "Gnangoro Bouare"
+          }
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 564736,
+      "from": "api-football",
+      "af": 1570435,
+      "goals": [
+        {
+          "minute": 38,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 1561,
+            "name": "Marc Bartra"
+          },
+          "assist": {
+            "id": 745,
+            "name": "Isco"
+          }
+        },
+        {
+          "minute": 45,
+          "extra": 2,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 1697,
+            "name": "Pablo Fornals"
+          },
+          "assist": null
+        },
+        {
+          "minute": 68,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 386850,
+            "name": "Adrian Nino"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 565839,
+      "from": "api-football",
+      "af": 1575208,
+      "goals": [],
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 280358,
+          "side": "home",
+          "status": "sub",
+          "minutes": 13,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "fd": 565840,
+      "from": "api-football",
+      "af": 1575210,
+      "goals": [
+        {
+          "minute": 37,
+          "extra": null,
+          "side": "away",
+          "kind": "penalty",
+          "scorer": {
+            "id": 314511,
+            "name": "Antonio Nusa"
+          },
+          "assist": null
+        },
+        {
+          "minute": 78,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 326102,
+            "name": "Rômulo José Cardoso da Cruz"
+          },
+          "assist": {
+            "id": 314511,
+            "name": "Antonio Nusa"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 24888,
+          "side": "home",
+          "status": "start",
+          "minutes": 83,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "fd": 565842,
+      "from": "api-football",
+      "af": 1575206,
+      "goals": [
+        {
+          "minute": 18,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 25297,
+            "name": "Michael Gregoritsch"
+          },
+          "assist": {
+            "id": 327897,
+            "name": "Arijon Ibrahimovic"
+          }
+        },
+        {
+          "minute": 65,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 202696,
+            "name": "Igor Matanović"
+          },
+          "assist": {
+            "id": 178709,
+            "name": "Yannick Engelhardt"
+          }
+        },
+        {
+          "minute": 85,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 431149,
+            "name": "Cyriaque Irié"
+          },
+          "assist": {
+            "id": 26248,
+            "name": "Vincenzo Grifo"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 197985,
+          "side": "home",
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "fd": 565843,
+      "from": "api-football",
+      "af": 1575209,
+      "goals": [
+        {
+          "minute": 57,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 25391,
+            "name": "Niclas Füllkrug"
+          },
+          "assist": {
+            "id": 169295,
+            "name": "Karl Hein"
+          }
+        },
+        {
+          "minute": 82,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 202526,
+            "name": "Eren Dinkci"
+          },
+          "assist": {
+            "id": 7073,
+            "name": "Marco Grüll"
+          }
+        }
+      ],
+      "goalsComplete": true
+    },
+    {
+      "fd": 565845,
+      "from": "api-football",
+      "af": 1575203,
+      "goals": [
+        {
+          "minute": 38,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 1157,
+            "name": "Konrad Laimer"
+          },
+          "assist": null
+        },
+        {
+          "minute": 60,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 21393,
+            "name": "Serhou Guirassy"
+          },
+          "assist": {
+            "id": 138935,
+            "name": "Carney Chukwuemeka"
+          }
+        },
+        {
+          "minute": 66,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 1149,
+            "name": "Dayot Upamecano"
+          },
+          "assist": {
+            "id": 184,
+            "name": "Harry Kane"
+          }
+        },
+        {
+          "minute": 89,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 129791,
+            "name": "Fábio Silva"
+          },
+          "assist": {
+            "id": 404891,
+            "name": "Konstantinos Karetsas"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 2897,
+          "side": "home",
+          "status": "start",
+          "minutes": 90,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "fd": 565847,
+      "from": "api-football",
+      "af": 1575204,
+      "goals": [
+        {
+          "minute": 14,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 46930,
+            "name": "Ermedin Demirović"
+          },
+          "assist": null
+        },
+        {
+          "minute": 22,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 128533,
+            "name": "Jamie Leweling"
+          },
+          "assist": null
+        },
+        {
+          "minute": 28,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 794,
+            "name": "Patrik Schick"
+          },
+          "assist": {
+            "id": 47516,
+            "name": "Aleix García"
+          }
+        },
+        {
+          "minute": 51,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 340573,
+            "name": "Bilal El Khannouss"
+          },
+          "assist": {
+            "id": 24798,
+            "name": "Chris Führich"
+          }
+        },
+        {
+          "minute": 65,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 46930,
+            "name": "Ermedin Demirović"
+          },
+          "assist": {
+            "id": 26475,
+            "name": "Deniz Undav"
+          }
+        },
+        {
+          "minute": 79,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 380587,
+            "name": "Ibrahim Maza"
+          },
+          "assist": {
+            "id": 162032,
+            "name": "Miguel Gutiérrez"
+          }
+        }
+      ],
+      "goalsComplete": true
+    }
+  ]
+}

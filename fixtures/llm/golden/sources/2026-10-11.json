@@ -2475,7 +2475,17 @@
           "assist": null
         }
       ],
-      "goalsComplete": true
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 2906,
+          "side": "home",
+          "status": "sub",
+          "minutes": 20,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
     },
     {
       "fd": 565817,
@@ -2494,7 +2504,17 @@
           "assist": null
         }
       ],
-      "goalsComplete": true
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 512,
+          "side": "home",
+          "status": "start",
+          "minutes": 78,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
     },
     {
       "fd": 565819,
@@ -2552,7 +2572,25 @@
           }
         }
       ],
-      "goalsComplete": true
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 2897,
+          "side": "away",
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "player": 197985,
+          "side": "home",
+          "status": "start",
+          "minutes": 62,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
     },
     {
       "fd": 560601,
@@ -2657,7 +2695,17 @@
           }
         }
       ],
-      "goalsComplete": true
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 927,
+          "side": "away",
+          "status": "sub",
+          "minutes": 33,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
     },
     {
       "fd": 565815,

@@ -1,0 +1,534 @@
+{
+  "briefDate": "2026-10-25",
+  "matches": [
+    {
+      "id": "m560617",
+      "comp": "Premier League",
+      "round": "Matchday 8",
+      "home": "Chelsea",
+      "away": "Tottenham",
+      "ft": "0-2",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "77",
+          "team": "Tottenham",
+          "player": "Mike Penders",
+          "type": "own_goal"
+        },
+        {
+          "min": "87",
+          "team": "Tottenham",
+          "player": "Mathys Tel"
+        }
+      ]
+    },
+    {
+      "id": "m564724",
+      "comp": "LaLiga",
+      "round": "Matchday 10",
+      "home": "Atleti",
+      "away": "RC Deportivo La Coruña",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "48",
+          "team": "Atleti",
+          "player": "Julián Álvarez",
+          "assist": "Alejandro Grimaldo"
+        }
+      ]
+    },
+    {
+      "id": "m565830",
+      "comp": "Bundesliga",
+      "round": "Matchday 7",
+      "home": "Mainz",
+      "away": "Bremen",
+      "ft": "2-3",
+      "ht": "1-2",
+      "goals": [
+        {
+          "min": "7",
+          "team": "Bremen",
+          "player": "Niclas Füllkrug",
+          "type": "penalty"
+        },
+        {
+          "min": "25",
+          "team": "Bremen",
+          "player": "Niclas Füllkrug",
+          "type": "penalty"
+        },
+        {
+          "min": "33",
+          "team": "Mainz",
+          "player": "Anthony Caci",
+          "assist": "Sheraldo Becker"
+        },
+        {
+          "min": "61",
+          "team": "Bremen",
+          "player": "Ludovit Reis",
+          "assist": "Marco Grüll"
+        },
+        {
+          "min": "63",
+          "team": "Mainz",
+          "player": "Jae-sung Lee",
+          "assist": "Anthony Caci"
+        }
+      ]
+    },
+    {
+      "id": "m560614",
+      "comp": "Premier League",
+      "round": "Matchday 8",
+      "home": "Aston Villa",
+      "away": "Man City",
+      "ft": "2-1",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "6",
+          "team": "Aston Villa",
+          "player": "Nicolas Jackson",
+          "assist": "John McGinn"
+        },
+        {
+          "min": "52",
+          "team": "Man City",
+          "player": "Erling Haaland",
+          "assist": "Iliman Ndiaye"
+        },
+        {
+          "min": "60",
+          "team": "Aston Villa",
+          "player": "Nicolas Jackson",
+          "assist": "Ibrahim Mbaye"
+        }
+      ]
+    },
+    {
+      "id": "m565831",
+      "comp": "Bundesliga",
+      "round": "Matchday 7",
+      "home": "1. FC Köln",
+      "away": "Schalke",
+      "ft": "0-0",
+      "ht": "0-0",
+      "goals": []
+    },
+    {
+      "id": "m565838",
+      "comp": "Bundesliga",
+      "round": "Matchday 7",
+      "home": "Augsburg",
+      "away": "Union Berlin",
+      "ft": "1-1",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "71",
+          "team": "Augsburg",
+          "player": "Han-Noah Massengo",
+          "assist": "Fabian Rieder"
+        },
+        {
+          "min": "74",
+          "team": "Union Berlin",
+          "player": "Janik Haberer"
+        }
+      ]
+    },
+    {
+      "id": "m560616",
+      "comp": "Premier League",
+      "round": "Matchday 8",
+      "home": "Arsenal",
+      "away": "Everton",
+      "ft": "2-0",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "7",
+          "team": "Arsenal",
+          "player": "Ezri Konsa",
+          "assist": "Viktor Gyökeres"
+        },
+        {
+          "min": "68",
+          "team": "Arsenal",
+          "player": "Gabriel dos Santos Magalhães",
+          "assist": "Ben White"
+        }
+      ]
+    },
+    {
+      "id": "m558564",
+      "comp": "Serie A",
+      "round": "Matchday 8",
+      "home": "Napoli",
+      "away": "Roma",
+      "ft": "3-3",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "28",
+          "team": "Napoli",
+          "player": "Frank Anguissa"
+        },
+        {
+          "min": "48",
+          "team": "Napoli",
+          "player": "Scott McTominay",
+          "assist": "Matteo Politano"
+        },
+        {
+          "min": "69",
+          "team": "Roma",
+          "player": "Matias Soule",
+          "assist": "Donyell Malen"
+        },
+        {
+          "min": "74",
+          "team": "Roma",
+          "player": "Leonardo Balerdi",
+          "assist": "Santiago Castro"
+        },
+        {
+          "min": "83",
+          "team": "Napoli",
+          "player": "Scott McTominay",
+          "assist": "Mathias Olivera"
+        },
+        {
+          "min": "89",
+          "team": "Roma",
+          "player": "Leonardo Balerdi",
+          "assist": "Wesley Vinícius França Lima"
+        }
+      ]
+    },
+    {
+      "id": "m564727",
+      "comp": "LaLiga",
+      "round": "Matchday 10",
+      "home": "Santander",
+      "away": "Espanyol",
+      "ft": "2-1",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "62",
+          "team": "Espanyol",
+          "player": "Eduardo Expósito Jaén",
+          "assist": "Francisco Javier Hernandez Coarasa"
+        },
+        {
+          "min": "69",
+          "team": "Santander",
+          "player": "Jeanuël Belocian",
+          "assist": "Sergio Canales"
+        },
+        {
+          "min": "84",
+          "team": "Santander",
+          "player": "Yassir Zabiri",
+          "assist": "Alvaro Mantilla"
+        }
+      ]
+    },
+    {
+      "id": "m565837",
+      "comp": "Bundesliga",
+      "round": "Matchday 7",
+      "home": "Dortmund",
+      "away": "Frankfurt",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "80",
+          "team": "Dortmund",
+          "player": "Maximilian Beier",
+          "assist": "Jobe Bellingham"
+        }
+      ]
+    },
+    {
+      "id": "m564718",
+      "comp": "LaLiga",
+      "round": "Matchday 10",
+      "home": "Rayo Vallecano",
+      "away": "Elche",
+      "ft": "0-3",
+      "ht": "0-2",
+      "goals": [
+        {
+          "min": "23",
+          "team": "Elche",
+          "player": "Federico Redondo Solari",
+          "type": "penalty"
+        },
+        {
+          "min": "36",
+          "team": "Elche",
+          "player": "Fernando Niño Rodríguez",
+          "type": "penalty"
+        },
+        {
+          "min": "68",
+          "team": "Elche",
+          "player": "Germán Valera",
+          "assist": "Facundo Buonanotte"
+        }
+      ]
+    },
+    {
+      "id": "m565832",
+      "comp": "Bundesliga",
+      "round": "Matchday 7",
+      "home": "RB Leipzig",
+      "away": "Elversberg",
+      "ft": "4-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "48",
+          "team": "RB Leipzig",
+          "player": "Tidiam Gomis",
+          "assist": "Antonio Nusa"
+        },
+        {
+          "min": "66",
+          "team": "RB Leipzig",
+          "player": "Rômulo José Cardoso da Cruz",
+          "assist": "Antonio Nusa"
+        },
+        {
+          "min": "84",
+          "team": "RB Leipzig",
+          "player": "Christoph Baumgartner",
+          "assist": "Brajan Gruda"
+        },
+        {
+          "min": "90+4",
+          "team": "RB Leipzig",
+          "player": "Rômulo José Cardoso da Cruz",
+          "assist": "Abdoul Kone"
+        }
+      ]
+    },
+    {
+      "id": "m560618",
+      "comp": "Premier League",
+      "round": "Matchday 8",
+      "home": "Coventry City",
+      "away": "Fulham",
+      "ft": "0-1",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "80",
+          "team": "Fulham",
+          "player": "Oscar Bobb",
+          "assist": "Josh King"
+        }
+      ]
+    },
+    {
+      "id": "m558560",
+      "comp": "Serie A",
+      "round": "Matchday 8",
+      "home": "Cagliari",
+      "away": "Bologna",
+      "ft": "0-2",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "57",
+          "team": "Bologna",
+          "player": "Nicolo Casale",
+          "assist": "Juan Miranda"
+        },
+        {
+          "min": "80",
+          "team": "Bologna",
+          "player": "Federico Bernardeschi",
+          "type": "penalty"
+        }
+      ]
+    },
+    {
+      "id": "m558561",
+      "comp": "Serie A",
+      "round": "Matchday 8",
+      "home": "Como 1907",
+      "away": "Sassuolo",
+      "ft": "2-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "49",
+          "team": "Como 1907",
+          "player": "Anastasios Douvikas",
+          "assist": "Maxence Caqueret"
+        },
+        {
+          "min": "60",
+          "team": "Como 1907",
+          "player": "Anastasios Douvikas",
+          "assist": "Kaiki Bruno"
+        }
+      ]
+    },
+    {
+      "id": "m565834",
+      "comp": "Bundesliga",
+      "round": "Matchday 7",
+      "home": "SC Paderborn",
+      "away": "HSV",
+      "ft": "1-0",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "88",
+          "team": "SC Paderborn",
+          "player": "Rayan Philippe",
+          "assist": "Felix Götze"
+        }
+      ]
+    },
+    {
+      "id": "m564722",
+      "comp": "LaLiga",
+      "round": "Matchday 10",
+      "home": "Valencia",
+      "away": "Villarreal",
+      "ft": "1-2",
+      "ht": "1-0",
+      "goals": [
+        {
+          "min": "38",
+          "team": "Valencia",
+          "player": "José Luis García Vayá",
+          "type": "penalty"
+        },
+        {
+          "min": "69",
+          "team": "Villarreal",
+          "player": "Alex Freeman",
+          "assist": "Sergi Cardona Bermúdez"
+        },
+        {
+          "min": "90+6",
+          "team": "Villarreal",
+          "player": "Georges Mikautadze",
+          "assist": "Alberto Moleiro"
+        }
+      ]
+    },
+    {
+      "id": "m558565",
+      "comp": "Serie A",
+      "round": "Matchday 8",
+      "home": "Lazio",
+      "away": "Parma",
+      "ft": "2-1",
+      "ht": "0-0",
+      "goals": [
+        {
+          "min": "50",
+          "team": "Lazio",
+          "player": "Kenneth Taylor"
+        },
+        {
+          "min": "58",
+          "team": "Lazio",
+          "player": "Diego Carlos",
+          "type": "own_goal"
+        },
+        {
+          "min": "90+5",
+          "team": "Parma",
+          "player": "Simone Lontani",
+          "assist": "Giovanni Fabbian"
+        }
+      ]
+    },
+    {
+      "id": "m559652",
+      "comp": "Ligue 1",
+      "round": "Matchday 8",
+      "home": "RC Lens",
+      "away": "Paris FC",
+      "ft": "2-1",
+      "ht": "0-1",
+      "goals": [
+        {
+          "min": "45+2",
+          "team": "Paris FC",
+          "player": "Luca Koleosho",
+          "assist": "Lassine Sinayoko"
+        },
+        {
+          "min": "63",
+          "team": "RC Lens",
+          "player": "Florian Thauvin",
+          "assist": "Thorgan Hazard"
+        },
+        {
+          "min": "83",
+          "team": "RC Lens",
+          "player": "Thorgan Hazard",
+          "assist": "Florian Thauvin"
+        }
+      ]
+    }
+  ],
+  "standings": [],
+  "korean": [
+    {
+      "id": "k927",
+      "player": "Kang-in Lee",
+      "team": "Atleti",
+      "match": "m564724",
+      "started": true,
+      "minutes": 67,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k2906",
+      "player": "Jae-sung Lee",
+      "team": "Mainz",
+      "match": "m565830",
+      "started": true,
+      "minutes": 75,
+      "goals": 1,
+      "assists": 0
+    },
+    {
+      "id": "k24888",
+      "player": "Hee-chan Hwang",
+      "team": "Schalke",
+      "match": "m565831",
+      "started": true,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0
+    },
+    {
+      "id": "k512",
+      "player": "Woo-yeong Jeong",
+      "team": "Union Berlin",
+      "match": "m565838",
+      "started": true,
+      "minutes": 76,
+      "goals": 0,
+      "assists": 0
+    }
+  ]
+}

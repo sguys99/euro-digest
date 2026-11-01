@@ -16,7 +16,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { CompetitionsFileSchema, NamesKoFileSchema } from "@/lib/schema";
 
-import { BRIEF_PROMPT_PATH } from "../scripts/lib/brief";
+import { BRIEF_PROMPT_PATH, renderBriefPrompt } from "../scripts/lib/brief";
 import {
   briefInputKeys,
   checkBriefOutput,
@@ -55,7 +55,10 @@ const CTX: BriefCheckContext = {
   ),
   competitions: COMPETITIONS,
 };
-const PROMPT = read(BRIEF_PROMPT_PATH).trim();
+/** 지시문 파일(조건 절 표시 포함) → 키 없는 날(v0.4와 같다)·한국 선수 블록이 있는 날(M3-03b)의 보낼 지시문 */
+const PROMPT_FILE = read(BRIEF_PROMPT_PATH).trim();
+const PROMPT = renderBriefPrompt(PROMPT_FILE, []);
+const PROMPT_KR = renderBriefPrompt(PROMPT_FILE, ["korean"]);
 
 type Goal = {
   min: string;
@@ -376,23 +379,33 @@ describe("뼈대·분석 단위", () => {
 // ─── 지시문 ↔ 문법 (D53 ②) ─────────────────────────────────────────────────
 
 describe("지시문 [문형] = 문법(D53 ② — 한 출처, 양방향)", () => {
-  it("지시문의 [문형] 절은 renderBriefPatterns()와 글자까지 같다", () => {
+  it('지시문의 [문형] 절은 renderBriefPatterns()와 글자까지 같다 — 한국 선수 블록이 있는 날은 renderBriefPatterns({ keys: ["korean"] })(M3-03b)', () => {
     // 머리말의 '아래 [문형]에 있는 꼴로만' 말고 줄머리 절 제목부터
-    const start = PROMPT.indexOf("\n[문형]") + 1;
-    const end = PROMPT.indexOf("\n\n[", start);
-    expect(start).toBeGreaterThan(0);
-    expect(PROMPT.slice(start, end)).toBe(renderBriefPatterns());
+    const section = (prompt: string) => {
+      const start = prompt.indexOf("\n[문형]") + 1;
+      const end = prompt.indexOf("\n\n[", start);
+      expect(start).toBeGreaterThan(0);
+      return prompt.slice(start, end);
+    };
+    expect(section(PROMPT)).toBe(renderBriefPatterns());
+    expect(section(PROMPT_KR)).toBe(renderBriefPatterns({ keys: ["korean"] }));
   });
 
-  it("문형 22개·수식 12개다(D53 ② 축소 — 문법에만 있던 꼴 약 25개를 뺐다). 그중 5개는 입력 선택 키 문형(D55 ①)", () => {
-    expect(PATTERNS).toHaveLength(22);
+  it("문형 23개·수식 12개다(D53 ② 축소 — 문법에만 있던 꼴 약 25개를 뺐다). 그중 6개는 입력 선택 키 문형(D55 ① — M3-03b 교체 분 꼴 분리)", () => {
+    expect(PATTERNS).toHaveLength(23);
     expect(MODIFIERS).toHaveLength(12);
-    expect(BRIEF_INPUT_KEYS).toEqual(["korean", "prev"]);
+    expect(BRIEF_INPUT_KEYS).toEqual([
+      "korean",
+      "koreanSub",
+      "koreanBench",
+      "prev",
+    ]);
     expect(
       PATTERNS.filter((p) => p.requires).map((p) => [p.id, p.requires]),
     ).toEqual([
       ["korean", "korean"],
-      ["korean-bench", "korean"],
+      ["korean-sub", "koreanSub"],
+      ["korean-bench", "koreanBench"],
       ["korean-tail", "korean"],
       ["move", "prev"],
       ["keep", "prev"],
@@ -411,6 +424,7 @@ describe("지시문 [문형] = 문법(D53 ② — 한 출처, 양방향)", () =>
       "count",
       "assist",
       "korean",
+      "korean-sub",
       "korean-bench",
       "korean-tail",
       "rank",
@@ -448,7 +462,7 @@ describe("지시문 [문형] = 문법(D53 ② — 한 출처, 양방향)", () =>
       PATTERNS.filter((p) => p.role === "second").map((p) => [p.id, p.after]),
     ).toEqual([
       ["end-pens", ["end"]],
-      ["korean-tail", ["korean"]],
+      ["korean-tail", ["korean", "korean-sub"]],
       ["rank-after", ["win", "win-beat", "win-earn", "loss", "draw", "pens"]],
     ]);
     const T: MentionKind = "team";
@@ -530,6 +544,8 @@ describe("지시문 [문형] = 문법(D53 ② — 한 출처, 양방향)", () =>
 
 /** 지시문 [예] 문장 → 근거 id(합성 입력) */
 const EXAMPLE_REFS: Record<string, string[]> = {
+  "PlayerZ는 TeamJ전에서 교체 투입돼 33분을 뛰었다.": ["k1"],
+  "PlayerZ는 57분 교체 투입돼 33분을 뛰었다.": ["k1"],
   "TeamA가 PlayerX의 해트트릭을 앞세워 TeamB를 6-0으로 완파했다.": ["m1"],
   "TeamC가 PlayerY의 90+2분 결승골로 TeamD 원정에서 2-1 역전승을 거뒀다.": [
     "m2",
@@ -542,16 +558,30 @@ const EXAMPLE_REFS: Record<string, string[]> = {
 };
 
 describe("지시문 [예] — 좋음은 통과, 나쁨은 강등", () => {
-  const examples = [
-    ...PROMPT.slice(
-      PROMPT.indexOf("[예]"),
-      PROMPT.indexOf("[쓰기 전 확인]"),
-    ).matchAll(/- (좋음|나쁨) "([^"]+)"/gu),
-  ].map((m) => ({ good: m[1] === "좋음", text: m[2]! }));
+  const examplesOf = (prompt: string) =>
+    [
+      ...prompt
+        .slice(prompt.indexOf("[예]"), prompt.indexOf("[쓰기 전 확인]"))
+        .matchAll(/- (좋음|나쁨) "([^"]+)"/gu),
+    ].map((m) => ({ good: m[1] === "좋음", text: m[2]! }));
+  const examples = examplesOf(PROMPT_KR);
+  /** 확정 형식 한국 선수 블록(subOn·subOff 없음, 출전한 선수만 — brief-input.ts briefKoreanBlock)의 합성 입력 */
+  const SYN_CONFIRMED: BriefCheckInput = {
+    ...SYN,
+    korean: SYN.korean!.filter((k) => k.minutes > 0).map((k) => {
+      const { subOn: _on, subOff: _off, ...rest } = k;
+      void _on;
+      void _off;
+      return rest;
+    }),
+  };
 
-  it("예문은 좋음 4 · 나쁨 3이고 모두 근거 표가 있다(D55 ① — 한국 선수 예문을 뺐다)", () => {
-    expect(examples.filter((e) => e.good)).toHaveLength(4);
-    expect(examples.filter((e) => !e.good)).toHaveLength(3);
+  it("예문은 좋음 4 · 나쁨 3이고(D55 ①) 한국 선수 블록이 있는 날은 한국 선수 예문 좋음 1 · 나쁨 1이 더해진다(M3-03b), 모두 근거 표가 있다", () => {
+    const base = examplesOf(PROMPT);
+    expect(base.filter((e) => e.good)).toHaveLength(4);
+    expect(base.filter((e) => !e.good)).toHaveLength(3);
+    expect(examples.filter((e) => e.good)).toHaveLength(5);
+    expect(examples.filter((e) => !e.good)).toHaveLength(4);
     for (const e of examples)
       expect(EXAMPLE_REFS[e.text], e.text).toBeDefined();
   });
@@ -559,7 +589,7 @@ describe("지시문 [예] — 좋음은 통과, 나쁨은 강등", () => {
   it.each(examples.map((e) => [e.good ? "좋음" : "나쁨", e.text] as const))(
     "%s: %s",
     (kind, text) => {
-      const { line, wholeOk } = judge(text, EXAMPLE_REFS[text]!);
+      const { line, wholeOk } = judge(text, EXAMPLE_REFS[text]!, SYN_CONFIRMED);
       expect(wholeOk).toBe(true);
       expect(line.ok, `${text} → ${describeLineCheck(line)}`).toBe(
         kind === "좋음",
@@ -759,19 +789,68 @@ describe("입력 선택 키(D55 ①) — 키가 없는 입력에서는 그 문�
   };
   const withoutBoth: BriefCheckInput = { ...withoutPrev, korean: undefined };
 
-  it("briefInputKeys — 한국 선수 블록 1건 이상이면 korean, 전일 순위 행이 1개 이상이면 prev. 골든셋 10일(지금 빌더 입력)은 둘 다 없다", () => {
-    expect([...briefInputKeys(SYN)].sort()).toEqual(["korean", "prev"]);
+  it("briefInputKeys — 한국 선수 블록 1건 이상이면 korean(교체 분이 있으면 koreanSub, 출전 0분 행이 있으면 koreanBench), 전일 순위 행이 1개 이상이면 prev. 골든셋 10일(지금 빌더 입력)은 prev·koreanSub·koreanBench가 없다", () => {
+    expect([...briefInputKeys(SYN)].sort()).toEqual([
+      "korean",
+      "koreanBench",
+      "koreanSub",
+      "prev",
+    ]);
     expect([...briefInputKeys(withoutKorean)]).toEqual(["prev"]);
-    expect([...briefInputKeys(withoutPrev)]).toEqual(["korean"]);
+    expect([...briefInputKeys(withoutPrev)]).toEqual([
+      "korean",
+      "koreanSub",
+      "koreanBench",
+    ]);
     expect([...briefInputKeys({ ...SYN, korean: [] })]).toEqual(["prev"]);
+    // 확정 형식 블록(subOn·subOff 없음, 출전한 선수만) — korean만
+    expect([
+      ...briefInputKeys({
+        ...withoutPrev,
+        korean: SYN.korean!.filter((k) => k.minutes > 0).map((k) => {
+          const { subOn: _on, subOff: _off, ...rest } = k;
+          void _on;
+          void _off;
+          return rest;
+        }),
+      }),
+    ]).toEqual(["korean"]);
     const golden = readdirSync(path.join(ROOT, "fixtures/llm/golden/inputs"));
     expect(golden).toHaveLength(10);
+    let withKorean = 0;
     for (const file of golden) {
       const input = JSON.parse(
         read(`fixtures/llm/golden/inputs/${file}`),
       ) as BriefCheckInput;
-      expect([...briefInputKeys(input)], file).toEqual([]);
+      const keys = [...briefInputKeys(input)];
+      if (input.korean) withKorean += 1;
+      expect(keys, file).toEqual(input.korean ? ["korean"] : []);
     }
+    // M3-03b — 한국 선수 블록이 있는 골든 날짜(확정 빌더 출력)
+    expect(withKorean).toBeGreaterThanOrEqual(3);
+  });
+
+  it("확정 입력(키 korean만)에서는 교체 분·결장 꼴이 꺼지고 출전 꼴은 켜진다(M3-03b — 원장에 교체 분이 없다)", () => {
+    const parsedAs = (p: (typeof PATTERNS)[number], keys: readonly string[]) =>
+      expandPatternText(p.text).filter((e) =>
+        parseBriefLine(`${p.context ?? ""}${e}.`, EXPAND_KINDS, {
+          keys: keys as typeof BRIEF_INPUT_KEYS,
+        }).parses.some((x) => x.clauses.some((c) => c.id === p.id)),
+      ).length;
+    const byId = (id: string) => PATTERNS.find((p) => p.id === id)!;
+    for (const id of ["korean", "korean-tail"]) {
+      const p = byId(id);
+      expect(parsedAs(p, ["korean"]), id).toBe(
+        expandPatternText(p.text).length,
+      );
+    }
+    for (const id of ["korean-sub", "korean-bench"])
+      expect(parsedAs(byId(id), ["korean"]), id).toBe(0);
+    const text = renderBriefPatterns({ keys: ["korean"] });
+    expect(text).toContain("\n한국 선수\n");
+    expect(text).not.toContain("교체됐다");
+    expect(text).not.toContain("{분} 교체 투입돼");
+    expect(text).not.toContain("결장했다");
   });
 
   it("키를 켠 입력의 출전·결장·'득점은 없었다'·순위 변동·유지 줄(11줄)은 통과한다 — 키가 들어오면 다시 켜진다", () => {
