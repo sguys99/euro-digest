@@ -13,6 +13,7 @@ import {
   TITLE_TEMPLATE,
   competitionDescription,
   teamDescription,
+  koreanPlayersDescription,
 } from "@/lib/seo";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
@@ -324,5 +325,15 @@ describe("teamDescription — 팀 페이지 설명(M2-13)", () => {
       },
       { url: "https://sguys99.github.io/euro-digest/teams/club-brugge/" },
     ]);
+  });
+});
+
+describe("koreanPlayersDescription — 한국 선수 목록 설명(M3-09)", () => {
+  it("집계 시작일을 넣고, 스코어 모양 없음(결과 노출 0)", () => {
+    const text = koreanPlayersDescription("10월 19일 이후 집계");
+    expect(text).toContain("10월 19일 이후 집계한 시즌 누적");
+    expect(text).toContain("API-Football · football-data.org");
+    expect(hasScoreLike(text)).toBe(false);
+    expect(koreanPlayersDescription(null)).toContain(", 시즌 누적,");
   });
 });

@@ -92,16 +92,30 @@ export const THEME_KEYS = {
     "type-stamp",
     "type-meta",
     "type-rh",
+    "type-hed-xl",
+    "type-dek",
     "num-issue",
     "num-brief-no",
     "num-score",
     "num-card-no",
     "num-meta",
+    "num-n1",
+    "num-n2",
+    "num-n3",
+    "num-n4",
+    "num-n5",
   ],
   /** `--font-*` */
   font: ["sans", "numeric", "latin"],
   /** `--spacing-*` — 레이아웃 토큰 */
-  spacing: ["edge", "gutter", "tab-w", "col-contents", "col-facing"],
+  spacing: [
+    "edge",
+    "gutter",
+    "gutter-date",
+    "tab-w",
+    "col-contents",
+    "col-facing",
+  ],
   /** `--container-*` — 최대 폭 */
   container: ["page"],
   /** `--radius-*` — shadcn 배율(전부 0). tailwind-merge 기본값과 같지만 대조를 위해 적는다 */

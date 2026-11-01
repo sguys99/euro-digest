@@ -207,6 +207,15 @@ export function competitionDescription(name: string, season: string): string {
 }
 
 /**
+ * 한국 선수 목록 설명(M3-09) — 실린 것·집계 방식·데이터 출처만(출전·결과 수치는 넣지 않는다 — 팀·대회 설명과 같은 이유).
+ * 예) "유럽 리그에서 뛰는 한국 선수를 리그별로 모았습니다 — 최근 경기 출전과 결과, 10월 19일 이후 집계한 시즌 누적, UCL 출전, 다음 경기(한국 시간). 데이터 API-Football · football-data.org."
+ */
+export function koreanPlayersDescription(sinceLabel: string | null): string {
+  const season = sinceLabel ? `${sinceLabel}한 시즌 누적` : "시즌 누적";
+  return `유럽 리그에서 뛰는 한국 선수를 리그별로 모았습니다 — 최근 경기 출전과 결과, ${season}, UCL 출전, 다음 경기(한국 시간). 데이터 API-Football · football-data.org.`;
+}
+
+/**
  * 팀 페이지 설명(M2-13) — 팀명·리그·시즌과 페이지에 실린 것·데이터 출처만. 순위·스코어는 넣지 않는다(결과 노출 0 — 대회 페이지와 같은 이유).
  * 예) "바이에른 뮌헨(분데스리가) 2026-27 시즌 순위와 최근 경기, 일정과 결과(한국 시간), 주 포메이션과 팀시트, 득점 상위 선수, 관련 소식을 한 화면에 모았습니다. 데이터 football-data.org · API-Football."
  */
@@ -221,6 +230,11 @@ export function teamDescription(
 /** sitemap 팀 페이지(M2-13) — 팀 slug와 lastModified(그 팀 대표 대회 데이터 updatedAt — 없으면 생략) */
 export interface SitemapTeam {
   slug: string;
+  updatedAt: string | null;
+}
+
+/** sitemap 한국 선수 목록(M3-09) — 현황 파일(`data/players/korean.json`) generatedAt(없으면 null) */
+export interface SitemapKoreanPlayers {
   updatedAt: string | null;
 }
 
@@ -241,7 +255,7 @@ export interface SitemapIssue {
  * - 홈(`lastModified` = 최신 호 generatedAt — 홈은 최신 호를 싣는다), `/about/`(lastModified 없음 — 설정이 바뀔 때만 바뀐다),
  *   `/tonight/`(M2-14 — 발행 빌드마다 다시 고르므로 홈과 같은 lastModified),
  *   대회 페이지(M2-10 — 데이터 파일이 있는 대회, 설정 순서, `lastModified` = 그 파일 updatedAt), 팀 페이지(M2-13 — 팀 파일이 있는 팀,
- *   slug 순, `lastModified` = 대표 대회 데이터 updatedAt), 발행된 날짜 아카이브 전부
+ *   slug 순, `lastModified` = 대표 대회 데이터 updatedAt), 한국 선수 목록(M3-09 — `lastModified` = 현황 파일 generatedAt), 발행된 날짜 아카이브 전부
  *   (`lastModified` = 그 호 generatedAt, 날짜 오름차순).
  * - `/news/`는 넣지 않는다 — 최신 날짜 페이지의 별칭(canonical이 그 날짜 페이지). 404·견본도 없다.
  * - 새 라우트(M2 대회·팀 등)를 만들면 여기에 넣는다 — e2e `tests/e2e/seo.spec.ts`가 out/의 색인 대상 페이지가 모두 sitemap에 있는지
@@ -251,6 +265,7 @@ export function sitemapEntries(
   issues: readonly SitemapIssue[],
   competitions: readonly SitemapCompetition[] = [],
   teams: readonly SitemapTeam[] = [],
+  koreanPlayers: SitemapKoreanPlayers | null = null,
 ): MetadataRoute.Sitemap {
   const sorted = [...issues].sort((a, b) => a.date.localeCompare(b.date));
   const latest = sorted.at(-1);
@@ -273,6 +288,17 @@ export function sitemapEntries(
       url: absoluteUrl(routes.team(t.slug)),
       ...(t.updatedAt ? { lastModified: t.updatedAt } : {}),
     })),
+    // 한국 선수 목록(M3-09) — 명단 설정이 있으면 늘 생긴다(lastModified = 현황 파일 generatedAt, 파일 전이면 없음)
+    ...(koreanPlayers
+      ? [
+          {
+            url: absoluteUrl(routes.koreanPlayers()),
+            ...(koreanPlayers.updatedAt
+              ? { lastModified: koreanPlayers.updatedAt }
+              : {}),
+          },
+        ]
+      : []),
     ...sorted.map((issue) => ({
       url: absoluteUrl(routes.newsArchive(issue.date)),
       lastModified: issue.generatedAt,

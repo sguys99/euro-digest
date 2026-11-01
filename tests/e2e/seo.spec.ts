@@ -110,7 +110,7 @@ test("빌드 결과 — out/sitemap.xml이 있고 robots.txt는 없다(M5 결정
   expect(existsSync(path.join(outDir, "robots.txt"))).toBe(false);
 });
 
-test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
+test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 한국 선수 목록(M3-09) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
   const entries = readSitemap();
   const locs = entries.map((e) => e.loc);
   expect(locs).toEqual([
@@ -119,6 +119,7 @@ test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-
     `${SITE}/tonight/`,
     ...COMPETITION_SEGMENTS.map((c) => `${SITE}/competitions/${c}/`),
     ...TEAM_SLUGS.map((t) => `${SITE}/teams/${t}/`),
+    `${SITE}/korean-players/`,
     ...DATES.map((date) => `${SITE}/news/${date}/`),
   ]);
   expect(locs).not.toContain(`${SITE}/news/`);

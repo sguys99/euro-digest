@@ -92,6 +92,15 @@ describe("DESIGN.md 토큰 표 읽기 (§0.3)", () => {
       "--hatch",
       "--text-card",
       "--num-meta",
+      // D2 크기 토큰 8개(M3-09 승격 — 2026-11-01 사용자 결정)
+      "--num-n1",
+      "--num-n2",
+      "--num-n3",
+      "--num-n4",
+      "--num-n5",
+      "--text-hed-xl",
+      "--text-dek",
+      "--gutter-date",
       "--edge",
       "--font-sans",
       "--space-8",
@@ -599,6 +608,10 @@ describe("Tailwind 컴파일 결과 (tailwindcss compile — 실제 유틸리티
       "text-type-card",
       "text-card",
       "text-num-score",
+      "text-num-n3",
+      "text-type-hed-xl",
+      "text-type-dek",
+      "w-gutter-date",
       "bg-paper",
       "text-competition-epl-foreground",
       "dark:bg-paper",
@@ -633,6 +646,13 @@ describe("Tailwind 컴파일 결과 (tailwindcss compile — 실제 유틸리티
     expect(rule("text-type-card")).toMatch(/line-height:.*var\(--lh-card\)/);
     expect(rule("text-num-score")).toMatch(/font-size:\s*var\(--num-score\)/);
     expect(rule("text-card")).toMatch(/color:\s*var\(--card\)/);
+    // D2 크기 토큰(M3-09 승격)
+    expect(rule("text-num-n3")).toMatch(/font-size:\s*var\(--num-n3\)/);
+    expect(rule("text-type-hed-xl")).toMatch(
+      /line-height:.*var\(--lh-hed-xl\)/,
+    );
+    expect(rule("text-type-dek")).toMatch(/font-size:\s*var\(--text-dek\)/);
+    expect(rule("w-gutter-date")).toMatch(/width:\s*var\(--gutter-date\)/);
   });
 
   it("토큰 색·폰트·레이아웃·모션 유틸리티가 만들어진다", () => {

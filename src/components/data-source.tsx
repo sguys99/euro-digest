@@ -24,7 +24,7 @@ export function DataSourceNote({
   /** API-Football이 준 것("팀시트·포메이션" 등) — 그 데이터를 싣지 않은 화면은 null(병기하지 않는다) */
   apiFootball?: string | null;
   /** 어느 화면의 줄인지(`data-scope` — 검사용) */
-  scope: "competition" | "team" | "home" | "tonight";
+  scope: "competition" | "team" | "home" | "tonight" | "korean-players";
   className?: string;
 }) {
   const { updatedAt, stale } = source;

@@ -35,6 +35,13 @@ const { listTeamSlugs, loadTeam } = vi.hoisted(() => ({
   loadTeam: vi.fn((slug: string) => ({ slug, comp: "EPL" })),
 }));
 vi.mock("@/lib/data/teams", () => ({ listTeamSlugs, loadTeam }));
+// 한국 선수 목록(M3-09) — 저장소 data/players 대신 테스트가 정한 현황 파일(기본 없음 → lastmod 없이 목록 페이지만)
+const { loadKoreanPlayersData } = vi.hoisted(() => ({
+  loadKoreanPlayersData: vi.fn<() => { generatedAt: string } | null>(
+    () => null,
+  ),
+}));
+vi.mock("@/lib/data/korean-players", () => ({ loadKoreanPlayersData }));
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -71,6 +78,7 @@ describe("sitemap 라우트", () => {
       { url: `${SITE}/`, lastModified: "2026-10-17T00:17:00.000Z" },
       { url: `${SITE}/about/` },
       { url: `${SITE}/tonight/`, lastModified: "2026-10-17T00:17:00.000Z" },
+      { url: `${SITE}/korean-players/` },
       ...DATES.map((date) => ({
         url: `${SITE}/news/${date}/`,
         lastModified: issueOf(date).generatedAt,
@@ -96,13 +104,28 @@ describe("sitemap 라우트", () => {
     ]);
   });
 
-  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/tonight/만", () => {
+  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/tonight/·/korean-players/만", () => {
     listNewsDates.mockReturnValue([]);
     expect(sitemap()).toEqual([
       { url: `${SITE}/` },
       { url: `${SITE}/about/` },
       { url: `${SITE}/tonight/` },
+      { url: `${SITE}/korean-players/` },
     ]);
+  });
+
+  it("한국 선수 목록 — 팀 다음, lastmod = 현황 파일 generatedAt(M3-09)", () => {
+    loadKoreanPlayersData.mockReturnValueOnce({
+      generatedAt: "2026-11-01T04:17:30.987Z",
+    });
+    expect(sitemap().filter((e) => e.url.endsWith("/korean-players/"))).toEqual(
+      [
+        {
+          url: `${SITE}/korean-players/`,
+          lastModified: "2026-11-01T04:17:30.987Z",
+        },
+      ],
+    );
   });
 
   it("팀 파일이 있으면 대회 다음에 팀 페이지(lastmod = 대표 대회 updatedAt, 데이터가 없으면 생략)", () => {

@@ -268,6 +268,16 @@
   --num-score: 30px;
   --num-card-no: 14px;
   --num-meta: 14.5px;
+  /* (D2 — M3-09 토큰 승격) 숫자 단계 N1~N5 · 주간 MVP 이름 · dek */
+  --num-n1: 56px;
+  --num-n2: 44px;
+  --num-n3: 28px;
+  --num-n4: 20px;
+  --num-n5: 17px;
+  --text-hed-xl: 60px;
+  --lh-hed-xl: 0.98;
+  --text-dek: 16.5px;
+  --lh-dek: 1.5;
 
   /* §4.1 간격 — Tailwind 간격 1·2·3·4·6·8·12·16과 같은 값(--spacing 0.25rem)이라 유틸리티는 숫자 간격을 쓴다 */
   --space-1: 4px;
@@ -283,6 +293,7 @@
   --edge: 16px;
   --gutter: 40px;
   --tab-w: 18px;
+  --gutter-date: 52px;
   --col-contents: 232px;
   --col-facing: 296px;
   --container: 1280px;
@@ -318,10 +329,18 @@
     --num-brief-no: 54px;
     --num-score: 34px;
     --num-card-no: 15px;
+    --num-n1: 96px;
+    --num-n2: 64px;
+    --num-n3: 34px;
+    --num-n4: 22px;
+    --num-n5: 18px;
+    --text-hed-xl: 112px;
+    --text-dek: 19px;
 
     --edge: 32px;
     --gutter: 64px;
     --tab-w: 22px;
+    --gutter-date: 68px;
   }
 }
 
@@ -544,10 +563,20 @@
   --text-num-score: var(--num-score);
   --text-num-card-no: var(--num-card-no);
   --text-num-meta: var(--num-meta);
+  --text-num-n1: var(--num-n1);
+  --text-num-n2: var(--num-n2);
+  --text-num-n3: var(--num-n3);
+  --text-num-n4: var(--num-n4);
+  --text-num-n5: var(--num-n5);
+  --text-type-hed-xl: var(--text-hed-xl);
+  --text-type-hed-xl--line-height: var(--lh-hed-xl);
+  --text-type-dek: var(--text-dek);
+  --text-type-dek--line-height: var(--lh-dek);
 
   /* 레이아웃 — px-edge, w-gutter, w-tab-w, w-col-contents, w-col-facing, max-w-page */
   --spacing-edge: var(--edge);
   --spacing-gutter: var(--gutter);
+  --spacing-gutter-date: var(--gutter-date);
   --spacing-tab-w: var(--tab-w);
   --spacing-col-contents: var(--col-contents);
   --spacing-col-facing: var(--col-facing);
@@ -1010,5 +1039,21 @@
   @variant lg {
     left: calc(100% - var(--a) * 1%);
     top: calc(var(--c) * 1%);
+  }
+}
+
+/* ── 12. 한국 선수 명단 보기 (M3-09, PRD FR-61, DESIGN §9.3 D2 "선수 명단 행") ─────────────────────────────────────
+ * 명단은 표 한 장이고 서버가 모든 열을 그린다. 1023 이하는 보기 탭 섬(src/components/korean-players/roster-views.tsx)이 감싼 요소의
+ * `data-roster-view`(recent · season · next)만 바꾸고, 여기서 다른 보기의 열(`data-col`)을 숨긴다 — 가로 스크롤 없음. 1024 이상은 모든 열.
+ * 속성 조합이 9개뿐이고 표의 모든 칸에 같은 변형 묶음을 반복하지 않으려고 선택자로 둔다(새 값 없음).
+ */
+@media (width < 64rem) {
+  [data-roster-view="recent"] [data-col="season"],
+  [data-roster-view="recent"] [data-col="next"],
+  [data-roster-view="season"] [data-col="recent"],
+  [data-roster-view="season"] [data-col="next"],
+  [data-roster-view="next"] [data-col="recent"],
+  [data-roster-view="next"] [data-col="season"] {
+    display: none;
   }
 }
