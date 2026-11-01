@@ -30,7 +30,13 @@
   ],
   "profile": null,
   "koreanPlayers": [],
-  "reading": [],
+  "reading": [
+    {
+      "title": "Access, Not Chances: How Como Took Manchester United Apart – LC",
+      "url": "https://spielverlagerung.com/2026/10/24/access-not-chances-how-como-took-manchester-united-apart-lc/",
+      "source": "Spielverlagerung"
+    }
+  ],
   "lineup": {
     "formation": "4-2-3-1",
     "match": "af-1557450",

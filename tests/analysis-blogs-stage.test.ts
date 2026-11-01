@@ -55,10 +55,15 @@ beforeEach(async () => {
     await cp(path.join(ROOT, "configs", f), path.join(root, "configs", f));
   }
   await mkdir(path.join(root, "data/teams"), { recursive: true });
+  // 실데이터 사본 — 이미 발행된 더 읽을거리(`reading`)는 비우고 시작한다(주간 실행이 실데이터에 글을 쌓아도 기대 값이 흔들리지 않게)
   for (const slug of TEAM_SLUGS) {
-    await cp(
-      path.join(ROOT, "data/teams", `${slug}.json`),
+    const team = JSON.parse(
+      await readFile(path.join(ROOT, "data/teams", `${slug}.json`), "utf8"),
+    ) as Record<string, unknown>;
+    team.reading = [];
+    await writeFile(
       path.join(root, "data/teams", `${slug}.json`),
+      `${JSON.stringify(team, null, 2)}\n`,
     );
   }
 });

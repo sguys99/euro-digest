@@ -801,6 +801,24 @@ export function daysBetween(from: string, to: string): number {
 }
 
 /**
+ * 달력 날짜 "YYYY-MM-DD" → "10.25 (일)"(`formatKst` `dayShort`와 같은 모양). 날짜 값을 그대로 쓴다 — 시간대 변환 없음.
+ * 주간 리포트 기간 · 발행 예정일(src/lib/weekly-report-view.ts `dayLabel`)에 쓴다.
+ */
+export function formatDateDayShort(date: string): string {
+  const [y, month, day] = parseDate(date);
+  return `${pad2(month)}.${pad2(day)} (${WEEKDAYS_KO[weekdayOf(y, month, day)]})`;
+}
+
+/**
+ * UTC ISO → 경기일(현지 = UTC 날짜) "10.25 (일)" — 시각 없이. 주간 리포트 출전 기록 표의 경기 줄(D65 ① 경기일 기준 —
+ * 기간 표기 "10.19 (월) ~ 10.25 (일)"과 같은 날짜 기준, DECISIONS D2 §8 #31 사용자 결정 2026-11-01). 다른 화면의 킥오프는 KST(`formatKst`).
+ * 예) 2026-10-25T19:30:00Z(= KST 10.26 (월) 04:30) → "10.25 (일)", 2026-10-26T00:00:00Z → "10.26 (월)".
+ */
+export function formatUtcDayShort(iso: string): string {
+  return formatDateDayShort(utcDate(iso));
+}
+
+/**
  * KST 하루의 UTC 구간 [start, end) — end는 다음 날 KST 00:00(제외).
  * 예) "2026-10-25" → { start: 2026-10-24T15:00:00.000Z, end: 2026-10-25T15:00:00.000Z }
  */

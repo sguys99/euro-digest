@@ -19,8 +19,10 @@ import {
   BRIEF_DEADLINE_LEAD_MINUTES,
   daysBetween,
   europeanSummerTimeTransitions,
+  formatDateDayShort,
   formatIcsUtc,
   formatKst,
+  formatUtcDayShort,
   isEuropeanSummerTime,
   PUBLISH_SEASONS,
   PUBLISH_TIMES_KST,
@@ -978,6 +980,32 @@ describe("shiftDate", () => {
   it("잘못된 입력은 TimeInputError", () => {
     expect(() => shiftDate("2026-10-10", 1.5)).toThrow(TimeInputError);
     expect(() => shiftDate("2026-13-01", 1)).toThrow(TimeInputError);
+  });
+});
+
+describe("formatDateDayShort · formatUtcDayShort — 경기일(UTC 날짜) 표기(주간 리포트 경기 줄, D2 §8 #31)", () => {
+  it("날짜 값은 시간대 변환 없이 그대로 — 요일 포함, 연말·윤년", () => {
+    expect(formatDateDayShort("2026-10-19")).toBe("10.19 (월)");
+    expect(formatDateDayShort("2026-12-31")).toBe("12.31 (목)");
+    expect(formatDateDayShort("2028-02-29")).toBe("02.29 (화)");
+    expect(() => formatDateDayShort("2026-02-30")).toThrow(TimeInputError);
+    expect(() => formatDateDayShort("2026-10-19T00:00:00Z")).toThrow(
+      TimeInputError,
+    );
+  });
+
+  it("UTC ISO → UTC 날짜(시각 없음) — 일요일 밤 유럽 경기는 KST로 월요일이어도 일요일", () => {
+    // 2026-10-25T19:30Z = KST 10.26 (월) 04:30
+    expect(formatUtcDayShort("2026-10-25T19:30:00.000Z")).toBe("10.25 (일)");
+    expect(formatKst("2026-10-25T19:30:00.000Z", "dayShort")).toBe(
+      "10.26 (월)",
+    );
+    // 경계 — UTC 23:59:59.999는 그날, 00:00은 다음 날
+    expect(formatUtcDayShort("2026-10-25T23:59:59.999Z")).toBe("10.25 (일)");
+    expect(formatUtcDayShort("2026-10-26T00:00:00.000Z")).toBe("10.26 (월)");
+    expect(() => formatUtcDayShort("2026-10-25T19:30:00+01:00")).toThrow(
+      TimeInputError,
+    );
   });
 });
 

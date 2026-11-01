@@ -35,7 +35,13 @@
   ],
   "profile": null,
   "koreanPlayers": [],
-  "reading": [],
+  "reading": [
+    {
+      "title": "Aspect analysis: Leipzig never found a trigger – LC",
+      "url": "https://spielverlagerung.com/2026/10/20/aspect-analysis-leipzig-never-found-a-trigger-lc/",
+      "source": "Spielverlagerung"
+    }
+  ],
   "lineup": {
     "formation": "4-5-1",
     "match": "af-1575210",

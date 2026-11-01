@@ -1,0 +1,239 @@
+{
+  "week": "2026-43",
+  "from": "2026-10-19T00:00:00.000Z",
+  "to": "2026-10-25T23:59:59.999Z",
+  "rows": [
+    {
+      "player": "lee-jae-sung",
+      "apps": 1,
+      "minutes": 75,
+      "goals": 1,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565830",
+          "kickoff": "2026-10-24T13:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "werder-bremen",
+            "name": "Werder Bremen"
+          },
+          "home": true,
+          "result": {
+            "for": 2,
+            "against": 3
+          },
+          "status": "start",
+          "minutes": 75,
+          "goals": 1,
+          "assists": 0,
+          "goalMinutes": [
+            "63"
+          ]
+        }
+      ]
+    },
+    {
+      "player": "hwang-hee-chan",
+      "apps": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565831",
+          "kickoff": "2026-10-24T13:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "koln",
+            "name": "1. FC Köln"
+          },
+          "home": false,
+          "result": {
+            "for": 0,
+            "against": 0
+          },
+          "status": "start",
+          "minutes": 90,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "jeong-woo-yeong",
+      "apps": 1,
+      "minutes": 76,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565838",
+          "kickoff": "2026-10-24T13:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "augsburg",
+            "name": "FC Augsburg"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "start",
+          "minutes": 76,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "lee-kang-in",
+      "apps": 1,
+      "minutes": 67,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-575362",
+          "kickoff": "2026-10-20T19:00:00.000Z",
+          "comp": "UCL",
+          "opponent": {
+            "slug": "stuttgart",
+            "name": "VfB Stuttgart"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-564724",
+          "kickoff": "2026-10-24T19:00:00.000Z",
+          "comp": "LALIGA",
+          "opponent": {
+            "slug": "deportivo-la-coruna",
+            "name": "Deportivo La Coruna"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 0
+          },
+          "status": "start",
+          "minutes": 67,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "kim-min-jae",
+      "apps": 1,
+      "minutes": 45,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-575372",
+          "kickoff": "2026-10-21T19:00:00.000Z",
+          "comp": "UCL",
+          "opponent": {
+            "slug": "arsenal",
+            "name": "Arsenal"
+          },
+          "home": true,
+          "result": {
+            "for": 2,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 45,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-565836",
+          "kickoff": "2026-10-25T16:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "freiburg",
+            "name": "SC Freiburg"
+          },
+          "home": false,
+          "result": {
+            "for": 3,
+            "against": 1
+          },
+          "status": "absent",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "seol-young-woo",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565838",
+          "kickoff": "2026-10-24T13:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "union-berlin",
+            "name": "Union Berlin"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "jens-castrop",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565833",
+          "kickoff": "2026-10-23T18:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "stuttgart",
+            "name": "VfB Stuttgart"
+          },
+          "home": false,
+          "result": {
+            "for": 3,
+            "against": 2
+          },
+          "status": "absent",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    }
+  ],
+  "mvp": "lee-jae-sung",
+  "summary": "이번 주 MVP는 이재성이다. 이재성은 마인츠 소속으로 10월 24일 홈 분데스리가 경기 브레멘전에 75분 선발 출전해 1골을 넣었고 팀은 2-3으로 졌다. 황희찬은 샬케04 원정에서 쾰른전 90분 선발 출전해 0-0으로 비겼고, 정우영은 우니온 베를린 소속으로 아우크스부르크 원정에서 76분 선발 출전해 1-1로 비겼다. 이강인은 10월 24일 라리가 홈 경기 데포르티보 라코루냐전에 67분 선발 출전했고 팀은 1-0으로 이겼다. 김민재는 10월 21일 UEFA 챔피언스리그 홈 경기 아스널전에 45분 선발 출전했고, 설영우와 옌스 카스트로프는 이번 주 출전하지 않았다.",
+  "summaryAi": true,
+  "generatedAt": "2026-11-01T07:09:25.458Z"
+}

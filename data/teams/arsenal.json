@@ -35,7 +35,13 @@
   ],
   "profile": null,
   "koreanPlayers": [],
-  "reading": [],
+  "reading": [
+    {
+      "title": "Man for Man: How Brighton’s Press Suffocated Arsenal",
+      "url": "https://spielverlagerung.com/2026/09/23/man-for-man-how-brightons-press-suffocated-arsenal/",
+      "source": "Spielverlagerung"
+    }
+  ],
   "lineup": {
     "formation": "4-2-3-1",
     "match": "af-1557437",
