@@ -1880,6 +1880,18 @@
       "kind": "team",
       "slug": "sg-sonnenhof-grossaspach",
       "note": "확정(사용자 승인 2026-11-01, M3-01 컵 상대 표기) — 대안(규범) 위키백과 'SG 소넨호프 그로스아스파흐'(ko.wikipedia 검색 2026-11-01) — 사용자 지정 표기 우선 · 원장 DFB Pokal 'Round of 32'(SG Sonnenhof Grossaspach 2-4 FC Augsburg, 2026-10-27) · slug D63 ③ 규칙 slug(teamSlugFromName — SG는 접두 제거 목록 밖) · 영문: API-Football 'SG Sonnenhof Grossaspach'(af 팀 1317)"
+    },
+    {
+      "ko": "DFB 포칼",
+      "en": ["DFB Pokal", "DFB-Pokal"],
+      "kind": "competition",
+      "note": "통칭(M3-10 화면 표기 — 오케스트레이터 지시 2026-11-01) — 독일 축구협회(DFB) 컵 대회, 국내 매체 표기 'DFB 포칼' · 영문: API-Football 리그 이름 'DFB Pokal'(data/matches 원장 league · data/players/korean.json leagueRaw). 6개 대회 밖 컵이라 competitions.json에 없다 — 화면 컵 대회 이름(leagueRaw → 한글)만 쓰고 브리핑 치환·검사에는 쓰지 않는다(scripts/lib/names.ts·brief-check.ts)"
+    },
+    {
+      "ko": "리그컵",
+      "en": ["League Cup"],
+      "kind": "competition",
+      "note": "통칭(M3-10 화면 표기 — 오케스트레이터 지시 2026-11-01) — 잉글랜드 EFL 컵(스폰서명 카라바오컵 — 스폰서가 바뀌어도 같은 '리그컵'으로 쓴다) · 영문: API-Football 리그 이름 'League Cup'(data/matches 원장 league). 6개 대회 밖 컵이라 competitions.json에 없다 — 화면 컵 대회 이름(leagueRaw → 한글)만 쓰고 브리핑 치환·검사에는 쓰지 않는다(scripts/lib/names.ts·brief-check.ts)"
     }
   ],
   "ignore": []

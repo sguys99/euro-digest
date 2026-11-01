@@ -1,3 +1,6 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+
 import { FormChip, Score } from "@/components/competition/marks";
 import { TeamBadge } from "@/components/team/team-badge";
 import { FlatTab, flatTabVariants } from "@/components/ui/chip";
@@ -10,6 +13,7 @@ import type {
   ResultView,
 } from "@/lib/korean-players-view";
 import { cx } from "@/lib/cx";
+import { routes } from "@/lib/paths";
 
 /**
  * 한국 선수 화면 표식 — 출전 분 거터 · 결과 칸 · 대회 표식 · 상대 팀 · 상태 도장 (DESIGN §9.3 "D2 — 한국 선수·이적·마이 팀 화면"
@@ -30,14 +34,22 @@ export const NUMBER_TONE: Readonly<Record<NumberTone, string>> = {
  * 출전 분 거터 — 숫자 N3(Barlow 800 · 행간 0.86) + 아래 상태 글자 11px 800(출전 = `--ink`, 그 밖 `--ink-2`). 숫자·글자는 장식, 화면 밖
  * "{상태} {n}분". 폭(`--gutter-date`)은 담는 칸이 정한다.
  */
-export function MinutesGutter({ appearance }: { appearance: AppearanceView }) {
+export function MinutesGutter({
+  appearance,
+  narrow = false,
+}: {
+  appearance: AppearanceView;
+  /** 좁은 단(홈 위젯 · 1280 마주 보는 면 — 거터 44px): 숫자 28px 고정(DESIGN §9.3 D2 출전 분 거터) */
+  narrow?: boolean;
+}) {
   return (
     <>
       <span
         aria-hidden="true"
         data-tone={appearance.tone}
         className={cx(
-          "block font-numeric text-num-n3 leading-[0.86] font-extrabold tracking-[-0.02em] tabular-nums",
+          "block font-numeric leading-[0.86] font-extrabold tracking-[-0.02em] tabular-nums",
+          narrow ? "text-[28px]" : "text-num-n3",
           NUMBER_TONE[appearance.tone],
         )}
       >
@@ -175,7 +187,14 @@ export function OtherTab({
 }
 
 /** 대회 표식 — 6개 대회는 평탄 탭(정식 이름은 마우스 올림 설명), 컵은 "기타" 탭 + 대회 이름(사전에 없으면 원문 `lang="en"`) */
-export function CompTag({ comp }: { comp: CompMark }) {
+export function CompTag({
+  comp,
+  stacked = false,
+}: {
+  comp: CompMark;
+  /** 컵 대회 이름을 탭 아래 줄로(시즌 기록 표 대회 칸 — M3-10) */
+  stacked?: boolean;
+}) {
   if (comp.kind === "comp") {
     return (
       <FlatTab comp={comp.comp} title={comp.name}>
@@ -184,7 +203,12 @@ export function CompTag({ comp }: { comp: CompMark }) {
     );
   }
   return (
-    <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1">
+    <span
+      className={cx(
+        "inline-flex gap-x-1.5 gap-y-1",
+        stacked ? "flex-col items-start" : "flex-wrap items-center",
+      )}
+    >
       <OtherTab />
       <span
         lang={comp.latin ? "en" : undefined}
@@ -220,5 +244,32 @@ export function StateStamp({ children }: { children: string }) {
     <span className="inline-flex items-center border border-dashed border-ink-2 px-1.5 pt-0.75 pb-0.5 text-[11.5px] leading-[1.3] font-extrabold whitespace-nowrap text-ink-2">
       {children}
     </span>
+  );
+}
+
+/**
+ * 선수 이름 링크 — 한국 선수 상세(`/korean-players/{slug}/`, M3-10)로. 누름 영역은 `::after`로 가운데 기준 44 × max(글자 폭, 44)px(세 글자
+ * 이름 15~16.5px는 글자 폭이 40px 안팎이라 가로도 넓힌다 — DESIGN §10), hover 2px `--brand-accent` 밑줄(팀 이름 링크와 같은 모양).
+ * 상세는 설정의 선수 전원을 정적으로 만들므로 늘 링크다.
+ */
+export function PlayerLink({
+  slug,
+  className,
+  children,
+}: {
+  slug: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={routes.koreanPlayer(slug)}
+      className={cx(
+        "relative text-inherit no-underline decoration-brand-accent decoration-2 underline-offset-3 after:absolute after:top-1/2 after:left-1/2 after:h-11 after:w-[max(100%,44px)] after:-translate-1/2 after:content-[''] hover:underline",
+        className,
+      )}
+    >
+      {children}
+    </Link>
   );
 }

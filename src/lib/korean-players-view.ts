@@ -297,7 +297,8 @@ export function seasonTotalOf(
   return { apps, minutes, goals, assists };
 }
 
-function compMarkOf(
+/** 대회 표식 — 6개 대회는 평탄 탭 약칭·정식 이름, 컵(OTHER)은 사전 한글(`leagueRaw` 정확 일치) 또는 원문 */
+export function compMarkOf(
   comp: PlayerComp,
   leagueRaw: string | undefined,
   comps: ReadonlyMap<CompId, RosterCompetition>,
@@ -319,7 +320,8 @@ function compMarkOf(
   return { kind: "other", name: ko ?? leagueRaw, latin: ko === null };
 }
 
-function opponentOf(
+/** 상대 팀 — 데이터 팀이면 배지·한글명(사전에 없으면 API 원문), 아니면 사전 한글 또는 원문 + 폴백 배지 */
+export function opponentOf(
   o: Opponent,
   team: TeamLookup,
   teamNameKo: (en: string) => string | null,

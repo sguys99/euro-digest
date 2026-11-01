@@ -49,10 +49,10 @@ const FORBIDDEN: ReadonlyArray<[string, RegExp]> = [
   ["반복 애니메이션", /animate-(?:pulse|spin|ping|bounce)/],
   // 컴포넌트는 dark:로 색을 따로 고르지 않는다(§2) — 토큰만
   ["dark: 변형", /(?<![\w-])dark:(?=[\w[!-])/],
-  // 브레이크포인트는 lg:·xl:만(§7.1)
+  // 브레이크포인트는 lg:·xl:만(§7.1). 컨테이너 쿼리(`@…`)는 아래 따로 본다(§7.1 예외 — 선수 티켓 600px, M3-10)
   [
     "lg·xl 밖 브레이크포인트",
-    /(?<![\w-])(?:sm|md|2xl):(?=[\w[!-])|(?<![\w-])max-(?:sm|md|lg|xl|2xl|\[)[\w-]*:|(?<![\w-])min-\[/,
+    /(?<![\w@-])(?:sm|md|2xl):(?=[\w[!-])|(?<![\w@-])max-(?:sm|md|lg|xl|2xl|\[)[\w-]*:|(?<![\w@-])min-\[/,
   ],
 ];
 
@@ -80,6 +80,20 @@ describe("shadcn 기본 모양 탈피 — src/components", () => {
         .map(([n, line]) => `${file}:${n} ${line.trim()}`),
     );
     expect(hits).toEqual([]);
+  });
+
+  it("컨테이너 쿼리는 DESIGN §7.1 예외 하나뿐 — 선수 티켓 꼬리표 `@min-[37.5rem]`(티켓 상자 폭 600px, M3-10)", () => {
+    const queries = sources.flatMap(({ file, text }) =>
+      [...text.matchAll(/(?<![\w-])@(?:max-|min-)?[\w[\].-]*:/g)].map(
+        (m) => `${file} ${m[0]}`,
+      ),
+    );
+    expect(new Set(queries)).toEqual(
+      new Set([
+        "src/components/korean-players/ticket-parts.tsx @min-[37.5rem]:",
+        "src/components/korean-players/player-ticket.tsx @min-[37.5rem]:",
+      ]),
+    );
   });
 
   it("쓰는 animate-* 유틸리티는 인쇄형 모션 4종뿐이다(DESIGN §6.1)", () => {

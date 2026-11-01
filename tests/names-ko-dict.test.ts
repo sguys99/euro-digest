@@ -147,12 +147,32 @@ describe("configs/names.ko.json — 초기 사전(M1-21)", () => {
     }
   });
 
-  it("모든 항목에 근거(note — 확신도 확실·관용·통칭·확정·추정)가 있고, 표기는 앞뒤 공백 없는 한글 중심(라틴은 약칭 PSV·AEK·AC·FC·CP·LASK만)", () => {
+  it("모든 항목에 근거(note — 확신도 확실·관용·통칭·확정·추정)가 있고, 표기는 앞뒤 공백 없는 한글 중심(라틴은 약칭 PSV·AEK·AC·FC·CP·LASK·DFB만)", () => {
     for (const e of NAMES.entries) {
       expect(e.note, e.ko).toMatch(/^(확실|관용|통칭|확정|추정)/); // 추정 = 초안(사용자 검토 대기 — M2-05)
       const latin = e.ko.match(/[A-Za-z]+/g) ?? [];
       for (const word of latin) {
-        expect(["PSV", "AEK", "AC", "FC", "CP", "LASK"], e.ko).toContain(word);
+        // DFB = 컵 대회 'DFB 포칼'(M3-10 — 국내 매체 표기 그대로)
+        expect(["PSV", "AEK", "AC", "FC", "CP", "LASK", "DFB"], e.ko).toContain(
+          word,
+        );
+      }
+    }
+  });
+
+  it("컵 대회 항목(kind competition — M3-10 화면 표기)은 6개 대회 밖 컵만, slug 없이: DFB 포칼 · 리그컵", () => {
+    const cups = NAMES.entries.filter((e) => e.kind === "competition");
+    expect(cups.map((e) => [e.ko, e.en[0]])).toEqual([
+      ["DFB 포칼", "DFB Pokal"],
+      ["리그컵", "League Cup"],
+    ]);
+    for (const e of cups) {
+      expect(e.slug, e.ko).toBeUndefined();
+      for (const en of e.en) {
+        expect(
+          COMPETITIONS.some((c) => c.nameEn.toLowerCase() === en.toLowerCase()),
+          en,
+        ).toBe(false);
       }
     }
   });

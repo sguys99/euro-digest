@@ -20,6 +20,7 @@ import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { readConfigFile } from "@/lib/data/config-file";
 import { NAMES_KO_PATH } from "@/lib/data/names";
 import { loadKoreanPlayers } from "@/lib/data/team-page";
+import { lastNightView, type LastNightView } from "@/lib/korean-last-night";
 import { rosterView, type RosterView } from "@/lib/korean-players-view";
 import { displayNameIndex, koreanDisplayName } from "@/lib/name-fold";
 import { NamesKoFileSchema } from "@/lib/schema/names";
@@ -60,7 +61,7 @@ export function loadKoreanPlayersData(
 }
 
 /** 사전의 한 유형(팀·대회) — 영문 원문 → 한글(정확 일치만 — D63 ①) */
-function nameLookup(
+export function nameLookup(
   kind: "team" | "competition",
   namesFile: string,
 ): (en: string) => string | null {
@@ -97,4 +98,29 @@ export function loadRosterSource(
   now: Date = new Date(),
 ): DataSourceView {
   return dataSourceOf([view.generatedAt], now.getTime());
+}
+
+/**
+ * 홈 "어젯밤 한국 선수"(M3-11 — FR-58) — 최신 호 발행일의 브리핑 창(발행일 − 1 UTC 하루)에 경기가 있던 등록 선수. 호가 없거나 실을 선수가
+ * 없으면 null(위젯 숨김 — src/lib/korean-last-night.ts)
+ */
+export function loadLastNight(
+  issueDate: string | null,
+  dataFile: string = KOREAN_PLAYERS_DATA_PATH,
+  namesFile: string = NAMES_KO_PATH,
+): LastNightView | null {
+  if (issueDate === null) return null;
+  return lastNightView({
+    players: loadKoreanPlayers(),
+    data: loadKoreanPlayersData(dataFile),
+    issueDate,
+    competitions: loadCompetitionsConfig().map((c) => ({
+      id: c.id,
+      short: c.shortKo,
+      name: c.nameKo,
+    })),
+    team: loadTeamLookup(),
+    teamNameKo: nameLookup("team", namesFile),
+    competitionNameKo: nameLookup("competition", namesFile),
+  });
 }

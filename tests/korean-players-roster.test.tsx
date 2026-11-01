@@ -180,7 +180,7 @@ describe("출전 분 거터", () => {
 });
 
 describe("명단 표", () => {
-  it("표 한 장 — caption · 선수 칸 th[scope=row] · 리그 구간 머리(rowgroup, 앵커) · 선수 이름은 글자(상세 전)", () => {
+  it("표 한 장 — caption · 선수 칸 th[scope=row] · 리그 구간 머리(rowgroup, 앵커) · 선수 이름은 상세 링크(M3-10)", () => {
     render(<RosterTable view={VIEW} headingId="kp-h" />);
     const table = screen.getByRole("table");
     expect(table.id).toBe(ROSTER_TABLE_ID);
@@ -190,17 +190,14 @@ describe("명단 표", () => {
     const rowHeads = table.querySelectorAll('th[scope="row"]');
     expect(rowHeads).toHaveLength(2);
     expect(
-      within(rowHeads[0] as HTMLElement).queryByRole("link", {
-        name: "김민재",
-      }),
-    ).toBeNull();
-    // 팀 이름은 팀 화면 링크(페이지가 있는 팀만)
-    expect(
-      within(rowHeads[0] as HTMLElement).getByRole("link", {
-        name: /바이에른 뮌헨/,
-      }),
-    ).toBeInTheDocument();
-    expect(within(rowHeads[1] as HTMLElement).queryByRole("link")).toBeNull();
+      within(rowHeads[0] as HTMLElement)
+        .getByRole("link", { name: "김민재" })
+        .getAttribute("href"),
+    ).toMatch(/^\/korean-players\/kim-min-jae\/?$/);
+    // 소속팀은 글자(M3-10 — 이름 링크와 누름 영역이 겹친다) — 행마다 링크는 선수 이름 하나
+    for (const head of rowHeads) {
+      expect(within(head as HTMLElement).getAllByRole("link")).toHaveLength(1);
+    }
     const groups = table.querySelectorAll('th[scope="rowgroup"]');
     expect([...groups].map((g) => g.id)).toEqual(["kp-bundesliga", "kp-other"]);
     expect(groups[1]?.textContent).toContain("5대 리그 밖 — 기록 갱신 중단");

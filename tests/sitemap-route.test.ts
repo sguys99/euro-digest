@@ -42,6 +42,11 @@ const { loadKoreanPlayersData } = vi.hoisted(() => ({
   ),
 }));
 vi.mock("@/lib/data/korean-players", () => ({ loadKoreanPlayersData }));
+// 한국 선수 상세(M3-10) — 저장소 설정 대신 테스트가 정한 slug(기본 없음 → 상세 없음)
+const { listKoreanPlayerSlugs } = vi.hoisted(() => ({
+  listKoreanPlayerSlugs: vi.fn<() => string[]>(() => []),
+}));
+vi.mock("@/lib/data/player-page", () => ({ listKoreanPlayerSlugs }));
 
 const fixture = NewsFileSchema.parse(
   JSON.parse(
@@ -111,6 +116,19 @@ describe("sitemap 라우트", () => {
       { url: `${SITE}/about/` },
       { url: `${SITE}/tonight/` },
       { url: `${SITE}/korean-players/` },
+    ]);
+  });
+
+  it("한국 선수 상세(M3-10) — 목록 바로 뒤에 설정 순서로", () => {
+    listKoreanPlayerSlugs.mockReturnValueOnce(["kim-ji-soo", "kim-min-jae"]);
+    expect(
+      sitemap()
+        .map((e) => e.url)
+        .filter((u) => u.includes("/korean-players/")),
+    ).toEqual([
+      `${SITE}/korean-players/`,
+      `${SITE}/korean-players/kim-ji-soo/`,
+      `${SITE}/korean-players/kim-min-jae/`,
     ]);
   });
 

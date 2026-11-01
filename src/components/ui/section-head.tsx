@@ -36,6 +36,11 @@ export interface SectionHeadProps extends Omit<
   runningHead?: string;
   /** 얇은 머리(위 1px, 제목 16px · ≥1024 17px) */
   thin?: boolean;
+  /**
+   * 옆단 머리(M3-10 선수 상세 — DESIGN §9.3 D2 "옆단 머리"): 1279 이하 지면 흐름에서는 보통 머리(3px + `--text-h2`), 1280 이상 옆단에서
+   * 얇은 머리(1px + 17px)
+   */
+  sideAtXl?: boolean;
   /** 대회 필터 색 면 — 약칭 상자 + 해제 버튼(`clear`) */
   filter?: { comp: CompId; short: string; clear: ReactNode };
   /**
@@ -51,6 +56,7 @@ export function SectionHead({
   headingId,
   runningHead,
   thin = false,
+  sideAtXl = false,
   filter,
   liveFilter,
   className,
@@ -62,6 +68,7 @@ export function SectionHead({
         "flex items-baseline justify-between gap-3 border-t-3 border-ink pt-2.5",
         "transition-[background-color,border-color,color] duration-base ease-print",
         thin && "border-t",
+        sideAtXl && "xl:border-t",
         filter && [
           "items-center py-1.5 pr-1 pl-3",
           COMPETITION_HEAD[filter.comp],
@@ -85,6 +92,7 @@ export function SectionHead({
           thin
             ? "text-base lg:text-[17px]"
             : "text-type-h2 tracking-[-0.025em]",
+          sideAtXl && "xl:text-[17px] xl:tracking-normal",
         )}
       >
         {heading}

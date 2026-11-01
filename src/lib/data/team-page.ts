@@ -58,6 +58,21 @@ function issueOf(date: string): NewsFile | null {
   return issueCache.get(date) ?? null;
 }
 
+/** 관련 뉴스 기간(오늘 KST 포함 30일 — FR-57)의 첫 발행일과 그 기간 호(삭제 요청 제외) — 팀 화면 · 선수 상세(M3-10)가 같은 캐시를 쓴다 */
+export function recentNewsIssues(now: Date): {
+  since: string;
+  issues: NewsFile[];
+} {
+  const since = relatedNewsSince(kstDate(now.toISOString()));
+  const issues = listNewsDates()
+    .filter((d) => d >= since)
+    .flatMap((d) => {
+      const news = issueOf(d);
+      return news ? [news] : [];
+    });
+  return { since, issues };
+}
+
 /** 한국 선수 설정 전체(카드 표시 로더와 같은 파일·같은 캐시 label) */
 export function loadKoreanPlayers(
   file: string = KOREAN_PLAYERS_PATH,
@@ -94,13 +109,7 @@ export function loadTeamPage(slug: string, now: Date): TeamPageData | null {
     const p = koreanBySlug.get(s);
     return p ? [p] : [];
   });
-  const since = relatedNewsSince(kstDate(now.toISOString()));
-  const issues = listNewsDates()
-    .filter((d) => d >= since)
-    .flatMap((d) => {
-      const news = issueOf(d);
-      return news ? [news] : [];
-    });
+  const { since, issues } = recentNewsIssues(now);
   return {
     team,
     self: lookup(slug),

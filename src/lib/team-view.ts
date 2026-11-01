@@ -309,6 +309,26 @@ export function relatedIssues<
   since: string,
   limit: number = RELATED_NEWS_LIMIT,
 ): RelatedIssue<N>[] {
+  return relatedIssuesBy(
+    issues,
+    (card) => card.teams.includes(slug),
+    since,
+    limit,
+  );
+}
+
+/**
+ * 호 목록 → `match`에 맞는 카드(최신 호부터, 호 안은 게재 순) 최대 `limit`건 — 팀 화면(팀 태그)·선수 상세(선수 태그 + 구역, M3-10)가 함께 쓴다.
+ * `match`는 카드와 그 호 날짜를 받는다(같은 카드가 여러 호에 있으면 한 호만 고르게).
+ */
+export function relatedIssuesBy<
+  N extends { date: string; cards: readonly NewsCard[] },
+>(
+  issues: readonly N[],
+  match: (card: NewsCard, date: string) => boolean,
+  since: string,
+  limit: number = RELATED_NEWS_LIMIT,
+): RelatedIssue<N>[] {
   const out: RelatedIssue<N>[] = [];
   let left = limit;
   const sorted = [...issues]
@@ -317,7 +337,7 @@ export function relatedIssues<
   for (const news of sorted) {
     if (left <= 0) break;
     const ids = news.cards
-      .filter((card) => card.teams.includes(slug))
+      .filter((card) => match(card, news.date))
       .slice(0, left)
       .map((card) => card.id);
     if (ids.length === 0) continue;

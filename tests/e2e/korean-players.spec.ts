@@ -45,11 +45,10 @@ test.describe("한국 선수 목록 — 명단 구성", () => {
     }
     const total = view.groups.reduce((n, g) => n + g.rows.length, 0);
     await expect(page.locator('#kp-list th[scope="row"]')).toHaveCount(total);
-    // 선수 이름은 상세(M3-10) 전이라 링크가 아니다 — 없는 페이지로 가는 링크 0
-    await expect(page.locator('a[href*="/korean-players/"]')).toHaveCount(
-      // 내비(상단·하단) 2곳만
-      2,
-    );
+    // 선수 이름은 상세(M3-10) 링크 — 선수마다 하나(내비 상단·하단 2곳은 목록 자신)
+    await expect(
+      page.locator('#kp-list a[href*="/korean-players/"]'),
+    ).toHaveCount(total);
     // 출처 줄
     await expect(
       page.locator('[data-slot="data-source"][data-scope="korean-players"]'),

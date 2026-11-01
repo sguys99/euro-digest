@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { PlayerLink } from "@/components/korean-players/player-marks";
 import { KoreanArmband } from "@/components/news/feed-card";
 import { NewsFeed } from "@/components/news-feed";
 import { ChevronRightIcon } from "@/components/ui/icons";
@@ -110,7 +111,7 @@ export function KeyPlayers({
               >
                 <span />
                 <span className="flex flex-wrap items-center gap-1.5 text-sm leading-[1.25] font-extrabold">
-                  {p.name}
+                  <PlayerLink slug={p.slug}>{p.name}</PlayerLink>
                   <KoreanArmband title="한국 선수" />
                   <span className="font-numeric text-[12.5px] font-semibold tracking-[0.06em] text-ink-2">
                     {p.position}

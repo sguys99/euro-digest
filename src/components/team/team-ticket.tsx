@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { FormChips } from "@/components/competition/marks";
+import { PlayerLink } from "@/components/korean-players/player-marks";
 import { KoreanArmband } from "@/components/news/feed-card";
 import { FlatTab } from "@/components/ui/chip";
 import {
@@ -28,7 +29,7 @@ import { TeamBadge } from "./team-badge";
  * - **꼬리표**: ① 최근 경기(전 대회 · 자료 n경기 + 폼 칩) ② 다음 경기(KST 시각 · 임시 · 평탄 탭 · 홈/원정 · 상대) ③ 한국 선수(완장 + 이름 + 포지션 —
  *   소속 선수가 있을 때만, FR-58). 1023 이하는 세로로 쌓고 1024 이상은 칸 수만큼 열(3칸 `1.1fr · 1.2fr · 1fr` · 2칸 `1fr · 1fr`).
  * - 포메이션은 티켓에 두지 않는다(팀시트에 한 번만 — DECISIONS D1 §4 중복 정리).
- * - 한국 선수 이름은 아직 선수 페이지 링크가 아니다(선수 페이지 M3 — 없는 페이지로 가는 링크를 만들지 않는다).
+ * - 한국 선수 이름은 선수 상세(`/korean-players/{slug}/` — M3-10) 링크(M3-11 — 누름 영역 44px).
  */
 export function TeamTicket({
   self,
@@ -138,7 +139,7 @@ export function TeamTicket({
               {korean.map((p) => (
                 <li key={p.slug} className="flex min-h-11 items-center gap-1.5">
                   <KoreanArmband title="한국 선수" />
-                  <span>{p.nameKo}</span>
+                  <PlayerLink slug={p.slug}>{p.nameKo}</PlayerLink>
                   <span className="font-numeric text-[12.5px] font-semibold tracking-[0.06em] text-ink-2">
                     {p.position}
                   </span>

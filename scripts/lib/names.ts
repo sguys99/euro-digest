@@ -192,6 +192,10 @@ export function buildNameIndex(
       if (isManagerSurnameAlias(entry, en)) continue;
       if (byEn.has(folded)) continue;
       byEn.set(folded, entry);
+      // 컵 대회 항목(kind competition — 'DFB Pokal' → 'DFB 포칼', M3-10)은 화면 표기 전용이다: 아는 이름(미등록 이름에서 뺀다)이지만
+      // 치환하지 않는다 — 브리핑·주간 총평 출력의 대회 표기는 브리핑 단위 대회 표기(competitionLabel)만 쓰고, 검사기(brief-check.ts)가
+      // 대회 한글 표기를 사람 대상으로 읽지 않게 한다(브리핑 동작 불변 — tests/brief-check.test.ts)
+      if (entry.kind === "competition") continue;
       targets.set(folded, { type: "entry", entry });
     }
   }

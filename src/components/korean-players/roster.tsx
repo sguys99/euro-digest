@@ -1,7 +1,6 @@
 import { FormChip } from "@/components/competition/marks";
 import { Leader } from "@/components/about/leader";
 import { TeamBadge } from "@/components/team/team-badge";
-import { TeamLink } from "@/components/team/team-link";
 import { FlatTab } from "@/components/ui/chip";
 import { SectionHead } from "@/components/ui/section-head";
 import type {
@@ -18,6 +17,7 @@ import {
   NUMBER_TONE,
   OpponentName,
   OtherTab,
+  PlayerLink,
   ResultCell,
   StateStamp,
 } from "./player-marks";
@@ -30,7 +30,8 @@ import { RosterViews } from "./roster-views";
  * 서버 컴포넌트 — D1 순위표와 같은 `<table>` 한 장. 리그 구간 머리(`tbody` 첫 줄 — 위 2px `--ink` + 평탄 탭 + 리그명 15px 800 + "n명")
  * 아래 선수 행: 출전 분 거터 · 선수(이름 16.5px 800 + 포지션 + 배지 xs + 팀) · 최근 경기(1024 이상 일시·대회 · 상대) · 결과 칸 · 시즌 누적 4열 ·
  * (1024 이상) UCL · 다음 경기(KST). 1023 이하는 보기 탭(섬 `roster-views.tsx`)이 `data-col` 열 묶음만 바꾼다(globals.css §12 — 가로 스크롤 없음).
- * 선수 이름은 상세 페이지(M3-10) 전이라 글자다(없는 페이지로 가는 링크 금지). 팀 이름은 팀 화면 링크(팀 페이지가 있을 때만 — `TeamLink`).
+ * 선수 이름은 상세 페이지 링크(M3-10 — `PlayerLink`, 누름 영역 44px). 소속팀 이름은 글자(M3-10 — M3-09의 팀 화면 링크는 이름 링크와 누름 영역이
+ * 겹쳐 뺐다, 팀 화면은 선수 상세 티켓에서).
  */
 
 export const ROSTER_TABLE_ID = "kp-list";
@@ -236,21 +237,17 @@ function RosterRow({ row }: { row: RosterRowView }) {
       >
         <span className="grid min-w-0 gap-1">
           <span className="flex flex-wrap items-baseline gap-x-1.75 gap-y-0.5 text-[16.5px] leading-[1.22] font-extrabold tracking-[-0.02em]">
-            <span>{row.nameKo}</span>
+            <PlayerLink slug={row.slug}>{row.nameKo}</PlayerLink>
             <span className="font-numeric text-[12.5px] font-semibold tracking-[0.04em] text-ink-2">
               {row.position}
             </span>
           </span>
-          <span className="text-[13px] leading-[1.3] text-ink-2">
-            <TeamLink
-              team={row.team}
-              className="inline-flex items-center gap-1.5"
-            >
-              <TeamBadge team={row.team} size="xs" />
-              <span lang={row.team.latin ? "en" : undefined}>
-                {row.team.name}
-              </span>
-            </TeamLink>
+          {/* 소속팀은 글자(M3-10 — 이름 링크와 위아래로 붙어 두 누름 영역 44px이 겹친다. 팀 화면은 선수 상세 티켓의 "팀 화면" 링크로) */}
+          <span className="inline-flex items-center gap-1.5 text-[13px] leading-[1.3] text-ink-2">
+            <TeamBadge team={row.team} size="xs" />
+            <span lang={row.team.latin ? "en" : undefined}>
+              {row.team.name}
+            </span>
           </span>
           {row.sinceNote ? (
             <span className="text-xs leading-[1.35] text-ink-2">

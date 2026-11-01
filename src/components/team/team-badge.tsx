@@ -12,14 +12,14 @@ import { cx } from "@/lib/cx";
  * - `--kf`는 빌드 때 `kitTextColor(상의)`(src/lib/kit-contrast.ts — 흰색·잉크 남색 중 대비가 큰 쪽)로 계산해 인라인 변수로 넣는다
  *   (2026-10-30 사용자 결정 — 데이터·토큰에 글자색 없음, DESIGN §11.14). 상의 색 보정(대비 5.3)은 데이터 단계에서 끝났다.
  * - 크기: m 40×44(약어 15px) · s 30×33(12px) · xs 24×27(10.5px) · `table` = s, 1024 이상 m(순위표 팀 칸) · `stub` = 팀 티켓 스텁(칸 채움,
- *   최소 150/190px · 약어 30/64px — M2-13). 모양은 globals.css §10
+ *   최소 150/190px · 약어 30/64px — M2-13) · `kit` = 선수 티켓 키트 띠(칸 폭 · 높이 52/56px · 약어 17/26px — M3-10). 모양은 globals.css §10
  *   유틸리티(`kit`·`kit-*` — 순위표·라운드에 수백 개가 반복돼 클래스 묶음을 짧게 했다).
  * - **접근성**: 옆에 한글 팀명이 늘 있는 표·목록 안 배지는 기본값 `aria-hidden`(이름이 두 번 읽히지 않게 — FCB·BRE 약어 충돌은 이름으로
  *   구분). 홀로 선 배지(팀 티켓 스텁·견본)만 `standalone` → `role="img"` + "{팀 한글명} 배지 {약어}".
  * - **폴백**(team-colors.json에 없는 팀): 면 없음 + 1px dashed `--ink-2`, 약어 `--ink-2` + 아래 dashed, 아래 2/5 `--hatch` 빗금.
  */
 
-export type TeamBadgeSize = "m" | "s" | "xs" | "table" | "stub";
+export type TeamBadgeSize = "m" | "s" | "xs" | "table" | "stub" | "kit";
 
 /** 크기 → 유틸리티(globals.css §10 `kit-*` — 반복이 많아 짧은 이름으로 묶었다) */
 const SIZE: Readonly<Record<TeamBadgeSize, string>> = {
@@ -29,6 +29,8 @@ const SIZE: Readonly<Record<TeamBadgeSize, string>> = {
   table: "kit-s lg:kit-m",
   // 팀 티켓 스텁(M2-13 — 배지를 키운 것): 칸을 채우고 최소 150px(1024 이상 190px), 약어 30px(64px) 0.04em
   stub: "min-h-37.5 w-full lg:min-h-47.5 [&>b]:text-[30px] [&>b]:tracking-[0.04em] lg:[&>b]:text-[64px]",
+  // 선수 티켓 키트 띠(M3-10 — DESIGN §9.3 D2 선수 티켓): 칸 폭 전체 · 높이 52px(1024 이상 56px) · 약어 17px(26px) 0.04em
+  kit: "h-13 w-full lg:h-14 [&>b]:text-[17px] [&>b]:tracking-[0.04em] lg:[&>b]:text-[26px]",
 };
 
 export interface TeamBadgeProps {

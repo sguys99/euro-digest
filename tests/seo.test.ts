@@ -13,6 +13,7 @@ import {
   TITLE_TEMPLATE,
   competitionDescription,
   teamDescription,
+  koreanPlayerDescription,
   koreanPlayersDescription,
 } from "@/lib/seo";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
@@ -335,5 +336,43 @@ describe("koreanPlayersDescription — 한국 선수 목록 설명(M3-09)", () =
     expect(text).toContain("API-Football · football-data.org");
     expect(hasScoreLike(text)).toBe(false);
     expect(koreanPlayersDescription(null)).toContain(", 시즌 누적,");
+  });
+});
+
+describe("koreanPlayerDescription · sitemap 선수 상세(M3-10)", () => {
+  it("선수 · 소속 · 리그 · 집계 시작일, 스코어 모양 없음", () => {
+    const text = koreanPlayerDescription(
+      "김민재",
+      "바이에른 뮌헨",
+      "분데스리가",
+      "10월 19일 이후 집계",
+    );
+    expect(text).toContain("김민재(바이에른 뮌헨 · 분데스리가)");
+    expect(text).toContain("시즌 기록(10월 19일 이후 집계)");
+    expect(hasScoreLike(text)).toBe(false);
+    expect(koreanPlayerDescription("양민혁", "Westerlo", null, null)).toContain(
+      "양민혁(Westerlo)의 대회별 시즌 기록,",
+    );
+  });
+
+  it("sitemapEntries — 목록 뒤에 설정 순서로 상세, lastModified = 현황 파일", () => {
+    const urls = sitemapEntries([], [], [], {
+      updatedAt: "2026-11-01T04:56:14.815Z",
+      players: ["kim-ji-soo", "kim-min-jae"],
+    }).slice(3);
+    expect(urls).toEqual([
+      {
+        url: "https://sguys99.github.io/euro-digest/korean-players/",
+        lastModified: "2026-11-01T04:56:14.815Z",
+      },
+      {
+        url: "https://sguys99.github.io/euro-digest/korean-players/kim-ji-soo/",
+        lastModified: "2026-11-01T04:56:14.815Z",
+      },
+      {
+        url: "https://sguys99.github.io/euro-digest/korean-players/kim-min-jae/",
+        lastModified: "2026-11-01T04:56:14.815Z",
+      },
+    ]);
   });
 });

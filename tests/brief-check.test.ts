@@ -1887,6 +1887,89 @@ describe("고유명사(D40 ④·M1-21 허용 목록)", () => {
   });
 });
 
+describe("컵 대회 사전 항목(kind competition — M3-10 화면 표기 'DFB 포칼'·'리그컵')은 브리핑 동작을 바꾸지 않는다", () => {
+  const NAMES_FILE = NamesKoFileSchema.parse(readJson("configs/names.ko.json"));
+  const WITHOUT_CUPS: BriefCheckContext = {
+    names: buildNameIndex(
+      {
+        ...NAMES_FILE,
+        entries: NAMES_FILE.entries.filter((e) => e.kind !== "competition"),
+      },
+      COMPETITIONS,
+    ),
+    competitions: COMPETITIONS,
+  };
+  // 한국 선수 컵 경기가 브리핑 입력에 들어온 날(대회 원문 'DFB Pokal' — 검사기 대회 키 c~dfb pokal)
+  const CUP_INPUT = sent({
+    briefDate: "2026-10-29",
+    matches: [
+      {
+        id: "m1638558",
+        comp: "DFB Pokal",
+        round: "Round of 32",
+        home: "Bayern",
+        away: "1. FC Magdeburg",
+        ft: "6-1",
+        ht: "3-0",
+        goals: null,
+      },
+    ],
+    standings: [],
+  });
+  const LINES = [
+    "Bayern이 DFB Pokal에서 1. FC Magdeburg를 6-1로 꺾었다.",
+    "바이에른 뮌헨이 DFB 포칼에서 1. FC Magdeburg를 6-1로 꺾었다.",
+    "바이에른 뮌헨이 포칼에서 1. FC Magdeburg를 6-1로 꺾었다.",
+    "Bayern이 League Cup에서 1. FC Magdeburg를 6-1로 꺾었다.",
+    "바이에른 뮌헨이 리그컵에서 1. FC Magdeburg를 6-1로 꺾었다.",
+  ].map((t) => ({ t, r: ["m1638558"] }));
+
+  it("치환은 컵 대회 이름을 바꾸지 않는다(대회 표기는 브리핑 단위 대회 표기만 — D30)", () => {
+    const sub = (text: string) => substituteNames(text, NAMES).text;
+    expect(sub("Bayern beat Magdeburg in the DFB Pokal")).toBe(
+      "바이에른 뮌헨 beat 마그데부르크 in the DFB Pokal",
+    );
+    expect(sub("League Cup")).toBe("League Cup");
+    expect(
+      substituteBriefLines(
+        LINES.map((l) => l.t),
+        CUP_INPUT,
+        CTX,
+      ).map((s) => s.text),
+    ).toEqual(
+      substituteBriefLines(
+        LINES.map((l) => l.t),
+        CUP_INPUT,
+        WITHOUT_CUPS,
+      ).map((s) => s.text),
+    );
+  });
+
+  it("검사 결과(줄별 통과·사유 코드)가 컵 항목이 없을 때와 같다 — 'DFB 포칼'이 선수 키로 읽히지 않는다", () => {
+    const withCups = checkBriefOutput(LINES, CUP_INPUT, CTX);
+    const without = checkBriefOutput(LINES, CUP_INPUT, WITHOUT_CUPS);
+    const view = (r: typeof withCups) =>
+      r.lines.map((l) => ({
+        ok: l.ok,
+        reasons: l.reasons.map((x) => `${x.code}:${x.detail ?? ""}`),
+      }));
+    expect(view(withCups)).toEqual(view(without));
+    // 원문 대회 이름은 입력 대회라 그대로 허용된다(전과 같다)
+    expect(
+      withCups.lines[0]!.reasons.filter((x) => x.code === "latin-token"),
+    ).toEqual([]);
+  });
+
+  it("템플릿 문장(이름 표기)도 같다 — 템플릿 이름은 팀·선수 항목만 쓴다", () => {
+    const a = briefNamesFromIndex(NAMES);
+    const b = briefNamesFromIndex(WITHOUT_CUPS.names);
+    for (const name of ["DFB Pokal", "League Cup", "Bayern"]) {
+      expect(a.team(name)).toBe(b.team(name));
+      expect(a.person(name)).toBe(b.person(name));
+    }
+  });
+});
+
 describe("판정 형식·로그(M1-45·M1-43·M1-24가 쓴다)", () => {
   it("briefVerdictLabel — brief-cases.json expected와 같은 문자열", () => {
     expect(briefVerdictLabel({ verdict: "ok" })).toBe("ok");

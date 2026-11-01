@@ -20,7 +20,7 @@ import { formatKst } from "@/lib/time";
  * - 읽는 것: `configs/korean-players.json`(명단·이름·포지션·소속) + `data/players/korean.json`(파생 현황 — 원장은 읽지 않는다, D33).
  * - 상태 4종(M1-37 관례): 로딩 — 정적 페이지라 없음 · 빈 상태 — 현황 파일 전이면 모든 선수 '기록 연결 전'(명단은 설정에서) · 오류 — 깨진
  *   파일은 빌드 실패(로더가 던진다 — 틀린 화면을 배포하지 않는다) · 오프라인 — 앱 셸 띠.
- * - 시각은 KST(src/lib/time.ts). 선수 이름은 상세(M3-10) 전이라 링크가 아니다.
+ * - 시각은 KST(src/lib/time.ts). 선수 이름은 상세(`/korean-players/{slug}/` — M3-10) 링크.
  */
 
 const HEADING_ID = "kp-h";

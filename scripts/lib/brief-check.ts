@@ -404,7 +404,13 @@ function koreanForms(
   const cached = KO_FORMS_CACHE.get(index);
   if (cached && cached.competitions === competitions) return cached;
   const ko = new Map<string, FormTarget>();
-  const entries = new Set([...index.byEn.values(), ...index.initials.values()]);
+  // 대상은 팀·사람(선수·감독) 항목만 — 컵 대회 항목(kind competition — 'DFB 포칼', M3-10 화면 표기 전용)은 `entryKey`가 선수 키로
+  // 읽고 대회 키(c~dfb pokal)와 어긋나므로 넣지 않는다(브리핑 동작 불변 — 대회 한글 표기는 아래 competitions 설정만)
+  const entries = new Set(
+    [...index.byEn.values(), ...index.initials.values()].filter(
+      (e) => e.kind === "team" || e.kind === "player" || e.kind === "manager",
+    ),
+  );
   for (const e of entries) {
     if (!/[가-힣]/.test(e.ko)) continue;
     ko.set(e.ko, {

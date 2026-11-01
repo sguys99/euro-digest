@@ -219,19 +219,31 @@ const HOLE_STROKE = 1.5;
 const PUNCH_WIDTH =
   HOLE * TRANSFER_STAGE_HOLES + HOLE_GAP * (TRANSFER_STAGE_HOLES - 1);
 
-/** 이적 단계 줄 — 펀치 구멍 4개(채운 수 = 단계) + 단계 글자 800 + Tier 배지. 결렬은 빈 구멍 위 2px 사선(−8°) */
+/**
+ * 이적 단계 줄 — 펀치 구멍 4개(채운 수 = 단계) + 단계 글자 800 + Tier 배지. 결렬은 빈 구멍 위 2px 사선(−8°).
+ * `tier`가 null이면 배지 없이(선수 티켓 꼬리표 — M3-10), `as`·`className`으로 줄 안(span)에 넣을 수 있다.
+ */
 export function TransferStage({
   status,
   tier,
+  as: Root = "div",
+  className,
 }: {
   status: TransferStatus;
-  tier: Tier;
+  tier: Tier | null;
+  as?: "div" | "span";
+  className?: string;
 }) {
   const stage = TRANSFER_STAGE[status];
   const official = status === "official";
   const collapsed = status === "collapsed";
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[12.5px]">
+    <Root
+      className={cn(
+        "mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[12.5px]",
+        className,
+      )}
+    >
       <span
         role="img"
         aria-label={transferStageLabel(status)}
@@ -279,8 +291,8 @@ export function TransferStage({
       >
         {stage.label}
       </span>
-      <TierBadge tier={tier} />
-    </div>
+      {tier !== null ? <TierBadge tier={tier} /> : null}
+    </Root>
   );
 }
 
