@@ -16,8 +16,11 @@ import {
   checkWeeklyStages,
   decideWeeklyGuard,
   defaultTargetWeek,
+  describeWeeklyReportOrigin,
   discardPathsOf,
+  effectiveWeeklyDry,
   formatWeeklyOutputs,
+  formatWeeklySummary,
   isWeeklyWritePath,
   parseWeeklyArgs,
   publishedWeeksOf,
@@ -128,6 +131,7 @@ describe("parseWeeklyArgs", () => {
       ok: true,
       value: {
         dry: false,
+        write: false,
         mock: false,
         force: false,
         week: null,
@@ -154,6 +158,39 @@ describe("parseWeeklyArgs", () => {
     expect(parseWeeklyArgs(["--limit", "5"], undefined).ok).toBe(false);
     expect(parseWeeklyArgs(["--week", "2026-W44"], undefined).ok).toBe(false);
     expect(parseWeeklyArgs([], "batch").ok).toBe(false);
+    expect(parseWeeklyArgs(["--dry", "--write"], undefined).ok).toBe(false);
+  });
+
+  it("--write", () => {
+    const r = parseWeeklyArgs(["--write"], undefined);
+    expect(r.ok && r.value).toMatchObject({ dry: false, write: true });
+  });
+});
+
+describe("effectiveWeeklyDry — dev는 --write 없으면 미리보기 (2026-11-01 리뷰)", () => {
+  it.each([
+    [
+      { env: "dev", dry: false, write: false },
+      { dry: true, reason: "dev-preview" },
+    ],
+    [
+      { env: "dev", dry: false, write: true },
+      { dry: false, reason: null },
+    ],
+    [
+      { env: "dev", dry: true, write: false },
+      { dry: true, reason: "flag" },
+    ],
+    [
+      { env: "prod", dry: false, write: false },
+      { dry: false, reason: null },
+    ],
+    [
+      { env: "prod", dry: true, write: false },
+      { dry: true, reason: "flag" },
+    ],
+  ] as const)("%j → %j", (input, expected) => {
+    expect(effectiveWeeklyDry(input)).toEqual(expected);
   });
 });
 
@@ -561,7 +598,7 @@ describe("runWeekly — 가드·기록·종료 코드", () => {
   const SKELETON = WEEKLY_STAGES.map((s) => ({ ...s, run: null }));
 
   it("미구현 단계만 — 성공·exit 0, mock이라 기록 안 함", async () => {
-    const outcome = await runWeekly(deps({ stages: SKELETON }));
+    const outcome = await runWeekly(deps({ stages: SKELETON, write: true }));
     expect(outcome.exitCode).toBe(0);
     expect(outcome.outputs).toMatchObject({
       skipped: false,
@@ -662,9 +699,9 @@ describe("runWeekly — 가드·기록·종료 코드", () => {
     expect(outcome.outputs.status).toBe("failed");
   });
 
-  it("live 비dry — data/runs-dev.json에 job weekly 기록(비용 0, LLM 호출 없음)", async () => {
+  it("live 비dry(--write) — data/runs-dev.json에 job weekly 기록(비용 0, LLM 호출 없음)", async () => {
     const outcome = await runWeekly(
-      deps({ llmMode: "live", stages: SKELETON }),
+      deps({ llmMode: "live", write: true, stages: SKELETON }),
     );
     expect(outcome.outputs.runRecorded).toBe(true);
     const runs = RunsDevFileSchema.parse(
@@ -683,6 +720,68 @@ describe("runWeekly — 가드·기록·종료 코드", () => {
     expect(outcome.outputs.runId).toMatch(
       /^weekly-dev-20261101T230000Z-[0-9a-f]{4}$/,
     );
+  });
+
+  it("dev는 --write 없으면 단계 문맥 dry(미리보기)·기록 상태 skipped, --write면 쓰기 · prod는 그대로", async () => {
+    const seen: boolean[] = [];
+    const stages = [stage("probe", async (ctx) => void seen.push(ctx.dry))];
+    const printed: string[] = [];
+    const preview = await runWeekly(
+      deps({ llmMode: "live", stages, print: (t) => printed.push(t) }),
+    );
+    expect(preview.run?.status).toBe("skipped");
+    expect(preview.outputs.runRecorded).toBe(false); // LLM 결과 없는 dry — 기록 안 함
+    expect(printed.join("\n")).toContain("--write");
+    await runWeekly(deps({ llmMode: "live", write: true, stages }));
+    await runWeekly(deps({ env: "prod", stages }));
+    expect(seen).toEqual([true, false, false]);
+  });
+
+  it("이미 있는 주차 — 가드 메시지(Step Summary '실행 판단')에 출처(생성 시각·runId) 표시, 파일 존재 기준 판정은 그대로", async () => {
+    const skipped = await runWeekly(
+      deps({
+        stages: SKELETON,
+        listReportFiles: async () => ["2026-44.json"],
+        describeReport: async (w) =>
+          `생성 2026-11-01T07:09:25.458Z · runId weekly-dev-x(dev) [${w}]`,
+      }),
+    );
+    expect(skipped.outputs.skipped).toBe(true);
+    expect(skipped.guard?.message).toContain(
+      "이미 있음 — 생성 2026-11-01T07:09:25.458Z · runId weekly-dev-x(dev) [2026-44]",
+    );
+    expect(
+      formatWeeklySummary(skipped.outputs, [], skipped.guard!.message),
+    ).toContain("runId weekly-dev-x(dev)");
+  });
+
+  it("describeWeeklyReportOrigin — 파일 generatedAt을 감싼 job weekly 실행의 runId·env, 없으면 찾지 못함", async () => {
+    const { mkdir, writeFile } = await import("node:fs/promises");
+    await mkdir(path.join(root, WEEKLY_REPORT_DIR), { recursive: true });
+    await writeFile(
+      path.join(root, WEEKLY_REPORT_DIR, "2026-43.json"),
+      JSON.stringify({ generatedAt: "2026-11-01T07:09:25.458Z" }),
+    );
+    const dataDir = path.join(root, "data");
+    expect(await describeWeeklyReportOrigin(root, dataDir, "2026-43")).toBe(
+      "생성 2026-11-01T07:09:25.458Z · runId 실행 기록에서 찾지 못함",
+    );
+    // 실행 기록(dev) — 그 시각을 감싼 실행
+    await runWeekly(
+      deps({
+        llmMode: "live",
+        write: true,
+        stages: SKELETON,
+        now: () => new Date("2026-11-01T07:09:25.458Z"),
+        week: "2026-43",
+      }),
+    );
+    expect(await describeWeeklyReportOrigin(root, dataDir, "2026-43")).toMatch(
+      /^생성 2026-11-01T07:09:25\.458Z · runId weekly-dev-20261101T070925Z-[0-9a-f]{4}\(dev\)$/,
+    );
+    expect(
+      await describeWeeklyReportOrigin(root, dataDir, "2026-42"),
+    ).toContain("리포트 파일을 읽지 못함");
   });
 
   it("live dry — LLM 결과가 없으면 기록하지 않는다", async () => {

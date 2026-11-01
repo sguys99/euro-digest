@@ -21,13 +21,15 @@
  *   한자·가나 혼입 · 한국어 비율(문장마다 — 이름을 가린 한글 < 라틴) · 이름 밖 라틴 낱말(허용: 입력의 미등록 원문 이름 · 'PK' · 'MVP') ·
  *   문장 형식('다.'로 끝남, 줄바꿈 없음, 문장당 길이 상한) · 입력에 없는 등록 이름(사전의 선수·팀 한글 표기가 입력 밖) ·
  *   스코어 'a-b'가 입력 경기에 없음 · 숫자 근거(문장의 모든 수가 입력 수 집합에 있음) · 한 선수만 언급한 문장의 'n골'·'n도움'·'n분'·
- *   'n경기'는 그 선수 값 · 'MVP'를 쓴 문장에는 MVP(공동 포함) 이름. 하나라도 걸리면 출력 전체 실패 — 브리핑과 달리 줄 단위
+ *   'n경기'는 그 선수 값 · 'MVP'를 쓴 문장에는 MVP(공동 포함) 이름 · 경기 대조(⑤-2 — 절의 스코어(소속팀 먼저)·승패 동사·홈/원정·
+ *   상대·대회·날짜·승부차기가 그 선수 경기 하나와 맞음, 2026-11-01 리뷰). 하나라도 걸리면 출력 전체 실패 — 브리핑과 달리 줄 단위
  *   강등이 없다(총평은 한 문단 — 2026-11-01 사용자 결정: 1회 재시도 후 템플릿).
  * ⑥ 템플릿(`weeklyTemplateSummary` — `summaryAi:false`): 표·MVP에서 코드가 쓰는 사실 문장(입력 밖 정보 없음).
  */
 import { z } from "zod";
 
 import type {
+  AfPendingEntry,
   CompId,
   KoreanPlayer,
   LedgerAppearance,
@@ -36,12 +38,13 @@ import type {
   WeeklyReport,
   WeeklyReportMatch,
 } from "@/lib/schema";
-import { utcDate } from "@/lib/time";
+import { formatKst, utcDate } from "@/lib/time";
 
 import { unwrapBriefOutput } from "./brief";
 import { estimateCost, type CostEstimate } from "./cost";
 import { withJosa } from "./josa";
 import {
+  FD_LINK_TOLERANCE_MS,
   appearedIn,
   appearanceOf,
   fdMatchIdOf,
@@ -342,6 +345,112 @@ export function buildWeeklyTable(input: WeeklyTableInput): WeeklyTable {
   };
 }
 
+// ─── ①-2 누락 가능 경기 ─────────────────────────────────────────────────
+
+/**
+ * 주간 구간 안인데 원장에 없는 한국 선수 경기(정기 실행 월 08:00 KST = 일 23:00 UTC — 일요일 늦은 경기가 원장에 아직 없을 수 있다).
+ * 발행은 계속하고 경고·재생성 안내만 한다(2026-11-01 리뷰). 근거 두 가지:
+ *   - 일정(`schedule`): 대회 파일(data/competitions — football-data)에서 표 행 선수(추적 중인 등록 선수)의 소속팀(korean-players `team`)
+ *     경기 중 킥오프가 구간 안이고 연기(postponed)가 아닌데, 원장 경기와 연결되지 않고(fdMatchIdOf) 그 선수 주간 경기 줄에도 킥오프
+ *     ±3시간(FD_LINK_TOLERANCE_MS) 경기가 없는 것. 같은 경기가 이월 목록에도 있으면 `pending: true`.
+ *   - 이월(`af-pending`): data/cache/af-pending.json(미종료 이월) 중 킥오프가 구간 안이고 대회가 null(한국 선수 소속팀의 기타 대회 —
+ *     6개 대회 항목은 한국 선수 경기인지 알 수 없어 일정 근거로만 본다).
+ */
+export interface WeeklyMissingCandidate {
+  source: "schedule" | "af-pending";
+  /** fd-… (일정) · af-… (이월) */
+  id: string;
+  kickoff: string;
+  /** 일정: [홈, 원정] 팀 slug · 이월: [] (팀을 모른다) */
+  teams: string[];
+  /** 일정: 그 경기의 표 행 선수 slug · 이월: [] */
+  players: string[];
+  /** 일정 경기가 이월 목록에도 있다(같은 대회·킥오프 ±3시간) */
+  pending: boolean;
+}
+
+export function findPossiblyMissing(input: {
+  table: WeeklyTable;
+  range: { from: string; to: string };
+  /** 그 주 구간 원장 경기 */
+  ledger: readonly LedgerMatch[];
+  links: LogContext;
+  pending: ReadonlyArray<Pick<AfPendingEntry, "id" | "comp" | "kickoff">>;
+}): WeeklyMissingCandidate[] {
+  const from = Date.parse(input.range.from);
+  const to = Date.parse(input.range.to);
+  const inRange = (iso: string) => {
+    const t = Date.parse(iso);
+    return t >= from && t <= to;
+  };
+  const linked = new Set(
+    input.ledger
+      .map((m) => fdMatchIdOf(m, input.links))
+      .filter((id): id is string => id !== null),
+  );
+  const pendingInRange = input.pending.filter((p) => inRange(p.kickoff));
+  const near = (a: string, b: string) =>
+    Math.abs(Date.parse(a) - Date.parse(b)) <= FD_LINK_TOLERANCE_MS;
+  const byId = new Map<string, WeeklyMissingCandidate>();
+  for (const r of input.table.rows) {
+    const slug = r.player.team;
+    for (const [comp, file] of Object.entries(input.links.competitions)) {
+      for (const x of file?.matches ?? []) {
+        if (x.home !== slug && x.away !== slug) continue;
+        if (x.status === "postponed" || !inRange(x.kickoff)) continue;
+        if (linked.has(x.id)) continue;
+        if (r.matches.some((l) => near(l.kickoff, x.kickoff))) continue;
+        const prev = byId.get(x.id);
+        if (prev) {
+          if (!prev.players.includes(r.player.slug))
+            prev.players.push(r.player.slug);
+          continue;
+        }
+        byId.set(x.id, {
+          source: "schedule",
+          id: x.id,
+          kickoff: x.kickoff,
+          teams: [x.home, x.away],
+          players: [r.player.slug],
+          pending: pendingInRange.some(
+            (p) => p.comp === comp && near(p.kickoff, x.kickoff),
+          ),
+        });
+      }
+    }
+  }
+  const out = [...byId.values()];
+  for (const p of pendingInRange) {
+    if (p.comp !== null) continue;
+    out.push({
+      source: "af-pending",
+      id: `af-${p.id}`,
+      kickoff: p.kickoff,
+      teams: [],
+      players: [],
+      pending: true,
+    });
+  }
+  return out.sort(
+    (a, b) =>
+      Date.parse(a.kickoff) - Date.parse(b.kickoff) ||
+      (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
+  );
+}
+
+/** 누락 가능 경기 안내 한 줄(로그·Step Summary·출력) — 팀 이름은 표시 이름 함수(slug → 한글)로 */
+export function missingCandidateMessage(
+  week: string,
+  c: WeeklyMissingCandidate,
+  teamName: (slug: string) => string,
+): string {
+  const what =
+    c.source === "schedule"
+      ? `${c.teams.map(teamName).join("–")} ${formatKst(c.kickoff, "datetime")} KST${c.pending ? " (미종료 이월 중)" : " (일정상 주간 경기, 원장에 없음)"}`
+      : `한국 선수 소속팀 기타 대회 경기 ${c.id} ${formatKst(c.kickoff, "datetime")} KST (미종료 이월 중)`;
+  return `W${week.slice(5)} 누락 가능: ${what} — 다음 날 \`npm run weekly -- --week ${week} --force\`(Actions 수동 실행 force·week 입력)로 재생성`;
+}
+
 // ─── ③ LLM 입력 ─────────────────────────────────────────────────────────
 
 /** 결과 글자 — 정규시간 + 연장 기준(승부차기는 pk로 따로) */
@@ -512,7 +621,15 @@ export type WeeklyCheckCode =
   | "score-not-in-input"
   | "number-not-in-input"
   | "player-stat"
-  | "mvp-name";
+  | "mvp-name"
+  // 경기 대조(⑤-2 — checkMatchClaims): 문장 조각의 사실이 그 선수 경기 하나와 맞지 않음
+  | "match-score" // 스코어가 그 경기 소속팀 득점 먼저 순서와 다름(뒤집힘 포함)
+  | "match-result" // 승패 동사(이겼다·승리·졌다·패·비겼다·무승부)가 결과와 다름
+  | "match-venue" // 홈/원정
+  | "match-opponent" // 그 경기 밖 팀
+  | "match-comp" // 대회
+  | "match-date" // 날짜(M월 D일 — 입력 d, UTC)
+  | "match-shootout"; // 승부차기 — 없는 경기에 승부차기 · 승부차기 경기를 '승부차기' 없이 이기거나 졌다고 씀
 
 export interface WeeklyCheckIssue {
   code: WeeklyCheckCode;
@@ -679,6 +796,7 @@ export function checkWeeklySummary(
       detail === undefined ? { code, sentence } : { code, sentence, detail },
     );
   const dict = dictionaryKoNames(ctx.names);
+  const views = matchViewsOf(table, ctx);
   const subs = raw.map((t) =>
     substituteNames(t, ctx.names, { competitionLabel: ctx.competitionLabel }),
   );
@@ -757,8 +875,459 @@ export function checkWeeklySummary(
       )
         push("mvp-name", n);
     }
+    // 경기 대조(⑤-2)
+    for (const issue of checkMatchClaims(text, views))
+      push(issue.code, n, issue.detail);
   });
   return { ok: issues.length === 0, issues, sentences };
+}
+
+// ─── ⑤-2 경기 대조 ──────────────────────────────────────────────────────
+//
+// 문장(치환 뒤)을 선수 이름 자리에서 끊어 조각마다 그 선수를 붙인다(첫 이름 앞 머리는 첫 선수 조각에, 'A와 B는'처럼 사실 없이 이어
+// 지는 이름은 다음 조각과 묶는다). 조각은 다시 절(쉼표·'-고/-며/-지만/-는데/-으나/-면서' 뒤 띄어쓰기)로 끊는다. 절마다 사실을 뽑아
+// (스코어 'a-b'·'a대 b', 승패 동사, 홈/원정, 팀 이름, 대회 이름, 'M월 D일', '승부차기') **그 선수의 그 주 경기 하나**와 모두 맞는지
+// 본다. 기준은 소속팀(입력 sc·ha·res와 같다) — 절의 주어('…은/는/이/가')가 상대 팀이면 상대 기준으로 뒤집어 본다(brief-check
+// score-order 정신: 승패 문장의 점수는 주어 팀 먼저). 승부차기 경기는 정규시간 + 연장이 동점이라 '비겼다'는 맞고, 이기거나 졌다고
+// 쓰려면 '승부차기'가 있어야 하며 그 승패는 승부차기 결과다(brief-check shootout 규칙). 승부차기 점수도 소속팀(주어) 먼저.
+// 한 절에 날짜·스코어·상대가 둘 이상이면(여러 경기를 한 절에) 사실마다 따로 어느 경기 하나와 맞으면 된다(스코어와 바로 뒤 동사는
+// 한 묶음). 조각의 선수 경기로 맞지 않으면 그 문장에 나온 선수 모두의 경기로 한 번 더 본다(이름 귀속이 틀릴 수 있는 문장 — 보수적
+// 판정). 선수 이름이 없는 문장은 그 주 모든 경기가 후보다. 기간 표기('M월 D일부터·까지')는 날짜 주장으로 보지 않는다.
+
+type ResultLetter = "W" | "D" | "L";
+
+/** 한 선수 시점의 경기 1건 + 문장 표기(치환 뒤) */
+interface MatchView {
+  line: WeeklyMatchLine;
+  team: string;
+  opp: string;
+  comp: string;
+  /** 입력 d(UTC 날짜)의 "M-D" */
+  date: string;
+}
+
+interface ScoreClaim {
+  a: number;
+  b: number;
+  /** 스코어 바로 뒤 동사('2-3으로 졌다'·'0-0 무승부') */
+  verb: ResultLetter | null;
+  raw: string;
+}
+
+interface ChunkClaims {
+  scores: ScoreClaim[];
+  verbs: Set<ResultLetter>;
+  venue: "H" | "A" | null;
+  teams: string[];
+  /** 팀 이름 바로 뒤가 주어·주제 조사 */
+  subjects: Set<string>;
+  comps: string[];
+  dates: string[];
+  shootout: boolean;
+}
+
+type MatchIssue = { code: WeeklyCheckCode; detail: string };
+
+const WIN_RE = /이겼|이긴|승리|꺾|제압|완승|역전승/u;
+// '졌'은 띄어 쓴 동사만('2-3으로 졌다'·'팀은 졌다') — '치러졌다'·'빠졌다'·'벌어졌다'를 거르지 않게
+const LOSS_RE = /(?:^|[\s,])졌|패배|패했|패하|패한|완패|역전패/u;
+const DRAW_RE = /비겼|비긴|비기|무승부/u;
+const ATTACHED_VERB =
+  /^\s*(?:으로|로)?\s*(?:(이겼|이긴|승리|꺾|제압|완승|역전승)|(졌|패배|패했|패하|패한|완패|역전패)|(비겼|비긴|비기|무승부))/u;
+const SCORE_RE = /(\d+)\s*(?:-|대\s?)\s*(\d+)/gu;
+const DATE_RE = /(\d{1,2})\s*월\s*(\d{1,2})\s*일(?!\s*(?:부터|까지|~|–))/gu;
+/** 절 경계 — 쉼표, 연결 어미 뒤 띄어쓰기 */
+const CLAUSE_SPLIT = /,\s*|(?<=[가-힣](?:고|며|지만|는데|으나|면서))\s+/u;
+/** 'A와 B는' — 이름 뒤에 접속 조사만 남은 조각 */
+const CONJUNCTION_ONLY = /^(?:와|과|,|·|및)?\s*$/u;
+const SUBJECT_PARTICLE = /^(?:이|가|은|는)(?![가-힣])/u;
+const COMP_IDS: readonly CompId[] = [
+  "EPL",
+  "LALIGA",
+  "SERIEA",
+  "BUNDESLIGA",
+  "LIGUE1",
+  "UCL",
+];
+
+function letterOf(f: number, a: number): ResultLetter {
+  return f > a ? "W" : f < a ? "L" : "D";
+}
+
+function verbsIn(text: string): Set<ResultLetter> {
+  const out = new Set<ResultLetter>();
+  // 부정('이기지 못했다'·'승리하지 않았다')은 승패를 단정하지 않는다 — 그 절의 동사는 보지 않는다
+  if (/못|않/u.test(text)) return out;
+  if (WIN_RE.test(text)) out.add("W");
+  if (LOSS_RE.test(text)) out.add("L");
+  if (DRAW_RE.test(text)) out.add("D");
+  return out;
+}
+
+function monthDayKey(mo: number, d: number): string {
+  return `${mo}-${d}`;
+}
+
+/** 이름 목록(긴 것부터)을 text에서 찾아 □로 가린다 — 찾은 이름·주어 여부. extraLookahead는 숫자로 끝나는 이름에만 */
+function scanNames(
+  text: string,
+  names: readonly string[],
+  extraLookahead?: RegExp,
+): { masked: string; found: string[]; subjects: Set<string> } {
+  let masked = text;
+  const found: string[] = [];
+  const subjects = new Set<string>();
+  for (const name of names) {
+    let from = 0;
+    for (;;) {
+      const at = masked.indexOf(name, from);
+      if (at < 0) break;
+      const after = masked.slice(at + name.length);
+      if (
+        extraLookahead &&
+        /[0-9]$/u.test(name) &&
+        !extraLookahead.test(after)
+      ) {
+        from = at + name.length;
+        continue;
+      }
+      if (!found.includes(name)) found.push(name);
+      if (SUBJECT_PARTICLE.test(after)) subjects.add(name);
+      masked =
+        masked.slice(0, at) +
+        "□".repeat(name.length) +
+        masked.slice(at + name.length);
+      from = at + name.length;
+    }
+  }
+  return { masked, found, subjects };
+}
+
+interface ClaimContext {
+  /** 모든 한국 선수 한글 이름(긴 것부터) — 절에서 가린다 */
+  playerNames: string[];
+  teamNames: string[];
+  compNames: string[];
+}
+
+function claimsOf(chunk: string, cc: ClaimContext): ChunkClaims {
+  let masked = chunk;
+  for (const p of cc.playerNames)
+    masked = masked.split(p).join("□".repeat(p.length));
+  const teams = scanNames(masked, cc.teamNames);
+  // 숫자로 끝나는 대회 표기('리그 1')가 '리그 1경기'·'리그 1위' 안에서 걸리지 않게(숫자로 끝나는 표기만 뒤를 본다)
+  const comps = scanNames(
+    teams.masked,
+    cc.compNames,
+    /^(?![0-9])(?!\s?(?:경기|골|도움|분|위|점))/u,
+  );
+  const rest = comps.masked;
+  const scores: ScoreClaim[] = [];
+  for (const m of rest.matchAll(SCORE_RE)) {
+    const tail = rest.slice(m.index + m[0].length);
+    const v = ATTACHED_VERB.exec(tail);
+    scores.push({
+      a: Number(m[1]),
+      b: Number(m[2]),
+      verb:
+        v === null || /못|않/u.test(tail.slice(0, 12))
+          ? null
+          : v[1]
+            ? "W"
+            : v[2]
+              ? "L"
+              : "D",
+      raw: m[0],
+    });
+  }
+  const dates = [...rest.matchAll(DATE_RE)].map((m) =>
+    monthDayKey(Number(m[1]), Number(m[2])),
+  );
+  const home = /홈/u.test(rest);
+  const away = /원정/u.test(rest);
+  return {
+    scores,
+    verbs: verbsIn(rest),
+    venue: home && !away ? "H" : away && !home ? "A" : null,
+    teams: teams.found,
+    subjects: teams.subjects,
+    comps: comps.found,
+    dates,
+    shootout: /승부차기/u.test(rest),
+  };
+}
+
+function hasClaims(c: ChunkClaims): boolean {
+  return (
+    c.scores.length > 0 ||
+    c.verbs.size > 0 ||
+    c.venue !== null ||
+    c.teams.length > 0 ||
+    c.comps.length > 0 ||
+    c.dates.length > 0 ||
+    c.shootout
+  );
+}
+
+/** 절 사실 ↔ 경기 1건 — 어긋난 것 목록(없으면 맞음) */
+function mismatchesOf(c: ChunkClaims, v: MatchView): MatchIssue[] {
+  const out: MatchIssue[] = [];
+  const flip = c.subjects.has(v.opp) && !c.subjects.has(v.team);
+  const f = flip ? v.line.score.against : v.line.score.for;
+  const a = flip ? v.line.score.for : v.line.score.against;
+  const pens = v.line.pens
+    ? flip
+      ? { f: v.line.pens.against, a: v.line.pens.for }
+      : { f: v.line.pens.for, a: v.line.pens.against }
+    : null;
+  const ftRes = letterOf(f, a);
+  const pkRes = pens ? letterOf(pens.f, pens.a) : null;
+  const sc = `${f}-${a}${pens ? ` (승부차기 ${pens.f}-${pens.a})` : ""}`;
+  if (c.shootout && !pens)
+    out.push({ code: "match-shootout", detail: `승부차기 없는 경기 ${sc}` });
+  for (const s of c.scores) {
+    const isFt = s.a === f && s.b === a;
+    const isPk =
+      pens !== null && c.shootout && s.a === pens.f && s.b === pens.a;
+    if (!isFt && !isPk) {
+      out.push({ code: "match-score", detail: `${s.raw} ≠ ${sc}` });
+      continue;
+    }
+    if (s.verb !== null) {
+      const expected = isPk && !isFt ? pkRes : ftRes;
+      if (!isPk && pens && s.verb !== "D")
+        out.push({ code: "match-shootout", detail: `${s.raw} ${s.verb}` });
+      else if (s.verb !== expected)
+        out.push({
+          code: "match-result",
+          detail: `${s.raw} ${s.verb} ≠ ${expected}`,
+        });
+    }
+  }
+  for (const verb of c.verbs) {
+    if (pens) {
+      if (verb === "D") continue;
+      if (!c.shootout)
+        out.push({ code: "match-shootout", detail: `승부차기 경기를 ${verb}` });
+      else if (verb !== pkRes)
+        out.push({
+          code: "match-result",
+          detail: `승부차기 ${verb} ≠ ${pkRes}`,
+        });
+    } else if (verb !== ftRes) {
+      out.push({ code: "match-result", detail: `${verb} ≠ ${ftRes} (${sc})` });
+    }
+  }
+  if (c.venue !== null) {
+    const home = flip ? !v.line.home : v.line.home;
+    if ((c.venue === "H") !== home)
+      out.push({
+        code: "match-venue",
+        detail: `${c.venue === "H" ? "홈" : "원정"} ≠ ${home ? "홈" : "원정"}`,
+      });
+  }
+  for (const t of c.teams)
+    if (t !== v.team && t !== v.opp)
+      out.push({ code: "match-opponent", detail: `${t} ≠ ${v.opp}` });
+  for (const comp of c.comps)
+    if (comp !== v.comp)
+      out.push({ code: "match-comp", detail: `${comp} ≠ ${v.comp}` });
+  for (const d of c.dates)
+    if (d !== v.date)
+      out.push({ code: "match-date", detail: `${d} ≠ ${v.date}` });
+  return out;
+}
+
+/** 여러 경기를 한 절에 쓴 꼴 — 사실마다 따로 본다 */
+function isMultiMatch(c: ChunkClaims): boolean {
+  return (
+    new Set(c.dates).size > 1 ||
+    c.scores.length > (c.shootout ? 2 : 1) ||
+    c.teams.length > 2
+  );
+}
+
+/** 절 1개를 사실 묶음으로 — 한 경기 절이면 그대로 1묶음, 여러 경기 절이면 사실마다(스코어는 바로 뒤 동사와 한 묶음) */
+function claimUnits(c: ChunkClaims): ChunkClaims[] {
+  if (!isMultiMatch(c)) return [c];
+  const empty = (): ChunkClaims => ({
+    scores: [],
+    verbs: new Set(),
+    venue: null,
+    teams: [],
+    subjects: c.subjects,
+    comps: [],
+    dates: [],
+    shootout: c.shootout,
+  });
+  const units: ChunkClaims[] = [];
+  for (const s of c.scores) units.push({ ...empty(), scores: [s] });
+  for (const v of c.verbs) units.push({ ...empty(), verbs: new Set([v]) });
+  if (c.venue !== null) units.push({ ...empty(), venue: c.venue });
+  for (const t of c.teams) units.push({ ...empty(), teams: [t] });
+  for (const comp of c.comps) units.push({ ...empty(), comps: [comp] });
+  for (const d of c.dates) units.push({ ...empty(), dates: [d] });
+  return units;
+}
+
+/** 사실 묶음들이 후보 경기로 모두 설명되는가 — 안 되면 가장 덜 어긋난 경기 기준 사유 */
+function judgeChunk(
+  c: ChunkClaims,
+  candidates: readonly MatchView[],
+): MatchIssue[] {
+  const issues: MatchIssue[] = [];
+  for (const unit of claimUnits(c)) {
+    let best: MatchIssue[] | null = null;
+    for (const v of candidates) {
+      const mm = mismatchesOf(unit, v);
+      if (best === null || mm.length < best.length) best = mm;
+      if (mm.length === 0) break;
+    }
+    if (best === null) {
+      issues.push({ code: noMatchCode(unit), detail: "그 선수 경기 없음" });
+    } else issues.push(...best);
+  }
+  return issues;
+}
+
+function noMatchCode(c: ChunkClaims): WeeklyCheckCode {
+  if (c.scores.length > 0) return "match-score";
+  if (c.verbs.size > 0) return "match-result";
+  if (c.teams.length > 0) return "match-opponent";
+  if (c.dates.length > 0) return "match-date";
+  if (c.venue !== null) return "match-venue";
+  if (c.comps.length > 0) return "match-comp";
+  return "match-shootout";
+}
+
+/** 표 → 선수(한글 이름)별 경기 표기 + 이름 목록 */
+function matchViewsOf(
+  table: WeeklyTable,
+  ctx: WeeklyCheckContext,
+): { byPlayer: Map<string, MatchView[]>; claim: ClaimContext } {
+  const display = (en: string) =>
+    substituteNames(en, ctx.names, {
+      competitionLabel: ctx.competitionLabel,
+    }).text.trim();
+  const byPlayer = new Map<string, MatchView[]>();
+  const teams = new Set<string>();
+  const comps = new Set<string>(COMP_IDS.map((c) => ctx.competitionLabel(c)));
+  for (const r of table.rows) {
+    const views = r.matches.map((l): MatchView => {
+      const [, mo, d] = utcDate(l.kickoff).split("-").map(Number);
+      const view: MatchView = {
+        line: l,
+        team: display(l.team),
+        opp: display(l.opponent),
+        comp:
+          l.comp === "OTHER"
+            ? display(l.compName)
+            : ctx.competitionLabel(l.comp),
+        date: monthDayKey(mo!, d!),
+      };
+      teams.add(view.team);
+      teams.add(view.opp);
+      comps.add(view.comp);
+      return view;
+    });
+    byPlayer.set(r.player.nameKo, [
+      ...(byPlayer.get(r.player.nameKo) ?? []),
+      ...views,
+    ]);
+  }
+  const byLength = (a: string, b: string) => b.length - a.length;
+  return {
+    byPlayer,
+    claim: {
+      playerNames: [...byPlayer.keys()].sort(byLength),
+      teamNames: [...teams].filter((t) => t.length >= 2).sort(byLength),
+      compNames: [...comps].filter((c) => c.length >= 2).sort(byLength),
+    },
+  };
+}
+
+/** 문장 → 선수 조각(머리 주석 ⑤-2) */
+function playerSegments(
+  text: string,
+  playerNames: readonly string[],
+): Array<{ text: string; players: string[] }> {
+  const hits: Array<{ at: number; name: string }> = [];
+  let scan = text;
+  for (const name of playerNames) {
+    let from = 0;
+    for (;;) {
+      const at = scan.indexOf(name, from);
+      if (at < 0) break;
+      hits.push({ at, name });
+      scan =
+        scan.slice(0, at) +
+        "□".repeat(name.length) +
+        scan.slice(at + name.length);
+      from = at + name.length;
+    }
+  }
+  if (hits.length === 0) return [{ text, players: [] }];
+  hits.sort((x, y) => x.at - y.at);
+  const raw = hits.map((h, i) => ({
+    name: h.name,
+    text: text.slice(i === 0 ? 0 : h.at, hits[i + 1]?.at ?? text.length),
+    after: text.slice(h.at + h.name.length, hits[i + 1]?.at ?? text.length),
+  }));
+  const out: Array<{ text: string; players: string[] }> = [];
+  let carry: string[] = [];
+  let carryText = "";
+  for (const seg of raw) {
+    const players = [...new Set([...carry, seg.name])];
+    if (CONJUNCTION_ONLY.test(seg.after) && seg !== raw.at(-1)) {
+      carry = players;
+      carryText += seg.text;
+      continue;
+    }
+    const prev = out.at(-1);
+    if (
+      carry.length === 0 &&
+      prev &&
+      prev.players.length === 1 &&
+      prev.players[0] === seg.name
+    ) {
+      prev.text += seg.text;
+    } else {
+      out.push({ text: carryText + seg.text, players });
+    }
+    carry = [];
+    carryText = "";
+  }
+  return out;
+}
+
+/** 문장 1개의 경기 대조(머리 주석 ⑤-2). 순수 함수 */
+function checkMatchClaims(
+  text: string,
+  views: ReturnType<typeof matchViewsOf>,
+): MatchIssue[] {
+  const { byPlayer, claim } = views;
+  const all = [...byPlayer.values()].flat();
+  const segments = playerSegments(text, claim.playerNames);
+  const mentioned = [...new Set(segments.flatMap((s) => s.players))];
+  const union = mentioned.flatMap((p) => byPlayer.get(p) ?? []);
+  const issues: MatchIssue[] = [];
+  for (const seg of segments) {
+    const candidates =
+      seg.players.length === 0
+        ? all
+        : seg.players.flatMap((p) => byPlayer.get(p) ?? []);
+    for (const chunk of seg.text.split(CLAUSE_SPLIT)) {
+      if (!chunk.trim()) continue;
+      const c = claimsOf(chunk, claim);
+      if (!hasClaims(c)) continue;
+      const strict = judgeChunk(c, candidates);
+      if (strict.length === 0) continue;
+      // 이름 귀속이 틀렸을 수 있다 — 문장의 선수 모두의 경기로 한 번 더(보수적)
+      if (mentioned.length > 1 && judgeChunk(c, union).length === 0) continue;
+      issues.push(...strict);
+    }
+  }
+  return issues;
 }
 
 // ─── ⑥ 템플릿 ───────────────────────────────────────────────────────────

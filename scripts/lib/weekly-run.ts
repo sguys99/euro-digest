@@ -9,11 +9,15 @@
  *      '끝난 주' 판정은 KST 주 끝(일 24:00 KST)으로 한다 — 정기 실행(월 08:00 KST = 일 23:00 UTC)에는 UTC 일요일이 1시간 남아 있지만
  *      일요일 마지막 킥오프(보통 ~20:00 UTC)는 끝나 있다. 이때 `weekly.run.utc-week-open` 경고를 남기고, 단계는 원장 기준으로 집계한다
  *      (원장에는 종료 경기만 들어오므로 그 시각까지 끝나지 않은 경기는 빠진다 — 단계가 로그로 남긴다).
+ *   ⓪-1 쓰기 여부(effectiveWeeklyDry): `--dry`면 미리보기. 로컬(dev)은 `--write`가 없으면 `--dry`와 같은 미리보기(data/에 쓰지
+ *      않음 — 실행 기록·비용은 dry 규칙대로, 2026-11-01 리뷰). Actions(prod)는 그대로 쓴다.
  *   ① 실행 가드(decideWeeklyGuard): 그 주차 한국 선수 주간 리포트(`data/players/weekly/<주차>.json`)가 이미 있으면(= 그 단계가 성공하고
  *      검증·빌드를 통과해 커밋됐다) force 없이는 실행 전체를 건너뛴다 — 실행 기록도 남기지 않는다(성공 처리, exit 0).
  *      판정 근거를 실행 기록이 아니라 산출물 파일로 둔 이유: RunLog에는 주차 필드가 없어(스키마 변경은 사용자 확인 사항) 지난 주차를
  *      지정한 재실행의 기록이 시작 시각 기준 주차로 잘못 귀속될 수 있다. 파일은 커밋된 결과 그 자체라 어긋나지 않는다.
  *      M3-07 전에는 파일이 생기지 않으므로 가드가 건너뛰지 않는다(수동 재실행마다 미구현 단계만 다시 로그).
+ *      파일이 있으면 출처(파일 generatedAt + 그 시각의 job weekly 실행 runId·env — describeWeeklyReportOrigin)를 가드 메시지(로그·Step
+ *      Summary '실행 판단')에 붙인다. dev가 만든 파일인지 스키마로는 구분하지 않으므로 판정은 파일 존재 기준 그대로다.
  *   ② 단계 실행(runWeeklyStages): weekly-stages.ts `WEEKLY_STAGES`를 선언 순서대로 하나씩. 단계마다 try/catch + 시간 상한(abort) —
  *      한 단계의 실패가 다음 단계를 막지 않는다. `run: null`(미구현)은 "미구현 — 건너뜀" 로그만(성공 처리).
  *   ③ 실행 상태(weeklyRunStatus): 실패 0 → success · 실패와 성공이 섞임 → partial · 실패만 있음(성공한 단계 0) → failed.
@@ -30,7 +34,7 @@
  * tests/weekly-workflow.test.ts가 대조): skipped · week · publish_date(실행 시작 KST 날짜 — 커밋 메시지) · run_id · status · run_recorded
  * (실패 실행 기록 보존 단계의 조건) · failed_stages(쉼표) · discard(공백 — 되돌릴 경로).
  */
-import { readdir } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
 
@@ -52,7 +56,9 @@ import {
   costFromResults,
   getModelPricing,
   makeRunId,
+  readRuns,
   recordRun,
+  runsPathFor,
   type Budgets,
 } from "./cost";
 import type { LlmClient } from "./llm";
@@ -69,6 +75,8 @@ import {
 
 export interface WeeklyArgs {
   dry: boolean;
+  /** 로컬(dev) 실행에서 data/에 쓴다 — 없으면 dev는 미리보기(effectiveWeeklyDry). prod(Actions)에는 영향 없음 */
+  write: boolean;
   mock: boolean;
   force: boolean;
   /** 지정 주차 "YYYY-WW" — null이면 기본(지난 주) */
@@ -80,6 +88,7 @@ export interface WeeklyArgs {
 export const WEEKLY_USAGE = [
   "사용법: npm run weekly -- [--dry] [--mock] [--force] [--week <YYYY-WW>]",
   "  --dry          data/에 쓰지 않고 결과만 출력 (LLM을 부른 단계가 있으면 비용은 기록)",
+  "  --write        로컬(dev) 실행에서 data/에 쓴다 — 없으면 로컬 실행은 --dry와 같은 미리보기 (Actions(prod)는 항상 씀)",
   "  --mock         LLM 대신 fixtures/llm/ 응답 사용 (LLM_MODE=mock과 같음 — 실행 기록 안 함)",
   "  --force        그 주차 주간 리포트가 이미 있어도 실행 (단계의 '이미 했음' 판단도 무시)",
   "  --week <주차>  대상 ISO 주차 (기본: 실행 시작 KST 날짜가 속한 주의 바로 앞 주 — 지난 월~일). 끝나지 않은 주는 거부",
@@ -96,6 +105,7 @@ export function parseWeeklyArgs(
 ): ParseResult<WeeklyArgs> {
   let values: {
     dry?: boolean;
+    write?: boolean;
     mock?: boolean;
     force?: boolean;
     week?: string;
@@ -108,6 +118,7 @@ export function parseWeeklyArgs(
       allowPositionals: false,
       options: {
         dry: { type: "boolean", default: false },
+        write: { type: "boolean", default: false },
         mock: { type: "boolean", default: false },
         force: { type: "boolean", default: false },
         week: { type: "string" },
@@ -127,6 +138,9 @@ export function parseWeeklyArgs(
       error: `--week는 YYYY-WW 형식이어야 합니다 (받은 값 길이 ${week.length})`,
     };
   }
+  if (values.dry && values.write) {
+    return { ok: false, error: "--dry와 --write는 함께 쓸 수 없습니다" };
+  }
   const mock = values.mock ?? false;
   const llmMode = resolveLlmMode(mock, envLlmMode);
   if (!llmMode.ok) return llmMode;
@@ -134,6 +148,7 @@ export function parseWeeklyArgs(
     ok: true,
     value: {
       dry: values.dry ?? false,
+      write: values.write ?? false,
       mock,
       force: values.force ?? false,
       week: week || null,
@@ -148,6 +163,21 @@ export function resolveWeeklyEnv(
   env: Readonly<Record<string, string | undefined>>,
 ): RunEnv {
   return env.GITHUB_ACTIONS === "true" ? "prod" : "dev";
+}
+
+/**
+ * 실제로 data/에 쓸지(머리 주석 ⓪-1). dev(로컬)는 `--write`가 있을 때만 쓴다 — 2026-11-01 리뷰: W43 첫 호는 dev 실행으로 의도해
+ * 만들었지만, 이후 로컬 실험이 실수로 주간 리포트·팀 파일을 만들어 다음 정기 실행의 가드(파일 존재)를 막지 않게. prod는 그대로.
+ */
+export function effectiveWeeklyDry(input: {
+  env: RunEnv;
+  dry: boolean;
+  write: boolean;
+}): { dry: boolean; reason: "flag" | "dev-preview" | null } {
+  if (input.dry) return { dry: true, reason: "flag" };
+  if (input.env === "dev" && !input.write)
+    return { dry: true, reason: "dev-preview" };
+  return { dry: false, reason: null };
 }
 
 // ─── 대상 주차 ───────────────────────────────────────────────────────────
@@ -242,6 +272,51 @@ export function decideWeeklyGuard(input: {
     reason: "not-published",
     message: `주차 ${input.week} 주간 리포트 없음 — 실행`,
   };
+}
+
+/**
+ * 이미 있는 주간 리포트의 출처 한 줄 — 파일 `generatedAt` + 그 시각을 [startedAt, finishedAt] 안에 둔 job weekly 실행 기록(runs.json·
+ * runs-dev.json)의 runId·env. 스키마에 생성 실행 필드가 없어(변경은 사용자 확인 사항) 시각으로 맞춘다. 가드 판정은 여전히 파일
+ * 존재 기준이고, 이 줄은 로그·Step Summary에 '누가 만들었나'를 보여 준다(dev로 만든 파일이 정기 실행을 막았는지 확인용).
+ * 던지지 않는다(읽지 못하면 그 사실을 적는다).
+ */
+export async function describeWeeklyReportOrigin(
+  rootDir: string,
+  dataDir: string,
+  week: string,
+): Promise<string> {
+  let generatedAt: string;
+  try {
+    const json = JSON.parse(
+      await readFile(
+        path.join(rootDir, WEEKLY_REPORT_DIR, `${week}.json`),
+        "utf8",
+      ),
+    ) as { generatedAt?: unknown };
+    if (typeof json.generatedAt !== "string") return "생성 시각 없음";
+    generatedAt = json.generatedAt;
+  } catch (error) {
+    return `리포트 파일을 읽지 못함(${firstLine(error)})`;
+  }
+  const at = Date.parse(generatedAt);
+  const owners: string[] = [];
+  for (const env of ["prod", "dev"] as const) {
+    let runs: RunLog[];
+    try {
+      runs = await readRuns(runsPathFor(env, dataDir));
+    } catch {
+      continue;
+    }
+    for (const r of runs) {
+      if (
+        r.job === "weekly" &&
+        Date.parse(r.startedAt) <= at &&
+        at <= Date.parse(r.finishedAt)
+      )
+        owners.push(`${r.runId}(${env})`);
+    }
+  }
+  return `생성 ${generatedAt} · runId ${owners.length > 0 ? owners.join(", ") : "실행 기록에서 찾지 못함"}`;
 }
 
 /** 주간 리포트 폴더의 파일 이름(없으면 []) — 그 밖의 읽기 오류는 던진다(가드 판정 불가 → 실행하지 않음) */
@@ -619,6 +694,8 @@ export interface RunWeeklyDeps {
   env: RunEnv;
   llmMode: LlmMode;
   dry: boolean;
+  /** dev에서 data/에 쓴다(--write — effectiveWeeklyDry). 생략 = false(dev는 미리보기) */
+  write?: boolean;
   force: boolean;
   /** 지정 주차(--week) — null이면 기본 */
   week: string | null;
@@ -629,6 +706,8 @@ export interface RunWeeklyDeps {
   print: (text: string) => void;
   /** 주간 리포트 폴더 파일 이름 — 기본 listWeeklyReportFiles(rootDir) */
   listReportFiles?: () => Promise<string[]>;
+  /** 이미 있는 주간 리포트의 출처 한 줄 — 기본 describeWeeklyReportOrigin */
+  describeReport?: (week: string) => Promise<string>;
   createLlm: () => LlmClient;
   /** DAILY_BUDGET_USD·MONTHLY_BUDGET_USD 해석(잘못된 값이면 던진다) */
   resolveBudgets: () => Budgets;
@@ -707,12 +786,28 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
       `주간 리포트 폴더를 읽지 못해 재실행 가드를 판정할 수 없다: ${firstLine(error)}`,
     );
   }
-  const guard = decideWeeklyGuard({ week, force: deps.force, publishedWeeks });
+  let guard = decideWeeklyGuard({ week, force: deps.force, publishedWeeks });
+  if (publishedWeeks.includes(week)) {
+    // 가드는 파일 존재 기준 그대로 — 출처(생성 시각·runId)만 덧붙인다(머리 주석 ①)
+    const origin = await (
+      deps.describeReport ??
+      ((w: string) => describeWeeklyReportOrigin(deps.rootDir, deps.dataDir, w))
+    )(week).catch((error: unknown) => `출처 확인 실패(${firstLine(error)})`);
+    guard = { ...guard, message: `${guard.message} · 이미 있음 — ${origin}` };
+    log.info("weekly.guard.existing", { week, force: deps.force, origin });
+  }
+  const effective = effectiveWeeklyDry({
+    env: deps.env,
+    dry: deps.dry,
+    write: deps.write ?? false,
+  });
+  const dry = effective.dry;
   log.info("weekly.run.start", {
     runId,
     env: deps.env,
     week,
-    dry: deps.dry,
+    dry,
+    dryReason: effective.reason,
     force: deps.force,
     llmMode: deps.llmMode,
     guard: guard.reason,
@@ -728,6 +823,11 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
         (Date.parse(range.to) + 1 - Date.parse(startedAt)) / 60_000,
       ),
     });
+  }
+  if (effective.reason === "dev-preview") {
+    deps.print(
+      "[weekly] 로컬(dev) 실행 — 미리보기(data/에 쓰지 않음, --dry와 같다). data/에 쓰려면 --write",
+    );
   }
   if (!guard.run) {
     log.info("weekly.guard.skip", { week, reason: guard.reason });
@@ -769,7 +869,7 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
     weekRange: range,
     env: deps.env,
     llmMode: deps.llmMode,
-    dry: deps.dry,
+    dry,
     force: deps.force,
     runId,
     startedAt,
@@ -825,7 +925,7 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
     finishedAt: nowUtcIso(deps.now()),
     runId,
     results: llmResults,
-    status: recordedWeeklyStatus(status, deps.dry),
+    status: recordedWeeklyStatus(status, dry),
     apiCalls,
     // 분석 블로그 소스별 결과(M3-08 — 주간 건강도 근거). 없으면 넣지 않는다(기본 [])
     ...(sources.length > 0 ? { sources } : {}),
@@ -836,7 +936,7 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
     if (
       shouldRecordWeeklyRun({
         llmMode: deps.llmMode,
-        dry: deps.dry,
+        dry,
         llmResultCount: llmResults.length,
       })
     ) {

@@ -199,6 +199,7 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
 ## 12. 운영 절차
 - **잘못된 발행**: `data/` 해당 커밋 revert → `deploy.yml` 수동 실행 → 원인 이슈 기록. **검증 게이트 실패**: 배포 중단·전날 사이트 유지 → 원인 수정.
 - **삭제·정정 요청**: `/takedown <card-id>` → 재빌드 (접수 후 72시간 이내). **브리핑·분류 오류 신고**: `summary-error` 이슈 집계 → 주간 검수 → 회귀 비교 후 프롬프트·분류 규칙 개선.
+- **주간 리포트 재생성**: 월요일 weekly Step Summary·로그 `weekly.korean-weekly.ledger.possibly-missing`에 "Wnn 누락 가능"이 있으면, 그 경기가 원장에 들어간 다음 날 아침 발행 뒤(06:00~08:00 KST 피함) Actions → weekly → Run workflow(`week`, `force: true`). 로컬은 `npm run weekly -- --week <주차> --force --write`(`--write` 없으면 미리보기 — data/에 쓰지 않음). 총평 `submit-unknown`이면 Console Batches에서 고아 배치·과금 확인.
 - **한국 선수 이적 감지**: `/add-player` 또는 `korean-players.json` 수정. **미등록 고유명사**: `/add-name`. **시즌 전환**: `/new-season`.
 
 ## 13. 미결 사항 (M0 검증 후 이 문서·PRD 갱신)

@@ -25,6 +25,7 @@ import {
   isRetryableErrorType,
   LlmConfigError,
   LlmMockFixtureError,
+  LlmBatchPollError,
   LlmRequestError,
   LlmTransportError,
   MAX_REQUESTS_PER_BATCH,
@@ -754,6 +755,25 @@ describe("배치: 제출 → 폴링 → 결과", () => {
     ).rejects.toMatchObject({
       errorType: "authentication_error",
     });
+  });
+
+  it("runBatch 제출 뒤 조회 영구 오류는 batchId를 실은 LlmBatchPollError(LlmTransportError이기도 함)로 던진다", async () => {
+    const { transport } = fakeTransport({
+      retrieve: [
+        new LlmTransportError({ status: 401, message: "unauthorized" }),
+      ],
+    });
+    const { client } = harness(transport);
+    const error = await client
+      .runBatch([request()], { deadline: DEADLINE })
+      .catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(LlmBatchPollError);
+    expect(error).toBeInstanceOf(LlmTransportError);
+    expect(error).toMatchObject({
+      errorType: "authentication_error",
+      status: 401,
+    });
+    expect((error as LlmBatchPollError).batchId).toMatch(/\S/);
   });
 
   it("마감 직전 조회가 모두 실패하면 snapshot null로 돌아온다", async () => {

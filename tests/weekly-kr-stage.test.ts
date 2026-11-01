@@ -21,6 +21,9 @@ import { isoWeekRangeUtc } from "@/lib/time";
 
 import type { BudgetCheck } from "../scripts/lib/cost";
 import {
+  LlmBatchPollError,
+  LlmRequestError,
+  LlmTransportError,
   createLlmClient,
   type LlmClient,
   type LlmRequest,
@@ -31,6 +34,7 @@ import { createLogger } from "../scripts/lib/logger";
 import { buildNameIndex } from "../scripts/lib/names";
 import {
   buildWeeklyTable,
+  checkWeeklySummary,
   type WeeklyCheckContext,
 } from "../scripts/lib/weekly-kr";
 import {
@@ -91,7 +95,11 @@ type Step =
   | { kind: "ok"; text: string }
   | { kind: "fail" }
   | { kind: "timeout" }
-  | { kind: "throw" };
+  | { kind: "throw" } // 예상 밖 오류(일반 Error)
+  | { kind: "reject" } // 서버가 제출 거부(HTTP 400)
+  | { kind: "conn" } // 연결 오류·타임아웃(상태 없음 — 배치가 생겼는지 모름)
+  | { kind: "request" } // 보내기 전 거부(LlmRequestError)
+  | { kind: "poll" }; // 제출 뒤 상태 조회 실패(LlmBatchPollError)
 
 function fakeClient(steps: Step[]) {
   const calls: string[] = [];
@@ -129,6 +137,34 @@ function fakeClient(steps: Step[]) {
       const step = steps[calls.length - 1] ?? { kind: "fail" };
       if (step.kind === "throw")
         return Promise.reject(new Error("submit 실패"));
+      if (step.kind === "reject")
+        return Promise.reject(
+          new LlmTransportError({
+            status: 400,
+            errorType: "invalid_request_error",
+            message: "거부",
+          }),
+        );
+      if (step.kind === "conn")
+        return Promise.reject(
+          new LlmTransportError({
+            errorType: "connection_error",
+            message: "요청 시간 초과",
+          }),
+        );
+      if (step.kind === "request")
+        return Promise.reject(new LlmRequestError("마감 지남"));
+      if (step.kind === "poll")
+        return Promise.reject(
+          new LlmBatchPollError(
+            `b-${calls.length}`,
+            new LlmTransportError({
+              status: 404,
+              errorType: "not_found_error",
+              message: "없음",
+            }),
+          ),
+        );
       if (step.kind === "timeout")
         return Promise.resolve({
           timedOut: true,
@@ -265,6 +301,31 @@ describe("W43 실데이터 사본 — 표·MVP (FR-91·FR-92)", () => {
       ["2026-10-25T16:30:00.000Z", "absent"],
     ]);
   });
+  it("W43 실측 총평(data/players/weekly/2026-43.json summary — 치환 뒤 문장)은 경기 대조(⑤-2)를 포함한 코드 검증을 통과한다", () => {
+    const actual = [
+      "이번 주 MVP는 이재성이다.",
+      "이재성은 마인츠 소속으로 10월 24일 홈 분데스리가 경기 브레멘전에 75분 선발 출전해 1골을 넣었고 팀은 2-3으로 졌다.",
+      "황희찬은 샬케04 원정에서 쾰른전 90분 선발 출전해 0-0으로 비겼고, 정우영은 우니온 베를린 소속으로 아우크스부르크 원정에서 76분 선발 출전해 1-1로 비겼다.",
+      "이강인은 10월 24일 라리가 홈 경기 데포르티보 라코루냐전에 67분 선발 출전했고 팀은 1-0으로 이겼다.",
+      "김민재는 10월 21일 UEFA 챔피언스리그 홈 경기 아스널전에 45분 선발 출전했고, 설영우와 옌스 카스트로프는 이번 주 출전하지 않았다.",
+    ];
+    expect(checkWeeklySummary(actual, TABLE, CHECK).issues).toEqual([]);
+    // 같은 문장의 사실을 하나씩 틀리면 걸린다
+    const broken = (from: string, to: string) =>
+      checkWeeklySummary(
+        actual.map((t) => t.replace(from, to)),
+        TABLE,
+        CHECK,
+      ).issues.map((i) => i.code);
+    expect(broken("2-3으로 졌다", "2-3으로 이겼다")).toContain("match-result");
+    expect(broken("2-3으로 졌다", "3-2로 졌다")).toContain("match-score");
+    expect(broken("24일 홈 분데스리가", "24일 원정 분데스리가")).toContain(
+      "match-venue",
+    );
+    expect(broken("브레멘전", "아스널전")).toContain("match-opponent");
+    expect(broken("10월 24일 홈", "10월 25일 홈")).toContain("match-date");
+    expect(broken("0-0으로 비겼고", "1-1로 비겼고")).toContain("match-score");
+  });
 });
 
 // ─── 총평 ────────────────────────────────────────────────────────────────
@@ -336,8 +397,8 @@ describe("composeKoreanWeeklySummary — 시도·재시도·템플릿 강등", (
     expect(f.calls).toHaveLength(2);
   });
 
-  it("배치 결과 실패·제출 실패 → 재시도 → 템플릿(batch-failed)", async () => {
-    const f = fakeClient([{ kind: "fail" }, { kind: "throw" }]);
+  it("배치 결과 실패·제출 거부 → 재시도 → 템플릿(batch-failed)", async () => {
+    const f = fakeClient([{ kind: "fail" }, { kind: "reject" }]);
     const { ctx, t0 } = ctxWith({ client: f.client });
     const r = await composeKoreanWeeklySummary(
       ctx,
@@ -349,6 +410,60 @@ describe("composeKoreanWeeklySummary — 시도·재시도·템플릿 강등", (
       "result-failed",
       "submit-failed",
     ]);
+  });
+
+  it.each([
+    ["reject", "submit-failed"],
+    ["request", "submit-failed"],
+  ] as const)(
+    "제출 거부 확정(%s) → 새 배치 재시도 1회(중복 과금 없음)",
+    async (kind, outcome) => {
+      const f = fakeClient([{ kind }, { kind: "ok", text: GOOD }]);
+      const { ctx, t0 } = ctxWith({ client: f.client });
+      const r = await composeKoreanWeeklySummary(
+        ctx,
+        { table: TABLE, check: CHECK },
+        t0,
+      );
+      expect(r.summaryAi).toBe(true);
+      expect(f.calls).toEqual(["weekly-kr-2026-43", "weekly-kr-2026-43-r1"]);
+      expect(r.attempts.map((a) => a.outcome)).toEqual([outcome, "ok"]);
+    },
+  );
+
+  it.each([
+    ["conn", "submit-unknown"],
+    ["throw", "submit-unknown"],
+  ] as const)(
+    "배치가 생겼는지 모르는 실패(%s — 연결 오류·타임아웃·예상 밖) → 다시 내지 않고 템플릿",
+    async (kind, outcome) => {
+      const f = fakeClient([{ kind }, { kind: "ok", text: GOOD }]);
+      const { ctx, t0, printed } = ctxWith({ client: f.client });
+      const r = await composeKoreanWeeklySummary(
+        ctx,
+        { table: TABLE, check: CHECK },
+        t0,
+      );
+      expect(r).toMatchObject({ summaryAi: false, reason: "batch-failed" });
+      expect(f.calls).toEqual(["weekly-kr-2026-43"]);
+      expect(r.attempts.map((a) => a.outcome)).toEqual([outcome]);
+      expect(f.cancels()).toBe(0);
+      expect(printed.join("\n")).toContain("다시 내지 않고");
+    },
+  );
+
+  it("제출 뒤 상태 조회 실패(LlmBatchPollError) → 그 배치 취소 시도, 다시 내지 않고 템플릿", async () => {
+    const f = fakeClient([{ kind: "poll" }, { kind: "ok", text: GOOD }]);
+    const { ctx, t0 } = ctxWith({ client: f.client });
+    const r = await composeKoreanWeeklySummary(
+      ctx,
+      { table: TABLE, check: CHECK },
+      t0,
+    );
+    expect(r).toMatchObject({ summaryAi: false, reason: "batch-failed" });
+    expect(f.calls).toEqual(["weekly-kr-2026-43"]);
+    expect(r.attempts.map((a) => a.outcome)).toEqual(["poll-failed"]);
+    expect(f.cancels()).toBe(1);
   });
 
   it("배치 마감 초과 → 취소 시도, 재시도 없이 템플릿(batch-timeout)", async () => {
@@ -499,6 +614,47 @@ describe("runKoreanWeekly — 읽기·쓰기", () => {
     );
     return dir;
   }
+
+  it("누락 가능 경기(이월 목록의 구간 안 기타 대회 경기) — 경고 + 단계 메모·출력에 재생성 안내, 발행은 계속", async () => {
+    const root = await repo({ links: true });
+    await mkdir(path.join(root, "data/cache"), { recursive: true });
+    await writeFile(
+      path.join(root, "data/cache/af-pending.json"),
+      JSON.stringify({
+        updatedAt: "2026-10-25T22:10:00.000Z",
+        fixtures: [
+          {
+            id: 777,
+            comp: null,
+            leagueId: 81,
+            kickoff: "2026-10-25T19:45:00.000Z",
+            status: "2H",
+            firstSeen: "2026-10-25T22:10:00.000Z",
+            requeries: 0,
+          },
+        ],
+      }),
+    );
+    const f = fakeClient([{ kind: "ok", text: GOOD }]);
+    const { ctx, printed } = ctxWith({ client: f.client, rootDir: root });
+    const report = await runKoreanWeekly(ctx);
+    expect(report.outputs).toEqual(["data/players/weekly/2026-43.json"]);
+    expect(report.counts?.possiblyMissing).toBe(1);
+    const line =
+      "W43 누락 가능: 한국 선수 소속팀 기타 대회 경기 af-777 10월 26일 (월) 04:45 KST (미종료 이월 중) — 다음 날 `npm run weekly -- --week 2026-43 --force`(Actions 수동 실행 force·week 입력)로 재생성";
+    expect(report.note).toContain(line);
+    expect(printed.join("\n")).toContain(line);
+  });
+
+  it("W43 실데이터 사본 + 대회 파일 일정 — 누락 가능 경기 없음(오탐 없음)", async () => {
+    const root = await repo({ links: true });
+    const f = fakeClient([{ kind: "ok", text: GOOD }]);
+    const report = await runKoreanWeekly(
+      ctxWith({ client: f.client, rootDir: root }).ctx,
+    );
+    expect(report.counts?.possiblyMissing).toBe(0);
+    expect(report.note).not.toContain("누락 가능");
+  });
 
   it("쓰기 — 스키마 통과 파일, 이미 있으면 force 없이 건너뜀", async () => {
     const root = await repo({ links: true });

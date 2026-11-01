@@ -7,11 +7,17 @@
  *      (data/competitions — 리포트 경기 줄 링크만, 없거나 깨지면 링크 없이). meta가 없거나 깨졌거나
  *      달 파일이 깨졌으면 던진다(단계 실패 — 표를 지어내지 않는다). 달 파일이 아직 없으면 빈 달로 본다(경고).
  *   ② 표·MVP(코드) — 항상 발행한다. 실행 시각에 UTC 주가 남아 있으면(정기 실행 월 08:00 KST = 일 23:00 UTC) 경고만 남긴다.
+ *      구간 안인데 원장에 없는 한국 선수 경기(이월 목록 af-pending·대회 파일 일정 — weekly-kr.ts findPossiblyMissing)가 있으면 경고 로그 +
+ *      단계 메모(Step Summary) + 출력에 "W.. 누락 가능: <팀> <킥오프> — 다음 날 `npm run weekly -- --week <주차> --force`로 재생성"을
+ *      남긴다(발행은 계속 — 2026-11-01 리뷰).
  *   ③ 총평(LLM 호출 지점 #3 — Message Batches API, D28): 출전 선수가 없으면 호출하지 않고 템플릿. 시도마다 최악값 예상(배치 50%)을
  *      출력하고 `ctx.budget.check`(runs.json + runs-dev.json — 판정 불가도 LLM 없이) → `runBatch`(단계 시작 + LLM 창 안에서 폴링).
- *      실패(배치 오류·만료·마감 초과·zod·코드 검증)면 남은 시간이 재시도 최소 시간 이상일 때 1회 재시도(합쳐 2회 — 2026-11-01 사용자
- *      결정) → 그래도 실패면 코드 템플릿(`summaryAi:false`). 마감을 넘긴 배치는 취소하고(남은 요청 과금 방지) 짧게 기다려 이미 처리된
- *      결과의 비용을 기록한다. 부른 결과는 성공·실패 모두 `ctx.llm.addResults`(dry여도 — CLAUDE.md §1-4).
+ *      재시도(합쳐 2회 — 2026-11-01 사용자 결정)는 **새 배치가 중복 과금되지 않는 실패**에서만, 남은 시간이 재시도 최소 시간 이상일 때
+ *      1회: 결과를 받은 뒤의 실패(결과 오류·만료·zod·코드 검증)와 제출이 거부로 확정된 실패(LlmRequestError, HTTP 상태가 있는 제출
+ *      오류 — `batchFailurePlan`). 연결 오류·타임아웃·예상 밖 오류(배치가 생겼는지 모름)는 다시 내지 않고 템플릿, 제출 뒤 상태 조회
+ *      실패(LlmBatchPollError)와 마감 초과는 다시 내지 않고 그 배치를 취소(남은 요청 과금 방지)한 뒤 짧게 기다려 이미 처리된 결과의
+ *      비용을 기록한다(llm.ts 정책 — 연결 오류는 재시도하지 않음). 그래도 실패면 코드 템플릿(`summaryAi:false`).
+ *      부른 결과는 성공·실패 모두 `ctx.llm.addResults`(dry여도 — CLAUDE.md §1-4).
  *   ④ 쓰기: dry가 아니면 끝에 한 번(임시 파일 → rename). 그 주차 파일이 이미 있으면 force 없이는 건너뛴다(러너 가드와 같은 근거).
  */
 import { randomBytes } from "node:crypto";
@@ -39,14 +45,16 @@ import { nowUtcIso, utcMonth } from "@/lib/time";
 import { readConfigFile } from "./config-files";
 import type { LogContext } from "./korean-players-data";
 import {
+  LlmBatchPollError,
   LlmMockFixtureError,
   LlmRequestError,
   LlmTransportError,
   type LlmClient,
   type LlmResult,
 } from "./llm";
+import { readAfPending } from "./api-football-plan";
 import { readLedgerMeta, readLedgerMonth } from "./match-ledger";
-import { buildNameIndex } from "./names";
+import { buildNameIndex, koreanNameBySlug } from "./names";
 import { afToSlugOf } from "./team-files";
 import { readCompetitionFiles } from "./team-files-io";
 import { loadTeamIds } from "./team-ids";
@@ -59,11 +67,14 @@ import {
   buildWeeklyTable,
   checkWeeklySummary,
   estimateWeeklyWorstCase,
+  findPossiblyMissing,
+  missingCandidateMessage,
   parseWeeklyOutput,
   serializeWeeklyReport,
   weeklyLlmInput,
   weeklyTemplateSummary,
   type WeeklyCheckContext,
+  type WeeklyMissingCandidate,
   type WeeklyTable,
 } from "./weekly-kr";
 import type { WeeklyStageContext, WeeklyStageReport } from "./weekly-stages";
@@ -98,7 +109,9 @@ export interface WeeklyAttemptLog {
     | "budget"
     | "budget-unreadable"
     | "timeout"
-    | "submit-failed"
+    | "submit-failed" // 서버가 제출을 거부했거나 보내기 전 거부 — 재시도 가능
+    | "submit-unknown" // 연결 오류·타임아웃·예상 밖 오류 — 배치가 생겼는지 모름, 재시도 안 함
+    | "poll-failed" // 제출 뒤 상태 조회 실패 — 취소·회수, 재시도 안 함
     | "result-failed"
     | "json"
     | "schema"
@@ -126,6 +139,8 @@ export interface KoreanWeeklyInputs {
   /** 그 주 구간 원장 경기 수(전체 — 한국 선수 행 유무와 무관) */
   ledgerMatches: number;
   missingMonths: string[];
+  /** 주간 구간 안인데 원장에 없는 한국 선수 경기(weekly-kr.ts findPossiblyMissing) — 경고만, 발행은 계속 */
+  possiblyMissing: WeeklyMissingCandidate[];
 }
 
 /**
@@ -187,6 +202,7 @@ export async function loadKoreanWeeklyInputs(
   }
   const compNames: Partial<Record<PlayerComp, string>> = {};
   for (const c of competitions) compNames[c.id] = c.nameEn;
+  const links = await loadReportLinks(ctx);
   const table = buildWeeklyTable({
     week: ctx.week,
     range: ctx.weekRange,
@@ -194,10 +210,27 @@ export async function loadKoreanWeeklyInputs(
     ledger,
     playerSince: meta.value.playerSince,
     compNames,
-    links: await loadReportLinks(ctx),
+    links,
   });
   const from = Date.parse(ctx.weekRange.from);
   const to = Date.parse(ctx.weekRange.to);
+  const inWeek = ledger.filter((m) => {
+    const t = Date.parse(m.kickoff);
+    return t >= from && t <= to;
+  });
+  // 이월 목록 — 읽지 못하면 경고만(누락 경고는 보조 정보 — 발행을 멈추지 않는다)
+  const pending = await readAfPending(ctx.dataDir);
+  if (pending.error !== null)
+    ctx.logger?.warn("weekly.korean-weekly.af-pending.unreadable", {
+      error: pending.error,
+    });
+  const possiblyMissing = findPossiblyMissing({
+    table,
+    range: ctx.weekRange,
+    ledger: inWeek,
+    links,
+    pending: pending.fixtures,
+  });
   const nameKo = new Map<CompId, string>(
     competitions.map((c) => [c.id, c.nameKo]),
   );
@@ -207,11 +240,9 @@ export async function loadKoreanWeeklyInputs(
       names: buildNameIndex(namesFile, competitions),
       competitionLabel: (comp) => nameKo.get(comp) ?? comp,
     },
-    ledgerMatches: ledger.filter((m) => {
-      const t = Date.parse(m.kickoff);
-      return t >= from && t <= to;
-    }).length,
+    ledgerMatches: inWeek.length,
     missingMonths,
+    possiblyMissing,
   };
 }
 
@@ -346,17 +377,31 @@ export async function composeKoreanWeeklySummary(
         });
         break;
       }
-      entry.outcome = "submit-failed";
+      lastReason = "batch-failed";
       entry.detail =
         error instanceof LlmTransportError || error instanceof LlmRequestError
           ? errorText(error)
           : `예상 밖 오류: ${errorText(error)}`;
-      lastReason = "batch-failed";
+      const plan = batchFailurePlan(error);
+      entry.outcome = plan.outcome;
       log.error("weekly.korean-weekly.batch.fail", {
         attempt,
+        outcome: plan.outcome,
+        resubmit: plan.resubmit,
+        ...(plan.batchId !== null ? { batchId: plan.batchId } : {}),
         error: entry.detail,
       });
-      continue;
+      if (plan.batchId !== null && client !== null) {
+        // 배치는 서버에 있다 — 새로 내지 않고 취소(남은 요청 과금 방지) + 처리된 결과 비용 회수(마감 초과와 같은 경로)
+        await cancelAndRecord(ctx, client, plan.batchId);
+      }
+      if (plan.resubmit) continue;
+      if (plan.batchId === null) {
+        ctx.print(
+          `[weekly] 주간 총평 배치 제출 결과를 알 수 없음(${entry.detail}) — 중복 과금을 피해 다시 내지 않고 템플릿으로 게시. 배치가 생겼다면 Console에서 확인`,
+        );
+      }
+      break;
     }
 
     if (!result || !result.ok) {
@@ -406,6 +451,27 @@ export async function composeKoreanWeeklySummary(
     };
   }
   return template(lastReason, attempts);
+}
+
+/**
+ * 배치 실행(runBatch)이 던진 오류 → 다시 낼지(머리 주석 ③ — llm.ts 정책: 연결 오류·타임아웃은 재시도하지 않음, retryConnectionErrors false).
+ *   - LlmRequestError: 보내기 전에 거부(요청 검증·마감 경과) — 배치 없음 → 재시도 가능
+ *   - LlmBatchPollError: 제출 뒤 상태 조회 실패 — 배치가 서버에 있다 → 다시 내지 않고 취소·비용 회수
+ *   - LlmTransportError + HTTP 상태 있음: 서버가 제출을 거부(4xx, 또는 llm.ts 재시도를 다 쓴 429·5xx — 처리하지 않은 요청) → 재시도 가능
+ *   - LlmTransportError 상태 없음(연결 오류·타임아웃)·예상 밖 오류: 배치가 생겼는지 모른다 → 다시 내지 않는다(템플릿)
+ */
+export function batchFailurePlan(error: unknown): {
+  outcome: "submit-failed" | "submit-unknown" | "poll-failed";
+  resubmit: boolean;
+  batchId: string | null;
+} {
+  if (error instanceof LlmBatchPollError)
+    return { outcome: "poll-failed", resubmit: false, batchId: error.batchId };
+  if (error instanceof LlmRequestError)
+    return { outcome: "submit-failed", resubmit: true, batchId: null };
+  if (error instanceof LlmTransportError && error.status !== undefined)
+    return { outcome: "submit-failed", resubmit: true, batchId: null };
+  return { outcome: "submit-unknown", resubmit: false, batchId: null };
 }
 
 /** 마감 초과 배치 — 취소(남은 요청 과금 방지) → 짧게 기다려 처리된 결과의 비용만 기록. 던지지 않는다 */
@@ -486,6 +552,28 @@ export async function runKoreanWeekly(
       note: "UTC 일요일이 남아 있다 — 원장(종료 경기)만 집계, 끝나지 않은 경기는 빠진다",
     });
   }
+  // 일요일 늦은 경기 등 원장에 아직 없는 경기 — 경고 + 재생성 안내(발행은 계속, 2026-11-01 리뷰)
+  const teamName = (slug: string) =>
+    koreanNameBySlug(inputs.check.names, "team", slug) ?? slug;
+  const missingLines = inputs.possiblyMissing.map((c) =>
+    missingCandidateMessage(ctx.week, c, teamName),
+  );
+  if (inputs.possiblyMissing.length > 0) {
+    log.warn("weekly.korean-weekly.ledger.possibly-missing", {
+      week: ctx.week,
+      count: inputs.possiblyMissing.length,
+      matches: inputs.possiblyMissing.map((c) => ({
+        source: c.source,
+        id: c.id,
+        kickoff: c.kickoff,
+        teams: c.teams,
+        players: c.players,
+        pending: c.pending,
+      })),
+      rerun: `npm run weekly -- --week ${ctx.week} --force`,
+    });
+    ctx.print(missingLines.map((l) => `[weekly] ${l}`).join("\n"));
+  }
   log.info("weekly.korean-weekly.table", {
     week: ctx.week,
     ledgerMatches: inputs.ledgerMatches,
@@ -520,7 +608,8 @@ export async function runKoreanWeekly(
       appeared: table.rows.filter((r) => r.apps > 0).length,
       llmAttempts: summary.attempts.length,
       summaryAi: summary.summaryAi ? 1 : 0,
+      possiblyMissing: inputs.possiblyMissing.length,
     },
-    note: `MVP ${[report.mvp, ...(report.coMvp ?? [])].filter(Boolean).join("·") || "없음"} · 총평 ${summary.summaryAi ? "LLM" : `템플릿(${summary.reason})`}${ctx.dry ? " · dry" : ""}`,
+    note: `MVP ${[report.mvp, ...(report.coMvp ?? [])].filter(Boolean).join("·") || "없음"} · 총평 ${summary.summaryAi ? "LLM" : `템플릿(${summary.reason})`}${ctx.dry ? " · dry" : ""}${missingLines.length > 0 ? ` · ${missingLines.join(" · ")}` : ""}`,
   };
 }

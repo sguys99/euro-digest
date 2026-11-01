@@ -296,6 +296,25 @@ export class LlmTransportError extends Error {
   }
 }
 
+/**
+ * 배치 제출 **뒤** 상태 조회가 일시적이지 않은 오류로 끝남(runBatch) — 배치는 서버에 있다. 호출부는 새 배치를 다시 내지 말고
+ * batchId로 취소·결과 회수를 시도한다(주간 총평 M3-07 — 중복 과금 방지, 2026-11-01 리뷰). LlmTransportError이기도 하다.
+ */
+export class LlmBatchPollError extends LlmTransportError {
+  readonly batchId: string;
+  constructor(batchId: string, cause: LlmTransportError) {
+    super({
+      ...(cause.status !== undefined ? { status: cause.status } : {}),
+      errorType: cause.errorType,
+      message: cause.message,
+      ...(cause.retryAfterMs !== undefined
+        ? { retryAfterMs: cause.retryAfterMs }
+        : {}),
+    });
+    this.batchId = batchId;
+  }
+}
+
 /** 오류 메시지를 한 줄·고정 길이로 자른다(응답 본문 전체가 로그·결과에 남지 않게). */
 function shortMessage(message: string): string {
   const oneLine = message.replace(/\s+/g, " ").trim();
@@ -1444,7 +1463,15 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
       );
     }
     const batchId = await submitBatch(valid);
-    const polled = await pollBatch(batchId, { deadline, intervalMs });
+    let polled: PollResult;
+    try {
+      polled = await pollBatch(batchId, { deadline, intervalMs });
+    } catch (error) {
+      // 배치는 이미 서버에 있다 — batchId를 실어 호출부가 취소·회수할 수 있게(LlmBatchPollError)
+      if (error instanceof LlmTransportError)
+        throw new LlmBatchPollError(batchId, error);
+      throw error;
+    }
     if (polled.state === "deadline") {
       return { timedOut: true, batchId, snapshot: polled.snapshot };
     }

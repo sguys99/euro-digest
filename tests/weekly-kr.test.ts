@@ -19,6 +19,8 @@ import {
   buildWeeklyTable,
   checkWeeklySummary,
   estimateWeeklyWorstCase,
+  findPossiblyMissing,
+  missingCandidateMessage,
   mvpPoints,
   parseWeeklyOutput,
   weeklyCustomId,
@@ -618,6 +620,252 @@ describe("checkWeeklySummary — 치환 뒤 코드 검증 (M0-30 · FR-29)", () 
     const r = checkWeeklySummary(sentences, t, ctx);
     expect(r.ok).toBe(false);
     expect(r.issues.map((i) => i.code)).toContain(code);
+  });
+});
+
+describe("checkWeeklySummary 경기 대조 — 선수 경기 하나와 스코어 순서·승패·홈/원정·상대·대회·날짜·승부차기 (⑤-2)", () => {
+  const names = buildNameIndex(
+    {
+      entries: [
+        { ko: "이가람", en: ["Garam Lee"], kind: "player", slug: "lee-a" },
+        { ko: "김나래", en: ["Narae Kim"], kind: "player", slug: "kim-b" },
+        { ko: "샘플 유나이티드", en: ["Sample United"], kind: "team" },
+        { ko: "이그잼플 시티", en: ["Example City"], kind: "team" },
+        { ko: "토트넘", en: ["Tottenham Hotspur"], kind: "team" },
+      ],
+      ignore: [],
+    },
+    [
+      { id: "BUNDESLIGA", nameEn: "Bundesliga" },
+      { id: "UCL", nameEn: "UEFA Champions League" },
+    ],
+  );
+  const ctx: WeeklyCheckContext = {
+    names,
+    competitionLabel: (c) =>
+      c === "BUNDESLIGA" ? "분데스리가" : c === "UCL" ? "UEFA 챔피언스리그" : c,
+  };
+  // 이가람: 10-24 분데스리가 홈 Example City전 2-3 패 · 김나래: 10-21 UCL 토트넘 원정 1-1(승부차기 4-3 승)
+  const t = buildWeeklyTable(
+    tableInput(
+      [
+        match("2026-10-24T13:30:00.000Z", [row(LEE, "start", 75, 1)], {
+          ft: { home: 2, away: 3 },
+        }),
+        match("2026-10-21T19:00:00.000Z", [row(KIM, "sub", 30, 0, 0, "away")], {
+          comp: "UCL",
+          league: "UEFA Champions League",
+          home: { id: 3, name: "Tottenham Hotspur", formation: null },
+          away: { id: 1, name: "Sample United", formation: null },
+          status: "PEN",
+          ft: { home: 1, away: 1 },
+          pens: { home: 3, away: 4 },
+        }),
+      ],
+      [LEE, KIM],
+    ),
+  );
+  const good = [
+    "Garam Lee가 이번 주 MVP에 올랐다.",
+    "Garam Lee는 10월 24일 Example City와의 Bundesliga 홈 경기에서 1골을 넣었지만 팀은 2-3으로 졌다.",
+    "Narae Kim은 10월 21일 Tottenham Hotspur 원정 UEFA Champions League 경기에 교체로 30분을 뛰었고, 팀은 1-1로 비긴 뒤 승부차기에서 4-3으로 이겼다.",
+  ];
+  const codes = (sentences: string[]) =>
+    checkWeeklySummary(sentences, t, ctx).issues.map((i) => i.code);
+  const with2 = (s: string) => [good[0]!, s, good[2]!];
+  const with3 = (s: string) => [good[0]!, good[1]!, s];
+
+  it("통과 — 소속팀 득점 먼저·승부차기 승(승부차기 점수 소속팀 먼저)·기간 표기·상대 주어 문장", () => {
+    expect(checkWeeklySummary(good, t, ctx).issues).toEqual([]);
+    expect(
+      codes(
+        with2(
+          "10월 19일부터 10월 25일까지 Example City는 Garam Lee의 Sample United를 3-2로 꺾었다.",
+        ),
+      ),
+    ).toEqual([]);
+  });
+
+  it("두 선수를 묶은 문장은 그 선수들 경기 어느 것과도 모순이 없으면 통과(오탐 없음)", () => {
+    expect(
+      codes(
+        with3("Garam Lee와 Narae Kim은 각각 2-3 패배와 1-1 무승부를 겪었다."),
+      ),
+    ).toEqual([]);
+    expect(
+      codes(
+        with3(
+          "Garam Lee는 홈에서 2-3으로 졌고, Narae Kim은 원정에서 1-1로 비겼다.",
+        ),
+      ),
+    ).toEqual([]);
+  });
+
+  it.each([
+    [
+      "동사 반대",
+      with2("Garam Lee는 Example City와의 홈 경기에서 2-3으로 이겼다."),
+      "match-result",
+    ],
+    [
+      "스코어 뒤집힘",
+      with2("Garam Lee는 Example City와의 홈 경기에서 3-2로 졌다."),
+      "match-score",
+    ],
+    [
+      "홈/원정 반대",
+      with2("Garam Lee는 10월 24일 Example City 원정에서 1골을 넣었다."),
+      "match-venue",
+    ],
+    [
+      "다른 경기 상대",
+      with2("Garam Lee는 Tottenham Hotspur전에서 1골을 넣었다."),
+      "match-opponent",
+    ],
+    [
+      "날짜 틀림",
+      with2("Garam Lee는 10월 25일 Example City전에서 1골을 넣었다."),
+      "match-date",
+    ],
+    [
+      "대회 틀림",
+      with2("Garam Lee는 UEFA Champions League 경기에서 1골을 넣었다."),
+      "match-comp",
+    ],
+    [
+      "승부차기 없는 경기에 승부차기",
+      with2("Garam Lee의 팀은 승부차기 끝에 2-3으로 졌다."),
+      "match-shootout",
+    ],
+    [
+      "승부차기 경기를 '승부차기' 없이 이겼다",
+      with3("Narae Kim은 Tottenham Hotspur 원정에서 1-1 끝에 이겼다."),
+      "match-shootout",
+    ],
+    [
+      "승부차기 점수 뒤집힘",
+      with3("Narae Kim은 Tottenham Hotspur 원정 승부차기에서 3-4로 졌다."),
+      "match-score",
+    ],
+    [
+      "승부차기 승패 반대",
+      with3("Narae Kim의 팀은 승부차기에서 졌다."),
+      "match-result",
+    ],
+    [
+      "선수 경기와 바뀐 스코어(두 선수 문장)",
+      with3(
+        "Garam Lee는 Example City와의 홈 경기에서 1-1로 비겼고, Narae Kim은 토트넘 원정에서 2-3으로 졌다.",
+      ),
+      "match-score",
+    ],
+  ] as const)("실패 — %s → %s", (_label, sentences, code) => {
+    expect(codes([...sentences])).toContain(code);
+  });
+});
+
+// ─── 누락 가능 경기 ──────────────────────────────────────────────────────
+
+describe("findPossiblyMissing — 구간 안인데 원장에 없는 한국 선수 경기 (2026-11-01 리뷰)", () => {
+  const fd = (
+    id: string,
+    kickoff: string,
+    home: string,
+    away: string,
+    status: "scheduled" | "finished" | "postponed" = "scheduled",
+  ) => ({
+    id,
+    comp: "BUNDESLIGA" as const,
+    round: "9",
+    kickoff,
+    home,
+    away,
+    score: null,
+    status,
+  });
+  const linkedMatch = match("2026-10-24T13:30:00.000Z", [
+    row(LEE, "start", 90),
+  ]);
+  const links = {
+    afToSlug: new Map([
+      [1, "sample-united"],
+      [2, "example-city"],
+    ]),
+    competitions: {
+      BUNDESLIGA: {
+        matches: [
+          fd("fd-1", "2026-10-24T13:30:00Z", "sample-united", "example-city"), // 원장과 연결
+          fd("fd-2", "2026-10-25T19:30:00Z", "other-fc", "sample-united"), // 누락(일요일 늦은 경기)
+          fd(
+            "fd-3",
+            "2026-10-22T18:00:00Z",
+            "sample-united",
+            "third-fc",
+            "postponed",
+          ), // 연기 — 제외
+          fd("fd-4", "2026-10-26T18:00:00Z", "sample-united", "fourth-fc"), // 구간 밖
+          fd("fd-5", "2026-10-21T18:00:00Z", "fifth-fc", "sixth-fc"), // 한국 선수 팀 아님
+        ],
+      },
+    },
+  };
+  const t = buildWeeklyTable(tableInput([linkedMatch], [LEE], { links }));
+  const base = {
+    table: t,
+    range: W43,
+    ledger: [linkedMatch],
+    links,
+  };
+
+  it("일정 근거 — 원장과 연결되지 않은 구간 안 경기만, 연기·구간 밖·다른 팀 제외 · 같은 경기 이월이면 pending", () => {
+    expect(findPossiblyMissing({ ...base, pending: [] })).toEqual([
+      {
+        source: "schedule",
+        id: "fd-2",
+        kickoff: "2026-10-25T19:30:00Z",
+        teams: ["other-fc", "sample-united"],
+        players: ["lee-a"],
+        pending: false,
+      },
+    ]);
+    const withPending = findPossiblyMissing({
+      ...base,
+      pending: [
+        { id: 900, comp: "BUNDESLIGA", kickoff: "2026-10-25T19:30:00.000Z" },
+        { id: 901, comp: null, kickoff: "2026-10-25T20:00:00.000Z" }, // 기타 대회 — 이월 근거
+        { id: 902, comp: null, kickoff: "2026-10-26T20:00:00.000Z" }, // 구간 밖
+        { id: 903, comp: "BUNDESLIGA", kickoff: "2026-10-21T18:00:00.000Z" }, // 6개 대회 이월은 일정 근거로만
+      ],
+    });
+    expect(withPending.map((c) => [c.source, c.id, c.pending])).toEqual([
+      ["schedule", "fd-2", true],
+      ["af-pending", "af-901", true],
+    ]);
+  });
+
+  it("원장 연결이 없어도 그 선수 경기 줄에 킥오프 ±3시간 경기가 있으면 누락 아님", () => {
+    const unlinked = { ...links, afToSlug: new Map<number, string>() };
+    const t2 = buildWeeklyTable(tableInput([linkedMatch], [LEE]));
+    expect(
+      findPossiblyMissing({
+        table: t2,
+        range: W43,
+        ledger: [linkedMatch],
+        links: unlinked,
+        pending: [],
+      }).map((c) => c.id),
+    ).toEqual(["fd-2"]);
+  });
+
+  it("안내 문구 — 팀·KST 킥오프·재생성 명령(--week --force)", () => {
+    const [c] = findPossiblyMissing({ ...base, pending: [] });
+    expect(
+      missingCandidateMessage("2026-43", c!, (s) =>
+        s === "sample-united" ? "샘플 유나이티드" : s,
+      ),
+    ).toBe(
+      "W43 누락 가능: other-fc–샘플 유나이티드 10월 26일 (월) 04:30 KST (일정상 주간 경기, 원장에 없음) — 다음 날 `npm run weekly -- --week 2026-43 --force`(Actions 수동 실행 force·week 입력)로 재생성",
+    );
   });
 });
 

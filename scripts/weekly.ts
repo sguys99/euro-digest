@@ -5,6 +5,7 @@
  * 의존성을 꾸리고, 단계 출력·요약을 쓰고, 종료 코드만 정한다.
  *
  *   npm run weekly -- --dry          # data/에 쓰지 않음 — 분석 블로그 단계(M3-08)는 dry여도 피드를 실제로 받는다(LLM 없음)
+ *   npm run weekly -- --write        # 로컬(dev)에서 data/에 쓴다 — 없으면 로컬 실행은 --dry와 같은 미리보기(Actions는 항상 씀)
  *   npm run weekly -- --force        # 그 주차 주간 리포트가 이미 있어도 실행
  *   npm run weekly -- --week 2026-44 # 지난 주차 지정
  *
@@ -66,6 +67,7 @@ async function main(): Promise<number> {
     env: resolveWeeklyEnv(env),
     llmMode: args.llmMode,
     dry: args.dry,
+    write: args.write,
     force: args.force,
     week: args.week,
     model,
