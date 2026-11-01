@@ -3,7 +3,53 @@
   "from": "2026-10-05T00:00:00Z",
   "to": "2026-10-11T23:59:59.999Z",
   "rows": [
-    { "player": "hong-gil-dong", "apps": 2, "minutes": 120, "goals": 1, "assists": 1 },
+    {
+      "player": "hong-gil-dong",
+      "apps": 2,
+      "minutes": 120,
+      "goals": 1,
+      "assists": 1,
+      "matches": [
+        {
+          "matchId": "fd-500001",
+          "kickoff": "2026-10-05T14:00:00Z",
+          "comp": "EPL",
+          "opponent": { "slug": "example-city", "name": "Example City" },
+          "home": true,
+          "result": { "for": 2, "against": 3 },
+          "status": "start",
+          "minutes": 90,
+          "goals": 1,
+          "assists": 0,
+          "goalMinutes": ["45+2"]
+        },
+        {
+          "matchId": "af-1638561",
+          "kickoff": "2026-10-08T18:45:00Z",
+          "comp": "OTHER",
+          "leagueRaw": "League Cup",
+          "opponent": { "slug": null, "name": "Lower League FC" },
+          "home": false,
+          "result": { "for": 1, "against": 1, "pens": { "for": 4, "against": 3 } },
+          "status": "sub",
+          "minutes": 30,
+          "goals": 0,
+          "assists": 1
+        },
+        {
+          "matchId": "fd-500002",
+          "kickoff": "2026-10-11T13:00:00Z",
+          "comp": "EPL",
+          "opponent": { "slug": "sample-united", "name": "Sample United" },
+          "home": false,
+          "result": { "for": 0, "against": 0 },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
     { "player": "kim-cheol-su", "apps": 2, "minutes": 120, "goals": 1, "assists": 1 }
   ],
   "mvp": "hong-gil-dong",

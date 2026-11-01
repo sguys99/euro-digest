@@ -34,13 +34,19 @@ import type {
   LedgerMatch,
   PlayerComp,
   WeeklyReport,
+  WeeklyReportMatch,
 } from "@/lib/schema";
 import { utcDate } from "@/lib/time";
 
 import { unwrapBriefOutput } from "./brief";
 import { estimateCost, type CostEstimate } from "./cost";
 import { withJosa } from "./josa";
-import { appearedIn, appearanceOf } from "./korean-players-data";
+import {
+  appearedIn,
+  appearanceOf,
+  fdMatchIdOf,
+  type LogContext,
+} from "./korean-players-data";
 import type { LlmRequest } from "./llm";
 import { foldName, substituteNames, type NameIndex } from "./names";
 
@@ -71,9 +77,18 @@ export const WEEKLY_LATIN_ALLOWED: ReadonlySet<string> = new Set(["PK", "MVP"]);
 
 // ─── ① 주간 표 ──────────────────────────────────────────────────────────
 
-/** 한 선수의 그 주 경기 1건(내부용 — LLM 입력·템플릿·검사 근거. 리포트 파일에는 저장하지 않는다) */
+/**
+ * 한 선수의 그 주 경기 1건 — LLM 입력·템플릿·검사 근거(필드 그대로)이자 리포트 `rows[].matches`의 원천(`reportMatchOf`로 스키마 형태
+ * 로 바꾼다 — 2026-11-01 사용자 결정). LLM 입력(`weeklyLlmInput`)은 고른 필드만 쓰므로 링크 필드를 더해도 입력이 바뀌지 않는다.
+ */
 export interface WeeklyMatchLine {
   matchId: string; // 원장 키 af-<id>
+  /** 리포트·korean.json 경기 id — 대회 파일 경기 id(fd-…, korean-players-data.ts fdMatchIdOf), 찾지 못하면 원장 키 */
+  logMatchId: string;
+  /** 대회 원문 이름 — comp "OTHER"이고 원장 league가 비어 있지 않을 때만(PlayerMatchLog.leagueRaw와 같다) */
+  leagueRaw: string | null;
+  /** 상대 팀 slug(team-ids.json 역매핑) — 없으면 null */
+  opponentSlug: string | null;
   kickoff: string; // UTC
   comp: PlayerComp;
   /** 대회 영문 이름 — 6개 대회는 competitions.json nameEn, 그 밖은 원장 league 원문 */
@@ -136,7 +151,14 @@ export interface WeeklyTableInput {
   playerSince: Readonly<Record<string, string>>;
   /** 6개 대회 id → 영문 이름(competitions.json nameEn) */
   compNames: Readonly<Partial<Record<PlayerComp, string>>>;
+  /**
+   * 리포트 경기 줄의 링크(상대 slug·대회 파일 경기 id) — korean.json 경기 로그와 같은 문맥(team-ids·data/competitions).
+   * 없으면 상대 slug null·경기 id는 원장 키(표·LLM 입력은 영향 없음).
+   */
+  links?: LogContext;
 }
+
+const NO_LINKS: LogContext = { afToSlug: new Map(), competitions: {} };
 
 /** MVP 점수(FR-92) */
 export function mvpPoints(r: {
@@ -193,6 +215,7 @@ function matchLineOf(
   m: LedgerMatch,
   afId: number,
   compNames: WeeklyTableInput["compNames"],
+  links: LogContext,
 ): WeeklyMatchLine | null {
   const row = m.korean.find((r) => r.player === afId);
   if (!row) return null;
@@ -207,6 +230,10 @@ function matchLineOf(
     : [];
   const line: WeeklyMatchLine = {
     matchId: m.id,
+    logMatchId: fdMatchIdOf(m, links) ?? m.id,
+    leagueRaw:
+      m.comp === null && m.league.trim() !== "" ? m.league.trim() : null,
+    opponentSlug: links.afToSlug.get(m[other].id) ?? null,
     kickoff: m.kickoff,
     comp,
     compName:
@@ -276,9 +303,10 @@ export function buildWeeklyTable(input: WeeklyTableInput): WeeklyTable {
       continue;
     }
     const afId = p.apiFootballId;
+    const links = input.links ?? NO_LINKS;
     const matches = inWeek
       .filter((m) => utcDate(m.kickoff) >= since)
-      .map((m) => matchLineOf(m, afId, input.compNames))
+      .map((m) => matchLineOf(m, afId, input.compNames, links))
       .filter((l): l is WeeklyMatchLine => l !== null);
     let apps = 0;
     let minutes = 0;
@@ -793,6 +821,35 @@ export function weeklyTemplateSummary(table: WeeklyTable): string {
 
 // ─── 리포트 ─────────────────────────────────────────────────────────────
 
+/**
+ * 내부 경기 줄 → 리포트 경기 줄(WeeklyReportMatchSchema — 키 순서 고정). goalMinutes는 개수가 골 수와 같을 때만 둔다(득점 목록이
+ * 불완전한 경기는 원장 goalsComplete false라 빈 배열 → 키 없음). PK 표시는 하지 않는다(분만 — 원장 kind는 쓰지 않음).
+ */
+export function reportMatchOf(l: WeeklyMatchLine): WeeklyReportMatch {
+  return {
+    matchId: l.logMatchId,
+    kickoff: l.kickoff,
+    comp: l.comp,
+    ...(l.leagueRaw !== null ? { leagueRaw: l.leagueRaw } : {}),
+    opponent: { slug: l.opponentSlug, name: l.opponent },
+    home: l.home,
+    result: {
+      for: l.score.for,
+      against: l.score.against,
+      ...(l.pens !== null
+        ? { pens: { for: l.pens.for, against: l.pens.against } }
+        : {}),
+    },
+    status: l.status,
+    minutes: l.minutes,
+    goals: l.goals,
+    assists: l.assists,
+    ...(l.goalMinutes.length > 0 && l.goalMinutes.length === l.goals
+      ? { goalMinutes: [...l.goalMinutes] }
+      : {}),
+  };
+}
+
 export function buildWeeklyReport(input: {
   table: WeeklyTable;
   summary: string;
@@ -810,6 +867,7 @@ export function buildWeeklyReport(input: {
       minutes: r.minutes,
       goals: r.goals,
       assists: r.assists,
+      matches: r.matches.map(reportMatchOf),
     })),
     mvp: table.mvp,
     ...(table.coMvp.length > 0 ? { coMvp: [...table.coMvp] } : {}),

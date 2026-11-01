@@ -674,3 +674,158 @@ describe("weeklyTemplateSummary — 코드 사실 문장(summaryAi:false)", () =
     ).toContain("등록 한국 선수가 없다");
   });
 });
+
+// ─── 리포트 경기 줄 ──────────────────────────────────────────────────────
+
+describe("리포트 rows[].matches — 경기별 줄 (2026-11-01 사용자 결정)", () => {
+  // team-ids 역매핑(af 팀 id → slug) + 대회 파일 경기(fd id 연결 — korean.json 경기 로그와 같은 규칙)
+  const links = {
+    afToSlug: new Map([
+      [1, "sample-united"],
+      [2, "example-city"],
+    ]),
+    competitions: {
+      BUNDESLIGA: {
+        matches: [
+          {
+            id: "fd-9001",
+            home: "sample-united",
+            away: "example-city",
+            kickoff: "2026-10-24T13:30:00Z",
+          },
+        ],
+      },
+    },
+  } as unknown as NonNullable<WeeklyTableInput["links"]>; // 표본 — 연결에 쓰는 필드만
+
+  const league = match(
+    "2026-10-24T13:30:00.000Z",
+    [row(LEE, "start", 90, 2, 0), row(KIM, "absent", null)],
+    {
+      ft: { home: 2, away: 1 },
+      goalsComplete: true,
+      goals: [
+        {
+          minute: 45,
+          extra: 2,
+          side: "home",
+          kind: "normal",
+          scorer: { id: 1001, name: "G. Lee" },
+          assist: null,
+        },
+        {
+          minute: 63,
+          extra: null,
+          side: "home",
+          kind: "penalty",
+          scorer: { id: 1001, name: "G. Lee" },
+          assist: null,
+        },
+        {
+          minute: 70,
+          extra: null,
+          side: "away",
+          kind: "own-goal",
+          scorer: { id: 1001, name: "G. Lee" },
+          assist: null,
+        },
+      ],
+    },
+  );
+  const cup = match(
+    "2026-10-21T18:45:00.000Z",
+    [
+      row(LEE, "unknown", null, 1, 0, "away"),
+      row(KIM, "bench", 0, 0, 0, "away"),
+    ],
+    {
+      leagueId: 81,
+      league: " DFB Pokal ",
+      comp: null,
+      home: { id: 55, name: "Lower League FC", formation: null },
+      away: { id: 1, name: "Sample United", formation: null },
+      ft: { home: 1, away: 1 },
+      pens: { home: 3, away: 4 },
+      status: "PEN",
+      goalsComplete: false,
+    },
+  );
+
+  const report = (input: WeeklyTableInput) =>
+    WeeklyReportSchema.parse(
+      buildWeeklyReport({
+        table: buildWeeklyTable(input),
+        summary: "요약.",
+        summaryAi: false,
+        generatedAt: "2026-10-26T00:00:00Z",
+      }),
+    );
+
+  it("경기 줄 — 시간 순, 상대 slug·대회 파일 경기 id·소속팀 기준 스코어·승부차기·출전 상태·골 분(자책골 제외)", () => {
+    const r = report(tableInput([league, cup], [LEE, KIM], { links }));
+    const lee = r.rows.find((x) => x.player === "lee-a")!;
+    expect(lee.matches).toEqual([
+      {
+        matchId: cup.id, // 대회 밖 경기 — 원장 키
+        kickoff: "2026-10-21T18:45:00.000Z",
+        comp: "OTHER",
+        leagueRaw: "DFB Pokal",
+        opponent: { slug: null, name: "Lower League FC" },
+        home: false,
+        result: { for: 1, against: 1, pens: { for: 4, against: 3 } },
+        status: "unknown",
+        minutes: null,
+        goals: 1,
+        assists: 0,
+        // 득점 목록 불완전(goalsComplete false) — goalMinutes 키 없음
+      },
+      {
+        matchId: "fd-9001",
+        kickoff: "2026-10-24T13:30:00.000Z",
+        comp: "BUNDESLIGA",
+        opponent: { slug: "example-city", name: "Example City" },
+        home: true,
+        result: { for: 2, against: 1 },
+        status: "start",
+        minutes: 90,
+        goals: 2,
+        assists: 0,
+        goalMinutes: ["45+2", "63"], // PK도 분만 · 자책골(70분) 제외
+      },
+    ]);
+    const kim = r.rows.find((x) => x.player === "kim-b")!;
+    expect(kim.matches?.map((l) => [l.status, l.minutes])).toEqual([
+      ["bench", 0],
+      ["absent", 0],
+    ]);
+    // 키 순서 고정(결정적 직렬화)
+    expect(Object.keys(lee.matches![1]!)).toEqual([
+      "matchId",
+      "kickoff",
+      "comp",
+      "opponent",
+      "home",
+      "result",
+      "status",
+      "minutes",
+      "goals",
+      "assists",
+      "goalMinutes",
+    ]);
+  });
+
+  it("경기가 없는 선수는 빈 배열 · 링크 문맥이 없으면 상대 slug null + 원장 키", () => {
+    const r = report(tableInput([league], [LEE, PARK]));
+    expect(r.rows.find((x) => x.player === "park-c")!.matches).toEqual([]);
+    const line = r.rows.find((x) => x.player === "lee-a")!.matches![0]!;
+    expect([line.matchId, line.opponent.slug]).toEqual([league.id, null]);
+  });
+
+  it("링크를 더해도 LLM 입력은 그대로다(프롬프트 회귀 없음)", () => {
+    const withLinks = buildWeeklyTable(
+      tableInput([league, cup], [LEE, KIM], { links }),
+    );
+    const without = buildWeeklyTable(tableInput([league, cup], [LEE, KIM]));
+    expect(weeklyLlmInput(withLinks)).toEqual(weeklyLlmInput(without));
+  });
+});

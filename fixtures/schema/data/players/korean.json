@@ -54,6 +54,7 @@
             "for": 2,
             "against": 1
           },
+          "status": "sub",
           "started": false,
           "minutes": 32,
           "goals": 1,
@@ -77,6 +78,7 @@
               "against": 3
             }
           },
+          "status": "start",
           "started": true,
           "minutes": 120,
           "goals": 1,

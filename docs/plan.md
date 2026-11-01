@@ -785,7 +785,10 @@ const KoreanPlayer = z.strictObject({
 const WeeklyReport = z.object({
   week: z.string().regex(/^\d{4}-(?:0[1-9]|[1-4]\d|5[0-3])$/), from: Iso, to: Iso,   // ISO 8601 주차 01~53(연도는 ISO week-year, 예: 2026-12-28 → "2026-53") · from/to = UTC 월 00:00 ~ 일 23:59:59.999(isoWeekRangeUtc, D65 ①)
   rows: z.array(z.object({ player: Slug, apps: z.number(), minutes: z.number(),
-                           goals: z.number(), assists: z.number() })),   // 순서 = MVP 순위
+                           goals: z.number(), assists: z.number(),
+                           matches: z.array(WeeklyReportMatch).optional() })),   // 순서 = MVP 순위 · matches = 그 주 경기별 줄(시간순, 2026-11-01 사용자 결정 — 새 파일은 항상, 경기 없으면 [])
+  // WeeklyReportMatch = { matchId(PlayerMatchLog와 같은 규칙), kickoff, comp, leagueRaw?(OTHER만), opponent, home, result{for,against,pens?}|null,
+  //   status: AppearanceStatus, minutes|null, goals, assists|null, goalMinutes?: string[] ("63"·"45+2", 자책골 제외, 개수 = goals, 득점 목록 불완전이면 키 없음) }
   mvp: Slug.nullable(),                              // 코드 규칙: 골×3 + 도움×2 + 출전 → 동점 출전 시간 → 골(D65 ②), 출전 0명이면 null
   coMvp: z.array(Slug).min(1).optional(),            // D65 ② 공동 MVP 중 mvp(가나다 첫 선수)를 뺀 나머지, 가나다순 — 단독이면 키 없음, mvp null이면 금지
   summary: z.string(),                               // 총평 3~5문장
@@ -983,7 +986,8 @@ const PlayerMatchLog = z.object({
   matchId: z.string().min(1), comp: PlayerComp, leagueRaw: LeagueRaw.optional(), kickoff: Iso, opponent: Opponent, home: z.boolean(),
   result: z.object({ for: z.number().int().min(0), against: z.number().int().min(0),
                     pens: z.object({ for: z.number().int().min(0), against: z.number().int().min(0) }).optional() }).nullable(),   // pens = 승부차기(소속팀 기준, PEN 경기만 — 2026-11-01 사용자 결정)
-  started: z.boolean().nullable(), minutes: z.number().int().min(0).nullable(),   // 0 = 미출전, null = 정보 없음
+  status: AppearanceStatus,                          // "start"|"sub"|"bench"|"absent"|"unknown" — 원장 출전 상태와 같은 공용 enum(2026-11-01 사용자 결정, 필수)
+  started: z.boolean().nullable(), minutes: z.number().int().min(0).nullable(),   // 0 = 미출전, null = 정보 없음 · status와 일치 검사
   goals: z.number().int().min(0), assists: z.number().int().min(0).nullable(),
 });
 const KoreanPlayerRecord = z.object({

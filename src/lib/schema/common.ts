@@ -149,3 +149,18 @@ export function isNotAfter(a: string, b: string): boolean {
 export function isBefore(a: string, b: string): boolean {
   return Date.parse(a) < Date.parse(b);
 }
+
+/**
+ * 한국 선수 출전 상태(공용 — 2026-11-01 사용자 결정): 원장 행(`LedgerKoreanRow.status`, D33 ②)·경기 로그(`PlayerMatchLog.status`)·
+ * 주간 리포트 경기 줄(`WeeklyReport.rows[].matches[].status`)이 같은 값을 쓴다.
+ * start 선발 · sub 교체 출전(교체 명단 + 출전 시간 > 0) · bench 벤치(교체 명단, 출전 없음) · absent 명단 제외(그 팀 라인업이 있는데
+ * 없음) · unknown 라인업 없음(커버리지가 없는 대회·폴백 — 출전 여부를 모른다).
+ */
+export const AppearanceStatusSchema = z.enum([
+  "start",
+  "sub",
+  "bench",
+  "absent",
+  "unknown",
+]);
+export type AppearanceStatus = z.infer<typeof AppearanceStatusSchema>;

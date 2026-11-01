@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  AppearanceStatusSchema,
   KoreanPlayerRecordSchema,
   KoreanPlayerSchema,
   KoreanPlayersDataFileSchema,
   KoreanPlayersFileSchema,
+  LedgerAppearanceSchema,
+  PlayerMatchLogSchema,
+  WeeklyReportMatchSchema,
   WeeklyReportSchema,
 } from "@/lib/schema";
 
@@ -337,5 +341,109 @@ describe("KoreanPlayersDataFile — data/players/korean.json (초안, F6)", () =
         players: [record, record],
       }),
     ).toEqual(["players.1.slug"]);
+  });
+});
+
+describe("출전 상태 status — 경기 로그(필수)·주간 경기 줄 (2026-11-01 사용자 결정)", () => {
+  const file = validFixture(
+    KoreanPlayersDataFileSchema,
+    "data/players/korean.json",
+  );
+  const record = at(file.players, 0);
+  const sub = at(record.recent, 0);
+
+  it("공용 enum은 원장 출전 상태와 같은 스키마다", () => {
+    expect(AppearanceStatusSchema).toBe(LedgerAppearanceSchema);
+    expect(AppearanceStatusSchema.options).toEqual([
+      "start",
+      "sub",
+      "bench",
+      "absent",
+      "unknown",
+    ]);
+  });
+
+  it("경기 로그 status는 필수", () => {
+    expect(
+      issuePaths(KoreanPlayerRecordSchema, {
+        ...record,
+        recent: [omit(sub, "status")],
+      }),
+    ).toEqual(["recent.0.status"]);
+  });
+
+  it("벤치·명단 제외는 started false + 0분, unknown은 null·null", () => {
+    for (const status of ["bench", "absent"] as const) {
+      expect(passes(PlayerMatchLogSchema, { ...sub, status, minutes: 0 })).toBe(
+        true,
+      );
+      expect(issuePaths(PlayerMatchLogSchema, { ...sub, status })).toEqual([
+        "minutes",
+      ]);
+    }
+    expect(
+      passes(PlayerMatchLogSchema, {
+        ...sub,
+        status: "unknown",
+        started: null,
+        minutes: null,
+      }),
+    ).toBe(true);
+    expect(
+      issuePaths(PlayerMatchLogSchema, {
+        ...sub,
+        status: "unknown",
+        minutes: null,
+      }),
+    ).toEqual(["started"]);
+    expect(
+      issuePaths(PlayerMatchLogSchema, { ...sub, status: "start" }),
+    ).toEqual(["started"]);
+  });
+});
+
+describe("WeeklyReport.rows[].matches — 경기별 줄 (2026-11-01 사용자 결정)", () => {
+  const report = validFixture(
+    WeeklyReportSchema,
+    "data/players/weekly/2026-41.json",
+  );
+  const row = at(report.rows, 0);
+  const lines = row.matches ?? [];
+  const goal = at(lines, 0);
+
+  it("선택 필드 — 이전 파일(matches 없음)도 통과한다", () => {
+    expect(at(report.rows, 1).matches).toBeUndefined();
+    expect(lines.map((l) => l.status)).toEqual(["start", "sub", "bench"]);
+  });
+
+  it("goalMinutes는 '63'·'45+2' 형식, 개수 = goals", () => {
+    expect(goal.goalMinutes).toEqual(["45+2"]);
+    expect(
+      issuePaths(WeeklyReportMatchSchema, { ...goal, goalMinutes: ["45분"] }),
+    ).toEqual(["goalMinutes.0"]);
+    expect(
+      issuePaths(WeeklyReportMatchSchema, {
+        ...goal,
+        goalMinutes: ["12", "45+2"],
+      }),
+    ).toEqual(["goalMinutes"]);
+    expect(
+      issuePaths(WeeklyReportMatchSchema, { ...goal, goalMinutes: [] }),
+    ).toContain("goalMinutes"); // min(1) — 골 없는 경기는 키 없음
+  });
+
+  it("leagueRaw는 OTHER만, 벤치는 0분", () => {
+    expect(
+      issuePaths(WeeklyReportMatchSchema, { ...goal, leagueRaw: "FA Cup" }),
+    ).toEqual(["leagueRaw"]);
+    expect(
+      issuePaths(WeeklyReportMatchSchema, { ...goal, status: "bench" }),
+    ).toEqual(["minutes"]);
+    expect(
+      issuePaths(WeeklyReportSchema, {
+        ...report,
+        rows: [{ ...row, matches: [{ ...goal, status: "late" }] }],
+      }),
+    ).toEqual(["rows.0.matches.0.status"]);
   });
 });

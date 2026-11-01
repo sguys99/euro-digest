@@ -7,6 +7,7 @@
  * 경기 로그 (`playerMatchLogOf`) — 원장 한국 선수 행 1개 → `PlayerMatchLog`
  *   - 출전 상태 → started·minutes: start → true·원장 분 · sub → false·원장 분 · bench(교체 명단, 출전 없음)·absent(명단 제외) →
  *     false·0(부록 A "0 = 명단 제외·미출전") · unknown(라인업 없음 — 출전 여부를 모른다) → null·null. 골·도움은 원장 값(자책골 제외).
+ *     `status`는 원장 출전 상태 그대로(공용 AppearanceStatus — 벤치·명단 제외를 나눈다, 2026-11-01 사용자 결정).
  *   - 홈/원정·스코어는 소속팀(행의 side) 기준 — result.for = 그 쪽 ft, against = 상대 ft(정규시간 + 연장, 승부차기 제외 — match-data.ts
  *     공통 규칙). 승부차기로 끝난 경기(원장 pens)는 result.pens = 소속팀 기준 승부차기 스코어(2026-11-01 사용자 결정 — M3-07).
  *   - 상대 = 상대 팀 API-Football id → `configs/team-ids.json` 역매핑 slug(없으면 null) + 원장 원문 이름.
@@ -145,6 +146,7 @@ export function playerMatchLogOf(
         ? { pens: { for: m.pens[own], against: m.pens[other] } }
         : {}),
     },
+    status: row.status,
     started,
     minutes,
     goals: row.goals,

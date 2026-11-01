@@ -133,6 +133,7 @@ describe("playerMatchLogOf — 원장 행 → 경기 로그 (FR-62)", () => {
       opponent: { slug: "example-city", name: "Example City" },
       home: true,
       result: { for: 2, against: 1 },
+      status: "start",
       started: true,
       minutes: 90,
       goals: 1,
@@ -146,6 +147,7 @@ describe("playerMatchLogOf — 원장 행 → 경기 로그 (FR-62)", () => {
       comp: "UCL",
       home: false,
       result: { for: 1, against: 1 },
+      status: "sub",
       started: false,
       minutes: 20,
     });
@@ -153,6 +155,8 @@ describe("playerMatchLogOf — 원장 행 → 경기 로그 (FR-62)", () => {
       matchId: "fd-15",
       home: false,
       result: { for: 0, against: 1 },
+      // 명단 제외 — 원장 분 null도 0으로(벤치와 같은 started·minutes, status로만 나뉜다 — 2026-11-01)
+      status: "absent",
       started: false,
       minutes: 0,
       goals: 0,
@@ -169,6 +173,7 @@ describe("playerMatchLogOf — 원장 행 → 경기 로그 (FR-62)", () => {
       home: false,
       // 승부차기 경기 — 스코어는 정규시간 + 연장(승부차기 제외, match-data.ts 공통 규칙), 승부차기는 pens(소속팀 기준 — M3-07)
       result: { for: 1, against: 1, pens: { for: 4, against: 3 } },
+      status: "bench",
       started: false,
       minutes: 0,
       goals: 0,
@@ -180,6 +185,7 @@ describe("playerMatchLogOf — 원장 행 → 경기 로그 (FR-62)", () => {
     expect(logOf("af-16")).toMatchObject({
       comp: "OTHER",
       leagueRaw: "League Cup",
+      status: "unknown",
       started: null,
       minutes: null,
       goals: 1,

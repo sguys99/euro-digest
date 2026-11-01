@@ -3,7 +3,8 @@
  * 규칙(표·MVP·LLM 입력·검증·템플릿)은 weekly-kr.ts 순수 함수, 여기는 읽기 → 판정 → LLM(Batches) → 쓰기만 한다.
  *
  * 흐름
- *   ① 읽기: configs(korean-players·names.ko·competitions) + 원장 meta·그 주 UTC 구간의 달 파일(data/matches). meta가 없거나 깨졌거나
+ *   ① 읽기: configs(korean-players·names.ko·competitions·team-ids) + 원장 meta·그 주 UTC 구간의 달 파일(data/matches) + 대회 파일
+ *      (data/competitions — 리포트 경기 줄 링크만, 없거나 깨지면 링크 없이). meta가 없거나 깨졌거나
  *      달 파일이 깨졌으면 던진다(단계 실패 — 표를 지어내지 않는다). 달 파일이 아직 없으면 빈 달로 본다(경고).
  *   ② 표·MVP(코드) — 항상 발행한다. 실행 시각에 UTC 주가 남아 있으면(정기 실행 월 08:00 KST = 일 23:00 UTC) 경고만 남긴다.
  *   ③ 총평(LLM 호출 지점 #3 — Message Batches API, D28): 출전 선수가 없으면 호출하지 않고 템플릿. 시도마다 최악값 예상(배치 50%)을
@@ -36,6 +37,7 @@ import {
 import { nowUtcIso, utcMonth } from "@/lib/time";
 
 import { readConfigFile } from "./config-files";
+import type { LogContext } from "./korean-players-data";
 import {
   LlmMockFixtureError,
   LlmRequestError,
@@ -45,6 +47,9 @@ import {
 } from "./llm";
 import { readLedgerMeta, readLedgerMonth } from "./match-ledger";
 import { buildNameIndex } from "./names";
+import { afToSlugOf } from "./team-files";
+import { readCompetitionFiles } from "./team-files-io";
+import { loadTeamIds } from "./team-ids";
 import {
   WEEKLY_KR_MAX_ATTEMPTS,
   WEEKLY_REPORT_DIR,
@@ -123,9 +128,37 @@ export interface KoreanWeeklyInputs {
   missingMonths: string[];
 }
 
+/**
+ * 리포트 경기 줄 링크(상대 slug·대회 파일 경기 id — korean.json 경기 로그와 같은 문맥). 던지지 않는다: team-ids가 깨졌으면
+ * 링크 없이(상대 slug null·원장 키) 표를 만든다(표·MVP·총평 입력은 링크와 무관 — 발행을 멈추지 않는다).
+ */
+async function loadReportLinks(
+  ctx: Pick<WeeklyStageContext, "rootDir" | "dataDir"> & {
+    logger?: Pick<WeeklyStageContext["logger"], "warn">;
+  },
+): Promise<LogContext> {
+  const warn = (event: string, fields: Record<string, unknown>) =>
+    ctx.logger?.warn(event, fields);
+  try {
+    const [teamIds, competitions] = await Promise.all([
+      loadTeamIds(ctx.rootDir),
+      readCompetitionFiles(ctx.dataDir, warn),
+    ]);
+    return { afToSlug: afToSlugOf(teamIds), competitions };
+  } catch (error) {
+    warn("weekly.korean.links-unavailable", { error: errorText(error) });
+    return { afToSlug: new Map(), competitions: {} };
+  }
+}
+
 /** 설정·원장 → 표(던질 수 있다 — 단계 실패) */
 export async function loadKoreanWeeklyInputs(
-  ctx: Pick<WeeklyStageContext, "rootDir" | "dataDir" | "week" | "weekRange">,
+  ctx: Pick<
+    WeeklyStageContext,
+    "rootDir" | "dataDir" | "week" | "weekRange"
+  > & {
+    logger?: Pick<WeeklyStageContext["logger"], "warn">;
+  },
 ): Promise<KoreanWeeklyInputs> {
   const [players, namesFile, competitions, meta] = await Promise.all([
     readConfigFile(ctx.rootDir, "korean-players.json", KoreanPlayersFileSchema),
@@ -161,6 +194,7 @@ export async function loadKoreanWeeklyInputs(
     ledger,
     playerSince: meta.value.playerSince,
     compNames,
+    links: await loadReportLinks(ctx),
   });
   const from = Date.parse(ctx.weekRange.from);
   const to = Date.parse(ctx.weekRange.to);

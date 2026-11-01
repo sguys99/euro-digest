@@ -18,6 +18,7 @@
 import { z } from "zod";
 
 import {
+  AppearanceStatusSchema,
   CompIdSchema,
   IsoDateSchema,
   IsoSchema,
@@ -78,13 +79,7 @@ export type LedgerGoal = z.infer<typeof LedgerGoalSchema>;
  * 출전 없음) · absent 명단 제외(그 팀 라인업이 있는데 없음) · unknown 라인업 없음(커버리지가 없는 대회 — 출전 여부를 모른다).
  * `unknown`은 D33의 4종에 더한 값이다(부록 A `PlayerMatchLog.started`·`minutes`의 null = 정보 없음으로 이어진다).
  */
-export const LedgerAppearanceSchema = z.enum([
-  "start",
-  "sub",
-  "bench",
-  "absent",
-  "unknown",
-]);
+export const LedgerAppearanceSchema = AppearanceStatusSchema; // 공용 출전 상태(common.ts — 2026-11-01)
 export type LedgerAppearance = z.infer<typeof LedgerAppearanceSchema>;
 
 /** 등록 한국 선수 행 — configs/korean-players.json 활성 선수 중 그 경기 양 팀(또는 라인업)에 있는 선수 */

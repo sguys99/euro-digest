@@ -6,7 +6,9 @@
 import { z } from "zod";
 
 import {
+  AppearanceStatusSchema,
   CompIdSchema,
+  type AppearanceStatus,
   IsoDateSchema,
   IsoSchema,
   PositionSchema,
@@ -41,65 +43,12 @@ export const KoreanPlayersFileSchema = z
   .superRefine(uniqueBy((p) => p.slug, "slug", "선수 slug"));
 export type KoreanPlayersFile = z.infer<typeof KoreanPlayersFileSchema>;
 
-/**
- * 한국 선수 주간 리포트 (부록 A, FR-90~93).
- * week는 ISO 8601 주차 "YYYY-WW"(01~53) — 연도는 ISO week-year다(달력 연도와 다를 수 있음).
- * 예) 2026-12-28(월)이 속한 주 → "2026-53", 2027-01-01(금)도 "2026-53".
- * 정규식은 형식·범위만 본다(그해에 53주가 실제로 있는지, from/to와의 일치는 생성 코드·테스트가 보장).
- * 2026-11-01 사용자 결정(PRD §15 D65, M3-07):
- *   ① 기간 from·to는 **UTC 월 00:00 ~ 일 23:59:59.999**(src/lib/time.ts isoWeekRangeUtc — 경기일 기준)
- *   ② `coMvp` — 점수·출전 시간·골이 모두 같은 공동 MVP 중 `mvp`(가나다 첫 선수)를 뺀 나머지(가나다순). 단독이면 키 없음
- *   ③ `summaryAi` — true = LLM 총평(화면 'AI 작성' 라벨), false = 코드 템플릿 문장으로 강등(검증 실패·배치 미완료·비용 가드)
- */
-export const WeeklyReportSchema = z
-  .object({
-    week: z.string().regex(/^\d{4}-(?:0[1-9]|[1-4]\d|5[0-3])$/, {
-      error: "주차는 YYYY-WW (01~53)",
-    }),
-    from: IsoSchema,
-    to: IsoSchema,
-    rows: z.array(
-      z.object({
-        player: SlugSchema, // 선수 slug
-        apps: z.number(),
-        minutes: z.number(),
-        goals: z.number(),
-        assists: z.number(),
-      }),
-    ),
-    mvp: SlugSchema.nullable(), // 선수 slug, 코드 규칙: 골×3 + 도움×2 + 출전 (FR-92) — 출전 0명이면 null
-    coMvp: z.array(SlugSchema).min(1).optional(), // 공동 MVP(mvp 제외, 가나다순 — D65 ②)
-    summary: z.string(), // 총평 3~5문장 (FR-91) — LLM 또는 코드 템플릿
-    summaryAi: z.boolean(), // true = LLM이 쓴 총평('AI 작성' 라벨), false = 템플릿 강등 (D65·M3-07)
-    generatedAt: IsoSchema,
-  })
-  .superRefine((r, ctx) => {
-    if (r.coMvp === undefined) return;
-    if (r.mvp === null) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["coMvp"],
-        message: "coMvp는 mvp가 있을 때만",
-      });
-    }
-    const seen = new Set<string>();
-    r.coMvp.forEach((slug, i) => {
-      if (slug === r.mvp || seen.has(slug)) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["coMvp", i],
-          message: "coMvp에 mvp 또는 중복 slug",
-        });
-      }
-      seen.add(slug);
-    });
-  });
-export type WeeklyReport = z.infer<typeof WeeklyReportSchema>;
-
 // ─── v0.1 — 2026-10-10 사용자 확인 — `data/players/korean.json` ────────────────
 // 2026-11-01 사용자 결정(PRD §15 D65, M3-02·M3-03): ① 컵 대회 원문 이름 `leagueRaw`(comp "OTHER"일 때만 — 원장 `league` 원문,
 // 예 "DFB Pokal". 화면은 names.ko로 한글 표기, 미등록이면 원문) ② 집계 시작일 — 파일 `since`(원장 meta.since 복사)·선수별 `since`
 // (meta.playerSince 복사, 추적하지 않는 선수는 null). 시즌 누적의 고유 키는 comp + leagueRaw(OTHER 대회가 여럿일 수 있다).
+// 2026-11-01 사용자 결정 ③: 경기 로그 `status`(공용 출전 상태 — 필수, started·minutes는 호환으로 유지)·주간 리포트 경기 줄
+// `rows[].matches`(부록 A 주간 리포트 — 아래로 옮겼다).
 
 /** 컵 대회 원문 이름(원장 `league`) — comp가 "OTHER"일 때만 둔다 */
 const LeagueRawSchema = z.string().min(1);
@@ -132,6 +81,139 @@ export const OpponentSchema = z.object({
   name: z.string().min(1), // 데이터 API 원문 팀 이름(영문) — 표시할 때 names.ko로 치환(FR-24)
 });
 export type Opponent = z.infer<typeof OpponentSchema>;
+
+/**
+ * 공용 출전 상태 → 선발 여부·출전 시간 규칙(경기 로그·주간 경기 줄): start → 선발 · sub → 교체 · bench·absent → 선발 아님 + 0분 ·
+ * unknown → 선발 null + 분 null(정보 없음). 파이프라인이 원장 행 하나에서 함께 만들므로 어긋나면 생성 코드 오류다.
+ */
+function minutesMatchStatus(
+  v: { status: AppearanceStatus; minutes: number | null },
+  ctx: z.RefinementCtx,
+): void {
+  const ok =
+    v.status === "bench" || v.status === "absent"
+      ? v.minutes === 0
+      : v.status === "unknown"
+        ? v.minutes === null
+        : true;
+  if (!ok) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["minutes"],
+      message:
+        "출전 시간이 출전 상태와 맞지 않음(bench·absent = 0, unknown = null)",
+    });
+  }
+}
+
+/** 골 분 표기 — 원장 득점 이벤트 분 "63", 추가 시간 "45+2"(minute + extra) */
+const GoalMinuteSchema = z.string().regex(/^\d{1,3}(?:\+\d{1,2})?$/, {
+  error: '골 분은 "63" 또는 "45+2"',
+});
+
+/**
+ * 주간 리포트 경기 줄 1건(`WeeklyReport.rows[].matches[]` — 2026-11-01 사용자 결정). 원장(`data/matches`)의 그 선수 행 1개에서 만든다.
+ * matchId·comp·leagueRaw·opponent·home·result는 경기 로그(`PlayerMatchLog`)와 같은 규칙(같은 경기면 같은 값 — korean.json 최근 경기와
+ * 맞춰 볼 수 있다). goalMinutes = 자책골을 뺀 그 선수 득점의 분(시간 순) — 득점 목록이 불완전한 경기(원장 goalsComplete false)·
+ * 골 없는 경기는 키 없음. 있으면 개수 = goals.
+ */
+export const WeeklyReportMatchSchema = z
+  .object({
+    matchId: z.string().min(1), // PlayerMatchLog.matchId와 같은 규칙 — 대회 파일 경기 id, 찾지 못하면 원장 키 af-<id>
+    kickoff: IsoSchema, // UTC — KST 표시는 화면에서
+    comp: PlayerCompSchema,
+    leagueRaw: LeagueRawSchema.optional(), // comp OTHER만 — 대회 원문 이름(D65)
+    opponent: OpponentSchema,
+    home: z.boolean(),
+    result: z
+      .object({
+        for: z.number().int().min(0),
+        against: z.number().int().min(0),
+        pens: z
+          .object({
+            for: z.number().int().min(0),
+            against: z.number().int().min(0),
+          })
+          .optional(), // 승부차기(소속팀 기준) — 승부차기로 끝난 경기만
+      })
+      .nullable(), // 소속팀 기준 스코어(정규시간 + 연장), 정보 없으면 null
+    status: AppearanceStatusSchema,
+    minutes: z.number().int().min(0).nullable(), // start·sub = 원장 분(기록 없으면 null) · bench·absent 0 · unknown null
+    goals: z.number().int().min(0),
+    assists: z.number().int().min(0).nullable(), // 정보 없으면 null
+    goalMinutes: z.array(GoalMinuteSchema).min(1).optional(),
+  })
+  .superRefine(leagueRawOnlyOther)
+  .superRefine(minutesMatchStatus)
+  .superRefine((v, ctx) => {
+    if (v.goalMinutes !== undefined && v.goalMinutes.length !== v.goals) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["goalMinutes"],
+        message: "goalMinutes 개수는 goals와 같아야 함",
+      });
+    }
+  });
+export type WeeklyReportMatch = z.infer<typeof WeeklyReportMatchSchema>;
+
+/**
+ * 한국 선수 주간 리포트 (부록 A, FR-90~93).
+ * week는 ISO 8601 주차 "YYYY-WW"(01~53) — 연도는 ISO week-year다(달력 연도와 다를 수 있음).
+ * 예) 2026-12-28(월)이 속한 주 → "2026-53", 2027-01-01(금)도 "2026-53".
+ * 정규식은 형식·범위만 본다(그해에 53주가 실제로 있는지, from/to와의 일치는 생성 코드·테스트가 보장).
+ * 2026-11-01 사용자 결정(PRD §15 D65, M3-07):
+ *   ① 기간 from·to는 **UTC 월 00:00 ~ 일 23:59:59.999**(src/lib/time.ts isoWeekRangeUtc — 경기일 기준)
+ *   ② `coMvp` — 점수·출전 시간·골이 모두 같은 공동 MVP 중 `mvp`(가나다 첫 선수)를 뺀 나머지(가나다순). 단독이면 키 없음
+ *   ③ `summaryAi` — true = LLM 총평(화면 'AI 작성' 라벨), false = 코드 템플릿 문장으로 강등(검증 실패·배치 미완료·비용 가드)
+ *   ④ `rows[].matches` — 행마다 그 주 경기별 줄(WeeklyReportMatchSchema, 시간 순). 선택 필드: 이 결정 전 파일에는 없다(마이그레이션 없음)
+ * 주간 리포트는 경기 줄이 korean.json과 같은 정의(상대·리그 원문)를 써서 이 절 뒤에 둔다.
+ */
+export const WeeklyReportSchema = z
+  .object({
+    week: z.string().regex(/^\d{4}-(?:0[1-9]|[1-4]\d|5[0-3])$/, {
+      error: "주차는 YYYY-WW (01~53)",
+    }),
+    from: IsoSchema,
+    to: IsoSchema,
+    rows: z.array(
+      z.object({
+        player: SlugSchema, // 선수 slug
+        apps: z.number(),
+        minutes: z.number(),
+        goals: z.number(),
+        assists: z.number(),
+        // 그 주 경기별 줄(시간 순 — 출전하지 않은 벤치·명단 제외·라인업 없음 경기 포함). 2026-11-01 사용자 결정 — 이전 파일에는 없다
+        matches: z.array(WeeklyReportMatchSchema).optional(),
+      }),
+    ),
+    mvp: SlugSchema.nullable(), // 선수 slug, 코드 규칙: 골×3 + 도움×2 + 출전 (FR-92) — 출전 0명이면 null
+    coMvp: z.array(SlugSchema).min(1).optional(), // 공동 MVP(mvp 제외, 가나다순 — D65 ②)
+    summary: z.string(), // 총평 3~5문장 (FR-91) — LLM 또는 코드 템플릿
+    summaryAi: z.boolean(), // true = LLM이 쓴 총평('AI 작성' 라벨), false = 템플릿 강등 (D65·M3-07)
+    generatedAt: IsoSchema,
+  })
+  .superRefine((r, ctx) => {
+    if (r.coMvp === undefined) return;
+    if (r.mvp === null) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["coMvp"],
+        message: "coMvp는 mvp가 있을 때만",
+      });
+    }
+    const seen = new Set<string>();
+    r.coMvp.forEach((slug, i) => {
+      if (slug === r.mvp || seen.has(slug)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["coMvp", i],
+          message: "coMvp에 mvp 또는 중복 slug",
+        });
+      }
+      seen.add(slug);
+    });
+  });
+export type WeeklyReport = z.infer<typeof WeeklyReportSchema>;
 
 /** 대회별 시즌 누적 (FR-61 시즌 누적·UCL 출전 여부, FR-62 시즌 기록). */
 export const PlayerSeasonStatsSchema = z
@@ -168,12 +250,27 @@ export const PlayerMatchLogSchema = z
           .optional(),
       })
       .nullable(), // 소속팀 기준 스코어(정규시간 + 연장), 정보 없으면 null
-    started: z.boolean().nullable(), // 선발 여부 — 폴백이면 null
-    minutes: z.number().int().min(0).nullable(), // 0 = 명단 제외·미출전, null = 정보 없음(폴백)
+    // 출전 상태(공용 — 2026-11-01 사용자 결정): 벤치(bench)와 명단 제외(absent)를 나눈다. started·minutes는 호환용으로 함께 둔다
+    status: AppearanceStatusSchema,
+    started: z.boolean().nullable(), // 선발 여부 — status에서 나온다(start true · unknown null · 나머지 false)
+    minutes: z.number().int().min(0).nullable(), // 0 = 벤치·명단 제외, null = 정보 없음(unknown 또는 기록 없음)
     goals: z.number().int().min(0),
     assists: z.number().int().min(0).nullable(), // 폴백이면 null
   })
-  .superRefine(leagueRawOnlyOther);
+  .superRefine(leagueRawOnlyOther)
+  .superRefine(minutesMatchStatus)
+  .superRefine((v, ctx) => {
+    const expected =
+      v.status === "start" ? true : v.status === "unknown" ? null : false;
+    if (v.started !== expected) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["started"],
+        message:
+          "started가 status와 맞지 않음(start true · unknown null · 나머지 false)",
+      });
+    }
+  });
 export type PlayerMatchLog = z.infer<typeof PlayerMatchLogSchema>;
 
 /** 다음 경기 (FR-61, 캘린더 FR-123 입력). */

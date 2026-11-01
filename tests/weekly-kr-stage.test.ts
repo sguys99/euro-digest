@@ -451,12 +451,24 @@ describe("runKoreanWeekly — 읽기·쓰기", () => {
     dir = null;
   });
 
-  async function repo(): Promise<string> {
+  /** links: team-ids·대회 파일(data/competitions)까지 복사 — 리포트 경기 줄의 상대 slug·fd 경기 id 연결 */
+  async function repo(opts: { links?: boolean } = {}): Promise<string> {
     dir = await mkdtemp(path.join(tmpdir(), "weekly-kr-"));
     await mkdir(path.join(dir, "configs/prompts"), { recursive: true });
     await mkdir(path.join(dir, "data/matches"), { recursive: true });
     for (const f of ["names.ko.json", "competitions.json"]) {
       await cp(path.join(ROOT, "configs", f), path.join(dir, "configs", f));
+    }
+    if (opts.links) {
+      await cp(
+        path.join(ROOT, "configs/team-ids.json"),
+        path.join(dir, "configs/team-ids.json"),
+      );
+      await cp(
+        path.join(ROOT, "data/competitions"),
+        path.join(dir, "data/competitions"),
+        { recursive: true },
+      );
     }
     await cp(
       path.join(ROOT, "configs/prompts/weekly-kr.md"),
@@ -483,7 +495,7 @@ describe("runKoreanWeekly — 읽기·쓰기", () => {
   }
 
   it("쓰기 — 스키마 통과 파일, 이미 있으면 force 없이 건너뜀", async () => {
-    const root = await repo();
+    const root = await repo({ links: true });
     const f = fakeClient([{ kind: "ok", text: GOOD }]);
     const { ctx } = ctxWith({ client: f.client, rootDir: root, dry: false });
     const report = await runKoreanWeekly(ctx);
@@ -504,6 +516,21 @@ describe("runKoreanWeekly — 읽기·쓰기", () => {
       summaryAi: true,
     });
     expect(file.rows).toHaveLength(7);
+    // 경기별 줄(2026-11-01) — 김민재: UCL 선발 + 10-25 프라이부르크전 명단 제외, 상대 slug·대회 파일 경기 id 연결
+    const kim = file.rows.find((r) => r.player === "kim-min-jae")!;
+    expect(kim.matches?.map((l) => [l.kickoff, l.status, l.minutes])).toEqual([
+      ["2026-10-21T19:00:00.000Z", "start", 45],
+      ["2026-10-25T16:30:00.000Z", "absent", 0],
+    ]);
+    expect(kim.matches?.every((l) => l.opponent.slug !== null)).toBe(true);
+    expect(kim.matches?.map((l) => l.matchId.slice(0, 3))).toEqual([
+      "fd-",
+      "fd-",
+    ]);
+    const lee = file.rows.find((r) => r.player === "lee-jae-sung")!;
+    expect(lee.matches?.map((l) => [l.goals, l.goalMinutes])).toEqual([
+      [1, ["63"]],
+    ]);
     const again = await runKoreanWeekly(
       ctxWith({ client: f.client, rootDir: root, dry: false }).ctx,
     );
