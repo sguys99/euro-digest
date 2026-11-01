@@ -329,6 +329,13 @@ export function readReportEnv(env: Env): ReportEnv {
 
 /** dry-run 출력 */
 export function formatPreview(preview: PreviewResult): string {
+  if (preview.action === "would-skip") {
+    return [
+      `[report-issue] dry-run — 같은 원인의 열린 이슈 #${preview.number}가 있어 건너뛸 예정 (이 kind는 댓글을 달지 않음)`,
+      `  이슈: ${preview.url}`,
+      `  원인: ${preview.key} · fingerprint ${preview.fingerprint}`,
+    ].join("\n");
+  }
   if (preview.action === "would-comment") {
     return [
       `[report-issue] dry-run — 열린 이슈 #${preview.number}에 댓글을 남길 예정 (생성·댓글 요청 없음)`,
@@ -354,6 +361,9 @@ export function formatPreview(preview: PreviewResult): string {
 /** 실제 보고 결과 한 줄 */
 export function formatReportResult(result: ReportResult): string {
   const nth = result.occurrence ? ` (${result.occurrence}번째 발생)` : "";
+  if (result.action === "skipped") {
+    return `[report-issue] 열린 이슈 #${result.number}가 있어 건너뜀 — ${result.url}`;
+  }
   return result.action === "created"
     ? `[report-issue] 새 이슈 #${result.number} 생성 — ${result.url}`
     : `[report-issue] 열린 이슈 #${result.number}에 댓글${nth} — ${result.commentUrl ?? result.url}`;
@@ -363,6 +373,8 @@ export interface BatchTally {
   created: number;
   commented: number;
   failed: number;
+  /** 열린 이슈가 있어 건너뜀(정책 skip — player-transfer) */
+  skipped?: number;
 }
 
 /** 상한 초과 경고 문구 */
@@ -376,12 +388,14 @@ export function formatBatchResult(
   tally: BatchTally,
   dropped = 0,
 ): string {
-  const total = tally.created + tally.commented + tally.failed;
+  const skipped = tally.skipped ?? 0;
+  const total = tally.created + tally.commented + tally.failed + skipped;
   const rest = dropped > 0 ? ` · 상한 초과로 보고 안 함 ${dropped}` : "";
   if (total === 0 && dropped === 0) {
     return `[report-issue] ${kind} 일괄 보고 — 보고할 사건 없음`;
   }
-  return `[report-issue] ${kind} 일괄 보고 ${total}건 — 새 이슈 ${tally.created} · 댓글 ${tally.commented} · 실패 ${tally.failed}${rest}`;
+  const skippedText = skipped > 0 ? ` · 건너뜀 ${skipped}` : "";
+  return `[report-issue] ${kind} 일괄 보고 ${total}건 — 새 이슈 ${tally.created} · 댓글 ${tally.commented}${skippedText} · 실패 ${tally.failed}${rest}`;
 }
 
 /** 일괄 보고 Step Summary — 항목별 줄(성공은 링크, 실패는 원인 키와 짧은 사유) */
@@ -399,6 +413,9 @@ export function formatBatchSummary(
     }
     const r = item.result;
     const nth = r.occurrence ? ` · ${r.occurrence}번째 발생` : "";
+    if (r.action === "skipped") {
+      return `- \`${r.key}\` 열린 이슈 [#${r.number}](${r.url})가 있어 건너뜀`;
+    }
     return r.action === "created"
       ? `- \`${r.key}\` 새 이슈 [#${r.number}](${r.url})`
       : `- \`${r.key}\` 열린 이슈 [#${r.number}](${r.commentUrl ?? r.url})에 댓글${nth}`;
@@ -418,7 +435,9 @@ export function formatReportSummary(result: ReportResult): string {
   const line =
     result.action === "created"
       ? `- 새 이슈 [#${result.number}](${result.url}) 생성`
-      : `- 열린 이슈 [#${result.number}](${result.commentUrl ?? result.url})에 댓글${nth}`;
+      : result.action === "skipped"
+        ? `- 열린 이슈 [#${result.number}](${result.url})가 있어 건너뜀`
+        : `- 열린 이슈 [#${result.number}](${result.commentUrl ?? result.url})에 댓글${nth}`;
   return [
     "## 실패 이슈 보고",
     "",

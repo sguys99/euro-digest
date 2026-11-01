@@ -96,7 +96,7 @@ describe("collect job 단계 — 수집 → 검증 → 빌드 → 커밋 (검증
       steps
         .filter((s) => stepKey(s, "continue-on-error") !== null)
         .map((s) => s.name),
-    ).toEqual(["실행 이슈 보고 (소스 · 부분 실패)"]);
+    ).toEqual(["실행 이슈 보고 (소스 · 부분 실패 · 이적 감지)"]);
   });
 
   it("run 단계는 모두 step 상한이 있고, 가장 큰 step 상한 + 5분 ≤ job 상한 — step 시간 초과가 job 시간 초과보다 먼저 와 실패 단계 기록이 돈다", () => {

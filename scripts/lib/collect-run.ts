@@ -992,6 +992,8 @@ export interface CollectOutcome {
   unknownNames: UnknownNamesOutcome | null;
   /** 축구 데이터 단계(M2-09 — 대회·팀 파일) — 예상 밖 오류로 결과가 없으면 null */
   football: FootballStagesOutcome | null;
+  /** 한국 선수 현황 단계(M3-03) — 돌지 않았으면 null·생략. 라인업 불일치는 이적 감지 이슈(M3-04 — collect.ts)가 쓴다 */
+  players?: KoreanPlayersStageOutcome | null;
   /** 기록한 실행 로그(기록하지 않았으면 null) */
   run: RunLog | null;
   runPath: string | null;
@@ -5519,6 +5521,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     briefFile,
     unknownNames,
     football,
+    players,
     run,
     runPath,
     status,

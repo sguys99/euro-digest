@@ -25,6 +25,9 @@
  * RUN_ISSUES_FILE(선택, Actions가 `$RUNNER_TEMP/run-issues.json`으로 준다 — M1-27): 부분 실패 이슈 사건(`pipeline-partial` payload
  * 배열 — 삭제 단계·seen-urls·클러스터링·브리핑·브리핑 파일·runs 읽기·원장 오류, scripts/lib/run-issues.ts)을 쓸 파일. dry는 쓰지
  * 않는다. 없으면(로컬) 로그로만 남긴다. 쓰기 실패는 경고만(종료 코드에 영향 없음).
+ * TRANSFER_ISSUES_FILE(선택, Actions가 `$RUNNER_TEMP/transfer-issues.json`으로 준다 — M3-04, FR-63): 등록 한국 선수 이적 감지 사건
+ * (`player-transfer` payload 배열 — 오늘 카드의 agreed·official 이적 + 원장 라인업 불일치, scripts/lib/transfer-issues.ts)을 쓸 파일.
+ * dry는 쓰지 않는다(판정 결과는 로그 `collect.transfer.issue`로 남긴다). 이 단계의 실패는 경고만 — 종료 코드·발행에 영향 없음.
  */
 import { appendFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -49,6 +52,10 @@ import { createLogger } from "./lib/logger";
 import { resolveLedgerEnabled } from "./lib/match-ledger";
 import { feedUserAgent } from "./lib/rss";
 import { partialFindings, partialIssuePayloads } from "./lib/run-issues";
+import {
+  buildTransferIssueEvents,
+  writeTransferIssueFile,
+} from "./lib/transfer-issues-io";
 
 const parsed = parseCollectArgs(process.argv.slice(2), process.env.LLM_MODE);
 
@@ -148,6 +155,42 @@ async function main(): Promise<number> {
         error: error instanceof Error ? error.message : String(error),
       });
     }
+  }
+  // 이적 감지 이슈 사건(M3-04, FR-63) — 부가 기능: 무엇이 실패해도 경고만 남기고 발행·종료 코드에 영향을 주지 않는다
+  try {
+    const transfer = await buildTransferIssueEvents(
+      { rootDir: ROOT_DIR, logger },
+      {
+        cards: outcome.news.file?.cards ?? [],
+        mismatches:
+          outcome.players?.state === "done"
+            ? outcome.players.build.teamMismatches
+            : [],
+        ctx: {
+          runId: outcome.runId,
+          publishDate: outcome.publishDate,
+          occurredAt: new Date().toISOString(),
+          ...(runUrl ? { runUrl } : {}),
+        },
+      },
+    );
+    logger.info("collect.transfer.issue.done", {
+      events: transfer.payloads.length,
+      dropped: transfer.dropped,
+      error: transfer.error,
+    });
+    const transferFile = env.TRANSFER_ISSUES_FILE?.trim() || null;
+    if (transferFile !== null && !args.dry && transfer.error === null) {
+      await writeTransferIssueFile(transferFile, transfer.payloads);
+      logger.info("collect.transfer.issue.write", {
+        file: transferFile,
+        events: transfer.payloads.length,
+      });
+    }
+  } catch (error) {
+    logger.warn("collect.transfer.issue.fail", {
+      error: error instanceof Error ? error.message : String(error),
+    });
   }
   // 단계 출력(M1-26) — 검증 게이트 `--publish-date`·data 커밋 메시지가 이 발행일을 쓴다. 수집이 실패한 실행(exit 1)도 쓴다.
   const outputs = collectStepOutputsOf(outcome);

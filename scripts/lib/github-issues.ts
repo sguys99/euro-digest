@@ -19,6 +19,10 @@
  *                       모두 같은 이슈에 쌓인다(새 이슈 또는 댓글, FR-152). 사건 판정은 scripts/lib/source-health.ts.
  *                       (M0-22의 별도 kind `source-health`는 D35로 이 kind에 합쳤다 — 같은 소스에 이슈가 둘 생기지 않게)
  *   - ops-report        key `<ISO 주>` (예: `2026-W41`) — 주간 운영 리포트(FR-155, M5에서 채움)
+ *   - player-transfer   key `transfer:<선수 slug>:<행선지>` (예: `transfer:kim-min-jae:arsenal`, 행선지를 모르면 `unknown`) —
+ *                       등록 한국 선수 이적 감지(FR-63, M3-04 — 판정 scripts/lib/transfer-issues.ts). **같은 선수·같은 행선지의
+ *                       열린 이슈가 있으면 댓글 없이 건너뛴다**(RECURRENCE_POLICY "skip" — 설정을 고칠 때까지 매일 같은 단서가
+ *                       나오므로 댓글은 소음이다). 설정을 고친 뒤 닫으면 같은 단서가 더는 후보가 되지 않는다.
  *   fingerprint = sha256(`v1|kind|key`) 앞 12자리. 이슈 본문 끝에 숨김 마커
  *   `<!-- euro-digest:fingerprint=… -->`로 넣고, 다음 보고 때 이 마커로 같은 원인의 열린 이슈를 찾는다.
  *   사람이 연 이슈(마커 없음)는 자동 보고와 섞이지 않는다.
@@ -66,6 +70,7 @@ export const ISSUE_KINDS = [
   "pipeline-partial",
   "source-broken",
   "ops-report",
+  "player-transfer",
 ] as const;
 export type IssueKind = (typeof ISSUE_KINDS)[number];
 
@@ -84,6 +89,8 @@ export const ISSUE_LABELS: Readonly<Record<IssueKind, readonly string[]>> = {
   "pipeline-partial": ["pipeline-failure"],
   "source-broken": ["source-broken"],
   "ops-report": ["ops-report"],
+  // M3-04(FR-63) — M0-10 6종 밖의 새 라벨. 저장소에 미리 만들어 둔다(`gh label create player-transfer`) — 운영 안내는 M3-04 보고
+  "player-transfer": ["player-transfer"],
 };
 
 /** 열린 이슈를 찾을 때 거르는 라벨(종류마다 하나) */
@@ -92,6 +99,21 @@ export const SEARCH_LABEL: Readonly<Record<IssueKind, string>> = {
   "pipeline-partial": "pipeline-failure",
   "source-broken": "source-broken",
   "ops-report": "ops-report",
+  "player-transfer": "player-transfer",
+};
+
+/**
+ * 같은 원인의 열린 이슈가 있을 때 — comment(재발 댓글, FR-152 기본) · skip(댓글 없이 건너뜀). 이적 감지(M3-04)는 사람이 설정을
+ * 고칠 때까지 같은 단서(라인업 불일치)가 매일 나오므로 첫 이슈 하나로 충분하다 — 댓글을 쌓지 않는다.
+ */
+export const RECURRENCE_POLICY: Readonly<
+  Record<IssueKind, "comment" | "skip">
+> = {
+  "pipeline-failure": "comment",
+  "pipeline-partial": "comment",
+  "source-broken": "comment",
+  "ops-report": "comment",
+  "player-transfer": "skip",
 };
 
 /**
@@ -421,11 +443,81 @@ export const OpsReportPayloadSchema = z.strictObject({
   occurredAt: IsoSchema.optional(),
 });
 
+/** 이적 감지 이슈의 리그 판정 — 5대 리그 id · "OTHER"(5대 리그 밖, FR-64) · null(판단할 수 없음 — 확인 필요) */
+export const TRANSFER_DESTINATION_LEAGUES = [
+  "EPL",
+  "LALIGA",
+  "SERIEA",
+  "BUNDESLIGA",
+  "LIGUE1",
+  "OTHER",
+] as const;
+
+const SlugText = z
+  .string()
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "slug")
+  .max(100);
+
+/** 근거 카드 1장 — 제목·출처·URL은 카드 원문 그대로(D23 — 번역·요약 없음) */
+const TransferCardEvidenceSchema = z.strictObject({
+  id: z.string().regex(/^c_[0-9a-f]{10}$/),
+  title: z.string().min(1).max(300),
+  status: z.enum(["rumor", "negotiating", "agreed", "official", "collapsed"]),
+  tier: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+  sources: z
+    .array(
+      z.strictObject({
+        name: z.string().min(1).max(100),
+        url: z.url({ protocol: /^https?$/ }),
+      }),
+    )
+    .min(1)
+    .max(10),
+});
+
+/** 이적 감지(M3-04 — FR-63·FR-64). 판정·문구 재료는 scripts/lib/transfer-issues.ts(코드, LLM 없음) */
+export const PlayerTransferPayloadSchema = z.strictObject({
+  /** korean-players.json slug */
+  player: SlugText,
+  /** 한글 이름(설정 nameKo) */
+  playerName: z.string().min(1).max(100),
+  /** 설정상 소속(지금 korean-players.json 값) */
+  config: z.strictObject({
+    team: SlugText,
+    comp: z.enum([...TRANSFER_DESTINATION_LEAGUES, "UCL"]),
+    active: z.boolean(),
+  }),
+  /** 행선지 — 카드 transfer.to(slug) 또는 원장 라인업 팀. 모르면 slug·name 모두 null */
+  destination: z.strictObject({
+    slug: SlugText.nullable(),
+    name: z.string().min(1).max(100).nullable(),
+    league: z.enum(TRANSFER_DESTINATION_LEAGUES).nullable(),
+    /** league가 null인 이유·판단 근거 한 줄 */
+    note: z.string().max(300).optional(),
+  }),
+  /** 근거 카드(단계 agreed·official — 루머·협상·결렬은 후보가 아니다) */
+  cards: z.array(TransferCardEvidenceSchema).max(10).default([]),
+  /** 원장 라인업 불일치(korean-players-data.ts teamMismatchOf) */
+  lineup: z
+    .strictObject({
+      matchId: z.string().min(1).max(60),
+      kickoff: IsoSchema,
+      teamName: z.string().min(1).max(100),
+    })
+    .nullable()
+    .default(null),
+  runId: z.string().max(100).optional(),
+  runUrl: HttpsUrl.optional(),
+  publishDate: KstDateString.optional(),
+  occurredAt: IsoSchema.optional(),
+});
+
 export const ISSUE_PAYLOAD_SCHEMAS = {
   "pipeline-failure": PipelineFailurePayloadSchema,
   "pipeline-partial": PipelinePartialPayloadSchema,
   "source-broken": SourceBrokenPayloadSchema,
   "ops-report": OpsReportPayloadSchema,
+  "player-transfer": PlayerTransferPayloadSchema,
 } as const satisfies Record<IssueKind, z.ZodType>;
 
 /** 호출부가 넘기는 payload(기본값 있는 필드는 생략 가능) */
@@ -512,6 +604,31 @@ export function partialIssueKey(
   return `${workflow}:partial:${reason}`;
 }
 
+/** 행선지 키 조각 — slug, 없으면 영문 이름을 slug 꼴로, 그것도 없으면 `unknown` */
+export function transferDestinationKey(destination: {
+  slug: string | null;
+  name: string | null;
+}): string {
+  if (destination.slug) return destination.slug;
+  const fromName = (destination.name ?? "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80)
+    .replace(/-+$/g, "");
+  return fromName || "unknown";
+}
+
+/** 이적 감지 이슈의 원인 키 — `transfer:<선수 slug>:<행선지>` (같은 선수·같은 행선지는 이슈 하나, M3-04) */
+export function transferIssueKey(
+  player: string,
+  destination: { slug: string | null; name: string | null },
+): string {
+  return `transfer:${player}:${transferDestinationKey(destination)}`;
+}
+
 /**
  * 실패 job별 원인 키 조각(정렬) — job 결과에 멈춘 단계(`step`)가 있으면 `<job>/<step>`, 없으면 `<job>`(M1-27 이전 키와 같다).
  */
@@ -545,6 +662,10 @@ export function defaultIssueKey<K extends IssueKind>(
       );
     case "ops-report":
       return parseIssuePayload("ops-report", payload).week;
+    case "player-transfer": {
+      const p = parseIssuePayload("player-transfer", payload);
+      return transferIssueKey(p.player, p.destination);
+    }
     default: {
       const unknownKind: never = kind;
       throw new IssuePayloadError(String(unknownKind), ["알 수 없는 kind"]);
@@ -614,10 +735,14 @@ function capBody(body: string): string {
 }
 
 function footer(kind: IssueKind, key: string, fingerprint: string): string[] {
+  const recurrence =
+    RECURRENCE_POLICY[kind] === "skip"
+      ? "이 이슈가 열려 있는 동안 같은 원인은 새 이슈·댓글 없이 건너뜁니다. 설정을 고친 뒤 닫아 주세요(고치지 않고 닫으면 다음 실행이 같은 단서로 새 이슈를 엽니다)."
+      : "이 이슈가 열려 있는 동안 같은 원인은 새 이슈 대신 댓글로 쌓입니다. 해결되면 닫아 주세요(닫힌 뒤 재발하면 새 이슈가 열립니다).";
   return [
     "",
     "---",
-    `<sub>자동 생성 · euro-digest 이슈 헬퍼(scripts/lib/github-issues.ts) · 원인 \`${kind}\` / \`${key.replace(/`/g, "")}\` — 이 이슈가 열려 있는 동안 같은 원인은 새 이슈 대신 댓글로 쌓입니다. 해결되면 닫아 주세요(닫힌 뒤 재발하면 새 이슈가 열립니다).</sub>`,
+    `<sub>자동 생성 · euro-digest 이슈 헬퍼(scripts/lib/github-issues.ts) · 원인 \`${kind}\` / \`${key.replace(/`/g, "")}\` — ${recurrence}</sub>`,
     "",
     fingerprintMarker(fingerprint),
   ];
@@ -1059,6 +1184,117 @@ function buildSourceBroken(
   };
 }
 
+// ── 이적 감지 (M3-04 — FR-63·FR-64) ──
+
+const TRANSFER_STATUS_LABEL: Readonly<Record<string, string>> = {
+  rumor: "루머",
+  negotiating: "협상",
+  agreed: "합의",
+  official: "공식",
+  collapsed: "결렬",
+};
+
+/** 행선지 표기 — `arsenal (Arsenal)` · 이름만 · `알 수 없음` */
+function transferDestinationText(
+  d: IssuePayload<"player-transfer">["destination"],
+): string {
+  if (d.slug && d.name)
+    return `${codeSpan(d.slug, 100)} (${inlineText(d.name, 100)})`;
+  if (d.slug) return codeSpan(d.slug, 100);
+  if (d.name) return inlineText(d.name, 100);
+  return "알 수 없음(근거 카드에 행선지가 없다)";
+}
+
+/** 5대 리그 여부 한 줄(FR-64) */
+function transferLeagueText(
+  d: IssuePayload<"player-transfer">["destination"],
+): string {
+  const note = d.note ? ` — ${inlineText(d.note)}` : "";
+  if (d.league === null) return `**확인 필요**${note}`;
+  if (d.league === "OTHER")
+    return `**5대 리그 밖** → '기타 리그'(FR-64)${note}`;
+  return `5대 리그 (\`${d.league}\`)${note}`;
+}
+
+/** 할 일 — 5대 리그 안·밖·모름에 따라(FR-64) */
+function transferTodo(p: IssuePayload<"player-transfer">): string[] {
+  const d = p.destination;
+  const slug = d.slug
+    ? `\`"team": "${d.slug}"\``
+    : "새 팀 slug(`team-ids.json`에 없으면 `/add-player`가 함께 확인)";
+  const verify = [
+    "- [ ] 구단·리그 공식 발표 등으로 이적(임대 포함)이 실제로 확정됐는지 확인 — 루머·협상 단계면 확정될 때까지 이 이슈를 열어 둔다",
+  ];
+  const common = [
+    "- [ ] `npm run validate` 통과 확인 후 커밋 (06:00~08:00 KST push 금지) — 다음 수집 실행이 data/players/korean.json을 새 설정으로 다시 만든다",
+    "- [ ] 설정을 고친 뒤 이 이슈 닫기",
+  ];
+  const otherLeague = [
+    `- [ ] 5대 리그 밖이면(FR-64): \`configs/korean-players.json\`에서 이 선수의 \`"comp": "OTHER"\` · \`"active": false\` · ${slug} — 목록에서 지우지 않는다(기록 갱신만 멈춘다 — 이전 기록은 동결)`,
+  ];
+  const inLeague = [
+    `- [ ] 5대 리그 안이면: \`/add-player\` 절차(또는 \`configs/korean-players.json\` 직접 수정)로 ${slug} · \`"comp"\`를 새 리그로 · \`"active": true\` 유지 — 새 팀이 \`configs/team-ids.json\`에 \`af\`와 함께 있어야 한다(검증 5)`,
+  ];
+  if (d.league === "OTHER") return [...verify, ...otherLeague, ...common];
+  if (d.league === null)
+    return [...verify, ...inLeague, ...otherLeague, ...common];
+  return [...verify, ...inLeague, ...common];
+}
+
+function buildPlayerTransfer(
+  p: IssuePayload<"player-transfer">,
+  occurredAt: string,
+): { title: string; body: string[] } {
+  const statuses = p.cards.map((c) => c.status);
+  const stage = statuses.includes("official")
+    ? "official"
+    : statuses.includes("agreed")
+      ? "agreed"
+      : null;
+  const trigger = [
+    ...(stage ? [`카드 ${TRANSFER_STATUS_LABEL[stage]}`] : []),
+    ...(p.lineup ? ["라인업 불일치"] : []),
+  ].join(" · ");
+  const dest = p.destination.name ?? p.destination.slug ?? "행선지 미상";
+  const cardLines = p.cards.flatMap((c) => [
+    `- ${inlineText(c.title, 300)}`,
+    `  - 단계 ${TRANSFER_STATUS_LABEL[c.status] ?? c.status} (\`${c.status}\`) · 최고 출처 Tier ${c.tier} · 카드 ${codeSpan(c.id, 20)}`,
+    ...c.sources.map((s) => `  - ${inlineText(s.name, 100)} — <${s.url}>`),
+  ]);
+  return {
+    title: `[이적 감지] ${inlineText(p.playerName, 100)} → ${inlineText(dest, 100)} (${trigger || "단서"})`,
+    body: [
+      `등록 한국 선수의 이적 단서를 감지했습니다(코드 판정 — LLM 미사용, FR-63). 설정(\`configs/korean-players.json\`)은 자동으로 바꾸지 않습니다 — 확인 후 사람이 고쳐 주세요.`,
+      "",
+      "| 항목 | 값 |",
+      "|---|---|",
+      `| 선수 | ${tableCell(p.playerName, 100)} (\`${p.player}\`) |`,
+      `| 설정상 소속 | \`${p.config.team}\` · \`${p.config.comp}\` · ${p.config.active ? "활성" : "비활성(기록 동결)"} |`,
+      `| 행선지 | ${transferDestinationText(p.destination).replace(/\|/g, "\\|")} |`,
+      `| 5대 리그 여부 | ${transferLeagueText(p.destination).replace(/\|/g, "\\|")} |`,
+      `| 단계 | ${stage ? `${TRANSFER_STATUS_LABEL[stage]} (\`${stage}\`)` : "카드 없음(라인업 단서만)"} |`,
+      `| 감지 시각 (KST) | ${kstDateTime(occurredAt)} |`,
+      `| 실행 | ${runLink(p.runUrl)}${p.runId ? ` · 실행 ID ${codeSpan(p.runId, 100)}` : ""} |`,
+      ...(p.publishDate ? [`| 발행일 (KST) | ${p.publishDate} |`] : []),
+      "",
+      ...(p.cards.length
+        ? ["### 근거 카드 (원제목·출처·원문 링크 그대로)", "", ...cardLines, ""]
+        : []),
+      ...(p.lineup
+        ? [
+            "### 근거 — 경기 기록 원장 라인업",
+            "",
+            `- ${kstDateTime(p.lineup.kickoff)} 경기(\`${inlineText(p.lineup.matchId, 60)}\`)에서 설정 소속이 아닌 **${inlineText(p.lineup.teamName, 100)}** 라인업(선발·교체·벤치)에 들었습니다 — API-Football 선수 id 매칭(이름 매칭 아님).`,
+            "- 등록이 늦은 이적·임대 복귀, 드물게는 API 쪽 선수 id 오류일 수 있습니다.",
+            "",
+          ]
+        : []),
+      "### 할 일",
+      ...transferTodo(p),
+    ],
+  };
+}
+
 /** FR-155 주간 운영 리포트 기본 섹션 — M5에서 코드로 채운다(LLM 미사용) */
 const OPS_REPORT_SECTIONS = [
   "비용",
@@ -1128,6 +1364,12 @@ export function buildIssue<K extends IssueKind>(
       break;
     case "ops-report":
       built = buildOpsReport(parsed as IssuePayload<"ops-report">, occurredAt);
+      break;
+    case "player-transfer":
+      built = buildPlayerTransfer(
+        parsed as IssuePayload<"player-transfer">,
+        occurredAt,
+      );
       break;
     default: {
       const unknownKind: never = kind;
@@ -1226,6 +1468,25 @@ export function buildComment<K extends IssueKind>(
         `### 리포트 다시 생성 — ${kstDateTime(occurredAt)}${nth}`,
         "",
         ...built.body,
+      ];
+      break;
+    }
+    case "player-transfer": {
+      // 기본 정책은 skip(RECURRENCE_POLICY) — 댓글은 정책을 comment로 바꿨을 때·미리보기용
+      const p = parsed as IssuePayload<"player-transfer">;
+      lines = [
+        `### 다시 감지 — ${kstDateTime(occurredAt)}${nth}`,
+        "",
+        `- 실행: ${runLink(p.runUrl)}${p.runId ? ` · 실행 ID ${codeSpan(p.runId, 100)}` : ""}`,
+        ...p.cards.map(
+          (c) =>
+            `- 카드 ${codeSpan(c.id, 20)} ${inlineText(c.title, 300)} (\`${c.status}\`)`,
+        ),
+        ...(p.lineup
+          ? [
+              `- 라인업: ${inlineText(p.lineup.teamName, 100)} (${kstDateTime(p.lineup.kickoff)})`,
+            ]
+          : []),
       ];
       break;
     }
@@ -1512,7 +1773,8 @@ export interface ReportIssueOptions<K extends IssueKind = IssueKind> {
 }
 
 export interface ReportResult {
-  action: "created" | "commented";
+  /** skipped — 같은 원인의 열린 이슈가 있고 정책이 skip(RECURRENCE_POLICY — 요청은 검색 GET뿐) */
+  action: "created" | "commented" | "skipped";
   /** 이슈 번호 */
   number: number;
   /** 이슈 URL */
@@ -1675,6 +1937,22 @@ async function runReport<K extends IssueKind>(
         pages,
         found: issue?.number ?? null,
       });
+      if (issue && RECURRENCE_POLICY[kind] === "skip") {
+        log.info("issues.skip", {
+          kind,
+          fingerprint,
+          number: issue.number,
+          reason: "open-issue",
+        });
+        return {
+          action: "skipped",
+          number: issue.number,
+          url: issue.html_url,
+          fingerprint,
+          key,
+          deduped: false,
+        };
+      }
       if (issue) {
         const previous = await countRecurrences(
           ctx,
@@ -1836,6 +2114,15 @@ export type PreviewResult =
       issue: BuiltIssue;
     }
   | {
+      /** 같은 원인의 열린 이슈가 있고 정책이 skip — 아무 요청도 보내지 않을 예정 */
+      action: "would-skip";
+      lookup: "searched";
+      number: number;
+      url: string;
+      fingerprint: string;
+      key: string;
+    }
+  | {
       action: "would-comment";
       lookup: "searched";
       number: number;
@@ -1883,6 +2170,16 @@ export async function previewReport<K extends IssueKind>(
     );
   }
   if (!found) return { action: "would-create", lookup: "searched", issue };
+  if (RECURRENCE_POLICY[prepared.kind] === "skip") {
+    return {
+      action: "would-skip",
+      lookup: "searched",
+      number: found.number,
+      url: found.html_url,
+      fingerprint: prepared.fingerprint,
+      key: prepared.key,
+    };
+  }
   const previous = await countRecurrences(
     ctx,
     options.repo,

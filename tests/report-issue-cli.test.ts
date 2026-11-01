@@ -490,6 +490,9 @@ describe("collect.yml 실행 이슈 단계와의 연결 (M1-11·M1-27, D35)", ()
     expect(collectStep).toContain(
       "RUN_ISSUES_FILE: ${{ runner.temp }}/run-issues.json",
     );
+    expect(collectStep).toContain(
+      "TRANSFER_ISSUES_FILE: ${{ runner.temp }}/transfer-issues.json",
+    );
     expect(collectStep).not.toMatch(/GITHUB_TOKEN|GH_TOKEN|github\.token/);
   });
 
@@ -506,6 +509,9 @@ describe("collect.yml 실행 이슈 단계와의 연결 (M1-11·M1-27, D35)", ()
     );
     expect(issueStep).toContain(
       "RUN_ISSUES_FILE: ${{ runner.temp }}/run-issues.json",
+    );
+    expect(issueStep).toContain(
+      "TRANSFER_ISSUES_FILE: ${{ runner.temp }}/transfer-issues.json",
     );
     // 파일이 없거나 빈 배열이면 셸에서 넘어간다 — 토큰을 가진 node를 띄우지 않는다
     const missingCheck = issueStep.indexOf('if [ ! -s "$file" ]; then');
@@ -525,8 +531,17 @@ describe("collect.yml 실행 이슈 단계와의 연결 (M1-11·M1-27, D35)", ()
     expect(issueStep).toContain(
       'report pipeline-partial "$RUN_ISSUES_FILE" "부분 실패"',
     );
-    expect(issueStep.indexOf('exit "$status"')).toBeGreaterThan(
+    // 이적 감지(M3-04)는 맨 뒤 — 새 라벨·새 kind의 보고 실패가 앞의 운영 이슈 보고를 막지 않는다
+    expect(issueStep).toContain(
+      'report player-transfer "$TRANSFER_ISSUES_FILE" "이적 감지"',
+    );
+    expect(
+      issueStep.indexOf('report player-transfer "$TRANSFER_ISSUES_FILE"'),
+    ).toBeGreaterThan(
       issueStep.indexOf('report pipeline-partial "$RUN_ISSUES_FILE"'),
+    );
+    expect(issueStep.indexOf('exit "$status"')).toBeGreaterThan(
+      issueStep.indexOf('report player-transfer "$TRANSFER_ISSUES_FILE"'),
     );
   });
 
@@ -544,7 +559,7 @@ describe("collect.yml 실행 이슈 단계와의 연결 (M1-11·M1-27, D35)", ()
       .filter((s) => /github\.token/.test(s))
       .map((s) => s.split("\n")[0]);
     expect(withToken).toEqual([
-      "실행 이슈 보고 (소스 · 부분 실패)",
+      "실행 이슈 보고 (소스 · 부분 실패 · 이적 감지)",
       "data 커밋 · push",
       "실패 실행 기록 보존",
     ]);

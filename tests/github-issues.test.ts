@@ -244,6 +244,7 @@ describe("defaultIssueKey", () => {
       "pipeline-partial",
       "source-broken",
       "ops-report",
+      "player-transfer",
     ]);
     expect(isIssueKind("source-health")).toBe(false);
   });

@@ -206,7 +206,7 @@ export async function runKoreanPlayersStage(
   try {
     const build = buildKoreanPlayersFile(buildInput);
     for (const m of build.teamMismatches) {
-      // 이적 감지 단서(FR-63) — M3-04가 이슈로 만든다. 지금은 경고 로그만
+      // 이적 감지 단서(FR-63) — 이슈 사건은 scripts/collect.ts가 transfer-issues.ts로 만든다(M3-04)
       log.warn("players.korean.team-mismatch", { ...m });
     }
     if (build.unmappedTeams.length > 0) {

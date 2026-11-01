@@ -63,6 +63,17 @@ function appendSummary(text: string): void {
   }
 }
 
+/** 보고 결과 notice 문구 */
+function resultNotice(result: ReportResult): string {
+  if (result.action === "created") {
+    return `새 이슈 #${result.number}: ${result.url}`;
+  }
+  if (result.action === "skipped") {
+    return `열린 이슈 #${result.number}가 있어 건너뜀: ${result.url}`;
+  }
+  return `이슈 #${result.number}에 댓글: ${result.commentUrl ?? result.url}`;
+}
+
 /** 실패 항목 표시용 원인 키 — payload가 깨졌으면 순번 */
 function labelFor(kind: IssueKind, payload: unknown, index: number): string {
   try {
@@ -121,6 +132,8 @@ async function reportBatch(
         });
         console.log(formatPreview(preview));
         if (preview.action === "would-create") tally.created += 1;
+        else if (preview.action === "would-skip")
+          tally.skipped = (tally.skipped ?? 0) + 1;
         else tally.commented += 1;
         continue;
       }
@@ -134,15 +147,13 @@ async function reportBatch(
         logger: log,
       });
       console.log(formatReportResult(result));
-      annotate(
-        "notice",
-        result.action === "created"
-          ? `새 이슈 #${result.number}: ${result.url}`
-          : `이슈 #${result.number}에 댓글: ${result.commentUrl ?? result.url}`,
-        { title: `이슈 보고 (${label})` },
-      );
+      annotate("notice", resultNotice(result), {
+        title: `이슈 보고 (${label})`,
+      });
       items.push({ ok: true, result });
       if (result.action === "created") tally.created += 1;
+      else if (result.action === "skipped")
+        tally.skipped = (tally.skipped ?? 0) + 1;
       else tally.commented += 1;
     } catch (error) {
       if (!(error instanceof IssueReportError)) throw error;
@@ -229,13 +240,9 @@ async function main(): Promise<number> {
       logger: log,
     });
     console.log(formatReportResult(result));
-    annotate(
-      "notice",
-      result.action === "created"
-        ? `새 이슈 #${result.number}: ${result.url}`
-        : `이슈 #${result.number}에 댓글: ${result.commentUrl ?? result.url}`,
-      { title: `이슈 보고 (${kind})` },
-    );
+    annotate("notice", resultNotice(result), {
+      title: `이슈 보고 (${kind})`,
+    });
     appendSummary(formatReportSummary(result));
     return 0;
   } catch (error) {
