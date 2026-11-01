@@ -117,6 +117,16 @@
       "checkedAt": "2026-10-10"
     },
     {
+      "domain": "spielverlagerung.com",
+      "publisher": "Spielverlagerung",
+      "status": "feed-only",
+      "sourceIds": ["spielverlagerung-en"],
+      "basis": "M3-08 · 사용자 결정 2026-11-01 — Impressum(.de·.com 공통)이 저작권법 범위 밖의 복제·배포·이용에 서면 동의를 요구하고 다운로드·복사는 사적·비상업 이용만 허용(불명확, TDM 유보·봇 금지·AI 조항 없음) — 영문 피드 원제목+링크만 위험 수용으로 켰다(D22 선례). 결정이 피드 게재에 한정된다.",
+      "basisUrl": "https://spielverlagerung.com/impressum/",
+      "checkedAt": "2026-11-01",
+      "note": "허가 요청 진행 중(info@spielverlagerung.de — 사용자 발송). 회신으로 허가를 받으면 allow 검토. 독일어 피드(spielverlagerung.de)는 등록하지 않았다(기본 차단)."
+    },
+    {
       "domain": "theguardian.com",
       "publisher": "The Guardian",
       "status": "deny",

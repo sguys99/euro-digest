@@ -163,7 +163,7 @@ describe("planDailySources", () => {
     });
   });
 
-  it("현재 configs/sources.json — 수집 대상 피드 13개(BBC 4·The Athletic·the Daily Briefing·Di Marzio·Relevo·국내 5), 나머지 제외 사유(ESPN은 2026-10-14부터 disabled)", async () => {
+  it("현재 configs/sources.json — 수집 대상 피드 13개(BBC 4·The Athletic·the Daily Briefing·Di Marzio·Relevo·국내 5), 나머지 제외 사유(ESPN은 2026-10-14부터 disabled, 분석 블로그는 주 1회)", async () => {
     const plan = planDailySources(await loadSources(ROOT));
     expect(plan.feeds.map((s) => `${s.id} (${s.type}, ${s.lang})`)).toEqual([
       "bbc-sport-football (rss, en)",
@@ -198,6 +198,8 @@ describe("planDailySources", () => {
       "google-news-ko": "disabled",
       "google-news-en": "disabled",
       "gdelt-doc": "disabled",
+      // M3-08 분석 블로그 — 일일 수집 밖, 주 1회 weekly analysis-blogs 단계(FR-10)
+      "spielverlagerung-en": "weekly-analysis",
     });
     // 수집 대상은 모두 원제목+링크 전용(D23) — summarize:true 소스가 생기면 이 테스트가 알린다
     expect(plan.feeds.every((s) => !s.summarize)).toBe(true);

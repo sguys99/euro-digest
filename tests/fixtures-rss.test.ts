@@ -106,8 +106,11 @@ function configSources() {
 }
 
 /** 수집 대상 소스(enabled && terms_checked) — CLAUDE.md §6.4 */
+/** 일일 수집 대상 — 분석 블로그(type analysis)는 주 1회 weekly 단계 몫이라 fixtures/analysis/에 따로 둔다(M3-08, FR-10) */
 function collectTargets() {
-  return configSources().filter((s) => s.enabled && s.terms_checked);
+  return configSources().filter(
+    (s) => s.enabled && s.terms_checked && s.type !== "analysis",
+  );
 }
 
 /** CDATA·주석을 지운 마크업 — 태그 균형·엔티티 검사용 */

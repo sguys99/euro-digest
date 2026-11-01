@@ -2,7 +2,8 @@
  * 소스별 코드 규칙 — 약관·피드 성격 때문에 소스 id에 묶어 두는 상수 (plan M1-17 리뷰 반영, 스키마 변경 없음) — 순수 함수.
  *
  * ── 요약문을 읽지 않는 소스 (PRD §15 D48 — 2026-10-17 사용자 결정) ─────────────────
- *   약관이 불분명해 '원제목+링크 전용'으로 위험을 수용하고 등록한 소스(D22 — the Daily Briefing·Di Marzio·Relevo)는
+ *   약관이 불분명해 '원제목+링크 전용'으로 위험을 수용하고 등록한 소스(D22 — the Daily Briefing·Di Marzio·Relevo, M3-08
+ *   Spielverlagerung 영문 — 2026-11-01)는
  *   `configs/sources.json` note의 조건('description·content:encoded는 읽거나 표시하지 않음')을 지킨다 — RSS 요약문(description)을
  *   분류 입력으로도 쓰지 않는다(D39 ①의 예외). 피드 파서(rss.ts)가 그 소스의 요약문을 꺼내지 않고, 정규화(normalize.ts)도 `summary`를
  *   null로 둔다(이중 차단). 새 위험 수용 소스를 더할 때 이 목록도 함께 본다(`/add-source`).
@@ -19,6 +20,7 @@ export const SUMMARY_UNREAD_SOURCE_IDS: ReadonlySet<string> = new Set([
   "daily-briefing",
   "di-marzio",
   "relevo",
+  "spielverlagerung-en", // M3-08 — 2026-11-01 사용자 결정(분석 블로그, 주 1회 — 팀 매칭도 원제목만)
 ]);
 
 /** 이 소스의 요약문을 읽는가(D48 — 위험 수용 소스는 읽지 않는다) */

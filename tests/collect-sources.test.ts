@@ -384,8 +384,9 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
     ).toMatchObject({
       feeds: 14,
       crawls: 0,
-      excluded: 12,
-      byReason: { disabled: 12 },
+      // 분석 블로그(Spielverlagerung 영문 — M3-08)는 주 1회 weekly 단계만 받는다(FR-10) — 일일 수집은 요청하지 않는다
+      excluded: 13,
+      byReason: { disabled: 12, "weekly-analysis": 1 },
     });
   });
 

@@ -111,18 +111,20 @@ describe("정규화 → 공통 형식 → 카드", () => {
   });
 });
 
-describe("D48 — 위험 수용 소스(the Daily Briefing·Di Marzio·Relevo)는 요약문을 읽지 않는다", () => {
+describe("D48 — 위험 수용 소스(the Daily Briefing·Di Marzio·Relevo·Spielverlagerung 영문)는 요약문을 읽지 않는다", () => {
   const XML = `<?xml version="1.0"?><rss version="2.0"><channel><title>t</title>
       <item><title>Napoli news</title><link>https://www.gianlucadimarzio.com/a</link><pubDate>Sat, 10 Oct 2026 19:24:23 GMT</pubDate>
       <description>D48-SUMMARY gol e vittoria del Napoli</description></item></channel></rss>`;
 
-  it("source-policy: 세 소스만 요약문을 읽지 않는다(sources.json note의 'description 읽지 않음' 조건)", () => {
+  it("source-policy: 위험 수용 네 소스만 요약문을 읽지 않는다(sources.json note의 'description 읽지 않음' 조건)", () => {
     expect([...SUMMARY_UNREAD_SOURCE_IDS].sort()).toEqual([
       "daily-briefing",
       "di-marzio",
       "relevo",
+      "spielverlagerung-en",
     ]);
     expect(readsSummary("di-marzio")).toBe(false);
+    expect(readsSummary("spielverlagerung-en")).toBe(false);
     expect(readsSummary("bbc-sport-football")).toBe(true);
     expect(readsSummary("interfootball-world")).toBe(true);
   });
