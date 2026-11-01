@@ -167,8 +167,8 @@ describe("playerMatchLogOf — 원장 행 → 경기 로그 (FR-62)", () => {
       kickoff: "2026-10-28T17:00:00.000Z",
       opponent: { slug: null, name: "Lower League FC" },
       home: false,
-      // 승부차기 경기 — 스코어는 정규시간 + 연장(승부차기 제외, match-data.ts 공통 규칙)
-      result: { for: 1, against: 1 },
+      // 승부차기 경기 — 스코어는 정규시간 + 연장(승부차기 제외, match-data.ts 공통 규칙), 승부차기는 pens(소속팀 기준 — M3-07)
+      result: { for: 1, against: 1, pens: { for: 4, against: 3 } },
       started: false,
       minutes: 0,
       goals: 0,
@@ -196,6 +196,24 @@ describe("playerMatchLogOf — 원장 행 → 경기 로그 (FR-62)", () => {
       ).matchId,
     ).toBe("af-13");
     expect(logOf("af-13").matchId).toBe("fd-13");
+  });
+
+  it("승부차기 경기는 result.pens = 소속팀 기준 승부차기 스코어, 아니면 키 없음 (M3-07)", () => {
+    const m = byId("af-16");
+    const away = { ...m.korean[0]!, side: "away" as const };
+    const pk: LedgerMatch = {
+      ...m,
+      status: "PEN",
+      ft: { home: 1, away: 1 },
+      pens: { home: 5, away: 4 },
+      korean: [away],
+    };
+    expect(playerMatchLogOf(pk, away, CTX).result).toEqual({
+      for: 1,
+      against: 1,
+      pens: { for: 4, against: 5 },
+    });
+    expect(logOf("af-16").result).not.toHaveProperty("pens");
   });
 
   it("자책골은 골이 아니고 PK는 골이다 — 경기 상세 → 원장 행(koreanRowsOf) → 로그", () => {

@@ -2,7 +2,7 @@
 
 LLM 응답 샘플. `LLM_MODE=mock`(또는 `--mock`)이면 `scripts/lib/llm.ts`가 실제 API 대신 여기 파일을 읽는다. 결정적이고 비용이 없다 (CLAUDE.md §6.3). Vitest는 항상 mock이다.
 
-일일 LLM 호출은 정형 경기 데이터로 쓰는 한국어 브리핑("오늘의 5줄")뿐이다(PRD §15 D24). 뉴스 기사는 LLM에 보내지 않으므로(D23) 기사 요약 응답 fixture는 두지 않는다. 주간 호출(팀 한줄평+강점·약점, 한국 선수 주간 총평)의 mock은 M3·M4에서 추가한다.
+일일 LLM 호출은 정형 경기 데이터로 쓰는 한국어 브리핑("오늘의 5줄")뿐이다(PRD §15 D24). 뉴스 기사는 LLM에 보내지 않으므로(D23) 기사 요약 응답 fixture는 두지 않는다. 주간 호출 중 한국 선수 주간 총평 mock은 M3-07에서 추가했다(아래 customId 규칙). 팀 한줄평+강점·약점은 M4에서 추가한다.
 
 > **M1-20 확정 (2026-10-17)** — 출력 zod 스키마는 M0-30 임시 스키마의 짧은 키 `{ l: [{ t, r }] }`를 그대로 확정했다(`scripts/lib/brief.ts` `BriefOutputSchema` — 아래 "출력 스키마"). 그래서 `mock/by-id/brief-*.json`은 **형식 때문에 다시 만들지 않았고** note와 `brief-cases.json` 기대값만 D40 판정으로 고쳤다. 단 mock의 `text`는 **M0-30·M0-34 임시 프롬프트**의 출력이다 — 지시문 v0.1(`configs/prompts/summarize.md`)의 실제 출력은 병합 뒤 dev 소량 실행(💰 M1-20)과 골든셋(M1-24, `npm run eval:prompt`)으로 더한다(비용은 `data/runs-dev.json`).
 
@@ -28,6 +28,13 @@ mock/
 | `brief-case-<유형>` | 실패·경계 사례. 날짜가 없어 발행일 id와 겹치지 않는다. 같은 유형의 두 번째는 `-2`. |
 | `golden-YYYY-MM-DD` · `golden-pre-YYYY-MM-DD` | 골든셋(`golden/` — M1-24) 실측 응답. `npm run eval:prompt` live 실행의 `--update-mock`이 쓰고 `--mock`이 재생한다(base = 지시문 v0.1, pre = 🧪 사실 선계산 변형). note에 실행 라벨·지시문 판·thinking·지연. 입력과 근거가 맞아 게시 줄 불변식 테스트에도 쓴다(tests/brief-publish.test.ts — M1-45) |
 | `slice-YYYY-MM-DD-<유형>` | **입력 일치 합성 응답**(M1-45) — `tests/collect-slice.test.ts` 슬라이스 입력(football-data fixture 23경기 + 순위, 발행일 2026-10-11, 득점자 없음)에 맞춰 지시문 [문형] 안의 꼴로 손으로 쓴 출력. 발행일 id(`brief-2026-10-11` = M0-34 입력 E 실측 — 슬라이스 입력과 근거가 맞지 않아 5줄 모두 강등)와 겹치지 않게 접두사를 따로 둔다. llm(5줄 통과)·mixed(L3 점수 오류 → 템플릿) 게시 경로 시험용 |
+
+### customId 규칙 (한국 선수 주간 총평 — M3-07, Batches)
+
+| 형식 | 뜻 |
+|---|---|
+| `weekly-kr-YYYY-WW` | 그 ISO 주차(UTC 월~일 — D65 ①) 총평 첫 시도. `weekly-kr-2026-43` = 2026-11-01 dev 실측(입력은 `fixtures/players/weekly-2026-43.json` 원장 사본과 같다 — tests/weekly-kr-stage.test.ts). 출력 형식 `{ "s": [3~5문장] }`(scripts/lib/weekly-kr.ts `WeeklyOutputSchema`) |
+| `weekly-kr-YYYY-WW-r1` | 출력 실패 재시도(1회). 파일이 없으면 mock 실행은 템플릿(`mock-missing`)으로 간다 |
 
 단건 호출의 customId는 API로 보내지 않는다(mock 조회·로그에만 쓰인다). 형식 제약은 배치와 같은 `^[a-zA-Z0-9_-]{1,64}$`.
 

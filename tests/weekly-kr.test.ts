@@ -1,0 +1,676 @@
+/**
+ * 한국 선수 주간 리포트 순수 함수 (M3-07 — PRD FR-90~92, §15 D65) — 주간 경계(UTC)·표 집계·MVP 규칙(동점 3단계·공동·0출전)·
+ * LLM 입력·출력 파싱·코드 검증·템플릿.
+ */
+import { describe, expect, it } from "vitest";
+
+import {
+  LedgerMatchSchema,
+  WeeklyReportSchema,
+  type KoreanPlayer,
+  type LedgerMatch,
+} from "@/lib/schema";
+import { isoWeekRangeUtc } from "@/lib/time";
+
+import { buildNameIndex } from "../scripts/lib/names";
+import {
+  buildWeeklyReport,
+  buildWeeklyRequest,
+  buildWeeklyTable,
+  checkWeeklySummary,
+  estimateWeeklyWorstCase,
+  mvpPoints,
+  parseWeeklyOutput,
+  weeklyCustomId,
+  weeklyLlmInput,
+  weeklyTemplateSummary,
+  WEEKLY_KR_MAX_TOKENS,
+  type WeeklyCheckContext,
+  type WeeklyTableInput,
+} from "../scripts/lib/weekly-kr";
+
+// ─── 표본 ────────────────────────────────────────────────────────────────
+
+const W43 = isoWeekRangeUtc("2026-43");
+
+function player(
+  slug: string,
+  nameKo: string,
+  nameEn: string,
+  apiFootballId: number | null,
+  extra: Partial<KoreanPlayer> = {},
+): KoreanPlayer {
+  return {
+    slug,
+    nameKo,
+    nameEn,
+    team: "sample-united",
+    comp: "BUNDESLIGA",
+    position: "MF",
+    birthYear: 2000,
+    apiFootballId,
+    active: true,
+    ...extra,
+  };
+}
+
+const LEE = player("lee-a", "이가람", "Garam Lee", 1001);
+const KIM = player("kim-b", "김나래", "Narae Kim", 1002);
+const PARK = player("park-c", "박다솜", "Dasom Park", 1003);
+
+type Row = LedgerMatch["korean"][number];
+let seq = 100;
+function match(
+  kickoff: string,
+  rows: Row[],
+  opts: Partial<LedgerMatch> = {},
+): LedgerMatch {
+  seq += 1;
+  return LedgerMatchSchema.parse({
+    id: `af-${seq}`,
+    leagueId: 78,
+    league: "Bundesliga",
+    comp: "BUNDESLIGA",
+    season: 2026,
+    round: "Regular Season - 8",
+    kickoff,
+    status: "FT",
+    home: { id: 1, name: "Sample United", formation: "4-4-2" },
+    away: { id: 2, name: "Example City", formation: "4-3-3" },
+    ft: { home: 0, away: 0 },
+    pens: null,
+    goals: [],
+    goalsComplete: false,
+    korean: rows,
+    fetchedAt: "2026-10-27T00:00:00.000Z",
+    ...opts,
+  });
+}
+const row = (
+  p: KoreanPlayer,
+  status: Row["status"],
+  minutes: number | null,
+  goals = 0,
+  assists = 0,
+  side: Row["side"] = "home",
+): Row => ({ player: p.apiFootballId!, side, status, minutes, goals, assists });
+
+function tableInput(
+  ledger: LedgerMatch[],
+  players: KoreanPlayer[] = [LEE, KIM, PARK],
+  over: Partial<WeeklyTableInput> = {},
+): WeeklyTableInput {
+  return {
+    week: "2026-43",
+    range: W43,
+    players,
+    ledger,
+    playerSince: {
+      "lee-a": "2026-10-19",
+      "kim-b": "2026-10-19",
+      "park-c": "2026-10-19",
+    },
+    compNames: { BUNDESLIGA: "Bundesliga", UCL: "UEFA Champions League" },
+    ...over,
+  };
+}
+
+// ─── 주간 경계 ───────────────────────────────────────────────────────────
+
+describe("주간 경계 — UTC 월 00:00 ~ 일 23:59:59.999 (D65 ①)", () => {
+  it("일 23:59 UTC 경기는 그 주, 월 00:00 UTC 경기는 다음 주 · 서머타임 종료일(10-25) 16:30Z 경기는 W43", () => {
+    const ledger = [
+      match("2026-10-19T00:00:00.000Z", [row(LEE, "start", 90)]), // 월 00:00 — 포함
+      match("2026-10-25T16:30:00.000Z", [row(LEE, "sub", 20)]), // DST 종료일 — KST로는 10-26(월)
+      match("2026-10-25T23:59:00.000Z", [row(LEE, "sub", 10)]), // 일 23:59 — 포함
+      match("2026-10-26T00:00:00.000Z", [row(LEE, "start", 90)]), // 다음 주
+      match("2026-10-18T23:59:00.000Z", [row(LEE, "start", 90)]), // 앞 주
+    ];
+    const t = buildWeeklyTable(tableInput(ledger, [LEE]));
+    expect(t.rows[0]).toMatchObject({ apps: 3, minutes: 120 });
+    expect(t.rows[0]!.matches.map((m) => m.kickoff)).toEqual([
+      "2026-10-19T00:00:00.000Z",
+      "2026-10-25T16:30:00.000Z",
+      "2026-10-25T23:59:00.000Z",
+    ]);
+  });
+
+  it("선수 집계 시작일(playerSince) 앞 경기는 빼고, 시작일이 주 끝 뒤면 표 밖", () => {
+    const ledger = [
+      match("2026-10-20T18:00:00.000Z", [row(LEE, "start", 90)]),
+      match("2026-10-24T13:30:00.000Z", [row(LEE, "start", 80)]),
+    ];
+    const t = buildWeeklyTable(
+      tableInput(ledger, [LEE, KIM], {
+        playerSince: { "lee-a": "2026-10-22", "kim-b": "2026-10-26" },
+      }),
+    );
+    expect(t.rows.map((r) => [r.player.slug, r.apps, r.minutes])).toEqual([
+      ["lee-a", 1, 80],
+    ]);
+    expect(t.excluded).toEqual([{ slug: "kim-b", reason: "since-after-week" }]);
+  });
+});
+
+// ─── 표 집계 ─────────────────────────────────────────────────────────────
+
+describe("표 집계 (FR-91)", () => {
+  it("출전 = 선발·교체 또는 골·도움 · 분 합 · 벤치·명단 제외는 출전 아님 · 라인업 없는 출전은 분 0 + unknownMinutes", () => {
+    const ledger = [
+      match("2026-10-21T19:00:00.000Z", [
+        row(LEE, "start", 75, 1, 0),
+        row(KIM, "bench", 0),
+      ]),
+      match("2026-10-24T13:30:00.000Z", [
+        row(LEE, "sub", 13, 0, 1),
+        row(KIM, "absent", null),
+      ]),
+      match("2026-10-25T13:30:00.000Z", [row(PARK, "unknown", null, 1)], {
+        comp: null,
+        league: "DFB Pokal",
+      }),
+      match("2026-10-23T13:30:00.000Z", [row(PARK, "unknown", null)]),
+    ];
+    const t = buildWeeklyTable(tableInput(ledger));
+    const by = new Map(t.rows.map((r) => [r.player.slug, r]));
+    expect(by.get("lee-a")).toMatchObject({
+      apps: 2,
+      minutes: 88,
+      goals: 1,
+      assists: 1,
+      points: 7,
+    });
+    expect(by.get("kim-b")).toMatchObject({
+      apps: 0,
+      minutes: 0,
+      goals: 0,
+      assists: 0,
+      points: 0,
+    });
+    expect(by.get("kim-b")!.matches.map((m) => m.status)).toEqual([
+      "bench",
+      "absent",
+    ]);
+    expect(by.get("park-c")).toMatchObject({
+      apps: 1,
+      minutes: 0,
+      goals: 1,
+      points: 4,
+    });
+    expect(t.unknownMinutes).toBe(1);
+    // 컵 대회 원문 이름은 원장 league 그대로
+    expect(by.get("park-c")!.matches.at(-1)!.compName).toBe("DFB Pokal");
+  });
+
+  it("표 밖 — 비활성(기타 리그)·API id 없음(기록 연결 전)·추적 시작 전, 경기가 없는 추적 선수는 0 행", () => {
+    const players = [
+      LEE,
+      player("other-d", "최라온", "Raon Choi", 1004, {
+        active: false,
+        comp: "OTHER",
+      }),
+      player("noid-e", "정마루", "Maru Jeong", null),
+      player("new-f", "한바다", "Bada Han", 1006),
+    ];
+    const t = buildWeeklyTable(tableInput([], players));
+    expect(
+      t.rows.map((r) => [r.player.slug, r.apps, r.matches.length]),
+    ).toEqual([["lee-a", 0, 0]]);
+    expect(t.excluded).toEqual([
+      { slug: "other-d", reason: "inactive" },
+      { slug: "noid-e", reason: "no-api-id" },
+      { slug: "new-f", reason: "not-tracked" },
+    ]);
+    expect(t.mvp).toBeNull();
+  });
+
+  it("소속팀 기준 스코어·홈/원정·승부차기·골 분(자책골 제외, 득점 완전할 때만)", () => {
+    const m = match(
+      "2026-10-22T19:00:00.000Z",
+      [row(LEE, "start", 120, 1, 0, "away")],
+      {
+        status: "PEN",
+        ft: { home: 1, away: 1 },
+        pens: { home: 3, away: 4 },
+        goalsComplete: true,
+        goals: [
+          {
+            minute: 20,
+            extra: null,
+            side: "home",
+            kind: "normal",
+            scorer: { id: 77, name: "X" },
+            assist: null,
+          },
+          {
+            minute: 90,
+            extra: 3,
+            side: "away",
+            kind: "normal",
+            scorer: { id: 1001, name: "G. Lee" },
+            assist: null,
+          },
+        ],
+      },
+    );
+    const line = buildWeeklyTable(tableInput([m], [LEE])).rows[0]!.matches[0]!;
+    expect(line).toMatchObject({
+      home: false,
+      team: "Example City",
+      opponent: "Sample United",
+      score: { for: 1, against: 1 },
+      pens: { for: 4, against: 3 },
+      goalMinutes: ["90+3"],
+    });
+  });
+});
+
+// ─── MVP ─────────────────────────────────────────────────────────────────
+
+describe("MVP — 골×3 + 도움×2 + 출전, 동점 3단계·공동·0출전 (FR-92·D65 ②③)", () => {
+  it("점수 산식", () => {
+    expect(mvpPoints({ goals: 2, assists: 1, apps: 3 })).toBe(11);
+  });
+
+  it("점수 1위가 MVP — 행은 순위 순", () => {
+    const t = buildWeeklyTable(
+      tableInput([
+        match("2026-10-24T13:30:00.000Z", [
+          row(LEE, "start", 90),
+          row(KIM, "start", 60, 1),
+        ]),
+      ]),
+    );
+    expect(t.mvp).toBe("kim-b");
+    expect(t.coMvp).toEqual([]);
+    expect(t.rows.map((r) => r.player.slug)).toEqual([
+      "kim-b",
+      "lee-a",
+      "park-c",
+    ]);
+  });
+
+  it("동점 → 출전 시간 많은 순", () => {
+    const t = buildWeeklyTable(
+      tableInput([
+        match("2026-10-24T13:30:00.000Z", [
+          row(LEE, "start", 70),
+          row(KIM, "start", 90),
+        ]),
+      ]),
+    );
+    expect([t.mvp, t.coMvp]).toEqual(["kim-b", []]);
+  });
+
+  it("점수·시간 동점 → 골 많은 순 (1골 2경기 = 2도움 1경기 = 5점)", () => {
+    const t = buildWeeklyTable(
+      tableInput([
+        match("2026-10-21T19:00:00.000Z", [row(LEE, "start", 45, 1)]),
+        match("2026-10-24T13:30:00.000Z", [
+          row(LEE, "start", 45),
+          row(KIM, "start", 90, 0, 2),
+        ]),
+      ]),
+    );
+    const by = new Map(t.rows.map((r) => [r.player.slug, r]));
+    expect([by.get("lee-a")!.points, by.get("kim-b")!.points]).toEqual([5, 5]);
+    expect([by.get("lee-a")!.minutes, by.get("kim-b")!.minutes]).toEqual([
+      90, 90,
+    ]);
+    expect([t.mvp, t.coMvp]).toEqual(["lee-a", []]);
+  });
+
+  it("모두 같으면 공동 MVP — 가나다 첫 선수가 mvp, 나머지 coMvp(가나다순)", () => {
+    const t = buildWeeklyTable(
+      tableInput([
+        match("2026-10-24T13:30:00.000Z", [
+          row(PARK, "start", 90),
+          row(LEE, "start", 90),
+          row(KIM, "start", 90),
+        ]),
+      ]),
+    );
+    // 김나래 < 박다솜 < 이가람
+    expect([t.mvp, t.coMvp]).toEqual(["kim-b", ["park-c", "lee-a"]]);
+    const report = WeeklyReportSchema.parse(
+      buildWeeklyReport({
+        table: t,
+        summary: "요약.",
+        summaryAi: false,
+        generatedAt: "2026-10-26T00:00:00Z",
+      }),
+    );
+    expect(report.coMvp).toEqual(["park-c", "lee-a"]);
+  });
+
+  it("골·도움이 없는 주도 같은 규칙으로 뽑는다(D65 ③)", () => {
+    const t = buildWeeklyTable(
+      tableInput([
+        match("2026-10-24T13:30:00.000Z", [
+          row(LEE, "sub", 12),
+          row(KIM, "bench", 0),
+        ]),
+      ]),
+    );
+    expect(t.mvp).toBe("lee-a");
+  });
+
+  it("출전 0명이면 mvp null · 리포트에 coMvp 키 없음", () => {
+    const t = buildWeeklyTable(
+      tableInput([
+        match("2026-10-24T13:30:00.000Z", [
+          row(LEE, "bench", 0),
+          row(KIM, "absent", null),
+        ]),
+      ]),
+    );
+    expect([t.mvp, t.coMvp]).toEqual([null, []]);
+    const report = buildWeeklyReport({
+      table: t,
+      summary: "x",
+      summaryAi: false,
+      generatedAt: "2026-10-26T00:00:00Z",
+    });
+    expect(report).not.toHaveProperty("coMvp");
+    expect(WeeklyReportSchema.safeParse(report).success).toBe(true);
+  });
+});
+
+// ─── LLM 입력·요청 ───────────────────────────────────────────────────────
+
+describe("LLM 입력 — 정형 데이터만, 영문 원문 이름 (D24)", () => {
+  const t = buildWeeklyTable(
+    tableInput([
+      match("2026-10-24T13:30:00.000Z", [row(LEE, "start", 75, 1)], {
+        ft: { home: 2, away: 3 },
+        goalsComplete: true,
+        goals: [
+          {
+            minute: 10,
+            extra: null,
+            side: "away",
+            kind: "normal",
+            scorer: { id: 9, name: "A" },
+            assist: null,
+          },
+          {
+            minute: 30,
+            extra: null,
+            side: "away",
+            kind: "normal",
+            scorer: { id: 9, name: "A" },
+            assist: null,
+          },
+          {
+            minute: 63,
+            extra: null,
+            side: "home",
+            kind: "normal",
+            scorer: { id: 1001, name: "G. Lee" },
+            assist: null,
+          },
+          {
+            minute: 70,
+            extra: null,
+            side: "home",
+            kind: "normal",
+            scorer: { id: 8, name: "B" },
+            assist: null,
+          },
+          {
+            minute: 80,
+            extra: null,
+            side: "away",
+            kind: "normal",
+            scorer: { id: 9, name: "A" },
+            assist: null,
+          },
+        ],
+      }),
+    ]),
+  );
+
+  it("MVP·선수 행·경기(소속팀 득점 먼저·결과·골 분)", () => {
+    const input = weeklyLlmInput(t);
+    expect(input).toMatchObject({
+      week: "2026-43",
+      from: "2026-10-19",
+      to: "2026-10-25",
+      mvp: ["Garam Lee"],
+      mvpPts: 4,
+    });
+    expect(input.players[0]).toEqual({
+      p: "Garam Lee",
+      team: "Sample United",
+      apps: 1,
+      min: 75,
+      g: 1,
+      a: 0,
+      pts: 4,
+      m: [
+        {
+          d: "2026-10-24",
+          c: "Bundesliga",
+          vs: "Example City",
+          ha: "H",
+          res: "L",
+          sc: "2-3",
+          st: "start",
+          min: 75,
+          g: 1,
+          a: 0,
+          gm: ["63"],
+        },
+      ],
+    });
+  });
+
+  it("요청 — customId(재시도 -r1)·max_tokens 16,384·thinking 적응형·effort medium·캐싱 끔, 예상은 배치 단가", () => {
+    const req = buildWeeklyRequest(weeklyLlmInput(t), "지시문", 2);
+    expect(req).toMatchObject({
+      customId: "weekly-kr-2026-43-r1",
+      maxTokens: WEEKLY_KR_MAX_TOKENS,
+      effort: "medium",
+      thinking: "adaptive",
+    });
+    expect(req).not.toHaveProperty("cacheSystem");
+    expect(weeklyCustomId("2026-43")).toBe("weekly-kr-2026-43");
+    const est = estimateWeeklyWorstCase(req, "claude-haiku-5-5");
+    expect(est.batch).toBe(true);
+    expect(est.tokens.out).toBe(16_384);
+    // 출력 상한 16,384 × $0.25/MTok(배치) ≈ $0.0041 + 입력
+    expect(est.usd).toBeGreaterThan(0.004);
+    expect(est.usd).toBeLessThan(0.0045);
+  });
+});
+
+// ─── 출력 파싱 ───────────────────────────────────────────────────────────
+
+describe("parseWeeklyOutput — {s:[3~5문장]} strict", () => {
+  const ok = '{"s":["가나다라마다.","바사아자차다.","카타파하다."]}';
+  it("통과 · 전체 코드블록은 벗긴다", () => {
+    expect(parseWeeklyOutput(ok)).toMatchObject({ ok: true });
+    expect(parseWeeklyOutput("```json\n" + ok + "\n```")).toMatchObject({
+      ok: true,
+    });
+  });
+  it.each([
+    ["not json", "json"],
+    ['{"s":["가나다라마다.","바사아자차다."]}', "schema"],
+    ['{"s":["가나다라마다.","바사아자차다.","카타파하다."],"x":1}', "schema"],
+    ['{"s":["1.","2.","3.","4.","5.","6."]}', "schema"],
+    ["앞말 " + ok, "json"],
+  ])("실패: %s", (text, reason) => {
+    expect(parseWeeklyOutput(text)).toMatchObject({ ok: false, reason });
+  });
+});
+
+// ─── 코드 검증 ───────────────────────────────────────────────────────────
+
+describe("checkWeeklySummary — 치환 뒤 코드 검증 (M0-30 · FR-29)", () => {
+  const names = buildNameIndex({
+    entries: [
+      { ko: "이가람", en: ["Garam Lee"], kind: "player", slug: "lee-a" },
+      { ko: "김나래", en: ["Narae Kim"], kind: "player", slug: "kim-b" },
+      { ko: "박다솜", en: ["Dasom Park"], kind: "player", slug: "park-c" },
+      {
+        ko: "손흥민",
+        en: ["Heung-min Son"],
+        kind: "player",
+        slug: "son-heung-min",
+      },
+      { ko: "샘플 유나이티드", en: ["Sample United"], kind: "team" },
+      { ko: "이그잼플 시티", en: ["Example City"], kind: "team" },
+      { ko: "토트넘", en: ["Tottenham Hotspur"], kind: "team" },
+    ],
+    ignore: [],
+  });
+  const ctx: WeeklyCheckContext = {
+    names,
+    competitionLabel: (c) => (c === "BUNDESLIGA" ? "분데스리가" : c),
+  };
+  const t = buildWeeklyTable(
+    tableInput([
+      match(
+        "2026-10-24T13:30:00.000Z",
+        [row(LEE, "start", 75, 1), row(KIM, "bench", 0)],
+        {
+          ft: { home: 2, away: 3 },
+        },
+      ),
+      match("2026-10-21T19:00:00.000Z", [row(PARK, "sub", 20)], {
+        comp: null,
+        league: "DFB Pokal",
+      }),
+    ]),
+  );
+  const good = [
+    "Garam Lee가 Example City전에서 1골을 넣어 MVP 점수 4점으로 이번 주 MVP에 올랐다.",
+    "Sample United는 Example City에 2-3으로 졌다.",
+    "Dasom Park는 DFB Pokal 경기에 교체로 나서 20분을 뛰었고 Narae Kim은 벤치에서 경기를 마쳤다.",
+  ];
+
+  it("통과 — 이름 치환·조사 보정, 입력의 미등록 원문 이름(DFB Pokal)·MVP 허용", () => {
+    const r = checkWeeklySummary(good, t, ctx);
+    expect(r.issues).toEqual([]);
+    expect(r.sentences[0]).toBe(
+      "이가람이 이그잼플 시티전에서 1골을 넣어 MVP 점수 4점으로 이번 주 MVP에 올랐다.",
+    );
+    expect(r.sentences[2]).toContain("박다솜은 DFB Pokal 경기에");
+  });
+
+  it("입력 대회의 한글 표기에 섞인 라틴('UEFA 챔피언스리그')은 허용", () => {
+    const ucl = buildWeeklyTable(
+      tableInput(
+        [
+          match("2026-10-21T19:00:00.000Z", [row(LEE, "start", 90)], {
+            comp: "UCL",
+            league: "UEFA Champions League",
+          }),
+        ],
+        [LEE],
+      ),
+    );
+    const uclCtx: WeeklyCheckContext = {
+      names,
+      competitionLabel: (c) => (c === "UCL" ? "UEFA 챔피언스리그" : c),
+    };
+    const s3 = [
+      "이가람이 UEFA 챔피언스리그 경기에 선발로 90분을 뛰었다.",
+      "Garam Lee가 이번 주 MVP에 올랐다.",
+      "이가람은 골을 넣지 못했다.",
+    ];
+    expect(checkWeeklySummary(s3, ucl, uclCtx).issues).toEqual([]);
+    expect(
+      checkWeeklySummary(
+        ["UEFA 유로파리그 경기였다.", ...s3.slice(1)],
+        ucl,
+        uclCtx,
+      ).issues.map((i) => i.code),
+    ).toContain("latin-token");
+  });
+
+  it.each([
+    [
+      [
+        "Garam Lee scored once and was named MVP of the week for his club.",
+        good[1]!,
+        good[2]!,
+      ],
+      "korean-ratio",
+    ],
+    [["이가람이 得点했다.", good[1]!, good[2]!], "han"],
+    [["이가람이 Matchday에 골을 넣었다.", good[1]!, good[2]!], "latin-token"],
+    [
+      ["샘플 유나이티드는 이그잼플 시티에 1-3으로 졌다.", good[1]!, good[2]!],
+      "score-not-in-input",
+    ],
+    [
+      ["이가람은 이번 주 7개의 슈팅을 기록했다.", good[1]!, good[2]!],
+      "number-not-in-input",
+    ],
+    [["이가람이 2골을 넣었다.", good[1]!, good[2]!], "player-stat"],
+    [["Heung-min Son도 골을 넣었다.", good[1]!, good[2]!], "name-not-in-input"],
+    [["Narae Kim이 이번 주 MVP에 올랐다.", good[1]!, good[2]!], "mvp-name"],
+    [["이가람이 골을 넣었다. 대단했다.", good[1]!, good[2]!], "sentence-form"],
+    [["이가람이 골을 넣었음", good[1]!, good[2]!], "sentence-form"],
+  ])("실패 %#: %s → %s", (sentences, code) => {
+    const r = checkWeeklySummary(sentences, t, ctx);
+    expect(r.ok).toBe(false);
+    expect(r.issues.map((i) => i.code)).toContain(code);
+  });
+});
+
+// ─── 템플릿 ──────────────────────────────────────────────────────────────
+
+describe("weeklyTemplateSummary — 코드 사실 문장(summaryAi:false)", () => {
+  it("단독 MVP", () => {
+    const t = buildWeeklyTable(
+      tableInput([
+        match("2026-10-24T13:30:00.000Z", [
+          row(LEE, "start", 75, 1),
+          row(KIM, "bench", 0),
+        ]),
+      ]),
+    );
+    expect(weeklyTemplateSummary(t)).toBe(
+      "10월 19일부터 10월 25일까지 기록을 집계한 한국 선수 3명 가운데 1명이 경기에 나섰다. " +
+        "이가람이 1경기 75분 1골로 MVP 점수 4점을 얻어 이번 주 MVP에 올랐다. " +
+        "이번 주 한국 선수들의 골은 모두 1골이었고 도움은 없었다.",
+    );
+  });
+
+  it("공동 MVP · 골·도움 없음", () => {
+    const t = buildWeeklyTable(
+      tableInput(
+        [
+          match("2026-10-24T13:30:00.000Z", [
+            row(LEE, "start", 90),
+            row(KIM, "start", 90),
+          ]),
+        ],
+        [LEE, KIM],
+      ),
+    );
+    expect(weeklyTemplateSummary(t)).toBe(
+      "10월 19일부터 10월 25일까지 기록을 집계한 한국 선수 2명 가운데 2명이 경기에 나섰다. " +
+        "김나래·이가람이 나란히 1경기 90분으로 MVP 점수 1점을 얻어 공동 MVP에 올랐다. " +
+        "이번 주 한국 선수의 골과 도움은 없었다.",
+    );
+  });
+
+  it("출전 0명 · 추적 선수 0명", () => {
+    const none = buildWeeklyTable(
+      tableInput(
+        [match("2026-10-24T13:30:00.000Z", [row(LEE, "bench", 0)])],
+        [LEE],
+      ),
+    );
+    expect(weeklyTemplateSummary(none)).toBe(
+      "10월 19일부터 10월 25일까지 기록을 집계한 한국 선수 1명 가운데 경기에 나선 선수는 없었다.",
+    );
+    expect(
+      weeklyTemplateSummary(buildWeeklyTable(tableInput([], []))),
+    ).toContain("등록 한국 선수가 없다");
+  });
+});

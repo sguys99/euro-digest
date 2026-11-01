@@ -46,26 +46,54 @@ export type KoreanPlayersFile = z.infer<typeof KoreanPlayersFileSchema>;
  * week는 ISO 8601 주차 "YYYY-WW"(01~53) — 연도는 ISO week-year다(달력 연도와 다를 수 있음).
  * 예) 2026-12-28(월)이 속한 주 → "2026-53", 2027-01-01(금)도 "2026-53".
  * 정규식은 형식·범위만 본다(그해에 53주가 실제로 있는지, from/to와의 일치는 생성 코드·테스트가 보장).
+ * 2026-11-01 사용자 결정(PRD §15 D65, M3-07):
+ *   ① 기간 from·to는 **UTC 월 00:00 ~ 일 23:59:59.999**(src/lib/time.ts isoWeekRangeUtc — 경기일 기준)
+ *   ② `coMvp` — 점수·출전 시간·골이 모두 같은 공동 MVP 중 `mvp`(가나다 첫 선수)를 뺀 나머지(가나다순). 단독이면 키 없음
+ *   ③ `summaryAi` — true = LLM 총평(화면 'AI 작성' 라벨), false = 코드 템플릿 문장으로 강등(검증 실패·배치 미완료·비용 가드)
  */
-export const WeeklyReportSchema = z.object({
-  week: z.string().regex(/^\d{4}-(?:0[1-9]|[1-4]\d|5[0-3])$/, {
-    error: "주차는 YYYY-WW (01~53)",
-  }),
-  from: IsoSchema,
-  to: IsoSchema,
-  rows: z.array(
-    z.object({
-      player: SlugSchema, // 선수 slug
-      apps: z.number(),
-      minutes: z.number(),
-      goals: z.number(),
-      assists: z.number(),
+export const WeeklyReportSchema = z
+  .object({
+    week: z.string().regex(/^\d{4}-(?:0[1-9]|[1-4]\d|5[0-3])$/, {
+      error: "주차는 YYYY-WW (01~53)",
     }),
-  ),
-  mvp: SlugSchema.nullable(), // 선수 slug, 코드 규칙: 골×3 + 도움×2 + 출전 (FR-92)
-  summary: z.string(), // LLM 총평 3~5문장 (FR-91)
-  generatedAt: IsoSchema,
-});
+    from: IsoSchema,
+    to: IsoSchema,
+    rows: z.array(
+      z.object({
+        player: SlugSchema, // 선수 slug
+        apps: z.number(),
+        minutes: z.number(),
+        goals: z.number(),
+        assists: z.number(),
+      }),
+    ),
+    mvp: SlugSchema.nullable(), // 선수 slug, 코드 규칙: 골×3 + 도움×2 + 출전 (FR-92) — 출전 0명이면 null
+    coMvp: z.array(SlugSchema).min(1).optional(), // 공동 MVP(mvp 제외, 가나다순 — D65 ②)
+    summary: z.string(), // 총평 3~5문장 (FR-91) — LLM 또는 코드 템플릿
+    summaryAi: z.boolean(), // true = LLM이 쓴 총평('AI 작성' 라벨), false = 템플릿 강등 (D65·M3-07)
+    generatedAt: IsoSchema,
+  })
+  .superRefine((r, ctx) => {
+    if (r.coMvp === undefined) return;
+    if (r.mvp === null) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["coMvp"],
+        message: "coMvp는 mvp가 있을 때만",
+      });
+    }
+    const seen = new Set<string>();
+    r.coMvp.forEach((slug, i) => {
+      if (slug === r.mvp || seen.has(slug)) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["coMvp", i],
+          message: "coMvp에 mvp 또는 중복 slug",
+        });
+      }
+      seen.add(slug);
+    });
+  });
 export type WeeklyReport = z.infer<typeof WeeklyReportSchema>;
 
 // ─── v0.1 — 2026-10-10 사용자 확인 — `data/players/korean.json` ────────────────
@@ -131,8 +159,15 @@ export const PlayerMatchLogSchema = z
       .object({
         for: z.number().int().min(0),
         against: z.number().int().min(0),
+        // 승부차기 스코어(소속팀 기준) — 승부차기로 끝난 경기만(원장 pens, 2026-11-01 사용자 결정 — M3-07)
+        pens: z
+          .object({
+            for: z.number().int().min(0),
+            against: z.number().int().min(0),
+          })
+          .optional(),
       })
-      .nullable(), // 소속팀 기준 스코어, 정보 없으면 null
+      .nullable(), // 소속팀 기준 스코어(정규시간 + 연장), 정보 없으면 null
     started: z.boolean().nullable(), // 선발 여부 — 폴백이면 null
     minutes: z.number().int().min(0).nullable(), // 0 = 명단 제외·미출전, null = 정보 없음(폴백)
     goals: z.number().int().min(0),

@@ -457,8 +457,9 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 2026-11-01 완료(사용자 결정 D65 ⑦ — 웹 검색 초안 → 확인): `configs/national-team.json` 친선 6경기(9·10월 결과 4 · 11월 도하 2 — 11-13 사우디아라비아·11-17 카타르, 경기장 미발표) + 11월 소집 등록 선수 7명, 경기마다 `sourceUrl`. `src/lib/national-team.ts` 판정 = 킥오프 KST 날짜 ±3일(양 끝 포함, 이어지는 창 합침, 연기 제외) → 11월 창 **11-10~11-20 KST**. 로더 `src/lib/data/national-team.ts`. `rest-period.ts`(발행 게이트 휴식기 하한)도 같은 함수로 통합
 - [x] M3-06 `weekly.yml` 골격: **매주 월요일 08:00 KST** (일일 발행 이후, push 금지 시간대 회피), 단계별 실패 격리, `concurrency: collect` 공유(같은 `data/` 파일 동시 쓰기 방지), 끝에서 빌드 → `data/` 커밋 → `deploy.yml` 호출(월요일 당일 공개, FR-90)
   - 2026-11-01 완료(`adcff07`): cron `0 23 * * 0`(월 08:00 KST) + 수동(force·dry·week), `concurrency: collect`, 게이트 `COLLECT_ENABLED == 'true'` + `WEEKLY_ENABLED != 'off'`. `scripts/weekly.ts` → `scripts/lib/weekly-run.ts`·`weekly-stages.ts`(단계 배열 korean-weekly → analysis-blogs → team-profiles → ops-report, 단계별 try/catch·시간 상한, 미구현 = 건너뜀). 대상 주차 = 실행 KST 날짜의 앞 주, 같은 주 재실행 가드 = 주간 리포트 파일 존재(force 예외). partial이면 실패 단계 산출물만 되돌리고 나머지 발행 + 이슈. 커밋 `chore(data): <날짜> 주간 발행 (<주차>)`
-- [ ] M3-07 `configs/prompts/weekly-kr.md` + 💰 주간 총평 1회 호출(Batches API — D28) + 이번 주 MVP 규칙 계산(코드) — 표·MVP 입력은 M1-48이 쌓은 지난 월~일 경기 기록 합산 (FR-90~92, D27)
+- [x] M3-07 `configs/prompts/weekly-kr.md` + 💰 주간 총평 1회 호출(Batches API — D28) + 이번 주 MVP 규칙 계산(코드) — 표·MVP 입력은 M1-48이 쌓은 지난 월~일 경기 기록 합산 (FR-90~92, D27)
   - 🆕 D2 이월: 주간 경계 시간대 UTC/KST 미정(추천 UTC — 브리핑과 같은 '현지') · MVP 동점 규칙 미정(공동 MVP는 스키마 변경 + 375 큰 이름 넘침 표기 함께 결정)
+  - 2026-11-01 완료(D65 ①~③ + 사용자 결정: 총평 실패 → 템플릿 강등 + `summaryAi`, 승부차기 `result.pens`): `scripts/lib/weekly-kr.ts`(표·MVP 순위·입력·검증·템플릿, 순수) · `weekly-kr-stage.ts`(Batches 1회 + 남은 시간 3분 이상이면 재시도 1회, LLM 창 8분·15초 폴링, 마감 넘기면 취소 → 템플릿) · 주간 범위 `isoWeekRangeUtc`(UTC 월~일). 요청: Haiku 5.5 · thinking 적응형 + effort medium · `max_tokens` 16,384 · 캐싱 끔. 실측 dev W43 1회 $0.001211(입력 2,750·출력 4,293, 배치 2분 14초, 검증 첫 시도 통과) — MVP 이재성(1골 4점). 첫 prod 발행 = 2026-11-02 08:00 KST W44
 - [ ] M3-08 분석 블로그 주 1회 수집(LLM 없음) → 팀 페이지 "더 읽을거리" (FR-10, FR-57)
 
 ### M3-B 화면
@@ -782,11 +783,13 @@ const KoreanPlayer = z.strictObject({
 
 // data/players/weekly/{yyyy-ww}.json
 const WeeklyReport = z.object({
-  week: z.string().regex(/^\d{4}-(?:0[1-9]|[1-4]\d|5[0-3])$/), from: Iso, to: Iso,   // ISO 8601 주차 01~53(연도는 ISO week-year, 예: 2026-12-28 → "2026-53")
+  week: z.string().regex(/^\d{4}-(?:0[1-9]|[1-4]\d|5[0-3])$/), from: Iso, to: Iso,   // ISO 8601 주차 01~53(연도는 ISO week-year, 예: 2026-12-28 → "2026-53") · from/to = UTC 월 00:00 ~ 일 23:59:59.999(isoWeekRangeUtc, D65 ①)
   rows: z.array(z.object({ player: Slug, apps: z.number(), minutes: z.number(),
-                           goals: z.number(), assists: z.number() })),
-  mvp: Slug.nullable(),                              // 코드 규칙: 골×3 + 도움×2 + 출전
-  summary: z.string(),                               // LLM 총평 3~5문장
+                           goals: z.number(), assists: z.number() })),   // 순서 = MVP 순위
+  mvp: Slug.nullable(),                              // 코드 규칙: 골×3 + 도움×2 + 출전 → 동점 출전 시간 → 골(D65 ②), 출전 0명이면 null
+  coMvp: z.array(Slug).min(1).optional(),            // D65 ② 공동 MVP 중 mvp(가나다 첫 선수)를 뺀 나머지, 가나다순 — 단독이면 키 없음, mvp null이면 금지
+  summary: z.string(),                               // 총평 3~5문장
+  summaryAi: z.boolean(),                            // true = LLM 총평('AI 작성' 라벨) · false = 코드 템플릿 강등(2026-11-01 사용자 결정)
   generatedAt: Iso,
 });
 
@@ -978,7 +981,8 @@ const PlayerSeasonStats = z.object({                 // 대회별 1행(리그·U
 });
 const PlayerMatchLog = z.object({
   matchId: z.string().min(1), comp: PlayerComp, leagueRaw: LeagueRaw.optional(), kickoff: Iso, opponent: Opponent, home: z.boolean(),
-  result: z.object({ for: z.number().int().min(0), against: z.number().int().min(0) }).nullable(),
+  result: z.object({ for: z.number().int().min(0), against: z.number().int().min(0),
+                    pens: z.object({ for: z.number().int().min(0), against: z.number().int().min(0) }).optional() }).nullable(),   // pens = 승부차기(소속팀 기준, PEN 경기만 — 2026-11-01 사용자 결정)
   started: z.boolean().nullable(), minutes: z.number().int().min(0).nullable(),   // 0 = 미출전, null = 정보 없음
   goals: z.number().int().min(0), assists: z.number().int().min(0).nullable(),
 });

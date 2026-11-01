@@ -1,11 +1,14 @@
 {
   "week": "2026-41",
-  "from": "2026-10-04T15:00:00Z",
-  "to": "2026-10-11T14:59:59.999Z",
+  "from": "2026-10-05T00:00:00Z",
+  "to": "2026-10-11T23:59:59.999Z",
   "rows": [
-    { "player": "hong-gil-dong", "apps": 2, "minutes": 120, "goals": 1, "assists": 1 }
+    { "player": "hong-gil-dong", "apps": 2, "minutes": 120, "goals": 1, "assists": 1 },
+    { "player": "kim-cheol-su", "apps": 2, "minutes": 120, "goals": 1, "assists": 1 }
   ],
   "mvp": "hong-gil-dong",
-  "summary": "[예시] 홍길동이 2경기에 나서 1골 1도움을 기록했다.",
+  "coMvp": ["kim-cheol-su"],
+  "summary": "[예시] 홍길동과 김철수가 나란히 2경기에 나서 1골 1도움을 기록했다.",
+  "summaryAi": true,
   "generatedAt": "2026-10-11T23:05:00Z"
 }

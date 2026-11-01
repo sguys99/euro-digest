@@ -32,6 +32,9 @@ import type { LlmMode } from "./cli-args";
 import type { Logger } from "./logger";
 import type { RunEnv, RunLog } from "@/lib/schema";
 
+import { WEEKLY_REPORT_DIR } from "./weekly-kr";
+import { runKoreanWeekly } from "./weekly-kr-stage";
+
 /** 비용 집계에 넣는 LLM 결과 1건 — llm.ts LlmResult를 그대로 넣을 수 있다 */
 export type WeeklyBillableResult =
   Parameters<typeof costFromResults>[1] extends Iterable<infer T> ? T : never;
@@ -44,7 +47,10 @@ export interface WeeklyStageContext {
   dataDir: string;
   /** 대상 ISO 주차 "YYYY-WW"(지난 월~일 — FR-90). 기본 = 실행 시작 KST 날짜가 속한 주의 바로 앞 주 */
   week: string;
-  /** 그 주차의 KST 월 00:00 ~ 일 23:59:59.999 (UTC ISO — src/lib/time.ts isoWeekRange). 경계 시간대 UTC/KST는 M3-07에서 확정 */
+  /**
+   * 그 주차의 **UTC** 월 00:00 ~ 일 23:59:59.999 (UTC ISO — src/lib/time.ts isoWeekRangeUtc, PRD §15 D65 ① 경기일 기준).
+   * 정기 실행(월 08:00 KST = 일 23:00 UTC)에는 끝이 아직 지나지 않았을 수 있다 — 원장(종료 경기만) 기준으로 집계한다
+   */
   weekRange: { from: string; to: string };
   env: RunEnv;
   llmMode: LlmMode;
@@ -119,8 +125,8 @@ export interface WeeklyStage {
   run: WeeklyStageRun | null;
 }
 
-/** 한국 선수 주간 리포트 폴더 — 실행 가드가 `<주차>.json`이 있는지 본다(src/lib/schema/registry.ts `data/players/weekly/????-??.json`) */
-export const WEEKLY_REPORT_DIR = "data/players/weekly";
+/** 한국 선수 주간 리포트 폴더 — 실행 가드가 `<주차>.json`이 있는지 본다(정의는 weekly-kr.ts — 단계 모듈과 순환 import를 피한다) */
+export { WEEKLY_REPORT_DIR } from "./weekly-kr";
 
 const MINUTE_MS = 60_000;
 
@@ -140,7 +146,7 @@ export const WEEKLY_STAGES: readonly WeeklyStage[] = [
     llm: true,
     timeoutMs: 10 * MINUTE_MS,
     writes: [WEEKLY_REPORT_DIR],
-    run: null,
+    run: runKoreanWeekly, // weekly-kr-stage.ts — 표·MVP(코드) + 총평 Batches 1회(+재시도 1회) → 실패면 템플릿
   },
   {
     id: "analysis-blogs",

@@ -31,6 +31,7 @@ import {
   isoWeek,
   isoWeekOfDate,
   isoWeekRange,
+  isoWeekRangeUtc,
   isoWeeksInYear,
   isUtcIso,
   isWithinKstWindow,
@@ -1165,7 +1166,8 @@ describe("isoWeekRange — KST 월 00:00 ~ 일 23:59:59.999 (from·to 모두 포
     const fixture = WeeklyReportSchema.parse(
       JSON.parse(readFileSync(fixturePath, "utf8")),
     );
-    const range = isoWeekRange(fixture.week);
+    // D65 ① — 주간 리포트 기간은 UTC 경계(isoWeekRangeUtc)
+    const range = isoWeekRangeUtc(fixture.week);
     expect([ms(fixture.from), ms(fixture.to)]).toEqual([
       ms(range.from),
       ms(range.to),
@@ -1174,7 +1176,7 @@ describe("isoWeekRange — KST 월 00:00 ~ 일 23:59:59.999 (from·to 모두 포
       WeeklyReportSchema.safeParse({
         ...fixture,
         week: "2026-53",
-        ...isoWeekRange("2026-53"),
+        ...isoWeekRangeUtc("2026-53"),
       }).success,
     ).toBe(true);
   });
@@ -1189,6 +1191,34 @@ describe("isoWeekRange — KST 월 00:00 ~ 일 23:59:59.999 (from·to 모두 포
     "2026-1",
   ])("거부: %s", (week) => {
     expect(() => isoWeekRange(week)).toThrow(TimeInputError);
+  });
+});
+
+describe("isoWeekRangeUtc — UTC 월 00:00 ~ 일 23:59:59.999 (주간 리포트 경계, PRD §15 D65 ①)", () => {
+  it.each([
+    ["2026-41", "2026-10-05T00:00:00.000Z", "2026-10-11T23:59:59.999Z"],
+    ["2026-43", "2026-10-19T00:00:00.000Z", "2026-10-25T23:59:59.999Z"], // 서머타임 종료 주(10-25 01:00 UTC) — 경계 불변
+    ["2026-44", "2026-10-26T00:00:00.000Z", "2026-11-01T23:59:59.999Z"],
+    ["2026-53", "2026-12-28T00:00:00.000Z", "2027-01-03T23:59:59.999Z"],
+    ["2027-13", "2027-03-29T00:00:00.000Z", "2027-04-04T23:59:59.999Z"], // 서머타임 시작(03-28) 다음 주
+  ])("%s → [%s, %s]", (week, from, to) => {
+    expect(isoWeekRangeUtc(week)).toEqual({ from, to });
+  });
+
+  it("일 23:59 UTC는 그 주, 월 00:00 UTC는 다음 주 — 일요일 저녁 유럽 경기(KST로는 월요일)가 그 주에 남는다", () => {
+    const w43 = isoWeekRangeUtc("2026-43");
+    const w44 = isoWeekRangeUtc("2026-44");
+    // 김민재 프라이부르크전 10-25 16:30Z = KST 10-26(월) 01:30 — KST 경계(isoWeekRange)로는 W44, UTC로는 W43
+    const kickoff = ms("2026-10-25T16:30:00Z");
+    expect(kickoff <= ms(w43.to)).toBe(true);
+    expect(kickoff > ms(isoWeekRange("2026-43").to)).toBe(true);
+    expect(ms("2026-10-25T23:59:00Z") <= ms(w43.to)).toBe(true);
+    expect(ms("2026-10-26T00:00:00Z")).toBe(ms(w44.from));
+    expect(ms(w43.to) + 1).toBe(ms(w44.from));
+  });
+
+  it.each(["2027-53", "2026-00", "2026-W41"])("거부: %s", (week) => {
+    expect(() => isoWeekRangeUtc(week)).toThrow(TimeInputError);
   });
 });
 

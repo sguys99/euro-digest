@@ -1,0 +1,7 @@
+{
+  "type": "succeeded",
+  "note": "M3-07 dev 실측(2026-11-01, runs-dev weekly-dev-20261101T042927Z-3dba — 지시문 configs/prompts/weekly-kr.md 첫 판, Batches, 입력 2,750·출력 4,293토큰, $0.001211, 배치 약 2분 14초). 단계가 치환 뒤 문장만 남겨 원문을 그대로 갖고 있지 않아 이름만 입력 영문 표기로 되돌린 재구성 — 내용·숫자·순서는 실측 그대로",
+  "text": "{\"s\":[\"이번 주 MVP는 FSV Mainz 05의 Jae-sung Lee로, 4점을 기록했다.\",\"Jae-sung Lee는 10월 24일 Werder Bremen과의 Bundesliga 홈 경기에 선발 출전해 63분 골을 넣었지만, 팀은 2-3으로 졌다.\",\"Hee-chan Hwang은 FC Schalke 04의 1. FC Köln 원정에 선발로 90분을 뛰어 0-0 무승부에 함께했고, Woo-yeong Jeong은 Union Berlin의 FC Augsburg 원정에 선발로 76분을 뛰어 1-1 무승부에 함께했다.\",\"Kang-in Lee는 Atletico Madrid의 10월 24일 Deportivo La Coruna 홈 경기에 선발로 67분을 뛰어 1-0 승리에 함께했다.\",\"Min-jae Kim은 10월 21일 Arsenal과의 UEFA Champions League 홈 경기에 선발로 45분을 뛰었고, Young-woo Seol은 10월 24일 벤치 대기했으며 Jens Castrop은 명단에서 빠졌다.\"]}",
+  "stop_reason": "end_turn",
+  "usage": { "input_tokens": 2750, "output_tokens": 4293, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0 }
+}

@@ -888,6 +888,34 @@ export function isoWeeksInYear(year: number): number {
  * 그해에 없는 주차(예: 52주인 해의 "-53")는 `TimeInputError`.
  */
 export function isoWeekRange(week: string): { from: string; to: string } {
+  const monday = isoWeekMondayEpochDay(week);
+  const from = zonedToUtcIso(
+    `${epochDayToDate(monday)}T00:00`,
+    DISPLAY_TIME_ZONE,
+  );
+  const nextFrom = zonedToUtcIso(
+    `${epochDayToDate(monday + 7)}T00:00`,
+    DISPLAY_TIME_ZONE,
+  );
+  return { from, to: toIso(Date.parse(nextFrom) - 1) };
+}
+
+/**
+ * ISO 주차 "YYYY-WW" → **UTC** 월 00:00:00.000 ~ 일 23:59:59.999 구간 (PRD §15 D65 ① — 한국 선수 주간 리포트의 '지난 월~일'은
+ * 브리핑 '전날'과 같은 현지 경기일 기준이라 UTC 경계다. 유럽 일요일 저녁 경기가 그 주에 남는다). from·to 모두 포함.
+ * 서머타임과 무관하다(UTC 자정 고정). 예) "2026-43" → { from: 2026-10-19T00:00:00.000Z, to: 2026-10-25T23:59:59.999Z }
+ * 그해에 없는 주차는 `TimeInputError`.
+ */
+export function isoWeekRangeUtc(week: string): { from: string; to: string } {
+  const monday = isoWeekMondayEpochDay(week);
+  return {
+    from: toIso(monday * DAY_MS),
+    to: toIso((monday + 7) * DAY_MS - 1),
+  };
+}
+
+/** ISO 주차 → 그 주 월요일의 epoch day(형식·범위 검사 포함) */
+function isoWeekMondayEpochDay(week: string): number {
   const m = typeof week === "string" ? WEEK_RE.exec(week) : null;
   if (!m) {
     throw new TimeInputError(`ISO 주차 형식(YYYY-WW)이 아님: ${quote(week)}`);
@@ -900,16 +928,7 @@ export function isoWeekRange(week: string): { from: string; to: string } {
   // 1월 4일은 항상 1주차에 속한다 → 그 주의 월요일이 1주차 시작.
   const jan4 = epochDay(year, 1, 4);
   const jan4IsoWeekday = ((weekdayOf(year, 1, 4) + 6) % 7) + 1;
-  const monday = jan4 - (jan4IsoWeekday - 1) + (w - 1) * 7;
-  const from = zonedToUtcIso(
-    `${epochDayToDate(monday)}T00:00`,
-    DISPLAY_TIME_ZONE,
-  );
-  const nextFrom = zonedToUtcIso(
-    `${epochDayToDate(monday + 7)}T00:00`,
-    DISPLAY_TIME_ZONE,
-  );
-  return { from, to: toIso(Date.parse(nextFrom) - 1) };
+  return jan4 - (jan4IsoWeekday - 1) + (w - 1) * 7;
 }
 
 // ─── 공개 API: 유럽 서머타임 ────────────────────────────────────────────────

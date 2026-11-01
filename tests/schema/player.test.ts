@@ -66,6 +66,14 @@ describe("KoreanPlayer — configs/korean-players.json (부록 A, FR-60)", () =>
   });
 });
 
+/** 키 하나를 뺀 사본(구조 분해의 버리는 변수 없이) */
+function omit<T extends object>(
+  value: T,
+  key: string,
+): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(value).filter(([k]) => k !== key));
+}
+
 describe("WeeklyReport — data/players/weekly/{yyyy-ww}.json (부록 A, FR-90~93)", () => {
   const report = validFixture(
     WeeklyReportSchema,
@@ -108,10 +116,51 @@ describe("WeeklyReport — data/players/weekly/{yyyy-ww}.json (부록 A, FR-90~9
   });
 
   it("MVP는 없으면 null, 기간은 UTC", () => {
-    expect(passes(WeeklyReportSchema, { ...report, mvp: null })).toBe(true);
+    expect(
+      passes(WeeklyReportSchema, { ...omit(report, "coMvp"), mvp: null }),
+    ).toBe(true);
     expect(
       issuePaths(WeeklyReportSchema, { ...report, from: "2026-10-05" }),
     ).toEqual(["from"]);
+  });
+});
+
+describe("WeeklyReport — 공동 MVP·총평 강등 (D65 ②·M3-07, 2026-11-01 사용자 결정)", () => {
+  const report = validFixture(
+    WeeklyReportSchema,
+    "data/players/weekly/2026-41.json",
+  );
+  const single = omit(report, "coMvp");
+
+  it("coMvp는 선택 — 단독 MVP는 키 없음", () => {
+    expect(passes(WeeklyReportSchema, single)).toBe(true);
+  });
+
+  it("coMvp는 mvp가 있을 때만 · mvp·중복 금지 · 빈 배열 금지", () => {
+    expect(issuePaths(WeeklyReportSchema, { ...report, mvp: null })).toEqual([
+      "coMvp",
+    ]);
+    expect(
+      issuePaths(WeeklyReportSchema, { ...report, coMvp: [report.mvp] }),
+    ).toEqual(["coMvp.0"]);
+    expect(
+      issuePaths(WeeklyReportSchema, {
+        ...report,
+        coMvp: ["kim-cheol-su", "kim-cheol-su"],
+      }),
+    ).toEqual(["coMvp.1"]);
+    expect(issuePaths(WeeklyReportSchema, { ...report, coMvp: [] })).toEqual([
+      "coMvp",
+    ]);
+  });
+
+  it("summaryAi는 필수 boolean", () => {
+    expect(issuePaths(WeeklyReportSchema, omit(report, "summaryAi"))).toEqual([
+      "summaryAi",
+    ]);
+    expect(passes(WeeklyReportSchema, { ...report, summaryAi: false })).toBe(
+      true,
+    );
   });
 });
 
@@ -160,6 +209,26 @@ describe("KoreanPlayersDataFile — data/players/korean.json (초안, F6)", () =
         recent: [{ ...log, minutes: -1 }],
       }),
     ).toEqual(["recent.0.minutes"]);
+  });
+
+  it("승부차기 스코어 result.pens는 선택(소속팀 기준, 0 이상 정수 — M3-07)", () => {
+    const pk = at(record.recent, record.recent.length - 1);
+    expect(pk.result?.pens).toEqual({ for: 4, against: 3 });
+    const plain = omit(pk.result ?? { for: 0, against: 0 }, "pens");
+    expect(
+      passes(KoreanPlayerRecordSchema, {
+        ...record,
+        recent: [{ ...pk, result: plain }],
+      }),
+    ).toBe(true);
+    expect(
+      issuePaths(KoreanPlayerRecordSchema, {
+        ...record,
+        recent: [
+          { ...pk, result: { ...plain, pens: { for: -1, against: 3 } } },
+        ],
+      }),
+    ).toEqual(["recent.0.result.pens.for"]);
   });
 
   it("상대 팀 slug는 null 허용, 이름은 필수", () => {

@@ -174,17 +174,28 @@ describe("defaultTargetWeek — 실행 KST 날짜가 속한 주의 바로 앞 �
 describe("resolveTargetWeek", () => {
   const now = MONDAY_RUN.toISOString();
 
-  it("기본 주차와 구간(KST 월 00:00 ~ 일 23:59:59.999)", () => {
+  it("기본 주차와 집계 구간(UTC 월 00:00 ~ 일 23:59:59.999 — D65 ①)", () => {
     expect(resolveTargetWeek(null, now)).toEqual({
       ok: true,
       value: {
         week: "2026-44",
         range: {
-          from: "2026-10-25T15:00:00.000Z",
-          to: "2026-11-01T14:59:59.999Z",
+          from: "2026-10-26T00:00:00.000Z",
+          to: "2026-11-01T23:59:59.999Z",
         },
       },
     });
+  });
+
+  it("'끝난 주'는 KST 주 끝으로 판정 — 월 08:00 KST(UTC 일요일 1시간 남음)에도 지난 주를 실행한다", () => {
+    // 일 23:59 KST = 일 14:59 UTC → 아직 W44 진행 중
+    expect(resolveTargetWeek("2026-44", "2026-11-01T14:59:00.000Z").ok).toBe(
+      false,
+    );
+    // 월 00:00 KST = 일 15:00 UTC → W44 끝(KST) — UTC 구간 끝은 9시간 뒤
+    expect(resolveTargetWeek("2026-44", "2026-11-01T15:00:00.000Z").ok).toBe(
+      true,
+    );
   });
 
   it("지난 주차 지정은 허용, 끝나지 않은 주·없는 주차는 거부", () => {
@@ -433,6 +444,9 @@ describe("단계 등록 (WEEKLY_STAGES)", () => {
     ]);
     // 가드가 보는 폴더 = 주간 리포트 단계가 쓰는 폴더
     expect(WEEKLY_STAGES[0]?.writes).toContain(WEEKLY_REPORT_DIR);
+    // M3-07 — 한국 선수 주간 리포트 단계 구현됨(LLM 호출 지점 #3)
+    expect(WEEKLY_STAGES[0]).toMatchObject({ id: "korean-weekly", llm: true });
+    expect(WEEKLY_STAGES[0]?.run).not.toBeNull();
   });
 
   it("잘못된 등록을 잡는다", () => {
@@ -537,8 +551,11 @@ describe("runWeekly — 가드·기록·종료 코드", () => {
     };
   }
 
-  it("지금 등록(모두 미구현) — 성공·exit 0, mock이라 기록 안 함", async () => {
-    const outcome = await runWeekly(deps());
+  // 실제 등록 단계(M3-07 korean-weekly)는 configs·원장을 읽는다 — 러너 동작은 미구현 골격으로 본다(단계는 weekly-kr-stage.test.ts)
+  const SKELETON = WEEKLY_STAGES.map((s) => ({ ...s, run: null }));
+
+  it("미구현 단계만 — 성공·exit 0, mock이라 기록 안 함", async () => {
+    const outcome = await runWeekly(deps({ stages: SKELETON }));
     expect(outcome.exitCode).toBe(0);
     expect(outcome.outputs).toMatchObject({
       skipped: false,
@@ -620,7 +637,9 @@ describe("runWeekly — 가드·기록·종료 코드", () => {
   });
 
   it("live 비dry — data/runs-dev.json에 job weekly 기록(비용 0, LLM 호출 없음)", async () => {
-    const outcome = await runWeekly(deps({ llmMode: "live" }));
+    const outcome = await runWeekly(
+      deps({ llmMode: "live", stages: SKELETON }),
+    );
     expect(outcome.outputs.runRecorded).toBe(true);
     const runs = RunsDevFileSchema.parse(
       JSON.parse(
@@ -641,7 +660,9 @@ describe("runWeekly — 가드·기록·종료 코드", () => {
   });
 
   it("live dry — LLM 결과가 없으면 기록하지 않는다", async () => {
-    const outcome = await runWeekly(deps({ llmMode: "live", dry: true }));
+    const outcome = await runWeekly(
+      deps({ llmMode: "live", dry: true, stages: SKELETON }),
+    );
     expect(outcome.outputs.runRecorded).toBe(false);
     expect(outcome.run?.status).toBe("skipped");
   });
@@ -685,7 +706,7 @@ describe("runWeekly — 가드·기록·종료 코드", () => {
     );
     expect(seen).toMatchObject({
       week: "2026-44",
-      from: "2026-10-25T15:00:00.000Z",
+      from: "2026-10-26T00:00:00.000Z",
     });
     expect(seen!.cost).toBeGreaterThan(0);
     expect(outcome.run).toMatchObject({

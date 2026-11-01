@@ -5,6 +5,10 @@
  * 흐름
  *   ⓪ 대상 주차 = 실행 시작 KST 날짜가 속한 ISO 주의 **바로 앞 주**(지난 월~일 — FR-90). 월요일 08:00 KST 정기 실행이면 어제 끝난
  *      주, 같은 주 화~일 수동 재실행도 같은 주차. `--week YYYY-WW`로 지난 주차를 지정할 수 있다(끝나지 않은 주는 거부).
+ *      단계에 넘기는 집계 구간 `weekRange`는 **UTC 월 00:00 ~ 일 23:59:59.999**(PRD §15 D65 ① — 경기일 기준, time.ts isoWeekRangeUtc).
+ *      '끝난 주' 판정은 KST 주 끝(일 24:00 KST)으로 한다 — 정기 실행(월 08:00 KST = 일 23:00 UTC)에는 UTC 일요일이 1시간 남아 있지만
+ *      일요일 마지막 킥오프(보통 ~20:00 UTC)는 끝나 있다. 이때 `weekly.run.utc-week-open` 경고를 남기고, 단계는 원장 기준으로 집계한다
+ *      (원장에는 종료 경기만 들어오므로 그 시각까지 끝나지 않은 경기는 빠진다 — 단계가 로그로 남긴다).
  *   ① 실행 가드(decideWeeklyGuard): 그 주차 한국 선수 주간 리포트(`data/players/weekly/<주차>.json`)가 이미 있으면(= 그 단계가 성공하고
  *      검증·빌드를 통과해 커밋됐다) force 없이는 실행 전체를 건너뛴다 — 실행 기록도 남기지 않는다(성공 처리, exit 0).
  *      판정 근거를 실행 기록이 아니라 산출물 파일로 둔 이유: RunLog에는 주차 필드가 없어(스키마 변경은 사용자 확인 사항) 지난 주차를
@@ -34,6 +38,7 @@ import type { RunEnv, RunLog } from "@/lib/schema";
 import {
   isoWeekOfDate,
   isoWeekRange,
+  isoWeekRangeUtc,
   kstDate,
   nowUtcIso,
   shiftDate,
@@ -157,25 +162,30 @@ export function defaultTargetWeek(nowIso: string): string {
 
 export interface TargetWeek {
   week: string;
+  /** 집계 구간 — UTC 월 00:00 ~ 일 23:59:59.999 (D65 ①) */
   range: { from: string; to: string };
 }
 
-/** 지정 주차(없으면 기본) → 주차·구간. 그해에 없는 주차·아직 끝나지 않은 주(구간 끝 > 지금)는 오류 */
+/**
+ * 지정 주차(없으면 기본) → 주차·UTC 집계 구간(D65 ①). 그해에 없는 주차·아직 끝나지 않은 주(**KST** 주 끝 > 지금 — 머리 주석 ⓪)는 오류
+ */
 export function resolveTargetWeek(
   requested: string | null,
   nowIso: string,
 ): ParseResult<TargetWeek> {
   const week = requested ?? defaultTargetWeek(nowIso);
   let range: TargetWeek["range"];
+  let kstEnd: string;
   try {
-    range = isoWeekRange(week);
+    range = isoWeekRangeUtc(week);
+    kstEnd = isoWeekRange(week).to;
   } catch (error) {
     return {
       ok: false,
       error: error instanceof Error ? error.message : String(error),
     };
   }
-  if (Date.parse(range.to) > Date.parse(nowIso)) {
+  if (Date.parse(kstEnd) > Date.parse(nowIso)) {
     return {
       ok: false,
       error: `주차 ${week}는 아직 끝나지 않았습니다 (KST 일요일 24시 이후에 실행) — 주간 리포트는 지난 월~일 기준(FR-90)`,
@@ -702,6 +712,16 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
     stages: deps.stages.length,
     implemented: deps.stages.filter((s) => s.run !== null).length,
   });
+  if (Date.parse(range.to) >= Date.parse(startedAt)) {
+    // 정기 실행(월 08:00 KST = 일 23:00 UTC) — UTC 일요일이 아직 남았다(머리 주석 ⓪). 원장 기준으로 집계한다
+    log.warn("weekly.run.utc-week-open", {
+      week,
+      utcWeekEnd: range.to,
+      remainingMinutes: Math.ceil(
+        (Date.parse(range.to) + 1 - Date.parse(startedAt)) / 60_000,
+      ),
+    });
+  }
   if (!guard.run) {
     log.info("weekly.guard.skip", { week, reason: guard.reason });
     deps.print(`[weekly] ${guard.message}`);

@@ -1,0 +1,762 @@
+{
+  "note": "M3-07 주간 리포트 W43(2026-10-19~25 UTC) 테스트 입력 — data/matches/2026-10.json 중 한국 선수 행이 있는 그 주 경기·configs/korean-players.json·meta.playerSince 사본(2026-11-01). 지난 날짜는 다시 받을 수 없어 저장본으로만 시험한다(D27)",
+  "week": "2026-43",
+  "players": [
+    {
+      "slug": "kim-ji-soo",
+      "nameKo": "김지수",
+      "nameEn": "Ji-soo Kim",
+      "team": "brentford",
+      "comp": "EPL",
+      "position": "DF",
+      "birthYear": 2004,
+      "apiFootballId": null,
+      "active": true
+    },
+    {
+      "slug": "park-seung-soo",
+      "nameKo": "박승수",
+      "nameEn": "Seung-soo Park",
+      "team": "newcastle-united",
+      "comp": "EPL",
+      "position": "FW",
+      "birthYear": 2007,
+      "apiFootballId": 423714,
+      "active": true
+    },
+    {
+      "slug": "lee-kang-in",
+      "nameKo": "이강인",
+      "nameEn": "Kang-in Lee",
+      "team": "atletico-madrid",
+      "comp": "LALIGA",
+      "position": "MF",
+      "birthYear": 2001,
+      "apiFootballId": 927,
+      "active": true
+    },
+    {
+      "slug": "kim-min-jae",
+      "nameKo": "김민재",
+      "nameEn": "Min-jae Kim",
+      "team": "bayern-munchen",
+      "comp": "BUNDESLIGA",
+      "position": "DF",
+      "birthYear": 1996,
+      "apiFootballId": 2897,
+      "active": true
+    },
+    {
+      "slug": "jeong-woo-yeong",
+      "nameKo": "정우영",
+      "nameEn": "Woo-yeong Jeong",
+      "team": "union-berlin",
+      "comp": "BUNDESLIGA",
+      "position": "MF",
+      "birthYear": 1999,
+      "apiFootballId": 512,
+      "active": true
+    },
+    {
+      "slug": "lee-jae-sung",
+      "nameKo": "이재성",
+      "nameEn": "Jae-sung Lee",
+      "team": "mainz",
+      "comp": "BUNDESLIGA",
+      "position": "MF",
+      "birthYear": 1992,
+      "apiFootballId": 2906,
+      "active": true
+    },
+    {
+      "slug": "jens-castrop",
+      "nameKo": "옌스 카스트로프",
+      "nameEn": "Jens Castrop",
+      "team": "borussia-monchengladbach",
+      "comp": "BUNDESLIGA",
+      "position": "MF",
+      "birthYear": 2003,
+      "apiFootballId": 280358,
+      "active": true
+    },
+    {
+      "slug": "seol-young-woo",
+      "nameKo": "설영우",
+      "nameEn": "Young-woo Seol",
+      "team": "augsburg",
+      "comp": "BUNDESLIGA",
+      "position": "DF",
+      "birthYear": 1998,
+      "apiFootballId": 197985,
+      "active": true
+    },
+    {
+      "slug": "hwang-hee-chan",
+      "nameKo": "황희찬",
+      "nameEn": "Hee-chan Hwang",
+      "team": "schalke",
+      "comp": "BUNDESLIGA",
+      "position": "FW",
+      "birthYear": 1996,
+      "apiFootballId": 24888,
+      "active": true
+    },
+    {
+      "slug": "hong-hyun-seok",
+      "nameKo": "홍현석",
+      "nameEn": "Hyun-seok Hong",
+      "team": "midtjylland",
+      "comp": "OTHER",
+      "position": "MF",
+      "birthYear": 1999,
+      "apiFootballId": null,
+      "active": false
+    },
+    {
+      "slug": "yang-min-hyeok",
+      "nameKo": "양민혁",
+      "nameEn": "Min-hyeok Yang",
+      "team": "westerlo",
+      "comp": "OTHER",
+      "position": "FW",
+      "birthYear": 2006,
+      "apiFootballId": null,
+      "active": false
+    }
+  ],
+  "playerSince": {
+    "hwang-hee-chan": "2026-10-19",
+    "jens-castrop": "2026-10-19",
+    "jeong-woo-yeong": "2026-10-19",
+    "kim-min-jae": "2026-10-19",
+    "lee-jae-sung": "2026-10-19",
+    "lee-kang-in": "2026-10-19",
+    "seol-young-woo": "2026-10-19"
+  },
+  "ledger": {
+    "month": "2026-10",
+    "updatedAt": "2026-10-31T22:15:28.384Z",
+    "matches": [
+      {
+        "id": "af-1635738",
+        "leagueId": 2,
+        "league": "UEFA Champions League",
+        "comp": "UCL",
+        "season": 2026,
+        "round": "League Stage - 3",
+        "kickoff": "2026-10-20T19:00:00.000Z",
+        "status": "FT",
+        "home": {
+          "id": 172,
+          "name": "VfB Stuttgart",
+          "formation": "4-2-3-1"
+        },
+        "away": {
+          "id": 530,
+          "name": "Atletico Madrid",
+          "formation": "4-4-2"
+        },
+        "ft": {
+          "home": 1,
+          "away": 1
+        },
+        "pens": null,
+        "goals": [
+          {
+            "minute": 36,
+            "extra": null,
+            "side": "home",
+            "kind": "normal",
+            "scorer": {
+              "id": 128533,
+              "name": "Jamie Leweling"
+            },
+            "assist": null
+          },
+          {
+            "minute": 47,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 6009,
+              "name": "Julián Álvarez"
+            },
+            "assist": {
+              "id": 18767,
+              "name": "Ademola Lookman"
+            }
+          }
+        ],
+        "goalsComplete": true,
+        "korean": [
+          {
+            "player": 927,
+            "side": "away",
+            "status": "bench",
+            "minutes": 0,
+            "goals": 0,
+            "assists": 0
+          }
+        ],
+        "fetchedAt": "2026-10-21T00:09:26.068Z"
+      },
+      {
+        "id": "af-1635630",
+        "leagueId": 2,
+        "league": "UEFA Champions League",
+        "comp": "UCL",
+        "season": 2026,
+        "round": "League Stage - 3",
+        "kickoff": "2026-10-21T19:00:00.000Z",
+        "status": "FT",
+        "home": {
+          "id": 157,
+          "name": "Bayern München",
+          "formation": "4-2-3-1"
+        },
+        "away": {
+          "id": 42,
+          "name": "Arsenal",
+          "formation": "4-3-3"
+        },
+        "ft": {
+          "home": 2,
+          "away": 2
+        },
+        "pens": null,
+        "goals": [
+          {
+            "minute": 25,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 19586,
+              "name": "Eberechi Eze"
+            },
+            "assist": {
+              "id": 37127,
+              "name": "Martin Odegaard"
+            }
+          },
+          {
+            "minute": 35,
+            "extra": null,
+            "side": "home",
+            "kind": "normal",
+            "scorer": {
+              "id": 509,
+              "name": "Alphonso Davies"
+            },
+            "assist": {
+              "id": 184,
+              "name": "Harry Kane"
+            }
+          },
+          {
+            "minute": 61,
+            "extra": null,
+            "side": "home",
+            "kind": "penalty",
+            "scorer": {
+              "id": 184,
+              "name": "Harry Kane"
+            },
+            "assist": null
+          },
+          {
+            "minute": 82,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 2937,
+              "name": "Declan Rice"
+            },
+            "assist": {
+              "id": 18979,
+              "name": "Viktor Gyökeres"
+            }
+          }
+        ],
+        "goalsComplete": true,
+        "korean": [
+          {
+            "player": 2897,
+            "side": "home",
+            "status": "start",
+            "minutes": 45,
+            "goals": 0,
+            "assists": 0
+          }
+        ],
+        "fetchedAt": "2026-10-22T00:13:17.053Z"
+      },
+      {
+        "id": "af-1575196",
+        "leagueId": 78,
+        "league": "Bundesliga",
+        "comp": "BUNDESLIGA",
+        "season": 2026,
+        "round": "Regular Season - 7",
+        "kickoff": "2026-10-23T18:30:00.000Z",
+        "status": "FT",
+        "home": {
+          "id": 172,
+          "name": "VfB Stuttgart",
+          "formation": "4-2-3-1"
+        },
+        "away": {
+          "id": 163,
+          "name": "Borussia Mönchengladbach",
+          "formation": "3-4-2-1"
+        },
+        "ft": {
+          "home": 2,
+          "away": 3
+        },
+        "pens": null,
+        "goals": [
+          {
+            "minute": 5,
+            "extra": null,
+            "side": "home",
+            "kind": "normal",
+            "scorer": {
+              "id": 46930,
+              "name": "Ermedin Demirović"
+            },
+            "assist": {
+              "id": 342188,
+              "name": "Dženan Pejčinović"
+            }
+          },
+          {
+            "minute": 38,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 50852,
+              "name": "Joe Scally"
+            },
+            "assist": {
+              "id": 351084,
+              "name": "Zento Uno"
+            }
+          },
+          {
+            "minute": 51,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 106851,
+              "name": "Shuto Machino"
+            },
+            "assist": {
+              "id": 501906,
+              "name": "Wael Mohya"
+            }
+          },
+          {
+            "minute": 66,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 501906,
+              "name": "Wael Mohya"
+            },
+            "assist": {
+              "id": 50852,
+              "name": "Joe Scally"
+            }
+          },
+          {
+            "minute": 83,
+            "extra": null,
+            "side": "home",
+            "kind": "normal",
+            "scorer": {
+              "id": 46930,
+              "name": "Ermedin Demirović"
+            },
+            "assist": {
+              "id": 128533,
+              "name": "Jamie Leweling"
+            }
+          }
+        ],
+        "goalsComplete": true,
+        "korean": [
+          {
+            "player": 280358,
+            "side": "away",
+            "status": "absent",
+            "minutes": null,
+            "goals": 0,
+            "assists": 0
+          }
+        ],
+        "fetchedAt": "2026-10-24T23:44:53.898Z"
+      },
+      {
+        "id": "af-1575199",
+        "leagueId": 78,
+        "league": "Bundesliga",
+        "comp": "BUNDESLIGA",
+        "season": 2026,
+        "round": "Regular Season - 7",
+        "kickoff": "2026-10-24T13:30:00.000Z",
+        "status": "FT",
+        "home": {
+          "id": 170,
+          "name": "FC Augsburg",
+          "formation": "3-4-2-1"
+        },
+        "away": {
+          "id": 182,
+          "name": "Union Berlin",
+          "formation": "4-2-3-1"
+        },
+        "ft": {
+          "home": 1,
+          "away": 1
+        },
+        "pens": null,
+        "goals": [
+          {
+            "minute": 71,
+            "extra": null,
+            "side": "home",
+            "kind": "normal",
+            "scorer": {
+              "id": 110,
+              "name": "Han-Noah Massengo"
+            },
+            "assist": {
+              "id": 163032,
+              "name": "Fabian Rieder"
+            }
+          },
+          {
+            "minute": 74,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 26249,
+              "name": "Janik Haberer"
+            },
+            "assist": null
+          }
+        ],
+        "goalsComplete": true,
+        "korean": [
+          {
+            "player": 512,
+            "side": "away",
+            "status": "start",
+            "minutes": 76,
+            "goals": 0,
+            "assists": 0
+          },
+          {
+            "player": 197985,
+            "side": "home",
+            "status": "bench",
+            "minutes": 0,
+            "goals": 0,
+            "assists": 0
+          }
+        ],
+        "fetchedAt": "2026-10-24T23:43:19.875Z"
+      },
+      {
+        "id": "af-1575200",
+        "leagueId": 78,
+        "league": "Bundesliga",
+        "comp": "BUNDESLIGA",
+        "season": 2026,
+        "round": "Regular Season - 7",
+        "kickoff": "2026-10-24T13:30:00.000Z",
+        "status": "FT",
+        "home": {
+          "id": 164,
+          "name": "FSV Mainz 05",
+          "formation": "3-5-2"
+        },
+        "away": {
+          "id": 162,
+          "name": "Werder Bremen",
+          "formation": "4-2-3-1"
+        },
+        "ft": {
+          "home": 2,
+          "away": 3
+        },
+        "pens": null,
+        "goals": [
+          {
+            "minute": 7,
+            "extra": null,
+            "side": "away",
+            "kind": "penalty",
+            "scorer": {
+              "id": 25391,
+              "name": "Niclas Füllkrug"
+            },
+            "assist": null
+          },
+          {
+            "minute": 25,
+            "extra": null,
+            "side": "away",
+            "kind": "penalty",
+            "scorer": {
+              "id": 25391,
+              "name": "Niclas Füllkrug"
+            },
+            "assist": null
+          },
+          {
+            "minute": 33,
+            "extra": null,
+            "side": "home",
+            "kind": "normal",
+            "scorer": {
+              "id": 22244,
+              "name": "Anthony Caci"
+            },
+            "assist": {
+              "id": 37938,
+              "name": "Sheraldo Becker"
+            }
+          },
+          {
+            "minute": 61,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 38124,
+              "name": "Ludovit Reis"
+            },
+            "assist": {
+              "id": 7073,
+              "name": "Marco Grüll"
+            }
+          },
+          {
+            "minute": 63,
+            "extra": null,
+            "side": "home",
+            "kind": "normal",
+            "scorer": {
+              "id": 2906,
+              "name": "Lee Jae-Sung"
+            },
+            "assist": {
+              "id": 22244,
+              "name": "Anthony Caci"
+            }
+          }
+        ],
+        "goalsComplete": true,
+        "korean": [
+          {
+            "player": 2906,
+            "side": "home",
+            "status": "start",
+            "minutes": 75,
+            "goals": 1,
+            "assists": 0
+          }
+        ],
+        "fetchedAt": "2026-10-24T23:43:26.580Z"
+      },
+      {
+        "id": "af-1575201",
+        "leagueId": 78,
+        "league": "Bundesliga",
+        "comp": "BUNDESLIGA",
+        "season": 2026,
+        "round": "Regular Season - 7",
+        "kickoff": "2026-10-24T13:30:00.000Z",
+        "status": "FT",
+        "home": {
+          "id": 192,
+          "name": "1. FC Köln",
+          "formation": "4-2-3-1"
+        },
+        "away": {
+          "id": 174,
+          "name": "FC Schalke 04",
+          "formation": "3-4-2-1"
+        },
+        "ft": {
+          "home": 0,
+          "away": 0
+        },
+        "pens": null,
+        "goals": [],
+        "goalsComplete": true,
+        "korean": [
+          {
+            "player": 24888,
+            "side": "away",
+            "status": "start",
+            "minutes": 90,
+            "goals": 0,
+            "assists": 0
+          }
+        ],
+        "fetchedAt": "2026-10-24T23:43:33.282Z"
+      },
+      {
+        "id": "af-1570425",
+        "leagueId": 140,
+        "league": "La Liga",
+        "comp": "LALIGA",
+        "season": 2026,
+        "round": "Regular Season - 10",
+        "kickoff": "2026-10-24T19:00:00.000Z",
+        "status": "FT",
+        "home": {
+          "id": 530,
+          "name": "Atletico Madrid",
+          "formation": "4-3-3"
+        },
+        "away": {
+          "id": 544,
+          "name": "Deportivo La Coruna",
+          "formation": "5-3-2"
+        },
+        "ft": {
+          "home": 1,
+          "away": 0
+        },
+        "pens": null,
+        "goals": [
+          {
+            "minute": 48,
+            "extra": null,
+            "side": "home",
+            "kind": "normal",
+            "scorer": {
+              "id": 6009,
+              "name": "Julián Álvarez"
+            },
+            "assist": {
+              "id": 563,
+              "name": "Alejandro Grimaldo"
+            }
+          }
+        ],
+        "goalsComplete": true,
+        "korean": [
+          {
+            "player": 927,
+            "side": "home",
+            "status": "start",
+            "minutes": 67,
+            "goals": 0,
+            "assists": 0
+          }
+        ],
+        "fetchedAt": "2026-10-24T23:44:47.190Z"
+      },
+      {
+        "id": "af-1575198",
+        "leagueId": 78,
+        "league": "Bundesliga",
+        "comp": "BUNDESLIGA",
+        "season": 2026,
+        "round": "Regular Season - 7",
+        "kickoff": "2026-10-25T16:30:00.000Z",
+        "status": "FT",
+        "home": {
+          "id": 160,
+          "name": "SC Freiburg",
+          "formation": "4-2-3-1"
+        },
+        "away": {
+          "id": 157,
+          "name": "Bayern München",
+          "formation": "4-2-3-1"
+        },
+        "ft": {
+          "home": 1,
+          "away": 3
+        },
+        "pens": null,
+        "goals": [
+          {
+            "minute": 16,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 1149,
+              "name": "Dayot Upamecano"
+            },
+            "assist": {
+              "id": 19617,
+              "name": "Michael Olise"
+            }
+          },
+          {
+            "minute": 42,
+            "extra": null,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 510,
+              "name": "Serge Gnabry"
+            },
+            "assist": {
+              "id": 280074,
+              "name": "Nathaniel Brown"
+            }
+          },
+          {
+            "minute": 82,
+            "extra": null,
+            "side": "home",
+            "kind": "own-goal",
+            "scorer": {
+              "id": 325975,
+              "name": "Tom Bischof"
+            },
+            "assist": null
+          },
+          {
+            "minute": 90,
+            "extra": 5,
+            "side": "away",
+            "kind": "normal",
+            "scorer": {
+              "id": 19617,
+              "name": "Michael Olise"
+            },
+            "assist": null
+          }
+        ],
+        "goalsComplete": true,
+        "korean": [
+          {
+            "player": 2897,
+            "side": "away",
+            "status": "absent",
+            "minutes": null,
+            "goals": 0,
+            "assists": 0
+          }
+        ],
+        "fetchedAt": "2026-10-27T01:33:13.677Z"
+      }
+    ]
+  }
+}

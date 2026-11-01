@@ -70,11 +70,15 @@
           },
           "home": false,
           "result": {
-            "for": 2,
-            "against": 0
+            "for": 1,
+            "against": 1,
+            "pens": {
+              "for": 4,
+              "against": 3
+            }
           },
           "started": true,
-          "minutes": 90,
+          "minutes": 120,
           "goals": 1,
           "assists": 0
         }
