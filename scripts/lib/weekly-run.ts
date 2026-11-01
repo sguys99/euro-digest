@@ -34,7 +34,7 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { parseArgs } from "node:util";
 
-import type { RunEnv, RunLog } from "@/lib/schema";
+import type { RunEnv, RunLog, RunSource } from "@/lib/schema";
 import {
   isoWeekOfDate,
   isoWeekRange,
@@ -57,6 +57,7 @@ import {
 } from "./cost";
 import type { LlmClient } from "./llm";
 import type { Logger } from "./logger";
+import { feedUserAgent, type FetchLike } from "./rss";
 import {
   WEEKLY_REPORT_DIR,
   type WeeklyBillableResult,
@@ -631,7 +632,13 @@ export interface RunWeeklyDeps {
   createLlm: () => LlmClient;
   /** DAILY_BUDGET_USD·MONTHLY_BUDGET_USD 해석(잘못된 값이면 던진다) */
   resolveBudgets: () => Budgets;
+  /** 외부 HTTP(분석 블로그 피드 — M3-08). 생략하면 요청을 거부하는 fetch(테스트에서 네트워크를 쓰지 않게) */
+  http?: { fetch: FetchLike; userAgent: string };
 }
+
+/** http를 주입하지 않은 실행의 fetch — 요청하면 거부한다 */
+const NO_HTTP: FetchLike = () =>
+  Promise.reject(new Error("외부 HTTP가 주입되지 않았다(RunWeeklyDeps.http)"));
 
 export interface WeeklyOutcome {
   outputs: WeeklyStepOutputs;
@@ -753,6 +760,7 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
 
   const llmResults: WeeklyBillableResult[] = [];
   const apiCalls: RunLog["apiCalls"] = { footballData: 0, apiFootball: 0 };
+  const sources: RunSource[] = [];
   const costSoFar = () => costFromResults(deps.model, llmResults);
   const base: WeeklyBaseContext = {
     rootDir: deps.rootDir,
@@ -791,6 +799,12 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
         apiCalls.apiFootball += calls.apiFootball ?? 0;
       },
     },
+    http: deps.http ?? { fetch: NO_HTTP, userAgent: feedUserAgent(undefined) },
+    sources: {
+      add: (entries) => {
+        for (const e of entries) sources.push(e);
+      },
+    },
   };
 
   const results = await runWeeklyStages(deps.stages, base, log);
@@ -813,6 +827,8 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
     results: llmResults,
     status: recordedWeeklyStatus(status, deps.dry),
     apiCalls,
+    // 분석 블로그 소스별 결과(M3-08 — 주간 건강도 근거). 없으면 넣지 않는다(기본 [])
+    ...(sources.length > 0 ? { sources } : {}),
     dataDir: deps.dataDir,
     now: deps.now(),
   };

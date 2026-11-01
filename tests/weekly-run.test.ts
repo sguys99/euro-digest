@@ -110,6 +110,12 @@ function baseContext(): WeeklyBaseContext {
       check: () => Promise.reject(new Error("테스트에서 예산을 읽지 않는다")),
     },
     apiCalls: { add: () => {} },
+    http: {
+      fetch: () =>
+        Promise.reject(new Error("테스트에서 네트워크를 쓰지 않는다")),
+      userAgent: "EuroDigestBot/0.1 (+test)",
+    },
+    sources: { add: () => {} },
   };
 }
 
@@ -596,6 +602,26 @@ describe("runWeekly — 가드·기록·종료 코드", () => {
     );
     expect(forced.outputs.skipped).toBe(false);
     expect(ran).toBe(1);
+  });
+
+  it("단계가 남긴 소스별 결과(ctx.sources — M3-08 분석 블로그)가 실행 기록 sources[]에 들어가고, http를 주입하지 않으면 요청이 거부된다", async () => {
+    let rejected = false;
+    const outcome = await runWeekly(
+      deps({
+        stages: [
+          stage("feeds", async (ctx) => {
+            ctx.sources.add([{ id: "blog", ok: true, items: 3, usable: 1 }]);
+            await ctx.http.fetch("https://blog.example.com/feed/").catch(() => {
+              rejected = true;
+            });
+          }),
+        ],
+      }),
+    );
+    expect(rejected).toBe(true);
+    expect(outcome.run?.sources).toEqual([
+      { id: "blog", ok: true, items: 3, usable: 1 },
+    ]);
   });
 
   it("partial — exit 0, 실패 단계·되돌릴 경로 출력", async () => {

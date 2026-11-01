@@ -461,7 +461,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [x] M3-07 `configs/prompts/weekly-kr.md` + 💰 주간 총평 1회 호출(Batches API — D28) + 이번 주 MVP 규칙 계산(코드) — 표·MVP 입력은 M1-48이 쌓은 지난 월~일 경기 기록 합산 (FR-90~92, D27)
   - 🆕 D2 이월: 주간 경계 시간대 UTC/KST 미정(추천 UTC — 브리핑과 같은 '현지') · MVP 동점 규칙 미정(공동 MVP는 스키마 변경 + 375 큰 이름 넘침 표기 함께 결정)
   - 2026-11-01 완료(D65 ①~③ + 사용자 결정: 총평 실패 → 템플릿 강등 + `summaryAi`, 승부차기 `result.pens`): `scripts/lib/weekly-kr.ts`(표·MVP 순위·입력·검증·템플릿, 순수) · `weekly-kr-stage.ts`(Batches 1회 + 남은 시간 3분 이상이면 재시도 1회, LLM 창 8분·15초 폴링, 마감 넘기면 취소 → 템플릿) · 주간 범위 `isoWeekRangeUtc`(UTC 월~일). 요청: Haiku 5.5 · thinking 적응형 + effort medium · `max_tokens` 16,384 · 캐싱 끔. 실측 dev W43 1회 $0.001211(입력 2,750·출력 4,293, 배치 2분 14초, 검증 첫 시도 통과) — MVP 이재성(1골 4점). 첫 prod 발행 = 2026-11-02 08:00 KST W44
-- [ ] M3-08 분석 블로그 주 1회 수집(LLM 없음) → 팀 페이지 "더 읽을거리" (FR-10, FR-57)
+- [x] M3-08 분석 블로그 주 1회 수집(LLM 없음) → 팀 페이지 "더 읽을거리" (FR-10, FR-57)
+  - 2026-11-01 완료(사용자 결정 PRD §15 D66): 후보 4곳 `/add-source` 조사(StatsBomb 금지 · TFA 피드 없음·배팅 제휴 · Opta Analyst 불명확·위험 큼 · Spielverlagerung 불명확·위험 낮음) → **Spielverlagerung 영문만 D22 위험 수용 등록**(feed-only, 요약문 미독 D48 ①, 허가 요청 메일은 사용자가 발송). weekly `analysis-blogs` 단계(`scripts/lib/analysis-reading.ts`·`analysis-blogs-stage.ts`): 주 1회 LLM 없이 원제목 → 코드 태그 규칙으로 팀 → `data/teams` `reading`(팀당 5건·새 글 앞·URL 중복 제거·180일 안·팀 0건 글 버림·takedowns·끈 매체 제외). 일일 collect·FR-11 건강도에서 제외, 주간 8주 연속 새 글 없음 경고. 실측 1회: 25건 → 180일 안 9건 → 4팀(아스널·브라이턴·맨유·라이프치히) 연결
 
 ### M3-B 화면
 - [x] M3-09 `/korean-players`: 리그별 그룹 카드 (FR-61)

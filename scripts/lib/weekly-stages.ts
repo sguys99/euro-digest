@@ -30,8 +30,10 @@ import type { BudgetCheck, costFromResults } from "./cost";
 import type { LlmClient } from "./llm";
 import type { LlmMode } from "./cli-args";
 import type { Logger } from "./logger";
-import type { RunEnv, RunLog } from "@/lib/schema";
+import type { FetchLike } from "./rss";
+import type { RunEnv, RunLog, RunSource } from "@/lib/schema";
 
+import { ANALYSIS_TEAMS_DIR, runAnalysisBlogs } from "./analysis-blogs-stage";
 import { WEEKLY_REPORT_DIR } from "./weekly-kr";
 import { runKoreanWeekly } from "./weekly-kr-stage";
 
@@ -88,6 +90,18 @@ export interface WeeklyStageContext {
   };
   apiCalls: {
     add: (calls: Partial<RunLog["apiCalls"]>) => void;
+  };
+  /**
+   * 외부 HTTP(피드 받기 — M3-08 분석 블로그). 진입점(scripts/weekly.ts)이 전역 fetch와 User-Agent(rss.ts feedUserAgent — CONTACT_EMAIL)를
+   * 넣는다. 주입하지 않은 실행(테스트 등)은 요청하면 거부되는 fetch다.
+   */
+  http: {
+    fetch: FetchLike;
+    userAgent: string;
+  };
+  /** 소스별 결과(RunLog.sources 형식)를 실행 기록(job weekly)에 남긴다 — 분석 블로그 주간 건강도의 근거(analysis-reading.ts) */
+  sources: {
+    add: (entries: Iterable<RunSource>) => void;
   };
 }
 
@@ -154,8 +168,10 @@ export const WEEKLY_STAGES: readonly WeeklyStage[] = [
     task: "M3-08",
     llm: false,
     timeoutMs: 5 * MINUTE_MS,
-    writes: [], // M3-08이 산출물 경로를 정해 채운다
-    run: null,
+    // 팀 파일의 reading만 바꾼다. 실패하면 Actions가 data/teams를 main(그날 일일 수집 커밋)으로 되돌린다 — M4-06이 같은 폴더를 쓰게
+    // 되면 등록 검사(writes 겹침 금지)를 함께 정한다
+    writes: [ANALYSIS_TEAMS_DIR],
+    run: runAnalysisBlogs, // analysis-blogs-stage.ts — 주 1회 RSS(LLM 없음) → 원제목으로 팀 찾기 → data/teams reading 갱신
   },
   {
     id: "team-profiles",

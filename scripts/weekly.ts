@@ -4,7 +4,7 @@
  * 단계 등록은 scripts/lib/weekly-stages.ts, 본체(가드·실행·상태·기록)는 scripts/lib/weekly-run.ts. 이 파일은 인자·환경변수를 읽어
  * 의존성을 꾸리고, 단계 출력·요약을 쓰고, 종료 코드만 정한다.
  *
- *   npm run weekly -- --dry          # data/에 쓰지 않음 — 미구현 단계만 있는 지금은 LLM·외부 호출 없이 끝난다
+ *   npm run weekly -- --dry          # data/에 쓰지 않음 — 분석 블로그 단계(M3-08)는 dry여도 피드를 실제로 받는다(LLM 없음)
  *   npm run weekly -- --force        # 그 주차 주간 리포트가 이미 있어도 실행
  *   npm run weekly -- --week 2026-44 # 지난 주차 지정
  *
@@ -21,6 +21,7 @@ import { fileURLToPath } from "node:url";
 import { resolveBudgets } from "./lib/cost";
 import { createLlmClient, resolveLlmModel } from "./lib/llm";
 import { createLogger } from "./lib/logger";
+import { feedUserAgent } from "./lib/rss";
 import {
   WEEKLY_USAGE,
   formatWeeklyOutputs,
@@ -74,6 +75,11 @@ async function main(): Promise<number> {
     print: (text) => console.log(text),
     createLlm: () => createLlmClient({ mode: args.llmMode, model, env }),
     resolveBudgets: () => resolveBudgets(env),
+    // 분석 블로그 피드(M3-08) — User-Agent 연락처는 CONTACT_EMAIL(비밀값 아님)
+    http: {
+      fetch: (input, init) => fetch(input, init),
+      userAgent: feedUserAgent(env.CONTACT_EMAIL),
+    },
   });
 
   for (const r of outcome.results) {

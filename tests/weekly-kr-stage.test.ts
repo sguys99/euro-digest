@@ -227,6 +227,12 @@ function ctxWith(over: {
     },
     budget: { check: over.budget ?? (() => Promise.resolve(allowed)) },
     apiCalls: { add: () => {} },
+    http: {
+      fetch: () =>
+        Promise.reject(new Error("테스트에서 네트워크를 쓰지 않는다")),
+      userAgent: "EuroDigestBot/0.1 (+test)",
+    },
+    sources: { add: () => {} },
   };
   return { ctx, billed, printed, created: () => created, t0 };
 }
