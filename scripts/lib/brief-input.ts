@@ -31,14 +31,26 @@
  *       기준을 믿을 수 없는 대회·팀은 키 없음 → 그 팀 순위 변동은 서술할 수 없다(D40 ③). **지금은 넣지 않는다**(`BRIEF_PREV_ENABLED`
  *       false) — 지시문 v0.4가 prev를 설명하지 않는다(D55 ① — 입력 키·문법·지시문 [문형]은 함께 켠다). 켜는 것은 지시문 v0.5 +
  *       골든셋 회귀(eval:prompt) 뒤 오케스트레이터·사용자 결정.
- *   - 한국 선수 출전(`korean`)은 M3-03 이후 — 키가 없으면 한국 선수를 언급하지 않는다(M0-30 지시문).
+ *   - korean(M3-03, 선택 — `briefKoreanBlock`) = 입력 경기(football-data id로 연결된 API-Football 상세)에서 **출전한**(선발·교체,
+ *     출전 분을 아는) 등록 한국 선수의 정형 기록 `{ id, player, team, match, started, minutes, goals, assists }` — id = `k` + API-Football
+ *     선수 id, player = korean-players.json nameEn(영문), team = 그 경기 입력의 home·away 이름, match = 입력 경기 id, 골·도움은 원장
+ *     행(자책골 제외). 원장 행(`data/matches` — 선수 id로만 매칭, FR-60)·이번 실행 상세의 라인업에서 만든 행만 쓴다. 벤치·명단 제외·
+ *     라인업 없음(unknown)은 넣지 않는다. 6개 대회 밖 경기(컵)는 입력 경기가 아니라 넣지 않는다. 교체 투입·아웃 분은 원장에 없어
+ *     subOn·subOff 키가 없다. 1건도 없으면 키 없음. **지금은 넣지 않는다**(`BRIEF_KOREAN_ENABLED` false) — 지시문 v0.4가 korean을
+ *     설명하지 않는다(D55 ① — 입력 키·문법·지시문 [문형]은 함께 켠다. 켤 때 지시문 [입력]·[문형] 한국 선수 절 + 골든셋 korean +
+ *     eval:prompt 회귀).
  *
  * 중요도(`matchImportance` — 코드 규칙, LLM 미사용): 활성 한국 선수 소속팀(korean-players.json → team-ids.json fd id) +3 ·
  * UCL +3 · 빅클럽(news-keywords.ts BIG_CLUBS 이름 맞춤) 1팀당 +2 · 리그 기본(EPL 2, 라리가·세리에 A·분데스리가 1) ·
  * 두 팀 모두 현재 순위 4위 안 +1 · 총 5골 이상 또는 3골 차 이상 +1. "오늘 밤 볼 경기"(FR-81 bigmatch-rules)와 같은 축이다 —
  * 그 설정 파일이 생기면(M2-08) 옮길 후보.
  */
-import type { CompId, CompetitionConfig, CompetitionFile } from "@/lib/schema";
+import type {
+  CompId,
+  CompetitionConfig,
+  CompetitionFile,
+  LedgerKoreanRow,
+} from "@/lib/schema";
 import {
   kstDate,
   kstWindowRangeUtc,
@@ -167,10 +179,88 @@ export interface BriefInputStandings {
   rows: BriefInputStandingRow[];
 }
 
+/**
+ * 한국 선수 출전 기록 1건(M3-03 — 머리 주석 korean). M0-30 입력 형식과 같은 키(subOn·subOff는 원장에 없어 넣지 않는다 — 검사기
+ * brief-check.ts는 그 키가 없으면 투입·아웃 분 서술을 받지 않는다).
+ */
+export interface BriefInputKorean {
+  /** `k` + API-Football 선수 id */
+  id: string;
+  /** 영문 이름(korean-players.json nameEn) */
+  player: string;
+  /** 그 경기 입력의 home·away 이름 */
+  team: string;
+  /** 입력 경기 id(`m…`) */
+  match: string;
+  started: boolean;
+  minutes: number;
+  goals: number;
+  assists: number;
+  /** 교체 투입 분 — 원장에 없어 지금은 넣지 않는다 */
+  subOn?: number;
+  /** 교체 아웃 분 — 원장에 없어 지금은 넣지 않는다 */
+  subOff?: number;
+}
+
 export interface BriefInput {
   briefDate: string;
   matches: BriefInputMatch[];
   standings: BriefInputStandings[];
+  /** 한국 선수 출전(M3-03 — 선택, 1건 이상일 때만 키가 있다) */
+  korean?: BriefInputKorean[];
+}
+
+/**
+ * 정기 실행이 브리핑 입력에 한국 선수 출전(korean)을 넣는가. **false** — 지시문 v0.4는 korean 키와 한국 선수 문형(korean·korean-bench·
+ * korean-tail)을 뺐다(D55 ①). 켤 때 함께 할 일: 지시문 [입력]에 korean 설명·[문형]을 `renderBriefPatterns({ keys: ["korean"] })`로
+ * → 골든셋 입력에 korean → eval:prompt 회귀(프롬프트 수정 절차, CLAUDE §6.3). 블록 계산(`briefKoreanBlock`)은 테스트로 고정해 둔다.
+ */
+export const BRIEF_KOREAN_ENABLED = false;
+
+/** 한국 선수 블록 재료 — 원장·이번 실행 상세의 한국 선수 행 + 이름 */
+export interface BriefKoreanSource {
+  /** API-Football 경기 id → 한국 선수 행(원장 행 또는 이번 실행 상세에서 만든 행 — match-ledger.ts `koreanRowsOf`) */
+  rowsByAf: ReadonlyMap<number, readonly LedgerKoreanRow[]>;
+  /** API-Football 선수 id → 영문 이름(korean-players.json nameEn) — 없는 선수는 넣지 않는다 */
+  names: ReadonlyMap<number, string>;
+}
+
+/**
+ * 입력 경기 + 연결된 상세 + 한국 선수 행 → 한국 선수 블록(순수 함수 — 머리 주석 korean). 입력 경기 순서(중요도) → 선수 id 순.
+ * 같은 선수는 한 번만(하루에 두 경기는 없다 — 겹치면 앞 경기).
+ */
+export function briefKoreanBlock(
+  matches: readonly Pick<BriefInputMatch, "id" | "home" | "away">[],
+  linkedAf: ReadonlyMap<string, number>,
+  source: BriefKoreanSource,
+): BriefInputKorean[] {
+  const out: BriefInputKorean[] = [];
+  const seen = new Set<number>();
+  for (const m of matches) {
+    const af = linkedAf.get(m.id);
+    if (af === undefined) continue;
+    const rows = [...(source.rowsByAf.get(af) ?? [])].sort(
+      (a, b) => a.player - b.player,
+    );
+    for (const r of rows) {
+      if (r.status !== "start" && r.status !== "sub") continue;
+      if (r.minutes === null || r.minutes <= 0) continue;
+      const name = source.names.get(r.player);
+      if (name === undefined || seen.has(r.player)) continue;
+      seen.add(r.player);
+      out.push({
+        id: `k${r.player}`,
+        player: name,
+        team: r.side === "home" ? m.home : m.away,
+        match: m.id,
+        started: r.status === "start",
+        minutes: r.minutes,
+        goals: r.goals,
+        assists: r.assists,
+      });
+    }
+  }
+  return out;
 }
 
 /** 중요도 가중치 — 머리 주석 "중요도". 같은 점수면 킥오프 → id 순 */
@@ -396,8 +486,13 @@ export interface BuildBriefInputOptions {
    * (지금 정기 실행은 `BRIEF_PREV_ENABLED`가 false라 넘기지 않는다)
    */
   prevPositions?: ReadonlyMap<CompId, ReadonlyMap<number, number>>;
-  /** football-data 경기 id → 연결된 API-Football 상세(득점자) */
-  linked?: ReadonlyMap<number, Pick<MatchDetail, "goals" | "goalsComplete">>;
+  /** football-data 경기 id → 연결된 API-Football 상세(득점자 — 한국 선수 블록은 matchId도 쓴다) */
+  linked?: ReadonlyMap<
+    number,
+    Pick<MatchDetail, "goals" | "goalsComplete"> & { matchId?: number }
+  >;
+  /** 한국 선수 블록 재료(M3-03) — 없으면 korean 키 없음 */
+  korean?: BriefKoreanSource;
   /** 활성 한국 선수 소속팀 football-data 팀 id(중요도) */
   koreanTeamIds?: ReadonlySet<number>;
   maxMatches?: number;
@@ -454,7 +549,11 @@ export function buildBriefInput(
     results,
     competitions,
     standings = [],
-    linked = new Map<number, Pick<MatchDetail, "goals" | "goalsComplete">>(),
+    linked = new Map<
+      number,
+      Pick<MatchDetail, "goals" | "goalsComplete"> & { matchId?: number }
+    >(),
+    korean: koreanSource,
     koreanTeamIds = new Set<number>(),
     unsettledComps = new Set<CompId>(),
     maxMatches = BRIEF_MAX_MATCHES,
@@ -533,8 +632,23 @@ export function buildBriefInput(
     });
   }
 
+  // 한국 선수 블록(M3-03) — 연결된 상세의 API-Football 경기 id로 행을 찾는다
+  const linkedAf = new Map<string, number>();
+  for (const r of kept) {
+    const af = linked.get(r.matchId)?.matchId;
+    if (af !== undefined) linkedAf.set(`m${r.matchId}`, af);
+  }
+  const korean = koreanSource
+    ? briefKoreanBlock(matches, linkedAf, koreanSource)
+    : [];
+
   return {
-    input: { briefDate, matches, standings: inputStandings },
+    input: {
+      briefDate,
+      matches,
+      standings: inputStandings,
+      ...(korean.length > 0 ? { korean } : {}),
+    },
     excluded: { overCap: results.length - kept.length },
     extraTime: kept.filter((r) => r.score.duration !== "REGULAR").length,
     standings: stats,
@@ -694,7 +808,7 @@ export interface BriefLlmInput {
 /**
  * 전체 입력 → LLM 요청 본문 입력(순수 함수, D51). 경기는 이미 중요도 순이라 앞에서 자른다. 순위는 남은 경기가 있는 대회만 남긴다 —
  * 빌더가 입력 경기가 있는 대회의 순위만 넣는 규칙과 같고, 바쁜 날 입력 토큰을 줄인다. 상한 이하이면 그대로(복사) 돌려준다.
- * 한국 선수 블록(M3-03)이 생기면 그 선수의 경기가 잘리지 않는지(중요도 +3으로 대개 앞쪽) 이 함수에서 확인할 것.
+ * 한국 선수 블록(M3-03)은 남은 경기의 항목만 남기고 잘린 항목의 id는 hiddenRefs에 넣는다(한국 선수 소속팀 경기는 중요도 +3으로 대개 앞쪽).
  */
 export function briefLlmInput(
   input: BriefInput,
@@ -704,18 +818,28 @@ export function briefLlmInput(
   const matches = input.matches.slice(0, cap);
   const comps = new Set(matches.map((m) => m.comp));
   const standings = input.standings.filter((s) => comps.has(s.comp));
+  const matchIds = new Set(matches.map((m) => m.id));
+  // 한국 선수 블록은 남은 경기의 것만(잘린 경기의 선수 기록은 모델이 보지 못한다)
+  const korean = (input.korean ?? []).filter((k) => matchIds.has(k.match));
   const keptIds = new Set([
-    ...matches.map((m) => m.id),
+    ...matchIds,
     ...standings.map((s) => s.id),
+    ...korean.map((k) => k.id),
   ]);
   const hiddenRefs = new Set(
     [
       ...input.matches.map((m) => m.id),
       ...input.standings.map((s) => s.id),
+      ...(input.korean ?? []).map((k) => k.id),
     ].filter((id) => !keptIds.has(id)),
   );
   return {
-    input: { ...input, matches, standings },
+    input: {
+      briefDate: input.briefDate,
+      matches,
+      standings,
+      ...(korean.length > 0 ? { korean } : {}),
+    },
     hiddenRefs,
     dropped: {
       matches: input.matches.length - matches.length,

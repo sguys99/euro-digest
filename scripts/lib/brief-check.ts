@@ -85,6 +85,7 @@ import {
 import type {
   BriefInput,
   BriefInputMatch,
+  BriefInputKorean,
   BriefInputStandingRow,
   BriefInputStandings,
 } from "./brief-input";
@@ -112,20 +113,11 @@ import {
 
 // ─── 입력·설정 ────────────────────────────────────────────────────────────
 
-/** 한국 선수 출전 기록(M0 입력 형식 — M3-03이 확정 입력에 더한다). 키가 없으면 한국 선수 서술은 근거가 없다 */
-export interface BriefCheckKorean {
-  id: string;
-  player: string;
-  team: string;
-  /** 그 선수가 뛴 경기 id(matches) */
-  match: string;
-  started: boolean;
-  minutes: number;
-  goals: number;
-  assists: number;
-  subOn?: number;
-  subOff?: number;
-}
+/**
+ * 한국 선수 출전 기록 — 확정 입력(brief-input.ts `BriefInputKorean`, M3-03)과 같은 형식(M0 입력 형식). 키가 없으면 한국 선수 서술은
+ * 근거가 없다. subOn·subOff는 원장에 없어 확정 입력에는 없다 — 없으면 투입·아웃 분 서술('62분 교체 투입돼'·'뛰고 교체됐다')을 받지 않는다.
+ */
+export type BriefCheckKorean = BriefInputKorean;
 
 /** 순위 행 + 전일 순위(M2-03이 더한다 — 지금 확정 입력에는 없다) */
 export type BriefCheckStandingRow = BriefInputStandingRow & { prev?: number };
@@ -138,7 +130,6 @@ export type BriefCheckInput = Omit<BriefInput, "standings"> & {
   standings: Array<
     Omit<BriefInputStandings, "rows"> & { rows: BriefCheckStandingRow[] }
   >;
-  korean?: BriefCheckKorean[];
 };
 
 export interface BriefCheckContext {
@@ -1700,8 +1691,8 @@ function vKorean(env: Env, bag: Bag): { focus: Focus; k: KoreanModel | null } {
       }
       if (kk.minutes <= 0) bad(sub, "appearance", "출전");
       if (app === "start" && !kk.started) bad(sub, "appearance", "선발");
-      if (app === "sub" && (kk.started || kk.subOn === undefined))
-        bad(sub, "appearance", "교체 투입");
+      // 교체 투입 = 선발이 아니고 뛰었다(위에서 확인). 투입 분은 subOn이 있을 때만 대조한다(확정 입력에는 없다 — 분을 쓰면 아래에서 강등)
+      if (app === "sub" && kk.started) bad(sub, "appearance", "교체 투입");
       const subOn = strAt(bag, "subOn");
       if (subOn !== null && String(kk.subOn) !== subOn)
         bad(sub, "minute", `${subOn}분 투입`);

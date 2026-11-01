@@ -104,6 +104,7 @@ describe("① 전부 유효", () => {
     expect(report.crossRef.checked).toHaveLength(6);
     expect(report.crossRef.skipped).toEqual([
       "data/teams → team-ids · team-colors · korean-players",
+      "data/players/korean.json → korean-players · data/teams · 원장 메타",
     ]);
     expect(infos.every((i) => i.startsWith("configs/prompts/"))).toBe(true);
   });
@@ -295,7 +296,7 @@ describe("⑤ 교차 참조 실패", () => {
       'configs/national-team.json:squads[0].playerSlugs[1] — korean-players.json에 없는 선수 slug "ghost"',
     ]);
     expect(lines).toContain(
-      "[validate] 교차 참조: 6건 실행 · 건너뜀 1건(관련 파일 없음) · 오류 4건",
+      "[validate] 교차 참조: 6건 실행 · 건너뜀 2건(관련 파일 없음) · 오류 4건",
     );
   });
 
@@ -340,6 +341,7 @@ describe("⑤ 교차 참조 실패", () => {
       "search-queries.source → sources(type search)",
       "publisher-domains.sourceIds → sources",
       "data/teams → team-ids · team-colors · korean-players",
+      "data/players/korean.json → korean-players · data/teams · 원장 메타",
     ]);
     expect(errors.every((e) => e.startsWith("configs/sources.json:"))).toBe(
       true,

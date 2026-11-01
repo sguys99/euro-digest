@@ -112,7 +112,8 @@
  * 확실할 때만, agreed 이상 승격 조건). 같은 날 재실행에서 오늘 카드에 붙인 새 출처로는 다시 판정하지 않는다(카드 id·제목처럼 유지).
  * 다음 작업이 갈아끼울 자리: 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력 순위 변동 prev(M2-03) ·
  * 브리핑 요청 나누기(하루 2~3요청 — 그때 모든 요청을 guardBriefBudget에, 같은 지시문 캐싱 켬, D28) ·
- * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서). 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
+ * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서, `BRIEF_KOREAN_ENABLED`로 켬 — 지시문 v0.5 뒤). 한국 선수 현황 파일(M3-03 —
+ * korean-players-io.ts)은 팀 단계 뒤. 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
  * 브리핑 게시 줄(검증 통과 줄 + 줄 단위 템플릿 강등)은 scripts/lib/brief-publish.ts(M1-45).
  */
 import { mkdir, writeFile } from "node:fs/promises";
@@ -129,6 +130,7 @@ import {
   type CompId,
   type CompetitionsFile,
   type FeedItem,
+  type LedgerKoreanRow,
   type LedgerMatch,
   type NewsCard,
   type NewsFile,
@@ -166,6 +168,7 @@ import {
 } from "./api-football-stage";
 
 import {
+  BRIEF_KOREAN_ENABLED,
   BRIEF_PREV_ENABLED,
   briefInputWindow,
   briefLlmInput,
@@ -176,6 +179,7 @@ import {
   mergeBriefDetails,
   serializeBriefInput,
   type BriefInput,
+  type BriefKoreanSource,
   type BriefInputBuild,
   type BriefPrevFile,
   type BriefPrevResult,
@@ -326,6 +330,7 @@ import {
   buildLedgerEntries,
   isIncompleteLedgerMatch,
   koreanPlayerTargets,
+  koreanRowsOf,
   ledgerMatchToDetail,
   ledgerMonthOf,
   ledgerMonthsAround,
@@ -379,6 +384,10 @@ import {
   type FootballStagesOutcome,
   type TeamsCollectOutcome,
 } from "./football-stages";
+import {
+  runKoreanPlayersStage,
+  type KoreanPlayersStageOutcome,
+} from "./korean-players-io";
 import {
   purgeSummary,
   runPurgeStage,
@@ -3125,6 +3134,64 @@ async function briefPlayerTeams(
 }
 
 /**
+ * 브리핑 한국 선수 블록 재료(M3-03 — brief-input.ts `briefKoreanBlock`). 이번 실행 상세(라인업 있음)는 `koreanRowsOf`로 행을 만들고,
+ * 라인업이 없는 상세(원장에서 읽은 항목)는 원장 행을 쓴다 — 선수 id로만 매칭(FR-60). 던지지 않는다 — 설정·원장을 읽지 못하면 null
+ * (그날 korean 키 없음). `BRIEF_KOREAN_ENABLED`일 때만 부른다.
+ */
+async function loadBriefKoreanSource(
+  deps: CollectDeps,
+  window: { start: string; end: string },
+  details: readonly MatchDetail[],
+): Promise<BriefKoreanSource | null> {
+  try {
+    const [players, teamIds] = await Promise.all([
+      readConfigFile(
+        deps.rootDir,
+        "korean-players.json",
+        KoreanPlayersFileSchema,
+      ),
+      loadTeamIds(deps.rootDir),
+    ]);
+    const { tracked } = koreanPlayerTargets(players, teamIds);
+    const names = new Map<number, string>();
+    for (const p of players) {
+      if (p.active && p.apiFootballId !== null)
+        names.set(p.apiFootballId, p.nameEn);
+    }
+    const ledgerRows = new Map<number, LedgerKoreanRow[]>();
+    const months = [
+      ...new Set([
+        ledgerMonthOf(window.start),
+        ledgerMonthOf(new Date(Date.parse(window.end) - 1).toISOString()),
+      ]),
+    ];
+    for (const month of months) {
+      const read = await readLedgerMonth(deps.dataDir, month);
+      for (const m of read.value?.matches ?? []) {
+        const id = afIdOfKey(m.id);
+        if (id !== null) ledgerRows.set(id, m.korean);
+      }
+    }
+    const rowsByAf = new Map<number, readonly LedgerKoreanRow[]>();
+    for (const d of details) {
+      const hasLineup = d.lineups.home !== null || d.lineups.away !== null;
+      rowsByAf.set(
+        d.matchId,
+        hasLineup
+          ? koreanRowsOf(d, tracked)
+          : (ledgerRows.get(d.matchId) ?? []),
+      );
+    }
+    return { rowsByAf, names };
+  } catch (error) {
+    deps.logger.warn("summarize.input.korean-fail", {
+      error: errorText(error),
+    });
+    return null;
+  }
+}
+
+/**
  * 원장(data/matches)의 브리핑 창 항목 → 경기 상세(6개 대회만 — football-data와 짝짓는 대상). 같은 아침 두 번째 실행은 브리핑 창
  * 경기를 다시 받지 않으므로 이 항목으로 득점자를 잇는다(M1-48 이월). 원장은 정기 운영 prod 실행만 쓰므로 개발 실행에서는 대개 없다.
  * 던지지 않는다 — 읽지 못하면 경고하고 빈 목록.
@@ -3449,6 +3516,10 @@ async function runBriefStage(
       competitions,
       team.index.byFd,
     );
+    // 한국 선수 출전(M3-03) — 지시문이 korean을 설명할 때만(BRIEF_KOREAN_ENABLED — 지금 false)
+    const koreanSource = BRIEF_KOREAN_ENABLED
+      ? await loadBriefKoreanSource(deps, fd.data.window, merged.details)
+      : null;
     built = buildBriefInput({
       briefDate: ctx.publishDate,
       results,
@@ -3458,6 +3529,7 @@ async function runBriefStage(
       unsettledComps: supplement.unsettledComps,
       koreanTeamIds: await briefKoreanTeamIds(deps, team.index),
       ...(BRIEF_PREV_ENABLED ? { prevPositions: prev.positions } : {}),
+      ...(koreanSource ? { korean: koreanSource } : {}),
     });
     const canonical = names
       ? canonicalizeBriefInput(built.input, names, {
@@ -5265,15 +5337,40 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     });
   }
 
-  // 미등록 고유명사(M1-21) — 브리핑 입력·출력의 사전에 없는 이름 + 대회 득점 순위 상위(M2-09, 대회별 20명). prod·비dry만 파일을
-  // 쓴다. 실패해도 발행은 계속
+  // 한국 선수 현황(M3-03 — korean-players-io.ts): 팀 단계와 같은 조건·모드(write = prod 비dry, 그 밖은 preview — 쓰지 않음).
+  // 원장(디스크 + 원장에 쓰지 않은 실행의 이번 항목) + 대회 파일(방금 쓴 것) → data/players/korean.json. 발행 산출물이라 검증·빌드가
+  // 실패하면 커밋되지 않는다. 던지지 않는다 — 실패해도 뉴스·브리핑 발행은 계속(전일 파일 유지)
+  let players: KoreanPlayersStageOutcome | null = null;
+  if (footballPlan.teams.run) {
+    try {
+      players = await runKoreanPlayersStage(deps, {
+        mode: footballPlan.teams.mode,
+        now: nowUtcIso(deps.now()),
+        ledgerExtra:
+          matchData?.ledger && matchData.ledger.mode !== "write"
+            ? matchData.ledger.entries
+            : [],
+      });
+    } catch (error) {
+      // 방어선 — runKoreanPlayersStage는 던지지 않는다
+      log.error("players.korean.fail", {
+        stage: "unexpected",
+        error: errorText(error),
+      });
+    }
+  }
+
+  // 미등록 고유명사(M1-21) — 브리핑 입력·출력의 사전에 없는 이름 + 대회 득점 순위 상위(M2-09, 대회별 20명) + 한국 선수 로그의
+  // slug 없는 상대 팀·컵 대회 원문(M3-03). prod·비dry만 파일을 쓴다. 실패해도 발행은 계속
   let unknownNames: UnknownNamesOutcome | null = null;
   if (briefStage !== null) {
     try {
-      const competitionNames =
-        football?.competitions.state === "done"
+      const competitionNames = [
+        ...(football?.competitions.state === "done"
           ? scorerNameObservations(football.competitions.files)
-          : [];
+          : []),
+        ...(players?.state === "done" ? players.build.unknownNames : []),
+      ];
       unknownNames = await recordUnknownNames(
         deps,
         stageCtx,
@@ -5396,6 +5493,14 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     apiFootball: matchData?.apiFootball.state ?? null,
     matchDataMs: matchData?.elapsedMs ?? null,
     ...footballStagesLogFields(football),
+    players:
+      players === null
+        ? null
+        : players.state === "done"
+          ? `${players.mode}:${players.written !== null ? "written" : players.build.changed ? "changed" : "same"}`
+          : players.state === "skipped"
+            ? `skipped:${players.reason}`
+            : `failed:${players.errorType}`,
     apiCalls: sink.apiCalls.footballData,
     apiFootballCalls: sink.apiCalls.apiFootball,
     llmCalls: sink.results.length,

@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import {
   CompIdSchema,
+  IsoDateSchema,
   IsoSchema,
   PositionSchema,
   SeasonSchema,
@@ -68,6 +69,34 @@ export const WeeklyReportSchema = z.object({
 export type WeeklyReport = z.infer<typeof WeeklyReportSchema>;
 
 // ─── v0.1 — 2026-10-10 사용자 확인 — `data/players/korean.json` ────────────────
+// 2026-11-01 사용자 결정(PRD §15 D65, M3-02·M3-03): ① 컵 대회 원문 이름 `leagueRaw`(comp "OTHER"일 때만 — 원장 `league` 원문,
+// 예 "DFB Pokal". 화면은 names.ko로 한글 표기, 미등록이면 원문) ② 집계 시작일 — 파일 `since`(원장 meta.since 복사)·선수별 `since`
+// (meta.playerSince 복사, 추적하지 않는 선수는 null). 시즌 누적의 고유 키는 comp + leagueRaw(OTHER 대회가 여럿일 수 있다).
+
+/** 컵 대회 원문 이름(원장 `league`) — comp가 "OTHER"일 때만 둔다 */
+const LeagueRawSchema = z.string().min(1);
+
+/** leagueRaw는 comp "OTHER"에만 */
+function leagueRawOnlyOther(
+  v: { comp: PlayerComp; leagueRaw?: string | undefined },
+  ctx: z.RefinementCtx,
+): void {
+  if (v.leagueRaw !== undefined && v.comp !== "OTHER") {
+    ctx.addIssue({
+      code: "custom",
+      path: ["leagueRaw"],
+      message: "leagueRaw는 comp가 OTHER일 때만",
+    });
+  }
+}
+
+/** 시즌 누적 행의 고유 키 — comp + leagueRaw(D65) */
+export function playerSeasonKey(s: {
+  comp: PlayerComp;
+  leagueRaw?: string | undefined;
+}): string {
+  return s.leagueRaw === undefined ? s.comp : `${s.comp}:${s.leagueRaw}`;
+}
 
 /** 상대 팀 — data/teams에 없는 팀(컵 대회 하부 리그 팀 등)은 slug가 null. */
 export const OpponentSchema = z.object({
@@ -77,43 +106,52 @@ export const OpponentSchema = z.object({
 export type Opponent = z.infer<typeof OpponentSchema>;
 
 /** 대회별 시즌 누적 (FR-61 시즌 누적·UCL 출전 여부, FR-62 시즌 기록). */
-export const PlayerSeasonStatsSchema = z.object({
-  comp: PlayerCompSchema, // 리그·UCL을 따로 센다
-  apps: z.number().int().min(0), // 출전 경기 수
-  minutes: z.number().int().min(0).nullable(), // 출전 시간 — 폴백(FR-65)이면 null
-  goals: z.number().int().min(0),
-  assists: z.number().int().min(0).nullable(), // 폴백이면 null
-});
+export const PlayerSeasonStatsSchema = z
+  .object({
+    comp: PlayerCompSchema, // 리그·UCL을 따로 센다
+    leagueRaw: LeagueRawSchema.optional(), // comp OTHER만 — 대회 원문 이름(D65)
+    apps: z.number().int().min(0), // 출전 경기 수
+    minutes: z.number().int().min(0).nullable(), // 출전 시간 — 폴백(FR-65)이면 null
+    goals: z.number().int().min(0),
+    assists: z.number().int().min(0).nullable(), // 폴백이면 null
+  })
+  .superRefine(leagueRawOnlyOther);
 export type PlayerSeasonStats = z.infer<typeof PlayerSeasonStatsSchema>;
 
 /** 경기별 출전 로그 1건 (FR-62 최근 5경기, 홈 하이라이트 칩). */
-export const PlayerMatchLogSchema = z.object({
-  matchId: z.string().min(1), // Match.id(data/competitions) — 대회 밖 경기는 데이터 API 원본 id
-  comp: PlayerCompSchema,
-  kickoff: IsoSchema, // UTC — KST 표시는 화면에서
-  opponent: OpponentSchema,
-  home: z.boolean(),
-  result: z
-    .object({
-      for: z.number().int().min(0),
-      against: z.number().int().min(0),
-    })
-    .nullable(), // 소속팀 기준 스코어, 정보 없으면 null
-  started: z.boolean().nullable(), // 선발 여부 — 폴백이면 null
-  minutes: z.number().int().min(0).nullable(), // 0 = 명단 제외·미출전, null = 정보 없음(폴백)
-  goals: z.number().int().min(0),
-  assists: z.number().int().min(0).nullable(), // 폴백이면 null
-});
+export const PlayerMatchLogSchema = z
+  .object({
+    matchId: z.string().min(1), // Match.id(data/competitions) — 대회 밖 경기는 데이터 API 원본 id
+    comp: PlayerCompSchema,
+    leagueRaw: LeagueRawSchema.optional(), // comp OTHER만 — 대회 원문 이름(D65)
+    kickoff: IsoSchema, // UTC — KST 표시는 화면에서
+    opponent: OpponentSchema,
+    home: z.boolean(),
+    result: z
+      .object({
+        for: z.number().int().min(0),
+        against: z.number().int().min(0),
+      })
+      .nullable(), // 소속팀 기준 스코어, 정보 없으면 null
+    started: z.boolean().nullable(), // 선발 여부 — 폴백이면 null
+    minutes: z.number().int().min(0).nullable(), // 0 = 명단 제외·미출전, null = 정보 없음(폴백)
+    goals: z.number().int().min(0),
+    assists: z.number().int().min(0).nullable(), // 폴백이면 null
+  })
+  .superRefine(leagueRawOnlyOther);
 export type PlayerMatchLog = z.infer<typeof PlayerMatchLogSchema>;
 
 /** 다음 경기 (FR-61, 캘린더 FR-123 입력). */
-export const PlayerNextMatchSchema = z.object({
-  matchId: z.string().min(1),
-  comp: PlayerCompSchema,
-  kickoff: IsoSchema, // UTC — KST 표시는 화면에서
-  opponent: OpponentSchema,
-  home: z.boolean(),
-});
+export const PlayerNextMatchSchema = z
+  .object({
+    matchId: z.string().min(1),
+    comp: PlayerCompSchema,
+    leagueRaw: LeagueRawSchema.optional(), // comp OTHER만 — 대회 원문 이름(D65)
+    kickoff: IsoSchema, // UTC — KST 표시는 화면에서
+    opponent: OpponentSchema,
+    home: z.boolean(),
+  })
+  .superRefine(leagueRawOnlyOther);
 export type PlayerNextMatch = z.infer<typeof PlayerNextMatchSchema>;
 
 /** 선수 1명의 현황 (configs/korean-players.json의 slug로 연결). */
@@ -121,9 +159,10 @@ export const KoreanPlayerRecordSchema = z.object({
   slug: SlugSchema, // configs/korean-players.json의 slug
   team: SlugSchema, // 기록 시점 소속팀 slug — 설정과 다르면 이적 감지 단서(FR-63)
   provider: z.enum(["api-football", "fallback"]), // 데이터 경로: fallback = 경기 결과 + 득점 순위 + 뉴스(FR-65)
+  since: IsoDateSchema.nullable(), // 이 선수 집계 시작일(UTC 날짜, meta.playerSince 복사 — D65) · 추적하지 않는 선수(id 없음·비활성)는 null
   season: z
     .array(PlayerSeasonStatsSchema)
-    .superRefine(uniqueBy((s) => s.comp, "comp", "시즌 누적 대회")),
+    .superRefine(uniqueBy(playerSeasonKey, "comp", "시즌 누적 대회")), // 고유 키 comp + leagueRaw(D65)
   recent: z.array(PlayerMatchLogSchema).max(5), // 최근 5경기, 최신순 (FR-62)
   next: PlayerNextMatchSchema.nullable(), // 일정 없으면 null
   updatedAt: IsoSchema, // 이 선수 기록의 마지막 갱신 — 소속팀 경기 다음 날만 갱신(FR-61), active:false면 멈춤(FR-64)
@@ -133,6 +172,7 @@ export type KoreanPlayerRecord = z.infer<typeof KoreanPlayerRecordSchema>;
 /** `data/players/korean.json` 파일 (M3-03). 관련 뉴스는 빌드 시 카드 태그로 찾는다. */
 export const KoreanPlayersDataFileSchema = z.object({
   season: SeasonSchema,
+  since: IsoDateSchema, // 집계 시작일(UTC 날짜, 원장 meta.since 복사 — D33 ③·D65) — 화면 "○월 ○일 이후 집계"
   generatedAt: IsoSchema,
   players: z
     .array(KoreanPlayerRecordSchema)

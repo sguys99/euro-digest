@@ -2,7 +2,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  KoreanPlayersDataFileSchema,
   KoreanPlayersFileSchema,
+  MatchLedgerMetaSchema,
   NationalTeamFileSchema,
   PublisherDomainsFileSchema,
   SearchQueriesFileSchema,
@@ -17,6 +19,7 @@ import {
 import {
   CROSSREF_FILES,
   checkKoreanPlayerTeamIds,
+  checkKoreanPlayersData,
   checkPublisherDomainSources,
   checkSearchQueryPlayers,
   checkSearchQuerySources,
@@ -401,7 +404,10 @@ describe("checkTeamFiles — data/teams ↔ team-ids·team-colors·korean-player
       runCrossRefChecks({ teamIds, teamColors, koreanPlayers }, "data"),
     ).toMatchObject({
       checked: [],
-      skipped: ["data/teams → team-ids · team-colors · korean-players"],
+      skipped: [
+        "data/teams → team-ids · team-colors · korean-players",
+        "data/players/korean.json → korean-players · data/teams · 원장 메타",
+      ],
     });
     const input = pickCrossRefInput(
       new Map<string, unknown>([
@@ -420,6 +426,58 @@ describe("checkTeamFiles — data/teams ↔ team-ids·team-colors·korean-player
       checked: ["data/teams → team-ids · team-colors · korean-players"],
       issues: [],
     });
+  });
+});
+
+describe("checkKoreanPlayersData — data/players/korean.json ↔ korean-players·data/teams·원장 메타 (M3-03)", () => {
+  const data = validFixture(
+    KoreanPlayersDataFileSchema,
+    "data/players/korean.json",
+  );
+  const meta = validFixture(MatchLedgerMetaSchema, "data/matches/meta.json");
+  const sample = validFixture(TeamSchema, "data/teams/sample-united.json");
+  const city: Team = { ...sample, slug: "example-city" };
+  const teams = new Map([
+    ["data/teams/sample-united.json", sample],
+    ["data/teams/example-city.json", city],
+  ]);
+  const shape = (issues: ReturnType<typeof checkKoreanPlayersData>) =>
+    issues.map((i) => [i.severity, i.path ?? null]);
+
+  it("레코드 slug ⊂ korean-players(오류) · 활성 선수 팀·상대 slug ⊂ data/teams(오류), 비활성은 팀 링크를 보지 않는다", () => {
+    const players = [
+      { ...data.players[0]!, slug: "ghost" },
+      { ...data.players[0]!, slug: "hong-gil-dong", team: "nowhere-fc" },
+      data.players[1]!,
+    ];
+    expect(
+      shape(
+        checkKoreanPlayersData(
+          { ...data, players },
+          koreanPlayers,
+          teams,
+          undefined,
+        ),
+      ),
+    ).toEqual([
+      ["error", "players[0].slug"],
+      ["error", "players[1].team"],
+    ]);
+  });
+
+  it("설정 선수 레코드 없음·집계 시작일 불일치는 경고(다음 수집이 다시 만든다 — 발행을 막지 않는다)", () => {
+    const issues = checkKoreanPlayersData(
+      { ...data, players: [data.players[0]!] },
+      koreanPlayers,
+      teams,
+      meta,
+    );
+    expect(issues.every((i) => i.severity === "warn")).toBe(true);
+    expect(issues.map((i) => i.message)).toEqual([
+      expect.stringContaining("playerSince(null)"),
+      expect.stringContaining('"kim-cheol-su"의 레코드가 없음'),
+      expect.stringContaining("원장 메타"),
+    ]);
   });
 });
 

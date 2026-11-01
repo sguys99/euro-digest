@@ -194,6 +194,67 @@ describe("KoreanPlayersDataFile — data/players/korean.json (초안, F6)", () =
     ).toEqual(["recent.0.opponent.slug"]);
   });
 
+  it("컵 대회 원문 leagueRaw는 comp OTHER에만(D65) — 시즌 누적 키는 comp + leagueRaw", () => {
+    const cup = {
+      comp: "OTHER" as const,
+      apps: 1,
+      minutes: 90,
+      goals: 0,
+      assists: 0,
+    };
+    expect(
+      passes(KoreanPlayerRecordSchema, {
+        ...record,
+        season: [
+          { ...cup, leagueRaw: "DFB Pokal" },
+          { ...cup, leagueRaw: "League Cup" },
+        ],
+      }),
+    ).toBe(true);
+    expect(
+      issuePaths(KoreanPlayerRecordSchema, {
+        ...record,
+        season: [
+          { ...cup, leagueRaw: "DFB Pokal" },
+          { ...cup, leagueRaw: "DFB Pokal" },
+        ],
+      }),
+    ).toEqual(["season.1.comp"]);
+    expect(
+      issuePaths(KoreanPlayerRecordSchema, {
+        ...record,
+        season: [{ ...cup, comp: "EPL", leagueRaw: "FA Cup" }],
+      }),
+    ).toEqual(["season.0.leagueRaw"]);
+    expect(
+      issuePaths(KoreanPlayerRecordSchema, {
+        ...record,
+        recent: [{ ...log, leagueRaw: "FA Cup" }],
+      }),
+    ).toEqual(["recent.0.leagueRaw"]);
+    expect(
+      issuePaths(KoreanPlayerRecordSchema, {
+        ...record,
+        recent: [{ ...log, leagueRaw: "", comp: "OTHER" }],
+      }),
+    ).toEqual(["recent.0.leagueRaw"]);
+  });
+
+  it("집계 시작일 — 파일 since 필수(UTC 날짜), 선수 since는 날짜 또는 null(D65)", () => {
+    expect(passes(KoreanPlayerRecordSchema, { ...record, since: null })).toBe(
+      true,
+    );
+    expect(
+      issuePaths(KoreanPlayerRecordSchema, {
+        ...record,
+        since: "2026-10-19T00:00:00Z",
+      }),
+    ).toEqual(["since"]);
+    const { since: _drop, ...noSince } = file;
+    void _drop;
+    expect(issuePaths(KoreanPlayersDataFileSchema, noSince)).toEqual(["since"]);
+  });
+
   it("provider 열거값·선수 slug 중복을 검사한다", () => {
     expect(
       issuePaths(KoreanPlayerRecordSchema, {

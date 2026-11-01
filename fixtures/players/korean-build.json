@@ -1,0 +1,600 @@
+{
+  "note": "합성 데이터(M3-02·M3-03 테스트) — 지어낸 선수·팀·경기. 원장(data/matches 형식)·메타·대회 파일 경기 발췌. 사실 정보가 아니다",
+  "now": "2026-11-01T22:00:00.000Z",
+  "players": [
+    {
+      "slug": "test-player",
+      "nameKo": "테스트",
+      "nameEn": "Test Player",
+      "team": "sample-united",
+      "comp": "BUNDESLIGA",
+      "position": "MF",
+      "birthYear": 2000,
+      "apiFootballId": 9001,
+      "active": true
+    },
+    {
+      "slug": "no-id-player",
+      "nameKo": "아이디없음",
+      "nameEn": "No Id",
+      "team": "example-city",
+      "comp": "BUNDESLIGA",
+      "position": "DF",
+      "birthYear": 2001,
+      "apiFootballId": null,
+      "active": true
+    },
+    {
+      "slug": "gone-player",
+      "nameKo": "이적",
+      "nameEn": "Gone Player",
+      "team": "faraway-fc",
+      "comp": "OTHER",
+      "position": "FW",
+      "birthYear": 1999,
+      "apiFootballId": null,
+      "active": false
+    }
+  ],
+  "teamIds": {
+    "sample-united": {
+      "fd": 1001,
+      "af": 101
+    },
+    "example-city": {
+      "fd": 1002,
+      "af": 102
+    }
+  },
+  "teamNames": {
+    "sample-united": "Sample United FC",
+    "example-city": "Example City FC"
+  },
+  "meta": {
+    "season": 2026,
+    "since": "2026-10-18",
+    "playerSince": {
+      "test-player": "2026-10-19"
+    },
+    "gaps": []
+  },
+  "ledger": [
+    {
+      "month": "2026-10",
+      "updatedAt": "2026-11-01T00:00:00.000Z",
+      "matches": [
+        {
+          "id": "af-10",
+          "leagueId": 78,
+          "league": "Bundesliga",
+          "comp": "BUNDESLIGA",
+          "season": 2026,
+          "round": "Regular Season - 1",
+          "kickoff": "2026-10-18T13:30:00.000Z",
+          "status": "FT",
+          "home": {
+            "id": 101,
+            "name": "Sample United",
+            "formation": "4-2-3-1"
+          },
+          "away": {
+            "id": 102,
+            "name": "Example City",
+            "formation": "4-2-3-1"
+          },
+          "ft": {
+            "home": 1,
+            "away": 0
+          },
+          "pens": null,
+          "goals": [
+            {
+              "minute": 10,
+              "extra": null,
+              "side": "home",
+              "kind": "normal",
+              "scorer": {
+                "id": 5,
+                "name": "Other Player"
+              },
+              "assist": null
+            }
+          ],
+          "goalsComplete": true,
+          "korean": [
+            {
+              "player": 9001,
+              "side": "home",
+              "status": "start",
+              "minutes": 90,
+              "goals": 0,
+              "assists": 0
+            }
+          ],
+          "fetchedAt": "2026-11-01T00:00:00.000Z"
+        },
+        {
+          "id": "af-11",
+          "leagueId": 78,
+          "league": "Bundesliga",
+          "comp": "BUNDESLIGA",
+          "season": 2026,
+          "round": "Regular Season - 1",
+          "kickoff": "2026-10-19T13:30:00.000Z",
+          "status": "FT",
+          "home": {
+            "id": 101,
+            "name": "Sample United",
+            "formation": "4-2-3-1"
+          },
+          "away": {
+            "id": 102,
+            "name": "Example City",
+            "formation": "4-2-3-1"
+          },
+          "ft": {
+            "home": 2,
+            "away": 1
+          },
+          "pens": null,
+          "goals": [
+            {
+              "minute": 20,
+              "extra": null,
+              "side": "home",
+              "kind": "penalty",
+              "scorer": {
+                "id": 9001,
+                "name": "T. Player"
+              },
+              "assist": null
+            },
+            {
+              "minute": 50,
+              "extra": null,
+              "side": "away",
+              "kind": "normal",
+              "scorer": {
+                "id": 6,
+                "name": "City Player"
+              },
+              "assist": null
+            },
+            {
+              "minute": 70,
+              "extra": null,
+              "side": "home",
+              "kind": "normal",
+              "scorer": {
+                "id": 5,
+                "name": "Other Player"
+              },
+              "assist": {
+                "id": 9001,
+                "name": "T. Player"
+              }
+            }
+          ],
+          "goalsComplete": true,
+          "korean": [
+            {
+              "player": 9001,
+              "side": "home",
+              "status": "start",
+              "minutes": 90,
+              "goals": 1,
+              "assists": 1
+            }
+          ],
+          "fetchedAt": "2026-11-01T00:00:00.000Z"
+        },
+        {
+          "id": "af-12",
+          "leagueId": 2,
+          "league": "UEFA Champions League",
+          "comp": "UCL",
+          "season": 2026,
+          "round": "Regular Season - 1",
+          "kickoff": "2026-10-22T19:00:00.000Z",
+          "status": "FT",
+          "home": {
+            "id": 102,
+            "name": "Example City",
+            "formation": "4-2-3-1"
+          },
+          "away": {
+            "id": 101,
+            "name": "Sample United",
+            "formation": "4-2-3-1"
+          },
+          "ft": {
+            "home": 1,
+            "away": 1
+          },
+          "pens": null,
+          "goals": [
+            {
+              "minute": 5,
+              "extra": null,
+              "side": "home",
+              "kind": "normal",
+              "scorer": {
+                "id": 6,
+                "name": "City Player"
+              },
+              "assist": null
+            },
+            {
+              "minute": 80,
+              "extra": null,
+              "side": "away",
+              "kind": "normal",
+              "scorer": {
+                "id": 5,
+                "name": "Other Player"
+              },
+              "assist": null
+            }
+          ],
+          "goalsComplete": true,
+          "korean": [
+            {
+              "player": 9001,
+              "side": "away",
+              "status": "sub",
+              "minutes": 20,
+              "goals": 0,
+              "assists": 0
+            }
+          ],
+          "fetchedAt": "2026-11-01T00:00:00.000Z"
+        },
+        {
+          "id": "af-13",
+          "leagueId": 78,
+          "league": "Bundesliga",
+          "comp": "BUNDESLIGA",
+          "season": 2026,
+          "round": "Regular Season - 1",
+          "kickoff": "2026-10-25T13:30:00.000Z",
+          "status": "FT",
+          "home": {
+            "id": 101,
+            "name": "Sample United",
+            "formation": "4-2-3-1"
+          },
+          "away": {
+            "id": 102,
+            "name": "Example City",
+            "formation": "4-2-3-1"
+          },
+          "ft": {
+            "home": 3,
+            "away": 0
+          },
+          "pens": null,
+          "goals": [
+            {
+              "minute": 1,
+              "extra": null,
+              "side": "home",
+              "kind": "normal",
+              "scorer": {
+                "id": 5,
+                "name": "Other Player"
+              },
+              "assist": null
+            },
+            {
+              "minute": 2,
+              "extra": null,
+              "side": "home",
+              "kind": "normal",
+              "scorer": {
+                "id": 5,
+                "name": "Other Player"
+              },
+              "assist": null
+            },
+            {
+              "minute": 3,
+              "extra": null,
+              "side": "home",
+              "kind": "normal",
+              "scorer": {
+                "id": 5,
+                "name": "Other Player"
+              },
+              "assist": null
+            }
+          ],
+          "goalsComplete": true,
+          "korean": [
+            {
+              "player": 9001,
+              "side": "home",
+              "status": "start",
+              "minutes": 70,
+              "goals": 0,
+              "assists": 0
+            }
+          ],
+          "fetchedAt": "2026-11-01T00:00:00.000Z"
+        },
+        {
+          "id": "af-14",
+          "leagueId": 81,
+          "league": "DFB Pokal",
+          "comp": null,
+          "season": 2026,
+          "round": "Regular Season - 1",
+          "kickoff": "2026-10-28T17:00:00.000Z",
+          "status": "PEN",
+          "home": {
+            "id": 999,
+            "name": "Lower League FC",
+            "formation": null
+          },
+          "away": {
+            "id": 101,
+            "name": "Sample United",
+            "formation": "4-2-3-1"
+          },
+          "ft": {
+            "home": 1,
+            "away": 1
+          },
+          "pens": {
+            "home": 3,
+            "away": 4
+          },
+          "goals": [
+            {
+              "minute": 30,
+              "extra": null,
+              "side": "home",
+              "kind": "normal",
+              "scorer": {
+                "id": 7,
+                "name": "Lower Player"
+              },
+              "assist": null
+            },
+            {
+              "minute": 60,
+              "extra": null,
+              "side": "away",
+              "kind": "normal",
+              "scorer": {
+                "id": 5,
+                "name": "Other Player"
+              },
+              "assist": null
+            }
+          ],
+          "goalsComplete": true,
+          "korean": [
+            {
+              "player": 9001,
+              "side": "away",
+              "status": "bench",
+              "minutes": 0,
+              "goals": 0,
+              "assists": 0
+            }
+          ],
+          "fetchedAt": "2026-11-01T00:00:00.000Z"
+        },
+        {
+          "id": "af-15",
+          "leagueId": 78,
+          "league": "Bundesliga",
+          "comp": "BUNDESLIGA",
+          "season": 2026,
+          "round": "Regular Season - 1",
+          "kickoff": "2026-10-31T14:30:00.000Z",
+          "status": "FT",
+          "home": {
+            "id": 102,
+            "name": "Example City",
+            "formation": "4-2-3-1"
+          },
+          "away": {
+            "id": 101,
+            "name": "Sample United",
+            "formation": "4-2-3-1"
+          },
+          "ft": {
+            "home": 1,
+            "away": 0
+          },
+          "pens": null,
+          "goals": [
+            {
+              "minute": 44,
+              "extra": null,
+              "side": "home",
+              "kind": "own-goal",
+              "scorer": {
+                "id": 9001,
+                "name": "T. Player"
+              },
+              "assist": null
+            }
+          ],
+          "goalsComplete": true,
+          "korean": [
+            {
+              "player": 9001,
+              "side": "away",
+              "status": "absent",
+              "minutes": null,
+              "goals": 0,
+              "assists": 0
+            }
+          ],
+          "fetchedAt": "2026-11-01T00:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "month": "2026-11",
+      "updatedAt": "2026-11-01T00:00:00.000Z",
+      "matches": [
+        {
+          "id": "af-16",
+          "leagueId": 81,
+          "league": "League Cup",
+          "comp": null,
+          "season": 2026,
+          "round": "Regular Season - 1",
+          "kickoff": "2026-11-01T12:00:00.000Z",
+          "status": "FT",
+          "home": {
+            "id": 998,
+            "name": "Other Town",
+            "formation": null
+          },
+          "away": {
+            "id": 101,
+            "name": "Sample United",
+            "formation": "4-2-3-1"
+          },
+          "ft": {
+            "home": 0,
+            "away": 2
+          },
+          "pens": null,
+          "goals": [
+            {
+              "minute": 10,
+              "extra": null,
+              "side": "away",
+              "kind": "normal",
+              "scorer": {
+                "id": 9001,
+                "name": "T. Player"
+              },
+              "assist": null
+            },
+            {
+              "minute": 20,
+              "extra": null,
+              "side": "away",
+              "kind": "normal",
+              "scorer": {
+                "id": 5,
+                "name": "Other Player"
+              },
+              "assist": null
+            }
+          ],
+          "goalsComplete": true,
+          "korean": [
+            {
+              "player": 9001,
+              "side": "away",
+              "status": "unknown",
+              "minutes": null,
+              "goals": 1,
+              "assists": 0
+            }
+          ],
+          "fetchedAt": "2026-11-01T00:00:00.000Z"
+        }
+      ]
+    }
+  ],
+  "competitions": {
+    "BUNDESLIGA": {
+      "matches": [
+        {
+          "id": "fd-11",
+          "comp": "BUNDESLIGA",
+          "round": "7",
+          "kickoff": "2026-10-19T13:30:00Z",
+          "home": "sample-united",
+          "away": "example-city",
+          "score": {
+            "h": 2,
+            "a": 1
+          },
+          "status": "finished"
+        },
+        {
+          "id": "fd-13",
+          "comp": "BUNDESLIGA",
+          "round": "8",
+          "kickoff": "2026-10-25T14:00:00Z",
+          "home": "sample-united",
+          "away": "example-city",
+          "score": {
+            "h": 3,
+            "a": 0
+          },
+          "status": "finished"
+        },
+        {
+          "id": "fd-15",
+          "comp": "BUNDESLIGA",
+          "round": "9",
+          "kickoff": "2026-10-31T14:30:00Z",
+          "home": "example-city",
+          "away": "sample-united",
+          "score": {
+            "h": 1,
+            "a": 0
+          },
+          "status": "finished"
+        },
+        {
+          "id": "fd-20",
+          "comp": "BUNDESLIGA",
+          "round": "10",
+          "kickoff": "2026-10-31T18:30:00Z",
+          "home": "sample-united",
+          "away": "example-city",
+          "score": null,
+          "status": "scheduled"
+        },
+        {
+          "id": "fd-21",
+          "comp": "BUNDESLIGA",
+          "round": "11",
+          "kickoff": "2026-11-08T14:30:00Z",
+          "home": "sample-united",
+          "away": "example-city",
+          "score": null,
+          "status": "scheduled"
+        }
+      ]
+    },
+    "UCL": {
+      "matches": [
+        {
+          "id": "fd-12",
+          "comp": "UCL",
+          "round": "3",
+          "kickoff": "2026-10-22T19:00:00Z",
+          "home": "example-city",
+          "away": "sample-united",
+          "score": {
+            "h": 1,
+            "a": 1
+          },
+          "status": "finished"
+        },
+        {
+          "id": "fd-22",
+          "comp": "UCL",
+          "round": "4",
+          "kickoff": "2026-11-04T20:00:00Z",
+          "home": "sample-united",
+          "away": "example-city",
+          "score": null,
+          "status": "scheduled"
+        }
+      ]
+    }
+  }
+}

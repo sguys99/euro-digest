@@ -19,6 +19,9 @@
  *   7. data/teams/*.json(파생 — scripts/build-teams.ts, M2-06·M2-07) ↔ configs — 팀 파일이 하나라도 있을 때만(`--configs-only`는 건너뜀):
  *      팀 slug ⊂ team-ids · team-ids 팀마다 파일 · `colors`·`short` = team-colors(복사본) · `koreanPlayers`·팀시트 `korean` slug ⊂
  *      korean-players(소속 팀 일치) · 팀시트 상대 ⊂ team-ids는 오류. 활성 한국 선수가 소속 팀 파일 `koreanPlayers`에 없으면 경고
+ *   8. data/players/korean.json ↔ korean-players·data/teams·team-ids·data/matches/meta.json (M3-03) — 레코드 slug ⊂ korean-players,
+ *      활성 선수의 team·출전 로그·다음 경기 상대 slug ⊂ data/teams(팀 페이지 링크)는 오류. 설정 선수의 레코드가 없음·집계 시작일이
+ *      원장 메타와 다름은 경고(설정을 바꾼 커밋 뒤 다음 수집이 다시 만든다 — 발행을 막지 않는다)
  *      (설정만 바꾸고 팀 파일을 다시 만들지 않은 경우 — 다음 생성에서 들어간다)
  *
  * formations.json·team-colors.json의 키 형식(slug)은 스키마(`z.record(SlugSchema, …)`)가 이미 검사한다.
@@ -30,6 +33,8 @@ import {
   type PublisherDomainsFile,
   type SearchQueriesFile,
   type SourcesFile,
+  type KoreanPlayersDataFile,
+  type MatchLedgerMeta,
   type Team,
   type TeamColorsFile,
   type TeamIdsFile,
@@ -54,10 +59,18 @@ type CrossRefKey = keyof typeof CROSSREF_FILES;
 /** 팀 파일 경로 접두사(레지스트리 `data/teams/*.json`) */
 export const TEAM_FILES_PREFIX = "data/teams/";
 
+/** 한국 선수 현황·원장 메타 경로(레지스트리 패턴과 같은 값) */
+export const KOREAN_PLAYERS_DATA_FILE = "data/players/korean.json";
+export const LEDGER_META_FILE = "data/matches/meta.json";
+
 /** 스키마를 통과한 configs 값. 없거나 스키마 오류인 파일은 비워 둔다. */
 export interface CrossRefInput {
   /** 스키마를 통과한 팀 파일(경로 → 값) — 하나도 없으면 비워 둔다 */
   teams?: ReadonlyMap<string, Team>;
+  /** data/players/korean.json(스키마 통과) */
+  koreanPlayersData?: KoreanPlayersDataFile;
+  /** data/matches/meta.json(스키마 통과) */
+  ledgerMeta?: MatchLedgerMeta;
   sources?: SourcesFile;
   searchQueries?: SearchQueriesFile;
   koreanPlayers?: KoreanPlayersFile;
@@ -404,6 +417,98 @@ export function checkTeamFiles(
   return issues;
 }
 
+/**
+ * 8. data/players/korean.json ↔ korean-players·data/teams·원장 메타 (M3-03 — 머리 주석). 파생 파일이라 어긋나면
+ * `npm run build:players`로 다시 만든다.
+ */
+export function checkKoreanPlayersData(
+  data: KoreanPlayersDataFile,
+  koreanPlayers: KoreanPlayersFile,
+  teams: ReadonlyMap<string, Team>,
+  meta: MatchLedgerMeta | undefined,
+): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  const file = KOREAN_PLAYERS_DATA_FILE;
+  const regen = "npm run build:players로 다시 만들 것";
+  const bySlug = new Map(koreanPlayers.map((p) => [p.slug, p]));
+  const teamSlugs = new Set([...teams.values()].map((t) => t.slug));
+  const warn = (path: readonly PropertyKey[], message: string) =>
+    issues.push({
+      severity: "warn",
+      stage: "crossref",
+      file,
+      path: formatIssuePath(path),
+      message,
+    });
+  const teamLink = (path: readonly PropertyKey[], slug: string | null) => {
+    if (slug !== null && !teamSlugs.has(slug)) {
+      issues.push(
+        crossRefError(
+          file,
+          path,
+          `팀 "${slug}"의 팀 파일(data/teams)이 없음 — ${regen}`,
+        ),
+      );
+    }
+  };
+  data.players.forEach((r, i) => {
+    const player = bySlug.get(r.slug);
+    if (player === undefined) {
+      issues.push(
+        crossRefError(
+          file,
+          ["players", i, "slug"],
+          `korean-players.json에 없는 선수 slug "${r.slug}" — ${regen}`,
+        ),
+      );
+      return;
+    }
+    // 비활성(기타 리그 — FR-64) 선수는 기록이 멈춘 레코드라 팀 파일 링크를 보지 않는다
+    if (!player.active) return;
+    teamLink(["players", i, "team"], r.team);
+    r.recent.forEach((log, j) =>
+      teamLink(
+        ["players", i, "recent", j, "opponent", "slug"],
+        log.opponent.slug,
+      ),
+    );
+    if (r.next !== null) {
+      teamLink(
+        ["players", i, "next", "opponent", "slug"],
+        r.next.opponent.slug,
+      );
+    }
+    if (meta !== undefined) {
+      const since =
+        player.apiFootballId !== null
+          ? (meta.playerSince[r.slug] ?? null)
+          : null;
+      if (r.since !== since) {
+        warn(
+          ["players", i, "since"],
+          `집계 시작일(${String(r.since)})이 원장 메타 playerSince(${String(since)})와 다름 — ${regen}`,
+        );
+      }
+    }
+  });
+  const recorded = new Set(data.players.map((r) => r.slug));
+  for (const p of koreanPlayers) {
+    if (!recorded.has(p.slug)) {
+      warn(["players"], `설정 선수 "${p.slug}"의 레코드가 없음 — ${regen}`);
+    }
+  }
+  if (
+    meta !== undefined &&
+    (data.since !== meta.since || data.season !== meta.season)
+  ) {
+    warn(
+      ["since"],
+      `집계 시작일·시즌(${data.since}·${data.season})이 원장 메타(${meta.since}·${meta.season})와 다름 — ${regen}`,
+    );
+  }
+  return issues;
+}
+
 interface CrossRefCheck {
   name: string;
   /** 필요한 파일이 모두 있으면 이슈 목록, 하나라도 없으면 null(건너뜀) */
@@ -462,6 +567,18 @@ const DATA_CHECKS: readonly CrossRefCheck[] = [
         ? checkTeamFiles(teams, teamIds, teamColors, koreanPlayers)
         : null,
   },
+  {
+    name: "data/players/korean.json → korean-players · data/teams · 원장 메타",
+    run: ({ koreanPlayersData, koreanPlayers, teams, ledgerMeta }) =>
+      koreanPlayersData && koreanPlayers && teams && teams.size > 0
+        ? checkKoreanPlayersData(
+            koreanPlayersData,
+            koreanPlayers,
+            teams,
+            ledgerMeta,
+          )
+        : null,
+  },
 ];
 
 /** 교차 참조 검사 전체를 실행한다(`scope` "data"면 data 파일이 걸린 검사만). */
@@ -509,5 +626,12 @@ export function pickCrossRefInput(
     }
   }
   if (teams.size > 0) input.teams = teams;
+  // 레지스트리 KoreanPlayersDataFileSchema·MatchLedgerMetaSchema 통과 값(호출 규약)
+  const koreanData = parsedByPath.get(KOREAN_PLAYERS_DATA_FILE);
+  if (koreanData !== undefined) {
+    input.koreanPlayersData = koreanData as KoreanPlayersDataFile;
+  }
+  const meta = parsedByPath.get(LEDGER_META_FILE);
+  if (meta !== undefined) input.ledgerMeta = meta as MatchLedgerMeta;
   return input;
 }
