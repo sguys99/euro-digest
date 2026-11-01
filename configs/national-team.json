@@ -1,0 +1,93 @@
+{
+  "matches": [
+    {
+      "id": "2026-09-24-ecuador",
+      "kickoff": "2026-09-24T11:00:00.000Z",
+      "kickoffTbd": false,
+      "opponent": "에콰도르",
+      "home": true,
+      "venue": "수원월드컵경기장 (수원)",
+      "competition": "친선경기",
+      "status": "finished",
+      "result": { "kor": 3, "opp": 0 },
+      "sourceUrl": "https://khan.co.kr/article/202609242208001"
+    },
+    {
+      "id": "2026-09-28-uruguay",
+      "kickoff": "2026-09-28T11:00:00.000Z",
+      "kickoffTbd": false,
+      "opponent": "우루과이",
+      "home": true,
+      "venue": "서울월드컵경기장 (서울)",
+      "competition": "친선경기",
+      "status": "finished",
+      "result": { "kor": 1, "opp": 4 },
+      "sourceUrl": "https://www.heraldk.com/article/2026092820004754068"
+    },
+    {
+      "id": "2026-10-02-venezuela",
+      "kickoff": "2026-10-02T11:00:00.000Z",
+      "kickoffTbd": false,
+      "opponent": "베네수엘라",
+      "home": true,
+      "venue": "울산문수축구경기장 (울산)",
+      "competition": "친선경기",
+      "status": "finished",
+      "result": { "kor": 0, "opp": 0 },
+      "sourceUrl": "https://news.tf.co.kr/read/ogmeta/2372736.htm"
+    },
+    {
+      "id": "2026-10-06-uzbekistan",
+      "kickoff": "2026-10-06T11:00:00.000Z",
+      "kickoffTbd": false,
+      "opponent": "우즈베키스탄",
+      "home": true,
+      "venue": "용인미르스타디움 (용인)",
+      "competition": "친선경기",
+      "status": "finished",
+      "result": { "kor": 2, "opp": 0 },
+      "sourceUrl": "https://www.heraldk.com/article/2026100606124419681"
+    },
+    {
+      "id": "2026-11-13-saudi-arabia",
+      "kickoff": "2026-11-13T14:30:00.000Z",
+      "kickoffTbd": false,
+      "opponent": "사우디아라비아",
+      "home": false,
+      "venue": "도하 (카타르)",
+      "competition": "친선경기",
+      "status": "scheduled",
+      "result": null,
+      "sourceUrl": "https://www.kfa.or.kr/live/live.php?act=news_tv_detail&idx=28395&div_code=news"
+    },
+    {
+      "id": "2026-11-17-qatar",
+      "kickoff": "2026-11-17T14:00:00.000Z",
+      "kickoffTbd": false,
+      "opponent": "카타르",
+      "home": false,
+      "venue": "도하 (카타르)",
+      "competition": "친선경기",
+      "status": "scheduled",
+      "result": null,
+      "sourceUrl": "https://www.kfa.or.kr/live/live.php?act=news_tv_detail&idx=28395&div_code=news"
+    }
+  ],
+  "squads": [
+    {
+      "id": "2026-11",
+      "announcedAt": "2026-10-29T04:58:00.000Z",
+      "matchIds": ["2026-11-13-saudi-arabia", "2026-11-17-qatar"],
+      "playerSlugs": [
+        "kim-min-jae",
+        "seol-young-woo",
+        "kim-ji-soo",
+        "lee-jae-sung",
+        "lee-kang-in",
+        "jeong-woo-yeong",
+        "hwang-hee-chan"
+      ],
+      "sourceUrl": "https://www.kfa.or.kr/live/live.php?act=news_tv_detail&idx=28395&div_code=news"
+    }
+  ]
+}

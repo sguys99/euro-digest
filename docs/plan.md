@@ -443,8 +443,9 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 **관련 요구사항**: FR-60~73, FR-90~93, FR-10
 
 ### M3-A 데이터
-- [ ] M3-01 🙋 `korean-players.json` 확정(2026-27, M0-32에서 등록한 초안 9명 검토 — 이적·임대 변동, 김지수 `apiFootballId`, 팀 slug는 M2-04 규칙으로 재확인) → 추가·변경분은 `/add-player`로(표기 사전·검색 쿼리 포함) (FR-60)
+- [x] M3-01 🙋 `korean-players.json` 확정(2026-27, M0-32에서 등록한 초안 9명 검토 — 이적·임대 변동, 김지수 `apiFootballId`, 팀 slug는 M2-04 규칙으로 재확인) → 추가·변경분은 `/add-player`로(표기 사전·검색 쿼리 포함) (FR-60)
   - 🆕 D2 이월: 김지수 `apiFootballId` 없음 → 목록·주간 표 '기록 연결 전' 상태(DESIGN §9.3 D2). 컵 상대 5팀·로호 names.ko 미등록 → `/add-name`
+  - 2026-11-01 완료(사용자 결정 D65 ⑥): 11명 — 추적 7명 원장 115경기 팀 일치(불일치 0)로 확정 · 김지수 유지 '기록 연결 전'(브렌트포드 squads 재조회에도 없음 — 첫 라인업 등장 때 채움) · **박승수 추가**(뉴캐슬, `apiFootballId` 423714 — squads 1회, 다음 정기 실행이 `playerSince` 기록) · **양민혁 추가**(KVC 베스테를로 임대 → OTHER·비활성, FR-64). names.ko 선수 2 + 컵 상대 5팀(로호는 실데이터에 없어 제외 · DFB 포칼·리그컵 대회 표기는 사전 검사 정비와 함께 — M3-10), search-queries 박승수 2(꺼짐). API-Football dev 2건(runs-dev 기록)
 - [x] M3-02 선수 기록 (D27): M1-48이 쌓은 경기 기록에서 한국 선수 경기 로그 추출(`apiFootballId` 매칭, 추가 호출 없음) + FR-65 폴백 경로(`errors.plan` 강등 시 경기 결과 + 득점 순위 + 뉴스 기반 "출전·득점 소식") (FR-61, FR-65)
   - 🆕 D2 이월: 원장 컵 대회 `comp: null` → 화면은 "기타 대회"만. 원문 대회 이름 필드 추가는 스키마 변경 — 사용자 확인(M3-03과 함께) → 2026-11-01 사용자 결정 `leagueRaw` 추가(PRD §15 D65 ④)
   - 2026-11-01 완료: `scripts/lib/korean-players-data.ts` — 원장 행 → PlayerMatchLog(`apiFootballId`만, 추가 호출 0 · start/sub 원장 분 · bench/absent 0 · unknown null · 소속팀 기준 홈/원정·스코어(승부차기 제외) · 상대 slug는 team-ids 역매핑, 없으면 null + 원문 · 컵은 OTHER + `leagueRaw` · 6개 대회는 fd 경기 id로 연결). FR-65 폴백 = meta gaps `degraded` 날의 소속팀 종료 경기가 원장에 없으면 provider `fallback`(출전·골은 지어내지 않고 경기 로그를 만들지 않음)
@@ -452,7 +453,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 2026-11-01 완료: `data/players/korean.json` 9명(`npm run build:players` · collect 팀 단계 뒤 발행 산출물 — prod 비-dry만 씀, D49 · `validate` 교차 검사 8). 최상위·선수별 `since`(meta 복사, D65 ⑤), 시즌 키 comp+`leagueRaw`. 초기값: 추적 7명 최근 2~4경기, 이적 단서 0, 김지수 `since: null`(기록 연결 전), 홍현석 비활성 고정
   - 🆕 이월: 브리핑 `korean` 블록 빌더·수집 연결 완료, **플래그 `BRIEF_KOREAN_ENABLED=false`** — 지시문 v0.5(korean 설명 + 문형, 원장에 교체 분이 없으니 'n분 교체 투입' 문형 제외) + 골든셋 korean 행 + `eval:prompt` 뒤 켬(M3-03b)
 - [ ] M3-04 이적 감지 이슈 자동 생성(FR-63), 5대 리그 밖 이적 시 '기타 리그' 처리(FR-64)
-- [ ] M3-05 🙋 `national-team.json`에 현 시즌 A매치 일정 입력 + A매치 기간 판정(±3일) (FR-70, FR-71)
+- [x] M3-05 🙋 `national-team.json`에 현 시즌 A매치 일정 입력 + A매치 기간 판정(±3일) (FR-70, FR-71)
+  - 2026-11-01 완료(사용자 결정 D65 ⑦ — 웹 검색 초안 → 확인): `configs/national-team.json` 친선 6경기(9·10월 결과 4 · 11월 도하 2 — 11-13 사우디아라비아·11-17 카타르, 경기장 미발표) + 11월 소집 등록 선수 7명, 경기마다 `sourceUrl`. `src/lib/national-team.ts` 판정 = 킥오프 KST 날짜 ±3일(양 끝 포함, 이어지는 창 합침, 연기 제외) → 11월 창 **11-10~11-20 KST**. 로더 `src/lib/data/national-team.ts`. `rest-period.ts`(발행 게이트 휴식기 하한)도 같은 함수로 통합
 - [x] M3-06 `weekly.yml` 골격: **매주 월요일 08:00 KST** (일일 발행 이후, push 금지 시간대 회피), 단계별 실패 격리, `concurrency: collect` 공유(같은 `data/` 파일 동시 쓰기 방지), 끝에서 빌드 → `data/` 커밋 → `deploy.yml` 호출(월요일 당일 공개, FR-90)
   - 2026-11-01 완료(`adcff07`): cron `0 23 * * 0`(월 08:00 KST) + 수동(force·dry·week), `concurrency: collect`, 게이트 `COLLECT_ENABLED == 'true'` + `WEEKLY_ENABLED != 'off'`. `scripts/weekly.ts` → `scripts/lib/weekly-run.ts`·`weekly-stages.ts`(단계 배열 korean-weekly → analysis-blogs → team-profiles → ops-report, 단계별 try/catch·시간 상한, 미구현 = 건너뜀). 대상 주차 = 실행 KST 날짜의 앞 주, 같은 주 재실행 가드 = 주간 리포트 파일 존재(force 예외). partial이면 실패 단계 산출물만 되돌리고 나머지 발행 + 이슈. 커밋 `chore(data): <날짜> 주간 발행 (<주차>)`
 - [ ] M3-07 `configs/prompts/weekly-kr.md` + 💰 주간 총평 1회 호출(Batches API — D28) + 이번 주 MVP 규칙 계산(코드) — 표·MVP 입력은 M1-48이 쌓은 지난 월~일 경기 기록 합산 (FR-90~92, D27)

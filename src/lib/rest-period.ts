@@ -4,14 +4,14 @@
  * I/O 없는 순수 함수만 둔다. 입력은 스키마를 통과한 configs 값.
  *
  * - 비시즌 = 그날(KST 발행일)이 `configs/competitions.json` **모든** 대회의 [startDate, endDate] 밖(부록 A '비시즌 판단' 필드).
- * - A매치 기간 = `configs/national-team.json` 경기일(킥오프 KST 날짜) ±3일(FR-71 — 파일은 M3-05에서 생긴다). 근거 파일이 없으면 판정하지
- *   않는다(평시) — 화면은 A매치 휴식기 문구를 쓰지 않는다(근거 없는 안내 금지, CLAUDE §1-7).
+ * - A매치 기간 = `configs/national-team.json` 경기일(킥오프 KST 날짜) ±3일(FR-71 — 판정은 src/lib/national-team.ts `nationalWindowOn`,
+ *   이어지는 기간 합치기·연기 경기 제외 포함 — M3-05). 근거 파일이 없으면 판정하지 않는다(평시) — 화면은 A매치 휴식기 문구를 쓰지
+ *   않는다(근거 없는 안내 금지, CLAUDE §1-7).
  */
+import { NATIONAL_WINDOW_DAYS, nationalWindowOn } from "@/lib/national-team";
 import type { CompetitionsFile, NationalTeamFile } from "@/lib/schema/configs";
-import { kstDate, shiftDate } from "@/lib/time";
 
-/** A매치 기간 = 경기일 ±3일(FR-71) */
-export const NATIONAL_WINDOW_DAYS = 3;
+export { NATIONAL_WINDOW_DAYS };
 
 export type RestReason = "off-season" | "international-window";
 
@@ -49,16 +49,12 @@ export function restPeriodOf(
   if (!nationalTeam) {
     basis.push("national-team.json 없음 — A매치 기간 판정 안 함");
   } else {
-    const match = nationalTeam.matches.find((m) => {
-      const day = kstDate(m.kickoff);
-      return (
-        shiftDate(day, -NATIONAL_WINDOW_DAYS) <= date &&
-        date <= shiftDate(day, NATIONAL_WINDOW_DAYS)
-      );
-    });
-    if (match) {
+    const window = nationalWindowOn(date, nationalTeam.matches);
+    if (window) {
       reasons.push("international-window");
-      basis.push(`A매치 기간(${match.id} ±${NATIONAL_WINDOW_DAYS}일)`);
+      basis.push(
+        `A매치 기간(${window.from}~${window.to} — ${window.matchIds.join("·")} ±${NATIONAL_WINDOW_DAYS}일)`,
+      );
     } else {
       basis.push("A매치 기간 아님");
     }
