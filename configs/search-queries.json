@@ -37,6 +37,24 @@
       "enabled": false
     },
     {
+      "id": "gd-ko-park-seung-soo",
+      "source": "gdelt-doc",
+      "q": "박승수",
+      "lang": "ko",
+      "purpose": "korean",
+      "player": "park-seung-soo",
+      "enabled": false
+    },
+    {
+      "id": "gd-en-park-seung-soo",
+      "source": "gdelt-doc",
+      "q": "\"Park Seung-soo\"",
+      "lang": "en",
+      "purpose": "korean",
+      "player": "park-seung-soo",
+      "enabled": false
+    },
+    {
       "id": "gd-en-transfer-epl",
       "source": "gdelt-doc",
       "q": "(Arsenal OR Chelsea OR Liverpool OR \"Manchester City\" OR \"Manchester United\" OR Tottenham) transfer",

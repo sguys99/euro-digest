@@ -127,9 +127,9 @@ describe("대상 선별 — 6개 대회 ∪ 활성 한국 선수 소속팀(클�
       [61, "LIGUE1"],
       [2, "UCL"],
     ]);
-    // 활성 8명의 소속 8팀(홍현석 midtjylland는 비활성 — 제외)
+    // 활성 9명의 소속 9팀(홍현석 midtjylland·양민혁 westerlo는 비활성 — 제외)
     expect([...built.targets.koreanTeamIds].sort((a, b) => a - b)).toEqual([
-      55, 157, 163, 164, 170, 174, 182, 530,
+      34, 55, 157, 163, 164, 170, 174, 182, 530,
     ]);
     expect(built.unmappedTeams).toEqual([]);
     expect(CLUB_FRIENDLY_LEAGUE_IDS).toEqual([667]);

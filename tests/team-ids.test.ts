@@ -64,6 +64,16 @@ const COMPETITIONS = CompetitionsFileSchema.parse(
 const KOREAN = KoreanPlayersFileSchema.parse(
   readJson("configs/korean-players.json"),
 );
+/**
+ * M3-01(2026-11-01)에 추가한 선수와 squads로 확인한 소속팀 af — 2026-10-13 초안(M0-32 명단 9명) 재현 테스트는 이 선수들을 뺀다
+ * (박승수 뉴캐슬 34 — `/players/squads?team=34` 응답 team.id · 양민혁은 비활성이라 소속팀 대상이 아니다, PRD §15 D65 ⑥)
+ */
+const M3_01_ADDED = new Set(["park-seung-soo", "yang-min-hyeok"]);
+const SQUAD_TEAM_IDS: Readonly<Record<string, number>> = {
+  ...M0_32_SQUAD_TEAM_IDS,
+  "newcastle-united": 34,
+};
+const KOREAN_M0_32 = KOREAN.filter((p) => !M3_01_ADDED.has(p.slug));
 const NAMES = NamesKoFileSchema.parse(readJson("configs/names.ko.json"));
 const INDEX = FixtureIndexSchema.parse(
   readJson("fixtures/football/index.json"),
@@ -132,12 +142,12 @@ describe("TeamIdsFileSchema — slug → { fd, af } (D33)", () => {
 describe("configs/team-ids.json(현재 파일) — 스키마·교차 검사", () => {
   const file = TeamIdsFileSchema.parse(readJson("configs/team-ids.json"));
 
-  it("활성 한국 선수 소속팀이 모두 있고 af가 M0-32 squads 확인값과 같다", () => {
+  it("활성 한국 선수 소속팀이 모두 있고 af가 squads 확인값(M0-32 + M3-01 뉴캐슬)과 같다", () => {
     expect(checkKoreanPlayerTeamIds(KOREAN, file)).toEqual([]);
     for (const team of koreanTeamsFrom(KOREAN)) {
       expect([team.slug, file[team.slug]?.af]).toEqual([
         team.slug,
-        M0_32_SQUAD_TEAM_IDS[team.slug],
+        SQUAD_TEAM_IDS[team.slug],
       ]);
     }
   });
@@ -970,13 +980,13 @@ describe("buildTeamIdsDraft — fixtures 52쌍 + 한국 선수 소속팀", () =>
       INDEX.matchIdPairs.pairs.map((p) => [p.af, p.afStatus]),
     ),
     pairing: suggestTeamIdPairs(FD.finished, AF),
-    koreanTeams: koreanTeamsFrom(KOREAN),
+    koreanTeams: koreanTeamsFrom(KOREAN_M0_32),
     // 초안을 만든 2026-10-13의 names.ko 팀 항목 = 한국 선수 소속팀뿐이었다. M1-21 초기 사전(6개 대회 팀 전체)이 생긴 뒤에도 이
     // 표는 그날 입력으로 고정한다 — 사전 slug가 규칙 slug를 이기는 동작은 아래 '문제 감지'·소속팀 행이 따로 본다
     nameSlugs: NAMES.entries.flatMap((e) =>
       e.kind === "team" &&
       e.slug !== undefined &&
-      KOREAN.some((p) => p.team === e.slug)
+      KOREAN_M0_32.some((p) => p.team === e.slug)
         ? [{ slug: e.slug, en: e.en }]
         : [],
     ),

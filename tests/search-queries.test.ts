@@ -81,7 +81,7 @@ const SOURCES: Source[] = [
 // ─── 현재 configs ────────────────────────────────────────────────────────
 
 describe("현재 configs — 검색 대상 없음(D32)", () => {
-  it("쿼리 9개가 모두 query-disabled이고 활성 쿼리는 0개다", async () => {
+  it("쿼리 11개가 모두 query-disabled이고 활성 쿼리는 0개다", async () => {
     const [queries, sources] = await Promise.all([
       loadSearchQueries(ROOT),
       loadSources(ROOT),
@@ -112,6 +112,16 @@ describe("현재 configs — 검색 대상 없음(D32)", () => {
         reason: "query-disabled",
       },
       {
+        id: "gd-ko-park-seung-soo",
+        source: "gdelt-doc",
+        reason: "query-disabled",
+      },
+      {
+        id: "gd-en-park-seung-soo",
+        source: "gdelt-doc",
+        reason: "query-disabled",
+      },
+      {
         id: "gd-en-transfer-epl",
         source: "gdelt-doc",
         reason: "query-disabled",
@@ -138,7 +148,7 @@ describe("현재 configs — 검색 대상 없음(D32)", () => {
       },
     ]);
     expect(countSearchExclusions(plan.excluded)).toEqual({
-      "query-disabled": 9,
+      "query-disabled": 11,
     });
   });
 
@@ -154,7 +164,7 @@ describe("현재 configs — 검색 대상 없음(D32)", () => {
     const plan = planSearchQueries(allOn, sources);
     expect(plan.active).toBe(0);
     expect(countSearchExclusions(plan.excluded)).toEqual({
-      "source-disabled": 9,
+      "source-disabled": 11,
     });
   });
 });

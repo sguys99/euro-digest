@@ -1101,6 +1101,7 @@ describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
     "kim-min-jae",
     "lee-jae-sung",
     "lee-kang-in",
+    "park-seung-soo",
     "seol-young-woo",
   ];
   const writeMeta = (meta: MatchLedgerMeta) => {
@@ -1108,7 +1109,7 @@ describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
     writeFileSync(metaFile(), `${JSON.stringify(meta, null, 2)}\n`, "utf8");
   };
 
-  it("첫 정기 실행: 받은 23경기를 원장에 쓰고 since = 받은 가장 이른 날(2026-10-09), 추적 선수 7명 playerSince = since", async () => {
+  it("첫 정기 실행: 받은 23경기를 원장에 쓰고 since = 받은 가장 이른 날(2026-10-09), 추적 선수 8명 playerSince = since", async () => {
     const { deps, records } = makeDeps(undefined, regular());
     const outcome = await runCollect(deps);
     const file = MatchLedgerFileSchema.parse(

@@ -32,7 +32,9 @@
     }
   ],
   "profile": null,
-  "koreanPlayers": [],
+  "koreanPlayers": [
+    "park-seung-soo"
+  ],
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",

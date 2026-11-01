@@ -1266,16 +1266,16 @@ describe("runCollect — 검색형 소스는 계획만 하고 요청하지 않�
         level: "info",
         event: "collect.search.skip",
         reason: "no-active-queries",
-        queries: 9,
+        queries: 11,
         maxEnabled: 10,
-        byReason: { "query-disabled": 9 },
+        byReason: { "query-disabled": 11 },
       }),
     ]);
     expect(outcome.news.search).toMatchObject({
       active: 0,
       skippedSources: [],
     });
-    expect(outcome.news.search?.excluded).toHaveLength(9);
+    expect(outcome.news.search?.excluded).toHaveLength(11);
     expect(fetcher.calls.some((url) => url.startsWith(GDELT_URL))).toBe(false);
   });
 

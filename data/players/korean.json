@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-01T02:00:45.583Z",
+  "generatedAt": "2026-11-01T04:17:30.987Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -21,6 +21,25 @@
         "home": false
       },
       "updatedAt": "2026-11-01T02:00:45.583Z"
+    },
+    {
+      "slug": "park-seung-soo",
+      "team": "newcastle-united",
+      "provider": "api-football",
+      "since": null,
+      "season": [],
+      "recent": [],
+      "next": {
+        "matchId": "fd-560622",
+        "comp": "EPL",
+        "kickoff": "2026-11-02T20:00:00Z",
+        "opponent": {
+          "slug": "everton",
+          "name": "Everton FC"
+        },
+        "home": true
+      },
+      "updatedAt": "2026-11-01T04:17:30.987Z"
     },
     {
       "slug": "lee-kang-in",
@@ -673,6 +692,16 @@
       "recent": [],
       "next": null,
       "updatedAt": "2026-11-01T02:00:45.583Z"
+    },
+    {
+      "slug": "yang-min-hyeok",
+      "team": "westerlo",
+      "provider": "api-football",
+      "since": null,
+      "season": [],
+      "recent": [],
+      "next": null,
+      "updatedAt": "2026-11-01T04:17:30.987Z"
     }
   ]
 }

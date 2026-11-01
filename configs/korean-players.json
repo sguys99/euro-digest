@@ -11,6 +11,17 @@
     "active": true
   },
   {
+    "slug": "park-seung-soo",
+    "nameKo": "박승수",
+    "nameEn": "Seung-soo Park",
+    "team": "newcastle-united",
+    "comp": "EPL",
+    "position": "FW",
+    "birthYear": 2007,
+    "apiFootballId": 423714,
+    "active": true
+  },
+  {
     "slug": "lee-kang-in",
     "nameKo": "이강인",
     "nameEn": "Kang-in Lee",
@@ -95,6 +106,17 @@
     "comp": "OTHER",
     "position": "MF",
     "birthYear": 1999,
+    "apiFootballId": null,
+    "active": false
+  },
+  {
+    "slug": "yang-min-hyeok",
+    "nameKo": "양민혁",
+    "nameEn": "Min-hyeok Yang",
+    "team": "westerlo",
+    "comp": "OTHER",
+    "position": "FW",
+    "birthYear": 2006,
     "apiFootballId": null,
     "active": false
   }

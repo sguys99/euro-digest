@@ -174,8 +174,9 @@ describe("쓰기 조건 — COLLECT_ENABLED(정기 운영)인 prod·비dry 실�
 // ─── 한국 선수 행 ────────────────────────────────────────────────────────
 
 describe("koreanPlayerTargets·koreanRowsOf — apiFootballId로만 매칭", () => {
-  it("추적 = 활성 + id(7명), id 없는 활성 선수(김지수)는 이름 후보 대상, 비활성(홍현석)은 빠진다", () => {
+  it("추적 = 활성 + id(8명), id 없는 활성 선수(김지수)는 이름 후보 대상, 비활성(홍현석·양민혁)은 빠진다", () => {
     expect(TARGETS.tracked.map((p) => p.slug)).toEqual([
+      "park-seung-soo",
       "lee-kang-in",
       "kim-min-jae",
       "jeong-woo-yeong",

@@ -8,6 +8,13 @@
       "note": "확실 — KFA 2026-09-15 아시안게임 기사 '김지수(브렌트포드FC·잉글랜드)' https://www.kfa.or.kr/live/live.php?act=news_tv_detail&idx=28286&div_code=news · 영문: brentfordfc.com 'Ji-soo Kim', premierleague.com 'Kim Ji-Soo'"
     },
     {
+      "ko": "박승수",
+      "en": ["Seung-soo Park", "Park Seung-soo"],
+      "kind": "player",
+      "slug": "park-seung-soo",
+      "note": "확실 — 사용자 결정 2026-11-01(PRD §15 D65 ⑥ — 뉴캐슬 U21 소속, 국내 매체 '박승수') · 영문: API-Football /players/squads?team=34 'Park Seung-Soo'(id 423714, #16 — 2026-11-01 확인)"
+    },
+    {
       "ko": "이강인",
       "en": ["Kang-in Lee", "Lee Kang-in", "Kangin Lee"],
       "kind": "player",
@@ -62,6 +69,13 @@
       "kind": "player",
       "slug": "hong-hyun-seok",
       "note": "확실 — KFA 2026-03-17 소집 명단 '홍현석(KAA 헨트)'(idx 27813) · 영문: fcm.dk 'Hyun-seok Hong' https://www.fcm.dk/truppen/hyun-seok-hong/"
+    },
+    {
+      "ko": "양민혁",
+      "en": ["Min-hyeok Yang", "Yang Min-hyeok"],
+      "kind": "player",
+      "slug": "yang-min-hyeok",
+      "note": "확실 — 사용자 결정 2026-11-01(PRD §15 D65 ⑥ — KVC 베스테를로 임대(벨기에, 원소속 토트넘) · 기타 리그 FR-64 — 등록 선수라 비활성도 사전에 둔다, 홍현석과 같음) · 영문 'Min-hyeok Yang'(사용자 확정 표기)"
     },
     {
       "ko": "브렌트포드",
