@@ -92,7 +92,14 @@ export function MyNews({
               why={
                 <span className="font-extrabold text-ink">
                   <span className="sr-only">팔로우: </span>
-                  <span {...{ [MN.why]: "" }} suppressHydrationWarning />
+                  {/* 빈 칸에 첫 페인트 전 스크립트가 글자 노드를 넣는다 — 빈 요소의 '남는 자식 노드'는 suppressHydrationWarning으로도 넘어가지 않고
+                      하이드레이션 오류(#418)로 문서 전체를 다시 그려 <html> 속성(테마 · 결과 가리기)이 지워졌다. 내용은 innerHTML로 두면
+                      React가 자식을 대조하지 않는다(M4-15 병합 때 수정) */}
+                  <span
+                    {...{ [MN.why]: "" }}
+                    suppressHydrationWarning
+                    dangerouslySetInnerHTML={{ __html: "" }}
+                  />
                 </span>
               }
             />

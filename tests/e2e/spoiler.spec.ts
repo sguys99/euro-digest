@@ -46,6 +46,13 @@ async function spoilerOn(page: Page): Promise<void> {
   });
 }
 
+/** 하이드레이션 뒤(스위치 aria-checked가 속성을 따라감 = '보기' 위임이 걸림)까지 기다린다 */
+async function hydrated(page: Page): Promise<void> {
+  await expect(
+    page.getByRole("switch", { name: "결과 가리기" }),
+  ).toHaveAttribute("aria-checked", "true");
+}
+
 /**
  * 가림 상태 요약 — 값 · 표식 · 단위. 다른 이유로 숨은 요소(접힌 탭 패널 · 지난 라운드 · 375 펼침 행 · 닫힌 타임라인)와 섞이지 않게
  * 요소 자신의 computed display로 가림 여부를 본다(가림 규칙은 값 · 표식 자신에 display: none을 건다).
@@ -124,6 +131,8 @@ test.describe("결과 가리기 켬 — 화면 × 폭 × 테마", () => {
         page,
       }, testInfo) => {
         test.skip(testInfo.project.name !== "desktop", "폭은 테스트가 정한다");
+        // 긴 페이지(홈 · 대회) 두 테마 × axe — 기본 30초로는 부하가 큰 러너에서 모자란다
+        test.setTimeout(120_000);
         await spoilerOn(page);
         await page.setViewportSize({ width, height: 800 });
         for (const colorScheme of ["light", "dark"] as const) {
@@ -159,6 +168,7 @@ test.describe("펼치기 — 그 단위만 · 드러난 값으로 포커스", ()
     test(`${name} — 첫 '보기'`, async ({ page }) => {
       await spoilerOn(page);
       await page.goto(url);
+      await hydrated(page);
       const button = page
         .locator("[data-spoil-reveal]")
         .filter({ visible: true })
@@ -195,6 +205,7 @@ test.describe("펼치기 — 그 단위만 · 드러난 값으로 포커스", ()
   }) => {
     await spoilerOn(page);
     await page.goto("./");
+    await hydrated(page);
     const veil = page.locator(
       '[data-slot="today-brief"] [data-slot="spoiler-veil"]',
     );
@@ -214,6 +225,7 @@ test.describe("펼치기 — 그 단위만 · 드러난 값으로 포커스", ()
     test.skip(testInfo.project.name !== "desktop", "최근 5경기 열은 1024 이상");
     await spoilerOn(page);
     await page.goto("competitions/laliga/");
+    await hydrated(page);
     const table = page.locator('[data-slot="standings"]').first();
     await expect(table.locator("[data-trend]").first()).toBeHidden();
     await page.getByRole("button", { name: "라리가 순위 변동 보기" }).click();
@@ -316,4 +328,47 @@ test.describe("첫 로드(켬) 레이아웃 이동 ≤ 0.05 — 가림은 첫 �
       expect(cls).toBeLessThanOrEqual(0.05);
     });
   }
+});
+
+test.describe("/my · 홈 '내 팀 소식'(M4-08) — 팔로우가 있어도 가림 유지", () => {
+  test("최근 결과는 결과 가림 칸, '보기'는 그 칸만 — 첫 페인트 전 스크립트가 <html> 속성을 지우지 않는다", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("ed-spoiler", "on");
+      localStorage.setItem("ed-theme", "dark");
+      localStorage.setItem(
+        "ed-follow",
+        JSON.stringify({
+          v: 1,
+          teams: ["atletico-madrid"],
+          players: ["lee-kang-in", "kim-min-jae"],
+        }),
+      );
+    });
+    for (const url of ["./", "my/"]) {
+      await page.goto(url);
+      await page.waitForLoadState("networkidle");
+      // 하이드레이션 오류로 문서를 다시 그리면 초기 스크립트가 단 속성이 지워진다(M4-08 '내 팀 소식' 빈 칸 — 병합 때 수정)
+      expect(
+        await page.evaluate(() => [
+          document.documentElement.getAttribute("data-spoiler"),
+          document.documentElement.getAttribute("data-theme"),
+        ]),
+      ).toEqual(["on", "dark"]);
+    }
+    await hydrated(page);
+    const cells = page.locator('main [data-slot="result-cell"][data-spoil]');
+    await expect(cells.first()).toBeVisible();
+    const a = await audit(page);
+    expect(a.shownValues).toBe(0);
+    expect(a.orphan).toEqual([]);
+    const first = cells.first();
+    await first.locator("[data-spoil-reveal]").click();
+    await expect(first).toHaveAttribute("data-spoil-open", "");
+    await expect(
+      first.locator('[data-slot="result-value"]').first(),
+    ).toBeFocused();
+    expect((await audit(page)).onScreenValues).toBeGreaterThan(0);
+  });
 });
