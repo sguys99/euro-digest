@@ -4,6 +4,7 @@ import { preload } from "react-dom";
 
 import { fontFaceCss, fontPreloadHrefs } from "@/lib/fonts";
 import { withBasePath } from "@/lib/paths";
+import { APPLE_TOUCH_ICON } from "@/lib/pwa";
 import { siteMetadata } from "@/lib/seo";
 import { THEME_COLOR_METAS, THEME_INIT_SCRIPT } from "@/lib/theme";
 
@@ -11,7 +12,18 @@ import "./globals.css";
 
 // 기본 SEO(M1-38, FR-124) — metadataBase(SITE_URL + basePath), 제목 템플릿("뉴스 · 유로 다이제스트" — 홈은 서비스 이름 그대로),
 // 기본 설명, OG·twitter 기본값. canonical·og:url은 페이지마다(`pageMetadata`) — 규칙은 src/lib/seo.ts 머리 주석.
-export const metadata: Metadata = siteMetadata();
+// iOS 홈 화면 아이콘(FR-120 — 임시, D3에서 교체)은 여기서 더한다. manifest(`<link rel="manifest">`)는 src/app/manifest.ts가 넣는다(M4-13).
+export const metadata: Metadata = {
+  ...siteMetadata(),
+  icons: {
+    apple: [
+      {
+        url: withBasePath(APPLE_TOUCH_ICON.path),
+        sizes: `${APPLE_TOUCH_ICON.size}x${APPLE_TOUCH_ICON.size}`,
+      },
+    ],
+  },
+};
 
 // 라이트·다크 둘 다 지원한다고 CSS보다 먼저 알린다(<meta name="color-scheme">).
 // theme-color(브라우저 UI 색 = 지면 --paper, DESIGN §2.1·§8)는 viewport.themeColor로 내보내지 않고 아래 <head>에 직접 렌더한다.

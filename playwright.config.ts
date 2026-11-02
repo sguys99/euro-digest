@@ -22,6 +22,9 @@ export default defineConfig({
     // basePath가 붙은 주소. 테스트에서는 앞에 `/` 없이 상대 경로로 이동한다(예: page.goto("./")).
     baseURL: siteUrl,
     trace: "on-first-retry",
+    // 서비스 워커(M4-13)는 기본으로 막는다 — 첫 방문마다 앱 셸·최근 호(수 MB)를 프리캐시하고 요청을 가로채 다른 검사(네트워크·경로
+    // 가로채기·CLS)를 흔들지 않게. 워커 검사는 tests/e2e/pwa.spec.ts가 `serviceWorkers: "allow"`로 켠다.
+    serviceWorkers: "block",
   },
   // 화면 검증 기준 폭: 모바일 375 · 데스크톱 1280 (CLAUDE.md §4)
   projects: [

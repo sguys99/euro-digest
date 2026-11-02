@@ -50,7 +50,7 @@ export interface ToastOptions {
   kind?: ToastKind;
   /** 액션 하나(예: "새로고침") — 누르면 실행하고 닫는다 */
   action?: { label: string; onClick: () => void };
-  /** 보이는 시간(ms, 기본 2400) */
+  /** 보이는 시간(ms, 기본 2400). `Infinity`면 저절로 사라지지 않는다(액션·닫기 버튼으로만 — 새 버전 토스트, M4-13) */
   duration?: number;
   /** 닫기 버튼(기본 false) */
   dismissible?: boolean;
@@ -115,6 +115,7 @@ export function Toaster({ className }: { className?: string }) {
 
   useEffect(() => {
     if (!item || paused) return;
+    if (item.duration === Infinity) return;
     const timer = setTimeout(
       () => setItem(null),
       item.duration ?? TOAST_DURATION_MS,

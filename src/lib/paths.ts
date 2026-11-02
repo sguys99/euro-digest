@@ -384,6 +384,8 @@ export const routes = {
   privacy: (): string => "/privacy/",
   /** `/status/` 공개 상태 페이지 */
   status: (): string => "/status/",
+  /** `/offline/` 오프라인 화면 (FR-121, M4-13) — 서비스 워커가 저장하지 않은 페이지를 연결 없이 열 때 보낸다. 색인·sitemap 제외 */
+  offline: (): string => "/offline/",
 } as const;
 
 // ─── 빌드 산출물 (basePath 없음) ────────────────────────────────────────────

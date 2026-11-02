@@ -34,6 +34,9 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
     NEXT_PUBLIC_SITE_URL: siteUrl,
+    // 서비스 워커 등록(M4-13, FR-121) — 공개 빌드만 "on". 견본 빌드(out-specimen/)에는 sw.js가 없어 등록하지 않는다.
+    // 개발 서버는 셸 상태 섬이 NODE_ENV로 따로 막는다(src/components/shell/status-island.tsx).
+    NEXT_PUBLIC_SW: SPECIMEN_BUILD ? "off" : "on",
   },
   // `next dev`가 AGENTS.md를 자동 생성·수정하지 않게 한다. 작업 규칙은 CLAUDE.md가 단일 출처.
   agentRules: false,

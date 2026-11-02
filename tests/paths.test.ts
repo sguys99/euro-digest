@@ -750,6 +750,8 @@ describe("기본 인스턴스 — 환경변수 읽는 순서 (NEXT_PUBLIC_* → 
     expect(config.env).toEqual({
       NEXT_PUBLIC_BASE_PATH: "/x",
       NEXT_PUBLIC_SITE_URL: "https://a.dev",
+      // 서비스 워커 등록 플래그(M4-13) — 공개 빌드 "on"(견본 빌드 "off"는 tests/next-config.test.ts)
+      NEXT_PUBLIC_SW: "on",
     });
     expect(config.trailingSlash).toBe(true);
 

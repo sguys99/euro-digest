@@ -9,7 +9,8 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node --env-file-if-exists=.env.local --import tsx scripts/build-feeds.ts",
+    "build": "next build && node --env-file-if-exists=.env.local --import tsx scripts/build-feeds.ts && node --env-file-if-exists=.env.local --import tsx scripts/build-sw.ts",
+    "build:icons": "tsx scripts/build-icons.ts",
     "preview": "tsx scripts/serve-out.ts",
     "verify:deploy": "tsx scripts/verify-deploy.ts",
     "collect": "node --env-file-if-exists=.env.local --import tsx scripts/collect.ts",

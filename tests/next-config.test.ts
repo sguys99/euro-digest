@@ -53,6 +53,11 @@ describe("next.config.ts — 견본 빌드 플래그", () => {
     expect(config.trailingSlash).toBe(true);
   });
 
+  it("서비스 워커 등록 플래그(M4-13) — 일반 빌드 on, 견본 빌드 off(out-specimen/에는 sw.js가 없다)", async () => {
+    expect((await loadConfig(undefined)).env?.NEXT_PUBLIC_SW).toBe("on");
+    expect((await loadConfig("1")).env?.NEXT_PUBLIC_SW).toBe("off");
+  });
+
   it("견본 라우트 파일은 *.specimen.tsx뿐이다 — 일반 확장자(page.tsx)로 두면 공개 빌드에 들어간다", () => {
     const dir = path.resolve("src/app/specimen");
     expect(existsSync(dir)).toBe(true);
