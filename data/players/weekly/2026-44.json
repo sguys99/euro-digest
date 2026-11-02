@@ -1,0 +1,322 @@
+{
+  "week": "2026-44",
+  "from": "2026-10-26T00:00:00.000Z",
+  "to": "2026-11-01T23:59:59.999Z",
+  "rows": [
+    {
+      "player": "hwang-hee-chan",
+      "apps": 2,
+      "minutes": 160,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "af-1638572",
+          "kickoff": "2026-10-28T17:00:00.000Z",
+          "comp": "OTHER",
+          "leagueRaw": "DFB Pokal",
+          "opponent": {
+            "slug": null,
+            "name": "Dynamo Dresden"
+          },
+          "home": false,
+          "result": {
+            "for": 0,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 77,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-565840",
+          "kickoff": "2026-10-31T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "rb-leipzig",
+            "name": "RB Leipzig"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 83,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "jeong-woo-yeong",
+      "apps": 2,
+      "minutes": 91,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "af-1638563",
+          "kickoff": "2026-10-27T19:45:00.000Z",
+          "comp": "OTHER",
+          "leagueRaw": "DFB Pokal",
+          "opponent": {
+            "slug": "koln",
+            "name": "1. FC Köln"
+          },
+          "home": false,
+          "result": {
+            "for": 0,
+            "against": 5
+          },
+          "status": "start",
+          "minutes": 75,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-565841",
+          "kickoff": "2026-11-01T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "koln",
+            "name": "1. FC Köln"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "sub",
+          "minutes": 16,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "kim-min-jae",
+      "apps": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "af-1638558",
+          "kickoff": "2026-10-28T19:45:00.000Z",
+          "comp": "OTHER",
+          "leagueRaw": "DFB Pokal",
+          "opponent": {
+            "slug": null,
+            "name": "1. FC Magdeburg"
+          },
+          "home": true,
+          "result": {
+            "for": 6,
+            "against": 1
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-565845",
+          "kickoff": "2026-10-31T17:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "borussia-dortmund",
+            "name": "Borussia Dortmund"
+          },
+          "home": true,
+          "result": {
+            "for": 2,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 90,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "lee-kang-in",
+      "apps": 1,
+      "minutes": 67,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-564730",
+          "kickoff": "2026-10-31T13:00:00.000Z",
+          "comp": "LALIGA",
+          "opponent": {
+            "slug": "levante",
+            "name": "Levante"
+          },
+          "home": false,
+          "result": {
+            "for": 2,
+            "against": 0
+          },
+          "status": "start",
+          "minutes": 67,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "seol-young-woo",
+      "apps": 1,
+      "minutes": 65,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "af-1638565",
+          "kickoff": "2026-10-27T17:00:00.000Z",
+          "comp": "OTHER",
+          "leagueRaw": "DFB Pokal",
+          "opponent": {
+            "slug": null,
+            "name": "SG Sonnenhof Grossaspach"
+          },
+          "home": false,
+          "result": {
+            "for": 4,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 65,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-565842",
+          "kickoff": "2026-10-31T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "freiburg",
+            "name": "SC Freiburg"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 2
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "lee-jae-sung",
+      "apps": 1,
+      "minutes": 63,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "af-1638560",
+          "kickoff": "2026-10-27T17:00:00.000Z",
+          "comp": "OTHER",
+          "leagueRaw": "DFB Pokal",
+          "opponent": {
+            "slug": null,
+            "name": "VfL Bochum"
+          },
+          "home": false,
+          "result": {
+            "for": 0,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 63,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-565846",
+          "kickoff": "2026-10-30T19:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "elversberg",
+            "name": "SV Elversberg"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 4
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "jens-castrop",
+      "apps": 1,
+      "minutes": 13,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "af-1638559",
+          "kickoff": "2026-10-27T19:45:00.000Z",
+          "comp": "OTHER",
+          "leagueRaw": "DFB Pokal",
+          "opponent": {
+            "slug": null,
+            "name": "Karlsruher SC"
+          },
+          "home": true,
+          "result": {
+            "for": 2,
+            "against": 0
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-565839",
+          "kickoff": "2026-10-31T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "paderborn",
+            "name": "SC Paderborn 07"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 0
+          },
+          "status": "sub",
+          "minutes": 13,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "park-seung-soo",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": []
+    }
+  ],
+  "mvp": "hwang-hee-chan",
+  "summary": "이번 주 MVP는 황희찬이며, 2경기에 선발 출전해 총 160분을 뛰었으나 골과 도움은 없었다. 샬케04는 DFB Pokal 원정에서 디나모 드레스덴에 0-2로, 분데스리가 홈 경기에서 라이프치히에 0-2로 졌다. 정우영은 우니온 베를린에서 2경기 91분을 뛰었고, 김민재는 분데스리가 도르트문트전에 90분 선발 출전해 2-2 무승부에 함께했다. 이강인은 레반테 원정에서 67분 선발 출전해 2-0 승리에 함께했고, 설영우는 DFB Pokal 원정 4-2 승리에서 65분 선발 출전했다. 이재성과 옌스 카스트로프는 각각 1경기에 출전했고, 박승수는 이번 주 출전 기록이 없다.",
+  "summaryAi": true,
+  "generatedAt": "2026-11-02T01:47:08.893Z"
+}
