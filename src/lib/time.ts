@@ -683,6 +683,34 @@ export function formatIcsUtc(iso: string): string {
   );
 }
 
+const RFC822_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
+const RFC822_MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const;
+
+/**
+ * UTC ISO → RSS 2.0 날짜(RFC 822, 연도 4자리 — RFC 1123) `Sun, 01 Nov 2026 20:32:44 +0000` — F12 RSS의 pubDate·lastBuildDate용(FR-122).
+ * 요일·월 이름은 로캘과 무관한 영문 약어, 시간대는 숫자 오프셋 `+0000`(UTC 저장 그대로 — KST로 바꾸지 않는다). 밀리초는 버린다.
+ */
+export function formatRfc822Utc(iso: string): string {
+  const d = new Date(parseUtcIsoMs(iso));
+  return (
+    `${RFC822_DAYS[d.getUTCDay()]}, ${pad2(d.getUTCDate())} ${RFC822_MONTHS[d.getUTCMonth()]} ${pad4(d.getUTCFullYear())} ` +
+    `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())} +0000`
+  );
+}
+
 // ─── 공개 API: 현지 → UTC ───────────────────────────────────────────────────
 
 /**

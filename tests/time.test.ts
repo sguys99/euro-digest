@@ -21,6 +21,7 @@ import {
   europeanSummerTimeTransitions,
   formatDateDayShort,
   formatIcsUtc,
+  formatRfc822Utc,
   formatKst,
   formatUtcDayShort,
   isEuropeanSummerTime,
@@ -435,6 +436,27 @@ describe("formatIcsUtc — .ics UTC 형식 (F12)", () => {
   it("YYYYMMDDTHHMMSSZ, 밀리초는 버림", () => {
     expect(formatIcsUtc("2026-10-24T19:00:00.000Z")).toBe("20261024T190000Z");
     expect(formatIcsUtc("2027-03-28T01:30:05.999Z")).toBe("20270328T013005Z");
+  });
+});
+
+describe("formatRfc822Utc — RSS 2.0 날짜 (F12, FR-122)", () => {
+  it("영문 요일·월 약어, 연도 4자리, +0000, 밀리초 버림 — 서머타임 경계와 무관(UTC 그대로)", () => {
+    expect(formatRfc822Utc("2026-11-01T20:32:44.999Z")).toBe(
+      "Sun, 01 Nov 2026 20:32:44 +0000",
+    );
+    expect(formatRfc822Utc("2026-10-25T00:30:05Z")).toBe(
+      "Sun, 25 Oct 2026 00:30:05 +0000",
+    );
+    expect(formatRfc822Utc("2027-03-28T01:30:00Z")).toBe(
+      "Sun, 28 Mar 2027 01:30:00 +0000",
+    );
+    expect(formatRfc822Utc("2028-02-29T09:05:00Z")).toBe(
+      "Tue, 29 Feb 2028 09:05:00 +0000",
+    );
+  });
+
+  it("UTC ISO가 아니면 던진다", () => {
+    expect(() => formatRfc822Utc("2026-11-01 20:32")).toThrow();
   });
 });
 
