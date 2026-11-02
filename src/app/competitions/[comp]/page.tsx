@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { CompetitionScreen } from "@/components/competition/competition-screen";
+import { SearchRecord } from "@/components/search/search-record";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { loadCompetitionPage } from "@/lib/data/competition-page";
 import { loadLatestIssue } from "@/lib/data/issue";
+import { competitionPageSearchRecord } from "@/lib/data/search";
 import { compFromSegment, compSegment, routes } from "@/lib/paths";
 import { seasonLabel } from "@/lib/rest-period";
 import { competitionDescription, pageMetadata } from "@/lib/seo";
@@ -48,16 +50,19 @@ export default async function CompetitionPage({
 
   const { issue, news } = loadLatestIssue();
   return (
-    <CompetitionScreen
-      comp={comp}
-      config={page.config}
-      data={page.data}
-      all={page.all}
-      team={page.team}
-      playerName={page.playerName}
-      issue={issue}
-      news={news}
-      nowMs={parseUtcIso(nowUtcIso()).getTime()}
-    />
+    <>
+      <CompetitionScreen
+        comp={comp}
+        config={page.config}
+        data={page.data}
+        all={page.all}
+        team={page.team}
+        playerName={page.playerName}
+        issue={issue}
+        news={news}
+        nowMs={parseUtcIso(nowUtcIso()).getTime()}
+      />
+      <SearchRecord record={competitionPageSearchRecord(page.config)} />
+    </>
   );
 }

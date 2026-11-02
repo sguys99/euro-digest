@@ -33,6 +33,7 @@ export function AiLabel({ className, ...props }: AiLabelProps) {
     <Link
       href={aboutHref("ai")}
       data-slot="ai-label"
+      data-pagefind-ignore=""
       className={cx(
         LABEL_BOX,
         "relative no-underline transition-colors duration-fast ease-print hover:border-ink hover:text-ink",

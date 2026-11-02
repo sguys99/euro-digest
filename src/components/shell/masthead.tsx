@@ -23,8 +23,8 @@ import { NAV_ITEMS, type NavKey } from "./site-nav";
  *   걸쳐 보이지 않아 반원으로 보인다. 장식이라 `aria-hidden`.
  * - 티켓 안 포커스 링은 --ticket-fg(색 면 안 재정의, DESIGN §9.1).
  *
- * 도구 영역: M1은 테마 토글만 — 검색(M4-E, Pagefind)과 결과 가리기 스위치(M4-15)는 그 작업에서 `search`·`spoilerSwitch`로 끼운다
- * (미완성 섹션 숨김 — DESIGN §9.3 "자리 대신 섹션을 숨긴다"). 둘을 빼도 격자는 그대로다(도구 열 = 토글 폭).
+ * 도구 영역: 검색 버튼(M4-14 — 앱 셸이 `search`로 넘긴다, 1023 이하 아이콘 44 · 1024 이상 상자형 "검색 /") + 테마 토글. 결과 가리기
+ * 스위치(M4-15)는 그 작업에서 `spoilerSwitch`로 끼운다(미완성 섹션 숨김 — DESIGN §9.3 "자리 대신 섹션을 숨긴다").
  *
  * 꼬리표(M1-34, DESIGN §9.3 티켓 꼬리표 — 시안 A `docs/design/m1-archive/concept-a.html`): `counterfoil`을 주면(`/news/`·날짜 아카이브만,
  * 홈에는 없음) 두 번째 가로 절취선(모든 폭, 양 끝 노치)과 꼬리표 줄이 티켓 마지막 두 줄로 붙는다 — 375 행 4·5, 1024 이상 행 3·4

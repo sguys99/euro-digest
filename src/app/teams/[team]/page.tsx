@@ -14,8 +14,10 @@ import {
 import { TeamSheet, type SheetPlayerView } from "@/components/team/team-sheet";
 import { TeamTicket } from "@/components/team/team-ticket";
 import { DataSourceNote } from "@/components/data-source";
+import { SearchRecord } from "@/components/search/search-record";
 import { dataSourceOf } from "@/lib/data-source";
 import { loadLatestIssue } from "@/lib/data/issue";
+import { teamPageSearchRecord } from "@/lib/data/search";
 import { loadTeamPage, type TeamPageData } from "@/lib/data/team-page";
 import { listTeamSlugs } from "@/lib/data/teams";
 import { absoluteUrl, routes } from "@/lib/paths";
@@ -136,6 +138,7 @@ export default async function TeamPage({ params }: PageProps<"/teams/[team]">) {
           korean={page.korean}
         />
         <JsonLd page={page} slug={slug} />
+        <SearchRecord record={teamPageSearchRecord(page)} />
         {team.formation ? (
           <TeamSheet
             headingId="team-sheet-h"

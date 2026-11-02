@@ -238,7 +238,7 @@ describe("티켓 마스트헤드 — 호수·스텁(DESIGN §9.3)", () => {
     ).toHaveTextContent("마지막 업데이트 15:04 KST");
   });
 
-  it("영문 워드마크·태그라인, 도구는 테마 토글만(검색·결과 가리기는 M4)", () => {
+  it("영문 워드마크·태그라인, 도구는 검색 버튼 + 테마 토글(결과 가리기는 M4-15)", () => {
     const { container } = render(
       <AppShell current="home" issue={ISSUE}>
         본문
@@ -249,10 +249,13 @@ describe("티켓 마스트헤드 — 호수·스텁(DESIGN §9.3)", () => {
     expect(t).toHaveTextContent("매일 아침, 밤사이 유럽 축구를 한눈에.");
     const buttons = within(t).getAllByRole("button");
     expect(buttons.map((b) => b.getAttribute("aria-label"))).toEqual([
+      "검색 (단축키 /)",
       "테마: 시스템 설정 (눌러서 바꾸기)",
     ]);
+    // 검색 버튼(M4-14) — 대화상자를 연다, 1024 이상 "검색" 글자 + `/` 키
+    expect(buttons[0]).toHaveAttribute("aria-haspopup", "dialog");
+    expect(buttons[0]).toHaveTextContent("검색/");
     expect(within(t).queryByRole("switch")).toBeNull();
-    expect(screen.queryByRole("button", { name: /검색/ })).toBeNull();
     // 천공 줄은 장식
     expect(t.querySelector("span[aria-hidden='true']")).not.toBeNull();
     // 색 면 안 포커스 링 = 티켓 글자색(DESIGN §9.1)

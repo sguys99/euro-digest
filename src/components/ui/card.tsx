@@ -91,6 +91,7 @@ export function CardNumber({
   return (
     <span
       aria-hidden="true"
+      data-pagefind-ignore=""
       className={cn(
         "pt-0.75 font-numeric text-num-card-no leading-none font-semibold tracking-[0.06em] text-ink-2 tabular-nums",
         "transition-colors duration-fast ease-print group-hover/card:text-brand-accent",

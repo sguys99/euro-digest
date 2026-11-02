@@ -13,6 +13,7 @@ import {
   TransferNews,
 } from "@/components/korean-players/player-detail";
 import { PlayerTicket } from "@/components/korean-players/player-ticket";
+import { SearchRecord } from "@/components/search/search-record";
 import { AppShell } from "@/components/shell/app-shell";
 import { ChevronLeftIcon } from "@/components/ui/icons";
 import { RunningHead } from "@/components/ui/section-head";
@@ -23,6 +24,7 @@ import {
   type PlayerPageData,
 } from "@/lib/data/player-page";
 import { cx } from "@/lib/cx";
+import { playerPageSearchRecord } from "@/lib/data/search";
 import { absoluteUrl, routes } from "@/lib/paths";
 import { koreanPlayerDescription, pageMetadata } from "@/lib/seo";
 
@@ -104,6 +106,7 @@ export default async function KoreanPlayerPage({
         data-state={view.state}
         className={cx(hasSide && GRID)}
       >
+        <SearchRecord record={playerPageSearchRecord(view)} />
         {/* 머리 묶음 — 쪽 머리 · 선수 티켓 · 시즌 기록 · 최근 5경기(1279 이하 순서 그대로 이어지는 형제를 감쌌다) */}
         <div className={cx(hasSide && MAIN, hasSide && "xl:row-start-1")}>
           <p className="flex items-center justify-between gap-2 pt-1">

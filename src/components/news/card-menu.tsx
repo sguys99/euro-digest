@@ -89,6 +89,7 @@ export function CardMenuPanel({ id, shareUrl, reportUrl }: CardMenuPanelProps) {
       id={id}
       role="menu"
       aria-label="카드 메뉴"
+      data-pagefind-ignore=""
       hidden
       className="absolute top-9 -right-2.5 z-5 flex min-w-40 scroll-mb-19 flex-col border border-ink bg-popover text-popover-foreground shadow-print lg:scroll-mb-4"
     >

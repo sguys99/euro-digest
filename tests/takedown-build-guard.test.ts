@@ -1,7 +1,7 @@
 /**
  * 삭제 요청 빌드 제외 가드 (M1-25, FR-143) — 카드를 내보내는 빌드 경로가 takedown 제외를 빼먹지 않게.
  *
- *   ① 빌드 경로 코드(src/ 전부 + scripts/build-feeds.ts — RSS·ics·검색·OG, M4-11·M4-12·M4-14·M5-01)는 data/news를 직접 읽지 않는다:
+ *   ① 빌드 경로 코드(src/ 전부 + scripts/build-search.ts·build-feeds.ts — 검색·RSS·ics·OG, M4-14·M4-11·M4-12·M5-01)는 data/news를 직접 읽지 않는다:
  *      `data/news` 경로 문자열·`NewsFileSchema`(뉴스 파일 직접 검증)·scripts의 뉴스 파일 읽기(news-file.ts·seen-urls.ts)를
  *      쓰면 실패. 허용: src/lib/data/news.ts(로더 — 유일한 읽기), src/lib/schema/(스키마·레지스트리 패턴).
  *   ② src/lib/data/news.ts의 공개 로더(`load…`)는 모두 삭제 요청 카드를 뺀다 — 아래 표에 없는 새 로더가 생기면 실패(표에 넣고
@@ -34,7 +34,11 @@ function buildPathFiles(): string[] {
       if (e.isDirectory()) return walk(rel);
       return /\.(ts|tsx)$/.test(e.name) ? [rel] : [];
     });
-  return [...walk("src"), "scripts/build-feeds.ts"].sort();
+  return [
+    ...walk("src"),
+    "scripts/build-search.ts",
+    "scripts/build-feeds.ts",
+  ].sort();
 }
 
 /**

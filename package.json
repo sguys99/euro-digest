@@ -9,8 +9,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node --env-file-if-exists=.env.local --import tsx scripts/build-feeds.ts && node --env-file-if-exists=.env.local --import tsx scripts/build-sw.ts",
+    "build": "next build && node --env-file-if-exists=.env.local --import tsx scripts/build-search.ts && node --env-file-if-exists=.env.local --import tsx scripts/build-feeds.ts && node --env-file-if-exists=.env.local --import tsx scripts/build-sw.ts",
     "build:icons": "tsx scripts/build-icons.ts",
+    "build:search": "node --env-file-if-exists=.env.local --import tsx scripts/build-search.ts",
     "preview": "tsx scripts/serve-out.ts",
     "verify:deploy": "tsx scripts/verify-deploy.ts",
     "collect": "node --env-file-if-exists=.env.local --import tsx scripts/collect.ts",
@@ -64,6 +65,7 @@
     "eslint-config-next": "^16.4.2",
     "eslint-config-prettier": "^10.1.8",
     "happy-dom": "^20.14.6",
+    "pagefind": "1.5.2",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4.3.3",

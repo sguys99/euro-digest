@@ -35,6 +35,7 @@ export function IssueLateNotice({
       <div
         role="status"
         data-slot="issue-late"
+        data-pagefind-ignore=""
         data-issue-date={issue.date}
         data-nosnippet=""
       >

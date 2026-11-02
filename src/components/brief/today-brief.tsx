@@ -210,6 +210,7 @@ function BriefRow({ row }: { row: BriefRowView }) {
       <span
         aria-hidden="true"
         data-slot="brief-no"
+        data-pagefind-ignore=""
         className="pt-0.5 font-numeric text-num-brief-no leading-[0.86] font-extrabold tracking-[-0.02em] text-brand-accent lining-nums tabular-nums"
       >
         {row.no}

@@ -134,6 +134,7 @@ export function RunningHead({
     <span
       lang="en"
       aria-hidden="true"
+      data-pagefind-ignore=""
       className={cn(
         "flex-none font-numeric text-type-rh font-semibold tracking-[0.14em] text-brand-accent-text tabular-nums",
         className,

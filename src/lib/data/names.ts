@@ -20,7 +20,11 @@ import path from "node:path";
 import { z } from "zod";
 
 import { tagLabelsFrom, type TagLabels } from "@/lib/news/tag-labels";
-import { NamesKoFileSchema, type NamesKoFile } from "@/lib/schema/names";
+import {
+  NamesKoFileSchema,
+  type NameEntry,
+  type NamesKoFile,
+} from "@/lib/schema/names";
 
 /** 표기 사전 위치(저장소 루트 기준). `next build`·Vitest 모두 루트에서 실행한다 */
 export const NAMES_KO_PATH = path.resolve("configs/names.ko.json");
@@ -62,4 +66,30 @@ function readNamesKo(file: string): NamesKoFile {
     );
   }
   return parsed.data;
+}
+
+const entryCache = new Map<string, ReadonlyMap<string, NameEntry>>();
+
+/** 사전 항목 열쇠 — 유형 + slug(`team:bayern-munchen`) */
+export function nameEntryKey(kind: NameEntry["kind"], slug: string): string {
+  return `${kind}:${slug}`;
+}
+
+/**
+ * slug가 있는 사전 항목 표(`nameEntryKey` → 항목) — 검색 별칭(FR-131: 한글·영문 변형 전부, M4-14)이 쓴다. 규칙은 머리 주석과 같다
+ * (없으면 빈 표, 깨졌으면 던짐, 경로별 캐시).
+ */
+export function loadNameEntries(
+  file: string = NAMES_KO_PATH,
+): ReadonlyMap<string, NameEntry> {
+  const cached = entryCache.get(file);
+  if (cached) return cached;
+  const map = new Map<string, NameEntry>();
+  if (existsSync(file)) {
+    for (const entry of readNamesKo(file).entries) {
+      if (entry.slug) map.set(nameEntryKey(entry.kind, entry.slug), entry);
+    }
+  }
+  entryCache.set(file, map);
+  return map;
 }

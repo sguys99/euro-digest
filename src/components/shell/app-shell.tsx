@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
 
+import { KoreanIndex } from "@/components/search/korean-index";
+import { SearchButton } from "@/components/search/search-button";
 import { BottomTab, BottomTabs } from "@/components/ui/nav-tabs";
 import { Toaster } from "@/components/ui/toast";
+import { loadSearchIndexPlayers } from "@/lib/data/search";
 import type { IssueMeta } from "@/lib/issue";
 import type { LateWindow } from "@/lib/issue-late";
 import { cn } from "@/lib/utils";
@@ -121,6 +124,12 @@ export function AppShell({
           currentKind={currentKind}
           wordmarkAs={current === "home" ? "h1" : "p"}
           lastUpdated={siteUpdatedAt}
+          search={
+            // 검색(M4-14) — 버튼·단축키 섬. 입력 전 색인(한국 선수 가나다)은 서버가 그려 넘긴다
+            <SearchButton
+              index={<KoreanIndex players={loadSearchIndexPlayers()} />}
+            />
+          }
           counterfoil={counterfoil?.strip}
           counterfoilPanel={counterfoil?.panel}
         />

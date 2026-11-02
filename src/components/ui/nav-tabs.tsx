@@ -31,6 +31,7 @@ export function BottomTabs({
   return (
     <nav
       aria-label={ariaLabel}
+      data-pagefind-ignore=""
       className={cn(
         "grid auto-cols-fr grid-flow-col border-t border-ink bg-paper transition-colors duration-base ease-print",
         className,
@@ -86,6 +87,7 @@ export function TopNav({
   return (
     <nav
       aria-label={ariaLabel}
+      data-pagefind-ignore=""
       className={cn(
         "flex items-center gap-7 border-b border-rule px-1",
         className,

@@ -50,7 +50,10 @@ export function Colophon({
 }) {
   const updated = lastUpdated ?? issue?.updatedAt;
   return (
-    <footer className="relative -mx-edge mt-14 bg-colophon text-colophon-fg transition-colors duration-base [--ring:var(--colophon-fg)] before:block before:h-1 before:translate-y-1.5 before:perf-x before:content-[''] lg:mx-0 lg:mt-18">
+    <footer
+      data-pagefind-ignore=""
+      className="relative -mx-edge mt-14 bg-colophon text-colophon-fg transition-colors duration-base [--ring:var(--colophon-fg)] before:block before:h-1 before:translate-y-1.5 before:perf-x before:content-[''] lg:mx-0 lg:mt-18"
+    >
       <div className="grid gap-2.5 px-edge pt-6.5 pb-7 text-[13px] leading-[1.6] lg:grid-cols-[1.1fr_1fr] lg:gap-x-12 lg:px-9 lg:pt-8 lg:pb-8.5">
         <p className="text-[17px] font-extrabold tracking-[-0.03em] lg:col-span-full">
           {SITE_NAME}{" "}

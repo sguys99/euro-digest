@@ -22,6 +22,7 @@ export function OfflineBand({ visible = false }: { visible?: boolean }) {
     <div
       role="status"
       data-slot="offline-band"
+      data-pagefind-ignore=""
       // 검색 발췌에 숨은 안내가 잡히지 않게(평소 숨김 — 렌더하는 크롤러의 시계·연결과 무관하게)
       data-nosnippet=""
       className={cn(
