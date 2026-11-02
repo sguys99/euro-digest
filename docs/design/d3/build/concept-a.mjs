@@ -43,7 +43,7 @@ const pal16D = { '.': T.ticketD, '#': T.ticketFgD };
 const SAFE = `<svg viewBox="0 0 512 512" class="safe" aria-hidden="true"><circle cx="256" cy="256" r="204.8" fill="none" stroke="${T.accentD}" stroke-width="3" stroke-dasharray="10 8"/><path d="M256 0V512M0 256H512" stroke="${T.accentD}" stroke-width="1.5" stroke-dasharray="4 6"/></svg>`;
 const faviconSrc = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><style>.f{fill:${T.ticketL}}@media (prefers-color-scheme:dark){.f{fill:${T.ticketD}}}</style><rect class="f" width="32" height="32"/><path fill="${T.ticketFgL}" d="…ED 글리프 외곽선(M5-02에서 생성)…"/></svg>`;
 
-function sIcons() {
+export function sIcons() {
   const ladder = [16, 32, 48].map((s) => `<figure><div>${iconA('small', { label: `작은 아이콘 ${s}px` }).replace('<svg ', `<svg width="${s}" height="${s}" `)}</div><figcaption>${s}</figcaption></figure>`).join('')
     + `<figure><div>${iconA('apple', { label: 'apple-touch-icon 180px' }).replace('<svg ', '<svg width="180" height="180" ')}</div><figcaption>180 apple</figcaption></figure>`
     + `<figure><div class="chk">${iconA('any', { label: 'any 192px' }).replace('<svg ', '<svg width="192" height="192" ')}</div><figcaption>192 any</figcaption></figure>`
@@ -90,7 +90,7 @@ const ogComp = (c, id) => ogShell(id, `<p class="oga__short">${esc(c.shortKo)}</
 const compTab = (id) => `<span class="oga__tab tab--${{ EPL: 'epl', LALIGA: 'laliga', SERIEA: 'seriea', BUNDESLIGA: 'bundesliga', LIGUE1: 'ligue1', UCL: 'ucl' }[id]}">${esc(COMP[id].shortKo)}</span>`;
 const ogTeam = (t, id) => ogShell(id, `<div class="oga__kit" style="--k1:${t.k1};--k2:${t.k2};--kf:${t.kf}"><b>${esc(t.short)}</b><i></i></div>`, `<p class="oga__tabs">${[t.comp, ...t.alsoIn].map(compTab).join('')}</p><p class="oga__name">${esc(t.nameKo)}</p><p class="oga__en2" lang="en">${esc(t.nameEn)}</p>${sign}`, { stubCls: 'oga__stub--k', alt: `유로 다이제스트 · ${t.nameKo} (${t.short}) · ${[t.comp, ...t.alsoIn].map((c) => COMP[c].nameKo).join(' · ')}` });
 
-function sOg() {
+export function sOg() {
   const today = D.today, i100 = D.issue100;
   const lab = (p, note = '') => `<p class="ogf__l"><span class="path">${p}</span>${note ? `<span>${note}</span>` : ''}</p>`;
   const big = ['EPL', 'BUNDESLIGA', 'UCL'], small = ['LALIGA', 'SERIEA', 'LIGUE1'];
@@ -228,7 +228,7 @@ ${tabbar()}</div>`;
 }
 
 /* ───────── CSS ───────── */
-const css = `
+export const css = `
 code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
 .code{margin-top:12px;padding:10px 12px;background:var(--paper-2);font:600 12px/1.45 var(--font-numeric);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
 .safe-wrap,.ios{position:relative}

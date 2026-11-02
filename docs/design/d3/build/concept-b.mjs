@@ -137,6 +137,18 @@ function cal({ y, m, cells = () => ({}), caption, from = 1, to = null }) {
 const CK = `<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="m3 8.5 3.2 3.2L13 5"/></svg>`;
 const XK = `<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="m4 4 8 8M12 4l-8 8"/></svg>`;
 
+// /offline/ — 최근 두 주 달력(저장한 호만 실선). 혼합안(concept-mix)도 이 함수를 그대로 쓴다
+export function offlineB({ h = 'h3', h2 = 'h4' } = {}) {
+  const saved = new Set(['2026-10-31', '2026-11-01', '2026-11-02']);
+  const pub = new Set(ST.days.filter((d) => d.state === 'ontime' || d.state === 'late').map((d) => d.date));
+  const offWeek = (y, m, from, to) => cal({ y, m, from, to, caption: '최근 두 주 — 저장한 호만 열 수 있음', cells: (d) => { const no = (Date.parse(d) - Date.parse('2026-10-12')) / 864e5 + 1; if (saved.has(d)) return { cls: 'cb__d--saved', label: `<span class="n">${no}</span>호`, sr: `${shortDate(d)} 제 ${no}호, 저장됨` }; if (pub.has(d)) return { cls: 'cb__d--gone', label: `<span class="n">${no}</span>호`, sr: `${shortDate(d)} 제 ${no}호, 저장 안 됨` }; if (d > '2026-11-02') return { cls: 'cb__d--fut' }; return { cls: 'cb__d--gap', label: '결호', sr: `${shortDate(d)}, 결호` }; } });
+  return `<div class="sec-h"><${h} class="h">${esc(D.copy.offline.h1)}</${h}><span class="rh" aria-hidden="true" lang="en">OFFLINE</span></div>
+  <div class="offlB"><div><p class="lead">${esc(D.copy.offline.lead)}</p><p class="body2">${esc(D.copy.offline.body)}</p><button class="btn btn--sm" type="button">${IC.retry}다시 시도</button></div>
+  <div class="offlB__cal"><p class="calt"><span class="n">10</span>월 <span class="n">25</span>일 – <span class="n">11</span>월 <span class="n">7</span>일 <span class="offlB__lg"><i class="sw sw--saved"></i>저장됨 <i class="sw sw--gone"></i>저장 안 됨</span></p>${offWeek(2026, 10, 25, 31).replace('</tbody></table>', '') + offWeek(2026, 11, 1, 7).replace(/^[\s\S]*?<tbody>/, '')}</div></div>
+  <div class="sec-h sec-h--thin" style="margin-top:28px"><${h2} class="h">${esc(D.copy.offline.saved)}</${h2}><span class="rh" aria-hidden="true" lang="en">SAVED</span></div>
+  <ul class="offline-list" role="list">${[...saved].reverse().map((d) => `<li><a href="#top"><span class="d">${md(d)}</span><span class="w">(${dow(d)})</span><span class="no">제 <span class="n">${(Date.parse(d) - Date.parse('2026-10-12')) / 864e5 + 1}</span>호</span></a></li>`).join('')}</ul>`;
+}
+
 function sEmpty() {
   const e = D.emptyStates, ucl = COMP[e.ended.comp], lal = COMP[e.upcomingSample.comp];
   const head = (id, c, extra = '') => `<p class="calh">${ftab(id)}<span>${esc(c.nameKo)} <span class="n">${c.season}</span> 시즌</span>${extra}</p>`;
@@ -153,15 +165,8 @@ function sEmpty() {
     <div class="idxB"><p class="idxB__k" aria-hidden="true" lang="en">M</p><div><p class="idxB__h">“<span lang="en">${esc(e.searchQuery)}</span>” ${esc(D.copy.search.none)}</p>
     <ul class="idxB__l" role="list">${['선수', '팀', '대회', '뉴스'].map((k) => `<li><span>${k}</span><i aria-hidden="true"></i><span class="n">0</span></li>`).join('')}</ul>
     <p class="body2">${esc(D.copy.search.hint)}</p></div></div>`;
-  const saved = new Set(['2026-10-31', '2026-11-01', '2026-11-02']);
-  const pub = new Set(ST.days.filter((d) => d.state === 'ontime' || d.state === 'late').map((d) => d.date));
-  const offWeek = (y, m, from, to) => cal({ y, m, from, to, caption: '최근 두 주 — 저장한 호만 열 수 있음', cells: (d) => { const no = (Date.parse(d) - Date.parse('2026-10-12')) / 864e5 + 1; if (saved.has(d)) return { cls: 'cb__d--saved', label: `<span class="n">${no}</span>호`, sr: `${shortDate(d)} 제 ${no}호, 저장됨` }; if (pub.has(d)) return { cls: 'cb__d--gone', label: `<span class="n">${no}</span>호`, sr: `${shortDate(d)} 제 ${no}호, 저장 안 됨` }; if (d > '2026-11-02') return { cls: 'cb__d--fut' }; return { cls: 'cb__d--gap', label: '결호', sr: `${shortDate(d)}, 결호` }; } });
-  const offline = `<div class="sec-h"><h3 class="h">${esc(D.copy.offline.h1)}</h3><span class="rh" aria-hidden="true" lang="en">OFFLINE</span></div>
-  <div class="offlB"><div><p class="lead">${esc(D.copy.offline.lead)}</p><p class="body2">${esc(D.copy.offline.body)}</p><button class="btn btn--sm" type="button">${IC.retry}다시 시도</button></div>
-  <div class="offlB__cal"><p class="calt"><span class="n">10</span>월 <span class="n">25</span>일 – <span class="n">11</span>월 <span class="n">7</span>일 <span class="offlB__lg"><i class="sw sw--saved"></i>저장됨 <i class="sw sw--gone"></i>저장 안 됨</span></p>${offWeek(2026, 10, 25, 31).replace('</tbody></table>', '') + offWeek(2026, 11, 1, 7).replace(/^[\s\S]*?<tbody>/, '')}</div></div>
-  <div class="sec-h sec-h--thin" style="margin-top:28px"><h4 class="h">${esc(D.copy.offline.saved)}</h4><span class="rh" aria-hidden="true" lang="en">SAVED</span></div>
-  <ul class="offline-list" role="list">${[...saved].reverse().map((d) => `<li><a href="#top"><span class="d">${md(d)}</span><span class="w">(${dow(d)})</span><span class="no">제 <span class="n">${(Date.parse(d) - Date.parse('2026-10-12')) / 864e5 + 1}</span>호</span></a></li>`).join('')}</ul>`;
-  const ctx = (lbl, inner, ba) => `<figure class="ctx"><figcaption class="ctx__lbl">${lbl}</figcaption>${inner}<div class="ba">${ba}</div></figure>`;
+  const offline = offlineB();
+  const ctx =(lbl, inner, ba) => `<figure class="ctx"><figcaption class="ctx__lbl">${lbl}</figcaption>${inner}<div class="ba">${ba}</div></figure>`;
   const ba = (before, after) => `<div class="ba__row"><span class="ba__k">지금</span><span>${before}</span></div><div class="ba__row"><span class="ba__k">새</span><span>${after}</span></div>`;
   return `<section id="s3" class="blk" aria-labelledby="s3h">
   <div class="sec-h"><h2 id="s3h"><span class="blk__no">3</span>빈 상태 조형</h2><span class="rh" aria-hidden="true" lang="en">EMPTY</span></div>
@@ -177,9 +182,8 @@ function sEmpty() {
 }
 
 /* ───────── 4. /status — 판권면 원장 ───────── */
-function sStatus() {
-  const L = ST.lastPublish, R = ST.runRate, C = ST.cost, DC = ST.dayCounts;
-  const early = (() => { const [h1, m1] = L.target.split(':').map(Number), [h2, m2] = L.finished.split(':').map(Number); return h1 * 60 + m1 - (h2 * 60 + m2); })();
+// 30일 달력 표 · 소스 표 — 혼합안(concept-mix)도 이 두 함수를 그대로 쓴다
+export function cal30B() {
   const byDate = Object.fromEntries(ST.days.map((d) => [d.date, d]));
   const cell = (date) => {
     const d = byDate[date];
@@ -192,11 +196,19 @@ function sStatus() {
     if (d.state === 'late') return { cls: 'cb__d--late', mark: '!', label: `<span class="n">${d.finished}</span>`, sr };
     return { cls: 'cb__d--ok', mark: CK + x, label: `<span class="n">${d.finished}</span>`, sr };
   };
-  const tbl30 = cal({ y: 2026, m: 10, from: 4, to: 31, caption: '최근 30일 발행 — 10월 4일부터 11월 2일', cells: cell }).replace('</tbody></table>', '') + cal({ y: 2026, m: 11, from: 1, to: 7, caption: '', cells: cell }).replace(/^[\s\S]*?<tbody>/, '');
-  const srows = ST.sources.map((s) => {
+  return cal({ y: 2026, m: 10, from: 4, to: 31, caption: '최근 30일 발행 — 10월 4일부터 11월 2일', cells: cell }).replace('</tbody></table>', '') + cal({ y: 2026, m: 11, from: 1, to: 7, caption: '', cells: cell }).replace(/^[\s\S]*?<tbody>/, '');
+}
+export function srcRowsB() {
+  return ST.sources.map((s) => {
     const st = s.staleStreak >= 7 ? `새 기사 없음 <span class="n">${s.staleStreak}</span>회 연속` : s.failStreak ? `실패 <span class="n">${s.failStreak}</span>회 연속` : '새 기사 있음';
     return `<tr${s.staleStreak >= 7 ? ' class="is-flag"' : ''}><th scope="row"><span ${s.lang === 'ko' ? '' : `lang="${s.lang}"`}>${esc(s.name)}</span></th><td><span class="tier tier--${s.tier}">Tier <span class="n">${s.tier}</span></span></td><td class="num" data-k="응답"><span class="n">${s.ok}/${s.attempts}</span></td><td class="num" data-k="새 기사"><span class="n">${s.usable}</span></td><td class="stB">${st}</td></tr>`;
   }).join('');
+}
+
+function sStatus() {
+  const L = ST.lastPublish, R = ST.runRate, C = ST.cost, DC = ST.dayCounts;
+  const early = (() => { const [h1, m1] = L.target.split(':').map(Number), [h2, m2] = L.finished.split(':').map(Number); return h1 * 60 + m1 - (h2 * 60 + m2); })();
+  const tbl30 = cal30B(), srows = srcRowsB();
   const bar = (k, v, cur) => `<div class="barB${cur ? '' : ' barB--prev'}"><p class="barB__k">${k}</p><div class="barB__t" role="img" aria-label="${k} 월 예산의 ${v.toFixed(2)}%"><i style="width:${v}%"></i><span class="barB__50" aria-hidden="true"></span></div><p class="barB__v"><span class="n">${v.toFixed(2)}</span>%</p></div>`;
   return `<div class="divider divider--screen" id="s4"><span><b>화면 4 · /status/</b> 앱 셸 안의 한 쪽 — 뒤표지 링크로 들어온다</span><span class="divider__info">판권면 원장 · 모션 없음(테마 잉크 전환만)</span></div>
 <div class="scr"><div class="shell">
@@ -248,7 +260,7 @@ ${tabbar()}</div>`;
 }
 
 /* ───────── CSS ───────── */
-const css = `
+export const css = `
 code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
 .code{margin-top:12px;padding:10px 12px;background:var(--paper-2);font:600 12px/1.45 var(--font-numeric);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
 .safe-wrap,.ios{position:relative}

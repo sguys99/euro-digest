@@ -1,6 +1,6 @@
-// D3 시안 생성기 — node docs/design/d3/build/gen.mjs [a|b|c]
+// D3 시안 생성기 — node docs/design/d3/build/gen.mjs [a|b|c|mix]
 const which = process.argv.slice(2);
-const all = which.length ? which : ['a', 'b', 'c'];
+const all = which.length ? which : ['a', 'b', 'c', 'mix'];
 for (const k of all) {
   const mod = await import(`./concept-${k}.mjs`);
   const size = mod.build();

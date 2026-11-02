@@ -123,6 +123,13 @@ function sOg() {
 
 /* ───────── 3. 빈 상태 — 숫자 조판(실선 = 값 · 윤곽 = 0 · 대시 = 값 없음) ───────── */
 const brief = (inner, sub) => `<div class="sec-h"><h3 class="h">오늘의 5줄</h3><span class="rh" aria-hidden="true" lang="en">STARTING FIVE</span></div><p class="sub">${sub}</p>${inner}`;
+// 검색 결과 없음 — 윤곽 0. 혼합안(concept-mix)도 이 함수를 그대로 쓴다
+export function searchZeroC() {
+  const e = D.emptyStates;
+  return `<div class="srch">${IC.search}<span lang="en">${esc(e.searchQuery)}</span></div>
+    <div class="zeroC"><span class="zeroC__n" aria-hidden="true">0</span><div><p class="zeroC__h">“<span lang="en">${esc(e.searchQuery)}</span>” ${esc(D.copy.search.none)}</p><p class="body2">${esc(D.copy.search.hint)}</p>
+    <ul class="zeroC__t" role="list">${['선수', '팀', '대회', '뉴스'].map((k) => `<li>${k} <span class="n o">0</span></li>`).join('')}</ul></div></div>`;
+}
 function sEmpty() {
   const e = D.emptyStates, ucl = COMP[e.ended.comp], lal = COMP[e.upcomingSample.comp];
   const dateBig = (date, word, comp, extra = '') => `<div class="numC"><p class="numC__c">${ftab(comp.id)}<span>${esc(comp.nameKo)} <span class="n">${comp.season}</span> 시즌</span>${extra}</p>
@@ -134,9 +141,7 @@ function sEmpty() {
     <div class="intlC"><p class="intlC__k"><span class="stamp">A매치 기간</span><span class="n">${md(D.intl.from)} – ${md(D.intl.to)}</span></p>
     <ul class="intlC__l" role="list">${im.map((m) => `<li><time datetime="${m.utc}"><span class="n intlC__d" aria-hidden="true">${m.md}</span><span class="sr">${shortDate(m.date)}</span></time><p class="intlC__t"><span class="n">${m.time}</span> KST · (${m.dow})</p><p class="intlC__o">${esc(m.opponent)}</p><p class="intlC__v">${esc(m.venue)} · ${m.home ? '홈' : '원정'} · ${esc(m.competition)}</p></li>`).join('')}</ul></div>
     <a class="tlink" href="#top">주요 뉴스로<span aria-hidden="true"> ↓</span></a>`;
-  const search = `<div class="srch">${IC.search}<span lang="en">${esc(e.searchQuery)}</span></div>
-    <div class="zeroC"><span class="zeroC__n" aria-hidden="true">0</span><div><p class="zeroC__h">“<span lang="en">${esc(e.searchQuery)}</span>” ${esc(D.copy.search.none)}</p><p class="body2">${esc(D.copy.search.hint)}</p>
-    <ul class="zeroC__t" role="list">${['선수', '팀', '대회', '뉴스'].map((k) => `<li>${k} <span class="n o">0</span></li>`).join('')}</ul></div></div>`;
+  const search = searchZeroC();
   const saved = ['2026-11-02', '2026-11-01', '2026-10-31'];
   const offline = `<div class="sec-h"><h3 class="h">${esc(D.copy.offline.h1)}</h3><span class="rh" aria-hidden="true" lang="en">OFFLINE</span></div>
   <div class="dashC"><span class="dashC__n" aria-hidden="true"></span><div><p class="lead">${esc(D.copy.offline.lead)}</p><p class="body2">${esc(D.copy.offline.body)}</p><button class="btn btn--sm" type="button">${IC.retry}다시 시도</button></div></div>
@@ -225,7 +230,7 @@ ${tabbar()}</div>
 }
 
 /* ───────── CSS ───────── */
-const css = `
+export const css = `
 code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
 .code{margin-top:12px;padding:10px 12px;background:var(--paper-2);font:600 12px/1.45 var(--font-numeric);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
 .safe-wrap,.ios{position:relative}
