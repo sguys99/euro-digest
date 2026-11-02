@@ -26,7 +26,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "8경기 1승 4무 3패로 리그 16위, 승점 7을 기록하며 강등권에 있다.",
+    "strengths": [
+      "무승부 4회",
+      "최근 5경기 중 2무"
+    ],
+    "weaknesses": [
+      "실점 리그 16위(19실점)의 수비",
+      "득점 리그 15위의 공격"
+    ],
+    "generatedAt": "2026-11-02T12:05:28.305Z"
+  },
   "koreanPlayers": [
     "jeong-woo-yeong"
   ],

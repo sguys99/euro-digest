@@ -32,16 +32,16 @@
     }
   ],
   "profile": {
-    "oneLiner": "리그 15위로 하위권에 있으며 3연패 중이다.",
+    "oneLiner": "리그 15위(승점 8)로 하위권에 있으며 최근 3연패 중이다.",
     "strengths": [
       "홈 2승",
-      "홈 득점 8골"
+      "홈 8득점"
     ],
     "weaknesses": [
       "5경기 무승",
       "원정 4패"
     ],
-    "generatedAt": "2026-11-02T04:39:32.702Z"
+    "generatedAt": "2026-11-02T12:05:28.305Z"
   },
   "koreanPlayers": [],
   "reading": [],

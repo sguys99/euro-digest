@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "선두에서 10경기 무패를 이어가며 승점 28을 기록하고 있다.",
+    "strengths": [
+      "리그 최소 실점(8실점)의 수비",
+      "득점 리그 3위(24골)의 공격"
+    ],
+    "weaknesses": [
+      "무승부 1회",
+      "홈 5경기에서 5실점"
+    ],
+    "generatedAt": "2026-11-02T12:05:28.305Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
