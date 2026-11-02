@@ -421,6 +421,33 @@ describe("코드 검증", () => {
     );
   });
 
+  it("'무실점 경기 없음'은 cs 0일 때만, 강점/약점의 순위 쪽 대조", () => {
+    expect(issues({ w: ["무실점 경기 없음", "무득점 1경기"] })).toContain(
+      "claim:무실점 없음",
+    );
+    const noCs = { ...ALPHA, lg: { ...ALPHA.lg, cs: 0 } };
+    expect(
+      checkTeamProfile(
+        { ...GOOD, w: ["무실점 경기 없음", "무득점 1경기"] },
+        noCs,
+        CHECK,
+      ).ok,
+    ).toBe(true);
+    // 6팀 대회: 강점 순위는 3위 이내, 약점 순위는 3위 이하
+    expect(issues({ s: ["리그 득점 순위 2위", "홈 3경기 무패"] })).toEqual([]);
+    expect(issues({ w: ["실점 순위 1위", "무득점 1경기"] })).toContain(
+      "side:실점 1위",
+    );
+    const low = { ...ALPHA, lg: { ...ALPHA.lg, gaR: 5 } };
+    expect(
+      checkTeamProfile(
+        { ...GOOD, s: ["실점 순위 5위의 수비", "홈 3경기 무패"] },
+        low,
+        CHECK,
+      ).issues.map((i) => i.code),
+    ).toContain("side");
+  });
+
   it("'16강'은 수 근거에서 빼고 zone으로 대조한다", () => {
     const ucl = {
       ...ALPHA,

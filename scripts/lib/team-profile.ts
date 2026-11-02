@@ -21,7 +21,8 @@
  *    (한줄평 '다.' 한 문장·80자 이내, 강점/약점 40자 이내·마침표 없음·'다'로 끝나지 않음·중복 없음) · 입력 밖 이름(사전 선수·팀 한글
  *    표기) · 지표 밖 주제 낱말(선수·감독·부상·이적·전술·점유·슈팅·전망 등) · 숫자 근거(모든 수가 그 팀 지표 수 집합에 있음) · 단위별
  *    수('n위'·'승점 n'·'n승/무/패'·'n실점'·'n골'·'n경기'·'n연승/연패'·'n경기 무패/무승'·'무실점/무득점 n경기') · 서술 대조(선두·최하위·
- *    상위권/중위권/하위권·강등·16강·플레이오프·탈락·최다 득점·최소 실점·최다 실점·최소 득점·홈/원정 무패·전승·무승·연승·연패 등).
+ *    상위권/중위권/하위권·강등·16강·플레이오프·탈락·최다 득점·최소 실점·최다 실점·최소 득점·홈/원정 무패·전승·무승·연승·연패 등) ·
+ *    강점/약점 쪽(강점의 득점·실점 순위는 위 절반, 약점은 위 3분의 1 밖).
  *    하나라도 걸리면 그 팀 실패(팀 단위 — 같은 묶음의 다른 팀은 통과할 수 있다).
  * ⑦ 실패·대상 밖 팀(`decideProfile`): **템플릿으로 강등하지 않는다** — 팀 스키마 `profile`에 ai 표시가 없고 화면은 이 블록 머리에
  *    'AI 작성' 라벨을 붙인다(D64 ⑥). 코드 문장을 넣으면 사람이 쓴 문장에 AI 라벨이 붙는다(FR-29 템플릿은 `ai:false`를 표시할 수 있는
@@ -522,7 +523,8 @@ export type ProfileCheckCode =
   | "topic" // 지표 밖 주제 낱말
   | "number" // 문장의 수가 지표 수 집합에 없음
   | "unit" // 단위별 수가 맞는 지표 값이 아님
-  | "claim"; // 서술(선두·최소 실점·홈 무패 등)이 지표와 다름
+  | "claim" // 서술(선두·최소 실점·홈 무패 등)이 지표와 다름
+  | "side"; // 강점에 하위 순위·약점에 상위 순위(득점·실점 순위)
 
 export interface ProfileCheckIssue {
   code: ProfileCheckCode;
@@ -840,13 +842,24 @@ const CLAIMS: readonly Claim[] = [
     ok: (f) => some(f, (b) => b.run?.r === "D"),
   },
   {
+    // '무실점 경기 없음'·'무실점 0경기'는 cs 0을 말한다
+    label: "무실점 없음",
+    re: /무실점\s*(?:경기\s*)?(?:없|0\s*경기)/u,
+    ok: (f) => some(f, (b) => b.cs === 0),
+  },
+  {
     label: "무실점",
-    re: /무실점/u,
+    re: /무실점(?!\s*(?:경기\s*)?(?:없|0\s*경기))/u,
     ok: (f) => some(f, (b) => (b.cs ?? 0) >= 1),
   },
   {
+    label: "무득점 없음",
+    re: /무득점\s*(?:경기\s*)?(?:없|0\s*경기)/u,
+    ok: (f) => some(f, (b) => b.fts === 0),
+  },
+  {
     label: "무득점",
-    re: /무득점/u,
+    re: /무득점(?!\s*(?:경기\s*)?(?:없|0\s*경기))/u,
     ok: (f) => some(f, (b) => (b.fts ?? 0) >= 1),
   },
   {
@@ -946,6 +959,31 @@ const UNITS: readonly UnitRule[] = [
   },
 ];
 
+/**
+ * 강점/약점 쪽 대조 — '득점(실점) 순위 n위'·'득점(실점) n위'·'최소 실점 n위'는 그 순위가 강점이면 위 절반, 약점이면 위 3분의 1
+ * 밖이어야 한다(2026-11-02 dev 실행: 18팀 중 실점 13·14위를 강점으로 쓴 사례. 지시문 6은 상위 팀의 '상대적으로 낮은 지표'를 약점으로
+ * 허용하므로 약점 쪽은 느슨하게). 그 순위 값을 가진 블록이 하나라도 맞으면 통과.
+ */
+const RANK_PHRASE = /(득점|실점)\s*(?:순위\s*)?(\d+)\s*위/gu;
+
+function rankSideIssues(
+  text: string,
+  side: "s" | "w",
+  facts: ProfileFacts,
+): string[] {
+  const out: string[] = [];
+  for (const m of text.matchAll(RANK_PHRASE)) {
+    const n = Number(m[2]);
+    const ok = facts.blocks.some(({ block: b }) => {
+      const rank = m[1] === "득점" ? b.gfR : b.gaR;
+      if (rank !== n) return false;
+      return side === "s" ? n <= Math.ceil(b.n / 2) : n > Math.round(b.n / 3);
+    });
+    if (!ok) out.push(`${m[1]} ${n}위`);
+  }
+  return out;
+}
+
 function checkText(
   text: string,
   field: string,
@@ -1008,6 +1046,10 @@ function checkText(
   }
   for (const claim of CLAIMS) {
     if (claim.re.test(text) && !claim.ok(facts)) push("claim", claim.label);
+  }
+  if (kind === "bullet") {
+    const side = field.startsWith("s") ? "s" : "w";
+    for (const d of rankSideIssues(text, side, facts)) push("side", d);
   }
   return issues;
 }

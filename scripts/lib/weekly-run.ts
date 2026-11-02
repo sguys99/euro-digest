@@ -81,16 +81,19 @@ export interface WeeklyArgs {
   force: boolean;
   /** 지정 주차 "YYYY-WW" — null이면 기본(지난 주) */
   week: string | null;
+  /** 이 단계만 실행(개발용 — 예: team-profiles). null이면 전체 */
+  only: string | null;
   llmMode: LlmMode;
   help: boolean;
 }
 
 export const WEEKLY_USAGE = [
-  "사용법: npm run weekly -- [--dry] [--mock] [--force] [--week <YYYY-WW>]",
+  "사용법: npm run weekly -- [--dry] [--mock] [--force] [--week <YYYY-WW>] [--only <단계>]",
   "  --dry          data/에 쓰지 않고 결과만 출력 (LLM을 부른 단계가 있으면 비용은 기록)",
   "  --write        로컬(dev) 실행에서 data/에 쓴다 — 없으면 로컬 실행은 --dry와 같은 미리보기 (Actions(prod)는 항상 씀)",
   "  --mock         LLM 대신 fixtures/llm/ 응답 사용 (LLM_MODE=mock과 같음 — 실행 기록 안 함)",
   "  --force        그 주차 주간 리포트가 이미 있어도 실행 (단계의 '이미 했음' 판단도 무시)",
+  "  --only <단계>  그 단계만 실행 (개발용 — 예: --only team-profiles --force --write. 가드는 그대로라 그 주 리포트가 있으면 --force)",
   "  --week <주차>  대상 ISO 주차 (기본: 실행 시작 KST 날짜가 속한 주의 바로 앞 주 — 지난 월~일). 끝나지 않은 주는 거부",
   "  --help, -h     이 도움말",
   "※ npm 뒤에 `--`를 빼면 npm이 옵션을 가져가 버린다.",
@@ -109,6 +112,7 @@ export function parseWeeklyArgs(
     mock?: boolean;
     force?: boolean;
     week?: string;
+    only?: string;
     help?: boolean;
   };
   try {
@@ -122,6 +126,7 @@ export function parseWeeklyArgs(
         mock: { type: "boolean", default: false },
         force: { type: "boolean", default: false },
         week: { type: "string" },
+        only: { type: "string" },
         help: { type: "boolean", short: "h", default: false },
       },
     }));
@@ -138,6 +143,13 @@ export function parseWeeklyArgs(
       error: `--week는 YYYY-WW 형식이어야 합니다 (받은 값 길이 ${week.length})`,
     };
   }
+  const only = values.only?.trim();
+  if (only !== undefined && !/^[a-z][a-z0-9-]{0,39}$/.test(only)) {
+    return {
+      ok: false,
+      error: "--only는 단계 id(소문자·숫자·하이픈)여야 합니다",
+    };
+  }
   if (values.dry && values.write) {
     return { ok: false, error: "--dry와 --write는 함께 쓸 수 없습니다" };
   }
@@ -152,6 +164,7 @@ export function parseWeeklyArgs(
       mock,
       force: values.force ?? false,
       week: week || null,
+      only: only || null,
       llmMode: llmMode.value,
       help: values.help ?? false,
     },
@@ -547,7 +560,7 @@ export function isWeeklyWritePath(p: string): boolean {
 export function checkWeeklyStages(stages: readonly WeeklyStage[]): string[] {
   const problems: string[] = [];
   const ids = new Set<string>();
-  const owners: Array<{ path: string; id: string }> = [];
+  const owners: Array<{ path: string; id: string; shared: boolean }> = [];
   for (const stage of stages) {
     if (!/^[a-z][a-z0-9-]*$/.test(stage.id) || stage.id.length > 40) {
       problems.push(`단계 id 형식: ${stage.id}`);
@@ -557,17 +570,25 @@ export function checkWeeklyStages(stages: readonly WeeklyStage[]): string[] {
     if (!Number.isInteger(stage.timeoutMs) || stage.timeoutMs <= 0) {
       problems.push(`${stage.id}: timeoutMs는 양의 정수`);
     }
+    for (const p of stage.sharedWrites ?? []) {
+      if (!stage.writes.includes(p))
+        problems.push(`${stage.id}: sharedWrites ${p}가 writes에 없음`);
+    }
     for (const p of stage.writes) {
       if (!isWeeklyWritePath(p)) problems.push(`${stage.id}: writes 경로 ${p}`);
+      const shared = stage.sharedWrites?.includes(p) ?? false;
+      // 같은 경로를 두 단계가 모두 sharedWrites로 적었으면 허용(weekly-stages.ts sharedWrites — 되돌림 대가는 거기 주석)
       const other = owners.find(
-        (o) => isUnder(p, o.path) || isUnder(o.path, p),
+        (o) =>
+          (isUnder(p, o.path) || isUnder(o.path, p)) &&
+          !(shared && o.shared && o.path === p),
       );
       if (other && other.id !== stage.id) {
         problems.push(
           `${stage.id}: writes ${p}가 ${other.id}의 ${other.path}와 겹침`,
         );
       }
-      owners.push({ path: p, id: stage.id });
+      owners.push({ path: p, id: stage.id, shared });
     }
   }
   return problems;

@@ -135,10 +135,25 @@ describe("parseWeeklyArgs", () => {
         mock: false,
         force: false,
         week: null,
+        only: null,
         llmMode: "live",
         help: false,
       },
     });
+  });
+
+  it("--only <단계>(개발용) — 단계 id 형식만 받는다", () => {
+    const r = parseWeeklyArgs(
+      ["--only", "team-profiles", "--force"],
+      undefined,
+    );
+    expect(r.ok && r.value).toMatchObject({
+      only: "team-profiles",
+      force: true,
+    });
+    expect(parseWeeklyArgs(["--only", "Team Profiles"], undefined).ok).toBe(
+      false,
+    );
   });
 
   it("--dry --force --week · --mock은 LLM_MODE보다 우선", () => {

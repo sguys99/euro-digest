@@ -34,6 +34,7 @@ import type { FetchLike } from "./rss";
 import type { RunEnv, RunLog, RunSource } from "@/lib/schema";
 
 import { ANALYSIS_TEAMS_DIR, runAnalysisBlogs } from "./analysis-blogs-stage";
+import { TEAM_PROFILE_TEAMS_DIR, runTeamProfiles } from "./team-profile-stage";
 import { WEEKLY_REPORT_DIR } from "./weekly-kr";
 import { runKoreanWeekly } from "./weekly-kr-stage";
 
@@ -135,6 +136,13 @@ export interface WeeklyStage {
    * main 상태로 되돌린다. data/runs.json 금지(러너가 쓴다).
    */
   writes: readonly string[];
+  /**
+   * 다른 단계와 함께 쓰는 경로(이 단계 `writes`에 있는 것만). 등록 검사는 writes 겹침을 막지만, **겹치는 두 단계가 모두 그 경로를
+   * sharedWrites에 적었으면** 허용한다(M4-06 — analysis-blogs·team-profiles가 data/teams를 함께 씀). 대가: 한 단계가 실패하면 Actions가
+   * 그 경로를 main 상태로 되돌리므로 **같은 실행에서 다른 단계가 바꾼 내용도 함께 사라진다**(그 주 갱신이 한 주 늦어질 뿐 이전 값은
+   * 남는다). 공유 단계는 팀 단위 실패를 단계 실패로 올리지 않아 되돌림을 줄인다.
+   */
+  sharedWrites?: readonly string[];
   /** 단계 함수 — null이면 미구현(로그만 남기고 건너뜀, 성공 처리) */
   run: WeeklyStageRun | null;
 }
@@ -148,7 +156,7 @@ const MINUTE_MS = 60_000;
  * 등록된 단계(순서 = 실행 순서). 시간 상한 합계 30분 — weekly.yml 주간 작업 단계 상한(35분) 안.
  *   ① 한국 선수 주간 리포트(M3-07 — 표·MVP 코드 계산 + 주간 총평 Batches 1회, FR-90~92)
  *   ② 분석 블로그 주 1회 수집(M3-08 — LLM 없음, FR-10·FR-57)
- *   ③ 팀 프로필(M4-06 — 팀 한줄평+강점/약점 20팀 묶음 Batches, 지시문 캐싱 켬, D28)
+ *   ③ 팀 프로필(M4-06 — 팀 한줄평+강점/약점 20팀 묶음 Batches, 지시문 캐싱 켬, D28 — data/teams를 ②와 공유)
  *   ④ 운영 리포트(M5-09 — 비용·성공률·소스 건강도·미등록 고유명사 이슈, FR-155). 이슈를 만들려면 토큰이 필요하다 — 이 단계
  *      (서드파티 코드가 도는 곳)에 쓰기 토큰을 넘기지 말고, collect.yml '실행 이슈 보고'처럼 사건 파일 → 다음 워크플로 단계로 낸다.
  */
@@ -168,9 +176,10 @@ export const WEEKLY_STAGES: readonly WeeklyStage[] = [
     task: "M3-08",
     llm: false,
     timeoutMs: 5 * MINUTE_MS,
-    // 팀 파일의 reading만 바꾼다. 실패하면 Actions가 data/teams를 main(그날 일일 수집 커밋)으로 되돌린다 — M4-06이 같은 폴더를 쓰게
-    // 되면 등록 검사(writes 겹침 금지)를 함께 정한다
+    // 팀 파일의 reading만 바꾼다. 실패하면 Actions가 data/teams를 main(그날 일일 수집 커밋)으로 되돌린다 — team-profiles와 공유
+    // (sharedWrites — 한쪽 실패 시 같은 실행의 다른 쪽 갱신도 되돌아간다)
     writes: [ANALYSIS_TEAMS_DIR],
+    sharedWrites: [ANALYSIS_TEAMS_DIR],
     run: runAnalysisBlogs, // analysis-blogs-stage.ts — 주 1회 RSS(LLM 없음) → 원제목으로 팀 찾기 → data/teams reading 갱신
   },
   {
@@ -179,8 +188,10 @@ export const WEEKLY_STAGES: readonly WeeklyStage[] = [
     task: "M4-06",
     llm: true,
     timeoutMs: 12 * MINUTE_MS,
-    writes: [], // M4-06이 산출물 경로를 정해 채운다(data/teams는 일일 수집도 쓴다 — 되돌릴 범위를 좁게)
-    run: null,
+    // 팀 파일의 profile만 바꾼다(analysis-blogs와 data/teams 공유 — sharedWrites)
+    writes: [TEAM_PROFILE_TEAMS_DIR],
+    sharedWrites: [TEAM_PROFILE_TEAMS_DIR],
+    run: runTeamProfiles, // team-profile-stage.ts — 20팀 묶음 Batches 1회(+실패 팀 재시도 1회), 지시문 캐싱 → 실패 팀은 이전 값·null
   },
   {
     id: "ops-report",

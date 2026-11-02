@@ -8,6 +8,7 @@
  *   npm run weekly -- --write        # 로컬(dev)에서 data/에 쓴다 — 없으면 로컬 실행은 --dry와 같은 미리보기(Actions는 항상 씀)
  *   npm run weekly -- --force        # 그 주차 주간 리포트가 이미 있어도 실행
  *   npm run weekly -- --week 2026-44 # 지난 주차 지정
+ *   npm run weekly -- --only team-profiles --force --write  # 개발용 — 그 단계만
  *
  * 환경변수는 package.json의 `node --env-file-if-exists=.env.local`이 로컬에서만 채운다(CI는 Actions가 주입). 값은 읽기만 하고
  * 출력하지 않는다. Actions(GITHUB_ACTIONS=true) = prod → data/runs.json, 로컬 = dev → data/runs-dev.json.
@@ -61,6 +62,17 @@ async function main(): Promise<number> {
     );
     return 1;
   }
+  // --only(개발용): 그 단계만 — 없는 id면 멈춘다
+  const stages =
+    args.only === null
+      ? WEEKLY_STAGES
+      : WEEKLY_STAGES.filter((s) => s.id === args.only);
+  if (stages.length === 0) {
+    console.error(
+      `[weekly] --only ${args.only}: 등록된 단계가 아닙니다 (${WEEKLY_STAGES.map((s) => s.id).join(", ")})`,
+    );
+    return 1;
+  }
   const outcome = await runWeekly({
     rootDir: ROOT_DIR,
     dataDir: path.join(ROOT_DIR, "data"),
@@ -71,7 +83,7 @@ async function main(): Promise<number> {
     force: args.force,
     week: args.week,
     model,
-    stages: WEEKLY_STAGES,
+    stages,
     now: () => new Date(),
     logger,
     print: (text) => console.log(text),
