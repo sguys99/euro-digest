@@ -509,8 +509,9 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M4-06 💰 `weekly.yml`에 20팀 묶음 배치 추가(Batches API 유지, 지시문 캐싱 켬 — D28), 팀 페이지에 생성 날짜 표시, 골든셋 10팀 회귀 비교
 
 ### M4-C 마이 팀 (E) — FR-110~115
-- [ ] M4-07 안전한 저장소 유틸(모든 접근 try/catch) + 팔로우 상태 훅
+- [x] M4-07 안전한 저장소 유틸(모든 접근 try/catch) + 팔로우 상태 훅
   - 🆕 D2 이월: 팔로우 전체 한도 5는 시안 가정 — 확정 필요
+  - 2026-11-02 완료(한도 PRD §15 D67 ② 팀 5 + 선수 5): `src/lib/safe-storage.ts`(get/set/remove/JSON 모두 try/catch, 사용 불가 시 메모리 폴백, 키 `ed-` 접두 타입·실행 검사, 서버에서도 안 던짐) · `src/lib/follow.ts`(순수 — 정리·직렬화·토글·한도·`followButtonState` on/off/limit·가져오기 덮어쓰기/합치기 + `dropped`·URL 쿼리 `t`·`p` 직렬화/파싱 — M4-10용) · `src/lib/use-follows.ts`(`useSyncExternalStore` — 섬 간 공유·`storage` 이벤트 탭 동기화·서버 스냅샷 빈 상태·`ready`). 저장 `ed-follow` = `{v:1,teams,players}`. **클라이언트 읽기 경계는 zod 대신 같은 규칙의 손 구현**(기존 규칙 '클라이언트 파일 zod import 금지' — zod/mini도 gzip 4.9KB), 엄격 스키마 `src/lib/schema/follow.ts`와 동치성 테스트로 고정. 번들 훅+모델 gzip 약 1.5~1.7KB(D2 추정 0.6KB보다 큼 — M4-16 실측), 새 의존성 0. 🆕 이월(M4-08): 한도 이유 문장 종류별('팀은 5개까지…'), `/my` 머리 n/5 팀·선수 분리, `saved:false` 안내 여부, 접힘 키프레임 토큰 승격. (M4-09) 진입 줄은 `ready && isFollowEmpty` 뒤 판정
 - [ ] M4-08 팔로우 버튼(팀·선수), `/my`, 홈 "내 팀 소식", 피드 "내 팀만" (FR-110~112, FR-59)
 - [ ] M4-09 첫 방문 온보딩: 리그 → 팀(최대 5) → 한국 선수, 건너뛰기 가능 (FR-113)
   - 🆕 D2 이월: 온보딩 진입 줄(첫 방문 + 팔로우 0)을 첫 페인트 전에 판정할지 CLS 측정
