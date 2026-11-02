@@ -1,0 +1,107 @@
+/* ══════════════════════════════════════════════════════════════
+   M4 미니 시안 — 결과 가리기(FR-37) 미확정 3요소 + RSS 위치(FR-122)
+   기반: D1 혼합안 CSS(그대로 추출) + D0 스위치 + D2 결과 가림 칸.
+   새 색·폰트 토큰 없음 — --hatch · --ink-2 점선 · --paper 칸 · --paper-2 안내 띠만 조합한다.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── D0 확정: 마스트헤드 검색 · 결과 가리기 스위치(M4-15에서 숨김 해제) ── */
+.ticket{grid-template-areas:"brand brand tools" "perf perf perf" "issue stub switch"}
+.ticket__tools{gap:0}
+.search__t,.search kbd{display:none}
+.search kbd{font:600 13px/1 var(--font-numeric);font-variant-numeric:tabular-nums lining-nums;border:1px solid var(--ticket-fg-2);padding:3px 6px 2px;color:var(--ticket-fg-2);background:transparent}
+.switch{grid-area:switch;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;padding:8px 14px 10px 0}
+.switch__l{font-size:11.5px;font-weight:800;color:var(--ticket-fg-2)}
+.switch__b{position:relative;display:inline-grid;grid-template-columns:1fr 1fr;height:30px;padding:0;border:1px solid var(--ticket-fg);background:transparent;color:var(--ticket-fg);font-size:12.5px;font-weight:800}
+.switch__b::after{content:"";position:absolute;inset:-8px -4px}
+.switch__b span{display:grid;place-items:center;min-width:34px;padding:0 8px;transition:background-color var(--duration-fast) var(--ease),color var(--duration-fast) var(--ease)}
+.switch__b[aria-checked="false"] .off,.switch__b[aria-checked="true"] .on{background:var(--ticket-fg);color:var(--ticket)}
+@media (min-width:1024px){
+  .ticket{grid-template-areas:"issue perf brand tools" "stub perf brand switch"}
+  .ticket__tools{gap:4px}
+  .search{border:1px solid var(--ticket-fg-2);padding:0 12px;min-width:132px;justify-content:flex-start}
+  .search__t{display:inline;font-size:14px;font-weight:800;flex:1;text-align:left}
+  .search kbd{display:inline}
+  .switch{flex-direction:row;align-items:center;gap:10px;padding:0 18px 18px 0;align-self:end}
+}
+
+/* ── 가림 공통 메커니즘 ──
+   .sv = 가릴 값(켜지면 display:none — 보조기술에서도 숨김), .sx = 가림 표식(꺼져 있으면 없음).
+   [data-scope] 하나가 '펼치는 단위'다. 펼치면 그 안의 .sv/.sx에 .is-shown. 스위치를 끄면 모두 원래대로. */
+.sx{display:none!important}
+[data-spoiler="on"] .sv:not(.is-shown){display:none!important}
+[data-spoiler="on"] .sx:not(.is-shown){display:var(--sx-d,inline-flex)!important}
+
+/* 빗금 원자 — DESIGN §2.9 --hatch(−45°, 5px 선 · 5px 간격) + 1px --ink-2 점선 */
+.hx{border:1px dashed var(--ink-2);background:repeating-linear-gradient(-45deg,var(--hatch) 0 5px,transparent 5px 10px)}
+.hx--fine{background:repeating-linear-gradient(-45deg,var(--hatch) 0 3px,transparent 3px 6px)}
+
+/* D2 확정 '결과 가림 칸' — 최소 44×64, 빗금 + 점선 + --paper "보기" 칸 */
+.rc{display:inline-grid;justify-items:end;gap:6px;vertical-align:middle}
+.spo-b{position:relative;align-items:center;justify-content:center;min-height:44px;min-width:64px;padding:0 8px;border:1px dashed var(--ink-2);background:repeating-linear-gradient(-45deg,var(--hatch) 0 5px,transparent 5px 10px);color:var(--ink);font-size:12px;font-weight:800;line-height:1.2}
+.spo-b>span{background:var(--paper);padding:2px 5px}
+.spo-b:hover{border-color:var(--ink)}
+.res{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+
+/* D0 확정 '결과 가림 띠'(줄·카드) — 경기 묶음 버튼으로도 쓴다 */
+.flap{width:100%;align-items:center;gap:10px;min-height:44px;padding:0 0 0 12px;border:1px dashed var(--ink-2);background:repeating-linear-gradient(-45deg,var(--hatch) 0 5px,transparent 5px 10px);color:var(--ink);text-align:left;font-size:13px;line-height:1.3}
+.flap__k{font-weight:800;flex:none}
+.flap__v{color:var(--ink-2);flex:1;min-width:0}
+.flap__v .n{font:600 14px/1 var(--font-numeric)}
+.flap__go{display:inline-flex;align-items:center;gap:2px;align-self:stretch;padding:0 10px 0 12px;border-left:1px dashed var(--ink-2);font-weight:800;background:var(--paper)}
+.flap__go .ic{width:16px;height:16px}
+.flap:hover{border-color:var(--ink)}
+.flap:hover .flap__go{border-left-color:var(--ink)}
+
+/* D0 확정 '결과 가림 안내 띠' — --paper-2 + 왼쪽 4px --brand-accent */
+.veil{flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding:10px 12px 10px 14px;background:var(--paper-2);border-left:4px solid var(--brand-accent);font-size:13.5px;line-height:1.5}
+.veil p{flex:1 1 18em;min-width:0}
+.veil b{font-weight:800}
+.veil__s{color:var(--ink-2)}
+.btn--sec{background:transparent;color:var(--ink)}
+.btn--sec:hover{background:var(--ink);color:var(--paper)}
+.btn--s{min-height:44px;padding:0 12px;font-size:13px;gap:6px}
+.btn .ic{width:18px;height:18px}
+
+/* 시안 문서용 — 가림 켬/끔 안내 줄 */
+.m4-state{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;max-width:1280px;margin:0 auto;padding:10px var(--edge);font-size:12.5px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.m4-state b{color:var(--ink);font-weight:800}
+.m4-state .on-t,.m4-state .off-t{display:none}
+[data-spoiler="on"] .m4-state .on-t{display:inline}
+html:not([data-spoiler="on"]) .m4-state .off-t{display:inline}
+@media (min-width:1024px){.m4-state{padding:10px 32px}}
+.skipnote{margin-top:28px;padding:10px 0;border-top:1px dotted var(--ink-3);border-bottom:1px dotted var(--ink-3);font-size:12.5px;color:var(--ink-2)}
+.skipnote b{color:var(--ink);font-weight:800;margin-right:6px}
+
+/* 라운드 행 스코어 칸 — 가림 칸이 들어가면 가운데 열을 64px로 */
+.rd__s{align-items:center}
+.rd__s .rc{justify-items:center}
+
+/* 홈 위젯 시안 틀 — 1280 이상 = 지면(생략) + 마주 보는 면 296px */
+.hm{display:block}
+.hm__main{display:none}
+@media (min-width:1280px){
+  .hm{display:grid;grid-template-columns:var(--col-contents) minmax(0,1fr) var(--col-facing)}
+  .hm__main{display:block;grid-column:2;padding:28px 32px 0 0}
+  .hm__facing{grid-column:3;border-left:1px solid var(--ink);padding:0 0 0 32px;margin-top:28px}
+}
+.hm__facing .wg:first-child{margin-top:0}
+@media (min-width:1280px){.hm__facing .tn{margin-right:0}}
+@media (max-width:1279px){.hm__facing{padding-top:12px}.hm__facing .wg:first-child{margin-top:24px}}
+
+/* 쪽 머리(한국 선수 목록) */
+.kp-head{display:grid;gap:6px;padding-top:6px}
+.kp-k{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:13px;color:var(--ink-2)}
+.kp-k .rh{margin-left:auto}
+.kp-head h1{font-size:32px;font-weight:800;letter-spacing:-.04em;line-height:1.1}
+.kp-sub{font-size:13px;color:var(--ink-2)}
+.kp-sub b{color:var(--ink);font-weight:800}
+@media (min-width:1024px){.kp-head h1{font-size:48px}}
+
+/* 아이콘 크기 */
+.ic--16{width:16px;height:16px}
+.ic--18{width:18px;height:18px}
+
+/* 데이터 출처 줄 */
+.dsrc{font-size:12.5px;line-height:1.5;color:var(--ink-2);margin-top:28px}
+.dsrc b{color:var(--ink);font-weight:800}
+.dsrc time{font:600 13px/1 var(--font-numeric)}

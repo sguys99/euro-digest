@@ -1,0 +1,884 @@
+{
+ "tonight": {
+  "baseKstDate": "2026-11-02",
+  "window": {
+   "start": "2026-11-02T09:00:00.000Z",
+   "end": "2026-11-02T22:00:00.000Z"
+  },
+  "cards": [
+   {
+    "id": "fd-558541",
+    "comp": "SERIEA",
+    "compLabel": {
+     "short": "세리에A",
+     "name": "세리에 A"
+    },
+    "kickoff": "2026-11-02T17:30:00Z",
+    "time": "02:30",
+    "date": "11.03",
+    "state": "scheduled",
+    "stateText": null,
+    "home": {
+     "slug": "sassuolo",
+     "name": "사수올로",
+     "latin": false,
+     "short": "SAS",
+     "colors": [
+      "#007C3D",
+      "#000000"
+     ],
+     "page": true
+    },
+    "away": {
+     "slug": "fiorentina",
+     "name": "피오렌티나",
+     "latin": false,
+     "short": "FIO",
+     "colors": [
+      "#482E92",
+      "#FFFFFF"
+     ],
+     "page": true
+    },
+    "reasons": [
+     {
+      "kind": "closeRace",
+      "label": "승점 차 3 · 15·17위"
+     }
+    ]
+   },
+   {
+    "id": "fd-559641",
+    "comp": "LIGUE1",
+    "compLabel": {
+     "short": "리그1",
+     "name": "리그 1"
+    },
+    "kickoff": "2026-11-02T19:45:00Z",
+    "time": "04:45",
+    "date": "11.03",
+    "state": "scheduled",
+    "stateText": null,
+    "home": {
+     "slug": "lorient",
+     "name": "로리앙",
+     "latin": false,
+     "short": "FCL",
+     "colors": [
+      "#F58113",
+      "#000000"
+     ],
+     "page": true
+    },
+    "away": {
+     "slug": "brest",
+     "name": "브레스트",
+     "latin": false,
+     "short": "BRE",
+     "colors": [
+      "#D50612",
+      "#FFFFFF"
+     ],
+     "page": true
+    },
+    "reasons": [
+     {
+      "kind": "closeRace",
+      "label": "승점 차 3 · 10·14위"
+     }
+    ]
+   },
+   {
+    "id": "fd-558545",
+    "comp": "SERIEA",
+    "compLabel": {
+     "short": "세리에A",
+     "name": "세리에 A"
+    },
+    "kickoff": "2026-11-02T19:45:00Z",
+    "time": "04:45",
+    "date": "11.03",
+    "state": "scheduled",
+    "stateText": null,
+    "home": {
+     "slug": "atalanta",
+     "name": "아탈란타",
+     "latin": false,
+     "short": "ATA",
+     "colors": [
+      "#1D6CB1",
+      "#000000"
+     ],
+     "page": true
+    },
+    "away": {
+     "slug": "parma",
+     "name": "파르마",
+     "latin": false,
+     "short": "PAR",
+     "colors": [
+      "#FFFFFF",
+      "#FFD200"
+     ],
+     "page": true
+    },
+    "reasons": []
+   },
+   {
+    "id": "fd-560622",
+    "comp": "EPL",
+    "compLabel": {
+     "short": "EPL",
+     "name": "프리미어리그"
+    },
+    "kickoff": "2026-11-02T20:00:00Z",
+    "time": "05:00",
+    "date": "11.03",
+    "state": "scheduled",
+    "stateText": null,
+    "home": {
+     "slug": "newcastle-united",
+     "name": "뉴캐슬 유나이티드",
+     "latin": false,
+     "short": "NEW",
+     "colors": [
+      "#241F20",
+      "#FFFFFF"
+     ],
+     "page": true
+    },
+    "away": {
+     "slug": "everton",
+     "name": "에버턴",
+     "latin": false,
+     "short": "EVE",
+     "colors": [
+      "#003399",
+      "#FFFFFF"
+     ],
+     "page": true
+    },
+    "reasons": [
+     {
+      "kind": "korean",
+      "label": "박승수 소속"
+     },
+     {
+      "kind": "closeRace",
+      "label": "승점 차 1 · 12·14위"
+     }
+    ]
+   },
+   {
+    "id": "fd-564731",
+    "comp": "LALIGA",
+    "compLabel": {
+     "short": "라리가",
+     "name": "라리가"
+    },
+    "kickoff": "2026-11-02T20:00:00Z",
+    "time": "05:00",
+    "date": "11.03",
+    "state": "scheduled",
+    "stateText": null,
+    "home": {
+     "slug": "deportivo-la-coruna",
+     "name": "데포르티보 라코루냐",
+     "latin": false,
+     "short": "DEP",
+     "colors": [
+      "#0055A4",
+      "#FFFFFF"
+     ],
+     "page": true
+    },
+    "away": {
+     "slug": "osasuna",
+     "name": "오사수나",
+     "latin": false,
+     "short": "OSA",
+     "colors": [
+      "#D01920",
+      "#0A346F"
+     ],
+     "page": true
+    },
+    "reasons": [
+     {
+      "kind": "closeRace",
+      "label": "승점 동률 · 13·15위"
+     }
+    ]
+   }
+  ]
+ },
+ "mini": [
+  {
+   "comp": "EPL",
+   "short": "EPL",
+   "name": "프리미어리그",
+   "rows": [
+    {
+     "pos": 1,
+     "pts": 24,
+     "team": {
+      "slug": "arsenal",
+      "name": "아스널",
+      "latin": false,
+      "short": "ARS",
+      "colors": [
+       "#D70106",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "up",
+      "by": 1
+     },
+     "band": null,
+     "href": "/competitions/epl/#arsenal"
+    },
+    {
+     "pos": 2,
+     "pts": 21,
+     "team": {
+      "slug": "manchester-city",
+      "name": "맨체스터 시티",
+      "latin": false,
+      "short": "MCI",
+      "colors": [
+       "#6CABDD",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "down",
+      "by": 1
+     },
+     "band": null,
+     "href": "/competitions/epl/#manchester-city"
+    },
+    {
+     "pos": 3,
+     "pts": 19,
+     "team": {
+      "slug": "brighton",
+      "name": "브라이턴",
+      "latin": false,
+      "short": "BHA",
+      "colors": [
+       "#0057B8",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/epl/#brighton"
+    },
+    {
+     "pos": 4,
+     "pts": 16,
+     "team": {
+      "slug": "chelsea",
+      "name": "첼시",
+      "latin": false,
+      "short": "CHE",
+      "colors": [
+       "#034694",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/epl/#chelsea"
+    },
+    {
+     "pos": 5,
+     "pts": 15,
+     "team": {
+      "slug": "liverpool",
+      "name": "리버풀",
+      "latin": false,
+      "short": "LIV",
+      "colors": [
+       "#C8102E",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/epl/#liverpool"
+    }
+   ],
+   "note": "11.02 기준 · 변동 전날 대비",
+   "updatedAt": "2026-11-01T22:15:08.393Z",
+   "href": "/competitions/epl/"
+  },
+  {
+   "comp": "LALIGA",
+   "short": "라리가",
+   "name": "라리가",
+   "rows": [
+    {
+     "pos": 1,
+     "pts": 30,
+     "team": {
+      "slug": "barcelona",
+      "name": "바르셀로나",
+      "latin": false,
+      "short": "FCB",
+      "colors": [
+       "#A50044",
+       "#004D98"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/laliga/#barcelona"
+    },
+    {
+     "pos": 2,
+     "pts": 28,
+     "team": {
+      "slug": "atletico-madrid",
+      "name": "아틀레티코 마드리드",
+      "latin": false,
+      "short": "ATL",
+      "colors": [
+       "#C73423",
+       "#272E61"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/laliga/#atletico-madrid"
+    },
+    {
+     "pos": 3,
+     "pts": 27,
+     "team": {
+      "slug": "real-madrid",
+      "name": "레알 마드리드",
+      "latin": false,
+      "short": "RMA",
+      "colors": [
+       "#FFFFFF",
+       "#FEBE10"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/laliga/#real-madrid"
+    },
+    {
+     "pos": 4,
+     "pts": 23,
+     "team": {
+      "slug": "real-betis",
+      "name": "레알 베티스",
+      "latin": false,
+      "short": "BET",
+      "colors": [
+       "#007A3E",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/laliga/#real-betis"
+    },
+    {
+     "pos": 5,
+     "pts": 19,
+     "team": {
+      "slug": "real-sociedad",
+      "name": "레알 소시에다드",
+      "latin": false,
+      "short": "RSO",
+      "colors": [
+       "#0067B1",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/laliga/#real-sociedad"
+    }
+   ],
+   "note": "11.02 기준 · 변동 전날 대비",
+   "updatedAt": "2026-11-01T22:15:30.428Z",
+   "href": "/competitions/laliga/"
+  },
+  {
+   "comp": "SERIEA",
+   "short": "세리에A",
+   "name": "세리에 A",
+   "rows": [
+    {
+     "pos": 1,
+     "pts": 28,
+     "team": {
+      "slug": "lazio",
+      "name": "라치오",
+      "latin": false,
+      "short": "LAZ",
+      "colors": [
+       "#87D8F7",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/seriea/#lazio"
+    },
+    {
+     "pos": 2,
+     "pts": 25,
+     "team": {
+      "slug": "inter",
+      "name": "인테르",
+      "latin": false,
+      "short": "INT",
+      "colors": [
+       "#0068A8",
+       "#000000"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/seriea/#inter"
+    },
+    {
+     "pos": 3,
+     "pts": 24,
+     "team": {
+      "slug": "roma",
+      "name": "로마",
+      "latin": false,
+      "short": "ROM",
+      "colors": [
+       "#8E1F2F",
+       "#F0BC42"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/seriea/#roma"
+    },
+    {
+     "pos": 4,
+     "pts": 23,
+     "team": {
+      "slug": "como",
+      "name": "코모",
+      "latin": false,
+      "short": "COM",
+      "colors": [
+       "#003F7F",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "up",
+      "by": 1
+     },
+     "band": null,
+     "href": "/competitions/seriea/#como"
+    },
+    {
+     "pos": 5,
+     "pts": 21,
+     "team": {
+      "slug": "milan",
+      "name": "AC 밀란",
+      "latin": false,
+      "short": "MIL",
+      "colors": [
+       "#D80809",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "down",
+      "by": 1
+     },
+     "band": null,
+     "href": "/competitions/seriea/#milan"
+    }
+   ],
+   "note": "11.02 기준 · 변동 전날 대비",
+   "updatedAt": "2026-11-01T22:15:52.745Z",
+   "href": "/competitions/seriea/"
+  },
+  {
+   "comp": "BUNDESLIGA",
+   "short": "분데스",
+   "name": "분데스리가",
+   "rows": [
+    {
+     "pos": 1,
+     "pts": 18,
+     "team": {
+      "slug": "bayern-munchen",
+      "name": "바이에른 뮌헨",
+      "latin": false,
+      "short": "FCB",
+      "colors": [
+       "#D3052B",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/bundesliga/#bayern-munchen"
+    },
+    {
+     "pos": 2,
+     "pts": 18,
+     "team": {
+      "slug": "borussia-dortmund",
+      "name": "도르트문트",
+      "latin": false,
+      "short": "BVB",
+      "colors": [
+       "#FDE100",
+       "#000000"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/bundesliga/#borussia-dortmund"
+    },
+    {
+     "pos": 3,
+     "pts": 16,
+     "team": {
+      "slug": "freiburg",
+      "name": "프라이부르크",
+      "latin": false,
+      "short": "SCF",
+      "colors": [
+       "#D40018",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/bundesliga/#freiburg"
+    },
+    {
+     "pos": 4,
+     "pts": 15,
+     "team": {
+      "slug": "rb-leipzig",
+      "name": "라이프치히",
+      "latin": false,
+      "short": "RBL",
+      "colors": [
+       "#FFFFFF",
+       "#DD0741"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/bundesliga/#rb-leipzig"
+    },
+    {
+     "pos": 5,
+     "pts": 15,
+     "team": {
+      "slug": "werder-bremen",
+      "name": "브레멘",
+      "latin": false,
+      "short": "SVW",
+      "colors": [
+       "#187946",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/bundesliga/#werder-bremen"
+    }
+   ],
+   "note": "11.02 기준 · 변동 전날 대비",
+   "updatedAt": "2026-11-01T22:16:14.261Z",
+   "href": "/competitions/bundesliga/"
+  },
+  {
+   "comp": "LIGUE1",
+   "short": "리그1",
+   "name": "리그 1",
+   "rows": [
+    {
+     "pos": 1,
+     "pts": 20,
+     "team": {
+      "slug": "paris-saint-germain",
+      "name": "파리 생제르맹",
+      "latin": false,
+      "short": "PSG",
+      "colors": [
+       "#004170",
+       "#DA291C"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/ligue1/#paris-saint-germain"
+    },
+    {
+     "pos": 2,
+     "pts": 18,
+     "team": {
+      "slug": "lille",
+      "name": "릴",
+      "latin": false,
+      "short": "LIL",
+      "colors": [
+       "#D31C12",
+       "#1B2B4D"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": null,
+     "href": "/competitions/ligue1/#lille"
+    },
+    {
+     "pos": 3,
+     "pts": 17,
+     "team": {
+      "slug": "lyon",
+      "name": "리옹",
+      "latin": false,
+      "short": "LYO",
+      "colors": [
+       "#FFFFFF",
+       "#14387F"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "up",
+      "by": 2
+     },
+     "band": null,
+     "href": "/competitions/ligue1/#lyon"
+    },
+    {
+     "pos": 4,
+     "pts": 17,
+     "team": {
+      "slug": "paris-fc",
+      "name": "파리 FC",
+      "latin": false,
+      "short": "PFC",
+      "colors": [
+       "#11234A",
+       "#6CB4E4"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "up",
+      "by": 2
+     },
+     "band": null,
+     "href": "/competitions/ligue1/#paris-fc"
+    },
+    {
+     "pos": 5,
+     "pts": 16,
+     "team": {
+      "slug": "rennes",
+      "name": "렌",
+      "latin": false,
+      "short": "REN",
+      "colors": [
+       "#CB2E23",
+       "#000000"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "down",
+      "by": 2
+     },
+     "band": null,
+     "href": "/competitions/ligue1/#rennes"
+    }
+   ],
+   "note": "11.02 기준 · 변동 전날 대비",
+   "updatedAt": "2026-11-01T22:16:35.482Z",
+   "href": "/competitions/ligue1/"
+  },
+  {
+   "comp": "UCL",
+   "short": "UCL",
+   "name": "UEFA 챔피언스리그",
+   "rows": [
+    {
+     "pos": 1,
+     "pts": 9,
+     "team": {
+      "slug": "paris-saint-germain",
+      "name": "파리 생제르맹",
+      "latin": false,
+      "short": "PSG",
+      "colors": [
+       "#004170",
+       "#DA291C"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": "ko",
+     "href": "/competitions/ucl/#paris-saint-germain"
+    },
+    {
+     "pos": 2,
+     "pts": 9,
+     "team": {
+      "slug": "aston-villa",
+      "name": "애스턴 빌라",
+      "latin": false,
+      "short": "AVL",
+      "colors": [
+       "#670E36",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": "ko",
+     "href": "/competitions/ucl/#aston-villa"
+    },
+    {
+     "pos": 3,
+     "pts": 9,
+     "team": {
+      "slug": "liverpool",
+      "name": "리버풀",
+      "latin": false,
+      "short": "LIV",
+      "colors": [
+       "#C8102E",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": "ko",
+     "href": "/competitions/ucl/#liverpool"
+    },
+    {
+     "pos": 4,
+     "pts": 9,
+     "team": {
+      "slug": "real-madrid",
+      "name": "레알 마드리드",
+      "latin": false,
+      "short": "RMA",
+      "colors": [
+       "#FFFFFF",
+       "#FEBE10"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": "ko",
+     "href": "/competitions/ucl/#real-madrid"
+    },
+    {
+     "pos": 5,
+     "pts": 9,
+     "team": {
+      "slug": "real-betis",
+      "name": "레알 베티스",
+      "latin": false,
+      "short": "BET",
+      "colors": [
+       "#007A3E",
+       "#FFFFFF"
+      ],
+      "page": true
+     },
+     "trend": {
+      "kind": "same"
+     },
+     "band": "ko",
+     "href": "/competitions/ucl/#real-betis"
+    }
+   ],
+   "note": "11.02 기준 · 변동 전날 대비",
+   "updatedAt": "2026-11-01T22:17:51.285Z",
+   "href": "/competitions/ucl/"
+  }
+ ]
+}
