@@ -17,7 +17,17 @@
  *   viewport 메타는 클라이언트 이동마다 새 노드로 바뀌어 고친 `media`가 풀렸다(D0-12 리뷰, DESIGN §8).
  * - `localStorage` 접근은 모두 try/catch(CLAUDE.md §7.2). 실패하면 시스템 테마·가리기 꺼짐으로 정상 렌더.
  * - 런타임 의존성 없음 — layout.tsx(서버)와 테마 토글(클라이언트 섬, D0-12)이 함께 import한다.
+ * - 저장소 인터페이스는 안전한 저장소 유틸(`src/lib/safe-storage.ts`, M4-07)과 같은 것을 쓴다. 테마 함수는 저장에 실패하면
+ *   메모리 폴백 없이 "이번 방문에만 속성 적용"이라 `createSafeStorage`로 바꾸지 않았다(동작 불변 — 상태는 `<html>` 속성이 들고 있다).
  */
+
+import type {
+  StorageGetter,
+  StorageLike,
+  StorageReader,
+} from "@/lib/safe-storage";
+
+export type { StorageGetter, StorageLike, StorageReader };
 
 /** 테마 저장 키. 값은 `light` | `dark`, 시스템이면 키를 지운다. */
 export const THEME_STORAGE_KEY = "ed-theme";
@@ -111,22 +121,7 @@ export const THEME_INIT_SCRIPT =
 
 // ─── 저장소·요소 최소 인터페이스 (DOM 타입 없이 테스트할 수 있게) ─────────────
 
-/** `localStorage`에서 읽기만 하는 부분 */
-export interface StorageReader {
-  getItem(key: string): string | null;
-}
-
-/** `localStorage`에서 쓰는 부분까지 */
-export interface StorageLike extends StorageReader {
-  setItem(key: string, value: string): void;
-  removeItem(key: string): void;
-}
-
-/**
- * 저장소를 돌려주는 함수. `localStorage` 전역에 접근하는 것만으로 예외가 나는 환경(쿠키 차단·샌드박스 iframe)이
- * 있어서 값이 아니라 함수로 받는다 — 호출까지 try 안에서 한다. 예: `() => window.localStorage`
- */
-export type StorageGetter<T extends StorageReader = StorageReader> = () => T;
+// 저장소 인터페이스(`StorageReader`·`StorageLike`·`StorageGetter`)는 `src/lib/safe-storage.ts`에 있고 위에서 다시 내보낸다.
 
 /** 속성을 다는 대상(`document.documentElement`) */
 export interface AttributeTarget {

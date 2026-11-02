@@ -15,6 +15,7 @@ export * from "./common";
 export * from "./competition";
 export * from "./configs";
 export * from "./feed-item";
+export * from "./follow";
 export * from "./matches";
 export * from "./names";
 export * from "./news";
