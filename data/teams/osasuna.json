@@ -12,12 +12,12 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-26T20:00:00.000Z"
+    "updated": "2026-11-02T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Ante Budimir",
-      "goals": 7,
+      "goals": 8,
       "assists": null
     }
   ],
@@ -37,15 +37,15 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1570431",
-    "kickoff": "2026-10-26T20:00:00.000Z",
+    "match": "af-1570436",
+    "kickoff": "2026-11-02T20:00:00.000Z",
     "comp": "LALIGA",
     "side": "away",
-    "opponent": "sevilla",
+    "opponent": "deportivo-la-coruna",
     "startXI": [
       {
-        "name": "Aitor Fernández",
-        "number": 13,
+        "name": "Sergio Herrera",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
@@ -80,8 +80,8 @@
         "grid": "3:3"
       },
       {
-        "name": "Lucas Torró",
-        "number": 6,
+        "name": "Iker Muñoz",
+        "number": 8,
         "pos": "M",
         "grid": "3:2"
       },
@@ -92,8 +92,8 @@
         "grid": "3:1"
       },
       {
-        "name": "Rubén García",
-        "number": 14,
+        "name": "Jonathan Dubasin",
+        "number": 21,
         "pos": "F",
         "grid": "4:3"
       },
@@ -104,23 +104,59 @@
         "grid": "4:2"
       },
       {
-        "name": "Jonathan Dubasin",
-        "number": 21,
+        "name": "Raul Moro",
+        "number": 18,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "Sergio Herrera",
-        "number": 1,
-        "pos": "G",
+        "name": "Diego Rico",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Asier Osambela",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Raúl García",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Rubén García",
+        "number": 14,
+        "pos": "M",
         "grid": null
       },
       {
         "name": "Rafa Fernández",
         "number": 31,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Aitor Fernández",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Mauro Echegoyen",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Kike Barja",
+        "number": 11,
+        "pos": "F",
         "grid": null
       },
       {
@@ -136,8 +172,8 @@
         "grid": null
       },
       {
-        "name": "Asier Osambela",
-        "number": 29,
+        "name": "Lucas Torró",
+        "number": 6,
         "pos": "M",
         "grid": null
       },
@@ -145,42 +181,6 @@
         "name": "R. Yeboah",
         "number": 48,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Diego Rico",
-        "number": 15,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Mauro Echegoyen",
-        "number": 26,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Raul Moro",
-        "number": 18,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Iker Muñoz",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Raúl García",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Kike Barja",
-        "number": 11,
-        "pos": "F",
         "grid": null
       }
     ]

@@ -2,11 +2,11 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-01T22:15:08.393Z",
+  "updatedAt": "2026-11-02T22:15:09.504Z",
   "standings": [
     {
       "pos": 1,
-      "prevPos": 2,
+      "prevPos": 1,
       "team": "arsenal",
       "played": 9,
       "w": 8,
@@ -26,7 +26,7 @@
     },
     {
       "pos": 2,
-      "prevPos": 1,
+      "prevPos": 2,
       "team": "manchester-city",
       "played": 9,
       "w": 7,
@@ -126,6 +126,26 @@
     },
     {
       "pos": 7,
+      "prevPos": 14,
+      "team": "everton",
+      "played": 9,
+      "w": 3,
+      "d": 4,
+      "l": 2,
+      "gf": 9,
+      "ga": 9,
+      "pts": 13,
+      "form": [
+        "D",
+        "W",
+        "D",
+        "L",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 8,
       "prevPos": 7,
       "team": "bournemouth",
       "played": 9,
@@ -145,7 +165,7 @@
       "zone": "none"
     },
     {
-      "pos": 8,
+      "pos": 9,
       "prevPos": 8,
       "team": "tottenham-hotspur",
       "played": 9,
@@ -165,7 +185,7 @@
       "zone": "none"
     },
     {
-      "pos": 9,
+      "pos": 10,
       "prevPos": 9,
       "team": "aston-villa",
       "played": 9,
@@ -185,7 +205,7 @@
       "zone": "none"
     },
     {
-      "pos": 10,
+      "pos": 11,
       "prevPos": 10,
       "team": "hull-city",
       "played": 9,
@@ -205,7 +225,7 @@
       "zone": "none"
     },
     {
-      "pos": 11,
+      "pos": 12,
       "prevPos": 11,
       "team": "leeds-united",
       "played": 9,
@@ -225,15 +245,15 @@
       "zone": "none"
     },
     {
-      "pos": 12,
+      "pos": 13,
       "prevPos": 12,
       "team": "newcastle-united",
-      "played": 8,
+      "played": 9,
       "w": 3,
       "d": 2,
-      "l": 3,
+      "l": 4,
       "gf": 12,
-      "ga": 14,
+      "ga": 15,
       "pts": 11,
       "form": [
         "L",
@@ -245,7 +265,7 @@
       "zone": "none"
     },
     {
-      "pos": 13,
+      "pos": 14,
       "prevPos": 13,
       "team": "ipswich-town",
       "played": 9,
@@ -261,26 +281,6 @@
         "L",
         "D",
         "D"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 14,
-      "prevPos": 14,
-      "team": "everton",
-      "played": 8,
-      "w": 2,
-      "d": 4,
-      "l": 2,
-      "gf": 8,
-      "ga": 9,
-      "pts": 10,
-      "form": [
-        "D",
-        "W",
-        "D",
-        "L",
-        "L"
       ],
       "zone": "none"
     },
@@ -4694,6 +4694,14 @@
       "played": 8
     },
     {
+      "player": "Thierno Barry",
+      "team": "everton",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
       "player": "Rayan Cherki",
       "team": "manchester-city",
       "goals": 4,
@@ -4732,14 +4740,6 @@
       "assists": null,
       "penalties": 1,
       "played": 7
-    },
-    {
-      "player": "Thierno Barry",
-      "team": "everton",
-      "goals": 3,
-      "assists": null,
-      "penalties": null,
-      "played": 8
     },
     {
       "player": "Jack Hinshelwood",
@@ -4859,7 +4859,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Keane Lewis-Potter",
@@ -4891,7 +4891,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Joe Willock",
@@ -4899,7 +4899,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Joshua King",
@@ -4947,7 +4947,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Jayden Bogle",
@@ -5155,7 +5155,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Liam Millar",
@@ -5171,7 +5171,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Wilson Isidor",
@@ -5203,7 +5203,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 5
+      "played": 6
     },
     {
       "player": "Luka Vušković",
@@ -5235,7 +5235,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Benjamin Šeško",
@@ -5251,7 +5251,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Anan Khalaili",
@@ -5323,7 +5323,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Jaidon Anthony",
@@ -5371,7 +5371,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Mohamed Cho",

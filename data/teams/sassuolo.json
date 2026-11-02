@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-27T17:30:00.000Z"
+    "updated": "2026-11-02T17:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -23,12 +23,12 @@
     {
       "name": "Sebastiano Esposito",
       "goals": 2,
-      "assists": 1
+      "assists": 2
     },
     {
-      "name": "Cas Odenthal",
+      "name": "Armand Lauriente",
       "goals": 2,
-      "assists": null
+      "assists": 1
     }
   ],
   "profile": {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1550174",
-    "kickoff": "2026-10-27T17:30:00.000Z",
+    "match": "af-1550185",
+    "kickoff": "2026-11-02T17:30:00.000Z",
     "comp": "SERIEA",
     "side": "home",
-    "opponent": "lazio",
+    "opponent": "fiorentina",
     "startXI": [
       {
         "name": "S. Turati",
@@ -60,20 +60,20 @@
         "grid": "1:1"
       },
       {
-        "name": "S. Cinquegrano",
-        "number": 46,
+        "name": "S. Walukiewicz",
+        "number": 6,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "C. Odenthal",
-        "number": 26,
+        "name": "J. Idzes",
+        "number": 21,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "D. Ćaleta-Car",
-        "number": 15,
+        "name": "Fali Candé",
+        "number": 5,
         "pos": "D",
         "grid": "2:2"
       },
@@ -84,20 +84,20 @@
         "grid": "2:1"
       },
       {
-        "name": "K. Thorstvedt",
-        "number": 42,
+        "name": "Vasilije Adžić",
+        "number": 17,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "L. Lipani",
-        "number": 35,
+        "name": "N. Matić",
+        "number": 18,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "D. Bakola",
-        "number": 50,
+        "name": "I. Sulemana",
+        "number": 55,
         "pos": "M",
         "grid": "3:1"
       },
@@ -122,15 +122,45 @@
     ],
     "substitutes": [
       {
-        "name": "B. Domínguez",
-        "number": 25,
+        "name": "I. Van der Brempt",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Bowie",
+        "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "S. Walukiewicz",
-        "number": 6,
+        "name": "G. Satalino",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Bakola",
+        "number": 50,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Ćaleta-Car",
+        "number": 15,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Cinquegrano",
+        "number": 46,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Domínguez",
+        "number": 25,
+        "pos": "F",
         "grid": null
       },
       {
@@ -140,14 +170,14 @@
         "grid": null
       },
       {
-        "name": "J. Idzes",
-        "number": 21,
-        "pos": "D",
+        "name": "G. Kulla",
+        "number": 14,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "N. Matić",
-        "number": 18,
+        "name": "L. Lipani",
+        "number": 35,
         "pos": "M",
         "grid": null
       },
@@ -164,51 +194,21 @@
         "grid": null
       },
       {
+        "name": "C. Odenthal",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Pieragnolo",
+        "number": 70,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "N. Pierini",
         "number": 77,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "G. Satalino",
-        "number": 12,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "I. Sulemana",
-        "number": 55,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "I. Van der Brempt",
-        "number": 20,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "C. Volpato",
-        "number": 7,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Fali Candé",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "K. Bowie",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Vasilije Adžić",
-        "number": 17,
-        "pos": "M",
         "grid": null
       }
     ]

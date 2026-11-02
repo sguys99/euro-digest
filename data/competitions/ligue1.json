@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-01T22:16:35.482Z",
+  "updatedAt": "2026-11-02T22:16:39.058Z",
   "standings": [
     {
       "pos": 1,
@@ -46,7 +46,7 @@
     },
     {
       "pos": 3,
-      "prevPos": 5,
+      "prevPos": 3,
       "team": "lyon",
       "played": 9,
       "w": 5,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": 6,
+      "prevPos": 4,
       "team": "paris-fc",
       "played": 9,
       "w": 5,
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": 3,
+      "prevPos": 5,
       "team": "rennes",
       "played": 9,
       "w": 5,
@@ -106,7 +106,7 @@
     },
     {
       "pos": 6,
-      "prevPos": 9,
+      "prevPos": 6,
       "team": "marseille",
       "played": 9,
       "w": 5,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 4,
+      "prevPos": 7,
       "team": "monaco",
       "played": 9,
       "w": 4,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 7,
+      "prevPos": 8,
       "team": "nice",
       "played": 9,
       "w": 4,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 8,
+      "prevPos": 9,
       "team": "lens",
       "played": 9,
       "w": 4,
@@ -186,26 +186,46 @@
     },
     {
       "pos": 10,
-      "prevPos": 10,
-      "team": "lorient",
-      "played": 8,
+      "prevPos": 14,
+      "team": "brest",
+      "played": 9,
       "w": 3,
       "d": 3,
-      "l": 2,
-      "gf": 7,
-      "ga": 6,
+      "l": 3,
+      "gf": 16,
+      "ga": 12,
       "pts": 12,
       "form": [
-        "D",
         "L",
         "W",
-        "W",
-        "D"
+        "D",
+        "L",
+        "W"
       ],
       "zone": "none"
     },
     {
       "pos": 11,
+      "prevPos": 10,
+      "team": "lorient",
+      "played": 9,
+      "w": 3,
+      "d": 3,
+      "l": 3,
+      "gf": 7,
+      "ga": 8,
+      "pts": 12,
+      "form": [
+        "L",
+        "W",
+        "W",
+        "D",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
       "prevPos": 11,
       "team": "toulouse",
       "played": 9,
@@ -225,8 +245,8 @@
       "zone": "none"
     },
     {
-      "pos": 12,
-      "prevPos": 16,
+      "pos": 13,
+      "prevPos": 12,
       "team": "strasbourg",
       "played": 9,
       "w": 3,
@@ -245,8 +265,8 @@
       "zone": "none"
     },
     {
-      "pos": 13,
-      "prevPos": 12,
+      "pos": 14,
+      "prevPos": 13,
       "team": "auxerre",
       "played": 9,
       "w": 3,
@@ -265,28 +285,8 @@
       "zone": "none"
     },
     {
-      "pos": 14,
-      "prevPos": 13,
-      "team": "brest",
-      "played": 8,
-      "w": 2,
-      "d": 3,
-      "l": 3,
-      "gf": 14,
-      "ga": 12,
-      "pts": 9,
-      "form": [
-        "L",
-        "L",
-        "W",
-        "D",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 15,
-      "prevPos": 14,
+      "prevPos": 15,
       "team": "angers",
       "played": 9,
       "w": 2,
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": 15,
+      "prevPos": 16,
       "team": "troyes",
       "played": 9,
       "w": 2,
@@ -1413,8 +1413,11 @@
       "kickoff": "2026-11-02T19:45:00Z",
       "home": "lorient",
       "away": "brest",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559638",
@@ -3878,7 +3881,7 @@
       "goals": 4,
       "assists": 1,
       "penalties": 1,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Sebastian Szymański",
@@ -3901,6 +3904,14 @@
       "team": "strasbourg",
       "goals": 4,
       "assists": 3,
+      "penalties": null,
+      "played": 9
+    },
+    {
+      "player": "Ludovic Ajorque",
+      "team": "brest",
+      "goals": 4,
+      "assists": 1,
       "penalties": null,
       "played": 9
     },
@@ -3959,14 +3970,6 @@
       "assists": null,
       "penalties": null,
       "played": 6
-    },
-    {
-      "player": "Ludovic Ajorque",
-      "team": "brest",
-      "goals": 3,
-      "assists": 1,
-      "penalties": null,
-      "played": 8
     },
     {
       "player": "Adil Bourabaa",
@@ -4158,7 +4161,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Mohammed Amoura",
@@ -4174,7 +4177,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Edan Diop",
@@ -4350,7 +4353,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Loïs Openda",
@@ -4502,7 +4505,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Noah Mbamba",
@@ -4510,7 +4513,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Lucas Calodat",
@@ -4550,7 +4553,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Amine Sbaï",
@@ -4590,7 +4593,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Kenny Lala",
@@ -4598,7 +4601,7 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Gabin Bernardeau",
@@ -4606,7 +4609,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     }
   ]
 }

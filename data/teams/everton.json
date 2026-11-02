@@ -12,12 +12,12 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-24T14:00:00.000Z"
+    "updated": "2026-11-02T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Thierno Barry",
-      "goals": 3,
+      "goals": 4,
       "assists": null
     },
     {
@@ -42,62 +42,62 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557437",
-    "kickoff": "2026-10-24T14:00:00.000Z",
+    "match": "af-1557455",
+    "kickoff": "2026-11-02T20:00:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "arsenal",
+    "opponent": "newcastle-united",
     "startXI": [
       {
-        "name": "Jordan Pickford",
+        "name": "J. Pickford",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Merlin Röhl",
-        "number": 34,
+        "name": "J. O&apos;Brien",
+        "number": 15,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "James Tarkowski",
+        "name": "J. Tarkowski",
         "number": 6,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Jake O'Brien",
-        "number": 15,
+        "name": "J. Branthwaite",
+        "number": 4,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Vitaliy Mykolenko",
+        "name": "V. Mykolenko",
         "number": 16,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Harrison Armstrong",
+        "name": "H. Armstrong",
         "number": 45,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "James Garner",
+        "name": "J. Garner",
         "number": 37,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Brennan Johnson",
-        "number": 22,
+        "name": "M. Röhl",
+        "number": 34,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "Kiernan Dewsbury-Hall",
+        "name": "K. Dewsbury-Hall",
         "number": 8,
         "pos": "M",
         "grid": "4:2"
@@ -109,7 +109,7 @@
         "grid": "4:1"
       },
       {
-        "name": "Thierno Barry",
+        "name": "T. Barry",
         "number": 11,
         "pos": "F",
         "grid": "5:1"
@@ -117,55 +117,55 @@
     ],
     "substitutes": [
       {
-        "name": "Tyler Dibling",
-        "number": 20,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Hayden Hackney",
-        "number": 30,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Carlos Alcaraz",
-        "number": 24,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Mark Travers",
-        "number": 12,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Tom King",
-        "number": 31,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Ainsley Maitland-Niles",
+        "name": "A. Maitland-Niles",
         "number": 2,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Michael Keane",
+        "name": "M. Keane",
         "number": 5,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Christian Nørgaard",
+        "name": "T. Dibling",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Nørgaard",
         "number": 23,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Braiden Graham",
+        "name": "C. Alcaraz",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "H. Hackney",
+        "number": 30,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Johnson",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Travers",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "B. Graham",
         "number": 58,
         "pos": "F",
         "grid": null

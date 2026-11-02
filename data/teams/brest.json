@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-23T18:45:00.000Z"
+    "updated": "2026-11-02T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -22,7 +22,7 @@
     },
     {
       "name": "Ludovic Ajorque",
-      "goals": 3,
+      "goals": 4,
       "assists": 1
     },
     {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1552794",
-    "kickoff": "2026-10-23T18:45:00.000Z",
+    "match": "af-1552803",
+    "kickoff": "2026-11-02T19:45:00.000Z",
     "comp": "LIGUE1",
-    "side": "home",
-    "opponent": "nice",
+    "side": "away",
+    "opponent": "lorient",
     "startXI": [
       {
         "name": "E. Selvik",
@@ -122,33 +122,9 @@
     ],
     "substitutes": [
       {
-        "name": "J. Bourgault",
-        "number": 18,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "D. N´Guessan",
         "number": 39,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "J. Nonge Boende",
-        "number": 7,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Patouillet",
-        "number": 30,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "L. Zogbe",
-        "number": 20,
-        "pos": "D",
         "grid": null
       },
       {
@@ -170,8 +146,32 @@
         "grid": null
       },
       {
-        "name": "L. C. Laine M.",
-        "number": 32,
+        "name": "J. Bourgault",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Nonge Boende",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Patouillet",
+        "number": 30,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "L. Zogbe",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Versini",
+        "number": 10,
         "pos": "F",
         "grid": null
       }

@@ -18,5 +18,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1635655",
+    "kickoff": "2026-10-20T19:00:00.000Z",
+    "comp": "UCL",
+    "side": "home",
+    "opponent": "psv",
+    "startXI": [
+      {
+        "name": "Diogo Costa",
+        "number": 99,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Alberto Baio",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "J. Bednarek",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "J. Kiwior",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Z. Sanusi",
+        "number": 12,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Victor Mow Froholdt",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "P. Rosario",
+        "number": 13,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Gabri Veiga",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Pepê Aquino",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "Samu",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "O. Pietuszewski",
+        "number": 77,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Hwang In-Beom",
+        "number": 16,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Giménez",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Martim Fernandes",
+        "number": 52,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Cláudio Ramos",
+        "number": 14,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "N. Pérez",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Borja Sainz",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Francisco Moura",
+        "number": 74,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Andorinha",
+        "number": 24,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "André Silva",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Varela",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Souza",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Fofana",
+        "number": 42,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
 }

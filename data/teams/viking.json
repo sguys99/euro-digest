@@ -24,5 +24,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1635621",
+    "kickoff": "2026-10-21T19:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "aston-villa",
+    "startXI": [
+      {
+        "name": "A. Østbø",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "H. Haugen",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "G. Stensness",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "J. Daland",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "H. Heggheim",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "T. Moi",
+        "number": 29,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "J. Bell",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "K. Askildsen",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "P. Christiansen",
+        "number": 20,
+        "pos": "F",
+        "grid": "4:3"
+      },
+      {
+        "name": "E. Botheim",
+        "number": 22,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "Z. Tripić",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Vetle Auklend",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Bassey",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ľ. Belko",
+        "number": 30,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "H. Bjørdal",
+        "number": 16,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Cosic",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "K. Haugen",
+        "number": 28,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "V. Vevatne",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Fuglestad",
+        "number": 23,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Kvia-Egeskog",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Postema",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Hansen",
+        "number": 33,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "H. Falchener",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      }
+    ]
+  }
 }

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-25T16:15:00.000Z"
+    "updated": "2026-11-02T19:45:00.000Z"
   },
   "topPlayers": [],
   "profile": {
@@ -31,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1552792",
-    "kickoff": "2026-10-25T16:15:00.000Z",
+    "match": "af-1552803",
+    "kickoff": "2026-11-02T19:45:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "angers",
+    "side": "home",
+    "opponent": "brest",
     "startXI": [
       {
         "name": "Y. Mvogo",
@@ -106,8 +106,14 @@
     ],
     "substitutes": [
       {
-        "name": "N. Obaretin",
-        "number": 55,
+        "name": "B. Kamara",
+        "number": 21,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "S. Kuzmić",
+        "number": 30,
         "pos": "D",
         "grid": null
       },
@@ -118,21 +124,21 @@
         "grid": null
       },
       {
-        "name": "S. Kuzmić",
-        "number": 30,
+        "name": "N. Mbamba",
+        "number": 72,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Obaretin",
+        "number": 55,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "M. Kone",
-        "number": 42,
+        "name": "I. Jensen",
+        "number": 10,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "B. Kamara",
-        "number": 21,
-        "pos": "G",
         "grid": null
       },
       {
@@ -150,12 +156,6 @@
       {
         "name": "A. Tosin",
         "number": 15,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "I. Jensen",
-        "number": 10,
         "pos": "F",
         "grid": null
       }

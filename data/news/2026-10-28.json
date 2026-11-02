@@ -1,7 +1,7 @@
 {
   "date": "2026-10-28",
-  "generatedAt": "2026-10-27T22:11:11.161Z",
-  "runId": "collect-prod-20261027T221105Z-cba2",
+  "generatedAt": "2026-11-02T22:13:54.163Z",
+  "runId": "collect-prod-20261102T221354Z-4066",
   "cards": [
     {
       "id": "c_6609cba790",
@@ -674,60 +674,6 @@
       "created": "2026-10-27T22:11:05.549Z"
     },
     {
-      "id": "c_46b7a5d497",
-      "t": "Ask the Ref: Is Arteta being unfairly targeted at Arsenal? Did Palmer deserve a straight red?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "arsenal"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7729009/2026/10/27/mikel-arteta-technical-area-referee/",
-          "at": "2026-10-27T12:30:06.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-27T22:11:05.549Z"
-    },
-    {
-      "id": "c_1096bda184",
-      "t": "Michael Carrick to be given more time to turn Manchester United form around",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7726768/2026/10/27/michael-carrick-stays-manchester-united/",
-          "at": "2026-10-27T12:06:24.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-27T22:11:05.549Z"
-    },
-    {
       "id": "c_74f526e9dc",
       "t": "결국 中에 고개 숙였다! 음바페, 3개 국어로 사과…“중국 국민과 역사에 깊은 존경심 가지고 있어”",
       "s": [],
@@ -891,33 +837,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cw054vdz9g7mo?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-27T15:20:51.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-27T22:11:05.549Z"
-    },
-    {
-      "id": "c_6ea4374d88",
-      "t": "RB Leipzig fan section sealed shut with concrete in stunt before German Cup tie",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "BUNDESLIGA"
-      ],
-      "teams": [
-        "rb-leipzig"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7729456/2026/10/27/rb-leipzig-fans-german-cup/",
-          "at": "2026-10-27T15:16:20.000Z",
           "tier": 2
         }
       ],

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-25T14:00:00.000Z"
+    "updated": "2026-11-02T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,74 +49,74 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557441",
-    "kickoff": "2026-10-25T14:00:00.000Z",
+    "match": "af-1557455",
+    "kickoff": "2026-11-02T20:00:00.000Z",
     "comp": "EPL",
-    "side": "away",
-    "opponent": "crystal-palace",
+    "side": "home",
+    "opponent": "everton",
     "startXI": [
       {
-        "name": "Lukáš Horníček",
+        "name": "L. Horníček",
         "number": 21,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Amar Dedić",
+        "name": "A. Dedić",
         "number": 37,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Fabian Schär",
+        "name": "F. Schär",
         "number": 5,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Dan Burn",
+        "name": "D. Burn",
         "number": 33,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Lewis Hall",
+        "name": "L. Hall",
         "number": 3,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Nico González",
-        "number": 6,
+        "name": "Joelinton",
+        "number": 7,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Joelinton",
-        "number": 7,
+        "name": "Nico González",
+        "number": 6,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Jacob Murphy",
-        "number": 23,
+        "name": "A. Elanga",
+        "number": 19,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "Joe Willock",
+        "name": "J. Willock",
         "number": 28,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Harvey Barnes",
+        "name": "H. Barnes",
         "number": 11,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "William Osula",
+        "name": "W. Osula",
         "number": 10,
         "pos": "F",
         "grid": "5:1"
@@ -124,57 +124,57 @@
     ],
     "substitutes": [
       {
-        "name": "Jacob Ramsey",
-        "number": 41,
+        "name": "B. Touré",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Murphy",
+        "number": 23,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Yoane Wissa",
+        "name": "Y. Wissa",
         "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Anthony Elanga",
-        "number": 19,
-        "pos": "F",
+        "name": "J. Ramsey",
+        "number": 41,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Pope",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "S. Botman",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Thiaw",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Bamba",
+        "number": 8,
+        "pos": "M",
         "grid": null
       },
       {
         "name": "Sean Steur",
         "number": 14,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Malick Thiaw",
-        "number": 12,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Nick Pope",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Sven Botman",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Aladji Bamba",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Bazoumana Touré",
-        "number": 17,
-        "pos": "F",
         "grid": null
       }
     ]

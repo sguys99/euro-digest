@@ -12,23 +12,23 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-29T19:45:00.000Z"
+    "updated": "2026-11-02T17:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Franco Mastantuono",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Mateo Pellegrino",
       "goals": 3,
       "assists": null
     },
     {
-      "name": "Álex Jiménez",
+      "name": "Alieu Njie",
       "goals": 2,
       "assists": 2
-    },
-    {
-      "name": "Mateo Pellegrino",
-      "goals": 2,
-      "assists": null
     }
   ],
   "profile": {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1550169",
-    "kickoff": "2026-10-29T19:45:00.000Z",
+    "match": "af-1550185",
+    "kickoff": "2026-11-02T17:30:00.000Z",
     "comp": "SERIEA",
-    "side": "home",
-    "opponent": "atalanta",
+    "side": "away",
+    "opponent": "sassuolo",
     "startXI": [
       {
         "name": "David de Gea",
@@ -122,51 +122,15 @@
     ],
     "substitutes": [
       {
-        "name": "O. Christensen",
-        "number": 53,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Dodô",
-        "number": 2,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "W. Gnonto",
-        "number": 29,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Beto",
-        "number": 23,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "Valde",
         "number": 21,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Antonio Pirrò",
-        "number": 73,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "Pote",
         "number": 28,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "B. Mazzeo",
-        "number": 72,
-        "pos": "F",
         "grid": null
       },
       {
@@ -182,9 +146,45 @@
         "grid": null
       },
       {
+        "name": "W. Gnonto",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Dodô",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "F. Croci",
+        "number": 70,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "O. Christensen",
+        "number": 53,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Beto",
+        "number": 23,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "D. Beldenti",
         "number": 75,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Salvatore Cianciulli",
+        "number": 76,
+        "pos": "M",
         "grid": null
       }
     ]

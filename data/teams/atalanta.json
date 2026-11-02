@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-29T19:45:00.000Z"
+    "updated": "2026-11-02T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -42,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1550169",
-    "kickoff": "2026-10-29T19:45:00.000Z",
+    "match": "af-1550178",
+    "kickoff": "2026-11-02T19:45:00.000Z",
     "comp": "SERIEA",
-    "side": "away",
-    "opponent": "fiorentina",
+    "side": "home",
+    "opponent": "parma",
     "startXI": [
       {
         "name": "M. Carnesecchi",
@@ -61,8 +61,8 @@
         "grid": "2:4"
       },
       {
-        "name": "T. Kristensen",
-        "number": 31,
+        "name": "G. Scalvini",
+        "number": 42,
         "pos": "D",
         "grid": "2:3"
       },
@@ -79,20 +79,20 @@
         "grid": "2:1"
       },
       {
-        "name": "G. Gaetano",
-        "number": 70,
+        "name": "Éderson",
+        "number": 13,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Éderson",
-        "number": 13,
+        "name": "Mario Pasalic",
+        "number": 8,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "E. Elmas",
-        "number": 99,
+        "name": "N. Zalewski",
+        "number": 59,
         "pos": "M",
         "grid": "4:3"
       },
@@ -103,8 +103,8 @@
         "grid": "4:2"
       },
       {
-        "name": "N. Zalewski",
-        "number": 59,
+        "name": "J. Rowe",
+        "number": 11,
         "pos": "M",
         "grid": "4:1"
       },
@@ -117,38 +117,14 @@
     ],
     "substitutes": [
       {
-        "name": "J. Rowe",
-        "number": 11,
-        "pos": "F",
+        "name": "E. Elmas",
+        "number": 99,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "K. Sulemana",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Sportiello",
-        "number": 57,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. Sonzogni",
-        "number": 51,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "G. Scalvini",
-        "number": 42,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "L. Samardžić",
-        "number": 10,
+        "name": "J. Idele",
+        "number": 41,
         "pos": "M",
         "grid": null
       },
@@ -159,14 +135,32 @@
         "grid": null
       },
       {
-        "name": "Mario Pasalic",
-        "number": 8,
+        "name": "L. Samardžić",
+        "number": 10,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Idele",
-        "number": 41,
+        "name": "M. Sonzogni",
+        "number": 51,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Sportiello",
+        "number": 57,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "K. Sulemana",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Sergej Levak",
+        "number": 46,
         "pos": "M",
         "grid": null
       }

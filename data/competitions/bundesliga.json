@@ -2,7 +2,7 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-01T22:16:14.261Z",
+  "updatedAt": "2026-11-02T22:16:16.950Z",
   "standings": [
     {
       "pos": 1,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 15,
+      "prevPos": 8,
       "team": "eintracht-frankfurt",
       "played": 8,
       "w": 3,
@@ -156,17 +156,17 @@
       "ga": 18,
       "pts": 11,
       "form": [
-        "W",
         "D",
         "L",
         "W",
-        "L"
+        "L",
+        "W"
       ],
       "zone": "none"
     },
     {
       "pos": 9,
-      "prevPos": 8,
+      "prevPos": 9,
       "team": "mainz",
       "played": 8,
       "w": 3,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 9,
+      "prevPos": 10,
       "team": "augsburg",
       "played": 8,
       "w": 2,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 10,
+      "prevPos": 11,
       "team": "stuttgart",
       "played": 8,
       "w": 3,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "hoffenheim",
       "played": 8,
       "w": 3,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 14,
+      "prevPos": 13,
       "team": "koln",
       "played": 8,
       "w": 2,
@@ -256,17 +256,17 @@
       "ga": 12,
       "pts": 9,
       "form": [
-        "D",
         "L",
         "W",
         "L",
+        "D",
         "D"
       ],
       "zone": "none"
     },
     {
       "pos": 14,
-      "prevPos": 12,
+      "prevPos": 14,
       "team": "paderborn",
       "played": 8,
       "w": 2,
@@ -286,7 +286,7 @@
     },
     {
       "pos": 15,
-      "prevPos": 13,
+      "prevPos": 15,
       "team": "hamburg",
       "played": 8,
       "w": 3,
@@ -296,17 +296,17 @@
       "ga": 19,
       "pts": 9,
       "form": [
+        "W",
+        "W",
+        "W",
         "L",
-        "W",
-        "W",
-        "W",
         "L"
       ],
       "zone": "none"
     },
     {
       "pos": 16,
-      "prevPos": 17,
+      "prevPos": 16,
       "team": "union-berlin",
       "played": 8,
       "w": 1,
@@ -317,8 +317,8 @@
       "pts": 7,
       "form": [
         "L",
-        "L",
         "W",
+        "D",
         "D",
         "D"
       ],
@@ -326,7 +326,7 @@
     },
     {
       "pos": 17,
-      "prevPos": 16,
+      "prevPos": 17,
       "team": "schalke",
       "played": 8,
       "w": 1,
@@ -1283,8 +1283,11 @@
       "kickoff": "2026-11-01T14:30:00Z",
       "home": "union-berlin",
       "away": "koln",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565844",
@@ -1293,8 +1296,11 @@
       "kickoff": "2026-11-01T16:30:00Z",
       "home": "eintracht-frankfurt",
       "away": "hamburg",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565852",

@@ -12,16 +12,16 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-28T17:30:00.000Z"
+    "updated": "2026-11-02T19:45:00.000Z"
   },
   "topPlayers": [
     {
-      "name": "José Romero",
-      "goals": 2,
+      "name": "Simone Lontani",
+      "goals": 3,
       "assists": null
     },
     {
-      "name": "Simone Lontani",
+      "name": "José Romero",
       "goals": 2,
       "assists": null
     }

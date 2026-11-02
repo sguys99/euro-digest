@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-01T22:18:18.461Z",
+  "generatedAt": "2026-11-02T22:17:28.133Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -27,19 +27,47 @@
       "team": "newcastle-united",
       "provider": "api-football",
       "since": "2026-10-31",
-      "season": [],
-      "recent": [],
+      "season": [
+        {
+          "comp": "EPL",
+          "apps": 0,
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ],
+      "recent": [
+        {
+          "matchId": "fd-560622",
+          "comp": "EPL",
+          "kickoff": "2026-11-02T20:00:00.000Z",
+          "opponent": {
+            "slug": "everton",
+            "name": "Everton"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 1
+          },
+          "status": "absent",
+          "started": false,
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ],
       "next": {
-        "matchId": "fd-560622",
+        "matchId": "fd-560633",
         "comp": "EPL",
-        "kickoff": "2026-11-02T20:00:00Z",
+        "kickoff": "2026-11-07T15:00:00Z",
         "opponent": {
-          "slug": "everton",
-          "name": "Everton FC"
+          "slug": "fulham",
+          "name": "Fulham FC"
         },
-        "home": true
+        "home": false
       },
-      "updatedAt": "2026-11-01T22:18:18.461Z"
+      "updatedAt": "2026-11-02T22:17:28.133Z"
     },
     {
       "slug": "lee-kang-in",

@@ -18,5 +18,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-1-4-1",
+    "match": "af-1635617",
+    "kickoff": "2026-10-20T19:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "roma",
+    "startXI": [
+      {
+        "name": "D. Takáč",
+        "number": 71,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "C. Blackman",
+        "number": 28,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "K. Bajrič",
+        "number": 12,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "S. Marković",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Sandro Cruz",
+        "number": 57,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "P. Pokorný",
+        "number": 3,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "T. Barseghyan",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:4"
+      },
+      {
+        "name": "R. Ibrahim",
+        "number": 5,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "A. Gajdoš",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Suleiman Camara",
+        "number": 21,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "N. Marcelli",
+        "number": 10,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "L. Hofstadter",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Ignatenko",
+        "number": 77,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Kozlovský",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Cristian Jesús Martínez",
+        "number": 70,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Matsuoka",
+        "number": 88,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Mustafić",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Popović",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "R. Tománek",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Wimmer",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Yirajang",
+        "number": 14,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Camara",
+        "number": 49,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Maroš",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
 }

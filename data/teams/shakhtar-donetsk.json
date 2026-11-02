@@ -24,5 +24,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-1-4-1",
+    "match": "af-1635672",
+    "kickoff": "2026-10-21T19:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "inter",
+    "startXI": [
+      {
+        "name": "D. Riznyk",
+        "number": 31,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Vinícius Tobias",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "V. Bondar",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "M. Matvienko",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Pedrinho",
+        "number": 13,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "O. Ocheretko",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Alisson Santana",
+        "number": 30,
+        "pos": "M",
+        "grid": "4:4"
+      },
+      {
+        "name": "Pedrinho",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Marlon Gomes",
+        "number": 6,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "G. Mendoza",
+        "number": 77,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Kauã Elias",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "K. Fesyun",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "L. Traoré",
+        "number": 2,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Gabriel Carvalho",
+        "number": 25,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Ghram",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Isaque",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "O. Karavaev",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Kryskiv",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Luca Meirelles",
+        "number": 49,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Lucas Ferreira",
+        "number": 37,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Nazaryna",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Newertton",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Bruninho",
+        "number": 99,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
 }

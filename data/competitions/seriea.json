@@ -2,7 +2,7 @@
   "comp": "SERIEA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-01T22:15:52.745Z",
+  "updatedAt": "2026-11-02T22:15:54.710Z",
   "standings": [
     {
       "pos": 1,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": 5,
+      "prevPos": 4,
       "team": "como",
       "played": 10,
       "w": 7,
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": 4,
+      "prevPos": 5,
       "team": "milan",
       "played": 10,
       "w": 6,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 9,
+      "prevPos": 7,
       "team": "juventus",
       "played": 10,
       "w": 5,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 7,
+      "prevPos": 8,
       "team": "napoli",
       "played": 10,
       "w": 4,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 8,
+      "prevPos": 9,
       "team": "bologna",
       "played": 10,
       "w": 4,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 13,
+      "prevPos": 11,
       "team": "genoa",
       "played": 10,
       "w": 4,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "cagliari",
       "played": 10,
       "w": 4,
@@ -246,21 +246,21 @@
     },
     {
       "pos": 13,
-      "prevPos": 12,
+      "prevPos": 13,
       "team": "atalanta",
-      "played": 9,
+      "played": 10,
       "w": 3,
       "d": 2,
-      "l": 4,
+      "l": 5,
       "gf": 16,
-      "ga": 17,
+      "ga": 20,
       "pts": 11,
       "form": [
-        "L",
         "W",
         "L",
         "D",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "none"
     },
@@ -286,18 +286,58 @@
     },
     {
       "pos": 15,
-      "prevPos": 15,
-      "team": "sassuolo",
-      "played": 9,
+      "prevPos": 18,
+      "team": "parma",
+      "played": 10,
       "w": 2,
       "d": 2,
-      "l": 5,
-      "gf": 14,
-      "ga": 22,
+      "l": 6,
+      "gf": 8,
+      "ga": 15,
       "pts": 8,
       "form": [
         "L",
+        "L",
+        "L",
         "D",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 16,
+      "prevPos": 17,
+      "team": "fiorentina",
+      "played": 10,
+      "w": 2,
+      "d": 2,
+      "l": 6,
+      "gf": 15,
+      "ga": 23,
+      "pts": 8,
+      "form": [
+        "L",
+        "L",
+        "L",
+        "D",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 17,
+      "prevPos": 15,
+      "team": "sassuolo",
+      "played": 10,
+      "w": 2,
+      "d": 2,
+      "l": 6,
+      "gf": 16,
+      "ga": 26,
+      "pts": 8,
+      "form": [
+        "D",
+        "L",
         "L",
         "L",
         "L"
@@ -305,7 +345,7 @@
       "zone": "none"
     },
     {
-      "pos": 16,
+      "pos": 18,
       "prevPos": 16,
       "team": "monza",
       "played": 10,
@@ -321,46 +361,6 @@
         "L",
         "L",
         "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 17,
-      "prevPos": 17,
-      "team": "fiorentina",
-      "played": 9,
-      "w": 1,
-      "d": 2,
-      "l": 6,
-      "gf": 11,
-      "ga": 21,
-      "pts": 5,
-      "form": [
-        "D",
-        "L",
-        "L",
-        "L",
-        "D"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 18,
-      "prevPos": 18,
-      "team": "parma",
-      "played": 9,
-      "w": 1,
-      "d": 2,
-      "l": 6,
-      "gf": 5,
-      "ga": 15,
-      "pts": 5,
-      "form": [
-        "W",
-        "L",
-        "L",
-        "L",
-        "D"
       ],
       "zone": "relegation"
     },
@@ -1687,8 +1687,11 @@
       "kickoff": "2026-11-02T17:30:00Z",
       "home": "sassuolo",
       "away": "fiorentina",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 4
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558545",
@@ -1697,8 +1700,11 @@
       "kickoff": "2026-11-02T19:45:00Z",
       "home": "atalanta",
       "away": "parma",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558537",
@@ -4722,7 +4728,7 @@
       "goals": 6,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Anastasios Douvikas",
@@ -4803,6 +4809,14 @@
       "assists": null,
       "penalties": null,
       "played": 6
+    },
+    {
+      "player": "Franco Mastantuono",
+      "team": "fiorentina",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Tijjani Noslin",
@@ -4901,6 +4915,22 @@
       "played": 10
     },
     {
+      "player": "Mateo Pellegrino",
+      "team": "fiorentina",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Simone Lontani",
+      "team": "parma",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
       "player": "Giorgi Kvernadze",
       "team": "frosinone",
       "goals": 3,
@@ -4914,15 +4944,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Franco Mastantuono",
-      "team": "fiorentina",
-      "goals": 3,
-      "assists": null,
-      "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Federico Bernardeschi",
@@ -4994,7 +5016,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Gonçalo Ramos",
@@ -5010,7 +5032,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Assane Diao",
@@ -5019,14 +5041,6 @@
       "assists": 1,
       "penalties": null,
       "played": 6
-    },
-    {
-      "player": "Mateo Pellegrino",
-      "team": "fiorentina",
-      "goals": 2,
-      "assists": null,
-      "penalties": null,
-      "played": 9
     },
     {
       "player": "Matteo Politano",
@@ -5042,7 +5056,7 @@
       "goals": 2,
       "assists": null,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jay Robinson",
@@ -5051,14 +5065,6 @@
       "assists": 1,
       "penalties": null,
       "played": 10
-    },
-    {
-      "player": "Simone Lontani",
-      "team": "parma",
-      "goals": 2,
-      "assists": null,
-      "penalties": null,
-      "played": 9
     },
     {
       "player": "Akor Adams",
@@ -5088,9 +5094,9 @@
       "player": "Sebastiano Esposito",
       "team": "sassuolo",
       "goals": 2,
-      "assists": 1,
+      "assists": 2,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Edon Zhegrova",
@@ -5114,7 +5120,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Carlos Augusto Lobaton",
@@ -5162,7 +5168,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Junior Messias",
@@ -5259,6 +5265,22 @@
       "assists": null,
       "penalties": null,
       "played": 8
+    },
+    {
+      "player": "Alieu Njie",
+      "team": "fiorentina",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Armand Lauriente",
+      "team": "sassuolo",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Yann Aurel Bisseck",
@@ -5362,7 +5384,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Rolando Mandragora",
@@ -5402,7 +5424,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Roberto Piccoli",
@@ -5475,22 +5497,6 @@
       "assists": null,
       "penalties": null,
       "played": 8
-    },
-    {
-      "player": "Ricardo Mangas",
-      "team": "monza",
-      "goals": 1,
-      "assists": 2,
-      "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Exequiel Zeballos",
-      "team": "monza",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 6
     }
   ]
 }

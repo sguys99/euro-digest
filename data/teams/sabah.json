@@ -18,5 +18,154 @@
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
-  "lineup": null
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1635719",
+    "kickoff": "2026-10-20T16:45:00.000Z",
+    "comp": "UCL",
+    "side": "home",
+    "opponent": "borussia-dortmund",
+    "startXI": [
+      {
+        "name": "S. Pokatilov",
+        "number": 92,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "A. Zedadka",
+        "number": 80,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "S. Solvet",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "A. McCarthy",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "T. Puchacz",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "U. Rahmonaliyev",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "I. Lepinjica",
+        "number": 13,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "K. Parris",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Du Queiroz",
+        "number": 37,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "V. Simić",
+        "number": 21,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "J. Mickels",
+        "number": 20,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Rodrigo Fernandes",
+        "number": 88,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Isaev",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Daşdəmirov",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Erivaldo Almeida",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Xaybulayev",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Mbina",
+        "number": 99,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Mirzəmmədov",
+        "number": 94,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "T. Mütəllimov",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "C. Nwachukwu",
+        "number": 8,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Ramazanov",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "X. Severina",
+        "number": 34,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Aliyev",
+        "number": 9,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
 }
