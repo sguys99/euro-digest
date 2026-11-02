@@ -20,6 +20,8 @@
  * `/my` 자료 (PRD FR-111, plan M4-08): `out/my/data/teams/{team}.json`(팀 페이지가 있는 팀마다) · `out/my/data/players/{slug}.json`(등록 선수마다) —
  * 다음 경기 · 최근 결과(규칙 scripts/lib/follow-data.ts, 형식 src/lib/my-view.ts). `/my` 섬이 팔로우한 것만 지연 fetch한다. 선수는 선수 상세와 같은
  * 로더(`loadPlayerPage`)의 화면 모델을 쓴다. 이전 빌드 파일이 남지 않게 `out/my/data/`를 비우고 쓴다.
+ * 같은 폴더에 첫 방문 온보딩 자료 `out/my/data/onboarding.json`(PRD FR-113, plan M4-09 — 리그 · 팀 · 한국 선수, 규칙 src/lib/onboarding-data.ts)도 쓴다 —
+ * 홈 진입 줄의 "시작"을 누를 때만 받는다.
  */
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -33,9 +35,10 @@ import { loadKoreanPlayersData, nameLookup } from "@/lib/data/korean-players";
 import { loadNationalTeamConfig } from "@/lib/data/national-team";
 import { listNewsDates, loadNewsIssue } from "@/lib/data/news";
 import { loadPlayerPage } from "@/lib/data/player-page";
+import { loadOnboardingData } from "@/lib/data/my-page";
 import { loadKoreanPlayers } from "@/lib/data/team-page";
 import { listTeamSlugs } from "@/lib/data/teams";
-import { sitePaths } from "@/lib/paths";
+import { artifacts, sitePaths } from "@/lib/paths";
 import { shiftDate } from "@/lib/time";
 
 import { createLogger } from "./lib/logger";
@@ -178,6 +181,11 @@ function main(): number {
     writeFileSync(file, json, "utf8");
     myBytes += Buffer.byteLength(json);
   }
+  const onboarding = JSON.stringify(loadOnboardingData());
+  const onboardingFile = outFile(artifacts.onboardingData());
+  mkdirSync(path.dirname(onboardingFile), { recursive: true });
+  writeFileSync(onboardingFile, onboarding, "utf8");
+  myBytes += Buffer.byteLength(onboarding);
   log.info("build.my.done", {
     count: myFiles.length,
     teams: myFiles.filter((f) => f.data.kind === "teams").length,

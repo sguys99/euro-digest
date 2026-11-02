@@ -633,4 +633,26 @@ describe("HomePage — 상태 화면(M1-37, DESIGN §9.3 ③)", () => {
     render(<HomePage />);
     expect(document.querySelector("[data-slot=issue-late]")).toBeNull();
   });
+  it("첫 방문 온보딩(M4-09 — FR-113 · D64 ⑥): 5줄 바로 다음 · 내 팀 소식 앞, 바로 뒤 첫 페인트 전 스크립트", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadBrief.mockReturnValue({ ...briefFixture, date: fixture.date });
+    const { container } = render(<HomePage />);
+    const main = container.querySelector("main") as HTMLElement;
+    const brief = main.querySelector("[data-slot='today-brief']")!;
+    const entry = main.querySelector("#ob-entry")!;
+    expect(entry).not.toBeNull();
+    expect(entry).toHaveClass("mt-7");
+    // 5줄 다음 첫 형제 요소가 진입 줄
+    expect(brief.nextElementSibling).toBe(entry);
+    expect(entry.nextElementSibling).toHaveAttribute(
+      "data-slot",
+      "onboarding-boot",
+    );
+    const myNews = main.querySelector("[data-slot='my-news']");
+    if (myNews)
+      expect(
+        entry.compareDocumentPosition(myNews) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+  });
 });

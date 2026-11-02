@@ -14,8 +14,12 @@ import { loadAllCompetitionData } from "@/lib/data/competition-data";
 import { loadTeamLookup } from "@/lib/data/competition-page";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { loadCardLabels } from "@/lib/data/card-labels";
+import { loadKoreanPlayersData } from "@/lib/data/korean-players";
 import { loadKoreanPlayers } from "@/lib/data/team-page";
 import { listTeamSlugs, loadTeam } from "@/lib/data/teams";
+import { rosterStateOf } from "@/lib/korean-players-view";
+import type { OnboardingData } from "@/lib/onboarding-steps";
+import { buildOnboardingData } from "@/lib/onboarding-data";
 import {
   followKey,
   type MyDirectory,
@@ -24,6 +28,7 @@ import {
 } from "@/lib/my-view";
 import { cardTags, type CardTagView } from "@/lib/news/feed-view";
 import type { PlayerNewsItem } from "@/lib/player-detail-view";
+import type { CompId } from "@/lib/schema/common";
 import type { NewsFile } from "@/lib/schema/news";
 
 let directoryCache: MyDirectory | undefined;
@@ -101,5 +106,38 @@ export function loadMyNewsCandidates(
         tags: cardTags(card, labels),
       },
     ];
+  });
+}
+
+/**
+ * 첫 방문 온보딩 자료(M4-09 — FR-113): 5대 리그 · 리그별 팀(현재 순위 순) · 등록 한국 선수. build-feeds가 `out/my/data/onboarding.json`으로 쓴다
+ * (규칙 src/lib/onboarding-data.ts). 팀 · 선수 범위는 디렉터리와 같다(팔로우할 수 있는 것만).
+ */
+export function loadOnboardingData(
+  dir: MyDirectory = loadMyDirectory(),
+): OnboardingData {
+  const all = loadAllCompetitionData();
+  const teamComp = new Map<string, CompId>();
+  for (const slug of Object.keys(dir.teams)) {
+    const team = loadTeam(slug);
+    if (team) teamComp.set(slug, team.comp);
+  }
+  const korean = loadKoreanPlayersData();
+  const records = new Map((korean?.players ?? []).map((r) => [r.slug, r]));
+  return buildOnboardingData({
+    competitions: loadCompetitionsConfig(),
+    teamComp,
+    standings: new Map(
+      all.map((c) => [c.comp, new Map(c.standings.map((r) => [r.team, r.pos]))]),
+    ),
+    directory: dir,
+    players: loadKoreanPlayers().map((p) => ({
+      slug: p.slug,
+      position: p.position,
+      team: p.team,
+      active: p.active,
+      comp: p.comp,
+      state: rosterStateOf(p, records.get(p.slug) ?? null),
+    })),
   });
 }

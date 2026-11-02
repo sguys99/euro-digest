@@ -9,6 +9,7 @@ import { NationalHome } from "@/components/national-team/national-team";
 import { TonightSection } from "@/components/home/tonight";
 import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
+import { OnboardingSlot } from "@/components/onboarding/onboarding-slot";
 import { AppShell } from "@/components/shell/app-shell";
 import { TransferHotList } from "@/components/transfers/hot-list";
 import { loadBriefSlot } from "@/lib/data/brief";
@@ -58,6 +59,9 @@ import { cn } from "@/lib/utils";
  *   7. 내 팀 소식(M4-08 — FR-112 · PRD §4.2 순서 2, DESIGN §9.3 D2 홈 위젯): 모든 폭에서 지면 안 5줄 바로 아래(A매치 앞). 팔로우는 브라우저에만 있어
  *      최신 호 후보 뉴스 행을 숨긴 채 싣고 첫 페인트 전 스크립트가 맞는 3장을 고른다(src/components/my/my-news.tsx) — 팔로우가 없거나 걸린 소식이
  *      없으면 섹션이 숨은 채라 자리가 생기지 않는다(CLS 0 — 숨은 섹션의 위 여백도 함께 숨는다).
+ *   8. 첫 방문 온보딩 진입 줄(M4-09 — FR-113 · PRD §15 D64 ⑥, DESIGN §9.3 D2 "온보딩"): 5줄 바로 아래(내 팀 소식 앞) 한 줄 — 첫 방문 + 팔로우 0일 때만,
+ *      모달 없음. 서버 HTML은 숨김이고 첫 페인트 전 스크립트가 연다(src/components/onboarding/onboarding-slot.tsx — 하이드레이션 뒤 펼침과의 CLS
+ *      비교는 DECISIONS D2 §9). "시작"을 누르면 같은 자리에서 단계 목록으로 펼친다(단계 UI · 자료는 그때 받는다).
  * 1024~1279는 목차 + 지면 2단,
  * 1280 이상은 목차 + 지면(688) + 마주 보는 면(296) 3단이다(DESIGN §4.3).
  */
@@ -149,6 +153,9 @@ export default function HomePage() {
     >
       {slot?.kind === "brief" ? <TodayBrief brief={slot.brief} /> : null}
       {slot?.kind === "missing" ? <BriefMissing /> : null}
+      {/* 첫 방문 온보딩 진입 줄(M4-09 — FR-113 · D64 ⑥): 첫 방문 + 팔로우 0일 때만 5줄 바로 아래 한 줄(첫 페인트 전 스크립트). 팔로우 0이면 아래
+          '내 팀 소식'은 숨으므로 둘은 함께 보이지 않는다 — 온보딩에서 팀 · 선수를 고르면 그 자리 아래에 내 팀 소식이 나타난다 */}
+      <OnboardingSlot className={hasBrief ? "mt-7" : "mb-9 lg:mb-11"} />
       {/* 내 팀 소식(M4-08 — FR-112): 팔로우가 있고 오늘 호에 걸린 소식이 있을 때만 보인다(첫 페인트 전 스크립트 — PRD §4.2 순서 2) */}
       <MyNews
         candidates={loadMyNewsCandidates(news)}

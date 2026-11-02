@@ -467,6 +467,11 @@ export const artifacts = {
       return unknownKind("artifacts.myData", { kind } as never);
     return `/my/data/${kind}/${assertSlug(slug, kind === "teams" ? "팀 slug" : "선수 slug")}.json`;
   },
+  /**
+   * `/my/data/onboarding.json` — 첫 방문 온보딩 자료(리그 · 팀 · 한국 선수 — M4-09, build-feeds가 쓴다). 홈 진입 줄의 "시작"을 누르면 받는다
+   * (형식은 src/lib/onboarding-steps.ts `OnboardingData`).
+   */
+  onboardingData: (): string => "/my/data/onboarding.json",
   /** `/manifest.webmanifest` (FR-120, Next 메타데이터 규칙과 같은 파일명) */
   manifest: (): string => "/manifest.webmanifest",
   /** `/sitemap.xml` (FR-124) — src/app/sitemap.ts가 빌드 때 만든다(M1-38) */
