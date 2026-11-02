@@ -50,8 +50,11 @@ import { matchResultFor, teamForms, type FormResult } from "./standings-enrich";
 export const TEAM_PROFILE_PROMPT_PATH = "configs/prompts/team-profile.md";
 /** 요청 하나에 넣는 최대 팀 수(PRD §9.1 '20팀 묶음') */
 export const TEAM_PROFILE_GROUP_SIZE = 20;
-/** 요청당 max_tokens — 주간 총평(D65 ⑨)·브리핑(D57)과 같은 16,384(llm.ts MAX_TOKENS_CEILING — 올리려면 사용자 승인) */
-export const TEAM_PROFILE_MAX_TOKENS = 16_384;
+/**
+ * 요청당 max_tokens 32,768 — 2026-11-02 사용자 승인(M4-06 안 A, llm.ts MAX_TOKENS_BY_CALL_SITE["team-profile"]). 16,384에서는 20팀
+ * 묶음 5개 중 3개가 thinking만으로 잘렸다(실측 thinking 10~16K, 보이는 출력 20팀 약 2~3K). 브리핑·주간 총평은 16,384 그대로.
+ */
+export const TEAM_PROFILE_MAX_TOKENS = 32_768;
 export const TEAM_PROFILE_EFFORT = "medium" as const;
 export const TEAM_PROFILE_THINKING = "adaptive" as const;
 /** 첫 시도 + 실패 팀만 모은 재시도 1회(FR-29와 같은 횟수 — 재시도 2회 이상은 사용자 승인 사항) */
@@ -388,6 +391,7 @@ export function buildProfileRequest(
     maxTokens: TEAM_PROFILE_MAX_TOKENS,
     effort: TEAM_PROFILE_EFFORT,
     thinking: TEAM_PROFILE_THINKING,
+    callSite: "team-profile", // max_tokens 상한 32,768(llm.ts MAX_TOKENS_BY_CALL_SITE) — 배치 전용
     // 같은 지시문으로 요청 여러 개(묶음) — D28: 주간 팀 프로필은 지시문 캐싱 켬(Haiku 5.5 최소 프리픽스 512토큰)
     cacheSystem: true,
   };

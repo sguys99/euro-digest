@@ -66,13 +66,35 @@ export const DEFAULT_LLM_MODEL = "claude-haiku-5-5";
 export const CUSTOM_ID_PATTERN = /^[a-zA-Z0-9_-]{1,64}$/;
 
 /**
- * 요청 1건의 max_tokens 절대 상한(전송 계층 안전망). 호출 지점별 실제 값은 호출부가 정한다 — 일일 브리핑 brief.ts
- * BRIEF_MAX_TOKENS 16,384(PRD §15 D57), 주간 2곳은 M3-07·M4-05에서(그때도 이 상한 안 — 각자 값은 사용자 승인). 상한이나
+ * 요청 1건의 기본 max_tokens 상한(전송 계층 안전망 — callSite가 없는 요청). 호출 지점별 실제 값은 호출부가 정한다 — 일일 브리핑
+ * brief.ts BRIEF_MAX_TOKENS 16,384(PRD §15 D57), 한국 선수 주간 총평 16,384(D65 ⑨), 팀 프로필만 아래 MAX_TOKENS_BY_CALL_SITE
+ * 32,768(2026-11-02 사용자 승인 — 배치 전용). 상한이나
  * 호출 지점별 값을 올리려면 사용자 승인이 필요하다(CLAUDE.md §1-3). M0-20 8,192(뉴스 요약 묶음 + thinking 여유) → D57에서 브리핑
  * 값과 같은 16,384로 올렸다(10-18 prod 첫 요청이 8,192에서 thinking만으로 잘림). 16,384는 비스트리밍 단건으로 보낼 수 있는 크기다
  * (SDK는 클라이언트 timeout을 주면 max_tokens로 스트리밍을 강요하지 않는다 — 이 파일은 항상 timeout을 준다).
  */
 export const MAX_TOKENS_CEILING = 16_384;
+
+/**
+ * 호출 지점별 max_tokens 상한(2026-11-02 사용자 승인 — M4-06 안 A). `callSite`가 없는 요청(일일 브리핑·주간 총평)은 기본 상한
+ * MAX_TOKENS_CEILING(16,384)을 넘을 수 없다. 팀 프로필(LLM 호출 지점 #2 — 20팀 묶음 Batches)만 32,768: 2026-11-02 dev 전체 실행에서
+ * 20팀 묶음 5개 중 3개가 16,384에서 thinking만으로 잘렸다(thinking이 요청마다 10~16K를 쓰고 팀 수에 비례하지 않음). 이 표의 값을
+ * 올리거나 지점을 더하려면 사용자 승인(CLAUDE.md §1-3) — tests/llm.test.ts가 값을 고정한다.
+ */
+export const MAX_TOKENS_BY_CALL_SITE = Object.freeze({
+  "team-profile": 32_768,
+} as const);
+export type LlmCallSite = keyof typeof MAX_TOKENS_BY_CALL_SITE;
+
+/** 요청의 max_tokens 상한 — callSite 표 값, 없으면 기본 MAX_TOKENS_CEILING */
+export function maxTokensCeilingFor(callSite: LlmCallSite | undefined): number {
+  return callSite === undefined
+    ? MAX_TOKENS_CEILING
+    : MAX_TOKENS_BY_CALL_SITE[callSite];
+}
+
+/** 단건(비스트리밍 HTTP) 호출의 max_tokens 상한 — 큰 값은 배치에서만(단건은 HTTP 타임아웃 위험, 이 파일은 스트리밍을 쓰지 않는다) */
+export const SINGLE_CALL_MAX_TOKENS = MAX_TOKENS_CEILING;
 
 /** 배치 1회 요청 수 상한(안전망 — API 한도는 100,000). 일일 브리핑은 하루 1~3요청(FR-25), 주간 팀 프로필은 20팀 묶음(M4-06). */
 export const MAX_REQUESTS_PER_BATCH = 100;
@@ -329,40 +351,49 @@ function shortMessage(message: string): string {
  * LLM 요청 1건. 입력 크기 상한(브리핑 정형 데이터의 경기 수 상한 등)은 호출부 책임이고, 여기서는 형식과 max_tokens만 강제한다.
  * temperature·top_p·top_k는 넣지 않는다 — claude-haiku-5-5는 기본값 외의 값을 400으로 거부한다.
  */
-export const LlmRequestSchema = z.strictObject({
-  /** 결과 매칭 키. 브리핑 날짜·팀 묶음 ID 등. Batches API 제약을 단건 호출에도 똑같이 적용한다 */
-  customId: z
-    .string()
-    .regex(
-      CUSTOM_ID_PATTERN,
-      "customId는 영문·숫자·_·-만, 1~64자여야 한다 (Batches API custom_id 제약)",
-    ),
-  /** 고정 지시문(configs/prompts/*.md). cacheSystem이면 캐시 대상 */
-  system: z.string().min(1, "system이 비어 있다"),
-  /** 요청별 입력 */
-  user: z.string().min(1, "user가 비어 있다"),
-  /** 필수. thinking 토큰도 이 안에서 쓰인다 */
-  maxTokens: z
-    .number()
-    .int("maxTokens는 정수여야 한다")
-    .min(1, "maxTokens는 1 이상이어야 한다")
-    .max(
-      MAX_TOKENS_CEILING,
-      `maxTokens는 ${MAX_TOKENS_CEILING} 이하여야 한다 (올리려면 사용자 승인 — CLAUDE.md §1-3)`,
-    ),
-  /**
-   * system 블록에 `cache_control: {type:"ephemeral"}`(5분 TTL)을 붙인다.
-   * - 모델 최소 프리픽스(claude-haiku-5-5 512토큰)에 못 미치면 효과가 없다(오류 없이 캐싱 안 됨).
-   * - M1 첫 실측에서 `cache_read_input_tokens`가 0이면 이 옵션과 캐싱 코드를 빼고 PRD 비용 표를 갱신한다
-   *   (CLAUDE.md §6.2, plan.md §14 B3).
-   * - 1시간 TTL(문서는 배치에 권장, 쓰기 단가 2배)은 cost.ts 단가 분리가 필요해 지금은 지원하지 않는다.
-   */
-  cacheSystem: z.boolean().optional(),
-  /** output_config.effort. 생략하면 모델 기본값(claude-haiku-5-5는 medium). xhigh·max는 막는다(비용) */
-  effort: z.enum(["low", "medium", "high"]).optional(),
-  /** thinking 설정. 생략하면 모델 기본값(claude-haiku-5-5는 적응형 thinking 켜짐) */
-  thinking: z.enum(["adaptive", "disabled"]).optional(),
-});
+export const LlmRequestSchema = z
+  .strictObject({
+    /** 결과 매칭 키. 브리핑 날짜·팀 묶음 ID 등. Batches API 제약을 단건 호출에도 똑같이 적용한다 */
+    customId: z
+      .string()
+      .regex(
+        CUSTOM_ID_PATTERN,
+        "customId는 영문·숫자·_·-만, 1~64자여야 한다 (Batches API custom_id 제약)",
+      ),
+    /** 고정 지시문(configs/prompts/*.md). cacheSystem이면 캐시 대상 */
+    system: z.string().min(1, "system이 비어 있다"),
+    /** 요청별 입력 */
+    user: z.string().min(1, "user가 비어 있다"),
+    /** 필수. thinking 토큰도 이 안에서 쓰인다. 상한은 callSite별(MAX_TOKENS_BY_CALL_SITE — 없으면 MAX_TOKENS_CEILING) */
+    maxTokens: z
+      .number()
+      .int("maxTokens는 정수여야 한다")
+      .min(1, "maxTokens는 1 이상이어야 한다"),
+    /** 호출 지점 — 기본 상한보다 큰 max_tokens를 승인받은 지점만(팀 프로필). API로 보내지 않는다 */
+    callSite: z.enum(["team-profile"]).optional(),
+    /**
+     * system 블록에 `cache_control: {type:"ephemeral"}`(5분 TTL)을 붙인다.
+     * - 모델 최소 프리픽스(claude-haiku-5-5 512토큰)에 못 미치면 효과가 없다(오류 없이 캐싱 안 됨).
+     * - M1 첫 실측에서 `cache_read_input_tokens`가 0이면 이 옵션과 캐싱 코드를 빼고 PRD 비용 표를 갱신한다
+     *   (CLAUDE.md §6.2, plan.md §14 B3).
+     * - 1시간 TTL(문서는 배치에 권장, 쓰기 단가 2배)은 cost.ts 단가 분리가 필요해 지금은 지원하지 않는다.
+     */
+    cacheSystem: z.boolean().optional(),
+    /** output_config.effort. 생략하면 모델 기본값(claude-haiku-5-5는 medium). xhigh·max는 막는다(비용) */
+    effort: z.enum(["low", "medium", "high"]).optional(),
+    /** thinking 설정. 생략하면 모델 기본값(claude-haiku-5-5는 적응형 thinking 켜짐) */
+    thinking: z.enum(["adaptive", "disabled"]).optional(),
+  })
+  .superRefine((request, ctx) => {
+    const ceiling = maxTokensCeilingFor(request.callSite);
+    if (request.maxTokens > ceiling) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["maxTokens"],
+        message: `maxTokens는 ${ceiling} 이하여야 한다${request.callSite ? ` (호출 지점 ${request.callSite})` : ""} (올리려면 사용자 승인 — CLAUDE.md §1-3)`,
+      });
+    }
+  });
 export type LlmRequest = z.infer<typeof LlmRequestSchema>;
 
 /**
@@ -1532,6 +1563,11 @@ export function createLlmClient(options: LlmClientOptions = {}): LlmClient {
   ): Promise<LlmResult> {
     const [valid] = validateRequests([request]);
     if (!valid) throw new LlmRequestError("요청이 0건이다");
+    if (valid.maxTokens > SINGLE_CALL_MAX_TOKENS) {
+      throw new LlmRequestError(
+        `단건 호출의 maxTokens는 ${SINGLE_CALL_MAX_TOKENS} 이하여야 한다 — 큰 값은 배치에서만(비스트리밍 HTTP 타임아웃)`,
+      );
+    }
     if (
       callTimeoutMs !== undefined &&
       !(Number.isSafeInteger(callTimeoutMs) && callTimeoutMs > 0)

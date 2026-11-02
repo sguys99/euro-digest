@@ -153,7 +153,7 @@ export { WEEKLY_REPORT_DIR } from "./weekly-kr";
 const MINUTE_MS = 60_000;
 
 /**
- * 등록된 단계(순서 = 실행 순서). 시간 상한 합계 30분 — weekly.yml 주간 작업 단계 상한(35분) 안.
+ * 등록된 단계(순서 = 실행 순서). 시간 상한 합계 36분 — weekly.yml 주간 작업 단계 상한(40분) 안.
  *   ① 한국 선수 주간 리포트(M3-07 — 표·MVP 코드 계산 + 주간 총평 Batches 1회, FR-90~92)
  *   ② 분석 블로그 주 1회 수집(M3-08 — LLM 없음, FR-10·FR-57)
  *   ③ 팀 프로필(M4-06 — 팀 한줄평+강점/약점 20팀 묶음 Batches, 지시문 캐싱 켬, D28 — data/teams를 ②와 공유)
@@ -187,7 +187,7 @@ export const WEEKLY_STAGES: readonly WeeklyStage[] = [
     title: "팀 프로필",
     task: "M4-06",
     llm: true,
-    timeoutMs: 12 * MINUTE_MS,
+    timeoutMs: 18 * MINUTE_MS, // 2026-11-02 사용자 승인 12→18분(LLM 창 15분 + 취소 유예·쓰기)
     // 팀 파일의 profile만 바꾼다(analysis-blogs와 data/teams 공유 — sharedWrites)
     writes: [TEAM_PROFILE_TEAMS_DIR],
     sharedWrites: [TEAM_PROFILE_TEAMS_DIR],

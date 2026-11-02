@@ -72,10 +72,13 @@ import type { WeeklyStageContext, WeeklyStageReport } from "./weekly-stages";
 /** 이 단계가 쓰는 폴더(weekly-stages.ts writes·sharedWrites) */
 export const TEAM_PROFILE_TEAMS_DIR = "data/teams";
 
-// ─── 시간 상한 (단계 timeoutMs 12분 안 — weekly-stages.ts) ─────────────────
+// ─── 시간 상한 (단계 timeoutMs 18분 안 — weekly-stages.ts, 2026-11-02 사용자 승인 12→18분) ─────────
 
-/** 단계 시작부터 LLM(배치 제출·폴링·재시도)에 쓰는 시간 — 남은 시간은 취소 유예·쓰기 */
-export const TEAM_PROFILE_LLM_WINDOW_MS = 10 * 60_000;
+/**
+ * 단계 시작부터 LLM(배치 제출·폴링·재시도)에 쓰는 시간 — 남은 시간은 취소 유예·쓰기. 2026-11-02 사용자 승인 10→15분: dev 전체 실행의
+ * 5요청 배치가 6분 50초 걸려 재시도 배치가 10분 창을 넘겼다.
+ */
+export const TEAM_PROFILE_LLM_WINDOW_MS = 15 * 60_000;
 /** 첫 배치를 보낼 최소 남은 시간 */
 export const TEAM_PROFILE_FIRST_MIN_MS = 60_000;
 /** 재시도 배치를 보낼 최소 남은 시간 — M0-30 배치 완료 1분 50초~6분 33초 */

@@ -5,7 +5,7 @@
  * - 골든셋: `fixtures/llm/golden-team/inputs.json` — 팀 지표 스냅숏(team-profile.ts buildTeamMetrics 결과를 그대로 얼린 것, 기사·이름 없음).
  *   `--build-golden`이 지금 data/competitions·data/teams에서 GOLDEN_TEAM_SLUGS로 다시 쓴다(LLM 없음). 평소 실행은 파일만 읽는다.
  * - 실행: 10팀 = 묶음 1개(요청 1건, customId `team-profile-golden-g1`) — 파이프라인과 같은 요청 설정(Batches·지시문 캐싱·max_tokens
- *   16,384·thinking 적응형 + effort medium). 판정은 파이프라인과 같은 judgeGroup.
+ *   32,768·thinking 적응형 + effort medium). 판정은 파이프라인과 같은 judgeGroup.
  * - live(기본): 예상 최악 비용 출력 → 이번 달 사용 알림(dev 50%) → 비용 가드(env dev — runs.json + runs-dev.json) → 배치 → 실행 기록
  *   (`data/runs-dev.json`, job weekly, runId `eval-team-…` — cost.ts withRecordedRun) → `fixtures/llm/golden-team/runs/<라벨>.json` →
  *   이전 실행과 팀별 diff. `--update-mock`이면 출력을 mock fixture(`fixtures/llm/mock/by-id/team-profile-golden-g1.json`)로 쓴다.
