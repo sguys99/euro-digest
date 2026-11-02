@@ -136,6 +136,10 @@ describe("tonightCards — 선별 결과 → 카드", () => {
     });
     expect(cards[0]?.home.name).toBe("바이에른 뮌헨");
     expect(cards[1]?.reasons).toEqual([]);
+    expect(cards.map((c) => c.ics)).toEqual([
+      { kind: "match", matchId: "m1" },
+      { kind: "match", matchId: "m2" },
+    ]);
   });
 
   it("화면 순서는 킥오프 순 — 선별(점수 순)은 그대로 두고, 같은 킥오프는 선별 순서를 유지", () => {
@@ -219,6 +223,12 @@ describe("tonightCards — 선별 결과 → 카드", () => {
       ["pending", "결과 대기"],
       ["scheduled", null],
     ]);
+    // 경기별 .ics(M4-12)는 예정 경기만 — 종료 · 결과 대기는 없음
+    expect(cards.map((c) => c.ics)).toEqual([
+      null,
+      null,
+      { kind: "match", matchId: "l" },
+    ]);
     expect(JSON.stringify(cards)).not.toMatch(/"h":2/);
   });
 
@@ -271,7 +281,9 @@ describe("TonightSection — 홈 위젯", () => {
       within(second).queryByRole("list", { name: "선정 이유" }),
     ).toBeNull();
     // 대진: 홈 / 화면 밖 "대" / 원정, 배지는 장식
-    expect(first.querySelector(".sr-only")?.textContent).toBe("대");
+    expect(
+      first.querySelector("p.grid > .sr-only, p > .sr-only")?.textContent,
+    ).toBe("대");
     for (const badge of first.querySelectorAll(".kit")) {
       expect(badge).toHaveAttribute("aria-hidden", "true");
     }
@@ -284,7 +296,22 @@ describe("TonightSection — 홈 위젯", () => {
       "분데스리가",
     );
     // 팀 이름(배지 + 이름) = 팀 화면 링크(M2-13 — 팀 페이지가 있는 팀만, 인테르는 글자만) + '선정 기준 ›'
-    const links = within(section).getAllByRole("link");
+    // 예정 경기 거터 끝 경기별 .ics(M4-12) — 이름 = 대진 + "캘린더에 추가 .ics", 경로 = 경기별 파일
+    const ics = within(section)
+      .getAllByRole("link")
+      .filter((a) => a.matches("[data-slot=ics-link]"));
+    expect(ics.map((a) => a.getAttribute("href"))).toEqual([
+      "/euro-digest/calendar/match/m1.ics",
+      "/euro-digest/calendar/match/m2.ics",
+    ]);
+    expect(
+      within(first).getByRole("link", {
+        name: "바이에른 뮌헨 대 보루시아 도르트문트 경기 캘린더에 추가 .ics",
+      }),
+    ).toBe(ics[0]);
+    const links = within(section)
+      .getAllByRole("link")
+      .filter((a) => !a.matches("[data-slot=ics-link]"));
     expect(links.map((a) => a.textContent)).toEqual([
       "BAY바이에른 뮌헨",
       "BOR보루시아 도르트문트",
@@ -330,6 +357,8 @@ describe("TonightSection — 홈 위젯", () => {
       "종료",
     );
     expect(row.textContent).not.toMatch(/3\s*[-–:]\s*0/);
+    // 끝난 경기에는 .ics 링크가 없다(M4-12)
+    expect(row.querySelector("[data-slot=ics-link]")).toBeNull();
   });
 
   it("빈 상태 — 경기 없는 날은 부제(창, 경기 수 없음) + 빈 상태 문구, 선정 규칙 파일이 없으면(창 null) 부제도 없다", () => {

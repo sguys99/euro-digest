@@ -3,6 +3,7 @@ import Link from "next/link";
 import { KoreanArmband } from "@/components/news/feed-card";
 import { TeamBadge } from "@/components/team/team-badge";
 import { TeamLink } from "@/components/team/team-link";
+import { IcsLink } from "@/components/ui/ics-link";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { IndexTab, StampChip } from "@/components/ui/chip";
 import { SectionHead } from "@/components/ui/section-head";
@@ -27,6 +28,7 @@ import { cn } from "@/lib/utils";
  *   스코어는 싣지 않는다(결과 가리기 M4-15 전, src/lib/home-widgets.ts 머리 주석).
  * - 본문: 이유 태그 줄(데이터 사실만 — `reasons[].label` 그대로, 한국 선수 = "한국" 완장 + "{선수} 소속", 그 밖 = 도장 칩) → 대진 2줄(홈 / 원정,
  *   배지 s + 한글 팀명 800 15px). 이유가 없으면 태그 줄을 두지 않는다.
+ * - 거터 끝 경기별 .ics 짧은 링크(M4-12 — 아이콘 + ".ics", 누름 영역 44px): 예정 경기만(종료 · 결과 대기 없음 — src/lib/ics-links.ts).
  * - 접근성: 목록 `<ol>`, 이유 `<ul aria-label="선정 이유">`, 두 팀 사이 화면 밖 "대", 배지 `aria-hidden`, 인덱스 탭 약칭 + `title`,
  *   킥오프 `<time datetime>`. 팀 이름은 팀 화면 링크(M2-13 — 팀 페이지가 있는 팀만, `TeamLink`).
  */
@@ -74,6 +76,15 @@ function TonightRow({ card }: { card: TonightCardView }) {
           >
             {card.stateText}
           </span>
+        ) : null}
+        {card.ics ? (
+          <IcsLink
+            feed={card.ics}
+            label=".ics"
+            context={`${card.home.name} 대 ${card.away.name} 경기 캘린더에 추가`}
+            variant="compact"
+            className="-ml-0.5 justify-self-start"
+          />
         ) : null}
       </div>
       <div className="min-w-0">

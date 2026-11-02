@@ -28,7 +28,8 @@ import {
   type TrendView,
   type ZoneBand,
 } from "@/lib/competition-view";
-import { routes } from "@/lib/paths";
+import { upcomingMatchIcsFeed } from "@/lib/ics-links";
+import { routes, type CalendarFeed } from "@/lib/paths";
 import type { CompId } from "@/lib/schema/common";
 import type { CompetitionFile } from "@/lib/schema/competition";
 import type {
@@ -72,6 +73,8 @@ export interface TonightCardView {
   away: TeamView;
   /** 이유 태그(선별 순서 그대로) — 없으면 빈 배열(태그 줄을 숨긴다) */
   reasons: TonightReasonView[];
+  /** 경기별 .ics(M4-12) — 예정 경기만(src/lib/ics-links.ts `upcomingMatchIcsFeed`), 종료 · 결과 대기는 null */
+  ics: CalendarFeed | null;
 }
 
 const STATE_TEXT: Readonly<Record<TonightState, string | null>> = {
@@ -114,6 +117,7 @@ export function tonightCards(
       home: team(match.home),
       away: team(match.away),
       reasons: reasons.map((r) => ({ kind: r.kind, label: r.label })),
+      ics: upcomingMatchIcsFeed(state, match),
     };
   });
 }

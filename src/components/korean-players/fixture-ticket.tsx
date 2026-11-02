@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 
 import { TeamBadge } from "@/components/team/team-badge";
+import { IcsLink } from "@/components/ui/ics-link";
+import { upcomingRowIcsFeed } from "@/lib/ics-links";
 import type { FixtureRowView, FixtureTeamView } from "@/lib/player-detail-view";
 
 import { CompTag } from "./player-marks";
@@ -123,8 +125,8 @@ export function Admission({
       <div
         className={
           xlVertical
-            ? "grid min-w-0 content-start gap-2 pt-3 pr-3.5 pb-3 pl-4 xl:px-4 xl:pt-3 xl:pb-3.5"
-            : "grid min-w-0 content-start gap-2 pt-3 pr-3.5 pb-3 pl-4 lg:pt-3.5 lg:pr-5 lg:pb-3.5 lg:pl-5"
+            ? "grid min-w-0 content-start gap-2 pt-3 pr-3.5 pb-1.5 pl-4 xl:px-4 xl:pt-3 xl:pb-1.5"
+            : "grid min-w-0 content-start gap-2 pt-3 pr-3.5 pb-1.5 pl-4 lg:pt-3.5 lg:pr-5 lg:pb-1.5 lg:pl-5"
         }
       >
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-2">
@@ -136,6 +138,14 @@ export function Admission({
           <SideTeam team={row.away} side="원정" />
         </p>
         {why}
+        {/* 캘린더에 추가(M4-12 — D2 혼합안 `.adm__act`): 다음 경기 줄은 예정 경기 · 선수 `next`뿐이라 경기별 .ics가 늘 있다(src/lib/ics-links.ts) */}
+        <p className="-ml-0.5">
+          <IcsLink
+            feed={upcomingRowIcsFeed(row)}
+            label="캘린더에 추가 .ics"
+            context={`${row.home.name} 대 ${row.away.name} 경기`}
+          />
+        </p>
       </div>
     </article>
   );

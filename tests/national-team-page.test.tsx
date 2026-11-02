@@ -60,6 +60,15 @@ describe("NationalHome — 홈 A매치 섹션", () => {
     expect(rows[0]!.textContent).toMatch(/홈 사우디아라비아.*원정 대한민국/);
     expect(rows[0]!.textContent).toContain("23:30");
     expect(rows[0]).toHaveAttribute("data-state", "scheduled");
+    // 예정 경기 오른쪽 칸 끝 경기별 .ics(M4-12) — 이름 = 대진 + "캘린더에 추가 .ics"
+    expect(
+      within(rows[0] as HTMLElement).getByRole("link", {
+        name: "사우디아라비아 대 대한민국 경기 캘린더에 추가 .ics",
+      }),
+    ).toHaveAttribute(
+      "href",
+      "/euro-digest/calendar/match/2026-11-13-saudi-arabia.ics",
+    );
     const squad = within(
       section.querySelector('[data-slot="home-national-squad"]') as HTMLElement,
     );
@@ -82,6 +91,8 @@ describe("NationalHome — 홈 A매치 섹션", () => {
       <NationalHome data={pending} headingId="a-h" tagsOf={() => []} />,
     );
     expect(screen.getAllByText("결과 대기")).toHaveLength(2);
+    // 결과 대기(킥오프 지남)에는 .ics 없음
+    expect(document.querySelector("[data-slot=ics-link]")).toBeNull();
     unmount();
     const done = loadNationalHome(at("2026-10-07T03:00:00Z"))!;
     const { container } = render(

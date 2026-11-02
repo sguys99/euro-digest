@@ -5,10 +5,12 @@ import { ResultChip, Score } from "@/components/competition/marks";
 import { PlayerLink } from "@/components/korean-players/player-marks";
 import { NewsRows } from "@/components/news/news-row";
 import { TeamBadge } from "@/components/team/team-badge";
+import { IcsLink } from "@/components/ui/ics-link";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { SectionHead } from "@/components/ui/section-head";
 import type { TeamView } from "@/lib/competition-view";
 import { cx } from "@/lib/cx";
+import { nationalIcsFeed } from "@/lib/ics-links";
 import type {
   NationalHomeData,
   NationalNewsView,
@@ -77,6 +79,8 @@ function MatchResult({ row }: { row: NationalMatchRowView }) {
     );
   }
   if (row.state === "scheduled") {
+    // 경기별 .ics(M4-12) — 예정 행만(src/lib/ics-links.ts `nationalIcsFeed`)
+    const ics = nationalIcsFeed(row);
     return (
       <>
         {row.time ? (
@@ -92,6 +96,15 @@ function MatchResult({ row }: { row: NationalMatchRowView }) {
         <span className="text-[11.5px] text-ink-2">
           {row.time ? "예정 · KST" : "킥오프 시각 미정"}
         </span>
+        {ics ? (
+          <IcsLink
+            feed={ics}
+            label=".ics"
+            context={`${row.home} 대 ${row.away} 경기 캘린더에 추가`}
+            variant="compact"
+            className="-mr-0.5"
+          />
+        ) : null}
       </>
     );
   }

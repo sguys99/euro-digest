@@ -47,6 +47,7 @@ export function TeamTicket({
   next,
   nextComp,
   korean,
+  nextIcs,
 }: {
   self: TeamView;
   headingId: string;
@@ -61,6 +62,8 @@ export function TeamTicket({
   /** 다음 경기 대회의 평탄 탭 표기 */
   nextComp: { id: CompId; short: string; name: string } | null;
   korean: readonly KoreanPlayer[];
+  /** 다음 경기 칸 끝 팀 .ics 버튼(M4-12 — D2 #11, 다음 경기가 있을 때만) */
+  nextIcs?: ReactNode;
 }) {
   const cells = korean.length > 0 ? 3 : 2;
   return (
@@ -149,6 +152,7 @@ export function TeamTicket({
               <span lang={next.opponent.latin ? "en" : undefined}>
                 {next.opponent.name}
               </span>
+              {nextIcs}
             </p>
           ) : (
             <p className="text-[13px] text-ink-2">예정된 경기 자료 없음</p>
