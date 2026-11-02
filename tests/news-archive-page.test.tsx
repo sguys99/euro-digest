@@ -215,7 +215,9 @@ describe("NewsArchivePage(/news/[date]/) — 지면", () => {
     ]);
     expect(h1s[0]).toHaveClass("sr-only");
     expect(
-      screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent),
+      within(screen.getByRole("main"))
+        .getAllByRole("heading", { level: 2 })
+        .map((h) => h.textContent),
     ).toEqual(["뉴스"]);
     const articles = screen.getAllByRole("article");
     for (const article of articles)
@@ -268,7 +270,9 @@ describe("NewsArchivePage(/news/[date]/) — 지면", () => {
     await renderArchive("2026-10-20");
     expect(loadBrief.mock.calls.map(([d]) => d)).toEqual(["2026-10-20"]);
     expect(
-      screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent),
+      within(screen.getByRole("main"))
+        .getAllByRole("heading", { level: 2 })
+        .map((h) => h.textContent),
     ).toEqual(["이날의 5줄", "뉴스"]);
     expect(screen.queryByText("오늘의 5줄")).toBeNull();
     const brief = screen.getByRole("region", { name: "이날의 5줄" });

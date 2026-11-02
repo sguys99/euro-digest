@@ -25,6 +25,7 @@ import {
 } from "@/lib/data/player-page";
 import { cx } from "@/lib/cx";
 import { playerPageSearchRecord } from "@/lib/data/search";
+import { rssFeedLink } from "@/lib/feed-links";
 import { absoluteUrl, routes } from "@/lib/paths";
 import { koreanPlayerDescription, pageMetadata } from "@/lib/seo";
 
@@ -66,6 +67,7 @@ export async function generateMetadata({
       view.sinceLabel,
     ),
     canonical: routes.koreanPlayer(slug),
+    feeds: [rssFeedLink({ kind: "korean" })],
   });
 }
 

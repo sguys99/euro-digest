@@ -19,6 +19,7 @@ import {
   loadWeeklyReport,
 } from "@/lib/data/weekly-report";
 import { cx } from "@/lib/cx";
+import { rssFeedLink } from "@/lib/feed-links";
 import { routes } from "@/lib/paths";
 import { pageMetadata, weeklyReportDescription } from "@/lib/seo";
 import { weekName, weekRangeView } from "@/lib/weekly-report-view";
@@ -64,6 +65,7 @@ export async function generateMetadata({
       `${range.fromLabel} ~ ${range.toLabel}`,
     ),
     canonical: routes.weeklyReportArchive(week),
+    feeds: [rssFeedLink({ kind: "korean" })],
   });
 }
 

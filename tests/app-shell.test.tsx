@@ -359,8 +359,12 @@ describe("뒤표지 — 데이터 출처·AI 고지·GitHub·마지막 업데이
     expect(updated?.parentElement).toHaveTextContent(
       "마지막 업데이트 15:04 KST",
     );
-    expect(within(footer).getByRole("list")).toBeInTheDocument();
-    const links = within(footer).getAllByRole("link");
+    // 링크 목록(구독 단 — M4-12 — 은 따로, tests/subscribe-band.test.tsx)
+    const list = footer.querySelector<HTMLElement>(
+      "[data-slot=colophon-links]",
+    )!;
+    expect(list).toHaveAttribute("role", "list");
+    const links = within(list).getAllByRole("link");
     // DESIGN §9.3·혼합안 순서 — AI 작성 고지 · 소개·출처 정책 · (개인정보 처리방침 — M5-05, 아직 없는 페이지라 링크하지 않음) ·
     // 삭제·정정 요청 · GitHub. /about 앵커는 ABOUT_SECTIONS(M1-36)
     // 테스트 환경의 next/link는 trailingSlash를 모른다(끝 슬래시를 뗀다 — /about#ai) — 빌드 HTML의 href는 e2e가 본다

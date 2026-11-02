@@ -19,6 +19,7 @@
  */
 import type { Metadata, MetadataRoute } from "next";
 
+import { RSS_MIME, type FeedLink } from "@/lib/feed-links";
 import { archiveDateLabel } from "@/lib/news/archive";
 import { issueNumber } from "@/lib/issue";
 import { absoluteUrl, routes } from "@/lib/paths";
@@ -123,16 +124,22 @@ export interface PageSeo {
   description: string;
   /** canonical 라우트(basePath 없음 — `routes.*`). `null`이면 canonical·og:url을 두지 않는다(발행된 호가 없는 `/news/`) */
   canonical: string | null;
+  /**
+   * 이 페이지의 RSS 자동 발견 링크(M4-12 — 대회 피드 · 한국 선수 피드, src/lib/feed-links.ts). `alternates.types`로 낸다. 전체 소식 피드는
+   * 루트 레이아웃 `<head>`가 모든 페이지에 직접 둔다(얕은 합침 때문에 여기 넣지 않는다 — 머리 주석)
+   */
+  feeds?: readonly FeedLink[];
 }
 
 /**
- * 페이지 메타 — title·description·canonical·OG(type website · siteName · locale ko_KR · url · title · description)·twitter(summary).
- * 제목·설명에 스코어 모양이 있으면 던진다(결과 노출 0 — 머리 주석).
+ * 페이지 메타 — title·description·canonical·OG(type website · siteName · locale ko_KR · url · title · description)·twitter(summary)
+ * · (있으면) RSS 자동 발견 `alternates.types`. 제목·설명에 스코어 모양이 있으면 던진다(결과 노출 0 — 머리 주석).
  */
 export function pageMetadata({
   title,
   description,
   canonical,
+  feeds = [],
 }: PageSeo): Metadata {
   const full = documentTitle(title);
   for (const [field, text] of [
@@ -146,11 +153,21 @@ export function pageMetadata({
     }
   }
   const url = canonical === null ? null : absoluteUrl(canonical);
+  const alternates: NonNullable<Metadata["alternates"]> = {
+    ...(url === null ? {} : { canonical: url }),
+    ...(feeds.length === 0
+      ? {}
+      : {
+          types: {
+            [RSS_MIME]: feeds.map((f) => ({ url: f.url, title: f.title })),
+          },
+        }),
+  };
   return {
     // 홈은 레이아웃과 같은 세그먼트라 템플릿이 붙지 않지만, 의도를 드러내려고 absolute로 둔다
     title: title === null ? { absolute: SITE_NAME } : title,
     description,
-    ...(url === null ? {} : { alternates: { canonical: url } }),
+    ...(Object.keys(alternates).length === 0 ? {} : { alternates }),
     openGraph: openGraphFor(full, description, url),
     twitter: twitterFor(full, description),
   };

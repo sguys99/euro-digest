@@ -165,7 +165,10 @@ test("뒤표지 링크 순서(DESIGN §9.3·혼합안) — AI 작성 고지 · �
 }, testInfo) => {
   desktopOnly(testInfo.project.name);
   await open(page, "./");
-  const links = page.getByRole("contentinfo").getByRole("link");
+  const links = page
+    .getByRole("contentinfo")
+    .locator('[data-slot="colophon-links"]')
+    .getByRole("link");
   await expect(links).toHaveText([
     "AI 작성 고지",
     "소개·출처 정책",

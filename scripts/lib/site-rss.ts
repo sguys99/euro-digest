@@ -23,6 +23,7 @@
  *   U+FFFE/U+FFFF)는 지운다(원제목은 cleanTitle이 이미 제어 문자를 지웠다 — 마지막 방어선). 한글·이모지는 문자 그대로.
  * - RSS 2.0 + `atom:link rel="self"`(RSS Advisory Board 권장 — 피드 검증기 경고 방지). 날짜는 RFC 822(src/lib/time.ts `formatRfc822Utc`).
  */
+import { rssFeedTitle } from "@/lib/feed-links";
 import type { SitePaths } from "@/lib/paths";
 import { artifacts, routes, type RssFeed } from "@/lib/paths";
 import type { CompId } from "@/lib/schema/common";
@@ -182,7 +183,7 @@ export function channelMeta(
   switch (feed.kind) {
     case "all":
       return {
-        title: SITE_NAME,
+        title: rssFeedTitle(feed),
         link: paths.absoluteUrl(routes.home()),
         description: `${SITE_TAGLINE} 주요 뉴스 상위 ${RSS_ITEM_LIMIT}건. ${CHANNEL_NOTE}`,
         selfUrl,
@@ -190,7 +191,7 @@ export function channelMeta(
     case "competition": {
       const name = competitionName(feed.comp) ?? feed.comp;
       return {
-        title: `${SITE_NAME} — ${name}`,
+        title: rssFeedTitle(feed, name),
         link: paths.absoluteUrl(routes.competition(feed.comp)),
         description: `${name} 관련 뉴스. ${CHANNEL_NOTE}`,
         selfUrl,
@@ -198,7 +199,7 @@ export function channelMeta(
     }
     case "korean":
       return {
-        title: `${SITE_NAME} — 한국 선수`,
+        title: rssFeedTitle(feed),
         link: paths.absoluteUrl(routes.koreanPlayers()),
         description: `유럽 무대 한국 선수 관련 뉴스. ${CHANNEL_NOTE}`,
         selfUrl,

@@ -136,6 +136,34 @@ export function CalendarIcon(props: IconProps) {
   );
 }
 
+/** RSS(뒤표지 '구독' 단 — M4 미니 시안 A `docs/design/m4/concept-a.html` 그대로: 호 두 개 + 채운 네모 점) */
+export function RssIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 11a8 8 0 0 1 8 8" />
+      <path d="M5 5a14 14 0 0 1 14 14" />
+      <rect
+        x="4.25"
+        y="17.25"
+        width="2.5"
+        height="2.5"
+        fill="currentColor"
+        stroke="none"
+      />
+    </Icon>
+  );
+}
+
+/** 캘린더 추가(.ics 링크 — M4 미니 시안 A · D2 혼합안 `.icsl` 그대로: 날 칸 점 없는 달력) */
+export function CalendarAddIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 5.5h16V20H4z" />
+      <path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" />
+    </Icon>
+  );
+}
+
 /** 하단 탭 · 홈 */
 export function HomeIcon(props: IconProps) {
   return (

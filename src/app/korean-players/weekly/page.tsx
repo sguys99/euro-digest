@@ -11,6 +11,7 @@ import { RunningHead } from "@/components/ui/section-head";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { listWeeklyWeeks, loadWeeklyIndex } from "@/lib/data/weekly-report";
 import { cx } from "@/lib/cx";
+import { rssFeedLink } from "@/lib/feed-links";
 import { routes } from "@/lib/paths";
 import { WEEKLY_INDEX_DESCRIPTION, pageMetadata } from "@/lib/seo";
 import { upcomingWeek } from "@/lib/weekly-report-view";
@@ -30,6 +31,7 @@ export function generateMetadata(): Metadata {
     title: "주간 리포트 — 한국 선수",
     description: WEEKLY_INDEX_DESCRIPTION,
     canonical: routes.weeklyReport(),
+    feeds: [rssFeedLink({ kind: "korean" })],
   });
 }
 

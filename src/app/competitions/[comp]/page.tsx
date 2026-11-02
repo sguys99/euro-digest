@@ -7,6 +7,7 @@ import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { loadCompetitionPage } from "@/lib/data/competition-page";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { competitionPageSearchRecord } from "@/lib/data/search";
+import { rssFeedLink } from "@/lib/feed-links";
 import { compFromSegment, compSegment, routes } from "@/lib/paths";
 import { seasonLabel } from "@/lib/rest-period";
 import { competitionDescription, pageMetadata } from "@/lib/seo";
@@ -37,6 +38,7 @@ export async function generateMetadata({
     title: `${page.config.nameKo} ${season}`,
     description: competitionDescription(page.config.nameKo, season),
     canonical: routes.competition(comp),
+    feeds: [rssFeedLink({ kind: "competition", comp }, page.config.nameKo)],
   });
 }
 

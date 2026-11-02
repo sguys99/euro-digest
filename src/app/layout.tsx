@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { preload } from "react-dom";
 
+import { RSS_MIME, rssFeedLink } from "@/lib/feed-links";
 import { fontFaceCss, fontPreloadHrefs } from "@/lib/fonts";
 import { withBasePath } from "@/lib/paths";
 import { APPLE_TOUCH_ICON } from "@/lib/pwa";
@@ -36,6 +37,10 @@ export const viewport: Viewport = {
 // 웹폰트(DR-03, DESIGN §3.1·§11.3) — 빌드 때 한 번 만든다. 경로는 모두 withBasePath(basePath 포함, src/lib/fonts.ts 설명 참고).
 const FONT_FACE_CSS = fontFaceCss(withBasePath);
 const FONT_PRELOAD_HREFS = fontPreloadHrefs(withBasePath);
+
+// RSS 자동 발견(FR-122 — M4-11 이월): 전체 소식 피드는 모든 페이지에. 메타데이터 `alternates`로 두면 canonical을 가진 페이지 메타가 통째로
+// 덮어써서(얕은 합침 — src/lib/seo.ts) <head>에 직접 둔다. 대회·한국 선수 피드는 페이지 메타(`pageMetadata({ feeds })`)가 더한다.
+const SITE_FEED = rssFeedLink({ kind: "all" });
 
 export default function RootLayout({
   children,
@@ -81,6 +86,12 @@ export default function RootLayout({
          * 인라인으로 둔다. 내용은 저장소 안 상수에서 만든 문자열뿐이다(src/lib/fonts.ts가 따옴표·꺾쇠를 막는다).
          */}
         <style dangerouslySetInnerHTML={{ __html: FONT_FACE_CSS }} />
+        <link
+          rel="alternate"
+          type={RSS_MIME}
+          title={SITE_FEED.title}
+          href={SITE_FEED.url}
+        />
       </head>
       <body>
         {/*

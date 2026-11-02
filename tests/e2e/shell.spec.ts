@@ -230,7 +230,9 @@ test.describe("마스트헤드·뒤표지 — 데이터에서 계산한 호수·
       footer.getByRole("link", { name: "AI 작성", exact: true }),
     ).toHaveCount(0);
     // /about 링크(M1-36 — 순서·앵커는 tests/e2e/about.spec.ts) + GitHub. 개인정보 처리방침(/privacy/)은 M5-05
-    const links = footer.getByRole("link");
+    const links = footer
+      .locator('[data-slot="colophon-links"]')
+      .getByRole("link");
     await expect(links).toHaveCount(4);
     await expect(links.last()).toHaveAttribute("href", REPO_URL);
     await expect(links.last()).toHaveAttribute("target", "_blank");
@@ -538,8 +540,8 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
         }
       }
       // 건너뛰기 · 워드마크 · 검색 버튼(M4-14) · 테마 토글 · (1024 이상 상단 내비 6 — 리그 M2-10 · 한국 선수 M3-09 · 이적 M4-04 · 마이 M4-08) · 뒤표지 4(AI 작성 고지 ·
-      // 소개·출처 정책 · 삭제·정정 요청 — M1-36 · GitHub) · (1023 이하 하단 탭 5)
-      expect(checked).toBe(width >= 1024 ? 14 : 13);
+      // 소개·출처 정책 · 삭제·정정 요청 — M1-36 · GitHub) · 뒤표지 구독 단 9(RSS 2 · 대회 6 · .ics 1 — M4-12) · (1023 이하 하단 탭 5)
+      expect(checked).toBe(width >= 1024 ? 23 : 22);
       expect(problems).toEqual([]);
     });
   }

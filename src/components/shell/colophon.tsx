@@ -6,6 +6,8 @@ import type { IssueMeta } from "@/lib/issue";
 import { FOOTBALL_DATA_ATTRIBUTION, REPO_URL, SITE_NAME } from "@/lib/site";
 import { formatKst, kstDate, kstDayRangeUtc } from "@/lib/time";
 
+import { SubscribeBand } from "./subscribe-band";
+
 /**
  * 뒤표지(푸터) (DESIGN.md §9.3 뒤표지 · PRD FR-142·FR-45, M1-30)
  *
@@ -20,6 +22,8 @@ import { formatKst, kstDate, kstDayRangeUtc } from "@/lib/time";
  *   소개·출처 정책(`/about/` — 한 링크) · [개인정보 처리방침(`/privacy/`) — M5-05에서 이 자리에] · 삭제·정정 요청(`/about/#contact`) ·
  *   GitHub↗. `/about` 앵커는 `ABOUT_SECTIONS`(src/lib/about-sections.ts — M1-36)가 정한다.
  * - 안쪽 포커스 링은 --colophon-fg(색 면 안 재정의, DESIGN §9.1).
+ * - **'구독' 단**(M4-12 — DECISIONS M4 미니 게이트 #6, src/components/shell/subscribe-band.tsx): 링크 다음. 1024 이상 배치는 시안 A 그대로 —
+ *   왼쪽 열 = football-data 문구(2행) · 설명 문단(3행) · 마지막 업데이트(4행), 오른쪽 열 = 링크(2행) · 구독 단(3행).
  */
 
 interface FooterLink {
@@ -68,11 +72,11 @@ export function Colophon({
         </p>
         <p
           lang="en"
-          className="font-numeric text-[15px] leading-[1.3] font-semibold tracking-[0.03em] lg:col-start-1"
+          className="font-numeric text-[15px] leading-[1.3] font-semibold tracking-[0.03em] lg:col-start-1 lg:row-start-2"
         >
           {FOOTBALL_DATA_ATTRIBUTION}
         </p>
-        <p className="max-w-[62ch] text-colophon-fg-2 lg:col-start-1">
+        <p className="max-w-[62ch] text-colophon-fg-2 lg:col-start-1 lg:row-start-3">
           경기·출전 데이터 football-data.org · API-Football. 오늘의 5줄은 이
           데이터로 AI가 쓰고, AI가 쓴 줄에만 ‘AI 작성’ 라벨을 붙입니다. 검증에
           맞지 않는 줄은 라벨 없는 코드 문장으로 바꾸거나 빼고, AI 답을 쓸 수
@@ -80,7 +84,11 @@ export function Colophon({
           제목 그대로 싣습니다.
         </p>
         {/* list-style: none인 목록의 의미를 Safari가 지우지 않게 role="list"(DESIGN §9.3 5줄 행과 같은 처리) */}
-        <ul role="list" className="flex flex-wrap gap-x-4.5 lg:col-start-2">
+        <ul
+          role="list"
+          data-slot="colophon-links"
+          className="flex flex-wrap gap-x-4.5 lg:col-start-2 lg:row-start-2"
+        >
           {LINKS.map((link) => (
             <li key={link.href}>
               {link.external ? (
@@ -102,8 +110,9 @@ export function Colophon({
             </li>
           ))}
         </ul>
+        <SubscribeBand className="lg:col-start-2 lg:row-start-3" />
         {issue && updated && (
-          <p className="text-colophon-fg-2 lg:col-start-2">
+          <p className="text-colophon-fg-2 lg:col-start-1 lg:row-start-4">
             마지막 업데이트{" "}
             <KstTime iso={updated} withDate={kstDate(updated) !== issue.date} />
           </p>
