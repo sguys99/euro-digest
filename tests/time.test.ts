@@ -20,6 +20,8 @@ import {
   daysBetween,
   europeanSummerTimeTransitions,
   formatDateDayShort,
+  addMinutesUtc,
+  formatIcsDate,
   formatIcsUtc,
   formatRfc822Utc,
   formatKst,
@@ -436,6 +438,37 @@ describe("formatIcsUtc — .ics UTC 형식 (F12)", () => {
   it("YYYYMMDDTHHMMSSZ, 밀리초는 버림", () => {
     expect(formatIcsUtc("2026-10-24T19:00:00.000Z")).toBe("20261024T190000Z");
     expect(formatIcsUtc("2027-03-28T01:30:05.999Z")).toBe("20270328T013005Z");
+  });
+});
+
+describe("formatIcsDate · addMinutesUtc — .ics 종일 일정·경기 시간 (F12, M4-12)", () => {
+  it("YYYY-MM-DD → YYYYMMDD, 형식 오류는 던진다", () => {
+    expect(formatIcsDate("2027-01-17")).toBe("20270117");
+    expect(formatIcsDate("2028-02-29")).toBe("20280229");
+    expect(() => formatIcsDate("2027-02-29")).toThrow(TimeInputError);
+    expect(() => formatIcsDate("20270117")).toThrow(TimeInputError);
+  });
+
+  it("분 더하기는 절대 시각 계산 — 서머타임 전환 시각을 가로질러도 UTC 그대로", () => {
+    // 2026-10-25T01:00Z 유럽 서머타임 끝 · 2027-03-28T01:00Z 시작 — 경계를 넘는 2시간
+    expect(addMinutesUtc("2026-10-25T00:30:00Z", 120)).toBe(
+      "2026-10-25T02:30:00.000Z",
+    );
+    expect(addMinutesUtc("2027-03-28T00:30:00Z", 120)).toBe(
+      "2027-03-28T02:30:00.000Z",
+    );
+    expect(addMinutesUtc("2026-12-31T23:00:00.000Z", 120)).toBe(
+      "2027-01-01T01:00:00.000Z",
+    );
+    expect(addMinutesUtc("2026-11-01T00:00:00Z", -30)).toBe(
+      "2026-10-31T23:30:00.000Z",
+    );
+    expect(() => addMinutesUtc("2026-11-01T00:00:00Z", 1.5)).toThrow(
+      TimeInputError,
+    );
+    expect(() => addMinutesUtc("2026-11-01T09:00:00+09:00", 10)).toThrow(
+      TimeInputError,
+    );
   });
 });
 

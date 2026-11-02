@@ -683,6 +683,26 @@ export function formatIcsUtc(iso: string): string {
   );
 }
 
+/**
+ * 달력 날짜 "YYYY-MM-DD" → iCalendar(RFC 5545) DATE 형식 `YYYYMMDD` — F12 .ics 종일 일정(킥오프 미정 경기)의
+ * `DTSTART;VALUE=DATE`·`DTEND;VALUE=DATE`용. 시간대와 무관한 문자열 변환(날짜는 호출부가 `kstDate`로 정한다).
+ */
+export function formatIcsDate(date: string): string {
+  const [y, month, day] = parseDate(date);
+  return `${pad4(y)}${pad2(month)}${pad2(day)}`;
+}
+
+/**
+ * UTC ISO에 분을 더한 UTC ISO(`toISOString` 형식, 밀리초 포함). 시간대와 무관한 절대 시각 계산이라 서머타임 전환과 상관없다 —
+ * F12 .ics의 기본 경기 시간(DTEND = 킥오프 + 120분)용. 분은 정수(음수 가능).
+ */
+export function addMinutesUtc(iso: string, minutes: number): string {
+  if (!Number.isInteger(minutes)) {
+    throw new TimeInputError(`분은 정수여야 함: ${quote(minutes)}`);
+  }
+  return toIso(parseUtcIsoMs(iso) + minutes * MINUTE_MS);
+}
+
 const RFC822_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 const RFC822_MONTHS = [
   "Jan",
