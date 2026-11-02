@@ -1,7 +1,7 @@
 /**
  * M3-03 브리핑 입력 한국 선수 블록(scripts/lib/brief-input.ts `briefKoreanBlock` — D24, D55 ①) + 검사기(brief-check.ts)가 확정
  * 형식(subOn·subOff 없음)의 한국 선수 줄을 거르지 않는지. 네트워크·LLM 없음 — M0-30 입력 A(fixtures/llm/brief-inputs/2026-09-19.json)·골든 2026-10-25(M3-03b).
- * 정기 실행은 아직 블록을 넣지 않는다(`BRIEF_KOREAN_ENABLED` false — 지시문 v0.5 뒤에 켠다).
+ * 정기 실행은 블록을 넣는다(`BRIEF_KOREAN_ENABLED` — 2026-11-02 켬, 지시문 v0.5 뒤).
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -144,7 +144,7 @@ describe("briefKoreanBlock — 출전한 등록 선수만, 입력 경기 순서"
   });
 
   it("정기 실행은 아직 켜지 않는다(지시문 v0.4 — D55 ①)", () => {
-    expect(BRIEF_KOREAN_ENABLED).toBe(false);
+    expect(BRIEF_KOREAN_ENABLED).toBe(true);
   });
 });
 

@@ -36,7 +36,7 @@
  *     선수 id, player = korean-players.json nameEn(영문), team = 그 경기 입력의 home·away 이름, match = 입력 경기 id, 골·도움은 원장
  *     행(자책골 제외). 원장 행(`data/matches` — 선수 id로만 매칭, FR-60)·이번 실행 상세의 라인업에서 만든 행만 쓴다. 벤치·명단 제외·
  *     라인업 없음(unknown)은 넣지 않는다. 6개 대회 밖 경기(컵)는 입력 경기가 아니라 넣지 않는다. 교체 투입·아웃 분은 원장에 없어
- *     subOn·subOff 키가 없다. 1건도 없으면 키 없음. **정기 실행은 아직 넣지 않는다**(`BRIEF_KOREAN_ENABLED` false — 지시문 v0.5 한국 선수
+ *     subOn·subOff 키가 없다. 1건도 없으면 키 없음. 정기 실행은 `BRIEF_KOREAN_ENABLED`(2026-11-02 켬 — 지시문 v0.5 한국 선수
  *     조건 절·골든셋 korean·eval:prompt는 M3-03b에서 준비했다. D55 ① — 입력 키·문법·지시문 [문형]은 함께 켠다).
  *
  * 중요도(`matchImportance` — 코드 규칙, LLM 미사용): 활성 한국 선수 소속팀(korean-players.json → team-ids.json fd id) +3 ·
@@ -210,14 +210,15 @@ export interface BriefInput {
 }
 
 /**
- * 정기 실행이 브리핑 입력에 한국 선수 출전(korean)을 넣는가. **false** — 켜는 것은 사용자 확인 뒤 오케스트레이터가 정한다.
+ * 정기 실행이 브리핑 입력에 한국 선수 출전(korean)을 넣는가. **true** — 2026-11-02 켬(사용자 결정: 월요일 주간 첫 발행 확인 뒤 →
+ * 11-03 화요일 브리핑부터).
  * M3-03b(2026-11-01) 준비 완료: 지시문 v0.5(configs/prompts/summarize.md)의 `<!-- korean -->` 조건 절([입력] korean 설명·[사실]
  * 한국 선수 규칙·[문형] 한국 선수 절 = `renderBriefPatterns({ keys: ["korean"] })`·[고르기]·[예])은 보내는 본문에 korean이 있을 때만
  * 펼쳐진다(brief.ts `renderBriefPrompt`) — 꺼져 있거나 한국 선수가 뛰지 않은 날의 지시문은 v0.4와 같다. 원장에 교체 투입·아웃 분이
  * 없어 그 꼴(`korean-sub`)과 결장 꼴(`korean-bench`)은 문법·지시문에서 꺼져 있다(입력 세부 키 koreanSub·koreanBench — M0 입력 형식만).
  * 골든셋 korean 4일(09-19·10-11·10-25·11-01) eval:prompt 2회(runs 2026-11-01-v0.5·-r). 블록 계산(`briefKoreanBlock`)은 테스트로 고정.
  */
-export const BRIEF_KOREAN_ENABLED = false;
+export const BRIEF_KOREAN_ENABLED = true;
 
 /** 한국 선수 블록 재료 — 원장·이번 실행 상세의 한국 선수 행 + 이름 */
 export interface BriefKoreanSource {

@@ -3518,7 +3518,7 @@ async function runBriefStage(
       competitions,
       team.index.byFd,
     );
-    // 한국 선수 출전(M3-03) — 지시문이 korean을 설명할 때만(BRIEF_KOREAN_ENABLED — 지금 false)
+    // 한국 선수 출전(M3-03) — 지시문이 korean을 설명할 때만(BRIEF_KOREAN_ENABLED — 2026-11-02 켬)
     const koreanSource = BRIEF_KOREAN_ENABLED
       ? await loadBriefKoreanSource(deps, fd.data.window, merged.details)
       : null;
