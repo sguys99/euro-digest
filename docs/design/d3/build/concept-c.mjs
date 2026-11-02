@@ -91,10 +91,14 @@ const ogComp = (c, id) => `<div class="og og--cp" data-solo="${id}" role="img" a
 // 거대 약어 채움 = 상의 색. 상의가 크림 면과 3:1이 안 되면(흰 상의 등) 하의 색, 그것도 안 되면 잉크 — 윤곽처럼 보이지 않게(윤곽 = 0 규칙과 충돌 방지)
 const lum = (h) => { const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
 const cr = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
-const letterFill = (t) => (cr(t.k1, T.paperL) >= 3 ? t.k1 : cr(t.k2, T.paperL) >= 3 ? t.k2 : T.inkL);
-const ogTeam = (t, id) => `<div class="og og--cp og--ct" data-solo="${id}" role="img" aria-label="${esc(`유로 다이제스트 · ${t.nameKo} (${t.short}) · ${[t.comp, ...t.alsoIn].map((c) => COMP[c].nameKo).join(' · ')}`)}"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><div class="ogc__abbr" style="--k1:${t.k1};--k2:${t.k2};--kl:${letterFill(t)}"><p class="n">${esc(t.short)}</p><i></i></div><div class="ogc__tm"><p class="ogc__tabs">${[t.comp, ...t.alsoIn].map((c) => `<span class="ogc__ftab tab--${SLUG[c]}">${esc(COMP[c].shortKo)}</span>`).join('')}</p><p class="ogc__name ogc__name--t">${esc(t.nameKo)}</p><p class="ogc__en2" lang="en">${esc(t.nameEn)}</p></div></div>`;
+// min = 채움 대비 하한(이 시안 3.0 — 큰 글자 AA, 혼합안 5.3 — 내부 하한). 상의 → 하의 → 잉크 순으로 하한을 넘는 첫 색
+export const letterFill = (t, min = 3) => (cr(t.k1, T.paperL) >= min ? t.k1 : cr(t.k2, T.paperL) >= min ? t.k2 : T.inkL);
+export const contrast = cr;
+let FILL_MIN = 3;
+const ogTeam = (t, id) => `<div class="og og--cp og--ct" data-solo="${id}" role="img" aria-label="${esc(`유로 다이제스트 · ${t.nameKo} (${t.short}) · ${[t.comp, ...t.alsoIn].map((c) => COMP[c].nameKo).join(' · ')}`)}"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><div class="ogc__abbr" style="--k1:${t.k1};--k2:${t.k2};--kl:${letterFill(t, FILL_MIN)}"><p class="n">${esc(t.short)}</p><i></i></div><div class="ogc__tm"><p class="ogc__tabs">${[t.comp, ...t.alsoIn].map((c) => `<span class="ogc__ftab tab--${SLUG[c]}">${esc(COMP[c].shortKo)}</span>`).join('')}</p><p class="ogc__name ogc__name--t">${esc(t.nameKo)}</p><p class="ogc__en2" lang="en">${esc(t.nameEn)}</p></div></div>`;
 
-function sOg() {
+export function sOg({ fillMin = 3, teamNote = "" } = {}) {
+  FILL_MIN = fillMin;
   const today = D.today, i100 = D.issue100;
   const lab = (p, note = '') => `<p class="ogf__l"><span class="path">${p}</span>${note ? `<span>${note}</span>` : ''}</p>`;
   return `<section id="s2" class="blk" aria-labelledby="s2h">
@@ -111,7 +115,7 @@ function sOg() {
   <h3 class="h3">대회 <small lang="en">COMPETITIONS · 6</small></h3>
   <div class="ogset ogset--3">${['EPL', 'BUNDESLIGA', 'UCL'].map((id) => `<div class="ogf">${lab(`/og/competitions/${id.toLowerCase()}.png`)}${ogComp(COMP[id], `og-c-${id.toLowerCase()}`)}</div>`).join('')}</div>
   <div class="ogset ogset--3" style="margin-top:14px">${['LALIGA', 'SERIEA', 'LIGUE1'].map((id) => `<div class="ogf">${lab(`/og/competitions/${id.toLowerCase()}.png`, '축소판')}${ogComp(COMP[id], `og-c-${id.toLowerCase()}`)}</div>`).join('')}</div>
-  <h3 class="h3">팀 <small lang="en">TEAMS · 111</small></h3>
+  <h3 class="h3">팀 <small lang="en">TEAMS · 111</small></h3>${teamNote}
   <div class="ogset ogset--2">${['rennes', 'atletico-madrid', 'borussia-monchengladbach', 'bayern-munchen'].map((s) => `<div class="ogf">${lab(`/og/teams/${s}.png`, { rennes: '이름 1자', 'atletico-madrid': '10자 · 두 줄', 'borussia-monchengladbach': '흰 상의(크림 대비 1.12) → 글자는 하의 색, 띠에 2색', 'bayern-munchen': '소속 + UCL 탭 2개' }[s])}${ogTeam(TEAM[s], `og-t-${s}`)}</div>`).join('')}</div>
   <h3 class="h3">링크 미리보기 <small lang="en">PREVIEW</small></h3>
   ${previews({
@@ -163,7 +167,7 @@ function sEmpty() {
 }
 
 /* ───────── 4. /status — 숫자판 + 30일 점 그래프 ───────── */
-function sStatus() {
+export function sStatus({ id = "s4", no = "4", band = "" } = {}) {
   const L = ST.lastPublish, R = ST.runRate, C = ST.cost, DC = ST.dayCounts;
   const early = (() => { const [h1, m1] = L.target.split(':').map(Number), [h2, m2] = L.finished.split(':').map(Number); return h1 * 60 + m1 - (h2 * 60 + m2); })();
   // 점 그래프 — x: 30일, y: 수집 완료 시각(KST, 0~24시, 위 = 늦음). 공개 목표 기준선(여름 07:00 → 겨울 07:30 계단)
@@ -190,7 +194,7 @@ function sStatus() {
   const dayLine = (d) => `${md(d.date)} (${d.dow})${d.no ? ` · 제 ${d.no}호` : ''} · ${DAYSTATE[d.state].k}${d.finished ? ` · 수집 완료 ${d.finished}${d.finishedDate !== d.date ? `(${md(d.finishedDate)})` : ''}` : ''}${d.state !== 'prelaunch' ? ` · 공개 목표 ${d.target}` : ''}${d.failedRuns.length ? ` · 실패한 실행 ${d.failedRuns.length}회(${d.failedRuns.map((f) => f.started).join(', ')} 수동)` : ''}`;
   const daysJson = JSON.stringify(ST.days.map(dayLine));
   const srows = ST.sources.map((s) => `<tr${s.staleStreak >= 7 ? ' class="is-flag"' : ''}><th scope="row"><span ${s.lang === 'ko' ? '' : `lang="${s.lang}"`}>${esc(s.name)}</span></th><td class="num"><span class="tier tier--${s.tier}"><span class="n">${s.tier}</span></span></td><td class="num"><span class="n">${s.ok}</span><span class="den">/${s.attempts}</span></td><td class="num"><span class="n">${s.usable}</span></td><td class="num"><span class="n${s.staleStreak ? '' : ' o'}">${s.staleStreak}</span></td></tr>`).join('');
-  return `<div class="divider divider--screen" id="s4"><span><b>화면 4 · /status/</b> 앱 셸 안의 한 쪽 — 뒤표지 링크로 들어온다</span><span class="divider__info">숫자판 · 찍힘(점 선택 → 그날 상세 줄)</span></div>
+  return `<div class="divider divider--screen" id="${id}"><span><b>화면 ${no} · /status/</b> 앱 셸 안의 한 쪽 — 뒤표지 링크로 들어온다</span><span class="divider__info">숫자판 · 찍힘(점 선택 → 그날 상세 줄)</span></div>
 <div class="scr"><div class="shell">
 ${ticket()}
 <div class="layout">
@@ -208,9 +212,9 @@ ${ticket()}
     <section id="st-30" class="stC" aria-labelledby="st-30-h">
       <div class="sec-h sec-h--thin"><h2 id="st-30-h" class="h">최근 30일 — 수집 완료 시각</h2><span class="rh" aria-hidden="true" lang="en">30 DAYS</span></div>
       <p class="sub">점 = 그날 첫 발행 실행의 수집 완료(KST) · 선 = 공개 목표(여름 <span class="n">07:00</span> → 겨울 <span class="n">07:30</span>)</p>
-      <div class="dotC"><div class="dotC__plot"><svg viewBox="0 0 100 100" class="dotC__svg" aria-hidden="true" preserveAspectRatio="none">${g}</svg><div class="dotC__pts" aria-hidden="true">${pts}<i class="dotC__sel" style="left:${xP(29)}%"></i></div>${btns}</div><div class="dotC__ax" aria-hidden="true">${ax}</div></div>
+      <div class="dotC"><div class="dotC__plot"><svg viewBox="0 0 100 100" class="dotC__svg" aria-hidden="true" preserveAspectRatio="none">${g}</svg><div class="dotC__pts" aria-hidden="true">${pts}<i class="dotC__sel" style="left:${xP(29)}%"></i></div>${btns}</div><div class="dotC__ax" aria-hidden="true">${ax}</div></div>${band ? band.strip : ""}
       <div class="dotC__nav"><button class="ibtn ibtn--b" type="button" data-step="-1" aria-label="이전 날">${IC.right.replace('<svg', '<svg style="transform:scaleX(-1)"')}</button><p class="dotC__line" aria-live="polite" id="dotline">${esc(dayLine(ST.days[29]))}</p><button class="ibtn ibtn--b" type="button" data-step="1" aria-label="다음 날">${IC.right}</button></div>
-      <ul class="legC" role="list"><li><i class="lg lg--on"></i>정시 <span class="n">${DC.ontime}</span></li><li><i class="lg lg--late"></i>늦음 <span class="n">${DC.late}</span></li><li><i class="lg lg--miss"></i>결호 <span class="n">${DC.missed}</span></li><li><i class="lg lg--x"></i>실패한 실행 <span class="n">1</span></li><li><i class="lg lg--pre"></i>창간 전 <span class="n">${DC.prelaunch}</span></li></ul>
+      ${band ? band.legend : `<ul class="legC" role="list"><li><i class="lg lg--on"></i>정시 <span class="n">${DC.ontime}</span></li><li><i class="lg lg--late"></i>늦음 <span class="n">${DC.late}</span></li><li><i class="lg lg--miss"></i>결호 <span class="n">${DC.missed}</span></li><li><i class="lg lg--x"></i>실패한 실행 <span class="n">1</span></li><li><i class="lg lg--pre"></i>창간 전 <span class="n">${DC.prelaunch}</span></li></ul>`}
       <ol class="sr">${ST.days.map((d) => `<li>${esc(dayLine(d))}</li>`).join('')}</ol>
       <p class="def"><b>성공률</b>은 실행 기준(PRD KPI · 운영 리포트와 같은 셈), <b>점</b>은 발행일 기준이다. 정시 = 공개 목표 + 15분 안. 10월 13일 점(<span class="n">00:28</span>)은 자정 직후 수동 실행이라 목표보다 이르다.</p>
     </section>
@@ -223,7 +227,7 @@ ${ticket()}
     </section>
   </main>
 </div>
-${colophon({ linksAfter: [{ html: `<a href="#s4" class="colC">발행 상태 <span class="n">${pct(R.pct)}</span>%</a>` }] })}
+${colophon({ linksAfter: [{ html: `<a href="#${id}" class="colC">발행 상태 <span class="n">${pct(R.pct)}</span>%</a>` }] })}
 </div>
 ${tabbar()}</div>
 <script>window.__D3DAYS=${daysJson.replace(/</g, '\\u003c')};</script>`;
@@ -379,7 +383,7 @@ code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
 .colC .n{font:800 17px/1 var(--font-numeric);margin-left:4px}
 `;
 
-const js = `
+export const js = `
 (function(){var days=window.__D3DAYS;if(!days)return;var bs=[].slice.call(document.querySelectorAll('.dotC__b'));var line=document.getElementById('dotline');var sel=document.querySelector('.dotC__sel');var cur=29;
 var rm=matchMedia('(prefers-reduced-motion: reduce)');
 function set(i){if(i<0||i>29)return;cur=i;bs.forEach(function(b,k){b.setAttribute('aria-pressed',String(k===i))});line.textContent=days[i];if(!rm.matches){line.classList.remove('is-stamp');void line.offsetWidth;line.classList.add('is-stamp')}
