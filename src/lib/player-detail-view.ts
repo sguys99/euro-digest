@@ -175,7 +175,7 @@ function fixtureTeamOf(t: TeamView): FixtureTeamView {
   return { name: t.name, latin: t.latin, badge: t, link: t };
 }
 
-function fixtureFromTeam(
+export function fixtureFromTeam(
   f: TeamFixtureView,
   self: TeamView,
   comps: ReadonlyMap<string, RosterCompetition>,

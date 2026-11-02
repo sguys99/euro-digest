@@ -124,8 +124,8 @@ export const THEME_KEYS = {
   shadow: ["print", "print-accent"],
   /** `--ease-*` */
   ease: ["print"],
-  /** `--animate-*` — 인쇄형 모션 4종(DESIGN §6.1, D0-12) */
-  animate: ["stamp", "tear", "eject", "arrive"],
+  /** `--animate-*` — 인쇄형 모션 4종(DESIGN §6.1, D0-12) + (D2) 접힘(M4-08) */
+  animate: ["stamp", "tear", "eject", "arrive", "fold"],
   /** `--transition-duration-*` */
   "transition-duration": ["fast", "base", "slow"],
 } as const satisfies Readonly<Record<string, readonly string[]>>;

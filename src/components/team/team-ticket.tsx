@@ -1,6 +1,10 @@
 import type { ReactNode } from "react";
 
 import { FormChips } from "@/components/competition/marks";
+import {
+  FollowButton,
+  FollowLimitNote,
+} from "@/components/follow/follow-button";
 import { PlayerLink } from "@/components/korean-players/player-marks";
 import { KoreanArmband } from "@/components/news/feed-card";
 import { FlatTab } from "@/components/ui/chip";
@@ -30,6 +34,8 @@ import { TeamBadge } from "./team-badge";
  *   소속 선수가 있을 때만, FR-58). 1023 이하는 세로로 쌓고 1024 이상은 칸 수만큼 열(3칸 `1.1fr · 1.2fr · 1fr` · 2칸 `1fr · 1fr`).
  * - 포메이션은 티켓에 두지 않는다(팀시트에 한 번만 — DECISIONS D1 §4 중복 정리).
  * - 한국 선수 이름은 선수 상세(`/korean-players/{slug}/` — M3-10) 링크(M3-11 — 누름 영역 44px).
+ * - **팔로우 버튼**(M4-08 — FR-110, DECISIONS D2 §6 #9): 본문 오른쪽 위, 티켓 폭 560px 미만은 숫자 칸 아래(컨테이너 쿼리 `@min-[35rem]` —
+ *   선수 티켓과 같은 규칙, DESIGN §7.1 예외). 한도 이유 문장은 그 아래 전폭(한도일 때만).
  */
 export function TeamTicket({
   self,
@@ -60,7 +66,7 @@ export function TeamTicket({
   return (
     <div
       data-slot="team-ticket"
-      className="relative grid grid-cols-[96px_2px_minmax(0,1fr)] border-[1.5px] border-ink bg-paper lg:min-h-55 lg:grid-cols-[var(--col-contents)_2px_minmax(0,1fr)]"
+      className="@container relative grid grid-cols-[96px_2px_minmax(0,1fr)] border-[1.5px] border-ink bg-paper lg:min-h-55 lg:grid-cols-[var(--col-contents)_2px_minmax(0,1fr)]"
     >
       <TeamBadge team={self} size="stub" standalone />
       <span
@@ -72,9 +78,9 @@ export function TeamTicket({
           "after:absolute after:-bottom-2.75 after:left-1/2 after:size-[calc(var(--notch)*2)] after:-translate-x-1/2 after:bg-[radial-gradient(circle_closest-side,var(--paper)_calc(100%-1.5px),var(--ink)_calc(100%-1.5px),var(--ink)_100%,transparent_100%)] after:content-[''] after:[clip-path:inset(0_0_50%_0)]",
         )}
       />
-      <div className="min-w-0 pt-3.5 pr-3.5 pb-3.5 pl-4 lg:pt-5.5 lg:pr-7 lg:pb-5 lg:pl-8">
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start pt-3.5 pr-3.5 pb-3.5 pl-4 lg:pt-5.5 lg:pr-7 lg:pb-5 lg:pl-8 @min-[35rem]:grid-cols-[minmax(0,1fr)_auto] @min-[35rem]:gap-x-3">
         {config ? (
-          <p className="flex items-center gap-2 text-[12.5px] text-ink-2">
+          <p className="flex items-center gap-2 text-[12.5px] text-ink-2 @min-[35rem]:col-start-1">
             <FlatTab comp={config.id} title={config.nameKo}>
               {config.shortKo}
             </FlatTab>
@@ -87,11 +93,26 @@ export function TeamTicket({
         <h1
           id={headingId}
           lang={self.latin ? "en" : undefined}
-          className="mt-2 text-[27px] leading-[1.15] font-extrabold tracking-[-0.04em] lg:text-5xl"
+          className="mt-2 text-[27px] leading-[1.15] font-extrabold tracking-[-0.04em] lg:text-5xl @min-[35rem]:col-start-1"
         >
           {self.name}
         </h1>
         {row ? <TicketNumbers row={row} /> : null}
+        {/* 팔로우(M4-08 — DECISIONS D2 §6 #9): 티켓 폭 560px 미만은 숫자 칸 아래, 이상이면 몸통 오른쪽 위(대회 줄 · 팀명 옆) */}
+        <div className="mt-3.5 @min-[35rem]:col-start-2 @min-[35rem]:row-span-2 @min-[35rem]:row-start-1 @min-[35rem]:mt-0 @min-[35rem]:self-start">
+          <FollowButton
+            kind="teams"
+            slug={self.slug}
+            name={self.name}
+            reasonId={`${headingId}-follow-limit`}
+          />
+        </div>
+        <FollowLimitNote
+          kind="teams"
+          slug={self.slug}
+          id={`${headingId}-follow-limit`}
+          className="mt-2 @min-[35rem]:col-span-2"
+        />
       </div>
       <div
         className={cn(
@@ -194,7 +215,7 @@ function TicketNumbers({ row }: { row: StandingRow }) {
     },
   ];
   return (
-    <dl className="mt-3 grid grid-cols-[repeat(4,auto)] justify-start gap-x-4 gap-y-1 lg:mt-4 lg:gap-x-8 lg:gap-y-1.5">
+    <dl className="mt-3 grid grid-cols-[repeat(4,auto)] justify-start gap-x-4 gap-y-1 lg:mt-4 lg:gap-x-8 lg:gap-y-1.5 @min-[35rem]:col-span-2">
       {items.map((item) => (
         <div key={item.label} className="grid content-start gap-0.75">
           <dt className="text-[11.5px] font-extrabold text-ink-2">

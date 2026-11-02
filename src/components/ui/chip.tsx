@@ -61,6 +61,8 @@ export interface FilterChipProps
   label: ReactNode;
   /** 해당 카드 수(Barlow 600 16px). 0이면 보통 `disabled`와 함께 쓴다 */
   count: number;
+  /** 건수 칸 속성 — 섬·부트 스크립트가 건수를 고쳐 쓸 때(M4-08 '내 팀만' — 데이터 속성 · suppressHydrationWarning) */
+  countProps?: ComponentProps<"span"> & Record<`data-${string}`, string>;
 }
 
 /** 분류 칩·한국 선수만 칩 — 토글 버튼(`aria-pressed`), 칩 줄은 `role="group" aria-label="분류 필터"`로 감싼다 */
@@ -68,6 +70,7 @@ export function FilterChip({
   pressed,
   label,
   count,
+  countProps,
   tone,
   className,
   type = "button",
@@ -88,7 +91,7 @@ export function FilterChip({
       </span>
       {label}
       <span className="font-numeric text-base leading-none font-semibold text-ink-2 tabular-nums group-disabled/chip:text-current group-aria-pressed/chip:text-current">
-        {count}
+        {countProps ? <span {...countProps}>{count}</span> : count}
         <span className="sr-only">건</span>
       </span>
     </button>
@@ -225,6 +228,8 @@ export interface ContentsRowProps extends Omit<
   label: ReactNode;
   count: number;
   marker: ContentsMarker;
+  /** 건수 칸 속성(FilterChip `countProps`와 같다) */
+  countProps?: ComponentProps<"span"> & Record<`data-${string}`, string>;
 }
 
 function ContentsMarkerView({ marker }: { marker: ContentsMarker }) {
@@ -289,6 +294,7 @@ export function ContentsRow({
   pressed,
   label,
   count,
+  countProps,
   marker,
   className,
   type = "button",
@@ -323,7 +329,7 @@ export function ContentsRow({
         className="min-w-2 flex-1 translate-y-1 border-b-2 border-dotted border-ink-3"
       />
       <span className="min-w-4.5 text-right font-numeric text-[17px] leading-none font-semibold text-ink-2 tabular-nums group-disabled/row:text-ink-disabled group-aria-pressed/row:text-ink">
-        {count}
+        {countProps ? <span {...countProps}>{count}</span> : count}
         <span className="sr-only">건</span>
       </span>
     </button>

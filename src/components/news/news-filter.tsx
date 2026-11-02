@@ -8,7 +8,7 @@ import {
   NEWS_FILTER_BOOT_SCRIPT,
   NEWS_FILTER_PENDING_SCRIPT,
 } from "@/lib/news/filter-boot";
-import { ALL_CATEGORIES, FILTER_CONFIG_ID } from "@/lib/news/filter-dom";
+import { ALL_CATEGORIES, FILTER_CONFIG_ID, NF } from "@/lib/news/filter-dom";
 import type { NewsFilterView } from "@/lib/news/filter";
 
 import { NewsFilterIsland } from "./filter-island";
@@ -108,7 +108,33 @@ export function NewsFilterContents({ view }: { view: NewsFilterView }) {
           />
         </li>
       </ul>
+      {/* 마이(M4-08 — FR-112): 팔로우가 있거나 `mine=1`로 들어왔을 때만 보인다(부트 스크립트 · 섬이 `hidden`을 푼다). 건수도 그때 쓴다 */}
+      <div {...{ [NF.mine]: "" }} hidden suppressHydrationWarning>
+        <GroupLabel id="nf-mine-h">마이</GroupLabel>
+        <ul role="list" aria-labelledby="nf-mine-h">
+          <li>
+            <MineRow />
+          </li>
+        </ul>
+      </div>
     </div>
+  );
+}
+
+/** 목차 '내 팀만' 행 — 건수 · 비활성은 팔로우에 달려 있어 클라이언트가 쓴다 */
+function MineRow() {
+  return (
+    <ContentsRow
+      data-nf-key="mine"
+      data-nf-value="1"
+      disabled
+      suppressHydrationWarning
+      pressed={false}
+      label="내 팀만"
+      count={0}
+      countProps={{ [NF.mineCount]: "", suppressHydrationWarning: true }}
+      marker={{ kind: "check" }}
+    />
   );
 }
 
@@ -160,6 +186,19 @@ export function NewsFilterChips({ view }: { view: NewsFilterView }) {
         pressed={false}
         label="한국 선수만"
         count={view.kr}
+      />
+      {/* 내 팀만(M4-08) — 팔로우가 있거나 눌렸을 때만(목차 '마이' 묶음과 같은 규칙) */}
+      <FilterChip
+        data-nf-key="mine"
+        data-nf-value="1"
+        {...{ [NF.mine]: "" }}
+        hidden
+        disabled
+        suppressHydrationWarning
+        pressed={false}
+        label="내 팀만"
+        count={0}
+        countProps={{ [NF.mineCount]: "", suppressHydrationWarning: true }}
       />
     </div>
   );

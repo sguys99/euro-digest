@@ -27,6 +27,10 @@ import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
 import { CardMenuButton } from "./card-menu";
+import { KoreanArmband } from "./korean-armband";
+
+// 한국 완장은 클라이언트 섬(`/my` 관리 열 · 최근 결과)도 그리므로 따로 둔 모듈에서 다시 내보낸다(M4-08 — 동작 불변)
+export { KoreanArmband };
 
 /**
  * 뉴스 카드 — D0 변형 6종을 한 컴포넌트로 (PRD FR-30, D23·D30, DESIGN.md §9.2 Card · §9.3, plan M1-31)
@@ -167,23 +171,6 @@ export function ImportanceBar({ value }: { value: number }) {
           )}
         />
       ))}
-    </span>
-  );
-}
-
-/**
- * 한국 완장 — `kr` 데이터 기준(제목에 이름이 있어도 `kr:false`면 달지 않는다). 텍스트 "한국" + `title` "한국 선수 관련"
- * (팀 화면 티켓·팀시트처럼 선수 자신 옆에 다는 완장은 `title` "한국 선수" — DESIGN §9.3 팀 헤더 티켓)
- */
-export function KoreanArmband({
-  title = "한국 선수 관련",
-}: { title?: string } = {}) {
-  return (
-    <span
-      title={title}
-      className="inline-block bg-brand-accent px-0.75 pt-0.75 pb-0.5 text-[10.5px] leading-[1.2] font-extrabold tracking-[-0.02em] text-brand-accent-foreground"
-    >
-      한국
     </span>
   );
 }

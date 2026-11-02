@@ -16,6 +16,10 @@
  * ics (PRD FR-59·FR-83·FR-115·FR-123, plan M4-12): `out/calendar/{team}.ics`(팀 페이지가 있는 팀마다) · `out/calendar/korean.ics`
  * (한국 선수 소속팀 묶음) · `out/calendar/match/{id}.ics`(예정 경기마다). 규칙은 scripts/lib/site-ics.ts 머리 주석. 대회 데이터·팀·한국 선수
  * 현황·대표팀 설정은 화면과 같은 로더로 읽는다(깨졌으면 던짐 → 빌드 실패). 이전 빌드의 경기 파일이 남지 않게 `out/calendar/`를 비우고 쓴다.
+ *
+ * `/my` 자료 (PRD FR-111, plan M4-08): `out/my/data/teams/{team}.json`(팀 페이지가 있는 팀마다) · `out/my/data/players/{slug}.json`(등록 선수마다) —
+ * 다음 경기 · 최근 결과(규칙 scripts/lib/follow-data.ts, 형식 src/lib/my-view.ts). `/my` 섬이 팔로우한 것만 지연 fetch한다. 선수는 선수 상세와 같은
+ * 로더(`loadPlayerPage`)의 화면 모델을 쓴다. 이전 빌드 파일이 남지 않게 `out/my/data/`를 비우고 쓴다.
  */
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -28,12 +32,14 @@ import { NAMES_KO_PATH } from "@/lib/data/names";
 import { loadKoreanPlayersData, nameLookup } from "@/lib/data/korean-players";
 import { loadNationalTeamConfig } from "@/lib/data/national-team";
 import { listNewsDates, loadNewsIssue } from "@/lib/data/news";
+import { loadPlayerPage } from "@/lib/data/player-page";
 import { loadKoreanPlayers } from "@/lib/data/team-page";
 import { listTeamSlugs } from "@/lib/data/teams";
 import { sitePaths } from "@/lib/paths";
 import { shiftDate } from "@/lib/time";
 
 import { createLogger } from "./lib/logger";
+import { buildFollowData, type FollowDataFile } from "./lib/follow-data";
 import { buildSiteCalendars, type CalendarFile } from "./lib/site-ics";
 import {
   RSS_WINDOW_DAYS,
@@ -84,6 +90,25 @@ function buildCalendars(): CalendarFile[] {
     korean: loadKoreanPlayersData(),
     national: loadNationalTeamConfig()?.matches ?? [],
     paths: sitePaths(),
+  });
+}
+
+/** `/my` 자료 입력을 로더로 읽어 순수 함수에 넘긴다(기준 시각 = 빌드 시각) */
+function buildMyData(now: Date): FollowDataFile[] {
+  return buildFollowData({
+    teams: listTeamSlugs(),
+    matchLists: loadAllCompetitionData().map((c) => c.matches),
+    team: loadTeamLookup(),
+    competitions: loadCompetitionsConfig().map((c) => ({
+      id: c.id,
+      short: c.shortKo,
+      name: c.nameKo,
+    })),
+    players: loadKoreanPlayers().flatMap((p) => {
+      const page = loadPlayerPage(p.slug, now);
+      return page ? [page.view] : [];
+    }),
+    nowMs: now.getTime(),
   });
 }
 
@@ -140,6 +165,25 @@ function main(): number {
     matches: counts.match,
     teamEvents: events,
     elapsedMs: Date.now() - icsStarted,
+  });
+
+  const myStarted = Date.now();
+  const myFiles = buildMyData(new Date());
+  rmSync(outFile("/my/data/"), { recursive: true, force: true });
+  let myBytes = 0;
+  for (const entry of myFiles) {
+    const file = outFile(entry.path);
+    const json = JSON.stringify(entry.data);
+    mkdirSync(path.dirname(file), { recursive: true });
+    writeFileSync(file, json, "utf8");
+    myBytes += Buffer.byteLength(json);
+  }
+  log.info("build.my.done", {
+    count: myFiles.length,
+    teams: myFiles.filter((f) => f.data.kind === "teams").length,
+    players: myFiles.filter((f) => f.data.kind === "players").length,
+    bytes: myBytes,
+    elapsedMs: Date.now() - myStarted,
   });
 
   todo(

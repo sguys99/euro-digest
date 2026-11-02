@@ -96,13 +96,16 @@ function scopeItems<
   );
 }
 
-/** 카드 `<li>`의 필터 값(DOM 약속 — src/lib/news/filter-dom.ts). 대회·팀은 공백으로 잇는다 */
+/** 카드 `<li>`의 필터 값(DOM 약속 — src/lib/news/filter-dom.ts). 대회·팀·선수는 공백으로 잇는다(선수 = 내 팀 필터, M4-08) */
 function filterData(card: NewsCard) {
   return {
     "data-nf-card": "",
     "data-nf-cat": card.cat,
     "data-nf-comps": [...new Set(card.comp)].join(" "),
     "data-nf-teams": [...new Set(card.teams)].join(" "),
+    ...(card.players.length > 0
+      ? { "data-nf-players": [...new Set(card.players)].join(" ") }
+      : {}),
     ...(card.kr ? { "data-nf-kr": "" } : {}),
   };
 }

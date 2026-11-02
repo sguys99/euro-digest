@@ -182,3 +182,12 @@ export function BookmarkIcon(props: IconProps) {
     </Icon>
   );
 }
+
+/** 체크 — 팔로우 중(켜짐) 미니 스텁(D2 혼합안 `.fol__s .on`) */
+export function CheckIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m5 12.5 4.5 4.5L19 7.5" />
+    </Icon>
+  );
+}

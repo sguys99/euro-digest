@@ -12,6 +12,11 @@ import type {
 import { cx } from "@/lib/cx";
 import { routes } from "@/lib/paths";
 
+import {
+  FollowButton,
+  FollowLimitNote,
+} from "@/components/follow/follow-button";
+
 import { NUMBER_TONE, OtherTab, StateStamp } from "./player-marks";
 import { Perforation, TailCell, TailLink } from "./ticket-parts";
 
@@ -29,7 +34,8 @@ import { Perforation, TailCell, TailLink } from "./ticket-parts";
  * - **꼬리표**(있는 칸만 — 데이터가 없으면 칸을 숨기고 모두 없으면 꼬리표를 두지 않는다, DECISIONS D2 §6 #8): UCL 출전 · 이적설(코드가 판정한
  *   이 선수 이적 카드의 단계 펀치 + 행선지, 없으면 기사 건수) · 대표팀(최신 소집 명단에 있을 때 — 관련 기사 건수). 값은 같은 페이지 구역 링크.
  *   티켓 상자 폭 600px 미만은 세로로 쌓고 이상이면 가로(컨테이너 쿼리 — DESIGN §7.1 예외, DECISIONS D2 §6 #7).
- * - 팔로우 버튼은 M4-08 범위 — 자리를 그리지 않는다.
+ * - **팔로우 버튼**(M4-08 — FR-59 · FR-110, DESIGN §9.3 D2 "팔로우 버튼"): 몸통 오른쪽 위, 티켓 폭 560px 미만은 사실 줄 아래(컨테이너 쿼리
+ *   `@min-[35rem]` — 꼬리표와 같은 티켓 상자 기준, DESIGN §7.1 예외). 한도 이유 문장은 사실 줄 아래 전폭(한도일 때만).
  */
 export function PlayerTicket({
   view,
@@ -54,6 +60,7 @@ export function PlayerTicket({
 }) {
   const m = view.minutes;
   const digits = m.text.length;
+  const followReasonId = `${headingId}-follow-limit`;
   const tail: React.ReactNode[] = [];
   if (view.ucl) {
     tail.push(
@@ -174,8 +181,8 @@ export function PlayerTicket({
         </div>
       </div>
       <Perforation />
-      <div className="min-w-0 pt-3.5 pr-3.5 pb-2.5 pl-4 lg:pt-5.5 lg:pr-6 lg:pb-3.5 lg:pl-7">
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] leading-[1.35] text-ink-2">
+      <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start pt-3.5 pr-3.5 pb-2.5 pl-4 lg:pt-5.5 lg:pr-6 lg:pb-3.5 lg:pl-7 @min-[35rem]:grid-cols-[minmax(0,1fr)_auto] @min-[35rem]:gap-x-3">
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] leading-[1.35] text-ink-2 @min-[35rem]:col-start-1">
           {view.league.kind === "comp" ? (
             <FlatTab comp={view.league.comp} title={view.league.name}>
               {view.league.short}
@@ -211,17 +218,17 @@ export function PlayerTicket({
         </p>
         <h1
           id={headingId}
-          className="mt-2.5 text-[36px] leading-[1.06] font-extrabold tracking-[-0.045em] lg:text-[52px]"
+          className="mt-2.5 text-[36px] leading-[1.06] font-extrabold tracking-[-0.045em] lg:text-[52px] @min-[35rem]:col-start-1"
         >
           {view.nameKo}
         </h1>
         <p
           lang="en"
-          className="mt-1 font-numeric text-[17px] leading-[1.1] font-semibold tracking-[0.04em] text-ink-2 lg:text-xl"
+          className="mt-1 font-numeric text-[17px] leading-[1.1] font-semibold tracking-[0.04em] text-ink-2 lg:text-xl @min-[35rem]:col-span-2"
         >
           {view.nameEn}
         </p>
-        <p className="mt-3 flex flex-wrap gap-x-3.5 gap-y-1 text-[13px] leading-[1.4] text-ink-2">
+        <p className="mt-3 flex flex-wrap gap-x-3.5 gap-y-1 text-[13px] leading-[1.4] text-ink-2 @min-[35rem]:col-span-2">
           <span>
             <b className="font-numeric text-[15px] font-semibold tracking-[0.04em] text-ink">
               {view.position}
@@ -239,8 +246,23 @@ export function PlayerTicket({
             </span>
           ) : null}
         </p>
+        {/* 팔로우(M4-08 — DECISIONS D2 §6 #9): 티켓 폭 560px 미만은 사실 줄 아래, 이상이면 몸통 오른쪽 위(대회 줄 · 이름 옆). DOM은 사실 줄 뒤 한 자리 */}
+        <div className="mt-3.5 @min-[35rem]:col-start-2 @min-[35rem]:row-span-2 @min-[35rem]:row-start-1 @min-[35rem]:mt-0 @min-[35rem]:self-start">
+          <FollowButton
+            kind="players"
+            slug={view.slug}
+            name={view.nameKo}
+            reasonId={followReasonId}
+          />
+        </div>
+        <FollowLimitNote
+          kind="players"
+          slug={view.slug}
+          id={followReasonId}
+          className="mt-2 @min-[35rem]:col-span-2"
+        />
         {view.state !== "linked" ? (
-          <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] leading-normal text-ink-2">
+          <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] leading-normal text-ink-2 @min-[35rem]:col-span-2">
             <StateStamp>
               {view.state === "other" ? "갱신 중단" : "기록 연결 전"}
             </StateStamp>
@@ -252,7 +274,7 @@ export function PlayerTicket({
           </p>
         ) : null}
         {view.team.page ? (
-          <p className="mt-1.5">
+          <p className="mt-1.5 @min-[35rem]:col-span-2">
             <Link
               href={routes.team(view.team.slug)}
               className="inline-flex min-h-11 items-center gap-1 text-[13px] font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2"

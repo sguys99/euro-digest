@@ -20,7 +20,9 @@ import {
   readFilterConfig,
   revealPressedChip,
 } from "@/lib/news/filter-dom";
+import { followKeySet } from "@/lib/my-view";
 import type { Category, CompId } from "@/lib/schema/common";
+import { followStore, useFollows } from "@/lib/use-follows";
 
 /**
  * 뉴스 필터 섬 — 페이지에 하나(홈·`/news/`). 렌더 결과는 없고, 서버가 그린 목차·칩·피드 머리·카드의 속성만 바꾼다(plan M1-33,
@@ -32,6 +34,9 @@ import type { Category, CompId } from "@/lib/schema/common";
  *   기록 추가 없음 — Next 라우터가 같은 주소를 `useSearchParams`로 돌려주면 같은 상태라 다시 그리지 않는다).
  *   남은 카드는 찍힘(fast — 필터 결과 진입, 모션 줄이기면 건너뜀), 결과는 `aria-live`로 알린다("이적 4건").
  *   누른 버튼이 사라지거나 비활성이 되면(해제·필터 해제·눌린 채 들어온 0건 항목 끄기) 보이는 눌린 분류 칩·행으로 포커스를 옮기고, 목록 머리가 화면 위로 지나가 있었으면 피드 머리로 올린다.
+ *
+ * - **내 팀만**(M4-08 — FR-112): 팔로우(브라우저 저장소 — `useFollows`)가 바뀌면(같은 페이지 · 다른 탭) '내 팀만' 칩 · 건수와, 켜져 있으면 결과를
+ *   다시 그린다. 첫 화면은 부트 스크립트가 같은 팔로우로 이미 그렸다 — 주소 → 상태 그리기도 저장소 스냅숏을 바로 읽어 같은 결과를 낸다.
  *
  * `cn`을 쓰지 않는다(섬 번들 — DESIGN §9.4). import하는 모듈에 fs·zod가 없다(src/lib/news 순수 모듈).
  */
@@ -55,6 +60,8 @@ export function filterActionOf(button: Element): FilterAction | null {
       return value ? { type: "comp", value: value as CompId } : null;
     case "kr":
       return { type: "kr" };
+    case "mine":
+      return { type: "mine" };
     default:
       return null;
   }
@@ -74,27 +81,48 @@ function stampVisibleCards(doc: Document): void {
   for (const li of cards) li.setAttribute(NF.enter, "");
 }
 
+/** 그린 상태 키 — 필터 쿼리 + 팔로우 키(같으면 다시 그리지 않는다) */
+function drawKey(state: NewsFilterState, keys: ReadonlySet<string>): string {
+  return `${filterKey(state)}|${[...keys].join(",")}`;
+}
+
 export function NewsFilterIsland() {
   // App Router 밖(단위 테스트 렌더)에서는 null — 필터 없음으로 본다
   const params = useSearchParams() as ReturnType<typeof useSearchParams> | null;
   const search = params ? params.toString() : "";
   const stateRef = useRef<NewsFilterState>(EMPTY_FILTER);
-  /** 마지막으로 그린 상태 키(null = 아직 그리지 않음) */
+  /** 마지막으로 그린 상태 키(필터 + 팔로우 — null = 아직 그리지 않음) */
   const drawnRef = useRef<string | null>(null);
+  /** 지금 팔로우 키(내 팀 필터) */
+  const keysRef = useRef<ReadonlySet<string>>(new Set());
+  const { follows, ready } = useFollows();
 
-  // 주소 → 상태(첫 마운트·주소 이동) — 페인트 전에
+  // 주소 → 상태(첫 마운트·주소 이동) — 페인트 전에. 팔로우는 저장소 스냅숏을 바로 읽는다(부트 스크립트와 같은 값)
   useLayoutEffect(() => {
     document.documentElement.removeAttribute(NF.pending);
     const config = readFilterConfig(document);
     if (!config) return;
     const state = parseFilterQuery(search, config);
     stateRef.current = state;
-    const key = filterKey(state);
+    keysRef.current = followKeySet(followStore.getSnapshot());
+    const key = drawKey(state, keysRef.current);
     if (key === drawnRef.current) return;
     drawnRef.current = key;
-    applyFilterToDom(document, state, config);
+    applyFilterToDom(document, state, config, keysRef.current);
     revealPressedChip(document);
   }, [search]);
+
+  // 팔로우가 바뀌면(하이드레이션 뒤) — '내 팀만' 칩 · 건수 · (켜져 있으면) 결과를 다시 그린다. 모션 · 알림 없음
+  useEffect(() => {
+    if (!ready) return;
+    const config = readFilterConfig(document);
+    if (!config) return;
+    keysRef.current = followKeySet(follows);
+    const key = drawKey(stateRef.current, keysRef.current);
+    if (key === drawnRef.current) return;
+    drawnRef.current = key;
+    applyFilterToDom(document, stateRef.current, config, keysRef.current);
+  }, [follows, ready]);
 
   // 클릭 → 상태 → 주소
   useEffect(() => {
@@ -104,10 +132,10 @@ export function NewsFilterIsland() {
 
     const commit = (next: NewsFilterState, origin: HTMLElement) => {
       stateRef.current = next;
-      const key = filterKey(next);
+      const key = drawKey(next, keysRef.current);
       if (key === drawnRef.current) return;
       drawnRef.current = key;
-      const count = applyFilterToDom(document, next, config);
+      const count = applyFilterToDom(document, next, config, keysRef.current);
       if (!reduce.matches) stampVisibleCards(document);
       const live = document.querySelector(`[${NF.live}]`);
       if (live) live.textContent = filterAnnouncement(next, config, count);

@@ -27,8 +27,8 @@ function ticket(container: HTMLElement): HTMLElement {
   return el;
 }
 
-describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 섹션 숨김, plan §2.3)", () => {
-  it("홈·뉴스·리그·한국 선수 네 항목, 있는 라우트로만 간다(리그 = 첫 대회 EPL — M2-10, 한국 선수 = 목록 M3-09)", () => {
+describe("내비 항목 — 최종 5개(홈·뉴스·리그·한국 선수·마이) + 상단 이적(PRD §4.1, M4-08)", () => {
+  it("홈·뉴스·리그·한국 선수·이적·마이, 있는 라우트로만 간다(리그 = 첫 대회 EPL — M2-10, 한국 선수 = 목록 M3-09, 마이 = M4-08)", () => {
     expect(NAV_ITEMS.map((item) => [item.key, item.label, item.href])).toEqual([
       ["home", "홈", routes.home()],
       ["news", "뉴스", routes.news()],
@@ -36,6 +36,8 @@ describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 �
       ["korean", "한국 선수", routes.koreanPlayers()],
       // 이적(M4-04) — 상단 내비만(PRD §4.1 하단 탭 5개 고정, 이적은 상단 메뉴)
       ["transfers", "이적", routes.transfers()],
+      // 마이(M4-08) — 하단 탭 다섯째 · 상단 내비 맨 끝
+      ["my", "마이", routes.my()],
     ]);
     expect(NAV_ITEMS.map((item) => item.bottomTab)).toEqual([
       true,
@@ -43,10 +45,11 @@ describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 �
       true,
       true,
       false,
+      true,
     ]);
   });
 
-  it("하단 탭 네 항목 · 상단 내비 다섯 항목(+ 이적), 현재 페이지만 aria-current", () => {
+  it("하단 탭 다섯 항목 · 상단 내비 여섯 항목(+ 이적), 현재 페이지만 aria-current", () => {
     render(
       <AppShell current="news" issue={ISSUE}>
         본문
@@ -62,6 +65,7 @@ describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 �
         "리그",
         "한국 선수",
         ...(top ? ["이적"] : []),
+        "마이",
       ]);
       // 테스트 환경의 next/link는 trailingSlash 설정을 모른다(끝 슬래시를 뗀다) — 빌드 HTML의 href는 e2e가 본다
       expect(
@@ -72,6 +76,7 @@ describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 �
         "/competitions/epl/",
         "/korean-players/",
         ...(top ? ["/transfers/"] : []),
+        "/my/",
       ]);
       expect(links.map((a) => a.getAttribute("aria-current"))).toEqual([
         null,
@@ -79,10 +84,9 @@ describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 �
         null,
         null,
         ...(top ? [null] : []),
+        null,
       ]);
     }
-    // 마이는 아직 없다(M4)
-    expect(screen.queryByRole("link", { name: "마이" })).toBeNull();
   });
 
   it("currentKind='section'(날짜 아카이브 — M1-34)이면 그 항목은 aria-current='true'(이 페이지가 /news/ 자신은 아니다), 같은 표시(막대·굵기)", () => {

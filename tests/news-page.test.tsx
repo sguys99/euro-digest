@@ -88,7 +88,8 @@ describe("NewsPage(/news/)", () => {
       screen
         .getByRole("group", { name: "분류 필터" })
         .querySelectorAll("button"),
-    ).toHaveLength(9);
+      // 전체 + 7 + 한국 선수만 + 내 팀만(M4-08 — 팔로우가 있을 때만 보인다)
+    ).toHaveLength(10);
     expect(container.querySelector("[data-columns]")).toHaveAttribute(
       "data-columns",
       "contents",

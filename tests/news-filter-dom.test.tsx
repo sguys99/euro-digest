@@ -33,6 +33,8 @@ import {
   NF,
   readFilterConfig,
 } from "@/lib/news/filter-dom";
+import { parseFollows } from "@/lib/follow";
+import { followKeySet } from "@/lib/my-view";
 import { NewsFileSchema } from "@/lib/schema/news";
 
 vi.mock("next/navigation", () => ({
@@ -173,6 +175,78 @@ describe("부트 스크립트 ≡ applyFilterToDom — 실제 서버 렌더 DOM�
   });
 });
 
+describe("내 팀만(M4-08) — 팔로우가 있으면 부트 스크립트 ≡ applyFilterToDom", () => {
+  const FOLLOWS = JSON.stringify({
+    v: 1,
+    teams: ["bayern-munchen", "chelsea"],
+    players: ["lee-kang-in"],
+  });
+  const keys = () =>
+    followKeySet(parseFollows(window.localStorage.getItem("ed-follow")));
+
+  beforeEach(() => window.localStorage.setItem("ed-follow", FOLLOWS));
+  afterEach(() => window.localStorage.clear());
+
+  it.each([
+    "",
+    "?mine=1",
+    "?mine=1&cat=result",
+    "?mine=1&kr=1",
+    "?cat=transfer",
+    "?mine=2",
+  ])("%s", (search) => {
+    setUrl(search);
+    mountStatic();
+    document.documentElement.setAttribute(NF.pending, "");
+    runScript(NEWS_FILTER_BOOT_SCRIPT);
+    const fromBoot = document.body.innerHTML;
+    mountStatic();
+    applyFilterToDom(
+      document,
+      parseFilterQuery(location.search, config()),
+      config(),
+      keys(),
+    );
+    expect(document.body.innerHTML).toBe(fromBoot);
+  });
+
+  it("팔로우가 있으면 칩 · 목차 묶음이 보이고 건수 = 팔로우가 걸린 카드 수, mine=1이면 그 카드만 + 설명 '내 팀'", () => {
+    setUrl("?mine=1");
+    mountStatic();
+    const n = applyFilterToDom(
+      document,
+      parseFilterQuery(location.search, config()),
+      config(),
+      keys(),
+    );
+    const expected = sample.cards.filter(
+      (c) =>
+        c.teams.some((t) => ["bayern-munchen", "chelsea"].includes(t)) ||
+        c.players.includes("lee-kang-in"),
+    ).length;
+    expect(n).toBe(expected);
+    expect(n).toBeGreaterThan(0);
+    for (const el of document.querySelectorAll<HTMLElement>(`[${NF.mine}]`))
+      expect(el.hidden).toBe(false);
+    for (const el of document.querySelectorAll(`[${NF.mineCount}]`))
+      expect(el.textContent).toBe(String(expected));
+    expect(button("mine", "1")).toHaveAttribute("aria-pressed", "true");
+    expect(q(`[${NF.desc}]`).textContent).toBe("내 팀");
+  });
+
+  it("팔로우가 없는데 mine=1로 들어오면 결과 0건 + 칩은 눌린 채 보여 끌 수 있다", () => {
+    window.localStorage.clear();
+    setUrl("?mine=1");
+    mountStatic();
+    runScript(NEWS_FILTER_BOOT_SCRIPT);
+    expect(visibleIds()).toEqual([]);
+    expect(q(`[${NF.empty}]`).hidden).toBe(false);
+    const chip = button("mine", "1");
+    expect(chip.closest(`[${NF.mine}]`)?.hasAttribute("hidden")).toBe(false);
+    expect(chip.disabled).toBe(false);
+  });
+});
+
 describe("그리기 규칙", () => {
   function draw(search: string): number {
     setUrl(search);
@@ -290,6 +364,8 @@ describe("정적 HTML — 처음 상태", () => {
       "UCL0건",
       "기타3건",
       "한국 선수 관련만5건",
+      // 내 팀만(M4-08) — 팔로우가 없으면 묶음째 숨고(`hidden`) 건수는 클라이언트가 쓴다
+      "내 팀만0건",
     ]);
     expect(button("cat", "all")).toHaveAttribute("aria-pressed", "true");
     // 0건은 비활성(DESIGN §9.2) — "전체"는 늘 활성
@@ -297,7 +373,7 @@ describe("정적 HTML — 처음 상태", () => {
       rows
         .filter((r) => (r as HTMLButtonElement).disabled)
         .map((r) => r.getAttribute(NF.value)),
-    ).toEqual(["LIGUE1", "UCL", "ucl"]);
+    ).toEqual(["LIGUE1", "UCL", "ucl", "1"]); // 마지막 = 내 팀만(팔로우 0 — 건수 0이라 비활성, 묶음째 숨음)
   });
 
   it("목차 묶음은 목록 이름(aria-labelledby) — 제목 요소를 만들지 않는다", () => {
@@ -310,7 +386,7 @@ describe("정적 HTML — 처음 상태", () => {
           document.getElementById(ul.getAttribute("aria-labelledby") ?? "")
             ?.textContent,
       ),
-    ).toEqual(["대회", "분류", "한국 선수"]);
+    ).toEqual(["대회", "분류", "한국 선수", "마이"]);
   });
 
   it("대회 행의 약칭 상자는 장식(접근 이름 겹침 방지), ✓는 눌림일 때만 보이는 장식", () => {
@@ -340,6 +416,7 @@ describe("정적 HTML — 처음 상태", () => {
       "✓UCL0건",
       "✓기타3건",
       "✓한국 선수만5건",
+      "✓내 팀만0건",
     ]);
     // 대회 진입점 없음(DECISIONS #11)
     expect(row.querySelector(`[${NF.key}="comp"]`)).toBeNull();

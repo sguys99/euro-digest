@@ -110,13 +110,15 @@
   --shadow-print-accent: 4px 4px 0 var(--brand-accent);
 
   /*
-   * DESIGN §6.1·§6.2 — 인쇄형 모션 4종(animate-stamp·tear·eject·arrive, D0-12).
+   * DESIGN §6.1·§6.2 — 인쇄형 모션 4종(animate-stamp·tear·eject·arrive, D0-12) + (D2) 접힘(animate-fold, M4-08).
    * 모션 줄이기(reduce)면 아래 base 규칙이 지속 시간을 0으로 만든다 — 채움 모드 both라 끝 상태로 바로 보인다.
    */
   --animate-stamp: stamp var(--duration-fast) var(--ease) both;
   --animate-tear: tear var(--duration-base) var(--ease) both;
   --animate-eject: eject var(--duration-base) var(--ease) both;
   --animate-arrive: arrive var(--duration-slow) var(--ease);
+  /* (D2) 접힘 — 팔로우 버튼 미니 스텁(M4-08에서 토큰으로 올림 — DESIGN §6.1, DECISIONS D2 §9 #12). 채움 모드 없음(끝 = 제자리) */
+  --animate-fold: fold var(--duration-base) var(--ease);
 
   /* 찍힘 — 필터 결과 진입 카드(첫 로드에는 없음, D31) */
   @keyframes stamp {
@@ -149,6 +151,19 @@
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  /* 접힘 (D2) — 팔로우 버튼을 누름: 미니 스텁이 오른쪽 기준으로 접혔다 펴진다(transform-origin은 컴포넌트가 정한다) */
+  @keyframes fold {
+    0% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(0);
+    }
+    100% {
+      transform: scaleX(1);
     }
   }
 

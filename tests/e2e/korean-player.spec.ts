@@ -102,8 +102,11 @@ test.describe("선수 상세 — 구성", () => {
         "player-national",
         callUp !== null || news.national.items.length > 0,
       );
-      // 팔로우 버튼(M4-08)은 없다
-      await expect(page.locator("[aria-pressed]")).toHaveCount(0);
+      // 팔로우 버튼(M4-08) — 선수 티켓 몸통 하나(토글 버튼은 이것뿐)
+      await expect(page.locator("[aria-pressed]")).toHaveCount(1);
+      await expect(
+        page.locator('[data-slot="player-ticket"] [data-slot="follow-button"]'),
+      ).toHaveAttribute("data-follow", `players:${slug}`);
       // DOM 순서 = 1279 이하 순서(2026-11-01 사용자 결정 — 다음 경기 → 이적설 → 대표팀 → 관련 뉴스, DECISIONS D2 §8 #20)
       const order = await page
         .locator('[data-slot="player-page"] [data-slot^="player-"]')

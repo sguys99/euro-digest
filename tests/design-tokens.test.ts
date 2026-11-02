@@ -629,6 +629,7 @@ describe("Tailwind 컴파일 결과 (tailwindcss compile — 실제 유틸리티
       "animate-tear",
       "animate-eject",
       "animate-arrive",
+      "animate-fold",
       // 지운 기본값 — 만들어지면 안 된다
       ...REMOVED_DEFAULTS,
     ]);
@@ -674,8 +675,8 @@ describe("Tailwind 컴파일 결과 (tailwindcss compile — 실제 유틸리티
     expect(rule("transition-colors")).toMatch(/var\(--ease\)/);
   });
 
-  it("인쇄형 모션 4종: animate-X 유틸리티와 같은 이름의 키프레임이 만들어진다(DESIGN §6.1, D0-12)", () => {
-    for (const name of ["stamp", "tear", "eject", "arrive"]) {
+  it("인쇄형 모션 4종 + 접힘(D2): animate-X 유틸리티와 같은 이름의 키프레임이 만들어진다(DESIGN §6.1, D0-12 · M4-08)", () => {
+    for (const name of ["stamp", "tear", "eject", "arrive", "fold"]) {
       expect(rule(`animate-${name}`), name).toMatch(
         new RegExp(`animation:\\s*var\\(--animate-${name}\\)`),
       );

@@ -7,6 +7,11 @@ import type {
 import { FORM_WORD } from "@/lib/competition-view";
 import { cn } from "@/lib/utils";
 
+import { FormChip } from "./form-chip";
+
+// 폼 칩 한 칸은 클라이언트 섬도 쓰므로 따로 둔 모듈(form-chip.tsx)에서 다시 내보낸다(M4-08)
+export { FormChip };
+
 /**
  * 순위표 표식 — 순위 변동 ▲▼ · 폼 칩 W/D/L · 스코어 (DESIGN §9.3 "순위 변동 ▲▼"·"폼 칩 W/D/L", §10 색 외 표식, M2-11)
  *
@@ -73,37 +78,6 @@ export function TrendMark({
         </span>
       );
   }
-}
-
-const CHIP_COLOR: Readonly<Record<FormResult, string>> = {
-  W: "text-result-win",
-  D: "text-result-draw",
-  L: "text-result-loss",
-};
-
-/**
- * 폼 칩 한 칸 — 글자 + 1.5px 현재 글자색 테두리. `result` null = 자료 없음(가운데 8×2 짧은 선). 모양은 globals.css §10 `form-chip`
- * (순위표 20행 × 5칸이 두 번 — 표·펼침 — 반복돼 짧은 유틸리티로 묶었다)
- */
-export function FormChip({
-  result,
-  className,
-}: {
-  result: FormResult | null;
-  className?: string;
-}) {
-  return (
-    <i
-      aria-hidden="true"
-      className={cn(
-        "form-chip",
-        result === null ? "form-chip-none" : CHIP_COLOR[result],
-        className,
-      )}
-    >
-      {result}
-    </i>
-  );
 }
 
 /** 폼 칩 5칸 묶음 — `role="img"` + 읽는 이름(칸은 장식) */

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { FormChip, Score } from "@/components/competition/marks";
+import { FormChip } from "@/components/competition/form-chip";
 import { TeamBadge } from "@/components/team/team-badge";
 import { FlatTab, flatTabVariants } from "@/components/ui/chip";
 import { FORM_WORD } from "@/lib/competition-view";
@@ -123,11 +123,14 @@ export function ResultCell({
           >
             <FormChip result={result.outcome} />
             <span className="sr-only">{FORM_WORD[result.outcome]} </span>
-            <Score
-              h={result.for}
-              a={result.against}
-              className="gap-0 font-numeric text-lg leading-none tracking-[0.04em] tabular-nums"
-            />
+            {/* 스코어 "3-1"(하이픈 장식 · 화면 밖 "대") — marks.tsx `Score`에 이 칸 크기를 병합한 결과와 같은 클래스(M4-08: 클라이언트 섬에서도
+                그리도록 `cn` 병합 없이 완성된 문자열로) */}
+            <span className="inline-flex gap-0 font-numeric text-lg leading-none font-extrabold tracking-[0.04em] tabular-nums">
+              <span>{result.for}</span>
+              <span aria-hidden="true">-</span>
+              <span className="sr-only">대</span>
+              <span>{result.against}</span>
+            </span>
           </span>
         ) : (
           <span className="text-[12.5px] text-ink-2">결과 없음</span>

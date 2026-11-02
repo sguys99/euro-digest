@@ -82,7 +82,7 @@ describe("shadcn 기본 모양 탈피 — src/components", () => {
     expect(hits).toEqual([]);
   });
 
-  it("컨테이너 쿼리는 DESIGN §7.1 예외 하나뿐 — 선수 티켓 꼬리표 `@min-[37.5rem]`(티켓 상자 폭 600px, M3-10)", () => {
+  it("컨테이너 쿼리는 DESIGN §7.1 예외뿐 — 선수 티켓 꼬리표 `@min-[37.5rem]`(600px, M3-10) · 선수 · 팀 티켓 팔로우 위치 `@min-[35rem]`(560px, M4-08)", () => {
     const queries = sources.flatMap(({ file, text }) =>
       [...text.matchAll(/(?<![\w-])@(?:max-|min-)?[\w[\].-]*:/g)].map(
         (m) => `${file} ${m[0]}`,
@@ -92,6 +92,8 @@ describe("shadcn 기본 모양 탈피 — src/components", () => {
       new Set([
         "src/components/korean-players/ticket-parts.tsx @min-[37.5rem]:",
         "src/components/korean-players/player-ticket.tsx @min-[37.5rem]:",
+        "src/components/korean-players/player-ticket.tsx @min-[35rem]:",
+        "src/components/team/team-ticket.tsx @min-[35rem]:",
       ]),
     );
   });

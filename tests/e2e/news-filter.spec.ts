@@ -729,7 +729,10 @@ test.describe("짧은 화면의 목차 — 마지막 행까지 닿는다(목차 
       const geo = await nav.evaluate((el) => {
         const before = el.getBoundingClientRect();
         el.scrollTop = el.scrollHeight;
-        const rows = el.querySelectorAll("button");
+        // 보이는 행만('마이' 묶음 — 팔로우가 없으면 숨는다, M4-08)
+        const rows = [...el.querySelectorAll("button")].filter(
+          (b) => b.getClientRects().length > 0,
+        );
         const lastRow = rows[rows.length - 1]!.getBoundingClientRect();
         return {
           top: before.top,

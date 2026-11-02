@@ -60,7 +60,15 @@ export interface SafeStorage {
    * 키를 주지 않으면 모두 버린다(`localStorage.clear()` 이벤트는 key가 null).
    */
   dropMemory(key?: StorageKey): void;
+  /**
+   * 지금 저장소에 쓸 수 있는지 — 잠깐 `ed-probe`를 쓰고 지워 본다(M4-08 `/my` 머리 "이 기기에만 저장" · "이번 방문 동안만" 안내).
+   * 차단 · 할당량 초과 · 서버면 false. 메모리 폴백에는 손대지 않는다.
+   */
+  writable(): boolean;
 }
+
+/** `writable()`이 잠깐 쓰는 키 */
+export const STORAGE_PROBE_KEY: StorageKey = "ed-probe";
 
 /**
  * 안전한 저장소를 만든다. 메모리 폴백은 인스턴스마다 따로 두므로, 같은 상태를 나누는 섬들은 같은 인스턴스를 써야 한다
@@ -122,6 +130,16 @@ export function createSafeStorage(
     dropMemory(key) {
       if (key === undefined) memory.clear();
       else memory.delete(key);
+    },
+    writable() {
+      try {
+        const storage = getStorage();
+        storage.setItem(STORAGE_PROBE_KEY, "1");
+        storage.removeItem(STORAGE_PROBE_KEY);
+        return true;
+      } catch {
+        return false;
+      }
     },
   };
 }

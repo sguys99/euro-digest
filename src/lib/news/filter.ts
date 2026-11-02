@@ -11,17 +11,20 @@
  * | 분류 | `cat` | 분류 ID(`result`·`transfer`·`injury`·`club`·`national`·`ucl`·`other` — FR-31) | 목차 분류 행·375 분류 칩(하나만 — "전체"가 기본, 눌린 칩을 다시 누르면 전체) |
  * | 팀 | `team` | 팀 slug(`names.ko.json`) — 그 호 카드에 태그로 실린 팀만 | 진입 UI 없음 — 주소로만(M2 팀 화면이 링크할 자리) |
  * | 한국 선수 | `kr` | `1` | 목차 "한국 선수 관련만"·375 "한국 선수만" 칩(켬·끔) |
+ * | 내 팀 | `mine` | `1` | 목차 '마이' 묶음 "내 팀만"·375 "내 팀만" 칩(켬·끔) — 팔로우한 팀·선수가 걸린 카드(M4-08, FR-112). 팔로우가 있을 때만 보인다 |
  *
  * - 잘못된 값(모르는 대회·분류, 그 호에 없는 팀, `kr=1` 밖의 값)은 그 필터만 무시한다. 대소문자는 가리지 않고 읽고, 쓸 때는 위 표기로 쓴다.
  * - 쓰는 순서는 comp → cat → team → kr(PRD 예시 `?comp=epl&cat=transfer`). 필터가 아닌 쿼리(utm 등)와 `#앵커`는 그대로 둔다.
  * - 건수는 빌드 때 그 호 카드 전체로 센다(다른 필터와 겹친 건수가 아니다 — 시안 그대로). 0건인 항목은 비활성(눌린 상태면 끌 수 있게 활성).
+ * - **내 팀**은 팔로우(브라우저 저장소)에 달려 빌드가 셀 수 없다 — 건수 · 보임은 첫 페인트 전 부트 스크립트 · 섬이 정한다(src/lib/news/filter-dom.ts).
+ *   팔로우가 없는데 `mine=1`로 들어오면 결과 0건 빈 상태 + 칩은 눌린 채 보여 끌 수 있다.
  */
 import type { Category, CompId } from "@/lib/schema/common";
 
 import { CATEGORY_LABEL } from "./labels";
 
 /** 주소 쿼리 이름 — 필터 4종 */
-export const FILTER_PARAMS = ["comp", "cat", "team", "kr"] as const;
+export const FILTER_PARAMS = ["comp", "cat", "team", "kr", "mine"] as const;
 export type FilterParam = (typeof FILTER_PARAMS)[number];
 
 /** 분류 순서(FR-31 — 칩·목차 순서) */
@@ -31,6 +34,10 @@ export const FILTER_CATEGORIES = Object.keys(CATEGORY_LABEL) as Category[];
 export const FILTER_DESC_DEFAULT = "중요도 순";
 /** 한국 선수 필터 설명 */
 export const FILTER_DESC_KOREAN = "한국 선수 관련";
+/** 내 팀 필터 설명 */
+export const FILTER_DESC_MINE = "내 팀";
+/** 내 팀만 주소 쿼리(`/news/?mine=1` — '내 팀 소식' 더 보기 링크) */
+export const MINE_QUERY = "mine=1";
 
 export interface NewsFilterState {
   /** 대회(null = 전체) */
@@ -41,6 +48,8 @@ export interface NewsFilterState {
   team: string | null;
   /** 한국 선수 관련만 */
   kr: boolean;
+  /** 팔로우한 팀·선수가 걸린 카드만(M4-08) */
+  mine: boolean;
 }
 
 export const EMPTY_FILTER: NewsFilterState = Object.freeze({
@@ -48,6 +57,7 @@ export const EMPTY_FILTER: NewsFilterState = Object.freeze({
   cat: null,
   team: null,
   kr: false,
+  mine: false,
 });
 
 /**
@@ -65,6 +75,8 @@ export interface NewsFilterConfig {
   d: string;
   /** 한국 선수 필터 설명("한국 선수 관련") */
   k: string;
+  /** 내 팀 필터 설명("내 팀") */
+  m: string;
 }
 
 function has(record: object, key: string): boolean {
@@ -85,10 +97,11 @@ export function parseFilterQuery(
     cat: has(config.cats, cat) ? (cat as Category) : null,
     team: has(config.teams, team) ? team : null,
     kr: q.get("kr") === "1",
+    mine: q.get("mine") === "1",
   };
 }
 
-/** 필터 상태 → 쿼리 쌍(comp → cat → team → kr 순서, 켜진 것만) */
+/** 필터 상태 → 쿼리 쌍(comp → cat → team → kr → mine 순서, 켜진 것만) */
 export function filterQueryPairs(
   state: NewsFilterState,
 ): Array<[FilterParam, string]> {
@@ -97,6 +110,7 @@ export function filterQueryPairs(
   if (state.cat) out.push(["cat", state.cat]);
   if (state.team) out.push(["team", state.team]);
   if (state.kr) out.push(["kr", "1"]);
+  if (state.mine) out.push(["mine", "1"]);
   return out;
 }
 
@@ -117,7 +131,11 @@ export function withFilterQuery(
 
 export function isFilterActive(state: NewsFilterState): boolean {
   return (
-    state.comp !== null || state.cat !== null || state.team !== null || state.kr
+    state.comp !== null ||
+    state.cat !== null ||
+    state.team !== null ||
+    state.kr ||
+    state.mine
   );
 }
 
@@ -133,19 +151,38 @@ export interface FilterableCard {
   cat: Category;
   comps: readonly string[];
   teams: readonly string[];
+  /** 걸린 선수 slug(내 팀 필터) */
+  players: readonly string[];
   kr: boolean;
 }
 
-/** 카드가 필터를 모두 만족하는가(AND) */
+/** 팔로우 키 접두(src/lib/my-view.ts `FOLLOW_KEY_PREFIX`와 같다 — 이 모듈은 부트 스크립트 문자열에도 쓰여 의존을 늘리지 않는다) */
+const TEAM_KEY = "t:";
+const PLAYER_KEY = "p:";
+
+/** 카드에 팔로우한 팀·선수가 걸렸는가(키 = `t:{팀}` · `p:{선수}`) */
+export function cardMatchesFollow(
+  card: Pick<FilterableCard, "teams" | "players">,
+  keys: ReadonlySet<string>,
+): boolean {
+  return (
+    card.teams.some((t) => keys.has(`${TEAM_KEY}${t}`)) ||
+    card.players.some((p) => keys.has(`${PLAYER_KEY}${p}`))
+  );
+}
+
+/** 카드가 필터를 모두 만족하는가(AND). 내 팀 필터는 팔로우 키(`keys` — 없으면 빈 팔로우)로 본다 */
 export function cardMatchesFilter(
   card: FilterableCard,
   state: NewsFilterState,
+  keys: ReadonlySet<string> = new Set(),
 ): boolean {
   return (
     (state.cat === null || card.cat === state.cat) &&
     (state.comp === null || card.comps.includes(state.comp)) &&
     (state.team === null || card.teams.includes(state.team)) &&
-    (!state.kr || card.kr)
+    (!state.kr || card.kr) &&
+    (!state.mine || cardMatchesFollow(card, keys))
   );
 }
 
@@ -161,6 +198,7 @@ export function filterDescriptionParts(
     parts.push(config.teams[state.team] as string);
   if (state.cat) parts.push(config.cats[state.cat]);
   if (state.kr) parts.push(config.k);
+  if (state.mine) parts.push(config.m);
   return parts;
 }
 
@@ -190,6 +228,7 @@ export type FilterAction =
   | { type: "cat"; value: Category | null }
   | { type: "comp"; value: CompId }
   | { type: "kr" }
+  | { type: "mine" }
   | { type: "clear-comp" }
   | { type: "clear-team" }
   | { type: "reset" };
@@ -218,6 +257,8 @@ export function nextFilterState(
       };
     case "kr":
       return { ...state, kr: !state.kr };
+    case "mine":
+      return { ...state, mine: !state.mine };
     case "clear-comp":
       return { ...state, comp: null };
     case "clear-team":
@@ -308,6 +349,7 @@ export function buildFilterView(
       teams,
       d: FILTER_DESC_DEFAULT,
       k: FILTER_DESC_KOREAN,
+      m: FILTER_DESC_MINE,
     },
   };
 }

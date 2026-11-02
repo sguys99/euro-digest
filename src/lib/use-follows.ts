@@ -50,6 +50,8 @@ export interface FollowStore {
   getServerSnapshot(): FollowState;
   /** 지금 상태에 함수를 적용해 저장하고 구독자에게 알린다. 같은 객체를 돌려주면 아무것도 하지 않는다. */
   update(recipe: (current: FollowState) => FollowState): FollowUpdate;
+  /** 저장소에 쓸 수 있는지(차단이면 false — 팔로우는 이번 방문 동안만 유지된다, M4-08 `/my` 머리 안내) */
+  persistent(): boolean;
 }
 
 /** 이벤트를 받는 대상(`window`) — 테스트에서 바꿀 수 있게 */
@@ -114,6 +116,7 @@ export function createFollowStore(
       emit();
       return { state: getSnapshot(), changed: true, saved };
     },
+    persistent: () => storage.writable(),
   };
 }
 

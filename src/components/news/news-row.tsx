@@ -1,3 +1,5 @@
+import type { ComponentProps, ReactNode } from "react";
+
 import {
   KoreanArmband,
   TagList,
@@ -19,23 +21,35 @@ import { formatKst } from "@/lib/time";
  *
  * `tags`·`armband`(M3-13 — 혼합안 홈 A매치 · `/national-team` 뉴스 행): 여러 선수가 걸리는 대표팀 소식은 태그 줄과 한국 완장을 싣는다.
  * 선수 상세는 그 선수 구역이라 싣지 않는다(M3-10 그대로).
+ *
+ * `why`·`liProps`(M4-08 — 혼합안 '내 팀 소식'): 메타 줄 끝 걸린 팔로우 이름(800 `--ink`) · 행 `<li>` 속성(첫 페인트 전 스크립트가 고르는 후보 행 —
+ * src/lib/my-news-dom.ts).
  */
 export function NewsRow({
   item,
   idPrefix,
   tags = [],
   armband = false,
+  why,
+  liProps,
 }: {
   item: PlayerNewsItem;
   idPrefix: string;
   tags?: readonly CardTagView[];
   armband?: boolean;
+  /** 메타 줄 끝 걸린 팔로우 이름 */
+  why?: ReactNode;
+  /** 행 `<li>` 속성(데이터 속성 · hidden) */
+  liProps?: ComponentProps<"li"> & Record<`data-${string}`, string>;
 }) {
   const { card } = item;
   const lead = card.src[0]!;
   const titleId = `${idPrefix}-${card.id}-t`;
   return (
-    <li className="grid grid-cols-[var(--gutter-date)_minmax(0,1fr)] gap-x-2.5 border-b border-rule pt-3.25 pb-3 lg:gap-x-3.5 xl:grid-cols-[48px_minmax(0,1fr)] xl:gap-x-2.5">
+    <li
+      {...liProps}
+      className="grid grid-cols-[var(--gutter-date)_minmax(0,1fr)] gap-x-2.5 border-b border-rule pt-3.25 pb-3 lg:gap-x-3.5 xl:grid-cols-[48px_minmax(0,1fr)] xl:gap-x-2.5"
+    >
       <p className="grid content-start justify-items-start gap-2">
         <time
           dateTime={lead.at}
@@ -84,6 +98,7 @@ export function NewsRow({
           >
             {formatKst(lead.at, "short")}
           </time>
+          {why}
         </p>
       </div>
     </li>

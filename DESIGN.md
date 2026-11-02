@@ -587,8 +587,9 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 | `--animate-tear` | `tear var(--duration-base) var(--ease) both` | 뜯김 — `animate-tear`. 키프레임 `tear`: `clip-path: inset(0 0 100% 0)` → `inset(0)`. 결과 가림 펼치기(M4-15), (D1) 375 순위표 행 펼침 상세(M2-11) |
 | `--animate-eject` | `eject var(--duration-base) var(--ease) both` | 배출 — `animate-eject`. 키프레임 `eject`: opacity 0 · 아래 12px → 제자리. 토스트 등장(D0-12) |
 | `--animate-arrive` | `arrive var(--duration-slow) var(--ease)` | 도착 — `animate-arrive`. 키프레임 `arrive`: 배경 투명 → 그 요소의 배경(`:target` 카드는 `--paper-2`). 채움 모드 없음(끝나면 요소 자신의 배경) |
+| `--animate-fold` | `fold var(--duration-base) var(--ease)` | (D2) 접힘 — `animate-fold`. 키프레임 `fold`: `scaleX 1 → 0 → 1`(기준점은 컴포넌트 — 팔로우 버튼 미니 스텁은 오른쪽). 채움 모드 없음. 팔로우 버튼(M4-08 — 2026-11-02 토큰 승격, DECISIONS D2 §9 #12) |
 
-- `--animate-*` 4개는 이름이 Tailwind 테마 키와 같아 globals.css `@theme static`에 키프레임과 함께 둔다(D0-12). Tailwind 기본 애니메이션(spin·ping·pulse·bounce)은 지운 그대로다(§11.2).
+- `--animate-*` 5개(D0 4개 + D2 접힘)는 이름이 Tailwind 테마 키와 같아 globals.css `@theme static`에 키프레임과 함께 둔다(D0-12 · M4-08). Tailwind 기본 애니메이션(spin·ping·pulse·bounce)은 지운 그대로다(§11.2).
 - 전환(transition)은 키가 없다 — `transition-colors`·`duration-fast|base|slow`·`ease-print` 유틸리티를 쓴다(기본 전환 시간·곡선은 fast·`--ease`).
 
 ### 6.2 인쇄형 모션
@@ -601,7 +602,7 @@ OG 이미지 견본(1200×630) 변수는 테마와 무관하고, 옛 크림 값�
 | 잉크 전환 | 테마 전환 — 지면·잉크·티켓·하단 탭·인덱스 탭 색 | base | `background-color`·`color` 전환 |
 | 색 면 | 대회 필터 머리 면 바뀜(1024 이상 목차·`?comp=`) | base | `background-color`·`color`·`border-color` 전환 |
 | 도착 | 공유 앵커·연결 줄로 도착한 카드(`:target`), (D2) 홈 이적 핫 리스트 → 이적 타임라인 항목(`#xt-{카드 ID}` — 그 이적 행을 자동으로 펼친 뒤) | slow | 투명 → `--paper-2`가 배어 나옴 |
-| 접힘 (D2) | 팔로우 버튼을 누름(켜기·끄기) — 미니 스텁만 | base | 스텁 `scaleX 1 → 0 → 1`(오른쪽 기준). D0 모션 4종 밖의 키프레임 하나 — 토큰으로 올릴지는 M4-08(§11.19) |
+| 접힘 (D2) | 팔로우 버튼을 누름(켜기·끄기) — 미니 스텁만 | base | 스텁 `scaleX 1 → 0 → 1`(오른쪽 기준) — `animate-fold`(M4-08에서 토큰으로 올림, §6.1) |
 | 피드백 | 칩·버튼·아이콘 버튼·스위치 hover/선택, 게재 번호 색, (D1) 팀시트 명단 ↔ 피치 하이라이트(hover) | fast | 색 전환, 버튼 누름 1px 내려감, (D1) 명단 행 `--paper-2` 면 + 피치 칸 링(`box-shadow`) |
 
 - **첫 화면은 즉시 표시한다(LCP·3초 스캔 우선, D31).** 첫 로드에는 진입 모션이 없다 — 카드·5줄·섹션이 페이드·슬라이드로 들어오지 않고, 필터 초기화(URL 쿼리 `?cat=`·`?comp=`·`?kr=1` 반영 포함)도 모션 없이 적용한다. 혼합안 실측: 모션 줄이기 없이 열어도 홈 영역 애니메이션 0, 필터를 바꾸면 남은 카드에만 찍힘(375·1024·1280).
@@ -1400,6 +1401,17 @@ M3 · M4에서 §9.3 D2를 구현할 때 볼 것이다. 결정과 열린 문제�
 - **의도한 차이(시안 대비)**: ① 시안 전용 '준비된 질의' 칩 없음 ② 한국 선수가 없는 팀의 보조 글자 = 영문 이름(시안 "이름 일치") ③ '대회' 묶음 추가(찾았을 때만) ④ 색인 안내 "선수·팀은 한글·영문 이름으로 찾아요"(시안의 '감독' — 감독 → 팀 연결 데이터가 없다) ⑤ `/search/` 뉴스 행에 인덱스 탭 없음(구현된 뉴스 행 `NewsRow`와 같게) · 건수 줄 문구 · "뉴스 더 보기" ⑥ 결과 가림 띠(시안에 검색 결과 가림 없음).
 - **구현 스크린샷**: `docs/design/d2/screenshots/impl-search-{index-375-light,overlay-375-light,overlay-1280-dark,page-1280-light,page-375-dark}.png`(256색).
 
+### 11.29 M4-08 (팔로우 버튼 · `/my` · 홈 '내 팀 소식' · 피드 '내 팀만') — 구현 완료
+
+- **파일**: 팔로우 버튼 · 한도 문장 `src/components/follow/follow-button.tsx`(섬) · `/my` `src/app/my/page.tsx` + `src/components/my/`(`my-head` 머리 · `my-board` 다음 경기 · 최근 결과 · 빈 상태 · `my-manage` 관리 열 · `my-news` 내 팀 소식(서버) + `my-news-island` · `use-my-data` 디렉터리 · 자료 fetch) · 모델 `src/lib/my-view.ts` · DOM `src/lib/my-news-dom.ts` · 부트 `src/lib/my-news-boot.ts` · 팔로우 읽기(ES5) `src/lib/follow-boot.ts` · 데이터 `src/lib/data/my-page.ts` · 자료 파일 `scripts/lib/follow-data.ts`(build-feeds → `out/my/data/`) · 경로 `artifacts.myData`.
+- **팔로우 버튼**: 선수 티켓 · 팀 티켓 몸통 오른쪽 위(티켓 폭 560px 미만은 사실 줄 · 숫자 칸 아래 — `@min-[35rem]`, §7.1 예외 두 곳 더), `/my` 관리 열 아이콘형. 3상태 · 접힘(`animate-fold` — §6.1 새 토큰) · 하이드레이션 전 숨김 · 폭 고정은 DECISIONS D2 §9 #12 · #16 · #17. 한도 이유 문장은 종류별 "팀은 / 선수는 5개까지 팔로우할 수 있어요 — 마이에서 하나를 풀면 더할 수 있어요"(§9.3 표의 "팔로우는 5개까지예요"를 바꿈 — §9 #13).
+- **`/my`**: 혼합안 화면 4 배치 그대로(쪽 머리 → 다음 경기 · 최근 결과 1280 2단 → 내 팀 소식, 1024 이상 왼쪽 관리 열 · 1023 이하 지면 끝). 머리 수는 팀 · 선수 두 칸(§9 #14). 자료 전달 · 합치기 · 빈 상태 · 오류는 §9 #18~#21. 색인 대상 아님 — `robots: noindex` · canonical 없음 · sitemap 밖(404와 같은 규칙, 사람마다 다른 화면).
+- **홈 · 피드**: '내 팀 소식' 5줄 바로 아래 — 첫 페인트 전 스크립트(§9 #22). 피드 '내 팀만' `mine=1` — 팔로우가 있을 때만 칩 · 목차 행(§9 #23). 내비 '마이'(§9 #24).
+- **검사(2026-11-02, 공개 빌드 + 팔로우 5)**: `/my` 375 · 768 · 1024 · 1280 가로 넘침 0 · axe(WCAG 2.1 A/AA) 0 · 44px 미달 0 · `/my` · 홈 · 팀(한도 상태) · 선수 상세 · `/news/?mine=1` × 375 · 1280 × 라이트 · 다크 axe 0 · 넘침 0. CLS: `/my` 0.0004 이하 · 홈 0.0243(팔로우 없음 기준 0.0229 — 위젯 +0.0014) · 팀 한도 상태 375 0.023(한도 문장이 하이드레이션 뒤 생김 — 한도일 때만). 초기 JS: `/my` 153.8KB(최대 페이지 — 여유 6.2KB, tailwind-merge 없음) · 홈 148.6KB(+2.8 — 팔로우 저장소 · 필터 내 팀) · 팀 147.7KB · 선수 상세 147.6KB / 160KB.
+- **의도한 차이(시안 대비)**: 꺼짐 버튼 오른쪽 여백 약 20px 넓음(폭 고정 — §9 #16) · 머리 수 두 칸(§9 #14) · 한도 문장 종류별(§9 #13) · 관리 열 이름 링크 · 푼 항목 자리 유지(§9 #20) · 다음 경기 "모두 보기"는 같은 자리 펼침 버튼(§9 #19) · 부제 한 줄 말줄임 · 내보내기/가져오기 · .ics 버튼 없음(M4-10 · M4-12 — 마크업 자리만 숨김) · 최근 결과 결과 가림 '보기' 버튼 없음(M4-15 — `data-slot="result-value"`는 달려 있다).
+- **구현 스크린샷**: `docs/design/d2/screenshots/impl-my-{375-light,1280-dark}-fold.png` · `impl-my-home-375-light.png`(내 팀 소식) · `impl-my-news-mine-1280-light-fold.png`(`/news/?mine=1`) · `impl-my-follow-limit-1280-light.png`(팀 한도 5/5 + 이유 문장) — 256색.
+- **넘길 것**: 온보딩 진입 줄(M4-09 — `ready && isFollowEmpty` 뒤 판정, 첫 페인트 전 판정이 필요하면 `follow-boot.ts` 재사용) · 내보내기/가져오기(M4-10 — `my-tools` 자리, 아는 slug = 디렉터리) · `/my` 입장권 · 팀 .ics 묶음 버튼(M4-12) · 서비스워커가 `/my/data/` 를 캐시할지(M4-13) · 결과 가림 '보기'(M4-15).
+
 ## 12. 변경 이력
 
 | 날짜 | 내용 | 근거 |
@@ -1436,3 +1448,4 @@ M3 · M4에서 §9.3 D2를 구현할 때 볼 것이다. 결정과 열린 문제�
 | 2026-11-01 | M3-14 M3 화면 시각 검증: §11.23 신설(대상 168조합 · 고친 것 6 · 접근성 · 성능 · 남은 차이), D2 결과 칸 스코어 간격 0 + 자간 0.04em(D1 경기 기준 스코어와 구분) · 주간 표 경기 줄 글자 · 다음 순위 '점' · 폰트 교체 줄 수 고정 2곳 · 승점 nowrap. 토큰 변경 없음 | DECISIONS D2 §8 #34~#37, plan M3-14 |
 | 2026-11-02 | M4 미니 게이트(결과 가리기 순위표·경기 행·폼 + RSS 구독 위치) A 낱칸 확정 → §9.3 컴포넌트 2행 추가(새 토큰 0) | DECISIONS M4, PRD §15 D67 ④ |
 | 2026-11-02 | M4-04 `/transfers/` · 홈 이적 핫 리스트 · 이적 창 모드: §11.24 신설(배치 · 타임라인 · 필터 · 도착 · 홈 · 내비 · 검사 · 의도한 차이). 새 토큰 0 | DECISIONS D2 §9, PRD §15 D64 ②⑤ · D67 · D68 ① |
+| 2026-11-02 | M4-08 팔로우 · `/my` · 내 팀 소식 · 내 팀만: §6.1 `--animate-fold` 토큰 추가(D2 접힘 키프레임 승격 — §0.2 절차, globals.css · `utils.ts` · 토큰 대조 테스트 함께), §6.2 접힘 줄 갱신, §11.25 신설. 새 색 토큰 0 | DECISIONS D2 §9 #12~#25 |

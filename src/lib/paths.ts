@@ -458,6 +458,15 @@ export const artifacts = {
         return unknownKind("artifacts.ogImage", image);
     }
   },
+  /**
+   * `/my/data/{teams|players}/{slug}.json` — `/my` 다음 경기 · 최근 결과 자료(팀 · 선수마다 하나, build-feeds가 쓴다 — M4-08).
+   * `/my` 섬이 팔로우한 것만 지연 fetch한다(형식은 src/lib/my-view.ts `MyEntityData`).
+   */
+  myData(kind: "teams" | "players", slug: string): string {
+    if (kind !== "teams" && kind !== "players")
+      return unknownKind("artifacts.myData", { kind } as never);
+    return `/my/data/${kind}/${assertSlug(slug, kind === "teams" ? "팀 slug" : "선수 slug")}.json`;
+  },
   /** `/manifest.webmanifest` (FR-120, Next 메타데이터 규칙과 같은 파일명) */
   manifest: (): string => "/manifest.webmanifest",
   /** `/sitemap.xml` (FR-124) — src/app/sitemap.ts가 빌드 때 만든다(M1-38) */

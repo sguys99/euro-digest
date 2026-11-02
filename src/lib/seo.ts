@@ -45,6 +45,10 @@ export const NATIONAL_TEAM_DESCRIPTION =
 export const TRANSFERS_DESCRIPTION =
   "유럽 축구 이적설을 선수·행선지별로 모아 루머·협상·합의·공식·결렬 단계와 출처 Tier, 관련 기사 타임라인(원문 링크)으로 보여 줍니다.";
 
+/** `/my/` 설명(M4-08) — 팔로우는 브라우저에만 있어 화면 내용이 사람마다 다르다(색인 대상 아님 — sitemap에 넣지 않는다) */
+export const MY_DESCRIPTION =
+  "팔로우한 팀과 한국 선수의 다음 경기(한국 시간), 최근 결과, 오늘 호의 관련 소식을 한 화면에 모읍니다. 팔로우는 이 기기에만 저장돼요.";
+
 /** og:locale */
 export const OG_LOCALE = "ko_KR";
 

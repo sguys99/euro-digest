@@ -47,6 +47,7 @@ const CONFIG: NewsFilterConfig = {
   teams: { chelsea: "첼시", "tottenham-hotspur": "토트넘 홋스퍼" },
   d: FILTER_DESC_DEFAULT,
   k: "한국 선수 관련",
+  m: "내 팀",
 };
 
 function state(partial: Partial<NewsFilterState>): NewsFilterState {
@@ -54,8 +55,8 @@ function state(partial: Partial<NewsFilterState>): NewsFilterState {
 }
 
 describe("필터 이름·분류 순서", () => {
-  it("쿼리 이름은 comp·cat·team·kr(PRD 예시 ?comp=epl&cat=transfer)", () => {
-    expect(FILTER_PARAMS).toEqual(["comp", "cat", "team", "kr"]);
+  it("쿼리 이름은 comp·cat·team·kr·mine(PRD 예시 ?comp=epl&cat=transfer, 내 팀 — M4-08)", () => {
+    expect(FILTER_PARAMS).toEqual(["comp", "cat", "team", "kr", "mine"]);
   });
 
   it("분류는 FR-31 7종을 스키마 순서대로", () => {
@@ -172,6 +173,7 @@ describe("cardMatchesFilter — 필터 4종 AND", () => {
     cat: "transfer",
     comps: ["EPL", "BUNDESLIGA"],
     teams: ["arsenal", "bayern-munchen"],
+    players: ["kim-min-jae"],
     kr: false,
   };
 

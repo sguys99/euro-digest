@@ -11,7 +11,6 @@ import type { RosterView } from "@/lib/korean-players-view";
 import { routes } from "@/lib/paths";
 import type {
   FixtureRowView,
-  FixtureTeamView,
   LogRowView,
   NationalCallUpView,
   PlayerDetailView,
@@ -24,8 +23,8 @@ import { formatKst } from "@/lib/time";
 import { cx } from "@/lib/cx";
 import { cn } from "@/lib/utils";
 
+import { Admission, FixtureRow } from "./fixture-ticket";
 import { CompTag, NUMBER_TONE, OpponentName, ResultCell } from "./player-marks";
-import { Perforation } from "./ticket-parts";
 
 /**
  * 한국 선수 상세 구역 — 시즌 기록 표 · 최근 5경기 로그 · 다음 경기(입장권 + 일정 행) · 관련 뉴스 · 이적설 · 대표팀 소식 · 1024 이상 목차(명단)
@@ -324,114 +323,7 @@ export function MatchLog({
   );
 }
 
-// ─── 다음 경기 — 입장권 + 일정 행 ───────────────────────────────────────────
-
-/**
- * 팀 한 줄(경기 기준 — 홈/원정): 배지 s + 팀명 15px 800 + "홈"/"원정" 11.5px. 글자다(시안 그대로 — 두 줄 간격 6px에 팀 링크 두 개의 누름
- * 영역 44px이 겹친다, 팀 화면은 선수 티켓의 "팀 화면" 링크로)
- */
-function SideTeam({
-  team,
-  side,
-}: {
-  team: FixtureTeamView;
-  side: "홈" | "원정";
-}) {
-  return (
-    <span className="flex items-center gap-2 text-[15px] leading-[1.25] font-extrabold">
-      <span className="sr-only">{side} </span>
-      <span className="inline-flex min-w-0 items-center gap-2">
-        <TeamBadge team={team.badge} size="s" />
-        <span lang={team.latin ? "en" : undefined} className="min-w-0">
-          {team.name}
-        </span>
-      </span>
-      <span
-        aria-hidden="true"
-        className="text-[11.5px] font-normal whitespace-nowrap text-ink-2"
-      >
-        {side}
-      </span>
-    </span>
-  );
-}
-
-/** 다음 경기 입장권(B) — 가로형(1279 이하) · 세로형(1280 이상 옆단). 경기 기준이라 홈 팀 먼저 */
-function Admission({
-  row,
-  headingId,
-}: {
-  row: FixtureRowView;
-  headingId: string;
-}) {
-  return (
-    <article
-      aria-labelledby={headingId}
-      data-slot="admission"
-      className="relative mt-2.5 grid grid-cols-[auto_2px_minmax(0,1fr)] border-[1.5px] border-ink bg-paper xl:grid-cols-1 xl:grid-rows-[auto_2px_auto]"
-    >
-      <h3 id={headingId} className="sr-only">
-        다음 경기 — {row.day} {row.time ?? "시각 미정"} KST, {row.home.name} 대{" "}
-        {row.away.name}
-      </h3>
-      <div
-        aria-hidden="true"
-        className="flex min-w-26 flex-col justify-center gap-2 py-3.5 pr-3 pl-3.5 lg:min-w-37.5 lg:px-5 lg:py-4.5 xl:min-w-0 xl:flex-row xl:items-end xl:justify-between xl:px-4 xl:pt-4 xl:pb-3.5"
-      >
-        <time
-          dateTime={row.kickoff}
-          className="block font-numeric text-num-n2 leading-[0.84] font-extrabold tracking-[-0.02em] tabular-nums xl:text-[56px]"
-        >
-          {row.time ?? "미정"}
-        </time>
-        <span className="flex items-baseline gap-1.5 font-numeric text-sm leading-none font-extrabold tracking-[0.02em] text-ink-2 xl:flex-col xl:items-end xl:gap-1.25">
-          <span className="text-ink tabular-nums">{row.day}</span>
-          <span className="text-xs font-semibold">KST</span>
-        </span>
-      </div>
-      <Perforation xlHorizontal />
-      <div className="grid min-w-0 content-start gap-2 pt-3 pr-3.5 pb-3 pl-4 xl:px-4 xl:pt-3 xl:pb-3.5">
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-2">
-          <CompTag comp={row.comp} />
-          {row.round ? <span>{row.round}</span> : null}
-        </p>
-        <p className="grid gap-1.5">
-          <SideTeam team={row.home} side="홈" />
-          <SideTeam team={row.away} side="원정" />
-        </p>
-      </div>
-    </article>
-  );
-}
-
-/** 이어지는 경기 — D1 팀 일정 행 문법(거터 킥오프 + 날짜 · 대회 줄 · 홈/원정 두 줄) */
-function FixtureRow({ row }: { row: FixtureRowView }) {
-  return (
-    <li className="grid grid-cols-[var(--gutter-date)_minmax(0,1fr)] items-start gap-x-2.5 border-b border-rule py-2.75 xl:grid-cols-[56px_minmax(0,1fr)]">
-      <p className="grid gap-1">
-        <time
-          dateTime={row.kickoff}
-          className="font-numeric text-[21px] leading-[0.9] font-extrabold tracking-[-0.01em] tabular-nums"
-        >
-          {row.time ?? "미정"}
-        </time>
-        <span className="font-numeric text-[12.5px] leading-none font-semibold text-ink-2 tabular-nums">
-          {row.day}
-        </span>
-      </p>
-      <div className="grid min-w-0 gap-1.5">
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-2">
-          <CompTag comp={row.comp} />
-          {row.round ? <span>{row.round}</span> : null}
-        </p>
-        <p className="grid gap-1.5">
-          <SideTeam team={row.home} side="홈" />
-          <SideTeam team={row.away} side="원정" />
-        </p>
-      </div>
-    </li>
-  );
-}
+// ─── 다음 경기 — 입장권 + 일정 행(src/components/korean-players/fixture-ticket.tsx — `/my`도 쓴다, M4-08) ─────
 
 export function NextMatches({
   headingId,

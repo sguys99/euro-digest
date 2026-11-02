@@ -26,6 +26,7 @@ import {
   REVEAL_CHIP_SELECTOR,
 } from "./filter-dom";
 import { FILTER_PARAMS } from "./filter";
+import { READ_FOLLOW_KEYS_ES5 } from "../follow-boot";
 
 const has = "function(o,k){return Object.prototype.hasOwnProperty.call(o,k)}";
 
@@ -47,16 +48,27 @@ export const NEWS_FILTER_BOOT_SCRIPT = [
   `var h=${has};`,
   "var q=new URLSearchParams(location.search);",
   "var cp=(q.get('comp')||'').toUpperCase(),ct=(q.get('cat')||'').toLowerCase(),tm=(q.get('team')||'').toLowerCase();",
-  "var s={comp:h(c.comps,cp)?cp:null,cat:h(c.cats,ct)?ct:null,team:h(c.teams,tm)?tm:null,kr:q.get('kr')==='1'};",
-  // 필터가 없으면 서버 HTML이 이미 그 상태다
-  "if(s.comp===null&&s.cat===null&&s.team===null&&!s.kr)return;",
+  "var s={comp:h(c.comps,cp)?cp:null,cat:h(c.cats,ct)?ct:null,team:h(c.teams,tm)?tm:null,kr:q.get('kr')==='1',mine:q.get('mine')==='1'};",
   "var w=function(e,n){return (e.getAttribute(n)||'').split(' ')};",
   "var i,e,n=0,ok,t,li,hide,a,k,v,p;",
-  // 카드
   `var cs=d.querySelectorAll('[${NF.card}]');`,
+  // 팔로우(브라우저 저장소 — src/lib/follow-boot.ts)와 '내 팀만' 칩 · 목차 묶음(applyMineControls) — 필터가 없어도 그린다
+  `var fk=(${READ_FOLLOW_KEYS_ES5})(),fn=0,fx;for(fx in fk)if(h(fk,fx))fn++;`,
+  "var fm=function(e){var x=w(e,'" +
+    NF.teams +
+    "'),y=w(e,'" +
+    NF.players +
+    "'),j;for(j=0;j<x.length;j++)if(h(fk,'t:'+x[j]))return true;for(j=0;j<y.length;j++)if(h(fk,'p:'+y[j]))return true;return false};",
+  "var mc=0;if(fn)for(i=0;i<cs.length;i++)if(fm(cs[i]))mc++;",
+  `var mg=d.querySelectorAll('[${NF.mine}]');for(i=0;i<mg.length;i++)mg[i].hidden=!(fn>0||s.mine);`,
+  `mg=d.querySelectorAll('[${NF.mineCount}]');for(i=0;i<mg.length;i++)mg[i].textContent=String(mc);`,
+  `mg=d.querySelectorAll('[${NF.key}="mine"]');for(i=0;i<mg.length;i++)mg[i].disabled=mc===0&&!s.mine;`,
+  // 필터가 없으면 서버 HTML이 이미 그 상태다
+  "if(s.comp===null&&s.cat===null&&s.team===null&&!s.kr&&!s.mine)return;",
+  // 카드
   "for(i=0;i<cs.length;i++){e=cs[i];",
   `ok=(s.cat===null||e.getAttribute('${NF.cat}')===s.cat)&&(s.comp===null||w(e,'${NF.comps}').indexOf(s.comp)>-1)&&`,
-  `(s.team===null||w(e,'${NF.teams}').indexOf(s.team)>-1)&&(!s.kr||e.hasAttribute('${NF.kr}'));`,
+  `(s.team===null||w(e,'${NF.teams}').indexOf(s.team)>-1)&&(!s.kr||e.hasAttribute('${NF.kr}'))&&(!s.mine||fm(e));`,
   "e.hidden=!ok;if(ok)n++}",
   // 연결 줄 — 짝 카드가 숨으면 줄도 숨기고 카드 아래 여백을 되돌린다
   `var ls=d.querySelectorAll('[${NF.link}]');`,
@@ -69,7 +81,7 @@ export const NEWS_FILTER_BOOT_SCRIPT = [
   `var bs=d.querySelectorAll('[${NF.key}]');`,
   "for(i=0;i<bs.length;i++){e=bs[i];",
   `k=e.getAttribute('${NF.key}');v=e.getAttribute('${NF.value}');`,
-  `p=k==='cat'?v===(s.cat||'${ALL_CATEGORIES}'):k==='comp'?v===s.comp:k==='kr'&&s.kr;`,
+  `p=k==='cat'?v===(s.cat||'${ALL_CATEGORIES}'):k==='comp'?v===s.comp:k==='kr'?s.kr:k==='mine'&&s.mine;`,
   `e.setAttribute('aria-pressed',p?'true':'false');if(e.hasAttribute('${NF.zero}'))e.disabled=!p}`,
   // 피드 머리 — 대회 색 면 · 팀 상자
   `var hd=d.querySelector('[${NF.head}]');`,
@@ -78,7 +90,7 @@ export const NEWS_FILTER_BOOT_SCRIPT = [
   `x('[${NF.compBadge}]',s.comp?c.comps[s.comp].s:'');`,
   `x('[${NF.teamBadge}]',s.team?c.teams[s.team]:'');`,
   `x('[${NF.count}]',String(n));`,
-  "var ps=[];if(s.comp)ps.push(c.comps[s.comp].n);if(s.team)ps.push(c.teams[s.team]);if(s.cat)ps.push(c.cats[s.cat]);if(s.kr)ps.push(c.k);",
+  "var ps=[];if(s.comp)ps.push(c.comps[s.comp].n);if(s.team)ps.push(c.teams[s.team]);if(s.cat)ps.push(c.cats[s.cat]);if(s.kr)ps.push(c.k);if(s.mine)ps.push(c.m);",
   `x('[${NF.desc}]',ps.length?ps.join(' · '):c.d);`,
   `var em=d.querySelector('[${NF.empty}]');if(em)em.hidden=n!==0;`,
   // 375 칩 줄 — 눌린 칩이 가로 스크롤 밖이면 칩 줄만 민다

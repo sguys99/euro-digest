@@ -10,9 +10,11 @@
  * | 속성 | 요소 | 뜻 |
  * |------|------|----|
  * | `data-nf-scope` | 목차 묶음 · 뉴스 섹션 | 필터가 그리는 범위 — 쿼리로 들어온 첫 화면에서 부트가 끝날 때까지 그리지 않는다(`<html data-nf-pending>`) |
- * | `data-nf-key` + `data-nf-value` | 칩·목차 행 `<button>` | `cat`(값 `all`·분류 ID) · `comp`(대회 ID) · `kr`(값 `1`) → `aria-pressed` |
+ * | `data-nf-key` + `data-nf-value` | 칩·목차 행 `<button>` | `cat`(값 `all`·분류 ID) · `comp`(대회 ID) · `kr`·`mine`(값 `1`) → `aria-pressed` |
  * | `data-nf-zero` | 0건 칩·행 | 눌리지 않았으면 `disabled`(눌린 채 들어오면 끌 수 있게 활성) |
- * | `data-nf-card` + `data-nf-cat`·`data-nf-comps`·`data-nf-teams`·`data-nf-kr` | 카드 `<li>` | 술어 입력(대회·팀은 공백 구분) → 맞지 않으면 `hidden` |
+ * | `data-nf-card` + `data-nf-cat`·`data-nf-comps`·`data-nf-teams`·`data-nf-players`·`data-nf-kr` | 카드 `<li>` | 술어 입력(대회·팀·선수는 공백 구분) → 맞지 않으면 `hidden` |
+ * | `data-nf-mine` | '내 팀만' 칩 · 목차 묶음 | 팔로우가 있거나 눌렸을 때만 보인다(`hidden`) — M4-08 |
+ * | `data-nf-mine-count` | '내 팀만' 건수 | 팔로우한 팀·선수가 걸린 카드 수(그 호 전체 기준 — 다른 칩 건수와 같은 규칙). 0이고 눌리지 않았으면 버튼 `disabled` |
  * | `data-nf-lead` | 머리기사 `<article>` | 필터가 없을 때만 `data-lead`(머리기사 모양 — 필터 결과에는 없음, DECISIONS #13) |
  * | `data-nf-link` | 연결 줄 `<a href="#짝">` | 짝 카드가 숨으면 줄도 `hidden` + 카드 `data-paired` 끔(아래 여백이 돌아온다) |
  * | `data-nf-head` | 피드 머리 | `data-comp="{대회 ID}"`(색 면) · `data-team`(팀 상자) |
@@ -29,6 +31,7 @@ import type { Category } from "@/lib/schema/common";
 
 import {
   cardMatchesFilter,
+  cardMatchesFollow,
   filterDescription,
   isFilterActive,
   type NewsFilterConfig,
@@ -45,6 +48,9 @@ export const NF = {
   cat: "data-nf-cat",
   comps: "data-nf-comps",
   teams: "data-nf-teams",
+  players: "data-nf-players",
+  mine: "data-nf-mine",
+  mineCount: "data-nf-mine-count",
   kr: "data-nf-kr",
   lead: "data-nf-lead",
   link: "data-nf-link",
@@ -69,10 +75,10 @@ export const ALL_CATEGORIES = "all";
 
 /** 칩·목차 행의 값 — `data-nf-value` */
 export function controlValue(
-  key: "cat" | "comp" | "kr",
+  key: "cat" | "comp" | "kr" | "mine",
   value: Category | string | null,
 ): string {
-  if (key === "kr") return "1";
+  if (key === "kr" || key === "mine") return "1";
   return value ?? ALL_CATEGORIES;
 }
 
@@ -109,6 +115,7 @@ function cardOf(li: Element) {
     cat: li.getAttribute(NF.cat) as Category,
     comps: words(li, NF.comps),
     teams: words(li, NF.teams),
+    players: words(li, NF.players),
     kr: li.hasAttribute(NF.kr),
   };
 }
@@ -120,18 +127,49 @@ function inHiddenCard(el: Element): boolean {
 }
 
 /**
- * 필터 상태를 문서에 그린다 — 카드 숨김 · 연결 줄 · 머리기사 · 칩·행 눌림 · 피드 머리 · 부제 · 빈 상태. 보이는 카드 수를 돌려준다.
- * 같은 상태로 다시 불러도 결과가 같다(멱등). 모션·알림·포커스는 섬이 따로 맡는다.
+ * '내 팀만' 칩 · 목차 묶음 — 팔로우가 있거나 눌렸으면 보이고, 건수(팔로우가 걸린 카드 수 — 그 호 전체)를 쓰고, 0건이면 눌리지 않은 버튼을 끈다.
+ * 필터가 없어도 부른다(첫 화면 — 부트 스크립트가 같은 결과를 그린다).
+ */
+export function applyMineControls(
+  doc: Document,
+  state: Pick<NewsFilterState, "mine">,
+  keys: ReadonlySet<string>,
+): number {
+  let mine = 0;
+  if (keys.size > 0) {
+    for (const li of doc.querySelectorAll(`[${NF.card}]`)) {
+      if (cardMatchesFollow(cardOf(li), keys)) mine++;
+    }
+  }
+  const show = keys.size > 0 || state.mine;
+  for (const el of doc.querySelectorAll<HTMLElement>(`[${NF.mine}]`))
+    setHidden(el, !show);
+  for (const el of doc.querySelectorAll(`[${NF.mineCount}]`))
+    setText(el, String(mine));
+  for (const button of doc.querySelectorAll<HTMLButtonElement>(
+    `[${NF.key}="mine"]`,
+  )) {
+    const off = mine === 0 && !state.mine;
+    if (button.disabled !== off) button.disabled = off;
+  }
+  return mine;
+}
+
+/**
+ * 필터 상태를 문서에 그린다 — 카드 숨김 · 연결 줄 · 머리기사 · 칩·행 눌림 · 피드 머리 · 부제 · 빈 상태 · '내 팀만'. 보이는 카드 수를 돌려준다.
+ * 같은 상태로 다시 불러도 결과가 같다(멱등). 모션·알림·포커스는 섬이 따로 맡는다. `keys` = 팔로우 키(내 팀 필터 — src/lib/my-view.ts `followKeySet`).
  */
 export function applyFilterToDom(
   doc: Document,
   state: NewsFilterState,
   config: NewsFilterConfig,
+  keys: ReadonlySet<string> = new Set(),
 ): number {
   const active = isFilterActive(state);
+  applyMineControls(doc, state, keys);
   let count = 0;
   for (const li of doc.querySelectorAll<HTMLElement>(`[${NF.card}]`)) {
-    const ok = cardMatchesFilter(cardOf(li), state);
+    const ok = cardMatchesFilter(cardOf(li), state, keys);
     setHidden(li, !ok);
     if (ok) count++;
   }
@@ -155,7 +193,9 @@ export function applyFilterToDom(
         ? value === (state.cat ?? ALL_CATEGORIES)
         : key === "comp"
           ? value === state.comp
-          : key === "kr" && state.kr;
+          : key === "kr"
+            ? state.kr
+            : key === "mine" && state.mine;
     const text = pressed ? "true" : "false";
     if (button.getAttribute("aria-pressed") !== text)
       button.setAttribute("aria-pressed", text);

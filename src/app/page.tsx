@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { BriefMissing, TodayBrief } from "@/components/brief/today-brief";
 import { DataSourceNote } from "@/components/data-source";
 import { KoreanLastNight } from "@/components/home/korean-last-night";
+import { MyNews } from "@/components/my/my-news";
 import { LeagueMini } from "@/components/home/league-mini";
 import { NationalHome } from "@/components/national-team/national-team";
 import { TonightSection } from "@/components/home/tonight";
@@ -18,12 +19,14 @@ import {
 } from "@/lib/data/home-widgets";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadLastNight } from "@/lib/data/korean-players";
+import { loadMyNewsCandidates } from "@/lib/data/my-page";
 import { loadKoreanPlayers } from "@/lib/data/team-page";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
 import { loadNationalHome, nationalNewsTags } from "@/lib/data/national-page";
 import { loadTransferWindowState } from "@/lib/data/transfer-windows";
 import { loadHotTransfers, loadTransfersFile } from "@/lib/data/transfers";
 import { issueLateWindows, issueNumber } from "@/lib/issue";
+import { MY_NEWS_HOME } from "@/lib/my-view";
 import { routes } from "@/lib/paths";
 import { pageMetadata, SITE_DESCRIPTION } from "@/lib/seo";
 import { transferWindowLine } from "@/lib/transfer-window-view";
@@ -52,6 +55,9 @@ import { cn } from "@/lib/utils";
  *      실을 이적이 없으면 숨김. 평소 = 위젯 자리 맨 끝(1280 마주 보는 면 오늘 밤 → 한국 선수 → 순위 → 이적, 1279 이하 지면 안 같은 순서).
  *      **이적 창 모드**(FR-105 — 빌드 시각에 어느 리그든 창이 열려 있거나 마감 뒤 24시간, D68 ①): 위치만 위로 — 모든 폭에서 지면 안
  *      5줄 · A매치 바로 아래(한국 선수 · 피드 앞), 마주 보는 면에서는 뺀다(한 번만). 부제 앞에 창 상태("이적 창 열림 · 마감 D-n").
+ *   7. 내 팀 소식(M4-08 — FR-112 · PRD §4.2 순서 2, DESIGN §9.3 D2 홈 위젯): 모든 폭에서 지면 안 5줄 바로 아래(A매치 앞). 팔로우는 브라우저에만 있어
+ *      최신 호 후보 뉴스 행을 숨긴 채 싣고 첫 페인트 전 스크립트가 맞는 3장을 고른다(src/components/my/my-news.tsx) — 팔로우가 없거나 걸린 소식이
+ *      없으면 섹션이 숨은 채라 자리가 생기지 않는다(CLS 0 — 숨은 섹션의 위 여백도 함께 숨는다).
  * 1024~1279는 목차 + 지면 2단,
  * 1280 이상은 목차 + 지면(688) + 마주 보는 면(296) 3단이다(DESIGN §4.3).
  */
@@ -143,6 +149,15 @@ export default function HomePage() {
     >
       {slot?.kind === "brief" ? <TodayBrief brief={slot.brief} /> : null}
       {slot?.kind === "missing" ? <BriefMissing /> : null}
+      {/* 내 팀 소식(M4-08 — FR-112): 팔로우가 있고 오늘 호에 걸린 소식이 있을 때만 보인다(첫 페인트 전 스크립트 — PRD §4.2 순서 2) */}
+      <MyNews
+        candidates={loadMyNewsCandidates(news)}
+        issueNo={issue ? issueNumber(issue.date) : null}
+        limit={MY_NEWS_HOME}
+        variant="home"
+        headingId="home-my-news-h"
+        className={hasBrief ? "mt-9 lg:mt-11" : undefined}
+      />
       {/* A매치 기간에만(FR-71) — 모든 폭에서 5줄 바로 아래(PRD §4.2 순서 3) */}
       {national ? (
         <NationalHome
