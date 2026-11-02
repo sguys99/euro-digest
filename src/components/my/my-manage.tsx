@@ -20,6 +20,7 @@ import { followKey, teamBadgeOf, type MyDirectory } from "@/lib/my-view";
 import { routes } from "@/lib/paths";
 import { useFollows } from "@/lib/use-follows";
 
+import { MyExportTools, MyTeamIcs } from "./my-tools";
 import { directoryWhenReady } from "./use-my-data";
 
 /**
@@ -31,7 +32,7 @@ import { directoryWhenReady } from "./use-my-data";
  * - **목록**: 팀 → 선수, 팔로우한 순. 이름은 팀 화면 · 선수 상세 링크, 오른쪽 = 아이콘형 팔로우 버튼(켜짐). 이번 방문에 푼 항목은 꺼진 버튼으로
  *   자리에 남겨 다시 켤 수 있다(새로고침하면 빠진다). 디렉터리에 없는 slug(빌드에서 빠진 팀)는 slug 글자 + "자료 없음" — 풀 수 있다.
  * - **한도 띠**: 그 종류가 5개면 `--paper-2` + 왼쪽 4px `--brand-accent` + 이유 문장(종류별). 그 종류의 꺼진 버튼이 이 문장을 가리킨다(`aria-describedby`).
- * - **내보내기 · 가져오기**(M4-10): 시안 자리 — 동작과 함께 M4-10에서 연다. 지금은 마크업만 숨겨 둔다(`hidden`).
+ * - **내보내기**(M4-10 — FR-114) · **내 팀 일정 구독**(M4-12 — FR-115): `my-tools.tsx`. 가져오기 확인 띠는 쪽 머리 아래(`my-import.tsx`).
  */
 export function MyManage({
   where,
@@ -122,8 +123,9 @@ export function MyManage({
           </p>
         );
       })}
-      {/* 내보내기 · 가져오기(혼합안 `.tools` — FR-114) — M4-10에서 URL 형식(D67 ③ `?t=…&p=…`) · 확인 상태(덮어쓰기 · 합치기)와 함께 연다 */}
-      <div hidden data-slot="my-tools" className="mt-2.5 grid gap-2" />
+      {/* 내보내기(혼합안 `.tools` — FR-114, M4-10) · 내 팀 일정 구독(FR-115, M4-12) */}
+      <MyExportTools follows={follows} ready={ready} where={where} />
+      <MyTeamIcs follows={follows} ready={ready} dir={dir} where={where} />
     </div>
   );
 }

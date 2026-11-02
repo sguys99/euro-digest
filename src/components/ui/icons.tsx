@@ -76,6 +76,16 @@ export function ShareIcon(props: IconProps) {
   );
 }
 
+/** 링크(사슬 두 고리) — `/my` 내보내기 "링크 복사"(D2 혼합안 `.tools` 그대로, M4-10) */
+export function LinkIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1" />
+      <path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1" />
+    </Icon>
+  );
+}
+
 /** 더 보기(가로 점 3개) — 점이라 둥근 끝(DESIGN §9.1 예외) */
 export function MoreIcon(props: IconProps) {
   return (

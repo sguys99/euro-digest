@@ -41,6 +41,7 @@ export function IcsLink({
   label,
   context,
   variant = "link",
+  labelLang,
   className,
 }: {
   feed: CalendarFeed;
@@ -49,6 +50,8 @@ export function IcsLink({
   /** 화면 밖 앞말(대상) — "{팀} 경기" · "{홈} 대 {원정} 경기" · "{홈} 대 {원정} 경기 캘린더에 추가" */
   context: string;
   variant?: IcsLinkVariant;
+  /** 보이는 글자의 언어 — 라틴 팀 이름을 그대로 쓸 때 `"en"`(`/my` 팀 일정 목록 — M4-12) */
+  labelLang?: string;
   /** 여백 · 배치만 */
   className?: string;
 }) {
@@ -63,7 +66,7 @@ export function IcsLink({
       <CalendarAddIcon size={ICON_SIZE[variant]} />
       <span>
         <span className="sr-only">{context} </span>
-        {label}
+        {labelLang ? <span lang={labelLang}>{label}</span> : label}
       </span>
     </a>
   );

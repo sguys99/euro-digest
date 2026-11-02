@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { MyBoard } from "@/components/my/my-board";
 import { MyHead } from "@/components/my/my-head";
+import { MyImport } from "@/components/my/my-import";
 import { MyManage } from "@/components/my/my-manage";
 import { MyNews } from "@/components/my/my-news";
 import { AppShell } from "@/components/shell/app-shell";
@@ -9,6 +10,7 @@ import { RunningHead, SectionHead } from "@/components/ui/section-head";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadMyDirectory, loadMyNewsCandidates } from "@/lib/data/my-page";
 import { issueNumber } from "@/lib/issue";
+import { MY_IMPORT_BOOT_SCRIPT } from "@/lib/my-import-boot";
 import { MY_DIRECTORY_ID, MY_NEWS_PAGE } from "@/lib/my-view";
 import { MY_DESCRIPTION, pageMetadata } from "@/lib/seo";
 
@@ -87,6 +89,9 @@ export default function MyPage() {
             </h1>
           }
         />
+        {/* 공유 링크(`?t=…&p=…`)로 열었을 때만 — 가져오기 확인 띠(FR-114, M4-10). 부트가 첫 페인트 전에 자리를 연다(CLS) */}
+        <script dangerouslySetInnerHTML={{ __html: MY_IMPORT_BOOT_SCRIPT }} />
+        <MyImport />
         <MyBoard
           fixturesHeadingId="my-fx-h"
           resultsHeadingId="my-rs-h"

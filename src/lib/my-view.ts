@@ -65,6 +65,9 @@ export function followKeySet(state: FollowLists): Set<string> {
 /** 디렉터리 JSON 요소 id(`/my` 페이지에 하나 — `<script type="application/json">`) */
 export const MY_DIRECTORY_ID = "my-directory";
 
+/** 가져오기 확인 띠 자리를 연 표시 — `<html>` 속성(첫 페인트 전 부트 src/lib/my-import-boot.ts가 달고, 띠가 끝나면 섬이 지운다 — M4-10) */
+export const MY_IMPORT_ATTR = "data-my-import";
+
 /** 팀 한 줄 — 짧은 키(HTML · RSC 페이로드에 두 번 실린다) */
 export interface MyTeamEntry {
   /** 한글 팀명(사전에 없으면 원어) */

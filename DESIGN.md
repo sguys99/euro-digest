@@ -1448,6 +1448,17 @@ M3 · M4에서 §9.3 D2를 구현할 때 볼 것이다. 결정과 열린 문제�
 - **구현 스크린샷**: `docs/design/d2/screenshots/impl-onboarding-{375-light,1280-dark}-entry.png` · `impl-onboarding-{375-light,1280-dark}-teams.png` · `impl-onboarding-{375-light,1280-light}-players.png` · `impl-onboarding-{375-dark,1280-light}-done.png` — 256색(기준 `concept-mix-375-light-onboarding.png` · `compare-onboarding-375-light-a.png`).
 - **넘길 것**: `/my` 빈 상태에서 온보딩 다시 열기 여부(§9 #27) · 서비스워커가 온보딩 청크 · `onboarding.json`을 캐시할지(M4-16 — 지금은 첫 방문 오프라인이면 '받지 못했어요') · `next dev`에는 자료 파일이 없다(build + preview로 확인).
 
+### 11.31 M4-10 · M4-12 나머지 (`/my` 팔로우 내보내기 · 가져오기 · 내 팀 일정 구독) — 구현 완료
+
+- **파일**: 도구(섬 — 내보내기 버튼 · 내 팀 일정 구독) `src/components/my/my-tools.tsx` · 내보내기 동작(지연 조각) `my-share-actions.ts` · 가져오기 진입 섬 + 자리 `my-import.tsx` · 확인 띠(지연 조각) `my-import-band.tsx` · 계획 · 문구(순수) `src/lib/follow-share.ts` · 첫 페인트 전 자리 부트 `src/lib/my-import-boot.ts` · 아이콘 `LinkIcon`(혼합안 `.tools` 사슬 경로) · `IcsLink` 선택 속성 `labelLang`.
+- **내보내기**(FR-114 · D67 ③ — DECISIONS D2 §9 #33): 관리 열 한도 띠 아래 위 16px, §9.2 보조 버튼 왼쪽 정렬 · 아이콘 18px "내보내기 — 링크 복사" + Web Share가 있으면 "내보내기 — 공유", 간격 8px, 설명 줄 12px `--ink-2`. 팔로우 0 = 비활성(점선), 하이드레이션 전 숨김. 토스트 "링크를 복사했어요"(종류 '공유').
+- **가져오기 확인 띠**(§9 #34~#37): 쪽 머리 바로 아래 · 다음 경기 위(위 20px, 1024 이상 24px) D0 안내 띠 — `--paper-2` + 왼쪽 4px `--brand-accent`(inset 그림자). 줄 높이 고정: 키커 12px 800 행간 16 · 제목 h2 18px 800 행간 24(위 4) · 미리보기 칸 24px(위 10, 열 2 · 1024 이상 3 · 1280 이상 4, 간격 16 × 8) · 1px `--rule` 아래(위 12 · 안 10) 방식 줄 13px 행간 20(1023 이하 이름 · 설명 두 줄) · 안내 줄 13px 행간 20 한 줄 말줄임(위 8) · 버튼 한 줄(위 12 — 주 '합치기' · 보조 '덮어쓰기' · 텍스트 '취소' 최소 44 × 44). 부트가 같은 셈으로 자리를 먼저 열어(`<html data-my-import>` + `--mi-r2/3/4` · `--mi-n`) **자리 = 띠 높이**. 새 토큰 0(간격은 `--spacing` 배수).
+- **내 팀 일정 구독**(FR-115 — §9 #38): 도구 아래 위 24px · 1px `--ink` 괘선 · 위 12px, "내 팀 일정 구독" 14px 800 + 안내 12px `--ink-2` + 팀마다 `IcsLink` `link`(아이콘 18px + 팀 이름, 줄 사이 1px `--rule`). 팀 0이면 숨김. 묶음 파일 없음.
+- **검사(2026-11-02, 공개 빌드)**: 단위(`tests/follow-share.test.ts` 계획 · 문구 · 주소 정리, `tests/my-import-boot.test.ts` 부트 = 계획 대조 15건, `tests/my-share.test.tsx` 버튼 상태 · Web Share 유무 · 복사/공유/취소/실패 · 띠 미리보기 · dropped 문구 · 합치기/덮어쓰기/취소 · 같은 팔로우 · 빈 쿼리 · .ics 목록) · e2e `tests/e2e/my-share.spec.ts`(링크 복사 → 새 컨텍스트에서 열기 → 합치기 · 덮어쓰기 → 주소 정리 · 새로고침해도 다시 묻지 않음, 한도 초과 · 모르는 항목 · 대문자 · 공백 · 빈 값, 이미 같은 팔로우, 취소, 저장소 차단, .ics 200 · 팀을 풀면 숨김, 375 · 768 · 1024 · 1280 × 라이트 · 다크 axe 0 · 넘침 0 · 44px 미달 0 · 자리 = 띠 ±1px · CLS ≤ 0.0001 · 페이지 오류 0). 시안(D2 혼합안 `/my` 관리 열 `.tools` — 자리만)과 375 · 1280 비교 — 버튼 모양 · 위치 일치.
+- **번들**: `/my` 초기 JS(M4-15 병합 뒤 156.6 → **158.1KB**, +1.5 — 도구 버튼 · .ics 목록 · 진입 섬) / 160KB. 지연 조각: 확인 띠 2.8KB · 내보내기 동작 1.6KB(gzip — 쿼리가 있을 때 · 버튼에 포인터/포커스가 올 때만).
+- **의도한 차이(시안 대비)**: 혼합안 '가져오기' 버튼 없음(링크를 여는 것이 가져오기 — 설명 줄) · "팀 일정 .ics 묶음" 버튼 대신 팀별 링크 목록 · 내보내기 문구 "주소 복사" → "링크 복사"(FR-34 토스트 문구와 맞춤) · Web Share 버튼 추가.
+- **구현 스크린샷**: `docs/design/d2/screenshots/impl-my-share-{375,768,1024,1280}-{light,dark}-{fold,manage}.png`(256색 — 확인 띠 + 관리 열 도구 · 내 팀 일정 구독).
+
 ## 12. 변경 이력
 
 | 날짜 | 내용 | 근거 |
