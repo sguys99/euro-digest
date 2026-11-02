@@ -555,7 +555,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 
 - [x] D3-01 범위: 앱 아이콘(maskable 포함), OG 이미지 템플릿(날짜별·대회별·팀별), 빈 상태 일러스트(비시즌·휴식기·검색 결과 없음 — **도형·타이포 기반 SVG**, 이미지 자산 금지 규칙 준수), **`/status` 페이지** 🆕(P-1 승인분)
   - 2026-11-02 완료: `docs/design/d3/scope.md`(범위 · 현재 구현 상태 — 임시 아이콘 3종·파비콘 없음(호스트 루트 404)·og:image 없음·빈 상태 22종 모두 글자/윤곽 숫자 · `/status` 실데이터(runs.json 필드, 소스 건강도 `source-health.ts` 재사용, 배포 완료 시각·실패 원인은 데이터 없음 → 자리) · OG 실데이터(호수 3자리, 네이비 면 위 대회 색은 다크 값, 팀 배지 면 색 테두리 필요) · 추가 제안 18 · 방향 후보 3). **사용자 결정(7문항 모두 추천안 — scope §7.1)**: 시안 A 입장권 · B 제호 · C 등번호 3안 / 범위 = 원래 + 필수 묶음(favicon.svg·ico, `summary_large_image`·`og:image:alt`, `/offline/` 조형, 홈·`/news/` OG) / 조형 = 기존 모티프만 조합한 SVG(DESIGN §1 원칙 4 유지) / OG 경로 잠정안 `/og/…` 확정(M5-01 ❓ 해소) / `/status` 비용 %만 · 성공률 실행 기준 + 30칸 날짜 띠 / 홈 기본 OG · `/news/` 최신 호 OG
-- [ ] D3-02 시안 2~3개(`docs/design/d3/`) + 비교표·추천안
+- [x] D3-02 시안 2~3개(`docs/design/d3/`) + 비교표·추천안
+  - 2026-11-02 완료: `docs/design/d3/concept-{a,b,c}.html`(A 입장권 · B 제호 · C 등번호 — 5축 모두 다름) + `comparison.md` · `notes-{a,b,c}.md` · 스크린샷 39장(전체 쪽 12 · OG 실제 크기 21 · 아이콘 6) · 생성기 `build/`·`data/`(제품 함수 `assessSourceHealth`·`publishSlot`·`issueNumber`·`kitTextColor` 직접 호출 — 실값만). 세 안 모두 필수 묶음(favicon.svg 라이트/다크·ico 16·32, 크기 사다리, 런처 마스크, OG 기본·제 22호/제 100호·대회 6·팀 4·`summary_large_image`·메신저·`og:image:alt`, `/offline/`, 뒤표지 `/status` 링크). 4조합 가로 넘침·외부 요청·콘솔 오류·axe 위반·44px 미달·AA 미달 0, 새 폰트·색 토큰 0(`--og-*` 4개 제거안). 실값: 성공률 96.0%(24/25) · 비용 11월 3.56%·10월 5.80% · 30일 띠 정시 7·늦음 11·결호 4·창간 전 8. 자리: 배포 완료 시각(M5-15). **추천(에이전트)**: A 아이콘·파비콘·OG + C 빈 상태(비시즌·휴식기·검색 0) + B `/offline/` + B `/status`(머리에 C 숫자판) + B 뒤표지 링크 — DESIGN 규칙 변경 0
 - [ ] D3-03 🙋 사용자 선택 → DECISIONS.md, DESIGN.md 갱신
 
 ---

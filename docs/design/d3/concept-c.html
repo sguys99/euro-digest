@@ -1,0 +1,765 @@
+<!doctype html>
+<!--
+D3 시안 C — 등번호 (Squad No.)
+한 줄: '숫자가 주인공'을 끝까지 — 아이콘 · OG · 빈 상태 · /status가 모두 Barlow 큰 숫자 하나(실선 · 윤곽 · 대시)
+장점: 첫인상이 가장 강함 · 윤곽 숫자 언어를 키워 빈 상태 일관성 최고 · /status 점 그래프가 실제 시각을 보임
+단점: "5"의 브랜드 인지 불확실 · 벽돌 레드 넓은 면 = DESIGN §2.2 규칙 변경 · 대시 억지 · OG 면 2종 · 375 점 선택은 화살표
+구현 난이도: 중 (5 글리프 path 1회, OG 면 2종, 숫자 조판 CSS, 점 그래프 SVG + 섬 1)
+번들/폰트: 폰트 변화 0 (EuroDigest Sans 400·800 + Barlow Condensed 600·800 = 417.8KB, ../fonts/ 로컬), 새 색 토큰 0, OG 전용 변수 4개 제거
+데이터: docs/design/d3/data/d3-data.json (실값, 2026-11-02 기준). 문구 생성·LLM 호출 0
+견본 단독 렌더: ?solo=<data-solo 값>&w=1200 (예: ?solo=og-news-100)
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>D3 시안 C · 등번호 — 유로 다이제스트</title>
+<script>
+(function(){try{var t=localStorage.getItem('d3-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+var q=new URLSearchParams(location.search);if(q.get('solo'))document.documentElement.classList.add('is-solo');if(q.get('theme'))document.documentElement.setAttribute('data-theme',q.get('theme'))})();
+</script>
+<style>
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-400.ksx.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-800.ksx.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-SemiBold.latin.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+:root{
+  color-scheme:light;
+  --paper:#F3F0EA;--paper-2:#E8E4DB;--paper-3:#E1DFDC;
+  --ink:#14213D;--ink-2:#4A5670;--ink-3:#727886;--ink-disabled:#727886;--rule:#CFCFCE;--hatch:#DFDDDA;
+  --brand-accent:#B32F25;--brand-accent-text:#A92B22;--brand-accent-foreground:#F3F0EA;
+  --ticket:#14213D;--ticket-fg:#F3F0EA;--ticket-fg-2:#C2C2C4;
+  --colophon:#14213D;--colophon-fg:#F3F0EA;--colophon-fg-2:#C2C2C4;
+  --ring:#A92B22;
+  --competition-epl:#3D1E5C;--competition-laliga:#7F5300;--competition-seriea:#0A6390;
+  --competition-bundesliga:#A8122B;--competition-ligue1:#2A7035;--competition-ucl:#4A5263;
+  --competition-foreground:#F3F0EA;
+  --result-win:#1F6B45;--result-draw:#4A5670;--result-loss:#A92B22;--trend-up:#1F6B45;--trend-down:#A92B22;
+  --font-sans:"EuroDigest Sans",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --font-numeric:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-latin:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;
+  --radius:0px;--notch:10px;--perf:3.2px;
+  --shadow-print:4px 4px 0 var(--ink);--shadow-print-accent:4px 4px 0 var(--brand-accent);--shadow-none:none;
+  --duration-fast:150ms;--duration-base:200ms;--duration-slow:250ms;--ease:cubic-bezier(.2,.8,.2,1);
+  --gutter:40px;--tab-w:18px;--edge:16px;--col-contents:232px;--col-facing:296px;--container:1280px;
+  --text-wordmark:30px;--lh-wordmark:1.1;--text-h2:21px;--lh-h2:1.3;--text-brief:17px;--lh-brief:1.62;--text-card:16.5px;--lh-card:1.45;--text-tag:13px;--lh-tag:1.35;--text-stamp:11.5px;--lh-stamp:1.3;--text-meta:13px;--lh-meta:1.3;--text-rh:12.5px;--lh-rh:1;--num-issue:40px;--num-brief-no:40px;--num-score:30px;--num-card-no:14px;--num-meta:14.5px;
+}
+[data-theme="dark"]{color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}}
+@media (min-width:1024px){:root{--text-wordmark:52px;--text-h2:24px;--text-brief:19px;--lh-brief:1.6;--text-card:18px;--num-issue:88px;--num-brief-no:54px;--num-score:34px;--num-card-no:15px;--tab-w:22px;--gutter:64px}}
+
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:16px;line-height:1.55;word-break:keep-all;overflow-wrap:anywhere;font-synthesis:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;transition:background-color var(--duration-base) var(--ease),color var(--duration-base) var(--ease)}
+h1,h2,h3,h4,p,ul,ol,dl,dd,figure,table{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+table{border-collapse:collapse;border-spacing:0}
+th{font-weight:inherit;text-align:inherit}
+.n,time,.c{font-variant-numeric:tabular-nums lining-nums}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-80px;z-index:30;background:var(--ink);color:var(--paper);padding:12px 16px;font-weight:800;text-decoration:none;box-shadow:0 0 0 7px var(--paper)}
+.skip:focus{top:8px}
+.ic{display:block;flex:none}
+[lang="en"]{word-break:normal}
+.hit{position:relative}
+.hit::after{content:"";position:absolute;left:-6px;right:-6px;top:50%;height:44px;transform:translateY(-50%)}
+
+/* 시안 메타 띠 (문서용) */
+.meta{background:var(--paper-2);border-bottom:1px solid var(--rule);font-size:13px;line-height:1.55}
+.meta summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;max-width:1280px;margin:0 auto;padding:12px var(--edge);cursor:pointer;list-style:none;min-height:44px}
+.meta summary::-webkit-details-marker{display:none}
+.meta summary b{font-size:15px;font-weight:800}
+.meta__tag{font:600 12px/1 var(--font-numeric);letter-spacing:.12em;border:1px solid var(--ink-2);padding:4px 6px 3px;color:var(--ink-2)}
+.meta__one{color:var(--ink-2)}
+.meta__more{margin-left:auto;font-weight:800;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.meta__more::before{content:"펼치기"}
+.meta[open] .meta__more::before{content:"접기"}
+.meta__grid{display:grid;gap:12px 32px;max-width:1280px;margin:0 auto;padding:0 var(--edge) 16px}
+.meta .meta__h{font-size:12px;font-weight:800;margin:8px 0 2px;color:var(--ink)}
+.meta li{padding-left:12px;position:relative;color:var(--ink-2)}
+.meta li::before{content:"";position:absolute;left:0;top:.7em;width:5px;height:1px;background:var(--ink-2)}
+.meta p{color:var(--ink-2)}
+.axes{width:100%;font-size:12.5px}
+.axes th,.axes td{border-bottom:1px solid var(--rule);padding:5px 8px 5px 0;vertical-align:top;text-align:left}
+.axes thead th{font-weight:800;border-bottom:1px solid var(--ink);color:var(--ink)}
+.axes td{color:var(--ink-2)}
+.axes td.me{color:var(--ink);font-weight:800}
+@media (min-width:1024px){.meta summary{padding:12px 32px}.meta__grid{grid-template-columns:1fr 1fr 1fr;padding:0 32px 18px}.meta__grid>.span3{grid-column:1/-1}}
+@media (max-width:1023px){.meta:not([open]) .meta__one{display:none}}
+
+.divider{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;max-width:1280px;margin:0 auto;padding:10px var(--edge);font-size:12px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.divider b{font-weight:800;color:var(--ink)}
+.divider code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
+.divider--screen{border-top:3px double var(--ink);margin-top:64px;padding-top:14px}
+@media (min-width:1024px){.divider{padding:10px 32px}}
+@media (max-width:1023px){.divider__info{flex-basis:100%}}
+
+.shell{max-width:1280px;margin:0 auto;padding:12px var(--edge) 0}
+@media (min-width:1024px){.shell{padding:24px 32px 0;--edge:32px}}
+
+/* 마스트헤드 = 티켓 (M1 공개 상태 — 도구는 테마 토글만) */
+.ticket{--ring:var(--ticket-fg);position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"brand brand tools" "perf perf perf" "issue stub stub";background:var(--ticket);color:var(--ticket-fg);transition:background-color var(--duration-base) var(--ease)}
+.ticket__brand{grid-area:brand;padding:16px 0 14px 18px;min-width:0}
+.wordmark{font-size:var(--text-wordmark);font-weight:800;line-height:var(--lh-wordmark);letter-spacing:-.045em}
+.wordmark a{display:inline-block;padding:6px 0;margin:-6px 0;text-decoration:none}
+.wordmark-en{font:800 12px/1 var(--font-numeric);letter-spacing:.32em;margin-top:8px;color:var(--ticket-fg-2)}
+.tagline{font-size:13px;line-height:1.45;margin-top:10px;color:var(--ticket-fg-2)}
+.ticket__tools{grid-area:tools;display:flex;align-items:flex-start;padding:6px 6px 0 0}
+.ibtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:44px;height:44px;padding:0 10px;background:transparent;border:0;color:inherit;transition:background-color var(--duration-fast) var(--ease)}
+.ibtn:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
+.ticket__perf{grid-area:perf;position:relative;height:4px;margin:0 14px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x}
+.ticket__perf::before,.ticket__perf::after{content:"";position:absolute;top:50%;width:calc(var(--notch)*2);height:calc(var(--notch)*2);margin-top:calc(var(--notch)*-1);border-radius:50%;background:var(--paper)}
+.ticket__perf::before{left:calc(-14px - var(--notch))}
+.ticket__perf::after{right:calc(-14px - var(--notch))}
+.issue{grid-area:issue;display:flex;align-items:baseline;gap:3px;padding:12px 0 12px 18px}
+.issue__k{font-size:13px;font-weight:800}
+.issue__n{font:800 var(--num-issue)/.82 var(--font-numeric);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stub{grid-area:stub;display:flex;flex-direction:column;justify-content:center;padding:10px 8px 10px 14px;font-size:12.5px;line-height:1.45;min-width:0}
+.stub time{font-weight:800;font-variant-numeric:normal}
+.stub span{display:block;color:var(--ticket-fg-2);font-size:11.5px;line-height:1.4}
+.topnav{display:none}
+@media (min-width:1024px){
+  .ticket{grid-template-columns:232px 4px minmax(0,1fr) auto;grid-template-rows:1fr auto;grid-template-areas:"issue perf brand tools" "stub perf brand tools";min-height:160px}
+  .ticket__brand{padding:22px 0 20px 36px;align-self:center}
+  .wordmark{letter-spacing:-.05em}
+  .wordmark-en{font-size:13px;margin-top:12px}
+  .tagline{font-size:15px;margin-top:12px}
+  .ticket__tools{padding:14px 14px 0 0}
+  .ticket__perf{height:auto;width:4px;margin:14px 0;background-size:4px 9px;background-repeat:repeat-y}
+  .ticket__perf::before,.ticket__perf::after{left:50%;right:auto;margin:0 0 0 calc(var(--notch)*-1)}
+  .ticket__perf::before{top:calc(-14px - var(--notch))}
+  .ticket__perf::after{top:auto;bottom:calc(-14px - var(--notch))}
+  .issue{padding:18px 0 0 28px;align-self:start;gap:6px}
+  .issue__k{font-size:17px}
+  .issue__n{line-height:.78}
+  .stub{padding:0 16px 18px 28px;justify-content:flex-end;font-size:13px}
+  .stub span{font-size:12.5px}
+  .topnav{display:flex;align-items:center;gap:28px;border-bottom:1px solid var(--rule);padding:0 4px}
+  .topnav a{position:relative;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;font-size:15px;font-weight:800;color:var(--ink-2);text-decoration:none}
+  .topnav a:hover{color:var(--ink)}
+  .topnav a[aria-current]{color:var(--ink)}
+  .topnav a[aria-current]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--brand-accent)}
+  .topnav__upd{margin-left:auto;font-size:13px;color:var(--ink-2)}
+}
+
+/* 레이아웃 3구간 (D31): ≤1023 1단 · ≥1024 목차 + 지면(마주 보는 면이 없는 페이지는 2단) */
+.layout{display:block}
+.contents,.facing{display:none}
+@media (min-width:1024px){
+  .layout{display:grid;grid-template-columns:var(--col-contents) minmax(0,1fr);align-items:start}
+  .contents{display:block;position:sticky;top:16px;margin:28px 36px 0 0}
+  .page{padding-top:28px;min-width:0}
+}
+@media (min-width:1280px){
+  .layout--3{grid-template-columns:var(--col-contents) minmax(0,1fr) var(--col-facing)}
+  .layout--3 .facing{display:block;border-left:1px solid var(--ink);padding:0 0 0 32px;margin-top:28px;align-self:stretch}
+  .layout--3 .in-flow{display:none}
+}
+
+/* 섹션 머리 · 러닝 헤드 */
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-top:3px solid var(--ink);padding-top:10px}
+.sec-h h2,.sec-h h3,.sec-h .h{font-size:var(--text-h2);font-weight:800;line-height:var(--lh-h2);letter-spacing:-.025em}
+.sec-h--thin{border-top-width:1px}
+.sec-h--thin h2,.sec-h--thin h3{font-size:16px}
+@media (min-width:1024px){.sec-h--thin h2,.sec-h--thin h3{font-size:17px}}
+.rh{flex:none;font:600 var(--text-rh)/1 var(--font-numeric);letter-spacing:.14em;color:var(--brand-accent-text)}
+.sub{font-size:13px;color:var(--ink-2);margin-top:3px}
+
+/* 대회 표식 — 인덱스 탭(세로) · 평탄 탭 */
+.tab{display:flex;align-items:center;justify-content:center;width:var(--tab-w);padding:7px 0 6px;background:var(--c);color:var(--competition-foreground);font:800 10.5px/1.08 var(--font-sans);writing-mode:vertical-rl;text-orientation:upright;letter-spacing:0;transition:background-color var(--duration-base) var(--ease)}
+@media (min-width:1024px){.tab{font-size:11px;padding:9px 0 8px}}
+.ftab{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:22px;padding:0 6px;background:var(--c);color:var(--competition-foreground);font-size:11.5px;font-weight:800;line-height:1;letter-spacing:-.01em;flex:none}
+.tab--epl{--c:var(--competition-epl)}.tab--laliga{--c:var(--competition-laliga)}.tab--seriea{--c:var(--competition-seriea)}
+.tab--bundesliga{--c:var(--competition-bundesliga)}.tab--ligue1{--c:var(--competition-ligue1)}.tab--ucl{--c:var(--competition-ucl)}
+
+/* 대회 탭 (DESIGN §9.2 Tabs — D1 순위 미니 모양) */
+.ctab{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;padding:0 10px;border:1px solid var(--ink-2);background:transparent;font-size:13px;font-weight:800;color:var(--ink);text-decoration:none;transition:background-color var(--duration-base) var(--ease),color var(--duration-base) var(--ease),border-color var(--duration-base) var(--ease)}
+.ctab:hover{border-color:var(--ink);background:var(--paper-2)}
+.ctab[aria-selected="true"],.ctab[aria-current="page"]{background:var(--c);border-color:var(--c);color:var(--competition-foreground);--ring:var(--ink)}
+
+/* 도장 · 완장 · 자리 */
+.stamp{flex:none;display:inline-flex;align-items:center;gap:4px;padding:3px 6px 2px;border:1px solid var(--ink);color:var(--ink);font-size:var(--text-stamp);font-weight:800;line-height:1.3;letter-spacing:.01em}
+.stamp--ph{border:1px dashed var(--ink-3);color:var(--ink-2)}
+.arm{display:inline-block;padding:3px 3px 2px;background:var(--brand-accent);color:var(--brand-accent-foreground);font-size:10.5px;font-weight:800;line-height:1.2;letter-spacing:-.02em;flex:none}
+.ph-box{padding:12px 14px;border:1.5px dashed var(--ink-3);font-size:12.5px;color:var(--ink-2)}
+.ph-box b{color:var(--ink);font-weight:800;margin-right:6px}
+.ph-box .id{font:600 13.5px/1.3 var(--font-numeric);letter-spacing:.04em;margin-left:6px}
+
+/* 팀 배지 (DR-05) */
+.bdg{position:relative;display:inline-grid;grid-template-rows:3fr 2fr;flex:none;background:var(--k2);outline:1px solid var(--rule);outline-offset:-1px;vertical-align:middle}
+.bdg b{grid-row:1;display:grid;place-items:center;background:var(--k1);color:var(--kf);font-family:var(--font-numeric);font-weight:800;font-variant-numeric:tabular-nums lining-nums;letter-spacing:.04em;line-height:1}
+.bdg--m{width:40px;height:44px}.bdg--m b{font-size:15px}
+.bdg--s{width:30px;height:33px}.bdg--s b{font-size:12px;letter-spacing:.02em}
+.bdg--xs{width:24px;height:27px}.bdg--xs b{font-size:10.5px;letter-spacing:0}
+.bdg--none{background:transparent;outline:1px dashed var(--ink-2)}
+.bdg--none b{background:transparent;color:var(--ink-2);box-shadow:none;border-bottom:1px dashed var(--ink-2)}
+.bdg--none::after{content:"";grid-row:2;background:repeating-linear-gradient(-45deg,var(--hatch) 0 3px,transparent 3px 6px)}
+
+/* 폼 칩 W/D/L — 글자 + 색 (색만으로 전달하지 않음) */
+.form{display:inline-flex;gap:3px;flex:none;vertical-align:middle}
+.fm{display:inline-grid;place-items:center;width:20px;height:20px;font:800 12.5px/1 var(--font-numeric);font-style:normal;letter-spacing:0;border:1.5px solid currentColor}
+.fm--W{color:var(--result-win)}.fm--D{color:var(--result-draw)}.fm--L{color:var(--result-loss)}
+.fm--x{border:0;color:transparent;background:linear-gradient(var(--ink-3),var(--ink-3)) center/8px 2px no-repeat}
+
+/* 순위 변동 ▲▼ — CSS 도형 + 숫자 */
+.tr{display:inline-flex;align-items:center;gap:2px;font:600 13px/1 var(--font-numeric);letter-spacing:.02em;white-space:nowrap}
+.tr i{display:block;width:8px;height:7px;background:currentColor}
+.tr--up{color:var(--trend-up)}.tr--up i{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.tr--down{color:var(--trend-down)}.tr--down i{clip-path:polygon(0 0,100% 0,50% 100%)}
+.tr--eq{color:var(--ink-2)}
+.tr--na{color:var(--ink-2)}
+
+/* 버튼 · 링크 */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;font-size:14px;font-weight:800;border:1px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;transition:background-color var(--duration-fast) var(--ease),color var(--duration-fast) var(--ease)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.tlink{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:44px;min-width:44px;font-size:13px;font-weight:800;color:var(--brand-accent-text);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.tlink:hover{text-decoration-thickness:2px}
+.tlink .ic{width:16px;height:16px}
+.src-note{font-size:12.5px;color:var(--ink-2);margin-top:14px;line-height:1.5}
+.src-note b{color:var(--ink);font-weight:800}
+.note{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.krl{display:inline-flex!important;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+
+/* 뒤표지 · 하단 탭 · 토스트 */
+.colophon{position:relative;margin:64px calc(var(--edge)*-1) 0;background:var(--colophon);color:var(--colophon-fg);--ring:var(--colophon-fg)}
+.colophon::before{content:"";display:block;height:4px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x;transform:translateY(6px)}
+.colophon__in{padding:26px var(--edge) 28px;display:grid;gap:10px;font-size:13px;line-height:1.6}
+.colophon__brand{font-size:17px;font-weight:800;letter-spacing:-.03em}
+.colophon__brand span{font-size:12.5px;font-weight:400;letter-spacing:0;color:var(--colophon-fg-2);margin-left:6px}
+.colophon__fd{font:600 15px/1.3 var(--font-numeric);letter-spacing:.03em}
+.colophon__p{color:var(--colophon-fg-2);max-width:62ch}
+.colophon__links{display:flex;flex-wrap:wrap;column-gap:18px}
+.colophon__links a{display:inline-flex;align-items:center;min-height:44px;font-weight:800;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+@media (min-width:1024px){.colophon{margin:72px 0 0}.colophon__in{grid-template-columns:1.1fr 1fr;column-gap:48px;padding:32px 36px 34px}.colophon__links{grid-column:2;grid-row:2/4}.colophon__brand{grid-column:1/-1}}
+.tabbar{position:sticky;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(3,1fr);margin:0;background:var(--paper);border-top:1px solid var(--ink)}
+.tabbar a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;font-size:11px;font-weight:800;color:var(--ink-2);text-decoration:none}
+.tabbar a:hover{color:var(--ink)}
+.tabbar a[aria-current]{color:var(--ink)}
+.tabbar a[aria-current]::before{content:"";position:absolute;top:-1px;left:24%;right:24%;height:3px;background:var(--brand-accent)}
+@media (min-width:1024px){.tabbar{display:none}}
+.toast-region{position:fixed;left:0;right:0;bottom:76px;z-index:40;display:flex;justify-content:center;pointer-events:none}
+.toast{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 16px 0 0;background:var(--ink);color:var(--paper);font-size:14px;font-weight:800;pointer-events:auto;box-shadow:var(--shadow-print-accent);animation:eject var(--duration-base) var(--ease) both}
+.toast[hidden]{display:none}
+.toast__k{align-self:stretch;display:grid;place-items:center;padding:0 10px;border-right:2px dotted color-mix(in srgb,var(--paper) 55%,transparent);font-size:12px}
+@keyframes eject{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes tear{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes stamp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes arrive{from{background-color:transparent}}
+@media (min-width:1024px){.toast-region{bottom:28px}}
+
+/* 견본 */
+.spec{margin-top:48px}
+.spec-grid{display:grid;gap:24px;margin-top:14px}
+@media (min-width:1024px){.spec-grid{grid-template-columns:1fr 1fr}}
+.frame{border:1px solid var(--rule);padding:14px;min-width:0}
+.cap{font-size:12.5px;color:var(--ink-2);margin-bottom:10px;line-height:1.5}
+.cap b{font-weight:800;color:var(--ink);margin-right:4px}
+.bdg-row{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.bdg-row span.l{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.legend>span{display:inline-flex;align-items:center;gap:6px}
+.legend b{color:var(--ink);font-weight:800}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0s!important;animation-delay:0s!important;transition-duration:0s!important;scroll-behavior:auto!important}
+}
+
+/* ───────── D3 공용: 견본 보드 ───────── */
+.bar{position:sticky;top:0;z-index:25;background:var(--paper);border-bottom:1px solid var(--rule)}
+.bar__in{display:flex;align-items:center;gap:4px 16px;flex-wrap:wrap;max-width:1280px;margin:0 auto;padding:0 var(--edge);min-height:52px;font-size:12.5px;color:var(--ink-2)}
+.bar__in b{color:var(--ink);font-weight:800}
+.bar__nav{display:flex;flex-wrap:wrap;gap:0 2px;margin-left:auto}
+.bar__nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;font-weight:800;color:var(--ink);text-decoration:none}
+.bar__nav a:hover{text-decoration:underline;text-underline-offset:4px}
+.bar__nav .n{color:var(--brand-accent-text);margin-right:4px;font-family:var(--font-numeric)}
+@media (max-width:1023px){.bar__nav{display:none}.bar{position:static}}
+@media (min-width:1024px){.bar__in{padding:0 32px}}
+.board{max-width:1280px;margin:0 auto;padding:28px var(--edge) 0}
+@media (min-width:1024px){.board{padding:40px 32px 0}}
+.hero{display:grid;gap:10px;padding-bottom:4px}
+.hero__k{font:600 var(--text-rh)/1 var(--font-numeric);letter-spacing:.14em;color:var(--brand-accent-text)}
+.hero h1{font-size:34px;line-height:1.08;font-weight:800;letter-spacing:-.04em}
+.hero p{font-size:15px;color:var(--ink-2);max-width:60ch}
+@media (min-width:1024px){.hero h1{font-size:52px}.hero p{font-size:16px}}
+.blk{margin-top:56px}
+@media (min-width:1024px){.blk{margin-top:88px}}
+.blk__no{font-family:var(--font-numeric);font-variant-numeric:tabular-nums lining-nums;margin-right:8px;color:var(--brand-accent-text)}
+.sub2{font-size:13px;color:var(--ink-2);margin-top:4px;max-width:72ch;line-height:1.5}
+.h3{font-size:16px;font-weight:800;letter-spacing:-.02em;margin:36px 0 12px;padding-top:8px;border-top:1px solid var(--ink);display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.h3 small{font:600 12px/1 var(--font-numeric);letter-spacing:.12em;color:var(--ink-2)}
+@media (min-width:1024px){.h3{font-size:17px;margin-top:48px}}
+.grid2,.grid3{display:grid;gap:16px}
+@media (min-width:768px){.grid3{grid-template-columns:1fr 1fr}}
+@media (min-width:1024px){.grid2{grid-template-columns:1fr 1fr;gap:24px}.grid3{grid-template-columns:repeat(3,1fr);gap:24px}}
+.fr{border:1px solid var(--rule);padding:14px;min-width:0}
+.fr--bare{border:0;padding:0}
+.fr__cap{font-size:12.5px;color:var(--ink-2);margin-bottom:10px;line-height:1.5}
+.fr__cap b{color:var(--ink);font-weight:800;margin-right:6px}
+.path{font:600 13px/1.3 var(--font-numeric);letter-spacing:.02em;color:var(--ink);overflow-wrap:anywhere}
+.lbl{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;margin-top:8px;font-size:12.5px;color:var(--ink-2)}
+.lbl b{color:var(--ink);font-weight:800}
+.chk{background-color:var(--paper);background-image:linear-gradient(45deg,var(--paper-3) 25%,transparent 25%,transparent 75%,var(--paper-3) 75%),linear-gradient(45deg,var(--paper-3) 25%,transparent 25%,transparent 75%,var(--paper-3) 75%);background-size:16px 16px;background-position:0 0,8px 8px}
+.ladder{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 22px}
+.ladder figure{display:grid;justify-items:start;gap:6px}
+.ladder figcaption{font:600 13px/1 var(--font-numeric);letter-spacing:.04em;color:var(--ink-2)}
+.ladder svg{display:block}
+.ladder .big svg{width:min(512px,100%);height:auto}
+.ladder .big{flex-basis:100%}
+@media (min-width:1024px){.ladder .big{flex-basis:auto}}
+.devices{display:grid;gap:12px}
+@media (min-width:768px){.devices{grid-template-columns:1fr 1fr}}
+.home{display:flex;flex-wrap:wrap;gap:18px 26px;justify-content:center;padding:22px 12px 16px}
+.home--l{background:var(--frame-l)}.home--d{background:var(--frame-d)}
+.home figure{display:grid;justify-items:center;gap:7px;width:76px}
+.home figcaption{font-size:11px;line-height:1.2;text-align:center}
+.home--l figcaption{color:var(--frame-l-fg)}.home--d figcaption{color:var(--frame-d-fg)}
+.home figcaption span{display:block;font:600 11px/1.2 var(--font-numeric);letter-spacing:.04em;margin-top:2px}
+.home svg{display:block;width:60px;height:60px}
+.m-circle{clip-path:circle(50%)}
+.m-round{clip-path:inset(0 round 22%)}
+.m-squircle{clip-path:url(#squircle)}
+.tabs{display:flex;align-items:flex-end;gap:2px;padding:8px 8px 0;min-width:0}
+.tabs--l{background:var(--frame-l-bar)}.tabs--d{background:var(--frame-d-bar)}
+.tabs__t{display:flex;align-items:center;gap:8px;min-width:0;max-width:230px;flex:1 1 auto;height:34px;padding:0 12px;font-size:12px;white-space:nowrap;overflow:hidden}
+.tabs--l .tabs__t--on{background:var(--frame-l);color:var(--frame-l-fg)}
+.tabs--d .tabs__t--on{background:var(--frame-d-tab);color:var(--frame-d-fg)}
+.tabs--l .tabs__t:not(.tabs__t--on){color:var(--frame-l-fg2)}
+.tabs--d .tabs__t:not(.tabs__t--on){color:var(--frame-d-fg2)}
+.tabs__t svg{flex:none;width:16px;height:16px}
+.tabs__t i{flex:none;width:16px;height:16px;border:1.5px solid currentColor}
+.px{display:grid;grid-template-columns:auto auto;gap:14px;align-items:end;justify-content:start}
+.px figure{display:grid;gap:6px;justify-items:start}
+.px figcaption{font:600 12px/1 var(--font-numeric);letter-spacing:.04em;color:var(--ink-2)}
+.pxbig{width:128px;height:128px;image-rendering:pixelated}
+.zoom svg{width:128px;height:128px;display:block}
+/* OG 공용 틀 */
+.og{container-type:inline-size;position:relative;width:100%;aspect-ratio:1200/630;overflow:hidden;font-family:var(--font-sans);font-synthesis:none;color-scheme:light}
+.og *{margin:0}
+.og .n{font-family:var(--font-numeric);font-variant-numeric:tabular-nums lining-nums}
+.ogset{display:grid;gap:18px}
+@media (min-width:1024px){.ogset--2{grid-template-columns:1fr 1fr;gap:24px}.ogset--3{grid-template-columns:repeat(3,1fr);gap:18px}}
+.ogf{display:grid;gap:8px;min-width:0}
+.ogf__l{display:flex;flex-wrap:wrap;gap:2px 12px;align-items:baseline;justify-content:space-between;font-size:12.5px;color:var(--ink-2)}
+.ogf__l b{font-weight:800;color:var(--ink)}
+.alt{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.alt q{color:var(--ink);quotes:"“" "”"}
+.alt q::before{content:open-quote}.alt q::after{content:close-quote}
+/* 미리보기 틀 (기기 · 앱 색은 견본 틀 전용 — 제품 토큰 아님) */
+.pv{display:grid;gap:16px}
+@media (min-width:1024px){.pv{grid-template-columns:1.25fr 1fr;gap:24px;align-items:start}}
+.pv__x{border:1px solid var(--frame-l-line);border-radius:16px;overflow:hidden;background:var(--frame-l);color:var(--frame-l-fg);max-width:520px}
+.pv__x .og{border-bottom:1px solid var(--frame-l-line)}
+.pv__x>p{padding:10px 14px 12px;font-size:13px;line-height:1.4}
+.pv__x>p span{display:block;color:var(--frame-l-fg2);font-size:12px}
+.pv__d{background:var(--frame-d)}
+.pv__x--d{border-color:var(--frame-d-line);background:var(--frame-d);color:var(--frame-d-fg)}
+.pv__x--d .og{border-bottom-color:var(--frame-d-line)}
+.pv__x--d>p span{color:var(--frame-d-fg2)}
+.msg{display:flex;flex-wrap:wrap;gap:14px;padding:16px;align-items:flex-start}
+.msg--l{background:var(--frame-l-bar)}.msg--d{background:var(--frame-d-bar)}
+.msg__b{width:240px;border-radius:12px;overflow:hidden;background:var(--frame-l);color:var(--frame-l-fg)}
+.msg--d .msg__b{background:var(--frame-d-tab);color:var(--frame-d-fg)}
+.msg__b>p{padding:8px 10px 10px;font-size:12px;line-height:1.35}
+.msg__b>p span{display:block;font-size:11px;color:var(--frame-l-fg2);margin-top:2px}
+.msg--d .msg__b>p span{color:var(--frame-d-fg2)}
+.msg__sq{display:flex;gap:10px;align-items:center;width:240px;padding:8px;border-radius:12px;background:var(--frame-l);color:var(--frame-l-fg);font-size:12px;line-height:1.35}
+.msg--d .msg__sq{background:var(--frame-d-tab);color:var(--frame-d-fg)}
+.msg__sq .sq{flex:none;width:64px;height:64px;overflow:hidden;position:relative;border-radius:6px}
+.msg__sq .sq .og{position:absolute;top:0;left:50%;width:121.9px;height:64px;transform:translateX(-50%)}
+.msg__sq>p span{display:block;font-size:11px;color:var(--frame-l-fg2)}
+.msg--d .msg__sq>p span{color:var(--frame-d-fg2)}
+/* 빈 상태 · 전후 비교 */
+.es{display:grid;gap:14px}
+.ctx{border:1px solid var(--rule);padding:16px 14px 18px;min-width:0;background:var(--paper)}
+@media (min-width:1024px){.ctx{padding:22px 24px 24px}}
+.ctx__lbl{display:flex;flex-wrap:wrap;gap:2px 10px;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--ink-2);margin-bottom:12px}
+.ctx__lbl b{color:var(--ink);font-weight:800}
+.ba{display:grid;gap:8px;font-size:12.5px;line-height:1.5;color:var(--ink-2);padding:10px 0 0;border-top:1px dotted var(--ink-3)}
+.ba b{color:var(--ink);font-weight:800}
+.ba__row{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:baseline}
+.ba__k{font-weight:800;color:var(--ink)}
+.before{border:1px dashed var(--ink-3);padding:10px 12px;font-size:13px;color:var(--ink-2)}
+.before b{color:var(--ink)}
+.before .o0{font:800 34px/.86 var(--font-numeric);color:transparent;-webkit-text-stroke:1.5px var(--brand-accent);margin-right:10px;vertical-align:-4px}
+.before .o0--ink{-webkit-text-stroke-color:var(--ink-2)}
+.before .d34{font:800 24px/1 var(--font-numeric);color:var(--ink);margin-right:6px}
+.srch{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 12px;border:1px solid var(--ink);font-size:16px;font-weight:800;margin-bottom:6px}
+.srch .ic{width:20px;height:20px}
+.srch span{font-family:var(--font-latin);font-weight:600;font-size:19px}
+.ph{display:inline-flex;align-items:baseline;gap:6px;padding:6px 10px;border:1.5px dashed var(--ink-3);font-size:12.5px;color:var(--ink-2)}
+.ph b{color:var(--ink);font-weight:800}
+.ph .n{font:600 13px/1 var(--font-numeric);letter-spacing:.04em;color:var(--ink)}
+.offline-list{margin-top:10px}
+.offline-list a{display:flex;align-items:baseline;gap:14px;min-height:48px;padding:12px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.offline-list a:hover{background:var(--paper-2)}
+.offline-list .d{font:800 22px/1 var(--font-numeric);font-variant-numeric:tabular-nums lining-nums}
+.offline-list .w{font-weight:800}
+.offline-list .no{margin-left:auto;font-size:13px;color:var(--ink-2)}
+.offline-list .no .n{font:600 15px/1 var(--font-numeric)}
+.lead{font-size:var(--text-brief);line-height:1.45;font-weight:800}
+.body2{font-size:14px;line-height:1.55;color:var(--ink-2);max-width:46ch;margin-top:6px}
+/* 공용: 상태 쪽 */
+.st-basis{font-size:13px;color:var(--ink-2);margin-top:6px}
+.st-basis time{color:var(--ink);font-weight:800}
+.def{font-size:12.5px;line-height:1.55;color:var(--ink-2);margin-top:10px;max-width:70ch}
+.def b{color:var(--ink);font-weight:800}
+.colophon__links a.is-new{position:relative}
+
+.ogf--hero .og{max-width:880px}
+.scr{position:relative}
+/* 견본: 하단 탭은 실제로 sticky(bottom 0). 전체 쪽 캡처에서 중간에 걸리지 않게 시안에서는 셸 끝에 둔다 */
+.scr .tabbar{position:relative}
+
+:root{--frame-l:#FFFFFF;--frame-l-fg:#1F1F1F;--frame-l-fg2:#5F6368;--frame-l-bar:#E8EAED;--frame-l-line:#CFD9DE;--frame-d:#000000;--frame-d-fg:#E7E9EA;--frame-d-fg2:#9AA0A6;--frame-d-bar:#1F1F1F;--frame-d-tab:#2B2B2B;--frame-d-line:#2F3336}
+.ibtn svg{width:22px;height:22px}
+html.is-solo body{margin:0;background:transparent}
+html.is-solo body>*:not(.solo){display:none!important}
+.solo{position:absolute;left:0;top:0}
+.tabbar--5{grid-template-columns:repeat(5,1fr)}
+
+code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
+.code{margin-top:12px;padding:10px 12px;background:var(--paper-2);font:600 12px/1.45 var(--font-numeric);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+.safe-wrap,.ios{position:relative}
+.fr>svg,.safe-wrap svg,.ios svg{display:block;width:100%;height:auto}
+.safe-wrap .safe{position:absolute;inset:0}
+.ios{border-radius:22.5%;overflow:hidden;width:min(180px,100%)}
+/* OG C — 벽돌 레드 면 */
+.og--cr{--ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;background:var(--ticket);color:var(--ticket-fg)}
+.ogc__top{position:absolute;left:5cqw;top:4.6cqw;max-width:52cqw}
+.ogc__wm{font-size:5.6cqw;font-weight:800;letter-spacing:-.05em;line-height:1.05;white-space:nowrap}
+.ogc__en{font:800 1.7cqw/1 var(--font-numeric);letter-spacing:.34em;color:var(--ticket-fg-2);margin-top:1.4cqw}
+.ogc__tag{font-size:2.6cqw;margin-top:2.4cqw;color:var(--ticket-fg)}
+.ogc__no{display:flex;align-items:baseline;gap:1cqw;margin-top:2.4cqw;font-size:2.6cqw;font-weight:800;white-space:nowrap}
+.ogc__no i{display:inline-block;width:5cqw;border-bottom:.25cqw solid var(--ticket-fg-2);transform:translateY(-.5cqw)}
+.ogc__no b{margin-left:2cqw;padding-left:2cqw;border-left:.25cqw solid var(--ticket-fg-2);font-weight:800}
+.ogc__big{position:absolute;right:4cqw;bottom:-7.2cqw;font:800 46cqw/1 var(--font-numeric);font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.02em;color:var(--ticket-fg)}
+/* OG C — 크림 면(대회 · 팀) */
+.og--cp{--paper:#F3F0EA;--ink:#14213D;--ink-2:#4A5670;--competition-foreground:#F3F0EA;--competition-epl:#3D1E5C;--competition-laliga:#7F5300;--competition-seriea:#0A6390;--competition-bundesliga:#A8122B;--competition-ligue1:#2A7035;--competition-ucl:#4A5263;background:var(--paper);color:var(--ink);outline:1px dashed var(--ink-3)}
+.ogc__sig{position:absolute;left:5cqw;top:4.4cqw;font-size:2.2cqw;font-weight:800;color:var(--ink)}
+.ogc__sig span{font:800 1.5cqw/1 var(--font-numeric);letter-spacing:.3em;color:var(--ink-2);margin-left:1.2cqw}
+.ogc__short{position:absolute;left:4.4cqw;top:8cqw;font-size:17cqw;font-weight:800;letter-spacing:-.05em;line-height:1.1}
+.ogc__short--l{font:800 27cqw/.9 var(--font-numeric);letter-spacing:-.01em;top:9cqw}
+.ogc__name{position:absolute;left:5cqw;bottom:13.4cqw;font-size:4.4cqw;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.ogc__bar{position:absolute;left:0;right:0;bottom:0;height:9cqw;display:flex;justify-content:space-between;align-items:center;padding:0 5cqw;background:var(--c);color:var(--competition-foreground);font-size:2.4cqw;font-weight:800}
+.ogc__bar span[lang]{font:600 2.8cqw/1 var(--font-numeric);letter-spacing:.02em}
+.ogc__bar .n{font:600 1.1em/1 var(--font-numeric)}
+.ogc__abbr{position:absolute;left:4.4cqw;top:9.5cqw}
+.ogc__abbr p{font:800 26cqw/.86 var(--font-numeric);letter-spacing:.01em;color:var(--kl)}
+.ogc__abbr i{display:block;height:3.6cqw;margin-top:1.6cqw;background:linear-gradient(90deg,var(--k1) 50%,var(--k2) 50%);outline:.25cqw solid var(--ink)}
+.ogc__tm{position:absolute;left:5cqw;right:5cqw;bottom:4.6cqw}
+.og--ct .ogc__tm{left:auto;right:5cqw;bottom:5cqw;width:42cqw;text-align:right}
+.ogc__tabs{display:flex;justify-content:flex-end;gap:.8cqw}
+.ogc__ftab{display:inline-flex;align-items:center;height:3.6cqw;padding:0 1.2cqw;background:var(--c);color:var(--competition-foreground);font-size:2.1cqw;font-weight:800}
+.ogc__name--t{position:static;font-size:5.6cqw;margin-top:1.6cqw;line-height:1.08}
+.ogc__en2{font:600 2.4cqw/1.1 var(--font-numeric);letter-spacing:.02em;color:var(--ink-2);margin-top:1.2cqw}
+/* 빈 상태 — 숫자 */
+.restC{margin-top:12px;border-top:1px solid var(--rule);padding-top:14px}
+.numC__c{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:14px;font-weight:800}
+.numC__big{display:flex;align-items:flex-end;gap:12px;margin-top:12px}
+.numC__big .n{font:800 var(--num-n1,56px)/.84 var(--font-numeric);letter-spacing:-.02em;color:var(--ink)}
+.numC__w{display:grid;gap:4px;font-size:15px;font-weight:800;padding-bottom:2px}
+.numC__w .n{font:600 14px/1 var(--font-numeric)!important;color:var(--ink-2)!important;letter-spacing:.02em!important}
+.numC__note{font-size:15px;font-weight:800;margin-top:14px;max-width:34em}
+@media (min-width:1024px){:root{--num-n1:96px;--num-n2:64px}}
+.gutC{display:grid;grid-template-columns:var(--gutter) minmax(0,1fr);gap:0 12px;align-items:start}
+.gutC__n{font:800 var(--num-brief-no)/.86 var(--font-numeric);font-variant-numeric:tabular-nums lining-nums}
+.gutC__n--o{color:transparent;-webkit-text-stroke:2px var(--brand-accent)}
+.intlC{margin-top:16px;padding-top:12px;border-top:2px solid var(--ink)}
+.intlC__k{display:flex;align-items:center;gap:10px;font:600 15px/1 var(--font-numeric)}
+.intlC__l{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin-top:12px}
+.intlC__d{display:block;font:800 var(--num-n2,44px)/.84 var(--font-numeric);letter-spacing:-.02em}
+.intlC__t{font-size:12.5px;color:var(--ink-2);margin-top:8px}
+.intlC__t .n{font:600 14px/1 var(--font-numeric);color:var(--ink)}
+.intlC__o{font-size:15px;font-weight:800;margin-top:4px}
+.intlC__v{font-size:12.5px;color:var(--ink-2)}
+.restC .tlink{margin-top:6px}
+.zeroC{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 18px;align-items:start;margin-top:12px;padding-top:14px;border-top:1px solid var(--ink)}
+.zeroC__n{font:800 var(--num-n1,56px)/.84 var(--font-numeric);color:transparent;-webkit-text-stroke:2px var(--ink-2);font-variant-numeric:tabular-nums lining-nums}
+@media (min-width:1024px){.zeroC__n{-webkit-text-stroke-width:2.5px}}
+.zeroC__h{font-size:16px;font-weight:800}
+.zeroC__t{display:flex;flex-wrap:wrap;gap:4px 18px;word-spacing:4px;margin-top:10px;font-size:13px;color:var(--ink-2)}
+.n.o{font:800 22px/1 var(--font-numeric);color:transparent;-webkit-text-stroke:1.5px var(--ink-2)}
+.dashC{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 18px;align-items:start;margin-top:16px}
+.dashC__n{display:block;width:44px;height:var(--num-n1,56px);background:linear-gradient(var(--ink-2),var(--ink-2)) center 58%/100% 7px no-repeat}
+@media (min-width:1024px){.dashC__n{width:76px;background-size:100% 10px}}
+.savedC{margin-top:8px}
+.savedC a{display:grid;grid-template-columns:var(--gutter) minmax(0,1fr) auto;gap:0 12px;align-items:center;min-height:60px;padding:8px 0;border-bottom:1px solid var(--rule);color:var(--ink);text-decoration:none}
+.savedC a:hover{background:var(--paper-2)}
+.savedC__n{font:800 var(--num-n3,28px)/.86 var(--font-numeric)}
+.savedC__t b{display:block;font-weight:800}
+.savedC__t b .n{font:800 17px/1 var(--font-numeric)}
+.savedC__t>span{font-size:13px;color:var(--ink-2)}
+.savedC__t>span .n{font:600 14px/1 var(--font-numeric)}
+.savedC .ic{width:18px;height:18px;color:var(--ink-2)}
+@media (min-width:1024px){:root{--num-n3:34px}}
+.btn--sm{min-height:44px;gap:8px;margin-top:12px;padding:0 14px}
+.btn .ic{width:18px;height:18px}
+/* /status C */
+.boardC{display:grid;gap:0;margin-top:20px;border-top:2px solid var(--ink)}
+.boardC>div{padding:14px 0 16px;border-bottom:1px solid var(--rule)}
+.boardC dt{font-size:13px;font-weight:800;color:var(--ink-2)}
+.boardC dd{display:flex;align-items:baseline;gap:6px;margin-top:10px}
+.boardC__n{font:800 var(--num-n1,56px)/.84 var(--font-numeric);letter-spacing:-.02em}
+.boardC__u{font:800 20px/1 var(--font-numeric);letter-spacing:.04em;color:var(--ink-2)}
+.boardC dd.boardC__c{display:block;font-size:13px;line-height:1.6;color:var(--ink-2)}
+.boardC__c .n{font:600 14.5px/1 var(--font-numeric);color:var(--ink)}
+.boardC .ph{margin-top:6px}
+@media (min-width:1024px){.boardC{grid-template-columns:repeat(3,minmax(0,1fr))}.boardC>div{padding:18px 24px 20px 0;border-bottom:0}.boardC>div+div{padding-left:24px;border-left:1px solid var(--rule)}.boardC__u{font-size:26px}}
+.stC{margin-top:40px}
+.dotC{position:relative;margin-top:14px;padding:0 0 22px 26px}
+.dotC__plot{position:relative;height:200px}
+@media (min-width:1024px){.dotC__plot{height:240px}}
+.dotC__svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.dotC__svg .gl{stroke:var(--rule);stroke-width:1;vector-effect:non-scaling-stroke}
+.dotC__svg .pre{fill:var(--paper-2)}
+.dotC__svg .tg{fill:none;stroke:var(--ink);stroke-width:2;vector-effect:non-scaling-stroke}
+.dotC__pts{position:absolute;inset:0;pointer-events:none}
+.dp{position:absolute;width:9px;height:9px;margin:-4.5px 0 0 -4.5px}
+.dp--ontime{border-radius:50%;background:var(--ink)}
+.dp--late{border:1.75px solid var(--ink);background:var(--paper)}
+.dp--miss{width:9px;height:2.5px;margin-top:-1px;background:var(--ink-2)}
+.dp--x{width:10px;height:10px;margin:-5px 0 0 -5px;background:linear-gradient(45deg,transparent 40%,var(--brand-accent) 40% 60%,transparent 60%),linear-gradient(-45deg,transparent 40%,var(--brand-accent) 40% 60%,transparent 60%)}
+.dotC__sel{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--brand-accent);transition:left var(--duration-fast) var(--ease)}
+.dotC__ax{position:absolute;left:26px;right:0;top:0;height:200px;pointer-events:none}
+@media (min-width:1024px){.dotC__ax{height:240px}}
+.dotC__y{position:absolute;left:-26px;transform:translateY(-50%);font:600 12px/1 var(--font-numeric);color:var(--ink-2)}
+.dotC__x{position:absolute;top:calc(100% + 8px);transform:translateX(-50%);font:600 12px/1 var(--font-numeric);color:var(--ink-2);white-space:nowrap}
+.dotC__x:last-child{transform:translateX(-100%)}
+.dotC__pre{position:absolute;top:8px;text-align:center;font-size:11px;font-weight:800;color:var(--ink-2)}
+.dotC__tg{position:absolute;transform:translate(6px,calc(-100% - 4px));font-size:11px;font-weight:800;color:var(--ink);white-space:nowrap}
+.dotC__b{position:absolute;top:0;bottom:0;padding:0;border:0;background:transparent}
+@media (max-width:1023px){.dotC__b{display:none}}
+.dotC__b:hover{box-shadow:inset 0 -3px 0 var(--ink-2)}
+.dotC__b[aria-pressed="true"]{box-shadow:inset 0 -3px 0 var(--brand-accent)}
+.dotC__nav{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px;margin-top:8px;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
+.ibtn--b{color:var(--ink)}
+.dotC__line{font-size:14px;font-weight:800;text-align:center;line-height:1.4;padding:8px 0}
+.dotC__line.is-stamp{animation:stamp var(--duration-fast) var(--ease) both}
+.legC{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:12.5px;color:var(--ink-2)}
+.legC li{display:inline-flex;align-items:center;gap:6px}
+.legC .n{font:600 14px/1 var(--font-numeric);color:var(--ink)}
+.lg{display:inline-block;width:10px;height:10px}
+.lg--on{border-radius:50%;background:var(--ink)}
+.lg--late{border:1.75px solid var(--ink)}
+.lg--miss{height:2.5px;background:var(--ink-2)}
+.lg--x{background:linear-gradient(45deg,transparent 40%,var(--brand-accent) 40% 60%,transparent 60%),linear-gradient(-45deg,transparent 40%,var(--brand-accent) 40% 60%,transparent 60%)}
+.lg--pre{background:var(--paper-2);outline:1px solid var(--rule)}
+.tblwrap{margin-top:12px}
+.srcC{width:100%;font-size:13.5px}
+.srcC th,.srcC td{padding:10px 0 10px 10px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:baseline}
+.srcC th:first-child{padding-left:0}
+.srcC thead th{font-size:12px;font-weight:800;color:var(--ink-2);border-bottom:1px solid var(--ink);padding-top:0}
+.srcC tbody th{font-weight:800}
+.srcC .num{text-align:right;white-space:nowrap}
+.srcC td .n{font:800 18px/1 var(--font-numeric)}
+.srcC td .n.o{font-size:18px}
+.srcC .den{font:600 13px/1 var(--font-numeric);color:var(--ink-2)}
+.srcC tr.is-flag td:last-child .n{color:var(--brand-accent-text)}
+.tier{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 4px}
+.tier .n{font-size:14px!important}
+.tier--2{border:2px solid var(--ink)}.tier--3{border:1px dashed var(--ink-2);color:var(--ink-2)}
+@media (max-width:520px){.srcC thead th:nth-child(2),.srcC td:nth-child(2){display:none}.srcC td .n{font-size:16px}}
+.toc{margin-top:10px}
+.toc a{display:flex;align-items:baseline;gap:6px;min-height:44px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:14px;color:var(--ink);text-decoration:none}
+.toc a i{flex:1;border-bottom:2px dotted var(--ink-3);transform:translateY(-3px)}
+.colC .n{font:800 17px/1 var(--font-numeric);margin-left:4px}
+
+</style>
+
+</head>
+<body id="top">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><clipPath id="squircle" clipPathUnits="objectBoundingBox"><path d="M.5 0C.89 0 1 .11 1 .5S.89 1 .5 1 0 .89 0 .5 .11 0 .5 0Z"/></clipPath></defs></svg>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<details class="meta">
+  <summary><span class="meta__tag">시안 정보</span><b>C 등번호 (Squad No.)</b><span class="meta__one">‘숫자가 주인공’을 끝까지 민다 — 아이콘 · OG · 빈 상태 · /status가 모두 Barlow 큰 숫자 하나로 말한다(실선 · 윤곽 · 대시).</span><span class="meta__more" aria-hidden="true"></span></summary>
+  <div class="meta__grid">
+    <div><p class="meta__h">장점</p><ul><li>홈 화면 · 링크 미리보기에서 가장 눈에 띈다(진한 레드 면 + 큰 숫자) — 세 안 중 첫인상이 가장 강하다</li><li>이미 7곳에 퍼진 윤곽 숫자 언어를 그대로 키워 빈 상태 일관성이 가장 높다 — 새 도형 0</li><li>/status 점 그래프가 실제 수집 완료 시각을 그대로 보여 줘 ‘10월 28일부터 정시’가 한눈에 읽힌다</li><li>대회 · 팀 OG가 크림 면이라 화면과 같은 라이트 대회 색 · 키트 색을 쓴다</li></ul></div>
+    <div><p class="meta__h">단점</p><ul><li>“5”가 브랜드로 읽힐지 불확실하다 — 알림 배지 · 숫자 채널 앱처럼 보일 위험</li><li>벽돌 레드 넓은 면은 DESIGN §2.2 “레드를 넓은 면으로 깔지 않는다(다크 티켓만 예외)”의 예외를 아이콘 · OG로 넓히는 규칙 변경이다(사용자 확인)</li><li>숫자가 없는 상태(오프라인)에 대시를 억지로 세운다 — 첫눈에 “무엇이 없는지” 글을 읽어야 안다</li><li>OG 면이 둘(레드 · 크림)로 갈려 한 벌로 보이는 힘이 A · B보다 약하다</li><li>/status 점 그래프는 375에서 날짜 칸이 11px라 화살표 버튼으로 고른다(점 직접 누르기는 1024 이상)</li></ul></div>
+    <div><p class="meta__h">구현 난이도</p><p><b>중</b> — 아이콘 “5” 글리프 path 1회, OG 면 2종(레드 · 크림) 템플릿 + 변형 3, 빈 상태는 숫자 조판(CSS), /status 점 그래프 SVG(빌드 때 계산) + 날짜 선택 섬 1개(gzip 약 0.4KB).</p><p class="meta__h">번들 · 폰트 영향</p><p>폰트 변화 0 — EuroDigest Sans 400 · 800 + Barlow Condensed 600 · 800(417.8KB, 2패밀리 4파일). 새 색 토큰 0, OG 전용 변수 4개 제거. favicon.svg 약 0.5KB · ico 약 1.5KB.</p><p class="meta__h">DESIGN 규칙 변경</p><p><b>필요</b> — (1) DESIGN §2.2 레드 넓은 면 예외에 “아이콘 · OG 면(다크 --ticket 값)” 추가 (2) OG 호수 숫자는 실선(scope의 윤곽 안은 D2 숫자 상태 규칙과 충돌해 바꿈) (3) 다크 탭 파비콘은 --brand-accent 다크 면. 휴식기 S4 변형은 화면 결정.</p></div>
+    <div class="span3"><p class="meta__h">축 매트릭스 (시안 × 5축)</p><table class="axes"><thead><tr><th scope="col">축</th><th scope="col">A 입장권</th><th scope="col">B 제호</th><th scope="col">C 등번호</th></tr></thead><tbody><tr><th scope="row">레이아웃</th><td>가로 분할 — 스텁 · 천공 · 본문</td><td>세로 띠 쌓기 — 러닝 헤드 · 괘선 · 제호 · 표</td><td class="me">큰 숫자 하나가 절반 이상 — 비대칭 블리드</td></tr><tr><th scope="row">타이포</th><td>호수 큰 숫자 + 한글 800 섞음</td><td>한글 제호 800이 주도, 숫자는 표 안에서만</td><td class="me">Barlow 숫자가 주도, 한글은 작게</td></tr><tr><th scope="row">색</th><td>네이비 티켓 면(라이트 --ticket) + 지면색 천공</td><td>크림 지면 + 잉크, 레드는 괘선 한 줄</td><td class="me">벽돌 레드 면(다크 --ticket) + 지면색 숫자 · 대회/팀 OG만 크림</td></tr><tr><th scope="row">밀도</th><td>중간</td><td>높음</td><td class="me">낮음</td></tr><tr><th scope="row">모션</th><td>뜯김 — 소스 행 상세 펼침</td><td>없음 — 테마 잉크 전환만</td><td class="me">찍힘 — 30일 점 선택 → 그날 상세 줄</td></tr></tbody></table></div>
+  </div>
+</details>
+<div class="bar"><div class="bar__in"><b>D3 시안 C · 등번호</b><span>기준 <time datetime="2026-11-02">2026년 11월 2일 (월)</time> 제 22호 · 실데이터</span><nav class="bar__nav" aria-label="견본 목차"><a href="#s1"><span class="n">1</span>앱 아이콘</a><a href="#s2"><span class="n">2</span>OG</a><a href="#s3"><span class="n">3</span>빈 상태</a><a href="#s4"><span class="n">4</span>/status</a></nav><button class="ibtn" type="button" data-theme-toggle aria-label="테마: 시스템 설정"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button></div></div>
+<div class="board">
+  <header class="hero"><p class="hero__k" lang="en" aria-hidden="true">D3 · SQUAD NO.</p><h1>C 등번호</h1><p>숫자 하나가 화면의 절반을 맡는다. 값이 있으면 실선, 0이면 윤곽, 값이 없으면 대시 — D2 숫자 상태 규칙을 아이콘 · OG · 빈 상태 · 상태 쪽까지 민다.</p></header>
+  <section id="s1" class="blk" aria-labelledby="s1h">
+  <div class="sec-h"><h2 id="s1h"><span class="blk__no">1</span>앱 아이콘</h2><span class="rh" aria-hidden="true" lang="en">ICONS</span></div>
+  <p class="sub2">오늘의 5줄의 마지막 등번호 <b class="n">5</b>. 벽돌 레드 면(다크 <code>--ticket</code> #9E2F28) · 지면색 Barlow 800 · 아래 짧은 괘선. 세 파일 모두 면을 꽉 채운다. 192 이상에서는 1~5 세로 거터 변형도 비교한다.</p>
+  <div class="grid3" style="margin-top:18px">
+    <figure class="fr"><p class="fr__cap"><b>any 512</b><span class="path">public/icons/icon-512.png</span> · 192 같은 그림</p><svg viewBox="0 0 512 512" role="img" aria-label="any 아이콘 — 벽돌 레드 면, 지면색 5, 짧은 괘선"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="388" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="430" fill="#F2EFE8">5</text><rect x="196" y="440" width="120" height="16" fill="#F2EFE8"/></svg></figure>
+    <figure class="fr"><p class="fr__cap"><b>maskable 512</b><span class="path">icon-maskable-512.png</span> · 점선 원 = 안전 영역 지름 80%</p><div class="safe-wrap"><svg viewBox="0 0 512 512" role="img" aria-label="maskable 아이콘 — 안전 원 안의 5"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg><svg viewBox="0 0 512 512" class="safe" aria-hidden="true"><circle cx="256" cy="256" r="204.8" fill="none" stroke="#F3F0EA" stroke-width="3" stroke-dasharray="10 8"/><path d="M256 0V512M0 256H512" stroke="#F3F0EA" stroke-width="1.5" stroke-dasharray="4 6"/></svg></div></figure>
+    <figure class="fr"><p class="fr__cap"><b>변형 — 1~5 거터</b> 192 · 512 any 후보(16~48에는 쓰지 않음)</p><svg viewBox="0 0 512 512" role="img" aria-label="거터 변형 — 윤곽 1~4와 큰 5"><rect width="512" height="512" fill="#9E2F28"/><text x="118" y="134" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="92" fill="none" stroke="#F2EFE8" stroke-width="3.5">1</text><text x="118" y="218" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="92" fill="none" stroke="#F2EFE8" stroke-width="3.5">2</text><text x="118" y="302" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="92" fill="none" stroke="#F2EFE8" stroke-width="3.5">3</text><text x="118" y="386" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="92" fill="none" stroke="#F2EFE8" stroke-width="3.5">4</text><rect x="168" y="66" width="4" height="380" fill="#F2EFE8"/><text x="330" y="420" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="430" fill="#F2EFE8">5</text></svg></figure>
+  </div>
+  <div class="grid3" style="margin-top:16px">
+    <figure class="fr"><p class="fr__cap"><b>apple-touch 180</b><span class="path">apple-touch-icon.png</span> · 투명 0 · iOS가 모서리를 깎음</p><div class="ios"><svg viewBox="0 0 512 512" role="img" aria-label="apple-touch 아이콘"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg></div></figure>
+  </div>
+  <h3 class="h3">크기 사다리 <small lang="en">16 · 32 · 48 · 180 · 192 · 512</small></h3>
+  <div class="ladder"><figure><div><svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" role="img" aria-label="16px"><rect x="0" y="0" width="16" height="1" fill="#9E2F28"/><rect x="0" y="1" width="16" height="1" fill="#9E2F28"/><rect x="0" y="2" width="4" height="1" fill="#9E2F28"/><rect x="4" y="2" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="2" width="4" height="1" fill="#9E2F28"/><rect x="0" y="3" width="4" height="1" fill="#9E2F28"/><rect x="4" y="3" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="3" width="4" height="1" fill="#9E2F28"/><rect x="0" y="4" width="4" height="1" fill="#9E2F28"/><rect x="4" y="4" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="4" width="10" height="1" fill="#9E2F28"/><rect x="0" y="5" width="4" height="1" fill="#9E2F28"/><rect x="4" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="5" width="10" height="1" fill="#9E2F28"/><rect x="0" y="6" width="4" height="1" fill="#9E2F28"/><rect x="4" y="6" width="7" height="1" fill="#F2EFE8"/><rect x="11" y="6" width="5" height="1" fill="#9E2F28"/><rect x="0" y="7" width="4" height="1" fill="#9E2F28"/><rect x="4" y="7" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="7" width="4" height="1" fill="#9E2F28"/><rect x="0" y="8" width="10" height="1" fill="#9E2F28"/><rect x="10" y="8" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="8" width="4" height="1" fill="#9E2F28"/><rect x="0" y="9" width="10" height="1" fill="#9E2F28"/><rect x="10" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="9" width="4" height="1" fill="#9E2F28"/><rect x="0" y="10" width="10" height="1" fill="#9E2F28"/><rect x="10" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="10" width="4" height="1" fill="#9E2F28"/><rect x="0" y="11" width="4" height="1" fill="#9E2F28"/><rect x="4" y="11" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="11" width="4" height="1" fill="#9E2F28"/><rect x="10" y="11" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="11" width="4" height="1" fill="#9E2F28"/><rect x="0" y="12" width="4" height="1" fill="#9E2F28"/><rect x="4" y="12" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="12" width="4" height="1" fill="#9E2F28"/><rect x="0" y="13" width="5" height="1" fill="#9E2F28"/><rect x="5" y="13" width="6" height="1" fill="#F2EFE8"/><rect x="11" y="13" width="5" height="1" fill="#9E2F28"/><rect x="0" y="14" width="16" height="1" fill="#9E2F28"/><rect x="0" y="15" width="16" height="1" fill="#9E2F28"/></svg></div><figcaption>16</figcaption></figure><figure><div><svg width="32" height="32" viewBox="0 0 512 512" role="img" aria-label="32px"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="452" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="530" fill="#F2EFE8">5</text></svg></div><figcaption>32</figcaption></figure><figure><div><svg width="48" height="48" viewBox="0 0 512 512" role="img" aria-label="48px"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="452" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="530" fill="#F2EFE8">5</text></svg></div><figcaption>48</figcaption></figure><figure><div><svg width="180" height="180" viewBox="0 0 512 512" role="img" aria-label="apple-touch 180px"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg></div><figcaption>180 apple</figcaption></figure><figure><div><svg width="192" height="192" viewBox="0 0 512 512" role="img" aria-label="any 192px"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="388" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="430" fill="#F2EFE8">5</text><rect x="196" y="440" width="120" height="16" fill="#F2EFE8"/></svg></div><figcaption>192 any</figcaption></figure><figure class="big"><div><svg width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="any 512px"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="388" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="430" fill="#F2EFE8">5</text><rect x="196" y="440" width="120" height="16" fill="#F2EFE8"/></svg></div><figcaption>512 any — 좁은 화면에서는 폭에 맞춰 줄여 보임</figcaption></figure></div>
+  <h3 class="h3">런처 마스크 · 홈 화면 바탕 <small lang="en">LAUNCHER</small></h3>
+  <div class="devices"><div class="home home--l"><figure><div class="m-circle"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg></div><figcaption>유로 다이제스트<span>원</span></figcaption></figure><figure><div class="m-squircle"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg></div><figcaption>유로 다이제스트<span>스퀴클</span></figcaption></figure><figure><div class="m-round"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg></div><figcaption>유로 다이제스트<span>둥근 사각</span></figcaption></figure></div><div class="home home--d"><figure><div class="m-circle"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg></div><figcaption>유로 다이제스트<span>원</span></figcaption></figure><figure><div class="m-squircle"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg></div><figcaption>유로 다이제스트<span>스퀴클</span></figcaption></figure><figure><div class="m-round"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="348" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="290" fill="#F2EFE8">5</text><rect x="214" y="390" width="84" height="12" fill="#F2EFE8"/></svg></div><figcaption>유로 다이제스트<span>둥근 사각</span></figcaption></figure></div></div>
+  <p class="sub2">홈 화면에서 가장 눈에 띈다(진한 레드 면 + 큰 숫자). 다만 숫자 하나는 알림 배지 · 숫자 채널 앱과 헷갈릴 수 있다 — 아래 이름 줄이 늘 붙는 런처에서는 덜하다.</p>
+  <h3 class="h3">파비콘 · 브라우저 탭 <small lang="en">FAVICON</small></h3>
+  <div class="grid2">
+    <div class="fr"><p class="fr__cap"><b>favicon.svg</b><span class="path">public/favicon.svg</span> — 라이트 탭 벽돌 레드 · 다크 탭 레드(<code>--brand-accent</code> 다크) 면 + 네이비 5 — 어두운 탭에서 벽돌 레드가 가라앉아 밝은 값으로 바꾼다</p><div class="tabs tabs--l"><div class="tabs__t tabs__t--on"><svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" role="img" aria-label="파비콘 16px 라이트"><rect x="0" y="0" width="16" height="1" fill="#9E2F28"/><rect x="0" y="1" width="16" height="1" fill="#9E2F28"/><rect x="0" y="2" width="4" height="1" fill="#9E2F28"/><rect x="4" y="2" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="2" width="4" height="1" fill="#9E2F28"/><rect x="0" y="3" width="4" height="1" fill="#9E2F28"/><rect x="4" y="3" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="3" width="4" height="1" fill="#9E2F28"/><rect x="0" y="4" width="4" height="1" fill="#9E2F28"/><rect x="4" y="4" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="4" width="10" height="1" fill="#9E2F28"/><rect x="0" y="5" width="4" height="1" fill="#9E2F28"/><rect x="4" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="5" width="10" height="1" fill="#9E2F28"/><rect x="0" y="6" width="4" height="1" fill="#9E2F28"/><rect x="4" y="6" width="7" height="1" fill="#F2EFE8"/><rect x="11" y="6" width="5" height="1" fill="#9E2F28"/><rect x="0" y="7" width="4" height="1" fill="#9E2F28"/><rect x="4" y="7" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="7" width="4" height="1" fill="#9E2F28"/><rect x="0" y="8" width="10" height="1" fill="#9E2F28"/><rect x="10" y="8" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="8" width="4" height="1" fill="#9E2F28"/><rect x="0" y="9" width="10" height="1" fill="#9E2F28"/><rect x="10" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="9" width="4" height="1" fill="#9E2F28"/><rect x="0" y="10" width="10" height="1" fill="#9E2F28"/><rect x="10" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="10" width="4" height="1" fill="#9E2F28"/><rect x="0" y="11" width="4" height="1" fill="#9E2F28"/><rect x="4" y="11" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="11" width="4" height="1" fill="#9E2F28"/><rect x="10" y="11" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="11" width="4" height="1" fill="#9E2F28"/><rect x="0" y="12" width="4" height="1" fill="#9E2F28"/><rect x="4" y="12" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="12" width="4" height="1" fill="#9E2F28"/><rect x="0" y="13" width="5" height="1" fill="#9E2F28"/><rect x="5" y="13" width="6" height="1" fill="#F2EFE8"/><rect x="11" y="13" width="5" height="1" fill="#9E2F28"/><rect x="0" y="14" width="16" height="1" fill="#9E2F28"/><rect x="0" y="15" width="16" height="1" fill="#9E2F28"/></svg><span>유로 다이제스트</span></div><div class="tabs__t"><i aria-hidden="true"></i><span>새 탭</span></div></div><div class="tabs tabs--d"><div class="tabs__t tabs__t--on"><svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" role="img" aria-label="파비콘 16px 다크"><rect x="0" y="0" width="16" height="1" fill="#FF7A6E"/><rect x="0" y="1" width="16" height="1" fill="#FF7A6E"/><rect x="0" y="2" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="2" width="8" height="1" fill="#0E1626"/><rect x="12" y="2" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="3" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="3" width="8" height="1" fill="#0E1626"/><rect x="12" y="3" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="4" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="4" width="2" height="1" fill="#0E1626"/><rect x="6" y="4" width="10" height="1" fill="#FF7A6E"/><rect x="0" y="5" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="5" width="2" height="1" fill="#0E1626"/><rect x="6" y="5" width="10" height="1" fill="#FF7A6E"/><rect x="0" y="6" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="6" width="7" height="1" fill="#0E1626"/><rect x="11" y="6" width="5" height="1" fill="#FF7A6E"/><rect x="0" y="7" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="7" width="8" height="1" fill="#0E1626"/><rect x="12" y="7" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="8" width="10" height="1" fill="#FF7A6E"/><rect x="10" y="8" width="2" height="1" fill="#0E1626"/><rect x="12" y="8" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="9" width="10" height="1" fill="#FF7A6E"/><rect x="10" y="9" width="2" height="1" fill="#0E1626"/><rect x="12" y="9" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="10" width="10" height="1" fill="#FF7A6E"/><rect x="10" y="10" width="2" height="1" fill="#0E1626"/><rect x="12" y="10" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="11" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="11" width="2" height="1" fill="#0E1626"/><rect x="6" y="11" width="4" height="1" fill="#FF7A6E"/><rect x="10" y="11" width="2" height="1" fill="#0E1626"/><rect x="12" y="11" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="12" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="12" width="8" height="1" fill="#0E1626"/><rect x="12" y="12" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="13" width="5" height="1" fill="#FF7A6E"/><rect x="5" y="13" width="6" height="1" fill="#0E1626"/><rect x="11" y="13" width="5" height="1" fill="#FF7A6E"/><rect x="0" y="14" width="16" height="1" fill="#FF7A6E"/><rect x="0" y="15" width="16" height="1" fill="#FF7A6E"/></svg><span>유로 다이제스트</span></div><div class="tabs__t"><i aria-hidden="true"></i><span>새 탭</span></div></div>
+      <pre class="code" aria-label="favicon.svg 구조">&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 32 32&quot;&gt;&lt;style&gt;.f{fill:#9E2F28}.g{fill:#F2EFE8}@media (prefers-color-scheme:dark){.f{fill:#FF7A6E}.g{fill:#0E1626}}&lt;/style&gt;&lt;rect class=&quot;f&quot; width=&quot;32&quot; height=&quot;32&quot;/&gt;&lt;path class=&quot;g&quot; d=&quot;…5 글리프 외곽선(M5-02에서 생성)…&quot;/&gt;&lt;/svg&gt;</pre></div>
+    <div class="fr"><p class="fr__cap"><b>favicon.ico 16 · 32</b><span class="path">public/favicon.ico</span> — 16은 픽셀 격자에 맞춰 손으로 그린다. 획 2px</p>
+      <div class="px">
+        <figure><svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" role="img" aria-label="16px 라이트"><rect x="0" y="0" width="16" height="1" fill="#9E2F28"/><rect x="0" y="1" width="16" height="1" fill="#9E2F28"/><rect x="0" y="2" width="4" height="1" fill="#9E2F28"/><rect x="4" y="2" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="2" width="4" height="1" fill="#9E2F28"/><rect x="0" y="3" width="4" height="1" fill="#9E2F28"/><rect x="4" y="3" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="3" width="4" height="1" fill="#9E2F28"/><rect x="0" y="4" width="4" height="1" fill="#9E2F28"/><rect x="4" y="4" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="4" width="10" height="1" fill="#9E2F28"/><rect x="0" y="5" width="4" height="1" fill="#9E2F28"/><rect x="4" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="5" width="10" height="1" fill="#9E2F28"/><rect x="0" y="6" width="4" height="1" fill="#9E2F28"/><rect x="4" y="6" width="7" height="1" fill="#F2EFE8"/><rect x="11" y="6" width="5" height="1" fill="#9E2F28"/><rect x="0" y="7" width="4" height="1" fill="#9E2F28"/><rect x="4" y="7" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="7" width="4" height="1" fill="#9E2F28"/><rect x="0" y="8" width="10" height="1" fill="#9E2F28"/><rect x="10" y="8" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="8" width="4" height="1" fill="#9E2F28"/><rect x="0" y="9" width="10" height="1" fill="#9E2F28"/><rect x="10" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="9" width="4" height="1" fill="#9E2F28"/><rect x="0" y="10" width="10" height="1" fill="#9E2F28"/><rect x="10" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="10" width="4" height="1" fill="#9E2F28"/><rect x="0" y="11" width="4" height="1" fill="#9E2F28"/><rect x="4" y="11" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="11" width="4" height="1" fill="#9E2F28"/><rect x="10" y="11" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="11" width="4" height="1" fill="#9E2F28"/><rect x="0" y="12" width="4" height="1" fill="#9E2F28"/><rect x="4" y="12" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="12" width="4" height="1" fill="#9E2F28"/><rect x="0" y="13" width="5" height="1" fill="#9E2F28"/><rect x="5" y="13" width="6" height="1" fill="#F2EFE8"/><rect x="11" y="13" width="5" height="1" fill="#9E2F28"/><rect x="0" y="14" width="16" height="1" fill="#9E2F28"/><rect x="0" y="15" width="16" height="1" fill="#9E2F28"/></svg><figcaption>16</figcaption></figure>
+        <figure><svg width="32" height="32" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#9E2F28"/><text x="256" y="452" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="530" fill="#F2EFE8">5</text></svg><figcaption>32</figcaption></figure>
+        <figure class="zoom"><svg viewBox="0 0 16 16" width="128" height="128" shape-rendering="crispEdges" role="img" aria-label="16px 격자 8배 확대"><rect x="0" y="0" width="16" height="1" fill="#9E2F28"/><rect x="0" y="1" width="16" height="1" fill="#9E2F28"/><rect x="0" y="2" width="4" height="1" fill="#9E2F28"/><rect x="4" y="2" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="2" width="4" height="1" fill="#9E2F28"/><rect x="0" y="3" width="4" height="1" fill="#9E2F28"/><rect x="4" y="3" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="3" width="4" height="1" fill="#9E2F28"/><rect x="0" y="4" width="4" height="1" fill="#9E2F28"/><rect x="4" y="4" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="4" width="10" height="1" fill="#9E2F28"/><rect x="0" y="5" width="4" height="1" fill="#9E2F28"/><rect x="4" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="5" width="10" height="1" fill="#9E2F28"/><rect x="0" y="6" width="4" height="1" fill="#9E2F28"/><rect x="4" y="6" width="7" height="1" fill="#F2EFE8"/><rect x="11" y="6" width="5" height="1" fill="#9E2F28"/><rect x="0" y="7" width="4" height="1" fill="#9E2F28"/><rect x="4" y="7" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="7" width="4" height="1" fill="#9E2F28"/><rect x="0" y="8" width="10" height="1" fill="#9E2F28"/><rect x="10" y="8" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="8" width="4" height="1" fill="#9E2F28"/><rect x="0" y="9" width="10" height="1" fill="#9E2F28"/><rect x="10" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="9" width="4" height="1" fill="#9E2F28"/><rect x="0" y="10" width="10" height="1" fill="#9E2F28"/><rect x="10" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="10" width="4" height="1" fill="#9E2F28"/><rect x="0" y="11" width="4" height="1" fill="#9E2F28"/><rect x="4" y="11" width="2" height="1" fill="#F2EFE8"/><rect x="6" y="11" width="4" height="1" fill="#9E2F28"/><rect x="10" y="11" width="2" height="1" fill="#F2EFE8"/><rect x="12" y="11" width="4" height="1" fill="#9E2F28"/><rect x="0" y="12" width="4" height="1" fill="#9E2F28"/><rect x="4" y="12" width="8" height="1" fill="#F2EFE8"/><rect x="12" y="12" width="4" height="1" fill="#9E2F28"/><rect x="0" y="13" width="5" height="1" fill="#9E2F28"/><rect x="5" y="13" width="6" height="1" fill="#F2EFE8"/><rect x="11" y="13" width="5" height="1" fill="#9E2F28"/><rect x="0" y="14" width="16" height="1" fill="#9E2F28"/><rect x="0" y="15" width="16" height="1" fill="#9E2F28"/><g stroke="#727886" stroke-width=".04" opacity=".55"><path d="M1 0V16M0 1H16"/><path d="M2 0V16M0 2H16"/><path d="M3 0V16M0 3H16"/><path d="M4 0V16M0 4H16"/><path d="M5 0V16M0 5H16"/><path d="M6 0V16M0 6H16"/><path d="M7 0V16M0 7H16"/><path d="M8 0V16M0 8H16"/><path d="M9 0V16M0 9H16"/><path d="M10 0V16M0 10H16"/><path d="M11 0V16M0 11H16"/><path d="M12 0V16M0 12H16"/><path d="M13 0V16M0 13H16"/><path d="M14 0V16M0 14H16"/><path d="M15 0V16M0 15H16"/></g></svg><figcaption>16 × 8 확대</figcaption></figure>
+        <figure class="zoom"><svg viewBox="0 0 16 16" width="128" height="128" shape-rendering="crispEdges" role="img" aria-label="16px 다크 격자 8배 확대"><rect x="0" y="0" width="16" height="1" fill="#FF7A6E"/><rect x="0" y="1" width="16" height="1" fill="#FF7A6E"/><rect x="0" y="2" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="2" width="8" height="1" fill="#0E1626"/><rect x="12" y="2" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="3" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="3" width="8" height="1" fill="#0E1626"/><rect x="12" y="3" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="4" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="4" width="2" height="1" fill="#0E1626"/><rect x="6" y="4" width="10" height="1" fill="#FF7A6E"/><rect x="0" y="5" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="5" width="2" height="1" fill="#0E1626"/><rect x="6" y="5" width="10" height="1" fill="#FF7A6E"/><rect x="0" y="6" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="6" width="7" height="1" fill="#0E1626"/><rect x="11" y="6" width="5" height="1" fill="#FF7A6E"/><rect x="0" y="7" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="7" width="8" height="1" fill="#0E1626"/><rect x="12" y="7" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="8" width="10" height="1" fill="#FF7A6E"/><rect x="10" y="8" width="2" height="1" fill="#0E1626"/><rect x="12" y="8" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="9" width="10" height="1" fill="#FF7A6E"/><rect x="10" y="9" width="2" height="1" fill="#0E1626"/><rect x="12" y="9" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="10" width="10" height="1" fill="#FF7A6E"/><rect x="10" y="10" width="2" height="1" fill="#0E1626"/><rect x="12" y="10" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="11" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="11" width="2" height="1" fill="#0E1626"/><rect x="6" y="11" width="4" height="1" fill="#FF7A6E"/><rect x="10" y="11" width="2" height="1" fill="#0E1626"/><rect x="12" y="11" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="12" width="4" height="1" fill="#FF7A6E"/><rect x="4" y="12" width="8" height="1" fill="#0E1626"/><rect x="12" y="12" width="4" height="1" fill="#FF7A6E"/><rect x="0" y="13" width="5" height="1" fill="#FF7A6E"/><rect x="5" y="13" width="6" height="1" fill="#0E1626"/><rect x="11" y="13" width="5" height="1" fill="#FF7A6E"/><rect x="0" y="14" width="16" height="1" fill="#FF7A6E"/><rect x="0" y="15" width="16" height="1" fill="#FF7A6E"/><g stroke="#727886" stroke-width=".04" opacity=".55"><path d="M1 0V16M0 1H16"/><path d="M2 0V16M0 2H16"/><path d="M3 0V16M0 3H16"/><path d="M4 0V16M0 4H16"/><path d="M5 0V16M0 5H16"/><path d="M6 0V16M0 6H16"/><path d="M7 0V16M0 7H16"/><path d="M8 0V16M0 8H16"/><path d="M9 0V16M0 9H16"/><path d="M10 0V16M0 10H16"/><path d="M11 0V16M0 11H16"/><path d="M12 0V16M0 12H16"/><path d="M13 0V16M0 13H16"/><path d="M14 0V16M0 14H16"/><path d="M15 0V16M0 15H16"/></g></svg><figcaption>다크 탭용 (svg만)</figcaption></figure>
+      </div></div>
+  </div>
+</section>
+  <section id="s2" class="blk" aria-labelledby="s2h">
+  <div class="sec-h"><h2 id="s2h"><span class="blk__no">2</span>OG 이미지 1200×630</h2><span class="rh" aria-hidden="true" lang="en">OPEN GRAPH</span></div>
+  <p class="sub2">기본 · 날짜는 벽돌 레드 면(다크 티켓 토큰 고정 — <code>--ticket</code> · <code>--ticket-fg</code> · <code>--ticket-fg-2</code>) 위 큰 숫자 하나가 아래로 흘러 나간다(블리드). 숫자는 <b>실선</b> — D2 숫자 상태 규칙(실선 = 값 · 윤곽 = 0)을 따라 scope의 ‘윤곽 숫자’를 바꿨다. 대회 · 팀은 데이터 색이 주인공이라 크림 지면(라이트 토큰 · 대회 라이트 값). <b>결과 노출 0</b>.</p>
+  <h3 class="h3">기본 · 날짜 <small lang="en">DEFAULT · ISSUE</small></h3>
+  <div class="ogset">
+    <div class="ogf ogf--hero"><p class="ogf__l"><span class="path">/og/default.png</span><span>홈 <span class="path">/</span> · 쪽 이름형 OG의 바탕</span></p><div class="og og--cr" data-solo="og-default" role="img" aria-label="유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에."><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__tag">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div><p class="ogc__big n" data-d="1" aria-hidden="true">5</p></div></div>
+    <div class="ogset ogset--2">
+      <div class="ogf"><p class="ogf__l"><span class="path">/og/news/2026-11-02.png</span><span>제 22호 · <span class="path">/news/</span> 최신 호</span></p><div class="og og--cr" data-solo="og-news-22" role="img" aria-label="유로 다이제스트 제 22호, 2026년 11월 2일 (월)"><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__no"><span>제</span><i aria-hidden="true"></i><span>호</span><b>2026년 11월 2일 (월)</b></p></div><p class="ogc__big n" data-d="2" aria-hidden="true">22</p></div></div>
+      <div class="ogf"><p class="ogf__l"><span class="path">/og/news/2027-01-19.png</span><span>제 100호 — 같은 높이, 폭만 늘어남</span></p><div class="og og--cr" data-solo="og-news-100" role="img" aria-label="유로 다이제스트 제 100호, 2027년 1월 19일 (화)"><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__no"><span>제</span><i aria-hidden="true"></i><span>호</span><b>2027년 1월 19일 (화)</b></p></div><p class="ogc__big n" data-d="3" aria-hidden="true">100</p></div></div>
+    </div>
+  </div>
+  <h3 class="h3">대회 <small lang="en">COMPETITIONS · 6</small></h3>
+  <div class="ogset ogset--3"><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/epl.png</span></p><div class="og og--cp" data-solo="og-c-epl" role="img" aria-label="유로 다이제스트 · 프리미어리그 2026-27 시즌"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><p class="ogc__short ogc__short--l">EPL</p><p class="ogc__name">프리미어리그</p><p class="ogc__bar tab--epl"><span lang="en">Premier League</span><span><span class="n">2026-27</span> 시즌</span></p></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/bundesliga.png</span></p><div class="og og--cp" data-solo="og-c-bundesliga" role="img" aria-label="유로 다이제스트 · 분데스리가 2026-27 시즌"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><p class="ogc__short">분데스</p><p class="ogc__name">분데스리가</p><p class="ogc__bar tab--bundesliga"><span lang="en">Bundesliga</span><span><span class="n">2026-27</span> 시즌</span></p></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/ucl.png</span></p><div class="og og--cp" data-solo="og-c-ucl" role="img" aria-label="유로 다이제스트 · UEFA 챔피언스리그 2026-27 시즌"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><p class="ogc__short ogc__short--l">UCL</p><p class="ogc__name">UEFA 챔피언스리그</p><p class="ogc__bar tab--ucl"><span lang="en">UEFA Champions League</span><span><span class="n">2026-27</span> 시즌</span></p></div></div></div>
+  <div class="ogset ogset--3" style="margin-top:14px"><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/laliga.png</span><span>축소판</span></p><div class="og og--cp" data-solo="og-c-laliga" role="img" aria-label="유로 다이제스트 · 라리가 2026-27 시즌"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><p class="ogc__short">라리가</p><p class="ogc__name">라리가</p><p class="ogc__bar tab--laliga"><span lang="en">LaLiga</span><span><span class="n">2026-27</span> 시즌</span></p></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/seriea.png</span><span>축소판</span></p><div class="og og--cp" data-solo="og-c-seriea" role="img" aria-label="유로 다이제스트 · 세리에 A 2026-27 시즌"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><p class="ogc__short">세리에A</p><p class="ogc__name">세리에 A</p><p class="ogc__bar tab--seriea"><span lang="en">Serie A</span><span><span class="n">2026-27</span> 시즌</span></p></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/ligue1.png</span><span>축소판</span></p><div class="og og--cp" data-solo="og-c-ligue1" role="img" aria-label="유로 다이제스트 · 리그 1 2026-27 시즌"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><p class="ogc__short">리그1</p><p class="ogc__name">리그 1</p><p class="ogc__bar tab--ligue1"><span lang="en">Ligue 1</span><span><span class="n">2026-27</span> 시즌</span></p></div></div></div>
+  <h3 class="h3">팀 <small lang="en">TEAMS · 111</small></h3>
+  <div class="ogset ogset--2"><div class="ogf"><p class="ogf__l"><span class="path">/og/teams/rennes.png</span><span>이름 1자</span></p><div class="og og--cp og--ct" data-solo="og-t-rennes" role="img" aria-label="유로 다이제스트 · 렌 (REN) · 리그 1"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><div class="ogc__abbr" style="--k1:#CB2E23;--k2:#000000;--kl:#CB2E23"><p class="n">REN</p><i></i></div><div class="ogc__tm"><p class="ogc__tabs"><span class="ogc__ftab tab--ligue1">리그1</span></p><p class="ogc__name ogc__name--t">렌</p><p class="ogc__en2" lang="en">Stade Rennais FC 1901</p></div></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/teams/atletico-madrid.png</span><span>10자 · 두 줄</span></p><div class="og og--cp og--ct" data-solo="og-t-atletico-madrid" role="img" aria-label="유로 다이제스트 · 아틀레티코 마드리드 (ATL) · 라리가 · UEFA 챔피언스리그"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><div class="ogc__abbr" style="--k1:#C73423;--k2:#272E61;--kl:#C73423"><p class="n">ATL</p><i></i></div><div class="ogc__tm"><p class="ogc__tabs"><span class="ogc__ftab tab--laliga">라리가</span><span class="ogc__ftab tab--ucl">UCL</span></p><p class="ogc__name ogc__name--t">아틀레티코 마드리드</p><p class="ogc__en2" lang="en">Club Atlético de Madrid</p></div></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/teams/borussia-monchengladbach.png</span><span>흰 상의(크림 대비 1.12) → 글자는 하의 색, 띠에 2색</span></p><div class="og og--cp og--ct" data-solo="og-t-borussia-monchengladbach" role="img" aria-label="유로 다이제스트 · 묀헨글라트바흐 (BMG) · 분데스리가"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><div class="ogc__abbr" style="--k1:#FFFFFF;--k2:#000000;--kl:#000000"><p class="n">BMG</p><i></i></div><div class="ogc__tm"><p class="ogc__tabs"><span class="ogc__ftab tab--bundesliga">분데스</span></p><p class="ogc__name ogc__name--t">묀헨글라트바흐</p><p class="ogc__en2" lang="en">Borussia Mönchengladbach</p></div></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/teams/bayern-munchen.png</span><span>소속 + UCL 탭 2개</span></p><div class="og og--cp og--ct" data-solo="og-t-bayern-munchen" role="img" aria-label="유로 다이제스트 · 바이에른 뮌헨 (FCB) · 분데스리가 · UEFA 챔피언스리그"><p class="ogc__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p><div class="ogc__abbr" style="--k1:#D3052B;--k2:#FFFFFF;--kl:#D3052B"><p class="n">FCB</p><i></i></div><div class="ogc__tm"><p class="ogc__tabs"><span class="ogc__ftab tab--bundesliga">분데스</span><span class="ogc__ftab tab--ucl">UCL</span></p><p class="ogc__name ogc__name--t">바이에른 뮌헨</p><p class="ogc__en2" lang="en">FC Bayern München</p></div></div></div></div>
+  <h3 class="h3">링크 미리보기 <small lang="en">PREVIEW</small></h3>
+  <div class="pv">
+  <div class="ogf"><p class="ogf__l"><b>twitter:card summary_large_image</b><span>1.91:1 큰 카드 — 지금 값 summary는 작은 정사각만 나온다</span></p>
+    <div class="grid2"><figure class="pv__x"><div class="og og--cr" data-solo="pv-default" role="img" aria-label="유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에."><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__tag">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div><p class="ogc__big n" data-d="1" aria-hidden="true">5</p></div><p>유로 다이제스트<span>sguys99.github.io</span></p></figure><figure class="pv__x pv__x--d"><div class="og og--cr" data-solo="pv-news" role="img" aria-label="유로 다이제스트 제 22호, 2026년 11월 2일 (월)"><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__no"><span>제</span><i aria-hidden="true"></i><span>호</span><b>2026년 11월 2일 (월)</b></p></div><p class="ogc__big n" data-d="2" aria-hidden="true">22</p></div><p>제 22호 · 2026년 11월 2일 (월) · 유로 다이제스트<span>sguys99.github.io</span></p></figure></div>
+    <p class="alt">홈 <span class="path">/</span> → <span class="path">/og/default.png</span> · <code class="path">og:image:alt</code> <q>유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에.</q></p>
+    <p class="alt">뉴스 <span class="path">/news/</span> → 최신 호 <span class="path">/og/news/2026-11-02.png</span> · <code class="path">og:image:alt</code> <q>유로 다이제스트 제 22호, 2026년 11월 2일 (월)</q></p>
+  </div>
+  <div class="ogf"><p class="ogf__l"><b>메신저 미리보기</b><span>폭 240px · 정사각 가운데 자르기 64px</span></p>
+    <div class="msg msg--l"><div class="msg__b"><div class="og og--cr" data-solo="pv-default" role="img" aria-label="유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에."><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__tag">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div><p class="ogc__big n" data-d="1" aria-hidden="true">5</p></div><p>유로 다이제스트<span>매일 아침, 밤사이 유럽 축구를 한눈에.</span><span>sguys99.github.io</span></p></div><div class="msg__sq"><div class="sq"><div class="og og--cr" data-solo="pv-news" role="img" aria-label="유로 다이제스트 제 22호, 2026년 11월 2일 (월)"><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__no"><span>제</span><i aria-hidden="true"></i><span>호</span><b>2026년 11월 2일 (월)</b></p></div><p class="ogc__big n" data-d="2" aria-hidden="true">22</p></div></div><p>제 22호 · 2026년 11월 2일 (월) · 유로 다이제스트<span>sguys99.github.io</span></p></div></div>
+    <div class="msg msg--d"><div class="msg__b"><div class="og og--cr" data-solo="pv-news" role="img" aria-label="유로 다이제스트 제 22호, 2026년 11월 2일 (월)"><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__no"><span>제</span><i aria-hidden="true"></i><span>호</span><b>2026년 11월 2일 (월)</b></p></div><p class="ogc__big n" data-d="2" aria-hidden="true">22</p></div><p>제 22호 · 2026년 11월 2일 (월) · 유로 다이제스트<span>오늘의 5줄과 유럽 축구 소식</span><span>sguys99.github.io</span></p></div><div class="msg__sq"><div class="sq"><div class="og og--cr" data-solo="pv-default" role="img" aria-label="유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에."><div class="ogc__top"><p class="ogc__wm">유로 다이제스트</p><p class="ogc__en" lang="en">EURO DIGEST</p><p class="ogc__tag">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div><p class="ogc__big n" data-d="1" aria-hidden="true">5</p></div></div><p>유로 다이제스트<span>sguys99.github.io</span></p></div></div>
+  </div>
+</div>
+</section>
+  <section id="s3" class="blk" aria-labelledby="s3h">
+  <div class="sec-h"><h2 id="s3h"><span class="blk__no">3</span>빈 상태 조형</h2><span class="rh" aria-hidden="true" lang="en">EMPTY</span></div>
+  <p class="sub2">이미 7곳에 퍼진 윤곽 숫자 언어를 키운다. 날짜가 있는 상태는 <b>실선 큰 숫자</b>(값), 결과가 없으면 <b>윤곽 0</b>, 값 자체가 없으면 <b>대시</b>. 새 도형은 0개다.</p>
+  <div class="es grid2" style="margin-top:18px">
+    <figure class="ctx"><figcaption class="ctx__lbl"><b>비시즌 · 종료</b><span>견본 날 6월 7일 — 결승 다음 날부터 · UCL endDate</span></figcaption><div class="sec-h"><h3 class="h">오늘의 5줄</h3><span class="rh" aria-hidden="true" lang="en">STARTING FIVE</span></div><p class="sub">6월 6일 경기 기준</p><div class="restC"><div class="numC"><p class="numC__c"><span class="ftab tab--ucl" title="UEFA 챔피언스리그">UCL</span><span>UEFA 챔피언스리그 <span class="n">2026-27</span> 시즌</span></p>
+    <p class="numC__big"><time datetime="2027-06-05"><span class="n" aria-hidden="true">06.05</span><span class="sr">2027년 6월 5일 (토)</span></time><span class="numC__w">종료<span class="n">2027</span></span></p></div><p class="numC__note">시즌이 끝났어요. 다음 시즌 일정이 나오면 이 자리에 다시 채워집니다.</p><a class="tlink" href="#top">주요 뉴스로<span aria-hidden="true"> ↓</span></a></div><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>평탄 탭 + “2027.06.05 종료” 34px + 안내 — 글자만</span></div><div class="ba__row"><span class="ba__k">새</span><span>“06.05” N1 실선 숫자(56 / 96px) + 낱말 · 연도 — 날짜가 화면의 중심</span></div></div></figure>
+    <figure class="ctx"><figcaption class="ctx__lbl"><b>비시즌 · 개막</b><span>견본 날 8월 15일 — 2027-28 설정 전이라 라리가 지난 개막일</span></figcaption><div class="sec-h"><h3 class="h">오늘의 5줄</h3><span class="rh" aria-hidden="true" lang="en">STARTING FIVE</span></div><p class="sub">8월 14일 경기 기준</p><div class="restC"><div class="numC"><p class="numC__c"><span class="ftab tab--laliga" title="라리가">라리가</span><span>라리가 <span class="n">2026-27</span> 시즌</span><span class="stamp stamp--ph">견본</span></p>
+    <p class="numC__big"><time datetime="2026-08-16"><span class="n" aria-hidden="true">08.16</span><span class="sr">2026년 8월 16일 (일)</span></time><span class="numC__w">개막<span class="n">2026</span></span></p></div><p class="numC__note">아직 시즌 전이에요. 경기가 열리면 이 자리에 5줄이 채워집니다.</p></div><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>평탄 탭 + 날짜 + “개막” — 글자만</span></div><div class="ba__row"><span class="ba__k">새</span><span>같은 숫자 조판, 낱말만 “개막”</span></div></div></figure>
+    <figure class="ctx"><figcaption class="ctx__lbl"><b>휴식기 · A매치 기간</b><span>견본 날 11월 12일 — national-team.json 경기일 ±3일</span></figcaption><div class="sec-h"><h3 class="h">오늘의 5줄</h3><span class="rh" aria-hidden="true" lang="en">STARTING FIVE</span></div><p class="sub">11월 11일 경기 기준</p><div class="restC"><div class="gutC"><span class="gutC__n gutC__n--o" aria-hidden="true">0</span><div><p class="lead">오늘은 5줄을 쉽니다</p><p class="body2">전날 6개 대회에 끝난 경기가 없었습니다.</p></div></div>
+    <div class="intlC"><p class="intlC__k"><span class="stamp">A매치 기간</span><span class="n">11.10 – 11.20</span></p>
+    <ul class="intlC__l" role="list"><li><time datetime="2026-11-13T14:30:00.000Z"><span class="n intlC__d" aria-hidden="true">11.13</span><span class="sr">11월 13일 (금)</span></time><p class="intlC__t"><span class="n">23:30</span> KST · (금)</p><p class="intlC__o">사우디아라비아</p><p class="intlC__v">도하 (카타르) · 원정 · 친선경기</p></li><li><time datetime="2026-11-17T14:00:00.000Z"><span class="n intlC__d" aria-hidden="true">11.17</span><span class="sr">11월 17일 (화)</span></time><p class="intlC__t"><span class="n">23:00</span> KST · (화)</p><p class="intlC__o">카타르</p><p class="intlC__v">도하 (카타르) · 원정 · 친선경기</p></li></ul></div>
+    <a class="tlink" href="#top">주요 뉴스로<span aria-hidden="true"> ↓</span></a></div><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>S4 그대로 — 레드 윤곽 ‘0’ + “오늘은 5줄을 쉽니다” + 이유 1줄</span></div><div class="ba__row"><span class="ba__k">새</span><span>S4 아래 A매치 날짜 “11.13” · “11.17” N2 실선 숫자 2개 + 상대 · 장소 — <b>새 S4 변형(결정 필요)</b></span></div></div></figure>
+    <figure class="ctx"><figcaption class="ctx__lbl"><b>검색 결과 없음</b><span>오버레이 · <span class="path">/search/</span> 공용 · e2e 0건 질의</span></figcaption><div class="srch"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20.5 20.5"/></svg><span lang="en">Magdeburg</span></div>
+    <div class="zeroC"><span class="zeroC__n" aria-hidden="true">0</span><div><p class="zeroC__h">“<span lang="en">Magdeburg</span>” 결과가 없어요</p><p class="body2">선수 · 팀은 한글이나 영문 이름으로, 뉴스는 제목과 태그로 찾아요</p>
+    <ul class="zeroC__t" role="list"><li>선수 <span class="n o">0</span></li><li>팀 <span class="n o">0</span></li><li>대회 <span class="n o">0</span></li><li>뉴스 <span class="n o">0</span></li></ul></div></div><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>윤곽 ‘0’ 64px + “결과가 없어요” + 안내</span></div><div class="ba__row"><span class="ba__k">새</span><span>윤곽 ‘0’을 N1(56 / 96px)로 키우고 유형 4개도 윤곽 0</span></div></div></figure>
+  </div>
+  <figure class="ctx" style="margin-top:16px"><figcaption class="ctx__lbl"><b>/offline/ 화면</b><span>서비스 워커가 저장하지 않은 쪽을 열면 — 셸은 /status와 같다</span></figcaption><div class="sec-h"><h3 class="h">연결이 끊겨 열 수 없어요</h3><span class="rh" aria-hidden="true" lang="en">OFFLINE</span></div>
+  <div class="dashC"><span class="dashC__n" aria-hidden="true"></span><div><p class="lead">이 페이지는 아직 저장해 두지 않았어요.</p><p class="body2">연결이 돌아오면 다시 열어 주세요. 저장해 둔 최근 호는 연결 없이도 볼 수 있어요.</p><button class="btn btn--sm" type="button"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M19 12a7 7 0 1 1-2.05-4.95"/><path d="M19.5 4.5V9H15"/></svg>다시 시도</button></div></div>
+  <div class="sec-h sec-h--thin" style="margin-top:28px"><h4 class="h">저장해 둔 호</h4><span class="rh" aria-hidden="true" lang="en">SAVED</span></div>
+  <ul class="savedC" role="list"><li><a href="#top"><span class="savedC__n n" aria-hidden="true">22</span><span class="savedC__t"><b>제 <span class="n">22</span>호</b><span><span class="n">11.02</span> (월)</span></span><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></li><li><a href="#top"><span class="savedC__n n" aria-hidden="true">21</span><span class="savedC__t"><b>제 <span class="n">21</span>호</b><span><span class="n">11.01</span> (일)</span></span><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></li><li><a href="#top"><span class="savedC__n n" aria-hidden="true">20</span><span class="savedC__t"><b>제 <span class="n">20</span>호</b><span><span class="n">10.31</span> (토)</span></span><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></li></ul><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>h1 + OFFLINE + 안내 2줄 + 다시 시도 + 저장해 둔 호 목록 — 글자만</span></div><div class="ba__row"><span class="ba__k">새</span><span>거터에 대시 “–”(값 없음 — 이 쪽은 못 엶) + 저장한 호를 호수 실선 숫자 거터로</span></div></div></figure>
+</section>
+</div>
+<div class="divider divider--screen" id="s4"><span><b>화면 4 · /status/</b> 앱 셸 안의 한 쪽 — 뒤표지 링크로 들어온다</span><span class="divider__info">숫자판 · 찍힘(점 선택 → 그날 상세 줄)</span></div>
+<div class="scr"><div class="shell">
+<header class="ticket">
+  <div class="ticket__brand"><p class="wordmark"><a href="#top">유로 다이제스트</a></p><p class="wordmark-en" lang="en" aria-hidden="true">EURO DIGEST</p><p class="tagline">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div>
+  <div class="ticket__tools"><button class="ibtn" type="button" aria-label="검색"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20.5 20.5"/></svg></button><button class="ibtn" type="button" data-theme-toggle aria-label="테마: 시스템 설정"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button></div>
+  <div class="ticket__perf" aria-hidden="true"></div>
+  <p class="issue"><span class="issue__k">제</span><span class="issue__n">22</span><span class="issue__k">호</span></p>
+  <p class="stub"><time datetime="2026-11-02">2026년 11월 2일 (월)</time><span>발행 <time datetime="2026-11-02T07:18+09:00">07:18</time> KST</span></p>
+</header>
+<nav class="topnav" aria-label="주 메뉴"><a href="#top">홈</a><a href="#top">뉴스</a><a href="#top">리그</a><a href="#top">한국 선수</a><a href="#top">마이</a><span class="topnav__upd">마지막 업데이트 <time datetime="2026-11-02T07:18+09:00">07:18</time> KST</span></nav>
+<div class="layout">
+  <aside class="contents" aria-label="이 쪽 목차"><div class="sec-h"><h2 class="h">이 쪽</h2><span class="rh" aria-hidden="true" lang="en">CONTENTS</span></div>
+    <ul class="toc" role="list"><li><a href="#st-n"><span>숫자판</span><i></i></a></li><li><a href="#st-30"><span>최근 30일</span><i></i></a></li><li><a href="#st-src"><span>소스</span><i></i></a></li></ul></aside>
+  <main class="page" id="main">
+    <div class="sec-h"><h1 class="h">발행 상태</h1><span class="rh" aria-hidden="true" lang="en">STATUS</span></div>
+    <p class="st-basis">이 쪽 기준 <time datetime="2026-11-02T13:39+09:00">11월 2일 (월) 13:39 KST</time> · 발행할 때마다 다시 만든다</p>
+    <dl class="boardC" id="st-n">
+      <div><dt>마지막 발행 · 수집 완료</dt><dd><span class="boardC__n n">07:18</span><span class="boardC__u">KST</span></dd><dd class="boardC__c">11월 2일 (월) 제 <span class="n">22</span>호 · 공개 목표 <span class="n">07:30</span>보다 <span class="n">12</span>분 앞<br><span class="ph"><b>자리</b>배포 완료 시각 · <span class="n">M5-15</span></span></dd></div>
+      <div><dt>최근 30일 실행 성공률</dt><dd><span class="boardC__n n">96.0</span><span class="boardC__u">%</span></dd><dd class="boardC__c">prod 수집 <span class="n">25</span>회 중 <span class="n">24</span>회 · 실패 <span class="n">1</span>회</dd></div>
+      <div><dt>이번 달 비용 · 월 예산 대비</dt><dd><span class="boardC__n n">3.56</span><span class="boardC__u">%</span></dd><dd class="boardC__c">운영 + 개발 실험 합 · 10월 <span class="n">5.80</span>%</dd></div>
+    </dl>
+
+    <section id="st-30" class="stC" aria-labelledby="st-30-h">
+      <div class="sec-h sec-h--thin"><h2 id="st-30-h" class="h">최근 30일 — 수집 완료 시각</h2><span class="rh" aria-hidden="true" lang="en">30 DAYS</span></div>
+      <p class="sub">점 = 그날 첫 발행 실행의 수집 완료(KST) · 선 = 공개 목표(여름 <span class="n">07:00</span> → 겨울 <span class="n">07:30</span>)</p>
+      <div class="dotC"><div class="dotC__plot"><svg viewBox="0 0 100 100" class="dotC__svg" aria-hidden="true" preserveAspectRatio="none"><line x1="0" x2="100" y1="100" y2="100" class="gl"/><line x1="0" x2="100" y1="75" y2="75" class="gl"/><line x1="0" x2="100" y1="50" y2="50" class="gl"/><line x1="0" x2="100" y1="25" y2="25" class="gl"/><line x1="0" x2="100" y1="0" y2="0" class="gl"/><rect x="0" y="0" width="26.666666666666668" height="100" class="pre"/><path d="M26.666666666666668 70.83333333333333L30 70.83333333333333L30 70.83333333333333L33.333333333333336 70.83333333333333L33.333333333333336 70.83333333333333L36.666666666666664 70.83333333333333L36.666666666666664 70.83333333333333L40 70.83333333333333L40 70.83333333333333L43.333333333333336 70.83333333333333L43.333333333333336 70.83333333333333L46.666666666666664 70.83333333333333L46.666666666666664 70.83333333333333L50 70.83333333333333L50 70.83333333333333L53.333333333333336 70.83333333333333L53.333333333333336 70.83333333333333L56.666666666666664 70.83333333333333L56.666666666666664 70.83333333333333L60 70.83333333333333L60 70.83333333333333L63.333333333333336 70.83333333333333L63.333333333333336 70.83333333333333L66.66666666666667 70.83333333333333L66.66666666666667 70.83333333333333L70 70.83333333333333L70 70.83333333333333L73.33333333333333 70.83333333333333L73.33333333333333 68.75L76.66666666666667 68.75L76.66666666666667 68.75L80 68.75L80 68.75L83.33333333333333 68.75L83.33333333333333 68.75L86.66666666666667 68.75L86.66666666666667 68.75L90 68.75L90 68.75L93.33333333333333 68.75L93.33333333333333 68.75L96.66666666666667 68.75L96.66666666666667 68.75L100 68.75" class="tg"/></svg><div class="dotC__pts" aria-hidden="true"><i class="dp dp--late" style="left:28.333333333333332%;top:14.722222222222225%"></i><i class="dp dp--ontime" style="left:31.666666666666668%;top:98.05555555555556%"></i><i class="dp dp--late" style="left:35%;top:6.25%"></i><i class="dp dp--miss" style="left:38.333333333333336%;top:97%"></i><i class="dp dp--miss" style="left:41.666666666666664%;top:97%"></i><i class="dp dp--late" style="left:45%;top:8.472222222222225%"></i><i class="dp dp--late" style="left:48.333333333333336%;top:39.02777777777777%"></i><i class="dp dp--miss" style="left:51.666666666666664%;top:97%"></i><i class="dp dp--late" style="left:55%;top:59.583333333333336%"></i><i class="dp dp--late" style="left:58.333333333333336%;top:61.875%"></i><i class="dp dp--late" style="left:61.666666666666664%;top:61.52777777777778%"></i><i class="dp dp--late" style="left:65%;top:61.80555555555556%"></i><i class="dp dp--late" style="left:68.33333333333333%;top:62.5%"></i><i class="dp dp--late" style="left:71.66666666666667%;top:63.54166666666667%"></i><i class="dp dp--miss" style="left:75%;top:97%"></i><i class="dp dp--late" style="left:78.33333333333333%;top:56.041666666666664%"></i><i class="dp dp--ontime" style="left:81.66666666666667%;top:70%"></i><i class="dp dp--ontime" style="left:85%;top:70%"></i><i class="dp dp--ontime" style="left:88.33333333333333%;top:70.06944444444446%"></i><i class="dp dp--ontime" style="left:91.66666666666667%;top:69.86111111111111%"></i><i class="dp dp--x" style="left:91.66666666666667%;top:97.70833333333333%"></i><i class="dp dp--ontime" style="left:95%;top:69.58333333333333%"></i><i class="dp dp--ontime" style="left:98.33333333333333%;top:69.58333333333333%"></i><i class="dotC__sel" style="left:98.33333333333333%"></i></div><button type="button" class="dotC__b" data-i="0" style="left:0%;width:3.3333333333333335%" aria-label="10월 4일 (일) 창간 전" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="1" style="left:3.3333333333333335%;width:3.3333333333333335%" aria-label="10월 5일 (월) 창간 전" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="2" style="left:6.666666666666667%;width:3.3333333333333335%" aria-label="10월 6일 (화) 창간 전" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="3" style="left:10%;width:3.3333333333333335%" aria-label="10월 7일 (수) 창간 전" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="4" style="left:13.333333333333334%;width:3.3333333333333335%" aria-label="10월 8일 (목) 창간 전" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="5" style="left:16.666666666666668%;width:3.3333333333333335%" aria-label="10월 9일 (금) 창간 전" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="6" style="left:20%;width:3.3333333333333335%" aria-label="10월 10일 (토) 창간 전" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="7" style="left:23.333333333333332%;width:3.3333333333333335%" aria-label="10월 11일 (일) 창간 전" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="8" style="left:26.666666666666668%;width:3.3333333333333335%" aria-label="10월 12일 (월) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="9" style="left:30%;width:3.3333333333333335%" aria-label="10월 13일 (화) 정시" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="10" style="left:33.333333333333336%;width:3.3333333333333335%" aria-label="10월 14일 (수) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="11" style="left:36.666666666666664%;width:3.3333333333333335%" aria-label="10월 15일 (목) 결호" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="12" style="left:40%;width:3.3333333333333335%" aria-label="10월 16일 (금) 결호" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="13" style="left:43.333333333333336%;width:3.3333333333333335%" aria-label="10월 17일 (토) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="14" style="left:46.666666666666664%;width:3.3333333333333335%" aria-label="10월 18일 (일) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="15" style="left:50%;width:3.3333333333333335%" aria-label="10월 19일 (월) 결호" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="16" style="left:53.333333333333336%;width:3.3333333333333335%" aria-label="10월 20일 (화) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="17" style="left:56.666666666666664%;width:3.3333333333333335%" aria-label="10월 21일 (수) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="18" style="left:60%;width:3.3333333333333335%" aria-label="10월 22일 (목) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="19" style="left:63.333333333333336%;width:3.3333333333333335%" aria-label="10월 23일 (금) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="20" style="left:66.66666666666667%;width:3.3333333333333335%" aria-label="10월 24일 (토) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="21" style="left:70%;width:3.3333333333333335%" aria-label="10월 25일 (일) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="22" style="left:73.33333333333333%;width:3.3333333333333335%" aria-label="10월 26일 (월) 결호" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="23" style="left:76.66666666666667%;width:3.3333333333333335%" aria-label="10월 27일 (화) 늦음" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="24" style="left:80%;width:3.3333333333333335%" aria-label="10월 28일 (수) 정시" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="25" style="left:83.33333333333333%;width:3.3333333333333335%" aria-label="10월 29일 (목) 정시" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="26" style="left:86.66666666666667%;width:3.3333333333333335%" aria-label="10월 30일 (금) 정시" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="27" style="left:90%;width:3.3333333333333335%" aria-label="10월 31일 (토) 정시" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="28" style="left:93.33333333333333%;width:3.3333333333333335%" aria-label="11월 1일 (일) 정시" aria-pressed="false"></button><button type="button" class="dotC__b" data-i="29" style="left:96.66666666666667%;width:3.3333333333333335%" aria-label="11월 2일 (월) 정시" aria-pressed="true"></button></div><div class="dotC__ax" aria-hidden="true"><span class="dotC__y" style="top:100%">00</span><span class="dotC__y" style="top:75%">06</span><span class="dotC__y" style="top:50%">12</span><span class="dotC__y" style="top:25%">18</span><span class="dotC__y" style="top:0%">24</span><span class="dotC__pre" style="left:0;width:26.666666666666668%">창간 전</span><span class="dotC__tg" style="left:26.666666666666668%;top:70.83333333333333%">공개 목표</span><span class="dotC__x" style="left:1.6666666666666667%">10.04</span><span class="dotC__x" style="left:28.333333333333332%">10.12</span><span class="dotC__x" style="left:51.666666666666664%">10.19</span><span class="dotC__x" style="left:75%">10.26</span><span class="dotC__x" style="left:98.33333333333333%">11.02</span></div></div>
+      <div class="dotC__nav"><button class="ibtn ibtn--b" type="button" data-step="-1" aria-label="이전 날"><svg style="transform:scaleX(-1)" class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></button><p class="dotC__line" aria-live="polite" id="dotline">11.02 (월) · 제 22호 · 정시 · 수집 완료 07:18 · 공개 목표 07:30</p><button class="ibtn ibtn--b" type="button" data-step="1" aria-label="다음 날"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></button></div>
+      <ul class="legC" role="list"><li><i class="lg lg--on"></i>정시 <span class="n">7</span></li><li><i class="lg lg--late"></i>늦음 <span class="n">11</span></li><li><i class="lg lg--miss"></i>결호 <span class="n">4</span></li><li><i class="lg lg--x"></i>실패한 실행 <span class="n">1</span></li><li><i class="lg lg--pre"></i>창간 전 <span class="n">8</span></li></ul>
+      <ol class="sr"><li>10.04 (일) · 창간 전</li><li>10.05 (월) · 창간 전</li><li>10.06 (화) · 창간 전</li><li>10.07 (수) · 창간 전</li><li>10.08 (목) · 창간 전</li><li>10.09 (금) · 창간 전</li><li>10.10 (토) · 창간 전</li><li>10.11 (일) · 창간 전</li><li>10.12 (월) · 제 1호 · 늦음 · 수집 완료 20:28 · 공개 목표 07:00</li><li>10.13 (화) · 제 2호 · 정시 · 수집 완료 00:28 · 공개 목표 07:00</li><li>10.14 (수) · 제 3호 · 늦음 · 수집 완료 22:30 · 공개 목표 07:00</li><li>10.15 (목) · 제 4호 · 결호 · 공개 목표 07:00</li><li>10.16 (금) · 제 5호 · 결호 · 공개 목표 07:00</li><li>10.17 (토) · 제 6호 · 늦음 · 수집 완료 21:58 · 공개 목표 07:00</li><li>10.18 (일) · 제 7호 · 늦음 · 수집 완료 14:38 · 공개 목표 07:00</li><li>10.19 (월) · 제 8호 · 결호 · 공개 목표 07:00</li><li>10.20 (화) · 제 9호 · 늦음 · 수집 완료 09:42 · 공개 목표 07:00</li><li>10.21 (수) · 제 10호 · 늦음 · 수집 완료 09:09 · 공개 목표 07:00</li><li>10.22 (목) · 제 11호 · 늦음 · 수집 완료 09:14 · 공개 목표 07:00</li><li>10.23 (금) · 제 12호 · 늦음 · 수집 완료 09:10 · 공개 목표 07:00</li><li>10.24 (토) · 제 13호 · 늦음 · 수집 완료 09:00 · 공개 목표 07:00</li><li>10.25 (일) · 제 14호 · 늦음 · 수집 완료 08:45 · 공개 목표 07:00</li><li>10.26 (월) · 제 15호 · 결호 · 공개 목표 07:30</li><li>10.27 (화) · 제 16호 · 늦음 · 수집 완료 10:33 · 공개 목표 07:30</li><li>10.28 (수) · 제 17호 · 정시 · 수집 완료 07:12 · 공개 목표 07:30</li><li>10.29 (목) · 제 18호 · 정시 · 수집 완료 07:12 · 공개 목표 07:30</li><li>10.30 (금) · 제 19호 · 정시 · 수집 완료 07:11 · 공개 목표 07:30</li><li>10.31 (토) · 제 20호 · 정시 · 수집 완료 07:14 · 공개 목표 07:30 · 실패한 실행 1회(00:33 수동)</li><li>11.01 (일) · 제 21호 · 정시 · 수집 완료 07:18 · 공개 목표 07:30</li><li>11.02 (월) · 제 22호 · 정시 · 수집 완료 07:18 · 공개 목표 07:30</li></ol>
+      <p class="def"><b>성공률</b>은 실행 기준(PRD KPI · 운영 리포트와 같은 셈), <b>점</b>은 발행일 기준이다. 정시 = 공개 목표 + 15분 안. 10월 13일 점(<span class="n">00:28</span>)은 자정 직후 수동 실행이라 목표보다 이르다.</p>
+    </section>
+
+    <section id="st-src" class="stC" aria-labelledby="st-src-h">
+      <div class="sec-h sec-h--thin"><h2 id="st-src-h" class="h">소스 건강도</h2><span class="rh" aria-hidden="true" lang="en">SOURCES</span></div>
+      <p class="sub">최근 7일 <span class="n">10.27 – 11.02</span> · 수집 <span class="n">13</span>곳</p>
+      <div class="tblwrap"><table class="srcC"><caption class="sr">소스 건강도 — 최근 7일</caption><thead><tr><th scope="col">매체</th><th scope="col" class="num">Tier</th><th scope="col" class="num">응답</th><th scope="col" class="num">새 기사</th><th scope="col" class="num">없음 연속</th></tr></thead><tbody><tr><th scope="row"><span lang="en">BBC Sport — Football</span></th><td class="num"><span class="tier tier--2"><span class="n">2</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">302</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span lang="en">BBC Sport — Premier League</span></th><td class="num"><span class="tier tier--2"><span class="n">2</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">92</span></td><td class="num"><span class="n o">0</span></td></tr><tr class="is-flag"><th scope="row"><span lang="en">BBC Sport — Champions League</span></th><td class="num"><span class="tier tier--2"><span class="n">2</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">0</span></td><td class="num"><span class="n">13</span></td></tr><tr><th scope="row"><span lang="en">BBC Sport — European football</span></th><td class="num"><span class="tier tier--2"><span class="n">2</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">13</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span lang="en">The Athletic — Football</span></th><td class="num"><span class="tier tier--2"><span class="n">2</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">101</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span lang="en">the Daily Briefing (Fabrizio Romano)</span></th><td class="num"><span class="tier tier--2"><span class="n">2</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">20</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span lang="it">Gianluca Di Marzio</span></th><td class="num"><span class="tier tier--2"><span class="n">2</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">90</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span lang="es">Relevo</span></th><td class="num"><span class="tier tier--2"><span class="n">2</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">100</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span >인터풋볼 — 해외축구</span></th><td class="num"><span class="tier tier--3"><span class="n">3</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">173</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span >인터풋볼 — 전체기사</span></th><td class="num"><span class="tier tier--3"><span class="n">3</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">417</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span >풋볼리스트 — 축구</span></th><td class="num"><span class="tier tier--3"><span class="n">3</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">139</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span >베스트일레븐 — WORLD</span></th><td class="num"><span class="tier tier--3"><span class="n">3</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">150</span></td><td class="num"><span class="n o">0</span></td></tr><tr><th scope="row"><span >베스트일레븐 — 전체기사</span></th><td class="num"><span class="tier tier--3"><span class="n">3</span></span></td><td class="num"><span class="n">9</span><span class="den">/9</span></td><td class="num"><span class="n">262</span></td><td class="num"><span class="n o">0</span></td></tr></tbody></table></div>
+      <p class="def">없음 연속 = 응답은 했지만 새 기사가 없던 실행이 이어진 횟수(7 이상이면 점검 이슈). 0은 윤곽 숫자.</p>
+    </section>
+  </main>
+</div>
+<footer class="colophon">
+  <div class="colophon__in">
+    <p class="colophon__brand">유로 다이제스트 <span>제 22호 · <time datetime="2026-11-02">2026년 11월 2일 (월)</time></span></p>
+    <p class="colophon__fd" lang="en">Football data provided by the Football-Data.org API</p>
+    <p class="colophon__p">경기·출전 데이터 football-data.org · API-Football. 오늘의 5줄은 이 데이터로 AI가 쓰고, AI가 쓴 줄에만 ‘AI 작성’ 라벨을 붙입니다. 검증에 맞지 않는 줄은 라벨 없는 코드 문장으로 바꾸거나 빼고, AI 답을 쓸 수 없는 날은 모든 줄을 코드 문장으로 싣습니다. 뉴스 카드는 AI 없이 원문 제목 그대로 싣습니다.</p>
+    <ul class="colophon__links" role="list"><li><a href="#top">AI 작성 고지</a></li><li><a href="#top">소개·출처 정책</a></li><li><a href="#top">삭제·정정 요청</a></li><li><a href="#s4" class="colC">발행 상태 <span class="n">96.0</span>%</a></li><li><a href="#top">GitHub<span aria-hidden="true"> ↗</span><span class="sr"> (새 창)</span></a></li></ul>
+    
+    <p class="colophon__p">마지막 업데이트 <time datetime="2026-11-02T07:18+09:00">07:18</time> KST</p>
+  </div>
+</footer>
+</div>
+<nav class="tabbar tabbar--5" aria-label="하단 탭"><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M3.5 10.5 12 4l8.5 6.5V20h-5.5v-6h-6v6H3.5z"/></svg>홈</a><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 12.5h8M8 16h5"/></svg>뉴스</a><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 5h16M4 10h16M4 15h16M4 20h16"/><path d="M8.5 5v15"/></svg>리그</a><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M8 3.5 3.5 6.5 5.5 10.5 7.5 9.5V20.5h9V9.5l2 1 2-4L16 3.5c-.6 1.7-2.2 2.8-4 2.8S8.6 5.2 8 3.5z"/></svg>한국 선수</a><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 3.5h12v17l-6-4.5-6 4.5z"/></svg>마이</a></nav></div>
+<script>window.__D3DAYS=["10.04 (일) · 창간 전","10.05 (월) · 창간 전","10.06 (화) · 창간 전","10.07 (수) · 창간 전","10.08 (목) · 창간 전","10.09 (금) · 창간 전","10.10 (토) · 창간 전","10.11 (일) · 창간 전","10.12 (월) · 제 1호 · 늦음 · 수집 완료 20:28 · 공개 목표 07:00","10.13 (화) · 제 2호 · 정시 · 수집 완료 00:28 · 공개 목표 07:00","10.14 (수) · 제 3호 · 늦음 · 수집 완료 22:30 · 공개 목표 07:00","10.15 (목) · 제 4호 · 결호 · 공개 목표 07:00","10.16 (금) · 제 5호 · 결호 · 공개 목표 07:00","10.17 (토) · 제 6호 · 늦음 · 수집 완료 21:58 · 공개 목표 07:00","10.18 (일) · 제 7호 · 늦음 · 수집 완료 14:38 · 공개 목표 07:00","10.19 (월) · 제 8호 · 결호 · 공개 목표 07:00","10.20 (화) · 제 9호 · 늦음 · 수집 완료 09:42 · 공개 목표 07:00","10.21 (수) · 제 10호 · 늦음 · 수집 완료 09:09 · 공개 목표 07:00","10.22 (목) · 제 11호 · 늦음 · 수집 완료 09:14 · 공개 목표 07:00","10.23 (금) · 제 12호 · 늦음 · 수집 완료 09:10 · 공개 목표 07:00","10.24 (토) · 제 13호 · 늦음 · 수집 완료 09:00 · 공개 목표 07:00","10.25 (일) · 제 14호 · 늦음 · 수집 완료 08:45 · 공개 목표 07:00","10.26 (월) · 제 15호 · 결호 · 공개 목표 07:30","10.27 (화) · 제 16호 · 늦음 · 수집 완료 10:33 · 공개 목표 07:30","10.28 (수) · 제 17호 · 정시 · 수집 완료 07:12 · 공개 목표 07:30","10.29 (목) · 제 18호 · 정시 · 수집 완료 07:12 · 공개 목표 07:30","10.30 (금) · 제 19호 · 정시 · 수집 완료 07:11 · 공개 목표 07:30","10.31 (토) · 제 20호 · 정시 · 수집 완료 07:14 · 공개 목표 07:30 · 실패한 실행 1회(00:33 수동)","11.01 (일) · 제 21호 · 정시 · 수집 완료 07:18 · 공개 목표 07:30","11.02 (월) · 제 22호 · 정시 · 수집 완료 07:18 · 공개 목표 07:30"];</script>
+<script>
+(function(){
+var d=document.documentElement;
+function cur(){return d.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+function label(){var b=document.querySelectorAll('[data-theme-toggle]');for(var i=0;i<b.length;i++)b[i].setAttribute('aria-label','테마: '+(cur()==='dark'?'다크':'라이트')+' — 눌러 바꾸기')}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-theme-toggle]');if(!b)return;var t=cur()==='dark'?'light':'dark';d.setAttribute('data-theme',t);try{localStorage.setItem('d3-theme',t)}catch(err){}label()});
+label();
+var q=new URLSearchParams(location.search),s=q.get('solo');
+if(s){var el=document.querySelector('[data-solo="'+s+'"]');if(el){var c=el.cloneNode(true);c.classList.add('solo');var w=+(q.get('w')||c.getAttribute('data-w')||1200);c.style.width=w+'px';document.body.appendChild(c);}}
+})();
+
+(function(){var days=window.__D3DAYS;if(!days)return;var bs=[].slice.call(document.querySelectorAll('.dotC__b'));var line=document.getElementById('dotline');var sel=document.querySelector('.dotC__sel');var cur=29;
+var rm=matchMedia('(prefers-reduced-motion: reduce)');
+function set(i){if(i<0||i>29)return;cur=i;bs.forEach(function(b,k){b.setAttribute('aria-pressed',String(k===i))});line.textContent=days[i];if(!rm.matches){line.classList.remove('is-stamp');void line.offsetWidth;line.classList.add('is-stamp')}
+sel.style.left=(100*(i+.5)/30)+'%';}
+bs.forEach(function(b,k){b.addEventListener('click',function(){set(k)})});
+document.querySelectorAll('[data-step]').forEach(function(b){b.addEventListener('click',function(){set(cur+(+b.getAttribute('data-step')))})});
+set(29);line.classList.remove('is-stamp');})();
+
+</script>
+</body>
+</html>

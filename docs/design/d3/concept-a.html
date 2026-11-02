@@ -1,0 +1,887 @@
+<!doctype html>
+<!--
+D3 시안 A — 입장권 (Admission)
+한 줄: 모든 산출물을 마스트헤드 티켓의 한 조각으로 — 아이콘 = 스텁, OG = D0 견본 티켓 정리, 빈 상태 = 아직 검표하지 않은 표, /status = 검표 기록
+장점: D0·D2와 한 식구라 정할 것이 가장 적다 · 아이콘이 임시안과 가깝다 · 미리보기 = 사이트 첫인상
+단점: 티켓 변형이 늘어 키치 경계 · 네이비 면 위 레드 2.55(장식만) · 대회 OG 다크 값 · 375 구멍 30개는 2줄
+구현 난이도: 중 (래스터라이저 천공·노치 + ED path 1회, OG 템플릿 1 + 변형 3, /status JS 0 + 펼침 섬 1)
+번들/폰트: 폰트 변화 0 (EuroDigest Sans 400·800 + Barlow Condensed 600·800 = 417.8KB, ../fonts/ 로컬), 새 색 토큰 0, OG 전용 변수 4개 제거
+데이터: docs/design/d3/data/d3-data.json (runs.json·runs-dev.json·configs·data/teams 실값, 2026-11-02 기준). 문구 생성·LLM 호출 0
+견본 단독 렌더: ?solo=<data-solo 값>&w=1200 (예: ?solo=og-news-22) — OG 1200×630 실제 크기
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>D3 시안 A · 입장권 — 유로 다이제스트</title>
+<script>
+(function(){try{var t=localStorage.getItem('d3-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}
+var q=new URLSearchParams(location.search);if(q.get('solo'))document.documentElement.classList.add('is-solo');if(q.get('theme'))document.documentElement.setAttribute('data-theme',q.get('theme'))})();
+</script>
+<style>
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-400.ksx.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"EuroDigest Sans";src:url("../fonts/pretendard/eurodigest-sans-800.ksx.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-SemiBold.latin.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Barlow Condensed";src:url("../fonts/barlow-condensed/BarlowCondensed-ExtraBold.latin.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
+:root{
+  color-scheme:light;
+  --paper:#F3F0EA;--paper-2:#E8E4DB;--paper-3:#E1DFDC;
+  --ink:#14213D;--ink-2:#4A5670;--ink-3:#727886;--ink-disabled:#727886;--rule:#CFCFCE;--hatch:#DFDDDA;
+  --brand-accent:#B32F25;--brand-accent-text:#A92B22;--brand-accent-foreground:#F3F0EA;
+  --ticket:#14213D;--ticket-fg:#F3F0EA;--ticket-fg-2:#C2C2C4;
+  --colophon:#14213D;--colophon-fg:#F3F0EA;--colophon-fg-2:#C2C2C4;
+  --ring:#A92B22;
+  --competition-epl:#3D1E5C;--competition-laliga:#7F5300;--competition-seriea:#0A6390;
+  --competition-bundesliga:#A8122B;--competition-ligue1:#2A7035;--competition-ucl:#4A5263;
+  --competition-foreground:#F3F0EA;
+  --result-win:#1F6B45;--result-draw:#4A5670;--result-loss:#A92B22;--trend-up:#1F6B45;--trend-down:#A92B22;
+  --font-sans:"EuroDigest Sans",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --font-numeric:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-latin:"Barlow Condensed","EuroDigest Sans",-apple-system,"Apple SD Gothic Neo",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji";
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;
+  --radius:0px;--notch:10px;--perf:3.2px;
+  --shadow-print:4px 4px 0 var(--ink);--shadow-print-accent:4px 4px 0 var(--brand-accent);--shadow-none:none;
+  --duration-fast:150ms;--duration-base:200ms;--duration-slow:250ms;--ease:cubic-bezier(.2,.8,.2,1);
+  --gutter:40px;--tab-w:18px;--edge:16px;--col-contents:232px;--col-facing:296px;--container:1280px;
+  --text-wordmark:30px;--lh-wordmark:1.1;--text-h2:21px;--lh-h2:1.3;--text-brief:17px;--lh-brief:1.62;--text-card:16.5px;--lh-card:1.45;--text-tag:13px;--lh-tag:1.35;--text-stamp:11.5px;--lh-stamp:1.3;--text-meta:13px;--lh-meta:1.3;--text-rh:12.5px;--lh-rh:1;--num-issue:40px;--num-brief-no:40px;--num-score:30px;--num-card-no:14px;--num-meta:14.5px;
+}
+[data-theme="dark"]{color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --paper:#0E1626;--paper-2:#16213A;--paper-3:#232A37;
+  --ink:#F2EFE8;--ink-2:#ABA698;--ink-3:#75787D;--ink-disabled:#75787D;--rule:#323945;--hatch:#202736;
+  --brand-accent:#FF7A6E;--brand-accent-text:#FF7A6E;--brand-accent-foreground:#0E1626;
+  --ticket:#9E2F28;--ticket-fg:#F2EFE8;--ticket-fg-2:#EADCD5;
+  --colophon:#16213A;--colophon-fg:#F2EFE8;--colophon-fg-2:#ABA698;
+  --ring:#FF7A6E;
+  --competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;
+  --competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;
+  --competition-foreground:#0E1626;
+  --result-win:#7FD3A4;--result-draw:#ABA698;--result-loss:#FF7A6E;--trend-up:#7FD3A4;--trend-down:#FF7A6E;}}
+@media (min-width:1024px){:root{--text-wordmark:52px;--text-h2:24px;--text-brief:19px;--lh-brief:1.6;--text-card:18px;--num-issue:88px;--num-brief-no:54px;--num-score:34px;--num-card-no:15px;--tab-w:22px;--gutter:64px}}
+
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:16px;line-height:1.55;word-break:keep-all;overflow-wrap:anywhere;font-synthesis:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;transition:background-color var(--duration-base) var(--ease),color var(--duration-base) var(--ease)}
+h1,h2,h3,h4,p,ul,ol,dl,dd,figure,table{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+table{border-collapse:collapse;border-spacing:0}
+th{font-weight:inherit;text-align:inherit}
+.n,time,.c{font-variant-numeric:tabular-nums lining-nums}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.skip{position:absolute;left:8px;top:-80px;z-index:30;background:var(--ink);color:var(--paper);padding:12px 16px;font-weight:800;text-decoration:none;box-shadow:0 0 0 7px var(--paper)}
+.skip:focus{top:8px}
+.ic{display:block;flex:none}
+[lang="en"]{word-break:normal}
+.hit{position:relative}
+.hit::after{content:"";position:absolute;left:-6px;right:-6px;top:50%;height:44px;transform:translateY(-50%)}
+
+/* 시안 메타 띠 (문서용) */
+.meta{background:var(--paper-2);border-bottom:1px solid var(--rule);font-size:13px;line-height:1.55}
+.meta summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;max-width:1280px;margin:0 auto;padding:12px var(--edge);cursor:pointer;list-style:none;min-height:44px}
+.meta summary::-webkit-details-marker{display:none}
+.meta summary b{font-size:15px;font-weight:800}
+.meta__tag{font:600 12px/1 var(--font-numeric);letter-spacing:.12em;border:1px solid var(--ink-2);padding:4px 6px 3px;color:var(--ink-2)}
+.meta__one{color:var(--ink-2)}
+.meta__more{margin-left:auto;font-weight:800;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.meta__more::before{content:"펼치기"}
+.meta[open] .meta__more::before{content:"접기"}
+.meta__grid{display:grid;gap:12px 32px;max-width:1280px;margin:0 auto;padding:0 var(--edge) 16px}
+.meta .meta__h{font-size:12px;font-weight:800;margin:8px 0 2px;color:var(--ink)}
+.meta li{padding-left:12px;position:relative;color:var(--ink-2)}
+.meta li::before{content:"";position:absolute;left:0;top:.7em;width:5px;height:1px;background:var(--ink-2)}
+.meta p{color:var(--ink-2)}
+.axes{width:100%;font-size:12.5px}
+.axes th,.axes td{border-bottom:1px solid var(--rule);padding:5px 8px 5px 0;vertical-align:top;text-align:left}
+.axes thead th{font-weight:800;border-bottom:1px solid var(--ink);color:var(--ink)}
+.axes td{color:var(--ink-2)}
+.axes td.me{color:var(--ink);font-weight:800}
+@media (min-width:1024px){.meta summary{padding:12px 32px}.meta__grid{grid-template-columns:1fr 1fr 1fr;padding:0 32px 18px}.meta__grid>.span3{grid-column:1/-1}}
+@media (max-width:1023px){.meta:not([open]) .meta__one{display:none}}
+
+.divider{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 16px;max-width:1280px;margin:0 auto;padding:10px var(--edge);font-size:12px;color:var(--ink-2);border-bottom:1px solid var(--rule)}
+.divider b{font-weight:800;color:var(--ink)}
+.divider code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
+.divider--screen{border-top:3px double var(--ink);margin-top:64px;padding-top:14px}
+@media (min-width:1024px){.divider{padding:10px 32px}}
+@media (max-width:1023px){.divider__info{flex-basis:100%}}
+
+.shell{max-width:1280px;margin:0 auto;padding:12px var(--edge) 0}
+@media (min-width:1024px){.shell{padding:24px 32px 0;--edge:32px}}
+
+/* 마스트헤드 = 티켓 (M1 공개 상태 — 도구는 테마 토글만) */
+.ticket{--ring:var(--ticket-fg);position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"brand brand tools" "perf perf perf" "issue stub stub";background:var(--ticket);color:var(--ticket-fg);transition:background-color var(--duration-base) var(--ease)}
+.ticket__brand{grid-area:brand;padding:16px 0 14px 18px;min-width:0}
+.wordmark{font-size:var(--text-wordmark);font-weight:800;line-height:var(--lh-wordmark);letter-spacing:-.045em}
+.wordmark a{display:inline-block;padding:6px 0;margin:-6px 0;text-decoration:none}
+.wordmark-en{font:800 12px/1 var(--font-numeric);letter-spacing:.32em;margin-top:8px;color:var(--ticket-fg-2)}
+.tagline{font-size:13px;line-height:1.45;margin-top:10px;color:var(--ticket-fg-2)}
+.ticket__tools{grid-area:tools;display:flex;align-items:flex-start;padding:6px 6px 0 0}
+.ibtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:44px;height:44px;padding:0 10px;background:transparent;border:0;color:inherit;transition:background-color var(--duration-fast) var(--ease)}
+.ibtn:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
+.ticket__perf{grid-area:perf;position:relative;height:4px;margin:0 14px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x}
+.ticket__perf::before,.ticket__perf::after{content:"";position:absolute;top:50%;width:calc(var(--notch)*2);height:calc(var(--notch)*2);margin-top:calc(var(--notch)*-1);border-radius:50%;background:var(--paper)}
+.ticket__perf::before{left:calc(-14px - var(--notch))}
+.ticket__perf::after{right:calc(-14px - var(--notch))}
+.issue{grid-area:issue;display:flex;align-items:baseline;gap:3px;padding:12px 0 12px 18px}
+.issue__k{font-size:13px;font-weight:800}
+.issue__n{font:800 var(--num-issue)/.82 var(--font-numeric);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stub{grid-area:stub;display:flex;flex-direction:column;justify-content:center;padding:10px 8px 10px 14px;font-size:12.5px;line-height:1.45;min-width:0}
+.stub time{font-weight:800;font-variant-numeric:normal}
+.stub span{display:block;color:var(--ticket-fg-2);font-size:11.5px;line-height:1.4}
+.topnav{display:none}
+@media (min-width:1024px){
+  .ticket{grid-template-columns:232px 4px minmax(0,1fr) auto;grid-template-rows:1fr auto;grid-template-areas:"issue perf brand tools" "stub perf brand tools";min-height:160px}
+  .ticket__brand{padding:22px 0 20px 36px;align-self:center}
+  .wordmark{letter-spacing:-.05em}
+  .wordmark-en{font-size:13px;margin-top:12px}
+  .tagline{font-size:15px;margin-top:12px}
+  .ticket__tools{padding:14px 14px 0 0}
+  .ticket__perf{height:auto;width:4px;margin:14px 0;background-size:4px 9px;background-repeat:repeat-y}
+  .ticket__perf::before,.ticket__perf::after{left:50%;right:auto;margin:0 0 0 calc(var(--notch)*-1)}
+  .ticket__perf::before{top:calc(-14px - var(--notch))}
+  .ticket__perf::after{top:auto;bottom:calc(-14px - var(--notch))}
+  .issue{padding:18px 0 0 28px;align-self:start;gap:6px}
+  .issue__k{font-size:17px}
+  .issue__n{line-height:.78}
+  .stub{padding:0 16px 18px 28px;justify-content:flex-end;font-size:13px}
+  .stub span{font-size:12.5px}
+  .topnav{display:flex;align-items:center;gap:28px;border-bottom:1px solid var(--rule);padding:0 4px}
+  .topnav a{position:relative;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:48px;font-size:15px;font-weight:800;color:var(--ink-2);text-decoration:none}
+  .topnav a:hover{color:var(--ink)}
+  .topnav a[aria-current]{color:var(--ink)}
+  .topnav a[aria-current]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--brand-accent)}
+  .topnav__upd{margin-left:auto;font-size:13px;color:var(--ink-2)}
+}
+
+/* 레이아웃 3구간 (D31): ≤1023 1단 · ≥1024 목차 + 지면(마주 보는 면이 없는 페이지는 2단) */
+.layout{display:block}
+.contents,.facing{display:none}
+@media (min-width:1024px){
+  .layout{display:grid;grid-template-columns:var(--col-contents) minmax(0,1fr);align-items:start}
+  .contents{display:block;position:sticky;top:16px;margin:28px 36px 0 0}
+  .page{padding-top:28px;min-width:0}
+}
+@media (min-width:1280px){
+  .layout--3{grid-template-columns:var(--col-contents) minmax(0,1fr) var(--col-facing)}
+  .layout--3 .facing{display:block;border-left:1px solid var(--ink);padding:0 0 0 32px;margin-top:28px;align-self:stretch}
+  .layout--3 .in-flow{display:none}
+}
+
+/* 섹션 머리 · 러닝 헤드 */
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-top:3px solid var(--ink);padding-top:10px}
+.sec-h h2,.sec-h h3,.sec-h .h{font-size:var(--text-h2);font-weight:800;line-height:var(--lh-h2);letter-spacing:-.025em}
+.sec-h--thin{border-top-width:1px}
+.sec-h--thin h2,.sec-h--thin h3{font-size:16px}
+@media (min-width:1024px){.sec-h--thin h2,.sec-h--thin h3{font-size:17px}}
+.rh{flex:none;font:600 var(--text-rh)/1 var(--font-numeric);letter-spacing:.14em;color:var(--brand-accent-text)}
+.sub{font-size:13px;color:var(--ink-2);margin-top:3px}
+
+/* 대회 표식 — 인덱스 탭(세로) · 평탄 탭 */
+.tab{display:flex;align-items:center;justify-content:center;width:var(--tab-w);padding:7px 0 6px;background:var(--c);color:var(--competition-foreground);font:800 10.5px/1.08 var(--font-sans);writing-mode:vertical-rl;text-orientation:upright;letter-spacing:0;transition:background-color var(--duration-base) var(--ease)}
+@media (min-width:1024px){.tab{font-size:11px;padding:9px 0 8px}}
+.ftab{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:22px;padding:0 6px;background:var(--c);color:var(--competition-foreground);font-size:11.5px;font-weight:800;line-height:1;letter-spacing:-.01em;flex:none}
+.tab--epl{--c:var(--competition-epl)}.tab--laliga{--c:var(--competition-laliga)}.tab--seriea{--c:var(--competition-seriea)}
+.tab--bundesliga{--c:var(--competition-bundesliga)}.tab--ligue1{--c:var(--competition-ligue1)}.tab--ucl{--c:var(--competition-ucl)}
+
+/* 대회 탭 (DESIGN §9.2 Tabs — D1 순위 미니 모양) */
+.ctab{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:56px;padding:0 10px;border:1px solid var(--ink-2);background:transparent;font-size:13px;font-weight:800;color:var(--ink);text-decoration:none;transition:background-color var(--duration-base) var(--ease),color var(--duration-base) var(--ease),border-color var(--duration-base) var(--ease)}
+.ctab:hover{border-color:var(--ink);background:var(--paper-2)}
+.ctab[aria-selected="true"],.ctab[aria-current="page"]{background:var(--c);border-color:var(--c);color:var(--competition-foreground);--ring:var(--ink)}
+
+/* 도장 · 완장 · 자리 */
+.stamp{flex:none;display:inline-flex;align-items:center;gap:4px;padding:3px 6px 2px;border:1px solid var(--ink);color:var(--ink);font-size:var(--text-stamp);font-weight:800;line-height:1.3;letter-spacing:.01em}
+.stamp--ph{border:1px dashed var(--ink-3);color:var(--ink-2)}
+.arm{display:inline-block;padding:3px 3px 2px;background:var(--brand-accent);color:var(--brand-accent-foreground);font-size:10.5px;font-weight:800;line-height:1.2;letter-spacing:-.02em;flex:none}
+.ph-box{padding:12px 14px;border:1.5px dashed var(--ink-3);font-size:12.5px;color:var(--ink-2)}
+.ph-box b{color:var(--ink);font-weight:800;margin-right:6px}
+.ph-box .id{font:600 13.5px/1.3 var(--font-numeric);letter-spacing:.04em;margin-left:6px}
+
+/* 팀 배지 (DR-05) */
+.bdg{position:relative;display:inline-grid;grid-template-rows:3fr 2fr;flex:none;background:var(--k2);outline:1px solid var(--rule);outline-offset:-1px;vertical-align:middle}
+.bdg b{grid-row:1;display:grid;place-items:center;background:var(--k1);color:var(--kf);font-family:var(--font-numeric);font-weight:800;font-variant-numeric:tabular-nums lining-nums;letter-spacing:.04em;line-height:1}
+.bdg--m{width:40px;height:44px}.bdg--m b{font-size:15px}
+.bdg--s{width:30px;height:33px}.bdg--s b{font-size:12px;letter-spacing:.02em}
+.bdg--xs{width:24px;height:27px}.bdg--xs b{font-size:10.5px;letter-spacing:0}
+.bdg--none{background:transparent;outline:1px dashed var(--ink-2)}
+.bdg--none b{background:transparent;color:var(--ink-2);box-shadow:none;border-bottom:1px dashed var(--ink-2)}
+.bdg--none::after{content:"";grid-row:2;background:repeating-linear-gradient(-45deg,var(--hatch) 0 3px,transparent 3px 6px)}
+
+/* 폼 칩 W/D/L — 글자 + 색 (색만으로 전달하지 않음) */
+.form{display:inline-flex;gap:3px;flex:none;vertical-align:middle}
+.fm{display:inline-grid;place-items:center;width:20px;height:20px;font:800 12.5px/1 var(--font-numeric);font-style:normal;letter-spacing:0;border:1.5px solid currentColor}
+.fm--W{color:var(--result-win)}.fm--D{color:var(--result-draw)}.fm--L{color:var(--result-loss)}
+.fm--x{border:0;color:transparent;background:linear-gradient(var(--ink-3),var(--ink-3)) center/8px 2px no-repeat}
+
+/* 순위 변동 ▲▼ — CSS 도형 + 숫자 */
+.tr{display:inline-flex;align-items:center;gap:2px;font:600 13px/1 var(--font-numeric);letter-spacing:.02em;white-space:nowrap}
+.tr i{display:block;width:8px;height:7px;background:currentColor}
+.tr--up{color:var(--trend-up)}.tr--up i{clip-path:polygon(50% 0,100% 100%,0 100%)}
+.tr--down{color:var(--trend-down)}.tr--down i{clip-path:polygon(0 0,100% 0,50% 100%)}
+.tr--eq{color:var(--ink-2)}
+.tr--na{color:var(--ink-2)}
+
+/* 버튼 · 링크 */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;font-size:14px;font-weight:800;border:1px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;transition:background-color var(--duration-fast) var(--ease),color var(--duration-fast) var(--ease)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.tlink{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:44px;min-width:44px;font-size:13px;font-weight:800;color:var(--brand-accent-text);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.tlink:hover{text-decoration-thickness:2px}
+.tlink .ic{width:16px;height:16px}
+.src-note{font-size:12.5px;color:var(--ink-2);margin-top:14px;line-height:1.5}
+.src-note b{color:var(--ink);font-weight:800}
+.note{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.krl{display:inline-flex!important;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+
+/* 뒤표지 · 하단 탭 · 토스트 */
+.colophon{position:relative;margin:64px calc(var(--edge)*-1) 0;background:var(--colophon);color:var(--colophon-fg);--ring:var(--colophon-fg)}
+.colophon::before{content:"";display:block;height:4px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x;transform:translateY(6px)}
+.colophon__in{padding:26px var(--edge) 28px;display:grid;gap:10px;font-size:13px;line-height:1.6}
+.colophon__brand{font-size:17px;font-weight:800;letter-spacing:-.03em}
+.colophon__brand span{font-size:12.5px;font-weight:400;letter-spacing:0;color:var(--colophon-fg-2);margin-left:6px}
+.colophon__fd{font:600 15px/1.3 var(--font-numeric);letter-spacing:.03em}
+.colophon__p{color:var(--colophon-fg-2);max-width:62ch}
+.colophon__links{display:flex;flex-wrap:wrap;column-gap:18px}
+.colophon__links a{display:inline-flex;align-items:center;min-height:44px;font-weight:800;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+@media (min-width:1024px){.colophon{margin:72px 0 0}.colophon__in{grid-template-columns:1.1fr 1fr;column-gap:48px;padding:32px 36px 34px}.colophon__links{grid-column:2;grid-row:2/4}.colophon__brand{grid-column:1/-1}}
+.tabbar{position:sticky;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(3,1fr);margin:0;background:var(--paper);border-top:1px solid var(--ink)}
+.tabbar a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;font-size:11px;font-weight:800;color:var(--ink-2);text-decoration:none}
+.tabbar a:hover{color:var(--ink)}
+.tabbar a[aria-current]{color:var(--ink)}
+.tabbar a[aria-current]::before{content:"";position:absolute;top:-1px;left:24%;right:24%;height:3px;background:var(--brand-accent)}
+@media (min-width:1024px){.tabbar{display:none}}
+.toast-region{position:fixed;left:0;right:0;bottom:76px;z-index:40;display:flex;justify-content:center;pointer-events:none}
+.toast{display:inline-flex;align-items:center;gap:12px;min-height:48px;padding:0 16px 0 0;background:var(--ink);color:var(--paper);font-size:14px;font-weight:800;pointer-events:auto;box-shadow:var(--shadow-print-accent);animation:eject var(--duration-base) var(--ease) both}
+.toast[hidden]{display:none}
+.toast__k{align-self:stretch;display:grid;place-items:center;padding:0 10px;border-right:2px dotted color-mix(in srgb,var(--paper) 55%,transparent);font-size:12px}
+@keyframes eject{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes tear{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes stamp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes arrive{from{background-color:transparent}}
+@media (min-width:1024px){.toast-region{bottom:28px}}
+
+/* 견본 */
+.spec{margin-top:48px}
+.spec-grid{display:grid;gap:24px;margin-top:14px}
+@media (min-width:1024px){.spec-grid{grid-template-columns:1fr 1fr}}
+.frame{border:1px solid var(--rule);padding:14px;min-width:0}
+.cap{font-size:12.5px;color:var(--ink-2);margin-bottom:10px;line-height:1.5}
+.cap b{font-weight:800;color:var(--ink);margin-right:4px}
+.bdg-row{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.bdg-row span.l{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--ink-2);line-height:1.4}
+.legend>span{display:inline-flex;align-items:center;gap:6px}
+.legend b{color:var(--ink);font-weight:800}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0s!important;animation-delay:0s!important;transition-duration:0s!important;scroll-behavior:auto!important}
+}
+
+/* ───────── D3 공용: 견본 보드 ───────── */
+.bar{position:sticky;top:0;z-index:25;background:var(--paper);border-bottom:1px solid var(--rule)}
+.bar__in{display:flex;align-items:center;gap:4px 16px;flex-wrap:wrap;max-width:1280px;margin:0 auto;padding:0 var(--edge);min-height:52px;font-size:12.5px;color:var(--ink-2)}
+.bar__in b{color:var(--ink);font-weight:800}
+.bar__nav{display:flex;flex-wrap:wrap;gap:0 2px;margin-left:auto}
+.bar__nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;font-weight:800;color:var(--ink);text-decoration:none}
+.bar__nav a:hover{text-decoration:underline;text-underline-offset:4px}
+.bar__nav .n{color:var(--brand-accent-text);margin-right:4px;font-family:var(--font-numeric)}
+@media (max-width:1023px){.bar__nav{display:none}.bar{position:static}}
+@media (min-width:1024px){.bar__in{padding:0 32px}}
+.board{max-width:1280px;margin:0 auto;padding:28px var(--edge) 0}
+@media (min-width:1024px){.board{padding:40px 32px 0}}
+.hero{display:grid;gap:10px;padding-bottom:4px}
+.hero__k{font:600 var(--text-rh)/1 var(--font-numeric);letter-spacing:.14em;color:var(--brand-accent-text)}
+.hero h1{font-size:34px;line-height:1.08;font-weight:800;letter-spacing:-.04em}
+.hero p{font-size:15px;color:var(--ink-2);max-width:60ch}
+@media (min-width:1024px){.hero h1{font-size:52px}.hero p{font-size:16px}}
+.blk{margin-top:56px}
+@media (min-width:1024px){.blk{margin-top:88px}}
+.blk__no{font-family:var(--font-numeric);font-variant-numeric:tabular-nums lining-nums;margin-right:8px;color:var(--brand-accent-text)}
+.sub2{font-size:13px;color:var(--ink-2);margin-top:4px;max-width:72ch;line-height:1.5}
+.h3{font-size:16px;font-weight:800;letter-spacing:-.02em;margin:36px 0 12px;padding-top:8px;border-top:1px solid var(--ink);display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.h3 small{font:600 12px/1 var(--font-numeric);letter-spacing:.12em;color:var(--ink-2)}
+@media (min-width:1024px){.h3{font-size:17px;margin-top:48px}}
+.grid2,.grid3{display:grid;gap:16px}
+@media (min-width:768px){.grid3{grid-template-columns:1fr 1fr}}
+@media (min-width:1024px){.grid2{grid-template-columns:1fr 1fr;gap:24px}.grid3{grid-template-columns:repeat(3,1fr);gap:24px}}
+.fr{border:1px solid var(--rule);padding:14px;min-width:0}
+.fr--bare{border:0;padding:0}
+.fr__cap{font-size:12.5px;color:var(--ink-2);margin-bottom:10px;line-height:1.5}
+.fr__cap b{color:var(--ink);font-weight:800;margin-right:6px}
+.path{font:600 13px/1.3 var(--font-numeric);letter-spacing:.02em;color:var(--ink);overflow-wrap:anywhere}
+.lbl{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 10px;margin-top:8px;font-size:12.5px;color:var(--ink-2)}
+.lbl b{color:var(--ink);font-weight:800}
+.chk{background-color:var(--paper);background-image:linear-gradient(45deg,var(--paper-3) 25%,transparent 25%,transparent 75%,var(--paper-3) 75%),linear-gradient(45deg,var(--paper-3) 25%,transparent 25%,transparent 75%,var(--paper-3) 75%);background-size:16px 16px;background-position:0 0,8px 8px}
+.ladder{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 22px}
+.ladder figure{display:grid;justify-items:start;gap:6px}
+.ladder figcaption{font:600 13px/1 var(--font-numeric);letter-spacing:.04em;color:var(--ink-2)}
+.ladder svg{display:block}
+.ladder .big svg{width:min(512px,100%);height:auto}
+.ladder .big{flex-basis:100%}
+@media (min-width:1024px){.ladder .big{flex-basis:auto}}
+.devices{display:grid;gap:12px}
+@media (min-width:768px){.devices{grid-template-columns:1fr 1fr}}
+.home{display:flex;flex-wrap:wrap;gap:18px 26px;justify-content:center;padding:22px 12px 16px}
+.home--l{background:var(--frame-l)}.home--d{background:var(--frame-d)}
+.home figure{display:grid;justify-items:center;gap:7px;width:76px}
+.home figcaption{font-size:11px;line-height:1.2;text-align:center}
+.home--l figcaption{color:var(--frame-l-fg)}.home--d figcaption{color:var(--frame-d-fg)}
+.home figcaption span{display:block;font:600 11px/1.2 var(--font-numeric);letter-spacing:.04em;margin-top:2px}
+.home svg{display:block;width:60px;height:60px}
+.m-circle{clip-path:circle(50%)}
+.m-round{clip-path:inset(0 round 22%)}
+.m-squircle{clip-path:url(#squircle)}
+.tabs{display:flex;align-items:flex-end;gap:2px;padding:8px 8px 0;min-width:0}
+.tabs--l{background:var(--frame-l-bar)}.tabs--d{background:var(--frame-d-bar)}
+.tabs__t{display:flex;align-items:center;gap:8px;min-width:0;max-width:230px;flex:1 1 auto;height:34px;padding:0 12px;font-size:12px;white-space:nowrap;overflow:hidden}
+.tabs--l .tabs__t--on{background:var(--frame-l);color:var(--frame-l-fg)}
+.tabs--d .tabs__t--on{background:var(--frame-d-tab);color:var(--frame-d-fg)}
+.tabs--l .tabs__t:not(.tabs__t--on){color:var(--frame-l-fg2)}
+.tabs--d .tabs__t:not(.tabs__t--on){color:var(--frame-d-fg2)}
+.tabs__t svg{flex:none;width:16px;height:16px}
+.tabs__t i{flex:none;width:16px;height:16px;border:1.5px solid currentColor}
+.px{display:grid;grid-template-columns:auto auto;gap:14px;align-items:end;justify-content:start}
+.px figure{display:grid;gap:6px;justify-items:start}
+.px figcaption{font:600 12px/1 var(--font-numeric);letter-spacing:.04em;color:var(--ink-2)}
+.pxbig{width:128px;height:128px;image-rendering:pixelated}
+.zoom svg{width:128px;height:128px;display:block}
+/* OG 공용 틀 */
+.og{container-type:inline-size;position:relative;width:100%;aspect-ratio:1200/630;overflow:hidden;font-family:var(--font-sans);font-synthesis:none;color-scheme:light}
+.og *{margin:0}
+.og .n{font-family:var(--font-numeric);font-variant-numeric:tabular-nums lining-nums}
+.ogset{display:grid;gap:18px}
+@media (min-width:1024px){.ogset--2{grid-template-columns:1fr 1fr;gap:24px}.ogset--3{grid-template-columns:repeat(3,1fr);gap:18px}}
+.ogf{display:grid;gap:8px;min-width:0}
+.ogf__l{display:flex;flex-wrap:wrap;gap:2px 12px;align-items:baseline;justify-content:space-between;font-size:12.5px;color:var(--ink-2)}
+.ogf__l b{font-weight:800;color:var(--ink)}
+.alt{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.alt q{color:var(--ink);quotes:"“" "”"}
+.alt q::before{content:open-quote}.alt q::after{content:close-quote}
+/* 미리보기 틀 (기기 · 앱 색은 견본 틀 전용 — 제품 토큰 아님) */
+.pv{display:grid;gap:16px}
+@media (min-width:1024px){.pv{grid-template-columns:1.25fr 1fr;gap:24px;align-items:start}}
+.pv__x{border:1px solid var(--frame-l-line);border-radius:16px;overflow:hidden;background:var(--frame-l);color:var(--frame-l-fg);max-width:520px}
+.pv__x .og{border-bottom:1px solid var(--frame-l-line)}
+.pv__x>p{padding:10px 14px 12px;font-size:13px;line-height:1.4}
+.pv__x>p span{display:block;color:var(--frame-l-fg2);font-size:12px}
+.pv__d{background:var(--frame-d)}
+.pv__x--d{border-color:var(--frame-d-line);background:var(--frame-d);color:var(--frame-d-fg)}
+.pv__x--d .og{border-bottom-color:var(--frame-d-line)}
+.pv__x--d>p span{color:var(--frame-d-fg2)}
+.msg{display:flex;flex-wrap:wrap;gap:14px;padding:16px;align-items:flex-start}
+.msg--l{background:var(--frame-l-bar)}.msg--d{background:var(--frame-d-bar)}
+.msg__b{width:240px;border-radius:12px;overflow:hidden;background:var(--frame-l);color:var(--frame-l-fg)}
+.msg--d .msg__b{background:var(--frame-d-tab);color:var(--frame-d-fg)}
+.msg__b>p{padding:8px 10px 10px;font-size:12px;line-height:1.35}
+.msg__b>p span{display:block;font-size:11px;color:var(--frame-l-fg2);margin-top:2px}
+.msg--d .msg__b>p span{color:var(--frame-d-fg2)}
+.msg__sq{display:flex;gap:10px;align-items:center;width:240px;padding:8px;border-radius:12px;background:var(--frame-l);color:var(--frame-l-fg);font-size:12px;line-height:1.35}
+.msg--d .msg__sq{background:var(--frame-d-tab);color:var(--frame-d-fg)}
+.msg__sq .sq{flex:none;width:64px;height:64px;overflow:hidden;position:relative;border-radius:6px}
+.msg__sq .sq .og{position:absolute;top:0;left:50%;width:121.9px;height:64px;transform:translateX(-50%)}
+.msg__sq>p span{display:block;font-size:11px;color:var(--frame-l-fg2)}
+.msg--d .msg__sq>p span{color:var(--frame-d-fg2)}
+/* 빈 상태 · 전후 비교 */
+.es{display:grid;gap:14px}
+.ctx{border:1px solid var(--rule);padding:16px 14px 18px;min-width:0;background:var(--paper)}
+@media (min-width:1024px){.ctx{padding:22px 24px 24px}}
+.ctx__lbl{display:flex;flex-wrap:wrap;gap:2px 10px;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--ink-2);margin-bottom:12px}
+.ctx__lbl b{color:var(--ink);font-weight:800}
+.ba{display:grid;gap:8px;font-size:12.5px;line-height:1.5;color:var(--ink-2);padding:10px 0 0;border-top:1px dotted var(--ink-3)}
+.ba b{color:var(--ink);font-weight:800}
+.ba__row{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:baseline}
+.ba__k{font-weight:800;color:var(--ink)}
+.before{border:1px dashed var(--ink-3);padding:10px 12px;font-size:13px;color:var(--ink-2)}
+.before b{color:var(--ink)}
+.before .o0{font:800 34px/.86 var(--font-numeric);color:transparent;-webkit-text-stroke:1.5px var(--brand-accent);margin-right:10px;vertical-align:-4px}
+.before .o0--ink{-webkit-text-stroke-color:var(--ink-2)}
+.before .d34{font:800 24px/1 var(--font-numeric);color:var(--ink);margin-right:6px}
+.srch{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 12px;border:1px solid var(--ink);font-size:16px;font-weight:800;margin-bottom:6px}
+.srch .ic{width:20px;height:20px}
+.srch span{font-family:var(--font-latin);font-weight:600;font-size:19px}
+.ph{display:inline-flex;align-items:baseline;gap:6px;padding:6px 10px;border:1.5px dashed var(--ink-3);font-size:12.5px;color:var(--ink-2)}
+.ph b{color:var(--ink);font-weight:800}
+.ph .n{font:600 13px/1 var(--font-numeric);letter-spacing:.04em;color:var(--ink)}
+.offline-list{margin-top:10px}
+.offline-list a{display:flex;align-items:baseline;gap:14px;min-height:48px;padding:12px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.offline-list a:hover{background:var(--paper-2)}
+.offline-list .d{font:800 22px/1 var(--font-numeric);font-variant-numeric:tabular-nums lining-nums}
+.offline-list .w{font-weight:800}
+.offline-list .no{margin-left:auto;font-size:13px;color:var(--ink-2)}
+.offline-list .no .n{font:600 15px/1 var(--font-numeric)}
+.lead{font-size:var(--text-brief);line-height:1.45;font-weight:800}
+.body2{font-size:14px;line-height:1.55;color:var(--ink-2);max-width:46ch;margin-top:6px}
+/* 공용: 상태 쪽 */
+.st-basis{font-size:13px;color:var(--ink-2);margin-top:6px}
+.st-basis time{color:var(--ink);font-weight:800}
+.def{font-size:12.5px;line-height:1.55;color:var(--ink-2);margin-top:10px;max-width:70ch}
+.def b{color:var(--ink);font-weight:800}
+.colophon__links a.is-new{position:relative}
+
+.ogf--hero .og{max-width:880px}
+.scr{position:relative}
+/* 견본: 하단 탭은 실제로 sticky(bottom 0). 전체 쪽 캡처에서 중간에 걸리지 않게 시안에서는 셸 끝에 둔다 */
+.scr .tabbar{position:relative}
+
+:root{--frame-l:#FFFFFF;--frame-l-fg:#1F1F1F;--frame-l-fg2:#5F6368;--frame-l-bar:#E8EAED;--frame-l-line:#CFD9DE;--frame-d:#000000;--frame-d-fg:#E7E9EA;--frame-d-fg2:#9AA0A6;--frame-d-bar:#1F1F1F;--frame-d-tab:#2B2B2B;--frame-d-line:#2F3336}
+.ibtn svg{width:22px;height:22px}
+html.is-solo body{margin:0;background:transparent}
+html.is-solo body>*:not(.solo){display:none!important}
+.solo{position:absolute;left:0;top:0}
+.tabbar--5{grid-template-columns:repeat(5,1fr)}
+
+code{font:600 13px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink)}
+.code{margin-top:12px;padding:10px 12px;background:var(--paper-2);font:600 12px/1.45 var(--font-numeric);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+.safe-wrap,.ios{position:relative}
+.safe-wrap svg,.ios svg,.fr .chk svg{display:block;width:100%;height:auto}
+.safe-wrap .safe{position:absolute;inset:0}
+.ios{border-radius:22.5%;overflow:hidden;width:min(180px,100%)}
+/* OG A */
+.og--a{--ticket:#14213D;--ticket-fg:#F3F0EA;--ticket-fg-2:#C2C2C4;--paper:#F3F0EA;--competition-foreground:#0E1626;--competition-epl:#C7A8F2;--competition-laliga:#F2C14E;--competition-seriea:#6CC6F2;--competition-bundesliga:#F45D7D;--competition-ligue1:#8FD18A;--competition-ucl:#C5CBD8;display:grid;grid-template-columns:31% 0 minmax(0,1fr);background:var(--ticket);color:var(--ticket-fg)}
+.oga__stub{display:flex;flex-direction:column;justify-content:center;padding:0 2.6cqw 0 3.6cqw;min-width:0}
+.oga__stub--c{background:var(--c);color:var(--competition-foreground);align-items:flex-start}
+.oga__stub--k{padding:0}
+.oga__no{display:flex;align-items:baseline;gap:.5cqw;white-space:nowrap}
+.oga__no .k{font-size:2.8cqw;font-weight:800}
+.oga__no .n{font-size:12.4cqw;line-height:.8;font-weight:800;letter-spacing:-.02em}
+.oga__mark{font:800 15cqw/.8 var(--font-numeric);letter-spacing:-.01em}
+.oga__short{font-size:6.6cqw;font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.oga__perf{position:relative;width:.5cqw;margin-left:-.25cqw;background-image:radial-gradient(circle,var(--paper) .2cqw,transparent .26cqw);background-size:.5cqw 1.15cqw;z-index:1}
+.oga__perf::before,.oga__perf::after{content:"";position:absolute;left:50%;width:4.4cqw;height:4.4cqw;margin-left:-2.2cqw;border-radius:50%;background:var(--paper)}
+.oga__perf::before{top:-2.2cqw}.oga__perf::after{bottom:-2.2cqw}
+.oga__main{display:flex;flex-direction:column;justify-content:center;padding:0 5cqw 0 5.2cqw;min-width:0}
+.oga__wm{font-size:8.4cqw;font-weight:800;letter-spacing:-.05em;line-height:1.05;white-space:nowrap}
+.oga__en{font:800 1.9cqw/1 var(--font-numeric);letter-spacing:.34em;color:var(--ticket-fg-2);margin-top:2.4cqw}
+.oga__ft{align-self:flex-start;font-size:2.8cqw;font-weight:800;margin-top:4.6cqw;padding-top:2.2cqw;border-top:.25cqw solid var(--ticket-fg-2)}
+.oga__ft--tag{font-weight:400;color:var(--ticket-fg)}
+.oga__season{font-size:2.4cqw;font-weight:800;color:var(--ticket-fg-2)}
+.oga__season .n{font-weight:600;font-size:1.1em}
+.oga__name{font-size:7.6cqw;font-weight:800;letter-spacing:-.045em;line-height:1.08;margin-top:1.4cqw}
+.oga__en2{font:600 2.5cqw/1.1 var(--font-numeric);letter-spacing:.02em;color:var(--ticket-fg-2);margin-top:1.4cqw}
+.oga__sig{align-self:flex-start;font-size:2.2cqw;font-weight:800;margin-top:4cqw;padding-top:1.8cqw;border-top:.25cqw solid var(--ticket-fg-2)}
+.oga__sig span{font:800 1.6cqw/1 var(--font-numeric);letter-spacing:.3em;color:var(--ticket-fg-2);margin-left:1.2cqw}
+.oga__tabs{display:flex;gap:1cqw}
+.oga__tab{display:inline-flex;align-items:center;height:3.6cqw;padding:0 1.2cqw;background:var(--c);color:var(--competition-foreground);font-size:2.1cqw;font-weight:800}
+.oga__kit{height:100%;display:grid;grid-template-rows:3fr 2fr;background:var(--k2);box-shadow:inset 0 0 0 .3cqw var(--paper)}
+.oga__kit b{display:grid;place-items:center;background:var(--k1);color:var(--kf);font:800 9cqw/1 var(--font-numeric);letter-spacing:.04em;box-shadow:inset .3cqw .3cqw 0 0 var(--paper),inset -.3cqw 0 0 0 var(--paper)}
+.ogf--s .og{max-width:100%}
+/* 빈 상태 — 입장권 */
+.adm{position:relative;display:grid;grid-template-columns:auto 2px minmax(0,1fr);border:1.5px solid var(--ink);background:var(--paper);margin-top:14px}
+.adm__stub{display:grid;align-content:center;justify-items:start;gap:4px;padding:14px 16px 14px 14px;min-width:104px}
+.adm__n{font:800 var(--num-n2,44px)/.84 var(--font-numeric);font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.02em;color:var(--ink)}
+.adm__y{font-size:12.5px;color:var(--ink-2)}
+.adm__y .n{font:600 14px/1 var(--font-numeric)}
+.adm__k{font-size:13px;font-weight:800}
+.adm__perf{position:relative;background-image:radial-gradient(circle,var(--ink-3) 1px,transparent 1.4px);background-size:2px 6px;background-repeat:repeat-y}
+.adm__perf::before,.adm__perf::after{content:"";position:absolute;left:50%;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--paper);border:1.5px solid var(--ink)}
+.adm__perf::before{top:-11.5px;clip-path:inset(50% 0 0 0)}.adm__perf::after{bottom:-11.5px;clip-path:inset(0 0 50% 0)}
+.adm__body{padding:14px 14px 10px 16px;min-width:0}
+.adm__c{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:14px;font-weight:800}
+.adm__note{font-size:13.5px;line-height:1.5;color:var(--ink-2);margin-top:6px}
+.adm__h{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.adm__q{display:block;font:600 21px/1.1 var(--font-latin);letter-spacing:.002em}
+.adm__h .vs{font:600 13px/1 var(--font-numeric);color:var(--ink-2);margin:0 2px}
+.adm .tlink{margin-top:2px}
+.adm--sample{border-style:dashed}
+@media (min-width:1024px){:root{--num-n2:64px}.adm__stub{min-width:150px;padding:18px 22px 16px 20px}.adm__body{padding:18px 20px 12px 22px}}
+.restA{margin-top:12px;border-top:1px solid var(--rule);padding-top:12px}
+.restA__w{display:flex;align-items:center;gap:10px;margin-top:10px;font:600 15px/1 var(--font-numeric)}
+.stackA{position:relative;padding-bottom:4px}
+.stackA .adm--i1{margin-left:18px;margin-top:-6px;z-index:0}
+.stackA .adm--i0{z-index:1;margin-right:18px}
+.adm--intl .adm__n{font-size:34px}
+@media (min-width:1024px){.adm--intl .adm__n{font-size:44px}}
+.adm--chk .adm__stub{min-width:0;padding:12px 14px}
+.chk4{display:grid;grid-template-columns:auto auto;gap:8px 12px}
+.chk4 li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)}
+.chk4 i{width:13px;height:13px;border-radius:50%;border:1.5px solid var(--ink-2)}
+.chk4 .n{font:600 13px/1 var(--font-numeric);color:var(--ink)}
+.offA{display:grid;grid-template-columns:104px minmax(0,1fr);gap:0 10px;margin-top:16px}
+.offA__s{position:relative;display:grid;align-content:center;gap:6px;padding:16px 14px;border:1.5px solid var(--ink);border-right:2px dotted var(--ink-3)}
+.offA__s::before,.offA__s::after{content:"";position:absolute;right:-11px;width:20px;height:20px;border-radius:50%;background:var(--paper);border:1.5px solid var(--ink);clip-path:inset(0 50% 0 0)}
+.offA__s::before{top:-11.5px;clip-path:inset(50% 50% 0 0)}.offA__s::after{bottom:-11.5px;clip-path:inset(0 50% 50% 0)}
+.offA__b{padding:16px 16px 14px;border:1.5px dashed var(--ink-3)}
+.btn--sm{min-height:44px;gap:8px;margin-top:12px;padding:0 14px}
+.btn .ic{width:18px;height:18px}
+@media (min-width:1024px){.offA{grid-template-columns:200px minmax(0,1fr);gap:0 14px}.offA__s{padding:22px 26px}.offA__b{padding:24px 30px 20px}}
+/* /status A */
+.stA{margin-top:36px}
+@media (min-width:1024px){.stA{margin-top:48px}}
+.tixA{--ring:var(--ticket-fg);display:grid;grid-template-columns:minmax(0,1fr);background:var(--ticket);color:var(--ticket-fg);margin-top:18px}
+.tixA__stub{padding:16px 18px 14px}
+.tixA__k{font-size:12.5px;font-weight:800;color:var(--ticket-fg-2)}
+.tixA__no{display:flex;align-items:baseline;gap:4px;margin-top:6px}
+.tixA__no .k{font-size:14px;font-weight:800}
+.tixA__no .n{font:800 40px/.82 var(--font-numeric);letter-spacing:-.02em}
+.tixA__d{font-size:13px;font-weight:800;margin-top:8px}
+.tixA__perf{position:relative;height:4px;margin:0 14px;background-image:radial-gradient(circle at 2px 2px,var(--paper) 1.6px,transparent 2.1px);background-size:9px 4px;background-repeat:repeat-x}
+.tixA__perf::before,.tixA__perf::after{content:"";position:absolute;top:50%;width:20px;height:20px;margin-top:-10px;border-radius:50%;background:var(--paper)}
+.tixA__perf::before{left:-24px}.tixA__perf::after{right:-24px}
+.tixA__main{padding:16px 18px 16px}
+.tixA__big{display:flex;align-items:baseline;gap:8px}
+.tixA__big .n{font:800 var(--num-n1,56px)/.84 var(--font-numeric);letter-spacing:-.02em}
+.tixA__big span:last-child{font:800 16px/1 var(--font-numeric);letter-spacing:.06em;color:var(--ticket-fg-2)}
+.tixA__cap{font-size:13px;color:var(--ticket-fg-2);margin-top:8px}
+.tixA__cap .n{font:600 15px/1 var(--font-numeric)}
+.tixA__vs{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:12px;font-size:14px;padding-top:10px;border-top:1px solid var(--ticket-fg-2)}
+.tixA__vs b{font:800 17px/1 var(--font-numeric);margin:0 2px}
+.tixA__ph{margin-top:12px;padding:8px 10px;border:1.5px dashed var(--ticket-fg-2);font-size:12.5px;color:var(--ticket-fg-2)}
+.tixA__ph b{color:var(--ticket-fg);margin-right:4px}
+.tixA__ph .n{white-space:nowrap}
+@media (min-width:1024px){:root{--num-n1:96px}.tixA{grid-template-columns:232px 4px minmax(0,1fr)}.tixA__stub{padding:22px 24px}.tixA__no .n{font-size:64px}
+  .tixA__perf{height:auto;width:4px;margin:14px 0;background-size:4px 9px;background-repeat:repeat-y}.tixA__perf::before,.tixA__perf::after{left:50%;right:auto;margin:0 0 0 -10px}.tixA__perf::before{top:-24px}.tixA__perf::after{top:auto;bottom:-24px}
+  .tixA__main{padding:24px 32px 22px}}
+.rateA{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 18px;margin-top:14px}
+.rateA__n{display:flex;align-items:baseline}
+.rateA__n .n{font:800 var(--num-n2,44px)/.84 var(--font-numeric);letter-spacing:-.02em}
+.rateA__n .u{font:800 22px/1 var(--font-numeric);margin-left:2px}
+.rateA__c{font-size:13px;line-height:1.5;color:var(--ink-2)}
+.rateA__c b{color:var(--ink);font-weight:800;margin-right:6px}
+.rateA__c .n{font:600 14.5px/1 var(--font-numeric);color:var(--ink)}
+.ph30{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));row-gap:34px;margin-top:20px;padding-bottom:34px}
+@media (min-width:768px){.ph30{grid-template-columns:repeat(30,minmax(0,1fr))}}
+.ph30 .h{position:relative;display:grid;justify-items:center}
+.h>i{display:block;width:15px;height:15px;border-radius:50%;border:1.5px solid var(--ink)}
+@media (min-width:1024px){.h>i{width:17px;height:17px}}
+.h--ontime>i{background:var(--ink)}
+.h--late>i{background:linear-gradient(90deg,var(--ink) 50%,transparent 50%)}
+.h--missed>i{border-color:var(--ink-2)}
+.h--failed>i{border-color:var(--ink-2);background:linear-gradient(-82deg,transparent calc(50% - 1px),var(--ink-2) calc(50% - 1px) calc(50% + 1px),transparent calc(50% + 1px))}
+.h--prelaunch>i{border:1.5px dotted var(--ink-3);transform:scale(.72)}
+.h--x::after{content:"";position:absolute;top:21px;left:50%;width:9px;height:9px;margin-left:-4.5px;background:linear-gradient(45deg,transparent 40%,var(--brand-accent) 40% 60%,transparent 60%),linear-gradient(-45deg,transparent 40%,var(--brand-accent) 40% 60%,transparent 60%)}
+.ph30__t{position:absolute;top:36px;left:50%;transform:translateX(-50%);font:600 12px/1 var(--font-numeric);letter-spacing:.02em;color:var(--ink-2);white-space:nowrap}
+@media (max-width:767px){.ph30 .h:nth-child(15n+1) .ph30__t{left:0;transform:none}}
+.legA{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;font-size:12.5px;color:var(--ink-2)}
+.legA li{display:inline-flex;align-items:center;gap:6px}
+.legA .n{font:600 14px/1 var(--font-numeric);color:var(--ink)}
+.legA .h>i{width:13px;height:13px}
+.xmark{width:10px;height:10px;background:linear-gradient(45deg,transparent 40%,var(--brand-accent) 40% 60%,transparent 60%),linear-gradient(-45deg,transparent 40%,var(--brand-accent) 40% 60%,transparent 60%)}
+.legS{display:inline-flex;align-items:center;gap:4px;margin-left:6px;white-space:nowrap}
+.sh{display:inline-block;width:11px;height:11px;border-radius:50%;border:1.5px solid var(--ink);flex:none}
+.sh--fresh{background:var(--ink)}
+.sh--no-new{border-color:var(--ink-2)}
+.sh--failed{border-color:var(--ink-2);background:linear-gradient(-82deg,transparent calc(50% - 1px),var(--ink-2) calc(50% - 1px) calc(50% + 1px),transparent calc(50% + 1px))}
+.srcsA{margin-top:12px;border-top:1px solid var(--ink)}
+.srcA{border-bottom:1px solid var(--rule)}
+.srcA__b{display:grid;grid-template-columns:60px 2px minmax(0,1fr) auto auto 28px;grid-template-areas:"stub perf name name name chev" "stub perf holes ok new chev";align-items:center;gap:4px 10px;width:100%;min-height:60px;padding:8px 0;border:0;background:transparent;text-align:left;transition:background-color var(--duration-fast) var(--ease)}
+.srcA__b:hover{background:var(--paper-2)}
+.srcA__stub{grid-area:stub;display:grid;place-items:center}
+.srcA__perf{grid-area:perf;align-self:stretch;margin:-8px 0;background-image:radial-gradient(circle,var(--ink-3) 1px,transparent 1.4px);background-size:2px 6px}
+.srcA__name{grid-area:name;min-width:0;font-size:14px;line-height:1.3}
+.srcA__name b{font-weight:800}
+.srcA__flag{display:block;font-size:12px;color:var(--brand-accent-text);font-weight:800;margin-top:2px}
+.srcA__flag .n{font:600 13px/1 var(--font-numeric)}
+.srcA__holes{grid-area:holes;display:flex;gap:4px}
+.srcA__ok{grid-area:ok}.srcA__new{grid-area:new}
+.srcA__ok,.srcA__new{display:grid;justify-items:end;gap:3px;min-width:44px}
+.srcA__ok .n,.srcA__new .n{font:800 18px/1 var(--font-numeric)}
+.srcA small{font-size:11px;color:var(--ink-2)}
+.srcA__chev{grid-area:chev;color:var(--ink-2);transition:transform var(--duration-base) var(--ease)}
+.srcA__chev .ic{width:18px;height:18px}
+.srcA__b[aria-expanded="true"] .srcA__chev{transform:rotate(180deg)}
+.srcA__d{padding:4px 0 14px 76px;animation:tear var(--duration-base) var(--ease) both}
+.srcA__d dl{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12.5px;color:var(--ink-2);border-top:2px dotted var(--ink-3);padding-top:10px}
+.srcA__d dd{color:var(--ink);font-weight:800}
+.srcA__d dd .n{font:800 15px/1 var(--font-numeric)}
+.tier{display:inline-flex;align-items:center;gap:3px;height:24px;padding:0 6px;font:600 13px/1 var(--font-numeric);letter-spacing:.04em;white-space:nowrap}
+.tier .n{font-weight:800}
+.tier--2{border:2px solid var(--ink)}.tier--3{border:1px dashed var(--ink-2);color:var(--ink-2)}
+@media (min-width:1024px){.srcA__b{grid-template-columns:78px 2px minmax(0,1fr) auto 64px 64px 28px;grid-template-areas:"stub perf name holes ok new chev";min-height:56px}.srcA__holes{gap:6px}.srcA__d{padding-left:90px}}
+.costA{display:grid;grid-template-columns:minmax(0,1.3fr) 2px minmax(0,1fr);border:1.5px solid var(--ink);margin-top:16px}
+.costA__s{padding:14px 16px}
+.costA__k{font-size:12.5px;font-weight:800;color:var(--ink-2)}
+.costA__n{display:flex;align-items:baseline;margin-top:8px}
+.costA__n .n{font:800 var(--num-n2,44px)/.84 var(--font-numeric);letter-spacing:-.02em}
+.costA__n .u{font:800 20px/1 var(--font-numeric);margin-left:2px}
+.costA__n--s .n{font-size:28px;color:var(--ink-2)}
+.costA__perf{position:relative;background-image:radial-gradient(circle,var(--ink-3) 1px,transparent 1.4px);background-size:2px 6px}
+.costA__perf::before,.costA__perf::after{content:"";position:absolute;left:50%;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:var(--paper);border:1.5px solid var(--ink)}
+.costA__perf::before{top:-11.5px;clip-path:inset(50% 0 0 0)}.costA__perf::after{bottom:-11.5px;clip-path:inset(0 0 50% 0)}
+@media (min-width:1024px){.costA{max-width:560px}}
+.toc{margin-top:10px}
+.toc a{display:flex;align-items:baseline;gap:6px;min-height:44px;padding:10px 0;border-bottom:1px solid var(--rule);font-size:14px;color:var(--ink);text-decoration:none}
+.toc a i{flex:1;border-bottom:2px dotted var(--ink-3);transform:translateY(-3px)}
+.toc .n{font:600 17px/1 var(--font-numeric)}
+.colA{margin-top:4px}
+.colA__a{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 10px 0 12px;border:1.5px solid var(--colophon-fg);color:var(--colophon-fg);text-decoration:none;font-weight:800}
+.colA__a:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
+.colA__perf{align-self:stretch;width:2px;background-image:radial-gradient(circle,var(--colophon-fg-2) 1px,transparent 1.4px);background-size:2px 6px}
+.colA__v{font-weight:400;color:var(--colophon-fg-2)}
+.colA__v .n{font:800 16px/1 var(--font-numeric);color:var(--colophon-fg)}
+.colA .ic{width:18px;height:18px}
+@media (min-width:1024px){.colA{grid-column:2}}
+
+</style>
+
+</head>
+<body id="top">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><clipPath id="squircle" clipPathUnits="objectBoundingBox"><path d="M.5 0C.89 0 1 .11 1 .5S.89 1 .5 1 0 .89 0 .5 .11 0 .5 0Z"/></clipPath></defs></svg>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<details class="meta">
+  <summary><span class="meta__tag">시안 정보</span><b>A 입장권 (Admission)</b><span class="meta__one">모든 산출물을 마스트헤드 티켓의 한 조각으로 — 아이콘은 스텁, OG는 D0 견본 티켓, 빈 상태는 아직 검표하지 않은 표, /status는 검표 기록.</span><span class="meta__more" aria-hidden="true"></span></summary>
+  <div class="meta__grid">
+    <div><p class="meta__h">장점</p><ul><li>D0 견본 · 마스트헤드 · D2 입장권과 한 식구라 정할 것이 가장 적다(DECISIONS D0이 “D3 티켓 OG · 스텁 아이콘”을 예고)</li><li>아이콘이 지금 임시안(네이비 + ED + 레드 막대)과 가까워 이행이 쉽고, 흰 · 검 런처 모두에서 윤곽이 선다</li><li>공유 미리보기가 사이트 첫인상(티켓)과 같다 — 메신저 흰 · 검 바탕 어디서나 진한 면으로 구분된다</li><li>/status 30일 띠가 이적 단계 펀치 구멍 문법이라 따로 배울 것이 없다</li></ul></div>
+    <div><p class="meta__h">단점</p><ul><li>티켓 변형이 아이콘 · OG · 빈 상태 · /status 전부로 늘어 키치 경계에 가장 가깝다(DESIGN §1 원칙 1) — 이 시안은 장식 0(ADMIT ONE · 바코드 · 일련번호 없음)으로 버텼다</li><li>네이비 면 위 레드는 2.55라 장식 막대로만 쓴다. 대회 OG는 다크 대회 값이라 화면(라이트 탭)과 색이 달라 보인다</li><li>/status 구멍 30개는 375에서 15칸 × 2줄로 접어야 한다</li><li>빈 상태 입장권이 실제 입장권(선수 상세)과 모양이 같아 “경기 표”로 오해할 여지</li></ul></div>
+    <div><p class="meta__h">구현 난이도</p><p><b>중</b> — 아이콘은 temp-icons.ts 래스터라이저에 천공 점 · 노치만 더한다(ED 글자는 path 변환 1회). OG 템플릿 1개 + 변형 3(날짜 · 대회 · 팀), 빈 상태는 D2 입장권 컴포넌트 재사용 + SVG 1개(오프라인). /status는 서버 컴포넌트(JS 0) + 소스 행 펼침 섬 1개(gzip 약 0.3KB).</p><p class="meta__h">번들 · 폰트 영향</p><p>폰트 변화 0 — EuroDigest Sans 400 · 800 + Barlow Condensed 600 · 800(417.8KB, 2패밀리 4파일). 새 색 토큰 0, OG 전용 변수 4개 제거. favicon.svg 약 0.6KB · ico 16+32 약 1.5KB.</p><p class="meta__h">DESIGN 규칙 변경</p><p>없음 — OG 견본 변수 4개 삭제(라이트 티켓 토큰으로). 휴식기 S4 변형(A매치 기간)은 화면 결정(today-brief 주석 변경).</p></div>
+    <div class="span3"><p class="meta__h">축 매트릭스 (시안 × 5축)</p><table class="axes"><thead><tr><th scope="col">축</th><th scope="col">A 입장권</th><th scope="col">B 제호</th><th scope="col">C 등번호</th></tr></thead><tbody><tr><th scope="row">레이아웃</th><td class="me">가로 분할 — 스텁 · 천공 · 본문</td><td>세로 띠 쌓기 — 러닝 헤드 · 괘선 · 제호 · 표</td><td>큰 숫자 하나가 절반 이상 — 비대칭 블리드</td></tr><tr><th scope="row">타이포</th><td class="me">호수 큰 숫자 + 한글 800 섞음</td><td>한글 제호 800이 주도, 숫자는 표 안에서만</td><td>Barlow 숫자가 주도, 한글은 작게</td></tr><tr><th scope="row">색</th><td class="me">네이비 티켓 면(라이트 --ticket) + 지면색 천공</td><td>크림 지면 + 잉크, 레드는 괘선 한 줄</td><td>벽돌 레드 면(다크 --ticket) + 지면색 숫자 · 대회/팀 OG만 크림</td></tr><tr><th scope="row">밀도</th><td class="me">중간</td><td>높음</td><td>낮음</td></tr><tr><th scope="row">모션</th><td class="me">뜯김 — 소스 행 상세 펼침</td><td>없음 — 테마 잉크 전환만</td><td>찍힘 — 30일 점 선택 → 그날 상세 줄</td></tr></tbody></table></div>
+  </div>
+</details>
+<div class="bar"><div class="bar__in"><b>D3 시안 A · 입장권</b><span>기준 <time datetime="2026-11-02">2026년 11월 2일 (월)</time> 제 22호 · 실데이터</span><nav class="bar__nav" aria-label="견본 목차"><a href="#s1"><span class="n">1</span>앱 아이콘</a><a href="#s2"><span class="n">2</span>OG</a><a href="#s3"><span class="n">3</span>빈 상태</a><a href="#s4"><span class="n">4</span>/status</a></nav><button class="ibtn" type="button" data-theme-toggle aria-label="테마: 시스템 설정"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button></div></div>
+<div class="board">
+  <header class="hero"><p class="hero__k" lang="en" aria-hidden="true">D3 · ADMISSION</p><h1>A 입장권</h1><p>아이콘 · OG · 빈 상태 · 상태 쪽을 모두 마스트헤드 티켓의 한 조각으로 만든다. 장식 문구 · 바코드 · 일련번호는 넣지 않는다 — 천공 · 노치 · 펀치 구멍만.</p></header>
+  <section id="s1" class="blk" aria-labelledby="s1h">
+  <div class="sec-h"><h2 id="s1h"><span class="blk__no">1</span>앱 아이콘</h2><span class="rh" aria-hidden="true" lang="en">ICONS</span></div>
+  <p class="sub2">티켓 스텁을 그대로 줄였다. 네이비 면(라이트 <code>--ticket</code>) · 지면색 <b>ED</b>(Barlow 800) · 가로 천공 · 스팟 레드 막대 하나. any만 좌우 노치를 투명으로 뚫고, maskable · apple은 면을 꽉 채운다.</p>
+  <div class="grid3" style="margin-top:18px">
+    <figure class="fr"><p class="fr__cap"><b>any 512</b><span class="path">public/icons/icon-512.png</span> · 192 같은 그림</p><div class="chk"><svg viewBox="0 0 512 512" role="img" aria-label="any 아이콘 — 네이비 면, ED, 가로 천공, 좌우 투명 노치"><path d="M0 0H512V348A36 36 0 0 0 512 420V512H0V420A36 36 0 0 0 0 348Z" fill="#14213D"/><text x="256" y="312" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="330" letter-spacing="-3.3" fill="#F3F0EA">ED</text><circle cx="62.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="79.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="97.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="114.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="132.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="150.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="167.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="185.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="202.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="220.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="238.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="255.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="273.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="290.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="308.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="326.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="343.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="361.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="378.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="396.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="414.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="431.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="449.2" cy="384" r="5.6" fill="#F3F0EA"/><rect x="216" y="438" width="80" height="16" fill="#B32F25"/></svg></div></figure>
+    <figure class="fr"><p class="fr__cap"><b>maskable 512</b><span class="path">icon-maskable-512.png</span> · 점선 원 = 안전 영역 지름 80%</p><div class="safe-wrap"><svg viewBox="0 0 512 512" role="img" aria-label="maskable 아이콘 — 안전 원 안의 ED와 천공"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg><svg viewBox="0 0 512 512" class="safe" aria-hidden="true"><circle cx="256" cy="256" r="204.8" fill="none" stroke="#FF7A6E" stroke-width="3" stroke-dasharray="10 8"/><path d="M256 0V512M0 256H512" stroke="#FF7A6E" stroke-width="1.5" stroke-dasharray="4 6"/></svg></div></figure>
+    <figure class="fr"><p class="fr__cap"><b>apple-touch 180</b><span class="path">apple-touch-icon.png</span> · 투명 0 · iOS가 모서리를 깎음</p><div class="ios"><svg viewBox="0 0 512 512" role="img" aria-label="apple-touch 아이콘"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg></div></figure>
+  </div>
+  <h3 class="h3">크기 사다리 <small lang="en">16 · 32 · 48 · 180 · 192 · 512</small></h3>
+  <div class="ladder"><figure><div><svg width="16" height="16" viewBox="0 0 512 512" role="img" aria-label="작은 아이콘 16px"><rect width="512" height="512" fill="#14213D"/><text x="256" y="392" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="440" letter-spacing="-4.4" fill="#F3F0EA">ED</text></svg></div><figcaption>16</figcaption></figure><figure><div><svg width="32" height="32" viewBox="0 0 512 512" role="img" aria-label="작은 아이콘 32px"><rect width="512" height="512" fill="#14213D"/><text x="256" y="392" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="440" letter-spacing="-4.4" fill="#F3F0EA">ED</text></svg></div><figcaption>32</figcaption></figure><figure><div><svg width="48" height="48" viewBox="0 0 512 512" role="img" aria-label="작은 아이콘 48px"><rect width="512" height="512" fill="#14213D"/><text x="256" y="392" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="440" letter-spacing="-4.4" fill="#F3F0EA">ED</text></svg></div><figcaption>48</figcaption></figure><figure><div><svg width="180" height="180" viewBox="0 0 512 512" role="img" aria-label="apple-touch-icon 180px"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg></div><figcaption>180 apple</figcaption></figure><figure><div class="chk"><svg width="192" height="192" viewBox="0 0 512 512" role="img" aria-label="any 192px"><path d="M0 0H512V348A36 36 0 0 0 512 420V512H0V420A36 36 0 0 0 0 348Z" fill="#14213D"/><text x="256" y="312" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="330" letter-spacing="-3.3" fill="#F3F0EA">ED</text><circle cx="62.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="79.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="97.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="114.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="132.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="150.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="167.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="185.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="202.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="220.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="238.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="255.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="273.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="290.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="308.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="326.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="343.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="361.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="378.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="396.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="414.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="431.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="449.2" cy="384" r="5.6" fill="#F3F0EA"/><rect x="216" y="438" width="80" height="16" fill="#B32F25"/></svg></div><figcaption>192 any</figcaption></figure><figure class="big"><div class="chk"><svg width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="any 512px"><path d="M0 0H512V348A36 36 0 0 0 512 420V512H0V420A36 36 0 0 0 0 348Z" fill="#14213D"/><text x="256" y="312" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="330" letter-spacing="-3.3" fill="#F3F0EA">ED</text><circle cx="62.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="79.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="97.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="114.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="132.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="150.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="167.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="185.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="202.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="220.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="238.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="255.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="273.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="290.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="308.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="326.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="343.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="361.2" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="378.8" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="396.4" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="414.0" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="431.6" cy="384" r="5.6" fill="#F3F0EA"/><circle cx="449.2" cy="384" r="5.6" fill="#F3F0EA"/><rect x="216" y="438" width="80" height="16" fill="#B32F25"/></svg></div><figcaption>512 any — 좁은 화면에서는 폭에 맞춰 줄여 보임</figcaption></figure></div>
+  <h3 class="h3">런처 마스크 · 홈 화면 바탕 <small lang="en">LAUNCHER</small></h3>
+  <div class="devices"><div class="home home--l"><figure><div class="m-circle"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg></div><figcaption>유로 다이제스트<span>원</span></figcaption></figure><figure><div class="m-squircle"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg></div><figcaption>유로 다이제스트<span>스퀴클</span></figcaption></figure><figure><div class="m-round"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg></div><figcaption>유로 다이제스트<span>둥근 사각</span></figcaption></figure></div><div class="home home--d"><figure><div class="m-circle"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg></div><figcaption>유로 다이제스트<span>원</span></figcaption></figure><figure><div class="m-squircle"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg></div><figcaption>유로 다이제스트<span>스퀴클</span></figcaption></figure><figure><div class="m-round"><svg width="60" height="60" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#14213D"/><text x="256" y="292" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="236" letter-spacing="-2.4" fill="#F3F0EA">ED</text><circle cx="112.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="126.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="140.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="155.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="169.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="184.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="198.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="212.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="227.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="241.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="256.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="270.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="284.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="299.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="313.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="328.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="342.4" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="356.8" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="371.2" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="385.6" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="400.0" cy="338" r="4.6" fill="#F3F0EA"/><circle cx="96" cy="338" r="9" fill="#F3F0EA"/><circle cx="416" cy="338" r="9" fill="#F3F0EA"/><rect x="224" y="374" width="64" height="13" fill="#B32F25"/></svg></div><figcaption>유로 다이제스트<span>둥근 사각</span></figcaption></figure></div></div>
+  <p class="sub2">바탕은 기기 색 견본(흰 · 검)이다. 네이비 면은 두 바탕 모두에서 윤곽이 선다 — 흰 바탕 대비 15.7, 검 바탕은 면 경계 1.3이지만 지면색 ED · 천공이 형태를 만든다.</p>
+  <h3 class="h3">파비콘 · 브라우저 탭 <small lang="en">FAVICON</small></h3>
+  <div class="grid2">
+    <div class="fr"><p class="fr__cap"><b>favicon.svg</b><span class="path">public/favicon.svg</span> — 라이트 탭 네이비 · 다크 탭 벽돌 레드(<code>prefers-color-scheme</code> — 사이트 다크 티켓과 같은 짝)</p><div class="tabs tabs--l"><div class="tabs__t tabs__t--on"><svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" role="img" aria-label="파비콘 16px 라이트"><rect x="0" y="0" width="16" height="1" fill="#14213D"/><rect x="0" y="1" width="16" height="1" fill="#14213D"/><rect x="0" y="2" width="16" height="1" fill="#14213D"/><rect x="0" y="3" width="2" height="1" fill="#14213D"/><rect x="2" y="3" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="3" width="1" height="1" fill="#14213D"/><rect x="8" y="3" width="5" height="1" fill="#F3F0EA"/><rect x="13" y="3" width="3" height="1" fill="#14213D"/><rect x="0" y="4" width="2" height="1" fill="#14213D"/><rect x="2" y="4" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="4" width="1" height="1" fill="#14213D"/><rect x="8" y="4" width="6" height="1" fill="#F3F0EA"/><rect x="14" y="4" width="2" height="1" fill="#14213D"/><rect x="0" y="5" width="2" height="1" fill="#14213D"/><rect x="2" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="5" width="4" height="1" fill="#14213D"/><rect x="8" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="5" width="2" height="1" fill="#14213D"/><rect x="12" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="5" width="2" height="1" fill="#14213D"/><rect x="0" y="6" width="2" height="1" fill="#14213D"/><rect x="2" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="6" width="4" height="1" fill="#14213D"/><rect x="8" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="6" width="2" height="1" fill="#14213D"/><rect x="12" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="6" width="2" height="1" fill="#14213D"/><rect x="0" y="7" width="2" height="1" fill="#14213D"/><rect x="2" y="7" width="4" height="1" fill="#F3F0EA"/><rect x="6" y="7" width="2" height="1" fill="#14213D"/><rect x="8" y="7" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="7" width="2" height="1" fill="#14213D"/><rect x="12" y="7" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="7" width="2" height="1" fill="#14213D"/><rect x="0" y="8" width="2" height="1" fill="#14213D"/><rect x="2" y="8" width="4" height="1" fill="#F3F0EA"/><rect x="6" y="8" width="2" height="1" fill="#14213D"/><rect x="8" y="8" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="8" width="2" height="1" fill="#14213D"/><rect x="12" y="8" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="8" width="2" height="1" fill="#14213D"/><rect x="0" y="9" width="2" height="1" fill="#14213D"/><rect x="2" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="9" width="4" height="1" fill="#14213D"/><rect x="8" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="9" width="2" height="1" fill="#14213D"/><rect x="12" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="9" width="2" height="1" fill="#14213D"/><rect x="0" y="10" width="2" height="1" fill="#14213D"/><rect x="2" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="10" width="4" height="1" fill="#14213D"/><rect x="8" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="10" width="2" height="1" fill="#14213D"/><rect x="12" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="10" width="2" height="1" fill="#14213D"/><rect x="0" y="11" width="2" height="1" fill="#14213D"/><rect x="2" y="11" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="11" width="1" height="1" fill="#14213D"/><rect x="8" y="11" width="6" height="1" fill="#F3F0EA"/><rect x="14" y="11" width="2" height="1" fill="#14213D"/><rect x="0" y="12" width="2" height="1" fill="#14213D"/><rect x="2" y="12" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="12" width="1" height="1" fill="#14213D"/><rect x="8" y="12" width="5" height="1" fill="#F3F0EA"/><rect x="13" y="12" width="3" height="1" fill="#14213D"/><rect x="0" y="13" width="16" height="1" fill="#14213D"/><rect x="0" y="14" width="16" height="1" fill="#14213D"/><rect x="0" y="15" width="16" height="1" fill="#14213D"/></svg><span>유로 다이제스트</span></div><div class="tabs__t"><i aria-hidden="true"></i><span>새 탭</span></div></div><div class="tabs tabs--d"><div class="tabs__t tabs__t--on"><svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" role="img" aria-label="파비콘 16px 다크"><rect x="0" y="0" width="16" height="1" fill="#9E2F28"/><rect x="0" y="1" width="16" height="1" fill="#9E2F28"/><rect x="0" y="2" width="16" height="1" fill="#9E2F28"/><rect x="0" y="3" width="2" height="1" fill="#9E2F28"/><rect x="2" y="3" width="5" height="1" fill="#F2EFE8"/><rect x="7" y="3" width="1" height="1" fill="#9E2F28"/><rect x="8" y="3" width="5" height="1" fill="#F2EFE8"/><rect x="13" y="3" width="3" height="1" fill="#9E2F28"/><rect x="0" y="4" width="2" height="1" fill="#9E2F28"/><rect x="2" y="4" width="5" height="1" fill="#F2EFE8"/><rect x="7" y="4" width="1" height="1" fill="#9E2F28"/><rect x="8" y="4" width="6" height="1" fill="#F2EFE8"/><rect x="14" y="4" width="2" height="1" fill="#9E2F28"/><rect x="0" y="5" width="2" height="1" fill="#9E2F28"/><rect x="2" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="4" y="5" width="4" height="1" fill="#9E2F28"/><rect x="8" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="5" width="2" height="1" fill="#9E2F28"/><rect x="12" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="5" width="2" height="1" fill="#9E2F28"/><rect x="0" y="6" width="2" height="1" fill="#9E2F28"/><rect x="2" y="6" width="2" height="1" fill="#F2EFE8"/><rect x="4" y="6" width="4" height="1" fill="#9E2F28"/><rect x="8" y="6" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="6" width="2" height="1" fill="#9E2F28"/><rect x="12" y="6" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="6" width="2" height="1" fill="#9E2F28"/><rect x="0" y="7" width="2" height="1" fill="#9E2F28"/><rect x="2" y="7" width="4" height="1" fill="#F2EFE8"/><rect x="6" y="7" width="2" height="1" fill="#9E2F28"/><rect x="8" y="7" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="7" width="2" height="1" fill="#9E2F28"/><rect x="12" y="7" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="7" width="2" height="1" fill="#9E2F28"/><rect x="0" y="8" width="2" height="1" fill="#9E2F28"/><rect x="2" y="8" width="4" height="1" fill="#F2EFE8"/><rect x="6" y="8" width="2" height="1" fill="#9E2F28"/><rect x="8" y="8" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="8" width="2" height="1" fill="#9E2F28"/><rect x="12" y="8" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="8" width="2" height="1" fill="#9E2F28"/><rect x="0" y="9" width="2" height="1" fill="#9E2F28"/><rect x="2" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="4" y="9" width="4" height="1" fill="#9E2F28"/><rect x="8" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="9" width="2" height="1" fill="#9E2F28"/><rect x="12" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="9" width="2" height="1" fill="#9E2F28"/><rect x="0" y="10" width="2" height="1" fill="#9E2F28"/><rect x="2" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="4" y="10" width="4" height="1" fill="#9E2F28"/><rect x="8" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="10" width="2" height="1" fill="#9E2F28"/><rect x="12" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="10" width="2" height="1" fill="#9E2F28"/><rect x="0" y="11" width="2" height="1" fill="#9E2F28"/><rect x="2" y="11" width="5" height="1" fill="#F2EFE8"/><rect x="7" y="11" width="1" height="1" fill="#9E2F28"/><rect x="8" y="11" width="6" height="1" fill="#F2EFE8"/><rect x="14" y="11" width="2" height="1" fill="#9E2F28"/><rect x="0" y="12" width="2" height="1" fill="#9E2F28"/><rect x="2" y="12" width="5" height="1" fill="#F2EFE8"/><rect x="7" y="12" width="1" height="1" fill="#9E2F28"/><rect x="8" y="12" width="5" height="1" fill="#F2EFE8"/><rect x="13" y="12" width="3" height="1" fill="#9E2F28"/><rect x="0" y="13" width="16" height="1" fill="#9E2F28"/><rect x="0" y="14" width="16" height="1" fill="#9E2F28"/><rect x="0" y="15" width="16" height="1" fill="#9E2F28"/></svg><span>유로 다이제스트</span></div><div class="tabs__t"><i aria-hidden="true"></i><span>새 탭</span></div></div>
+      <pre class="code" aria-label="favicon.svg 구조">&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 32 32&quot;&gt;&lt;style&gt;.f{fill:#14213D}@media (prefers-color-scheme:dark){.f{fill:#9E2F28}}&lt;/style&gt;&lt;rect class=&quot;f&quot; width=&quot;32&quot; height=&quot;32&quot;/&gt;&lt;path fill=&quot;#F3F0EA&quot; d=&quot;…ED 글리프 외곽선(M5-02에서 생성)…&quot;/&gt;&lt;/svg&gt;</pre></div>
+    <div class="fr"><p class="fr__cap"><b>favicon.ico 16 · 32</b><span class="path">public/favicon.ico</span> — 16은 픽셀 격자에 맞춰 손으로 그린다(벡터 축소는 흐려짐)</p>
+      <div class="px">
+        <figure><svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" role="img" aria-label="16px 라이트"><rect x="0" y="0" width="16" height="1" fill="#14213D"/><rect x="0" y="1" width="16" height="1" fill="#14213D"/><rect x="0" y="2" width="16" height="1" fill="#14213D"/><rect x="0" y="3" width="2" height="1" fill="#14213D"/><rect x="2" y="3" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="3" width="1" height="1" fill="#14213D"/><rect x="8" y="3" width="5" height="1" fill="#F3F0EA"/><rect x="13" y="3" width="3" height="1" fill="#14213D"/><rect x="0" y="4" width="2" height="1" fill="#14213D"/><rect x="2" y="4" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="4" width="1" height="1" fill="#14213D"/><rect x="8" y="4" width="6" height="1" fill="#F3F0EA"/><rect x="14" y="4" width="2" height="1" fill="#14213D"/><rect x="0" y="5" width="2" height="1" fill="#14213D"/><rect x="2" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="5" width="4" height="1" fill="#14213D"/><rect x="8" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="5" width="2" height="1" fill="#14213D"/><rect x="12" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="5" width="2" height="1" fill="#14213D"/><rect x="0" y="6" width="2" height="1" fill="#14213D"/><rect x="2" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="6" width="4" height="1" fill="#14213D"/><rect x="8" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="6" width="2" height="1" fill="#14213D"/><rect x="12" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="6" width="2" height="1" fill="#14213D"/><rect x="0" y="7" width="2" height="1" fill="#14213D"/><rect x="2" y="7" width="4" height="1" fill="#F3F0EA"/><rect x="6" y="7" width="2" height="1" fill="#14213D"/><rect x="8" y="7" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="7" width="2" height="1" fill="#14213D"/><rect x="12" y="7" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="7" width="2" height="1" fill="#14213D"/><rect x="0" y="8" width="2" height="1" fill="#14213D"/><rect x="2" y="8" width="4" height="1" fill="#F3F0EA"/><rect x="6" y="8" width="2" height="1" fill="#14213D"/><rect x="8" y="8" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="8" width="2" height="1" fill="#14213D"/><rect x="12" y="8" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="8" width="2" height="1" fill="#14213D"/><rect x="0" y="9" width="2" height="1" fill="#14213D"/><rect x="2" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="9" width="4" height="1" fill="#14213D"/><rect x="8" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="9" width="2" height="1" fill="#14213D"/><rect x="12" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="9" width="2" height="1" fill="#14213D"/><rect x="0" y="10" width="2" height="1" fill="#14213D"/><rect x="2" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="10" width="4" height="1" fill="#14213D"/><rect x="8" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="10" width="2" height="1" fill="#14213D"/><rect x="12" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="10" width="2" height="1" fill="#14213D"/><rect x="0" y="11" width="2" height="1" fill="#14213D"/><rect x="2" y="11" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="11" width="1" height="1" fill="#14213D"/><rect x="8" y="11" width="6" height="1" fill="#F3F0EA"/><rect x="14" y="11" width="2" height="1" fill="#14213D"/><rect x="0" y="12" width="2" height="1" fill="#14213D"/><rect x="2" y="12" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="12" width="1" height="1" fill="#14213D"/><rect x="8" y="12" width="5" height="1" fill="#F3F0EA"/><rect x="13" y="12" width="3" height="1" fill="#14213D"/><rect x="0" y="13" width="16" height="1" fill="#14213D"/><rect x="0" y="14" width="16" height="1" fill="#14213D"/><rect x="0" y="15" width="16" height="1" fill="#14213D"/></svg><figcaption>16</figcaption></figure>
+        <figure><svg width="32" height="32" viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" fill="#14213D"/><text x="256" y="392" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="440" letter-spacing="-4.4" fill="#F3F0EA">ED</text></svg><figcaption>32</figcaption></figure>
+        <figure class="zoom"><svg viewBox="0 0 16 16" width="128" height="128" shape-rendering="crispEdges" role="img" aria-label="16px 격자 8배 확대"><rect x="0" y="0" width="16" height="1" fill="#14213D"/><rect x="0" y="1" width="16" height="1" fill="#14213D"/><rect x="0" y="2" width="16" height="1" fill="#14213D"/><rect x="0" y="3" width="2" height="1" fill="#14213D"/><rect x="2" y="3" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="3" width="1" height="1" fill="#14213D"/><rect x="8" y="3" width="5" height="1" fill="#F3F0EA"/><rect x="13" y="3" width="3" height="1" fill="#14213D"/><rect x="0" y="4" width="2" height="1" fill="#14213D"/><rect x="2" y="4" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="4" width="1" height="1" fill="#14213D"/><rect x="8" y="4" width="6" height="1" fill="#F3F0EA"/><rect x="14" y="4" width="2" height="1" fill="#14213D"/><rect x="0" y="5" width="2" height="1" fill="#14213D"/><rect x="2" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="5" width="4" height="1" fill="#14213D"/><rect x="8" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="5" width="2" height="1" fill="#14213D"/><rect x="12" y="5" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="5" width="2" height="1" fill="#14213D"/><rect x="0" y="6" width="2" height="1" fill="#14213D"/><rect x="2" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="6" width="4" height="1" fill="#14213D"/><rect x="8" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="6" width="2" height="1" fill="#14213D"/><rect x="12" y="6" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="6" width="2" height="1" fill="#14213D"/><rect x="0" y="7" width="2" height="1" fill="#14213D"/><rect x="2" y="7" width="4" height="1" fill="#F3F0EA"/><rect x="6" y="7" width="2" height="1" fill="#14213D"/><rect x="8" y="7" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="7" width="2" height="1" fill="#14213D"/><rect x="12" y="7" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="7" width="2" height="1" fill="#14213D"/><rect x="0" y="8" width="2" height="1" fill="#14213D"/><rect x="2" y="8" width="4" height="1" fill="#F3F0EA"/><rect x="6" y="8" width="2" height="1" fill="#14213D"/><rect x="8" y="8" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="8" width="2" height="1" fill="#14213D"/><rect x="12" y="8" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="8" width="2" height="1" fill="#14213D"/><rect x="0" y="9" width="2" height="1" fill="#14213D"/><rect x="2" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="9" width="4" height="1" fill="#14213D"/><rect x="8" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="9" width="2" height="1" fill="#14213D"/><rect x="12" y="9" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="9" width="2" height="1" fill="#14213D"/><rect x="0" y="10" width="2" height="1" fill="#14213D"/><rect x="2" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="4" y="10" width="4" height="1" fill="#14213D"/><rect x="8" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="10" y="10" width="2" height="1" fill="#14213D"/><rect x="12" y="10" width="2" height="1" fill="#F3F0EA"/><rect x="14" y="10" width="2" height="1" fill="#14213D"/><rect x="0" y="11" width="2" height="1" fill="#14213D"/><rect x="2" y="11" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="11" width="1" height="1" fill="#14213D"/><rect x="8" y="11" width="6" height="1" fill="#F3F0EA"/><rect x="14" y="11" width="2" height="1" fill="#14213D"/><rect x="0" y="12" width="2" height="1" fill="#14213D"/><rect x="2" y="12" width="5" height="1" fill="#F3F0EA"/><rect x="7" y="12" width="1" height="1" fill="#14213D"/><rect x="8" y="12" width="5" height="1" fill="#F3F0EA"/><rect x="13" y="12" width="3" height="1" fill="#14213D"/><rect x="0" y="13" width="16" height="1" fill="#14213D"/><rect x="0" y="14" width="16" height="1" fill="#14213D"/><rect x="0" y="15" width="16" height="1" fill="#14213D"/><g stroke="#727886" stroke-width=".04" opacity=".55"><path d="M1 0V16M0 1H16"/><path d="M2 0V16M0 2H16"/><path d="M3 0V16M0 3H16"/><path d="M4 0V16M0 4H16"/><path d="M5 0V16M0 5H16"/><path d="M6 0V16M0 6H16"/><path d="M7 0V16M0 7H16"/><path d="M8 0V16M0 8H16"/><path d="M9 0V16M0 9H16"/><path d="M10 0V16M0 10H16"/><path d="M11 0V16M0 11H16"/><path d="M12 0V16M0 12H16"/><path d="M13 0V16M0 13H16"/><path d="M14 0V16M0 14H16"/><path d="M15 0V16M0 15H16"/></g></svg><figcaption>16 × 8 확대</figcaption></figure>
+        <figure class="zoom"><svg viewBox="0 0 16 16" width="128" height="128" shape-rendering="crispEdges" role="img" aria-label="16px 다크 격자 8배 확대"><rect x="0" y="0" width="16" height="1" fill="#9E2F28"/><rect x="0" y="1" width="16" height="1" fill="#9E2F28"/><rect x="0" y="2" width="16" height="1" fill="#9E2F28"/><rect x="0" y="3" width="2" height="1" fill="#9E2F28"/><rect x="2" y="3" width="5" height="1" fill="#F2EFE8"/><rect x="7" y="3" width="1" height="1" fill="#9E2F28"/><rect x="8" y="3" width="5" height="1" fill="#F2EFE8"/><rect x="13" y="3" width="3" height="1" fill="#9E2F28"/><rect x="0" y="4" width="2" height="1" fill="#9E2F28"/><rect x="2" y="4" width="5" height="1" fill="#F2EFE8"/><rect x="7" y="4" width="1" height="1" fill="#9E2F28"/><rect x="8" y="4" width="6" height="1" fill="#F2EFE8"/><rect x="14" y="4" width="2" height="1" fill="#9E2F28"/><rect x="0" y="5" width="2" height="1" fill="#9E2F28"/><rect x="2" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="4" y="5" width="4" height="1" fill="#9E2F28"/><rect x="8" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="5" width="2" height="1" fill="#9E2F28"/><rect x="12" y="5" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="5" width="2" height="1" fill="#9E2F28"/><rect x="0" y="6" width="2" height="1" fill="#9E2F28"/><rect x="2" y="6" width="2" height="1" fill="#F2EFE8"/><rect x="4" y="6" width="4" height="1" fill="#9E2F28"/><rect x="8" y="6" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="6" width="2" height="1" fill="#9E2F28"/><rect x="12" y="6" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="6" width="2" height="1" fill="#9E2F28"/><rect x="0" y="7" width="2" height="1" fill="#9E2F28"/><rect x="2" y="7" width="4" height="1" fill="#F2EFE8"/><rect x="6" y="7" width="2" height="1" fill="#9E2F28"/><rect x="8" y="7" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="7" width="2" height="1" fill="#9E2F28"/><rect x="12" y="7" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="7" width="2" height="1" fill="#9E2F28"/><rect x="0" y="8" width="2" height="1" fill="#9E2F28"/><rect x="2" y="8" width="4" height="1" fill="#F2EFE8"/><rect x="6" y="8" width="2" height="1" fill="#9E2F28"/><rect x="8" y="8" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="8" width="2" height="1" fill="#9E2F28"/><rect x="12" y="8" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="8" width="2" height="1" fill="#9E2F28"/><rect x="0" y="9" width="2" height="1" fill="#9E2F28"/><rect x="2" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="4" y="9" width="4" height="1" fill="#9E2F28"/><rect x="8" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="9" width="2" height="1" fill="#9E2F28"/><rect x="12" y="9" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="9" width="2" height="1" fill="#9E2F28"/><rect x="0" y="10" width="2" height="1" fill="#9E2F28"/><rect x="2" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="4" y="10" width="4" height="1" fill="#9E2F28"/><rect x="8" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="10" y="10" width="2" height="1" fill="#9E2F28"/><rect x="12" y="10" width="2" height="1" fill="#F2EFE8"/><rect x="14" y="10" width="2" height="1" fill="#9E2F28"/><rect x="0" y="11" width="2" height="1" fill="#9E2F28"/><rect x="2" y="11" width="5" height="1" fill="#F2EFE8"/><rect x="7" y="11" width="1" height="1" fill="#9E2F28"/><rect x="8" y="11" width="6" height="1" fill="#F2EFE8"/><rect x="14" y="11" width="2" height="1" fill="#9E2F28"/><rect x="0" y="12" width="2" height="1" fill="#9E2F28"/><rect x="2" y="12" width="5" height="1" fill="#F2EFE8"/><rect x="7" y="12" width="1" height="1" fill="#9E2F28"/><rect x="8" y="12" width="5" height="1" fill="#F2EFE8"/><rect x="13" y="12" width="3" height="1" fill="#9E2F28"/><rect x="0" y="13" width="16" height="1" fill="#9E2F28"/><rect x="0" y="14" width="16" height="1" fill="#9E2F28"/><rect x="0" y="15" width="16" height="1" fill="#9E2F28"/><g stroke="#727886" stroke-width=".04" opacity=".55"><path d="M1 0V16M0 1H16"/><path d="M2 0V16M0 2H16"/><path d="M3 0V16M0 3H16"/><path d="M4 0V16M0 4H16"/><path d="M5 0V16M0 5H16"/><path d="M6 0V16M0 6H16"/><path d="M7 0V16M0 7H16"/><path d="M8 0V16M0 8H16"/><path d="M9 0V16M0 9H16"/><path d="M10 0V16M0 10H16"/><path d="M11 0V16M0 11H16"/><path d="M12 0V16M0 12H16"/><path d="M13 0V16M0 13H16"/><path d="M14 0V16M0 14H16"/><path d="M15 0V16M0 15H16"/></g></svg><figcaption>다크 탭용 (svg만)</figcaption></figure>
+      </div></div>
+  </div>
+</section>
+  <section id="s2" class="blk" aria-labelledby="s2h">
+  <div class="sec-h"><h2 id="s2h"><span class="blk__no">2</span>OG 이미지 1200×630</h2><span class="rh" aria-hidden="true" lang="en">OPEN GRAPH</span></div>
+  <p class="sub2">D0 견본 티켓을 정리했다. 스텁 31% · 세로 천공 · 위아래 노치 · 본문. 면은 라이트 티켓 토큰 고정(<code>--ticket</code> #14213D · <code>--ticket-fg</code> · <code>--ticket-fg-2</code> · 천공 <code>--paper</code>) — 옛 <code>--og-*</code> 4개를 없앤다. 네이비 면 위 대회 색은 다크 값. <b>결과 노출 0</b> — 스코어 · 순위 · 승점 · 폼 · 5줄 · 원제목 · 포메이션 · 한줄평 없음.</p>
+  <h3 class="h3">기본 · 날짜 <small lang="en">DEFAULT · ISSUE</small></h3>
+  <div class="ogset">
+    <div class="ogf ogf--hero"><p class="ogf__l"><span class="path">/og/default.png</span><span>홈 <span class="path">/</span> · 쪽 이름형 OG의 바탕</span></p><div class="og og--a" data-solo="og-default" role="img" aria-label="유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에."><div class="oga__stub "><p class="oga__mark" aria-hidden="true">ED</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft oga__ft--tag">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div></div></div>
+    <div class="ogset ogset--2">
+      <div class="ogf"><p class="ogf__l"><span class="path">/og/news/2026-11-02.png</span><span>제 22호 · <span class="path">/news/</span> 최신 호</span></p><div class="og og--a" data-solo="og-news-22" role="img" aria-label="유로 다이제스트 제 22호, 2026년 11월 2일 (월)"><div class="oga__stub "><p class="oga__no"><span class="k">제</span><span class="n">22</span><span class="k">호</span></p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft">2026년 11월 2일 (월)</p></div></div></div>
+      <div class="ogf"><p class="ogf__l"><span class="path">/og/news/2027-01-19.png</span><span>제 100호 — 3자리도 같은 크기</span></p><div class="og og--a" data-solo="og-news-100" role="img" aria-label="유로 다이제스트 제 100호, 2027년 1월 19일 (화)"><div class="oga__stub "><p class="oga__no"><span class="k">제</span><span class="n">100</span><span class="k">호</span></p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft">2027년 1월 19일 (화)</p></div></div></div>
+    </div>
+  </div>
+  <h3 class="h3">대회 <small lang="en">COMPETITIONS · 6</small></h3>
+  <div class="ogset ogset--3"><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/epl.png</span></p><div class="og og--a" data-solo="og-c-epl" role="img" aria-label="유로 다이제스트 · 프리미어리그 2026-27 시즌"><div class="oga__stub tab--epl oga__stub--c"><p class="oga__short">EPL</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__season"><span class="n">2026-27</span> 시즌</p><p class="oga__name">프리미어리그</p><p class="oga__en2" lang="en">Premier League</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/bundesliga.png</span></p><div class="og og--a" data-solo="og-c-bundesliga" role="img" aria-label="유로 다이제스트 · 분데스리가 2026-27 시즌"><div class="oga__stub tab--bundesliga oga__stub--c"><p class="oga__short">분데스</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__season"><span class="n">2026-27</span> 시즌</p><p class="oga__name">분데스리가</p><p class="oga__en2" lang="en">Bundesliga</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/competitions/ucl.png</span></p><div class="og og--a" data-solo="og-c-ucl" role="img" aria-label="유로 다이제스트 · UEFA 챔피언스리그 2026-27 시즌"><div class="oga__stub tab--ucl oga__stub--c"><p class="oga__short">UCL</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__season"><span class="n">2026-27</span> 시즌</p><p class="oga__name">UEFA 챔피언스리그</p><p class="oga__en2" lang="en">UEFA Champions League</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div></div>
+  <div class="ogset ogset--3" style="margin-top:14px"><div class="ogf ogf--s"><p class="ogf__l"><span class="path">/og/competitions/laliga.png</span><span>축소판</span></p><div class="og og--a" data-solo="og-c-laliga" role="img" aria-label="유로 다이제스트 · 라리가 2026-27 시즌"><div class="oga__stub tab--laliga oga__stub--c"><p class="oga__short">라리가</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__season"><span class="n">2026-27</span> 시즌</p><p class="oga__name">라리가</p><p class="oga__en2" lang="en">LaLiga</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div><div class="ogf ogf--s"><p class="ogf__l"><span class="path">/og/competitions/seriea.png</span><span>축소판</span></p><div class="og og--a" data-solo="og-c-seriea" role="img" aria-label="유로 다이제스트 · 세리에 A 2026-27 시즌"><div class="oga__stub tab--seriea oga__stub--c"><p class="oga__short">세리에A</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__season"><span class="n">2026-27</span> 시즌</p><p class="oga__name">세리에 A</p><p class="oga__en2" lang="en">Serie A</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div><div class="ogf ogf--s"><p class="ogf__l"><span class="path">/og/competitions/ligue1.png</span><span>축소판</span></p><div class="og og--a" data-solo="og-c-ligue1" role="img" aria-label="유로 다이제스트 · 리그 1 2026-27 시즌"><div class="oga__stub tab--ligue1 oga__stub--c"><p class="oga__short">리그1</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__season"><span class="n">2026-27</span> 시즌</p><p class="oga__name">리그 1</p><p class="oga__en2" lang="en">Ligue 1</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div></div>
+  <h3 class="h3">팀 <small lang="en">TEAMS · 111</small></h3>
+  <div class="ogset ogset--2"><div class="ogf"><p class="ogf__l"><span class="path">/og/teams/rennes.png</span><span>이름 1자</span></p><div class="og og--a" data-solo="og-t-rennes" role="img" aria-label="유로 다이제스트 · 렌 (REN) · 리그 1"><div class="oga__stub oga__stub--k"><div class="oga__kit" style="--k1:#CB2E23;--k2:#000000;--kf:#FFFFFF"><b>REN</b><i></i></div></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__tabs"><span class="oga__tab tab--ligue1">리그1</span></p><p class="oga__name">렌</p><p class="oga__en2" lang="en">Stade Rennais FC 1901</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/teams/atletico-madrid.png</span><span>10자 · 두 줄</span></p><div class="og og--a" data-solo="og-t-atletico-madrid" role="img" aria-label="유로 다이제스트 · 아틀레티코 마드리드 (ATL) · 라리가 · UEFA 챔피언스리그"><div class="oga__stub oga__stub--k"><div class="oga__kit" style="--k1:#C73423;--k2:#272E61;--kf:#FFFFFF"><b>ATL</b><i></i></div></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__tabs"><span class="oga__tab tab--laliga">라리가</span><span class="oga__tab tab--ucl">UCL</span></p><p class="oga__name">아틀레티코 마드리드</p><p class="oga__en2" lang="en">Club Atlético de Madrid</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/teams/borussia-monchengladbach.png</span><span>흰 상의 — 면 경계 지면색 테두리</span></p><div class="og og--a" data-solo="og-t-borussia-monchengladbach" role="img" aria-label="유로 다이제스트 · 묀헨글라트바흐 (BMG) · 분데스리가"><div class="oga__stub oga__stub--k"><div class="oga__kit" style="--k1:#FFFFFF;--k2:#000000;--kf:#14213D"><b>BMG</b><i></i></div></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__tabs"><span class="oga__tab tab--bundesliga">분데스</span></p><p class="oga__name">묀헨글라트바흐</p><p class="oga__en2" lang="en">Borussia Mönchengladbach</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div><div class="ogf"><p class="ogf__l"><span class="path">/og/teams/bayern-munchen.png</span><span>소속 + UCL 탭 2개</span></p><div class="og og--a" data-solo="og-t-bayern-munchen" role="img" aria-label="유로 다이제스트 · 바이에른 뮌헨 (FCB) · 분데스리가 · UEFA 챔피언스리그"><div class="oga__stub oga__stub--k"><div class="oga__kit" style="--k1:#D3052B;--k2:#FFFFFF;--kf:#FFFFFF"><b>FCB</b><i></i></div></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__tabs"><span class="oga__tab tab--bundesliga">분데스</span><span class="oga__tab tab--ucl">UCL</span></p><p class="oga__name">바이에른 뮌헨</p><p class="oga__en2" lang="en">FC Bayern München</p><p class="oga__sig">유로 다이제스트 <span lang="en">EURO DIGEST</span></p></div></div></div></div>
+  <h3 class="h3">링크 미리보기 <small lang="en">PREVIEW</small></h3>
+  <div class="pv">
+  <div class="ogf"><p class="ogf__l"><b>twitter:card summary_large_image</b><span>1.91:1 큰 카드 — 지금 값 summary는 작은 정사각만 나온다</span></p>
+    <div class="grid2"><figure class="pv__x"><div class="og og--a" data-solo="pv-default" role="img" aria-label="유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에."><div class="oga__stub "><p class="oga__mark" aria-hidden="true">ED</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft oga__ft--tag">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div></div><p>유로 다이제스트<span>sguys99.github.io</span></p></figure><figure class="pv__x pv__x--d"><div class="og og--a" data-solo="pv-news" role="img" aria-label="유로 다이제스트 제 22호, 2026년 11월 2일 (월)"><div class="oga__stub "><p class="oga__no"><span class="k">제</span><span class="n">22</span><span class="k">호</span></p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft">2026년 11월 2일 (월)</p></div></div><p>제 22호 · 2026년 11월 2일 (월) · 유로 다이제스트<span>sguys99.github.io</span></p></figure></div>
+    <p class="alt">홈 <span class="path">/</span> → <span class="path">/og/default.png</span> · <code class="path">og:image:alt</code> <q>유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에.</q></p>
+    <p class="alt">뉴스 <span class="path">/news/</span> → 최신 호 <span class="path">/og/news/2026-11-02.png</span> · <code class="path">og:image:alt</code> <q>유로 다이제스트 제 22호, 2026년 11월 2일 (월)</q></p>
+  </div>
+  <div class="ogf"><p class="ogf__l"><b>메신저 미리보기</b><span>폭 240px · 정사각 가운데 자르기 64px</span></p>
+    <div class="msg msg--l"><div class="msg__b"><div class="og og--a" data-solo="pv-default" role="img" aria-label="유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에."><div class="oga__stub "><p class="oga__mark" aria-hidden="true">ED</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft oga__ft--tag">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div></div><p>유로 다이제스트<span>매일 아침, 밤사이 유럽 축구를 한눈에.</span><span>sguys99.github.io</span></p></div><div class="msg__sq"><div class="sq"><div class="og og--a" data-solo="pv-news" role="img" aria-label="유로 다이제스트 제 22호, 2026년 11월 2일 (월)"><div class="oga__stub "><p class="oga__no"><span class="k">제</span><span class="n">22</span><span class="k">호</span></p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft">2026년 11월 2일 (월)</p></div></div></div><p>제 22호 · 2026년 11월 2일 (월) · 유로 다이제스트<span>sguys99.github.io</span></p></div></div>
+    <div class="msg msg--d"><div class="msg__b"><div class="og og--a" data-solo="pv-news" role="img" aria-label="유로 다이제스트 제 22호, 2026년 11월 2일 (월)"><div class="oga__stub "><p class="oga__no"><span class="k">제</span><span class="n">22</span><span class="k">호</span></p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft">2026년 11월 2일 (월)</p></div></div><p>제 22호 · 2026년 11월 2일 (월) · 유로 다이제스트<span>오늘의 5줄과 유럽 축구 소식</span><span>sguys99.github.io</span></p></div><div class="msg__sq"><div class="sq"><div class="og og--a" data-solo="pv-default" role="img" aria-label="유로 다이제스트 — 매일 아침, 밤사이 유럽 축구를 한눈에."><div class="oga__stub "><p class="oga__mark" aria-hidden="true">ED</p></div><span class="oga__perf" aria-hidden="true"></span><div class="oga__main"><p class="oga__wm">유로 다이제스트</p><p class="oga__en" lang="en">EURO DIGEST</p><p class="oga__ft oga__ft--tag">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div></div></div><p>유로 다이제스트<span>sguys99.github.io</span></p></div></div>
+  </div>
+</div>
+</section>
+  <section id="s3" class="blk" aria-labelledby="s3h">
+  <div class="sec-h"><h2 id="s3h"><span class="blk__no">3</span>빈 상태 조형</h2><span class="rh" aria-hidden="true" lang="en">EMPTY</span></div>
+  <p class="sub2">'아직 검표하지 않은 표'. 새 그림 없이 D2 입장권(1.5px 잉크 테두리 · 점선 절취선 · 노치)과 이적 단계 펀치 구멍만 쓴다. 표 안의 날짜 · 상대는 설정 파일 실값이다.</p>
+  <div class="es grid2" style="margin-top:18px">
+    <figure class="ctx"><figcaption class="ctx__lbl"><b>비시즌 · 종료</b><span>견본 날 6월 7일 — 결승 다음 날부터 · UCL endDate</span></figcaption><div class="sec-h"><h3 class="h">오늘의 5줄</h3><span class="rh" aria-hidden="true" lang="en">STARTING FIVE</span></div><p class="sub">6월 6일 경기 기준</p><article class="adm " aria-label="UEFA 챔피언스리그 2026-27 시즌 종료 2027년 6월 5일 (토)"><div class="adm__stub"><time class="adm__n" datetime="2027-06-05">06.05</time><span class="adm__y n">2027</span><span class="adm__k">종료</span></div><span class="adm__perf" aria-hidden="true"></span><div class="adm__body"><p class="adm__c"><span class="ftab tab--ucl" title="UEFA 챔피언스리그">UCL</span><span>UEFA 챔피언스리그 <span class="n">2026-27</span> 시즌</span></p><p class="adm__note">시즌이 끝났어요. 다음 시즌 일정이 나오면 이 자리에 다시 채워집니다.</p><a class="tlink" href="#top">주요 뉴스로<span aria-hidden="true"> ↓</span></a></div></article><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>평탄 탭 + “2027.06.05 종료” 34px + 안내 — 글자만</span></div><div class="ba__row"><span class="ba__k">새</span><span>종료 입장권 — 스텁에 날짜 N2 · 본문에 대회 탭 · 시즌 · 안내</span></div></div></figure>
+    <figure class="ctx"><figcaption class="ctx__lbl"><b>비시즌 · 개막</b><span>견본 날 8월 15일 — 2027-28 설정 전이라 라리가 지난 개막일</span></figcaption><div class="sec-h"><h3 class="h">오늘의 5줄</h3><span class="rh" aria-hidden="true" lang="en">STARTING FIVE</span></div><p class="sub">8월 14일 경기 기준</p><article class="adm adm--sample" aria-label="견본: 라리가 2026-27 시즌 개막 2026년 8월 16일 (일)"><div class="adm__stub"><time class="adm__n" datetime="2026-08-16">08.16</time><span class="adm__y n">2026</span><span class="adm__k">개막</span></div><span class="adm__perf" aria-hidden="true"></span><div class="adm__body"><p class="adm__c"><span class="ftab tab--laliga" title="라리가">라리가</span><span>라리가 <span class="n">2026-27</span> 시즌</span><span class="stamp stamp--ph">견본</span></p><p class="adm__note">아직 시즌 전이에요. 경기가 열리면 이 자리에 5줄이 채워집니다.</p></div></article><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>평탄 탭 + 날짜 + “개막” — 글자만</span></div><div class="ba__row"><span class="ba__k">새</span><span>개막 입장권 — 같은 틀, 낱말만 “개막”</span></div></div></figure>
+    <figure class="ctx"><figcaption class="ctx__lbl"><b>휴식기 · A매치 기간</b><span>견본 날 11월 12일 — national-team.json 경기일 ±3일</span></figcaption><div class="sec-h"><h3 class="h">오늘의 5줄</h3><span class="rh" aria-hidden="true" lang="en">STARTING FIVE</span></div><p class="sub">11월 11일 경기 기준</p><div class="restA"><p class="lead">오늘은 5줄을 쉽니다</p><p class="body2">전날 6개 대회에 끝난 경기가 없었습니다.</p><p class="restA__w"><span class="stamp">A매치 기간</span><span class="n">11.10 – 11.20</span></p><div class="stackA"><article class="adm adm--intl adm--i0" aria-label="A매치 11월 13일 (금) 23:30 KST 사우디아라비아 도하 (카타르) 원정 친선경기"><div class="adm__stub"><time class="adm__n" datetime="2026-11-13T14:30:00.000Z">11.13</time><span class="adm__y">(금) <span class="n">23:30</span></span><span class="adm__k">KST</span></div><span class="adm__perf" aria-hidden="true"></span><div class="adm__body"><p class="adm__c"><span class="stamp">친선경기</span><span class="adm__h">대한민국 <span class="vs">vs</span> 사우디아라비아</span></p><p class="adm__note">도하 (카타르) · 원정</p></div></article><article class="adm adm--intl adm--i1" aria-label="A매치 11월 17일 (화) 23:00 KST 카타르 도하 (카타르) 원정 친선경기"><div class="adm__stub"><time class="adm__n" datetime="2026-11-17T14:00:00.000Z">11.17</time><span class="adm__y">(화) <span class="n">23:00</span></span><span class="adm__k">KST</span></div><span class="adm__perf" aria-hidden="true"></span><div class="adm__body"><p class="adm__c"><span class="stamp">친선경기</span><span class="adm__h">대한민국 <span class="vs">vs</span> 카타르</span></p><p class="adm__note">도하 (카타르) · 원정</p></div></article></div><a class="tlink" href="#top">주요 뉴스로<span aria-hidden="true"> ↓</span></a></div><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>S4 그대로 — 레드 윤곽 ‘0’ + “오늘은 5줄을 쉽니다” + 이유 1줄</span></div><div class="ba__row"><span class="ba__k">새</span><span>S4 문구 아래 A매치 입장권 2장 겹침(11.13 · 11.17, 도하) — <b>새 S4 변형(결정 필요)</b></span></div></div></figure>
+    <figure class="ctx"><figcaption class="ctx__lbl"><b>검색 결과 없음</b><span>오버레이 · <span class="path">/search/</span> 공용 · e2e 0건 질의</span></figcaption><div class="srch"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20.5 20.5"/></svg><span lang="en">Magdeburg</span></div><article class="adm adm--chk" aria-label="“Magdeburg” 결과 없음 — 선수 0 팀 0 대회 0 뉴스 0"><div class="adm__stub"><ol class="chk4" role="list"><li><i aria-hidden="true"></i><span>선수 <span class="n">0</span></span></li><li><i aria-hidden="true"></i><span>팀 <span class="n">0</span></span></li><li><i aria-hidden="true"></i><span>대회 <span class="n">0</span></span></li><li><i aria-hidden="true"></i><span>뉴스 <span class="n">0</span></span></li></ol></div><span class="adm__perf" aria-hidden="true"></span><div class="adm__body"><p class="adm__h"><span class="adm__q">“<span lang="en">Magdeburg</span>”</span> 결과가 없어요</p><p class="adm__note">선수 · 팀은 한글이나 영문 이름으로, 뉴스는 제목과 태그로 찾아요</p></div></article><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>윤곽 ‘0’ 64px + “결과가 없어요” + 안내</span></div><div class="ba__row"><span class="ba__k">새</span><span>검표 4칸(선수 · 팀 · 대회 · 뉴스)이 모두 빈 작은 표 — 유형별 0을 한 번에</span></div></div></figure>
+  </div>
+  <figure class="ctx" style="margin-top:16px"><figcaption class="ctx__lbl"><b>/offline/ 화면</b><span>서비스 워커가 저장하지 않은 쪽을 열면 — 셸은 /status와 같다</span></figcaption><div class="sec-h"><h3 class="h">연결이 끊겨 열 수 없어요</h3><span class="rh" aria-hidden="true" lang="en">OFFLINE</span></div>
+  <div class="offA"><div class="offA__s"><span class="adm__n">3</span><span class="adm__k">저장한 호</span></div>
+    <div class="offA__b"><p class="lead">이 페이지는 아직 저장해 두지 않았어요.</p><p class="body2">연결이 돌아오면 다시 열어 주세요. 저장해 둔 최근 호는 연결 없이도 볼 수 있어요.</p><button class="btn btn--sm" type="button"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M19 12a7 7 0 1 1-2.05-4.95"/><path d="M19.5 4.5V9H15"/></svg>다시 시도</button></div></div>
+  <div class="sec-h sec-h--thin" style="margin-top:28px"><h4 class="h">저장해 둔 호</h4><span class="rh" aria-hidden="true" lang="en">SAVED</span></div>
+  <ul class="offline-list" role="list"><li><a href="#top"><span class="d">11.02</span><span class="w">(월)</span><span class="no">제 <span class="n">22</span>호</span></a></li><li><a href="#top"><span class="d">11.01</span><span class="w">(일)</span><span class="no">제 <span class="n">21</span>호</span></a></li><li><a href="#top"><span class="d">10.31</span><span class="w">(토)</span><span class="no">제 <span class="n">20</span>호</span></a></li></ul><div class="ba"><div class="ba__row"><span class="ba__k">지금</span><span>h1 + OFFLINE + 안내 2줄 + 다시 시도 + 저장해 둔 호 목록 — 글자만</span></div><div class="ba__row"><span class="ba__k">새</span><span>스텁만 남은 표 — 저장한 호(실선 스텁) · 열 수 없는 쪽(점선 본문). 목록은 괘선 사이 행 그대로</span></div></div></figure>
+</section>
+</div>
+<div class="divider divider--screen" id="s4"><span><b>화면 4 · /status/</b> 앱 셸 안의 한 쪽 — 뒤표지 링크로 들어온다</span><span class="divider__info">375 하단 탭 · 1024+ 상단 내비 · 목차 열</span></div>
+<div class="scr"><div class="shell">
+<header class="ticket">
+  <div class="ticket__brand"><p class="wordmark"><a href="#top">유로 다이제스트</a></p><p class="wordmark-en" lang="en" aria-hidden="true">EURO DIGEST</p><p class="tagline">매일 아침, 밤사이 유럽 축구를 한눈에.</p></div>
+  <div class="ticket__tools"><button class="ibtn" type="button" aria-label="검색"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 20.5 20.5"/></svg></button><button class="ibtn" type="button" data-theme-toggle aria-label="테마: 시스템 설정"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg></button></div>
+  <div class="ticket__perf" aria-hidden="true"></div>
+  <p class="issue"><span class="issue__k">제</span><span class="issue__n">22</span><span class="issue__k">호</span></p>
+  <p class="stub"><time datetime="2026-11-02">2026년 11월 2일 (월)</time><span>발행 <time datetime="2026-11-02T07:18+09:00">07:18</time> KST</span></p>
+</header>
+<nav class="topnav" aria-label="주 메뉴"><a href="#top">홈</a><a href="#top">뉴스</a><a href="#top">리그</a><a href="#top">한국 선수</a><a href="#top">마이</a><span class="topnav__upd">마지막 업데이트 <time datetime="2026-11-02T07:18+09:00">07:18</time> KST</span></nav>
+<div class="layout">
+  <aside class="contents" aria-label="이 쪽 목차"><div class="sec-h"><h2 class="h">이 쪽</h2><span class="rh" aria-hidden="true" lang="en">CONTENTS</span></div>
+    <ul class="toc" role="list"><li><a href="#st-last"><span>마지막 발행</span><i></i><span class="n">07:18</span></a></li><li><a href="#st-30"><span>최근 30일</span><i></i><span class="n">96.0%</span></a></li><li><a href="#st-src"><span>소스</span><i></i><span class="n">13</span></a></li><li><a href="#st-cost"><span>이번 달 비용</span><i></i><span class="n">3.56%</span></a></li></ul></aside>
+  <main class="page" id="main">
+    <div class="sec-h"><h1 class="h">발행 상태</h1><span class="rh" aria-hidden="true" lang="en">STATUS</span></div>
+    <p class="st-basis">이 쪽 기준 <time datetime="2026-11-02T13:39+09:00">11월 2일 (월) 13:39 KST</time> · 발행할 때마다 다시 만든다</p>
+
+    <section id="st-last" class="stA" aria-labelledby="st-last-h">
+      <h2 id="st-last-h" class="sr">마지막 발행</h2>
+      <div class="tixA"><div class="tixA__stub"><p class="tixA__k">마지막 발행</p><p class="tixA__no"><span class="k">제</span><span class="n">22</span><span class="k">호</span></p><p class="tixA__d"><time datetime="2026-11-02">2026년 11월 2일 (월)</time></p></div><span class="tixA__perf" aria-hidden="true"></span>
+      <div class="tixA__main"><p class="tixA__big"><time datetime="2026-11-02T07:18+09:00" class="n">07:18</time><span>KST</span></p><p class="tixA__cap">수집 완료 · 시작 <span class="n">07:12</span></p>
+        <p class="tixA__vs"><span>공개 목표 <b class="n">07:30</b></span><span>목표보다 <b class="n">12</b>분 앞</span></p>
+        <p class="tixA__ph"><b>자리</b> 배포 완료 시각 — 실행 기록에 없음 · 채울 단계 <span class="n">M5-15</span></p></div></div>
+    </section>
+
+    <section id="st-30" class="stA" aria-labelledby="st-30-h">
+      <div class="sec-h sec-h--thin"><h2 id="st-30-h" class="h">최근 30일</h2><span class="rh" aria-hidden="true" lang="en">30 DAYS</span></div>
+      <div class="rateA"><p class="rateA__n"><span class="n">96.0</span><span class="u">%</span></p><p class="rateA__c"><b>실행 성공률</b> prod 수집 <span class="n">25</span>회 중 <span class="n">24</span>회 성공 · 실패 <span class="n">1</span>회<br><span class="n">10.04 – 11.02</span> · 운영 리포트와 같은 셈</p></div>
+      <ol class="ph30" role="list" aria-label="최근 30일 발행일 띠"><li class="h h--prelaunch" title="10월 4일 (일) 창간 전"><i aria-hidden="true"></i><span class="sr">10월 4일 (일) 창간 전</span><span class="ph30__t" aria-hidden="true">10.04</span></li><li class="h h--prelaunch" title="10월 5일 (월) 창간 전"><i aria-hidden="true"></i><span class="sr">10월 5일 (월) 창간 전</span></li><li class="h h--prelaunch" title="10월 6일 (화) 창간 전"><i aria-hidden="true"></i><span class="sr">10월 6일 (화) 창간 전</span></li><li class="h h--prelaunch" title="10월 7일 (수) 창간 전"><i aria-hidden="true"></i><span class="sr">10월 7일 (수) 창간 전</span></li><li class="h h--prelaunch" title="10월 8일 (목) 창간 전"><i aria-hidden="true"></i><span class="sr">10월 8일 (목) 창간 전</span></li><li class="h h--prelaunch" title="10월 9일 (금) 창간 전"><i aria-hidden="true"></i><span class="sr">10월 9일 (금) 창간 전</span></li><li class="h h--prelaunch" title="10월 10일 (토) 창간 전"><i aria-hidden="true"></i><span class="sr">10월 10일 (토) 창간 전</span></li><li class="h h--prelaunch" title="10월 11일 (일) 창간 전"><i aria-hidden="true"></i><span class="sr">10월 11일 (일) 창간 전</span></li><li class="h h--late" title="10월 12일 (월) 제 1호 늦음 · 수집 완료 20:28"><i aria-hidden="true"></i><span class="sr">10월 12일 (월) 제 1호 늦음 · 수집 완료 20:28</span><span class="ph30__t" aria-hidden="true">10.12</span></li><li class="h h--ontime" title="10월 13일 (화) 제 2호 정시 · 수집 완료 00:28"><i aria-hidden="true"></i><span class="sr">10월 13일 (화) 제 2호 정시 · 수집 완료 00:28</span></li><li class="h h--late" title="10월 14일 (수) 제 3호 늦음 · 수집 완료 22:30"><i aria-hidden="true"></i><span class="sr">10월 14일 (수) 제 3호 늦음 · 수집 완료 22:30</span></li><li class="h h--missed" title="10월 15일 (목) 제 4호 결호"><i aria-hidden="true"></i><span class="sr">10월 15일 (목) 제 4호 결호</span></li><li class="h h--missed" title="10월 16일 (금) 제 5호 결호"><i aria-hidden="true"></i><span class="sr">10월 16일 (금) 제 5호 결호</span></li><li class="h h--late" title="10월 17일 (토) 제 6호 늦음 · 수집 완료 21:58"><i aria-hidden="true"></i><span class="sr">10월 17일 (토) 제 6호 늦음 · 수집 완료 21:58</span></li><li class="h h--late" title="10월 18일 (일) 제 7호 늦음 · 수집 완료 14:38"><i aria-hidden="true"></i><span class="sr">10월 18일 (일) 제 7호 늦음 · 수집 완료 14:38</span></li><li class="h h--missed" title="10월 19일 (월) 제 8호 결호"><i aria-hidden="true"></i><span class="sr">10월 19일 (월) 제 8호 결호</span><span class="ph30__t" aria-hidden="true">10.19</span></li><li class="h h--late" title="10월 20일 (화) 제 9호 늦음 · 수집 완료 09:42"><i aria-hidden="true"></i><span class="sr">10월 20일 (화) 제 9호 늦음 · 수집 완료 09:42</span></li><li class="h h--late" title="10월 21일 (수) 제 10호 늦음 · 수집 완료 09:09"><i aria-hidden="true"></i><span class="sr">10월 21일 (수) 제 10호 늦음 · 수집 완료 09:09</span></li><li class="h h--late" title="10월 22일 (목) 제 11호 늦음 · 수집 완료 09:14"><i aria-hidden="true"></i><span class="sr">10월 22일 (목) 제 11호 늦음 · 수집 완료 09:14</span></li><li class="h h--late" title="10월 23일 (금) 제 12호 늦음 · 수집 완료 09:10"><i aria-hidden="true"></i><span class="sr">10월 23일 (금) 제 12호 늦음 · 수집 완료 09:10</span></li><li class="h h--late" title="10월 24일 (토) 제 13호 늦음 · 수집 완료 09:00"><i aria-hidden="true"></i><span class="sr">10월 24일 (토) 제 13호 늦음 · 수집 완료 09:00</span></li><li class="h h--late" title="10월 25일 (일) 제 14호 늦음 · 수집 완료 08:45"><i aria-hidden="true"></i><span class="sr">10월 25일 (일) 제 14호 늦음 · 수집 완료 08:45</span></li><li class="h h--missed" title="10월 26일 (월) 제 15호 결호"><i aria-hidden="true"></i><span class="sr">10월 26일 (월) 제 15호 결호</span><span class="ph30__t" aria-hidden="true">10.26</span></li><li class="h h--late" title="10월 27일 (화) 제 16호 늦음 · 수집 완료 10:33"><i aria-hidden="true"></i><span class="sr">10월 27일 (화) 제 16호 늦음 · 수집 완료 10:33</span></li><li class="h h--ontime" title="10월 28일 (수) 제 17호 정시 · 수집 완료 07:12"><i aria-hidden="true"></i><span class="sr">10월 28일 (수) 제 17호 정시 · 수집 완료 07:12</span></li><li class="h h--ontime" title="10월 29일 (목) 제 18호 정시 · 수집 완료 07:12"><i aria-hidden="true"></i><span class="sr">10월 29일 (목) 제 18호 정시 · 수집 완료 07:12</span></li><li class="h h--ontime" title="10월 30일 (금) 제 19호 정시 · 수집 완료 07:11"><i aria-hidden="true"></i><span class="sr">10월 30일 (금) 제 19호 정시 · 수집 완료 07:11</span></li><li class="h h--ontime h--x" title="10월 31일 (토) 제 20호 정시 · 수집 완료 07:14 · 실패 실행 1회(00:33)"><i aria-hidden="true"></i><span class="sr">10월 31일 (토) 제 20호 정시 · 수집 완료 07:14 · 실패 실행 1회(00:33)</span></li><li class="h h--ontime" title="11월 1일 (일) 제 21호 정시 · 수집 완료 07:18"><i aria-hidden="true"></i><span class="sr">11월 1일 (일) 제 21호 정시 · 수집 완료 07:18</span></li><li class="h h--ontime" title="11월 2일 (월) 제 22호 정시 · 수집 완료 07:18"><i aria-hidden="true"></i><span class="sr">11월 2일 (월) 제 22호 정시 · 수집 완료 07:18</span><span class="ph30__t" aria-hidden="true">11.02</span></li></ol>
+      <ul class="legA" role="list">
+        <li><i class="h h--ontime"><i></i></i>정시 <span class="n">7</span></li>
+        <li><i class="h h--late"><i></i></i>늦음 <span class="n">11</span></li>
+        <li><i class="h h--missed"><i></i></i>결호 <span class="n">4</span></li>
+        <li><i class="h h--failed"><i></i></i>실패 <span class="n">0</span></li>
+        <li><i class="h h--prelaunch"><i></i></i>창간 전 <span class="n">8</span></li>
+        <li><i class="xmark" aria-hidden="true"></i>실패한 실행 있음 <span class="n">1</span> · <span class="n">10.31</span> <span class="n">00:33</span> 수동</li>
+      </ul>
+      <p class="def"><b>숫자</b>는 실행 기준(PRD KPI와 같은 셈), <b>띠</b>는 발행일 기준이다. 정시 = 그날 첫 발행 실행의 수집 완료가 공개 목표(여름 <span class="n">07:00</span> · 겨울 <span class="n">07:30</span>) + 15분 안, 늦음 = 그 뒤, 결호 = 그날 발행 기록 없음. 결호 4일은 10월 28일 정시 수집이 자리 잡기 전이다.</p>
+    </section>
+
+    <section id="st-src" class="stA" aria-labelledby="st-src-h">
+      <div class="sec-h sec-h--thin"><h2 id="st-src-h" class="h">소스 건강도</h2><span class="rh" aria-hidden="true" lang="en">SOURCES</span></div>
+      <p class="sub">최근 7일 <span class="n">10.27 – 11.02</span> · 수집 <span class="n">13</span>곳 · 구멍 = 날마다 <span class="legS"><i class="sh sh--fresh"></i>새 기사</span> <span class="legS"><i class="sh sh--no-new"></i>응답 · 새 기사 없음</span> <span class="legS"><i class="sh sh--failed"></i>실패</span></p>
+      <ol class="srcsA" role="list"><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-0">
+      <span class="srcA__stub"><span class="tier tier--2">Tier <span class="n">2</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b lang="en">BBC Sport — Football</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">302</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-0" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">702</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">302</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-1">
+      <span class="srcA__stub"><span class="tier tier--2">Tier <span class="n">2</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b lang="en">BBC Sport — Premier League</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">92</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-1" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">353</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">92</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-2">
+      <span class="srcA__stub"><span class="tier tier--2">Tier <span class="n">2</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b lang="en">BBC Sport — Champions League</b><span class="srcA__flag">새 기사 없음 <span class="n">13</span>회 연속</span></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사 없음, 10.28 새 기사 없음, 10.29 새 기사 없음, 10.30 새 기사 없음, 10.31 새 기사 없음, 11.01 새 기사 없음, 11.02 새 기사 없음"><i class="sh sh--no-new" title="10.27 새 기사 없음"></i><i class="sh sh--no-new" title="10.28 새 기사 없음"></i><i class="sh sh--no-new" title="10.29 새 기사 없음"></i><i class="sh sh--no-new" title="10.30 새 기사 없음"></i><i class="sh sh--no-new" title="10.31 새 기사 없음"></i><i class="sh sh--no-new" title="11.01 새 기사 없음"></i><i class="sh sh--no-new" title="11.02 새 기사 없음"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">0</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-2" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">135</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">0</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">13</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-3">
+      <span class="srcA__stub"><span class="tier tier--2">Tier <span class="n">2</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b lang="en">BBC Sport — European football</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사 없음, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--no-new" title="10.31 새 기사 없음"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">13</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-3" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">234</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">13</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-4">
+      <span class="srcA__stub"><span class="tier tier--2">Tier <span class="n">2</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b lang="en">The Athletic — Football</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">101</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-4" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">900</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">101</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-5">
+      <span class="srcA__stub"><span class="tier tier--2">Tier <span class="n">2</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b lang="en">the Daily Briefing (Fabrizio Romano)</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사 없음, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--no-new" title="10.28 새 기사 없음"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">20</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-5" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">180</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">20</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-6">
+      <span class="srcA__stub"><span class="tier tier--2">Tier <span class="n">2</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b lang="it">Gianluca Di Marzio</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">90</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-6" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">90</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">90</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-7">
+      <span class="srcA__stub"><span class="tier tier--2">Tier <span class="n">2</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b lang="es">Relevo</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">100</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-7" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">135</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">100</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-8">
+      <span class="srcA__stub"><span class="tier tier--3">Tier <span class="n">3</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b >인터풋볼 — 해외축구</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">173</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-8" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">180</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">173</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-9">
+      <span class="srcA__stub"><span class="tier tier--3">Tier <span class="n">3</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b >인터풋볼 — 전체기사</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">417</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-9" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">450</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">417</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-10">
+      <span class="srcA__stub"><span class="tier tier--3">Tier <span class="n">3</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b >풋볼리스트 — 축구</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사 없음, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--no-new" title="10.28 새 기사 없음"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">139</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-10" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">180</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">139</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-11">
+      <span class="srcA__stub"><span class="tier tier--3">Tier <span class="n">3</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b >베스트일레븐 — WORLD</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">150</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-11" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">180</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">150</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li><li class="srcA"><button class="srcA__b" type="button" aria-expanded="false" aria-controls="srcd-12">
+      <span class="srcA__stub"><span class="tier tier--3">Tier <span class="n">3</span></span></span><span class="srcA__perf" aria-hidden="true"></span>
+      <span class="srcA__name"><b >베스트일레븐 — 전체기사</b></span>
+      <span class="srcA__holes" aria-label="최근 7일: 10.27 새 기사, 10.28 새 기사, 10.29 새 기사, 10.30 새 기사, 10.31 새 기사, 11.01 새 기사, 11.02 새 기사"><i class="sh sh--fresh" title="10.27 새 기사"></i><i class="sh sh--fresh" title="10.28 새 기사"></i><i class="sh sh--fresh" title="10.29 새 기사"></i><i class="sh sh--fresh" title="10.30 새 기사"></i><i class="sh sh--fresh" title="10.31 새 기사"></i><i class="sh sh--fresh" title="11.01 새 기사"></i><i class="sh sh--fresh" title="11.02 새 기사"></i></span>
+      <span class="srcA__ok"><span class="n">9/9</span><small>응답</small></span>
+      <span class="srcA__new"><span class="n">262</span><small>새 기사</small></span>
+      <span class="srcA__chev"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m6 9 6 6 6-6"/></svg></span></button>
+      <div class="srcA__d" id="srcd-12" hidden><dl><div><dt>실행</dt><dd><span class="n">9</span>회</dd></div><div><dt>응답 성공</dt><dd><span class="n">9</span>회</dd></div><div><dt>원문 항목</dt><dd><span class="n">450</span></dd></div><div><dt>창 안 새 항목</dt><dd><span class="n">262</span></dd></div><div><dt>실패 연속</dt><dd><span class="n">0</span></dd></div><div><dt>새 기사 없음 연속</dt><dd><span class="n">0</span></dd></div></dl></div></li></ol>
+    </section>
+
+    <section id="st-cost" class="stA" aria-labelledby="st-cost-h">
+      <div class="sec-h sec-h--thin"><h2 id="st-cost-h" class="h">이번 달 비용</h2><span class="rh" aria-hidden="true" lang="en">BUDGET</span></div>
+      <div class="costA"><div class="costA__s"><p class="costA__k">11월 · 지금까지</p><p class="costA__n"><span class="n">3.56</span><span class="u">%</span></p></div><span class="costA__perf" aria-hidden="true"></span><div class="costA__s costA__s--prev"><p class="costA__k">10월</p><p class="costA__n costA__n--s"><span class="n">5.80</span><span class="u">%</span></p></div></div>
+      <p class="def">월 예산 대비 사용률. 운영(prod)과 개발 실험(dev)의 AI 브리핑 비용을 합쳤다. 데이터 API는 무료 플랜이라 0이다.</p>
+    </section>
+  </main>
+</div>
+<footer class="colophon">
+  <div class="colophon__in">
+    <p class="colophon__brand">유로 다이제스트 <span>제 22호 · <time datetime="2026-11-02">2026년 11월 2일 (월)</time></span></p>
+    <p class="colophon__fd" lang="en">Football data provided by the Football-Data.org API</p>
+    <p class="colophon__p">경기·출전 데이터 football-data.org · API-Football. 오늘의 5줄은 이 데이터로 AI가 쓰고, AI가 쓴 줄에만 ‘AI 작성’ 라벨을 붙입니다. 검증에 맞지 않는 줄은 라벨 없는 코드 문장으로 바꾸거나 빼고, AI 답을 쓸 수 없는 날은 모든 줄을 코드 문장으로 싣습니다. 뉴스 카드는 AI 없이 원문 제목 그대로 싣습니다.</p>
+    <ul class="colophon__links" role="list"><li><a href="#top">AI 작성 고지</a></li><li><a href="#top">소개·출처 정책</a></li><li><a href="#top">삭제·정정 요청</a></li><li><a href="#top">GitHub<span aria-hidden="true"> ↗</span><span class="sr"> (새 창)</span></a></li></ul>
+    <p class="colA"><a href="#s4" class="colA__a"><span class="colA__k">발행 상태</span><span class="colA__perf" aria-hidden="true"></span><span class="colA__v">최근 30일 <span class="n">96.0%</span></span><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="m9 6 6 6-6 6"/></svg></a></p>
+    <p class="colophon__p">마지막 업데이트 <time datetime="2026-11-02T07:18+09:00">07:18</time> KST</p>
+  </div>
+</footer>
+</div>
+<nav class="tabbar tabbar--5" aria-label="하단 탭"><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M3.5 10.5 12 4l8.5 6.5V20h-5.5v-6h-6v6H3.5z"/></svg>홈</a><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 12.5h8M8 16h5"/></svg>뉴스</a><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M4 5h16M4 10h16M4 15h16M4 20h16"/><path d="M8.5 5v15"/></svg>리그</a><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M8 3.5 3.5 6.5 5.5 10.5 7.5 9.5V20.5h9V9.5l2 1 2-4L16 3.5c-.6 1.7-2.2 2.8-4 2.8S8.6 5.2 8 3.5z"/></svg>한국 선수</a><a href="#top"><svg class="ic" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square" stroke-linejoin="miter"><path d="M6 3.5h12v17l-6-4.5-6 4.5z"/></svg>마이</a></nav></div>
+<script>
+(function(){
+var d=document.documentElement;
+function cur(){return d.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+function label(){var b=document.querySelectorAll('[data-theme-toggle]');for(var i=0;i<b.length;i++)b[i].setAttribute('aria-label','테마: '+(cur()==='dark'?'다크':'라이트')+' — 눌러 바꾸기')}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-theme-toggle]');if(!b)return;var t=cur()==='dark'?'light':'dark';d.setAttribute('data-theme',t);try{localStorage.setItem('d3-theme',t)}catch(err){}label()});
+label();
+var q=new URLSearchParams(location.search),s=q.get('solo');
+if(s){var el=document.querySelector('[data-solo="'+s+'"]');if(el){var c=el.cloneNode(true);c.classList.add('solo');var w=+(q.get('w')||c.getAttribute('data-w')||1200);c.style.width=w+'px';document.body.appendChild(c);}}
+})();
+
+document.addEventListener('click',function(e){var b=e.target.closest('.srcA__b');if(!b)return;var d=document.getElementById(b.getAttribute('aria-controls'));var o=b.getAttribute('aria-expanded')==='true';b.setAttribute('aria-expanded',String(!o));d.hidden=o;});
+
+</script>
+</body>
+</html>

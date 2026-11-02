@@ -1,0 +1,1390 @@
+{
+ "generatedFrom": "data/runs.json · data/runs-dev.json · configs/* · data/teams/* (2026-11-02 파일 기준)",
+ "today": {
+  "date": "2026-11-02",
+  "label": "2026년 11월 2일 (월)",
+  "no": 22
+ },
+ "issue100": {
+  "date": "2027-01-19",
+  "label": "2027년 1월 19일 (화)",
+  "no": 100
+ },
+ "status": {
+  "lastPublish": {
+   "date": "2026-11-02",
+   "label": "2026년 11월 2일 (월)",
+   "no": 22,
+   "started": "07:12",
+   "finished": "07:18",
+   "target": "07:30",
+   "season": "winter",
+   "runId": "collect-prod-20261101T221234Z-e780"
+  },
+  "window": {
+   "from": "2026-10-04",
+   "to": "2026-11-02",
+   "days": 30
+  },
+  "runRate": {
+   "ok": 24,
+   "all": 25,
+   "pct": 96
+  },
+  "dayCounts": {
+   "ontime": 7,
+   "late": 11,
+   "missed": 4,
+   "failed": 0,
+   "prelaunch": 8
+  },
+  "failedRunDays": [
+   "2026-10-31"
+  ],
+  "days": [
+   {
+    "date": "2026-10-04",
+    "md": "10.04",
+    "dow": "일",
+    "no": null,
+    "state": "prelaunch",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-05",
+    "md": "10.05",
+    "dow": "월",
+    "no": null,
+    "state": "prelaunch",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-06",
+    "md": "10.06",
+    "dow": "화",
+    "no": null,
+    "state": "prelaunch",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-07",
+    "md": "10.07",
+    "dow": "수",
+    "no": null,
+    "state": "prelaunch",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-08",
+    "md": "10.08",
+    "dow": "목",
+    "no": null,
+    "state": "prelaunch",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-09",
+    "md": "10.09",
+    "dow": "금",
+    "no": null,
+    "state": "prelaunch",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-10",
+    "md": "10.10",
+    "dow": "토",
+    "no": null,
+    "state": "prelaunch",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-11",
+    "md": "10.11",
+    "dow": "일",
+    "no": null,
+    "state": "prelaunch",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-12",
+    "md": "10.12",
+    "dow": "월",
+    "no": 1,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "20:28",
+    "finishedDate": "2026-10-12",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-13",
+    "md": "10.13",
+    "dow": "화",
+    "no": 2,
+    "state": "ontime",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "00:28",
+    "finishedDate": "2026-10-13",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-14",
+    "md": "10.14",
+    "dow": "수",
+    "no": 3,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "22:30",
+    "finishedDate": "2026-10-14",
+    "runs": 2,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-15",
+    "md": "10.15",
+    "dow": "목",
+    "no": 4,
+    "state": "missed",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-16",
+    "md": "10.16",
+    "dow": "금",
+    "no": 5,
+    "state": "missed",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-17",
+    "md": "10.17",
+    "dow": "토",
+    "no": 6,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "21:58",
+    "finishedDate": "2026-10-17",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-18",
+    "md": "10.18",
+    "dow": "일",
+    "no": 7,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "14:38",
+    "finishedDate": "2026-10-18",
+    "runs": 3,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-19",
+    "md": "10.19",
+    "dow": "월",
+    "no": 8,
+    "state": "missed",
+    "season": "summer",
+    "target": "07:00",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-20",
+    "md": "10.20",
+    "dow": "화",
+    "no": 9,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "09:42",
+    "finishedDate": "2026-10-20",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-21",
+    "md": "10.21",
+    "dow": "수",
+    "no": 10,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "09:09",
+    "finishedDate": "2026-10-21",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-22",
+    "md": "10.22",
+    "dow": "목",
+    "no": 11,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "09:14",
+    "finishedDate": "2026-10-22",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-23",
+    "md": "10.23",
+    "dow": "금",
+    "no": 12,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "09:10",
+    "finishedDate": "2026-10-23",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-24",
+    "md": "10.24",
+    "dow": "토",
+    "no": 13,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "09:00",
+    "finishedDate": "2026-10-24",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-25",
+    "md": "10.25",
+    "dow": "일",
+    "no": 14,
+    "state": "late",
+    "season": "summer",
+    "target": "07:00",
+    "finished": "08:45",
+    "finishedDate": "2026-10-25",
+    "runs": 3,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-26",
+    "md": "10.26",
+    "dow": "월",
+    "no": 15,
+    "state": "missed",
+    "season": "winter",
+    "target": "07:30",
+    "finished": null,
+    "finishedDate": null,
+    "runs": 0,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-27",
+    "md": "10.27",
+    "dow": "화",
+    "no": 16,
+    "state": "late",
+    "season": "winter",
+    "target": "07:30",
+    "finished": "10:33",
+    "finishedDate": "2026-10-27",
+    "runs": 2,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-28",
+    "md": "10.28",
+    "dow": "수",
+    "no": 17,
+    "state": "ontime",
+    "season": "winter",
+    "target": "07:30",
+    "finished": "07:12",
+    "finishedDate": "2026-10-28",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-29",
+    "md": "10.29",
+    "dow": "목",
+    "no": 18,
+    "state": "ontime",
+    "season": "winter",
+    "target": "07:30",
+    "finished": "07:12",
+    "finishedDate": "2026-10-29",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-30",
+    "md": "10.30",
+    "dow": "금",
+    "no": 19,
+    "state": "ontime",
+    "season": "winter",
+    "target": "07:30",
+    "finished": "07:11",
+    "finishedDate": "2026-10-30",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-10-31",
+    "md": "10.31",
+    "dow": "토",
+    "no": 20,
+    "state": "ontime",
+    "season": "winter",
+    "target": "07:30",
+    "finished": "07:14",
+    "finishedDate": "2026-10-31",
+    "runs": 2,
+    "failedRuns": [
+     {
+      "runId": "collect-prod-20261030T153306Z-ce25",
+      "started": "00:33"
+     }
+    ]
+   },
+   {
+    "date": "2026-11-01",
+    "md": "11.01",
+    "dow": "일",
+    "no": 21,
+    "state": "ontime",
+    "season": "winter",
+    "target": "07:30",
+    "finished": "07:18",
+    "finishedDate": "2026-11-01",
+    "runs": 1,
+    "failedRuns": []
+   },
+   {
+    "date": "2026-11-02",
+    "md": "11.02",
+    "dow": "월",
+    "no": 22,
+    "state": "ontime",
+    "season": "winter",
+    "target": "07:30",
+    "finished": "07:18",
+    "finishedDate": "2026-11-02",
+    "runs": 1,
+    "failedRuns": []
+   }
+  ],
+  "cost": {
+   "thisMonth": {
+    "ym": "2026-11",
+    "pct": 3.56
+   },
+   "lastMonth": {
+    "ym": "2026-10",
+    "pct": 5.8
+   }
+  },
+  "lastRecordKst": "2026-11-02 13:39",
+  "sources": [
+   {
+    "id": "bbc-sport-football",
+    "name": "BBC Sport — Football",
+    "tier": 2,
+    "lang": "en",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 702,
+    "usable": 302,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "bbc-sport-premier-league",
+    "name": "BBC Sport — Premier League",
+    "tier": 2,
+    "lang": "en",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 353,
+    "usable": 92,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "bbc-sport-champions-league",
+    "name": "BBC Sport — Champions League",
+    "tier": 2,
+    "lang": "en",
+    "state": "no-new",
+    "failStreak": 0,
+    "staleStreak": 13,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 135,
+    "usable": 0,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "no-new",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "no-new",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "no-new",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "no-new",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "no-new",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "no-new",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "no-new",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "bbc-sport-european",
+    "name": "BBC Sport — European football",
+    "tier": 2,
+    "lang": "en",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 234,
+    "usable": 13,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "no-new",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "the-athletic-football",
+    "name": "The Athletic — Football",
+    "tier": 2,
+    "lang": "en",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 900,
+    "usable": 101,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "daily-briefing",
+    "name": "the Daily Briefing (Fabrizio Romano)",
+    "tier": 2,
+    "lang": "en",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 180,
+    "usable": 20,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "no-new",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "di-marzio",
+    "name": "Gianluca Di Marzio",
+    "tier": 2,
+    "lang": "it",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 90,
+    "usable": 90,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "relevo",
+    "name": "Relevo",
+    "tier": 2,
+    "lang": "es",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 135,
+    "usable": 100,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "interfootball-world",
+    "name": "인터풋볼 — 해외축구",
+    "tier": 3,
+    "lang": "ko",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 180,
+    "usable": 173,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "interfootball-all",
+    "name": "인터풋볼 — 전체기사",
+    "tier": 3,
+    "lang": "ko",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 450,
+    "usable": 417,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "footballist-football",
+    "name": "풋볼리스트 — 축구",
+    "tier": 3,
+    "lang": "ko",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 180,
+    "usable": 139,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "no-new",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "besteleven-world",
+    "name": "베스트일레븐 — WORLD",
+    "tier": 3,
+    "lang": "ko",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 180,
+    "usable": 150,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   },
+   {
+    "id": "besteleven-all",
+    "name": "베스트일레븐 — 전체기사",
+    "tier": 3,
+    "lang": "ko",
+    "state": "fresh",
+    "failStreak": 0,
+    "staleStreak": 0,
+    "runs": 9,
+    "attempts": 9,
+    "ok": 9,
+    "items": 450,
+    "usable": 262,
+    "perDay": [
+     {
+      "date": "2026-10-27",
+      "md": "10.27",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-10-28",
+      "md": "10.28",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-29",
+      "md": "10.29",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-30",
+      "md": "10.30",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-10-31",
+      "md": "10.31",
+      "state": "fresh",
+      "runs": 2
+     },
+     {
+      "date": "2026-11-01",
+      "md": "11.01",
+      "state": "fresh",
+      "runs": 1
+     },
+     {
+      "date": "2026-11-02",
+      "md": "11.02",
+      "state": "fresh",
+      "runs": 1
+     }
+    ]
+   }
+  ]
+ },
+ "competitions": [
+  {
+   "id": "EPL",
+   "nameKo": "프리미어리그",
+   "nameEn": "Premier League",
+   "shortKo": "EPL",
+   "season": "2026-27",
+   "startDate": "2026-08-21",
+   "endDate": "2027-05-30"
+  },
+  {
+   "id": "LALIGA",
+   "nameKo": "라리가",
+   "nameEn": "LaLiga",
+   "shortKo": "라리가",
+   "season": "2026-27",
+   "startDate": "2026-08-16",
+   "endDate": "2027-05-30"
+  },
+  {
+   "id": "SERIEA",
+   "nameKo": "세리에 A",
+   "nameEn": "Serie A",
+   "shortKo": "세리에A",
+   "season": "2026-27",
+   "startDate": "2026-08-23",
+   "endDate": "2027-05-30"
+  },
+  {
+   "id": "BUNDESLIGA",
+   "nameKo": "분데스리가",
+   "nameEn": "Bundesliga",
+   "shortKo": "분데스",
+   "season": "2026-27",
+   "startDate": "2026-08-28",
+   "endDate": "2027-05-22"
+  },
+  {
+   "id": "LIGUE1",
+   "nameKo": "리그 1",
+   "nameEn": "Ligue 1",
+   "shortKo": "리그1",
+   "season": "2026-27",
+   "startDate": "2026-08-22",
+   "endDate": "2027-05-29"
+  },
+  {
+   "id": "UCL",
+   "nameKo": "UEFA 챔피언스리그",
+   "nameEn": "UEFA Champions League",
+   "shortKo": "UCL",
+   "season": "2026-27",
+   "startDate": "2026-09-08",
+   "endDate": "2027-06-05"
+  }
+ ],
+ "teams": [
+  {
+   "slug": "rennes",
+   "nameKo": "렌",
+   "nameEn": "Stade Rennais FC 1901",
+   "short": "REN",
+   "comp": "LIGUE1",
+   "alsoIn": [],
+   "k1": "#CB2E23",
+   "k2": "#000000",
+   "kf": "#FFFFFF"
+  },
+  {
+   "slug": "atletico-madrid",
+   "nameKo": "아틀레티코 마드리드",
+   "nameEn": "Club Atlético de Madrid",
+   "short": "ATL",
+   "comp": "LALIGA",
+   "alsoIn": [
+    "UCL"
+   ],
+   "k1": "#C73423",
+   "k2": "#272E61",
+   "kf": "#FFFFFF"
+  },
+  {
+   "slug": "borussia-monchengladbach",
+   "nameKo": "묀헨글라트바흐",
+   "nameEn": "Borussia Mönchengladbach",
+   "short": "BMG",
+   "comp": "BUNDESLIGA",
+   "alsoIn": [],
+   "k1": "#FFFFFF",
+   "k2": "#000000",
+   "kf": "#14213D"
+  },
+  {
+   "slug": "bayern-munchen",
+   "nameKo": "바이에른 뮌헨",
+   "nameEn": "FC Bayern München",
+   "short": "FCB",
+   "comp": "BUNDESLIGA",
+   "alsoIn": [
+    "UCL"
+   ],
+   "k1": "#D3052B",
+   "k2": "#FFFFFF",
+   "kf": "#FFFFFF"
+  },
+  {
+   "slug": "tottenham-hotspur",
+   "nameKo": "토트넘",
+   "nameEn": "Tottenham Hotspur FC",
+   "short": "TOT",
+   "comp": "EPL",
+   "alsoIn": [],
+   "k1": "#FFFFFF",
+   "k2": "#132257",
+   "kf": "#14213D"
+  }
+ ],
+ "intl": {
+  "matches": [
+   {
+    "id": "2026-11-13-saudi-arabia",
+    "opponent": "사우디아라비아",
+    "home": false,
+    "venue": "도하 (카타르)",
+    "competition": "친선경기",
+    "date": "2026-11-13",
+    "md": "11.13",
+    "dow": "금",
+    "time": "23:30",
+    "utc": "2026-11-13T14:30:00.000Z"
+   },
+   {
+    "id": "2026-11-17-qatar",
+    "opponent": "카타르",
+    "home": false,
+    "venue": "도하 (카타르)",
+    "competition": "친선경기",
+    "date": "2026-11-17",
+    "md": "11.17",
+    "dow": "화",
+    "time": "23:00",
+    "utc": "2026-11-17T14:00:00.000Z"
+   }
+  ],
+  "from": "2026-11-10",
+  "to": "2026-11-20"
+ },
+ "emptyStates": {
+  "ended": {
+   "comp": "UCL",
+   "date": "2027-06-05"
+  },
+  "upcomingSample": {
+   "comp": "LALIGA",
+   "date": "2026-08-16"
+  },
+  "searchQuery": "Magdeburg"
+ },
+ "copy": {
+  "tagline": "매일 아침, 밤사이 유럽 축구를 한눈에.",
+  "offSeason": {
+   "ended": {
+    "label": "종료",
+    "note": "시즌이 끝났어요. 다음 시즌 일정이 나오면 이 자리에 다시 채워집니다."
+   },
+   "upcoming": {
+    "label": "개막",
+    "note": "아직 시즌 전이에요. 경기가 열리면 이 자리에 5줄이 채워집니다."
+   }
+  },
+  "search": {
+   "none": "결과가 없어요",
+   "hint": "선수 · 팀은 한글이나 영문 이름으로, 뉴스는 제목과 태그로 찾아요"
+  },
+  "offline": {
+   "h1": "연결이 끊겨 열 수 없어요",
+   "lead": "이 페이지는 아직 저장해 두지 않았어요.",
+   "body": "연결이 돌아오면 다시 열어 주세요. 저장해 둔 최근 호는 연결 없이도 볼 수 있어요.",
+   "saved": "저장해 둔 호"
+  }
+ }
+}
