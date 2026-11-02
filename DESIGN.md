@@ -1467,7 +1467,7 @@ M3 · M4에서 §9.3 D2를 구현할 때 볼 것이다. 결정과 열린 문제�
 - **성능(M1-39 도구 — slow 4G · 412×823 모바일 · 5회 중앙값, Windows 글꼴)**: LCP 홈 1.61 · `/transfers/` 1.69 · `/my/` 1.54 · `/search/` 1.60 · 팀(바이에른) 1.76 · 선수 상세(김민재) 1.60 · 한국 선수 1.59초 — 모두 ≤ 2.0초. CLS 최대 0.0147(`/my` 빈 상태 — 하이드레이션 뒤 관리 열 높이 변화로 뒤표지가 한 번 밀림, 예산의 1/3), 나머지 ≤ 0.0006. 375×812 한국 선수 0.0004 · `/my` 0.0021. TBT는 홈 879ms · 팀 674 · 선수 602ms로 M1-39(205~328)보다 커졌다 — 하이드레이션 긴 작업(4× CPU), M5-07 Lighthouse 95 목표 때 다시 본다.
 - **서비스 워커**: `ed-data`(`/my/data/**.json` 네트워크 우선 + 사본, 상한 24) · 해시 없는 정적 자산 내용 해시 갱신(DECISIONS M4-16 #5 · #6). 오프라인 `/my` e2e(pwa.spec — 온라인으로 본 자료는 사본으로 그려지고 처음 보는 팀만 실패 안내).
 - **새 구성 요소**: `IcsSubscribe`(webcal + '.ics 받기', `src/components/ui/ics-link.tsx`) · `webcalUrl`(src/lib/paths.ts) · `TimelineToggleIsland` · `LedgerRow placement="side"` · `my-board-lists.tsx`(지연) · `src/lib/my-empty-boot.ts` · `src/lib/form-word.ts`. 새 색 · 간격 토큰 0, 새 의존성 0, 변형 `my-empty:` 1.
-- **남은 것**: 실기기(Android 설치 · iOS 홈 화면 · webcal 구독 동작 — iOS/macOS 캘린더 · Android(대부분 webcal 처리 앱 없음 → '.ics 받기') · Windows Outlook), TBT 상승(M5-07), 원장 행이 펼쳐질 때 근거 줄과 첫 타임라인 노드가 같은 기사를 두 번 보인다(혼합안은 펼치면 근거 줄을 숨김 — `/transfers/` M4-04 구현 그대로, 옆단에서 더 길다 — 사용자 확인 후보).
+- **남은 것**: 실기기(Android 설치 · iOS 홈 화면 · webcal 구독 동작 — iOS/macOS 캘린더 · Android(대부분 webcal 처리 앱 없음 → '.ics 받기') · Windows Outlook), TBT 상승(M5-07). 원장 행 펼침 때 근거 줄과 첫 노드가 같은 기사를 두 번 보이던 것은 M4-16 후속에서 혼합안대로 '펼치면 근거 줄 숨김'으로 맞췄다(DECISIONS D2 §9 #3a — CSS `:has()`, `/transfers/` · 옆단 공용).
 
 ## 12. 변경 이력
 

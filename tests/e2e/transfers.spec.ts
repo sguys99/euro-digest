@@ -50,5 +50,61 @@ test.describe("/transfers/", () => {
     await expect(target).toHaveAttribute("data-xt-arrive", "");
     await expect(target).toBeVisible();
     await expect(target).toBeInViewport();
+    // 펼친 행은 근거 줄을 숨긴다(첫 노드와 같은 기사 — 확정 혼합안, M4-16 후속)
+    const row = target.locator("xpath=ancestor::article[1]");
+    if ((await row.locator("[data-xt-toggle]").count()) > 0)
+      await expect(row.locator('[id$="-lead-t"]')).toBeHidden();
+  });
+
+  test("타임라인 펼침 — 근거 줄 숨김 · 접으면 다시 · 포커스 유지 · 이동 0(아래 행만 밀림)", async ({
+    page,
+  }) => {
+    const row = rows.find((r) => r.timeline.length > 1);
+    test.skip(!row, "타임라인이 있는 행이 없다");
+    await page.goto("transfers/");
+    const article = page.locator(`[id="${row!.anchor}"]`);
+    const toggle = article.locator("[data-xt-toggle]");
+    const lead = article.locator('[id$="-lead-t"]');
+    await expect(lead).toBeVisible();
+    await toggle.focus();
+    await page.keyboard.press("Enter");
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(lead).toBeHidden();
+    await expect(toggle).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(lead).toBeVisible();
+    await expect(toggle).toBeFocused();
+  });
+
+  test("첫 로드 CLS — 쿼리 · 해시 도착(부트로 펼친 행)", async ({ page }) => {
+    const row = rows.find((r) => r.timeline.length > 1 && r.lead);
+    test.skip(!row, "타임라인이 있는 행이 없다");
+    // 단계 근거 노드만 id가 있다(보조 노드는 없음) — 가장 오래된 근거
+    const node = row!.timeline.filter((n) => n.kind === "stage").at(-1)!.card
+      .id;
+    await page.addInitScript(() => {
+      (window as unknown as { __cls: number }).__cls = 0;
+      new PerformanceObserver((l) => {
+        for (const e of l.getEntries() as unknown as {
+          value: number;
+          hadRecentInput: boolean;
+        }[])
+          if (!e.hadRecentInput)
+            (window as unknown as { __cls: number }).__cls += e.value;
+      }).observe({ type: "layout-shift", buffered: true });
+    });
+    await page.goto(`transfers/#xt-${node}`);
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(800);
+    const article = page.locator(`[id="${row!.anchor}"]`);
+    await expect(article.locator("[data-xt-toggle]")).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+    await expect(article.locator('[id$="-lead-t"]')).toBeHidden();
+    expect(
+      await page.evaluate(() => (window as unknown as { __cls: number }).__cls),
+    ).toBeLessThan(0.05);
   });
 });

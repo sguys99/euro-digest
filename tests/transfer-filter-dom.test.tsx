@@ -209,3 +209,27 @@ describe("openTransferTarget — 해시 도착", () => {
     expect(openTransferTarget(document, "#xt-%E0%A4%A")).toBeNull();
   });
 });
+
+describe("펼치면 근거 줄 숨김(확정 혼합안 `.xr.is-open` — M4-16 후속)", () => {
+  it("타임라인이 있는 행: 근거 줄 묶음은 버튼 aria-expanded=true일 때 숨는 변형(:has), 근거 칸은 1열 · 오른쪽 정렬 / 기사 1행은 변형 없음", () => {
+    mount();
+    for (const row of view.rows) {
+      const article = document.getElementById(row.anchor)!;
+      const lead = article.querySelector(`[id="${row.anchor}-lead-t"]`);
+      if (!lead) continue;
+      const box = lead.closest("[data-xf-row] .group\\/ev > div")!;
+      const ev = box.parentElement!;
+      if (row.timeline.length > 1) {
+        expect(box.className).toContain(
+          "group-has-[[data-xt-toggle][aria-expanded=true]]/ev:hidden",
+        );
+        expect(ev.className).toContain(
+          "has-[[data-xt-toggle][aria-expanded=true]]:grid-cols-1",
+        );
+        expect(ev.querySelector("[data-xt-toggle]")).not.toBeNull();
+      } else {
+        expect(box.className).not.toContain("/ev:hidden");
+      }
+    }
+  });
+});

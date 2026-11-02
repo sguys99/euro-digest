@@ -145,9 +145,19 @@ test("타임라인 — 펼침 aria-expanded · 단계 근거 · 보조 · 단계
   await waitForHydration(page);
   const row = page.locator("#x-test-player-a--tottenham-hotspur");
   const toggle = row.locator("[data-xt-toggle]");
+  const lead = page.locator("#x-test-player-a--tottenham-hotspur-lead-t");
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(lead).toBeVisible();
   await toggle.click();
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  // 펼치면 근거 줄을 숨긴다(첫 노드와 같은 기사 — 확정 혼합안 `.xr.is-open`, M4-16 후속) · 포커스는 버튼에 그대로 · 버튼은 오른쪽 끝
+  await expect(lead).toBeHidden();
+  await expect(toggle).toBeFocused();
+  const ev = await toggle.evaluate((b) => {
+    const box = b.parentElement!.getBoundingClientRect();
+    return box.right - b.getBoundingClientRect().right;
+  });
+  expect(ev).toBeLessThanOrEqual(0.5);
   const items = row.locator("[data-xt-panel] ol > li");
   await expect(items).toHaveCount(6);
   await expect(row.locator("[data-xt-panel] ol")).toHaveAttribute(
@@ -155,6 +165,11 @@ test("타임라인 — 펼침 aria-expanded · 단계 근거 · 보조 · 단계
     "기사 타임라인 — 최신순, 단계 근거 4건 · 보조 2건",
   );
   await expect(row.getByText("단계 유지")).toHaveCount(2); // 노드 1 + 범례 1
+  // 다시 접으면 근거 줄이 돌아온다
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(lead).toBeVisible();
+  await expect(toggle).toBeFocused();
   // 해시 도착 — 홈 핫 리스트 링크와 같은 형태
   const hot = page
     .locator('[data-specimen="hot-normal"] a[href*="#xt-"]')
@@ -167,4 +182,13 @@ test("타임라인 — 펼침 aria-expanded · 단계 근거 · 보조 · 단계
     "",
   );
   await expect(page.locator(`[id="${id}"]`)).toBeInViewport();
+  // 해시 도착으로 펼친 행도(첫 페인트 전 부트) 근거 줄은 숨김
+  const arrived = page
+    .locator(`[id="${id}"]`)
+    .locator("xpath=ancestor::article[1]");
+  await expect(arrived.locator("[data-xt-toggle]")).toHaveAttribute(
+    "aria-expanded",
+    "true",
+  );
+  await expect(arrived.locator('[id$="-lead-t"]')).toBeHidden();
 });

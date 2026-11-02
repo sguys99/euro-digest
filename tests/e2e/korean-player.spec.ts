@@ -173,8 +173,13 @@ test.describe("선수 상세 — 구성", () => {
     if (first.timeline.length > 1) {
       const toggle = rows.first().getByRole("button", { name: /타임라인/ });
       await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      const lead = rows.first().locator('[id$="-lead-t"]');
+      await expect(lead).toBeVisible();
       await toggle.click();
       await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      // 펼치면 근거 줄 숨김(확정 혼합안 — 첫 노드와 같은 기사, M4-16 후속), 접으면 다시
+      await expect(lead).toBeHidden();
+      await expect(toggle).toBeFocused();
       const panel = page.locator(
         `#${await toggle.getAttribute("aria-controls")}`,
       );
@@ -182,6 +187,7 @@ test.describe("선수 상세 — 구성", () => {
       await expect(panel.locator("ol > li")).toHaveCount(first.timeline.length);
       await toggle.click();
       await expect(panel).toBeHidden();
+      await expect(lead).toBeVisible();
     }
     await expect(
       section

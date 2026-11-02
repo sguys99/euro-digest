@@ -253,11 +253,19 @@ export function LedgerRow({
         </time>
       </p>
       {row.lead ? (
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1.5 border-t border-dotted border-ink-3 pt-2.25 [grid-area:ev] lg:pt-2.5">
+        // 타임라인을 펼치면 근거 줄을 숨기고 버튼만 오른쪽에 남긴다 — 근거 카드가 타임라인 첫 노드와 같은 기사라 두 번 보이지 않게(확정 혼합안
+        // `.xr.is-open` 그대로, M4-16 후속). 펼침 상태 = 버튼 `aria-expanded`(섬 · 첫 페인트 전 부트 · 해시 도착이 모두 이 속성을 바꾼다)라 CSS
+        // `:has()`만으로 따라간다 — JS 0, 부트로 펼친 첫 화면도 페인트 전에 숨는다. 버튼은 같은 요소라 포커스가 그대로 남는다.
+        <div className="group/ev grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1.5 border-t border-dotted border-ink-3 pt-2.25 [grid-area:ev] has-[[data-xt-toggle][aria-expanded=true]]:grid-cols-1 has-[[data-xt-toggle][aria-expanded=true]]:justify-items-end lg:pt-2.5">
           <div
             id={hasTimeline ? undefined : nodeId(row.lead.id, idPrefix)}
             tabIndex={hasTimeline ? undefined : -1}
-            className={cx("min-w-0", !hasTimeline && ARRIVE)}
+            className={cx(
+              "min-w-0",
+              !hasTimeline && ARRIVE,
+              hasTimeline &&
+                "group-has-[[data-xt-toggle][aria-expanded=true]]/ev:hidden",
+            )}
           >
             <LeadCard card={row.lead} titleId={`${id}-lead-t`} as={cardAs} />
           </div>
