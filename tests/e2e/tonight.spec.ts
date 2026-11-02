@@ -40,12 +40,16 @@ test.describe("홈 위젯 — 두 자리", () => {
     await open(page, "./");
     const wide = testInfo.project.name === "desktop"; // 1280
     const flow = page.locator("main [data-slot=home-widgets]");
-    const aside = page.locator('aside[aria-label="오늘 밤 경기·리그 순위"]');
+    // 이적 핫 리스트(M4-04)가 있으면 면 이름에 '·이적'이 붙는다
+    const aside = page.locator('aside[aria-label^="오늘 밤 경기·리그 순위"]');
     await expect(wide ? aside : flow).toBeVisible();
     await expect(wide ? flow : aside).toBeHidden();
     const visible = wide ? aside : flow;
-    // 1280 마주 보는 면에는 '어젯밤 한국 선수'(M3-11 — 경기가 있던 날만)가 오늘 밤과 리그 순위 사이에 낀다
-    const widgets = visible.locator("section:not([data-slot=last-night])");
+    // 1280 마주 보는 면에는 '어젯밤 한국 선수'(M3-11 — 경기가 있던 날만)가 오늘 밤과 리그 순위 사이에 낀다.
+    // 이적 핫 리스트(M4-04 — 이적이 있을 때만)는 리그 순위 다음(맨 끝) — 여기서는 뺀다(tests/e2e/transfers.spec.ts · home-page.test.tsx)
+    const widgets = visible.locator(
+      "section:not([data-slot=last-night]):not([data-slot=transfer-hot])",
+    );
     await expect(widgets).toHaveCount(2);
     await expect(widgets.locator("h2")).toHaveText([
       "오늘 밤 볼 경기",

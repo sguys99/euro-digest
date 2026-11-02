@@ -116,7 +116,7 @@ test("빌드 결과 — out/sitemap.xml이 있고 robots.txt는 없다(M5 결정
   expect(existsSync(path.join(outDir, "robots.txt"))).toBe(false);
 });
 
-test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 한국 선수 목록(M3-09)·상세(M3-10)·주간 리포트(M3-12) · 대표팀(M3-13) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
+test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 한국 선수 목록(M3-09)·상세(M3-10)·주간 리포트(M3-12) · 대표팀(M3-13) · 이적(M4-04) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
   const entries = readSitemap();
   const locs = entries.map((e) => e.loc);
   expect(locs).toEqual([
@@ -131,6 +131,8 @@ test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-
     ...WEEKS.map((w) => `${SITE}/korean-players/weekly/${w}/`),
     // 대표팀(M3-13)
     `${SITE}/national-team/`,
+    // 이적(M4-04)
+    `${SITE}/transfers/`,
     ...DATES.map((date) => `${SITE}/news/${date}/`),
   ]);
   expect(locs).not.toContain(`${SITE}/news/`);

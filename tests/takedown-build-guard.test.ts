@@ -174,6 +174,13 @@ describe("② src/lib/data/news.ts 공개 로더는 모두 삭제 요청 카드�
     loadLatestNews: () => newsLoader.loadLatestNews(dir, { takedownsFile }),
     loadNewsIssue: () =>
       newsLoader.loadNewsIssue("2026-10-10", dir, { takedownsFile }),
+    // 보존된 호 전체의 카드(M4-04 — 이적 화면) — 카드 목록을 호 모양으로 감싸 같은 검사를 돈다
+    loadRetainedCards: () => ({
+      date: "2026-10-10",
+      generatedAt: "2026-10-10T00:00:00Z",
+      runId: "guard",
+      cards: newsLoader.loadRetainedCards(dir, { takedownsFile }),
+    }),
   };
 
   it("공개 로더(load… 중 NewsFile을 돌려주는 것)가 모두 표에 있다", () => {

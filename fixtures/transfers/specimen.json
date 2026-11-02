@@ -1,0 +1,927 @@
+{
+  "_note": "이적 화면 견본(M4-04 — `/specimen/transfers/`, SPECIMEN=1 빌드 전용) · 단위 테스트용 합성 데이터. 김민재 카드 7장(c_aad5c2482e 등)은 data/news 실카드 그대로이고, `test-player-*` 선수 · `[견본]`·`Sample:` 카드는 지어낸 값이다(사실 아님 — 이름은 견본용 가명, 원문 URL example.com). records는 cards를 scripts/lib/transfers.ts buildTransfers(now)로 집계한 결과다. 단계별(루머 · 협상 · 합의 · 공식 · 결렬) · 공식 뒤 결렬(미반영 — 단계 유지 노드) · 같은 단계 재보도 · 잠잠 · 행선지 미정 · 사전 미등록 이름 · Tier 1~3 · 한국 선수(소속 칸)를 덮는다.",
+  "now": "2026-11-02T00:00:00.000Z",
+  "korean": [
+    {
+      "slug": "test-player-a",
+      "nameKo": "홍길동",
+      "team": "mainz",
+      "comp": "BUNDESLIGA"
+    },
+    {
+      "slug": "test-player-d",
+      "nameKo": "성춘향",
+      "team": "freiburg",
+      "comp": "BUNDESLIGA"
+    }
+  ],
+  "names": {
+    "test-player-b": "이몽룡",
+    "test-player-e": "변학도"
+  },
+  "records": [
+    {
+      "id": "test-player-b:chelsea",
+      "player": "test-player-b",
+      "from": "napoli",
+      "to": "chelsea",
+      "status": "official",
+      "bestTier": 1,
+      "updated": "2026-11-01T09:00:00.000Z",
+      "quiet": false,
+      "history": [
+        {
+          "at": "2026-10-18T16:00:00.000Z",
+          "status": "rumor",
+          "card": "c_5ec0000007"
+        },
+        {
+          "at": "2026-10-27T22:30:00.000Z",
+          "status": "agreed",
+          "card": "c_5ec0000008"
+        },
+        {
+          "at": "2026-10-31T13:00:00.000Z",
+          "status": "official",
+          "card": "c_5ec0000009"
+        },
+        {
+          "at": "2026-11-01T09:00:00.000Z",
+          "status": "collapsed",
+          "card": "c_5ec0000010"
+        }
+      ]
+    },
+    {
+      "id": "test-player-d:-",
+      "player": "test-player-d",
+      "status": "rumor",
+      "bestTier": 3,
+      "updated": "2026-10-29T23:10:00.000Z",
+      "quiet": false,
+      "history": [
+        {
+          "at": "2026-10-29T23:10:00.000Z",
+          "status": "rumor",
+          "card": "c_5ec0000014"
+        }
+      ]
+    },
+    {
+      "id": "kim-min-jae:arsenal",
+      "player": "kim-min-jae",
+      "to": "arsenal",
+      "status": "rumor",
+      "bestTier": 3,
+      "updated": "2026-10-29T07:15:00.000Z",
+      "quiet": false,
+      "history": [
+        {
+          "at": "2026-10-17T09:35:00.000Z",
+          "status": "rumor",
+          "card": "c_aad5c2482e"
+        },
+        {
+          "at": "2026-10-29T07:15:00.000Z",
+          "status": "rumor",
+          "card": "c_1501d40b10"
+        }
+      ]
+    },
+    {
+      "id": "test-player-a:tottenham-hotspur",
+      "player": "test-player-a",
+      "from": "mainz",
+      "to": "tottenham-hotspur",
+      "status": "agreed",
+      "bestTier": 2,
+      "updated": "2026-10-28T21:15:00.000Z",
+      "quiet": false,
+      "history": [
+        {
+          "at": "2026-10-05T08:10:00.000Z",
+          "status": "rumor",
+          "card": "c_5ec0000001"
+        },
+        {
+          "at": "2026-10-12T19:40:00.000Z",
+          "status": "negotiating",
+          "card": "c_5ec0000002"
+        },
+        {
+          "at": "2026-10-20T02:25:00.000Z",
+          "status": "negotiating",
+          "card": "c_5ec0000004"
+        },
+        {
+          "at": "2026-10-28T21:15:00.000Z",
+          "status": "agreed",
+          "card": "c_5ec0000006"
+        }
+      ]
+    },
+    {
+      "id": "test-player-c:barcelona",
+      "player": "test-player-c",
+      "from": "liverpool",
+      "to": "barcelona",
+      "status": "collapsed",
+      "bestTier": 2,
+      "updated": "2026-10-24T10:20:00.000Z",
+      "quiet": false,
+      "history": [
+        {
+          "at": "2026-10-09T05:30:00.000Z",
+          "status": "rumor",
+          "card": "c_5ec0000011"
+        },
+        {
+          "at": "2026-10-16T18:45:00.000Z",
+          "status": "negotiating",
+          "card": "c_5ec0000012"
+        },
+        {
+          "at": "2026-10-24T10:20:00.000Z",
+          "status": "collapsed",
+          "card": "c_5ec0000013"
+        }
+      ]
+    },
+    {
+      "id": "test-player-e:juventus",
+      "player": "test-player-e",
+      "to": "juventus",
+      "status": "rumor",
+      "bestTier": 3,
+      "updated": "2026-09-20T04:00:00.000Z",
+      "quiet": true,
+      "history": [
+        {
+          "at": "2026-09-20T04:00:00.000Z",
+          "status": "rumor",
+          "card": "c_5ec0000015"
+        }
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "id": "c_aad5c2482e",
+      "t": "한국 축구 역사상 이런 수비수 없었다…김민재 아스널 이적설 등장→“긴급 대체자로 원하고 있어”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "transfer": {
+        "player": "kim-min-jae",
+        "to": "arsenal",
+        "status": "rumor",
+        "tier": 3
+      },
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696592",
+          "at": "2026-10-17T09:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-17T12:56:47.182Z"
+    },
+    {
+      "id": "c_f0e40fd803",
+      "t": "“김민재? EPL에 적합한지는 의문”… 韓 대표팀 ‘은퇴 소동’ KIM, 아스널 이적설에도 獨 매체 혹평→ “반복되는 치명적 실수, 겨울 이적은 회의적”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313183",
+          "at": "2026-10-16T07:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-17T12:56:47.182Z"
+    },
+    {
+      "id": "c_295c3659f6",
+      "t": "“토트넘 희망 사라지고 있어” 김민재 영입 원하지만 아스널까지 참전…“경쟁 훨씬 치열해졌어”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696601",
+          "at": "2026-10-17T16:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-18T05:34:53.361Z"
+    },
+    {
+      "id": "c_d097ad3ee7",
+      "t": "韓 축구 초대박, 김민재에게 AC밀란이 제대로 꽂혔다! 1월 영입 낙관론까지 등장…그런데 '연봉 150억'이 걸림돌 “상당한 양보 필요”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "SERIEA",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "milan"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696803",
+          "at": "2026-10-20T22:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-21T00:08:18.672Z"
+    },
+    {
+      "id": "c_d999cba4d2",
+      "t": "“김민재가 공식적으로 아스널 영입 명단에 올랐다” 소식 나왔는데…“콤파니가 수비 핵심 자원으로 여겨”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696796",
+          "at": "2026-10-20T17:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-21T00:08:18.672Z"
+    },
+    {
+      "id": "c_93efbb75b1",
+      "t": "‘韓 국가대표’ 김민재 향한 독일 현지의 깜짝 주장! 아스널전 45분만 뛰고도 호평…“겨울 이적시장에 팀을 떠날 수 있다는 소문은 사라져야 할 것”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=696921",
+          "at": "2026-10-22T10:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-23T00:10:00.356Z"
+    },
+    {
+      "id": "c_1501d40b10",
+      "t": "‘4부리그에 충격패 당하자 韓 괴물 수비수 찾는다!’ 아스널, 김민재 1월 영입설 급부상…“관심이 실제로 존재한다는 사실을 확인”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "transfer": {
+        "player": "kim-min-jae",
+        "to": "arsenal",
+        "status": "rumor",
+        "tier": 3
+      },
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697397",
+          "at": "2026-10-29T07:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-29T22:11:08.570Z"
+    },
+    {
+      "id": "c_5ec0000001",
+      "t": "[견본] 토트넘, 홍길동 영입 관심…“여름부터 꾸준히 지켜봤다”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [
+        "test-player-a"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-a",
+        "to": "tottenham-hotspur",
+        "status": "rumor",
+        "tier": 3
+      },
+      "src": [
+        {
+          "n": "견본 통신",
+          "u": "https://example.com/specimen/c_5ec0000001",
+          "at": "2026-10-05T08:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-05T08:10:00.000Z"
+    },
+    {
+      "id": "c_5ec0000002",
+      "t": "Sample: Tottenham open talks with Mainz over Hong Gil-dong",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "mainz"
+      ],
+      "players": [
+        "test-player-a"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-a",
+        "from": "mainz",
+        "to": "tottenham-hotspur",
+        "status": "negotiating",
+        "tier": 2
+      },
+      "src": [
+        {
+          "n": "Sample Wire",
+          "u": "https://example.com/specimen/c_5ec0000002",
+          "at": "2026-10-12T19:40:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-12T19:40:00.000Z"
+    },
+    {
+      "id": "c_5ec0000003",
+      "t": "[견본] 홍길동, 토트넘 이적설 속 리그 2호골…“지금은 마인츠에 집중”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "mainz",
+        "tottenham-hotspur"
+      ],
+      "players": [
+        "test-player-a"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "견본 통신",
+          "u": "https://example.com/specimen/c_5ec0000003",
+          "at": "2026-10-15T11:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-15T11:05:00.000Z"
+    },
+    {
+      "id": "c_5ec0000004",
+      "t": "[견본] “협상은 계속된다” 홍길동 토트넘행 협상 소식 다시 전해져",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [
+        "test-player-a"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-a",
+        "to": "tottenham-hotspur",
+        "status": "negotiating",
+        "tier": 3
+      },
+      "src": [
+        {
+          "n": "견본 통신",
+          "u": "https://example.com/specimen/c_5ec0000004",
+          "at": "2026-10-20T02:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-20T02:25:00.000Z"
+    },
+    {
+      "id": "c_5ec0000005",
+      "t": "[견본] 마인츠 감독 “홍길동 거취, 겨울에 다시 이야기하자”…토트넘 관심에는 말 아껴",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "mainz",
+        "tottenham-hotspur"
+      ],
+      "players": [
+        "test-player-a"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "견본 통신",
+          "u": "https://example.com/specimen/c_5ec0000005",
+          "at": "2026-10-25T07:50:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-25T07:50:00.000Z"
+    },
+    {
+      "id": "c_5ec0000006",
+      "t": "Sample: Hong Gil-dong agrees personal terms with Tottenham ahead of January move",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [
+        "test-player-a"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-a",
+        "to": "tottenham-hotspur",
+        "status": "agreed",
+        "tier": 2
+      },
+      "src": [
+        {
+          "n": "Sample Wire",
+          "u": "https://example.com/specimen/c_5ec0000006",
+          "at": "2026-10-28T21:15:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-28T21:15:00.000Z"
+    },
+    {
+      "id": "c_5ec0000007",
+      "t": "Sample: Chelsea monitor Napoli forward Lee Mong-ryong",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "SERIEA"
+      ],
+      "teams": [
+        "chelsea",
+        "napoli"
+      ],
+      "players": [
+        "test-player-b"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-b",
+        "from": "napoli",
+        "to": "chelsea",
+        "status": "rumor",
+        "tier": 2
+      },
+      "src": [
+        {
+          "n": "Sample Wire",
+          "u": "https://example.com/specimen/c_5ec0000007",
+          "at": "2026-10-18T16:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-18T16:00:00.000Z"
+    },
+    {
+      "id": "c_5ec0000008",
+      "t": "Sample: Chelsea agree fee with Napoli for Lee Mong-ryong – here we go",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "SERIEA"
+      ],
+      "teams": [
+        "chelsea",
+        "napoli"
+      ],
+      "players": [
+        "test-player-b"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-b",
+        "from": "napoli",
+        "to": "chelsea",
+        "status": "agreed",
+        "tier": 1
+      },
+      "src": [
+        {
+          "n": "Sample Wire",
+          "u": "https://example.com/specimen/c_5ec0000008",
+          "at": "2026-10-27T22:30:00.000Z",
+          "tier": 1
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-27T22:30:00.000Z"
+    },
+    {
+      "id": "c_5ec0000009",
+      "t": "Sample: Official – Lee Mong-ryong joins Chelsea on a five-year deal",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [
+        "test-player-b"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-b",
+        "from": "napoli",
+        "to": "chelsea",
+        "status": "official",
+        "tier": 1
+      },
+      "src": [
+        {
+          "n": "Sample Wire",
+          "u": "https://example.com/specimen/c_5ec0000009",
+          "at": "2026-10-31T13:00:00.000Z",
+          "tier": 1
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-31T13:00:00.000Z"
+    },
+    {
+      "id": "c_5ec0000010",
+      "t": "Sample: Napoli confirm Lee Mong-ryong exit was agreed in October; reports of a late collapse denied",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli",
+        "chelsea"
+      ],
+      "players": [
+        "test-player-b"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-b",
+        "from": "napoli",
+        "to": "chelsea",
+        "status": "collapsed",
+        "tier": 2
+      },
+      "src": [
+        {
+          "n": "Sample Wire",
+          "u": "https://example.com/specimen/c_5ec0000010",
+          "at": "2026-11-01T09:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-01T09:00:00.000Z"
+    },
+    {
+      "id": "c_5ec0000011",
+      "t": "[견본] 바르셀로나, 리버풀 측면 수비수 영입 추진설",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA",
+        "EPL"
+      ],
+      "teams": [
+        "barcelona",
+        "liverpool"
+      ],
+      "players": [
+        "test-player-c"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-c",
+        "from": "liverpool",
+        "to": "barcelona",
+        "status": "rumor",
+        "tier": 3
+      },
+      "src": [
+        {
+          "n": "견본 통신",
+          "u": "https://example.com/specimen/c_5ec0000011",
+          "at": "2026-10-09T05:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-09T05:30:00.000Z"
+    },
+    {
+      "id": "c_5ec0000012",
+      "t": "Sample: Barcelona in talks with Liverpool over full-back",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA",
+        "EPL"
+      ],
+      "teams": [
+        "barcelona",
+        "liverpool"
+      ],
+      "players": [
+        "test-player-c"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-c",
+        "from": "liverpool",
+        "to": "barcelona",
+        "status": "negotiating",
+        "tier": 2
+      },
+      "src": [
+        {
+          "n": "Sample Wire",
+          "u": "https://example.com/specimen/c_5ec0000012",
+          "at": "2026-10-16T18:45:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-16T18:45:00.000Z"
+    },
+    {
+      "id": "c_5ec0000013",
+      "t": "Sample: Barcelona move for Liverpool full-back collapses over fee",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA",
+        "EPL"
+      ],
+      "teams": [
+        "barcelona",
+        "liverpool"
+      ],
+      "players": [
+        "test-player-c"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-c",
+        "from": "liverpool",
+        "to": "barcelona",
+        "status": "collapsed",
+        "tier": 2
+      },
+      "src": [
+        {
+          "n": "Sample Wire",
+          "u": "https://example.com/specimen/c_5ec0000013",
+          "at": "2026-10-24T10:20:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-10-24T10:20:00.000Z"
+    },
+    {
+      "id": "c_5ec0000014",
+      "t": "[견본] 성춘향, 겨울 이적시장서 새 팀 찾는다…“출전 시간이 먼저”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "freiburg"
+      ],
+      "players": [
+        "test-player-d"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-d",
+        "status": "rumor",
+        "tier": 3
+      },
+      "src": [
+        {
+          "n": "견본 통신",
+          "u": "https://example.com/specimen/c_5ec0000014",
+          "at": "2026-10-29T23:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-10-29T23:10:00.000Z"
+    },
+    {
+      "id": "c_5ec0000015",
+      "t": "[견본] 유벤투스, 변학도 영입 검토설",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus"
+      ],
+      "players": [
+        "test-player-e"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "transfer": {
+        "player": "test-player-e",
+        "to": "juventus",
+        "status": "rumor",
+        "tier": 3
+      },
+      "src": [
+        {
+          "n": "견본 통신",
+          "u": "https://example.com/specimen/c_5ec0000015",
+          "at": "2026-09-20T04:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-09-20T04:00:00.000Z"
+    }
+  ]
+}

@@ -19,6 +19,8 @@ import type { TonightWidget } from "@/lib/data/home-widgets";
 import type { LeagueMiniPanelView } from "@/lib/home-widgets";
 import type { NationalHomeData } from "@/lib/data/national-page";
 import { nationalMatchRows } from "@/lib/national-team-view";
+import type { TransferWindowState } from "@/lib/transfer-window";
+import type { HotTransferView } from "@/lib/transfers-view";
 
 // 홈은 빌드 때 data/news의 최신 호를 읽는다. 저장소 data/는 파이프라인 실행에 따라 바뀌므로 로더를 바꿔 끼운다
 // (로더 자체는 tests/data-news.test.ts).
@@ -60,6 +62,64 @@ vi.mock("@/lib/data/national-page", () => ({
   loadNationalHome,
   nationalNewsTags: () => () => [],
 }));
+// 이적 핫 리스트 · 이적 창 모드(M4-04 — FR-104 · FR-105) — 저장소 data/transfers.json · 빌드 시각 대신 테스트가 정한 값(기본: 없음 → 숨김).
+// 순위 규칙은 tests/transfers-view.test.ts, 창 판정은 tests/transfer-window*.test.ts
+const { loadHotTransfers, loadTransferWindowState } = vi.hoisted(() => ({
+  loadHotTransfers: vi.fn<() => HotTransferView[]>(() => []),
+  loadTransferWindowState: vi.fn<(now: Date) => TransferWindowState | null>(
+    () => null,
+  ),
+}));
+vi.mock("@/lib/data/transfers", () => ({
+  loadHotTransfers,
+  loadTransfersFile: () => null,
+}));
+vi.mock("@/lib/data/transfer-windows", () => ({ loadTransferWindowState }));
+const HOT: HotTransferView = {
+  id: "kim-min-jae:arsenal",
+  player: { slug: "kim-min-jae", name: "김민재", korean: true, page: true },
+  to: {
+    slug: "arsenal",
+    name: "아스널",
+    latin: false,
+    short: "ARS",
+    colors: null,
+    page: true,
+  },
+  status: "rumor",
+  bestTier: 3,
+  updated: "2026-10-29T07:15:00.000Z",
+  lead: {
+    id: "c_1501d40b10",
+    title: "원제목",
+    lang: "ko",
+    url: "https://example.com/a",
+    source: "인터풋볼",
+    at: "2026-10-29T07:15:00.000Z",
+    more: 0,
+  },
+};
+const WINDOW_OPEN: TransferWindowState = {
+  active: true,
+  grace: false,
+  open: [
+    {
+      comp: "EPL",
+      season: 2026,
+      kind: "winter",
+      opensAt: "2027-01-01T00:00:00.000Z",
+      closesAt: "2027-02-01T23:00:00.000Z",
+      daysLeft: 18,
+    },
+  ],
+  closesAt: "2027-02-01T23:00:00.000Z",
+  daysLeft: 18,
+  closedAt: null,
+  graceEndsAt: null,
+  closedComps: [],
+  upcoming: [],
+};
+
 function slotFromBrief(date: string): BriefSlot {
   const brief = loadBrief(date);
   return brief ? { kind: "brief", brief } : { kind: "none" };
@@ -101,6 +161,10 @@ beforeEach(() => {
   loadLeagueMini.mockReturnValue([]);
   loadNationalHome.mockReset();
   loadNationalHome.mockReturnValue(null);
+  loadHotTransfers.mockReset();
+  loadHotTransfers.mockReturnValue([]);
+  loadTransferWindowState.mockReset();
+  loadTransferWindowState.mockReturnValue(null);
 });
 
 describe("HomePage", () => {
@@ -500,6 +564,67 @@ describe("HomePage — 상태 화면(M1-37, DESIGN §9.3 ③)", () => {
     expect(new Set(ids).size).toBe(4);
     // 오늘 밤 빈 상태(창 없음) — 부제 없이 빈 상태 문구
     expect(flow.querySelector("[data-slot=tonight-empty]")).not.toBeNull();
+  });
+
+  it("이적 핫 리스트(M4-04) — 평소: 두 위젯 자리 모두 순위 다음(1280 마주 보는 면 오늘 밤 → 순위 → 이적), 타임라인 도착 링크", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadHotTransfers.mockReturnValue([HOT]);
+    loadLeagueMini.mockReturnValue([
+      {
+        comp: "EPL",
+        short: "EPL",
+        name: "프리미어리그",
+        rows: [],
+        note: null,
+        updatedAt: null,
+        href: "/competitions/epl/",
+      },
+    ]);
+    const { container } = render(<HomePage />);
+    const flow = container.querySelector(
+      "main [data-slot=home-widgets]",
+    ) as HTMLElement;
+    const aside = container.querySelector("aside") as HTMLElement;
+    expect(aside).toHaveAttribute("aria-label", "오늘 밤 경기·리그 순위·이적");
+    for (const root of [flow, aside]) {
+      expect(
+        [...root.querySelectorAll("section")].map((el) =>
+          el.getAttribute("data-slot"),
+        ),
+      ).toEqual(["tonight", "league-mini", "transfer-hot"]);
+    }
+    const link = within(aside).getByRole("link", { name: /김민재/ });
+    expect(link.getAttribute("href")).toMatch(
+      /^\/transfers\/?#xt-c_1501d40b10$/,
+    );
+    expect(link).toHaveAccessibleName(/이적 타임라인의 최근 기사로/);
+  });
+
+  it("이적 창 모드(FR-105) — 위치만 위로: 지면 안 5줄 바로 아래 · 주요 뉴스 앞, 위젯 자리(마주 보는 면 포함)에서는 빠진다, 부제에 창 상태", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadBrief.mockReturnValue(briefFixture);
+    loadHotTransfers.mockReturnValue([HOT]);
+    loadTransferWindowState.mockReturnValue(WINDOW_OPEN);
+    const { container } = render(<HomePage />);
+    const hot = container.querySelectorAll("[data-slot=transfer-hot]");
+    expect(hot).toHaveLength(1);
+    const main = container.querySelector("main") as HTMLElement;
+    expect(main.contains(hot[0]!)).toBe(true);
+    expect(
+      container.querySelector("aside [data-slot=transfer-hot]"),
+    ).toBeNull();
+    const news = container.querySelector("section#news") as HTMLElement;
+    expect(
+      hot[0]!.compareDocumentPosition(news) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(hot[0]!.textContent).toContain("이적 창 열림 · 마감 D-18");
+  });
+
+  it("실을 이적이 없으면 핫 리스트를 그리지 않는다(창 모드여도)", () => {
+    loadLatestNews.mockReturnValue(fixture);
+    loadTransferWindowState.mockReturnValue(WINDOW_OPEN);
+    const { container } = render(<HomePage />);
+    expect(container.querySelector("[data-slot=transfer-hot]")).toBeNull();
   });
 
   it("발행된 호가 없으면 지연 안내도 없다", () => {

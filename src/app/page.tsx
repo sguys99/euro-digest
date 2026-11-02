@@ -9,6 +9,7 @@ import { TonightSection } from "@/components/home/tonight";
 import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
 import { AppShell } from "@/components/shell/app-shell";
+import { TransferHotList } from "@/components/transfers/hot-list";
 import { loadBriefSlot } from "@/lib/data/brief";
 import {
   loadLeagueMini,
@@ -20,9 +21,12 @@ import { loadLastNight } from "@/lib/data/korean-players";
 import { loadKoreanPlayers } from "@/lib/data/team-page";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
 import { loadNationalHome, nationalNewsTags } from "@/lib/data/national-page";
+import { loadTransferWindowState } from "@/lib/data/transfer-windows";
+import { loadHotTransfers, loadTransfersFile } from "@/lib/data/transfers";
 import { issueLateWindows, issueNumber } from "@/lib/issue";
 import { routes } from "@/lib/paths";
 import { pageMetadata, SITE_DESCRIPTION } from "@/lib/seo";
+import { transferWindowLine } from "@/lib/transfer-window-view";
 import { cn } from "@/lib/utils";
 
 /*
@@ -44,7 +48,11 @@ import { cn } from "@/lib/utils";
  *   5. A매치(M3-13 — FR-71, DESIGN §9.3 D2 홈 위젯 A매치, PRD §4.2 순서 3): 빌드 시각의 KST 날짜가 A매치 기간(경기일 ±3일 —
  *      src/lib/national-team.ts)일 때만 — 그 기간 경기 · 소집 선수 · 대표팀 뉴스 행 3장. 위치는 모든 폭에서 지면 안 5줄 바로 아래(혼합안 화면 5 —
  *      내 팀 소식(M4) 다음 · 한국 선수 앞). 기간이 아니면 그리지 않는다(자리 없음). 매일 아침 발행 빌드가 판정을 다시 굳힌다.
- * 그 밖의 홈 섹션(이적)은 해당 단계에서 싣는다(미완성 섹션 숨김, plan §2.3 — 자리를 그리지 않는다). 1024~1279는 목차 + 지면 2단,
+ *   6. 이적 핫 리스트(M4-04 — PRD §4.2 7 · FR-104, DESIGN §9.3 D2 홈 위젯): 잠잠 제외 상위 5건(순위 규칙 src/lib/transfers-view.ts `hotTransfers`),
+ *      실을 이적이 없으면 숨김. 평소 = 위젯 자리 맨 끝(1280 마주 보는 면 오늘 밤 → 한국 선수 → 순위 → 이적, 1279 이하 지면 안 같은 순서).
+ *      **이적 창 모드**(FR-105 — 빌드 시각에 어느 리그든 창이 열려 있거나 마감 뒤 24시간, D68 ①): 위치만 위로 — 모든 폭에서 지면 안
+ *      5줄 · A매치 바로 아래(한국 선수 · 피드 앞), 마주 보는 면에서는 뺀다(한 번만). 부제 앞에 창 상태("이적 창 열림 · 마감 D-n").
+ * 1024~1279는 목차 + 지면 2단,
  * 1280 이상은 목차 + 지면(688) + 마주 보는 면(296) 3단이다(DESIGN §4.3).
  */
 
@@ -67,6 +75,22 @@ export default function HomePage() {
   const lastNight = loadLastNight(issue?.date ?? null);
   const national = loadNationalHome(new Date());
   const hasBrief = slot !== null && slot.kind !== "none";
+  // 이적 핫 리스트(M4-04) · 이적 창 모드(FR-105 — 빌드 시각 기준)
+  const hot = loadHotTransfers();
+  const transferTotal = loadTransfersFile()?.length ?? 0;
+  const windowState = loadTransferWindowState(new Date());
+  const windowLine =
+    windowState?.active === true ? transferWindowLine(windowState) : null;
+  const hotTop = hot.length > 0 && windowLine !== null;
+  const hotList = (where: "top" | "flow" | "facing", className?: string) => (
+    <TransferHotList
+      items={hot}
+      total={transferTotal}
+      windowLine={windowLine}
+      headingId={`transfer-hot-${where}-h`}
+      className={className}
+    />
+  );
   const korean = (where: "flow" | "facing", className: string) =>
     lastNight ? (
       <KoreanLastNight
@@ -91,6 +115,8 @@ export default function HomePage() {
         headingId={`league-mini-${where}-h`}
         className="mt-9"
       />
+      {/* 이적 핫 리스트 — 평소 자리(순위 다음). 이적 창 모드면 지면 위로 옮겨 여기서는 뺀다 */}
+      {hot.length > 0 && !hotTop ? hotList(where, "mt-9") : null}
       {/* 위젯의 데이터 출처(FR-45 — 6개 대회 파일 중 가장 오래된 갱신 시각, M2-16 · 한국 선수 출전·결과는 API-Football — M3-11) */}
       <DataSourceNote
         source={source}
@@ -109,7 +135,11 @@ export default function HomePage() {
       contents={filter ? <NewsFilterContents view={filter} /> : undefined}
       lateWindows={issue ? issueLateWindows(issue.date) : undefined}
       facing={widgets("facing")}
-      facingLabel="오늘 밤 경기·리그 순위"
+      facingLabel={
+        hot.length > 0 && !hotTop
+          ? "오늘 밤 경기·리그 순위·이적"
+          : "오늘 밤 경기·리그 순위"
+      }
     >
       {slot?.kind === "brief" ? <TodayBrief brief={slot.brief} /> : null}
       {slot?.kind === "missing" ? <BriefMissing /> : null}
@@ -122,10 +152,17 @@ export default function HomePage() {
           className={hasBrief ? "mt-9 lg:mt-11" : undefined}
         />
       ) : null}
+      {/* 이적 창 모드(FR-105) — 모든 폭에서 5줄 · A매치 바로 아래 이적 핫 리스트 */}
+      {hotTop
+        ? hotList("top", hasBrief || national ? "mt-9 lg:mt-11" : undefined)
+        : null}
       {/* 1279 이하 — 5줄 바로 아래 어젯밤 한국 선수(D0 #16 흐름 5줄 → 한국 선수 → 피드, M3-11). 1280 이상은 마주 보는 면 */}
       {lastNight ? (
         <div data-slot="home-korean-flow" className="xl:hidden">
-          {korean("flow", hasBrief || national ? "mt-9 lg:mt-11" : "")}
+          {korean(
+            "flow",
+            hasBrief || national || hotTop ? "mt-9 lg:mt-11" : "",
+          )}
         </div>
       ) : null}
       <NewsSection
@@ -138,9 +175,9 @@ export default function HomePage() {
         titleAs="h3"
         className={cn(
           "scroll-mt-4",
-          (hasBrief || national || lastNight) && "mt-9 lg:mt-11",
-          // 1280 이상은 한국 선수 위젯이 마주 보는 면에 있어 5줄 · A매치 바로 아래가 피드다(둘 다 없으면 위 여백 없음)
-          lastNight && !(hasBrief || national) && "xl:mt-0",
+          (hasBrief || national || hotTop || lastNight) && "mt-9 lg:mt-11",
+          // 1280 이상은 한국 선수 위젯이 마주 보는 면에 있어 5줄 · A매치 · (창 모드) 이적 바로 아래가 피드다(모두 없으면 위 여백 없음)
+          lastNight && !(hasBrief || national || hotTop) && "xl:mt-0",
         )}
       />
       {/* 1279 이하 — 지면 안 피드 다음(1280 이상은 마주 보는 면) */}

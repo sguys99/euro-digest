@@ -26,7 +26,11 @@ import path from "node:path";
 
 import { z } from "zod";
 
-import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
+import {
+  NewsFileSchema,
+  type NewsCard,
+  type NewsFile,
+} from "@/lib/schema/news";
 import { TakedownsFileSchema } from "@/lib/schema/takedown";
 
 /** 파이프라인 산출물 위치(저장소 루트 기준). `next build`·Vitest 모두 루트에서 실행한다 */
@@ -75,6 +79,34 @@ export function loadNewsIssue(
 ): NewsFile | null {
   if (!listNewsDates(dir).includes(date)) return null;
   return readIssue(path.join(dir, `${date}.json`), options);
+}
+
+const retainedCache = new Map<string, NewsCard[]>();
+
+/**
+ * 보존된 일별 호 전체의 카드(삭제 요청 제외) — 날짜 오름차순으로 읽어 같은 카드 ID는 **앞 날짜 것 하나만**(이적 트래커 집계
+ * scripts/lib/transfers.ts와 같은 규칙). 이적 화면(M4-04 — `history` 근거 카드 · 보조 노드)이 쓴다. 파일이 없으면 빈 배열, 깨진 파일이
+ * 있으면 던진다(위 규칙 — 보존 기간 전체가 근거라 최신 파일만 보지 않는다). 같은 폴더 · 같은 등록 파일은 한 번만 읽는다(빌드 중 캐시).
+ */
+export function loadRetainedCards(
+  dir: string = NEWS_DIR,
+  options: LoadNewsOptions = {},
+): NewsCard[] {
+  const key = `${dir}\u0000${options.takedownsFile ?? TAKEDOWNS_FILE}`;
+  const hit = retainedCache.get(key);
+  if (hit) return hit;
+  const seen = new Set<string>();
+  const cards: NewsCard[] = [];
+  for (const date of listNewsDates(dir)) {
+    for (const card of readIssue(path.join(dir, `${date}.json`), options)
+      .cards) {
+      if (seen.has(card.id)) continue;
+      seen.add(card.id);
+      cards.push(card);
+    }
+  }
+  retainedCache.set(key, cards);
+  return cards;
 }
 
 /** 삭제 요청 카드 ID 집합 — 파일이 없거나 JSON·스키마가 틀리면 던진다(빌드 실패, 위 규칙) */

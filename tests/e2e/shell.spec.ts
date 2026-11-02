@@ -28,6 +28,8 @@ const PAGES = [
 ] as const;
 
 const NAV_LABELS = ["홈", "뉴스", "리그", "한국 선수"];
+/** 상단 내비(1024 이상)에만 있는 항목 — 이적(M4-04, PRD §4.1 하단 탭 5개 고정) */
+const TOP_ONLY_LABELS = ["이적"];
 
 // 폭은 테스트가 정하므로 desktop 프로젝트에서 한 번만 돈다(모바일 에뮬레이션이 필요한 sticky 검사는 아래 따로)
 function desktopOnly(projectName: string): void {
@@ -69,7 +71,9 @@ for (const width of WIDTHS) {
 
         for (const nav of [top, bottom]) {
           const links = nav.locator("a");
-          await expect(links).toHaveText(NAV_LABELS);
+          await expect(links).toHaveText(
+            nav === top ? [...NAV_LABELS, ...TOP_ONLY_LABELS] : NAV_LABELS,
+          );
           await expect(links.nth(0)).toHaveAttribute("href", `${basePath}/`);
           await expect(links.nth(1)).toHaveAttribute(
             "href",
@@ -535,9 +539,9 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           );
         }
       }
-      // 건너뛰기 · 워드마크 · 테마 토글 · (1024 이상 상단 내비 4 — 리그 M2-10 · 한국 선수 M3-09) · 뒤표지 4(AI 작성 고지 · 소개·출처 정책 ·
-      // 삭제·정정 요청 — M1-36 · GitHub) · (1023 이하 하단 탭 4)
-      expect(checked).toBe(11);
+      // 건너뛰기 · 워드마크 · 테마 토글 · (1024 이상 상단 내비 5 — 리그 M2-10 · 한국 선수 M3-09 · 이적 M4-04) · 뒤표지 4(AI 작성 고지 ·
+      // 소개·출처 정책 · 삭제·정정 요청 — M1-36 · GitHub) · (1023 이하 하단 탭 4)
+      expect(checked).toBe(width >= 1024 ? 12 : 11);
       expect(problems).toEqual([]);
     });
   }

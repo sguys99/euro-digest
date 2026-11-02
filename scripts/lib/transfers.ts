@@ -45,6 +45,7 @@ import type {
   TransfersFile,
 } from "@/lib/schema";
 import { parseUtcIso } from "@/lib/time";
+import { PROGRESS_RANK, reduceTransferStatus } from "@/lib/transfer-status";
 
 // ─── 정책 ────────────────────────────────────────────────────────────────
 
@@ -55,16 +56,6 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /** 행선지가 없는 카드의 레코드 키(slug에 들 수 없는 값) */
 export const UNKNOWN_DESTINATION_KEY = "-";
 
-type ProgressStatus = Exclude<TransferStatus, "collapsed">;
-
-/** 진행 단계 순서(FR-102) */
-export const PROGRESS_RANK: Readonly<Record<ProgressStatus, number>> = {
-  rumor: 0,
-  negotiating: 1,
-  agreed: 2,
-  official: 3,
-};
-
 /** 같은 시각 정렬용 — 진행 단계 먼저, 결렬 나중(transfer-extract.ts ⑥ '결렬이 진행 주장과 같거나 늦을 때'와 같은 쪽) */
 const STATUS_ORDER: Readonly<Record<TransferStatus, number>> = {
   ...PROGRESS_RANK,
@@ -72,53 +63,15 @@ const STATUS_ORDER: Readonly<Record<TransferStatus, number>> = {
 };
 
 // ─── 상태 머신 ───────────────────────────────────────────────────────────
+// 규칙(머리 주석 '상태 머신')은 화면 타임라인(M4-04)과 함께 쓰려고 src/lib/transfer-status.ts로 옮겼다 — 예전 이름 그대로 다시 내보낸다.
 
-/** 상태 머신의 현재 값 — peak = 지금까지 도달한 최고 진행 단계 순위(결렬로 시작했으면 -1) */
-export interface TransferState {
-  status: TransferStatus;
-  peak: number;
-}
-
-/** 첫 근거 카드의 상태 */
-export function initialTransferState(status: TransferStatus): TransferState {
-  return {
-    status,
-    peak: status === "collapsed" ? -1 : PROGRESS_RANK[status],
-  };
-}
-
-/** 근거 카드 1장 적용(머리 주석 '상태 머신') — 바뀌지 않으면 같은 객체를 돌려준다 */
-export function applyTransferStatus(
-  state: TransferState,
-  next: TransferStatus,
-): TransferState {
-  if (next === "collapsed") {
-    // 공식 발표 뒤 결렬은 적용하지 않는다 · 이미 결렬이면 그대로
-    if (state.status === "official" || state.status === "collapsed") {
-      return state;
-    }
-    return { status: "collapsed", peak: state.peak };
-  }
-  const rank = PROGRESS_RANK[next];
-  if (state.status === "collapsed") {
-    // 결렬 뒤에는 결렬 전 최고 단계보다 높은 단계만 다시 연다
-    return rank > state.peak ? { status: next, peak: rank } : state;
-  }
-  return rank > PROGRESS_RANK[state.status]
-    ? { status: next, peak: Math.max(state.peak, rank) }
-    : state;
-}
-
-/** 단계 목록(적용 순서) → 최종 상태. 빈 목록이면 null */
-export function reduceTransferStatus(
-  statuses: readonly TransferStatus[],
-): TransferStatus | null {
-  const [first, ...rest] = statuses;
-  if (first === undefined) return null;
-  let state = initialTransferState(first);
-  for (const s of rest) state = applyTransferStatus(state, s);
-  return state.status;
-}
+export {
+  applyTransferStatus,
+  initialTransferState,
+  PROGRESS_RANK,
+  reduceTransferStatus,
+  type TransferState,
+} from "@/lib/transfer-status";
 
 // ─── 키·시각 ─────────────────────────────────────────────────────────────
 

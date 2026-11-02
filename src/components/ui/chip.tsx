@@ -212,7 +212,9 @@ export function StampChip({ className, ...props }: ComponentProps<"span">) {
 export type ContentsMarker =
   | { kind: "competition"; comp: CompId; short: string; title?: string }
   | { kind: "category" }
-  | { kind: "korean" };
+  | { kind: "korean" }
+  /** 이적 필터 체크 목록(M4-04 — DESIGN §9.3 D2 "이적 필터"): 14px 체크 칸 + (선택) 앞 표식(펀치 · 평탄 탭 · 팀 배지) */
+  | { kind: "check"; lead?: ReactNode };
 
 export interface ContentsRowProps extends Omit<
   ComponentProps<"button">,
@@ -246,6 +248,21 @@ function ContentsMarkerView({ marker }: { marker: ContentsMarker }) {
           aria-hidden="true"
           className="size-2.5 flex-none border border-ink-2 group-aria-pressed/row:border-brand-accent group-aria-pressed/row:bg-brand-accent"
         />
+      );
+    case "check":
+      // 이적 필터 행 — 14px 체크 칸(1.5px --ink-2), 선택 = --ink 면 + 안쪽 2px 지면 띠, 0건 = 점선 --ink-disabled(혼합안 `.xf__opts .chip::before`)
+      return (
+        <>
+          <span
+            aria-hidden="true"
+            className={cx(
+              "size-3.5 flex-none border-[1.5px] border-ink-2",
+              "group-aria-pressed/row:border-ink group-aria-pressed/row:bg-ink group-aria-pressed/row:shadow-[inset_0_0_0_2px_var(--paper)]",
+              "group-disabled/row:border-dashed group-disabled/row:border-ink-disabled",
+            )}
+          />
+          {marker.lead}
+        </>
       );
     case "korean":
       // 한국 선수 행 — 16px 체크 칸, 선택이면 --brand-accent 면 + 체크(CSS 도형)

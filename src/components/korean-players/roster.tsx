@@ -532,18 +532,21 @@ function RosterLegend() {
 /**
  * 1024 이상 왼쪽 목차 — 리그별 구간 앵커(평탄 탭 + 리그명 + 리더 점선 + 인원) + 집계 시작 안내 + (주면) 아래 떨어진 묶음에
  * '주간 리포트' 행(M3-12 — 최신 주차, 색인 페이지로) · '대표팀' 행(M3-13 — 최신 소집 명단 이름, `/national-team/`로).
- * 이적 행은 페이지(M4-04) 전이라 넣지 않는다(DECISIONS D2 §8 #10).
+ * '이적' 행(M4-04 — 이적 원장 건수, `/transfers/`로).
  */
 export function RosterContents({
   view,
   weekly = null,
   national = null,
+  transfers = null,
 }: {
   view: RosterView;
   /** 최신 주간 리포트 주차 이름("W43") — 없으면 null(행 대신 '월요일 발행' 글자) */
   weekly?: { latest: string | null } | null;
   /** 최신 소집 명단 이름("11월 소집") — 없으면 null(값 대신 'A매치 일정' 글자) */
   national?: { label: string | null } | null;
+  /** 이적 원장 건수(M4-04) — 주면 '이적' 행 */
+  transfers?: { count: number } | null;
 }) {
   return (
     <>
@@ -628,6 +631,32 @@ export function RosterContents({
               <Leader />
               <span className="text-[12.5px] leading-none text-ink-2">
                 {national.label ?? "A매치 일정"}
+              </span>
+            </Link>
+          </li>
+        </ul>
+      ) : null}
+      {transfers ? (
+        <ul
+          role="list"
+          data-slot="roster-transfers-link"
+          className={weekly || national ? undefined : "mt-4.5"}
+        >
+          <li>
+            <Link
+              href={routes.transfers()}
+              className={cx(
+                "group/row flex min-h-11 items-center gap-2 border-b border-rule text-sm text-ink no-underline",
+                !weekly && !national && "border-t",
+              )}
+            >
+              <span className="min-w-0 font-extrabold underline-offset-3 group-hover/row:underline">
+                이적
+              </span>
+              <Leader />
+              <span className="font-numeric text-[17px] leading-none font-semibold text-ink-2 tabular-nums">
+                {transfers.count}
+                <span className="sr-only">건</span>
               </span>
             </Link>
           </li>

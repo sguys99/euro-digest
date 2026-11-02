@@ -12,6 +12,7 @@ import { RunningHead } from "@/components/ui/section-head";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadRosterSource, loadRosterView } from "@/lib/data/korean-players";
 import { loadNationalTeamConfig } from "@/lib/data/national-team";
+import { loadTransfersFile } from "@/lib/data/transfers";
 import { listWeeklyWeeks } from "@/lib/data/weekly-report";
 import { latestSquad, squadLabel } from "@/lib/national-team-view";
 import { routes } from "@/lib/paths";
@@ -51,13 +52,20 @@ export default function KoreanPlayersPage() {
   const config = loadNationalTeamConfig();
   const squad = config ? latestSquad(config) : null;
   const national = { label: squad ? squadLabel(squad) : null };
+  // 이적 진입(M4-04) — 같은 두 자리. `/transfers/`는 늘 생긴다(빈 상태 포함) — 값은 원장 건수
+  const transfers = { count: loadTransfersFile()?.length ?? 0 };
   return (
     <AppShell
       current="korean"
       issue={issue}
       contents={
         view.groups.length > 0 ? (
-          <RosterContents view={view} weekly={weekly} national={national} />
+          <RosterContents
+            view={view}
+            weekly={weekly}
+            national={national}
+            transfers={transfers}
+          />
         ) : undefined
       }
       contentsLabel="한국 선수 목차"
@@ -118,6 +126,18 @@ export default function KoreanPlayersPage() {
               {national.label ? (
                 <span className="font-normal">{national.label}</span>
               ) : null}
+              <ChevronRightIcon size={16} />
+            </Link>
+            <Link
+              href={routes.transfers()}
+              data-slot="korean-players-transfers-link"
+              className="-ml-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-sm font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2"
+            >
+              이적
+              <span className="font-numeric font-normal tabular-nums">
+                {transfers.count}
+              </span>
+              <span className="sr-only">건</span>
               <ChevronRightIcon size={16} />
             </Link>
           </p>

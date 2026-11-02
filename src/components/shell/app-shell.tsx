@@ -10,7 +10,7 @@ import { Colophon } from "./colophon";
 import { IssueLateNotice } from "./issue-late-notice";
 import { Masthead } from "./masthead";
 import { OfflineBand } from "./offline-band";
-import { NAV_ITEMS, type NavKey } from "./site-nav";
+import { BOTTOM_TAB_ITEMS, type NavKey } from "./site-nav";
 import { StatusIsland } from "./status-island";
 
 /**
@@ -166,7 +166,7 @@ export function AppShell({
           data-slot="bottom-tabs"
           className="sticky bottom-0 z-20 -mx-edge pb-[env(safe-area-inset-bottom)] lg:hidden"
         >
-          {NAV_ITEMS.map(({ key, label, href, Icon }) => (
+          {BOTTOM_TAB_ITEMS.map(({ key, label, href, Icon }) => (
             <BottomTab
               key={key}
               href={href}

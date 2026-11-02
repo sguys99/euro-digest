@@ -41,6 +41,10 @@ export const TONIGHT_DESCRIPTION =
 export const NATIONAL_TEAM_DESCRIPTION =
   "한국 축구 대표팀의 A매치 일정과 결과(한국 시간), 소집된 등록 한국 선수, 대표팀 소식과 주요국 A매치 뉴스를 원문 링크와 함께 한 화면에 모았습니다.";
 
+/** `/transfers/` 설명(M4-04) — 화면에 실린 것만(단계 · Tier · 원문 링크 타임라인) */
+export const TRANSFERS_DESCRIPTION =
+  "유럽 축구 이적설을 선수·행선지별로 모아 루머·협상·합의·공식·결렬 단계와 출처 Tier, 관련 기사 타임라인(원문 링크)으로 보여 줍니다.";
+
 /** og:locale */
 export const OG_LOCALE = "ko_KR";
 
@@ -328,6 +332,8 @@ export function sitemapEntries(
   koreanPlayers: SitemapKoreanPlayers | null = null,
   /** 대표팀 화면(M3-13) — 늘 생기는 페이지라 있으면 싣는다(lastModified = 최신 호 — 대표팀 소식이 호마다 바뀐다) */
   nationalTeam: boolean = false,
+  /** 이적 화면(M4-04) — 늘 생기는 페이지(빈 상태 포함). lastModified = 트래커의 가장 늦은 갱신(없으면 없음) */
+  transfers: { updatedAt: string | null } | null = null,
 ): MetadataRoute.Sitemap {
   const sorted = [...issues].sort((a, b) => a.date.localeCompare(b.date));
   const latest = sorted.at(-1);
@@ -370,6 +376,17 @@ export function sitemapEntries(
           {
             url: absoluteUrl(routes.nationalTeam()),
             ...(latest ? { lastModified: latest.generatedAt } : {}),
+          },
+        ]
+      : []),
+    // 이적(M4-04) — 원장 · 타임라인(트래커 집계)
+    ...(transfers
+      ? [
+          {
+            url: absoluteUrl(routes.transfers()),
+            ...(transfers.updatedAt
+              ? { lastModified: transfers.updatedAt }
+              : {}),
           },
         ]
       : []),

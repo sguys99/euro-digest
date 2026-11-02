@@ -60,6 +60,12 @@ vi.mock("@/lib/data/weekly-report", () => ({
   loadWeeklyReport,
 }));
 
+// 이적(M4-04) — 트래커 파일(가장 늦은 갱신 = lastmod). 기본은 파일 없음
+const { loadTransfersFile } = vi.hoisted(() => ({
+  loadTransfersFile: vi.fn((): Array<{ updated: string }> | null => null),
+}));
+vi.mock("@/lib/data/transfers", () => ({ loadTransfersFile }));
+
 const fixture = NewsFileSchema.parse(
   JSON.parse(
     readFileSync(
@@ -102,6 +108,8 @@ describe("sitemap 라우트", () => {
         url: `${SITE}/national-team/`,
         lastModified: "2026-10-17T00:17:00.000Z",
       },
+      // 이적(M4-04) — 늘 생긴다(트래커 파일이 없으면 lastmod 없음)
+      { url: `${SITE}/transfers/` },
       ...DATES.map((date) => ({
         url: `${SITE}/news/${date}/`,
         lastModified: issueOf(date).generatedAt,
@@ -127,7 +135,7 @@ describe("sitemap 라우트", () => {
     ]);
   });
 
-  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/tonight/·/korean-players/·/national-team/만", () => {
+  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/tonight/·/korean-players/·/national-team/·/transfers/만", () => {
     listNewsDates.mockReturnValue([]);
     expect(sitemap()).toEqual([
       { url: `${SITE}/` },
@@ -136,7 +144,19 @@ describe("sitemap 라우트", () => {
       { url: `${SITE}/korean-players/` },
       { url: `${SITE}/korean-players/weekly/` },
       { url: `${SITE}/national-team/` },
+      { url: `${SITE}/transfers/` },
     ]);
+  });
+
+  it("이적(M4-04) — lastmod = 트래커 레코드 중 가장 늦은 갱신", () => {
+    loadTransfersFile.mockReturnValueOnce([
+      { updated: "2026-10-29T07:15:00.000Z" },
+      { updated: "2026-10-30T01:00:00.000Z" },
+    ]);
+    expect(sitemap().find((e) => e.url === `${SITE}/transfers/`)).toEqual({
+      url: `${SITE}/transfers/`,
+      lastModified: "2026-10-30T01:00:00.000Z",
+    });
   });
 
   it("한국 선수 상세(M3-10) — 목록 바로 뒤에 설정 순서로", () => {

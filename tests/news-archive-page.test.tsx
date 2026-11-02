@@ -42,6 +42,8 @@ vi.mock("@/lib/data/news", () => ({
   listNewsDates,
   loadNewsIssue,
   loadLatestNews,
+  // 홈 이적 핫 리스트(M4-04)의 근거 카드 — 이 테스트는 이적을 보지 않는다
+  loadRetainedCards: () => [],
 }));
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
 // 5줄 자리 상태(M1-37) — 기본은 loadBrief 결과 그대로(파일 있으면 브리핑, 없으면 블록 없음)

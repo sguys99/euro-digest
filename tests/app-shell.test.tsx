@@ -34,16 +34,26 @@ describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 �
       ["news", "뉴스", routes.news()],
       ["league", "리그", routes.competition("EPL")],
       ["korean", "한국 선수", routes.koreanPlayers()],
+      // 이적(M4-04) — 상단 내비만(PRD §4.1 하단 탭 5개 고정, 이적은 상단 메뉴)
+      ["transfers", "이적", routes.transfers()],
+    ]);
+    expect(NAV_ITEMS.map((item) => item.bottomTab)).toEqual([
+      true,
+      true,
+      true,
+      true,
+      false,
     ]);
   });
 
-  it("하단 탭·상단 내비 모두 같은 네 항목, 현재 페이지만 aria-current", () => {
+  it("하단 탭 네 항목 · 상단 내비 다섯 항목(+ 이적), 현재 페이지만 aria-current", () => {
     render(
       <AppShell current="news" issue={ISSUE}>
         본문
       </AppShell>,
     );
     for (const name of ["하단 탭", "주요 메뉴"]) {
+      const top = name === "주요 메뉴";
       const nav = screen.getByRole("navigation", { name });
       const links = within(nav).getAllByRole("link");
       expect(links.map((a) => a.textContent)).toEqual([
@@ -51,16 +61,24 @@ describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 �
         "뉴스",
         "리그",
         "한국 선수",
+        ...(top ? ["이적"] : []),
       ]);
       // 테스트 환경의 next/link는 trailingSlash 설정을 모른다(끝 슬래시를 뗀다) — 빌드 HTML의 href는 e2e가 본다
       expect(
         links.map((a) => a.getAttribute("href")?.replace(/\/?$/, "/")),
-      ).toEqual(["/", "/news/", "/competitions/epl/", "/korean-players/"]);
+      ).toEqual([
+        "/",
+        "/news/",
+        "/competitions/epl/",
+        "/korean-players/",
+        ...(top ? ["/transfers/"] : []),
+      ]);
       expect(links.map((a) => a.getAttribute("aria-current"))).toEqual([
         null,
         "page",
         null,
         null,
+        ...(top ? [null] : []),
       ]);
     }
     // 마이는 아직 없다(M4)
@@ -77,12 +95,9 @@ describe("내비 항목 — M3은 홈·뉴스·리그·한국 선수(미완성 �
       const links = within(
         screen.getByRole("navigation", { name }),
       ).getAllByRole("link");
-      expect(links.map((a) => a.getAttribute("aria-current"))).toEqual([
-        null,
-        "true",
-        null,
-        null,
-      ]);
+      expect(
+        links.map((a) => a.getAttribute("aria-current")).slice(0, 4),
+      ).toEqual([null, "true", null, null]);
       expect(links[1]?.className).toContain("aria-[current=true]:text-ink");
     }
   });
