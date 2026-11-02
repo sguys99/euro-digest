@@ -1,5 +1,5 @@
 /**
- * 뉴스 점수화 + 상위 N 선별 (PRD FR-06, FR-105 연결 지점, plan M1-14) — 순수 함수.
+ * 뉴스 점수화 + 상위 N 선별 (PRD FR-06, FR-105 이적 창 가중, plan M1-14·M4-03) — 순수 함수.
  *
  *   점수 = 소스 weight × Tier 가중치 × 키워드 × 클러스터 크기 × 최신성 × 범위
  *
@@ -19,7 +19,8 @@
  *     아니라 'Aston Villa revival'처럼 5대 리그 팀이면 감점 없음) ∪ 빅클럽 ∪ 등록 한국 선수. 하부 리그·다른 리그·사건 기사가 근거
  *     없이 위로 오지 않게(M1-01 이월). 축구 외·K리그·연예 기사는 점수화 전(클러스터링 전 묶음 단계)에 뺀다(news-scope.ts, M1-17).
  *
- * 값은 코드 상수 `DEFAULT_SCORE_WEIGHTS` 한 곳에서 조정한다(이적 창 배수만 `configs/transfer-windows.json` `boost` — M4-03,
+ * 값은 코드 상수 `DEFAULT_SCORE_WEIGHTS` 한 곳에서 조정한다(이적 창 배수만 `configs/transfer-windows.json` `boost` — M4-03, 창 판정은
+ * `transferWindowBoost` → src/lib/transfer-window.ts,
  * 스키마 주석 '그 밖의 점수화 가중치는 코드 상수'). 선별 규모는 환경변수 `MAX_ITEMS_PER_RUN`(collect-run.ts).
  *
  * 선별(PRD §15 D44): **일일 카드 상한은 그날 파일 기준** — 새 카드 자리 = max(0, 상한 − 오늘 파일의 기존 카드 수)(`planSlots`).
@@ -36,6 +37,7 @@ import type {
   TransferWindowsFile,
 } from "@/lib/schema";
 import { parseUtcIso } from "@/lib/time";
+import { isTransferWindowActive } from "@/lib/transfer-window";
 
 import { clusterSourceMeta, type NewsCluster } from "./news-cluster";
 import { matchTitles, type KeywordIndex } from "./news-keywords";
@@ -83,6 +85,10 @@ export interface ScoreWeights {
  *     곱한다 — 같은 매체 조건에서 합의 보도가 루머 기사보다 한 단계쯤 위(BBC 단독 신선 이적 기사 ≈ 3 × 1.2 = 3.6 → 4.1), Tier 1은 Tier
  *     배수(1.25)와 합쳐 Tier 2 'here we go'보다 약 1.4배. Tier 3은 매체 2곳일 때만 대상이 된다(승격 조건 — transfer-extract.ts
  *     `hereWeGoBacked`). 실제 피드(2026-10-12~11-02 data/news·fixtures)에는 'here we go' 제목이 아직 0건이라 실측 조정은 첫 사례 뒤.
+ *   - 이적 창 배수(FR-105 — M4-03, 값은 transfer-windows.json `boost` 1.5)와 'here we go'는 서로 다른 축이라 곱한다: 창 배수는 이적 화제
+ *     전체를 같은 비율로 올려 '이적 비중'만 바꾸고(이적 카드끼리 순서는 그대로), 'here we go'는 그 안에서 단계 확신만 올린다. 이적 관련
+ *     키워드 곱의 최대 = 1.2 × 1.5 × 1.3 = 2.34로 한국 선수 배수(3) 아래 — 창 기간에도 서비스 핵심(등록 선수 기사)을 넘지 않는다
+ *     (boost 2면 3.12로 넘는다). fixtures/cluster(2026-10-15) 상위 45의 이적 화제 8 → 12건, 상위 10의 한국 선수 기사 5건 그대로(2.5면 4건).
  */
 export const DEFAULT_SCORE_WEIGHTS: Readonly<ScoreWeights> = Object.freeze({
   tier: Object.freeze({ 1: 1.25, 2: 1, 3: 0.8 }),
@@ -98,7 +104,7 @@ export const DEFAULT_SCORE_WEIGHTS: Readonly<ScoreWeights> = Object.freeze({
   noScope: 0.5,
 });
 
-/** 이적 창 배수 기본값 — 중립(FR-105, transfer-windows.json이 생기기 전·이적 창 밖) */
+/** 이적 창 배수 기본값 — 중립(FR-105: 이적 창 밖·transfer-windows.json을 읽지 못함) */
 export const NEUTRAL_TRANSFER_BOOST = 1;
 
 /**
@@ -112,25 +118,23 @@ export function domesticQuotaOf(limit: number): number {
   return Math.floor(Math.max(0, limit) / DOMESTIC_QUOTA_DIVISOR);
 }
 
-// ─── 이적 창 (FR-105 연결 지점) ─────────────────────────────────────────────
+// ─── 이적 창 (FR-105 — M4-03) ───────────────────────────────────────────────
 
 /**
- * 시각 `at`(UTC ISO)이 어느 리그든 이적 창 안이면 그 파일의 `boost`, 아니면 중립(1). 파일이 없으면(null) 중립.
- * 창 판정은 [opensAt, closesAt). 리그별로 다르게 가중할지(EPL 창만 열렸을 때 EPL 기사만?)는 M4-03이 정한다 — 지금 수집
- * 실행은 이 함수를 부르지 않고 중립을 넘긴다(configs/transfer-windows.json은 M4-03에서 만든다).
+ * 시각 `at`(UTC ISO)이 이적 창 모드면(5대 리그 중 어느 한 리그라도 창 [opensAt, closesAt) 안, 또는 마지막 마감 뒤 24시간 유예 —
+ * src/lib/transfer-window.ts `isTransferWindowActive`, 화면 M4-04와 같은 판정) 그 파일의 `boost`, 아니면 중립(1). 파일이 없거나 읽지
+ * 못하면(null) 중립.
+ * 배수는 이적 화제 클러스터 전체에 같은 값으로 곱한다 — 리그별로 다르게 주지 않는다(판정 근거는 transfer-window.ts 머리 주석).
+ * 수집 실행은 실행 시작 시각(수집 창 now)으로 부른다(collect-run.ts).
  */
 export function transferWindowBoost(
   at: string,
   file: Pick<TransferWindowsFile, "boost" | "windows"> | null,
 ): number {
   if (file === null) return NEUTRAL_TRANSFER_BOOST;
-  const t = parseUtcIso(at).getTime();
-  const open = file.windows.some(
-    (w) =>
-      parseUtcIso(w.opensAt).getTime() <= t &&
-      t < parseUtcIso(w.closesAt).getTime(),
-  );
-  return open ? file.boost : NEUTRAL_TRANSFER_BOOST;
+  return isTransferWindowActive(at, file.windows)
+    ? file.boost
+    : NEUTRAL_TRANSFER_BOOST;
 }
 
 // ─── 신호 → 점수 ──────────────────────────────────────────────────────────

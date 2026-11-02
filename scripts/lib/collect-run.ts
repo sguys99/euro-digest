@@ -110,7 +110,9 @@
  * (`deps.filterOutOfScope`·`deps.classifyClusters`).
  * 이적 정보(M1-18 — transfer-extract.ts): 카테고리 '이적' 새 카드의 `transfer`(선수·출발·행선지·단계·tier)는 코드 분류가 채운다(classify.ts —
  * 확실할 때만, agreed 이상 승격 조건). 같은 날 재실행에서 오늘 카드에 붙인 새 출처로는 다시 판정하지 않는다(카드 id·제목처럼 유지).
- * 다음 작업이 갈아끼울 자리: 이적 창 배수(M4-03 — score.ts `transferWindowBoost`) · 브리핑 입력 순위 변동 prev(M2-03) ·
+ * 이적 창 배수(M4-03, FR-105): configs/transfer-windows.json을 읽어 실행 시작 시각이 이적 창 모드면(어느 리그든 창 안, 또는
+ * 마지막 마감 뒤 24시간 유예 — src/lib/transfer-window.ts) 이적 화제 클러스터에 `boost`를 곱한다. 파일이 없거나 형식 오류면 경고 후 중립 1로 계속한다(발행 계속 —
+ * 설정 오류는 검증 게이트가 잡는다). 다음 작업이 갈아끼울 자리: 브리핑 입력 순위 변동 prev(M2-03) ·
  * 브리핑 요청 나누기(하루 2~3요청 — 그때 모든 요청을 guardBriefBudget에, 같은 지시문 캐싱 켬, D28) ·
  * 브리핑 입력 한국 선수 출전(M3-03 — 원장 행에서, `BRIEF_KOREAN_ENABLED`로 켬 — 지시문 v0.5 뒤). 한국 선수 현황 파일(M3-03 —
  * korean-players-io.ts)은 팀 단계 뒤. 계절별 마감·단계 예산은 scripts/lib/collect-deadlines.ts(M1-47).
@@ -123,6 +125,7 @@ import {
   CompetitionsFileSchema,
   KoreanPlayersFileSchema,
   NamesKoFileSchema,
+  TransferWindowsFileSchema,
   type AfPendingEntry,
   type BriefEmptyReason,
   type BriefFile,
@@ -138,6 +141,7 @@ import {
   type RunLog,
   type SearchQueriesFile,
   type Source,
+  type TransferWindowsFile,
 } from "@/lib/schema";
 import { kstDate, nowUtcIso, parseUtcIso, utcDate } from "@/lib/time";
 
@@ -407,7 +411,7 @@ import {
 } from "./providers/football-data";
 import type { FetchLike } from "./rss";
 import {
-  NEUTRAL_TRANSFER_BOOST,
+  transferWindowBoost,
   planSlots,
   roundScore,
   scoreCluster,
@@ -535,6 +539,11 @@ export interface CollectDeps {
   loadSources?: () => Promise<Source[]>;
   /** 검색 쿼리 설정 읽기 — 기본은 `<rootDir>/configs/search-queries.json`(loadSearchQueries). 테스트 주입용 */
   loadSearchQueries?: () => Promise<SearchQueriesFile>;
+  /**
+   * 이적 창 일정 읽기(FR-105, M4-03) — 기본은 `<rootDir>/configs/transfer-windows.json`(zod 검증). 테스트 주입용. 던지면 경고 후
+   * 이적 창 배수 중립(1)으로 계속한다.
+   */
+  loadTransferWindows?: () => Promise<TransferWindowsFile>;
   /** 같은 사건 클러스터링(M1-13) — 기본은 제목 유사도(cluster.ts `clusterDocs`). 테스트가 실패 경로를 주입한다 */
   clusterDocs?: ClusterFn;
   /** 코드 분류·엔티티 병합 단계(M1-17) — 기본은 cluster-classify.ts `classifyClusters`. 테스트가 실패 경로를 주입한다 */
@@ -918,7 +927,7 @@ export interface ScoreOutcome {
   ranked: number;
   /** 그중 국내 몫 때문에 들어간 수(순수 점수 순이면 자리 밖) */
   domesticByQuota: number;
-  /** 이적 창 배수(FR-105 — 지금은 항상 중립 1) */
+  /** 이적 창 배수(FR-105 — 이적 창 모드면 transfer-windows.json `boost`, 아니면·읽기 실패면 중립 1) */
   transferBoost: number;
   /** 자리에 든 최고·최저 점수(반올림) — 없으면 null. 국내 몫 때문에 최저가 firstOut보다 낮을 수 있다 */
   top: number | null;
@@ -1361,6 +1370,7 @@ async function runNewsStage(
   // 범위 밖 기사 제외(M1-17 — news-scope.ts): 축구 외 종목·K리그·연예를 **클러스터링 전**(묶음 단계)에 뺀다 — 제목 유사도의 IDF·
   // 병합과 국내 몫 경쟁에 섞이지 않게. 판정 실패(예상 밖 오류)는 빼지 않고 계속한다(실행 상태 partial).
   const keywordLoad = await loadKeywordIndex(deps);
+  const transferWindows = await loadTransferWindows(deps);
   const classifyFailure: { error: string | null } = { error: null };
   const noteClassifyFailure = (event: string, error: unknown) => {
     classifyFailure.error ??= errorText(error);
@@ -1425,7 +1435,7 @@ async function runNewsStage(
   // 않는다. 그 자리 안에서 국내(ko) 몫(하루 상한의 1/3 − 기존 국내 카드)을 국내 점수 순으로 먼저 채우고 나머지는 전체 점수 순
   // (국내 후보가 모자라면 해외로). 오늘 카드의 새 출처는 자리와 무관하게 붙인다(카드 수가 늘지 않는다). 점수가 같으면 클러스터
   // 첫 묶음의 입력 순서(설정 순서 — 결정적). 수집 시각으로 낮춘 기사(창 단계 clampedKeys)는 최신성을 믿지 않는다. 이적 창 배수는
-  // 중립(FR-105 — M4-03이 연결).
+  // 실행 시작 시각(수집 창 now)이 이적 창 모드일 때 transfer-windows.json `boost`, 아니면 중립(FR-105 — M4-03).
   // 카드(M1-15, FR-20 — news-cluster.ts `clusterCard`): 대표 = 클러스터 묶음 중 Tier·weight·최신성 1위(card-lead.ts — 낮춘 시각은
   // 최신성을 믿지 않는다, 200자 초과·설정에 없는 소스는 다음 후보)의 피드 원문 제목·링크, 출처 = 대표 + 나머지(Tier → 최신 → URL),
   // 카드 소스 = 대표 소스 + 클러스터 대회 합집합, `ai:false`·`s:[]`(LLM 없음 — D23). 오늘 카드는 대표를 다시 고르지 않는다.
@@ -1474,7 +1484,7 @@ async function runNewsStage(
     keywords: keywordLoad.index,
     isClamped: (item: FeedItem) =>
       windowed.clampedKeys.has(clampedItemKey(item)),
-    transferBoost: NEUTRAL_TRANSFER_BOOST,
+    transferBoost: transferWindowBoost(window.now, transferWindows),
     extraComps: (cluster: Pick<NewsCluster, "members">) =>
       classified.analysisOf(cluster as NewsCluster)?.leagues ?? [],
     // 한국 선수 배수 = 분류 kr과 같은 기준(동명이인 확인 — classify.ts `korean`)
@@ -1748,6 +1758,29 @@ async function loadKeywordIndex(
       tags: buildTagIndex({}),
       error: errorText(error),
     };
+  }
+}
+
+/**
+ * 이적 창 일정(FR-105, M4-03) — configs/transfer-windows.json. 파일이 없거나 읽기·형식 오류면 경고만 하고 null(이적 창 배수 중립) —
+ * 선별 가중이 빠질 뿐 발행은 계속한다(형식 오류는 같은 실행의 검증 게이트가 잡아 커밋되지 않는다).
+ */
+async function loadTransferWindows(
+  deps: Pick<CollectDeps, "rootDir" | "logger" | "loadTransferWindows">,
+): Promise<TransferWindowsFile | null> {
+  try {
+    return deps.loadTransferWindows
+      ? await deps.loadTransferWindows()
+      : await readConfigFile(
+          deps.rootDir,
+          "transfer-windows.json",
+          TransferWindowsFileSchema,
+        );
+  } catch (error) {
+    deps.logger.warn("collect.score.transfer-windows", {
+      error: errorText(error),
+    });
+    return null;
   }
 }
 

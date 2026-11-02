@@ -39,6 +39,7 @@ import {
   type NewsCard,
   type NewsFile,
   type Source,
+  type TransferWindowsFile,
 } from "@/lib/schema";
 
 import { cardIdFor } from "../scripts/lib/card-id";
@@ -118,6 +119,9 @@ const LIMIT5_HEADS = [
   "‘이강인 33분 소화’",
   "이강인이 대체 뭘 잘못했길래",
 ];
+
+/** --limit 10의 이적 화제 카드 수 — 창 밖(중립) 1장(AC 밀란 이적설), 이적 창 모드(boost 1.5) 3장 (FR-105, M4-03) */
+const TRANSFER_IN_TOP10 = { neutral: 1, boosted: 3 } as const;
 
 const KOREAN_FEEDS = [
   "interfootball-world",
@@ -759,6 +763,82 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
         noScope: 0,
         clamped: 0,
       },
+    });
+  });
+
+  describe("이적 창 모드(FR-105, M4-03) — 실행 시작 시각(NOW 2026-10-11T06:20Z) 기준", () => {
+    const windowsFile = (closesAt: string): TransferWindowsFile => ({
+      boost: 1.5,
+      windows: [
+        {
+          comp: "EPL",
+          season: 2026,
+          kind: "winter",
+          opensAt: "2026-10-01T00:00:00.000Z",
+          closesAt,
+        },
+      ],
+    });
+    const selectDone = (records: LogRecord[]) =>
+      records.find((r) => r.event === "collect.select.done");
+
+    it("창 안이면 이적 화제 클러스터에 boost — 같은 상한에서 이적 카드가 늘어난다", async () => {
+      const { deps, records } = makeDeps({
+        limit: 10,
+        loadTransferWindows: async () =>
+          windowsFile("2026-10-12T00:00:00.000Z"),
+      });
+      const outcome = await runCollect(deps);
+      expect(outcome.news.score).toMatchObject({ transferBoost: 1.5 });
+      expect(selectDone(records)).toMatchObject({
+        transferBoost: 1.5,
+        selectedMix: { transfer: TRANSFER_IN_TOP10.boosted },
+      });
+    });
+
+    it("마감 뒤 24시간 유예 안(마감 = NOW − 23시간 59분)이면 창 안과 같은 boost", async () => {
+      const { deps, records } = makeDeps({
+        limit: 10,
+        loadTransferWindows: async () =>
+          windowsFile(
+            new Date(NOW.getTime() - (24 * 60 - 1) * 60_000).toISOString(),
+          ),
+      });
+      const outcome = await runCollect(deps);
+      expect(outcome.news.score).toMatchObject({ transferBoost: 1.5 });
+      expect(selectDone(records)).toMatchObject({
+        transferBoost: 1.5,
+        selectedMix: { transfer: TRANSFER_IN_TOP10.boosted },
+      });
+    });
+
+    it("유예 끝(마감 = NOW − 24시간)은 모드 아님 — 중립 1, 이적 카드 수는 중립 그대로", async () => {
+      const { deps, records } = makeDeps({
+        limit: 10,
+        loadTransferWindows: async () =>
+          windowsFile(new Date(NOW.getTime() - 24 * 60 * 60_000).toISOString()),
+      });
+      const outcome = await runCollect(deps);
+      expect(outcome.news.score).toMatchObject({ transferBoost: 1 });
+      expect(selectDone(records)).toMatchObject({
+        transferBoost: 1,
+        selectedMix: { transfer: TRANSFER_IN_TOP10.neutral },
+      });
+    });
+
+    it("설정 읽기 실패는 경고 후 중립 1로 발행을 계속한다", async () => {
+      const { deps, records } = makeDeps({
+        limit: 5,
+        loadTransferWindows: async () => {
+          throw new ConfigFileError("configs/transfer-windows.json 읽기 실패");
+        },
+      });
+      const outcome = await runCollect(deps);
+      expect(outcome.news.selected).toBe(5);
+      expect(outcome.news.score).toMatchObject({ transferBoost: 1 });
+      expect(
+        records.find((r) => r.event === "collect.score.transfer-windows"),
+      ).toMatchObject({ level: "warn" });
     });
   });
 

@@ -1,7 +1,7 @@
 /**
  * M1-14 — 뉴스 점수화 + 상위 N 선별 (scripts/lib/score.ts, PRD FR-06·FR-105 — CLAUDE.md §9.2 필수: 점수화).
  *
- * 곱 인자(소스 weight · Tier · 키워드 · 클러스터 크기 · 최신성 · 범위) · 이적 창 배수(연결 지점, 기본 중립) · 클러스터 → 신호
+ * 곱 인자(소스 weight · Tier · 키워드 · 클러스터 크기 · 최신성 · 범위) · 이적 창 배수(M4-03 — 리그 합집합 모드, 선별 가중) · 클러스터 → 신호
  * (클러스터 최고 Tier·최대 weight — 카드 tier 아님, 매체 수, 소스 대회 ∪ 제목 대회, 수집 시각으로 낮춘 기사의 최신성 불신) ·
  * 결정적 선별(같은 점수는 입력 순서) · 실데이터 회귀(fixtures/cluster 창 안 198건 → 상위 45). 네트워크 없음.
  */
@@ -14,6 +14,7 @@ import { describe, expect, it } from "vitest";
 import {
   KoreanPlayersFileSchema,
   NamesKoFileSchema,
+  TransferWindowsFileSchema,
   type FeedItem,
   type Source,
   type TransferWindowsFile,
@@ -227,7 +228,7 @@ describe("곱 인자", () => {
   });
 });
 
-describe("이적 창 배수 (FR-105 연결 지점 — 기본 중립)", () => {
+describe("이적 창 배수 (FR-105 — M4-03)", () => {
   const FILE: Pick<TransferWindowsFile, "boost" | "windows"> = {
     boost: 1.5,
     windows: [
@@ -241,12 +242,30 @@ describe("이적 창 배수 (FR-105 연결 지점 — 기본 중립)", () => {
     ],
   };
 
-  it("설정 파일이 없으면(null) 중립 1, 창 안 [opensAt, closesAt)이면 boost", () => {
+  it("설정 파일이 없으면(null) 중립 1, 창 안 [opensAt, closesAt) 또는 마감 뒤 24시간 유예면 boost", () => {
     expect(transferWindowBoost("2027-01-15T00:00:00.000Z", null)).toBe(1);
     expect(transferWindowBoost("2027-01-15T00:00:00.000Z", FILE)).toBe(1.5);
     expect(transferWindowBoost("2027-01-01T00:00:00.000Z", FILE)).toBe(1.5);
-    expect(transferWindowBoost("2027-02-02T23:00:00.000Z", FILE)).toBe(1);
+    expect(transferWindowBoost("2027-02-02T23:00:00.000Z", FILE)).toBe(1.5); // 유예 시작
+    expect(transferWindowBoost("2027-02-03T22:59:59.999Z", FILE)).toBe(1.5);
+    expect(transferWindowBoost("2027-02-03T23:00:00.000Z", FILE)).toBe(1); // 유예 끝
     expect(transferWindowBoost("2026-12-31T23:59:59.000Z", FILE)).toBe(1);
+  });
+
+  it("실제 configs/transfer-windows.json — 한 리그만 열려도 모드(리그 합집합), 모든 리그가 닫히면 중립", () => {
+    const real = TransferWindowsFileSchema.parse(
+      readJson("configs/transfer-windows.json"),
+    );
+    expect(transferWindowBoost("2026-11-02T22:10:00.000Z", real)).toBe(1); // 시즌 중
+    expect(transferWindowBoost("2026-12-31T23:00:00.000Z", real)).toBe(1.5); // 분데스리가·리그 1 개장
+    expect(transferWindowBoost("2027-01-15T22:10:00.000Z", real)).toBe(1.5);
+    expect(transferWindowBoost("2027-02-01T22:10:00.000Z", real)).toBe(1.5); // EPL·라리가만 남음
+    expect(transferWindowBoost("2027-02-01T23:00:00.000Z", real)).toBe(1.5); // 마지막 EPL 마감 — 유예 24시간 시작
+    expect(transferWindowBoost("2027-02-02T22:10:00.000Z", real)).toBe(1.5); // 02-03 아침 발행 = 유예 안
+    expect(transferWindowBoost("2027-02-02T23:00:00.000Z", real)).toBe(1); // 유예 끝
+    expect(transferWindowBoost("2027-06-20T21:30:00.000Z", real)).toBe(1.5); // 여름: EPL·리그 1만 열림
+    expect(transferWindowBoost("2027-09-02T21:59:59.999Z", real)).toBe(1.5); // EPL 09-01 22:00Z 마감 + 유예
+    expect(transferWindowBoost("2027-09-02T22:00:00.000Z", real)).toBe(1);
   });
 
   it("배수는 이적 화제 기사에만 — 기본(중립)은 점수를 바꾸지 않는다", () => {
@@ -260,6 +279,32 @@ describe("이적 창 배수 (FR-105 연결 지점 — 기본 중립)", () => {
     );
     expect(scoreSignals(BASE, { transferBoost: 1.5 }).score).toBe(
       scoreSignals(BASE).score,
+    );
+  });
+
+  it("'here we go'(FR-103)와 곱해진다 — 이적 카드끼리의 비율은 창 안팎에서 같고, 이적 관련 곱 최대(2.34)는 한국 선수 배수(3) 아래", () => {
+    const rumor = { ...BASE, transfer: true };
+    const agreed = { ...rumor, hereWeGo: true };
+    const ratio = (boost: number) =>
+      scoreSignals(agreed, { transferBoost: boost }).score /
+      scoreSignals(rumor, { transferBoost: boost }).score;
+    expect(ratio(1)).toBeCloseTo(DEFAULT_SCORE_WEIGHTS.hereWeGo[2], 12);
+    expect(ratio(1.5)).toBeCloseTo(ratio(1), 12);
+    const maxTransferKeywords =
+      DEFAULT_SCORE_WEIGHTS.transfer *
+      1.5 *
+      Math.max(...Object.values(DEFAULT_SCORE_WEIGHTS.hereWeGo));
+    expect(maxTransferKeywords).toBeCloseTo(2.34, 12);
+    expect(maxTransferKeywords).toBeLessThan(DEFAULT_SCORE_WEIGHTS.korean);
+    // 같은 매체·시각이면 창 안 Tier 1 'here we go'도 이적 아닌 등록 한국 선수 기사 아래
+    const kr = {
+      ...BASE,
+      bestTier: 1 as const,
+      koreanPlayers: ["lee-kang-in"],
+    };
+    const hwgTier1 = { ...agreed, bestTier: 1 as const };
+    expect(scoreSignals(hwgTier1, { transferBoost: 1.5 }).score).toBeLessThan(
+      scoreSignals(kr, { transferBoost: 1.5 }).score,
     );
   });
 });
@@ -542,6 +587,25 @@ describe("실데이터 회귀 — fixtures/cluster 창 안 198건(2026-10-15 수
       "t116",
     ]) {
       expect(topIds.has(id)).toBe(false);
+    }
+  });
+
+  it("이적 창 모드(FR-105 — boost 1.5)면 상위 45의 이적 화제가 늘고, 상위 10의 등록 한국 선수 기사는 그대로", () => {
+    const boosted = selectTopScored(
+      plan.fresh,
+      (c) => scoreCluster(c, { ...ctx, transferBoost: 1.5 }),
+      45,
+    );
+    const transfers = (list: typeof ranked) =>
+      list.filter((r) => r.score.signals.transfer).length;
+    const korean10 = (list: typeof ranked) =>
+      list.slice(0, 10).filter((r) => r.score.signals.koreanPlayers.length > 0)
+        .length;
+    expect(transfers(top)).toBe(8); // 창 밖(중립)
+    expect(transfers(boosted)).toBe(12);
+    expect(korean10(boosted)).toBe(korean10(top));
+    for (const id of ["t084", "t088", "t093"]) {
+      expect(new Set(idsOf(boosted.slice(0, 10))).has(id)).toBe(true);
     }
   });
 
