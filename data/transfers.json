@@ -1,0 +1,23 @@
+[
+  {
+    "id": "kim-min-jae:arsenal",
+    "player": "kim-min-jae",
+    "to": "arsenal",
+    "status": "rumor",
+    "bestTier": 3,
+    "updated": "2026-10-29T07:15:00.000Z",
+    "quiet": false,
+    "history": [
+      {
+        "at": "2026-10-17T09:35:00.000Z",
+        "status": "rumor",
+        "card": "c_aad5c2482e"
+      },
+      {
+        "at": "2026-10-29T07:15:00.000Z",
+        "status": "rumor",
+        "card": "c_1501d40b10"
+      }
+    ]
+  }
+]

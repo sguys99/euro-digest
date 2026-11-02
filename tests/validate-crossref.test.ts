@@ -13,7 +13,10 @@ import {
   TeamIdsFileSchema,
   TeamSchema,
   schemaRegistry,
+  type NewsCard,
+  type NewsFile,
   type Team,
+  type Transfer,
 } from "@/lib/schema";
 
 import {
@@ -26,6 +29,7 @@ import {
   checkSquadPlayers,
   checkTeamColors,
   checkTeamFiles,
+  checkTransfersData,
   pickCrossRefInput,
   runCrossRefChecks,
 } from "../scripts/lib/validate-crossref";
@@ -407,6 +411,7 @@ describe("checkTeamFiles — data/teams ↔ team-ids·team-colors·korean-player
       skipped: [
         "data/teams → team-ids · team-colors · korean-players",
         "data/players/korean.json → korean-players · data/teams · 원장 메타",
+        "data/transfers.json → data/news · takedowns",
       ],
     });
     const input = pickCrossRefInput(
@@ -528,10 +533,12 @@ describe("pickCrossRefInput", () => {
         ["configs/takedowns.json", []],
       ]),
     );
+    // takedowns = 이적 트래커 교차 검사(M4-01 — 근거 카드가 삭제 요청에 있는지)
     expect(Object.keys(input).sort()).toEqual([
       "koreanPlayers",
       "publisherDomains",
       "sources",
+      "takedowns",
       "teamIds",
     ]);
     expect(input.sources).toBe(sources);
@@ -542,5 +549,118 @@ describe("pickCrossRefInput", () => {
       const entry = schemaRegistry.find((e) => e.pattern === file);
       expect([file, entry?.kind]).toEqual([file, "config"]);
     }
+  });
+});
+
+describe("checkTransfersData — data/transfers.json ↔ data/news·takedowns (M4-01)", () => {
+  const at1 = "2026-10-16T10:00:00.000Z";
+  const at2 = "2026-10-29T10:00:00.000Z";
+  const card = (id: string, transfer?: NewsCard["transfer"]): NewsCard => ({
+    id,
+    t: "제목",
+    s: [],
+    cat: "transfer",
+    comp: [],
+    teams: [],
+    players: ["kim-min-jae"],
+    imp: 3,
+    kr: true,
+    spoiler: false,
+    ...(transfer ? { transfer } : {}),
+    src: [{ n: "매체", u: "https://example.com/a", at: at1, tier: 3 }],
+    lang: "ko",
+    ai: false,
+    created: at1,
+  });
+  const tr = {
+    player: "kim-min-jae",
+    to: "arsenal",
+    status: "rumor",
+    tier: 3,
+  } as const;
+  const news = new Map<string, NewsFile>([
+    [
+      "data/news/2026-10-30.json",
+      {
+        date: "2026-10-30",
+        generatedAt: at2,
+        runId: "r",
+        cards: [
+          card("c_000000000a", tr),
+          card("c_000000000b", tr),
+          card("c_000000000c"),
+        ],
+      },
+    ],
+  ]);
+  const record: Transfer = {
+    id: "kim-min-jae:arsenal",
+    player: "kim-min-jae",
+    to: "arsenal",
+    status: "rumor",
+    bestTier: 3,
+    updated: at2,
+    quiet: false,
+    history: [
+      { at: at1, status: "rumor", card: "c_000000000a" },
+      { at: at2, status: "rumor", card: "c_000000000b" },
+    ],
+  };
+
+  it("파이프라인 출력과 같은 레코드는 문제 없음", () => {
+    expect(checkTransfersData([record], news, [])).toEqual([]);
+  });
+
+  it("근거가 빈 레코드만 오류, 나머지는 경고(발행을 막지 않는다)", () => {
+    const issues = checkTransfersData(
+      [
+        { ...record, history: [] },
+        {
+          ...record,
+          id: "kim-min-jae:-",
+          history: [
+            { at: at1, status: "rumor", card: "c_000000000a" }, // 다른 레코드(arsenal)의 카드
+            { at: at1, status: "rumor", card: "c_000000000c" }, // transfer 없는 카드
+            { at: at2, status: "rumor", card: "c_00000000ff" }, // data/news에 없음
+            { at: at2, status: "rumor", card: "c_000000000b" }, // 삭제 요청
+          ],
+        },
+      ],
+      news,
+      [
+        {
+          id: "c_000000000b",
+          requestedAt: at2,
+          handledAt: null,
+          reason: "삭제 요청 (#1)",
+        },
+      ],
+    );
+    expect(issues.map((i) => [i.severity, i.path])).toEqual([
+      ["error", "[0].history"],
+      ["warn", "[1]"], // id ≠ 선수:행선지
+      ["warn", "[1].history[0].card"],
+      ["warn", "[1].history[1].card"],
+      ["warn", "[1].history[2].card"],
+      ["warn", "[1].history[3].card"],
+    ]);
+    expect(issues.every((i) => i.file === "data/transfers.json")).toBe(true);
+  });
+
+  it("pickCrossRefInput이 transfers·일별 뉴스·takedowns를 모으고 data 범위에서 실행한다", () => {
+    const input = pickCrossRefInput(
+      new Map<string, unknown>([
+        ["data/transfers.json", [record]],
+        ["data/news/2026-10-30.json", news.get("data/news/2026-10-30.json")],
+        ["configs/takedowns.json", []],
+      ]),
+    );
+    expect([...(input.news?.keys() ?? [])]).toEqual([
+      "data/news/2026-10-30.json",
+    ]);
+    expect(runCrossRefChecks(input, "data")).toMatchObject({
+      checked: ["data/transfers.json → data/news · takedowns"],
+      issues: [],
+    });
   });
 });

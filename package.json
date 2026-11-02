@@ -17,6 +17,7 @@
     "fetch:competitions": "node --env-file-if-exists=.env.local --import tsx scripts/fetch-competitions.ts",
     "build:teams": "node --env-file-if-exists=.env.local --import tsx scripts/build-teams.ts",
     "build:players": "node --env-file-if-exists=.env.local --import tsx scripts/build-players.ts",
+    "build:transfers": "node --env-file-if-exists=.env.local --import tsx scripts/build-transfers.ts",
     "weekly": "node --env-file-if-exists=.env.local --import tsx scripts/weekly.ts",
     "ops-report": "node --env-file-if-exists=.env.local --import tsx scripts/ops-report.ts",
     "observe": "node --env-file-if-exists=.env.local --import tsx scripts/observe.ts",

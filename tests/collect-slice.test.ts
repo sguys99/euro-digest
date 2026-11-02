@@ -1988,6 +1988,107 @@ describe("runCollect — 실호출 비용 기록(cost.ts 경로 재사용)", () 
       costUsd: 0,
     });
   });
+
+  // ── M4-01 이적 트래커 단계(transfers-io.ts) 연결 ──
+  /** 이적 카드 1장이 든 지난 발행 파일(2026-10-09) — 뉴스 단계는 이 파일을 건드리지 않는다 */
+  function seedTransferNews(dir: string): void {
+    const file: NewsFile = {
+      date: "2026-10-09",
+      generatedAt: "2026-10-08T21:40:00.000Z",
+      runId: "collect-prod-20261008T213000Z-0001",
+      cards: [
+        {
+          id: "c_aaaaaaaaaa",
+          t: "김민재 아스널 이적설",
+          s: [],
+          cat: "transfer",
+          comp: [],
+          teams: ["arsenal"],
+          players: ["kim-min-jae"],
+          imp: 3,
+          kr: true,
+          spoiler: false,
+          transfer: {
+            player: "kim-min-jae",
+            to: "arsenal",
+            status: "rumor",
+            tier: 3,
+          },
+          src: [
+            {
+              n: "인터풋볼",
+              u: "https://example.com/a",
+              at: "2026-10-08T20:00:00.000Z",
+              tier: 3,
+            },
+          ],
+          lang: "ko",
+          ai: false,
+          created: "2026-10-08T21:40:00.000Z",
+        },
+      ],
+    };
+    mkdirSync(path.join(dir, "news"), { recursive: true });
+    writeFileSync(
+      path.join(dir, "news", "2026-10-09.json"),
+      JSON.stringify(NewsFileSchema.parse(file)),
+    );
+  }
+
+  it("이적 트래커(M4-01): prod 비dry만 data/transfers.json을 쓰고 검증 게이트를 통과한다 · 단계를 끄면(기본) 돌지 않는다", async () => {
+    const repo = path.join(dataDir, "repo");
+    copyRepo(repo);
+    const repoData = path.join(repo, "data");
+    seedTransferNews(repoData);
+    const { deps } = liveDeps({
+      env: "prod",
+      rootDir: repo,
+      dataDir: repoData,
+      transfersStage: true,
+    });
+    const outcome = await runCollect(deps);
+    expect(outcome.exitCode).toBe(0);
+    expect(outcome.transfers).toMatchObject({ state: "done", mode: "write" });
+    const written = JSON.parse(
+      readFileSync(path.join(repoData, "transfers.json"), "utf8"),
+    ) as Array<{ id: string; history: Array<{ card: string }> }>;
+    expect(written.map((t) => t.id)).toEqual(["kim-min-jae:arsenal"]);
+    expect(written[0]!.history.map((h) => h.card)).toEqual(["c_aaaaaaaaaa"]);
+    const report = buildValidationReport(
+      readValidationSnapshot(repo, { configsOnly: false }),
+      { configsOnly: false },
+    );
+    expect(report.issues.filter((i) => i.severity === "error")).toEqual([]);
+    expect(
+      report.issues.filter((i) => i.file === "data/transfers.json"),
+    ).toEqual([]);
+
+    // 기본(transfersStage 없음)은 단계가 돌지 않는다
+    const off = liveDeps({ env: "prod", dry: true });
+    expect((await runCollect(off.deps)).transfers).toBeNull();
+  });
+
+  it("이적 트래커(M4-01): dev·dry 실행은 preview — data/transfers.json을 쓰지 않는다", async () => {
+    seedTransferNews(dataDir);
+    for (const over of [
+      { env: "dev" as const },
+      { env: "prod" as const, dry: true },
+    ]) {
+      const { deps } = liveDeps({ ...over, transfersStage: true });
+      const outcome = await runCollect(deps);
+      expect(outcome.transfers).toMatchObject({
+        state: "done",
+        mode: "preview",
+        written: null,
+      });
+      if (outcome.transfers?.state === "done") {
+        expect(outcome.transfers.build.transfers.map((t) => t.id)).toEqual([
+          "kim-min-jae:arsenal",
+        ]);
+      }
+      expect(existsSync(path.join(dataDir, "transfers.json"))).toBe(false);
+    }
+  });
 });
 
 // ─── M1-45 브리핑 게시 — FR-29 재시도·줄 강등·마감·예산·사전 실패 ─────────────────

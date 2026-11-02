@@ -388,6 +388,7 @@ import {
   runKoreanPlayersStage,
   type KoreanPlayersStageOutcome,
 } from "./korean-players-io";
+import { runTransfersStage, type TransfersStageOutcome } from "./transfers-io";
 import {
   purgeSummary,
   runPurgeStage,
@@ -600,6 +601,11 @@ export interface CollectDeps {
    * 저장소 변수 `COLLECT_FOOTBALL_STAGES`(기본 켬, `off`면 끔)로 정한다. 기본 false — 주입 deps(테스트)는 켤 때만 돈다.
    */
   footballStages?: boolean;
+  /**
+   * 이적 트래커 단계(M4-01 — data/transfers.json, scripts/lib/transfers-io.ts)를 돌리나. 진입점(scripts/collect.ts)이 켠다. 기본 false —
+   * 주입 deps(테스트)는 켤 때만 돈다. 켜져 있어도 쓰기는 prod·비dry만(그 밖은 preview — 로그만).
+   */
+  transfersStage?: boolean;
 }
 
 export type BriefOutcome =
@@ -994,6 +1000,8 @@ export interface CollectOutcome {
   football: FootballStagesOutcome | null;
   /** 한국 선수 현황 단계(M3-03) — 돌지 않았으면 null·생략. 라인업 불일치는 이적 감지 이슈(M3-04 — collect.ts)가 쓴다 */
   players?: KoreanPlayersStageOutcome | null;
+  /** 이적 트래커 단계(M4-01) — 돌지 않았으면(꺼짐·뉴스 실패) null·생략 */
+  transfers?: TransfersStageOutcome | null;
   /** 기록한 실행 로그(기록하지 않았으면 null) */
   run: RunLog | null;
   runPath: string | null;
@@ -5362,6 +5370,29 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     }
   }
 
+  // 이적 트래커(M4-01 — transfers-io.ts): 뉴스 단계가 성공한 실행만. data/news 전체(이번 실행 발행일 파일 포함 — 쓰지 않은 실행은
+  // 메모리 파일로 덮는다) − 삭제 요청 카드 → data/transfers.json. write = prod 비dry, 그 밖은 preview(쓰지 않음). 발행 산출물이라
+  // 검증·빌드가 실패하면 커밋되지 않는다(D49). 던지지 않는다 — 실패해도 발행은 계속(전일 파일 유지, 실행 상태 불변)
+  let transfers: TransfersStageOutcome | null = null;
+  if (deps.transfersStage === true && news.ok) {
+    try {
+      transfers = await runTransfersStage(deps, {
+        mode: deps.env === "prod" && !deps.dry ? "write" : "preview",
+        now: nowUtcIso(deps.now()),
+        newsOverride:
+          news.path === null && news.file !== null
+            ? { date: publishDate, cards: news.file.cards }
+            : null,
+      });
+    } catch (error) {
+      // 방어선 — runTransfersStage는 던지지 않는다
+      log.error("transfers.fail", {
+        stage: "unexpected",
+        error: errorText(error),
+      });
+    }
+  }
+
   // 미등록 고유명사(M1-21) — 브리핑 입력·출력의 사전에 없는 이름 + 대회 득점 순위 상위(M2-09, 대회별 20명) + 한국 선수 로그의
   // slug 없는 상대 팀·컵 대회 원문(M3-03). prod·비dry만 파일을 쓴다. 실패해도 발행은 계속
   let unknownNames: UnknownNamesOutcome | null = null;
@@ -5503,6 +5534,12 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
           : players.state === "skipped"
             ? `skipped:${players.reason}`
             : `failed:${players.errorType}`,
+    transfers:
+      transfers === null
+        ? null
+        : transfers.state === "done"
+          ? `${transfers.mode}:${transfers.written !== null ? "written" : transfers.changed ? "changed" : "same"}:${transfers.build.transfers.length}`
+          : `failed:${transfers.errorType}`,
     apiCalls: sink.apiCalls.footballData,
     apiFootballCalls: sink.apiCalls.apiFootball,
     llmCalls: sink.results.length,
@@ -5522,6 +5559,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     unknownNames,
     football,
     players,
+    transfers,
     run,
     runPath,
     status,

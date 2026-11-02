@@ -23,11 +23,19 @@
  *      활성 선수의 team·출전 로그·다음 경기 상대 slug ⊂ data/teams(팀 페이지 링크)는 오류. 설정 선수의 레코드가 없음·집계 시작일이
  *      원장 메타와 다름은 경고(설정을 바꾼 커밋 뒤 다음 수집이 다시 만든다 — 발행을 막지 않는다)
  *      (설정만 바꾸고 팀 파일을 다시 만들지 않은 경우 — 다음 생성에서 들어간다)
+ *   9. data/transfers.json ↔ data/news·takedowns (M4-01) — 근거(history)가 빈 레코드는 오류(근거 없는 단계 주장 — CLAUDE §1-7).
+ *      나머지는 경고(파이프라인 산출물 — 2026-10-10 Q7 결정처럼 발행을 막지 않는다): id ≠ 선수:행선지 · status ≠ history 적용 결과 ·
+ *      updated ≠ 가장 늦은 근거 시각 · history 시각 순 아님 · 근거 카드가 data/news에 없음 · 근거 카드가 삭제 요청에 있음(등록 push는
+ *      다음 수집 전에 돌아야 한다 — 발행 게이트 ⑥과 같은 이유) · 근거 카드의 transfer가 이 레코드(선수:행선지)와 다름.
+ *      어긋나면 `npm run build:transfers`로 다시 만든다(다음 수집도 다시 만든다)
  *
  * formations.json·team-colors.json의 키 형식(slug)은 스키마(`z.record(SlugSchema, …)`)가 이미 검사한다.
  */
 import {
   findPublisherDomain,
+  type NewsFile,
+  type TakedownsFile,
+  type TransfersFile,
   type KoreanPlayersFile,
   type NationalTeamFile,
   type PublisherDomainsFile,
@@ -41,6 +49,8 @@ import {
 } from "@/lib/schema";
 
 import { KIT_MIN_CONTRAST, kitShirtContrast } from "@/lib/kit-contrast";
+import { isDailyNewsPath } from "./publish-gate";
+import { transferIdOf, transferRecordProblems } from "./transfers";
 import { formatIssuePath, type ValidationIssue } from "./validate-schema";
 
 /** 교차 참조에 쓰는 configs 경로 (레지스트리 패턴과 같은 값) */
@@ -62,6 +72,9 @@ export const TEAM_FILES_PREFIX = "data/teams/";
 /** 한국 선수 현황·원장 메타 경로(레지스트리 패턴과 같은 값) */
 export const KOREAN_PLAYERS_DATA_FILE = "data/players/korean.json";
 export const LEDGER_META_FILE = "data/matches/meta.json";
+/** 이적 트래커·삭제 요청 경로(레지스트리 패턴과 같은 값) */
+export const TRANSFERS_DATA_FILE = "data/transfers.json";
+export const TAKEDOWNS_FILE = "configs/takedowns.json";
 
 /** 스키마를 통과한 configs 값. 없거나 스키마 오류인 파일은 비워 둔다. */
 export interface CrossRefInput {
@@ -71,6 +84,12 @@ export interface CrossRefInput {
   koreanPlayersData?: KoreanPlayersDataFile;
   /** data/matches/meta.json(스키마 통과) */
   ledgerMeta?: MatchLedgerMeta;
+  /** data/transfers.json(스키마 통과) */
+  transfers?: TransfersFile;
+  /** 스키마를 통과한 일별 뉴스 파일(경로 → 값) — 없으면 빈 맵 */
+  news?: ReadonlyMap<string, NewsFile>;
+  /** configs/takedowns.json(스키마 통과) */
+  takedowns?: TakedownsFile;
   sources?: SourcesFile;
   searchQueries?: SearchQueriesFile;
   koreanPlayers?: KoreanPlayersFile;
@@ -509,6 +528,72 @@ export function checkKoreanPlayersData(
   return issues;
 }
 
+/** 9. data/transfers.json ↔ data/news·takedowns (M4-01 — 머리 주석) */
+export function checkTransfersData(
+  transfers: TransfersFile,
+  news: ReadonlyMap<string, NewsFile>,
+  takedowns: TakedownsFile | undefined,
+): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  const file = TRANSFERS_DATA_FILE;
+  const regen =
+    "npm run build:transfers로 다시 만들 것(다음 수집도 다시 만든다)";
+  const push = (
+    severity: "error" | "warn",
+    path: readonly PropertyKey[],
+    message: string,
+  ) =>
+    issues.push({
+      severity,
+      stage: "crossref",
+      file,
+      path: formatIssuePath(path),
+      message,
+    });
+  const cards = new Map<string, NonNullable<NewsFile["cards"][number]>>();
+  for (const f of news.values()) {
+    for (const c of f.cards) if (!cards.has(c.id)) cards.set(c.id, c);
+  }
+  const takedownIds = new Set((takedowns ?? []).map((t) => t.id));
+  transfers.forEach((t, i) => {
+    if (t.history.length === 0) {
+      push(
+        "error",
+        [i, "history"],
+        `이적 "${t.id}"의 근거 카드가 없음 — 근거 없는 단계는 게시하지 않는다(${regen})`,
+      );
+    }
+    for (const problem of transferRecordProblems(t)) {
+      push("warn", [i], `이적 "${t.id}": ${problem} — ${regen}`);
+    }
+    t.history.forEach((h, j) => {
+      const path = [i, "history", j, "card"];
+      if (takedownIds.has(h.card)) {
+        push(
+          "warn",
+          path,
+          `근거 카드 ${h.card}가 삭제 요청(takedowns)에 있음 — ${regen}`,
+        );
+        return;
+      }
+      const card = cards.get(h.card);
+      if (card === undefined) {
+        push("warn", path, `근거 카드 ${h.card}가 data/news에 없음 — ${regen}`);
+      } else if (
+        card.transfer === undefined ||
+        transferIdOf(card.transfer.player, card.transfer.to) !== t.id
+      ) {
+        push(
+          "warn",
+          path,
+          `근거 카드 ${h.card}의 transfer가 이적 "${t.id}"와 다름 — ${regen}`,
+        );
+      }
+    });
+  });
+  return issues;
+}
+
 interface CrossRefCheck {
   name: string;
   /** 필요한 파일이 모두 있으면 이슈 목록, 하나라도 없으면 null(건너뜀) */
@@ -579,6 +664,13 @@ const DATA_CHECKS: readonly CrossRefCheck[] = [
           )
         : null,
   },
+  {
+    name: "data/transfers.json → data/news · takedowns",
+    run: ({ transfers, news, takedowns }) =>
+      transfers
+        ? checkTransfersData(transfers, news ?? new Map(), takedowns)
+        : null,
+  },
 ];
 
 /** 교차 참조 검사 전체를 실행한다(`scope` "data"면 data 파일이 걸린 검사만). */
@@ -633,5 +725,15 @@ export function pickCrossRefInput(
   }
   const meta = parsedByPath.get(LEDGER_META_FILE);
   if (meta !== undefined) input.ledgerMeta = meta as MatchLedgerMeta;
+  // 레지스트리 TransfersFileSchema·NewsFileSchema·TakedownsFileSchema 통과 값(호출 규약)
+  const transfers = parsedByPath.get(TRANSFERS_DATA_FILE);
+  if (transfers !== undefined) input.transfers = transfers as TransfersFile;
+  const news = new Map<string, NewsFile>();
+  for (const [file, value] of parsedByPath) {
+    if (isDailyNewsPath(file)) news.set(file, value as NewsFile);
+  }
+  if (news.size > 0) input.news = news;
+  const takedowns = parsedByPath.get(TAKEDOWNS_FILE);
+  if (takedowns !== undefined) input.takedowns = takedowns as TakedownsFile;
   return input;
 }

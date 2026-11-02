@@ -99,6 +99,8 @@ async function main(): Promise<number> {
     // 축구 데이터 단계(M2-09 — 대회·팀 파일·라인업 백필). 저장소 변수 COLLECT_FOOTBALL_STAGES='off'면 끈다(기본 켬 — 아침 봇
     // 시간대에 코드 수정 없이 끌 수 있는 스위치). 켜져 있어도 대회 단계는 prod·비dry·09:00 KST 전만, 팀 파일 쓰기는 prod·비dry만
     footballStages: resolveFootballStagesEnabled(env.COLLECT_FOOTBALL_STAGES),
+    // 이적 트래커(M4-01 — data/transfers.json). 쓰기는 prod·비dry만, API·LLM 호출 없음
+    transfersStage: true,
     // 브리핑 전용 설정은 브리핑 단계 안에서 해석한다(잘못된 값이면 브리핑만 실패, 뉴스는 발행).
     resolveBriefConfig: () => ({
       model: resolveLlmModel(env),
