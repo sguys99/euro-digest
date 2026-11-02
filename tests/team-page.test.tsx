@@ -397,3 +397,78 @@ describe("팀 페이지 — 티켓 · 팀시트 · 일정 · 주요 선수 · �
     expect(source.textContent).not.toContain("업데이트 지연");
   });
 });
+
+describe("팀 페이지 — 팀 한줄평 · 강점/약점(M4-06 화면 — FR-53·56, D64 ⑥)", () => {
+  const profile = {
+    oneLiner: "리그 1위로 7경기 무패를 이어 가고 있다.",
+    strengths: ["리그 최다 득점 25골", "리그 최소 실점 6골"],
+    weaknesses: ["원정 2경기 무승", "UCL 3경기 4골"],
+    generatedAt: "2026-10-26T04:39:32.702Z",
+  };
+
+  it("profile이 null이면 블록이 없다", async () => {
+    await renderPage();
+    expect(document.querySelector("[data-slot=team-profile]")).toBeNull();
+  });
+
+  it("티켓 아래 · 팀시트 위, 머리 'AI 작성' 라벨 한 번 + 생성 날짜(KST) · 강점/약점 글자 머리 + 번호 2행", async () => {
+    loadTeamPage.mockImplementation(() => pageData(teamOf({ profile })));
+    await renderPage();
+    const block = document.querySelector<HTMLElement>(
+      "[data-slot=team-profile]",
+    )!;
+    const ticket = document.querySelector("[data-slot=team-ticket]")!;
+    const sheet = document.querySelector("[data-slot=team-sheet]")!;
+    // DOM 순서: 티켓 → 한줄평 → 팀시트
+    expect(
+      ticket.compareDocumentPosition(block) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      block.compareDocumentPosition(sheet) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      within(block).getByRole("heading", { level: 2, name: "팀 한줄평" }),
+    ).toBeTruthy();
+    // 라벨은 블록에 한 번(줄마다 붙이지 않는다)
+    const labels = block.querySelectorAll("[data-slot=ai-label]");
+    expect(labels).toHaveLength(1);
+    expect(labels[0]!.textContent).toBe("AI 작성");
+    const time = block.querySelector("time")!;
+    expect(time.getAttribute("dateTime")).toBe(profile.generatedAt);
+    expect(time.textContent).toBe("10.26 (월)");
+    // 지금(테스트 시각 10.30)과 4일 차 — "n주 전" 없음
+    expect(block.textContent).not.toContain("주 전");
+    expect(block.textContent).toContain(profile.oneLiner);
+    const s = within(block).getByRole("list", { name: "강점" });
+    const w = within(block).getByRole("list", { name: "약점" });
+    expect(
+      within(s)
+        .getAllByRole("listitem")
+        .map((li) => li.textContent),
+    ).toEqual(["1리그 최다 득점 25골", "2리그 최소 실점 6골"]);
+    expect(within(w).getAllByRole("listitem")).toHaveLength(2);
+    // 색만으로 구분하지 않는다 — 글자 머리 + 기호(장식)
+    expect(
+      within(block).getByRole("heading", { level: 3, name: "강점" }),
+    ).toBeTruthy();
+    expect(
+      within(block).getByRole("heading", { level: 3, name: "약점" }),
+    ).toBeTruthy();
+  });
+
+  it("오래된 값(이전 값 유지)은 날짜 그대로 + 'n주 전'", async () => {
+    loadTeamPage.mockImplementation(() =>
+      pageData(
+        teamOf({
+          profile: { ...profile, generatedAt: "2026-10-12T04:00:00Z" },
+        }),
+      ),
+    );
+    await renderPage();
+    const block = document.querySelector<HTMLElement>(
+      "[data-slot=team-profile]",
+    )!;
+    expect(block.querySelector("time")!.textContent).toBe("10.12 (월)");
+    expect(block.textContent).toContain("2주 전");
+  });
+});

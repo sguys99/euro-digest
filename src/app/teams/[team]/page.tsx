@@ -11,6 +11,7 @@ import {
   RelatedNews,
   type KoreanKeyPlayer,
 } from "@/components/team/team-parts";
+import { TeamProfile } from "@/components/team/team-profile";
 import { TeamSheet, type SheetPlayerView } from "@/components/team/team-sheet";
 import { TeamTicket } from "@/components/team/team-ticket";
 import { DataSourceNote } from "@/components/data-source";
@@ -37,6 +38,7 @@ import {
   teamMatchesOf,
   type TeamFixtureView,
 } from "@/lib/team-view";
+import { teamProfileView } from "@/lib/team-profile-view";
 import { formatKst, parseUtcIso } from "@/lib/time";
 
 /*
@@ -48,7 +50,8 @@ import { formatKst, parseUtcIso } from "@/lib/time";
  *   득점·도움 상위(1280 이상 `1.25fr · 1fr` 2단) → 관련 뉴스 → 더 읽을거리). 1023 이하: 일정·결과 → 득점·도움 상위 → 리그 맥락 → 관련 뉴스.
  *   목차 열은 앱 셸의 목차(nav)가 아니라 이 페이지 지면 안의 열이다 — 티켓·팀시트가 목차 열 위까지 전폭이어야 해서(DESIGN §9.3 팀 화면 틀).
  * - 시각은 빌드 시각 기준(정적 — 다음 경기·결과 대기·업데이트 지연). 하루 1회 발행 빌드가 다시 굳힌다.
- * - 팀 한줄평·강점/약점(FR-53·56)·팔로우·.ics(FR-59)는 M4 — 자리를 그리지 않는다. 한국 선수 이름(티켓 꼬리표 · 주요 선수)은 선수 상세 링크(M3-11).
+ * - 팀 한줄평·강점/약점(FR-53·56 — M4-06)은 티켓 아래 · 팀시트 위(D64 ⑥), `profile`이 null이면 숨긴다. 팀 .ics(FR-59 — M4-12)는 티켓 '다음 경기'
+ *   칸의 보조 버튼. 한국 선수 이름(티켓 꼬리표 · 주요 선수)은 선수 상세 링크(M3-11).
  * - 오프라인 띠는 앱 셸(M1-37), 로딩 화면은 두지 않는다(정적). 데이터가 없는 요소는 숨긴다(자리 상자 없음 — DESIGN §9.3 자리).
  */
 
@@ -113,6 +116,7 @@ export default async function TeamPage({ params }: PageProps<"/teams/[team]">) {
       }
     : null;
 
+  const profile = teamProfileView(team.profile, nowMs);
   const keyPlayers = keyPlayerViews(team.topPlayers, page.playerName);
   const koreanKey = koreanKeyPlayers(page);
   const leagueName = config?.nameKo ?? null;
@@ -139,6 +143,13 @@ export default async function TeamPage({ params }: PageProps<"/teams/[team]">) {
         />
         <JsonLd page={page} slug={slug} />
         <SearchRecord record={teamPageSearchRecord(page)} />
+        {profile ? (
+          <TeamProfile
+            profile={profile}
+            headingId="team-profile-h"
+            className="mt-8"
+          />
+        ) : null}
         {team.formation ? (
           <TeamSheet
             headingId="team-sheet-h"
