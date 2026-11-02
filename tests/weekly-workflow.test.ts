@@ -115,6 +115,8 @@ describe("weekly job 단계 — 주간 작업 → 검증 → 빌드 → 커밋 (
     }
     const body = run(STEP.weekly);
     expect(body).toContain('npm run weekly -- "${args[@]}"');
+    expect(body).toContain('args+=(--only "$ONLY")');
+    expect(step.body).toContain("ONLY: ${{ inputs.only }}");
     expect(body).not.toMatch(/\$\{\{\s*inputs\./);
   });
 
