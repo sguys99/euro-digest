@@ -332,7 +332,12 @@ describe("W43 실데이터 사본 — 표·MVP (FR-91·FR-92)", () => {
 
 describe("composeKoreanWeeklySummary — 시도·재시도·템플릿 강등", () => {
   it("mock fixture(weekly-kr-2026-43) 결정적 재생 — 검증 통과, summaryAi true, 비용 결과 기록", async () => {
-    const client = createLlmClient({ mode: "mock", model: "claude-haiku-5-5" });
+    // 단계 시계(ctxWith t0)와 같은 시계를 넘긴다 — 실제 시계면 t0 + LLM 창(8분)이 지난 뒤 마감 초과로 강등된다
+    const client = createLlmClient({
+      mode: "mock",
+      model: "claude-haiku-5-5",
+      now: () => Date.parse("2026-11-01T23:00:00Z"),
+    });
     const { ctx, billed, t0 } = ctxWith({ client });
     const r = await composeKoreanWeeklySummary(
       ctx,
