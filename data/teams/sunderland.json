@@ -26,7 +26,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 최하위 20위, 승점 5로 강등권에 있으며 7경기 무승 중이다.",
+    "strengths": [
+      "리그 무실점 2경기",
+      "원정 경기 6득점"
+    ],
+    "weaknesses": [
+      "리그 실점 순위 18위의 수비",
+      "리그 무득점 4경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

@@ -31,7 +31,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 3위, 9경기 승점 19이며 최다 득점인 24골을 넣었다.",
+    "strengths": [
+      "리그 최다 득점 24골의 공격",
+      "리그 무실점 6경기"
+    ],
+    "weaknesses": [
+      "리그 무득점 경기 1회",
+      "원정 경기 6실점"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [
     {

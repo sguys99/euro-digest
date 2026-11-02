@@ -33,7 +33,18 @@
       "assists": 3
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 2위로 9경기 7승 2패, 승점 21을 기록했으나 지금 2연패 중이다.",
+    "strengths": [
+      "리그 득점 순위 2위의 공격",
+      "원정 4경기 3실점"
+    ],
+    "weaknesses": [
+      "챔피언스리그 플레이오프권 10위",
+      "리그 2연패 진행 중"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

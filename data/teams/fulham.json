@@ -21,7 +21,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 15위, 승점 9로 하위권에 있으며 3경기 무패 중이다.",
+    "strengths": [
+      "리그 무실점 3경기",
+      "홈 경기 6득점"
+    ],
+    "weaknesses": [
+      "리그 득점 순위 14위의 공격",
+      "리그 무득점 2경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

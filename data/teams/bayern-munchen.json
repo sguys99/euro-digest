@@ -33,7 +33,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 선두로 8경기 연속 무패를 이어가며 승점 18점을 기록하고 있다.",
+    "strengths": [
+      "리그 최다 득점 27골",
+      "리그 실점 2위의 수비"
+    ],
+    "weaknesses": [
+      "챔피언스리그 플레이오프권",
+      "무득점 경기 1회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [
     "kim-min-jae"
   ],

@@ -21,7 +21,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 8위, 중위권으로 승점 12이며 4경기 무패 중이다.",
+    "strengths": [
+      "리그 무실점 4경기",
+      "리그 3연승 진행 중"
+    ],
+    "weaknesses": [
+      "리그 무득점 4경기",
+      "리그 득점 순위 11위의 공격"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

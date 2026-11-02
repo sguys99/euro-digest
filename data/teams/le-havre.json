@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 최하위(승점 2)로 강등권에 있으며 최근 5경기에서 5연패를 기록했다.",
+    "strengths": [
+      "무실점 경기 1회",
+      "원정 4경기 6득점"
+    ],
+    "weaknesses": [
+      "9경기 무승",
+      "무득점 경기 3회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

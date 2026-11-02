@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 6위로 8경기에서 4승 1무 3패를 기록해 승점 13점을 얻었으며 상위권에 있다.",
+    "strengths": [
+      "리그 득점 3위 18골",
+      "홈 4경기 3승"
+    ],
+    "weaknesses": [
+      "현재 2연패",
+      "원정 4경기 11실점"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

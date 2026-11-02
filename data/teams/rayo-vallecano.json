@@ -31,7 +31,18 @@
       "assists": 2
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 11위로 승점 12를 쌓았고, 최근 5경기에서 2승 2무 1패를 기록했다.",
+    "strengths": [
+      "홈 5경기 3승",
+      "리그 득점 순위 8위"
+    ],
+    "weaknesses": [
+      "원정 5경기 무승",
+      "리그 득실차 -5"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

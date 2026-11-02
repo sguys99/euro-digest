@@ -31,7 +31,18 @@
       "assists": 4
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 10위로 8경기에서 2승 3무 3패를 기록해 승점 9점을 얻었으며 중위권에 있다.",
+    "strengths": [
+      "리그 득점 3위 18골",
+      "3골 이상 넣은 경기 3회"
+    ],
+    "weaknesses": [
+      "6경기 무승",
+      "최근 5경기 3패"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [
     "seol-young-woo"
   ],

@@ -26,7 +26,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 12위이며 4연패 중이고 승점은 13이다.",
+    "strengths": [
+      "무실점 3경기",
+      "원정 3승"
+    ],
+    "weaknesses": [
+      "5경기 무승",
+      "리그 득점 순위 18위"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

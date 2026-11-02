@@ -31,7 +31,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 6위로 9경기 3승 5무 1패, 승점 14를 기록하며 2경기 무패 중이다.",
+    "strengths": [
+      "리그 득점 순위 4위의 공격",
+      "홈 경기 3실점"
+    ],
+    "weaknesses": [
+      "원정 무승",
+      "리그 무승부 5경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [
     "kim-ji-soo"
   ],

@@ -33,7 +33,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 2위(승점 18)로 최소 실점을 기록했으나 챔피언스리그에서는 3연패로 탈락권에 있다.",
+    "strengths": [
+      "리그 최소 실점 6골의 수비",
+      "4경기 연속 무패 진행 중"
+    ],
+    "weaknesses": [
+      "챔피언스리그 3경기 무승",
+      "챔피언스리그 36팀 중 35위"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 10위이며 2연패 중이고 승점은 13이다.",
+    "strengths": [
+      "원정 실점 6골",
+      "3골 이상 넣은 경기 2회"
+    ],
+    "weaknesses": [
+      "2경기 무승",
+      "홈 3패"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

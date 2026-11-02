@@ -33,7 +33,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 선두(승점 20)로 6연승 중이며 챔피언스리그에서도 3전 전승을 거두었다.",
+    "strengths": [
+      "리그 최다 득점 21골",
+      "6연승 진행 중"
+    ],
+    "weaknesses": [
+      "홈 경기 1패 기록",
+      "리그 무승부 2회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

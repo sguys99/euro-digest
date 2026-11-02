@@ -26,7 +26,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 13위이며 승점 11로 2경기 무패 중이다.",
+    "strengths": [
+      "홈 3승",
+      "홈 득점 11골"
+    ],
+    "weaknesses": [
+      "3경기 무승",
+      "원정 4경기 무승"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

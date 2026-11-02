@@ -807,5 +807,53 @@
     },
     "sources": [],
     "status": "success"
+  },
+  {
+    "runId": "eval-team-dev-20261102T042910Z-06a6",
+    "env": "dev",
+    "job": "weekly",
+    "startedAt": "2026-11-02T04:29:10.139Z",
+    "finishedAt": "2026-11-02T04:31:07.603Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 2961,
+      "out": 12875,
+      "cacheRead": 0,
+      "cacheWrite": 2359
+    },
+    "costUsd": 0.003514,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
+  },
+  {
+    "runId": "weekly-dev-20261102T043132Z-b0e3",
+    "env": "dev",
+    "job": "weekly",
+    "startedAt": "2026-11-02T04:31:32.684Z",
+    "finishedAt": "2026-11-02T04:39:32.847Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 24105,
+      "out": 96776,
+      "cacheRead": 11360,
+      "cacheWrite": 2272
+    },
+    "costUsd": 0.025598,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
   }
 ]

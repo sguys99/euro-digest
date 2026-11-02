@@ -15,7 +15,18 @@
     "updated": "2026-10-25T16:15:00.000Z"
   },
   "topPlayers": [],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 10위(승점 12)로 중위권에 있으며 최근 5경기에서 2승 2무 1패를 기록했다.",
+    "strengths": [
+      "리그 최소 실점 6골",
+      "무실점 경기 5회"
+    ],
+    "weaknesses": [
+      "리그 득점 순위 17위",
+      "무득점 경기 2회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

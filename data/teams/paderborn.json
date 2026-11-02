@@ -26,7 +26,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 14위로 8경기에서 2승 3무 3패를 기록해 승점 9점을 얻었으며 하위권에 있다.",
+    "strengths": [
+      "리그 실점 순위 3위 수비",
+      "무실점 경기 3회"
+    ],
+    "weaknesses": [
+      "무득점 경기 5회",
+      "원정 4경기 무승"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

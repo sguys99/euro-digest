@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 11위(승점 10)로 중위권에 있으며 9경기 중 4차례 무승부를 기록했다.",
+    "strengths": [
+      "3골 이상 득점 경기 2회",
+      "최근 5경기 패배 1회"
+    ],
+    "weaknesses": [
+      "홈 4경기 2패",
+      "무득점 경기 4회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

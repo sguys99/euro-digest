@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 7위로 승점 15를 쌓았고, 현재 2연승 중이다.",
+    "strengths": [
+      "리그 실점 순위 2위",
+      "무실점 경기 5회"
+    ],
+    "weaknesses": [
+      "리그 무득점 경기 3회",
+      "리그 득점 순위 12위"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

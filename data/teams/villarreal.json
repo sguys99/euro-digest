@@ -33,7 +33,18 @@
       "assists": 4
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 8위로 승점 12를 쌓았고, 최근 5경기 중 2패를 기록했다.",
+    "strengths": [
+      "챔피언스리그 플레이오프권",
+      "챔피언스리그 홈 1경기 전승"
+    ],
+    "weaknesses": [
+      "리그 무득점 경기 4회",
+      "홈 5경기 3패"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

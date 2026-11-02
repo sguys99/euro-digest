@@ -31,7 +31,18 @@
       "assists": 2
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 5위로 승점 19를 쌓았고, 최근 5경기에서 4승을 거두었다.",
+    "strengths": [
+      "리그 득점 순위 4위",
+      "3골 이상 넣은 경기 4회"
+    ],
+    "weaknesses": [
+      "리그 실점 20골",
+      "리그 무득점 경기 3회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

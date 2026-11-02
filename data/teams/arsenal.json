@@ -33,7 +33,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 선두로 9경기 8승 1패, 승점 24를 기록하며 4연승 중이다.",
+    "strengths": [
+      "리그 최소 실점 5실점의 수비",
+      "홈 4경기 전승"
+    ],
+    "weaknesses": [
+      "리그 무득점 경기 1회",
+      "챔피언스리그 득점 순위 15위"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [
     {

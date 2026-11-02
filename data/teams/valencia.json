@@ -21,7 +21,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 19위로 강등권에 있으며, 승점 9를 쌓았다.",
+    "strengths": [
+      "무실점 경기 4회",
+      "원정 실점 6골"
+    ],
+    "weaknesses": [
+      "홈 6경기 무승",
+      "무득점 경기 5회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

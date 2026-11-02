@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 12위, 8경기 승점 11로 3승 2무 3패를 기록했다.",
+    "strengths": [
+      "리그 무실점 2경기",
+      "원정 2승"
+    ],
+    "weaknesses": [
+      "리그 실점 순위 14위의 수비",
+      "리그 무득점 1경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [
     "park-seung-soo"
   ],

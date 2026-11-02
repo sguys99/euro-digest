@@ -33,7 +33,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 4위로 4연승 중이며 상위권을 지키고 있다.",
+    "strengths": [
+      "리그 최소 실점 8골",
+      "홈 무패 4경기"
+    ],
+    "weaknesses": [
+      "무득점 2경기",
+      "원정 1패"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

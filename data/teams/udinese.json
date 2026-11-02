@@ -26,7 +26,18 @@
       "assists": 2
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 19위로 강등권에 놓여 있으며, 10경기에서 1승 2무 7패, 승점 5점을 기록했다.",
+    "strengths": [
+      "원정 4경기 7득점",
+      "3골 이상 넣은 경기 2회"
+    ],
+    "weaknesses": [
+      "8경기 무승",
+      "홈 6경기 5패"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

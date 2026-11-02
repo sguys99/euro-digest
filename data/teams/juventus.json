@@ -26,7 +26,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 7위이며 승점 17로 상위권에 있다.",
+    "strengths": [
+      "무실점 5경기",
+      "리그 실점 순위 3위"
+    ],
+    "weaknesses": [
+      "리그 득점 순위 13위",
+      "무득점 2경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

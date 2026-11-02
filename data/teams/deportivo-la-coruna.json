@@ -21,7 +21,18 @@
       "assists": 2
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 13위로 승점 11을 쌓았고, 현재 6경기 무승이 이어지고 있다.",
+    "strengths": [
+      "리그 실점 순위 6위",
+      "3골 이상 넣은 경기 2회"
+    ],
+    "weaknesses": [
+      "무실점 경기 없음",
+      "무득점 경기 2회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

@@ -15,7 +15,18 @@
     "updated": "2026-10-31T19:45:00.000Z"
   },
   "topPlayers": [],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 16위(승점 8)로 강등권에 있으며 최근 2경기 무패를 이어 가고 있다.",
+    "strengths": [
+      "무실점 경기 3회",
+      "원정 4경기 실점 5골"
+    ],
+    "weaknesses": [
+      "무득점 경기 5회",
+      "리그 득점 순위 17위(7골)"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

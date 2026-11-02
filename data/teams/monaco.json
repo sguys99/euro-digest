@@ -26,7 +26,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 7위(승점 15)로 중위권에 있으며 최근 4경기 무승에 머물러 있다.",
+    "strengths": [
+      "무실점 경기 2회",
+      "리그 실점 순위 4위(10골)"
+    ],
+    "weaknesses": [
+      "원정 5경기 2패",
+      "3골 이상 득점 경기 없음"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

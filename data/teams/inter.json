@@ -33,7 +33,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 2위이며 승점 25로 상위권에 있다.",
+    "strengths": [
+      "홈 전승 5경기",
+      "리그 득점 2위, 26골"
+    ],
+    "weaknesses": [
+      "챔피언스리그 2패",
+      "원정 1패"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

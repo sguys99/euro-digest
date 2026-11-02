@@ -26,7 +26,18 @@
       "assists": 4
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 10위로 승점 12를 쌓았고, 현재 7경기 무승이 이어지고 있다.",
+    "strengths": [
+      "무실점 경기 3회",
+      "홈 실점 6골"
+    ],
+    "weaknesses": [
+      "원정 5경기 무승",
+      "리그 무득점 경기 2회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

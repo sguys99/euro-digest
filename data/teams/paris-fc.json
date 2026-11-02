@@ -31,7 +31,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 4위(승점 17)에 올라 있으며 3골 이상 넣은 경기가 4회다.",
+    "strengths": [
+      "3골 이상 득점 경기 4회",
+      "홈 5경기 4승"
+    ],
+    "weaknesses": [
+      "리그 2패 기록",
+      "무득점 경기 3회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 5위이며 승점 21로 상위권에 있다.",
+    "strengths": [
+      "원정 5경기 무패",
+      "무실점 3경기"
+    ],
+    "weaknesses": [
+      "원정 무승부 3경기",
+      "리그 실점 12골"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

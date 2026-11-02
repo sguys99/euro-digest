@@ -15,7 +15,18 @@
     "updated": "2026-10-31T14:30:00.000Z"
   },
   "topPlayers": [],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 17위로 강등권에 놓여 있으며 8경기에서 1승 3무 4패, 승점 6점을 기록했다.",
+    "strengths": [
+      "리그 실점 순위 3위 수비",
+      "무실점 경기 3회"
+    ],
+    "weaknesses": [
+      "무득점 경기 6회",
+      "5경기 무승"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [
     "hwang-hee-chan"
   ],

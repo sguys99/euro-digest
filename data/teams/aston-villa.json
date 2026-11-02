@@ -28,7 +28,18 @@
       "assists": 3
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 중위권 9위지만 챔피언스리그에서는 2위로 16강 직행권에 있다.",
+    "strengths": [
+      "챔피언스리그 실점 순위 4위",
+      "리그 5경기 무패"
+    ],
+    "weaknesses": [
+      "리그 실점 순위 12위의 수비",
+      "리그 무득점 3경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

@@ -28,7 +28,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 17위, 승점 7로 하위권에 있으며 7경기 무승 중이다.",
+    "strengths": [
+      "챔피언스리그 무실점 1경기",
+      "챔피언스리그 홈 경기 4득점"
+    ],
+    "weaknesses": [
+      "리그 무득점 4경기",
+      "챔피언스리그 득점 순위 18위"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [
     {

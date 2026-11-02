@@ -31,7 +31,18 @@
       "assists": 4
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 9위로 8경기에서 3승 1무 4패를 기록해 승점 10점을 얻었으며 중위권에 있다.",
+    "strengths": [
+      "원정 4경기 3승",
+      "무실점 경기 3회"
+    ],
+    "weaknesses": [
+      "현재 2연패",
+      "홈 4경기 3패"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [
     "lee-jae-sung"
   ],

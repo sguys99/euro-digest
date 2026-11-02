@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 15위로 8경기에서 3승 5패를 기록해 승점 9점을 얻었으며 하위권에 있다.",
+    "strengths": [
+      "최근 5경기 3승",
+      "리그 3승 기록"
+    ],
+    "weaknesses": [
+      "리그 실점 19골",
+      "리그 득실차 -12"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

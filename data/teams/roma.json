@@ -33,7 +33,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 3위이며 최다 득점 28골로 10경기 무패 중이다.",
+    "strengths": [
+      "리그 최다 득점 28골",
+      "무실점 5경기"
+    ],
+    "weaknesses": [
+      "챔피언스리그 1패",
+      "리그 무승부 3경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

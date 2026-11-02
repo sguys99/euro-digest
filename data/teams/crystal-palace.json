@@ -21,7 +21,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 18위, 승점 7로 강등권에 있으며 최근 3연패 중이다.",
+    "strengths": [
+      "리그 3골 이상 경기 2회",
+      "리그 무실점 1경기"
+    ],
+    "weaknesses": [
+      "리그 최다 실점 21골",
+      "리그 무득점 5경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

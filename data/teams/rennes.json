@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 5위(승점 16)이며 득점 순위 2위(20골)를 기록하고 있다.",
+    "strengths": [
+      "리그 득점 순위 2위(20골)",
+      "홈 5경기 실점 5골"
+    ],
+    "weaknesses": [
+      "원정 4경기 3패",
+      "최근 5경기 3패"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

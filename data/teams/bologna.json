@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 9위이며 승점 14로 3연승 중이다.",
+    "strengths": [
+      "3연승 중인 흐름",
+      "리그 실점 순위 6위"
+    ],
+    "weaknesses": [
+      "무득점 3경기",
+      "리그 득점 순위 10위"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

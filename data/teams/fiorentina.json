@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 17위로 하위권이며 승점 5에 머물러 있다.",
+    "strengths": [
+      "원정 1승",
+      "3골 이상 넣은 경기 1회"
+    ],
+    "weaknesses": [
+      "5경기 무승",
+      "무득점 2경기"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

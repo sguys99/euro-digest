@@ -21,7 +21,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 최하위이며 승점 5로 강등권에 머물러 있다.",
+    "strengths": [
+      "무실점 1경기",
+      "홈 득점 5골"
+    ],
+    "weaknesses": [
+      "11경기 무승",
+      "득실차 -13"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

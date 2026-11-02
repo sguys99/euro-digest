@@ -33,7 +33,18 @@
       "assists": 2
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 2위로 승점 28을 쌓았고, 현재 7경기 무패를 이어 가고 있다.",
+    "strengths": [
+      "리그 현재 7연승",
+      "리그 최소 실점 8골 수비"
+    ],
+    "weaknesses": [
+      "챔피언스리그 원정 2경기 무승",
+      "챔피언스리그 3경기 4골"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [
     "lee-kang-in"
   ],

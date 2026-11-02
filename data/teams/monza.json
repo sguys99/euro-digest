@@ -26,7 +26,18 @@
       "assists": 1
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 16위로 하위권에 있으며 3연패 중이다.",
+    "strengths": [
+      "리그 득점 순위 7위",
+      "홈 2승"
+    ],
+    "weaknesses": [
+      "원정 6경기 무승",
+      "리그 최다 실점 24골"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

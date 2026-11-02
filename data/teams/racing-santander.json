@@ -26,7 +26,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 16위로 승점 11을 쌓았으며, 실점 29골로 리그 최다 실점이다.",
+    "strengths": [
+      "리그 득점 순위 8위",
+      "홈 6경기 득점 11골"
+    ],
+    "weaknesses": [
+      "원정 5경기 무승",
+      "무득점 경기 4회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

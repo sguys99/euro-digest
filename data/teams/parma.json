@@ -26,7 +26,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 18위로 강등권에 있으며 득점은 리그 최소인 5골이다.",
+    "strengths": [
+      "무실점 1경기",
+      "홈 1승"
+    ],
+    "weaknesses": [
+      "무득점 5경기",
+      "4경기 무승"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

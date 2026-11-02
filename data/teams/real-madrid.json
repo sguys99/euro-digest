@@ -33,7 +33,18 @@
       "assists": 2
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 3위로 승점 27을 쌓았고, 현재 4연승 중이다.",
+    "strengths": [
+      "홈 5경기 전승",
+      "챔피언스리그 16강 직행권"
+    ],
+    "weaknesses": [
+      "원정 6경기 2패",
+      "리그 무득점 경기 1회"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {

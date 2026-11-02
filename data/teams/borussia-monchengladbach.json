@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 최하위(승점 4)로 강등권에 속해 있으며 최근 5경기에서 3패를 기록했다.",
+    "strengths": [
+      "2경기 연속 무패 진행 중",
+      "3골 이상 득점 경기 3회"
+    ],
+    "weaknesses": [
+      "원정 4경기 1승 3패",
+      "리그 최다 실점 22골의 수비"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [
     "jens-castrop"
   ],

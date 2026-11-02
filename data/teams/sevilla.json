@@ -31,7 +31,18 @@
       "assists": null
     }
   ],
-  "profile": null,
+  "profile": {
+    "oneLiner": "리그 6위로 승점 17을 쌓았고, 최근 5경기 중 3패를 기록했다.",
+    "strengths": [
+      "무실점 경기 3회",
+      "리그 무득점 경기 없음"
+    ],
+    "weaknesses": [
+      "리그 실점 19골",
+      "리그 득실차 -2"
+    ],
+    "generatedAt": "2026-11-02T04:39:32.702Z"
+  },
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
