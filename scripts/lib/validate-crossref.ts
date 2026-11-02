@@ -26,7 +26,9 @@
  *   9. data/transfers.json ↔ data/news·takedowns (M4-01) — 근거(history)가 빈 레코드는 오류(근거 없는 단계 주장 — CLAUDE §1-7).
  *      나머지는 경고(파이프라인 산출물 — 2026-10-10 Q7 결정처럼 발행을 막지 않는다): id ≠ 선수:행선지 · status ≠ history 적용 결과 ·
  *      updated ≠ 가장 늦은 근거 시각 · history 시각 순 아님 · 근거 카드가 data/news에 없음 · 근거 카드가 삭제 요청에 있음(등록 push는
- *      다음 수집 전에 돌아야 한다 — 발행 게이트 ⑥과 같은 이유) · 근거 카드의 transfer가 이 레코드(선수:행선지)와 다름.
+ *      다음 수집 전에 돌아야 한다 — 발행 게이트 ⑥과 같은 이유) · 근거 카드의 transfer가 이 레코드(선수:행선지)와 다름 · 루머가 아닌데
+ *      quiet · 파일 순서가 잠잠 아님 → updated 내림차순 → id가 아님(M4-02 — FR-106 '목록 하단'). quiet 값 자체(30일 경과)는 실행 시각에
+ *      달려 있어 다시 계산하지 않는다(다른 날 돌린 validate가 어긋남을 만들지 않게).
  *      어긋나면 `npm run build:transfers`로 다시 만든다(다음 수집도 다시 만든다)
  *
  * formations.json·team-colors.json의 키 형식(slug)은 스키마(`z.record(SlugSchema, …)`)가 이미 검사한다.
@@ -50,7 +52,11 @@ import {
 
 import { KIT_MIN_CONTRAST, kitShirtContrast } from "@/lib/kit-contrast";
 import { isDailyNewsPath } from "./publish-gate";
-import { transferIdOf, transferRecordProblems } from "./transfers";
+import {
+  transferIdOf,
+  transferRecordProblems,
+  transfersOrderProblems,
+} from "./transfers";
 import { formatIssuePath, type ValidationIssue } from "./validate-schema";
 
 /** 교차 참조에 쓰는 configs 경로 (레지스트리 패턴과 같은 값) */
@@ -591,6 +597,9 @@ export function checkTransfersData(
       }
     });
   });
+  for (const { index, problem } of transfersOrderProblems(transfers)) {
+    push("warn", [index], `${problem} — ${regen}`);
+  }
   return issues;
 }
 

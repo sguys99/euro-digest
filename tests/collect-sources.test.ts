@@ -754,6 +754,7 @@ describe("runCollect — 수집 대상 피드 전부(fixture 피드 14개 활성
         bigClub: 5,
         ucl: 0,
         transfer: 1,
+        hereWeGo: 0,
         multiPublisher: 3,
         noScope: 0,
         clamped: 0,

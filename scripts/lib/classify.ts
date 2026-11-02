@@ -51,7 +51,8 @@
  *                  agreed 이상·결렬 승격 조건)·출발/행선지(문형 슬롯 또는 확실한 방향 규칙)를 뽑고, tier = 클러스터 최고 출처 Tier. 미등록
  *                  선수·애매한 기사는 생략(카테고리만 이적 — PRD F10). 이적 화제는 `TRANSFER_TERMS` + 국내 'T행'(바로 뒤 단서) + 닫힌 문형에 맞는
  *                  제목이고, 국내 제목의 지난 이적을 꾸미는 말('이적 설득한'·'이적 이끈'·'이적 당시')은 화제 표에서 지운다(M1-17 이월 — '이강인
- *                  이적 설득한 코케, 부상 이탈'은 부상).
+ *                  이적 설득한 코케, 부상 이탈'은 부상). 'here we go' 가중 대상(`hereWeGo` — transfer-extract.ts `hereWeGoBacked`, FR-103·
+ *                  M4-02)은 분석에만 두고 점수화가 쓴다(카드 필드 아님 — score.ts `hereWeGo`).
  *   imp            선별 점수(M1-14 `signals.score`)의 **절대 임계값** 구간 1~4(`IMPORTANCE_THRESHOLDS` — 같은 날 재실행 카드끼리 같은
  *                  기준). 5는 머리기사(D30 — imp 최고 1장) 자리: 그날 파일에 imp 5 카드가 없을 때 이번 실행에 **만들어진** 새 카드 중
  *                  점수 1위 1장이 imp 4 임계값 이상이면 5(`assignImportance` — 하루 1장, 같은 날 재실행이 머리기사를 바꾸지 않는다).
@@ -507,6 +508,11 @@ export interface ClusterAnalysis extends Omit<CardClassification, "imp"> {
    * `transferTopic` — 'T행'은 이적 표에 없다)
    */
   transferTopic?: boolean;
+  /**
+   * 'here we go' 가중 대상(transfer-extract.ts `hereWeGoBacked` — FR-103, M4-02). true일 때만 키가 있다. 점수화 `hereWeGo` 배수 근거이고
+   * 카드에는 넣지 않는다(스키마 불변)
+   */
+  hereWeGo?: true;
 }
 
 const COMP_ORDER: readonly CompId[] = CompIdSchema.options;
@@ -722,7 +728,7 @@ export function analyzeItems(
   });
 
   // 이적 정보(M1-18 — transfer-extract.ts): 카테고리 '이적' 카드만, 모든 구성 묶음 제목 + 묶음 소스(매체명·Tier). 요약문은 쓰지 않는다
-  const transfer =
+  const transferResult =
     cat === "transfer"
       ? clusterTransfer(
           items.map((item, i) => {
@@ -744,8 +750,9 @@ export function analyzeItems(
             };
           }),
           { tags: ctx.tags, sourceById: ctx.sourceById },
-        ).transfer
+        )
       : null;
+  const transfer = transferResult?.transfer ?? null;
 
   const summaries = items.flatMap((item) =>
     item.summary ? [textSignals(item.summary, item.lang)] : [],
@@ -771,6 +778,7 @@ export function analyzeItems(
     earliestMs: Math.min(...items.map((i) => Date.parse(i.publishedAt))),
     transferTopic: perTitle.some((p) => p.s.transfer),
     ...(transfer ? { transfer } : {}),
+    ...(transferResult?.hereWeGo === true ? { hereWeGo: true as const } : {}),
   };
 }
 

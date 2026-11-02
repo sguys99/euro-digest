@@ -2,6 +2,7 @@
  * M4-01 이적 트래커 집계(scripts/lib/transfers.ts) — 순수 함수. 네트워크·실호출 없음.
  * 역행 금지 · collapsed 예외(공식 뒤 결렬 무시 · 결렬 뒤 재개는 최고 단계 초과만) · 행선지 분리 · 행선지 미정 · 삭제 요청 제외 ·
  * Tier 최고값 · from · quiet(30일) · 정렬 · 결정성 · 빈 입력 · 중복 카드.
+ * M4-02(FR-106): 잠잠 경계(정확히 30일 · 기준 시각 = 실행 시각) · 루머만(D67 ⑥) · 같은 단계 재보도도 갱신 · 파일 순서 '목록 하단'.
  */
 import { describe, expect, it } from "vitest";
 
@@ -19,7 +20,10 @@ import {
   reduceTransferStatus,
   serializeTransfersFile,
   transferIdOf,
+  TRANSFER_QUIET_DAYS,
+  compareTransfers,
   transferRecordProblems,
+  transfersOrderProblems,
   type TransferNewsInput,
 } from "../scripts/lib/transfers";
 
@@ -317,5 +321,117 @@ describe("transferIdOf · transferRecordProblems", () => {
       `updated ${day(9)} ≠ 가장 늦은 근거 시각 ${day(2)}`,
       "history가 시각 순이 아님",
     ]);
+  });
+});
+
+describe("M4-02 — 잠잠(FR-106): 경계·기준 시각·루머만·목록 하단", () => {
+  const DAY = 24 * 60 * 60 * 1000;
+  const minus = (iso: string, ms: number) =>
+    new Date(Date.parse(iso) - ms).toISOString();
+
+  it("기간 = 30일, 경계는 '이상'(정확히 30일 → 잠잠, 1ms 모자라면 아님) — 기준 시각은 넘긴 now(실행 시각)", () => {
+    expect(TRANSFER_QUIET_DAYS).toBe(30);
+    const updated = "2026-10-03T21:10:00.000Z"; // 기사 시각(KST 10-04 06:10)
+    const at30 = minus(updated, -30 * DAY); // updated + 30일
+    const quietAt = (now: string) =>
+      build([card(t("rumor"), updated)], { now }).transfers[0]!.quiet;
+    expect(quietAt(at30)).toBe(true);
+    expect(quietAt(minus(at30, 1))).toBe(false);
+    // 같은 입력이라도 집계를 돌린 시각에 따라 달라진다(다음 날 아침 수집에서 바뀐다)
+    expect(quietAt("2026-11-02T21:10:00.000Z")).toBe(true);
+    expect(quietAt("2026-11-01T21:09:59.999Z")).toBe(false);
+  });
+
+  it("유럽 서머타임 전환(2026-10-25)을 건너도 30×24시간 — 시간대와 무관한 UTC 밀리초 비교", () => {
+    const updated = "2026-10-20T06:00:00.000Z";
+    expect(
+      build([card(t("rumor"), updated)], { now: "2026-11-19T06:00:00.000Z" })
+        .transfers[0]!.quiet,
+    ).toBe(true);
+    expect(
+      build([card(t("rumor"), updated)], { now: "2026-11-19T05:59:59.999Z" })
+        .transfers[0]!.quiet,
+    ).toBe(false);
+  });
+
+  it("잠잠은 루머만(D67 ⑥) — 협상·합의·공식·결렬은 30일 무갱신이어도 아님", () => {
+    const old = "2026-09-01T00:00:00.000Z";
+    for (const status of [
+      "negotiating",
+      "agreed",
+      "official",
+      "collapsed",
+    ] as const) {
+      expect(build([card(t(status), old)]).transfers[0]!.quiet, status).toBe(
+        false,
+      );
+    }
+    // 결렬 뒤 루머 재보도(결렬 유지)도 상태가 collapsed라 잠잠 아님
+    expect(
+      build([
+        card(t("negotiating"), "2026-08-01T00:00:00.000Z"),
+        card(t("collapsed"), "2026-08-05T00:00:00.000Z"),
+        card(t("rumor"), old),
+      ]).transfers[0]!,
+    ).toMatchObject({ status: "collapsed", quiet: false });
+  });
+
+  it("갱신 = 근거 카드가 새로 생김 — 단계를 바꾸지 않은 같은 단계 재보도도 잠잠을 푼다, 결정은 가장 늦은 근거", () => {
+    const [rec] = build([
+      card(t("rumor"), "2026-09-01T00:00:00.000Z"),
+      card(t("rumor"), day(25)),
+    ]).transfers;
+    expect(rec).toMatchObject({
+      status: "rumor",
+      updated: day(25),
+      quiet: false,
+    });
+    // 행선지가 다른 레코드의 새 보도는 이 레코드를 갱신하지 않는다(이적 1건 = 선수 + 행선지 — D67 ①)
+    const out = build([
+      card(t("rumor", { to: "chelsea" }), "2026-09-01T00:00:00.000Z"),
+      card(t("rumor", { to: "arsenal" }), day(25)),
+    ]).transfers;
+    expect(out.map((r) => [r.id, r.quiet])).toEqual([
+      ["saka:arsenal", false],
+      ["saka:chelsea", true],
+    ]);
+  });
+
+  it("목록 하단 — 잠잠 루머는 더 오래 갱신 없는 협상·합의 레코드보다도 아래, 잠잠끼리는 updated 내림차순 → id", () => {
+    const out = build([
+      card(t("rumor", { player: "a" }), "2026-09-30T00:00:00.000Z"), // 잠잠(33일)
+      card(t("negotiating", { player: "b" }), "2026-08-01T00:00:00.000Z"), // 93일, 진행 중
+      card(t("rumor", { player: "c" }), "2026-09-10T00:00:00.000Z"), // 잠잠(53일)
+      card(t("rumor", { player: "d" }), day(30)), // 잠잠 아님
+      card(t("agreed", { player: "e" }), "2026-07-15T00:00:00.000Z"),
+      card(t("rumor", { player: "f" }), "2026-09-30T00:00:00.000Z"), // a와 같은 시각 → id
+    ]);
+    expect(out.transfers.map((r) => [r.id, r.quiet])).toEqual([
+      ["d:real-madrid", false],
+      ["b:real-madrid", false],
+      ["e:real-madrid", false],
+      ["a:real-madrid", true],
+      ["f:real-madrid", true],
+      ["c:real-madrid", true],
+    ]);
+    expect(out.stats.quiet).toBe(3);
+    // 파일 순서 = compareTransfers — 자기 검사 문제 없음, 순서를 흔들면 문제로 알린다
+    expect(transfersOrderProblems(out.transfers)).toEqual([]);
+    const shuffled = [...out.transfers].reverse();
+    expect(transfersOrderProblems(shuffled).length).toBeGreaterThan(0);
+    expect([...shuffled].sort(compareTransfers)).toEqual(out.transfers);
+    // 직렬화(파일)도 같은 순서 — 화면은 파일 순서를 그대로 쓴다
+    const parsed = TransfersFileSchema.parse(
+      JSON.parse(serializeTransfersFile(out.transfers)),
+    );
+    expect(parsed.map((r) => r.id)).toEqual(out.transfers.map((r) => r.id));
+  });
+
+  it("transferRecordProblems — 루머가 아닌데 quiet면 문제", () => {
+    const [rec] = build([card(t("agreed"), day(1))]).transfers;
+    expect(transferRecordProblems({ ...rec!, quiet: true })).toEqual([
+      "quiet인데 status agreed — 잠잠은 루머만(FR-106·D67 ⑥)",
+    ]);
+    expect(transferRecordProblems(rec!)).toEqual([]);
   });
 });

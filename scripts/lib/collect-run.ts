@@ -1483,6 +1483,9 @@ async function runNewsStage(
     // 이적 배수 = 분류의 이적 화제와 같은 근거(국내 'T행' 포함 — M1-18)
     transferTopic: (cluster: Pick<NewsCluster, "members">) =>
       classified.analysisOf(cluster as NewsCluster)?.transferTopic,
+    // 'here we go' 가중(FR-103, M4-02) = 분류의 이적 추출이 거른 결과(의문·부정·임박·Tier 3 단독 제외 — transfer-extract.ts `hereWeGoBacked`)
+    hereWeGo: (cluster: Pick<NewsCluster, "members">) =>
+      classified.analysisOf(cluster as NewsCluster)?.hereWeGo,
   };
   const slotPlan = planSlots({
     limit: deps.limit,
@@ -1827,6 +1830,7 @@ function selectedMix(
     bigClub: count((r) => r.score.signals.bigClubs.length > 0),
     ucl: count((r) => r.score.signals.comps.includes("UCL")),
     transfer: count((r) => r.score.signals.transfer),
+    hereWeGo: count((r) => r.score.signals.hereWeGo === true),
     multiPublisher: count((r) => r.score.signals.publishers > 1),
     noScope: count((r) => r.score.factors.scope < 1),
     clamped: count((r) => r.score.signals.clamped),

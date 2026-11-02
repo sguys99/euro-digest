@@ -27,8 +27,14 @@
  * ── 그 밖의 필드 ─────────────────────────────────────────────────────────────────────────
  *   bestTier = 근거 카드 `transfer.tier`(카드 최고 출처 Tier) 중 가장 높은 값(숫자가 작은 쪽) · updated = 가장 늦은 근거 카드 시각 ·
  *   from = 출발 팀이 있는 가장 늦은 근거 카드의 `from`(없으면 비움 — 설정의 소속으로 메우지 않는다, D64 ②) ·
- *   quiet(FR-106 '30일 이상 갱신 없는 루머') = 상태 rumor + 기준 시각 − updated ≥ 30일(M4-02에서 다듬는다).
- *   파일 순서 = 잠잠하지 않은 것 먼저 → updated 내림차순 → id(FR-106 '목록 하단'). history 순서 = 적용 순서.
+ *   quiet(FR-106 '30일 이상 갱신 없는 루머', M4-02) = 상태 rumor(D67 ⑥ — 협상·합의는 30일 무갱신이어도 진행 중) + 기준 시각 − updated
+ *   ≥ 30일(`TRANSFER_QUIET_DAYS` × 24시간, 밀리초 비교 — 정확히 30일째 같은 시각부터 잠잠, '이상'). '갱신' = 그 레코드의 근거 카드가 새로
+ *   생김(단계를 바꾸지 않은 같은 단계 재보도 포함 — 보도가 이어지면 잠잠이 아니다). 기준 시각 = 이 집계를 돌린 실행 시각(collect는 실행
+ *   시각, build:transfers는 지금) — 정적 사이트라 잠잠 표시는 다음 집계(다음 날 아침 수집)까지 그대로이고, KST 날짜 경계로 자르지 않는
+ *   것은 같은 입력·같은 실행 시각이면 같은 결과이고 시간대 변환이 필요 없어서다(늦어도 하루 안에 반영). updated가 카드 발행 시각(원문
+ *   시각)이라 수집이 늦은 기사도 원문 기준으로 센다.
+ *   파일 순서 = 잠잠하지 않은 것 먼저 → updated 내림차순 → id(FR-106 '목록 하단' — 화면은 파일 순서를 그대로 쓴다, 잠잠 레코드는 더 오래된
+ *   협상·합의 레코드보다도 아래). validate가 `transfersOrderProblems`로 순서를 확인한다. history 순서 = 적용 순서.
  *   같은 카드 id가 여러 날짜 파일에 있으면 앞 날짜 파일의 것 하나만 쓴다.
  */
 import type {
@@ -297,6 +303,9 @@ export function transferRecordProblems(t: Transfer): string[] {
   if (expected !== t.status) {
     problems.push(`status ${t.status} ≠ history 적용 결과 ${expected}`);
   }
+  if (t.quiet && t.status !== "rumor") {
+    problems.push(`quiet인데 status ${t.status} — 잠잠은 루머만(FR-106·D67 ⑥)`);
+  }
   const latest = t.history.reduce(
     (max, h) => (ms(h.at) > ms(max) ? h.at : max),
     t.history[0]!.at,
@@ -311,4 +320,25 @@ export function transferRecordProblems(t: Transfer): string[] {
     }
   }
   return problems;
+}
+
+/**
+ * 파일 순서가 `compareTransfers`(잠잠 아님 → updated 내림차순 → id — FR-106 '목록 하단')와 맞는지 — 어긋난 자리(뒤 레코드 index) 목록.
+ * 화면은 파일 순서를 그대로 쓰므로 순서가 깨지면 잠잠 레코드가 위로 올라온다. 발행을 막지 않는 경고용(`transferRecordProblems`와 같은 이유).
+ */
+export function transfersOrderProblems(
+  file: readonly Transfer[],
+): Array<{ index: number; problem: string }> {
+  const out: Array<{ index: number; problem: string }> = [];
+  for (let i = 1; i < file.length; i += 1) {
+    const prev = file[i - 1]!;
+    const cur = file[i]!;
+    if (compareTransfers(prev, cur) > 0) {
+      out.push({
+        index: i,
+        problem: `"${cur.id}"가 "${prev.id}"보다 앞이어야 함 — 파일 순서는 잠잠 아님 → updated 내림차순 → id`,
+      });
+    }
+  }
+  return out;
 }

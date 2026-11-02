@@ -643,8 +643,51 @@ describe("checkTransfersData — data/transfers.json ↔ data/news·takedowns (M
       ["warn", "[1].history[1].card"],
       ["warn", "[1].history[2].card"],
       ["warn", "[1].history[3].card"],
+      ["warn", "[1]"], // 파일 순서 — updated가 같으면 id 순('kim-min-jae:-' < 'kim-min-jae:arsenal')
     ]);
     expect(issues.every((i) => i.file === "data/transfers.json")).toBe(true);
+  });
+
+  it("M4-02 — 루머가 아닌데 quiet·파일 순서(잠잠 아님 → updated 내림차순 → id)가 깨지면 경고(FR-106 '목록 하단')", () => {
+    const quietRumor: Transfer = { ...record, quiet: true };
+    const agreed: Transfer = {
+      ...record,
+      id: "kim-min-jae:-",
+      to: undefined,
+      status: "agreed",
+      history: [
+        { at: at1, status: "rumor", card: "c_000000000a" },
+        { at: at2, status: "agreed", card: "c_000000000b" },
+      ],
+    };
+    delete agreed.to;
+    // 순서 맞음(잠잠 아닌 것 먼저) — 근거 카드 대조 경고만 본다
+    const ok = checkTransfersData([agreed, quietRumor], news, []);
+    expect(ok.filter((i) => /파일 순서|quiet/.test(i.message))).toEqual([]);
+    // 둘 다 quiet(합의인데 quiet → 레코드 경고) + 같은 updated에서 id 순 어긋남 → 순서 경고
+    const bad = checkTransfersData(
+      [quietRumor, { ...agreed, quiet: true }],
+      news,
+      [],
+    );
+    expect(
+      bad
+        .filter((i) => /파일 순서|quiet/.test(i.message))
+        .map((i) => [i.severity, i.path]),
+    ).toEqual([
+      ["warn", "[1]"],
+      ["warn", "[1]"],
+    ]);
+    expect(
+      checkTransfersData([{ ...agreed, quiet: true }], news, []).some((i) =>
+        i.message.includes("잠잠은 루머만"),
+      ),
+    ).toBe(true);
+    expect(
+      checkTransfersData([quietRumor, agreed], news, []).some((i) =>
+        i.message.includes("파일 순서"),
+      ),
+    ).toBe(true);
   });
 
   it("pickCrossRefInput이 transfers·일별 뉴스·takedowns를 모으고 data 범위에서 실행한다", () => {

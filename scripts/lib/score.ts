@@ -7,7 +7,8 @@
  *   - Tier 가중치: 클러스터 최고 Tier(`bestTier` — Tier 1이 가장 높음).
  *   - 키워드(news-keywords.ts, 클러스터 구성 기사 제목의 합집합): 등록 한국 선수(FR-60) · 빅클럽 · UCL(제목 또는 소스 대회) ·
  *     이적 화제. 각 항목이 있으면 그 배수를 곱한다(항목당 한 번). 이적 배수에는 이적 창 배수(`transferBoost`, FR-105 —
- *     기본 1 = 중립)를 더 곱한다.
+ *     기본 1 = 중립)를 더 곱한다. 'here we go' 가중(FR-103, M4-02 — classify.ts 분석의 `hereWeGo`: 의문·부정·임박 없는 'here we go'
+ *     제목이 승격 조건을 넘어 카드 단계가 agreed·official)은 클러스터 최고 Tier별 배수(`hereWeGo` — Tier 1이 더 큼)를 더 곱한다.
  *   - 클러스터 크기: 보도 매체 수(`NewsCluster.publishers.length` — 매체명 기준, M1-13). 1곳 = 1, 1곳 늘 때마다 +step, 상한.
  *   - 최신성: 실행 시작(수집 창 기준 시각)부터 클러스터 구성 기사 중 가장 최근 기사까지 경과 시간의 반감기 감쇠.
  *     미래 시각이라 수집 시각으로 낮춘 기사(collect-window.ts `future-clamped` — ESPN 'EST' 등)는 발행 시각을 믿을 수 없어
@@ -52,6 +53,8 @@ export interface ScoreWeights {
   ucl: number;
   /** 이적 화제 — 이적 창 배수(transferBoost)를 더 곱한다 */
   transfer: number;
+  /** 'here we go' 가중(FR-103 — `ScoreSignals.hereWeGo`) — 클러스터 최고 Tier → 배수(Tier 1이 가장 크다) */
+  hereWeGo: Readonly<Record<Tier, number>>;
   /** 보도 매체가 1곳 늘 때마다 더하는 값 */
   clusterStep: number;
   /** 클러스터 크기 배수 상한 */
@@ -76,6 +79,10 @@ export interface ScoreWeights {
  *     기사는 전체기사 피드(weight 1)에만 남는다).
  *   - 최신성 반감기 24시간: 하루 창(직전 실행 − 3시간 ~ 지금)의 끝(약 27시간)에서 0.46 — 어제 아침 기사가 밤사이 기사보다 아래.
  *   - 낮춘 기사 12시간: 창 가운데쯤(발행 시각을 모른다).
+ *   - 'here we go'(FR-103 'agreed 가중, Tier 1 출처면 더 높게' — M4-02): Tier 2·3 1.15 · Tier 1 1.3. 이적 배수(1.2)·Tier 배수 위에 더
+ *     곱한다 — 같은 매체 조건에서 합의 보도가 루머 기사보다 한 단계쯤 위(BBC 단독 신선 이적 기사 ≈ 3 × 1.2 = 3.6 → 4.1), Tier 1은 Tier
+ *     배수(1.25)와 합쳐 Tier 2 'here we go'보다 약 1.4배. Tier 3은 매체 2곳일 때만 대상이 된다(승격 조건 — transfer-extract.ts
+ *     `hereWeGoBacked`). 실제 피드(2026-10-12~11-02 data/news·fixtures)에는 'here we go' 제목이 아직 0건이라 실측 조정은 첫 사례 뒤.
  */
 export const DEFAULT_SCORE_WEIGHTS: Readonly<ScoreWeights> = Object.freeze({
   tier: Object.freeze({ 1: 1.25, 2: 1, 3: 0.8 }),
@@ -83,6 +90,7 @@ export const DEFAULT_SCORE_WEIGHTS: Readonly<ScoreWeights> = Object.freeze({
   bigClub: 1.3,
   ucl: 1.25,
   transfer: 1.2,
+  hereWeGo: Object.freeze({ 1: 1.3, 2: 1.15, 3: 1.15 }),
   clusterStep: 0.5,
   clusterMax: 3,
   recencyHalfLifeHours: 24,
@@ -143,6 +151,8 @@ export interface ScoreSignals {
   bigClubs: readonly string[];
   /** 이적 화제(제목) */
   transfer: boolean;
+  /** 'here we go' 가중 대상(classify.ts 분석 `hereWeGo` — FR-103). 없으면 아님 */
+  hereWeGo?: boolean;
   /** 실행 시작부터 가장 최근 구성 기사까지(시간, 0 이상) — 낮춘 기사는 clampedAgeHours로 센다 */
   ageHours: number;
   /** 최신성을 낮춘 기사의 clampedAgeHours로 봤는가(낮춘 기사보다 어린 믿을 수 있는 기사가 없음) */
@@ -207,7 +217,8 @@ export function scoreSignals(
     (signals.koreanPlayers.length > 0 ? w.korean : 1) *
     (signals.bigClubs.length > 0 ? w.bigClub : 1) *
     (signals.comps.includes("UCL") ? w.ucl : 1) *
-    (signals.transfer ? w.transfer * boost : 1);
+    (signals.transfer ? w.transfer * boost : 1) *
+    (signals.hereWeGo === true ? w.hereWeGo[signals.bestTier] : 1);
   const factors: ScoreFactors = {
     weight: signals.maxWeight,
     tier: w.tier[signals.bestTier],
@@ -257,6 +268,11 @@ export interface ClusterScoreContext {
   transferTopic?: (
     cluster: Pick<NewsCluster, "members">,
   ) => boolean | undefined;
+  /**
+   * 클러스터의 'here we go' 가중 대상(M4-02 — classify.ts 분석의 `hereWeGo`, FR-103). true일 때만 `hereWeGo` 배수. undefined·false면 아님
+   * (제목 키워드만으로는 주지 않는다 — 의문·부정·임박·Tier 3 단독 'here we go'를 거른 분류 결과만 쓴다)
+   */
+  hereWeGo?: (cluster: Pick<NewsCluster, "members">) => boolean | undefined;
 }
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -300,6 +316,7 @@ export function clusterSignals(
     koreanPlayers: ctx.koreanPlayers?.(cluster) ?? hits.koreanPlayers,
     bigClubs: hits.bigClubs,
     transfer: hits.transfer || ctx.transferTopic?.(cluster) === true,
+    ...(ctx.hereWeGo?.(cluster) === true ? { hereWeGo: true } : {}),
     ageHours,
     clamped,
   };

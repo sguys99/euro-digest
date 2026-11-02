@@ -40,8 +40,11 @@
  *      때만(PRD §15 D52 ① — 2026-10-17 사용자 결정), 못 미치면 agreed. **agreed 이상**은 그 단계 이상을 말한 기사가 Tier 2 이상(Tier 1·2 —
  *      `PROMOTION_RULE.maxTier`)이거나 매체 2곳 이상일 때만(PRD F10 — 상태는 역행하지 않으므로(FR-102) 오탐 1건이 단계를 올린다), 못 미치면
  *      negotiating. **결렬**도 같은 조건(D52 ②) — 못 미치면 그 결렬 주장을 버리고 진행 단계 유지(결렬 주장뿐이면 생략), 넘으면 가장 늦은 진행
- *      주장보다 같거나 늦을 때 collapsed. 기사 속 원 보도자('Romano reports')는 Tier에 넣지 않는다. FR-103 'Tier 1 출처면 더 높게'는 활성 Tier 1
- *      소스가 없어 v0.1에 없다(트래커 가중 — M4-01).
+ *      주장보다 같거나 늦을 때 collapsed. 기사 속 원 보도자('Romano reports')는 Tier에 넣지 않는다.
+ *   ⑥' FR-103 'here we go' (M4-02): 단계 쪽은 ③(닫힌 문형 + agreed 상한 — 의문·부정·임박은 rumor·negotiating)과 ⑥(승격 조건 — Tier 1·2 단일
+ *      출처 agreed, Tier 3 단일 출처 negotiating)이 이미 한다. 'Tier 1이면 더 높게'는 단계로는 official이 될 수 없으므로(D52 ① 2026-10-17 사용자
+ *      확인) 뉴스 점수 가중이다 — 의문·부정·임박 없이 agreed가 된 'here we go' 제목(`HERE_WE_GO_EVIDENCE`)이 승격 조건을 넘고 카드 단계가
+ *      agreed·official이면 `hereWeGo`(`hereWeGoBacked`) → score.ts `hereWeGo` 배수(Tier 1이 더 큼).
  *   ⑦ 출발·행선지 = 최종 단계를 만든 주장들의 합(결렬이면 결렬 주장만 — 진행 주장의 행선지를 빌리지 않는다), 역할마다 다른 팀이면 생략.
  *   ⑧ tier = 클러스터 최고 출처 Tier — 모든 구성 묶음 소스 중 가장 높은 Tier(숫자가 작은 쪽). news-cluster.ts `clusterSourceMeta(cluster).bestTier`와
  *      같은 값이다(M1-13 이월 — tests가 대조한다). 설정에 없는 소스는 건너뛴다.
@@ -1867,6 +1870,11 @@ const CONTRACT_LENGTH =
   /\b(?:on|in)\s+(?:a\s+)?(?:new\s+)?(?:(?:[\p{L}\d]+[-\s]){1,4}years?|long[-\s]term)\s+(?:deal|contract)\b/iu;
 /** 'here we go'가 든 제목(3회차 결정 C) */
 const HERE_WE_GO_ANY = /here\s*we\s*go|히어\s?위\s?고/iu;
+/**
+ * 주장 근거 표시 — 'here we go'가 든 제목이 의문·부정·임박 없이 agreed 주장이 됨(FR-103, M4-02). 의문('Here we go?')·부정('Not here we go yet')·
+ * 임박('here we go soon')은 문형 밖이라 rumor·negotiating이 되어 이 표시를 받지 않는다.
+ */
+export const HERE_WE_GO_EVIDENCE = "here-we-go";
 /** 계약 기간이 재계약 단서가 되는 꼴 — 'signs for'·'T sign(s) P'·'joins'·'commits'·'new … deal'·'ficha por'·'firma'(D54 결정) */
 const SIGNS_FORM =
   /\b(?:signs?|signed|signing) for\b|\b(?:sign|signs|signed)\b|\bjoin(?:s|ed)?\b|\bcommit(?:s|ted)?\b|\bnew\b[^,:;|]*\b(?:deal|contract)\b|\bficha por\b|\bfirma\b/iu;
@@ -2351,6 +2359,9 @@ export function transferClaimOf(
   ) {
     return { skip: "renewal" };
   }
+  if (status === "agreed" && HERE_WE_GO_ANY.test(title)) {
+    evidence.push(HERE_WE_GO_EVIDENCE);
+  }
   return {
     claim: {
       player: player.slug,
@@ -2473,6 +2484,30 @@ export function combineTransferClaims(
   };
 }
 
+/**
+ * 'here we go' 가중 대상인가(머리 주석 ⑥' — FR-103, M4-02): 카드 단계가 agreed·official이고, 그 선수의 `HERE_WE_GO_EVIDENCE` 주장들이 승격
+ * 조건(`promotionOk` — Tier 2 이상 또는 매체 2곳)을 넘을 때. 국내 매체(Tier 3) 1곳이 'HERE WE GO'를 옮긴 카드는 negotiating이라 아니다.
+ */
+export function hereWeGoBacked(
+  evidence: readonly TransferEvidence[],
+  transfer: Pick<CardTransfer, "player" | "status"> | null,
+  rule: typeof PROMOTION_RULE = PROMOTION_RULE,
+): boolean {
+  if (transfer === null) return false;
+  if (transfer.status !== "agreed" && transfer.status !== "official") {
+    return false;
+  }
+  return promotionOk(
+    evidence.filter(
+      (e) =>
+        e.claim.player === transfer.player &&
+        e.claim.status === "agreed" &&
+        e.claim.evidence.includes(HERE_WE_GO_EVIDENCE),
+    ),
+    rule,
+  );
+}
+
 /** 소스 id들 → 설정에 있는 소스 중 가장 높은 Tier(숫자가 작은 쪽) — 없으면 null */
 export function bestTierOf(
   sourceIds: readonly string[],
@@ -2497,6 +2532,8 @@ export interface TransferMemberInput extends TransferTitleInput {
 /** 클러스터 이적 추출 결과 */
 export interface ClusterTransferResult {
   transfer: CardTransfer | null;
+  /** 'here we go' 가중 대상(`hereWeGoBacked` — 점수화 입력, 카드·data/에 넣지 않는다) */
+  hereWeGo: boolean;
   /** 구성 묶음마다 주장 또는 건너뛴 이유(입력 순서 — 검수·테스트용) */
   members: TransferClaimResult[];
 }
@@ -2514,7 +2551,9 @@ export function clusterTransfer(
     [...new Set(members.flatMap((m) => m.sources))],
     ctx.sourceById,
   );
-  if (cardTier === null) return { transfer: null, members: results };
+  if (cardTier === null) {
+    return { transfer: null, hereWeGo: false, members: results };
+  }
   const evidence: TransferEvidence[] = [];
   members.forEach((m, i) => {
     const claim = results[i]?.claim;
@@ -2531,8 +2570,10 @@ export function clusterTransfer(
     ];
     evidence.push({ claim, publishers, tier, atMs: Date.parse(m.publishedAt) });
   });
+  const transfer = combineTransferClaims(evidence, cardTier);
   return {
-    transfer: combineTransferClaims(evidence, cardTier),
+    transfer,
+    hereWeGo: hereWeGoBacked(evidence, transfer),
     members: results,
   };
 }
