@@ -521,7 +521,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 🆕 D2 이월: 내보내기/가져오기 URL 형식 미정(시안은 자리)
 
 ### M4-D PWA·RSS·캘린더 (G) — FR-120~123
-- [ ] M4-11 `build-feeds.ts`: `/rss.xml`(상위 30), `/rss/[comp].xml`, `/rss/korean.xml` (FR-122)
+- [x] M4-11 `build-feeds.ts`: `/rss.xml`(상위 30), `/rss/[comp].xml`, `/rss/korean.xml` (FR-122)
+  - 2026-11-02 완료: `scripts/lib/site-rss.ts`(순수) + `build-feeds.ts` → `out/rss.xml`·`out/rss/{epl,laliga,seriea,bundesliga,ligue1,ucl}.xml`·`out/rss/korean.xml` 8개(실데이터 30·30·30·30·30·10·4·30건, rss-parser 왕복 일치). 항목 = 카드 1장: 제목 원제목 그대로(D23) · `<link>` 대표 원문 URL · guid = 카드 ID(호 사이 중복 수신 방지) · pubDate 대표 출처 시각 · description은 출처명·대회·분류 + '유로 다이제스트에서 보기' 앵커만(요약문 없음 — M0-25). 상위 30 = 최신 호부터 선별 순서, 모자라면 전날 호(최신 호 기준 7일). 대회 피드는 0건이어도 생성(구독 링크 404 방지), korean = `kr:true`. **5줄 브리핑은 넣지 않음**(FR-122 범위 + 리더에 결과 가리기 없음). RSS 2.0 + atom:link self, CDATA 없이 이스케이프·XML 불가 문자 제거, 채널 날짜 = 호 `generatedAt` 최댓값(같은 데이터면 바이트 동일). `formatRfc822Utc`(time.ts). 🆕 이월(UI — M4-12 구독 단과 함께): `<head>` 자동 발견 `<link rel="alternate" type="application/rss+xml">`(전체 + 대회·한국 선수 페이지별), 뒤표지 '구독' 단(DECISIONS M4 #6) — `rssPath()` 헬퍼
 - [ ] M4-12 `.ics`: 팀별, 한국 선수 소속팀 묶음, 경기별 + 버튼 연결, 시간대 테스트 (FR-59, FR-83, FR-115, FR-123)
 - [ ] M4-13 manifest + 서비스워커(basePath scope, 앱 셸 + 최근 3일 뉴스 캐시, 새 버전 토스트) — 아이콘은 임시, D3에서 교체 (FR-120, FR-121)
 
