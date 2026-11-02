@@ -27,6 +27,7 @@ import type {
 } from "@/lib/schema/competition";
 import type { ZoneRule } from "@/lib/schema/configs";
 import { standingZoneOf } from "@/lib/standing-zone";
+import { FORM_WORD, type FormResult } from "@/lib/form-word";
 import { formatKst, kstDate, parseUtcIso } from "@/lib/time";
 
 // ─── 팀 ─────────────────────────────────────────────────────────────────────
@@ -77,16 +78,11 @@ export function trendOf(pos: number, prevPos: number | null): TrendView {
 
 // ─── 폼 ─────────────────────────────────────────────────────────────────────
 
-export type FormResult = "W" | "D" | "L";
+// FormResult · FORM_WORD는 의존 없는 src/lib/form-word.ts에 두고 여기서 다시 내보낸다(클라이언트 번들 절감 — M4-16)
+export { FORM_WORD, type FormResult };
 
 /** 폼 칸 수(DESIGN §9.3 폼 칩 — 5칸 고정) */
 export const FORM_SLOTS = 5;
-
-export const FORM_WORD: Readonly<Record<FormResult, string>> = {
-  W: "승",
-  D: "무",
-  L: "패",
-};
 
 export interface FormView {
   /** 5칸, 오래된 → 최근. null = 자료 없음 */

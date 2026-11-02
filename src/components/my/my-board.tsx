@@ -1,16 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
 
-import {
-  Admission,
-  FixtureRow,
-  FollowWhy,
-} from "@/components/korean-players/fixture-ticket";
-import { CompTag, ResultCell } from "@/components/korean-players/player-marks";
-import { KoreanArmband } from "@/components/news/korean-armband";
-import { TeamBadge } from "@/components/team/team-badge";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { cx } from "@/lib/cx";
 import { FOLLOW_LIMITS, isFollowEmpty } from "@/lib/follow";
@@ -19,12 +11,33 @@ import {
   MY_RESULTS_SHOWN,
   mergeFixtures,
   mergeResults,
-  type MyResultRowView,
 } from "@/lib/my-view";
 import { routes } from "@/lib/paths";
 import { useFollows } from "@/lib/use-follows";
 
 import { directoryWhenReady, useMyData } from "./use-my-data";
+
+/*
+ * 목록 그리기(입장권 · 일정 행 · 결과 행 — fixture-ticket · player-marks · 결과 칸)는 지연 청크(./my-board-lists — M4-16 번들 절감,
+ * `/my` 초기 JS −약 6KB). 자료 파일은 어차피 하이드레이션 뒤 받으므로, 팔로우가 있으면 받기와 **같은 때** 청크도 받기 시작해 그리는 시각은
+ * 그대로다(둘 다 올 때까지 교정쇄). 청크는 서비스 워커가 `_next/static/**` 전부를 프리캐시하므로 오프라인에서도 열린다.
+ * 받기 실패(배포 교체 중 옛 청크 등)는 페이지를 깨뜨리지 않고 구역마다 안내 줄로.
+ */
+let listsModule: Promise<typeof import("./my-board-lists") | null> | null =
+  null;
+function loadLists() {
+  listsModule ??= import("./my-board-lists").catch(() => null);
+  return listsModule;
+}
+const LazyFixtures = lazy(() =>
+  loadLists().then((m) => ({ default: m?.MyFixtures ?? ListsFailed })),
+);
+const LazyResults = lazy(() =>
+  loadLists().then((m) => ({ default: m?.MyResults ?? ListsFailed })),
+);
+function ListsFailed() {
+  return <NoneLine>목록을 그리지 못했어요 — 새로고침해 주세요</NoneLine>;
+}
 
 /**
  * `/my` 다음 경기 · 최근 결과 (PRD FR-111, DESIGN §9.3 D2 "`/my` 틀" · "다음 경기 입장권" · "결과 칸 · 스코어 맥락", 혼합안 화면 4, plan M4-08)
@@ -52,6 +65,15 @@ export function MyBoard({
   const { follows, ready } = useFollows();
   const dir = directoryWhenReady(ready);
   const data = useMyData(follows, ready, dir);
+  const hasFollows = ready && !isFollowEmpty(follows);
+  useEffect(() => {
+    if (hasFollows) void loadLists();
+  }, [hasFollows]);
+  // 첫 페인트 전 표시(src/lib/my-empty-boot.ts `MY_EMPTY_ATTR`)는 하이드레이션 전 모양에만 쓴다 — 뒤로는 섬이 그리므로 지운다
+  // (클라이언트 이동으로 다시 들어왔을 때 지난 값이 남지 않게. 부트 모듈을 import하면 스크립트 원문이 번들에 들어와 글자로 쓴다)
+  useEffect(() => {
+    if (ready) document.documentElement.removeAttribute("data-my-empty");
+  }, [ready]);
 
   if (ready && isFollowEmpty(follows)) return <MyEmpty />;
 
@@ -59,11 +81,14 @@ export function MyBoard({
   const fixtures = loading ? [] : mergeFixtures(data.entries);
   const results = loading ? [] : mergeResults(data.entries);
 
-  return (
+  const board = (
     <div
       data-slot="my-board"
       aria-busy={loading || undefined}
-      className="mt-9 grid gap-9 lg:mt-11 lg:gap-11 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-start xl:gap-x-10"
+      className={cx(
+        "mt-9 grid gap-9 lg:mt-11 lg:gap-11 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-start xl:gap-x-10",
+        !ready && "my-empty:hidden",
+      )}
     >
       {!loading && data.failed > 0 ? (
         <FetchNotice failed={data.failed} retry={data.retry} />
@@ -76,7 +101,9 @@ export function MyBoard({
         {loading ? (
           <FixturesSkeleton />
         ) : fixtures.length > 0 ? (
-          <Fixtures fixtures={fixtures} headingId={fixturesHeadingId} />
+          <Suspense fallback={<FixturesSkeleton />}>
+            <LazyFixtures fixtures={fixtures} headingId={fixturesHeadingId} />
+          </Suspense>
         ) : (
           <NoneLine>예정된 경기 자료가 없어요</NoneLine>
         )}
@@ -89,140 +116,25 @@ export function MyBoard({
         {loading ? (
           <RowsSkeleton rows={MY_RESULTS_SHOWN} />
         ) : results.length > 0 ? (
-          <ol
-            aria-label="최근 결과 — 최근 경기부터"
-            className="mt-2 border-t border-rule"
-          >
-            {results.slice(0, MY_RESULTS_SHOWN).map((row) => (
-              <ResultRow
-                key={`${row.key}-${row.player ?? row.team.slug}`}
-                row={row}
-              />
-            ))}
-          </ol>
+          <Suspense fallback={<RowsSkeleton rows={MY_RESULTS_SHOWN} />}>
+            <LazyResults results={results} />
+          </Suspense>
         ) : (
           <NoneLine>최근 결과 자료가 없어요</NoneLine>
         )}
       </section>
     </div>
   );
-}
-
-/** 다음 경기 — 입장권 + 일정 행 + 모두 보기 */
-function Fixtures({
-  fixtures,
-  headingId,
-}: {
-  fixtures: ReturnType<typeof mergeFixtures>;
-  headingId: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const listId = useId();
-  const [first, ...rest] = fixtures;
-  if (!first) return null;
-  const shown = open ? rest : rest.slice(0, MY_FIXTURES_SHOWN - 1);
+  if (ready) return board;
+  // 하이드레이션 전 — 교정쇄 + 숨긴 빈 상태. 첫 페인트 전 스크립트가 팔로우 0을 알리면(`<html data-my-empty>`) 빈 상태를 보이고 교정쇄를
+  // 숨긴다(src/lib/my-empty-boot.ts). 하이드레이션 뒤 섬이 같은 빈 상태를 그려 이동이 없다(M4-16 — 전에는 375 첫 로드 CLS 0.27)
   return (
     <>
-      <Admission
-        row={first.row}
-        headingId={`${headingId}-1`}
-        xlVertical={false}
-        why={<FollowWhy names={first.why} />}
-      />
-      {shown.length > 0 ? (
-        <ol id={listId} aria-label="이어지는 경기" className="mt-2.5">
-          {shown.map((f) => (
-            <FixtureRow
-              key={f.row.key}
-              row={f.row}
-              narrowAtXl={false}
-              why={<FollowWhy names={f.why} />}
-            />
-          ))}
-        </ol>
-      ) : null}
-      {fixtures.length > MY_FIXTURES_SHOWN ? (
-        <p className="mt-1 flex flex-wrap items-center justify-between gap-x-3">
-          <span className="text-[13px] text-ink-2">
-            <span className="font-numeric tabular-nums">{fixtures.length}</span>
-            경기 중{" "}
-            <span className="font-numeric tabular-nums">
-              {open ? fixtures.length : MY_FIXTURES_SHOWN}
-            </span>
-          </span>
-          <button
-            type="button"
-            aria-expanded={open}
-            aria-controls={listId}
-            onClick={() => setOpen((v) => !v)}
-            className="inline-flex min-h-11 items-center gap-1 bg-transparent text-sm font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2"
-          >
-            {open ? "처음 5경기만" : "모두 보기"}
-            <ChevronRightIcon
-              size={18}
-              className={open ? "-rotate-90" : "rotate-90"}
-            />
-          </button>
-        </p>
-      ) : null}
-    </>
-  );
-}
-
-/** 최근 결과 한 줄 — `[날짜 거터 │ 팀(선수) · 대회 vs 상대 │ 결과 칸]` */
-function ResultRow({ row }: { row: MyResultRowView }) {
-  return (
-    <li className="grid grid-cols-[var(--gutter-date)_minmax(0,1fr)_auto] items-center gap-x-2.5 border-b border-rule py-2.75 lg:gap-x-3.5">
-      <time
-        dateTime={row.kickoff}
-        className="font-numeric text-sm leading-none font-semibold tracking-[0.02em] text-ink-2 tabular-nums"
-      >
-        {row.date}
-      </time>
-      <div className="grid min-w-0 gap-1.25">
-        <p className="flex min-w-0 items-center gap-1.75 text-[14.5px] leading-[1.25] font-extrabold">
-          {row.player ? (
-            <>
-              <KoreanArmband title="한국 선수" />
-              <span>{row.player}</span>
-            </>
-          ) : (
-            <>
-              <TeamBadge team={row.team} size="xs" />
-              <span
-                lang={row.team.latin ? "en" : undefined}
-                className="min-w-0"
-              >
-                {row.team.name}
-              </span>
-            </>
-          )}
-        </p>
-        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] leading-[1.3] text-ink-2">
-          <CompTag comp={row.comp} />
-          <span>
-            {row.player ? (
-              <>
-                <span lang={row.team.latin ? "en" : undefined}>
-                  {row.team.name}
-                </span>{" "}
-              </>
-            ) : null}
-            vs{" "}
-            <span lang={row.opponent.latin ? "en" : undefined}>
-              {row.opponent.name}
-            </span>
-          </span>
-        </p>
+      {board}
+      <div className="hidden my-empty:block">
+        <MyEmpty />
       </div>
-      <ResultCell
-        result={row.result}
-        home={row.home}
-        goals={row.goals}
-        assists={row.player ? row.assists : null}
-        revealLabel={`${row.player ? `${row.player} ` : ""}${row.date} ${row.opponent.name}전 결과 보기`}
-      />
-    </li>
+    </>
   );
 }
 

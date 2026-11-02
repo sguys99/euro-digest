@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { IcsLink } from "@/components/ui/ics-link";
+import { IcsLink, IcsSubscribe } from "@/components/ui/ics-link";
 
 // 공용 .ics 링크(M4-12 — `/my`(M4-08)도 쓴다). 접근 이름 = 화면 밖 대상 + 보이는 글자, 누름 영역 44px 클래스, 일반 <a>(basePath 포함).
 describe("IcsLink", () => {
@@ -60,5 +60,29 @@ describe("IcsLink", () => {
       expect(a.className).toContain("min-w-11");
       expect(a).toHaveAttribute("data-ics", "match");
     }
+  });
+});
+
+describe("IcsSubscribe — 구독형 캘린더(webcal + https 병기, M4-16 사용자 결정)", () => {
+  it("팀 — webcal 구독 링크(버튼 꼴) + '.ics 받기'(https · text/calendar), 접근 이름 = 대상 + 보이는 글자", () => {
+    render(
+      <IcsSubscribe
+        feed={{ kind: "team", team: "liverpool" }}
+        label="일정 구독"
+        context="리버풀 경기"
+        variant="button"
+      />,
+    );
+    const sub = screen.getByRole("link", { name: "리버풀 경기 일정 구독" });
+    expect(sub).toHaveAttribute(
+      "href",
+      "webcal://sguys99.github.io/euro-digest/calendar/liverpool.ics",
+    );
+    expect(sub).toHaveAttribute("data-ics-mode", "webcal");
+    expect(sub.className).toContain("min-h-11");
+    const file = screen.getByRole("link", { name: "리버풀 경기 .ics 받기" });
+    expect(file).toHaveAttribute("href", "/euro-digest/calendar/liverpool.ics");
+    expect(file).toHaveAttribute("type", "text/calendar");
+    expect(file.className).toContain("min-h-11");
   });
 });

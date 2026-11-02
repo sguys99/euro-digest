@@ -7,6 +7,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
@@ -17,8 +18,12 @@ import { SearchIcon } from "@/components/ui/icons";
 /**
  * 마스트헤드 검색 버튼 + 단축키 (PRD FR-132, DESIGN §9.3 티켓 마스트헤드 도구 · 검색 오버레이, plan M4-14) — 모든 페이지에 들어가는 작은 섬.
  *
- * - 1023 이하 = 아이콘 버튼 44×44, 1024 이상 = 상자형(1px `--ticket-fg-2` 테두리, "검색" 14px 800 + `/` 키 상자). 접근 이름 "검색 (단축키 /)".
- * - 단축키: `/`(입력 필드·편집 영역 안에서는 무시 — 글자를 쳐야 하므로) · ⌘K / Ctrl+K(어디서나 — 브라우저 기본 동작은 막는다).
+ * - 1023 이하 = 아이콘 버튼 44×44, 1024 이상 = 상자형(1px `--ticket-fg-2` 테두리, "검색" 14px 800 + 키 상자 `⌘K`(Mac) · `Ctrl K`(그 밖)).
+ *   접근 이름 "검색" + `aria-keyshortcuts="Control+K Meta+K"`.
+ * - 단축키: ⌘K / Ctrl+K만(어디서나 — 브라우저 기본 동작은 막는다). **글자 하나 단축키 `/`는 뺐다**(2026-11-02 사용자 결정 — WCAG 2.1.4
+ *   문자 키 단축키: 끌 수도 바꿀 수도 없어 음성 입력 · 실수 입력과 부딪힌다, DECISIONS D2 §8 #43).
+ * - 키 상자 글자는 하이드레이션 뒤 플랫폼으로 정한다(`useSyncExternalStore` — 서버 · 하이드레이션 값 `Ctrl K`, Mac이면 그 뒤 `⌘K`). 상자 폭을
+ *   고정해 글자가 바뀌어도 버튼 크기가 그대로다.
  * - 오버레이 본체(search-dialog.tsx)와 Pagefind 런타임은 **처음 열 때** 받는다(버튼에 마우스·포커스가 오면 본체를 미리 받는다) — 이 섬은
  *   버튼과 키 처리뿐이다(초기 JS 예산 — PRD §15 D21).
  * - 오버레이는 `document.body`에 포털로 그린다(티켓의 글자색·포커스 링 재정의를 물려받지 않게). 닫히면 연 요소(버튼 또는 단축키를 누를 때
@@ -28,27 +33,7 @@ import { SearchIcon } from "@/components/ui/icons";
 const loadDialog = () => import("./search-dialog");
 const SearchDialog = lazy(loadDialog);
 
-/** 단축키를 무시할 대상 — 글자를 입력하는 곳 */
-function isTyping(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false;
-  if (target.isContentEditable) return true;
-  const tag = target.tagName;
-  if (tag === "TEXTAREA" || tag === "SELECT") return true;
-  if (tag !== "INPUT") return false;
-  const type = (target as HTMLInputElement).type;
-  return ![
-    "checkbox",
-    "radio",
-    "button",
-    "submit",
-    "reset",
-    "range",
-    "color",
-    "file",
-  ].includes(type);
-}
-
-/** `/` · ⌘K · Ctrl+K 판정(순수 — 테스트) */
+/** ⌘K · Ctrl+K 판정(순수 — 테스트). 입력 필드 안에서도 연다 — 조합 키라 글자 입력과 겹치지 않는다 */
 export function isSearchShortcut(
   e: Pick<
     KeyboardEvent,
@@ -60,23 +45,28 @@ export function isSearchShortcut(
     | "isComposing"
     | "defaultPrevented"
   >,
-  typing: boolean,
 ): boolean {
   if (e.isComposing || e.defaultPrevented) return false;
-  if (
-    (e.metaKey || e.ctrlKey) &&
-    !e.altKey &&
-    (e.key === "k" || e.key === "K")
-  ) {
-    return true;
-  }
-  return e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey;
+  return (
+    (e.metaKey || e.ctrlKey) && !e.altKey && (e.key === "k" || e.key === "K")
+  );
 }
+
+/** Mac 계열(⌘) — 키 상자 글자만 정한다(판정은 ⌘ · Ctrl 둘 다 받는다) */
+function isMacLike(): boolean {
+  const nav = navigator as Navigator & {
+    userAgentData?: { platform?: string };
+  };
+  const platform = nav.userAgentData?.platform || nav.platform || nav.userAgent;
+  return /Mac|iPhone|iPad|iPod/i.test(platform);
+}
+const noSubscribe = () => () => {};
 
 const BUTTON = `${BUTTON_BASE} ${BUTTON_VARIANTS.icon} lg:min-w-33 lg:justify-start lg:border lg:border-ticket-fg-2 lg:px-3`;
 
 export function SearchButton({ index }: { index: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const mac = useSyncExternalStore(noSubscribe, isMacLike, () => false);
   const button = useRef<HTMLButtonElement>(null);
   const opener = useRef<HTMLElement | null>(null);
 
@@ -100,7 +90,7 @@ export function SearchButton({ index }: { index: ReactNode }) {
   useEffect(() => {
     if (open) return;
     function onKey(e: KeyboardEvent) {
-      if (!isSearchShortcut(e, isTyping(e.target))) return;
+      if (!isSearchShortcut(e)) return;
       e.preventDefault();
       show();
     }
@@ -117,7 +107,8 @@ export function SearchButton({ index }: { index: ReactNode }) {
       <button
         ref={button}
         type="button"
-        aria-label="검색 (단축키 /)"
+        aria-label="검색"
+        aria-keyshortcuts="Control+K Meta+K"
         aria-haspopup="dialog"
         data-slot="search-button"
         onClick={show}
@@ -129,8 +120,11 @@ export function SearchButton({ index }: { index: ReactNode }) {
         <span className="hidden flex-1 text-left text-sm font-extrabold lg:inline">
           검색
         </span>
-        <kbd className="hidden border border-ticket-fg-2 px-1.5 pt-0.75 pb-0.5 font-numeric text-[13px] leading-none font-semibold text-ticket-fg-2 tabular-nums lg:inline">
-          /
+        <kbd
+          aria-hidden="true"
+          className="hidden min-w-12 border border-ticket-fg-2 px-1.5 pt-0.75 pb-0.5 text-center font-numeric text-[13px] leading-none font-semibold whitespace-nowrap text-ticket-fg-2 tabular-nums lg:inline-block"
+        >
+          {mac ? "⌘K" : "Ctrl K"}
         </kbd>
       </button>
       {open

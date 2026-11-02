@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 
 import { BUTTON_BASE, BUTTON_VARIANTS } from "@/components/ui/button-classes";
-import { IcsLink } from "@/components/ui/ics-link";
+import { IcsSubscribe } from "@/components/ui/ics-link";
 import { LinkIcon, ShareIcon } from "@/components/ui/icons";
 import { isFollowEmpty, type FollowState } from "@/lib/follow";
 import { teamIcsFeed } from "@/lib/ics-links";
@@ -125,20 +125,21 @@ export function MyTeamIcs({
         내 팀 일정 구독
       </p>
       <p className="mt-1 text-xs leading-[1.45] text-pretty [word-break:keep-all] text-ink-2">
-        캘린더 앱에서 팀마다 구독해요 — 링크 주소를 붙여 넣으면 바뀐 일정도
-        따라와요.
+        팀 이름을 누르면 캘린더 앱이 구독으로 열려 바뀐 일정도 따라와요. 앱이
+        열리지 않으면 ‘.ics 받기’ 주소를 캘린더 앱에 붙여 넣어요.
       </p>
       <ul aria-labelledby={headId} className="mt-1 grid">
         {teams.map((slug) => {
           const team = dir.teams[slug]!;
           return (
             <li key={slug} className="border-b border-rule last:border-b-0">
-              <IcsLink
+              <IcsSubscribe
                 feed={teamIcsFeed(slug)}
                 label={team.n}
                 labelLang={team.l ? "en" : undefined}
-                context="경기 일정 .ics —"
-                className="w-full"
+                context="경기 일정 구독 —"
+                fileContext={`${team.n} 경기 일정`}
+                className="w-full justify-between"
               />
             </li>
           );

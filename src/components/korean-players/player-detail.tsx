@@ -5,6 +5,8 @@ import { NewsRows } from "@/components/news/news-row";
 import { TeamBadge } from "@/components/team/team-badge";
 import { Leader } from "@/components/about/leader";
 import { ChevronRightIcon } from "@/components/ui/icons";
+import { LedgerRow } from "@/components/transfers/ledger";
+import { TimelineToggleIsland } from "@/components/transfers/timeline-toggle-island";
 import { SectionHead } from "@/components/ui/section-head";
 import { issueNumber } from "@/lib/issue";
 import type { RosterView } from "@/lib/korean-players-view";
@@ -20,6 +22,7 @@ import type {
 } from "@/lib/player-detail-view";
 import type { NewsFile } from "@/lib/schema/news";
 import { formatKst } from "@/lib/time";
+import { timelineAnchor, type TransferRowView } from "@/lib/transfers-view";
 import { cx } from "@/lib/cx";
 import { cn } from "@/lib/utils";
 
@@ -496,18 +499,31 @@ export function RelatedNews({
 
 // ─── 옆단 뉴스 행(이적설 · 대표팀 소식) — 뉴스 행은 src/components/news/news-row.tsx ─────────────
 
-/** 이적설 — 이 선수 태그 + 이적 분류 카드(원제목 그대로 — 루머는 보도 형식 그대로). 0건이면 페이지가 숨긴다 */
+/**
+ * 이적설 — 이 선수의 **이적 원장 행**(`/transfers/`와 같은 행 · 펼침 타임라인 — 혼합안 화면 1 옆단 `.xr`, DECISIONS D2 §8 #16 · M4-04 이월 →
+ * M4-16) + "이적 화면에서 보기". 행은 모든 폭에서 쌓기(옆단 폭), 행 머리 h3 · 기사 제목 h4, 이름은 글자(자기 쪽 링크 없음).
+ * 원장 행(근거 줄 · 타임라인)에 실리지 않은 이 선수의 이적 분류 카드는 아래 뉴스 행으로 남긴다(카드가 화면에서 사라지지 않게 — 원제목 그대로).
+ * 원장 행이 없으면(트래커에 이 선수 레코드 없음) M3-10처럼 이적 분류 기사 뉴스 행만. 둘 다 0건이면 페이지가 숨긴다.
+ * 타임라인 펼침은 작은 섬(TimelineToggleIsland — 필터 섬보다 가볍다).
+ */
 export function TransferNews({
   id,
+  rows,
   items,
   total,
 }: {
   /** 구역 id(티켓 꼬리표 링크 대상) — 머리 id는 `{id}-h` */
   id: string;
+  /** 이 선수의 이적 원장 행(`/transfers/` 순서) */
+  rows: readonly TransferRowView[];
+  /** 뉴스 행으로 실을 이적 분류 카드 — 원장 행이 있으면 거기 실리지 않은 나머지 */
   items: readonly PlayerNewsItem[];
+  /** 최근 30일 이적 분류 카드 수(원장 행이 없을 때 부제) */
   total: number;
 }) {
   const headingId = `${id}-h`;
+  const ledger = rows.length > 0;
+  const only = rows.length === 1 ? rows[0] : undefined;
   return (
     <section
       id={id}
@@ -522,13 +538,63 @@ export function TransferNews({
         runningHead="TRANSFERS"
         sideAtXl
       />
-      <p className={SUB}>
-        이적 분류 기사 · 최신순 ·{" "}
-        {items.length < total
-          ? `최근 30일 ${total}건 중 ${items.length}건`
-          : `${total}건`}
-      </p>
-      <NewsRows items={items} idPrefix="pd-tr" label="이적설 기사 — 최신순" />
+      {ledger ? (
+        <>
+          <p className={SUB}>
+            행선지별 · 단계 = 펀치 구멍 · 출처 Tier = 카드 최고 출처
+          </p>
+          <div data-slot="transfer-rows" className="mt-2 border-t border-ink">
+            {rows.map((row) => (
+              <LedgerRow
+                key={row.id}
+                row={row}
+                idPrefix="pd"
+                placement="side"
+              />
+            ))}
+          </div>
+          <TimelineToggleIsland />
+          {items.length > 0 ? (
+            <>
+              <p className={cx(SUB, "mt-3.5")}>
+                그 밖의 이적 기사 · 최신순 · {items.length}건
+              </p>
+              <NewsRows
+                items={items}
+                idPrefix="pd-tr"
+                label="그 밖의 이적 기사 — 최신순"
+              />
+            </>
+          ) : null}
+          <p className="mt-1">
+            <Link
+              href={
+                only?.lead
+                  ? `${routes.transfers()}#${timelineAnchor(only.lead.id)}`
+                  : routes.transfers()
+              }
+              className={TEXT_LINK}
+            >
+              이적 화면에서 보기
+              <ChevronRightIcon size={16} />
+            </Link>
+          </p>
+        </>
+      ) : (
+        <>
+          <p className={SUB}>
+            이적 분류 기사 · 최신순 ·{" "}
+            {items.length < total
+              ? `최근 30일 ${total}건 중 ${items.length}건`
+              : `${total}건`}
+          </p>
+          <NewsRows
+            items={items}
+            idPrefix="pd-tr"
+            label="이적설 기사 — 최신순"
+          />
+        </>
+      )}
     </section>
   );
 }

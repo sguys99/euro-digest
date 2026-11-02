@@ -97,7 +97,10 @@ test.describe("선수 상세 — 구성", () => {
       await has("player-log", view.state === "linked");
       await has("player-next", view.upcoming.length > 0);
       await has("player-news", true);
-      await has("player-transfers", news.transfer.items.length > 0);
+      await has(
+        "player-transfers",
+        data.transfers.length > 0 || news.transfer.items.length > 0,
+      );
       await has(
         "player-national",
         callUp !== null || news.national.items.length > 0,
@@ -143,6 +146,56 @@ test.describe("선수 상세 — 구성", () => {
       }
     });
   }
+
+  test("이적설 = 이적 원장 행(M4-16) — 그 선수 레코드마다 행(쌓기 · h3 · 이름 링크 없음) · 타임라인 펼침 · 원장에 없는 이적 기사는 아래 뉴스 행 · 이적 화면 링크", async ({
+    page,
+  }) => {
+    const slug = "kim-min-jae";
+    const data = loadPlayerPage(slug, NOW)!;
+    test.skip(data.transfers.length === 0, "이 선수의 이적 레코드가 없음");
+    await page.goto(`korean-players/${slug}/`);
+    const section = page.locator('[data-slot="player-transfers"]');
+    const rows = section.locator("article[data-xf-row]");
+    await expect(rows).toHaveCount(data.transfers.length);
+    const first = data.transfers[0]!;
+    await expect(rows.first().locator("h3").first()).toContainText(
+      first.player.name ?? "",
+    );
+    // 자기 쪽으로 가는 이름 링크가 없다
+    await expect(
+      rows.first().locator(`a[href$="/korean-players/${slug}/"]`),
+    ).toHaveCount(0);
+    // 1280에서도 쌓기(옆단 폭) — 행 안에 가로 넘침 없음
+    const overflow = await rows
+      .first()
+      .evaluate((el) => el.scrollWidth - el.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+    if (first.timeline.length > 1) {
+      const toggle = rows.first().getByRole("button", { name: /타임라인/ });
+      await expect(toggle).toHaveAttribute("aria-expanded", "false");
+      await toggle.click();
+      await expect(toggle).toHaveAttribute("aria-expanded", "true");
+      const panel = page.locator(
+        `#${await toggle.getAttribute("aria-controls")}`,
+      );
+      await expect(panel).toBeVisible();
+      await expect(panel.locator("ol > li")).toHaveCount(first.timeline.length);
+      await toggle.click();
+      await expect(panel).toBeHidden();
+    }
+    await expect(
+      section
+        .getByRole("list", { name: "그 밖의 이적 기사 — 최신순" })
+        .locator("> li"),
+    ).toHaveCount(data.transferRest.length);
+    const link = section.getByRole("link", { name: "이적 화면에서 보기" });
+    await expect(link).toHaveAttribute(
+      "href",
+      new RegExp(
+        `/transfers/${data.transfers.length === 1 && first.lead ? `#xt-${first.lead.id}` : ""}$`,
+      ),
+    );
+  });
 
   test("숫자 tabular-nums · 한글 keep-all · display: contents 없음", async ({
     page,
@@ -261,6 +314,8 @@ test.describe("선수 상세 — 폭별 배치 · 가로 넘침 · 접근성", (
   });
 
   test("axe 0 — 1280 · 375 (라이트 · 다크)", async ({ page }) => {
+    // 선수 4명 × 2테마 axe — 이적설 원장 행 · 타임라인(M4-16)이 더해져 부하 중 기본 30초를 넘겼다(다른 axe 반복 검사와 같은 상한)
+    test.setTimeout(120_000);
     for (const colorScheme of ["light", "dark"] as const) {
       await page.emulateMedia({ colorScheme });
       for (const slug of SAMPLES) {

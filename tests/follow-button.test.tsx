@@ -45,14 +45,14 @@ afterEach(() => {
 });
 
 describe("팔로우 버튼 — 3상태", () => {
-  it("꺼짐 → 누르면 켜짐(aria-pressed, 저장) → 다시 누르면 꺼짐. 접근 이름 = 보이는 글자 + 대상", () => {
+  it("꺼짐 → 누르면 켜짐(aria-pressed, 저장) → 다시 누르면 꺼짐. 접근 이름 = '팔로우 — 대상' 고정(상태는 aria-pressed · aria-disabled만 — M4-16)", () => {
     render(<FollowButton kind="teams" slug="arsenal" name="아스널" />);
     const button = screen.getByRole("button", { name: "팔로우 — 아스널" });
     expect(button).toHaveAttribute("aria-pressed", "false");
     expect(button).not.toHaveAttribute("aria-disabled");
     fireEvent.click(button);
     expect(button).toHaveAttribute("aria-pressed", "true");
-    expect(button).toHaveAccessibleName("팔로우 중 — 아스널");
+    expect(button).toHaveAccessibleName("팔로우 — 아스널");
     expect(
       JSON.parse(window.localStorage.getItem(FOLLOW_STORAGE_KEY)!),
     ).toEqual({ v: 1, teams: ["arsenal"], players: [] });
@@ -76,7 +76,7 @@ describe("팔로우 버튼 — 3상태", () => {
     fireEvent.click(icon);
     expect(icon).toHaveAttribute("aria-pressed", "true");
     expect(
-      screen.getByRole("button", { name: "팔로우 중 — 김민재" }),
+      screen.getByRole("button", { name: "팔로우 — 김민재" }),
     ).toHaveAttribute("aria-pressed", "true");
   });
 
@@ -113,7 +113,7 @@ describe("팔로우 버튼 — 3상태", () => {
         <FollowButton kind="players" slug="kim-min-jae" name="김민재" />
       </>,
     );
-    const button = screen.getByRole("button", { name: "팔로우 5/5 — 아스널" });
+    const button = screen.getByRole("button", { name: "팔로우 — 아스널" });
     expect(button).toHaveAttribute("aria-disabled", "true");
     expect(button).toHaveAttribute("aria-pressed", "false");
     // jsdom은 <b> 경계에 공백을 넣어 계산한다(브라우저는 넣지 않는다) — 공백은 보지 않는다
@@ -147,7 +147,7 @@ describe("팔로우 버튼 — 3상태", () => {
         <FollowLimitNote kind="teams" slug="arsenal" id="r" />
       </>,
     );
-    const button = screen.getByRole("button", { name: "팔로우 중 — 아스널" });
+    const button = screen.getByRole("button", { name: "팔로우 — 아스널" });
     expect(button).not.toHaveAttribute("aria-disabled");
     expect(button).not.toHaveAttribute("aria-describedby");
     expect(document.getElementById("r")).toHaveAttribute("hidden");
@@ -168,7 +168,7 @@ describe("팔로우 버튼 — 3상태", () => {
     fireEvent.click(screen.getByRole("button", { name: "팔로우 — 아스널" }));
     fireEvent.click(screen.getByRole("button", { name: "팔로우 — 첼시" }));
     expect(
-      screen.getByRole("button", { name: "팔로우 중 — 아스널" }),
+      screen.getByRole("button", { name: "팔로우 — 아스널" }),
     ).toHaveAttribute("aria-pressed", "true");
     expect(toastMock).toHaveBeenCalledTimes(1);
     expect(toastMock.mock.calls[0]?.[0].message).toContain("이번 방문 동안만");

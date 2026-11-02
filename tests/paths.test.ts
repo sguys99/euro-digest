@@ -570,6 +570,16 @@ describe.each(LOCATIONS)("createPaths — $label", ({ input, base, origin }) => 
     expect(p.icsUrl({ kind: "match", matchId: "537785" })).toBe(
       `${site}/calendar/match/537785.ics`,
     );
+    // 구독형 캘린더 webcal(M4-16) — http(s) 출처를 webcal로, 경기별은 받지 않는다
+    expect(p.webcalUrl({ kind: "korean" })).toBe(
+      `${site.replace(/^https?:/, "webcal:")}/calendar/korean.ics`,
+    );
+    expect(p.webcalUrl({ kind: "team", team: "liverpool" })).toMatch(
+      /^webcal:\/\/[^/]+.*\/calendar\/liverpool\.ics$/,
+    );
+    expect(() => p.webcalUrl({ kind: "match", matchId: "1" } as never)).toThrow(
+      PathInputError,
+    );
 
     expect(p.ogImagePath()).toBe(`${base}/og/default.png`);
     expect(p.ogImageUrl({ kind: "news", date: DATE })).toBe(

@@ -400,6 +400,12 @@ export type CalendarFeed =
   | { kind: "korean" }
   | { kind: "match"; matchId: string };
 
+/** 구독형 캘린더(팀 · 한국 선수 소속팀 묶음 — 일정이 바뀌면 따라온다). 경기별 .ics는 한 번 추가하는 파일이라 빠진다 */
+export type SubscribableCalendarFeed = Extract<
+  CalendarFeed,
+  { kind: "team" } | { kind: "korean" }
+>;
+
 /** 공유 OG 이미지 (DR-10) — 파일 규칙은 잠정안(M5-01에서 확정) */
 export type OgImage =
   | { kind: "default" }
@@ -546,6 +552,11 @@ export interface SitePaths {
   icsPath(feed: CalendarFeed): string;
   /** .ics 절대 URL (캘린더 앱 구독 주소) */
   icsUrl(feed: CalendarFeed): string;
+  /**
+   * 구독형 캘린더 `webcal://` 주소(팀 · 한국 선수 소속팀 묶음 — 경기별 .ics는 구독 대상이 아니라 PathInputError) — `icsUrl`의 http(s)를 `webcal`로.
+   * 누르면 캘린더 앱이 구독(주기적으로 다시 받기)으로 연다(2026-11-02 사용자 결정, M4-16). 정적 링크라 JS 0
+   */
+  webcalUrl(feed: SubscribableCalendarFeed): string;
   /** OG 이미지 href */
   ogImagePath(image?: OgImage): string;
   /** OG 이미지 절대 URL (`og:image` 메타) */
@@ -584,6 +595,14 @@ export function createPaths(location: {
     rssUrl: (feed) => absolute(artifacts.rss(feed)),
     icsPath: (feed) => withBase(artifacts.calendar(feed)),
     icsUrl: (feed) => absolute(artifacts.calendar(feed)),
+    webcalUrl: (feed) => {
+      if (feed.kind !== "team" && feed.kind !== "korean") {
+        throw new PathInputError(
+          `webcalUrl: 구독형 캘린더(team · korean)만: ${quote((feed as { kind?: unknown }).kind)}`,
+        );
+      }
+      return absolute(artifacts.calendar(feed)).replace(/^https?:/, "webcal:");
+    },
     ogImagePath: (image) => withBase(artifacts.ogImage(image)),
     ogImageUrl: (image) => absolute(artifacts.ogImage(image)),
     manifestPath: () => withBase(artifacts.manifest()),
@@ -637,6 +656,11 @@ export function icsPath(feed: CalendarFeed): string {
 /** .ics 절대 URL */
 export function icsUrl(feed: CalendarFeed): string {
   return sitePaths().icsUrl(feed);
+}
+
+/** 구독형 캘린더 `webcal://` 주소. 예) `webcal://sguys99.github.io/euro-digest/calendar/liverpool.ics` */
+export function webcalUrl(feed: SubscribableCalendarFeed): string {
+  return sitePaths().webcalUrl(feed);
 }
 
 /** OG 이미지 href */

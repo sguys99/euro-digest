@@ -12,7 +12,7 @@ const comps = CompetitionsFileSchema.parse(
 );
 
 describe("SubscribeBand", () => {
-  it("머리 '구독' · RSS 전체 · 한국 선수 · 대회별 6개(설정 순서) · 한국 선수 소속팀 .ics · 안내 1줄", () => {
+  it("머리 '구독' · RSS 전체 · 한국 선수 · 대회별 6개(설정 순서) · 한국 선수 소속팀 캘린더(구독 · .ics 받기) · 안내 1줄", () => {
     render(<SubscribeBand />);
     const band = screen.getByRole("region", { name: "구독" });
     const rows = within(band).getAllByRole("listitem");
@@ -29,15 +29,22 @@ describe("SubscribeBand", () => {
         `${c.shortKo} RSS`,
         `/euro-digest/rss/${c.id.toLowerCase()}.xml`,
       ]),
-      ["한국 선수 소속팀 경기 .ics", "/euro-digest/calendar/korean.ics"],
+      // 구독형 캘린더 = webcal 구독 + https 파일 병기(2026-11-02 사용자 결정, M4-16)
+      [
+        "한국 선수 소속팀 경기 구독",
+        "webcal://sguys99.github.io/euro-digest/calendar/korean.ics",
+      ],
+      ["한국 선수 소속팀 경기 .ics 받기", "/euro-digest/calendar/korean.ics"],
     ]);
     // RSS 링크는 type 표기, 대회 링크는 정식 이름 title
     for (const a of links.slice(0, 8)) {
       expect(a.getAttribute("type")).toBe("application/rss+xml");
     }
     expect(links[2]!.getAttribute("title")).toBe(`${comps[0]!.nameKo} RSS`);
+    expect(band.textContent).toContain("RSS는 리더에 주소를 붙여 넣어요.");
+    // 결과 가리기 범위 안내(M4-16 리뷰)
     expect(band.textContent).toContain(
-      "RSS 리더나 캘린더 앱에 주소를 붙여 넣어 구독해요.",
+      "RSS에는 결과 가리기가 적용되지 않아요 (캘린더에는 스코어가 없어요).",
     );
   });
 });

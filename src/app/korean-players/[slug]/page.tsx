@@ -90,7 +90,8 @@ export default async function KoreanPlayerPage({
   const { view, news, callUp } = page;
 
   const hasNext = view.upcoming.length > 0;
-  const hasTransfers = news.transfer.items.length > 0;
+  const hasTransfers =
+    page.transfers.length > 0 || news.transfer.items.length > 0;
   const hasNational = callUp !== null || news.national.items.length > 0;
   const hasSide = hasNext || hasTransfers || hasNational;
 
@@ -166,7 +167,12 @@ export default async function KoreanPlayerPage({
             {hasTransfers ? (
               <TransferNews
                 id={TRANSFERS_ID}
-                items={news.transfer.items}
+                rows={page.transfers}
+                items={
+                  page.transfers.length > 0
+                    ? page.transferRest
+                    : news.transfer.items
+                }
                 total={news.transfer.total}
               />
             ) : null}

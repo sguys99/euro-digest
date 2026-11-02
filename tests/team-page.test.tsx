@@ -274,11 +274,19 @@ describe("팀 페이지 — 티켓 · 팀시트 · 일정 · 주요 선수 · �
     // 다음 경기 = 10.31 17:30Z → 11.01 (일) 02:30 KST, 홈 도르트문트
     expect(ticket.textContent).toContain("11.01 (일) 02:30");
     expect(ticket.textContent).toContain("홈도르트문트");
-    // 다음 경기 칸 끝 팀 .ics 버튼(M4-12 — D2 #11): 이름 = "{팀} 경기 .ics 일정 구독", 경로 = 팀 캘린더
+    // 다음 경기 칸 끝 팀 캘린더(M4-12 — D2 #11): webcal 구독 버튼 "{팀} 경기 일정 구독" + https ".ics 받기"(2026-11-02 사용자 결정, M4-16)
     const ics = within(ticket).getByRole("link", {
-      name: "바이에른 뮌헨 경기 .ics 일정 구독",
+      name: "바이에른 뮌헨 경기 일정 구독",
     });
-    expect(ics).toHaveAttribute("href", "/euro-digest/calendar/fcb.ics");
+    expect(ics).toHaveAttribute(
+      "href",
+      "webcal://sguys99.github.io/euro-digest/calendar/fcb.ics",
+    );
+    expect(
+      within(ticket).getByRole("link", {
+        name: "바이에른 뮌헨 경기 .ics 받기",
+      }),
+    ).toHaveAttribute("href", "/euro-digest/calendar/fcb.ics");
     expect(ticket.textContent).toContain("김민재");
     // 포메이션은 티켓에 두지 않는다(D1 §4)
     expect(ticket.textContent).not.toContain("4-2-3-1");

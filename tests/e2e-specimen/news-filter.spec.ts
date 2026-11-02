@@ -77,7 +77,8 @@ test.describe("목차(1024 이상) — 혼합안 홈과 같은 건수·모양", 
       await open(page);
       const nav = page.locator('nav[aria-label="뉴스 필터"]');
       await expect(nav).toBeVisible();
-      const rows = nav.locator("button[data-nf-key]");
+      // '마이' 묶음의 '내 팀만'(M4-08)은 팔로우가 있을 때만 보인다 — 보이는 행만 센다
+      const rows = nav.locator("button[data-nf-key]").filter({ visible: true });
       expect(await rows.allTextContents()).toEqual([
         "EPL프리미어리그 ✓8건",
         "라리가라리가 ✓6건",
@@ -146,11 +147,14 @@ test.describe("목차(1024 이상) — 혼합안 홈과 같은 건수·모양", 
         false,
       ]);
       // 묶음 이름 12px 800 --ink-2(시안 .ct-h)
+      // '마이' 묶음(M4-08)은 팔로우가 있을 때만 보인다 — 보이는 머리만
       const labels = await nav.locator("p[id^='nf-']").evaluateAll((els) =>
-        els.map((el) => {
-          const cs = getComputedStyle(el);
-          return [el.textContent, cs.fontSize, cs.fontWeight];
-        }),
+        els
+          .filter((el) => el.getClientRects().length > 0)
+          .map((el) => {
+            const cs = getComputedStyle(el);
+            return [el.textContent, cs.fontSize, cs.fontWeight];
+          }),
       );
       expect(labels).toEqual([
         ["대회", "12px", "800"],

@@ -28,15 +28,26 @@ import { RouteArrow, TeamName, TransferName } from "./transfer-marks";
  * 1280 이상 = 혼합안 `150 · 230 · 1fr · 76 · 104px`(간격 16px). 잠잠(FR-106) = 행 글자 `--ink-2` + '잠잠' 도장(파일 순서 그대로 맨 아래).
  */
 
-const ROW_GRID = cx(
+/** 쌓기 격자(1023 이하 원장 · 선수 상세 옆단 — 혼합안 `.xr`) */
+const ROW_GRID_STACKED = cx(
   "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2.25 border-b border-rule pt-3.5 pb-3",
   "[grid-template-areas:'stg_tier'_'who_who'_'rt_upd'_'ev_ev'_'tl_tl']",
+);
+/** 원장 격자 — 1024 이상 열(혼합안 `.xr--w`) */
+const ROW_GRID = cx(
+  ROW_GRID_STACKED,
   "lg:grid-cols-[132px_196px_minmax(0,1fr)_72px_92px] lg:gap-x-3 lg:gap-y-2.5 lg:pt-4",
   "lg:[grid-template-areas:'stg_who_rt_tier_upd'_'._ev_ev_ev_ev'_'._tl_tl_tl_tl']",
   "xl:grid-cols-[150px_230px_minmax(0,1fr)_76px_104px] xl:gap-x-4",
   // 필터 결과 진입 찍힘(섬이 잠깐 단다 — 첫 로드에는 없음)
   "data-xf-in:animate-stamp",
 );
+
+/**
+ * 행이 놓이는 곳 — `ledger` = `/transfers/` 원장(1024 이상 열 · 행 머리 h2 · 선수 이름 = 상세 링크),
+ * `side` = 한국 선수 상세 '이적설' 구역(모든 폭 쌓기 — 혼합안 `.xr` · 구역 머리가 h2라 행 머리 h3 · 그 선수 쪽이라 이름 링크 없음 — M4-16)
+ */
+export type LedgerPlacement = "ledger" | "side";
 
 /** 1024 이상 열 머리(장식 — 각 칸에 글자가 있다) */
 export function LedgerHead() {
@@ -126,10 +137,15 @@ function nodeId(cardId: string, idPrefix: string): string {
 export function LedgerRow({
   row,
   idPrefix = "x",
+  placement = "ledger",
 }: {
   row: TransferRowView;
   idPrefix?: string;
+  placement?: LedgerPlacement;
 }) {
+  const side = placement === "side";
+  const RowHeading = side ? "h3" : "h2";
+  const cardAs = side ? "h4" : "h3";
   const id = rowId(row, idPrefix);
   const headingId = `${id}-h`;
   const panelId = `${id}-tl`;
@@ -148,17 +164,32 @@ export function LedgerRow({
       {...filterAttrs}
       data-quiet={row.quiet ? "" : undefined}
       suppressHydrationWarning
-      className={cx(ROW_GRID, "scroll-mt-4", row.quiet && "mt-2 text-ink-2")}
+      className={cx(
+        side ? ROW_GRID_STACKED : ROW_GRID,
+        "scroll-mt-4",
+        row.quiet && "mt-2 text-ink-2",
+      )}
     >
       <div className="[grid-area:stg]">
         <TransferStage status={row.status} tier={null} className="mt-0" />
       </div>
-      <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1.5 [grid-area:who] lg:flex-col lg:items-start">
-        <h2
+      <div
+        className={cx(
+          "flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1.5 [grid-area:who]",
+          !side && "lg:flex-col lg:items-start",
+        )}
+      >
+        <RowHeading
           id={headingId}
           className="text-lg leading-[1.2] font-extrabold tracking-[-0.02em]"
         >
-          {row.player.page && row.player.name !== null ? (
+          {side && row.player.name !== null ? (
+            // 그 선수 상세 안 — 이름은 글자 + 완장(혼합안 `.xr__nm`, 자기 쪽 링크 없음)
+            <span className="inline-flex flex-wrap items-center gap-x-2">
+              <span>{row.player.name}</span>
+              {row.player.page ? <KoreanArmband title="한국 선수" /> : null}
+            </span>
+          ) : row.player.page && row.player.name !== null ? (
             // 등록 한국 선수 — 이름은 선수 상세 링크(누름 영역 44px) + 완장
             <span className="inline-flex flex-wrap items-center gap-x-2">
               <PlayerLink slug={row.player.slug}>{row.player.name}</PlayerLink>
@@ -167,7 +198,7 @@ export function LedgerRow({
           ) : (
             <TransferName player={row.player} />
           )}
-        </h2>
+        </RowHeading>
         {row.affiliation ? (
           <p className="inline-flex min-w-0 items-center gap-1.5 text-[12.5px] leading-[1.2] text-ink-2">
             <span className="inline-block flex-none border border-ink-2 px-1.25 pt-0.5 pb-px text-xs font-extrabold">
@@ -210,7 +241,7 @@ export function LedgerRow({
         <TierBadge tier={row.bestTier} />
       </div>
       <p className="grid justify-items-end gap-0.75 justify-self-end text-[11.5px] font-extrabold text-ink-2 [grid-area:upd]">
-        <span className="lg:sr-only">최근 갱신</span>
+        <span className={side ? undefined : "lg:sr-only"}>최근 갱신</span>
         <time
           dateTime={row.updated}
           className={cx(
@@ -228,7 +259,7 @@ export function LedgerRow({
             tabIndex={hasTimeline ? undefined : -1}
             className={cx("min-w-0", !hasTimeline && ARRIVE)}
           >
-            <LeadCard card={row.lead} titleId={`${id}-lead-t`} />
+            <LeadCard card={row.lead} titleId={`${id}-lead-t`} as={cardAs} />
           </div>
           {hasTimeline ? (
             <button
@@ -269,7 +300,7 @@ export function LedgerRow({
           suppressHydrationWarning
           className="pt-0.5 [grid-area:tl]"
         >
-          <Timeline row={row} idPrefix={idPrefix} />
+          <Timeline row={row} idPrefix={idPrefix} cardAs={cardAs} />
         </div>
       ) : null}
     </article>
@@ -290,19 +321,19 @@ const TITLE_LINK = { className: "py-3.5" };
 function LeadCard({
   card,
   titleId,
+  as,
 }: {
   card: TransferCardView;
   titleId: string;
+  as: "h3" | "h4";
 }) {
   return (
-    // 결과 가림(M4-15): spoiler 카드면 이 묶음이 펼치는 단위 — 원제목을 접고 띠(상자 없는 묶음 — 바깥 격자 그대로)
-    <div
-      className="contents"
-      {...(card.spoiler !== null ? { "data-spoil": "tear" } : {})}
-    >
+    // 결과 가림(M4-15): spoiler 카드면 이 묶음이 펼치는 단위 — 원제목을 접고 띠. 부모가 블록 흐름이라 보통 블록 묶음(모양 같음 —
+    // `display: contents`를 쓰지 않는다: 선수 상세 옆단에서도 쓰므로 DECISIONS D2 §6 #6 규칙, M4-16)
+    <div {...(card.spoiler !== null ? { "data-spoil": "tear" } : {})}>
       <CardTitle
         id={titleId}
-        as="h3"
+        as={as}
         {...(card.spoiler !== null ? { "data-spoil-value": "" } : {})}
         href={card.url}
         lang={card.lang}
@@ -434,9 +465,12 @@ function StageLabel({
 export function Timeline({
   row,
   idPrefix = "x",
+  cardAs = "h3",
 }: {
   row: TransferRowView;
   idPrefix?: string;
+  /** 기사 제목 단계 — 원장 h3 · 선수 상세 옆단 h4(행 머리 아래) */
+  cardAs?: "h3" | "h4";
 }) {
   const kept = row.timeline.some((n) => n.kind === "stage" && !n.changed);
   const base = rowId(row, idPrefix);
@@ -496,7 +530,7 @@ export function Timeline({
               </p>
               <CardTitle
                 id={`${base}-n-${node.card.id}-t`}
-                as="h3"
+                as={cardAs}
                 {...(node.card.spoiler !== null
                   ? { "data-spoil-value": "" }
                   : {})}

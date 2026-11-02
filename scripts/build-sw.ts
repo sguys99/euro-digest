@@ -27,6 +27,7 @@ import { kstDate, nowUtcIso } from "@/lib/time";
 import { createLogger } from "./lib/logger";
 import {
   RUNTIME_PAGE_LIMIT,
+  assetHashes,
   planPrecache,
   renderServiceWorker,
   sha256,
@@ -139,6 +140,7 @@ function main(): number {
       pages: plan.pages.map((p) => p.href),
       offline: withBasePath(routes.offline()),
       assets: plan.assets.map((a) => a.href),
+      assetHashes: assetHashes(plan.assets),
       runtimePageLimit: RUNTIME_PAGE_LIMIT,
     },
     policySource,

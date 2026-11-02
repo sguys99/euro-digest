@@ -105,7 +105,9 @@ export default function KoreanPlayersPage() {
               ) : null}
             </p>
           ) : null}
-          <p className="flex flex-wrap gap-x-5 lg:hidden">
+          {/* 링크 사이 16px(M4-16): 20px이면 375에서 세 링크가 웹폰트로는 한 줄(여유 1px) · 대체 글꼴로는 두 줄이라 글꼴이 바뀔 때 명단이 44px
+              밀렸다(첫 로드 CLS 0.18). 16px이면 두 글꼴 모두 한 줄(여유 6~9px) — 링크가 길어져 넘치면 두 글꼴 모두 두 줄이다 */}
+          <p className="flex flex-wrap gap-x-4 lg:hidden">
             <Link
               href={routes.weeklyReport()}
               data-slot="korean-players-weekly-link"

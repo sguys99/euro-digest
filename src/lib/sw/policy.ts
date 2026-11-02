@@ -10,7 +10,12 @@
  * |--------------------------|--------------------------------------------------------------|-----------|
  * | `ed-pages-{version}`     | 앱 셸 HTML(홈·`/news/`·`/offline/`) + 최근 3일 호 날짜 페이지  | 설치 때 채움(프리캐시), 새 버전이 활성화되면 지움 |
  * | `ed-runtime-{version}`   | 그 밖에 온라인으로 열어 본 페이지 HTML(상한 `runtimePageLimit`) | 오래된 것부터 지움, 새 버전이 활성화되면 지움 |
- * | `ed-static`              | `_next/static/**`·웹폰트·아이콘·manifest(파일명에 해시 — 바뀌지 않음) | 버전 사이 공유(받은 파일은 다시 받지 않음), 활성화 때 이번 목록에 없는 것을 지움 |
+ * | `ed-static`              | `_next/static/**`(파일명에 해시 — 바뀌지 않음)·웹폰트·아이콘·manifest(**이름은 그대로 두고 내용이 바뀔 수 있음**) | 버전 사이 공유. 해시 이름 파일은 받은 것을 다시 받지 않고, 해시 없는 이름은 설치 때 내용 해시(`assetHashes` — 사본의 `SW_HASH_HEADER`)가 다르면 HTTP 캐시를 거치지 않고(`reload`) 새로 받아 덮는다(M4-16 리뷰 — D3 아이콘 교체 등). 활성화 때 이번 목록에 없는 것을 지움 |
+ * | `ed-data`                | `/my/data/**.json`(마이 팀 · 선수 자료 · 온보딩 자료 — M4-16)  | 버전 사이 공유, **네트워크 우선**(온라인이면 늘 새 값), 받은 것만 상한 `SW_DATA_LIMIT`까지 |
+ *
+ * 지연 청크(온보딩 단계 · 내보내기 · 검색 오버레이 · `/my` 목록)는 `_next/static/**`라 설치 때 함께 받는다(프리캐시) — 오프라인에서도 열린다.
+ * `/my/data/`는 팔로우마다 다른 파일이라 프리캐시하지 않고, 온라인으로 받은 것만 남겨 오프라인 `/my`가 마지막으로 본 다음 경기 · 결과를
+ * 그린다(없으면 '오프라인이라 받지 못했어요' + 다시 시도). 검색 색인(`/pagefind/` — 약 0.7MB)은 오프라인 범위 밖이다(bypass).
  *
  * 요청 분류(`swRequestKind`) — scope(basePath + `/`) 밖·GET 아닌 요청·외부 출처(원문 링크·GoatCounter)는 손대지 않는다(`bypass`).
  * 페이지 이동(`navigate`)은 네트워크 우선 → 캐시 → 오프라인 화면. RSC 페이로드(next/link 클라이언트 이동의 `.txt`)는 캐시하지 않는다 —
@@ -35,6 +40,11 @@ export interface SwConfig {
   offline: string;
   /** 정적 자산 프리캐시(JS·CSS 청크, 웹폰트, 아이콘, manifest) */
   assets: string[];
+  /**
+   * 파일명에 해시가 없는 자산(`_next/static/` 밖 — 웹폰트 · 아이콘 · manifest)의 내용 해시(href → 16자리). 설치 때 사본의 해시와 다르면 다시
+   * 받는다. 여기 없는 자산(해시 이름)은 받은 사본을 그대로 쓴다
+   */
+  assetHashes: Record<string, string>;
   /** 런타임 페이지 캐시 상한(개) */
   runtimePageLimit: number;
 }
@@ -43,7 +53,11 @@ export interface SwCacheNames {
   pages: string;
   runtime: string;
   static: string;
+  data: string;
 }
+
+/** `ed-data` 상한(개) — 팔로우 팀 5 + 선수 5 + 온보딩 자료 1에 여유(오래된 것부터 지움) */
+export const SW_DATA_LIMIT = 24;
 
 /** 버전별 캐시 이름 */
 export function swCacheNames(version: string): SwCacheNames {
@@ -51,10 +65,11 @@ export function swCacheNames(version: string): SwCacheNames {
     pages: `${SW_CACHE_PREFIX}pages-${version}`,
     runtime: `${SW_CACHE_PREFIX}runtime-${version}`,
     static: `${SW_CACHE_PREFIX}static`,
+    data: `${SW_CACHE_PREFIX}data`,
   };
 }
 
-export type SwRequestKind = "page" | "static" | "bypass";
+export type SwRequestKind = "page" | "static" | "data" | "bypass";
 
 export interface SwRequestInfo {
   /** 요청 절대 URL */
@@ -66,15 +81,21 @@ export interface SwRequestInfo {
   rsc: boolean;
 }
 
-/** scope 아래 정적 자산 경로(접두) — 파일명에 해시가 있거나 배포마다 같은 파일 */
+/**
+ * scope 아래 정적 자산 경로(접두) — `_next/static/`만 파일명에 해시가 있다(내용이 바뀌면 이름이 바뀜). `fonts/`·`icons/`·manifest는 이름이
+ * 그대로인 채 내용이 바뀔 수 있어 설치 때 내용 해시로 새로 고친다(`swStaticFresh`)
+ */
 const STATIC_PREFIXES = ["_next/static/", "fonts/", "icons/"];
 /** scope 바로 아래 정적 파일 */
 const STATIC_FILES = ["manifest.webmanifest"];
+/** scope 아래 클라이언트가 받는 자료(JSON) — 네트워크 우선 + 오프라인 대비 사본 */
+const DATA_PREFIX = "my/data/";
 
 /**
  * 요청을 분류한다. `scopeUrl`은 절대 URL(출처 + basePath + `/`).
  * - `page`: scope 안 페이지 이동(GET · navigate)
  * - `static`: scope 안 정적 자산(캐시 우선)
+ * - `data`: scope 안 `/my/data/**.json`(네트워크 우선 → 실패하면 사본)
  * - `bypass`: 손대지 않음 — GET 아님, scope 밖·다른 출처(원문 링크·GoatCounter), RSC 페이로드(`_rsc` 쿼리·RSC 헤더), RSS·ics·sitemap·검색 색인 등
  */
 export function swRequestKind(
@@ -93,6 +114,7 @@ export function swRequestKind(
   ) {
     return "static";
   }
+  if (rest.startsWith(DATA_PREFIX) && rest.endsWith(".json")) return "data";
   return "bypass";
 }
 
@@ -106,6 +128,20 @@ export function swPageKey(href: string): string {
   const last = pathname.slice(pathname.lastIndexOf("/") + 1);
   if (last !== "" && !last.includes(".")) pathname += "/";
   return `${url.origin}${pathname}`;
+}
+
+/** 정적 사본에 붙이는 내용 해시 헤더(해시 없는 이름의 자산 — 설치 때 비교) */
+export const SW_HASH_HEADER = "x-ed-hash";
+
+/**
+ * 설치 때 정적 자산 사본을 그대로 써도 되는가 — 해시 이름(`wanted` 없음)은 사본이 있으면 늘 그렇다, 해시 없는 이름은 사본의 해시가 이번 빌드의
+ * 내용 해시와 같을 때만(같은 이름 · 다른 내용이면 다시 받는다)
+ */
+export function swStaticFresh(
+  wanted: string | undefined,
+  cachedHash: string | null,
+): boolean {
+  return wanted === undefined || wanted === cachedHash;
 }
 
 /** 지울 캐시 — 이 사이트 접두(`ed-`)인데 이번 버전이 쓰지 않는 이름. 다른 접두의 캐시는 남긴다 */

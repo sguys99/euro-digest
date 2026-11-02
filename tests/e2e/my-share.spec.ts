@@ -199,10 +199,20 @@ test.describe("내 팀 일정 구독(FR-115)", () => {
     await page.goto("my/");
     const block = tools(page).locator('[data-slot="my-ics"]');
     await expect(block).toBeVisible();
-    const links = block.getByRole("link");
+    // 팀마다 webcal 구독 + https '.ics 받기'(2026-11-02 사용자 결정, M4-16) — 파일 링크가 200
+    const subs = block.locator('a[data-ics-mode="webcal"]');
+    await expect(subs).toHaveCount(2);
+    await expect(subs.first()).toHaveAccessibleName(
+      "경기 일정 구독 — 바이에른 뮌헨",
+    );
+    await expect(subs.first()).toHaveAttribute(
+      "href",
+      /^webcal:\/\/.+\/calendar\/bayern-munchen\.ics$/,
+    );
+    const links = block.locator('a[data-slot="ics-file"]');
     await expect(links).toHaveCount(2);
     await expect(links.first()).toHaveAccessibleName(
-      "경기 일정 .ics — 바이에른 뮌헨",
+      "바이에른 뮌헨 경기 일정 .ics 받기",
     );
     for (const href of await links.evaluateAll((els) =>
       els.map((el) => (el as HTMLAnchorElement).href),

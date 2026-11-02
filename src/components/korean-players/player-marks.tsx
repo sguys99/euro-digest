@@ -5,7 +5,7 @@ import { FormChip } from "@/components/competition/form-chip";
 import { SpoilerCellButton } from "@/components/spoiler/spoiler-parts";
 import { TeamBadge } from "@/components/team/team-badge";
 import { FlatTab, flatTabVariants } from "@/components/ui/chip";
-import { FORM_WORD } from "@/lib/competition-view";
+import { FORM_WORD } from "@/lib/form-word";
 import type {
   AppearanceView,
   CompMark,

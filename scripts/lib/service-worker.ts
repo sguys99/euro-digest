@@ -128,3 +128,20 @@ export function renderServiceWorker(
   new Script(body, { filename: "sw.js" });
   return body;
 }
+
+/** 해시 이름 정적 자산(Next 빌드 산출물 — 내용이 바뀌면 이름이 바뀐다)의 경로 조각 */
+const IMMUTABLE_ASSET_SEGMENT = "/_next/static/";
+
+/**
+ * 파일명에 해시가 없는 자산(웹폰트 · 아이콘 · manifest)의 내용 해시(href → 앞 16자리) — 서비스 워커가 설치 때 사본과 비교해 같은 이름 · 다른
+ * 내용이면 다시 받는다(src/lib/sw/policy.ts `swStaticFresh`, M4-16). `_next/static/`은 이름이 곧 해시라 넣지 않는다
+ */
+export function assetHashes(
+  assets: readonly PrecacheFile[],
+): Record<string, string> {
+  return Object.fromEntries(
+    assets
+      .filter((a) => !a.href.includes(IMMUTABLE_ASSET_SEGMENT))
+      .map((a) => [a.href, a.hash.slice(0, 16)]),
+  );
+}

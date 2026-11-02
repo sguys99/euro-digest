@@ -1,6 +1,11 @@
 import { CalendarAddIcon } from "@/components/ui/icons";
 import { cx } from "@/lib/cx";
-import { icsPath, type CalendarFeed } from "@/lib/paths";
+import {
+  icsPath,
+  webcalUrl,
+  type CalendarFeed,
+  type SubscribableCalendarFeed,
+} from "@/lib/paths";
 
 /**
  * .ics 링크 — 공용 (PRD FR-59 · FR-83 · FR-115 · FR-123, DESIGN §9.3 "구독 단" · "다음 경기 입장권" · §11.28, plan M4-12)
@@ -17,6 +22,10 @@ import { icsPath, type CalendarFeed } from "@/lib/paths";
  *
  * 접근 이름 = 화면 밖 `context` + 보이는 `label`(보이는 글자가 이름 안에 그대로 — WCAG 2.5.3). 예) "아틀레티코 마드리드 경기 .ics 일정 구독",
  * "바이에른 뮌헨 대 도르트문트 경기 캘린더에 추가 .ics". `download` 속성은 두지 않는다 — iOS · macOS는 .ics 링크를 열면 캘린더 추가 창을 띄운다.
+ *
+ * 경기별 .ics(한 번 추가하는 파일)는 이 `IcsLink`(https). **구독형 캘린더(팀 · 한국 선수 소속팀 묶음)는 `IcsSubscribe`** — `webcal://` 구독
+ * 링크 + https '.ics 받기' 병기(2026-11-02 사용자 결정, M4-16 — 캘린더 앱이 구독으로 열어 바뀐 일정이 따라온다. webcal을 못 여는 기기 ·
+ * 웹 캘린더는 파일 주소를 붙여 넣는다).
  */
 export type IcsLinkVariant = "button" | "link" | "compact";
 
@@ -69,5 +78,64 @@ export function IcsLink({
         {labelLang ? <span lang={labelLang}>{label}</span> : label}
       </span>
     </a>
+  );
+}
+
+/**
+ * 구독형 캘린더 — `webcal://` 구독 링크(변형은 `IcsLink`와 같다 — 보이는 글자 `label`) + 옆에 https 파일 링크(텍스트 링크 짧은 꼴 '.ics 받기').
+ * 두 링크 모두 최소 44px, 접근 이름 = 화면 밖 `context` + 보이는 글자("리버풀 경기 일정 캘린더 구독" · "리버풀 경기 일정 .ics 받기").
+ * 서버 · 클라이언트 어디서나(`cx`만, JS 0).
+ */
+export function IcsSubscribe({
+  feed,
+  label = "캘린더 구독",
+  fileLabel = ".ics 받기",
+  context,
+  fileContext = context,
+  variant = "link",
+  labelLang,
+  className,
+}: {
+  feed: SubscribableCalendarFeed;
+  label?: string;
+  fileLabel?: string;
+  /** 화면 밖 앞말(대상) — "{팀} 경기" */
+  context: string;
+  /** 파일 링크의 화면 밖 앞말 — 없으면 `context`(구독 링크의 보이는 글자가 대상 이름일 때 따로 준다 — `/my`) */
+  fileContext?: string;
+  variant?: IcsLinkVariant;
+  labelLang?: string;
+  /** 두 링크 묶음의 여백 · 배치만 */
+  className?: string;
+}) {
+  return (
+    <span
+      data-slot="ics-subscribe"
+      className={cx("inline-flex flex-wrap items-center gap-x-3", className)}
+    >
+      <a
+        href={webcalUrl(feed)}
+        data-slot="ics-link"
+        data-ics={feed.kind}
+        data-ics-mode="webcal"
+        className={VARIANT[variant]}
+      >
+        <CalendarAddIcon size={ICON_SIZE[variant]} />
+        <span>
+          <span className="sr-only">{context} </span>
+          {labelLang ? <span lang={labelLang}>{label}</span> : label}
+        </span>
+      </a>
+      <a
+        href={icsPath(feed)}
+        type="text/calendar"
+        data-slot="ics-file"
+        data-ics={feed.kind}
+        className={cx(TEXT_LINK, "justify-center")}
+      >
+        <span className="sr-only">{fileContext} </span>
+        {fileLabel}
+      </a>
+    </span>
   );
 }

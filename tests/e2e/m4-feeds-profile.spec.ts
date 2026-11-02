@@ -167,14 +167,21 @@ test.describe("② 구독 단 · RSS 자동 발견", () => {
     }
   });
 
-  test("뒤표지 구독 단 — RSS 2 · 대회 6(설정 순서) · .ics 1, 모두 200 · 이름 '{대상} RSS'", async ({
+  test("뒤표지 구독 단 — RSS 2 · 대회 6(설정 순서) · 캘린더(webcal 구독 + .ics 받기), https 모두 200 · 이름 '{대상} RSS'", async ({
     page,
   }) => {
     await open(page, "korean-players/");
     const band = page.getByRole("contentinfo").getByRole("region", {
       name: "구독",
     });
-    const links = band.getByRole("link");
+    // 캘린더 구독 = webcal(2026-11-02 사용자 결정, M4-16) — 같은 파일의 https 주소가 옆에 있다
+    const webcal = band.locator('a[data-ics-mode="webcal"]');
+    await expect(webcal).toHaveCount(1);
+    await expect(webcal).toHaveAttribute(
+      "href",
+      /^webcal:\/\/.+\/calendar\/korean\.ics$/,
+    );
+    const links = band.locator('a:not([data-ics-mode="webcal"])');
     await expect(links).toHaveCount(2 + comps.length + 1);
     await expect(band.locator("a[data-comp]")).toHaveText(
       // 보이는 글자 = 약칭, 화면 밖 " RSS"
@@ -217,15 +224,21 @@ test.describe("② 구독 단 · RSS 자동 발견", () => {
 });
 
 test.describe("③ .ics 버튼 — 가리키는 파일이 실제로 있다", () => {
-  test("팀 티켓 '다음 경기' 칸 — 팀 .ics(이름 '{팀} 경기 .ics 일정 구독') 200", async ({
+  test("팀 티켓 '다음 경기' 칸 — webcal 구독(이름 '{팀} 경기 일정 구독') + .ics 받기(https 200)", async ({
     page,
   }) => {
     await open(page, "teams/atletico-madrid/");
     const next = page.locator("[data-slot=team-ticket]");
     const ics = next.locator("[data-slot=ics-link]");
     await expect(ics).toHaveCount(1);
-    await expect(ics).toHaveAccessibleName(/^.+ 경기 \.ics 일정 구독$/);
-    expect(await statusOf(page, (await ics.getAttribute("href"))!)).toBe(200);
+    await expect(ics).toHaveAccessibleName(/^.+ 경기 일정 구독$/);
+    await expect(ics).toHaveAttribute(
+      "href",
+      /^webcal:\/\/.+\/calendar\/atletico-madrid\.ics$/,
+    );
+    const file = next.locator("[data-slot=ics-file]");
+    await expect(file).toHaveAccessibleName(/^.+ 경기 \.ics 받기$/);
+    expect(await statusOf(page, (await file.getAttribute("href"))!)).toBe(200);
   });
 
   test("선수 상세 입장권 · 오늘 밤 · /tonight · 대표팀 — 경기별 .ics 200, 링크는 예정 행에만", async ({

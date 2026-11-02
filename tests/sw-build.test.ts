@@ -12,6 +12,7 @@ import type { SwConfig } from "@/lib/sw/policy";
 
 import {
   PRECACHE_BUDGET_BYTES,
+  assetHashes,
   planPrecache,
   renderServiceWorker,
   swVersion,
@@ -72,6 +73,24 @@ describe("planPrecache — 용량 상한", () => {
       budgetBytes: 1600,
     });
     expect(tight.dropped.map((p) => p.href)).toEqual(["/n/big/", "/n/small/"]);
+  });
+});
+
+describe("assetHashes — 해시 없는 이름의 자산만(M4-16)", () => {
+  it("_next/static/ 밖(웹폰트 · 아이콘 · manifest)만 href → 내용 해시 앞 16자리", () => {
+    const f = (href: string, hash: string) => ({ href, bytes: 1, hash });
+    expect(
+      assetHashes([
+        f("/euro-digest/_next/static/chunks/a.js", "a".repeat(64)),
+        f("/euro-digest/fonts/x.woff2", "b".repeat(64)),
+        f("/euro-digest/icons/icon-192.png", "c".repeat(64)),
+        f("/euro-digest/manifest.webmanifest", "d".repeat(64)),
+      ]),
+    ).toEqual({
+      "/euro-digest/fonts/x.woff2": "b".repeat(16),
+      "/euro-digest/icons/icon-192.png": "c".repeat(16),
+      "/euro-digest/manifest.webmanifest": "d".repeat(16),
+    });
   });
 });
 
@@ -192,6 +211,7 @@ const CONFIG: SwConfig = {
     "/euro-digest/_next/static/chunks/a.js",
     "/euro-digest/fonts/x.woff2",
   ],
+  assetHashes: { "/euro-digest/fonts/x.woff2": "h2" },
   runtimePageLimit: 2,
 };
 
@@ -316,6 +336,29 @@ describe("sw.js 실행 — 이벤트 처리", () => {
     expect(fetchMock.mock.calls.map((c) => c[0])).not.toContain(
       abs(CONFIG.assets[0] ?? ""),
     );
+  });
+
+  it("install — 해시 없는 이름(웹폰트 · 아이콘 · manifest)은 같은 이름 · 다른 내용이면 다시 받아 덮고(reload), 같은 내용이면 그대로(M4-16)", async () => {
+    const font = abs("/euro-digest/fonts/x.woff2");
+    const old = boot();
+    const oldStatics = await old.caches.open("ed-static");
+    const stale = basic("old font", "font/woff2");
+    stale.headers.set("x-ed-hash", "h1");
+    oldStatics.entries.set(font, stale);
+    await old.dispatch("install");
+    expect(old.fetchMock).toHaveBeenCalledWith(font, { cache: "reload" });
+    const now = await oldStatics.match(font);
+    expect(await now?.text()).toBe("body /euro-digest/fonts/x.woff2");
+    expect(now?.headers.get("x-ed-hash")).toBe("h2");
+
+    const same = boot();
+    const sameStatics = await same.caches.open("ed-static");
+    const fresh = basic("current font", "font/woff2");
+    fresh.headers.set("x-ed-hash", "h2");
+    sameStatics.entries.set(font, fresh);
+    await same.dispatch("install");
+    expect(same.fetchMock.mock.calls.map((c) => c[0])).not.toContain(font);
+    expect(await (await sameStatics.match(font))?.text()).toBe("current font");
   });
 
   it("install — 하나라도 실패하면(404·연결 끊김) 설치 실패", async () => {

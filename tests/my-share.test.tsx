@@ -280,7 +280,7 @@ describe("가져오기 확인 띠", () => {
 });
 
 describe("내 팀 일정 구독(FR-115)", () => {
-  it("디렉터리에 있는 팔로우 팀마다 .ics 링크, 라틴 이름은 lang", () => {
+  it("디렉터리에 있는 팔로우 팀마다 구독(webcal) + .ics 받기, 라틴 이름은 lang", () => {
     render(
       <MyTeamIcs
         follows={state(
@@ -293,19 +293,25 @@ describe("내 팀 일정 구독(FR-115)", () => {
       />,
     );
     const list = screen.getByRole("list", { name: "내 팀 일정 구독" });
-    const links = list.querySelectorAll("a");
-    expect(links).toHaveLength(2);
-    expect(links[0]).toHaveAttribute(
+    // 팀마다 webcal 구독 링크(팀 이름) + https '.ics 받기'(2026-11-02 사용자 결정, M4-16)
+    const subs = list.querySelectorAll('a[data-ics-mode="webcal"]');
+    const files = list.querySelectorAll('a[data-slot="ics-file"]');
+    expect(subs).toHaveLength(2);
+    expect(files).toHaveLength(2);
+    expect(subs[0]).toHaveAttribute(
       "href",
-      expect.stringMatching(/\/calendar\/bayern-munchen\.ics$/),
+      expect.stringMatching(/^webcal:\/\/.+\/calendar\/bayern-munchen\.ics$/),
     );
-    expect(links[0]).toHaveAccessibleName("경기 일정 .ics — 바이에른 뮌헨");
-    expect(links[1]!.querySelector('[lang="en"]')).toHaveTextContent(
+    expect(subs[0]).toHaveAccessibleName("경기 일정 구독 — 바이에른 뮌헨");
+    expect(files[0]).toHaveAttribute(
+      "href",
+      expect.stringMatching(/^\/euro-digest\/calendar\/bayern-munchen\.ics$/),
+    );
+    expect(files[0]).toHaveAccessibleName("바이에른 뮌헨 경기 일정 .ics 받기");
+    expect(subs[1]!.querySelector('[lang="en"]')).toHaveTextContent(
       "Union Berlin",
     );
-    expect(
-      screen.getByText(/캘린더 앱에서 팀마다 구독해요/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/캘린더 앱이 구독으로 열려/)).toBeInTheDocument();
   });
 
   it("팀 0(선수만) · 하이드레이션 전이면 숨김", () => {

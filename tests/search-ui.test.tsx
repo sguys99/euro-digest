@@ -83,22 +83,21 @@ describe("단축키(FR-132)", () => {
     defaultPrevented: false,
     ...extra,
   });
-  it("/ — 입력 중이면 무시, ⌘K · Ctrl+K — 어디서나", () => {
-    expect(isSearchShortcut(key("/"), false)).toBe(true);
-    expect(isSearchShortcut(key("/"), true)).toBe(false);
-    expect(isSearchShortcut(key("/", { ctrlKey: true }), false)).toBe(false);
-    expect(isSearchShortcut(key("k", { metaKey: true }), true)).toBe(true);
-    expect(isSearchShortcut(key("K", { ctrlKey: true }), false)).toBe(true);
+  it("⌘K · Ctrl+K만 — 글자 하나 단축키 '/'는 없다(2026-11-02 사용자 결정 · WCAG 2.1.4)", () => {
+    expect(isSearchShortcut(key("/"))).toBe(false);
+    expect(isSearchShortcut(key("/", { ctrlKey: true }))).toBe(false);
+    expect(isSearchShortcut(key("k", { metaKey: true }))).toBe(true);
+    expect(isSearchShortcut(key("K", { ctrlKey: true }))).toBe(true);
+    expect(isSearchShortcut(key("k", { ctrlKey: true, altKey: true }))).toBe(
+      false,
+    );
+    expect(isSearchShortcut(key("k"))).toBe(false);
     expect(
-      isSearchShortcut(key("k", { ctrlKey: true, altKey: true }), false),
+      isSearchShortcut(key("k", { ctrlKey: true, isComposing: true })),
     ).toBe(false);
-    expect(isSearchShortcut(key("k"), false)).toBe(false);
-    expect(isSearchShortcut(key("/", { isComposing: true }), false)).toBe(
-      false,
-    );
-    expect(isSearchShortcut(key("/", { defaultPrevented: true }), false)).toBe(
-      false,
-    );
+    expect(
+      isSearchShortcut(key("k", { metaKey: true, defaultPrevented: true })),
+    ).toBe(false);
   });
 });
 

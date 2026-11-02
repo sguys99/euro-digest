@@ -11,9 +11,12 @@
  *   `SW_SKIP_WAITING_MESSAGE`를 받아 활성화한다. 처음 설치(맡은 페이지 없음)는 바로 활성화된다.
  * - activate: 이번 버전이 쓰지 않는 `ed-` 캐시를 지우고, `ed-static`을 이번 목록으로 줄이고, 내비게이션 미리 받기를 켜고, 열린 페이지를 맡는다.
  * - fetch: 페이지 이동은 네트워크 우선 → (실패) 캐시 → 오프라인 화면(`/offline/?from=…`으로 보냄). 받은 HTML은 프리캐시 대상이면 그 캐시를,
- *   아니면 런타임 캐시(상한)를 새로 고친다. 정적 자산은 캐시 우선(없으면 받아서 넣음). 그 밖(외부 출처·RSC·RSS 등)은 손대지 않는다.
+ *   아니면 런타임 캐시(상한)를 새로 고친다. 정적 자산은 캐시 우선(없으면 받아서 넣음). `/my/data/**.json`은 네트워크 우선 → 받은 사본을
+ *   `ed-data`(상한)에, 받지 못하면 사본(M4-16). 그 밖(외부 출처·RSC·RSS·검색 색인 등)은 손대지 않는다.
  */
 import {
+  SW_DATA_LIMIT,
+  SW_HASH_HEADER,
   SW_SKIP_WAITING_MESSAGE,
   swCacheNames,
   swOfflineRedirect,
@@ -21,6 +24,7 @@ import {
   swPageKey,
   swRequestKind,
   swStaleCaches,
+  swStaticFresh,
   swStaticToDrop,
   type SwConfig,
 } from "./policy";
@@ -76,6 +80,17 @@ async function storable(res: Response): Promise<Response> {
   });
 }
 
+/** 내용 해시 헤더를 붙인 사본(해시 없는 이름의 정적 자산) */
+async function tagged(res: Response, hash: string): Promise<Response> {
+  const headers = new Headers(res.headers);
+  headers.set(SW_HASH_HEADER, hash);
+  return new Response(await res.blob(), {
+    status: res.status,
+    statusText: res.statusText,
+    headers,
+  });
+}
+
 async function precache(): Promise<void> {
   const pages = await caches.open(names.pages);
   await Promise.all(
@@ -89,16 +104,25 @@ async function precache(): Promise<void> {
   await Promise.all(
     SW_CONFIG.assets.map(async (href) => {
       const url = abs(href);
-      if (await statics.match(url)) return;
-      const res = await fetch(url);
+      const wanted = SW_CONFIG.assetHashes[href];
+      const hit = await statics.match(url);
+      if (hit && swStaticFresh(wanted, hit.headers.get(SW_HASH_HEADER))) return;
+      // 해시 없는 이름(웹폰트 · 아이콘 · manifest)은 HTTP 캐시(max-age)의 지난 내용이 끼지 않게 새로 받고 내용 해시를 붙여 둔다
+      const res =
+        wanted === undefined
+          ? await fetch(url)
+          : await fetch(url, { cache: "reload" });
       if (!res.ok) throw new Error(`precache ${href} ${res.status}`);
-      await statics.put(url, await storable(res));
+      await statics.put(
+        url,
+        wanted === undefined ? await storable(res) : await tagged(res, wanted),
+      );
     }),
   );
 }
 
 async function activate(): Promise<void> {
-  const keep = [names.pages, names.runtime, names.static];
+  const keep = [names.pages, names.runtime, names.static, names.data];
   await Promise.all(
     swStaleCaches(await caches.keys(), keep).map((name) => caches.delete(name)),
   );
@@ -172,6 +196,32 @@ async function asset(event: SwFetchEvent): Promise<Response> {
   return res;
 }
 
+/** 자료(JSON) — 네트워크 우선: 받으면 사본을 새로 고치고(상한까지), 받지 못하면(오프라인) 사본, 사본도 없으면 원래 실패 그대로 */
+async function data(event: SwFetchEvent): Promise<Response> {
+  const { request } = event;
+  const key = request.url.split("#")[0] ?? request.url;
+  const store = await caches.open(names.data);
+  try {
+    const res = await fetch(request);
+    if (res.ok && res.type === "basic") {
+      const copy = res.clone();
+      event.waitUntil(
+        (async () => {
+          await store.delete(key);
+          await store.put(key, await storable(copy));
+          const overflow = swOverflow(await store.keys(), SW_DATA_LIMIT);
+          await Promise.all(overflow.map((req) => store.delete(req)));
+        })().catch(() => undefined),
+      );
+    }
+    return res;
+  } catch (error) {
+    const hit = await store.match(key);
+    if (hit) return hit;
+    throw error;
+  }
+}
+
 sw.addEventListener("install", (event) => {
   event.waitUntil(precache());
 });
@@ -198,4 +248,5 @@ sw.addEventListener("fetch", (event) => {
   );
   if (kind === "page") event.respondWith(page(event));
   else if (kind === "static") event.respondWith(asset(event));
+  else if (kind === "data") event.respondWith(data(event));
 });

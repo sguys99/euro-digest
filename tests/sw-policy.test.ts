@@ -14,6 +14,7 @@ import {
   swRequestKind,
   swSafeReturnPath,
   swStaleCaches,
+  swStaticFresh,
   swStaticToDrop,
   type SwRequestInfo,
 } from "@/lib/sw/policy";
@@ -86,6 +87,27 @@ describe("swRequestKind — 캐시 대상 판정", () => {
     expect(swRequestKind(info, SCOPE)).toBe("bypass");
   });
 
+  it.each([
+    ["마이 팀 자료", `${SCOPE}my/data/teams/arsenal.json`],
+    ["마이 선수 자료", `${SCOPE}my/data/players/kim-min-jae.json`],
+    ["온보딩 자료", `${SCOPE}my/data/onboarding.json`],
+    ["쿼리 붙은 자료", `${SCOPE}my/data/teams/arsenal.json?v=1`],
+  ])("%s → data(네트워크 우선 · 사본, M4-16)", (_label, url) => {
+    expect(swRequestKind(req(url, { mode: "cors" }), SCOPE)).toBe("data");
+  });
+
+  it("마이 페이지 이동은 page, my/data 밖 JSON · my/data 안 JSON 아닌 것은 bypass", () => {
+    expect(swRequestKind(req(`${SCOPE}my/`, { mode: "navigate" }), SCOPE)).toBe(
+      "page",
+    );
+    expect(
+      swRequestKind(req(`${SCOPE}pagefind/pagefind-entry.json`), SCOPE),
+    ).toBe("bypass");
+    expect(swRequestKind(req(`${SCOPE}my/data/readme.txt`), SCOPE)).toBe(
+      "bypass",
+    );
+  });
+
   it("루트 배포(basePath 빈 값)도 같은 규칙", () => {
     const root = `${ORIGIN}/`;
     expect(swRequestKind(req(`${root}news/`, { mode: "navigate" }), root)).toBe(
@@ -117,6 +139,7 @@ describe("캐시 이름 · 버전 정리 · 상한", () => {
       pages: "ed-pages-abc123",
       runtime: "ed-runtime-abc123",
       static: "ed-static",
+      data: "ed-data",
     });
     expect(SW_CACHE_PREFIX).toBe("ed-");
   });
@@ -145,6 +168,13 @@ describe("캐시 이름 · 버전 정리 · 상한", () => {
     expect(swOverflow(["a", "b"], 2)).toEqual([]);
     expect(swOverflow(["a"], 0)).toEqual(["a"]);
     expect(swOverflow(["a", "b"], -1)).toEqual(["a", "b"]);
+  });
+
+  it("swStaticFresh — 해시 이름은 사본이면 그대로, 해시 없는 이름은 내용 해시가 같을 때만(같은 이름 · 다른 내용 → 다시 받기, M4-16)", () => {
+    expect(swStaticFresh(undefined, null)).toBe(true);
+    expect(swStaticFresh("h2", "h2")).toBe(true);
+    expect(swStaticFresh("h2", "h1")).toBe(false);
+    expect(swStaticFresh("h2", null)).toBe(false);
   });
 
   it("swStaticToDrop — 이번 목록에 없는 지난 청크", () => {

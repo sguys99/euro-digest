@@ -253,12 +253,14 @@ describe("티켓 마스트헤드 — 호수·스텁(DESIGN §9.3)", () => {
     expect(t).toHaveTextContent("매일 아침, 밤사이 유럽 축구를 한눈에.");
     const buttons = within(t).getAllByRole("button");
     expect(buttons.map((b) => b.getAttribute("aria-label"))).toEqual([
-      "검색 (단축키 /)",
+      "검색",
       "테마: 시스템 설정 (눌러서 바꾸기)",
     ]);
-    // 검색 버튼(M4-14) — 대화상자를 연다, 1024 이상 "검색" 글자 + `/` 키
+    // 검색 버튼(M4-14) — 대화상자를 연다, 1024 이상 "검색" 글자 + 키 상자
     expect(buttons[0]).toHaveAttribute("aria-haspopup", "dialog");
-    expect(buttons[0]).toHaveTextContent("검색/");
+    // 단축키는 ⌘K · Ctrl+K만(2026-11-02 사용자 결정 — '/' 제거), 키 상자는 하이드레이션 값 'Ctrl K'(Mac은 뒤에 '⌘K')
+    expect(buttons[0]).toHaveAttribute("aria-keyshortcuts", "Control+K Meta+K");
+    expect(buttons[0]).toHaveTextContent(/^검색(Ctrl K|⌘K)$/);
     // 결과 가리기 스위치(M4-15) — role=switch + 보이는 라벨, 기본 꺼짐(D3)
     const sw = within(t).getByRole("switch", { name: "결과 가리기" });
     expect(sw).toHaveAttribute("aria-checked", "false");

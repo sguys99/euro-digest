@@ -10,6 +10,7 @@ import { RunningHead, SectionHead } from "@/components/ui/section-head";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { loadMyDirectory, loadMyNewsCandidates } from "@/lib/data/my-page";
 import { issueNumber } from "@/lib/issue";
+import { MY_EMPTY_BOOT_SCRIPT } from "@/lib/my-empty-boot";
 import { MY_IMPORT_BOOT_SCRIPT } from "@/lib/my-import-boot";
 import { MY_DIRECTORY_ID, MY_NEWS_PAGE } from "@/lib/my-view";
 import { MY_DESCRIPTION, pageMetadata } from "@/lib/seo";
@@ -92,6 +93,8 @@ export default function MyPage() {
         {/* 공유 링크(`?t=…&p=…`)로 열었을 때만 — 가져오기 확인 띠(FR-114, M4-10). 부트가 첫 페인트 전에 자리를 연다(CLS) */}
         <script dangerouslySetInnerHTML={{ __html: MY_IMPORT_BOOT_SCRIPT }} />
         <MyImport />
+        {/* 팔로우 0이면 첫 페인트 전에 빈 상태로(교정쇄 → 빈 상태 이동 없음 — M4-16) */}
+        <script dangerouslySetInnerHTML={{ __html: MY_EMPTY_BOOT_SCRIPT }} />
         <MyBoard
           fixturesHeadingId="my-fx-h"
           resultsHeadingId="my-rs-h"

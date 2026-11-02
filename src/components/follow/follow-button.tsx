@@ -126,7 +126,9 @@ export function FollowButton({
       aria-pressed={state === "on"}
       aria-disabled={state === "limit" ? true : undefined}
       aria-describedby={state === "limit" ? reasonId : undefined}
-      aria-label={icon ? `${name} 팔로우` : undefined}
+      // 접근 이름은 상태와 무관하게 고정 — 상태는 `aria-pressed`(켜짐) · `aria-disabled` + 이유 문장(한도)만 알린다(M4-16 리뷰: '팔로우 중'이
+      // 이름에도 들어가 상태를 두 번 읽었다). 보이는 글자(팔로우 · 팔로우 중 · 팔로우 n/n)는 시안 그대로 — 장식(aria-hidden)
+      aria-label={icon ? `${name} 팔로우` : `팔로우 — ${name}`}
       onClick={onClick}
       className={cx(
         "group/fol relative inline-flex min-h-11 flex-none items-stretch border border-ink bg-transparent p-0 text-left text-sm font-extrabold text-ink transition-colors duration-fast ease-print",
@@ -157,7 +159,7 @@ export function FollowButton({
           {STATES.map((s) => (
             <span
               key={s}
-              aria-hidden={s !== state || undefined}
+              aria-hidden="true"
               className={cx(
                 "col-start-1 row-start-1",
                 s !== state && "invisible",
@@ -166,7 +168,6 @@ export function FollowButton({
               {LABEL[s](kind)}
             </span>
           ))}
-          <span className="sr-only"> — {name}</span>
         </span>
       )}
     </button>

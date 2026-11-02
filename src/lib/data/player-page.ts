@@ -19,6 +19,7 @@ import {
 import { NAMES_KO_PATH } from "@/lib/data/names";
 import { loadNationalTeamConfig } from "@/lib/data/national-team";
 import { loadKoreanPlayers, recentNewsIssues } from "@/lib/data/team-page";
+import { loadTransfersView } from "@/lib/data/transfers";
 import type { RosterView } from "@/lib/korean-players-view";
 import {
   nationalCallUpOf,
@@ -27,10 +28,12 @@ import {
   transferTagOf,
   type NationalCallUpView,
   type PlayerDetailView,
+  type PlayerNewsItem,
   type PlayerNewsView,
   type TransferTagView,
 } from "@/lib/player-detail-view";
 import type { NewsFile } from "@/lib/schema/news";
+import type { TransferRowView } from "@/lib/transfers-view";
 import {
   fixtureRoundLabel,
   teamFixtureViews,
@@ -40,8 +43,15 @@ import {
 export interface PlayerPageData {
   view: PlayerDetailView;
   news: PlayerNewsView<NewsFile>;
-  /** 티켓 꼬리표 이적설 — 코드가 이 선수 이적으로 판정한 카드가 없으면 null(기사 건수만) */
+  /** 티켓 꼬리표 이적설 — 이 선수의 이적 원장 행이 있으면 첫 행(`/transfers` 순서), 없으면 코드가 이 선수 이적으로 판정한 최신 카드. 둘 다 없으면 null(기사 건수만) */
   transferTag: TransferTagView | null;
+  /**
+   * '이적설' 구역 — 이 선수의 이적 원장 행(`data/transfers.json` → `/transfers/`와 같은 화면 모델 · 순서, M4-16 · DECISIONS D2 §8 #16 이월).
+   * 트래커 파일이 없거나 이 선수 레코드가 없으면 빈 배열(구역은 뉴스 행으로 — 아래)
+   */
+  transfers: TransferRowView[];
+  /** 원장 행(근거 줄 · 타임라인)에 실리지 않은 이 선수의 이적 분류 카드(최신순 — `news.transfer.items`에서 뺀 나머지) */
+  transferRest: PlayerNewsItem[];
   /** 최신 소집 명단에 있으면 그 소집 — 없으면 null */
   callUp: NationalCallUpView | null;
   /** 1024 이상 목차(명단 — 최근 경기 출전 분) */
@@ -114,10 +124,24 @@ export function loadPlayerPage(
 
   const { since, issues } = recentNewsIssues(now);
   const news = playerNews(issues, slug, since);
+  const transfers = (loadTransfersView()?.rows ?? []).filter(
+    (r) => r.player.slug === slug,
+  );
+  const shown = new Set(
+    transfers.flatMap((r) => [
+      ...(r.lead ? [r.lead.id] : []),
+      ...r.timeline.map((n) => n.card.id),
+    ]),
+  );
+  const first = transfers[0];
   return {
     view,
     news,
-    transferTag: transferTagOf(news.transfer.items, slug, team),
+    transferTag: first
+      ? { status: first.status, tier: first.bestTier, to: first.to }
+      : transferTagOf(news.transfer.items, slug, team),
+    transfers,
+    transferRest: news.transfer.items.filter(({ card }) => !shown.has(card.id)),
     callUp: nationalCallUpOf(loadNationalTeamConfig(), slug),
     roster: loadRosterView(dataFile, namesFile),
     source: dataSourceOf(

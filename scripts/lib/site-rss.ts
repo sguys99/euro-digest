@@ -132,7 +132,8 @@ export function channelDate(
 // ─── XML ────────────────────────────────────────────────────────────────────
 
 /** XML 1.0에서 쓸 수 없는 문자(탭·LF·CR 밖의 C0 제어 문자, 짝 없는 서로게이트, U+FFFE·U+FFFF) */
-const XML_INVALID_RE = /[^\t\n\r -퟿-�\u{10000}-\u{10FFFF}]/gu;
+const XML_INVALID_RE =
+  /[^\t\n\r\u{20}-\u{D7FF}\u{E000}-\u{FFFD}\u{10000}-\u{10FFFF}]/gu;
 
 /** 텍스트·속성 값 이스케이프 — 쓸 수 없는 문자를 지우고 & < > " '를 엔티티로 */
 export function escapeXml(text: string): string {

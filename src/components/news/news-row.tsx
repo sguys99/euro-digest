@@ -29,6 +29,9 @@ import { formatKst } from "@/lib/time";
  * 결과 가림(M4-15 — FR-37): spoiler 카드는 행이 펼치는 단위(뜯김) — 가림이 켜지면 원제목을 접고 띠 "결과 가림 · {분류} 제목 · 보기"(뉴스
  * 카드와 같다 — feed-card.tsx `spoilerCardProps`).
  */
+/** 라틴 18px 원제목 링크 패딩(이적 원장 근거 줄과 같은 값) */
+const LATIN_TITLE_LINK = { className: "py-3.5" };
+
 export function NewsRow({
   item,
   idPrefix,
@@ -88,6 +91,8 @@ export function NewsRow({
           lang={card.lang}
           source={lead.n}
           className={card.lang === "ko" ? "text-[15px]" : "text-lg"}
+          // 라틴 18px 제목은 기본 패딩(10px)으로 누름 영역 43px — 14px로 44px 이상(인라인 패딩이라 줄 높이는 그대로, M4-16)
+          linkProps={card.lang === "ko" ? undefined : LATIN_TITLE_LINK}
         >
           {card.t}
         </CardTitle>

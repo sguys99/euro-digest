@@ -243,7 +243,8 @@ test("깊은 없는 경로 → 404 상태 + 사이트 404(스타일 적용), 링
   const html = readFileSync(path.join(outDir, "404.html"), "utf8");
   const refs = [...html.matchAll(/\s(?:href|src)="([^"]+)"/g)]
     .map((m) => m[1] ?? "")
-    .filter((ref) => !/^(?:https?:|mailto:|#|data:)/.test(ref));
+    // webcal://(구독형 캘린더 — M4-16 사용자 결정)은 SITE_URL 절대 주소라 http(s)처럼 뺀다(경로에 basePath가 있는지는 m4-feeds-profile e2e)
+    .filter((ref) => !/^(?:https?:|webcal:|mailto:|#|data:)/.test(ref));
   expect(refs.length).toBeGreaterThan(0);
   for (const ref of refs)
     expect(ref.startsWith(`${basePath}/`), ref).toBe(true);

@@ -9,7 +9,7 @@
  * 킥오프가 지난 결과 대기(`pending`) 경기는 파일이 있어도 캘린더에 넣을 일이 아니라 숨긴다. **킥오프 미정(tbc)은 건다** — 파일은 종일
  * `TENTATIVE` '(시각 미정)' 일정이라(site-ics 머리 주석) 시각을 지어내지 않고, 일정이 잡히면 같은 UID로 갱신된다(DECISIONS M4 '구현 중 결정').
  */
-import type { CalendarFeed } from "@/lib/paths";
+import type { CalendarFeed, SubscribableCalendarFeed } from "@/lib/paths";
 
 /** 경기별 .ics — 데이터 상태 `scheduled`인 경기만(그 밖은 파일이 없다) */
 export function matchIcsFeed(match: {
@@ -49,6 +49,6 @@ export function upcomingRowIcsFeed(row: { key: string }): CalendarFeed {
 }
 
 /** 팀 .ics — 팀 페이지가 있는 팀은 늘 파일이 있다 */
-export function teamIcsFeed(team: string): CalendarFeed {
+export function teamIcsFeed(team: string): SubscribableCalendarFeed {
   return { kind: "team", team };
 }

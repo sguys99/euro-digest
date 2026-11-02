@@ -65,6 +65,8 @@
 @custom-variant offline (:root[data-offline] &);
 /* 결과 가리기(M4-15 — `<html data-spoiler="on">`, 초기 스크립트 · 스위치가 단다). 첫 페인트부터 CSS가 가린다(§13) */
 @custom-variant spoiler-on (:root[data-spoiler="on"] &);
+/* `/my` 팔로우 0 — 첫 페인트 전 스크립트(src/lib/my-empty-boot.ts)가 단다(M4-16) */
+@custom-variant my-empty (:root[data-my-empty] &);
 
 /* ── 2. Tailwind 기본 테마 정리 ───────────────────────────────────────────────
  * 색: 토큰 색만(기본 팔레트·black·white 없음 — transparent·current는 그대로)

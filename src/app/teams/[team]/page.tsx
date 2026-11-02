@@ -15,7 +15,7 @@ import { TeamProfile } from "@/components/team/team-profile";
 import { TeamSheet, type SheetPlayerView } from "@/components/team/team-sheet";
 import { TeamTicket } from "@/components/team/team-ticket";
 import { DataSourceNote } from "@/components/data-source";
-import { IcsLink } from "@/components/ui/ics-link";
+import { IcsSubscribe } from "@/components/ui/ics-link";
 import { SearchRecord } from "@/components/search/search-record";
 import { dataSourceOf } from "@/lib/data-source";
 import { teamIcsFeed } from "@/lib/ics-links";
@@ -143,9 +143,9 @@ export default async function TeamPage({ params }: PageProps<"/teams/[team]">) {
           nextComp={nextComp}
           korean={page.korean}
           nextIcs={
-            <IcsLink
+            <IcsSubscribe
               feed={teamIcsFeed(slug)}
-              label=".ics 일정 구독"
+              label="일정 구독"
               context={`${self.name} 경기`}
               variant="button"
               className="ml-auto"

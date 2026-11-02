@@ -37,7 +37,7 @@ test.describe("팔로우 → /my", () => {
     await expect(follow).toHaveAttribute("aria-pressed", "false");
     await follow.click();
     await expect(
-      page.getByRole("button", { name: "팔로우 중 — 바이에른 뮌헨" }),
+      page.getByRole("button", { name: "팔로우 — 바이에른 뮌헨" }),
     ).toHaveAttribute("aria-pressed", "true");
     expect(await stored(page)).toEqual({
       v: 1,
@@ -96,7 +96,7 @@ test.describe("팔로우 → /my", () => {
     }, KEY);
     await page.goto("teams/bayern-munchen/");
     const limit = page.getByRole("button", {
-      name: "팔로우 5/5 — 바이에른 뮌헨",
+      name: "팔로우 — 바이에른 뮌헨",
     });
     await expect(limit).toHaveAttribute("aria-disabled", "true");
     const note = page.locator('[data-slot="follow-limit-note"]');
@@ -134,7 +134,7 @@ test.describe("팔로우 → /my", () => {
     const follow = page.getByRole("button", { name: "팔로우 — 바이에른 뮌헨" });
     await follow.click();
     await expect(
-      page.getByRole("button", { name: "팔로우 중 — 바이에른 뮌헨" }),
+      page.getByRole("button", { name: "팔로우 — 바이에른 뮌헨" }),
     ).toBeVisible();
     await expect(page.getByText("이번 방문 동안만 유지돼요")).toBeVisible();
     await page.goto("my/");

@@ -245,6 +245,83 @@ test("오프라인 — 최근 3일 호·홈·뉴스는 워커 캐시로 열리�
   expect(errors).toEqual([]);
 });
 
+test("오프라인 /my(M4-16) — 온라인으로 본 마이와 팀 · 선수 자료는 사본으로 열리고(다음 경기 · 최근 결과), 처음 보는 자료만 '받지 못했어요'", async ({
+  page,
+  context,
+}) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.addInitScript(() => {
+    if (!localStorage.getItem("ed-follow"))
+      localStorage.setItem(
+        "ed-follow",
+        JSON.stringify({
+          v: 1,
+          teams: ["bayern-munchen"],
+          players: ["kim-min-jae"],
+        }),
+      );
+  });
+  await page.goto("./");
+  await waitForController(page);
+  // 온라인으로 /my — 페이지는 런타임 캐시, 자료 2개는 ed-data에(네트워크 우선)
+  await page.goto("my/");
+  await expect(
+    page.locator('[data-slot="my-fixtures"] [data-slot="admission"]'),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("list", { name: "최근 결과 — 최근 경기부터" }),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(async () =>
+        (await (await caches.open("ed-data")).keys()).map(
+          (r) => new URL(r.url).pathname,
+        ),
+      ),
+    )
+    .toEqual(
+      expect.arrayContaining([
+        `${basePath}/my/data/teams/bayern-munchen.json`,
+        `${basePath}/my/data/players/kim-min-jae.json`,
+      ]),
+    );
+
+  await context.setOffline(true);
+  const res = await page.goto("my/");
+  expect(res?.fromServiceWorker()).toBe(true);
+  await expect(
+    page.locator('[data-slot="my-fixtures"] [data-slot="admission"]'),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("list", { name: "최근 결과 — 최근 경기부터" }),
+  ).toBeVisible();
+  await expect(page.locator("[data-slot=offline-band-body]")).toBeVisible();
+  await expect(
+    page.getByRole("status").filter({ hasText: "받지 못했어요" }),
+  ).toHaveCount(0);
+
+  // 사본이 없는 자료(새로 팔로우한 팀)만 실패 안내 + 다시 시도
+  await page.evaluate(() =>
+    localStorage.setItem(
+      "ed-follow",
+      JSON.stringify({
+        v: 1,
+        teams: ["bayern-munchen", "arsenal"],
+        players: ["kim-min-jae"],
+      }),
+    ),
+  );
+  await page.reload();
+  await expect(
+    page
+      .getByRole("status")
+      .filter({ hasText: "오프라인이라 팀·선수 자료를 받지 못했어요" }),
+  ).toBeVisible();
+  await context.setOffline(false);
+  expect(errors).toEqual([]);
+});
+
 /** 새 버전 흉내용 정적 서버(테스트 프로세스 안) — out/을 basePath 아래로 그대로 주고 sw.js만 메모리 값(버전 교체)으로 준다 */
 function mirrorServer() {
   let sw = SW_SOURCE;

@@ -251,3 +251,24 @@ describe("MyManage · MyHead", () => {
     ).toHaveTextContent("팀 바이에른 뮌헨 · 선수 김민재");
   });
 });
+
+describe("MyBoard — 첫 페인트 전 빈 상태(M4-16)", () => {
+  it("부트 스크립트: 팔로우 0이면 <html data-my-empty>, 있으면 달지 않는다 · 섬 이름과 같은 글자", async () => {
+    const { MY_EMPTY_ATTR, MY_EMPTY_BOOT_SCRIPT } =
+      await import("@/lib/my-empty-boot");
+    expect(MY_EMPTY_ATTR).toBe("data-my-empty");
+    const html = document.documentElement;
+    localStorage.removeItem(FOLLOW_STORAGE_KEY);
+    html.removeAttribute(MY_EMPTY_ATTR);
+    new Function(MY_EMPTY_BOOT_SCRIPT)();
+    expect(html.hasAttribute(MY_EMPTY_ATTR)).toBe(true);
+    html.removeAttribute(MY_EMPTY_ATTR);
+    localStorage.setItem(
+      FOLLOW_STORAGE_KEY,
+      JSON.stringify({ v: 1, teams: ["arsenal"], players: [] }),
+    );
+    new Function(MY_EMPTY_BOOT_SCRIPT)();
+    expect(html.hasAttribute(MY_EMPTY_ATTR)).toBe(false);
+    localStorage.removeItem(FOLLOW_STORAGE_KEY);
+  });
+});

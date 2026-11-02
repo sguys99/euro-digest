@@ -4,7 +4,7 @@ import { CalendarAddIcon, RssIcon } from "@/components/ui/icons";
 import { cx } from "@/lib/cx";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { RSS_MIME } from "@/lib/feed-links";
-import { icsPath, rssPath } from "@/lib/paths";
+import { icsPath, rssPath, webcalUrl } from "@/lib/paths";
 
 /**
  * 뒤표지 '구독' 단 (PRD FR-122 · FR-123, DECISIONS 'M4 미니 게이트' #6, DESIGN §9.3 "구독 단(뒤표지)" · §11.28, plan M4-11 이월 · M4-12)
@@ -19,8 +19,10 @@ import { icsPath, rssPath } from "@/lib/paths";
  * - 링크는 뒤표지 링크와 같은 모양(800 밑줄 1px · 4px 띄움 → hover 2px, 최소 44px). RSS · .ics는 Next 라우트가 아니라 빌드 산출물이라
  *   일반 `<a>` + basePath 붙은 경로(`rssPath` · `icsPath` — src/lib/paths.ts). 링크 이름은 "{대상} RSS"(DESIGN §9.3 — 대회는 약칭 + 화면
  *   밖 " RSS", 정식 이름은 `title`).
- * - **주소 복사 · webcal 없음**(DECISIONS M4 미니 게이트 '구현 중 결정'): 평범한 https 링크 — 누르면 받기/캘린더 앱 가져오기, 구독은 링크
- *   주소를 리더·캘린더 앱에 붙여 넣는다(안내 줄). 복사 버튼은 뒤표지에 섬을 새로 만들고, `webcal://`은 기기마다 처리가 갈린다.
+ * - **캘린더 = `webcal://` 구독 링크 + https '.ics 받기' 병기**(2026-11-02 사용자 결정, M4-16 — 처음 M4-12는 https 하나였다): 구독 링크를
+ *   누르면 캘린더 앱이 구독으로 열고, 열리지 않는 기기 · 웹 캘린더는 파일 주소를 붙여 넣는다(안내 줄). RSS는 https 그대로 — 리더에 주소를
+ *   붙여 넣는다. 주소 복사 버튼은 두지 않는다(뒤표지에 섬이 생긴다 — DECISIONS M4 미니 게이트 '구현 중 결정').
+ * - 안내 줄에 결과 가리기 범위를 함께 적는다(M4-16 리뷰 — RSS는 원제목 그대로라 가리지 않는다, 캘린더에는 스코어가 없다).
  */
 
 /** 뒤표지 링크 모양(src/components/shell/colophon.tsx `LINK`와 같다) */
@@ -91,15 +93,28 @@ export function SubscribeBand({
         </Row>
         <Row icon={<CalendarAddIcon size={16} />} label="캘린더">
           <span className="flex min-w-0 flex-wrap gap-x-4">
-            <a href={icsPath({ kind: "korean" })} className={LINK}>
-              한국 선수 소속팀 경기 .ics
+            <a
+              href={webcalUrl({ kind: "korean" })}
+              data-ics-mode="webcal"
+              className={LINK}
+            >
+              한국 선수 소속팀 경기 구독
+            </a>
+            <a
+              href={icsPath({ kind: "korean" })}
+              type="text/calendar"
+              className={LINK}
+            >
+              <span className="sr-only">한국 선수 소속팀 경기 </span>.ics 받기
             </a>
           </span>
         </Row>
       </ul>
       <p className="text-[12.5px] leading-normal text-colophon-fg-2">
-        RSS 리더나 캘린더 앱에 주소를 붙여 넣어 구독해요. 팀 일정 .ics는 각 팀
-        화면 ‘다음 경기’ 칸에 있어요.
+        RSS는 리더에 주소를 붙여 넣어요. 캘린더 ‘구독’은 캘린더 앱이 열려 바로
+        구독하고, 열리지 않으면 ‘.ics 받기’ 주소를 붙여 넣어요. 팀 일정은 각 팀
+        화면 ‘다음 경기’ 칸에 있어요. RSS에는 결과 가리기가 적용되지 않아요
+        (캘린더에는 스코어가 없어요).
       </p>
     </section>
   );

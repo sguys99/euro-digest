@@ -420,7 +420,8 @@ function PageNewsRow({
               href={hit.link}
               target="_blank"
               rel="noopener"
-              className="relative block py-1.5 no-underline decoration-brand-accent decoration-2 underline-offset-3 hover:underline"
+              // 누름 영역: 한 줄 제목(블록 34~36px)은 위아래 5px을 ::before로 넓혀 44px 이상(줄 높이 그대로 — 위 태그 줄 · 아래 메타 줄은 누르는 요소가 아니다, M4-16)
+              className="relative block py-1.5 no-underline decoration-brand-accent decoration-2 underline-offset-3 before:absolute before:inset-x-0 before:-inset-y-1.25 before:content-[''] hover:underline"
             >
               <NewsTitle hit={hit} page />
               <span className="sr-only">{`(원문 ${hit.src}, 새 창)`}</span>

@@ -246,7 +246,10 @@ function eventLines(event: IcsEvent, transparent: boolean): string[] {
 /** 일정 정렬 — 킥오프(시각 값 — 밀리초 표기 유무와 무관) · id 순 */
 function sortEvents(events: IcsEvent[]): IcsEvent[] {
   const ms = (e: IcsEvent): number => parseUtcIso(e.kickoff).getTime();
-  return events.sort((a, b) => ms(a) - ms(b) || a.id.localeCompare(b.id));
+  // 동점은 코드포인트 비교 — localeCompare는 실행 환경의 로캘(ICU)에 따라 순서가 달라질 수 있다(결정성 — M4-16 리뷰)
+  return events.sort(
+    (a, b) => ms(a) - ms(b) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
+  );
 }
 
 export interface CalendarMeta {

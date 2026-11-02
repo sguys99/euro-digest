@@ -11,7 +11,7 @@ const input = (page: Page) =>
   dialog(page).getByRole("combobox", { name: "검색어" });
 
 async function openByButton(page: Page) {
-  await page.getByRole("button", { name: "검색 (단축키 /)" }).click();
+  await page.getByRole("button", { name: "검색", exact: true }).click();
   await expect(input(page)).toBeFocused();
 }
 
@@ -125,7 +125,7 @@ test.describe("검색 오버레이 — 키보드 · 접근성(FR-132, DESIGN §1
     page,
   }) => {
     await page.goto("korean-players/");
-    const button = page.getByRole("button", { name: "검색 (단축키 /)" });
+    const button = page.getByRole("button", { name: "검색", exact: true });
     await openByButton(page);
     await expect(dialog(page)).toHaveAttribute("aria-modal", "true");
     // 입력 전 = 한국 선수 가나다 색인
@@ -161,7 +161,9 @@ test.describe("검색 오버레이 — 키보드 · 접근성(FR-132, DESIGN §1
     await expect(page).toHaveURL(/\/korean-players\/kim-min-jae\/$/);
   });
 
-  test("단축키 / · Ctrl+K — 입력 필드 안의 /는 글자", async ({ page }) => {
+  test("단축키 Ctrl+K만 — '/'는 단축키가 아니다(입력 필드 밖에서도 · WCAG 2.1.4)", async ({
+    page,
+  }) => {
     await page.goto("search/");
     const field = page.getByRole("searchbox", { name: "검색어" });
     await field.click();
@@ -175,6 +177,8 @@ test.describe("검색 오버레이 — 키보드 · 접근성(FR-132, DESIGN §1
 
     await page.locator("body").click({ position: { x: 1, y: 1 } });
     await page.keyboard.press("/");
+    await expect(dialog(page)).toHaveCount(0);
+    await page.keyboard.press("Control+k");
     await expect(input(page)).toBeFocused();
     await expect(input(page)).toHaveValue("");
   });
