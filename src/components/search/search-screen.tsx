@@ -27,7 +27,7 @@ import {
   SearchSkeleton,
 } from "./search-results";
 import { useSearch, type SearchState } from "./use-search";
-import { useSpoiler } from "./use-spoiler";
+import { useSpoiler } from "@/components/spoiler/use-spoiler";
 
 /**
  * `/search/?q=` 전체 결과 (PRD FR-130·FR-131, DESIGN §9.3 "검색 오버레이 · 색인" — `/search/`는 같은 묶음, 머리 `--text-h2` + 3px, 혼합안 화면 4,
@@ -151,6 +151,12 @@ export function SearchScreen({ action }: { action: string }) {
   const [busy, setBusy] = useState(false);
   const [now] = useState(() => new Date());
   const spoiler = useSpoiler();
+  // 결과 가리기 스위치를 켜거나 끄면 펼친 카드를 잊는다(M4-15 — 다른 화면의 '보기'와 같은 규칙: 다시 켜면 처음처럼 다 가린다)
+  const [seenSpoiler, setSeenSpoiler] = useState(spoiler);
+  if (seenSpoiler !== spoiler) {
+    setSeenSpoiler(spoiler);
+    setRevealed(new Set());
+  }
   const { state, more, retry } = useSearch(query, PAGE_LIMITS);
 
   useEffect(() => {

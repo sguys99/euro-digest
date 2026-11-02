@@ -1,6 +1,10 @@
 import Link from "next/link";
 
 import { TrendMark, ZONE_BAND } from "@/components/competition/marks";
+import {
+  SpoilerHatch,
+  SpoilerRevealButton,
+} from "@/components/spoiler/spoiler-parts";
 import { TeamBadge } from "@/components/team/team-badge";
 import { FlatTab } from "@/components/ui/chip";
 import { ChevronRightIcon } from "@/components/ui/icons";
@@ -24,6 +28,8 @@ import { LeagueMiniTabs } from "./league-mini-tabs";
  * - 접근성: 목록 `aria-label="{대회} 상위 5위"`, 순위 뒤 화면 밖 "위", 승점 뒤 화면 밖 "점", 배지 `aria-hidden`, ▲▼ 화면 밖 글자(TrendMark).
  * - JS가 없으면 `<noscript>` 스타일이 탭 목록을 숨기고 패널 6개를 모두 펼친다(패널마다 평탄 탭 + 대회명 머리가 나타난다 — 진보적 향상).
  * - 자료가 없는 대회(첫 수집 전·개막 전 빈 순위표)는 그 패널만 빈 상태 문구.
+ * - 결과 가림(M4-15 — DECISIONS M4 #2): 패널 하나가 펼치는 단위(찍힘). 가림이 켜지면 변동 ▲▼만 26×13 빗금 자리(순위·승점은 집계라
+ *   그대로), 아래 줄에 '변동 보기'(그 패널만 — 목록으로 포커스).
  */
 
 /** JS가 없으면 탭 목록을 숨기고 패널을 모두 펼친다(머리 주석) */
@@ -31,8 +37,9 @@ const NOSCRIPT_STYLE =
   "<style>[data-league-mini] [role=tabpanel][hidden]{display:block!important}[data-league-mini] [data-slot=league-mini-tabs]{display:none!important}[data-league-mini] [data-slot=league-mini-caption]{display:flex!important}</style>";
 
 function MiniPanel({ panel }: { panel: LeagueMiniPanelView }) {
+  const spoil = panel.rows.length > 0;
   return (
-    <>
+    <div {...(spoil ? { "data-spoil": "stamp" } : {})}>
       {/* JS 없을 때만 보이는 패널 머리(탭 목록 대신) */}
       <p
         data-slot="league-mini-caption"
@@ -47,6 +54,8 @@ function MiniPanel({ panel }: { panel: LeagueMiniPanelView }) {
         <ol
           role="list"
           aria-label={`${panel.name} 상위 ${panel.rows.length}위`}
+          data-spoil-focus=""
+          tabIndex={-1}
           className="mt-2.5 border-t border-rule"
         >
           {panel.rows.map((row) => (
@@ -73,7 +82,8 @@ function MiniPanel({ panel }: { panel: LeagueMiniPanelView }) {
                 >
                   {row.team.name}
                 </span>
-                <TrendMark trend={row.trend} />
+                <TrendMark trend={row.trend} spoil />
+                <SpoilerHatch sr="변동 가림" box="h-3.25 w-6.5" />
                 <span className="font-numeric text-[20px] leading-none font-extrabold tabular-nums">
                   {row.pts}
                   <span className="sr-only">점</span>
@@ -101,12 +111,20 @@ function MiniPanel({ panel }: { panel: LeagueMiniPanelView }) {
         ) : (
           <span />
         )}
+        {spoil ? (
+          <SpoilerRevealButton
+            label={`${panel.name} 순위 변동 보기`}
+            className="ml-auto"
+          >
+            변동 보기
+          </SpoilerRevealButton>
+        ) : null}
         <Link href={panel.href} className={WIDGET_LINK}>
           전체 순위
           <ChevronRightIcon size={16} />
         </Link>
       </p>
-    </>
+    </div>
   );
 }
 

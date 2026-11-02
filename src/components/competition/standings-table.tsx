@@ -18,6 +18,12 @@ import type { Match } from "@/lib/schema/competition";
 import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
+import {
+  SpoilerFlap,
+  SpoilerHatch,
+  SpoilerVeil,
+} from "@/components/spoiler/spoiler-parts";
+
 import { FormChips, ResultChip, Score, TrendMark, ZONE_BAND } from "./marks";
 import { StandingsIsland } from "./standings-island";
 
@@ -35,6 +41,9 @@ import { StandingsIsland } from "./standings-island";
  * - 팀 칸(배지 + 한글 팀명)은 팀 화면(`/teams/[team]/`, M2-13) 링크이고, 375 펼침 끝에 "{팀} 팀 화면 ›" 텍스트 링크가 있다(혼합안). 팀 파일이
  *   없는 팀은 글자만(`TeamLink` — 없는 페이지로 가는 링크를 만들지 않는다). 행 누름(펼침)은 링크 클릭을 건드리지 않는다(섬).
  * - 배지는 옆 한글 팀명이 이름이라 `aria-hidden`(D1 §5 #5).
+ * - 결과 가림(M4-15 — DECISIONS M4 미니 게이트 A #2, DESIGN §9.3 '결과 가림 — 순위표'): 표 하나가 펼치는 단위(찍힘). 가림이 켜지면 변동 ▲▼
+ *   칸 = 26×13 빗금 자리, 1024 이상 '최근 5경기' = 112×20 빗금 줄, 375 펼침의 최근 경기 = 띠(그 칸만 '보기'). 순위·승점·경기·승무패·득실은
+ *   집계값이라 그대로다. 표 위 안내 띠 + '변동 보기'(표 하나를 연다 → 표로 포커스).
  */
 
 /** 구간 머리 줄 위 괘선·글자 */
@@ -90,10 +99,21 @@ export function StandingsTable({
   hasPrev,
 }: StandingsTableProps) {
   return (
-    <>
+    <div data-spoil="stamp" data-slot="standings-spoil">
+      <SpoilerVeil
+        action="변동 보기"
+        actionLabel={`${compName} 순위 변동 보기`}
+        className="mt-3.5"
+      >
+        순위 변동과 최근 5경기를 가렸어요. 순위·승점은 어젯밤 경기까지 더한
+        집계라 그대로 보여요.
+      </SpoilerVeil>
       <table
         id={id}
         data-slot="standings"
+        // '변동 보기'로 펼치면 표로 포커스(캡션이 표 이름 — DESIGN §9.3)
+        data-spoil-focus=""
+        tabIndex={-1}
         className="mt-1 w-full border-collapse text-sm"
       >
         <caption className="sr-only">
@@ -179,7 +199,7 @@ export function StandingsTable({
         </tbody>
       </table>
       <StandingsIsland tableId={id} />
-    </>
+    </div>
   );
 }
 
@@ -224,7 +244,13 @@ function StandingRowLines({
             </span>
             <TrendMark
               trend={view.trend}
+              spoil
               className="mt-1.25 flex lg:mt-px lg:inline-flex"
+            />
+            <SpoilerHatch
+              sr="변동 가림"
+              box="h-3.25 w-6.5"
+              className="mt-1.25 lg:mt-px"
             />
           </span>
         </td>
@@ -287,7 +313,8 @@ function StandingRowLines({
           </button>
         </td>
         <td className={cn(WIDE, "border-b border-rule pl-3.5 align-middle")}>
-          <FormChips form={view.form} />
+          <FormChips form={view.form} spoil />
+          <SpoilerHatch sr="최근 5경기 가림" box="h-5 w-28" />
         </td>
       </tr>
       <tr id={detailId} hidden className="lg:hidden" data-detail="">
@@ -344,49 +371,59 @@ function RowDetail({
           </div>
         ))}
       </dl>
-      <div>
-        <p className="mb-1.5 text-[12.5px] font-extrabold">
-          최근 {formScope} 경기
-          <span className="ml-1.5 font-normal text-ink-2">
-            {form.count > 0
-              ? `자료 ${form.count}경기 · 오래된 → 최근`
-              : "자료 없음"}
+      {/* 최근 경기 — 결과 가림이 켜지면 띠 하나로 접는다(그 칸만 '보기' — 펼치는 단위) */}
+      <div data-spoil="stamp">
+        <SpoilerFlap>
+          최근 {formScope}{" "}
+          <span className="font-numeric text-sm leading-none font-semibold tabular-nums">
+            {Math.max(form.count, recent.length)}
           </span>
-        </p>
-        <FormChips form={form} />
-        {recent.length > 0 ? (
-          <ul className="mt-2 grid gap-1 text-[13px] *:flex *:flex-wrap *:items-center *:gap-2 [&_time]:font-numeric [&_time]:leading-none [&_time]:font-semibold [&_time]:text-ink-2">
-            {recent.map((m) => {
-              const result = resultFor(m, row.team);
-              const home = team(m.home);
-              const away = team(m.away);
-              return (
-                <li key={m.id}>
-                  {result ? <ResultChip result={result} /> : null}
-                  <time dateTime={m.kickoff}>
-                    {formatKst(m.kickoff, "dayShort")}{" "}
-                    {formatKst(m.kickoff, "time")}
-                  </time>
-                  <span>
-                    <span lang={home.latin ? "en" : undefined}>
-                      {home.name}
-                    </span>{" "}
-                    {m.score ? (
-                      <Score
-                        h={m.score.h}
-                        a={m.score.a}
-                        className="mx-0.5 font-numeric text-[15px] leading-none"
-                      />
-                    ) : null}{" "}
-                    <span lang={away.latin ? "en" : undefined}>
-                      {away.name}
+          경기
+        </SpoilerFlap>
+        <div data-slot="result-value">
+          <p className="mb-1.5 text-[12.5px] font-extrabold">
+            최근 {formScope} 경기
+            <span className="ml-1.5 font-normal text-ink-2">
+              {form.count > 0
+                ? `자료 ${form.count}경기 · 오래된 → 최근`
+                : "자료 없음"}
+            </span>
+          </p>
+          <FormChips form={form} />
+          {recent.length > 0 ? (
+            <ul className="mt-2 grid gap-1 text-[13px] *:flex *:flex-wrap *:items-center *:gap-2 [&_time]:font-numeric [&_time]:leading-none [&_time]:font-semibold [&_time]:text-ink-2">
+              {recent.map((m) => {
+                const result = resultFor(m, row.team);
+                const home = team(m.home);
+                const away = team(m.away);
+                return (
+                  <li key={m.id}>
+                    {result ? <ResultChip result={result} /> : null}
+                    <time dateTime={m.kickoff}>
+                      {formatKst(m.kickoff, "dayShort")}{" "}
+                      {formatKst(m.kickoff, "time")}
+                    </time>
+                    <span>
+                      <span lang={home.latin ? "en" : undefined}>
+                        {home.name}
+                      </span>{" "}
+                      {m.score ? (
+                        <Score
+                          h={m.score.h}
+                          a={m.score.a}
+                          className="mx-0.5 font-numeric text-[15px] leading-none"
+                        />
+                      ) : null}{" "}
+                      <span lang={away.latin ? "en" : undefined}>
+                        {away.name}
+                      </span>
                     </span>
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
+        </div>
       </div>
       {view.team.page ? (
         <Link

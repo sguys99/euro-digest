@@ -2,9 +2,11 @@ import type { ComponentProps, ReactNode } from "react";
 
 import {
   KoreanArmband,
+  spoilerCardProps,
   TagList,
   TransferStage,
 } from "@/components/news/feed-card";
+import { SpoilerFlap } from "@/components/spoiler/spoiler-parts";
 import { CardTitle } from "@/components/ui/card";
 import { StampChip } from "@/components/ui/chip";
 import { cx } from "@/lib/cx";
@@ -24,6 +26,8 @@ import { formatKst } from "@/lib/time";
  *
  * `why`·`liProps`(M4-08 — 혼합안 '내 팀 소식'): 메타 줄 끝 걸린 팔로우 이름(800 `--ink`) · 행 `<li>` 속성(첫 페인트 전 스크립트가 고르는 후보 행 —
  * src/lib/my-news-dom.ts).
+ * 결과 가림(M4-15 — FR-37): spoiler 카드는 행이 펼치는 단위(뜯김) — 가림이 켜지면 원제목을 접고 띠 "결과 가림 · {분류} 제목 · 보기"(뉴스
+ * 카드와 같다 — feed-card.tsx `spoilerCardProps`).
  */
 export function NewsRow({
   item,
@@ -45,9 +49,15 @@ export function NewsRow({
   const { card } = item;
   const lead = card.src[0]!;
   const titleId = `${idPrefix}-${card.id}-t`;
+  const spoil = spoilerCardProps(
+    card,
+    CATEGORY_LABEL[card.cat],
+    `${idPrefix}-`,
+  );
   return (
     <li
       {...liProps}
+      {...(spoil ? { "data-spoil": "tear" } : {})}
       className="grid grid-cols-[var(--gutter-date)_minmax(0,1fr)] gap-x-2.5 border-b border-rule pt-3.25 pb-3 lg:gap-x-3.5 xl:grid-cols-[48px_minmax(0,1fr)] xl:gap-x-2.5"
     >
       <p className="grid content-start justify-items-start gap-2">
@@ -73,6 +83,7 @@ export function NewsRow({
         <CardTitle
           id={titleId}
           as="h3"
+          {...(spoil ? { "data-spoil-value": "" } : {})}
           href={lead.u}
           lang={card.lang}
           source={lead.n}
@@ -80,6 +91,11 @@ export function NewsRow({
         >
           {card.t}
         </CardTitle>
+        {spoil ? (
+          <SpoilerFlap descId={spoil.descId} className="mt-2">
+            {spoil.desc}
+          </SpoilerFlap>
+        ) : null}
         <p className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] leading-[1.3] text-ink-2">
           <span
             lang={sourceNameLang(lead.n, card.lang)}

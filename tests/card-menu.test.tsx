@@ -77,11 +77,22 @@ describe("CardMenu 마크업 — 카드마다 버튼, 피드마다 메뉴 하나
       const button = menuButton(card.id);
       expect(button).toHaveAttribute("type", "button");
       expect(button).toHaveAttribute("id", `${card.id}-mb`);
-      expect(button).toHaveAttribute("aria-describedby", `${card.id}-t`);
-      // 설명 = 카드 제목(장식 ↗ 제외 — 45개 "카드 메뉴" 버튼을 구분)
-      expect(button).toHaveAccessibleDescription(
-        `${card.t.trim()} (원문 ${card.src[0]?.n}, 새 창)`,
-      );
+      if (card.spoiler) {
+        // 결과 가림 카드(M4-15) — 설명은 띠 설명("{분류} 제목")이라 가린 제목이 보조기술로 새지 않는다
+        expect(button).toHaveAttribute("aria-describedby", `${card.id}-fl`);
+        expect(button.getAttribute("aria-describedby")).not.toBe(
+          `${card.id}-t`,
+        );
+        expect(button).not.toHaveAccessibleDescription(
+          expect.stringContaining(card.t.trim()),
+        );
+      } else {
+        expect(button).toHaveAttribute("aria-describedby", `${card.id}-t`);
+        // 설명 = 카드 제목(장식 ↗ 제외 — 45개 "카드 메뉴" 버튼을 구분)
+        expect(button).toHaveAccessibleDescription(
+          `${card.t.trim()} (원문 ${card.src[0]?.n}, 새 창)`,
+        );
+      }
       expect(button).toHaveAttribute("aria-haspopup", "menu");
       expect(button).toHaveAttribute("aria-expanded", "false");
       expect(button).toHaveAttribute("aria-controls", MENU_ID);

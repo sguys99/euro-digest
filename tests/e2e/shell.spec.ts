@@ -455,10 +455,14 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           .filter((el) => el.getClientRects().length > 0)
           .map((el) => {
             const r = el.getBoundingClientRect();
+            // 누름 영역을 `::after`로 넓힌 요소(결과 가리기 스위치 — 보이는 높이 30px · 누름 46×78px, DESIGN §9.2)는 그 상자로 잰다
+            const after = getComputedStyle(el, "::after");
+            const ah = parseFloat(after.height) || 0;
+            const aw = parseFloat(after.width) || 0;
             return {
               name: el.textContent?.trim() || el.ariaLabel,
-              w: r.width,
-              h: r.height,
+              w: Math.max(r.width, aw),
+              h: Math.max(r.height, ah),
             };
           })
           .filter((r) => r.w < 44 || r.h < 44)
@@ -539,9 +543,9 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           );
         }
       }
-      // 건너뛰기 · 워드마크 · 검색 버튼(M4-14) · 테마 토글 · (1024 이상 상단 내비 6 — 리그 M2-10 · 한국 선수 M3-09 · 이적 M4-04 · 마이 M4-08) · 뒤표지 4(AI 작성 고지 ·
+      // 건너뛰기 · 워드마크 · 검색 버튼(M4-14) · 테마 토글 · 결과 가리기 스위치(M4-15) · (1024 이상 상단 내비 6 — 리그 M2-10 · 한국 선수 M3-09 · 이적 M4-04 · 마이 M4-08) · 뒤표지 4(AI 작성 고지 ·
       // 소개·출처 정책 · 삭제·정정 요청 — M1-36 · GitHub) · 뒤표지 구독 단 9(RSS 2 · 대회 6 · .ics 1 — M4-12) · (1023 이하 하단 탭 5)
-      expect(checked).toBe(width >= 1024 ? 23 : 22);
+      expect(checked).toBe(width >= 1024 ? 24 : 23);
       expect(problems).toEqual([]);
     });
   }

@@ -169,6 +169,7 @@ function RecentCells({ row }: { row: RosterRowView }) {
           home={r.home}
           goals={r.goals}
           assists={r.assists}
+          revealLabel={`${row.nameKo} ${formatKst(r.kickoff, "monthDay")} ${r.opponent.name}전 결과 보기`}
         />
         {/* 1023 이하 — 결과 아래 날짜 · 상대(1024 이상은 앞 두 칸) */}
         <span className="mt-1.25 ml-auto block max-w-[13.5em] text-xs leading-[1.3] text-ink-2 lg:hidden">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { FormChip } from "@/components/competition/form-chip";
+import { SpoilerCellButton } from "@/components/spoiler/spoiler-parts";
 import { TeamBadge } from "@/components/team/team-badge";
 import { FlatTab, flatTabVariants } from "@/components/ui/chip";
 import { FORM_WORD } from "@/lib/competition-view";
@@ -83,18 +84,24 @@ function GoalBadge({ n, unit }: { n: number; unit: string }) {
  * 결과 칸 — 선수·팀 기준 행(스코어 맥락 규칙, D64 ③): `[W/D/L 칩] 기준 팀 득점-상대 · 홈/원정` + 아래 승부차기 · 골·도움 배지.
  * 오른쪽 정렬(`align="start"`면 왼쪽), 칸 안 간격 6px. 결과 값(칩·스코어·승부차기·골·도움)은 `data-slot="result-value"` 묶음 —
  * 결과 가리기(M4-15)가 이 묶음만 가리고 홈/원정 글자는 남긴다(D64 ④). 결과 정보가 없으면 "결과 없음".
+ *
+ * 결과 가림 칸(M4-15 — DESIGN §9.3 '결과 가림 칸'): 칸 하나가 펼치는 단위(찍힘)다. 가림이 켜지면 값 자리에 44×64 "보기" 버튼 하나(골 0 행도
+ * 같은 버튼 — 골 여부가 새지 않는다), 이름은 `revealLabel`("{날짜} {상대}전 결과 보기").
  */
 export function ResultCell({
   result,
   home,
   goals,
   assists,
+  revealLabel,
   align = "end",
 }: {
   result: ResultView | null;
   home: boolean;
   goals: number;
   assists: number | null;
+  /** 결과 가림 칸 버튼 이름 — "{M.DD} {상대}전 결과 보기"(선수 목록은 앞에 선수 이름) */
+  revealLabel: string;
   align?: "start" | "end";
 }) {
   const badges = (
@@ -106,9 +113,12 @@ export function ResultCell({
     </>
   );
   const hasBadges = goals > 0 || (assists !== null && assists > 0);
+  // 가릴 값이 하나라도 있으면 칸이 펼치는 단위 — 없으면("결과 없음"만) 가릴 것이 없다
+  const hasValue = result !== null || hasBadges;
   return (
     <span
       data-slot="result-cell"
+      {...(hasValue ? { "data-spoil": "stamp" } : {})}
       className={cx(
         "inline-grid gap-1.5 align-middle",
         align === "end" ? "justify-items-end" : "justify-items-start",
@@ -135,6 +145,7 @@ export function ResultCell({
         ) : (
           <span className="text-[12.5px] text-ink-2">결과 없음</span>
         )}
+        {hasValue ? <SpoilerCellButton label={revealLabel} /> : null}
         <span className="text-xs font-extrabold text-ink-2 before:mr-1.5 before:font-normal before:content-['·']">
           {home ? "홈" : "원정"}
         </span>

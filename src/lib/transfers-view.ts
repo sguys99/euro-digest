@@ -25,6 +25,7 @@
  */
 import type { TeamView } from "@/lib/competition-view";
 import type { CompId, Tier, TransferStatus } from "@/lib/schema/common";
+import { CATEGORY_LABEL } from "@/lib/news/labels";
 import type { NewsCard } from "@/lib/schema/news";
 import type { Transfer } from "@/lib/schema/transfer";
 import { kstDate, parseUtcIso } from "@/lib/time";
@@ -114,6 +115,11 @@ export interface TransferCardView {
   at: string;
   /** 같은 카드의 다른 출처 수(+N) */
   more: number;
+  /**
+   * 결과 가림(FR-37, M4-15) — spoiler 카드면 띠 설명("{한국 선수 관련 · }{분류} 제목" — 뉴스 카드와 같은 말), 아니면 null.
+   * 가림이 켜지면 원제목을 접고 띠를 보인다
+   */
+  spoiler: string | null;
 }
 
 export type TimelineNodeView =
@@ -190,6 +196,9 @@ function cardView(card: NewsCard): TransferCardView {
     source: lead.n,
     at: lead.at,
     more: card.src.length - 1,
+    spoiler: card.spoiler
+      ? `${card.kr ? "한국 선수 관련 · " : ""}${CATEGORY_LABEL[card.cat]} 제목`
+      : null,
   };
 }
 

@@ -1,3 +1,4 @@
+import { SpoilerCellButton } from "@/components/spoiler/spoiler-parts";
 import { SectionHead } from "@/components/ui/section-head";
 import { TeamBadge } from "@/components/team/team-badge";
 import { TeamLink, TeamName } from "@/components/team/team-link";
@@ -81,18 +82,27 @@ function TieBlock({ tie: view }: { tie: TieView }) {
   if (tie.legCount === 1) {
     // 결승 — 단판이라 합산 줄 없이 날짜 머리 + 경기 줄 + 보조 글자
     const leg = view.legs[0]!;
+    const finished =
+      leg.view.state === "finished" && leg.view.match.score !== null;
     return (
-      <li id={tie.id} data-tie={tie.state} className="scroll-mt-4">
+      // 결과 가림(M4-15): 결승은 경기 줄 + 줄 밖 보조 글자(우승)가 한 단위 — 경기 줄의 '보기'가 이 묶음을 편다
+      <li
+        id={tie.id}
+        data-tie={tie.state}
+        {...(finished ? { "data-spoil": "stamp" } : {})}
+        className="scroll-mt-4"
+      >
         <p className={LEG_HEAD}>
           {leg.label} ·{" "}
           <time dateTime={kstDate(leg.view.match.kickoff)}>{leg.view.day}</time>
         </p>
         <ul role="list">
-          <MatchRow view={leg.view} full />
+          <MatchRow view={leg.view} full spoilScope={false} />
         </ul>
         {view.note ? (
           <p
             data-tie-note=""
+            data-slot={finished ? "result-value" : undefined}
             className="mt-1.5 text-center text-[12.5px] font-extrabold"
           >
             {view.note}
@@ -136,6 +146,8 @@ function AggregateRow({ view }: { view: TieView }) {
     <li
       data-state={tie.aggregate ? "finished" : "scheduled"}
       data-aggregate=""
+      // 결과 가림(M4-15): 합산 스코어 + 진출 글자가 한 단위(경기 줄과 같은 결과 가림 칸)
+      {...(tie.aggregate ? { "data-spoil": "stamp" } : {})}
       className="match-row match-row-full"
     >
       <span data-t="label">합산</span>
@@ -145,7 +157,16 @@ function AggregateRow({ view }: { view: TieView }) {
       </TeamLink>
       <span data-s="">
         {tie.aggregate ? (
-          <Score h={tie.aggregate.first} a={tie.aggregate.second} />
+          <>
+            <Score
+              h={tie.aggregate.first}
+              a={tie.aggregate.second}
+              data-slot="result-value"
+            />
+            <SpoilerCellButton
+              label={`합산 ${view.first.name} 대 ${view.second.name} 결과 보기`}
+            />
+          </>
         ) : (
           <span className="match-state">예정</span>
         )}
@@ -155,7 +176,11 @@ function AggregateRow({ view }: { view: TieView }) {
         <TeamName team={view.second} />
       </TeamLink>
       {view.note ? (
-        <span data-x="" data-tie-note="">
+        <span
+          data-x=""
+          data-tie-note=""
+          data-slot={tie.aggregate ? "result-value" : undefined}
+        >
           {tie.state === "decided" ? (
             <b className="font-extrabold text-ink">{view.note}</b>
           ) : (

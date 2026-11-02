@@ -7,6 +7,7 @@ import {
 } from "@/components/follow/follow-button";
 import { PlayerLink } from "@/components/korean-players/player-marks";
 import { KoreanArmband } from "@/components/news/feed-card";
+import { SpoilerCellButton } from "@/components/spoiler/spoiler-parts";
 import { FlatTab } from "@/components/ui/chip";
 import {
   goalDiffText,
@@ -129,7 +130,18 @@ export function TeamTicket({
             form.count > 0 ? `전 대회 · 자료 ${form.count}경기` : "전 대회"
           }
         >
-          <FormChips form={form} />
+          {form.count > 0 ? (
+            // 결과 가림(M4-15 — DECISIONS M4 #3): 폼 5칸 줄은 이 칸만 '보기'(폭 112 — 몇 칸이 W인지 새지 않게 한 줄로)
+            <span data-spoil="stamp" className="inline-flex">
+              <FormChips form={form} spoil />
+              <SpoilerCellButton
+                wide
+                label={`최근 경기 ${form.count}경기 결과 보기`}
+              />
+            </span>
+          ) : (
+            <FormChips form={form} />
+          )}
         </TailCell>
         <TailCell label="다음 경기">
           {next && nextComp ? (

@@ -34,20 +34,30 @@ export const ZONE_BAND: Readonly<Record<ZoneBand, string>> = {
 const TREND_SHAPE =
   "block h-1.75 w-2 bg-current [clip-path:polygon(50%_0,100%_100%,0_100%)]";
 
-/** 순위 변동 — 상승 ▲n · 하락 ▼n · 변동 없음 "–" · 전날 자료 없음 = 빈칸(화면 밖 "변동 자료 없음") */
+/**
+ * 순위 변동 — 상승 ▲n · 하락 ▼n · 변동 없음 "–" · 전날 자료 없음 = 빈칸(화면 밖 "변동 자료 없음").
+ * `spoil`이면 결과 가리기(M4-15)가 가리는 값(`data-slot="result-value"`) — 변동 없음 · 자료 없음도 함께 가린다(어느 팀이 움직였는지 새지 않게)
+ */
 export function TrendMark({
   trend,
   className,
+  spoil = false,
 }: {
   trend: TrendView;
   className?: string;
+  spoil?: boolean;
 }) {
+  const slot = spoil ? "result-value" : undefined;
   const base =
     "inline-flex min-h-3.25 items-center gap-0.5 font-numeric text-[13px] leading-none font-semibold tracking-[0.02em] whitespace-nowrap tabular-nums";
   switch (trend.kind) {
     case "up":
       return (
-        <span data-trend="up" className={cn(base, "text-trend-up", className)}>
+        <span
+          data-trend="up"
+          data-slot={slot}
+          className={cn(base, "text-trend-up", className)}
+        >
           <i aria-hidden="true" className={TREND_SHAPE} />
           <span>{trend.by}</span>
           <span className="sr-only">계단 상승</span>
@@ -57,6 +67,7 @@ export function TrendMark({
       return (
         <span
           data-trend="down"
+          data-slot={slot}
           className={cn(base, "text-trend-down", className)}
         >
           <i aria-hidden="true" className={cn(TREND_SHAPE, "rotate-180")} />
@@ -66,30 +77,41 @@ export function TrendMark({
       );
     case "same":
       return (
-        <span data-trend="same" className={cn(base, "text-ink-2", className)}>
+        <span
+          data-trend="same"
+          data-slot={slot}
+          className={cn(base, "text-ink-2", className)}
+        >
           <span aria-hidden="true">–</span>
           <span className="sr-only">변동 없음</span>
         </span>
       );
     case "none":
       return (
-        <span data-trend="none" className={cn(base, "text-ink-2", className)}>
+        <span
+          data-trend="none"
+          data-slot={slot}
+          className={cn(base, "text-ink-2", className)}
+        >
           <span className="sr-only">변동 자료 없음</span>
         </span>
       );
   }
 }
 
-/** 폼 칩 5칸 묶음 — `role="img"` + 읽는 이름(칸은 장식) */
+/** 폼 칩 5칸 묶음 — `role="img"` + 읽는 이름(칸은 장식). `spoil`이면 결과 가리기가 가리는 값(M4-15 — 5칸을 한 줄로 함께) */
 export function FormChips({
   form,
   className,
+  spoil = false,
 }: {
   form: FormView;
   className?: string;
+  spoil?: boolean;
 }) {
   return (
     <span
+      data-slot={spoil ? "result-value" : undefined}
       role="img"
       aria-label={form.label}
       className={cn("inline-flex flex-none gap-0.75 align-middle", className)}
@@ -116,13 +138,19 @@ export function Score({
   h,
   a,
   className,
+  "data-slot": slot,
 }: {
   h: number;
   a: number;
   className?: string;
+  /** `result-value`면 결과 가리기(M4-15)가 가리는 값 */
+  "data-slot"?: "result-value";
 }) {
   return (
-    <span className={cn("inline-flex gap-0.75 font-extrabold", className)}>
+    <span
+      data-slot={slot}
+      className={cn("inline-flex gap-0.75 font-extrabold", className)}
+    >
       <span>{h}</span>
       <span aria-hidden="true">-</span>
       <span className="sr-only">대</span>

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { KoreanIndex } from "@/components/search/korean-index";
 import { SearchButton } from "@/components/search/search-button";
+import { SpoilerSwitch } from "@/components/spoiler/spoiler-switch";
 import { BottomTab, BottomTabs } from "@/components/ui/nav-tabs";
 import { Toaster } from "@/components/ui/toast";
 import { loadSearchIndexPlayers } from "@/lib/data/search";
@@ -130,6 +131,8 @@ export function AppShell({
               index={<KoreanIndex players={loadSearchIndexPlayers()} />}
             />
           }
+          // 결과 가리기 스위치(M4-15) — 스위치 + '보기' 펼치기 위임 섬 하나(모든 페이지)
+          spoilerSwitch={<SpoilerSwitch />}
           counterfoil={counterfoil?.strip}
           counterfoilPanel={counterfoil?.panel}
         />

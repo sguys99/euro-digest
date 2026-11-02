@@ -120,6 +120,7 @@ describe("결과 칸 — 스코어 맥락 규칙(D64 ③)", () => {
         home
         goals={1}
         assists={2}
+        revealLabel="10.29 마그데부르크전 결과 보기"
       />,
     );
     const values = container.querySelectorAll('[data-slot="result-value"]');
@@ -133,6 +134,16 @@ describe("결과 칸 — 스코어 맥락 규칙(D64 ③)", () => {
     expect(score?.className).toMatch(/(^| )gap-0( |$)/);
     expect(score?.className).toContain("tracking-[0.04em]");
     expect(score?.className).not.toContain("gap-0.75");
+    // 결과 가림 칸(M4-15): 칸이 펼치는 단위(찍힘) + 이름 있는 "보기" 버튼 하나 — 값 묶음 밖(가림 표식)
+    const cell = container.querySelector('[data-slot="result-cell"]');
+    expect(cell?.getAttribute("data-spoil")).toBe("stamp");
+    const reveal = container.querySelectorAll("[data-spoil-reveal]");
+    expect(reveal).toHaveLength(1);
+    expect(reveal[0]?.getAttribute("aria-label")).toBe(
+      "10.29 마그데부르크전 결과 보기",
+    );
+    expect(reveal[0]?.hasAttribute("data-spoil-mask")).toBe(true);
+    expect(reveal[0]?.closest('[data-slot="result-value"]')).toBeNull();
   });
 
   it("승부차기 — 무 칩 + 정규·연장 스코어 + '승부차기 4–3'(소속팀 먼저, 화면 밖 '대')", () => {
@@ -147,6 +158,7 @@ describe("결과 칸 — 스코어 맥락 규칙(D64 ③)", () => {
         home={false}
         goals={0}
         assists={null}
+        revealLabel="10.28 쾰른전 결과 보기"
       />,
     );
     const values = container.querySelectorAll('[data-slot="result-value"]');
@@ -157,8 +169,19 @@ describe("결과 칸 — 스코어 맥락 규칙(D64 ③)", () => {
   });
 
   it("결과 정보가 없으면 '결과 없음'(값을 지어내지 않는다)", () => {
-    render(<ResultCell result={null} home goals={0} assists={0} />);
+    const { container } = render(
+      <ResultCell
+        result={null}
+        home
+        goals={0}
+        assists={0}
+        revealLabel="10.28 쾰른전 결과 보기"
+      />,
+    );
     expect(screen.getByText("결과 없음")).toBeInTheDocument();
+    // 가릴 값이 없으면 단위·버튼도 없다
+    expect(container.querySelector("[data-spoil]")).toBeNull();
+    expect(container.querySelector("[data-spoil-reveal]")).toBeNull();
   });
 });
 

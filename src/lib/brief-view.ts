@@ -15,12 +15,15 @@
  *   화면은 "{M월 D일}(현지) 경기 기준"으로 현지 경기일임을 밝힌다(2026-10-19 사용자 결정 — 유럽 저녁 경기는 KST로 발행일 새벽이다).
  *   경기가 없는 날(`empty`)은 날짜를 단정하지 않는다(D30 #7 — "전날(현지) 경기 기준").
  * - 인덱스 탭 = 줄의 선택 필드 `comps`(대회 id 배열 — D58, 파이프라인이 refs에서 계산)의 첫 값. 키가 없는 옛 파일 줄은 탭 없음.
+ * - 결과 가리기(FR-37, M4-15): 줄마다 경기 결과 줄인지(`result` — 근거 refs로 판정, src/lib/spoiler.ts `isBriefResultLine`)와 모든 줄이
+ *   결과인지(`allResults` — 안내 띠 '모두 보기')를 낸다. 가림 자체는 CSS(`<html data-spoiler>`)가 한다.
  * - empty의 이유 = 파일의 선택 필드 `emptyReason`(D60) — `no-matches`면 S4("끝난 경기가 없었습니다"), `results-pending`이면 S4 대신
  *   "5줄을 싣지 못했어요" 안내(경기는 있었지만 결과를 받지 못한 날 — S4 문구는 사실이 아니다). 키가 없는 옛 empty는 no-matches.
  */
 import { BRIEF_MAX_LINES } from "@/lib/brief-limits";
 import type { BriefEmptyReason, BriefMode } from "@/lib/schema/brief";
 import type { CompId } from "@/lib/schema/common";
+import { briefSpoilerPlan } from "@/lib/spoiler";
 import { kstDayRangeUtc, kstParts, shiftDate } from "@/lib/time";
 
 /** 화면이 읽는 줄 — 스키마 줄(BriefLine)과 같은 모양. `comps`는 D58 선택 필드(없는 옛 파일도 받는다) */
@@ -28,6 +31,8 @@ export interface BriefLineInput {
   text: string;
   ai: boolean;
   comps?: readonly CompId[];
+  /** 근거 id(스키마 필수 — 결과 가리기 판정, M4-15). 없는 입력은 결과 줄로 본다 */
+  refs?: readonly string[];
 }
 
 export interface BriefInput {
@@ -55,6 +60,8 @@ export interface BriefRowView {
   ai: boolean;
   /** 인덱스 탭 대회(comps 첫 값 — D58). 없으면 null(탭 열은 빈 채로 둔다) */
   comp: CompId | null;
+  /** 경기 결과 줄 — 결과 가리기가 켜지면 띠로 접는다(FR-37) */
+  result: boolean;
 }
 
 export interface BriefView {
@@ -72,6 +79,8 @@ export interface BriefView {
   shortCount: number | null;
   /** `ai:true` 줄이 하나라도 있는가 — 하단 "AI 작성 안내" 링크(혼합안 S3·S4는 없음) */
   hasAi: boolean;
+  /** 모든 줄이 결과 줄 — 결과 가리기가 켜지면 안내 띠 "{N}줄 모두 경기 결과라 가렸어요." + '모두 보기'(DESIGN §9.3) */
+  allResults: boolean;
 }
 
 const NUM_RE = /\d+(?:\+\d+)?(?:-\d+)?/g;
@@ -103,12 +112,15 @@ export function monthDayLabel(date: string): string {
 
 export function buildBriefView(brief: BriefInput): BriefView {
   const empty = brief.mode === "empty";
-  const rows = (empty ? [] : brief.lines).map((line, index): BriefRowView => ({
+  const lines = empty ? [] : brief.lines;
+  const spoiler = briefSpoilerPlan(lines);
+  const rows = lines.map((line, index): BriefRowView => ({
     no: index + 1,
     text: line.text,
     parts: briefTextParts(line.text),
     ai: line.ai,
     comp: line.comps?.[0] ?? null,
+    result: spoiler.results[index] ?? true,
   }));
   const matchDate = empty ? null : briefMatchDate(brief.date);
   return {
@@ -121,5 +133,6 @@ export function buildBriefView(brief: BriefInput): BriefView {
     shortCount:
       rows.length > 0 && rows.length < BRIEF_MAX_LINES ? rows.length : null,
     hasAi: rows.some((row) => row.ai),
+    allResults: spoiler.all,
   };
 }

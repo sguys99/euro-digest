@@ -32,7 +32,7 @@ import { directoryWhenReady, useMyData } from "./use-my-data";
  * 클라이언트 섬. 팔로우(브라우저 저장소)로 팀·선수 자료 파일을 받아(src/components/my/use-my-data.ts) 합친다(src/lib/my-view.ts).
  * - **다음 경기**: 경기 id로 합친 줄(걸린 팔로우 이름 — 팔로우 순서) · 첫 경기 = 입장권 가로형(B), 나머지 = 일정 행. 처음 5줄, "모두 보기"로 나머지.
  * - **최근 결과**: 선수·팀 기준 행(D64 ③ — `[W/D/L] 기준 팀 득점-상대 · 홈/원정`, 선수 행은 골 · 도움 배지). 결과 값은 `data-slot="result-value"`
- *   (결과 가리기 M4-15가 이 묶음만 가린다 — FR-37, 기존 결과 칸 그대로).
+ *   (결과 가리기 M4-15가 이 묶음만 가리고 결과 가림 칸 "보기" — 이름 "{선수 }{M.DD} {상대}전 결과 보기", 펼치기는 스위치 섬의 위임 — FR-37).
  * - 1280 이상 = 다음 경기 · 최근 결과 2단(1.15fr · 1fr, 간격 40px — 혼합안), 그 아래는 쌓기.
  * - **상태 4종**: 하이드레이션 전 · 받는 중 = 움직이지 않는 교정쇄(`aria-busy`) · 팔로우 0 = 빈 상태(윤곽 '0' + 팔로우하는 곳 링크) ·
  *   받기 실패 = 안내 줄 + 다시 시도(오프라인이면 그 문구 — 앱 셸 오프라인 띠와 함께) · 자료 없음 = 구역마다 한 줄.
@@ -220,6 +220,7 @@ function ResultRow({ row }: { row: MyResultRowView }) {
         home={row.home}
         goals={row.goals}
         assists={row.player ? row.assists : null}
+        revealLabel={`${row.player ? `${row.player} ` : ""}${row.date} ${row.opponent.name}전 결과 보기`}
       />
     </li>
   );

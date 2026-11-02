@@ -56,6 +56,7 @@ function Row({ row }: { row: LastNightRowView }) {
           home={row.home}
           goals={row.goals}
           assists={row.assists}
+          revealLabel={`${row.nameKo} ${formatKst(row.kickoff, "monthDay")} ${row.opponent.name}전 결과 보기`}
         />
       </div>
     </li>

@@ -63,6 +63,8 @@
  */
 @custom-variant issue-late (:root[data-issue-late] &);
 @custom-variant offline (:root[data-offline] &);
+/* 결과 가리기(M4-15 — `<html data-spoiler="on">`, 초기 스크립트 · 스위치가 단다). 첫 페인트부터 CSS가 가린다(§13) */
+@custom-variant spoiler-on (:root[data-spoiler="on"] &);
 
 /* ── 2. Tailwind 기본 테마 정리 ───────────────────────────────────────────────
  * 색: 토큰 색만(기본 팔레트·black·white 없음 — transparent·current는 그대로)
@@ -1070,5 +1072,37 @@
   [data-roster-view="next"] [data-col="recent"],
   [data-roster-view="next"] [data-col="season"] {
     display: none;
+  }
+}
+
+/* ── 13. 결과 가리기 (M4-15, PRD FR-37 · D64 ④, DESIGN §9.3 '결과 가림' 3행 · §6.2, 계약은 src/lib/spoiler.ts) ──────────────────
+ * 켜고 끄기는 `<html data-spoiler="on">` 하나다. 초기 스크립트가 첫 페인트 전에 달아서 깜빡임·레이아웃 이동이 없다(JS 섬은 스위치와 '보기'
+ * 위임뿐). 블러·투명도로 가리지 않는다 — 가린 값은 `display: none`이라 보조기술·찾기·복사에서도 빠진다.
+ * - 값(`data-slot="result-value"` · `data-spoil-value`): 켜지면 숨는다. 펼친 단위(`data-spoil-open`) 안이면 그대로 보인다.
+ * - 표식(`data-spoil-mask` — 띠 · 결과 가림 칸 · 빗금 자리 · 안내 띠): 켜졌고 펼치지 않았을 때만 보인다(모양 · display는 표식이 가진다).
+ * - 드러날 때 모션: 단위의 `data-spoil` 값 — 칸은 찍힘(fast), 줄 · 카드는 뜯김(base). display: none에서 다시 그려질 때 한 번 돈다.
+ *   모션 줄이기면 base 레이어 규칙이 지속 시간을 0으로 만든다(§6.3).
+ * - 경기 줄(`match-row`) 가운데 스코어 칸은 켜졌을 때만 64px — 결과 가림 칸(44×64)이 들어간다(DECISIONS M4 #3). 펼쳐도 폭은 그대로다.
+ */
+:root:not([data-spoiler="on"]) [data-spoil-mask],
+[data-spoil-open] [data-spoil-mask] {
+  display: none;
+}
+:root[data-spoiler="on"]
+  :is([data-slot="result-value"], [data-spoil-value]):not([data-spoil-open] *) {
+  display: none;
+}
+[data-spoil="stamp"][data-spoil-open]
+  :is([data-slot="result-value"], [data-spoil-value]) {
+  animation: var(--animate-stamp);
+}
+[data-spoil="tear"][data-spoil-open]
+  :is([data-slot="result-value"], [data-spoil-value]) {
+  animation: var(--animate-tear);
+}
+:root[data-spoiler="on"] .match-row {
+  grid-template-columns: 40px minmax(0, 1fr) 64px minmax(0, 1fr);
+  @variant lg {
+    grid-template-columns: 44px minmax(0, 1fr) 64px minmax(0, 1fr);
   }
 }

@@ -3,6 +3,10 @@ import type { ReactNode } from "react";
 
 import { Leader } from "@/components/about/leader";
 import { FormChip, Score } from "@/components/competition/marks";
+import {
+  SpoilerCellButton,
+  SpoilerFlap,
+} from "@/components/spoiler/spoiler-parts";
 import { TeamBadge } from "@/components/team/team-badge";
 import { AiLabel } from "@/components/ui/ai-label";
 import { StampChip } from "@/components/ui/chip";
@@ -308,6 +312,7 @@ function EvidenceLine({ evidence }: { evidence: EvidenceView }) {
       </span>
       <span
         data-slot="result-cell"
+        {...(scoring || result ? { "data-spoil": "stamp" } : {})}
         className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1"
       >
         {scoring || result ? (
@@ -343,6 +348,11 @@ function EvidenceLine({ evidence }: { evidence: EvidenceView }) {
               </>
             ) : null}
           </span>
+        ) : null}
+        {scoring || result ? (
+          <SpoilerCellButton
+            label={`${formatKst(evidence.kickoff, "monthDay")} ${evidence.opponent.name}전 결과 보기`}
+          />
         ) : null}
         {scoring ? null : <b className="font-extrabold">{evidence.played}</b>}
         <span className="text-xs font-extrabold text-ink-2 before:mr-1.5 before:font-normal before:content-['·']">
@@ -662,6 +672,9 @@ export function RunnersUp({
 /**
  * 총평 단 — 구역 머리(3px + "총평" + REMARKS) → (LLM 총평이면) 머리 줄 'AI 작성' 라벨 한 번 + 생성 날짜 → 문단 16.5 / 19px(`max-width: 46em`).
  * 코드 템플릿으로 강등된 총평(`summaryAi` false)에는 라벨 · 생성 날짜를 붙이지 않는다(D64 ⑥ · D24)
+ *
+ * 결과 가림(M4-15): 총평 문단은 그 주 경기의 스코어 · 승패를 문장으로 담는다(입력 = 출전 기록 — 결과 포함) → 5줄 결과 줄과 같은 띠로 접는다
+ * (문단이 펼치는 단위 — 뜯김). 'AI 작성' 라벨 · 생성 날짜 머리 줄은 결과가 아니라 그대로 둔다.
  */
 export function WeeklySummary({
   summary,
@@ -677,6 +690,7 @@ export function WeeklySummary({
       aria-labelledby={headingId}
       data-slot="weekly-summary"
       data-ai={summary.ai}
+      data-spoil="tear"
     >
       <SectionHead heading="총평" headingId={headingId} runningHead="REMARKS" />
       {summary.ai ? (
@@ -693,7 +707,12 @@ export function WeeklySummary({
           </span>
         </p>
       ) : null}
-      <p className="mt-3 max-w-[46em] text-type-dek break-keep">
+      <SpoilerFlap className="mt-3">총평 — 이번 주 경기 결과 포함</SpoilerFlap>
+      <p
+        data-spoil-value=""
+        data-spoil-focus=""
+        className="mt-3 max-w-[46em] text-type-dek break-keep"
+      >
         {summary.text}
       </p>
     </section>

@@ -4,6 +4,7 @@ import { AiLabel } from "@/components/ui/ai-label";
 import { ROW_GRID } from "@/components/ui/card";
 import { FlatTab, IndexTab } from "@/components/ui/chip";
 import { SectionHead } from "@/components/ui/section-head";
+import { SpoilerFlap, SpoilerVeil } from "@/components/spoiler/spoiler-parts";
 import { aboutHref } from "@/lib/about-sections";
 import {
   buildBriefView,
@@ -42,7 +43,10 @@ import { cn } from "@/lib/utils";
  * - 등번호는 장식(`aria-hidden`) — 목록 의미(`<ol>`)가 순서를 전한다. Safari가 `list-style: none` 목록의 의미를 지우지 않게 `role="list"`.
  * - "AI 작성" 라벨은 `ai:true` 줄 전부, 템플릿 줄(`ai:false`)은 없음(FR-35). 템플릿 줄도 같은 문장 행이다(D45 ④ — 화면 모델 머리 주석).
  * - 하단 "AI 작성 안내"는 AI 줄이 있는 날만(혼합안 S3·S4), "브리핑 오류 신고"는 발행 날짜를 채운 이슈 양식(FR-36)이다.
- * - 서버 컴포넌트 — JS 0. 결과 가림(M4-15)은 이 블록에 아직 없다.
+ * - 결과 가림(M4-15 — FR-37, DESIGN §9.3 '결과 가림(줄·카드)'): 경기 결과 줄(`row.result`)은 행이 펼치는 단위(뜯김)다. 가림이 켜지면 문장
+ *   (+ AI 라벨)을 접고 띠 "결과 가림 · {n}번 줄 · 보기"를 보인다. 모든 줄이 결과면 목록 위 안내 띠 "{N}줄 모두 경기 결과라 가렸어요." +
+ *   '모두 보기'(블록 전체가 바깥 단위 — 펴면 줄이 모두 드러난다). 가림은 CSS(globals.css §13), 펼치기는 스위치 섬의 위임.
+ * - 서버 컴포넌트 — JS 0.
  */
 
 /** 텍스트 링크 — 레드 800 13px, 밑줄 1px(4px 띄움) → hover 2px, 최소 44px(DESIGN §9.2 텍스트 링크, 혼합안 `.tlink` — 사이 간격 없음) */
@@ -123,6 +127,8 @@ export function TodayBrief({
       aria-labelledby={headingId}
       data-brief-mode={view.mode}
       data-slot="today-brief"
+      // 모든 줄이 결과면 블록 전체가 펼치는 단위('모두 보기' — 안의 줄 단위도 함께 펴진다)
+      {...(view.allResults ? { "data-spoil": "tear" } : {})}
     >
       <SectionHead
         heading={text.heading}
@@ -156,15 +162,26 @@ export function TodayBrief({
           <BriefRest newsHref={newsHref} text={text} />
         )
       ) : (
-        <ol
-          role="list"
-          aria-label={`${view.rows.length}줄`}
-          className="mt-3 border-t border-rule"
-        >
-          {view.rows.map((row) => (
-            <BriefRow key={row.no} row={row} />
-          ))}
-        </ol>
+        <>
+          {view.allResults ? (
+            <SpoilerVeil
+              action="모두 보기"
+              actionLabel={`${text.heading} 모두 보기`}
+              className="mt-3"
+            >
+              {view.rows.length}줄 모두 경기 결과라 가렸어요.
+            </SpoilerVeil>
+          ) : null}
+          <ol
+            role="list"
+            aria-label={`${view.rows.length}줄`}
+            className="mt-3 border-t border-rule"
+          >
+            {view.rows.map((row) => (
+              <BriefRow key={row.no} row={row} />
+            ))}
+          </ol>
+        </>
       )}
       <div
         data-slot="brief-foot"
@@ -202,6 +219,7 @@ function BriefRow({ row }: { row: BriefRowView }) {
     <li
       data-slot="brief-row"
       data-ai={row.ai ? "true" : "false"}
+      {...(row.result ? { "data-spoil": "tear" } : {})}
       className={cn(
         ROW_GRID,
         "-mr-edge border-b border-rule pt-3.25 pb-3.5 lg:mr-0 lg:pt-3.5 lg:pb-3.75",
@@ -218,6 +236,10 @@ function BriefRow({ row }: { row: BriefRowView }) {
       <div className="min-w-0 self-center">
         <p
           data-slot="brief-text"
+          // 결과 줄 — 가림이 켜지면 문장과 AI 라벨을 함께 접는다(펼치면 이 문장으로 포커스)
+          {...(row.result
+            ? { "data-spoil-value": "", "data-spoil-focus": "" }
+            : {})}
           className="max-w-[46em] text-type-brief tracking-[-0.005em] text-pretty"
         >
           <BriefText parts={row.parts} />
@@ -232,6 +254,7 @@ function BriefRow({ row }: { row: BriefRowView }) {
             </>
           ) : null}
         </p>
+        {row.result ? <SpoilerFlap>{row.no}번 줄</SpoilerFlap> : null}
       </div>
       <span className="flex flex-col gap-0.5">
         {row.comp && comp ? (

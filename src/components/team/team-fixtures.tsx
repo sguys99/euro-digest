@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { ResultChip, Score } from "@/components/competition/marks";
+import { SpoilerCellButton } from "@/components/spoiler/spoiler-parts";
 import { FlatTab } from "@/components/ui/chip";
 import { ChevronDownIcon } from "@/components/ui/icons";
 import { SectionHead } from "@/components/ui/section-head";
@@ -104,6 +105,10 @@ function FixtureRow({
   return (
     <li
       data-state={state}
+      // 결과 가림(M4-15 — DECISIONS M4 #3): 종료 경기 줄 하나가 펼치는 단위(결과 가림 칸 — 찍힘)
+      {...(state === "finished" && match.score
+        ? { "data-spoil": "stamp" }
+        : {})}
       className="grid grid-cols-[var(--gutter)_minmax(0,1fr)_auto] items-center gap-x-2.5 border-b border-rule py-3"
     >
       <div className="grid gap-0.75">
@@ -147,16 +152,24 @@ function FixtureResult({ row }: { row: TeamFixtureView }) {
   if (state === "finished" && match.score) {
     return (
       <>
-        <Score
-          h={match.score.h}
-          a={match.score.a}
-          className="font-numeric text-2xl leading-none tracking-[0.04em] tabular-nums"
+        <SpoilerCellButton
+          label={`${row.date} ${row.opponent.name}전 결과 보기`}
         />
-        {row.result ? <ResultChip result={row.result} /> : null}
-        <span className="sr-only"> (홈-원정 순 스코어)</span>
-        {row.extra ? (
-          <span className="text-[11.5px] text-ink-2">{row.extra}</span>
-        ) : null}
+        <span
+          data-slot="result-value"
+          className="grid justify-items-end gap-1.25"
+        >
+          <Score
+            h={match.score.h}
+            a={match.score.a}
+            className="font-numeric text-2xl leading-none tracking-[0.04em] tabular-nums"
+          />
+          {row.result ? <ResultChip result={row.result} /> : null}
+          <span className="sr-only"> (홈-원정 순 스코어)</span>
+          {row.extra ? (
+            <span className="text-[11.5px] text-ink-2">{row.extra}</span>
+          ) : null}
+        </span>
       </>
     );
   }

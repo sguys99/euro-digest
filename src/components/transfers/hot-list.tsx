@@ -4,6 +4,7 @@ import { WIDGET_LINK } from "@/components/home/tonight";
 import { KoreanArmband, TransferStage } from "@/components/news/feed-card";
 import { TeamBadge } from "@/components/team/team-badge";
 import { CardTitle } from "@/components/ui/card";
+import { SpoilerFlap } from "@/components/spoiler/spoiler-parts";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { SectionHead } from "@/components/ui/section-head";
 import { TierBadge } from "@/components/ui/tier-badge";
@@ -67,6 +68,9 @@ export function TransferHotList({
           <li
             key={item.id}
             data-slot="transfer-hot-row"
+            {...(item.player.name === null && item.lead.spoiler !== null
+              ? { "data-spoil": "tear" }
+              : {})}
             className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-1.5 border-b border-rule py-2.75"
           >
             <TransferStage status={item.status} tier={null} className="mt-0" />
@@ -118,6 +122,9 @@ export function TransferHotList({
               <CardTitle
                 id={`${headingId}-${item.lead.id}-t`}
                 as="h3"
+                {...(item.lead.spoiler !== null
+                  ? { "data-spoil-value": "" }
+                  : {})}
                 href={item.lead.url}
                 lang={item.lead.lang}
                 source={item.lead.source}
@@ -131,6 +138,11 @@ export function TransferHotList({
                 {item.lead.title}
               </CardTitle>
             )}
+            {item.player.name === null && item.lead.spoiler !== null ? (
+              <SpoilerFlap className="col-span-2">
+                {item.lead.spoiler}
+              </SpoilerFlap>
+            ) : null}
           </li>
         ))}
       </ol>

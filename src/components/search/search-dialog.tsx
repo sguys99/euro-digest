@@ -25,7 +25,7 @@ import {
   SearchSkeleton,
 } from "./search-results";
 import { useSearch } from "./use-search";
-import { useSpoiler } from "./use-spoiler";
+import { useSpoiler } from "@/components/spoiler/use-spoiler";
 
 /**
  * 검색 오버레이 (PRD FR-130~132, DESIGN §9.3 "검색 오버레이 · 색인" · §10 D2 화면, 혼합안 `docs/design/d2/concept-mix.html` `.sov`, plan M4-14)

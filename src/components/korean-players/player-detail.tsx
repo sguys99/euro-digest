@@ -235,6 +235,7 @@ function LogRow({ row }: { row: LogRowView }) {
           home={row.home}
           goals={row.goals}
           assists={row.assists}
+          revealLabel={`${formatKst(row.kickoff, "monthDay")} ${row.opponent.name}전 결과 보기`}
         />
       </div>
     </li>

@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 
+import { SpoilerCellButton } from "@/components/spoiler/spoiler-parts";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { TeamBadge } from "@/components/team/team-badge";
 import { TeamLink, TeamName } from "@/components/team/team-link";
 import type { MatchView, RoundView } from "@/lib/competition-view";
+import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
 import { Score } from "./marks";
@@ -19,6 +21,8 @@ import { Score } from "./marks";
  * - `RoundBook`(일정·결과 탭): 모든 라운드를 그리고 CSS가 하나만 보인다 — 지금 라운드(`data-current`) 또는 주소 `#round-n`이 가리키는
  *   라운드(`:target` — globals.css §9). 라운드 이동은 앵커 링크라 JS 없이도 동작한다(FR-44). 탭 섬이 앵커가 가리키는 패널을 연다.
  * - 팀 칸(이름 + 배지)은 팀 화면 링크(M2-13 — `TeamLink`, 팀 페이지가 있는 팀만, 누름 영역 위아래 44px). 배지는 `aria-hidden`(옆 한글 팀명이 이름).
+ * - 결과 가림(M4-15 — DECISIONS M4 #3): 종료 경기 줄 하나가 펼치는 단위(찍힘). 가림이 켜지면 스코어(+ 연장·승부차기 글자)를 접고 가운데
+ *   칸에 결과 가림 칸(44×64 "보기", 이름 "{M.DD} {홈} 대 {원정} 결과 보기"). 가운데 칸은 켜졌을 때만 64px(globals.css §13).
  */
 
 /** 경기 줄 — 모양은 globals.css §10 `match-row`(시즌 380경기가 반복돼 짧은 유틸리티로 묶었다 — 자식 칸은 data-t·h·s·a·x). 녹아웃 대진 차전 줄도 쓴다(M2-12) */
@@ -26,17 +30,25 @@ export function MatchRow({
   view,
   full,
   lead,
+  spoilScope = true,
 }: {
   view: MatchView;
   full: boolean;
   /** 킥오프 칸 대신 둘 내용(녹아웃 차전 줄 "1차전" + 날짜 — M2-12). 없으면 킥오프 시각·"임시" */
   lead?: ReactNode;
+  /**
+   * 결과 가림 — 이 줄이 펼치는 단위인가(기본 true). 결승처럼 줄 밖 보조 글자(진출·우승)까지 한 번에 펴야 하면 false로 두고 감싸는 요소가
+   * 단위가 된다(knockout.tsx)
+   */
+  spoilScope?: boolean;
 }) {
   const { match, state } = view;
   const badge = full ? "s" : "xs";
+  const result = state === "finished" && match.score !== null;
   return (
     <li
       data-state={state}
+      {...(result && spoilScope ? { "data-spoil": "stamp" } : {})}
       className={full ? "match-row match-row-full" : "match-row"}
     >
       {lead !== undefined ? (
@@ -58,8 +70,17 @@ export function MatchRow({
         <TeamBadge team={view.home} size={badge} />
       </TeamLink>
       <span data-s="">
-        {state === "finished" && match.score ? (
-          <Score h={match.score.h} a={match.score.a} />
+        {result && match.score ? (
+          <>
+            <Score
+              h={match.score.h}
+              a={match.score.a}
+              data-slot="result-value"
+            />
+            <SpoilerCellButton
+              label={`${formatKst(match.kickoff, "monthDay")} ${view.home.name} 대 ${view.away.name} 결과 보기`}
+            />
+          </>
         ) : (
           <span className="match-state">{STATE_TEXT[state]}</span>
         )}
@@ -68,7 +89,12 @@ export function MatchRow({
         <TeamBadge team={view.away} size={badge} />
         <TeamName team={view.away} />
       </TeamLink>
-      {view.extra ? <span data-x="">{view.extra}</span> : null}
+      {view.extra ? (
+        // 연장 · 승부차기 글자도 결과다(가림이 켜지면 함께 접힌다)
+        <span data-x="" data-slot={result ? "result-value" : undefined}>
+          {view.extra}
+        </span>
+      ) : null}
     </li>
   );
 }

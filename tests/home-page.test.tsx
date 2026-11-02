@@ -97,6 +97,7 @@ const HOT: HotTransferView = {
     source: "인터풋볼",
     at: "2026-10-29T07:15:00.000Z",
     more: 0,
+    spoiler: null,
   },
 };
 const WINDOW_OPEN: TransferWindowState = {

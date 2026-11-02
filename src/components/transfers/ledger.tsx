@@ -1,6 +1,7 @@
 import { KoreanArmband, TransferStage } from "@/components/news/feed-card";
 import { PlayerLink } from "@/components/korean-players/player-marks";
 import { CardTitle } from "@/components/ui/card";
+import { SpoilerFlap } from "@/components/spoiler/spoiler-parts";
 import { ChevronDownIcon } from "@/components/ui/icons";
 import { TierBadge } from "@/components/ui/tier-badge";
 import { cx } from "@/lib/cx";
@@ -294,10 +295,15 @@ function LeadCard({
   titleId: string;
 }) {
   return (
-    <>
+    // 결과 가림(M4-15): spoiler 카드면 이 묶음이 펼치는 단위 — 원제목을 접고 띠(상자 없는 묶음 — 바깥 격자 그대로)
+    <div
+      className="contents"
+      {...(card.spoiler !== null ? { "data-spoil": "tear" } : {})}
+    >
       <CardTitle
         id={titleId}
         as="h3"
+        {...(card.spoiler !== null ? { "data-spoil-value": "" } : {})}
         href={card.url}
         lang={card.lang}
         source={card.source}
@@ -309,8 +315,11 @@ function LeadCard({
       >
         {card.title}
       </CardTitle>
+      {card.spoiler !== null ? (
+        <SpoilerFlap className="mt-1">{card.spoiler}</SpoilerFlap>
+      ) : null}
       <CardMetaLine card={card} />
-    </>
+    </div>
   );
 }
 
@@ -469,7 +478,10 @@ export function Timeline({
             >
               <NodeMark node={node} />
             </span>
-            <div className="min-w-0">
+            <div
+              className="min-w-0"
+              {...(node.card.spoiler !== null ? { "data-spoil": "tear" } : {})}
+            >
               <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
                 {node.kind === "stage" ? (
                   <>
@@ -485,6 +497,9 @@ export function Timeline({
               <CardTitle
                 id={`${base}-n-${node.card.id}-t`}
                 as="h3"
+                {...(node.card.spoiler !== null
+                  ? { "data-spoil-value": "" }
+                  : {})}
                 href={node.card.url}
                 lang={node.card.lang}
                 source={node.card.source}
@@ -498,6 +513,11 @@ export function Timeline({
               >
                 {node.card.title}
               </CardTitle>
+              {node.card.spoiler !== null ? (
+                <SpoilerFlap className="mt-1.5">
+                  {node.card.spoiler}
+                </SpoilerFlap>
+              ) : null}
               <CardMetaLine card={node.card} className="mt-1" />
             </div>
           </li>

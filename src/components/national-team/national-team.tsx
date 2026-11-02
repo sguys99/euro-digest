@@ -24,6 +24,7 @@ import type { CardTagView } from "@/lib/news/feed-view";
 import { routes } from "@/lib/paths";
 import type { PlayerNewsItem } from "@/lib/player-detail-view";
 import { formatKst } from "@/lib/time";
+import { SpoilerCellButton } from "@/components/spoiler/spoiler-parts";
 
 /**
  * 대표팀 구역 — 일정 · 결과 행 · 소집 명단 · 대표팀 소식 · 근거 줄 · 홈 A매치 섹션 (PRD FR-70~73, DESIGN §9.3 D2 "`/national-team` 틀" ·
@@ -63,19 +64,25 @@ function MatchSide({ name, side }: { name: string; side: "홈" | "원정" }) {
 
 function MatchResult({ row }: { row: NationalMatchRowView }) {
   if (row.state === "finished" && row.score) {
+    // 결과 가림 칸(M4-15): 가림이 켜지면 스코어·결과 칩 대신 "보기" 칸 — 펼치는 단위는 이 줄(li)
     return (
-      <span
-        data-slot="result-value"
-        className="grid justify-items-end gap-1.25"
-      >
-        <Score
-          h={row.score.h}
-          a={row.score.a}
-          className="font-numeric text-2xl leading-none tracking-[0.04em] tabular-nums"
+      <>
+        <SpoilerCellButton
+          label={`${row.date} ${row.koreaHome ? row.away : row.home}전 결과 보기`}
         />
-        <span className="sr-only"> (홈-원정 순 스코어) 대한민국 </span>
-        {row.result ? <ResultChip result={row.result} /> : null}
-      </span>
+        <span
+          data-slot="result-value"
+          className="grid justify-items-end gap-1.25"
+        >
+          <Score
+            h={row.score.h}
+            a={row.score.a}
+            className="font-numeric text-2xl leading-none tracking-[0.04em] tabular-nums"
+          />
+          <span className="sr-only"> (홈-원정 순 스코어) 대한민국 </span>
+          {row.result ? <ResultChip result={row.result} /> : null}
+        </span>
+      </>
     );
   }
   if (row.state === "scheduled") {
@@ -121,6 +128,9 @@ export function NationalMatchRow({ row }: { row: NationalMatchRowView }) {
     <li
       data-slot="national-match"
       data-state={row.state}
+      {...(row.state === "finished" && row.score
+        ? { "data-spoil": "stamp" }
+        : {})}
       className="grid grid-cols-[var(--gutter)_minmax(0,1fr)_auto] items-center gap-x-2.5 border-b border-rule py-3"
     >
       <div className="grid gap-0.75 self-start pt-0.5">

@@ -9,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { IndexTab, StampChip } from "@/components/ui/chip";
+import { SpoilerFlap } from "@/components/spoiler/spoiler-parts";
 import { TierBadge } from "@/components/ui/tier-badge";
 import type { Tier, TransferStatus } from "@/lib/schema/common";
 import type {
@@ -41,7 +42,8 @@ export { KoreanArmband };
  * | ② 다출처 '+N곳'·'+N건' | 출처 2건 이상 — 다른 매체가 있으면 '+N곳', 같은 매체 기사만 더 있으면 '+N건' | 메타 줄 버튼 → 펼친 출처 목록(행마다 출처명·리더 점선·시각·↗, 기사 전부) |
  * | ③ 이적 | `cat === "transfer"`(도장) · `transfer` 있음(단계 줄) | 도장 "이적" + 펀치 구멍 4개 + 단계 글자 + Tier 배지 |
  * | ④ 한국 선수 | `kr` | 거터 "한국" 완장 + 한국 선수 태그 800 --ink |
- * | ⑤ 경기 결과 | `cat === "result"` | 도장 "경기 결과". 결과 가림 띠·`data-spoiler`는 M4-E(결과 가리기 토글) — 제목 바로 아래 자리 |
+ * | ⑤ 경기 결과 | `cat === "result"` | 도장 "경기 결과" |
+ * | 결과 가림(M4-15) | `spoiler`(FR-21 코드 규칙 — 분류와 무관) | 카드가 펼치는 단위(뜯김). 가림이 켜지면 원제목을 접고 제목 자리에 띠 "결과 가림 · {분류} 제목 · 보기" |
  * | ⑥ 한국어 보도 | `lang === "ko"` | 한글 제목 규칙(800 · 46em 줄 길이) |
  * | 머리기사 | 화면 모델 `lead` → `data-lead` | 1024 이상에서만 위 24 · 아래 22px, 아래 2px 잉크 괘선, 제목 한 단계 크게, 인덱스 탭 카드 높이 |
  * | 연결 줄 | 화면 모델 `link` → `data-paired` | 본문 맨 아래 "같은 소식 국내(해외) 보도 ···· 14 인터풋볼 ↓", 카드 아래 여백 4px(머리기사 ≥1024 12px) |
@@ -49,7 +51,7 @@ export { KoreanArmband };
  * 머리기사·연결 줄 모양은 카드 속성(`data-lead`·`data-paired`)에 건 변형이다 — 필터 결과(M1-33)에서는 필터 부트 스크립트·섬이 속성만 지워
  * 머리기사 없이(DECISIONS #13), 짝이 숨은 카드는 보통 아래 여백으로 그린다(`filterable`).
  *
- * 본문 순서(혼합안 그대로): 태그 줄(도장 + 태그) → 이적 단계 줄 → 원제목 → (결과 가림 띠 — M4-E) → 메타(출처명 · '+N곳' · 상대 시간 +
+ * 본문 순서(혼합안 그대로): 태그 줄(도장 + 태그) → 이적 단계 줄 → 원제목 → (결과 가림 띠 — spoiler 카드) → 메타(출처명 · '+N곳' · 상대 시간 +
  * 절대 시각, 오른쪽 끝 카드 메뉴 버튼) → 펼친 출처 목록 → 연결 줄. 카드 메뉴(M1-35)는 버튼만 카드마다 있고, 메뉴("공유하기" — 그 호 날짜
  * 페이지 앵커, FR-34 · "오류 신고↗" — 카드 ID·발행 날짜를 채운 이슈 폼, FR-36)는 피드마다 하나를 섬이 연 카드로 옮긴다(src/components/news/card-menu.tsx).
  *
@@ -83,11 +85,14 @@ export function FeedCard({
   const titleId = `${card.id}-t`;
   const listId = `${card.id}-src`;
   const latin = card.lang !== "ko";
+  const spoil = spoilerCardProps(card, view.category);
 
   return (
     <Card
       id={card.id}
-      aria-labelledby={titleId}
+      // 결과 가림 카드는 이름·메뉴 버튼 설명을 제목에 걸지 않는다 — 가린 제목이 보조기술로 새지 않게(DESIGN §10 결과 가림)
+      aria-labelledby={spoil ? undefined : titleId}
+      {...(spoil ? { "data-spoil": "tear" } : {})}
       bleed
       // 값 없는 속성은 넘기지 않는다(RSC 페이로드에 카드마다 "$undefined"가 쌓이지 않게)
       {...(lead ? { "data-lead": "" } : {})}
@@ -125,6 +130,7 @@ export function FeedCard({
         <CardTitle
           id={titleId}
           as={titleAs}
+          {...(spoil ? { "data-spoil-value": "" } : {})}
           href={stack.lead.url}
           lang={card.lang}
           source={stack.lead.name}
@@ -137,10 +143,18 @@ export function FeedCard({
         >
           {card.t}
         </CardTitle>
-        {/* 결과 가림 띠 자리(변형 ⑤ — M4-E 결과 가리기 토글이 여기에 띠를 끼우고 제목을 접는다) */}
+        {spoil ? (
+          <SpoilerFlap descId={spoil.descId} className="mt-2">
+            {spoil.desc}
+          </SpoilerFlap>
+        ) : null}
         <CardMeta className={cn(lead && "lg:group-data-lead/card:mt-4")}>
           <SourceLine stack={stack} listId={listId} />
-          <CardMenuButton cardId={card.id} titleId={titleId} menuId={menuId} />
+          <CardMenuButton
+            cardId={card.id}
+            titleId={spoil ? spoil.descId : titleId}
+            menuId={menuId}
+          />
         </CardMeta>
         {stack.more > 0 ? <SourceList id={listId} rows={stack.rows} /> : null}
         {link ? <LinkLine link={link} filterable={filterable} /> : null}
@@ -154,6 +168,24 @@ export function FeedCard({
       </CardTabs>
     </Card>
   );
+}
+
+// ─── 결과 가림 ──────────────────────────────────────────────────────────────
+
+/**
+ * 결과 가림 카드(spoiler — FR-21 코드 규칙, FR-37)의 띠 설명 — "{한국 선수 관련 · }{분류} 제목"(D0 혼합안 그대로 — 결과를 드러내지 않는 말).
+ * 설명 요소 id = `{카드 ID}-fl`(띠 버튼 · 카드 메뉴 버튼의 `aria-describedby`). spoiler가 아니면 null. 뉴스 행(news-row.tsx)도 쓴다
+ */
+export function spoilerCardProps(
+  card: { id: string; spoiler: boolean; kr: boolean },
+  category: string,
+  idPrefix = "",
+): { descId: string; desc: string } | null {
+  if (!card.spoiler) return null;
+  return {
+    descId: `${idPrefix}${card.id}-fl`,
+    desc: `${card.kr ? "한국 선수 관련 · " : ""}${category} 제목`,
+  };
 }
 
 // ─── 거터 ───────────────────────────────────────────────────────────────────

@@ -65,7 +65,11 @@ test("카드마다 버튼 · 피드마다 메뉴 하나 — 연 카드의 공유
           }
           if (button.getAttribute("aria-haspopup") !== "menu")
             out.push(`${id}: aria-haspopup`);
-          if (button.getAttribute("aria-describedby") !== `${id}-t`)
+          // 결과 가림 카드(M4-15 — data-spoil)는 띠 설명(`{id}-fl`)에 건다 — 가린 제목이 버튼 설명으로 새지 않게
+          const describedBy = article.hasAttribute("data-spoil")
+            ? `${id}-fl`
+            : `${id}-t`;
+          if (button.getAttribute("aria-describedby") !== describedBy)
             out.push(`${id}: aria-describedby`);
           button.click();
           const menu = document.getElementById(

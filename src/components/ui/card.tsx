@@ -41,8 +41,8 @@ export const ROW_GRID =
 export interface CardProps extends ComponentProps<"article"> {
   /** 카드 ID(`c_` + 16진수 10자리) — 공유 앵커(`#카드ID`)·`:target` 도착 */
   id: string;
-  /** 제목 요소 id */
-  "aria-labelledby": string;
+  /** 제목 요소 id — 결과 가림 카드(spoiler)는 주지 않는다(가린 제목이 이름으로 새지 않게 — M4-15) */
+  "aria-labelledby"?: string;
   /**
    * 1023 이하에서 오른쪽으로 --edge만큼 넘쳐 인덱스 탭을 화면 가장자리에 붙인다(DESIGN §4.3).
    * 피드 안 카드에서 켜고, 견본 틀·상자 안에서는 끈다. 기본 false

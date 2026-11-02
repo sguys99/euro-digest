@@ -310,9 +310,11 @@ function SheetBasis({
       {score ? (
         <>
           {" "}
+          {/* 결과 가림(M4-15): 부제의 스코어는 가림이 켜지면 접는다 — 같은 경기가 아래 일정·결과에 결과 가림 칸으로 있다 */}
           <Score
             h={score.h}
             a={score.a}
+            data-slot="result-value"
             className="font-numeric font-semibold tabular-nums"
           />
         </>
