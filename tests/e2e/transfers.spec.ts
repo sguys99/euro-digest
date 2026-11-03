@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 import { loadTransfersView } from "../../src/lib/data/transfers";
+import { blockWebFonts } from "./support/site";
 
 // `/transfers/`(M4-04 — PRD FR-101 · FR-104 · FR-105). 빌드 결과(out/) 대상 — 저장소 data/transfers.json 그대로라 구조만 본다.
 // 여러 상태(단계별 · 잠잠 · 행선지 미정 · Tier 1~3)의 모양은 견본 빌드 e2e(tests/e2e-specimen/transfers.spec.ts)가 본다.
@@ -83,6 +84,8 @@ test.describe("/transfers/", () => {
     // 단계 근거 노드만 id가 있다(보조 노드는 없음) — 가장 오래된 근거
     const node = row!.timeline.filter((n) => n.kind === "stage").at(-1)!.card
       .id;
+    // 웹폰트 교체 이동은 fonts.spec.ts가 본다 — 여기서는 쿼리 · 해시 부트(행 펼침) 자체의 이동만
+    await blockWebFonts(page);
     await page.addInitScript(() => {
       (window as unknown as { __cls: number }).__cls = 0;
       new PerformanceObserver((l) => {

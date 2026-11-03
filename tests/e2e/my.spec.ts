@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { blockWebFonts } from "./support/site";
+
 // 마이 팀(M4-08 — PRD FR-110~112, DESIGN §9.3 D2 "팔로우 버튼" · "`/my` 틀" · 홈 위젯 '내 팀 소식' · 피드 '내 팀만').
 // 빌드 결과(out/) 대상 — 팔로우는 브라우저 저장소(`ed-follow`)에만 있다. 팀 = 바이에른 뮌헨(김민재 소속 — 저장소 데이터에 늘 있는 팀).
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
@@ -160,6 +162,8 @@ test.describe("홈 '내 팀 소식' · 피드 '내 팀만'", () => {
   test("팔로우가 걸린 소식이 있으면 첫 페인트에 위젯(최대 3) · /news/?mine=1은 그 카드만", async ({
     page,
   }) => {
+    // 웹폰트 교체 이동은 fonts.spec.ts가 본다 — 아래 CLS는 위젯 판정(부트) 자체의 이동만
+    await blockWebFonts(page);
     // 오늘 호에서 걸린 팀이 가장 많은 팀을 고른다(데이터에 의존하지 않게)
     await page.goto("./");
     const team = await page.evaluate(() => {
@@ -188,21 +192,20 @@ test.describe("홈 '내 팀 소식' · 피드 '내 팀만'", () => {
     const rows = widget.locator("[data-mn-row]:not([hidden])");
     expect(await rows.count()).toBeGreaterThan(0);
     expect(await rows.count()).toBeLessThanOrEqual(3);
-    // 첫 페인트 전 스크립트가 그렸다 — 레이아웃 이동 0
-    const cls = await page.evaluate(
-      () =>
-        new Promise<number>((resolve) => {
-          let sum = 0;
-          new PerformanceObserver((list) => {
-            for (const e of list.getEntries() as unknown as Array<{
-              value: number;
-              hadRecentInput: boolean;
-            }>)
-              if (!e.hadRecentInput) sum += e.value;
-          }).observe({ type: "layout-shift", buffered: true });
-          setTimeout(() => resolve(sum), 500);
-        }),
-    );
+    // 첫 페인트 전 스크립트가 그렸다 — 레이아웃 이동 0(폰트 로드가 끝난 뒤까지 잰다)
+    const cls = await page.evaluate(async () => {
+      let sum = 0;
+      new PerformanceObserver((list) => {
+        for (const e of list.getEntries() as unknown as Array<{
+          value: number;
+          hadRecentInput: boolean;
+        }>)
+          if (!e.hadRecentInput) sum += e.value;
+      }).observe({ type: "layout-shift", buffered: true });
+      await document.fonts.ready;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      return sum;
+    });
     expect(cls).toBeLessThanOrEqual(0.05);
 
     await page.goto("news/?mine=1");

@@ -6,6 +6,8 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 
+import type { Page } from "@playwright/test";
+
 import { listSitePages, type SitePage } from "../../../scripts/lib/out-dir";
 import { normalizeBasePath } from "../../../scripts/lib/site-refs";
 
@@ -18,6 +20,18 @@ export const siteOrigins = [
 ];
 
 export const outDir = path.resolve(process.env.OUT_DIR ?? "out");
+
+/**
+ * 웹폰트 요청을 막는다(abort) — 폴백 글꼴로만 그려, 첫 페인트 전 스크립트(부트) 자체의 레이아웃 이동만 잰다.
+ * 웹폰트 교체(swap) 이동은 메트릭 폴백이 설계대로 그려지는 환경에서 fonts.spec.ts가 따로 본다(DR-11).
+ * CI 러너(playwright --with-deps)의 한글 글꼴은 WenQuanYi Zen Hei뿐이라 메트릭 폴백(맑은 고딕 · Noto CJK KR)에 걸리지 않고,
+ * 교체 때 줄 수가 바뀌는지는 그날 데이터(5줄 문장 · 이적 행 · 빌드 날짜로 바뀌는 문구)에 달려 있다 — 막지 않으면 코드가 그대로여도
+ * 데이터에 따라 CLS가 흔들린다(run 40200106751 0.166 · run 41472704921 0.296 · run 41603193100 0.081 · 0.315).
+ * 첫 탐색 전에 부른다(앞 탐색이 받은 폰트가 캐시에서 늦게 적용되는 경우도 없게).
+ */
+export async function blockWebFonts(page: Page): Promise<void> {
+  await page.route(`**${basePath}/fonts/**`, (route) => route.abort());
+}
 
 /** out/의 모든 HTML 페이지. out/이 없으면 빈 배열(각 spec의 첫 테스트가 빌드 누락으로 실패시킨다). */
 export function sitePages(): SitePage[] {

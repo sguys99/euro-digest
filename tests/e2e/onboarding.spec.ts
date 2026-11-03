@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { blockWebFonts } from "./support/site";
+
 // 첫 방문 온보딩(M4-09 — PRD FR-113 · §15 D64 ⑥ · D67 ②, DESIGN §9.3 D2 "온보딩"). 빌드 결과(out/) 대상 — 온보딩 자료는 build-feeds가 쓴
 // `/my/data/onboarding.json`. 기록 키 `ed-onboarding`(done · skipped), 팔로우 `ed-follow`.
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
@@ -42,22 +44,21 @@ async function smallTargets(page: Page) {
   }, ENTRY);
 }
 
-/** 페이지를 연 뒤 500ms까지 쌓인 레이아웃 이동(입력 직후 제외) */
+/** 페이지를 연 뒤 폰트 로드가 끝나고(막았으면 실패로 끝남) 500ms 더 지날 때까지 쌓인 레이아웃 이동(입력 직후 제외) */
 async function cls(page: Page): Promise<number> {
-  return page.evaluate(
-    () =>
-      new Promise<number>((resolve) => {
-        let sum = 0;
-        new PerformanceObserver((list) => {
-          for (const e of list.getEntries() as unknown as Array<{
-            value: number;
-            hadRecentInput: boolean;
-          }>)
-            if (!e.hadRecentInput) sum += e.value;
-        }).observe({ type: "layout-shift", buffered: true });
-        setTimeout(() => resolve(sum), 500);
-      }),
-  );
+  return page.evaluate(async () => {
+    let sum = 0;
+    new PerformanceObserver((list) => {
+      for (const e of list.getEntries() as unknown as Array<{
+        value: number;
+        hadRecentInput: boolean;
+      }>)
+        if (!e.hadRecentInput) sum += e.value;
+    }).observe({ type: "layout-shift", buffered: true });
+    await document.fonts.ready;
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return sum;
+  });
 }
 
 async function stored(page: Page) {
@@ -231,6 +232,8 @@ test.describe("단계", () => {
 
 test.describe("CLS — 첫 페인트 전 판정", () => {
   test("첫 방문 · 재방문 모두 0.05 이하", async ({ page }) => {
+    // 웹폰트 교체 이동은 fonts.spec.ts가 본다 — 여기서는 진입 줄 판정(부트) 자체의 이동만
+    await blockWebFonts(page);
     await page.goto("./");
     await expect(page.locator(ENTRY)).toBeVisible();
     const first = await cls(page);

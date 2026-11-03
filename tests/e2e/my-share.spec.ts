@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { blockWebFonts } from "./support/site";
+
 // 팔로우 내보내기 · 가져오기(M4-10 — PRD FR-114, §15 D67 ③ `/my/?t=…&p=…`) · 내 팀 일정 구독(M4-12 — FR-115).
 // 빌드 결과(out/) 대상. 공유 URL은 SITE_URL 기준 절대 주소라 로컬 서버에서는 경로 + 쿼리만 떼어 연다.
 const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
@@ -242,6 +244,8 @@ test.describe("/my 공유 화면 — 폭 × 테마", () => {
           ["bayern-munchen", "atletico-madrid", "arsenal", "chelsea"],
           ["kim-min-jae"],
         );
+        // 웹폰트 교체 이동은 fonts.spec.ts가 본다 — 여기서는 확인 띠 자리(부트) 자체의 이동만
+        await blockWebFonts(page);
         await page.addInitScript(() => {
           (window as unknown as { __cls: number }).__cls = 0;
           new PerformanceObserver((list) => {
