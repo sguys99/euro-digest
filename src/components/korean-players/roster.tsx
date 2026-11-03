@@ -311,7 +311,10 @@ function GroupHead({
       >
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] font-extrabold tracking-[-0.01em]">
           {group.key === "OTHER" ? (
-            <OtherTab title="5대 리그 밖" />
+            // 약칭 '기타'는 바로 뒤 '기타 리그'와 겹쳐 읽히지 않게(M5-06 — 다른 리그 묶음의 FlatTab과 같은 규칙)
+            <span aria-hidden="true" className="contents">
+              <OtherTab title="5대 리그 밖" />
+            </span>
           ) : (
             <FlatTab comp={group.key} title={group.label} aria-hidden="true">
               {group.short}

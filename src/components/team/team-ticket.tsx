@@ -85,7 +85,8 @@ export function TeamTicket({
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start pt-3.5 pr-3.5 pb-3.5 pl-4 lg:pt-5.5 lg:pr-7 lg:pb-5 lg:pl-8 @min-[35rem]:grid-cols-[minmax(0,1fr)_auto] @min-[35rem]:gap-x-3">
         {config ? (
           <p className="flex items-center gap-2 text-[12.5px] text-ink-2 @min-[35rem]:col-start-1">
-            <FlatTab comp={config.id} title={config.nameKo}>
+            {/* 약칭은 바로 뒤 정식 이름과 겹쳐 읽히지 않게(M5-06) */}
+            <FlatTab comp={config.id} title={config.nameKo} aria-hidden="true">
               {config.shortKo}
             </FlatTab>
             <span>

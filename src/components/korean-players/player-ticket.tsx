@@ -174,7 +174,11 @@ export function PlayerTicket({
             </span>
             <span className="sr-only">{m.sr}</span>
           </p>
-          <p className="text-[11.5px] leading-[1.3] font-extrabold">
+          {/* 숫자 칸의 화면 밖 글자("시즌 출전 시간 N분")가 이름을 이미 읽는다 — 보이는 라벨은 겹쳐 읽히지 않게(M5-06) */}
+          <p
+            aria-hidden="true"
+            className="text-[11.5px] leading-[1.3] font-extrabold"
+          >
             시즌 출전 시간
           </p>
           <p className="text-[11.5px] leading-[1.3] text-ink-2">{m.note}</p>
@@ -183,12 +187,19 @@ export function PlayerTicket({
       <Perforation />
       <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] content-start pt-3.5 pr-3.5 pb-2.5 pl-4 lg:pt-5.5 lg:pr-6 lg:pb-3.5 lg:pl-7 @min-[35rem]:grid-cols-[minmax(0,1fr)_auto] @min-[35rem]:gap-x-3">
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[12.5px] leading-[1.35] text-ink-2 @min-[35rem]:col-start-1">
+          {/* 탭 약칭은 바로 뒤 정식 이름과 겹쳐 읽히지 않게 숨긴다(M5-06 — "분데스 분데스리가" 중복) */}
           {view.league.kind === "comp" ? (
-            <FlatTab comp={view.league.comp} title={view.league.name}>
+            <FlatTab
+              comp={view.league.comp}
+              title={view.league.name}
+              aria-hidden="true"
+            >
               {view.league.short}
             </FlatTab>
           ) : (
-            <OtherTab title="5대 리그 밖" />
+            <span aria-hidden="true" className="contents">
+              <OtherTab title="5대 리그 밖" />
+            </span>
           )}
           <span>
             {view.league.name} ·{" "}
