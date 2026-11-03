@@ -232,7 +232,7 @@ function MyEmpty() {
         <p className="text-[15px] font-extrabold text-ink">
           아직 팔로우한 팀·선수가 없어요
         </p>
-        <p className="mt-1 max-w-[46em]">
+        <p className="mt-1 max-w-measure">
           팀 화면이나 한국 선수 화면에서 ‘팔로우’를 누르면 다음 경기 · 최근 결과
           · 오늘 호의 소식이 여기 모여요. 팀{" "}
           <span className="font-numeric tabular-nums">

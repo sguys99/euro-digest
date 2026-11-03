@@ -499,7 +499,7 @@ describe("Card", () => {
       expect.arrayContaining([
         "text-type-card",
         "font-extrabold",
-        "max-w-[46em]",
+        "max-w-measure",
       ]),
     );
   });

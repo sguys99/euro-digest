@@ -59,7 +59,7 @@ export default function WeeklyIndexPage() {
           >
             주간 리포트
           </h1>
-          <p className="max-w-[46em] text-[13px] leading-normal text-ink-2">
+          <p className="max-w-measure text-[13px] leading-normal text-ink-2">
             매주 월요일 아침, 지난 월~일(경기일 기준) 한국 선수의 출전 · 분 · 골
             · 도움을 모으고 이번 주 MVP(골×3 + 도움×2 + 출전)를 뽑아요.
           </p>

@@ -260,7 +260,7 @@ function BriefRow({ row }: { row: BriefRowView }) {
           {...(row.result
             ? { "data-spoil-value": "", "data-spoil-focus": "" }
             : {})}
-          className="max-w-[46em] text-type-brief tracking-[-0.005em] text-pretty"
+          className="max-w-measure text-type-brief tracking-[-0.005em] text-pretty"
         >
           <BriefText parts={row.parts} />
           {row.ai ? (

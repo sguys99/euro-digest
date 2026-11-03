@@ -711,7 +711,7 @@ export function WeeklySummary({
       <p
         data-spoil-value=""
         data-spoil-focus=""
-        className="mt-3 max-w-[46em] text-type-dek break-keep"
+        className="mt-3 max-w-measure text-type-dek break-keep"
       >
         {summary.text}
       </p>

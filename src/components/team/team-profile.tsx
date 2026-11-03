@@ -57,7 +57,7 @@ export function TeamProfile({
           · 그날까지 기록 기준
         </span>
       </p>
-      <p className="mt-2.5 max-w-[46em] text-type-dek break-keep">
+      <p className="mt-2.5 max-w-measure text-type-dek break-keep">
         {profile.oneLiner}
       </p>
       <div className="mt-2 grid max-w-[46rem] grid-cols-2 gap-x-4">

@@ -219,7 +219,7 @@ export function CardTitle({
         "mt-2 text-pretty",
         latin
           ? "font-latin text-type-card-latin font-semibold tracking-[0.002em] [word-break:normal]"
-          : "max-w-[46em] text-type-card font-extrabold tracking-[-0.015em]",
+          : "max-w-measure text-type-card font-extrabold tracking-[-0.015em]",
         className,
       )}
       {...props}
