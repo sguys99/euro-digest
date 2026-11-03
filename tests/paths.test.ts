@@ -399,6 +399,11 @@ describe("artifacts — 빌드 산출물의 사이트 경로", () => {
       artifacts.ogImage({ kind: "team", team: "bayern-munchen" }),
       "/og/teams/bayern-munchen.png",
     ],
+    [
+      "og 쪽 이름형",
+      artifacts.ogImage({ kind: "page", name: "national-team" }),
+      "/og/pages/national-team.png",
+    ],
     ["manifest", artifacts.manifest(), "/manifest.webmanifest"],
     ["sitemap", artifacts.sitemap(), "/sitemap.xml"],
     ["robots", artifacts.robots(), "/robots.txt"],
@@ -427,6 +432,10 @@ describe("artifacts — 빌드 산출물의 사이트 경로", () => {
     [
       "OG 날짜 형식",
       () => artifacts.ogImage({ kind: "news", date: "2026/10/10" }),
+    ],
+    [
+      "OG 쪽 이름 형식",
+      () => artifacts.ogImage({ kind: "page", name: "../about" }),
     ],
     [
       "RSS kind 모름",

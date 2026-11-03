@@ -146,3 +146,26 @@ export function kitShirtContrast(shirt: string): {
   const text = kitTextColor(shirt);
   return { text, contrast: contrastRatio(shirt, text) };
 }
+
+/** 팀 OG 거대 약어 채움 대비 하한 (DESIGN §9.3 D3 · DECISIONS D3 #9 — 내부 하한 텍스트, 큰 글자 3.0 예외를 쓰지 않는다) */
+export const KIT_LETTER_MIN_CONTRAST = 5.3;
+
+/**
+ * 팀 OG(크림 면) 거대 약어 채움색 (PRD §15 D71 ⑤, DESIGN §9.3 D3 "팀 약어 채움", plan M5-01).
+ *
+ * 상의 → 하의 → 잉크 남색(`#14213D` — 약어 글자색 후보와 같은 값) 중 면 색과 대비가 `min` 이상인 **첫 색**. 키트 색 인상은 OG 아래
+ * 2색 띠가 맡으므로 글자는 읽힘을 먼저 본다(흰 상의 → 하의, 빨간 상의 상당수 → 잉크). 데이터 · 스키마는 바꾸지 않는다(빌드 때 계산).
+ * 잉크도 하한에 못 미치는 면 색은 없다(크림 면 대비 14.04) — 그래도 마지막 후보는 잉크다.
+ */
+export function kitLetterFill(
+  shirt: string,
+  shorts: string,
+  face: string,
+  min: number = KIT_LETTER_MIN_CONTRAST,
+): string {
+  for (const color of [shirt, shorts]) {
+    const normalized = rgbToHex(hexToRgb(color));
+    if (contrastRatio(normalized, face) >= min) return normalized;
+  }
+  return KIT_TEXT_COLORS[1];
+}

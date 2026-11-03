@@ -9,8 +9,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node --env-file-if-exists=.env.local --import tsx scripts/build-search.ts && node --env-file-if-exists=.env.local --import tsx scripts/build-feeds.ts && node --env-file-if-exists=.env.local --import tsx scripts/build-sw.ts",
+    "build": "node --import tsx scripts/build-og.ts && next build && node --env-file-if-exists=.env.local --import tsx scripts/build-search.ts && node --env-file-if-exists=.env.local --import tsx scripts/build-feeds.ts && node --env-file-if-exists=.env.local --import tsx scripts/build-sw.ts",
     "build:icons": "tsx scripts/build-icons.ts",
+    "build:og": "node --import tsx scripts/build-og.ts",
     "build:search": "node --env-file-if-exists=.env.local --import tsx scripts/build-search.ts",
     "preview": "tsx scripts/serve-out.ts",
     "verify:deploy": "tsx scripts/verify-deploy.ts",

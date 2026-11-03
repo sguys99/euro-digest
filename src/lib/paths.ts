@@ -406,12 +406,16 @@ export type SubscribableCalendarFeed = Extract<
   { kind: "team" } | { kind: "korean" }
 >;
 
-/** 공유 OG 이미지 (DR-10) — 파일 규칙은 잠정안(M5-01에서 확정) */
+/**
+ * 공유 OG 이미지 (DR-10) — 경로 확정(PRD §15 D71 ②, 2026-11-02 사용자 결정) + 쪽 이름형(2026-11-03 사용자 결정 — 고정 쪽의 기본 OG에
+ * 쪽 제목만 바꾼 판). 무엇을 어느 쪽에 쓰는지·이미지 안 글자·alt는 src/lib/og.ts
+ */
 export type OgImage =
   | { kind: "default" }
   | { kind: "news"; date: string }
   | { kind: "competition"; comp: CompId }
-  | { kind: "team"; team: string };
+  | { kind: "team"; team: string }
+  | { kind: "page"; name: string };
 
 /**
  * 빌드 산출물의 사이트 경로(basePath 없음, 확장자로 끝남). URL 규칙의 단일 출처다.
@@ -447,8 +451,9 @@ export const artifacts = {
     }
   },
   /**
-   * OG 이미지(1200×630 PNG, 빌드 시 Playwright 스크린샷 — DR-10·§15 D13). **잠정 규칙(M5-01에서 확정)**:
-   * `/og/default.png` · `/og/news/{date}.png` · `/og/competitions/{comp}.png` · `/og/teams/{team}.png`
+   * OG 이미지(1200×630 PNG, 빌드 시 Playwright 스크린샷 — DR-10·§15 D13, plan M5-01). 경로(PRD §15 D71 ②):
+   * `/og/default.png` · `/og/news/{date}.png` · `/og/competitions/{comp}.png` · `/og/teams/{team}.png` · `/og/pages/{name}.png`
+   * (쪽 이름형 — name은 src/lib/og.ts `OG_PAGES` 키)
    */
   ogImage(image: OgImage = { kind: "default" }): string {
     switch (image.kind) {
@@ -460,6 +465,8 @@ export const artifacts = {
         return `/og/competitions/${compSegment(image.comp)}.png`;
       case "team":
         return `/og/teams/${assertSlug(image.team, "팀 slug")}.png`;
+      case "page":
+        return `/og/pages/${assertSlug(image.name, "쪽 이름")}.png`;
       default:
         return unknownKind("artifacts.ogImage", image);
     }

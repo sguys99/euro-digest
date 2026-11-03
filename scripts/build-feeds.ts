@@ -1,7 +1,7 @@
 /**
  * `npm run build` 후반 단계 — next build(정적 export)로 out/이 생긴 뒤 실행 (CLAUDE.md §5).
- * 순서: Pagefind 인덱싱(앞 단계 scripts/build-search.ts — M4-14) → OG 이미지 → RSS → ics. 이 파일에 구현된 것은 RSS(M4-11)·ics(M4-12)이고
- * OG 이미지(M5-01)는 TODO 안내만 남긴다.
+ * 순서: (OG 이미지 — next build 앞 단계 scripts/build-og.ts, M5-01 · public/og → out/og) → Pagefind 인덱싱(앞 단계
+ * scripts/build-search.ts — M4-14) → RSS → ics. 이 파일에 구현된 것은 RSS(M4-11)·ics(M4-12)다.
  *
  * RSS (PRD FR-122, plan M4-11): `out/rss.xml`(전체 상위 30) · `out/rss/{comp}.xml`(configs/competitions.json 대회마다) ·
  * `out/rss/korean.xml`(한국 선수 관련 카드). out/은 basePath 아래에 그대로 걸리므로(GitHub Pages) `out/rss.xml`이
@@ -49,7 +49,6 @@ import {
   buildSiteFeeds,
   type FeedIssue,
 } from "./lib/site-rss";
-import { todo } from "./lib/todo";
 
 const ROOT_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -193,12 +192,6 @@ function main(): number {
     bytes: myBytes,
     elapsedMs: Date.now() - myStarted,
   });
-
-  todo(
-    "build-feeds (npm run build) 나머지 단계",
-    "M5-01(OG 이미지)",
-    "out/에 OG 이미지 생성",
-  );
   return 0;
 }
 

@@ -10,7 +10,7 @@ import path from "node:path";
 import { compile } from "tailwindcss";
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { THEME_COLOR } from "@/lib/theme";
+import { APP_ICON_COLORS, OG_COLORS, THEME_COLOR } from "@/lib/theme";
 
 import {
   COLOR_LITERAL_RE,
@@ -261,6 +261,31 @@ describe("값 대조 — DESIGN.md = globals.css", () => {
   it("theme-color 메타 값(src/lib/theme.ts)은 --paper 라이트·다크와 같다", () => {
     const paper = colors.find((t) => t.name === "--paper");
     expect(THEME_COLOR).toEqual({ light: paper?.light, dark: paper?.dark });
+  });
+
+  it("OG 면 2종 색(src/lib/theme.ts OG_COLORS)은 기존 토큰의 한 테마 값이다 — 레드 면 = 다크 티켓 · 크림 면 = 라이트 지면 · 잉크 · 대회 6색 (DESIGN §2.10)", () => {
+    const up = (name: string, scope: ReadonlyMap<string, string>) =>
+      resolvedToken(name, scope)?.toUpperCase();
+    expect(OG_COLORS.red).toEqual({
+      face: up("--ticket", scopes.dark),
+      fg: up("--ticket-fg", scopes.dark),
+      fg2: up("--ticket-fg-2", scopes.dark),
+    });
+    expect(OG_COLORS.cream.face).toBe(up("--paper", scopes.light));
+    expect(OG_COLORS.cream.ink).toBe(up("--ink", scopes.light));
+    expect(OG_COLORS.cream.ink2).toBe(up("--ink-2", scopes.light));
+    for (const [id, c] of Object.entries(OG_COLORS.cream.competition)) {
+      const slug = id.toLowerCase();
+      expect([id, c]).toEqual([
+        id,
+        {
+          face: up(`--competition-${slug}`, scopes.light),
+          fg: up(`--competition-${slug}-foreground`, scopes.light),
+        },
+      ]);
+    }
+    // 아이콘 면과 OG 레드 면은 같은 색(DECISIONS D3 #6 · #7)
+    expect(OG_COLORS.red.face).toBe(APP_ICON_COLORS.face);
   });
 });
 

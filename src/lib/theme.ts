@@ -26,6 +26,7 @@ import type {
   StorageLike,
   StorageReader,
 } from "@/lib/safe-storage";
+import type { CompId } from "@/lib/schema/common";
 
 export type { StorageGetter, StorageLike, StorageReader };
 
@@ -71,6 +72,29 @@ export const APP_ICON_COLORS = {
   letter: "#F2EFE8",
   darkTabFace: "#FF7A6E",
   darkTabLetter: "#0E1626",
+} as const;
+
+/**
+ * OG 이미지(1200×630) 면 2종 색 — DESIGN §2.10 "OG 면 2종"(DECISIONS D3 #6, PRD §15 D71 ②). OG는 테마를 따르지 않으므로 기존 토큰의
+ * **한 테마 값**을 고정해 쓴다(새 토큰 0): ① 레드 면(기본 · 날짜 · 쪽 이름형) = 다크 `--ticket` · `--ticket-fg` · `--ticket-fg-2`,
+ * ② 크림 면(대회 · 팀) = 라이트 `--paper` · `--ink` · `--ink-2` · 라이트 대회 6색과 그 `-foreground`.
+ * 그리는 곳은 scripts/lib/og-template.ts(빌드 때 Playwright 스크린샷 — M5-01). tests/design-tokens.test.ts가 globals.css 값과 대조한다.
+ */
+export const OG_COLORS = {
+  red: { face: "#9E2F28", fg: "#F2EFE8", fg2: "#EADCD5" },
+  cream: {
+    face: "#F3F0EA",
+    ink: "#14213D",
+    ink2: "#4A5670",
+    competition: {
+      EPL: { face: "#3D1E5C", fg: "#F3F0EA" },
+      LALIGA: { face: "#7F5300", fg: "#F3F0EA" },
+      SERIEA: { face: "#0A6390", fg: "#F3F0EA" },
+      BUNDESLIGA: { face: "#A8122B", fg: "#F3F0EA" },
+      LIGUE1: { face: "#2A7035", fg: "#F3F0EA" },
+      UCL: { face: "#4A5263", fg: "#F3F0EA" },
+    } satisfies Record<CompId, { face: string; fg: string }>,
+  },
 } as const;
 
 /** theme-color 메타 선택자 — 초기 스크립트와 토글이 같은 메타를 고친다 */
