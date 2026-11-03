@@ -10,14 +10,19 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-3-3",
+    "shape": "3-4-1-2",
     "source": "api",
-    "updated": "2026-10-21T19:00:00.000Z"
+    "updated": "2026-11-03T17:45:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Luis Suárez",
       "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Issa Doumbia",
+      "goals": 2,
       "assists": null
     }
   ],
@@ -25,24 +30,18 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-3-3",
-    "match": "af-1635737",
-    "kickoff": "2026-10-21T19:00:00.000Z",
+    "formation": "3-4-1-2",
+    "match": "af-1635723",
+    "kickoff": "2026-11-03T17:45:00.000Z",
     "comp": "UCL",
-    "side": "home",
-    "opponent": "lask",
+    "side": "away",
+    "opponent": "shakhtar-donetsk",
     "startXI": [
       {
-        "name": "Kaique",
-        "number": 30,
+        "name": "Rui Silva",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
-      },
-      {
-        "name": "Iván Fresneda",
-        "number": 22,
-        "pos": "D",
-        "grid": "2:4"
       },
       {
         "name": "Eduardo Quaresma",
@@ -51,20 +50,26 @@
         "grid": "2:3"
       },
       {
-        "name": "Gonçalo Inácio",
-        "number": 25,
+        "name": "Eduardo Felicíssimo",
+        "number": 73,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "M. Araújo",
-        "number": 20,
+        "name": "Gonçalo Inácio",
+        "number": 25,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "João Simões",
-        "number": 8,
+        "name": "Geny Catamo",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "S. Andersen",
+        "number": 4,
         "pos": "M",
         "grid": "3:3"
       },
@@ -75,46 +80,70 @@
         "grid": "3:2"
       },
       {
-        "name": "I. Doumbia",
-        "number": 77,
+        "name": "M. Araújo",
+        "number": 20,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Geny Catamo",
-        "number": 10,
-        "pos": "F",
-        "grid": "4:3"
+        "name": "I. Doumbia",
+        "number": 77,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "L. Suárez",
         "number": 97,
         "pos": "F",
-        "grid": "4:2"
+        "grid": "5:2"
       },
       {
-        "name": "N. Irankunda",
-        "number": 19,
+        "name": "F. Ioannidis",
+        "number": 7,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "Rui Silva",
-        "number": 1,
+        "name": "R. Zalazar",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "João Simões",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Pedro Lima",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Rafael Ferreira Nel",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Luis Guilherme",
+        "number": 31,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Kaique",
+        "number": 30,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "Ibrahima Ba",
-        "number": 55,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Derry",
-        "number": 28,
+        "name": "N. Irankunda",
+        "number": 19,
         "pos": "F",
         "grid": null
       },
@@ -125,50 +154,26 @@
         "grid": null
       },
       {
-        "name": "Rafael Ferreira Nel",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "F. Ioannidis",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Pedro Lima",
-        "number": 21,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Luis Guilherme",
-        "number": 31,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "S. Andersen",
-        "number": 4,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "G. Vagiannidis",
-        "number": 13,
+        "name": "Iván Fresneda",
+        "number": 22,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Eduardo Felicíssimo",
-        "number": 73,
-        "pos": "M",
+        "name": "J. Derry",
+        "number": 28,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "Rodrigo Dias",
-        "number": 50,
+        "name": "Ibrahima Ba",
+        "number": 55,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Salvador Blopa",
+        "number": 70,
         "pos": "D",
         "grid": null
       }

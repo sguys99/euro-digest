@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T12:30:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -50,11 +50,11 @@
   ],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557450",
-    "kickoff": "2026-10-31T12:30:00.000Z",
-    "comp": "EPL",
-    "side": "away",
-    "opponent": "chelsea",
+    "match": "af-1635695",
+    "kickoff": "2026-11-03T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "home",
+    "opponent": "roma",
     "startXI": [
       {
         "name": "S. Lammens",
@@ -75,8 +75,8 @@
         "grid": "2:3"
       },
       {
-        "name": "Lisandro Martínez",
-        "number": 6,
+        "name": "A. Heaven",
+        "number": 26,
         "pos": "D",
         "grid": "2:2"
       },
@@ -87,14 +87,14 @@
         "grid": "2:1"
       },
       {
-        "name": "Andrey Santos",
-        "number": 17,
+        "name": "C. Baleba",
+        "number": 20,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "C. Baleba",
-        "number": 20,
+        "name": "K. Mainoo",
+        "number": 37,
         "pos": "M",
         "grid": "3:1"
       },
@@ -125,38 +125,50 @@
     ],
     "substitutes": [
       {
-        "name": "K. Darlow",
-        "number": 12,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. de Ligt",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Heaven",
-        "number": 26,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "N. Mazraoui",
         "number": 3,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "K. Mainoo",
-        "number": 37,
+        "name": "Lisandro Martínez",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Lacey",
+        "number": 31,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Heaton",
+        "number": 22,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "T. Fletcher",
+        "number": 39,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Darlow",
+        "number": 12,
+        "pos": "G",
         "grid": null
       },
       {
         "name": "M. Mount",
         "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Andrey Santos",
+        "number": 17,
         "pos": "M",
         "grid": null
       },
@@ -167,15 +179,21 @@
         "grid": null
       },
       {
-        "name": "S. Lacey",
-        "number": 31,
+        "name": "J. Zirkzee",
+        "number": 11,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "J. Zirkzee",
-        "number": 11,
-        "pos": "F",
+        "name": "M. de Ligt",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "H. Amass",
+        "number": 41,
+        "pos": "D",
         "grid": null
       }
     ]

@@ -14,7 +14,7 @@
   "formation": {
     "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-10-31T19:45:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,15 +49,15 @@
   "reading": [],
   "lineup": {
     "formation": "3-5-2",
-    "match": "af-1550176",
-    "kickoff": "2026-10-28T17:30:00.000Z",
-    "comp": "SERIEA",
+    "match": "af-1635662",
+    "kickoff": "2026-11-03T20:00:00.000Z",
+    "comp": "UCL",
     "side": "away",
-    "opponent": "venezia",
+    "opponent": "feyenoord",
     "startXI": [
       {
-        "name": "I. Provedel",
-        "number": 49,
+        "name": "Josep Martínez",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
@@ -68,8 +68,8 @@
         "grid": "2:3"
       },
       {
-        "name": "A. Bastoni",
-        "number": 95,
+        "name": "M. Akanji",
+        "number": 25,
         "pos": "D",
         "grid": "2:2"
       },
@@ -80,20 +80,20 @@
         "grid": "2:1"
       },
       {
-        "name": "A. Diouf",
-        "number": 17,
+        "name": "D. Spence",
+        "number": 99,
         "pos": "M",
         "grid": "3:5"
       },
       {
-        "name": "P. Sučić",
-        "number": 8,
+        "name": "N. Barella",
+        "number": 23,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "A. Stanković",
-        "number": 5,
+        "name": "H. Çalhanoğlu",
+        "number": 20,
         "pos": "M",
         "grid": "3:3"
       },
@@ -110,58 +110,28 @@
         "grid": "3:1"
       },
       {
-        "name": "M. Thuram",
-        "number": 9,
+        "name": "F. Esposito",
+        "number": 94,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "A. Bonny",
-        "number": 14,
+        "name": "M. Thuram",
+        "number": 9,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "D. Spence",
-        "number": 99,
+        "name": "L. Bovio",
+        "number": 46,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "M. Mosconi",
-        "number": 48,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "H. Mkhitaryan",
-        "number": 22,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Josep Martínez",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. Lavelli",
-        "number": 53,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "L. Jakirović",
-        "number": 51,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "F. Esposito",
-        "number": 94,
+        "name": "A. Bonny",
+        "number": 14,
         "pos": "F",
         "grid": null
       },
@@ -172,26 +142,56 @@
         "grid": null
       },
       {
-        "name": "H. Çalhanoğlu",
-        "number": 20,
+        "name": "A. Diouf",
+        "number": 17,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "L. Bovio",
-        "number": 46,
+        "name": "M. Lavelli",
+        "number": 53,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "H. Mkhitaryan",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Mosconi",
+        "number": 48,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "B. Pavard",
+        "number": 28,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "N. Barella",
-        "number": 23,
+        "name": "I. Provedel",
+        "number": 49,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Stanković",
+        "number": 5,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Akanji",
-        "number": 25,
+        "name": "P. Sučić",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Stante",
+        "number": 45,
         "pos": "D",
         "grid": null
       }

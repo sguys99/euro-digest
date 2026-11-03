@@ -2,7 +2,7 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-02T22:15:09.504Z",
+  "updatedAt": "2026-11-03T22:14:04.632Z",
   "standings": [
     {
       "pos": 1,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 14,
+      "prevPos": 7,
       "team": "everton",
       "played": 9,
       "w": 3,
@@ -136,17 +136,17 @@
       "ga": 9,
       "pts": 13,
       "form": [
-        "D",
         "W",
         "D",
         "L",
-        "L"
+        "L",
+        "W"
       ],
       "zone": "none"
     },
     {
       "pos": 8,
-      "prevPos": 7,
+      "prevPos": 8,
       "team": "bournemouth",
       "played": 9,
       "w": 3,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 8,
+      "prevPos": 9,
       "team": "tottenham-hotspur",
       "played": 9,
       "w": 3,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 9,
+      "prevPos": 10,
       "team": "aston-villa",
       "played": 9,
       "w": 3,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 10,
+      "prevPos": 11,
       "team": "hull-city",
       "played": 9,
       "w": 2,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "leeds-united",
       "played": 9,
       "w": 2,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 12,
+      "prevPos": 13,
       "team": "newcastle-united",
       "played": 9,
       "w": 3,
@@ -256,17 +256,17 @@
       "ga": 15,
       "pts": 11,
       "form": [
-        "L",
         "W",
         "L",
         "L",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "none"
     },
     {
       "pos": 14,
-      "prevPos": 13,
+      "prevPos": 14,
       "team": "ipswich-town",
       "played": 9,
       "w": 3,
@@ -1570,8 +1570,11 @@
       "kickoff": "2026-11-02T20:00:00Z",
       "home": "newcastle-united",
       "away": "everton",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560634",

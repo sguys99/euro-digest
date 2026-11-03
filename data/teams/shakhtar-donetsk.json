@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-1-4-1",
     "source": "api",
-    "updated": "2026-10-21T19:00:00.000Z"
+    "updated": "2026-11-03T17:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -26,11 +26,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-1-4-1",
-    "match": "af-1635672",
-    "kickoff": "2026-10-21T19:00:00.000Z",
+    "match": "af-1635723",
+    "kickoff": "2026-11-03T17:45:00.000Z",
     "comp": "UCL",
-    "side": "away",
-    "opponent": "inter",
+    "side": "home",
+    "opponent": "sporting-cp",
     "startXI": [
       {
         "name": "D. Riznyk",
@@ -63,8 +63,8 @@
         "grid": "2:1"
       },
       {
-        "name": "O. Ocheretko",
-        "number": 27,
+        "name": "E. Nazaryna",
+        "number": 29,
         "pos": "M",
         "grid": "3:1"
       },
@@ -75,8 +75,8 @@
         "grid": "4:4"
       },
       {
-        "name": "Pedrinho",
-        "number": 10,
+        "name": "O. Ocheretko",
+        "number": 27,
         "pos": "M",
         "grid": "4:3"
       },
@@ -107,9 +107,9 @@
         "grid": null
       },
       {
-        "name": "L. Traoré",
-        "number": 2,
-        "pos": "F",
+        "name": "I. Azarovi",
+        "number": 16,
+        "pos": "D",
         "grid": null
       },
       {
@@ -155,21 +155,21 @@
         "grid": null
       },
       {
-        "name": "E. Nazaryna",
-        "number": 29,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "Newertton",
         "number": 11,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Bruninho",
-        "number": 99,
+        "name": "P. Obah",
+        "number": 68,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. Traoré",
+        "number": 2,
+        "pos": "F",
         "grid": null
       }
     ]

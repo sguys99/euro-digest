@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-31T13:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -51,11 +51,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1570439",
-    "kickoff": "2026-10-31T13:00:00.000Z",
-    "comp": "LALIGA",
-    "side": "away",
-    "opponent": "levante",
+    "match": "af-1635622",
+    "kickoff": "2026-11-03T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "home",
+    "opponent": "bayern-munchen",
     "startXI": [
       {
         "name": "J. Oblak",
@@ -64,14 +64,14 @@
         "grid": "1:1"
       },
       {
-        "name": "Marcos Llorente",
-        "number": 14,
+        "name": "Marc Pubill",
+        "number": 18,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Marc Pubill",
-        "number": 18,
+        "name": "Robin Le Normand",
+        "number": 24,
         "pos": "D",
         "grid": "2:3"
       },
@@ -100,8 +100,8 @@
         "grid": "3:3"
       },
       {
-        "name": "M. Hjulmand",
-        "number": 23,
+        "name": "Marcos Llorente",
+        "number": 14,
         "pos": "M",
         "grid": "3:2"
       },
@@ -112,11 +112,10 @@
         "grid": "3:1"
       },
       {
-        "name": "Lee Kang-In",
-        "number": 7,
+        "name": "A. Sørloth",
+        "number": 9,
         "pos": "F",
-        "grid": "4:2",
-        "korean": "lee-kang-in"
+        "grid": "4:2"
       },
       {
         "name": "J. Álvarez",
@@ -127,39 +126,46 @@
     ],
     "substitutes": [
       {
+        "name": "J. Castillo",
+        "number": 46,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. David",
+        "number": 15,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "J. Dominguez",
         "number": 27,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "O. Vargas",
-        "number": 3,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Sørloth",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "C. Romero",
-        "number": 21,
+        "name": "R. Hueso",
+        "number": 26,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Arnau Ortiz",
-        "number": 16,
-        "pos": "F",
+        "name": "Koke",
+        "number": 6,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Musso",
-        "number": 1,
-        "pos": "G",
+        "name": "Lee Kang-In",
+        "number": 7,
+        "pos": "M",
+        "grid": null,
+        "korean": "lee-kang-in"
+      },
+      {
+        "name": "A. Lookman",
+        "number": 11,
+        "pos": "F",
         "grid": null
       },
       {
@@ -169,27 +175,21 @@
         "grid": null
       },
       {
-        "name": "A. Lookman",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Robin Le Normand",
-        "number": 24,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Salvador Esquivel",
-        "number": 25,
+        "name": "J. Musso",
+        "number": 1,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "J. David",
-        "number": 15,
+        "name": "Arnau Ortiz",
+        "number": 16,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "O. Vargas",
+        "number": 3,
+        "pos": "M",
         "grid": null
       },
       {

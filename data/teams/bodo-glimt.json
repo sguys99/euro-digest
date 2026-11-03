@@ -10,21 +10,21 @@
     "#000000"
   ],
   "formation": {
-    "shape": "4-4-2",
+    "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-20T19:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-4-2",
-    "match": "af-1635700",
-    "kickoff": "2026-10-20T19:00:00.000Z",
+    "formation": "4-3-3",
+    "match": "af-1635640",
+    "kickoff": "2026-11-03T20:00:00.000Z",
     "comp": "UCL",
-    "side": "away",
-    "opponent": "napoli",
+    "side": "home",
+    "opponent": "lille",
     "startXI": [
       {
         "name": "N. Haikin",
@@ -39,14 +39,14 @@
         "grid": "2:4"
       },
       {
-        "name": "J. Gundersen",
-        "number": 6,
+        "name": "O. Bjørtuft",
+        "number": 4,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "O. Bjørtuft",
-        "number": 4,
+        "name": "H. Aleesami",
+        "number": 5,
         "pos": "D",
         "grid": "2:2"
       },
@@ -60,23 +60,17 @@
         "name": "S. Auklend",
         "number": 8,
         "pos": "M",
-        "grid": "3:4"
+        "grid": "3:3"
       },
       {
         "name": "P. Berg",
         "number": 7,
         "pos": "M",
-        "grid": "3:3"
+        "grid": "3:2"
       },
       {
         "name": "S. Fet",
         "number": 19,
-        "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "J. Hauge",
-        "number": 10,
         "pos": "M",
         "grid": "3:1"
       },
@@ -84,11 +78,17 @@
         "name": "O. Didrik Blomberg",
         "number": 11,
         "pos": "F",
-        "grid": "4:2"
+        "grid": "4:3"
       },
       {
         "name": "A. Helmersen",
         "number": 9,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "J. Hauge",
+        "number": 10,
         "pos": "F",
         "grid": "4:1"
       }
@@ -98,6 +98,12 @@
         "name": "O. Brynhildsen",
         "number": 17,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Gundersen",
+        "number": 6,
+        "pos": "D",
         "grid": null
       },
       {
@@ -131,15 +137,15 @@
         "grid": null
       },
       {
-        "name": "U. Saltnes",
-        "number": 14,
+        "name": "M. Riisnæs",
+        "number": 23,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "H. Aleesami",
-        "number": 5,
-        "pos": "D",
+        "name": "U. Saltnes",
+        "number": 14,
+        "pos": "M",
         "grid": null
       }
     ]

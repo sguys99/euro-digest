@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-30T20:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1570442",
-    "kickoff": "2026-10-30T20:00:00.000Z",
-    "comp": "LALIGA",
+    "match": "af-1635746",
+    "kickoff": "2026-11-03T20:00:00.000Z",
+    "comp": "UCL",
     "side": "home",
-    "opponent": "espanyol",
+    "opponent": "paris-saint-germain",
     "startXI": [
       {
         "name": "P. Gulácsi",
@@ -62,14 +62,14 @@
         "grid": "1:1"
       },
       {
-        "name": "S. Mouriño",
-        "number": 15,
+        "name": "A. Freeman",
+        "number": 3,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Pau Navarro",
-        "number": 6,
+        "name": "S. Mouriño",
+        "number": 15,
         "pos": "D",
         "grid": "2:3"
       },
@@ -80,14 +80,14 @@
         "grid": "2:2"
       },
       {
-        "name": "Sergi Cardona",
-        "number": 23,
+        "name": "Carlos Romero",
+        "number": 20,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "T. Buchanan",
-        "number": 17,
+        "name": "Santi Comesaña",
+        "number": 14,
         "pos": "M",
         "grid": "3:4"
       },
@@ -98,34 +98,52 @@
         "grid": "3:3"
       },
       {
-        "name": "Santi Comesaña",
-        "number": 14,
+        "name": "P. Gueye",
+        "number": 18,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "Alberto Moleiro",
-        "number": 10,
+        "name": "T. Buchanan",
+        "number": 17,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Gerard Moreno",
-        "number": 7,
+        "name": "N. Pépé",
+        "number": 19,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "G. Mikautadze",
-        "number": 9,
+        "name": "Ayoze Pérez",
+        "number": 22,
         "pos": "F",
         "grid": "4:1"
       }
     ],
     "substitutes": [
       {
-        "name": "Carlos Romero",
-        "number": 20,
+        "name": "Joselillo Gaitán",
+        "number": 28,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "N. El Jmili",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Logan Costa",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Sergi Cardona",
+        "number": 23,
         "pos": "D",
         "grid": null
       },
@@ -136,26 +154,20 @@
         "grid": null
       },
       {
-        "name": "A. Freeman",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "N. El Jmili",
-        "number": 27,
+        "name": "G. Mikautadze",
+        "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Luíz Júnior",
-        "number": 1,
-        "pos": "G",
+        "name": "Alberto Moleiro",
+        "number": 10,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "Logan Costa",
-        "number": 2,
+        "name": "Pau Navarro",
+        "number": 6,
         "pos": "D",
         "grid": null
       },
@@ -166,21 +178,9 @@
         "grid": null
       },
       {
-        "name": "N. Pépé",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Ayoze Pérez",
-        "number": 22,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "C. Tidiane Thiam",
-        "number": 30,
-        "pos": "M",
+        "name": "Luíz Júnior",
+        "number": 1,
+        "pos": "G",
         "grid": null
       }
     ]

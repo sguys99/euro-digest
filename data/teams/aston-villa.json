@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T20:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -44,11 +44,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557447",
-    "kickoff": "2026-10-31T20:00:00.000Z",
-    "comp": "EPL",
-    "side": "home",
-    "opponent": "fulham",
+    "match": "af-1635627",
+    "kickoff": "2026-11-03T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "barcelona",
     "startXI": [
       {
         "name": "Z. Suzuki",
@@ -81,32 +81,32 @@
         "grid": "2:1"
       },
       {
-        "name": "B. Kamara",
-        "number": 8,
+        "name": "João Gomes",
+        "number": 35,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "L. Goretzka",
-        "number": 27,
+        "name": "B. Kamara",
+        "number": 8,
         "pos": "M",
         "grid": "3:1"
-      },
-      {
-        "name": "Alysson Edward",
-        "number": 47,
-        "pos": "M",
-        "grid": "4:3"
       },
       {
         "name": "J.  McGinn",
         "number": 7,
         "pos": "M",
-        "grid": "4:2"
+        "grid": "4:3"
       },
       {
         "name": "J. Manzambi",
         "number": 44,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "E. Buendía",
+        "number": 10,
         "pos": "M",
         "grid": "4:1"
       },
@@ -119,45 +119,15 @@
     ],
     "substitutes": [
       {
-        "name": "João Gomes",
-        "number": 35,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Garnacho",
-        "number": 17,
+        "name": "Alysson Edward",
+        "number": 47,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Brian Madjo",
-        "number": 39,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "I. Mbaye",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Bizot",
-        "number": 40,
+        "name": "J. Wright",
+        "number": 42,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "T. Harwood-Bellis",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "T. Mings",
-        "number": 5,
-        "pos": "D",
         "grid": null
       },
       {
@@ -167,9 +137,51 @@
         "grid": null
       },
       {
-        "name": "E. Buendía",
-        "number": 10,
+        "name": "M. Bizot",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Garnacho",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Goretzka",
+        "number": 27,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Harwood-Bellis",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "George Hemmings",
+        "number": 53,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "I. Mbaye",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Mings",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Abraham",
+        "number": 18,
+        "pos": "F",
         "grid": null
       }
     ]

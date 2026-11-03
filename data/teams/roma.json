@@ -14,7 +14,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T17:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,27 +49,27 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1550186",
-    "kickoff": "2026-10-31T17:00:00.000Z",
-    "comp": "SERIEA",
+    "match": "af-1635695",
+    "kickoff": "2026-11-03T20:00:00.000Z",
+    "comp": "UCL",
     "side": "away",
-    "opponent": "udinese",
+    "opponent": "manchester-united",
     "startXI": [
       {
-        "name": "P. Gollini",
-        "number": 95,
+        "name": "D. Vásquez",
+        "number": 32,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "D. Ghilardi",
-        "number": 87,
+        "name": "G. Mancini",
+        "number": 23,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "E. Ndicka",
-        "number": 5,
+        "name": "L. Balerdi",
+        "number": 26,
         "pos": "D",
         "grid": "2:2"
       },
@@ -80,20 +80,20 @@
         "grid": "2:1"
       },
       {
-        "name": "N. Molina",
-        "number": 20,
+        "name": "D. Rensch",
+        "number": 2,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "M. de Roon",
-        "number": 15,
+        "name": "B. Cristante",
+        "number": 4,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "B. Cristante",
-        "number": 4,
+        "name": "M. de Roon",
+        "number": 15,
         "pos": "M",
         "grid": "3:2"
       },
@@ -124,38 +124,8 @@
     ],
     "substitutes": [
       {
-        "name": "L. Balerdi",
-        "number": 26,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Mandjou Camara",
-        "number": 78,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "S. Castro",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "G. De Marzi",
-        "number": 70,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Alessandro Di Nunzio",
-        "number": 63,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "K. Koulierakis",
-        "number": 3,
+        "name": "N. Molina",
+        "number": 20,
         "pos": "D",
         "grid": null
       },
@@ -166,9 +136,33 @@
         "grid": null
       },
       {
-        "name": "G. Mancini",
-        "number": 23,
+        "name": "K. Koulierakis",
+        "number": 3,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Ghilardi",
+        "number": 87,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Alessandro Di Nunzio",
+        "number": 63,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. De Marzi",
+        "number": 70,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "S. Castro",
+        "number": 9,
+        "pos": "F",
         "grid": null
       },
       {
@@ -178,15 +172,9 @@
         "grid": null
       },
       {
-        "name": "D. Rensch",
-        "number": 2,
+        "name": "E. Ndicka",
+        "number": 5,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "D. Vásquez",
-        "number": 32,
-        "pos": "G",
         "grid": null
       }
     ]

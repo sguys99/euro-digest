@@ -10,37 +10,31 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-1-4-1",
+    "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-20T19:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-1-4-1",
-    "match": "af-1635617",
-    "kickoff": "2026-10-20T19:00:00.000Z",
+    "formation": "3-4-2-1",
+    "match": "af-1635677",
+    "kickoff": "2026-11-03T20:00:00.000Z",
     "comp": "UCL",
     "side": "away",
-    "opponent": "roma",
+    "opponent": "lask",
     "startXI": [
       {
-        "name": "D. Takáč",
-        "number": 71,
+        "name": "A. Popović",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "C. Blackman",
-        "number": 28,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "K. Bajrič",
-        "number": 12,
+        "name": "S. Camara",
+        "number": 49,
         "pos": "D",
         "grid": "2:3"
       },
@@ -51,32 +45,38 @@
         "grid": "2:2"
       },
       {
-        "name": "Sandro Cruz",
-        "number": 57,
+        "name": "K. Wimmer",
+        "number": 6,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "P. Pokorný",
-        "number": 3,
+        "name": "C. Blackman",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Cristian Jesús Martínez",
+        "number": 70,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "A. Mustafić",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "S. Kozlovský",
+        "number": 2,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "T. Barseghyan",
-        "number": 11,
-        "pos": "M",
-        "grid": "4:4"
-      },
-      {
-        "name": "R. Ibrahim",
-        "number": 5,
-        "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "A. Gajdoš",
-        "number": 8,
+        "name": "A. Maroš",
+        "number": 29,
         "pos": "M",
         "grid": "4:2"
       },
@@ -87,13 +87,25 @@
         "grid": "4:1"
       },
       {
-        "name": "N. Marcelli",
-        "number": 10,
+        "name": "A. Šporar",
+        "number": 99,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
+      {
+        "name": "Sandro Cruz",
+        "number": 57,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Gajdoš",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
       {
         "name": "L. Hofstadter",
         "number": 7,
@@ -101,20 +113,20 @@
         "grid": null
       },
       {
-        "name": "D. Ignatenko",
-        "number": 77,
+        "name": "R. Ibrahim",
+        "number": 5,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "S. Kozlovský",
-        "number": 2,
-        "pos": "D",
+        "name": "M. Macík",
+        "number": 44,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "Cristian Jesús Martínez",
-        "number": 70,
+        "name": "N. Marcelli",
+        "number": 10,
         "pos": "M",
         "grid": null
       },
@@ -125,14 +137,14 @@
         "grid": null
       },
       {
-        "name": "A. Mustafić",
-        "number": 20,
+        "name": "P. Pokorný",
+        "number": 3,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "A. Popović",
-        "number": 1,
+        "name": "D. Takáč",
+        "number": 71,
         "pos": "G",
         "grid": null
       },
@@ -143,27 +155,15 @@
         "grid": null
       },
       {
-        "name": "K. Wimmer",
-        "number": 6,
+        "name": "K. Bajrič",
+        "number": 12,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Yirajang",
-        "number": 14,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "S. Camara",
-        "number": 49,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Maroš",
-        "number": 29,
-        "pos": "F",
+        "name": "T. Barseghyan",
+        "number": 11,
+        "pos": "M",
         "grid": null
       }
     ]

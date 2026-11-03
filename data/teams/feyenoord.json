@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-21T19:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [],
   "profile": null,
@@ -20,11 +20,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1635636",
-    "kickoff": "2026-10-21T19:00:00.000Z",
+    "match": "af-1635662",
+    "kickoff": "2026-11-03T20:00:00.000Z",
     "comp": "UCL",
-    "side": "away",
-    "opponent": "real-betis",
+    "side": "home",
+    "opponent": "inter",
     "startXI": [
       {
         "name": "T. Ernst",
@@ -39,8 +39,8 @@
         "grid": "2:4"
       },
       {
-        "name": "J. St. Juste",
-        "number": 6,
+        "name": "T. Kraaijeveld",
+        "number": 24,
         "pos": "D",
         "grid": "2:3"
       },
@@ -95,15 +95,9 @@
     ],
     "substitutes": [
       {
-        "name": "T. Wessels",
-        "number": 32,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "T. Watanabe",
-        "number": 4,
-        "pos": "D",
+        "name": "J. Schaken",
+        "number": 57,
+        "pos": "F",
         "grid": null
       },
       {
@@ -113,39 +107,33 @@
         "grid": null
       },
       {
+        "name": "T. Watanabe",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. van Persie",
+        "number": 49,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Dani Slory",
+        "number": 65,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "S. Steijn",
         "number": 14,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Schaken",
-        "number": 57,
+        "name": "Gonçalo Borges",
+        "number": 11,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "T. Kraaijeveld",
-        "number": 24,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "F. Kastenmeier",
-        "number": 33,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "G. Diarra",
-        "number": 27,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Deijl",
-        "number": 20,
-        "pos": "D",
         "grid": null
       },
       {
@@ -155,8 +143,26 @@
         "grid": null
       },
       {
-        "name": "Gonçalo Borges",
-        "number": 11,
+        "name": "M. Deijl",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Diarra",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "F. Kastenmeier",
+        "number": 33,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "R. Nelson",
+        "number": 17,
         "pos": "F",
         "grid": null
       }

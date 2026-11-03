@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-02T22:16:39.058Z",
+  "updatedAt": "2026-11-03T22:15:33.688Z",
   "standings": [
     {
       "pos": 1,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 14,
+      "prevPos": 10,
       "team": "brest",
       "played": 9,
       "w": 3,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 10,
+      "prevPos": 11,
       "team": "lorient",
       "played": 9,
       "w": 3,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "toulouse",
       "played": 9,
       "w": 2,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 12,
+      "prevPos": 13,
       "team": "strasbourg",
       "played": 9,
       "w": 3,
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": 13,
+      "prevPos": 14,
       "team": "auxerre",
       "played": 9,
       "w": 3,

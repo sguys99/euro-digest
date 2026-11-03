@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T17:30:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -51,15 +51,15 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1575203",
-    "kickoff": "2026-10-31T17:30:00.000Z",
-    "comp": "BUNDESLIGA",
-    "side": "home",
-    "opponent": "borussia-dortmund",
+    "match": "af-1635622",
+    "kickoff": "2026-11-03T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "atletico-madrid",
     "startXI": [
       {
-        "name": "J. Urbig",
-        "number": 40,
+        "name": "M. Neuer",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
@@ -76,15 +76,14 @@
         "grid": "2:3"
       },
       {
-        "name": "Kim Min-Jae",
-        "number": 3,
+        "name": "J. Tah",
+        "number": 4,
         "pos": "D",
-        "grid": "2:2",
-        "korean": "kim-min-jae"
+        "grid": "2:2"
       },
       {
-        "name": "A. Davies",
-        "number": 19,
+        "name": "J. Stanišić",
+        "number": 44,
         "pos": "D",
         "grid": "2:1"
       },
@@ -95,8 +94,8 @@
         "grid": "3:2"
       },
       {
-        "name": "A. Pavlović",
-        "number": 45,
+        "name": "T. Bischof",
+        "number": 8,
         "pos": "M",
         "grid": "3:1"
       },
@@ -107,14 +106,14 @@
         "grid": "4:3"
       },
       {
-        "name": "I. Saibari",
-        "number": 34,
+        "name": "L. Karl",
+        "number": 42,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "S. Gnabry",
-        "number": 7,
+        "name": "A. Davies",
+        "number": 19,
         "pos": "M",
         "grid": "4:1"
       },
@@ -127,33 +126,40 @@
     ],
     "substitutes": [
       {
+        "name": "J. Urbig",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
         "name": "S. Ulreich",
         "number": 26,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "J. Tah",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Stanišić",
-        "number": 44,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "L. Karl",
-        "number": 42,
+        "name": "A. Pavlović",
+        "number": 45,
         "pos": "M",
         "grid": null
+      },
+      {
+        "name": "Kim Min-Jae",
+        "number": 3,
+        "pos": "D",
+        "grid": null,
+        "korean": "kim-min-jae"
       },
       {
         "name": "H. Ito",
         "number": 21,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "David Daiber",
+        "number": 47,
+        "pos": "M",
         "grid": null
       },
       {
@@ -166,12 +172,6 @@
         "name": "S. Boey",
         "number": 23,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "T. Bischof",
-        "number": 8,
-        "pos": "M",
         "grid": null
       },
       {

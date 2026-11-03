@@ -2,7 +2,7 @@
   "comp": "SERIEA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-02T22:15:54.710Z",
+  "updatedAt": "2026-11-03T22:14:49.482Z",
   "standings": [
     {
       "pos": 1,
@@ -286,7 +286,7 @@
     },
     {
       "pos": 15,
-      "prevPos": 18,
+      "prevPos": 15,
       "team": "parma",
       "played": 10,
       "w": 2,
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": 17,
+      "prevPos": 16,
       "team": "fiorentina",
       "played": 10,
       "w": 2,
@@ -326,7 +326,7 @@
     },
     {
       "pos": 17,
-      "prevPos": 15,
+      "prevPos": 17,
       "team": "sassuolo",
       "played": 10,
       "w": 2,
@@ -346,7 +346,7 @@
     },
     {
       "pos": 18,
-      "prevPos": 16,
+      "prevPos": 18,
       "team": "monza",
       "played": 10,
       "w": 2,

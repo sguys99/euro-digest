@@ -12,9 +12,9 @@
     "#E32219"
   ],
   "formation": {
-    "shape": "4-2-3-1",
+    "shape": "3-4-1-2",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-03T17:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -48,34 +48,28 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-2-3-1",
-    "match": "af-1575196",
-    "kickoff": "2026-10-23T18:30:00.000Z",
-    "comp": "BUNDESLIGA",
-    "side": "home",
-    "opponent": "borussia-monchengladbach",
+    "formation": "3-4-1-2",
+    "match": "af-1635669",
+    "kickoff": "2026-11-03T17:45:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "galatasaray",
     "startXI": [
       {
-        "name": "D. Seimen",
-        "number": 41,
+        "name": "F. Bredlow",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "L. Assignon",
-        "number": 22,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "Finn Jeltsch",
-        "number": 29,
+        "name": "R. Hendriks",
+        "number": 3,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "R. Hendriks",
-        "number": 3,
+        "name": "J. Chabot",
+        "number": 24,
         "pos": "D",
         "grid": "2:2"
       },
@@ -86,34 +80,40 @@
         "grid": "2:1"
       },
       {
-        "name": "A. Stiller",
-        "number": 6,
+        "name": "J. Leweling",
+        "number": 18,
         "pos": "M",
-        "grid": "3:2"
+        "grid": "3:4"
+      },
+      {
+        "name": "G. Prömel",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:3"
       },
       {
         "name": "A. Karazor",
         "number": 16,
         "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "L. Sauer",
-        "number": 44,
-        "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "D. Pejčinović",
-        "number": 17,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
         "name": "C. Führich",
         "number": 10,
         "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "B. El Khannouss",
+        "number": 11,
+        "pos": "M",
         "grid": "4:1"
+      },
+      {
+        "name": "D. Undav",
+        "number": 26,
+        "pos": "F",
+        "grid": "5:2"
       },
       {
         "name": "E. Demirović",
@@ -124,33 +124,9 @@
     ],
     "substitutes": [
       {
-        "name": "A. Al Dakhil",
-        "number": 2,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "F. Bredlow",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "J. Chabot",
-        "number": 24,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Leweling",
-        "number": 18,
+        "name": "Tiago Tomás",
+        "number": 8,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "G. Prömel",
-        "number": 21,
-        "pos": "M",
         "grid": null
       },
       {
@@ -160,21 +136,57 @@
         "grid": null
       },
       {
-        "name": "L. Stergiou",
-        "number": 20,
-        "pos": "D",
+        "name": "D. Seimen",
+        "number": 41,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "D. Undav",
-        "number": 26,
+        "name": "D. Pejčinović",
+        "number": 17,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "B. El Khannouss",
-        "number": 11,
+        "name": "N. Nartey",
+        "number": 28,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Jarzinho Ataide Adriano de Nascimento Malanga",
+        "number": 43,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Finn Jeltsch",
+        "number": 29,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Jaquez",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Funk",
+        "number": 33,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "L. Assignon",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Al Dakhil",
+        "number": 2,
+        "pos": "D",
         "grid": null
       }
     ]

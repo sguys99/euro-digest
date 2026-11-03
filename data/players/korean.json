@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-02T22:17:28.133Z",
+  "generatedAt": "2026-11-03T22:15:55.399Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -84,13 +84,32 @@
         },
         {
           "comp": "UCL",
-          "apps": 0,
-          "minutes": 0,
+          "apps": 1,
+          "minutes": 31,
           "goals": 0,
           "assists": 0
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-575381",
+          "comp": "UCL",
+          "kickoff": "2026-11-03T20:00:00.000Z",
+          "opponent": {
+            "slug": "bayern-munchen",
+            "name": "Bayern München"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 2
+          },
+          "status": "sub",
+          "started": false,
+          "minutes": 31,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-564730",
           "comp": "LALIGA",
@@ -150,16 +169,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-575381",
-        "comp": "UCL",
-        "kickoff": "2026-11-03T20:00:00Z",
+        "matchId": "fd-564746",
+        "comp": "LALIGA",
+        "kickoff": "2026-11-08T20:00:00Z",
         "opponent": {
-          "slug": "bayern-munchen",
-          "name": "FC Bayern München"
+          "slug": "barcelona",
+          "name": "FC Barcelona"
         },
         "home": true
       },
-      "updatedAt": "2026-11-01T04:56:14.815Z"
+      "updatedAt": "2026-11-03T22:15:55.399Z"
     },
     {
       "slug": "kim-min-jae",
@@ -176,8 +195,8 @@
         },
         {
           "comp": "UCL",
-          "apps": 1,
-          "minutes": 45,
+          "apps": 2,
+          "minutes": 56,
           "goals": 0,
           "assists": 0
         },
@@ -191,6 +210,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-575381",
+          "comp": "UCL",
+          "kickoff": "2026-11-03T20:00:00.000Z",
+          "opponent": {
+            "slug": "atletico-madrid",
+            "name": "Atletico Madrid"
+          },
+          "home": false,
+          "result": {
+            "for": 2,
+            "against": 0
+          },
+          "status": "sub",
+          "started": false,
+          "minutes": 11,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565845",
           "comp": "BUNDESLIGA",
@@ -270,16 +308,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-575381",
-        "comp": "UCL",
-        "kickoff": "2026-11-03T20:00:00Z",
+        "matchId": "fd-565851",
+        "comp": "BUNDESLIGA",
+        "kickoff": "2026-11-07T14:30:00Z",
         "opponent": {
-          "slug": "atletico-madrid",
-          "name": "Club Atlético de Madrid"
+          "slug": "mainz",
+          "name": "1. FSV Mainz 05"
         },
         "home": false
       },
-      "updatedAt": "2026-11-01T04:56:14.815Z"
+      "updatedAt": "2026-11-03T22:15:55.399Z"
     },
     {
       "slug": "jeong-woo-yeong",

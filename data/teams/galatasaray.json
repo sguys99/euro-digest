@@ -12,12 +12,12 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-21T16:45:00.000Z"
+    "updated": "2026-11-03T17:45:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Aleksey Batrakov",
-      "goals": 2,
+      "goals": 4,
       "assists": null
     }
   ],
@@ -26,11 +26,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1635684",
-    "kickoff": "2026-10-21T16:45:00.000Z",
+    "match": "af-1635669",
+    "kickoff": "2026-11-03T17:45:00.000Z",
     "comp": "UCL",
-    "side": "away",
-    "opponent": "lille",
+    "side": "home",
+    "opponent": "stuttgart",
     "startXI": [
       {
         "name": "U. Çakır",
@@ -69,8 +69,8 @@
         "grid": "3:2"
       },
       {
-        "name": "Gabriel Sara",
-        "number": 8,
+        "name": "M. Lemina",
+        "number": 99,
         "pos": "M",
         "grid": "3:1"
       },
@@ -101,15 +101,9 @@
     ],
     "substitutes": [
       {
-        "name": "E. Elmalı",
-        "number": 17,
+        "name": "E. Bitshiabu",
+        "number": 3,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "İ. Gündoğan",
-        "number": 20,
-        "pos": "M",
         "grid": null
       },
       {
@@ -119,14 +113,8 @@
         "grid": null
       },
       {
-        "name": "M. Lemina",
-        "number": 99,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Berat Luş",
-        "number": 73,
+        "name": "Rafael Leão",
+        "number": 27,
         "pos": "F",
         "grid": null
       },
@@ -161,15 +149,27 @@
         "grid": null
       },
       {
-        "name": "E. Bitshiabu",
-        "number": 3,
+        "name": "D. Gül",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Gabriel Sara",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Elmalı",
+        "number": 17,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "D. Gül",
-        "number": 21,
-        "pos": "F",
+        "name": "İ. Gündoğan",
+        "number": 20,
+        "pos": "M",
         "grid": null
       }
     ]

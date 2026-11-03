@@ -10,11 +10,21 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "3-4-3",
+    "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-10-21T19:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
+    {
+      "name": "Kasper Jørgensen",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Robert Ljubicic",
+      "goals": 2,
+      "assists": 1
+    },
     {
       "name": "Florian Flecker",
       "goals": 2,
@@ -25,12 +35,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-4-3",
-    "match": "af-1635737",
-    "kickoff": "2026-10-21T19:00:00.000Z",
+    "formation": "3-5-2",
+    "match": "af-1635677",
+    "kickoff": "2026-11-03T20:00:00.000Z",
     "comp": "UCL",
-    "side": "away",
-    "opponent": "sporting-cp",
+    "side": "home",
+    "opponent": "slovan-bratislava",
     "startXI": [
       {
         "name": "L. Jungwirth",
@@ -60,11 +70,17 @@
         "name": "K. Jørgensen",
         "number": 20,
         "pos": "M",
-        "grid": "3:4"
+        "grid": "3:5"
       },
       {
         "name": "R. Ljubičić",
         "number": 10,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "M. Bogarde",
+        "number": 6,
         "pos": "M",
         "grid": "3:3"
       },
@@ -81,43 +97,19 @@
         "grid": "3:1"
       },
       {
-        "name": "K. Daněk",
-        "number": 9,
-        "pos": "F",
-        "grid": "4:3"
-      },
-      {
-        "name": "S. Kalajdzic",
-        "number": 11,
+        "name": "M. Usor",
+        "number": 8,
         "pos": "F",
         "grid": "4:2"
-      },
-      {
-        "name": "C. Lang",
-        "number": 27,
-        "pos": "F",
-        "grid": "4:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "M. Verhaeghe",
-        "number": 21,
-        "pos": "D",
-        "grid": null
       },
       {
         "name": "S. Adeniran",
         "number": 7,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Bogarde",
-        "number": 6,
-        "pos": "D",
-        "grid": null
-      },
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
       {
         "name": "Daniel Elfadli",
         "number": 23,
@@ -131,9 +123,21 @@
         "grid": null
       },
       {
+        "name": "K. Daněk",
+        "number": 9,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "M. Freckleton",
         "number": 3,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Kalajdzic",
+        "number": 11,
+        "pos": "F",
         "grid": null
       },
       {
@@ -143,8 +147,14 @@
         "grid": null
       },
       {
-        "name": "Christof Katzmayr",
-        "number": 39,
+        "name": "C. Lang",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Fabian Schillinger",
+        "number": 50,
         "pos": "G",
         "grid": null
       },
@@ -161,9 +171,9 @@
         "grid": null
       },
       {
-        "name": "M. Usor",
-        "number": 8,
-        "pos": "F",
+        "name": "M. Verhaeghe",
+        "number": 21,
+        "pos": "D",
         "grid": null
       }
     ]

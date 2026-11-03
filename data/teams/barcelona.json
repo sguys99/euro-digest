@@ -12,9 +12,9 @@
     "#004D98"
   ],
   "formation": {
-    "shape": "4-3-3",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T20:00:00.000Z"
+    "updated": "2026-11-03T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -48,12 +48,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-3-3",
-    "match": "af-1570434",
-    "kickoff": "2026-10-31T20:00:00.000Z",
-    "comp": "LALIGA",
+    "formation": "4-2-3-1",
+    "match": "af-1635627",
+    "kickoff": "2026-11-03T20:00:00.000Z",
+    "comp": "UCL",
     "side": "home",
-    "opponent": "alaves",
+    "opponent": "aston-villa",
     "startXI": [
       {
         "name": "Joan García",
@@ -74,8 +74,8 @@
         "grid": "2:3"
       },
       {
-        "name": "F. de Jong",
-        "number": 21,
+        "name": "Gerard Martín",
+        "number": 18,
         "pos": "D",
         "grid": "2:2"
       },
@@ -84,12 +84,6 @@
         "number": 2,
         "pos": "D",
         "grid": "2:1"
-      },
-      {
-        "name": "Fermín",
-        "number": 7,
-        "pos": "M",
-        "grid": "3:3"
       },
       {
         "name": "Rodri",
@@ -106,33 +100,39 @@
       {
         "name": "Lamine Yamal",
         "number": 10,
-        "pos": "F",
+        "pos": "M",
         "grid": "4:3"
+      },
+      {
+        "name": "Fermín",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Gordon",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "Raphinha",
         "number": 11,
         "pos": "F",
-        "grid": "4:2"
-      },
-      {
-        "name": "K. Adeyemi",
-        "number": 14,
-        "pos": "F",
-        "grid": "4:1"
+        "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "Alejandro Balde",
-        "number": 3,
-        "pos": "D",
+        "name": "K. Adeyemi",
+        "number": 14,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "H. Abdelkarim",
-        "number": 29,
-        "pos": "F",
+        "name": "Alejandro Balde",
+        "number": 3,
+        "pos": "D",
         "grid": null
       },
       {
@@ -148,21 +148,9 @@
         "grid": null
       },
       {
-        "name": "Gabriel Jesus",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Gavi",
-        "number": 6,
+        "name": "O. Goren",
+        "number": 32,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Gordon",
-        "number": 17,
-        "pos": "F",
         "grid": null
       },
       {
@@ -172,9 +160,15 @@
         "grid": null
       },
       {
-        "name": "Gerard Martín",
-        "number": 18,
-        "pos": "D",
+        "name": "Gavi",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "H. Abdelkarim",
+        "number": 29,
+        "pos": "F",
         "grid": null
       },
       {
@@ -184,15 +178,21 @@
         "grid": null
       },
       {
-        "name": "E. Tunkara",
-        "number": 30,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "Guillem Víctor",
         "number": 40,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Gabriel Jesus",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "F. de Jong",
+        "number": 21,
+        "pos": "M",
         "grid": null
       }
     ]
