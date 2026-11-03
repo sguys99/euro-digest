@@ -318,8 +318,9 @@ export default function AboutPage() {
       {/* ── 04 AI 작성 고지 ──────────────────────────────────────────── */}
       <AboutSection id="ai">
         <p className={LEAD}>
-          AI는 홈 맨 위 ‘오늘의 5줄’의 문장을 쓰는 데만 씁니다. 뉴스 카드에는
-          AI를 쓰지 않습니다.
+          AI는 세 곳의 문장을 쓰는 데만 씁니다. 홈 맨 위 ‘오늘의 5줄’(매일), 팀
+          페이지의 한줄평과 강점·약점(주 1회), 한국 선수 주간 총평(주
+          1회)입니다. 뉴스 카드에는 AI를 쓰지 않습니다.
         </p>
         <TermList
           className="mt-5"
@@ -328,8 +329,8 @@ export default function AboutPage() {
               term: "입력",
               description: (
                 <>
-                  전날 열린 경기의 결과와 득점자, 대회 순위 같은 경기 데이터만
-                  넣습니다(<Brand>football-data.org</Brand> ·{" "}
+                  경기 결과와 득점자, 대회 순위, 선수 출전 기록 같은 경기
+                  데이터만 넣습니다(<Brand>football-data.org</Brand> ·{" "}
                   <Brand>API-Football</Brand>). 기사 제목이나 내용은 넣지
                   않습니다.
                 </>

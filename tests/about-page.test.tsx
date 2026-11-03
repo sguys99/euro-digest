@@ -247,11 +247,11 @@ describe("출처·저작권 정책 · 출처 Tier — 매체는 configs/sources.
 });
 
 describe("AI 작성 고지(#ai — 브리핑 'AI 작성' 라벨이 가리킴, D23·D24)", () => {
-  it("AI는 오늘의 5줄에만 · 입력은 경기 데이터만(기사 없음) · 라벨은 AI 줄에만 · 검증 실패 줄은 코드 문장 · 뉴스 카드는 AI 없음", () => {
+  it("AI는 세 곳(5줄 · 팀 한줄평 · 주간 총평 — CLAUDE §1-3)만 · 입력은 경기 데이터만(기사 없음) · 라벨은 AI 줄에만 · 검증 실패 줄은 코드 문장 · 뉴스 카드는 AI 없음", () => {
     render(<AboutPage />);
     const el = section("ai");
     expect(el).toHaveTextContent(
-      "AI는 홈 맨 위 ‘오늘의 5줄’의 문장을 쓰는 데만 씁니다. 뉴스 카드에는 AI를 쓰지 않습니다.",
+      "AI는 세 곳의 문장을 쓰는 데만 씁니다. 홈 맨 위 ‘오늘의 5줄’(매일), 팀 페이지의 한줄평과 강점·약점(주 1회), 한국 선수 주간 총평(주 1회)입니다. 뉴스 카드에는 AI를 쓰지 않습니다.",
     );
     expect(el).toHaveTextContent("기사 제목이나 내용은 넣지 않습니다.");
     expect(el).toHaveTextContent("AI가 쓴 줄 끝에만 AI 작성 라벨을 붙입니다.");
