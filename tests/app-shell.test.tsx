@@ -350,7 +350,7 @@ describe("뒤표지 — 데이터 출처·AI 고지·GitHub·마지막 업데이
     expect(within(footer).queryByRole("link", { name: "AI 작성" })).toBeNull();
   });
 
-  it("호 줄 · 마지막 업데이트 HH:MM KST · /about 링크 3개 + GitHub 저장소(새 창)", () => {
+  it("호 줄 · 마지막 업데이트 HH:MM KST · /about 링크 3개 + 발행 상태 + GitHub 저장소(새 창)", () => {
     render(
       <AppShell current="home" issue={ISSUE}>
         본문
@@ -385,9 +385,13 @@ describe("뒤표지 — 데이터 출처·AI 고지·GitHub·마지막 업데이
       ["소개·출처 정책", "/about/"],
       ["삭제·정정 요청", "/about/#contact"],
     ]);
-    expect(links).toHaveLength(4);
+    expect(links).toHaveLength(5);
     expect(footer.querySelector('a[href*="privacy"]')).toBeNull();
-    const github = links[3] as HTMLElement;
+    // 발행 상태 {성공률}%(M5-15 — DECISIONS D3 #15) — 삭제·정정 요청 뒤 · GitHub 앞. 숫자는 data/runs.json과 지금 시각에서(형식만 본다)
+    const status = links[3] as HTMLElement;
+    expect(status.getAttribute("href")?.replace(/\/?$/, "/")).toBe("/status/");
+    expect(status.textContent).toMatch(/^발행 상태( \d{1,3}\.\d%)?$/);
+    const github = links[4] as HTMLElement;
     expect(github).toHaveAttribute("href", REPO_URL);
     expect(github).toHaveAttribute("target", "_blank");
     expect(github.getAttribute("rel")).toContain("noopener");

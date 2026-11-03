@@ -6,6 +6,7 @@ import { SpoilerSwitch } from "@/components/spoiler/spoiler-switch";
 import { BottomTab, BottomTabs } from "@/components/ui/nav-tabs";
 import { Toaster } from "@/components/ui/toast";
 import { loadSearchIndexPlayers } from "@/lib/data/search";
+import { loadStatusRunRate } from "@/lib/data/status";
 import type { IssueMeta } from "@/lib/issue";
 import type { LateWindow } from "@/lib/issue-late";
 import { cn } from "@/lib/utils";
@@ -169,7 +170,12 @@ export function AppShell({
             </aside>
           )}
         </div>
-        <Colophon issue={issue} lastUpdated={siteUpdatedAt} />
+        {/* 뒤표지 '발행 상태 {n}%'(M5-15) — `/status` 숫자판과 같은 계산 · 같은 빌드 기준 시각 */}
+        <Colophon
+          issue={issue}
+          lastUpdated={siteUpdatedAt}
+          statusRate={loadStatusRunRate()}
+        />
         {/* 오프라인 띠(M1-37) — 하단 탭 바로 앞. 평소 높이 0, 끊기면 하단 탭 위(1024 이상 화면 아래)에 sticky */}
         <OfflineBand />
         {/* 하단 탭(1023 이하) — 화면 아래 sticky. 셸의 마지막 흐름 요소라 끝까지 내리면 뒤표지 바로 아래에 놓여 아무것도 가리지 않는다.

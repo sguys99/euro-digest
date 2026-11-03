@@ -3,6 +3,7 @@ import Link from "next/link";
 import { KstTime } from "@/components/kst-time";
 import { aboutHref } from "@/lib/about-sections";
 import type { IssueMeta } from "@/lib/issue";
+import { routes } from "@/lib/paths";
 import { FOOTBALL_DATA_ATTRIBUTION, REPO_URL, SITE_NAME } from "@/lib/site";
 import { formatKst, kstDate, kstDayRangeUtc } from "@/lib/time";
 
@@ -20,7 +21,9 @@ import { SubscribeBand } from "./subscribe-band";
  *   사실) · GitHub 저장소 · 마지막 업데이트 HH:MM KST(FR-142).
  * - 링크는 있는 페이지만 건다(e2e 링크 검사). 순서·문구는 DESIGN §9.3·혼합안 뒤표지 그대로: AI 작성 고지(`/about/#ai`) ·
  *   소개·출처 정책(`/about/` — 한 링크) · [개인정보 처리방침(`/privacy/`) — M5-05에서 이 자리에] · 삭제·정정 요청(`/about/#contact`) ·
- *   GitHub↗. `/about` 앵커는 `ABOUT_SECTIONS`(src/lib/about-sections.ts — M1-36)가 정한다.
+ *   **발행 상태 {성공률}%**(`/status/` — D3 #15, M5-15: 숫자 Barlow 800 17px, 성공률은 `/status` 숫자판과 같은 계산 — 앱 셸이
+ *   `loadStatusRunRate`로 넘긴다, 실행 기록이 없으면 숫자 없이 "발행 상태") · GitHub↗. `/about` 앵커는 `ABOUT_SECTIONS`
+ *   (src/lib/about-sections.ts — M1-36)가 정한다.
  * - 안쪽 포커스 링은 --colophon-fg(색 면 안 재정의, DESIGN §9.1).
  * - **'구독' 단**(M4-12 — DECISIONS M4 미니 게이트 #6, src/components/shell/subscribe-band.tsx): 링크 다음. 1024 이상 배치는 시안 A 그대로 —
  *   왼쪽 열 = football-data 문구(2행) · 설명 문단(3행) · 마지막 업데이트(4행), 오른쪽 열 = 링크(2행) · 구독 단(3행).
@@ -47,8 +50,11 @@ const LINK =
 export function Colophon({
   issue,
   lastUpdated,
+  statusRate = null,
 }: {
   issue: IssueMeta | null;
+  /** 발행 상태 링크 숫자 — 최근 30일 실행 성공률 "96.0"(`/status`와 같은 계산). null이면 숫자 없이 */
+  statusRate?: string | null;
   /** 마지막 업데이트(사이트 기준 — 최신 호의 업데이트, FR-142). 주지 않으면 `issue.updatedAt`. 호의 발행일과 다른 날이면 날짜를 붙인다(M1-34) */
   lastUpdated?: string;
 }) {
@@ -89,7 +95,26 @@ export function Colophon({
           data-slot="colophon-links"
           className="flex flex-wrap gap-x-4.5 lg:col-start-2 lg:row-start-2"
         >
-          {LINKS.map((link) => (
+          {LINKS.map((link) => [
+            link.external ? (
+              <li key="status">
+                {/* 글자를 span 하나로 — 링크가 inline-flex라 낱말 사이 공백이 flex 항목 사이에서 사라지지 않게 */}
+                <Link href={routes.status()} className={LINK}>
+                  <span>
+                    발행 상태
+                    {statusRate !== null ? (
+                      <>
+                        {" "}
+                        <span className="ml-0.5 font-numeric text-[17px] leading-none font-extrabold lining-nums tabular-nums">
+                          {statusRate}
+                        </span>
+                        %
+                      </>
+                    ) : null}
+                  </span>
+                </Link>
+              </li>
+            ) : null,
             <li key={link.href}>
               {link.external ? (
                 <a
@@ -107,8 +132,8 @@ export function Colophon({
                   {link.label}
                 </Link>
               )}
-            </li>
-          ))}
+            </li>,
+          ])}
         </ul>
         <SubscribeBand className="lg:col-start-2 lg:row-start-3" />
         {issue && updated && (
