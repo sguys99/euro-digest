@@ -539,6 +539,58 @@ export function serializeTeamFile(team: Team): string {
   return `${JSON.stringify(team, null, 2)}\n`;
 }
 
+// ─── 지난 시즌 팀 파일 정리 (`build-teams --prune`, /new-season B10) ─────────────
+
+/** 한 번에 지울 수 있는 팀 파일 비율 상한 — 넘으면 설정이 깨졌다고 보고 아무것도 지우지 않는다 */
+export const TEAM_PRUNE_MAX_SHARE = 0.25;
+
+export interface TeamPrunePlan {
+  /** 지울 팀 파일 slug(이번 시즌 6개 대회 팀도 아니고 team-ids에도 없다) */
+  remove: string[];
+  /** 이번 시즌 팀은 아니지만 남기는 파일과 이유 */
+  keep: Array<{ slug: string; reason: string }>;
+  /** 정리를 멈춘 이유(그러면 remove는 비어 있다) */
+  blocked: string | null;
+}
+
+/**
+ * 지난 시즌 팀(강등·UCL 탈락) 파일 정리 계획 — 순수 함수 (2026-11-03 사용자 결정 ② A: 팀 페이지를 내리고 표기 사전은 유지).
+ * 지우는 조건은 둘 다: 이번 시즌 팀 표(`allTeamSlugs`)에 없고 **`configs/team-ids.json`에도 없다**(사람이 대응표에서 뺀 팀만 —
+ * 표와 대응표가 어긋난 상태에서는 지우지 않는다). 팀 표·대응표가 비었거나 지울 파일이 전체의 25%를 넘으면 설정 오류로 보고 멈춘다.
+ */
+export function planTeamPrune(input: {
+  /** data/teams/ 파일 이름의 slug */
+  files: readonly string[];
+  /** 이번 시즌 6개 대회 팀 slug */
+  seasonSlugs: readonly string[];
+  teamIds: TeamIdsFile;
+  maxShare?: number;
+}): TeamPrunePlan {
+  const season = new Set(input.seasonSlugs);
+  const remove: string[] = [];
+  const keep: TeamPrunePlan["keep"] = [];
+  for (const slug of [...input.files].sort()) {
+    if (season.has(slug)) continue;
+    if (Object.hasOwn(input.teamIds, slug)) {
+      keep.push({
+        slug,
+        reason:
+          "team-ids.json에 남아 있음 — 지난 시즌 팀이면 대응표에서 먼저 뺀다(/new-season B3)",
+      });
+    } else {
+      remove.push(slug);
+    }
+  }
+  const maxShare = input.maxShare ?? TEAM_PRUNE_MAX_SHARE;
+  let blocked: string | null = null;
+  if (season.size === 0 || Object.keys(input.teamIds).length === 0) {
+    blocked = "팀 표 또는 team-ids.json이 비어 있음";
+  } else if (remove.length > input.files.length * maxShare) {
+    blocked = `지울 파일 ${remove.length}개가 전체 ${input.files.length}개의 ${Math.round(maxShare * 100)}%를 넘음 — 설정을 확인할 것`;
+  }
+  return { remove: blocked === null ? remove : [], keep, blocked };
+}
+
 // ─── 라인업 백필 ─────────────────────────────────────────────────────────
 
 /**

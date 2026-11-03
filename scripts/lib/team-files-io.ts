@@ -161,6 +161,31 @@ export async function writeTeamFileIfChanged(
   return true;
 }
 
+const TEAM_FILE_RE = /^([a-z0-9]+(?:-[a-z0-9]+)*)\.json$/;
+
+/** data/teams/ 파일 이름의 slug(이름 순, 폴더가 없으면 빈 배열) — 정리 계획 입력 */
+export async function listTeamFileSlugs(dataDir: string): Promise<string[]> {
+  try {
+    return (await readdir(teamsDir(dataDir)))
+      .map((name) => TEAM_FILE_RE.exec(name)?.[1])
+      .filter((slug): slug is string => slug !== undefined)
+      .sort();
+  } catch {
+    return [];
+  }
+}
+
+/** 팀 파일 하나를 지운다(`build-teams --prune` — planTeamPrune이 고른 slug만) */
+export async function removeTeamFile(
+  dataDir: string,
+  slug: string,
+): Promise<void> {
+  if (!TEAM_FILE_RE.test(`${slug}.json`)) {
+    throw new Error(`팀 slug 형식이 아님: ${slug}`);
+  }
+  await rm(path.join(teamsDir(dataDir), `${slug}.json`));
+}
+
 /**
  * `build-teams --backfill`(단독 실행)의 API-Football 호출 기록 — RunLog 스키마 그대로 한 건(job collect·status skipped = 발행하지 않은
  * 실행, LLM 비용 0, apiCalls.apiFootball만). 로컬(dev)은 data/runs-dev.json, Actions(prod)는 data/runs.json(resolveRunEnv와 같은 기준).

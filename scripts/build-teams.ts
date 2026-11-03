@@ -13,6 +13,10 @@
  *                    호출 수(`/status` 포함)는 성공·실패와 상관없이 실행 기록에 남긴다(로컬 = data/runs-dev.json, job collect·status
  *                    skipped — M2-09). 봇 일일 카운터가 같은 UTC 날의 개발 사용을 합산한다. 기록 실패면 종료 코드 1
  *   --reserve <n>    백필 때 남겨 둘 오늘 일 한도(기본 60 — 다음 봇 수집 계획 상한)
+ *   --prune          지난 시즌 팀 파일 정리(/new-season B10 — 2026-11-03 사용자 결정 ② A): 이번 시즌 팀 표에 없고 team-ids.json에도
+ *                    없는 `data/teams/<slug>.json`을 지운다(`planTeamPrune` — 25% 넘게 지우게 되면 멈춘다). `--dry`와 함께 쓰면
+ *                    지울 목록만 출력한다. 팀 생성에 문제(teams.problem)가 있으면 지우지 않는다. 정기 collect는 지우지 않는다(경고만 —
+ *                    공개 URL을 없애는 일이라 사람이 /new-season에서 확인하고 실행). 팀 OG는 다음 `npm run build:og`가 지운다
  *
  * 키는 API_FOOTBALL_KEY 환경변수로만 받고 출력하지 않는다. 응답 본문은 저장·로그하지 않는다(라인업에서 이름·등번호·포지션·grid만
  * 팀 파일에 남긴다 — D63 ②). 종료 코드: 설정이 어긋나 만들지 못한 팀이 있으면 1.
@@ -44,15 +48,18 @@ import {
   koreanByAfIdOf,
   lineupBackfillPriority,
   planLineupBackfill,
+  planTeamPrune,
   teamSheetsFromDetails,
   type TeamFilesInput,
 } from "./lib/team-files";
 import {
+  listTeamFileSlugs,
   readCompetitionFiles,
   readFormations,
   readLedgerAll,
   readPreviousTeams,
   recordBackfillApiCalls,
+  removeTeamFile,
   writeTeamFileIfChanged,
 } from "./lib/team-files-io";
 import { resolveRunEnv } from "./lib/collect-run";
@@ -76,6 +83,7 @@ const USAGE = [
   "  --plan <n>       팀시트 백필 계획(경기 n개)만 출력 — API 호출 없음",
   `  --backfill <n>   API-Football 경기 단건 n건(≤ ${BACKFILL_MAX})으로 팀시트 백필 — /status 확인 후, 06:00~08:00 KST 금지`,
   `  --reserve <n>    백필 때 남길 오늘 일 한도(기본 ${DEFAULT_RESERVE})`,
+  "  --prune          지난 시즌 팀 파일 정리(팀 표·team-ids 둘 다에 없는 파일) — --dry면 목록만",
   "  --help, -h       이 도움말",
 ].join("\n");
 
@@ -95,6 +103,7 @@ async function main(): Promise<number> {
       plan: { type: "string" },
       backfill: { type: "string" },
       reserve: { type: "string" },
+      prune: { type: "boolean", default: false },
       help: { type: "boolean", short: "h", default: false },
     },
     strict: true,
@@ -301,15 +310,47 @@ async function main(): Promise<number> {
     }
   }
   const stale = [...previous.keys()].filter((s) => !slugs.includes(s));
-  if (stale.length > 0) log.warn("teams.stale-files", { slugs: stale });
+  let pruned = 0;
+  let pruneFailed = false;
+  if (values.prune) {
+    const plan = planTeamPrune({
+      files: await listTeamFileSlugs(DATA_DIR),
+      seasonSlugs: slugs,
+      teamIds,
+    });
+    for (const k of plan.keep) log.warn("teams.prune.keep", k);
+    if (plan.blocked !== null) {
+      log.error("teams.prune.blocked", { reason: plan.blocked });
+      pruneFailed = true;
+    } else if (result.problems.length > 0) {
+      log.error("teams.prune.blocked", {
+        reason: "팀 생성 문제가 있어 정리하지 않는다",
+      });
+      pruneFailed = true;
+    } else if (values.dry) {
+      log.info("teams.prune.plan", { remove: plan.remove, dry: true });
+    } else {
+      for (const slug of plan.remove) {
+        await removeTeamFile(DATA_DIR, slug);
+        pruned += 1;
+      }
+      log.info("teams.prune.done", { removed: plan.remove });
+    }
+  } else if (stale.length > 0) {
+    log.warn("teams.stale-files", {
+      slugs: stale,
+      hint: "지난 시즌 팀이면 team-ids.json에서 뺀 뒤 --prune(/new-season B10)",
+    });
+  }
   log.info("teams.summary", {
     ...result.stats,
     sheets: extract.sheets.length,
     written,
+    pruned,
     dry: values.dry,
     apiCalls,
   });
-  return result.problems.length > 0 || recordFailed ? 1 : 0;
+  return result.problems.length > 0 || recordFailed || pruneFailed ? 1 : 0;
 }
 
 main().then(
