@@ -28,6 +28,7 @@
     "quality:sample": "node --env-file-if-exists=.env.local --import tsx scripts/quality-sample.ts",
     "eval:prompt": "node --env-file-if-exists=.env.local --import tsx scripts/eval-prompt.ts",
     "validate": "node --env-file-if-exists=.env.local --import tsx scripts/validate.ts",
+    "new-season:check": "node --import tsx scripts/new-season-check.ts",
     "check": "npm run typecheck && npm run lint && npm run test",
     "check:bundle": "node --env-file-if-exists=.env.local --import tsx scripts/check-bundle.ts",
     "typecheck": "next typegen && tsc --noEmit",

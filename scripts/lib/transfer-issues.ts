@@ -22,9 +22,9 @@
  *   댓글 없이 건너뛴다(github-issues.ts RECURRENCE_POLICY "skip" — 설정을 고칠 때까지 라인업 단서는 매일 나온다).
  *
  * ── 5대 리그 여부 (FR-64) ────────────────────────────────────────────────────
- *   행선지 slug가 팀 → 리그 표(team-leagues.ts — 2026-27 5대 리그 96팀)에 있으면 그 리그, 표에는 없지만 아는 팀(team-ids.json — 5대
+ *   행선지 slug가 팀 → 리그 표(team-leagues.ts — 이번 시즌 5대 리그 팀)에 있으면 그 리그, 표에는 없지만 아는 팀(team-ids.json — 5대
  *   리그 밖 UCL 팀 포함 · names.ko.json 팀 slug — 컵 상대 하부 리그 팀 등)이면 OTHER, slug가 없으면(원장 팀이 team-ids에 없음) null =
- *   '확인 필요'(5대 리그 96팀은 모두 team-ids에 있어 5대 리그 밖일 가능성이 크다는 메모만). 팀 표의 시즌이 competitions.json 시즌과
+ *   '확인 필요'(5대 리그 팀은 모두 team-ids에 있어 5대 리그 밖일 가능성이 크다는 메모만). 팀 표의 시즌이 competitions.json 시즌과
  *   다르면(시즌 전환 직후 — `/new-season` 전) 리그 판정을 하지 않는다(null).
  *
  * 문구 재료는 카드 원문 그대로(제목·출처명·URL — 번역·요약·다듬기 없음, D23). 기사 본문·요약문은 쓰지 않는다.
@@ -35,9 +35,11 @@ import type {
   NewsCard,
   TransferStatus,
 } from "@/lib/schema";
+import { seasonLabel } from "@/lib/rest-period";
 
 import { transferIssueKey, type IssuePayloadInput } from "./github-issues";
 import type { TeamMismatch } from "./korean-players-data";
+import { TEAM_LEAGUES_SEASON } from "./team-leagues";
 
 /** 이슈를 만드는 카드 단계 — 확정 쪽만(머리 주석 ②) */
 export const TRANSFER_ISSUE_STATUSES: readonly TransferStatus[] = [
@@ -113,7 +115,7 @@ export function destinationLeagueOf(
   if (slug === null) {
     return {
       league: null,
-      note: "팀 대응표(configs/team-ids.json)에 없는 팀 — 5대 리그 96팀은 모두 등록돼 있어 5대 리그 밖일 가능성이 크다",
+      note: `팀 대응표(configs/team-ids.json)에 없는 팀 — 5대 리그 ${input.teamLeagues.size}팀은 모두 등록돼 있어 5대 리그 밖일 가능성이 크다`,
     };
   }
   const league = input.teamLeagues.get(slug);
@@ -121,7 +123,7 @@ export function destinationLeagueOf(
   if (input.knownTeams.has(slug)) {
     return {
       league: "OTHER",
-      note: "2026-27 5대 리그 팀 표(scripts/lib/team-leagues.ts)에 없는 팀",
+      note: `${seasonLabel(TEAM_LEAGUES_SEASON).replace(/ 시즌$/, "")} 5대 리그 팀 표(scripts/lib/team-leagues.ts)에 없는 팀`,
     };
   }
   return {
