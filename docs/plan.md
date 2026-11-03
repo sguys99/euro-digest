@@ -52,7 +52,7 @@
 | **M3** | 한국 선수·A매치 | 1주 | 2026-11-01 | (작업 11-01 · 발행 11-02 · 자동 실행 11-09 확인) | 🚧 |
 | **M4** | 부가 기능 | 1.5주 | 2026-11-02 | 2026-11-02 | ✅ |
 | **D3** 🎨 | 아이콘·OG·빈 상태·상태 페이지 | 1~2일 | 2026-11-02 | 2026-11-03 | ✅ |
-| **M5** | 다듬기·정식 공개 | 1주 | | | ⬜ |
+| **M5** | 다듬기·정식 공개 | 1주 | 2026-11-03 | | 🚧 |
 
 상태: ⬜ 대기 · 🚧 진행 중 · ✅ 완료 · ⏸ 보류
 
@@ -569,8 +569,9 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M5-01 OG 이미지 빌드 시 생성(날짜·대회·팀) — **Playwright로 템플릿 HTML 스크린샷**(확정, 새 의존성 없음) (DR-10) — ~~❓ 파일 경로는 M0-19 잠정안(`/og/default.png`·`/og/news/{date}.png`·`/og/competitions/{comp}.png`·`/og/teams/{team}.png`, `artifacts.ogImage`) — 공개 URL 구조라 착수 전 사용자 확인~~ → **경로 확정**(2026-11-02 사용자 결정 — D3 scope Q3 ①, PRD §15 D71 ②)
   - 🆕 D3 이월(2026-11-03): 템플릿 = D3 C CSS(`.og--cr` 벽돌 레드 면 — 기본 · 날짜 / `.og--cp` 크림 면 — 대회 · 팀, cqw — DESIGN §9.3 D3 · §2.10 OG 면 2종). 팀 약어 채움 `kitLetterFill(shirt, shorts, face, min = 5.3)`(`src/lib/kit-contrast.ts` 옆 — 111팀 단위 테스트 최저 ≥ 5.3, 데이터 · 스키마 변경 0). 빌드 경로에 **chromium 설치(캐시)** — CI·배포 워크플로 시간 확인. `seo.ts`에 og:image · width · height · `og:image:alt`(4문형) + `twitter:card` `summary_large_image`. 템플릿 고정 문구 · alt `hasScoreLike`(결과 노출 0) · 서브셋 커버리지 테스트. 홈 = 기본 OG · `/news/` = 최신 호 날짜 OG. 선수 · 주간 · 쪽 이름형 OG는 미정(DECISIONS D3 §8)
   - 🆕 M1-38 이월(2026-10-23): OG 이미지가 생기면 `src/lib/seo.ts` `pageMetadata`의 공통 OG 객체에 `images`만 추가(D3 — 워드마크·날짜·호수만, 결과 노출 0)
-- [ ] M5-02 앱 아이콘·테마 컬러 교체
+- [x] M5-02 앱 아이콘·테마 컬러 교체
   - 🆕 D3 이월(2026-11-03): **C 스타일 ED**(벽돌 레드 `#9E2F28` 면 + 지면색 `#F2EFE8` ED Barlow 800 + 짧은 괘선 — 512 좌표는 DESIGN §9.3 D3) — any 192 · 512 · maskable 512 · apple-touch 180 교체(`scripts/lib/temp-icons.ts` 래스터라이저를 C 면으로, ED는 Barlow 800 글리프 path 1회(OFL 확인) 또는 SVG를 Playwright로 굽기). **favicon.svg**(라이트 벽돌 레드 / 다크 탭 `#FF7A6E` 면 + `#0E1626` ED — `prefers-color-scheme`) · **favicon.ico** 16 · 32(`docs/design/d3/build/concept-mix.mjs` `P16` · `P32` 픽셀 격자) 새로 추가. **스플래시 manifest `background_color` = `#9E2F28`**(라이트 · 다크 공통 — PRD §15 D71 ⑥, `theme_color`는 이 결정 밖). 파일 이름 유지 → 서비스 워커 내용 해시 갱신(M4-16). 열린 것: manifest `monochrome`
+  - 2026-11-03 완료: **C 스타일 ED** 교체 — any 192 · 512 · maskable 512 · apple-touch 180(파일 이름 유지) + **monochrome 512 추가**(사용자 결정 11-03 — maskable 배치의 ED · 괘선만, 투명 배경 · DECISIONS D3 §8 #1 결정됨) + `public/favicon.svg`(P32 사각형 합 421B, 다크 탭 `#FF7A6E` 면 + `#0E1626` ED) · `public/favicon.ico`(P16 · P32 PNG 항목 291B). 그리기 `scripts/lib/app-icons.ts`(← `temp-icons.ts`, 512 좌표 `iconPlan` · 격자 · ICO), PNG는 `npm run build:icons`가 Playwright Chromium 캔버스에 저장소 Barlow Condensed 800 woff2(OFL 1.1 — 예약 글꼴 이름 없음)로 ED를 그려 굽는다(새 의존성 0, 두 번 돌려 바이트 같음). manifest `background_color` `#9E2F28`(`theme_color` 현행) · 색 상수 `APP_ICON_COLORS`(`src/lib/theme.ts`) · 루트 레이아웃 `<link rel="icon">` 2개(basePath 포함 — 호스트 루트 `/favicon.ico`는 제어 밖). 서비스 워커: 파비콘을 정적 자산(`ed-static`)에 더함, 아이콘 바이트가 바뀌면 `assetHashes`가 바뀌어 설치 때 다시 받음(빌드 확인). 테스트: `tests/pwa.test.ts`(크기 · 면/글자 색 · 투명 · 안전 원 · 격자 · ICO · SVG = 규칙 결과) · `sw-policy` · e2e `pwa.spec`(파비콘 링크 · manifest 4아이콘 · 스플래시 색). D3 혼합안 아이콘 스크린샷과 나란히 비교(16 · 32 · 48 · 180 · 512, 라이트 · 다크 탭)
 - [ ] M5-03 SEO: canonical, 구조화 데이터(NewsArticle·SportsTeam·SportsEvent), 전체 sitemap (NFR-03)
   - 🆕 M1-38 이월(2026-10-23): Search Console은 URL 접두어 속성 `https://sguys99.github.io/euro-digest/` 등록 + sitemap URL 직접 제출(D59 — 블로그 저장소 robots.txt는 건드리지 않음, 오케스트레이터 추천 확정), robots.txt 결정, 새 라우트는 `src/lib/seo.ts` `sitemapEntries`에 추가(e2e가 빠뜨림을 잡음), og:type은 지금 모두 website — 구조화 데이터와 함께 날짜 페이지 article 여부 재검토, 삭제 요청으로 카드가 빠져도 lastmod(generatedAt)가 그대로라 재크롤 신호 없음 → 함께 검토
 - [ ] M5-04 GoatCounter 연동(계정 `euro-digest` — U-08) + 이벤트(원문 클릭·RSS/ics 클릭·PWA 설치·마이 팀 설정) (PRD §11.2)

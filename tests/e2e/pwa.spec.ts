@@ -53,6 +53,28 @@ test("manifest — <link rel=manifest>, Chrome이 읽은 필드·오류 0·설�
     "href",
     `${basePath}/icons/apple-touch-icon.png`,
   );
+  // 파비콘(M5-02) — ico 16 · 32 격자 + svg(테마별 색), basePath 포함(호스트 루트 /favicon.ico는 우리 것이 아니다)
+  const icons = await page
+    .locator('link[rel="icon"]')
+    .evaluateAll((els) =>
+      els.map((el) => [
+        el.getAttribute("href"),
+        el.getAttribute("type"),
+        el.getAttribute("sizes"),
+      ]),
+    );
+  expect(icons).toEqual([
+    [`${basePath}/favicon.ico`, null, "16x16 32x32"],
+    [`${basePath}/favicon.svg`, "image/svg+xml", null],
+  ]);
+  for (const [src, type] of [
+    [`${basePath}/favicon.svg`, "image/svg+xml"],
+    [`${basePath}/favicon.ico`, "image/"],
+  ] as const) {
+    const res = await request.get(src);
+    expect(res.status(), src).toBe(200);
+    expect(res.headers()["content-type"] ?? "").toContain(type);
+  }
 
   // Chrome DevTools Application › Manifest와 같은 파서(CDP Page.getAppManifest) + 설치 가능 오류(Page.getInstallabilityErrors)
   const cdp = await page.context().newCDPSession(page);
@@ -79,10 +101,12 @@ test("manifest — <link rel=manifest>, Chrome이 읽은 필드·오류 0·설�
   expect(parsed?.startUrl).toBe(root);
   expect(parsed?.scope).toBe(root);
   expect(parsed?.display).toBe("kStandalone");
-  expect(parsed?.backgroundColor).toBe("rgba(243,240,234,1)");
+  // 스플래시 = 아이콘 면 벽돌 레드 #9E2F28(PRD §15 D71 ⑥) · theme_color는 --paper 라이트 그대로
+  expect(parsed?.backgroundColor).toBe("rgba(158,47,40,1)");
   expect(parsed?.themeColor).toBe("rgba(243,240,234,1)");
   expect(parsed?.icons?.map((i) => i.sizes)).toEqual([
     "192x192",
+    "512x512",
     "512x512",
     "512x512",
   ]);
@@ -100,6 +124,7 @@ test("manifest — <link rel=manifest>, Chrome이 읽은 필드·오류 0·설�
     "192x192 any",
     "512x512 any",
     "512x512 maskable",
+    "512x512 monochrome",
   ]);
   for (const icon of [
     ...manifest.icons,
@@ -168,6 +193,8 @@ test("서비스 워커 — load 뒤 등록, scope = basePath/, 앱 셸 + 최근 
     /\/fonts\/.+\.woff2$/,
     /\/icons\/.+\.png$/,
     /\/manifest\.webmanifest$/,
+    /\/favicon\.svg$/,
+    /\/favicon\.ico$/,
   ]) {
     expect(
       caches.assets.some((p) => re.test(p)),
@@ -332,6 +359,8 @@ function mirrorServer() {
     ".txt": "text/plain; charset=utf-8",
     ".woff2": "font/woff2",
     ".png": "image/png",
+    ".svg": "image/svg+xml",
+    ".ico": "image/x-icon",
     ".webmanifest": "application/manifest+json; charset=utf-8",
   };
   const server = createServer((req, res) => {

@@ -61,6 +61,18 @@ export const THEME_COLOR: Readonly<Record<ResolvedTheme, string>> = {
   dark: "#0E1626",
 };
 
+/**
+ * 아이콘 · 파비콘 · 스플래시 색 — DESIGN §2.10 ① 레드 면(다크 `--ticket` · `--ticket-fg` 값을 테마와 무관하게 고정) · 다크 탭 파비콘
+ * (다크 `--brand-accent` 면 + 다크 `--paper` 글자). 화면 밖 이미지 전용 고정 값이라 globals.css 토큰이 아니다(DECISIONS D3 #6).
+ * theme-color처럼 페이지 밖(브라우저 · 런처)에 칠하는 색이라 여기 둔다 — 쓰는 곳은 src/lib/pwa.ts(manifest)와 scripts/lib/app-icons.ts(그리기).
+ */
+export const APP_ICON_COLORS = {
+  face: "#9E2F28",
+  letter: "#F2EFE8",
+  darkTabFace: "#FF7A6E",
+  darkTabLetter: "#0E1626",
+} as const;
+
 /** theme-color 메타 선택자 — 초기 스크립트와 토글이 같은 메타를 고친다 */
 export const THEME_COLOR_META_SELECTOR = 'meta[name="theme-color"]';
 

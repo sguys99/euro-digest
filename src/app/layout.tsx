@@ -5,7 +5,7 @@ import { preload } from "react-dom";
 import { RSS_MIME, rssFeedLink } from "@/lib/feed-links";
 import { fontFaceCss, fontPreloadHrefs } from "@/lib/fonts";
 import { withBasePath } from "@/lib/paths";
-import { APPLE_TOUCH_ICON } from "@/lib/pwa";
+import { APPLE_TOUCH_ICON, FAVICON } from "@/lib/pwa";
 import { siteMetadata } from "@/lib/seo";
 import { THEME_COLOR_METAS, THEME_INIT_SCRIPT } from "@/lib/theme";
 
@@ -13,10 +13,18 @@ import "./globals.css";
 
 // 기본 SEO(M1-38, FR-124) — metadataBase(SITE_URL + basePath), 제목 템플릿("뉴스 · 유로 다이제스트" — 홈은 서비스 이름 그대로),
 // 기본 설명, OG·twitter 기본값. canonical·og:url은 페이지마다(`pageMetadata`) — 규칙은 src/lib/seo.ts 머리 주석.
-// iOS 홈 화면 아이콘(FR-120 — 임시, D3에서 교체)은 여기서 더한다. manifest(`<link rel="manifest">`)는 src/app/manifest.ts가 넣는다(M4-13).
+// 파비콘(ico 16 · 32 격자 + svg 테마별 색)과 iOS 홈 화면 아이콘(FR-120 — D3 C 스타일 ED, M5-02)은 여기서 더한다. 경로는 basePath 포함
+// (GitHub Pages 프로젝트 사이트 — 호스트 루트 /favicon.ico는 우리 것이 아니다). manifest(`<link rel="manifest">`)는 src/app/manifest.ts가 넣는다(M4-13).
 export const metadata: Metadata = {
   ...siteMetadata(),
   icons: {
+    icon: [
+      {
+        url: withBasePath(FAVICON.ico),
+        sizes: FAVICON.icoSizes.map((s) => `${s}x${s}`).join(" "),
+      },
+      { url: withBasePath(FAVICON.svg), type: "image/svg+xml" },
+    ],
     apple: [
       {
         url: withBasePath(APPLE_TOUCH_ICON.path),

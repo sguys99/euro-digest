@@ -5,7 +5,7 @@
  * 프리캐시(설치 때 받아 두는 것 — 규칙·상한은 scripts/lib/service-worker.ts, 캐시 동작은 src/lib/sw/runtime.ts)
  *   - 앱 셸 페이지: 홈 `/` · `/news/` · 오프라인 화면 `/offline/`
  *   - 최근 3일 호: `/news/YYYY-MM-DD/` — src/lib/pwa.ts `recentIssueDates`(발행된 호 목록 · 오늘 KST — 오프라인 화면 목록과 같은 함수)
- *   - 정적 자산: `_next/static/**`(JS·CSS 청크 전부) · `fonts/**.woff2` · `icons/*.png` · `manifest.webmanifest`
+ *   - 정적 자산: `_next/static/**`(JS·CSS 청크 전부) · `fonts/**.woff2` · `icons/*.png` · `manifest.webmanifest` · `favicon.{svg,ico}`
  * 버전 = 이 파일들의 내용 해시 + 워커 코드 → 캐시 이름 `ed-pages-{version}` 등. 경로는 basePath 포함(BASE_PATH — src/lib/paths.ts).
  * 네트워크·LLM 호출 없음. 뉴스 내용은 읽지 않는다(호 날짜 목록만 — src/lib/data/issue.ts 로더).
  */
@@ -48,7 +48,7 @@ const ASSET_DIRS: { dir: string; test: RegExp }[] = [
   { dir: "fonts", test: /\.woff2$/ },
   { dir: "icons", test: /\.png$/ },
 ];
-const ASSET_FILES = ["manifest.webmanifest"];
+const ASSET_FILES = ["manifest.webmanifest", "favicon.svg", "favicon.ico"];
 
 function walk(dir: string): string[] {
   if (!existsSync(dir)) return [];

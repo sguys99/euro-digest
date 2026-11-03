@@ -86,8 +86,8 @@ export interface SwRequestInfo {
  * 그대로인 채 내용이 바뀔 수 있어 설치 때 내용 해시로 새로 고친다(`swStaticFresh`)
  */
 const STATIC_PREFIXES = ["_next/static/", "fonts/", "icons/"];
-/** scope 바로 아래 정적 파일 */
-const STATIC_FILES = ["manifest.webmanifest"];
+/** scope 바로 아래 정적 파일(manifest · 파비콘 — M5-02) */
+const STATIC_FILES = ["manifest.webmanifest", "favicon.svg", "favicon.ico"];
 /** scope 아래 클라이언트가 받는 자료(JSON) — 네트워크 우선 + 오프라인 대비 사본 */
 const DATA_PREFIX = "my/data/";
 

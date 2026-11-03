@@ -47,6 +47,8 @@ describe("swRequestKind — 캐시 대상 판정", () => {
     ["웹폰트", `${SCOPE}fonts/eurodigest-sans/eurodigest-sans-400.ksx.woff2`],
     ["아이콘", `${SCOPE}icons/icon-192.png`],
     ["manifest", `${SCOPE}manifest.webmanifest`],
+    ["파비콘 svg", `${SCOPE}favicon.svg`],
+    ["파비콘 ico", `${SCOPE}favicon.ico`],
     ["쿼리 붙은 청크", `${SCOPE}_next/static/chunks/a.js?dpl=1`],
   ])("%s → static", (_label, url) => {
     expect(swRequestKind(req(url, { mode: "cors" }), SCOPE)).toBe("static");
