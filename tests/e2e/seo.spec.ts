@@ -127,12 +127,14 @@ test("빌드 결과 — out/sitemap.xml이 있고 robots.txt는 없다(D59 · D7
   expect(existsSync(path.join(outDir, "robots.txt"))).toBe(false);
 });
 
-test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 한국 선수 목록(M3-09)·상세(M3-10)·주간 리포트(M3-12) · 대표팀(M3-13) · 이적(M4-04) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
+test("sitemap.xml — 홈 · /about/ · /privacy/(M5-05) · /tonight/(M2-14) · 대회 페이지(M2-10) · 팀 페이지(M2-13) · 한국 선수 목록(M3-09)·상세(M3-10)·주간 리포트(M3-12) · 대표팀(M3-13) · 이적(M4-04) · 발행된 날짜 페이지 전부(오름차순), /news/ 별칭 없음, 절대 URL·끝 슬래시·중복 없음", () => {
   const entries = readSitemap();
   const locs = entries.map((e) => e.loc);
   expect(locs).toEqual([
     `${SITE}/`,
     `${SITE}/about/`,
+    // 개인정보 처리방침(M5-05)
+    `${SITE}/privacy/`,
     `${SITE}/tonight/`,
     ...COMPETITION_SEGMENTS.map((c) => `${SITE}/competitions/${c}/`),
     ...TEAM_SLUGS.map((t) => `${SITE}/teams/${t}/`),
@@ -153,7 +155,7 @@ test("sitemap.xml — 홈 · /about/ · /tonight/(M2-14) · 대회 페이지(M2-
   }
 });
 
-test("sitemap.xml lastmod — 날짜 페이지 = 그 호 지면 수정 시각(뉴스 generatedAt · 삭제 요청 반영 · 브리핑 generatedAt 중 늦은 것 — M5-03), 홈 = 최신 호와 같은 값, /about/ 없음", () => {
+test("sitemap.xml lastmod — 날짜 페이지 = 그 호 지면 수정 시각(뉴스 generatedAt · 삭제 요청 반영 · 브리핑 generatedAt 중 늦은 것 — M5-03), 홈 = 최신 호와 같은 값, /about/ · /privacy/ 없음", () => {
   const byLoc = new Map(readSitemap().map((e) => [e.loc, e.lastmod]));
   for (const date of DATES) {
     const lastModified = issuePageLastModified(date);
@@ -169,6 +171,7 @@ test("sitemap.xml lastmod — 날짜 페이지 = 그 호 지면 수정 시각(�
     LATEST ? issuePageLastModified(LATEST) : null,
   );
   expect(byLoc.get(`${SITE}/about/`)).toBeNull();
+  expect(byLoc.get(`${SITE}/privacy/`)).toBeNull();
   // /tonight/(M2-14)는 발행 빌드마다 다시 고른다 — 홈과 같은 lastmod
   expect(byLoc.get(`${SITE}/tonight/`)).toBe(byLoc.get(`${SITE}/`));
 });

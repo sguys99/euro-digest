@@ -229,11 +229,11 @@ test.describe("마스트헤드·뒤표지 — 데이터에서 계산한 호수·
     await expect(
       footer.getByRole("link", { name: "AI 작성", exact: true }),
     ).toHaveCount(0);
-    // /about 링크(M1-36 — 순서·앵커는 tests/e2e/about.spec.ts) + 발행 상태(M5-15) + GitHub. 개인정보 처리방침(/privacy/)은 M5-05
+    // /about 링크(M1-36 — 순서·앵커는 tests/e2e/about.spec.ts) + 개인정보 처리방침(M5-05) + 발행 상태(M5-15) + GitHub
     const links = footer
       .locator('[data-slot="colophon-links"]')
       .getByRole("link");
-    await expect(links).toHaveCount(5);
+    await expect(links).toHaveCount(6);
     await expect(links.last()).toHaveAttribute("href", REPO_URL);
     await expect(links.last()).toHaveAttribute("target", "_blank");
   });
@@ -543,9 +543,9 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           );
         }
       }
-      // 건너뛰기 · 워드마크 · 검색 버튼(M4-14) · 테마 토글 · 결과 가리기 스위치(M4-15) · (1024 이상 상단 내비 6 — 리그 M2-10 · 한국 선수 M3-09 · 이적 M4-04 · 마이 M4-08) · 뒤표지 5(AI 작성 고지 ·
-      // 소개·출처 정책 · 삭제·정정 요청 — M1-36 · 발행 상태 — M5-15 · GitHub) · 뒤표지 구독 단 10(RSS 2 · 대회 6 · 캘린더 구독 webcal + .ics 받기 — M4-12 · M4-16) · (1023 이하 하단 탭 5)
-      expect(checked).toBe(width >= 1024 ? 26 : 25);
+      // 건너뛰기 · 워드마크 · 검색 버튼(M4-14) · 테마 토글 · 결과 가리기 스위치(M4-15) · (1024 이상 상단 내비 6 — 리그 M2-10 · 한국 선수 M3-09 · 이적 M4-04 · 마이 M4-08) · 뒤표지 6(AI 작성 고지 ·
+      // 소개·출처 정책 · 삭제·정정 요청 — M1-36 · 개인정보 처리방침 — M5-05 · 발행 상태 — M5-15 · GitHub) · 뒤표지 구독 단 10(RSS 2 · 대회 6 · 캘린더 구독 webcal + .ics 받기 — M4-12 · M4-16) · (1023 이하 하단 탭 5)
+      expect(checked).toBe(width >= 1024 ? 27 : 26);
       expect(problems).toEqual([]);
     });
   }

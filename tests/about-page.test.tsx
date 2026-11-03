@@ -291,8 +291,8 @@ describe("데이터 출처(#data — FR-45)", () => {
 });
 
 describe("삭제·정정 요청(#contact — FR-140·FR-143, D8)", () => {
-  it("72시간 · 이메일(mailto) · 삭제·정정 이슈 양식 · 오류 신고 양식, 개인정보 처리방침(/privacy — M5-05)은 링크하지 않는다", () => {
-    const { container } = render(<AboutPage />);
+  it("72시간 · 이메일(mailto) · 삭제·정정 이슈 양식 · 오류 신고 양식", () => {
+    render(<AboutPage />);
     const el = section("contact");
     expect(el).toHaveTextContent(
       "카드 삭제·정정 요청은 접수 후 72시간 안에 처리합니다.",
@@ -310,6 +310,19 @@ describe("삭제·정정 요청(#contact — FR-140·FR-143, D8)", () => {
     expect(
       within(el).getByRole("link", { name: /브리핑·분류 오류 신고 양식/ }),
     ).toHaveAttribute("href", issueFormUrl("summary-error.yml"));
-    expect(container.querySelector('a[href*="privacy"]')).toBeNull();
+    expect(el.querySelector('a[href*="privacy"]')).toBeNull();
+  });
+});
+
+describe("개인정보 처리방침 링크 (M5-05 — FR-141)", () => {
+  it("머리 소개 아래 문장 속 링크 하나 → /privacy/", () => {
+    render(<AboutPage />);
+    const intro = document.querySelector<HTMLElement>(
+      'main section[aria-labelledby="about-h"]',
+    )!;
+    const link = within(intro).getByRole("link", { name: "개인정보 처리방침" });
+    // 테스트 환경의 next/link는 trailingSlash를 모른다(끝 슬래시를 뗀다)
+    expect(link.getAttribute("href")?.replace(/\/?$/, "/")).toBe("/privacy/");
+    expect(link.closest("p")).toHaveTextContent("쿠키를 쓰지 않습니다");
   });
 });

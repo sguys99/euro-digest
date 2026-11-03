@@ -1,9 +1,20 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { AboutToc } from "@/components/about/about-toc";
+import { DocSection } from "@/components/about/doc-section";
 import { Leader } from "@/components/about/leader";
 import { OutletList } from "@/components/about/outlet-list";
+import {
+  BODY,
+  INLINE_LINK,
+  LEAD,
+  NewWindow,
+  NOTE,
+  Num,
+  ROW_LINK,
+} from "@/components/about/prose";
 import { ScheduleTable } from "@/components/about/schedule-table";
 import { TermList } from "@/components/about/term-list";
 import { AppShell } from "@/components/shell/app-shell";
@@ -45,6 +56,8 @@ import { kstDate, nowUtcIso } from "@/lib/time";
  * - 발행 시각·계절 기간 = src/lib/about.ts(`publishSchedule` — time.ts의 D26 규칙), 기준일은 최신 호 날짜(없으면 빌드 날짜, KST)
  * - 매체·Tier = configs/sources.json(일일 수집 대상만 — `outletsFrom`), 대회 = configs/competitions.json
  * - 연락처·필수 문구·태그라인·창간일 = src/lib/site.ts, 이슈 양식 링크 = src/lib/paths.ts `issueFormUrl`
+ * - 머리 소개 아래에 개인정보 처리방침(`/privacy/` — M5-05) 링크. 본문 문법(문단·링크 클래스)과 절 틀은 `/privacy`와 공용
+ *   (src/components/about/prose.tsx · doc-section.tsx)
  *
  * 지면(D0 시안에 없는 화면 — 새 디자인 언어 없이 기존 문법으로): 섹션 머리 + 러닝 헤드로 절을 나누고, 줄은 괘선 사이의 한 줄
  * (항목 목록·매체 목록·시각표), 이름과 값은 리더 점선으로 잇는다. 큰 숫자는 발행 시각과 처리 기한(72시간)만.
@@ -61,27 +74,6 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const INTRO_HEADING_ID = "about-h";
-
-/** 본문 문단 — 16px, 62ch(뒤표지 설명 문단과 같은 줄 길이) */
-const BODY = "mt-3 max-w-[62ch] leading-[1.6]";
-/** 보조 설명 — 13px `--ink-2`(섹션 부제·필터 설명 크기) */
-const NOTE = "mt-3 max-w-[62ch] text-[13px] leading-[1.55] text-ink-2";
-/** 절 첫 문단 — 오늘의 5줄 문장 크기(--text-brief) */
-const LEAD = "mt-4 max-w-[62ch] text-type-brief";
-/** 본문 안 텍스트 링크 — 레드 800, 밑줄 1px(4px 띄움) → hover 2px(DESIGN §9.2 텍스트 링크, 문장 안이라 44px 높이 없이) */
-const INLINE_LINK =
-  "font-extrabold text-brand-accent-text underline decoration-1 underline-offset-4 hover:decoration-2";
-/** 줄 끝 텍스트 링크 — 누르는 높이 44px(DESIGN §9.1 텍스트 링크 최소 44px) */
-const ROW_LINK = `${INLINE_LINK} inline-flex min-h-11 items-center`;
-/** 외부 링크 표식 ↗ + 화면 밖 "(새 창)" */
-function NewWindow() {
-  return (
-    <>
-      <span aria-hidden="true"> ↗</span>
-      <span className="sr-only"> (새 창)</span>
-    </>
-  );
-}
 
 const TIER_CRITERIA: Readonly<Record<Tier, string>> = {
   1: "구단·리그 공식 발표, 신뢰도가 가장 높은 기자",
@@ -124,6 +116,14 @@ export default function AboutPage() {
           서비스입니다. 전날 경기는 한국어 브리핑 ‘오늘의 5줄’로 정리하고, 해외
           매체의 소식은 원제목 그대로 같은 사건끼리 묶어 한국어 태그로 분류한 뒤
           원문으로 안내합니다.
+        </p>
+        <p className={NOTE}>
+          가입·로그인이 없고 쿠키를 쓰지 않습니다. 방문 통계와 이 기기에
+          저장하는 설정은{" "}
+          <Link href={routes.privacy()} className={INLINE_LINK}>
+            개인정보 처리방침
+          </Link>
+          에 적었습니다.
         </p>
         {competitions.length > 0 ? (
           <div className="mt-6 lg:mt-7">
@@ -454,10 +454,7 @@ export default function AboutPage() {
 
 // ─── 절 · 행 ────────────────────────────────────────────────────────────
 
-/**
- * 절 — 섹션 머리(h2 + 러닝 헤드) + 내용. 앵커로 도착하면(`:target`) 머리 위 3px 괘선이 레드로 바뀐다(현재 탭 막대와 같은 레드 —
- * 색 면 전환 base). 앞에 고정 요소가 없어 위 여백 16px만 남기고 멈춘다(scroll-margin).
- */
+/** 절 — `ABOUT_SECTIONS`의 이름·러닝 헤드로 `DocSection`(앵커 도착 시 머리 괘선 레드 · scroll-margin)을 그린다 */
 function AboutSection({
   id,
   children,
@@ -467,21 +464,10 @@ function AboutSection({
 }) {
   const section = ABOUT_SECTIONS.find((s) => s.id === id);
   if (!section) return null;
-  const headingId = `${id}-h`;
   return (
-    <section
-      id={id}
-      aria-labelledby={headingId}
-      className="group/sec mt-12 scroll-mt-4 lg:mt-16"
-    >
-      <SectionHead
-        heading={section.title}
-        headingId={headingId}
-        runningHead={section.runningHead}
-        className="group-target/sec:border-brand-accent"
-      />
+    <DocSection id={id} title={section.title} runningHead={section.runningHead}>
       {children}
-    </section>
+    </DocSection>
   );
 }
 
@@ -553,15 +539,6 @@ function ContactRow({
       </p>
       <p className="-mt-1 text-[13px] leading-[1.45] text-ink-2">{note}</p>
     </li>
-  );
-}
-
-/** 큰 숫자가 아닌 문장 속 숫자 — Barlow 600 1.16em(브리핑 문장 속 숫자 규칙, DESIGN §3.5) */
-function Num({ children }: { children: ReactNode }) {
-  return (
-    <span className="font-numeric text-[1.16em] leading-none font-semibold tracking-[0.01em] lining-nums tabular-nums">
-      {children}
-    </span>
   );
 }
 

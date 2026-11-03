@@ -88,7 +88,14 @@ const INTERACTIVE =
  * 빼지 않게 예외 목록 자체를 단언한다(M1-39 리뷰 — 처음 규칙은 카드 목록 `li`를 문단으로 보아 카드 제목 링크 45개를 뺐다).
  */
 const INLINE_LINK_EXCEPTIONS: Readonly<Record<string, readonly string[]>> = {
-  "about/": ["요청 방법"],
+  // 머리 소개 아래 개인정보 처리방침(M5-05) · 삭제·정정 항목의 '요청 방법'
+  "about/": ["개인정보 처리방침", "요청 방법"],
+  // M5-05 — 방문 통계 근거 문서 · AI 작성 고지 · 호스팅 항목의 GitHub 안내(이름은 앞 24자)
+  "privacy/": [
+    "GoatCounter 개인정보 정책 ↗ (새",
+    "AI 작성 고지",
+    "GitHub 안내 ↗ (새 창)",
+  ],
 };
 
 for (const target of targets) {
@@ -187,6 +194,7 @@ const FOCUS_TARGETS = (() => {
         "./",
         "news/",
         "about/",
+        "privacy/",
         "this-page-does-not-exist/",
         "korean-players/",
         "korean-players/kim-min-jae/",

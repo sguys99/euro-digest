@@ -113,10 +113,11 @@ describe("sitemap 라우트", () => {
     expect(dynamic).toBe("force-static");
   });
 
-  it("홈 · /about/ · /tonight/ · 발행된 날짜 페이지 전부(lastmod = 그 호 generatedAt), /news/ 없음", () => {
+  it("홈 · /about/ · /privacy/ · /tonight/ · 발행된 날짜 페이지 전부(lastmod = 그 호 generatedAt), /news/ 없음", () => {
     expect(sitemap()).toEqual([
       { url: `${SITE}/`, lastModified: "2026-10-17T00:17:00.000Z" },
       { url: `${SITE}/about/` },
+      { url: `${SITE}/privacy/` },
       { url: `${SITE}/tonight/`, lastModified: "2026-10-17T00:17:00.000Z" },
       { url: `${SITE}/korean-players/` },
       { url: `${SITE}/korean-players/weekly/` },
@@ -173,7 +174,7 @@ describe("sitemap 라우트", () => {
       { comp: "EPL", updatedAt: "2026-10-30T02:17:27.762Z" },
       { comp: "UCL", updatedAt: "2026-10-30T02:19:28.728Z" },
     ]);
-    expect(sitemap().slice(2, 5)).toEqual([
+    expect(sitemap().slice(3, 6)).toEqual([
       { url: `${SITE}/tonight/`, lastModified: "2026-10-17T00:17:00.000Z" },
       {
         url: `${SITE}/competitions/epl/`,
@@ -186,11 +187,12 @@ describe("sitemap 라우트", () => {
     ]);
   });
 
-  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/tonight/·/korean-players/·/national-team/·/transfers/만", () => {
+  it("발행된 호가 없으면(빈 data/news) 홈·/about/·/privacy/·/tonight/·/korean-players/·/national-team/·/transfers/만", () => {
     listNewsDates.mockReturnValue([]);
     expect(sitemap()).toEqual([
       { url: `${SITE}/` },
       { url: `${SITE}/about/` },
+      { url: `${SITE}/privacy/` },
       { url: `${SITE}/tonight/` },
       { url: `${SITE}/korean-players/` },
       { url: `${SITE}/korean-players/weekly/` },

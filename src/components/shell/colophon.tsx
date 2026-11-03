@@ -20,7 +20,7 @@ import { SubscribeBand } from "./subscribe-band";
  *   모든 줄이 코드 문장, 뉴스 카드는 AI 없이 원문 제목 그대로(D23). `/about#ai` 문구와 같은
  *   사실) · GitHub 저장소 · 마지막 업데이트 HH:MM KST(FR-142).
  * - 링크는 있는 페이지만 건다(e2e 링크 검사). 순서·문구는 DESIGN §9.3·혼합안 뒤표지 그대로: AI 작성 고지(`/about/#ai`) ·
- *   소개·출처 정책(`/about/` — 한 링크) · [개인정보 처리방침(`/privacy/`) — M5-05에서 이 자리에] · 삭제·정정 요청(`/about/#contact`) ·
+ *   소개·출처 정책(`/about/` — 한 링크) · 개인정보 처리방침(`/privacy/` — M5-05) · 삭제·정정 요청(`/about/#contact`) ·
  *   **발행 상태 {성공률}%**(`/status/` — D3 #15, M5-15: 숫자 Barlow 800 17px, 성공률은 `/status` 숫자판과 같은 계산 — 앱 셸이
  *   `loadStatusRunRate`로 넘긴다, 실행 기록이 없으면 숫자 없이 "발행 상태") · GitHub↗. `/about` 앵커는 `ABOUT_SECTIONS`
  *   (src/lib/about-sections.ts — M1-36)가 정한다.
@@ -39,6 +39,7 @@ interface FooterLink {
 const LINKS: readonly FooterLink[] = [
   { label: "AI 작성 고지", href: aboutHref("ai") },
   { label: "소개·출처 정책", href: aboutHref() },
+  { label: "개인정보 처리방침", href: routes.privacy() },
   { label: "삭제·정정 요청", href: aboutHref("contact") },
   { label: "GitHub", href: REPO_URL, external: true },
 ];

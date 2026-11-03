@@ -310,10 +310,11 @@ describe("sitemapEntries — sitemap.xml 항목", () => {
     { date: "2026-10-23", generatedAt: "2026-10-23T00:10:07.307Z" },
   ];
 
-  it("홈(lastmod = 최신 호) · /about/(lastmod 없음) · /tonight/(lastmod = 최신 호, M2-14) · 날짜 페이지 전부(오름차순, lastmod = 그 호 generatedAt) — /news/는 없다", () => {
+  it("홈(lastmod = 최신 호) · /about/ · /privacy/(M5-05)(lastmod 없음) · /tonight/(lastmod = 최신 호, M2-14) · 날짜 페이지 전부(오름차순, lastmod = 그 호 generatedAt) — /news/는 없다", () => {
     expect(sitemapEntries(issues)).toEqual([
       { url: `${SITE}/`, lastModified: "2026-10-23T00:10:07.307Z" },
       { url: `${SITE}/about/` },
+      { url: `${SITE}/privacy/` },
       { url: `${SITE}/tonight/`, lastModified: "2026-10-23T00:10:07.307Z" },
       {
         url: `${SITE}/news/2026-10-12/`,
@@ -335,7 +336,7 @@ describe("sitemapEntries — sitemap.xml 항목", () => {
       { comp: "EPL", updatedAt: "2026-10-30T02:17:27.762Z" },
       { comp: "UCL", updatedAt: "2026-10-30T02:19:28.728Z" },
     ]);
-    expect(entries.slice(2, 5)).toEqual([
+    expect(entries.slice(3, 6)).toEqual([
       { url: `${SITE}/tonight/`, lastModified: "2026-10-23T00:10:07.307Z" },
       {
         url: `${SITE}/competitions/epl/`,
@@ -358,10 +359,11 @@ describe("sitemapEntries — sitemap.xml 항목", () => {
     expect(urls).not.toContain(`${SITE}/news/`);
   });
 
-  it("발행된 호가 없으면 홈·/about/·/tonight/(lastmod 없음)만", () => {
+  it("발행된 호가 없으면 홈·/about/·/privacy/·/tonight/(lastmod 없음)만", () => {
     expect(sitemapEntries([])).toEqual([
       { url: `${SITE}/` },
       { url: `${SITE}/about/` },
+      { url: `${SITE}/privacy/` },
       { url: `${SITE}/tonight/` },
     ]);
   });
@@ -435,7 +437,7 @@ describe("koreanPlayerDescription · sitemap 선수 상세(M3-10)", () => {
     const urls = sitemapEntries([], [], [], {
       updatedAt: "2026-11-01T04:56:14.815Z",
       players: ["kim-ji-soo", "kim-min-jae"],
-    }).slice(3);
+    }).slice(4);
     expect(urls).toEqual([
       {
         url: "https://sguys99.github.io/euro-digest/korean-players/",
@@ -471,7 +473,7 @@ describe("weeklyReportDescription · sitemap 주간 리포트(M3-12)", () => {
         { week: "2026-44", generatedAt: "2026-11-01T23:05:00.000Z" },
         { week: "2026-43", generatedAt: "2026-11-01T07:09:25.458Z" },
       ],
-    }).slice(4);
+    }).slice(5);
     expect(urls).toEqual([
       {
         url: "https://sguys99.github.io/euro-digest/korean-players/weekly/",

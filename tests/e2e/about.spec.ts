@@ -160,7 +160,7 @@ test("사이트 안의 /about/#… 링크(뒤표지 등)는 모두 /about/에 �
   }
 });
 
-test("뒤표지 링크 순서(DESIGN §9.3·혼합안) — AI 작성 고지 · 소개·출처 정책 · 삭제·정정 요청 · 발행 상태(M5-15) · GitHub", async ({
+test("뒤표지 링크 순서(DESIGN §9.3·혼합안) — AI 작성 고지 · 소개·출처 정책 · 개인정보 처리방침(M5-05) · 삭제·정정 요청 · 발행 상태(M5-15) · GitHub", async ({
   page,
 }, testInfo) => {
   desktopOnly(testInfo.project.name);
@@ -172,6 +172,7 @@ test("뒤표지 링크 순서(DESIGN §9.3·혼합안) — AI 작성 고지 · �
   await expect(links).toHaveText([
     "AI 작성 고지",
     "소개·출처 정책",
+    "개인정보 처리방침",
     "삭제·정정 요청",
     /^발행 상태( \d{1,3}\.\d%)?$/,
     /GitHub/,
@@ -179,9 +180,10 @@ test("뒤표지 링크 순서(DESIGN §9.3·혼합안) — AI 작성 고지 · �
   const hrefs = await links.evaluateAll((els) =>
     els.map((a) => a.getAttribute("href")),
   );
-  expect(hrefs.slice(0, 4)).toEqual([
+  expect(hrefs.slice(0, 5)).toEqual([
     `${basePath}/about/#ai`,
     `${basePath}/about/`,
+    `${basePath}/privacy/`,
     `${basePath}/about/#contact`,
     `${basePath}/status/`,
   ]);

@@ -350,7 +350,7 @@ describe("뒤표지 — 데이터 출처·AI 고지·GitHub·마지막 업데이
     expect(within(footer).queryByRole("link", { name: "AI 작성" })).toBeNull();
   });
 
-  it("호 줄 · 마지막 업데이트 HH:MM KST · /about 링크 3개 + 발행 상태 + GitHub 저장소(새 창)", () => {
+  it("호 줄 · 마지막 업데이트 HH:MM KST · /about 링크 3개 + 개인정보 처리방침 + 발행 상태 + GitHub 저장소(새 창)", () => {
     render(
       <AppShell current="home" issue={ISSUE}>
         본문
@@ -370,28 +370,28 @@ describe("뒤표지 — 데이터 출처·AI 고지·GitHub·마지막 업데이
     )!;
     expect(list).toHaveAttribute("role", "list");
     const links = within(list).getAllByRole("link");
-    // DESIGN §9.3·혼합안 순서 — AI 작성 고지 · 소개·출처 정책 · (개인정보 처리방침 — M5-05, 아직 없는 페이지라 링크하지 않음) ·
-    // 삭제·정정 요청 · GitHub. /about 앵커는 ABOUT_SECTIONS(M1-36)
+    // DESIGN §9.3·혼합안 순서 — AI 작성 고지 · 소개·출처 정책 · 개인정보 처리방침(M5-05) · 삭제·정정 요청 · 발행 상태 · GitHub.
+    // /about 앵커는 ABOUT_SECTIONS(M1-36)
     // 테스트 환경의 next/link는 trailingSlash를 모른다(끝 슬래시를 뗀다 — /about#ai) — 빌드 HTML의 href는 e2e가 본다
     expect(
       links
-        .slice(0, 3)
+        .slice(0, 4)
         .map((a) => [
           a.textContent,
-          a.getAttribute("href")?.replace(/^\/about(?=#|$)/, "/about/"),
+          a.getAttribute("href")?.replace(/^\/(about|privacy)(?=#|$)/, "/$1/"),
         ]),
     ).toEqual([
       ["AI 작성 고지", "/about/#ai"],
       ["소개·출처 정책", "/about/"],
+      ["개인정보 처리방침", "/privacy/"],
       ["삭제·정정 요청", "/about/#contact"],
     ]);
-    expect(links).toHaveLength(5);
-    expect(footer.querySelector('a[href*="privacy"]')).toBeNull();
+    expect(links).toHaveLength(6);
     // 발행 상태 {성공률}%(M5-15 — DECISIONS D3 #15) — 삭제·정정 요청 뒤 · GitHub 앞. 숫자는 data/runs.json과 지금 시각에서(형식만 본다)
-    const status = links[3] as HTMLElement;
+    const status = links[4] as HTMLElement;
     expect(status.getAttribute("href")?.replace(/\/?$/, "/")).toBe("/status/");
     expect(status.textContent).toMatch(/^발행 상태( \d{1,3}\.\d%)?$/);
-    const github = links[4] as HTMLElement;
+    const github = links[5] as HTMLElement;
     expect(github).toHaveAttribute("href", REPO_URL);
     expect(github).toHaveAttribute("target", "_blank");
     expect(github.getAttribute("rel")).toContain("noopener");

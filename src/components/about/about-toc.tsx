@@ -12,10 +12,23 @@ import { Leader } from "./leader";
  *   머리는 섹션 머리 + 러닝 헤드 CONTENTS(뉴스 목차와 같은 자리). 페이지 h1보다 DOM이 앞이라 제목 요소가 아니다(p).
  * - `inline` — 1023 이하 본문 머리(소개 아래)에 두는 차례. 얇은 머리(1px) + 2열(세로로 01~03 · 04~06). 1024 이상에서는 숨긴다.
  * 링크는 같은 페이지 앵커(`#ai`)라 `next/link`가 아닌 일반 `<a>`다 — 브라우저 기본 이동이라 `:target`(절 머리 레드 괘선)과 scroll-margin이
- * 그대로 걸린다(`next/link`의 history.pushState 이동은 `:target`을 갱신하지 않는다). 차례는 `/about/`에만 있다.
+ * 그대로 걸린다(`next/link`의 history.pushState 이동은 `:target`을 갱신하지 않는다). 차례는 `/about/`·`/privacy/`에 있다.
  * 서버 컴포넌트 — JS 0. 지금 읽는 절 표시(스크롤 위치)는 하지 않는다.
+ *
+ * `sections`: 기본은 `/about` 절(`ABOUT_SECTIONS`). `/privacy`(M5-05)도 같은 차례 문법으로 자기 절 목록을 넘긴다 — inline 2열은 6절(세로 3행 — `grid-rows-3`) 기준이라 절은 6개로 맞춘다(tests/privacy-page.test.tsx).
  */
-export function AboutToc({ variant }: { variant: "contents" | "inline" }) {
+export interface TocSection {
+  id: string;
+  title: string;
+}
+
+export function AboutToc({
+  variant,
+  sections = ABOUT_SECTIONS,
+}: {
+  variant: "contents" | "inline";
+  sections?: readonly TocSection[];
+}) {
   const inline = variant === "inline";
   return (
     <>
@@ -32,7 +45,7 @@ export function AboutToc({ variant }: { variant: "contents" | "inline" }) {
           inline && "grid grid-flow-col grid-cols-2 grid-rows-3 gap-x-6",
         )}
       >
-        {ABOUT_SECTIONS.map((section, index) => (
+        {sections.map((section, index) => (
           <li key={section.id}>
             <a
               href={`#${section.id}`}

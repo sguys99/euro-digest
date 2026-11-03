@@ -163,6 +163,7 @@ describe("og:image:alt 문형 · 경로 (DESIGN §9.3 D3 링크 미리보기 메
         "korean-players",
         "my",
         "national-team",
+        "privacy",
         "search",
         "status",
         "tonight",
@@ -175,6 +176,9 @@ describe("og:image:alt 문형 · 경로 (DESIGN §9.3 D3 링크 미리보기 메
     expect(OG_PAGES.my).toBe("마이 팀");
     expect(ogAlt(pageOgCard("my"))).toBe("유로 다이제스트 · 마이 팀");
     expect(ogAlt(pageOgCard("status"))).toBe("유로 다이제스트 · 발행 상태");
+    expect(ogAlt(pageOgCard("privacy"))).toBe(
+      "유로 다이제스트 · 개인정보 처리방침",
+    );
   });
 });
 
