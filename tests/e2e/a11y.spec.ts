@@ -1,6 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { axeWcag } from "./support/a11y";
 import {
   outDir,
   sitePages,
@@ -8,13 +9,13 @@ import {
   withArchiveSample,
 } from "./support/site";
 
-// 빌드 후 접근성 자동 검사 (NFR-12). axe-core로 WCAG 2.0/2.1 A·AA 규칙 위반 0건을 요구한다.
+// 빌드 후 접근성 자동 검사 (NFR-12 · NFR-02). axe-core로 WCAG 2.0/2.1/2.2 A·AA 규칙 위반 0건을 요구한다(2.2 AA는 M5-06에서 더했다 —
+// 기준·누름 영역 판정은 support/a11y.ts `axeWcag`).
 // - 대상: out/의 모든 HTML 페이지 + 실제 404 응답(없는 경로) — 목록은 빌드 결과에서 모은다.
 // - 라이트·다크 두 색 구성표에서 검사한다(대비 기준은 다크 포함, CLAUDE.md §4).
-// - best-practice 규칙(region·landmark-one-main 등)은 태그 필터로 제외된다 — 기준은 WCAG 위반만.
+// - best-practice 규칙(region·landmark-unique·page-has-heading-one·heading-order 등)은 아래 따로 라이트 한 번만 본다(색과 무관, M5-06).
 // - 날짜 아카이브(`/news/{date}/`)는 같은 틀이라 표본만(첫 호·최신 호·최근 3·결호 앞뒤·월 경계 — support/site.ts `archiveSample`, M1-34 리뷰).
 //   발행일마다 렌더 + axe 4번이 늘어 시간이 발행일 수에 비례하던 것을 막는다. 링크 검사(links.spec — HTTP만)는 전수.
-const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
 const COLOR_SCHEMES = ["light", "dark"] as const;
 
 const targets = [
@@ -34,41 +35,36 @@ test("out/에서 접근성 검사할 페이지를 찾는다", () => {
 
 for (const target of targets) {
   for (const colorScheme of COLOR_SCHEMES) {
-    test(`${target.name} (${colorScheme}) — WCAG 2.1 A/AA 위반 0건`, async ({
+    test(`${target.name} (${colorScheme}) — WCAG 2.2 A/AA 위반 0건`, async ({
       page,
     }) => {
       await page.emulateMedia({ colorScheme });
       await page.goto(target.gotoPath);
 
-      const { violations } = await new AxeBuilder({ page })
-        .withTags(WCAG_TAGS)
-        .analyze();
-      const summary = violations.map(
-        (violation) =>
-          `${violation.id} (${violation.impact ?? "impact 없음"}): ${violation.help} — ${violation.nodes
-            .map((node) => node.target.join(" "))
-            .join(", ")}`,
-      );
-      expect(summary, "axe 위반 목록 (규칙 설명: violation.helpUrl)").toEqual(
-        [],
-      );
+      expect(
+        await axeWcag(page),
+        "axe 위반 목록 (규칙 설명: violation.helpUrl)",
+      ).toEqual([]);
     });
   }
 }
 
-// 제목 단계(best-practice heading-order — WCAG 태그 밖이라 위 검사에 들지 않는다). h1 → h3처럼 단계를 건너뛰지 않는다(M1-30 리뷰 —
-// `/news/`는 페이지 h1 바로 아래 카드 제목을 h2로). 색과 무관해 라이트 한 번만.
+// axe best-practice(WCAG 태그 밖이라 위 검사에 들지 않는다) — 제목 단계 heading-order(h1 → h3처럼 건너뛰지 않는다 — M1-30 리뷰,
+// `/news/`는 페이지 h1 바로 아래 카드 제목을 h2로) · h1 있음 · 랜드마크(main 하나 · 머리·바닥 하나 · 같은 이름 내비 없음 · 모든 내용이
+// 랜드마크 안) · 빈 제목 없음 등. 색과 무관해 라이트 한 번만(M5-06에서 heading-order 하나 → best-practice 전체로 넓혔다).
 for (const target of targets) {
-  test(`${target.name} — 제목 단계를 건너뛰지 않는다(axe heading-order)`, async ({
+  test(`${target.name} — axe best-practice 위반 0건(제목 단계 · 랜드마크 · h1)`, async ({
     page,
   }) => {
     await page.goto(target.gotoPath);
     const { violations } = await new AxeBuilder({ page })
-      .withRules(["heading-order"])
+      .withTags(["best-practice"])
       .analyze();
     expect(
       violations.flatMap((violation) =>
-        violation.nodes.map((node) => node.target.join(" ")),
+        violation.nodes.map(
+          (node) => `${violation.id}: ${node.target.join(" ")}`,
+        ),
       ),
     ).toEqual([]);
   });
