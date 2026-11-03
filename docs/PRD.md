@@ -390,7 +390,7 @@
 | NFR-05 | 정시성 | 계절별 목표 시각(유럽 서머타임 07:00 · 표준시 07:30 KST)**까지** 공개, 늦어도 +15분(D26 · D48 — 일찍 공개되는 것은 허용) |
 | NFR-06 | 비용 | 월 ≤ $3, 일 LLM ≤ $0.10, 데이터 API 무료 티어 한도 내 |
 | NFR-07 | 보안 | 모든 키는 Actions Secrets, 정적 번들에 키 포함 금지(빌드 후 번들 grep 검사 🆕), 서드파티 스크립트는 분석 도구 1개만 |
-| NFR-08 | 개인정보 | 쿠키리스 분석(**GoatCounter 무료 호스팅**), 개인 식별 정보 수집 없음, localStorage 항목 /privacy에 고지 |
+| NFR-08 | 개인정보 | 쿠키리스 분석(**GoatCounter 무료 호스팅**), 개인 식별 정보 수집 없음, localStorage 항목 /privacy에 고지 — 연동 방식 D75 |
 | NFR-09 | 법·약관 | 본문 전재 금지, 해외 기사는 피드 제목·링크를 수정 없이 게시만(재서술·번역 없음 — D23), 한국어 소스도 제목+링크만(RSS 요약문 절단 표시 예외는 M0-25 판정 결과 적용 매체 없음 — 요약문(description)은 표시·저장하지 않는다, 2026-10-10 · FR-20), 매체명·원문 링크, 로고·사진 미사용, RSS 약관(`terms_checked`), robots.txt, 데이터 API 약관(LLM 입력·재가공 허용 여부 — D24)과 출처 표기 |
 | NFR-10 | 시간대 | 저장은 UTC, 표시는 KST. 서머타임 전환(유럽 3월·10월 말) 테스트 🆕 |
 | NFR-11 | 유지보수 | TypeScript strict, 수집 모듈은 어댑터 구조(소스·데이터 API 교체 가능) |
@@ -723,6 +723,7 @@
 | D72 | 시즌 전환 규칙 (2026-11-03 사용자 결정 — M5-11) | ① 원장 meta는 설정 시즌이 커진 뒤 날짜를 받은 첫 정기 실행이 다시 쓴다(since = 그 실행의 첫 UTC 날짜, playerSince·gaps 비움, 지난 시즌 meta는 git 이력) ② 지난 시즌(강등·UCL 탈락) 팀 페이지는 내린다 — `build-teams --prune`을 사람이 /new-season에서 실행, 표기 사전은 유지, 정기 collect는 지우지 않음 ③ 지난 시즌 순위·대회 데이터는 git 이력만 ④ 2단계 전환(5대 리그 7월 · UCL 리그 페이즈 추첨 뒤) ⑤ 시즌 고정 테스트는 동결한 2026-27 설정 사본(`fixtures/season-2026/`)으로 | FR-156, plan M5-11·M1-48, D33 |
 | D73 | 일별 뉴스 월별 병합 (2026-11-03 사용자 결정 — M5-10) | `data/news/YYYY-MM.json` = NewsMonthFile { month, updatedAt, issues: NewsFile[] }(일별 호 값 그대로, 일별·월별 날짜 겹침 = 오류). 병합은 그 달 말일 + 90일이 지난 뒤 첫 수집 실행이 달 단위로 한 번(첫 병합 2027-01-29 — 월별 파일을 한 번만 써 git 용량 증가 억제). 날짜 페이지·카드 ID·공유 URL은 병합 전후 동일 | FR-34·FR-158, §8.4, plan M5-10·부록 A |
 | D74 | 구조화 데이터 적용 범위 · robots.txt 확정 · sitemap lastmod (2026-11-03 M5-03 구현 결정 — 오케스트레이터 보고, NFR-03) | ① **JSON-LD는 서버 렌더 정적 스크립트**(클라이언트 JS 0, `<`·`>`·`&` 이스케이프 — `src/lib/structured-data.ts`). 유형: 홈 `WebSite`+`Organization`(로고 없음 · 검색 `potentialAction` 없음 — Google 사이트링크 검색창 종료 · `/search/` noindex) · 날짜 호 `CollectionPage` + **이날의 5줄만 `NewsArticle`**(저자·발행처 = 유로 다이제스트, 본문 없음 · 브리핑 줄이 있을 때만) — **뉴스 카드는 싣지 않는다**(다른 매체 기사를 우리 NewsArticle로 표시하면 저자 사칭, 바깥 주소 ItemList는 Google 목록형 결과 대상 아님) · 팀 `SportsTeam`(이미지·로고 없음, UCL 외부 팀은 memberOf 생략) · `SportsEvent`는 **다가오는 경기만**(종료·진행 중·킥오프 미확정 제외 — 스코어·승패 없음, 장소 생략) 대회 10 · 팀 4 · `/tonight/` 선정 경기 · 한국 선수 상세 `Person`. NFR-03의 "NewsArticle"은 이 범위로 적용 ② og:type은 모두 website 유지(한 호는 기사 한 편이 아니라 지면) ③ **robots.txt는 만들지 않는다**(D59 확정 — basePath 아래 robots.txt는 크롤러가 읽지 않음), sitemap은 Search Console URL 접두어 속성 `https://sguys99.github.io/euro-digest/`에 직접 제출(사용자 작업) ④ 날짜 페이지 sitemap lastmod · dateModified = max(뉴스 파일 generatedAt, 그 호 카드에 걸린 삭제 요청 반영 시각 handledAt ?? requestedAt, 브리핑 파일 generatedAt) — 삭제 요청·브리핑 재작성 뒤에도 재크롤 신호 | NFR-03, FR-124·FR-143, plan M5-03 |
+| D75 | GoatCounter 연동 방식 (2026-11-03 — M5-04, 추천안 확정) | `count.v5.js`(버전 고정 + SRI)를 공개 사이트 주소에서만 지연 로드(로컬·견본·e2e 0). path는 basePath 포함 경로만(쿼리·해시 제외, count.js `q` 제거 — utm 미집계). 이벤트 `out/{호스트}` · `feed/{rss|ics|webcal}/{범위}` · `pwa/install` · `my/set` — 카드 ID·팀 slug·팔로우 목록·개수는 보내지 않는다(최소 수집). 원문 클릭률 분모는 페이지뷰 × 쪽당 카드 수 근사(노출 이벤트 없음). 대시보드는 비공개로 시작해 공개 3개월 뒤 KPI 재설정 때 다시 판단 | NFR-08·FR-141·§11.2, plan M5-04 |
 
 ### 15.1 남은 확인 사항 (M0에서 검증)
 basic_plan §12의 외부 확인 항목 중 **남은 것은 상표·저장소명(M0-31)과 2026-27 한국 선수 명단(M0-32)**이며, M0 검증 결과로 확정한 뒤 PRD 해당 항목을 갱신한다.
