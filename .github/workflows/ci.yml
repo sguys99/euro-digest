@@ -1,5 +1,5 @@
 # 검사 워크플로 (M0-12, NFR-12) — push·PR마다 정적 export 사이트 전체를 검사한다.
-# check(typecheck·lint·단위 테스트) → 서식 → 설정 검증 → 빌드 → 번들 예산·비밀값 → e2e(스모크·링크·접근성)
+# check(typecheck·lint·단위 테스트) → 서식 → 설정 검증 → Chromium 설치(OG 이미지 · e2e) → 빌드 → 번들 예산·비밀값 → e2e(스모크·링크·접근성)
 # main push에서 통과하면 재사용 워크플로 deploy.yml로 배포한다(M0-13, PRD §15 D20 — 파일 끝 deploy job).
 #
 # 참고
@@ -67,12 +67,7 @@ jobs:
       - name: 설정·데이터 검증 (configs·data 스키마)
         run: npm run validate
 
-      - name: 정적 빌드 (next build → out/)
-        run: npm run build
-
-      - name: 번들 예산 · 비밀값 검사 (DR-11, NFR-07)
-        run: npm run check:bundle
-
+      # 빌드 첫 단계(scripts/build-og.ts — M5-01)가 입력이 바뀐 OG 이미지를 Chromium으로 굽고, e2e도 Chromium을 쓴다 — 빌드 앞에 설치한다.
       - name: Playwright 버전 확인
         id: playwright
         run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
@@ -86,6 +81,12 @@ jobs:
       # 캐시가 맞으면 브라우저 다운로드는 건너뛰고 OS 의존성만 설치한다.
       - name: Playwright 브라우저 설치 (chromium + OS 의존성)
         run: npx playwright install --with-deps chromium
+
+      - name: 정적 빌드 (next build → out/)
+        run: npm run build
+
+      - name: 번들 예산 · 비밀값 검사 (DR-11, NFR-07)
+        run: npm run check:bundle
 
       - name: e2e — 스모크 · 링크 · 접근성 (NFR-12)
         id: e2e

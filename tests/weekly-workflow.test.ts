@@ -28,6 +28,8 @@ const STEP = {
   weekly: "주간 작업",
   discard: "실패 단계 산출물 되돌리기",
   validate: "검증 게이트",
+  og: "OG 이미지 확인",
+  chromium: "Chromium 설치 (OG 이미지)",
   build: "정적 빌드",
   commit: "data 커밋",
   preserve: "실패 실행 기록 보존",
@@ -128,6 +130,32 @@ describe("weekly job 단계 — 주간 작업 → 검증 → 빌드 → 커밋 (
     }
     expect(run(STEP.validate)).toBe("npm run validate");
     expect(run(STEP.build)).toBe("npm run build");
+  });
+
+  it("OG 이미지 준비(M5-01) — 확인은 가드 skip이 아니면 늘, 브라우저 캐시 · Chromium 설치는 구울 것이 있을 때만", () => {
+    expect(stepKey(stepNamed(steps, STEP.og), "if")).toBe(
+      "steps.weekly.outputs.skipped != 'true'",
+    );
+    expect(run(STEP.og)).toContain("npm run build:og -- --check");
+    for (const name of [
+      "Playwright 브라우저 캐시 (OG 이미지)",
+      STEP.chromium,
+    ]) {
+      expect(stepKey(stepNamed(steps, name), "if")).toBe(
+        "steps.weekly.outputs.skipped != 'true' && steps.og.outputs.stale != '0'",
+      );
+    }
+    expect(run(STEP.chromium)).toBe(
+      "npx playwright install --with-deps chromium",
+    );
+    const stopped = run(STEP.stopped);
+    expect(stopped).toContain('step="og"');
+    expect(stopped.indexOf("$OG_OUTCOME")).toBeGreaterThan(
+      stopped.indexOf("$VALIDATE_OUTCOME"),
+    );
+    expect(stopped.indexOf("$OG_OUTCOME")).toBeLessThan(
+      stopped.indexOf("$BUILD_OUTCOME"),
+    );
   });
 
   it("되돌리기 — discard가 있을 때만, 경로 형식을 다시 확인하고 HEAD로 되돌린다", () => {

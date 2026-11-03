@@ -43,6 +43,8 @@ const STEP = {
   collect: "수집 · 정제·분류 · 브리핑",
   runIssues: "실행 이슈 보고",
   validate: "검증 게이트",
+  og: "OG 이미지 확인",
+  chromium: "Chromium 설치 (OG 이미지)",
   build: "정적 빌드",
   commit: "data 커밋",
   preserve: "실패 실행 기록 보존",
@@ -56,7 +58,7 @@ function run(prefix: string): string {
 }
 
 describe("collect job 단계 — 수집 → 검증 → 빌드 → 커밋 (검증·빌드 실패 시 커밋하지 않음)", () => {
-  it("단계 순서: 기준 커밋 → 설치 → 수집 → 실행 이슈 → 검증 게이트 → 정적 빌드 → data 커밋 → 실패 실행 기록 보존 → 실패 단계 기록(마지막)", () => {
+  it("단계 순서: 기준 커밋 → 설치 → 수집 → 실행 이슈 → 검증 게이트 → OG 이미지 확인 → Chromium 설치 → 정적 빌드 → data 커밋 → 실패 실행 기록 보존 → 실패 단계 기록(마지막)", () => {
     const order = Object.values(STEP).map((name) =>
       steps.findIndex((s) => s.name.startsWith(name)),
     );
@@ -88,6 +90,25 @@ describe("collect job 단계 — 수집 → 검증 → 빌드 → 커밋 (검증
         0,
       ]);
     }
+  });
+
+  it("OG 이미지 준비(M5-01): 확인 단계는 늘 돌고, 브라우저 캐시 · Chromium 설치는 구울 것이 있을 때만(캐시 키 = ci.yml과 같은 Playwright 판)", () => {
+    const og = stepNamed(steps, STEP.og);
+    expect(stepKey(og, "id")).toBe("og");
+    expect(stepKey(og, "if")).toBeNull();
+    expect(run(STEP.og)).toContain("npm run build:og -- --check");
+    expect(run(STEP.og)).toContain('echo "playwright=');
+    const cache = stepNamed(steps, "Playwright 브라우저 캐시 (OG 이미지)");
+    expect(stepKey(cache, "if")).toBe("steps.og.outputs.stale != '0'");
+    expect(cache.body).toContain(
+      "key: playwright-${{ runner.os }}-${{ steps.og.outputs.playwright }}",
+    );
+    const chromium = stepNamed(steps, STEP.chromium);
+    expect(stepKey(chromium, "id")).toBe("chromium");
+    expect(stepKey(chromium, "if")).toBe("steps.og.outputs.stale != '0'");
+    expect(run(STEP.chromium)).toBe(
+      "npx playwright install --with-deps chromium",
+    );
   });
 
   it("job 수준 continue-on-error가 없고, step 수준은 실행 이슈 보고 하나뿐", () => {
@@ -331,6 +352,8 @@ describe("실패 단계 기록 → 실패 이슈 메모 (FR-152)", () => {
       "install",
       "collect",
       "validate",
+      "og",
+      "chromium",
       "build",
       "commit",
       "preserve",
@@ -343,6 +366,7 @@ describe("실패 단계 기록 → 실패 이슈 메모 (FR-152)", () => {
       "$INSTALL_OUTCOME",
       "$COLLECT_OUTCOME",
       "$VALIDATE_OUTCOME",
+      "$OG_OUTCOME",
       "$BUILD_OUTCOME",
       "$COMMIT_OUTCOME",
       "$PRESERVE_OUTCOME",
@@ -360,6 +384,7 @@ describe("실패 단계 기록 → 실패 이슈 메모 (FR-152)", () => {
       "install",
       "collect",
       "validate",
+      "og",
       "build",
       "commit",
       "setup",

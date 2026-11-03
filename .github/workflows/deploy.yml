@@ -115,6 +115,27 @@ jobs:
       - name: 의존성 설치
         run: npm ci
 
+      # OG 이미지(M5-01): 빌드 첫 단계(scripts/build-og.ts)가 입력이 바뀐 PNG만 굽는다. collect·weekly·사람 커밋이 public/og를 함께
+      # 올리므로 평소에는 0장 — 그때는 Chromium을 받지 않는다(확인 약 2초). 구울 것이 있을 때만(롤백한 옛 커밋 · public/og를 빠뜨린 커밋)
+      # 브라우저 캐시(ci.yml과 같은 키) · Chromium 설치.
+      - name: OG 이미지 확인 (npm run build:og -- --check)
+        id: og
+        run: |
+          echo "playwright=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+          # --if-present: 이 스크립트가 없던 옛 커밋(M5-01 전)으로 롤백할 때도 멈추지 않는다(출력이 없으면 아래 설치가 돈다 — 해는 없음)
+          npm run build:og --if-present -- --check
+
+      - name: Playwright 브라우저 캐시 (OG 이미지)
+        if: steps.og.outputs.stale != '0'
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.og.outputs.playwright }}
+
+      - name: Chromium 설치 (OG 이미지)
+        if: steps.og.outputs.stale != '0'
+        run: npx playwright install --with-deps chromium
+
       - name: 정적 빌드 (next build → out/)
         run: npm run build
 

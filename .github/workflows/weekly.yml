@@ -15,6 +15,7 @@
 #   ② 검증 게이트 `npm run validate` — configs·data 스키마·교차 참조(주간 리포트 파일 포함). 발행일 카드 하한(--publish-date)은
 #      일일 수집 몫이라 넘기지 않는다.
 #   ③ 정적 빌드 `npm run build` — 빌드가 깨지는 데이터는 커밋하지 않는다(배포용 빌드는 deploy.yml이 커밋 SHA로 다시 한다).
+#      앞에 OG 이미지 확인 → (구울 것이 있으면) 브라우저 캐시 · Chromium 설치(M5-01 — collect.yml과 같다).
 #   ④ data 커밋 · push — data/·public/ 변경분만 `chore(data): <발행일> 주간 발행 (<주차>)`, rebase 뒤 push(충돌은 push하지 않고
 #      실패). 변경이 없으면 커밋·배포를 건너뛴다. 가드가 건너뛴 실행은 ②~④를 돌지 않는다.
 #   (보조) 실패 실행 기록 보존 — 위 단계가 실패했고 주간 작업이 실행 기록을 남겼을 때만(D49). main 최신 별도 작업 트리에 이번 실행
@@ -194,6 +195,30 @@ jobs:
         if: steps.weekly.outputs.skipped != 'true'
         timeout-minutes: 5
         run: npm run validate
+
+      # ③ 앞 — OG 이미지 준비(M5-01, PRD DR-10): 빌드 첫 단계(scripts/build-og.ts)가 입력이 바뀐 OG PNG만 굽는다(주간 작업은 보통 0장 —
+      #    팀 표기 · 소속 대회가 바뀌었을 때만). 구울 것이 있을 때만 브라우저 캐시(ci.yml과 같은 키) · Chromium 설치. 구운 PNG는 ④가
+      #    public/과 함께 커밋한다(collect.yml과 같은 규칙).
+      - name: OG 이미지 확인 (npm run build:og -- --check)
+        id: og
+        if: steps.weekly.outputs.skipped != 'true'
+        timeout-minutes: 2
+        run: |
+          echo "playwright=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+          npm run build:og -- --check
+
+      - name: Playwright 브라우저 캐시 (OG 이미지)
+        if: steps.weekly.outputs.skipped != 'true' && steps.og.outputs.stale != '0'
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.og.outputs.playwright }}
+
+      - name: Chromium 설치 (OG 이미지)
+        id: chromium
+        if: steps.weekly.outputs.skipped != 'true' && steps.og.outputs.stale != '0'
+        timeout-minutes: 4
+        run: npx playwright install --with-deps chromium
 
       # ③ 빌드가 깨지는 데이터는 커밋하지 않는다. 배포용 빌드는 deploy.yml이 커밋한 SHA로 다시 한다.
       - name: 정적 빌드 (npm run build)
@@ -417,6 +442,8 @@ jobs:
           WEEKLY_OUTCOME: ${{ steps.weekly.outcome }}
           DISCARD_OUTCOME: ${{ steps.discard.outcome }}
           VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
+          OG_OUTCOME: ${{ steps.og.outcome }}
+          CHROMIUM_OUTCOME: ${{ steps.chromium.outcome }}
           BUILD_OUTCOME: ${{ steps.build.outcome }}
           COMMIT_OUTCOME: ${{ steps.commit.outcome }}
           PRESERVE_OUTCOME: ${{ steps.preserve.outcome }}
@@ -436,6 +463,9 @@ jobs:
           elif [ "$VALIDATE_OUTCOME" = "failure" ]; then
             reason="검증 게이트(npm run validate) 실패 — 커밋·배포 안 함, 사이트 유지"
             step="validate"
+          elif [ "$OG_OUTCOME" = "failure" ] || [ "$CHROMIUM_OUTCOME" = "failure" ]; then
+            reason="OG 이미지 준비(확인·Chromium 설치) 실패 — 빌드·커밋·배포 안 함, 사이트 유지"
+            step="og"
           elif [ "$BUILD_OUTCOME" = "failure" ]; then
             reason="정적 빌드(npm run build) 실패 — 커밋·배포 안 함, 사이트 유지"
             step="build"
