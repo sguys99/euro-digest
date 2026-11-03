@@ -1,0 +1,169 @@
+{
+  "slug": "brighton",
+  "nameKo": "브라이턴",
+  "nameEn": "Brighton & Hove Albion FC",
+  "short": "BHA",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#0057B8",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Pascal Groß",
+      "goals": 3,
+      "assists": 4
+    },
+    {
+      "name": "Charalampos Kostoulas",
+      "goals": 3,
+      "assists": 2
+    },
+    {
+      "name": "Jack Hinshelwood",
+      "goals": 3,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557444",
+    "kickoff": "2026-10-25T14:00:00.000Z",
+    "comp": "EPL",
+    "side": "away",
+    "opponent": "liverpool",
+    "startXI": [
+      {
+        "name": "Bart Verbruggen",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Ferdi Kadıoğlu",
+        "number": 24,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Luka Vušković",
+        "number": 44,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Lewis Dunk",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Olivier Boscagli",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Pascal Groß",
+        "number": 13,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Chema Andrés",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Diego Gómez",
+        "number": 25,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Yasin Ayari",
+        "number": 26,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Maxim De Cuyper",
+        "number": 29,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Charalampos Kostoulas",
+        "number": 19,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Costinha",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Jack Hinshelwood",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Malick Yalcouyé",
+        "number": 35,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Georginio Rutter",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Jason Steele",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Jaouen Hadjam",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Matt O'Riley",
+        "number": 33,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ibrahim Osman",
+        "number": 15,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Promise David",
+        "number": 12,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

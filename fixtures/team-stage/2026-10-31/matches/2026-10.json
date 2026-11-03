@@ -1,0 +1,1444 @@
+{
+  "month": "2026-10",
+  "updatedAt": "2026-10-30T22:11:40.322Z",
+  "matches": [
+    {
+      "id": "af-1557436",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 7",
+      "kickoff": "2026-10-19T19:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 47,
+        "name": "Tottenham",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 1346,
+        "name": "Coventry",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 3,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 14,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 18784,
+            "name": "James Maddison"
+          },
+          "assist": {
+            "id": 15911,
+            "name": "Mohammed Kudus"
+          }
+        },
+        {
+          "minute": 49,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 20372,
+            "name": "Jack Rudoni"
+          },
+          "assist": {
+            "id": 82090,
+            "name": "Brandon Thomas-Asante"
+          }
+        },
+        {
+          "minute": 58,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 81573,
+            "name": "Omar Marmoush"
+          },
+          "assist": {
+            "id": 289,
+            "name": "Andrew Robertson"
+          }
+        },
+        {
+          "minute": 90,
+          "extra": 6,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 164,
+            "name": "Ben Davies"
+          },
+          "assist": {
+            "id": 18883,
+            "name": "Dominic Solanke"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-20T00:39:32.030Z"
+    },
+    {
+      "id": "af-1570417",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 9",
+      "kickoff": "2026-10-19T19:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 546,
+        "name": "Getafe",
+        "formation": "4-4-2"
+      },
+      "away": {
+        "id": 728,
+        "name": "Rayo Vallecano",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 1,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 11,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 47543,
+            "name": "Álvaro García"
+          },
+          "assist": {
+            "id": 128582,
+            "name": "Jorge De Frutos"
+          }
+        },
+        {
+          "minute": 56,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 195512,
+            "name": "Martin Satriano"
+          },
+          "assist": {
+            "id": 162249,
+            "name": "Francho Serrano Gracia"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-20T00:39:38.737Z"
+    },
+    {
+      "id": "af-1570389",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 6",
+      "kickoff": "2026-10-21T18:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 539,
+        "name": "Levante",
+        "formation": "4-4-2"
+      },
+      "away": {
+        "id": 531,
+        "name": "Athletic Club",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 3,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 20,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 47225,
+            "name": "Roger Brugué"
+          },
+          "assist": {
+            "id": 391131,
+            "name": "Daniel Requena Sánchez"
+          }
+        },
+        {
+          "minute": 22,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 47225,
+            "name": "Roger Brugué"
+          },
+          "assist": null
+        },
+        {
+          "minute": 67,
+          "extra": null,
+          "side": "away",
+          "kind": "penalty",
+          "scorer": {
+            "id": 30510,
+            "name": "Alex Berenguer"
+          },
+          "assist": null
+        },
+        {
+          "minute": 90,
+          "extra": 8,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 378284,
+            "name": "Karl Etta Eyong"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-22T00:13:03.634Z"
+    },
+    {
+      "id": "af-1557443",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-23T19:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 57,
+        "name": "Ipswich",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 65,
+        "name": "Nottingham Forest",
+        "formation": "3-4-2-1"
+      },
+      "ft": {
+        "home": 1,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 13,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 138780,
+            "name": "Neco Williams"
+          },
+          "assist": {
+            "id": 13736,
+            "name": "Daniel Muñoz"
+          }
+        },
+        {
+          "minute": 41,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 70747,
+            "name": "Julio Enciso"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:45:14.021Z"
+    },
+    {
+      "id": "af-1570423",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-23T19:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 542,
+        "name": "Alaves",
+        "formation": "5-3-2"
+      },
+      "away": {
+        "id": 535,
+        "name": "Malaga",
+        "formation": "4-1-4-1"
+      },
+      "ft": {
+        "home": 1,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 44,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 386850,
+            "name": "Adrian Nino"
+          },
+          "assist": {
+            "id": 129056,
+            "name": "Ramón Enríquez"
+          }
+        },
+        {
+          "minute": 89,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 330440,
+            "name": "Aitor Mañas"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:45:20.733Z"
+    },
+    {
+      "id": "af-1557438",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-24T11:30:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 66,
+        "name": "Aston Villa",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 50,
+        "name": "Manchester City",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 2,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 6,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 283058,
+            "name": "Nicolas Jackson"
+          },
+          "assist": {
+            "id": 19191,
+            "name": "John McGinn"
+          }
+        },
+        {
+          "minute": 52,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 1100,
+            "name": "Erling Haaland"
+          },
+          "assist": {
+            "id": 18592,
+            "name": "Iliman Ndiaye"
+          }
+        },
+        {
+          "minute": 60,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 283058,
+            "name": "Nicolas Jackson"
+          },
+          "assist": {
+            "id": 446249,
+            "name": "Ibrahim Mbaye"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:42:46.255Z"
+    },
+    {
+      "id": "af-1570429",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-24T12:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 728,
+        "name": "Rayo Vallecano",
+        "formation": "4-3-3"
+      },
+      "away": {
+        "id": 797,
+        "name": "Elche",
+        "formation": "4-3-3"
+      },
+      "ft": {
+        "home": 0,
+        "away": 3
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 23,
+          "extra": null,
+          "side": "away",
+          "kind": "penalty",
+          "scorer": {
+            "id": 311345,
+            "name": "Federico Redondo Solari"
+          },
+          "assist": null
+        },
+        {
+          "minute": 36,
+          "extra": null,
+          "side": "away",
+          "kind": "penalty",
+          "scorer": {
+            "id": 184277,
+            "name": "Fernando Niño Rodríguez"
+          },
+          "assist": null
+        },
+        {
+          "minute": 68,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 161963,
+            "name": "Germán Valera"
+          },
+          "assist": {
+            "id": 311334,
+            "name": "Facundo Buonanotte"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:42:52.963Z"
+    },
+    {
+      "id": "af-1557437",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-24T14:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 42,
+        "name": "Arsenal",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 45,
+        "name": "Everton",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 2,
+        "away": 0
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 7,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 19354,
+            "name": "Ezri Konsa"
+          },
+          "assist": {
+            "id": 18979,
+            "name": "Viktor Gyökeres"
+          }
+        },
+        {
+          "minute": 68,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 22224,
+            "name": "Gabriel dos Santos Magalhães"
+          },
+          "assist": {
+            "id": 19959,
+            "name": "Ben White"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:43:46.698Z"
+    },
+    {
+      "id": "af-1557440",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-24T14:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 1346,
+        "name": "Coventry",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 36,
+        "name": "Fulham",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 0,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 80,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 278133,
+            "name": "Oscar Bobb"
+          },
+          "assist": {
+            "id": 389315,
+            "name": "Josh King"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:43:53.397Z"
+    },
+    {
+      "id": "af-1570428",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-24T14:15:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 4665,
+        "name": "Racing Santander",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 540,
+        "name": "Espanyol",
+        "formation": "4-4-2"
+      },
+      "ft": {
+        "home": 2,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 62,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 46799,
+            "name": "Eduardo Expósito Jaén"
+          },
+          "assist": {
+            "id": 388495,
+            "name": "Francisco Javier Hernandez Coarasa"
+          }
+        },
+        {
+          "minute": 69,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 343316,
+            "name": "Jeanuël Belocian"
+          },
+          "assist": {
+            "id": 1570,
+            "name": "Sergio Canales"
+          }
+        },
+        {
+          "minute": 84,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 457101,
+            "name": "Yassir Zabiri"
+          },
+          "assist": {
+            "id": 181685,
+            "name": "Alvaro Mantilla"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:44:00.100Z"
+    },
+    {
+      "id": "af-1557439",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-24T16:30:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 49,
+        "name": "Chelsea",
+        "formation": "3-4-2-1"
+      },
+      "away": {
+        "id": 47,
+        "name": "Tottenham",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 0,
+        "away": 2
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 77,
+          "extra": null,
+          "side": "away",
+          "kind": "own-goal",
+          "scorer": {
+            "id": 340151,
+            "name": "Mike Penders"
+          },
+          "assist": null
+        },
+        {
+          "minute": 87,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 270510,
+            "name": "Mathys Tel"
+          },
+          "assist": null
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:44:13.587Z"
+    },
+    {
+      "id": "af-1570432",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-24T16:30:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 532,
+        "name": "Valencia",
+        "formation": "4-4-2"
+      },
+      "away": {
+        "id": 533,
+        "name": "Villarreal",
+        "formation": "4-4-2"
+      },
+      "ft": {
+        "home": 1,
+        "away": 2
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 38,
+          "extra": null,
+          "side": "home",
+          "kind": "penalty",
+          "scorer": {
+            "id": 47463,
+            "name": "José Luis García Vayá"
+          },
+          "assist": null
+        },
+        {
+          "minute": 69,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 355994,
+            "name": "Alex Freeman"
+          },
+          "assist": {
+            "id": 70500,
+            "name": "Sergi Cardona Bermúdez"
+          }
+        },
+        {
+          "minute": 90,
+          "extra": 6,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 180496,
+            "name": "Georges Mikautadze"
+          },
+          "assist": {
+            "id": 182519,
+            "name": "Alberto Moleiro"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-24T23:44:20.289Z"
+    },
+    {
+      "id": "af-1570425",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-24T19:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 530,
+        "name": "Atletico Madrid",
+        "formation": "4-3-3"
+      },
+      "away": {
+        "id": 544,
+        "name": "Deportivo La Coruna",
+        "formation": "5-3-2"
+      },
+      "ft": {
+        "home": 1,
+        "away": 0
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 48,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 6009,
+            "name": "Julián Álvarez"
+          },
+          "assist": {
+            "id": 563,
+            "name": "Alejandro Grimaldo"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [
+        {
+          "player": 927,
+          "side": "home",
+          "status": "start",
+          "minutes": 67,
+          "goals": 0,
+          "assists": 0
+        }
+      ],
+      "fetchedAt": "2026-10-24T23:44:47.190Z"
+    },
+    {
+      "id": "af-1570424",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-25T13:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 531,
+        "name": "Athletic Club",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 546,
+        "name": "Getafe",
+        "formation": "5-4-1"
+      },
+      "ft": {
+        "home": 4,
+        "away": 0
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 17,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 30510,
+            "name": "A. Berenguer"
+          },
+          "assist": null
+        },
+        {
+          "minute": 35,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 47294,
+            "name": "I. Williams"
+          },
+          "assist": {
+            "id": 30510,
+            "name": "A. Berenguer"
+          }
+        },
+        {
+          "minute": 70,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 183849,
+            "name": "A. Paredes"
+          },
+          "assist": {
+            "id": 30510,
+            "name": "A. Berenguer"
+          }
+        },
+        {
+          "minute": 88,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 47273,
+            "name": "Y. Berchiche"
+          },
+          "assist": {
+            "id": 30510,
+            "name": "A. Berenguer"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:31:26.299Z"
+    },
+    {
+      "id": "af-1557441",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-25T14:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 52,
+        "name": "Crystal Palace",
+        "formation": "3-4-2-1"
+      },
+      "away": {
+        "id": 34,
+        "name": "Newcastle",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 0,
+        "away": 2
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 47,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 315237,
+            "name": "William Osula"
+          },
+          "assist": {
+            "id": 19163,
+            "name": "Jacob Murphy"
+          }
+        },
+        {
+          "minute": 58,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 18778,
+            "name": "Harvey Barnes"
+          },
+          "assist": {
+            "id": 7318,
+            "name": "Amar Dedić"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:31:53.131Z"
+    },
+    {
+      "id": "af-1557442",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-25T14:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 64,
+        "name": "Hull City",
+        "formation": "5-4-1"
+      },
+      "away": {
+        "id": 55,
+        "name": "Brentford",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 1,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 24,
+          "extra": null,
+          "side": "home",
+          "kind": "penalty",
+          "scorer": {
+            "id": 19337,
+            "name": "Oliver McBurnie"
+          },
+          "assist": null
+        },
+        {
+          "minute": 63,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 284797,
+            "name": "Dango Ouattara"
+          },
+          "assist": {
+            "id": 196156,
+            "name": "Igor Thiago"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:31:59.883Z"
+    },
+    {
+      "id": "af-1557444",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-25T14:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 40,
+        "name": "Liverpool",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 51,
+        "name": "Brighton",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 2,
+        "away": 0
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 17,
+          "extra": null,
+          "side": "home",
+          "kind": "own-goal",
+          "scorer": {
+            "id": 18970,
+            "name": "Pascal Groß"
+          },
+          "assist": null
+        },
+        {
+          "minute": 21,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 2864,
+            "name": "Alexander Isak"
+          },
+          "assist": {
+            "id": 161904,
+            "name": "Bradley Barcola"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:32:06.608Z"
+    },
+    {
+      "id": "af-1557445",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-25T14:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 33,
+        "name": "Manchester United",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 35,
+        "name": "Bournemouth",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 0,
+        "away": 3
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 38,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 407806,
+            "name": "Rayan"
+          },
+          "assist": {
+            "id": 792,
+            "name": "Justin Kluivert"
+          }
+        },
+        {
+          "minute": 43,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 19245,
+            "name": "Marcus Tavernier"
+          },
+          "assist": {
+            "id": 162267,
+            "name": "Adrien Truffert"
+          }
+        },
+        {
+          "minute": 71,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 152856,
+            "name": "Evanilson"
+          },
+          "assist": {
+            "id": 18872,
+            "name": "Lewis Cook"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:32:13.298Z"
+    },
+    {
+      "id": "af-1570427",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-25T15:15:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 538,
+        "name": "Celta Vigo",
+        "formation": "3-4-3"
+      },
+      "away": {
+        "id": 543,
+        "name": "Real Betis",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 0,
+        "away": 0
+      },
+      "pens": null,
+      "goals": [],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:32:26.738Z"
+    },
+    {
+      "id": "af-1557446",
+      "leagueId": 39,
+      "league": "Premier League",
+      "comp": "EPL",
+      "season": 2026,
+      "round": "Regular Season - 8",
+      "kickoff": "2026-10-25T16:30:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 746,
+        "name": "Sunderland",
+        "formation": "4-2-3-1"
+      },
+      "away": {
+        "id": 63,
+        "name": "Leeds",
+        "formation": "3-4-2-1"
+      },
+      "ft": {
+        "home": 0,
+        "away": 0
+      },
+      "pens": null,
+      "goals": [],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:33:06.981Z"
+    },
+    {
+      "id": "af-1570430",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-25T17:30:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 548,
+        "name": "Real Sociedad",
+        "formation": "4-4-2"
+      },
+      "away": {
+        "id": 539,
+        "name": "Levante",
+        "formation": "4-4-2"
+      },
+      "ft": {
+        "home": 2,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 6,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 61774,
+            "name": "O. Oskarsson"
+          },
+          "assist": null
+        },
+        {
+          "minute": 22,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 504605,
+            "name": "N. Perez"
+          },
+          "assist": {
+            "id": 362750,
+            "name": "T. Fernandez"
+          }
+        },
+        {
+          "minute": 27,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 183744,
+            "name": "B. Turrientes"
+          },
+          "assist": {
+            "id": 925,
+            "name": "G. Guedes"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:33:27.079Z"
+    },
+    {
+      "id": "af-1570426",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-25T20:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 529,
+        "name": "Barcelona",
+        "formation": "4-3-3"
+      },
+      "away": {
+        "id": 541,
+        "name": "Real Madrid",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 1,
+        "away": 2
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 41,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 278,
+            "name": "K. Mbappe"
+          },
+          "assist": null
+        },
+        {
+          "minute": 61,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 1496,
+            "name": "Raphinha"
+          },
+          "assist": {
+            "id": 133609,
+            "name": "Pedri"
+          }
+        },
+        {
+          "minute": 87,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 278,
+            "name": "K. Mbappe"
+          },
+          "assist": {
+            "id": 2207,
+            "name": "E. Camavinga"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:33:40.488Z"
+    },
+    {
+      "id": "af-1570431",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 10",
+      "kickoff": "2026-10-26T20:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 536,
+        "name": "Sevilla",
+        "formation": "4-4-2"
+      },
+      "away": {
+        "id": 727,
+        "name": "Osasuna",
+        "formation": "4-3-3"
+      },
+      "ft": {
+        "home": 2,
+        "away": 0
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 24,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 185398,
+            "name": "Isaac Romero"
+          },
+          "assist": {
+            "id": 22254,
+            "name": "Youssouf Fofana"
+          }
+        },
+        {
+          "minute": 82,
+          "extra": null,
+          "side": "home",
+          "kind": "normal",
+          "scorer": {
+            "id": 135749,
+            "name": "Felix Correia"
+          },
+          "assist": {
+            "id": 22254,
+            "name": "Youssouf Fofana"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-27T01:31:12.875Z"
+    },
+    {
+      "id": "af-1570442",
+      "leagueId": 140,
+      "league": "La Liga",
+      "comp": "LALIGA",
+      "season": 2026,
+      "round": "Regular Season - 11",
+      "kickoff": "2026-10-30T20:00:00.000Z",
+      "status": "FT",
+      "home": {
+        "id": 533,
+        "name": "Villarreal",
+        "formation": "4-4-2"
+      },
+      "away": {
+        "id": 540,
+        "name": "Espanyol",
+        "formation": "4-2-3-1"
+      },
+      "ft": {
+        "home": 0,
+        "away": 1
+      },
+      "pens": null,
+      "goals": [
+        {
+          "minute": 60,
+          "extra": null,
+          "side": "away",
+          "kind": "normal",
+          "scorer": {
+            "id": 47249,
+            "name": "Leandro Cabrera"
+          },
+          "assist": {
+            "id": 286639,
+            "name": "Bryan Zaragoza"
+          }
+        }
+      ],
+      "goalsComplete": true,
+      "korean": [],
+      "fetchedAt": "2026-10-30T22:11:33.629Z"
+    }
+  ]
+}

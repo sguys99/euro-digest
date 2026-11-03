@@ -1,0 +1,159 @@
+{
+  "slug": "nottingham-forest",
+  "nameKo": "노팅엄 포레스트",
+  "nameEn": "Nottingham Forest FC",
+  "short": "NOT",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#D90000",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "3-4-2-1",
+    "source": "api",
+    "updated": "2026-10-23T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Dan Ndoye",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "3-4-2-1",
+    "match": "af-1557443",
+    "kickoff": "2026-10-23T19:00:00.000Z",
+    "comp": "EPL",
+    "side": "away",
+    "opponent": "ipswich-town",
+    "startXI": [
+      {
+        "name": "Matz Sels",
+        "number": 26,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Jair",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Nikola Milenković",
+        "number": 31,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Murillo",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Daniel Muñoz",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "James McAtee",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Xaver Schlager",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Neco Williams",
+        "number": 3,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Morgan Gibbs-White",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "Dan Ndoye",
+        "number": 14,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "Liam Delap",
+        "number": 19,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Callum Hudson Odoi",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Luca Netz",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Chris Wood",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "John Victor",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Ousmane Diomande",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ola Aina",
+        "number": 34,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ibrahim Sangaré",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ryan Yates",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Arnaud Kalimuendo",
+        "number": 15,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

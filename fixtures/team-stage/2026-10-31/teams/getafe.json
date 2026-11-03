@@ -1,0 +1,165 @@
+{
+  "slug": "getafe",
+  "nameKo": "헤타페",
+  "nameEn": "Getafe CF",
+  "short": "GET",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#005999",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "5-4-1",
+    "source": "api",
+    "updated": "2026-10-25T13:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Martin Satriano",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "5-4-1",
+    "match": "af-1570424",
+    "kickoff": "2026-10-25T13:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "athletic",
+    "startXI": [
+      {
+        "name": "D. Soria",
+        "number": 13,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Kiko Femenia",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:5"
+      },
+      {
+        "name": "D. Carvajal",
+        "number": 14,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "N. Gudelj",
+        "number": 8,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "J. Valou",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "J. Mojica",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "R. Terrats",
+        "number": 11,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Francho",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "M. Martin",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "M. Satriano",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "I. Azon",
+        "number": 20,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "J. Letacek",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Ferrer",
+        "number": 35,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Abqar",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Davinchi",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Sazonov",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Boselli",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Garcia",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Risco",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Unal",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "B. Mayoral",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

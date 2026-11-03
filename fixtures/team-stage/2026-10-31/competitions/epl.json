@@ -1,0 +1,410 @@
+{
+  "comp": "EPL",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-30T22:12:20.291Z",
+  "standings": [
+    {
+      "pos": 1,
+      "prevPos": 1,
+      "team": "manchester-city",
+      "played": 8,
+      "w": 7,
+      "d": 0,
+      "l": 1,
+      "gf": 20,
+      "ga": 9,
+      "pts": 21,
+      "form": [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
+      "prevPos": 2,
+      "team": "arsenal",
+      "played": 8,
+      "w": 7,
+      "d": 0,
+      "l": 1,
+      "gf": 13,
+      "ga": 5,
+      "pts": 21,
+      "form": [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": 3,
+      "team": "brighton",
+      "played": 8,
+      "w": 5,
+      "d": 1,
+      "l": 2,
+      "gf": 23,
+      "ga": 7,
+      "pts": 16,
+      "form": [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 4,
+      "prevPos": 4,
+      "team": "liverpool",
+      "played": 8,
+      "w": 4,
+      "d": 3,
+      "l": 1,
+      "gf": 11,
+      "ga": 8,
+      "pts": 15,
+      "form": [
+        "D",
+        "W",
+        "L",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 5,
+      "prevPos": 5,
+      "team": "chelsea",
+      "played": 8,
+      "w": 4,
+      "d": 1,
+      "l": 3,
+      "gf": 17,
+      "ga": 15,
+      "pts": 13,
+      "form": [
+        "D",
+        "L",
+        "W",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
+      "prevPos": 6,
+      "team": "brentford",
+      "played": 8,
+      "w": 2,
+      "d": 5,
+      "l": 1,
+      "gf": 14,
+      "ga": 9,
+      "pts": 11,
+      "form": [
+        "D",
+        "W",
+        "D",
+        "L",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
+      "prevPos": 7,
+      "team": "leeds-united",
+      "played": 8,
+      "w": 2,
+      "d": 5,
+      "l": 1,
+      "gf": 9,
+      "ga": 6,
+      "pts": 11,
+      "form": [
+        "W",
+        "D",
+        "L",
+        "D",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 8,
+      "prevPos": 8,
+      "team": "newcastle-united",
+      "played": 8,
+      "w": 3,
+      "d": 2,
+      "l": 3,
+      "gf": 12,
+      "ga": 14,
+      "pts": 11,
+      "form": [
+        "L",
+        "W",
+        "L",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": 9,
+      "team": "aston-villa",
+      "played": 8,
+      "w": 3,
+      "d": 2,
+      "l": 3,
+      "gf": 9,
+      "ga": 12,
+      "pts": 11,
+      "form": [
+        "L",
+        "W",
+        "D",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
+      "prevPos": 10,
+      "team": "hull-city",
+      "played": 8,
+      "w": 2,
+      "d": 4,
+      "l": 2,
+      "gf": 9,
+      "ga": 8,
+      "pts": 10,
+      "form": [
+        "D",
+        "L",
+        "D",
+        "L",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
+      "prevPos": 11,
+      "team": "everton",
+      "played": 8,
+      "w": 2,
+      "d": 4,
+      "l": 2,
+      "gf": 8,
+      "ga": 9,
+      "pts": 10,
+      "form": [
+        "D",
+        "W",
+        "D",
+        "L",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
+      "prevPos": 12,
+      "team": "ipswich-town",
+      "played": 8,
+      "w": 3,
+      "d": 1,
+      "l": 4,
+      "gf": 12,
+      "ga": 16,
+      "pts": 10,
+      "form": [
+        "W",
+        "L",
+        "W",
+        "L",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 13,
+      "prevPos": 13,
+      "team": "bournemouth",
+      "played": 8,
+      "w": 2,
+      "d": 3,
+      "l": 3,
+      "gf": 12,
+      "ga": 13,
+      "pts": 9,
+      "form": [
+        "D",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
+      "prevPos": 14,
+      "team": "tottenham-hotspur",
+      "played": 8,
+      "w": 2,
+      "d": 3,
+      "l": 3,
+      "gf": 8,
+      "ga": 10,
+      "pts": 9,
+      "form": [
+        "D",
+        "L",
+        "D",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
+      "prevPos": 15,
+      "team": "fulham",
+      "played": 8,
+      "w": 2,
+      "d": 2,
+      "l": 4,
+      "gf": 8,
+      "ga": 10,
+      "pts": 8,
+      "form": [
+        "D",
+        "D",
+        "L",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 16,
+      "prevPos": 16,
+      "team": "manchester-united",
+      "played": 8,
+      "w": 1,
+      "d": 4,
+      "l": 3,
+      "gf": 10,
+      "ga": 13,
+      "pts": 7,
+      "form": [
+        "L",
+        "D",
+        "D",
+        "D",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 17,
+      "prevPos": 17,
+      "team": "crystal-palace",
+      "played": 8,
+      "w": 2,
+      "d": 1,
+      "l": 5,
+      "gf": 9,
+      "ga": 19,
+      "pts": 7,
+      "form": [
+        "L",
+        "D",
+        "W",
+        "L",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 18,
+      "prevPos": 18,
+      "team": "nottingham-forest",
+      "played": 8,
+      "w": 1,
+      "d": 3,
+      "l": 4,
+      "gf": 6,
+      "ga": 10,
+      "pts": 6,
+      "form": [
+        "W",
+        "L",
+        "L",
+        "L",
+        "D"
+      ],
+      "zone": "relegation"
+    },
+    {
+      "pos": 19,
+      "prevPos": 19,
+      "team": "coventry-city",
+      "played": 8,
+      "w": 2,
+      "d": 0,
+      "l": 6,
+      "gf": 6,
+      "ga": 15,
+      "pts": 6,
+      "form": [
+        "L",
+        "W",
+        "W",
+        "L",
+        "L"
+      ],
+      "zone": "relegation"
+    },
+    {
+      "pos": 20,
+      "prevPos": 20,
+      "team": "sunderland",
+      "played": 8,
+      "w": 1,
+      "d": 2,
+      "l": 5,
+      "gf": 6,
+      "ga": 14,
+      "pts": 5,
+      "form": [
+        "L",
+        "L",
+        "L",
+        "L",
+        "D"
+      ],
+      "zone": "relegation"
+    }
+  ],
+  "matches": [],
+  "scorers": []
+}

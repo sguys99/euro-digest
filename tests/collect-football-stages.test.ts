@@ -636,13 +636,24 @@ describe("runCollect — 축구 데이터 단계(M2-09)", () => {
 // ─── 팀 단계 + 라인업 백필 ───────────────────────────────────────────────
 
 describe("runTeamsCollectStage — 라인업 백필(exclude·상한·간격·캐시)", () => {
-  function seedRealData() {
+  const seedFrom = (base: string) => {
     for (const dir of ["matches", "competitions", "teams"]) {
-      cpSync(path.join(ROOT, "data", dir), path.join(dataDir, dir), {
+      cpSync(path.join(base, dir), path.join(dataDir, dir), {
         recursive: true,
       });
     }
-  }
+  };
+
+  /**
+   * 고정 스냅숏 — 커밋 861c48a(2026-10-31 발행, 2026-10-30T22:15Z)의 원장·대회·팀 파일에서 EPL·라리가만 골랐다
+   * (fixtures/team-stage/2026-10-31/README.md). 백필 후보 4경기. 실제 data/는 봇 백필이 날마다 채워 후보가 줄어든다
+   * (2026-11-03 발행에서 0건 — 이 테스트가 깨진 원인)라 백필 동작 테스트는 실데이터를 쓰지 않는다.
+   */
+  const seedSnapshot = () =>
+    seedFrom(path.join(ROOT, "fixtures", "team-stage", "2026-10-31"));
+
+  /** 실제 data/ — 커밋된 산출물이 생성기의 고정점인지(봇 커밋에 불필요한 diff가 없는지) 보는 테스트만 쓴다 */
+  const seedRealData = () => seedFrom(path.join(ROOT, "data"));
 
   function teamDeps() {
     const records: LogRecord[] = [];
@@ -675,7 +686,7 @@ describe("runTeamsCollectStage — 라인업 백필(exclude·상한·간격·캐
   }
 
   it("허용 건수만 받고(첫 요청 ≥ notBefore), 받아 본 id를 캐시에 남겨 다음 실행이 다른 경기를 고른다", async () => {
-    seedRealData();
+    seedSnapshot();
     const sink = { apiCalls: { apiFootball: 0 } };
     const first = teamDeps();
     const r1 = await runTeamsCollectStage(first.deps, {
@@ -691,6 +702,8 @@ describe("runTeamsCollectStage — 라인업 백필(exclude·상한·간격·캐
     if (r1.state !== "done") throw new Error("unreachable");
     expect(r1.backfill.state).toBe("done");
     expect(r1.backfill.planned).toBe(3);
+    // 스냅숏 후보 4경기 중 상한 밖 1경기 — pending은 팀 수라(한 경기에 두 팀일 수 있음) 1 이상만 본다
+    expect(r1.backfill.pending).toBeGreaterThan(0);
     expect(first.calls).toHaveLength(3);
     expect(first.calls.every((c) => c.path.startsWith("/fixtures?id="))).toBe(
       true,
@@ -718,12 +731,13 @@ describe("runTeamsCollectStage — 라인업 백필(exclude·상한·간격·캐
     if (r2.state !== "done") throw new Error("unreachable");
     expect(r2.backfill.excluded).toBe(3);
     const secondIds = second.calls.map((c) => Number(c.path.split("=")[1]));
+    expect(secondIds).toHaveLength(1); // 남은 1경기만 — 빈 호출로 통과하지 않게
     expect(secondIds.some((id) => triedIds.includes(id))).toBe(false);
     expect(sink.apiCalls.apiFootball).toBe(3 + second.calls.length);
   });
 
   it("백필 0건이면 API를 부르지 않고 캐시도 쓰지 않는다(preview는 팀 파일도 쓰지 않음)", async () => {
-    seedRealData();
+    seedSnapshot();
     const before = readFileSync(
       path.join(dataDir, "teams", "arsenal.json"),
       "utf8",

@@ -1,0 +1,187 @@
+{
+  "slug": "sevilla",
+  "nameKo": "세비야",
+  "nameEn": "Sevilla FC",
+  "short": "SEV",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#D81920"
+  ],
+  "formation": {
+    "shape": "4-4-2",
+    "source": "api",
+    "updated": "2026-10-26T20:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Isaac",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Félix Correia",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Miguel Ángel Sierra",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-4-2",
+    "match": "af-1570431",
+    "kickoff": "2026-10-26T20:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "home",
+    "opponent": "osasuna",
+    "startXI": [
+      {
+        "name": "O. Vlachodimos",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Juan Iglesias",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Andrés Castrín",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Kike Salas",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "G. Suazo",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "C. Ejuke",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "L. Agoumé",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Y. Fofana",
+        "number": 24,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Félix Correia",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Isaac",
+        "number": 16,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "L. Stassin",
+        "number": 19,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "José Ángel Carmona",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Julio Díaz del Romo",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Peque Fernández",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Alfon González",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Fran González",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Jon Guridi",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. Kochorashvili",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Fábio Cardoso",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Sangante",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "R. Ure",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Vargas",
+        "number": 11,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Manu Bueno",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

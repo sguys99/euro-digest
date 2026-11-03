@@ -1,0 +1,164 @@
+{
+  "slug": "everton",
+  "nameKo": "에버턴",
+  "nameEn": "Everton FC",
+  "short": "EVE",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#003399",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Thierno Barry",
+      "goals": 3,
+      "assists": null
+    },
+    {
+      "name": "Kiernan Dewsbury Hall",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557437",
+    "kickoff": "2026-10-24T14:00:00.000Z",
+    "comp": "EPL",
+    "side": "away",
+    "opponent": "arsenal",
+    "startXI": [
+      {
+        "name": "Jordan Pickford",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Merlin Röhl",
+        "number": 34,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "James Tarkowski",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Jake O'Brien",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Vitaliy Mykolenko",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Harrison Armstrong",
+        "number": 45,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "James Garner",
+        "number": 37,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Brennan Johnson",
+        "number": 22,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Kiernan Dewsbury-Hall",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Tyrique George",
+        "number": 19,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Thierno Barry",
+        "number": 11,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Tyler Dibling",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Hayden Hackney",
+        "number": 30,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Carlos Alcaraz",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Mark Travers",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Tom King",
+        "number": 31,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Ainsley Maitland-Niles",
+        "number": 2,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Michael Keane",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Christian Nørgaard",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Braiden Graham",
+        "number": 58,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,410 @@
+{
+  "comp": "LALIGA",
+  "season": 2026,
+  "provider": "football-data",
+  "updatedAt": "2026-10-30T22:12:42.986Z",
+  "standings": [
+    {
+      "pos": 1,
+      "prevPos": 1,
+      "team": "barcelona",
+      "played": 10,
+      "w": 9,
+      "d": 0,
+      "l": 1,
+      "gf": 40,
+      "ga": 11,
+      "pts": 27,
+      "form": [
+        "W",
+        "W",
+        "W",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
+      "prevPos": 2,
+      "team": "atletico-madrid",
+      "played": 10,
+      "w": 8,
+      "d": 1,
+      "l": 1,
+      "gf": 20,
+      "ga": 8,
+      "pts": 25,
+      "form": [
+        "W",
+        "W",
+        "W",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": 3,
+      "team": "real-madrid",
+      "played": 10,
+      "w": 8,
+      "d": 0,
+      "l": 2,
+      "gf": 25,
+      "ga": 10,
+      "pts": 24,
+      "form": [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 4,
+      "prevPos": 4,
+      "team": "real-betis",
+      "played": 10,
+      "w": 6,
+      "d": 2,
+      "l": 2,
+      "gf": 16,
+      "ga": 14,
+      "pts": 20,
+      "form": [
+        "W",
+        "D",
+        "W",
+        "L",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 5,
+      "prevPos": 5,
+      "team": "real-sociedad",
+      "played": 10,
+      "w": 6,
+      "d": 1,
+      "l": 3,
+      "gf": 19,
+      "ga": 18,
+      "pts": 19,
+      "form": [
+        "L",
+        "W",
+        "W",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
+      "prevPos": 6,
+      "team": "sevilla",
+      "played": 10,
+      "w": 5,
+      "d": 2,
+      "l": 3,
+      "gf": 16,
+      "ga": 16,
+      "pts": 17,
+      "form": [
+        "W",
+        "L",
+        "D",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
+      "prevPos": 7,
+      "team": "alaves",
+      "played": 10,
+      "w": 3,
+      "d": 3,
+      "l": 4,
+      "gf": 14,
+      "ga": 11,
+      "pts": 12,
+      "form": [
+        "L",
+        "D",
+        "L",
+        "L",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 8,
+      "prevPos": 8,
+      "team": "athletic",
+      "played": 9,
+      "w": 3,
+      "d": 3,
+      "l": 3,
+      "gf": 12,
+      "ga": 9,
+      "pts": 12,
+      "form": [
+        "D",
+        "D",
+        "D",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": 9,
+      "team": "celta-vigo",
+      "played": 10,
+      "w": 2,
+      "d": 6,
+      "l": 2,
+      "gf": 10,
+      "ga": 7,
+      "pts": 12,
+      "form": [
+        "D",
+        "W",
+        "D",
+        "W",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
+      "prevPos": 10,
+      "team": "villarreal",
+      "played": 11,
+      "w": 3,
+      "d": 3,
+      "l": 5,
+      "gf": 15,
+      "ga": 15,
+      "pts": 12,
+      "form": [
+        "W",
+        "L",
+        "D",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
+      "prevPos": 11,
+      "team": "deportivo-la-coruna",
+      "played": 10,
+      "w": 2,
+      "d": 5,
+      "l": 3,
+      "gf": 13,
+      "ga": 13,
+      "pts": 11,
+      "form": [
+        "L",
+        "D",
+        "L",
+        "D",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
+      "prevPos": 18,
+      "team": "espanyol",
+      "played": 11,
+      "w": 3,
+      "d": 2,
+      "l": 6,
+      "gf": 13,
+      "ga": 14,
+      "pts": 11,
+      "form": [
+        "L",
+        "D",
+        "L",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 13,
+      "prevPos": 12,
+      "team": "osasuna",
+      "played": 10,
+      "w": 3,
+      "d": 2,
+      "l": 5,
+      "gf": 10,
+      "ga": 20,
+      "pts": 11,
+      "form": [
+        "L",
+        "D",
+        "L",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
+      "prevPos": 13,
+      "team": "racing-santander",
+      "played": 10,
+      "w": 3,
+      "d": 2,
+      "l": 5,
+      "gf": 15,
+      "ga": 26,
+      "pts": 11,
+      "form": [
+        "L",
+        "L",
+        "D",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
+      "prevPos": 14,
+      "team": "levante",
+      "played": 10,
+      "w": 2,
+      "d": 4,
+      "l": 4,
+      "gf": 16,
+      "ga": 19,
+      "pts": 10,
+      "form": [
+        "L",
+        "D",
+        "D",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 16,
+      "prevPos": 15,
+      "team": "elche",
+      "played": 10,
+      "w": 2,
+      "d": 4,
+      "l": 4,
+      "gf": 14,
+      "ga": 17,
+      "pts": 10,
+      "form": [
+        "L",
+        "W",
+        "D",
+        "D",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 17,
+      "prevPos": 16,
+      "team": "rayo-vallecano",
+      "played": 9,
+      "w": 2,
+      "d": 3,
+      "l": 4,
+      "gf": 12,
+      "ga": 20,
+      "pts": 9,
+      "form": [
+        "L",
+        "W",
+        "D",
+        "D",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 18,
+      "prevPos": 17,
+      "team": "getafe",
+      "played": 10,
+      "w": 2,
+      "d": 3,
+      "l": 5,
+      "gf": 5,
+      "ga": 15,
+      "pts": 9,
+      "form": [
+        "L",
+        "W",
+        "L",
+        "D",
+        "L"
+      ],
+      "zone": "relegation"
+    },
+    {
+      "pos": 19,
+      "prevPos": 19,
+      "team": "valencia",
+      "played": 10,
+      "w": 1,
+      "d": 3,
+      "l": 6,
+      "gf": 7,
+      "ga": 17,
+      "pts": 6,
+      "form": [
+        "W",
+        "L",
+        "D",
+        "D",
+        "L"
+      ],
+      "zone": "relegation"
+    },
+    {
+      "pos": 20,
+      "prevPos": 20,
+      "team": "malaga",
+      "played": 10,
+      "w": 0,
+      "d": 5,
+      "l": 5,
+      "gf": 7,
+      "ga": 19,
+      "pts": 5,
+      "form": [
+        "L",
+        "L",
+        "D",
+        "L",
+        "D"
+      ],
+      "zone": "relegation"
+    }
+  ],
+  "matches": [],
+  "scorers": []
+}

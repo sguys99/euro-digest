@@ -1,0 +1,28 @@
+{
+  "slug": "fulham",
+  "nameKo": "풀럼",
+  "nameEn": "Fulham FC",
+  "short": "FUL",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#FFFFFF",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Joshua King",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

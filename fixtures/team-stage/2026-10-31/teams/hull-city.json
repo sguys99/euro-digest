@@ -1,0 +1,159 @@
+{
+  "slug": "hull-city",
+  "nameKo": "헐 시티",
+  "nameEn": "Hull City AFC",
+  "short": "HUL",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#F5A12D",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "5-4-1",
+    "source": "api",
+    "updated": "2026-10-25T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Mohamed Belloumi",
+      "goals": 3,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "5-4-1",
+    "match": "af-1557442",
+    "kickoff": "2026-10-25T14:00:00.000Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "brentford",
+    "startXI": [
+      {
+        "name": "Konstantinos Tzolakis",
+        "number": 19,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Lewie Coyle",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:5"
+      },
+      {
+        "name": "Semi Ajayi",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "John Egan",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Lucas Herrington",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Ryan Giles",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Mohamed Belloumi",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Tim Iroegbunam",
+        "number": 42,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Regan Slater",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Elliot Stroud",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Oliver McBurnie",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Brooke Norton-Cuffy",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Mohamed Ali Cho",
+        "number": 50,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Hidemasa Morita",
+        "number": 5,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Joe Gelhardt",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Robinio Vaz",
+        "number": 47,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Dillon Phillips",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Paddy McNair",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Sorba Thomas",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Matt Crooks",
+        "number": 25,
+        "pos": "M",
+        "grid": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "slug": "sunderland",
+  "nameKo": "선덜랜드",
+  "nameEn": "Sunderland AFC",
+  "short": "SUN",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#D41527",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T16:30:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Brian Brobbey",
+      "goals": 3,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1557446",
+    "kickoff": "2026-10-25T16:30:00.000Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "leeds-united",
+    "startXI": [
+      {
+        "name": "Robin Roefs",
+        "number": 22,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "Trai Hume",
+        "number": 32,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Nordi Mukiele",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Luke O'Nien",
+        "number": 13,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Reinildo Mandava",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Granit Xhaka",
+        "number": 34,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Noah Sadiki",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Chris Rigg",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Enzo Le Fée",
+        "number": 28,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Nilson Angulo",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Brian Brobbey",
+        "number": 9,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Omar Alderete",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Timur Tuterov",
+        "number": 57,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Chemsdine Talbi",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Habib Diarra",
+        "number": 19,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Melker Ellborg",
+        "number": 31,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Dayann Methalie",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Jules Ahoka",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Malick Fofana",
+        "number": 39,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Juan Riquelme Angulo",
+        "number": 50,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

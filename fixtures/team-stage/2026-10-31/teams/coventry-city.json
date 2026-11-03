@@ -1,0 +1,28 @@
+{
+  "slug": "coventry-city",
+  "nameKo": "코번트리 시티",
+  "nameEn": "Coventry City FC",
+  "short": "COV",
+  "comp": "EPL",
+  "alsoIn": [],
+  "colors": [
+    "#59CBE8",
+    "#FFFFFF"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-24T14:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Jack Rudoni",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": null
+}

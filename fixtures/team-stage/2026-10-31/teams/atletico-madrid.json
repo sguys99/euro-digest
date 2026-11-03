@@ -1,0 +1,192 @@
+{
+  "slug": "atletico-madrid",
+  "nameKo": "아틀레티코 마드리드",
+  "nameEn": "Club Atlético de Madrid",
+  "short": "ATL",
+  "comp": "LALIGA",
+  "alsoIn": [
+    "UCL"
+  ],
+  "colors": [
+    "#C73423",
+    "#272E61"
+  ],
+  "formation": {
+    "shape": "4-3-3",
+    "source": "api",
+    "updated": "2026-10-24T19:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Álex Baena",
+      "goals": 5,
+      "assists": 2
+    },
+    {
+      "name": "Alejandro Grimaldo",
+      "goals": 3,
+      "assists": 2
+    },
+    {
+      "name": "Jonathan David",
+      "goals": 3,
+      "assists": 2
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [
+    "lee-kang-in"
+  ],
+  "reading": [],
+  "lineup": {
+    "formation": "4-3-3",
+    "match": "af-1570425",
+    "kickoff": "2026-10-24T19:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "home",
+    "opponent": "deportivo-la-coruna",
+    "startXI": [
+      {
+        "name": "J. Oblak",
+        "number": 13,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "M. Llorente",
+        "number": 14,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "M. Pubill",
+        "number": 18,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "D. Hancko",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "A. Grimaldo",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "P. Barrios",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "M. Hjulmand",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "A. Baena",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "Lee Kang-In",
+        "number": 7,
+        "pos": "F",
+        "grid": "4:3",
+        "korean": "lee-kang-in"
+      },
+      {
+        "name": "J. Alvarez",
+        "number": 19,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "A. Lookman",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "S. Esquivel",
+        "number": 25,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "J. Musso",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "R. Le Normand",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "D. Martinez",
+        "number": 30,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Dominguez",
+        "number": 27,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. Vargas",
+        "number": 3,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Mendoza",
+        "number": 4,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Castillo",
+        "number": 46,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Sorloth",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. David",
+        "number": 15,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "G. Simeone",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Ortiz",
+        "number": 16,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}

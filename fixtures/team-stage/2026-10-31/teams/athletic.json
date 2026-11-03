@@ -1,0 +1,187 @@
+{
+  "slug": "athletic",
+  "nameKo": "아틀레틱 빌바오",
+  "nameEn": "Athletic Club",
+  "short": "ATH",
+  "comp": "LALIGA",
+  "alsoIn": [],
+  "colors": [
+    "#D1211F",
+    "#000000"
+  ],
+  "formation": {
+    "shape": "4-2-3-1",
+    "source": "api",
+    "updated": "2026-10-25T13:00:00.000Z"
+  },
+  "topPlayers": [
+    {
+      "name": "Álex Berenguer",
+      "goals": 3,
+      "assists": 4
+    },
+    {
+      "name": "Iñaki Williams",
+      "goals": 2,
+      "assists": 2
+    },
+    {
+      "name": "Aitor Paredes Casamichana",
+      "goals": 2,
+      "assists": null
+    }
+  ],
+  "profile": null,
+  "koreanPlayers": [],
+  "reading": [],
+  "lineup": {
+    "formation": "4-2-3-1",
+    "match": "af-1570424",
+    "kickoff": "2026-10-25T13:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "home",
+    "opponent": "getafe",
+    "startXI": [
+      {
+        "name": "U. Simon",
+        "number": 1,
+        "pos": "G",
+        "grid": "1:1"
+      },
+      {
+        "name": "H. Rincon",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "D. Vivian",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "A. Paredes",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Y. Berchiche",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "I. Ruiz de Galarreta",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "P. Canales",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "I. Williams",
+        "number": 9,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "A. Berenguer",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "N. Williams",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "M. Sannadi",
+        "number": 21,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Padilla",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Y. Alvarez",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Areso",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Louis-Jean",
+        "number": 31,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Rego",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "R. Navarro",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Prados Diaz",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "B. Gerenabarrena",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Jauregizar",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Serrano",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Vizcay",
+        "number": 34,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Imga",
+        "number": 33,
+        "pos": "F",
+        "grid": null
+      }
+    ]
+  }
+}
