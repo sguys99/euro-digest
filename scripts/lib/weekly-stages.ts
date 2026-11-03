@@ -26,7 +26,7 @@
  * 실행 가드(같은 주 재실행)는 단계가 아니라 러너가 본다 — 그 주차 한국 선수 주간 리포트(`WEEKLY_REPORT_DIR/<주차>.json`)가 이미
  * 커밋돼 있으면 force 없이는 실행 전체를 건너뛴다(weekly-run.ts decideWeeklyGuard).
  */
-import type { BudgetCheck, costFromResults } from "./cost";
+import type { BudgetCheck, Budgets, costFromResults } from "./cost";
 import type { LlmClient } from "./llm";
 import type { LlmMode } from "./cli-args";
 import type { Logger } from "./logger";
@@ -34,6 +34,7 @@ import type { FetchLike } from "./rss";
 import type { RunEnv, RunLog, RunSource } from "@/lib/schema";
 
 import { ANALYSIS_TEAMS_DIR, runAnalysisBlogs } from "./analysis-blogs-stage";
+import { runOpsReport } from "./ops-report-stage";
 import { TEAM_PROFILE_TEAMS_DIR, runTeamProfiles } from "./team-profile-stage";
 import { WEEKLY_REPORT_DIR } from "./weekly-kr";
 import { runKoreanWeekly } from "./weekly-kr-stage";
@@ -88,6 +89,11 @@ export interface WeeklyStageContext {
      * runs 파일을 읽지 못하거나 예산 설정이 잘못됐으면 던진다(fail-closed — 그 단계 실패로 격리된다).
      */
     check: (estimatedUsd: number) => Promise<BudgetCheck>;
+    /**
+     * 예산 설정(DAILY_BUDGET_USD·MONTHLY_BUDGET_USD 해석값 — cost.ts resolveBudgets). 잘못된 값이면 던진다. 운영 리포트(M5-09)가
+     * 월 사용률의 분모로 쓴다. runWeekly는 늘 채운다(선택인 이유: 단계 단위 테스트의 문맥이 이 필드 없이도 만들어지게).
+     */
+    limits?: () => Budgets;
   };
   apiCalls: {
     add: (calls: Partial<RunLog["apiCalls"]>) => void;
@@ -104,6 +110,11 @@ export interface WeeklyStageContext {
   sources: {
     add: (entries: Iterable<RunSource>) => void;
   };
+  /**
+   * 운영 리포트 이슈 payload를 쓸 파일(절대 경로 — OPS_REPORT_FILE, weekly.yml이 `$RUNNER_TEMP/ops-report.json`으로 준다, M5-09).
+   * 저장소 밖 임시 파일이라 `writes`에 넣지 않는다. 없거나 null이면 쓰지 않고 출력만 한다(로컬 실행).
+   */
+  opsReportFile?: string | null;
 }
 
 /** 단계가 돌려주는 결과(선택) — 구조화 로그·Step Summary에 남는다 */
@@ -157,8 +168,9 @@ const MINUTE_MS = 60_000;
  *   ① 한국 선수 주간 리포트(M3-07 — 표·MVP 코드 계산 + 주간 총평 Batches 1회, FR-90~92)
  *   ② 분석 블로그 주 1회 수집(M3-08 — LLM 없음, FR-10·FR-57)
  *   ③ 팀 프로필(M4-06 — 팀 한줄평+강점/약점 20팀 묶음 Batches, 지시문 캐싱 켬, D28 — data/teams를 ②와 공유)
- *   ④ 운영 리포트(M5-09 — 비용·성공률·소스 건강도·미등록 고유명사 이슈, FR-155). 이슈를 만들려면 토큰이 필요하다 — 이 단계
- *      (서드파티 코드가 도는 곳)에 쓰기 토큰을 넘기지 말고, collect.yml '실행 이슈 보고'처럼 사건 파일 → 다음 워크플로 단계로 낸다.
+ *   ④ 운영 리포트(M5-09 — 비용·성공률·브리핑·소스 건강도·미등록 고유명사 이슈, FR-155 — LLM 없음). 이슈를 만들려면 토큰이
+ *      필요하다 — 이 단계(서드파티 코드가 도는 곳)에 쓰기 토큰을 넘기지 않고, collect.yml '실행 이슈 보고'처럼 payload 파일
+ *      (ctx.opsReportFile) → weekly.yml '운영 리포트 이슈 보고' 단계로 낸다.
  */
 export const WEEKLY_STAGES: readonly WeeklyStage[] = [
   {
@@ -199,7 +211,7 @@ export const WEEKLY_STAGES: readonly WeeklyStage[] = [
     task: "M5-09",
     llm: false,
     timeoutMs: 3 * MINUTE_MS,
-    writes: [],
-    run: null,
+    writes: [], // data/에 쓰지 않는다 — 이슈 payload는 저장소 밖 임시 파일(ctx.opsReportFile)
+    run: runOpsReport, // ops-report-stage.ts — 비용·성공률·브리핑·소스 건강도·미등록 고유명사(코드 생성, LLM 0) → payload 파일
   },
 ];

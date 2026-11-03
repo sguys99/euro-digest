@@ -583,7 +583,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
   - 🆕 M2-16 이월 메모(2026-10-31): 대회·팀 페이지 HTML 크기 — EPL 1.69MB(gzip 77KB)·팀 111개 합 34.4MB(gzip 바이에른 40KB), RSC 페이로드가 약 60%(서버 컴포넌트 출력이 HTML과 페이로드에 두 번). 싼 감축은 없었다 — 후보: ① 일정·결과 라운드 창(지금 라운드 ±N — M2-10 제안, FR-44 범위라 사용자 결정) ② 팀 일정 행을 `match-row`처럼 유틸리티로(약 −30%) ③ 접힌 일정을 줄이기. 모바일 412 slow4g LCP 1.50~1.58초·CLS ≤ 0.019(대회·팀·홈·`/tonight`)는 예산 안
   - 🆕 M2 리뷰 이월(2026-10-31): 표 칸 폭 px 임의 트랙(`grid-cols-[30px_…]` 등)·`max-w-[46em]`이 DESIGN 간격 규칙(4px 단위·임의값은 글자 크기만)에 드는지 정리 — DESIGN 한 줄 명시 또는 레이아웃 토큰화
 - [ ] M5-08 `check:bundle` 비밀값 grep + Lighthouse CI를 `ci.yml`에 추가 (NFR-07)
-- [ ] M5-09 `ops-report.ts`: 월요일 운영 리포트 이슈(비용·성공률·소스 건강도·미등록 고유명사) (FR-155)
+- [x] M5-09 `ops-report.ts`: 월요일 운영 리포트 이슈(비용·성공률·소스 건강도·미등록 고유명사) (FR-155)
+  - 2026-11-03 완료: 주간 작업 단계 ④ `runOpsReport`(LLM 0)가 지난 ISO 주(KST 월~일, 일요일 끝 고정 — 재실행해도 같은 값)의 요약·비용(prod/dev, 걸친 달 누적 %, dev 50% 경고)·실행 성공률(실행 기준, dry 제외 + 발행일 7칸 정시/늦음/결호/실패)·브리핑(mode·AI/템플릿 줄·요청)·소스 건강도·미등록 고유명사(이 주 새 이름 상위)를 payload 파일로 쓰고, weekly.yml '운영 리포트 이슈 보고'(`issues: write` · continue-on-error · 3분)가 `[운영 리포트] YYYY-Www` 이슈를 만들거나 같은 주차 열린 이슈 본문을 교체(RECURRENCE_POLICY `update`). 수동 `npm run ops-report -- [--week] [--dry]`. 지표 순수 함수 `src/lib/ops-metrics.ts`(M5-15 `/status` 재사용). W44 실데이터 dry: 정시 5 · 늦음 1 · 결호 1, 수집 성공률 87.5%(7/8), 소스 확인 필요 1(`bbc-sport-champions-league` 12회 연속 0건). 첫 실제 이슈는 11-09 정기 주간 실행에서 확인. 함께: CI를 깨뜨린 라인업 백필 테스트를 고정 스냅숏(`fixtures/team-stage/2026-10-31`)으로 — 11-03 봇 백필이 후보를 다 채워 0건이 됨
 - [ ] M5-10 데이터 보존: 90일 지난 일별 JSON 월별 병합, `runs.json`·`runs-dev.json` 180일 (FR-158)
   - 🆕 M1-35 이월 메모(리뷰): 90일 월별 병합 뒤에도 **날짜 페이지(`/news/{date}/`)를 계속 생성**해야 한다 — 카드 공유 URL(`…/news/{date}/#c_…`)이 영구 주소다(FR-34). 지금 `listNewsDates`(src/lib/data/news.ts — `listIssueDates`·`generateStaticParams`·달력의 출처)는 일별 파일만 보므로 월별 파일 안의 날짜도 내도록 바꾸고, `loadIssue(date)`도 월별 파일에서 그날 카드를 읽게(병합 전후 같은 HTML·카드 ID — e2e로 대조)
 - [ ] M5-11 `/new-season` 커맨드 완성 (FR-156)

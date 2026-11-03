@@ -18,7 +18,9 @@
  *                       (PRD §10 "수집 일부 실패 → 이슈", FR-08), 실패·빈 피드 3회 연속(FR-11), 새 기사 없음 7회 연속이
  *                       모두 같은 이슈에 쌓인다(새 이슈 또는 댓글, FR-152). 사건 판정은 scripts/lib/source-health.ts.
  *                       (M0-22의 별도 kind `source-health`는 D35로 이 kind에 합쳤다 — 같은 소스에 이슈가 둘 생기지 않게)
- *   - ops-report        key `<ISO 주>` (예: `2026-W41`) — 주간 운영 리포트(FR-155, M5에서 채움)
+ *   - ops-report        key `<ISO 주>` (예: `2026-W41`) — 주간 운영 리포트(FR-155, M5-09 — 내용은 scripts/lib/ops-report.ts).
+ *                       **같은 주차의 열린 이슈가 있으면 본문을 새로 만든 값으로 바꾼다**(RECURRENCE_POLICY "update" — 댓글을 쌓지
+ *                       않는다. 주간 작업 force 재실행·수동 재생성이 같은 이슈 하나를 고친다 — 멱등). 닫힌 뒤 다시 만들면 새 이슈.
  *   - player-transfer   key `transfer:<선수 slug>:<행선지>` (예: `transfer:kim-min-jae:arsenal`, 행선지를 모르면 `unknown`) —
  *                       등록 한국 선수 이적 감지(FR-63, M3-04 — 판정 scripts/lib/transfer-issues.ts). **같은 선수·같은 행선지의
  *                       열린 이슈가 있으면 댓글 없이 건너뛴다**(RECURRENCE_POLICY "skip" — 설정을 고칠 때까지 매일 같은 단서가
@@ -103,18 +105,19 @@ export const SEARCH_LABEL: Readonly<Record<IssueKind, string>> = {
 };
 
 /**
- * 같은 원인의 열린 이슈가 있을 때 — comment(재발 댓글, FR-152 기본) · skip(댓글 없이 건너뜀). 이적 감지(M3-04)는 사람이 설정을
- * 고칠 때까지 같은 단서(라인업 불일치)가 매일 나오므로 첫 이슈 하나로 충분하다 — 댓글을 쌓지 않는다.
+ * 같은 원인의 열린 이슈가 있을 때 — comment(재발 댓글, FR-152 기본) · skip(댓글 없이 건너뜀) · update(제목·본문을 새 값으로 교체).
+ * 이적 감지(M3-04)는 사람이 설정을 고칠 때까지 같은 단서(라인업 불일치)가 매일 나오므로 첫 이슈 하나로 충분하다 — 댓글을 쌓지 않는다.
+ * 주간 운영 리포트(M5-09)는 한 주차 = 이슈 하나이고 다시 만들면 같은 주차의 최신 집계로 바꾼다(멱등 — 댓글로 두 벌을 쌓지 않는다).
  */
-export const RECURRENCE_POLICY: Readonly<
-  Record<IssueKind, "comment" | "skip">
-> = {
-  "pipeline-failure": "comment",
-  "pipeline-partial": "comment",
-  "source-broken": "comment",
-  "ops-report": "comment",
-  "player-transfer": "skip",
-};
+export type RecurrencePolicy = "comment" | "skip" | "update";
+export const RECURRENCE_POLICY: Readonly<Record<IssueKind, RecurrencePolicy>> =
+  {
+    "pipeline-failure": "comment",
+    "pipeline-partial": "comment",
+    "source-broken": "comment",
+    "ops-report": "update",
+    "player-transfer": "skip",
+  };
 
 /**
  * 소스 건강도 사건 (M1-11, PRD §15 D35) — scripts/lib/source-health.ts가 판정한다.
@@ -426,7 +429,7 @@ export const SourceBrokenPayloadSchema = z.strictObject({
   parseDiagnostics: ParseDiagnosticsPayloadSchema.optional(),
 });
 
-/** 주간 운영 리포트 — M5(FR-155)에서 비용·성공률·소스 건강도·미등록 고유명사 섹션을 채운다. 지금은 골격. */
+/** 주간 운영 리포트(FR-155, M5-09) — 섹션 본문은 scripts/lib/ops-report.ts가 코드로 만든다(OPS_REPORT_SECTIONS 순서, LLM 미사용). */
 export const OpsReportPayloadSchema = z.strictObject({
   week: z.string().regex(/^\d{4}-W\d{2}$/, "YYYY-Www"),
   from: KstDateString.optional(),
@@ -734,11 +737,16 @@ function capBody(body: string): string {
   return `${body.slice(0, MAX_BODY_LENGTH - notice.length - tail.length)}${notice}${tail}`;
 }
 
+const RECURRENCE_FOOTER: Readonly<Record<RecurrencePolicy, string>> = {
+  skip: "이 이슈가 열려 있는 동안 같은 원인은 새 이슈·댓글 없이 건너뜁니다. 설정을 고친 뒤 닫아 주세요(고치지 않고 닫으면 다음 실행이 같은 단서로 새 이슈를 엽니다).",
+  comment:
+    "이 이슈가 열려 있는 동안 같은 원인은 새 이슈 대신 댓글로 쌓입니다. 해결되면 닫아 주세요(닫힌 뒤 재발하면 새 이슈가 열립니다).",
+  update:
+    "이 이슈가 열려 있는 동안 같은 주차를 다시 만들면 새 이슈 대신 이 본문을 최신 집계로 바꿉니다. 확인했으면 닫아 주세요(닫힌 뒤 다시 만들면 새 이슈가 열립니다).",
+};
+
 function footer(kind: IssueKind, key: string, fingerprint: string): string[] {
-  const recurrence =
-    RECURRENCE_POLICY[kind] === "skip"
-      ? "이 이슈가 열려 있는 동안 같은 원인은 새 이슈·댓글 없이 건너뜁니다. 설정을 고친 뒤 닫아 주세요(고치지 않고 닫으면 다음 실행이 같은 단서로 새 이슈를 엽니다)."
-      : "이 이슈가 열려 있는 동안 같은 원인은 새 이슈 대신 댓글로 쌓입니다. 해결되면 닫아 주세요(닫힌 뒤 재발하면 새 이슈가 열립니다).";
+  const recurrence = RECURRENCE_FOOTER[RECURRENCE_POLICY[kind]];
   return [
     "",
     "---",
@@ -1295,10 +1303,15 @@ function buildPlayerTransfer(
   };
 }
 
-/** FR-155 주간 운영 리포트 기본 섹션 — M5에서 코드로 채운다(LLM 미사용) */
-const OPS_REPORT_SECTIONS = [
+/**
+ * FR-155 주간 운영 리포트 기본 섹션(이 순서로 싣는다) — 내용은 scripts/lib/ops-report.ts가 코드로 만든다(LLM 미사용, M5-09).
+ * payload에 없는 기본 섹션은 '이번 리포트에 없음'으로, 기본 밖 섹션은 뒤에 넘긴 순서대로 싣는다.
+ */
+export const OPS_REPORT_SECTIONS = [
+  "요약",
   "비용",
   "실행 성공률",
+  "브리핑",
   "소스 건강도",
   "미등록 고유명사",
 ] as const;
@@ -1325,7 +1338,7 @@ function buildOpsReport(
         "",
         given.has(h)
           ? neutralizeMentions(sanitizeText(given.get(h) ?? "", 20_000))
-          : "_M5(FR-155)에서 채운다_",
+          : "_이번 리포트에 없음_",
         "",
       ]),
     ],
@@ -1642,7 +1655,7 @@ async function errorFromResponse(response: Response): Promise<GitHubHttpError> {
 
 async function request(
   ctx: HttpContext,
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PATCH",
   url: string,
   body?: unknown,
 ): Promise<{ data: unknown; link: string | null }> {
@@ -1773,8 +1786,11 @@ export interface ReportIssueOptions<K extends IssueKind = IssueKind> {
 }
 
 export interface ReportResult {
-  /** skipped — 같은 원인의 열린 이슈가 있고 정책이 skip(RECURRENCE_POLICY — 요청은 검색 GET뿐) */
-  action: "created" | "commented" | "skipped";
+  /**
+   * skipped — 같은 원인의 열린 이슈가 있고 정책이 skip(RECURRENCE_POLICY — 요청은 검색 GET뿐) ·
+   * updated — 같은 원인의 열린 이슈가 있고 정책이 update(제목·본문 PATCH — 운영 리포트)
+   */
+  action: "created" | "commented" | "skipped" | "updated";
   /** 이슈 번호 */
   number: number;
   /** 이슈 URL */
@@ -1863,7 +1879,7 @@ function checkRepo(repo: string, kind: string): void {
 }
 
 /**
- * 같은 원인의 열린 이슈가 있으면 댓글, 없으면 새 이슈. 실패하면 IssueReportError(파이프라인은 잡고 계속).
+ * 같은 원인의 열린 이슈가 있으면 댓글(정책 skip이면 건너뜀 · update면 본문 교체), 없으면 새 이슈. 실패하면 IssueReportError(파이프라인은 잡고 계속).
  * 같은 실행 안에서 같은 fingerprint는 한 번만 요청한다(두 번째부터 deduped: true).
  */
 export async function reportIssue<K extends IssueKind>(
@@ -1948,6 +1964,37 @@ async function runReport<K extends IssueKind>(
           action: "skipped",
           number: issue.number,
           url: issue.html_url,
+          fingerprint,
+          key,
+          deduped: false,
+        };
+      }
+      if (issue && RECURRENCE_POLICY[kind] === "update") {
+        // 같은 원인의 열린 이슈 본문을 새 값으로 바꾼다(라벨은 건드리지 않는다 — 사람이 붙인 라벨 유지)
+        const built = buildIssue(options.kind, options.payload, {
+          key,
+          now: now(),
+        });
+        const updated = CreatedIssueSchema.parse(
+          (
+            await request(
+              ctx,
+              "PATCH",
+              `${apiBase(apiUrl, options.repo)}/issues/${issue.number}`,
+              { title: built.title, body: built.body },
+            )
+          ).data,
+        );
+        log.info("issues.update", {
+          kind,
+          fingerprint,
+          number: issue.number,
+          attempt,
+        });
+        return {
+          action: "updated",
+          number: updated.number,
+          url: updated.html_url,
           fingerprint,
           key,
           deduped: false,
@@ -2130,6 +2177,14 @@ export type PreviewResult =
       comment: string;
       fingerprint: string;
       key: string;
+    }
+  | {
+      /** 같은 원인의 열린 이슈가 있고 정책이 update — 그 이슈의 제목·본문을 `issue`로 바꿀 예정 */
+      action: "would-update";
+      lookup: "searched";
+      number: number;
+      url: string;
+      issue: BuiltIssue;
     };
 
 /**
@@ -2170,6 +2225,15 @@ export async function previewReport<K extends IssueKind>(
     );
   }
   if (!found) return { action: "would-create", lookup: "searched", issue };
+  if (RECURRENCE_POLICY[prepared.kind] === "update") {
+    return {
+      action: "would-update",
+      lookup: "searched",
+      number: found.number,
+      url: found.html_url,
+      issue,
+    };
+  }
   if (RECURRENCE_POLICY[prepared.kind] === "skip") {
     return {
       action: "would-skip",

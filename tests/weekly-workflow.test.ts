@@ -26,6 +26,7 @@ const STEP = {
   base: "기준 커밋 기록",
   install: "의존성 설치",
   weekly: "주간 작업",
+  opsIssue: "운영 리포트 이슈 보고",
   discard: "실패 단계 산출물 되돌리기",
   validate: "검증 게이트",
   og: "OG 이미지 확인",
@@ -73,10 +74,15 @@ describe("weekly.yml 트리거·동시성·게이트", () => {
     );
   });
 
-  it("기본 권한 없음 — weekly job은 contents: write만", () => {
+  it("기본 권한 없음 — weekly job은 contents: write + issues: write(운영 리포트 이슈 — M5-09)뿐", () => {
     expect(workflow).toMatch(/^permissions: \{\}$/m);
-    expect(weeklyJob).toMatch(/^ {4}permissions:\n {6}contents: write/m);
-    expect(weeklyJob).not.toMatch(/issues: write/);
+    const block = /^ {4}permissions:\n((?: {6}.*\n)+)/m.exec(weeklyJob)?.[1];
+    expect(
+      block
+        ?.trimEnd()
+        .split("\n")
+        .map((line) => line.replace(/\s+#.*$/, "").trim()),
+    ).toEqual(["contents: write", "issues: write"]);
   });
 });
 
@@ -120,6 +126,37 @@ describe("weekly job 단계 — 주간 작업 → 검증 → 빌드 → 커밋 (
     expect(body).toContain('args+=(--only "$ONLY")');
     expect(step.body).toContain("ONLY: ${{ inputs.only }}");
     expect(body).not.toMatch(/\$\{\{\s*inputs\./);
+  });
+
+  it("운영 리포트 — 주간 작업이 payload 파일 경로를 받고(토큰 없음), 다음 단계가 파일이 있을 때만 ops-report 이슈를 낸다", () => {
+    const weeklyStep = stepNamed(steps, STEP.weekly);
+    expect(weeklyStep.body).toContain(
+      "OPS_REPORT_FILE: ${{ runner.temp }}/ops-report.json",
+    );
+    expect(weeklyStep.body).not.toContain("github.token");
+    const step = stepNamed(steps, STEP.opsIssue);
+    expect(stepKey(step, "if")).toBe(
+      "${{ !cancelled() && steps.weekly.outcome != 'skipped' }}",
+    );
+    expect(stepKey(step, "continue-on-error")).toBe("true");
+    expect(step.body).toContain("GITHUB_TOKEN: ${{ github.token }}");
+    expect(step.body).toContain(
+      "OPS_REPORT_FILE: ${{ runner.temp }}/ops-report.json",
+    );
+    const body = run(STEP.opsIssue);
+    expect(body).toContain('if [ ! -s "$OPS_REPORT_FILE" ]; then');
+    expect(body).toContain(
+      'node --import tsx scripts/report-issue.ts --kind ops-report --payload-file "$OPS_REPORT_FILE"',
+    );
+    // 토큰을 받는 단계는 운영 리포트 이슈 · data 커밋 · 실패 실행 기록 보존 셋뿐
+    const withToken = steps
+      .filter((s) => s.body.includes("github.token"))
+      .map((s) => s.name);
+    expect(withToken).toEqual([
+      expect.stringMatching(/^운영 리포트 이슈 보고/),
+      expect.stringMatching(/^data 커밋/),
+      expect.stringMatching(/^실패 실행 기록 보존/),
+    ]);
   });
 
   it("검증·빌드·커밋은 가드 skip이면 돌지 않고, 앞 단계가 실패하면 돌지 않는다(상태 함수 없는 if = success())", () => {

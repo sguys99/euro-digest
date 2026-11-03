@@ -1,5 +1,5 @@
 /**
- * GitHub 이슈 보고 CLI (M0-22, FR-152) — 같은 원인의 열린 이슈가 있으면 댓글, 없으면 새 이슈.
+ * GitHub 이슈 보고 CLI (M0-22, FR-152) — 같은 원인의 열린 이슈가 있으면 댓글(kind 정책에 따라 건너뜀·본문 갱신), 없으면 새 이슈.
  * 워크플로(collect.yml `report-failure` job·소스 이슈 단계)에서 쓰기 쉽게 만든 얇은 진입점이다. 판단·템플릿은
  * scripts/lib/github-issues.ts, 인자·환경변수 해석은 scripts/lib/report-issue-cli.ts(순수 함수).
  *
@@ -14,6 +14,9 @@
  *   node --import tsx scripts/report-issue.ts --kind source-broken --payload-file payload.json --dry-run
  *   # Actions: 수집 단계가 쓴 소스 건강도 사건 파일(source-broken payload 배열, M1-11 · D35)
  *   GITHUB_TOKEN=… node --import tsx scripts/report-issue.ts --kind source-broken --payload-file "$SOURCE_HEALTH_FILE"
+ *
+ *   # Actions: 주간 작업의 운영 리포트 단계가 쓴 payload(단건 — 같은 주차 열린 이슈가 있으면 본문 갱신, M5-09)
+ *   GITHUB_TOKEN=… node --import tsx scripts/report-issue.ts --kind ops-report --payload-file "$OPS_REPORT_FILE"
  *
  * 종료 코드: 생성·댓글·dry-run 성공 0(일괄은 전부 성공 또는 빈 배열), 인자·payload·API 오류 1(일괄은 하나라도 실패 —
  * 나머지 항목은 계속 보고한다). 토큰·응답 본문은 출력하지 않는다.
@@ -70,6 +73,9 @@ function resultNotice(result: ReportResult): string {
   }
   if (result.action === "skipped") {
     return `열린 이슈 #${result.number}가 있어 건너뜀: ${result.url}`;
+  }
+  if (result.action === "updated") {
+    return `열린 이슈 #${result.number} 본문 갱신: ${result.url}`;
   }
   return `이슈 #${result.number}에 댓글: ${result.commentUrl ?? result.url}`;
 }
@@ -134,6 +140,8 @@ async function reportBatch(
         if (preview.action === "would-create") tally.created += 1;
         else if (preview.action === "would-skip")
           tally.skipped = (tally.skipped ?? 0) + 1;
+        else if (preview.action === "would-update")
+          tally.updated = (tally.updated ?? 0) + 1;
         else tally.commented += 1;
         continue;
       }
@@ -154,6 +162,8 @@ async function reportBatch(
       if (result.action === "created") tally.created += 1;
       else if (result.action === "skipped")
         tally.skipped = (tally.skipped ?? 0) + 1;
+      else if (result.action === "updated")
+        tally.updated = (tally.updated ?? 0) + 1;
       else tally.commented += 1;
     } catch (error) {
       if (!(error instanceof IssueReportError)) throw error;

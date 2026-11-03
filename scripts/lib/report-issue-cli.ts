@@ -329,6 +329,17 @@ export function readReportEnv(env: Env): ReportEnv {
 
 /** dry-run 출력 */
 export function formatPreview(preview: PreviewResult): string {
+  if (preview.action === "would-update") {
+    return [
+      `[report-issue] dry-run — 열린 이슈 #${preview.number}의 제목·본문을 바꿀 예정 (이 kind는 댓글 대신 본문 교체, 수정 요청 없음)`,
+      `  이슈: ${preview.url}`,
+      `  원인: ${preview.issue.key} · fingerprint ${preview.issue.fingerprint}`,
+      `  제목: ${preview.issue.title}`,
+      "──── 이슈 본문 ────",
+      preview.issue.body,
+      "──────────────────",
+    ].join("\n");
+  }
   if (preview.action === "would-skip") {
     return [
       `[report-issue] dry-run — 같은 원인의 열린 이슈 #${preview.number}가 있어 건너뛸 예정 (이 kind는 댓글을 달지 않음)`,
@@ -364,6 +375,9 @@ export function formatReportResult(result: ReportResult): string {
   if (result.action === "skipped") {
     return `[report-issue] 열린 이슈 #${result.number}가 있어 건너뜀 — ${result.url}`;
   }
+  if (result.action === "updated") {
+    return `[report-issue] 열린 이슈 #${result.number}의 본문을 갱신 — ${result.url}`;
+  }
   return result.action === "created"
     ? `[report-issue] 새 이슈 #${result.number} 생성 — ${result.url}`
     : `[report-issue] 열린 이슈 #${result.number}에 댓글${nth} — ${result.commentUrl ?? result.url}`;
@@ -375,6 +389,8 @@ export interface BatchTally {
   failed: number;
   /** 열린 이슈가 있어 건너뜀(정책 skip — player-transfer) */
   skipped?: number;
+  /** 열린 이슈 본문을 바꿈(정책 update — ops-report) */
+  updated?: number;
 }
 
 /** 상한 초과 경고 문구 */
@@ -389,13 +405,16 @@ export function formatBatchResult(
   dropped = 0,
 ): string {
   const skipped = tally.skipped ?? 0;
-  const total = tally.created + tally.commented + tally.failed + skipped;
+  const updated = tally.updated ?? 0;
+  const total =
+    tally.created + tally.commented + tally.failed + skipped + updated;
   const rest = dropped > 0 ? ` · 상한 초과로 보고 안 함 ${dropped}` : "";
   if (total === 0 && dropped === 0) {
     return `[report-issue] ${kind} 일괄 보고 — 보고할 사건 없음`;
   }
   const skippedText = skipped > 0 ? ` · 건너뜀 ${skipped}` : "";
-  return `[report-issue] ${kind} 일괄 보고 ${total}건 — 새 이슈 ${tally.created} · 댓글 ${tally.commented}${skippedText} · 실패 ${tally.failed}${rest}`;
+  const updatedText = updated > 0 ? ` · 본문 갱신 ${updated}` : "";
+  return `[report-issue] ${kind} 일괄 보고 ${total}건 — 새 이슈 ${tally.created} · 댓글 ${tally.commented}${updatedText}${skippedText} · 실패 ${tally.failed}${rest}`;
 }
 
 /** 일괄 보고 Step Summary — 항목별 줄(성공은 링크, 실패는 원인 키와 짧은 사유) */
@@ -415,6 +434,9 @@ export function formatBatchSummary(
     const nth = r.occurrence ? ` · ${r.occurrence}번째 발생` : "";
     if (r.action === "skipped") {
       return `- \`${r.key}\` 열린 이슈 [#${r.number}](${r.url})가 있어 건너뜀`;
+    }
+    if (r.action === "updated") {
+      return `- \`${r.key}\` 열린 이슈 [#${r.number}](${r.url}) 본문 갱신`;
     }
     return r.action === "created"
       ? `- \`${r.key}\` 새 이슈 [#${r.number}](${r.url})`
@@ -437,9 +459,11 @@ export function formatReportSummary(result: ReportResult): string {
       ? `- 새 이슈 [#${result.number}](${result.url}) 생성`
       : result.action === "skipped"
         ? `- 열린 이슈 [#${result.number}](${result.url})가 있어 건너뜀`
-        : `- 열린 이슈 [#${result.number}](${result.commentUrl ?? result.url})에 댓글${nth}`;
+        : result.action === "updated"
+          ? `- 열린 이슈 [#${result.number}](${result.url}) 본문 갱신`
+          : `- 열린 이슈 [#${result.number}](${result.commentUrl ?? result.url})에 댓글${nth}`;
   return [
-    "## 실패 이슈 보고",
+    "## 이슈 보고",
     "",
     line,
     `- 원인 키 \`${result.key}\` · fingerprint \`${result.fingerprint}\``,

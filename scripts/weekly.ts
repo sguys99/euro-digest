@@ -94,6 +94,8 @@ async function main(): Promise<number> {
       fetch: (input, init) => fetch(input, init),
       userAgent: feedUserAgent(env.CONTACT_EMAIL),
     },
+    // 운영 리포트 이슈 payload(M5-09) — weekly.yml이 $RUNNER_TEMP/ops-report.json을 준다. 로컬은 비워 두면 출력만
+    opsReportFile: env.OPS_REPORT_FILE?.trim() || null,
   });
 
   for (const r of outcome.results) {

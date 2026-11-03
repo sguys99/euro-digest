@@ -10,6 +10,9 @@
 #      로그만(성공 처리). 실행 기록 → data/runs.json(job "weekly"). 종료 코드: 0 = 건너뜀·success·partial · 1 = failed(성공한 단계 없이
 #      실패만)·준비 실패·실행 기록 실패. 단계 출력(형식 weekly-run.ts WEEKLY_OUTPUT_KEYS): skipped · week · publish_date · run_id ·
 #      status · run_recorded · failed_stages · discard — 실패한 실행(exit 1)도 쓴다.
+#   (보조) 운영 리포트 이슈 보고 — 주간 작업 단계 ④(M5-09, FR-155)가 쓴 payload 파일(OPS_REPORT_FILE)로 이슈를 만들거나 같은 주차
+#      열린 이슈의 본문을 바꾼다(github-issues.ts RECURRENCE_POLICY "update"). 파일이 없으면(단계 실패·dry·건너뜀) 넘어가고, 실패해도
+#      뒤 단계를 막지 않는다(continue-on-error).
 #   (보조) 실패 단계 산출물 되돌리기 — partial일 때 실패한 단계의 writes 경로(단계 출력 discard)를 main 상태로 되돌린다. 발행 산출물은
 #      그 단계가 성공했을 때만 커밋한다(D49 정신 — 반쯤 쓴 파일이 검증·빌드·커밋에 들어가지 않게).
 #   ② 검증 게이트 `npm run validate` — configs·data 스키마·교차 참조(주간 리포트 파일 포함). 발행일 카드 하한(--publish-date)은
@@ -86,14 +89,16 @@ jobs:
     name: 주간 작업 · 검증 · 빌드 · 커밋 (weekly)
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || (vars.COLLECT_ENABLED == 'true' && vars.WEEKLY_ENABLED != 'off'))
     runs-on: ubuntu-latest
-    # job 상한(여유 포함): 가장 긴 주간 작업 40분 + 그 밖의 단계 실측 1~2분 + 실패 실행 기록 보존 3분 + 실패 단계 기록 1분 +
-    # 단계 실패 표시 1분 ≈ 47분 < 50분(tests/weekly-workflow.test.ts가 "가장 큰 step 상한 + 실패 경로 단계 상한 + 1분 ≤ job 상한"을
+    # job 상한(여유 포함): 가장 긴 주간 작업 40분 + 그 밖의 단계 실측 1~2분(운영 리포트 이슈 보고 상한 3분 — 평소 수 초) + 실패 실행
+    # 기록 보존 3분 + 실패 단계 기록 1분 + 단계 실패 표시 1분 ≈ 47분 < 50분(tests/weekly-workflow.test.ts가 "가장 큰 step 상한 + 실패 경로 단계 상한 + 1분 ≤ job 상한"을
     # 확인한다). 주간 작업 40분 안에 단계 시간 상한 합계(weekly-stages.ts — 지금 36분)가 들어간다. 2026-11-02 사용자 승인 35→40분
     # (팀 프로필 단계 12→18분 — M4-06).
     timeout-minutes: 50
     permissions:
       contents: write # data/·public/ 커밋 push
-    # 토큰(github.token)을 env로 받는 단계는 둘뿐이다: data 커밋 · 실패 실행 기록 보존. 토큰은 git 헤더로만 넘기고 git 훅을 끈다.
+      issues: write # 운영 리포트 이슈 보고 단계가 쓴다(M5-09)
+    # 토큰(github.token — job 권한 contents·issues write를 함께 가진 한 토큰)을 env로 받는 단계는 셋뿐이다: 운영 리포트 이슈 보고 ·
+    # data 커밋 · 실패 실행 기록 보존. 커밋·보존 단계는 토큰을 git 헤더로만 넘기고 git 훅을 끈다. 격리 한계는 이슈 보고 단계 주석.
     # reason·step은 실패 단계 기록(앞 단계 실패) 또는 단계 실패 표시(partial)가 쓴다 — 둘은 함께 돌지 않는다.
     outputs:
       committed: ${{ steps.commit.outputs.committed }}
@@ -139,7 +144,8 @@ jobs:
         timeout-minutes: 4
         run: npm ci
 
-      # ① 주간 단계. 비밀값은 이 단계에만 넘긴다(설치·검증·빌드 단계에는 노출하지 않는다). GitHub 토큰은 넘기지 않는다.
+      # ① 주간 단계. 비밀값은 이 단계에만 넘긴다(설치·검증·빌드 단계에는 노출하지 않는다). GitHub 토큰은 넘기지 않는다 — 운영 리포트
+      # 단계(M5-09)는 이슈 payload를 OPS_REPORT_FILE(저장소 밖 임시 파일)로만 내고, 이슈는 다음 단계가 만든다.
       # 입력값(force·dry·week·only)은 셸에 직접 펼치지 않고 env로 넘긴다(스크립트 주입 방지). 값 검증은 weekly 스크립트가 한다.
       - name: 주간 작업 (npm run weekly)
         id: weekly
@@ -152,6 +158,7 @@ jobs:
           DRY: ${{ inputs.dry }}
           WEEK: ${{ inputs.week }}
           ONLY: ${{ inputs.only }}
+          OPS_REPORT_FILE: ${{ runner.temp }}/ops-report.json
         run: |
           args=()
           if [ "$FORCE" = "true" ]; then
@@ -167,6 +174,30 @@ jobs:
             args+=(--only "$ONLY")
           fi
           npm run weekly -- "${args[@]}"
+
+      # 운영 리포트 이슈 (M5-09 — FR-155, FR-152): 주간 작업 단계 ④(scripts/lib/ops-report-stage.ts)가 쓴 payload(단건 — 지난 주
+      # 비용·실행 성공률·브리핑·소스 건강도·미등록 고유명사, 코드 생성·LLM 0)로 `[운영 리포트] <YYYY-Www>` 이슈를 만들거나, 같은 주차
+      # 열린 이슈가 있으면 본문을 최신 집계로 바꾼다(RECURRENCE_POLICY "update" — force 재실행도 이슈 하나, 라벨 ops-report).
+      # - 조건: 주간 작업 단계가 돌았으면 성공·실패와 상관없이(수동 취소면 안 함). payload 파일이 없으면(운영 리포트 단계 실패·dry·
+      #   가드 건너뜀·--only 다른 단계) 셸에서 넘어간다 — 토큰을 가진 node 프로세스를 띄우지 않는다.
+      # - 위치: 주간 작업 바로 뒤 — 토큰을 받는 단계 앞에서 도는 서드파티 코드를 줄이고 검증·빌드·커밋 결과와 무관하게 보고한다.
+      # - 토큰 격리는 env 수준뿐이다(collect.yml '실행 이슈 보고'와 같은 한계 — 같은 job의 앞 단계 코드가 작업 디렉터리를 바꾸면 막지
+      #   못한다. 완전히 나누려면 별도 job + 아티팩트).
+      # - continue-on-error: 이슈 보고 실패가 검증·빌드·커밋·배포를 막거나 job 결과를 뒤집지 않게 한다. 실패는 error 주석·로그로만
+      #   남는다 — `npm run ops-report -- --week <주차>`(로컬·토큰)로 다시 낼 수 있다.
+      - name: 운영 리포트 이슈 보고
+        if: ${{ !cancelled() && steps.weekly.outcome != 'skipped' }}
+        continue-on-error: true
+        timeout-minutes: 3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OPS_REPORT_FILE: ${{ runner.temp }}/ops-report.json
+        run: |
+          if [ ! -s "$OPS_REPORT_FILE" ]; then
+            echo "운영 리포트 payload 없음 — 운영 리포트 단계가 돌지 않았거나(dry·건너뜀·--only) 실패했습니다. 건너뜁니다."
+            exit 0
+          fi
+          node --import tsx scripts/report-issue.ts --kind ops-report --payload-file "$OPS_REPORT_FILE"
 
       # partial일 때만(주간 작업이 exit 0 + discard 출력). 경로는 코드 상수(weekly-stages.ts writes)지만 경계에서 형식을 다시 본다.
       # 추적 파일은 HEAD로 되돌리고(없던 경로면 무시) 새 파일은 지운다. 토큰을 받지 않는다.

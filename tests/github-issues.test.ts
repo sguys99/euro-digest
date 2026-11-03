@@ -8,6 +8,8 @@ import {
   IssuePayloadError,
   IssueReportError,
   MAX_BODY_LENGTH,
+  OPS_REPORT_SECTIONS,
+  RECURRENCE_POLICY,
   SOURCE_FORM_HEADINGS,
   SOURCE_SYMPTOMS,
   buildComment,
@@ -606,19 +608,25 @@ describe("buildIssue·buildComment — 파싱 실패 응답 진단 표 (M1-03 �
   });
 });
 
-describe("buildIssue — ops-report (M5 골격)", () => {
-  it("기본 섹션은 자리표시, 넘긴 섹션은 내용으로", () => {
+describe("buildIssue — ops-report (M5-09)", () => {
+  it("기본 섹션 순서로 싣고, 넘기지 않은 기본 섹션은 '이번 리포트에 없음', 기본 밖 섹션은 뒤에", () => {
     const b = buildIssue("ops-report", {
       week: "2026-W41",
       from: "2026-10-05",
       to: "2026-10-11",
-      sections: [{ heading: "비용", body: "$0.04" }],
+      sections: [
+        { heading: "메모", body: "기본 밖" },
+        { heading: "비용", body: "$0.04" },
+      ],
       occurredAt: OCCURRED,
     });
     expect(b.title).toBe("[운영 리포트] 2026-W41 (2026-10-05 ~ 2026-10-11)");
     expect(b.labels).toEqual(["ops-report"]);
     expect(b.body).toContain("### 비용\n\n$0.04\n");
-    expect(b.body).toContain("### 소스 건강도\n\n_M5(FR-155)에서 채운다_");
+    expect(b.body).toContain("### 소스 건강도\n\n_이번 리포트에 없음_");
+    const headings = [...b.body.matchAll(/^### (.+)$/gm)].map((m) => m[1]);
+    expect(headings).toEqual([...OPS_REPORT_SECTIONS, "메모"]);
+    expect(b.body).toContain("같은 주차를 다시 만들면 새 이슈 대신 이 본문을");
   });
 
   it("본문이 길면 한도 안으로 자르되 마커는 남긴다", () => {
@@ -1315,6 +1323,79 @@ describe("reportIssue — 같은 실행 안 중복 방지", () => {
       payload: pipelinePayload,
     });
     expect(third).toMatchObject({ action: "commented", deduped: false });
+  });
+});
+
+// ─── ops-report: 같은 주차 열린 이슈는 본문 교체 (RECURRENCE_POLICY update) ──
+
+describe("reportIssue — ops-report 같은 주차는 본문 교체 (M5-09)", () => {
+  const opsPayload: IssuePayloadInput<"ops-report"> = {
+    week: "2026-W44",
+    from: "2026-10-26",
+    to: "2026-11-01",
+    sections: [{ heading: "요약", body: "- 발행 7일" }],
+    occurredAt: OCCURRED,
+  };
+  const FP_OPS = issueFingerprint("ops-report", "2026-W44");
+  const openOps = () =>
+    issue(31, { fp: FP_OPS, labels: [{ name: "ops-report" }] });
+
+  it("정책: ops-report만 update", () => {
+    expect(RECURRENCE_POLICY["ops-report"]).toBe("update");
+    expect(
+      ISSUE_KINDS.filter((k) => RECURRENCE_POLICY[k] === "update"),
+    ).toEqual(["ops-report"]);
+  });
+
+  it("열린 같은 주차 이슈가 있으면 댓글 없이 제목·본문 PATCH — 라벨은 보내지 않는다", async () => {
+    const h = harness([
+      json([openOps()]),
+      json({ number: 31, html_url: `https://github.com/${REPO}/issues/31` }),
+    ]);
+    const result = await reportIssue({
+      ...h.base,
+      kind: "ops-report",
+      payload: opsPayload,
+    });
+    expect(result).toMatchObject({ action: "updated", number: 31 });
+    expect(h.calls.map((c) => c.method)).toEqual(["GET", "PATCH"]);
+    expect(h.calls[0]?.url).toContain("labels=ops-report");
+    expect(h.calls[1]?.url).toBe(`${API}/repos/${REPO}/issues/31`);
+    const body = h.calls[1]?.body as Record<string, unknown>;
+    expect(Object.keys(body).sort()).toEqual(["body", "title"]);
+    expect(body.title).toBe("[운영 리포트] 2026-W44 (2026-10-26 ~ 2026-11-01)");
+    expect(extractFingerprints(String(body.body))).toEqual([FP_OPS]);
+  });
+
+  it("다른 주차 이슈만 열려 있으면 새 이슈", async () => {
+    const other = issue(30, {
+      fp: issueFingerprint("ops-report", "2026-W43"),
+      labels: [{ name: "ops-report" }],
+    });
+    const h = harness([json([other]), created(32)]);
+    const result = await reportIssue({
+      ...h.base,
+      kind: "ops-report",
+      payload: opsPayload,
+    });
+    expect(result).toMatchObject({ action: "created", number: 32 });
+    expect(h.calls.map((c) => c.method)).toEqual(["GET", "POST"]);
+  });
+
+  it("dry-run은 would-update — 요청은 GET만", async () => {
+    const h = harness([json([openOps()])]);
+    const p = await previewReport({
+      kind: "ops-report",
+      payload: opsPayload,
+      repo: REPO,
+      fetch: h.fetch,
+      now: () => NOW,
+    });
+    expect(p).toMatchObject({ action: "would-update", number: 31 });
+    if (p.action === "would-update") {
+      expect(p.issue.title).toContain("2026-W44");
+    }
+    expect(h.calls.map((c) => c.method)).toEqual(["GET"]);
   });
 });
 

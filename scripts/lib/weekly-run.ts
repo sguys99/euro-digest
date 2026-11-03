@@ -734,6 +734,8 @@ export interface RunWeeklyDeps {
   resolveBudgets: () => Budgets;
   /** 외부 HTTP(분석 블로그 피드 — M3-08). 생략하면 요청을 거부하는 fetch(테스트에서 네트워크를 쓰지 않게) */
   http?: { fetch: FetchLike; userAgent: string };
+  /** 운영 리포트 이슈 payload 파일(OPS_REPORT_FILE — M5-09, weekly-stages.ts `opsReportFile`). 생략 = 쓰지 않음 */
+  opsReportFile?: string | null;
 }
 
 /** http를 주입하지 않은 실행의 fetch — 요청하면 거부한다 */
@@ -913,6 +915,7 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
           dataDir: deps.dataDir,
           budgets: deps.resolveBudgets(),
         }),
+      limits: deps.resolveBudgets,
     },
     apiCalls: {
       add: (calls) => {
@@ -926,6 +929,7 @@ export async function runWeekly(deps: RunWeeklyDeps): Promise<WeeklyOutcome> {
         for (const e of entries) sources.push(e);
       },
     },
+    opsReportFile: deps.opsReportFile ?? null,
   };
 
   const results = await runWeeklyStages(deps.stages, base, log);

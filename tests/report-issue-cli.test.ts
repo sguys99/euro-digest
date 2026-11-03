@@ -387,6 +387,59 @@ describe("출력 문구", () => {
   });
 });
 
+describe("본문 갱신(update — ops-report, M5-09) 출력 문구", () => {
+  const updated: ReportResult = {
+    action: "updated",
+    number: 31,
+    url: "https://github.com/sguys99/euro-digest/issues/31",
+    fingerprint: "0123456789ab",
+    key: "2026-w44",
+    deduped: false,
+  };
+
+  it("결과 한 줄·Step Summary·일괄 집계", () => {
+    expect(formatReportResult(updated)).toBe(
+      "[report-issue] 열린 이슈 #31의 본문을 갱신 — https://github.com/sguys99/euro-digest/issues/31",
+    );
+    expect(formatReportSummary(updated)).toContain(
+      "- 열린 이슈 [#31](https://github.com/sguys99/euro-digest/issues/31) 본문 갱신",
+    );
+    expect(formatReportSummary(updated)).toContain("## 이슈 보고");
+    expect(
+      formatBatchResult("ops-report", {
+        created: 0,
+        commented: 0,
+        failed: 0,
+        updated: 1,
+      }),
+    ).toBe(
+      "[report-issue] ops-report 일괄 보고 1건 — 새 이슈 0 · 댓글 0 · 본문 갱신 1 · 실패 0",
+    );
+    expect(
+      formatBatchSummary("ops-report", [{ ok: true, result: updated }]),
+    ).toContain(
+      "열린 이슈 [#31](https://github.com/sguys99/euro-digest/issues/31) 본문 갱신",
+    );
+  });
+
+  it("dry-run(본문 교체)은 대상 이슈와 새 본문", () => {
+    const issue = buildIssue("ops-report", {
+      week: "2026-W44",
+      sections: [{ heading: "요약", body: "- 발행 7일" }],
+      occurredAt: "2026-11-01T23:05:00.000Z",
+    });
+    const text = formatPreview({
+      action: "would-update",
+      lookup: "searched",
+      number: 31,
+      url: "https://github.com/sguys99/euro-digest/issues/31",
+      issue,
+    });
+    expect(text).toContain("열린 이슈 #31의 제목·본문을 바꿀 예정");
+    expect(text).toContain(issue.body);
+  });
+});
+
 describe("일괄 보고 출력 문구", () => {
   const result: ReportResult = {
     action: "created",
