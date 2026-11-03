@@ -250,22 +250,36 @@ describe("checkNewSeason — 지금 시즌 정합성", () => {
 });
 
 describe("checkNewSeason — 다음 시즌 남은 일", () => {
-  it("시즌 중에 다음 시즌을 보면 시기 경고 + 대회 시즌(한 줄로 묶음)·팀 표 시즌·원장 meta 오류", () => {
+  it("시즌 중에 다음 시즌을 보면 시기 경고 + 대회 시즌(한 줄로 묶음)·팀 표 시즌 오류, 원장 meta는 참고(다음 정기 수집이 새로 쓴다)", () => {
     const report = checkNewSeason(baseInput(), { target: 2027, today: TODAY });
     expect(messages(report, "warn")).toContainEqual(
       expect.stringMatching(
         /^timing: 설정 시즌 2026-27이 아직 시즌 중.*2027-06-05 뒤/,
       ),
     );
-    const errors = messages(report, "error");
-    expect(errors).toEqual([
+    expect(messages(report, "error")).toEqual([
       "season: competitions.json season 2026 ≠ 대상 2027: EPL·LALIGA·SERIEA·BUNDESLIGA·LIGUE1·UCL",
       "season: 팀 → 리그 표 TEAM_LEAGUES_SEASON 2026 ≠ 대상 2027",
-      expect.stringMatching(
-        /^season: 원장 meta\.season 2026 ≠ 대상 2027\(since 2026-10-19\).*since 규칙이 아직 없다/,
-      ),
     ]);
+    expect(messages(report, "info")).toContainEqual(
+      expect.stringMatching(
+        /^season: 원장 meta\.season 2026\(since 2026-10-19\) — 설정을 2027로 바꾼 뒤 날짜를 받은 첫 정기 수집이 새 메타를 쓴다/,
+      ),
+    );
     expect(report.ready).toBe(false);
+  });
+
+  it("원장 meta가 대상보다 뒤 시즌이면 오류(설정 되돌림)", () => {
+    const input = baseInput();
+    const report = checkNewSeason(
+      { ...input, ledgerMeta: { ...input.ledgerMeta!, season: 2027 } },
+      { target: 2026, today: TODAY },
+    );
+    expect(messages(report, "error")).toContainEqual(
+      expect.stringMatching(
+        /^season: 원장 meta\.season 2027이 대상 2026보다 뒤/,
+      ),
+    );
   });
 
   it("시즌이 끝난 뒤면 시기는 참고(전환 시기)", () => {

@@ -5,7 +5,7 @@
  * `npm run validate`(스키마·교차 참조 — 파일 하나하나가 맞는가)와 달리 **시즌 하나로 맞물렸는가**를 본다:
  *   ① 시기       기준일(KST)이 지금 설정 시즌의 어디인가 — 시즌 중 전환·대상 시즌 역행을 막는다
  *   ② 시즌·기간   competitions.json 대회 6개의 season = 대상, startDate 연도 = 대상, endDate 연도 = 대상 + 1, 팀 → 리그 표 시즌 = 대상,
- *                 원장 meta.season = 대상(새 시즌 since 규칙 — M1-48 이월, 아직 없음), data/competitions 파일 시즌
+ *                 원장 meta.season(대상보다 앞이면 다음 정기 수집이 새 메타를 쓴다 — match-ledger.ts '새 시즌'), data/competitions 파일 시즌
  *   ③ 팀 목록     팀 → 리그 표(TEAM_LEAGUES·UCL_TEAMS) 리그별 팀 수 = teamCount, 리그 사이 중복 없음, 표 = team-ids.json 키(6개 대회 팀만
  *                 — tests/team-leagues.test.ts), 팀마다 fd·af id · team-colors · names.ko 팀 항목(slug) · formations 키
  *   ④ 한국 선수   활성 선수 소속팀이 이번 시즌 6개 대회 팀 · comp = 소속팀 리그 · 소속팀 af id · apiFootballId, 축약 별칭 소속팀 표
@@ -13,7 +13,7 @@
  *   ⑤ 오늘 밤     더비 두 팀이 같은 리그 · 빅클럽(bigmatch-rules·뉴스 점수화 BIG_CLUBS)이 이번 시즌 팀
  *   ⑥ 이적 창     리그마다 대상 시즌 여름·겨울 창과 다음 여름 창 — 없음·추정(sourceUrl 없음)·곧 열리는 추정 창
  *   ⑦ 대표팀      기준일 뒤 A매치 일정이 있는가(휴식기 판정 근거)
- *   ⑧ 파생 파일   data/teams 파일 = 이번 시즌 팀(지난 시즌 팀 파일 처리는 사용자 결정 — /new-season), public/og/teams PNG
+ *   ⑧ 파생 파일   data/teams 파일 = 이번 시즌 팀(지난 시즌 팀 파일은 `build-teams --prune` — /new-season B10), public/og/teams PNG
  *
  * 심각도: error = 이대로 전환하면 검사(validate·check)가 실패하거나 기록이 조용히 빠진다 · warn = 사람이 확인할 것 · info = 참고.
  * error가 0이면 "준비됨". 대상 시즌을 지금 설정 시즌으로 두면 정합성 점검(오늘 상태가 맞는지), 다음 시즌으로 두면 남은 일 목록이다.
@@ -298,11 +298,18 @@ function seasonSection(
       severity: "info",
       message: "경기 원장 meta 없음 — 정기 운영 첫 쓰기 실행이 만든다",
     });
-  } else if (meta.season !== target) {
+  } else if (meta.season < target) {
+    // 2026-11-03 사용자 결정 ① A — 설정 시즌이 커진 뒤 날짜를 받은 첫 정기 실행이 메타를 새로 쓴다(match-ledger.ts '새 시즌')
+    findings.push({
+      severity: "info",
+      message: `원장 meta.season ${meta.season}(since ${meta.since}) — 설정을 ${target}로 바꾼 뒤 날짜를 받은 첫 정기 수집이 새 메타를 쓴다(since = 그 실행이 받은 첫 날짜, playerSince·gaps 비움). 그 전까지 한국 선수 기록·팀 포메이션은 지난 시즌 경기만 센다`,
+      fix: "다음 날 아침 발행 뒤 data/matches/meta.json season·since와 로그 collect.ledger.meta seasonReset 확인 — 손으로 고치지 않는다",
+    });
+  } else if (meta.season > target) {
     findings.push({
       severity: "error",
-      message: `원장 meta.season ${meta.season} ≠ 대상 ${target}(since ${meta.since}) — 지금 코드는 meta를 바꾸지 않고(로그 seasonMismatch만) 한국 선수 기록·팀 포메이션이 meta.season 경기만 집계한다. 새 시즌 since 규칙이 아직 없다(plan M1-48 이월)`,
-      fix: "/new-season '사용자 확인 지점'에서 규칙을 정해 파이프라인에 구현한 뒤 전환한다 — data/matches/meta.json을 손으로 고치지 않는다",
+      message: `원장 meta.season ${meta.season}이 대상 ${target}보다 뒤 — 설정을 되돌렸다면 원장은 바뀌지 않는다(seasonMismatch). 대상 시즌을 확인할 것`,
+      fix: "--season 값 또는 configs/competitions.json season",
     });
   }
   const filesByComp = new Map(
@@ -698,7 +705,7 @@ function derivedSection(input: NewSeasonInput): NewSeasonSection {
     findings.push({
       severity: notInIds.length > 0 ? "error" : "warn",
       message: `이번 시즌 밖 팀 파일 ${stale.length}: ${list(stale)}${notInIds.length > 0 ? " — team-ids에 없는 팀 파일은 validate 오류(교차 참조 7)" : ""}. 팀 페이지 URL(/teams/<slug>/)이 걸린 공개 URL 변경이다`,
-      fix: "지난 시즌 팀 파일 처리(삭제 → 404 · 보존)를 /new-season 사용자 확인 지점에서 정한다 — build:teams는 지우지 않는다(teams.stale-files 경고만)",
+      fix: "team-ids.json에서 뺀 뒤 node --import tsx scripts/build-teams.ts --prune --dry로 목록 확인 → --prune(팀 표·team-ids 둘 다에 없는 파일만 지운다, /new-season B10). 정기 collect는 지우지 않는다",
     });
   }
   const og = new Set(input.ogTeamImages);

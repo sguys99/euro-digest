@@ -41,8 +41,8 @@ disable-model-invocation: true
 | 시즌 고정 테스트 | T단계 목록 | T |
 | 팀 파일·팀 OG | `data/teams/*.json`(`npm run build:teams`) · `public/og/`(`npm run build:og`) | B · J |
 
-## 언제 — 2단계 (추천안, 첫 실행 때 '사용자 결정' ④로 확인)
-- **0단계 준비(5~6월)**: 0단계 점검으로 남은 일을 본다. **원장 since 규칙(E)이 구현돼 있어야 1단계를 시작할 수 있다**(지금은 없음 — '사용자 결정' ①).
+## 언제 — 2단계 (2026-11-03 사용자 결정 ④)
+- **0단계 준비(5~6월)**: 0단계 점검으로 남은 일을 본다. 원장 since는 자동이다(E — 할 일은 첫 수집 뒤 확인뿐).
 - **1단계 — 5대 리그(7월, 늦어도 첫 리그 개막 2주 전)**. 조건:
   1. 지난 시즌 모든 대회가 끝났다(2026-27은 UCL 결승 2027-06-05).
   2. 리그 공식 일정이 발표됐다.
@@ -68,7 +68,7 @@ disable-model-invocation: true
 ### 0. 사전 점검 (읽기 전용 — 언제든)
 - 명령: `npm run new-season:check -- --season <S>` · `npm run validate` · `git status`(작업 트리가 깨끗한지)
 - 확인: 출력의 오류·경고를 이 문서의 단계별로 나눈 표를 만든다. 시기 섹션이 "아직 시즌 중"이면 남은 일만 보고하고 멈춘다.
-- 사용자 확인: '사용자 결정' ①~⑤ 중 미결인 것을 먼저 묻는다. 특히 ①은 구현 작업이 필요하다.
+- 사용자 확인: '정해진 결정' ①~⑤와 다르게 가야 할 사정이 있으면 먼저 묻는다(예: UCL 방식 변경으로 2단계가 맞지 않을 때).
 
 ### A1. 대회 시즌·기간 — 5대 리그 (1단계)
 - 바꿀 것(`configs/competitions.json` 리그 5개):
@@ -108,7 +108,12 @@ disable-model-invocation: true
    - `scripts/lib/names.ts` `PROTECTED_LATIN_PHRASES`(사전 이름을 품은 다른 팀 — 2군·다른 리그)
    - `scripts/lib/names.ts` `COMPETITION_EN_ALIASES`(대회 스폰서 이름 변경 — 예: 'LaLiga EA Sports')
 9. **수동 포메이션**: `configs/formations.json`에서 이번 시즌 밖 팀을 뺀다(점검 ③ 경고).
-10. **팀 파일**: `npm run build:teams`(API 호출 없음)로 새 팀 파일을 만든다. 지난 시즌 팀 파일은 지우지 않고 `teams.stale-files` 경고만 낸다 → 처리는 '사용자 결정' ②.
+10. **팀 파일**(2026-11-03 사용자 결정 ② — 지난 시즌 팀 페이지는 내린다):
+    - `npm run build:teams`(API 호출 없음)로 새 팀 파일을 만든다.
+    - 지난 시즌 팀 파일은 **같은 커밋에서** 정리한다: `node --env-file-if-exists=.env.local --import tsx scripts/build-teams.ts --prune --dry`(지울 목록만 — 로그 `teams.prune.plan`) → 확인 → `--prune`(로그 `teams.prune.done`).
+    - 지우는 파일 = 이번 시즌 팀 표에도 `team-ids.json`에도 없는 팀만(3에서 대응표에서 뺀 팀). 대응표에 남은 팀은 `teams.prune.keep`으로 이유와 함께 남긴다. 25% 넘게 지우게 되거나 팀 생성 문제가 있으면 멈춘다(`teams.prune.blocked`, 종료 코드 1).
+    - 정기 collect는 지우지 않는다(`collect.teams.stale-files` 경고만). 공개 URL을 없애는 일이라 사람이 대응표를 고친 커밋에서 확인하고 실행한다. team-ids에서 뺀 팀의 파일이 남아 있으면 `validate`(교차 참조 7)가 그 push를 막으므로 빠뜨릴 수 없다.
+    - 결과: `/teams/<slug>/`는 404가 된다. 사이트 안 링크는 팀 파일이 없으면 글자로만 그린다(`TeamLink` — 깨진 링크 없음). 팔로우는 '빠진 팀'(`/my`). 표기 사전 항목은 남기므로 지난 카드 태그는 한글 그대로다. 팀 OG는 J(`build:og`)가 지운다.
 11. **비용**: 주간 팀 한줄평(Batches)은 팀 수만큼 요청한다(지금 111팀). 6개 대회 팀 수가 늘면 예상 토큰·비용을 보고하고 묻는다(§1-3).
 - 확인: 점검 ③④⑤⑧ · `npm run validate`(교차 참조 5·6·7) · T단계 테스트.
 - 되돌리기: 커밋 revert(팀 컬러 원본과 생성 파일은 같은 커밋) → `npm run build:teams`.
@@ -129,17 +134,18 @@ disable-model-invocation: true
 - 'X. 성' 축약 후보는 사전에만 넣으면 치환되지 않는다 — C의 `KNOWN_PLAYER_TEAMS`도 함께 고친다.
 - 확인: `npm run validate` · `npx vitest run tests/names-ko-dict.test.ts`.
 
-### E. 경기 원장 새 시즌 since (1단계 전에 구현 — 지금은 규칙 없음)
-- 지금 동작(`scripts/lib/match-ledger.ts` `nextLedgerMeta`):
-  - meta는 첫 쓰기 실행이 한 번 만들고 바꾸지 않는다. 설정 시즌이 meta.season과 다르면 로그 `seasonMismatch`만 남긴다.
-  - 한국 선수 기록(`scripts/lib/korean-players-data.ts`)과 팀 포메이션(`scripts/lib/team-files.ts`)은 **meta.season 경기만** 집계한다.
-  - 그래서 규칙 없이 시즌을 바꾸면 새 시즌 기록이 조용히 빠진다. 점검 ②가 이것을 오류로 막는다.
-- 할 일: '사용자 결정' ①을 받고 그 규칙을 파이프라인에 구현한다(`pipeline-dev` — 단위 테스트 필수, 스키마를 바꾸면 사용자 확인 §8). `data/matches/meta.json`을 손으로 고치지 않는다.
+### E. 경기 원장 새 시즌 since (자동 — 2026-11-03 사용자 결정 ①)
+- 규칙(`scripts/lib/match-ledger.ts` `nextLedgerMeta`·`applyLedger` 머리 주석 '새 시즌'):
+  - 설정 시즌(competitions.json 최댓값)이 meta.season보다 커진 뒤 **날짜를 받은 첫 정기 쓰기 실행**이 meta를 달 파일보다 먼저 새로 쓴다: `{ season: S, since: 그 실행이 받은 가장 이른 UTC 날짜, playerSince: {}(추적 선수는 since부터 다시), gaps: [] }`. 스키마는 그대로다.
+  - 그 실행이 날짜를 하나도 받지 못하면 바꾸지 않고(`seasonMismatch`) 다음 실행이 다시 시도한다. 새 since 앞 킥오프 경기는 원장에 넣지 않는다.
+  - 설정 시즌이 meta보다 작아지면(되돌림) 바꾸지 않는다. 달 파일은 그대로 둔다(경기마다 season이 있다).
+  - 지난 시즌 meta는 git 이력에만 남는다(지난 시즌 누적은 화면에서 다시 볼 수 없다 — 결정 ①·③).
+- 1단계(리그 시즌을 S로)부터 수집 시즌은 S다. 2단계 사이에도 원장은 S로 넘어간다(최댓값).
 - 확인(1단계 뒤 첫 정기 수집):
-  - meta `season = S`, `since` = 정한 규칙대로.
-  - `data/players/korean.json` 최상위 `season`·`since`가 meta와 같다(`validate` 교차 참조 8).
-  - 선수 화면 "○월 ○일 이후 집계"가 새 날짜다.
-- 되돌리기: 구현 작업에서 정한다(잘못된 발행은 CLAUDE §12 — 발행 커밋 revert).
+  - 로그 `collect.ledger.meta`의 `seasonReset`("2026→2027 (이전 since …)").
+  - `data/matches/meta.json` `season = S`·`since` = 그 실행이 받은 첫 날짜.
+  - `data/players/korean.json` 최상위 `season`·`since`가 meta와 같다(`validate` 교차 참조 8). 선수 화면 "○월 ○일 이후 집계"가 새 날짜다.
+- 손으로 meta를 고치지 않는다. 되돌리기: 시즌 설정 커밋을 revert해도 meta는 되돌아가지 않는다(설정이 meta보다 작으면 바꾸지 않는 규칙). 정말 되돌려야 하면 그 발행 커밋을 revert한다(CLAUDE §12 — 사용자 확인).
 
 ### F. 이적 창 — `configs/transfer-windows.json`
 - 그 시즌 여름 창: 이미 있으면 추정값을 공식 발표로 바꾸고 `sourceUrl`을 단다.
@@ -157,18 +163,15 @@ disable-model-invocation: true
 - 약관 확인일(`note`)이 1년을 넘은 소스는 약관·robots.txt를 다시 확인한다. 새 소스는 `/add-source`.
 
 ### T. 시즌 고정 테스트 (1단계·A2 커밋에 함께)
-2026-11-03 실험(설정 시즌만 2027로 바꾸고 단위 테스트 전체 실행)에서 깨진 테스트다. 시즌을 바꾸면 아래가 실패하므로 같은 묶음에서 고친다. '사용자 결정' ⑤로 미리 동결 fixture로 옮겨 두면 첫 묶음과 OG만 남는다.
-- **팀 목록 fixtures — 새 시즌 파일 필요**
-  - `tests/team-leagues.test.ts`: 리그 96·전체 111·UCL 21 리터럴, 순위표 fixture 이름(`standings-*-2026-10-11.json`), `teams-<code>-${TEAM_LEAGUES_SEASON}.json`. 두 단계 사이에는 UCL fixture를 UCL 대회 시즌으로 읽게 한다.
+2026-11-03 결정 ⑤로, 고정 날짜·2026 응답 fixtures·"2026-27 시즌" 문구를 기대하는 테스트는 **동결한 2026-27 사본**을 읽는다(`fixtures/season-2026/competitions.json` — 손으로 고치지 않는다, 읽기 도우미 `tests/support/season-2026.ts`). 설정 시즌만 2027로 바꾼 실험(2026-11-03, 단위 테스트 전체)에서 이 테스트들은 더 이상 깨지지 않는다. 시즌을 바꿀 때 고칠 것은 설정 자체를 검사하는 테스트뿐이다.
+- **전환 때 고친다 — 팀 목록(새 시즌 fixtures 필요)**
+  - `tests/team-leagues.test.ts`: 리그 96·전체 111·UCL 21 리터럴, 순위표 fixture 이름(`standings-*-2026-10-11.json`), `teams-<code>-${TEAM_LEAGUES_SEASON}.json`(B1 `--write`가 만든다). 두 단계 사이에는 UCL fixture를 UCL 대회 시즌으로 읽게 한다.
   - `tests/team-slugs.test.ts`(같은 teams fixtures)
-  - `tests/names-ko-dict.test.ts`: `SEASON_TEAMS`(순위표 fixture), 111 리터럴, 확인 대기 목록
-  - `tests/team-colors.test.ts`: 111 리터럴
-- **저장소 competitions.json + 고정 날짜**(설정 날짜가 바뀌면 그 날짜가 비시즌이 된다): `tests/brief-empty.test.ts` · `tests/brief-rest.test.tsx` · `tests/states.test.tsx` · `tests/today-brief.test.tsx` · `tests/rest-period.test.ts` · `tests/publish-gate.test.ts`(`TODAY` 2026-10-17)
-- **시즌 라벨 리터럴**("2026-27 시즌"): `tests/competition-page.test.tsx` · `tests/team-page.test.tsx`
-- **2026 응답 fixtures ↔ 설정 시즌**(어댑터의 시즌 대조 가드): `tests/football-data-competition.test.ts` · `tests/competition-file.test.ts` · `tests/collect-football-stages.test.ts`
-- **원장 시즌**: `tests/collect-matchdata.test.ts`(meta.season 기대값 2026 — E의 규칙과 함께)
-- **OG**: `tests/og.test.ts`(커밋된 `public/og` = 지금 입력 — J 뒤 통과)
-- 설정을 따라가는 테스트: `tests/tonight.test.ts`(더비 두 팀 같은 리그 — B7) · `tests/transfer-windows-config.test.ts`(F)
+  - `tests/names-ko-dict.test.ts`: `SEASON_TEAMS`(순위표 fixture), 111 리터럴, 확인 대기 목록(승강이 있을 때)
+  - `tests/team-colors.test.ts`: 111 리터럴(팀 수가 바뀔 때)
+- **전환 때 고친다 — 산출물**: `tests/og.test.ts`(커밋된 `public/og` = 지금 입력 — J 뒤 통과)
+- **설정을 따라간다**: `tests/tonight.test.ts`(더비 두 팀 같은 리그 — B7) · `tests/transfer-windows-config.test.ts`(F)
+- **동결 사본으로 옮긴 테스트**(전환과 무관 — 손대지 않는다): `brief-empty` · `brief-rest` · `states` · `today-brief` · `rest-period` · `competition-page`(화면 코드의 `loadCompetitionsConfig()`를 vi.mock으로 사본에) · `publish-gate` · `team-page` · `football-data-competition` · `competition-file`(사본을 직접 읽음) · `collect-football-stages` · `collect-matchdata`(configs 사본 루트 `season2026Root()`). 새로 고정 날짜 테스트를 쓸 때도 이 도우미를 쓴다.
 
 ### J. OG 다시 굽기
 - `npm run build:og`(`npm run build`의 첫 단계와 같다): 대회 OG(시즌 표기)와 새 팀 OG를 굽고, 목록에 없는 PNG(빠진 팀)는 지운다(`scripts/build-og.ts`). `public/og/` 변경을 같은 커밋에 넣는다.
@@ -187,26 +190,14 @@ disable-model-invocation: true
 - B1을 다시 돌려 `teams-cl-<S>.json`을 받는다. 이어서 `UCL_TEAMS`(slug 순) · team-ids(5대 리그 밖 새 참가 팀 추가, 지난 시즌 5대 리그 밖 팀 제거) · 컬러 · 표기 · `npm run build:teams` · J · T의 UCL 부분.
 - 확인: 점검 오류·경고 0(남은 참고는 다음 수집 몫) · K.
 
-## 사용자 결정 (첫 실행 때 AskUserQuestion — 선택지 + 추천안)
-1. **원장 새 시즌 since 규칙**(plan M1-48 이월 — 아직 없음, 1단계의 선행 조건)
-   - A (추천) **시즌 경계에서 새 meta**: 설정 시즌이 meta.season보다 커진 첫 정기 실행이 `{ season: S, since: 그 실행이 받은 가장 이른 날짜, playerSince: {}, gaps: [] }`로 새로 쓴다. 지난 시즌 meta는 git 이력에 남는다. 스키마 변경 없이 `nextLedgerMeta`와 테스트만 바꾼다. 단점: 지난 시즌 누적을 화면에서 다시 볼 수 없다.
-   - B 시즌별 meta 보존(`meta.json` + `meta-<시즌>.json`, 지난 시즌 기록 화면 가능) — 스키마·레지스트리·화면 변경(§8 사용자 확인).
-   - C 전환 때 사람이 일회성 스크립트로 새 meta를 쓴다 — 봇 실행과 겹칠 수 있어 실수 여지가 크다.
-2. **지난 시즌 팀(강등·UCL 탈락)의 팀 파일·페이지**. 지금 코드는 "6개 대회 팀만" 둔다(team-ids·team-colors·data/teams·OG). 팀 파일이 team-ids 밖이면 `validate`가 오류(교차 참조 7)를 내지만 `build:teams`는 지우지 않는다.
-   - A (추천) **내린다**: 그 팀의 `data/teams/<slug>.json`을 지우고, OG는 `build:og`가 지운다.
-     - `/teams/<slug>/`는 404가 된다. 사이트 안 링크는 팀 파일이 없으면 글자로만 그려 깨진 링크가 없다(`TeamLink`). 팔로우는 '빠진 팀'으로 처리된다(`/my`).
-     - 표기 사전 항목은 남으므로 지난 카드 태그는 한글로 나온다.
-     - 파일 삭제는 손 대신 `build:teams`의 정리 옵션(예: `--prune`)으로 하도록 작은 코드 변경을 추천한다.
-   - B 보존한다(지난 시즌 팀 페이지 유지) — team-ids·검증·로더·화면에 '지난 시즌 팀' 개념이 필요하다(공개 URL 정책·스키마 변경).
-3. **지난 시즌 순위·대회 데이터**
-   - A (추천) 지금처럼 git 이력에만 둔다(새 시즌 수집이 `data/competitions`를 덮어쓴다).
-   - B 시즌 보관 파일(`data/competitions/<comp>-<시즌>.json`)과 아카이브 화면 — 스키마·공개 URL 변경.
-4. **전환 방식**
-   - A (추천) 위 2단계(리그 7월 · UCL 추첨 뒤).
-   - B 추첨 뒤(8월 말) 한 번에 — 리그가 8월 중순에 개막하므로 개막 뒤 약 2주 동안 리그 순위·경기를 지난 시즌 설정으로 받는다.
-5. **시즌 고정 테스트를 동결 fixture로 옮기기**(T단계의 '저장소 competitions.json + 고정 날짜'·'시즌 라벨'·'2026 응답 fixtures' 약 11개 파일)
-   - A (추천) 전환 전(봄)에 따로 작업한다. 고정 날짜 테스트가 저장소 `competitions.json` 대신 `fixtures/` 아래 2026-27 사본을 읽게 해, 전환 때 고칠 테스트를 팀 목록 테스트·원장·OG로 줄인다(동작 불변 리팩터링).
-   - B 전환 때마다 그 자리에서 고친다.
+## 정해진 결정 (2026-11-03 사용자 결정 — PRD §15)
+1. **원장 새 시즌 since** = 자동 초기화(E). 스키마 변경 없음.
+2. **지난 시즌 팀(강등·UCL 탈락)** = 팀 페이지를 내린다. `build-teams --prune`을 사람이 실행한다(B10). 표기 사전은 유지.
+3. **지난 시즌 순위·대회 데이터** = git 이력에만(새 시즌 수집이 `data/competitions`를 덮어쓴다).
+4. **전환 방식** = 2단계(리그 7월 · UCL 추첨 뒤).
+5. **시즌 고정 테스트** = 동결한 2026-27 사본(`fixtures/season-2026/competitions.json` · `tests/support/season-2026.ts`)으로 옮겼다(T).
+
+## 사용자 확인 지점 (AskUserQuestion — 선택지 + 추천안)
 - 단계별 변경안: [그대로 반영 (추천)] / [항목별 수정] / [이 단계 보류].
 - 팀 수가 바뀌어 주간 LLM 요청이 늘 때: [예상 비용 보고 후 진행] / [보류] — §1-3, 반드시 묻는다.
 - 스키마 필드 추가·공개 URL 변경이 필요하면 중단하고 질문한다(CLAUDE §2·§8).
