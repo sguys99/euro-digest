@@ -26,6 +26,11 @@
  *   - since: 원장이 없을 때, COLLECT_ENABLED를 켠 뒤 처음 원장을 쓰는 실행(수동 prod 실행 포함 — 2026-10-14 사용자 확인)이 날짜
  *     조회로 받은 가장 이른 날짜를 한 번 쓰고 바꾸지 않는다. 메타를 달 파일보다 먼저 쓰고, 킥오프가 since 앞인 경기는 원장에 넣지
  *     않는다. 그 실행이 날짜를 하나도 받지 못하면 원장을 시작하지 않는다(다음 실행이 시작).
+ *   - **새 시즌**(2026-11-03 사용자 결정 — `/new-season` E): 설정 시즌(competitions.json 최댓값)이 meta.season보다 커진 뒤 처음
+ *     날짜를 받은 쓰기 실행이 메타를 처음부터 다시 쓴다 — season = 새 시즌, since = 그 실행이 받은 가장 이른 날짜, playerSince·gaps
+ *     비움(원장이 없을 때와 같은 규칙, 스키마 그대로). 지난 시즌 메타는 git 이력에 남는다. 달 파일은 그대로 두고(경기마다 season이
+ *     있다), 소비자(한국 선수 기록·팀 포메이션)는 meta.season 경기만 집계한다. 날짜를 하나도 받지 못한 실행은 바꾸지 않고
+ *     `seasonMismatch`만 알린다(다음 실행이 다시 시도). 설정 시즌이 meta보다 작으면(되돌림) 바꾸지 않는다 — `seasonMismatch`.
  *   - playerSince: 추적 선수(활성 + apiFootballId)마다 한 번 쓰고 바꾸지 않는다. 원장을 시작한 실행의 선수는 since. id를 나중에 채웠거나
  *     나중에 등록한 선수는 `playerStartDate` — 이번 실행이 받은 가장 이른 날짜부터 시작하되, 이미 원장에 그 선수 팀 경기가 행 없이
  *     들어 있으면 그 다음 날로 미룬다(그 경기는 다시 받지 않으므로 그 날의 기록이 빠진다). 행 보충(원장 id로 재조회 — D33 ②)은
@@ -588,8 +593,21 @@ export interface LedgerMetaUpdate {
   playersAdded: Array<{ slug: string; since: string }>;
   gapsAdded: LedgerGap[];
   gapsHealed: LedgerGap[];
-  /** 메타 시즌과 설정 시즌이 다르다(/new-season 확인 — 메타는 바꾸지 않는다) */
+  /** 메타 시즌과 설정 시즌이 다르고 이번 실행이 메타를 새로 쓰지 않았다(/new-season 확인) */
   seasonMismatch: boolean;
+  /** 새 시즌으로 메타를 처음부터 다시 썼다(머리 주석 '새 시즌') — 지난 시즌 값 */
+  seasonReset: { from: number; to: number; previousSince: string } | null;
+}
+
+/**
+ * 이번 실행이 새 시즌 메타를 써야 하는가(머리 주석 '새 시즌') — 설정 시즌이 메타 시즌보다 크다. 날짜를 받았는지는
+ * `nextLedgerMeta`가 본다(받지 못하면 바꾸지 않는다).
+ */
+export function ledgerSeasonAdvanced(
+  current: Pick<MatchLedgerMeta, "season"> | null,
+  season: number | null,
+): boolean {
+  return current !== null && season !== null && season > current.season;
 }
 
 const maxDate = (a: string, b: string) => (a > b ? a : b);
@@ -670,9 +688,12 @@ export function nextLedgerMeta(
     gapsAdded: [],
     gapsHealed: [],
     seasonMismatch: false,
+    seasonReset: null,
   };
   let meta: MatchLedgerMeta;
-  if (current === null) {
+  const reset =
+    ledgerSeasonAdvanced(current, facts.season) && listed.length > 0;
+  if (current === null || reset) {
     if (listed.length === 0 || facts.season === null) return update;
     meta = {
       season: facts.season,
@@ -681,6 +702,13 @@ export function nextLedgerMeta(
       gaps: [],
     };
     update.created = true;
+    if (current !== null) {
+      update.seasonReset = {
+        from: current.season,
+        to: facts.season,
+        previousSince: current.since,
+      };
+    }
   } else {
     meta = {
       season: current.season,
@@ -1004,7 +1032,8 @@ function mergeMetaUpdates(
     playersAdded: [...first.playersAdded, ...second.playersAdded],
     gapsAdded: [...first.gapsAdded, ...second.gapsAdded],
     gapsHealed: [...first.gapsHealed, ...second.gapsHealed],
-    seasonMismatch: first.seasonMismatch || second.seasonMismatch,
+    seasonMismatch: second.seasonMismatch,
+    seasonReset: first.seasonReset ?? second.seasonReset,
   };
 }
 
@@ -1014,6 +1043,8 @@ function mergeMetaUpdates(
  *   - 메타를 읽지 못하면 아무것도 쓰지 않고 이번 경기는 모두 `unstored`(settle은 부른다 — 이월 목록에 다시 넣는다).
  *   - 원장이 아직 없으면 새 메타(since)를 **먼저** 쓴다 — 달 파일만 있고 메타가 없는 상태(다음 실행이 since를 늦게 잡는다)를 막는다.
  *     이번 실행이 날짜를 하나도 받지 못했거나 시즌을 모르면 시작하지 않는다(not-started — 아무것도 쓰지 않고 settle도 부르지 않음).
+ *   - 설정 시즌이 메타 시즌보다 크면(새 시즌 — 머리 주석) 새 메타를 같은 방식으로 **먼저** 쓴다. 날짜를 받지 못해 새로 쓰지 못하면
+ *     지난 메타로 그대로 진행한다(seasonMismatch).
  *   - 킥오프 UTC 날짜가 since 앞인 경기는 원장에 넣지 않는다(`beforeSince` — 집계 밖. 소비자는 since로 거를 필요가 없다).
  */
 export async function applyLedger(input: {
@@ -1055,11 +1086,11 @@ export async function applyLedger(input: {
     return result;
   }
 
-  // 새 원장 — 메타(since·playerSince·첫 기회 공백)를 먼저 쓴다
+  // 새 원장·새 시즌 — 메타(since·playerSince·첫 기회 공백)를 먼저 쓴다
   let current = metaRead.value;
   let created: LedgerMetaUpdate | null = null;
-  if (current === null) {
-    const first = nextLedgerMeta(null, {
+  if (current === null || ledgerSeasonAdvanced(current, input.facts.season)) {
+    const first = nextLedgerMeta(current, {
       ...input.facts,
       dropped: [],
       now: input.now,
@@ -1070,21 +1101,24 @@ export async function applyLedger(input: {
       result.state = "not-started";
       return result;
     }
-    try {
-      result.metaWritten = await writeAtomic(
-        ledgerMetaPath(input.dataDir),
-        serializeLedgerMeta(first.meta),
-      );
-    } catch (error) {
-      result.state = "meta-unwritable";
-      result.unstored = idsOf(input.entries);
-      result.errors.push(`data/${LEDGER_META_REL}: ${errorText(error)}`);
-      settle();
-      return result;
+    if (first.created) {
+      try {
+        result.metaWritten = await writeAtomic(
+          ledgerMetaPath(input.dataDir),
+          serializeLedgerMeta(first.meta),
+        );
+      } catch (error) {
+        result.state = "meta-unwritable";
+        result.unstored = idsOf(input.entries);
+        result.errors.push(`data/${LEDGER_META_REL}: ${errorText(error)}`);
+        settle();
+        return result;
+      }
+      current = first.meta;
+      created = first;
     }
-    current = first.meta;
-    created = first;
   }
+  if (current === null) return result; // 위에서 시작하지 못하면 이미 돌아갔다(타입 좁히기)
 
   // since 앞 경기는 넣지 않는다
   const since = current.since;

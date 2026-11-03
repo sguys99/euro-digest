@@ -58,6 +58,7 @@ import {
   ledgerPlanKnown,
   ledgerWriteMode,
   nameMatchBasis,
+  ledgerSeasonAdvanced,
   nextLedgerMeta,
   playerStartDate,
   readLedgerWindow,
@@ -659,11 +660,102 @@ describe("nextLedgerMeta — since 한 번만·playerSince·gaps", () => {
     expect(nextLedgerMeta(null, facts({ season: null })).meta).toBeNull();
   });
 
-  it("since·시즌은 바꾸지 않는다 — 설정 시즌이 달라도 seasonMismatch만, 같은 내용이면 changed false", () => {
-    const u = nextLedgerMeta(META, facts({ season: 2027 }));
+  it("같은 시즌이면 since·시즌을 바꾸지 않는다 — 같은 내용이면 changed false", () => {
+    const u = nextLedgerMeta(META, facts());
     expect(u.meta).toMatchObject({ since: "2026-10-01", season: 2026 });
-    expect(u.seasonMismatch).toBe(true);
-    expect(u.changed).toBe(false);
+    expect(u).toMatchObject({
+      changed: false,
+      created: false,
+      seasonMismatch: false,
+      seasonReset: null,
+    });
+  });
+
+  it("새 시즌(2026-11-03 결정 — /new-season E): 설정 시즌이 커진 뒤 날짜를 받은 첫 실행이 메타를 처음부터 다시 쓴다", () => {
+    // 여름 시각 수집(06:30 KST = 전날 21:30 UTC) — 날짜는 UTC 기준: 오늘 07-04 · 어제 07-03
+    const withGaps: MatchLedgerMeta = {
+      ...META,
+      gaps: [{ date: "2027-05-20", reason: "date-query" }],
+    };
+    const u = nextLedgerMeta(
+      withGaps,
+      facts({
+        now: "2027-07-04T21:30:00.000Z",
+        season: 2027,
+        dates: [
+          { date: "2027-07-04", ok: true },
+          { date: "2027-07-03", ok: true },
+        ],
+      }),
+    );
+    expect(u.meta).toEqual({
+      season: 2027,
+      since: "2027-07-03",
+      playerSince: {
+        "kim-min-jae": "2027-07-03",
+        "seol-young-woo": "2027-07-03",
+      },
+      gaps: [],
+    });
+    expect(u).toMatchObject({
+      created: true,
+      changed: true,
+      seasonMismatch: false,
+      seasonReset: { from: 2026, to: 2027, previousSince: "2026-10-01" },
+    });
+  });
+
+  it("새 시즌인데 어제 날짜만 실패하면 since는 오늘(UTC) — 실패한 날은 since 앞이라 gaps에 남기지 않는다", () => {
+    const u = nextLedgerMeta(
+      META,
+      facts({
+        now: "2027-07-04T21:30:00.000Z",
+        season: 2027,
+        dates: [
+          { date: "2027-07-04", ok: true },
+          { date: "2027-07-03", ok: false, errorType: "network" },
+        ],
+      }),
+    );
+    expect(u.meta).toMatchObject({
+      season: 2027,
+      since: "2027-07-04",
+      gaps: [],
+    });
+  });
+
+  it("새 시즌인데 날짜를 하나도 받지 못하면 바꾸지 않는다 — seasonMismatch만(다음 실행이 다시 시도)", () => {
+    const u = nextLedgerMeta(
+      META,
+      facts({
+        now: "2027-07-04T21:30:00.000Z",
+        season: 2027,
+        dates: [
+          { date: "2027-07-04", ok: false, errorType: "quota" },
+          { date: "2027-07-03", ok: false, errorType: "quota" },
+        ],
+      }),
+    );
+    expect(u.meta).toMatchObject({ season: 2026, since: "2026-10-01" });
+    expect(u).toMatchObject({ seasonMismatch: true, seasonReset: null });
+  });
+
+  it("설정 시즌이 메타보다 작으면(되돌림) 바꾸지 않는다 — seasonMismatch", () => {
+    const u = nextLedgerMeta(META, facts({ season: 2025 }));
+    expect(u.meta).toMatchObject({ season: 2026, since: "2026-10-01" });
+    expect(u).toMatchObject({
+      created: false,
+      seasonMismatch: true,
+      seasonReset: null,
+    });
+  });
+
+  it("ledgerSeasonAdvanced — 메타 시즌보다 클 때만", () => {
+    expect(ledgerSeasonAdvanced(META, 2027)).toBe(true);
+    expect(ledgerSeasonAdvanced(META, 2026)).toBe(false);
+    expect(ledgerSeasonAdvanced(META, 2025)).toBe(false);
+    expect(ledgerSeasonAdvanced(META, null)).toBe(false);
+    expect(ledgerSeasonAdvanced(null, 2027)).toBe(false);
   });
 
   it("id를 나중에 채운 선수 — 이번 실행이 받은 가장 이른 날부터, 원장에 그 팀 경기가 행 없이 있으면 그 다음 날부터", () => {
@@ -992,6 +1084,86 @@ describe("applyLedger·readLedgerWindow — 원자적 쓰기, 읽기 오류면 �
     expect(second.metaWritten).toBeNull();
     expect(statSync(ledgerMonthPath(dataDir, "2026-10")).mtimeMs).toBe(mtime);
     expect(readFileSync(ledgerMetaPath(dataDir), "utf8")).toBe(metaText);
+  });
+
+  it("새 시즌: 메타를 달 파일보다 먼저 새로 쓰고, 새 since 앞 경기는 넣지 않는다 — 다음 실행은 그 메타를 이어 쓴다", async () => {
+    writeMeta(META);
+    const NOW2 = "2027-07-04T21:30:00.000Z";
+    const old = { ...entryOf(1575180), kickoff: "2027-06-01T19:00:00.000Z" };
+    const fresh = {
+      ...entryOf(1575181),
+      kickoff: "2027-07-04T17:00:00.000Z",
+      season: 2027,
+    };
+    const facts2026 = baseFacts();
+    const r = await applyLedger({
+      dataDir,
+      now: NOW2,
+      read: await readLedgerWindow(dataDir, ledgerMonthsAround(NOW2)),
+      entries: [old, fresh],
+      facts: {
+        ...facts2026,
+        season: 2027,
+        dates: [
+          { date: "2027-07-04", ok: true },
+          { date: "2027-07-03", ok: true },
+        ],
+      },
+    });
+    expect(r).toMatchObject({ state: "started", errors: [], unstored: [] });
+    expect(r.beforeSince).toEqual([1575180]);
+    expect(r.meta).toMatchObject({
+      created: true,
+      seasonMismatch: false,
+      seasonReset: { from: 2026, to: 2027, previousSince: "2026-10-01" },
+    });
+    const meta = MatchLedgerMetaSchema.parse(
+      JSON.parse(readFileSync(ledgerMetaPath(dataDir), "utf8")),
+    );
+    expect(meta).toMatchObject({ season: 2027, since: "2027-07-03", gaps: [] });
+    expect(r.months.map((m) => [m.month, m.added])).toEqual([["2027-07", 1]]);
+
+    const metaText = readFileSync(ledgerMetaPath(dataDir), "utf8");
+    const again = await applyLedger({
+      dataDir,
+      now: "2027-07-04T21:40:00.000Z",
+      read: await readLedgerWindow(dataDir, ledgerMonthsAround(NOW2)),
+      entries: [],
+      facts: {
+        ...facts2026,
+        season: 2027,
+        dates: [
+          { date: "2027-07-04", ok: true },
+          { date: "2027-07-03", ok: true },
+        ],
+      },
+    });
+    expect(again.meta).toMatchObject({ created: false, seasonReset: null });
+    expect(again.metaWritten).toBeNull();
+    expect(readFileSync(ledgerMetaPath(dataDir), "utf8")).toBe(metaText);
+  });
+
+  it("새 시즌인데 날짜를 받지 못하면 지난 메타로 그대로 진행한다(메타 그대로 · seasonMismatch)", async () => {
+    writeMeta(META);
+    const NOW2 = "2027-07-04T21:30:00.000Z";
+    const r = await applyLedger({
+      dataDir,
+      now: NOW2,
+      read: await readLedgerWindow(dataDir, ledgerMonthsAround(NOW2)),
+      entries: [],
+      facts: {
+        ...baseFacts(),
+        season: 2027,
+        dates: [{ date: "2027-07-04", ok: false, errorType: "quota" }],
+      },
+    });
+    expect(r.state).toBe("started");
+    expect(r.meta).toMatchObject({ seasonMismatch: true, seasonReset: null });
+    expect(
+      MatchLedgerMetaSchema.parse(
+        JSON.parse(readFileSync(ledgerMetaPath(dataDir), "utf8")),
+      ),
+    ).toMatchObject({ season: 2026, since: "2026-10-01" });
   });
 
   it("원장이 없고 이번 실행이 날짜를 하나도 받지 못하면 시작하지 않는다(아무것도 쓰지 않음)", async () => {

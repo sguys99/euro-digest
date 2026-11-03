@@ -2568,6 +2568,10 @@ function logLedgerApplied(log: Logger, applied: LedgerApplyResult): void {
     gapsHealed: (meta?.gapsHealed ?? []).map((g) => `${g.date}:${g.reason}`),
     gaps: meta?.meta?.gaps.length ?? null,
     seasonMismatch: meta?.seasonMismatch ?? false,
+    // 새 시즌으로 메타를 다시 썼다(/new-season E — 지난 시즌·since는 git 이력)
+    seasonReset: meta?.seasonReset
+      ? `${meta.seasonReset.from}→${meta.seasonReset.to} (이전 since ${meta.seasonReset.previousSince})`
+      : null,
   });
   if (applied.errors.length > 0) {
     log.error("collect.ledger.fail", { errors: applied.errors });
