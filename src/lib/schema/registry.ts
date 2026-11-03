@@ -32,7 +32,7 @@ import {
 } from "./configs";
 import { MatchLedgerFileSchema, MatchLedgerMetaSchema } from "./matches";
 import { NamesKoFileSchema } from "./names";
-import { NewsFileSchema } from "./news";
+import { NewsFileSchema, NewsMonthFileSchema } from "./news";
 import {
   KoreanPlayersDataFileSchema,
   KoreanPlayersFileSchema,
@@ -182,6 +182,15 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
     schema: NewsFileSchema,
     description: "일별 뉴스 카드 (F3, 파일명 = KST 발행일)",
     expectedBaseName: (f) => f.date,
+  }),
+  entry({
+    pattern: "data/news/????-??.json",
+    kind: "data",
+    status: "confirmed",
+    schema: NewsMonthFileSchema,
+    description:
+      "월별 병합 뉴스 — 말일 + 90일 지난 달의 일별 호 묶음 (FR-158, plan M5-10, 파일명 = KST 달)",
+    expectedBaseName: (f) => f.month,
   }),
   entry({
     pattern: "data/briefs/????-??-??.json",

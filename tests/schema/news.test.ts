@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { AI_TITLE_MAX, NewsCardSchema, NewsFileSchema } from "@/lib/schema";
+import {
+  AI_TITLE_MAX,
+  NewsCardSchema,
+  NewsFileSchema,
+  NewsMonthFileSchema,
+} from "@/lib/schema";
 
 import {
   REJECTED_URLS,
@@ -46,6 +51,62 @@ describe("NewsFile — data/news/YYYY-MM-DD.json", () => {
 
   it("카드가 0장이어도 스키마는 통과한다 (하한 ≥10은 발행 게이트 FR-153 몫)", () => {
     expect(passes(NewsFileSchema, { ...file, cards: [] })).toBe(true);
+  });
+});
+
+describe("NewsMonthFile — data/news/YYYY-MM.json (월별 병합 FR-158, M5-10)", () => {
+  const month = validFixture(NewsMonthFileSchema, "data/news/2026-09.json");
+  const [first, second] = month.issues;
+
+  it("fixture: 호 2개 — 호는 NewsFile 그대로, 같은 카드 ID가 다른 날짜 호에 있어도 된다(호 안에서만 유일)", () => {
+    expect(month.issues).toHaveLength(2);
+    for (const issue of month.issues) {
+      expect(passes(NewsFileSchema, issue)).toBe(true);
+    }
+    expect(first!.cards[0]!.id).toBe(second!.cards[0]!.id);
+  });
+
+  it("호 날짜가 파일 달 밖이면 실패", () => {
+    expect(
+      issuePaths(NewsMonthFileSchema, {
+        ...month,
+        issues: [first, { ...second!, date: "2026-10-01" }],
+      }),
+    ).toEqual(["issues.1.date"]);
+  });
+
+  it("날짜 중복·역순이면 실패", () => {
+    expect(
+      issueMessages(NewsMonthFileSchema, {
+        ...month,
+        issues: [first, first],
+      }),
+    ).toEqual(["호 날짜 중복: 2026-09-29"]);
+    expect(
+      issuePaths(NewsMonthFileSchema, { ...month, issues: [second, first] }),
+    ).toEqual(["issues.1.date"]);
+  });
+
+  it("호가 0개·달 형식이 틀림·호 안 카드 ID 중복·updatedAt 오프셋이면 실패", () => {
+    expect(issuePaths(NewsMonthFileSchema, { ...month, issues: [] })).toEqual([
+      "issues",
+    ]);
+    expect(
+      issuePaths(NewsMonthFileSchema, { ...month, month: "2026-13" }),
+    ).toContain("month");
+    const card = first!.cards[0]!;
+    expect(
+      issuePaths(NewsMonthFileSchema, {
+        ...month,
+        issues: [{ ...first!, cards: [card, card] }, second],
+      }),
+    ).toEqual(["issues.0.cards.1.id"]);
+    expect(
+      issuePaths(NewsMonthFileSchema, {
+        ...month,
+        updatedAt: "2026-12-31T06:32:00+09:00",
+      }),
+    ).toEqual(["updatedAt"]);
   });
 });
 

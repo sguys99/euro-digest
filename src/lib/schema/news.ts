@@ -90,3 +90,47 @@ export const NewsFileSchema = z.object({
     .superRefine(uniqueBy((c) => c.id, "id", "카드 ID")),
 });
 export type NewsFile = z.infer<typeof NewsFileSchema>;
+
+/** 월별 병합 파일의 달 "YYYY-MM" — 호 date(KST 발행일)의 앞 7자 = 파일명 */
+export const NewsMonthSchema = z
+  .string()
+  .regex(/^\d{4}-(?:0[1-9]|1[0-2])$/, "달은 YYYY-MM 형식");
+
+/**
+ * 월별 병합 뉴스 파일 `data/news/YYYY-MM.json` = `{ month, updatedAt, issues }` (PRD FR-158·§8.4, plan M5-10 — 2026-11-03 사용자 결정 A안).
+ * 그 달 말일 + 90일이 지난 뒤 첫 수집 실행이 그 달 일별 파일을 통째로 합친다(T1 — scripts/lib/news-retention.ts).
+ * - month: KST 달(파일명). 모든 호의 `date.slice(0, 7)`과 같다.
+ * - updatedAt: 내용이 마지막으로 바뀐 시각(UTC) — 병합·삭제 요청 원본 삭제 때 갱신.
+ * - issues: 일별 `NewsFile` 그대로(date·generatedAt·runId·cards — 병합 전과 같은 값) · 날짜 오름차순 · 날짜 중복 금지 · 1개 이상.
+ *   카드 ID 중복 금지는 지금처럼 **호 안에서만**(같은 기사의 날짜 간 재게시가 이미 있다 — plan M1-16 이월 메모).
+ * - 같은 날짜가 일별 파일과 월별 파일에 함께 있으면 오류다(로더가 던지고 validate 교차 검사가 잡는다 — 파일 하나만으로는 알 수 없음).
+ */
+export const NewsMonthFileSchema = z
+  .object({
+    month: NewsMonthSchema,
+    updatedAt: IsoSchema,
+    issues: z.array(NewsFileSchema).min(1),
+  })
+  .superRefine((file, ctx) => {
+    file.issues.forEach((issue, i) => {
+      if (issue.date.slice(0, 7) !== file.month) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["issues", i, "date"],
+          message: `호 날짜(${issue.date})가 파일 달(${file.month})에 속하지 않는다`,
+        });
+      }
+      const prev = file.issues[i - 1];
+      if (prev && prev.date >= issue.date) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["issues", i, "date"],
+          message:
+            prev.date === issue.date
+              ? `호 날짜 중복: ${issue.date}`
+              : "호는 날짜 오름차순이어야 한다",
+        });
+      }
+    });
+  });
+export type NewsMonthFile = z.infer<typeof NewsMonthFileSchema>;

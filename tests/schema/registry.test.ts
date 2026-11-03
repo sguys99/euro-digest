@@ -4,6 +4,7 @@ import {
   BriefFileSchema,
   KoreanPlayersDataFileSchema,
   NewsFileSchema,
+  NewsMonthFileSchema,
   RunsDevFileSchema,
   RunsFileSchema,
   SourcesFileSchema,
@@ -75,7 +76,8 @@ describe("schemaRegistry ↔ fixtures/schema", () => {
     // + data/matches/????-??.json · data/matches/meta.json (경기 기록 원장 D33, M1-48b)
     // + data/briefs/????-??-??.json (일일 브리핑 D38, M1-19)
     // + data/cache/lineup-backfill.json (M2-09 — 2026-10-30 사용자 확인)
-    expect(schemaRegistry).toHaveLength(28);
+    // + data/news/????-??.json (월별 병합 FR-158, M5-10 — 2026-11-03 사용자 결정 A안)
+    expect(schemaRegistry).toHaveLength(29);
   });
 
   it("configs/ 항목은 알 수 없는 키를 거부하고 data/ 항목은 버린다 (결정 Q5)", () => {
@@ -107,6 +109,7 @@ describe("findSchemaEntry — 경로 매칭", () => {
     ["./configs/sources.json", SourcesFileSchema],
     ["configs\\sources.json", SourcesFileSchema],
     ["data/news/2026-10-10.json", NewsFileSchema],
+    ["data/news/2026-10.json", NewsMonthFileSchema], // 월별 병합(FR-158, M5-10)
     ["data/briefs/2026-10-11.json", BriefFileSchema],
     ["data/players/korean.json", KoreanPlayersDataFileSchema],
     ["data/players/weekly/2026-53.json", WeeklyReportSchema],
@@ -117,7 +120,7 @@ describe("findSchemaEntry — 경로 매칭", () => {
   });
 
   it.each([
-    "data/news/2026-10.json", // 월별 병합 형식은 아직 미정(FR-158) — 등록 전에는 매칭하지 않는다
+    "data/news/2026-1.json", // 월별 병합은 YYYY-MM 7자만
     "data/news/archive/2026-10-10.json", // `*`·`?`는 / 를 넘지 않는다
     "data/news/2026-10-10.json.bak",
     "configs/prompts/summarize.md",
