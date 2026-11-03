@@ -44,6 +44,8 @@ vi.mock("@/lib/data/news", () => ({
   loadLatestNews,
   // 홈 이적 핫 리스트(M4-04)의 근거 카드 — 이 테스트는 이적을 보지 않는다
   loadRetainedCards: () => [],
+  // 지면 수정 시각(M5-03 — 구조화 데이터 dateModified). 규칙은 tests/data-news.test.ts
+  issueLastModified: (date: string) => loadNewsIssue(date)?.generatedAt ?? null,
 }));
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
 // 5줄 자리 상태(M1-37) — 기본은 loadBrief 결과 그대로(파일 있으면 브리핑, 없으면 블록 없음)
@@ -275,7 +277,10 @@ describe("NewsArchivePage(/news/[date]/) — 지면", () => {
       date === "2026-10-20" ? { ...briefFixture, date } : null,
     );
     await renderArchive("2026-10-20");
-    expect(loadBrief.mock.calls.map(([d]) => d)).toEqual(["2026-10-20"]);
+    // 그 호 날짜만 읽는다(5줄 자리 + 지면 수정 시각 — M5-03 구조화 데이터 dateModified)
+    expect([...new Set(loadBrief.mock.calls.map(([d]) => d))]).toEqual([
+      "2026-10-20",
+    ]);
     expect(
       within(screen.getByRole("main"))
         .getAllByRole("heading", { level: 2 })

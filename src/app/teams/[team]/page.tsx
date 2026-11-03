@@ -15,6 +15,7 @@ import { TeamProfile } from "@/components/team/team-profile";
 import { TeamSheet, type SheetPlayerView } from "@/components/team/team-sheet";
 import { TeamTicket } from "@/components/team/team-ticket";
 import { DataSourceNote } from "@/components/data-source";
+import { JsonLd } from "@/components/seo/json-ld";
 import { IcsSubscribe } from "@/components/ui/ics-link";
 import { SearchRecord } from "@/components/search/search-record";
 import { dataSourceOf } from "@/lib/data-source";
@@ -23,13 +24,14 @@ import { loadLatestIssue } from "@/lib/data/issue";
 import { teamPageSearchRecord } from "@/lib/data/search";
 import { loadTeamPage, type TeamPageData } from "@/lib/data/team-page";
 import { listTeamSlugs } from "@/lib/data/teams";
-import { absoluteUrl, routes } from "@/lib/paths";
+import { routes } from "@/lib/paths";
 import { seasonLabel } from "@/lib/rest-period";
 import type { CompId } from "@/lib/schema/common";
 import type { TeamSheetPlayer } from "@/lib/schema/team";
 import { teamOgCard } from "@/lib/og";
 import { pageMetadata, teamDescription } from "@/lib/seo";
 import {
+  FIXTURES_UPCOMING,
   fixtureWindow,
   keyPlayerViews,
   leagueContextRows,
@@ -42,6 +44,11 @@ import {
   type TeamFixtureView,
 } from "@/lib/team-view";
 import { teamProfileView } from "@/lib/team-profile-view";
+import {
+  eventInputs,
+  teamJsonLd,
+  upcomingMatches,
+} from "@/lib/structured-data";
 import { formatKst, parseUtcIso } from "@/lib/time";
 
 /*
@@ -154,7 +161,7 @@ export default async function TeamPage({ params }: PageProps<"/teams/[team]">) {
             />
           }
         />
-        <JsonLd page={page} slug={slug} />
+        <JsonLd data={teamStructuredData(page, slug, nowMs)} />
         <SearchRecord record={teamPageSearchRecord(page)} />
         {profile ? (
           <TeamProfile
@@ -344,30 +351,32 @@ function koreanKeyPlayers(page: TeamPageData): KoreanKeyPlayer[] {
   });
 }
 
-/** SportsTeam 구조화 데이터(NFR-03 선택) — 이름·영문 이름·종목·리그·주소만(순위·스코어 없음) */
-function JsonLd({ page, slug }: { page: TeamPageData; slug: string }) {
-  const json = {
-    "@context": "https://schema.org",
-    "@type": "SportsTeam",
-    name: page.self.name,
-    alternateName: page.team.nameEn,
-    sport: "Soccer",
-    url: absoluteUrl(routes.team(slug)),
-    ...(page.config
-      ? {
-          memberOf: {
-            "@type": "SportsOrganization",
-            name: page.config.nameKo,
-          },
-        }
-      : {}),
-  };
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(json).replace(/</g, "\\u003c"),
-      }}
-    />
+/**
+ * 구조화 데이터(NFR-03 — M5-03, src/lib/structured-data.ts): SportsTeam(이름 · 영문 이름 · 종목 · 리그 · 주소) + 다가오는 경기
+ * `FIXTURES_UPCOMING`개(화면 일정 창의 다가오는 경기 수 — 이 팀이 뛰는 대회 전부, 지난 경기 · 스코어 없음)
+ */
+function teamStructuredData(page: TeamPageData, slug: string, nowMs: number) {
+  const names = new Map(page.configs.map((c) => [c.id, c.nameKo]));
+  const upcoming = upcomingMatches(
+    teamMatchesOf(
+      page.competitions.map((c) => c.matches),
+      slug,
+    ),
+    nowMs,
+    FIXTURES_UPCOMING,
+  );
+  return teamJsonLd(
+    {
+      slug,
+      name: page.self.name,
+      nameEn: page.team.nameEn,
+      league: page.config
+        ? { id: page.config.id, name: page.config.nameKo }
+        : null,
+    },
+    eventInputs(upcoming, page.lookup, (id) => ({
+      id,
+      name: names.get(id) ?? id,
+    })),
   );
 }

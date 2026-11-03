@@ -24,7 +24,8 @@
  * - **호는 이 모듈의 `readIssue` 한 곳에서만 꺼내고(일별·월별 파일 모두), 그 함수가 삭제 요청 제외까지 한다** — 공개 로더(`loadLatestNews`·
  *   `loadNewsIssue`)는 모두 그것을 거친다. 날짜 아카이브·필터·RSS·검색·OG 등 카드를 내보내는 빌드 경로(M1-33·M1-34·M4-11·M4-14·
  *   M5-01)는 data/news를 직접 읽지 말고 이 모듈의 로더를 쓴다(새 로더도 여기에 — tests/takedown-build-guard.test.ts가 src/·
- *   scripts/build-feeds.ts의 직접 읽기와, 이 모듈의 로더가 삭제 요청을 빼는지를 확인한다).
+ *   scripts/build-feeds.ts의 직접 읽기와, 이 모듈의 로더가 삭제 요청을 빼는지를 확인한다). 예외는 `issueLastModified`(M5-03) 하나 —
+ *   원본 카드 ID를 삭제 요청 시각과 맞춰 보려고 제외 전 호를 읽지만, 시각 문자열만 돌려주고 카드는 내보내지 않는다.
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
@@ -38,7 +39,11 @@ import {
   type NewsFile,
   type NewsMonthFile,
 } from "@/lib/schema/news";
-import { TakedownsFileSchema } from "@/lib/schema/takedown";
+import {
+  TakedownsFileSchema,
+  type Takedown,
+  type TakedownsFile,
+} from "@/lib/schema/takedown";
 
 /** 파이프라인 산출물 위치(저장소 루트 기준). `next build`·Vitest 모두 루트에서 실행한다 */
 export const NEWS_DIR = path.resolve("data/news");
@@ -151,8 +156,8 @@ export function loadRetainedCards(
   return cards;
 }
 
-/** 삭제 요청 카드 ID 집합 — 파일이 없거나 JSON·스키마가 틀리면 던진다(빌드 실패, 위 규칙) */
-export function loadTakedownIds(file: string = TAKEDOWNS_FILE): Set<string> {
+/** 삭제 요청 등록 목록 — 파일이 없거나 JSON·스키마가 틀리면 던진다(빌드 실패, 위 규칙) */
+function readTakedowns(file: string): TakedownsFile {
   const where = path.relative(process.cwd(), file) || file;
   let raw: unknown;
   try {
@@ -169,7 +174,53 @@ export function loadTakedownIds(file: string = TAKEDOWNS_FILE): Set<string> {
       `${where}: 삭제 요청 등록 파일 스키마 검증 실패 — 빌드를 멈춘다(FR-143)\n${z.prettifyError(parsed.error)}`,
     );
   }
-  return new Set(parsed.data.map((t) => t.id));
+  return parsed.data;
+}
+
+/** 삭제 요청 카드 ID 집합 — 파일이 없거나 JSON·스키마가 틀리면 던진다(빌드 실패, 위 규칙) */
+export function loadTakedownIds(file: string = TAKEDOWNS_FILE): Set<string> {
+  return new Set(readTakedowns(file).map((t) => t.id));
+}
+
+/**
+ * 지면이 마지막으로 바뀐 시각(순수) — 파일 `generatedAt`과, 그 호 **원본** 카드에 걸린 삭제 요청의 반영 시각(`handledAt`, 아직 없으면
+ * `requestedAt`) 가운데 늦은 것(M5-03 — M1-38 이월). 삭제 요청은 등록만으로 빌드에서 빠지지만(위 규칙) 원본 파일은 다음 수집 실행이
+ * 지울 때까지 그대로라 `generatedAt`이 바뀌지 않는다 — 이 값이 없으면 sitemap lastmod가 재크롤 신호를 내지 못한다. 원본을 지운 실행은
+ * 파일을 다시 써 `generatedAt`이 더 늦어지므로 값은 뒤로 가지 않는다. 시각 비교는 Date 값으로(소수 초 자릿수가 달라도), 돌려주는 값은
+ * 원래 문자열.
+ */
+export function lastModifiedWithTakedowns(
+  generatedAt: string,
+  cardIds: readonly string[],
+  takedowns: readonly Pick<Takedown, "id" | "requestedAt" | "handledAt">[],
+): string {
+  const ids = new Set(cardIds);
+  let latest = generatedAt;
+  for (const t of takedowns) {
+    if (!ids.has(t.id)) continue;
+    const at = t.handledAt ?? t.requestedAt;
+    if (Date.parse(at) > Date.parse(latest)) latest = at;
+  }
+  return latest;
+}
+
+/**
+ * 발행일 하나의 지면 수정 시각(sitemap lastmod · 날짜 호 구조화 데이터 dateModified — `lastModifiedWithTakedowns`). 호가 없으면 `null`.
+ * 카드를 돌려주지 않는다(시각만) — 삭제 요청 카드를 내보내는 경로가 아니다.
+ */
+export function issueLastModified(
+  date: string,
+  dir: string = NEWS_DIR,
+  options: LoadNewsOptions = {},
+): string | null {
+  const location = indexIssues(dir).get(date);
+  if (location === undefined) return null;
+  const issue = readRawIssue(date, location);
+  return lastModifiedWithTakedowns(
+    issue.generatedAt,
+    issue.cards.map((c) => c.id),
+    readTakedowns(options.takedownsFile ?? TAKEDOWNS_FILE),
+  );
 }
 
 /** 삭제 요청 카드를 뺀 호(순서 유지). 뺄 카드가 없으면 같은 객체를 돌려준다 */
@@ -184,12 +235,8 @@ export function withoutTakedowns(
   };
 }
 
-/** 호 1개를 꺼내 검증하고 삭제 요청 카드를 뺀다 — 이 모듈에서 호를 꺼내는 유일한 곳(머리 주석). 일별·월별 파일 모두 */
-function readIssue(
-  date: string,
-  location: IssueLocation,
-  options: LoadNewsOptions,
-): NewsFile {
+/** 호 1개를 꺼내 검증한다(삭제 요청 카드 포함 — 이 모듈 안에서만, `readIssue`·`issueLastModified`). 일별·월별 파일 모두 */
+function readRawIssue(date: string, location: IssueLocation): NewsFile {
   const issue =
     location.kind === "daily"
       ? readNewsFile(location.file)
@@ -197,8 +244,17 @@ function readIssue(
   if (issue === undefined) {
     throw new Error(`호 ${date}를 ${location.file}에서 찾지 못함`);
   }
+  return issue;
+}
+
+/** 호 1개를 꺼내 검증하고 삭제 요청 카드를 뺀다 — 카드를 내보내는 읽기는 모두 여기를 지난다(머리 주석). 일별·월별 파일 모두 */
+function readIssue(
+  date: string,
+  location: IssueLocation,
+  options: LoadNewsOptions,
+): NewsFile {
   return withoutTakedowns(
-    issue,
+    readRawIssue(date, location),
     loadTakedownIds(options.takedownsFile ?? TAKEDOWNS_FILE),
   );
 }

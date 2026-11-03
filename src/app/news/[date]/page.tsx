@@ -6,8 +6,10 @@ import { counterfoilSlots } from "@/components/news/counterfoil";
 import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
 import { AppShell } from "@/components/shell/app-shell";
+import { JsonLd } from "@/components/seo/json-ld";
 import { loadBrief, loadBriefSlot } from "@/lib/data/brief";
 import {
+  issuePageLastModified,
   listIssueDates,
   loadArchiveView,
   loadIssue,
@@ -18,6 +20,7 @@ import { archiveHeading, archiveTitle } from "@/lib/news/archive";
 import { routes } from "@/lib/paths";
 import { newsOgCard } from "@/lib/og";
 import { archiveDescription, pageMetadata } from "@/lib/seo";
+import { issueJsonLd } from "@/lib/structured-data";
 import { FIRST_ISSUE_DATE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -87,6 +90,26 @@ export default async function NewsArchivePage({
   // 이날의 5줄 자리(M1-37 — 브리핑 · 확인된 오류 · 없음, src/lib/brief-slot.ts)
   const slot = loadBriefSlot(date);
   const filter = loadNewsFilterView(news);
+  // 구조화 데이터(NFR-03 — M5-03, src/lib/structured-data.ts): 한 호 = CollectionPage, 우리가 쓴 글인 이날의 5줄만 NewsArticle(줄이 있을 때).
+  // 카드(다른 매체 기사 링크)는 싣지 않는다 — 우리 기사로 표시하면 안 된다
+  const brief =
+    slot.kind === "brief" && slot.brief.lines.length > 0 ? slot.brief : null;
+  const structured = issueJsonLd({
+    date,
+    description: archiveDescription({
+      date,
+      cards: news.cards.length,
+      briefLines: brief?.lines.length ?? 0,
+    }),
+    lastModified: issuePageLastModified(date) ?? news.generatedAt,
+    brief: brief
+      ? {
+          generatedAt: brief.generatedAt,
+          lines: brief.lines.length,
+          aiLines: brief.lines.filter((l) => l.ai).length,
+        }
+      : null,
+  });
 
   return (
     <AppShell
@@ -112,6 +135,7 @@ export default async function NewsArchivePage({
         titleAs="h3"
         className={cn("scroll-mt-4", slot.kind !== "none" && "mt-9 lg:mt-11")}
       />
+      <JsonLd data={structured} />
     </AppShell>
   );
 }

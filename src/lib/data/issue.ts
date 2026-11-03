@@ -5,7 +5,9 @@
  * 쓴다 — node:fs를 쓰는 로더들을 부르므로 `"use client"` 파일에서 import하지 않는다.
  * 카드는 뉴스 로더(src/lib/data/news.ts)를 거쳐 읽으므로 삭제 요청 카드는 이미 빠져 있다(FR-143). 호 정보 규칙은 src/lib/issue.ts.
  */
+import { loadBrief } from "@/lib/data/brief";
 import {
+  issueLastModified,
   listNewsDates,
   loadLatestNews,
   loadNewsIssue,
@@ -48,4 +50,27 @@ export function listIssueDates(): string[] {
 /** 그 호의 아카이브 이동 모델(이전·다음 호 + 달력 — src/lib/news/archive.ts). 발행된 호가 아니면 null */
 export function loadArchiveView(date: string): ArchiveView | null {
   return buildArchiveView(listIssueDates(), date);
+}
+
+/** UTC ISO 시각 가운데 가장 늦은 것(원래 문자열 — 소수 초 자릿수가 달라도 시각으로 비교). 값이 없으면 null */
+export function latestIso(
+  values: ReadonlyArray<string | null | undefined>,
+): string | null {
+  let latest: string | null = null;
+  for (const v of values) {
+    if (v == null) continue;
+    if (latest === null || Date.parse(v) > Date.parse(latest)) latest = v;
+  }
+  return latest;
+}
+
+/**
+ * 날짜 페이지 지면이 마지막으로 바뀐 시각(M5-03 — sitemap lastmod · 구조화 데이터 dateModified) — 뉴스 쪽(파일 generatedAt과 그 호
+ * 카드의 삭제 요청 반영 시각 — `issueLastModified`)과 그 호 브리핑 파일 generatedAt(이날의 5줄 — 결과 지연 재수집 등으로 다시 쓰인다)
+ * 가운데 늦은 것. 발행된 호가 아니면 null.
+ */
+export function issuePageLastModified(date: string): string | null {
+  const news = issueLastModified(date);
+  if (news === null) return null;
+  return latestIso([news, loadBrief(date)?.generatedAt]);
 }

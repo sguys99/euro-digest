@@ -7,6 +7,7 @@ import {
 } from "@/components/home/tonight";
 import { DataSourceNote } from "@/components/data-source";
 import { AppShell } from "@/components/shell/app-shell";
+import { JsonLd } from "@/components/seo/json-ld";
 import { SectionHead } from "@/components/ui/section-head";
 import { loadLatestIssue } from "@/lib/data/issue";
 import {
@@ -18,6 +19,7 @@ import { tonightCriteria, tonightWindowLongText } from "@/lib/home-widgets";
 import { routes } from "@/lib/paths";
 import { pageMetadata, TONIGHT_DESCRIPTION } from "@/lib/seo";
 import { pageOgCard } from "@/lib/og";
+import { eventsJsonLd } from "@/lib/structured-data";
 
 /*
  * `/tonight/` 오늘 밤 볼 경기 (PRD F8 FR-80~82 · §4 IA "홈 섹션의 전체 보기", plan M2-14)
@@ -43,10 +45,25 @@ const HEADING_ID = "tonight-page-h";
 
 export default function TonightPage() {
   const { issue } = loadLatestIssue();
-  const widget = loadTonightWidget();
+  const now = new Date();
+  const widget = loadTonightWidget(now);
   const rules = loadTonightRules();
   const source = loadWidgetsSource();
   const count = widget.cards.length;
+  // 구조화 데이터(NFR-03 — M5-03): 선정 경기 가운데 아직 시작 전인 예정 경기만 SportsEvent로(종료 · 결과 대기 · 진행 중은 뺀다 — 결과 노출 0)
+  const nowMs = now.getTime();
+  const events = eventsJsonLd(
+    widget.cards
+      .filter((c) => c.state === "scheduled" && Date.parse(c.kickoff) > nowMs)
+      .map((c) => ({
+        kickoff: c.kickoff,
+        status: "scheduled" as const,
+        home: c.home,
+        away: c.away,
+        competition: { id: c.comp, name: c.compLabel.name },
+      })),
+    "/tonight/ JSON-LD",
+  );
 
   const criteria = (where: "flow" | "facing") =>
     rules ? (
@@ -92,6 +109,7 @@ export default function TonightPage() {
         scope="tonight"
         className="mt-9"
       />
+      <JsonLd data={events} />
     </AppShell>
   );
 }

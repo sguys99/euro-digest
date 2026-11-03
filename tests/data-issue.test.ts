@@ -4,26 +4,39 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
+  issuePageLastModified,
+  latestIso,
   listIssueDates,
   loadArchiveView,
   loadIssue,
   loadLatestIssue,
 } from "@/lib/data/issue";
+import type { BriefFile } from "@/lib/schema/brief";
 import type { NewsFile } from "@/lib/schema/news";
 import type { RunLog } from "@/lib/schema/run";
 
-const { listNewsDates, loadLatestNews, loadNewsIssue, loadProdRuns } =
-  vi.hoisted(() => ({
-    listNewsDates: vi.fn<() => string[]>(),
-    loadLatestNews: vi.fn<() => NewsFile | null>(),
-    loadNewsIssue: vi.fn<(date: string) => NewsFile | null>(),
-    loadProdRuns: vi.fn<() => RunLog[]>(),
-  }));
+const {
+  listNewsDates,
+  loadLatestNews,
+  loadNewsIssue,
+  issueLastModified,
+  loadBrief,
+  loadProdRuns,
+} = vi.hoisted(() => ({
+  listNewsDates: vi.fn<() => string[]>(),
+  loadLatestNews: vi.fn<() => NewsFile | null>(),
+  loadNewsIssue: vi.fn<(date: string) => NewsFile | null>(),
+  issueLastModified: vi.fn<(date: string) => string | null>(),
+  loadBrief: vi.fn<(date: string) => BriefFile | null>(() => null),
+  loadProdRuns: vi.fn<() => RunLog[]>(),
+}));
 vi.mock("@/lib/data/news", () => ({
   listNewsDates,
   loadLatestNews,
   loadNewsIssue,
+  issueLastModified,
 }));
+vi.mock("@/lib/data/brief", () => ({ loadBrief }));
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
 
 const NEWS: NewsFile = {
@@ -84,5 +97,36 @@ describe("listIssueDates · loadArchiveView (M1-34)", () => {
     expect(loadArchiveView("2026-10-15")).toBeNull();
     // 파일 내용은 읽지 않는다(목록만)
     expect(loadNewsIssue).not.toHaveBeenCalled();
+  });
+});
+
+describe("지면 수정 시각 (M5-03 — sitemap lastmod · 구조화 데이터 dateModified)", () => {
+  it("latestIso — 시각으로 비교해 원래 문자열, 빈 값은 건너뛰고 모두 없으면 null", () => {
+    expect(
+      latestIso(["2026-11-02T22:14:00.397Z", null, "2026-11-02T22:14:53Z"]),
+    ).toBe("2026-11-02T22:14:53Z");
+    expect(latestIso(["2026-11-02T22:14:00.5Z", "2026-11-02T22:14:00Z"])).toBe(
+      "2026-11-02T22:14:00.5Z",
+    );
+    expect(latestIso([undefined, null])).toBeNull();
+  });
+
+  it("issuePageLastModified — 뉴스 쪽(삭제 요청 반영 포함)과 브리핑 generatedAt 가운데 늦은 것, 발행된 호가 아니면 null", () => {
+    issueLastModified.mockImplementation((date) =>
+      date === "2026-11-03" ? "2026-11-02T22:14:00.397Z" : null,
+    );
+    loadBrief.mockImplementation((date) =>
+      date === "2026-11-03"
+        ? ({ generatedAt: "2026-11-02T22:14:53.273Z" } as BriefFile)
+        : null,
+    );
+    expect(issuePageLastModified("2026-11-03")).toBe(
+      "2026-11-02T22:14:53.273Z",
+    );
+    expect(issuePageLastModified("2026-11-04")).toBeNull();
+    loadBrief.mockReturnValue(null);
+    expect(issuePageLastModified("2026-11-03")).toBe(
+      "2026-11-02T22:14:00.397Z",
+    );
   });
 });

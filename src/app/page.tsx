@@ -11,6 +11,7 @@ import { NewsFilterContents } from "@/components/news/news-filter";
 import { NewsSection } from "@/components/news/news-section";
 import { OnboardingSlot } from "@/components/onboarding/onboarding-slot";
 import { AppShell } from "@/components/shell/app-shell";
+import { JsonLd } from "@/components/seo/json-ld";
 import { TransferHotList } from "@/components/transfers/hot-list";
 import { loadBriefSlot } from "@/lib/data/brief";
 import {
@@ -30,6 +31,7 @@ import { issueLateWindows, issueNumber } from "@/lib/issue";
 import { MY_NEWS_HOME } from "@/lib/my-view";
 import { routes } from "@/lib/paths";
 import { pageMetadata, SITE_DESCRIPTION } from "@/lib/seo";
+import { siteJsonLd } from "@/lib/structured-data";
 import { transferWindowLine } from "@/lib/transfer-window-view";
 import { cn } from "@/lib/utils";
 
@@ -215,6 +217,8 @@ export default function HomePage() {
       <div data-slot="home-widgets" className="xl:hidden">
         {widgets("flow")}
       </div>
+      {/* 구조화 데이터(NFR-03 — M5-03): 사이트 전역 WebSite + Organization은 홈에만(검색 potentialAction 없음 — src/lib/structured-data.ts) */}
+      <JsonLd data={siteJsonLd()} />
     </AppShell>
   );
 }

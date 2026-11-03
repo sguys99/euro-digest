@@ -9,19 +9,32 @@ import type { RunLog } from "@/lib/schema/run";
 
 // `src/app/sitemap.ts` 라우트(M1-38, FR-124) — 로더(발행일 목록·그 호 파일)를 바꿔 끼워 항목을 본다.
 // 항목 규칙 자체는 tests/seo.test.ts, 빌드 결과 out/sitemap.xml은 e2e tests/e2e/seo.spec.ts.
-const { listNewsDates, loadNewsIssue, loadLatestNews, loadProdRuns } =
-  vi.hoisted(() => ({
-    listNewsDates: vi.fn<() => string[]>(),
-    loadNewsIssue: vi.fn<(date: string) => NewsFile | null>(),
-    loadLatestNews: vi.fn<() => NewsFile | null>(() => null),
-    loadProdRuns: vi.fn<() => RunLog[]>(() => []),
-  }));
+const {
+  listNewsDates,
+  loadNewsIssue,
+  loadLatestNews,
+  issueLastModified,
+  loadProdRuns,
+} = vi.hoisted(() => ({
+  listNewsDates: vi.fn<() => string[]>(),
+  loadNewsIssue: vi.fn<(date: string) => NewsFile | null>(),
+  loadLatestNews: vi.fn<() => NewsFile | null>(() => null),
+  // 지면 수정 시각(M5-03 — generatedAt과 삭제 요청 반영 시각 중 늦은 것, 규칙은 tests/data-news.test.ts)
+  issueLastModified: vi.fn<(date: string) => string | null>(),
+  loadProdRuns: vi.fn<() => RunLog[]>(() => []),
+}));
 vi.mock("@/lib/data/news", () => ({
   listNewsDates,
   loadNewsIssue,
   loadLatestNews,
+  issueLastModified,
 }));
 vi.mock("@/lib/data/runs", () => ({ loadProdRuns }));
+// 브리핑 파일(M5-03 — 날짜 페이지 lastmod에 브리핑 generatedAt도 든다). 기본 없음
+const { loadBrief } = vi.hoisted(() => ({
+  loadBrief: vi.fn((): { generatedAt: string } | null => null),
+}));
+vi.mock("@/lib/data/brief", () => ({ loadBrief }));
 // 대회 페이지(M2-10) — 저장소 data/competitions 대신 테스트가 정한 대회 데이터(기본 없음)
 const { loadAllCompetitionData } = vi.hoisted(() => ({
   loadAllCompetitionData: vi.fn<
@@ -89,6 +102,10 @@ beforeEach(() => {
   loadNewsIssue.mockImplementation((date) =>
     DATES.includes(date) ? issueOf(date) : null,
   );
+  issueLastModified.mockReset();
+  issueLastModified.mockImplementation((date) =>
+    DATES.includes(date) ? issueOf(date).generatedAt : null,
+  );
 });
 
 describe("sitemap 라우트", () => {
@@ -115,6 +132,40 @@ describe("sitemap 라우트", () => {
         lastModified: issueOf(date).generatedAt,
       })),
     ]);
+  });
+
+  it("날짜 페이지 lastmod = 지면 수정 시각(M5-03 — 삭제 요청으로 카드가 빠진 호는 그 반영 시각), 최신 호면 홈 lastmod도", () => {
+    issueLastModified.mockImplementation((date) =>
+      date === "2026-10-17"
+        ? "2026-10-20T03:00:00Z"
+        : DATES.includes(date)
+          ? issueOf(date).generatedAt
+          : null,
+    );
+    const entries = sitemap();
+    expect(entries.find((e) => e.url === `${SITE}/news/2026-10-17/`)).toEqual({
+      url: `${SITE}/news/2026-10-17/`,
+      lastModified: "2026-10-20T03:00:00Z",
+    });
+    expect(entries[0]).toEqual({
+      url: `${SITE}/`,
+      lastModified: "2026-10-20T03:00:00Z",
+    });
+  });
+
+  it("브리핑 파일이 뉴스 파일보다 늦게 쓰였으면 그 날짜 페이지 lastmod = 브리핑 generatedAt(M5-03)", () => {
+    loadBrief.mockImplementation(((date: string) =>
+      date === "2026-10-13"
+        ? { generatedAt: "2026-10-13T05:00:00Z" }
+        : null) as () => { generatedAt: string } | null);
+    expect(sitemap().find((e) => e.url === `${SITE}/news/2026-10-13/`)).toEqual(
+      {
+        url: `${SITE}/news/2026-10-13/`,
+        lastModified: "2026-10-13T05:00:00Z",
+      },
+    );
+    loadBrief.mockReset();
+    loadBrief.mockReturnValue(null);
   });
 
   it("대회 데이터가 있으면 /tonight/ 다음에 대회 페이지(lastmod = updatedAt)", () => {

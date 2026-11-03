@@ -14,20 +14,18 @@ import {
 } from "@/components/korean-players/player-detail";
 import { PlayerTicket } from "@/components/korean-players/player-ticket";
 import { SearchRecord } from "@/components/search/search-record";
+import { JsonLd } from "@/components/seo/json-ld";
 import { AppShell } from "@/components/shell/app-shell";
 import { ChevronLeftIcon } from "@/components/ui/icons";
 import { RunningHead } from "@/components/ui/section-head";
 import { loadLatestIssue } from "@/lib/data/issue";
-import {
-  listKoreanPlayerSlugs,
-  loadPlayerPage,
-  type PlayerPageData,
-} from "@/lib/data/player-page";
+import { listKoreanPlayerSlugs, loadPlayerPage } from "@/lib/data/player-page";
 import { cx } from "@/lib/cx";
 import { playerPageSearchRecord } from "@/lib/data/search";
 import { rssFeedLink } from "@/lib/feed-links";
-import { absoluteUrl, routes } from "@/lib/paths";
+import { routes } from "@/lib/paths";
 import { koreanPlayerDescription, pageMetadata } from "@/lib/seo";
+import { personJsonLd } from "@/lib/structured-data";
 
 /*
  * `/korean-players/[slug]/` 한국 선수 상세 (PRD FR-62·FR-64·FR-65·FR-73, DESIGN §9.3 "D2 — 한국 선수·이적·마이 팀 화면" 선수 티켓 · 시즌 기록 표 ·
@@ -212,28 +210,15 @@ export default async function KoreanPlayerPage({
           </div>
         ) : null}
       </div>
-      <JsonLd page={page} slug={slug} />
+      {/* 구조화 데이터(NFR-03 — M5-03): Person — 이름 · 영문 이름 · 소속 팀만(출전 · 결과 수치 없음) */}
+      <JsonLd
+        data={personJsonLd({
+          slug,
+          nameKo: page.view.nameKo,
+          nameEn: page.view.nameEn,
+          team: page.view.team,
+        })}
+      />
     </AppShell>
-  );
-}
-
-/** Person 구조화 데이터(NFR-03 선택) — 이름 · 영문 이름 · 소속 팀만(출전 · 결과 수치 없음) */
-function JsonLd({ page, slug }: { page: PlayerPageData; slug: string }) {
-  const { view } = page;
-  const json = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: view.nameKo,
-    alternateName: view.nameEn,
-    url: absoluteUrl(routes.koreanPlayer(slug)),
-    memberOf: { "@type": "SportsTeam", name: view.team.name },
-  };
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(json).replace(/</g, "\\u003c"),
-      }}
-    />
   );
 }

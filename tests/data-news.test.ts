@@ -15,6 +15,8 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
   NEWS_DIR,
   TAKEDOWNS_FILE,
+  issueLastModified,
+  lastModifiedWithTakedowns,
   listNewsDates,
   loadLatestNews,
   loadNewsIssue,
@@ -256,5 +258,89 @@ describe("월별 병합 파일 `YYYY-MM.json` (M5-10, FR-158·FR-34)", () => {
     expect(listNewsDates(dir)).toEqual(["2026-10-12"]);
     writeMonth("2026-10", ["2026-10-12", "2026-10-13"]);
     expect(listNewsDates(dir)).toEqual(["2026-10-12", "2026-10-13"]);
+  });
+});
+
+describe("지면 수정 시각 — sitemap lastmod · 날짜 호 dateModified (M5-03, M1-38 이월)", () => {
+  // 픽스처 호 2026-10-10: generatedAt 2026-10-09T21:52:10.482Z, 카드 c_8f3a1b2c4d · c_0a1b2c3d4e · c_5f6e7d8c9b
+  const GENERATED = "2026-10-09T21:52:10.482Z";
+  const IDS = ["c_8f3a1b2c4d", "c_0a1b2c3d4e", "c_5f6e7d8c9b"];
+  const entry = (
+    id: string,
+    requestedAt: string,
+    handledAt: string | null = null,
+  ) => ({ id, requestedAt, handledAt, reason: "삭제 요청 (#1)" });
+
+  it("삭제 요청이 없거나 다른 호 카드면 generatedAt 그대로", () => {
+    expect(lastModifiedWithTakedowns(GENERATED, IDS, [])).toBe(GENERATED);
+    expect(
+      lastModifiedWithTakedowns(GENERATED, IDS, [
+        entry("c_ffffffffff", "2026-10-12T00:00:00Z"),
+      ]),
+    ).toBe(GENERATED);
+  });
+
+  it("그 호 카드에 걸린 요청 — 처리 시각(handledAt), 아직 없으면 접수 시각(requestedAt) 가운데 늦은 것", () => {
+    expect(
+      lastModifiedWithTakedowns(GENERATED, IDS, [
+        entry("c_0a1b2c3d4e", "2026-10-11T03:00:00Z"),
+      ]),
+    ).toBe("2026-10-11T03:00:00Z");
+    expect(
+      lastModifiedWithTakedowns(GENERATED, IDS, [
+        entry("c_0a1b2c3d4e", "2026-10-11T03:00:00Z", "2026-10-11T09:30:00Z"),
+        entry("c_5f6e7d8c9b", "2026-10-10T08:00:00Z"),
+      ]),
+    ).toBe("2026-10-11T09:30:00Z");
+  });
+
+  it("generatedAt보다 이른 요청은 무시(원본을 지운 수집 실행이 파일을 다시 쓴 뒤 — 값이 뒤로 가지 않음) · 소수 초 자릿수가 달라도 시각으로 비교", () => {
+    expect(
+      lastModifiedWithTakedowns("2026-10-12T06:31:00.5Z", IDS, [
+        entry("c_0a1b2c3d4e", "2026-10-11T03:00:00Z", "2026-10-12T06:31:00Z"),
+      ]),
+    ).toBe("2026-10-12T06:31:00.5Z");
+  });
+
+  it("issueLastModified — 원본(삭제 요청 제외 전) 카드 ID로 맞춘다 · 일별 · 월별 파일 · 없는 호는 null", () => {
+    writeIssue(dir, "2026-10-10");
+    writeFileSync(
+      path.join(dir, "2026-09.json"),
+      JSON.stringify({
+        month: "2026-09",
+        updatedAt: "2027-01-28T21:31:00Z",
+        issues: [
+          {
+            ...(JSON.parse(readFileSync(FIXTURE_FILE, "utf8")) as object),
+            date: "2026-09-30",
+          },
+        ],
+      }),
+    );
+    const takedownsFile = path.join(dir, "takedowns.json");
+    writeFileSync(
+      takedownsFile,
+      JSON.stringify([entry("c_0a1b2c3d4e", "2026-10-11T03:00:00Z")]),
+    );
+    expect(issueLastModified("2026-10-10", dir, { takedownsFile })).toBe(
+      "2026-10-11T03:00:00Z",
+    );
+    expect(issueLastModified("2026-09-30", dir, { takedownsFile })).toBe(
+      "2026-10-11T03:00:00Z",
+    );
+    expect(issueLastModified("2026-10-11", dir, { takedownsFile })).toBeNull();
+    writeFileSync(takedownsFile, "[]");
+    expect(issueLastModified("2026-10-10", dir, { takedownsFile })).toBe(
+      GENERATED,
+    );
+  });
+
+  it("issueLastModified — 등록 파일이 깨졌으면 던진다(빌드 실패 — 로더와 같은 규칙)", () => {
+    writeIssue(dir, "2026-10-10");
+    const takedownsFile = path.join(dir, "takedowns.json");
+    writeFileSync(takedownsFile, "{");
+    expect(() =>
+      issueLastModified("2026-10-10", dir, { takedownsFile }),
+    ).toThrow(/삭제 요청 등록 파일/);
   });
 });

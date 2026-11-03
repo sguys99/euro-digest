@@ -17,8 +17,9 @@
  *   넣지 않는다. 날짜 페이지 설명은 호수·날짜·카드 수 같은 사실만 쓰고, 뉴스 원제목도 넣지 않는다(원제목 인용 — D23).
  *   `pageMetadata`가 스코어 모양("2-1"·"2:1"·"2대1")을 만나면 던진다(빌드 실패 — 개발 중 실수를 막는 마지막 방어선). `og:image:alt`도
  *   같은 검사를 거친다(이미지 안 글자는 tests/og.test.ts가 같은 함수로 본다).
- * - robots.txt는 만들지 않는다 — 프로젝트 사이트(basePath 아래)의 robots.txt는 크롤러가 읽지 않는다(호스트 루트만 유효).
- *   Search Console sitemap 제출·색인 정책은 M5(정식 공개)에서 정한다(2026-10-18 사용자 결정). 404는 Next가 noindex를 넣는다.
+ * - robots.txt는 만들지 않는다(확정 — PRD §15 D59 · D74) — 프로젝트 사이트(basePath 아래)의 robots.txt는 크롤러가 읽지 않는다(호스트
+ *   루트만 유효). sitemap은 Search Console URL 접두어 속성에 직접 제출한다. 404는 Next가 noindex를 넣는다.
+ * - 구조화 데이터(JSON-LD — M5-03)는 src/lib/structured-data.ts. 메타와 같은 결과 노출 0 검사를 거친다.
  */
 import type { Metadata, MetadataRoute } from "next";
 
