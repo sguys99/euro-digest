@@ -45,3 +45,6 @@ Desktop.ini
 
 # 원자적 쓰기 임시 파일 (scripts/lib/cost.ts 등이 강제 종료로 남긴 경우)
 data/**/*.tmp
+
+# ── Lighthouse CI 측정 산출물 (npm run lighthouse — M5-07) ──
+/.lighthouseci/

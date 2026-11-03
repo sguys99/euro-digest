@@ -39,7 +39,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "build:specimen": "SPECIMEN=1 next build",
-    "test:specimen": "npm run build:specimen && playwright test -c playwright.specimen.config.ts"
+    "test:specimen": "npm run build:specimen && playwright test -c playwright.specimen.config.ts",
+    "lighthouse": "node --import tsx scripts/lighthouse.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.133.0",
@@ -54,6 +55,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@lhci/cli": "0.15.1",
     "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/dom": "^10.4.2",

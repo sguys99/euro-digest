@@ -1,0 +1,228 @@
+/**
+ * `npm run lighthouse` (M5-07 — NFR-01·DR-11) — out/을 Lighthouse 모바일로 재고 페이지별 중앙값 표를 낸다.
+ *
+ * 도구는 Lighthouse CI(`@lhci/cli` — lighthouse 내장)이고 설정은 루트 `lighthouserc.json`(측정 횟수·카테고리·임계값) 하나다.
+ * M5-08이 CI에 붙일 때도 같은 설정·같은 URL 목록을 쓴다.
+ *
+ * - 서버: lhci 내장 정적 서버(express + gzip 압축 — GitHub Pages처럼 압축 전송). basePath 아래에서 열리게
+ *   `.lighthouseci/site/<basePath>` → out/ 심볼릭 링크를 만들어 그 폴더를 서빙한다.
+ * - 브라우저: Playwright Chromium(`chromium.executablePath()` — e2e와 같은 바이너리, CI도 이미 설치).
+ * - 조건: Lighthouse 기본 모바일(412×823 배율 1.75 · Slow 4G RTT 150ms · 1.6Mbps · CPU 4×), 캐시 없음. 스로틀링 방식은 `devtools`
+ *   (실제로 늦춰서 잰다 — M1-39 측정과 같은 방식). `--method simulate`는 PageSpeed Insights와 같은 Lantern 시뮬레이션인데, 빠른 로컬
+ *   무제한 로드에서 웹폰트(VeryHigh)가 첫 페인트 전에 끝나 FCP 필수 경로로 잡혀 FCP·LCP를 2초 안팎 비관적으로 낸다(docs/research/m5-performance.md §2).
+ *
+ * 사용법: npm run lighthouse -- [--runs <n>] [--url <경로>]… [--method devtools|simulate] [--assert]
+ *   --url  basePath 뒤 경로(예: `teams/bayern-munchen/`). 없으면 아래 기본 목록(최신 날짜 페이지는 data/news에서 고른다)
+ *   --assert  측정 뒤 `lhci assert`(성능 ≥ 0.95 · LCP ≤ 2000ms · CLS ≤ 0.05 — 중앙값 실행 기준)
+ * 결과: `.lighthouseci/.lighthouseci/lhr-*.json`(lhci 원자료) · `.lighthouseci/summary.json` · 표준 출력에 마크다운 표.
+ *   lhci는 `.lighthouseci/`(gitignore)를 작업 폴더로 돌린다 — WSL에서 chrome-launcher가 Windows식 임시 폴더 이름
+ *   (`C:\Users\…\lighthouse.NNN`)을 작업 폴더에 상대 경로로 만들어서, 저장소 루트를 더럽히지 않게.
+ * 측정 중에는 빌드·e2e 같은 무거운 작업을 같이 돌리지 않는다(CPU 4× 시뮬레이션이 흔들린다).
+ */
+import { spawnSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
+import path from "node:path";
+
+import { chromium } from "@playwright/test";
+
+import { normalizeBasePath } from "./lib/site-refs";
+
+const TAG = "[lighthouse]";
+const WORK_DIR = path.resolve(".lighthouseci");
+const SITE_DIR = path.join(WORK_DIR, "site");
+/** lhci가 작업 폴더 아래에 만드는 원자료 폴더 */
+const LHCI_DIR = path.join(WORK_DIR, ".lighthouseci");
+const CONFIG = path.resolve("lighthouserc.json");
+
+/** 기본 측정 대상 — 큰 HTML(대회·팀)과 섬이 많은 화면을 고루. 날짜 페이지는 최신 호로 채운다 */
+const DEFAULT_PATHS = [
+  "",
+  "news/",
+  "{latest-date}",
+  "competitions/epl/",
+  "competitions/ucl/",
+  "teams/bayern-munchen/",
+  "tonight/",
+  "korean-players/",
+  "transfers/",
+  "status/",
+] as const;
+
+type Method = "devtools" | "simulate";
+type Args = {
+  runs: number | null;
+  paths: string[];
+  method: Method | null;
+  assert: boolean;
+};
+
+function parseArgs(argv: readonly string[]): Args {
+  const args: Args = { runs: null, paths: [], method: null, assert: false };
+  for (let i = 0; i < argv.length; i += 1) {
+    const a = argv[i];
+    if (a === "--runs") {
+      const n = Number(argv[(i += 1)]);
+      if (!Number.isInteger(n) || n < 1)
+        throw new Error("--runs는 1 이상 정수");
+      args.runs = n;
+    } else if (a === "--url") {
+      const p = argv[(i += 1)];
+      if (p === undefined) throw new Error("--url 값 없음");
+      args.paths.push(p.replace(/^\//, ""));
+    } else if (a === "--method") {
+      const m = argv[(i += 1)];
+      if (m !== "devtools" && m !== "simulate")
+        throw new Error("--method는 devtools 또는 simulate");
+      args.method = m;
+    } else if (a === "--assert") {
+      args.assert = true;
+    } else {
+      throw new Error(`알 수 없는 인자: ${a}`);
+    }
+  }
+  return args;
+}
+
+function latestNewsPath(): string {
+  const files = readdirSync(path.resolve("data/news"))
+    .filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f))
+    .sort();
+  const last = files.at(-1);
+  return last ? `news/${last.slice(0, 10)}/` : "news/";
+}
+
+/** `.lighthouseci/site/<basePath>` → out/ — lhci 정적 서버가 basePath 아래 경로를 그대로 찾게 */
+function prepareSite(outDir: string, basePath: string): void {
+  rmSync(SITE_DIR, { recursive: true, force: true });
+  if (basePath === "") {
+    mkdirSync(WORK_DIR, { recursive: true });
+    symlinkSync(outDir, SITE_DIR, "dir");
+    return;
+  }
+  const link = path.join(SITE_DIR, basePath.replace(/^\//, ""));
+  mkdirSync(path.dirname(link), { recursive: true });
+  symlinkSync(outDir, link, "dir");
+}
+
+type Lhr = {
+  requestedUrl: string;
+  categories: Record<string, { score: number | null }>;
+  audits: Record<string, { numericValue?: number }>;
+};
+
+function median(values: readonly number[]): number {
+  const s = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid]! : (s[mid - 1]! + s[mid]!) / 2;
+}
+
+type Row = {
+  path: string;
+  runs: number;
+  performance: number;
+  accessibility: number;
+  bestPractices: number;
+  seo: number;
+  fcpMs: number;
+  lcpMs: number;
+  tbtMs: number;
+  cls: number;
+  siMs: number;
+};
+
+function summarize(basePath: string): Row[] {
+  const lhrs: Lhr[] = readdirSync(LHCI_DIR)
+    .filter((f) => /^lhr-\d+\.json$/.test(f))
+    .map(
+      (f) => JSON.parse(readFileSync(path.join(LHCI_DIR, f), "utf8")) as Lhr,
+    );
+  const byUrl = new Map<string, Lhr[]>();
+  for (const lhr of lhrs) {
+    const list = byUrl.get(lhr.requestedUrl) ?? [];
+    list.push(lhr);
+    byUrl.set(lhr.requestedUrl, list);
+  }
+  const cat = (l: Lhr, id: string) =>
+    Math.round((l.categories[id]?.score ?? 0) * 100);
+  const num = (l: Lhr, id: string) => l.audits[id]?.numericValue ?? Number.NaN;
+  return [...byUrl.entries()].map(([url, list]) => ({
+    path: new URL(url).pathname.slice(basePath.length) || "/",
+    runs: list.length,
+    performance: median(list.map((l) => cat(l, "performance"))),
+    accessibility: median(list.map((l) => cat(l, "accessibility"))),
+    bestPractices: median(list.map((l) => cat(l, "best-practices"))),
+    seo: median(list.map((l) => cat(l, "seo"))),
+    fcpMs: median(list.map((l) => num(l, "first-contentful-paint"))),
+    lcpMs: median(list.map((l) => num(l, "largest-contentful-paint"))),
+    tbtMs: median(list.map((l) => num(l, "total-blocking-time"))),
+    cls: median(list.map((l) => num(l, "cumulative-layout-shift"))),
+    siMs: median(list.map((l) => num(l, "speed-index"))),
+  }));
+}
+
+function formatTable(rows: readonly Row[]): string {
+  const head =
+    "| 페이지 | 성능 | 접근성 | 모범 사례 | SEO | FCP | LCP | TBT | CLS | SI |\n|---|---|---|---|---|---|---|---|---|---|";
+  const s = (ms: number) => `${(ms / 1000).toFixed(2)}s`;
+  const body = rows.map(
+    (r) =>
+      `| \`${r.path}\` | ${r.performance} | ${r.accessibility} | ${r.bestPractices} | ${r.seo} | ${s(r.fcpMs)} | ${s(r.lcpMs)} | ${Math.round(r.tbtMs)}ms | ${r.cls.toFixed(4)} | ${s(r.siMs)} |`,
+  );
+  return [head, ...body].join("\n");
+}
+
+function main(): void {
+  const args = parseArgs(process.argv.slice(2));
+  const outDir = path.resolve(process.env.OUT_DIR ?? "out");
+  if (!existsSync(outDir) || !statSync(outDir).isDirectory()) {
+    console.error(
+      `${TAG} out/ 폴더가 없습니다. 먼저 \`npm run build\`를 실행하세요.`,
+    );
+    process.exit(1);
+  }
+  const basePath = normalizeBasePath(process.env.BASE_PATH);
+  prepareSite(outDir, basePath);
+
+  const paths = (args.paths.length ? args.paths : [...DEFAULT_PATHS]).map(
+    (p) => (p === "{latest-date}" ? latestNewsPath() : p),
+  );
+  const lhci = path.resolve("node_modules/.bin/lhci");
+  const collect = [
+    "collect",
+    `--config=${CONFIG}`,
+    `--staticDistDir=${SITE_DIR}`,
+    `--chromePath=${chromium.executablePath()}`,
+    ...(args.runs ? [`--numberOfRuns=${args.runs}`] : []),
+    ...(args.method ? [`--settings.throttlingMethod=${args.method}`] : []),
+    ...paths.map((p) => `--url=http://localhost${basePath}/${p}`),
+  ];
+  console.log(`${TAG} 측정 ${paths.length}쪽 — ${paths.join(" · ") || "/"}`);
+  const run = spawnSync(lhci, collect, { stdio: "inherit", cwd: WORK_DIR });
+  if (run.status !== 0) process.exit(run.status ?? 1);
+
+  const rows = summarize(basePath);
+  writeFileSync(
+    path.join(WORK_DIR, "summary.json"),
+    `${JSON.stringify(rows, null, 2)}\n`,
+  );
+  console.log(`\n${formatTable(rows)}\n`);
+
+  if (args.assert) {
+    const assert = spawnSync(lhci, ["assert", `--config=${CONFIG}`], {
+      stdio: "inherit",
+      cwd: WORK_DIR,
+    });
+    process.exit(assert.status ?? 1);
+  }
+}
+
+main();
