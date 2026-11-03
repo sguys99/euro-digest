@@ -11,6 +11,7 @@
  */
 import { useMemo, useSyncExternalStore } from "react";
 
+import { track } from "@/lib/analytics";
 import {
   addFollow,
   EMPTY_FOLLOWS,
@@ -21,6 +22,7 @@ import {
   type FollowLists,
   type FollowState,
   importFollows,
+  isFollowing,
   parseFollows,
   removeFollow,
   sameFollows,
@@ -150,15 +152,29 @@ export interface UseFollowsResult {
   ): FollowImportUpdate;
 }
 
+/**
+ * 마이 팀 저장 이벤트(M5-04, PRD §11.2 재방문 신호) — 팔로우를 더한 저장(추가 · 켜기)과 공유 URL 가져오기만 `my/set`으로 센다. 해제는 세지 않는다.
+ * 무엇을 · 몇 개 팔로우했는지는 보내지 않는다(src/lib/analytics.ts — 공개 사이트가 아니면 아무것도 하지 않는다).
+ */
+function trackSet(result: FollowUpdate, added: boolean): FollowUpdate {
+  if (result.changed && added) track({ kind: "my-set" });
+  return result;
+}
+
 /** 저장소에 묶인 동작 — 저장소마다 한 번만 만든다(참조가 늘 같다) */
 function actionsFor(store: FollowStore) {
   return {
     follow: (kind: FollowKind, slug: string) =>
-      store.update((s) => addFollow(s, kind, slug)),
+      trackSet(
+        store.update((s) => addFollow(s, kind, slug)),
+        true,
+      ),
     unfollow: (kind: FollowKind, slug: string) =>
       store.update((s) => removeFollow(s, kind, slug)),
-    toggle: (kind: FollowKind, slug: string) =>
-      store.update((s) => toggleFollow(s, kind, slug)),
+    toggle: (kind: FollowKind, slug: string) => {
+      const result = store.update((s) => toggleFollow(s, kind, slug));
+      return trackSet(result, isFollowing(result.state, kind, slug));
+    },
     importFrom(
       incoming: FollowLists,
       mode: FollowImportMode,
@@ -171,6 +187,7 @@ function actionsFor(store: FollowStore) {
         // 내용이 같으면 같은 객체 — 쓰지 않는다
         return sameFollows(imported.state, current) ? current : imported.state;
       });
+      trackSet(result, true);
       return { ...result, dropped };
     },
   };

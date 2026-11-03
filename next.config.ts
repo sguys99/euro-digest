@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
     // 서비스 워커 등록(M4-13, FR-121) — 공개 빌드만 "on". 견본 빌드(out-specimen/)에는 sw.js가 없어 등록하지 않는다.
     // 개발 서버는 셸 상태 섬이 NODE_ENV로 따로 막는다(src/components/shell/status-island.tsx).
     NEXT_PUBLIC_SW: SPECIMEN_BUILD ? "off" : "on",
+    // 쿠키리스 분석 GoatCounter(M5-04, NFR-08) — 공개 빌드만 "on", 견본 빌드는 "off". 켜져도 공개 사이트 주소(SITE_URL 출처 + basePath)에서만
+    // 스크립트를 싣는다 — 로컬 미리보기 · e2e(127.0.0.1)는 호스트로 제외, 개발 서버는 NODE_ENV로 제외(src/lib/analytics.ts).
+    NEXT_PUBLIC_ANALYTICS: SPECIMEN_BUILD ? "off" : "on",
   },
   // `next dev`가 AGENTS.md를 자동 생성·수정하지 않게 한다. 작업 규칙은 CLAUDE.md가 단일 출처.
   agentRules: false,

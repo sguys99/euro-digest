@@ -1,8 +1,10 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 import { toast } from "@/components/ui/toast";
+import { startAnalytics, trackPageview } from "@/lib/analytics";
 import {
   ISSUE_LATE_ATTR,
   isIssueLate,
@@ -26,6 +28,9 @@ import { setupServiceWorker } from "@/lib/sw-register";
  * 3. 서비스 워커(M4-13, FR-121): 문서 `load` 뒤 등록하고, 새 버전이 기다리면 토스트 "새 소식이 있어요" + "새로고침"(DESIGN §9.2 —
  *    저절로 사라지지 않고 닫기 버튼을 단다). 규칙은 src/lib/sw-register.ts. 공개 빌드에서만 — 개발 서버(`next dev`)와 견본 빌드(SPECIMEN=1 —
  *    out-specimen/에는 sw.js가 없다)에서는 등록하지 않는다(`NEXT_PUBLIC_SW` — next.config.ts).
+ * 4. 쿠키리스 분석(M5-04, NFR-08): `startAnalytics`(문서마다 한 번 — 공개 빌드 · 공개 사이트 주소일 때만 구현 조각을 받아 GoatCounter를
+ *    싣는다)와, 경로(`usePathname`)가 바뀔 때마다 `trackPageview`(직전과 같은 path는 건너뜀 — 섬이 다시 마운트돼도 중복 없음). 진입점은
+ *    src/lib/analytics.ts, 규칙은 src/lib/goatcounter.ts. 섬은 페이지마다 하나라(앱 셸) 첫 로드 · 클라이언트 이동 모두 여기서 센다.
  */
 
 /** `<html>` 오프라인 속성 — CSS 변형 `offline:` */
@@ -57,6 +62,17 @@ function setHeightVar(name: string, el: HTMLElement | null): void {
 }
 
 export function StatusIsland({ late }: { late?: readonly LateWindow[] }) {
+  const pathname = usePathname();
+
+  // 분석(M5-04) — 시작이 페이지뷰보다 먼저(같은 조각 약속에 차례로 걸린다). 꺼져 있으면 둘 다 아무것도 하지 않는다
+  useEffect(() => {
+    startAnalytics();
+  }, []);
+
+  useEffect(() => {
+    trackPageview();
+  }, [pathname]);
+
   useEffect(() => {
     const root = document.documentElement;
     const band = document.querySelector<HTMLElement>(

@@ -3,6 +3,7 @@
 import type { CSSProperties, ReactNode } from "react";
 
 import { COMPETITION_SURFACE } from "@/components/ui/competition";
+import { OUT_LINK_PROPS } from "@/lib/analytics";
 import { cx } from "@/lib/cx";
 import {
   SEARCH_TYPE_LABEL,
@@ -419,6 +420,7 @@ function PageNewsRow({
           <h3 className="mt-2">
             <a
               href={hit.link}
+              {...OUT_LINK_PROPS}
               target="_blank"
               rel="noopener"
               // 누름 영역: 한 줄 제목(블록 34~36px)은 위아래 5px을 ::before로 넓혀 44px 이상(줄 높이 그대로 — 위 태그 줄 · 아래 메타 줄은 누르는 요소가 아니다, M4-16)

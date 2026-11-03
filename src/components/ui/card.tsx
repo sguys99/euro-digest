@@ -1,5 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
 
+import { OUT_LINK_PROPS } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 /**
@@ -225,6 +226,7 @@ export function CardTitle({
     >
       <a
         {...linkProps}
+        {...OUT_LINK_PROPS}
         href={href}
         target="_blank"
         rel="noopener"

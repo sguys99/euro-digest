@@ -11,6 +11,7 @@ import {
 import { IndexTab, StampChip } from "@/components/ui/chip";
 import { SpoilerFlap } from "@/components/spoiler/spoiler-parts";
 import { TierBadge } from "@/components/ui/tier-badge";
+import { OUT_LINK_PROPS } from "@/lib/analytics";
 import type { Tier, TransferStatus } from "@/lib/schema/common";
 import type {
   CardTagView,
@@ -413,6 +414,7 @@ function SourceList({ id, rows }: { id: string; rows: readonly SourceView[] }) {
         <li key={index}>
           <a
             href={row.url}
+            {...OUT_LINK_PROPS}
             target="_blank"
             rel="noopener"
             className="group/src flex min-h-11.25 items-baseline gap-2 pt-3 text-[13.5px] text-ink no-underline"

@@ -58,6 +58,11 @@ describe("next.config.ts — 견본 빌드 플래그", () => {
     expect((await loadConfig("1")).env?.NEXT_PUBLIC_SW).toBe("off");
   });
 
+  it("분석 플래그(M5-04) — 일반 빌드 on, 견본 빌드 off(공개 주소 판정은 src/lib/analytics.ts가 런타임에)", async () => {
+    expect((await loadConfig(undefined)).env?.NEXT_PUBLIC_ANALYTICS).toBe("on");
+    expect((await loadConfig("1")).env?.NEXT_PUBLIC_ANALYTICS).toBe("off");
+  });
+
   it("견본 라우트 파일은 *.specimen.tsx뿐이다 — 일반 확장자(page.tsx)로 두면 공개 빌드에 들어간다", () => {
     const dir = path.resolve("src/app/specimen");
     expect(existsSync(dir)).toBe(true);

@@ -5,6 +5,7 @@ import { KoreanArmband } from "@/components/news/feed-card";
 import { NewsFeed } from "@/components/news-feed";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { SectionHead } from "@/components/ui/section-head";
+import { OUT_LINK_PROPS } from "@/lib/analytics";
 import type { TeamLookup } from "@/lib/competition-view";
 import { statText } from "@/lib/competition-view";
 import { issueNumber } from "@/lib/issue";
@@ -305,6 +306,7 @@ export function Reading({
           <li key={item.url} className="border-b border-rule py-1">
             <a
               href={item.url}
+              {...OUT_LINK_PROPS}
               target="_blank"
               rel="noopener"
               className="inline-flex min-h-11 flex-wrap items-center gap-x-2 text-[15px] leading-[1.35] font-extrabold text-ink underline decoration-1 underline-offset-4 hover:decoration-2"

@@ -771,6 +771,8 @@ describe("기본 인스턴스 — 환경변수 읽는 순서 (NEXT_PUBLIC_* → 
       NEXT_PUBLIC_SITE_URL: "https://a.dev",
       // 서비스 워커 등록 플래그(M4-13) — 공개 빌드 "on"(견본 빌드 "off"는 tests/next-config.test.ts)
       NEXT_PUBLIC_SW: "on",
+      // 쿠키리스 분석 플래그(M5-04) — 같은 규칙
+      NEXT_PUBLIC_ANALYTICS: "on",
     });
     expect(config.trailingSlash).toBe(true);
 
@@ -819,7 +821,7 @@ describe("가드 — basePath 하드코딩은 src/lib/paths.ts에만", () => {
 
   // `/euro-digest` 경로(앞이 영숫자가 아님 — 저장소 주소 `sguys99/euro-digest`는 제외)와 운영 사이트 주소
   const SRC_PATTERN =
-    /(?:^|[^\w.-])\/euro-digest(?![\w-])|github\.io\/euro-digest/;
+    /(?:^|[^\w./-])\/euro-digest(?![\w-])|github\.io\/euro-digest/;
 
   it("패턴 자체 점검: 경로·사이트 주소는 잡고 저장소 주소는 통과", () => {
     expect(SRC_PATTERN.test('href="/euro-digest/rss.xml"')).toBe(true);
@@ -831,6 +833,10 @@ describe("가드 — basePath 하드코딩은 src/lib/paths.ts에만", () => {
       false,
     );
     expect(SRC_PATTERN.test("/euro-digest-logo.svg")).toBe(false);
+    // 호스트 이름(GoatCounter 사이트 `https://euro-digest.goatcounter.com` — M5-04)은 경로가 아니다
+    expect(SRC_PATTERN.test("https://euro-digest.goatcounter.com/count")).toBe(
+      false,
+    );
   });
 
   it("src/의 다른 파일에는 `/euro-digest` 경로·사이트 주소가 없다(주석 포함)", () => {
