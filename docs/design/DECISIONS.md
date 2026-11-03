@@ -729,10 +729,10 @@ M4 시각 검증 · 번들 재확인 · 이월 처리와 M4 코드 리뷰 반영
 | 1차 혼합안 | 커밋 5552dbf의 `concept-mix.html` · `notes-mix.md` · `build/concept-mix.mjs` · 스크린샷(기각 — 기록용) |
 | 폰트 | 새 파일 없음 — `docs/design/fonts/`(EuroDigest Sans 400 · 800 · Barlow Condensed 600 · 800) 재사용 |
 
-### 8. 열린 것 (M5 후보 — #1은 2026-11-03 결정됨)
+### 8. 열린 것 (M5 후보 — #1 · #3은 2026-11-03 결정됨)
 
 | # | 항목 | 메모 |
 |---|---|---|
 | 1 | ~~manifest `monochrome` 아이콘~~ → **결정됨(2026-11-03 사용자 결정, M5-02)** | **추가한다** — maskable 배치(ED 236px · 기준선 300 + 괘선 84×12 · y 330, 안전 원 안)에서 면을 뺀 ED · 괘선만의 단색 판 512 한 장(투명 배경 · 글자색 `#F2EFE8` — 런처는 알파만 쓴다), `public/icons/icon-monochrome-512.png` · manifest `purpose: "monochrome"`. 시안에 없던 판이라 새 모양은 없다(maskable 그림의 글자 층 그대로) |
 | 2 | `/status` 색인 여부 | noindex · sitemap 포함 여부(공개 투명성 쪽 vs 운영 쪽). M5-15 착수 때 |
-| 3 | 선수 · 주간 · 쪽 이름형 OG | `/korean-players/[slug]/` · 주간 리포트 · `/transfers` · `/national-team` · `/tonight` · `/about` 등의 OG를 기본 OG로 둘지, 이름형(scope §5 #12 — 기본 템플릿에 제목만 바꾼 것)을 만들지 정하지 않았다(scope Q2 ① — 이번 범위 밖). M5-01 착수 때 |
+| 3 | ~~선수 · 주간 · 쪽 이름형 OG~~ → **결정됨(2026-11-03 사용자 결정, M5-01)** | **쪽 이름형 OG를 고정 쪽에 만든다** — 기본 OG(벽돌 레드 면 · 큰 숫자 "5")에서 태그라인 자리만 쪽 제목으로 바꾼 판(`.ogc__page` 4.4cqw 800 — 대회 OG 정식 이름과 같은 크기, 2.6cqw는 메신저 축소판에서 읽히지 않음). 경로 **`/og/pages/{name}.png`**, name = 라우트 세그먼트: `korean-players`(한국 선수) · `national-team`(대표팀 — 이름만, 결과 0) · `transfers`(이적) · `tonight`(오늘 밤 볼 경기) · `search`(검색) · `my`(마이) · `about`(소개). 제목 = 그 쪽 문서 제목 앞부분, 목록 `src/lib/og.ts` `OG_PAGES`(새 고정 쪽 — M5-15 `/status` · M5-05 `/privacy` — 은 한 줄 추가). alt "유로 다이제스트 · {쪽 제목}". **한국 선수 개별 쪽 · 주간 리포트(색인 · 주) · `/offline/` · 404는 기본 OG**. 홈 = 기본 · `/news/` = 최신 호 날짜 OG(#5 그대로). DESIGN §9.3 D3 · §11.34, PRD §15 D71 |
