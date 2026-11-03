@@ -21,7 +21,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   CompetitionFileSchema,
@@ -68,8 +68,16 @@ import {
   fdPath,
   readFdFixture,
 } from "./support/football-data-fake";
+import { season2026Root } from "./support/season-2026";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
+/**
+ * configs 루트 — 저장소 configs 사본 + 동결한 2026-27 competitions.json(fixtures 응답·고정 시각이 2026 시즌이다 — 시즌 전환과 무관,
+ * tests/support/season-2026.ts). 데이터·fixtures는 ROOT에서 읽는다
+ */
+const SEASON_ROOT = season2026Root();
+const CONFIG_ROOT = SEASON_ROOT.root;
+afterAll(SEASON_ROOT.cleanup);
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
 const SOURCES = SourcesFileSchema.parse(
   JSON.parse(read("configs/sources.json")),
@@ -430,7 +438,7 @@ function makeDeps(over: Partial<CollectDeps> = {}) {
     throw new Error(`테스트에서 예상하지 못한 URL: ${url}`);
   };
   const deps: CollectDeps = {
-    rootDir: ROOT,
+    rootDir: CONFIG_ROOT,
     dataDir,
     env: "prod",
     llmMode: "mock",
@@ -660,7 +668,7 @@ describe("runTeamsCollectStage — 라인업 백필(exclude·상한·간격·캐
     const calls: Array<{ path: string; at: number }> = [];
     let t = 100_000;
     const deps = {
-      rootDir: ROOT,
+      rootDir: CONFIG_ROOT,
       dataDir,
       env: "prod" as const,
       dry: false,

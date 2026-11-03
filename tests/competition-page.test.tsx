@@ -17,6 +17,13 @@ import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
 import type { RunLog } from "@/lib/schema/run";
 import { FOOTBALL_DATA_ATTRIBUTION } from "@/lib/site";
 
+// 동결한 2026-27 대회 설정(시즌 전환과 무관 — tests/support/season-2026.ts, /new-season T)
+vi.mock("@/lib/data/competitions", async (importOriginal) =>
+  (await import("./support/season-2026")).season2026CompetitionsModule(
+    importOriginal,
+  ),
+);
+
 // `/competitions/[comp]/`(M2-10·M2-11) — 대회 데이터·최신 호는 fixtures로 바꿔 끼운다(저장소 data/는 매일 바뀐다).
 // 화면 모델 계산은 tests/competition-view.test.ts, 빌드 결과(375·1280 · 접근성)는 tests/e2e/competition.spec.ts.
 const { loadCompetitionData, loadLatestNews, loadProdRuns } = vi.hoisted(

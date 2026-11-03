@@ -7,7 +7,6 @@ import { describe, expect, it } from "vitest";
 import { listNewsDates, loadNewsIssue } from "@/lib/data/news";
 import {
   BriefFileSchema,
-  CompetitionsFileSchema,
   NationalTeamFileSchema,
   NewsFileSchema,
   SourcesFileSchema,
@@ -28,13 +27,11 @@ import {
   type GateInput,
 } from "../scripts/lib/publish-gate";
 import { formatIssue } from "../scripts/lib/validate-schema";
+import { season2026Competitions } from "./support/season-2026";
 
 const ROOT = path.resolve(".");
-const COMPETITIONS = CompetitionsFileSchema.parse(
-  JSON.parse(
-    readFileSync(path.join(ROOT, "configs/competitions.json"), "utf8"),
-  ),
-);
+// 동결한 2026-27 대회 설정(TODAY 2026-10-17 기준 — 시즌 전환과 무관, tests/support/season-2026.ts)
+const COMPETITIONS = season2026Competitions();
 const SOURCES = SourcesFileSchema.parse(
   JSON.parse(readFileSync(path.join(ROOT, "configs/sources.json"), "utf8")),
 );

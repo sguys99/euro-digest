@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-
 import { render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -10,9 +8,9 @@ import TeamPage, {
 import type { TeamLookup } from "@/lib/competition-view";
 import type { TeamPageData } from "@/lib/data/team-page";
 import { CompetitionFileSchema } from "@/lib/schema/competition";
-import { CompetitionsFileSchema } from "@/lib/schema/configs";
 import { TeamSchema, type Team } from "@/lib/schema/team";
 import { FOOTBALL_DATA_ATTRIBUTION } from "@/lib/site";
+import { season2026Competitions } from "./support/season-2026";
 
 // `/teams/[team]/`(M2-13 — PRD FR-50~58). 팀 페이지 입력(loadTeamPage)을 가짜 값으로 바꿔 끼운다(저장소 data/는 매일 바뀐다).
 // 화면 모델 계산은 tests/team-view.test.ts, 빌드 결과(375·1280 · 접근성 · 111팀 링크)는 tests/e2e/team.spec.ts.
@@ -41,10 +39,8 @@ const lookup: TeamLookup = (slug) => ({
   page: slug !== "vik",
 });
 
-// 대회 설정은 저장소 설정 그대로(분데스리가 · UCL 순서만 쓴다)
-const all = CompetitionsFileSchema.parse(
-  JSON.parse(readFileSync("configs/competitions.json", "utf8")),
-);
+// 대회 설정은 동결한 2026-27 사본(분데스리가 · UCL 순서만 쓴다 — 메타 제목 "2026-27 시즌", tests/support/season-2026.ts)
+const all = season2026Competitions();
 const configs = ["BUNDESLIGA", "UCL"].map((id) =>
   all.find((c) => c.id === id)!,
 );

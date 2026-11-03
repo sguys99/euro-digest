@@ -6,7 +6,7 @@
  * 기간의 경기(연기 제외, 킥오프 순), 지난 경기는 "끝남"(`past`)만 — 결과 필드 없음(결과 노출 0), `kickoffTbd`는 시각 없음 · 날짜로 지남 판정.
  * 설정은 합성 값(대회는 실제 설정 — 시즌 날짜만 쓴다)이라 configs/national-team.json이 바뀌어도 흔들리지 않는다.
  */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   briefEmptyState,
@@ -19,6 +19,13 @@ import {
   type NationalTeamFile,
 } from "@/lib/schema/configs";
 import { shiftDate } from "@/lib/time";
+
+// 동결한 2026-27 대회 설정(시즌 전환과 무관 — tests/support/season-2026.ts, /new-season T)
+vi.mock("@/lib/data/competitions", async (importOriginal) =>
+  (await import("./support/season-2026")).season2026CompetitionsModule(
+    importOriginal,
+  ),
+);
 
 const competitions = loadCompetitionsConfig();
 const lastEnd = competitions.reduce((a, b) =>

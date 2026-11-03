@@ -13,7 +13,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   CompetitionFileSchema,
-  CompetitionsFileSchema,
   TeamIdsFileSchema,
   type CompetitionConfig,
   type CompetitionFile,
@@ -48,13 +47,11 @@ import {
   FD_STANDINGS_FILES,
   readFdFixture,
 } from "./support/football-data-fake";
+import { season2026Competitions } from "./support/season-2026";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const COMPETITIONS: CompetitionConfig[] = CompetitionsFileSchema.parse(
-  JSON.parse(
-    readFileSync(path.join(ROOT, "configs/competitions.json"), "utf8"),
-  ),
-);
+// 동결한 2026-27 대회 설정 — fixtures 응답이 2026 시즌이다(시즌 대조 가드, tests/support/season-2026.ts)
+const COMPETITIONS: CompetitionConfig[] = season2026Competitions();
 const EPL = COMPETITIONS.find((c) => c.id === "EPL")!;
 const TEAMS = buildTeamIdIndex(
   TeamIdsFileSchema.parse(

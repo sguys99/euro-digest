@@ -10,13 +10,20 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { TodayBrief } from "@/components/brief/today-brief";
 import { AiLabel, AiLabelMark } from "@/components/ui/ai-label";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { briefErrorIssueUrl } from "@/lib/paths";
 import { BriefFileSchema, type BriefFile } from "@/lib/schema/brief";
+
+// 동결한 2026-27 대회 설정(시즌 전환과 무관 — tests/support/season-2026.ts, /new-season T)
+vi.mock("@/lib/data/competitions", async (importOriginal) =>
+  (await import("./support/season-2026")).season2026CompetitionsModule(
+    importOriginal,
+  ),
+);
 
 const sample = BriefFileSchema.array().parse(
   (

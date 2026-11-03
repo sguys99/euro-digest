@@ -1,0 +1,89 @@
+[
+  {
+    "id": "EPL",
+    "nameKo": "프리미어리그",
+    "nameEn": "Premier League",
+    "shortKo": "EPL",
+    "footballDataCode": "PL",
+    "apiFootballLeagueId": 39,
+    "season": 2026,
+    "startDate": "2026-08-21",
+    "endDate": "2027-05-30",
+    "teamCount": 20,
+    "zones": [{ "zone": "relegation", "from": 18, "to": 20, "label": "강등" }]
+  },
+  {
+    "id": "LALIGA",
+    "nameKo": "라리가",
+    "nameEn": "LaLiga",
+    "shortKo": "라리가",
+    "footballDataCode": "PD",
+    "apiFootballLeagueId": 140,
+    "season": 2026,
+    "startDate": "2026-08-16",
+    "endDate": "2027-05-30",
+    "teamCount": 20,
+    "zones": [{ "zone": "relegation", "from": 18, "to": 20, "label": "강등" }]
+  },
+  {
+    "id": "SERIEA",
+    "nameKo": "세리에 A",
+    "nameEn": "Serie A",
+    "shortKo": "세리에A",
+    "footballDataCode": "SA",
+    "apiFootballLeagueId": 135,
+    "season": 2026,
+    "startDate": "2026-08-23",
+    "endDate": "2027-05-30",
+    "teamCount": 20,
+    "zones": [{ "zone": "relegation", "from": 18, "to": 20, "label": "강등" }]
+  },
+  {
+    "id": "BUNDESLIGA",
+    "nameKo": "분데스리가",
+    "nameEn": "Bundesliga",
+    "shortKo": "분데스",
+    "footballDataCode": "BL1",
+    "apiFootballLeagueId": 78,
+    "season": 2026,
+    "startDate": "2026-08-28",
+    "endDate": "2027-05-22",
+    "teamCount": 18,
+    "zones": [
+      { "zone": "relegation", "from": 16, "to": 16, "label": "강등 PO" },
+      { "zone": "relegation", "from": 17, "to": 18, "label": "강등" }
+    ]
+  },
+  {
+    "id": "LIGUE1",
+    "nameKo": "리그 1",
+    "nameEn": "Ligue 1",
+    "shortKo": "리그1",
+    "footballDataCode": "FL1",
+    "apiFootballLeagueId": 61,
+    "season": 2026,
+    "startDate": "2026-08-22",
+    "endDate": "2027-05-29",
+    "teamCount": 18,
+    "zones": [
+      { "zone": "relegation", "from": 16, "to": 16, "label": "강등 PO" },
+      { "zone": "relegation", "from": 17, "to": 18, "label": "강등" }
+    ]
+  },
+  {
+    "id": "UCL",
+    "nameKo": "UEFA 챔피언스리그",
+    "nameEn": "UEFA Champions League",
+    "shortKo": "UCL",
+    "footballDataCode": "CL",
+    "apiFootballLeagueId": 2,
+    "season": 2026,
+    "startDate": "2026-09-08",
+    "endDate": "2027-06-05",
+    "teamCount": 36,
+    "zones": [
+      { "zone": "knockout", "from": 1, "to": 8, "label": "16강 직행" },
+      { "zone": "playoff", "from": 9, "to": 24, "label": "PO" }
+    ]
+  }
+]

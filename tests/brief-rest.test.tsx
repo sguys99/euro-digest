@@ -14,6 +14,13 @@ import { TodayBrief } from "@/components/brief/today-brief";
 import { BriefFileSchema } from "@/lib/schema/brief";
 import { NationalTeamFileSchema } from "@/lib/schema/configs";
 
+// 동결한 2026-27 대회 설정(시즌 전환과 무관 — tests/support/season-2026.ts, /new-season T)
+vi.mock("@/lib/data/competitions", async (importOriginal) =>
+  (await import("./support/season-2026")).season2026CompetitionsModule(
+    importOriginal,
+  ),
+);
+
 const NATIONAL = NationalTeamFileSchema.parse({
   matches: [
     {

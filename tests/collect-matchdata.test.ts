@@ -23,7 +23,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   AfPendingFileSchema,
@@ -66,8 +66,16 @@ import {
   fdFixtureResponse,
   fdPath,
 } from "./support/football-data-fake";
+import { season2026Root } from "./support/season-2026";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
+/**
+ * configs 루트 — 저장소 configs 사본 + 동결한 2026-27 competitions.json(fixtures 응답·고정 시각이 2026 시즌이다 — 시즌 전환과 무관,
+ * tests/support/season-2026.ts). 데이터·fixtures는 ROOT에서 읽는다
+ */
+const SEASON_ROOT = season2026Root();
+const CONFIG_ROOT = SEASON_ROOT.root;
+afterAll(SEASON_ROOT.cleanup);
 const read = (rel: string) => readFileSync(path.join(ROOT, rel), "utf8");
 const SOURCES = SourcesFileSchema.parse(
   JSON.parse(read("configs/sources.json")),
@@ -111,7 +119,7 @@ function makeDeps(
     throw new Error(`테스트에서 예상하지 못한 URL: ${url}`);
   };
   const deps: CollectDeps = {
-    rootDir: ROOT,
+    rootDir: CONFIG_ROOT,
     dataDir,
     env: "dev",
     llmMode: "mock",
@@ -1492,7 +1500,7 @@ describe("runCollect — 경기 기록 원장(M1-48b, D33)", () => {
     const root = mkdtempSync(path.join(os.tmpdir(), "euro-digest-noaug-"));
     try {
       // configs 사본 — 브리핑 지시문(configs/prompts/summarize.md, M1-20)도 함께 복사된다
-      cpSync(path.join(ROOT, "configs"), path.join(root, "configs"), {
+      cpSync(path.join(CONFIG_ROOT, "configs"), path.join(root, "configs"), {
         recursive: true,
       });
       const teamIdsPath = path.join(root, "configs", "team-ids.json");

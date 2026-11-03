@@ -3,11 +3,18 @@
  * (PRD DR-07 빈 상태 "비시즌·휴식기", DESIGN §9.3 상태 화면 ② — 평탄 탭 + 시즌명 + 날짜, `configs/competitions.json` 실값만).
  * 휴식기 판정 `restPeriodOf` 자체는 발행 게이트 테스트(tests/publish-gate.test.ts — 같은 함수를 다시 내보냄)가 본다.
  */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
 import { offSeasonFeature, restPeriodOf, seasonLabel } from "@/lib/rest-period";
 import type { CompetitionsFile } from "@/lib/schema/configs";
+
+// 동결한 2026-27 대회 설정(시즌 전환과 무관 — tests/support/season-2026.ts, /new-season T)
+vi.mock("@/lib/data/competitions", async (importOriginal) =>
+  (await import("./support/season-2026")).season2026CompetitionsModule(
+    importOriginal,
+  ),
+);
 
 const real = loadCompetitionsConfig();
 
