@@ -81,12 +81,8 @@ export function SpoilerCellButton({
       data-spoil-mask=""
       data-spoil-reveal=""
       aria-label={label}
-      className={cx(
-        "relative inline-flex min-h-11 flex-none items-center justify-center border border-dashed border-ink-2 bg-transparent px-2 font-sans text-xs leading-[1.2] font-extrabold text-ink transition-colors duration-fast ease-print hover:border-ink",
-        wide ? "min-w-28" : "min-w-16",
-        HATCH,
-        className,
-      )}
+      // 몸 = globals.css §14 `spoil-cell`(빗금 포함 — 위 HATCH와 같은 값, 경기 줄마다 반복돼 짧은 이름으로 — M5-07)
+      className={cx("spoil-cell", wide ? "min-w-28" : "min-w-16", className)}
     >
       <span className="bg-paper px-1.25 py-0.5">보기</span>
     </button>

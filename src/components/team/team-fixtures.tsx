@@ -109,13 +109,11 @@ function FixtureRow({
       {...(state === "finished" && match.score
         ? { "data-spoil": "stamp" }
         : {})}
-      className="grid grid-cols-[var(--gutter)_minmax(0,1fr)_auto] items-center gap-x-2.5 border-b border-rule py-3"
+      // 줄 모양 = globals.css §14 fixture-row · fixture-date · fixture-meta · fixture-team(시즌 40여 경기 반복 — M5-07)
+      className="fixture-row"
     >
       <div className="grid gap-0.75">
-        <time
-          dateTime={match.kickoff}
-          className="font-numeric text-[19px] leading-[0.9] font-extrabold tracking-[-0.01em] whitespace-nowrap tabular-nums"
-        >
+        <time dateTime={match.kickoff} className="fixture-date">
           {row.date}
         </time>
         <span className="text-[11.5px] font-extrabold text-ink-2">
@@ -123,7 +121,7 @@ function FixtureRow({
         </span>
       </div>
       <div className="grid min-w-0 gap-1.5">
-        <p className="flex flex-wrap items-center gap-1.5 text-[12.5px] text-ink-2">
+        <p className="fixture-meta">
           {comp ? (
             <FlatTab comp={row.comp} title={comp.name}>
               {comp.short}
@@ -132,10 +130,7 @@ function FixtureRow({
           <span>{row.side === "home" ? "홈" : "원정"}</span>
           <span>{row.round}</span>
         </p>
-        <TeamLink
-          team={row.opponent}
-          className="flex w-fit max-w-full items-center gap-2 text-[15px] leading-[1.25] font-extrabold"
-        >
+        <TeamLink team={row.opponent} className="fixture-team">
           <TeamBadge team={row.opponent} size="s" />
           <TeamName team={row.opponent} />
         </TeamLink>

@@ -37,6 +37,8 @@ import {
   Skeleton,
 } from "@/components/ui/skeleton";
 
+import { appliedClasses } from "./support/class-conflicts";
+
 function classesOf(el: Element): string[] {
   return (el.getAttribute("class") ?? "").split(/\s+/).filter(Boolean);
 }
@@ -274,9 +276,11 @@ describe("대회 표식·도장", () => {
         "bg-competition-ligue1",
         "text-competition-ligue1-foreground",
         "min-w-11.5",
-        "h-5.5",
+        "flat-tab",
       ]),
     );
+    // 몸은 globals.css §14 `flat-tab`(M5-07) — 높이 22px는 그 묶음 안
+    expect(appliedClasses("flat-tab")).toContain("h-5.5");
   });
 
   it("인덱스 탭: 세로쓰기, 너비 --tab-w", () => {
@@ -289,11 +293,14 @@ describe("대회 표식·도장", () => {
     expect(tab).toHaveTextContent("EPL");
     expect(classesOf(tab)).toEqual(
       expect.arrayContaining([
-        "w-tab-w",
-        "[writing-mode:vertical-rl]",
+        "index-tab",
         "bg-competition-epl",
         "text-competition-epl-foreground",
       ]),
+    );
+    // 몸은 globals.css §14 `index-tab`(M5-07)
+    expect(appliedClasses("index-tab")).toEqual(
+      expect.arrayContaining(["w-tab-w", "[writing-mode:vertical-rl]"]),
     );
   });
 

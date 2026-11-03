@@ -30,6 +30,8 @@ import {
   spoilerToastMessage,
 } from "@/lib/spoiler";
 
+import { appliedClasses } from "./support/class-conflicts";
+
 const toastMock = vi.hoisted(() => vi.fn());
 vi.mock("@/components/ui/toast", () => ({ toast: toastMock }));
 
@@ -224,7 +226,9 @@ describe("표식 마크업 — 모두 data-spoil-mask(꺼져 있으면 CSS가 �
       name: "10.29 마그데부르크전 결과 보기",
     });
     expect(button).toHaveTextContent("보기");
-    expect(button.className).toContain("min-h-11");
+    // 몸은 globals.css §14 `spoil-cell`(M5-07) — 최소 높이 44px는 그 묶음 안
+    expect(button.className).toContain("spoil-cell");
+    expect(appliedClasses("spoil-cell")).toContain("min-h-11");
     expect(button.className).toContain("min-w-16");
     rerender(<SpoilerCellButton wide label="최근 경기 5경기 결과 보기" />);
     expect(screen.getByRole("button").className).toContain("min-w-28");

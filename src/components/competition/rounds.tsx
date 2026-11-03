@@ -121,7 +121,7 @@ export function RoundDays({
     <ol role="list" className={cn("mt-2", className)}>
       {round.days.map((day) => (
         <li key={day.date}>
-          <p className="border-b border-ink pt-2.5 pb-1 text-[12.5px] font-extrabold text-ink-2">
+          <p className="round-day">
             <time dateTime={day.date}>{day.label}</time>
           </p>
           <ul role="list">
@@ -143,8 +143,8 @@ function RoundNavButton({
   to: RoundView | null;
   dir: "prev" | "next";
 }) {
-  const base =
-    "inline-flex min-h-11 min-w-14 items-center justify-center gap-1 border px-2.5 font-numeric text-sm leading-none font-extrabold tracking-[0.04em] no-underline";
+  // 몸 = globals.css §14 `round-nav`(라운드마다 2개 — 시즌 38라운드 × 2, M5-07)
+  const base = "round-nav";
   const icon =
     dir === "prev" ? (
       <ChevronLeftIcon size={16} />

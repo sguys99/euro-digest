@@ -113,10 +113,8 @@ export interface CompetitionMarkProps extends Omit<
 }
 
 export const flatTabVariants = cva(
-  [
-    "inline-flex h-5.5 items-center justify-center px-1.5 text-[11.5px] leading-none font-extrabold tracking-[-0.01em]",
-    "transition-colors duration-base ease-print",
-  ],
+  // 몸 = globals.css §14 `flat-tab`(팀 일정 · 목차 · 범례에 수십 번 — M5-07)
+  "flat-tab",
   {
     variants: {
       size: {
@@ -170,8 +168,8 @@ export function IndexTab({
     <span
       data-slot="index-tab"
       className={cx(
-        "flex w-tab-w items-center justify-center pt-1.75 pb-1.5 font-sans text-[10.5px] leading-[1.08] font-extrabold tracking-normal [text-orientation:upright] [writing-mode:vertical-rl]",
-        "transition-colors duration-base ease-print lg:pt-2.25 lg:pb-2",
+        // 몸 = globals.css §14 `index-tab`(카드 · 5줄 행마다 — M5-07)
+        "index-tab",
         // 머리기사: 카드(`group/card`)에 `data-lead`가 있을 때만 — 필터 결과(M1-33)는 속성을 지워 일반 탭으로 돌아간다
         "lg:text-[11px]",
         lead &&

@@ -1110,3 +1110,48 @@
     grid-template-columns: 44px minmax(0, 1fr) 64px minmax(0, 1fr);
   }
 }
+
+/* ── 14. 반복 마크업 축약 (M5-07 — NFR-01 · DR-11, 2026-11-03 사용자 결정 '마크업 경량화만') ──────────────────────────────────────
+ * 시즌 일정(대회 380경기 · 팀 40여 경기)처럼 수백 번 반복되는 요소의 긴 클래스 묶음을 짧은 이름 하나로 줄인다. 서버 컴포넌트 출력은 HTML과
+ * RSC 페이로드에 두 번 실리므로 클래스 글자가 두 번 줄어든다. 값은 원래 유틸리티를 `@apply`로 그대로 옮겨서 모양·상태(hover)가 같다 —
+ * 새 값 · 새 토큰 없음. 바깥에서 덧붙이는 클래스(대회 색 면 · 크기 변형)는 여기 넣지 않고 쓰는 곳에 남긴다.
+ * - spoil-cell: 결과 가림 칸 버튼(`SpoilerCellButton` — 빗금 포함, 폭 `min-w-16`/`min-w-28`은 쓰는 곳)
+ * - round-nav: 라운드 이동 버튼 공통 몸(활성 링크 · 비활성 점선은 쓰는 곳) · round-day: 라운드 안 날짜 머리 줄
+ * - flat-tab: 평탄 탭 몸(크기 변형 · 대회 색 면은 cva) · index-tab: 인덱스 탭 몸(1024 이상 글자 크기 · 머리기사 변형 · 색 면은 쓰는 곳)
+ * - fixture-row · fixture-date · fixture-meta · fixture-team: 팀 화면 일정·결과 줄(`TeamFixtures`)
+ */
+@utility spoil-cell {
+  @apply relative inline-flex min-h-11 flex-none items-center justify-center border border-dashed border-ink-2 bg-transparent bg-[repeating-linear-gradient(-45deg,var(--hatch)_0_5px,transparent_5px_10px)] px-2 font-sans text-xs leading-[1.2] font-extrabold text-ink transition-colors duration-fast ease-print hover:border-ink;
+}
+
+@utility round-nav {
+  @apply inline-flex min-h-11 min-w-14 items-center justify-center gap-1 border px-2.5 font-numeric text-sm leading-none font-extrabold tracking-[0.04em] no-underline;
+}
+
+@utility round-day {
+  @apply border-b border-ink pt-2.5 pb-1 text-[12.5px] font-extrabold text-ink-2;
+}
+
+@utility flat-tab {
+  @apply inline-flex h-5.5 items-center justify-center px-1.5 text-[11.5px] leading-none font-extrabold tracking-[-0.01em] transition-colors duration-base ease-print;
+}
+
+@utility index-tab {
+  @apply flex w-tab-w items-center justify-center pt-1.75 pb-1.5 font-sans text-[10.5px] leading-[1.08] font-extrabold tracking-normal transition-colors duration-base ease-print [text-orientation:upright] [writing-mode:vertical-rl] lg:pt-2.25 lg:pb-2;
+}
+
+@utility fixture-row {
+  @apply grid grid-cols-[var(--gutter)_minmax(0,1fr)_auto] items-center gap-x-2.5 border-b border-rule py-3;
+}
+
+@utility fixture-date {
+  @apply font-numeric text-[19px] leading-[0.9] font-extrabold tracking-[-0.01em] whitespace-nowrap tabular-nums;
+}
+
+@utility fixture-meta {
+  @apply flex flex-wrap items-center gap-1.5 text-[12.5px] text-ink-2;
+}
+
+@utility fixture-team {
+  @apply flex w-fit max-w-full items-center gap-2 text-[15px] leading-[1.25] font-extrabold;
+}

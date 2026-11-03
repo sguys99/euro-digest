@@ -134,10 +134,7 @@ export function NationalMatchRow({ row }: { row: NationalMatchRowView }) {
       className="grid grid-cols-[var(--gutter)_minmax(0,1fr)_auto] items-center gap-x-2.5 border-b border-rule py-3"
     >
       <div className="grid gap-0.75 self-start pt-0.5">
-        <time
-          dateTime={row.kickoff}
-          className="font-numeric text-[19px] leading-[0.9] font-extrabold tracking-[-0.01em] whitespace-nowrap tabular-nums"
-        >
+        <time dateTime={row.kickoff} className="fixture-date">
           {row.date}
         </time>
         <span className="text-[11.5px] font-extrabold text-ink-2">

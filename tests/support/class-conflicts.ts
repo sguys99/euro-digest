@@ -11,6 +11,9 @@
  * 파일 이름이 *.test.ts가 아니므로 Vitest가 테스트로 실행하지 않는다.
  */
 
+import { readFileSync } from "node:fs";
+import path from "node:path";
+
 type Rule = readonly [
   RegExp,
   readonly string[] | ((m: RegExpExecArray) => readonly string[]),
@@ -215,10 +218,37 @@ export function splitVariants(className: string): {
   return { variants: parts, utility: current };
 }
 
+/**
+ * globals.css의 `@apply` 묶음 유틸리티(§14 반복 마크업 축약 — M5-07: `flat-tab`·`index-tab`·`spoil-cell` …) — 이름 → 묶은 클래스.
+ * 그 유틸리티는 묶은 클래스 가운데 변형 없는 것들의 속성을 정한다고 본다(변형 붙은 것은 조건이 달라 바깥 클래스와 겹침이 아니다).
+ */
+const APPLY_UTILITIES: ReadonlyMap<string, readonly string[]> = new Map(
+  [
+    ...readFileSync(path.resolve("src/app/globals.css"), "utf8").matchAll(
+      /@utility ([\w-]+) \{\s*@apply ([^;]+);\s*\}/g,
+    ),
+  ].map((m) => [m[1] ?? "", (m[2] ?? "").trim().split(/\s+/)] as const),
+);
+
+/** `@apply` 묶음 유틸리티가 묶은 클래스(없으면 빈 배열) — 컴포넌트 테스트가 모양 클래스를 확인할 때 */
+export function appliedClasses(name: string): readonly string[] {
+  return APPLY_UTILITIES.get(name) ?? [];
+}
+
 /** 유틸리티 하나(변형 없이)가 정하는 CSS 속성. 분류표에 없으면 null */
 export function utilityProperties(utility: string): readonly string[] | null {
   // 중요 표시(!)·음수(-) 떼기
   const u = utility.replace(/^!|!$/g, "").replace(/^-/, "");
+  const applied = APPLY_UTILITIES.get(u);
+  if (applied) {
+    const props = new Set<string>();
+    for (const cls of applied) {
+      const { variants, utility: inner } = splitVariants(cls);
+      if (variants.length > 0) continue;
+      for (const prop of utilityProperties(inner) ?? []) props.add(prop);
+    }
+    return [...props];
+  }
   // 임의 속성: [property:value]
   const arbitrary = /^\[((?:--)?[a-z][\w-]*):.+\]$/.exec(u);
   if (arbitrary) return [arbitrary[1] ?? ""];
