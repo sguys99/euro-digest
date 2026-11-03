@@ -10,6 +10,7 @@ import { competitionPageSearchRecord } from "@/lib/data/search";
 import { rssFeedLink } from "@/lib/feed-links";
 import { compFromSegment, compSegment, routes } from "@/lib/paths";
 import { seasonLabel } from "@/lib/rest-period";
+import { competitionOgCard } from "@/lib/og";
 import { competitionDescription, pageMetadata } from "@/lib/seo";
 import { nowUtcIso, parseUtcIso } from "@/lib/time";
 
@@ -39,6 +40,7 @@ export async function generateMetadata({
     description: competitionDescription(page.config.nameKo, season),
     canonical: routes.competition(comp),
     feeds: [rssFeedLink({ kind: "competition", comp }, page.config.nameKo)],
+    og: competitionOgCard(page.config),
   });
 }
 

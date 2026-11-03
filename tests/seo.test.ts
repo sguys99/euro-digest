@@ -17,7 +17,9 @@ import {
   koreanPlayersDescription,
   weeklyReportDescription,
   NATIONAL_TEAM_DESCRIPTION,
+  ogImageMeta,
 } from "@/lib/seo";
+import { newsOgCard, pageOgCard } from "@/lib/og";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
 // 기본 SEO (M1-38 — PRD FR-124·NFR-03). 빌드 결과(out/의 head 메타·sitemap.xml)는 e2e tests/e2e/seo.spec.ts.
@@ -33,7 +35,7 @@ describe("documentTitle · 제목 템플릿", () => {
 });
 
 describe("siteMetadata — 루트 레이아웃 기본값", () => {
-  it("metadataBase = SITE_URL + basePath(끝 슬래시), 제목 템플릿, 기본 설명, OG·twitter 기본값 — canonical·og:url·og:image 없음", () => {
+  it("metadataBase = SITE_URL + basePath(끝 슬래시), 제목 템플릿, 기본 설명, OG·twitter 기본값(기본 OG 이미지 · summary_large_image) — canonical·og:url 없음", () => {
     const meta = siteMetadata();
     expect(String(meta.metadataBase)).toBe(`${SITE}/`);
     expect(meta.title).toEqual({
@@ -50,17 +52,32 @@ describe("siteMetadata — 루트 레이아웃 기본값", () => {
       locale: OG_LOCALE,
       title: SITE_NAME,
       description: SITE_DESCRIPTION,
+      images: [
+        {
+          url: `${SITE}/og/default.png`,
+          width: 1200,
+          height: 630,
+          alt: `${SITE_NAME} — ${SITE_TAGLINE}`,
+          type: "image/png",
+        },
+      ],
     });
     expect(meta.twitter).toEqual({
-      card: "summary",
+      card: "summary_large_image",
       title: SITE_NAME,
       description: SITE_DESCRIPTION,
+      images: [
+        {
+          url: `${SITE}/og/default.png`,
+          alt: `${SITE_NAME} — ${SITE_TAGLINE}`,
+        },
+      ],
     });
   });
 });
 
 describe("pageMetadata — 페이지별 메타", () => {
-  it("canonical·og:url = 같은 절대 URL(basePath·끝 슬래시), OG·twitter 전부(얕은 병합 대비), og:image 없음", () => {
+  it("canonical·og:url = 같은 절대 URL(basePath·끝 슬래시), OG·twitter 전부(얕은 병합 대비), og 카드가 없으면 기본 OG 이미지", () => {
     const meta = pageMetadata({
       title: "소개",
       description: "설명",
@@ -76,13 +93,70 @@ describe("pageMetadata — 페이지별 메타", () => {
       title: "소개 · 유로 다이제스트",
       description: "설명",
       url: `${SITE}/about/`,
+      images: [
+        {
+          url: `${SITE}/og/default.png`,
+          width: 1200,
+          height: 630,
+          alt: `${SITE_NAME} — ${SITE_TAGLINE}`,
+          type: "image/png",
+        },
+      ],
     });
     expect(meta.twitter).toEqual({
-      card: "summary",
+      card: "summary_large_image",
       title: "소개 · 유로 다이제스트",
       description: "설명",
+      images: [
+        {
+          url: `${SITE}/og/default.png`,
+          alt: `${SITE_NAME} — ${SITE_TAGLINE}`,
+        },
+      ],
     });
-    expect(JSON.stringify(meta)).not.toMatch(/image/i);
+  });
+
+  it("og 카드 — og:image(절대 URL · basePath) · alt가 카드를 따르고 twitter:image가 같다", () => {
+    const meta = pageMetadata({
+      title: "이적",
+      description: "설명",
+      canonical: "/transfers/",
+      og: pageOgCard("transfers"),
+    });
+    expect(meta.openGraph?.images).toEqual([
+      {
+        url: `${SITE}/og/pages/transfers.png`,
+        width: 1200,
+        height: 630,
+        alt: "유로 다이제스트 · 이적",
+        type: "image/png",
+      },
+    ]);
+    expect(meta.twitter?.images).toEqual([
+      { url: `${SITE}/og/pages/transfers.png`, alt: "유로 다이제스트 · 이적" },
+    ]);
+    const news = pageMetadata({
+      title: "뉴스",
+      description: "설명",
+      canonical: null,
+      og: newsOgCard("2026-11-02"),
+    });
+    expect(news.openGraph?.images).toEqual([
+      expect.objectContaining({
+        url: `${SITE}/og/news/2026-11-02.png`,
+        alt: "유로 다이제스트 제 22호, 2026년 11월 2일 (월)",
+      }),
+    ]);
+  });
+
+  it("og:image:alt에 스코어 모양이 있으면 던진다(결과 노출 0)", () => {
+    expect(() =>
+      ogImageMeta({
+        kind: "page",
+        name: "tonight",
+        title: "토트넘 2-1 아스널",
+      }),
+    ).toThrow(/og:image:alt에 스코어 모양/);
   });
 
   it("홈 — 제목은 사이트 이름 단독(absolute), canonical = 사이트 루트", () => {

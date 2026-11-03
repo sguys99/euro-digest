@@ -8,6 +8,7 @@ import { loadArchiveView, loadLatestIssue } from "@/lib/data/issue";
 import { loadNewsFilterView } from "@/lib/data/news-filter";
 import { issueLateWindows } from "@/lib/issue";
 import { routes } from "@/lib/paths";
+import { newsOgCard } from "@/lib/og";
 import { newsDescription, pageMetadata } from "@/lib/seo";
 
 /*
@@ -33,6 +34,8 @@ export function generateMetadata(): Metadata {
       news ? { date: news.date, cards: news.cards.length } : null,
     ),
     canonical: news ? routes.newsArchive(news.date) : null,
+    // 최신 호의 날짜 OG(D71 ② — `/news/`는 최신 날짜 페이지의 별칭), 호가 없으면 기본
+    ...(news ? { og: newsOgCard(news.date) } : {}),
   });
 }
 

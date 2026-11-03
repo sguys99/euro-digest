@@ -10,10 +10,13 @@
  * - canonical·og:url = 같은 절대 URL(`absoluteUrl` — SITE_URL + basePath + 끝 슬래시). 날짜 아카이브는 자기 자신, `/news/`는 최신 날짜
  *   페이지(별칭 — M1-34 결정), 그 밖의 페이지는 자기 자신.
  * - og:title·twitter:title = 문서 제목 그대로(템플릿 " · 유로 다이제스트" 포함 — 링크 미리보기에 사이트 이름이 빠지지 않게).
- * - **og:image 없음** — OG 이미지는 D3 게이트에서 확정한다(워드마크·날짜·호수만, DECISIONS D0 §5 #9). twitter 카드는 `summary`.
+ * - **og:image**(M5-01 — PRD §15 D71 ②): 모든 페이지가 OG 이미지 하나(절대 URL · 1200×630 · `og:image:alt`)를 싣는다. 어느 쪽이 어떤
+ *   이미지를 쓰는지는 src/lib/og.ts(기본 · 날짜 · 쪽 이름형 · 대회 · 팀 — 페이지가 `og` 카드를 넘긴다, 없으면 기본). twitter 카드는
+ *   `summary_large_image`(twitter:image = og:image). 이미지 파일은 빌드 때 scripts/build-og.ts가 같은 카드로 굽는다.
  * - **결과 노출 0**(DECISIONS D0 §5 #9 — 링크 미리보기는 결과 가리기로 막을 수 없다): title·description·OG에 경기 결과(스코어)를
  *   넣지 않는다. 날짜 페이지 설명은 호수·날짜·카드 수 같은 사실만 쓰고, 뉴스 원제목도 넣지 않는다(원제목 인용 — D23).
- *   `pageMetadata`가 스코어 모양("2-1"·"2:1"·"2대1")을 만나면 던진다(빌드 실패 — 개발 중 실수를 막는 마지막 방어선).
+ *   `pageMetadata`가 스코어 모양("2-1"·"2:1"·"2대1")을 만나면 던진다(빌드 실패 — 개발 중 실수를 막는 마지막 방어선). `og:image:alt`도
+ *   같은 검사를 거친다(이미지 안 글자는 tests/og.test.ts가 같은 함수로 본다).
  * - robots.txt는 만들지 않는다 — 프로젝트 사이트(basePath 아래)의 robots.txt는 크롤러가 읽지 않는다(호스트 루트만 유효).
  *   Search Console sitemap 제출·색인 정책은 M5(정식 공개)에서 정한다(2026-10-18 사용자 결정). 404는 Next가 noindex를 넣는다.
  */
@@ -22,7 +25,15 @@ import type { Metadata, MetadataRoute } from "next";
 import { RSS_MIME, type FeedLink } from "@/lib/feed-links";
 import { archiveDateLabel } from "@/lib/news/archive";
 import { issueNumber } from "@/lib/issue";
-import { absoluteUrl, routes } from "@/lib/paths";
+import {
+  DEFAULT_OG_CARD,
+  OG_HEIGHT,
+  OG_WIDTH,
+  ogAlt,
+  ogImageOf,
+  type OgCard,
+} from "@/lib/og";
+import { absoluteUrl, artifacts, routes } from "@/lib/paths";
 import type { CompId } from "@/lib/schema/common";
 import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
 
@@ -80,11 +91,40 @@ export function documentTitle(title: string | null): string {
   return title === null ? SITE_NAME : TITLE_TEMPLATE.replace("%s", title);
 }
 
+/** 결과 노출 0 — 메타 문구에 스코어 모양이 있으면 던진다(빌드 실패) */
+function assertNoScore(field: string, text: string): void {
+  if (hasScoreLike(text)) {
+    throw new RangeError(
+      `메타 ${field}에 스코어 모양이 있음(결과 노출 0 — DECISIONS D0 §5 #9): ${JSON.stringify(text)}`,
+    );
+  }
+}
+
+/** OG 이미지 메타 값 — 절대 URL(SITE_URL + basePath) · 1200×630 · alt(src/lib/og.ts 문형). alt에 스코어 모양이 있으면 던진다 */
+export function ogImageMeta(card: OgCard = DEFAULT_OG_CARD): {
+  url: string;
+  width: number;
+  height: number;
+  alt: string;
+  type: "image/png";
+} {
+  const alt = ogAlt(card);
+  assertNoScore("og:image:alt", alt);
+  return {
+    url: absoluteUrl(artifacts.ogImage(ogImageOf(card))),
+    width: OG_WIDTH,
+    height: OG_HEIGHT,
+    alt,
+    type: "image/png",
+  };
+}
+
 /** OG 공통값 + 이 페이지 값. url이 없으면(404·canonical 없는 페이지) og:url을 넣지 않는다 */
 function openGraphFor(
   title: string,
   description: string,
   url: string | null,
+  card: OgCard,
 ): NonNullable<Metadata["openGraph"]> {
   return {
     type: "website",
@@ -93,14 +133,23 @@ function openGraphFor(
     title,
     description,
     ...(url === null ? {} : { url }),
+    images: [ogImageMeta(card)],
   };
 }
 
+/** twitter 카드 — 큰 이미지(D71 ②). 이미지·alt는 og:image와 같다 */
 function twitterFor(
   title: string,
   description: string,
+  card: OgCard,
 ): NonNullable<Metadata["twitter"]> {
-  return { card: "summary", title, description };
+  const { url, alt } = ogImageMeta(card);
+  return {
+    card: "summary_large_image",
+    title,
+    description,
+    images: [{ url, alt }],
+  };
 }
 
 /**
@@ -112,8 +161,8 @@ export function siteMetadata(): Metadata {
     metadataBase: new URL(absoluteUrl(routes.home())),
     title: { default: SITE_NAME, template: TITLE_TEMPLATE },
     description: SITE_DESCRIPTION,
-    openGraph: openGraphFor(SITE_NAME, SITE_DESCRIPTION, null),
-    twitter: twitterFor(SITE_NAME, SITE_DESCRIPTION),
+    openGraph: openGraphFor(SITE_NAME, SITE_DESCRIPTION, null, DEFAULT_OG_CARD),
+    twitter: twitterFor(SITE_NAME, SITE_DESCRIPTION, DEFAULT_OG_CARD),
   };
 }
 
@@ -129,10 +178,13 @@ export interface PageSeo {
    * 루트 레이아웃 `<head>`가 모든 페이지에 직접 둔다(얕은 합침 때문에 여기 넣지 않는다 — 머리 주석)
    */
   feeds?: readonly FeedLink[];
+  /** 이 페이지의 OG 이미지 카드(src/lib/og.ts — 날짜 · 쪽 이름형 · 대회 · 팀). 없으면 기본 OG */
+  og?: OgCard;
 }
 
 /**
- * 페이지 메타 — title·description·canonical·OG(type website · siteName · locale ko_KR · url · title · description)·twitter(summary)
+ * 페이지 메타 — title·description·canonical·OG(type website · siteName · locale ko_KR · url · title · description · image)·twitter
+ * (summary_large_image)
  * · (있으면) RSS 자동 발견 `alternates.types`. 제목·설명에 스코어 모양이 있으면 던진다(결과 노출 0 — 머리 주석).
  */
 export function pageMetadata({
@@ -140,18 +192,11 @@ export function pageMetadata({
   description,
   canonical,
   feeds = [],
+  og = DEFAULT_OG_CARD,
 }: PageSeo): Metadata {
   const full = documentTitle(title);
-  for (const [field, text] of [
-    ["title", full],
-    ["description", description],
-  ] as const) {
-    if (hasScoreLike(text)) {
-      throw new RangeError(
-        `메타 ${field}에 스코어 모양이 있음(결과 노출 0 — DECISIONS D0 §5 #9): ${JSON.stringify(text)}`,
-      );
-    }
-  }
+  assertNoScore("title", full);
+  assertNoScore("description", description);
   const url = canonical === null ? null : absoluteUrl(canonical);
   const alternates: NonNullable<Metadata["alternates"]> = {
     ...(url === null ? {} : { canonical: url }),
@@ -168,8 +213,8 @@ export function pageMetadata({
     title: title === null ? { absolute: SITE_NAME } : title,
     description,
     ...(Object.keys(alternates).length === 0 ? {} : { alternates }),
-    openGraph: openGraphFor(full, description, url),
-    twitter: twitterFor(full, description),
+    openGraph: openGraphFor(full, description, url, og),
+    twitter: twitterFor(full, description, og),
   };
 }
 

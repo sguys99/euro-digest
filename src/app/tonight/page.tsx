@@ -17,6 +17,7 @@ import {
 import { tonightCriteria, tonightWindowLongText } from "@/lib/home-widgets";
 import { routes } from "@/lib/paths";
 import { pageMetadata, TONIGHT_DESCRIPTION } from "@/lib/seo";
+import { pageOgCard } from "@/lib/og";
 
 /*
  * `/tonight/` 오늘 밤 볼 경기 (PRD F8 FR-80~82 · §4 IA "홈 섹션의 전체 보기", plan M2-14)
@@ -35,6 +36,7 @@ export const metadata: Metadata = pageMetadata({
   title: "오늘 밤 볼 경기",
   description: TONIGHT_DESCRIPTION,
   canonical: routes.tonight(),
+  og: pageOgCard("tonight"),
 });
 
 const HEADING_ID = "tonight-page-h";

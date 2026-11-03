@@ -18,6 +18,7 @@ import { latestSquad, squadLabel } from "@/lib/national-team-view";
 import { rssFeedLink } from "@/lib/feed-links";
 import { routes } from "@/lib/paths";
 import { koreanPlayersDescription, pageMetadata } from "@/lib/seo";
+import { pageOgCard } from "@/lib/og";
 import { formatKst } from "@/lib/time";
 import { weekName } from "@/lib/weekly-report-view";
 
@@ -39,6 +40,7 @@ export function generateMetadata(): Metadata {
     title: "한국 선수",
     description: koreanPlayersDescription(view.sinceLabel),
     canonical: routes.koreanPlayers(),
+    og: pageOgCard("korean-players"),
     feeds: [rssFeedLink({ kind: "korean" })],
   });
 }

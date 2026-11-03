@@ -12,10 +12,11 @@ import { basePath, outDir, siteOrigins, sitePages } from "./support/site";
 
 // 기본 SEO e2e (M1-38 — PRD FR-124·NFR-03) — 빌드 결과(out/)의 HTML <head>와 sitemap.xml을 그대로 읽는다.
 // 크롤러·링크 미리보기(카카오톡 등)는 JS를 돌리지 않으므로 정적 HTML이 검사 기준이다. 페이지 목록은 out/에서 모은다(새 라우트 자동 포함).
-// - 색인 대상(noindex 아님) 페이지: title 유일 · description · canonical 1개 · og:url = canonical · OG 기본값 · twitter summary
+// - 색인 대상(noindex 아님) 페이지: title 유일 · description · canonical 1개 · og:url = canonical · OG 기본값 · twitter summary_large_image
 // - noindex 페이지(404 — Next가 넣는다): robots 메타 1개(중복 없음) · canonical 없음 · sitemap 밖
 // - sitemap.xml: 홈 · /about/ · 발행된 날짜 페이지 전부(`/news/`는 별칭이라 제외), 절대 URL·끝 슬래시, 모두 200, 각 페이지 canonical = 자기 URL
-// - 결과 노출 0(DECISIONS D0 §5 #9): title·description·OG·twitter 문구에 스코어 모양이 없다, og:image 없음(D3에서 확정)
+// - 결과 노출 0(DECISIONS D0 §5 #9): title·description·OG·twitter 문구(og:image:alt 포함)에 스코어 모양이 없다. OG 이미지 자체는
+//   tests/e2e/og.spec.ts(M5-01)
 // - robots.txt는 만들지 않는다(프로젝트 사이트 아래는 크롤러가 읽지 않음 — M5에서 Search Console과 함께 결정)
 
 const SITE = `${siteOrigins[0]}${basePath}`;
@@ -192,7 +193,7 @@ test("색인 대상 페이지 — canonical 1개가 sitemap 안을 가리키고,
   expect(indexable.length).toBe(locs.size + aliases.length);
 });
 
-test("색인 대상 페이지 — title 유일·description·OG(type·site_name·locale·url = canonical·title·description)·twitter summary", () => {
+test("색인 대상 페이지 — title 유일·description·OG(type·site_name·locale·url = canonical·title·description)·twitter summary_large_image", () => {
   expect(indexable.length).toBeGreaterThanOrEqual(2);
   const titles = indexable.map((h) => {
     expect(h.titles, h.urlPath).toHaveLength(1);
@@ -211,7 +212,7 @@ test("색인 대상 페이지 — title 유일·description·OG(type·site_name�
     expect(one(head, "og:url"), head.urlPath).toBe(head.canonicals[0]);
     expect(one(head, "og:title"), head.urlPath).toBe(title);
     expect(one(head, "og:description"), head.urlPath).toBe(description);
-    expect(one(head, "twitter:card"), head.urlPath).toBe("summary");
+    expect(one(head, "twitter:card"), head.urlPath).toBe("summary_large_image");
     expect(one(head, "twitter:title"), head.urlPath).toBe(title);
     expect(one(head, "twitter:description"), head.urlPath).toBe(description);
     expect(one(head, "robots"), head.urlPath).toBeUndefined();
@@ -230,7 +231,7 @@ test("404 — robots noindex 1개(Next가 넣는다 — 중복 없음), canonica
   }
 });
 
-test("결과 노출 0 — 모든 페이지의 title·description·OG·twitter 문구에 스코어 모양이 없고 og:image·twitter:image가 없다", () => {
+test("결과 노출 0 — 모든 페이지의 title·description·OG·twitter 문구(이미지 alt 포함)에 스코어 모양이 없다", () => {
   for (const head of heads) {
     const texts = [
       ...head.titles,
@@ -240,6 +241,8 @@ test("결과 노출 0 — 모든 페이지의 title·description·OG·twitter �
         "og:description",
         "twitter:title",
         "twitter:description",
+        "og:image:alt",
+        "twitter:image:alt",
       ].flatMap((key) => head.meta.get(key) ?? []),
     ];
     expect(texts.length, head.urlPath).toBeGreaterThan(0);
@@ -248,9 +251,6 @@ test("결과 노출 0 — 모든 페이지의 title·description·OG·twitter �
         SCORE_RE.test(withoutSeasons(text)),
         `${head.urlPath}: ${text}`,
       ).toBe(false);
-    }
-    for (const key of ["og:image", "twitter:image"]) {
-      expect(head.meta.get(key), `${head.urlPath} ${key}`).toBeUndefined();
     }
   }
 });

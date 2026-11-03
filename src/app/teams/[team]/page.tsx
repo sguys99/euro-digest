@@ -27,6 +27,7 @@ import { absoluteUrl, routes } from "@/lib/paths";
 import { seasonLabel } from "@/lib/rest-period";
 import type { CompId } from "@/lib/schema/common";
 import type { TeamSheetPlayer } from "@/lib/schema/team";
+import { teamOgCard } from "@/lib/og";
 import { pageMetadata, teamDescription } from "@/lib/seo";
 import {
   fixtureWindow,
@@ -85,6 +86,7 @@ export async function generateMetadata({
       season,
     ),
     canonical: routes.team(slug),
+    og: teamOgCard(page.self, page.team, page.configs),
   });
 }
 

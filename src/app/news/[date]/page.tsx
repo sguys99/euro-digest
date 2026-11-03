@@ -16,6 +16,7 @@ import {
 import { loadNewsFilterView } from "@/lib/data/news-filter";
 import { archiveHeading, archiveTitle } from "@/lib/news/archive";
 import { routes } from "@/lib/paths";
+import { newsOgCard } from "@/lib/og";
 import { archiveDescription, pageMetadata } from "@/lib/seo";
 import { FIRST_ISSUE_DATE } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -71,6 +72,7 @@ export async function generateMetadata({
       briefLines: loadBrief(date)?.lines.length ?? 0,
     }),
     canonical: routes.newsArchive(date),
+    og: newsOgCard(date),
   });
 }
 

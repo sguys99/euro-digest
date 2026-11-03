@@ -5,6 +5,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { routes, withBasePath } from "@/lib/paths";
 import { pageMetadata } from "@/lib/seo";
+import { pageOgCard } from "@/lib/og";
 
 /*
  * `/search/?q=` 검색 전체 결과 (PRD §4 IA `/search` · FR-130~132, DESIGN §9.3 "검색 오버레이 · 색인", plan M4-14)
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
     description:
       "한국 선수 · 팀 · 대회 · 뉴스를 한글이나 영문 이름으로 찾아요.",
     canonical: null,
+    og: pageOgCard("search"),
   }),
   // 404와 같은 규칙(tests/e2e/seo.spec.ts) — noindex 페이지는 canonical·og:url 없이 robots 메타 하나
   robots: { index: false },

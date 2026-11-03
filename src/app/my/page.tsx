@@ -14,6 +14,7 @@ import { MY_EMPTY_BOOT_SCRIPT } from "@/lib/my-empty-boot";
 import { MY_IMPORT_BOOT_SCRIPT } from "@/lib/my-import-boot";
 import { MY_DIRECTORY_ID, MY_NEWS_PAGE } from "@/lib/my-view";
 import { MY_DESCRIPTION, pageMetadata } from "@/lib/seo";
+import { pageOgCard } from "@/lib/og";
 
 /*
  * `/my/` 마이 (PRD FR-110~112 · §4.1 하단 탭 '마이', DESIGN §9.3 D2 "`/my` 틀", DECISIONS D2 §4 A · §6 #9 · §9, PRD §15 D64 ③ · D67 ②, plan M4-08).
@@ -35,6 +36,7 @@ export const metadata: Metadata = {
     title: "마이",
     description: MY_DESCRIPTION,
     canonical: null,
+    og: pageOgCard("my"),
   }),
   robots: { index: false },
 };

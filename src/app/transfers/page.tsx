@@ -21,6 +21,7 @@ import type { CompLabel } from "@/lib/home-widgets";
 import { routes } from "@/lib/paths";
 import type { CompId } from "@/lib/schema/common";
 import { pageMetadata, TRANSFERS_DESCRIPTION } from "@/lib/seo";
+import { pageOgCard } from "@/lib/og";
 import { TRANSFER_BOOT_SCRIPT } from "@/lib/transfer-filter-dom";
 import { transferWindowLine } from "@/lib/transfer-window-view";
 
@@ -41,6 +42,7 @@ export const metadata: Metadata = pageMetadata({
   title: "이적",
   description: TRANSFERS_DESCRIPTION,
   canonical: routes.transfers(),
+  og: pageOgCard("transfers"),
 });
 
 const HEADING_ID = "tr-h";

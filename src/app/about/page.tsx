@@ -27,6 +27,7 @@ import { loadLatestIssue } from "@/lib/data/issue";
 import { issueFormUrl, routes } from "@/lib/paths";
 import type { Tier } from "@/lib/schema/common";
 import { pageMetadata } from "@/lib/seo";
+import { pageOgCard } from "@/lib/og";
 import {
   CONTACT_EMAIL,
   FIRST_ISSUE_DATE,
@@ -56,6 +57,7 @@ export const metadata: Metadata = pageMetadata({
   title: "소개",
   description: `${SITE_NAME}의 발행 시각, 출처·저작권 정책, 출처 Tier, AI 작성 고지, 데이터 출처, 삭제·정정 요청 연락처.`,
   canonical: routes.about(),
+  og: pageOgCard("about"),
 });
 
 const INTRO_HEADING_ID = "about-h";

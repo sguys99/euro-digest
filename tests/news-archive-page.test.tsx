@@ -152,7 +152,14 @@ describe("generateMetadata — 제목·설명·canonical·OG (M1-38)", () => {
       locale: "ko_KR",
       siteName: "유로 다이제스트",
     });
-    expect(meta.twitter).toMatchObject({ card: "summary" });
+    expect(meta.twitter).toMatchObject({ card: "summary_large_image" });
+    // 날짜 OG(M5-01 — PRD §15 D71 ②)
+    expect(meta.openGraph?.images).toEqual([
+      expect.objectContaining({
+        url: "https://sguys99.github.io/euro-digest/og/news/2026-10-14.png",
+        alt: "유로 다이제스트 제 3호, 2026년 10월 14일 (수)",
+      }),
+    ]);
   });
 
   it("설명 = 호수·날짜·카드 수(브리핑 파일이 없으면 브리핑 언급 없음) — 카드 원제목은 넣지 않는다", async () => {

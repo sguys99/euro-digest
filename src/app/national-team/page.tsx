@@ -20,6 +20,7 @@ import { issueNumber } from "@/lib/issue";
 import { isNationalCard } from "@/lib/national-team-view";
 import { routes } from "@/lib/paths";
 import { NATIONAL_TEAM_DESCRIPTION, pageMetadata } from "@/lib/seo";
+import { pageOgCard } from "@/lib/og";
 
 /*
  * `/national-team/` 대표팀 (PRD FR-70~73, DESIGN §9.3 D2 "`/national-team` 틀", DECISIONS D2 §5 #4 · §6 #8 · §8, D64 ⑦, plan M3-13)
@@ -41,6 +42,7 @@ export const metadata: Metadata = pageMetadata({
   title: "대표팀",
   description: NATIONAL_TEAM_DESCRIPTION,
   canonical: routes.nationalTeam(),
+  og: pageOgCard("national-team"),
 });
 
 const HEADING_ID = "nt-page-h";
