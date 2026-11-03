@@ -32,7 +32,7 @@ export const OG_LATIN_WORDMARK = "EURO DIGEST";
 /**
  * 쪽 이름형 OG를 쓰는 고정 쪽 → 이미지 제목(= 그 쪽 문서 제목의 앞부분, 템플릿 " · 유로 다이제스트" 앞). 한국 선수 상세 · 주간 리포트는
  * 기본 OG(2026-11-03 사용자 결정). `/offline/`은 공유 대상이 아니라(색인 제외) 레이아웃 기본 OG를 물려받는다.
- * 새 고정 쪽(예: M5-15 `/status` · M5-05 `/privacy`)을 만들면 여기 한 줄 + 그 쪽 `pageMetadata`에 `og: pageOgCard(name)`.
+ * 새 고정 쪽(예: M5-05 `/privacy`)을 만들면 여기 한 줄 + 그 쪽 `pageMetadata`에 `og: pageOgCard(name)`.
  */
 export const OG_PAGES = {
   "korean-players": "한국 선수",
@@ -43,6 +43,8 @@ export const OG_PAGES = {
   // 내비 라벨은 "마이"(하단 탭) — 쪽 제목 · og:title · 문서 제목은 "마이 팀"(2026-11-03 사용자 결정)
   my: "마이 팀",
   about: "소개",
+  // M5-15 — 색인 제외 쪽이지만 링크로 공유될 수 있어 쪽 이름형(2026-11-03 사용자 결정)
+  status: "발행 상태",
 } as const satisfies Record<string, string>;
 
 export type OgPageName = keyof typeof OG_PAGES;

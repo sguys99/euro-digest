@@ -19,11 +19,28 @@ const TIER_CLASS: Readonly<Record<Tier, string>> = {
 
 export function TierBadge({
   tier,
+  compact = false,
   className,
 }: {
   tier: Tier;
+  /** 숫자만(24px 정사각 — `/status` 소스 표, 열 머리가 "Tier"). 화면 밖 "출처 Tier"는 그대로 */
+  compact?: boolean;
   className?: string;
 }) {
+  if (compact) {
+    return (
+      <span
+        className={cx(
+          "inline-grid size-6 flex-none place-items-center font-numeric text-sm leading-none font-extrabold tabular-nums",
+          TIER_CLASS[tier],
+          className,
+        )}
+      >
+        <span className="sr-only">출처 Tier </span>
+        {tier}
+      </span>
+    );
+  }
   return (
     <span
       className={cx(

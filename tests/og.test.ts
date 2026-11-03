@@ -164,6 +164,7 @@ describe("og:image:alt 문형 · 경로 (DESIGN §9.3 D3 링크 미리보기 메
         "my",
         "national-team",
         "search",
+        "status",
         "tonight",
         "transfers",
       ].sort(),
@@ -173,6 +174,7 @@ describe("og:image:alt 문형 · 경로 (DESIGN §9.3 D3 링크 미리보기 메
   it('마이 쪽 제목은 "마이 팀"(내비 라벨 "마이"와 다름 — 2026-11-03 사용자 결정)', () => {
     expect(OG_PAGES.my).toBe("마이 팀");
     expect(ogAlt(pageOgCard("my"))).toBe("유로 다이제스트 · 마이 팀");
+    expect(ogAlt(pageOgCard("status"))).toBe("유로 다이제스트 · 발행 상태");
   });
 });
 
