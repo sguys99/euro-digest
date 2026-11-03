@@ -25,7 +25,8 @@ import { StatusDayPicker } from "./status-day-picker";
  * → **소스 건강도**(최근 7일 표).
  * 숫자 상태 규칙(DESIGN §9.3 D2): 값 = 실선, 0 = 윤곽, 값 없음 = 대시. 점 · 띠 · 기호는 `aria-hidden`이고 뜻은 화면 밖 목록 · 범례 글자 ·
  * 상세 줄이 맡는다(색만으로 전하지 않음 — 모양 ● □ — ⊘ ◌ ✕). 첫 로드 모션 0.
- * 배포 완료 시각 칸은 없다(실행 기록에 그 시각이 없다 — 시안의 '자리'는 숨김, plan M5-15 메모).
+ * 배포 완료 시각(시안의 '자리')은 숫자판 첫 칸 캡션 둘째 줄 + 상세 줄 — deploy.yml이 넘긴 지난 배포 목록에서(오늘 호는 '배포 중'),
+ * 목록이 없으면(로컬 · API 실패) 숨긴다(src/lib/status-view.ts `deployOf`, 2026-11-03 사용자 결정).
  */
 
 const N1 =
@@ -160,6 +161,21 @@ function Board({ view }: { view: StatusView }) {
                   {lead > 0 ? "앞" : "뒤"}
                 </>
               )}
+              {last.deploy ? (
+                <span data-slot="status-deploy" className="block">
+                  {last.deploy.kind === "done" ? (
+                    <>
+                      배포 완료 <Num>{last.deploy.at}</Num>
+                      {last.deploy.nextDay ? (
+                        <> ({last.deploy.nextDay.slice(5).replace("-", ".")})</>
+                      ) : null}{" "}
+                      KST
+                    </>
+                  ) : (
+                    "배포 중"
+                  )}
+                </span>
+              ) : null}
             </>
           ) : (
             "아직 발행한 호가 없어요"

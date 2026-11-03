@@ -4,7 +4,15 @@
  * 빌드 때(서버 컴포넌트)만 쓴다 — node:fs를 쓰는 로더를 부르므로 `"use client"` 파일에서 import하지 않는다.
  * 계산은 순수 모듈 src/lib/status-view.ts. 기준 시각 = 빌드 시각("이 쪽 기준") — 프로세스 안에서 한 번 정해 같은 빌드의
  * 페이지(뒤표지 링크 숫자)와 `/status`가 같은 값을 쓴다. 월 예산은 기본값(`DEFAULT_MONTHLY_BUDGET_USD` — 빌드 환경에 예산 변수 없음).
+ *
+ * 배포 완료 시각(2026-11-03 사용자 결정): deploy.yml '배포 기록 읽기' 단계가 github-pages 배포 성공 시각 배열(JSON, UTC ISO)을 파일로 쓰고
+ * 경로를 `STATUS_DEPLOYS_FILE`로 넘긴다. 변수가 없거나(로컬 · ci 빌드) 파일이 없거나 형식이 다르면 **던지지 않고** null — 칸을 숨긴다
+ * (API 실패가 발행을 멈추지 않게).
  */
+import { existsSync, readFileSync } from "node:fs";
+
+import { z } from "zod";
+
 import { loadSourcesConfig } from "@/lib/data/about";
 import { loadDevRuns, loadProdRuns } from "@/lib/data/runs";
 import { DEFAULT_MONTHLY_BUDGET_USD } from "@/lib/ops-metrics";
@@ -13,6 +21,7 @@ import {
   statusRunRatePct,
   type StatusView,
 } from "@/lib/status-view";
+import { IsoSchema } from "@/lib/schema";
 import { nowUtcIso } from "@/lib/time";
 
 let buildAsOf: string | null = null;
@@ -23,6 +32,23 @@ export function statusAsOf(): string {
   return buildAsOf;
 }
 
+const DeployTimesSchema = z.array(IsoSchema).max(1_000);
+
+/** 배포 성공 시각 목록 — 머리 주석 규칙(실패하면 null) */
+export function loadDeployTimes(
+  file: string | undefined = process.env.STATUS_DEPLOYS_FILE,
+): string[] | null {
+  if (!file || !existsSync(file)) return null;
+  try {
+    const parsed = DeployTimesSchema.safeParse(
+      JSON.parse(readFileSync(file, "utf8")),
+    );
+    return parsed.success ? parsed.data : null;
+  } catch {
+    return null;
+  }
+}
+
 /** `/status/` 화면 모델 */
 export function loadStatusView(asOf: string = statusAsOf()): StatusView {
   return buildStatusView({
@@ -30,6 +56,7 @@ export function loadStatusView(asOf: string = statusAsOf()): StatusView {
     devRuns: loadDevRuns(),
     asOf,
     monthlyBudget: DEFAULT_MONTHLY_BUDGET_USD,
+    deploys: loadDeployTimes(),
     sources: loadSourcesConfig().map((s) => ({
       id: s.id,
       name: s.name,

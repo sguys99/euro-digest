@@ -168,6 +168,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
+      deployments: read # deploy.yml build job — /status 배포 완료 시각(M5-15, 읽기만)
     uses: ./.github/workflows/deploy.yml
     with:
       ref: ${{ github.sha }}

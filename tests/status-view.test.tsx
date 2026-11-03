@@ -7,15 +7,21 @@
  * - 뒤표지 '발행 상태 {n}%' 링크(숫자 Barlow 800 17px · 값 없으면 숫자 없이)
  * 빌드 결과(out/ 메타 · 링크 · axe · OG)는 e2e tests/e2e/status.spec.ts.
  */
+import { mkdtempSync, writeFileSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { Colophon } from "@/components/shell/colophon";
 import { StatusBody } from "@/components/status/status-body";
+import { loadDeployTimes } from "@/lib/data/status";
 import { sitemapEntries } from "@/lib/seo";
 import type { RunLog, RunSource } from "@/lib/schema/run";
 import {
   buildStatusView,
+  deployOf,
   durationParts,
   formatRatePct,
   formatSharePct,
@@ -232,6 +238,7 @@ describe("buildStatusView — 실행 기록 → 화면 모델", () => {
       finished: "07:15",
       target: "07:30",
       leadMinutes: 15,
+      deploy: null, // 배포 목록이 없으면(로컬 · API 실패) 모름 — 칸 숨김
     });
     expect(view.runRate).toEqual({
       runs: 7,
@@ -429,5 +436,112 @@ describe("뒤표지 '발행 상태' 링크 (DECISIONS D3 #15)", () => {
   it('실행 기록이 없으면 숫자 없이 "발행 상태"', () => {
     render(<Colophon issue={null} statusRate={null} />);
     expect(screen.getByRole("link", { name: "발행 상태" })).toBeTruthy();
+  });
+});
+
+describe("배포 완료 시각 — deploy.yml이 넘긴 github-pages 배포 목록 (2026-11-03 사용자 결정)", () => {
+  // 10-31 첫 발행 수집 완료 = 2026-10-30T22:15Z(07:15 KST)
+  const PUBLISHED = "2026-10-30T22:15:00.000Z";
+
+  it("수집 완료 뒤 12시간 안에 끝난 첫 배포 = 그 호의 배포 완료(이전 배포 · 12시간 뒤 배포는 아니다)", () => {
+    const deploys = [
+      "2026-10-30T12:00:00Z", // 전날 저녁 사람 배포 — 앞
+      "2026-10-31T05:00:00Z", // 같은 날 오후 배포 — 첫 배포가 아니다
+      "2026-10-30T22:19:30Z", // 07:19 KST — 이것
+    ];
+    expect(deployOf("2026-10-31", PUBLISHED, deploys, AS_OF)).toEqual({
+      kind: "done",
+      at: "07:19",
+      nextDay: null,
+    });
+    expect(
+      deployOf("2026-10-31", PUBLISHED, ["2026-10-31T10:15:00Z"], AS_OF),
+    ).toBeNull(); // 12시간 뒤 — 이 호의 배포로 보지 않는다
+  });
+
+  it("자정을 넘겨 끝난 배포는 다음 날 표시 · asOf 뒤 배포는 보지 않는다", () => {
+    expect(
+      deployOf(
+        "2026-10-31",
+        "2026-10-31T14:50:00.000Z", // 23:50 KST
+        ["2026-10-31T15:04:00Z"], // 11-01 00:04 KST
+        AS_OF,
+      ),
+    ).toEqual({ kind: "done", at: "00:04", nextDay: "2026-11-01" });
+    expect(
+      deployOf(
+        "2026-11-03",
+        "2026-11-02T22:15:00.000Z",
+        ["2026-11-02T22:20:00Z"],
+        "2026-11-02T22:18:00.000Z",
+      ),
+    ).toEqual({ kind: "pending" });
+  });
+
+  it("오늘 호가 발행됐고 그 배포가 아직 없으면 '배포 중', 지난 날은 모름(null) · 목록이 없으면 늘 null", () => {
+    const asOf = "2026-11-02T22:18:00.000Z"; // 11-03 07:18 KST — 이 빌드가 오늘 배포
+    expect(
+      deployOf("2026-11-03", "2026-11-02T22:15:00.000Z", [], asOf),
+    ).toEqual({ kind: "pending" });
+    expect(
+      deployOf("2026-11-02", "2026-11-01T22:15:00.000Z", [], asOf),
+    ).toBeNull();
+    expect(
+      deployOf("2026-11-03", "2026-11-02T22:15:00.000Z", null, asOf),
+    ).toBeNull();
+    expect(deployOf("2026-11-03", null, [], asOf)).toBeNull();
+  });
+
+  it("화면 모델 — 상세 줄 · 숫자판 캡션에 배포 완료(오늘은 배포 중)", () => {
+    const today = run({
+      startedAt: "2026-11-03T22:10:00.000Z",
+      finishedAt: "2026-11-03T22:14:00.000Z",
+    });
+    const view = buildStatusView({
+      ...INPUT,
+      prodRuns: [...PROD, today],
+      asOf: "2026-11-03T22:16:00.000Z", // 11-04 07:16 KST
+      deploys: ["2026-10-30T22:19:30Z"],
+    });
+    const day = (date: string) => view.days.find((d) => d.date === date)!;
+    expect(day("2026-10-31").line).toBe(
+      "10.31 (토) · 제 20호 · 정시 · 수집 완료 07:15 · 배포 완료 07:19 · 공개 목표 07:30 · 실패한 실행 1회(00:33)",
+    );
+    expect(day("2026-11-04").line).toBe(
+      "11.04 (수) · 제 24호 · 정시 · 수집 완료 07:14 · 배포 중 · 공개 목표 07:30",
+    );
+    expect(day("2026-10-26").deploy).toBeNull(); // 목록 범위 밖 — 지어내지 않는다
+    expect(view.last?.deploy).toEqual({ kind: "pending" });
+    render(<StatusBody view={view} />);
+    expect(
+      document.querySelector("[data-slot=status-deploy]")?.textContent,
+    ).toBe("배포 중");
+  });
+
+  it("목록이 없으면 숫자판에 배포 줄이 없다", () => {
+    const { container } = render(<StatusBody view={buildStatusView(INPUT)} />);
+    expect(container.querySelector("[data-slot=status-deploy]")).toBeNull();
+  });
+
+  it("loadDeployTimes — 변수 없음 · 파일 없음 · 깨진 JSON · 형식 다름은 던지지 않고 null(빌드 계속, 칸 숨김)", () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), "deploys-"));
+    const file = (name: string, body: string) => {
+      const p = path.join(dir, name);
+      writeFileSync(p, body);
+      return p;
+    };
+    expect(loadDeployTimes(undefined)).toBeNull();
+    expect(loadDeployTimes("")).toBeNull();
+    expect(loadDeployTimes(path.join(dir, "none.json"))).toBeNull();
+    expect(loadDeployTimes(file("broken.json", "{"))).toBeNull();
+    expect(loadDeployTimes(file("object.json", '{"a":1}'))).toBeNull();
+    expect(
+      loadDeployTimes(file("offset.json", '["2026-11-02T22:20:02+09:00"]')),
+    ).toBeNull();
+    expect(
+      loadDeployTimes(
+        file("ok.json", '["2026-11-02T22:20:02Z","2026-11-02T15:00:54Z"]'),
+      ),
+    ).toEqual(["2026-11-02T22:20:02Z", "2026-11-02T15:00:54Z"]);
   });
 });

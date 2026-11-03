@@ -43,6 +43,13 @@ test("띠 6종 — 기호 모양이 상태마다 다르고(색만으로 전하�
   await expect(varied.locator("[data-slot=status-line]")).toContainText(
     "발행 전",
   );
+  // 배포 완료 시각 — 숫자판 캡션 둘째 줄(11-03 호 07:16), 빈 데이터 견본에는 없다
+  await expect(varied.locator("[data-slot=status-deploy]")).toHaveText(
+    "배포 완료 07:16 KST",
+  );
+  await expect(
+    frame(page, "status-empty").locator("[data-slot=status-deploy]"),
+  ).toHaveCount(0);
   // 계단선 — 서머타임 끝(10-25 → 10-26) 두 높이
   const d = await varied.locator("[data-slot=status-target]").getAttribute("d");
   const ys = new Set(

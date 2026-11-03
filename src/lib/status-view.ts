@@ -8,7 +8,10 @@
  *
  * 공개 범위(D71 ③ — 사용자 결정): 비용은 **예산 대비 %만**(소수 두 자리, 금액 없음), 성공률은 **실행 기준 %**(소수 한 자리), 발행일은
  * 30칸 띠(정시 · 늦음 · 결호 · 실패 · 창간 전 + 오늘 발행 전). 실패 원인 · 소스 마지막 새 기사 시각은 넣지 않는다.
- * 배포 완료 시각은 실행 기록에 없어 싣지 않는다(칸 숨김 — 제안은 plan M5-15 메모).
+ * **배포 완료 시각**(2026-11-03 사용자 결정 — Deployments API): 이 빌드는 배포 *전에* 돌아 자기 배포 시각을 알 수 없다. deploy.yml이
+ * github-pages 지난 배포의 성공 시각 목록(`deploys`)을 빌드 입력으로 넘기면, 발행일마다 **첫 발행 실행의 수집 완료 뒤 12시간 안에 끝난
+ * 첫 배포**를 그 호의 배포 완료로 싣는다(`deployOf`). 오늘 호가 발행됐는데 그 배포가 아직 없으면 '배포 중'(이 빌드가 그 배포다).
+ * 목록이 없으면(로컬 빌드 · API 실패) 칸을 숨기고, 목록 범위(최근 100건) 밖의 지난 날은 값 없이 둔다(지어내지 않는다).
  *
  * 그래프 좌표는 % 값(0~100)으로 낸다 — x는 30칸 열의 가운데, y는 KST 하루(0 ~ 24시, 위 = 늦음)의 수집 완료 시각.
  */
@@ -77,9 +80,17 @@ export interface StatusDay {
   targetY: number;
   /** 실패한 실행 ✕ y(%) — failedRuns와 같은 순서 */
   failedY: number[];
+  /** 그 호의 배포 — 완료 KST "07:21"(다음 날이면 date) · 오늘 '배포 중' · 모름(null) */
+  deploy: StatusDeploy;
   /** 날짜 이동 상세 줄 · 화면 밖 목록 한 줄 */
   line: string;
 }
+
+/** 배포 완료 — `deployOf` 규칙(머리 주석). null = 모름(목록 없음 · 범위 밖 · 발행 없음) */
+export type StatusDeploy =
+  | { kind: "done"; at: string; nextDay: string | null }
+  | { kind: "pending" }
+  | null;
 
 export interface StatusLast {
   date: string;
@@ -92,6 +103,8 @@ export interface StatusLast {
   target: string;
   /** 표시 분 단위로 잰 목표 − 완료(양수 = 앞, 음수 = 뒤) */
   leadMinutes: number;
+  /** 그 호의 배포 완료 · 배포 중 · 모름 */
+  deploy: StatusDeploy;
 }
 
 export interface StatusRunRate {
@@ -175,6 +188,43 @@ export interface StatusInput {
   monthlyBudget: number;
   /** 소스 설정(configs/sources.json) — id · 이름 · Tier · 언어 */
   sources: readonly { id: string; name: string; tier: Tier; lang: string }[];
+  /** github-pages 배포 성공 시각(UTC ISO, 순서 무관) — deploy.yml이 넘긴다. 없으면(null · 생략) 배포 칸 숨김 */
+  deploys?: readonly string[] | null;
+}
+
+/** 첫 발행 실행의 수집 완료 뒤 이 시간 안에 끝난 첫 배포를 그 호의 배포로 본다 */
+export const DEPLOY_MATCH_HOURS = 12;
+
+/**
+ * 발행일 하나의 배포 완료(머리 주석 규칙) — `deploys` = 배포 성공 시각(UTC ISO), `publishedAt` = 첫 발행 실행의 수집 완료,
+ * 오늘(asOf의 KST 날짜)이면 못 찾았을 때 '배포 중'. asOf 뒤의 배포는 보지 않는다.
+ */
+export function deployOf(
+  date: string,
+  publishedAt: string | null,
+  deploys: readonly string[] | null | undefined,
+  asOf: string,
+): StatusDeploy {
+  if (!deploys || publishedAt === null) return null;
+  const from = Date.parse(publishedAt);
+  const until = Math.min(
+    from + DEPLOY_MATCH_HOURS * 3_600_000,
+    Date.parse(asOf) + 1,
+  );
+  const hit = deploys
+    .map((iso) => Date.parse(iso))
+    .filter((t) => Number.isFinite(t) && t >= from && t < until)
+    .sort((a, b) => a - b)[0];
+  if (hit !== undefined) {
+    const iso = new Date(hit).toISOString();
+    const day = kstDate(iso);
+    return {
+      kind: "done",
+      at: formatKst(iso, "time"),
+      nextDay: day === date ? null : day,
+    };
+  }
+  return date === kstDate(asOf) ? { kind: "pending" } : null;
 }
 
 // ─── 숫자 형식 ───────────────────────────────────────────────────────────
@@ -272,6 +322,12 @@ function dayLine(day: Omit<StatusDay, "line">, finishedDate: string | null) {
         : "";
     parts.push(`수집 완료 ${day.finished}${nextDay}`);
   }
+  if (day.deploy?.kind === "done") {
+    const next = day.deploy.nextDay ? `(${monthDot(day.deploy.nextDay)})` : "";
+    parts.push(`배포 완료 ${day.deploy.at}${next}`);
+  } else if (day.deploy?.kind === "pending") {
+    parts.push("배포 중");
+  }
   if (day.state !== "prelaunch") parts.push(`공개 목표 ${day.target}`);
   if (day.failedRuns.length > 0) {
     parts.push(
@@ -314,6 +370,7 @@ export function buildStatusView(input: StatusInput): StatusView {
       y: d.publishedAt ? yOf(minutesInto(d.date, d.publishedAt)) : null,
       targetY: yOf(minutesInto(d.date, publishSlot(d.date).publishTarget)),
       failedY: failed.map((run) => yOf(minutesInto(d.date, run.startedAt))),
+      deploy: deployOf(d.date, d.publishedAt, input.deploys, asOf),
     };
     return {
       ...base,
@@ -344,6 +401,12 @@ export function buildStatusView(input: StatusInput): StatusView {
       leadMinutes:
         Math.floor(Date.parse(target) / 60_000) -
         Math.floor(Date.parse(published.publishedAt) / 60_000),
+      deploy: deployOf(
+        published.date,
+        published.publishedAt,
+        input.deploys,
+        asOf,
+      ),
     };
   }
   const stats = recentRunStats(prod, asOf);
