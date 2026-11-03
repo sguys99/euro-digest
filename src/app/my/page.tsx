@@ -33,7 +33,7 @@ import { OG_PAGES, pageOgCard } from "@/lib/og";
 // 색인 대상이 아니다(팔로우는 브라우저에만 — 크롤러에게는 빈 상태): noindex · canonical 없음 · sitemap 밖(404와 같은 규칙 — tests/e2e/seo.spec.ts)
 export const metadata: Metadata = {
   ...pageMetadata({
-    // 쪽 제목 "마이 팀"(OG 쪽 이름형 글자와 같은 값 — 2026-11-03 사용자 결정). 내비 라벨 · h1은 "마이" 그대로
+    // 쪽 제목 "마이 팀"(OG 쪽 이름형 글자 · h1과 같은 값 — 2026-11-03 사용자 결정). 내비 라벨(하단 탭 · 상단 내비)만 "마이"
     title: OG_PAGES.my,
     description: MY_DESCRIPTION,
     canonical: null,
@@ -89,7 +89,7 @@ export default function MyPage() {
               id={HEADING_ID}
               className="text-[32px] leading-[1.1] font-extrabold tracking-[-0.04em] lg:text-5xl"
             >
-              마이
+              {OG_PAGES.my}
             </h1>
           }
         />

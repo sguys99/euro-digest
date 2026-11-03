@@ -244,7 +244,9 @@ test.describe("/my 화면", () => {
         );
       }, KEY);
       await page.goto("my/");
-      await expect(page.getByRole("heading", { level: 1 })).toHaveText("마이");
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+        "마이 팀",
+      ); // h1 = 쪽 제목(2026-11-03 사용자 결정), 내비 라벨은 "마이"
       await expect(
         page.locator('[data-slot="my-board"]:not([aria-busy])'),
       ).toBeVisible();
