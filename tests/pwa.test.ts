@@ -234,21 +234,28 @@ describe("앱 아이콘 — D3 C 스타일 ED(public/icons, M5-02)", () => {
           mono ? [0, 0, 0, 0] : [...FACE, 255],
         );
       }
+      // 픽셀마다 expect를 부르면 512 판에서 50만 번이 넘어 전체 실행 때 5초 제한을 넘긴다 — 위반 픽셀을 세어 한 번에 단언한다.
       let letter = 0;
+      const bad = { alpha: 0, offLine: 0, monoRgb: 0 };
       for (let i = 0; i < rgba.length; i += 4) {
         const px = [rgba[i]!, rgba[i + 1]!, rgba[i + 2]!, rgba[i + 3]!];
-        if (!mono) expect(px[3]).toBe(255); // any · maskable · apple — 투명 0
+        if (!mono && px[3] !== 255) bad.alpha += 1; // any · maskable · apple — 투명 0
         if (mono && px[3] === 0) continue;
         if (colorDistance(px, LETTER) < 2 && px[3] === 255) letter += 1;
         // 면 · 글자 사이 안티에일리어싱 말고 다른 색이 없다(면 ↔ 글자 직선 위)
         if (!mono) {
           const t = (px[0]! - FACE[0]) / (LETTER[0] - FACE[0]);
           const mid = FACE.map((f, k) => f + (LETTER[k]! - f) * t);
-          expect(colorDistance(px, mid)).toBeLessThan(4);
-        } else {
-          expect(px.slice(0, 3)).toEqual([...LETTER]); // 단색 판 — 알파만 다르다
+          if (colorDistance(px, mid) >= 4) bad.offLine += 1;
+        } else if (
+          px[0] !== LETTER[0] ||
+          px[1] !== LETTER[1] ||
+          px[2] !== LETTER[2]
+        ) {
+          bad.monoRgb += 1; // 단색 판 — 알파만 다르다
         }
       }
+      expect(bad).toEqual({ alpha: 0, offLine: 0, monoRgb: 0 });
       // 글자 면적 — ED + 괘선이 실제로 그려졌다(글꼴이 빠지면 괘선만 남아 아주 작아진다)
       const ratio = letter / (size * size);
       expect(ratio).toBeGreaterThan(variant === "any" ? 0.12 : 0.05);
