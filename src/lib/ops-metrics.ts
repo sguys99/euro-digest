@@ -37,6 +37,12 @@ import {
 /** dev 누적이 월 예산의 이 비율을 넘으면 알림 (CLAUDE.md §6.3) — scripts/lib/cost.ts가 다시 내보낸다(단일 출처) */
 export const DEV_ALERT_SHARE = 0.5;
 
+/**
+ * 월 예산 기본값(USD — `MONTHLY_BUDGET_USD` 기본, CLAUDE.md §6.2·§10). scripts/lib/cost.ts가 다시 내보낸다(단일 출처, M5-15).
+ * `/status`는 빌드 환경에 예산 변수를 두지 않으므로 이 값으로 사용률을 낸다.
+ */
+export const DEFAULT_MONTHLY_BUDGET_USD = 3;
+
 /** 한 번에 펼치는 날짜·달 수 상한 — 잘못된 입력으로 큰 배열을 만들지 않게 */
 const MAX_SPAN_DAYS = 3_660;
 

@@ -54,6 +54,12 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 
 import { IsoSchema } from "@/lib/schema";
+import {
+  SOURCE_EVENT_TYPES,
+  SOURCE_RUN_STATES,
+  type SourceEventType,
+  type SourceRunState,
+} from "@/lib/source-health";
 import { formatKst, kstDate, nowUtcIso } from "@/lib/time";
 
 import {
@@ -120,19 +126,6 @@ export const RECURRENCE_POLICY: Readonly<Record<IssueKind, RecurrencePolicy>> =
   };
 
 /**
- * 소스 건강도 사건 (M1-11, PRD §15 D35) — scripts/lib/source-health.ts가 판정한다.
- *   - failed          이번 실행에서 소스 받기·파싱이 실패했다(시간 예산 초과 `budget`은 사건이 아니다) — PRD §10
- *   - failing-streak  요청 실패·빈 피드가 3회 이상 연속(이번 실행 포함) — FR-11
- *   - stale-streak    피드는 응답하지만 수집 창 안의 새 기사가 7회 이상 연속 0건(이번 실행 포함)
- */
-export const SOURCE_EVENT_TYPES = [
-  "failed",
-  "failing-streak",
-  "stale-streak",
-] as const;
-export type SourceEventType = (typeof SOURCE_EVENT_TYPES)[number];
-
-/**
  * 부분 실패 사유 (M1-27, FR-152) — 수집 단계 안에서 실패했지만 실행은 계속된(수집 판정 partial) 사람이 손봐야 하는 단계 오류.
  * 그 실행이 발행됐는지는 뒤 단계(검증·빌드·커밋)에 달려 있다 — 이슈 본문은 발행했다고 쓰지 않는다. 사유별로 이슈 하나
  * (원인 키 `<워크플로>:partial:<사유>`). 판정은 scripts/lib/run-issues.ts `partialFindings`.
@@ -161,20 +154,9 @@ export const PIPELINE_PARTIAL_REASONS = [
 ] as const;
 export type PipelinePartialReason = (typeof PIPELINE_PARTIAL_REASONS)[number];
 
-/**
- * 실행 1회에서 소스의 상태 (runs.json `sources[]` 한 줄을 분류한 값 — source-health.ts `classifySourceRun`).
- *   fresh 새 기사 있음 · no-new 응답했지만 창 안 새 기사 0건 · empty 빈 피드(원문 0건) · failed 실패 ·
- *   budget 시간 예산 초과로 건너뜀 · legacy-ok 성공했지만 `usable`이 없는 옛 기록(새 기사 수 모름)
- */
-export const SOURCE_RUN_STATES = [
-  "fresh",
-  "no-new",
-  "empty",
-  "failed",
-  "budget",
-  "legacy-ok",
-] as const;
-export type SourceRunState = (typeof SOURCE_RUN_STATES)[number];
+/** 소스 건강도 사건·실행 상태 — 정의는 src/lib/source-health.ts(M5-15 — `/status` 화면도 쓴다), 이슈 스키마가 쓰고 다시 내보낸다 */
+export { SOURCE_EVENT_TYPES, SOURCE_RUN_STATES };
+export type { SourceEventType, SourceRunState };
 
 /** `.github/ISSUE_TEMPLATE/source-broken.yml`의 증상 선택지 — 테스트가 이슈 폼과 같은지 확인한다. */
 export const SOURCE_SYMPTOMS = [

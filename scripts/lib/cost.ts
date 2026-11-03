@@ -47,7 +47,7 @@ import {
   type RunEnv,
   type RunLog,
 } from "@/lib/schema";
-import { DEV_ALERT_SHARE } from "@/lib/ops-metrics";
+import { DEFAULT_MONTHLY_BUDGET_USD, DEV_ALERT_SHARE } from "@/lib/ops-metrics";
 import {
   kstDate,
   kstMonth,
@@ -423,9 +423,8 @@ export function monthToDate(runs: readonly RunLog[], now: Date): SpendTotals {
 // ─── 예산 가드 ───────────────────────────────────────────────────────────
 
 export const DEFAULT_DAILY_BUDGET_USD = 0.1;
-export const DEFAULT_MONTHLY_BUDGET_USD = 3;
-/** dev 누적이 월 예산의 이 비율을 넘으면 알림 (CLAUDE.md §6.3) — 정의는 src/lib/ops-metrics.ts(운영 리포트·/status와 단일 출처) */
-export { DEV_ALERT_SHARE };
+/** 월 예산 기본값(MONTHLY_BUDGET_USD) · dev 알림 비율(CLAUDE.md §6.3) — 정의는 src/lib/ops-metrics.ts(운영 리포트·/status와 단일 출처, M5-15) */
+export { DEFAULT_MONTHLY_BUDGET_USD, DEV_ALERT_SHARE };
 
 export interface Budgets {
   dailyBudgetUsd: number;

@@ -55,6 +55,11 @@ import {
   type SourceRunRecord,
   type SourceRunState,
 } from "../scripts/lib/source-health";
+import * as scriptsHealth from "../scripts/lib/source-health";
+import * as githubIssues from "../scripts/lib/github-issues";
+import * as libHealth from "@/lib/source-health";
+import * as opsMetrics from "@/lib/ops-metrics";
+import * as cost from "../scripts/lib/cost";
 
 import { fixtureFeedSources } from "./support/fixture-sources";
 
@@ -1234,5 +1239,49 @@ describe("runCollect — 소스 건강도 연결 (M1-11)", () => {
       streak: 7,
       symptoms: ["0건 수집"],
     });
+  });
+});
+
+// ─── M5-15 — 판정부를 src/lib로 옮긴 뒤에도 scripts 경로가 같은 함수·값을 내보낸다(동작 불변) ─────────────
+
+describe("src/lib/source-health 이동 (M5-15)", () => {
+  it("scripts/lib/source-health는 src/lib의 판정·집계 함수를 그대로 다시 내보낸다", () => {
+    for (const name of [
+      "classifySourceRun",
+      "healthRuns",
+      "sourceHistory",
+      "failStreak",
+      "staleStreak",
+      "sourceStats",
+      "healthEvent",
+      "isWholeRunFailure",
+      "assessSourceHealth",
+    ] as const) {
+      expect(scriptsHealth[name], name).toBe(libHealth[name]);
+    }
+    expect(scriptsHealth.FAIL_STREAK_THRESHOLD).toBe(3);
+    expect(scriptsHealth.STALE_STREAK_THRESHOLD).toBe(7);
+    expect(scriptsHealth.HEALTH_STATS_DAYS).toBe(libHealth.HEALTH_STATS_DAYS);
+    expect(scriptsHealth.BUDGET_ERROR).toBe(libHealth.BUDGET_ERROR);
+  });
+
+  it("이슈 스키마의 사건·상태 목록은 src/lib 정의와 같은 배열이다", () => {
+    expect(githubIssues.SOURCE_EVENT_TYPES).toBe(libHealth.SOURCE_EVENT_TYPES);
+    expect(githubIssues.SOURCE_RUN_STATES).toBe(libHealth.SOURCE_RUN_STATES);
+    expect([...libHealth.SOURCE_RUN_STATES]).toEqual([
+      "fresh",
+      "no-new",
+      "empty",
+      "failed",
+      "budget",
+      "legacy-ok",
+    ]);
+  });
+
+  it("월 예산 기본값은 src/lib/ops-metrics 한 곳 — cost.ts가 같은 값을 다시 내보낸다", () => {
+    expect(cost.DEFAULT_MONTHLY_BUDGET_USD).toBe(
+      opsMetrics.DEFAULT_MONTHLY_BUDGET_USD,
+    );
+    expect(opsMetrics.DEFAULT_MONTHLY_BUDGET_USD).toBe(3);
   });
 });
