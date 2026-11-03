@@ -39,7 +39,7 @@ afterEach(() => {
 });
 
 describe("빈 상태 — 비시즌(모든 대회 시즌 밖인 날의 S4 자리)", () => {
-  it("모두 끝난 뒤: 가장 늦게 끝난 대회 평탄 탭 + 시즌명 + 종료일(설정 실값, Barlow 34px) + 안내, S4 문구 없음", () => {
+  it("모두 끝난 뒤(S4 가족 ③ — D3 #11): 같은 틀(거터 윤곽 0 · '오늘은 5줄을 쉽니다') 안 이유 블록 = 가장 늦게 끝난 대회 평탄 탭 + 시즌명 + 종료일(설정 실값, MM.DD N2 + 연도) + 안내, 경기 없음 이유 줄 없음", () => {
     const last = competitions.reduce((a, b) => (b.endDate > a.endDate ? b : a));
     render(<TodayBrief brief={{ ...emptyBrief, date: "2027-07-01" }} />);
     const block = screen.getByRole("region", { name: "오늘의 5줄" });
@@ -50,17 +50,24 @@ describe("빈 상태 — 비시즌(모든 대회 시즌 밖인 날의 S4 자리)
     );
     const time = off?.querySelector("time");
     expect(time).toHaveAttribute("datetime", last.endDate);
-    expect(time?.querySelector("[aria-hidden]")).toHaveTextContent(
-      last.endDate.replaceAll("-", "."),
-    );
-    expect(off).toHaveTextContent("종료");
+    const big = time?.querySelector("[aria-hidden]");
+    expect(big).toHaveTextContent(last.endDate.slice(5).replace("-", "."));
+    expect(big?.className).toContain("text-num-n2");
+    expect(off).toHaveTextContent(`종료${last.endDate.slice(0, 4)}`);
     expect(off).toHaveTextContent(
       "시즌이 끝났어요. 다음 시즌 일정이 나오면 이 자리에 다시 채워집니다.",
     );
     expect(
       within(block).getByRole("link", { name: "주요 뉴스로" }),
     ).toHaveAttribute("href", "#news");
-    expect(block).not.toHaveTextContent("5줄을 쉽니다");
+    // S4 가족 — 같은 틀 안 이유 블록만 바뀐다(거터 윤곽 0 · 제목 문장은 그대로, 경기 없음 이유 줄은 없다)
+    const rest = block.querySelector("[data-slot=brief-rest]");
+    expect(rest).toHaveAttribute("data-rest", "off-season");
+    expect(rest).toContainElement(off as HTMLElement);
+    expect(rest?.querySelector("[aria-hidden=true]")).toHaveTextContent("0");
+    expect(rest).toHaveTextContent("오늘은 5줄을 쉽니다");
+    expect(block).not.toHaveTextContent("끝난 경기가 없었습니다");
+    expect(block.querySelector("[data-slot=brief-intl]")).toBeNull();
   });
 
   it("개막 전: 가장 먼저 개막하는 대회의 개막일", () => {

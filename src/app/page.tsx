@@ -37,7 +37,8 @@ import { cn } from "@/lib/utils";
  * 홈 (PRD §4.2, plan M1-32·M1-33) — 빌드 때 최신 호를 읽어 앱 셸(티켓 마스트헤드·내비·뒤표지, M1-30) 안에 싣는다.
  *   0. 발행 지연 안내(M1-37 — 평소 숨김, 앱 셸 main 맨 앞): 지금이 오늘 공개 목표 + 15분 뒤인데 이 빌드의 최신 호가 오늘보다 앞이면 보인다.
  *   1. 오늘의 5줄(최상단 — PRD §15 D2) — 그 호 날짜의 브리핑 파일(data/briefs, D38). 경기 없는 날(mode empty)은 블록을 두고 높이만 줄이고
- *      (D30 S4), 모든 대회가 시즌 밖이면 S4 자리에 비시즌 빈 상태(M1-37). 파일이 없는 호는 블록을 싣지 않되(D38 전 2026-10-12~14 — 사실 없는
+ *      (D30 S4), 이유 블록이 비시즌 → A매치 휴식기 → 경기 없음 순으로 바뀐다(S4 가족 — D3 #12, M5-17). 휴식기 변형의 "A매치 섹션으로 ↓"는
+ *      아래 A매치 섹션(id="national")을 그린 빌드에서만 싣는다. 파일이 없는 호는 블록을 싣지 않되(D38 전 2026-10-12~14 — 사실 없는
  *      안내 금지), D38 뒤 호인데 그날 게시 실행 기록이 있으면 5줄 자리에 오류 상태(M1-37 — src/lib/brief-slot.ts). 필터와 무관하게 늘 맨 위다.
  *   2. 주요 뉴스 피드(M1-31 카드) — 5줄 아래 36px(≥1024 44px, DESIGN §4.3). id="news"는 S4 "주요 뉴스로 ↓"의 앵커.
  *      필터(M1-33 — 피드만 거른다): 1024 이상은 앱 셸 목차 열(대회·분류·한국 선수), 1023 이하는 부제 아래 분류 칩 줄. 주소 쿼리
@@ -74,6 +75,8 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const NEWS_HEADING_ID = "news-h";
+/** 홈 A매치 섹션 앵커 — 5줄 A매치 휴식기 변형의 "A매치 섹션으로 ↓"(M5-17) */
+const NATIONAL_ID = "national";
 
 export default function HomePage() {
   const { news, issue } = loadLatestIssue();
@@ -151,7 +154,12 @@ export default function HomePage() {
           : "오늘 밤 경기·리그 순위"
       }
     >
-      {slot?.kind === "brief" ? <TodayBrief brief={slot.brief} /> : null}
+      {slot?.kind === "brief" ? (
+        <TodayBrief
+          brief={slot.brief}
+          nationalHref={national ? `#${NATIONAL_ID}` : undefined}
+        />
+      ) : null}
       {slot?.kind === "missing" ? <BriefMissing /> : null}
       {/* 첫 방문 온보딩 진입 줄(M4-09 — FR-113 · D64 ⑥): 첫 방문 + 팔로우 0일 때만 5줄 바로 아래 한 줄(첫 페인트 전 스크립트). 팔로우 0이면 아래
           '내 팀 소식'은 숨으므로 둘은 함께 보이지 않는다 — 온보딩에서 팀 · 선수를 고르면 그 자리 아래에 내 팀 소식이 나타난다 */}
@@ -169,9 +177,10 @@ export default function HomePage() {
       {national ? (
         <NationalHome
           data={national}
+          id={NATIONAL_ID}
           headingId="home-national-h"
           tagsOf={nationalNewsTags()}
-          className={hasBrief ? "mt-9 lg:mt-11" : undefined}
+          className={cn("scroll-mt-4", hasBrief && "mt-9 lg:mt-11")}
         />
       ) : null}
       {/* 이적 창 모드(FR-105) — 모든 폭에서 5줄 · A매치 바로 아래 이적 핫 리스트 */}

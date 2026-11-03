@@ -122,23 +122,101 @@ for (const width of [375, 1280] as const) {
       expect(c.bg).not.toBe(c.fg);
     });
 
-    test("비시즌 — 날짜 Barlow 800 34px/1 · 160×41, 평탄 탭 46×22 · 종료·개막 두 견본", async ({
+    test("비시즌(S4 가족 ③ — D3) — 같은 틀(거터 레드 윤곽 0 · 쉽니다) 안 날짜 MM.DD --num-n2 800 · 평탄 탭 46×22 · 종료·개막 두 견본", async ({
       page,
     }) => {
       await open(page);
+      const n2 = width >= 1024 ? "64px/53.76px 800" : "44px/36.96px 800";
       for (const phase of ["ended", "upcoming"]) {
-        const sel = `[data-specimen=state-off-season-${phase}] [data-slot=brief-off-season]`;
+        const rest = `[data-specimen=state-off-season-${phase}] [data-slot=brief-rest]`;
+        await expect(page.locator(rest)).toHaveAttribute(
+          "data-rest",
+          "off-season",
+        );
+        await expect(page.locator(rest)).toContainText("오늘은 5줄을 쉽니다");
+        const sel = `${rest} [data-slot=brief-off-season]`;
         await expect(page.locator(sel)).toHaveAttribute("data-phase", phase);
         expect(await box(page, `${sel} time [aria-hidden]`)).toMatchObject({
-          w: 160,
-          h: 41,
-          font: "34px/34px 800",
+          h: width >= 1024 ? 53.75 : 36.95,
+          font: n2,
         });
         expect(await box(page, `${sel} [title]`)).toMatchObject({
           w: 46,
           h: 22,
         });
       }
+    });
+
+    test("A매치 휴식기(S4 가족 ② — D3 #12) — 점선 · 도장 + 기간 · 경기 날짜 --num-n2(혼합안 .s4i__d 실측) · 2열(1024 이상 220px · 간격 32) · 끝남은 날짜 --ink-2 · 스코어 없음", async ({
+      page,
+    }) => {
+      await open(page);
+      const n2 = width >= 1024 ? "64px/53.76px 800" : "44px/36.96px 800";
+      for (const key of ["before", "after"]) {
+        const rest = `[data-specimen=state-international-${key}] [data-slot=brief-rest]`;
+        await expect(page.locator(rest)).toHaveAttribute(
+          "data-rest",
+          "international",
+        );
+        const intl = `${rest} [data-slot=brief-intl]`;
+        expect(await box(page, intl)).toMatchObject({
+          padding: "12px 0px 0px",
+          border: "1px dotted",
+        });
+        await expect(page.locator(intl)).toContainText("A매치 기간");
+        const list = page
+          .locator(rest)
+          .getByRole("list", { name: "A매치 기간 경기 — 킥오프 순" });
+        const gap = await page
+          .locator(`${intl} ol`)
+          .evaluate((el) => getComputedStyle(el).gap);
+        expect(gap).toBe(width >= 1024 ? "12px 32px" : "12px 20px");
+        expect(await box(page, `${intl} li time [aria-hidden]`)).toMatchObject({
+          h: width >= 1024 ? 53.75 : 36.95,
+          font: n2,
+          ...(width >= 1024 ? { w: 220 } : {}),
+        });
+        await expect(list.getByRole("listitem")).toHaveCount(2);
+        // 결과 노출 0 — 스코어 모양("2-1" · "2:1")이 없다(시각 "23:30"은 KST 앞 시각)
+        const text = (await page.locator(intl).innerText()).replace(
+          /\d{2}:\d{2} KST/g,
+          "",
+        );
+        expect(text).not.toMatch(/\d\s*[-:]\s*\d/);
+        await expect(
+          page.locator(rest).getByRole("link", { name: "A매치 섹션으로" }),
+        ).toHaveCount(1);
+      }
+      // 첫 경기 뒤 — 지난 경기는 날짜 --ink-2 + "끝남", 다음 경기는 --ink
+      const after = page.locator(
+        "[data-specimen=state-international-after] [data-slot=brief-intl-match]",
+      );
+      await expect(after.first()).toHaveAttribute("data-past", "true");
+      await expect(after.first()).toContainText("끝남");
+      await expect(after.last()).toHaveAttribute("data-past", "false");
+      const colors = await after.evaluateAll((items) => {
+        const probe = (v: string) => {
+          const d = document.createElement("i");
+          d.style.color = `var(${v})`;
+          document.body.append(d);
+          const c = getComputedStyle(d).color;
+          d.remove();
+          return c;
+        };
+        return {
+          past: getComputedStyle(items[0]!.querySelector("time span")!).color,
+          next: getComputedStyle(items[1]!.querySelector("time span")!).color,
+          ink2: probe("--ink-2"),
+          ink: probe("--ink"),
+        };
+      });
+      expect(colors.past).toBe(colors.ink2);
+      expect(colors.next).toBe(colors.ink);
+      await expect(
+        page.locator(
+          "[data-specimen=state-international-before] [data-past=true]",
+        ),
+      ).toHaveCount(0);
     });
 
     test("로딩 스켈레톤 — 머리 37 · 5줄 행 3 · 카드 3(375는 혼합안 78·128과 같음, ≥1024는 실제 행 여백 80·133 — D0-12)", async ({

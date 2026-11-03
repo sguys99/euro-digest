@@ -20,7 +20,7 @@ import newsSampleJson from "../../../../fixtures/news-sample.json";
 /**
  * 상태 화면 4종 견본(M1-37 — DESIGN §9.3 상태 화면 4종, PRD DR-07) — `SPECIMEN=1` 빌드 전용(`/specimen/states/`, 공개 빌드에 없음).
  * 혼합안 `concept-mix.html` "상태 화면 4종"(`#spec-states`)과 같은 배치·같은 fixtures로 실제 컴포넌트를 싣는다 — 로딩(스켈레톤) · 빈 상태(필터 0건 ·
- * 비시즌 종료·개막 전) · 오류(발행 지연 안내 + 마지막 정상 지면 · 5줄 자리 오류) · 오프라인(띠 + 지면). 실제 화면에서는 시각·연결에 따라 보였다
+ * 비시즌 종료·개막 전 · A매치 휴식기 경기 전·첫 경기 뒤 — D3 S4 가족, M5-17) · 오류(발행 지연 안내 + 마지막 정상 지면 · 5줄 자리 오류) · 오프라인(띠 + 지면). 실제 화면에서는 시각·연결에 따라 보였다
  * 숨는 상자를 여기서는 늘 보인다(`visible` — 스크립트·섬 없음). 실제 동작(가짜 시계·offline 이벤트)은 홈 견본·실제 홈 e2e가 본다.
  * 경기 없는 날(S4)은 기초 컴포넌트 견본의 5줄 S4(`/specimen/`)가 기준이다.
  */
@@ -48,6 +48,25 @@ const offlineNews = {
     ["c_d8ecc21d28", "c_92935e72fe"].includes(c.id),
   ),
 };
+
+/**
+ * A매치 휴식기 견본(M5-17 — S4 가족 ②, DECISIONS D3 #12) — 같은 S4 합성 파일의 날짜를 실제 `configs/national-team.json`의 11월 기간 안으로
+ * 옮기고 "끝남" 기준 시각(발행 빌드 07:00 KST)을 고정한다: 경기 전(11-12 — 혼합안 견본 날) · 첫 경기 뒤(11-15 — 11-13 경기 끝남, 스코어 없음)
+ */
+const INTERNATIONAL = [
+  [
+    "before",
+    "기간 안 · 경기 전(11월 12일 발행)",
+    "2026-11-12",
+    "2026-11-11T22:00:00.000Z",
+  ],
+  [
+    "after",
+    "기간 안 · 첫 경기 뒤(11월 15일 발행 — 끝남, 스코어 없음)",
+    "2026-11-15",
+    "2026-11-14T22:00:00.000Z",
+  ],
+] as const;
 
 /** 비시즌 견본 — 같은 S4 합성 파일의 날짜만 시즌 밖으로(설정 실값으로 판정: 모두 끝남 · 개막 전) */
 const OFF_SEASON = [
@@ -134,6 +153,25 @@ export default function SpecimenStatesPage() {
                 <FilterEmptyState visible />
               </div>
             </Frame>
+            {INTERNATIONAL.map(([key, detail, date, now]) => (
+              <Frame
+                key={key}
+                caption="빈 상태 4"
+                detail={`A매치 휴식기 · ${detail} · 경기는 configs/national-team.json 실값`}
+                slot={`state-international-${key}`}
+              >
+                <div className="mr-3.5">
+                  <TodayBrief
+                    brief={{ ...emptyBrief, date }}
+                    headingAs="h3"
+                    headingId={`specimen-intl-${key}-h`}
+                    newsHref="#spec-states-h"
+                    nationalHref="#spec-states-h"
+                    now={new Date(now)}
+                  />
+                </div>
+              </Frame>
+            ))}
             {OFF_SEASON.map(([phase, detail, date]) => (
               <Frame
                 key={phase}

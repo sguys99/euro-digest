@@ -402,11 +402,14 @@ export function NationalSourceNote({
  */
 export function NationalHome({
   data,
+  id,
   headingId,
   tagsOf,
   className,
 }: {
   data: NationalHomeData;
+  /** 같은 쪽 앵커 — 홈 5줄 A매치 휴식기 변형의 "A매치 섹션으로 ↓"(M5-17) */
+  id?: string;
   headingId: string;
   tagsOf: (item: PlayerNewsItem) => readonly CardTagView[];
   className?: string;
@@ -414,6 +417,7 @@ export function NationalHome({
   const { rows, squad, news } = data;
   return (
     <section
+      id={id}
       aria-labelledby={headingId}
       data-slot="home-national"
       className={className}

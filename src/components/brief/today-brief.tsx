@@ -2,10 +2,15 @@ import Link from "next/link";
 
 import { AiLabel } from "@/components/ui/ai-label";
 import { ROW_GRID } from "@/components/ui/card";
-import { FlatTab, IndexTab } from "@/components/ui/chip";
+import { FlatTab, IndexTab, StampChip } from "@/components/ui/chip";
 import { SectionHead } from "@/components/ui/section-head";
 import { SpoilerFlap, SpoilerVeil } from "@/components/spoiler/spoiler-parts";
 import { aboutHref } from "@/lib/about-sections";
+import {
+  briefEmptyState,
+  type BriefEmptyState,
+  type BriefRestMatch,
+} from "@/lib/brief-empty";
 import {
   buildBriefView,
   type BriefInput,
@@ -14,12 +19,9 @@ import {
 } from "@/lib/brief-view";
 import { loadCompetitionLabels } from "@/lib/data/card-labels";
 import { loadCompetitionsConfig } from "@/lib/data/competitions";
+import { loadNationalTeamConfig } from "@/lib/data/national-team";
 import { briefErrorIssueUrl } from "@/lib/paths";
-import {
-  offSeasonFeature,
-  seasonLabel,
-  type OffSeasonFeature,
-} from "@/lib/rest-period";
+import { seasonLabel, type OffSeasonFeature } from "@/lib/rest-period";
 import { formatKst, kstDayRangeUtc } from "@/lib/time";
 import { cn } from "@/lib/utils";
 
@@ -31,8 +33,12 @@ import { cn } from "@/lib/utils";
  * section
  *   섹션 머리 "오늘의 5줄" + STARTING FIVE · 부제 "{M월 D일}(현지) 경기 기준"(+ "이날 N줄")
  *   ol(N줄) › li 행 [--gutter 등번호 │ 문장 + "AI 작성" │ --tab-w 인덱스 탭]     ← mode llm·mixed·template
- *   S4 [--gutter '0' 윤곽 │ "오늘은 5줄을 쉽니다" + 이유 + 주요 뉴스로 ↓]          ← mode empty(D30 — 블록을 두고 높이만 줄인다)
- *   비시즌 [평탄 탭 + 시즌명 │ 날짜(Barlow 800 34px) + 개막·종료 │ 안내 + 주요 뉴스로 ↓] ← mode empty + 홈 + 모든 대회 시즌 밖(M1-37)
+ *   S4 가족 [--gutter '0' 윤곽 │ "오늘은 5줄을 쉽니다" + 이유 블록 + 링크]          ← mode empty(D30 — 블록을 두고 높이만 줄인다)
+ *     ① 경기 없음: 이유 1줄 + 주요 뉴스로 ↓
+ *     ② A매치 휴식기(홈만 — M5-17): 이유 1줄 · 점선 · 도장 "A매치 기간" + 기간 · 경기(날짜 N2 · 시각 · 상대 · 홈/원정 · 대회, 스코어 0)
+ *        + A매치 섹션으로 ↓ · 주요 뉴스로 ↓
+ *     ③ 비시즌(홈만 — M1-37 → D3): 평탄 탭 + 시즌명 · 날짜(N2) + 개막·종료 / 연도 · 안내 + 주요 뉴스로 ↓
+ *     판정은 src/lib/brief-empty.ts `briefEmptyState`(DECISIONS D3 #12 — 우선순위 비시즌 → A매치 휴식기 → 경기 없음)
  *   하단: 데이터 football-data.org · API-Football │ AI 작성 안내 · 브리핑 오류 신고↗
  *
  *   결과 지연(D60 — mode empty + emptyReason results-pending): 섹션 머리 + 5줄 자리 오류(`BriefMissing`)와 같은 상자
@@ -68,9 +74,14 @@ export interface TodayBriefProps {
    * 홈 "주요 뉴스" · 아카이브 "뉴스")도 함께 바뀐다. 부제 "(현지) 경기 기준"은 같다
    */
   variant?: "today" | "issue";
+  /**
+   * 홈 A매치 섹션(M3-13) 앵커 — A매치 휴식기 변형의 "A매치 섹션으로 ↓". 그 섹션을 그린 페이지만 준다(없으면 링크 없음 — 빈 앵커 금지)
+   */
+  nationalHref?: string;
+  /** A매치 휴식기 변형에서 "끝남"을 가르는 기준 시각 — 기본 빌드 시각(홈 A매치 섹션과 같은 기준). 견본·테스트가 고정한다 */
+  now?: Date;
 }
 
-/** 변형별 글자 */
 /**
  * 변형별 글자. `countComps` — S4 이유에 대회 수를 쓸지: 홈(오늘 호)은 지금 설정의 대회 수 그대로, 아카이브(지난 호)는 빼고 "전날 끝난 경기가
  * 없었습니다." — 지난 호의 사실을 지금 설정(`configs/competitions.json`)으로 바꿔 쓰지 않는다(CLAUDE §1-7, M1-34 리뷰)
@@ -98,10 +109,24 @@ export function TodayBrief({
   headingId = "brief-h",
   newsHref = "#news",
   variant = "today",
+  nationalHref,
+  now,
 }: TodayBriefProps) {
   const view = buildBriefView(brief);
   const text = VARIANT_TEXT[variant];
-  if (view.emptyReason === "results-pending") {
+  // 빈 날의 5줄 자리(S4 가족 — DECISIONS D3 #12). 아카이브는 지금 설정을 읽지 않는다(지난 호를 지금 설정으로 다시 쓰지 않는다)
+  const rest: BriefEmptyState | null =
+    view.mode === "empty"
+      ? briefEmptyState({
+          date: view.date,
+          emptyReason: view.emptyReason ?? "no-matches",
+          scope: variant,
+          competitions: variant === "today" ? loadCompetitionsConfig() : [],
+          nationalTeam: variant === "today" ? loadNationalTeamConfig() : null,
+          nowMs: (now ?? new Date()).getTime(),
+        })
+      : null;
+  if (rest?.kind === "pending") {
     // 경기는 있었지만 수집 때 결과를 받지 못한 날(D60) — S4("끝난 경기가 없었습니다")는 사실이 아니라 쓰지 않고, 비시즌 판정도 하지
     // 않는다(경기가 있었다). 5줄 자리 오류와 같은 상자에 사실만 — 원인을 단정하지 않는다
     return (
@@ -116,12 +141,6 @@ export function TodayBrief({
       />
     );
   }
-  const empty = view.mode === "empty";
-  // 비시즌(M1-37 — DESIGN §9.3 상태 화면 ② 빈 상태): 홈(오늘 호)만. 지난 호는 지금 설정으로 그날 시즌을 다시 쓰지 않는다(S4 이유와 같은 원칙)
-  const offSeason =
-    empty && text.countComps
-      ? offSeasonFeature(view.date, loadCompetitionsConfig())
-      : null;
   return (
     <section
       aria-labelledby={headingId}
@@ -155,12 +174,13 @@ export function TodayBrief({
           </span>
         ) : null}
       </p>
-      {empty ? (
-        offSeason ? (
-          <BriefOffSeason feature={offSeason} newsHref={newsHref} text={text} />
-        ) : (
-          <BriefRest newsHref={newsHref} text={text} />
-        )
+      {rest ? (
+        <BriefRest
+          state={rest}
+          newsHref={newsHref}
+          nationalHref={nationalHref}
+          text={text}
+        />
       ) : (
         <>
           {view.allResults ? (
@@ -284,27 +304,41 @@ function BriefText({ parts }: { parts: readonly BriefTextPart[] }) {
 }
 
 /**
- * S4 경기 없는 날 — 블록을 두고 높이만 줄인다(D30 #7, DESIGN §9.3): 거터 '0'(--num-brief-no, 2px --brand-accent 윤곽, 속 비움 —
- * 장식) + "오늘은 5줄을 쉽니다" + 이유 1줄 + "주요 뉴스로 ↓". 이유는 파이프라인 규칙의 사실만(입력 경기 0 + 창 안에 결과를 기다리는
- * 경기도 없음 = 다루는 대회의 전날 종료 경기 없음 — scripts/lib/brief-file.ts `planBriefPublish` empty·`emptyReason` no-matches. 결과
- * 지연(results-pending — D60)은 S4를 쓰지 않는다), 날짜는 쓰지 않는다.
+ * S4 가족(D30 #7 → D3 #11 — DESIGN §9.3 S4 행 · D3 "S4 가족", 혼합안 `docs/design/d3/concept-mix.html` `.s4`) — 블록을 두고 높이만 줄인다.
+ * 공통 틀: 위아래 1px `--rule` · `[--gutter │ 1fr]` · 거터 '0'(--num-brief-no, 2px --brand-accent 윤곽, 속 비움 — 장식) +
+ * "{오늘은·이날은} 5줄을 쉽니다" + **이유 블록**(이것만 바뀐다) + 링크. 이유는 파이프라인 규칙의 사실만(입력 경기 0 + 창 안에 결과를 기다리는
+ * 경기도 없음 = 다루는 대회의 전날 종료 경기 없음 — scripts/lib/brief-file.ts `planBriefPublish` empty·`emptyReason` no-matches. 결과 지연
+ * (results-pending — D60)은 S4 가족을 쓰지 않는다), 날짜는 단정하지 않는다. 원인 서술("리그가 쉰다")은 쓰지 않는다. 첫 로드 모션 0.
  */
 function BriefRest({
+  state,
   newsHref,
+  nationalHref,
   text,
 }: {
+  state: Exclude<BriefEmptyState, { kind: "pending" }>;
   newsHref: string;
+  nationalHref: string | undefined;
   text: VariantText;
 }) {
-  const comps = loadCompetitionsConfig().length;
+  // 같은 페이지 앵커 — 일반 <a>(브라우저 기본 이동)
+  // 화살표 앞 4px — 혼합안 `.tlink` gap(flex 항목 앞 공백은 접혀 사라진다)
+  const link = cn(TEXT_LINK, "gap-1");
+  const toNews = (
+    <a href={newsHref} className={link}>
+      {text.news}
+      <span aria-hidden="true">↓</span>
+    </a>
+  );
   return (
     <div
       data-slot="brief-rest"
+      data-rest={state.kind}
       className="mt-3 grid grid-cols-[var(--gutter)_minmax(0,1fr)] items-start gap-x-2.5 border-y border-rule pt-3 pb-0.5 lg:gap-x-3.5"
     >
       <span
         aria-hidden="true"
-        className="font-numeric text-num-brief-no leading-[0.86] font-extrabold text-transparent lining-nums tabular-nums [-webkit-text-stroke:2px_var(--brand-accent)]"
+        className="font-numeric text-num-brief-no leading-[0.86] font-extrabold tracking-[-0.02em] text-transparent lining-nums tabular-nums [-webkit-text-stroke:2px_var(--brand-accent)]"
       >
         0
       </span>
@@ -312,17 +346,127 @@ function BriefRest({
         <p className="pt-0.5 text-type-brief leading-[1.4] font-extrabold">
           {text.rest} 5줄을 쉽니다
         </p>
-        <p className="mt-0.5 text-sm leading-[1.55] text-ink-2">
-          {text.countComps && comps > 0
-            ? `전날 ${comps}개 대회에 끝난 경기가 없었습니다.`
-            : "전날 끝난 경기가 없었습니다."}
+        {state.kind === "off-season" ? (
+          <BriefOffSeason feature={state.feature} />
+        ) : (
+          <BriefRestWhy text={text} />
+        )}
+        {state.kind === "international" ? (
+          <BriefInternational window={state.window} matches={state.matches} />
+        ) : null}
+        <p className="mt-0.5 flex flex-wrap gap-x-4.5">
+          {state.kind === "international" && nationalHref ? (
+            <a href={nationalHref} className={link}>
+              A매치 섹션으로<span aria-hidden="true">↓</span>
+            </a>
+          ) : null}
+          {toNews}
         </p>
-        {/* 같은 페이지 앵커 — 일반 <a>(브라우저 기본 이동) */}
-        <a href={newsHref} className={cn(TEXT_LINK, "mt-0.5")}>
-          {text.news}
-          <span aria-hidden="true">{" ↓"}</span>
-        </a>
       </div>
+    </div>
+  );
+}
+
+/** S4 이유 1줄 — 홈은 지금 설정의 대회 수, 아카이브는 대회 수 없이(VARIANT_TEXT `countComps`) */
+function BriefRestWhy({ text }: { text: VariantText }) {
+  const comps = text.countComps ? loadCompetitionsConfig().length : 0;
+  return (
+    <p className="mt-0.5 text-sm leading-[1.55] text-ink-2">
+      {comps > 0
+        ? `전날 ${comps}개 대회에 끝난 경기가 없었습니다.`
+        : "전날 끝난 경기가 없었습니다."}
+    </p>
+  );
+}
+
+/** "11.10"(KST 날짜 "YYYY-MM-DD" → 월.일) */
+const monthDot = (date: string) => date.slice(5).replace("-", ".");
+/** "11월 10일"(화면 밖 — 요일 없이) */
+const monthDayKo = (date: string) =>
+  `${Number(date.slice(5, 7))}월 ${Number(date.slice(8, 10))}일`;
+
+/**
+ * S4 가족 ② A매치 휴식기(D3 #12 — 홈만, 판정 src/lib/brief-empty.ts): 1px dotted `--ink-3`(위 12px) → 도장 "A매치 기간" + 기간
+ * `MM.DD – MM.DD`(Barlow 600 15px) → 경기 목록(2열 · 1024 이상 열 220px · 간격 32px): 날짜 `--num-n2` 실선 · "(요일) HH:MM KST" 12.5px ·
+ * 상대 15px 800 · 홈/원정 · 대회 12.5px `--ink-2`. 킥오프가 지난 경기는 날짜 `--ink-2` + "끝남" — **스코어 없음**(결과 노출 0 — 화면 모델에
+ * 결과 필드가 없다). 시각 미정(`kickoffTbd`)이면 "시각 미정". 장소 · 소집 선수 · 결과는 바로 아래 홈 A매치 섹션(M3-13)이 맡는다.
+ */
+function BriefInternational({
+  window,
+  matches,
+}: {
+  window: { from: string; to: string };
+  matches: readonly BriefRestMatch[];
+}) {
+  return (
+    <div
+      data-slot="brief-intl"
+      className="mt-3 border-t border-dotted border-ink-3 pt-3"
+    >
+      <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+        <StampChip>A매치 기간</StampChip>
+        <span
+          aria-hidden="true"
+          className="font-numeric text-[15px] leading-none font-semibold tracking-[0.02em] lining-nums tabular-nums"
+        >
+          {monthDot(window.from)} – {monthDot(window.to)}
+        </span>
+        <span className="sr-only">
+          {monthDayKo(window.from)}부터 {monthDayKo(window.to)}까지
+        </span>
+      </p>
+      <ol
+        role="list"
+        aria-label="A매치 기간 경기 — 킥오프 순"
+        className="mt-3 grid grid-cols-2 gap-x-5 gap-y-3 lg:grid-cols-[repeat(2,minmax(0,220px))] lg:gap-x-8"
+      >
+        {matches.map((m) => (
+          <li
+            key={m.id}
+            data-slot="brief-intl-match"
+            data-past={m.past ? "true" : "false"}
+            className="min-w-0"
+          >
+            <time dateTime={m.kickoff}>
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "block font-numeric text-num-n2 leading-[0.84] font-extrabold tracking-[-0.02em] lining-nums tabular-nums",
+                  m.past ? "text-ink-2" : "text-ink",
+                )}
+              >
+                {m.date}
+              </span>
+              <span className="sr-only">{m.dateLabel}</span>
+            </time>
+            <p className="mt-2.5 text-[12.5px] text-ink-2">
+              ({m.weekday}){" "}
+              {m.time !== null ? (
+                <>
+                  <span className="font-numeric text-sm leading-none font-semibold text-ink lining-nums tabular-nums">
+                    {m.time}
+                  </span>{" "}
+                  KST
+                </>
+              ) : (
+                "시각 미정"
+              )}
+              {m.past ? (
+                <>
+                  {" · "}
+                  <span className="font-extrabold text-ink">끝남</span>
+                </>
+              ) : null}
+            </p>
+            <p className="mt-0.75 text-[15px] leading-[1.35] font-extrabold">
+              {m.opponent}
+            </p>
+            <p className="text-[12.5px] text-ink-2">
+              {m.home ? "홈" : "원정"} · {m.competition}
+            </p>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
@@ -340,30 +484,17 @@ const OFF_SEASON_TEXT = {
 } as const;
 
 /**
- * 비시즌 빈 상태(M1-37 — DESIGN §9.3 상태 화면 ② "평탄 탭 + 시즌명 + 종료일(실값만, Barlow 800 34px) + 안내", 혼합안 `.off`) — 경기 없는 날(S4)
- * 중 **모든 대회가 시즌 밖인 날**(src/lib/rest-period.ts `offSeasonFeature`) S4 자리를 바꾼다. 대회 하나: 개막 전인 대회가 있으면 가장 먼저
- * 개막하는 대회(개막일), 모두 끝났으면 가장 늦게 끝난 대회(종료일) — 날짜는 `configs/competitions.json` 값 그대로(만들어 내지 않는다).
- * A매치 기간은 홈 A매치 섹션(M3-13 — src/lib/national-team.ts 판정, 5줄 바로 아래)이 맡는다. 5줄 블록에는 A매치 휴식기 문구가 없고(D0 시안 ·
- * DESIGN 상태 화면에 문구 없음) 새로 만들지 않는다 — 경기 없는 A매치 기간 아침은 S4 그대로.
+ * S4 가족 ③ 비시즌(M1-37 → D3 #11 — 홈만) — **모든 대회가 시즌 밖인 날**(src/lib/rest-period.ts `offSeasonFeature`). 대회 하나: 개막 전인
+ * 대회가 있으면 가장 먼저 개막하는 대회(개막일), 모두 끝났으면 가장 늦게 끝난 대회(종료일) — 날짜는 `configs/competitions.json` 값 그대로
+ * (만들어 내지 않는다). 평탄 탭 + "{대회} 2026-27 시즌" 14px 800 → 날짜 `MM.DD` `--num-n2` 실선 + 낱말("개막" · "종료") 15px 800 / 연도
+ * Barlow 600 14px `--ink-2` → 안내 15px 800.
  */
-function BriefOffSeason({
-  feature,
-  newsHref,
-  text,
-}: {
-  feature: OffSeasonFeature;
-  newsHref: string;
-  text: VariantText;
-}) {
+function BriefOffSeason({ feature }: { feature: OffSeasonFeature }) {
   const { comp, phase, date } = feature;
   const copy = OFF_SEASON_TEXT[phase];
   return (
-    <div
-      data-slot="brief-off-season"
-      data-phase={phase}
-      className="mt-3 border-y border-rule pt-3 pb-0.5"
-    >
-      <p className="flex items-center gap-2 text-sm font-extrabold">
+    <div data-slot="brief-off-season" data-phase={phase}>
+      <p className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-sm font-extrabold">
         <FlatTab comp={comp.id} title={comp.nameKo}>
           {comp.shortKo}
         </FlatTab>
@@ -371,25 +502,31 @@ function BriefOffSeason({
           {comp.nameKo} {seasonLabel(comp.season)}
         </span>
       </p>
-      <p className="mt-2.5 text-sm text-ink-2">
+      <p className="mt-3 flex items-end gap-3">
         <time dateTime={date}>
           <span
             aria-hidden="true"
-            className="mr-1.5 font-numeric text-[34px] leading-none font-extrabold text-ink lining-nums tabular-nums"
+            className="block font-numeric text-num-n2 leading-[0.84] font-extrabold tracking-[-0.02em] text-ink lining-nums tabular-nums"
           >
-            {date.replaceAll("-", ".")}
+            {monthDot(date)}
           </span>
           <span className="sr-only">
             {formatKst(kstDayRangeUtc(date).start, "fullDate")}{" "}
           </span>
         </time>
-        {copy.label}
+        <span className="grid gap-1 pb-px text-[15px] leading-normal font-extrabold">
+          {copy.label}
+          <span
+            aria-hidden="true"
+            className="font-numeric text-sm leading-none font-semibold tracking-[0.02em] text-ink-2 lining-nums tabular-nums"
+          >
+            {date.slice(0, 4)}
+          </span>
+        </span>
       </p>
-      <p className="mt-3 mb-0.5 text-[15px] font-extrabold">{copy.note}</p>
-      <a href={newsHref} className={TEXT_LINK}>
-        {text.news}
-        <span aria-hidden="true">{" ↓"}</span>
-      </a>
+      <p className="mt-3 max-w-[34em] text-[15px] leading-normal font-extrabold">
+        {copy.note}
+      </p>
     </div>
   );
 }
