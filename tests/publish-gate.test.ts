@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { listNewsDates, loadNewsIssue } from "@/lib/data/news";
 import {
   BriefFileSchema,
   CompetitionsFileSchema,
@@ -536,19 +537,23 @@ describe("⑥⑦⑧⑨ 경고 — 통과(다음 수집 실행이 지운다)", ()
     ]);
   });
 
-  it("저장소 data/news 실데이터(2026-10-12~14) 매체명은 모두 sources.json에 있다", () => {
-    const files = ["2026-10-12", "2026-10-13", "2026-10-14"].flatMap((date) => {
-      try {
-        const value = NewsFileSchema.parse(
-          JSON.parse(
-            readFileSync(path.join(ROOT, "data/news", `${date}.json`), "utf8"),
-          ),
-        );
-        return [{ file: `data/news/${date}.json`, value }];
-      } catch {
-        return []; // 보존 기간 정리 등으로 파일이 바뀌어도 이 테스트는 매체명만 본다
-      }
+  it("저장소 data/news 실데이터 전 호의 매체명은 모두 sources.json에 있다(보존 로더로 읽음 — 빈 입력으로 통과하지 않음)", () => {
+    // 뉴스 로더(src/lib/data/news.ts)로 보존된 호를 전부 읽는다 — 파일을 직접 열지 않으므로 90일 뒤 월별 병합(M5-10)이 들어와도
+    // 로더가 내는 날짜는 그대로 검사된다. 읽기·검증 실패는 삼키지 않는다(깨진 파일은 이 테스트도 실패).
+    const dates = listNewsDates();
+    // 창간 첫 호(2026-10-12)부터 보존된다(PRD §8.4 '영구') — 빠지면 로더가 병합 파일을 못 읽는 것
+    expect(dates).toEqual(
+      expect.arrayContaining(["2026-10-12", "2026-10-13", "2026-10-14"]),
+    );
+    const files = dates.map((date) => {
+      const value = loadNewsIssue(date);
+      if (value === null) throw new Error(`호를 읽지 못함: ${date}`);
+      return { file: `data/news/${date}.json`, value };
     });
+    expect(files.length).toBe(dates.length);
+    expect(files.reduce((n, f) => n + f.value.cards.length, 0)).toBeGreaterThan(
+      0,
+    );
     const { errors, warns } = gate({ news: files, now: undefined });
     expect(errors).toEqual([]);
     expect(warns).toEqual([]);
