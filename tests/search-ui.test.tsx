@@ -10,6 +10,7 @@ import { SearchRecord } from "@/components/search/search-record";
 import {
   countSummary,
   ListboxGroups,
+  NoResults,
   PageGroups,
 } from "@/components/search/search-results";
 import { viewState } from "@/components/search/use-search";
@@ -223,6 +224,31 @@ describe("오버레이 결과(listbox)", () => {
 
   it("요약 줄 — 대회는 찾았을 때만", () => {
     expect(countSummary(GROUPS)).toBe("선수 1 · 팀 0 · 뉴스 37");
+  });
+});
+
+describe("결과 없음(D3 — M5-17, DESIGN §9.3 D3 검색 결과 없음)", () => {
+  it("윤곽 '0' --num-n2(장식) + 문장 + 안내 + 유형 4개(선수 · 팀 · 대회 · 뉴스) 윤곽 0, 결과가 0으로 바뀔 때만 찍힘(모션 줄이기면 없음)", () => {
+    render(<NoResults query="Magdeburg" />);
+    const box = document.querySelector("[data-slot=search-none]")!;
+    expect(box.className).toContain("animate-stamp");
+    expect(box.className).toContain("motion-reduce:animate-none");
+    const zero = box.querySelector(":scope > [aria-hidden=true]")!;
+    expect(zero).toHaveTextContent("0");
+    expect(zero.className).toContain("text-num-n2");
+    expect(zero.className).toContain("text-transparent");
+    expect(box).toHaveTextContent("“Magdeburg” 결과가 없어요");
+    const items = within(screen.getByRole("list")).getAllByRole("listitem");
+    expect(items.map((li) => li.textContent)).toEqual([
+      "선수0",
+      "팀0",
+      "대회0",
+      "뉴스0",
+    ]);
+    for (const li of items)
+      expect(li.querySelector("span")?.className).toContain(
+        "[-webkit-text-stroke:1.25px_var(--ink-2)]",
+      );
   });
 });
 

@@ -6,6 +6,7 @@ import { COMPETITION_SURFACE } from "@/components/ui/competition";
 import { cx } from "@/lib/cx";
 import {
   SEARCH_TYPE_LABEL,
+  SEARCH_TYPES,
   type CompetitionHit,
   type KitMark,
   type NewsHit,
@@ -531,22 +532,45 @@ export function countSummary(groups: readonly SearchGroup[]): string {
     .join(" · ");
 }
 
-/** 전체 0건 — '0' 윤곽(장식) + 안내 */
+/**
+ * 전체 0건 — 윤곽 '0'(장식, `--num-n2` · `--ink-2` 2px / 1024 이상 2.5px) + "‘{q}’ 결과가 없어요" 16px 800 + 안내 + 유형 4개(선수 · 팀 · 대회
+ * · 뉴스) 각각 윤곽 0 22px(1.25px) (D3 — DESIGN §9.3 D3 "검색 결과 없음", 혼합안 `docs/design/d3/concept-mix.html` `.zeroC`, plan M5-17).
+ * 결과가 0으로 바뀔 때만 찍힌다(fast) — 0건인 채 검색어만 바뀌면 이 블록이 그대로 남아 다시 찍히지 않는다(`use-search` `viewState`).
+ * 모션 줄이기면 없다.
+ */
 export function NoResults({ query }: { query: string }) {
   return (
-    <div className="mt-4 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 border-t border-b border-t-ink border-b-rule py-4.5">
+    <div
+      data-slot="search-none"
+      className="mt-3 grid animate-stamp grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4.5 border-t border-ink pt-3.5 pb-4.5 motion-reduce:animate-none"
+    >
       <span
         aria-hidden="true"
-        className="font-numeric text-[64px] leading-[0.8] font-extrabold text-transparent lining-nums tabular-nums [-webkit-text-stroke:2px_var(--ink-2)]"
+        className="font-numeric text-num-n2 leading-[0.84] font-extrabold text-transparent lining-nums tabular-nums [-webkit-text-stroke:2px_var(--ink-2)] lg:[-webkit-text-stroke-width:2.5px]"
       >
         0
       </span>
-      <p className="text-sm leading-normal text-ink-2">
-        <b className="mb-0.5 block text-base font-extrabold text-ink">
+      <div className="min-w-0">
+        <p className="text-base font-extrabold text-ink">
           “{query}” 결과가 없어요
-        </b>
-        선수 · 팀은 한글이나 영문 이름으로, 뉴스는 제목과 태그로 찾아요
-      </p>
+        </p>
+        <p className="mt-1.5 max-w-[46ch] text-sm leading-[1.55] text-ink-2">
+          선수 · 팀은 한글이나 영문 이름으로, 뉴스는 제목과 태그로 찾아요
+        </p>
+        <ul
+          role="list"
+          className="mt-2.5 flex flex-wrap gap-x-4.5 gap-y-1 text-[13px] text-ink-2"
+        >
+          {SEARCH_TYPES.map((type) => (
+            <li key={type} className="flex items-baseline gap-1">
+              {SEARCH_TYPE_LABEL[type]}
+              <span className="font-numeric text-[22px] leading-none font-extrabold text-transparent lining-nums tabular-nums [-webkit-text-stroke:1.25px_var(--ink-2)]">
+                0
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
