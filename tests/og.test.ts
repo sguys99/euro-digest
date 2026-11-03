@@ -21,6 +21,7 @@ import {
 import {
   competitionOgCard,
   DEFAULT_OG_CARD,
+  ogFullNameLine,
   newsOgCard,
   OG_PAGES,
   ogAlt,
@@ -167,6 +168,47 @@ describe("og:image:alt 문형 · 경로 (DESIGN §9.3 D3 링크 미리보기 메
         "transfers",
       ].sort(),
     );
+  });
+
+  it('마이 쪽 제목은 "마이 팀"(내비 라벨 "마이"와 다름 — 2026-11-03 사용자 결정)', () => {
+    expect(OG_PAGES.my).toBe("마이 팀");
+    expect(ogAlt(pageOgCard("my"))).toBe("유로 다이제스트 · 마이 팀");
+  });
+});
+
+describe("대회 OG 정식 이름 줄 — 거대 약칭과 글자 그대로 같으면 숨김 (2026-11-03 사용자 결정)", () => {
+  const LALIGA = {
+    id: "LALIGA",
+    nameKo: "라리가",
+    nameEn: "LaLiga",
+    shortKo: "라리가",
+    season: 2026,
+  } as const;
+  const SERIEA = {
+    id: "SERIEA",
+    nameKo: "세리에 A",
+    nameEn: "Serie A",
+    shortKo: "세리에A",
+    season: 2026,
+  } as const;
+
+  it('라리가는 줄이 없다(여백) — 이미지 글자에 "라리가"가 한 번만, alt는 정식 이름 그대로', () => {
+    const card = competitionOgCard(LALIGA);
+    expect(ogFullNameLine(LALIGA)).toEqual([]);
+    expect(ogCardHtml(card)).not.toContain("ogc__name");
+    expect(
+      textNodes(ogCardHtml(card)).filter((t) => t === "라리가"),
+    ).toHaveLength(1);
+    expect(ogAlt(card)).toBe("유로 다이제스트 · 라리가 2026-27 시즌");
+  });
+
+  it("띄어쓰기만 다른 세리에A ↔ 세리에 A, 라틴 약칭 UCL · 다른 대회는 정식 이름 줄을 그대로 싣는다", () => {
+    for (const config of [SERIEA, COMP, UCL]) {
+      expect(ogFullNameLine(config), config.id).toEqual([config.nameKo]);
+      expect(ogCardHtml(competitionOgCard(config)), config.id).toContain(
+        `<p class="ogc__name">${config.nameKo}</p>`,
+      );
+    }
   });
 });
 

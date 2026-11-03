@@ -7,6 +7,7 @@
  * - 크림 면 견본 테두리(`outline: 1px dashed` — 시안 화면 구분용, 1200×630 밖에 그려져 시안 스크린샷에도 없음)를 뺐다.
  * - 팀 약어 채움은 `kitLetterFill`(src/lib/kit-contrast.ts — 크림 면 대비 5.3 하한, 시안 `letterFill(t, 5.3)`과 같은 규칙).
  * - 쪽 이름형(2026-11-03 사용자 결정): 기본 OG에서 태그라인 자리만 쪽 제목으로 바꾼 판(`.ogc__page`).
+ * - 대회: 거대 약칭과 정식 이름이 글자 그대로 같으면(라리가) 정식 이름 줄을 빼고 여백으로 둔다(2026-11-03 사용자 결정 — `ogFullNameLine`).
  * 글자는 `ogTexts`(src/lib/og.ts)의 값만 쓴다 — tests/og.test.ts가 마크업 글자와 대조하고 서브셋 커버리지 · 결과 노출 0을 본다.
  *
  * 글꼴은 저장소 서브셋(public/fonts — EuroDigest Sans 400 · 800, Barlow Condensed 600 · 800)만. 빌드 스크립트가 FontFace로 넣고
@@ -15,6 +16,7 @@
 import { kitLetterFill } from "@/lib/kit-contrast";
 import {
   isLatinShort,
+  ogFullNameLine,
   OG_HEIGHT,
   OG_LATIN_WORDMARK,
   OG_WIDTH,
@@ -114,7 +116,13 @@ export function ogCardHtml(card: OgCard): string {
       );
     case "competition": {
       const latin = isLatinShort(card.shortKo);
-      return `<div class="og og--cp">${SIG}<p class="ogc__short${latin ? " ogc__short--l" : ""}">${esc(card.shortKo)}</p><p class="ogc__name">${esc(card.nameKo)}</p><p class="ogc__bar ${compClass(card.id)}"><span lang="en">${esc(card.nameEn)}</span><span><span class="n">${esc(card.season)}</span> 시즌</span></p></div>`;
+      return `<div class="og og--cp">${SIG}<p class="ogc__short${latin ? " ogc__short--l" : ""}">${esc(card.shortKo)}</p>${ogFullNameLine(
+        card,
+      )
+        .map((name) => `<p class="ogc__name">${esc(name)}</p>`)
+        .join(
+          "",
+        )}<p class="ogc__bar ${compClass(card.id)}"><span lang="en">${esc(card.nameEn)}</span><span><span class="n">${esc(card.season)}</span> 시즌</span></p></div>`;
     }
     case "team": {
       const [shirt, shorts] = card.kit;

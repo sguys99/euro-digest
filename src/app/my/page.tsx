@@ -14,7 +14,7 @@ import { MY_EMPTY_BOOT_SCRIPT } from "@/lib/my-empty-boot";
 import { MY_IMPORT_BOOT_SCRIPT } from "@/lib/my-import-boot";
 import { MY_DIRECTORY_ID, MY_NEWS_PAGE } from "@/lib/my-view";
 import { MY_DESCRIPTION, pageMetadata } from "@/lib/seo";
-import { pageOgCard } from "@/lib/og";
+import { OG_PAGES, pageOgCard } from "@/lib/og";
 
 /*
  * `/my/` 마이 (PRD FR-110~112 · §4.1 하단 탭 '마이', DESIGN §9.3 D2 "`/my` 틀", DECISIONS D2 §4 A · §6 #9 · §9, PRD §15 D64 ③ · D67 ②, plan M4-08).
@@ -33,7 +33,8 @@ import { pageOgCard } from "@/lib/og";
 // 색인 대상이 아니다(팔로우는 브라우저에만 — 크롤러에게는 빈 상태): noindex · canonical 없음 · sitemap 밖(404와 같은 규칙 — tests/e2e/seo.spec.ts)
 export const metadata: Metadata = {
   ...pageMetadata({
-    title: "마이",
+    // 쪽 제목 "마이 팀"(OG 쪽 이름형 글자와 같은 값 — 2026-11-03 사용자 결정). 내비 라벨 · h1은 "마이" 그대로
+    title: OG_PAGES.my,
     description: MY_DESCRIPTION,
     canonical: null,
     og: pageOgCard("my"),

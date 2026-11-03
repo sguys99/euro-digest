@@ -40,7 +40,8 @@ export const OG_PAGES = {
   transfers: "이적",
   tonight: "오늘 밤 볼 경기",
   search: "검색",
-  my: "마이",
+  // 내비 라벨은 "마이"(하단 탭) — 쪽 제목 · og:title · 문서 제목은 "마이 팀"(2026-11-03 사용자 결정)
+  my: "마이 팀",
   about: "소개",
 } as const satisfies Record<string, string>;
 
@@ -208,7 +209,7 @@ export function ogTexts(card: OgCard): OgTexts {
     case "competition":
       return isLatinShort(card.shortKo)
         ? {
-            sans: [SITE_NAME, card.nameKo, "시즌"],
+            sans: [SITE_NAME, ...ogFullNameLine(card), "시즌"],
             numeric: [
               OG_LATIN_WORDMARK,
               card.shortKo,
@@ -217,7 +218,7 @@ export function ogTexts(card: OgCard): OgTexts {
             ],
           }
         : {
-            sans: [SITE_NAME, card.shortKo, card.nameKo, "시즌"],
+            sans: [SITE_NAME, card.shortKo, ...ogFullNameLine(card), "시즌"],
             numeric: [OG_LATIN_WORDMARK, card.nameEn, card.season],
           };
     case "team":
@@ -226,6 +227,18 @@ export function ogTexts(card: OgCard): OgTexts {
         numeric: [OG_LATIN_WORDMARK, card.short, card.nameEn],
       };
   }
+}
+
+/**
+ * 대회 OG 정식 이름 줄 — 거대 약칭과 정식 이름이 **글자 그대로 같으면**(라리가) 줄을 싣지 않고 여백으로 둔다(같은 이름이 두 번
+ * 나오지 않게 — 2026-11-03 사용자 결정). 띄어쓰기만 다른 세리에A ↔ 세리에 A · 리그1 ↔ 리그 1은 그대로 싣는다(같은 결정 — 다른 대회는 그대로).
+ * 템플릿(scripts/lib/og-template.ts)과 `ogTexts`가 같이 쓴다. alt는 늘 정식 이름을 쓴다(이미지 글자와 무관).
+ */
+export function ogFullNameLine(card: {
+  shortKo: string;
+  nameKo: string;
+}): string[] {
+  return card.shortKo === card.nameKo ? [] : [card.nameKo];
 }
 
 /** 거대 약칭이 라틴 대문자뿐인가("EPL" · "UCL") — 라틴이면 Barlow 27cqw, 아니면 한글 17cqw(DESIGN §9.3 D3) */
