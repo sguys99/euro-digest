@@ -105,6 +105,7 @@ describe("① 전부 유효", () => {
     expect(report.crossRef.skipped).toEqual([
       "data/teams → team-ids · team-colors · korean-players",
       "data/players/korean.json → korean-players · data/teams · 원장 메타",
+      "data/news 일별 ↔ 월별 병합 날짜 중복",
       "data/transfers.json → data/news · takedowns",
     ]);
     expect(infos.every((i) => i.startsWith("configs/prompts/"))).toBe(true);
@@ -297,7 +298,7 @@ describe("⑤ 교차 참조 실패", () => {
       'configs/national-team.json:squads[0].playerSlugs[1] — korean-players.json에 없는 선수 slug "ghost"',
     ]);
     expect(lines).toContain(
-      "[validate] 교차 참조: 6건 실행 · 건너뜀 3건(관련 파일 없음) · 오류 4건",
+      "[validate] 교차 참조: 6건 실행 · 건너뜀 4건(관련 파일 없음) · 오류 4건",
     );
   });
 
@@ -343,6 +344,7 @@ describe("⑤ 교차 참조 실패", () => {
       "publisher-domains.sourceIds → sources",
       "data/teams → team-ids · team-colors · korean-players",
       "data/players/korean.json → korean-players · data/teams · 원장 메타",
+      "data/news 일별 ↔ 월별 병합 날짜 중복",
       "data/transfers.json → data/news · takedowns",
     ]);
     expect(errors.every((e) => e.startsWith("configs/sources.json:"))).toBe(
@@ -389,8 +391,8 @@ describe("⑥ data 파일 검증", () => {
     ]);
     expect(exitCode).toBe(1);
     // + data/cache/af-pending.json (M1-48) · data/matches/2026-10.json·meta.json (M1-48b) · data/briefs/2026-10-11.json (M1-19)
-    // + data/cache/lineup-backfill.json (M2-09)
-    expect(report.counts.data).toBe(16);
+    // + data/cache/lineup-backfill.json (M2-09) · data/news/2026-09.json (월별 병합 M5-10)
+    expect(report.counts.data).toBe(17);
   });
 
   it("같은 fixture의 뉴스 카드를 원제목+링크 형식(ai:false·s:[])으로 바꾸면 통과한다", () => {

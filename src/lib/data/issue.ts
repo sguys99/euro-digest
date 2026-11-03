@@ -38,7 +38,8 @@ export function loadIssue(date: string): LoadedIssue {
 
 /**
  * 발행된 호의 발행일 전부(오름차순) — 날짜 아카이브의 `generateStaticParams`·이전·다음 호·달력(M1-34), `/news/`의 canonical.
- * 파일 목록만 본다(내용은 읽지 않는다 — 깨진 파일은 그 날짜 페이지가 `loadIssue`로 읽을 때 빌드를 멈춘다).
+ * 일별 파일은 목록만 본다(깨진 파일은 그 날짜 페이지가 `loadIssue`로 읽을 때 빌드를 멈춘다). 월별 병합 파일(M5-10)은 안의 호 날짜를 알아야
+ * 해서 읽는다(깨졌거나 일별 파일과 날짜가 겹치면 여기서 멈춘다 — src/lib/data/news.ts). 병합 뒤에도 날짜 페이지는 그대로 생긴다(FR-34).
  */
 export function listIssueDates(): string[] {
   return listNewsDates();

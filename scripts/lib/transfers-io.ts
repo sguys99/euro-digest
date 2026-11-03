@@ -8,18 +8,11 @@
  *   쓰기: write 모드 + 내용이 바뀌었을 때만, 임시 파일 → rename. preview 모드(dry·dev)는 쓰지 않는다.
  *   발행 묶음: collect.yml은 data/ 변경분을 검증·빌드가 통과한 뒤에만 `발행` 커밋에 넣는다 — 발행이 실패하면 이 파일도 커밋되지 않는다
  *   (실패 실행 기록 보존은 runs.json·원장·이월만 — PRD §15 D49, run-preserve.ts `NOT_PRESERVED_PATHS`). 던지지 않는다(실패는 결과로).
- *   월별 병합 파일(CLAUDE §8 '일별 뉴스 90일 후 월별 병합')이 생기면 `readRetainedNews`가 그 파일도 읽어야 한다 — 아니면 90일보다 오래된
- *   근거가 빠져 단계가 낮아진다.
+ *   월별 병합 파일(CLAUDE §8 '일별 뉴스 90일 후 월별 병합' — M5-10 `YYYY-MM.json`)도 `readRetainedNews`가 읽는다 — 90일보다 오래된
+ *   근거가 빠지면 단계가 낮아진다.
  */
 import { randomBytes } from "node:crypto";
-import {
-  mkdir,
-  readdir,
-  readFile,
-  rename,
-  rm,
-  writeFile,
-} from "node:fs/promises";
+import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import {
@@ -31,7 +24,7 @@ import {
 
 import { readConfigFile } from "./config-files";
 import type { Logger } from "./logger";
-import { newsFilePath, readNewsFile } from "./news-file";
+import { readAllNewsIssues } from "./news-month-file";
 import {
   buildTransfers,
   serializeTransfersFile,
@@ -46,41 +39,20 @@ export function transfersPath(dataDir: string): string {
   return path.join(dataDir, TRANSFERS_REL_PATH);
 }
 
-const DAILY_FILE_RE = /^(\d{4}-\d{2}-\d{2})\.json$/;
-
 const errorText = (error: unknown) =>
   error instanceof Error ? (error.message.split("\n")[0] ?? "") : String(error);
 
-/** data/news 날짜 파일 전부(오름차순). 하나라도 읽지 못하거나 date가 파일명과 다르면 던진다. 폴더가 없으면 [] */
+/**
+ * data/news 호 전부(오름차순) — 일별 파일 + 월별 병합 파일(M5-10, news-month-file.ts `readAllNewsIssues`). 하나라도 읽지 못하거나
+ * 일별 date가 파일명과 다르거나 같은 날짜가 일별·월별에 함께 있으면 던진다. 폴더가 없으면 []
+ */
 export async function readRetainedNews(
   dataDir: string,
 ): Promise<TransferNewsInput[]> {
-  let names: string[];
-  try {
-    const entries = await readdir(path.join(dataDir, "news"), {
-      withFileTypes: true,
-    });
-    names = entries.filter((e) => e.isFile()).map((e) => e.name);
-  } catch (error) {
-    if ((error as { code?: unknown } | null)?.code === "ENOENT") return [];
-    throw error;
-  }
-  const dates = names
-    .map((n) => DAILY_FILE_RE.exec(n)?.[1])
-    .filter((d): d is string => d !== undefined)
-    .sort();
-  const out: TransferNewsInput[] = [];
-  for (const date of dates) {
-    const file = await readNewsFile(newsFilePath(dataDir, date));
-    if (file === null) continue;
-    if (file.date !== date) {
-      throw new Error(
-        `data/news/${date}.json: date(${file.date})가 파일명과 다름`,
-      );
-    }
-    out.push({ date, cards: file.cards });
-  }
-  return out;
+  return (await readAllNewsIssues(dataDir)).map(({ date, file }) => ({
+    date,
+    cards: file.cards,
+  }));
 }
 
 export interface TransfersPrevious {

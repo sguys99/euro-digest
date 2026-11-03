@@ -14,7 +14,7 @@
  * (CONTACT_EMAIL — 비밀값 아님)·feed-collect.ts `DEFAULT_FEED_POLICY`의 타임아웃·크기·리다이렉트 상한, 같은 호스트 요청 간격(1초)은 지킨다.
  * 피드 파싱은 rss.ts `parseFeedXml`(요약문을 꺼내지 않음 — 제목·링크만 쓴다).
  */
-import { readFile, readdir, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -49,7 +49,7 @@ import {
   type FeedSnapshot,
   type PageExpectation,
 } from "./lib/m1-completion";
-import { newsFilePath, readNewsFile } from "./lib/news-file";
+import { readAllNewsIssues } from "./lib/news-month-file";
 import { feedUserAgent, fetchFeed, parseFeedXml } from "./lib/rss";
 import { loadSources, planDailySources } from "./lib/sources";
 
@@ -85,17 +85,22 @@ const FeedSnapshotsSchema = z.array(
 
 const pct = (share: number) => `${(share * 100).toFixed(1)}%`;
 
+/** 일별 + 월별 병합 파일(M5-10)의 호 전부 — 한 번만 읽는다 */
+let storedIssues: Promise<Map<string, NewsFile>> | null = null;
+function allIssues(): Promise<Map<string, NewsFile>> {
+  storedIssues ??= readAllNewsIssues(DATA_DIR).then(
+    (issues) => new Map(issues.map((i) => [i.date, i.file] as const)),
+  );
+  return storedIssues;
+}
+
 async function issueDates(): Promise<string[]> {
-  const names = await readdir(path.join(DATA_DIR, "news"));
-  return names
-    .filter((n) => /^\d{4}-\d{2}-\d{2}\.json$/.test(n))
-    .map((n) => n.slice(0, 10))
-    .sort();
+  return [...(await allIssues()).keys()].sort();
 }
 
 async function loadNews(date: string): Promise<NewsFile> {
-  const news = await readNewsFile(newsFilePath(DATA_DIR, date));
-  if (!news) throw new Error(`data/news/${date}.json 없음`);
+  const news = (await allIssues()).get(date);
+  if (!news) throw new Error(`data/news 호 ${date} 없음`);
   return news;
 }
 

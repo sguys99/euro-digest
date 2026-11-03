@@ -29,13 +29,16 @@
  *      다음 수집 전에 돌아야 한다 — 발행 게이트 ⑥과 같은 이유) · 근거 카드의 transfer가 이 레코드(선수:행선지)와 다름 · 루머가 아닌데
  *      quiet · 파일 순서가 잠잠 아님 → updated 내림차순 → id가 아님(M4-02 — FR-106 '목록 하단'). quiet 값 자체(30일 경과)는 실행 시각에
  *      달려 있어 다시 계산하지 않는다(다른 날 돌린 validate가 어긋남을 만들지 않게).
- *      어긋나면 `npm run build:transfers`로 다시 만든다(다음 수집도 다시 만든다)
+ *      어긋나면 `npm run build:transfers`로 다시 만든다(다음 수집도 다시 만든다). 근거 카드는 일별 파일과 월별 병합 파일(M5-10)의 호 모두에서 찾는다
+ *  10. data/news 일별 ↔ 월별 병합(M5-10, FR-158) — 같은 날짜가 일별 파일(`YYYY-MM-DD.json`)과 월별 파일(`YYYY-MM.json`)에 함께 있으면
+ *      오류(병합 중간 상태 — 로더 src/lib/data/news.ts가 빌드를 멈춘다. 파일 하나의 스키마로는 알 수 없어 여기서 잡는다)
  *
  * formations.json·team-colors.json의 키 형식(slug)은 스키마(`z.record(SlugSchema, …)`)가 이미 검사한다.
  */
 import {
   findPublisherDomain,
   type NewsFile,
+  type NewsMonthFile,
   type TakedownsFile,
   type TransfersFile,
   type KoreanPlayersFile,
@@ -92,8 +95,12 @@ export interface CrossRefInput {
   ledgerMeta?: MatchLedgerMeta;
   /** data/transfers.json(스키마 통과) */
   transfers?: TransfersFile;
-  /** 스키마를 통과한 일별 뉴스 파일(경로 → 값) — 없으면 빈 맵 */
+  /**
+   * 스키마를 통과한 뉴스 호(키 → 값, 날짜 오름차순) — 일별 파일은 경로, 월별 병합 파일 안의 호는 `<경로>#<날짜>`. 없으면 비워 둔다
+   */
   news?: ReadonlyMap<string, NewsFile>;
+  /** 스키마를 통과한 월별 병합 뉴스 파일(경로 → 값, M5-10) — 없으면 비워 둔다 */
+  newsMonths?: ReadonlyMap<string, NewsMonthFile>;
   /** configs/takedowns.json(스키마 통과) */
   takedowns?: TakedownsFile;
   sources?: SourcesFile;
@@ -674,6 +681,13 @@ const DATA_CHECKS: readonly CrossRefCheck[] = [
         : null,
   },
   {
+    name: "data/news 일별 ↔ 월별 병합 날짜 중복",
+    run: ({ news, newsMonths }) =>
+      newsMonths && newsMonths.size > 0
+        ? checkNewsMonthOverlap((news ?? new Map()).keys(), newsMonths)
+        : null,
+  },
+  {
     name: "data/transfers.json → data/news · takedowns",
     run: ({ transfers, news, takedowns }) =>
       transfers
@@ -681,6 +695,37 @@ const DATA_CHECKS: readonly CrossRefCheck[] = [
         : null,
   },
 ];
+
+/** 월별 병합 뉴스 파일 경로(레지스트리 `data/news/????-??.json`) */
+export function isMonthNewsPath(relPath: string): boolean {
+  return /^data\/news\/\d{4}-\d{2}\.json$/.test(relPath);
+}
+
+/** 10. data/news 일별 ↔ 월별 병합 — 같은 날짜가 양쪽에 있으면 오류(머리 주석) */
+export function checkNewsMonthOverlap(
+  dailyPaths: Iterable<string>,
+  newsMonths: ReadonlyMap<string, NewsMonthFile>,
+): ValidationIssue[] {
+  const daily = new Set<string>();
+  for (const file of dailyPaths) {
+    if (isDailyNewsPath(file)) daily.add(file.slice("data/news/".length, -5));
+  }
+  const issues: ValidationIssue[] = [];
+  for (const [file, month] of newsMonths) {
+    month.issues.forEach((issue, i) => {
+      if (daily.has(issue.date)) {
+        issues.push(
+          crossRefError(
+            file,
+            ["issues", i, "date"],
+            `호 ${issue.date}가 일별 파일 data/news/${issue.date}.json에도 있음 — 월별 병합 중간 상태(빌드가 멈춘다). 한쪽을 지울 것(FR-158)`,
+          ),
+        );
+      }
+    });
+  }
+  return issues;
+}
 
 /** 교차 참조 검사 전체를 실행한다(`scope` "data"면 data 파일이 걸린 검사만). */
 export function runCrossRefChecks(
@@ -737,11 +782,31 @@ export function pickCrossRefInput(
   // 레지스트리 TransfersFileSchema·NewsFileSchema·TakedownsFileSchema 통과 값(호출 규약)
   const transfers = parsedByPath.get(TRANSFERS_DATA_FILE);
   if (transfers !== undefined) input.transfers = transfers as TransfersFile;
-  const news = new Map<string, NewsFile>();
+  // 레지스트리 NewsMonthFileSchema 통과 값(호출 규약) — 월별 병합 파일 안의 호도 뉴스 호로 담는다(이적 근거 카드, M5-10)
+  const entries: Array<{ date: string; key: string; value: NewsFile }> = [];
+  const newsMonths = new Map<string, NewsMonthFile>();
   for (const [file, value] of parsedByPath) {
-    if (isDailyNewsPath(file)) news.set(file, value as NewsFile);
+    if (isDailyNewsPath(file)) {
+      const issue = value as NewsFile;
+      entries.push({ date: issue.date, key: file, value: issue });
+    } else if (isMonthNewsPath(file)) {
+      const month = value as NewsMonthFile;
+      newsMonths.set(file, month);
+      for (const issue of month.issues) {
+        entries.push({
+          date: issue.date,
+          key: `${file}#${issue.date}`,
+          value: issue,
+        });
+      }
+    }
   }
+  entries.sort((a, b) =>
+    a.date < b.date ? -1 : a.date > b.date ? 1 : a.key < b.key ? -1 : 1,
+  );
+  const news = new Map(entries.map((e) => [e.key, e.value] as const));
   if (news.size > 0) input.news = news;
+  if (newsMonths.size > 0) input.newsMonths = newsMonths;
   const takedowns = parsedByPath.get(TAKEDOWNS_FILE);
   if (takedowns !== undefined) input.takedowns = takedowns as TakedownsFile;
   return input;

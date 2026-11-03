@@ -2,10 +2,11 @@
  * 삭제 요청 빌드 제외 가드 (M1-25, FR-143) — 카드를 내보내는 빌드 경로가 takedown 제외를 빼먹지 않게.
  *
  *   ① 빌드 경로 코드(src/ 전부 + scripts/build-search.ts·build-feeds.ts — 검색·RSS·ics·OG, M4-14·M4-11·M4-12·M5-01)는 data/news를 직접 읽지 않는다:
- *      `data/news` 경로 문자열·`NewsFileSchema`(뉴스 파일 직접 검증)·scripts의 뉴스 파일 읽기(news-file.ts·seen-urls.ts)를
+ *      `data/news` 경로 문자열·`NewsFileSchema`·`NewsMonthFileSchema`(뉴스 파일 직접 검증)·scripts의 뉴스 파일 읽기(news-file.ts·
+ *      news-month-file.ts·seen-urls.ts)를
  *      쓰면 실패. 허용: src/lib/data/news.ts(로더 — 유일한 읽기), src/lib/schema/(스키마·레지스트리 패턴).
  *   ② src/lib/data/news.ts의 공개 로더(`load…`)는 모두 삭제 요청 카드를 뺀다 — 아래 표에 없는 새 로더가 생기면 실패(표에 넣고
- *      제외를 확인하라는 신호).
+ *      제외를 확인하라는 신호). 호가 일별 파일에 있을 때와 월별 병합 파일(`YYYY-MM.json`, M5-10) 안에 있을 때 모두.
  * 주석은 검사하지 않는다(TypeScript 프린터로 주석을 지운 코드만 본다).
  */
 import {
@@ -50,14 +51,15 @@ const ALLOWED = (rel: string) =>
   rel.startsWith("src/lib/schema/") ||
   rel.startsWith("src/app/specimen/");
 
-const SCRIPTS_NEWS_READERS = /(?:^|\/)lib\/(?:news-file|seen-urls)$/;
+const SCRIPTS_NEWS_READERS =
+  /(?:^|\/)lib\/(?:news-file|news-month-file|seen-urls)$/;
 
 /**
  * 코드에서 금지 패턴을 찾는다 — TypeScript AST로 본다(주석은 자연히 빠진다).
  *   - 문자열에 `data/news`(import 경로 `@/lib/data/news`는 로더 자신이라 허용)
  *   - path.join·path.resolve 인자에 "news" 조각(`path.join(dataDir, "news")`)
- *   - `NewsFileSchema`(뉴스 파일을 직접 검증 = 직접 읽기)
- *   - scripts의 뉴스 파일 읽기 모듈 import(news-file.ts·seen-urls.ts — 삭제 요청을 빼지 않는다)
+ *   - `NewsFileSchema`·`NewsMonthFileSchema`(뉴스 파일을 직접 검증 = 직접 읽기)
+ *   - scripts의 뉴스 파일 읽기 모듈 import(news-file.ts·news-month-file.ts·seen-urls.ts — 삭제 요청을 빼지 않는다)
  */
 function forbiddenIn(fileName: string, text: string): string[] {
   const source = ts.createSourceFile(
@@ -75,7 +77,7 @@ function forbiddenIn(fileName: string, text: string): string[] {
       ts.isStringLiteral(node.moduleSpecifier)
     ) {
       if (SCRIPTS_NEWS_READERS.test(node.moduleSpecifier.text)) {
-        hits.add("scripts 뉴스 파일 읽기(news-file·seen-urls)");
+        hits.add("scripts 뉴스 파일 읽기(news-file·news-month-file·seen-urls)");
       }
       return; // 모듈 경로 문자열은 아래 경로 검사에서 뺀다
     }
@@ -98,6 +100,9 @@ function forbiddenIn(fileName: string, text: string): string[] {
     }
     if (ts.isIdentifier(node) && node.text === "NewsFileSchema") {
       hits.add("NewsFileSchema(뉴스 파일 직접 검증)");
+    }
+    if (ts.isIdentifier(node) && node.text === "NewsMonthFileSchema") {
+      hits.add("NewsMonthFileSchema(월별 뉴스 파일 직접 검증)");
     }
     ts.forEachChild(node, visit);
   };
@@ -137,7 +142,13 @@ describe("① 빌드 경로는 data/news를 직접 읽지 않는다 — src/lib/
       ),
     ).toEqual(["NewsFileSchema(뉴스 파일 직접 검증)"]);
     expect(probe('import { readNewsFile } from "./lib/news-file";')).toEqual([
-      "scripts 뉴스 파일 읽기(news-file·seen-urls)",
+      "scripts 뉴스 파일 읽기(news-file·news-month-file·seen-urls)",
+    ]);
+    expect(
+      probe('import { readAllNewsIssues } from "./lib/news-month-file";'),
+    ).toEqual(["scripts 뉴스 파일 읽기(news-file·news-month-file·seen-urls)"]);
+    expect(probe("NewsMonthFileSchema.parse(x);")).toEqual([
+      "NewsMonthFileSchema(월별 뉴스 파일 직접 검증)",
     ]);
     expect(
       probe(
@@ -147,65 +158,80 @@ describe("① 빌드 경로는 data/news를 직접 읽지 않는다 — src/lib/
   });
 });
 
-describe("② src/lib/data/news.ts 공개 로더는 모두 삭제 요청 카드를 뺀다", () => {
-  const FIXTURE = path.resolve("fixtures/schema/data/news/2026-10-10.json");
-  const TAKEN = "c_0a1b2c3d4e";
-  let dir: string;
-  let takedownsFile: string;
+describe.each(["daily", "month"] as const)(
+  "② src/lib/data/news.ts 공개 로더는 모두 삭제 요청 카드를 뺀다 — 호 위치 %s",
+  (layout) => {
+    const FIXTURE = path.resolve("fixtures/schema/data/news/2026-10-10.json");
+    const TAKEN = "c_0a1b2c3d4e";
+    let dir: string;
+    let takedownsFile: string;
 
-  beforeEach(() => {
-    dir = mkdtempSync(path.join(tmpdir(), "euro-digest-guard-"));
-    writeFileSync(path.join(dir, "2026-10-10.json"), readFileSync(FIXTURE));
-    takedownsFile = path.join(dir, "takedowns.json");
-    writeFileSync(
-      takedownsFile,
-      JSON.stringify([
-        {
-          id: TAKEN,
-          requestedAt: "2026-10-10T03:00:00Z",
-          handledAt: null,
-          reason: "삭제 요청 (#1)",
-        },
-      ]),
-    );
-  });
-  afterEach(() => {
-    rmSync(dir, { recursive: true, force: true });
-  });
+    beforeEach(() => {
+      dir = mkdtempSync(path.join(tmpdir(), "euro-digest-guard-"));
+      if (layout === "daily") {
+        writeFileSync(path.join(dir, "2026-10-10.json"), readFileSync(FIXTURE));
+      } else {
+        // 월별 병합 파일(M5-10) 안의 호 — 일별 파일과 같은 값
+        writeFileSync(
+          path.join(dir, "2026-10.json"),
+          JSON.stringify({
+            month: "2026-10",
+            updatedAt: "2027-01-28T21:31:00Z",
+            issues: [JSON.parse(readFileSync(FIXTURE, "utf8"))],
+          }),
+        );
+      }
+      takedownsFile = path.join(dir, "takedowns.json");
+      writeFileSync(
+        takedownsFile,
+        JSON.stringify([
+          {
+            id: TAKEN,
+            requestedAt: "2026-10-10T03:00:00Z",
+            handledAt: null,
+            reason: "삭제 요청 (#1)",
+          },
+        ]),
+      );
+    });
+    afterEach(() => {
+      rmSync(dir, { recursive: true, force: true });
+    });
 
-  /** 로더 이름 → 임시 폴더·등록 파일로 부르는 방법. 새 로더를 만들면 여기에 넣는다 */
-  const CALLS: Record<string, () => NewsFile | null> = {
-    loadLatestNews: () => newsLoader.loadLatestNews(dir, { takedownsFile }),
-    loadNewsIssue: () =>
-      newsLoader.loadNewsIssue("2026-10-10", dir, { takedownsFile }),
-    // 보존된 호 전체의 카드(M4-04 — 이적 화면) — 카드 목록을 호 모양으로 감싸 같은 검사를 돈다
-    loadRetainedCards: () => ({
-      date: "2026-10-10",
-      generatedAt: "2026-10-10T00:00:00Z",
-      runId: "guard",
-      cards: newsLoader.loadRetainedCards(dir, { takedownsFile }),
-    }),
-  };
+    /** 로더 이름 → 임시 폴더·등록 파일로 부르는 방법. 새 로더를 만들면 여기에 넣는다 */
+    const CALLS: Record<string, () => NewsFile | null> = {
+      loadLatestNews: () => newsLoader.loadLatestNews(dir, { takedownsFile }),
+      loadNewsIssue: () =>
+        newsLoader.loadNewsIssue("2026-10-10", dir, { takedownsFile }),
+      // 보존된 호 전체의 카드(M4-04 — 이적 화면) — 카드 목록을 호 모양으로 감싸 같은 검사를 돈다
+      loadRetainedCards: () => ({
+        date: "2026-10-10",
+        generatedAt: "2026-10-10T00:00:00Z",
+        runId: "guard",
+        cards: newsLoader.loadRetainedCards(dir, { takedownsFile }),
+      }),
+    };
 
-  it("공개 로더(load… 중 NewsFile을 돌려주는 것)가 모두 표에 있다", () => {
-    const loaders = Object.keys(newsLoader)
-      .filter((name) => /^load/.test(name) && name !== "loadTakedownIds")
-      .sort();
-    expect(loaders).toEqual(Object.keys(CALLS).sort());
-  });
+    it("공개 로더(load… 중 NewsFile을 돌려주는 것)가 모두 표에 있다", () => {
+      const loaders = Object.keys(newsLoader)
+        .filter((name) => /^load/.test(name) && name !== "loadTakedownIds")
+        .sort();
+      expect(loaders).toEqual(Object.keys(CALLS).sort());
+    });
 
-  it.each(Object.keys(CALLS))("%s — 등록 카드를 뺀다", (name) => {
-    const news = CALLS[name]!();
-    expect(news?.cards.length).toBe(2);
-    expect(news?.cards.map((c) => c.id)).not.toContain(TAKEN);
-  });
+    it.each(Object.keys(CALLS))("%s — 등록 카드를 뺀다", (name) => {
+      const news = CALLS[name]!();
+      expect(news?.cards.length).toBe(2);
+      expect(news?.cards.map((c) => c.id)).not.toContain(TAKEN);
+    });
 
-  it("loadNewsIssue — 없는 날짜는 null(경로 조작 문자열도 목록에 없으면 null)", () => {
-    expect(
-      newsLoader.loadNewsIssue("2026-10-11", dir, { takedownsFile }),
-    ).toBeNull();
-    expect(
-      newsLoader.loadNewsIssue("../2026-10-10", dir, { takedownsFile }),
-    ).toBeNull();
-  });
-});
+    it("loadNewsIssue — 없는 날짜는 null(경로 조작 문자열도 목록에 없으면 null)", () => {
+      expect(
+        newsLoader.loadNewsIssue("2026-10-11", dir, { takedownsFile }),
+      ).toBeNull();
+      expect(
+        newsLoader.loadNewsIssue("../2026-10-10", dir, { takedownsFile }),
+      ).toBeNull();
+    });
+  },
+);

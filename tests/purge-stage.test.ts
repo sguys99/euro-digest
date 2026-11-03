@@ -15,6 +15,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import {
   NewsFileSchema,
+  NewsMonthFileSchema,
   SeenUrlsFileSchema,
   type CardSource,
   type NewsCard,
@@ -492,5 +493,84 @@ describe("formatPurgePlan", () => {
       "data/news 원본 삭제 — 카드 0장(삭제 요청 0 · 보존 기간 0) · 출처 1건 · 파일 1개 · 기억에 남길 링크 1개",
       "   2026-10-14 — 출처 c_5555555555[1](The Athletic 만료 2026-10-20T20:00:00.000Z)",
     ]);
+  });
+});
+
+describe("runPurgeStage — 월별 병합 파일 안의 호 (M5-10, FR-158·FR-143)", () => {
+  function writeMonth(month: string, dates: Array<[string, NewsCard[]]>) {
+    const target = path.join(dataDir, "news", `${month}.json`);
+    mkdirSync(path.dirname(target), { recursive: true });
+    const file = NewsMonthFileSchema.parse({
+      month,
+      updatedAt: "2027-01-28T21:31:00.000Z",
+      issues: dates.map(([date, cards]) => ({
+        date,
+        generatedAt: `${date}T00:00:00.000Z`,
+        runId: `prod-collect-old-${date}`,
+        cards,
+      })),
+    });
+    writeFileSync(target, `${JSON.stringify(file, null, 2)}\n`);
+    return target;
+  }
+  const readMonth = (month: string) =>
+    NewsMonthFileSchema.parse(
+      JSON.parse(
+        readFileSync(path.join(dataDir, "news", `${month}.json`), "utf8"),
+      ),
+    );
+
+  it("월별 파일 안의 삭제 요청 카드도 지우고 그 호만 갈아 끼운다(다른 호·카드 그대로, updatedAt 갱신) — 일별 파일과 함께", async () => {
+    writeMonth("2026-10", [
+      ["2026-10-12", [DUP, KEEP]],
+      ["2026-10-13", [KEEP]],
+    ]);
+    writeNews("2026-11-01", [DUP]);
+    const { deps } = makeDeps({
+      loadTakedowns: async () => takedowns(["c_fb2dd57b4a"]),
+    });
+
+    const outcome = await runPurgeStage(deps, {
+      runId: "dev-collect-20261020T213000Z",
+      startedAt: STARTED,
+    });
+
+    expect(outcome.errors).toEqual([]);
+    expect(outcome.scanned).toBe(3);
+    expect(outcome.written).toEqual(["2026-10-12", "2026-11-01"]);
+    const month = readMonth("2026-10");
+    expect(month.updatedAt).toBe(NOW.toISOString());
+    expect(month.issues.map((i) => i.date)).toEqual([
+      "2026-10-12",
+      "2026-10-13",
+    ]);
+    expect(month.issues[0]!.cards.map((c) => c.id)).toEqual(["c_0ece511965"]);
+    expect(month.issues[0]!.runId).toBe("dev-collect-20261020T213000Z");
+    // 바뀌지 않은 호는 그대로(generatedAt·runId 유지)
+    expect(month.issues[1]!.runId).toBe("prod-collect-old-2026-10-13");
+    expect(readNews("2026-11-01").cards).toEqual([]);
+    // 일별 파일이 생기지 않는다(월별 호는 월별 파일에만)
+    expect(readdirSync(path.join(dataDir, "news")).sort()).toEqual([
+      "2026-10.json",
+      "2026-11-01.json",
+    ]);
+  });
+
+  it("같은 날짜가 일별·월별 파일에 함께 있으면 그 월별 파일은 건너뛰고(오류) 일별 파일은 처리한다", async () => {
+    const monthPath = writeMonth("2026-10", [["2026-10-12", [DUP]]]);
+    writeNews("2026-10-12", [DUP, KEEP]);
+    const before = readFileSync(monthPath, "utf8");
+    const { deps } = makeDeps({
+      loadTakedowns: async () => takedowns(["c_fb2dd57b4a"]),
+    });
+    const outcome = await runPurgeStage(deps, {
+      runId: "r",
+      startedAt: STARTED,
+    });
+    expect(outcome.errors.map((e) => `${e.step}:${e.date}`)).toEqual([
+      "read:2026-10",
+    ]);
+    expect(outcome.written).toEqual(["2026-10-12"]);
+    expect(readFileSync(monthPath, "utf8")).toBe(before);
   });
 });

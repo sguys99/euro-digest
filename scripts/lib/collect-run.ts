@@ -85,6 +85,8 @@
  *   (①보다 먼저) ⓪ data 원본 삭제(M1-25 — purge-stage.ts·purge-plan.ts): configs/takedowns.json 등록 카드(저장된 카드 ID, 모든 날짜
  *      파일)와 보존 기간이 지난 출처(Source.retentionDays — The Athletic 7일, 대표 출처면 카드)를 data/news에서 지우고 그 링크 해시를
  *      기억(seen-urls)에 남긴다. dry는 계획만 출력. 실패는 partial(발행 계속 — 빌드 제외가 공개 사이트를 지킨다).
+ *   (⓪ 바로 뒤) ⓪-b 월별 병합(M5-10, FR-158 — retention-merge-stage.ts·news-retention.ts): 그 달 말일 + 90일이 지난 달의 일별 파일을
+ *      data/news/YYYY-MM.json(NewsMonthFile) 하나로 합치고 일별 파일을 지운다. dry는 계획만 출력. 실패는 그 달만 건너뛰고 상태는 그대로.
  *
  * 실패 격리: 소스 하나의 실패(받기·파싱·예상 밖 오류)는 그 소스만 건너뛴다(상태 partial). 피드 받기는 scripts/lib/feed-collect.ts가
  * 호스트별 병렬·재시도(1회)·단계 시간 예산(90초)으로 하고, 결과는 설정 순서로 돌려준다(M1-03).
@@ -399,6 +401,11 @@ import {
   withPurgeStatus,
   type PurgeOutcome,
 } from "./purge-stage";
+import {
+  retentionMergeSummary,
+  runRetentionMergeStage,
+  type RetentionMergeOutcome,
+} from "./retention-merge-stage";
 import {
   createApiFootballClient,
   type AfRateHeaders,
@@ -992,6 +999,8 @@ export interface CollectOutcome {
   publishDate: string;
   /** data 원본 삭제(M1-25 — 삭제 요청·보존 기간, purge-stage.ts) — 뉴스 단계 전에 돈다 */
   purge: PurgeOutcome;
+  /** 월별 병합(M5-10 — 말일 + 90일 지난 달의 일별 파일 → YYYY-MM.json, retention-merge-stage.ts) — 삭제 단계 바로 뒤, 뉴스 단계 전 */
+  retentionMerge: RetentionMergeOutcome;
   news: NewsOutcome;
   /** 소스 건강도 — 수집을 시도한 소스가 없거나(설정 오류) 단계가 실패했으면 null */
   health: HealthOutcome | null;
@@ -5161,6 +5170,20 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     { runId, startedAt },
   );
 
+  // ⓪-b 월별 병합(M5-10, FR-158 — retention-merge-stage.ts). 삭제 단계가 정리한 일별 파일을 그 달 말일 + 90일 뒤 한 번 YYYY-MM.json으로
+  // 합친다. 뉴스 단계는 오늘(일별) 파일만 쓰므로 겹치지 않는다. 던지지 않고 실행 상태도 바꾸지 않는다(실패는 로그·주석, 다음 실행이 다시).
+  const retentionMerge = await runRetentionMergeStage(
+    {
+      dataDir: deps.dataDir,
+      env: deps.env,
+      dry: deps.dry,
+      now: deps.now,
+      logger: log,
+      print: deps.print,
+    },
+    { startedAt },
+  );
+
   // ② 경기 데이터는 뉴스 피드 수집과 병렬로 시작한다(머리 주석 "병렬 근거") — 수집 대상이 정해진 뒤(설정 오류·대상 0개면
   // 시작하지 않는다). 뉴스가 실패하면 취소 신호로 새 요청을 멈춘다.
   const sink = {
@@ -5538,6 +5561,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     runId,
     status,
     purge: purgeSummary(purge),
+    retentionMerge: retentionMergeSummary(retentionMerge),
     collected: news.feedItems,
     clusters: news.selected,
     added: news.added,
@@ -5588,6 +5612,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
     runId,
     publishDate,
     purge,
+    retentionMerge,
     news,
     health,
     matchData,

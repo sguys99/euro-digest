@@ -585,7 +585,8 @@ D0에서 실제로 비교할 방향의 출발점이다. 최소 두 축(레이아
 - [ ] M5-08 `check:bundle` 비밀값 grep + Lighthouse CI를 `ci.yml`에 추가 (NFR-07)
 - [x] M5-09 `ops-report.ts`: 월요일 운영 리포트 이슈(비용·성공률·소스 건강도·미등록 고유명사) (FR-155)
   - 2026-11-03 완료: 주간 작업 단계 ④ `runOpsReport`(LLM 0)가 지난 ISO 주(KST 월~일, 일요일 끝 고정 — 재실행해도 같은 값)의 요약·비용(prod/dev, 걸친 달 누적 %, dev 50% 경고)·실행 성공률(실행 기준, dry 제외 + 발행일 7칸 정시/늦음/결호/실패)·브리핑(mode·AI/템플릿 줄·요청)·소스 건강도·미등록 고유명사(이 주 새 이름 상위)를 payload 파일로 쓰고, weekly.yml '운영 리포트 이슈 보고'(`issues: write` · continue-on-error · 3분)가 `[운영 리포트] YYYY-Www` 이슈를 만들거나 같은 주차 열린 이슈 본문을 교체(RECURRENCE_POLICY `update`). 수동 `npm run ops-report -- [--week] [--dry]`. 지표 순수 함수 `src/lib/ops-metrics.ts`(M5-15 `/status` 재사용). W44 실데이터 dry: 정시 5 · 늦음 1 · 결호 1, 수집 성공률 87.5%(7/8), 소스 확인 필요 1(`bbc-sport-champions-league` 12회 연속 0건). 첫 실제 이슈는 11-09 정기 주간 실행에서 확인. 함께: CI를 깨뜨린 라인업 백필 테스트를 고정 스냅숏(`fixtures/team-stage/2026-10-31`)으로 — 11-03 봇 백필이 후보를 다 채워 0건이 됨
-- [ ] M5-10 데이터 보존: 90일 지난 일별 JSON 월별 병합, `runs.json`·`runs-dev.json` 180일 (FR-158)
+- [x] M5-10 데이터 보존: 90일 지난 일별 JSON 월별 병합, `runs.json`·`runs-dev.json` 180일 (FR-158)
+  - 2026-11-03 완료: **사용자 결정(11-03)** A안 `data/news/YYYY-MM.json` = NewsMonthFile { month, updatedAt, issues: NewsFile[] }(부록 A 추가 — 호는 일별 값 그대로, 날짜 오름차순·중복 금지, 일별·월별 날짜 겹침 = 오류) · T1 그 달 말일 + 90일 뒤 첫 수집 실행이 달 단위로 한 번(첫 병합 2027-01-29 — 단위 테스트 고정). 구현: 순수 `scripts/lib/news-retention.ts` · I/O `news-month-file.ts` · 단계 `retention-merge-stage.ts`(collect ⓪ purge 직후 ⓪-b — 달 단위 실패 격리·지우기 실패 시 되돌리기·dry 계획 출력) · 로더 `src/lib/data/news.ts` 전부 월별 포함 · purge가 월별 호의 takedown·보존 기간도 처리 · transfers-io·m1-completion-check 월별 포함 · validate 교차 검사 10(날짜 겹침). runs 180일은 기존 `cost.ts` appendRun → pruneRuns — 정리 전후 monthToDate·/status 30일 성공률 같음 테스트. 브리핑은 §8.4 무기한 일별(D45)이라 대상 아님. 대조: 실데이터 전 호 병합 전후 로더 deep-equal + 날짜 페이지 generateStaticParams·HTML·카드 앵커 ID 동일. 실데이터 dry: 대상 0. publish-gate 실데이터 테스트는 보존 로더 기반 전 호 검사로(조용한 통과 제거). 한계: 발행 게이트는 일별 파일만 봄(월별 안 takedown 잔존 경고 없음 — 빌드 제외·purge는 적용)
   - 🆕 M1-35 이월 메모(리뷰): 90일 월별 병합 뒤에도 **날짜 페이지(`/news/{date}/`)를 계속 생성**해야 한다 — 카드 공유 URL(`…/news/{date}/#c_…`)이 영구 주소다(FR-34). 지금 `listNewsDates`(src/lib/data/news.ts — `listIssueDates`·`generateStaticParams`·달력의 출처)는 일별 파일만 보므로 월별 파일 안의 날짜도 내도록 바꾸고, `loadIssue(date)`도 월별 파일에서 그날 카드를 읽게(병합 전후 같은 HTML·카드 ID — e2e로 대조)
 - [ ] M5-11 `/new-season` 커맨드 완성 (FR-156)
 - [ ] M5-12 브라우저 확인: Chrome·Safari(iOS)·Edge·Samsung Internet 최신 2버전 (NFR-13)
@@ -877,6 +878,14 @@ const NewsFile = z.object({                          // data/news/YYYY-MM-DD.jso
   runId: z.string().min(1),                          // RunLog.runId
   cards: z.array(NewsCard),                          // 카드 ID 중복 금지 (FR-04)
 });
+const NewsMonthFile = z.object({                     // data/news/YYYY-MM.json  (FR-158, PRD §8.4, M5-10 — 2026-11-03 사용자 결정 A안·T1)
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/), // KST 달 = 파일명 = 모든 issues[].date의 앞 7자
+  updatedAt: Iso,                                    // 내용이 마지막으로 바뀐 시각(병합·삭제 요청 원본 삭제)
+  issues: z.array(NewsFile).min(1),                  // 일별 NewsFile 그대로(date·generatedAt·runId·cards — 병합 전과 같은 값)
+});
+  // 파일 단위: issues 날짜 오름차순·날짜 중복 금지. 카드 ID 중복 금지는 호 안에서만(날짜 간 재게시 있음 — M1-16)
+  // 같은 날짜가 일별 파일과 월별 파일에 함께 있으면 오류(validate 교차 검사 10 · 로더가 빌드를 멈춤)
+  // 병합 시점(T1): 그 달 말일 + 90일이 된 날(KST 발행일, 그날 포함) 첫 수집 실행이 그 달 일별 파일을 통째로 합침 — 예) 2026-10 → 2027-01-29
 // data/runs.json → RunLog[] (env "prod"만) · data/runs-dev.json → RunLog[] (env "dev"만)
 
 // 1. configs/competitions.json → CompetitionConfig[]  (M2-01, /new-season A) — id·footballDataCode 중복 금지

@@ -411,6 +411,7 @@ describe("checkTeamFiles — data/teams ↔ team-ids·team-colors·korean-player
       skipped: [
         "data/teams → team-ids · team-colors · korean-players",
         "data/players/korean.json → korean-players · data/teams · 원장 메타",
+        "data/news 일별 ↔ 월별 병합 날짜 중복",
         "data/transfers.json → data/news · takedowns",
       ],
     });
@@ -705,5 +706,54 @@ describe("checkTransfersData — data/transfers.json ↔ data/news·takedowns (M
       checked: ["data/transfers.json → data/news · takedowns"],
       issues: [],
     });
+  });
+
+  it("월별 병합 파일(M5-10) 안의 호도 근거 카드로 찾는다 — 키는 `<경로>#<날짜>`, 날짜 오름차순", () => {
+    const issue = news.get("data/news/2026-10-30.json")!;
+    const input = pickCrossRefInput(
+      new Map<string, unknown>([
+        ["data/transfers.json", [record]],
+        [
+          "data/news/2026-11-01.json",
+          { ...issue, date: "2026-11-01", cards: [] },
+        ],
+        [
+          "data/news/2026-10.json",
+          { month: "2026-10", updatedAt: at2, issues: [issue] },
+        ],
+        ["configs/takedowns.json", []],
+      ]),
+    );
+    expect([...(input.news?.keys() ?? [])]).toEqual([
+      "data/news/2026-10.json#2026-10-30",
+      "data/news/2026-11-01.json",
+    ]);
+    expect(runCrossRefChecks(input, "data")).toMatchObject({
+      checked: [
+        "data/news 일별 ↔ 월별 병합 날짜 중복",
+        "data/transfers.json → data/news · takedowns",
+      ],
+      issues: [],
+    });
+  });
+
+  it("같은 날짜가 일별·월별 파일에 함께 있으면 오류(병합 중간 상태)", () => {
+    const issue = news.get("data/news/2026-10-30.json")!;
+    const input = pickCrossRefInput(
+      new Map<string, unknown>([
+        ["data/news/2026-10-30.json", issue],
+        [
+          "data/news/2026-10.json",
+          { month: "2026-10", updatedAt: at2, issues: [issue] },
+        ],
+      ]),
+    );
+    const result = runCrossRefChecks(input, "data");
+    expect(
+      result.issues.map((i) => `${i.severity} ${i.file}:${i.path}`),
+    ).toEqual(["error data/news/2026-10.json:issues[0].date"]);
+    expect(result.issues[0]!.message).toMatch(
+      /호 2026-10-30가 일별 파일 data\/news\/2026-10-30\.json에도 있음/,
+    );
   });
 });

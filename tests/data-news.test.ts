@@ -17,6 +17,8 @@ import {
   TAKEDOWNS_FILE,
   listNewsDates,
   loadLatestNews,
+  loadNewsIssue,
+  loadRetainedCards,
   loadTakedownIds,
   withoutTakedowns,
 } from "@/lib/data/news";
@@ -66,12 +68,12 @@ describe("loadLatestNews", () => {
     expect(loadLatestNews(path.join(dir, "missing"))).toBeNull();
   });
 
-  it("가장 늦은 날짜 파일을 고른다 — 월별 병합 파일·다른 이름·하위 폴더는 무시", () => {
+  it("가장 늦은 날짜 파일을 고른다 — 다른 이름·하위 폴더는 무시", () => {
     writeIssue(dir, "2026-09-30");
     writeIssue(dir, "2026-10-11");
     writeIssue(dir, "2026-10-09");
-    writeFileSync(path.join(dir, "2026-12.json"), "{}");
     writeFileSync(path.join(dir, "notes.json"), "{}");
+    writeFileSync(path.join(dir, "2026-1.json"), "{}");
     mkdirSync(path.join(dir, "2099-01-01.json"));
 
     expect(listNewsDates(dir)).toEqual([
@@ -176,5 +178,83 @@ describe("삭제 요청 카드 빌드 제외 (M1-25, FR-143)", () => {
     expect(filtered).not.toBe(news);
     expect(filtered.cards).toHaveLength(2);
     expect(news.cards).toHaveLength(3);
+  });
+});
+
+describe("월별 병합 파일 `YYYY-MM.json` (M5-10, FR-158·FR-34)", () => {
+  const issueOf = (date: string) => ({
+    ...(JSON.parse(readFileSync(FIXTURE_FILE, "utf8")) as object),
+    date,
+  });
+  function writeMonth(month: string, dates: string[], patch: object = {}) {
+    writeFileSync(
+      path.join(dir, `${month}.json`),
+      JSON.stringify({
+        month,
+        updatedAt: "2027-01-28T21:31:00Z",
+        issues: dates.map(issueOf),
+        ...patch,
+      }),
+    );
+  }
+  const opts = () => {
+    const takedownsFile = path.join(dir, "takedowns.json");
+    writeFileSync(takedownsFile, "[]");
+    return { takedownsFile };
+  };
+
+  it("월별 파일 안의 날짜도 목록에 내고(일별과 합쳐 오름차순), 그날 호를 일별 파일과 같은 값으로 돌려준다", () => {
+    const o = opts();
+    writeMonth("2026-10", ["2026-10-12", "2026-10-31"]);
+    writeIssue(dir, "2026-11-01");
+    writeIssue(dir, "2026-09-30");
+
+    expect(listNewsDates(dir)).toEqual([
+      "2026-09-30",
+      "2026-10-12",
+      "2026-10-31",
+      "2026-11-01",
+    ]);
+    expect(loadNewsIssue("2026-10-31", dir, o)).toEqual(issueOf("2026-10-31"));
+    expect(loadNewsIssue("2026-10-13", dir, o)).toBeNull();
+    expect(loadLatestNews(dir, o)?.date).toBe("2026-11-01");
+    // 같은 카드 ID가 여러 호에 있으면 앞 날짜 것 하나만(일별일 때와 같은 규칙)
+    expect(loadRetainedCards(dir, o).map((c) => c.id)).toEqual([
+      "c_8f3a1b2c4d",
+      "c_0a1b2c3d4e",
+      "c_5f6e7d8c9b",
+    ]);
+  });
+
+  it("최신 호가 월별 파일에만 있어도 고른다", () => {
+    const o = opts();
+    writeMonth("2026-10", ["2026-10-12", "2026-10-31"]);
+    expect(loadLatestNews(dir, o)?.date).toBe("2026-10-31");
+  });
+
+  it("같은 날짜가 일별·월별 파일에 함께 있으면 목록에서부터 던진다(병합 중간 상태 — 빌드 실패)", () => {
+    writeMonth("2026-10", ["2026-10-12"]);
+    writeIssue(dir, "2026-10-12");
+    expect(() => listNewsDates(dir)).toThrow(
+      /호 2026-10-12가 일별 파일\(2026-10-12\.json\)에도 있음/,
+    );
+  });
+
+  it("월별 파일이 깨졌거나 스키마·파일명이 틀리면 던진다", () => {
+    writeFileSync(path.join(dir, "2026-10.json"), "{ broken");
+    expect(() => listNewsDates(dir)).toThrow(
+      /2026-10\.json: JSON을 읽을 수 없음/,
+    );
+    writeMonth("2026-10", ["2026-11-01"]);
+    expect(() => listNewsDates(dir)).toThrow(/월별 뉴스 파일 스키마 검증 실패/);
+    writeMonth("2026-10", ["2026-10-12"], { month: "2026-11" });
+    expect(() => listNewsDates(dir)).toThrow(/스키마 검증 실패|파일명/);
+  });
+
+  it("파일을 다시 쓰면 다시 읽는다(크기·수정 시각 캐시)", () => {
+    writeMonth("2026-10", ["2026-10-12"]);
+    expect(listNewsDates(dir)).toEqual(["2026-10-12"]);
+    writeMonth("2026-10", ["2026-10-12", "2026-10-13"]);
+    expect(listNewsDates(dir)).toEqual(["2026-10-12", "2026-10-13"]);
   });
 });

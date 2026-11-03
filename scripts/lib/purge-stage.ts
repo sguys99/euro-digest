@@ -8,20 +8,21 @@
  *
  * 순서(쓰기)
  *   ① 설정 읽기 — `configs/takedowns.json`(카드 ID), `configs/sources.json`(보존 기간 — 매체명 표). 한쪽을 못 읽으면 그쪽만 건너뛴다.
- *   ② `data/news/YYYY-MM-DD.json` 전부 읽기(검증) — 깨진 파일·파일명과 date가 다른 파일은 건너뛴다(발행 검증 게이트가 오류로 잡는다).
+ *   ② `data/news/YYYY-MM-DD.json` 전부 + 월별 병합 파일 `YYYY-MM.json`(M5-10 — 안의 호마다) 읽기(검증) — 깨진 파일·파일명과 date가
+ *      다른 파일·일별 파일에도 있는 날짜의 월별 호는 건너뛴다(발행 검증 게이트가 오류로 잡는다).
  *   ③ 계획(planPurge) — 보존 기간은 다음 실행 전에 만료될 출처까지(여유 30시간 — purge-plan.ts). 비었으면 끝(파일을 건드리지 않는다).
  *   ④ dry면 계획만 출력하고 끝.
  *   ⑤ 기억(seen-urls.json)에 지울 링크 해시를 먼저 더한다(없는 키만). **기억을 읽거나 쓰지 못하면 뉴스 파일을 지우지 않는다** —
  *      기억 없이 지우면 (2026-10-14 이전 발행분처럼 기억에 없던 카드가) 수집 창 안에서 다른 ID로 다시 카드가 될 수 있다.
  *      takedown 카드가 새 규칙 ID로 다시 나오면 빌드 제외도 피한다. 다음 실행이 다시 시도한다.
- *   ⑥ 바뀌는 날짜 파일마다 다시 쓴다(generatedAt·runId 갱신 — NewsFile 규칙). 한 파일의 실패는 그 파일만(다음 실행이 다시).
+ *   ⑥ 바뀌는 날짜 파일마다 다시 쓴다(generatedAt·runId 갱신 — NewsFile 규칙). 월별 파일 안의 호는 그 달 파일을 한 번 다시 쓴다
+ *      (바뀐 호만 갈아 끼우고 updatedAt 갱신). 한 파일의 실패는 그 파일만(다음 실행이 다시).
  *
  * 실패 정책 — **발행을 멈추지 않는다(실행 상태 partial)**. 삭제 실패는 Actions 오류 주석(prod)과 로그로 드러나고, 다음 발행 검증
  * 게이트가 남은 takedown 카드·만료 출처를 경고로 보여 준다. 근거: 공개 사이트는 빌드 제외가 지킨다(takedowns.json을 못 읽으면
  * 빌드가 실패한다 — 열린 채 배포되지 않음). 실행을 실패(exit 1)로 끝내도 원본은 지워지지 않고(커밋되지 않으므로) 그날 발행만
  * 막힌다. 삭제가 실패하는 실제 원인은 깨진 파일·설정이고, 그때는 검증 게이트가 오류로 커밋을 막는다.
  */
-import { readdir } from "node:fs/promises";
 import path from "node:path";
 
 import {
@@ -43,6 +44,13 @@ import {
   writeNewsFile,
 } from "./news-file";
 import {
+  listNewsDir,
+  newsMonthFilePath,
+  readNewsMonthFile,
+  writeNewsMonthFile,
+} from "./news-month-file";
+import { replaceMonthIssues } from "./news-retention";
+import {
   isEmptyPurge,
   mergeSeenKeys,
   planPurge,
@@ -58,7 +66,6 @@ import {
 } from "./seen-urls";
 import { loadSources } from "./sources";
 
-const DAILY_FILE_RE = /^(\d{4}-\d{2}-\d{2})\.json$/;
 const SEEN_LABEL = `data/${SEEN_URLS_REL_PATH.split(path.sep).join("/")}`;
 
 export interface PurgeStageDeps {
@@ -135,23 +142,6 @@ export function formatPurgePlan(plan: PurgePlan): string[] {
     lines.push(`   ${file.date} — ${parts.join(" · ")}`);
   }
   return lines;
-}
-
-/** 날짜 파일 목록(오름차순). 폴더가 없으면 [] */
-async function listDailyDates(dataDir: string): Promise<string[]> {
-  try {
-    const entries = await readdir(path.join(dataDir, "news"), {
-      withFileTypes: true,
-    });
-    return entries
-      .filter((e) => e.isFile())
-      .map((e) => DAILY_FILE_RE.exec(e.name)?.[1])
-      .filter((d): d is string => d !== undefined)
-      .sort();
-  } catch (error) {
-    if ((error as { code?: unknown } | null)?.code === "ENOENT") return [];
-    throw error;
-  }
 }
 
 /** 삭제 단계 — 머리 주석 순서. 던지지 않는다(예상 밖 오류도 errors에 남기고 발행 계속) */
@@ -231,15 +221,18 @@ async function purge(
     });
   }
 
-  // ② 날짜 파일
+  // ② 날짜 파일 + 월별 병합 파일(M5-10)
   const files: Array<{ date: string; file: NewsFile }> = [];
   let dates: string[] = [];
+  let months: string[] = [];
   try {
-    dates = await listDailyDates(deps.dataDir);
+    ({ daily: dates, months } = await listNewsDir(deps.dataDir));
   } catch (error) {
     errors.push({ step: "list", error: errorText(error) });
     log.error("collect.purge.read", { stage: "list", error: errorText(error) });
   }
+  /** 월별 파일에서 읽은 호의 날짜 → 그 달 */
+  const monthOf = new Map<string, string>();
   for (const date of dates) {
     try {
       const file = await readNewsFile(newsFilePath(deps.dataDir, date));
@@ -253,6 +246,30 @@ async function purge(
       log.warn("collect.purge.read", { date, error: errorText(error) });
     }
   }
+  const dailySet = new Set(dates);
+  for (const month of months) {
+    try {
+      const monthFile = await readNewsMonthFile(
+        newsMonthFilePath(deps.dataDir, month),
+      );
+      if (monthFile === null) continue;
+      for (const issue of monthFile.issues) {
+        if (dailySet.has(issue.date)) {
+          throw new Error(
+            `호 ${issue.date}가 일별 파일에도 있음(월별 병합 중간 상태) — 이 달을 건너뜀`,
+          );
+        }
+      }
+      for (const issue of monthFile.issues) {
+        files.push({ date: issue.date, file: issue });
+        monthOf.set(issue.date, month);
+      }
+    } catch (error) {
+      errors.push({ step: "read", date: month, error: errorText(error) });
+      log.warn("collect.purge.read", { month, error: errorText(error) });
+    }
+  }
+  files.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 
   // ③ 계획 — 보존 기간은 다음 실행 전에 만료될 출처까지 미리 지운다(purge-plan.ts RETENTION_PURGE_LEAD_MS)
   const plan = planPurge({
@@ -340,9 +357,37 @@ async function purge(
     );
   }
 
-  // ⑥ 날짜 파일
+  // ⑥ 날짜 파일 — 월별 파일 안의 호는 달마다 모아 한 번에 다시 쓴다
   const written: string[] = [];
+  const monthChanges = new Map<string, Map<string, NewsFile>>();
   for (const change of plan.files) {
+    const month = monthOf.get(change.date);
+    if (month !== undefined) {
+      try {
+        const changes = monthChanges.get(month) ?? new Map<string, NewsFile>();
+        changes.set(
+          change.date,
+          buildNewsFile({
+            date: change.date,
+            generatedAt: nowUtcIso(deps.now()),
+            runId: ctx.runId,
+            cards: change.cards,
+          }),
+        );
+        monthChanges.set(month, changes);
+      } catch (error) {
+        errors.push({
+          step: "write",
+          date: change.date,
+          error: errorText(error),
+        });
+        log.error("collect.purge.fail", {
+          date: change.date,
+          error: errorText(error),
+        });
+      }
+      continue;
+    }
     try {
       const file = buildNewsFile({
         date: change.date,
@@ -370,6 +415,27 @@ async function purge(
       });
     }
   }
+  for (const [month, changes] of monthChanges) {
+    try {
+      const monthPath = newsMonthFilePath(deps.dataDir, month);
+      const current = await readNewsMonthFile(monthPath);
+      if (current === null) throw new Error(`${month}.json이 사라짐`);
+      await writeNewsMonthFile(
+        monthPath,
+        replaceMonthIssues(current, changes, nowUtcIso(deps.now())),
+      );
+      for (const date of changes.keys()) written.push(date);
+      log.info("collect.purge.write", {
+        month,
+        dates: [...changes.keys()],
+        cards: [...changes.values()].reduce((n, f) => n + f.cards.length, 0),
+      });
+    } catch (error) {
+      errors.push({ step: "write", date: month, error: errorText(error) });
+      log.error("collect.purge.fail", { month, error: errorText(error) });
+    }
+  }
+  written.sort();
   log.info("collect.purge.done", {
     ...planFields,
     written: written.length,
