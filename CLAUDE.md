@@ -1,7 +1,7 @@
 # CLAUDE.md — 유로 다이제스트 (Euro Digest)
 
 > 매일 아침, 밤사이 유럽 축구를 한눈에.
-> 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **M4(부가 기능) 완료(2026-11-02 — 실기기 확인은 M5 이월, M3 주간 자동 실행 확인은 11-09) · D3(아이콘·OG·빈 상태·`/status`) 디자인 완료(2026-11-03) → 다음 M5(다듬기·정식 공개)**
+> 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **M5(다듬기·정식 공개) 진행 중(2026-11-03~) — M5-01~05·07~11·13~15·17 완료, 🙋 실기기 확인 대기 M5-06·M5-12, 남은 작업 M5-16 공개 체크리스트** (M3 주간 자동 실행 확인은 11-09)
 
 이 문서는 Claude Code가 이 저장소에서 **어떻게 일하는지**를 정한다. 문서끼리 충돌하면 아래 우선순위를 따르고 사용자에게 알린다.
 
@@ -82,22 +82,27 @@
              · ISSUE_TEMPLATE/ summary-error·takedown·source-broken
 configs/     사람이 관리, 전부 zod 검증: sources · competitions · names.ko · korean-players · national-team · bigmatch-rules
              · search-queries · publisher-domains · formations · team-colors · transfer-windows · takedowns (.json) · prompts/ summarize(일일 브리핑)·team-profile·weekly-kr (.md)
-data/        파이프라인 산출물(손 편집 금지): news/YYYY-MM-DD.json · briefs/YYYY-MM-DD.json(일일 브리핑, D38) · competitions/ · teams/ · players/ · transfers.json
+data/        파이프라인 산출물(손 편집 금지): news/YYYY-MM-DD.json(90일 뒤 news/YYYY-MM.json 월별 병합, D73) · briefs/YYYY-MM-DD.json(일일 브리핑, D38) · competitions/ · teams/ · players/ · transfers.json
              · matches/ YYYY-MM.json·meta.json(경기 기록 원장 — 정기 운영만 씀, 화면은 읽지 않음, D33)
              · runs.json(봇) · runs-dev.json(dev 실행, 개발자 커밋) · cache/ seen-urls.json·unknown-names.json·af-pending.json
 fixtures/    개발·테스트 샘플 (RSS·API 응답·LLM 응답·뉴스 카드)       tests/  단위·스키마 (e2e는 tests/e2e)
 scripts/     collect · summarize · weekly · validate · build-feeds · ops-report · preserve-run(실패 실행 기록 보존) (.ts) · crawlers/<site>.ts
              · lib/ normalize·dedup·cluster·score·llm·cost·time·names·providers/ …
 src/         app/(라우트, PRD §4 IA) · components/(ui/ shadcn 커스텀 + 도메인) · lib/(data 로더·schema/·time·paths)
-docs/        basic_plan.md · PRD.md · plan.md · design/(d0~d3 시안 + DECISIONS.md)
-public/      manifest, 아이콘, 폰트        루트: CLAUDE.md · DESIGN.md · README.md
+docs/        basic_plan.md · PRD.md · plan.md · design/(d0~d3 시안 + DECISIONS.md) · research/(m0·m1·m5-* 검증·실측 기록)
+public/      아이콘(icons/ · favicon.svg·ico — build:icons로 굽고 커밋) · 폰트 · og/(공유 OG PNG — 빌드가 굽고 커밋, D71 ②·D77)
+루트         CLAUDE.md · DESIGN.md · README.md · lighthouserc.json · lighthouse-baseline.json(성능 점수 회귀 기준선, D78)
 ```
 공용 zod 스키마는 `src/lib/schema/`에 두고 `scripts/`도 `@/*` 별칭으로 같은 스키마를 import한다(tsx가 tsconfig paths 지원). 명령어는 M0에서 `package.json`에 정의:
 ```bash
-npm run dev / build                  # build = next build(export) → pagefind → OG·RSS·ics 생성
+npm run dev / build                  # build = OG 굽기(build:og) → next build(export·sitemap) → Pagefind → RSS·ics → 서비스 워커
+npm run preview / verify:deploy      # out/을 basePath 아래로 서빙(4173) / 배포된 사이트 HTTP 확인
+npm run build:og [-- --check] / build:icons   # 공유 OG PNG(public/og — 바뀐 것만, --check는 구울 장 수만) / 앱 아이콘·파비콘(커밋)
 npm run collect                      # 수집→정제·분류→데이터 브리핑→검증 (실제 LLM 호출)
 npm run collect -- --limit 5 --dry   # 소량 실행, data/ 산출물 대신 출력만 (--mock: LLM 없이 fixtures 응답)
 npm run weekly                       # 팀 프로필·주간 리포트·운영 리포트
+npm run ops-report -- [--week YYYY-WW] --dry   # 주간 운영 리포트 미리보기(LLM 0 — GITHUB_TOKEN이 있고 --dry가 없으면 이슈 생성/교체)
+npm run new-season:check -- [--season S] [--date D]   # 시즌 전환 준비 읽기 전용 점검(/new-season, M5-11)
 npm run eval:prompt                  # 골든셋 회귀 평가 — 프롬프트 수정 전후 출력 diff (실제 LLM 호출, 소량)
 npm run observe -- [--date D]        # M1-41·42 발행 관찰(Actions 공개 시각·계절 가드·runs 비용·브리핑·경기 상태) → docs/research/m1-observation.md (--week: 주간 요약)
 npm run probe:gdelt                  # M1-46 GDELT 재측정 — 하루 1회·요청 ≤ 3건, 같은 문서 GDELT 표·7일 판정
@@ -107,6 +112,7 @@ npm run validate                     # configs·data 스키마 + 발행 검증 �
 npm run check                        # typecheck + lint + test (커밋 전 필수)
 npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린샷 / 번들 크기 예산 + 비밀값 검사(out/ 전체 — 키 모양 패턴·PEM·API 키 헤더·env 실제 값 대조)
 npm run lighthouse [-- --method simulate] [--assert]   # Lighthouse 모바일 10쪽 × 3회(lighthouserc.json — error LCP·CLS·접근성·SEO / warn 성능·회귀 감시 lighthouse-baseline.json, D78). CI는 ci.yml lighthouse job(main push·PR·수동 — 배포와 병렬)
+E2E_ENGINE=webkit npm run test:e2e   # WebKit(Safari) e2e — 수동 실행만, CI 미포함(D76)
 npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) → 기초 컴포넌트 e2e (공개 빌드에는 견본 없음)
 ```
 
@@ -203,8 +209,15 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
 - **주간 리포트 재생성**: 월요일 weekly Step Summary·로그 `weekly.korean-weekly.ledger.possibly-missing`에 "Wnn 누락 가능"이 있으면, 그 경기가 원장에 들어간 다음 날 아침 발행 뒤(06:00~08:00 KST 피함) Actions → weekly → Run workflow(`week`, `force: true`). 로컬은 `npm run weekly -- --week <주차> --force --write`(`--write` 없으면 미리보기 — data/에 쓰지 않음). 총평 `submit-unknown`이면 Console Batches에서 고아 배치·과금 확인.
 - **한국 선수 이적 감지**: `/add-player` 또는 `korean-players.json` 수정. **미등록 고유명사**: `/add-name`. **시즌 전환**: `/new-season`.
 
-## 13. 미결 사항 (M0 검증 후 이 문서·PRD 갱신)
-- ~~API-Football 무료 플랜의 2026-27 시즌 조회 가능 여부~~ → M0-29 완료: 시즌 단위 불가·경기 단위 가능(plan §14 B1 일부 발동) → 경기 단건 조회 + 시즌 누적 자체 집계(PRD §15 D27). 경기 기록 저장 스키마는 M1 착수 때 사용자 확인(plan M1-48)
-- ~~각 RSS·기자 채널·크롤링 대상의 약관·robots.txt, Google News RSS 이용 조건~~ → M0-23~26 완료(`docs/research/m0-validation.md`, PRD §15 D22~D25). GDELT는 M0-27 판정(약관 허용·현재 비활성, M1-46 재측정)
+## 13. 미결 사항 (해소되면 취소선 + 결과, 이 문서·PRD 갱신)
+- ~~API-Football 무료 플랜의 2026-27 시즌 조회 가능 여부~~ → M0-29 완료: 시즌 단위 불가·경기 단위 가능(plan §14 B1 일부 발동) → 경기 단건 조회 + 시즌 누적 자체 집계(PRD §15 D27). 경기 기록 저장 스키마 → D33 확정(M1-48)
+- ~~각 RSS·기자 채널·크롤링 대상의 약관·robots.txt, Google News RSS 이용 조건~~ → M0-23~26 완료(`docs/research/m0-validation.md`, PRD §15 D22~D25). GDELT는 M0-27 판정(약관 허용) → M1-46 재측정 뒤 재활성 안 함(2026-10-25)
 - ~~football-data.org·API-Football 약관의 LLM 입력·재가공(한국어 브리핑) 허용 여부~~ → M0-28·M0-29 완료: 두 API 모두 조건부 허용, B7 미발동(football-data 출처 문구 필수 — PRD FR-45, D27)
-- ~~서비스명 상표·저장소명 확인, 연락용 이메일 개설, 2026-27 시즌 5대 리그 한국 선수 명단~~ → M0-31 KIPRIS 충돌 없음(B6 미발동) · U-07 `sguys99@gmail.com` · M0-32 초안 9명을 `configs/korean-players.json`에 등록(확정은 M3-01)
+- ~~서비스명 상표·저장소명 확인, 연락용 이메일 개설, 2026-27 시즌 5대 리그 한국 선수 명단~~ → M0-31 KIPRIS 충돌 없음(B6 미발동) · U-07 `sguys99@gmail.com` · M0-32 초안 9명 → M3-01 확정 11명(D65)
+- **M5에서 열린 항목** (plan §13 · PRD §15 D71~D78)
+  - 🙋 실기기 확인: M5-06(VoiceOver/TalkBack 3흐름 · RSS·webcal 구독 · 홈 화면 설치·아이콘·스플래시) · M5-12(iOS Safari·Samsung Internet 13항목) — 체크리스트 `docs/research/m5-accessibility.md` §5
+  - iOS 폴백 실측: iPhone 첫 방문 글꼴 CLS → Apple SD Gothic Neo 보정 면 추가 여부(D78 ③, DESIGN §11.3 남은 일 ①, m5-accessibility §5.5)
+  - 🙋 Search Console: URL 접두어 속성 `https://sguys99.github.io/euro-digest/` 등록 + sitemap 제출(D59·D74 ③) / GoatCounter 대시보드: 시간대 Asia/Seoul · 본인 방문 제외 · 첫 수신 확인(D75)
+  - `/status` 배포 완료 시각 매칭(커밋 시각 < 수집 완료인 배포만 — M5-13 ③) 실제 배포 기록으로 첫 확인
+  - 오늘 밤 가중치 11월 말 재검토(D76 — `docs/research/m5-tonight-weights.md` §6) · `@lhci/cli` 0.16 검토는 2주 규칙상 11-16 이후(m5-performance §9)
+  - M3 주간 정기 실행(월요일 자동 실행·팀 프로필 첫 정기 실행) 11-09 확인 · 브리핑 정확도 주간 표본 재검수(M1-43 이후 미측정 — M5-16 KPI)
