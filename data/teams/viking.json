@@ -16,9 +16,19 @@
   },
   "topPlayers": [
     {
+      "name": "Zlatko Tripić",
+      "goals": 2,
+      "assists": 3
+    },
+    {
+      "name": "Erik Botheim",
+      "goals": 2,
+      "assists": 1
+    },
+    {
       "name": "Peter Christiansen",
       "goals": 2,
-      "assists": null
+      "assists": 1
     }
   ],
   "profile": null,

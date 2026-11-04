@@ -2,7 +2,7 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-03T22:14:04.632Z",
+  "updatedAt": "2026-11-04T22:12:46.325Z",
   "standings": [
     {
       "pos": 1,
@@ -2197,16 +2197,6 @@
       "status": "scheduled"
     },
     {
-      "id": "fd-560694",
-      "comp": "EPL",
-      "round": "16",
-      "kickoff": "2026-12-19T15:00:00Z",
-      "home": "nottingham-forest",
-      "away": "everton",
-      "score": null,
-      "status": "scheduled"
-    },
-    {
       "id": "fd-560696",
       "comp": "EPL",
       "round": "16",
@@ -2243,6 +2233,16 @@
       "kickoff": "2026-12-20T14:00:00Z",
       "home": "brighton",
       "away": "ipswich-town",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-560694",
+      "comp": "EPL",
+      "round": "16",
+      "kickoff": "2026-12-20T14:00:00Z",
+      "home": "nottingham-forest",
+      "away": "everton",
       "score": null,
       "status": "scheduled"
     },

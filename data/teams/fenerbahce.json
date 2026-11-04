@@ -14,7 +14,18 @@
     "source": "api",
     "updated": "2026-10-20T16:45:00.000Z"
   },
-  "topPlayers": [],
+  "topPlayers": [
+    {
+      "name": "Archie Brown",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Mason Greenwood",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],

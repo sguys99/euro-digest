@@ -11,5 +11,11 @@
     "park-seung-soo": "2026-10-31",
     "seol-young-woo": "2026-10-19"
   },
-  "gaps": []
+  "gaps": [
+    {
+      "date": "2026-11-04",
+      "reason": "date-query",
+      "cause": "auth"
+    }
+  ]
 }

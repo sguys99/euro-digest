@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-03T22:15:33.688Z",
+  "updatedAt": "2026-11-04T22:14:15.840Z",
   "standings": [
     {
       "pos": 1,
@@ -1433,7 +1433,7 @@
       "id": "fd-559637",
       "comp": "LIGUE1",
       "round": "10",
-      "kickoff": "2026-11-07T16:15:00Z",
+      "kickoff": "2026-11-07T18:00:00Z",
       "home": "auxerre",
       "away": "paris-fc",
       "score": null,
@@ -1443,7 +1443,7 @@
       "id": "fd-559635",
       "comp": "LIGUE1",
       "round": "10",
-      "kickoff": "2026-11-07T19:45:00Z",
+      "kickoff": "2026-11-07T20:05:00Z",
       "home": "paris-saint-germain",
       "away": "troyes",
       "score": null,

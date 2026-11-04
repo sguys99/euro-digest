@@ -14,7 +14,13 @@
     "source": "api",
     "updated": "2026-10-20T19:00:00.000Z"
   },
-  "topPlayers": [],
+  "topPlayers": [
+    {
+      "name": "Stavros Pilios",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],

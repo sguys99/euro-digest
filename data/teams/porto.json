@@ -14,7 +14,18 @@
     "source": "api",
     "updated": "2026-10-20T19:00:00.000Z"
   },
-  "topPlayers": [],
+  "topPlayers": [
+    {
+      "name": "Gabriel Veiga",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Samu Aghehowa",
+      "goals": 2,
+      "assists": null
+    }
+  ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],

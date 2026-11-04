@@ -17,8 +17,13 @@
   "topPlayers": [
     {
       "name": "Nicolo Tresoldi",
-      "goals": 4,
+      "goals": 5,
       "assists": null
+    },
+    {
+      "name": "Carlos Forbs",
+      "goals": 2,
+      "assists": 2
     }
   ],
   "profile": null,
