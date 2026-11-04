@@ -1486,10 +1486,10 @@
     },
     {
       "ko": "세루 기라시",
-      "en": ["Serhou Guirassy"],
+      "en": ["Serhou Guirassy", "Sehrou Guirassy"],
       "kind": "player",
       "slug": "serhou-guirassy",
-      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 베스트일레븐 본문 '세루 기라시' 6건 — https://www.besteleven.com/news/articleView.html?idxno=312019 · https://www.besteleven.com/news/articleView.html?idxno=304861 · https://www.besteleven.com/news/articleView.html?idxno=229606 등) — 위키백과 '세루 기라시'와 같음(규범·매체 일치), 소수 매체 표기 '세르후 기라시'(베스트일레븐 302377·230880) · 영문: 데이터 API 득점 입력 'Serhou Guirassy'(unknown-names 2026-10-21 — 도르트문트)"
+      "note": "확정(사용자 결정 2026-10-23) — 국내 매체 관용(근거: 베스트일레븐 본문 '세루 기라시' 6건 — https://www.besteleven.com/news/articleView.html?idxno=312019 · https://www.besteleven.com/news/articleView.html?idxno=304861 · https://www.besteleven.com/news/articleView.html?idxno=229606 등) — 위키백과 '세루 기라시'와 같음(규범·매체 일치), 소수 매체 표기 '세르후 기라시'(베스트일레븐 302377·230880) · 영문: 데이터 API 득점 입력 'Serhou Guirassy'(unknown-names 2026-10-21 — 도르트문트) · 별칭 'Sehrou Guirassy'는 football-data 득점 순위 철자 변형(unknown-names ×5 — 2026-11-04 사용자 승인, m5-name-proposals.md §3)"
     },
     {
       "ko": "조슈아 지르크지",
@@ -1616,6 +1616,727 @@
       "kind": "player",
       "slug": "lukas-petkov",
       "note": "확실(규범·매체 — 위키 문서 없음, 매체 본문 1건) — 스포츠경향 2026-08-31 본문 '루카스 페트코프' https://sports.khan.co.kr/article/202608310314003/ · 독일어 표기법 일치 · 영문: 데이터 API 득점 입력 'Lukas Petkov'(unknown-names 2026-10-18 — 엘버스베르크, API-Football 라인업 'L. Petkov' fixtures-id-1575182.json)"
+    },
+    {
+      "ko": "레안드로 카브레라",
+      "en": ["Leandro Cabrera"],
+      "kind": "player",
+      "slug": "leandro-cabrera",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 풋볼리스트 '카브레라'(idxno=123740) · 나무위키 '레안드로 카브레라' · 스페인어 규범과 일치 · 출처 docs/research/m5-name-proposals.md A2 · 영문: 데이터 API 득점 입력 'Leandro Cabrera'(unknown-names 2026-11-03 — 에스파뇰)"
+    },
+    {
+      "ko": "안드레아 피나몬티",
+      "en": ["Andrea Pinamonti"],
+      "kind": "player",
+      "slug": "andrea-pinamonti",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 위키백과 '안드레아 피나몬티' · 마이데일리 2026-11-02(라치오 선두 기사) 본문 '피나몬티' · 출처 docs/research/m5-name-proposals.md A3 · 영문: 데이터 API 득점 입력 'Andrea Pinamonti'(unknown-names 2026-11-03 — 라치오)"
+    },
+    {
+      "ko": "니콜라 잘레프스키",
+      "en": ["Nicola Zalewski"],
+      "kind": "player",
+      "slug": "nicola-zalewski",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '니콜라 잘레프스키' · 폴란드어 규범(w→프) 일치 · 국내 매체 제목 확인 못 함 · 출처 docs/research/m5-name-proposals.md A5 · 영문: 데이터 API 득점 입력 'Nicola Zalewski'(unknown-names 2026-11-03 — 아탈란타)"
+    },
+    {
+      "ko": "올리비에 지루",
+      "en": ["Olivier Giroud"],
+      "kind": "player",
+      "slug": "olivier-giroud",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 위키백과 '올리비에 지루' · 풋볼리스트 2025-09(idxno=201893) · 스포츠경향 2025-08-25 제목 '지루' · 출처 docs/research/m5-name-proposals.md A6 · 영문: 데이터 API 득점 입력 'Olivier Giroud'(unknown-names 2026-11-03 — 릴)"
+    },
+    {
+      "ko": "파비우 실바",
+      "en": ["Fábio Silva"],
+      "kind": "player",
+      "slug": "fabio-silva",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 머니투데이·스포츠경향 2026-11-01 도르트문트전 기사 '파비우 실바'(일부 '파비오 실바') · 위키백과 '파비우 시우바'(포르투갈어 규범). 관용 우선 · 출처 docs/research/m5-name-proposals.md A7 · 영문: 데이터 API 득점 입력 'Fábio Silva'(unknown-names 2026-11-03 — 도르트문트)"
+    },
+    {
+      "ko": "카이 하베르츠",
+      "en": ["Kai Havertz"],
+      "kind": "player",
+      "slug": "kai-havertz",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 매일일보·베스트일레븐(idxno=313667)·스포츠월드 2026-11-02 제목 '하베르츠' · 위키백과 '카이 하베르츠' · 출처 docs/research/m5-name-proposals.md A8 · 영문: 데이터 API 득점 입력 'Kai Havertz'(unknown-names 2026-11-03 — 아스널)"
+    },
+    {
+      "ko": "파벨 카초르",
+      "en": ["Pavel Kacor"],
+      "kind": "player",
+      "slug": "pavel-kacor",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 국내 표기 없음 · 영문 위키 문서 없음. 체코어 표기 세칙상 c·č 모두 'ㅊ'이라 원어가 Kacor든 Kačor든 '카초르', Pavel → '파벨'(발음 근거만) · 출처 docs/research/m5-name-proposals.md A9 · 영문: 데이터 API 득점 입력 'Pavel Kacor'(unknown-names 2026-11-03 — 슬라비아 프라하)"
+    },
+    {
+      "ko": "에르메딘 데미로비치",
+      "en": ["Ermedin Demirović"],
+      "kind": "player",
+      "slug": "ermedin-demirovic",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '에르메딘 데미로비치' · 나무위키·Livesport 같은 표기 · 출처 docs/research/m5-name-proposals.md B1 · 영문: 데이터 API 득점 입력 'Ermedin Demirović'(unknown-names 2026-11-03 — 슈투트가르트)"
+    },
+    {
+      "ko": "안토니오 누사",
+      "en": ["Antonio Nusa"],
+      "kind": "player",
+      "slug": "antonio-nusa",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '안토니오 누사' · 출처 docs/research/m5-name-proposals.md B2 · 영문: 데이터 API 득점 입력 'Antonio Nusa'(unknown-names 2026-11-03 — 라이프치히)"
+    },
+    {
+      "ko": "스즈키 유이토",
+      "en": ["Yuito Suzuki"],
+      "kind": "player",
+      "slug": "yuito-suzuki",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스포츠경향 2026-08-31 제목 '스즈키 유이토' · 네이트 2026-08-31 · 위키백과 '스즈키 유이토'(일본 이름은 성-이름 순) · 출처 docs/research/m5-name-proposals.md B3 · 영문: 데이터 API 득점 입력 'Yuito Suzuki'(unknown-names 2026-11-03 — 프라이부르크)"
+    },
+    {
+      "ko": "이고르 마타노비치",
+      "en": ["Igor Matanović"],
+      "kind": "player",
+      "slug": "igor-matanovic",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 위키백과 '이고르 마타노비치' · 스포츠경향 2026-08-31 개막전 기사 '이고르 마타노비치' · 출처 docs/research/m5-name-proposals.md B4 · 영문: 데이터 API 득점 입력 'Igor Matanović'(unknown-names 2026-11-03 — 프라이부르크)"
+    },
+    {
+      "ko": "모리스 크라텐마허",
+      "en": ["Maurice Krattenmacher"],
+      "kind": "player",
+      "slug": "maurice-krattenmacher",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 스포츠경향 2026-10-31(마인츠전) 본문 '모리스 크라텐마허' 1건 · 독일어 규범 일치 · 위키백과 한국어 문서 없음 · 출처 docs/research/m5-name-proposals.md B5 · 영문: 데이터 API 득점 입력 'Maurice Krattenmacher'(unknown-names 2026-11-03 — 엘버스베르크)"
+    },
+    {
+      "ko": "다요 우파메카노",
+      "en": ["Dayot Upamecano"],
+      "kind": "player",
+      "slug": "dayot-upamecano",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — OSEN·코리아데일리 2026-10-31 선발 기사 '우파메카노' · 위키백과 '다요 우파메카노' · 출처 docs/research/m5-name-proposals.md B7 · 영문: 데이터 API 득점 입력 'Dayot Upamecano'(unknown-names 2026-11-03 — 바이에른 뮌헨(김민재))"
+    },
+    {
+      "ko": "이브라힘 마자",
+      "en": ["Ibrahim Maza"],
+      "kind": "player",
+      "slug": "ibrahim-maza",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스포르티보미디어 제목 '이브라힘 마자'(idxno=15809) · 위키백과 '이브라힘 마자' · 출처 docs/research/m5-name-proposals.md B8 · 영문: 데이터 API 득점 입력 'Ibrahim Maza'(unknown-names 2026-11-03 — 레버쿠젠)"
+    },
+    {
+      "ko": "조 스캘리",
+      "en": ["Joseph Scally", "Joe Scally"],
+      "kind": "player",
+      "slug": "joseph-scally",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '조 스캘리' · 엑스포츠뉴스(빌트 인용) '스캘리'. 데이터는 'Joseph' — 관용 통칭 'Joe'로 표기하는 안 · 출처 docs/research/m5-name-proposals.md B9 · 영문: 데이터 API 득점 입력 'Joseph Scally'(unknown-names 2026-11-03 — 묀헨글라트바흐(카스트로프))"
+    },
+    {
+      "ko": "마커스 태버니어",
+      "en": ["Marcus Tavernier"],
+      "kind": "player",
+      "slug": "marcus-tavernier",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — STN 제목 '태버니어 결승골'(idxno=205351) · 네이트 2026-10-25 제목 '태버니어 추가골' · 이투데이 '마커스 태버니어'(dict '마커스 래시포드'와 같은 Marcus 표기) · 출처 docs/research/m5-name-proposals.md B10 · 영문: 데이터 API 득점 입력 'Marcus Tavernier'(unknown-names 2026-11-03 — 본머스)"
+    },
+    {
+      "ko": "주앙 페드루",
+      "en": ["João Pedro"],
+      "kind": "player",
+      "slug": "joao-pedro",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 풋볼리스트 제목 '페드루'(idxno=207529) · 네이트 2026-08-26 제목 '주앙 페드루' · 위키백과 '주앙 페드루' · 출처 docs/research/m5-name-proposals.md B11 · 영문: 데이터 API 득점 입력 'João Pedro'(unknown-names 2026-11-03 — 첼시)"
+    },
+    {
+      "ko": "모건 로저스",
+      "en": ["Morgan Rogers"],
+      "kind": "player",
+      "slug": "morgan-rogers",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 한국일보·스타뉴스 2026-07-22 제목 '모건 로저스'·'로저스' · 위키백과 '모건 로저스' · 출처 docs/research/m5-name-proposals.md B12 · 영문: 데이터 API 득점 입력 'Morgan Rogers'(unknown-names 2026-11-03 — 첼시)"
+    },
+    {
+      "ko": "라얀 셰르키",
+      "en": ["Rayan Cherki"],
+      "kind": "player",
+      "slug": "rayan-cherki",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 풋볼리스트 제목 '셰르키 원더골'(idxno=205356) · 맨시티 한국어 공식 '셰르키' · 위키백과 '라얀 셰르키' · 출처 docs/research/m5-name-proposals.md B13 · 영문: 데이터 API 득점 입력 'Rayan Cherki'(unknown-names 2026-11-03 — 맨체스터 시티)"
+    },
+    {
+      "ko": "브라이언 음뵈모",
+      "en": ["Bryan Mbeumo"],
+      "kind": "player",
+      "slug": "bryan-mbeumo",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 풋볼리스트 제목 '음뵈모'(idxno=203708) · OSEN·SBS '음뵈모' · 위키백과 '브라이언 음뵈모' · 출처 docs/research/m5-name-proposals.md B14 · 영문: 데이터 API 득점 입력 'Bryan Mbeumo'(unknown-names 2026-11-03 — 맨체스터 유나이티드)"
+    },
+    {
+      "ko": "잭 힌셜우드",
+      "en": ["Jack Hinshelwood"],
+      "kind": "player",
+      "slug": "jack-hinshelwood",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 나무위키 '잭 힌셜우드'(영어 표기법 -shel- → 셜) · STN 2023 제목 '힌셀우드' 1건 · 출처 docs/research/m5-name-proposals.md B16 · 영문: 데이터 API 득점 입력 'Jack Hinshelwood'(unknown-names 2026-11-03 — 브라이턴)"
+    },
+    {
+      "ko": "파스칼 그로스",
+      "en": ["Pascal Groß", "Pascal Gross"],
+      "kind": "player",
+      "slug": "pascal-gross",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — OSEN(네이트 2026-01-03) 제목 '그로스 재영입' · 위키백과 '파스칼 그로스' · 출처 docs/research/m5-name-proposals.md B17 · 영문: 데이터 API 득점 입력 'Pascal Groß'(unknown-names 2026-11-03 — 브라이턴)"
+    },
+    {
+      "ko": "케빈 샤데",
+      "en": ["Kevin Schade"],
+      "kind": "player",
+      "slug": "kevin-schade",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '케빈 샤데' · Livesport 같은 표기 · 매체 제목 확인 못 함 · 출처 docs/research/m5-name-proposals.md B18 · 영문: 데이터 API 득점 입력 'Kevin Schade'(unknown-names 2026-11-03 — 브렌트퍼드(김지수))"
+    },
+    {
+      "ko": "도미닉 칼버트르윈",
+      "en": ["Dominic Calvert-Lewin"],
+      "kind": "player",
+      "slug": "dominic-calvert-lewin",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 풋볼리스트 제목 '칼버트르윈'(idxno=205640) · MHN 2026-10-19 '칼버트르윈' vs 국제뉴스 '캘버트-루윈', 위키백과 '캘버트루인'. 매체 다수 관용 · 출처 docs/research/m5-name-proposals.md B19 · 영문: 데이터 API 득점 입력 'Dominic Calvert-Lewin'(unknown-names 2026-11-03 — 리즈 유나이티드)"
+    },
+    {
+      "ko": "모하메드 벨루미",
+      "en": ["Mohamed Belloumi"],
+      "kind": "player",
+      "slug": "mohamed-belloumi",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 네이트 2026-09(사진 설명) '모하메드 벨루미' · 나무위키 같은 표기 · dict '모하메드 살라'와 같은 Mohamed 표기 · 출처 docs/research/m5-name-proposals.md B20 · 영문: 데이터 API 득점 입력 'Mohamed Belloumi'(unknown-names 2026-11-03 — 헐 시티)"
+    },
+    {
+      "ko": "안테 부디미르",
+      "en": ["Ante Budimir"],
+      "kind": "player",
+      "slug": "ante-budimir",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — STN 제목 '부디미르'(idxno=147000) · 위키백과 '안테 부디미르' · 출처 docs/research/m5-name-proposals.md B21 · 영문: 데이터 API 득점 입력 'Ante Budimir'(unknown-names 2026-11-03 — 오사수나)"
+    },
+    {
+      "ko": "야시르 자비리",
+      "en": ["Yassir Zabiri"],
+      "kind": "player",
+      "slug": "yassir-zabiri",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 나무위키 '야시르 자비리' 1곳 · 국내 매체 제목 확인 못 함 · 출처 docs/research/m5-name-proposals.md B22 · 영문: 데이터 API 득점 입력 'Yassir Zabiri'(unknown-names 2026-11-03 — 라싱 산탄데르)"
+    },
+    {
+      "ko": "세르히오 카메요",
+      "en": ["Sergio Camello"],
+      "kind": "player",
+      "slug": "sergio-camello",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스포츠경향 2026-10-09 제목 '카메요' · 위키백과 '세르히오 카메요' · 출처 docs/research/m5-name-proposals.md B23 · 영문: 데이터 API 득점 입력 'Sergio Camello'(unknown-names 2026-11-03 — 라요 바예카노)"
+    },
+    {
+      "ko": "로베르토 페르난데스",
+      "en": ["Roberto Fernández"],
+      "kind": "player",
+      "slug": "roberto-fernandez",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 마이데일리 2026-10-08(토트넘 관심 기사) '로베르토 페르난데스' · 나무위키 '로베르토 페르난데스(2002)' · 동명이인(2000년생 파라과이 수비수) 있음 — 같은 표기라 치환 충돌 없음 · 출처 docs/research/m5-name-proposals.md B24 · 영문: 데이터 API 득점 입력 'Roberto Fernández'(unknown-names 2026-11-03 — 에스파뇰)"
+    },
+    {
+      "ko": "페르 니뇨",
+      "en": ["Fer Niño", "Fernando Niño Rodríguez"],
+      "kind": "player",
+      "slug": "fer-nino",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 나무위키 '페르난도 니뇨'(통칭 '페르 니뇨') · 스페인어 규범 · 매체 제목 확인 못 함 · 출처 docs/research/m5-name-proposals.md B25 · 영문: 데이터 API 득점 입력 'Fer Niño'·'Fernando Niño Rodríguez'(unknown-names 2026-11-03 — 엘체)"
+    },
+    {
+      "ko": "루카스 보예",
+      "en": ["Lucas Boyé"],
+      "kind": "player",
+      "slug": "lucas-boye",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 마이데일리 2026-10-10 본문 '루카스 보예' · 위키백과 '루카스 보예' · 출처 docs/research/m5-name-proposals.md B27 · 영문: 데이터 API 득점 입력 'Lucas Boyé'(unknown-names 2026-11-03 — 알라베스)"
+    },
+    {
+      "ko": "마리아노 디아스",
+      "en": ["Mariano Díaz"],
+      "kind": "player",
+      "slug": "mariano-diaz",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 마이데일리 2026-11-01 바르셀로나전 기사 '마리아노' · 나무위키 '마리아노 디아스' · 위키백과 '마리아노 디아스 메히아'(전체 이름). dict '루이스 디아스'와 성 같음 — 전체 이름 매칭이라 충돌 없음 · 출처 docs/research/m5-name-proposals.md B30 · 영문: 데이터 API 득점 입력 'Mariano Díaz'(unknown-names 2026-11-03 — 알라베스)"
+    },
+    {
+      "ko": "루카 수치치",
+      "en": ["Luka Sučić"],
+      "kind": "player",
+      "slug": "luka-sucic",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '루카 수치치' · 크로아티아어 규범 일치 · 출처 docs/research/m5-name-proposals.md B31 · 영문: 데이터 API 득점 입력 'Luka Sučić'(unknown-names 2026-11-03 — 레알 소시에다드)"
+    },
+    {
+      "ko": "알렉스 베렝게르",
+      "en": ["Álex Berenguer"],
+      "kind": "player",
+      "slug": "alex-berenguer",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '알렉스 베렝게르' · 스페인어 규범 · 출처 docs/research/m5-name-proposals.md B32 · 영문: 데이터 API 득점 입력 'Álex Berenguer'(unknown-names 2026-11-03 — 아틀레틱)"
+    },
+    {
+      "ko": "알바로 가르시아",
+      "en": ["Álvaro García"],
+      "kind": "player",
+      "slug": "alvaro-garcia",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — Flashscore 한국어 '알바로 가르시아' · 스페인어 규범 · 동명이인 다수(같은 표기라 충돌 없음) · 출처 docs/research/m5-name-proposals.md B33 · 영문: 데이터 API 득점 입력 'Álvaro García'(unknown-names 2026-11-03 — 라요 바예카노)"
+    },
+    {
+      "ko": "라신 시나요코",
+      "en": ["Lassine Sinayoko"],
+      "kind": "player",
+      "slug": "lassine-sinayoko",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 나무위키 '라신 시나요코' · 스포츠경향 2026-11-03 파리FC 기사(제목엔 이름 없음) · 출처 docs/research/m5-name-proposals.md B34 · 영문: 데이터 API 득점 입력 'Lassine Sinayoko'(unknown-names 2026-11-03 — 파리 FC)"
+    },
+    {
+      "ko": "아민 구이리",
+      "en": ["Amine Gouiri"],
+      "kind": "player",
+      "slug": "amine-gouiri",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키·Flashscore '아민 구이리' · 출처 docs/research/m5-name-proposals.md B36 · 영문: 데이터 API 득점 입력 'Amine Gouiri'(unknown-names 2026-11-03 — 마르세유)"
+    },
+    {
+      "ko": "카스페르 텡스테트",
+      "en": ["Casper Tengstedt"],
+      "kind": "player",
+      "slug": "casper-tengstedt",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '카스페르 텡스테트' · 출처 docs/research/m5-name-proposals.md B39 · 영문: 데이터 API 득점 입력 'Casper Tengstedt'(unknown-names 2026-11-03 — 툴루즈)"
+    },
+    {
+      "ko": "루이 마푸타",
+      "en": ["Louis Mafouta"],
+      "kind": "player",
+      "slug": "louis-mafouta",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 국내 표기 없음 · 프랑스어 발음(Louis [lwi] → 루이) · 출처 docs/research/m5-name-proposals.md B40 · 영문: 데이터 API 득점 입력 'Louis Mafouta'(unknown-names 2026-11-03 — 르망)"
+    },
+    {
+      "ko": "카모리 둠비아",
+      "en": ["Kamory Doumbia"],
+      "kind": "player",
+      "slug": "kamory-doumbia",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '카모리 둠비아' · 출처 docs/research/m5-name-proposals.md B41 · 영문: 데이터 API 득점 입력 'Kamory Doumbia'(unknown-names 2026-11-03 — 브레스트)"
+    },
+    {
+      "ko": "세바스티안 시만스키",
+      "en": ["Sebastian Szymański"],
+      "kind": "player",
+      "slug": "sebastian-szymanski",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키·인벤 '세바스티안 시만스키' · 폴란드어 규범 일치 · 매체 제목 확인 못 함 · 출처 docs/research/m5-name-proposals.md B42 · 영문: 데이터 API 득점 입력 'Sebastian Szymański'(unknown-names 2026-11-03 — 렌)"
+    },
+    {
+      "ko": "페란 토레스",
+      "en": ["Ferran Torres"],
+      "kind": "player",
+      "slug": "ferran-torres",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 네이트 2026-09-21 제목 '페란 토레스' · FIFA 한국어 기사 · 포포투 · 위키백과 '페란 토레스' · 출처 docs/research/m5-name-proposals.md B43 · 영문: 데이터 API 득점 입력 'Ferrán Torres'(unknown-names 2026-11-03 — 파리 생제르맹)"
+    },
+    {
+      "ko": "뤼도비크 아조르크",
+      "en": ["Ludovic Ajorque"],
+      "kind": "player",
+      "slug": "ludovic-ajorque",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '뤼도비크 아조르크' · 프랑스어 규범 · AiScore '루도비크' · 출처 docs/research/m5-name-proposals.md B45 · 영문: 데이터 API 득점 입력 'Ludovic Ajorque'(unknown-names 2026-11-03 — 브레스트)"
+    },
+    {
+      "ko": "파리스 브루너",
+      "en": ["Paris Brunner"],
+      "kind": "player",
+      "slug": "paris-brunner",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 나무위키 '파리스 브루너' · 출처 docs/research/m5-name-proposals.md B46 · 영문: 데이터 API 득점 입력 'Paris Brunner'(unknown-names 2026-11-03 — 모나코)"
+    },
+    {
+      "ko": "어니스트 누아마",
+      "en": ["Ernest Nuamah"],
+      "kind": "player",
+      "slug": "ernest-nuamah",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 위키백과 '어니스트 누아마' · Goal 한국어 · 이투데이 2026-10(리옹-팰리스) 본문 '누아마' · 출처 docs/research/m5-name-proposals.md B47 · 영문: 데이터 API 득점 입력 'Ernest Nuamah'(unknown-names 2026-11-03 — 리옹)"
+    },
+    {
+      "ko": "조시 마자",
+      "en": ["Josh Maja"],
+      "kind": "player",
+      "slug": "josh-maja",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 나무위키 '조시 마자' · 재경일보 2026-10-30 본문 '조시 마자' · Flashscore '조쉬'(규범상 '쉬' 불가) · 출처 docs/research/m5-name-proposals.md B48 · 영문: 데이터 API 득점 입력 'Josh Maja'(unknown-names 2026-11-03 — 르아브르)"
+    },
+    {
+      "ko": "불라예 디아",
+      "en": ["Boulaye Dia"],
+      "kind": "player",
+      "slug": "boulaye-dia",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '불라예 디아' · 출처 docs/research/m5-name-proposals.md B49 · 영문: 데이터 API 득점 입력 'Boulaye Dia'(unknown-names 2026-11-03 — 렌)"
+    },
+    {
+      "ko": "마르키뉴스",
+      "en": ["Marquinhos"],
+      "kind": "player",
+      "slug": "marquinhos",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — STN 제목 'PSG 주장은 마르키뉴스'(idxno=208182) · 위키백과 '마르키뉴스' · 나무위키만 '마르퀴뇨스' · 출처 docs/research/m5-name-proposals.md B51 · 영문: 데이터 API 득점 입력 'Marquinhos'(unknown-names 2026-11-03 — 파리 생제르맹)"
+    },
+    {
+      "ko": "니콜라 크르스토비치",
+      "en": ["Nikola Krstović"],
+      "kind": "player",
+      "slug": "nikola-krstovic",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 이투데이 제목 '크르스토비치 멀티골'(2635036) · 위키백과 '니콜라 크르스토비치' · 출처 docs/research/m5-name-proposals.md B52 · 영문: 데이터 API 득점 입력 'Nikola Krstović'(unknown-names 2026-11-03 — 아탈란타)"
+    },
+    {
+      "ko": "아나스타시오스 두비카스",
+      "en": ["Anastasios Douvikas"],
+      "kind": "player",
+      "slug": "anastasios-douvikas",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 위키백과 '아나스타시오스 두비카스' · 네이트 2026-05-25 본문 '두비카스' · 출처 docs/research/m5-name-proposals.md B53 · 영문: 데이터 API 득점 입력 'Anastasios Douvikas'(unknown-names 2026-11-03 — 코모)"
+    },
+    {
+      "ko": "아드리앙 라비오",
+      "en": ["Adrien Rabiot"],
+      "kind": "player",
+      "slug": "adrien-rabiot",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 포포투·베스트일레븐 2026-11 밀란 더비 기사 '아드리앙 라비오' · 위키백과 '아드리앵 라비오'(규범). 관용 우선 · 출처 docs/research/m5-name-proposals.md B54 · 영문: 데이터 API 득점 입력 'Adrien Rabiot'(unknown-names 2026-11-03 — 밀란)"
+    },
+    {
+      "ko": "마르쿠스 튀랑",
+      "en": ["Marcus Thuram", "Marcus Thuram-Ulien"],
+      "kind": "player",
+      "slug": "marcus-thuram",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 네이트 2023-06-28 제목 '마르쿠스 튀랑' · 나무위키 '마르쿠스 튀랑' vs 위키백과 '마르퀴스 튀람'. 관용 우선 · 출처 docs/research/m5-name-proposals.md B55 · 영문: 데이터 API 득점 입력 'Marcus Thuram'·'Marcus Thuram-Ulien'(unknown-names 2026-11-03 — 인테르)"
+    },
+    {
+      "ko": "다니엘 말디니",
+      "en": ["Daniel Maldini"],
+      "kind": "player",
+      "slug": "daniel-maldini",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '다니엘 말디니' · 이탈리아어 규범 · 출처 docs/research/m5-name-proposals.md B56 · 영문: 데이터 API 득점 입력 'Daniel Maldini'(unknown-names 2026-11-03 — 칼리아리)"
+    },
+    {
+      "ko": "자코모 칼로",
+      "en": ["Giacomo Calò"],
+      "kind": "player",
+      "slug": "giacomo-calo",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 국내 표기 없음 · 이탈리아어 규범(Gia → 자, ò → 오) · 출처 docs/research/m5-name-proposals.md B57 · 영문: 데이터 API 득점 입력 'Giacomo Calò'(unknown-names 2026-11-03 — 프로시노네)"
+    },
+    {
+      "ko": "알파조 시세",
+      "en": ["Alphadjo Cissè"],
+      "kind": "player",
+      "slug": "alphadjo-cisse",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 베스트일레븐(idxno=313179)·포포투(idxno=99380) 제목 '알파조 시세' · 일간스포츠 2026-10-29 · 출처 docs/research/m5-name-proposals.md B58 · 영문: 데이터 API 득점 입력 'Alphadjo Cissè'(unknown-names 2026-11-03 — 밀란)"
+    },
+    {
+      "ko": "체 애덤스",
+      "en": ["Che Adams"],
+      "kind": "player",
+      "slug": "che-adams",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '체 애덤스' · Flashscore '체 아담스'. dict '아코르 애덤스'와 같은 Adams 표기(전체 이름 매칭이라 충돌 없음) · 출처 docs/research/m5-name-proposals.md B59 · 영문: 데이터 API 득점 입력 'Che Adams'(unknown-names 2026-11-03 — 토리노)"
+    },
+    {
+      "ko": "밀루틴 오스마이치",
+      "en": ["Milutin Osmajić"],
+      "kind": "player",
+      "slug": "milutin-osmajic",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 나무위키 '밀루틴 오스마이치' · 몬테네그로어 규범 · 출처 docs/research/m5-name-proposals.md B60 · 영문: 데이터 API 득점 입력 'Milutin Osmajić'(unknown-names 2026-11-03 — 제노아)"
+    },
+    {
+      "ko": "프랑코 마스탄투오노",
+      "en": ["Franco Mastantuono"],
+      "kind": "player",
+      "slug": "franco-mastantuono",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 인터풋볼 제목(idxno=692095) · 베스트일레븐(idxno=312134) · 위키백과 '프랑코 마스탄투오노' · 출처 docs/research/m5-name-proposals.md B61 · 영문: 데이터 API 득점 입력 'Franco Mastantuono'(unknown-names 2026-11-03 — 피오렌티나)"
+    },
+    {
+      "ko": "구스타프 이삭센",
+      "en": ["Gustav Isaksen"],
+      "kind": "player",
+      "slug": "gustav-isaksen",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 마이데일리 2026-11-02 본문 '구스타프 이삭센' · Footboom 같은 표기 vs 위키백과 '구스타우 이삭센'(덴마크어 규범). 관용 우선 · 출처 docs/research/m5-name-proposals.md B63 · 영문: 데이터 API 득점 입력 'Gustav Isaksen'(unknown-names 2026-11-03 — 라치오)"
+    },
+    {
+      "ko": "다비데 프라테시",
+      "en": ["Davide Frattesi"],
+      "kind": "player",
+      "slug": "davide-frattesi",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '다비데 프라테시' · 이탈리아어 규범 · 출처 docs/research/m5-name-proposals.md B65 · 영문: 데이터 API 득점 입력 'Davide Frattesi'(unknown-names 2026-11-03 — 라치오)"
+    },
+    {
+      "ko": "니콜로 트레솔디",
+      "en": ["Nicolò Tresoldi"],
+      "kind": "player",
+      "slug": "nicolo-tresoldi",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스포츠경향 2026-10-14 · 인터풋볼(idxno=697356) · 네이트 2026-10-17 '트레솔디' · Flashscore '니콜로 트레솔디' · 출처 docs/research/m5-name-proposals.md B66 · 영문: 데이터 API 득점 입력 'Nicolo Tresoldi'(unknown-names 2026-11-03 — 클럽 브뤼헤)"
+    },
+    {
+      "ko": "파비안 루이스",
+      "en": ["Fabián Ruiz"],
+      "kind": "player",
+      "slug": "fabian-ruiz",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 뉴스핌·진일보 2026-11-04 '파비안 루이스' · 위키백과 '파비안 루이스' · 네이트 사진 설명 1건 '파비앙' · 출처 docs/research/m5-name-proposals.md B67 · 영문: 데이터 API 득점 입력 'Fabián Ruiz'(unknown-names 2026-11-03 — 파리 생제르맹)"
+    },
+    {
+      "ko": "루이스 수아레스",
+      "en": ["Luis Suárez"],
+      "kind": "player",
+      "slug": "luis-suarez",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 뉴시스 2026-01-21 제목 '수아레스 멀티 골 스포르팅' · 스포츠경향 2026-01-22 '루이스 수아레스'. 우루과이의 동명이인과 같은 표기라 치환 충돌 없음 · 출처 docs/research/m5-name-proposals.md B68 · 영문: 데이터 API 득점 입력 'Luis Suárez'(unknown-names 2026-11-03 — 스포르팅 CP)"
+    },
+    {
+      "ko": "알렉세이 바트라코프",
+      "en": ["Aleksey Batrakov", "Aleksei Batrakov"],
+      "kind": "player",
+      "slug": "aleksey-batrakov",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 나무위키 '알렉세이 바트라코프' · 러시아어 규범(Батраков) · 출처 docs/research/m5-name-proposals.md B69 · 영문: 데이터 API 득점 입력 'Aleksey Batrakov'(unknown-names 2026-11-03 — 갈라타사라이)"
+    },
+    {
+      "ko": "알렉시스 맥 알리스터",
+      "en": ["Alexis Mac Allister"],
+      "kind": "player",
+      "slug": "alexis-mac-allister",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 인터풋볼 2026-10-20·11-02 제목 '맥 알리스터'(저장 카드) · 위키백과 '알렉시스 마크 알리스테르'(규범). 관용 우선 · 출처 docs/research/m5-name-proposals.md B70 · 영문: 데이터 API 득점 입력 'Alexis Mac Allister'(unknown-names 2026-11-03 — 리버풀)"
+    },
+    {
+      "ko": "마테우스 쿠냐",
+      "en": ["Matheus Cunha"],
+      "kind": "player",
+      "slug": "matheus-cunha",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 인터풋볼 RSS 2026-11-04 제목 '쿠냐' · 위키백과 '마테우스 쿠냐' · 출처 docs/research/m5-name-proposals.md B71 · 영문: 데이터 API 득점 입력 'Matheus Cunha'(unknown-names 2026-11-03 — 맨체스터 유나이티드)"
+    },
+    {
+      "ko": "에밀리아노 부엔디아",
+      "en": ["Emiliano Buendía"],
+      "kind": "player",
+      "slug": "emiliano-buendia",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 뉴시스 2026-05-21 사진 제목 '부엔디아' · 위키백과 '에밀리아노 부엔디아' · 출처 docs/research/m5-name-proposals.md C1 · 영문: 데이터 API 득점 입력 'Emiliano Buendía'(unknown-names 2026-11-03 — 애스턴 빌라)"
+    },
+    {
+      "ko": "로스 바클리",
+      "en": ["Ross Barkley"],
+      "kind": "player",
+      "slug": "ross-barkley",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '로스 바클리' · 출처 docs/research/m5-name-proposals.md C2 · 영문: 데이터 API 득점 입력 'Ross Barkley'(unknown-names 2026-11-03 — 애스턴 빌라)"
+    },
+    {
+      "ko": "세니 마율루",
+      "en": ["Senny Mayulu"],
+      "kind": "player",
+      "slug": "senny-mayulu",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 풋볼리스트(idxno=198386) · 네이트 2026-10-27 사진 '마율루' · 위키백과 '세니 마율루' · 출처 docs/research/m5-name-proposals.md C3 · 영문: 데이터 API 득점 입력 'Senny Mayulu'(unknown-names 2026-11-03 — 파리 생제르맹)"
+    },
+    {
+      "ko": "마르크 바르트라",
+      "en": ["Marc Bartra"],
+      "kind": "player",
+      "slug": "marc-bartra",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·Goal 한국어 '마르크 바르트라'. 데이터 이름은 성만('Bartra') — 별칭 정책(§3) · 출처 docs/research/m5-name-proposals.md C4 · 영문: 데이터 API 득점 입력 'Marc Bartra'(unknown-names 2026-11-03 — 레알 베티스)"
+    },
+    {
+      "ko": "카를루스 아우구스투",
+      "en": ["Carlos Augusto", "Carlos Augusto Lobaton"],
+      "kind": "player",
+      "slug": "carlos-augusto",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '카를루스 아우구스투' · 올풋볼 '카를로스'. 'Carlos Augusto Lobaton'(football-data 득점 순위, 인테르)이 같은 선수인지는 데이터로만 추정 · 출처 docs/research/m5-name-proposals.md C5 · 영문: 데이터 API 득점 입력 'Carlos Augusto'·'Carlos Augusto Lobaton'(unknown-names 2026-11-03 — 인테르)"
+    },
+    {
+      "ko": "니콜로 바렐라",
+      "en": ["Nicolò Barella"],
+      "kind": "player",
+      "slug": "nicolo-barella",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '니콜로 바렐라' · 출처 docs/research/m5-name-proposals.md C7 · 영문: 데이터 API 득점 입력 'Nicolò Barella'(unknown-names 2026-11-03 — 인테르)"
+    },
+    {
+      "ko": "피오트르 지엘린스키",
+      "en": ["Piotr Zieliński"],
+      "kind": "player",
+      "slug": "piotr-zielinski",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스타뉴스 2024-02-07·오마이스타 본문 '지엘린스키' · 위키백과 '피오트르 지엘린스키' · 출처 docs/research/m5-name-proposals.md C8 · 영문: 데이터 API 득점 입력 'Piotr Zieliński'(unknown-names 2026-11-03 — 인테르)"
+    },
+    {
+      "ko": "마르틴 바투리나",
+      "en": ["Martin Baturina"],
+      "kind": "player",
+      "slug": "martin-baturina",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 이투데이 2026-10-28 본문 '마르틴 바투리나' · 위키백과·나무위키 같은 표기 · 출처 docs/research/m5-name-proposals.md C9 · 영문: 데이터 API 득점 입력 'Martin Baturina'(unknown-names 2026-11-03 — 코모)"
+    },
+    {
+      "ko": "가브리엘 제주스",
+      "en": ["Gabriel Jesus"],
+      "kind": "player",
+      "slug": "gabriel-jesus",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 네이트 2026-09-01·스포츠경향 2026-09-03 제목 '가브리엘 제주스'·'제주스' · 위키백과는 '가브리에우 제주스'(규범). 관용 우선 · 출처 docs/research/m5-name-proposals.md C10 · 영문: 데이터 API 득점 입력 'Gabriel Jesus'(unknown-names 2026-11-03 — 바르셀로나)"
+    },
+    {
+      "ko": "마티아스 소울레",
+      "en": ["Matías Soulé"],
+      "kind": "player",
+      "slug": "matias-soule",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스포츠경향 2026-11-04 본문 '마티아스 소울레' · 위키백과 '마티아스 소울레' · 출처 docs/research/m5-name-proposals.md C11 · 영문: 데이터 API 득점 입력 'Matias Soule'(unknown-names 2026-11-03 — 로마)"
+    },
+    {
+      "ko": "호드리구 모라",
+      "en": ["Rodrigo Mora"],
+      "kind": "player",
+      "slug": "rodrigo-mora",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 네이트 2026-08-19 제목 '호드리구 모라' · 풋볼리스트(idxno=213680) · 위키백과 · 출처 docs/research/m5-name-proposals.md C12 · 영문: 데이터 API 득점 입력 'Rodrigo Mora'(unknown-names 2026-11-03 — 로마)"
+    },
+    {
+      "ko": "니콜로 피실리",
+      "en": ["Niccolò Pisilli"],
+      "kind": "player",
+      "slug": "niccolo-pisilli",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 나무위키·Flashscore '니콜로 피실리' · 출처 docs/research/m5-name-proposals.md C13 · 영문: 데이터 API 득점 입력 'Niccolò Pisilli'(unknown-names 2026-11-03 — 로마)"
+    },
+    {
+      "ko": "니코 파스",
+      "en": ["Nico Paz"],
+      "kind": "player",
+      "slug": "nico-paz",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스포츠경향 2026-10-22 · 이투데이 제목 '니코 파스' · 위키백과 · 출처 docs/research/m5-name-proposals.md C14 · 영문: 데이터 API 득점 입력 'Nico Paz'(unknown-names 2026-11-03 — 코모)"
+    },
+    {
+      "ko": "다니 올모",
+      "en": ["Dani Olmo", "Daniel Olmo Carvajal"],
+      "kind": "player",
+      "slug": "dani-olmo",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '다니 올모'. 데이터 이름은 본명 'Daniel Olmo Carvajal' · 출처 docs/research/m5-name-proposals.md C15 · 영문: 데이터 API 득점 입력 'Daniel Olmo Carvajal'(unknown-names 2026-11-03 — 바르셀로나)"
+    },
+    {
+      "ko": "티디암 고미스",
+      "en": ["Tidiam Gomis"],
+      "kind": "player",
+      "slug": "tidiam-gomis",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 국내 표기 확인 못 함 · 프랑스어 규범 · 출처 docs/research/m5-name-proposals.md C16 · 영문: 데이터 API 득점 입력 'Tidiam Gomis'(unknown-names 2026-11-03 — 라이프치히)"
+    },
+    {
+      "ko": "요주아 키미히",
+      "en": ["Joshua Kimmich"],
+      "kind": "player",
+      "slug": "joshua-kimmich",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — OSEN·코리아데일리 2026-10-31 선발 기사 '요주아 키미히' · 위키백과 '요주아 키미히' · 출처 docs/research/m5-name-proposals.md D1 · 영문: 데이터 API 득점 입력 'Joshua Kimmich'(unknown-names 2026-11-03 — 바이에른 뮌헨(김민재))"
+    },
+    {
+      "ko": "알렉산다르 파블로비치",
+      "en": ["Aleksandar Pavlović"],
+      "kind": "player",
+      "slug": "aleksandar-pavlovic",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — OSEN 2026-10-31 '알렉산다르 파블로비치' · 머니투데이 2026-11-01 · 위키백과 · 출처 docs/research/m5-name-proposals.md D2 · 영문: 데이터 API 득점 입력 'Aleksandar Pavlović'(unknown-names 2026-11-03 — 바이에른 뮌헨(김민재))"
+    },
+    {
+      "ko": "콘라트 라이머",
+      "en": ["Konrad Laimer"],
+      "kind": "player",
+      "slug": "konrad-laimer",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — OSEN 2026-10-31 '콘라트 라이머' · 위키백과 · 출처 docs/research/m5-name-proposals.md D3 · 영문: 데이터 API 득점 입력 'Konrad Laimer'(unknown-names 2026-11-03 — 바이에른 뮌헨(김민재))"
+    },
+    {
+      "ko": "레나르트 카를",
+      "en": ["Lennart Karl"],
+      "kind": "player",
+      "slug": "lennart-karl",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 문화일보·뉴시스 '레나르트 카를' · 위키백과 '레나르트 카를' · 네이트 2026-04-05 1건 '레나르트 칼' · 출처 docs/research/m5-name-proposals.md D4 · 영문: 데이터 API 득점 입력 'Lennart Karl'(unknown-names 2026-11-03 — 바이에른 뮌헨(김민재))"
+    },
+    {
+      "ko": "이스마엘 사이바리",
+      "en": ["Ismael Saibari"],
+      "kind": "player",
+      "slug": "ismael-saibari",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — FIFA 한국어·머니투데이 2026-06-16 '사이바리' · OSEN 2026-10-31 · 위키백과 '이스마엘 사이바리' · 출처 docs/research/m5-name-proposals.md D5 · 영문: football-data 득점 순위 'Ismael Saibari'(data/competitions 2026-11-04 — 바이에른 뮌헨(김민재))"
+    },
+    {
+      "ko": "줄리아노 시메오네",
+      "en": ["Giuliano Simeone", "Giuliano Simeone Baldini"],
+      "kind": "player",
+      "slug": "giuliano-simeone",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스포츠경향 2026-11-01 '줄리아노 시메오네' · 위키백과 · dict '지오반니 시메오네'(형)·'디에고 시메오네'(감독)와 이름이 달라 충돌 없음 · 출처 docs/research/m5-name-proposals.md D6 · 영문: 데이터 API 득점 입력 'Giuliano Simeone Baldini'(unknown-names 2026-11-03 — 아틀레티코 마드리드(이강인))"
+    },
+    {
+      "ko": "조너선 데이비드",
+      "en": ["Jonathan David"],
+      "kind": "player",
+      "slug": "jonathan-david",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 네이트 2026-08-31 · 스포츠경향 2026-11-01 '조너선 데이비드' · 위키백과 · 출처 docs/research/m5-name-proposals.md D7 · 영문: football-data 득점 순위 'Jonathan David'(data/competitions 2026-11-04 — 아틀레티코 마드리드(이강인))"
+    },
+    {
+      "ko": "아데몰라 루크먼",
+      "en": ["Ademola Lookman"],
+      "kind": "player",
+      "slug": "ademola-lookman",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 스포츠경향 2026-02-02 · 베스트일레븐 · 풋볼리스트 '루크먼' · 위키백과 · 출처 docs/research/m5-name-proposals.md D8 · 영문: 데이터 API 득점 입력 'Ademola Lookman'(unknown-names 2026-11-03 — 아틀레티코 마드리드(이강인))"
+    },
+    {
+      "ko": "앤서니 엘랑가",
+      "en": ["Anthony Elanga"],
+      "kind": "player",
+      "slug": "anthony-elanga",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 스타뉴스 2025-07-27·풋볼리스트·인터풋볼 '엘랑가'(성 일치) · 이름은 위키백과 '안토니'. 매체 기사에서 이름 표기는 확인 못 함 · 출처 docs/research/m5-name-proposals.md D9 · 영문: football-data 득점 순위 'Anthony Elanga'(data/competitions 2026-11-04 — 뉴캐슬(박승수))"
+    },
+    {
+      "ko": "조 윌록",
+      "en": ["Joe Willock"],
+      "kind": "player",
+      "slug": "joe-willock",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 '조 윌록' · 출처 docs/research/m5-name-proposals.md D10 · 영문: football-data 득점 순위 'Joe Willock'(data/competitions 2026-11-04 — 뉴캐슬(박승수))"
+    },
+    {
+      "ko": "하비 반스",
+      "en": ["Harvey Barnes"],
+      "kind": "player",
+      "slug": "harvey-barnes",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 인터풋볼(idxno=638442) · 이투데이 · 일간스포츠 '하비 반스' · 위키백과 · 출처 docs/research/m5-name-proposals.md D11 · 영문: football-data 득점 순위 'Harvey Barnes'(data/competitions 2026-11-04 — 뉴캐슬(박승수))"
+    },
+    {
+      "ko": "비탈리 야넬트",
+      "en": ["Vitaly Janelt"],
+      "kind": "player",
+      "slug": "vitaly-janelt",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 국내 표기 없음 · 독일어 규범(J → 야) · 출처 docs/research/m5-name-proposals.md D12 · 영문: football-data 득점 순위 'Vitaly Janelt'(data/competitions 2026-11-04 — 브렌트퍼드(김지수))"
+    },
+    {
+      "ko": "제이든 앤서니",
+      "en": ["Jaidon Anthony"],
+      "kind": "player",
+      "slug": "jaidon-anthony",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과·나무위키 '제이든 앤서니' · 출처 docs/research/m5-name-proposals.md D13 · 영문: 데이터 API 득점 입력 'Jaidon Anthony'(unknown-names 2026-11-03 — 브렌트퍼드(김지수))"
+    },
+    {
+      "ko": "베네딕트 홀러바흐",
+      "en": ["Benedict Hollerbach"],
+      "kind": "player",
+      "slug": "benedict-hollerbach",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 포포투·미디어파인 2026-10-31 마인츠전 기사 본문 '베네딕트 홀러바흐' · 독일어 규범 · 출처 docs/research/m5-name-proposals.md D14 · 영문: 데이터 API 득점 입력 'Benedict Hollerbach'(unknown-names 2026-11-03 — 마인츠(이재성))"
+    },
+    {
+      "ko": "셰랄도 베커르",
+      "en": ["Sheraldo Becker"],
+      "kind": "player",
+      "slug": "sheraldo-becker",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 마인츠-함부르크전 국내 기사 본문 '셰랄도 베커르' 1건 · 네덜란드어 규범(-er → 에르) · 출처 docs/research/m5-name-proposals.md D15 · 영문: 데이터 API 득점 입력 'Sheraldo Becker'(unknown-names 2026-11-03 — 마인츠(이재성))"
+    },
+    {
+      "ko": "야니크 하베러",
+      "en": ["Janik Haberer"],
+      "kind": "player",
+      "slug": "janik-haberer",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 위키백과 우니온 베를린 선수 명단 '야니크 하베러' · 출처 docs/research/m5-name-proposals.md D16 · 영문: 데이터 API 득점 입력 'Janik Haberer'(unknown-names 2026-11-03 — 우니온 베를린(정우영))"
+    },
+    {
+      "ko": "팀 스카르케",
+      "en": ["Tim Skarke"],
+      "kind": "player",
+      "slug": "tim-skarke",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 2026-03 정우영 결승골 기사(엑스포츠뉴스·서울신문) 본문 '팀 스카르케' · 출처 docs/research/m5-name-proposals.md D17 · 영문: 데이터 API 득점 입력 'Tim Skarke'(unknown-names 2026-11-03 — 우니온 베를린(정우영))"
+    },
+    {
+      "ko": "마치노 슈토",
+      "en": ["Shuto Machino"],
+      "kind": "player",
+      "slug": "shuto-machino",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 엑스포츠뉴스 2026 카스트로프 기사 '마치노 슈토' · 위키백과 '마치노 슈토'(일본 이름은 성-이름 순) · 출처 docs/research/m5-name-proposals.md D18 · 영문: football-data 득점 순위 'Shuto Machino'(data/competitions 2026-11-04 — 묀헨글라트바흐(카스트로프))"
+    },
+    {
+      "ko": "후고 볼린",
+      "en": ["Hugo Bolin"],
+      "kind": "player",
+      "slug": "hugo-bolin",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 보통) — 국내 표기 없음 · 스웨덴어 규범 · 출처 docs/research/m5-name-proposals.md D19 · 영문: football-data 득점 순위 'Hugo Bolin'(data/competitions 2026-11-04 — 묀헨글라트바흐(카스트로프))"
+    },
+    {
+      "ko": "로빈 펠하우어",
+      "en": ["Robin Fellhauer"],
+      "kind": "player",
+      "slug": "robin-fellhauer",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 마이데일리 2026-10-11 '펠하우어' · 인터풋볼(idxno=697360) '로빈 펠하우어' · 출처 docs/research/m5-name-proposals.md D20 · 영문: 데이터 API 득점 입력 'Robin Fellhauer'(unknown-names 2026-11-03 — 아우크스부르크(설영우))"
+    },
+    {
+      "ko": "호드리구 히베이루",
+      "en": ["Rodrigo Ribeiro"],
+      "kind": "player",
+      "slug": "rodrigo-ribeiro",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 인터풋볼(idxno=697360) '호드리구 히베이루' · 나무위키 같은 표기 · 출처 docs/research/m5-name-proposals.md D22 · 영문: football-data 득점 순위 'Rodrigo Ribeiro'(data/competitions 2026-11-04 — 아우크스부르크(설영우))"
+    },
+    {
+      "ko": "로빈 고젠스",
+      "en": ["Robin Gosens"],
+      "kind": "player",
+      "slug": "robin-gosens",
+      "note": "확정(사용자 결정 2026-11-04 — M5-16 표기안 일괄 승인, 신뢰 높음) — 네이트(2026-09-13) 제목 '고젠스' · 스포츠경향 · 위키백과 '로빈 고젠스' · 출처 docs/research/m5-name-proposals.md D23 · 영문: football-data 득점 순위 'Robin Gosens'(data/competitions 2026-11-04 — 샬케(황희찬))"
     },
     {
       "ko": "펩 과르디올라",

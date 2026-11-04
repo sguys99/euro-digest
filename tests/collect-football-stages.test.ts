@@ -400,6 +400,9 @@ describe("단계 마감·간격", () => {
 
 // ─── runCollect 통합 ─────────────────────────────────────────────────────
 
+/** 표기 사전에 없는 가상 득점자 — 미등록 이름 적재(대회별 상위 20명) 검사용 */
+const UNREGISTERED_SCORER = "Testo Unregistrato";
+
 /** 대회 단계 가짜 — PL은 시즌 경기·득점 fixture, 그 밖 대회의 시즌 경기·득점은 500. 순위는 기존 가짜(fixture) */
 function competitionsFake(url: string): Response {
   const p = fdPath(url)!;
@@ -409,9 +412,17 @@ function competitionsFake(url: string): Response {
     });
   }
   if (p.startsWith("/competitions/PL/scorers?")) {
-    return new Response(readFdFixture("scorers-pl-2026-10-10.json"), {
-      status: 200,
+    // fixture 득점자 10명은 모두 표기 사전에 올라 있다(M5-16 일괄 등록 2026-11-04) — 미등록 이름 적재 경로를
+    // 계속 검사하도록 사전에 없는 가상 득점자 1명을 응답 끝에 붙인다(fixture 파일은 원본 그대로 둔다)
+    const raw = JSON.parse(readFdFixture("scorers-pl-2026-10-10.json")) as {
+      scorers: Array<{ player: { id: number; name: string } }>;
+    };
+    const last = raw.scorers.at(-1)!;
+    raw.scorers.push({
+      ...last,
+      player: { ...last.player, id: 999_000_001, name: UNREGISTERED_SCORER },
     });
+    return new Response(JSON.stringify(raw), { status: 200 });
   }
   if (/^\/competitions\/[^/]+\/(matches\?season|scorers\?)/.test(p)) {
     return new Response('{"message":"boom","errorCode":500}', { status: 500 });
@@ -578,6 +589,7 @@ describe("runCollect — 축구 데이터 단계(M2-09)", () => {
       .slice(SCORER_NAMES_PER_COMP)
       .map((s) => s.player);
     expect(Object.keys(names.names).some((n) => eplTop.has(n))).toBe(true);
+    expect(names.names[UNREGISTERED_SCORER]).toBeDefined();
     expect(eplRest.filter((n) => n in names.names && !eplTop.has(n))).toEqual(
       [],
     );
