@@ -9,6 +9,13 @@ const port = Number(process.env.PORT ?? 4173);
 const basePath = normalizeBasePath(process.env.BASE_PATH);
 const siteUrl = `http://127.0.0.1:${port}${basePath}/`;
 const isCI = Boolean(process.env.CI);
+// 브라우저 엔진(M5-12 — NFR-13): 기본 Chromium(Chrome · Edge · Samsung Internet 계열). `E2E_ENGINE=webkit`이면 같은 두 프로젝트(mobile ·
+// desktop — 테스트가 프로젝트 이름으로 폭을 나누므로 이름은 그대로)를 Playwright WebKit(Safari 엔진 근사)으로 돌린다. 선택 실행용이라
+// CI 기본 실행에는 넣지 않는다(시간 약 2배). WebKit 설치: `npx playwright install webkit`(Linux는 시스템 라이브러리도 필요 —
+// docs/research/m5-browsers.md)
+const engine = process.env.E2E_ENGINE === "webkit" ? "webkit" : "chromium";
+const browserDevice =
+  engine === "webkit" ? devices["Desktop Safari"] : devices["Desktop Chrome"];
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -31,7 +38,7 @@ export default defineConfig({
     {
       name: "mobile",
       use: {
-        ...devices["Desktop Chrome"],
+        ...browserDevice,
         viewport: { width: 375, height: 812 },
         isMobile: true,
         hasTouch: true,
@@ -40,7 +47,7 @@ export default defineConfig({
     {
       name: "desktop",
       use: {
-        ...devices["Desktop Chrome"],
+        ...browserDevice,
         viewport: { width: 1280, height: 800 },
       },
     },
