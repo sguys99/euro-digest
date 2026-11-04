@@ -117,7 +117,13 @@ export const THEME_KEYS = {
     "col-facing",
   ],
   /** `--container-*` — 최대 폭 */
-  container: ["page", "measure"],
+  container: [
+    "page",
+    "measure",
+    "measure-prose",
+    "measure-note",
+    "measure-dek",
+  ],
   /** `--radius-*` — shadcn 배율(전부 0). tailwind-merge 기본값과 같지만 대조를 위해 적는다 */
   radius: ["sm", "md", "lg", "xl", "2xl", "3xl", "4xl"],
   /** `--shadow-*` — 인쇄 오프셋 */

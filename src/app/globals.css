@@ -317,6 +317,10 @@
   --col-facing: 296px;
   --container: 1280px;
   --measure: 46em;
+  /* (M5-13) 줄 길이 상한 3종 — 여러 화면이 같은 역할로 쓰던 임의값을 올렸다(DESIGN §4.2) */
+  --measure-prose: 62ch;
+  --measure-note: 46ch;
+  --measure-dek: 22em;
 
   /* §5.1 모서리 · §5.2 그림자(인쇄 오프셋 2종은 위 @theme static) */
   --radius: 0px;
@@ -593,7 +597,7 @@
   --text-type-dek: var(--text-dek);
   --text-type-dek--line-height: var(--lh-dek);
 
-  /* 레이아웃 — px-edge, w-gutter, w-tab-w, w-col-contents, w-col-facing, max-w-page, max-w-measure */
+  /* 레이아웃 — px-edge, w-gutter, w-tab-w, w-col-contents, w-col-facing, max-w-page, max-w-measure(-prose · -note · -dek) */
   --spacing-edge: var(--edge);
   --spacing-gutter: var(--gutter);
   --spacing-gutter-date: var(--gutter-date);
@@ -602,6 +606,9 @@
   --spacing-col-facing: var(--col-facing);
   --container-page: var(--container);
   --container-measure: var(--measure);
+  --container-measure-prose: var(--measure-prose);
+  --container-measure-note: var(--measure-note);
+  --container-measure-dek: var(--measure-dek);
 
   /* 모서리 — shadcn v4 배율 그대로. --radius가 0이라 전부 0(DESIGN §5.1) */
   --radius-sm: calc(var(--radius) * 0.6);

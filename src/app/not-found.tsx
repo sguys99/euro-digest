@@ -48,7 +48,7 @@ export default function NotFound() {
             <p className="text-type-brief font-extrabold">
               요청한 주소에 페이지가 없습니다.
             </p>
-            <p className="mt-1.5 max-w-[46ch] text-sm leading-[1.55] text-ink-2">
+            <p className="mt-1.5 max-w-measure-note text-sm leading-[1.55] text-ink-2">
               주소를 다시 확인하거나, 오늘 호로 돌아가 주세요.
             </p>
             <ul role="list" className="mt-2 flex flex-wrap gap-x-5">

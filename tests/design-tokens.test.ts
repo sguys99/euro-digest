@@ -647,6 +647,9 @@ describe("Tailwind 컴파일 결과 (tailwindcss compile — 실제 유틸리티
       "rounded-lg",
       "px-edge",
       "max-w-page",
+      "max-w-measure-prose",
+      "max-w-measure-note",
+      "max-w-measure-dek",
       "duration-base",
       "ease-print",
       "transition-colors",
@@ -694,6 +697,13 @@ describe("Tailwind 컴파일 결과 (tailwindcss compile — 실제 유틸리티
     expect(rule("rounded-lg")).toMatch(/border-radius:\s*var\(--radius\)/);
     expect(rule("px-edge")).toMatch(/var\(--edge\)/);
     expect(rule("max-w-page")).toMatch(/var\(--container\)/);
+    // 줄 길이 상한 3종(M5-13 — 임의값 62ch · 46ch · 22em을 올림, 값 그대로)
+    expect(rule("max-w-measure-prose")).toMatch(/var\(--measure-prose\)/);
+    expect(rule("max-w-measure-note")).toMatch(/var\(--measure-note\)/);
+    expect(rule("max-w-measure-dek")).toMatch(/var\(--measure-dek\)/);
+    expect(globalsCss).toMatch(/--measure-prose: 62ch;/);
+    expect(globalsCss).toMatch(/--measure-note: 46ch;/);
+    expect(globalsCss).toMatch(/--measure-dek: 22em;/);
     expect(rule("duration-base")).toMatch(/var\(--duration-base\)/);
     expect(rule("ease-print")).toMatch(/var\(--ease\)/);
     expect(rule("transition-colors")).toMatch(/var\(--duration-fast\)/);

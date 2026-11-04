@@ -556,7 +556,7 @@ export function NoResults({ query }: { query: string }) {
         <p className="text-base font-extrabold text-ink">
           “{query}” 결과가 없어요
         </p>
-        <p className="mt-1.5 max-w-[46ch] text-sm leading-[1.55] text-ink-2">
+        <p className="mt-1.5 max-w-measure-note text-sm leading-[1.55] text-ink-2">
           선수 · 팀은 한글이나 영문 이름으로, 뉴스는 제목과 태그로 찾아요
         </p>
         <ul

@@ -831,7 +831,7 @@ export function StatusBody({
       {empty ? (
         <p
           data-slot="status-empty"
-          className="mt-8 max-w-[46ch] text-sm leading-[1.55] text-ink-2"
+          className="mt-8 max-w-measure-note text-sm leading-[1.55] text-ink-2"
         >
           아직 실행 기록이 없어요. 첫 호를 발행하면 최근 30일 발행일과 소스
           건강도가 이 쪽에 채워져요.

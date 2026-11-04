@@ -30,7 +30,9 @@ export function TermList({
           <dt className="text-[15px] leading-[1.5] font-extrabold">
             {item.term}
           </dt>
-          <dd className="max-w-[62ch] leading-[1.6]">{item.description}</dd>
+          <dd className="max-w-measure-prose leading-[1.6]">
+            {item.description}
+          </dd>
         </div>
       ))}
     </dl>

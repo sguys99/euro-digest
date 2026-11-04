@@ -67,7 +67,7 @@ export default function OfflinePage() {
           <p className="text-type-brief font-extrabold">
             이 페이지는 아직 저장해 두지 않았어요.
           </p>
-          <p className="mt-1.5 max-w-[46ch] text-sm leading-[1.55] text-ink-2">
+          <p className="mt-1.5 max-w-measure-note text-sm leading-[1.55] text-ink-2">
             연결이 돌아오면 다시 열어 주세요. 저장해 둔 최근 호는 연결 없이도 볼
             수 있어요.
           </p>

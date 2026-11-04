@@ -108,7 +108,7 @@ export default function AboutPage() {
           headingId={INTRO_HEADING_ID}
           runningHead="ABOUT"
         />
-        <p className="mt-5 max-w-[22em] text-type-h2 font-extrabold tracking-[-0.03em] text-balance lg:mt-6 lg:text-type-lead">
+        <p className="mt-5 max-w-measure-dek text-type-h2 font-extrabold tracking-[-0.03em] text-balance lg:mt-6 lg:text-type-lead">
           {SITE_TAGLINE}
         </p>
         <p className={LEAD}>
@@ -167,7 +167,7 @@ export default function AboutPage() {
         <p className={LEAD}>
           매일 아침 한 호를 냅니다. 발행 시각은 유럽의 서머타임에 맞춰 바뀝니다.
         </p>
-        <div className="mt-5 max-w-[62ch]">
+        <div className="mt-5 max-w-measure-prose">
           <ScheduleTable schedule={schedule} />
         </div>
         <p className={BODY}>
@@ -282,7 +282,10 @@ export default function AboutPage() {
           출처 Tier는 소식을 낸 매체의 신뢰도 등급입니다. 1이 가장 높고,
           매체마다 정해 둡니다.
         </p>
-        <ul role="list" className="mt-5 max-w-[62ch] border-t border-rule">
+        <ul
+          role="list"
+          className="mt-5 max-w-measure-prose border-t border-rule"
+        >
           {TIERS.map((tier) => (
             <li
               key={tier}
@@ -377,11 +380,14 @@ export default function AboutPage() {
       <AboutSection id="data">
         <p
           lang="en"
-          className="mt-5 max-w-[62ch] font-latin text-type-card-latin font-semibold tracking-[0.01em]"
+          className="mt-5 max-w-measure-prose font-latin text-type-card-latin font-semibold tracking-[0.01em]"
         >
           {FOOTBALL_DATA_ATTRIBUTION}
         </p>
-        <ul role="list" className="mt-5 max-w-[62ch] border-t border-rule">
+        <ul
+          role="list"
+          className="mt-5 max-w-measure-prose border-t border-rule"
+        >
           <DataRow
             what="경기 결과·순위"
             name="football-data.org"
@@ -408,7 +414,7 @@ export default function AboutPage() {
             </span>
             <span className="text-sm font-extrabold">시간</span>
           </p>
-          <p className="max-w-[46ch] text-type-brief">
+          <p className="max-w-measure-note text-type-brief">
             카드 삭제·정정 요청은 접수 후 72시간 안에 처리합니다.
           </p>
         </div>
@@ -416,7 +422,10 @@ export default function AboutPage() {
           요청받은 카드는 사이트에서 내리고, 다음 수집 때 사이트 데이터
           원본에서도 지웁니다. 다만 공개 저장소의 git 이력에는 남을 수 있습니다.
         </p>
-        <ul role="list" className="mt-5 max-w-[62ch] border-t border-rule">
+        <ul
+          role="list"
+          className="mt-5 max-w-measure-prose border-t border-rule"
+        >
           <ContactRow
             what="이메일"
             note="비공개 연락이나 신원 확인이 필요할 때"

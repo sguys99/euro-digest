@@ -83,7 +83,7 @@ export function Colophon({
         >
           {FOOTBALL_DATA_ATTRIBUTION}
         </p>
-        <p className="max-w-[62ch] text-colophon-fg-2 lg:col-start-1 lg:row-start-3">
+        <p className="max-w-measure-prose text-colophon-fg-2 lg:col-start-1 lg:row-start-3">
           경기·출전 데이터 football-data.org · API-Football. 오늘의 5줄은 이
           데이터로 AI가 쓰고, AI가 쓴 줄에만 ‘AI 작성’ 라벨을 붙입니다. 검증에
           맞지 않는 줄은 라벨 없는 코드 문장으로 바꾸거나 빼고, AI 답을 쓸 수

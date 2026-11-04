@@ -80,7 +80,7 @@ export default function PrivacyPage() {
           headingId={INTRO_HEADING_ID}
           runningHead="PRIVACY"
         />
-        <p className="mt-5 max-w-[22em] text-type-h2 font-extrabold tracking-[-0.03em] text-balance lg:mt-6 lg:text-type-lead">
+        <p className="mt-5 max-w-measure-dek text-type-h2 font-extrabold tracking-[-0.03em] text-balance lg:mt-6 lg:text-type-lead">
           가입도, 쿠키도 없이 읽습니다.
         </p>
         <p className={LEAD}>
@@ -176,7 +176,10 @@ export default function PrivacyPage() {
         />
 
         <SubHead>보관과 열람</SubHead>
-        <ul role="list" className="mt-3 max-w-[62ch] border-t border-rule">
+        <ul
+          role="list"
+          className="mt-3 max-w-measure-prose border-t border-rule"
+        >
           <InfoRow what="저장 위치" value="GoatCounter 서버(핀란드·독일)" />
           <InfoRow what="보는 사람" value="운영자만(집계 화면 비공개)" />
           <InfoRow what="제3자 공유" value="하지 않음(GoatCounter 정책)" />
@@ -196,7 +199,10 @@ export default function PrivacyPage() {
         </p>
 
         <SubHead>통계에서 빠지기</SubHead>
-        <ul role="list" className="mt-3 max-w-[62ch] border-t border-rule">
+        <ul
+          role="list"
+          className="mt-3 max-w-measure-prose border-t border-rule"
+        >
           <li className="border-b border-rule pb-2.5">
             <p className="flex items-center gap-2">
               <span className="flex-none font-extrabold">이 브라우저</span>
@@ -234,7 +240,7 @@ export default function PrivacyPage() {
               0
             </span>
           </p>
-          <p className="max-w-[46ch] text-type-brief">
+          <p className="max-w-measure-note text-type-brief">
             이 사이트도, 방문 통계도 쿠키를 하나도 쓰지 않습니다.
           </p>
         </div>
@@ -432,7 +438,10 @@ export default function PrivacyPage() {
 
       {/* ── 06 문의·변경 이력 ─────────────────────────────────────────── */}
       <PrivacySection id="changes">
-        <ul role="list" className="mt-5 max-w-[62ch] border-t border-rule">
+        <ul
+          role="list"
+          className="mt-5 max-w-measure-prose border-t border-rule"
+        >
           <li className="flex items-center gap-2 border-b border-rule">
             <span className="flex-none font-extrabold">문의</span>
             <Leader />
@@ -451,7 +460,10 @@ export default function PrivacyPage() {
         </ul>
 
         <SubHead>변경 이력</SubHead>
-        <ol role="list" className="mt-3 max-w-[62ch] border-t border-rule">
+        <ol
+          role="list"
+          className="mt-3 max-w-measure-prose border-t border-rule"
+        >
           {PRIVACY_CHANGES.map((change) => (
             <li
               key={change.date}
