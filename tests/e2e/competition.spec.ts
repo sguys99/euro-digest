@@ -171,6 +171,48 @@ test("375 — 경기 줄 팀명은 어절 중간에서 줄을 바꾸지 않는�
   }
 });
 
+test("360 — 일정·결과 탭 팀명 말줄임 0 · 배지는 1023 이하 xs(24×27) · 1024 이상 s(30×33)(2026-11-04 사용자 결정 — M5-12)", async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== "mobile", "폭은 테스트가 정한다 — 한 번만");
+  const badgeOf = () =>
+    page.evaluate(() => {
+      const kit = [
+        ...document.querySelectorAll<HTMLElement>(".match-row-full .kit"),
+      ].find((e) => e.offsetParent !== null);
+      const r = kit?.getBoundingClientRect();
+      return r ? `${Math.round(r.width)}×${Math.round(r.height)}` : null;
+    });
+  for (const comp of COMPS) {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto(`competitions/${comp}/`);
+    await page.getByRole("tab", { name: "일정·결과" }).click();
+    await page.evaluate(() => document.fonts.ready);
+    await page.addStyleTag({
+      content: "[data-rounds] > [data-round]{display:block!important}",
+    });
+    // 팀명 칸(말줄임 규칙이 걸린 글자)이 제 글자보다 좁으면 말줄임 — 7자 "묀헨글라트바흐" · "아우크스부르크"까지 들어가야 한다
+    const cut = await page.evaluate(() =>
+      [
+        ...document.querySelectorAll<HTMLElement>(
+          ".match-row-full [data-h] *, .match-row-full [data-a] *",
+        ),
+      ]
+        .filter(
+          (e) =>
+            e.offsetParent !== null &&
+            getComputedStyle(e).textOverflow === "ellipsis" &&
+            e.scrollWidth > e.clientWidth + 0.5,
+        )
+        .map((e) => e.textContent),
+    );
+    expect(cut, comp).toEqual([]);
+    expect(await badgeOf(), comp).toBe("24×27");
+  }
+  await page.setViewportSize({ width: 1024, height: 800 });
+  expect(await badgeOf()).toBe("30×33");
+});
+
 test("누를 수 있는 것은 44px 이상(대회 이동·목차·탭·펼침·라운드 이동)", async ({
   page,
 }) => {

@@ -43,7 +43,8 @@ export function MatchRow({
   spoilScope?: boolean;
 }) {
   const { match, state } = view;
-  const badge = full ? "s" : "xs";
+  // 일정·결과 탭(full)은 1023 이하 xs · 1024 이상 s(M5-12 — 360 폭 7자 팀명), 라운드 탭은 xs
+  const badge = full ? "fixture" : "xs";
   const result = state === "finished" && match.score !== null;
   return (
     <li

@@ -153,7 +153,7 @@ function AggregateRow({ view }: { view: TieView }) {
       <span data-t="label">합산</span>
       <TeamLink team={view.first} data-h="">
         <TeamName team={view.first} />
-        <TeamBadge team={view.first} size="s" />
+        <TeamBadge team={view.first} size="fixture" />
       </TeamLink>
       <span data-s="">
         {tie.aggregate ? (
@@ -172,7 +172,7 @@ function AggregateRow({ view }: { view: TieView }) {
         )}
       </span>
       <TeamLink team={view.second} data-a="">
-        <TeamBadge team={view.second} size="s" />
+        <TeamBadge team={view.second} size="fixture" />
         <TeamName team={view.second} />
       </TeamLink>
       {view.note ? (

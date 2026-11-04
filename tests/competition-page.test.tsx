@@ -216,6 +216,21 @@ describe("CompetitionPage — EPL fixtures", () => {
     );
   });
 
+  it("일정·결과 탭 경기 줄 배지 = 1023 이하 xs · 1024 이상 s(M5-12 — 360 폭 7자 팀명)", async () => {
+    const { container } = await renderPage("epl");
+    const kits = [
+      ...container.querySelectorAll<HTMLElement>(
+        "[data-rounds] .match-row-full .kit",
+      ),
+    ];
+    expect(kits.length).toBeGreaterThan(0);
+    for (const kit of kits) {
+      expect(kit.classList).toContain("kit-xs");
+      expect(kit.classList).toContain("lg:kit-s");
+      expect(kit.classList).not.toContain("kit-s");
+    }
+  });
+
   it("득점 순위 — 공동 1위, 자료 없는 값은 '–'", async () => {
     await renderPage("epl");
     const table = screen.getByRole("table", {
