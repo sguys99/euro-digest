@@ -156,6 +156,102 @@ describe("runBundleCheck", () => {
   });
 });
 
+describe("M5-08 — out/ 파일 종류마다 심은 가짜 키를 잡는다", () => {
+  // 가짜 값은 실행 중에 조립한다(소스에 토큰 모양을 두지 않음 — secret-scan.test.ts와 같은 이유)
+  const fake = {
+    anthropic: ["sk", "ant", "api03", "Q".repeat(24)].join("-"),
+    ghp: `${"gh"}p_${"Ab12".repeat(9)}`,
+    ghs: `${"gh"}s_${"Cd34".repeat(9)}`,
+    pat: `${"github"}_pat_${"11AAAA_bbbb".repeat(3)}`,
+    pem: ["-----BEGIN", "EC", "PRIVATE", "KEY-----"].join(" "),
+    hex: "9f8e7d6c5b4a3210".repeat(2),
+  };
+
+  it("HTML(OG 메타) · JS · JSON · RSC txt · RSS · ics · sw.js · webmanifest 전부", () => {
+    write(
+      "teams/x/index.html",
+      `<meta property="og:description" content="${fake.anthropic}">`,
+    );
+    write(
+      "_next/static/chunks/a.js",
+      `fetch(u,{headers:{"X-Auth-Token":"${fake.hex}"}})`,
+    );
+    write("data/a.json", `{"t":"${fake.ghp}"}`);
+    write("news/index.txt", `1:["$","p",null,{"c":"${fake.ghs}"}]`);
+    write("rss.xml", `<item><description>${fake.pat}</description></item>`);
+    write(
+      "calendar/x.ics",
+      `BEGIN:VEVENT\nDESCRIPTION:API_FOOTBALL_KEY=abc\nEND:VEVENT`,
+    );
+    write("sw.js", `const k=\`${fake.pem}\`;`);
+    write(
+      "manifest.webmanifest",
+      `{"name":"x","k":"x-apisports-key='${fake.hex}'"}`,
+    );
+    const result = runBundleCheck({
+      outDir,
+      basePath: BASE,
+      budgetBytes: 160 * BYTES_PER_KB,
+    });
+    expect(result.ok).toBe(false);
+    expect(
+      result.secrets.map((finding) => [finding.file, finding.patternId]).sort(),
+    ).toEqual(
+      [
+        ["_next/static/chunks/a.js", "api-key-header"],
+        ["calendar/x.ics", "env-assignment"],
+        ["data/a.json", "github-token"],
+        ["manifest.webmanifest", "api-key-header"],
+        ["news/index.txt", "github-token"],
+        ["rss.xml", "github-pat"],
+        ["sw.js", "private-key"],
+        ["teams/x/index.html", "anthropic-key"],
+      ].sort(),
+    );
+    const serialized = JSON.stringify(result.secrets);
+    // PEM 머리는 값이 아니라 표지(보고에 '-----BEGIN PRIVATE KEY-----'로 남는다) — 나머지 값만 본다
+    for (const secret of [
+      fake.anthropic,
+      fake.ghp,
+      fake.ghs,
+      fake.pat,
+      fake.hex,
+    ])
+      expect(serialized).not.toContain(secret.slice(-10));
+  });
+
+  it("secretEnv가 있으면 그 값 자체를 찾는다 — 키 모양 패턴에 안 걸리는 16진수 키도", () => {
+    write("_next/static/chunks/inline.js", `var k="${fake.hex}";`);
+    const withoutEnv = runBundleCheck({
+      outDir,
+      basePath: BASE,
+      budgetBytes: 160 * BYTES_PER_KB,
+    });
+    expect(withoutEnv.ok).toBe(true);
+    expect(withoutEnv.secretStats.valueEnvNames).toBeUndefined();
+
+    const withEnv = runBundleCheck({
+      outDir,
+      basePath: BASE,
+      budgetBytes: 160 * BYTES_PER_KB,
+      secretEnv: { FOOTBALL_DATA_API_KEY: fake.hex, PATH: "/usr/bin" },
+    });
+    expect(withEnv.ok).toBe(false);
+    expect(withEnv.secretStats.valueEnvNames).toEqual([
+      "FOOTBALL_DATA_API_KEY",
+    ]);
+    expect(withEnv.secrets).toEqual([
+      {
+        file: "_next/static/chunks/inline.js",
+        line: 1,
+        patternId: "env-value",
+        label: "환경변수 FOOTBALL_DATA_API_KEY의 실제 값",
+        masked: "FOOTBALL_DATA_API_KEY=****",
+      },
+    ]);
+  });
+});
+
 describe("scanOutDirForSecrets", () => {
   it("바이너리 파일은 내용 검사를 건너뛴다", () => {
     const { findings, stats } = scanOutDirForSecrets(outDir);

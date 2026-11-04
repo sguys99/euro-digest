@@ -8,6 +8,7 @@ import {
   maskSecret,
   maskSecretsInText,
   scanTextForSecrets,
+  secretValuePatterns,
 } from "../scripts/lib/secret-scan";
 
 // 가짜 비밀값은 실행 중에 조립한다. 소스 파일에 토큰 모양 문자열을 그대로 두면
@@ -17,6 +18,10 @@ const FAKE = {
   ghp: `${"gh"}p_${"A1b2C3d4".repeat(5)}`,
   ghs: `${"gh"}s_${"Z9y8X7w6".repeat(5)}`,
   pat: `${"github"}_pat_${"11ABCDEFG0_abcdefghijklmnop".repeat(2)}`,
+  // football-data.org · API-Football 키 모양(32자리 16진수)
+  hex32: "0123456789abcdef".repeat(2),
+  pem: ["-----BEGIN", "RSA", "PRIVATE", "KEY-----"].join(" "),
+  pemOpenssh: ["-----BEGIN", "OPENSSH", "PRIVATE", "KEY-----"].join(" "),
 };
 
 describe("scanTextForSecrets", () => {
@@ -94,6 +99,111 @@ describe("scanTextForSecrets", () => {
     const text = `${FAKE.ghp} ${FAKE.ghp}`;
     expect(scanTextForSecrets(text, "a")).toHaveLength(2);
     expect(scanTextForSecrets(text, "a")).toHaveLength(2);
+  });
+});
+
+describe("M5-08 보강 — 개인 키 · API 키 헤더 · 실제 값 대조", () => {
+  it.each([
+    [FAKE.pem, "RSA"],
+    [FAKE.pemOpenssh, "OPENSSH"],
+    [["-----BEGIN", "PRIVATE", "KEY-----"].join(" "), "PKCS#8"],
+    [["-----BEGIN", "ENCRYPTED", "PRIVATE", "KEY-----"].join(" "), "암호화"],
+  ])("PEM 개인 키 머리를 찾는다: %s (%s)", (head) => {
+    const findings = scanTextForSecrets(`x\n${head}\nMIIE…`, "sw.js");
+    expect(findings.map((f) => [f.line, f.patternId, f.masked])).toEqual([
+      [2, "private-key", "-----BEGIN PRIVATE KEY-----****"],
+    ]);
+  });
+
+  it("인증서 · 공개 키 머리는 비밀이 아니라 잡지 않는다", () => {
+    const text = [
+      ["-----BEGIN", "CERTIFICATE-----"].join(" "),
+      ["-----BEGIN", "PUBLIC", "KEY-----"].join(" "),
+    ].join("\n");
+    expect(scanTextForSecrets(text, "a.txt")).toEqual([]);
+  });
+
+  it.each([
+    [`headers:{"X-Auth-Token":"${FAKE.hex32}"}`, "X-Auth-Token: ****"],
+    [`h["x-apisports-key"]='${FAKE.hex32}'`, "x-apisports-key: ****"],
+    [`x-rapidapi-key: "${FAKE.hex32}"`, "x-rapidapi-key: ****"],
+    [`X-AUTH-TOKEN=\`${FAKE.hex32}\``, "X-AUTH-TOKEN: ****"],
+  ])("API 키 헤더에 박힌 리터럴을 찾는다: %s", (text, masked) => {
+    const findings = scanTextForSecrets(text, "a.js");
+    expect(findings.map((f) => [f.patternId, f.masked])).toEqual([
+      ["api-key-header", masked],
+    ]);
+  });
+
+  it.each([
+    ["변수 참조", '{"X-Auth-Token":e,"x-apisports-key":t}'],
+    ["짧은 자리표시자", '{"X-Auth-Token":"test"}'],
+    ["문서 문장", "football-data는 X-Auth-Token 헤더로 인증한다"],
+    ["32자리 해시 자체(빌드 해시와 구별 불가)", `revision:"${FAKE.hex32}"`],
+  ])("헤더 패턴이 오탐하지 않는다: %s", (_name, text) => {
+    expect(scanTextForSecrets(text, "a.js")).toEqual([]);
+  });
+
+  it("실제 비밀값 대조 — env에 있는 값을 형식과 무관하게 찾고, 이름만 보고한다", () => {
+    const env = {
+      FOOTBALL_DATA_API_KEY: FAKE.hex32,
+      API_FOOTBALL_KEY: "fedcba9876543210".repeat(2),
+      ANTHROPIC_API_KEY: "short", // 16자 미만 — 대조하지 않음
+      GITHUB_TOKEN: FAKE.ghs,
+      GH_TOKEN: FAKE.ghs, // 같은 값은 한 번만
+      UNRELATED: "z".repeat(40),
+    };
+    const patterns = secretValuePatterns(env);
+    expect(patterns.map((p) => p.envName)).toEqual([
+      "FOOTBALL_DATA_API_KEY",
+      "API_FOOTBALL_KEY",
+      "GITHUB_TOKEN",
+    ]);
+    const text = `<meta content="${FAKE.hex32}">\nvar a="${env.API_FOOTBALL_KEY}";`;
+    const findings = scanTextForSecrets(text, "index.html", patterns);
+    expect(findings.map((f) => [f.line, f.label, f.masked])).toEqual([
+      [
+        1,
+        "환경변수 FOOTBALL_DATA_API_KEY의 실제 값",
+        "FOOTBALL_DATA_API_KEY=****",
+      ],
+      [2, "환경변수 API_FOOTBALL_KEY의 실제 값", "API_FOOTBALL_KEY=****"],
+    ]);
+    const serialized =
+      JSON.stringify(findings) +
+      formatSecretReport(findings, {
+        files: 1,
+        textFiles: 1,
+        valueEnvNames: patterns.flatMap((p) => (p.envName ? [p.envName] : [])),
+      });
+    for (const secret of [FAKE.hex32, env.API_FOOTBALL_KEY, FAKE.ghs]) {
+      expect(serialized).not.toContain(secret);
+      expect(serialized).not.toContain(secret.slice(-8));
+    }
+    expect(serialized).toContain(
+      "실제 값 대조: FOOTBALL_DATA_API_KEY · API_FOOTBALL_KEY · GITHUB_TOKEN",
+    );
+  });
+
+  it("정규식 특수문자가 든 값도 글자 그대로 대조한다", () => {
+    const value = "a+b*c?d(e)[f]{g}|h^i$j.k\\l/m";
+    const patterns = secretValuePatterns({ ANTHROPIC_API_KEY: value });
+    expect(scanTextForSecrets(`x${value}y`, "a", patterns)).toHaveLength(1);
+    expect(scanTextForSecrets("aab*c?d", "a", patterns)).toEqual([]);
+  });
+
+  it("env에 값이 없으면 대조 패턴도 없다(CI 빌드 단계 — Secrets 없음)", () => {
+    expect(secretValuePatterns({})).toEqual([]);
+    expect(formatSecretReport([], { files: 1, textFiles: 1 })).toContain(
+      "실제 값 대조: 없음",
+    );
+  });
+
+  it("로그 마스킹도 새 패턴을 가린다", () => {
+    expect(maskSecretsInText(`"X-Auth-Token":"${FAKE.hex32}"`)).toBe(
+      '"X-Auth-Token: ****"',
+    );
+    expect(maskSecretsInText(FAKE.pem)).toBe("-----BEGIN PRIVATE KEY-----****");
   });
 });
 

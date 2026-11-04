@@ -1,7 +1,8 @@
 /**
  * `npm run check:bundle` 진입점 (M0-12) — out/ 기준 두 가지를 검사하고 하나라도 실패하면 exit 1.
  *   1. 초기 JS 예산: 페이지별 <script src>(noModule 제외) gzip 합 ≤ 160KB (PRD DR-11·§15 D21)
- *   2. 비밀값 grep: Anthropic·GitHub 토큰, 비밀 환경변수 값 할당, .env* 파일 (NFR-07)
+ *   2. 비밀값 grep: out/ 텍스트 파일 전체 — Anthropic·GitHub 토큰, PEM 개인 키, API 키 헤더 리터럴, 비밀 환경변수 값 할당,
+ *      .env* 파일 + env에 있는 실제 비밀값 그 자체(M5-08) (NFR-07)
  * 먼저 `npm run build`가 필요하다. CI(.github/workflows/ci.yml)는 build 직후에 실행한다.
  *
  * 사용법: npm run check:bundle -- [--budget-kb <n>] [--out-dir <dir>]
@@ -52,6 +53,8 @@ const result = runBundleCheck({
   outDir,
   basePath,
   budgetBytes: Math.round(parsed.value.budgetKb * BYTES_PER_KB),
+  // 실제 비밀값 대조(M5-08) — env에 값이 있는 곳(로컬 .env.local)에서만 켜진다. 값은 출력하지 않는다.
+  secretEnv: process.env,
 });
 
 console.log(

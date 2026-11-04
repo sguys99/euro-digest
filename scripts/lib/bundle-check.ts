@@ -19,7 +19,10 @@ import {
   isEnvFileName,
   isProbablyBinary,
   scanTextForSecrets,
+  SECRET_PATTERNS,
+  secretValuePatterns,
   type SecretFinding,
+  type SecretPattern,
   type SecretScanStats,
 } from "./secret-scan";
 import {
@@ -32,6 +35,11 @@ export interface BundleCheckOptions {
   outDir: string;
   basePath: string;
   budgetBytes: number;
+  /**
+   * 실제 비밀값 대조용 환경(M5-08 — 보통 process.env). 이름 목록 SECRET_VALUE_ENV_NAMES의 값만 쓰고, 값은 결과·출력에 남지 않는다.
+   * 없으면 키 모양 패턴만 본다.
+   */
+  secretEnv?: Readonly<Record<string, string | undefined>>;
 }
 
 export interface BundleCheckResult {
@@ -98,8 +106,14 @@ export function collectPageScripts(
   });
 }
 
-/** out/ 전체에서 비밀 패턴과 .env* 파일을 찾는다. */
-export function scanOutDirForSecrets(outDir: string): {
+/**
+ * out/ 전체(HTML·JS·JSON·RSC txt·RSS xml·ics·sw.js·webmanifest 등 텍스트 파일 모두 — 확장자로 거르지 않는다)에서
+ * 비밀 패턴과 .env* 파일을 찾는다. 바이너리(PNG·woff2·Pagefind 압축 조각)는 내용 검사를 건너뛴다 — Pagefind 조각은 이미 검사한 HTML에서 만든다.
+ */
+export function scanOutDirForSecrets(
+  outDir: string,
+  patterns: readonly SecretPattern[] = SECRET_PATTERNS,
+): {
   findings: SecretFinding[];
   stats: SecretScanStats;
 } {
@@ -112,7 +126,9 @@ export function scanOutDirForSecrets(outDir: string): {
     const content = readFileSync(path.join(outDir, file));
     if (isProbablyBinary(content)) continue;
     textFiles += 1;
-    findings.push(...scanTextForSecrets(content.toString("utf8"), file));
+    findings.push(
+      ...scanTextForSecrets(content.toString("utf8"), file, patterns),
+    );
   }
   return { findings, stats: { files: files.length, textFiles } };
 }
@@ -123,11 +139,24 @@ export function runBundleCheck(options: BundleCheckOptions): BundleCheckResult {
     collectPageScripts(options.outDir, options.basePath),
     options.budgetBytes,
   );
-  const { findings, stats } = scanOutDirForSecrets(options.outDir);
+  const valuePatterns = options.secretEnv
+    ? secretValuePatterns(options.secretEnv)
+    : [];
+  const { findings, stats } = scanOutDirForSecrets(options.outDir, [
+    ...SECRET_PATTERNS,
+    ...valuePatterns,
+  ]);
   return {
     budget,
     secrets: findings,
-    secretStats: stats,
+    secretStats: valuePatterns.length
+      ? {
+          ...stats,
+          valueEnvNames: valuePatterns.flatMap((p) =>
+            p.envName ? [p.envName] : [],
+          ),
+        }
+      : stats,
     ok: budget.ok && findings.length === 0,
   };
 }
