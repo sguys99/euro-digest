@@ -75,6 +75,34 @@ describe("ci.yml — lighthouse job (M5-08)", () => {
     expect(runOf(stepNamed(lhSteps, "정적 빌드"))).toBe("npm run build");
   });
 
+  it("한글 글꼴(fonts-noto-cjk)은 lighthouse job에만 — 빌드 뒤 · 측정 앞, .deb 캐시 · 시간 상한 · 설치 확인 (D78)", () => {
+    const names = lhSteps.map((s) => s.name);
+    const at = (prefix: string): number =>
+      names.findIndex((n) => n.startsWith(prefix));
+    const version = at("한글 글꼴 버전 확인");
+    const cache = at("한글 글꼴 캐시");
+    const install = at("한글 글꼴 설치");
+    expect(at("정적 빌드")).toBeLessThan(version);
+    expect(version).toBeLessThan(cache);
+    expect(cache).toBeLessThan(install);
+    expect(install).toBeLessThan(at("Lighthouse 측정"));
+    const cacheStep = stepNamed(lhSteps, "한글 글꼴 캐시");
+    expect(cacheStep.body).toContain("uses: actions/cache@v6");
+    expect(cacheStep.body).toContain("key: ${{ steps.cjk.outputs.key }}");
+    const installStep = stepNamed(lhSteps, "한글 글꼴 설치");
+    expect(stepKey(installStep, "timeout-minutes")).toBe("5");
+    const run = runOf(installStep) ?? "";
+    expect(run).toContain("apt-get download fonts-noto-cjk");
+    expect(run).toContain(
+      'fc-list :lang=ko family | grep -q "Noto Sans CJK KR"',
+    );
+    // check job(e2e · 스크린샷 · fonts.spec)과 specimen job은 그대로
+    // (job 블록 끝에는 다음 job 앞 주석이 붙으므로 step 본문으로 본다)
+    for (const job of ["check", "specimen"])
+      for (const step of stepsOf(jobBlock(ci, job)))
+        expect(`${step.name}\n${step.body}`).not.toContain("fonts-noto-cjk");
+  });
+
   it("측정은 npm run lighthouse -- --assert, 수동 입력은 env로만 셸에 넘긴다(식 직접 삽입 없음)", () => {
     const step = stepNamed(lhSteps, "Lighthouse 측정");
     expect(stepKey(step, "id")).toBe("lighthouse");

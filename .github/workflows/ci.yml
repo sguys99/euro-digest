@@ -170,7 +170,10 @@ jobs:
   #   표시된다(배포는 check·specimen 기준으로 이미 진행). 아침 봇 발행(collect.yml·weekly.yml → deploy.yml)은 이 워크플로를 거치지 않는다.
   # - out/은 check job에서 artifact로 넘겨 받지 않고 여기서 다시 빌드한다: needs: check면 e2e(약 16분)가 끝나야 시작되고, out/은
   #   216MB · 3,679파일이라 올리고 받는 시간이 빌드(약 40초)보다 길다. 배포도 deploy.yml이 커밋을 다시 빌드한다(같은 원칙).
-  # - 한글 시스템 글꼴(fonts-noto-cjk)은 설치하지 않는다(이전 결정) — Playwright 의존성 설치가 넣는 글꼴만. '측정 환경 기록' 단계가 남긴다.
+  # - 한글 글꼴 fonts-noto-cjk를 이 job에만 설치한다(2026-11-04 사용자 결정 A — PRD §15 D78). 러너 기본 한글 글꼴(WenQuanYi)은
+  #   메트릭 폴백(src/lib/fonts.ts — 맑은 고딕 · Noto Sans CJK KR)에 없어 웹폰트 swap 때 줄이 바뀌고 CLS 0.12~0.16이 나왔다(측정 환경 문제 —
+  #   Noto CJK KR이 있으면 0.000x, docs/research/m5-performance.md §11.3). 빌드 뒤에 설치해 OG 이미지 굽기와 check job의 e2e(fonts.spec
+  #   CI skip · 스크린샷)는 그대로 둔다. .deb는 actions/cache로 재사용한다.
   lighthouse:
     name: Lighthouse 모바일 (LCP·CLS·접근성·SEO 단언 · 성능 기록)
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
@@ -207,6 +210,31 @@ jobs:
 
       - name: 정적 빌드 (next build → out/)
         run: npm run build
+
+      # 패키지 후보 버전을 캐시 키에 넣는다(우분투 이미지 · 패키지가 바뀌면 새로 받는다). apt 목록은 위 Playwright 의존성 설치가 갱신했다.
+      - name: 한글 글꼴 버전 확인 (fonts-noto-cjk)
+        id: cjk
+        run: |
+          version="$(apt-cache policy fonts-noto-cjk | awk '/Candidate:/ {print $2}' | tr -c 'A-Za-z0-9.\n' '_')"
+          echo "key=fonts-noto-cjk-$(lsb_release -rs)-${version}" >> "$GITHUB_OUTPUT"
+
+      - name: 한글 글꼴 캐시 (.deb)
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/fonts-noto-cjk-deb
+          key: ${{ steps.cjk.outputs.key }}
+
+      - name: 한글 글꼴 설치 (fonts-noto-cjk — Lighthouse CLS 측정 조건, 이 job에만)
+        timeout-minutes: 5
+        run: |
+          dir="$HOME/.cache/fonts-noto-cjk-deb"
+          mkdir -p "$dir"
+          if ! ls "$dir"/fonts-noto-cjk_*.deb >/dev/null 2>&1; then
+            (cd "$dir" && apt-get download fonts-noto-cjk)
+          fi
+          sudo dpkg -i "$dir"/fonts-noto-cjk_*.deb
+          fc-cache -f
+          fc-list :lang=ko family | grep -q "Noto Sans CJK KR"
 
       # 측정 잡음 해석용(benchmarkIndex와 함께) — CPU 수 · 부하 · 한글을 그릴 수 있는 시스템 글꼴(폴백 탐색 영향 관찰, M5-08 과제 4)
       - name: 측정 환경 기록 (CPU · 부하 · 한글 글꼴)
