@@ -283,7 +283,7 @@ describe("대회 표식·도장", () => {
     expect(appliedClasses("flat-tab")).toContain("h-5.5");
   });
 
-  it("인덱스 탭: 세로쓰기, 너비 --tab-w", () => {
+  it("인덱스 탭: 글자를 한 자씩 쌓은 세로 글자(writing-mode 없음 — M5-12), 너비 --tab-w, 텍스트 노드 하나", () => {
     render(
       <IndexTab comp="EPL" title="프리미어리그">
         EPL
@@ -300,8 +300,23 @@ describe("대회 표식·도장", () => {
     );
     // 몸은 globals.css §14 `index-tab`(M5-07)
     expect(appliedClasses("index-tab")).toEqual(
-      expect.arrayContaining(["w-tab-w", "[writing-mode:vertical-rl]"]),
+      expect.arrayContaining(["w-tab-w"]),
     );
+    // WebKit은 vmtx 없는 웹폰트의 세로쓰기 글자를 겹쳐 그렸다(M5-12) — 세로쓰기를 쓰지 않고 가장 넓은 글자 폭 상자에서 한 자씩 줄 바꿈
+    expect(appliedClasses("index-tab").join(" ")).not.toMatch(
+      /writing-mode|text-orientation/,
+    );
+    const glyphs = tab.firstElementChild as HTMLElement;
+    expect(classesOf(glyphs)).toEqual(
+      expect.arrayContaining([
+        "w-min",
+        "break-all",
+        "leading-[1.25]",
+        "h-[calc(var(--chars)*1.25em)]",
+      ]),
+    );
+    expect(glyphs.style.getPropertyValue("--chars")).toBe("3");
+    expect(glyphs.childNodes).toHaveLength(1);
   });
 
   it("도장 칩: 1px --ink 실선, --text-stamp 800 — 상호작용 없음", () => {

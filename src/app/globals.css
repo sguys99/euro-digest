@@ -1117,7 +1117,8 @@
  * 새 값 · 새 토큰 없음. 바깥에서 덧붙이는 클래스(대회 색 면 · 크기 변형)는 여기 넣지 않고 쓰는 곳에 남긴다.
  * - spoil-cell: 결과 가림 칸 버튼(`SpoilerCellButton` — 빗금 포함, 폭 `min-w-16`/`min-w-28`은 쓰는 곳)
  * - round-nav: 라운드 이동 버튼 공통 몸(활성 링크 · 비활성 점선은 쓰는 곳) · round-day: 라운드 안 날짜 머리 줄
- * - flat-tab: 평탄 탭 몸(크기 변형 · 대회 색 면은 cva) · index-tab: 인덱스 탭 몸(1024 이상 글자 크기 · 머리기사 변형 · 색 면은 쓰는 곳)
+ * - flat-tab: 평탄 탭 몸(크기 변형 · 대회 색 면은 cva) · index-tab: 인덱스 탭 몸(1024 이상 글자 크기 · 머리기사 변형 · 색 면은 쓰는 곳 —
+ *   세로 글자는 `writing-mode` 없이 글자 한 자씩 가로 줄로 쌓는다, `IndexTab` 주석 · M5-12)
  * - fixture-row · fixture-date · fixture-meta · fixture-team: 팀 화면 일정·결과 줄(`TeamFixtures`)
  */
 @utility spoil-cell {
@@ -1137,7 +1138,7 @@
 }
 
 @utility index-tab {
-  @apply flex w-tab-w items-center justify-center pt-1.75 pb-1.5 font-sans text-[10.5px] leading-[1.08] font-extrabold tracking-normal transition-colors duration-base ease-print [text-orientation:upright] [writing-mode:vertical-rl] lg:pt-2.25 lg:pb-2;
+  @apply flex w-tab-w items-center justify-center pt-1.75 pb-1.5 font-sans text-[10.5px] leading-[1.08] font-extrabold tracking-normal transition-colors duration-base ease-print lg:pt-2.25 lg:pb-2;
 }
 
 @utility fixture-row {

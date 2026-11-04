@@ -152,8 +152,8 @@ export function FlatTab({
 }
 
 /**
- * 인덱스 탭 — 카드·5줄 행 오른쪽 열의 세로 대회 탭(너비 --tab-w, 세로쓰기, 10.5px · ≥1024 11px 800).
- * `writing-mode`는 점진적 향상이다(지원하지 않으면 가로로 좁게 나온다). 약칭 글자가 접근 이름이다.
+ * 인덱스 탭 — 카드·5줄 행 오른쪽 열의 세로 대회 탭(너비 --tab-w, 글자를 위에서 아래로 쌓음, 10.5px · ≥1024 11px 800).
+ * 약칭 글자(텍스트 노드 하나)가 접근 이름이다 — 화면 읽기는 "라리가"를 한 낱말로 읽는다.
  * `lead`(머리기사, M1-31): 1024 이상에서 카드 높이만큼 늘이고 12px(DESIGN §9.3 머리기사) — 카드에 `data-lead`가 있을 때만(M1-33 필터 결과는
  * 속성을 지운다). 1023 이하는 일반 탭과 같다.
  */
@@ -179,11 +179,14 @@ export function IndexTab({
       )}
       {...props}
     >
-      {/* 세로쓰기 글자 줄 길이를 글꼴과 무관하게 고정한다 — 웹폰트(EuroDigest Sans)는 세로 메트릭(vmtx)이 없어 글자마다 ascent + descent
-          (약 1.19em, 화면에서 1.24em 안팎으로 반올림)를 쓰고, 메트릭 폴백(맑은 고딕·Noto)은 1em × size-adjust라 웹폰트가 오면 탭이 약 11px
-          길어져 5줄 행 전체가 밀렸다(홈 CLS 0.15 — M2-16). 글자 수(`--chars`) × 1.25em 상자 안에서 가운데 정렬 */}
+      {/* 세로 글자 = 가로 글자를 한 자씩 줄 바꿈해 쌓는다(M5-12 — `writing-mode: vertical-rl` 대체). 상자 폭 = 가장 넓은 글자 하나
+          (`min-content` + `break-all`)라 글자마다 줄이 바뀌고, 줄 높이 1.25em × 글자 수(`--chars`)로 탭 길이가 글꼴과 무관하게 고정된다.
+          - 세로쓰기는 글꼴의 세로 메트릭(vmtx)에 기대는데 웹폰트(EuroDigest Sans)에는 없다: 크롬은 글자마다 ascent + descent(약 1.24em),
+            WebKit(Playwright)은 글리프 높이만큼만 띄워 "UCL"·"분데스" 글자가 겹쳤다(M5-12 스크린샷). 폴백 글꼴(1em × size-adjust)과 웹폰트의
+            길이 차이로 5줄 행이 밀리던 CLS(홈 0.15 — M2-16)도 같은 원인 — 가로 줄 높이는 엔진·글꼴과 무관하다.
+          - 텍스트 노드는 하나 그대로라 접근 이름·textContent가 바뀌지 않는다. */}
       <span
-        className="block h-[calc(var(--chars)*1.25em)] text-center"
+        className="block h-[calc(var(--chars)*1.25em)] w-min text-center leading-[1.25] break-all"
         style={{ "--chars": [...children].length } as CSSProperties}
       >
         {children}

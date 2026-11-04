@@ -527,7 +527,8 @@ function Band({ days }: { days: readonly StatusDay[] }) {
       data-slot="status-band"
       className="mt-0.5 grid grid-cols-[26px_minmax(0,1fr)] items-center border-y border-rule py-2"
     >
-      <span className="justify-self-start text-[11px] font-extrabold tracking-[-0.05em] text-ink-2 [text-orientation:upright] [writing-mode:vertical-rl]">
+      {/* 세로 글자 = 한 자씩 줄 바꿈해 쌓기(인덱스 탭과 같은 방식 — WebKit이 vmtx 없는 웹폰트의 세로쓰기 글자를 겹쳐 그린다, M5-12) */}
+      <span className="block w-min justify-self-start text-center text-[11px] leading-[1.25] font-extrabold tracking-[-0.05em] break-all text-ink-2">
         발행일
       </span>
       <ol
