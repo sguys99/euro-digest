@@ -55,7 +55,7 @@
 | G2 | 5대 리그 + UCL 순위·일정·결과를 매일 갱신 | 데이터 최신성 |
 | G3 | 5대 리그 한국 선수 현황을 한 페이지에서 제공 | 선수 페이지 완성도 |
 | G4 | 월 총비용 $3 이하 유지 | `runs.json`·`runs-dev.json` 누적 비용 |
-| G5 | 모바일에서 빠르고 아름다운 경험 | Lighthouse 성능 ≥95, 접근성 ≥90 |
+| G5 | 모바일에서 빠르고 아름다운 경험 | 모바일 성능 예산(LCP ≤ 2.0s · CLS ≤ 0.05 · 초기 JS ≤ 160KB), Lighthouse 접근성 ≥ 90 — 성능 점수는 기록 · 회귀 감시 (§15 D78) |
 
 ### 2.2 비목표 (이번 버전에서 하지 않음)
 - 실시간 스코어·라이브 업데이트 (하루 1회 발행 구조)
@@ -383,7 +383,7 @@
 
 | ID | 영역 | 요구사항 |
 |---|---|---|
-| NFR-01 | 성능 | Lighthouse 성능 ≥ 95(모바일), 페이지 정적 생성, 이미지 최소화 |
+| NFR-01 | 성능 | **모바일 성능 예산이 합격선**: LCP ≤ 2.0s · CLS ≤ 0.05 · 초기 JS ≤ 160KB(DR-11) — CI Lighthouse 모바일(devtools 스로틀링, 쪽마다 3회 중앙값)과 `check:bundle`이 error로 판정. Lighthouse 성능 점수는 기록 · 회귀 감시(warn — 쪽별 중앙값이 기준선 −10 미만이면 경고, §15 D78). 페이지 정적 생성, 이미지 최소화 |
 | NFR-02 | 접근성 | Lighthouse 접근성 ≥ 90, 스크린리더 라벨, `lang="ko"` |
 | NFR-03 | SEO | 페이지별 title/description/OG, canonical, sitemap, 구조화 데이터(NewsArticle·SportsTeam·SportsEvent 🆕 — 적용 범위는 §15 D74: NewsArticle은 우리가 쓴 이날의 5줄만), 날짜별 고유 URL, `basePath` 반영 |
 | NFR-04 | 신뢰성 | 30일 파이프라인 성공률 ≥ 95%, 실패 시 전날 사이트 유지 |
@@ -557,7 +557,7 @@
 | 일일 신규 카드 | 30~50건 (휴식기 예외) |
 | 중복 카드 | 0건 |
 | 브리핑 정확도(주간 샘플 20줄) (D24) | ≥ 90% |
-| Lighthouse 성능 / 접근성 | ≥ 95 / ≥ 90 |
+| 모바일 성능 예산 / Lighthouse 접근성 | LCP ≤ 2.0s · CLS ≤ 0.05 · 초기 JS ≤ 160KB (성능 점수는 기록 · 회귀 감시 — D78) / ≥ 90 |
 
 ### 11.2 제품 KPI 🆕 (쿠키리스 분석 기준, 공개 3개월 후 목표 — 첫 달 데이터로 재설정)
 | 항목 | 측정 | 초기 목표 |
@@ -580,7 +580,7 @@
 | **M2 대회·팀** | 1주 | (D1 시안 선택 후) 대회 6개, 팀 페이지(주요 선수·포메이션 포함), 오늘 밤 볼 경기 | 전 팀 페이지 생성, 데이터 매일 갱신 |
 | **M3 한국 선수·A매치** | 1주 | (D2 시안 선택 후) 한국 선수 목록·상세, 대표팀, 주간 리포트 | 주간 리포트 1회 발행 |
 | **M4 부가 기능** | 1주 | 이적 트래커, 마이 팀, 팀 한줄평·강점/약점, PWA·RSS·ics, 검색, 결과 가리기 | 기능별 수용 기준 통과 |
-| **M5 다듬기** | 1주 | (D3 시안 선택 후) OG 이미지·아이콘, SEO·접근성·분석·/privacy, 성능 최적화 | Lighthouse 목표 달성, 공개 |
+| **M5 다듬기** | 1주 | (D3 시안 선택 후) OG 이미지·아이콘, SEO·접근성·분석·/privacy, 성능 최적화 | 성능 예산(LCP · CLS · 초기 JS — D78)·Lighthouse 접근성 ≥ 90 달성, 공개 |
 
 > 별도 비공개 기간 없이 M1 첫 배포부터 공개·색인 허용으로 운영한다(§15 D10). 미완성 섹션은 내비게이션에서 숨긴다.
 
@@ -726,6 +726,7 @@
 | D75 | GoatCounter 연동 방식 (2026-11-03 — M5-04, 추천안 확정) | `count.v5.js`(버전 고정 + SRI)를 공개 사이트 주소에서만 지연 로드(로컬·견본·e2e 0). path는 basePath 포함 경로만(쿼리·해시 제외, count.js `q` 제거 — utm 미집계). 이벤트 `out/{호스트}` · `feed/{rss|ics|webcal}/{범위}` · `pwa/install` · `my/set` — 카드 ID·팀 slug·팔로우 목록·개수는 보내지 않는다(최소 수집). 원문 클릭률 분모는 페이지뷰 × 쪽당 카드 수 근사(노출 이벤트 없음). 대시보드는 비공개로 시작해 공개 3개월 뒤 KPI 재설정 때 다시 판단 | NFR-08·FR-141·§11.2, plan M5-04 |
 | D76 | `/tonight` 상단 내비 (2026-11-04 사용자 결정 — M5-12) | **1024 이상 상단 내비에만 '오늘 밤'**, 하단 탭 5개(홈 · 뉴스 · 리그 · 한국 선수 · 마이) 그대로(§4.1 '오늘 밤은 홈 섹션과 상단 메뉴에서 진입'). 순서 홈 · 뉴스 · 리그 · **오늘 밤** · 한국 선수 · 이적 · 마이(경기 화면끼리 묶음). 오늘 밤 가중치는 그대로 두고 11월 말 재검토(분석 `docs/research/m5-tonight-weights.md`). 함께 정한 것: 1023 이하 대회 일정·결과 탭 배지 xs(360 폭 7자 팀명 말줄임 0 — DECISIONS D1 §8 #11), WebKit e2e는 수동 실행만(CI 미포함 — `docs/research/m5-browsers.md`) | §4.1 · FR-80~82 · NFR-13, plan M5-12 · M2-16, DECISIONS D1 §8 #2 · #3 |
 | D77 | OG 이미지 굽기 실패는 발행을 멈추지 않는다 (2026-11-04 — M5-13 리뷰 지적) | 공유 이미지 하나가 그날 뉴스 · 브리핑 발행을 막지 않는다(브리핑 실패가 발행을 멈추지 않는 것과 같은 원칙 — CLAUDE §6.2). ① **발행 경로(collect · weekly · deploy)**: OG 확인 · 브라우저 캐시 · Chromium 설치는 `continue-on-error`(시간 상한 2 · 4분), 빌드는 `OG_BUILD_MODE=soft` — `scripts/build-og.ts`가 Chromium이 없거나 굽기가 실패하면 `::warning::` · 구조화 로그 `build.og.degraded` · Step Summary · 단계 출력 `og_failed`만 남기고 next build로 간다. 실패 단계 키 `og`는 없앤다(job을 실패시키지 않는다). ② **ci.yml check job · 로컬 `npm run build`는 엄격**(기본 strict — 굽기 실패 exit 1, 템플릿 회귀를 잡는다). ③ **페이지 메타는 있는 PNG만 가리킨다** — 그 카드의 PNG가 `public/og`에 없으면 기본 카드(`/og/default.png` · 기본 alt)로 접는다(`src/lib/seo.ts` `bakedOgCard`, 빌드 첫 단계 뒤의 파일을 본다 — og.spec '가리키는 이미지 존재'와 맞음). ④ **다시 굽기**: 빠진 PNG는 입력 해시가 없어 다음 빌드의 `--check`가 stale로 센다 — deploy.yml 재빌드 · 다음 수집 실행(봇 커밋이 public/og와 함께 올림) · 사람 push(로컬 빌드가 굽고, 커밋을 빠뜨리면 `tests/og.test.ts` '커밋된 public/og 최신'이 CI에서 알린다). runs.json 스키마는 바꾸지 않는다(실행 기록은 Actions 주석 · Step Summary · 로그). | DR-10 · FR-150 · §15 D71 ②, plan M5-13 · M5-01 |
+| D78 | NFR-01 판정 = 지표 예산 · CI 글꼴 · Lighthouse CI 도구 (2026-11-04 사용자 결정 — M5-07 · M5-08) | ① **합격선은 사용자 체감 지표 예산**: LCP ≤ 2.0s · CLS ≤ 0.05 · 초기 JS ≤ 160KB(DR-11). CI `ci.yml` lighthouse job(10쪽 × 3회, **devtools 스로틀링** — Lighthouse 기본 모바일 412px · Slow 4G · CPU 4×)의 쪽별 중앙값이 error 단언, 초기 JS는 `check:bundle`. **Lighthouse 성능 점수 ≥ 95는 합격선에서 내리고 기록 · 회귀 감시(warn)**로 둔다 — 루트 `lighthouse-baseline.json`의 쪽별 기준선보다 중앙값이 10점 넘게 낮으면 경고(작업은 실패시키지 않음). 근거(M5-08 CI 실측, `docs/research/m5-performance.md` §11 · §12): LCP 1.47~1.69초로 전 쪽 통과, 성능은 작은 쪽 93~99 · 홈 · 뉴스 · 날짜 72~88 — TBT 바닥이 React 하이드레이션 한 덩어리(165~230ms)라 큰 DOM 쪽은 구조 작업 없이 95에 닿지 않는다. 러너 CPU가 실행마다 달라(benchmarkIndex 2,042~3,658) 같은 커밋 점수가 5~10점 움직여 고정 점수 합격선은 실행마다 결과가 바뀐다. simulate(PSI 방식)는 웹폰트를 첫 페인트 필수 경로로 계산해 LCP 4.1~4.8초를 내므로 판정 기준은 devtools(simulate는 수동 실행 기록용). ② **CI 글꼴**: lighthouse job에만 `fonts-noto-cjk` 설치(e2e · check job은 그대로). 러너 기본 한글 글꼴(WenQuanYi)은 메트릭 폴백(맑은 고딕 · Noto Sans CJK KR)에 없어 홈 · 뉴스 · 날짜 CLS 0.12~0.16이 나왔다 — Noto CJK KR이 있으면 0.000x(로컬 재현). ③ **iOS 폴백(Apple SD Gothic Neo)**: 실기기 측정 뒤 보정 면 추가 — `docs/research/m5-accessibility.md` 실기기 목록, DESIGN §11.3 남은 일 ①. ④ **`@lhci/cli` 0.15.1 devDependency 승인**(lighthouse 12.6.1 내장 — 측정 전용, 배포물에 안 들어감, 외부 업로드 없음) | NFR-01 · NFR-02 · DR-11 · DR-03, D21 · D29, plan M5-07 · M5-08, CLAUDE §3 · §5 |
 
 ### 15.1 남은 확인 사항 (M0에서 검증)
 basic_plan §12의 외부 확인 항목 중 **남은 것은 상표·저장소명(M0-31)과 2026-27 한국 선수 명단(M0-32)**이며, M0 검증 결과로 확정한 뒤 PRD 해당 항목을 갱신한다.

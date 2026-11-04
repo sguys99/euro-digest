@@ -264,6 +264,17 @@ CHROME_PATH=~/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome \
 - [ ] **키보드 포커스 · 하단 탭(iPhone + 블루투스 키보드, 선택)** — 홈에서 Tab으로 카드 제목을 차례로 이동(설정 → 손쉬운 사용 → 키보드 → 전체 키보드 접근 켬). 기대: 포커스한 제목의 첫 줄은 늘 보임. Playwright WebKit에서는 두 줄 제목의 아래 줄 5~14px가 하단 탭에 걸렸다(`m5-browsers.md` §1) — 실기기에서 더 많이 가리면(한 줄 전체) 이슈로
 - [ ] **키보드(아이패드 · 블루투스 키보드, 선택)** — 1024 이상 가로에서 상단 내비 Tab 순서 홈 → … → 오늘 밤 → 한국 선수 → 이적 → 마이, 포커스 링 보임, `/tonight/`에서 '오늘 밤'에 현재 표시(아래 막대)
 
+### 5.5 M5-08 — iPhone 첫 방문 글꼴 CLS(PRD §15 D78 ③ — Apple SD Gothic Neo 보정 면 결정용)
+
+CI에서 보정 폴백 글꼴이 없을 때 홈 · `/news/` · 날짜 CLS가 0.12~0.16이었다(`docs/research/m5-performance.md` §11.3). iOS의 한글 시스템 글꼴 Apple SD Gothic Neo는 아직 보정 면이 없어(`src/lib/fonts.ts`) 같은 밀림이 날 수 있다. 결과에 따라 보정 면을 더한다(DESIGN §11.3 남은 일 ①).
+
+- [ ] **iPhone Safari 웹 인스펙터로 홈 · 날짜 첫 방문 CLS 측정(캐시 비우기)**
+  1. iPhone 설정 → Safari → 고급 → '웹 속성' 켬, Mac Safari 개발자용 메뉴 → 기기 이름 → 유로 다이제스트 탭 연결
+  2. 웹 인스펙터 네트워크 탭 '캐시 비활성화' 켬(또는 iPhone 방문 기록 · 웹 사이트 데이터 지우기), 가능하면 느린 회선(네트워크 링크 컨디셔너 3G)
+  3. 콘솔에 붙여 넣고 홈(`/euro-digest/`)을 다시 연다: `new PerformanceObserver(l=>l.getEntries().forEach(e=>!e.hadRecentInput&&console.log('shift',e.value.toFixed(4),e.sources?.map(s=>s.node))) ).observe({type:'layout-shift',buffered:true})` — Safari가 `layout-shift`를 지원하지 않으면 '타임라인 → 레이아웃 · 렌더링' 기록에서 웹폰트 로드 직후 '레이아웃' 이벤트와 화면 변화를 본다
+  4. 같은 방법으로 최신 날짜 쪽(`/euro-digest/news/YYYY-MM-DD/`)도 잰다
+  - 기대: shift 합 ≤ 0.05. 넘거나(또는 타임라인에서 5줄 · 첫 카드가 웹폰트 로드 때 아래로 밀리면) Apple SD Gothic Neo 보정 면을 추가한다 — 기기 모델 · iOS 버전 · 값을 적어 둘 것
+
 ## 6. 사용자 결정이 필요한 것
 
 1. **Lighthouse `target-size` 96~97 페이지를 그대로 둘지** — 원인은 1023 이하 sticky 하단 탭 가장자리(§1.3 · §3).
