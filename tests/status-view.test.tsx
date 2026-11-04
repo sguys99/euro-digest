@@ -439,15 +439,21 @@ describe("뒤표지 '발행 상태' 링크 (DECISIONS D3 #15)", () => {
   });
 });
 
-describe("배포 완료 시각 — deploy.yml이 넘긴 github-pages 배포 목록 (2026-11-03 사용자 결정)", () => {
+describe("배포 완료 시각 — deploy.yml이 넘긴 github-pages 배포 목록 (2026-11-03 사용자 결정 · M5-13 실행 구분)", () => {
   // 10-31 첫 발행 수집 완료 = 2026-10-30T22:15Z(07:15 KST)
   const PUBLISHED = "2026-10-30T22:15:00.000Z";
+  // 발행 실행이 받은 main 끝(수집 전 — 전날 밤 사람 커밋)
+  const BEFORE = "2026-10-30T11:00:00Z";
+  const rec = (at: string, commitAt: string | null = BEFORE) => ({
+    at,
+    commitAt,
+  });
 
   it("수집 완료 뒤 12시간 안에 끝난 첫 배포 = 그 호의 배포 완료(이전 배포 · 12시간 뒤 배포는 아니다)", () => {
     const deploys = [
-      "2026-10-30T12:00:00Z", // 전날 저녁 사람 배포 — 앞
-      "2026-10-31T05:00:00Z", // 같은 날 오후 배포 — 첫 배포가 아니다
-      "2026-10-30T22:19:30Z", // 07:19 KST — 이것
+      rec("2026-10-30T12:00:00Z"), // 전날 저녁 사람 배포 — 앞
+      rec("2026-10-31T05:00:00Z"), // 같은 날 오후 배포 — 첫 배포가 아니다
+      rec("2026-10-30T22:19:30Z"), // 07:19 KST — 이것
     ];
     expect(deployOf("2026-10-31", PUBLISHED, deploys, AS_OF)).toEqual({
       kind: "done",
@@ -455,8 +461,34 @@ describe("배포 완료 시각 — deploy.yml이 넘긴 github-pages 배포 목�
       nextDay: null,
     });
     expect(
-      deployOf("2026-10-31", PUBLISHED, ["2026-10-31T10:15:00Z"], AS_OF),
+      deployOf("2026-10-31", PUBLISHED, [rec("2026-10-31T10:15:00Z")], AS_OF),
     ).toBeNull(); // 12시간 뒤 — 이 호의 배포로 보지 않는다
+  });
+
+  it("아침 배포가 실패한 날 — 낮의 사람 push 배포(커밋 시각이 수집 완료 뒤)는 그 호의 배포가 아니다(값 없음)", () => {
+    // 07:19 배포 실패(기록 없음) → 12:30 KST 사람 커밋(발행 커밋 위) → 12:41 KST ci 배포
+    const human = rec("2026-10-31T03:41:00Z", "2026-10-31T03:30:00Z");
+    expect(deployOf("2026-10-31", PUBLISHED, [human], AS_OF)).toBeNull();
+    // 같은 목록에 발행 실행의 배포가 있으면 그것만(사람 배포가 더 이르더라도 — 커밋 시각으로 가른다)
+    const early = rec("2026-10-30T22:16:00Z", "2026-10-30T22:15:30Z"); // 발행 커밋 뒤 수동 재배포
+    const publish = rec("2026-10-30T22:20:00Z");
+    expect(
+      deployOf("2026-10-31", PUBLISHED, [early, human, publish], AS_OF),
+    ).toEqual({ kind: "done", at: "07:20", nextDay: null });
+  });
+
+  it("커밋 시각을 모르는 배포(null) · 커밋 시각이 수집 완료와 같은 배포는 싣지 않는다", () => {
+    expect(
+      deployOf(
+        "2026-10-31",
+        PUBLISHED,
+        [
+          rec("2026-10-30T22:19:30Z", null),
+          rec("2026-10-30T22:20:00Z", PUBLISHED),
+        ],
+        AS_OF,
+      ),
+    ).toBeNull();
   });
 
   it("자정을 넘겨 끝난 배포는 다음 날 표시 · asOf 뒤 배포는 보지 않는다", () => {
@@ -464,7 +496,7 @@ describe("배포 완료 시각 — deploy.yml이 넘긴 github-pages 배포 목�
       deployOf(
         "2026-10-31",
         "2026-10-31T14:50:00.000Z", // 23:50 KST
-        ["2026-10-31T15:04:00Z"], // 11-01 00:04 KST
+        [rec("2026-10-31T15:04:00Z")], // 11-01 00:04 KST
         AS_OF,
       ),
     ).toEqual({ kind: "done", at: "00:04", nextDay: "2026-11-01" });
@@ -472,7 +504,7 @@ describe("배포 완료 시각 — deploy.yml이 넘긴 github-pages 배포 목�
       deployOf(
         "2026-11-03",
         "2026-11-02T22:15:00.000Z",
-        ["2026-11-02T22:20:00Z"],
+        [rec("2026-11-02T22:20:00Z")],
         "2026-11-02T22:18:00.000Z",
       ),
     ).toEqual({ kind: "pending" });
@@ -501,7 +533,9 @@ describe("배포 완료 시각 — deploy.yml이 넘긴 github-pages 배포 목�
       ...INPUT,
       prodRuns: [...PROD, today],
       asOf: "2026-11-03T22:16:00.000Z", // 11-04 07:16 KST
-      deploys: ["2026-10-30T22:19:30Z"],
+      deploys: [
+        { at: "2026-10-30T22:19:30Z", commitAt: "2026-10-30T11:00:00Z" },
+      ],
     });
     const day = (date: string) => view.days.find((d) => d.date === date)!;
     expect(day("2026-10-31").line).toBe(
@@ -535,13 +569,28 @@ describe("배포 완료 시각 — deploy.yml이 넘긴 github-pages 배포 목�
     expect(loadDeployTimes(path.join(dir, "none.json"))).toBeNull();
     expect(loadDeployTimes(file("broken.json", "{"))).toBeNull();
     expect(loadDeployTimes(file("object.json", '{"a":1}'))).toBeNull();
+    // 옛 형식(성공 시각 문자열 배열 — M5-13 전 deploy.yml)은 형식이 다르다
     expect(
-      loadDeployTimes(file("offset.json", '["2026-11-02T22:20:02+09:00"]')),
+      loadDeployTimes(file("legacy.json", '["2026-11-02T22:20:02Z"]')),
     ).toBeNull();
     expect(
       loadDeployTimes(
-        file("ok.json", '["2026-11-02T22:20:02Z","2026-11-02T15:00:54Z"]'),
+        file(
+          "offset.json",
+          '[{"at":"2026-11-02T22:20:02+09:00","commitAt":null}]',
+        ),
       ),
-    ).toEqual(["2026-11-02T22:20:02Z", "2026-11-02T15:00:54Z"]);
+    ).toBeNull();
+    expect(
+      loadDeployTimes(
+        file(
+          "ok.json",
+          '[{"at":"2026-11-02T22:20:02Z","commitAt":"2026-11-02T13:00:00Z"},{"at":"2026-11-02T15:00:54Z","commitAt":null}]',
+        ),
+      ),
+    ).toEqual([
+      { at: "2026-11-02T22:20:02Z", commitAt: "2026-11-02T13:00:00Z" },
+      { at: "2026-11-02T15:00:54Z", commitAt: null },
+    ]);
   });
 });

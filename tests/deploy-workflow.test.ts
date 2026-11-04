@@ -3,8 +3,10 @@
  * - build job만 `deployments: read`(최소 범위 — deploy job · 쓰기 권한 없음), 재사용 호출하는 ci · collect · weekly의 deploy job도 같은 권한을 넘긴다
  *   (호출된 워크플로는 호출 측이 준 권한 이하만 쓸 수 있다 — 빠지면 그 경로에서 API가 거부된다)
  * - '배포 기록 읽기' 단계: 빌드 앞 · continue-on-error(실패해도 빌드 통과 — 칸 숨김) · 시간 상한 · 토큰은 GH_TOKEN 환경변수로만(출력 없음)
- *   · github-pages 환경 · GraphQL 한 번 · SUCCESS 상태 시각만 · 결과 파일 경로를 출력으로
+ *   · github-pages 환경 · GraphQL 쪽당 100건 최대 2쪽(M5-13) · SUCCESS 상태 시각 + 그 배포의 커밋 시각 · 결과 파일 경로를 출력으로 ·
+ *   실패하면 경고 단계
  * - 빌드 단계는 그 출력을 STATUS_DEPLOYS_FILE로 받는다(비면 칸 숨김 — src/lib/data/status.ts loadDeployTimes)
+ * - OG 준비(M5-13 — PRD §15 D77): 확인 · 캐시 · 설치는 continue-on-error + 시간 상한, 빌드는 OG_BUILD_MODE=soft, 실패하면 경고 단계
  */
 import { describe, expect, it } from "vitest";
 
@@ -70,16 +72,33 @@ describe("deploy.yml — 배포 기록 읽기(/status 배포 완료 시각)", ()
     expect(body).not.toMatch(/set -x/);
   });
 
-  it("github-pages 환경 · GraphQL 한 번 · SUCCESS 시각만 · 파일 경로를 출력으로", () => {
+  it("github-pages 환경 · GraphQL 쪽당 100건 · 최대 2쪽(다음 쪽이 있을 때만) · SUCCESS 시각 + 커밋 시각 · 파일 경로를 출력으로", () => {
     const body = runOf(read) ?? "";
     expect(body.match(/gh api/g)).toHaveLength(1);
     expect(body).toContain("gh api graphql");
     expect(body).toContain('environments:["github-pages"]');
-    expect(body).toMatch(/first:100/);
+    expect(body).toMatch(/first:100,after:\$after/);
+    expect(body).toContain("pageInfo{hasNextPage endCursor}");
+    expect(body).toMatch(/^ {0}for page in 1 2; do$/m);
+    expect(body).toContain('if .hasNextPage then .endCursor else "" end');
+    expect(body).toContain("commit{committedDate}");
     expect(body).toContain('select(.state == "SUCCESS")');
+    expect(body).toContain("commitAt: (.commit.committedDate // null)");
     expect(body).toMatch(/echo "file=\$DEPLOYS_FILE" >> "\$GITHUB_OUTPUT"/);
     expect(read.body).toMatch(
       /DEPLOYS_FILE: \$\{\{ runner\.temp \}\}\/deploys\.json/,
+    );
+  });
+
+  it("읽기가 실패하면 경고 단계(::warning:: · Step Summary) — 빌드 앞, 토큰 없음", () => {
+    const warn = stepNamed(steps, "배포 기록 읽기 실패 경고");
+    expect(stepKey(warn, "if")).toBe("steps.deploys.outcome == 'failure'");
+    expect(runOf(warn)).toContain("::warning title=배포 기록 읽기 실패");
+    expect(runOf(warn)).toContain("$GITHUB_STEP_SUMMARY");
+    expect(warn.body).not.toMatch(/github\.token|GH_TOKEN/);
+    const names = steps.map((s) => s.name);
+    expect(names.indexOf(warn.name)).toBeLessThan(
+      names.indexOf(buildStep.name),
     );
   });
 
@@ -103,4 +122,31 @@ describe("재사용 호출 경로 — ci · collect · weekly의 deploy job이 d
       });
     });
   }
+});
+
+describe("deploy.yml — OG 이미지 준비 강등 (M5-13 — PRD §15 D77)", () => {
+  it("확인 · 브라우저 캐시 · Chromium 설치는 continue-on-error, 확인 2분 · 설치 4분 상한(collect · weekly와 같다)", () => {
+    const og = stepNamed(steps, "OG 이미지 확인");
+    const cache = stepNamed(steps, "Playwright 브라우저 캐시 (OG 이미지)");
+    const chromium = stepNamed(steps, "Chromium 설치 (OG 이미지)");
+    for (const step of [og, cache, chromium]) {
+      expect([step.name, stepKey(step, "continue-on-error")]).toEqual([
+        step.name,
+        "true",
+      ]);
+    }
+    expect(stepKey(og, "timeout-minutes")).toBe("2");
+    expect(stepKey(chromium, "timeout-minutes")).toBe("4");
+    expect(stepKey(chromium, "id")).toBe("chromium");
+  });
+
+  it("실패하면 경고 단계, 빌드는 OG_BUILD_MODE=soft(굽기 실패는 경고만 — 엄격 검사는 ci.yml check job)", () => {
+    const warn = stepNamed(steps, "OG 준비 실패 경고");
+    expect(stepKey(warn, "if")).toBe(
+      "steps.og.outcome == 'failure' || steps.chromium.outcome == 'failure'",
+    );
+    expect(runOf(warn)).toContain("::warning title=OG 이미지 준비 실패");
+    expect(buildStep.body).toMatch(/^ {10}OG_BUILD_MODE: soft$/m);
+    expect(runOf(buildStep)).toBe("npm run build");
+  });
 });

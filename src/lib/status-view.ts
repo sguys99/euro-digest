@@ -9,9 +9,14 @@
  * 공개 범위(D71 ③ — 사용자 결정): 비용은 **예산 대비 %만**(소수 두 자리, 금액 없음), 성공률은 **실행 기준 %**(소수 한 자리), 발행일은
  * 30칸 띠(정시 · 늦음 · 결호 · 실패 · 창간 전 + 오늘 발행 전). 실패 원인 · 소스 마지막 새 기사 시각은 넣지 않는다.
  * **배포 완료 시각**(2026-11-03 사용자 결정 — Deployments API): 이 빌드는 배포 *전에* 돌아 자기 배포 시각을 알 수 없다. deploy.yml이
- * github-pages 지난 배포의 성공 시각 목록(`deploys`)을 빌드 입력으로 넘기면, 발행일마다 **첫 발행 실행의 수집 완료 뒤 12시간 안에 끝난
- * 첫 배포**를 그 호의 배포 완료로 싣는다(`deployOf`). 오늘 호가 발행됐는데 그 배포가 아직 없으면 '배포 중'(이 빌드가 그 배포다).
- * 목록이 없으면(로컬 빌드 · API 실패) 칸을 숨기고, 목록 범위(최근 100건) 밖의 지난 날은 값 없이 둔다(지어내지 않는다).
+ * github-pages 지난 배포 기록(`deploys` — 성공 시각 + 그 배포를 만든 실행의 커밋 시각)을 빌드 입력으로 넘기면, 발행일마다 **그 호를
+ * 발행한 실행의 배포** — 첫 발행 실행의 수집 완료 뒤 12시간 안에 끝났고, **커밋 시각이 수집 완료보다 앞선** 첫 배포 — 를 그 호의 배포
+ * 완료로 싣는다(`deployOf`, M5-13). Actions 환경 배포의 커밋은 실행의 GITHUB_SHA라, 발행 실행(collect → deploy.yml)의 배포는 수집 *전*
+ * main 끝 커밋을, 사람 push(ci → deploy.yml) · 수동 재배포는 발행 커밋 *뒤*의 커밋을 단다 — 아침 배포가 실패한 날 낮의 사람 push 배포를
+ * 그 호의 배포로 싣지 않는다(그날은 값 없이 둔다). 오늘 호가 발행됐는데 그 배포가 아직 없으면 '배포 중'(이 빌드가 그 배포다).
+ * 목록이 없으면(로컬 빌드 · API 실패) 칸을 숨기고, 목록 범위(최근 최대 200건) 밖의 지난 날은 값 없이 둔다(지어내지 않는다).
+ * 한계: 같은 날 다시 수집한 실행(결과 지연 재수집 — D60)의 배포는 커밋 시각이 첫 수집 완료 뒤라 세지 않는다(첫 실행의 배포가 실패하고
+ * 재수집 배포만 성공한 날은 값 없음).
  *
  * 그래프 좌표는 % 값(0~100)으로 낸다 — x는 30칸 열의 가운데, y는 KST 하루(0 ~ 24시, 위 = 늦음)의 수집 완료 시각.
  */
@@ -188,21 +193,28 @@ export interface StatusInput {
   monthlyBudget: number;
   /** 소스 설정(configs/sources.json) — id · 이름 · Tier · 언어 */
   sources: readonly { id: string; name: string; tier: Tier; lang: string }[];
-  /** github-pages 배포 성공 시각(UTC ISO, 순서 무관) — deploy.yml이 넘긴다. 없으면(null · 생략) 배포 칸 숨김 */
-  deploys?: readonly string[] | null;
+  /** github-pages 배포 기록(순서 무관) — deploy.yml이 넘긴다. 없으면(null · 생략) 배포 칸 숨김 */
+  deploys?: readonly StatusDeployRecord[] | null;
 }
 
-/** 첫 발행 실행의 수집 완료 뒤 이 시간 안에 끝난 첫 배포를 그 호의 배포로 본다 */
+/** github-pages 배포 한 건 — 성공 시각 · 그 배포를 만든 실행의 커밋 시각(UTC ISO, 모르면 null — 그 배포는 어느 호에도 싣지 않는다) */
+export interface StatusDeployRecord {
+  at: string;
+  commitAt: string | null;
+}
+
+/** 첫 발행 실행의 수집 완료 뒤 이 시간 안에 끝난 배포만 그 호의 배포 후보로 본다 */
 export const DEPLOY_MATCH_HOURS = 12;
 
 /**
- * 발행일 하나의 배포 완료(머리 주석 규칙) — `deploys` = 배포 성공 시각(UTC ISO), `publishedAt` = 첫 발행 실행의 수집 완료,
- * 오늘(asOf의 KST 날짜)이면 못 찾았을 때 '배포 중'. asOf 뒤의 배포는 보지 않는다.
+ * 발행일 하나의 배포 완료(머리 주석 규칙) — `publishedAt` = 첫 발행 실행의 수집 완료. 후보 = 성공 시각이 [수집 완료, +12시간)이고
+ * 커밋 시각이 수집 완료보다 앞선 배포(그 호를 발행한 실행의 배포). 오늘(asOf의 KST 날짜)이면 못 찾았을 때 '배포 중'. asOf 뒤의 배포는
+ * 보지 않는다.
  */
 export function deployOf(
   date: string,
   publishedAt: string | null,
-  deploys: readonly string[] | null | undefined,
+  deploys: readonly StatusDeployRecord[] | null | undefined,
   asOf: string,
 ): StatusDeploy {
   if (!deploys || publishedAt === null) return null;
@@ -212,7 +224,8 @@ export function deployOf(
     Date.parse(asOf) + 1,
   );
   const hit = deploys
-    .map((iso) => Date.parse(iso))
+    .filter((d) => d.commitAt !== null && Date.parse(d.commitAt) < from)
+    .map((d) => Date.parse(d.at))
     .filter((t) => Number.isFinite(t) && t >= from && t < until)
     .sort((a, b) => a - b)[0];
   if (hit !== undefined) {
