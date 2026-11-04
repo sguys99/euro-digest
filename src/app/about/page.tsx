@@ -25,6 +25,7 @@ import { TierBadge } from "@/components/ui/tier-badge";
 import {
   issueDateLabel,
   SEASON_LABEL,
+  analysisOutletsFrom,
   outletCountByTier,
   outletsFrom,
   publishSchedule,
@@ -54,7 +55,8 @@ import { kstDate, nowUtcIso } from "@/lib/time";
  *
  * 문구는 PRD·설정·코드에 근거가 있는 사실만 쓴다(CLAUDE §1-7). 바뀌는 사실은 빌드 때 계산한다:
  * - 발행 시각·계절 기간 = src/lib/about.ts(`publishSchedule` — time.ts의 D26 규칙), 기준일은 최신 호 날짜(없으면 빌드 날짜, KST)
- * - 매체·Tier = configs/sources.json(일일 수집 대상만 — `outletsFrom`), 대회 = configs/competitions.json
+ * - 매체·Tier = configs/sources.json(일일 수집 대상 — `outletsFrom`, 팀 페이지 '더 읽을거리'의 분석 블로그 — `analysisOutletsFrom`,
+ *   M3 이월), 대회 = configs/competitions.json
  * - 연락처·필수 문구·태그라인·창간일 = src/lib/site.ts, 이슈 양식 링크 = src/lib/paths.ts `issueFormUrl`
  * - 머리 소개 아래에 개인정보 처리방침(`/privacy/` — M5-05) 링크. 본문 문법(문단·링크 클래스)과 절 틀은 `/privacy`와 공용
  *   (src/components/about/prose.tsx · doc-section.tsx)
@@ -85,7 +87,10 @@ const TIERS: readonly Tier[] = [1, 2, 3];
 
 export default function AboutPage() {
   const { issue } = loadLatestIssue();
-  const outlets = outletsFrom(loadSourcesConfig());
+  const sources = loadSourcesConfig();
+  const outlets = outletsFrom(sources);
+  // 분석 블로그(주 1회 — D66)는 같은 목록의 따로 선 무리. 출처 Tier는 뉴스 카드 등급이라 배지·Tier별 수에서 뺀다
+  const analysis = analysisOutletsFrom(sources);
   const overseas = outlets.filter((o) => o.region === "overseas");
   const domestic = outlets.filter((o) => o.region === "domestic");
   const tierCounts = outletCountByTier(outlets);
@@ -248,13 +253,13 @@ export default function AboutPage() {
         <h3 className="mt-10 flex items-baseline gap-2 text-base font-extrabold lg:mt-12 lg:text-[17px]">
           지금 싣는 매체
           <span className="font-numeric text-[17px] font-semibold text-ink-2 lining-nums tabular-nums">
-            {outlets.length}
+            {outlets.length + analysis.length}
           </span>
           <span className="sr-only">곳</span>
         </h3>
         <p className="mt-1 text-[13px] text-ink-2">
-          사이트를 발행할 때 수집 설정에서 이 목록을 만듭니다. 배지는 매체의
-          출처 Tier입니다.
+          사이트를 발행할 때 수집 설정에서 이 목록을 만듭니다. 배지는 뉴스 카드
+          매체의 출처 Tier입니다.
         </p>
         <div className="mt-4 grid gap-y-7 lg:grid-cols-2 lg:gap-x-8">
           {overseas.length > 0 ? (
@@ -271,6 +276,16 @@ export default function AboutPage() {
               caption="한국어 원문 제목"
               outlets={domestic}
               showLang={false}
+            />
+          ) : null}
+          {analysis.length > 0 ? (
+            <OutletGroup
+              title="분석 블로그"
+              caption="팀 페이지 ‘더 읽을거리’"
+              outlets={analysis}
+              showLang
+              aside="주 1회"
+              usage="전술 분석 글의 원제목과 링크만 · 본문 수집 없음 · AI 미사용"
             />
           ) : null}
         </div>
@@ -486,11 +501,15 @@ function OutletGroup({
   caption,
   outlets,
   showLang,
+  aside,
+  usage,
 }: {
   title: string;
   caption: string;
   outlets: readonly Outlet[];
   showLang: boolean;
+  aside?: string;
+  usage?: string;
 }) {
   return (
     <div>
@@ -498,7 +517,12 @@ function OutletGroup({
         <h4 className="text-sm font-extrabold">{title}</h4>
         <p className="text-[12.5px] text-ink-2">{caption}</p>
       </div>
-      <OutletList outlets={outlets} showLang={showLang} />
+      <OutletList
+        outlets={outlets}
+        showLang={showLang}
+        aside={aside}
+        usage={usage}
+      />
     </div>
   );
 }

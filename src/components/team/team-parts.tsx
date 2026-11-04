@@ -9,11 +9,11 @@ import { OUT_LINK_PROPS } from "@/lib/analytics";
 import type { TeamLookup } from "@/lib/competition-view";
 import { statText } from "@/lib/competition-view";
 import { issueNumber } from "@/lib/issue";
+import type { ReadingItemView } from "@/lib/reading";
 import { routes } from "@/lib/paths";
 import type { CompId } from "@/lib/schema/common";
 import type { StandingRow } from "@/lib/schema/competition";
 import type { NewsFile } from "@/lib/schema/news";
-import type { Team } from "@/lib/schema/team";
 import type { KeyPlayerView, RelatedIssue } from "@/lib/team-view";
 import { formatKst } from "@/lib/time";
 import { cn } from "@/lib/utils";
@@ -290,13 +290,16 @@ export function RelatedNews({
   );
 }
 
-/** 더 읽을거리(FR-57 — 분석 블로그 링크). 빈 배열이면 섹션을 두지 않는다(호출부) */
+/**
+ * 더 읽을거리(FR-57 — 분석 블로그 링크). 빈 배열이면 섹션을 두지 않는다(호출부). 제목은 원제목 그대로, `lang`은 매체 피드 언어
+ * (영문 피드의 네덜란드어 글은 `nl` — src/lib/reading.ts `readingView`)
+ */
 export function Reading({
   headingId,
   items,
 }: {
   headingId: string;
-  items: Team["reading"];
+  items: readonly ReadingItemView[];
 }) {
   return (
     <section aria-labelledby={headingId} data-slot="team-reading">
@@ -311,7 +314,7 @@ export function Reading({
               rel="noopener"
               className="inline-flex min-h-11 flex-wrap items-center gap-x-2 text-[15px] leading-[1.35] font-extrabold text-ink underline decoration-1 underline-offset-4 hover:decoration-2"
             >
-              <span lang="en">{item.title}</span>
+              <span lang={item.lang}>{item.title}</span>
               <span className="text-[12.5px] font-normal text-ink-2">
                 {item.source}
               </span>

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import TeamPage, {
@@ -404,6 +404,44 @@ describe("팀 페이지 — 티켓 · 팀시트 · 일정 · 주요 선수 · �
       FOOTBALL_DATA_ATTRIBUTION,
     );
     expect(source.textContent).not.toContain("업데이트 지연");
+  });
+
+  it("더 읽을거리: 원제목 그대로 · 매체명 · 새 창, 제목 lang = 피드 언어(네덜란드어 글은 nl — FR-57, M3 이월) · 없으면 섹션 없음", async () => {
+    await renderPage();
+    expect(document.querySelector("[data-slot=team-reading]")).toBeNull();
+    cleanup();
+    const reading = [
+      {
+        title: "Aspect analysis: Leipzig never found a trigger – LC",
+        url: "https://spielverlagerung.com/fixture/synthetic-1/",
+        source: "Spielverlagerung",
+      },
+      {
+        title: "PSV onder Bosz: hoe de opbouw verandert",
+        url: "https://spielverlagerung.com/fixture/synthetic-2/",
+        source: "Spielverlagerung",
+      },
+    ];
+    loadTeamPage.mockImplementation(() => pageData(teamOf({ reading })));
+    await renderPage();
+    const el = document.querySelector<HTMLElement>("[data-slot=team-reading]")!;
+    expect(
+      within(el).getByRole("heading", { name: "더 읽을거리" }),
+    ).toBeInTheDocument();
+    const links = within(el).getAllByRole("link");
+    expect(links.map((a) => a.getAttribute("href"))).toEqual(
+      reading.map((r) => r.url),
+    );
+    for (const a of links) {
+      expect(a).toHaveAttribute("target", "_blank");
+      expect(a).toHaveTextContent("Spielverlagerung");
+      expect(a).toHaveTextContent("(새 창)");
+    }
+    const titles = links.map((a) => a.querySelector("span[lang]")!);
+    expect(titles.map((t) => t.textContent)).toEqual(
+      reading.map((r) => r.title),
+    );
+    expect(titles.map((t) => t.getAttribute("lang"))).toEqual(["en", "nl"]);
   });
 });
 

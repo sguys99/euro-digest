@@ -4,6 +4,9 @@ import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { loadSourcesConfig } from "../../src/lib/data/about";
+import { readingView } from "../../src/lib/reading";
+import { TeamSchema } from "../../src/lib/schema/team";
 import { basePath, outDir, sitePages } from "./support/site";
 
 // 팀 페이지 `/teams/[team]/` (M2-13 — PRD FR-50~58, DESIGN §9.3 팀 화면). 빌드 결과(out/)를 대상으로 한다.
@@ -61,6 +64,28 @@ test.describe("팀 페이지 — 정적 생성 · 팀 링크 무결성", () => {
     expect(links).toBeGreaterThan(100);
     expect(missing).toEqual([]);
   });
+});
+
+test("더 읽을거리 — 원제목 그대로, 제목 lang = 피드 언어(네덜란드어 글은 nl — FR-57 · WCAG 3.1.2, M3 이월)", async ({
+  page,
+}) => {
+  const dir = path.resolve("data/teams");
+  const team = readdirSync(dir)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) =>
+      TeamSchema.parse(JSON.parse(readFileSync(path.join(dir, f), "utf8"))),
+    )
+    .find((t) => t.reading.length > 0);
+  test.skip(!team, "더 읽을거리가 있는 팀 없음");
+  const expected = readingView(team!.reading, loadSourcesConfig());
+  await page.goto(`teams/${team!.slug}/`);
+  const titles = page.locator("[data-slot=team-reading] li a > span[lang]");
+  await expect(titles).toHaveCount(expected.length);
+  for (const [index, item] of expected.entries()) {
+    await expect(titles.nth(index)).toHaveText(item.title);
+    await expect(titles.nth(index)).toHaveAttribute("lang", item.lang);
+  }
+  await noOverflow(page);
 });
 
 test.describe("팀 페이지 — 표본 팀 렌더", () => {

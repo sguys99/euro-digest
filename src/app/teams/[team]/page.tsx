@@ -20,11 +20,13 @@ import { IcsSubscribe } from "@/components/ui/ics-link";
 import { SearchRecord } from "@/components/search/search-record";
 import { dataSourceOf } from "@/lib/data-source";
 import { teamIcsFeed } from "@/lib/ics-links";
+import { loadSourcesConfig } from "@/lib/data/about";
 import { loadLatestIssue } from "@/lib/data/issue";
 import { teamPageSearchRecord } from "@/lib/data/search";
 import { loadTeamPage, type TeamPageData } from "@/lib/data/team-page";
 import { listTeamSlugs } from "@/lib/data/teams";
 import { routes } from "@/lib/paths";
+import { readingView } from "@/lib/reading";
 import { seasonLabel } from "@/lib/rest-period";
 import type { CompId } from "@/lib/schema/common";
 import type { TeamSheetPlayer } from "@/lib/schema/team";
@@ -235,7 +237,10 @@ export default async function TeamPage({ params }: PageProps<"/teams/[team]">) {
               teamName={self.name}
             />
             {team.reading.length > 0 ? (
-              <Reading headingId="team-reading-h" items={team.reading} />
+              <Reading
+                headingId="team-reading-h"
+                items={readingView(team.reading, loadSourcesConfig())}
+              />
             ) : null}
           </div>
         </div>

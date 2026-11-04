@@ -7,10 +7,13 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
+import { planAnalysisSources } from "../scripts/lib/analysis-reading";
 import { planDailySources } from "../scripts/lib/sources";
 import { publisherNameOf as scriptsPublisherNameOf } from "../scripts/lib/publisher-name";
 import {
+  analysisOutletsFrom,
   feedLabelOf,
+  isAnalysisFeed,
   isDailyFeed,
   issueDateLabel,
   outletCountByTier,
@@ -223,6 +226,48 @@ describe("outletsFrom — 지금 싣는 매체(configs/sources.json)", () => {
 
   it("publisherNameOf는 화면·파이프라인이 같은 함수다(scripts는 다시 내보내기)", () => {
     expect(scriptsPublisherNameOf).toBe(publisherNameOf);
+  });
+});
+
+describe("analysisOutletsFrom — 분석 블로그(팀 페이지 '더 읽을거리', M3 이월 — FR-57, D66)", () => {
+  it("주간 단계 analysis-blogs 대상(planAnalysisSources)과 같은 소스 — 일일 매체 목록과 겹치지 않는다", () => {
+    expect(SOURCES.filter(isAnalysisFeed).map((s) => s.id)).toEqual(
+      planAnalysisSources(SOURCES).map((s) => s.id),
+    );
+    const analysis = analysisOutletsFrom(SOURCES);
+    expect(analysis.map((o) => o.name)).toContain("Spielverlagerung");
+    const daily = new Set(outletsFrom(SOURCES).map((o) => o.name));
+    for (const outlet of analysis) expect(daily.has(outlet.name)).toBe(false);
+  });
+
+  it("꺼진·약관 미확인 분석 블로그는 싣지 않고, 같은 매체 피드는 한 줄", () => {
+    expect(
+      analysisOutletsFrom([
+        source({ id: "rss", name: "News — Football" }),
+        source({ id: "a-en", name: "Blog — English", type: "analysis" }),
+        source({ id: "a-nl", name: "Blog — Nederlands", type: "analysis" }),
+        source({
+          id: "off",
+          name: "Off Blog — English",
+          type: "analysis",
+          enabled: false,
+        }),
+        source({
+          id: "terms",
+          name: "Terms Blog — English",
+          type: "analysis",
+          terms_checked: false,
+        }),
+      ]),
+    ).toEqual([
+      {
+        name: "Blog",
+        lang: "en",
+        region: "overseas",
+        tiers: [2],
+        feeds: ["English", "Nederlands"],
+      },
+    ]);
   });
 });
 

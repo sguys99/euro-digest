@@ -10,7 +10,7 @@ import { render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import AboutPage, { metadata } from "@/app/about/page";
-import { outletsFrom } from "@/lib/about";
+import { analysisOutletsFrom, outletsFrom } from "@/lib/about";
 import { ABOUT_SECTIONS } from "@/lib/about-sections";
 import { issueFormUrl } from "@/lib/paths";
 import { NewsFileSchema, type NewsFile } from "@/lib/schema/news";
@@ -203,9 +203,11 @@ describe("출처·저작권 정책 · 출처 Tier — 매체는 configs/sources.
         .getAllByRole("listitem")
         .map((li) => li.querySelector("p > span[lang]")),
     );
+    const analysis = analysisOutletsFrom(SOURCES);
     expect(rendered.map((n) => n?.textContent)).toEqual([
       ...expected.filter((o) => o.region === "overseas").map((o) => o.name),
       ...expected.filter((o) => o.region === "domestic").map((o) => o.name),
+      ...analysis.map((o) => o.name),
     ]);
     for (const outlet of expected) {
       const name = within(el).getByText(outlet.name, {
@@ -223,7 +225,31 @@ describe("출처·저작권 정책 · 출처 Tier — 매체는 configs/sources.
     expect(el).not.toHaveTextContent("Google News");
     expect(
       within(el).getByRole("heading", { name: /지금 싣는 매체/ }),
-    ).toHaveTextContent(`지금 싣는 매체${expected.length}곳`);
+    ).toHaveTextContent(`지금 싣는 매체${expected.length + analysis.length}곳`);
+    expect(el).toHaveTextContent("배지는 뉴스 카드 매체의 출처 Tier입니다.");
+  });
+
+  it("분석 블로그(M3 이월 — FR-57, D66): 무엇을·어디에·어떻게 한 줄 · Tier 배지 없음 · 매체명은 피드 언어", () => {
+    render(<AboutPage />);
+    const el = section("sources");
+    const analysis = analysisOutletsFrom(SOURCES);
+    expect(analysis.length).toBeGreaterThan(0);
+    const group = within(el)
+      .getByRole("heading", { name: "분석 블로그" })
+      .closest("div")?.parentElement as HTMLElement;
+    expect(group).toHaveTextContent("팀 페이지 ‘더 읽을거리’");
+    for (const outlet of analysis) {
+      const name = within(group).getByText(outlet.name, {
+        selector: "span[lang]",
+      });
+      expect(name).toHaveAttribute("lang", outlet.lang);
+      const row = name.closest("li") as HTMLElement;
+      expect(row).toHaveTextContent("주 1회");
+      expect(row).toHaveTextContent(
+        "영어 · 전술 분석 글의 원제목과 링크만 · 본문 수집 없음 · AI 미사용",
+      );
+      expect(row).not.toHaveTextContent("출처 Tier");
+    }
   });
 
   it("Tier 1~3 정의(PRD 용어 — basic_plan 3.8)와 지금 싣는 매체 수", () => {

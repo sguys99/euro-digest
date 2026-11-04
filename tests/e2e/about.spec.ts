@@ -3,8 +3,9 @@ import path from "node:path";
 
 import { expect, test, type Page } from "@playwright/test";
 
-import { publishSchedule } from "../../src/lib/about";
+import { analysisOutletsFrom, publishSchedule } from "../../src/lib/about";
 import { ABOUT_SECTIONS } from "../../src/lib/about-sections";
+import { loadSourcesConfig } from "../../src/lib/data/about";
 import { loadLatestNews } from "../../src/lib/data/news";
 import { kstDate, nowUtcIso } from "../../src/lib/time";
 import { basePath, outDir } from "./support/site";
@@ -204,6 +205,33 @@ test("발행 시각은 최신 호 날짜로 계산한 계절 값이다(07:00 고
   await expect(page.locator("#schedule")).toContainText(
     `매일 ${current.publish} KST에 발행합니다.`,
   );
+});
+
+test("매체 목록 — 분석 블로그 무리(팀 페이지 '더 읽을거리', M3 이월 — FR-57, D66): 행마다 매체명(피드 언어) · 주 1회 · 이용 방식, Tier 배지 없음", async ({
+  page,
+}) => {
+  const analysis = analysisOutletsFrom(loadSourcesConfig());
+  test.skip(analysis.length === 0, "지금 싣는 분석 블로그 없음");
+  await open(page, "about/");
+  const heading = page.locator("#sources h4", { hasText: "분석 블로그" });
+  await expect(heading).toBeVisible();
+  const group = heading.locator("xpath=../..");
+  await expect(group).toContainText("팀 페이지 ‘더 읽을거리’");
+  const rows = group.locator("ul > li");
+  await expect(rows).toHaveCount(analysis.length);
+  for (const [index, outlet] of analysis.entries()) {
+    const row = rows.nth(index);
+    await expect(row.locator("p > span[lang]").first()).toHaveAttribute(
+      "lang",
+      outlet.lang,
+    );
+    await expect(row).toContainText(outlet.name);
+    await expect(row).toContainText("주 1회");
+    await expect(row).toContainText(
+      "전술 분석 글의 원제목과 링크만 · 본문 수집 없음 · AI 미사용",
+    );
+    await expect(row).not.toContainText("출처 Tier");
+  }
 });
 
 test("깊은 없는 경로 → 404 상태 + 사이트 404(스타일 적용), 링크·자산은 basePath 절대 경로", async ({

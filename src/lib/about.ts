@@ -7,7 +7,8 @@
  *   계절이라 새 계절은 그다음 월요일 호부터다(D26).
  * - 매체 = `configs/sources.json`에서 일일 수집 대상인 소스(수집 조건 `enabled && terms_checked` + 일일 RSS 루프 type — 파이프라인
  *   scripts/lib/sources.ts `planDailySources().feeds`와 같은 규칙, tests/about-page.test.tsx가 대조)를 카드와 같은 매체명
- *   (`publisherNameOf`)으로 묶는다.
+ *   (`publisherNameOf`)으로 묶는다. 팀 페이지 '더 읽을거리'의 분석 블로그(`type: "analysis"` — 주간 단계 대상과 같은 규칙)는
+ *   `analysisOutletsFrom`으로 따로 묶는다(M3 이월 — FR-57, D66).
  */
 import { publisherNameOf } from "@/lib/publisher-name";
 import type { Tier } from "@/lib/schema/common";
@@ -140,6 +141,14 @@ export function isDailyFeed(source: Source): boolean {
   return source.enabled && source.terms_checked && FEED_TYPES.has(source.type);
 }
 
+/**
+ * 지금 싣는 분석 블로그인가 — 수집 조건(FR-01) + `type: "analysis"`. 주간 단계 analysis-blogs(scripts/lib/analysis-reading.ts
+ * `planAnalysisSources`)와 같은 규칙이고, 글은 팀 페이지 '더 읽을거리'에 실린다(FR-10·FR-57, D66)
+ */
+export function isAnalysisFeed(source: Source): boolean {
+  return source.enabled && source.terms_checked && source.type === "analysis";
+}
+
 /** 매체 하나 — 같은 매체명의 피드를 묶는다 */
 export interface Outlet {
   /** 카드에 보이는 매체명(`publisherNameOf`) */
@@ -167,10 +176,25 @@ export function feedLabelOf(source: Pick<Source, "name">): string | null {
  * 나온 순서. 해외·국내 구분은 화면이 `region`으로 나눈다.
  */
 export function outletsFrom(sources: readonly Source[]): Outlet[] {
+  return groupOutlets(sources, isDailyFeed);
+}
+
+/**
+ * 지금 싣는 분석 블로그 — `outletsFrom`과 같은 묶음·정렬(`/about` 매체 목록의 '분석 블로그' 무리). 출처 Tier는 뉴스 카드의 등급이라
+ * 화면은 배지를 그리지 않고 Tier별 매체 수에도 넣지 않는다.
+ */
+export function analysisOutletsFrom(sources: readonly Source[]): Outlet[] {
+  return groupOutlets(sources, isAnalysisFeed);
+}
+
+function groupOutlets(
+  sources: readonly Source[],
+  include: (source: Source) => boolean,
+): Outlet[] {
   // Map은 넣은 순서를 지키고 Array#sort는 안정 정렬이라, 같은 Tier끼리는 설정 파일 순서가 남는다
   const byName = new Map<string, Outlet>();
   for (const source of sources) {
-    if (!isDailyFeed(source)) continue;
+    if (!include(source)) continue;
     const name = publisherNameOf(source);
     let outlet = byName.get(name);
     if (!outlet) {
