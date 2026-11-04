@@ -13,14 +13,17 @@
  *
  * 사용법: npm run lighthouse -- [--runs <n>] [--url <경로>]… [--method devtools|simulate] [--assert]
  *   --url  basePath 뒤 경로(예: `teams/bayern-munchen/`). 없으면 아래 기본 목록(최신 날짜 페이지는 data/news에서 고른다)
- *   --assert  측정 뒤 `lhci assert`(성능 ≥ 0.95 · LCP ≤ 2000ms · CLS ≤ 0.05 — 중앙값 실행 기준)
- * 결과: `.lighthouseci/.lighthouseci/lhr-*.json`(lhci 원자료) · `.lighthouseci/summary.json` · 표준 출력에 마크다운 표.
+ *   --assert  측정 뒤 `lhci assert`(lighthouserc.json assertMatrix — M5-08: error LCP ≤ 2000ms · CLS ≤ 0.05 · 접근성 ≥ 0.9 ·
+ *             SEO ≥ 0.9(`/status/`·`/search/` noindex 제외), warn 성능 ≥ 0.95 — 중앙값 실행 기준). error가 하나라도 있으면 exit 1
+ * 결과: `.lighthouseci/.lighthouseci/lhr-*.json`·`lhr-*.html`(lhci 원자료) · `assertion-results.json`(--assert) ·
+ *   `.lighthouseci/summary.json` · 표준 출력에 마크다운 표. `GITHUB_STEP_SUMMARY`가 있으면(CI) 같은 내용 + 단언 결과를 Step Summary에 덧붙인다.
  *   lhci는 `.lighthouseci/`(gitignore)를 작업 폴더로 돌린다 — WSL에서 chrome-launcher가 Windows식 임시 폴더 이름
  *   (`C:\Users\…\lighthouse.NNN`)을 작업 폴더에 상대 경로로 만들어서, 저장소 루트를 더럽히지 않게.
  * 측정 중에는 빌드·e2e 같은 무거운 작업을 같이 돌리지 않는다(CPU 4× 시뮬레이션이 흔들린다).
  */
 import { spawnSync } from "node:child_process";
 import {
+  appendFileSync,
   existsSync,
   mkdirSync,
   readdirSync,
@@ -34,6 +37,15 @@ import path from "node:path";
 
 import { chromium } from "@playwright/test";
 
+import {
+  formatStepSummary,
+  formatTable,
+  summarizeAssertions,
+  summarizeLhrs,
+  type AssertionResult,
+  type AssertionSummary,
+  type Lhr,
+} from "./lib/lighthouse-report";
 import { normalizeBasePath } from "./lib/site-refs";
 
 const TAG = "[lighthouse]";
@@ -113,72 +125,22 @@ function prepareSite(outDir: string, basePath: string): void {
   symlinkSync(outDir, link, "dir");
 }
 
-type Lhr = {
-  requestedUrl: string;
-  categories: Record<string, { score: number | null }>;
-  audits: Record<string, { numericValue?: number }>;
+type LhciConfig = {
+  ci?: {
+    collect?: {
+      numberOfRuns?: number;
+      settings?: { throttlingMethod?: string };
+    };
+  };
 };
 
-function median(values: readonly number[]): number {
-  const s = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid]! : (s[mid - 1]! + s[mid]!) / 2;
+function readConfig(): LhciConfig {
+  return JSON.parse(readFileSync(CONFIG, "utf8")) as LhciConfig;
 }
-
-type Row = {
-  path: string;
-  runs: number;
-  performance: number;
-  accessibility: number;
-  bestPractices: number;
-  seo: number;
-  fcpMs: number;
-  lcpMs: number;
-  tbtMs: number;
-  cls: number;
-  siMs: number;
-};
-
-function summarize(basePath: string): Row[] {
-  const lhrs: Lhr[] = readdirSync(LHCI_DIR)
-    .filter((f) => /^lhr-\d+\.json$/.test(f))
-    .map(
-      (f) => JSON.parse(readFileSync(path.join(LHCI_DIR, f), "utf8")) as Lhr,
-    );
-  const byUrl = new Map<string, Lhr[]>();
-  for (const lhr of lhrs) {
-    const list = byUrl.get(lhr.requestedUrl) ?? [];
-    list.push(lhr);
-    byUrl.set(lhr.requestedUrl, list);
-  }
-  const cat = (l: Lhr, id: string) =>
-    Math.round((l.categories[id]?.score ?? 0) * 100);
-  const num = (l: Lhr, id: string) => l.audits[id]?.numericValue ?? Number.NaN;
-  return [...byUrl.entries()].map(([url, list]) => ({
-    path: new URL(url).pathname.slice(basePath.length) || "/",
-    runs: list.length,
-    performance: median(list.map((l) => cat(l, "performance"))),
-    accessibility: median(list.map((l) => cat(l, "accessibility"))),
-    bestPractices: median(list.map((l) => cat(l, "best-practices"))),
-    seo: median(list.map((l) => cat(l, "seo"))),
-    fcpMs: median(list.map((l) => num(l, "first-contentful-paint"))),
-    lcpMs: median(list.map((l) => num(l, "largest-contentful-paint"))),
-    tbtMs: median(list.map((l) => num(l, "total-blocking-time"))),
-    cls: median(list.map((l) => num(l, "cumulative-layout-shift"))),
-    siMs: median(list.map((l) => num(l, "speed-index"))),
-  }));
-}
-
-function formatTable(rows: readonly Row[]): string {
-  const head =
-    "| 페이지 | 성능 | 접근성 | 모범 사례 | SEO | FCP | LCP | TBT | CLS | SI |\n|---|---|---|---|---|---|---|---|---|---|";
-  const s = (ms: number) => `${(ms / 1000).toFixed(2)}s`;
-  const body = rows.map(
-    (r) =>
-      `| \`${r.path}\` | ${r.performance} | ${r.accessibility} | ${r.bestPractices} | ${r.seo} | ${s(r.fcpMs)} | ${s(r.lcpMs)} | ${Math.round(r.tbtMs)}ms | ${r.cls.toFixed(4)} | ${s(r.siMs)} |`,
-  );
-  return [head, ...body].join("\n");
-}
+const configuredMethod = (): string =>
+  readConfig().ci?.collect?.settings?.throttlingMethod ?? "simulate";
+const configuredRuns = (): number =>
+  readConfig().ci?.collect?.numberOfRuns ?? 1;
 
 function main(): void {
   const args = parseArgs(process.argv.slice(2));
@@ -209,20 +171,51 @@ function main(): void {
   const run = spawnSync(lhci, collect, { stdio: "inherit", cwd: WORK_DIR });
   if (run.status !== 0) process.exit(run.status ?? 1);
 
-  const rows = summarize(basePath);
+  const lhrs: Lhr[] = readdirSync(LHCI_DIR)
+    .filter((f) => /^lhr-\d+\.json$/.test(f))
+    .map(
+      (f) => JSON.parse(readFileSync(path.join(LHCI_DIR, f), "utf8")) as Lhr,
+    );
+  const rows = summarizeLhrs(lhrs, basePath, paths);
   writeFileSync(
     path.join(WORK_DIR, "summary.json"),
     `${JSON.stringify(rows, null, 2)}\n`,
   );
   console.log(`\n${formatTable(rows)}\n`);
 
+  let assertions: AssertionSummary | null = null;
+  let status = 0;
   if (args.assert) {
+    const resultsFile = path.join(LHCI_DIR, "assertion-results.json");
+    rmSync(resultsFile, { force: true });
     const assert = spawnSync(lhci, ["assert", `--config=${CONFIG}`], {
       stdio: "inherit",
       cwd: WORK_DIR,
     });
-    process.exit(assert.status ?? 1);
+    status = assert.status ?? 1;
+    // 통과하지 못한 단언만 들어 있다(lhci 기본 — 모두 통과면 빈 배열)
+    assertions = summarizeAssertions(
+      existsSync(resultsFile)
+        ? (JSON.parse(readFileSync(resultsFile, "utf8")) as AssertionResult[])
+        : [],
+    );
   }
+
+  // GitHub Actions Step Summary(M5-08) — 쪽 × 성능 · LCP · TBT · CLS · 접근성 + benchmarkIndex
+  const stepSummary = process.env.GITHUB_STEP_SUMMARY;
+  if (stepSummary) {
+    appendFileSync(
+      stepSummary,
+      formatStepSummary({
+        rows,
+        method: args.method ?? configuredMethod(),
+        runs: args.runs ?? configuredRuns(),
+        basePath,
+        assertions,
+      }),
+    );
+  }
+  process.exit(status);
 }
 
 main();

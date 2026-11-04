@@ -1,6 +1,7 @@
 # 검사 워크플로 (M0-12, NFR-12) — push·PR마다 정적 export 사이트 전체를 검사한다.
 # check(typecheck·lint·단위 테스트) → 서식 → 설정 검증 → Chromium 설치(OG 이미지 · e2e) → 빌드 → 번들 예산·비밀값 → e2e(스모크·링크·접근성)
 # main push에서 통과하면 재사용 워크플로 deploy.yml로 배포한다(M0-13, PRD §15 D20 — 파일 끝 deploy job).
+# Lighthouse 모바일(M5-08 — lighthouse job)은 main push · PR · 수동 실행에서 따로 돌고 배포를 기다리게 하지 않는다.
 #
 # 참고
 # - 봇의 data 커밋은 GITHUB_TOKEN으로 push되므로 이 워크플로를 다시 트리거하지 않는다(GitHub 규칙).
@@ -17,6 +18,12 @@ on:
     branches: ["**"]
   pull_request:
   workflow_dispatch:
+    inputs:
+      lighthouse_method:
+        description: Lighthouse 스로틀링 방식 — devtools(기본 · 단언 기준) / simulate(PageSpeed Insights 방식 — 비교 기록용)
+        type: choice
+        options: [devtools, simulate]
+        default: devtools
 
 # 같은 브랜치의 새 push가 오면 이전 실행을 취소한다. 단 main은 취소하지 않고 순서대로 처리한다:
 # 배포 job(deploy-pages)이 도중에 끊기지 않게 하고, 검사를 통과한 커밋이 뒤 커밋의 실패로 배포 없이
@@ -155,9 +162,90 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+  # Lighthouse 모바일(M5-08 — NFR-01 · DR-11 · NFR-02) — `npm run lighthouse -- --assert`(scripts/lighthouse.ts + lighthouserc.json,
+  # M5-07 도구 그대로). 단언: error LCP ≤ 2000ms · CLS ≤ 0.05 · 접근성 ≥ 0.9 · SEO ≥ 0.9(/status/·/search/ noindex 제외) /
+  # warn 성능 ≥ 0.95(NFR-01 판정 방식 사용자 결정 전 — 기록만). 결과는 Step Summary 표 + artifact(lhr JSON·HTML). 외부 업로드 없음.
+  # - 조건: main push · PR · 수동 실행(다른 브랜치 push는 건너뜀). 수동 실행은 lighthouse_method 입력으로 simulate도 잰다.
+  # - 배포(deploy job)는 이 job을 기다리지 않는다(needs에 없음) — 측정 시간(docs/research/m5-performance.md §11)이 배포를 늦추지 않게. error 단언이 실패하면 CI 실행만 빨갛게
+  #   표시된다(배포는 check·specimen 기준으로 이미 진행). 아침 봇 발행(collect.yml·weekly.yml → deploy.yml)은 이 워크플로를 거치지 않는다.
+  # - out/은 check job에서 artifact로 넘겨 받지 않고 여기서 다시 빌드한다: needs: check면 e2e(약 16분)가 끝나야 시작되고, out/은
+  #   216MB · 3,679파일이라 올리고 받는 시간이 빌드(약 40초)보다 길다. 배포도 deploy.yml이 커밋을 다시 빌드한다(같은 원칙).
+  # - 한글 시스템 글꼴(fonts-noto-cjk)은 설치하지 않는다(이전 결정) — Playwright 의존성 설치가 넣는 글꼴만. '측정 환경 기록' 단계가 남긴다.
+  lighthouse:
+    name: Lighthouse 모바일 (LCP·CLS·접근성·SEO 단언 · 성능 기록)
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Node.js 설정 (.nvmrc)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci
+
+      # check job과 같은 캐시 키 — Lighthouse도 Playwright Chromium(chromium.executablePath())으로 잰다. 빌드 첫 단계(OG 이미지)도 쓴다.
+      - name: Playwright 버전 확인
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Playwright 브라우저 캐시
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Playwright 브라우저 설치 (chromium + OS 의존성)
+        run: npx playwright install --with-deps chromium
+
+      - name: 정적 빌드 (next build → out/)
+        run: npm run build
+
+      # 측정 잡음 해석용(benchmarkIndex와 함께) — CPU 수 · 부하 · 한글을 그릴 수 있는 시스템 글꼴(폴백 탐색 영향 관찰, M5-08 과제 4)
+      - name: 측정 환경 기록 (CPU · 부하 · 한글 글꼴)
+        run: |
+          ko_fonts="$(fc-list :lang=ko family | sort -u | paste -sd ',' - || true)"
+          {
+            echo "## 측정 환경"
+            echo ""
+            echo "| 항목 | 값 |"
+            echo "|---|---|"
+            echo "| CPU | $(nproc)코어 · $(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | xargs) |"
+            echo "| load average | $(cut -d' ' -f1-3 /proc/loadavg) |"
+            echo "| 한글 시스템 글꼴 (fc-list :lang=ko) | ${ko_fonts:-없음} |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Lighthouse 측정 + 단언 (npm run lighthouse -- --assert)
+        id: lighthouse
+        env:
+          LIGHTHOUSE_METHOD: ${{ inputs.lighthouse_method || 'devtools' }}
+        run: npm run lighthouse -- --assert --method "$LIGHTHOUSE_METHOD"
+
+      # 성공 · 실패 모두 남긴다(측정이 돌았으면). .lighthouseci/는 점(.) 폴더라 include-hidden-files가 필요하다. site/(out/ 심볼릭 링크)는 뺀다.
+      - name: Lighthouse 결과 업로드 (lhr JSON·HTML · 단언 결과 · 요약)
+        if: always() && (steps.lighthouse.outcome == 'success' || steps.lighthouse.outcome == 'failure')
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .lighthouseci/.lighthouseci/
+            .lighthouseci/summary.json
+          include-hidden-files: true
+          retention-days: 14
+          if-no-files-found: warn
+
   # main push에서 검사(check·견본 specimen — M1-30부터)를 통과하면 재사용 워크플로로 배포한다(M0-13, PRD §15 D20).
   # - workflow_dispatch(수동 검사)는 배포하지 않는다: 수동 배포·롤백은 deploy.yml 수동 실행 한 경로로 모은다(FR-154).
   # - PR·다른 브랜치 push는 검사만 한다.
+  # - Lighthouse(lighthouse job)는 needs에 넣지 않는다 — 측정이 배포를 늦추지 않게(M5-08). 그 job의 error 단언은 CI 표시만 빨갛게 한다.
   # - 배포에 필요한 Pages 권한은 이 job에만 준다(워크플로 기본 권한은 contents: read 유지).
   #   호출된 워크플로는 여기서 준 권한 이하로만 쓸 수 있다: build job contents·pages read, deploy job pages write·id-token write.
   deploy:
