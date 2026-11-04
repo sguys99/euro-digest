@@ -1,0 +1,18 @@
+{
+  "measuredAt": "2026-11-04",
+  "source": "CI devtools 실측 — 0207f50(fonts-noto-cjk) 실행 41785816802 + 이전 4실행(CLS 영향 없는 7쪽은 5실행 중앙값), docs/research/m5-performance.md §12",
+  "method": "devtools",
+  "tolerance": 10,
+  "performance": {
+    "/": 86,
+    "/news/": 91,
+    "{latest-date}": 91,
+    "/competitions/epl/": 95,
+    "/competitions/ucl/": 93,
+    "/teams/bayern-munchen/": 93,
+    "/tonight/": 98,
+    "/korean-players/": 98,
+    "/transfers/": 98,
+    "/status/": 97
+  }
+}

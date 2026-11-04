@@ -1,7 +1,13 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, it } from "vitest";
 
 import {
+  findRegressions,
+  formatRegressionSummary,
   formatStepSummary,
+  LighthouseBaselineSchema,
   formatTable,
   median,
   pathOf,
@@ -178,5 +184,94 @@ describe("summarizeAssertions · formatStepSummary", () => {
         assertions: { errors: [], warnings: [] },
       }),
     ).toContain("**error 단언: 통과**");
+  });
+});
+
+describe("회귀 감시 (D78)", () => {
+  const baseline = LighthouseBaselineSchema.parse({
+    measuredAt: "2026-11-04",
+    source: "CI devtools 실측",
+    method: "devtools",
+    tolerance: 10,
+    performance: { "/": 80, "/tonight/": 95, "{latest-date}": 85 },
+  });
+  const rows = summarizeLhrs(
+    [
+      lhr("/", 0.69, 900, 2000),
+      lhr("/tonight/", 0.86, 300, 2000),
+      lhr("/news/2026-11-05/", 0.7, 800, 2000),
+      lhr("/transfers/", 0.1, 5000, 2000),
+    ],
+    BASE,
+  );
+
+  it("중앙값 < 기준선 − tolerance만 경고, 날짜 쪽은 {latest-date} 키, 기준선 없는 쪽은 건너뜀", () => {
+    expect(findRegressions(rows, baseline, "devtools")).toEqual([
+      { path: "/", median: 69, baseline: 80, floor: 70 },
+      { path: "/news/2026-11-05/", median: 70, baseline: 85, floor: 75 },
+    ]);
+  });
+
+  it("경계값(= floor)은 경고하지 않는다", () => {
+    const at = summarizeLhrs([lhr("/", 0.7, 900, 2000)], BASE);
+    expect(findRegressions(at, baseline, "devtools")).toEqual([]);
+  });
+
+  it("다른 방식(simulate) 실행은 비교하지 않는다", () => {
+    expect(findRegressions(rows, baseline, "simulate")).toEqual([]);
+    expect(formatRegressionSummary([], baseline, "simulate")).toContain(
+      "simulate 실행이라 건너뜀",
+    );
+  });
+
+  it("요약 문단 — 이상 없음 / 경고 목록", () => {
+    expect(formatRegressionSummary([], baseline, "devtools")).toContain(
+      "**이상 없음**",
+    );
+    const text = formatRegressionSummary(
+      findRegressions(rows, baseline, "devtools"),
+      baseline,
+      "devtools",
+    );
+    expect(text).toContain("**2쪽 경고**");
+    expect(text).toContain("- warn: `/` 성능 69 < 70 (기준선 80)");
+  });
+
+  it("스키마 — 경로는 /로 시작, 점수 0~100 정수", () => {
+    expect(() =>
+      LighthouseBaselineSchema.parse({ ...baseline, performance: { x: 1 } }),
+    ).toThrow();
+    expect(() =>
+      LighthouseBaselineSchema.parse({
+        ...baseline,
+        performance: { "/": 101 },
+      }),
+    ).toThrow();
+  });
+});
+
+describe("lighthouse-baseline.json (저장소 기준선)", () => {
+  it("스키마를 통과하고 기본 10쪽을 모두 덮는다(devtools · tolerance 10)", () => {
+    const raw = readFileSync(
+      fileURLToPath(new URL("../lighthouse-baseline.json", import.meta.url)),
+      "utf8",
+    );
+    const b = LighthouseBaselineSchema.parse(JSON.parse(raw));
+    expect(b.method).toBe("devtools");
+    expect(b.tolerance).toBe(10);
+    expect(Object.keys(b.performance).sort()).toEqual(
+      [
+        "/",
+        "/news/",
+        "{latest-date}",
+        "/competitions/epl/",
+        "/competitions/ucl/",
+        "/teams/bayern-munchen/",
+        "/tonight/",
+        "/korean-players/",
+        "/transfers/",
+        "/status/",
+      ].sort(),
+    );
   });
 });

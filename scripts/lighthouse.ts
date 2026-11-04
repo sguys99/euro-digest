@@ -13,6 +13,7 @@
  *
  * 사용법: npm run lighthouse -- [--runs <n>] [--url <경로>]… [--method devtools|simulate] [--assert]
  *   --url  basePath 뒤 경로(예: `teams/bayern-munchen/`). 없으면 아래 기본 목록(최신 날짜 페이지는 data/news에서 고른다)
+ *   (루트 `lighthouse-baseline.json`이 있으면 쪽별 성능 중앙값을 기준선과 비교해 회귀를 warn으로 알린다 — PRD §15 D78)
  *   --assert  측정 뒤 `lhci assert`(lighthouserc.json assertMatrix — M5-08: error LCP ≤ 2000ms · CLS ≤ 0.05 · 접근성 ≥ 0.9 ·
  *             SEO ≥ 0.9(`/status/`·`/search/` noindex 제외), warn 성능 ≥ 0.95 — 중앙값 실행 기준). error가 하나라도 있으면 exit 1
  * 결과: `.lighthouseci/.lighthouseci/lhr-*.json`·`lhr-*.html`(lhci 원자료) · `assertion-results.json`(--assert) ·
@@ -38,8 +39,11 @@ import path from "node:path";
 import { chromium } from "@playwright/test";
 
 import {
+  findRegressions,
+  formatRegressionSummary,
   formatStepSummary,
   formatTable,
+  LighthouseBaselineSchema,
   summarizeAssertions,
   summarizeLhrs,
   type AssertionResult,
@@ -54,6 +58,8 @@ const SITE_DIR = path.join(WORK_DIR, "site");
 /** lhci가 작업 폴더 아래에 만드는 원자료 폴더 */
 const LHCI_DIR = path.join(WORK_DIR, ".lighthouseci");
 const CONFIG = path.resolve("lighthouserc.json");
+/** 쪽별 성능 기준선(회귀 감시 — PRD §15 D78). 없으면 감시를 건너뛴다 */
+const BASELINE = path.resolve("lighthouse-baseline.json");
 
 /** 기본 측정 대상 — 큰 HTML(대회·팀)과 섬이 많은 화면을 고루. 날짜 페이지는 최신 호로 채운다 */
 const DEFAULT_PATHS = [
@@ -201,6 +207,24 @@ function main(): void {
     );
   }
 
+  // 회귀 감시(D78) — 쪽별 성능 중앙값 < 기준선 − tolerance면 warn(작업은 실패시키지 않는다)
+  const method = args.method ?? configuredMethod();
+  let regressionText = "";
+  if (existsSync(BASELINE)) {
+    const baseline = LighthouseBaselineSchema.parse(
+      JSON.parse(readFileSync(BASELINE, "utf8")),
+    );
+    const regressions = findRegressions(rows, baseline, method);
+    regressionText = formatRegressionSummary(regressions, baseline, method);
+    console.log(regressionText);
+    if (process.env.GITHUB_ACTIONS === "true") {
+      for (const r of regressions)
+        console.log(
+          `::warning title=Lighthouse 성능 회귀::${r.path} 성능 ${r.median} < ${r.floor} (기준선 ${r.baseline} − ${baseline.tolerance})`,
+        );
+    }
+  }
+
   // GitHub Actions Step Summary(M5-08) — 쪽 × 성능 · LCP · TBT · CLS · 접근성 + benchmarkIndex
   const stepSummary = process.env.GITHUB_STEP_SUMMARY;
   if (stepSummary) {
@@ -208,11 +232,11 @@ function main(): void {
       stepSummary,
       formatStepSummary({
         rows,
-        method: args.method ?? configuredMethod(),
+        method,
         runs: args.runs ?? configuredRuns(),
         basePath,
         assertions,
-      }),
+      }) + regressionText,
     );
   }
   process.exit(status);

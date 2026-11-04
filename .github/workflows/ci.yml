@@ -164,7 +164,7 @@ jobs:
 
   # Lighthouse 모바일(M5-08 — NFR-01 · DR-11 · NFR-02) — `npm run lighthouse -- --assert`(scripts/lighthouse.ts + lighthouserc.json,
   # M5-07 도구 그대로). 단언: error LCP ≤ 2000ms · CLS ≤ 0.05 · 접근성 ≥ 0.9 · SEO ≥ 0.9(/status/·/search/ noindex 제외) /
-  # warn 성능 ≥ 0.95(NFR-01 판정 방식 사용자 결정 전 — 기록만). 결과는 Step Summary 표 + artifact(lhr JSON·HTML). 외부 업로드 없음.
+  # warn 성능 ≥ 0.95 + 회귀 감시(lighthouse-baseline.json 기준선 −10 — NFR-01 합격선은 지표 예산, PRD §15 D78). 결과는 Step Summary 표 + artifact(lhr JSON·HTML). 외부 업로드 없음.
   # - 조건: main push · PR · 수동 실행(다른 브랜치 push는 건너뜀). 수동 실행은 lighthouse_method 입력으로 simulate도 잰다.
   # - 배포(deploy job)는 이 job을 기다리지 않는다(needs에 없음) — 측정 시간(docs/research/m5-performance.md §11)이 배포를 늦추지 않게. error 단언이 실패하면 CI 실행만 빨갛게
   #   표시된다(배포는 check·specimen 기준으로 이미 진행). 아침 봇 발행(collect.yml·weekly.yml → deploy.yml)은 이 워크플로를 거치지 않는다.

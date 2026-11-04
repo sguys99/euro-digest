@@ -3,6 +3,8 @@
  * I/O 없는 순수 함수만 둔다. 파일 읽기·lhci 실행은 scripts/lighthouse.ts.
  */
 
+import { z } from "zod";
+
 /** lhr에서 쓰는 부분만 */
 export interface Lhr {
   requestedUrl: string;
@@ -188,7 +190,7 @@ export function formatStepSummary(input: StepSummaryInput): string {
         `| \`${r.path}\` | ${span(r.performance, int)} | ${span(r.lcpMs, sec)} | ${span(r.tbtMs, ms)} | ${Number.isFinite(r.cls) ? r.cls.toFixed(4) : "—"} | ${int(r.accessibility)} | ${int(r.seo)} | ${span(r.benchmarkIndex, int)} |`,
     ),
     "",
-    "단언(`lighthouserc.json`): **error** LCP ≤ 2000ms · CLS ≤ 0.05 · 접근성 ≥ 90 · SEO ≥ 90(`/status/`·`/search/` noindex 제외) / **warn** 성능 ≥ 95(NFR-01 판정 방식 결정 전 — 기록만).",
+    "단언(`lighthouserc.json`): **error** LCP ≤ 2000ms · CLS ≤ 0.05 · 접근성 ≥ 90 · SEO ≥ 90(`/status/`·`/search/` noindex 제외) / **warn** 성능 ≥ 95(기록 · 회귀 감시 — NFR-01 합격선은 LCP · CLS · 초기 JS, PRD §15 D78).",
   ];
   if (assertions) {
     lines.push("");
@@ -212,4 +214,74 @@ export function formatStepSummary(input: StepSummaryInput): string {
     }
   }
   return `${lines.join("\n")}\n`;
+}
+
+// ─── 회귀 감시 (PRD §15 D78 — 성능 점수는 합격선이 아니라 기록 · 회귀 감시) ───────────────────────
+
+/** 루트 `lighthouse-baseline.json` — 쪽별 성능 점수 기준선(CI devtools 실측). 사람이 관리, 경계에서 zod로 검증 */
+export const LighthouseBaselineSchema = z.object({
+  /** 기준선을 잰 날짜 · 커밋 · 근거(사람이 읽는 메모) */
+  measuredAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  source: z.string().min(1),
+  /** 이 방식으로 잰 실행만 비교한다(simulate 실행은 감시하지 않음) */
+  method: z.enum(["devtools", "simulate"]),
+  /** 쪽별 중앙값이 기준선 − tolerance보다 낮으면 warn */
+  tolerance: z.number().int().min(1).max(50),
+  /** basePath 뒤 경로(`/`·`/news/`) 또는 최신 날짜 쪽 `{latest-date}` → 성능 점수(0~100) */
+  performance: z.record(
+    z.string().regex(/^(?:\/.*|\{latest-date\})$/),
+    z.number().int().min(0).max(100),
+  ),
+});
+export type LighthouseBaseline = z.infer<typeof LighthouseBaselineSchema>;
+
+export interface Regression {
+  path: string;
+  median: number;
+  baseline: number;
+  /** 경고선 = baseline − tolerance */
+  floor: number;
+}
+
+/**
+ * 쪽별 성능 중앙값을 기준선과 비교한다. 같은 방식(method)일 때만 보고, 기준선에 없는 쪽(최신 날짜 등 — 경로가 바뀌는 쪽은
+ * `{latest-date}` 키로 둔다)은 건너뛴다. 경고만 — 작업을 실패시키지 않는다.
+ */
+export function findRegressions(
+  rows: readonly LighthouseRow[],
+  baseline: LighthouseBaseline,
+  method: string,
+): Regression[] {
+  if (method !== baseline.method) return [];
+  return rows.flatMap((r) => {
+    const key = /^\/news\/\d{4}-\d{2}-\d{2}\/$/.test(r.path)
+      ? "{latest-date}"
+      : r.path;
+    const base = baseline.performance[key];
+    if (base === undefined || !Number.isFinite(r.performance.median)) return [];
+    const floor = base - baseline.tolerance;
+    return r.performance.median < floor
+      ? [{ path: r.path, median: r.performance.median, baseline: base, floor }]
+      : [];
+  });
+}
+
+/** Step Summary에 덧붙이는 회귀 감시 문단 */
+export function formatRegressionSummary(
+  regressions: readonly Regression[],
+  baseline: LighthouseBaseline,
+  method: string,
+): string {
+  if (method !== baseline.method)
+    return `\n회귀 감시: ${method} 실행이라 건너뜀(기준선은 ${baseline.method} — ${baseline.measuredAt})\n`;
+  const head = `\n회귀 감시(warn — D78): 쪽별 성능 중앙값 < 기준선 − ${baseline.tolerance} (기준선 ${baseline.measuredAt} · ${baseline.source})`;
+  if (regressions.length === 0) return `${head}: **이상 없음**\n`;
+  return [
+    `${head}: **${regressions.length}쪽 경고**`,
+    ...regressions.map(
+      (r) =>
+        `- warn: \`${r.path}\` 성능 ${r.median} < ${r.floor} (기준선 ${r.baseline})`,
+    ),
+    "",
+  ].join("\n");
 }
