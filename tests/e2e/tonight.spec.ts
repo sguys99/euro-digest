@@ -135,14 +135,22 @@ test.describe("오늘 밤 볼 경기", () => {
     ).toHaveAttribute("href", `${basePath}/tonight/`);
   });
 
-  test("/tonight/ — h1 · 같은 카드 · 창 안내 · 선정 기준(설정 값) · 내비 현재 탭 없음", async ({
+  test("/tonight/ — h1 · 같은 카드 · 창 안내 · 선정 기준(설정 값) · 현재 탭은 상단 내비 '오늘 밤'만(하단 탭에는 항목 없음 — M5-12 · D76)", async ({
     page,
   }) => {
     await open(page, "tonight/");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "오늘 밤 볼 경기",
     );
-    await expect(page.locator('[aria-current="page"]')).toHaveCount(0);
+    const current = page.locator('[aria-current="page"]');
+    await expect(current).toHaveCount(1);
+    await expect(current).toHaveText("오늘 밤");
+    await expect(
+      page.locator('nav[aria-label="주요 메뉴"] [aria-current="page"]'),
+    ).toHaveAttribute("href", `${basePath}/tonight/`);
+    await expect(
+      page.locator('nav[aria-label="하단 탭"] [aria-current]'),
+    ).toHaveCount(0);
     if (tonight.cards.length > 0 && (await sameBase(page))) {
       await expect(
         page.locator("[data-slot=tonight-page] [data-slot=tonight-row]"),

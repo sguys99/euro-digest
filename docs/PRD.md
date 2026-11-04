@@ -137,7 +137,7 @@
 ### 4.1 내비게이션
 - **모바일**: 하단 탭 바 5개 — 홈 · 뉴스 · 리그 · 한국 선수 · 마이
   (이적·A매치·오늘 밤은 홈 섹션과 상단 메뉴에서 진입)
-- **데스크톱**: 상단 헤더 내비 + 3단 레이아웃(좌: 대회/필터, 중: 피드, 우: 오늘 밤 경기·한국 선수·순위 미니 위젯)
+- **데스크톱**: 상단 헤더 내비(홈 · 뉴스 · 리그 · 오늘 밤 · 한국 선수 · 이적 · 마이 — 오늘 밤 · 이적은 상단에만, D76) + 3단 레이아웃(좌: 대회/필터, 중: 피드, 우: 오늘 밤 경기·한국 선수·순위 미니 위젯)
 - 전역: 검색, 다크/라이트 토글, 결과 가리기 토글 🆕, "마지막 업데이트 HH:MM KST" 표시 🆕
 
 ### 4.2 홈 화면 구성 (위 → 아래)
@@ -724,6 +724,7 @@
 | D73 | 일별 뉴스 월별 병합 (2026-11-03 사용자 결정 — M5-10) | `data/news/YYYY-MM.json` = NewsMonthFile { month, updatedAt, issues: NewsFile[] }(일별 호 값 그대로, 일별·월별 날짜 겹침 = 오류). 병합은 그 달 말일 + 90일이 지난 뒤 첫 수집 실행이 달 단위로 한 번(첫 병합 2027-01-29 — 월별 파일을 한 번만 써 git 용량 증가 억제). 날짜 페이지·카드 ID·공유 URL은 병합 전후 동일 | FR-34·FR-158, §8.4, plan M5-10·부록 A |
 | D74 | 구조화 데이터 적용 범위 · robots.txt 확정 · sitemap lastmod (2026-11-03 M5-03 구현 결정 — 오케스트레이터 보고, NFR-03) | ① **JSON-LD는 서버 렌더 정적 스크립트**(클라이언트 JS 0, `<`·`>`·`&` 이스케이프 — `src/lib/structured-data.ts`). 유형: 홈 `WebSite`+`Organization`(로고 없음 · 검색 `potentialAction` 없음 — Google 사이트링크 검색창 종료 · `/search/` noindex) · 날짜 호 `CollectionPage` + **이날의 5줄만 `NewsArticle`**(저자·발행처 = 유로 다이제스트, 본문 없음 · 브리핑 줄이 있을 때만) — **뉴스 카드는 싣지 않는다**(다른 매체 기사를 우리 NewsArticle로 표시하면 저자 사칭, 바깥 주소 ItemList는 Google 목록형 결과 대상 아님) · 팀 `SportsTeam`(이미지·로고 없음, UCL 외부 팀은 memberOf 생략) · `SportsEvent`는 **다가오는 경기만**(종료·진행 중·킥오프 미확정 제외 — 스코어·승패 없음, 장소 생략) 대회 10 · 팀 4 · `/tonight/` 선정 경기 · 한국 선수 상세 `Person`. NFR-03의 "NewsArticle"은 이 범위로 적용 ② og:type은 모두 website 유지(한 호는 기사 한 편이 아니라 지면) ③ **robots.txt는 만들지 않는다**(D59 확정 — basePath 아래 robots.txt는 크롤러가 읽지 않음), sitemap은 Search Console URL 접두어 속성 `https://sguys99.github.io/euro-digest/`에 직접 제출(사용자 작업) ④ 날짜 페이지 sitemap lastmod · dateModified = max(뉴스 파일 generatedAt, 그 호 카드에 걸린 삭제 요청 반영 시각 handledAt ?? requestedAt, 브리핑 파일 generatedAt) — 삭제 요청·브리핑 재작성 뒤에도 재크롤 신호 | NFR-03, FR-124·FR-143, plan M5-03 |
 | D75 | GoatCounter 연동 방식 (2026-11-03 — M5-04, 추천안 확정) | `count.v5.js`(버전 고정 + SRI)를 공개 사이트 주소에서만 지연 로드(로컬·견본·e2e 0). path는 basePath 포함 경로만(쿼리·해시 제외, count.js `q` 제거 — utm 미집계). 이벤트 `out/{호스트}` · `feed/{rss|ics|webcal}/{범위}` · `pwa/install` · `my/set` — 카드 ID·팀 slug·팔로우 목록·개수는 보내지 않는다(최소 수집). 원문 클릭률 분모는 페이지뷰 × 쪽당 카드 수 근사(노출 이벤트 없음). 대시보드는 비공개로 시작해 공개 3개월 뒤 KPI 재설정 때 다시 판단 | NFR-08·FR-141·§11.2, plan M5-04 |
+| D76 | `/tonight` 상단 내비 (2026-11-04 사용자 결정 — M5-12) | **1024 이상 상단 내비에만 '오늘 밤'**, 하단 탭 5개(홈 · 뉴스 · 리그 · 한국 선수 · 마이) 그대로(§4.1 '오늘 밤은 홈 섹션과 상단 메뉴에서 진입'). 순서 홈 · 뉴스 · 리그 · **오늘 밤** · 한국 선수 · 이적 · 마이(경기 화면끼리 묶음). 오늘 밤 가중치는 그대로 두고 분석만(`docs/research/m5-tonight-weights.md`) | §4.1 · FR-80~82 · NFR-13, plan M5-12 · M2-16, DECISIONS D1 §8 #2 · #3 |
 
 ### 15.1 남은 확인 사항 (M0에서 검증)
 basic_plan §12의 외부 확인 항목 중 **남은 것은 상표·저장소명(M0-31)과 2026-27 한국 선수 명단(M0-32)**이며, M0 검증 결과로 확정한 뒤 PRD 해당 항목을 갱신한다.

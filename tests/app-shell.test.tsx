@@ -27,12 +27,14 @@ function ticket(container: HTMLElement): HTMLElement {
   return el;
 }
 
-describe("내비 항목 — 최종 5개(홈·뉴스·리그·한국 선수·마이) + 상단 이적(PRD §4.1, M4-08)", () => {
-  it("홈·뉴스·리그·한국 선수·이적·마이, 있는 라우트로만 간다(리그 = 첫 대회 EPL — M2-10, 한국 선수 = 목록 M3-09, 마이 = M4-08)", () => {
+describe("내비 항목 — 최종 5개(홈·뉴스·리그·한국 선수·마이) + 상단 오늘 밤·이적(PRD §4.1, M4-08 · M5-12)", () => {
+  it("홈·뉴스·리그·오늘 밤·한국 선수·이적·마이, 있는 라우트로만 간다(리그 = 첫 대회 EPL — M2-10, 한국 선수 = 목록 M3-09, 마이 = M4-08, 오늘 밤 = M5-12)", () => {
     expect(NAV_ITEMS.map((item) => [item.key, item.label, item.href])).toEqual([
       ["home", "홈", routes.home()],
       ["news", "뉴스", routes.news()],
       ["league", "리그", routes.competition("EPL")],
+      // 오늘 밤(M5-12 — 2026-11-04 사용자 결정) — 상단 내비만, 리그와 한국 선수 사이
+      ["tonight", "오늘 밤", routes.tonight()],
       ["korean", "한국 선수", routes.koreanPlayers()],
       // 이적(M4-04) — 상단 내비만(PRD §4.1 하단 탭 5개 고정, 이적은 상단 메뉴)
       ["transfers", "이적", routes.transfers()],
@@ -43,13 +45,14 @@ describe("내비 항목 — 최종 5개(홈·뉴스·리그·한국 선수·마�
       true,
       true,
       true,
+      false,
       true,
       false,
       true,
     ]);
   });
 
-  it("하단 탭 다섯 항목 · 상단 내비 여섯 항목(+ 이적), 현재 페이지만 aria-current", () => {
+  it("하단 탭 다섯 항목 · 상단 내비 일곱 항목(+ 오늘 밤 · 이적), 현재 페이지만 aria-current", () => {
     render(
       <AppShell current="news" issue={ISSUE}>
         본문
@@ -63,6 +66,7 @@ describe("내비 항목 — 최종 5개(홈·뉴스·리그·한국 선수·마�
         "홈",
         "뉴스",
         "리그",
+        ...(top ? ["오늘 밤"] : []),
         "한국 선수",
         ...(top ? ["이적"] : []),
         "마이",
@@ -74,6 +78,7 @@ describe("내비 항목 — 최종 5개(홈·뉴스·리그·한국 선수·마�
         "/",
         "/news/",
         "/competitions/epl/",
+        ...(top ? ["/tonight/"] : []),
         "/korean-players/",
         ...(top ? ["/transfers/"] : []),
         "/my/",
@@ -82,6 +87,7 @@ describe("내비 항목 — 최종 5개(홈·뉴스·리그·한국 선수·마�
         null,
         "page",
         null,
+        ...(top ? [null] : []),
         null,
         ...(top ? [null] : []),
         null,

@@ -14,22 +14,43 @@ import { basePath } from "./support/site";
 /** 경계 폭 — 1023 이하 1단 · 1024~1279 2단 · 1280 이상 3단(M1은 마주 보는 면이 없어 1280 이상도 목차 · 지면 2단, 404는 지면 한 열) */
 const WIDTHS = [375, 1023, 1024, 1279, 1280] as const;
 
-/** 셸을 쓰는 페이지 — [goto 경로, 현재 탭(없으면 null), h1] */
-const PAGES = [
+/** 셸을 쓰는 페이지 — [goto 경로, 현재 탭(없으면 null — `currentTop`은 상단 내비만 다를 때), h1] */
+const PAGES: readonly {
+  path: string;
+  current: string | null;
+  currentTop?: string;
+  h1: string;
+}[] = [
   { path: "./", current: "홈", h1: "유로 다이제스트" },
   { path: "news/", current: "뉴스", h1: "뉴스" },
-  // 오늘 밤(M2-14) — 내비 항목이 없는 페이지(홈 섹션에서 진입 — PRD §4.1)
-  { path: "tonight/", current: null, h1: "오늘 밤 볼 경기" },
+  // 오늘 밤(M2-14) — 상단 내비에만 항목이 있다(M5-12 — 하단 탭 5개 고정, PRD §4.1 · D76)
+  {
+    path: "tonight/",
+    current: null,
+    currentTop: "오늘 밤",
+    h1: "오늘 밤 볼 경기",
+  },
   {
     path: "this-page-does-not-exist/",
     current: null,
     h1: "페이지를 찾을 수 없습니다",
   },
-] as const;
+];
 
 const NAV_LABELS = ["홈", "뉴스", "리그", "한국 선수", "마이"];
-/** 상단 내비(1024 이상) — 이적(M4-04)은 상단에만(PRD §4.1 하단 탭 5개 고정), 순서는 한국 선수와 마이 사이(M4-08, DECISIONS D2 §9 #24) */
-const TOP_LABELS = ["홈", "뉴스", "리그", "한국 선수", "이적", "마이"];
+/**
+ * 상단 내비(1024 이상) — 오늘 밤(M5-12)·이적(M4-04)은 상단에만(PRD §4.1 하단 탭 5개 고정). 이적은 한국 선수와 마이 사이(M4-08,
+ * DECISIONS D2 §9 #24), 오늘 밤은 리그와 한국 선수 사이(DECISIONS D1 §8 #2)
+ */
+const TOP_LABELS = [
+  "홈",
+  "뉴스",
+  "리그",
+  "오늘 밤",
+  "한국 선수",
+  "이적",
+  "마이",
+];
 
 // 폭은 테스트가 정하므로 desktop 프로젝트에서 한 번만 돈다(모바일 에뮬레이션이 필요한 sticky 검사는 아래 따로)
 function desktopOnly(projectName: string): void {
@@ -52,7 +73,7 @@ for (const width of WIDTHS) {
     test.use({ viewport: { width, height: 800 } });
 
     for (const target of PAGES) {
-      test(`${target.path} — 가로 넘침 0 · ${wide ? "상단 내비" : "하단 탭"}만 보임(홈·뉴스·리그·한국 선수·마이 + 상단 이적 — M4-08) · 현재 탭 · h1 하나`, async ({
+      test(`${target.path} — 가로 넘침 0 · ${wide ? "상단 내비" : "하단 탭"}만 보임(홈·뉴스·리그·한국 선수·마이 + 상단 오늘 밤·이적 — M4-08 · M5-12) · 현재 탭 · h1 하나`, async ({
         page,
       }, testInfo) => {
         desktopOnly(testInfo.project.name);
@@ -78,7 +99,11 @@ for (const width of WIDTHS) {
             `${basePath}/news/`,
           );
           const current = nav.locator('[aria-current="page"]');
-          if (target.current) await expect(current).toHaveText(target.current);
+          const expected =
+            nav === top
+              ? (target.currentTop ?? target.current)
+              : target.current;
+          if (expected) await expect(current).toHaveText(expected);
           else await expect(current).toHaveCount(0);
         }
 
@@ -543,9 +568,9 @@ test.describe("터치 타깃·포커스 링(DESIGN §9.1·§10)", () => {
           );
         }
       }
-      // 건너뛰기 · 워드마크 · 검색 버튼(M4-14) · 테마 토글 · 결과 가리기 스위치(M4-15) · (1024 이상 상단 내비 6 — 리그 M2-10 · 한국 선수 M3-09 · 이적 M4-04 · 마이 M4-08) · 뒤표지 6(AI 작성 고지 ·
+      // 건너뛰기 · 워드마크 · 검색 버튼(M4-14) · 테마 토글 · 결과 가리기 스위치(M4-15) · (1024 이상 상단 내비 7 — 리그 M2-10 · 한국 선수 M3-09 · 이적 M4-04 · 마이 M4-08 · 오늘 밤 M5-12) · 뒤표지 6(AI 작성 고지 ·
       // 소개·출처 정책 · 삭제·정정 요청 — M1-36 · 개인정보 처리방침 — M5-05 · 발행 상태 — M5-15 · GitHub) · 뒤표지 구독 단 10(RSS 2 · 대회 6 · 캘린더 구독 webcal + .ics 받기 — M4-12 · M4-16) · (1023 이하 하단 탭 5)
-      expect(checked).toBe(width >= 1024 ? 27 : 26);
+      expect(checked).toBe(width >= 1024 ? 28 : 26);
       expect(problems).toEqual([]);
     });
   }

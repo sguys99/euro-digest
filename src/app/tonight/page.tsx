@@ -79,6 +79,7 @@ export default function TonightPage() {
   return (
     <AppShell
       issue={issue}
+      current="tonight"
       facing={rules ? criteria("facing") : undefined}
       facingLabel="선정 기준"
     >
