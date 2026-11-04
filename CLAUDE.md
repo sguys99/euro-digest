@@ -48,7 +48,7 @@
 - **LLM**: `@anthropic-ai/sdk` — 일일 브리핑은 Messages API 단건, 주간 2곳은 Message Batches API(PRD §15 D28). 기본 `LLM_MODEL=claude-haiku-5-5`. 호출은 `scripts/lib/llm.ts`에서만
 - **수집·데이터**: rss-parser, 경량 HTML 파서(목록·OG 메타만) / football-data.org(주), API-Football(보조), 어댑터 구조
 - **검색·분석**: Pagefind(빌드 후 인덱싱) / GoatCounter(쿠키리스, 허용되는 유일한 서드파티 스크립트)
-- **테스트·품질**: Vitest(+Testing Library), Playwright(스크린샷·링크·접근성) / ESLint, Prettier(+tailwind 플러그인)
+- **테스트·품질**: Vitest(+Testing Library), Playwright(스크린샷·링크·접근성), Lighthouse CI(`@lhci/cli` 0.15.1 — dev 전용 측정 도구, 배포물·외부 업로드 없음, PRD §15 D78) / ESLint, Prettier(+tailwind 플러그인)
 - **배포**: GitHub Actions → GitHub Pages(`actions/deploy-pages`), `https://sguys99.github.io/euro-digest`
 
 ## 4. 디자인 프로세스 (DR-00 — 필수)
@@ -105,7 +105,8 @@ npm run quality:sample -- --from D1 --to D2   # M1-43 브리핑 20줄·카드 20
 npm run build:players [-- --dry]     # 경기 원장 → data/players/korean.json 재생성(수집 실행도 같은 단계를 돈다, M3-03)
 npm run validate                     # configs·data 스키마 + 발행 검증 게이트
 npm run check                        # typecheck + lint + test (커밋 전 필수)
-npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린샷 / 번들 크기 예산 + 비밀값 grep
+npm run test:e2e / check:bundle      # Playwright 링크·접근성·스크린샷 / 번들 크기 예산 + 비밀값 검사(out/ 전체 — 키 모양 패턴·PEM·API 키 헤더·env 실제 값 대조)
+npm run lighthouse [-- --method simulate] [--assert]   # Lighthouse 모바일 10쪽 × 3회(lighthouserc.json — error LCP·CLS·접근성·SEO / warn 성능·회귀 감시 lighthouse-baseline.json, D78). CI는 ci.yml lighthouse job(main push·PR·수동 — 배포와 병렬)
 npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) → 기초 컴포넌트 e2e (공개 빌드에는 견본 없음)
 ```
 
