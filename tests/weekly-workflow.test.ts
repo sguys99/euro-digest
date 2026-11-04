@@ -185,14 +185,43 @@ describe("weekly job 단계 — 주간 작업 → 검증 → 빌드 → 커밋 (
     expect(run(STEP.chromium)).toBe(
       "npx playwright install --with-deps chromium",
     );
+  });
+
+  it("OG 강등(M5-13 — PRD §15 D77) — 확인 · 캐시 · 설치는 continue-on-error, 경고 단계, 빌드는 OG_BUILD_MODE=soft, 실패 단계 기록에 og 키 없음", () => {
+    for (const name of [
+      STEP.og,
+      "Playwright 브라우저 캐시 (OG 이미지)",
+      STEP.chromium,
+    ]) {
+      expect([
+        name,
+        stepKey(stepNamed(steps, name), "continue-on-error"),
+      ]).toEqual([name, "true"]);
+    }
+    expect(Number(stepKey(stepNamed(steps, STEP.og), "timeout-minutes"))).toBe(
+      2,
+    );
+    expect(
+      Number(stepKey(stepNamed(steps, STEP.chromium), "timeout-minutes")),
+    ).toBe(4);
+    const warn = stepNamed(steps, "OG 준비 실패 경고");
+    expect(stepKey(warn, "if")).toBe(
+      "steps.og.outcome == 'failure' || steps.chromium.outcome == 'failure'",
+    );
+    expect(runOf(warn)).toContain("::warning title=OG 이미지 준비 실패");
+    const names = steps.map((s) => s.name);
+    expect(names.indexOf(warn.name)).toBeGreaterThan(
+      names.indexOf(stepNamed(steps, STEP.chromium).name),
+    );
+    expect(names.indexOf(warn.name)).toBeLessThan(
+      names.indexOf(stepNamed(steps, STEP.build).name),
+    );
+    expect(stepNamed(steps, STEP.build).body).toMatch(
+      /^ {10}OG_BUILD_MODE: soft$/m,
+    );
     const stopped = run(STEP.stopped);
-    expect(stopped).toContain('step="og"');
-    expect(stopped.indexOf("$OG_OUTCOME")).toBeGreaterThan(
-      stopped.indexOf("$VALIDATE_OUTCOME"),
-    );
-    expect(stopped.indexOf("$OG_OUTCOME")).toBeLessThan(
-      stopped.indexOf("$BUILD_OUTCOME"),
-    );
+    expect(stopped).not.toContain('step="og"');
+    expect(stopped).not.toContain("OG_OUTCOME");
   });
 
   it("되돌리기 — discard가 있을 때만, 경로 형식을 다시 확인하고 HEAD로 되돌린다", () => {

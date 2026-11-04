@@ -53,8 +53,17 @@ function only(head: OgHead, key: string): string {
   return values[0]!;
 }
 
-/** 쪽 → 기대 이미지 경로(basePath 없음) */
+/**
+ * 쪽 → 기대 이미지 경로(basePath 없음). 그 카드의 PNG가 빌드 결과에 없으면 기본 OG로 접힌다(M5-13 — PRD §15 D77: 발행 경로의 굽기
+ * 강등. src/lib/seo.ts `bakedOgCard`). CI 빌드는 엄격 모드라 아래 '빌드 결과' 테스트가 날짜 · 쪽 이름형 PNG가 있는지 따로 본다.
+ */
 function expectedOg(urlPath: string): string {
+  const wanted = wantedOg(urlPath);
+  return outPngSet.has(wanted) ? wanted : "/og/default.png";
+}
+
+/** 쪽 → 그 쪽 카드의 이미지 경로(접기 전) */
+function wantedOg(urlPath: string): string {
   if (urlPath === "/news/" && LATEST) return `/og/news/${LATEST}.png`;
   const date = /^\/news\/(\d{4}-\d{2}-\d{2})\/$/.exec(urlPath)?.[1];
   if (date) return `/og/news/${date}.png`;
@@ -78,6 +87,8 @@ function outOgPngs(dir: string = path.join(outDir, "og")): string[] {
       : [];
   });
 }
+
+const outPngSet = new Set(outOgPngs());
 
 test("빌드 결과 — out/og/에 기본 · 쪽 이름형 · 날짜 · 대회 · 팀 OG가 있다", () => {
   const files = new Set(outOgPngs());

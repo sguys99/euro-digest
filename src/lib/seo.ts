@@ -1,7 +1,8 @@
 /**
  * 기본 SEO — 페이지별 title·description·canonical·OG·twitter 메타, sitemap 항목 (PRD FR-124·NFR-03, plan M1-38)
  *
- * 순수 함수만 둔다(파일 읽기는 페이지·`src/app/sitemap.ts`가 로더로). 화면 코드는 이 모듈로 메타를 만들고 손으로 조립하지 않는다.
+ * 순수 함수만 둔다(파일 읽기는 페이지·`src/app/sitemap.ts`가 로더로 — 예외 하나: OG PNG가 있는지 `ogPngExists`, 아래 og:image).
+ * 화면 코드는 이 모듈로 메타를 만들고 손으로 조립하지 않는다.
  *
  * 규칙
  * - **Next 메타데이터는 얕게 합쳐진다** — 페이지가 `openGraph`·`alternates`를 주면 레이아웃 값을 통째로 덮는다. 그래서 레이아웃
@@ -13,6 +14,8 @@
  * - **og:image**(M5-01 — PRD §15 D71 ②): 모든 페이지가 OG 이미지 하나(절대 URL · 1200×630 · `og:image:alt`)를 싣는다. 어느 쪽이 어떤
  *   이미지를 쓰는지는 src/lib/og.ts(기본 · 날짜 · 쪽 이름형 · 대회 · 팀 — 페이지가 `og` 카드를 넘긴다, 없으면 기본). twitter 카드는
  *   `summary_large_image`(twitter:image = og:image). 이미지 파일은 빌드 때 scripts/build-og.ts가 같은 카드로 굽는다.
+ *   **있는 PNG만 가리킨다**(M5-13 — PRD §15 D77): 발행 경로에서 굽기가 실패해 그 카드의 PNG가 public/og에 없으면 기본 카드
+ *   (`/og/default.png` · 기본 alt)로 접는다(src/lib/data/og-files.ts — 빌드 첫 단계가 굽고 난 뒤의 파일을 본다).
  * - **결과 노출 0**(DECISIONS D0 §5 #9 — 링크 미리보기는 결과 가리기로 막을 수 없다): title·description·OG에 경기 결과(스코어)를
  *   넣지 않는다. 날짜 페이지 설명은 호수·날짜·카드 수 같은 사실만 쓰고, 뉴스 원제목도 넣지 않는다(원제목 인용 — D23).
  *   `pageMetadata`가 스코어 모양("2-1"·"2:1"·"2대1")을 만나면 던진다(빌드 실패 — 개발 중 실수를 막는 마지막 방어선). `og:image:alt`도
@@ -23,6 +26,7 @@
  */
 import type { Metadata, MetadataRoute } from "next";
 
+import { ogPngExists } from "@/lib/data/og-files";
 import { RSS_MIME, type FeedLink } from "@/lib/feed-links";
 import { archiveDateLabel } from "@/lib/news/archive";
 import { issueNumber } from "@/lib/issue";
@@ -101,14 +105,30 @@ function assertNoScore(field: string, text: string): void {
   }
 }
 
+/**
+ * 페이지에 싣는 카드 — 그 카드의 PNG가 public/og에 있으면 그대로, 없으면 기본 카드(머리 주석 og:image · D77).
+ * `exists`는 테스트용(기본 = 파일 확인).
+ */
+export function bakedOgCard(
+  card: OgCard,
+  exists: (sitePath: string) => boolean = ogPngExists,
+): OgCard {
+  if (card.kind === "default") return card;
+  return exists(artifacts.ogImage(ogImageOf(card))) ? card : DEFAULT_OG_CARD;
+}
+
 /** OG 이미지 메타 값 — 절대 URL(SITE_URL + basePath) · 1200×630 · alt(src/lib/og.ts 문형). alt에 스코어 모양이 있으면 던진다 */
-export function ogImageMeta(card: OgCard = DEFAULT_OG_CARD): {
+export function ogImageMeta(
+  wanted: OgCard = DEFAULT_OG_CARD,
+  exists?: (sitePath: string) => boolean,
+): {
   url: string;
   width: number;
   height: number;
   alt: string;
   type: "image/png";
 } {
+  const card = bakedOgCard(wanted, exists);
   const alt = ogAlt(card);
   assertNoScore("og:image:alt", alt);
   return {

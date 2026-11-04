@@ -10,6 +10,10 @@
  *   `public/`과 함께 올린다. 목록에 없는 PNG(시즌 전환으로 빠진 팀 등)는 지운다. 구울 것이 없으면 브라우저를 띄우지 않는다.
  * - `--check`: 굽지 않고 구울 장 수만 낸다 — 워크플로가 Chromium 설치 여부를 정한다(`$GITHUB_OUTPUT`에 `stale=<n>`).
  * - `--force`: 해시와 무관하게 전부 다시 굽는다(144장 약 6초).
+ * - **강등**(M5-13 — PRD §15 D77, scripts/lib/og-degrade.ts): 기본은 엄격 — 굽기 실패는 exit 1(ci.yml check job · 로컬 빌드가 템플릿
+ *   회귀를 잡는다). 발행 경로(collect · weekly · deploy 빌드 단계)는 `OG_BUILD_MODE=soft`(또는 `--soft`)로 돌려 Chromium이 없거나 굽기가
+ *   실패해도 경고 · 구조화 로그 · Step Summary만 남기고 다음 단계(next build)로 간다. 못 구운 쪽의 메타는 `/og/default.png`로 접히고
+ *   (src/lib/seo.ts — 있는 PNG만 가리킨다), 다음 빌드가 다시 굽는다(PNG가 없거나 꼬리표가 달라 `stale`).
  * 네트워크 · 외부 이미지 없음. Chromium이 없으면 `npx playwright install chromium`.
  */
 import { appendFileSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
@@ -17,7 +21,14 @@ import path from "node:path";
 
 import { OG_HEIGHT, OG_WIDTH } from "@/lib/og";
 
-import { createLogger } from "./lib/logger";
+import { annotate, createLogger } from "./lib/logger";
+import {
+  failureMessage,
+  ogBuildMode,
+  ogSummaryMarkdown,
+  ogWarning,
+  type OgFailure,
+} from "./lib/og-degrade";
 import { writeOgHash } from "./lib/og-png";
 import {
   ogFileOf,
@@ -72,12 +83,24 @@ async function placeCard(args: {
   return null;
 }
 
+/**
+ * 찍기 — 엄격 모드는 첫 실패에서 던지고, 느슨한 모드(`soft`)는 장마다 실패를 모아 돌려준다(브라우저를 띄우지 못하면 전부 실패).
+ */
 async function render(
   stale: OgPlanItem[],
   fonts: OgFontInput[],
-): Promise<void> {
+  soft: boolean,
+): Promise<OgFailure[]> {
+  const failures: OgFailure[] = [];
   const { chromium } = await import("@playwright/test");
-  const browser = await chromium.launch();
+  let browser: Awaited<ReturnType<typeof chromium.launch>>;
+  try {
+    browser = await chromium.launch();
+  } catch (error) {
+    if (!soft) throw error;
+    const message = `Chromium 실행 실패 — ${failureMessage(error)}`;
+    return stale.map((item) => ({ path: item.path, message }));
+  }
   try {
     const context = await browser.newContext({
       viewport: { width: OG_WIDTH, height: OG_HEIGHT },
@@ -89,23 +112,64 @@ async function render(
     await page.setContent(OG_DOCUMENT);
     await page.evaluate(loadFontsInPage, fonts);
     for (const item of stale) {
-      const problem = await page.evaluate(placeCard, {
-        html: ogCardHtml(item.card),
-        faces: fonts.length,
-      });
-      if (problem) throw new Error(`${item.path}: ${problem}`);
-      const png = await page.screenshot({
-        type: "png",
-        clip: { x: 0, y: 0, width: OG_WIDTH, height: OG_HEIGHT },
-        animations: "disabled",
-        caret: "hide",
-      });
-      const file = ogFileOf(item.path);
-      mkdirSync(path.dirname(file), { recursive: true });
-      writeFileSync(file, writeOgHash(png, item.hash));
+      try {
+        const problem = await page.evaluate(placeCard, {
+          html: ogCardHtml(item.card),
+          faces: fonts.length,
+        });
+        if (problem) throw new Error(`${item.path}: ${problem}`);
+        const png = await page.screenshot({
+          type: "png",
+          clip: { x: 0, y: 0, width: OG_WIDTH, height: OG_HEIGHT },
+          animations: "disabled",
+          caret: "hide",
+        });
+        const file = ogFileOf(item.path);
+        mkdirSync(path.dirname(file), { recursive: true });
+        writeFileSync(file, writeOgHash(png, item.hash));
+      } catch (error) {
+        if (!soft) throw error;
+        failures.push({ path: item.path, message: failureMessage(error) });
+      }
     }
+  } catch (error) {
+    // 문서 · 글꼴 준비 단계 실패(느슨한 모드 — 장마다의 실패는 위에서 잡으므로 여기는 찍기 전) — 전부 못 구움
+    if (!soft) throw error;
+    const message = failureMessage(error);
+    return stale.map((item) => ({ path: item.path, message }));
   } finally {
-    await browser.close();
+    await browser.close().catch(() => undefined);
+  }
+  return failures;
+}
+
+/** 느슨한 모드 실패 보고 — 경고 주석 · 구조화 로그 · Step Summary · 단계 출력 `og_failed` */
+function reportDegraded(
+  failures: readonly OgFailure[],
+  log: ReturnType<typeof createLogger>,
+): void {
+  const { title, message } = ogWarning(failures);
+  annotate("warning", message, { title });
+  log.warn("build.og.degraded", {
+    failed: failures.length,
+    paths: failures.flatMap((f) => (f.path ? [f.path] : [])).slice(0, 20),
+    reason: failures[0]?.message ?? "",
+  });
+  try {
+    if (process.env.GITHUB_STEP_SUMMARY) {
+      appendFileSync(
+        process.env.GITHUB_STEP_SUMMARY,
+        ogSummaryMarkdown(failures),
+      );
+    }
+    if (process.env.GITHUB_OUTPUT) {
+      appendFileSync(
+        process.env.GITHUB_OUTPUT,
+        `og_failed=${failures.length}\n`,
+      );
+    }
+  } catch {
+    // 요약 · 출력 쓰기 실패로 빌드를 멈추지 않는다(경고 주석은 이미 남았다)
   }
 }
 
@@ -113,7 +177,17 @@ async function main(): Promise<void> {
   const args = new Set(process.argv.slice(2));
   const log = createLogger({ scope: "build-og" });
   const started = Date.now();
-  const plan = planOgImages({ force: args.has("--force") });
+  const mode = ogBuildMode(process.env, args);
+  const soft = mode === "soft";
+
+  let plan: ReturnType<typeof planOgImages>;
+  try {
+    plan = planOgImages({ force: args.has("--force") });
+  } catch (error) {
+    if (!soft || args.has("--check")) throw error;
+    reportDegraded([{ path: null, message: failureMessage(error) }], log);
+    return;
+  }
 
   if (args.has("--check")) {
     log.info("build.og.check", {
@@ -128,10 +202,14 @@ async function main(): Promise<void> {
   }
 
   for (const orphan of plan.orphans) rmSync(ogFileOf(orphan));
-  if (plan.stale.length > 0) await render(plan.stale, plan.fonts);
+  const failures =
+    plan.stale.length > 0 ? await render(plan.stale, plan.fonts, soft) : [];
+  if (failures.length > 0) reportDegraded(failures, log);
   log.info("build.og.done", {
+    mode,
     total: plan.items.length,
-    rendered: plan.stale.length,
+    rendered: plan.stale.length - failures.length,
+    failed: failures.length,
     skipped: plan.items.length - plan.stale.length,
     removed: plan.orphans.length,
     elapsedMs: Date.now() - started,

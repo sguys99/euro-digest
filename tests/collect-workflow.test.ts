@@ -45,6 +45,7 @@ const STEP = {
   validate: "검증 게이트",
   og: "OG 이미지 확인",
   chromium: "Chromium 설치 (OG 이미지)",
+  ogWarn: "OG 준비 실패 경고",
   build: "정적 빌드",
   commit: "data 커밋",
   preserve: "실패 실행 기록 보존",
@@ -58,7 +59,7 @@ function run(prefix: string): string {
 }
 
 describe("collect job 단계 — 수집 → 검증 → 빌드 → 커밋 (검증·빌드 실패 시 커밋하지 않음)", () => {
-  it("단계 순서: 기준 커밋 → 설치 → 수집 → 실행 이슈 → 검증 게이트 → OG 이미지 확인 → Chromium 설치 → 정적 빌드 → data 커밋 → 실패 실행 기록 보존 → 실패 단계 기록(마지막)", () => {
+  it("단계 순서: 기준 커밋 → 설치 → 수집 → 실행 이슈 → 검증 게이트 → OG 이미지 확인 → Chromium 설치 → OG 준비 실패 경고 → 정적 빌드 → data 커밋 → 실패 실행 기록 보존 → 실패 단계 기록(마지막)", () => {
     const order = Object.values(STEP).map((name) =>
       steps.findIndex((s) => s.name.startsWith(name)),
     );
@@ -111,13 +112,47 @@ describe("collect job 단계 — 수집 → 검증 → 빌드 → 커밋 (검증
     );
   });
 
-  it("job 수준 continue-on-error가 없고, step 수준은 실행 이슈 보고 하나뿐", () => {
+  it("OG 강등(M5-13 — PRD §15 D77): 확인 · 캐시 · 설치가 실패해도 발행을 계속한다 — continue-on-error · 경고 단계 · 빌드는 OG_BUILD_MODE=soft", () => {
+    for (const name of [
+      STEP.og,
+      "Playwright 브라우저 캐시 (OG 이미지)",
+      STEP.chromium,
+    ]) {
+      expect([
+        name,
+        stepKey(stepNamed(steps, name), "continue-on-error"),
+      ]).toEqual([name, "true"]);
+    }
+    const warn = stepNamed(steps, STEP.ogWarn);
+    expect(stepKey(warn, "if")).toBe(
+      "steps.og.outcome == 'failure' || steps.chromium.outcome == 'failure'",
+    );
+    expect(run(STEP.ogWarn)).toContain(
+      "::warning title=OG 이미지 준비 실패 — 발행 계속::",
+    );
+    expect(run(STEP.ogWarn)).toContain('>> "$GITHUB_STEP_SUMMARY"');
+    expect(warn.body).not.toMatch(/github\.token|GITHUB_TOKEN|GH_TOKEN/);
+    const build = stepNamed(steps, STEP.build);
+    expect(build.body).toMatch(/^ {10}OG_BUILD_MODE: soft$/m);
+    expect(run(STEP.build)).toBe("npm run build");
+    // 실패 단계 기록에 OG 원인 키가 없다 — OG는 job을 실패시키지 않는다
+    expect(run(STEP.stopped)).not.toContain('step="og"');
+    expect(run(STEP.stopped)).not.toContain("OG_OUTCOME");
+  });
+
+  it("job 수준 continue-on-error가 없고, step 수준은 실행 이슈 보고 · OG 준비 3단계뿐", () => {
     expect(collectJob).not.toMatch(/^ {4}continue-on-error:/m);
     expect(
       steps
         .filter((s) => stepKey(s, "continue-on-error") !== null)
         .map((s) => s.name),
-    ).toEqual(["실행 이슈 보고 (소스 · 부분 실패 · 이적 감지)"]);
+    ).toEqual([
+      "실행 이슈 보고 (소스 · 부분 실패 · 이적 감지)",
+      // OG 준비 강등(M5-13 — PRD §15 D77): 실패해도 빌드 · 커밋 · 배포를 계속한다
+      "OG 이미지 확인 (npm run build:og -- --check)",
+      "Playwright 브라우저 캐시 (OG 이미지)",
+      "Chromium 설치 (OG 이미지)",
+    ]);
   });
 
   it("run 단계는 모두 step 상한이 있고, 가장 큰 step 상한 + 5분 ≤ job 상한 — step 시간 초과가 job 시간 초과보다 먼저 와 실패 단계 기록이 돈다", () => {
@@ -352,8 +387,6 @@ describe("실패 단계 기록 → 실패 이슈 메모 (FR-152)", () => {
       "install",
       "collect",
       "validate",
-      "og",
-      "chromium",
       "build",
       "commit",
       "preserve",
@@ -366,7 +399,6 @@ describe("실패 단계 기록 → 실패 이슈 메모 (FR-152)", () => {
       "$INSTALL_OUTCOME",
       "$COLLECT_OUTCOME",
       "$VALIDATE_OUTCOME",
-      "$OG_OUTCOME",
       "$BUILD_OUTCOME",
       "$COMMIT_OUTCOME",
       "$PRESERVE_OUTCOME",
@@ -384,7 +416,6 @@ describe("실패 단계 기록 → 실패 이슈 메모 (FR-152)", () => {
       "install",
       "collect",
       "validate",
-      "og",
       "build",
       "commit",
       "setup",

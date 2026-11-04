@@ -20,7 +20,8 @@
 #      `today`는 자정을 넘긴 실행에서 수집이 쓴 파일과 어긋난다.
 #   ⑤ 정적 빌드 `npm run build` — 빌드가 깨지는 데이터는 커밋하지 않는다(배포용 빌드는 deploy.yml이 커밋 SHA로 다시 한다).
 #      앞에 OG 이미지 확인 → (구울 것이 있으면) Playwright 브라우저 캐시 · Chromium 설치(M5-01). 빌드 첫 단계가 입력이 바뀐 OG PNG만
-#      굽고(평소 새 호 날짜 1장), ⑥이 public/og와 함께 커밋한다 — 배포 빌드는 다시 굽지 않는다.
+#      굽고(평소 새 호 날짜 1장), ⑥이 public/og와 함께 커밋한다 — 배포 빌드는 다시 굽지 않는다. OG 준비 · 굽기 실패는 발행을 멈추지
+#      않는다(M5-13 — PRD §15 D77: 경고 · Step Summary, 그 쪽 메타는 /og/default.png, 다음 빌드가 다시 굽는다).
 #   ⑥ data 커밋 · push — data/·public/ 변경분만 `chore(data): <publish_date> 발행`, `git pull --rebase` 뒤 push(rebase 충돌은
 #      push하지 않고 실패). 변경이 없으면 커밋·배포를 건너뛴다. rebase로 얹은 main의 새 커밋은 검증 게이트를 다시 거치지 않는다
 #      (deploy.yml은 빌드·번들·비밀값만 다시 본다 — 커밋 단계 주석).
@@ -171,7 +172,7 @@ jobs:
     # 계산해 경기 데이터 단계 예산·LLM 재시도를 그 안으로 묶는다(scripts/lib/collect-deadlines.ts, M1-47). 마감까지 성공하지
     # 못하면 코드 템플릿 게시는 M1-45. 마감이 이미 지났거나 3분도 남지 않은 실행(수동·지연 실행)은 시작 + 8분을 마감으로 쓴다.
     # step 상한과의 관계: run 단계에는 모두 step 상한을 둔다(기준 커밋 1 · 설치 4 · 수집 22 · 실행 이슈 3 · 검증 5 · OG 확인 2 ·
-    # Chromium 설치 4 · 빌드 10 · 커밋 5 · 실패 실행 기록 보존 3 · 실패 단계 기록 1분). step 시간 초과는 그 단계의 실패라 뒤의 실패
+    # Chromium 설치 4 · OG 준비 실패 경고 1 · 빌드 10 · 커밋 5 · 실패 실행 기록 보존 3 · 실패 단계 기록 1분). step 시간 초과는 그 단계의 실패라 뒤의 실패
     # 경로 단계·report-failure가 돈다. job 시간 초과는 job을 취소해 실패 경로 단계가 돌지 않으므로, "한 단계가 상한까지 걸리고 나머지는
     # 평소 시간"인 경우가 job 상한 안에 들어가게 둔다: 가장 긴 수집 22분 + 그 밖의 단계 실측 1분 반 안팎(준비·설치 약 25초, 검증·빌드·
     # 커밋 약 20초, OG 확인·브라우저 캐시·Chromium 설치·OG 1장 약 30초 — M5-01 추정) + 실패 실행 기록 보존 3분 + 실패 단계 기록 1분
@@ -340,8 +341,12 @@ jobs:
       # ⑤ 앞 — OG 이미지 준비(M5-01, PRD DR-10): 빌드 첫 단계(scripts/build-og.ts)가 새 호의 날짜 OG 등 입력이 바뀐 PNG만 Playwright
       #    Chromium으로 굽는다(나머지는 커밋된 public/og 그대로 — 평소 1장, 약 1초). 구울 것이 있을 때만 브라우저를 캐시에서 받고 설치한다
       #    (캐시 키는 ci.yml과 같다 — main의 CI가 저장한 캐시를 쓴다). 구운 PNG는 ⑥ data 커밋이 public/과 함께 올린다.
+      #    **강등**(M5-13 — PRD §15 D77): 공유 이미지 하나가 그날 발행을 막지 않는다. 확인 · 캐시 · 설치는 continue-on-error, 빌드는
+      #    OG_BUILD_MODE=soft — 굽지 못하면 경고 · Step Summary만 남기고 빌드 · 커밋 · 배포를 계속한다(그 쪽 메타는 /og/default.png).
+      #    빠진 PNG는 다음 빌드(deploy.yml 재빌드 · 다음 수집 실행 · 사람 push)가 다시 굽는다. 엄격 검사는 ci.yml check job이 맡는다.
       - name: OG 이미지 확인 (npm run build:og -- --check)
         id: og
+        continue-on-error: true
         timeout-minutes: 2
         run: |
           echo "playwright=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
@@ -349,6 +354,7 @@ jobs:
 
       - name: Playwright 브라우저 캐시 (OG 이미지)
         if: steps.og.outputs.stale != '0'
+        continue-on-error: true
         uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
@@ -358,13 +364,37 @@ jobs:
       - name: Chromium 설치 (OG 이미지)
         id: chromium
         if: steps.og.outputs.stale != '0'
+        continue-on-error: true
         timeout-minutes: 4
         run: npx playwright install --with-deps chromium
 
+      # 확인 · 설치가 실패해도 멈추지 않는다는 것을 실행 화면에 남긴다(굽기 자체의 실패는 빌드 단계의 build-og가 따로 경고한다).
+      - name: OG 준비 실패 경고 (발행 계속)
+        if: steps.og.outcome == 'failure' || steps.chromium.outcome == 'failure'
+        timeout-minutes: 1
+        env:
+          OG_OUTCOME: ${{ steps.og.outcome }}
+          CHROMIUM_OUTCOME: ${{ steps.chromium.outcome }}
+        run: |
+          echo "::warning title=OG 이미지 준비 실패 — 발행 계속::확인 ${OG_OUTCOME} · Chromium 설치 ${CHROMIUM_OUTCOME} — 빌드는 OG_BUILD_MODE=soft로 계속하고, 굽지 못한 쪽의 og:image는 /og/default.png로 접힙니다(다음 빌드가 다시 굽습니다)"
+          {
+            echo "## OG 이미지 준비 — 강등(발행 계속)"
+            echo ""
+            echo "| 단계 | 결과 |"
+            echo "|---|---|"
+            echo "| OG 이미지 확인 | ${OG_OUTCOME} |"
+            echo "| Chromium 설치 | ${CHROMIUM_OUTCOME:-skipped} |"
+            echo ""
+            echo "빌드 · 커밋 · 배포는 계속한다. 굽지 못한 쪽의 \`og:image\`는 \`/og/default.png\`를 가리키고, 다음 빌드가 다시 굽는다."
+          } >> "$GITHUB_STEP_SUMMARY" || echo "::warning title=요약 쓰기 실패::OG 준비 요약을 Step Summary에 쓰지 못했습니다"
+
       # ⑤ 빌드가 깨지는 데이터는 커밋하지 않는다. 배포용 빌드는 deploy.yml이 커밋한 SHA로 다시 한다.
+      #    OG_BUILD_MODE=soft — 위 강등 규칙(굽기 실패는 경고만, 단계 출력 og_failed). 그 밖의 빌드 실패는 그대로 멈춘다.
       - name: 정적 빌드 (npm run build)
         id: build
         timeout-minutes: 10
+        env:
+          OG_BUILD_MODE: soft
         run: npm run build
 
       # ⑥ data/·public/ 변경분만 github-actions[bot]으로 커밋 → main 최신으로 rebase → push. 커밋 메시지의 날짜는 수집 단계가
@@ -624,8 +654,6 @@ jobs:
           INSTALL_OUTCOME: ${{ steps.install.outcome }}
           COLLECT_OUTCOME: ${{ steps.collect.outcome }}
           VALIDATE_OUTCOME: ${{ steps.validate.outcome }}
-          OG_OUTCOME: ${{ steps.og.outcome }}
-          CHROMIUM_OUTCOME: ${{ steps.chromium.outcome }}
           BUILD_OUTCOME: ${{ steps.build.outcome }}
           COMMIT_OUTCOME: ${{ steps.commit.outcome }}
           PRESERVE_OUTCOME: ${{ steps.preserve.outcome }}
@@ -643,9 +671,6 @@ jobs:
           elif [ "$VALIDATE_OUTCOME" = "failure" ]; then
             reason="검증 게이트(npm run validate) 실패 — 커밋·배포 안 함, 전날 사이트 유지"
             step="validate"
-          elif [ "$OG_OUTCOME" = "failure" ] || [ "$CHROMIUM_OUTCOME" = "failure" ]; then
-            reason="OG 이미지 준비(확인·Chromium 설치) 실패 — 빌드·커밋·배포 안 함, 전날 사이트 유지"
-            step="og"
           elif [ "$BUILD_OUTCOME" = "failure" ]; then
             reason="정적 빌드(npm run build) 실패 — 커밋·배포 안 함, 전날 사이트 유지"
             step="build"
