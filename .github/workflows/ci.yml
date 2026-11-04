@@ -221,7 +221,7 @@ jobs:
             echo "| load average | $(cut -d' ' -f1-3 /proc/loadavg) |"
             echo "| 한글 시스템 글꼴 (fc-list :lang=ko) | ${ko_fonts:-없음} |"
             echo ""
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Lighthouse 측정 + 단언 (npm run lighthouse -- --assert)
         id: lighthouse
