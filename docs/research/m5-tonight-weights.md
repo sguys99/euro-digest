@@ -1,6 +1,6 @@
 # M5-12 · 오늘 밤 가중치 분석 (M2-16 이월 ④ — DECISIONS D1 §8 #3)
 
-> v0.1 · 2026-11-04 · 분석만 — **가중치는 바꾸지 않는다**(2026-11-04 사용자 결정). 다시 계산: `npx tsx scripts/tonight-weights.ts [--from D] [--to D] [--standings asof|current]`
+> v0.1 · 2026-11-04 · 분석만 — **가중치는 바꾸지 않는다**(2026-11-04 사용자 결정 — 유지 · 11월 말 재검토, §6). 다시 계산: `npx tsx scripts/tonight-weights.ts [--from D] [--to D] [--standings asof|current]`
 
 ## 0. 요약
 
@@ -116,7 +116,10 @@
 | 2026-11-04 (수) | 9 | aek-athens–real-madrid 5(UCL+빅클럽)<br>fenerbahce–liverpool 5(UCL+빅클럽)<br>rb-leipzig–manchester-city 5(UCL+빅클럽)<br>slavia-praha–arsenal 5(UCL+빅클럽)<br>borussia-dortmund–real-betis 5(UCL+빅클럽) | 같음 | 같음 |
 
 
-## 6. 사용자 결정이 필요한 것
+## 6. 결정 (2026-11-04 사용자 결정 — (A) 유지 · 11월 말 재검토)
+
+> **결정**: (A) 지금 가중치 유지, 11월 말(UCL 리그 페이즈 5·6차전 포함 7주치)에 이 스크립트로 다시 계산해 대안 A와 비교한다. 아래는 제시했던 선택지 기록이다.
+
 
 - (A, 추천) **지금 가중치 유지 · 11월 말 재확인** — 바뀌는 밤 4주 2번, 밀린 대형 경기 3경기. 비용 0
 - (B) **대안 A(한국 3)로 변경** — 밀린 대형 경기 3 → 1, 주말 한국 자리 44% → 40%. `bigmatch-rules.json` 숫자 하나 + `/tonight` 선정 기준 문단은 설정에서 읽으므로 그대로. 비용: 설정 1줄 · 단위 테스트 기대값 확인

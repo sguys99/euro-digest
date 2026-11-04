@@ -9,7 +9,7 @@
 - **기능 지원**(§2): 쓰는 CSS · JS 기능은 목표 브라우저에서 모두 지원된다. 미지원 기능 0 — 폴백 추가 없음. `color-mix()`는 Tailwind가 `@supports` 폴백을 이미 낸다.
 - **고친 것**(§3): **인덱스 탭 세로 글자가 WebKit에서 겹쳤다**(웹폰트에 세로 메트릭이 없어 WebKit이 글자 높이만큼만 띄움) → `writing-mode` 없이 한 자씩 쌓는 방식으로 바꿔 두 엔진이 같은 모양(크롬 이전 모양 그대로). `/status` 띠 라벨 "발행일"도 같은 방식.
 - **`/tonight` 상단 내비**(§4, 사용자 결정 2026-11-04): 리그와 한국 선수 사이에 '오늘 밤'. 1024~1440 × 라이트 · 다크 × 두 엔진 넘침 0.
-- **결정 필요**(§5): 360 폭 7자 팀명 말줄임 — 1023 이하 일정·결과 탭 배지 xs로 줄일지.
+- **결정**(§5, 2026-11-04 사용자): 360 폭 7자 팀명 → 1023 이하 일정·결과 탭 배지 xs 적용(말줄임 0) · WebKit e2e는 수동 실행만.
 
 ## 1. 엔진별 e2e
 
@@ -35,7 +35,7 @@ WebKit 실패 18건 분류:
 ### 1.1 WebKit 실행 환경 · CI
 
 - `playwright.config.ts`에 **`E2E_ENGINE=webkit` 선택 실행**을 넣었다 — 같은 두 프로젝트(mobile · desktop)를 Desktop Safari 기기 설정으로 돌린다. 테스트가 프로젝트 이름으로 폭을 나누므로 이름은 그대로 둔다. 기본값은 Chromium이라 CI(`ci.yml`)와 `npm run test:e2e`는 바뀌지 않는다.
-- **CI 기본 실행에는 넣지 않았다**: 같은 파일 묶음이 엔진 하나 더 → e2e 시간이 약 2배(CI 러너 3 worker 기준 지금 e2e job이 가장 길다). 넣는다면 ① 주 1회 `schedule` 별도 job ② 스모크 몇 개만 WebKit — 둘 중 하나를 권한다(§5 결정 2).
+- **CI 기본 실행에는 넣지 않는다 — 수동 실행만**(2026-11-04 사용자 결정, §5 #2): 같은 파일 묶음이 엔진 하나 더 → e2e 시간이 약 2배. 공개 전 · 큰 UI 변경 때 `E2E_ENGINE=webkit`으로 돌린다.
 - WebKit 설치: `npx playwright install webkit`(devDependency 변경 없음). Linux는 시스템 라이브러리(`libevent` · `libavif16` · `libgstreamer-plugins-bad1.0-0` · `libmanette` · `libwayland-server0` · `libwebpdemux2` 등)가 필요하다 — CI는 `npx playwright install --with-deps webkit`, sudo가 없는 개발 기기는 `apt-get download`로 받은 .deb를 풀어 브라우저 폴더의 `sys/lib`에 두고 `PLAYWRIGHT_BROWSERS_PATH`로 그 사본을 가리켜 돌렸다(이번 확인 방식).
 - **한계**: Playwright WebKit은 Linux용 WPE 빌드(글꼴 FreeType · HarfBuzz)라 iOS Safari(CoreText)와 글자 그리기 · 스크롤 · 주소창 · 안전 영역 동작이 다르다. 그래서 글자 모양 · 터치 동작은 실기기 목록(§5.4)에 남겼다.
 
@@ -85,9 +85,7 @@ WebKit 실패 18건 분류:
 - 넘침: 1024 · 1100 · 1200 · 1279 · 1280 · 1440 × 라이트 · 다크 × Chromium · WebKit, 홈 · `/news/` · `/tonight/` — 내비 · 페이지 가로 넘침 0, '마지막 업데이트'와의 간격 1024에서 317~320px, 링크 최소 48 × 44px.
 - 스크린샷: `docs/design/m5/screenshots/impl-m5-12-tonight-nav-*`.
 
-## 5. 사용자 결정이 필요한 것
+## 5. 결정 (2026-11-04 사용자 결정)
 
-1. **360 폭 7자 팀명 말줄임**(M2-16 이월 ②) — DECISIONS D1 §8 #11은 "칸보다 긴 어절(360 이하 폭)만 말줄임"으로 정했고 배지 xs는 제안으로만 남아 있다(결정 아님). 360 Bundesliga 일정·결과 탭 실측: 지금 18개 팀명 중 2개 말줄임("묀헨글라트…" · "아우크스부…"), 배지 xs(24 × 27)면 0개. 375는 둘 다 0개.
-   - (A, 추천) **1023 이하 일정·결과 탭 배지를 xs로** — 갤럭시 기본 폭(360)에서 팀명이 온전히 보인다. 라운드 줄(대회 화면 기본 탭)이 이미 xs라 크기가 하나로 맞는다. 비용: `rounds.tsx` 배지 크기 분기 1줄(반응형 크기 — `lg:`에서 s) + e2e 1개. 스크린샷 `impl-m5-12-fixtures-360-badge-{s-now,xs-option}.png`
-   - (B) 그대로(말줄임 허용) — 시안 크기 유지, 360에서 2팀만
-2. **WebKit e2e를 CI에 넣을지** — (A, 추천) 넣지 않고 M5 공개 전 · 큰 UI 변경 때 수동 실행(`E2E_ENGINE=webkit`) / (B) 주 1회 schedule job / (C) 스모크만 매 push. 비용: (B) Actions 시간 주 1회 약 20~30분 · (C) push마다 약 2~3분
+1. **360 폭 7자 팀명 말줄임**(M2-16 이월 ②) → **(A) 1023 이하 일정·결과 탭 배지 xs 적용**. `TeamBadge` 크기 `fixture`(`kit-xs lg:kit-s`)를 일정·결과 탭 경기 줄과 녹아웃 합산 줄(`match-row-full`)에 쓴다 — 1024 이상은 s 그대로. 360 분데스리가 말줄임 2팀("묀헨글라트…" · "아우크스부…") → 0, 360 · 375 · 1023 × 라이트 · 다크 가로 넘침 0. e2e(`competition.spec.ts` "360 — 일정·결과 탭 팀명 말줄임 0") · 단위(`competition-page.test.tsx`)로 고정. DECISIONS D1 §8 #11. 스크린샷: 전 `impl-m5-12-fixtures-360-badge-s-now.png` · 후 `impl-m5-12-fixtures-{360,375,1023}-{light,dark}.png`
+2. **WebKit e2e를 CI에 넣을지** → **(A) 수동 실행만** — 설정은 지금 그대로(`E2E_ENGINE=webkit` 선택 실행), 공개 전 · 큰 UI 변경 때 돌린다
