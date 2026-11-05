@@ -1,7 +1,7 @@
 {
   "date": "2026-10-31",
-  "generatedAt": "2026-10-30T22:11:04.807Z",
-  "runId": "collect-prod-20261030T221059Z-6510",
+  "generatedAt": "2026-11-05T22:12:23.777Z",
+  "runId": "collect-prod-20261105T221223Z-15e1",
   "cards": [
     {
       "id": "c_0cf16646c1",
@@ -747,29 +747,6 @@
       "created": "2026-10-30T22:10:59.618Z"
     },
     {
-      "id": "c_4e2d1132d5",
-      "t": "Christian Pulisic has found his European soccer home in Milan",
-      "s": [],
-      "cat": "other",
-      "comp": [],
-      "teams": [],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7732669/2026/10/30/christian-pulisic-ac-milan-contract-2031-usmnt-future/",
-          "at": "2026-10-30T14:22:47.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-30T22:10:59.618Z"
-    },
-    {
       "id": "c_7e54c2f393",
       "t": "\"강원 소속으로 대표팀 가 기뻐\"...이기혁 아닌 신민하가 모레노 선택 받아! 김민재-이한범과 뛴다",
       "s": [],
@@ -791,34 +768,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-10-30T22:10:59.618Z"
-    },
-    {
-      "id": "c_0047943c9e",
-      "t": "Barcelona suspends own fan groups from Camp Nou after Clasico incidents vs. Real Madrid",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona",
-        "real-madrid"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7738612/2026/10/30/barcelona-supporters-suspended-camp-nou/",
-          "at": "2026-10-30T12:45:13.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-10-30T22:10:59.618Z"
     },
@@ -893,12 +842,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cqn73pxx8vr5o?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-30T08:39:36.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7738295/2026/10/30/afcon-two-years-africa-cup/",
-          "at": "2026-10-30T09:15:27.000Z",
           "tier": 2
         }
       ],
@@ -1130,31 +1073,6 @@
       "created": "2026-10-30T22:10:59.618Z"
     },
     {
-      "id": "c_69f76ad0ac",
-      "t": "La Liga referees set for televised post-match interviews in league first",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7738648/2026/10/30/la-liga-referees-interviews/",
-          "at": "2026-10-30T15:53:10.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-10-30T22:10:59.618Z"
-    },
-    {
       "id": "c_e4109efefb",
       "t": "\"더 이상 축구 못할 줄 알았는데 이제 무릎 튼튼! 제대로 뛸 수 있어\"...손흥민과 뛰던 쿨루셉스키, 토트넘 히든카드로 급부상",
       "s": [],
@@ -1178,35 +1096,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-10-30T22:10:59.618Z"
-    },
-    {
-      "id": "c_ae6eb81ffc",
-      "t": "What Jose Mourinho is getting right at Real Madrid, from Valverde reinvention to Vinicius Jr situation",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "real-madrid"
-      ],
-      "players": [
-        "vinicius-junior"
-      ],
-      "imp": 1,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7735383/2026/10/30/jose-mourinho-valverde-vinicius-clasico-analysis/",
-          "at": "2026-10-30T05:20:03.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-10-30T22:10:59.618Z"
     },

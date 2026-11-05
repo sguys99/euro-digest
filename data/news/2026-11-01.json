@@ -1,7 +1,7 @@
 {
   "date": "2026-11-01",
-  "generatedAt": "2026-10-31T22:13:00.124Z",
-  "runId": "collect-prod-20261031T221253Z-aeb3",
+  "generatedAt": "2026-11-05T22:12:23.799Z",
+  "runId": "collect-prod-20261105T221223Z-15e1",
   "cards": [
     {
       "id": "c_bdb2bff4c1",
@@ -1199,12 +1199,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/c6073yeg52xeo?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-31T15:21:24.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7739899/2026/10/30/harry-kane-ballon-dor-voting-mbappe-margin/",
-          "at": "2026-10-30T21:38:19.000Z",
           "tier": 2
         }
       ],
