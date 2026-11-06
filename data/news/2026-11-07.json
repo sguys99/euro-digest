@@ -1,0 +1,1212 @@
+{
+  "date": "2026-11-07",
+  "generatedAt": "2026-11-06T22:12:46.855Z",
+  "runId": "collect-prod-20261106T221240Z-88d3",
+  "cards": [
+    {
+      "id": "c_d23cf0ca2a",
+      "t": "이런 한국 선수 있었나! 이강인, 바르셀로나전 선발 출전 전망…스페인 현지 매체는 “알바레스와 짝 이룰 것으로 예상”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 5,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697958",
+          "at": "2026-11-06T22:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_4b1fe7d113",
+      "t": "Real Madrid and PSG keen on Suzuki - Saturday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA",
+        "LIGUE1"
+      ],
+      "teams": [
+        "real-madrid",
+        "paris-saint-germain"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c98rzz0rjjvdo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T21:08:04.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_e9752f965a",
+      "t": "‘이럴수가!’ 마지막 공격 포인트가 무려 2달전...‘아틀레티코 핵심’ 이강인, 바르셀로나전 선발 출전 ‘유력’...현지 매체 ”이강인, 공격 연결고리 역할 할 것“",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid",
+        "barcelona"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697946",
+          "at": "2026-11-06T12:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_84020a8e3d",
+      "t": "‘대한민국 국가대표인데 위기의 첫 번째 희생자로 지목됐다’…황희찬, 샬케 이적 후 7경기 무득점→“제대로 맞아떨어지는 게 거의 없다”",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697939",
+          "at": "2026-11-06T09:00:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313798",
+          "at": "2026-11-06T01:08:46.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_f79c1e2aab",
+      "t": "Roma, la probabile formazione contro il Sassuolo: ancora Vasquez in porta",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "roma",
+        "sassuolo",
+        "inter",
+        "como"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/roma-sassuolo-probabile-formazione-dove-vederla-serie-a-2026-2027-499221",
+          "at": "2026-11-06T20:30:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/inter-probabile-formazione-como-499201",
+          "at": "2026-11-06T19:30:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_e3ad378ed1",
+      "t": "Napoli, lesione all'adduttore per Di Lorenzo: salta la Lazio",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli",
+        "lazio"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/di-lorenzo-napoli-infortunio-serie-a-499225",
+          "at": "2026-11-06T16:30:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_50e04794b0",
+      "t": "Has Anderson lived up to the hype after Man City move?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqde8w0k2pz1o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T12:00:18.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_430ceec24d",
+      "t": "Newcastle's Dedic stopped by police after being spotted with bow and arrows",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "newcastle-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmpwggy2gz0eo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T11:16:07.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_dc49f630d5",
+      "t": "‘韓 국가대표’ 설영우, 부상도 없는데 또 선발 제외 전망…최근 2경기 연속 결장→분데스리가 공식 예상 명단서 제외",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "seol-young-woo"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697930",
+          "at": "2026-11-06T08:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_b6d96704a2",
+      "t": "'He'll regret it' - the day Ferguson quit Aberdeen for Man Utd",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/cmwy4edrdp02o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T06:17:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_f440896334",
+      "t": "Watch: Highlights as Raith Rovers go top with Dunfermline draw",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/videos/c3qjnnpr9xzno?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T22:06:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_927feaeabe",
+      "t": "[오피셜] ‘맨유 진짜 안 풀린다’ 9경기 무승 탈출에도 웃지 못한다→1270억 MF, 햄스트링 부상…“A매치 휴식기에도 복귀 불가”",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697956",
+          "at": "2026-11-06T21:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_7d9007eebe",
+      "t": "Como, un altro Primavera in Nazionale: Andrealli convocato dal Perù",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "como"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/como-cassano-calciatore-primavera-nazionale-maggiore-499233",
+          "at": "2026-11-06T21:30:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_aeafcded66",
+      "t": "‘우리 애는 건들지마!’ 리버풀, 18세 ‘특급 윙어’ 은구모하 지킨다...빅클럽 관심 전면 차단→장기 재계약 임박",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697953",
+          "at": "2026-11-06T21:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_06128267aa",
+      "t": "Ascoli-Palermo, Brunori colpisce da ex: gol al 19', il check conferma la rete",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/brunori-colpisce-ex-gol-19-check-conferma-rete-499231",
+          "at": "2026-11-06T20:01:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_4b7f273c70",
+      "t": "'토트넘 아직 희망 안버렸다!'  뮌헨과 초대형 재계약 체결한 케인이지만...토트넘 “우리에겐 우선 협상권 있어”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "bayern-munchen"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697954",
+          "at": "2026-11-06T20:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_b515ff3efe",
+      "t": "Football Daily",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sounds/play/p0plqn9l?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T19:52:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_0ae4708c6a",
+      "t": "Salvatore Bochetti è il nuovo allenatore del Fatih Karagümrük: la nota",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/bocchetti-fatih-karagumruk-comunicato-ufficiale-499230",
+          "at": "2026-11-06T18:55:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_8f8cc9a03d",
+      "t": "Venezia-Udinese, le formazioni ufficiali: Zaniolo titolare",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "venezia",
+        "udinese"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/venezia-udinese-formazioni-ufficiali-11a-giornata-serie-a-news-499228",
+          "at": "2026-11-06T18:30:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_e4461ced30",
+      "t": "Cannavaro a Sky Calcio Unplugged: \"La scuola italiana ha perso i suoi principi. Così non si vincono le partite\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/fabio-cannavaro-sky-calcio-unplugged-intervista-499229",
+          "at": "2026-11-06T18:15:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/fabio-cannavaro-sky-calcio-unplugged-intervista-499226",
+          "at": "2026-11-06T17:10:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_6c1edc1232",
+      "t": "Pavoletti a Sky Calcio Unplugged: \"Lascio uno spiraglio per gennaio. Corso da ds? Mi sto riqualificando\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/leonardo-pavoletti-sky-calcio-unplugged-intervista-499227",
+          "at": "2026-11-06T17:45:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_730d386762",
+      "t": "📈 Brighton & Man Utd at opposite ends of our alternative Premier League table - the damning data behind the Red Devils’ decline",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "brighton",
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/brighton-and-man-utd-at-opposite",
+          "at": "2026-11-06T14:24:31.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_af62de5fcb",
+      "t": "Harborough sign 6ft 9in striker Hudlin before FA Cup tie",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cxvgdd7q2dm3o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T13:54:50.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_642c88117d",
+      "t": "Will Barcelona sign a centre-back in January?",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7758984/2026/11/06/barcelona-transfers-flick-deco-balde/",
+          "at": "2026-11-06T13:54:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_8c05acc9b1",
+      "t": "🚨 EXCL: Liverpool, Man Utd & Chelsea closely monitoring underrated Serie A talent",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL",
+        "SERIEA"
+      ],
+      "teams": [
+        "liverpool",
+        "manchester-united",
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/koni-de-winter-transfer-united-liverpool",
+          "at": "2026-11-06T10:25:39.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_e7bf07d9ca",
+      "t": "Will Rafael Nadal be Real Madrid's next president?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7756324/2026/11/06/real-madrid-rafael-nadal-president/",
+          "at": "2026-11-06T09:25:17.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_409a11c3af",
+      "t": "🚨 Ronaldo RETIRES from Portugal, Kane’s new contract with Spurs clause, Arsenal eye Bournemouth star, Liverpool contract talks, & more",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "arsenal",
+        "bournemouth",
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/ronaldo-retires-from-portugal-kanes",
+          "at": "2026-11-06T08:11:47.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_54d8c238a7",
+      "t": "대한민국 국가대표 공격수인데…황희찬, 벌써 입지 흔들린다→샬케 겨울 이적시장 추가 보강 추진 “영입은 기대한 효과를 내지 못하고 있다”",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697912",
+          "at": "2026-11-06T05:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_03d89085ed",
+      "t": "Forest need balance between Woodstock and military - Glasner",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwg5jj6nvmnyo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-05T22:30:07.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_60f419502d",
+      "t": "James out for minimum of five games - Bompastor",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/crq5nnqn84zyo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T16:44:44.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_595a90d542",
+      "t": "Is Palmer's England career over under Tuchel?",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c9e8ll62rp68o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T16:30:03.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_7ea35a954c",
+      "t": "Euro Leagues",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sounds/play/p0plhlmm?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T16:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_edba463efc",
+      "t": "The Fifa hopeful hoping to take Infantino down with 'samurai spirit'",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmwyvv7pkqrno?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T15:21:40.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_903219900e",
+      "t": "Portugal coach 'knew nothing' about Ronaldo retiring",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwzd66r22j68o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T14:25:41.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_1092d01f4a",
+      "t": "'A beautiful story' as Bellingham brothers called up",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c5x2vvjy2rpeo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T14:16:34.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_667b59a4ef",
+      "t": "유럽 휩쓰는 코모, 그 중심엔 ‘젊은 천재 감독’ 파브레가스가 있다...“벌써부터 친정팀 바르셀로나·아스널·첼시 군침”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL",
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona",
+        "arsenal",
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697951",
+          "at": "2026-11-06T14:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_563388cafd",
+      "t": "“개인적 감정은 없다” 최근 폼 오른 ‘첼시 에이스’ 콜 파머 전격 제외한 투헬...“기회를 너무 많이 놓쳤어”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697949",
+          "at": "2026-11-06T13:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_5c0e4ea574",
+      "t": "'맨유 역대 최악 감독' 아모림, AC 밀란 이끌고 충격패 뒤 또 다시 망언...\"우리팀은 아직 두 대회 병행할 수준 아니야\"",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [
+        "manchester-united",
+        "milan"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697943",
+          "at": "2026-11-06T10:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_2242b01386",
+      "t": "‘콘테·나겔스만 애매한데...’ 17위 맨유, 캐릭 후임으로 ‘WC 우승 사령탑’ 데샹 접촉! 구단 관계자 \"최고 수준 감독 데려오기 힘들어\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697942",
+          "at": "2026-11-06T10:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_be5b6f7203",
+      "t": "맨유 역대급 재능이었던 래시포드도 인정했다…19세 야말 향한 극찬 “최근 몇 년간 메시 수준에 가장 근접한 선수”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697938",
+          "at": "2026-11-06T08:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_d3b211b18d",
+      "t": "손흥민에게 무릎 꿇었던 아모림, 팀 바꿔도 유로파리그 악몽 여전…AC밀란서 4경기 3패→선수단 공개 질책 “축구할 준비가 되어 있지 않았다”",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "milan"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697924",
+          "at": "2026-11-06T07:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_90280ff2ec",
+      "t": "Goodwin keen but realistic over Cameron move - gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c8wy9z99we1yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-06T07:27:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_850df930d0",
+      "t": "\"손흥민은 진심으로 깊은 존경을 받을 만한 사람\"…토트넘 옛 동료 포로가 털어놓은 진심 “구단 레전드인데도 나를 따뜻하게 받아줬다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=697923",
+          "at": "2026-11-06T07:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_74256ea88c",
+      "t": "Premier League predictions: Man Utd vs Aston Villa, Leeds vs Spurs and the rest of GW10",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "aston-villa",
+        "leeds-united",
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7755930/2026/11/06/premier-league-predictions-gw10/",
+          "at": "2026-11-06T05:07:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    },
+    {
+      "id": "c_2a993597b8",
+      "t": "The making of Mike Penders, Chelsea's 'Obelix' of a goalkeeper who is showing his resilience",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7756403/2026/11/06/chelsea-mike-penders-origins/",
+          "at": "2026-11-06T05:05:31.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-06T22:12:40.251Z"
+    }
+  ]
+}

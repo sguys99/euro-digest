@@ -1,7 +1,7 @@
 {
   "date": "2026-11-01",
-  "generatedAt": "2026-11-05T22:12:23.799Z",
-  "runId": "collect-prod-20261105T221223Z-15e1",
+  "generatedAt": "2026-11-06T22:12:40.332Z",
+  "runId": "collect-prod-20261106T221240Z-88d3",
   "cards": [
     {
       "id": "c_bdb2bff4c1",
@@ -350,12 +350,6 @@
           "u": "https://www.bbc.co.uk/sport/football/videos/cqrlywrdjdzyo?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-31T15:13:43.000Z",
           "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7738467/2026/10/31/chelsea-man-united-result-analysis-martinez-sent-off-red-card-carrick/",
-          "at": "2026-10-31T14:32:58.000Z",
-          "tier": 2
         }
       ],
       "lang": "en",
@@ -412,12 +406,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/c3j47prvlz04o?at_medium=RSS&at_campaign=rss",
           "at": "2026-10-31T14:35:50.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7741484/2026/10/31/lisandro-martinez-man-united-mistakes-red-card-performance/",
-          "at": "2026-10-31T16:00:06.000Z",
           "tier": 2
         }
       ],

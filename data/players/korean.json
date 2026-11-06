@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-03T22:15:55.399Z",
+  "generatedAt": "2026-11-06T22:15:43.798Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -590,14 +590,14 @@
         }
       ],
       "next": {
-        "matchId": "fd-565852",
+        "matchId": "fd-565862",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-06T19:30:00Z",
+        "kickoff": "2026-11-21T14:30:00Z",
         "opponent": {
-          "slug": "hamburg",
-          "name": "Hamburger SV"
+          "slug": "borussia-dortmund",
+          "name": "Borussia Dortmund"
         },
-        "home": false
+        "home": true
       },
       "updatedAt": "2026-11-01T04:56:14.815Z"
     },

@@ -2,7 +2,7 @@
   "comp": "SERIEA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-05T22:13:34.157Z",
+  "updatedAt": "2026-11-06T22:14:35.651Z",
   "standings": [
     {
       "pos": 1,
@@ -366,39 +366,39 @@
     },
     {
       "pos": 19,
-      "prevPos": 19,
-      "team": "udinese",
-      "played": 10,
-      "w": 1,
-      "d": 2,
-      "l": 7,
-      "gf": 11,
-      "ga": 23,
-      "pts": 5,
+      "prevPos": 20,
+      "team": "venezia",
+      "played": 11,
+      "w": 2,
+      "d": 0,
+      "l": 9,
+      "gf": 8,
+      "ga": 21,
+      "pts": 6,
       "form": [
+        "W",
         "L",
         "L",
         "L",
-        "D",
-        "L"
+        "W"
       ],
       "zone": "relegation"
     },
     {
       "pos": 20,
-      "prevPos": 20,
-      "team": "venezia",
-      "played": 10,
+      "prevPos": 19,
+      "team": "udinese",
+      "played": 11,
       "w": 1,
-      "d": 0,
-      "l": 9,
-      "gf": 6,
-      "ga": 20,
-      "pts": 3,
+      "d": 2,
+      "l": 8,
+      "gf": 12,
+      "ga": 25,
+      "pts": 5,
       "form": [
         "L",
-        "W",
         "L",
+        "D",
         "L",
         "L"
       ],
@@ -1713,8 +1713,11 @@
       "kickoff": "2026-11-06T19:45:00Z",
       "home": "venezia",
       "away": "udinese",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558532",
@@ -4872,7 +4875,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Martin Baturina",
@@ -4976,7 +4979,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Piotr Zieliński",
@@ -5072,15 +5075,15 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Antoine Hainaut",
       "team": "venezia",
       "goals": 2,
-      "assists": 1,
+      "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Lassana Coulibaly",
@@ -5344,7 +5347,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Andrea Colpani",
@@ -5408,7 +5411,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Richie Sagrado",
@@ -5416,7 +5419,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Josh Doig",
@@ -5456,7 +5459,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Albert Guðmundsson",

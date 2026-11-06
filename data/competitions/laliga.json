@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-05T22:13:11.250Z",
+  "updatedAt": "2026-11-06T22:14:11.801Z",
   "standings": [
     {
       "pos": 1,
@@ -108,19 +108,19 @@
       "pos": 6,
       "prevPos": 6,
       "team": "sevilla",
-      "played": 11,
+      "played": 12,
       "w": 5,
-      "d": 2,
+      "d": 3,
       "l": 4,
       "gf": 17,
       "ga": 19,
-      "pts": 17,
+      "pts": 18,
       "form": [
-        "L",
         "D",
         "L",
         "W",
-        "L"
+        "L",
+        "D"
       ],
       "zone": "none"
     },
@@ -166,6 +166,26 @@
     },
     {
       "pos": 9,
+      "prevPos": 11,
+      "team": "alaves",
+      "played": 12,
+      "w": 3,
+      "d": 4,
+      "l": 5,
+      "gf": 15,
+      "ga": 17,
+      "pts": 13,
+      "form": [
+        "L",
+        "L",
+        "D",
+        "L",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
       "prevPos": 9,
       "team": "villarreal",
       "played": 11,
@@ -185,7 +205,7 @@
       "zone": "none"
     },
     {
-      "pos": 10,
+      "pos": 11,
       "prevPos": 10,
       "team": "celta-vigo",
       "played": 11,
@@ -199,26 +219,6 @@
         "W",
         "D",
         "W",
-        "D",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 11,
-      "prevPos": 11,
-      "team": "alaves",
-      "played": 11,
-      "w": 3,
-      "d": 3,
-      "l": 5,
-      "gf": 15,
-      "ga": 17,
-      "pts": 12,
-      "form": [
-        "D",
-        "L",
-        "L",
         "D",
         "L"
       ],
@@ -1830,8 +1830,11 @@
       "kickoff": "2026-11-06T20:00:00Z",
       "home": "sevilla",
       "away": "alaves",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564744",
@@ -4879,7 +4882,7 @@
       "goals": 5,
       "assists": null,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Brugui",
@@ -4903,7 +4906,7 @@
       "goals": 4,
       "assists": 4,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Jude Bellingham",
@@ -4959,7 +4962,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Georges Mikautadze",
@@ -5247,7 +5250,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Nsongo Tonfack",
@@ -5279,7 +5282,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Mikel Rodríguez",
@@ -5295,7 +5298,7 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Peque",
@@ -5351,7 +5354,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Álex Calatrava",
@@ -5503,7 +5506,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Lucas Stassin",
@@ -5511,7 +5514,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Marcos Fernández",
@@ -5559,7 +5562,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Ville Koski",
@@ -5567,7 +5570,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Facundo Buonanotte",

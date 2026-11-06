@@ -2,7 +2,7 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-05T22:12:48.380Z",
+  "updatedAt": "2026-11-06T22:13:48.146Z",
   "standings": [
     {
       "pos": 1,
@@ -86,6 +86,26 @@
     },
     {
       "pos": 5,
+      "prevPos": 7,
+      "team": "everton",
+      "played": 10,
+      "w": 4,
+      "d": 4,
+      "l": 2,
+      "gf": 12,
+      "ga": 10,
+      "pts": 16,
+      "form": [
+        "D",
+        "L",
+        "L",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
       "prevPos": 5,
       "team": "liverpool",
       "played": 9,
@@ -105,7 +125,7 @@
       "zone": "none"
     },
     {
-      "pos": 6,
+      "pos": 7,
       "prevPos": 6,
       "team": "brentford",
       "played": 9,
@@ -120,26 +140,6 @@
         "D",
         "L",
         "D",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 7,
-      "prevPos": 7,
-      "team": "everton",
-      "played": 9,
-      "w": 3,
-      "d": 4,
-      "l": 2,
-      "gf": 9,
-      "ga": 9,
-      "pts": 13,
-      "form": [
-        "W",
-        "D",
-        "L",
-        "L",
         "W"
       ],
       "zone": "none"
@@ -308,19 +308,19 @@
       "pos": 16,
       "prevPos": 16,
       "team": "coventry-city",
-      "played": 9,
+      "played": 10,
       "w": 3,
       "d": 0,
-      "l": 6,
-      "gf": 9,
-      "ga": 16,
+      "l": 7,
+      "gf": 10,
+      "ga": 19,
       "pts": 9,
       "form": [
         "W",
+        "L",
+        "L",
         "W",
-        "L",
-        "L",
-        "W"
+        "L"
       ],
       "zone": "none"
     },
@@ -1583,8 +1583,11 @@
       "kickoff": "2026-11-06T20:00:00Z",
       "home": "everton",
       "away": "coventry-city",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560632",
@@ -4657,6 +4660,14 @@
       "played": 9
     },
     {
+      "player": "Thierno Barry",
+      "team": "everton",
+      "goals": 6,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
       "player": "Alexander Isak",
       "team": "liverpool",
       "goals": 6,
@@ -4697,14 +4708,6 @@
       "played": 8
     },
     {
-      "player": "Thierno Barry",
-      "team": "everton",
-      "goals": 4,
-      "assists": null,
-      "penalties": null,
-      "played": 9
-    },
-    {
       "player": "Rayan Cherki",
       "team": "manchester-city",
       "goals": 4,
@@ -4743,6 +4746,14 @@
       "assists": null,
       "penalties": 1,
       "played": 7
+    },
+    {
+      "player": "Kiernan Dewsbury Hall",
+      "team": "everton",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Jack Hinshelwood",
@@ -4838,7 +4849,7 @@
       "goals": 3,
       "assists": null,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Martin Ødegaard",
@@ -4851,14 +4862,6 @@
     {
       "player": "Emersonn",
       "team": "ipswich-town",
-      "goals": 2,
-      "assists": 1,
-      "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Kiernan Dewsbury Hall",
-      "team": "everton",
       "goals": 2,
       "assists": 1,
       "penalties": null,
@@ -5158,7 +5161,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Liam Millar",
@@ -5238,7 +5241,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Benjamin Šeško",
@@ -5254,7 +5257,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Anan Khalaili",
@@ -5390,7 +5393,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Enzo Fernández",

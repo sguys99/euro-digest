@@ -2,7 +2,7 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-05T22:13:55.878Z",
+  "updatedAt": "2026-11-06T22:14:57.745Z",
   "standings": [
     {
       "pos": 1,
@@ -146,6 +146,26 @@
     },
     {
       "pos": 8,
+      "prevPos": 15,
+      "team": "hamburg",
+      "played": 9,
+      "w": 4,
+      "d": 0,
+      "l": 5,
+      "gf": 10,
+      "ga": 20,
+      "pts": 12,
+      "form": [
+        "W",
+        "W",
+        "L",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
       "prevPos": 8,
       "team": "eintracht-frankfurt",
       "played": 8,
@@ -165,7 +185,7 @@
       "zone": "none"
     },
     {
-      "pos": 9,
+      "pos": 10,
       "prevPos": 9,
       "team": "mainz",
       "played": 8,
@@ -185,7 +205,7 @@
       "zone": "none"
     },
     {
-      "pos": 10,
+      "pos": 11,
       "prevPos": 10,
       "team": "augsburg",
       "played": 8,
@@ -205,7 +225,7 @@
       "zone": "none"
     },
     {
-      "pos": 11,
+      "pos": 12,
       "prevPos": 11,
       "team": "stuttgart",
       "played": 8,
@@ -225,7 +245,7 @@
       "zone": "none"
     },
     {
-      "pos": 12,
+      "pos": 13,
       "prevPos": 12,
       "team": "hoffenheim",
       "played": 8,
@@ -245,7 +265,7 @@
       "zone": "none"
     },
     {
-      "pos": 13,
+      "pos": 14,
       "prevPos": 13,
       "team": "koln",
       "played": 8,
@@ -265,7 +285,7 @@
       "zone": "none"
     },
     {
-      "pos": 14,
+      "pos": 15,
       "prevPos": 14,
       "team": "paderborn",
       "played": 8,
@@ -281,26 +301,6 @@
         "D",
         "W",
         "D"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 15,
-      "prevPos": 15,
-      "team": "hamburg",
-      "played": 8,
-      "w": 3,
-      "d": 0,
-      "l": 5,
-      "gf": 7,
-      "ga": 19,
-      "pts": 9,
-      "form": [
-        "W",
-        "W",
-        "W",
-        "L",
-        "L"
       ],
       "zone": "none"
     },
@@ -348,19 +348,19 @@
       "pos": 18,
       "prevPos": 18,
       "team": "borussia-monchengladbach",
-      "played": 8,
+      "played": 9,
       "w": 1,
       "d": 1,
-      "l": 6,
-      "gf": 11,
-      "ga": 22,
+      "l": 7,
+      "gf": 12,
+      "ga": 25,
       "pts": 4,
       "form": [
         "L",
         "L",
-        "L",
         "W",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "relegation"
     }
@@ -1309,8 +1309,11 @@
       "kickoff": "2026-11-06T19:30:00Z",
       "home": "hamburg",
       "away": "borussia-monchengladbach",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565848",
@@ -3868,6 +3871,14 @@
       "played": 8
     },
     {
+      "player": "Joseph Scally",
+      "team": "borussia-monchengladbach",
+      "goals": 4,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
       "player": "Maurice Krattenmacher",
       "team": "elversberg",
       "goals": 4,
@@ -3932,14 +3943,6 @@
       "played": 8
     },
     {
-      "player": "Joseph Scally",
-      "team": "borussia-monchengladbach",
-      "goals": 3,
-      "assists": 1,
-      "penalties": null,
-      "played": 8
-    },
-    {
       "player": "Maximilian Eggestein",
       "team": "freiburg",
       "goals": 3,
@@ -3978,6 +3981,14 @@
       "assists": 3,
       "penalties": null,
       "played": 8
+    },
+    {
+      "player": "Miro Muheim",
+      "team": "hamburg",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 5
     },
     {
       "player": "Josha Vagnoman",
@@ -4177,7 +4188,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Shuto Machino",
@@ -4185,7 +4196,7 @@
       "goals": 2,
       "assists": null,
       "penalties": 1,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Derry Scherhant",
@@ -4249,15 +4260,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
-    },
-    {
-      "player": "Miro Muheim",
-      "team": "hamburg",
-      "goals": 2,
-      "assists": 1,
-      "penalties": null,
-      "played": 4
+      "played": 9
     },
     {
       "player": "Wael Mohya",
@@ -4265,7 +4268,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Alexander Prass",
@@ -4497,7 +4500,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Isac Lidberg",
@@ -4505,7 +4508,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Eric Martel",

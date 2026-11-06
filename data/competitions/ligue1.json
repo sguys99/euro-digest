@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-05T22:14:18.351Z",
+  "updatedAt": "2026-11-06T22:15:21.056Z",
   "standings": [
     {
       "pos": 1,
@@ -186,6 +186,26 @@
     },
     {
       "pos": 10,
+      "prevPos": 12,
+      "team": "toulouse",
+      "played": 10,
+      "w": 3,
+      "d": 4,
+      "l": 3,
+      "gf": 15,
+      "ga": 14,
+      "pts": 13,
+      "form": [
+        "D",
+        "W",
+        "D",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
       "prevPos": 10,
       "team": "brest",
       "played": 9,
@@ -205,7 +225,7 @@
       "zone": "none"
     },
     {
-      "pos": 11,
+      "pos": 12,
       "prevPos": 11,
       "team": "lorient",
       "played": 9,
@@ -225,42 +245,22 @@
       "zone": "none"
     },
     {
-      "pos": 12,
-      "prevPos": 12,
-      "team": "toulouse",
-      "played": 9,
-      "w": 2,
-      "d": 4,
-      "l": 3,
-      "gf": 12,
-      "ga": 13,
-      "pts": 10,
-      "form": [
-        "W",
-        "D",
-        "W",
-        "D",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 13,
       "prevPos": 13,
       "team": "strasbourg",
-      "played": 9,
+      "played": 10,
       "w": 3,
       "d": 1,
-      "l": 5,
-      "gf": 17,
-      "ga": 19,
+      "l": 6,
+      "gf": 18,
+      "ga": 22,
       "pts": 10,
       "form": [
         "L",
         "L",
         "L",
-        "L",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "none"
     },
@@ -1426,8 +1426,11 @@
       "kickoff": "2026-11-06T19:45:00Z",
       "home": "toulouse",
       "away": "strasbourg",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559637",
@@ -3857,7 +3860,7 @@
       "goals": 5,
       "assists": 1,
       "penalties": 2,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Florian Thauvin",
@@ -3905,7 +3908,7 @@
       "goals": 4,
       "assists": 3,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Ludovic Ajorque",
@@ -3980,6 +3983,22 @@
       "played": 5
     },
     {
+      "player": "Gio Reyna",
+      "team": "strasbourg",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Thomas Jørgensen",
+      "team": "toulouse",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
       "player": "Amine Harit",
       "team": "marseille",
       "goals": 3,
@@ -4049,7 +4068,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Ayase Ueda",
@@ -4076,20 +4095,12 @@
       "played": 9
     },
     {
-      "player": "Gio Reyna",
-      "team": "strasbourg",
-      "goals": 2,
-      "assists": null,
-      "penalties": null,
-      "played": 9
-    },
-    {
       "player": "Samuel Amo-Ameyaw",
       "team": "strasbourg",
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Conrad Harder",
@@ -4097,21 +4108,13 @@
       "goals": 2,
       "assists": 1,
       "penalties": 1,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Adrien Thomasson",
       "team": "rennes",
       "goals": 2,
       "assists": 2,
-      "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Thomas Jørgensen",
-      "team": "toulouse",
-      "goals": 2,
-      "assists": 1,
       "penalties": null,
       "played": 9
     },
@@ -4193,7 +4196,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Jonathan Clauss",
@@ -4393,7 +4396,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Samir Chergui",
@@ -4465,7 +4468,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Diogo Lobão",
@@ -4473,7 +4476,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jérémy Le Douaron",

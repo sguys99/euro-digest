@@ -21,6 +21,11 @@
       "date": "2026-11-05",
       "reason": "date-query",
       "cause": "auth"
+    },
+    {
+      "date": "2026-11-06",
+      "reason": "date-query",
+      "cause": "auth"
     }
   ]
 }
