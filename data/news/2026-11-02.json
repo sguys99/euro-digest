@@ -1,7 +1,7 @@
 {
   "date": "2026-11-02",
-  "generatedAt": "2026-11-01T22:12:40.340Z",
-  "runId": "collect-prod-20261101T221234Z-e780",
+  "generatedAt": "2026-11-07T22:12:18.758Z",
+  "runId": "collect-prod-20261107T221218Z-fb5b",
   "cards": [
     {
       "id": "c_287a6c6dfb",
@@ -876,34 +876,6 @@
       "created": "2026-11-01T22:12:34.762Z"
     },
     {
-      "id": "c_0f68ea2a58",
-      "t": "Liverpool 0 Arsenal 1: What does this mean for title race? Why wasn't shirt-pull on Isak a pen?",
-      "s": [],
-      "cat": "result",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "liverpool",
-        "arsenal"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7741258/2026/11/01/liverpool-arsenal-isak-timber-havertz/",
-          "at": "2026-11-01T18:26:53.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-01T22:12:34.762Z"
-    },
-    {
       "id": "c_ebc562287f",
       "t": "[라리가 REVIEW] 비니시우스 빠진 레알 마드리드, 오히려 더 강해졌다…음바페·벨링엄·디오망데 골 폭발→라싱 산탄데르 3-0 완파",
       "s": [],
@@ -947,34 +919,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/c820vylvxwxlo?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-01T16:51:07.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-01T22:12:34.762Z"
-    },
-    {
-      "id": "c_70c67da999",
-      "t": "How Jobe Bellingham shone against star-studded Bayern in best performance since joining Dortmund",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "BUNDESLIGA"
-      ],
-      "teams": [
-        "bayern-munchen",
-        "borussia-dortmund"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7743435/2026/11/01/jobe-bellingham-borussia-dortmund-bayern-munich/",
-          "at": "2026-11-01T16:12:28.000Z",
           "tier": 2
         }
       ],

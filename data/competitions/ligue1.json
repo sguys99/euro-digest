@@ -2,19 +2,19 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-06T22:15:21.056Z",
+  "updatedAt": "2026-11-07T22:14:56.673Z",
   "standings": [
     {
       "pos": 1,
       "prevPos": 1,
       "team": "paris-saint-germain",
-      "played": 9,
-      "w": 6,
+      "played": 10,
+      "w": 7,
       "d": 2,
       "l": 1,
-      "gf": 21,
+      "gf": 22,
       "ga": 10,
-      "pts": 20,
+      "pts": 23,
       "form": [
         "W",
         "W",
@@ -26,6 +26,26 @@
     },
     {
       "pos": 2,
+      "prevPos": 4,
+      "team": "paris-fc",
+      "played": 10,
+      "w": 6,
+      "d": 2,
+      "l": 2,
+      "gf": 17,
+      "ga": 10,
+      "pts": 20,
+      "form": [
+        "L",
+        "W",
+        "L",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
       "prevPos": 2,
       "team": "lille",
       "played": 9,
@@ -45,7 +65,7 @@
       "zone": "none"
     },
     {
-      "pos": 3,
+      "pos": 4,
       "prevPos": 3,
       "team": "lyon",
       "played": 9,
@@ -54,26 +74,6 @@
       "l": 2,
       "gf": 15,
       "ga": 7,
-      "pts": 17,
-      "form": [
-        "W",
-        "L",
-        "W",
-        "L",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 4,
-      "prevPos": 4,
-      "team": "paris-fc",
-      "played": 9,
-      "w": 5,
-      "d": 2,
-      "l": 2,
-      "gf": 16,
-      "ga": 10,
       "pts": 17,
       "form": [
         "W",
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 12,
+      "prevPos": 10,
       "team": "toulouse",
       "played": 10,
       "w": 3,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 10,
+      "prevPos": 11,
       "team": "brest",
       "played": 9,
       "w": 3,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "lorient",
       "played": 9,
       "w": 3,
@@ -268,18 +268,18 @@
       "pos": 14,
       "prevPos": 14,
       "team": "auxerre",
-      "played": 9,
+      "played": 10,
       "w": 3,
       "d": 1,
-      "l": 5,
+      "l": 6,
       "gf": 13,
-      "ga": 23,
+      "ga": 24,
       "pts": 10,
       "form": [
-        "W",
         "L",
         "W",
         "D",
+        "L",
         "L"
       ],
       "zone": "none"
@@ -308,19 +308,19 @@
       "pos": 16,
       "prevPos": 16,
       "team": "troyes",
-      "played": 9,
+      "played": 10,
       "w": 2,
       "d": 2,
-      "l": 5,
+      "l": 6,
       "gf": 7,
-      "ga": 16,
+      "ga": 17,
       "pts": 8,
       "form": [
         "L",
         "L",
-        "L",
         "D",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "relegation"
     },
@@ -1439,8 +1439,11 @@
       "kickoff": "2026-11-07T18:00:00Z",
       "home": "auxerre",
       "away": "paris-fc",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559635",
@@ -1449,8 +1452,11 @@
       "kickoff": "2026-11-07T20:05:00Z",
       "home": "paris-saint-germain",
       "away": "troyes",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559636",
@@ -3817,10 +3823,10 @@
     {
       "player": "Lassine Sinayoko",
       "team": "paris-fc",
-      "goals": 8,
+      "goals": 9,
       "assists": 5,
       "penalties": 3,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Esteban Lepaul",
@@ -3844,7 +3850,7 @@
       "goals": 6,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Sepe Elye Wahi",
@@ -3900,7 +3906,7 @@
       "goals": 4,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Gessime Yassine",
@@ -3956,7 +3962,7 @@
       "goals": 3,
       "assists": 2,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Olivier Giroud",
@@ -4138,9 +4144,9 @@
       "player": "Pablo Pagis",
       "team": "paris-fc",
       "goals": 2,
-      "assists": 1,
+      "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Prosper Peter",
@@ -4207,6 +4213,14 @@
       "played": 9
     },
     {
+      "player": "Illia Zabarnyi",
+      "team": "paris-saint-germain",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
       "player": "Igor Paixão",
       "team": "marseille",
       "goals": 2,
@@ -4220,15 +4234,15 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Senny Mayulu",
       "team": "paris-saint-germain",
       "goals": 2,
-      "assists": 1,
+      "assists": 2,
       "penalties": null,
-      "played": 5
+      "played": 6
     },
     {
       "player": "Mika Godts",
@@ -4236,7 +4250,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Keyliane Abdallah",
@@ -4276,7 +4290,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Romain Del Castillo",
@@ -4332,7 +4346,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Renaud Ripart",
@@ -4340,7 +4354,7 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Lucas Maronnier",
@@ -4348,7 +4362,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jean-Victor Makengo",
@@ -4380,7 +4394,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 5
+      "played": 6
     },
     {
       "player": "Harouna Djibirin",
@@ -4412,7 +4426,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Valentin Rongier",
@@ -4460,7 +4474,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jacobo Ortega",
@@ -4484,7 +4498,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Przemysław Frankowski",
@@ -4540,7 +4554,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Habib Diallo",
@@ -4604,14 +4618,6 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 9
-    },
-    {
-      "player": "Gabin Bernardeau",
-      "team": "lorient",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
       "played": 9
     }
   ]

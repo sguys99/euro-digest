@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-06T22:14:11.801Z",
+  "updatedAt": "2026-11-07T22:13:49.265Z",
   "standings": [
     {
       "pos": 1,
@@ -26,15 +26,15 @@
     },
     {
       "pos": 2,
-      "prevPos": 2,
-      "team": "atletico-madrid",
-      "played": 11,
-      "w": 9,
-      "d": 1,
-      "l": 1,
-      "gf": 22,
-      "ga": 8,
-      "pts": 28,
+      "prevPos": 3,
+      "team": "real-madrid",
+      "played": 12,
+      "w": 10,
+      "d": 0,
+      "l": 2,
+      "gf": 31,
+      "ga": 10,
+      "pts": 30,
       "form": [
         "W",
         "W",
@@ -46,17 +46,17 @@
     },
     {
       "pos": 3,
-      "prevPos": 3,
-      "team": "real-madrid",
+      "prevPos": 2,
+      "team": "atletico-madrid",
       "played": 11,
       "w": 9,
-      "d": 0,
-      "l": 2,
-      "gf": 28,
-      "ga": 10,
-      "pts": 27,
+      "d": 1,
+      "l": 1,
+      "gf": 22,
+      "ga": 8,
+      "pts": 28,
       "form": [
-        "L",
+        "W",
         "W",
         "W",
         "W",
@@ -128,19 +128,19 @@
       "pos": 7,
       "prevPos": 7,
       "team": "athletic",
-      "played": 10,
+      "played": 11,
       "w": 4,
-      "d": 3,
+      "d": 4,
       "l": 3,
-      "gf": 14,
-      "ga": 10,
-      "pts": 15,
+      "gf": 15,
+      "ga": 11,
+      "pts": 16,
       "form": [
-        "D",
         "D",
         "L",
         "W",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "none"
     },
@@ -148,25 +148,45 @@
       "pos": 8,
       "prevPos": 8,
       "team": "deportivo-la-coruna",
-      "played": 11,
+      "played": 12,
       "w": 3,
-      "d": 5,
+      "d": 6,
       "l": 3,
       "gf": 15,
       "ga": 14,
+      "pts": 15,
+      "form": [
+        "L",
+        "D",
+        "L",
+        "W",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": 16,
+      "team": "racing-santander",
+      "played": 12,
+      "w": 4,
+      "d": 2,
+      "l": 6,
+      "gf": 17,
+      "ga": 30,
       "pts": 14,
       "form": [
         "D",
         "L",
-        "D",
+        "W",
         "L",
         "W"
       ],
       "zone": "none"
     },
     {
-      "pos": 9,
-      "prevPos": 11,
+      "pos": 10,
+      "prevPos": 9,
       "team": "alaves",
       "played": 12,
       "w": 3,
@@ -185,8 +205,8 @@
       "zone": "none"
     },
     {
-      "pos": 10,
-      "prevPos": 9,
+      "pos": 11,
+      "prevPos": 10,
       "team": "villarreal",
       "played": 11,
       "w": 3,
@@ -205,8 +225,8 @@
       "zone": "none"
     },
     {
-      "pos": 11,
-      "prevPos": 10,
+      "pos": 12,
+      "prevPos": 11,
       "team": "celta-vigo",
       "played": 11,
       "w": 2,
@@ -225,7 +245,27 @@
       "zone": "none"
     },
     {
-      "pos": 12,
+      "pos": 13,
+      "prevPos": 14,
+      "team": "espanyol",
+      "played": 12,
+      "w": 3,
+      "d": 3,
+      "l": 6,
+      "gf": 13,
+      "ga": 14,
+      "pts": 12,
+      "form": [
+        "D",
+        "L",
+        "L",
+        "W",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
       "prevPos": 12,
       "team": "rayo-vallecano",
       "played": 10,
@@ -245,7 +285,7 @@
       "zone": "none"
     },
     {
-      "pos": 13,
+      "pos": 15,
       "prevPos": 13,
       "team": "getafe",
       "played": 11,
@@ -265,62 +305,22 @@
       "zone": "none"
     },
     {
-      "pos": 14,
-      "prevPos": 14,
-      "team": "espanyol",
-      "played": 11,
-      "w": 3,
-      "d": 2,
-      "l": 6,
-      "gf": 13,
-      "ga": 14,
-      "pts": 11,
-      "form": [
-        "L",
-        "D",
-        "L",
-        "L",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 15,
+      "pos": 16,
       "prevPos": 15,
       "team": "osasuna",
-      "played": 11,
+      "played": 12,
       "w": 3,
-      "d": 2,
+      "d": 3,
       "l": 6,
-      "gf": 11,
-      "ga": 22,
-      "pts": 11,
+      "gf": 12,
+      "ga": 23,
+      "pts": 12,
       "form": [
-        "D",
         "L",
         "W",
         "L",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 16,
-      "prevPos": 16,
-      "team": "racing-santander",
-      "played": 11,
-      "w": 3,
-      "d": 2,
-      "l": 6,
-      "gf": 15,
-      "ga": 29,
-      "pts": 11,
-      "form": [
         "L",
-        "D",
-        "L",
-        "W",
-        "L"
+        "D"
       ],
       "zone": "none"
     },
@@ -368,19 +368,19 @@
       "pos": 19,
       "prevPos": 19,
       "team": "valencia",
-      "played": 11,
+      "played": 12,
       "w": 2,
       "d": 3,
-      "l": 6,
+      "l": 7,
       "gf": 8,
-      "ga": 17,
+      "ga": 20,
       "pts": 9,
       "form": [
-        "L",
         "D",
         "D",
         "L",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "relegation"
     },
@@ -388,18 +388,18 @@
       "pos": 20,
       "prevPos": 20,
       "team": "malaga",
-      "played": 11,
+      "played": 12,
       "w": 0,
       "d": 5,
-      "l": 6,
-      "gf": 8,
-      "ga": 21,
+      "l": 7,
+      "gf": 9,
+      "ga": 23,
       "pts": 5,
       "form": [
-        "L",
         "D",
         "L",
         "D",
+        "L",
         "L"
       ],
       "zone": "relegation"
@@ -1843,8 +1843,11 @@
       "kickoff": "2026-11-07T13:00:00Z",
       "home": "malaga",
       "away": "racing-santander",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564745",
@@ -1853,8 +1856,11 @@
       "kickoff": "2026-11-07T15:15:00Z",
       "home": "espanyol",
       "away": "deportivo-la-coruna",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564739",
@@ -1863,8 +1869,11 @@
       "kickoff": "2026-11-07T17:30:00Z",
       "home": "osasuna",
       "away": "athletic",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564741",
@@ -1873,8 +1882,11 @@
       "kickoff": "2026-11-07T20:00:00Z",
       "home": "valencia",
       "away": "real-madrid",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564738",
@@ -2027,114 +2039,104 @@
       "status": "scheduled"
     },
     {
-      "id": "fd-564758",
+      "id": "fd-564765",
       "comp": "LALIGA",
       "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
-      "home": "celta-vigo",
-      "away": "villarreal",
+      "kickoff": "2026-11-27T20:00:00Z",
+      "home": "levante",
+      "away": "racing-santander",
       "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564759",
-      "comp": "LALIGA",
-      "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
-      "home": "elche",
-      "away": "atletico-madrid",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
+      "status": "scheduled"
     },
     {
       "id": "fd-564760",
       "comp": "LALIGA",
       "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
+      "kickoff": "2026-11-28T13:00:00Z",
       "home": "real-betis",
       "away": "rayo-vallecano",
       "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564761",
-      "comp": "LALIGA",
-      "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
-      "home": "valencia",
-      "away": "osasuna",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564762",
-      "comp": "LALIGA",
-      "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
-      "home": "real-madrid",
-      "away": "alaves",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564763",
-      "comp": "LALIGA",
-      "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
-      "home": "espanyol",
-      "away": "getafe",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564764",
-      "comp": "LALIGA",
-      "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
-      "home": "real-sociedad",
-      "away": "sevilla",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564765",
-      "comp": "LALIGA",
-      "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
-      "home": "levante",
-      "away": "racing-santander",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564766",
-      "comp": "LALIGA",
-      "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
-      "home": "deportivo-la-coruna",
-      "away": "barcelona",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
+      "status": "scheduled"
     },
     {
       "id": "fd-564767",
       "comp": "LALIGA",
       "round": "14",
-      "kickoff": "2026-11-29T00:00:00Z",
+      "kickoff": "2026-11-28T15:15:00Z",
       "home": "malaga",
       "away": "athletic",
       "score": null,
-      "status": "scheduled",
-      "tbc": true
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564759",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-28T17:30:00Z",
+      "home": "elche",
+      "away": "atletico-madrid",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564762",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-28T20:00:00Z",
+      "home": "real-madrid",
+      "away": "alaves",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564761",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T13:00:00Z",
+      "home": "valencia",
+      "away": "osasuna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564766",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T15:15:00Z",
+      "home": "deportivo-la-coruna",
+      "away": "barcelona",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564758",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T17:30:00Z",
+      "home": "celta-vigo",
+      "away": "villarreal",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564764",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-29T20:00:00Z",
+      "home": "real-sociedad",
+      "away": "sevilla",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564763",
+      "comp": "LALIGA",
+      "round": "14",
+      "kickoff": "2026-11-30T20:00:00Z",
+      "home": "espanyol",
+      "away": "getafe",
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564768",
@@ -4799,10 +4801,10 @@
     {
       "player": "Kylian Mbappé",
       "team": "real-madrid",
-      "goals": 12,
+      "goals": 13,
       "assists": 2,
       "penalties": 3,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Lamine Yamal",
@@ -4813,20 +4815,20 @@
       "played": 11
     },
     {
+      "player": "Yassir Zabiri",
+      "team": "racing-santander",
+      "goals": 9,
+      "assists": null,
+      "penalties": null,
+      "played": 12
+    },
+    {
       "player": "Ante Budimir",
       "team": "osasuna",
       "goals": 8,
       "assists": null,
       "penalties": 4,
-      "played": 11
-    },
-    {
-      "player": "Yassir Zabiri",
-      "team": "racing-santander",
-      "goals": 8,
-      "assists": null,
-      "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Sergio Camello",
@@ -4842,7 +4844,7 @@
       "goals": 6,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Fer Niño",
@@ -4858,7 +4860,7 @@
       "goals": 5,
       "assists": 2,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Álex Baena",
@@ -4896,9 +4898,9 @@
       "player": "Adrián",
       "team": "malaga",
       "goals": 5,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Mariano Díaz",
@@ -4914,7 +4916,7 @@
       "goals": 4,
       "assists": 3,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Luka Sučić",
@@ -4930,7 +4932,7 @@
       "goals": 4,
       "assists": 4,
       "penalties": 2,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Alejandro Grimaldo",
@@ -4989,6 +4991,14 @@
       "played": 10
     },
     {
+      "player": "Arda Guler",
+      "team": "real-madrid",
+      "goals": 3,
+      "assists": 4,
+      "penalties": null,
+      "played": 12
+    },
+    {
       "player": "Martin Satriano",
       "team": "getafe",
       "goals": 3,
@@ -5002,7 +5012,7 @@
       "goals": 3,
       "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Iván Romero",
@@ -5042,7 +5052,7 @@
       "goals": 3,
       "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Nicolas Pépé",
@@ -5082,7 +5092,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Gerard Moreno",
@@ -5114,7 +5124,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Adrián de la Fuente",
@@ -5149,20 +5159,12 @@
       "played": 8
     },
     {
-      "player": "Arda Guler",
-      "team": "real-madrid",
-      "goals": 2,
-      "assists": 3,
-      "penalties": null,
-      "played": 11
-    },
-    {
       "player": "Umar Sadiq",
       "team": "valencia",
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Roberto Navarro",
@@ -5170,7 +5172,15 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
+    },
+    {
+      "player": "Nico Williams",
+      "team": "athletic",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Ferran Jutglà",
@@ -5187,6 +5197,14 @@
       "assists": 2,
       "penalties": null,
       "played": 9
+    },
+    {
+      "player": "Carlos Dotor",
+      "team": "malaga",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Alberto Moleiro",
@@ -5234,7 +5252,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Isco",
@@ -5258,7 +5276,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Mikel Oyarzabal",
@@ -5330,7 +5348,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Marc Aguado",
@@ -5362,7 +5380,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Marc Pubill",
@@ -5378,7 +5396,7 @@
       "goals": 1,
       "assists": null,
       "penalties": 1,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Vinicius Junior",
@@ -5402,7 +5420,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Buba",
@@ -5445,20 +5463,12 @@
       "played": 10
     },
     {
-      "player": "Nico Williams",
-      "team": "athletic",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 9
-    },
-    {
       "player": "Oihan Sancet",
       "team": "athletic",
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Canales",
@@ -5466,7 +5476,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Andrei Rațiu",
@@ -5482,7 +5492,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Zakaria Eddahchouri",
@@ -5522,7 +5532,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Carl Starfelt",
@@ -5578,14 +5588,6 @@
       "goals": 1,
       "assists": 1,
       "penalties": 1,
-      "played": 11
-    },
-    {
-      "player": "Álvaro Carreras",
-      "team": "real-madrid",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
       "played": 11
     }
   ]

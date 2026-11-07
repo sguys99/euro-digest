@@ -18,6 +18,11 @@
     {
       "name": "Adrián",
       "goals": 5,
+      "assists": 1
+    },
+    {
+      "name": "Carlos Dotor",
+      "goals": 2,
       "assists": null
     }
   ],

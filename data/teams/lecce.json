@@ -18,12 +18,17 @@
     {
       "name": "Lassana Coulibaly",
       "goals": 2,
-      "assists": 1
+      "assists": 2
     },
     {
       "name": "Tiago Gabriel",
       "goals": 2,
       "assists": 1
+    },
+    {
+      "name": "Konan N'Dri",
+      "goals": 2,
+      "assists": null
     }
   ],
   "profile": {

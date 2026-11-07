@@ -20,17 +20,17 @@
     {
       "name": "Donyell Malen",
       "goals": 8,
-      "assists": 1
+      "assists": 2
+    },
+    {
+      "name": "Rodrigo Mora",
+      "goals": 4,
+      "assists": null
     },
     {
       "name": "Matias Soule",
       "goals": 3,
       "assists": 3
-    },
-    {
-      "name": "Niccolo Pisilli",
-      "goals": 3,
-      "assists": null
     }
   ],
   "profile": {

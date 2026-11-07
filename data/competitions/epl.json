@@ -2,21 +2,21 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-06T22:13:48.146Z",
+  "updatedAt": "2026-11-07T22:13:26.382Z",
   "standings": [
     {
       "pos": 1,
       "prevPos": 1,
       "team": "arsenal",
-      "played": 9,
-      "w": 8,
+      "played": 10,
+      "w": 9,
       "d": 0,
       "l": 1,
-      "gf": 14,
+      "gf": 15,
       "ga": 5,
-      "pts": 24,
+      "pts": 27,
       "form": [
-        "L",
+        "W",
         "W",
         "W",
         "W",
@@ -28,17 +28,17 @@
       "pos": 2,
       "prevPos": 2,
       "team": "manchester-city",
-      "played": 9,
+      "played": 10,
       "w": 7,
       "d": 0,
-      "l": 2,
-      "gf": 20,
-      "ga": 10,
+      "l": 3,
+      "gf": 21,
+      "ga": 13,
       "pts": 21,
       "form": [
         "W",
         "W",
-        "W",
+        "L",
         "L",
         "L"
       ],
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": 7,
+      "prevPos": 5,
       "team": "everton",
       "played": 10,
       "w": 4,
@@ -106,7 +106,7 @@
     },
     {
       "pos": 6,
-      "prevPos": 5,
+      "prevPos": 6,
       "team": "liverpool",
       "played": 9,
       "w": 4,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 6,
+      "prevPos": 7,
       "team": "brentford",
       "played": 9,
       "w": 3,
@@ -146,6 +146,26 @@
     },
     {
       "pos": 8,
+      "prevPos": 12,
+      "team": "leeds-united",
+      "played": 10,
+      "w": 3,
+      "d": 5,
+      "l": 2,
+      "gf": 10,
+      "ga": 8,
+      "pts": 14,
+      "form": [
+        "L",
+        "D",
+        "D",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
       "prevPos": 8,
       "team": "bournemouth",
       "played": 9,
@@ -165,27 +185,47 @@
       "zone": "none"
     },
     {
-      "pos": 9,
+      "pos": 10,
       "prevPos": 9,
       "team": "tottenham-hotspur",
-      "played": 9,
+      "played": 10,
       "w": 3,
       "d": 3,
-      "l": 3,
+      "l": 4,
       "gf": 10,
-      "ga": 10,
+      "ga": 11,
       "pts": 12,
       "form": [
-        "L",
         "D",
         "W",
         "W",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "none"
     },
     {
-      "pos": 10,
+      "pos": 11,
+      "prevPos": 13,
+      "team": "newcastle-united",
+      "played": 10,
+      "w": 3,
+      "d": 3,
+      "l": 4,
+      "gf": 13,
+      "ga": 16,
+      "pts": 12,
+      "form": [
+        "L",
+        "L",
+        "W",
+        "L",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 12,
       "prevPos": 10,
       "team": "aston-villa",
       "played": 9,
@@ -205,61 +245,21 @@
       "zone": "none"
     },
     {
-      "pos": 11,
+      "pos": 13,
       "prevPos": 11,
       "team": "hull-city",
-      "played": 9,
+      "played": 10,
       "w": 2,
       "d": 5,
-      "l": 2,
+      "l": 3,
       "gf": 11,
-      "ga": 10,
-      "pts": 11,
-      "form": [
-        "L",
-        "D",
-        "L",
-        "D",
-        "D"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 12,
-      "prevPos": 12,
-      "team": "leeds-united",
-      "played": 9,
-      "w": 2,
-      "d": 5,
-      "l": 2,
-      "gf": 9,
-      "ga": 8,
+      "ga": 11,
       "pts": 11,
       "form": [
         "D",
         "L",
         "D",
         "D",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 13,
-      "prevPos": 13,
-      "team": "newcastle-united",
-      "played": 9,
-      "w": 3,
-      "d": 2,
-      "l": 4,
-      "gf": 12,
-      "ga": 15,
-      "pts": 11,
-      "form": [
-        "W",
-        "L",
-        "L",
-        "W",
         "L"
       ],
       "zone": "none"
@@ -288,24 +288,44 @@
       "pos": 15,
       "prevPos": 15,
       "team": "fulham",
-      "played": 9,
+      "played": 10,
       "w": 2,
-      "d": 3,
+      "d": 4,
       "l": 4,
-      "gf": 9,
-      "ga": 11,
-      "pts": 9,
+      "gf": 10,
+      "ga": 12,
+      "pts": 10,
       "form": [
-        "D",
         "L",
         "W",
         "W",
+        "D",
         "D"
       ],
       "zone": "none"
     },
     {
       "pos": 16,
+      "prevPos": 19,
+      "team": "nottingham-forest",
+      "played": 10,
+      "w": 2,
+      "d": 3,
+      "l": 5,
+      "gf": 9,
+      "ga": 13,
+      "pts": 9,
+      "form": [
+        "L",
+        "L",
+        "D",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 17,
       "prevPos": 16,
       "team": "coventry-city",
       "played": 10,
@@ -325,7 +345,7 @@
       "zone": "none"
     },
     {
-      "pos": 17,
+      "pos": 18,
       "prevPos": 17,
       "team": "manchester-united",
       "played": 9,
@@ -342,10 +362,10 @@
         "L",
         "L"
       ],
-      "zone": "none"
+      "zone": "relegation"
     },
     {
-      "pos": 18,
+      "pos": 19,
       "prevPos": 18,
       "team": "crystal-palace",
       "played": 9,
@@ -360,26 +380,6 @@
         "W",
         "L",
         "L",
-        "L"
-      ],
-      "zone": "relegation"
-    },
-    {
-      "pos": 19,
-      "prevPos": 19,
-      "team": "nottingham-forest",
-      "played": 9,
-      "w": 1,
-      "d": 3,
-      "l": 5,
-      "gf": 6,
-      "ga": 12,
-      "pts": 6,
-      "form": [
-        "L",
-        "L",
-        "L",
-        "D",
         "L"
       ],
       "zone": "relegation"
@@ -1596,8 +1596,11 @@
       "kickoff": "2026-11-07T12:30:00Z",
       "home": "leeds-united",
       "away": "tottenham-hotspur",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560633",
@@ -1606,8 +1609,11 @@
       "kickoff": "2026-11-07T15:00:00Z",
       "home": "fulham",
       "away": "newcastle-united",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560640",
@@ -1616,8 +1622,11 @@
       "kickoff": "2026-11-07T15:00:00Z",
       "home": "arsenal",
       "away": "hull-city",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560641",
@@ -1626,8 +1635,11 @@
       "kickoff": "2026-11-07T17:30:00Z",
       "home": "nottingham-forest",
       "away": "manchester-city",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560635",
@@ -4657,7 +4669,7 @@
       "goals": 9,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Thierno Barry",
@@ -4700,20 +4712,20 @@
       "played": 9
     },
     {
+      "player": "Rayan Cherki",
+      "team": "manchester-city",
+      "goals": 5,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
       "player": "Nicolas Jackson",
       "team": "aston-villa",
       "goals": 5,
       "assists": null,
       "penalties": null,
       "played": 8
-    },
-    {
-      "player": "Rayan Cherki",
-      "team": "manchester-city",
-      "goals": 4,
-      "assists": 2,
-      "penalties": null,
-      "played": 9
     },
     {
       "player": "Bryan Mbeumo",
@@ -4737,7 +4749,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Bukayo Saka",
@@ -4746,6 +4758,14 @@
       "assists": null,
       "penalties": 1,
       "played": 7
+    },
+    {
+      "player": "Martin Ødegaard",
+      "team": "arsenal",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Kiernan Dewsbury Hall",
@@ -4801,7 +4821,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Bruno Fernandes",
@@ -4809,6 +4829,14 @@
       "goals": 3,
       "assists": 1,
       "penalties": 1,
+      "played": 9
+    },
+    {
+      "player": "Liam Delap",
+      "team": "nottingham-forest",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
       "played": 9
     },
     {
@@ -4852,14 +4880,6 @@
       "played": 10
     },
     {
-      "player": "Martin Ødegaard",
-      "team": "arsenal",
-      "goals": 2,
-      "assists": null,
-      "penalties": null,
-      "played": 9
-    },
-    {
       "player": "Emersonn",
       "team": "ipswich-town",
       "goals": 2,
@@ -4897,7 +4917,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 5
+      "played": 6
     },
     {
       "player": "Joe Willock",
@@ -4905,7 +4925,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Joshua King",
@@ -4913,7 +4933,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Dan Ndoye",
@@ -4921,7 +4941,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Víctor Muñoz",
@@ -4953,7 +4973,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jayden Bogle",
@@ -4961,7 +4981,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Enzo Le Fée",
@@ -4993,7 +5013,15 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
+    },
+    {
+      "player": "Noah Okafor",
+      "team": "leeds-united",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
     },
     {
       "player": "Thiago",
@@ -5017,7 +5045,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Antoine Semenyo",
@@ -5049,7 +5077,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Semi Ajayi",
@@ -5057,7 +5085,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Nobel Mendy",
@@ -5065,7 +5093,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Nilson Angulo",
@@ -5105,7 +5133,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Joško Gvardiol",
@@ -5113,7 +5141,7 @@
       "goals": 1,
       "assists": 3,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Cody Gakpo",
@@ -5137,15 +5165,15 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Morgan Gibbs-White",
       "team": "nottingham-forest",
       "goals": 1,
-      "assists": 2,
+      "assists": 3,
       "penalties": 1,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Alex Scott",
@@ -5177,7 +5205,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Wilson Isidor",
@@ -5225,7 +5253,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Ben Chilwell",
@@ -5276,14 +5304,6 @@
       "played": 7
     },
     {
-      "player": "Liam Delap",
-      "team": "nottingham-forest",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 8
-    },
-    {
       "player": "Alysson",
       "team": "aston-villa",
       "goals": 1,
@@ -5297,7 +5317,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 5
+      "played": 6
     },
     {
       "player": "Justin Kluivert",
@@ -5316,20 +5336,12 @@
       "played": 8
     },
     {
-      "player": "Noah Okafor",
-      "team": "leeds-united",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 8
-    },
-    {
       "player": "Bazoumana Touré",
       "team": "newcastle-united",
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jaidon Anthony",
@@ -5361,7 +5373,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Chema Andrés",
@@ -5377,7 +5389,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Mohamed Cho",
@@ -5385,7 +5397,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Jay Dasilva",
@@ -5401,7 +5413,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Matheus Cunha",
@@ -5417,7 +5429,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Riccardo Calafiori",
@@ -5425,7 +5437,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jaouen Hadjam",
@@ -5441,7 +5453,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Abdoul Ouattara",

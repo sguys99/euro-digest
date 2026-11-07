@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-06T22:15:43.798Z",
+  "generatedAt": "2026-11-07T22:15:19.036Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -58,14 +58,14 @@
         }
       ],
       "next": {
-        "matchId": "fd-560633",
+        "matchId": "fd-560651",
         "comp": "EPL",
-        "kickoff": "2026-11-07T15:00:00Z",
+        "kickoff": "2026-11-21T17:30:00Z",
         "opponent": {
-          "slug": "fulham",
-          "name": "Fulham FC"
+          "slug": "arsenal",
+          "name": "Arsenal FC"
         },
-        "home": false
+        "home": true
       },
       "updatedAt": "2026-11-02T22:17:28.133Z"
     },
@@ -308,14 +308,14 @@
         }
       ],
       "next": {
-        "matchId": "fd-565851",
+        "matchId": "fd-565859",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-07T14:30:00Z",
+        "kickoff": "2026-11-20T19:30:00Z",
         "opponent": {
-          "slug": "mainz",
-          "name": "1. FSV Mainz 05"
+          "slug": "koln",
+          "name": "1. FC Köln"
         },
-        "home": false
+        "home": true
       },
       "updatedAt": "2026-11-03T22:15:55.399Z"
     },
@@ -496,14 +496,14 @@
         }
       ],
       "next": {
-        "matchId": "fd-565851",
+        "matchId": "fd-565864",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-07T14:30:00Z",
+        "kickoff": "2026-11-22T14:30:00Z",
         "opponent": {
-          "slug": "bayern-munchen",
-          "name": "FC Bayern München"
+          "slug": "augsburg",
+          "name": "FC Augsburg"
         },
-        "home": true
+        "home": false
       },
       "updatedAt": "2026-11-01T04:56:14.815Z"
     },
@@ -684,14 +684,14 @@
         }
       ],
       "next": {
-        "matchId": "fd-565848",
+        "matchId": "fd-565864",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-07T14:30:00Z",
+        "kickoff": "2026-11-22T14:30:00Z",
         "opponent": {
-          "slug": "rb-leipzig",
-          "name": "RB Leipzig"
+          "slug": "mainz",
+          "name": "1. FSV Mainz 05"
         },
-        "home": false
+        "home": true
       },
       "updatedAt": "2026-11-01T04:56:14.815Z"
     },

@@ -19,7 +19,7 @@
   "topPlayers": [
     {
       "name": "Kylian Mbappé",
-      "goals": 12,
+      "goals": 13,
       "assists": 2
     },
     {
@@ -28,9 +28,9 @@
       "assists": 3
     },
     {
-      "name": "Yan Diomandé",
+      "name": "Arda Guler",
       "goals": 3,
-      "assists": 2
+      "assists": 4
     }
   ],
   "profile": {

@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-08",
+  "generatedAt": "2026-11-07T22:13:11.226Z",
+  "runId": "collect-prod-20261107T221218Z-fb5b",
+  "mode": "mixed",
+  "lines": [
+    {
+      "text": "레알 마드리드가 라리가 원정에서 발렌시아를 3-0으로 완파했다.",
+      "ai": false,
+      "refs": [
+        "m564741"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "라이프치히가 아우크스부르크를 5-2로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m565848"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    },
+    {
+      "text": "로마가 사수올로를 3-0으로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m558531"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "바이에른 뮌헨이 마인츠 원정에서 2-1로 이겼다.",
+      "ai": true,
+      "refs": [
+        "m565851"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    },
+    {
+      "text": "아스널은 승점 27로 프리미어리그 선두다.",
+      "ai": true,
+      "refs": [
+        "sPL"
+      ],
+      "comps": [
+        "EPL"
+      ]
+    }
+  ]
+}

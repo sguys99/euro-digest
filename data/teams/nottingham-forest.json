@@ -16,6 +16,11 @@
   },
   "topPlayers": [
     {
+      "name": "Liam Delap",
+      "goals": 3,
+      "assists": null
+    },
+    {
       "name": "Dan Ndoye",
       "goals": 2,
       "assists": null
