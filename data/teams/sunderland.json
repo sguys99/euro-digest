@@ -16,14 +16,14 @@
   },
   "topPlayers": [
     {
+      "name": "Enzo Le Fée",
+      "goals": 3,
+      "assists": 1
+    },
+    {
       "name": "Brian Brobbey",
       "goals": 3,
       "assists": null
-    },
-    {
-      "name": "Enzo Le Fée",
-      "goals": 2,
-      "assists": 1
     }
   ],
   "profile": {

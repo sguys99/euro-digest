@@ -2,31 +2,51 @@
   "comp": "SERIEA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-07T22:14:12.784Z",
+  "updatedAt": "2026-11-08T22:14:28.471Z",
   "standings": [
     {
       "pos": 1,
       "prevPos": 1,
       "team": "lazio",
-      "played": 10,
+      "played": 11,
       "w": 9,
-      "d": 1,
+      "d": 2,
       "l": 0,
-      "gf": 24,
-      "ga": 8,
-      "pts": 28,
+      "gf": 25,
+      "ga": 9,
+      "pts": 29,
       "form": [
         "W",
         "W",
         "W",
         "W",
-        "W"
+        "D"
       ],
       "zone": "none"
     },
     {
       "pos": 2,
       "prevPos": 3,
+      "team": "inter",
+      "played": 11,
+      "w": 9,
+      "d": 1,
+      "l": 1,
+      "gf": 28,
+      "ga": 13,
+      "pts": 28,
+      "form": [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": 2,
       "team": "roma",
       "played": 11,
       "w": 8,
@@ -45,40 +65,20 @@
       "zone": "none"
     },
     {
-      "pos": 3,
-      "prevPos": 2,
-      "team": "inter",
-      "played": 10,
-      "w": 8,
-      "d": 1,
-      "l": 1,
-      "gf": 26,
-      "ga": 13,
-      "pts": 25,
-      "form": [
-        "W",
-        "W",
-        "W",
-        "W",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 4,
-      "prevPos": 4,
-      "team": "como",
-      "played": 10,
+      "prevPos": 5,
+      "team": "milan",
+      "played": 11,
       "w": 7,
-      "d": 2,
+      "d": 3,
       "l": 1,
-      "gf": 18,
-      "ga": 8,
-      "pts": 23,
+      "gf": 23,
+      "ga": 13,
+      "pts": 24,
       "form": [
-        "D",
         "W",
         "W",
+        "L",
         "W",
         "W"
       ],
@@ -86,21 +86,21 @@
     },
     {
       "pos": 5,
-      "prevPos": 5,
-      "team": "milan",
-      "played": 10,
-      "w": 6,
-      "d": 3,
-      "l": 1,
-      "gf": 21,
-      "ga": 12,
-      "pts": 21,
+      "prevPos": 4,
+      "team": "como",
+      "played": 11,
+      "w": 7,
+      "d": 2,
+      "l": 2,
+      "gf": 18,
+      "ga": 10,
+      "pts": 23,
       "form": [
-        "D",
         "W",
         "W",
-        "L",
-        "W"
+        "W",
+        "W",
+        "L"
       ],
       "zone": "none"
     },
@@ -128,25 +128,25 @@
       "pos": 7,
       "prevPos": 7,
       "team": "juventus",
-      "played": 10,
+      "played": 11,
       "w": 5,
-      "d": 2,
+      "d": 3,
       "l": 3,
-      "gf": 13,
-      "ga": 10,
-      "pts": 17,
+      "gf": 15,
+      "ga": 12,
+      "pts": 18,
       "form": [
-        "D",
         "L",
         "W",
         "L",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "none"
     },
     {
       "pos": 8,
-      "prevPos": 9,
+      "prevPos": 8,
       "team": "bologna",
       "played": 11,
       "w": 5,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 12,
+      "prevPos": 9,
       "team": "cagliari",
       "played": 11,
       "w": 5,
@@ -186,27 +186,27 @@
     },
     {
       "pos": 10,
-      "prevPos": 8,
+      "prevPos": 10,
       "team": "napoli",
-      "played": 10,
+      "played": 11,
       "w": 4,
-      "d": 2,
+      "d": 3,
       "l": 4,
-      "gf": 17,
-      "ga": 13,
-      "pts": 14,
+      "gf": 18,
+      "ga": 14,
+      "pts": 15,
       "form": [
-        "W",
         "L",
         "D",
         "W",
-        "L"
+        "L",
+        "D"
       ],
       "zone": "none"
     },
     {
       "pos": 11,
-      "prevPos": 10,
+      "prevPos": 11,
       "team": "torino",
       "played": 11,
       "w": 4,
@@ -226,40 +226,40 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
-      "team": "genoa",
-      "played": 10,
+      "prevPos": 13,
+      "team": "atalanta",
+      "played": 11,
       "w": 4,
-      "d": 1,
+      "d": 2,
       "l": 5,
-      "gf": 10,
-      "ga": 14,
-      "pts": 13,
+      "gf": 17,
+      "ga": 20,
+      "pts": 14,
       "form": [
-        "W",
         "L",
-        "W",
-        "W",
+        "D",
+        "D",
+        "L",
         "W"
       ],
       "zone": "none"
     },
     {
       "pos": 13,
-      "prevPos": 13,
-      "team": "atalanta",
-      "played": 10,
-      "w": 3,
-      "d": 2,
-      "l": 5,
-      "gf": 16,
-      "ga": 20,
-      "pts": 11,
+      "prevPos": 12,
+      "team": "genoa",
+      "played": 11,
+      "w": 4,
+      "d": 1,
+      "l": 6,
+      "gf": 11,
+      "ga": 16,
+      "pts": 13,
       "form": [
-        "W",
         "L",
-        "D",
-        "D",
+        "W",
+        "W",
+        "W",
         "L"
       ],
       "zone": "none"
@@ -286,27 +286,27 @@
     },
     {
       "pos": 15,
-      "prevPos": 16,
+      "prevPos": 15,
       "team": "fiorentina",
-      "played": 10,
+      "played": 11,
       "w": 2,
-      "d": 2,
+      "d": 3,
       "l": 6,
-      "gf": 15,
-      "ga": 23,
-      "pts": 8,
+      "gf": 17,
+      "ga": 25,
+      "pts": 9,
       "form": [
         "L",
         "L",
-        "L",
         "D",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "none"
     },
     {
       "pos": 16,
-      "prevPos": 15,
+      "prevPos": 16,
       "team": "parma",
       "played": 11,
       "w": 2,
@@ -348,16 +348,16 @@
       "pos": 18,
       "prevPos": 18,
       "team": "monza",
-      "played": 10,
+      "played": 11,
       "w": 2,
       "d": 1,
-      "l": 7,
+      "l": 8,
       "gf": 17,
-      "ga": 24,
+      "ga": 25,
       "pts": 7,
       "form": [
-        "L",
         "W",
+        "L",
         "L",
         "L",
         "L"
@@ -1778,8 +1778,11 @@
       "kickoff": "2026-11-08T11:30:00Z",
       "home": "napoli",
       "away": "lazio",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558536",
@@ -1788,8 +1791,11 @@
       "kickoff": "2026-11-08T14:00:00Z",
       "home": "genoa",
       "away": "milan",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558538",
@@ -1798,8 +1804,11 @@
       "kickoff": "2026-11-08T14:00:00Z",
       "home": "monza",
       "away": "atalanta",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558530",
@@ -1808,8 +1817,11 @@
       "kickoff": "2026-11-08T17:00:00Z",
       "home": "inter",
       "away": "como",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558529",
@@ -1818,8 +1830,11 @@
       "kickoff": "2026-11-08T19:45:00Z",
       "home": "fiorentina",
       "away": "juventus",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558525",
@@ -4719,7 +4734,7 @@
       "goals": 9,
       "assists": 1,
       "penalties": 2,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Donyell Malen",
@@ -4740,10 +4755,18 @@
     {
       "player": "Nikola Krstović",
       "team": "atalanta",
+      "goals": 7,
+      "assists": 2,
+      "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Marcus Thuram-Ulien",
+      "team": "inter",
       "goals": 6,
       "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Anastasios Douvikas",
@@ -4751,23 +4774,23 @@
       "goals": 5,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
+    },
+    {
+      "player": "Alphadjo Cisse",
+      "team": "milan",
+      "goals": 5,
+      "assists": null,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Adrien Rabiot",
       "team": "milan",
       "goals": 5,
-      "assists": 3,
+      "assists": 4,
       "penalties": null,
-      "played": 8
-    },
-    {
-      "player": "Marcus Thuram-Ulien",
-      "team": "inter",
-      "goals": 5,
-      "assists": 2,
-      "penalties": null,
-      "played": 10
+      "played": 9
     },
     {
       "player": "Daniel Maldini",
@@ -4791,15 +4814,7 @@
       "goals": 4,
       "assists": 1,
       "penalties": 1,
-      "played": 10
-    },
-    {
-      "player": "Alphadjo Cisse",
-      "team": "milan",
-      "goals": 4,
-      "assists": null,
-      "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Che Adams",
@@ -4808,6 +4823,14 @@
       "assists": null,
       "penalties": null,
       "played": 9
+    },
+    {
+      "player": "Davide Frattesi",
+      "team": "lazio",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Rodrigo Mora",
@@ -4823,7 +4846,15 @@
       "goals": 4,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
+    },
+    {
+      "player": "Mateo Pellegrino",
+      "team": "fiorentina",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Lautaro Martínez",
@@ -4839,15 +4870,15 @@
       "goals": 4,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Tijjani Noslin",
       "team": "lazio",
       "goals": 4,
-      "assists": 3,
+      "assists": 4,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Diego Moreira",
@@ -4855,7 +4886,15 @@
       "goals": 4,
       "assists": 3,
       "penalties": null,
-      "played": 8
+      "played": 9
+    },
+    {
+      "player": "Christian Pulisic",
+      "team": "milan",
+      "goals": 4,
+      "assists": 1,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Gustav Isaksen",
@@ -4863,7 +4902,7 @@
       "goals": 4,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Hakan Çalhanoğlu",
@@ -4871,15 +4910,23 @@
       "goals": 3,
       "assists": null,
       "penalties": 1,
-      "played": 8
+      "played": 9
     },
     {
-      "player": "Davide Frattesi",
-      "team": "lazio",
+      "player": "Francesco Esposito",
+      "team": "inter",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Bremer",
+      "team": "juventus",
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Niccolo Pisilli",
@@ -4903,7 +4950,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Rasmus Højlund",
@@ -4911,7 +4958,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Matias Soule",
@@ -4927,15 +4974,7 @@
       "goals": 3,
       "assists": 3,
       "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Mateo Pellegrino",
-      "team": "fiorentina",
-      "goals": 3,
-      "assists": null,
-      "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Simone Lontani",
@@ -4970,20 +5009,20 @@
       "played": 11
     },
     {
-      "player": "Christian Pulisic",
-      "team": "milan",
-      "goals": 3,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
-    },
-    {
       "player": "Samuel Mbangula",
       "team": "bologna",
       "goals": 3,
       "assists": null,
       "penalties": null,
       "played": 8
+    },
+    {
+      "player": "Alieu Njie",
+      "team": "fiorentina",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Hassane Kamara",
@@ -4999,23 +5038,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": 1,
-      "played": 10
-    },
-    {
-      "player": "Francesco Esposito",
-      "team": "inter",
-      "goals": 2,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Bremer",
-      "team": "juventus",
-      "goals": 2,
-      "assists": null,
-      "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Tiago Gabriel",
@@ -5037,9 +5060,9 @@
       "player": "Gonçalo Ramos",
       "team": "milan",
       "goals": 2,
-      "assists": 1,
+      "assists": 2,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Domenico Berardi",
@@ -5063,7 +5086,7 @@
       "goals": 2,
       "assists": 3,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Éderson",
@@ -5071,7 +5094,7 @@
       "goals": 2,
       "assists": null,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Mario Hermoso",
@@ -5087,7 +5110,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Akor Adams",
@@ -5127,7 +5150,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jacobo Ramón",
@@ -5135,7 +5158,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "José Romero",
@@ -5151,7 +5174,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Ange-Yoan Bonny",
@@ -5159,7 +5182,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Sandro Kulenović",
@@ -5191,7 +5214,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Junior Messias",
@@ -5199,7 +5222,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Riccardo Orsolini",
@@ -5215,7 +5238,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Kristian Thorstvedt",
@@ -5263,7 +5286,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Leonardo Balerdi",
@@ -5279,13 +5302,21 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Romano Schmid",
       "team": "frosinone",
       "goals": 2,
       "assists": 4,
+      "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Mikael Egill Ellertsson",
+      "team": "genoa",
+      "goals": 2,
+      "assists": 1,
       "penalties": null,
       "played": 11
     },
@@ -5306,14 +5337,6 @@
       "played": 9
     },
     {
-      "player": "Alieu Njie",
-      "team": "fiorentina",
-      "goals": 2,
-      "assists": 2,
-      "penalties": null,
-      "played": 10
-    },
-    {
       "player": "Armand Lauriente",
       "team": "sassuolo",
       "goals": 2,
@@ -5327,7 +5350,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Antonio Vergara",
@@ -5335,7 +5358,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Alessandro Romano",
@@ -5391,7 +5414,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Gabriele Bracaglia",
@@ -5415,7 +5438,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Lazar Samardzic",
@@ -5423,7 +5446,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Rolando Mandragora",
@@ -5479,7 +5502,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jesper Karlström",
@@ -5503,15 +5526,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Matteo Cancellieri",
-      "team": "lazio",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 8
+      "played": 10
     }
   ]
 }

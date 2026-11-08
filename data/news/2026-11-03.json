@@ -1,7 +1,7 @@
 {
   "date": "2026-11-03",
-  "generatedAt": "2026-11-02T22:14:00.397Z",
-  "runId": "collect-prod-20261102T221354Z-4066",
+  "generatedAt": "2026-11-08T22:12:32.195Z",
+  "runId": "collect-prod-20261108T221232Z-3b42",
   "cards": [
     {
       "id": "c_2731349c3f",
@@ -198,12 +198,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/c6vgj0p4ey17o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-02T20:23:55.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7748241/2026/11/02/fifa-uefa-ffe-documents-world-cup/",
-          "at": "2026-11-02T18:30:47.000Z",
           "tier": 2
         }
       ],
@@ -944,62 +938,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cqgm0k9xg4p7o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-02T14:19:21.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-02T22:13:54.086Z"
-    },
-    {
-      "id": "c_0285f7b964",
-      "t": "Declan Rice, the Liverpool assist and a positional tweak helping him reach new levels",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "liverpool"
-      ],
-      "players": [
-        "declan-rice"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7747305/2026/11/02/declan-rice-arsenal-positioning/",
-          "at": "2026-11-02T14:00:42.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-02T22:13:54.086Z"
-    },
-    {
-      "id": "c_7f5f77200e",
-      "t": "Premier League Briefing: Are Man United in a relegation battle? How many teams are in the title race?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7744437/2026/11/02/premier-league-title-race-relegation-battle-analysis-talking-points/",
-          "at": "2026-11-02T11:00:30.000Z",
           "tier": 2
         }
       ],

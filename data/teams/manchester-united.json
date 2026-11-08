@@ -18,14 +18,14 @@
   },
   "topPlayers": [
     {
+      "name": "Bruno Fernandes",
+      "goals": 4,
+      "assists": 2
+    },
+    {
       "name": "Bryan Mbeumo",
       "goals": 4,
       "assists": null
-    },
-    {
-      "name": "Bruno Fernandes",
-      "goals": 3,
-      "assists": 1
     }
   ],
   "profile": {

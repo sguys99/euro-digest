@@ -18,17 +18,17 @@
     {
       "name": "Adrien Rabiot",
       "goals": 5,
-      "assists": 3
+      "assists": 4
+    },
+    {
+      "name": "Alphadjo Cisse",
+      "goals": 5,
+      "assists": null
     },
     {
       "name": "Diego Moreira",
       "goals": 4,
       "assists": 3
-    },
-    {
-      "name": "Alphadjo Cisse",
-      "goals": 4,
-      "assists": null
     }
   ],
   "profile": {

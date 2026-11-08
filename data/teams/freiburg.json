@@ -16,14 +16,14 @@
   },
   "topPlayers": [
     {
+      "name": "Yuito Suzuki",
+      "goals": 5,
+      "assists": null
+    },
+    {
       "name": "Igor Matanovic",
       "goals": 4,
       "assists": 1
-    },
-    {
-      "name": "Yuito Suzuki",
-      "goals": 4,
-      "assists": null
     },
     {
       "name": "Maximilian Eggestein",

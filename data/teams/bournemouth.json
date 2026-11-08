@@ -16,14 +16,14 @@
   },
   "topPlayers": [
     {
+      "name": "Evanilson",
+      "goals": 5,
+      "assists": 4
+    },
+    {
       "name": "Marcus Tavernier",
       "goals": 5,
       "assists": null
-    },
-    {
-      "name": "Evanilson",
-      "goals": 4,
-      "assists": 4
     }
   ],
   "profile": {

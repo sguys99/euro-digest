@@ -14,7 +14,13 @@
     "source": "api",
     "updated": "2026-11-02T19:45:00.000Z"
   },
-  "topPlayers": [],
+  "topPlayers": [
+    {
+      "name": "Jean-Victor Makengo",
+      "goals": 2,
+      "assists": 1
+    }
+  ],
   "profile": {
     "oneLiner": "리그 10위로 승점 12를 쌓았으며, 최근 3경기에서 무패를 이어 가고 있다.",
     "strengths": [

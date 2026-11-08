@@ -19,8 +19,13 @@
   "topPlayers": [
     {
       "name": "Nicolas Jackson",
-      "goals": 5,
-      "assists": null
+      "goals": 6,
+      "assists": 1
+    },
+    {
+      "name": "John McGinn",
+      "goals": 2,
+      "assists": 4
     },
     {
       "name": "Johan Manzambi",

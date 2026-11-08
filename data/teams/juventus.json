@@ -16,14 +16,14 @@
   },
   "topPlayers": [
     {
+      "name": "Bremer",
+      "goals": 3,
+      "assists": null
+    },
+    {
       "name": "Edon Zhegrova",
       "goals": 2,
       "assists": 2
-    },
-    {
-      "name": "Bremer",
-      "goals": 2,
-      "assists": null
     }
   ],
   "profile": {

@@ -2,7 +2,7 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-07T22:13:26.382Z",
+  "updatedAt": "2026-11-08T22:13:39.351Z",
   "standings": [
     {
       "pos": 1,
@@ -26,6 +26,26 @@
     },
     {
       "pos": 2,
+      "prevPos": 3,
+      "team": "brighton",
+      "played": 10,
+      "w": 7,
+      "d": 1,
+      "l": 2,
+      "gf": 26,
+      "ga": 7,
+      "pts": 22,
+      "form": [
+        "W",
+        "W",
+        "L",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
       "prevPos": 2,
       "team": "manchester-city",
       "played": 10,
@@ -45,36 +65,16 @@
       "zone": "none"
     },
     {
-      "pos": 3,
-      "prevPos": 3,
-      "team": "brighton",
-      "played": 9,
-      "w": 6,
-      "d": 1,
-      "l": 2,
-      "gf": 24,
-      "ga": 7,
-      "pts": 19,
-      "form": [
-        "W",
-        "W",
-        "W",
-        "L",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 4,
-      "prevPos": 4,
-      "team": "chelsea",
-      "played": 9,
+      "prevPos": 6,
+      "team": "liverpool",
+      "played": 10,
       "w": 5,
-      "d": 1,
-      "l": 3,
-      "gf": 19,
-      "ga": 15,
-      "pts": 16,
+      "d": 3,
+      "l": 2,
+      "gf": 14,
+      "ga": 10,
+      "pts": 18,
       "form": [
         "L",
         "W",
@@ -86,6 +86,26 @@
     },
     {
       "pos": 5,
+      "prevPos": 4,
+      "team": "chelsea",
+      "played": 10,
+      "w": 5,
+      "d": 1,
+      "l": 4,
+      "gf": 19,
+      "ga": 16,
+      "pts": 16,
+      "form": [
+        "W",
+        "W",
+        "L",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 6,
       "prevPos": 5,
       "team": "everton",
       "played": 10,
@@ -105,48 +125,48 @@
       "zone": "none"
     },
     {
-      "pos": 6,
-      "prevPos": 6,
-      "team": "liverpool",
-      "played": 9,
+      "pos": 7,
+      "prevPos": 9,
+      "team": "bournemouth",
+      "played": 10,
       "w": 4,
       "d": 3,
-      "l": 2,
-      "gf": 11,
-      "ga": 9,
+      "l": 3,
+      "gf": 16,
+      "ga": 14,
       "pts": 15,
       "form": [
-        "W",
         "L",
         "W",
         "W",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 7,
-      "prevPos": 7,
-      "team": "brentford",
-      "played": 9,
-      "w": 3,
-      "d": 5,
-      "l": 1,
-      "gf": 16,
-      "ga": 9,
-      "pts": 14,
-      "form": [
         "W",
-        "D",
-        "L",
-        "D",
         "W"
       ],
       "zone": "none"
     },
     {
       "pos": 8,
-      "prevPos": 12,
+      "prevPos": 7,
+      "team": "brentford",
+      "played": 10,
+      "w": 3,
+      "d": 5,
+      "l": 2,
+      "gf": 16,
+      "ga": 11,
+      "pts": 14,
+      "form": [
+        "D",
+        "L",
+        "D",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
+      "prevPos": 8,
       "team": "leeds-united",
       "played": 10,
       "w": 3,
@@ -165,28 +185,28 @@
       "zone": "none"
     },
     {
-      "pos": 9,
-      "prevPos": 8,
-      "team": "bournemouth",
-      "played": 9,
+      "pos": 10,
+      "prevPos": 12,
+      "team": "aston-villa",
+      "played": 10,
       "w": 3,
-      "d": 3,
+      "d": 4,
       "l": 3,
       "gf": 14,
-      "ga": 13,
-      "pts": 12,
+      "ga": 17,
+      "pts": 13,
       "form": [
-        "L",
-        "L",
+        "D",
         "W",
         "W",
-        "W"
+        "D",
+        "D"
       ],
       "zone": "none"
     },
     {
-      "pos": 10,
-      "prevPos": 9,
+      "pos": 11,
+      "prevPos": 10,
       "team": "tottenham-hotspur",
       "played": 10,
       "w": 3,
@@ -205,8 +225,8 @@
       "zone": "none"
     },
     {
-      "pos": 11,
-      "prevPos": 13,
+      "pos": 12,
+      "prevPos": 11,
       "team": "newcastle-united",
       "played": 10,
       "w": 3,
@@ -225,28 +245,8 @@
       "zone": "none"
     },
     {
-      "pos": 12,
-      "prevPos": 10,
-      "team": "aston-villa",
-      "played": 9,
-      "w": 3,
-      "d": 3,
-      "l": 3,
-      "gf": 10,
-      "ga": 13,
-      "pts": 12,
-      "form": [
-        "W",
-        "D",
-        "W",
-        "W",
-        "D"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 13,
-      "prevPos": 11,
+      "prevPos": 13,
       "team": "hull-city",
       "played": 10,
       "w": 2,
@@ -268,19 +268,19 @@
       "pos": 14,
       "prevPos": 14,
       "team": "ipswich-town",
-      "played": 9,
+      "played": 10,
       "w": 3,
       "d": 2,
-      "l": 4,
-      "gf": 14,
-      "ga": 18,
+      "l": 5,
+      "gf": 15,
+      "ga": 20,
       "pts": 11,
       "form": [
-        "L",
         "W",
         "L",
         "D",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "none"
     },
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": 19,
+      "prevPos": 16,
       "team": "nottingham-forest",
       "played": 10,
       "w": 2,
@@ -326,7 +326,7 @@
     },
     {
       "pos": 17,
-      "prevPos": 16,
+      "prevPos": 17,
       "team": "coventry-city",
       "played": 10,
       "w": 3,
@@ -346,60 +346,60 @@
     },
     {
       "pos": 18,
-      "prevPos": 17,
+      "prevPos": 18,
       "team": "manchester-united",
-      "played": 9,
+      "played": 10,
       "w": 1,
-      "d": 4,
+      "d": 5,
       "l": 4,
-      "gf": 10,
-      "ga": 15,
-      "pts": 7,
+      "gf": 14,
+      "ga": 19,
+      "pts": 8,
       "form": [
         "D",
         "D",
-        "D",
         "L",
-        "L"
+        "L",
+        "D"
       ],
       "zone": "relegation"
     },
     {
       "pos": 19,
-      "prevPos": 18,
-      "team": "crystal-palace",
-      "played": 9,
+      "prevPos": 20,
+      "team": "sunderland",
+      "played": 10,
       "w": 2,
-      "d": 1,
+      "d": 2,
       "l": 6,
-      "gf": 9,
-      "ga": 21,
-      "pts": 7,
+      "gf": 8,
+      "ga": 17,
+      "pts": 8,
       "form": [
+        "L",
+        "L",
         "D",
-        "W",
         "L",
-        "L",
-        "L"
+        "W"
       ],
       "zone": "relegation"
     },
     {
       "pos": 20,
-      "prevPos": 20,
-      "team": "sunderland",
-      "played": 9,
-      "w": 1,
-      "d": 2,
-      "l": 6,
-      "gf": 7,
-      "ga": 17,
-      "pts": 5,
+      "prevPos": 19,
+      "team": "crystal-palace",
+      "played": 10,
+      "w": 2,
+      "d": 1,
+      "l": 7,
+      "gf": 10,
+      "ga": 24,
+      "pts": 7,
       "form": [
+        "W",
         "L",
         "L",
         "L",
-        "D",
         "L"
       ],
       "zone": "relegation"
@@ -1648,8 +1648,11 @@
       "kickoff": "2026-11-08T14:00:00Z",
       "home": "crystal-palace",
       "away": "liverpool",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560636",
@@ -1658,8 +1661,11 @@
       "kickoff": "2026-11-08T14:00:00Z",
       "home": "sunderland",
       "away": "chelsea",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560637",
@@ -1668,8 +1674,11 @@
       "kickoff": "2026-11-08T14:00:00Z",
       "home": "ipswich-town",
       "away": "bournemouth",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560638",
@@ -1678,8 +1687,11 @@
       "kickoff": "2026-11-08T14:00:00Z",
       "home": "brighton",
       "away": "brentford",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560639",
@@ -1688,8 +1700,11 @@
       "kickoff": "2026-11-08T16:30:00Z",
       "home": "manchester-united",
       "away": "aston-villa",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 4,
+        "a": 4
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560643",
@@ -4672,6 +4687,14 @@
       "played": 10
     },
     {
+      "player": "Alexander Isak",
+      "team": "liverpool",
+      "goals": 7,
+      "assists": null,
+      "penalties": null,
+      "played": 9
+    },
+    {
       "player": "Thierno Barry",
       "team": "everton",
       "goals": 6,
@@ -4680,12 +4703,12 @@
       "played": 10
     },
     {
-      "player": "Alexander Isak",
-      "team": "liverpool",
+      "player": "Nicolas Jackson",
+      "team": "aston-villa",
       "goals": 6,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Marcus Tavernier",
@@ -4693,7 +4716,7 @@
       "goals": 5,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "João Pedro",
@@ -4709,7 +4732,7 @@
       "goals": 5,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Rayan Cherki",
@@ -4720,12 +4743,28 @@
       "played": 10
     },
     {
-      "player": "Nicolas Jackson",
-      "team": "aston-villa",
+      "player": "Evanilson",
+      "team": "bournemouth",
       "goals": 5,
-      "assists": null,
+      "assists": 4,
       "penalties": null,
-      "played": 8
+      "played": 10
+    },
+    {
+      "player": "Pascal Groß",
+      "team": "brighton",
+      "goals": 4,
+      "assists": 4,
+      "penalties": 2,
+      "played": 10
+    },
+    {
+      "player": "Bruno Fernandes",
+      "team": "manchester-united",
+      "goals": 4,
+      "assists": 2,
+      "penalties": 2,
+      "played": 10
     },
     {
       "player": "Bryan Mbeumo",
@@ -4733,15 +4772,7 @@
       "goals": 4,
       "assists": null,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Evanilson",
-      "team": "bournemouth",
-      "goals": 4,
-      "assists": 4,
-      "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Kai Havertz",
@@ -4781,7 +4812,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Cole Palmer",
@@ -4789,7 +4820,7 @@
       "goals": 3,
       "assists": 3,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Pedro Neto",
@@ -4797,15 +4828,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Pascal Groß",
-      "team": "brighton",
-      "goals": 3,
-      "assists": 4,
-      "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Kevin Schade",
@@ -4813,7 +4836,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Dominic Calvert-Lewin",
@@ -4824,12 +4847,12 @@
       "played": 10
     },
     {
-      "player": "Bruno Fernandes",
-      "team": "manchester-united",
+      "player": "Enzo Le Fée",
+      "team": "sunderland",
       "goals": 3,
       "assists": 1,
-      "penalties": 1,
-      "played": 9
+      "penalties": 3,
+      "played": 10
     },
     {
       "player": "Liam Delap",
@@ -4853,7 +4876,7 @@
       "goals": 3,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Yasin Ayari",
@@ -4861,7 +4884,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Brian Brobbey",
@@ -4869,7 +4892,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Jack Rudoni",
@@ -4885,7 +4908,15 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
+    },
+    {
+      "player": "Jack Clarke",
+      "team": "ipswich-town",
+      "goals": 2,
+      "assists": 1,
+      "penalties": 1,
+      "played": 10
     },
     {
       "player": "Keane Lewis-Potter",
@@ -4893,7 +4924,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Vitaly Janelt",
@@ -4901,7 +4932,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Maxim De Cuyper",
@@ -4909,7 +4940,7 @@
       "goals": 2,
       "assists": 3,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Anthony Elanga",
@@ -4949,7 +4980,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Malick Yalcouyé",
@@ -4957,7 +4988,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Leif Davis",
@@ -4965,7 +4996,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Harvey Barnes",
@@ -4984,20 +5015,12 @@
       "played": 10
     },
     {
-      "player": "Enzo Le Fée",
-      "team": "sunderland",
-      "goals": 2,
-      "assists": 1,
-      "penalties": 2,
-      "played": 9
-    },
-    {
       "player": "Tyrick Mitchell",
       "team": "crystal-palace",
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Zian Flemming",
@@ -5005,7 +5028,15 @@
       "goals": 2,
       "assists": null,
       "penalties": 1,
-      "played": 7
+      "played": 8
+    },
+    {
+      "player": "Alysson",
+      "team": "aston-villa",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 9
     },
     {
       "player": "Bruno Guimarães",
@@ -5029,7 +5060,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Johan Manzambi",
@@ -5037,7 +5068,7 @@
       "goals": 2,
       "assists": 3,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Jan Paul van Hecke",
@@ -5061,7 +5092,23 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
+    },
+    {
+      "player": "John McGinn",
+      "team": "aston-villa",
+      "goals": 2,
+      "assists": 4,
+      "penalties": 1,
+      "played": 10
+    },
+    {
+      "player": "Diego Gómez",
+      "team": "brighton",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Julio Enciso",
@@ -5069,7 +5116,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Oliver McBurnie",
@@ -5101,15 +5148,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Jack Clarke",
-      "team": "ipswich-town",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Anton Stach",
@@ -5125,7 +5164,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Marc Guéhi",
@@ -5149,15 +5188,15 @@
       "goals": 1,
       "assists": 3,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Dominik Szoboszlai",
       "team": "liverpool",
       "goals": 1,
-      "assists": null,
+      "assists": 1,
       "penalties": 1,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Gonzalo García",
@@ -5181,7 +5220,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 5
+      "played": 6
     },
     {
       "player": "James Tarkowski",
@@ -5213,7 +5252,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Romeo Lavia",
@@ -5221,7 +5260,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Chuba Akpom",
@@ -5229,7 +5268,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Jacob Ramsey",
@@ -5245,7 +5284,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "César Palacios",
@@ -5261,7 +5300,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 5
+      "played": 6
     },
     {
       "player": "Tyrique George",
@@ -5293,19 +5332,11 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jørgen Strand Larsen",
       "team": "crystal-palace",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 7
-    },
-    {
-      "player": "Alysson",
-      "team": "aston-villa",
       "goals": 1,
       "assists": null,
       "penalties": null,
@@ -5325,7 +5356,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Lewis Dunk",
@@ -5333,7 +5364,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Bazoumana Touré",
@@ -5349,7 +5380,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Fabio Carvalho",
@@ -5365,7 +5396,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Conor Gallagher",
@@ -5381,7 +5412,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Lewis Hall",
@@ -5421,7 +5452,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "James Justin",
@@ -5444,22 +5475,6 @@
       "team": "brighton",
       "goals": 1,
       "assists": null,
-      "penalties": null,
-      "played": 8
-    },
-    {
-      "player": "Ryan Sessegnon",
-      "team": "fulham",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 7
-    },
-    {
-      "player": "Abdoul Ouattara",
-      "team": "ipswich-town",
-      "goals": 1,
-      "assists": 2,
       "penalties": null,
       "played": 9
     }
