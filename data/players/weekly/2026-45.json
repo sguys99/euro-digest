@@ -1,0 +1,132 @@
+{
+  "week": "2026-45",
+  "from": "2026-11-02T00:00:00.000Z",
+  "to": "2026-11-08T23:59:59.999Z",
+  "rows": [
+    {
+      "player": "lee-kang-in",
+      "apps": 1,
+      "minutes": 31,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-575381",
+          "kickoff": "2026-11-03T20:00:00.000Z",
+          "comp": "UCL",
+          "opponent": {
+            "slug": "bayern-munchen",
+            "name": "Bayern München"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 2
+          },
+          "status": "sub",
+          "minutes": 31,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "kim-min-jae",
+      "apps": 1,
+      "minutes": 11,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-575381",
+          "kickoff": "2026-11-03T20:00:00.000Z",
+          "comp": "UCL",
+          "opponent": {
+            "slug": "atletico-madrid",
+            "name": "Atletico Madrid"
+          },
+          "home": false,
+          "result": {
+            "for": 2,
+            "against": 0
+          },
+          "status": "sub",
+          "minutes": 11,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "park-seung-soo",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-560622",
+          "kickoff": "2026-11-02T20:00:00.000Z",
+          "comp": "EPL",
+          "opponent": {
+            "slug": "everton",
+            "name": "Everton"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 1
+          },
+          "status": "absent",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "seol-young-woo",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": []
+    },
+    {
+      "player": "jens-castrop",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": []
+    },
+    {
+      "player": "lee-jae-sung",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": []
+    },
+    {
+      "player": "jeong-woo-yeong",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": []
+    },
+    {
+      "player": "hwang-hee-chan",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": []
+    }
+  ],
+  "mvp": "lee-kang-in",
+  "summary": "11월 2일부터 11월 8일까지 기록을 집계한 한국 선수 8명 가운데 2명이 경기에 나섰다. 이강인이 1경기 31분으로 MVP 점수 1점을 얻어 이번 주 MVP에 올랐다. 이번 주 한국 선수의 골과 도움은 없었다.",
+  "summaryAi": false,
+  "generatedAt": "2026-11-09T02:39:15.689Z"
+}

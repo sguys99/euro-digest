@@ -3354,5 +3354,36 @@
     "brief": {
       "requests": 1
     }
+  },
+  {
+    "runId": "weekly-prod-20261109T023043Z-0ce9",
+    "env": "prod",
+    "job": "weekly",
+    "startedAt": "2026-11-09T02:30:43.052Z",
+    "finishedAt": "2026-11-09T02:54:28.809Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 14430,
+      "out": 47622,
+      "cacheRead": 4544,
+      "cacheWrite": 2272
+    },
+    "costUsd": 0.012792,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [
+      {
+        "id": "spielverlagerung-en",
+        "ok": true,
+        "items": 25,
+        "usable": 0
+      }
+    ],
+    "status": "success"
   }
 ]
