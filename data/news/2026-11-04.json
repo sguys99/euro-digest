@@ -1,7 +1,7 @@
 {
   "date": "2026-11-04",
-  "generatedAt": "2026-11-03T22:12:25.411Z",
-  "runId": "collect-prod-20261103T221218Z-b752",
+  "generatedAt": "2026-11-09T22:12:23.006Z",
+  "runId": "collect-prod-20261109T221222Z-f563",
   "cards": [
     {
       "id": "c_8d34a6df25",
@@ -627,33 +627,6 @@
       "created": "2026-11-03T22:12:18.881Z"
     },
     {
-      "id": "c_68b7e4e16c",
-      "t": "Matheus Cunha with two late goals and red as Man United secure miraculous comeback win over Roma",
-      "s": [],
-      "cat": "result",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7741817/2026/11/03/man-utd-roma-carrick-dalot/",
-          "at": "2026-11-03T21:57:19.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-03T22:12:18.881Z"
-    },
-    {
       "id": "c_6486fcf59b",
       "t": "Roma, imprevisto in Inghilterra: Gasperini bloccato nel traffico, salta l'intervista",
       "s": [],
@@ -723,33 +696,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/ckqxn7pzrxyro?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-03T18:26:55.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-03T22:12:18.881Z"
-    },
-    {
-      "id": "c_9eb64ca5db",
-      "t": "David Ornstein's The Athletic FC Q&A: Van Dijk's future and Spurs' striker search",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "tottenham-hotspur"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7750705/2026/11/03/ornstein-van-dijk-spurs-striker-richarlison/",
-          "at": "2026-11-03T17:38:47.000Z",
           "tier": 2
         }
       ],
@@ -868,67 +814,6 @@
           "n": "the Daily Briefing",
           "u": "https://thedailybriefing.io/p/man-united-make-bruno-decision-mourinho",
           "at": "2026-11-03T08:04:26.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-03T22:12:18.881Z"
-    },
-    {
-      "id": "c_7497810879",
-      "t": "PSG, Aston Villa, Liverpool, Real Madrid and Betis: The Champions League's flawless five",
-      "s": [],
-      "cat": "ucl",
-      "comp": [
-        "EPL",
-        "LALIGA",
-        "LIGUE1",
-        "UCL"
-      ],
-      "teams": [
-        "paris-saint-germain",
-        "aston-villa",
-        "liverpool",
-        "real-madrid",
-        "real-betis"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7747489/2026/11/03/psg-villa-liverpool-madrid-betis-champions-league-analysis/",
-          "at": "2026-11-03T05:12:15.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-03T22:12:18.881Z"
-    },
-    {
-      "id": "c_e38b1369fb",
-      "t": "Louie Barry, Barcelona and a transfer that remains 'unbelievable', seven years on",
-      "s": [],
-      "cat": "transfer",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7739256/2026/11/03/louie-barry-barcelona-aston-villa-transfer/",
-          "at": "2026-11-03T05:08:17.000Z",
           "tier": 2
         }
       ],

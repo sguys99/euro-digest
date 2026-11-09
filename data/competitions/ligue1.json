@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-08T22:15:15.138Z",
+  "updatedAt": "2026-11-09T22:14:15.713Z",
   "standings": [
     {
       "pos": 1,
@@ -26,7 +26,7 @@
     },
     {
       "pos": 2,
-      "prevPos": 3,
+      "prevPos": 2,
       "team": "lille",
       "played": 10,
       "w": 6,
@@ -46,7 +46,7 @@
     },
     {
       "pos": 3,
-      "prevPos": 2,
+      "prevPos": 3,
       "team": "paris-fc",
       "played": 10,
       "w": 6,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": 6,
+      "prevPos": 4,
       "team": "marseille",
       "played": 10,
       "w": 6,
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": 4,
+      "prevPos": 5,
       "team": "lyon",
       "played": 10,
       "w": 5,
@@ -106,7 +106,7 @@
     },
     {
       "pos": 6,
-      "prevPos": 8,
+      "prevPos": 6,
       "team": "nice",
       "played": 10,
       "w": 5,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 5,
+      "prevPos": 8,
       "team": "rennes",
       "played": 10,
       "w": 5,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 11,
+      "prevPos": 9,
       "team": "brest",
       "played": 10,
       "w": 4,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 12,
+      "prevPos": 10,
       "team": "lorient",
       "played": 10,
       "w": 4,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 9,
+      "prevPos": 11,
       "team": "lens",
       "played": 10,
       "w": 4,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 10,
+      "prevPos": 12,
       "team": "toulouse",
       "played": 10,
       "w": 3,
@@ -286,7 +286,7 @@
     },
     {
       "pos": 15,
-      "prevPos": 17,
+      "prevPos": 15,
       "team": "le-mans",
       "played": 10,
       "w": 1,
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": 15,
+      "prevPos": 16,
       "team": "angers",
       "played": 10,
       "w": 2,
@@ -326,7 +326,7 @@
     },
     {
       "pos": 17,
-      "prevPos": 16,
+      "prevPos": 17,
       "team": "troyes",
       "played": 10,
       "w": 2,

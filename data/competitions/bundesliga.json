@@ -2,7 +2,7 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-08T22:14:51.997Z",
+  "updatedAt": "2026-11-09T22:13:53.869Z",
   "standings": [
     {
       "pos": 1,
@@ -46,7 +46,7 @@
     },
     {
       "pos": 3,
-      "prevPos": 4,
+      "prevPos": 3,
       "team": "freiburg",
       "played": 9,
       "w": 6,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": 3,
+      "prevPos": 4,
       "team": "rb-leipzig",
       "played": 9,
       "w": 6,
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": 6,
+      "prevPos": 5,
       "team": "leverkusen",
       "played": 9,
       "w": 5,
@@ -106,7 +106,7 @@
     },
     {
       "pos": 6,
-      "prevPos": 5,
+      "prevPos": 6,
       "team": "werder-bremen",
       "played": 9,
       "w": 4,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 14,
+      "prevPos": 9,
       "team": "hoffenheim",
       "played": 9,
       "w": 4,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 9,
+      "prevPos": 10,
       "team": "eintracht-frankfurt",
       "played": 9,
       "w": 3,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 10,
+      "prevPos": 11,
       "team": "hamburg",
       "played": 9,
       "w": 4,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "mainz",
       "played": 9,
       "w": 3,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 12,
+      "prevPos": 13,
       "team": "paderborn",
       "played": 9,
       "w": 2,
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": 13,
+      "prevPos": 14,
       "team": "augsburg",
       "played": 9,
       "w": 2,
