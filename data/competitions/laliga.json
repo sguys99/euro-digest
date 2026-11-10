@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-09T22:13:08.991Z",
+  "updatedAt": "2026-11-10T22:13:34.269Z",
   "standings": [
     {
       "pos": 1,
@@ -18,9 +18,9 @@
       "form": [
         "W",
         "W",
-        "L",
         "W",
-        "W"
+        "W",
+        "L"
       ],
       "zone": "none"
     },
@@ -37,7 +37,7 @@
       "pts": 30,
       "form": [
         "W",
-        "W",
+        "L",
         "W",
         "W",
         "W"
@@ -60,7 +60,7 @@
         "W",
         "W",
         "W",
-        "L"
+        "W"
       ],
       "zone": "none"
     },
@@ -77,10 +77,10 @@
       "pts": 26,
       "form": [
         "W",
-        "L",
         "D",
         "W",
-        "W"
+        "L",
+        "D"
       ],
       "zone": "none"
     },
@@ -96,10 +96,10 @@
       "ga": 20,
       "pts": 22,
       "form": [
-        "W",
-        "W",
-        "W",
         "L",
+        "W",
+        "W",
+        "W",
         "W"
       ],
       "zone": "none"
@@ -116,11 +116,11 @@
       "ga": 19,
       "pts": 18,
       "form": [
-        "D",
-        "L",
         "W",
         "L",
-        "D"
+        "D",
+        "L",
+        "W"
       ],
       "zone": "none"
     },
@@ -137,10 +137,10 @@
       "pts": 16,
       "form": [
         "D",
+        "D",
+        "D",
         "L",
-        "W",
-        "W",
-        "D"
+        "W"
       ],
       "zone": "none"
     },
@@ -156,10 +156,10 @@
       "ga": 15,
       "pts": 15,
       "form": [
-        "L",
-        "D",
+        "W",
         "W",
         "L",
+        "D",
         "W"
       ],
       "zone": "none"
@@ -179,8 +179,8 @@
         "L",
         "D",
         "L",
-        "W",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "none"
     },
@@ -196,9 +196,9 @@
       "ga": 30,
       "pts": 14,
       "form": [
-        "D",
         "L",
-        "W",
+        "L",
+        "D",
         "L",
         "W"
       ],
@@ -219,7 +219,7 @@
         "D",
         "W",
         "D",
-        "L",
+        "W",
         "D"
       ],
       "zone": "none"
@@ -237,8 +237,8 @@
       "pts": 13,
       "form": [
         "L",
-        "L",
         "D",
+        "L",
         "L",
         "D"
       ],
@@ -256,11 +256,11 @@
       "ga": 14,
       "pts": 12,
       "form": [
+        "L",
+        "L",
         "D",
         "L",
-        "L",
-        "W",
-        "D"
+        "L"
       ],
       "zone": "none"
     },
@@ -276,10 +276,10 @@
       "ga": 21,
       "pts": 12,
       "form": [
-        "D",
-        "D",
         "L",
         "W",
+        "D",
+        "D",
         "L"
       ],
       "zone": "none"
@@ -297,9 +297,9 @@
       "pts": 12,
       "form": [
         "L",
-        "D",
-        "L",
         "W",
+        "L",
+        "D",
         "L"
       ],
       "zone": "none"
@@ -317,10 +317,10 @@
       "pts": 12,
       "form": [
         "L",
+        "D",
+        "L",
         "W",
-        "L",
-        "L",
-        "D"
+        "L"
       ],
       "zone": "none"
     },
@@ -336,11 +336,11 @@
       "ga": 21,
       "pts": 11,
       "form": [
+        "L",
+        "D",
         "D",
         "W",
-        "L",
-        "L",
-        "D"
+        "L"
       ],
       "zone": "none"
     },
@@ -356,11 +356,11 @@
       "ga": 20,
       "pts": 10,
       "form": [
-        "D",
-        "D",
-        "W",
         "L",
-        "L"
+        "W",
+        "D",
+        "D",
+        "W"
       ],
       "zone": "relegation"
     },
@@ -376,10 +376,10 @@
       "ga": 20,
       "pts": 9,
       "form": [
-        "D",
-        "D",
-        "L",
         "W",
+        "L",
+        "D",
+        "D",
         "L"
       ],
       "zone": "relegation"
@@ -396,11 +396,11 @@
       "ga": 23,
       "pts": 5,
       "form": [
-        "D",
+        "L",
         "L",
         "D",
         "L",
-        "L"
+        "D"
       ],
       "zone": "relegation"
     }
@@ -1700,11 +1700,8 @@
       "kickoff": "2026-10-30T20:00:00Z",
       "home": "villarreal",
       "away": "espanyol",
-      "score": {
-        "h": 0,
-        "a": 1
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564730",
@@ -1713,11 +1710,8 @@
       "kickoff": "2026-10-31T13:00:00Z",
       "home": "levante",
       "away": "atletico-madrid",
-      "score": {
-        "h": 0,
-        "a": 2
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564735",
@@ -1726,11 +1720,8 @@
       "kickoff": "2026-10-31T15:15:00Z",
       "home": "rayo-vallecano",
       "away": "celta-vigo",
-      "score": {
-        "h": 3,
-        "a": 0
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564736",
@@ -1739,11 +1730,8 @@
       "kickoff": "2026-10-31T17:30:00Z",
       "home": "real-betis",
       "away": "malaga",
-      "score": {
-        "h": 2,
-        "a": 1
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564732",
@@ -1752,11 +1740,8 @@
       "kickoff": "2026-10-31T20:00:00Z",
       "home": "barcelona",
       "away": "alaves",
-      "score": {
-        "h": 6,
-        "a": 1
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564733",
@@ -1765,11 +1750,8 @@
       "kickoff": "2026-11-01T13:00:00Z",
       "home": "getafe",
       "away": "sevilla",
-      "score": {
-        "h": 3,
-        "a": 1
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564734",
@@ -1778,11 +1760,8 @@
       "kickoff": "2026-11-01T15:15:00Z",
       "home": "racing-santander",
       "away": "real-madrid",
-      "score": {
-        "h": 0,
-        "a": 3
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564728",
@@ -1791,11 +1770,8 @@
       "kickoff": "2026-11-01T17:30:00Z",
       "home": "elche",
       "away": "valencia",
-      "score": {
-        "h": 0,
-        "a": 1
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564729",
@@ -1804,11 +1780,8 @@
       "kickoff": "2026-11-01T20:00:00Z",
       "home": "athletic",
       "away": "real-sociedad",
-      "score": {
-        "h": 2,
-        "a": 1
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564731",
@@ -1817,11 +1790,8 @@
       "kickoff": "2026-11-02T20:00:00Z",
       "home": "deportivo-la-coruna",
       "away": "osasuna",
-      "score": {
-        "h": 2,
-        "a": 1
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564740",
@@ -1830,11 +1800,8 @@
       "kickoff": "2026-11-06T20:00:00Z",
       "home": "sevilla",
       "away": "alaves",
-      "score": {
-        "h": 0,
-        "a": 0
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564744",
@@ -1843,11 +1810,8 @@
       "kickoff": "2026-11-07T13:00:00Z",
       "home": "malaga",
       "away": "racing-santander",
-      "score": {
-        "h": 1,
-        "a": 2
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564745",
@@ -1856,11 +1820,8 @@
       "kickoff": "2026-11-07T15:15:00Z",
       "home": "espanyol",
       "away": "deportivo-la-coruna",
-      "score": {
-        "h": 0,
-        "a": 0
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564739",
@@ -1869,11 +1830,8 @@
       "kickoff": "2026-11-07T17:30:00Z",
       "home": "osasuna",
       "away": "athletic",
-      "score": {
-        "h": 1,
-        "a": 1
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564741",
@@ -1882,11 +1840,8 @@
       "kickoff": "2026-11-07T20:00:00Z",
       "home": "valencia",
       "away": "real-madrid",
-      "score": {
-        "h": 0,
-        "a": 3
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564738",
@@ -1895,11 +1850,8 @@
       "kickoff": "2026-11-08T13:00:00Z",
       "home": "elche",
       "away": "real-betis",
-      "score": {
-        "h": 0,
-        "a": 2
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564743",
@@ -1908,11 +1860,8 @@
       "kickoff": "2026-11-08T15:15:00Z",
       "home": "real-sociedad",
       "away": "rayo-vallecano",
-      "score": {
-        "h": 1,
-        "a": 0
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564742",
@@ -1921,11 +1870,8 @@
       "kickoff": "2026-11-08T17:30:00Z",
       "home": "celta-vigo",
       "away": "levante",
-      "score": {
-        "h": 0,
-        "a": 0
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564747",
@@ -1934,11 +1880,8 @@
       "kickoff": "2026-11-08T17:30:00Z",
       "home": "villarreal",
       "away": "getafe",
-      "score": {
-        "h": 2,
-        "a": 0
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564746",
@@ -1947,11 +1890,8 @@
       "kickoff": "2026-11-08T20:00:00Z",
       "home": "atletico-madrid",
       "away": "barcelona",
-      "score": {
-        "h": 1,
-        "a": 2
-      },
-      "status": "finished"
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564748",

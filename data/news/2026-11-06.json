@@ -1,7 +1,7 @@
 {
   "date": "2026-11-06",
-  "generatedAt": "2026-11-05T22:12:30.741Z",
-  "runId": "collect-prod-20261105T221223Z-15e1",
+  "generatedAt": "2026-11-10T22:12:46.868Z",
+  "runId": "collect-prod-20261110T221246Z-0623",
   "cards": [
     {
       "id": "c_60ab505a01",
@@ -175,12 +175,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/videos/c6wyr8gzzr1zo?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-04T22:45:45.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7754017/2026/11/04/liverpool-como-bellingham-champions-league/",
-          "at": "2026-11-04T22:40:04.000Z",
           "tier": 2
         }
       ],
