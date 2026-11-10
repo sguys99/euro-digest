@@ -1,7 +1,7 @@
 {
   "date": "2026-11-05",
-  "generatedAt": "2026-11-04T22:12:06.167Z",
-  "runId": "collect-prod-20261104T221200Z-4ec1",
+  "generatedAt": "2026-11-10T04:10:57.805Z",
+  "runId": "collect-prod-20261110T041057Z-7a63",
   "cards": [
     {
       "id": "c_cb281e2402",
@@ -284,12 +284,6 @@
           "n": "The Athletic",
           "u": "https://www.nytimes.com/athletic/7753358/2026/11/04/jesus-owono-andorra-de-miguel-death/",
           "at": "2026-11-04T17:00:32.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7750978/2026/11/04/jesus-de-miguel-tenerife-death-profile/",
-          "at": "2026-11-04T09:34:32.000Z",
           "tier": 2
         }
       ],

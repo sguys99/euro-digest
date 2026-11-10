@@ -1,7 +1,7 @@
 {
   "date": "2026-11-10",
-  "generatedAt": "2026-11-09T22:12:29.911Z",
-  "runId": "collect-prod-20261109T221222Z-f563",
+  "generatedAt": "2026-11-10T04:11:04.802Z",
+  "runId": "collect-prod-20261110T041057Z-7a63",
   "cards": [
     {
       "id": "c_af3efa1350",
@@ -546,6 +546,12 @@
           "u": "https://www.bbc.co.uk/sport/football/articles/c6wyrynd848jo?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-09T22:10:22.000Z",
           "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cqm24237y5z5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-10T00:13:13.000Z",
+          "tier": 2
         }
       ],
       "lang": "en",
@@ -572,6 +578,12 @@
           "n": "The Athletic",
           "u": "https://www.nytimes.com/athletic/7768165/2026/11/09/michael-carrick-sacked-manchester-united/",
           "at": "2026-11-09T21:57:15.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmy0r041ed0po?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-09T23:13:31.000Z",
           "tier": 2
         }
       ],
