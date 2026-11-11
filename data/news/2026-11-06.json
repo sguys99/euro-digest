@@ -1,7 +1,7 @@
 {
   "date": "2026-11-06",
-  "generatedAt": "2026-11-10T22:12:46.868Z",
-  "runId": "collect-prod-20261110T221246Z-0623",
+  "generatedAt": "2026-11-11T22:13:02.260Z",
+  "runId": "collect-prod-20261111T221302Z-b60c",
   "cards": [
     {
       "id": "c_60ab505a01",
@@ -113,12 +113,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cmjweqpv8vj1o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-05T08:39:18.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7649297/2026/11/05/harry-kane-bayern-munich-contract/",
-          "at": "2026-11-05T07:52:58.000Z",
           "tier": 2
         }
       ],
@@ -317,21 +311,9 @@
           "tier": 2
         },
         {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7662860/2026/11/05/cristiano-ronaldo-23-portugal-facts/",
-          "at": "2026-11-05T19:15:14.000Z",
-          "tier": 2
-        },
-        {
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cew197l8l17o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-05T11:22:59.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7752962/2026/11/05/cristiano-ronaldo-portugal-international-retirement/",
-          "at": "2026-11-05T10:31:53.000Z",
           "tier": 2
         }
       ],
@@ -1007,42 +989,6 @@
           "u": "https://www.bbc.co.uk/sport/football/articles/cwvgdyd80g9do?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-05T12:55:13.000Z",
           "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7755737/2026/11/05/japan-fa-kozo-tashima-fifa-president-gianni-infantino/",
-          "at": "2026-11-05T11:57:18.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-05T22:12:23.704Z"
-    },
-    {
-      "id": "c_2d1b191991",
-      "t": "Does Harry Kane's new Bayern contract mean Alan Shearer's Premier League goals record is safe?",
-      "s": [],
-      "cat": "transfer",
-      "comp": [
-        "EPL",
-        "BUNDESLIGA"
-      ],
-      "teams": [
-        "bayern-munchen"
-      ],
-      "players": [
-        "harry-kane"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7683468/2026/11/05/alan-shearer-premier-league-goals-kane-haaland/",
-          "at": "2026-11-05T12:00:52.000Z",
-          "tier": 2
         }
       ],
       "lang": "en",
@@ -1081,35 +1027,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-11-05T22:12:23.704Z"
-    },
-    {
-      "id": "c_b38833bd06",
-      "t": "How Harry Kane proved he is worth his new record-breaking Bayern Munich contract",
-      "s": [],
-      "cat": "transfer",
-      "comp": [
-        "BUNDESLIGA"
-      ],
-      "teams": [
-        "bayern-munchen"
-      ],
-      "players": [
-        "harry-kane"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7752682/2026/11/05/harry-kane-bayern-contract-data/",
-          "at": "2026-11-05T08:30:09.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-05T22:12:23.704Z"
     },

@@ -1,0 +1,1235 @@
+{
+  "date": "2026-11-12",
+  "generatedAt": "2026-11-11T22:13:09.428Z",
+  "runId": "collect-prod-20261111T221302Z-b60c",
+  "cards": [
+    {
+      "id": "c_8a8bfd19ac",
+      "t": "Arsenal join Scott chase - Thursday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 5,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c62l51xyl98no?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T21:38:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_210f50e7bf",
+      "t": "이강인 태클에 한국 땅 못 밟았던 발베르데, 아직도 몸 상태 완전하지 않다…“여전히 불편함 남아 있고, 100% 아니다”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698279",
+          "at": "2026-11-11T16:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_4e806102aa",
+      "t": "Pochettino ready to accept Man Utd offer to replace Carrick",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqvg25pj36mvo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T16:03:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_82a48fea26",
+      "t": "이강인 떠나니 시메오네 감독 한숨만 나온다…아틀레티코 무려 17명 국가대표 차출→“훈련할 선수 크게 부족한 상황”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698273",
+          "at": "2026-11-11T12:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_cee749c4ac",
+      "t": "“그 어떤 팀과도 접촉 없었다”… ‘이강인과 한솥밥설’ 아스널 MF 수비멘디 입 열었다… 아틀레티코 마드리드 이적설 직접 부인→ “나는 이곳에서 행복하다”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid",
+        "arsenal"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=313938",
+          "at": "2026-11-11T01:22:19.000Z",
+          "tier": 3
+        },
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698235",
+          "at": "2026-11-11T00:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_84d05b6b45",
+      "t": "Francia, Zidane: \"Competitivi nonostante le assenze. Allenare la Juve? Mi piacerebbe\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/francia-zidane-conferenza-stampa-italia-499410",
+          "at": "2026-11-11T19:40:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_ec146fa56d",
+      "t": "🚨 Mauricio Pochettino to Man Utd: What we know so far, and what we can expect from the Argentine",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/mauricio-pochettino-to-man-utd",
+          "at": "2026-11-11T11:06:41.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7773820/2026/11/11/pep-guardiola-pochettino-manchester-united-usmnt-coach-candidate/",
+          "at": "2026-11-11T18:58:22.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7773683/2026/11/11/usmnt-vs-haiti-pochettino-manchester-united/",
+          "at": "2026-11-11T17:48:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_1b11434a76",
+      "t": "황희찬에게 밀리더니 결국 불만 터졌다…‘보스니아 레전드’ 제코, 샬케서 단 2번 선발 출전→“현재 자신의 상황에 만족하지 못하고 있다”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698275",
+          "at": "2026-11-11T13:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_867203436f",
+      "t": "Pochettino a decade in Man Utd's making - but Carrick deserves better",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwzd9pvjy426o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T12:58:17.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_bb662b72ca",
+      "t": "황희찬도 아직 한 골도 못 넣었는데…공격진 향한 팬들의 비판에 샬케 감독 작심 발언 “전혀 마음에 들지 않는다, 그래서는 안 된다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698271",
+          "at": "2026-11-11T12:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_22b01d0dbf",
+      "t": "Assessing the reasons for Man City's decline in form under Maresca",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cw30e0yz0p04o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T11:47:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_2577b4233d",
+      "t": "이래도 ‘韓 국가대표’ 설영우에게 기회 안 주나…아우크스부르크 수비진 줄부상→핵심 수비수 마치마까지 최소 2주 이탈 “충격적인 소식”",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "augsburg"
+      ],
+      "players": [
+        "seol-young-woo"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698270",
+          "at": "2026-11-11T11:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_2102f9d721",
+      "t": "이강인은 60분 만에 칼같이 교체하더니…시메오네 감독, 결정적 기회 2번 날린 알바레스는 끝까지 신뢰→“팬들의 분노 더욱 키웠다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698269",
+          "at": "2026-11-11T10:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_ab51280019",
+      "t": "Shirt pull on Isak should have been penalty - panel",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6n8d8kl125vo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T10:23:37.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_5aa00d700a",
+      "t": "From Jersey to Somalia... via Liverpool & Man City",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm5ynnklgl9xo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T07:13:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_477783ed74",
+      "t": "Francia, la probabile formazione contro l’Italia: in attacco tridente Olise-Doué-Barcola",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/francia-probabile-formazione-italia-nations-league-499419",
+          "at": "2026-11-11T21:45:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-belgio-probabile-formazione-499400",
+          "at": "2026-11-11T21:30:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_ad73c0b01d",
+      "t": "Bologna, Heggem: \"Non posso continuare a stare in panchina per il resto della stagione\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "bologna"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/bologna-heggem-non-posso-continuare-restare-panchina-resto-stagione-499418",
+          "at": "2026-11-11T21:15:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_d3241a8951",
+      "t": "“떠날 생각 없습니다, 아직 끝내지 못한 일이 있습니다” 맨유 차기 사령탑으로 거론→“유로 우승 도전하고 싶어” 부인",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698284",
+          "at": "2026-11-11T21:13:16.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_d5d3b7502b",
+      "t": "Football Daily",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sounds/play/p0pmhwp1?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T20:53:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_b1acaa99e6",
+      "t": "[오피셜] “선수들에게 다이빙하라고 하겠다” 리버풀 사령탑의 분노→오심이었다…“페널티킥 주어졌어야”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698283",
+          "at": "2026-11-11T20:52:43.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_f76513ca0d",
+      "t": "Manchester United make formal contact with U.S. Soccer over Mauricio Pochettino",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7772824/2026/11/11/mauricio-pochettino-manchester-united-us-soccer/",
+          "at": "2026-11-11T20:20:44.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_1266104925",
+      "t": "Pochettino-United? La Nazionale statunitense si muove: Guardiola uno dei candidati per sostituirlo",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/pochettino-united-nazionale-statunitense-guardiola-candidati-sostituirlo-499417",
+          "at": "2026-11-11T20:20:37.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_af137b1873",
+      "t": "英 BBC 확인! '맨유의 8년 짝사랑 드디어 결실 맺는다'…포체티노, 감독직 수락 준비 완료→캐릭은 48시간 내 경질 전망",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698282",
+          "at": "2026-11-11T20:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_2206861d3c",
+      "t": "De Rossi: \"È stato il momento più difficile della mia carriera. Al Genoa sto proprio bene\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "genoa"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/de-rossi-intervista-genoa-11-novembre-2026-499416",
+          "at": "2026-11-11T19:30:14.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_a120be98d6",
+      "t": "Mbappé salta la sfida con l'Italia, Zidane: \"Bisogna adottare la politica zero rischi\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/mbappe-salta-sfida-italia-ultime-499415",
+          "at": "2026-11-11T19:11:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_63b5ac64ea",
+      "t": "Football Daily",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sounds/play/p0pmh9w1?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T18:15:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_241b510667",
+      "t": "Italia, Mancini: \"Tutti volevano i giovani, ora l'obiettivo è farli crescere\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-mancini-conferenza-stampa-francia-499411",
+          "at": "2026-11-11T18:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_cb287c90ac",
+      "t": "Calafiori verso Italia-Francia: \"Ci vorrà tanta testa e tanto cuore. Io leader? Ci provo\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-calafiori-conferenza-stampa-francia-499413",
+          "at": "2026-11-11T17:45:19.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_f9ffccd0cb",
+      "t": "Shrewsbury 'hit all the boxes' for new owners - Friedel",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm894wegv3lno?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T17:44:42.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_56f35f888f",
+      "t": "Legally restrict heading a football in training, says MP",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm1ewpjyy3dzo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T17:38:18.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_b8c6686e42",
+      "t": "O'Shea proud of how team-mates handled Israel games",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwg7l9nd0p1zo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T17:33:37.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_d960b5419f",
+      "t": "What's next for Endrick at Real Madrid? Might he leave in January?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid"
+      ],
+      "players": [
+        "endrick"
+      ],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7773347/2026/11/11/real-madrid-endrick-transfer-loan-mourinho-january/",
+          "at": "2026-11-11T16:20:11.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_57fd8da7c4",
+      "t": "Mauricio Pochettino and Man United: A poisoned chalice or dream restoration job?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7773134/2026/11/11/mauricio-pochettino-man-united-challenge-job/",
+          "at": "2026-11-11T16:02:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_b3880f517d",
+      "t": "Roma, Mancini e Dybala parzialmente in gruppo. Le ultime su Svilar",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "roma"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/roma-dybala-mancini-svilar-news-allenamenti-499409",
+          "at": "2026-11-11T15:45:11.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_980b4034c6",
+      "t": "🚨 Man United fiasco in numbers - 322 jobs cut, almost £100m spent on firing managers, still no profit",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/man-united-fiasco-in-numbers-322",
+          "at": "2026-11-11T13:11:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_9a4a90e4f2",
+      "t": "Man United's dreadful handling of Carrick is no way to treat anyone. But it's also not a surprise",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7772967/2026/11/11/manchester-united-treatment-michael-carrick/",
+          "at": "2026-11-11T12:46:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_70746a790a",
+      "t": "맨유 새 감독 드디어 윤곽 드러났다…포체티노 감독 선임 마무리 단계→캐릭 경질 시 133억 보상금 지불 예정",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698268",
+          "at": "2026-11-11T09:50:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "풋볼리스트",
+          "u": "http://www.footballist.co.kr/news/articleView.html?idxno=216708",
+          "at": "2026-11-11T09:01:03.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_8964aff05c",
+      "t": "What Mauricio Pochettino could bring to Man Utd: Leadership, tactical flexibility and a trust in youth",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7770113/2026/11/11/mauricio-pochettino-manchester-united-tactics/",
+          "at": "2026-11-11T09:15:11.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_b38595a542",
+      "t": "Manchester United finalising deal for Mauricio Pochettino if Michael Carrick departs",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7767421/2026/11/11/mauricio-pochettino-manchester-united-manager-usmnt/",
+          "at": "2026-11-11T08:14:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_cbfd33c46c",
+      "t": "황희찬과 뛰는 '기름손 골키퍼' 카리우스, 김민재와 뛴다?...놀랍게도 노이어 대체자로 거론→인간 승리 서사 쓸까",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan",
+        "kim-min-jae"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698255",
+          "at": "2026-11-11T05:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_ffbe547ea9",
+      "t": "이강인 패스도 못 받으면 떠나야...\"아틀레티코 내부 인내심 잃었다\"→쇠를로트 연이은 부진에 비판 이어져, 추가 ST 보강 필요성 제기",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698251",
+          "at": "2026-11-11T04:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_d74917d244",
+      "t": "‘아시안게임 金→K리그 35R BEST 11’ 신민하, 김민재와 호흡 맞출까...대표팀 첫 소집서 눈도장 도전",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698240",
+          "at": "2026-11-11T02:19:21.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_600b8795ac",
+      "t": "이강인도 없고, 아틀레티코 전멸...현 시점 라리가 베스트 팀 공개! 바르셀로나-레알 선수들 합쳐 9명",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid",
+        "barcelona",
+        "real-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698239",
+          "at": "2026-11-11T01:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_bb38964e5b",
+      "t": "Bromley signings 'not good enough' - ex-boss Woodman",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c5x2wle9nnvzo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-11T10:32:23.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    },
+    {
+      "id": "c_554d72a191",
+      "t": "🚨 Man Utd eye PL captain, Arsenal & City battle for Brazilian forward, Chelsea confident over midfielder deal, Liverpool BLOCK exit, & more",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "arsenal",
+        "chelsea",
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/man-utd-eye-pl-captain-arsenal-and",
+          "at": "2026-11-11T07:48:29.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-11T22:13:02.163Z"
+    }
+  ]
+}
