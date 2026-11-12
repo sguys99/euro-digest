@@ -1,0 +1,1213 @@
+{
+  "date": "2026-11-13",
+  "generatedAt": "2026-11-12T22:12:25.360Z",
+  "runId": "collect-prod-20261112T221219Z-2d2f",
+  "cards": [
+    {
+      "id": "c_91c84dc569",
+      "t": "이강인한테 도대체 왜 그러나…발 밟혔다고 항의했는데 주심 황당 답변 “그냥 즐겨”→아틀레티코 팬들 분노",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 5,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698355",
+          "at": "2026-11-12T21:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_0c5c7242b8",
+      "t": "Gritty Arsenal show different side in Barcelona draw",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [
+        "arsenal",
+        "barcelona"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqe85vym242jo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T21:50:59.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/crlye55q790yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T20:09:07.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_be78ba94ca",
+      "t": "Man Utd & Man City in Gusto battle - Friday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmp86enlly13o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T21:13:59.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_adb034b6cc",
+      "t": "How Pochettino came on Man Utd's radar - and what Carrick was told when",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqdr1jlr1707o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T16:12:39.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_2fcaf8b981",
+      "t": "올 시즌 한 골도 못 넣은 ‘이강인 경쟁자’ 쇠를로트, 주전 경쟁 밀리고 방출 가능성...아틀레티코, 1월 매각 검토",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698330",
+          "at": "2026-11-12T09:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_d7f1151bb1",
+      "t": "Grealish apologises for absence after breach of discipline",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cr3wgp8e2ljxo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T22:10:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_af5407f304",
+      "t": "Italia-Francia, emozioni a non finire: Esposito sbaglia il rigore, poi Frattesi firma il sorpasso",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/sebastiano-esposito-rigore-frattesi-italia-francia-news-499452",
+          "at": "2026-11-12T21:05:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_e0e57eb62c",
+      "t": "Italia-Francia, errore di Donnarumma: Olise firma il vantaggio",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-francia-olise-gol-donnarumma-errore-499447",
+          "at": "2026-11-12T20:00:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_ab028b8590",
+      "t": "Crystal Palace sack boss Sage after 16 games",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "crystal-palace"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cv5y18lkk87do?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T17:15:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_a506143566",
+      "t": "Six matches that defined Carrick's Man Utd tenure",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c5ev37egv97mo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T11:25:46.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_267184de1b",
+      "t": "The chaos that took Carrick from two-year deal to sacked within 15 games",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm0rl4kwn8vqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T10:21:29.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_0695d98e37",
+      "t": "🚨 BREAKING: Michael Carrick officially sacked by Manchester United",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/michael-carrick-sacked-united",
+          "at": "2026-11-12T09:38:21.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7683765/2026/11/12/michael-carrick-sacked-manchester-united-head-coach/",
+          "at": "2026-11-12T10:19:35.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_10ab0d0abb",
+      "t": "[오피셜] 대전 유스 또 일냈다! 김지호, 황희찬-홀란 성장했던 잘츠부르크 이적...\"대전에서 시간 잊지 않겠다\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698322",
+          "at": "2026-11-12T08:19:15.000Z",
+          "tier": 3
+        },
+        {
+          "n": "풋볼리스트",
+          "u": "http://www.footballist.co.kr/news/articleView.html?idxno=216730",
+          "at": "2026-11-12T08:26:59.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_fb5e5699fd",
+      "t": "[오피셜] ‘이강인 떠나자마자 제대로 터졌다!’…2006년생 마율루, 지단 감독 선택 받았다→프랑스 A대표팀 최초 발탁",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698320",
+          "at": "2026-11-12T08:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_c44d12ac0d",
+      "t": "“이강인의 합류로 팀 내 비중이 줄어들었다”…’지난 시즌 20골 공격수’ 쇠를로트, 선발 단 1회에 결국 이적 재요청 전망",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698313",
+          "at": "2026-11-12T07:05:08.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_cf2b2b7b63",
+      "t": "How 'Barca way' continues despite big-name exits",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c5vg23nmgp2yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T06:41:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_72cb6ec98e",
+      "t": "Italia, Mancini: \"Oggi mi è piaciuto tutto. Obbligatorio vincere in Belgio\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-dichiarazioni-pre-francia-nations-league-499437",
+          "at": "2026-11-12T21:50:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_da7967058f",
+      "t": "Italia, Pio Esposito: \"Volevo far dimenticare l'errore di mio fratello\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/esposito-italia-intervista-francia-post-partita-499455",
+          "at": "2026-11-12T21:50:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_df5aa86435",
+      "t": "Kane scores winner but who else made an impression? England player ratings",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c64gnd7vd912o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T21:47:36.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_c566a55598",
+      "t": "Italia, obiettivo quarti di Nations League: tutte le combinazioni per il passaggio del turno",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-nations-league-2026-2027-qualificazione-fase-eliminazione-diretta-497995",
+          "at": "2026-11-12T21:40:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_48f3c9c671",
+      "t": "Ghana kick-start Afcon 2027 bid despite Ayew penalty miss",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c61md0mldvdgo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T21:28:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_0995341c97",
+      "t": "Sebastiano sbaglia, Pio no: Esposito fa doppietta dal dischetto",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/esposito-italia-francia-rigore-totti-classifica-marcatori-all-time-499454",
+          "at": "2026-11-12T21:20:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_7a3ca824e0",
+      "t": "SFA in talks with Boston officials over biennial friendly match",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/cqdr1jd5mpp5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T21:16:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_ec8f51af5f",
+      "t": "Folarin Balogun on his failed Everton transfer, return to the USMNT and post-World Cup detour",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "everton"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7777027/2026/11/12/folarin-balogun-usmnt-everton-transfer-monaco-pochettino/",
+          "at": "2026-11-12T21:15:43.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_740cce7e32",
+      "t": "Esposito ammonito: l'attaccante entra in diffida",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/esposito-ammonizione-diffida-regolamento-499451",
+          "at": "2026-11-12T20:30:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_9439574382",
+      "t": "Italia-Francia, Esposito ancora protagonista: solo Meazza meglio di lui alla sua età",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-francia-esposito-dato-gol-nazionale-499450",
+          "at": "2026-11-12T20:20:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_56b4c6b90d",
+      "t": "De Bruyne al PSV? Van Bommel: \"Il calcio olandese gli si addice perfettamente\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "psv"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/de-bruyne-psv-napoli-calciomercato-intervista-van-bommel-499449",
+          "at": "2026-11-12T20:16:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_46ffff82f7",
+      "t": "‘그래도 구단 레전드인데...’ 맨유, 캐릭 출근시키고 2시간 만에 전격 경질... 발표땐 \"영원한 전설로 기억될 것\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698352",
+          "at": "2026-11-12T20:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_96a8a42a28",
+      "t": "Leader, role model, extraordinary - how Kane's 'fairytale' came true",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c60qkdj4lp34o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T19:53:40.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_af55ffac53",
+      "t": "Quiz: Name England men's all-time leading appearance makers",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmlylv1xl9qgo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T19:47:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_a51f51b034",
+      "t": "Kane, accoglienza da re a Wembley: Pallone d’Oro e record con l’Inghilterra",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/kane-accoglienza-re-wembley-pallone-d-oro-record-l-inghilterra-499448",
+          "at": "2026-11-12T19:30:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_8fcbdd95aa",
+      "t": "‘너도? 나도!’ 맨유 캐릭 이어 크리스탈 팰리스도 세이지 감독 전격 경질...후임으론 전 토트넘 사령탑 프랭크 유력",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698353",
+          "at": "2026-11-12T19:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_d8723bb3f5",
+      "t": "Goodwillie prosecutors 'wrong' not to put footballer on trial for rape, court hears",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/c6z9dppxxyxpo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-12T17:31:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_8eb5496bf8",
+      "t": "Pochettino the manager, as seen by Tottenham, Chelsea and USMNT reporters",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7773330/2026/11/12/pochettino-man-utd-usa-tottenham-chelsea/",
+          "at": "2026-11-12T17:00:08.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_81c42cd257",
+      "t": "“내 애제자 당장 데려와” 맨유 지휘봉 잡는 포체티노, 1월 이적시장 첫 타깃으로 ‘美 폭격기’ 발로건 급부상",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698347",
+          "at": "2026-11-12T14:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_3ce82595f3",
+      "t": "‘포체티노 맨유행 임박’ 미국 대표팀, 후임 1순위로 펩 과르디올라 점찍었다...펩도 “미국 감독직에 오랜 관심”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698346",
+          "at": "2026-11-12T13:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_e0aa36c1b8",
+      "t": "🚨 Bale & Kane reached new heights after Tottenham, can Pochettino do the same?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/bale-and-kane-reached-new-heights",
+          "at": "2026-11-12T13:01:27.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_8429815d90",
+      "t": "‘HERE WE GO SOON!’ 강등권 추락한 맨유, 결국 캐릭과 결별하고 포체티노 선임 유력...로마노 \"이미 구두 합의 완료\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698331",
+          "at": "2026-11-12T10:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_a151a1c86d",
+      "t": "🚨 Pochettino to Man Utd CLOSER, Arsenal rival Chelsea for £100m star, Liverpool eye shock Spurs RAID, Evanilson battle this January, & more",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "arsenal",
+        "chelsea",
+        "liverpool",
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/pochettino-to-man-utd-closer-arsenal",
+          "at": "2026-11-12T08:12:23.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_04ed977fa6",
+      "t": "대한민국 국가대표 설영우는 안중에도 없다…아우크스부르크, 부상자 복귀에 희망 건다 “성적 부진에서 벗어나는 데 도움 되길”",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "augsburg"
+      ],
+      "players": [
+        "seol-young-woo"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698308",
+          "at": "2026-11-12T06:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_2f07571f15",
+      "t": "Real Madrid squad rankings: Arda Guler joins the elite but can Vinicius Jr recover?",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid",
+        "barcelona"
+      ],
+      "players": [
+        "vinicius-junior"
+      ],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7772940/2026/11/12/real-madrid-squad-rankings-guler-vinicius/",
+          "at": "2026-11-12T05:16:58.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7773140/2026/11/12/barcelona-squad-rankings-fermin-gordon/",
+          "at": "2026-11-12T05:16:53.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_c431b1362c",
+      "t": "[오피셜] 황희찬, 최악의 상황은 피했다…7경기 연속 무승에도 무슬리치 감독 입지 굳건 “앞으로 몇 달 동안 감독 교체 논의 없다”",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698303",
+          "at": "2026-11-12T04:16:10.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_b6f7099a76",
+      "t": "‘12경기 15골 폭발!’ 하피냐, 예상 최종 득점 무려 48골...10년간 라리가 득점왕 페이스 압도 ‘메시 넘본다!’",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "raphinha"
+      ],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698351",
+          "at": "2026-11-12T21:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_8cb1baeaab",
+      "t": "\"10년 기다린 꿈 이뤘다!\" 포체티노, 칠전팔기 끝 맨유 사령탑 유력...퍼거슨이 점찍은 남자였다",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698341",
+          "at": "2026-11-12T12:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    },
+    {
+      "id": "c_268af977b3",
+      "t": "‘이 정도로 진심이라고?’ 맨유 부임 유력한 포체티노, 본인이 직접 위약금 지불하고 맨유 온다!",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698338",
+          "at": "2026-11-12T12:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-12T22:12:19.632Z"
+    }
+  ]
+}

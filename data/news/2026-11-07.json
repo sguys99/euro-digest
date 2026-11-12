@@ -1,7 +1,7 @@
 {
   "date": "2026-11-07",
-  "generatedAt": "2026-11-06T22:12:46.855Z",
-  "runId": "collect-prod-20261106T221240Z-88d3",
+  "generatedAt": "2026-11-12T22:12:19.697Z",
+  "runId": "collect-prod-20261112T221219Z-2d2f",
   "cards": [
     {
       "id": "c_d23cf0ca2a",
@@ -636,33 +636,6 @@
       "created": "2026-11-06T22:12:40.251Z"
     },
     {
-      "id": "c_642c88117d",
-      "t": "Will Barcelona sign a centre-back in January?",
-      "s": [],
-      "cat": "transfer",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7758984/2026/11/06/barcelona-transfers-flick-deco-balde/",
-          "at": "2026-11-06T13:54:05.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-06T22:12:40.251Z"
-    },
-    {
       "id": "c_8c05acc9b1",
       "t": "🚨 EXCL: Liverpool, Man Utd & Chelsea closely monitoring underrated Serie A talent",
       "s": [],
@@ -685,33 +658,6 @@
           "n": "the Daily Briefing",
           "u": "https://thedailybriefing.io/p/koni-de-winter-transfer-united-liverpool",
           "at": "2026-11-06T10:25:39.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-06T22:12:40.251Z"
-    },
-    {
-      "id": "c_e7bf07d9ca",
-      "t": "Will Rafael Nadal be Real Madrid's next president?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "real-madrid"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7756324/2026/11/06/real-madrid-rafael-nadal-president/",
-          "at": "2026-11-06T09:25:17.000Z",
           "tier": 2
         }
       ],
@@ -1148,63 +1094,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-11-06T22:12:40.251Z"
-    },
-    {
-      "id": "c_74256ea88c",
-      "t": "Premier League predictions: Man Utd vs Aston Villa, Leeds vs Spurs and the rest of GW10",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united",
-        "aston-villa",
-        "leeds-united",
-        "tottenham-hotspur"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7755930/2026/11/06/premier-league-predictions-gw10/",
-          "at": "2026-11-06T05:07:56.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-06T22:12:40.251Z"
-    },
-    {
-      "id": "c_2a993597b8",
-      "t": "The making of Mike Penders, Chelsea's 'Obelix' of a goalkeeper who is showing his resilience",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "chelsea"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7756403/2026/11/06/chelsea-mike-penders-origins/",
-          "at": "2026-11-06T05:05:31.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-06T22:12:40.251Z"
     }
