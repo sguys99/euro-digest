@@ -1,7 +1,7 @@
 {
   "date": "2026-11-08",
-  "generatedAt": "2026-11-07T22:12:24.817Z",
-  "runId": "collect-prod-20261107T221218Z-fb5b",
+  "generatedAt": "2026-11-13T22:12:57.839Z",
+  "runId": "collect-prod-20261113T221257Z-df05",
   "cards": [
     {
       "id": "c_b2ff60c35b",
@@ -1011,33 +1011,6 @@
           "n": "the Daily Briefing",
           "u": "https://thedailybriefing.io/p/luka-vuskovic-liverpool-transfer",
           "at": "2026-11-07T14:21:19.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-07T22:12:18.702Z"
-    },
-    {
-      "id": "c_d7f62af754",
-      "t": "Aminata Diallo to stand trial over allegedly instigating attack on PSG team-mate Kheira Hamraoui",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LIGUE1"
-      ],
-      "teams": [
-        "paris-saint-germain"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7759629/2026/11/07/aminata-diallo-kheira-hamraoui-trial-psg-attack/",
-          "at": "2026-11-07T14:04:25.000Z",
           "tier": 2
         }
       ],
