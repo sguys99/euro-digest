@@ -1,7 +1,7 @@
 {
   "date": "2026-11-09",
-  "generatedAt": "2026-11-08T22:12:38.512Z",
-  "runId": "collect-prod-20261108T221232Z-3b42",
+  "generatedAt": "2026-11-14T22:13:00.948Z",
+  "runId": "collect-prod-20261114T221300Z-666f",
   "cards": [
     {
       "id": "c_a83984ae27",
@@ -1095,36 +1095,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-11-08T22:12:32.120Z"
-    },
-    {
-      "id": "c_57e921d70f",
-      "t": "Atletico Madrid 1 Barcelona 2: Fermin Lopez's double seals key comeback victory",
-      "s": [],
-      "cat": "result",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "atletico-madrid",
-        "barcelona"
-      ],
-      "players": [
-        "fermin-lopez"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7764835/2026/11/08/atletico-madrid-barcelona-result-reaction-analysis/",
-          "at": "2026-11-08T21:57:37.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-08T22:12:32.120Z"
     },

@@ -1,0 +1,1212 @@
+{
+  "date": "2026-11-15",
+  "generatedAt": "2026-11-14T22:13:06.975Z",
+  "runId": "collect-prod-20261114T221300Z-666f",
+  "cards": [
+    {
+      "id": "c_e40233f932",
+      "t": "Arsenal target Nusa could cost £66m - Sunday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 5,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6e9kgn532gxo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T21:48:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_eff2899086",
+      "t": "Spurs held to a draw by Everton in the WSL",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "everton"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ck9q8vvz81rxo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T20:56:46.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_080d9c7a25",
+      "t": "Rice close to signing new Arsenal contract",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cq0mdzrjn0j2o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T20:40:35.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_cf401eda72",
+      "t": "Bompastor's risks pay off as Chelsea go top of WSL",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmvg25w18q9qo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T18:55:34.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cm702wwpj9keo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T15:50:34.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_0c8a924ae3",
+      "t": "Le Tissier stars as Man Utd beat Crystal Palace to extend unbeaten run",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "crystal-palace"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cqglrkk7gr1xo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T18:27:23.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_804d1d5b0f",
+      "t": "\"이강인, 韓 대표팀만 가면 부진! 아틀레티코 모습 없다\"...스페인 매체도, 모레노 LEE 활용법 의문! 우려 표해",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698474",
+          "at": "2026-11-14T20:30:20.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_2fbde83efe",
+      "t": "Garcia: \"Napoli? Il presidente non mi esonerò per i risultati\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/garcia-napoli-de-laurentiis-esonero-risultati-499512",
+          "at": "2026-11-14T19:05:12.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_7482ce453a",
+      "t": "韓 축구 대충격! 김민재, 주전 경쟁 잘하고 있는데 부상에 발목 잡혔다...'유리몸' 데이비스, 선발 복귀전에서 6분 만에 털썩! \"가장 우려되는 상황은 근육 부상 재발\"",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698457",
+          "at": "2026-11-14T10:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_4b9925e77b",
+      "t": "Argentina e Portogallo perdono le prime gare senza Messi e Ronaldo",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/argentina-portogallo-messi-ronaldo-news-499517",
+          "at": "2026-11-14T21:40:03.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/portogallo-danimarca-formazioni-ufficiali-nations-league-14-novembre-2026-499510",
+          "at": "2026-11-14T18:35:29.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_74942d4c2f",
+      "t": "Svezia-Bosnia, Armin Gigović in gol contro la sua ex Nazionale: chi come lui?",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/svezia-bosnia-armin-gigovic-gol-ex-nazionale-499518",
+          "at": "2026-11-14T21:39:24.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_9e3ec8d0ae",
+      "t": "포체티노 맨유 부임 선물은 '메시 후계자?', 브루노 장기 대체까지 가능...\"맨유, 자신들 무너뜨린 파스 노린다\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698478",
+          "at": "2026-11-14T21:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_0cf859b151",
+      "t": "What Wales need to stay in Nations League top tier",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmx28nxw1elvo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T20:52:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_7a50be08f8",
+      "t": "'No racism in Spain' – De la Fuente message for Tuchel",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c893r74ryy3qo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T20:43:57.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cq2d9l3e313zo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T20:22:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c60mdzn2dk1eo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T09:13:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_f147e3ad96",
+      "t": "Dalle maglie numero 7 agli applausi dei tifosi: il Portogallo omaggia Ronaldo",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/portogallo-omaggio-ronaldo-maglie-news-499516",
+          "at": "2026-11-14T20:36:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_9d9e24531e",
+      "t": "'미국의 원대한 꿈'...포체티노는 맨유로→사령탑 공백 과르디올라에 맡긴다! 손흥민 지도하던 LAFC 감독과 나란히 후보에",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698475",
+          "at": "2026-11-14T20:35:46.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_c6d726ab43",
+      "t": "Italia, Dimarco terzino o esterno alto contro il Belgio? Le ultime",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-probabile-formazione-belgio-nations-league-15-novembre-2026-499513",
+          "at": "2026-11-14T20:15:34.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/belgio-probabile-formazione-italia-nations-league-15-novembre-2026-499514",
+          "at": "2026-11-14T20:05:38.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_c1d78328d0",
+      "t": "Haaland helps Norway to win over Wales in Nations League",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cr20vgxv43p8o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T19:23:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_4ac8e56b21",
+      "t": "Italia, Mancini: “Ero già positivo dopo la sconfitta col Belgio. Non sarà semplice\"",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-mancini-conferenza-stampa-belgio-14-novembre-2026-499508",
+          "at": "2026-11-14T18:50:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_a9a85c8585",
+      "t": "Abodi: \"La Nazionale ci inorgoglisce. Mancini un'ottima guida\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/abodi-figc-nazionale-intervista-news-499511",
+          "at": "2026-11-14T18:27:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_80a904ff5d",
+      "t": "Italia, Scalvini: \"Daremo il massimo. De Ketelaere? Grandissimo giocatore\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/italia-scalvini-dichiarazioni-pre-belgio-nations-league-499509",
+          "at": "2026-11-14T18:10:47.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_e6f135a99d",
+      "t": "🚨 Carrick sacked - could Alonso be next after shocking Chelsea stats emerge?",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/xabi-alonso-chelsea-stats",
+          "at": "2026-11-14T10:27:31.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_7669a38bf2",
+      "t": "[오피셜] 20위였던 토트넘 ‘수직 상승’시킨 공로 인정받았다… 10월 ‘3승 1무’ 이끈 데 제르비, 커리어 첫 EPL 이달의 감독상 수상",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314051",
+          "at": "2026-11-14T07:00:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "풋볼리스트",
+          "u": "http://www.footballist.co.kr/news/articleView.html?idxno=216790",
+          "at": "2026-11-14T07:40:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698437",
+          "at": "2026-11-14T00:46:58.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_8320890a9d",
+      "t": "[IN POINT] ‘대기심 논란+국대 갈등설’ 황희찬, 사우디 상대로 맹활약→팀 내 평점 1위 등극",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698440",
+          "at": "2026-11-14T01:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_6a16c96e5c",
+      "t": "Fitness obsessed & 'control freak' - what can Man Utd expect from Pochettino?",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c85y13pv69xwo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-13T22:53:17.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_fde07979bf",
+      "t": "Tenerife boss says Owono's 12-match ban 'feels light'",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmjeq0x815zko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T16:26:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_75c96805e1",
+      "t": "'I just play where the manager tells me to play!' - Walsh",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6d91n2x0e7ko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T16:17:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_adf0c5b146",
+      "t": "Former Stoke City manager Thordarson dies aged 71",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c98r7l5yrn6go?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T15:04:59.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_4dff86f4c0",
+      "t": "'UCL 5회 우승' 체면 다 구겼다...'日에 두 번째 패배+퇴장' 안첼로티 \"심판의 경험 부족이 결과에 영향 미쳤어! 충분히 이길 수 있었다\"",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698467",
+          "at": "2026-11-14T15:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_b31a84981d",
+      "t": "[오피셜] 포체티노 맨유 오기도 전에 악재 생겼다...도르구, 햄스트링 부상으로 덴마크 대표팀 제외! \"재활 더 진행할 수 있도록 소속팀 복귀 결정\"",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698460",
+          "at": "2026-11-14T11:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_e3ef619fbc",
+      "t": "'Exciting' Moylan flourishing for club and country",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmlydwy2zg10o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T09:59:18.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_94c6954386",
+      "t": "브루노 후계자 낙점! 새 시대 준비하는 맨유, 포체티노 선임 이어 ‘코모 에이스’ 니코 파스까지 영입 추진...‘아르헨티나 커넥션 가동’",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [
+        "nico-paz"
+      ],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "transfer": {
+        "player": "nico-paz",
+        "status": "rumor",
+        "tier": 3
+      },
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698454",
+          "at": "2026-11-14T09:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_a7dc315693",
+      "t": "Who would make your England-Spain combined XI?",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cw77p0v78exlo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T08:57:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_c7256a9ddf",
+      "t": "Clough's longevity: landmark achievement or indictment on football?",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqr7grl145zpo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T08:35:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_1cd3c82768",
+      "t": "‘두번 거절해도 계속 잡을거야’ 맨유, ‘캡틴’ 브루노와 재계약 협상 지속...\"우린 결국 합의에 이를 것\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698453",
+          "at": "2026-11-14T08:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_de82100a56",
+      "t": "Titz and Clarke on Aberdeen shortlist - gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmgre0jlw24yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T08:28:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_af7f743169",
+      "t": "🚨 Cole Palmer to Man United? Clubs on alert for Liverpool star, update on Trent Alexander-Arnold, Arsenal star too expensive for Bayern, & more",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "manchester-united",
+        "liverpool",
+        "arsenal",
+        "bayern-munchen"
+      ],
+      "players": [
+        "cole-palmer"
+      ],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/cole-palmer-to-man-united-clubs-on",
+          "at": "2026-11-14T08:07:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_87dc2940b9",
+      "t": "Six goals to go - will McGinn catch Dalglish & Law?",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cke89156y10zo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T07:49:46.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_7a876c3ad0",
+      "t": "Who am I? Plus today's other quizzes",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6n83ld3le95o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-14T06:27:36.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_7bbeff2441",
+      "t": "Why Tom Brady left Birmingham City as club pushes for the Premier League",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7775559/2026/11/14/tom-brady-birmingham-city-exit-why/",
+          "at": "2026-11-14T05:03:23.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_2753a6fc52",
+      "t": "“맨유가 부르는데 어떻게 거절하나”… 회견장서 눈물 쏟은 포체티노 감독, “지도자 경력에서 가장 어려운 결정이었다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314050",
+          "at": "2026-11-14T05:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_d71c792e7f",
+      "t": "‘최대 수혜자는 누구?’ 맨유 부임 성공한 포체티노, 과연 어떤 전술 사용할까...“쿠냐·음뵈모 득점력 폭발할 것”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698446",
+          "at": "2026-11-14T04:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_8c8670c576",
+      "t": "\"우리 다시 돌아갈거야\" 더 브라위너 아내, 나폴리 탈출 전격 예고... '감독·동료와 불화에 가족 일상까지 마비'",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698445",
+          "at": "2026-11-14T04:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_db2a49327f",
+      "t": "'라커룸 분열에 30실점 자동문까지' 꿈 이뤘지만 웃지 못하는 포체티노...맨유 입성과 동시에 '비상사태'",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698444",
+          "at": "2026-11-14T03:38:41.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_7761e5f7b1",
+      "t": "진짜 맨유 주장이 떠나나? BBC 떴다…“브루노가 두 번째 재계약 제안 거절했어, 당분간 해결책 나올 가능성 낮아”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698439",
+          "at": "2026-11-14T01:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    },
+    {
+      "id": "c_58bc8f799a",
+      "t": "'If that penalty is given against you, you're furious'",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c34gn5k2lk9lo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-13T22:34:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-14T22:13:00.857Z"
+    }
+  ]
+}
