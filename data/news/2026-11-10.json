@@ -1,7 +1,7 @@
 {
   "date": "2026-11-10",
-  "generatedAt": "2026-11-10T04:11:04.802Z",
-  "runId": "collect-prod-20261110T041057Z-7a63",
+  "generatedAt": "2026-11-15T22:12:45.977Z",
+  "runId": "collect-prod-20261115T221245Z-b1a9",
   "cards": [
     {
       "id": "c_af3efa1350",
@@ -559,39 +559,6 @@
       "created": "2026-11-09T22:12:22.916Z"
     },
     {
-      "id": "c_f521ad47b5",
-      "t": "Manchester United expected to sack Michael Carrick as head coach",
-      "s": [],
-      "cat": "club",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7768165/2026/11/09/michael-carrick-sacked-manchester-united/",
-          "at": "2026-11-09T21:57:15.000Z",
-          "tier": 2
-        },
-        {
-          "n": "BBC Sport",
-          "u": "https://www.bbc.co.uk/sport/football/articles/cmy0r041ed0po?at_medium=RSS&at_campaign=rss",
-          "at": "2026-11-09T23:13:31.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-09T22:12:22.916Z"
-    },
-    {
       "id": "c_3ae0b97d08",
       "t": "Serie A, 196 giocatori in partenza per le Nazionali: ecco chi ne perde di più",
       "s": [],
@@ -942,39 +909,6 @@
       "created": "2026-11-09T22:12:22.916Z"
     },
     {
-      "id": "c_b590f512b8",
-      "t": "Barcelona's Pau Cubarsi wins 2026 Golden Boy award",
-      "s": [],
-      "cat": "result",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7767874/2026/11/09/pau-cubarsi-barcelona-golden-boy-winner/",
-          "at": "2026-11-09T17:22:51.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7766283/2026/11/09/mls-2026-season-awards-mvp-best-xi-messi/",
-          "at": "2026-11-09T11:00:36.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-09T22:12:22.916Z"
-    },
-    {
       "id": "c_96e23903f2",
       "t": "Radici italiane, scuola inglese e la convocazione del Brasile: Matheos Ferreira e un futuro tutto da scrivere",
       "s": [],
@@ -996,34 +930,6 @@
         }
       ],
       "lang": "it",
-      "ai": false,
-      "created": "2026-11-09T22:12:22.916Z"
-    },
-    {
-      "id": "c_8e44c10224",
-      "t": "Barcelona relish their La Liga lead, but have Real Madrid turned a corner?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona",
-        "real-madrid"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7767219/2026/11/09/la-liga-barcelona-real-madrid-title-race/",
-          "at": "2026-11-09T15:38:21.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-09T22:12:22.916Z"
     },

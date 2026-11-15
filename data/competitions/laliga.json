@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-14T22:13:50.979Z",
+  "updatedAt": "2026-11-15T22:13:33.247Z",
   "standings": [
     {
       "pos": 1,
@@ -2174,15 +2174,54 @@
       "status": "scheduled"
     },
     {
-      "id": "fd-564768",
+      "id": "fd-564770",
       "comp": "LALIGA",
       "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "osasuna",
-      "away": "elche",
+      "kickoff": "2026-12-04T20:00:00Z",
+      "home": "alaves",
+      "away": "espanyol",
       "score": null,
-      "status": "scheduled",
-      "tbc": true
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564772",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-05T13:00:00Z",
+      "home": "racing-santander",
+      "away": "deportivo-la-coruna",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564777",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-05T15:15:00Z",
+      "home": "rayo-vallecano",
+      "away": "levante",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564776",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-05T17:30:00Z",
+      "home": "villarreal",
+      "away": "real-sociedad",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564773",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-05T20:00:00Z",
+      "home": "barcelona",
+      "away": "celta-vigo",
+      "score": null,
+      "status": "scheduled"
     },
     {
       "id": "fd-564769",
@@ -2191,17 +2230,6 @@
       "kickoff": "2026-12-06T00:00:00Z",
       "home": "sevilla",
       "away": "malaga",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564770",
-      "comp": "LALIGA",
-      "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "alaves",
-      "away": "espanyol",
       "score": null,
       "status": "scheduled",
       "tbc": true
@@ -2218,28 +2246,6 @@
       "tbc": true
     },
     {
-      "id": "fd-564772",
-      "comp": "LALIGA",
-      "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "racing-santander",
-      "away": "deportivo-la-coruna",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564773",
-      "comp": "LALIGA",
-      "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "barcelona",
-      "away": "celta-vigo",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
       "id": "fd-564774",
       "comp": "LALIGA",
       "round": "15",
@@ -2251,37 +2257,24 @@
       "tbc": true
     },
     {
+      "id": "fd-564768",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T13:00:00Z",
+      "home": "osasuna",
+      "away": "elche",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
       "id": "fd-564775",
       "comp": "LALIGA",
       "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
+      "kickoff": "2026-12-06T15:15:00Z",
       "home": "athletic",
       "away": "real-madrid",
       "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564776",
-      "comp": "LALIGA",
-      "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "villarreal",
-      "away": "real-sociedad",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564777",
-      "comp": "LALIGA",
-      "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "rayo-vallecano",
-      "away": "levante",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
+      "status": "scheduled"
     },
     {
       "id": "fd-564698",
