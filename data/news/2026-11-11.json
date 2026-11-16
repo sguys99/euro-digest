@@ -1,7 +1,7 @@
 {
   "date": "2026-11-11",
-  "generatedAt": "2026-11-15T22:12:45.984Z",
-  "runId": "collect-prod-20261115T221245Z-b1a9",
+  "generatedAt": "2026-11-16T22:12:25.392Z",
+  "runId": "collect-prod-20261116T221225Z-5554",
   "cards": [
     {
       "id": "c_fc7347cecf",
@@ -758,39 +758,6 @@
       "created": "2026-11-10T22:12:46.781Z"
     },
     {
-      "id": "c_cc5a640591",
-      "t": "USMNT unaffected by Pochettino-to-Manchester United reports, Antonee Robinson says",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7770289/2026/11/10/mauricio-pochettino-manchester-united-antonee-robinson-usmnt/",
-          "at": "2026-11-10T17:08:58.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7769416/2026/11/10/mauricio-pochettino-usmnt-manchester-united-decision/",
-          "at": "2026-11-10T09:00:38.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-10T22:12:46.781Z"
-    },
-    {
       "id": "c_d506292465",
       "t": "日 국대 골키퍼가 레알 마드리드 간다고? 심지어 “이적료 1258억 넘어 역대 GK 최고액 발생할 수도” 전망",
       "s": [],
@@ -1108,61 +1075,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/c8ly0y5q34pno?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-10T07:25:56.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-10T22:12:46.781Z"
-    },
-    {
-      "id": "c_92a717ee90",
-      "t": "Forest flattened Man City and Brobbey battered Chelsea: Who won the Premier League weekend?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-city",
-        "chelsea"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7767295/2026/11/10/premier-league-best-worst-performance-rankings-table-gameweek-10/",
-          "at": "2026-11-10T05:14:20.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-10T22:12:46.781Z"
-    },
-    {
-      "id": "c_2002c751a9",
-      "t": "Arsenal, 10 questions after 10 matches: The eliteness of Rice, striker worries, champions again?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "arsenal"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7767407/2026/11/10/arsenal-premier-league-rice-arteta/",
-          "at": "2026-11-10T05:05:01.000Z",
           "tier": 2
         }
       ],

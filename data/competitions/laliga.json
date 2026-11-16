@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-15T22:13:33.247Z",
+  "updatedAt": "2026-11-16T22:13:12.479Z",
   "standings": [
     {
       "pos": 1,
@@ -2246,17 +2246,6 @@
       "tbc": true
     },
     {
-      "id": "fd-564774",
-      "comp": "LALIGA",
-      "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "getafe",
-      "away": "valencia",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
       "id": "fd-564768",
       "comp": "LALIGA",
       "round": "15",
@@ -2273,6 +2262,16 @@
       "kickoff": "2026-12-06T15:15:00Z",
       "home": "athletic",
       "away": "real-madrid",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564774",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T17:30:00Z",
+      "home": "getafe",
+      "away": "valencia",
       "score": null,
       "status": "scheduled"
     },
