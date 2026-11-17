@@ -1,7 +1,7 @@
 {
   "date": "2026-11-12",
-  "generatedAt": "2026-11-11T22:13:09.428Z",
-  "runId": "collect-prod-20261111T221302Z-b60c",
+  "generatedAt": "2026-11-17T22:13:21.277Z",
+  "runId": "collect-prod-20261117T221321Z-f8c5",
   "cards": [
     {
       "id": "c_8a8bfd19ac",
@@ -197,18 +197,6 @@
           "n": "the Daily Briefing",
           "u": "https://thedailybriefing.io/p/mauricio-pochettino-to-man-utd",
           "at": "2026-11-11T11:06:41.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7773820/2026/11/11/pep-guardiola-pochettino-manchester-united-usmnt-coach-candidate/",
-          "at": "2026-11-11T18:58:22.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7773683/2026/11/11/usmnt-vs-haiti-pochettino-manchester-united/",
-          "at": "2026-11-11T17:48:52.000Z",
           "tier": 2
         }
       ],
@@ -569,33 +557,6 @@
       "created": "2026-11-11T22:13:02.163Z"
     },
     {
-      "id": "c_f76513ca0d",
-      "t": "Manchester United make formal contact with U.S. Soccer over Mauricio Pochettino",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7772824/2026/11/11/mauricio-pochettino-manchester-united-us-soccer/",
-          "at": "2026-11-11T20:20:44.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-11T22:13:02.163Z"
-    },
-    {
       "id": "c_1266104925",
       "t": "Pochettino-United? La Nazionale statunitense si muove: Guardiola uno dei candidati per sostituirlo",
       "s": [],
@@ -842,62 +803,6 @@
       "created": "2026-11-11T22:13:02.163Z"
     },
     {
-      "id": "c_d960b5419f",
-      "t": "What's next for Endrick at Real Madrid? Might he leave in January?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "real-madrid"
-      ],
-      "players": [
-        "endrick"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7773347/2026/11/11/real-madrid-endrick-transfer-loan-mourinho-january/",
-          "at": "2026-11-11T16:20:11.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-11T22:13:02.163Z"
-    },
-    {
-      "id": "c_57fd8da7c4",
-      "t": "Mauricio Pochettino and Man United: A poisoned chalice or dream restoration job?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7773134/2026/11/11/mauricio-pochettino-man-united-challenge-job/",
-          "at": "2026-11-11T16:02:09.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-11T22:13:02.163Z"
-    },
-    {
       "id": "c_b3880f517d",
       "t": "Roma, Mancini e Dybala parzialmente in gruppo. Le ultime su Svilar",
       "s": [],
@@ -952,33 +857,6 @@
       "created": "2026-11-11T22:13:02.163Z"
     },
     {
-      "id": "c_9a4a90e4f2",
-      "t": "Man United's dreadful handling of Carrick is no way to treat anyone. But it's also not a surprise",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7772967/2026/11/11/manchester-united-treatment-michael-carrick/",
-          "at": "2026-11-11T12:46:16.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-11T22:13:02.163Z"
-    },
-    {
       "id": "c_70746a790a",
       "t": "맨유 새 감독 드디어 윤곽 드러났다…포체티노 감독 선임 마무리 단계→캐릭 경질 시 133억 보상금 지불 예정",
       "s": [],
@@ -1008,60 +886,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-11-11T22:13:02.163Z"
-    },
-    {
-      "id": "c_8964aff05c",
-      "t": "What Mauricio Pochettino could bring to Man Utd: Leadership, tactical flexibility and a trust in youth",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7770113/2026/11/11/mauricio-pochettino-manchester-united-tactics/",
-          "at": "2026-11-11T09:15:11.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-11T22:13:02.163Z"
-    },
-    {
-      "id": "c_b38595a542",
-      "t": "Manchester United finalising deal for Mauricio Pochettino if Michael Carrick departs",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7767421/2026/11/11/mauricio-pochettino-manchester-united-manager-usmnt/",
-          "at": "2026-11-11T08:14:48.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-11T22:13:02.163Z"
     },

@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-16T22:13:12.479Z",
+  "updatedAt": "2026-11-17T22:14:09.550Z",
   "standings": [
     {
       "pos": 1,
@@ -2224,28 +2224,6 @@
       "status": "scheduled"
     },
     {
-      "id": "fd-564769",
-      "comp": "LALIGA",
-      "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "sevilla",
-      "away": "malaga",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
-      "id": "fd-564771",
-      "comp": "LALIGA",
-      "round": "15",
-      "kickoff": "2026-12-06T00:00:00Z",
-      "home": "atletico-madrid",
-      "away": "real-betis",
-      "score": null,
-      "status": "scheduled",
-      "tbc": true
-    },
-    {
       "id": "fd-564768",
       "comp": "LALIGA",
       "round": "15",
@@ -2272,6 +2250,26 @@
       "kickoff": "2026-12-06T17:30:00Z",
       "home": "getafe",
       "away": "valencia",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564771",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-06T20:00:00Z",
+      "home": "atletico-madrid",
+      "away": "real-betis",
+      "score": null,
+      "status": "scheduled"
+    },
+    {
+      "id": "fd-564769",
+      "comp": "LALIGA",
+      "round": "15",
+      "kickoff": "2026-12-07T20:00:00Z",
+      "home": "sevilla",
+      "away": "malaga",
       "score": null,
       "status": "scheduled"
     },
