@@ -46,7 +46,7 @@
 
 ```
 cron-job.org (여름 06:30 · 겨울 07:10 KST) → GitHub Actions collect.yml   (백업 schedule: 여름 06:40 · 겨울 07:20)
- ① 수집     약관을 통과한 매체 RSS · 목록/OG 메타 + 전날 경기 데이터(football-data.org · API-Football)
+ ① 수집     약관을 통과한 매체 RSS · 목록/OG 메타 + 전날 경기 데이터(football-data.org · Highlightly)
  ② 정제·분류 URL 정규화 · 중복 제거 · 같은 사건 묶기 · 중요도 점수 · 상위 45건 · 한국어 태그        ← 코드
  ③ 브리핑   정형 경기 데이터만 Claude Haiku(Messages API 단건)에 → "오늘의 5줄"
             → zod 검증 → 코드 검증 → 1회 재시도 → 실패하면 코드 템플릿 문장(발행은 멈추지 않음)
@@ -68,7 +68,7 @@ cron-job.org (여름 06:30 · 겨울 07:10 KST) → GitHub Actions collect.yml  
 | 스타일 | Tailwind CSS 4 · shadcn/ui 패턴(커스텀) — 토큰은 [DESIGN.md](DESIGN.md) → `src/app/globals.css` |
 | 스키마·실행 | zod 4(configs·data·LLM 출력 경계 검증, `src/lib/schema/`) · tsx · Node.js 24(`.nvmrc`) · npm |
 | LLM | Claude Haiku 5.5 · `@anthropic-ai/sdk` — 일일 브리핑은 Messages API 단건, 주간 2곳은 Message Batches API, 호출은 `scripts/lib/llm.ts`에서만 |
-| 수집·데이터 | rss-parser · football-data.org(주) · API-Football(보조, 경기 단건 조회) |
+| 수집·데이터 | rss-parser · football-data.org(주) · Highlightly(경기 상세 — 2026-11-03 경기까지는 API-Football) |
 | 검색·분석 | Pagefind(빌드 후 색인) · GoatCounter(쿠키리스 — 유일한 서드파티 스크립트) |
 | 테스트·품질 | Vitest · Testing Library · Playwright(+axe) · Lighthouse CI(`@lhci/cli`, 측정 전용) · ESLint · Prettier |
 | 배포 | GitHub Actions → GitHub Pages |
@@ -86,7 +86,7 @@ cp .env.example .env.local    # 선택 — 실제 수집·브리핑을 돌릴 �
 npm run dev                   # http://localhost:3000/euro-digest/
 ```
 
-`basePath`가 `/euro-digest`라서 `http://localhost:3000/`이 아니라 `/euro-digest/` 경로로 엽니다. 저장소에 커밋된 `data/`로 화면이 바로 뜨므로 `dev`·`build`·`check`는 API 키 없이 동작합니다. `.env.local`은 커밋하지 않으며, 배포 환경의 키(`ANTHROPIC_API_KEY`·`FOOTBALL_DATA_API_KEY`·`API_FOOTBALL_KEY`)는 GitHub Actions Secrets로만 관리합니다.
+`basePath`가 `/euro-digest`라서 `http://localhost:3000/`이 아니라 `/euro-digest/` 경로로 엽니다. 저장소에 커밋된 `data/`로 화면이 바로 뜨므로 `dev`·`build`·`check`는 API 키 없이 동작합니다. `.env.local`은 커밋하지 않으며, 배포 환경의 키(`ANTHROPIC_API_KEY`·`FOOTBALL_DATA_API_KEY`·`HIGHLIGHTLY_API_KEY`)는 GitHub Actions Secrets로만 관리합니다.
 
 정적 빌드 미리보기:
 
@@ -169,7 +169,7 @@ npm run preview    # http://127.0.0.1:4173/euro-digest/ (GitHub Pages처럼 base
 |---|---|
 | 뉴스 | 약관 판정을 통과한 매체 RSS(해외·국내 14개 채널, `configs/sources.json`) — LLM 미사용, 원제목 + 코드 분류 |
 | 순위 · 일정 · 결과 · 득점 순위 | [football-data.org](https://www.football-data.org/) — **Football data provided by the Football-Data.org API** |
-| 경기별 득점자 · 라인업(포메이션) · 한국 선수 경기 기록 | [API-Football](https://www.api-football.com/) — 경기 단위로 받아 쌓은 기록이라 한국 선수 시즌 누적은 "집계 시작일 이후" 값입니다 |
+| 경기별 득점자 · 라인업(포메이션) · 한국 선수 경기 기록 | [Highlightly](https://highlightly.net/)(2026-11-04 경기부터) · [API-Football](https://www.api-football.com/)(11-03 경기까지) — 경기 단위로 받아 쌓은 기록이라 한국 선수 시즌 누적은 "집계 시작일 이후" 값입니다 |
 | 오늘의 5줄 · 팀 한줄평 · 주간 총평 | 위 경기 데이터를 바탕으로 Claude가 작성 — 화면에 "AI 작성" 표시 |
 | A매치 일정 · 한국 선수 명단 · 팀 컬러 | 직접 관리하는 설정 파일(`configs/`) |
 

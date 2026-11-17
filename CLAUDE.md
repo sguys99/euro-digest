@@ -1,7 +1,7 @@
 # CLAUDE.md — 유로 다이제스트 (Euro Digest)
 
 > 매일 아침, 밤사이 유럽 축구를 한눈에.
-> 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **M5(다듬기·정식 공개) 진행 중(2026-11-03~) — M5-01~05·07~11·13~15·17 완료, 🙋 실기기 확인 대기 M5-06·M5-12, 남은 작업 M5-16 공개 체크리스트** (M3 주간 자동 실행 확인은 11-09)
+> 버전: **v0.1** · 작성일: 2026-10-10 · 현재 단계: **M5(다듬기·정식 공개) 진행 중(2026-11-03~) — M5-01~05·07~11·13~15·17 완료, 🙋 실기기 확인 대기 M5-06·M5-12, 남은 작업 M5-18 경기 상세 제공자 교체(Highlightly — 공백 백필 남음)·M5-16 공개 체크리스트** (M3 주간 자동 실행 확인은 11-09)
 
 이 문서는 Claude Code가 이 저장소에서 **어떻게 일하는지**를 정한다. 문서끼리 충돌하면 아래 우선순위를 따르고 사용자에게 알린다.
 
@@ -46,7 +46,7 @@
 - **스타일**: Tailwind CSS v4 + shadcn/ui(커스텀). 토큰은 DESIGN.md → `src/app/globals.css`의 CSS 변수·`@theme` 단일 출처
 - **스키마·실행**: zod(데이터·설정·LLM 출력 모두 경계에서 검증), tsx(`scripts/*.ts`), Node.js LTS(`.nvmrc` 고정), 패키지 매니저 **npm**
 - **LLM**: `@anthropic-ai/sdk` — 일일 브리핑은 Messages API 단건, 주간 2곳은 Message Batches API(PRD §15 D28). 기본 `LLM_MODEL=claude-haiku-5-5`. 호출은 `scripts/lib/llm.ts`에서만
-- **수집·데이터**: rss-parser, 경량 HTML 파서(목록·OG 메타만) / football-data.org(주), API-Football(보조), 어댑터 구조
+- **수집·데이터**: rss-parser, 경량 HTML 파서(목록·OG 메타만) / football-data.org(주), Highlightly(경기 상세 — 득점자·라인업·출전 시간, PRD §15 D80 · API-Football은 2026-11-04 계정 정지로 대기, `MATCH_DETAIL_PROVIDER`), 어댑터 구조
 - **검색·분석**: Pagefind(빌드 후 인덱싱) / GoatCounter(쿠키리스, 허용되는 유일한 서드파티 스크립트)
 - **테스트·품질**: Vitest(+Testing Library), Playwright(스크린샷·링크·접근성), Lighthouse CI(`@lhci/cli` 0.15.1 — dev 전용 측정 도구, 배포물·외부 업로드 없음, PRD §15 D78) / ESLint, Prettier(+tailwind 플러그인)
 - **배포**: GitHub Actions → GitHub Pages(`actions/deploy-pages`), `https://sguys99.github.io/euro-digest`
@@ -143,7 +143,8 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
 - 크롤러는 `scripts/crawlers/<site>.ts`로 분리: robots.txt 준수, User-Agent에 서비스명·연락처, 사이트당 2~3초 지연, 하루 1회, 목록(제목·링크·날짜·작성자)과 OG 메타만.
 - 소스 실패는 격리(해당 소스만 건너뛰고 이슈 생성). 3일 연속 0건이면 소스 건강도 이슈.
 - football-data.org 분당 10회 → 호출 간 지연.
-- **API-Football (PRD §15 D27)**: 무료 플랜은 시즌 단위(`season=`)·`ids`·`next` 조회가 막혀 있어 **경기 단건 조회만** 쓴다 — `/fixtures?date=`(어제·오늘 UTC, 무료는 오늘 ±1일만)로 경기 id를 찾고 대상 경기(6개 대회 전 경기 + 한국 선수 소속팀의 다른 대회 경기)마다 `/fixtures?id=`(이벤트·라인업·선수 기록 한 번에). 미종료 경기 id는 `data/cache`에 두고 다음 실행에서 재조회. 오류도 **HTTP 200**으로 온다 — 상태 코드보다 본문 `errors`(정상 `[]`, 오류는 객체)를 먼저 검사하고, `errors.plan`은 재시도 없이 그 기능을 FR-65 폴백으로 강등 + 이슈. 시각은 `+00:00` 오프셋이라 경계에서 `Z`로 바꾼다(`Iso` 스키마).
+- **Highlightly (PRD §15 D80 — 2026-11-18부터 경기 상세 기본 경로)**: 무료 Basic 하루 100회(`x-ratelimit-requests-remaining`), 직접 접근 `soccer.highlightly.net` + 헤더 `x-rapidapi-key`. 날짜 × 6개 대회 목록 → 대상 경기마다 `/matches/{id}`(이벤트)·`/lineups/{id}`, 한국 선수 경기만 `/box-score/{id}`(출전 시간). 지난 날짜도 열린다(백필 `scripts/backfill-matches.ts`). 봇 상한 65 · 개발 30(우리 쪽 카운터), 응답 뒤 3초 간격. 선수·팀 매칭은 id로만(이름 표기가 응답마다 다르다), 응답의 `logo` URL은 쓰지 않는다. 원장 키 `af-`(11-03까지)·`hl-`(이후) 공존. 실측 `docs/research/m5-highlightly-probe.md`
+- **API-Football (PRD §15 D27 — 2026-11-04 계정 정지, 복구 시 `MATCH_DETAIL_PROVIDER=api-football`로 되돌림)**: 무료 플랜은 시즌 단위(`season=`)·`ids`·`next` 조회가 막혀 있어 **경기 단건 조회만** 쓴다 — `/fixtures?date=`(어제·오늘 UTC, 무료는 오늘 ±1일만)로 경기 id를 찾고 대상 경기(6개 대회 전 경기 + 한국 선수 소속팀의 다른 대회 경기)마다 `/fixtures?id=`(이벤트·라인업·선수 기록 한 번에). 미종료 경기 id는 `data/cache`에 두고 다음 실행에서 재조회. 오류도 **HTTP 200**으로 온다 — 상태 코드보다 본문 `errors`(정상 `[]`, 오류는 객체)를 먼저 검사하고, `errors.plan`은 재시도 없이 그 기능을 FR-65 폴백으로 강등 + 이슈. 시각은 `+00:00` 오프셋이라 경계에서 `Z`로 바꾼다(`Iso` 스키마).
 - API-Football 한도: 하루 100회·분당 10회(분당 초과는 약관상 중대한 위반 — 동시 1개, 응답 후 6.5초 간격). 일 한도는 **00:00 UTC = 09:00 KST에 리셋**되므로 09:00 KST 이후 개발 호출과 다음 날 아침 봇 수집이 같은 한도를 쓴다 → 봇 일일 계획 ≤ 60회(헤더 카운터가 일관되지 않아 우리 쪽 카운터로 지킴), **개발 호출은 하루 50건 이내**, 봇 수집 시간대(06:00~08:00 KST, §10 push 금지 시간대)에는 수동 호출 금지. 지난 날짜는 날짜 조회로 다시 받을 수 없으니 테스트는 저장한 `fixtures/`로만.
 - 외부 데이터는 어댑터(`scripts/lib/providers/*`)로 내부 스키마로 변환. 화면 코드는 외부 API 형식을 모른다.
 
@@ -186,7 +187,7 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
 - 봇 데이터 커밋: `chore(data): YYYY-MM-DD 발행` — 변경분만, `data/`·`public/` 산출물에 한정. 발행이 실패한 실행은 `chore(data): YYYY-MM-DD 실행 기록 (발행 실패)` — `runs.json`(상태 failed)·원장·이월만(뉴스·브리핑·seen-urls 제외, M1-27). 롤백은 `발행` 커밋만 revert한다(실행 기록 커밋은 비용·호출 수 기록이라 되돌리지 않음).
 - 개발·봇 모두 `main`에 직접 커밋(무인 발행 브랜치) → **커밋 전 `npm run check`·`npm run build` 통과 필수**. `ci.yml`이 push마다 같은 검사를 돌리고, 실패하면 즉시 수정 또는 revert. main push가 검사를 통과하면 `deploy.yml`로 배포된다(`concurrency: pages`).
 - 큰 변경(스키마·파이프라인 구조)은 작은 커밋으로 나눈다. **06:00~08:00 KST에는 사람(개발) push 금지**(봇의 `chore(data)` 발행 커밋은 이 시간대가 정상)(계절 무관 — 여름 06:30 수집~07:15, 겨울 07:10 수집~07:45 공개 허용 범위를 한 구간으로 덮는다, D26). push 전 항상 `git pull --rebase`.
-- Secrets: `ANTHROPIC_API_KEY`, `FOOTBALL_DATA_API_KEY`, `API_FOOTBALL_KEY`는 Actions Secrets. cron-job.org용 PAT(Actions 권한만)는 저장소에 두지 않는다.
+- Secrets: `ANTHROPIC_API_KEY`, `FOOTBALL_DATA_API_KEY`, `HIGHLIGHTLY_API_KEY`, `API_FOOTBALL_KEY`(정지 — D80)는 Actions Secrets. cron-job.org용 PAT(Actions 권한만)는 저장소에 두지 않는다.
 - 환경변수 기본값: `LLM_MODEL=claude-haiku-5-5` · `LLM_MODE=live`(테스트·CI는 `mock`) · `MAX_ITEMS_PER_RUN=45`(일일 카드 선별 상한) · `DAILY_BUDGET_USD=0.10` / `MONTHLY_BUDGET_USD=3` · `SITE_URL=https://sguys99.github.io` / `BASE_PATH=/euro-digest` · `CONTACT_EMAIL`(User-Agent·삭제 요청 연락처, M0에서 개설)
 
 ## 11. Claude Code 보조 설정 (M0에서 생성)
@@ -221,3 +222,4 @@ npm run test:specimen                # SPECIMEN=1 견본 빌드(out-specimen/) �
   - `/status` 배포 완료 시각 매칭(커밋 시각 < 수집 완료인 배포만 — M5-13 ③) 실제 배포 기록으로 첫 확인
   - 오늘 밤 가중치 11월 말 재검토(D76 — `docs/research/m5-tonight-weights.md` §6) · `@lhci/cli` 0.16 검토는 2주 규칙상 11-16 이후(m5-performance §9)
   - M3 주간 정기 실행(월요일 자동 실행·팀 프로필 첫 정기 실행) 11-09 확인 · 브리핑 정확도 주간 표본 재검수(M1-43 이후 미측정 — M5-16 KPI)
+  - **API-Football 계정 정지(2026-11-04~, 이슈 #4)** → Highlightly로 교체(PRD §15 D80, plan M5-18). 남은 일: 11-04~ 원장 공백 백필(한국 선수 경기) → W45·W46 주간 리포트 재생성, 첫 정기 실행 확인(호출 수·박승수 id 68218108 라인업 일치), 승부차기 경기 스코어 실측. API-Sports 지원팀 답장 오면 복구 여부 재결정
