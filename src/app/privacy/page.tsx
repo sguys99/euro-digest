@@ -372,8 +372,9 @@ export default function PrivacyPage() {
               description: (
                 <>
                   경기 결과·득점자·순위 같은 경기 데이터(
-                  <Brand>football-data.org</Brand> · <Brand>API-Football</Brand>
-                  ). 기사 제목이나 본문은 넣지 않습니다.
+                  <Brand>football-data.org</Brand> · <Brand>API-Football</Brand>{" "}
+                  · <Brand>Highlightly</Brand>). 기사 제목이나 본문은 넣지
+                  않습니다.
                 </>
               ),
             },

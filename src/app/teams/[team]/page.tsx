@@ -294,7 +294,7 @@ function SheetBasis({
     return (
       <>
         최근 라인업 최빈값 · {formatKst(formation.updated, "monthDay")} 경기까지
-        집계 · 선수 배치 자료 없음 · API-Football
+        집계 · 선수 배치 자료 없음 · API-Football · Highlightly
       </>
     );
   }
@@ -333,7 +333,7 @@ function SheetBasis({
           />
         </>
       ) : null}{" "}
-      · API-Football
+      · API-Football · Highlightly
     </>
   );
 }

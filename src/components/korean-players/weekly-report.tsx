@@ -989,7 +989,7 @@ export function WeeklySourceNote({
       className={cx("text-[12.5px] leading-normal text-ink-2", className)}
     >
       <b className="font-extrabold text-ink">데이터</b> 출전·분·골·도움·결과
-      API-Football · MVP 점수는 골×3 + 도움×2 + 출전으로 계산 ·{" "}
+      API-Football · Highlightly · MVP 점수는 골×3 + 도움×2 + 출전으로 계산 ·{" "}
       {ai
         ? "총평은 같은 기록만 넣어 AI가 쓴 문장"
         : "총평은 기록으로 만든 문장"}{" "}

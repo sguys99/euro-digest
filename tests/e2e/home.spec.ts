@@ -112,7 +112,9 @@ test("하단: 데이터 출처 · AI 작성 안내(AI 줄이 있을 때) · 브�
   test.skip(!brief, "그 호의 5줄이 없음");
   await open(page);
   const foot = page.locator("[data-slot=brief-foot]");
-  await expect(foot).toContainText("데이터 football-data.org · API-Football");
+  await expect(foot).toContainText(
+    "데이터 football-data.org · API-Football · Highlightly",
+  );
   const report = foot.getByRole("link", { name: /브리핑 오류 신고/ });
   await expect(report).toHaveAttribute(
     "href",

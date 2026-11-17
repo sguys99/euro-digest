@@ -63,7 +63,7 @@ export function DataSourceNote({
           </b>
         </>
       ) : null}
-      {apiFootball ? <> · {apiFootball} API-Football</> : null} ·{" "}
+      {apiFootball ? <> · {apiFootball} API-Football · Highlightly</> : null} ·{" "}
       <span lang="en">{FOOTBALL_DATA_ATTRIBUTION}</span>
     </p>
   );

@@ -349,8 +349,8 @@ export default function AboutPage() {
                 <>
                   경기 결과와 득점자, 대회 순위, 선수 출전 기록 같은 경기
                   데이터만 넣습니다(<Brand>football-data.org</Brand> ·{" "}
-                  <Brand>API-Football</Brand>). 기사 제목이나 내용은 넣지
-                  않습니다.
+                  <Brand>API-Football</Brand> · <Brand>Highlightly</Brand>).
+                  기사 제목이나 내용은 넣지 않습니다.
                 </>
               ),
             },
@@ -409,13 +409,18 @@ export default function AboutPage() {
             href="https://www.football-data.org/"
           />
           <DataRow
-            what="경기별 득점자·도움"
+            what="경기별 득점자·도움·출전 기록(11월 3일 경기까지)"
             name="API-Football"
             href="https://www.api-football.com/"
           />
+          <DataRow
+            what="경기별 득점자·도움·출전 기록(11월 4일 경기부터)"
+            name="Highlightly"
+            href="https://highlightly.net/"
+          />
         </ul>
         <p className={NOTE}>
-          두 서비스에서 받은 경기 데이터로 오늘의 5줄을 만듭니다.
+          이 서비스들에서 받은 경기 데이터로 오늘의 5줄을 만듭니다.
         </p>
       </AboutSection>
 

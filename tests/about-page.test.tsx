@@ -295,7 +295,7 @@ describe("AI 작성 고지(#ai — 브리핑 'AI 작성' 라벨이 가리킴, D2
 });
 
 describe("데이터 출처(#data — FR-45)", () => {
-  it("football-data.org 필수 문구는 영문 원문 그대로(lang=en), API-Football 병기, 두 서비스 링크(새 창)", () => {
+  it("football-data.org 필수 문구는 영문 원문 그대로(lang=en), API-Football · Highlightly 병기(D80), 세 서비스 링크(새 창)", () => {
     render(<AboutPage />);
     const el = section("data");
     const fd = within(el).getByText(FOOTBALL_DATA_ATTRIBUTION);
@@ -307,6 +307,7 @@ describe("데이터 출처(#data — FR-45)", () => {
     expect(links.map((a) => a.getAttribute("href"))).toEqual([
       "https://www.football-data.org/",
       "https://www.api-football.com/",
+      "https://highlightly.net/",
     ]);
     for (const a of links) {
       expect(a).toHaveAttribute("target", "_blank");

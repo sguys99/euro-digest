@@ -209,7 +209,8 @@ export function TodayBrief({
       >
         <p className="pt-3">
           데이터 <span className="whitespace-nowrap">football-data.org</span> ·{" "}
-          <span className="whitespace-nowrap">API-Football</span>
+          <span className="whitespace-nowrap">API-Football</span> ·{" "}
+          <span className="whitespace-nowrap">Highlightly</span>
         </p>
         <p className="flex flex-wrap gap-x-4.5">
           {view.hasAi ? (

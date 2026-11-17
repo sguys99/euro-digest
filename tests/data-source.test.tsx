@@ -91,7 +91,7 @@ describe("DataSourceNote — 출처 줄 문구", () => {
     );
   });
 
-  it("지연 + API-Football 병기(팀 화면)", () => {
+  it("지연 + API-Football · Highlightly 병기(팀 화면 — D80)", () => {
     const { container } = render(
       <DataSourceNote
         source={{ updatedAt: "2026-10-28T22:11:59Z", stale: true }}
@@ -101,7 +101,7 @@ describe("DataSourceNote — 출처 줄 문구", () => {
       />,
     );
     expect(container.textContent).toBe(
-      `데이터 football-data.org — 순위·경기·득점 10.29 07:11 KST 갱신 · 업데이트 지연 · 팀시트·포메이션 API-Football · ${FOOTBALL_DATA_ATTRIBUTION}`,
+      `데이터 football-data.org — 순위·경기·득점 10.29 07:11 KST 갱신 · 업데이트 지연 · 팀시트·포메이션 API-Football · Highlightly · ${FOOTBALL_DATA_ATTRIBUTION}`,
     );
     expect(
       container.querySelector("[data-slot=data-source-stale]")?.tagName,
