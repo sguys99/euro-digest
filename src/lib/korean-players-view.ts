@@ -175,11 +175,17 @@ export function sinceLabel(date: string): string {
 
 /** 선수 상태(머리 주석) */
 export function rosterStateOf(
-  player: Pick<KoreanPlayer, "comp" | "active" | "apiFootballId">,
+  player: Pick<
+    KoreanPlayer,
+    "comp" | "active" | "apiFootballId" | "highlightlyId"
+  >,
   record: Pick<KoreanPlayerRecord, "since"> | null,
 ): RosterState {
   if (player.comp === "OTHER" || !player.active) return "other";
-  if (player.apiFootballId === null || !record || record.since === null) {
+  // 경기 상세 id는 API-Football 또는 Highlightly(PRD §15 D80) — 어느 쪽이든 있으면 기록을 잇는다
+  const noDetailId =
+    player.apiFootballId === null && (player.highlightlyId ?? null) === null;
+  if (noDetailId || !record || record.since === null) {
     return "not-linked";
   }
   return "linked";

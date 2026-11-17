@@ -340,7 +340,10 @@ export function excludedGroups(
     if (inTable.has(p.slug)) continue;
     const since = records.get(p.slug)?.since ?? null;
     if (p.comp === "OTHER" || !p.active) add("5대 리그 밖", p.nameKo);
-    else if (p.apiFootballId === null || since === null)
+    else if (
+      (p.apiFootballId === null && (p.highlightlyId ?? null) === null) ||
+      since === null
+    )
       add("기록 연결 전", p.nameKo);
     else if (since > weekEnd)
       add(

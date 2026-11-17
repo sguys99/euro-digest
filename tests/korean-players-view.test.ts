@@ -130,6 +130,19 @@ describe("선수 상태(FR-64 · 기록 연결 전)", () => {
     expect(rosterStateOf(base, { since: null })).toBe("not-linked");
     expect(rosterStateOf(base, null)).toBe("not-linked");
     expect(rosterStateOf(base, { since: "2026-10-19" })).toBe("linked");
+    // Highlightly id만 있어도 잇는다(D80 — 김지수: apiFootballId 없음)
+    expect(
+      rosterStateOf(
+        { ...base, apiFootballId: null, highlightlyId: 57354311 },
+        { since: "2026-11-18" },
+      ),
+    ).toBe("linked");
+    expect(
+      rosterStateOf(
+        { ...base, apiFootballId: null, highlightlyId: null },
+        { since: "2026-11-18" },
+      ),
+    ).toBe("not-linked");
   });
 });
 
