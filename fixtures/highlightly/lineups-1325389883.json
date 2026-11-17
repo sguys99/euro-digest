@@ -1,0 +1,280 @@
+{
+  "homeTeam": {
+    "formation": "4-2-3-1",
+    "substitutes": [
+      {
+        "name": "H. Valdimarsson",
+        "number": 12,
+        "position": "Goalkeeper",
+        "id": 9940616
+      },
+      {
+        "name": "A. Hickey",
+        "number": 2,
+        "position": "Defender",
+        "id": 7224385
+      },
+      {
+        "name": "N. Collins",
+        "number": 22,
+        "position": "Defender",
+        "id": 3138849
+      },
+      {
+        "name": "E. Diouf",
+        "number": 25,
+        "position": "Defender",
+        "id": 65897937
+      },
+      {
+        "name": "Jannik Schuster",
+        "number": 44,
+        "position": "Defender",
+        "id": 71044785
+      },
+      {
+        "name": "M. Damsgaard",
+        "number": 24,
+        "position": "Midfielder",
+        "id": 2561342
+      },
+      {
+        "name": "J. Anthony",
+        "number": 19,
+        "position": "Forward",
+        "id": 31693809
+      },
+      {
+        "name": "C. Wilson",
+        "number": 13,
+        "position": "Forward",
+        "id": 473333
+      },
+      {
+        "name": "Gustavo Gomes",
+        "number": 39,
+        "position": "Forward",
+        "id": 68865650
+      }
+    ],
+    "initialLineup": [
+      [
+        {
+          "name": "C. Kelleher",
+          "number": 1,
+          "position": "Goalkeeper",
+          "id": 45395
+        }
+      ],
+      [
+        {
+          "name": "K. Lewis-Potter",
+          "number": 23,
+          "position": "Defender",
+          "id": 17182879
+        },
+        {
+          "name": "K. Ajer",
+          "number": 20,
+          "position": "Defender",
+          "id": 180313
+        },
+        {
+          "name": "S. van den Berg",
+          "number": 4,
+          "position": "Defender",
+          "id": 5944596
+        },
+        {
+          "name": "M. Kayode",
+          "number": 33,
+          "position": "Defender",
+          "id": 55065696
+        }
+      ],
+      [
+        {
+          "name": "V. Janelt",
+          "number": 27,
+          "position": "Midfielder",
+          "id": 4036907
+        },
+        {
+          "name": "M. Sangaré",
+          "number": 18,
+          "position": "Midfielder",
+          "id": 44646420
+        }
+      ],
+      [
+        {
+          "name": "K. Schade",
+          "number": 7,
+          "position": "Midfielder",
+          "id": 28670551
+        },
+        {
+          "name": "M. Jensen",
+          "number": 8,
+          "position": "Midfielder",
+          "id": 7637672
+        },
+        {
+          "name": "D. Ouattara",
+          "number": 11,
+          "position": "Midfielder",
+          "id": 45852471
+        }
+      ],
+      [
+        {
+          "name": "Thiago",
+          "number": 9,
+          "position": "Forward",
+          "id": 31581270
+        }
+      ]
+    ],
+    "id": 47589,
+    "name": "Brentford"
+  },
+  "awayTeam": {
+    "formation": "3-4-2-1",
+    "substitutes": [
+      {
+        "name": "A. Kalimuendo",
+        "number": 15,
+        "position": "Forward",
+        "id": 23800945
+      },
+      {
+        "name": "C. Wood",
+        "number": 9,
+        "position": "Forward",
+        "id": 3048045
+      },
+      {
+        "name": "C. Hudson-Odoi",
+        "number": 7,
+        "position": "Forward",
+        "id": 370132
+      },
+      {
+        "name": "R. Yates",
+        "number": 22,
+        "position": "Midfielder",
+        "id": 3108259
+      },
+      {
+        "name": "I. Sangaré",
+        "number": 6,
+        "position": "Midfielder",
+        "id": 3566143
+      },
+      {
+        "name": "D. Muñoz",
+        "number": 27,
+        "position": "Defender",
+        "id": 2211650
+      },
+      {
+        "name": "L. Netz",
+        "number": 25,
+        "position": "Defender",
+        "id": 26254263
+      },
+      {
+        "name": "O. Diomande",
+        "number": 2,
+        "position": "Defender",
+        "id": 57115387
+      },
+      {
+        "name": "John",
+        "number": 12,
+        "position": "Goalkeeper",
+        "id": 11329080
+      }
+    ],
+    "initialLineup": [
+      [
+        {
+          "name": "M. Sels",
+          "number": 26,
+          "position": "Goalkeeper",
+          "id": 470113
+        }
+      ],
+      [
+        {
+          "name": "Murillo",
+          "number": 5,
+          "position": "Defender",
+          "id": 58555049
+        },
+        {
+          "name": "N. Milenković",
+          "number": 31,
+          "position": "Defender",
+          "id": 453691
+        },
+        {
+          "name": "Jair",
+          "number": 23,
+          "position": "Defender",
+          "id": 58396625
+        }
+      ],
+      [
+        {
+          "name": "N. Williams",
+          "number": 3,
+          "position": "Midfielder",
+          "id": 22343734
+        },
+        {
+          "name": "X. Schlager",
+          "number": 21,
+          "position": "Midfielder",
+          "id": 176449
+        },
+        {
+          "name": "J. McAtee",
+          "number": 24,
+          "position": "Midfielder",
+          "id": 25550371
+        },
+        {
+          "name": "O. Aina",
+          "number": 34,
+          "position": "Midfielder",
+          "id": 446285
+        }
+      ],
+      [
+        {
+          "name": "D. Ndoye",
+          "number": 14,
+          "position": "Midfielder",
+          "id": 7832482
+        },
+        {
+          "name": "M. Gibbs-White",
+          "number": 10,
+          "position": "Midfielder",
+          "id": 3018260
+        }
+      ],
+      [
+        {
+          "name": "L. Delap",
+          "number": 19,
+          "position": "Forward",
+          "id": 26073782
+        }
+      ]
+    ],
+    "id": 56099,
+    "name": "Nottingham Forest"
+  }
+}

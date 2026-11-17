@@ -2,7 +2,9 @@
  * `configs/team-ids.json` 초안 만들기 — 일회성 도구 (M1-44, PRD §15 D33 ⑤). 네트워크·LLM 호출 없음(fixtures만 읽는다).
  *
  * 사용법: npx tsx scripts/build-team-ids.ts [--roster [--af-pairs <파일>] [--af-source <설명>] [--renames <파일>]] [--write] [--review <파일>] [--date YYYY-MM-DD]
+ *         npx tsx scripts/build-team-ids.ts --hl <폴더> [--hl-source <설명>] [--write] [--date YYYY-MM-DD]
  *   --roster      M2-04 팀 목록 모드(아래) — 없으면 M1-44 초안 모드
+ *   --hl          Highlightly 팀 id(`hl`) 채우기 모드(PRD §15 D80 — 아래)
  *   (인자 없음)   초안 요약과 확인용 표를 출력만 한다
  *   --write       configs/team-ids.json에 쓴다(커밋은 사람이 확인한 뒤 — D33)
  *   --review      확인용 표(Markdown)를 그 파일에 쓴다(저장소 밖 경로 권장)
@@ -19,6 +21,10 @@
  * slug는 scripts/lib/team-slugs.ts 규칙(+예외표), af는 지금 대응표 → `--af-pairs`(경기 원장 ↔ football-data 같은 기간 종료 경기를
  * `suggestTeamIdPairs`로 맞춘 PairingReport JSON — 원본 응답은 저장소 밖) 순, 근거가 없으면 null. `--renames`는 옛 → 새 slug 표
  * (scripts/migrate-team-slugs.ts 입력 확인용)를 쓴다. 판단 로직은 scripts/lib/team-roster.ts.
+ *
+ * `--hl <폴더>` (M5-18, PRD §15 D80): 폴더의 Highlightly 시즌 경기 목록 응답(`/matches?leagueId=&season=` 원문 JSON — 저장소 밖에 둔다,
+ * 로고 URL이 들어 있어 커밋하지 않는다)과 대회 파일(data/competitions — football-data 종료 경기)을 `suggestTeamIdPairs`로 맞춰 대응표의
+ * 기존 slug에 `hl`을 채운다(네트워크 없음). 판단 로직은 scripts/lib/team-ids-hl.ts. 못 찾은 팀·충돌이 있으면 종료 코드 2(쓰지 않음).
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -49,6 +55,12 @@ import {
   readFdFixtures,
 } from "./lib/team-ids-draft";
 import { buildTeamRoster, formatRosterReview } from "./lib/team-roster";
+import {
+  fdPairingFromCompetitionFiles,
+  fillHighlightlyTeamIdsIterative,
+  hlPairingFromLists,
+} from "./lib/team-ids-hl";
+import { readCompetitionFiles } from "./lib/team-files-io";
 import { checkKoreanPlayerTeamIds } from "./lib/validate-crossref";
 
 const TAG = "[build-team-ids]";
@@ -77,6 +89,67 @@ interface CliValues {
   "af-pairs"?: string;
   "af-source"?: string;
   renames?: string;
+  hl?: string;
+  "hl-source"?: string;
+}
+
+/** Highlightly 팀 id 채우기 모드(머리 주석 `--hl`) — 네트워크 없음 */
+async function mainHighlightly(
+  values: CliValues,
+  date: string,
+): Promise<number> {
+  const dir = values.hl!;
+  const [competitions, existing] = await Promise.all([
+    readConfigFile(ROOT_DIR, "competitions.json", CompetitionsFileSchema),
+    readConfigFile(ROOT_DIR, "team-ids.json", TeamIdsFileSchema),
+  ]);
+  const files = await readCompetitionFiles(
+    path.join(ROOT_DIR, "data"),
+    (event, fields) =>
+      console.warn(`${TAG} ${event} ${JSON.stringify(fields)}`),
+  );
+  const fd = fdPairingFromCompetitionFiles(files, existing);
+  const hl = hlPairingFromLists(readJsonDir(dir), competitions);
+  const result = fillHighlightlyTeamIdsIterative({
+    teamIds: existing,
+    fd,
+    hl,
+    source:
+      values["hl-source"] ??
+      "Highlightly 시즌 경기 목록 ↔ football-data 대회 파일 종료 경기",
+    date,
+  });
+  const parsed = TeamIdsFileSchema.safeParse(result.file);
+  if (!parsed.success) {
+    for (const issue of parsed.error.issues) {
+      result.problems.push(
+        `스키마 오류 ${issue.path.join(".")}: ${issue.message}`,
+      );
+    }
+  }
+  console.log(
+    `${TAG} hl: fd 종료 ${fd.length}경기 · hl 6개 대회 ${hl.length}경기 · 짝 ${result.pairing.matchPairs.length}건 · 채움 ${result.filled.length}팀 · 못 찾음 ${result.missing.length}팀 · 문제 ${result.problems.length}건`,
+  );
+  for (const f of result.filled) {
+    console.log(
+      `  + ${f.slug} hl ${f.hl} "${f.name}" (근거 ${f.evidence}경기)`,
+    );
+  }
+  for (const slug of result.missing) console.log(`  ? ${slug} — hl 못 찾음`);
+  for (const p of result.problems) console.log(`  ! ${p}`);
+  const blocked = !parsed.success || result.problems.length > 0;
+  if (values.write) {
+    if (blocked) {
+      console.error(`${TAG} 문제가 있어 쓰지 않는다`);
+      return 2;
+    }
+    const target = path.join(ROOT_DIR, "configs/team-ids.json");
+    writeFileSync(target, `${JSON.stringify(parsed.data, null, 2)}\n`, "utf8");
+    console.log(
+      `${TAG} configs/team-ids.json hl ${result.filled.length}팀 작성`,
+    );
+  }
+  return blocked || result.missing.length > 0 ? 2 : 0;
 }
 
 /** M2-04 팀 목록 모드 — 네트워크 없음 */
@@ -172,6 +245,8 @@ async function main(): Promise<number> {
       "af-pairs": { type: "string" },
       "af-source": { type: "string" },
       renames: { type: "string" },
+      hl: { type: "string" },
+      "hl-source": { type: "string" },
     },
     strict: true,
   });
@@ -181,6 +256,7 @@ async function main(): Promise<number> {
     return 1;
   }
   if (values.roster) return mainRoster(values, draftDate);
+  if (values.hl) return mainHighlightly(values, draftDate);
 
   const competitions = await readConfigFile(
     ROOT_DIR,

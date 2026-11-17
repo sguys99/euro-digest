@@ -40,7 +40,7 @@ export type TeamSheetPlayer = z.infer<typeof TeamSheetPlayerSchema>;
  */
 export const TeamLineupSchema = z.object({
   formation: FormationShapeSchema, // 그 경기 포메이션 = Team.formation.shape
-  match: AfMatchKeySchema, // 원장 경기 키 af-<id>
+  match: AfMatchKeySchema, // 원장 경기 키 af-<id>·hl-<id>(D80 ②)
   kickoff: IsoSchema, // 킥오프(UTC)
   comp: CompIdSchema, // 6개 대회 경기만
   side: LedgerSideSchema, // 이 팀이 홈·원정 중 어느 쪽

@@ -1,0 +1,229 @@
+[
+  {
+    "events": [
+      {
+        "team": {
+          "id": 134391,
+          "name": "Bayern Munich"
+        },
+        "time": "14",
+        "type": "Goal",
+        "assist": "Harry Kane",
+        "player": "Joshua Kimmich",
+        "playerId": 80976,
+        "substituted": null,
+        "assistingPlayerId": 29778
+      },
+      {
+        "team": {
+          "id": 140348,
+          "name": "FSV Mainz 05"
+        },
+        "time": "44",
+        "type": "VAR Goal Cancelled",
+        "assist": null,
+        "player": "Lee Jae-Sung",
+        "playerId": 468020,
+        "substituted": null,
+        "assistingPlayerId": null
+      },
+      {
+        "team": {
+          "id": 134391,
+          "name": "Bayern Munich"
+        },
+        "time": "45",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Manuel Neuer",
+        "playerId": 80171,
+        "substituted": "Jonas Urbig",
+        "assistingPlayerId": 32743690
+      },
+      {
+        "team": {
+          "id": 134391,
+          "name": "Bayern Munich"
+        },
+        "time": "57",
+        "type": "Goal",
+        "assist": "Harry Kane",
+        "player": "Lennart Karl",
+        "playerId": 79555245,
+        "substituted": null,
+        "assistingPlayerId": 29778
+      },
+      {
+        "team": {
+          "id": 140348,
+          "name": "FSV Mainz 05"
+        },
+        "time": "63",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Ransford Königsdörffer",
+        "playerId": 26206607,
+        "substituted": "Phillip Tietz",
+        "assistingPlayerId": 4213685
+      },
+      {
+        "team": {
+          "id": 140348,
+          "name": "FSV Mainz 05"
+        },
+        "time": "63",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Lee Jae-Sung",
+        "playerId": 468020,
+        "substituted": "Paul Nebel",
+        "assistingPlayerId": 32640650
+      },
+      {
+        "team": {
+          "id": 134391,
+          "name": "Bayern Munich"
+        },
+        "time": "67",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Lennart Karl",
+        "playerId": 79555245,
+        "substituted": "Tom Bischof",
+        "assistingPlayerId": 52482129
+      },
+      {
+        "team": {
+          "id": 134391,
+          "name": "Bayern Munich"
+        },
+        "time": "67",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Josip Stanišić",
+        "playerId": 20152685,
+        "substituted": "Alphonso Davies",
+        "assistingPlayerId": 82103
+      },
+      {
+        "team": {
+          "id": 140348,
+          "name": "FSV Mainz 05"
+        },
+        "time": "68",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Sheraldo Becker",
+        "playerId": 6108172,
+        "substituted": "Benedict Hollerbach",
+        "assistingPlayerId": 26234460
+      },
+      {
+        "team": {
+          "id": 140348,
+          "name": "FSV Mainz 05"
+        },
+        "time": "69",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Silvan Widmer",
+        "playerId": 7789012,
+        "substituted": "Rael Nakuzola",
+        "assistingPlayerId": 107634289
+      },
+      {
+        "team": {
+          "id": 134391,
+          "name": "Bayern Munich"
+        },
+        "time": "76",
+        "type": "Yellow Card",
+        "assist": null,
+        "player": "Konrad Laimer",
+        "playerId": 186431,
+        "substituted": null,
+        "assistingPlayerId": null
+      },
+      {
+        "team": {
+          "id": 140348,
+          "name": "FSV Mainz 05"
+        },
+        "time": "82",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Anthony Caci",
+        "playerId": 3581438,
+        "substituted": "Eric Martel",
+        "assistingPlayerId": 26159434
+      },
+      {
+        "team": {
+          "id": 134391,
+          "name": "Bayern Munich"
+        },
+        "time": "86",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Konrad Laimer",
+        "playerId": 186431,
+        "substituted": "Hiroki Ito",
+        "assistingPlayerId": 5295927
+      },
+      {
+        "team": {
+          "id": 134391,
+          "name": "Bayern Munich"
+        },
+        "time": "86",
+        "type": "Substitution",
+        "assist": null,
+        "player": "Joshua Kimmich",
+        "playerId": 80976,
+        "substituted": "Sacha Boey",
+        "assistingPlayerId": 353549
+      },
+      {
+        "team": {
+          "id": 140348,
+          "name": "FSV Mainz 05"
+        },
+        "time": "90+2",
+        "type": "Goal",
+        "assist": "Benedict Hollerbach",
+        "player": "Phillip Tietz",
+        "playerId": 4213685,
+        "substituted": null,
+        "assistingPlayerId": 26234460
+      }
+    ],
+    "id": 1340510451,
+    "round": "Regular Season - 9",
+    "date": "2026-11-07T14:30:00.000Z",
+    "country": {
+      "code": "DE",
+      "name": "Germany"
+    },
+    "state": {
+      "clock": 90,
+      "score": {
+        "current": "1 - 2",
+        "penalties": null
+      },
+      "description": "Finished"
+    },
+    "awayTeam": {
+      "id": 134391,
+      "name": "Bayern Munich"
+    },
+    "homeTeam": {
+      "id": 140348,
+      "name": "FSV Mainz 05"
+    },
+    "league": {
+      "id": 67162,
+      "name": "Bundesliga",
+      "season": 2026
+    }
+  }
+]

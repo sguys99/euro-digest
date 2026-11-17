@@ -197,11 +197,14 @@ export async function recordBackfillApiCalls(input: {
   /** 백필 시작(UTC ISO) — 카운터는 이 시각의 UTC 날짜로 센다 */
   startedAt: string;
   apiFootballCalls: number;
+  /** Highlightly 호출 수(경기 원장 백필 — scripts/backfill-matches.ts, D80) — 없으면 0 */
+  highlightlyCalls?: number;
   now?: Date;
   /** 생략하면 now */
   finishedAt?: string;
 }): Promise<RecordRunResult | null> {
-  if (input.apiFootballCalls <= 0) return null;
+  const highlightly = input.highlightlyCalls ?? 0;
+  if (input.apiFootballCalls <= 0 && highlightly <= 0) return null;
   return recordRun({
     env: input.env,
     job: "collect",
@@ -210,7 +213,11 @@ export async function recordBackfillApiCalls(input: {
     ...(input.finishedAt !== undefined ? { finishedAt: input.finishedAt } : {}),
     ...(input.now !== undefined ? { now: input.now } : {}),
     status: "skipped",
-    apiCalls: { footballData: 0, apiFootball: input.apiFootballCalls },
+    apiCalls: {
+      footballData: 0,
+      apiFootball: input.apiFootballCalls,
+      ...(highlightly > 0 ? { highlightly } : {}),
+    },
     dataDir: input.dataDir,
   });
 }

@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import type { RunSource } from "@/lib/schema";
 
 import { apiFootballIssuePayloads } from "../scripts/lib/api-football-stage";
+import { highlightlyIssuePayloads } from "../scripts/lib/highlightly-stage";
 import {
   RUN_PARTIAL_CONDITIONS,
   apiFootballIncomplete,
@@ -35,16 +36,19 @@ const FD_OK = {
   elapsedMs: 1,
 };
 
-/** API-Football 끝난 단계(최소 모양 — 판정·사건에 쓰는 필드만) */
-function afDone(stage: {
-  dates?: Array<{ date: string; ok: boolean }>;
-  degraded?: unknown;
-  stoppedBy?: string | null;
-  outcomes?: Array<{ result: { kind: string } }>;
-  issues?: Array<{ kind: string; endpoint: string; message: string }>;
-}) {
+/** API-Football(또는 Highlightly — D80) 끝난 단계(최소 모양 — 판정·사건에 쓰는 필드만) */
+function afDone(
+  stage: {
+    dates?: Array<{ date: string; ok: boolean }>;
+    degraded?: unknown;
+    stoppedBy?: string | null;
+    outcomes?: Array<{ result: { kind: string } }>;
+    issues?: Array<{ kind: string; endpoint: string; message: string }>;
+  },
+  provider: "api-football" | "highlightly" = "api-football",
+) {
   return {
-    provider: "api-football" as const,
+    provider,
     state: "done" as const,
     data: {
       stage: {
@@ -246,6 +250,60 @@ const SCENARIOS: Record<string, Scenario> = {
       }),
     },
   }),
+  "highlightly-failed": base({
+    matchData: {
+      footballData: FD_OK,
+      apiFootball: {
+        provider: "highlightly",
+        state: "failed",
+        errorType: "unexpected",
+        error: "boom",
+        elapsedMs: 1,
+      },
+    },
+  }),
+  "highlightly-daily-cap": base({
+    matchData: {
+      footballData: FD_OK,
+      apiFootball: {
+        provider: "highlightly",
+        state: "skipped",
+        reason: "daily-cap",
+        elapsedMs: 0,
+      },
+    },
+  }),
+  "highlightly-degraded": base({
+    matchData: {
+      footballData: FD_OK,
+      apiFootball: afDone(
+        {
+          degraded: { kind: "plan", endpoint: "date", message: "plan" },
+          stoppedBy: "plan",
+          issues: [
+            {
+              kind: "plan",
+              endpoint: "date",
+              message: "Some data is restricted on your current plan",
+            },
+          ],
+        },
+        "highlightly",
+      ),
+    },
+  }),
+  "highlightly-incomplete": base({
+    matchData: {
+      footballData: FD_OK,
+      apiFootball: afDone(
+        {
+          stoppedBy: "budget",
+          outcomes: [{ result: { kind: "failed" } }],
+        },
+        "highlightly",
+      ),
+    },
+  }),
   "ledger-write": base({
     matchData: {
       footballData: FD_OK,
@@ -331,7 +389,9 @@ function issueKeysOf(s: Scenario): string[] {
       CTX,
     ),
     ...(af?.state === "done"
-      ? apiFootballIssuePayloads(af.data.stage.issues, CTX)
+      ? af.provider === "highlightly"
+        ? highlightlyIssuePayloads(af.data.stage.issues, CTX)
+        : apiFootballIssuePayloads(af.data.stage.issues, CTX)
       : []),
   ].map((p) => `source:${p.sourceId}`);
   const feedRecords: RunSource[] = (input.news.sources ?? []).map((src, i) =>

@@ -1,0 +1,253 @@
+{
+  "data": [
+    {
+      "id": 1325388181,
+      "round": "Regular Season - 9",
+      "date": "2026-10-31T20:00:00.000Z",
+      "country": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "1 - 1",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 31420,
+        "name": "Fulham"
+      },
+      "homeTeam": {
+        "id": 56950,
+        "name": "Aston Villa"
+      },
+      "league": {
+        "id": 33973,
+        "name": "Premier League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1325395840,
+      "round": "Regular Season - 9",
+      "date": "2026-10-31T17:30:00.000Z",
+      "country": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 0",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 45036,
+        "name": "Crystal Palace"
+      },
+      "homeTeam": {
+        "id": 40781,
+        "name": "Tottenham"
+      },
+      "league": {
+        "id": 33973,
+        "name": "Premier League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1325394138,
+      "round": "Regular Season - 9",
+      "date": "2026-10-31T15:00:00.000Z",
+      "country": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "0 - 1",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 44185,
+        "name": "Brighton"
+      },
+      "homeTeam": {
+        "id": 43334,
+        "name": "Manchester City"
+      },
+      "league": {
+        "id": 33973,
+        "name": "Premier League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1325392436,
+      "round": "Regular Season - 9",
+      "date": "2026-10-31T15:00:00.000Z",
+      "country": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 2",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 49291,
+        "name": "Ipswich"
+      },
+      "homeTeam": {
+        "id": 55248,
+        "name": "Hull City"
+      },
+      "league": {
+        "id": 33973,
+        "name": "Premier League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1325391585,
+      "round": "Regular Season - 9",
+      "date": "2026-10-31T15:00:00.000Z",
+      "country": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "3 - 1",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 635630,
+        "name": "Sunderland"
+      },
+      "homeTeam": {
+        "id": 1146230,
+        "name": "Coventry"
+      },
+      "league": {
+        "id": 33973,
+        "name": "Premier League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1325389883,
+      "round": "Regular Season - 9",
+      "date": "2026-10-31T15:00:00.000Z",
+      "country": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 0",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 56099,
+        "name": "Nottingham Forest"
+      },
+      "homeTeam": {
+        "id": 47589,
+        "name": "Brentford"
+      },
+      "league": {
+        "id": 33973,
+        "name": "Premier League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1325389032,
+      "round": "Regular Season - 9",
+      "date": "2026-10-31T15:00:00.000Z",
+      "country": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 0",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 54397,
+        "name": "Leeds"
+      },
+      "homeTeam": {
+        "id": 30569,
+        "name": "Bournemouth"
+      },
+      "league": {
+        "id": 33973,
+        "name": "Premier League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1325390734,
+      "round": "Regular Season - 9",
+      "date": "2026-10-31T12:30:00.000Z",
+      "country": {
+        "code": "GB-ENG",
+        "name": "England"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 0",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 28867,
+        "name": "Manchester United"
+      },
+      "homeTeam": {
+        "id": 42483,
+        "name": "Chelsea"
+      },
+      "league": {
+        "id": 33973,
+        "name": "Premier League",
+        "season": 2026
+      }
+    }
+  ],
+  "plan": {
+    "tier": "BASIC",
+    "message": "All data available with current plan."
+  },
+  "pagination": {
+    "totalCount": 8,
+    "offset": 0,
+    "limit": 100
+  }
+}

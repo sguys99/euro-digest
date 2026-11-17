@@ -22,6 +22,7 @@ export const SECRET_ENV_NAMES = [
   "ANTHROPIC_API_KEY",
   "FOOTBALL_DATA_API_KEY",
   "API_FOOTBALL_KEY",
+  "HIGHLIGHTLY_API_KEY",
 ] as const;
 
 const ENV_NAME_GROUP = SECRET_ENV_NAMES.join("|");

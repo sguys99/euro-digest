@@ -1,0 +1,152 @@
+[
+  {
+    "id": 1404095469,
+    "round": "Club Friendlies",
+    "date": "2026-11-12T13:30:00.000Z",
+    "country": {
+      "code": "World",
+      "name": "World"
+    },
+    "state": {
+      "clock": 90,
+      "score": {
+        "current": "2 - 0",
+        "penalties": null
+      },
+      "description": "Finished"
+    },
+    "awayTeam": {
+      "id": 155666,
+      "name": "Union Berlin"
+    },
+    "homeTeam": {
+      "id": 137795,
+      "name": "VfL Wolfsburg"
+    },
+    "league": {
+      "id": 568401,
+      "name": "Friendlies Clubs",
+      "season": 2026
+    }
+  },
+  {
+    "id": 1340509600,
+    "round": "Regular Season - 9",
+    "date": "2026-11-08T16:30:00.000Z",
+    "country": {
+      "code": "DE",
+      "name": "Germany"
+    },
+    "state": {
+      "clock": 90,
+      "score": {
+        "current": "2 - 0",
+        "penalties": null
+      },
+      "description": "Finished"
+    },
+    "awayTeam": {
+      "id": 155666,
+      "name": "Union Berlin"
+    },
+    "homeTeam": {
+      "id": 136944,
+      "name": "SC Freiburg"
+    },
+    "league": {
+      "id": 67162,
+      "name": "Bundesliga",
+      "season": 2026
+    }
+  },
+  {
+    "id": 1340501941,
+    "round": "Regular Season - 8",
+    "date": "2026-11-01T14:30:00.000Z",
+    "country": {
+      "code": "DE",
+      "name": "Germany"
+    },
+    "state": {
+      "clock": 90,
+      "score": {
+        "current": "1 - 1",
+        "penalties": null
+      },
+      "description": "Finished"
+    },
+    "awayTeam": {
+      "id": 164176,
+      "name": "FC Koln"
+    },
+    "homeTeam": {
+      "id": 155666,
+      "name": "Union Berlin"
+    },
+    "league": {
+      "id": 67162,
+      "name": "Bundesliga",
+      "season": 2026
+    }
+  },
+  {
+    "id": 1394417897,
+    "round": "Round of 32",
+    "date": "2026-10-27T19:45:00.000Z",
+    "country": {
+      "code": "DE",
+      "name": "Germany"
+    },
+    "state": {
+      "clock": 90,
+      "score": {
+        "current": "5 - 0",
+        "penalties": null
+      },
+      "description": "Finished"
+    },
+    "awayTeam": {
+      "id": 155666,
+      "name": "Union Berlin"
+    },
+    "homeTeam": {
+      "id": 164176,
+      "name": "FC Koln"
+    },
+    "league": {
+      "id": 69715,
+      "name": "DFB Pokal",
+      "season": 2026
+    }
+  },
+  {
+    "id": 1340495133,
+    "round": "Regular Season - 7",
+    "date": "2026-10-24T13:30:00.000Z",
+    "country": {
+      "code": "DE",
+      "name": "Germany"
+    },
+    "state": {
+      "clock": 90,
+      "score": {
+        "current": "1 - 1",
+        "penalties": null
+      },
+      "description": "Finished"
+    },
+    "awayTeam": {
+      "id": 155666,
+      "name": "Union Berlin"
+    },
+    "homeTeam": {
+      "id": 145454,
+      "name": "FC Augsburg"
+    },
+    "league": {
+      "id": 67162,
+      "name": "Bundesliga",
+      "season": 2026
+    }
+  }
+]

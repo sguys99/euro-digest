@@ -129,7 +129,7 @@ describe("TeamIdsFileSchema — slug → { fd, af } (D33)", () => {
 
   it("둘 다 null·slug 형식·모르는 키·양의 정수 아님은 오류", () => {
     expect(issues({ a: { fd: null, af: null } })).toEqual([
-      "a: fd·af가 둘 다 null — 둘 중 하나는 있어야 함",
+      "a: fd·af·hl이 모두 null — 하나는 있어야 함",
     ]);
     expect(issues({ "Bad Slug": { fd: 1, af: 2 } })).toHaveLength(1);
     expect(issues({ a: { fd: 1, af: 2, fdName: "x" } })).toHaveLength(1);

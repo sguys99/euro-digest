@@ -1,0 +1,564 @@
+[
+  {
+    "team": {
+      "id": 134391,
+      "name": "Bayern Munich"
+    },
+    "players": [
+      {
+        "id": 156646,
+        "name": "J. Tah",
+        "fullName": "Jonathan Glao Tah",
+        "position": "Defender",
+        "shirtNumber": 4,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 80171,
+        "name": "M. Neuer",
+        "fullName": "Manuel Peter Neuer",
+        "position": "Goalkeeper",
+        "shirtNumber": 1,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 44,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 45092068,
+        "name": "N. Brown",
+        "fullName": "Nathaniel Brown",
+        "position": "Midfielder",
+        "shirtNumber": 11,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 29778,
+        "name": "H. Kane",
+        "fullName": "Harry Edward Kane",
+        "position": "Forward",
+        "shirtNumber": 9,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 2
+        }
+      },
+      {
+        "id": 79555245,
+        "name": "L. Karl",
+        "fullName": "Lennart Karl",
+        "position": "Midfielder",
+        "shirtNumber": 42,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 67,
+        "statistics": {
+          "goalsScored": 1,
+          "assists": 0
+        }
+      },
+      {
+        "id": 80976,
+        "name": "J. Kimmich",
+        "fullName": "Joshua Walter Kimmich",
+        "position": "Midfielder",
+        "shirtNumber": 6,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 86,
+        "statistics": {
+          "goalsScored": 1,
+          "assists": 0
+        }
+      },
+      {
+        "id": 186431,
+        "name": "K. Laimer",
+        "fullName": "Konrad Laimer",
+        "position": "Defender",
+        "shirtNumber": 27,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 86,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 3158491,
+        "name": "M. Olise",
+        "fullName": "Michael Akpovie Olise",
+        "position": "Midfielder",
+        "shirtNumber": 17,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 52813467,
+        "name": "A. Pavlović",
+        "fullName": "Aleksandar Pavlović",
+        "position": "Midfielder",
+        "shirtNumber": 45,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 20152685,
+        "name": "J. Stanišić",
+        "fullName": "Josip Stanišić",
+        "position": "Defender",
+        "shirtNumber": 44,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 67,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 185143,
+        "name": "D. Upamecano",
+        "fullName": "Dayotchanculle Oswald Upamecano",
+        "position": "Defender",
+        "shirtNumber": 2,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 77065702,
+        "name": "T. Binder",
+        "fullName": "Tim Binder",
+        "position": "Forward",
+        "shirtNumber": 46,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 0,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 52482129,
+        "name": "T. Bischof",
+        "fullName": "Tom Bischof",
+        "position": "Midfielder",
+        "shirtNumber": 8,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 23,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 353549,
+        "name": "S. Boey",
+        "fullName": "Sacha Boey",
+        "position": "Defender",
+        "shirtNumber": 23,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 4,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 82103,
+        "name": "A. Davies",
+        "fullName": "Alphonso Boyle Davies",
+        "position": "Defender",
+        "shirtNumber": 19,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 23,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 5295927,
+        "name": "H. Ito",
+        "fullName": "Hiroki Ito",
+        "position": "Defender",
+        "shirtNumber": 21,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 4,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 466571,
+        "name": "Kim Min-jae",
+        "fullName": "Min-Jae Kim",
+        "position": "Defender",
+        "shirtNumber": 3,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 0,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 80332,
+        "name": "S. Ulreich",
+        "fullName": "Sven Ulreich",
+        "position": "Goalkeeper",
+        "shirtNumber": 26,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 0,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 32743690,
+        "name": "J. Urbig",
+        "fullName": "Jonas Kurt Urbig",
+        "position": "Goalkeeper",
+        "shirtNumber": 40,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 46,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      }
+    ]
+  },
+  {
+    "team": {
+      "id": 140348,
+      "name": "FSV Mainz 05"
+    },
+    "players": [
+      {
+        "id": 4213685,
+        "name": "P. Tietz",
+        "fullName": "Phillip Tietz",
+        "position": "Forward",
+        "shirtNumber": 9,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 27,
+        "statistics": {
+          "goalsScored": 1,
+          "assists": 0
+        }
+      },
+      {
+        "id": 7789012,
+        "name": "S. Widmer",
+        "fullName": "Silvan Dominic Widmer",
+        "position": "Midfielder",
+        "shirtNumber": 30,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 69,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 115108,
+        "name": "N. Amiri",
+        "fullName": "Nadiem Amiri",
+        "position": "Midfielder",
+        "shirtNumber": 10,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 6108172,
+        "name": "S. Becker",
+        "fullName": "Sheraldo Rudi Becker",
+        "position": "Forward",
+        "shirtNumber": 23,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 68,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 3581438,
+        "name": "A. Caci",
+        "fullName": "Anthony Caci",
+        "position": "Midfielder",
+        "shirtNumber": 19,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 82,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 291886,
+        "name": "D. da Costa",
+        "fullName": "Danny Vieira da Costa",
+        "position": "Defender",
+        "shirtNumber": 21,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 32658199,
+        "name": "F. Gruber",
+        "fullName": "Fabio Gruber",
+        "position": "Defender",
+        "shirtNumber": 3,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 26206607,
+        "name": "R. Königsdörffer",
+        "fullName": "Ransford-Yeboah Königsdörffer",
+        "position": "Forward",
+        "shirtNumber": 11,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 63,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 468020,
+        "name": "Jae-sung Lee",
+        "fullName": "Jae-Sung Lee",
+        "position": "Midfielder",
+        "shirtNumber": 7,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 63,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 71250060,
+        "name": "K. Potulski",
+        "fullName": "Kacper Potulski",
+        "position": "Defender",
+        "shirtNumber": 48,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 5456283,
+        "name": "K. Sano",
+        "fullName": "Kaishu Sano",
+        "position": "Midfielder",
+        "shirtNumber": 6,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 4171020,
+        "name": "R. Zentner",
+        "fullName": "Robin Zentner",
+        "position": "Goalkeeper",
+        "shirtNumber": 27,
+        "isCaptain": false,
+        "isSubstitute": false,
+        "minutesPlayed": 90,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 4171181,
+        "name": "S. Bell",
+        "fullName": "Stefan Bell",
+        "position": "Defender",
+        "shirtNumber": 16,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 0,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 26234460,
+        "name": "B. Hollerbach",
+        "fullName": "Benedict Hollerbach",
+        "position": "Forward",
+        "shirtNumber": 17,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 22,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 1
+        }
+      },
+      {
+        "id": 32183571,
+        "name": "S. Kawasaki",
+        "fullName": "Sota Kawasaki",
+        "position": "Midfielder",
+        "shirtNumber": 24,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 0,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 3999716,
+        "name": "L. Maloney",
+        "fullName": "Lennard Maloney",
+        "position": "Midfielder",
+        "shirtNumber": 15,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 0,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 26159434,
+        "name": "E. Martel",
+        "fullName": "Eric Martel",
+        "position": "Midfielder",
+        "shirtNumber": 5,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 8,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 107634289,
+        "name": "R. Nakuzola",
+        "fullName": null,
+        "position": "Defender",
+        "shirtNumber": 47,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 21,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 32640650,
+        "name": "P. Nebel",
+        "fullName": "Paul Nebel",
+        "position": "Midfielder",
+        "shirtNumber": 8,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 27,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      },
+      {
+        "id": 4223828,
+        "name": "A. Schwolow",
+        "fullName": "Alexander Schwolow",
+        "position": "Goalkeeper",
+        "shirtNumber": 1,
+        "isCaptain": false,
+        "isSubstitute": true,
+        "minutesPlayed": 0,
+        "statistics": {
+          "goalsScored": 0,
+          "assists": 0
+        }
+      }
+    ]
+  }
+]

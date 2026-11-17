@@ -1,5 +1,11 @@
 /**
  * 경기 기록 원장 `data/matches/YYYY-MM.json` + `data/matches/meta.json` (M1-48b, PRD §15 D27·D33).
+ *
+ * 경기 상세 프로바이더 교체(PRD §15 D80 — 2026-11-17): 새 경기는 Highlightly 상세로 `hl-<id>` 키, 기존 `af-<id>` 항목은 그대로 둔다
+ * (공존 — 마이그레이션 없음). 항목 키 접두사가 그 항목의 대회·팀·선수 id 체계를 정한다(scripts/lib/detail-provider.ts). 읽기의
+ * `known`·쓰기의 저장 확인은 이번 실행 프로바이더 체계만 보고(`readLedgerWindow` provider), 한국 선수 행은 그 체계의 선수 id
+ * (`koreanPlayerTargets` provider — Highlightly는 highlightlyId · team-ids hl)로 만든다. 아래 "API-Football"·"apiFootballId"는 그
+ * 실행의 상세 프로바이더로 읽는다.
  * 스키마는 src/lib/schema/matches.ts. 이 파일은 원장 항목 조립(한국 선수 행·이름 후보)·달 파일 갱신·메타 규칙(순수 함수)과
  * 파일 읽기·쓰기(원자적 — 임시 파일 + rename)를 둔다. 실행 연결은 scripts/lib/collect-run.ts.
  *
@@ -61,6 +67,14 @@ import {
 import { shiftDate, utcDate, utcMonth } from "@/lib/time";
 
 import {
+  ledgerIdFor,
+  ledgerMatchKey,
+  parseLedgerMatchKey,
+  playerIdFor,
+  teamIdOfSlug,
+  type DetailProvider,
+} from "./detail-provider";
+import {
   playerAppearance,
   type LineupPlayer,
   type MatchDetail,
@@ -82,13 +96,17 @@ export const LEDGER_META_REL = path.join(LEDGER_DIR_REL, "meta.json");
 export const LEDGER_KNOWN_LOOKBACK_DAYS = 4;
 
 export function afMatchKey(id: number): string {
-  return `af-${id}`;
+  return ledgerMatchKey("api-football", id);
 }
 
-/** `af-<id>` → id(형식이 아니면 null) */
+/** `af-<id>` → id(형식이 아니면 null — `hl-` 키도 null) */
 export function afIdOfKey(key: string): number | null {
-  const m = /^af-([1-9]\d*)$/.exec(key);
-  return m ? Number(m[1]) : null;
+  return ledgerIdFor(key, "api-football");
+}
+
+/** 원장 키의 숫자(접두사 무관 — 정렬 동률 깨기용, 형식이 아니면 0) */
+export function ledgerKeyNumber(key: string): number {
+  return parseLedgerMatchKey(key)?.id ?? 0;
 }
 
 /** 킥오프(UTC ISO) → 원장 달(UTC) */
@@ -147,18 +165,25 @@ export function ledgerWriteMode(input: {
 
 // ─── 한국 선수 ───────────────────────────────────────────────────────────
 
-/** 원장 행을 만드는 선수 — 활성 + apiFootballId */
+/**
+ * 원장 행을 만드는 선수 — 활성 + 그 상세 프로바이더 선수 id. **필드 이름은 역사적이다**(M1-48b — API-Football만 있던 때): 값은
+ * `provider` 체계의 id다(Highlightly면 `apiFootballId` = korean-players.json highlightlyId, `teamAf` = team-ids.json hl — D80).
+ */
 export interface TrackedPlayer {
   slug: string;
+  /** 그 프로바이더 선수 id(API-Football이면 apiFootballId, Highlightly면 highlightlyId) */
   apiFootballId: number;
-  /** 소속팀 API-Football 팀 id(team-ids.json `af`) — 없으면 null(validate 교차 검사가 막는 경우) */
+  /** 소속팀의 그 프로바이더 팀 id(team-ids.json `af`·`hl`) — 없으면 null(validate 교차 검사가 막는 경우) */
   teamAf: number | null;
+  /** id 체계 — 없으면 API-Football(옛 호출부·테스트) */
+  provider?: DetailProvider;
 }
 
-/** 행을 만들지 못하는 선수 — 활성인데 apiFootballId가 null(이름 대조로 후보만 찾는다) */
+/** 행을 만들지 못하는 선수 — 활성인데 그 프로바이더 선수 id가 null(이름 대조로 후보만 찾는다) */
 export interface UnidentifiedPlayer {
   slug: string;
   nameEn: string;
+  /** 소속팀의 그 프로바이더 팀 id */
   teamAf: number | null;
 }
 
@@ -167,26 +192,33 @@ export interface KoreanPlayerTargets {
   unidentified: UnidentifiedPlayer[];
 }
 
-/** configs → 추적 선수·id 없는 선수(설정 순서, 같은 apiFootballId는 처음 것만) */
+/**
+ * configs → 추적 선수·id 없는 선수(설정 순서, 같은 선수 id는 처음 것만). `provider`의 id 체계로 고른다(기본 API-Football —
+ * Highlightly는 highlightlyId · team-ids `hl`, D80).
+ */
 export function koreanPlayerTargets(
   players: KoreanPlayersFile,
   teamIds: TeamIdsFile,
+  provider: DetailProvider = "api-football",
 ): KoreanPlayerTargets {
   const tracked: TrackedPlayer[] = [];
   const unidentified: UnidentifiedPlayer[] = [];
   const seen = new Set<number>();
   for (const p of players) {
     if (!p.active) continue;
-    const teamAf = Object.hasOwn(teamIds, p.team)
-      ? (teamIds[p.team]?.af ?? null)
-      : null;
-    if (p.apiFootballId === null) {
+    const teamAf = teamIdOfSlug(teamIds, p.team, provider);
+    const id = playerIdFor(p, provider);
+    if (id === null) {
       unidentified.push({ slug: p.slug, nameEn: p.nameEn, teamAf });
       continue;
     }
-    if (seen.has(p.apiFootballId)) continue;
-    seen.add(p.apiFootballId);
-    tracked.push({ slug: p.slug, apiFootballId: p.apiFootballId, teamAf });
+    if (seen.has(id)) continue;
+    seen.add(id);
+    tracked.push(
+      provider === "api-football"
+        ? { slug: p.slug, apiFootballId: id, teamAf }
+        : { slug: p.slug, apiFootballId: id, teamAf, provider },
+    );
   }
   return { tracked, unidentified };
 }
@@ -345,7 +377,7 @@ export function toLedgerMatch(
     formation: detail.lineups[side]?.formation ?? null,
   });
   return {
-    id: afMatchKey(detail.matchId),
+    id: ledgerMatchKey(detail.provider, detail.matchId),
     leagueId: detail.leagueId,
     league: detail.leagueName,
     comp: detail.comp,
@@ -393,12 +425,12 @@ const DURATION_BY_LEDGER_STATUS = {
  * 형식이 아니면 null.
  */
 export function ledgerMatchToDetail(m: LedgerMatch): MatchDetail | null {
-  const matchId = afIdOfKey(m.id);
-  if (matchId === null) return null;
+  const key = parseLedgerMatchKey(m.id);
+  if (key === null) return null;
   const ft = { home: m.ft.home, away: m.ft.away };
   return {
-    provider: "api-football",
-    matchId,
+    provider: key.provider,
+    matchId: key.id,
     leagueId: m.leagueId,
     leagueName: m.league,
     comp: m.comp,
@@ -442,7 +474,8 @@ export interface LedgerEntriesBuild {
 
 const byKickoffKey = (a: LedgerMatch, b: LedgerMatch) =>
   Date.parse(a.kickoff) - Date.parse(b.kickoff) ||
-  (afIdOfKey(a.id) ?? 0) - (afIdOfKey(b.id) ?? 0);
+  ledgerKeyNumber(a.id) - ledgerKeyNumber(b.id) ||
+  (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 
 /** 경기 상세들 → 원장 항목(메모리 — dry·dev도 만든다) + 이름 대조(순수 함수) */
 export function buildLedgerEntries(
@@ -575,14 +608,24 @@ export interface LedgerRunFacts {
   skipped: { dates: readonly string[]; cause: string } | null;
   /** 이월 정리 규칙(킥오프 후 3일·재조회 3회)으로 버린 경기 */
   dropped: ReadonlyArray<{ id: number; kickoff: string }>;
-  /** 이번 쓰기 뒤 원장(읽은 달)에 있는 경기 id — dropped 공백을 지우는 근거 */
+  /** 이번 쓰기 뒤 원장(읽은 달)에 있는 이번 실행 프로바이더의 경기 id — dropped 공백을 지우는 근거 */
   stored: ReadonlySet<number>;
-  /** 추적 선수(활성 + apiFootballId) */
+  /** 추적 선수(활성 + 그 프로바이더 선수 id) */
   tracked: readonly TrackedPlayer[];
-  /** 이번 실행 **전에** 원장(읽은 달)에 있던 경기 — 새 선수의 시작일 계산 */
+  /**
+   * 이번 실행 **전에** 원장(읽은 달)에 있던 경기 — 새 선수의 시작일 계산. `id`(경기 키)가 있으면 선수와 같은 프로바이더 항목만
+   * 본다(팀·선수 id 체계가 다르다 — D80), 없으면 API-Football 항목으로 본다(옛 호출부)
+   */
   previous: ReadonlyArray<
-    Pick<LedgerMatch, "kickoff" | "home" | "away" | "korean">
+    Pick<LedgerMatch, "kickoff" | "home" | "away" | "korean"> & {
+      id?: string;
+    }
   >;
+  /**
+   * 받은 날짜로 날짜 단위 공백(date-query·degraded·skipped)을 지우는가 — 기본 true. 한국 선수 경기만 받는 백필은 그 날짜의 다른
+   * 경기를 원장에 넣지 않으므로 false(공백을 남긴다 — scripts/backfill-matches.ts)
+   */
+  healDateGaps?: boolean;
 }
 
 export interface LedgerMetaUpdate {
@@ -628,9 +671,15 @@ export function playerStartDate(input: {
     return maxDate(input.base, shiftDate(utcDate(input.now), 1));
   }
   let start = input.base;
+  const own = player.provider ?? "api-football";
   for (const m of input.previous) {
     const date = utcDate(m.kickoff);
     if (date < input.base) continue;
+    const provider =
+      m.id === undefined
+        ? "api-football"
+        : (parseLedgerMatchKey(m.id)?.provider ?? "api-football");
+    if (provider !== own) continue;
     const plays = m.home.id === player.teamAf || m.away.id === player.teamAf;
     const hasRow = m.korean.some((r) => r.player === player.apiFootballId);
     if (plays && !hasRow) start = maxDate(start, shiftDate(date, 1));
@@ -738,12 +787,13 @@ export function nextLedgerMeta(
     }
   }
 
-  // 빠진 날 — 지우기(받은 날짜 · 원장에 들어온 경기)
+  // 빠진 날 — 지우기(받은 날짜 · 원장에 들어온 경기). 한국 선수 경기만 받은 백필은 날짜 공백을 지우지 않는다(healDateGaps)
   const listedSet = new Set(listed);
+  const healing = facts.healDateGaps === false ? new Set<string>() : listedSet;
   const kept: LedgerGap[] = [];
   for (const gap of meta.gaps) {
     if (gap.reason !== "dropped") {
-      if (listedSet.has(gap.date)) update.gapsHealed.push(gap);
+      if (healing.has(gap.date)) update.gapsHealed.push(gap);
       else kept.push(gap);
       continue;
     }
@@ -894,8 +944,10 @@ export function isIncompleteLedgerMatch(
 
 /** 이번 실행이 읽은 원장(근처 달) */
 export interface LedgerWindowRead {
+  /** known·incomplete의 id 체계(경기 상세 프로바이더) — 다른 프로바이더 항목은 previous에만 든다(D80 ②) */
+  provider?: DetailProvider;
   months: Map<string, LedgerFileRead<MatchLedgerFile>>;
-  /** 원장에 있는 경기 id(완전·불완전 모두) — 빠진 날(dropped) 치유·저장 확인 기준 */
+  /** 원장에 있는 그 프로바이더 경기 id(완전·불완전 모두) — 빠진 날(dropped) 치유·저장 확인 기준 */
   known: Set<number>;
   /** 그중 불완전한 경기 id(`isIncompleteLedgerMatch`) */
   incomplete: Set<number>;
@@ -923,12 +975,17 @@ export function ledgerPlanKnown(
   return known;
 }
 
-/** 근처 달 원장 읽기 — 던지지 않는다(오류는 errors, 그 달은 known에서 빠지고 쓰지 않는다) */
+/**
+ * 근처 달 원장 읽기 — 던지지 않는다(오류는 errors, 그 달은 known에서 빠지고 쓰지 않는다). known·incomplete는 `provider` 체계
+ * 항목만(기본 API-Football), previous는 모든 항목.
+ */
 export async function readLedgerWindow(
   dataDir: string,
   months: readonly string[],
+  provider: DetailProvider = "api-football",
 ): Promise<LedgerWindowRead> {
   const read: LedgerWindowRead = {
+    provider,
     months: new Map(),
     known: new Set(),
     incomplete: new Set(),
@@ -945,7 +1002,7 @@ export async function readLedgerWindow(
       });
     }
     for (const m of r.value?.matches ?? []) {
-      const id = afIdOfKey(m.id);
+      const id = ledgerIdFor(m.id, provider);
       if (id !== null) {
         read.known.add(id);
         if (isIncompleteLedgerMatch(m)) read.incomplete.add(id);
@@ -1014,9 +1071,9 @@ export interface LedgerApplyResult {
 const errorText = (error: unknown) =>
   error instanceof Error ? (error.message.split("\n")[0] ?? "") : String(error);
 
-const idsOf = (entries: readonly LedgerMatch[]) =>
+const idsOf = (entries: readonly LedgerMatch[], provider: DetailProvider) =>
   entries.flatMap((e) => {
-    const id = afIdOfKey(e.id);
+    const id = ledgerIdFor(e.id, provider);
     return id === null ? [] : [id];
   });
 
@@ -1055,6 +1112,9 @@ export async function applyLedger(input: {
   facts: Omit<LedgerRunFacts, "stored" | "previous" | "now">;
   settle?: (r: LedgerSettleInput) => LedgerSettleOutput;
 }): Promise<LedgerApplyResult> {
+  // 이번 항목·known의 id 체계(경기 상세 프로바이더 — readLedgerWindow가 정한다, 기본 API-Football)
+  const provider: DetailProvider = input.read.provider ?? "api-football";
+  const idOf = (key: string) => ledgerIdFor(key, provider);
   const result: LedgerApplyResult = {
     state: "started",
     months: [],
@@ -1080,7 +1140,7 @@ export async function applyLedger(input: {
   const metaRead = await readLedgerMeta(input.dataDir);
   if (metaRead.error !== null) {
     result.state = "meta-unreadable";
-    result.unstored = idsOf(input.entries);
+    result.unstored = idsOf(input.entries, provider);
     result.errors.push(`data/${LEDGER_META_REL}: ${metaRead.error}`);
     settle();
     return result;
@@ -1109,7 +1169,7 @@ export async function applyLedger(input: {
         );
       } catch (error) {
         result.state = "meta-unwritable";
-        result.unstored = idsOf(input.entries);
+        result.unstored = idsOf(input.entries, provider);
         result.errors.push(`data/${LEDGER_META_REL}: ${errorText(error)}`);
         settle();
         return result;
@@ -1125,7 +1185,7 @@ export async function applyLedger(input: {
   const kept: LedgerMatch[] = [];
   for (const e of input.entries) {
     if (utcDate(e.kickoff) < since) {
-      const id = afIdOfKey(e.id);
+      const id = idOf(e.id);
       if (id !== null) result.beforeSince.push(id);
     } else {
       kept.push(e);
@@ -1141,13 +1201,13 @@ export async function applyLedger(input: {
   const reads = new Map(input.read.months);
   const stored = new Set(input.read.known);
   for (const [month, entries] of [...byMonth.entries()].sort()) {
-    const ids = idsOf(entries);
+    const ids = idsOf(entries, provider);
     let read = reads.get(month);
     if (read === undefined) {
       read = await readLedgerMonth(input.dataDir, month);
       reads.set(month, read);
       for (const m of read.value?.matches ?? []) {
-        const id = afIdOfKey(m.id);
+        const id = idOf(m.id);
         if (id !== null) stored.add(id);
       }
     }
@@ -1193,12 +1253,12 @@ export async function applyLedger(input: {
       const changedKeys = new Set([...update.added, ...update.replaced]);
       result.unstored.push(
         ...entries.flatMap((e) => {
-          const id = afIdOfKey(e.id);
+          const id = idOf(e.id);
           return id !== null && changedKeys.has(e.id) ? [id] : [];
         }),
       );
       for (const e of entries) {
-        const id = afIdOfKey(e.id);
+        const id = idOf(e.id);
         if (id !== null && !changedKeys.has(e.id)) stored.add(id);
       }
       result.months.push({
@@ -1215,7 +1275,7 @@ export async function applyLedger(input: {
   }
   const unstoredSet = new Set(result.unstored);
   result.incomplete = kept.flatMap((e) => {
-    const id = afIdOfKey(e.id);
+    const id = idOf(e.id);
     return id !== null && !unstoredSet.has(id) && isIncompleteLedgerMatch(e)
       ? [id]
       : [];

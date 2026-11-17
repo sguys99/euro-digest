@@ -1,0 +1,223 @@
+{
+  "data": [
+    {
+      "id": 1329230446,
+      "round": "Regular Season - 12",
+      "date": "2026-11-07T18:30:00.000Z",
+      "country": {
+        "code": "AT",
+        "name": "Austria"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 4",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 873910,
+        "name": "LASK Linz"
+      },
+      "homeTeam": {
+        "id": 875612,
+        "name": "Ried"
+      },
+      "league": {
+        "id": 186302,
+        "name": "Bundesliga",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1340507898,
+      "round": "Regular Season - 9",
+      "date": "2026-11-07T17:30:00.000Z",
+      "country": {
+        "code": "DE",
+        "name": "Germany"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "1 - 0",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 138646,
+        "name": "Werder Bremen"
+      },
+      "homeTeam": {
+        "id": 147156,
+        "name": "VfB Stuttgart"
+      },
+      "league": {
+        "id": 67162,
+        "name": "Bundesliga",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1329228744,
+      "round": "Regular Season - 12",
+      "date": "2026-11-07T16:00:00.000Z",
+      "country": {
+        "code": "AT",
+        "name": "Austria"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 1",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 3622640,
+        "name": "Grazer AK"
+      },
+      "homeTeam": {
+        "id": 1191333,
+        "name": "Austria Lustenau"
+      },
+      "league": {
+        "id": 186302,
+        "name": "Bundesliga",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1340513004,
+      "round": "Regular Season - 9",
+      "date": "2026-11-07T14:30:00.000Z",
+      "country": {
+        "code": "DE",
+        "name": "Germany"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 2",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 144603,
+        "name": "Eintracht Frankfurt"
+      },
+      "homeTeam": {
+        "id": 158219,
+        "name": "SC Paderborn 07"
+      },
+      "league": {
+        "id": 67162,
+        "name": "Bundesliga",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1340510451,
+      "round": "Regular Season - 9",
+      "date": "2026-11-07T14:30:00.000Z",
+      "country": {
+        "code": "DE",
+        "name": "Germany"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "1 - 2",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 134391,
+        "name": "Bayern Munich"
+      },
+      "homeTeam": {
+        "id": 140348,
+        "name": "FSV Mainz 05"
+      },
+      "league": {
+        "id": 67162,
+        "name": "Bundesliga",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1340507047,
+      "round": "Regular Season - 9",
+      "date": "2026-11-07T14:30:00.000Z",
+      "country": {
+        "code": "DE",
+        "name": "Germany"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "5 - 2",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 145454,
+        "name": "FC Augsburg"
+      },
+      "homeTeam": {
+        "id": 148007,
+        "name": "RB Leipzig"
+      },
+      "league": {
+        "id": 67162,
+        "name": "Bundesliga",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1340506196,
+      "round": "Regular Season - 9",
+      "date": "2026-11-07T14:30:00.000Z",
+      "country": {
+        "code": "DE",
+        "name": "Germany"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 1",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 1413444,
+        "name": "SV Elversberg"
+      },
+      "homeTeam": {
+        "id": 141199,
+        "name": "Borussia Dortmund"
+      },
+      "league": {
+        "id": 67162,
+        "name": "Bundesliga",
+        "season": 2026
+      }
+    }
+  ],
+  "plan": {
+    "tier": "BASIC",
+    "message": "All data available with current plan."
+  },
+  "pagination": {
+    "totalCount": 7,
+    "offset": 0,
+    "limit": 100
+  }
+}

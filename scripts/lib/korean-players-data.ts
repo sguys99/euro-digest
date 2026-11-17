@@ -53,7 +53,12 @@ import {
 } from "@/lib/schema";
 import { utcDate } from "@/lib/time";
 
-import { afToSlugOf } from "./team-files";
+import {
+  ledgerKeyProvider,
+  slugOfLedgerTeam,
+  type DetailProvider,
+} from "./detail-provider";
+import { afToSlugOf, hlToSlugOf } from "./team-files";
 import type { UnknownNameObservation } from "./unknown-names";
 
 /** 최근 경기 수(FR-62 — 스키마 상한과 같다) */
@@ -77,6 +82,8 @@ const COMP_ORDER: readonly CompId[] = [
 export interface LogContext {
   /** API-Football 팀 id → 팀 slug(team-ids.json) */
   afToSlug: ReadonlyMap<number, string>;
+  /** Highlightly 팀 id → 팀 slug(team-ids.json `hl` — `hl-` 원장 항목, D80). 없으면 그 항목 팀을 모른다 */
+  hlToSlug?: ReadonlyMap<number, string>;
   /** 대회 파일(있는 것만) — 경기 id 연결 */
   competitions: Partial<Record<CompId, Pick<CompetitionFile, "matches">>>;
 }
@@ -103,12 +110,12 @@ export function appearanceOf(
 
 /** 원장 경기 → 대회 파일 경기 id(같은 대회·두 팀 slug·킥오프 ±3시간, 후보 하나) — 없으면 null */
 export function fdMatchIdOf(
-  m: Pick<LedgerMatch, "comp" | "kickoff" | "home" | "away">,
+  m: Pick<LedgerMatch, "comp" | "kickoff" | "home" | "away"> & { id?: string },
   ctx: LogContext,
 ): string | null {
   if (m.comp === null) return null;
-  const home = ctx.afToSlug.get(m.home.id);
-  const away = ctx.afToSlug.get(m.away.id);
+  const home = slugOfLedgerTeam(ctx, m.id ?? "", m.home.id);
+  const away = slugOfLedgerTeam(ctx, m.id ?? "", m.away.id);
   if (home === undefined || away === undefined) return null;
   const at = Date.parse(m.kickoff);
   const found = (ctx.competitions[m.comp]?.matches ?? []).filter(
@@ -137,7 +144,10 @@ export function playerMatchLogOf(
       ? { leagueRaw: m.league.trim() }
       : {}),
     kickoff: m.kickoff,
-    opponent: { slug: ctx.afToSlug.get(opp.id) ?? null, name: opp.name },
+    opponent: {
+      slug: slugOfLedgerTeam(ctx, m.id, opp.id) ?? null,
+      name: opp.name,
+    },
     home: own === "home",
     result: {
       for: m.ft[own],
@@ -154,11 +164,12 @@ export function playerMatchLogOf(
   };
 }
 
-/** 원장 경기 최신순(킥오프 내림차순 → id 내림차순) */
+/** 원장 경기 최신순(킥오프 내림차순 → id 내림차순 — 접두사 3자 뒤 숫자, 같으면 키 문자열) */
 function newestFirst(a: LedgerMatch, b: LedgerMatch): number {
   return (
     Date.parse(b.kickoff) - Date.parse(a.kickoff) ||
-    Number(b.id.slice(3)) - Number(a.id.slice(3))
+    Number(b.id.slice(3)) - Number(a.id.slice(3)) ||
+    (b.id < a.id ? -1 : b.id > a.id ? 1 : 0)
   );
 }
 
@@ -170,17 +181,21 @@ export interface PlayerLedgerEntry {
 /**
  * 선수 1명의 원장 항목(최신순) — 선수 id 행만, 이번 시즌(원장 season이 같거나 없음)·집계 시작일(UTC 날짜) 이후.
  * 원장 항목은 since 이후만 들어 있지만 나중에 추적을 시작한 선수는 playerSince가 더 늦다.
+ * 항목 키의 체계(D80)로 선수 id를 고른다 — `af-` 항목은 `afId`(apiFootballId), `hl-` 항목은 `opts.hlId`(highlightlyId, 없으면 행 없음).
  */
 export function playerLedgerEntries(
   ledger: readonly LedgerMatch[],
-  afId: number,
-  opts: { season: number; since: string },
+  afId: number | null,
+  opts: { season: number; since: string; hlId?: number | null },
 ): PlayerLedgerEntry[] {
   const out: PlayerLedgerEntry[] = [];
   for (const m of [...ledger].sort(newestFirst)) {
     if (m.season !== null && m.season !== opts.season) continue;
     if (utcDate(m.kickoff) < opts.since) continue;
-    const row = m.korean.find((r) => r.player === afId);
+    const id =
+      ledgerKeyProvider(m.id) === "highlightly" ? (opts.hlId ?? null) : afId;
+    if (id === null) continue;
+    const row = m.korean.find((r) => r.player === id);
     if (row) out.push({ match: m, row });
   }
   return out;
@@ -299,7 +314,10 @@ export interface RecordedTeam {
   evidence: {
     matchId: string;
     kickoff: string;
+    /** 근거 팀의 프로바이더 팀 id(체계는 `provider` — 이름은 역사적) */
     teamAf: number;
+    /** id 체계 — 없으면 API-Football */
+    provider?: DetailProvider;
     teamName: string;
     /** 그 팀의 slug(team-ids에 없으면 null) */
     slug: string | null;
@@ -311,6 +329,7 @@ export function recordedTeamOf(
   entries: readonly PlayerLedgerEntry[],
   configTeam: string,
   afToSlug: ReadonlyMap<number, string>,
+  hlToSlug?: ReadonlyMap<number, string>,
 ): RecordedTeam {
   const hit = entries.find(
     (e) =>
@@ -320,13 +339,16 @@ export function recordedTeamOf(
   );
   if (!hit) return { team: configTeam, evidence: null };
   const side = hit.match[hit.row.side];
-  const slug = afToSlug.get(side.id) ?? null;
+  const slug =
+    slugOfLedgerTeam({ afToSlug, hlToSlug }, hit.match.id, side.id) ?? null;
+  const provider = ledgerKeyProvider(hit.match.id) ?? "api-football";
   return {
     team: slug ?? configTeam,
     evidence: {
       matchId: hit.match.id,
       kickoff: hit.match.kickoff,
       teamAf: side.id,
+      ...(provider === "highlightly" ? { provider } : {}),
       teamName: side.name,
       slug,
     },
@@ -344,16 +366,21 @@ export interface TeamMismatch {
   kickoff: string;
 }
 
-/** 이적 단서 판정 — 근거 팀이 설정 소속 af id와 다르면 단서(설정 소속 af를 모르면 slug로 비교) */
+/**
+ * 이적 단서 판정 — 근거 팀이 설정 소속 팀 id와 다르면 단서(설정 소속 id를 모르면 slug로 비교). 근거 항목의 체계(D80)로 비교한다 —
+ * `hl-` 근거는 `configTeamHl`(team-ids `hl`), 그 밖은 `configTeamAf`.
+ */
 export function teamMismatchOf(
   player: Pick<KoreanPlayer, "slug" | "team">,
   recorded: RecordedTeam,
   configTeamAf: number | null,
+  configTeamHl: number | null = null,
 ): TeamMismatch | null {
   const e = recorded.evidence;
   if (e === null) return null;
+  const configId = e.provider === "highlightly" ? configTeamHl : configTeamAf;
   const same =
-    configTeamAf !== null ? e.teamAf === configTeamAf : e.slug === player.team;
+    configId !== null ? e.teamAf === configId : e.slug === player.team;
   if (same) return null;
   return {
     player: player.slug,
@@ -469,7 +496,12 @@ export function buildKoreanPlayersFile(
   input: KoreanPlayersBuildInput,
 ): KoreanPlayersBuild {
   const afToSlug = afToSlugOf(input.teamIds);
-  const ctx: LogContext = { afToSlug, competitions: input.competitions };
+  const hlToSlug = hlToSlugOf(input.teamIds);
+  const ctx: LogContext = {
+    afToSlug,
+    hlToSlug,
+    competitions: input.competitions,
+  };
   const degraded = degradedDatesOf(input.meta);
   const prevBySlug = new Map(
     (input.previous?.players ?? []).map((r) => [r.slug, r] as const),
@@ -506,15 +538,16 @@ export function buildKoreanPlayersFile(
       out.frozen.push(p.slug);
       continue;
     }
-    const since =
-      p.apiFootballId !== null
-        ? (input.meta.playerSince[p.slug] ?? null)
-        : null;
+    // 기록 연결 = 경기 상세 프로바이더 선수 id 하나 이상(apiFootballId · highlightlyId — D80)
+    const hlId = p.highlightlyId ?? null;
+    const linked = p.apiFootballId !== null || hlId !== null;
+    const since = linked ? (input.meta.playerSince[p.slug] ?? null) : null;
     const entries =
-      p.apiFootballId !== null && since !== null
+      linked && since !== null
         ? playerLedgerEntries(input.ledger, p.apiFootballId, {
             season: input.meta.season,
             since,
+            hlId,
           })
         : [];
     const logs = entries.map((e) => playerMatchLogOf(e.match, e.row, ctx));
@@ -522,14 +555,19 @@ export function buildKoreanPlayersFile(
       if (log.opponent.slug === null) observe(log.opponent.name, "team");
       if (log.leagueRaw !== undefined) observe(log.leagueRaw, "competition");
     }
-    const recorded = recordedTeamOf(entries, p.team, afToSlug);
+    const recorded = recordedTeamOf(entries, p.team, afToSlug, hlToSlug);
     if (recorded.evidence !== null && recorded.evidence.slug === null) {
       out.unmappedTeams.push(p.slug);
     }
-    const configTeamAf = Object.hasOwn(input.teamIds, p.team)
-      ? (input.teamIds[p.team]?.af ?? null)
-      : null;
-    const mismatch = teamMismatchOf(p, recorded, configTeamAf);
+    const configEntry = Object.hasOwn(input.teamIds, p.team)
+      ? input.teamIds[p.team]
+      : undefined;
+    const mismatch = teamMismatchOf(
+      p,
+      recorded,
+      configEntry?.af ?? null,
+      configEntry?.hl ?? null,
+    );
     if (mismatch) out.teamMismatches.push(mismatch);
     const fallback =
       since !== null &&

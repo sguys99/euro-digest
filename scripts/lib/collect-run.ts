@@ -25,7 +25,11 @@
  *      한도가 따로)이고 각자 실패를 격리한다(scripts/lib/match-data.ts `isolateProvider`).
  *      - football-data = 전날(KST 창) 6개 대회 종료 경기 + 그 경기가 있는 대회의 현재 순위(최대 7요청, 단계 예산 150초 —
  *        providers/football-data.ts).
- *      - API-Football = 날짜 조회 D-1·D(UTC) → 대상 경기(6개 대회 + 한국 선수 소속팀 기타 대회) 상세를 브리핑 경기 먼저
+ *      - 경기 상세 프로바이더(PRD §15 D80 — 2026-11-17): `CollectDeps.matchDetailProvider`(진입점 MATCH_DETAIL_PROVIDER, 기본 highlightly)
+ *        하나만 부른다. Highlightly = 브리핑 날짜(UTC) × 6개 대회 목록 → 대상 경기 상세(+ 한국 선수 소속팀 경기 박스스코어)를 브리핑
+ *        경기 먼저, 라인업은 컷오프 뒤 → 날짜 조회에 없는 한국 선수 소속팀 최근 5경기 탐색(highlightly-stage.ts — 하루 ≤ 65회, 이월
+ *        data/cache/hl-pending.json, 원장 키 hl-<id>, 이슈 source:highlightly). 결과 형식은 아래 API-Football 단계와 같다(ApiFootballData).
+ *      - API-Football(MATCH_DETAIL_PROVIDER=api-football일 때만) = 날짜 조회 D-1·D(UTC) → 대상 경기(6개 대회 + 한국 선수 소속팀 기타 대회) 상세를 브리핑 경기 먼저
  *        (단계 예산 6분, 브리핑 컷오프 4분, 하루 ≤ 60회 우리 쪽 카운터 — api-football-stage.ts·api-football-plan.ts).
  *        미종료·미수신 경기는 data/cache/af-pending.json으로 이월한다(dry는 쓰지 않음). errors.plan·일 한도·그 밖의 errors는
  *        소스 이슈 사건(`source:api-football`)으로 사건 파일에 더한다(이슈는 collect.yml 다음 단계가 만든다).
@@ -137,6 +141,7 @@ import {
   type FeedItem,
   type LedgerKoreanRow,
   type LedgerMatch,
+  type TeamIdsFile,
   type NewsCard,
   type NewsFile,
   type RunEnv,
@@ -331,7 +336,6 @@ import {
   type ProviderOutcome,
 } from "./match-data";
 import {
-  afIdOfKey,
   applyLedger,
   buildLedgerEntries,
   isIncompleteLedgerMatch,
@@ -342,6 +346,7 @@ import {
   ledgerMonthsAround,
   ledgerPlanKnown,
   ledgerWriteMode,
+  readLedgerMeta,
   readLedgerMonth,
   readLedgerWindow,
   type KoreanNameCheck,
@@ -410,6 +415,23 @@ import {
   createApiFootballClient,
   type AfRateHeaders,
 } from "./providers/api-football";
+import { createHighlightlyClient } from "./providers/highlightly";
+import {
+  ledgerIdFor,
+  playerIdFor,
+  teamToSlugOf,
+  type DetailProvider,
+} from "./detail-provider";
+import {
+  buildHlTargetConfig,
+  highlightlyCallAllowance,
+  hlQueryDates,
+  resolveHighlightlyMaxCalls,
+} from "./highlightly-plan";
+import {
+  highlightlyIssuePayloads,
+  runHighlightlyStage,
+} from "./highlightly-stage";
 import {
   createFootballDataClient,
   fetchBriefFootballData,
@@ -587,6 +609,19 @@ export interface CollectDeps {
   /** API-Football 시계(ms) — 간격·단계 예산·브리핑 컷오프 계산(테스트 주입용). 기본 Date.now */
   apiFootballNow?: () => number;
   /**
+   * 경기 상세 프로바이더(PRD §15 D80) — 진입점(scripts/collect.ts)은 `MATCH_DETAIL_PROVIDER`(기본 highlightly)를 해석해 늘 넘긴다.
+   * 생략하면 API-Football(옛 테스트 주입 호환). 고른 프로바이더 하나만 부른다(정지된 API-Football을 매일 부르지 않게).
+   */
+  matchDetailProvider?: DetailProvider;
+  /** HIGHLIGHTLY_API_KEY — 없으면 Highlightly 단계를 건너뛴다(브리핑은 득점자 없이) */
+  highlightlyApiKey?: string;
+  /** HIGHLIGHTLY_MAX_CALLS 원문(선택, 실행당 호출 상한). 형식이 틀리면 Highlightly 단계만 실패 */
+  highlightlyMaxCalls?: string;
+  /** Highlightly 호출 간격·재시도 대기(테스트 주입용) — 기본 setTimeout */
+  highlightlySleep?: (ms: number) => Promise<void>;
+  /** Highlightly 시계(ms) — 간격·단계 예산·브리핑 컷오프 계산(테스트 주입용). 기본 Date.now */
+  highlightlyNow?: () => number;
+  /**
    * 브리핑 전용 설정(LLM_MODEL·DAILY_BUDGET_USD·MONTHLY_BUDGET_USD) 해석 — 브리핑 단계 안에서 부른다.
    * 값이 잘못돼 던져도 브리핑만 실패(partial)하고 뉴스 발행은 계속된다.
    */
@@ -756,17 +791,20 @@ export interface UnknownNamesOutcome {
 
 export type { SourceErrorType, SourceOutcome } from "./feed-collect";
 
-/** API-Football 단계 결과 (M1-48) */
+/**
+ * 경기 상세 단계 결과 (M1-48 · D80). **이름은 역사적이다** — API-Football 단계와 Highlightly 단계(D80)가 같은 형식을 낸다
+ * (결과를 담은 ProviderOutcome의 `provider`가 어느 쪽인지 정한다).
+ */
 export interface ApiFootballData {
   stage: AfStageResult;
   /** 이번 실행의 호출 허용량(우리 쪽 카운터) */
   allowance: AfCallAllowance;
-  /** 보낸 요청 수(재시도·실패 포함) — runs.json apiCalls.apiFootball */
+  /** 보낸 요청 수(재시도·실패 포함) — runs.json apiCalls.apiFootball · apiCalls.highlightly */
   calls: number;
   retries: number;
-  /** 마지막 응답의 레이트 리밋 헤더(참고 — 일 남은 수는 일관되지 않다) */
+  /** 마지막 응답의 레이트 리밋 헤더(참고 — 일 남은 수는 일관되지 않다. Highlightly는 분당 값이 없어 null) */
   rate: AfRateHeaders;
-  /** 활성 한국 선수 소속팀인데 team-ids.json `af`가 없는 팀 */
+  /** 활성 한국 선수 소속팀인데 team-ids.json `af`(Highlightly는 `hl`)가 없는 팀 */
   unmappedTeams: string[];
   /** 경기 기록 원장(M1-48b) — 항목·한국 선수 행·이름 후보(메모리)와 쓰기 결과 */
   ledger: LedgerOutcome;
@@ -821,7 +859,10 @@ export interface LedgerOutcome {
  */
 export interface MatchDataOutcome {
   footballData: ProviderOutcome<FootballDataBriefData>;
-  /** API-Football 경기 단건(M1-48) — 최종 결과(브리핑 뒤에 끝난 몫 포함) */
+  /**
+   * 경기 상세(M1-48 · D80) — 최종 결과(브리핑 뒤에 끝난 몫 포함). **이름은 역사적이다** — `provider`가 api-football 또는 highlightly
+   * (CollectDeps.matchDetailProvider로 고른 하나)
+   */
   apiFootball: ProviderOutcome<ApiFootballData>;
   /** 브리핑이 기다린 API-Football 몫(컷오프 시점) — 건너뛰거나 실패했으면 null */
   apiFootballBrief: AfBriefSnapshot | null;
@@ -2040,7 +2081,28 @@ async function saveSeen(
 
 /** 경기 데이터 단계가 호출 수를 더하는 곳(실행 기록 apiCalls) */
 interface ApiCallSink {
-  apiCalls: { footballData: number; apiFootball: number };
+  apiCalls: { footballData: number; apiFootball: number; highlightly: number };
+}
+
+/** 이번 실행의 경기 상세 프로바이더(deps 생략 = API-Football — CollectDeps.matchDetailProvider) */
+function detailProviderOf(
+  deps: Pick<CollectDeps, "matchDetailProvider">,
+): DetailProvider {
+  return deps.matchDetailProvider ?? "api-football";
+}
+
+/** 경기 상세 단계 시계(ms) — 프로바이더별 주입 시계 */
+function detailNowOf(
+  deps: Pick<
+    CollectDeps,
+    "matchDetailProvider" | "apiFootballNow" | "highlightlyNow"
+  >,
+): () => number {
+  return (
+    (detailProviderOf(deps) === "highlightly"
+      ? deps.highlightlyNow
+      : deps.apiFootballNow) ?? Date.now
+  );
 }
 
 /** 경기 데이터·브리핑 단계가 받는 실행 정보 — 발행일(KST)과 이번 실행의 브리핑 마감(UTC ISO, collect-deadlines.ts) */
@@ -2420,10 +2482,339 @@ async function runApiFootballProvider(
     sink.apiCalls.apiFootball += client.calls;
   }
 
+  return finishDetailStage(deps, ctx, signal, {
+    provider: "api-football",
+    stage,
+    allowance,
+    client: {
+      calls: client.calls,
+      retries: client.retries,
+      rate: client.rate,
+    },
+    unmappedTeams: target.unmappedTeams,
+    players,
+    season,
+    ledgerRead,
+    pendingRead,
+    elapsed,
+  });
+}
+
+/**
+ * 원장의 다른 프로바이더(API-Football `af-`) 항목과 같은 경기인가 — 같은 킥오프에 한쪽 팀 slug가 같으면 같은 경기로 본다(같은 팀이
+ * 같은 시각에 두 경기를 치르지 않는다). Highlightly 탐색·날짜 조회가 프로바이더 교체 전 경기(10-19~11-03)를 `hl-` 키로 한 번 더
+ * 넣지 않게 한다(D80 ② 공존). 팀 slug를 모르는 쪽은 비교하지 않는다.
+ */
+export function crossProviderDuplicate(input: {
+  previous: readonly Pick<LedgerMatch, "id" | "kickoff" | "home" | "away">[];
+  teamIds: TeamIdsFile;
+}): (fixture: {
+  kickoff: string;
+  home: { id: number };
+  away: { id: number };
+}) => boolean {
+  const afToSlug = teamToSlugOf(input.teamIds, "api-football");
+  const hlToSlug = teamToSlugOf(input.teamIds, "highlightly");
+  const keys = new Set<string>();
+  for (const m of input.previous) {
+    if (ledgerIdFor(m.id, "api-football") === null) continue;
+    const at = Date.parse(m.kickoff);
+    for (const side of [m.home, m.away]) {
+      const slug = afToSlug.get(side.id);
+      if (slug !== undefined) keys.add(`${at}|${slug}`);
+    }
+  }
+  return (fixture) => {
+    if (keys.size === 0) return false;
+    const at = Date.parse(fixture.kickoff);
+    return [fixture.home, fixture.away].some((side) => {
+      const slug = hlToSlug.get(side.id);
+      return slug !== undefined && keys.has(`${at}|${slug}`);
+    });
+  };
+}
+
+/**
+ * Highlightly 경기 상세 단계(PRD §15 D80) — 날짜 조회(대회별) → 대상 경기 상세·라인업(한국 선수 경기는 박스스코어, 브리핑 경기 먼저)
+ * → 한국 선수 소속팀 기타 대회 탐색 → 이월 목록(data/cache/hl-pending.json). 결과 형식은 API-Football 단계와 같다(원장·브리핑·이슈가
+ * 프로바이더를 가리지 않는다). 던지지 않는다. 호출 수는 `sink.apiCalls.highlightly`에 더한다(실행 기록 → 다음 실행의 일일 카운터).
+ */
+async function runHighlightlyProvider(
+  deps: CollectDeps,
+  ctx: StageCtx,
+  sink: ApiCallSink,
+  signal: AbortSignal,
+  onBrief: (snapshot: AfBriefSnapshot) => void,
+): Promise<ProviderOutcome<ApiFootballData>> {
+  const log = deps.logger;
+  const provider = "highlightly" as const;
+  const now = deps.highlightlyNow ?? Date.now;
+  const started = now();
+  const elapsed = () => Math.max(0, now() - started);
+  // 단계 예산 6분·브리핑 컷오프 4분 — API-Football과 같은 규칙(M1-47 — collect-deadlines.ts stageBudgets)
+  const budget = stageBudgets(msUntil(ctx.briefDeadline, deps.now()));
+  const skip = (
+    reason: "no-api-key" | "daily-cap" | "cancelled" | "dev-quiet-hours",
+  ) =>
+    ({
+      provider,
+      state: "skipped",
+      reason,
+      elapsedMs: elapsed(),
+    }) as const;
+  const apiKey = deps.highlightlyApiKey?.trim();
+  if (!apiKey) {
+    log.warn("collect.matchdata.skip", {
+      provider,
+      reason: "no-api-key",
+      missing: "HIGHLIGHTLY_API_KEY",
+    });
+    return skip("no-api-key");
+  }
+  // 개발 실행은 봇 수집 시간대(06:00~08:00 KST)에 부르지 않는다 — 일 한도를 봇과 나눠 쓴다(CLAUDE.md §6.4와 같은 규칙)
+  if (deps.env === "dev" && isDevQuietHours(nowUtcIso(deps.now()))) {
+    log.warn("collect.matchdata.skip", {
+      provider,
+      reason: "dev-quiet-hours",
+      kst: `${API_FOOTBALL_DEV_QUIET_HOURS.fromKst}~${API_FOOTBALL_DEV_QUIET_HOURS.toKst}`,
+    });
+    return skip("dev-quiet-hours");
+  }
+
+  let target: ReturnType<typeof buildHlTargetConfig>;
+  let perRunCap: number | null;
+  let players: KoreanPlayerTargets;
+  let season: number | null;
+  let teamIds: TeamIdsFile;
+  try {
+    perRunCap = resolveHighlightlyMaxCalls(deps.highlightlyMaxCalls);
+    const [competitions, koreanPlayers, ids] = await Promise.all([
+      readConfigFile(deps.rootDir, "competitions.json", CompetitionsFileSchema),
+      readConfigFile(
+        deps.rootDir,
+        "korean-players.json",
+        KoreanPlayersFileSchema,
+      ),
+      loadTeamIds(deps.rootDir),
+    ]);
+    teamIds = ids;
+    target = buildHlTargetConfig({ competitions, koreanPlayers, teamIds });
+    players = koreanPlayerTargets(koreanPlayers, teamIds, provider);
+    season =
+      competitions.length > 0
+        ? Math.max(...competitions.map((c) => c.season))
+        : null;
+  } catch (error) {
+    log.error("collect.matchdata.fail", {
+      provider,
+      stage: "setup",
+      errorType: "setup",
+      error: errorText(error),
+    });
+    return {
+      provider,
+      state: "failed",
+      errorType: "setup",
+      error: errorText(error),
+      elapsedMs: elapsed(),
+    };
+  }
+  if (target.unmappedTeams.length > 0) {
+    log.warn("collect.matchdata.korean-team-unmapped", {
+      provider,
+      teams: target.unmappedTeams,
+      file: "configs/team-ids.json",
+    });
+  }
+  if (target.leaguesMissing.length > 0) {
+    log.warn("collect.matchdata.league-unmapped", {
+      provider,
+      comps: target.leaguesMissing,
+      file: "configs/competitions.json",
+    });
+  }
+
+  // 우리 쪽 일일 카운터 — runs.json·runs-dev.json apiCalls.highlightly의 같은 UTC 날 합
+  const nowIso = nowUtcIso(deps.now());
+  const [prod, dev] = await Promise.all([
+    readRunsQuiet("prod", deps.dataDir),
+    readRunsQuiet("dev", deps.dataDir),
+  ]);
+  for (const [file, read] of [
+    ["runs.json", prod],
+    ["runs-dev.json", dev],
+  ] as const) {
+    if (read.error !== null) {
+      log.warn("collect.matchdata.runs-unreadable", {
+        provider,
+        file,
+        error: read.error,
+      });
+    }
+  }
+  const allowance = highlightlyCallAllowance({
+    env: deps.env,
+    prodRuns: prod.runs,
+    devRuns: dev.runs,
+    now: nowIso,
+    perRunCap,
+    runsUnreadable: prod.error !== null || dev.error !== null,
+  });
+  log.info("collect.matchdata.quota", {
+    provider,
+    env: deps.env,
+    utcDate: utcDate(nowIso),
+    cap: allowance.cap,
+    usedOwn: allowance.usedOwn,
+    usedTotal: allowance.usedTotal,
+    perRunCap: allowance.perRunCap,
+    remaining: allowance.remaining,
+    limitedBy: allowance.limitedBy,
+    runsUnreadable: allowance.runsUnreadable,
+  });
+  if (allowance.remaining <= 0) {
+    log.warn("collect.matchdata.skip", {
+      provider,
+      reason: "daily-cap",
+      limitedBy: allowance.limitedBy,
+    });
+    return skip("daily-cap");
+  }
+  if (signal.aborted) return skip("cancelled");
+
+  const pendingRead = await readAfPending(deps.dataDir, provider);
+  if (pendingRead.error !== null) {
+    log.warn("collect.matchdata.pending-unreadable", {
+      provider,
+      file: "data/cache/hl-pending.json",
+      error: pendingRead.error,
+    });
+  }
+  // 원장 — 근처 달의 hl-<id>는 이미 받은 경기(af- 항목은 previous에만 — 같은 경기 이중 저장 방지에 쓴다)
+  const ledgerRead = await readLedgerWindow(
+    deps.dataDir,
+    ledgerMonthsAround(nowIso),
+    provider,
+  );
+  for (const e of ledgerRead.errors) {
+    log.warn("collect.ledger.read-fail", {
+      provider,
+      file: e.file,
+      error: e.error,
+    });
+  }
+  const metaRead = await readLedgerMeta(deps.dataDir);
+  const briefWindow = briefInputWindow(ctx.publishDate);
+  const dates = hlQueryDates({ briefWindow, meta: metaRead.value });
+  const client = createHighlightlyClient({
+    apiKey,
+    fetch: deps.fetch,
+    sleep: deps.highlightlySleep,
+    now,
+    deadline: started + budget.apiFootballStageMs,
+    maxCalls: allowance.remaining,
+    signal,
+    onRetry: (event) =>
+      log.warn("collect.matchdata.retry", {
+        provider,
+        path: event.path,
+        retry: event.retry,
+        errorType: event.error.kind,
+        status: event.error.status,
+        delayMs: event.delayMs,
+      }),
+  });
+  let stage: AfStageResult;
+  try {
+    stage = await runHighlightlyStage({
+      client,
+      targets: target.targets,
+      leagues: target.leagues,
+      pending: pendingRead.fixtures,
+      known: ledgerPlanKnown(
+        ledgerRead,
+        new Set(pendingRead.fixtures.map((f) => f.id)),
+      ),
+      isDuplicate: crossProviderDuplicate({
+        previous: ledgerRead.previous,
+        teamIds,
+      }),
+      briefWindow,
+      dates,
+      now: deps.now,
+      clock: now,
+      briefCutoffAt: started + budget.apiFootballBriefCutoffMs,
+      onBriefReady: (snapshot) => {
+        log.info("collect.matchdata.brief-ready", {
+          provider,
+          reason: snapshot.reason,
+          details: snapshot.details.length,
+          missing: snapshot.missing.length,
+          apiCalls: client.calls,
+          elapsedMs: elapsed(),
+        });
+        onBrief(snapshot);
+      },
+    });
+  } finally {
+    sink.apiCalls.highlightly += client.calls;
+  }
+  return finishDetailStage(deps, ctx, signal, {
+    provider,
+    stage,
+    allowance,
+    client: {
+      calls: client.calls,
+      retries: client.retries,
+      rate: { minuteRemaining: null, ...client.rate },
+    },
+    unmappedTeams: target.unmappedTeams,
+    players,
+    season,
+    ledgerRead,
+    pendingRead,
+    elapsed,
+  });
+}
+
+/**
+ * 경기 상세 단계의 공통 마무리(API-Football · Highlightly — D80) — 실패 로그 → 원장(M1-48b) → 이월 목록 쓰기 → 완료 로그. 프로바이더마다
+ * 이월 파일이 다르다(af-pending.json · hl-pending.json). 던지지 않는다.
+ */
+async function finishDetailStage(
+  deps: CollectDeps,
+  ctx: StageCtx,
+  signal: AbortSignal,
+  input: {
+    provider: DetailProvider;
+    stage: AfStageResult;
+    allowance: AfCallAllowance;
+    client: { calls: number; retries: number; rate: AfRateHeaders };
+    unmappedTeams: string[];
+    players: KoreanPlayerTargets;
+    season: number | null;
+    ledgerRead: LedgerWindowRead;
+    pendingRead: Awaited<ReturnType<typeof readAfPending>>;
+    elapsed: () => number;
+  },
+): Promise<ProviderOutcome<ApiFootballData>> {
+  const log = deps.logger;
+  const {
+    provider,
+    allowance,
+    players,
+    season,
+    ledgerRead,
+    pendingRead,
+    elapsed,
+  } = input;
+  const client = input.client;
+  let stage = input.stage;
+  const target = { unmappedTeams: input.unmappedTeams };
   for (const d of stage.dates) {
     if (d.ok) continue;
     log.warn("collect.matchdata.date.fail", {
-      provider: "api-football",
+      provider,
       date: d.date,
       errorType: d.errorType ?? null,
       error: d.error ?? null,
@@ -2432,7 +2823,7 @@ async function runApiFootballProvider(
   if (stage.degraded) {
     // FR-65: 재시도 없이 경기 상세(득점자·라인업·한국 선수 기록)를 폴백으로 강등 — 실행·발행은 계속
     log.error("collect.matchdata.degraded", {
-      provider: "api-football",
+      provider,
       fallback: "FR-65",
       endpoint: stage.degraded.endpoint,
       error: stage.degraded.message,
@@ -2445,7 +2836,7 @@ async function runApiFootballProvider(
   for (const o of stage.outcomes) {
     if (o.result.kind !== "failed") continue;
     log.warn("collect.matchdata.fixture.fail", {
-      provider: "api-football",
+      provider,
       fixture: o.task.id,
       tier: o.task.tier,
       errorType: o.result.errorType,
@@ -2462,6 +2853,7 @@ async function runApiFootballProvider(
     season,
     pendingBefore: pendingRead.fixtures,
     cancelled: signal.aborted,
+    provider,
   });
   if (ledger.pending) {
     stage = {
@@ -2490,18 +2882,19 @@ async function runApiFootballProvider(
       written = await writeAfPending(
         deps.dataDir,
         buildAfPendingFile(stage.pending, nowUtcIso(deps.now())),
+        provider,
       );
     } catch (error) {
       // 이월 목록을 못 쓰면 다음 실행이 날짜 창 밖 미종료 경기를 놓칠 수 있다 — 수집·발행은 계속
       log.error("collect.matchdata.pending.fail", {
-        provider: "api-football",
-        file: afPendingPath(deps.dataDir),
+        provider,
+        file: afPendingPath(deps.dataDir, provider),
         error: errorText(error),
       });
     }
   }
   log.info("collect.matchdata.done", {
-    provider: "api-football",
+    provider,
     date: ctx.publishDate,
     dates: stage.dates.map((d) => `${d.date}:${d.ok ? d.listed : "fail"}`),
     targets: stage.counts.targets,
@@ -2525,7 +2918,7 @@ async function runApiFootballProvider(
     elapsedMs: elapsed(),
   });
   return {
-    provider: "api-football",
+    provider,
     state: "done",
     data: {
       stage,
@@ -2596,16 +2989,19 @@ async function runLedgerStep(
     season: number | null;
     pendingBefore: readonly AfPendingEntry[];
     cancelled: boolean;
+    /** 경기 상세 프로바이더(원장 키 af-·hl- — D80). 없으면 API-Football */
+    provider?: DetailProvider;
   },
 ): Promise<LedgerOutcome> {
   const log = deps.logger;
+  const provider = ctx.provider ?? "api-football";
   const build = buildLedgerEntries(ctx.stage.details, ctx.players);
   const slugById = new Map(
     ctx.players.tracked.map((p) => [p.apiFootballId, p.slug] as const),
   );
   const korean: KoreanRowView[] = build.entries.flatMap((e) =>
     e.korean.map((r) => ({
-      matchId: afIdOfKey(e.id) ?? 0,
+      matchId: ledgerIdFor(e.id, provider) ?? 0,
       player: slugById.get(r.player) ?? String(r.player),
       status: r.status,
       minutes: r.minutes,
@@ -2719,7 +3115,7 @@ async function runLedgerStep(
     // 방어선 — applyLedger는 던지지 않는다. 여기 오면 원장 쓰기 전체를 실패로 남기고 받은 경기를 이월에 다시 넣는다
     log.error("collect.ledger.fail", { errors: [errorText(error)] });
     const all = build.entries.flatMap((e) => {
-      const id = afIdOfKey(e.id);
+      const id = ledgerIdFor(e.id, provider);
       return id === null ? [] : [id];
     });
     outcome.applied = {
@@ -2738,7 +3134,7 @@ async function runLedgerStep(
     log[outcome.requeued.length > 0 ? "warn" : "info"](
       "collect.ledger.requeue",
       {
-        provider: "api-football",
+        provider,
         unstored: outcome.requeued,
         incomplete: outcome.incomplete,
         droppedByRule: (outcome.pending?.dropped ?? []).map(
@@ -2772,7 +3168,12 @@ async function runLedgerForUnfinishedStage(
   if (mode !== "write") return null;
   const log = deps.logger;
   const nowIso = nowUtcIso(deps.now());
-  const dates = afQueryDates(nowIso, briefInputWindow(ctx.publishDate));
+  const window = briefInputWindow(ctx.publishDate);
+  // 조회했어야 할 날짜 — API-Football D-1·D, Highlightly는 브리핑 날짜(highlightly-plan.ts hlQueryDates — 전날 공백은 이미 남아 있다)
+  const dates =
+    af.provider === "highlightly"
+      ? [utcDate(window.start)]
+      : afQueryDates(nowIso, window);
   const outcome: LedgerOutcome = {
     mode,
     entries: [],
@@ -2816,7 +3217,12 @@ async function pairMatchData(
   if (fd.state !== "done" || af.state !== "done") return null;
   const log = deps.logger;
   try {
-    const index = buildTeamIdIndex(await loadTeamIds(deps.rootDir));
+    const detailProvider =
+      af.provider === "highlightly" ? "highlightly" : "api-football";
+    const index = buildTeamIdIndex(
+      await loadTeamIds(deps.rootDir),
+      detailProvider,
+    );
     const result = linkMatchDetails(
       fd.data.results,
       af.data.stage.details,
@@ -2845,6 +3251,7 @@ async function pairMatchData(
     // D37 — 강한 증거로 자동 연결한 팀 쌍. configs/team-ids.json은 고치지 않는다(사람이 모아서 옮긴다 — 운영 리포트 M5-09 후보)
     for (const a of result.autoLinked) {
       log.info("collect.teamids.auto-link", {
+        provider: detailProvider,
         kind: a.kind,
         slug: a.slug,
         fd: `${a.fd.name}(${a.fd.id})`,
@@ -2858,6 +3265,7 @@ async function pairMatchData(
     );
     for (const c of result.report.candidates) {
       log.info("collect.teamids.candidate", {
+        provider: detailProvider,
         kind: c.kind,
         slug: c.slug,
         fd: `${c.fd.name}(${c.fd.id})`,
@@ -2868,6 +3276,7 @@ async function pairMatchData(
     }
     for (const c of result.report.conflicts) {
       log.warn("collect.teamids.conflict", {
+        provider: detailProvider,
         kind: c.kind,
         fd: `${c.fd.name}(${c.fd.id})`,
         af: `${c.af.name}(${c.af.id})`,
@@ -2915,12 +3324,20 @@ function startMatchDataStage(
   const apiFootballBrief = new Promise<AfBriefSnapshot | null>((resolve) => {
     resolveBrief = resolve;
   });
+  // 경기 상세 프로바이더 하나만 부른다(D80 — 기본 Highlightly, API-Football로 되돌릴 수 있다)
+  const detailProvider = detailProviderOf(deps);
   const apiFootball = isolateProvider(
-    "api-football",
+    detailProvider,
     () =>
-      runApiFootballProvider(deps, ctx, sink, signal, (s) => resolveBrief(s)),
-    deps.apiFootballNow ?? Date.now,
-  ).finally(() => resolveBrief(null)); // 건너뜀·실패·예상 밖 예외 — 브리핑은 API-Football 몫 없이 진행
+      detailProvider === "highlightly"
+        ? runHighlightlyProvider(deps, ctx, sink, signal, (s) =>
+            resolveBrief(s),
+          )
+        : runApiFootballProvider(deps, ctx, sink, signal, (s) =>
+            resolveBrief(s),
+          ),
+    detailNowOf(deps),
+  ).finally(() => resolveBrief(null)); // 건너뜀·실패·예상 밖 예외 — 브리핑은 상세 몫 없이 진행
 
   // football-data가 끝나지 않았으면(실패·건너뜀) 브리핑은 생략되므로 API-Football 몫을 기다리지 않는다
   const briefView = footballData.then(async (fd) => ({
@@ -2950,7 +3367,7 @@ function startMatchDataStage(
       return outcome;
     },
   );
-  const afNow = deps.apiFootballNow ?? Date.now;
+  const afNow = detailNowOf(deps);
   return {
     briefView,
     done,
@@ -2983,6 +3400,8 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
     lines.push(`football-data: 건너뜀(${fd.reason})`);
   }
   const af = outcome.apiFootball;
+  const label = af.provider;
+  const short = af.provider === "highlightly" ? "hl" : "af";
   if (af.state === "done") {
     const { stage, allowance } = af.data;
     const kinds = stage.outcomes.reduce<Record<string, number>>((acc, o) => {
@@ -2990,7 +3409,7 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
       return acc;
     }, {});
     lines.push(
-      `api-football: 날짜 ${stage.dates.map((d) => `${d.date} ${d.ok ? `${d.listed}경기` : `실패(${d.errorType})`}`).join(" · ")} → 대상 ${stage.counts.targets}경기(기타 대회 ${stage.counts.koreanOther} · 친선 제외 ${stage.counts.friendly}) · 요청 계획 brief ${stage.planned.brief}/window ${stage.planned.window}/requery ${stage.planned.requery} · 결과 ${
+      `${label}: 날짜 ${stage.dates.map((d) => `${d.date} ${d.ok ? `${d.listed}경기` : `실패(${d.errorType})`}`).join(" · ")} → 대상 ${stage.counts.targets}경기(기타 대회 ${stage.counts.koreanOther} · 친선 제외 ${stage.counts.friendly}) · 요청 계획 brief ${stage.planned.brief}/window ${stage.planned.window}/requery ${stage.planned.requery} · 결과 ${
         Object.entries(kinds)
           .map(([k, n]) => `${k} ${n}`)
           .join(", ") || "없음"
@@ -3013,16 +3432,16 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
         ? ` (PK ${d.score.pens.home}-${d.score.pens.away})`
         : "";
       lines.push(
-        `  · af ${d.matchId} ${d.comp ?? `league ${d.leagueId}`} ${d.home.name}(${d.home.id}) ${d.score.ft.home}-${d.score.ft.away} ${d.away.name}(${d.away.id})${pens} [${d.status}] ${d.lineups.home?.formation ?? "?"}/${d.lineups.away?.formation ?? "?"}${d.goalsComplete ? "" : " [득점 불완전]"} — ${scorers || "득점 없음"}`,
+        `  · ${short} ${d.matchId} ${d.comp ?? `league ${d.leagueId}`} ${d.home.name}(${d.home.id}) ${d.score.ft.home}-${d.score.ft.away} ${d.away.name}(${d.away.id})${pens} [${d.status}] ${d.lineups.home?.formation ?? "?"}/${d.lineups.away?.formation ?? "?"}${d.goalsComplete ? "" : " [득점 불완전]"} — ${scorers || "득점 없음"}`,
       );
     }
     lines.push(
-      `  [dry] data/cache/af-pending.json — 쓰지 않음${af.data.pendingFile.changed ? " (변경 있음)" : " (변경 없음)"}\n${serializeAfPending(buildAfPendingFile(stage.pending, "1970-01-01T00:00:00.000Z")).trimEnd()}`,
+      `  [dry] data/cache/${short}-pending.json — 쓰지 않음${af.data.pendingFile.changed ? " (변경 있음)" : " (변경 없음)"}\n${serializeAfPending(buildAfPendingFile(stage.pending, "1970-01-01T00:00:00.000Z")).trimEnd()}`,
     );
   } else if (af.state === "failed") {
-    lines.push(`api-football: 실패(${af.errorType}) ${af.error}`);
+    lines.push(`${label}: 실패(${af.errorType}) ${af.error}`);
   } else {
-    lines.push(`api-football: 건너뜀(${af.reason})`);
+    lines.push(`${label}: 건너뜀(${af.reason})`);
   }
   const pairing = outcome.pairing;
   if (pairing) {
@@ -3055,12 +3474,12 @@ export function formatMatchDataSummary(outcome: MatchDataOutcome): string {
     );
     for (const r of ledger.korean) {
       lines.push(
-        `  · af ${r.matchId} ${r.player} ${r.status}${r.minutes !== null ? ` ${r.minutes}분` : ""} ${r.goals}골 ${r.assists}도움`,
+        `  · ${short} ${r.matchId} ${r.player} ${r.status}${r.minutes !== null ? ` ${r.minutes}분` : ""} ${r.goals}골 ${r.assists}도움`,
       );
     }
     for (const c of ledger.nameChecks) {
       lines.push(
-        `  이름 대조(${c.player}, id 없음): af ${c.matchId} ${c.side} — ${c.lineup ? (c.candidates.length > 0 ? c.candidates.map((x) => `${x.name}(${x.id ?? "?"}) ${x.basis} ${x.status}`).join(", ") : "후보 없음") : "라인업 없음"}`,
+        `  이름 대조(${c.player}, id 없음): ${short} ${c.matchId} ${c.side} — ${c.lineup ? (c.candidates.length > 0 ? c.candidates.map((x) => `${x.name}(${x.id ?? "?"}) ${x.basis} ${x.status}`).join(", ") : "후보 없음") : "라인업 없음"}`,
       );
     }
   }
@@ -3129,7 +3548,11 @@ async function loadBriefPrev(
 async function loadBriefTeamIndex(deps: CollectDeps): Promise<BriefTeamIndex> {
   try {
     return {
-      index: buildTeamIdIndex(await loadTeamIds(deps.rootDir)),
+      // 상세 쪽 열은 이번 실행의 경기 상세 프로바이더(D80 — Highlightly는 team-ids `hl`)
+      index: buildTeamIdIndex(
+        await loadTeamIds(deps.rootDir),
+        detailProviderOf(deps),
+      ),
       autoLink: true,
     };
   } catch (error) {
@@ -3212,11 +3635,13 @@ async function loadBriefKoreanSource(
       ),
       loadTeamIds(deps.rootDir),
     ]);
-    const { tracked } = koreanPlayerTargets(players, teamIds);
+    // 상세·원장 행의 선수 id 체계 = 이번 실행의 경기 상세 프로바이더(D80 — 상세는 같은 체계 항목만 들어온다, readBriefLedgerDetails)
+    const provider = detailProviderOf(deps);
+    const { tracked } = koreanPlayerTargets(players, teamIds, provider);
     const names = new Map<number, string>();
     for (const p of players) {
-      if (p.active && p.apiFootballId !== null)
-        names.set(p.apiFootballId, p.nameEn);
+      const id = playerIdFor(p, provider);
+      if (p.active && id !== null) names.set(id, p.nameEn);
     }
     const ledgerRows = new Map<number, LedgerKoreanRow[]>();
     const months = [
@@ -3228,7 +3653,7 @@ async function loadBriefKoreanSource(
     for (const month of months) {
       const read = await readLedgerMonth(deps.dataDir, month);
       for (const m of read.value?.matches ?? []) {
-        const id = afIdOfKey(m.id);
+        const id = ledgerIdFor(m.id, provider);
         if (id !== null) ledgerRows.set(id, m.korean);
       }
     }
@@ -3269,6 +3694,8 @@ async function readBriefLedgerDetails(
     ]),
   ];
   const details: MatchDetail[] = [];
+  // 이번 실행의 상세 프로바이더 항목만(D80 — 대응표 열·선수 id 체계가 하나여야 football-data와 짝짓는다)
+  const provider = detailProviderOf(deps);
   for (const month of months) {
     const read = await readLedgerMonth(deps.dataDir, month);
     if (read.error !== null) {
@@ -3282,7 +3709,7 @@ async function readBriefLedgerDetails(
       const kickoff = Date.parse(m.kickoff);
       if (m.comp === null || kickoff < start || kickoff >= end) continue;
       const detail = ledgerMatchToDetail(m);
-      if (detail) details.push(detail);
+      if (detail && detail.provider === provider) details.push(detail);
     }
   }
   return details;
@@ -4730,7 +5157,9 @@ async function reportMatchDataIssues(
   }
   const payloads = [
     ...(af?.state === "done" && af.data.stage.issues.length > 0
-      ? apiFootballIssuePayloads(af.data.stage.issues, issueCtx)
+      ? af.provider === "highlightly"
+        ? highlightlyIssuePayloads(af.data.stage.issues, issueCtx)
+        : apiFootballIssuePayloads(af.data.stage.issues, issueCtx)
       : []),
     ...(ctx.newsOk ? stageIssues : []),
   ];
@@ -4820,7 +5249,10 @@ export interface RunStatusInput {
  */
 export type PartialIssueRoute =
   | { kind: "pipeline-partial"; reason: PipelinePartialReason }
-  | { kind: "source-broken"; source: "feed" | "football-data" | "api-football" }
+  | {
+      kind: "source-broken";
+      source: "feed" | "football-data" | "api-football" | "highlightly";
+    }
   | { kind: "none"; why: string };
 
 export interface PartialCondition {
@@ -4829,10 +5261,26 @@ export interface PartialCondition {
   holds: (input: RunStatusInput) => boolean;
 }
 
-/** API-Football 단계 결과 — 끝난(done) 경우의 단계 결과 */
-function afStageOf(input: RunStatusInput): AfStageResult | null {
+/** 경기 상세 단계 결과 — 끝난(done) 경우의 단계 결과(`provider`를 주면 그 프로바이더일 때만 — D80) */
+function afStageOf(
+  input: RunStatusInput,
+  provider: DetailProvider = "api-football",
+): AfStageResult | null {
   const af = input.matchData?.apiFootball;
-  return af?.state === "done" ? af.data.stage : null;
+  return af?.state === "done" && af.provider === provider
+    ? af.data.stage
+    : null;
+}
+
+/** 경기 상세 단계가 받지 못한 것이 있는가(강등 제외 — 날짜 조회 실패·멈춤·요청 실패) */
+function detailStageIncomplete(stage: AfStageResult | null): boolean {
+  return (
+    stage !== null &&
+    stage.degraded === null &&
+    (stage.dates.some((d) => !d.ok) ||
+      (stage.stoppedBy !== null && stage.stoppedBy !== "cancelled") ||
+      stage.outcomes.some((o) => o.result.kind === "failed"))
+  );
 }
 
 /**
@@ -4941,7 +5389,9 @@ export const RUN_PARTIAL_CONDITIONS: readonly PartialCondition[] = [
     // API-Football 단계 예상 밖 실패(isolateProvider)
     id: "api-football-failed",
     route: { kind: "source-broken", source: "api-football" },
-    holds: ({ matchData }) => matchData?.apiFootball?.state === "failed",
+    holds: ({ matchData }) =>
+      matchData?.apiFootball?.provider === "api-football" &&
+      matchData.apiFootball.state === "failed",
   },
   {
     id: "api-football-daily-cap",
@@ -4951,7 +5401,11 @@ export const RUN_PARTIAL_CONDITIONS: readonly PartialCondition[] = [
     },
     holds: ({ matchData }) => {
       const af = matchData?.apiFootball;
-      return af?.state === "skipped" && af.reason === "daily-cap";
+      return (
+        af?.provider === "api-football" &&
+        af.state === "skipped" &&
+        af.reason === "daily-cap"
+      );
     },
   },
   {
@@ -4966,16 +5420,45 @@ export const RUN_PARTIAL_CONDITIONS: readonly PartialCondition[] = [
       kind: "none",
       why: "날짜 조회 실패·단계 멈춤(시간 예산·호출 상한·일 한도·연속 실패)·경기 단건 실패 — 받지 못한 경기는 이월로 다음 실행이 다시 받는다. 응답 errors(일 한도·키·분당 초과)는 api-football-stage.ts가 source:api-football로 따로 낸다",
     },
-    holds: (input) => {
-      const stage = afStageOf(input);
+    holds: (input) => detailStageIncomplete(afStageOf(input)),
+  },
+  {
+    // Highlightly 단계 예상 밖 실패(isolateProvider — D80)
+    id: "highlightly-failed",
+    route: { kind: "source-broken", source: "highlightly" },
+    holds: ({ matchData }) =>
+      matchData?.apiFootball?.provider === "highlightly" &&
+      matchData.apiFootball.state === "failed",
+  },
+  {
+    id: "highlightly-daily-cap",
+    route: {
+      kind: "none",
+      why: "우리 쪽 일일 호출 상한(봇 65·개발 30 — D80 ③)에 닿아 건너뜀 — 의도된 멈춤, 받지 못한 경기는 이월 목록으로 다음 실행이 받는다",
+    },
+    holds: ({ matchData }) => {
+      const hl = matchData?.apiFootball;
       return (
-        stage !== null &&
-        stage.degraded === null &&
-        (stage.dates.some((d) => !d.ok) ||
-          (stage.stoppedBy !== null && stage.stoppedBy !== "cancelled") ||
-          stage.outcomes.some((o) => o.result.kind === "failed"))
+        hl?.provider === "highlightly" &&
+        hl.state === "skipped" &&
+        hl.reason === "daily-cap"
       );
     },
+  },
+  {
+    // plan.message 제한 → FR-65 강등 — highlightly-stage.ts 응답 사건(plan)이 source:highlightly로 낸다
+    id: "highlightly-degraded",
+    route: { kind: "source-broken", source: "highlightly" },
+    holds: (input) =>
+      (afStageOf(input, "highlightly")?.degraded ?? null) !== null,
+  },
+  {
+    id: "highlightly-incomplete",
+    route: {
+      kind: "none",
+      why: "날짜 조회 실패·단계 멈춤(시간 예산·호출 상한·일 한도·연속 실패)·상세 요청 실패 — 받지 못한 경기는 이월로 다음 실행이 다시 받는다(지난 날짜도 열린다). 응답 사건(일 한도·키·429 연속)은 highlightly-stage.ts가 source:highlightly로 따로 낸다",
+    },
+    holds: (input) => detailStageIncomplete(afStageOf(input, "highlightly")),
   },
   {
     // 원장 쓰기 오류(달 파일·메타) — 받은 경기는 이월 목록에 다시 넣었지만 실행 상태에 드러낸다(M1-48b)
@@ -5080,7 +5563,9 @@ export function shouldRecordRun(input: {
 }): boolean {
   if (
     input.apiCalls &&
-    (input.apiCalls.footballData > 0 || input.apiCalls.apiFootball > 0)
+    (input.apiCalls.footballData > 0 ||
+      input.apiCalls.apiFootball > 0 ||
+      (input.apiCalls.highlightly ?? 0) > 0)
   ) {
     return true;
   }
@@ -5192,7 +5677,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
   // 시작하지 않는다). 뉴스가 실패하면 취소 신호로 새 요청을 멈춘다.
   const sink = {
     results: [] as LlmResult[],
-    apiCalls: { footballData: 0, apiFootball: 0 },
+    apiCalls: { footballData: 0, apiFootball: 0, highlightly: 0 },
     model: null as string | null,
     unbilled: [] as Array<{
       inputTokens: number;
@@ -5537,6 +6022,10 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
         apiCalls: {
           footballData: sink.apiCalls.footballData,
           apiFootball: sink.apiCalls.apiFootball,
+          // Highlightly(D80) — 부른 실행만 기록한다(없음 = 0회, run.ts)
+          ...(sink.apiCalls.highlightly > 0
+            ? { highlightly: sink.apiCalls.highlightly }
+            : {}),
         },
         sources,
         dataDir: deps.dataDir,
@@ -5607,6 +6096,7 @@ export async function runCollect(deps: CollectDeps): Promise<CollectOutcome> {
           : `failed:${transfers.errorType}`,
     apiCalls: sink.apiCalls.footballData,
     apiFootballCalls: sink.apiCalls.apiFootball,
+    highlightlyCalls: sink.apiCalls.highlightly,
     llmCalls: sink.results.length,
     healthEvents: health?.reports.length ?? null,
     exitCode,

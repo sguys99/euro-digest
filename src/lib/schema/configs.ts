@@ -54,6 +54,9 @@ export const CompetitionConfigSchema = z
     shortKo: z.string().min(1).max(6), // 탭·칩용 짧은 이름: "EPL", "라리가", "분데스"
     footballDataCode: z.enum(["PL", "PD", "SA", "BL1", "FL1", "CL"]), // football-data.org 대회 코드
     apiFootballLeagueId: z.number().int().positive(), // API-Football league 파라미터
+    // Highlightly league id(`/matches?leagueId=` — PRD §15 D80, 2026-11-17 추가). leagueName만 쓰면 나라를 가리지 않아(분데스리가 →
+    // 독일 + 오스트리아) id로 거른다. 없으면 그 대회는 Highlightly 날짜 조회를 하지 않는다(경고)
+    highlightlyLeagueId: z.number().int().positive().optional(),
     season: SeasonSchema, // 시즌 시작 연도 — 두 API의 season 파라미터
     startDate: IsoDateSchema, // 시즌 첫 경기일 — 비시즌 빈 상태(DR-07) 판단
     endDate: IsoDateSchema, // 시즌 마지막 경기일
@@ -319,25 +322,27 @@ export const TeamIdEntrySchema = z
   .strictObject({
     fd: ProviderTeamIdSchema, // football-data.org 팀 id(순위·경기 결과 — 브리핑·대회 페이지)
     af: ProviderTeamIdSchema, // API-Football 팀 id(경기 단건 — 득점자·라인업·한국 선수 기록, D27)
+    // Highlightly 팀 id(경기 상세 — PRD §15 D80, 2026-11-17 추가). 없음·null = 모름(그 팀 경기는 Highlightly 원장 항목에서 slug를 모른다)
+    hl: ProviderTeamIdSchema.optional(),
     note: z.string().min(1).optional(), // 근거(짝을 찾은 경기 id 등)·확인 메모
   })
-  .refine((e) => e.fd !== null || e.af !== null, {
-    error: "fd·af가 둘 다 null — 둘 중 하나는 있어야 함",
+  .refine((e) => e.fd !== null || e.af !== null || (e.hl ?? null) !== null, {
+    error: "fd·af·hl이 모두 null — 하나는 있어야 함",
   });
 export type TeamIdEntry = z.infer<typeof TeamIdEntrySchema>;
 
 /**
- * `configs/team-ids.json` — 팀 slug → `{ fd, af }` (D33). 파일 안에서 fd·af 각각 중복 금지(null은 제외).
+ * `configs/team-ids.json` — 팀 slug → `{ fd, af, hl? }` (D33 · D80). 파일 안에서 fd·af·hl 각각 중복 금지(null은 제외).
  * 초안은 scripts/build-team-ids.ts가 M0 fixtures의 경기 쌍과 한국 선수 소속팀으로 만들고 사람이 확인해 커밋한다.
  * 나머지 팀은 실행 때 짝짓기 후보(scripts/lib/team-ids.ts)를 운영 리포트로 받아 사람이 더한다.
  */
 export const TeamIdsFileSchema = z
   .record(SlugSchema, TeamIdEntrySchema)
   .superRefine((file, ctx) => {
-    for (const key of ["fd", "af"] as const) {
+    for (const key of ["fd", "af", "hl"] as const) {
       const firstSlug = new Map<number, string>();
       for (const [slug, entry] of Object.entries(file)) {
-        const id = entry[key];
+        const id = entry[key] ?? null;
         if (id === null) continue;
         const first = firstSlug.get(id);
         if (first === undefined) {

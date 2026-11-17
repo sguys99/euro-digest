@@ -51,6 +51,7 @@ import {
   type UtcRange,
 } from "@/lib/time";
 
+import type { DetailProvider } from "./detail-provider";
 import {
   AF_FINISHED_STATUSES,
   AF_VOID_STATUSES,
@@ -95,6 +96,16 @@ export const AF_PENDING_MAX_REQUERIES = 3;
 
 /** data/ 기준 이월 파일 경로 */
 export const AF_PENDING_REL_PATH = path.join("cache", "af-pending.json");
+
+/**
+ * 경기 상세 프로바이더별 이월 파일(data/ 기준) — 같은 형식(src/lib/schema/cache.ts), 경기 id 체계가 달라 파일을 나눈다(PRD §15 D80 —
+ * Highlightly는 `cache/hl-pending.json`, scripts/lib/highlightly-plan.ts)
+ */
+export const PENDING_REL_PATHS: Readonly<Record<DetailProvider, string>> =
+  Object.freeze({
+    "api-football": AF_PENDING_REL_PATH,
+    highlightly: path.join("cache", "hl-pending.json"),
+  });
 
 // ─── 대상 선별 ───────────────────────────────────────────────────────────
 
@@ -658,8 +669,11 @@ export function requeueAfPending(input: {
 
 // ─── 이월 파일 ───────────────────────────────────────────────────────────
 
-export function afPendingPath(dataDir: string): string {
-  return path.join(dataDir, AF_PENDING_REL_PATH);
+export function afPendingPath(
+  dataDir: string,
+  provider: DetailProvider = "api-football",
+): string {
+  return path.join(dataDir, PENDING_REL_PATHS[provider]);
 }
 
 export interface AfPendingRead {
@@ -670,11 +684,14 @@ export interface AfPendingRead {
   error: string | null;
 }
 
-/** `data/cache/af-pending.json` 읽기 — 없으면 빈 목록, 형식 오류도 던지지 않고 오류와 빈 목록 */
-export async function readAfPending(dataDir: string): Promise<AfPendingRead> {
+/** `data/cache/af-pending.json`(Highlightly는 hl-pending.json) 읽기 — 없으면 빈 목록, 형식 오류도 던지지 않고 오류와 빈 목록 */
+export async function readAfPending(
+  dataDir: string,
+  provider: DetailProvider = "api-football",
+): Promise<AfPendingRead> {
   let text: string;
   try {
-    text = await readFile(afPendingPath(dataDir), "utf8");
+    text = await readFile(afPendingPath(dataDir, provider), "utf8");
   } catch (error) {
     const code = (error as { code?: unknown } | null)?.code;
     if (code === "ENOENT") return { fixtures: [], exists: false, error: null };
@@ -739,8 +756,9 @@ export function sameAfPending(
 export async function writeAfPending(
   dataDir: string,
   file: AfPendingFile,
+  provider: DetailProvider = "api-football",
 ): Promise<string> {
-  const target = afPendingPath(dataDir);
+  const target = afPendingPath(dataDir, provider);
   await mkdir(path.dirname(target), { recursive: true });
   const tmp = `${target}.${process.pid}.${randomBytes(4).toString("hex")}.tmp`;
   try {

@@ -35,6 +35,7 @@ import {
 } from "@/lib/schema";
 
 import { readConfigFile } from "./config-files";
+import { teamIdFor, type DetailProvider } from "./detail-provider";
 import type {
   FinishedMatch,
   MatchDetail,
@@ -53,23 +54,37 @@ export async function loadTeamIds(rootDir: string): Promise<TeamIdsFile> {
 export interface TeamIdIndex {
   /** football-data 팀 id → slug */
   byFd: ReadonlyMap<number, string>;
-  /** API-Football 팀 id → slug */
+  /**
+   * 경기 상세 프로바이더 팀 id → slug. **이름은 역사적이다**(API-Football만 있던 때) — `provider`가 Highlightly면 team-ids `hl` 열로
+   * 만든다(PRD §15 D80). 짝짓기의 "af 쪽"은 늘 이 색인의 프로바이더다.
+   */
   byAf: ReadonlyMap<number, string>;
   /** slug → 항목 */
   bySlug: ReadonlyMap<string, TeamIdEntry>;
+  /** byAf의 id 체계 — 없으면 API-Football */
+  provider?: DetailProvider;
 }
 
-/** 대응표 → 조회 색인(스키마가 id 중복을 막으므로 한 id는 한 slug) */
-export function buildTeamIdIndex(file: TeamIdsFile): TeamIdIndex {
+/** 대응표 → 조회 색인(스키마가 id 중복을 막으므로 한 id는 한 slug). 상세 쪽 열은 `provider`(기본 API-Football) */
+export function buildTeamIdIndex(
+  file: TeamIdsFile,
+  provider: DetailProvider = "api-football",
+): TeamIdIndex {
   const byFd = new Map<number, string>();
   const byAf = new Map<number, string>();
   const bySlug = new Map<string, TeamIdEntry>();
   for (const [slug, entry] of Object.entries(file)) {
     bySlug.set(slug, entry);
     if (entry.fd !== null) byFd.set(entry.fd, slug);
-    if (entry.af !== null) byAf.set(entry.af, slug);
+    const detailId = teamIdFor(entry, provider);
+    if (detailId !== null) byAf.set(detailId, slug);
   }
-  return { byFd, byAf, bySlug };
+  return { byFd, byAf, bySlug, provider };
+}
+
+/** 색인의 상세 쪽 열 값(그 slug의 상세 프로바이더 팀 id — 없으면 null) */
+function detailIdOfSlug(index: TeamIdIndex, slug: string): number | null {
+  return teamIdFor(index.bySlug.get(slug), index.provider ?? "api-football");
 }
 
 /** 빈 색인 — 대응표가 없거나 읽지 못했을 때(실행은 계속) */
@@ -164,7 +179,7 @@ function sideConsistent(
   const afSlug = index.byAf.get(afTeamId);
   if (fdSlug !== undefined && afSlug !== undefined) return fdSlug === afSlug;
   // 한쪽만 아는 경우 — 그 항목의 다른 쪽 id가 비어 있어야(채울 자리) 어긋나지 않는다
-  if (fdSlug !== undefined) return index.bySlug.get(fdSlug)?.af === null;
+  if (fdSlug !== undefined) return detailIdOfSlug(index, fdSlug) === null;
   if (afSlug !== undefined) return index.bySlug.get(afSlug)?.fd === null;
   return true;
 }

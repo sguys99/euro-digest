@@ -1,0 +1,272 @@
+{
+  "homeTeam": {
+    "formation": "3-5-2",
+    "substitutes": [
+      {
+        "name": "P. Tietz",
+        "number": 9,
+        "position": "Forward",
+        "id": 4213685
+      },
+      {
+        "name": "S. Bell",
+        "number": 16,
+        "position": "Defender",
+        "id": 4171181
+      },
+      {
+        "name": "B. Hollerbach",
+        "number": 17,
+        "position": "Forward",
+        "id": 26234460
+      },
+      {
+        "name": "S. Kawasaki",
+        "number": 24,
+        "position": "Midfielder",
+        "id": 32183571
+      },
+      {
+        "name": "L. Maloney",
+        "number": 15,
+        "position": "Midfielder",
+        "id": 3999716
+      },
+      {
+        "name": "E. Martel",
+        "number": 5,
+        "position": "Midfielder",
+        "id": 26159434
+      },
+      {
+        "name": "R. Nakuzola",
+        "number": 47,
+        "position": "Defender",
+        "id": 107634289
+      },
+      {
+        "name": "P. Nebel",
+        "number": 8,
+        "position": "Midfielder",
+        "id": 32640650
+      },
+      {
+        "name": "A. Schwolow",
+        "number": 1,
+        "position": "Goalkeeper",
+        "id": 4223828
+      }
+    ],
+    "initialLineup": [
+      [
+        {
+          "name": "R. Zentner",
+          "number": 27,
+          "position": "Goalkeeper",
+          "id": 4171020
+        }
+      ],
+      [
+        {
+          "name": "K. Potulski",
+          "number": 48,
+          "position": "Defender",
+          "id": 71250060
+        },
+        {
+          "name": "F. Gruber",
+          "number": 3,
+          "position": "Defender",
+          "id": 32658199
+        },
+        {
+          "name": "D. da Costa",
+          "number": 21,
+          "position": "Defender",
+          "id": 291886
+        }
+      ],
+      [
+        {
+          "name": "S. Widmer",
+          "number": 30,
+          "position": "Midfielder",
+          "id": 7789012
+        },
+        {
+          "name": "N. Amiri",
+          "number": 10,
+          "position": "Midfielder",
+          "id": 115108
+        },
+        {
+          "name": "K. Sano",
+          "number": 6,
+          "position": "Midfielder",
+          "id": 5456283
+        },
+        {
+          "name": "Lee Jae-Sung",
+          "number": 7,
+          "position": "Midfielder",
+          "id": 468020
+        },
+        {
+          "name": "A. Caci",
+          "number": 19,
+          "position": "Midfielder",
+          "id": 3581438
+        }
+      ],
+      [
+        {
+          "name": "R. Königsdörffer",
+          "number": 11,
+          "position": "Forward",
+          "id": 26206607
+        },
+        {
+          "name": "S. Becker",
+          "number": 23,
+          "position": "Forward",
+          "id": 6108172
+        }
+      ]
+    ],
+    "id": 140348,
+    "name": "FSV Mainz 05"
+  },
+  "awayTeam": {
+    "formation": "4-2-3-1",
+    "substitutes": [
+      {
+        "name": "J. Urbig",
+        "number": 40,
+        "position": "Goalkeeper",
+        "id": 32743690
+      },
+      {
+        "name": "S. Ulreich",
+        "number": 26,
+        "position": "Goalkeeper",
+        "id": 80332
+      },
+      {
+        "name": "Kim Min-Jae",
+        "number": 3,
+        "position": "Defender",
+        "id": 466571
+      },
+      {
+        "name": "H. Ito",
+        "number": 21,
+        "position": "Defender",
+        "id": 5295927
+      },
+      {
+        "name": "A. Davies",
+        "number": 19,
+        "position": "Defender",
+        "id": 82103
+      },
+      {
+        "name": "S. Boey",
+        "number": 23,
+        "position": "Defender",
+        "id": 353549
+      },
+      {
+        "name": "T. Bischof",
+        "number": 8,
+        "position": "Midfielder",
+        "id": 52482129
+      },
+      {
+        "name": "T. Binder",
+        "number": 46,
+        "position": "Forward",
+        "id": 77065702
+      }
+    ],
+    "initialLineup": [
+      [
+        {
+          "name": "M. Neuer",
+          "number": 1,
+          "position": "Goalkeeper",
+          "id": 80171
+        }
+      ],
+      [
+        {
+          "name": "J. Stanišić",
+          "number": 44,
+          "position": "Defender",
+          "id": 20152685
+        },
+        {
+          "name": "J. Tah",
+          "number": 4,
+          "position": "Defender",
+          "id": 156646
+        },
+        {
+          "name": "D. Upamecano",
+          "number": 2,
+          "position": "Defender",
+          "id": 185143
+        },
+        {
+          "name": "K. Laimer",
+          "number": 27,
+          "position": "Defender",
+          "id": 186431
+        }
+      ],
+      [
+        {
+          "name": "A. Pavlović",
+          "number": 45,
+          "position": "Midfielder",
+          "id": 52813467
+        },
+        {
+          "name": "J. Kimmich",
+          "number": 6,
+          "position": "Midfielder",
+          "id": 80976
+        }
+      ],
+      [
+        {
+          "name": "L. Karl",
+          "number": 42,
+          "position": "Midfielder",
+          "id": 79555245
+        },
+        {
+          "name": "N. Brown",
+          "number": 11,
+          "position": "Midfielder",
+          "id": 45092068
+        },
+        {
+          "name": "M. Olise",
+          "number": 17,
+          "position": "Midfielder",
+          "id": 3158491
+        }
+      ],
+      [
+        {
+          "name": "H. Kane",
+          "number": 9,
+          "position": "Forward",
+          "id": 29778
+        }
+      ]
+    ],
+    "id": 134391,
+    "name": "Bayern Munich"
+  }
+}

@@ -75,7 +75,13 @@ export const RunLogSchema = z.object({
     cacheWrite: z.number(),
   }),
   costUsd: z.number(),
-  apiCalls: z.object({ footballData: z.number(), apiFootball: z.number() }),
+  // 데이터 API 호출 수(우리 쪽 일일 카운터 — D27). highlightly는 2026-11-17 추가(PRD §15 D80 ③ — 경기 상세 프로바이더 교체):
+  // 옛 기록·Highlightly를 부르지 않은 실행은 없음 = 0회
+  apiCalls: z.object({
+    footballData: z.number(),
+    apiFootball: z.number(),
+    highlightly: z.number().optional(),
+  }),
   sources: z.array(RunSourceSchema),
   status: z.enum(["success", "partial", "failed", "skipped"]),
   /** 일일 브리핑 요청 기록(D56 — 위 RunBriefSchema). 브리핑 요청을 보내지 않은 실행·옛 기록은 없음 = 0건 */

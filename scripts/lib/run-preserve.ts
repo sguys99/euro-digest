@@ -11,7 +11,7 @@
  *   - data/runs.json — 이번 실행 기록 1건만, **상태를 failed로 바꿔서**(`failedRunRecord`). 판정값이 success·partial이어도 발행은
  *     되지 않았다 — 그대로 두면 수집 시간 창이 이 실행을 '직전 발행 실행'으로 보아(collect-window.ts isPublishedNewsRun) 다음
  *     실행이 이 실행 창의 기사를 건너뛴다(누락). 토큰·비용·호출 수·소스 결과는 그대로다. dry 기록(skipped)은 그대로 둔다.
- *   - data/matches/(원장)·data/cache/af-pending.json(이월) — **함께 커밋한다**(M1-48 이월). 근거: 호출 수는 기록에 남는데 받은
+ *   - data/matches/(원장)·data/cache/af-pending.json·hl-pending.json(이월 — hl은 D80) — **함께 커밋한다**(M1-48 이월). 근거: 호출 수는 기록에 남는데 받은
  *     결과를 버리면 같은 날 백업 실행이 그 경기를 다시 받아 일일 계획 상한(60) 안에서 받을 수 있는 경기가 그만큼 줄고, 다음 날은
  *     지난 날짜를 날짜 조회로 다시 받을 수 없다(D27). 원장은 화면이 읽지 않으므로(D33) 발행 게이트와 무관하고, 같은 아침 두 번째
  *     실행은 원장의 같은 창 항목으로 득점자를 잇는다(M1-19). 조건: 각 파일이 레지스트리 스키마를 통과(`checkJsonFile` — 검증 게이트와
@@ -53,12 +53,15 @@ import { checkJsonFile } from "./validate-schema";
 export const PRESERVE_RUNS_PATH = "data/runs.json";
 export const PRESERVE_LEDGER_DIR = "data/matches";
 export const PRESERVE_PENDING_PATH = "data/cache/af-pending.json";
+/** Highlightly 이월(PRD §15 D80 — af-pending과 같은 이유로 원장과 함께 보존한다) */
+export const PRESERVE_HL_PENDING_PATH = "data/cache/hl-pending.json";
 
 /** 실패 실행 커밋 대상(저장소 상대 경로) — collect.yml 단계의 git add 대상과 같다(tests/collect-workflow.test.ts가 대조) */
 export const PRESERVE_COMMIT_PATHS = [
   PRESERVE_RUNS_PATH,
   PRESERVE_LEDGER_DIR,
   PRESERVE_PENDING_PATH,
+  PRESERVE_HL_PENDING_PATH,
 ] as const;
 
 /** 실패 실행에서 커밋하지 않는 산출물(머리 주석) */
@@ -94,6 +97,7 @@ const LEDGER_FILE = /^data\/matches\/[A-Za-z0-9_-][A-Za-z0-9._-]*\.json$/;
 export function isLedgerPath(relPath: string): boolean {
   return (
     relPath === PRESERVE_PENDING_PATH ||
+    relPath === PRESERVE_HL_PENDING_PATH ||
     (LEDGER_FILE.test(relPath) && !relPath.includes(".."))
   );
 }
@@ -141,11 +145,13 @@ async function listLedgerFiles(rootDir: string): Promise<string[]> {
   } catch (error) {
     if (!isNotFound(error)) throw error;
   }
-  try {
-    await readFile(path.join(rootDir, PRESERVE_PENDING_PATH), "utf8");
-    files.push(PRESERVE_PENDING_PATH);
-  } catch (error) {
-    if (!isNotFound(error)) throw error;
+  for (const pending of [PRESERVE_PENDING_PATH, PRESERVE_HL_PENDING_PATH]) {
+    try {
+      await readFile(path.join(rootDir, pending), "utf8");
+      files.push(pending);
+    } catch (error) {
+      if (!isNotFound(error)) throw error;
+    }
   }
   return files;
 }

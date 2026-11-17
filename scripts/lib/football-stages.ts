@@ -70,6 +70,8 @@ import {
 } from "./providers/football-data";
 import {
   afToSlugOf,
+  hlToSlugOf,
+  koreanByHlIdOf,
   buildTeamFiles,
   koreanByAfIdOf,
   lineupBackfillPriority,
@@ -218,7 +220,9 @@ export type LineupBackfillSkipReason =
   | "no-api-key"
   | "af-not-done"
   | "af-stopped"
-  | "daily-cap";
+  | "daily-cap"
+  /** 경기 상세 프로바이더가 API-Football이 아니다(D80 — 백필은 API-Football `/fixtures?id=` 전용) */
+  | "other-provider";
 
 /**
  * 라인업 백필 건수 — min(이번 실행 허용량 − 이번 실행 사용, 5). 허용량(api-football-plan.ts `apiFootballCallAllowance`)이 이미
@@ -241,6 +245,9 @@ export function lineupBackfillAllowance(input: {
   if (!input.ledgerEnabled) return { count: 0, reason: "ledger-disabled" };
   if (!input.hasApiKey) return { count: 0, reason: "no-api-key" };
   const af = input.apiFootball;
+  if (af !== null && af.provider !== "api-football") {
+    return { count: 0, reason: "other-provider" };
+  }
   if (af === null || af.state !== "done") {
     return { count: 0, reason: "af-not-done" };
   }
@@ -736,6 +743,9 @@ export async function runTeamsCollectStage(
     const sheetCtx = {
       afToSlug: afToSlugOf(base.teamIds),
       koreanByAfId: koreanByAfIdOf(base.koreanPlayers),
+      // Highlightly 상세(D80)의 팀시트 — hl 대응표·선수 id
+      hlToSlug: hlToSlugOf(base.teamIds),
+      koreanByHlId: koreanByHlIdOf(base.koreanPlayers),
     };
     const extract = teamSheetsFromDetails(input.details, sheetCtx);
     const first = buildTeamFiles({ ...base, sheets: extract.sheets });

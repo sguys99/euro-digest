@@ -33,6 +33,9 @@ export const KoreanPlayerSchema = z.strictObject({
   position: PositionSchema,
   birthYear: z.number(),
   apiFootballId: z.number().nullable(),
+  // Highlightly 선수 id(PRD §15 D80, 2026-11-17 추가) — 원장 `hl-` 항목의 한국 선수 행은 이 id로만 매칭한다(이름 표기가 응답마다
+  // 다르다 — FR-60). 없음·null = 모름(Highlightly 경기에서 행을 만들지 않는다)
+  highlightlyId: z.number().int().positive().nullable().optional(),
   active: z.boolean(), // false = 기타 리그 이적 등으로 기록 갱신 중단, 목록에는 유지 (FR-64)
 });
 export type KoreanPlayer = z.infer<typeof KoreanPlayerSchema>;

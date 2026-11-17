@@ -7,7 +7,9 @@
  * 원제목 카드 → data/news/<KST 발행일>.json,
  * M1-44 경기 데이터(football-data 전날 종료 경기 + 그 대회 순위, 프로바이더별 병렬·실패 격리) → 브리핑 단건(FR-29 재시도 1회 · 검증 통과 줄 + 템플릿 강등 게시 — M1-45),
  * M1-48 API-Football 경기 단건(날짜 조회 D-1·D → 대상 경기 상세, 브리핑 경기 먼저 · 이월 data/cache/af-pending.json —
- * 뉴스와 병렬로 시작, API_FOOTBALL_MAX_CALLS로 실행당 호출 상한을 걸 수 있다) · M1-48b 경기 기록 원장 data/matches/
+ * 뉴스와 병렬로 시작, API_FOOTBALL_MAX_CALLS로 실행당 호출 상한을 걸 수 있다) — M5-18(PRD §15 D80)부터 경기 상세 기본 경로는
+ * Highlightly(MATCH_DETAIL_PROVIDER 기본 highlightly · HIGHLIGHTLY_API_KEY · HIGHLIGHTLY_MAX_CALLS · 이월 data/cache/hl-pending.json —
+ * scripts/lib/highlightly-stage.ts), API-Football은 `MATCH_DETAIL_PROVIDER=api-football`일 때만 부른다 · M1-48b 경기 기록 원장 data/matches/
  * (COLLECT_ENABLED == "true"인 prod·비dry 실행만 쓴다 — 로컬 dev·dry는 메모리에서 만들어 로그만),
  * M2-09 축구 데이터 단계(브리핑 뒤 — 대회 파일 data/competitions(football-data 18요청, prod·비dry·09:00 KST 전) ‖ API-Football 나머지 →
  * 팀 파일 data/teams + 라인업 백필 ≤ 5건, scripts/lib/football-stages.ts — COLLECT_FOOTBALL_STAGES=off면 끈다).
@@ -45,6 +47,11 @@ import {
   runCollect,
 } from "./lib/collect-run";
 import { resolveBudgets } from "./lib/cost";
+import {
+  DEFAULT_DETAIL_PROVIDER,
+  resolveDetailProvider,
+  type DetailProvider,
+} from "./lib/detail-provider";
 import { actionsRunUrl } from "./lib/github-issues";
 import { resolveFootballStagesEnabled } from "./lib/football-stages";
 import { createLlmClient, resolveLlmModel } from "./lib/llm";
@@ -78,6 +85,19 @@ const ROOT_DIR = path.resolve(
 );
 const logger = createLogger({ scope: "collect" });
 
+/** MATCH_DETAIL_PROVIDER 해석 — 형식이 틀리면 오류 로그 후 기본값(Highlightly — D80). 오타 하나로 수집 전체를 멈추지 않는다 */
+function detailProviderFromEnv(raw: string | undefined): DetailProvider {
+  try {
+    return resolveDetailProvider(raw);
+  } catch (error) {
+    logger.error("collect.matchdata.provider-invalid", {
+      error: error instanceof Error ? error.message : String(error),
+      fallback: DEFAULT_DETAIL_PROVIDER,
+    });
+    return DEFAULT_DETAIL_PROVIDER;
+  }
+}
+
 async function main(): Promise<number> {
   const env = process.env;
   const outcome = await runCollect({
@@ -94,6 +114,11 @@ async function main(): Promise<number> {
     apiFootballApiKey: env.API_FOOTBALL_KEY,
     // 실행당 API-Football 호출 상한(선택 — dry·개발 실측용). 일일 상한(봇 60·개발 50)은 실행 기록 카운터로 지킨다.
     apiFootballMaxCalls: env.API_FOOTBALL_MAX_CALLS,
+    // 경기 상세 프로바이더(PRD §15 D80) — MATCH_DETAIL_PROVIDER(기본 highlightly · api-football로 되돌릴 수 있다)
+    matchDetailProvider: detailProviderFromEnv(env.MATCH_DETAIL_PROVIDER),
+    highlightlyApiKey: env.HIGHLIGHTLY_API_KEY,
+    // 실행당 Highlightly 호출 상한(선택 — dry·개발 실측용). 일일 상한(봇 65·개발 30)은 실행 기록 카운터로 지킨다.
+    highlightlyMaxCalls: env.HIGHLIGHTLY_MAX_CALLS,
     // 정기 운영(저장소 변수 COLLECT_ENABLED == 'true') — 경기 기록 원장(data/matches)은 이때의 prod·비dry 실행만 쓴다(M1-48b)
     ledgerEnabled: resolveLedgerEnabled(env.COLLECT_ENABLED),
     // 축구 데이터 단계(M2-09 — 대회·팀 파일·라인업 백필). 저장소 변수 COLLECT_FOOTBALL_STAGES='off'면 끈다(기본 켬 — 아침 봇

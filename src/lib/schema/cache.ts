@@ -78,21 +78,22 @@ export type UnknownNamesFile = z.infer<typeof UnknownNamesFileSchema>;
  *   (상수는 scripts/lib/api-football-plan.ts — 데이터 파일 형식이 아니라 수집 정책이다)
  */
 export const AfPendingEntrySchema = z.object({
-  id: z.number().int().positive(), // API-Football 경기(fixture) id — 원장 키 `af-<id>`(D33)와 같은 숫자
+  id: z.number().int().positive(), // 프로바이더 경기 id — 원장 키 `af-<id>`(af-pending.json)·`hl-<id>`(hl-pending.json)와 같은 숫자
   comp: CompIdSchema.nullable(), // 6개 대회면 대회 ID, 한국 선수 소속팀의 기타 대회면 null
-  leagueId: z.number().int().positive(), // API-Football league id(기타 대회 구별·로그)
+  leagueId: z.number().int().positive(), // 프로바이더 league id(기타 대회 구별·로그)
   kickoff: IsoSchema, // 킥오프(UTC, `Z`)
   status: z.string().regex(/^[A-Z0-9]{1,6}$/, {
-    error: "API-Football 상태 약어(NS·1H·FT …)",
-  }), // 마지막으로 본 상태(fixture.status.short)
+    error: "상태 약어(NS·1H·FT …)",
+  }), // 마지막으로 본 상태(API-Football fixture.status.short — Highlightly는 같은 약어로 바꾼 값, providers/highlightly.ts)
   firstSeen: IsoSchema, // 처음 이 목록에 넣은 시각(UTC)
   requeries: z.number().int().min(0), // 상세를 얻지 못한 id 단건 조회 수(미종료·요청 실패) — 상한 넘으면 정리
 });
 export type AfPendingEntry = z.infer<typeof AfPendingEntrySchema>;
 
 /**
- * `data/cache/af-pending.json` — 수집 실행만 쓴다(dry는 쓰지 않음). 항목은 킥오프·id 순으로 저장해 커밋 diff를 줄인다.
- * 이미 상세를 받은 경기는 원장(`data/matches/`, M1-48b)이 기준이라 이 파일에 두지 않는다.
+ * `data/cache/af-pending.json`(API-Football) · `data/cache/hl-pending.json`(Highlightly — PRD §15 D80, 2026-11-17 추가, 같은 형식) —
+ * 수집 실행만 쓴다(dry는 쓰지 않음). 항목은 킥오프·id 순으로 저장해 커밋 diff를 줄인다. 두 프로바이더의 경기 id 체계가 달라 파일을
+ * 나눈다. 이미 상세를 받은 경기는 원장(`data/matches/`, M1-48b)이 기준이라 이 파일에 두지 않는다.
  */
 export const AfPendingFileSchema = z.object({
   updatedAt: IsoSchema, // 마지막으로 쓴 시각

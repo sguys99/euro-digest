@@ -1,0 +1,283 @@
+{
+  "data": [
+    {
+      "id": 1392019779,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T20:00:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "4 - 1",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 11894360,
+        "name": "Sabah FA"
+      },
+      "homeTeam": {
+        "id": 646693,
+        "name": "Viking"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1392003610,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T20:00:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "1 - 2",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 36526,
+        "name": "Arsenal"
+      },
+      "homeTeam": {
+        "id": 477344,
+        "name": "Slavia Praha"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1391989994,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T20:00:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 3",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 43334,
+        "name": "Manchester City"
+      },
+      "homeTeam": {
+        "id": 148007,
+        "name": "RB Leipzig"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1391987441,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T20:00:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "1 - 2",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 485003,
+        "name": "Club Brugge KV"
+      },
+      "homeTeam": {
+        "id": 168431,
+        "name": "PSV Eindhoven"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1391965315,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T20:00:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "1 - 9",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 762429,
+        "name": "Como"
+      },
+      "homeTeam": {
+        "id": 99500,
+        "name": "Lens"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1391944040,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T20:00:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "4 - 1",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 419476,
+        "name": "Napoli"
+      },
+      "homeTeam": {
+        "id": 181196,
+        "name": "FC Porto"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1391939785,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T20:00:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 1",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 462877,
+        "name": "Real Betis"
+      },
+      "homeTeam": {
+        "id": 141199,
+        "name": "Borussia Dortmund"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1391945742,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T17:45:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "3 - 2",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 34824,
+        "name": "Liverpool"
+      },
+      "homeTeam": {
+        "id": 520745,
+        "name": "Fenerbahce"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    },
+    {
+      "id": 1391901490,
+      "round": "League Stage - 4",
+      "date": "2026-11-04T17:45:00.000Z",
+      "country": {
+        "code": "World",
+        "name": "World"
+      },
+      "state": {
+        "clock": 90,
+        "score": {
+          "current": "2 - 3",
+          "penalties": null
+        },
+        "description": "Finished"
+      },
+      "awayTeam": {
+        "id": 461175,
+        "name": "Real Madrid"
+      },
+      "homeTeam": {
+        "id": 490109,
+        "name": "AEK Athens FC"
+      },
+      "league": {
+        "id": 2486,
+        "name": "UEFA Champions League",
+        "season": 2026
+      }
+    }
+  ],
+  "plan": {
+    "tier": "BASIC",
+    "message": "All data available with current plan."
+  },
+  "pagination": {
+    "totalCount": 9,
+    "offset": 0,
+    "limit": 100
+  }
+}

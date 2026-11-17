@@ -77,7 +77,8 @@ describe("schemaRegistry ↔ fixtures/schema", () => {
     // + data/briefs/????-??-??.json (일일 브리핑 D38, M1-19)
     // + data/cache/lineup-backfill.json (M2-09 — 2026-10-30 사용자 확인)
     // + data/news/????-??.json (월별 병합 FR-158, M5-10 — 2026-11-03 사용자 결정 A안)
-    expect(schemaRegistry).toHaveLength(29);
+    // + data/cache/hl-pending.json (Highlightly 이월 — PRD §15 D80, M5-18 · af-pending과 같은 형식)
+    expect(schemaRegistry).toHaveLength(30);
   });
 
   it("configs/ 항목은 알 수 없는 키를 거부하고 data/ 항목은 버린다 (결정 Q5)", () => {

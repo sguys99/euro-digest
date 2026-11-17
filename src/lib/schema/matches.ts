@@ -4,6 +4,9 @@
  * 원장을 쓰는 실행이 정한다.
  *   `data/matches/YYYY-MM.json` (킥오프 UTC 달) + `data/matches/meta.json` (집계 시작일·선수별 시작일·빠진 날)
  *
+ * 2026-11-17 사용자 결정(PRD §15 D80 ②): 경기 상세 프로바이더가 Highlightly로 바뀌어 새 경기는 `hl-<id>` 키로 들어온다. 키 접두사가
+ * 그 항목의 모든 id(대회·팀·선수) 체계를 정한다 — `af-` 항목은 API-Football, `hl-` 항목은 Highlightly. 기존 `af-` 항목은 그대로 둔다.
+ *
  * API-Football 경기 단건(`/fixtures?id=`)에서 **득점·도움·포메이션 + 등록 한국 선수 행만** 남긴다(D33 ②) — 전 선수 출전 시간·
  * 로고·사진·원본 응답은 저장하지 않는다(API-Football 재판매 금지 — 공개 저장소의 API 파생 데이터 최소화). 원장에는 API-Football
  * id·응답 원문 이름만 두고 slug는 읽을 때 `configs/team-ids.json`·`configs/names.ko.json`으로 바꾼다(D33 ④).
@@ -27,13 +30,23 @@ import {
   uniqueBy,
 } from "./common";
 
-/** API-Football id(경기·대회·팀·선수) — 양의 정수 */
+/**
+ * 경기 상세 프로바이더 id(경기·대회·팀·선수) — 양의 정수. 체계는 항목의 경기 키 접두사가 정한다(PRD §15 D80 ②):
+ * `af-` 항목은 API-Football id, `hl-` 항목은 Highlightly id. 두 체계는 같은 숫자가 다른 팀·선수일 수 있어 섞어 비교하지 않는다.
+ */
 const AfIdSchema = z.number().int().positive();
 
-/** 원장 경기 키 `af-<API-Football 경기 id>` — 다른 프로바이더 경기와 섞이지 않게 접두사를 붙인다(D33 ①) */
-export const AfMatchKeySchema = z.string().regex(/^af-[1-9]\d*$/, {
-  error: "원장 경기 id는 af-<API-Football 경기 id>",
+/**
+ * 원장 경기 키 — `af-<API-Football 경기 id>`(D33 ①, 2026-10-19~11-03) 또는 `hl-<Highlightly 경기 id>`(D80 ② — 2026-11-17 사용자
+ * 결정, 새 경기). 다른 프로바이더 경기와 섞이지 않게 접두사를 붙인다. 기존 `af-` 항목은 그대로 두고 마이그레이션하지 않는다.
+ */
+export const LedgerMatchKeySchema = z.string().regex(/^(?:af|hl)-[1-9]\d*$/, {
+  error:
+    "원장 경기 id는 af-<API-Football 경기 id> 또는 hl-<Highlightly 경기 id>",
 });
+
+/** 옛 이름(팀시트 `TeamLineup.match` 등) — `LedgerMatchKeySchema`와 같다 */
+export const AfMatchKeySchema = LedgerMatchKeySchema;
 
 /** 원장 달 "YYYY-MM" = 킥오프의 UTC 달(파일명) */
 export const LedgerMonthSchema = z
@@ -50,13 +63,13 @@ export const LedgerScoreSchema = z.object({
   away: GoalCountSchema,
 });
 
-/** 선수 — API-Football 선수 id(응답에 없으면 null)와 응답 원문 이름(영문, 표기가 응답마다 다르다 — 매칭은 id로만) */
+/** 선수 — 프로바이더 선수 id(응답에 없으면 null — 체계는 경기 키 접두사)와 응답 원문 이름(영문, 표기가 응답마다 다르다 — 매칭은 id로만) */
 export const LedgerPersonSchema = z.object({
   id: AfIdSchema.nullable(),
   name: z.string().min(1),
 });
 
-/** 팀 — API-Football 팀 id·원문 이름·포메이션(라인업 원문 "4-2-3-1", 라인업이 없으면 null — FR-55 최빈값 입력) */
+/** 팀 — 프로바이더 팀 id(체계는 경기 키 접두사)·원문 이름·포메이션(라인업 원문 "4-2-3-1", 라인업이 없으면 null — FR-55 최빈값 입력) */
 export const LedgerTeamSchema = z.object({
   id: AfIdSchema,
   name: z.string().min(1),
@@ -84,7 +97,7 @@ export type LedgerAppearance = z.infer<typeof LedgerAppearanceSchema>;
 
 /** 등록 한국 선수 행 — configs/korean-players.json 활성 선수 중 그 경기 양 팀(또는 라인업)에 있는 선수 */
 export const LedgerKoreanRowSchema = z.object({
-  player: AfIdSchema, // korean-players.json apiFootballId(slug는 읽을 때 바꾼다)
+  player: AfIdSchema, // korean-players.json 선수 id — af- 항목은 apiFootballId, hl- 항목은 highlightlyId(slug는 읽을 때 바꾼다)
   side: LedgerSideSchema,
   status: LedgerAppearanceSchema,
   minutes: z.number().int().min(0).nullable(), // 선수 기록의 출전 시간 — 기록이 없으면 null(벤치·명단 제외를 0으로 바꾸지 않는다)
@@ -96,8 +109,8 @@ export type LedgerKoreanRow = z.infer<typeof LedgerKoreanRowSchema>;
 /** 경기 1건 (D33 ① — 득점 불완전 표시 `goalsComplete`는 M1-48b 추가) */
 export const LedgerMatchSchema = z
   .object({
-    id: AfMatchKeySchema,
-    leagueId: AfIdSchema, // API-Football league id(6개 대회 밖 — 한국 선수 소속팀 컵 등 — 도 구별)
+    id: LedgerMatchKeySchema,
+    leagueId: AfIdSchema, // 프로바이더 league id(체계는 경기 키 접두사 — 6개 대회 밖 한국 선수 소속팀 컵 등도 구별)
     league: z.string(), // 대회 원문 이름(영문)
     comp: CompIdSchema.nullable(), // 6개 대회면 대회 ID, 그 밖은 null
     season: SeasonSchema.nullable(), // 응답의 시즌 시작 연도 — 없으면 null
@@ -153,16 +166,17 @@ export const LedgerMatchSchema = z
   });
 export type LedgerMatch = z.infer<typeof LedgerMatchSchema>;
 
-/** 킥오프·id 순 비교(원장 정렬 기준) */
+/** 킥오프·id 순 비교(원장 정렬 기준) — 같은 킥오프는 키의 숫자, 그래도 같으면 키 문자열(af- → hl-) */
 function compareKickoffId(a: LedgerMatch, b: LedgerMatch): number {
   return (
     Date.parse(a.kickoff) - Date.parse(b.kickoff) ||
-    Number(a.id.slice(3)) - Number(b.id.slice(3))
+    Number(a.id.slice(3)) - Number(b.id.slice(3)) ||
+    (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
   );
 }
 
 /**
- * `data/matches/YYYY-MM.json` — 경기 id(`af-<id>`) 기준 덮어쓰기, 킥오프·id 순, 파일 달 = 킥오프 UTC 달(D33 ①).
+ * `data/matches/YYYY-MM.json` — 경기 id(`af-<id>`·`hl-<id>`) 기준 덮어쓰기, 킥오프·id 순, 파일 달 = 킥오프 UTC 달(D33 ①).
  * 내용이 같으면 다시 쓰지 않는다(수집 시각만 다른 재조회 포함).
  */
 export const MatchLedgerFileSchema = z
@@ -220,7 +234,7 @@ export const LedgerGapSchema = z
       .string()
       .regex(/^[a-z][a-z0-9-]{0,39}$/, { error: "cause는 소문자 오류 종류" })
       .optional(), // 날짜 단위 사유의 오류 종류·건너뜀 이유(network·quota·daily-cap …)
-    matches: z.array(AfIdSchema).min(1).optional(), // dropped만 — 버린 API-Football 경기 id(오름차순)
+    matches: z.array(AfIdSchema).min(1).optional(), // dropped만 — 버린 경기의 그 실행 프로바이더 id(오름차순 — af 7자리 · hl 10자리라 겹치지 않는다)
   })
   .superRefine((g, ctx) => {
     if ((g.reason === "dropped") !== (g.matches !== undefined)) {

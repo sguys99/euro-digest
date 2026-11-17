@@ -23,6 +23,9 @@
  *   사용 횟수만 올리므로 주 포메이션은 그 포메이션으로만 바뀔 수 있다 — 그래서 팀당 1경기분만 들고 있어도 포메이션별 저장이 필요 없다.
  *   이름은 API-Football 원문 고정(D63 ①), 등록 한국 선수만 `apiFootballId`로 매칭해 `korean` slug를 붙인다.
  *
+ * 경기 상세 프로바이더 교체(PRD §15 D80): 원장 `hl-` 항목·Highlightly 상세는 team-ids `hl` 열(`hlToSlugOf`)·highlightlyId(`koreanByHlIdOf`)로
+ *   팀·한국 선수를 찾는다(항목 키·상세 provider로 고른다). 팀시트 경기 키는 `hl-<id>`. 라인업 백필(API-Football 전용)은 `af-` 항목만 고른다.
+ *
  * 주요 선수 (M2-06, FR-54·D63 ①)
  *   football-data 득점 순위(`data/competitions/<comp>.json` `scorers`, 시즌 누적·대회별 상위 100명)에서 팀의 **대표 대회(comp)**
  *   득점자만 고른다 — 원장 자체 집계(집계 시작일 이후)와 섞으면 숫자 뜻이 달라져 섞지 않는다. 목록이 상한(100명)만큼 차 있으면
@@ -47,6 +50,12 @@ import {
   type TeamSheetPlayer,
 } from "@/lib/schema";
 
+import {
+  koreanByIdOf,
+  ledgerMatchKey,
+  slugOfLedgerTeam,
+  teamToSlugOf,
+} from "./detail-provider";
 import type { LineupPlayer, MatchDetail, Side } from "./match-data";
 import {
   LEAGUE_IDS,
@@ -70,7 +79,7 @@ export const MIN_API_USES_OVER_MANUAL = 3;
 
 /** 원장에서 센 팀 경기 1개의 포메이션 사용 */
 export interface FormationUse {
-  /** 원장 경기 키 af-<id> */
+  /** 원장 경기 키 af-<id>·hl-<id> */
   match: string;
   kickoff: string;
   shape: string;
@@ -80,7 +89,7 @@ export interface FormationUse {
   opponent: string | null;
 }
 
-/** 경기 키 af-<id>의 숫자(정렬 동률 깨기용) */
+/** 경기 키 af-<id>·hl-<id>의 숫자(정렬 동률 깨기용 — 접두사 3자) */
 function matchNumber(key: string): number {
   const n = Number(key.slice(3));
   return Number.isFinite(n) ? n : 0;
@@ -104,11 +113,16 @@ export function isFormationShape(shape: string | null | undefined): boolean {
 
 /**
  * 원장 경기 → 팀 slug별 포메이션 사용(킥오프·id 순). 6개 대회 경기만(comp ≠ null), `season`이 주어지면 그 시즌만, 형식이 맞는
- * 포메이션만 센다. API-Football 팀 id가 대응표에 없으면 그 쪽은 건너뛴다.
+ * 포메이션만 센다. 항목 키의 체계(af-·hl- — D80)로 팀 id를 slug로 바꾸고, 대응표에 없으면 그 쪽은 건너뛴다.
  */
 export function formationUsesByTeam(
   matches: readonly LedgerMatch[],
-  ctx: { afToSlug: ReadonlyMap<number, string>; season?: number | null },
+  ctx: {
+    afToSlug: ReadonlyMap<number, string>;
+    /** Highlightly 팀 id → slug(`hl-` 항목) — 없으면 그 항목 팀을 모른다 */
+    hlToSlug?: ReadonlyMap<number, string>;
+    season?: number | null;
+  },
 ): Map<string, FormationUse[]> {
   const uses = new Map<string, FormationUse[]>();
   for (const m of matches) {
@@ -117,7 +131,7 @@ export function formationUsesByTeam(
       continue;
     for (const side of ["home", "away"] as const) {
       const team = m[side];
-      const slug = ctx.afToSlug.get(team.id);
+      const slug = slugOfLedgerTeam(ctx, m.id, team.id);
       const shape = team.formation?.trim() ?? null;
       if (slug === undefined || !isFormationShape(shape)) continue;
       const other = m[side === "home" ? "away" : "home"];
@@ -128,7 +142,7 @@ export function formationUsesByTeam(
         shape: shape!,
         comp: m.comp,
         side,
-        opponent: ctx.afToSlug.get(other.id) ?? null,
+        opponent: slugOfLedgerTeam(ctx, m.id, other.id) ?? null,
       });
       uses.set(slug, list);
     }
@@ -227,6 +241,10 @@ export interface TeamSheetContext {
   afToSlug: ReadonlyMap<number, string>;
   /** API-Football 선수 id → 한국 선수 slug(korean-players.json `apiFootballId`) */
   koreanByAfId: ReadonlyMap<number, string>;
+  /** Highlightly 팀 id → slug(team-ids `hl` — D80) — 없으면 Highlightly 상세의 팀을 모른다 */
+  hlToSlug?: ReadonlyMap<number, string>;
+  /** Highlightly 선수 id → 한국 선수 slug(korean-players.json `highlightlyId`) */
+  koreanByHlId?: ReadonlyMap<number, string>;
 }
 
 function toSheetPlayer(
@@ -253,6 +271,14 @@ export function teamSheetsFromDetail(
   const out: TeamSheetExtract = { sheets: [], skipped: [] };
   const skip = (side: Side, reason: TeamSheetSkip) =>
     out.skipped.push({ match: detail.matchId, side, reason });
+  // 상세의 id 체계(D80) — Highlightly 상세는 hl 대응표·선수 id
+  const hl = detail.provider === "highlightly";
+  const toSlug = hl
+    ? (ctx.hlToSlug ?? new Map<number, string>())
+    : ctx.afToSlug;
+  const koreanById = hl
+    ? (ctx.koreanByHlId ?? new Map<number, string>())
+    : ctx.koreanByAfId;
   for (const side of ["home", "away"] as const) {
     if (detail.comp === null) {
       skip(side, "not-6-comp");
@@ -271,30 +297,26 @@ export function teamSheetsFromDetail(
       skip(side, "start-xi");
       continue;
     }
-    const team = ctx.afToSlug.get(detail[side].id);
+    const team = toSlug.get(detail[side].id);
     if (team === undefined) {
       skip(side, "unknown-team");
       continue;
     }
-    const opponent = ctx.afToSlug.get(
-      detail[side === "home" ? "away" : "home"].id,
-    );
+    const opponent = toSlug.get(detail[side === "home" ? "away" : "home"].id);
     if (opponent === undefined) {
       skip(side, "unknown-opponent");
       continue;
     }
     const parsed = TeamLineupSchema.safeParse({
       formation: lineup.formation,
-      match: `af-${detail.matchId}`,
+      match: ledgerMatchKey(detail.provider, detail.matchId),
       kickoff: detail.kickoff,
       comp: detail.comp,
       side,
       opponent,
-      startXI: lineup.startXI.map((p) =>
-        toSheetPlayer(p, true, ctx.koreanByAfId),
-      ),
+      startXI: lineup.startXI.map((p) => toSheetPlayer(p, true, koreanById)),
       substitutes: lineup.substitutes.map((p) =>
-        toSheetPlayer(p, false, ctx.koreanByAfId),
+        toSheetPlayer(p, false, koreanById),
       ),
     });
     if (!parsed.success) {
@@ -442,11 +464,19 @@ export function koreanByAfIdOf(
 
 /** team-ids.json → API-Football 팀 id → slug */
 export function afToSlugOf(teamIds: TeamIdsFile): Map<number, string> {
-  const index = new Map<number, string>();
-  for (const [slug, entry] of Object.entries(teamIds)) {
-    if (entry.af !== null) index.set(entry.af, slug);
-  }
-  return index;
+  return teamToSlugOf(teamIds, "api-football");
+}
+
+/** team-ids.json → Highlightly 팀 id → slug(`hl` 열 — D80) */
+export function hlToSlugOf(teamIds: TeamIdsFile): Map<number, string> {
+  return teamToSlugOf(teamIds, "highlightly");
+}
+
+/** korean-players.json → Highlightly 선수 id → slug(id가 있는 선수 전원) */
+export function koreanByHlIdOf(
+  players: KoreanPlayersFile,
+): Map<number, string> {
+  return koreanByIdOf(players, "highlightly");
 }
 
 /** 팀 파일 전체를 만든다(slugs 순서). 각 값은 TeamSchema로 검증한다 */
@@ -456,6 +486,7 @@ export function buildTeamFiles(input: TeamFilesInput): TeamFilesResult {
   const afToSlug = afToSlugOf(input.teamIds);
   const uses = formationUsesByTeam(input.ledger, {
     afToSlug,
+    hlToSlug: hlToSlugOf(input.teamIds),
     season: input.season,
   });
   const sheetsByTeam = new Map<string, TeamLineup[]>();
@@ -669,6 +700,8 @@ export function planLineupBackfill(input: {
         null,
       );
     if (last === null || team.lineup?.match === last.match) continue;
+    // 백필은 API-Football `/fixtures?id=` 전용 — Highlightly 항목(hl-, D80)은 고르지 않는다(그 팀시트는 수집 단계가 라인업으로 채운다)
+    if (!last.match.startsWith("af-")) continue;
     const matchId = matchNumber(last.match);
     if (input.exclude?.has(matchId)) continue;
     const existing = byMatch.get(matchId);

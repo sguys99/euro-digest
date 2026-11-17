@@ -36,6 +36,7 @@ import {
   KoreanPlayersFileSchema,
   NamesKoFileSchema,
   WeeklyReportSchema,
+  type AfPendingEntry,
   type CompId,
   type LedgerMatch,
   type PlayerComp,
@@ -55,7 +56,9 @@ import {
 import { readAfPending } from "./api-football-plan";
 import { readLedgerMeta, readLedgerMonth } from "./match-ledger";
 import { buildNameIndex, koreanNameBySlug } from "./names";
-import { afToSlugOf } from "./team-files";
+import { DETAIL_PROVIDERS, type DetailProvider } from "./detail-provider";
+import { afToSlugOf, hlToSlugOf } from "./team-files";
+
 import { readCompetitionFiles } from "./team-files-io";
 import { loadTeamIds } from "./team-ids";
 import {
@@ -78,6 +81,9 @@ import {
   type WeeklyTable,
 } from "./weekly-kr";
 import type { WeeklyStageContext, WeeklyStageReport } from "./weekly-stages";
+
+/** 이월 항목(누락 경고 입력) */
+type KoreanWeeklyPendingEntry = Pick<AfPendingEntry, "id" | "comp" | "kickoff">;
 
 // ─── 시간 상한 (단계 timeoutMs 10분 안 — weekly-stages.ts) ─────────────────
 
@@ -159,7 +165,11 @@ async function loadReportLinks(
       loadTeamIds(ctx.rootDir),
       readCompetitionFiles(ctx.dataDir, warn),
     ]);
-    return { afToSlug: afToSlugOf(teamIds), competitions };
+    return {
+      afToSlug: afToSlugOf(teamIds),
+      hlToSlug: hlToSlugOf(teamIds),
+      competitions,
+    };
   } catch (error) {
     warn("weekly.korean.links-unavailable", { error: errorText(error) });
     return { afToSlug: new Map(), competitions: {} };
@@ -218,18 +228,25 @@ export async function loadKoreanWeeklyInputs(
     const t = Date.parse(m.kickoff);
     return t >= from && t <= to;
   });
-  // 이월 목록 — 읽지 못하면 경고만(누락 경고는 보조 정보 — 발행을 멈추지 않는다)
-  const pending = await readAfPending(ctx.dataDir);
-  if (pending.error !== null)
-    ctx.logger?.warn("weekly.korean-weekly.af-pending.unreadable", {
-      error: pending.error,
-    });
+  // 이월 목록(af-pending · hl-pending — D80) — 읽지 못하면 경고만(누락 경고는 보조 정보 — 발행을 멈추지 않는다)
+  const pendingEntries: Array<
+    KoreanWeeklyPendingEntry & { provider: DetailProvider }
+  > = [];
+  for (const provider of DETAIL_PROVIDERS) {
+    const pending = await readAfPending(ctx.dataDir, provider);
+    if (pending.error !== null)
+      ctx.logger?.warn("weekly.korean-weekly.af-pending.unreadable", {
+        provider,
+        error: pending.error,
+      });
+    for (const f of pending.fixtures) pendingEntries.push({ ...f, provider });
+  }
   const possiblyMissing = findPossiblyMissing({
     table,
     range: ctx.weekRange,
     ledger: inWeek,
     links,
-    pending: pending.fixtures,
+    pending: pendingEntries,
   });
   const nameKo = new Map<CompId, string>(
     competitions.map((c) => [c.id, c.nameKo]),

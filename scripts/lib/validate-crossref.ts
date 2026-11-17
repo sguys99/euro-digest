@@ -266,7 +266,7 @@ export function checkPublisherDomainSources(
 }
 
 /**
- * 5. 활성 한국 선수의 소속팀이 team-ids.json에 있고 API-Football 팀 id(af)가 있는지 (D33).
+ * 5. 활성 한국 선수의 소속팀이 team-ids.json에 있고 API-Football 팀 id(af)가 있는지 (D33) · Highlightly 팀 id(hl)가 없으면 경고(D80).
  * 비활성 선수(기타 리그 이적 등 — 기록 수집 중단, FR-64)는 보지 않는다.
  */
 export function checkKoreanPlayerTeamIds(
@@ -288,14 +288,26 @@ export function checkKoreanPlayerTeamIds(
           `활성 선수 "${player.slug}"의 팀 "${player.team}"가 team-ids.json에 없음 — API-Football 팀 id(af)를 함께 등록할 것`,
         ),
       );
-    } else if (entry.af === null) {
-      issues.push(
-        crossRefError(
-          CROSSREF_FILES.koreanPlayers,
-          path,
-          `활성 선수 "${player.slug}"의 팀 "${player.team}"의 af(API-Football 팀 id)가 null — 소속팀 경기 기록을 수집하지 못함`,
-        ),
-      );
+    } else {
+      if (entry.af === null) {
+        issues.push(
+          crossRefError(
+            CROSSREF_FILES.koreanPlayers,
+            path,
+            `활성 선수 "${player.slug}"의 팀 "${player.team}"의 af(API-Football 팀 id)가 null — 소속팀 경기 기록을 수집하지 못함`,
+          ),
+        );
+      }
+      // Highlightly(경기 상세 기본 프로바이더 — PRD §15 D80): 없으면 그 팀의 기타 대회 경기·박스스코어(출전 시간)를 고르지 못한다
+      if ((entry.hl ?? null) === null) {
+        issues.push({
+          severity: "warn",
+          stage: "crossref",
+          file: CROSSREF_FILES.koreanPlayers,
+          path: formatIssuePath(path),
+          message: `활성 선수 "${player.slug}"의 팀 "${player.team}"의 hl(Highlightly 팀 id)가 없음 — 그 팀의 기타 대회 경기·출전 시간(박스스코어)을 받지 못함 (scripts/build-team-ids.ts --hl)`,
+        });
+      }
     }
   });
   return issues;
@@ -511,8 +523,9 @@ export function checkKoreanPlayersData(
       );
     }
     if (meta !== undefined) {
+      // 기록 연결 = 경기 상세 프로바이더 선수 id 하나 이상(apiFootballId · highlightlyId — D80, korean-players-data.ts와 같은 규칙)
       const since =
-        player.apiFootballId !== null
+        player.apiFootballId !== null || (player.highlightlyId ?? null) !== null
           ? (meta.playerSince[r.slug] ?? null)
           : null;
       if (r.since !== since) {

@@ -19,6 +19,7 @@
     "position": "DF",
     "birthYear": 1998,
     "apiFootballId": 123456,
+    "highlightlyId": 99123456,
     "active": false
   }
 ]

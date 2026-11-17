@@ -1,0 +1,23 @@
+{
+  "updatedAt": "2026-11-17T22:12:40.000Z",
+  "fixtures": [
+    {
+      "id": 1340510451,
+      "comp": "BUNDESLIGA",
+      "leagueId": 67162,
+      "kickoff": "2026-11-07T14:30:00.000Z",
+      "status": "2H",
+      "firstSeen": "2026-11-07T15:40:12.000Z",
+      "requeries": 0
+    },
+    {
+      "id": 1399000001,
+      "comp": null,
+      "leagueId": 70001,
+      "kickoff": "2026-11-17T19:45:00.000Z",
+      "status": "NS",
+      "firstSeen": "2026-11-17T22:12:40.000Z",
+      "requeries": 1
+    }
+  ]
+}

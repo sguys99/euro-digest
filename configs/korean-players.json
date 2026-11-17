@@ -8,6 +8,7 @@
     "position": "DF",
     "birthYear": 2004,
     "apiFootballId": null,
+    "highlightlyId": 57354311,
     "active": true
   },
   {
@@ -19,6 +20,7 @@
     "position": "FW",
     "birthYear": 2007,
     "apiFootballId": 423714,
+    "highlightlyId": 68218108,
     "active": true
   },
   {
@@ -30,6 +32,7 @@
     "position": "MF",
     "birthYear": 2001,
     "apiFootballId": 927,
+    "highlightlyId": 149401,
     "active": true
   },
   {
@@ -41,6 +44,7 @@
     "position": "DF",
     "birthYear": 1996,
     "apiFootballId": 2897,
+    "highlightlyId": 466571,
     "active": true
   },
   {
@@ -52,6 +56,7 @@
     "position": "MF",
     "birthYear": 1999,
     "apiFootballId": 512,
+    "highlightlyId": 82586,
     "active": true
   },
   {
@@ -63,6 +68,7 @@
     "position": "MF",
     "birthYear": 1992,
     "apiFootballId": 2906,
+    "highlightlyId": 468020,
     "active": true
   },
   {
@@ -74,6 +80,7 @@
     "position": "MF",
     "birthYear": 2003,
     "apiFootballId": 280358,
+    "highlightlyId": 45137792,
     "active": true
   },
   {
@@ -85,6 +92,7 @@
     "position": "DF",
     "birthYear": 1998,
     "apiFootballId": 197985,
+    "highlightlyId": 31875739,
     "active": true
   },
   {
@@ -96,6 +104,7 @@
     "position": "FW",
     "birthYear": 1996,
     "apiFootballId": 24888,
+    "highlightlyId": 4007122,
     "active": true
   },
   {
@@ -107,6 +116,7 @@
     "position": "MF",
     "birthYear": 1999,
     "apiFootballId": null,
+    "highlightlyId": null,
     "active": false
   },
   {
@@ -118,6 +128,7 @@
     "position": "FW",
     "birthYear": 2006,
     "apiFootballId": null,
+    "highlightlyId": null,
     "active": false
   }
 ]

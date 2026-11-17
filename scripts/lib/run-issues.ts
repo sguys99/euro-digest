@@ -37,15 +37,27 @@ import type { MatchProvider, ProviderOutcome } from "./match-data";
 /** 오류 요약 최대 길이(이슈 스키마 ShortText 5,000자보다 훨씬 짧게 — 한 줄) */
 const DETAIL_MAX = 300;
 
-/** 데이터 API 소스 ID(이슈 원인 키 `source:<id>`) — API-Football은 api-football-stage.ts와 같은 값 */
+/** 데이터 API 소스 ID(이슈 원인 키 `source:<id>`) — API-Football은 api-football-stage.ts, Highlightly는 highlightly-stage.ts와 같은 값 */
 export const MATCH_SOURCE_IDS: Readonly<Record<MatchProvider, string>> = {
   "football-data": "football-data",
   "api-football": "api-football",
+  highlightly: "highlightly",
 };
 
 const MATCH_SOURCE_NAMES: Readonly<Record<MatchProvider, string>> = {
   "football-data": "football-data.org",
   "api-football": "API-Football",
+  highlightly: "Highlightly",
+};
+
+/** 경기 상세 단계 예상 밖 실패 안내(프로바이더별 설정 이름) */
+const DETAIL_FAILED_NOTES: Readonly<
+  Record<Exclude<MatchProvider, "football-data">, string>
+> = {
+  "api-football":
+    "API-Football 단계가 예상 밖 오류로 멈췄습니다 — 브리핑은 득점자 없이, 원장·이월은 이번 실행 몫이 빠졌습니다. 설정(API_FOOTBALL_MAX_CALLS 등)·코드 오류를 확인하세요.",
+  highlightly:
+    "Highlightly 단계가 예상 밖 오류로 멈췄습니다 — 브리핑은 득점자 없이, 원장·이월은 이번 실행 몫이 빠졌습니다(지난 날짜는 다시 받을 수 있다). 설정(HIGHLIGHTLY_MAX_CALLS · configs highlightlyLeagueId·hl 등)·코드 오류를 확인하세요.",
 };
 
 /** 소스 이슈로 내지 않는 프로바이더 실패 종류 — 시간 예산(늦은 실행·브리핑 마감, D35 budget과 같은 취급)·취소(뉴스 실패 — 실행 실패 이슈가 맡음) */
@@ -427,7 +439,9 @@ function apiFootballEvent(
   return {
     errorType: issueErrorType(af.errorType),
     error: oneLine(af.error),
-    note: "API-Football 단계가 예상 밖 오류로 멈췄습니다 — 브리핑은 득점자 없이, 원장·이월은 이번 실행 몫이 빠졌습니다. 설정(API_FOOTBALL_MAX_CALLS 등)·코드 오류를 확인하세요.",
+    note: DETAIL_FAILED_NOTES[
+      af.provider === "highlightly" ? "highlightly" : "api-football"
+    ],
   };
 }
 
@@ -448,7 +462,10 @@ export function matchDataIssuePayloads(
         : competitionsEvent(matchData.competitions),
     ],
     [
-      "api-football",
+      // 경기 상세 프로바이더(D80 — 결과의 provider: api-football · highlightly)
+      matchData.apiFootball?.provider === "highlightly"
+        ? "highlightly"
+        : "api-football",
       matchData.apiFootball ? apiFootballEvent(matchData.apiFootball) : null,
     ],
   ];

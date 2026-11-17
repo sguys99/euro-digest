@@ -41,6 +41,12 @@ import type {
 import { formatKst, utcDate } from "@/lib/time";
 
 import { unwrapBriefOutput } from "./brief";
+import {
+  ledgerKeyProvider,
+  ledgerMatchKey,
+  slugOfLedgerTeam,
+  type DetailProvider,
+} from "./detail-provider";
 import { estimateCost, type CostEstimate } from "./cost";
 import { withJosa } from "./josa";
 import {
@@ -213,13 +219,15 @@ function goalMinuteLabel(g: { minute: number; extra: number | null }): string {
     : String(g.minute);
 }
 
-/** 원장 경기 + 선수 → 그 주 경기 1건 */
+/** 원장 경기 + 선수 → 그 주 경기 1건. 선수 id는 항목 키의 체계(af-·hl- — D80)로 고른다 */
 function matchLineOf(
   m: LedgerMatch,
-  afId: number,
+  ids: { af: number | null; hl: number | null },
   compNames: WeeklyTableInput["compNames"],
   links: LogContext,
 ): WeeklyMatchLine | null {
+  const afId = ledgerKeyProvider(m.id) === "highlightly" ? ids.hl : ids.af;
+  if (afId === null) return null;
   const row = m.korean.find((r) => r.player === afId);
   if (!row) return null;
   const own = row.side;
@@ -236,7 +244,7 @@ function matchLineOf(
     logMatchId: fdMatchIdOf(m, links) ?? m.id,
     leagueRaw:
       m.comp === null && m.league.trim() !== "" ? m.league.trim() : null,
-    opponentSlug: links.afToSlug.get(m[other].id) ?? null,
+    opponentSlug: slugOfLedgerTeam(links, m.id, m[other].id) ?? null,
     kickoff: m.kickoff,
     comp,
     compName:
@@ -277,7 +285,8 @@ export function buildWeeklyTable(input: WeeklyTableInput): WeeklyTable {
     .sort(
       (a, b) =>
         Date.parse(a.kickoff) - Date.parse(b.kickoff) ||
-        Number(a.id.slice(3)) - Number(b.id.slice(3)),
+        Number(a.id.slice(3)) - Number(b.id.slice(3)) ||
+        (a.id < b.id ? -1 : a.id > b.id ? 1 : 0),
     );
   const excluded: WeeklyTable["excluded"] = [];
   const rows: WeeklyPlayerRow[] = [];
@@ -290,7 +299,8 @@ export function buildWeeklyTable(input: WeeklyTableInput): WeeklyTable {
       excluded.push({ slug: p.slug, reason: "inactive" });
       continue;
     }
-    if (p.apiFootballId === null) {
+    const hlId = p.highlightlyId ?? null;
+    if (p.apiFootballId === null && hlId === null) {
       excluded.push({ slug: p.slug, reason: "no-api-id" });
       continue;
     }
@@ -305,11 +315,11 @@ export function buildWeeklyTable(input: WeeklyTableInput): WeeklyTable {
       excluded.push({ slug: p.slug, reason: "since-after-week" });
       continue;
     }
-    const afId = p.apiFootballId;
+    const ids = { af: p.apiFootballId, hl: hlId };
     const links = input.links ?? NO_LINKS;
     const matches = inWeek
       .filter((m) => utcDate(m.kickoff) >= since)
-      .map((m) => matchLineOf(m, afId, input.compNames, links))
+      .map((m) => matchLineOf(m, ids, input.compNames, links))
       .filter((l): l is WeeklyMatchLine => l !== null);
     let apps = 0;
     let minutes = 0;
@@ -353,8 +363,8 @@ export function buildWeeklyTable(input: WeeklyTableInput): WeeklyTable {
  *   - 일정(`schedule`): 대회 파일(data/competitions — football-data)에서 표 행 선수(추적 중인 등록 선수)의 소속팀(korean-players `team`)
  *     경기 중 킥오프가 구간 안이고 연기(postponed)가 아닌데, 원장 경기와 연결되지 않고(fdMatchIdOf) 그 선수 주간 경기 줄에도 킥오프
  *     ±3시간(FD_LINK_TOLERANCE_MS) 경기가 없는 것. 같은 경기가 이월 목록에도 있으면 `pending: true`.
- *   - 이월(`af-pending`): data/cache/af-pending.json(미종료 이월) 중 킥오프가 구간 안이고 대회가 null(한국 선수 소속팀의 기타 대회 —
- *     6개 대회 항목은 한국 선수 경기인지 알 수 없어 일정 근거로만 본다).
+ *   - 이월(`af-pending` — 이름은 역사적): data/cache/af-pending.json · hl-pending.json(미종료 이월, D80) 중 킥오프가 구간 안이고 대회가
+ *     null(한국 선수 소속팀의 기타 대회 — 6개 대회 항목은 한국 선수 경기인지 알 수 없어 일정 근거로만 본다). id는 원장 키 형식(af-·hl-).
  */
 export interface WeeklyMissingCandidate {
   source: "schedule" | "af-pending";
@@ -375,7 +385,12 @@ export function findPossiblyMissing(input: {
   /** 그 주 구간 원장 경기 */
   ledger: readonly LedgerMatch[];
   links: LogContext;
-  pending: ReadonlyArray<Pick<AfPendingEntry, "id" | "comp" | "kickoff">>;
+  /** 이월 항목 — `provider`가 없으면 API-Football(af-pending.json) */
+  pending: ReadonlyArray<
+    Pick<AfPendingEntry, "id" | "comp" | "kickoff"> & {
+      provider?: DetailProvider;
+    }
+  >;
 }): WeeklyMissingCandidate[] {
   const from = Date.parse(input.range.from);
   const to = Date.parse(input.range.to);
@@ -424,7 +439,7 @@ export function findPossiblyMissing(input: {
     if (p.comp !== null) continue;
     out.push({
       source: "af-pending",
-      id: `af-${p.id}`,
+      id: ledgerMatchKey(p.provider ?? "api-football", p.id),
       kickoff: p.kickoff,
       teams: [],
       players: [],

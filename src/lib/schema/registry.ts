@@ -276,6 +276,14 @@ export const schemaRegistry: readonly SchemaRegistryEntry[] = [
       "API-Football 상세 미수신 대상 경기 — 다음 실행 재조회 (PRD §15 D27·D33, M1-48)",
   }),
   entry({
+    pattern: "data/cache/hl-pending.json",
+    kind: "data",
+    status: "confirmed",
+    schema: AfPendingFileSchema,
+    description:
+      "Highlightly 상세 미수신 대상 경기 — 다음 실행 재조회 (PRD §15 D80, M5-18 — af-pending과 같은 형식)",
+  }),
+  entry({
     pattern: "data/cache/lineup-backfill.json",
     kind: "data",
     status: "confirmed",

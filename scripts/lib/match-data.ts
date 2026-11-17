@@ -13,11 +13,14 @@
  * 프로바이더 단계: 호스트가 달라(분당 한도가 따로) 병렬로 돌리고, 한 프로바이더의 실패가 다른 쪽을 멈추지 않게
  * `isolateProvider`로 감싼다(던지지 않고 결과를 돌려준다).
  *
- * 경기 상세(`MatchDetail`, M1-48): API-Football 경기 단건 응답(`/fixtures?id=`)을 어댑터가 바꾼 형식 — 득점(events)·라인업
+ * 경기 상세(`MatchDetail`, M1-48 · D80): 경기 상세 프로바이더 응답을 어댑터가 바꾼 형식 — API-Football 경기 단건(`/fixtures?id=`)
+ * 또는 Highlightly 상세·라인업·박스스코어(`/matches/{id}`·`/lineups/{id}`·`/box-score/{id}`, providers/highlightly.ts). 원래 형식은 — 득점(events)·라인업
  * (포메이션·선발·교체 명단·출전 시간). 원장(data/matches, M1-48b)·브리핑 득점자(M1-19)·포메이션(M2-07)·한국 선수 기록(M3-02)이
  * 이 형식만 읽는다. 전 선수 출전 시간은 메모리에서만 쓰고 저장하지 않는다(D33 ② — 원장은 득점·도움·포메이션 + 등록 한국 선수 행).
  */
 import type { CompId } from "@/lib/schema";
+
+import type { DetailProvider } from "./detail-provider";
 
 // ─── 스코어·팀 ───────────────────────────────────────────────────────────
 
@@ -64,7 +67,8 @@ export interface TeamRef {
   fullName: string | null;
 }
 
-export type MatchProvider = "football-data" | "api-football";
+/** 데이터 프로바이더 — football-data(결과·순위) + 경기 상세 프로바이더(API-Football · Highlightly — PRD §15 D80) */
+export type MatchProvider = "football-data" | DetailProvider;
 
 /** 종료 경기 1건(브리핑 입력·대회 페이지 공용 내부 형식) */
 export interface FinishedMatch {
@@ -149,6 +153,11 @@ export interface MatchGoal {
  */
 export interface LineupPlayer extends PersonRef {
   minutes: number | null;
+  /**
+   * 교체로 들어왔는가 — 출전 시간 기록이 없을 때(minutes null) 교체 이벤트로 안 사실(Highlightly — 박스스코어 없이 라인업만 받은
+   * 경기, providers/highlightly.ts). true면 출전 시간을 몰라도 교체 출전(sub)이다. API-Football 상세에는 없다(출전 시간으로 판정)
+   */
+  cameOn?: boolean;
   /** 등번호(player.number) */
   number: number | null;
   /** 포지션 G·D·M·F(player.pos) */
@@ -174,9 +183,10 @@ export interface TeamLineup {
  * 담으므로 `comp`가 null일 수 있고 대회는 `leagueId`로 구별한다.
  */
 export interface MatchDetail {
-  provider: "api-football";
+  /** 경기 상세 프로바이더 — id 체계(경기·대회·팀·선수)를 정한다. 원장 키 접두사 af-·hl-(PRD §15 D80 ②) */
+  provider: DetailProvider;
   matchId: number;
-  /** API-Football league id(6개 대회는 configs/competitions.json apiFootballLeagueId) */
+  /** 프로바이더 league id(6개 대회는 configs/competitions.json apiFootballLeagueId·highlightlyLeagueId) */
   leagueId: number;
   /** 대회 원문 이름(영문) */
   leagueName: string;
@@ -238,8 +248,9 @@ function findInLineup(
 
 /**
  * 경기 상세에서 선수 1명의 출전 기록(순수 함수) — **선수 id로만 매칭**한다(이름 표기는 응답마다 다르다 — FR-60, D27).
- * 한국 선수는 configs/korean-players.json `apiFootballId`로 부른다(행 조립·저장은 scripts/lib/match-ledger.ts, M1-48b).
- *   - 라인업에 있으면: startXI → start, 교체 명단 → 출전 시간 > 0이면 sub, 아니면 bench
+ * 한국 선수는 configs/korean-players.json의 그 상세 프로바이더 id(`apiFootballId`·`highlightlyId`)로 부른다(행 조립·저장은
+ * scripts/lib/match-ledger.ts, M1-48b).
+ *   - 라인업에 있으면: startXI → start, 교체 명단 → 출전 시간 > 0이거나 교체 이벤트로 들어왔으면(cameOn) sub, 아니면 bench
  *   - 라인업에 없고 `teamId`가 이 경기 팀이면: 라인업이 있으면 absent(명단 제외), 없으면 unknown
  *   - 그 밖(이 경기 선수가 아님) → null
  */
@@ -261,7 +272,7 @@ export function playerAppearance(
     const minutes = found.player.minutes;
     const status: AppearanceStatus = found.started
       ? "start"
-      : (minutes ?? 0) > 0
+      : (minutes ?? 0) > 0 || found.player.cameOn === true
         ? "sub"
         : "bench";
     return { ...count(side), status, minutes };
