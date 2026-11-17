@@ -586,7 +586,6 @@ test.describe("④ 접근성 트리 — 대표 페이지 골격", () => {
       - main:
         - region "오늘의 5줄":
           - heading "오늘의 5줄" [level=2]
-          - list "5줄"
         - region "주요 뉴스":
           - heading "주요 뉴스" [level=2]
           - list:
@@ -600,6 +599,12 @@ test.describe("④ 접근성 트리 — 대표 페이지 골격", () => {
         - region "구독":
           - heading "구독" [level=2]
     `);
+    // 5줄 목록은 경기 없는 날(A매치 휴식기 · 비시즌 — 2026-11-16~)에는 쉬는 상태로 바뀐다 — 골격은 그날 데이터와 무관하게 보고,
+    // 목록이 있으면 이름만 확인한다
+    const briefList = page
+      .getByRole("region", { name: "오늘의 5줄" })
+      .getByRole("list", { name: "5줄" });
+    if ((await briefList.count()) > 0) await expect(briefList).toBeVisible();
     // 장식 러닝 헤드(영문 대문자)는 트리에 없다
     expect(await page.locator("body").ariaSnapshot()).not.toContain(
       "STARTING FIVE",
