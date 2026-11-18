@@ -855,5 +855,80 @@
     },
     "sources": [],
     "status": "success"
+  },
+  {
+    "runId": "collect-dev-20261118T081235Z-f3c3",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-11-18T08:12:35.988Z",
+    "finishedAt": "2026-11-18T08:12:46.635Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 0,
+      "out": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0,
+      "highlightly": 4
+    },
+    "sources": [],
+    "status": "skipped"
+  },
+  {
+    "runId": "collect-dev-20261118T081255Z-d92e",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-11-18T08:12:55.212Z",
+    "finishedAt": "2026-11-18T08:13:47.061Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 0,
+      "out": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0,
+      "highlightly": 14
+    },
+    "sources": [],
+    "status": "skipped"
+  },
+  {
+    "runId": "collect-dev-20261118T081420Z-a46c",
+    "env": "dev",
+    "job": "collect",
+    "startedAt": "2026-11-18T08:14:20.227Z",
+    "finishedAt": "2026-11-18T08:14:47.650Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 0,
+      "out": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0,
+      "highlightly": 8
+    },
+    "sources": [],
+    "status": "skipped"
   }
 ]

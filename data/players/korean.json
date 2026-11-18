@@ -1,13 +1,13 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-08T22:15:37.455Z",
+  "generatedAt": "2026-11-18T08:15:06.297Z",
   "players": [
     {
       "slug": "kim-ji-soo",
       "team": "brentford",
       "provider": "api-football",
-      "since": null,
+      "since": "2026-11-04",
       "season": [],
       "recent": [],
       "next": {
@@ -20,7 +20,7 @@
         },
         "home": true
       },
-      "updatedAt": "2026-11-01T04:56:14.815Z"
+      "updatedAt": "2026-11-18T08:15:06.297Z"
     },
     {
       "slug": "park-seung-soo",
@@ -37,6 +37,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-560633",
+          "comp": "EPL",
+          "kickoff": "2026-11-07T15:00:00.000Z",
+          "opponent": {
+            "slug": "fulham",
+            "name": "Fulham"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "absent",
+          "started": false,
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-560622",
           "comp": "EPL",
@@ -67,7 +86,7 @@
         },
         "home": true
       },
-      "updatedAt": "2026-11-02T22:17:28.133Z"
+      "updatedAt": "2026-11-18T08:15:06.297Z"
     },
     {
       "slug": "lee-kang-in",
@@ -77,8 +96,8 @@
       "season": [
         {
           "comp": "LALIGA",
-          "apps": 2,
-          "minutes": 134,
+          "apps": 3,
+          "minutes": 194,
           "goals": 0,
           "assists": 0
         },
@@ -91,6 +110,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-564746",
+          "comp": "LALIGA",
+          "kickoff": "2026-11-08T20:00:00.000Z",
+          "opponent": {
+            "slug": "barcelona",
+            "name": "Barcelona"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 2
+          },
+          "status": "start",
+          "started": true,
+          "minutes": 60,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-575381",
           "comp": "UCL",
@@ -178,7 +216,7 @@
         },
         "home": false
       },
-      "updatedAt": "2026-11-03T22:15:55.399Z"
+      "updatedAt": "2026-11-18T08:15:06.297Z"
     },
     {
       "slug": "kim-min-jae",
@@ -210,6 +248,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565851",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-07T14:30:00.000Z",
+          "opponent": {
+            "slug": "mainz",
+            "name": "FSV Mainz 05"
+          },
+          "home": false,
+          "result": {
+            "for": 2,
+            "against": 1
+          },
+          "status": "bench",
+          "started": false,
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-575381",
           "comp": "UCL",
@@ -286,25 +343,6 @@
           "minutes": 0,
           "goals": 0,
           "assists": 0
-        },
-        {
-          "matchId": "fd-575372",
-          "comp": "UCL",
-          "kickoff": "2026-10-21T19:00:00.000Z",
-          "opponent": {
-            "slug": "arsenal",
-            "name": "Arsenal"
-          },
-          "home": true,
-          "result": {
-            "for": 2,
-            "against": 2
-          },
-          "status": "start",
-          "started": true,
-          "minutes": 45,
-          "goals": 0,
-          "assists": 0
         }
       ],
       "next": {
@@ -317,7 +355,7 @@
         },
         "home": true
       },
-      "updatedAt": "2026-11-03T22:15:55.399Z"
+      "updatedAt": "2026-11-18T08:15:06.297Z"
     },
     {
       "slug": "jeong-woo-yeong",
@@ -327,8 +365,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 2,
-          "minutes": 92,
+          "apps": 3,
+          "minutes": 137,
           "goals": 0,
           "assists": 0
         },
@@ -342,6 +380,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565854",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-08T16:30:00.000Z",
+          "opponent": {
+            "slug": "freiburg",
+            "name": "SC Freiburg"
+          },
+          "home": false,
+          "result": {
+            "for": 0,
+            "against": 2
+          },
+          "status": "sub",
+          "started": false,
+          "minutes": 45,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565841",
           "comp": "BUNDESLIGA",
@@ -411,7 +468,7 @@
         },
         "home": true
       },
-      "updatedAt": "2026-11-01T22:18:18.461Z"
+      "updatedAt": "2026-11-18T08:15:06.297Z"
     },
     {
       "slug": "lee-jae-sung",
@@ -421,8 +478,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 1,
-          "minutes": 75,
+          "apps": 2,
+          "minutes": 138,
           "goals": 1,
           "assists": 0
         },
@@ -436,6 +493,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565851",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-07T14:30:00.000Z",
+          "opponent": {
+            "slug": "bayern-munchen",
+            "name": "Bayern Munich"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 2
+          },
+          "status": "start",
+          "started": true,
+          "minutes": 63,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565846",
           "comp": "BUNDESLIGA",
@@ -505,7 +581,7 @@
         },
         "home": false
       },
-      "updatedAt": "2026-11-01T04:56:14.815Z"
+      "updatedAt": "2026-11-18T08:15:06.297Z"
     },
     {
       "slug": "jens-castrop",
@@ -625,6 +701,25 @@
       ],
       "recent": [
         {
+          "matchId": "fd-565848",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-07T14:30:00.000Z",
+          "opponent": {
+            "slug": "rb-leipzig",
+            "name": "RB Leipzig"
+          },
+          "home": false,
+          "result": {
+            "for": 2,
+            "against": 5
+          },
+          "status": "bench",
+          "started": false,
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
+        {
           "matchId": "fd-565842",
           "comp": "BUNDESLIGA",
           "kickoff": "2026-10-31T14:30:00.000Z",
@@ -693,7 +788,7 @@
         },
         "home": true
       },
-      "updatedAt": "2026-11-01T04:56:14.815Z"
+      "updatedAt": "2026-11-18T08:15:06.297Z"
     },
     {
       "slug": "hwang-hee-chan",
@@ -703,8 +798,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 2,
-          "minutes": 173,
+          "apps": 3,
+          "minutes": 263,
           "goals": 0,
           "assists": 0
         },
@@ -718,6 +813,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565856",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-08T18:30:00.000Z",
+          "opponent": {
+            "slug": "hoffenheim",
+            "name": "1899 Hoffenheim"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 2
+          },
+          "status": "start",
+          "started": true,
+          "minutes": 90,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565840",
           "comp": "BUNDESLIGA",
@@ -787,7 +901,7 @@
         },
         "home": true
       },
-      "updatedAt": "2026-11-01T04:56:14.815Z"
+      "updatedAt": "2026-11-18T08:15:06.297Z"
     },
     {
       "slug": "hong-hyun-seok",
