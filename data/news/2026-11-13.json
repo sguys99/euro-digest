@@ -1,7 +1,7 @@
 {
   "date": "2026-11-13",
-  "generatedAt": "2026-11-12T22:12:25.360Z",
-  "runId": "collect-prod-20261112T221219Z-2d2f",
+  "generatedAt": "2026-11-18T22:12:47.264Z",
+  "runId": "collect-prod-20261118T221247Z-6baa",
   "cards": [
     {
       "id": "c_91c84dc569",
@@ -323,12 +323,6 @@
           "u": "https://thedailybriefing.io/p/michael-carrick-sacked-united",
           "at": "2026-11-12T09:38:21.000Z",
           "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7683765/2026/11/12/michael-carrick-sacked-manchester-united-head-coach/",
-          "at": "2026-11-12T10:19:35.000Z",
-          "tier": 2
         }
       ],
       "lang": "en",
@@ -617,33 +611,6 @@
       "created": "2026-11-12T22:12:19.632Z"
     },
     {
-      "id": "c_ec8f51af5f",
-      "t": "Folarin Balogun on his failed Everton transfer, return to the USMNT and post-World Cup detour",
-      "s": [],
-      "cat": "transfer",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "everton"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7777027/2026/11/12/folarin-balogun-usmnt-everton-transfer-monaco-pochettino/",
-          "at": "2026-11-12T21:15:43.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-12T22:12:19.632Z"
-    },
-    {
       "id": "c_740cce7e32",
       "t": "Esposito ammonito: l'attaccante entra in diffida",
       "s": [],
@@ -870,34 +837,6 @@
       "created": "2026-11-12T22:12:19.632Z"
     },
     {
-      "id": "c_8eb5496bf8",
-      "t": "Pochettino the manager, as seen by Tottenham, Chelsea and USMNT reporters",
-      "s": [],
-      "cat": "club",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "tottenham-hotspur",
-        "chelsea"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7773330/2026/11/12/pochettino-man-utd-usa-tottenham-chelsea/",
-          "at": "2026-11-12T17:00:08.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-12T22:12:19.632Z"
-    },
-    {
       "id": "c_81c42cd257",
       "t": "“내 애제자 당장 데려와” 맨유 지휘봉 잡는 포체티노, 1월 이적시장 첫 타깃으로 ‘美 폭격기’ 발로건 급부상",
       "s": [],
@@ -1062,42 +1001,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-11-12T22:12:19.632Z"
-    },
-    {
-      "id": "c_2f07571f15",
-      "t": "Real Madrid squad rankings: Arda Guler joins the elite but can Vinicius Jr recover?",
-      "s": [],
-      "cat": "transfer",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "real-madrid",
-        "barcelona"
-      ],
-      "players": [
-        "vinicius-junior"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7772940/2026/11/12/real-madrid-squad-rankings-guler-vinicius/",
-          "at": "2026-11-12T05:16:58.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7773140/2026/11/12/barcelona-squad-rankings-fermin-gordon/",
-          "at": "2026-11-12T05:16:53.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-12T22:12:19.632Z"
     },
