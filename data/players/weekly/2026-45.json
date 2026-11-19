@@ -5,8 +5,8 @@
   "rows": [
     {
       "player": "lee-kang-in",
-      "apps": 1,
-      "minutes": 31,
+      "apps": 2,
+      "minutes": 91,
       "goals": 0,
       "assists": 0,
       "matches": [
@@ -25,6 +25,105 @@
           },
           "status": "sub",
           "minutes": 31,
+          "goals": 0,
+          "assists": 0
+        },
+        {
+          "matchId": "fd-564746",
+          "kickoff": "2026-11-08T20:00:00.000Z",
+          "comp": "LALIGA",
+          "opponent": {
+            "slug": "barcelona",
+            "name": "Barcelona"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 60,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "hwang-hee-chan",
+      "apps": 1,
+      "minutes": 90,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565856",
+          "kickoff": "2026-11-08T18:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "hoffenheim",
+            "name": "1899 Hoffenheim"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 90,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "lee-jae-sung",
+      "apps": 1,
+      "minutes": 63,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565851",
+          "kickoff": "2026-11-07T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "bayern-munchen",
+            "name": "Bayern Munich"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 2
+          },
+          "status": "start",
+          "minutes": 63,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "jeong-woo-yeong",
+      "apps": 1,
+      "minutes": 45,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565854",
+          "kickoff": "2026-11-08T16:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "freiburg",
+            "name": "SC Freiburg"
+          },
+          "home": false,
+          "result": {
+            "for": 0,
+            "against": 2
+          },
+          "status": "sub",
+          "minutes": 45,
           "goals": 0,
           "assists": 0
         }
@@ -54,6 +153,78 @@
           "minutes": 11,
           "goals": 0,
           "assists": 0
+        },
+        {
+          "matchId": "fd-565851",
+          "kickoff": "2026-11-07T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "mainz",
+            "name": "FSV Mainz 05"
+          },
+          "home": false,
+          "result": {
+            "for": 2,
+            "against": 1
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "jens-castrop",
+      "apps": 1,
+      "minutes": 9,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565852",
+          "kickoff": "2026-11-06T19:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "hamburg",
+            "name": "Hamburger SV"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 3
+          },
+          "status": "sub",
+          "minutes": 9,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "kim-ji-soo",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-560638",
+          "kickoff": "2026-11-08T14:00:00.000Z",
+          "comp": "EPL",
+          "opponent": {
+            "slug": "brighton",
+            "name": "Brighton"
+          },
+          "home": false,
+          "result": {
+            "for": 0,
+            "against": 2
+          },
+          "status": "absent",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
         }
       ]
     },
@@ -81,6 +252,24 @@
           "minutes": 0,
           "goals": 0,
           "assists": 0
+        },
+        {
+          "matchId": "fd-560633",
+          "kickoff": "2026-11-07T15:00:00.000Z",
+          "comp": "EPL",
+          "opponent": {
+            "slug": "fulham",
+            "name": "Fulham"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "absent",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
         }
       ]
     },
@@ -90,43 +279,30 @@
       "minutes": 0,
       "goals": 0,
       "assists": 0,
-      "matches": []
-    },
-    {
-      "player": "jens-castrop",
-      "apps": 0,
-      "minutes": 0,
-      "goals": 0,
-      "assists": 0,
-      "matches": []
-    },
-    {
-      "player": "lee-jae-sung",
-      "apps": 0,
-      "minutes": 0,
-      "goals": 0,
-      "assists": 0,
-      "matches": []
-    },
-    {
-      "player": "jeong-woo-yeong",
-      "apps": 0,
-      "minutes": 0,
-      "goals": 0,
-      "assists": 0,
-      "matches": []
-    },
-    {
-      "player": "hwang-hee-chan",
-      "apps": 0,
-      "minutes": 0,
-      "goals": 0,
-      "assists": 0,
-      "matches": []
+      "matches": [
+        {
+          "matchId": "fd-565848",
+          "kickoff": "2026-11-07T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "rb-leipzig",
+            "name": "RB Leipzig"
+          },
+          "home": false,
+          "result": {
+            "for": 2,
+            "against": 5
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
     }
   ],
   "mvp": "lee-kang-in",
-  "summary": "11월 2일부터 11월 8일까지 기록을 집계한 한국 선수 8명 가운데 2명이 경기에 나섰다. 이강인이 1경기 31분으로 MVP 점수 1점을 얻어 이번 주 MVP에 올랐다. 이번 주 한국 선수의 골과 도움은 없었다.",
-  "summaryAi": false,
-  "generatedAt": "2026-11-09T02:39:15.689Z"
+  "summary": "이강인이 이번 주 MVP에 선정됐으며, 골과 도움 없이 2경기 91분 출전으로 MVP 점수 2점을 기록했다. 아틀레티코 마드리드 소속 이강인은 11월 3일 UEFA 챔피언스리그 홈 경기 0-2 패배에서 31분 교체 출전했고, 11월 8일 라리가 바르셀로나전 1-2 패배에서는 60분 선발로 나섰다. 황희찬은 11월 8일 호펜하임 원정 1-2 패배에서 선발로 90분을 뛰었고, 이재성은 11월 7일 바이에른 뮌헨과의 홈 경기 1-2 패배에서 선발로 63분 출전했다. 정우영은 11월 8일 프라이부르크 원정 0-2 패배에서 45분 교체 출전했고, 옌스 카스트로프는 11월 6일 함부르크 원정 1-3 패배에서 9분 교체 출전했다. 김민재는 아틀레티코 마드리드 원정 2-0 승리에서 11분 교체 출전했고, 김지수와 박승수는 명단에서 제외됐으며, 설영우는 라이프치히 원정 2-5 패배에서 벤치에 머물렀다.",
+  "summaryAi": true,
+  "generatedAt": "2026-11-19T09:30:37.969Z"
 }

@@ -980,5 +980,29 @@
     },
     "sources": [],
     "status": "skipped"
+  },
+  {
+    "runId": "weekly-dev-20261119T092810Z-77ec",
+    "env": "dev",
+    "job": "weekly",
+    "startedAt": "2026-11-19T09:28:10.766Z",
+    "finishedAt": "2026-11-19T09:30:37.991Z",
+    "collected": 0,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 3056,
+      "out": 3032,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.000911,
+    "apiCalls": {
+      "footballData": 0,
+      "apiFootball": 0
+    },
+    "sources": [],
+    "status": "success"
   }
 ]
