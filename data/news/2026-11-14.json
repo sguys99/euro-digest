@@ -1,7 +1,7 @@
 {
   "date": "2026-11-14",
-  "generatedAt": "2026-11-13T22:13:03.432Z",
-  "runId": "collect-prod-20261113T221257Z-df05",
+  "generatedAt": "2026-11-19T22:12:38.602Z",
+  "runId": "collect-prod-20261119T221238Z-a333",
   "cards": [
     {
       "id": "c_0cbf77752c",
@@ -778,33 +778,6 @@
       "created": "2026-11-13T22:12:57.771Z"
     },
     {
-      "id": "c_2889b9db0d",
-      "t": "Emotional Pochettino bids farewell to USMNT, U.S. Soccer after taking Man United job",
-      "s": [],
-      "cat": "transfer",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7779028/2026/11/13/mauricio-pochettino-press-conference-usmnt-us-soccer-manchester-united/",
-          "at": "2026-11-13T15:28:13.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-13T22:12:57.771Z"
-    },
-    {
       "id": "c_fda71ac84d",
       "t": "[IN POINT] 모레노의 황희찬 사랑 대단...샬케서 부진에도 명단 발탁 이어 사우디전 선발까지",
       "s": [],
@@ -916,33 +889,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-11-13T22:12:57.771Z"
-    },
-    {
-      "id": "c_c72ff54929",
-      "t": "Mauricio Pochettino hired as Manchester United head coach",
-      "s": [],
-      "cat": "club",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7774384/2026/11/13/mauricio-pochettino-manchester-united-usmnt-announced/",
-          "at": "2026-11-13T12:00:32.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-13T22:12:57.771Z"
     },

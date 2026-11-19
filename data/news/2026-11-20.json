@@ -1,0 +1,1213 @@
+{
+  "date": "2026-11-20",
+  "generatedAt": "2026-11-19T22:12:43.830Z",
+  "runId": "collect-prod-20261119T221238Z-a333",
+  "cards": [
+    {
+      "id": "c_10e709b876",
+      "t": "[오피셜] 韓 축구 대형 호재! 이강인, AFC 올해의 국제선수상 영예…역대 최초 2년 연속 수상",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA",
+        "UCL"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 5,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698821",
+          "at": "2026-11-19T15:05:13.000Z",
+          "tier": 3
+        },
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314169",
+          "at": "2026-11-19T21:42:36.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_2a5c113ec9",
+      "t": "Barcelona target Man Utd's Martinez - Friday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona",
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cj5y14g2wppko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T21:57:22.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_5928fcfadd",
+      "t": "‘韓 국가대표 수비수’ 김민재, 끝내 뮌헨 떠나나…토트넘·아스널·빌라·밀란까지 영입 관심→“이적료 439억으로 평가”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen",
+        "tottenham-hotspur",
+        "arsenal"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698829",
+          "at": "2026-11-19T21:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_cf7fe98e67",
+      "t": "‘韓 국가대표 에이스’ 이강인, 음바페와 어깨 나란히…유럽 7대 리그 공격수 중 드리블 성공 2위→“ 다른 선택지를 제공하는 선수”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698828",
+          "at": "2026-11-19T20:55:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_2a165e44f4",
+      "t": "Pochettino's first Man Utd training session filmed by drone operator",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6wy9d7wqy7wo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T18:45:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_2b300de5db",
+      "t": "“여러 구단이 관심 있어”…김민재 인기 폭발했다! “바이에른 뮌헨이 대체 후보 명단까지 마련”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "SERIEA",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen",
+        "juventus"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698822",
+          "at": "2026-11-19T15:49:55.000Z",
+          "tier": 3
+        },
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698796",
+          "at": "2026-11-19T06:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_2ced9e91b9",
+      "t": "Culture, defence, Fernandes - Pochettino's priorities at Man Utd",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cxlylzyg38l8o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T15:05:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_58f6a8d69b",
+      "t": "Premier League clubs to cover legal costs if Man City sponsors sue",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqy4jvdw7jdlo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T13:29:42.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_2ef8166826",
+      "t": "‘韓 혼혈 국가대표’ 옌스 카스트로프, 도르트문트전서 첫 선발 출격 전망…주전 수비수 부상→”빠르게 투입할 수 있다”",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "borussia-dortmund"
+      ],
+      "players": [
+        "jens-castrop"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698800",
+          "at": "2026-11-19T08:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_3d2b2a53a1",
+      "t": "Manchester United, falla nella sicurezza: un drone riprende il primo allenamento di Pochettino",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/manchester-united-drone-video-primo-allenamento-pochettino-499682",
+          "at": "2026-11-19T21:00:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_44409f5541",
+      "t": "Frank happy to be 'back in the circus' at Palace",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cje3900n0vvro?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T20:16:10.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_ce207bcf28",
+      "t": "Sutton's predictions v world champion boxer Lauren Price",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c50mdnxy3ry0o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T18:52:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_c5bd77b79f",
+      "t": "Pavlovic: \"Arrivo al Milan? L'Atletico Madrid mi voleva ma avevo dato la parola a Ibra\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA",
+        "SERIEA"
+      ],
+      "teams": [
+        "milan",
+        "atletico-madrid"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/milan-pavlovic-intervista-conceicao-499680",
+          "at": "2026-11-19T18:30:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_e9285dee4f",
+      "t": "Napoli, si ferma Meret: frattura della quinta vertebra lombare",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/napoli-infortunio-meret-frattura-news-499674",
+          "at": "2026-11-19T17:11:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_0f65e9fbe4",
+      "t": "'I'm very healthy' - Kompany to return to dugout after health scare",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm0rkzwgn0lro?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T10:32:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_81c3a69d45",
+      "t": "Shevchenko accuses Mudryk camp of 'baseless slander'",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmgqx908lk44o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T20:44:11.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_14e1f38b6e",
+      "t": "Mudryk svela: \"Mi hanno fatto prendere delle pillole\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/mudryk-intervista-doping-ucraina-shevchenko-de-zerbi-499681",
+          "at": "2026-11-19T20:08:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_bdd82807e7",
+      "t": "New manager Frick to take Aberdeen back to basics",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cq36gw03n17jo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T19:11:26.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_d70eba17af",
+      "t": "England fined for fans' anti-Catholic chants in Spain",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmlye2n7p7d9o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T19:11:03.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_90fb15aa46",
+      "t": "Inghilterra, sanzione UEFA per i tifosi: multa e trasferta vietata con la condizionale",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/inghilterra-sanzione-uefa-tifosi-trasferta-multa-spagna-499679",
+          "at": "2026-11-19T19:00:34.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_fd1d1623d4",
+      "t": "Udinese, risoluzione consensuale con Runjaic e il suo staff",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "udinese"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/udinese-risoluzione-consensuale-kosta-runjaic-comunicato-499676",
+          "at": "2026-11-19T18:07:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_ad783d3a40",
+      "t": "감독까지 바뀌었는데 정신 못 차렸다! 밤늦게까지 게임 즐긴 맨유 FW→“마음대로 하고 팀 떠나라” 비판",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698824",
+          "at": "2026-11-19T17:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_c48e22dd0d",
+      "t": "We'll only sell if offer makes club blink - McInnes",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwlymr2159y5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T17:11:51.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_edeea16e5e",
+      "t": "무리뉴가 레알 마드리드 떠난 이유…“남을 수 있었지만 구단에 대한 사랑 때문에”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698823",
+          "at": "2026-11-19T16:52:52.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_dfc43afdec",
+      "t": "“손흥민이 강력하게 추천!” 오현규, 토트넘 이적 가능성…그런데 현지 매체는 “15~20골 넣을 공격수가 필요해”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698820",
+          "at": "2026-11-19T14:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_9026a40648",
+      "t": "“전술에 적응할 수 있어” 아모림이 맨유 수비수 영입 노린다…그런데 “매각 의사 있는지는 지켜봐야”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698818",
+          "at": "2026-11-19T13:20:37.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_aafc5a024b",
+      "t": "前 일본 국대 주장, 올 시즌 0경기→사실상 리버풀과 동행 끝났다…”J리그 복귀 가능성+중동 이적설”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698816",
+          "at": "2026-11-19T12:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_48fe017dac",
+      "t": "Man Utd late comebacks have made... a comeback. Is it simply part of their DNA?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7787320/2026/11/19/manchester-united-late-comebacks-dna/",
+          "at": "2026-11-19T12:00:26.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_658682c151",
+      "t": "Eight-year ban for player who threw rock that hit assistant referee",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqlyk9yzkz2no?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T10:20:58.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7794562/2026/11/19/jhon-perlaza-ecuador-ban-rock/",
+          "at": "2026-11-19T11:10:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_a87af800e6",
+      "t": "Bayern Munich's Vincent Kompany 'very good' but says he 'didn't listen to my body' after absence",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7794517/2026/11/19/vincent-kompany-health-bayern-munich/",
+          "at": "2026-11-19T10:22:33.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_2ed9064d6a",
+      "t": "🚨 EXCL: Chelsea make \"unbelievable player\" admired by Guardiola their number one target",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/excl-chelsea-make-unbelievable-player",
+          "at": "2026-11-19T09:19:44.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_5e48668386",
+      "t": "손흥민·이강인 슈팅까지 막아냈지만 결국 무너졌다…카타르 GK, 韓 축구에 0-1 패배 후 현실 인정 “우리 대표팀은 정상적인 상태가 아니다”",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698803",
+          "at": "2026-11-19T08:35:07.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_9df2c31be5",
+      "t": "How Premier League's big six keep getting richer",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6x28e93zv3jo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T07:38:22.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_5d563416e7",
+      "t": "From Forest fringes to Glasner's go-to guy - the rise of McAtee",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck98z842gp11o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T07:14:11.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_7435e62054",
+      "t": "🚨 Man United target ex-Liverpool man, Arsenal selling player to Real Madrid, Chelsea want superstar midfielder in January, Liverpool boost to sign winger, Pochettino’s striker wish-list & more.",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "LALIGA"
+      ],
+      "teams": [
+        "manchester-united",
+        "liverpool",
+        "arsenal",
+        "real-madrid",
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/man-united-target-ex-liverpool-man",
+          "at": "2026-11-19T07:06:46.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_992cec994c",
+      "t": "'모레노 고맙습니다' 주전 이강인 체력 안배에…“시메오네 감독 체제 복귀 고려하면 매우 긍정적”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698795",
+          "at": "2026-11-19T05:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_a060a2720c",
+      "t": "'대한민국 국가대표' 황희찬, 설영우는 없는데...'日 장신 ST' 고토 케이스케, 분데스리가 최고의 영입 선정 \"중요한 순간 득점하는 능력 뛰어나\"",
+      "s": [],
+      "cat": "national",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan",
+        "seol-young-woo"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698786",
+          "at": "2026-11-19T03:00:24.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_91f7cc495b",
+      "t": "Buurman rescues late Chelsea win against PSG",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [
+        "chelsea",
+        "paris-saint-germain"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cjy5xkq5wwrgo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-18T22:13:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_86678d5fb4",
+      "t": "Manager ins and outs - 2026-27",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cd94713djgyo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T16:45:46.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_f21e5b2d6a",
+      "t": "Football Daily",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sounds/play/m003501m?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T16:42:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_5043aa29f5",
+      "t": "Crawley keep Blackwell as boss until end of season",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c8zx975y67qdo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T16:40:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_de2a407b41",
+      "t": "Struggling Blackpool sack Evatt on his birthday",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm4g1rzjj4v2o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-19T16:12:14.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_2eae2563bd",
+      "t": "“다음 장 시작합니다” 맨유 퇴단 직접 발표한 16세 유망주→“1군도 뛰지 않았는데 마치 레전드인 것처럼 인사하네” 비판",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698815",
+          "at": "2026-11-19T11:55:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_b2f3596fa7",
+      "t": "‘포체티노 따라 맨체스터 유나이티드 안 갑니다!’…맥케니, 이적설 직접 부인→유벤투스 잔류 선언 “이곳에서 행복하다, 그래서 재계약했다”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "SERIEA"
+      ],
+      "teams": [
+        "manchester-united",
+        "juventus"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=698804",
+          "at": "2026-11-19T09:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    },
+    {
+      "id": "c_8a0a5efc16",
+      "t": "The BookKeeper: Real Madrid have world record €1.2bn revenues - but is that enough?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7778699/2026/11/19/real-madrid-finances-analysis-bookkeeper-25-26/",
+          "at": "2026-11-19T07:30:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-19T22:12:38.540Z"
+    }
+  ]
+}
