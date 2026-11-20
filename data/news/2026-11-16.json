@@ -1,7 +1,7 @@
 {
   "date": "2026-11-16",
-  "generatedAt": "2026-11-15T22:12:51.370Z",
-  "runId": "collect-prod-20261115T221245Z-b1a9",
+  "generatedAt": "2026-11-20T22:12:33.324Z",
+  "runId": "collect-prod-20261120T221233Z-d5b7",
   "cards": [
     {
       "id": "c_77b9d1cc35",
@@ -791,12 +791,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/c539gn33z1l3o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-15T11:28:25.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7770203/2026/11/14/arsene-wenger-fifa-president-election-infantino/",
-          "at": "2026-11-14T21:25:27.000Z",
           "tier": 2
         }
       ],

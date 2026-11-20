@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-20T19:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -51,35 +51,17 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1635622",
-    "kickoff": "2026-11-03T20:00:00.000Z",
-    "comp": "UCL",
-    "side": "away",
-    "opponent": "atletico-madrid",
+    "match": "hl-1340513855",
+    "kickoff": "2026-11-20T19:30:00.000Z",
+    "comp": "BUNDESLIGA",
+    "side": "home",
+    "opponent": "koln",
     "startXI": [
       {
-        "name": "M. Neuer",
-        "number": 1,
+        "name": "J. Urbig",
+        "number": 40,
         "pos": "G",
         "grid": "1:1"
-      },
-      {
-        "name": "K. Laimer",
-        "number": 27,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "D. Upamecano",
-        "number": 2,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "J. Tah",
-        "number": 4,
-        "pos": "D",
-        "grid": "2:2"
       },
       {
         "name": "J. Stanišić",
@@ -88,22 +70,40 @@
         "grid": "2:1"
       },
       {
+        "name": "J. Tah",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "D. Upamecano",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "K. Laimer",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "A. Pavlović",
+        "number": 45,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
         "name": "J. Kimmich",
         "number": 6,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "T. Bischof",
-        "number": 8,
+        "name": "N. Brown",
+        "number": 11,
         "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "M. Olise",
-        "number": 17,
-        "pos": "M",
-        "grid": "4:3"
+        "grid": "4:1"
       },
       {
         "name": "L. Karl",
@@ -112,10 +112,10 @@
         "grid": "4:2"
       },
       {
-        "name": "A. Davies",
-        "number": 19,
+        "name": "M. Olise",
+        "number": 17,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "H. Kane",
@@ -126,20 +126,20 @@
     ],
     "substitutes": [
       {
-        "name": "J. Urbig",
-        "number": 40,
-        "pos": "G",
-        "grid": null
-      },
-      {
         "name": "S. Ulreich",
         "number": 26,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "A. Pavlović",
-        "number": 45,
+        "name": "Bara Ndiaye",
+        "number": 39,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Musiala",
+        "number": 10,
         "pos": "M",
         "grid": null
       },
@@ -157,21 +157,21 @@
         "grid": null
       },
       {
-        "name": "David Daiber",
-        "number": 47,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "N. Brown",
-        "number": 11,
-        "pos": "D",
+        "name": "Noah Codjo-Evora",
+        "number": 36,
+        "pos": "F",
         "grid": null
       },
       {
         "name": "S. Boey",
         "number": 23,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Bischof",
+        "number": 8,
+        "pos": "M",
         "grid": null
       },
       {

@@ -12,9 +12,20 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-31T19:45:00.000Z"
+    "updated": "2026-11-20T19:45:00.000Z"
   },
-  "topPlayers": [],
+  "topPlayers": [
+    {
+      "name": "Antoine Mille",
+      "goals": 3,
+      "assists": 1
+    },
+    {
+      "name": "Renaud Ripart",
+      "goals": 2,
+      "assists": null
+    }
+  ],
   "profile": {
     "oneLiner": "리그 17위 강등권으로 10경기에서 승점 8을 얻었고 리그 최소 득점 7골이다.",
     "strengths": [
@@ -31,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1552809",
-    "kickoff": "2026-10-31T19:45:00.000Z",
+    "match": "hl-1321456561",
+    "kickoff": "2026-11-20T19:45:00.000Z",
     "comp": "LIGUE1",
     "side": "home",
-    "opponent": "le-mans",
+    "opponent": "le-havre",
     "startXI": [
       {
         "name": "H. Konaté",
@@ -44,10 +55,16 @@
         "grid": "1:1"
       },
       {
-        "name": "L. Maronnier",
-        "number": 2,
+        "name": "I. Boura",
+        "number": 14,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "A. Ouzenadji",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "A. Monfray",
@@ -56,28 +73,10 @@
         "grid": "2:3"
       },
       {
-        "name": "M. Diaz",
-        "number": 4,
+        "name": "Y. Titi",
+        "number": 44,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "P. Gozzi",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "A. Mille",
-        "number": 17,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "D. Karim",
-        "number": 29,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:4"
       },
       {
         "name": "M. Diop",
@@ -86,41 +85,41 @@
         "grid": "3:1"
       },
       {
-        "name": "M. Ifnaoui",
-        "number": 10,
-        "pos": "F",
-        "grid": "4:3"
+        "name": "D. Karim",
+        "number": 29,
+        "pos": "M",
+        "grid": "3:2"
       },
       {
-        "name": "R. Ripart",
-        "number": 20,
-        "pos": "F",
-        "grid": "4:2"
+        "name": "A. Mille",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:3"
       },
-      {
-        "name": "T. Nkada",
-        "number": 23,
-        "pos": "F",
-        "grid": "4:1"
-      }
-    ],
-    "substitutes": [
       {
         "name": "K. Diawara",
         "number": 7,
         "pos": "F",
-        "grid": null
+        "grid": "4:1"
       },
       {
-        "name": "I. Boura",
-        "number": 14,
+        "name": "J. Le Douaron",
+        "number": 9,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "M. Ifnaoui",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:3"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "L. Maronnier",
+        "number": 2,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "P. Beach",
-        "number": 33,
-        "pos": "G",
         "grid": null
       },
       {
@@ -130,8 +129,14 @@
         "grid": null
       },
       {
-        "name": "J. Le Douaron",
-        "number": 9,
+        "name": "P. Beach",
+        "number": 33,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "T. Nkada",
+        "number": 23,
         "pos": "F",
         "grid": null
       },
@@ -148,15 +153,21 @@
         "grid": null
       },
       {
-        "name": "I. Soukouna",
-        "number": 36,
-        "pos": "M",
+        "name": "R. Ripart",
+        "number": 20,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "Y. Titi",
-        "number": 44,
+        "name": "Lassana Simakha",
+        "number": 34,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "I. Soukouna",
+        "number": 36,
+        "pos": "M",
         "grid": null
       }
     ]

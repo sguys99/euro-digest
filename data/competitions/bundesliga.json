@@ -2,25 +2,25 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-19T22:14:22.003Z",
+  "updatedAt": "2026-11-20T22:14:59.061Z",
   "standings": [
     {
       "pos": 1,
       "prevPos": 1,
       "team": "bayern-munchen",
-      "played": 9,
+      "played": 10,
       "w": 6,
-      "d": 3,
+      "d": 4,
       "l": 0,
-      "gf": 29,
-      "ga": 9,
-      "pts": 21,
+      "gf": 30,
+      "ga": 10,
+      "pts": 22,
       "form": [
-        "D",
         "W",
         "W",
         "D",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "none"
     },
@@ -266,6 +266,26 @@
     },
     {
       "pos": 14,
+      "prevPos": 15,
+      "team": "koln",
+      "played": 10,
+      "w": 2,
+      "d": 4,
+      "l": 4,
+      "gf": 11,
+      "ga": 15,
+      "pts": 10,
+      "form": [
+        "L",
+        "D",
+        "D",
+        "L",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
       "prevPos": 14,
       "team": "augsburg",
       "played": 9,
@@ -280,26 +300,6 @@
         "L",
         "D",
         "L",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 15,
-      "prevPos": 15,
-      "team": "koln",
-      "played": 9,
-      "w": 2,
-      "d": 3,
-      "l": 4,
-      "gf": 10,
-      "ga": 14,
-      "pts": 9,
-      "form": [
-        "W",
-        "L",
-        "D",
-        "D",
         "L"
       ],
       "zone": "none"
@@ -1426,8 +1426,11 @@
       "kickoff": "2026-11-20T19:30:00Z",
       "home": "bayern-munchen",
       "away": "koln",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565857",
@@ -3828,7 +3831,7 @@
       "goals": 6,
       "assists": 3,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Younes Ebnoutalib",
@@ -3948,7 +3951,7 @@
       "goals": 4,
       "assists": 7,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Dayot Upamecano",
@@ -3956,15 +3959,15 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Said El Mala",
       "team": "koln",
       "goals": 3,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Sehrou Guirassy",
@@ -4044,7 +4047,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Ridle Baku",
@@ -4228,7 +4231,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Ismael Saibari",
@@ -4317,6 +4320,14 @@
       "assists": null,
       "penalties": null,
       "played": 9
+    },
+    {
+      "player": "Nathaniel Brown",
+      "team": "bayern-munchen",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Ezechiel Banzuzi",
@@ -4500,7 +4511,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Willi Orban",
@@ -4516,7 +4527,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 3
+      "played": 4
     },
     {
       "player": "Nicolás Capaldo",
@@ -4532,7 +4543,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Florian Neuhaus",
@@ -4593,14 +4604,6 @@
     {
       "player": "Santiago Castaneda",
       "team": "paderborn",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Daniel Svensson",
-      "team": "borussia-dortmund",
       "goals": 1,
       "assists": null,
       "penalties": null,

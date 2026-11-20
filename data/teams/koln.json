@@ -10,15 +10,15 @@
     "#ED1C24"
   ],
   "formation": {
-    "shape": "4-4-2",
+    "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-11-01T14:30:00.000Z"
+    "updated": "2026-11-20T19:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Said El Mala",
       "goals": 3,
-      "assists": null
+      "assists": 1
     },
     {
       "name": "Thijs Dallinga",
@@ -41,12 +41,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-4-2",
-    "match": "af-1575207",
-    "kickoff": "2026-11-01T14:30:00.000Z",
+    "formation": "3-5-2",
+    "match": "hl-1340513855",
+    "kickoff": "2026-11-20T19:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "away",
-    "opponent": "union-berlin",
+    "opponent": "bayern-munchen",
     "startXI": [
       {
         "name": "M. Schwäbe",
@@ -55,16 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "S. Sebulonsen",
-        "number": 28,
+        "name": "L. Lochoshvili",
+        "number": 24,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "J. Schmied",
-        "number": 2,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Jahmai Simpson-Pusey",
@@ -73,46 +67,52 @@
         "grid": "2:2"
       },
       {
+        "name": "J. Schmied",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
         "name": "B. Sosa",
         "number": 3,
-        "pos": "D",
-        "grid": "2:1"
+        "pos": "M",
+        "grid": "3:1"
       },
       {
-        "name": "L. Maina",
-        "number": 37,
+        "name": "M. Moore",
+        "number": 47,
         "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Paul Michael Junior Okon-Engstler",
-        "number": 23,
-        "pos": "M",
-        "grid": "3:3"
+        "grid": "3:2"
       },
       {
         "name": "T. Krauß",
         "number": 5,
         "pos": "M",
-        "grid": "3:2"
+        "grid": "3:3"
       },
       {
-        "name": "Í. Bergmann Jóhannesson",
-        "number": 8,
+        "name": "Paul Michael Junior Okon-Engstler",
+        "number": 23,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:4"
       },
       {
-        "name": "M. Bülter",
-        "number": 30,
-        "pos": "F",
-        "grid": "4:2"
+        "name": "S. Sebulonsen",
+        "number": 28,
+        "pos": "M",
+        "grid": "3:5"
       },
       {
         "name": "S. El Mala",
         "number": 10,
         "pos": "F",
         "grid": "4:1"
+      },
+      {
+        "name": "L. Maina",
+        "number": 37,
+        "pos": "F",
+        "grid": "4:2"
       }
     ],
     "substitutes": [
@@ -120,6 +120,18 @@
         "name": "R. Zieler",
         "number": 20,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "R. Ache",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Bülter",
+        "number": 30,
+        "pos": "F",
         "grid": null
       },
       {
@@ -135,21 +147,9 @@
         "grid": null
       },
       {
-        "name": "L. Lochoshvili",
-        "number": 24,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "G. Mensah",
-        "number": 14,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Moore",
-        "number": 47,
-        "pos": "F",
+        "name": "Í. Bergmann Jóhannesson",
+        "number": 8,
+        "pos": "M",
         "grid": null
       },
       {

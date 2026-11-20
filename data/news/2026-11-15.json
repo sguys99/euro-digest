@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
-  "generatedAt": "2026-11-14T22:13:06.975Z",
-  "runId": "collect-prod-20261114T221300Z-666f",
+  "generatedAt": "2026-11-20T22:12:33.321Z",
+  "runId": "collect-prod-20261120T221233Z-d5b7",
   "cards": [
     {
       "id": "c_e40233f932",
@@ -1018,31 +1018,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/c6n83ld3le95o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-14T06:27:36.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-14T22:13:00.857Z"
-    },
-    {
-      "id": "c_7bbeff2441",
-      "t": "Why Tom Brady left Birmingham City as club pushes for the Premier League",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7775559/2026/11/14/tom-brady-birmingham-city-exit-why/",
-          "at": "2026-11-14T05:03:23.000Z",
           "tier": 2
         }
       ],

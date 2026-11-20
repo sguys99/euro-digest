@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-19T09:24:46.274Z",
+  "generatedAt": "2026-11-20T22:15:43.239Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -254,8 +254,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 1,
-          "minutes": 90,
+          "apps": 2,
+          "minutes": 110,
           "goals": 0,
           "assists": 0
         },
@@ -276,6 +276,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565859",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-20T19:30:00.000Z",
+          "opponent": {
+            "slug": "koln",
+            "name": "FC Koln"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "sub",
+          "started": false,
+          "minutes": 20,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565851",
           "comp": "BUNDESLIGA",
@@ -352,38 +371,19 @@
           "minutes": 0,
           "goals": 0,
           "assists": 0
-        },
-        {
-          "matchId": "fd-565836",
-          "comp": "BUNDESLIGA",
-          "kickoff": "2026-10-25T16:30:00.000Z",
-          "opponent": {
-            "slug": "freiburg",
-            "name": "SC Freiburg"
-          },
-          "home": false,
-          "result": {
-            "for": 3,
-            "against": 1
-          },
-          "status": "absent",
-          "started": false,
-          "minutes": 0,
-          "goals": 0,
-          "assists": 0
         }
       ],
       "next": {
-        "matchId": "fd-565859",
-        "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-20T19:30:00Z",
+        "matchId": "fd-575410",
+        "comp": "UCL",
+        "kickoff": "2026-11-25T20:00:00Z",
         "opponent": {
-          "slug": "koln",
-          "name": "1. FC Köln"
+          "slug": "lille",
+          "name": "Lille OSC"
         },
-        "home": true
+        "home": false
       },
-      "updatedAt": "2026-11-18T08:15:06.297Z"
+      "updatedAt": "2026-11-20T22:15:43.239Z"
     },
     {
       "slug": "jeong-woo-yeong",

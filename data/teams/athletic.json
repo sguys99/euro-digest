@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T20:00:00.000Z"
+    "updated": "2026-11-20T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -47,96 +47,102 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1570424",
-    "kickoff": "2026-10-25T13:00:00.000Z",
+    "match": "hl-1336457138",
+    "kickoff": "2026-11-20T20:00:00.000Z",
     "comp": "LALIGA",
     "side": "home",
-    "opponent": "getafe",
+    "opponent": "espanyol",
     "startXI": [
       {
-        "name": "U. Simon",
+        "name": "Unai Simón",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "H. Rincon",
-        "number": 15,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "D. Vivian",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "A. Paredes",
-        "number": 4,
-        "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "Y. Berchiche",
+        "name": "Yuri",
         "number": 17,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "I. Ruiz de Galarreta",
-        "number": 16,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Aymeric Laporte",
+        "number": 14,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
-        "name": "P. Canales",
-        "number": 28,
+        "name": "Yeray",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Hugo Rincón",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Beñat Prados",
+        "number": 6,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "I. Williams",
-        "number": 9,
+        "name": "Peio Canales",
+        "number": 28,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
       },
       {
-        "name": "A. Berenguer",
-        "number": 7,
-        "pos": "M",
-        "grid": "4:2"
-      },
-      {
-        "name": "N. Williams",
+        "name": "Nico Williams",
         "number": 10,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "M. Sannadi",
-        "number": 21,
+        "name": "Oihan Sancet",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Álex Berenguer",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "I. Williams",
+        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "A. Padilla",
-        "number": 13,
-        "pos": "G",
+        "name": "Álvaro Djaló",
+        "number": 25,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "Y. Alvarez",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Areso",
+        "name": "Jesús Areso",
         "number": 12,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Beñat Gerenabarrena",
+        "number": 24,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Mikel Jauregizar",
+        "number": 18,
+        "pos": "M",
         "grid": null
       },
       {
@@ -146,50 +152,44 @@
         "grid": null
       },
       {
-        "name": "A. Rego",
-        "number": 20,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "R. Navarro",
+        "name": "Robert Navarro",
         "number": 23,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "B. Prados Diaz",
-        "number": 6,
+        "name": "Álex Padilla",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Aitor Paredes",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Alejandro Rego",
+        "number": 20,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "B. Gerenabarrena",
-        "number": 24,
+        "name": "Ruíz de Galarreta",
+        "number": 16,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Jauregizar",
-        "number": 18,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "N. Serrano",
+        "name": "Nico Serrano",
         "number": 22,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "T. Vizcay",
+        "name": "Jesús Vizcay Hurtado",
         "number": 34,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "C. Imga",
-        "number": 33,
         "pos": "F",
         "grid": null
       }

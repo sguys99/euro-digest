@@ -10,14 +10,14 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-2-3-1",
+    "shape": "5-4-1",
     "source": "api",
-    "updated": "2026-10-30T20:00:00.000Z"
+    "updated": "2026-11-20T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Roberto Fernández",
-      "goals": 6,
+      "goals": 7,
       "assists": null
     }
   ],
@@ -36,12 +36,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-2-3-1",
-    "match": "af-1570442",
-    "kickoff": "2026-10-30T20:00:00.000Z",
+    "formation": "5-4-1",
+    "match": "hl-1336457138",
+    "kickoff": "2026-11-20T20:00:00.000Z",
     "comp": "LALIGA",
     "side": "away",
-    "opponent": "villarreal",
+    "opponent": "athletic",
     "startXI": [
       {
         "name": "Ángel Fortuño",
@@ -50,28 +50,40 @@
         "grid": "1:1"
       },
       {
-        "name": "O. El Hilali",
-        "number": 23,
+        "name": "Roger Hinojo",
+        "number": 21,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
       },
       {
-        "name": "V. Drkušić",
-        "number": 16,
+        "name": "Q. Hartman",
+        "number": 3,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:2"
       },
       {
         "name": "L. Cabrera",
         "number": 6,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:3"
       },
       {
-        "name": "Roger Hinojo",
-        "number": 21,
+        "name": "C. Riedel",
+        "number": 5,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:4"
+      },
+      {
+        "name": "O. El Hilali",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:5"
+      },
+      {
+        "name": "Alejandro Santiago Vargas",
+        "number": 36,
+        "pos": "M",
+        "grid": "3:1"
       },
       {
         "name": "Rafel Bauzà",
@@ -80,41 +92,47 @@
         "grid": "3:2"
       },
       {
-        "name": "Edu Expósito",
-        "number": 8,
+        "name": "Pol Lozano",
+        "number": 10,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:3"
       },
       {
-        "name": "Alejandro Santiago Vargas",
-        "number": 36,
+        "name": "Pere Milla",
+        "number": 11,
         "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "Javier Hernandez",
-        "number": 28,
-        "pos": "M",
-        "grid": "4:2"
-      },
-      {
-        "name": "Bryan Zaragoza",
-        "number": 15,
-        "pos": "M",
-        "grid": "4:1"
+        "grid": "3:4"
       },
       {
         "name": "Roberto Fernández",
         "number": 9,
         "pos": "F",
-        "grid": "5:1"
+        "grid": "4:1"
       }
     ],
     "substitutes": [
       {
+        "name": "Jofre Carreras",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Dmitrović",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
         "name": "T. Dolan",
         "number": 24,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "V. Drkušić",
+        "number": 16,
+        "pos": "D",
         "grid": null
       },
       {
@@ -124,33 +142,21 @@
         "grid": null
       },
       {
-        "name": "Gabriel Moscardo",
-        "number": 20,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Q. Hartman",
-        "number": 3,
+        "name": "Gorosabel",
+        "number": 2,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "J. A. Lopez",
-        "number": 32,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Pol Lozano",
-        "number": 10,
+        "name": "Javier Hernandez",
+        "number": 28,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Pere Milla",
-        "number": 11,
-        "pos": "M",
+        "name": "Makar Kotovshchikov",
+        "number": 34,
+        "pos": "F",
         "grid": null
       },
       {
@@ -166,20 +172,14 @@
         "grid": null
       },
       {
-        "name": "Adama Timera",
-        "number": 27,
-        "pos": "D",
+        "name": "Gabriel Moscardo",
+        "number": 20,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Dmitrović",
-        "number": 13,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Jan Peries Duran",
-        "number": 33,
+        "name": "Bryan Zaragoza",
+        "number": 15,
         "pos": "F",
         "grid": null
       }

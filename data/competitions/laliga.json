@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-19T22:13:36.277Z",
+  "updatedAt": "2026-11-20T22:14:15.040Z",
   "standings": [
     {
       "pos": 1,
@@ -128,19 +128,19 @@
       "pos": 7,
       "prevPos": 7,
       "team": "athletic",
-      "played": 11,
+      "played": 12,
       "w": 4,
       "d": 4,
-      "l": 3,
+      "l": 4,
       "gf": 15,
-      "ga": 11,
+      "ga": 12,
       "pts": 16,
       "form": [
-        "D",
         "L",
         "W",
         "W",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "none"
     },
@@ -186,6 +186,26 @@
     },
     {
       "pos": 10,
+      "prevPos": 13,
+      "team": "espanyol",
+      "played": 13,
+      "w": 4,
+      "d": 3,
+      "l": 6,
+      "gf": 14,
+      "ga": 14,
+      "pts": 15,
+      "form": [
+        "L",
+        "L",
+        "W",
+        "D",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 11,
       "prevPos": 10,
       "team": "racing-santander",
       "played": 12,
@@ -205,7 +225,7 @@
       "zone": "none"
     },
     {
-      "pos": 11,
+      "pos": 12,
       "prevPos": 11,
       "team": "celta-vigo",
       "played": 12,
@@ -225,7 +245,7 @@
       "zone": "none"
     },
     {
-      "pos": 12,
+      "pos": 13,
       "prevPos": 12,
       "team": "alaves",
       "played": 12,
@@ -240,26 +260,6 @@
         "L",
         "D",
         "L",
-        "D"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 13,
-      "prevPos": 13,
-      "team": "espanyol",
-      "played": 12,
-      "w": 3,
-      "d": 3,
-      "l": 6,
-      "gf": 13,
-      "ga": 14,
-      "pts": 12,
-      "form": [
-        "D",
-        "L",
-        "L",
-        "W",
         "D"
       ],
       "zone": "none"
@@ -1960,8 +1960,11 @@
       "kickoff": "2026-11-20T20:00:00Z",
       "home": "athletic",
       "away": "espanyol",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564755",
@@ -4834,6 +4837,14 @@
       "played": 12
     },
     {
+      "player": "Roberto Fernández",
+      "team": "espanyol",
+      "goals": 7,
+      "assists": null,
+      "penalties": null,
+      "played": 13
+    },
+    {
       "player": "Sergio Camello",
       "team": "rayo-vallecano",
       "goals": 7,
@@ -4846,14 +4857,6 @@
       "team": "barcelona",
       "goals": 7,
       "assists": 5,
-      "penalties": null,
-      "played": 12
-    },
-    {
-      "player": "Roberto Fernández",
-      "team": "espanyol",
-      "goals": 6,
-      "assists": null,
       "penalties": null,
       "played": 12
     },
@@ -4951,7 +4954,7 @@
       "goals": 4,
       "assists": 4,
       "penalties": 2,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Alejandro Grimaldo",
@@ -5031,7 +5034,7 @@
       "goals": 3,
       "assists": 2,
       "penalties": null,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Iván Romero",
@@ -5095,7 +5098,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Carlos Espí",
@@ -5175,7 +5178,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Nico Williams",
@@ -5183,7 +5186,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Ferran Jutglà",
@@ -5349,9 +5352,9 @@
       "player": "Tyrhys Dolan",
       "team": "espanyol",
       "goals": 1,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Marc Aguado",
@@ -5471,7 +5474,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Canales",
@@ -5535,7 +5538,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Carl Starfelt",

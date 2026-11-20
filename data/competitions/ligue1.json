@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-19T22:14:44.022Z",
+  "updatedAt": "2026-11-20T22:15:21.403Z",
   "standings": [
     {
       "pos": 1,
@@ -246,6 +246,26 @@
     },
     {
       "pos": 13,
+      "prevPos": 17,
+      "team": "troyes",
+      "played": 11,
+      "w": 3,
+      "d": 2,
+      "l": 6,
+      "gf": 10,
+      "ga": 18,
+      "pts": 11,
+      "form": [
+        "L",
+        "D",
+        "W",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
       "prevPos": 13,
       "team": "strasbourg",
       "played": 10,
@@ -265,7 +285,7 @@
       "zone": "none"
     },
     {
-      "pos": 14,
+      "pos": 15,
       "prevPos": 14,
       "team": "auxerre",
       "played": 10,
@@ -285,7 +305,7 @@
       "zone": "none"
     },
     {
-      "pos": 15,
+      "pos": 16,
       "prevPos": 15,
       "team": "le-mans",
       "played": 10,
@@ -302,10 +322,10 @@
         "L",
         "D"
       ],
-      "zone": "none"
+      "zone": "relegation"
     },
     {
-      "pos": 16,
+      "pos": 17,
       "prevPos": 16,
       "team": "angers",
       "played": 10,
@@ -325,35 +345,15 @@
       "zone": "relegation"
     },
     {
-      "pos": 17,
-      "prevPos": 17,
-      "team": "troyes",
-      "played": 10,
-      "w": 2,
-      "d": 2,
-      "l": 6,
-      "gf": 7,
-      "ga": 17,
-      "pts": 8,
-      "form": [
-        "L",
-        "L",
-        "D",
-        "W",
-        "L"
-      ],
-      "zone": "relegation"
-    },
-    {
       "pos": 18,
       "prevPos": 18,
       "team": "le-havre",
-      "played": 10,
+      "played": 11,
       "w": 0,
       "d": 2,
-      "l": 8,
-      "gf": 9,
-      "ga": 22,
+      "l": 9,
+      "gf": 10,
+      "ga": 25,
       "pts": 2,
       "form": [
         "L",
@@ -1543,8 +1543,11 @@
       "kickoff": "2026-11-20T19:45:00Z",
       "home": "troyes",
       "away": "le-havre",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559628",
@@ -3903,6 +3906,14 @@
       "played": 8
     },
     {
+      "player": "Josh Maja",
+      "team": "le-havre",
+      "goals": 5,
+      "assists": null,
+      "penalties": 1,
+      "played": 11
+    },
+    {
       "player": "Boulaye Dia",
       "team": "rennes",
       "goals": 5,
@@ -3967,14 +3978,6 @@
       "played": 10
     },
     {
-      "player": "Josh Maja",
-      "team": "le-havre",
-      "goals": 4,
-      "assists": null,
-      "penalties": 1,
-      "played": 10
-    },
-    {
       "player": "Daniel Namaso",
       "team": "auxerre",
       "goals": 3,
@@ -4005,6 +4008,14 @@
       "assists": 2,
       "penalties": null,
       "played": 5
+    },
+    {
+      "player": "Antoine Mille",
+      "team": "troyes",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Gio Reyna",
@@ -4087,6 +4098,14 @@
       "played": 9
     },
     {
+      "player": "Renaud Ripart",
+      "team": "troyes",
+      "goals": 2,
+      "assists": null,
+      "penalties": 2,
+      "played": 11
+    },
+    {
       "player": "Jean-Victor Makengo",
       "team": "lorient",
       "goals": 2,
@@ -4100,7 +4119,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Amine El Ouazzani",
@@ -4140,7 +4159,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Samuel Amo-Ameyaw",
@@ -4391,20 +4410,12 @@
       "played": 10
     },
     {
-      "player": "Renaud Ripart",
-      "team": "troyes",
-      "goals": 1,
-      "assists": null,
-      "penalties": 1,
-      "played": 10
-    },
-    {
       "player": "Lucas Maronnier",
       "team": "troyes",
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Loïs Openda",
@@ -4503,14 +4514,6 @@
       "played": 9
     },
     {
-      "player": "Antoine Mille",
-      "team": "troyes",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
-    },
-    {
       "player": "Jacobo Ortega",
       "team": "strasbourg",
       "goals": 1,
@@ -4532,7 +4535,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Przemysław Frankowski",

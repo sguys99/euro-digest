@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-21",
+  "generatedAt": "2026-11-20T22:13:32.935Z",
+  "runId": "collect-prod-20261120T221233Z-d5b7",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "트루아가 Antoine Mille의 69분 결승골로 르아브르에 3-1 역전승을 거뒀다.",
+      "ai": true,
+      "refs": [
+        "m559622"
+      ],
+      "comps": [
+        "LIGUE1"
+      ]
+    },
+    {
+      "text": "바이에른 뮌헨이 Nathaniel Brown의 37분 동점골로 쾰른과 1-1로 비겼다.",
+      "ai": true,
+      "refs": [
+        "m565859"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    },
+    {
+      "text": "에스파뇰이 로베르토 페르난데스 Jaén의 66분 결승골로 아틀레틱 빌바오를 1-0으로 이겼다.",
+      "ai": true,
+      "refs": [
+        "m564748"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "김민재는 바이에른 뮌헨의 쾰른전에서 교체 투입돼 20분을 뛰었고 득점은 없었다.",
+      "ai": true,
+      "refs": [
+        "k466571",
+        "m565859"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    },
+    {
+      "text": "바이에른 뮌헨은 승점 22로 분데스리가 선두다.",
+      "ai": true,
+      "refs": [
+        "sBL"
+      ],
+      "comps": [
+        "BUNDESLIGA"
+      ]
+    }
+  ]
+}
