@@ -12,23 +12,23 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-01T14:00:00.000Z"
+    "updated": "2026-11-21T14:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Tijjani Noslin",
-      "goals": 4,
+      "goals": 6,
       "assists": 4
+    },
+    {
+      "name": "Davide Frattesi",
+      "goals": 5,
+      "assists": null
     },
     {
       "name": "Gustav Isaksen",
       "goals": 4,
-      "assists": 1
-    },
-    {
-      "name": "Davide Frattesi",
-      "goals": 4,
-      "assists": null
+      "assists": 2
     }
   ],
   "profile": {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1550183",
-    "kickoff": "2026-11-01T14:00:00.000Z",
+    "match": "hl-1319222686",
+    "kickoff": "2026-11-21T14:00:00.000Z",
     "comp": "SERIEA",
     "side": "home",
-    "opponent": "cagliari",
+    "opponent": "lecce",
     "startXI": [
       {
         "name": "C. Mandas",
@@ -60,40 +60,28 @@
         "grid": "1:1"
       },
       {
-        "name": "R. Floriani Mussolini",
-        "number": 15,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "J. Šutalo",
-        "number": 37,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "O. Provstgaard",
-        "number": 25,
-        "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "Nuno Tavares",
-        "number": 17,
+        "name": "Pedraza",
+        "number": 23,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "D. Frattesi",
-        "number": 16,
-        "pos": "M",
-        "grid": "3:3"
+        "name": "Diogo Leite",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
-        "name": "R. Belahyane",
-        "number": 21,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "D. Doekhi",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "R. Floriani Mussolini",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "K. Taylor",
@@ -102,35 +90,47 @@
         "grid": "3:1"
       },
       {
-        "name": "G. Isaksen",
-        "number": 11,
-        "pos": "F",
-        "grid": "4:3"
+        "name": "R. Belahyane",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "D. Frattesi",
+        "number": 16,
+        "pos": "M",
+        "grid": "3:3"
       },
       {
         "name": "T. Noslin",
         "number": 14,
         "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "A. Pinamonti",
+        "number": 9,
+        "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "M. Zaccagni",
-        "number": 10,
+        "name": "G. Isaksen",
+        "number": 11,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "E. Motta",
-        "number": 40,
-        "pos": "G",
+        "name": "L. Pellegrini",
+        "number": 3,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "Diogo Leite",
-        "number": 2,
-        "pos": "D",
+        "name": "E. Motta",
+        "number": 40,
+        "pos": "G",
         "grid": null
       },
       {
@@ -152,33 +152,33 @@
         "grid": null
       },
       {
-        "name": "V. Farcomeni",
-        "number": 71,
+        "name": "O. Provstgaard",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Przyborek",
+        "number": 28,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Pedraza",
-        "number": 23,
-        "pos": "D",
+        "name": "D. Renzetti",
+        "number": 47,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "L. Pellegrini",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Pinamonti",
-        "number": 9,
+        "name": "A. Guðmundsson",
+        "number": 80,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "D. Doekhi",
-        "number": 5,
-        "pos": "D",
+        "name": "V. Farcomeni",
+        "number": 71,
+        "pos": "M",
         "grid": null
       },
       {
@@ -194,21 +194,21 @@
         "grid": null
       },
       {
+        "name": "N. Rovella",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "D. Cataldi",
         "number": 32,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "A. Przyborek",
-        "number": 28,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "D. Renzetti",
-        "number": 47,
-        "pos": "G",
+        "name": "F. Serra",
+        "number": 63,
+        "pos": "F",
         "grid": null
       }
     ]

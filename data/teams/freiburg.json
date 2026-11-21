@@ -12,18 +12,18 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-21T14:30:00.000Z"
   },
   "topPlayers": [
+    {
+      "name": "Igor Matanovic",
+      "goals": 5,
+      "assists": 1
+    },
     {
       "name": "Yuito Suzuki",
       "goals": 5,
       "assists": null
-    },
-    {
-      "name": "Igor Matanovic",
-      "goals": 4,
-      "assists": 1
     },
     {
       "name": "Maximilian Eggestein",
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1575206",
-    "kickoff": "2026-10-31T14:30:00.000Z",
+    "match": "hl-1340520663",
+    "kickoff": "2026-11-21T14:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "away",
-    "opponent": "augsburg",
+    "opponent": "elversberg",
     "startXI": [
       {
         "name": "M. Backhaus",
@@ -60,16 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "L. Kübler",
-        "number": 17,
+        "name": "J. Makengo",
+        "number": 33,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "M. Ginter",
-        "number": 28,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "P. Lienhart",
@@ -78,16 +72,16 @@
         "grid": "2:2"
       },
       {
-        "name": "J. Makengo",
-        "number": 33,
+        "name": "M. Ginter",
+        "number": 28,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "M. Eggestein",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "P. Treu",
+        "number": 29,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Y. Engelhardt",
@@ -96,16 +90,10 @@
         "grid": "3:1"
       },
       {
-        "name": "J. Beste",
-        "number": 19,
+        "name": "M. Eggestein",
+        "number": 8,
         "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "Y. Suzuki",
-        "number": 14,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
         "name": "D. Scherhant",
@@ -116,20 +104,26 @@
       {
         "name": "L. Höler",
         "number": 9,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "J. Beste",
+        "number": 19,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "I. Matanović",
+        "number": 31,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "K. Goto",
-        "number": 42,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "V. Grifo",
-        "number": 32,
+        "name": "R. Yamamoto",
+        "number": 20,
         "pos": "M",
         "grid": null
       },
@@ -140,9 +134,15 @@
         "grid": null
       },
       {
-        "name": "J. Huth",
-        "number": 24,
-        "pos": "G",
+        "name": "V. Grifo",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Goto",
+        "number": 42,
+        "pos": "F",
         "grid": null
       },
       {
@@ -152,27 +152,27 @@
         "grid": null
       },
       {
-        "name": "A. Jung",
-        "number": 5,
+        "name": "L. Kübler",
+        "number": 17,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "I. Matanović",
-        "number": 31,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "P. Osterhage",
-        "number": 6,
-        "pos": "M",
+        "name": "F. Müller",
+        "number": 21,
+        "pos": "G",
         "grid": null
       },
       {
         "name": "M. Rosenfelder",
         "number": 37,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Y. Suzuki",
+        "number": 14,
+        "pos": "M",
         "grid": null
       }
     ]

@@ -12,18 +12,23 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T15:00:00.000Z"
+    "updated": "2026-11-21T15:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Evanilson",
-      "goals": 5,
+      "goals": 6,
       "assists": 4
     },
     {
       "name": "Marcus Tavernier",
       "goals": 5,
-      "assists": null
+      "assists": 1
+    },
+    {
+      "name": "Justin Kluivert",
+      "goals": 2,
+      "assists": 2
     }
   ],
   "profile": {
@@ -42,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557448",
-    "kickoff": "2026-10-31T15:00:00.000Z",
+    "match": "hl-1325406052",
+    "kickoff": "2026-11-21T15:00:00.000Z",
     "comp": "EPL",
     "side": "home",
-    "opponent": "leeds-united",
+    "opponent": "nottingham-forest",
     "startXI": [
       {
         "name": "Đ. Petrović",
@@ -55,16 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Smith",
-        "number": 15,
+        "name": "A. Truffert",
+        "number": 3,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "J. Hill",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "António Silva",
@@ -73,16 +72,16 @@
         "grid": "2:2"
       },
       {
-        "name": "A. Truffert",
-        "number": 3,
+        "name": "J. Hill",
+        "number": 5,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "T. Adams",
-        "number": 12,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "A. Smith",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "R. Christie",
@@ -91,10 +90,16 @@
         "grid": "3:1"
       },
       {
-        "name": "Rayan",
-        "number": 37,
+        "name": "T. Adams",
+        "number": 12,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
+      },
+      {
+        "name": "M. Tavernier",
+        "number": 16,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "J. Kluivert",
@@ -103,10 +108,10 @@
         "grid": "4:2"
       },
       {
-        "name": "M. Tavernier",
-        "number": 16,
+        "name": "Rayan",
+        "number": 37,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "Evanilson",
@@ -117,21 +122,9 @@
     ],
     "substitutes": [
       {
-        "name": "D. Brooks",
-        "number": 7,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "L. Cook",
-        "number": 4,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "B. Diakité",
-        "number": 18,
-        "pos": "D",
+        "name": "E. Kroupi",
+        "number": 22,
+        "pos": "F",
         "grid": null
       },
       {
@@ -141,9 +134,33 @@
         "grid": null
       },
       {
-        "name": "A. Adli",
-        "number": 21,
-        "pos": "F",
+        "name": "J. Soler",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "B. Diakité",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Cook",
+        "number": 4,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Brooks",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Scott",
+        "number": 8,
+        "pos": "M",
         "grid": null
       },
       {
@@ -153,21 +170,9 @@
         "grid": null
       },
       {
-        "name": "E. Kroupi",
-        "number": 22,
+        "name": "A. Adli",
+        "number": 21,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Á. Rodríguez",
-        "number": 30,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "J. Soler",
-        "number": 6,
-        "pos": "D",
         "grid": null
       }
     ]

@@ -14,7 +14,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-30T20:05:00.000Z"
+    "updated": "2026-11-21T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1552802",
-    "kickoff": "2026-10-30T20:05:00.000Z",
+    "match": "hl-1321449753",
+    "kickoff": "2026-11-21T19:45:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "lille",
+    "side": "home",
+    "opponent": "toulouse",
     "startXI": [
       {
         "name": "R. Risser",
@@ -62,10 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "R. Aguilar",
-        "number": 2,
+        "name": "M. Udol",
+        "number": 14,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "S. Baidoo",
@@ -77,47 +77,47 @@
         "name": "J. Todibo",
         "number": 20,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "Saud Abdulhamid",
-        "number": 23,
+        "name": "J. Chávez",
+        "number": 13,
         "pos": "M",
-        "grid": "3:4"
+        "grid": "3:1"
       },
       {
-        "name": "A. Haidara",
-        "number": 21,
+        "name": "Y. Titraoui",
+        "number": 8,
         "pos": "M",
-        "grid": "3:3"
+        "grid": "3:2"
       },
       {
         "name": "M. Cuisance",
         "number": 27,
         "pos": "M",
-        "grid": "3:2"
+        "grid": "3:3"
       },
       {
-        "name": "M. Udol",
-        "number": 14,
+        "name": "R. Aguilar",
+        "number": 2,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:4"
       },
       {
         "name": "F. Thauvin",
         "number": 10,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "M. Soares",
+        "number": 38,
         "pos": "M",
         "grid": "4:2"
       },
       {
         "name": "F. Sotoca",
         "number": 7,
-        "pos": "M",
-        "grid": "4:1"
-      },
-      {
-        "name": "T. Hazard",
-        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
@@ -130,9 +130,9 @@
         "grid": null
       },
       {
-        "name": "A. Bulatović",
-        "number": 5,
-        "pos": "M",
+        "name": "I. Ganiou",
+        "number": 25,
+        "pos": "D",
         "grid": null
       },
       {
@@ -142,15 +142,15 @@
         "grid": null
       },
       {
-        "name": "J. Gradit",
-        "number": 24,
-        "pos": "D",
+        "name": "A. Haidara",
+        "number": 21,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "F. Ivanović",
-        "number": 29,
-        "pos": "F",
+        "name": "T. Hazard",
+        "number": 9,
+        "pos": "M",
         "grid": null
       },
       {
@@ -160,21 +160,21 @@
         "grid": null
       },
       {
-        "name": "M. Soares",
-        "number": 38,
-        "pos": "M",
+        "name": "A. Sima",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Saud Abdulhamid",
+        "number": 23,
+        "pos": "D",
         "grid": null
       },
       {
         "name": "M. Skóraś",
         "number": 22,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Y. Titraoui",
-        "number": 8,
-        "pos": "M",
         "grid": null
       }
     ]

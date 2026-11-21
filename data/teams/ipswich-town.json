@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T15:00:00.000Z"
+    "updated": "2026-11-21T15:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557452",
-    "kickoff": "2026-10-31T15:00:00.000Z",
+    "match": "hl-1325412860",
+    "kickoff": "2026-11-21T15:00:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "hull-city",
+    "opponent": "tottenham-hotspur",
     "startXI": [
       {
         "name": "C. Walton",
@@ -60,34 +60,28 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Ouattara",
-        "number": 42,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "D. O&apos;Shea",
-        "number": 26,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "I. Diop",
-        "number": 6,
-        "pos": "D",
-        "grid": "2:2"
-      },
-      {
         "name": "L. Davis",
         "number": 3,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Florentino",
-        "number": 12,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "D. O&apos;Shea",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "I. Diop",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "D. Furlong",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "E. Palacios",
@@ -96,10 +90,16 @@
         "grid": "3:1"
       },
       {
-        "name": "A. Fatawu",
-        "number": 7,
+        "name": "S. Lukić",
+        "number": 23,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
+      },
+      {
+        "name": "D. Maeda",
+        "number": 38,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "J. Enciso",
@@ -108,41 +108,23 @@
         "grid": "4:2"
       },
       {
-        "name": "J. Philogene",
-        "number": 11,
+        "name": "A. Ouattara",
+        "number": 42,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
-        "name": "Emersonn",
-        "number": 19,
+        "name": "Z. Flemming",
+        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "D. Maeda",
-        "number": 38,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Z. Flemming",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "K. Scherpen",
         "number": 37,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "D. Furlong",
-        "number": 2,
-        "pos": "D",
         "grid": null
       },
       {
@@ -152,15 +134,33 @@
         "grid": null
       },
       {
+        "name": "C. Akpom",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Florentino",
+        "number": 12,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Philogene",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "A. Matusiwa",
         "number": 5,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Núñez",
-        "number": 32,
-        "pos": "M",
+        "name": "A. Fatawu",
+        "number": 7,
+        "pos": "F",
         "grid": null
       },
       {
@@ -170,8 +170,8 @@
         "grid": null
       },
       {
-        "name": "C. Akpom",
-        "number": 29,
+        "name": "Emersonn",
+        "number": 19,
         "pos": "F",
         "grid": null
       }

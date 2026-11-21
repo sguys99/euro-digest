@@ -10,15 +10,15 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-5-1",
+    "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-31T20:00:00.000Z"
+    "updated": "2026-11-21T13:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Lucas Boyé",
-      "goals": 5,
-      "assists": null
+      "goals": 6,
+      "assists": 1
     },
     {
       "name": "Mariano Díaz",
@@ -41,12 +41,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-5-1",
-    "match": "af-1570434",
-    "kickoff": "2026-10-31T20:00:00.000Z",
+    "formation": "4-4-2",
+    "match": "hl-1336456287",
+    "kickoff": "2026-11-21T13:00:00.000Z",
     "comp": "LALIGA",
-    "side": "away",
-    "opponent": "barcelona",
+    "side": "home",
+    "opponent": "deportivo-la-coruna",
     "startXI": [
       {
         "name": "Sivera",
@@ -55,16 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Jonny",
-        "number": 17,
+        "name": "A. Rebbach",
+        "number": 21,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "N. Tenaglia",
-        "number": 14,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "V. Koski",
@@ -73,106 +67,58 @@
         "grid": "2:2"
       },
       {
-        "name": "Yusi",
-        "number": 3,
+        "name": "N. Tenaglia",
+        "number": 14,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "Angel Pérez",
-        "number": 7,
-        "pos": "M",
-        "grid": "3:5"
-      },
-      {
-        "name": "C. Benavídez",
-        "number": 23,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Guevara",
-        "number": 6,
-        "pos": "M",
-        "grid": "3:3"
+        "name": "Jonny",
+        "number": 17,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Denis Suárez",
         "number": 4,
         "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "A. Rebbach",
-        "number": 21,
-        "pos": "M",
         "grid": "3:1"
-      },
-      {
-        "name": "L. Boyé",
-        "number": 15,
-        "pos": "F",
-        "grid": "4:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "N. Valentini",
-        "number": 2,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Miguel Rodríguez",
-        "number": 22,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "A. Giménez",
-        "number": 13,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "X. Olaiz",
-        "number": 27,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Hugo Novoa",
-        "number": 12,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Toni Martínez",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Aitor Mañas",
-        "number": 20,
-        "pos": "F",
-        "grid": null
       },
       {
         "name": "Pablo Ibáñez",
         "number": 19,
         "pos": "M",
-        "grid": null
+        "grid": "3:2"
       },
       {
-        "name": "M. Díaz",
-        "number": 9,
+        "name": "Antonio Blanco",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Angel Pérez",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Toni Martínez",
+        "number": 11,
         "pos": "F",
-        "grid": null
+        "grid": "4:1"
       },
       {
-        "name": "Selu Diallo",
-        "number": 24,
+        "name": "L. Boyé",
+        "number": 15,
+        "pos": "F",
+        "grid": "4:2"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "C. Benavídez",
+        "number": 23,
         "pos": "M",
         "grid": null
       },
@@ -183,9 +129,63 @@
         "grid": null
       },
       {
-        "name": "Antonio Blanco",
-        "number": 8,
+        "name": "Selu Diallo",
+        "number": 24,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Díaz",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Yusi",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Guevara",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Aitor Mañas",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Hugo Novoa",
+        "number": 12,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "X. Olaiz",
+        "number": 27,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Giménez",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Miguel Rodríguez",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "N. Valentini",
+        "number": 2,
+        "pos": "D",
         "grid": null
       }
     ]

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-01T17:30:00.000Z"
+    "updated": "2026-11-21T15:15:00.000Z"
   },
   "topPlayers": [
     {
@@ -37,11 +37,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1570437",
-    "kickoff": "2026-11-01T17:30:00.000Z",
+    "match": "hl-1336462244",
+    "kickoff": "2026-11-21T15:15:00.000Z",
     "comp": "LALIGA",
     "side": "away",
-    "opponent": "elche",
+    "opponent": "rayo-vallecano",
     "startXI": [
       {
         "name": "S. Dimitrievski",
@@ -50,10 +50,16 @@
         "grid": "1:1"
       },
       {
-        "name": "Arnau Martínez",
-        "number": 22,
+        "name": "Pablo Maffeo",
+        "number": 24,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "Copete",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "César Tárrega",
@@ -62,34 +68,10 @@
         "grid": "2:3"
       },
       {
-        "name": "Pepelu",
-        "number": 18,
+        "name": "Arnau Martínez",
+        "number": 22,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "José Gayà",
-        "number": 14,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "Pablo Maffeo",
-        "number": 24,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Aaron Mayol",
-        "number": 33,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "G. Rodríguez",
-        "number": 2,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:4"
       },
       {
         "name": "Luis Rioja",
@@ -98,16 +80,34 @@
         "grid": "3:1"
       },
       {
+        "name": "G. Rodríguez",
+        "number": 2,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Pepelu",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Dani Raba",
+        "number": 19,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "U. Sadiq",
+        "number": 6,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
         "name": "Javi Guerra",
         "number": 8,
         "pos": "F",
         "grid": "4:2"
-      },
-      {
-        "name": "A. Danjuma",
-        "number": 7,
-        "pos": "F",
-        "grid": "4:1"
       }
     ],
     "substitutes": [
@@ -136,26 +136,26 @@
         "grid": null
       },
       {
+        "name": "H. Elliott",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "D. Foulquier",
         "number": 20,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Dani Raba",
-        "number": 19,
-        "pos": "F",
+        "name": "Aaron Mayol",
+        "number": 33,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "Cristian Rivero",
-        "number": 13,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "U. Sadiq",
-        "number": 6,
+        "name": "David Otorbi",
+        "number": 27,
         "pos": "F",
         "grid": null
       },
@@ -172,15 +172,15 @@
         "grid": null
       },
       {
-        "name": "Jesús Vázquez",
-        "number": 21,
+        "name": "J. de Haas",
+        "number": 12,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "J. de Haas",
-        "number": 12,
-        "pos": "D",
+        "name": "K. van Oevelen",
+        "number": 25,
+        "pos": "G",
         "grid": null
       }
     ]

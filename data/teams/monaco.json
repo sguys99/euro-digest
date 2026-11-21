@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T16:15:00.000Z"
+    "updated": "2026-11-21T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -22,7 +22,7 @@
     },
     {
       "name": "Edan Diop",
-      "goals": 2,
+      "goals": 3,
       "assists": 1
     }
   ],
@@ -42,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1552807",
-    "kickoff": "2026-11-01T16:15:00.000Z",
+    "match": "hl-1321453157",
+    "kickoff": "2026-11-21T19:45:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "paris-fc",
+    "side": "home",
+    "opponent": "auxerre",
     "startXI": [
       {
         "name": "L. Hrádecký",
@@ -55,16 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Vanderson",
-        "number": 2,
+        "name": "Flávio Nazinho",
+        "number": 20,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "Sadibou Sané",
-        "number": 72,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "E. Dier",
@@ -73,16 +67,16 @@
         "grid": "2:2"
       },
       {
-        "name": "Flávio Nazinho",
-        "number": 20,
+        "name": "Sadibou Sané",
+        "number": 72,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "L. Camara",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Vanderson",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "D. Zakaria",
@@ -91,22 +85,28 @@
         "grid": "3:1"
       },
       {
-        "name": "E. Diop",
-        "number": 37,
+        "name": "L. Camara",
+        "number": 8,
         "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "A. Golovin",
-        "number": 10,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
         "name": "M. Abline",
         "number": 11,
-        "pos": "M",
+        "pos": "F",
         "grid": "4:1"
+      },
+      {
+        "name": "T. Minamino",
+        "number": 18,
+        "pos": "F",
+        "grid": "4:2"
+      },
+      {
+        "name": "J. Teze",
+        "number": 4,
+        "pos": "D",
+        "grid": "4:3"
       },
       {
         "name": "Paris Josua  Brunner",
@@ -123,20 +123,14 @@
         "grid": null
       },
       {
+        "name": "Ilies Belmokhtar",
+        "number": 48,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "Pape Cabral",
         "number": 19,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "I. Touré",
-        "number": 49,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "T. Minamino",
-        "number": 18,
         "pos": "M",
         "grid": null
       },
@@ -153,21 +147,27 @@
         "grid": null
       },
       {
-        "name": "J. Teze",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "C. Mawissa Elebi",
-        "number": 13,
-        "pos": "D",
+        "name": "E. Diop",
+        "number": 37,
+        "pos": "M",
         "grid": null
       },
       {
         "name": "P. Köhn",
         "number": 16,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Salisu",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "I. Touré",
+        "number": 49,
+        "pos": "M",
         "grid": null
       }
     ]

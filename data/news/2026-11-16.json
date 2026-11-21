@@ -1,7 +1,7 @@
 {
   "date": "2026-11-16",
-  "generatedAt": "2026-11-20T22:12:33.324Z",
-  "runId": "collect-prod-20261120T221233Z-d5b7",
+  "generatedAt": "2026-11-21T22:12:49.189Z",
+  "runId": "collect-prod-20261121T221249Z-b9ff",
   "cards": [
     {
       "id": "c_77b9d1cc35",
@@ -709,12 +709,6 @@
           "u": "https://www.bbc.co.uk/sport/football/articles/cqx2xn535yj8o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-15T16:38:51.000Z",
           "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7783649/2026/11/15/jesus-de-miguel-tenerife-tribute/",
-          "at": "2026-11-15T15:33:52.000Z",
-          "tier": 2
         }
       ],
       "lang": "en",
@@ -749,33 +743,6 @@
       "created": "2026-11-15T22:12:45.907Z"
     },
     {
-      "id": "c_200594e88f",
-      "t": "What can Man United fans learn about Mauricio Pochettino from the U.S. v Haiti game?",
-      "s": [],
-      "cat": "club",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7783497/2026/11/15/pochettino-usmnt-man-united/",
-          "at": "2026-11-15T14:30:02.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-15T22:12:45.907Z"
-    },
-    {
       "id": "c_23dbafb3f9",
       "t": "Wenger decides not to challenge Fifa chief Infantino",
       "s": [],
@@ -791,33 +758,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/c539gn33z1l3o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-15T11:28:25.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-15T22:12:45.907Z"
-    },
-    {
-      "id": "c_fb8243e0bc",
-      "t": "Pochettino won't leave for Man United early despite huge USMNT lead. Here's why",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7782556/2026/11/15/mauricio-pochettino-usmnt-haiti-manchester-united/",
-          "at": "2026-11-15T10:00:32.000Z",
           "tier": 2
         }
       ],

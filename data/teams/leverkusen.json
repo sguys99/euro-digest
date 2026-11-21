@@ -12,12 +12,12 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-21T14:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Patrik Schick",
-      "goals": 8,
+      "goals": 9,
       "assists": 2
     },
     {
@@ -26,9 +26,9 @@
       "assists": 3
     },
     {
-      "name": "Christian Kofane",
+      "name": "Afonso Moreira",
       "goals": 2,
-      "assists": null
+      "assists": 2
     }
   ],
   "profile": {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1575204",
-    "kickoff": "2026-10-31T14:30:00.000Z",
+    "match": "hl-1340514706",
+    "kickoff": "2026-11-21T14:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "home",
-    "opponent": "stuttgart",
+    "opponent": "paderborn",
     "startXI": [
       {
         "name": "M. Flekken",
@@ -60,10 +60,16 @@
         "grid": "1:1"
       },
       {
-        "name": "J. Quansah",
-        "number": 4,
+        "name": "Miguel Gutiérrez",
+        "number": 3,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Badé",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "E. Tapsoba",
@@ -72,22 +78,10 @@
         "grid": "2:3"
       },
       {
-        "name": "F. Medina",
-        "number": 2,
+        "name": "J. Quansah",
+        "number": 4,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "Miguel Gutiérrez",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "E. Fernández",
-        "number": 6,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:4"
       },
       {
         "name": "Aleix García",
@@ -96,14 +90,20 @@
         "grid": "3:1"
       },
       {
-        "name": "Lucas Vázquez",
-        "number": 17,
+        "name": "E. Fernández",
+        "number": 6,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
       },
       {
-        "name": "I. Maza",
-        "number": 30,
+        "name": "N. Tella",
+        "number": 23,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "M. Tillman",
+        "number": 10,
         "pos": "M",
         "grid": "4:2"
       },
@@ -111,7 +111,7 @@
         "name": "Afonso Moreira",
         "number": 9,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "P. Schick",
@@ -121,6 +121,42 @@
       }
     ],
     "substitutes": [
+      {
+        "name": "M. Diaby",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "F. Medina",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Oermann",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Hofmann",
+        "number": 7,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "I. Maza",
+        "number": 30,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Christian Kofane",
+        "number": 35,
+        "pos": "F",
+        "grid": null
+      },
       {
         "name": "R. Andrich",
         "number": 8,
@@ -134,45 +170,9 @@
         "grid": null
       },
       {
-        "name": "V. Boniface",
-        "number": 22,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "M. Culbreath",
         "number": 42,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "K. Doganay",
-        "number": 39,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "J. Hofmann",
-        "number": 7,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "T. Oermann",
-        "number": 15,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Tillman",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "D. Buck",
-        "number": 37,
-        "pos": "F",
         "grid": null
       }
     ]

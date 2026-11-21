@@ -14,17 +14,17 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-21T17:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Donyell Malen",
-      "goals": 8,
+      "goals": 12,
       "assists": 2
     },
     {
       "name": "Rodrigo Mora",
-      "goals": 4,
+      "goals": 5,
       "assists": null
     },
     {
@@ -49,29 +49,17 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1635695",
-    "kickoff": "2026-11-03T20:00:00.000Z",
-    "comp": "UCL",
+    "match": "hl-1319225239",
+    "kickoff": "2026-11-21T17:00:00.000Z",
+    "comp": "SERIEA",
     "side": "away",
-    "opponent": "manchester-united",
+    "opponent": "parma",
     "startXI": [
       {
-        "name": "D. Vásquez",
-        "number": 32,
+        "name": "M. Svilar",
+        "number": 99,
         "pos": "G",
         "grid": "1:1"
-      },
-      {
-        "name": "G. Mancini",
-        "number": 23,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "L. Balerdi",
-        "number": 26,
-        "pos": "D",
-        "grid": "2:2"
       },
       {
         "name": "Hermoso",
@@ -80,10 +68,28 @@
         "grid": "2:1"
       },
       {
-        "name": "D. Rensch",
-        "number": 2,
+        "name": "L. Balerdi",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "G. Mancini",
+        "number": 23,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "N. Molina",
+        "number": 20,
         "pos": "M",
-        "grid": "3:4"
+        "grid": "3:1"
+      },
+      {
+        "name": "M. Koné",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:2"
       },
       {
         "name": "B. Cristante",
@@ -92,28 +98,22 @@
         "grid": "3:3"
       },
       {
-        "name": "M. de Roon",
-        "number": 15,
+        "name": "E. Lulli",
+        "number": 77,
         "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "Wesley",
-        "number": 43,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "M. Soulé",
-        "number": 18,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:4"
       },
       {
         "name": "Rodrigo Mora",
         "number": 86,
         "pos": "M",
         "grid": "4:1"
+      },
+      {
+        "name": "P. Dybala",
+        "number": 21,
+        "pos": "M",
+        "grid": "4:2"
       },
       {
         "name": "D. Malen",
@@ -124,44 +124,14 @@
     ],
     "substitutes": [
       {
-        "name": "N. Molina",
-        "number": 20,
+        "name": "Wesley",
+        "number": 43,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "E. Lulli",
-        "number": 77,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "K. Koulierakis",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "D. Ghilardi",
-        "number": 87,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Alessandro Di Nunzio",
-        "number": 63,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "G. De Marzi",
-        "number": 70,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "S. Castro",
-        "number": 9,
+        "name": "M. Soulé",
+        "number": 18,
         "pos": "F",
         "grid": null
       },
@@ -175,6 +145,42 @@
         "name": "E. Ndicka",
         "number": 5,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "K. Koulierakis",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "P. Gollini",
+        "number": 95,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "D. Ghilardi",
+        "number": 87,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. de Roon",
+        "number": 15,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "G. De Marzi",
+        "number": 70,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "S. Castro",
+        "number": 9,
+        "pos": "F",
         "grid": null
       }
     ]

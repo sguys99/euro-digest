@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-20T22:15:43.239Z",
+  "generatedAt": "2026-11-21T22:17:16.098Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -66,6 +66,25 @@
       ],
       "recent": [
         {
+          "matchId": "fd-560651",
+          "comp": "EPL",
+          "kickoff": "2026-11-21T17:30:00.000Z",
+          "opponent": {
+            "slug": "arsenal",
+            "name": "Arsenal"
+          },
+          "home": true,
+          "result": {
+            "for": 2,
+            "against": 2
+          },
+          "status": "absent",
+          "started": false,
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
+        {
           "matchId": "fd-560633",
           "comp": "EPL",
           "kickoff": "2026-11-07T15:00:00.000Z",
@@ -105,16 +124,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-560651",
+        "matchId": "fd-560659",
         "comp": "EPL",
-        "kickoff": "2026-11-21T17:30:00Z",
+        "kickoff": "2026-11-29T14:05:00Z",
         "opponent": {
-          "slug": "arsenal",
-          "name": "Arsenal FC"
+          "slug": "brighton",
+          "name": "Brighton & Hove Albion FC"
         },
-        "home": true
+        "home": false
       },
-      "updatedAt": "2026-11-18T08:15:06.297Z"
+      "updatedAt": "2026-11-21T22:17:16.098Z"
     },
     {
       "slug": "lee-kang-in",
@@ -393,8 +412,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 3,
-          "minutes": 137,
+          "apps": 4,
+          "minutes": 166,
           "goals": 0,
           "assists": 0
         },
@@ -408,6 +427,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565858",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-21T14:30:00.000Z",
+          "opponent": {
+            "slug": "rb-leipzig",
+            "name": "RB Leipzig"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 5
+          },
+          "status": "sub",
+          "started": false,
+          "minutes": 29,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565854",
           "comp": "BUNDESLIGA",
@@ -487,16 +525,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-565858",
+        "matchId": "fd-565867",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-21T14:30:00Z",
+        "kickoff": "2026-11-28T14:30:00Z",
         "opponent": {
-          "slug": "rb-leipzig",
-          "name": "RB Leipzig"
+          "slug": "mainz",
+          "name": "1. FSV Mainz 05"
         },
-        "home": true
+        "home": false
       },
-      "updatedAt": "2026-11-18T08:15:06.297Z"
+      "updatedAt": "2026-11-21T22:17:16.098Z"
     },
     {
       "slug": "lee-jae-sung",
@@ -619,8 +657,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 2,
-          "minutes": 22,
+          "apps": 3,
+          "minutes": 96,
           "goals": 0,
           "assists": 0
         },
@@ -634,6 +672,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565862",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-21T14:30:00.000Z",
+          "opponent": {
+            "slug": "borussia-dortmund",
+            "name": "Borussia Dortmund"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 1
+          },
+          "status": "start",
+          "started": true,
+          "minutes": 74,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565852",
           "comp": "BUNDESLIGA",
@@ -713,16 +770,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-565862",
+        "matchId": "fd-565869",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-21T14:30:00Z",
+        "kickoff": "2026-11-27T19:30:00Z",
         "opponent": {
-          "slug": "borussia-dortmund",
-          "name": "Borussia Dortmund"
+          "slug": "werder-bremen",
+          "name": "SV Werder Bremen"
         },
-        "home": true
+        "home": false
       },
-      "updatedAt": "2026-11-19T09:24:46.274Z"
+      "updatedAt": "2026-11-21T22:17:16.098Z"
     },
     {
       "slug": "seol-young-woo",
@@ -845,8 +902,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 3,
-          "minutes": 263,
+          "apps": 4,
+          "minutes": 329,
           "goals": 0,
           "assists": 0
         },
@@ -860,6 +917,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565861",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-21T17:30:00.000Z",
+          "opponent": {
+            "slug": "stuttgart",
+            "name": "VfB Stuttgart"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 0
+          },
+          "status": "start",
+          "started": true,
+          "minutes": 66,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565856",
           "comp": "BUNDESLIGA",
@@ -939,16 +1015,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-565861",
+        "matchId": "fd-565868",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-21T17:30:00Z",
+        "kickoff": "2026-11-28T14:30:00Z",
         "opponent": {
-          "slug": "stuttgart",
-          "name": "VfB Stuttgart"
+          "slug": "paderborn",
+          "name": "SC Paderborn 07"
         },
-        "home": true
+        "home": false
       },
-      "updatedAt": "2026-11-18T08:15:06.297Z"
+      "updatedAt": "2026-11-21T22:17:16.098Z"
     },
     {
       "slug": "hong-hyun-seok",

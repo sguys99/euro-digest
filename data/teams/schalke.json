@@ -10,9 +10,9 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-3-2-1",
+    "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-21T17:30:00.000Z"
   },
   "topPlayers": [],
   "profile": {
@@ -32,12 +32,12 @@
   ],
   "reading": [],
   "lineup": {
-    "formation": "4-3-2-1",
-    "match": "af-1575210",
-    "kickoff": "2026-10-31T14:30:00.000Z",
+    "formation": "3-5-2",
+    "match": "hl-1340519812",
+    "kickoff": "2026-11-21T17:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "home",
-    "opponent": "rb-leipzig",
+    "opponent": "stuttgart",
     "startXI": [
       {
         "name": "L. Karius",
@@ -46,16 +46,10 @@
         "grid": "1:1"
       },
       {
-        "name": "T. Becker",
-        "number": 5,
+        "name": "Vitalie  Becker",
+        "number": 33,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "N. Katić",
-        "number": 25,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "H. Kuruçay",
@@ -64,22 +58,10 @@
         "grid": "2:2"
       },
       {
-        "name": "Vitalie  Becker",
-        "number": 33,
+        "name": "N. Katić",
+        "number": 25,
         "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "S. Tanaka",
-        "number": 13,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "M. Ayhan",
-        "number": 43,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:3"
       },
       {
         "name": "A. Aouchiche",
@@ -88,29 +70,53 @@
         "grid": "3:1"
       },
       {
-        "name": "J. Adamu",
-        "number": 20,
-        "pos": "M",
-        "grid": "4:2"
-      },
-      {
         "name": "K. Karaman",
         "number": 19,
         "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "S. El-Faouzi",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "D. Ljubičić",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "J. Dina Ebimbe",
+        "number": 29,
+        "pos": "M",
+        "grid": "3:5"
+      },
+      {
+        "name": "J. Adamu",
+        "number": 20,
+        "pos": "F",
         "grid": "4:1"
       },
       {
         "name": "Hwang Hee-Chan",
         "number": 7,
         "pos": "F",
-        "grid": "5:1",
+        "grid": "4:2",
         "korean": "hwang-hee-chan"
       }
     ],
     "substitutes": [
       {
-        "name": "J. Dina Ebimbe",
-        "number": 29,
+        "name": "M. Ayhan",
+        "number": 43,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Bachmann",
+        "number": 14,
         "pos": "M",
         "grid": null
       },
@@ -121,9 +127,15 @@
         "grid": null
       },
       {
-        "name": "E. Gashi",
-        "number": 40,
-        "pos": "M",
+        "name": "A. Gantenbein",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "R. Gosens",
+        "number": 8,
+        "pos": "D",
         "grid": null
       },
       {
@@ -133,33 +145,21 @@
         "grid": null
       },
       {
-        "name": "D. Ljubičić",
-        "number": 21,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "K. Müller",
         "number": 22,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "Jean-Paul N'Diaye",
-        "number": 35,
+        "name": "M. Sylla",
+        "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "F. Porath",
-        "number": 27,
+        "name": "S. Tanaka",
+        "number": 13,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Johannes Simon Siebeking",
-        "number": 36,
-        "pos": "G",
         "grid": null
       }
     ]

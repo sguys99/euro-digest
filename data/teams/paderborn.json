@@ -10,9 +10,9 @@
     "#000000"
   ],
   "formation": {
-    "shape": "3-1-4-2",
+    "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-21T14:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -41,12 +41,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-1-4-2",
-    "match": "af-1575208",
-    "kickoff": "2026-10-31T14:30:00.000Z",
+    "formation": "3-4-2-1",
+    "match": "hl-1340514706",
+    "kickoff": "2026-11-21T14:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "away",
-    "opponent": "borussia-monchengladbach",
+    "opponent": "leverkusen",
     "startXI": [
       {
         "name": "N. Noll",
@@ -55,10 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "J. ter Horst",
-        "number": 21,
+        "name": "M. Hansen",
+        "number": 22,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "T. Scheller",
@@ -67,46 +67,46 @@
         "grid": "2:2"
       },
       {
-        "name": "M. Hansen",
-        "number": 22,
+        "name": "J. ter Horst",
+        "number": 21,
         "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "S. Castañeda",
-        "number": 5,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "L. Curda",
-        "number": 17,
-        "pos": "M",
-        "grid": "4:4"
-      },
-      {
-        "name": "T. Baack",
-        "number": 6,
-        "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "G. Vidović",
-        "number": 40,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "2:3"
       },
       {
         "name": "R. Obermair",
         "number": 23,
         "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "S. Castañeda",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "T. Baack",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "L. Curda",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "G. Vidović",
+        "number": 40,
+        "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "M. Pieringer",
-        "number": 18,
-        "pos": "F",
-        "grid": "5:2"
+        "name": "Ruben Müller",
+        "number": 2,
+        "pos": "M",
+        "grid": "4:2"
       },
       {
         "name": "S. Marino",
@@ -123,8 +123,8 @@
         "grid": null
       },
       {
-        "name": "R. Philippe",
-        "number": 9,
+        "name": "M. Pieringer",
+        "number": 18,
         "pos": "F",
         "grid": null
       },
@@ -165,9 +165,9 @@
         "grid": null
       },
       {
-        "name": "Ruben Müller",
-        "number": 2,
-        "pos": "D",
+        "name": "R. Philippe",
+        "number": 9,
+        "pos": "F",
         "grid": null
       }
     ]

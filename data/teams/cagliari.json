@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T14:00:00.000Z"
+    "updated": "2026-11-21T14:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -42,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1550183",
-    "kickoff": "2026-11-01T14:00:00.000Z",
+    "match": "hl-1319220984",
+    "kickoff": "2026-11-21T14:00:00.000Z",
     "comp": "SERIEA",
     "side": "away",
-    "opponent": "lazio",
+    "opponent": "como",
     "startXI": [
       {
         "name": "E. Caprile",
@@ -55,10 +55,16 @@
         "grid": "1:1"
       },
       {
-        "name": "Zé Pedro",
-        "number": 2,
+        "name": "A. Obert",
+        "number": 33,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "R. Kofler",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "A. Deiola",
@@ -67,40 +73,22 @@
         "grid": "2:3"
       },
       {
-        "name": "J. Rodríguez",
-        "number": 15,
+        "name": "Zé Pedro",
+        "number": 2,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:4"
       },
       {
-        "name": "A. Obert",
-        "number": 33,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "M. Adopo",
-        "number": 8,
+        "name": "N. Grandu",
+        "number": 36,
         "pos": "M",
-        "grid": "3:2"
+        "grid": "3:1"
       },
       {
         "name": "A. Romano",
         "number": 4,
         "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "A. Fadera",
-        "number": 39,
-        "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "D. Maldini",
-        "number": 70,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
         "name": "J. Fazzini",
@@ -109,29 +97,59 @@
         "grid": "4:1"
       },
       {
-        "name": "M&apos;Bala Nzola",
-        "number": 18,
+        "name": "D. Maldini",
+        "number": 70,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "M. Adopo",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "P. Mendy",
+        "number": 31,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "Kevin Carlos",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "R. Kofler",
-        "number": 22,
+        "name": "G. Aurelio",
+        "number": 24,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "J. Liteta",
-        "number": 27,
+        "name": "R. Ciervo",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Y. Trepy",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Gagliardini",
+        "number": 21,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Riyad Idrissi",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Kevin Carlos",
+        "number": 9,
+        "pos": "F",
         "grid": null
       },
       {
@@ -141,21 +159,21 @@
         "grid": null
       },
       {
-        "name": "P. Mendy",
-        "number": 31,
+        "name": "M&apos;Bala Nzola",
+        "number": 18,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Y. Mina",
-        "number": 26,
-        "pos": "D",
         "grid": null
       },
       {
         "name": "B. Radunović",
         "number": 23,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "J. Rodríguez",
+        "number": 15,
+        "pos": "D",
         "grid": null
       },
       {
@@ -177,33 +195,15 @@
         "grid": null
       },
       {
-        "name": "Y. Trepy",
-        "number": 19,
+        "name": "Alessandro Sugamele",
+        "number": 35,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "H. Winks",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "R. Ciervo",
-        "number": 20,
+        "name": "A. Fadera",
+        "number": 39,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "G. Aurelio",
-        "number": 24,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "R. Gagliardini",
-        "number": 21,
-        "pos": "M",
         "grid": null
       }
     ]

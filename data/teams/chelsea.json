@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T12:30:00.000Z"
+    "updated": "2026-11-21T15:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -23,7 +23,7 @@
     {
       "name": "Morgan Rogers",
       "goals": 5,
-      "assists": 1
+      "assists": 2
     },
     {
       "name": "Cole Palmer",
@@ -47,29 +47,23 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557450",
-    "kickoff": "2026-10-31T12:30:00.000Z",
+    "match": "hl-1325407754",
+    "kickoff": "2026-11-21T15:00:00.000Z",
     "comp": "EPL",
     "side": "home",
-    "opponent": "manchester-united",
+    "opponent": "leeds-united",
     "startXI": [
       {
-        "name": "M. Penders",
-        "number": 39,
+        "name": "E. Martínez",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Joshua Kofi Acheampong",
-        "number": 34,
+        "name": "Pep Chavarría",
+        "number": 29,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "W. Fofana",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "L. Colwill",
@@ -78,16 +72,16 @@
         "grid": "2:2"
       },
       {
-        "name": "M. Palestra",
-        "number": 2,
+        "name": "W. Fofana",
+        "number": 3,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "R. Lavia",
-        "number": 45,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Joshua Kofi Acheampong",
+        "number": 34,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "M. Caicedo",
@@ -96,16 +90,10 @@
         "grid": "3:1"
       },
       {
-        "name": "Estêvão",
-        "number": 41,
+        "name": "R. Lavia",
+        "number": 45,
         "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "C. Palmer",
-        "number": 10,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
         "name": "M. Rogers",
@@ -114,8 +102,20 @@
         "grid": "4:1"
       },
       {
-        "name": "Pedro Neto",
-        "number": 7,
+        "name": "C. Palmer",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Estêvão",
+        "number": 41,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "E. Emegha",
+        "number": 22,
         "pos": "F",
         "grid": "5:1"
       }
@@ -128,20 +128,20 @@
         "grid": null
       },
       {
-        "name": "E. Emegha",
-        "number": 22,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "Geovany Tcherno Quenda",
         "number": 23,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Nicoll-Jazuli",
-        "number": 32,
+        "name": "Pedro Neto",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Henderson",
+        "number": 14,
         "pos": "M",
         "grid": null
       },
@@ -152,8 +152,8 @@
         "grid": null
       },
       {
-        "name": "Pep Chavarría",
-        "number": 29,
+        "name": "M. Palestra",
+        "number": 2,
         "pos": "D",
         "grid": null
       },
@@ -164,8 +164,8 @@
         "grid": null
       },
       {
-        "name": "T. Sharman-Lowe",
-        "number": 28,
+        "name": "M. Penders",
+        "number": 39,
         "pos": "G",
         "grid": null
       },

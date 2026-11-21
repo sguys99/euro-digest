@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-31T15:15:00.000Z"
+    "updated": "2026-11-21T15:15:00.000Z"
   },
   "topPlayers": [
     {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1570441",
-    "kickoff": "2026-10-31T15:15:00.000Z",
+    "match": "hl-1336462244",
+    "kickoff": "2026-11-21T15:15:00.000Z",
     "comp": "LALIGA",
     "side": "home",
-    "opponent": "celta-vigo",
+    "opponent": "valencia",
     "startXI": [
       {
         "name": "E. Audero",
@@ -60,16 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Rațiu",
-        "number": 2,
+        "name": "G. Tsitaishvili",
+        "number": 14,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "F. Lejeune",
-        "number": 24,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Mujaid Sadick",
@@ -78,22 +72,16 @@
         "grid": "2:2"
       },
       {
-        "name": "Adrià Pedrosa",
-        "number": 17,
+        "name": "F. Lejeune",
+        "number": 24,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "Pedro Díaz",
-        "number": 4,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "Óscar Valentín",
-        "number": 23,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "A. Rațiu",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Unai López",
@@ -102,10 +90,22 @@
         "grid": "3:1"
       },
       {
-        "name": "Jorge de Frutos",
-        "number": 19,
+        "name": "P. Ciss",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "R. Nteka",
+        "number": 11,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Isi Palazón",
+        "number": 7,
         "pos": "F",
-        "grid": "4:3"
+        "grid": "4:1"
       },
       {
         "name": "Sergio Camello",
@@ -114,59 +114,17 @@
         "grid": "4:2"
       },
       {
-        "name": "Álvaro García",
-        "number": 18,
+        "name": "Jorge de Frutos",
+        "number": 19,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "I. Balliu",
-        "number": 20,
+        "name": "J. Vertrouwd",
+        "number": 33,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Rayane Belid",
-        "number": 37,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Alemão",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "G. Bouare",
-        "number": 36,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Dani Cárdenas",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Pelayo Fernández",
-        "number": 22,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "R. Nteka",
-        "number": 11,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Isi Palazón",
-        "number": 7,
-        "pos": "M",
         "grid": null
       },
       {
@@ -176,14 +134,62 @@
         "grid": null
       },
       {
-        "name": "G. Tsitaishvili",
-        "number": 14,
+        "name": "M. Kumbulla",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Álvaro García",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Alemão",
+        "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "J. Vertrouwd",
-        "number": 33,
+        "name": "Adrià Pedrosa",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Bouare",
+        "number": 36,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Rayane Belid",
+        "number": 37,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "I. Balliu",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Dani Cárdenas",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Pedro Díaz",
+        "number": 4,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Pelayo Fernández",
+        "number": 22,
         "pos": "D",
         "grid": null
       }

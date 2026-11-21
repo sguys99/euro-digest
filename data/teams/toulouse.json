@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-01T19:45:00.000Z"
+    "updated": "2026-11-21T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -27,7 +27,7 @@
     },
     {
       "name": "Jacen Russell-Rowe",
-      "goals": 2,
+      "goals": 3,
       "assists": null
     }
   ],
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1552805",
-    "kickoff": "2026-11-01T19:45:00.000Z",
+    "match": "hl-1321449753",
+    "kickoff": "2026-11-21T19:45:00.000Z",
     "comp": "LIGUE1",
     "side": "away",
-    "opponent": "marseille",
+    "opponent": "lens",
     "startXI": [
       {
         "name": "G. Restes",
@@ -60,16 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "I. Diallo",
-        "number": 94,
+        "name": "C. Tapé",
+        "number": 12,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "M. McKenzie",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "R. Nicolaisen",
@@ -78,10 +72,34 @@
         "grid": "2:2"
       },
       {
-        "name": "C. Tapé",
-        "number": 12,
+        "name": "M. McKenzie",
+        "number": 3,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
+      },
+      {
+        "name": "I. Diallo",
+        "number": 94,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "J. Russell-Rowe",
+        "number": 13,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "N. Sigur",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "C. Cásseres",
+        "number": 23,
+        "pos": "M",
+        "grid": "3:3"
       },
       {
         "name": "T. Jørgensen",
@@ -90,53 +108,29 @@
         "grid": "3:4"
       },
       {
-        "name": "N. Sigur",
-        "number": 14,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "C. Cásseres",
-        "number": 23,
-        "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "A. Dønnum",
-        "number": 15,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "J. Russell-Rowe",
-        "number": 13,
-        "pos": "F",
-        "grid": "4:2"
-      },
-      {
         "name": "C. Tengstedt",
         "number": 20,
         "pos": "F",
         "grid": "4:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "S. Koumbassa",
-        "number": 5,
-        "pos": "D",
-        "grid": null
       },
       {
         "name": "S. Hidalgo",
         "number": 9,
         "pos": "F",
+        "grid": "4:2"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Vossah",
+        "number": 6,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "T. Collin",
-        "number": 1,
-        "pos": "G",
+        "name": "A. Dønnum",
+        "number": 15,
+        "pos": "M",
         "grid": null
       },
       {
@@ -152,21 +146,27 @@
         "grid": null
       },
       {
+        "name": "A. Francis",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "S. Koumbassa",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Niflore",
+        "number": 60,
+        "pos": "G",
+        "grid": null
+      },
+      {
         "name": "S. Oppong",
         "number": 11,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "N. Schmidt",
-        "number": 31,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Vossah",
-        "number": 6,
-        "pos": "M",
         "grid": null
       },
       {

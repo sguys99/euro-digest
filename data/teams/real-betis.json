@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T17:30:00.000Z"
+    "updated": "2026-11-21T17:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1570435",
-    "kickoff": "2026-10-31T17:30:00.000Z",
+    "match": "hl-1336463946",
+    "kickoff": "2026-11-21T17:30:00.000Z",
     "comp": "LALIGA",
-    "side": "home",
-    "opponent": "malaga",
+    "side": "away",
+    "opponent": "sevilla",
     "startXI": [
       {
         "name": "Álvaro Vallés",
@@ -62,16 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Héctor Bellerín",
-        "number": 2,
+        "name": "Fran García",
+        "number": 11,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "Marc Bartra",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Natan",
@@ -80,16 +74,16 @@
         "grid": "2:2"
       },
       {
-        "name": "Fran García",
-        "number": 11,
+        "name": "Marc Bartra",
+        "number": 5,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "Pablo Fornals",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Héctor Bellerín",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Marc Roca",
@@ -98,16 +92,10 @@
         "grid": "3:1"
       },
       {
-        "name": "Rodrigo Riquelme",
-        "number": 17,
+        "name": "Pablo Fornals",
+        "number": 8,
         "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "Isco",
-        "number": 22,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
         "name": "A. Ezzalzouli",
@@ -116,53 +104,35 @@
         "grid": "4:1"
       },
       {
-        "name": "T. Parrott",
-        "number": 19,
+        "name": "Isco",
+        "number": 22,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Antony",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Aitor Ruibal",
+        "number": 24,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "J. A. Morante",
-        "number": 27,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "G. Lo Celso",
-        "number": 20,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Aitor Ruibal",
-        "number": 24,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Ángel Ortiz",
-        "number": 12,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Antony",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Dani Ceballos",
-        "number": 25,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "Diego Conde",
         "number": 13,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Rodrigo Riquelme",
+        "number": 17,
+        "pos": "M",
         "grid": null
       },
       {
@@ -178,9 +148,9 @@
         "grid": null
       },
       {
-        "name": "Manu González",
-        "number": 31,
-        "pos": "G",
+        "name": "Junior Firpo",
+        "number": 23,
+        "pos": "D",
         "grid": null
       },
       {
@@ -190,9 +160,39 @@
         "grid": null
       },
       {
+        "name": "C. Hernández",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "Diego Llorente",
         "number": 3,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Lo Celso",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ángel Ortiz",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Parrott",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "F. Bernal",
+        "number": 6,
+        "pos": "M",
         "grid": null
       }
     ]

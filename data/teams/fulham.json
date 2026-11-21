@@ -12,13 +12,18 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T20:00:00.000Z"
+    "updated": "2026-11-21T12:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Joshua King",
       "goals": 2,
       "assists": 1
+    },
+    {
+      "name": "Rodrigo Muniz",
+      "goals": 2,
+      "assists": null
     }
   ],
   "profile": {
@@ -37,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557447",
-    "kickoff": "2026-10-31T20:00:00.000Z",
+    "match": "hl-1325411158",
+    "kickoff": "2026-11-21T12:30:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "aston-villa",
+    "opponent": "manchester-city",
     "startXI": [
       {
         "name": "B. Leno",
@@ -50,16 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "T. Castagne",
-        "number": 21,
+        "name": "R. Sessegnon",
+        "number": 30,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "D. Affengruber",
-        "number": 22,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "C. Bassey",
@@ -68,16 +67,16 @@
         "grid": "2:2"
       },
       {
-        "name": "A. Robinson",
-        "number": 33,
+        "name": "D. Affengruber",
+        "number": 22,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "S. Berge",
-        "number": 16,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "K. Tete",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "S. Charles",
@@ -86,16 +85,10 @@
         "grid": "3:1"
       },
       {
-        "name": "Oscar Bobb",
-        "number": 14,
+        "name": "S. Berge",
+        "number": 16,
         "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "Joshua King",
-        "number": 24,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
         "name": "A. Iwobi",
@@ -104,23 +97,53 @@
         "grid": "4:1"
       },
       {
-        "name": "Gonzalo García",
-        "number": 7,
+        "name": "Joshua King",
+        "number": 24,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "Oscar Bobb",
+        "number": 14,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Rodrigo Muniz",
+        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "K. Tete",
-        "number": 2,
+        "name": "Gonzalo García",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "T. Castagne",
+        "number": 21,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "J. Andersen",
-        "number": 5,
+        "name": "Jorge Cuenca",
+        "number": 4,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Robinson",
+        "number": 33,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "H. Larsson",
+        "number": 15,
+        "pos": "M",
         "grid": null
       },
       {
@@ -136,33 +159,15 @@
         "grid": null
       },
       {
-        "name": "H. Larsson",
-        "number": 15,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "César Palacios",
         "number": 8,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Kevin",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "B. Lecomte",
-        "number": 23,
+        "name": "Dino Kaiser",
+        "number": 37,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Rodrigo Muniz",
-        "number": 9,
-        "pos": "F",
         "grid": null
       }
     ]

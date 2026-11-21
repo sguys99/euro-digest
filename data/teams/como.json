@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T11:30:00.000Z"
+    "updated": "2026-11-21T14:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1550180",
-    "kickoff": "2026-11-01T11:30:00.000Z",
+    "match": "hl-1319220984",
+    "kickoff": "2026-11-21T14:00:00.000Z",
     "comp": "SERIEA",
     "side": "home",
-    "opponent": "venezia",
+    "opponent": "cagliari",
     "startXI": [
       {
         "name": "J. Butez",
@@ -62,16 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Yan Couto",
-        "number": 27,
+        "name": "Kaiki",
+        "number": 16,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "Jacobo Ramón Naveros",
-        "number": 4,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "M. Kempf",
@@ -80,10 +74,22 @@
         "grid": "2:2"
       },
       {
-        "name": "Kaiki",
-        "number": 16,
+        "name": "Jacobo Ramón Naveros",
+        "number": 4,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
+      },
+      {
+        "name": "Yan Couto",
+        "number": 27,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "L. da Cunha",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:1"
       },
       {
         "name": "Luis Milla",
@@ -92,28 +98,22 @@
         "grid": "3:2"
       },
       {
-        "name": "S. Ricci",
-        "number": 21,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "L. da Cunha",
-        "number": 7,
-        "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "N. Paz",
-        "number": 10,
-        "pos": "M",
-        "grid": "4:2"
-      },
-      {
         "name": "M. Baturina",
         "number": 20,
         "pos": "M",
         "grid": "4:1"
+      },
+      {
+        "name": "S. Ricci",
+        "number": 21,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "M. Liberali",
+        "number": 30,
+        "pos": "M",
+        "grid": "4:3"
       },
       {
         "name": "T. Douvikas",
@@ -148,26 +148,8 @@
         "grid": null
       },
       {
-        "name": "M. Perrone",
-        "number": 5,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Lahdo",
-        "number": 15,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Willy Kambwala Ndengushi",
-        "number": 53,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "E. Goldaniga",
-        "number": 18,
+        "name": "T. Chalobah",
+        "number": 99,
         "pos": "D",
         "grid": null
       },
@@ -178,14 +160,26 @@
         "grid": null
       },
       {
-        "name": "M. Caqueret",
-        "number": 8,
+        "name": "E. Goldaniga",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Lahdo",
+        "number": 15,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Liberali",
-        "number": 30,
+        "name": "N. Paz",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Perrone",
+        "number": 5,
         "pos": "M",
         "grid": null
       },
@@ -196,8 +190,8 @@
         "grid": null
       },
       {
-        "name": "Zebedee Kennedy",
-        "number": 58,
+        "name": "Kevin Fustini",
+        "number": 56,
         "pos": "F",
         "grid": null
       }

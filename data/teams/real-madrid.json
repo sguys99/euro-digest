@@ -14,17 +14,17 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T15:15:00.000Z"
+    "updated": "2026-11-21T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Kylian Mbappé",
       "goals": 13,
-      "assists": 2
+      "assists": 3
     },
     {
       "name": "Jude Bellingham",
-      "goals": 4,
+      "goals": 5,
       "assists": 3
     },
     {

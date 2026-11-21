@@ -2,10 +2,30 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-20T22:14:59.061Z",
+  "updatedAt": "2026-11-21T22:16:30.987Z",
   "standings": [
     {
       "pos": 1,
+      "prevPos": 2,
+      "team": "borussia-dortmund",
+      "played": 10,
+      "w": 7,
+      "d": 3,
+      "l": 0,
+      "gf": 17,
+      "ga": 7,
+      "pts": 24,
+      "form": [
+        "D",
+        "W",
+        "D",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 2,
       "prevPos": 1,
       "team": "bayern-munchen",
       "played": 10,
@@ -25,40 +45,20 @@
       "zone": "none"
     },
     {
-      "pos": 2,
-      "prevPos": 2,
-      "team": "borussia-dortmund",
-      "played": 9,
-      "w": 6,
-      "d": 3,
-      "l": 0,
-      "gf": 16,
-      "ga": 7,
-      "pts": 21,
-      "form": [
-        "D",
-        "D",
-        "W",
-        "D",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 3,
       "prevPos": 3,
       "team": "freiburg",
-      "played": 9,
-      "w": 6,
+      "played": 10,
+      "w": 7,
       "d": 1,
       "l": 2,
-      "gf": 20,
+      "gf": 21,
       "ga": 10,
-      "pts": 19,
+      "pts": 22,
       "form": [
+        "L",
+        "L",
         "W",
-        "L",
-        "L",
         "W",
         "W"
       ],
@@ -68,16 +68,16 @@
       "pos": 4,
       "prevPos": 4,
       "team": "rb-leipzig",
-      "played": 9,
-      "w": 6,
+      "played": 10,
+      "w": 7,
       "d": 0,
       "l": 3,
-      "gf": 27,
-      "ga": 13,
-      "pts": 18,
+      "gf": 32,
+      "ga": 14,
+      "pts": 21,
       "form": [
-        "W",
         "L",
+        "W",
         "W",
         "W",
         "W"
@@ -88,18 +88,18 @@
       "pos": 5,
       "prevPos": 5,
       "team": "leverkusen",
-      "played": 9,
-      "w": 5,
+      "played": 10,
+      "w": 6,
       "d": 1,
       "l": 3,
-      "gf": 20,
+      "gf": 24,
       "ga": 17,
-      "pts": 16,
+      "pts": 19,
       "form": [
         "W",
+        "L",
+        "L",
         "W",
-        "L",
-        "L",
         "W"
       ],
       "zone": "none"
@@ -126,21 +126,21 @@
     },
     {
       "pos": 7,
-      "prevPos": 7,
-      "team": "elversberg",
-      "played": 9,
+      "prevPos": 10,
+      "team": "eintracht-frankfurt",
+      "played": 10,
       "w": 4,
-      "d": 1,
-      "l": 4,
-      "gf": 17,
-      "ga": 18,
-      "pts": 13,
+      "d": 3,
+      "l": 3,
+      "gf": 16,
+      "ga": 20,
+      "pts": 15,
       "form": [
-        "L",
         "W",
         "L",
         "W",
-        "L"
+        "D",
+        "W"
       ],
       "zone": "none"
     },
@@ -148,59 +148,59 @@
       "pos": 8,
       "prevPos": 8,
       "team": "stuttgart",
-      "played": 9,
+      "played": 10,
       "w": 4,
-      "d": 0,
+      "d": 1,
       "l": 5,
       "gf": 15,
       "ga": 15,
-      "pts": 12,
+      "pts": 13,
       "form": [
-        "W",
         "L",
         "L",
         "W",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "none"
     },
     {
       "pos": 9,
-      "prevPos": 9,
-      "team": "hoffenheim",
-      "played": 9,
+      "prevPos": 7,
+      "team": "elversberg",
+      "played": 10,
       "w": 4,
-      "d": 0,
+      "d": 1,
       "l": 5,
-      "gf": 16,
-      "ga": 17,
-      "pts": 12,
+      "gf": 17,
+      "ga": 19,
+      "pts": 13,
       "form": [
-        "L",
-        "W",
         "W",
         "L",
-        "W"
+        "W",
+        "L",
+        "L"
       ],
       "zone": "none"
     },
     {
       "pos": 10,
-      "prevPos": 10,
-      "team": "eintracht-frankfurt",
-      "played": 9,
-      "w": 3,
-      "d": 3,
-      "l": 3,
-      "gf": 15,
-      "ga": 20,
+      "prevPos": 9,
+      "team": "hoffenheim",
+      "played": 10,
+      "w": 4,
+      "d": 0,
+      "l": 6,
+      "gf": 16,
+      "ga": 18,
       "pts": 12,
       "form": [
-        "L",
+        "W",
         "W",
         "L",
         "W",
-        "D"
+        "L"
       ],
       "zone": "none"
     },
@@ -246,27 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 13,
-      "team": "paderborn",
-      "played": 9,
-      "w": 2,
-      "d": 4,
-      "l": 3,
-      "gf": 8,
-      "ga": 11,
-      "pts": 10,
-      "form": [
-        "L",
-        "D",
-        "W",
-        "D",
-        "D"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 14,
-      "prevPos": 15,
+      "prevPos": 14,
       "team": "koln",
       "played": 10,
       "w": 2,
@@ -285,8 +265,28 @@
       "zone": "none"
     },
     {
+      "pos": 14,
+      "prevPos": 13,
+      "team": "paderborn",
+      "played": 10,
+      "w": 2,
+      "d": 4,
+      "l": 4,
+      "gf": 8,
+      "ga": 15,
+      "pts": 10,
+      "form": [
+        "D",
+        "W",
+        "D",
+        "D",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
       "pos": 15,
-      "prevPos": 14,
+      "prevPos": 15,
       "team": "augsburg",
       "played": 9,
       "w": 2,
@@ -306,38 +306,38 @@
     },
     {
       "pos": 16,
-      "prevPos": 16,
-      "team": "union-berlin",
-      "played": 9,
+      "prevPos": 17,
+      "team": "schalke",
+      "played": 10,
       "w": 1,
       "d": 4,
-      "l": 4,
-      "gf": 7,
-      "ga": 21,
+      "l": 5,
+      "gf": 5,
+      "ga": 11,
       "pts": 7,
       "form": [
-        "W",
+        "L",
         "D",
-        "D",
-        "D",
-        "L"
+        "L",
+        "L",
+        "D"
       ],
       "zone": "relegation"
     },
     {
       "pos": 17,
-      "prevPos": 17,
-      "team": "schalke",
-      "played": 9,
+      "prevPos": 16,
+      "team": "union-berlin",
+      "played": 10,
       "w": 1,
-      "d": 3,
+      "d": 4,
       "l": 5,
-      "gf": 5,
-      "ga": 11,
-      "pts": 6,
+      "gf": 8,
+      "ga": 26,
+      "pts": 7,
       "form": [
-        "L",
-        "L",
+        "D",
+        "D",
         "D",
         "L",
         "L"
@@ -348,18 +348,18 @@
       "pos": 18,
       "prevPos": 18,
       "team": "borussia-monchengladbach",
-      "played": 9,
+      "played": 10,
       "w": 1,
       "d": 1,
-      "l": 7,
+      "l": 8,
       "gf": 12,
-      "ga": 25,
+      "ga": 26,
       "pts": 4,
       "form": [
         "L",
-        "L",
         "W",
         "D",
+        "L",
         "L"
       ],
       "zone": "relegation"
@@ -1439,8 +1439,11 @@
       "kickoff": "2026-11-21T14:30:00Z",
       "home": "leverkusen",
       "away": "paderborn",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565858",
@@ -1449,8 +1452,11 @@
       "kickoff": "2026-11-21T14:30:00Z",
       "home": "union-berlin",
       "away": "rb-leipzig",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 5
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565860",
@@ -1459,8 +1465,11 @@
       "kickoff": "2026-11-21T14:30:00Z",
       "home": "elversberg",
       "away": "freiburg",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565862",
@@ -1469,8 +1478,11 @@
       "kickoff": "2026-11-21T14:30:00Z",
       "home": "borussia-monchengladbach",
       "away": "borussia-dortmund",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565865",
@@ -1479,8 +1491,11 @@
       "kickoff": "2026-11-21T14:30:00Z",
       "home": "eintracht-frankfurt",
       "away": "hoffenheim",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565861",
@@ -1489,8 +1504,11 @@
       "kickoff": "2026-11-21T17:30:00Z",
       "home": "schalke",
       "away": "stuttgart",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565864",
@@ -3810,19 +3828,19 @@
   ],
   "scorers": [
     {
+      "player": "Patrik Schick",
+      "team": "leverkusen",
+      "goals": 9,
+      "assists": 2,
+      "penalties": null,
+      "played": 10
+    },
+    {
       "player": "Niclas Füllkrug",
       "team": "werder-bremen",
       "goals": 9,
       "assists": null,
       "penalties": 3,
-      "played": 9
-    },
-    {
-      "player": "Patrik Schick",
-      "team": "leverkusen",
-      "goals": 8,
-      "assists": 2,
-      "penalties": null,
       "played": 9
     },
     {
@@ -3839,7 +3857,7 @@
       "goals": 6,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Phillip Tietz",
@@ -3850,12 +3868,44 @@
       "played": 9
     },
     {
+      "player": "Jonathan Burkardt",
+      "team": "eintracht-frankfurt",
+      "goals": 6,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Romulo Cruz",
+      "team": "rb-leipzig",
+      "goals": 6,
+      "assists": null,
+      "penalties": null,
+      "played": 8
+    },
+    {
+      "player": "Antonio Nusa",
+      "team": "rb-leipzig",
+      "goals": 5,
+      "assists": 7,
+      "penalties": 2,
+      "played": 10
+    },
+    {
       "player": "Yuito Suzuki",
       "team": "freiburg",
       "goals": 5,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
+    },
+    {
+      "player": "Igor Matanovic",
+      "team": "freiburg",
+      "goals": 5,
+      "assists": 1,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Michael Gregoritsch",
@@ -3871,31 +3921,23 @@
       "goals": 5,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
-      "player": "Jonathan Burkardt",
-      "team": "eintracht-frankfurt",
+      "player": "Felix Kalu Nmecha",
+      "team": "borussia-dortmund",
       "goals": 5,
-      "assists": 1,
+      "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Christopher Nkunku",
       "team": "rb-leipzig",
       "goals": 5,
-      "assists": 2,
+      "assists": 3,
       "penalties": null,
-      "played": 8
-    },
-    {
-      "player": "Romulo Cruz",
-      "team": "rb-leipzig",
-      "goals": 5,
-      "assists": null,
-      "penalties": null,
-      "played": 7
+      "played": 9
     },
     {
       "player": "Luis Díaz",
@@ -3906,28 +3948,12 @@
       "played": 6
     },
     {
-      "player": "Antonio Nusa",
-      "team": "rb-leipzig",
-      "goals": 4,
-      "assists": 7,
-      "penalties": 1,
-      "played": 9
-    },
-    {
-      "player": "Igor Matanovic",
-      "team": "freiburg",
-      "goals": 4,
-      "assists": 1,
-      "penalties": null,
-      "played": 9
-    },
-    {
       "player": "Joseph Scally",
       "team": "borussia-monchengladbach",
       "goals": 4,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Maurice Krattenmacher",
@@ -3935,15 +3961,7 @@
       "goals": 4,
       "assists": 1,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Felix Kalu Nmecha",
-      "team": "borussia-dortmund",
-      "goals": 4,
-      "assists": null,
-      "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Harry Kane",
@@ -3956,6 +3974,14 @@
     {
       "player": "Dayot Upamecano",
       "team": "bayern-munchen",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 10
+    },
+    {
+      "player": "Ridle Baku",
+      "team": "rb-leipzig",
       "goals": 3,
       "assists": null,
       "penalties": null,
@@ -3983,7 +4009,7 @@
       "goals": 3,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Ibrahim Maza",
@@ -3991,7 +4017,7 @@
       "goals": 3,
       "assists": 3,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Maximilian Eggestein",
@@ -3999,7 +4025,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Robin Fellhauer",
@@ -4013,9 +4039,9 @@
       "player": "Tidiam Gomis",
       "team": "rb-leipzig",
       "goals": 3,
-      "assists": 2,
+      "assists": 3,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Anthony Caci",
@@ -4039,7 +4065,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Aleksandar Pavlović",
@@ -4050,12 +4076,12 @@
       "played": 9
     },
     {
-      "player": "Ridle Baku",
+      "player": "Rocco Reitz",
       "team": "rb-leipzig",
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 7
     },
     {
       "player": "Tim Skarke",
@@ -4063,7 +4089,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Lukas Petkov",
@@ -4071,7 +4097,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Cole Campbell",
@@ -4079,7 +4105,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "David Mokwa Ntusu",
@@ -4087,7 +4113,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Christian Kofane",
@@ -4095,7 +4121,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Adam Daghim",
@@ -4103,7 +4129,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Thijs Dallinga",
@@ -4135,7 +4161,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Eren Dinkci",
@@ -4159,7 +4185,15 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
+    },
+    {
+      "player": "Nicolás Ezequiel Fernández",
+      "team": "leverkusen",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 10
     },
     {
       "player": "Hugo Bolin",
@@ -4175,7 +4209,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Sheraldo Becker",
@@ -4199,7 +4233,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Maximilian Mittelstädt",
@@ -4207,7 +4241,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Can Uzun",
@@ -4223,7 +4257,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Lennart Karl",
@@ -4255,7 +4289,7 @@
       "goals": 2,
       "assists": null,
       "penalties": 1,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Derry Scherhant",
@@ -4263,7 +4297,7 @@
       "goals": 2,
       "assists": 4,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Maximilian Beier",
@@ -4271,7 +4305,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Stefano Marino",
@@ -4279,7 +4313,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Steffen Tigges",
@@ -4287,7 +4321,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Ludovit Reis",
@@ -4311,7 +4345,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Terem Moffi",
@@ -4335,7 +4369,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Wael Mohya",
@@ -4343,7 +4377,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Alexander Prass",
@@ -4351,7 +4385,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Christoph Baumgartner",
@@ -4359,7 +4393,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 3
+      "played": 4
     },
     {
       "player": "Janik Haberer",
@@ -4367,15 +4401,15 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
-      "player": "Rocco Reitz",
-      "team": "rb-leipzig",
-      "goals": 1,
-      "assists": null,
+      "player": "Afonso Moreira",
+      "team": "leverkusen",
+      "goals": 2,
+      "assists": 2,
       "penalties": null,
-      "played": 6
+      "played": 10
     },
     {
       "player": "Emmanuel Latte Lath",
@@ -4391,7 +4425,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Ozan Kabak",
@@ -4399,7 +4433,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Ioannis Konstantelias",
@@ -4423,7 +4457,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Leon Avdullahu",
@@ -4431,15 +4465,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Nicolás Ezequiel Fernández",
-      "team": "leverkusen",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Facundo Medina",
@@ -4447,7 +4473,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Philipp Mwene",
@@ -4487,7 +4513,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Adil Aouchiche",
@@ -4495,7 +4521,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Maximilian Wöber",
@@ -4519,7 +4545,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jamal Musiala",
@@ -4551,7 +4577,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Isac Lidberg",
@@ -4559,7 +4585,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Eric Martel",
@@ -4599,15 +4625,7 @@
       "goals": 1,
       "assists": 4,
       "penalties": null,
-      "played": 9
-    },
-    {
-      "player": "Santiago Castaneda",
-      "team": "paderborn",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 9
+      "played": 10
     }
   ]
 }

@@ -12,9 +12,14 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T17:30:00.000Z"
+    "updated": "2026-11-21T15:00:00.000Z"
   },
   "topPlayers": [
+    {
+      "name": "Dominic Solanke",
+      "goals": 2,
+      "assists": 1
+    },
     {
       "name": "Jan Paul van Hecke",
       "goals": 2,
@@ -37,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557456",
-    "kickoff": "2026-10-31T17:30:00.000Z",
+    "match": "hl-1325412860",
+    "kickoff": "2026-11-21T15:00:00.000Z",
     "comp": "EPL",
     "side": "home",
-    "opponent": "crystal-palace",
+    "opponent": "ipswich-town",
     "startXI": [
       {
         "name": "A. Kinský",
@@ -50,10 +55,16 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Gray",
-        "number": 14,
+        "name": "D. Udogie",
+        "number": 13,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "M. Senesi",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "J. van Hecke",
@@ -62,22 +73,10 @@
         "grid": "2:3"
       },
       {
-        "name": "M. van de Ven",
-        "number": 37,
+        "name": "Pedro Porro",
+        "number": 23,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "A. Robertson",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "S. Tonali",
-        "number": 16,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:4"
       },
       {
         "name": "Mateus Fernandes",
@@ -86,22 +85,28 @@
         "grid": "3:1"
       },
       {
-        "name": "M. Kudus",
-        "number": 20,
+        "name": "C. Gallagher",
+        "number": 8,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
       },
       {
-        "name": "Omar Marmoush",
-        "number": 22,
+        "name": "L. Williams-Barnett",
+        "number": 68,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "J. Maddison",
+        "number": 10,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "M. Tel",
-        "number": 11,
+        "name": "M. Kudus",
+        "number": 20,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "D. Solanke",
@@ -112,15 +117,39 @@
     ],
     "substitutes": [
       {
-        "name": "L. Williams-Barnett",
-        "number": 68,
+        "name": "M. Dúbravka",
+        "number": 39,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Robertson",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. van de Ven",
+        "number": 37,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Gray",
+        "number": 14,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Maddison",
-        "number": 10,
+        "name": "L. Bergvall",
+        "number": 15,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Sávio",
+        "number": 17,
+        "pos": "F",
         "grid": null
       },
       {
@@ -130,39 +159,15 @@
         "grid": null
       },
       {
-        "name": "C. Gallagher",
-        "number": 8,
+        "name": "R. Bentancur",
+        "number": 30,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "B. Davies",
-        "number": 33,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "D. Udogie",
-        "number": 13,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Pedro Porro",
-        "number": 23,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Senesi",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Dúbravka",
-        "number": 39,
-        "pos": "G",
+        "name": "Omar Marmoush",
+        "number": 22,
+        "pos": "F",
         "grid": null
       }
     ]

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-21T14:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1575208",
-    "kickoff": "2026-10-31T14:30:00.000Z",
+    "match": "hl-1340518110",
+    "kickoff": "2026-11-21T14:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "home",
-    "opponent": "paderborn",
+    "opponent": "borussia-dortmund",
     "startXI": [
       {
         "name": "D. Batz",
@@ -62,10 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "D. Hashioka",
-        "number": 14,
+        "name": "F. Chiarodia",
+        "number": 2,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "P. Sander",
@@ -74,22 +74,17 @@
         "grid": "2:2"
       },
       {
-        "name": "F. Chiarodia",
-        "number": 2,
+        "name": "K. Diks",
+        "number": 4,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "J. Scally",
-        "number": 29,
+        "name": "J. Castrop",
+        "number": 17,
         "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Z. Uno",
-        "number": 47,
-        "pos": "M",
-        "grid": "3:3"
+        "grid": "3:1",
+        "korean": "jens-castrop"
       },
       {
         "name": "F. Neuhaus",
@@ -98,22 +93,28 @@
         "grid": "3:2"
       },
       {
-        "name": "L. Ullrich",
-        "number": 26,
+        "name": "Z. Uno",
+        "number": 47,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:3"
       },
       {
-        "name": "R. Hack",
-        "number": 25,
+        "name": "J. Scally",
+        "number": 29,
         "pos": "M",
-        "grid": "4:2"
+        "grid": "3:4"
       },
       {
         "name": "W. Mohya",
         "number": 36,
         "pos": "M",
         "grid": "4:1"
+      },
+      {
+        "name": "R. Hack",
+        "number": 25,
+        "pos": "M",
+        "grid": "4:2"
       },
       {
         "name": "S. Machino",
@@ -124,26 +125,38 @@
     ],
     "substitutes": [
       {
+        "name": "F. Fleck",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Herold",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "F. Honorat",
+        "number": 9,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "Y. Konoplya",
         "number": 22,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "J. Olschowsky",
-        "number": 23,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "K. Stöger",
-        "number": 7,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "N. Kühn",
         "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "I. Lidberg",
+        "number": 3,
         "pos": "F",
         "grid": null
       },
@@ -154,28 +167,15 @@
         "grid": null
       },
       {
-        "name": "I. Lidberg",
-        "number": 3,
-        "pos": "F",
+        "name": "M. Nicolas",
+        "number": 1,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "J. Castrop",
-        "number": 17,
+        "name": "K. Stöger",
+        "number": 7,
         "pos": "M",
-        "grid": null,
-        "korean": "jens-castrop"
-      },
-      {
-        "name": "D. Herold",
-        "number": 20,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "K. Itakura",
-        "number": 6,
-        "pos": "D",
         "grid": null
       }
     ]

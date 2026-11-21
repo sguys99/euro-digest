@@ -12,16 +12,16 @@
   "formation": {
     "shape": "3-4-3",
     "source": "api",
-    "updated": "2026-10-31T15:15:00.000Z"
+    "updated": "2026-11-21T20:00:00.000Z"
   },
   "topPlayers": [
     {
-      "name": "Ferran Jutglà",
-      "goals": 2,
+      "name": "Pablo Duran",
+      "goals": 3,
       "assists": null
     },
     {
-      "name": "Pablo Duran",
+      "name": "Ferran Jutglà",
       "goals": 2,
       "assists": null
     }
@@ -42,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-3",
-    "match": "af-1570441",
-    "kickoff": "2026-10-31T15:15:00.000Z",
+    "match": "hl-1336463095",
+    "kickoff": "2026-11-21T20:00:00.000Z",
     "comp": "LALIGA",
     "side": "away",
-    "opponent": "rayo-vallecano",
+    "opponent": "real-madrid",
     "startXI": [
       {
         "name": "I. Radu",
@@ -55,10 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Javi Rodríguez",
-        "number": 20,
+        "name": "Marcos Alonso",
+        "number": 3,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Yoel Lago",
@@ -67,28 +67,10 @@
         "grid": "2:2"
       },
       {
-        "name": "S. Cáceres",
-        "number": 21,
+        "name": "Javi Rodríguez",
+        "number": 20,
         "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "Javi Rueda",
-        "number": 17,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "I. Moriba",
-        "number": 6,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "Aleix Febas",
-        "number": 14,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:3"
       },
       {
         "name": "Javi Galán",
@@ -97,29 +79,47 @@
         "grid": "3:1"
       },
       {
-        "name": "Hugo Álvarez",
-        "number": 23,
-        "pos": "F",
-        "grid": "4:3"
+        "name": "I. Moriba",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
       },
       {
-        "name": "Ferran Jutglà",
-        "number": 9,
+        "name": "H. Burcio",
+        "number": 30,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Sergio Carreira",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "W. Swedberg",
+        "number": 19,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "Pablo Durán",
+        "number": 11,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "Hugo González",
-        "number": 16,
+        "name": "Hugo Álvarez",
+        "number": 23,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "Marcos Alonso",
-        "number": 3,
-        "pos": "D",
+        "name": "Iago Aspas",
+        "number": 10,
+        "pos": "F",
         "grid": null
       },
       {
@@ -129,26 +129,14 @@
         "grid": null
       },
       {
-        "name": "Iago Aspas",
-        "number": 10,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "A. Bayındır",
         "number": 1,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "H. Burcio",
-        "number": 30,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Sergio Carreira",
-        "number": 5,
+        "name": "S. Cáceres",
+        "number": 21,
         "pos": "D",
         "grid": null
       },
@@ -159,8 +147,8 @@
         "grid": null
       },
       {
-        "name": "Pablo Durán",
-        "number": 11,
+        "name": "J. El Abdellaoui",
+        "number": 39,
         "pos": "F",
         "grid": null
       },
@@ -171,15 +159,33 @@
         "grid": null
       },
       {
-        "name": "W. Swedberg",
-        "number": 19,
+        "name": "Aleix Febas",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ferran Jutglà",
+        "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Iván Villar",
-        "number": 25,
-        "pos": "G",
+        "name": "Álvaro Núñez",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Javi Rueda",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Hugo González",
+        "number": 16,
+        "pos": "F",
         "grid": null
       }
     ]

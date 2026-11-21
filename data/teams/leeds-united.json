@@ -12,21 +12,21 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T15:00:00.000Z"
+    "updated": "2026-11-21T15:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Dominic Calvert-Lewin",
-      "goals": 3,
-      "assists": 1
-    },
-    {
-      "name": "Jayden Bogle",
-      "goals": 2,
-      "assists": null
+      "goals": 4,
+      "assists": 2
     },
     {
       "name": "Noah Okafor",
+      "goals": 4,
+      "assists": null
+    },
+    {
+      "name": "Jayden Bogle",
       "goals": 2,
       "assists": null
     }
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1557448",
-    "kickoff": "2026-10-31T15:00:00.000Z",
+    "match": "hl-1325407754",
+    "kickoff": "2026-11-21T15:00:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "bournemouth",
+    "opponent": "chelsea",
     "startXI": [
       {
         "name": "J. Trafford",
@@ -60,10 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "J. Justin",
-        "number": 24,
+        "name": "T. Muharemović",
+        "number": 5,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "N. Elvedi",
@@ -72,28 +72,10 @@
         "grid": "2:2"
       },
       {
-        "name": "T. Muharemović",
-        "number": 5,
+        "name": "J. Justin",
+        "number": 24,
         "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "J. Bogle",
-        "number": 2,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "E. Ampadu",
-        "number": 4,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "A. Tanaka",
-        "number": 22,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:3"
       },
       {
         "name": "G. Gudmundsson",
@@ -102,16 +84,34 @@
         "grid": "3:1"
       },
       {
-        "name": "H. Wilson",
-        "number": 10,
+        "name": "A. Tanaka",
+        "number": 22,
         "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
-        "name": "D. James",
-        "number": 7,
+        "name": "E. Ampadu",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "J. Bogle",
+        "number": 2,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "N. Okafor",
+        "number": 19,
         "pos": "M",
         "grid": "4:1"
+      },
+      {
+        "name": "S. Longstaff",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:2"
       },
       {
         "name": "D. Calvert-Lewin",
@@ -122,21 +122,33 @@
     ],
     "substitutes": [
       {
+        "name": "L. Nmecha",
+        "number": 14,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "B. Aaronson",
         "number": 11,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Bahoya",
-        "number": 23,
+        "name": "H. Wilson",
+        "number": 10,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "M. Bard",
-        "number": 26,
-        "pos": "D",
+        "name": "D. James",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Stach",
+        "number": 18,
+        "pos": "M",
         "grid": null
       },
       {
@@ -146,27 +158,15 @@
         "grid": null
       },
       {
-        "name": "I. Gruev",
-        "number": 44,
-        "pos": "M",
+        "name": "J. Rodon",
+        "number": 6,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "S. Longstaff",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "L. Nmecha",
-        "number": 14,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "A. Stach",
-        "number": 18,
-        "pos": "M",
+        "name": "M. Bard",
+        "number": 26,
+        "pos": "D",
         "grid": null
       },
       {

@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-21T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1552802",
-    "kickoff": "2026-10-30T20:05:00.000Z",
+    "match": "hl-1321450604",
+    "kickoff": "2026-11-21T19:45:00.000Z",
     "comp": "LIGUE1",
     "side": "home",
-    "opponent": "lens",
+    "opponent": "lyon",
     "startXI": [
       {
         "name": "B. Özer",
@@ -62,16 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "M. Goffi",
-        "number": 38,
+        "name": "R. Perraud",
+        "number": 15,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "N. Ngoy",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Alexsandro Ribeiro",
@@ -80,22 +74,16 @@
         "grid": "2:2"
       },
       {
-        "name": "R. Perraud",
-        "number": 15,
+        "name": "T. Nianzou",
+        "number": 23,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "N. Mukau",
-        "number": 17,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "N. Bentaleb",
-        "number": 6,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "N. Ngoy",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "B. André",
@@ -104,10 +92,22 @@
         "grid": "3:1"
       },
       {
-        "name": "E. Mbappé",
-        "number": 8,
+        "name": "N. Bentaleb",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "N. Mukau",
+        "number": 17,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "S. Diaoune",
+        "number": 35,
         "pos": "F",
-        "grid": "4:3"
+        "grid": "4:1"
       },
       {
         "name": "H. Haraldsson",
@@ -116,10 +116,10 @@
         "grid": "4:2"
       },
       {
-        "name": "S. Diaoune",
-        "number": 35,
+        "name": "D. Bakwa",
+        "number": 7,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
@@ -142,26 +142,26 @@
         "grid": null
       },
       {
+        "name": "M. Goffi",
+        "number": 38,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "M. Kjærgaard",
         "number": 14,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "G. Perrin",
-        "number": 28,
-        "pos": "F",
+        "name": "E. Mbappé",
+        "number": 8,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "D. Bakwa",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "O. Sahraoui",
-        "number": 11,
+        "name": "A. Ueda",
+        "number": 18,
         "pos": "F",
         "grid": null
       },

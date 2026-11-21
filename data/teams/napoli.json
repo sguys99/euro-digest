@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-01T19:45:00.000Z"
+    "updated": "2026-11-21T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -28,9 +28,9 @@
       "assists": null
     },
     {
-      "name": "Matteo Politano",
-      "goals": 2,
-      "assists": 3
+      "name": "Scott McTominay",
+      "goals": 3,
+      "assists": null
     }
   ],
   "profile": {

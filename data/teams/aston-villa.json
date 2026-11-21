@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-21T15:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1635627",
-    "kickoff": "2026-11-03T20:00:00.000Z",
-    "comp": "UCL",
-    "side": "away",
-    "opponent": "barcelona",
+    "match": "hl-1325405201",
+    "kickoff": "2026-11-21T15:00:00.000Z",
+    "comp": "EPL",
+    "side": "home",
+    "opponent": "sunderland",
     "startXI": [
       {
         "name": "Z. Suzuki",
@@ -62,16 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "M. Cash",
-        "number": 2,
+        "name": "I. Maatsen",
+        "number": 22,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "V. Lindelöf",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Pau Torres",
@@ -80,28 +74,34 @@
         "grid": "2:2"
       },
       {
-        "name": "I. Maatsen",
-        "number": 22,
+        "name": "T. Harwood-Bellis",
+        "number": 4,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "João Gomes",
-        "number": 35,
+        "name": "A. Wan-Bissaka",
+        "number": 29,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "L. Goretzka",
+        "number": 27,
         "pos": "M",
-        "grid": "3:2"
+        "grid": "3:1"
       },
       {
         "name": "B. Kamara",
         "number": 8,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:2"
       },
       {
-        "name": "J.  McGinn",
-        "number": 7,
+        "name": "E. Buendía",
+        "number": 10,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "4:1"
       },
       {
         "name": "J. Manzambi",
@@ -110,10 +110,10 @@
         "grid": "4:2"
       },
       {
-        "name": "E. Buendía",
-        "number": 10,
+        "name": "Alysson Edward",
+        "number": 47,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "N. Jackson",
@@ -124,15 +124,21 @@
     ],
     "substitutes": [
       {
-        "name": "Alysson Edward",
-        "number": 47,
+        "name": "I. Mbaye",
+        "number": 19,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "J. Wright",
-        "number": 42,
-        "pos": "G",
+        "name": "João Gomes",
+        "number": 35,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J.  McGinn",
+        "number": 7,
+        "pos": "M",
         "grid": null
       },
       {
@@ -142,39 +148,9 @@
         "grid": null
       },
       {
-        "name": "M. Bizot",
-        "number": 40,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "A. Garnacho",
-        "number": 17,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "L. Goretzka",
-        "number": 27,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "T. Harwood-Bellis",
-        "number": 4,
+        "name": "M. Cissé",
+        "number": 48,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "George Hemmings",
-        "number": 53,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "I. Mbaye",
-        "number": 19,
-        "pos": "F",
         "grid": null
       },
       {
@@ -184,9 +160,21 @@
         "grid": null
       },
       {
-        "name": "T. Abraham",
-        "number": 18,
+        "name": "M. Bizot",
+        "number": 40,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Brian Madjo",
+        "number": 39,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "George Hemmings",
+        "number": 53,
+        "pos": "M",
         "grid": null
       }
     ]

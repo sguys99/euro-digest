@@ -14,23 +14,23 @@
   "formation": {
     "shape": "4-5-1",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-21T14:30:00.000Z"
   },
   "topPlayers": [
     {
-      "name": "Christopher Nkunku",
-      "goals": 5,
-      "assists": 2
-    },
-    {
       "name": "Romulo Cruz",
-      "goals": 5,
+      "goals": 6,
       "assists": null
     },
     {
       "name": "Antonio Nusa",
-      "goals": 4,
+      "goals": 5,
       "assists": 7
+    },
+    {
+      "name": "Christopher Nkunku",
+      "goals": 5,
+      "assists": 3
     }
   ],
   "profile": {

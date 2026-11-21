@@ -10,9 +10,9 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-3-3",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T14:00:00.000Z"
+    "updated": "2026-11-21T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -46,12 +46,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-3-3",
-    "match": "af-1552808",
-    "kickoff": "2026-11-01T14:00:00.000Z",
+    "formation": "4-2-3-1",
+    "match": "hl-1321455710",
+    "kickoff": "2026-11-21T19:45:00.000Z",
     "comp": "LIGUE1",
     "side": "home",
-    "opponent": "auxerre",
+    "opponent": "brest",
     "startXI": [
       {
         "name": "F. Jörgensen",
@@ -63,13 +63,7 @@
         "name": "L. Høgsberg",
         "number": 24,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "I. Doukouré",
-        "number": 6,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Abdoul Karim Coulibaly",
@@ -78,83 +72,59 @@
         "grid": "2:2"
       },
       {
-        "name": "Oso",
-        "number": 36,
+        "name": "I. Doukouré",
+        "number": 6,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "Dário Essugo",
-        "number": 14,
-        "pos": "M",
-        "grid": "3:3"
+        "name": "G. Antwi",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "S. El Mourabet",
         "number": 29,
         "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "G. Reyna",
-        "number": 10,
-        "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Gessime Yassine",
-        "number": 80,
-        "pos": "F",
-        "grid": "4:3"
-      },
-      {
-        "name": "C. Harder",
-        "number": 40,
-        "pos": "F",
-        "grid": "4:2"
+        "name": "Dário Essugo",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:2"
       },
       {
         "name": "M. Godo",
         "number": 20,
-        "pos": "F",
-        "grid": "4:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "Diogo Sousa",
-        "number": 23,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Piekutowski",
-        "number": 12,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "J. Ortega",
-        "number": 30,
-        "pos": "F",
-        "grid": null
+        "grid": "4:1"
       },
       {
         "name": "S. Nanasi",
         "number": 11,
         "pos": "M",
-        "grid": null
+        "grid": "4:2"
       },
       {
-        "name": "J. Mitchell",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "O. Kellyman",
-        "number": 26,
+        "name": "Gessime Yassine",
+        "number": 80,
         "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "J. Ortega",
+        "number": 30,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "M. Del Blanco",
+        "number": 15,
+        "pos": "D",
         "grid": null
       },
       {
@@ -164,8 +134,8 @@
         "grid": null
       },
       {
-        "name": "G. Antwi",
-        "number": 16,
+        "name": "Y. Becker",
+        "number": 43,
         "pos": "D",
         "grid": null
       },
@@ -173,6 +143,36 @@
         "name": "S. Amo-Ameyaw",
         "number": 7,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Harder",
+        "number": 40,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "O. Kellyman",
+        "number": 26,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Diogo Sousa",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Tyrese Noubissie",
+        "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Piekutowski",
+        "number": 12,
+        "pos": "G",
         "grid": null
       }
     ]

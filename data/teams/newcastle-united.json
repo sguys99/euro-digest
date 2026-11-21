@@ -12,21 +12,21 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-02T20:00:00.000Z"
+    "updated": "2026-11-21T17:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Harvey Barnes",
-      "goals": 2,
+      "goals": 3,
       "assists": 2
     },
     {
-      "name": "Anthony Elanga",
+      "name": "Joe Willock",
       "goals": 2,
-      "assists": null
+      "assists": 1
     },
     {
-      "name": "Joe Willock",
+      "name": "Anthony Elanga",
       "goals": 2,
       "assists": null
     }
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557455",
-    "kickoff": "2026-11-02T20:00:00.000Z",
+    "match": "hl-1325412009",
+    "kickoff": "2026-11-21T17:30:00.000Z",
     "comp": "EPL",
     "side": "home",
-    "opponent": "everton",
+    "opponent": "arsenal",
     "startXI": [
       {
         "name": "L. Horníček",
@@ -62,16 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Dedić",
-        "number": 37,
+        "name": "L. Hall",
+        "number": 3,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "F. Schär",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "D. Burn",
@@ -80,28 +74,34 @@
         "grid": "2:2"
       },
       {
-        "name": "L. Hall",
-        "number": 3,
+        "name": "M. Thiaw",
+        "number": 12,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "Joelinton",
-        "number": 7,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "A. Dedić",
+        "number": 37,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
-        "name": "Nico González",
-        "number": 6,
+        "name": "L. Miley",
+        "number": 67,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "A. Elanga",
-        "number": 19,
+        "name": "Sean Steur",
+        "number": 14,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
+      },
+      {
+        "name": "H. Barnes",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "J. Willock",
@@ -110,10 +110,10 @@
         "grid": "4:2"
       },
       {
-        "name": "H. Barnes",
-        "number": 11,
+        "name": "J. Murphy",
+        "number": 23,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "W. Osula",
@@ -124,14 +124,8 @@
     ],
     "substitutes": [
       {
-        "name": "B. Touré",
-        "number": 17,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "J. Murphy",
-        "number": 23,
+        "name": "J. Ramsey",
+        "number": 41,
         "pos": "M",
         "grid": null
       },
@@ -142,9 +136,15 @@
         "grid": null
       },
       {
-        "name": "J. Ramsey",
-        "number": 41,
-        "pos": "M",
+        "name": "M. Fernandez-Pardo",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Elanga",
+        "number": 19,
+        "pos": "F",
         "grid": null
       },
       {
@@ -154,26 +154,26 @@
         "grid": null
       },
       {
+        "name": "T. Livramento",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "S. Botman",
         "number": 4,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "M. Thiaw",
-        "number": 12,
+        "name": "F. Schär",
+        "number": 5,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Bamba",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Sean Steur",
-        "number": 14,
+        "name": "Nico González",
+        "number": 6,
         "pos": "M",
         "grid": null
       }

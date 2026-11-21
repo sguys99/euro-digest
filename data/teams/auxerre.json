@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-11-01T14:00:00.000Z"
+    "updated": "2026-11-21T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -24,6 +24,11 @@
       "name": "Daniel Namaso",
       "goals": 3,
       "assists": 2
+    },
+    {
+      "name": "Romain Faivre",
+      "goals": 2,
+      "assists": 3
     }
   ],
   "profile": {
@@ -42,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1552808",
-    "kickoff": "2026-11-01T14:00:00.000Z",
+    "match": "hl-1321453157",
+    "kickoff": "2026-11-21T19:45:00.000Z",
     "comp": "LIGUE1",
     "side": "away",
-    "opponent": "strasbourg",
+    "opponent": "monaco",
     "startXI": [
       {
         "name": "P. Nardi",
@@ -55,10 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "C. Makosso",
-        "number": 15,
+        "name": "T. Siwe",
+        "number": 13,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "A. Tuanzebe",
@@ -67,16 +72,22 @@
         "grid": "2:2"
       },
       {
-        "name": "C. Akpa",
-        "number": 92,
+        "name": "S. Diomandé",
+        "number": 20,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "L. Sy",
-        "number": 27,
+        "name": "F. Oppegård",
+        "number": 22,
+        "pos": "D",
+        "grid": "3:1"
+      },
+      {
+        "name": "P. Ekwah",
+        "number": 17,
         "pos": "M",
-        "grid": "3:4"
+        "grid": "3:2"
       },
       {
         "name": "N. Ahamada",
@@ -85,28 +96,22 @@
         "grid": "3:3"
       },
       {
-        "name": "K. Danois",
-        "number": 5,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "M. Senaya",
+        "number": 29,
+        "pos": "D",
+        "grid": "3:4"
       },
       {
-        "name": "F. Oppegård",
-        "number": 22,
-        "pos": "M",
-        "grid": "3:1"
+        "name": "R. Labeau Lascary",
+        "number": 3,
+        "pos": "F",
+        "grid": "4:1"
       },
       {
         "name": "R. Faivre",
         "number": 21,
         "pos": "M",
         "grid": "4:2"
-      },
-      {
-        "name": "D. Namaso",
-        "number": 10,
-        "pos": "M",
-        "grid": "4:1"
       },
       {
         "name": "C. Archer",
@@ -117,9 +122,33 @@
     ],
     "substitutes": [
       {
-        "name": "M. Diop",
-        "number": 23,
-        "pos": "G",
+        "name": "Aristide Zossou",
+        "number": 77,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Sy",
+        "number": 27,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Piedfort",
+        "number": 46,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "R. Mandengue",
+        "number": 32,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Makosso",
+        "number": 15,
+        "pos": "D",
         "grid": null
       },
       {
@@ -129,45 +158,21 @@
         "grid": null
       },
       {
-        "name": "S. Diomandé",
-        "number": 20,
-        "pos": "D",
+        "name": "M. Diop",
+        "number": 23,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "K. Danois",
+        "number": 5,
+        "pos": "M",
         "grid": null
       },
       {
         "name": "Youssef Khoudda",
         "number": 47,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "R. Mandengue",
-        "number": 32,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Piedfort",
-        "number": 46,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Senaya",
-        "number": 29,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "T. Siwe",
-        "number": 13,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Aristide Zossou",
-        "number": 77,
-        "pos": "M",
         "grid": null
       }
     ]

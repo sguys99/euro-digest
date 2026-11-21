@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-02T20:00:00.000Z"
+    "updated": "2026-11-21T13:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1570436",
-    "kickoff": "2026-11-02T20:00:00.000Z",
+    "match": "hl-1336456287",
+    "kickoff": "2026-11-21T13:00:00.000Z",
     "comp": "LALIGA",
-    "side": "home",
-    "opponent": "osasuna",
+    "side": "away",
+    "opponent": "alaves",
     "startXI": [
       {
         "name": "Leo Román",
@@ -60,10 +60,16 @@
         "grid": "1:1"
       },
       {
-        "name": "Adrià Alti",
-        "number": 2,
+        "name": "G. Quagliata",
+        "number": 12,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Noubi",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "Miguel Loureiro",
@@ -72,26 +78,26 @@
         "grid": "2:3"
       },
       {
-        "name": "J. Giménez",
-        "number": 20,
+        "name": "Ximo Navarro",
+        "number": 23,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:4"
       },
       {
-        "name": "G. Quagliata",
-        "number": 12,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "David Mella",
-        "number": 11,
+        "name": "Luismi Cruz",
+        "number": 19,
         "pos": "M",
-        "grid": "3:4"
+        "grid": "3:1"
       },
       {
-        "name": "L. Amatucci",
-        "number": 16,
+        "name": "Marc Casadó",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Riki Rodríguez",
+        "number": 14,
         "pos": "M",
         "grid": "3:3"
       },
@@ -99,50 +105,32 @@
         "name": "Mario Soriano",
         "number": 21,
         "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "Peke",
-        "number": 10,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "Luismi Cruz",
-        "number": 19,
-        "pos": "F",
-        "grid": "4:2"
-      },
-      {
-        "name": "B. Nsongo",
-        "number": 32,
-        "pos": "F",
-        "grid": "4:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "Noé",
-        "number": 37,
-        "pos": "M",
-        "grid": null
+        "grid": "3:4"
       },
       {
         "name": "P. Aubameyang",
         "number": 7,
         "pos": "F",
-        "grid": null
+        "grid": "4:1"
       },
       {
-        "name": "Diego Villares",
-        "number": 8,
+        "name": "Peke",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:2"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "L. Amatucci",
+        "number": 16,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Arnau Comas",
-        "number": 3,
-        "pos": "D",
+        "name": "Noé",
+        "number": 37,
+        "pos": "M",
         "grid": null
       },
       {
@@ -158,39 +146,51 @@
         "grid": null
       },
       {
+        "name": "J. Giménez",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "Jonathan Asp Jensen",
         "number": 18,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Ximo Navarro",
-        "number": 23,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "L. Noubi",
-        "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Riki Rodríguez",
-        "number": 14,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Kevin Sánchez",
-        "number": 33,
+        "name": "David Mella",
+        "number": 11,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "B. Nsongo",
+        "number": 32,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Germán Parreño",
+        "number": 1,
+        "pos": "G",
         "grid": null
       },
       {
         "name": "Adama Traoré",
         "number": 24,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Diego Villares",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Adrià Alti",
+        "number": 2,
+        "pos": "D",
         "grid": null
       }
     ]

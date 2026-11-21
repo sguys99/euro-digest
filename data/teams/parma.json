@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-11-02T19:45:00.000Z"
+    "updated": "2026-11-21T17:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -42,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1550173",
-    "kickoff": "2026-10-28T17:30:00.000Z",
+    "match": "hl-1319225239",
+    "kickoff": "2026-11-21T17:00:00.000Z",
     "comp": "SERIEA",
     "side": "home",
-    "opponent": "udinese",
+    "opponent": "roma",
     "startXI": [
       {
         "name": "G. Daffara",
@@ -55,10 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "E. Del Prato",
-        "number": 15,
+        "name": "G. Fabbian",
+        "number": 80,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "M. Troilo",
@@ -67,22 +67,16 @@
         "grid": "2:2"
       },
       {
-        "name": "D. Drobnic",
-        "number": 72,
+        "name": "E. Del Prato",
+        "number": 15,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "S. Britschgi",
-        "number": 27,
+        "name": "E. Valeri",
+        "number": 14,
         "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "V. Sierro",
-        "number": 4,
-        "pos": "M",
-        "grid": "3:3"
+        "grid": "3:1"
       },
       {
         "name": "M. Keita",
@@ -91,31 +85,49 @@
         "grid": "3:2"
       },
       {
+        "name": "V. Sierro",
+        "number": 4,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "S. Britschgi",
+        "number": 27,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
         "name": "F. Carboni",
         "number": 29,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "4:1"
       },
       {
-        "name": "Adrián Bernabé",
-        "number": 10,
+        "name": "N. Elphege",
+        "number": 23,
         "pos": "M",
         "grid": "4:2"
       },
       {
         "name": "E. Touré",
         "number": 19,
-        "pos": "M",
-        "grid": "4:1"
-      },
-      {
-        "name": "D. Romero",
-        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
+      {
+        "name": "Adrián Bernabé",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "C. Ordoñez",
+        "number": 32,
+        "pos": "M",
+        "grid": null
+      },
       {
         "name": "P. Almqvist",
         "number": 11,
@@ -129,15 +141,15 @@
         "grid": null
       },
       {
-        "name": "T. De Martis",
-        "number": 25,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "B. Cremaschi",
         "number": 8,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. De Martis",
+        "number": 25,
+        "pos": "F",
         "grid": null
       },
       {
@@ -147,27 +159,9 @@
         "grid": null
       },
       {
-        "name": "C. Ordoñez",
-        "number": 32,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "E. Valeri",
-        "number": 14,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "Diego Carlos",
         "number": 34,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "G. Fabbian",
-        "number": 80,
-        "pos": "M",
         "grid": null
       },
       {
@@ -195,15 +189,15 @@
         "grid": null
       },
       {
-        "name": "A. N&apos;Diaye",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "H. Nicolussi",
         "number": 41,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Pajsar",
+        "number": 71,
+        "pos": "D",
         "grid": null
       }
     ]

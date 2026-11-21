@@ -12,9 +12,19 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T17:30:00.000Z"
+    "updated": "2026-11-21T15:00:00.000Z"
   },
   "topPlayers": [
+    {
+      "name": "Jørgen Strand Larsen",
+      "goals": 2,
+      "assists": 1
+    },
+    {
+      "name": "Yeremi Pino",
+      "goals": 2,
+      "assists": 1
+    },
     {
       "name": "Tyrick Mitchell",
       "goals": 2,
