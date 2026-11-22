@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T17:00:00.000Z"
+    "updated": "2026-11-22T14:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -24,6 +24,11 @@
       "name": "Hassane Kamara",
       "goals": 2,
       "assists": 2
+    },
+    {
+      "name": "Nicolò Zaniolo",
+      "goals": 2,
+      "assists": null
     }
   ],
   "profile": {
@@ -42,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1550186",
-    "kickoff": "2026-10-31T17:00:00.000Z",
+    "match": "hl-1319220133",
+    "kickoff": "2026-11-22T14:00:00.000Z",
     "comp": "SERIEA",
-    "side": "home",
-    "opponent": "roma",
+    "side": "away",
+    "opponent": "bologna",
     "startXI": [
       {
         "name": "M. Okoye",
@@ -55,10 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "J. Abankwah",
-        "number": 14,
+        "name": "O. Solet",
+        "number": 28,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "C. Kabasele",
@@ -70,37 +75,31 @@
         "name": "M. Palma",
         "number": 16,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "M. Vojvoda",
-        "number": 23,
-        "pos": "M",
-        "grid": "3:4"
+        "name": "H. Kamara",
+        "number": 11,
+        "pos": "D",
+        "grid": "3:1"
       },
       {
         "name": "J. Karlström",
         "number": 8,
         "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "L. Miller",
-        "number": 38,
-        "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "H. Kamara",
-        "number": 11,
+        "name": "J. Piotrowski",
+        "number": 24,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:3"
       },
       {
-        "name": "N. Zaniolo",
-        "number": 10,
-        "pos": "M",
-        "grid": "4:2"
+        "name": "J. Abankwah",
+        "number": 14,
+        "pos": "D",
+        "grid": "3:4"
       },
       {
         "name": "J. Ekkelenkamp",
@@ -109,25 +108,19 @@
         "grid": "4:1"
       },
       {
-        "name": "K. Davis",
-        "number": 9,
-        "pos": "F",
+        "name": "N. Zaniolo",
+        "number": 10,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "S. Lovrić",
+        "number": 4,
+        "pos": "M",
         "grid": "5:1"
       }
     ],
     "substitutes": [
-      {
-        "name": "N. Bertola",
-        "number": 13,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "G. Chakvetadze",
-        "number": 30,
-        "pos": "M",
-        "grid": null
-      },
       {
         "name": "J. Arizala",
         "number": 20,
@@ -135,9 +128,15 @@
         "grid": null
       },
       {
-        "name": "E. Ebosse",
-        "number": 77,
-        "pos": "D",
+        "name": "V. Bayo",
+        "number": 15,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "G. Chakvetadze",
+        "number": 30,
+        "pos": "M",
         "grid": null
       },
       {
@@ -149,12 +148,12 @@
       {
         "name": "L. JovanoviÄ",
         "number": 91,
-        "pos": "F",
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "S. Lovrić",
-        "number": 4,
+        "name": "L. Miller",
+        "number": 38,
         "pos": "M",
         "grid": null
       },
@@ -171,21 +170,33 @@
         "grid": null
       },
       {
+        "name": "G. Vinciati",
+        "number": 45,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Vojvoda",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Zanoli",
+        "number": 59,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "Oier Zarraga",
         "number": 6,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Piotrowski",
-        "number": 24,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "G. Vinciati",
-        "number": 45,
-        "pos": "F",
+        "name": "D. Alaba",
+        "number": 5,
+        "pos": "D",
         "grid": null
       }
     ]

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T15:00:00.000Z"
+    "updated": "2026-11-22T14:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -53,11 +53,11 @@
   ],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557454",
-    "kickoff": "2026-10-31T15:00:00.000Z",
+    "match": "hl-1325409456",
+    "kickoff": "2026-11-22T14:00:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "manchester-city",
+    "opponent": "hull-city",
     "startXI": [
       {
         "name": "B. Verbruggen",
@@ -66,16 +66,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Costinha",
-        "number": 20,
+        "name": "O. Boscagli",
+        "number": 21,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "L. Vušković",
-        "number": 44,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "L. Dunk",
@@ -84,16 +78,16 @@
         "grid": "2:2"
       },
       {
-        "name": "O. Boscagli",
-        "number": 21,
+        "name": "L. Vušković",
+        "number": 44,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "P. Groß",
-        "number": 13,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Costinha",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "José María Andrés Baixauli",
@@ -102,16 +96,10 @@
         "grid": "3:1"
       },
       {
-        "name": "D. Gómez",
-        "number": 25,
+        "name": "P. Groß",
+        "number": 13,
         "pos": "M",
-        "grid": "4:3"
-      },
-      {
-        "name": "Y. Ayari",
-        "number": 26,
-        "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
         "name": "M. De Cuyper",
@@ -120,46 +108,28 @@
         "grid": "4:1"
       },
       {
-        "name": "C. Kostoulas",
-        "number": 19,
+        "name": "Y. Ayari",
+        "number": 26,
+        "pos": "M",
+        "grid": "4:2"
+      },
+      {
+        "name": "D. Gómez",
+        "number": 25,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "G. Rutter",
+        "number": 10,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "J. Hadjam",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Wieffer",
-        "number": 27,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Svoboda",
-        "number": 30,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Hinshelwood",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "G. Rutter",
-        "number": 10,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Y. Minteh",
-        "number": 11,
+        "name": "C. Kostoulas",
+        "number": 19,
         "pos": "F",
         "grid": null
       },
@@ -170,15 +140,45 @@
         "grid": null
       },
       {
-        "name": "J. Steele",
-        "number": 23,
-        "pos": "G",
+        "name": "I. Osman",
+        "number": 15,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "M. Yalcouyé",
-        "number": 35,
+        "name": "Y. Minteh",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Hinshelwood",
+        "number": 8,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Svoboda",
+        "number": 30,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Wieffer",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Kadıoğlu",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Steele",
+        "number": 23,
+        "pos": "G",
         "grid": null
       }
     ]

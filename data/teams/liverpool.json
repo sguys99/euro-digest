@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T16:30:00.000Z"
+    "updated": "2026-11-22T16:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -24,8 +24,13 @@
     },
     {
       "name": "Víctor Muñoz",
-      "goals": 2,
+      "goals": 3,
       "assists": null
+    },
+    {
+      "name": "Florian Wirtz",
+      "goals": 2,
+      "assists": 4
     }
   ],
   "profile": {
@@ -44,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557453",
-    "kickoff": "2026-11-01T16:30:00.000Z",
+    "match": "hl-1325410307",
+    "kickoff": "2026-11-22T16:30:00.000Z",
     "comp": "EPL",
     "side": "home",
-    "opponent": "arsenal",
+    "opponent": "manchester-united",
     "startXI": [
       {
         "name": "Alisson Becker",
@@ -57,16 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "R. Araújo",
-        "number": 33,
+        "name": "M. Kerkez",
+        "number": 6,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "J. Jacquet",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "V. van Dijk",
@@ -75,28 +74,34 @@
         "grid": "2:2"
       },
       {
-        "name": "M. Kerkez",
-        "number": 6,
+        "name": "J. Jacquet",
+        "number": 5,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
+      },
+      {
+        "name": "R. Araújo",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "A. Mac Allister",
         "number": 10,
         "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "T. Nyoni",
-        "number": 42,
-        "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "C. Gakpo",
-        "number": 18,
+        "name": "D. Szoboszlai",
+        "number": 8,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
+      },
+      {
+        "name": "B. Barcola",
+        "number": 29,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "F. Wirtz",
@@ -105,10 +110,10 @@
         "grid": "4:2"
       },
       {
-        "name": "B. Barcola",
-        "number": 29,
+        "name": "R. Ngumoha",
+        "number": 73,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "A. Isak",
@@ -119,15 +124,27 @@
     ],
     "substitutes": [
       {
-        "name": "R. Ngumoha",
-        "number": 73,
+        "name": "L. Koumas",
+        "number": 67,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "L. Koumas",
-        "number": 67,
+        "name": "F. Chiesa",
+        "number": 14,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. McConnell",
+        "number": 53,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Nyoni",
+        "number": 42,
+        "pos": "M",
         "grid": null
       },
       {
@@ -137,21 +154,9 @@
         "grid": null
       },
       {
-        "name": "D. Szoboszlai",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "R. Gravenberch",
-        "number": 38,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "W. Endo",
-        "number": 3,
-        "pos": "M",
+        "name": "J. Frimpong",
+        "number": 30,
+        "pos": "D",
         "grid": null
       },
       {

@@ -4971,5 +4971,112 @@
     "brief": {
       "requests": 1
     }
+  },
+  {
+    "runId": "collect-prod-20261122T221246Z-8a33",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-11-22T22:12:46.941Z",
+    "finishedAt": "2026-11-22T22:16:31.538Z",
+    "collected": 297,
+    "clusters": 45,
+    "summarized": 4,
+    "downgraded": 0,
+    "tokens": {
+      "in": 9060,
+      "out": 4423,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0.003118,
+    "apiCalls": {
+      "footballData": 24,
+      "apiFootball": 0,
+      "highlightly": 46
+    },
+    "sources": [
+      {
+        "id": "bbc-sport-football",
+        "ok": true,
+        "items": 76,
+        "usable": 50
+      },
+      {
+        "id": "bbc-sport-premier-league",
+        "ok": true,
+        "items": 37,
+        "usable": 25
+      },
+      {
+        "id": "bbc-sport-champions-league",
+        "ok": true,
+        "items": 11,
+        "usable": 0
+      },
+      {
+        "id": "bbc-sport-european",
+        "ok": true,
+        "items": 28,
+        "usable": 3
+      },
+      {
+        "id": "the-athletic-football",
+        "ok": true,
+        "items": 100,
+        "usable": 17
+      },
+      {
+        "id": "daily-briefing",
+        "ok": true,
+        "items": 20,
+        "usable": 2
+      },
+      {
+        "id": "di-marzio",
+        "ok": true,
+        "items": 10,
+        "usable": 10
+      },
+      {
+        "id": "relevo",
+        "ok": true,
+        "items": 15,
+        "usable": 6
+      },
+      {
+        "id": "interfootball-world",
+        "ok": false,
+        "items": 0,
+        "error": "http-4xx"
+      },
+      {
+        "id": "interfootball-all",
+        "ok": false,
+        "items": 0,
+        "error": "http-4xx"
+      },
+      {
+        "id": "footballist-football",
+        "ok": false,
+        "items": 0,
+        "error": "http-4xx"
+      },
+      {
+        "id": "besteleven-world",
+        "ok": false,
+        "items": 0,
+        "error": "http-4xx"
+      },
+      {
+        "id": "besteleven-all",
+        "ok": false,
+        "items": 0,
+        "error": "http-4xx"
+      }
+    ],
+    "status": "partial",
+    "brief": {
+      "requests": 1
+    }
   }
 ]

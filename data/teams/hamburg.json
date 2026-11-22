@@ -10,9 +10,9 @@
     "#E3000F"
   ],
   "formation": {
-    "shape": "3-4-2-1",
+    "shape": "5-3-2",
     "source": "api",
-    "updated": "2026-11-01T16:30:00.000Z"
+    "updated": "2026-11-22T16:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -46,12 +46,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-4-2-1",
-    "match": "af-1575205",
-    "kickoff": "2026-11-01T16:30:00.000Z",
+    "formation": "5-3-2",
+    "match": "hl-1340518961",
+    "kickoff": "2026-11-22T16:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "away",
-    "opponent": "eintracht-frankfurt",
+    "opponent": "werder-bremen",
     "startXI": [
       {
         "name": "Daniel Heuer Fernandes",
@@ -60,34 +60,40 @@
         "grid": "1:1"
       },
       {
-        "name": "S. Nandja",
-        "number": 43,
+        "name": "D. Møller Wolfe",
+        "number": 3,
         "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "J. Torunarigha",
-        "number": 23,
-        "pos": "D",
-        "grid": "2:2"
+        "grid": "2:1"
       },
       {
         "name": "W. Omari",
         "number": 17,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:2"
       },
       {
-        "name": "D. Møller Wolfe",
-        "number": 3,
-        "pos": "M",
-        "grid": "3:4"
+        "name": "S. Bornauw",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:3"
       },
       {
-        "name": "A. Sambi Lokonga",
-        "number": 6,
+        "name": "N. Capaldo",
+        "number": 24,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Z. El Ouahdi",
+        "number": 7,
+        "pos": "D",
+        "grid": "2:5"
+      },
+      {
+        "name": "A. Grønbæk",
+        "number": 11,
         "pos": "M",
-        "grid": "3:3"
+        "grid": "3:1"
       },
       {
         "name": "M. Muheim",
@@ -96,49 +102,25 @@
         "grid": "3:2"
       },
       {
-        "name": "L. Lemke",
-        "number": 37,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
         "name": "M. Adeline",
         "number": 5,
         "pos": "M",
-        "grid": "4:2"
-      },
-      {
-        "name": "A. Grønbæk",
-        "number": 11,
-        "pos": "M",
-        "grid": "4:1"
-      },
-      {
-        "name": "T. Moffi",
-        "number": 9,
-        "pos": "F",
-        "grid": "5:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "Otto Emerson Stange",
-        "number": 19,
-        "pos": "F",
-        "grid": null
+        "grid": "3:3"
       },
       {
         "name": "Alexander Røssing-Lelesiit",
         "number": 38,
         "pos": "F",
-        "grid": null
+        "grid": "4:1"
       },
       {
-        "name": "I. Pherai",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
+        "name": "P. Daka",
+        "number": 27,
+        "pos": "F",
+        "grid": "4:2"
+      }
+    ],
+    "substitutes": [
       {
         "name": "B. Jatta",
         "number": 18,
@@ -146,15 +128,39 @@
         "grid": null
       },
       {
-        "name": "Z. El Ouahdi",
-        "number": 7,
+        "name": "L. Lemke",
+        "number": 37,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "P. Daka",
-        "number": 27,
+        "name": "T. Moffi",
+        "number": 9,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Otto Emerson Stange",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Tangvik",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Fábio Vieira",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Mario Vušković",
+        "number": 44,
+        "pos": "D",
         "grid": null
       },
       {
@@ -167,12 +173,6 @@
         "name": "Kofi Jeremy Amoako",
         "number": 22,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "S. Tangvik",
-        "number": 12,
-        "pos": "G",
         "grid": null
       }
     ]

@@ -12,13 +12,18 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T15:15:00.000Z"
+    "updated": "2026-11-22T15:15:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Yassir Zabiri",
-      "goals": 9,
+      "goals": 11,
       "assists": null
+    },
+    {
+      "name": "Canales",
+      "goals": 2,
+      "assists": 1
     },
     {
       "name": "Pablo García",
@@ -42,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1570440",
-    "kickoff": "2026-11-01T15:15:00.000Z",
+    "match": "hl-1336461393",
+    "kickoff": "2026-11-22T15:15:00.000Z",
     "comp": "LALIGA",
     "side": "home",
-    "opponent": "real-madrid",
+    "opponent": "real-sociedad",
     "startXI": [
       {
         "name": "Julen Agirrezabala",
@@ -55,16 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Álvaro Mantilla",
-        "number": 2,
+        "name": "Jorge Salinas",
+        "number": 17,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "Pablo Ramón",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "J. Belocian",
@@ -73,28 +72,34 @@
         "grid": "2:2"
       },
       {
-        "name": "Aarón Martín",
-        "number": 3,
+        "name": "Pedro Felipe",
+        "number": 22,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
+      },
+      {
+        "name": "Pablo Ramón",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Iván Martín",
         "number": 23,
         "pos": "M",
-        "grid": "3:2"
+        "grid": "3:1"
       },
       {
         "name": "M. Prati",
         "number": 18,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:2"
       },
       {
-        "name": "Iker Luque",
-        "number": 19,
+        "name": "Iñigo Vicente",
+        "number": 10,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "4:1"
       },
       {
         "name": "Sergio Canales",
@@ -103,10 +108,10 @@
         "grid": "4:2"
       },
       {
-        "name": "Iñigo Vicente",
-        "number": 10,
+        "name": "Iker Luque",
+        "number": 19,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "M. Zabiri",
@@ -129,6 +134,12 @@
         "grid": null
       },
       {
+        "name": "J. Castellanos",
+        "number": 33,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "Pablo García",
         "number": 15,
         "pos": "F",
@@ -138,12 +149,6 @@
         "name": "Facundo González",
         "number": 16,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Gueye",
-        "number": 14,
-        "pos": "M",
         "grid": null
       },
       {
@@ -159,8 +164,8 @@
         "grid": null
       },
       {
-        "name": "Pedro Felipe",
-        "number": 22,
+        "name": "Aarón Martín",
+        "number": 3,
         "pos": "D",
         "grid": null
       },

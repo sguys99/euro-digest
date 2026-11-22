@@ -12,13 +12,13 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-22T16:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Niclas Füllkrug",
-      "goals": 9,
-      "assists": null
+      "goals": 10,
+      "assists": 1
     },
     {
       "name": "Marco Grüll",
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1575209",
-    "kickoff": "2026-10-31T14:30:00.000Z",
+    "match": "hl-1340518961",
+    "kickoff": "2026-11-22T16:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "home",
-    "opponent": "hoffenheim",
+    "opponent": "hamburg",
     "startXI": [
       {
         "name": "K. Hein",
@@ -60,16 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Arthur",
-        "number": 13,
+        "name": "O. Deman",
+        "number": 2,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "A. Pieper",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "M. Friedl",
@@ -78,28 +72,34 @@
         "grid": "2:2"
       },
       {
-        "name": "O. Deman",
-        "number": 2,
+        "name": "A. Pieper",
+        "number": 5,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
+      },
+      {
+        "name": "Arthur",
+        "number": 13,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "L. Reis",
         "number": 15,
         "pos": "M",
-        "grid": "3:2"
+        "grid": "3:1"
       },
       {
         "name": "Y. Regeer",
         "number": 44,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:2"
       },
       {
-        "name": "M. Weiser",
-        "number": 8,
+        "name": "J. Njinmah",
+        "number": 11,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "4:1"
       },
       {
         "name": "Chuky San José",
@@ -108,10 +108,10 @@
         "grid": "4:2"
       },
       {
-        "name": "M. Grüll",
-        "number": 17,
+        "name": "E. Dinkçi",
+        "number": 18,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "N. Füllkrug",
@@ -122,26 +122,14 @@
     ],
     "substitutes": [
       {
-        "name": "E. Dinkçi",
-        "number": 18,
+        "name": "P. Erevbenagie",
+        "number": 38,
         "pos": "F",
         "grid": null
       },
       {
         "name": "C. Itten",
         "number": 26,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "S. Lynen",
-        "number": 14,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "J. Njinmah",
-        "number": 11,
         "pos": "F",
         "grid": null
       },
@@ -164,9 +152,21 @@
         "grid": null
       },
       {
+        "name": "D. Soylu",
+        "number": 34,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "Dariusz Stalmach",
         "number": 23,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Stark",
+        "number": 4,
+        "pos": "D",
         "grid": null
       },
       {

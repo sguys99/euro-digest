@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-23",
+  "generatedAt": "2026-11-22T22:14:19.416Z",
+  "runId": "collect-prod-20261122T221246Z-8a33",
+  "mode": "llm",
+  "lines": [
+    {
+      "text": "바르셀로나가 비야레알에 3-2 역전승을 거뒀다.",
+      "ai": true,
+      "refs": [
+        "m564749"
+      ],
+      "comps": [
+        "LALIGA"
+      ]
+    },
+    {
+      "text": "리버풀이 맨체스터 유나이티드를 4-0으로 완파했다.",
+      "ai": true,
+      "refs": [
+        "m560645"
+      ],
+      "comps": [
+        "EPL"
+      ]
+    },
+    {
+      "text": "아탈란타가 8골을 주고받은 끝에 인테르와 4-4로 비겼다.",
+      "ai": true,
+      "refs": [
+        "m558520"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    },
+    {
+      "text": "인테르의 Pio Esposito가 해트트릭을 기록했다.",
+      "ai": true,
+      "refs": [
+        "m558520"
+      ],
+      "comps": [
+        "SERIEA"
+      ]
+    }
+  ]
+}

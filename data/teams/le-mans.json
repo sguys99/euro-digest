@@ -12,18 +12,23 @@
   "formation": {
     "shape": "3-1-4-2",
     "source": "api",
-    "updated": "2026-10-31T19:45:00.000Z"
+    "updated": "2026-11-22T19:45:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Louis Mafouta",
-      "goals": 4,
+      "goals": 5,
       "assists": null
     },
     {
       "name": "Adil Bourabaa",
       "goals": 3,
       "assists": 2
+    },
+    {
+      "name": "Erwan Colas",
+      "goals": 2,
+      "assists": null
     }
   ],
   "profile": {
@@ -42,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-1-4-2",
-    "match": "af-1552809",
-    "kickoff": "2026-10-31T19:45:00.000Z",
+    "match": "hl-1321452306",
+    "kickoff": "2026-11-22T19:45:00.000Z",
     "comp": "LIGUE1",
     "side": "away",
-    "opponent": "troyes",
+    "opponent": "marseille",
     "startXI": [
       {
         "name": "N. Kocik",
@@ -55,10 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "N. Boissé",
-        "number": 15,
+        "name": "H. Voyer",
+        "number": 5,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "S. Yohou",
@@ -67,34 +72,16 @@
         "grid": "2:2"
       },
       {
-        "name": "Raúl Torrente",
-        "number": 16,
+        "name": "R. Bamba",
+        "number": 26,
         "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "A. Lauray",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "L. Buadés",
-        "number": 18,
-        "pos": "M",
-        "grid": "4:4"
-      },
-      {
-        "name": "A. Rabillard",
-        "number": 9,
-        "pos": "M",
-        "grid": "4:3"
+        "grid": "2:3"
       },
       {
         "name": "L. Bretelle",
         "number": 29,
         "pos": "M",
-        "grid": "4:2"
+        "grid": "3:1"
       },
       {
         "name": "L. Calodat",
@@ -103,40 +90,58 @@
         "grid": "4:1"
       },
       {
-        "name": "L. Mafouta",
-        "number": 14,
-        "pos": "F",
-        "grid": "5:2"
+        "name": "A. Rabillard",
+        "number": 9,
+        "pos": "M",
+        "grid": "4:2"
       },
       {
-        "name": "H. Diallo",
-        "number": 13,
-        "pos": "F",
-        "grid": "5:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "R. Bamba",
-        "number": 26,
-        "pos": "D",
-        "grid": null
+        "name": "D. Traoré",
+        "number": 23,
+        "pos": "M",
+        "grid": "4:3"
       },
       {
-        "name": "B. Brahimi",
-        "number": 7,
-        "pos": "F",
-        "grid": null
+        "name": "L. Buadés",
+        "number": 18,
+        "pos": "M",
+        "grid": "4:4"
       },
       {
         "name": "D. Guèye",
         "number": 25,
         "pos": "F",
+        "grid": "5:1"
+      },
+      {
+        "name": "L. Mafouta",
+        "number": 14,
+        "pos": "F",
+        "grid": "5:2"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "Raúl Torrente",
+        "number": 16,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "W. Harhouz",
-        "number": 20,
+        "name": "A. Lauray",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Y. Larouci",
+        "number": 76,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Adnane Kharroubi",
+        "number": 37,
         "pos": "F",
         "grid": null
       },
@@ -147,27 +152,27 @@
         "grid": null
       },
       {
-        "name": "Y. Larouci",
-        "number": 76,
-        "pos": "D",
+        "name": "W. Harhouz",
+        "number": 20,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "D. Traoré",
-        "number": 23,
-        "pos": "M",
+        "name": "E. Colas",
+        "number": 28,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "N. Boissé",
+        "number": 15,
+        "pos": "D",
         "grid": null
       },
       {
         "name": "J. Vercruysse",
         "number": 10,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "H. Voyer",
-        "number": 5,
-        "pos": "D",
         "grid": null
       }
     ]

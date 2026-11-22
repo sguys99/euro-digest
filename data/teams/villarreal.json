@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-22T13:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -30,7 +30,7 @@
     {
       "name": "Alberto Moleiro",
       "goals": 2,
-      "assists": 4
+      "assists": 5
     }
   ],
   "profile": {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1635746",
-    "kickoff": "2026-11-03T20:00:00.000Z",
-    "comp": "UCL",
-    "side": "home",
-    "opponent": "paris-saint-germain",
+    "match": "hl-1336457989",
+    "kickoff": "2026-11-22T13:00:00.000Z",
+    "comp": "LALIGA",
+    "side": "away",
+    "opponent": "barcelona",
     "startXI": [
       {
         "name": "P. Gulácsi",
@@ -62,16 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Freeman",
-        "number": 3,
+        "name": "Carlos Romero",
+        "number": 20,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "S. Mouriño",
-        "number": 15,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Renato Veiga",
@@ -80,22 +74,22 @@
         "grid": "2:2"
       },
       {
-        "name": "Carlos Romero",
-        "number": 20,
+        "name": "Pau Navarro",
+        "number": 6,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "Santi Comesaña",
-        "number": 14,
-        "pos": "M",
-        "grid": "3:4"
+        "name": "A. Freeman",
+        "number": 3,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
-        "name": "C. Macia",
-        "number": 16,
+        "name": "Alberto Moleiro",
+        "number": 10,
         "pos": "M",
-        "grid": "3:3"
+        "grid": "3:1"
       },
       {
         "name": "P. Gueye",
@@ -104,35 +98,35 @@
         "grid": "3:2"
       },
       {
+        "name": "Santi Comesaña",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
         "name": "T. Buchanan",
         "number": 17,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:4"
       },
       {
-        "name": "N. Pépé",
-        "number": 19,
-        "pos": "F",
-        "grid": "4:2"
-      },
-      {
-        "name": "Ayoze Pérez",
-        "number": 22,
+        "name": "G. Mikautadze",
+        "number": 9,
         "pos": "F",
         "grid": "4:1"
+      },
+      {
+        "name": "T. Oluwaseyi",
+        "number": 21,
+        "pos": "F",
+        "grid": "4:2"
       }
     ],
     "substitutes": [
       {
-        "name": "Joselillo Gaitán",
-        "number": 28,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "N. El Jmili",
-        "number": 27,
-        "pos": "F",
+        "name": "Sergi Cardona",
+        "number": 23,
+        "pos": "D",
         "grid": null
       },
       {
@@ -142,9 +136,9 @@
         "grid": null
       },
       {
-        "name": "Sergi Cardona",
-        "number": 23,
-        "pos": "D",
+        "name": "N. El Jmili",
+        "number": 27,
+        "pos": "F",
         "grid": null
       },
       {
@@ -154,26 +148,26 @@
         "grid": null
       },
       {
-        "name": "G. Mikautadze",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Alberto Moleiro",
-        "number": 10,
+        "name": "C. Macia",
+        "number": 16,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Pau Navarro",
-        "number": 6,
+        "name": "S. Mouriño",
+        "number": 15,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "T. Oluwaseyi",
-        "number": 21,
+        "name": "N. Pépé",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Ayoze Pérez",
+        "number": 22,
         "pos": "F",
         "grid": null
       },
@@ -181,6 +175,18 @@
         "name": "Luíz Júnior",
         "number": 1,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "C. Tidiane Thiam",
+        "number": 30,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "César Bonafé",
+        "number": 32,
+        "pos": "D",
         "grid": null
       }
     ]

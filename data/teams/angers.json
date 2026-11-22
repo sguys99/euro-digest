@@ -10,9 +10,9 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "5-4-1",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-01T16:15:00.000Z"
+    "updated": "2026-11-22T14:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -41,12 +41,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "5-4-1",
-    "match": "af-1552804",
-    "kickoff": "2026-11-01T16:15:00.000Z",
+    "formation": "4-2-3-1",
+    "match": "hl-1321454859",
+    "kickoff": "2026-11-22T14:00:00.000Z",
     "comp": "LIGUE1",
     "side": "away",
-    "opponent": "lyon",
+    "opponent": "paris-fc",
     "startXI": [
       {
         "name": "Anthony Lopes",
@@ -55,16 +55,16 @@
         "grid": "1:1"
       },
       {
-        "name": "L. Rao-Lisoa",
-        "number": 27,
+        "name": "J. Kalulu",
+        "number": 17,
         "pos": "D",
-        "grid": "2:5"
+        "grid": "2:1"
       },
       {
-        "name": "C. Arcus",
-        "number": 2,
+        "name": "M. Gernigon",
+        "number": 34,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:2"
       },
       {
         "name": "O. Camara",
@@ -73,82 +73,52 @@
         "grid": "2:3"
       },
       {
-        "name": "J. Lefort",
-        "number": 21,
+        "name": "C. Arcus",
+        "number": 2,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "J. Kalulu",
-        "number": 17,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "Y. Belkhdim",
-        "number": 14,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "H. Belkebla",
-        "number": 93,
-        "pos": "M",
-        "grid": "3:3"
+        "grid": "2:4"
       },
       {
         "name": "B. van den Boomen",
         "number": 8,
         "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "H. Belkebla",
+        "number": 93,
+        "pos": "M",
         "grid": "3:2"
+      },
+      {
+        "name": "A. Bermont",
+        "number": 26,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "A. Sbaï",
         "number": 10,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "4:2"
       },
       {
-        "name": "P. Peter",
-        "number": 9,
-        "pos": "F",
-        "grid": "4:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "L. Mouton",
-        "number": 6,
+        "name": "Y. Belkhdim",
+        "number": 14,
         "pos": "M",
-        "grid": null
+        "grid": "4:3"
       },
       {
         "name": "U. Simbakoli",
         "number": 7,
         "pos": "F",
-        "grid": null
-      },
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
       {
-        "name": "M. Zinga",
-        "number": 16,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Marius Louër",
-        "number": 20,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Gernigon",
-        "number": 34,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Djibirin Harouna",
-        "number": 11,
+        "name": "J. Allevinah",
+        "number": 18,
         "pos": "F",
         "grid": null
       },
@@ -159,15 +129,45 @@
         "grid": null
       },
       {
-        "name": "A. Bermont",
-        "number": 26,
+        "name": "Jules Bouffandeau",
+        "number": 37,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Allevinah",
-        "number": 18,
+        "name": "A. El Ouazzani",
+        "number": 19,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Marius Louër",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Mouton",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "P. Peter",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Rao-Lisoa",
+        "number": 27,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ianis Sacko",
+        "number": 50,
+        "pos": "G",
         "grid": null
       }
     ]

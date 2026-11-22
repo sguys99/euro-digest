@@ -10,9 +10,9 @@
     "#000000"
   ],
   "formation": {
-    "shape": "3-5-2",
+    "shape": "4-1-4-1",
     "source": "api",
-    "updated": "2026-10-30T18:00:00.000Z"
+    "updated": "2026-11-22T16:15:00.000Z"
   },
   "topPlayers": [
     {
@@ -22,7 +22,7 @@
     },
     {
       "name": "Boulaye Dia",
-      "goals": 5,
+      "goals": 6,
       "assists": null
     },
     {
@@ -46,30 +46,18 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-5-2",
-    "match": "af-1552806",
-    "kickoff": "2026-10-30T18:00:00.000Z",
+    "formation": "4-1-4-1",
+    "match": "hl-1321451455",
+    "kickoff": "2026-11-22T16:15:00.000Z",
     "comp": "LIGUE1",
     "side": "away",
-    "opponent": "nice",
+    "opponent": "lorient",
     "startXI": [
       {
-        "name": "N. Lemaître",
-        "number": 16,
+        "name": "B. Samba",
+        "number": 30,
         "pos": "G",
         "grid": "1:1"
-      },
-      {
-        "name": "A. Ait Boudlal",
-        "number": 48,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "C. Cresswell",
-        "number": 4,
-        "pos": "D",
-        "grid": "2:2"
       },
       {
         "name": "A. Rouault",
@@ -78,76 +66,70 @@
         "grid": "2:1"
       },
       {
-        "name": "P. Frankowski",
-        "number": 95,
-        "pos": "M",
-        "grid": "3:5"
+        "name": "Gonçalo Oliveira",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
-        "name": "S. Szymański",
-        "number": 17,
-        "pos": "M",
-        "grid": "3:4"
+        "name": "C. Cresswell",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "B. Reynolds",
+        "number": 14,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "V. Rongier",
         "number": 21,
         "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "A. Thomasson",
-        "number": 28,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "3:1"
       },
       {
         "name": "M. Nagida",
         "number": 18,
         "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "B. Dia",
-        "number": 22,
-        "pos": "F",
-        "grid": "4:2"
-      },
-      {
-        "name": "Mousa Tamari",
-        "number": 11,
-        "pos": "F",
         "grid": "4:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "Kilian Belazzoug",
-        "number": 60,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Gonçalo Oliveira",
-        "number": 5,
-        "pos": "D",
-        "grid": null
       },
       {
         "name": "M. Camara",
         "number": 45,
         "pos": "M",
-        "grid": null
+        "grid": "4:2"
       },
       {
-        "name": "D. Cissé",
-        "number": 6,
+        "name": "S. Szymański",
+        "number": 17,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Mousa Tamari",
+        "number": 11,
+        "pos": "M",
+        "grid": "4:4"
+      },
+      {
+        "name": "B. Dia",
+        "number": 22,
+        "pos": "F",
+        "grid": "5:1"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "A. Thomasson",
+        "number": 28,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Eliezer Mayenda",
-        "number": 12,
+        "name": "I. Soumaré",
+        "number": 90,
         "pos": "F",
         "grid": null
       },
@@ -158,9 +140,15 @@
         "grid": null
       },
       {
-        "name": "B. Reynolds",
-        "number": 14,
-        "pos": "D",
+        "name": "E. Lepaul",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "D. Cissé",
+        "number": 6,
+        "pos": "M",
         "grid": null
       },
       {
@@ -170,8 +158,20 @@
         "grid": null
       },
       {
-        "name": "I. Soumaré",
-        "number": 90,
+        "name": "Kilian Belazzoug",
+        "number": 60,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Ait Boudlal",
+        "number": 48,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "H. Do Marcolino",
+        "number": 65,
         "pos": "F",
         "grid": null
       }

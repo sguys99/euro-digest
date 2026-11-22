@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-11-01T11:30:00.000Z"
+    "updated": "2026-11-22T11:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -42,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-5-2",
-    "match": "af-1550180",
-    "kickoff": "2026-11-01T11:30:00.000Z",
+    "match": "hl-1319221835",
+    "kickoff": "2026-11-22T11:30:00.000Z",
     "comp": "SERIEA",
     "side": "away",
-    "opponent": "como",
+    "opponent": "juventus",
     "startXI": [
       {
         "name": "F. Stanković",
@@ -55,10 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "R. Halhal",
-        "number": 25,
+        "name": "Juan Jesus",
+        "number": 15,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "M. Moreno",
@@ -67,10 +67,34 @@
         "grid": "2:2"
       },
       {
-        "name": "Juan Jesus",
-        "number": 15,
+        "name": "R. Halhal",
+        "number": 25,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
+      },
+      {
+        "name": "R. Haps",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "S. Sohm",
+        "number": 19,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "G. Busio",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Kike Pérez",
+        "number": 71,
+        "pos": "M",
+        "grid": "3:4"
       },
       {
         "name": "A. Hainaut",
@@ -79,115 +103,19 @@
         "grid": "3:5"
       },
       {
-        "name": "Þ. Helgason",
-        "number": 21,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "S. Sohm",
-        "number": 19,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "G. Busio",
-        "number": 6,
-        "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "P. Mazzocchi",
-        "number": 70,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
         "name": "A. Adams",
         "number": 45,
         "pos": "F",
-        "grid": "4:2"
+        "grid": "4:1"
       },
       {
         "name": "L. Lauberbach",
         "number": 29,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:2"
       }
     ],
     "substitutes": [
-      {
-        "name": "R. Sagrado",
-        "number": 20,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Schingtienne",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Bella-Kotchap",
-        "number": 17,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "T. Bašić",
-        "number": 26,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Rrahmani",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Kike Pérez",
-        "number": 71,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "L. Montipò",
-        "number": 96,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "R. Mohammed",
-        "number": 16,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "K. Lisman",
-        "number": 56,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "R. Haps",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Toni Fernández",
-        "number": 77,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Lamine Dabo",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
       {
         "name": "A. Duncan",
         "number": 32,
@@ -201,9 +129,81 @@
         "grid": null
       },
       {
+        "name": "Lamine Dabo",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Toni Fernández",
+        "number": 77,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Gomes",
+        "number": 95,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Þ. Helgason",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Lisman",
+        "number": 56,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Mohammed",
+        "number": 16,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Montipò",
+        "number": 96,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Rrahmani",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Sagrado",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Schingtienne",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
         "name": "M. Dagasso",
         "number": 30,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Lorenzo Berardi",
+        "number": 36,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Bella-Kotchap",
+        "number": 17,
+        "pos": "D",
         "grid": null
       }
     ]

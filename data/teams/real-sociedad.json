@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-01T20:00:00.000Z"
+    "updated": "2026-11-22T15:15:00.000Z"
   },
   "topPlayers": [
     {
@@ -26,8 +26,8 @@
       "assists": null
     },
     {
-      "name": "Ander Barrenetxea",
-      "goals": 2,
+      "name": "Mikel Oyarzabal",
+      "goals": 3,
       "assists": 2
     }
   ],
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1570433",
-    "kickoff": "2026-11-01T20:00:00.000Z",
+    "match": "hl-1336461393",
+    "kickoff": "2026-11-22T15:15:00.000Z",
     "comp": "LALIGA",
     "side": "away",
-    "opponent": "athletic",
+    "opponent": "racing-santander",
     "startXI": [
       {
         "name": "Álex Remiro",
@@ -60,16 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "J. Aramburu",
-        "number": 2,
+        "name": "Sergio Gómez",
+        "number": 17,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "Jon Martín",
-        "number": 6,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "M. Sarr",
@@ -78,22 +72,22 @@
         "grid": "2:2"
       },
       {
-        "name": "Sergio Gómez",
-        "number": 17,
+        "name": "Zubeldia",
+        "number": 5,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
+      },
+      {
+        "name": "Héctor Fort",
+        "number": 22,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Gonçalo Guedes",
         "number": 11,
         "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Jon Gorrotxategi",
-        "number": 4,
-        "pos": "M",
-        "grid": "3:3"
+        "grid": "3:1"
       },
       {
         "name": "Carlos Soler",
@@ -102,41 +96,35 @@
         "grid": "3:2"
       },
       {
-        "name": "Barrenetxea",
-        "number": 7,
+        "name": "Jon Gorrotxategi",
+        "number": 4,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:3"
       },
       {
         "name": "L. Sučić",
         "number": 24,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "O. Óskarsson",
+        "number": 9,
         "pos": "F",
-        "grid": "4:2"
+        "grid": "4:1"
       },
       {
         "name": "Mikel Oyarzabal",
         "number": 10,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:2"
       }
     ],
     "substitutes": [
       {
-        "name": "Héctor Fort",
-        "number": 22,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "Aitor Fraga",
         "number": 32,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Y. Herrera",
-        "number": 21,
-        "pos": "M",
         "grid": null
       },
       {
@@ -146,15 +134,27 @@
         "grid": null
       },
       {
-        "name": "Unai Marrero",
-        "number": 13,
-        "pos": "G",
+        "name": "A. Lebarbier",
+        "number": 28,
+        "pos": "M",
         "grid": null
       },
       {
         "name": "Pablo Marín",
         "number": 15,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Unai Marrero",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Jon Martín",
+        "number": 6,
+        "pos": "D",
         "grid": null
       },
       {
@@ -182,15 +182,15 @@
         "grid": null
       },
       {
-        "name": "Zubeldia",
-        "number": 5,
-        "pos": "D",
+        "name": "A. Zakharyan",
+        "number": 23,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "O. Óskarsson",
-        "number": 9,
-        "pos": "F",
+        "name": "J. Aramburu",
+        "number": 2,
+        "pos": "D",
         "grid": null
       }
     ]

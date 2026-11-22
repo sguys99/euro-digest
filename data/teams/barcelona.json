@@ -12,9 +12,9 @@
     "#004D98"
   ],
   "formation": {
-    "shape": "4-2-3-1",
+    "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-22T13:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -25,11 +25,11 @@
     {
       "name": "Lamine Yamal",
       "goals": 10,
-      "assists": 8
+      "assists": 9
     },
     {
       "name": "Fermín López",
-      "goals": 7,
+      "goals": 8,
       "assists": 5
     }
   ],
@@ -48,12 +48,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-2-3-1",
-    "match": "af-1635627",
-    "kickoff": "2026-11-03T20:00:00.000Z",
-    "comp": "UCL",
+    "formation": "4-3-3",
+    "match": "hl-1336457989",
+    "kickoff": "2026-11-22T13:00:00.000Z",
+    "comp": "LALIGA",
     "side": "home",
-    "opponent": "aston-villa",
+    "opponent": "villarreal",
     "startXI": [
       {
         "name": "Joan García",
@@ -62,16 +62,10 @@
         "grid": "1:1"
       },
       {
-        "name": "B. Farinas",
-        "number": 4,
+        "name": "João Cancelo",
+        "number": 2,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "Pau Cubarsí Paredes",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Gerard Martín",
@@ -80,16 +74,16 @@
         "grid": "2:2"
       },
       {
-        "name": "João Cancelo",
-        "number": 2,
+        "name": "F. de Jong",
+        "number": 21,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "Rodri",
-        "number": 16,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Eric García",
+        "number": 24,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Pedri",
@@ -98,47 +92,41 @@
         "grid": "3:1"
       },
       {
-        "name": "Lamine Yamal",
-        "number": 10,
+        "name": "Marc Bernal",
+        "number": 22,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
       },
       {
         "name": "Fermín",
         "number": 7,
         "pos": "M",
-        "grid": "4:2"
+        "grid": "3:3"
       },
       {
-        "name": "A. Gordon",
-        "number": 17,
-        "pos": "M",
+        "name": "K. Adeyemi",
+        "number": 14,
+        "pos": "F",
         "grid": "4:1"
       },
       {
         "name": "Raphinha",
         "number": 11,
         "pos": "F",
-        "grid": "5:1"
+        "grid": "4:2"
+      },
+      {
+        "name": "Lamine Yamal",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "K. Adeyemi",
-        "number": 14,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "Alejandro Balde",
         "number": 3,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Marc Bernal",
-        "number": 22,
-        "pos": "M",
         "grid": null
       },
       {
@@ -148,9 +136,27 @@
         "grid": null
       },
       {
-        "name": "O. Goren",
-        "number": 32,
+        "name": "Pau Cubarsí Paredes",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "B. Farinas",
+        "number": 4,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Gordon",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Koundé",
+        "number": 23,
+        "pos": "D",
         "grid": null
       },
       {
@@ -160,15 +166,15 @@
         "grid": null
       },
       {
-        "name": "Gavi",
-        "number": 6,
+        "name": "Dani Olmo",
+        "number": 20,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "H. Abdelkarim",
-        "number": 29,
-        "pos": "F",
+        "name": "Gavi",
+        "number": 6,
+        "pos": "M",
         "grid": null
       },
       {
@@ -178,21 +184,9 @@
         "grid": null
       },
       {
-        "name": "Guillem Víctor",
-        "number": 40,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "Gabriel Jesus",
         "number": 9,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "F. de Jong",
-        "number": 21,
-        "pos": "M",
         "grid": null
       }
     ]

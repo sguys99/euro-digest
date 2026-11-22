@@ -12,18 +12,18 @@
   "formation": {
     "shape": "5-4-1",
     "source": "api",
-    "updated": "2026-10-31T15:00:00.000Z"
+    "updated": "2026-11-22T14:00:00.000Z"
   },
   "topPlayers": [
     {
-      "name": "Mohamed Belloumi",
-      "goals": 3,
+      "name": "Oliver McBurnie",
+      "goals": 4,
       "assists": 2
     },
     {
-      "name": "Oliver McBurnie",
-      "goals": 2,
-      "assists": 2
+      "name": "Mohamed Belloumi",
+      "goals": 3,
+      "assists": 3
     }
   ],
   "profile": {

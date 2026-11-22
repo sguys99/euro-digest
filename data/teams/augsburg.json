@@ -12,12 +12,12 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T14:30:00.000Z"
+    "updated": "2026-11-22T14:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Michael Gregoritsch",
-      "goals": 5,
+      "goals": 7,
       "assists": null
     },
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1575206",
-    "kickoff": "2026-10-31T14:30:00.000Z",
+    "match": "hl-1340516408",
+    "kickoff": "2026-11-22T14:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "home",
-    "opponent": "freiburg",
+    "opponent": "mainz",
     "startXI": [
       {
         "name": "F. Dahmen",
@@ -62,34 +62,28 @@
         "grid": "1:1"
       },
       {
+        "name": "Hennes Behrens",
+        "number": 16,
+        "pos": "D",
+        "grid": "2:1"
+      },
+      {
+        "name": "Abdulay Bah",
+        "number": 35,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
         "name": "Y. Keitel",
         "number": 14,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "J. Gouweleeuw",
-        "number": 6,
-        "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "C. Matsima",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "R. Fellhauer",
-        "number": 19,
+        "name": "M. Wolf",
+        "number": 27,
         "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "H. Massengo",
-        "number": 4,
-        "pos": "M",
-        "grid": "3:3"
+        "grid": "3:1"
       },
       {
         "name": "F. Rieder",
@@ -98,22 +92,28 @@
         "grid": "3:2"
       },
       {
-        "name": "Hennes Behrens",
-        "number": 16,
+        "name": "T. Schnitzer",
+        "number": 37,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:3"
+      },
+      {
+        "name": "R. Fellhauer",
+        "number": 19,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "A. Claude-Maurice",
+        "number": 20,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "A. Kade",
         "number": 30,
         "pos": "M",
         "grid": "4:2"
-      },
-      {
-        "name": "A. Ibrahimović",
-        "number": 21,
-        "pos": "M",
-        "grid": "4:1"
       },
       {
         "name": "M. Gregoritsch",
@@ -123,30 +123,6 @@
       }
     ],
     "substitutes": [
-      {
-        "name": "A. Claude-Maurice",
-        "number": 20,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Loris Husic",
-        "number": 38,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Kömür",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "N. Labrović",
-        "number": 22,
-        "pos": "G",
-        "grid": null
-      },
       {
         "name": "U. Ogundu",
         "number": 39,
@@ -160,12 +136,6 @@
         "grid": null
       },
       {
-        "name": "T. Schnitzer",
-        "number": 37,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "Seol Young-Woo",
         "number": 7,
         "pos": "D",
@@ -173,9 +143,39 @@
         "korean": "seol-young-woo"
       },
       {
-        "name": "M. Wolf",
-        "number": 27,
-        "pos": "D",
+        "name": "T. Breithaupt",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Loris Husic",
+        "number": 38,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "K. Suso",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Ibrahimović",
+        "number": 21,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Kömür",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Labrović",
+        "number": 22,
+        "pos": "G",
         "grid": null
       }
     ]

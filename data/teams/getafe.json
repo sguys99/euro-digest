@@ -10,9 +10,9 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "4-2-3-1",
+    "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-01T13:00:00.000Z"
+    "updated": "2026-11-22T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -41,12 +41,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-2-3-1",
-    "match": "af-1570438",
-    "kickoff": "2026-11-01T13:00:00.000Z",
+    "formation": "4-4-2",
+    "match": "hl-1336458840",
+    "kickoff": "2026-11-22T20:00:00.000Z",
     "comp": "LALIGA",
     "side": "home",
-    "opponent": "sevilla",
+    "opponent": "atletico-madrid",
     "startXI": [
       {
         "name": "David Soria",
@@ -55,14 +55,20 @@
         "grid": "1:1"
       },
       {
-        "name": "Daniel Carvajal",
-        "number": 14,
+        "name": "J. Mojica",
+        "number": 22,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
       },
       {
-        "name": "S. Boselli",
-        "number": 15,
+        "name": "J. Valou",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:2"
+      },
+      {
+        "name": "Z. Romero",
+        "number": 24,
         "pos": "D",
         "grid": "2:3"
       },
@@ -70,103 +76,55 @@
         "name": "D. Dakonam",
         "number": 2,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "J. Valou",
-        "number": 26,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "N. Gudelj",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "Francho Serrano",
-        "number": 16,
-        "pos": "M",
-        "grid": "3:1"
-      },
-      {
-        "name": "Andrés García",
-        "number": 21,
-        "pos": "M",
-        "grid": "4:3"
+        "grid": "2:4"
       },
       {
         "name": "Ramón Terrats",
         "number": 11,
         "pos": "M",
-        "grid": "4:2"
+        "grid": "3:1"
       },
       {
-        "name": "M. Satriano",
-        "number": 10,
+        "name": "Francho Serrano",
+        "number": 16,
         "pos": "M",
-        "grid": "4:1"
-      },
-      {
-        "name": "E. Ünal",
-        "number": 19,
-        "pos": "F",
-        "grid": "5:1"
-      }
-    ],
-    "substitutes": [
-      {
-        "name": "A. Abqar",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Iván Azón",
-        "number": 20,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "I. K. Danfakha",
-        "number": 36,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Davinchi",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Diego Ferrer",
-        "number": 35,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Kiko Femenía",
-        "number": 17,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Letáček",
-        "number": 1,
-        "pos": "G",
-        "grid": null
+        "grid": "3:2"
       },
       {
         "name": "O. Mangala",
         "number": 23,
         "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Andrés García",
+        "number": 21,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "E. Ünal",
+        "number": 19,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "Iván Azón",
+        "number": 20,
+        "pos": "F",
+        "grid": "4:2"
+      }
+    ],
+    "substitutes": [
+      {
+        "name": "S. Sazonov",
+        "number": 4,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "Borja Mayoral",
-        "number": 9,
+        "name": "M. Satriano",
+        "number": 10,
         "pos": "F",
         "grid": null
       },
@@ -177,8 +135,56 @@
         "grid": null
       },
       {
-        "name": "S. Sazonov",
-        "number": 4,
+        "name": "Borja Mayoral",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Mario Martín",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Letáček",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Kiko Femenía",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Diego Ferrer",
+        "number": 35,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Davinchi",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Abqar",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Mady Macalou Soumano",
+        "number": 39,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Bafode Gassama Gassama",
+        "number": 40,
         "pos": "D",
         "grid": null
       }

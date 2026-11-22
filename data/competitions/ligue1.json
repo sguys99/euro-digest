@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-21T22:16:54.057Z",
+  "updatedAt": "2026-11-22T22:16:09.856Z",
   "standings": [
     {
       "pos": 1,
@@ -26,6 +26,26 @@
     },
     {
       "pos": 2,
+      "prevPos": 3,
+      "team": "paris-fc",
+      "played": 11,
+      "w": 7,
+      "d": 2,
+      "l": 2,
+      "gf": 21,
+      "ga": 10,
+      "pts": 23,
+      "form": [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
       "prevPos": 2,
       "team": "lille",
       "played": 11,
@@ -45,28 +65,8 @@
       "zone": "none"
     },
     {
-      "pos": 3,
-      "prevPos": 3,
-      "team": "paris-fc",
-      "played": 10,
-      "w": 6,
-      "d": 2,
-      "l": 2,
-      "gf": 17,
-      "ga": 10,
-      "pts": 20,
-      "form": [
-        "L",
-        "W",
-        "L",
-        "W",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 4,
-      "prevPos": 5,
+      "prevPos": 4,
       "team": "lyon",
       "played": 11,
       "w": 6,
@@ -86,27 +86,27 @@
     },
     {
       "pos": 5,
-      "prevPos": 4,
+      "prevPos": 5,
       "team": "marseille",
-      "played": 10,
+      "played": 11,
       "w": 6,
       "d": 0,
-      "l": 4,
-      "gf": 22,
-      "ga": 14,
+      "l": 5,
+      "gf": 24,
+      "ga": 17,
       "pts": 18,
       "form": [
         "W",
         "W",
         "W",
         "W",
-        "W"
+        "L"
       ],
       "zone": "none"
     },
     {
       "pos": 6,
-      "prevPos": 9,
+      "prevPos": 6,
       "team": "brest",
       "played": 11,
       "w": 5,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 6,
+      "prevPos": 7,
       "team": "nice",
       "played": 11,
       "w": 5,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 7,
+      "prevPos": 8,
       "team": "monaco",
       "played": 11,
       "w": 4,
@@ -166,21 +166,21 @@
     },
     {
       "pos": 9,
-      "prevPos": 8,
+      "prevPos": 9,
       "team": "rennes",
-      "played": 10,
+      "played": 11,
       "w": 5,
-      "d": 1,
+      "d": 2,
       "l": 4,
-      "gf": 21,
-      "ga": 21,
-      "pts": 16,
+      "gf": 22,
+      "ga": 22,
+      "pts": 17,
       "form": [
-        "W",
         "L",
         "W",
         "L",
-        "L"
+        "L",
+        "D"
       ],
       "zone": "none"
     },
@@ -188,19 +188,19 @@
       "pos": 10,
       "prevPos": 10,
       "team": "lorient",
-      "played": 10,
+      "played": 11,
       "w": 4,
-      "d": 3,
+      "d": 4,
       "l": 3,
-      "gf": 9,
-      "ga": 8,
-      "pts": 15,
+      "gf": 10,
+      "ga": 9,
+      "pts": 16,
       "form": [
-        "W",
         "W",
         "D",
         "L",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "none"
     },
@@ -246,6 +246,26 @@
     },
     {
       "pos": 13,
+      "prevPos": 16,
+      "team": "le-mans",
+      "played": 11,
+      "w": 2,
+      "d": 5,
+      "l": 4,
+      "gf": 15,
+      "ga": 21,
+      "pts": 11,
+      "form": [
+        "L",
+        "D",
+        "L",
+        "D",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 14,
       "prevPos": 13,
       "team": "troyes",
       "played": 11,
@@ -265,8 +285,8 @@
       "zone": "none"
     },
     {
-      "pos": 14,
-      "prevPos": 15,
+      "pos": 15,
+      "prevPos": 14,
       "team": "auxerre",
       "played": 11,
       "w": 3,
@@ -285,8 +305,8 @@
       "zone": "none"
     },
     {
-      "pos": 15,
-      "prevPos": 14,
+      "pos": 16,
+      "prevPos": 15,
       "team": "strasbourg",
       "played": 11,
       "w": 3,
@@ -302,43 +322,23 @@
         "L",
         "L"
       ],
-      "zone": "none"
-    },
-    {
-      "pos": 16,
-      "prevPos": 16,
-      "team": "le-mans",
-      "played": 10,
-      "w": 1,
-      "d": 5,
-      "l": 4,
-      "gf": 12,
-      "ga": 19,
-      "pts": 8,
-      "form": [
-        "L",
-        "L",
-        "D",
-        "L",
-        "D"
-      ],
       "zone": "relegation"
     },
     {
       "pos": 17,
       "prevPos": 17,
       "team": "angers",
-      "played": 10,
+      "played": 11,
       "w": 2,
       "d": 2,
-      "l": 6,
+      "l": 7,
       "gf": 9,
-      "ga": 19,
+      "ga": 23,
       "pts": 8,
       "form": [
         "L",
-        "L",
         "D",
+        "L",
         "L",
         "L"
       ],
@@ -1621,8 +1621,11 @@
       "kickoff": "2026-11-22T14:00:00Z",
       "home": "paris-fc",
       "away": "angers",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559626",
@@ -1631,8 +1634,11 @@
       "kickoff": "2026-11-22T16:15:00Z",
       "home": "lorient",
       "away": "rennes",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559629",
@@ -1641,8 +1647,11 @@
       "kickoff": "2026-11-22T19:45:00Z",
       "home": "marseille",
       "away": "le-mans",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 3
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559616",
@@ -3862,15 +3871,15 @@
       "goals": 9,
       "assists": 5,
       "penalties": 3,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Amine Gouiri",
       "team": "marseille",
-      "goals": 7,
-      "assists": 3,
+      "goals": 8,
+      "assists": 4,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Esteban Lepaul",
@@ -3878,7 +3887,7 @@
       "goals": 7,
       "assists": null,
       "penalties": 4,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Cameron Archer",
@@ -3897,11 +3906,27 @@
       "played": 10
     },
     {
+      "player": "Boulaye Dia",
+      "team": "rennes",
+      "goals": 6,
+      "assists": null,
+      "penalties": 1,
+      "played": 9
+    },
+    {
       "player": "Florian Thauvin",
       "team": "lens",
       "goals": 5,
       "assists": 8,
       "penalties": 3,
+      "played": 11
+    },
+    {
+      "player": "Louis Mafouta",
+      "team": "le-mans",
+      "goals": 5,
+      "assists": null,
+      "penalties": 1,
       "played": 11
     },
     {
@@ -3937,22 +3962,6 @@
       "played": 11
     },
     {
-      "player": "Boulaye Dia",
-      "team": "rennes",
-      "goals": 5,
-      "assists": null,
-      "penalties": 1,
-      "played": 8
-    },
-    {
-      "player": "Louis Mafouta",
-      "team": "le-mans",
-      "goals": 4,
-      "assists": null,
-      "penalties": 1,
-      "played": 10
-    },
-    {
       "player": "Kamory Doumbia",
       "team": "brest",
       "goals": 4,
@@ -3966,7 +3975,7 @@
       "goals": 4,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Gessime Yassine",
@@ -4086,7 +4095,7 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Himad Abdelli",
@@ -4094,7 +4103,23 @@
       "goals": 3,
       "assists": null,
       "penalties": 1,
-      "played": 10
+      "played": 11
+    },
+    {
+      "player": "Igor Paixão",
+      "team": "marseille",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Maxime López",
+      "team": "paris-fc",
+      "goals": 3,
+      "assists": 2,
+      "penalties": null,
+      "played": 11
     },
     {
       "player": "Senny Mayulu",
@@ -4126,7 +4151,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Franjo Ivanovic",
@@ -4166,7 +4191,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Mbwana Samatta",
@@ -4182,7 +4207,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": 1,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Ayase Ueda",
@@ -4230,7 +4255,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Ethan Mbappé",
@@ -4252,9 +4277,9 @@
       "player": "Pablo Pagis",
       "team": "paris-fc",
       "goals": 2,
-      "assists": 2,
+      "assists": 3,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Prosper Peter",
@@ -4262,7 +4287,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Corentin Tolisso",
@@ -4313,22 +4338,6 @@
       "played": 11
     },
     {
-      "player": "Igor Paixão",
-      "team": "marseille",
-      "goals": 2,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Maxime López",
-      "team": "paris-fc",
-      "goals": 2,
-      "assists": 2,
-      "penalties": null,
-      "played": 10
-    },
-    {
       "player": "Romain Faivre",
       "team": "auxerre",
       "goals": 2,
@@ -4345,12 +4354,28 @@
       "played": 11
     },
     {
+      "player": "Luca Koleosho",
+      "team": "paris-fc",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 9
+    },
+    {
       "player": "Mika Godts",
       "team": "paris-saint-germain",
       "goals": 2,
       "assists": 1,
       "penalties": null,
       "played": 11
+    },
+    {
+      "player": "Erwan Colas",
+      "team": "le-mans",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 3
     },
     {
       "player": "Pierre Emile Højbjerg",
@@ -4398,7 +4423,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Noah Nartey",
@@ -4462,7 +4487,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Rémy Labeau Lascary",
@@ -4494,7 +4519,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Vincent Marchetti",
@@ -4502,7 +4527,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Valentin Rongier",
@@ -4510,7 +4535,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Felix Bacher",
@@ -4542,7 +4567,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Jacobo Ortega",
@@ -4582,7 +4607,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Ibrahima Baldé",
@@ -4590,7 +4615,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Noah Mbamba",
@@ -4598,7 +4623,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "Lucas Calodat",
@@ -4606,7 +4631,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Abdallah Sima",
@@ -4622,7 +4647,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Habib Diallo",
@@ -4638,23 +4663,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
-    },
-    {
-      "player": "Amine Sbaï",
-      "team": "angers",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Angel Gomes",
-      "team": "marseille",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
+      "played": 9
     }
   ]
 }

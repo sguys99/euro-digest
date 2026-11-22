@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-01T19:45:00.000Z"
+    "updated": "2026-11-22T11:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -22,6 +22,11 @@
     },
     {
       "name": "Edon Zhegrova",
+      "goals": 2,
+      "assists": 3
+    },
+    {
+      "name": "Randal Kolo Muani",
       "goals": 2,
       "assists": 2
     }
@@ -42,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1550182",
-    "kickoff": "2026-11-01T19:45:00.000Z",
+    "match": "hl-1319221835",
+    "kickoff": "2026-11-22T11:30:00.000Z",
     "comp": "SERIEA",
     "side": "home",
-    "opponent": "napoli",
+    "opponent": "venezia",
     "startXI": [
       {
         "name": "G. Vicario",
@@ -55,10 +60,16 @@
         "grid": "1:1"
       },
       {
-        "name": "P. Kalulu",
-        "number": 15,
+        "name": "J. Cabal",
+        "number": 32,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "L. Kelly",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "Bremer",
@@ -67,34 +78,10 @@
         "grid": "2:3"
       },
       {
-        "name": "J. Lucumí",
-        "number": 26,
+        "name": "Z. Çelik",
+        "number": 2,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "J. Cabal",
-        "number": 32,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "W. McKennie",
-        "number": 22,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Douglas Luiz",
-        "number": 12,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "T. Koopmeiners",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:4"
       },
       {
         "name": "Kerim-Sam Alajbegović",
@@ -103,25 +90,37 @@
         "grid": "3:1"
       },
       {
+        "name": "T. Koopmeiners",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Douglas Luiz",
+        "number": 12,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "W. McKennie",
+        "number": 22,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "E. Zhegrova",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
         "name": "R. Kolo Muani",
         "number": 9,
         "pos": "F",
         "grid": "4:2"
-      },
-      {
-        "name": "N. Woltemade",
-        "number": 27,
-        "pos": "F",
-        "grid": "4:1"
       }
     ],
     "substitutes": [
-      {
-        "name": "J. Ekhator",
-        "number": 18,
-        "pos": "F",
-        "grid": null
-      },
       {
         "name": "A. Cambiaso",
         "number": 20,
@@ -129,8 +128,20 @@
         "grid": null
       },
       {
+        "name": "J. Ekhator",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "J. Boga",
         "number": 13,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Francisco Conceição",
+        "number": 7,
         "pos": "F",
         "grid": null
       },
@@ -141,8 +152,8 @@
         "grid": null
       },
       {
-        "name": "L. Kelly",
-        "number": 6,
+        "name": "J. Lucumí",
+        "number": 26,
         "pos": "D",
         "grid": null
       },
@@ -171,8 +182,8 @@
         "grid": null
       },
       {
-        "name": "E. Zhegrova",
-        "number": 11,
+        "name": "N. Woltemade",
+        "number": 27,
         "pos": "F",
         "grid": null
       }

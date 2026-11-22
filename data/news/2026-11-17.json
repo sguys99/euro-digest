@@ -1,7 +1,7 @@
 {
   "date": "2026-11-17",
-  "generatedAt": "2026-11-16T22:12:30.600Z",
-  "runId": "collect-prod-20261116T221225Z-5554",
+  "generatedAt": "2026-11-22T22:12:47.013Z",
+  "runId": "collect-prod-20261122T221246Z-8a33",
   "cards": [
     {
       "id": "c_6bbd88c09e",
@@ -713,33 +713,6 @@
       "created": "2026-11-16T22:12:25.340Z"
     },
     {
-      "id": "c_2bb2a81833",
-      "t": "Pochettino assistants leave USMNT camp early to go to Manchester United: Sources",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7786892/2026/11/16/pochettino-assistant-coaches-usmnt-join-manchester-united/",
-          "at": "2026-11-16T15:09:22.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-16T22:12:25.340Z"
-    },
-    {
       "id": "c_5dd344cf84",
       "t": "“손흥민이 자문 역할 했다” 오현규, 토트넘이 아니라 나폴리로 이적하나…“협상 테이블에 앉았어” 트레이드 가능성",
       "s": [],
@@ -784,45 +757,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cwlymxr0ge8zo?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-16T11:40:20.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7786645/2026/11/16/romelu-lukaku-belgium-record-retirement/",
-          "at": "2026-11-16T13:32:24.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-16T22:12:25.340Z"
-    },
-    {
-      "id": "c_8110d53627",
-      "t": "Watch: Why Manchester United’s squad is better than you think",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7781085/2026/11/16/manchester-united-squad-analysis-video/",
-          "at": "2026-11-16T12:00:15.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7779830/2026/11/16/pochettino-manchester-united-usmnt-soccer-weekender/",
-          "at": "2026-11-16T11:00:25.000Z",
           "tier": 2
         }
       ],
@@ -1082,33 +1016,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cqp9dz91jkxvo?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-16T08:17:46.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-16T22:12:25.340Z"
-    },
-    {
-      "id": "c_001cd86c95",
-      "t": "How Man Utd hired Pochettino: Glazers' role, £15m Hurzeler price tag, Fabregas on shortlist",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7779576/2026/11/16/man-utd-pochettino-appointment-inside-story/",
-          "at": "2026-11-16T07:45:55.000Z",
           "tier": 2
         }
       ],

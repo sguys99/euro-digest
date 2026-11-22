@@ -10,9 +10,9 @@
     "#1A2F48"
   ],
   "formation": {
-    "shape": "3-4-3",
+    "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T14:00:00.000Z"
+    "updated": "2026-11-22T14:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -46,12 +46,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-4-3",
-    "match": "af-1550167",
-    "kickoff": "2026-10-28T17:30:00.000Z",
+    "formation": "3-4-2-1",
+    "match": "hl-1319220133",
+    "kickoff": "2026-11-22T14:00:00.000Z",
     "comp": "SERIEA",
-    "side": "away",
-    "opponent": "milan",
+    "side": "home",
+    "opponent": "udinese",
     "startXI": [
       {
         "name": "Ł. Skorupski",
@@ -60,10 +60,10 @@
         "grid": "1:1"
       },
       {
-        "name": "M. Darmian",
-        "number": 36,
+        "name": "A. Theate",
+        "number": 3,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "N. Casale",
@@ -72,22 +72,16 @@
         "grid": "2:2"
       },
       {
-        "name": "A. Theate",
-        "number": 3,
+        "name": "M. Darmian",
+        "number": 36,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "N. Zortea",
-        "number": 20,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "L. Ferguson",
-        "number": 19,
-        "pos": "M",
-        "grid": "3:3"
+        "name": "F. Bernardeschi",
+        "number": 10,
+        "pos": "F",
+        "grid": "3:1"
       },
       {
         "name": "T. Pobega",
@@ -96,52 +90,64 @@
         "grid": "3:2"
       },
       {
-        "name": "R. Alhassane",
-        "number": 23,
+        "name": "L. Ferguson",
+        "number": 19,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:3"
       },
       {
-        "name": "F. Bernardeschi",
-        "number": 10,
+        "name": "N. Zortea",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "N. Cambiaghi",
+        "number": 28,
         "pos": "F",
-        "grid": "4:3"
+        "grid": "4:1"
+      },
+      {
+        "name": "R. Orsolini",
+        "number": 7,
+        "pos": "F",
+        "grid": "4:2"
       },
       {
         "name": "J. Odgaard",
         "number": 21,
         "pos": "F",
-        "grid": "4:2"
-      },
-      {
-        "name": "S. Mbangula",
-        "number": 11,
-        "pos": "F",
-        "grid": "4:1"
+        "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "M. Vitík",
-        "number": 41,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Pessina",
-        "number": 25,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "N. Moro",
-        "number": 6,
+        "name": "M. Amondarain",
+        "number": 8,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Juan Miranda",
-        "number": 33,
+        "name": "R. Alhassane",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. De Silvestri",
+        "number": 29,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Dovbyk",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "E. Helland",
+        "number": 5,
         "pos": "D",
         "grid": null
       },
@@ -152,50 +158,44 @@
         "grid": null
       },
       {
-        "name": "T. Heggem",
-        "number": 14,
-        "pos": "D",
+        "name": "S. Mbangula",
+        "number": 11,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "U. Happonen",
-        "number": 72,
+        "name": "N. Moro",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Pessina",
+        "number": 25,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "E. Helland",
-        "number": 5,
+        "name": "R. Piccoli",
+        "number": 91,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Vitík",
+        "number": 41,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "O. El Azzouzi",
-        "number": 17,
-        "pos": "M",
+        "name": "Giacomo Giacomone",
+        "number": 75,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "A. Dovbyk",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Amondarain",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "N. Cambiaghi",
-        "number": 28,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Luca Lo Monaco",
-        "number": 43,
+        "name": "K. Badori",
+        "number": 34,
         "pos": "M",
         "grid": null
       }

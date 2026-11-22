@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-11-02T19:45:00.000Z"
+    "updated": "2026-11-22T16:15:00.000Z"
   },
   "topPlayers": [
     {
@@ -37,11 +37,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "af-1552803",
-    "kickoff": "2026-11-02T19:45:00.000Z",
+    "match": "hl-1321451455",
+    "kickoff": "2026-11-22T16:15:00.000Z",
     "comp": "LIGUE1",
     "side": "home",
-    "opponent": "brest",
+    "opponent": "rennes",
     "startXI": [
       {
         "name": "Y. Mvogo",
@@ -50,10 +50,10 @@
         "grid": "1:1"
       },
       {
-        "name": "N. Adjei",
-        "number": 32,
+        "name": "N. Obaretin",
+        "number": 55,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "M. Talbi",
@@ -62,28 +62,10 @@
         "grid": "2:2"
       },
       {
-        "name": "S. Touré",
-        "number": 95,
+        "name": "N. Adjei",
+        "number": 32,
         "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "D. Sylla",
-        "number": 20,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "A. Avom",
-        "number": 62,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "N. Cadiou",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:3"
       },
       {
         "name": "K. Kouassi",
@@ -92,29 +74,83 @@
         "grid": "3:1"
       },
       {
+        "name": "A. Avom",
+        "number": 62,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "N. Cadiou",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "D. Sylla",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "G. Bernardeau",
+        "number": 33,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
         "name": "J. Makengo",
         "number": 17,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "S. Faye",
-        "number": 19,
-        "pos": "M",
-        "grid": "4:1"
-      },
-      {
-        "name": "I. Baldé",
-        "number": 18,
+        "name": "A. Tosin",
+        "number": 15,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
+        "name": "N. Mbamba",
+        "number": 72,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "I. Baldé",
+        "number": 18,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "S. Faye",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Georgen",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "I. Jensen",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "B. Kamara",
         "number": 21,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "M. Kone",
+        "number": 42,
+        "pos": "F",
         "grid": null
       },
       {
@@ -127,42 +163,6 @@
         "name": "T. Le Bris",
         "number": 11,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "N. Mbamba",
-        "number": 72,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "N. Obaretin",
-        "number": 55,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "I. Jensen",
-        "number": 10,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "A. Georgen",
-        "number": 2,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "G. Bernardeau",
-        "number": 33,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Tosin",
-        "number": 15,
-        "pos": "F",
         "grid": null
       }
     ]

@@ -14,17 +14,17 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-22T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Álex Baena",
-      "goals": 5,
+      "goals": 6,
       "assists": 3
     },
     {
       "name": "Alejandro Grimaldo",
-      "goals": 4,
+      "goals": 5,
       "assists": 2
     },
     {

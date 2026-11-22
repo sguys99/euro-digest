@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-21T22:17:16.098Z",
+  "generatedAt": "2026-11-22T22:16:31.476Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -143,8 +143,8 @@
       "season": [
         {
           "comp": "LALIGA",
-          "apps": 3,
-          "minutes": 194,
+          "apps": 4,
+          "minutes": 239,
           "goals": 0,
           "assists": 0
         },
@@ -157,6 +157,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-564753",
+          "comp": "LALIGA",
+          "kickoff": "2026-11-22T20:00:00.000Z",
+          "opponent": {
+            "slug": "getafe",
+            "name": "Getafe"
+          },
+          "home": false,
+          "result": {
+            "for": 3,
+            "against": 0
+          },
+          "status": "sub",
+          "started": false,
+          "minutes": 45,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-564746",
           "comp": "LALIGA",
@@ -232,38 +251,19 @@
           "minutes": 67,
           "goals": 0,
           "assists": 0
-        },
-        {
-          "matchId": "fd-575362",
-          "comp": "UCL",
-          "kickoff": "2026-10-20T19:00:00.000Z",
-          "opponent": {
-            "slug": "stuttgart",
-            "name": "VfB Stuttgart"
-          },
-          "home": false,
-          "result": {
-            "for": 1,
-            "against": 1
-          },
-          "status": "bench",
-          "started": false,
-          "minutes": 0,
-          "goals": 0,
-          "assists": 0
         }
       ],
       "next": {
-        "matchId": "fd-564753",
-        "comp": "LALIGA",
-        "kickoff": "2026-11-22T20:00:00Z",
+        "matchId": "fd-575407",
+        "comp": "UCL",
+        "kickoff": "2026-11-25T20:00:00Z",
         "opponent": {
-          "slug": "getafe",
-          "name": "Getafe CF"
+          "slug": "viking",
+          "name": "Viking FK"
         },
-        "home": false
+        "home": true
       },
-      "updatedAt": "2026-11-18T08:15:06.297Z"
+      "updatedAt": "2026-11-22T22:16:31.476Z"
     },
     {
       "slug": "kim-min-jae",
@@ -560,6 +560,25 @@
       ],
       "recent": [
         {
+          "matchId": "fd-565864",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-22T14:30:00.000Z",
+          "opponent": {
+            "slug": "augsburg",
+            "name": "FC Augsburg"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 3
+          },
+          "status": "bench",
+          "started": false,
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        },
+        {
           "matchId": "fd-565851",
           "comp": "BUNDESLIGA",
           "kickoff": "2026-11-07T14:30:00.000Z",
@@ -638,16 +657,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-565864",
+        "matchId": "fd-565867",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-22T14:30:00Z",
+        "kickoff": "2026-11-28T14:30:00Z",
         "opponent": {
-          "slug": "augsburg",
-          "name": "FC Augsburg"
+          "slug": "union-berlin",
+          "name": "1. FC Union Berlin"
         },
-        "home": false
+        "home": true
       },
-      "updatedAt": "2026-11-18T08:15:06.297Z"
+      "updatedAt": "2026-11-22T22:16:31.476Z"
     },
     {
       "slug": "jens-castrop",
@@ -789,8 +808,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 0,
-          "minutes": 0,
+          "apps": 1,
+          "minutes": 17,
           "goals": 0,
           "assists": 0
         },
@@ -804,6 +823,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565864",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-22T14:30:00.000Z",
+          "opponent": {
+            "slug": "mainz",
+            "name": "FSV Mainz 05"
+          },
+          "home": true,
+          "result": {
+            "for": 3,
+            "against": 1
+          },
+          "status": "sub",
+          "started": false,
+          "minutes": 17,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565848",
           "comp": "BUNDESLIGA",
@@ -883,16 +921,16 @@
         }
       ],
       "next": {
-        "matchId": "fd-565864",
+        "matchId": "fd-565871",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-22T14:30:00Z",
+        "kickoff": "2026-11-29T16:30:00Z",
         "opponent": {
-          "slug": "mainz",
-          "name": "1. FSV Mainz 05"
+          "slug": "hoffenheim",
+          "name": "TSG 1899 Hoffenheim"
         },
-        "home": true
+        "home": false
       },
-      "updatedAt": "2026-11-18T08:15:06.297Z"
+      "updatedAt": "2026-11-22T22:16:31.476Z"
     },
     {
       "slug": "hwang-hee-chan",

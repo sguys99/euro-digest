@@ -1,0 +1,1241 @@
+{
+  "date": "2026-11-23",
+  "generatedAt": "2026-11-22T22:12:51.477Z",
+  "runId": "collect-prod-20261122T221246Z-8a33",
+  "cards": [
+    {
+      "id": "c_1a96d9bfd7",
+      "t": "Ngumoha stars as Liverpool thrash 10-man Man Utd",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool",
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 5,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c933g77knz00o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T19:59:35.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c933gzxk66yyo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T18:28:51.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7792083/2026/11/22/liverpool-man-utd-result-report-analysis/",
+          "at": "2026-11-22T18:22:49.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cq7827p8emmxo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:55:54.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_20033dc124",
+      "t": "'World's best could've lost 4-0' - but should Man Utd have done more at Anfield?",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm782j80yypwo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T21:36:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_e03dcace3c",
+      "t": "Man Utd plotting Toney move - Monday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck053nyl6399o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T21:04:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_6eb132a289",
+      "t": "Iraola 'enjoyed' big win over Man Utd",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c3y0x55ey81yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T19:25:21.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_097850f8ea",
+      "t": "Pochettino on 'painful' defeat in first game as Man Utd boss",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c8p3vyyg4d6vo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T19:03:24.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cj62pz1v7zdwo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T10:55:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_f88bf80d02",
+      "t": "Spurs deny Man City top spot with statement win",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c9vg2112evvdo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:54:36.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_fd0bea51c2",
+      "t": "Man Utd score dramatic late winner to extend record run",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cm0rkzzyl2ego?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:54:32.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_6f9767d5e4",
+      "t": "Arsenal frustrations grow as winless home run continues",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cm8e0pdw70d8o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:30:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_2e3f410122",
+      "t": "Spurs 'a match for anyone' as win at Man City boosts European hopes",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6n901w453nlo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T16:25:35.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_f16c2d6bd9",
+      "t": "PSG's Doue to have surgery on ruptured ACL",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cw0k6x0764ero?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T15:50:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_d7cc8899a1",
+      "t": "'Not the right time' - Fernandes pauses Man Utd contract talks",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [
+        "bruno-fernandes"
+      ],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6x2e8devk1po?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T08:41:20.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7802361/2026/11/22/bruno-fernandes-contract-manchester-united/",
+          "at": "2026-11-22T11:21:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_5f0a150a16",
+      "t": "Incredibile a Bergamo: il rigore di Kessié porta Atalanta-Inter sul 4-4",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "atalanta",
+        "inter"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/atalanta-inter-4-4-rigore-serie-a-news-499796",
+          "at": "2026-11-22T21:34:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_afc17782ad",
+      "t": "Chaotic week, nightmare start and huge reality check for Pochettino",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwd012903kvgo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T21:22:10.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_e2efdbcd7c",
+      "t": "Pepe did not injure eyes staring at sun, say Villarreal",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "villarreal"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c8zx9y6d29vyo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T21:04:55.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_b37b37acde",
+      "t": "Tre volte Pio: prima tripletta di Esposito con la maglia dell'Inter",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "inter"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/pio-esposito-inter-tripletta-atalanta-499795",
+          "at": "2026-11-22T20:56:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_e872d40f85",
+      "t": "Inter, problema al coscia destra per Calhanoglu: al suo posto entra Sucic",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "inter"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/calhanoglu-infortunio-inter-atalanta-news-499794",
+          "at": "2026-11-22T20:18:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_a2fe83b64e",
+      "t": "McBurnie stoppage-time double earns Hull win over 10-man Brighton",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "brighton"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/ck62pzzezqz2o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T19:59:38.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm4gn7npqe8yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T19:03:32.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cvwy0nnlxd30o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:18:10.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_c577f789f4",
+      "t": "Own-goal mishap gifts Brighton first away victory",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "brighton"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cqx2w0m8v84wo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T19:50:33.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_8c9068d33b",
+      "t": "Cardinale: \"Il Milan deve sempre competere per lo scudetto. Mercato? Se lo faremo sarà per fare la differenza\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "milan"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/cardinale-milan-intervista-serie-a-news-499793",
+          "at": "2026-11-22T19:39:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_535b636f4d",
+      "t": "Problema dell'ultimo minuto per Sarri contro l'Inter: Carnesecchi out per infortunio",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "inter"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/carnesecchi-infortunio-inter-serie-a-news-499792",
+          "at": "2026-11-22T19:23:57.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_d6c8abc4a4",
+      "t": "Milan, Amorim: \"Stiamo vivendo belle sensazioni. Rabiot? Spero che rimanga\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "milan"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/milan-amorim-post-partita-499761",
+          "at": "2026-11-22T19:15:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_05bf8c4fcb",
+      "t": "Atalanta-Inter, le formazioni ufficiali: Carnesecchi non ce la fa, gioca Sportiello. Chivu sceglie Pio",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "atalanta",
+        "inter"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/atalanta-inter-formazioni-ufficiali-dove-vedere-serie-a-news-499784",
+          "at": "2026-11-22T18:45:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_ca5b3e96e6",
+      "t": "Milan, Cisse entra e segna: gol convalidato dopo la revisione VAR",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "milan"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/milan-cisse-frosinone-gol-var-499789",
+          "at": "2026-11-22T18:21:53.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_3a30537458",
+      "t": "Jakirovic full of praise for Tzolakis performance",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cqz0k335d0njo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:18:07.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_05e2bb5100",
+      "t": "Fifa to confirm UK bid to host 2035 Women's World Cup",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cx30g83716lzo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T21:44:37.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_ddfaf2d09f",
+      "t": "Charlton earn maiden WSL point against Villa",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cwq6e7gl5r4yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T19:50:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_97be6344f5",
+      "t": "Villarreal deny 'completely false' reports that Nicolas Pepe had eye surgery after looking at eclipse",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "villarreal"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7803760/2026/11/22/nicolas-pepe-eclipse-eye-surgery-villarreal/",
+          "at": "2026-11-22T19:40:43.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_3b5348e7e6",
+      "t": "Fiorentina, la probabile formazione contro il Monza: ballottaggio tra Njie e Gnonto",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "fiorentina",
+        "monza"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/fiorentina-probabile-formazione-monza-499788",
+          "at": "2026-11-22T18:50:49.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_a697191030",
+      "t": "🚨 Liverpool 4-0 Man Utd: A star is born, but here’s why United could genuinely get relegated",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool",
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/liverpool-united-ngumoha-pochettino",
+          "at": "2026-11-22T18:45:17.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_4bcfca8664",
+      "t": "Villarreal, chiarimento sull'operazione agli occhi di Pépé: \"L'eclissi non c'entra\"",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "villarreal"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/villarreal-nicolas-pepe-operazione-occhi-eclissi-spagna-499790",
+          "at": "2026-11-22T18:29:59.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_40c5b5f5a3",
+      "t": "Holders Celtic win 17-0 in Women's Scottish Cup",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c8zx91z9xe9yo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:53:41.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_0f364205de",
+      "t": "Podcast: Premiership review, Ross County, Dumbarton & Largs Thistle",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sounds/play/p0ppch4v?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:40:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_1a50f32b42",
+      "t": "Paris Saint-Germain’s Desire Doue sustains ACL injury in right knee",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain"
+      ],
+      "players": [
+        "desire-doue"
+      ],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7800639/2026/11/22/psg-desire-doue-acl-injury/",
+          "at": "2026-11-22T12:12:38.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_0c92fb306a",
+      "t": "Argentina midfielder Paredes collapses during TV interview",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwnv45818z59o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T07:13:34.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7802414/2026/11/22/leandro-paredes-argentina-boca-juniors-copa-sudamericana/",
+          "at": "2026-11-22T12:01:42.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_63367307e5",
+      "t": "🚨 Bruno Fernandes Man United exit, Arsenal close to double deal, Liverpool star could say goodbye, Midfielder could make Old Trafford return & more.",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "arsenal",
+        "liverpool"
+      ],
+      "players": [
+        "bruno-fernandes"
+      ],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/bruno-fernandes-man-united-exit-arsenal",
+          "at": "2026-11-22T08:40:54.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_c8ee7cab39",
+      "t": "'A Spurs man through and through': Tottenham bid farewell to Danny Kelly, one of their own",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7789210/2026/11/22/tottenham-danny-kelly-tribute/",
+          "at": "2026-11-22T05:12:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_85738a8709",
+      "t": "I wish referee had opportunity to see 'handball' again - Hart",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cme3dvk1kzgqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T00:08:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_a5447c3071",
+      "t": "London City keep up title hunt with emphatic win over Crystal Palace",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "crystal-palace"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6n83rrknrj2o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-21T23:14:10.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_5dec1e030b",
+      "t": "El Barça le da la vuelta al marcador y apaga el incendio de la primera parte",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Relevo",
+          "u": "https://www.relevo.com/futbol/liga-primera/barcelona-villarreal-remontada-pedri.html",
+          "at": "2026-11-22T17:33:55.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "es",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_a63b3b1164",
+      "t": "'Rolls-Royce' Iqbal's 'dream' journey from Old Trafford to Tannadice",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwj05z6npze4o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T17:00:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_de750975a8",
+      "t": "Frick delivers on 'heavy metal football' promise",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmn50x95vv73o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T13:12:42.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_6ac12f9647",
+      "t": "Watford seek sixth manager in 18 months after sacking Dionisi",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cyvz6r4g1jqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T12:00:45.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_699ae47f9c",
+      "t": "Armstrong plays down talk of Rangers transfer - gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ckdd1epzz60eo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-22T09:10:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_940a6f8cf6",
+      "t": "Arsenal used to let a blip become a rut. This time, they have room to breathe",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7801452/2026/11/22/arsenal-newcastle-arteta-madueke/",
+          "at": "2026-11-22T05:14:59.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    },
+    {
+      "id": "c_dc6194f2d7",
+      "t": "Re-Predicting the Premier League: What we got right (and wrong) from pre-season",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7802168/2026/11/22/re-predicting-the-premier-league/",
+          "at": "2026-11-22T05:02:41.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-22T22:12:46.941Z"
+    }
+  ]
+}
