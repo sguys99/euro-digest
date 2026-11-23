@@ -1,0 +1,235 @@
+{
+  "week": "2026-47",
+  "from": "2026-11-16T00:00:00.000Z",
+  "to": "2026-11-22T23:59:59.999Z",
+  "rows": [
+    {
+      "player": "jens-castrop",
+      "apps": 1,
+      "minutes": 74,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565862",
+          "kickoff": "2026-11-21T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "borussia-dortmund",
+            "name": "Borussia Dortmund"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 1
+          },
+          "status": "start",
+          "minutes": 74,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "hwang-hee-chan",
+      "apps": 1,
+      "minutes": 66,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565861",
+          "kickoff": "2026-11-21T17:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "stuttgart",
+            "name": "VfB Stuttgart"
+          },
+          "home": true,
+          "result": {
+            "for": 0,
+            "against": 0
+          },
+          "status": "start",
+          "minutes": 66,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "lee-kang-in",
+      "apps": 1,
+      "minutes": 45,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-564753",
+          "kickoff": "2026-11-22T20:00:00.000Z",
+          "comp": "LALIGA",
+          "opponent": {
+            "slug": "getafe",
+            "name": "Getafe"
+          },
+          "home": false,
+          "result": {
+            "for": 3,
+            "against": 0
+          },
+          "status": "sub",
+          "minutes": 45,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "jeong-woo-yeong",
+      "apps": 1,
+      "minutes": 29,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565858",
+          "kickoff": "2026-11-21T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "rb-leipzig",
+            "name": "RB Leipzig"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 5
+          },
+          "status": "sub",
+          "minutes": 29,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "kim-min-jae",
+      "apps": 1,
+      "minutes": 20,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565859",
+          "kickoff": "2026-11-20T19:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "koln",
+            "name": "FC Koln"
+          },
+          "home": true,
+          "result": {
+            "for": 1,
+            "against": 1
+          },
+          "status": "sub",
+          "minutes": 20,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "seol-young-woo",
+      "apps": 1,
+      "minutes": 17,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565864",
+          "kickoff": "2026-11-22T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "mainz",
+            "name": "FSV Mainz 05"
+          },
+          "home": true,
+          "result": {
+            "for": 3,
+            "against": 1
+          },
+          "status": "sub",
+          "minutes": 17,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "kim-ji-soo",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": []
+    },
+    {
+      "player": "park-seung-soo",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-560651",
+          "kickoff": "2026-11-21T17:30:00.000Z",
+          "comp": "EPL",
+          "opponent": {
+            "slug": "arsenal",
+            "name": "Arsenal"
+          },
+          "home": true,
+          "result": {
+            "for": 2,
+            "against": 2
+          },
+          "status": "absent",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    },
+    {
+      "player": "lee-jae-sung",
+      "apps": 0,
+      "minutes": 0,
+      "goals": 0,
+      "assists": 0,
+      "matches": [
+        {
+          "matchId": "fd-565864",
+          "kickoff": "2026-11-22T14:30:00.000Z",
+          "comp": "BUNDESLIGA",
+          "opponent": {
+            "slug": "augsburg",
+            "name": "FC Augsburg"
+          },
+          "home": false,
+          "result": {
+            "for": 1,
+            "against": 3
+          },
+          "status": "bench",
+          "minutes": 0,
+          "goals": 0,
+          "assists": 0
+        }
+      ]
+    }
+  ],
+  "mvp": "jens-castrop",
+  "summary": "11월 16일부터 11월 22일까지 기록을 집계한 한국 선수 9명 가운데 6명이 경기에 나섰다. 옌스 카스트로프가 1경기 74분으로 MVP 점수 1점을 얻어 이번 주 MVP에 올랐다. 이번 주 한국 선수의 골과 도움은 없었다.",
+  "summaryAi": false,
+  "generatedAt": "2026-11-23T03:41:54.003Z"
+}
