@@ -2,7 +2,7 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-22T22:14:35.456Z",
+  "updatedAt": "2026-11-23T22:13:40.956Z",
   "standings": [
     {
       "pos": 1,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": 5,
+      "prevPos": 4,
       "team": "liverpool",
       "played": 11,
       "w": 6,
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": 4,
+      "prevPos": 5,
       "team": "bournemouth",
       "played": 11,
       "w": 5,
@@ -106,6 +106,26 @@
     },
     {
       "pos": 6,
+      "prevPos": 10,
+      "team": "brentford",
+      "played": 11,
+      "w": 4,
+      "d": 5,
+      "l": 2,
+      "gf": 20,
+      "ga": 11,
+      "pts": 17,
+      "form": [
+        "L",
+        "D",
+        "W",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
       "prevPos": 6,
       "team": "leeds-united",
       "played": 11,
@@ -118,26 +138,6 @@
       "form": [
         "D",
         "D",
-        "L",
-        "W",
-        "W"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 7,
-      "prevPos": 7,
-      "team": "everton",
-      "played": 10,
-      "w": 4,
-      "d": 4,
-      "l": 2,
-      "gf": 12,
-      "ga": 10,
-      "pts": 16,
-      "form": [
-        "D",
-        "L",
         "L",
         "W",
         "W"
@@ -166,6 +166,26 @@
     },
     {
       "pos": 9,
+      "prevPos": 7,
+      "team": "everton",
+      "played": 11,
+      "w": 4,
+      "d": 4,
+      "l": 3,
+      "gf": 12,
+      "ga": 14,
+      "pts": 16,
+      "form": [
+        "L",
+        "L",
+        "W",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 10,
       "prevPos": 9,
       "team": "tottenham-hotspur",
       "played": 11,
@@ -185,28 +205,8 @@
       "zone": "none"
     },
     {
-      "pos": 10,
-      "prevPos": 10,
-      "team": "brentford",
-      "played": 10,
-      "w": 3,
-      "d": 5,
-      "l": 2,
-      "gf": 16,
-      "ga": 11,
-      "pts": 14,
-      "form": [
-        "D",
-        "L",
-        "D",
-        "W",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 11,
-      "prevPos": 14,
+      "prevPos": 11,
       "team": "hull-city",
       "played": 11,
       "w": 3,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "aston-villa",
       "played": 11,
       "w": 3,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 12,
+      "prevPos": 13,
       "team": "newcastle-united",
       "played": 11,
       "w": 3,
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": 13,
+      "prevPos": 14,
       "team": "coventry-city",
       "played": 11,
       "w": 4,
@@ -1830,8 +1830,11 @@
       "kickoff": "2026-11-23T20:00:00Z",
       "home": "brentford",
       "away": "everton",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560658",
@@ -4697,7 +4700,7 @@
       "goals": 6,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Nicolas Jackson",
@@ -4744,6 +4747,14 @@
       "team": "manchester-city",
       "goals": 5,
       "assists": 2,
+      "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Keane Lewis-Potter",
+      "team": "brentford",
+      "goals": 4,
+      "assists": 1,
       "penalties": null,
       "played": 11
     },
@@ -4825,6 +4836,14 @@
       "goals": 3,
       "assists": 1,
       "penalties": null,
+      "played": 11
+    },
+    {
+      "player": "Vitaly Janelt",
+      "team": "brentford",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
       "played": 10
     },
     {
@@ -4865,7 +4884,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Harvey Barnes",
@@ -4946,22 +4965,6 @@
       "assists": 1,
       "penalties": 1,
       "played": 11
-    },
-    {
-      "player": "Keane Lewis-Potter",
-      "team": "brentford",
-      "goals": 2,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Vitaly Janelt",
-      "team": "brentford",
-      "goals": 2,
-      "assists": null,
-      "penalties": null,
-      "played": 9
     },
     {
       "player": "Maxim De Cuyper",
@@ -5090,6 +5093,14 @@
       "assists": 2,
       "penalties": null,
       "played": 10
+    },
+    {
+      "player": "Fabio Carvalho",
+      "team": "brentford",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 7
     },
     {
       "player": "Johan Manzambi",
@@ -5241,7 +5252,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Marc Guéhi",
@@ -5297,7 +5308,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Liam Millar",
@@ -5377,7 +5388,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Benjamin Šeško",
@@ -5393,7 +5404,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Anan Khalaili",
@@ -5431,17 +5442,9 @@
       "player": "Jaidon Anthony",
       "team": "brentford",
       "goals": 1,
-      "assists": 2,
+      "assists": 4,
       "penalties": null,
-      "played": 10
-    },
-    {
-      "player": "Fabio Carvalho",
-      "team": "brentford",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 6
+      "played": 11
     },
     {
       "player": "Emiliano Buendía",

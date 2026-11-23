@@ -2,7 +2,7 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-22T22:15:46.775Z",
+  "updatedAt": "2026-11-23T22:14:49.822Z",
   "standings": [
     {
       "pos": 1,
@@ -117,10 +117,10 @@
       "pts": 18,
       "form": [
         "D",
-        "D",
         "W",
         "W",
-        "L"
+        "L",
+        "W"
       ],
       "zone": "none"
     },
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 15,
+      "prevPos": 10,
       "team": "augsburg",
       "played": 10,
       "w": 3,
@@ -196,17 +196,17 @@
       "ga": 21,
       "pts": 12,
       "form": [
-        "D",
         "L",
         "D",
         "L",
-        "L"
+        "L",
+        "W"
       ],
       "zone": "none"
     },
     {
       "pos": 11,
-      "prevPos": 10,
+      "prevPos": 11,
       "team": "hoffenheim",
       "played": 10,
       "w": 4,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "hamburg",
       "played": 10,
       "w": 4,
@@ -237,16 +237,16 @@
       "pts": 12,
       "form": [
         "W",
+        "L",
+        "L",
         "W",
-        "L",
-        "L",
-        "W"
+        "L"
       ],
       "zone": "none"
     },
     {
       "pos": 13,
-      "prevPos": 12,
+      "prevPos": 13,
       "team": "mainz",
       "played": 10,
       "w": 3,
@@ -256,8 +256,8 @@
       "ga": 22,
       "pts": 10,
       "form": [
-        "L",
         "W",
+        "L",
         "L",
         "L",
         "L"
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": 13,
+      "prevPos": 14,
       "team": "koln",
       "played": 10,
       "w": 2,
@@ -286,7 +286,7 @@
     },
     {
       "pos": 15,
-      "prevPos": 14,
+      "prevPos": 15,
       "team": "paderborn",
       "played": 10,
       "w": 2,
@@ -1517,8 +1517,11 @@
       "kickoff": "2026-11-22T14:30:00Z",
       "home": "augsburg",
       "away": "mainz",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565863",
@@ -1527,8 +1530,11 @@
       "kickoff": "2026-11-22T16:30:00Z",
       "home": "werder-bremen",
       "away": "hamburg",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 4,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565869",

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-02T20:00:00.000Z"
+    "updated": "2026-11-23T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -42,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1557455",
-    "kickoff": "2026-11-02T20:00:00.000Z",
+    "match": "hl-1325406903",
+    "kickoff": "2026-11-23T20:00:00.000Z",
     "comp": "EPL",
     "side": "away",
-    "opponent": "newcastle-united",
+    "opponent": "brentford",
     "startXI": [
       {
         "name": "J. Pickford",
@@ -55,16 +55,10 @@
         "grid": "1:1"
       },
       {
-        "name": "J. O&apos;Brien",
-        "number": 15,
+        "name": "V. Mykolenko",
+        "number": 16,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "J. Tarkowski",
-        "number": 6,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "J. Branthwaite",
@@ -73,16 +67,16 @@
         "grid": "2:2"
       },
       {
-        "name": "V. Mykolenko",
-        "number": 16,
+        "name": "J. Tarkowski",
+        "number": 6,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "H. Armstrong",
-        "number": 45,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "J. O&apos;Brien",
+        "number": 15,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "J. Garner",
@@ -91,10 +85,16 @@
         "grid": "3:1"
       },
       {
-        "name": "M. Röhl",
-        "number": 34,
+        "name": "H. Armstrong",
+        "number": 45,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
+      },
+      {
+        "name": "Tyrique George",
+        "number": 19,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "K. Dewsbury-Hall",
@@ -103,10 +103,10 @@
         "grid": "4:2"
       },
       {
-        "name": "Tyrique George",
-        "number": 19,
+        "name": "M. Röhl",
+        "number": 34,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "T. Barry",
@@ -116,36 +116,6 @@
       }
     ],
     "substitutes": [
-      {
-        "name": "A. Maitland-Niles",
-        "number": 2,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Keane",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "T. Dibling",
-        "number": 20,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "C. Nørgaard",
-        "number": 23,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "C. Alcaraz",
-        "number": 24,
-        "pos": "M",
-        "grid": null
-      },
       {
         "name": "H. Hackney",
         "number": 30,
@@ -165,9 +135,39 @@
         "grid": null
       },
       {
-        "name": "B. Graham",
-        "number": 58,
+        "name": "A. Maitland-Niles",
+        "number": 2,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Keane",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Grealish",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "T. Dibling",
+        "number": 20,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "C. Nørgaard",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "C. Alcaraz",
+        "number": 24,
+        "pos": "M",
         "grid": null
       }
     ]

@@ -12,17 +12,17 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-10-31T14:00:00.000Z"
+    "updated": "2026-11-23T19:45:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Gustavo Varela",
-      "goals": 9,
+      "goals": 11,
       "assists": 1
     },
     {
       "name": "Jay Robinson",
-      "goals": 2,
+      "goals": 3,
       "assists": 1
     }
   ],

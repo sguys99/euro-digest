@@ -2,7 +2,7 @@
   "comp": "SERIEA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-22T22:15:21.662Z",
+  "updatedAt": "2026-11-23T22:14:27.610Z",
   "standings": [
     {
       "pos": 1,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": 5,
+      "prevPos": 4,
       "team": "milan",
       "played": 12,
       "w": 8,
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": 4,
+      "prevPos": 5,
       "team": "como",
       "played": 12,
       "w": 8,
@@ -106,7 +106,7 @@
     },
     {
       "pos": 6,
-      "prevPos": 8,
+      "prevPos": 6,
       "team": "juventus",
       "played": 12,
       "w": 6,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 6,
+      "prevPos": 7,
       "team": "frosinone",
       "played": 12,
       "w": 6,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 7,
+      "prevPos": 8,
       "team": "napoli",
       "played": 12,
       "w": 5,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 13,
+      "prevPos": 10,
       "team": "genoa",
       "played": 12,
       "w": 5,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 10,
+      "prevPos": 11,
       "team": "cagliari",
       "played": 12,
       "w": 5,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 11,
+      "prevPos": 12,
       "team": "atalanta",
       "played": 12,
       "w": 4,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 12,
+      "prevPos": 13,
       "team": "torino",
       "played": 12,
       "w": 4,
@@ -266,6 +266,26 @@
     },
     {
       "pos": 14,
+      "prevPos": 18,
+      "team": "monza",
+      "played": 12,
+      "w": 3,
+      "d": 1,
+      "l": 8,
+      "gf": 20,
+      "ga": 25,
+      "pts": 10,
+      "form": [
+        "L",
+        "L",
+        "L",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
       "prevPos": 14,
       "team": "lecce",
       "played": 12,
@@ -285,27 +305,27 @@
       "zone": "none"
     },
     {
-      "pos": 15,
+      "pos": 16,
       "prevPos": 15,
       "team": "fiorentina",
-      "played": 11,
+      "played": 12,
       "w": 2,
       "d": 3,
-      "l": 6,
+      "l": 7,
       "gf": 17,
-      "ga": 25,
+      "ga": 28,
       "pts": 9,
       "form": [
         "L",
-        "L",
         "D",
         "W",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "none"
     },
     {
-      "pos": 16,
+      "pos": 17,
       "prevPos": 16,
       "team": "parma",
       "played": 12,
@@ -325,7 +345,7 @@
       "zone": "none"
     },
     {
-      "pos": 17,
+      "pos": 18,
       "prevPos": 17,
       "team": "sassuolo",
       "played": 12,
@@ -342,31 +362,11 @@
         "L",
         "L"
       ],
-      "zone": "none"
-    },
-    {
-      "pos": 18,
-      "prevPos": 18,
-      "team": "monza",
-      "played": 11,
-      "w": 2,
-      "d": 1,
-      "l": 8,
-      "gf": 17,
-      "ga": 25,
-      "pts": 7,
-      "form": [
-        "W",
-        "L",
-        "L",
-        "L",
-        "L"
-      ],
       "zone": "relegation"
     },
     {
       "pos": 19,
-      "prevPos": 20,
+      "prevPos": 19,
       "team": "udinese",
       "played": 12,
       "w": 1,
@@ -386,7 +386,7 @@
     },
     {
       "pos": 20,
-      "prevPos": 19,
+      "prevPos": 20,
       "team": "venezia",
       "played": 12,
       "w": 2,
@@ -1960,8 +1960,11 @@
       "kickoff": "2026-11-23T19:45:00Z",
       "home": "monza",
       "away": "fiorentina",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558515",
@@ -4766,10 +4769,10 @@
     {
       "player": "Gustavo Varela",
       "team": "monza",
-      "goals": 9,
+      "goals": 11,
       "assists": 1,
-      "penalties": 2,
-      "played": 10
+      "penalties": 3,
+      "played": 11
     },
     {
       "player": "Antonio Raimondo",
@@ -4905,7 +4908,7 @@
       "goals": 4,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Lautaro Martínez",
@@ -4921,7 +4924,7 @@
       "goals": 4,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Diego Moreira",
@@ -5012,6 +5015,14 @@
       "played": 12
     },
     {
+      "player": "Jay Robinson",
+      "team": "monza",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 12
+    },
+    {
       "player": "Simone Lontani",
       "team": "parma",
       "goals": 3,
@@ -5081,7 +5092,7 @@
       "goals": 3,
       "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Hassane Kamara",
@@ -5162,14 +5173,6 @@
       "assists": null,
       "penalties": null,
       "played": 12
-    },
-    {
-      "player": "Jay Robinson",
-      "team": "monza",
-      "goals": 2,
-      "assists": 1,
-      "penalties": null,
-      "played": 11
     },
     {
       "player": "Akor Adams",
@@ -5265,7 +5268,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Junior Messias",
@@ -5513,7 +5516,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Gabriele Bracaglia",

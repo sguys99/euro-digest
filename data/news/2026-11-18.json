@@ -1,7 +1,7 @@
 {
   "date": "2026-11-18",
-  "generatedAt": "2026-11-17T22:13:26.835Z",
-  "runId": "collect-prod-20261117T221321Z-f8c5",
+  "generatedAt": "2026-11-23T22:12:35.065Z",
+  "runId": "collect-prod-20261123T221234Z-6eb5",
   "cards": [
     {
       "id": "c_da2a596f09",
@@ -599,35 +599,6 @@
       "created": "2026-11-17T22:13:21.163Z"
     },
     {
-      "id": "c_b77acc4983",
-      "t": "David Ornstein's The Athletic FC Q&A: Kroupi's future and would Arsenal go back in for Vinicius Jr?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "arsenal"
-      ],
-      "players": [
-        "vinicius-junior"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7789560/2026/11/17/ornstein-kroupi-vinicius-jr-arsenal/",
-          "at": "2026-11-17T19:09:53.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-17T22:13:21.163Z"
-    },
-    {
       "id": "c_86b19a06b4",
       "t": "Juventus Women, Guerrero lancia la sfida all'OH Leuven: \"Voglio una squadra affamata di vittoria\". Redondo: \"Sto ritrovando me stessa, questa squadra non muore mai\"",
       "s": [],
@@ -861,33 +832,6 @@
       "created": "2026-11-17T22:13:21.163Z"
     },
     {
-      "id": "c_18ccce0cab",
-      "t": "Ben White's 'Remontada'. The story of his rejuvenation for England and Arsenal",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "arsenal"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7788190/2026/11/17/ben-white-arsenal-england/",
-          "at": "2026-11-17T12:00:28.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-17T22:13:21.163Z"
-    },
-    {
       "id": "c_d73c7598b1",
       "t": "🚨 Do Tottenham really deserve to be part of the ‘big six’ - what the numbers say",
       "s": [],
@@ -942,60 +886,6 @@
       "created": "2026-11-17T22:13:21.163Z"
     },
     {
-      "id": "c_568b474f03",
-      "t": "Barcelona's Alejandro Balde plan for January – and what it means for transfer targets",
-      "s": [],
-      "cat": "transfer",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7788959/2026/11/17/barcelona-transfers-alejandro-balde-january/",
-          "at": "2026-11-17T11:06:49.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-17T22:13:21.163Z"
-    },
-    {
-      "id": "c_fdcd842cfe",
-      "t": "The 'strange' end of USMNT’s Pochettino era revealed: From United States to Man United",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7787346/2026/11/17/mauricio-pochettino-usmnt-last-week-manchester-united-inside-story/",
-          "at": "2026-11-17T10:00:20.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-17T22:13:21.163Z"
-    },
-    {
       "id": "c_523391c6d1",
       "t": "🚨 EXCL: Terms nearly agreed as Liverpool lead race for €70m Chelsea transfer target",
       "s": [],
@@ -1041,35 +931,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cvgxvg4v981o?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-17T06:15:43.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-17T22:13:21.163Z"
-    },
-    {
-      "id": "c_5d86d86f72",
-      "t": "How Declan Rice evolved at Arsenal as he looks to cement a legacy with new contract",
-      "s": [],
-      "cat": "club",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "arsenal"
-      ],
-      "players": [
-        "declan-rice"
-      ],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7645849/2026/11/17/declan-rice-arsenal-contract-legacy/",
-          "at": "2026-11-17T05:13:08.000Z",
           "tier": 2
         }
       ],

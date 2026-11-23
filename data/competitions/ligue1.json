@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-22T22:16:09.856Z",
+  "updatedAt": "2026-11-23T22:15:13.745Z",
   "standings": [
     {
       "pos": 1,
@@ -26,7 +26,7 @@
     },
     {
       "pos": 2,
-      "prevPos": 3,
+      "prevPos": 2,
       "team": "paris-fc",
       "played": 11,
       "w": 7,
@@ -46,7 +46,7 @@
     },
     {
       "pos": 3,
-      "prevPos": 2,
+      "prevPos": 3,
       "team": "lille",
       "played": 11,
       "w": 6,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 16,
+      "prevPos": 13,
       "team": "le-mans",
       "played": 11,
       "w": 2,
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": 13,
+      "prevPos": 14,
       "team": "troyes",
       "played": 11,
       "w": 3,
@@ -286,7 +286,7 @@
     },
     {
       "pos": 15,
-      "prevPos": 14,
+      "prevPos": 15,
       "team": "auxerre",
       "played": 11,
       "w": 3,
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": 15,
+      "prevPos": 16,
       "team": "strasbourg",
       "played": 11,
       "w": 3,

@@ -10,9 +10,9 @@
     "#004F9F"
   ],
   "formation": {
-    "shape": "4-4-2",
+    "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-31T13:00:00.000Z"
+    "updated": "2026-11-23T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -26,9 +26,9 @@
       "assists": null
     },
     {
-      "name": "Adrián de la Fuente",
+      "name": "Dani Requena",
       "goals": 2,
-      "assists": null
+      "assists": 1
     }
   ],
   "profile": {
@@ -46,12 +46,12 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "4-4-2",
-    "match": "af-1570430",
-    "kickoff": "2026-10-25T17:30:00.000Z",
+    "formation": "4-2-3-1",
+    "match": "hl-1336459691",
+    "kickoff": "2026-11-23T20:00:00.000Z",
     "comp": "LALIGA",
-    "side": "away",
-    "opponent": "real-sociedad",
+    "side": "home",
+    "opponent": "elche",
     "startXI": [
       {
         "name": "M. Ryan",
@@ -60,10 +60,16 @@
         "grid": "1:1"
       },
       {
-        "name": "N. Perez",
-        "number": 29,
+        "name": "Manu Sánchez",
+        "number": 23,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "Dela",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "A. Mandi",
@@ -72,125 +78,119 @@
         "grid": "2:3"
       },
       {
-        "name": "I. Ndukwe",
-        "number": 3,
+        "name": "J. Toljan",
+        "number": 22,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:4"
       },
       {
-        "name": "M. Sanchez",
-        "number": 23,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "R. Brugue",
-        "number": 7,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "J. A. Olasagasti",
+        "name": "Jon Ander Olasagasti",
         "number": 8,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "D. Requena",
-        "number": 6,
-        "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "T. Fernandez",
-        "number": 24,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "I. Romero",
-        "number": 9,
-        "pos": "F",
+        "name": "Oriol Rey",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "T. Fernández",
+        "number": 24,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Reque",
+        "number": 6,
+        "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "P. Ratkov",
-        "number": 10,
+        "name": "Brugui",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:3"
+      },
+      {
+        "name": "Iván Romero",
+        "number": 9,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "P. Cunat",
-        "number": 1,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "A. Primo",
-        "number": 32,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "J. Toljan",
-        "number": 22,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Cabello",
-        "number": 14,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "O. Rey",
-        "number": 20,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "P. Cortes",
-        "number": 27,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "H. Sotelo",
+        "name": "Hugo Sotelo",
         "number": 5,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Tape",
-        "number": 16,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "V. Garcia",
-        "number": 17,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Y. Musuayi",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "K. Etta Eyong",
-        "number": 21,
-        "pos": "F",
         "grid": null
       },
       {
         "name": "M. Santos",
         "number": 33,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "P. Ratkov",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Nacho Pérez",
+        "number": 29,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ifeanyi Ndukwe",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Yanis Musuayi",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Víctor García",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Etta Eyong",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Pablo Cuñat",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Paco Cortés",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Jorge Cabello",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Bardeli",
+        "number": 18,
+        "pos": "M",
         "grid": null
       }
     ]
