@@ -1,0 +1,1257 @@
+{
+  "date": "2026-11-25",
+  "generatedAt": "2026-11-24T22:12:56.912Z",
+  "runId": "collect-prod-20261124T221250Z-e918",
+  "cards": [
+    {
+      "id": "c_02273b6fdb",
+      "t": "'수비수인데 이강인보다 골 많이 넣는다'...그리말도, 13경기 만에 5골 폭발→30년 묵은 ATM 기록 경신 앞둬",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 5,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699166",
+          "at": "2026-11-24T12:05:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "풋볼리스트",
+          "u": "http://www.footballist.co.kr/news/articleView.html?idxno=217233",
+          "at": "2026-11-24T06:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_86ea58ddec",
+      "t": "Pochettino leads Man Utd fury at Yoro red card ruling",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqzr5ylmeerlo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T22:05:31.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck868g93djl5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T17:00:32.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_8a1e2567fb",
+      "t": "Oxford beat Spurs U21s to seal EFL Trophy progress",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmx20qn1dqv2o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T21:08:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_9c4cfe60a9",
+      "t": "Man Utd target Collins - Wednesday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm15en5je9eko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T20:51:44.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_893120aeef",
+      "t": "Bayern hold 'constructive' talks over Musiala's health",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c9x2ejnypp8jo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T19:58:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_b2031317fe",
+      "t": "이강인이 떠먹여 줘도 못 넣는데...시메오네, '지난 시즌 20골' 쇠를로트 향한 믿음 굳건! \"우리 팀에 없는 유형, 우리에게 매우 중요해\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699181",
+          "at": "2026-11-24T16:30:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_8551d66024",
+      "t": "Defender Heaven open to leaving Man Utd",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/crd61gy4ednvo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T15:56:55.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_c6bd87d534",
+      "t": "'韓 국가대표 주장단' 김민재는 거들떠보지도 않는다...독일 매체 \"뮌헨에 새로운 리더 필요해, 우파메카노와 타, 라이머 등이 후보\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699167",
+          "at": "2026-11-24T14:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_c9a6347e81",
+      "t": "Napoli, Allegri: \"De Bruyne? Credo rimarrà fino a giugno. Amaro in bocca per non aver vinto\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/napoli-allegri-intervista-manchester-city-champions-league-news-499888",
+          "at": "2026-11-24T22:04:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_1231b709df",
+      "t": "[오피셜] 맨유 항소가 통했다…요로 출전 징계 철회→“부당한 퇴장에 대한 이의 제기 받아들여졌어”",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699187",
+          "at": "2026-11-24T21:47:55.000Z",
+          "tier": 3
+        },
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314304",
+          "at": "2026-11-24T19:42:27.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_75d06a5a88",
+      "t": "Capolavoro di Milla, il Como non si ferma. Dai no da bambino alla Champions: il sogno dello spagnolo",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA",
+        "UCL"
+      ],
+      "teams": [
+        "como"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/como-aek-atene-milla-gol-partita-499889",
+          "at": "2026-11-24T21:44:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_2c3d2977fa",
+      "t": "Senegal reinstated as Afcon 2025 winners by court ruling",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/crn80y2l1404o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T17:16:09.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7809450/2026/11/24/afcon-senegal-morocco-cas-caf-african-football/",
+          "at": "2026-11-24T20:19:08.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_87cde6cc70",
+      "t": "PSG, la probabile formazione contro la Roma: due ballottaggi sulle fasce",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA",
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain",
+        "roma"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/psg-roma-probabile-formazione-champions-league-news-499880",
+          "at": "2026-11-24T20:15:00.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/roma-probabile-formazione-psg-champions-league-499881",
+          "at": "2026-11-24T20:12:51.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_e098fbffb4",
+      "t": "FA chief signs NDA to view Fifa sell-off plot documents",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqx2x4k74ryxo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T16:34:18.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7808696/2026/11/24/debbie-hewitt-fifa-fa-world-cup/",
+          "at": "2026-11-24T12:38:56.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_543443e587",
+      "t": "명색이 대한민국 국가대표인데...독일 매체, '9경기 무득점' 황희찬 두고 \"공격수 맞나? 기대에 전혀 못 미쳤다\" 비판",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699177",
+          "at": "2026-11-24T14:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_143079fd45",
+      "t": "The youngest Premier League goalscorers this season",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cme39v4w7ykqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T09:10:34.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_0ef4508fea",
+      "t": "韓 국가대표로 김민재 안 보내도 된다…소속팀 뮌헨, 아시안컵 1년 연기에 반색 “두터운 선수층이 중요하다는 점을 고려하면 특히 반가운 소식”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699158",
+          "at": "2026-11-24T08:40:50.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_10ec56a4ee",
+      "t": "Why has De Bruyne struggled at Napoli as he returns to Man City?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL",
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqglreexkk06o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T06:57:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_bb3134a465",
+      "t": "Como storico: battuto anche l'AEK Atene, qualificazione a un passo",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "como"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/como-aek-atene-passaggio-turno-champions-league-499892",
+          "at": "2026-11-24T21:55:04.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_27b41f067d",
+      "t": "Vibra l'orologio dell'arbitro, ma la palla non è entrata: episodio incredibile a Rotterdam",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/feyenoord-porto-gol-annullato-champions-league-2026-2027-499890",
+          "at": "2026-11-24T21:49:02.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_434d1a0c8f",
+      "t": "Il Benevento riparte...da cinque: e si rivede Marco Tumminello",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/interviste-e-storie/benevento-empoli-serie-b-risultato-499886",
+          "at": "2026-11-24T20:50:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_565f739062",
+      "t": "“강등권? 그게 맨유의 현실입니다” 부임 후 딱 한 경기 했는데…포체티노의 ‘솔직’ 발언",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699185",
+          "at": "2026-11-24T20:41:09.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_c809549895",
+      "t": "Rigore per il Como, Da Cunha scivola e sbaglia: cosa è successo",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "como"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/como-aek-atene-rigore-da-cunha-499882",
+          "at": "2026-11-24T20:32:51.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_ca36425d3b",
+      "t": "Juve Stabia-Catanzaro 1-3, i giallorossi non si fermano: seconda vittoria consecutiva",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/juve-stabia-catanzaro-1-3-serie-b-news-pecorino-ruggero-antonini-499883",
+          "at": "2026-11-24T20:10:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_191f506404",
+      "t": "Como, Suwarso: \"Non abbiamo soldi per gennaio, non ci sono acquisti in programma\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "como"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/suwarso-como-intervista-calciomercato-gennaio-499879",
+          "at": "2026-11-24T19:40:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_32f269695a",
+      "t": "Klopp advice and Iraola confidence boosts Wirtz",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c69w91k0j9zeo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T17:19:08.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_2a7b41b2af",
+      "t": "[오피셜] 포체티노 억울해서 어쩌나...맨유 항소 성공→FA, 레니 요로 퇴장 번복! \"1경기 출장 정지 징계 해제\"",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699183",
+          "at": "2026-11-24T17:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_4c91297caa",
+      "t": "Glens boss Ferguson apologises after seven-game ban",
+      "s": [],
+      "cat": "club",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm0evqv7nyq5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T11:36:18.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7808706/2026/11/24/duncan-ferguson-glentoran-ban-why/",
+          "at": "2026-11-24T12:45:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_6656b94f91",
+      "t": "Dead hippo to be honoured on football club tifo",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6n90jrvxrzpo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T09:43:38.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7808608/2026/11/24/fiona-the-hippo-fc-cincinnati-mls/",
+          "at": "2026-11-24T11:53:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_2e99bd6882",
+      "t": "'내가 여길 왜 왔지?'...'총체적 난국' 맨유 수뇌부, 강등권 탈출 의지 없나! \"포체티노의 겨울 이적시장 자금은 870억 미만\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699165",
+          "at": "2026-11-24T11:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_29113bc9dd",
+      "t": "How has Jose Mourinho got Real Madrid playing so well?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7777165/2026/11/24/real-madrid-jose-mourinho-tactics-analysis/",
+          "at": "2026-11-24T11:30:16.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_827b65fd35",
+      "t": "'강인아 우리 2029년까지 함께하자' 디에고 시메오네, 구단 CEO와 함께 2029년까지 ATM 남을 전망!...\"계약 종료보다 잔류에 더 가까워\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699163",
+          "at": "2026-11-24T10:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_048dddc399",
+      "t": "황희찬 어쩌나…샬케 122년 역사상 최악의 공격진이라는 불명예→충격 혹평 “분데스리가 수준에 미치지 못한다”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699146",
+          "at": "2026-11-24T06:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_60777af9b8",
+      "t": "이강인 킬패스 세 번이나 날리더니…쇠를로트에 폭발 “투자에 보답할 의지도 없어 보이는데 계속해서 투자하는 모습, 받아들이기 어렵다”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699142",
+          "at": "2026-11-24T03:55:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_ae9963841a",
+      "t": "Andrews praises 'versatile' Lewis-Potter",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6z0kdgz39p3o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-23T22:59:14.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_7e7c7e1a02",
+      "t": "Moyes questions Tarkowski red in Brentford loss",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "brentford"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cq4gnk062y8go?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-23T22:54:51.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmqx5eynvpqno?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-23T22:43:39.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_3b103a27b6",
+      "t": "Janelt scores stunner as Brentford beat 10-man Everton",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "brentford",
+        "everton"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c5gm3jlw7l7xo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-23T22:31:27.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_ae0d6e29cc",
+      "t": "“울고불고 안 한다”… 루이스 엔리케 PSG 감독, 흐비차·두에 십자인대 파열 공백에도 “영입 없다”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LIGUE1"
+      ],
+      "teams": [
+        "paris-saint-germain"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314311",
+          "at": "2026-11-24T21:37:01.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_f8fd34c065",
+      "t": "맨유 4-1로 박살 낸 이유가 있었다...'코모 감독' 파브레가스 \"선수들이 받는 압박감 매우 커, 잘 관리하는 게 우리의 일\"",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699170",
+          "at": "2026-11-24T15:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_49028adeb3",
+      "t": "[오피셜] '19위' 맨유에 희소식...'포체티노 옛제자' 루크 쇼, 부상에서 복귀! \"시기적절한 호재 될 것\"",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699173",
+          "at": "2026-11-24T13:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_1683f37ae5",
+      "t": "토트넘 손흥민 기습 숭배!...8년전, 첼시 상대로 50m 질주 원더골 조명→\"센세이셔널 SONNY\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur",
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699175",
+          "at": "2026-11-24T13:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_117ead6996",
+      "t": "Republic of Ireland boss Ward signs new contract",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cm4gn31z553go?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-24T10:45:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_238853edd4",
+      "t": "🚨 Man United’s January window budget, Winger wants Arsenal move, Inside report from Chelsea dressing room, Liverpool target Van Dijk replacement & more.",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "arsenal",
+        "chelsea",
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/man-uniteds-january-window-budget",
+          "at": "2026-11-24T07:22:55.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_124bc56cb6",
+      "t": "What Real Madrid are doing to get Vinicius Jr back on track",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "real-madrid"
+      ],
+      "players": [
+        "vinicius-junior"
+      ],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7806159/2026/11/24/real-madrid-vinicius-jr-mourinho-form-champions-league/",
+          "at": "2026-11-24T07:20:03.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    },
+    {
+      "id": "c_758adfa76c",
+      "t": "Leeds made history while Chelsea and Man Utd imploded. Who won the Premier League weekend?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "leeds-united",
+        "chelsea",
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7806151/2026/11/24/premier-league-analysis-ranking-gameweek-11-performance/",
+          "at": "2026-11-24T07:14:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-24T22:12:50.656Z"
+    }
+  ]
+}

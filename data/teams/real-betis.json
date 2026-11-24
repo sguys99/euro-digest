@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-21T17:30:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,14 +49,14 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1336463946",
-    "kickoff": "2026-11-21T17:30:00.000Z",
-    "comp": "LALIGA",
+    "match": "hl-1392007865",
+    "kickoff": "2026-11-24T20:00:00.000Z",
+    "comp": "UCL",
     "side": "away",
-    "opponent": "sevilla",
+    "opponent": "slovan-bratislava",
     "startXI": [
       {
-        "name": "Álvaro Vallés",
+        "name": "Álvaro Valles",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
@@ -68,37 +68,37 @@
         "grid": "2:1"
       },
       {
-        "name": "Natan",
-        "number": 4,
+        "name": "Valentín Gómez",
+        "number": 16,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Marc Bartra",
-        "number": 5,
+        "name": "Diego Llorente",
+        "number": 3,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "Héctor Bellerín",
-        "number": 2,
+        "name": "Angel Ortiz",
+        "number": 12,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "Marc Roca",
-        "number": 21,
+        "name": "Nelson Deossa",
+        "number": 18,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Pablo Fornals",
-        "number": 8,
+        "name": "Facundo Bernal",
+        "number": 6,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "A. Ezzalzouli",
+        "name": "Abdessamad Ezzalzouli",
         "number": 10,
         "pos": "M",
         "grid": "4:1"
@@ -116,8 +116,8 @@
         "grid": "4:3"
       },
       {
-        "name": "Aitor Ruibal",
-        "number": 24,
+        "name": "Cucho Hernández",
+        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
@@ -130,14 +130,44 @@
         "grid": null
       },
       {
-        "name": "Rodrigo Riquelme",
-        "number": 17,
-        "pos": "M",
+        "name": "Manu González",
+        "number": 31,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "N. Deossa",
-        "number": 18,
+        "name": "Héctor Bellerín",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Natan",
+        "number": 4,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Marc Bartra",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Junior Firpo",
+        "number": 23,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Aitor Ruibal",
+        "number": 24,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Pablo Fornals",
+        "number": 8,
         "pos": "M",
         "grid": null
       },
@@ -148,51 +178,21 @@
         "grid": null
       },
       {
-        "name": "Junior Firpo",
-        "number": 23,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "V. Gómez",
-        "number": 16,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "C. Hernández",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Diego Llorente",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "G. Lo Celso",
-        "number": 20,
+        "name": "Rodrigo Riquelme",
+        "number": 17,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Ángel Ortiz",
-        "number": 12,
-        "pos": "D",
+        "name": "Marc Roca",
+        "number": 21,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "T. Parrott",
+        "name": "Troy Parrott",
         "number": 19,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "F. Bernal",
-        "number": 6,
-        "pos": "M",
         "grid": null
       }
     ]

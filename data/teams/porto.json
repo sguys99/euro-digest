@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-20T19:00:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -31,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1635655",
-    "kickoff": "2026-10-20T19:00:00.000Z",
+    "match": "hl-1391949997",
+    "kickoff": "2026-11-24T20:00:00.000Z",
     "comp": "UCL",
-    "side": "home",
-    "opponent": "psv",
+    "side": "away",
+    "opponent": "feyenoord",
     "startXI": [
       {
         "name": "Diogo Costa",
@@ -44,40 +44,28 @@
         "grid": "1:1"
       },
       {
-        "name": "Alberto Baio",
-        "number": 20,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "J. Bednarek",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "J. Kiwior",
-        "number": 4,
-        "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "Z. Sanusi",
+        "name": "Zaidu Sanusi",
         "number": 12,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "Victor Mow Froholdt",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:3"
+        "name": "Jakub Kiwior",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
-        "name": "P. Rosario",
-        "number": 13,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Jan Bednarek",
+        "number": 5,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Alberto Costa",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Gabri Veiga",
@@ -86,83 +74,41 @@
         "grid": "3:1"
       },
       {
-        "name": "Pepê Aquino",
-        "number": 11,
-        "pos": "F",
-        "grid": "4:3"
+        "name": "Pablo Rosario",
+        "number": 13,
+        "pos": "M",
+        "grid": "3:2"
       },
       {
-        "name": "Samu",
-        "number": 9,
+        "name": "Victor Froholdt",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Oskar Pietuszewski",
+        "number": 77,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "Santiago Giménez",
+        "number": 29,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "O. Pietuszewski",
-        "number": 77,
+        "name": "Pepê",
+        "number": 11,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "Hwang In-Beom",
-        "number": 16,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "S. Giménez",
-        "number": 29,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Martim Fernandes",
-        "number": 52,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "Cláudio Ramos",
         "number": 14,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "N. Pérez",
-        "number": 18,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Borja Sainz",
-        "number": 17,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Francisco Moura",
-        "number": 74,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Andorinha",
-        "number": 24,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "André Silva",
-        "number": 19,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "A. Varela",
-        "number": 22,
-        "pos": "M",
         "grid": null
       },
       {
@@ -172,9 +118,63 @@
         "grid": null
       },
       {
-        "name": "S. Fofana",
+        "name": "Martim Fernandes",
+        "number": 52,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Nehuén Pérez",
+        "number": 18,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Francisco Moura",
+        "number": 74,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Hwang In-beom",
+        "number": 16,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Alan Varela",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Seko Fofana",
         "number": 42,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Samu Aghehowa",
+        "number": 9,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "William Gomes",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Borja Sainz",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "André Silva",
+        "number": 19,
+        "pos": "F",
         "grid": null
       }
     ]

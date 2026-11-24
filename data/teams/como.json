@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-21T14:00:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,32 +49,32 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1319220984",
-    "kickoff": "2026-11-21T14:00:00.000Z",
-    "comp": "SERIEA",
+    "match": "hl-1391938083",
+    "kickoff": "2026-11-24T20:00:00.000Z",
+    "comp": "UCL",
     "side": "home",
-    "opponent": "cagliari",
+    "opponent": "aek-athens",
     "startXI": [
       {
-        "name": "J. Butez",
-        "number": 1,
+        "name": "Robert Sánchez",
+        "number": 97,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Kaiki",
-        "number": 16,
+        "name": "Álex Valle",
+        "number": 3,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "M. Kempf",
-        "number": 2,
+        "name": "Trevoh Chalobah",
+        "number": 99,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Jacobo Ramón Naveros",
+        "name": "Jacobo Ramón",
         "number": 4,
         "pos": "D",
         "grid": "2:3"
@@ -86,37 +86,37 @@
         "grid": "2:4"
       },
       {
-        "name": "L. da Cunha",
-        "number": 7,
+        "name": "Luis Milla",
+        "number": 6,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Luis Milla",
-        "number": 6,
+        "name": "Máximo Perrone",
+        "number": 5,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "M. Baturina",
+        "name": "Martin Baturina",
         "number": 20,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "S. Ricci",
-        "number": 21,
+        "name": "Nico Paz",
+        "number": 10,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "M. Liberali",
-        "number": 30,
+        "name": "Lucas Da Cunha",
+        "number": 7,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "T. Douvikas",
+        "name": "Anastasios Douvikas",
         "number": 9,
         "pos": "F",
         "grid": "5:1"
@@ -124,62 +124,44 @@
     ],
     "substitutes": [
       {
-        "name": "M. Vigorito",
-        "number": 22,
+        "name": "Jean Butez",
+        "number": 1,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "Álex Valle",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "I. Smolčić",
-        "number": 28,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Robert Sánchez",
-        "number": 97,
+        "name": "Lorenzo Ginelli",
+        "number": 12,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "T. Chalobah",
-        "number": 99,
+        "name": "Marc Oliver Kempf",
+        "number": 2,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Dossena",
+        "name": "Alberto Dossena",
         "number": 13,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "E. Goldaniga",
-        "number": 18,
+        "name": "Kaiki",
+        "number": 16,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Lahdo",
-        "number": 15,
-        "pos": "M",
+        "name": "Ivan Smolčić",
+        "number": 28,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "N. Paz",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Perrone",
-        "number": 5,
+        "name": "Samuele Ricci",
+        "number": 21,
         "pos": "M",
         "grid": null
       },
@@ -190,9 +172,15 @@
         "grid": null
       },
       {
-        "name": "Kevin Fustini",
-        "number": 56,
+        "name": "Cristian Mazzara",
+        "number": 57,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Mattia Liberali",
+        "number": 30,
+        "pos": "M",
         "grid": null
       }
     ]

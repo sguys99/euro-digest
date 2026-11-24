@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-21T12:30:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,74 +49,74 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1325411158",
-    "kickoff": "2026-11-21T12:30:00.000Z",
-    "comp": "EPL",
+    "match": "hl-1391974676",
+    "kickoff": "2026-11-24T20:00:00.000Z",
+    "comp": "UCL",
     "side": "home",
-    "opponent": "fulham",
+    "opponent": "napoli",
     "startXI": [
       {
-        "name": "G. Donnarumma",
+        "name": "Gianluigi Donnarumma",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "N. O&apos;Reilly",
+        "name": "Nico O'Reilly",
         "number": 33,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "M. Guéhi",
+        "name": "Marc Guéhi",
         "number": 6,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Rúben Dias",
-        "number": 3,
+        "name": "Joško Gvardiol",
+        "number": 24,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "A. Khusanov",
-        "number": 45,
+        "name": "Matheus Nunes",
+        "number": 27,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "E. Anderson",
-        "number": 5,
+        "name": "Ayyoub Bouaddi",
+        "number": 32,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "A. Bouaddi",
-        "number": 32,
+        "name": "Elliot Anderson",
+        "number": 5,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "J. Doku",
-        "number": 11,
+        "name": "Enzo Fernández",
+        "number": 17,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "P. Foden",
-        "number": 47,
+        "name": "Rayan Cherki",
+        "number": 10,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "I. Ndiaye",
-        "number": 7,
+        "name": "Allan",
+        "number": 37,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "E. Haaland",
+        "name": "Erling Haaland",
         "number": 9,
         "pos": "F",
         "grid": "5:1"
@@ -124,56 +124,74 @@
     ],
     "substitutes": [
       {
-        "name": "M. Kovačić",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "R. Lewis",
-        "number": 82,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Gvardiol",
-        "number": 24,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Vitor Nunes",
-        "number": 22,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "G. Rulli",
+        "name": "Gerónimo Rulli",
         "number": 28,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "R. Cherki",
-        "number": 10,
+        "name": "Rúben Dias",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Rayan Aït-Nouri",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Abdukodir Khusanov",
+        "number": 45,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Rico Lewis",
+        "number": 82,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Vitor Reis",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Floyd Samba",
+        "number": 75,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "E. Fernández",
-        "number": 17,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Allan",
-        "number": 37,
+        "name": "Iliman Ndiaye",
+        "number": 7,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "F. Samba",
-        "number": 75,
+        "name": "Jérémy Doku",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Phil Foden",
+        "number": 47,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ryan McAidoo",
+        "number": 56,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Mateo Kovačić",
+        "number": 8,
         "pos": "M",
         "grid": null
       }

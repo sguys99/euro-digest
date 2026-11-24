@@ -1,7 +1,7 @@
 {
   "date": "2026-11-19",
-  "generatedAt": "2026-11-18T22:12:52.704Z",
-  "runId": "collect-prod-20261118T221247Z-6baa",
+  "generatedAt": "2026-11-24T22:12:50.788Z",
+  "runId": "collect-prod-20261124T221250Z-e918",
   "cards": [
     {
       "id": "c_b1d450b5c0",
@@ -155,12 +155,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/news/articles/cq4gnx28zp5lo?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-18T19:10:21.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7792708/2026/11/18/leicester-shirt-sponsor-terminate/",
-          "at": "2026-11-18T18:32:18.000Z",
           "tier": 2
         }
       ],
@@ -695,33 +689,6 @@
       "created": "2026-11-18T22:12:47.175Z"
     },
     {
-      "id": "c_d0d9743fb6",
-      "t": "Do Barcelona really value Frenkie de Jong?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "barcelona"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7791744/2026/11/18/barcelona-de-jong-atletico-flick-value/",
-          "at": "2026-11-18T11:44:19.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-18T22:12:47.175Z"
-    },
-    {
       "id": "c_225b193a1f",
       "t": "‘22년 만의 우승 주역 다 잡는다!’ 왕조 건설 나선 아스널, 핵심 4명 동시 재계약 초읽기... ‘캡틴' 외데고르는 언제?",
       "s": [],
@@ -1061,33 +1028,6 @@
       "created": "2026-11-18T22:12:47.175Z"
     },
     {
-      "id": "c_4de5689053",
-      "t": "Antonio Rudiger interview: 'Two years of not winning at Real Madrid. It's horrible.'",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "real-madrid"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7789376/2026/11/18/real-madrid-rudiger-interview-mourinho/",
-          "at": "2026-11-18T07:30:24.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-18T22:12:47.175Z"
-    },
-    {
       "id": "c_a1ffb61485",
       "t": "'맨유행 오피셜' 포체티노, 미국 4강 이끌고 고별사...\"눈물이 나, 더 나아지려고 노력하며 더 나은 감독이 됐다\"",
       "s": [],
@@ -1138,33 +1078,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-11-18T22:12:47.175Z"
-    },
-    {
-      "id": "c_d1f20416bc",
-      "t": "David Raya's new Arsenal deal: The four qualities that make him one of the world's best goalkeepers",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "arsenal"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7789429/2026/11/18/david-raya-arsenal-contract-worlds-best/",
-          "at": "2026-11-18T05:12:08.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-18T22:12:47.175Z"
     },

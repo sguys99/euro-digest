@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-20T19:00:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [],
   "profile": null,
@@ -20,74 +20,74 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1635655",
-    "kickoff": "2026-10-20T19:00:00.000Z",
+    "match": "hl-1391994249",
+    "kickoff": "2026-11-24T20:00:00.000Z",
     "comp": "UCL",
     "side": "away",
-    "opponent": "porto",
+    "opponent": "real-madrid",
     "startXI": [
       {
-        "name": "M. Kovář",
+        "name": "Matěj Kovář",
         "number": 32,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "S. Dest",
-        "number": 8,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "L. Geertruida",
-        "number": 2,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "Yarek Gasiorowski",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "F. Kostić",
+        "name": "Filip Kostić",
         "number": 18,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "K. Sano",
-        "number": 24,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Armando Obispo",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
-        "name": "Mauro Júnior",
-        "number": 17,
+        "name": "Lutsharel Geertruida",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "Sergiño Dest",
+        "number": 8,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Kodai Sano",
+        "number": 24,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "E. Bajraktarevic",
-        "number": 19,
+        "name": "Paul Wanner",
+        "number": 10,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
       },
       {
-        "name": "S. Mijnans",
+        "name": "Ruben van Bommel",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "Sven Mijnans",
         "number": 21,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "I. Perišić",
+        "name": "Ivan Perišić",
         "number": 5,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
-        "name": "G. Til",
+        "name": "Guus Til",
         "number": 20,
         "pos": "F",
         "grid": "5:1"
@@ -95,62 +95,68 @@
     ],
     "substitutes": [
       {
-        "name": "T. Smolenaars",
-        "number": 51,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "A. Santos",
-        "number": 35,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "N. Olij",
+        "name": "Nick Olij",
         "number": 1,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "A. Obispo",
-        "number": 4,
+        "name": "Tijn Smolenaars",
+        "number": 51,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Yarek Gasiorowski",
+        "number": 3,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "D. Man",
-        "number": 27,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "R. Flamingo",
+        "name": "Ryan Flamingo",
         "number": 6,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "N. Fernandez",
+        "name": "Kiliann Sildillia",
+        "number": 25,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Esmir Bajraktarević",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Dennis Man",
+        "number": 27,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Noah Fernandez",
         "number": 31,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "S. Cornecion",
-        "number": 42,
+        "name": "Ayoni Santos",
+        "number": 35,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Hansen",
-        "number": 23,
+        "name": "Ricardo Pepi",
+        "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "A. Bouhamdi",
-        "number": 37,
+        "name": "Sam Lammers",
+        "number": 29,
         "pos": "F",
         "grid": null
       }

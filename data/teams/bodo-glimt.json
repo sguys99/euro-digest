@@ -12,140 +12,152 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-24T17:45:00.000Z"
   },
-  "topPlayers": [],
+  "topPlayers": [
+    {
+      "name": "Andreas Helmersen",
+      "goals": 2,
+      "assists": null
+    }
+  ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1635640",
-    "kickoff": "2026-11-03T20:00:00.000Z",
+    "match": "hl-1391931275",
+    "kickoff": "2026-11-24T17:45:00.000Z",
     "comp": "UCL",
     "side": "home",
-    "opponent": "lille",
+    "opponent": "lask",
     "startXI": [
       {
-        "name": "N. Haikin",
+        "name": "Nikita Haikin",
         "number": 12,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "F. Sjøvold",
-        "number": 20,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "O. Bjørtuft",
-        "number": 4,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "H. Aleesami",
-        "number": 5,
-        "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "F. Bjørkan",
+        "name": "Fredrik André Bjørkan",
         "number": 15,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "S. Auklend",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:3"
+        "name": "Jostein Gundersen",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
-        "name": "P. Berg",
-        "number": 7,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Odin Luras Bjørtuft",
+        "number": 4,
+        "pos": "D",
+        "grid": "2:3"
       },
       {
-        "name": "S. Fet",
+        "name": "Fredrik Sjøvold",
+        "number": 20,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Sondre Fet",
         "number": 19,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "O. Didrik Blomberg",
-        "number": 11,
-        "pos": "F",
-        "grid": "4:3"
+        "name": "Patrick Berg",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:2"
       },
       {
-        "name": "A. Helmersen",
-        "number": 9,
+        "name": "Sondre Auklend",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Jens Petter Hauge",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "Ola Brynhildsen",
+        "number": 17,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "J. Hauge",
-        "number": 10,
+        "name": "Ole Didrik Blomberg",
+        "number": 11,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "O. Brynhildsen",
-        "number": 17,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "J. Gundersen",
-        "number": 6,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Kitolano",
-        "number": 16,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "J. Faye Lund",
+        "name": "Julian Lund",
         "number": 1,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "I. Määttä",
+        "name": "Isak Sjong",
+        "number": 45,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Isak Dybvik Määttä",
         "number": 25,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "J. Mvuka",
-        "number": 22,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "V. Nielsen",
+        "name": "Villads Nielsen",
         "number": 2,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "M. Riisnæs",
+        "name": "Haitam Aleesami",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Joshua Kitolano",
+        "number": 16,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ulrik Saltnes",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Magnus Riisnæs",
         "number": 23,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "U. Saltnes",
-        "number": 14,
+        "name": "Joel Mugisha Mvuka",
+        "number": 22,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Andreas Helmersen",
+        "number": 9,
+        "pos": "F",
         "grid": null
       }
     ]

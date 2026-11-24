@@ -10,9 +10,9 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "3-5-2",
+    "shape": "3-4-3",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-24T17:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -35,24 +35,24 @@
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-5-2",
-    "match": "af-1635677",
-    "kickoff": "2026-11-03T20:00:00.000Z",
+    "formation": "3-4-3",
+    "match": "hl-1391931275",
+    "kickoff": "2026-11-24T17:45:00.000Z",
     "comp": "UCL",
-    "side": "home",
-    "opponent": "slovan-bratislava",
+    "side": "away",
+    "opponent": "bodo-glimt",
     "startXI": [
       {
-        "name": "L. Jungwirth",
+        "name": "Lukas Jungwirth",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "X. Mbuyamba",
-        "number": 4,
+        "name": "Miguel Freckleton",
+        "number": 3,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Alemão",
@@ -61,97 +61,55 @@
         "grid": "2:2"
       },
       {
-        "name": "A. Andrade",
-        "number": 16,
+        "name": "Xavier Mbuyamba",
+        "number": 4,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "K. Jørgensen",
-        "number": 20,
-        "pos": "M",
-        "grid": "3:5"
-      },
-      {
-        "name": "R. Ljubičić",
-        "number": 10,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "M. Bogarde",
-        "number": 6,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "S. Horvath",
-        "number": 30,
-        "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "Y. Dibango",
+        "name": "Yvan Dibango",
         "number": 25,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "M. Usor",
-        "number": 8,
+        "name": "Alessandro Schöpf",
+        "number": 18,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Robert Ljubičić",
+        "number": 10,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Kasper Jørgensen",
+        "number": 20,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Christoph Lang",
+        "number": 27,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "Samuel Adeniran",
+        "number": 7,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "S. Adeniran",
-        "number": 7,
+        "name": "Krystof Daněk",
+        "number": 9,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
-      {
-        "name": "Daniel Elfadli",
-        "number": 23,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "F. Flecker",
-        "number": 29,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "K. Daněk",
-        "number": 9,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Freckleton",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "S. Kalajdzic",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "N. Kane",
-        "number": 45,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "C. Lang",
-        "number": 27,
-        "pos": "M",
-        "grid": null
-      },
       {
         "name": "Fabian Schillinger",
         "number": 50,
@@ -159,21 +117,51 @@
         "grid": null
       },
       {
-        "name": "A. Schöpf",
-        "number": 18,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "T. Schützenauer",
+        "name": "Tobias Schützenauer",
         "number": 33,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "M. Verhaeghe",
+        "name": "Manoël Verhaeghe",
         "number": 21,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Daniel Elfadli",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Melayro Bogarde",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Sascha Horvath",
+        "number": 30,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Saša Kalajdžić",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Moses Usor",
+        "number": 8,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Nael Kane",
+        "number": 45,
+        "pos": "M",
         "grid": null
       }
     ]

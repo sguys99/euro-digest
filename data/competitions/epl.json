@@ -2,7 +2,7 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-23T22:13:40.956Z",
+  "updatedAt": "2026-11-24T22:14:11.579Z",
   "standings": [
     {
       "pos": 1,
@@ -106,7 +106,7 @@
     },
     {
       "pos": 6,
-      "prevPos": 10,
+      "prevPos": 6,
       "team": "brentford",
       "played": 11,
       "w": 4,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 6,
+      "prevPos": 7,
       "team": "leeds-united",
       "played": 11,
       "w": 4,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 7,
+      "prevPos": 9,
       "team": "everton",
       "played": 11,
       "w": 4,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 9,
+      "prevPos": 10,
       "team": "tottenham-hotspur",
       "played": 11,
       "w": 4,

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [],
   "profile": null,
@@ -20,35 +20,17 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1635662",
-    "kickoff": "2026-11-03T20:00:00.000Z",
+    "match": "hl-1391949997",
+    "kickoff": "2026-11-24T20:00:00.000Z",
     "comp": "UCL",
     "side": "home",
-    "opponent": "inter",
+    "opponent": "porto",
     "startXI": [
       {
-        "name": "T. Ernst",
-        "number": 1,
+        "name": "Florian Kastenmeier",
+        "number": 33,
         "pos": "G",
         "grid": "1:1"
-      },
-      {
-        "name": "G. Read",
-        "number": 26,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "T. Kraaijeveld",
-        "number": 24,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "Mika Màrmol",
-        "number": 35,
-        "pos": "D",
-        "grid": "2:2"
       },
       {
         "name": "Javi López",
@@ -57,76 +39,100 @@
         "grid": "2:1"
       },
       {
-        "name": "G. Zechiël",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:3"
+        "name": "Mika Mármol",
+        "number": 35,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
-        "name": "C. Vanhoutte",
-        "number": 34,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "Thijs Kraaijeveld",
+        "number": 24,
+        "pos": "D",
+        "grid": "2:3"
       },
       {
-        "name": "O. Targhalline",
+        "name": "Givairo Read",
+        "number": 26,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Oussama Targhalline",
         "number": 28,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "A. Hadj-Moussa",
-        "number": 23,
-        "pos": "F",
-        "grid": "4:3"
+        "name": "Charles Vanhoutte",
+        "number": 34,
+        "pos": "M",
+        "grid": "3:2"
       },
       {
-        "name": "Nacho Ferri",
-        "number": 19,
+        "name": "Gjivai Zechiël",
+        "number": 8,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Luciano Valente",
+        "number": 10,
+        "pos": "F",
+        "grid": "4:1"
+      },
+      {
+        "name": "Shaqueel van Persie",
+        "number": 49,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "L. Valente",
-        "number": 10,
+        "name": "Anis Hadj Moussa",
+        "number": 23,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "J. Schaken",
-        "number": 57,
-        "pos": "F",
+        "name": "Tjark Ernst",
+        "number": 1,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "T. van den Elshout",
-        "number": 22,
-        "pos": "M",
+        "name": "Liam Bossin",
+        "number": 39,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "T. Watanabe",
+        "name": "Tsuyoshi Watanabe",
         "number": 4,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "S. van Persie",
-        "number": 49,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Dani Slory",
-        "number": 65,
+        "name": "Gijs Smal",
+        "number": 5,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "S. Steijn",
-        "number": 14,
+        "name": "Mats Deijl",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Reiss Nelson",
+        "number": 17,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Tobias van den Elshout",
+        "number": 22,
         "pos": "M",
         "grid": null
       },
@@ -137,32 +143,26 @@
         "grid": null
       },
       {
-        "name": "L. Bossin",
-        "number": 39,
-        "pos": "G",
+        "name": "Sem Steijn",
+        "number": 14,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "M. Deijl",
-        "number": 20,
-        "pos": "D",
+        "name": "Jerayno Schaken",
+        "number": 57,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "G. Diarra",
+        "name": "Gaoussou Diarra",
         "number": 27,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "F. Kastenmeier",
-        "number": 33,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "R. Nelson",
-        "number": 17,
+        "name": "Nacho Ferri",
+        "number": 19,
         "pos": "F",
         "grid": null
       }

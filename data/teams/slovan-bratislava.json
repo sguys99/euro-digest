@@ -10,160 +10,160 @@
     "#FFFFFF"
   ],
   "formation": {
-    "shape": "3-4-2-1",
+    "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-03T20:00:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
-    "formation": "3-4-2-1",
-    "match": "af-1635677",
-    "kickoff": "2026-11-03T20:00:00.000Z",
+    "formation": "4-3-3",
+    "match": "hl-1392007865",
+    "kickoff": "2026-11-24T20:00:00.000Z",
     "comp": "UCL",
-    "side": "away",
-    "opponent": "lask",
+    "side": "home",
+    "opponent": "real-betis",
     "startXI": [
       {
-        "name": "A. Popović",
-        "number": 1,
+        "name": "Dominik Takáč",
+        "number": 71,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "S. Camara",
-        "number": 49,
+        "name": "Sandro Cruz",
+        "number": 57,
         "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
-        "name": "S. Marković",
+        "name": "Svetozar Marković",
         "number": 15,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "K. Wimmer",
-        "number": 6,
+        "name": "Kenan Bajrić",
+        "number": 12,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "C. Blackman",
+        "name": "César Blackman",
         "number": 28,
-        "pos": "M",
-        "grid": "3:4"
+        "pos": "D",
+        "grid": "2:4"
       },
       {
-        "name": "Cristian Jesús Martínez",
-        "number": 70,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "A. Mustafić",
-        "number": 20,
-        "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "S. Kozlovský",
-        "number": 2,
+        "name": "Rahim Ibrahim",
+        "number": 5,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "A. Maroš",
-        "number": 29,
+        "name": "Peter Pokorný",
+        "number": 3,
         "pos": "M",
-        "grid": "4:2"
+        "grid": "3:2"
       },
       {
-        "name": "Suleiman Camara",
-        "number": 21,
+        "name": "Daiki Matsuoka",
+        "number": 88,
         "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Nino Marcelli",
+        "number": 10,
+        "pos": "F",
         "grid": "4:1"
       },
       {
-        "name": "A. Šporar",
+        "name": "Andraž Šporar",
         "number": 99,
         "pos": "F",
-        "grid": "5:1"
+        "grid": "4:2"
+      },
+      {
+        "name": "Tigran Barseghyan",
+        "number": 11,
+        "pos": "F",
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "Sandro Cruz",
-        "number": 57,
+        "name": "Aleksandar Popović",
+        "number": 1,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Daniel Gramblička",
+        "number": 31,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Samuel Kozlovský",
+        "number": 2,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "A. Gajdoš",
-        "number": 8,
-        "pos": "M",
+        "name": "Sahmkou Camara",
+        "number": 49,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "L. Hofstadter",
-        "number": 7,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "R. Ibrahim",
-        "number": 5,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Macík",
-        "number": 44,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "N. Marcelli",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "D. Matsuoka",
-        "number": 88,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "P. Pokorný",
-        "number": 3,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "D. Takáč",
-        "number": 71,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "R. Tománek",
+        "name": "Robert Tomanek",
         "number": 26,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "K. Bajrič",
-        "number": 12,
-        "pos": "D",
+        "name": "Leo Hofstädter",
+        "number": 7,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "T. Barseghyan",
-        "number": 11,
+        "name": "Alasana Yirajang",
+        "number": 14,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Alexej Maros",
+        "number": 29,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Cristian Martínez",
+        "number": 70,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Maximilian Marko",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Roman Čerepkai",
+        "number": 13,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Adam Griger",
+        "number": 30,
+        "pos": "F",
         "grid": null
       }
     ]

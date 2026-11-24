@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-10-20T19:00:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -26,29 +26,23 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1635693",
-    "kickoff": "2026-10-20T19:00:00.000Z",
+    "match": "hl-1391938083",
+    "kickoff": "2026-11-24T20:00:00.000Z",
     "comp": "UCL",
     "side": "away",
-    "opponent": "manchester-city",
+    "opponent": "como",
     "startXI": [
       {
-        "name": "A. Brignoli",
-        "number": 91,
+        "name": "Thomas Strakosha",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "L. Rota",
-        "number": 12,
+        "name": "Stavros Pilios",
+        "number": 3,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "H. Moukoudi",
-        "number": 2,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "Filipe Relvas",
@@ -57,97 +51,55 @@
         "grid": "2:2"
       },
       {
-        "name": "S. Pilios",
-        "number": 3,
+        "name": "Harold Moukoudi",
+        "number": 2,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "L. Majer",
-        "number": 14,
+        "name": "Lazaros Rota",
+        "number": 12,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "Mijat Gaćinović",
+        "number": 8,
         "pos": "M",
-        "grid": "3:4"
+        "grid": "3:1"
       },
       {
-        "name": "K. Arriaga",
-        "number": 16,
-        "pos": "M",
-        "grid": "3:3"
-      },
-      {
-        "name": "R. Marin",
+        "name": "Răzvan Marin",
         "number": 18,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "João Mário",
-        "number": 23,
+        "name": "Milán Vitális",
+        "number": 27,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:3"
       },
       {
-        "name": "L. Jović",
+        "name": "Lovro Majer",
+        "number": 14,
+        "pos": "M",
+        "grid": "3:4"
+      },
+      {
+        "name": "Luka Jović",
         "number": 9,
         "pos": "F",
-        "grid": "4:2"
+        "grid": "4:1"
       },
       {
-        "name": "B. Varga",
-        "number": 19,
+        "name": "Dereck Kutesa",
+        "number": 7,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:2"
       }
     ],
     "substitutes": [
-      {
-        "name": "O. Zubkov",
-        "number": 10,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Zini",
-        "number": 90,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Vitális",
-        "number": 27,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "D. Vida",
-        "number": 21,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "C. Lykogiannis",
-        "number": 22,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "A. Koita",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "K. Kairinen",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Gaćinović",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
       {
         "name": "Marios Balamotis",
         "number": 41,
@@ -155,9 +107,51 @@
         "grid": null
       },
       {
-        "name": "P. Mantalos",
+        "name": "Alberto Brignoli",
+        "number": 91,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Domagoj Vida",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Charalampos Lykogiannis",
+        "number": 22,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Kaan Kairinen",
+        "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Petros Mantalos",
         "number": 20,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "João Mário",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Barnabás Varga",
+        "number": 19,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Zini",
+        "number": 90,
+        "pos": "F",
         "grid": null
       }
     ]

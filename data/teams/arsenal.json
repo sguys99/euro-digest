@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-21T17:30:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -55,21 +55,21 @@
   ],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1325412009",
-    "kickoff": "2026-11-21T17:30:00.000Z",
-    "comp": "EPL",
-    "side": "away",
-    "opponent": "newcastle-united",
+    "match": "hl-1391905745",
+    "kickoff": "2026-11-24T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "home",
+    "opponent": "borussia-dortmund",
     "startXI": [
       {
-        "name": "David Raya",
-        "number": 1,
+        "name": "Kepa Arrizabalaga",
+        "number": 13,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "R. Calafiori",
-        "number": 33,
+        "name": "Piero Hincapié",
+        "number": 5,
         "pos": "D",
         "grid": "2:1"
       },
@@ -80,57 +80,69 @@
         "grid": "2:2"
       },
       {
-        "name": "E. Konsa",
+        "name": "Ezri Konsa",
         "number": 15,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "J. Timber",
-        "number": 12,
+        "name": "Ben White",
+        "number": 4,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "D. Rice",
+        "name": "Declan Rice",
         "number": 41,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Bruno Guimarães",
-        "number": 39,
+        "name": "Myles Lewis-Skelly",
+        "number": 49,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "E. Eze",
-        "number": 10,
+        "name": "Christos Tzolis",
+        "number": 17,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "M. Ødegaard",
+        "name": "Martin Ødegaard",
         "number": 8,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "N. Madueke",
+        "name": "Noni Madueke",
         "number": 20,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "K. Havertz",
-        "number": 29,
+        "name": "Viktor Gyökeres",
+        "number": 14,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "W. Saliba",
+        "name": "Jack Porter",
+        "number": 55,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Illan Meslier",
+        "number": 30,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "William Saliba",
         "number": 2,
         "pos": "D",
         "grid": null
@@ -142,27 +154,21 @@
         "grid": null
       },
       {
-        "name": "B. White",
-        "number": 4,
+        "name": "Jurriën Timber",
+        "number": 12,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "P. Hincapié",
-        "number": 5,
+        "name": "Riccardo Calafiori",
+        "number": 33,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "M. Lewis-Skelly",
-        "number": 49,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "C. Tzolis",
-        "number": 17,
-        "pos": "F",
+        "name": "Eberechi Eze",
+        "number": 10,
+        "pos": "M",
         "grid": null
       },
       {
@@ -172,14 +178,20 @@
         "grid": null
       },
       {
-        "name": "Kepa",
-        "number": 13,
-        "pos": "G",
+        "name": "Bruno Guimarães",
+        "number": 39,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "V. Gyökeres",
-        "number": 14,
+        "name": "Max Dowman",
+        "number": 56,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Kai Havertz",
+        "number": 29,
         "pos": "F",
         "grid": null
       }

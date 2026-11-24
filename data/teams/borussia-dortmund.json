@@ -14,7 +14,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-11-21T14:30:00.000Z"
+    "updated": "2026-11-24T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,70 +49,70 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "hl-1340518110",
-    "kickoff": "2026-11-21T14:30:00.000Z",
-    "comp": "BUNDESLIGA",
+    "match": "hl-1391905745",
+    "kickoff": "2026-11-24T20:00:00.000Z",
+    "comp": "UCL",
     "side": "away",
-    "opponent": "borussia-monchengladbach",
+    "opponent": "arsenal",
     "startXI": [
       {
-        "name": "G. Kobel",
+        "name": "Gregor Kobel",
         "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "R. Bensebaïni",
-        "number": 5,
+        "name": "Nico Schlotterbeck",
+        "number": 4,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "N. Schlotterbeck",
-        "number": 4,
+        "name": "Waldemar Anton",
+        "number": 3,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "Kouakou Joane Gadou",
+        "name": "Joane Gadou",
         "number": 22,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "D. Svensson",
+        "name": "Daniel Svensson",
         "number": 24,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "J. Bellingham",
-        "number": 7,
+        "name": "Joey Veerman",
+        "number": 25,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "F. Nmecha",
+        "name": "Felix Nmecha",
         "number": 8,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "J. Ryerson",
+        "name": "Julian Ryerson",
         "number": 26,
         "pos": "M",
         "grid": "3:4"
       },
       {
-        "name": "M. Beier",
+        "name": "Maximilian Beier",
         "number": 14,
-        "pos": "M",
+        "pos": "F",
         "grid": "4:1"
       },
       {
-        "name": "K. Karetsas",
-        "number": 19,
-        "pos": "M",
+        "name": "Jobe Bellingham",
+        "number": 7,
+        "pos": "F",
         "grid": "4:2"
       },
       {
@@ -124,55 +124,73 @@
     ],
     "substitutes": [
       {
-        "name": "A. Meyer",
+        "name": "Patrick Drewes",
+        "number": 30,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Alexander Meyer",
         "number": 33,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "E. Nwaneri",
-        "number": 18,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Kauã Prates",
-        "number": 36,
+        "name": "Ramy Bensebaini",
+        "number": 5,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "M. Sabitzer",
-        "number": 20,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "J. Veerman",
-        "number": 25,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "F. Mané",
+        "name": "Filippo Mané",
         "number": 39,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "E. de Pina Duarte dos Santos",
+        "name": "Luca Reggiani",
+        "number": 49,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Carney Chukwuemeka",
+        "number": 17,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Ethan Nwaneri",
+        "number": 18,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Marcel Sabitzer",
+        "number": 20,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Konstantinos Karetsas",
+        "number": 19,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Enzo dos Santos",
         "number": 44,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "W. Anton",
-        "number": 3,
-        "pos": "D",
+        "name": "Serhou Guirassy",
+        "number": 9,
+        "pos": "F",
         "grid": null
       },
       {
-        "name": "M. Albert",
+        "name": "Mathis Albert",
         "number": 41,
         "pos": "F",
         "grid": null
