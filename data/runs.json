@@ -5323,5 +5323,109 @@
     "brief": {
       "requests": 1
     }
+  },
+  {
+    "runId": "collect-prod-20261125T045633Z-126a",
+    "env": "prod",
+    "job": "collect",
+    "startedAt": "2026-11-25T04:56:33.414Z",
+    "finishedAt": "2026-11-25T04:57:19.430Z",
+    "collected": 450,
+    "clusters": 0,
+    "summarized": 0,
+    "downgraded": 0,
+    "tokens": {
+      "in": 0,
+      "out": 0,
+      "cacheRead": 0,
+      "cacheWrite": 0
+    },
+    "costUsd": 0,
+    "apiCalls": {
+      "footballData": 2,
+      "apiFootball": 0,
+      "highlightly": 15
+    },
+    "sources": [
+      {
+        "id": "bbc-sport-football",
+        "ok": true,
+        "items": 68,
+        "usable": 9
+      },
+      {
+        "id": "bbc-sport-premier-league",
+        "ok": true,
+        "items": 40,
+        "usable": 1
+      },
+      {
+        "id": "bbc-sport-champions-league",
+        "ok": true,
+        "items": 9,
+        "usable": 3
+      },
+      {
+        "id": "bbc-sport-european",
+        "ok": true,
+        "items": 28,
+        "usable": 3
+      },
+      {
+        "id": "the-athletic-football",
+        "ok": true,
+        "items": 100,
+        "usable": 4
+      },
+      {
+        "id": "daily-briefing",
+        "ok": true,
+        "items": 20,
+        "usable": 0
+      },
+      {
+        "id": "di-marzio",
+        "ok": true,
+        "items": 10,
+        "usable": 10
+      },
+      {
+        "id": "relevo",
+        "ok": true,
+        "items": 15,
+        "usable": 2
+      },
+      {
+        "id": "interfootball-world",
+        "ok": true,
+        "items": 20,
+        "usable": 13
+      },
+      {
+        "id": "interfootball-all",
+        "ok": true,
+        "items": 50,
+        "usable": 30
+      },
+      {
+        "id": "footballist-football",
+        "ok": true,
+        "items": 20,
+        "usable": 12
+      },
+      {
+        "id": "besteleven-world",
+        "ok": true,
+        "items": 20,
+        "usable": 14
+      },
+      {
+        "id": "besteleven-all",
+        "ok": true,
+        "items": 50,
+        "usable": 17
+      }
+    ],
+    "status": "success"
   }
 ]

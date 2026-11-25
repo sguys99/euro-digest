@@ -1,7 +1,7 @@
 {
   "date": "2026-11-20",
-  "generatedAt": "2026-11-19T22:12:43.830Z",
-  "runId": "collect-prod-20261119T221238Z-a333",
+  "generatedAt": "2026-11-25T04:56:33.496Z",
+  "runId": "collect-prod-20261125T045633Z-126a",
   "cards": [
     {
       "id": "c_10e709b876",
@@ -791,33 +791,6 @@
       "created": "2026-11-19T22:12:38.540Z"
     },
     {
-      "id": "c_a87af800e6",
-      "t": "Bayern Munich's Vincent Kompany 'very good' but says he 'didn't listen to my body' after absence",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "BUNDESLIGA"
-      ],
-      "teams": [
-        "bayern-munchen"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7794517/2026/11/19/vincent-kompany-health-bayern-munich/",
-          "at": "2026-11-19T10:22:33.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-19T22:12:38.540Z"
-    },
-    {
       "id": "c_2ed9064d6a",
       "t": "🚨 EXCL: Chelsea make \"unbelievable player\" admired by Guardiola their number one target",
       "s": [],
@@ -1179,33 +1152,6 @@
         }
       ],
       "lang": "ko",
-      "ai": false,
-      "created": "2026-11-19T22:12:38.540Z"
-    },
-    {
-      "id": "c_8a0a5efc16",
-      "t": "The BookKeeper: Real Madrid have world record €1.2bn revenues - but is that enough?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "LALIGA"
-      ],
-      "teams": [
-        "real-madrid"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7778699/2026/11/19/real-madrid-finances-analysis-bookkeeper-25-26/",
-          "at": "2026-11-19T07:30:15.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
       "ai": false,
       "created": "2026-11-19T22:12:38.540Z"
     }
