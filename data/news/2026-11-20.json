@@ -1,7 +1,7 @@
 {
   "date": "2026-11-20",
-  "generatedAt": "2026-11-25T04:56:33.496Z",
-  "runId": "collect-prod-20261125T045633Z-126a",
+  "generatedAt": "2026-11-25T22:12:49.567Z",
+  "runId": "collect-prod-20261125T221249Z-b945",
   "cards": [
     {
       "id": "c_10e709b876",
@@ -735,33 +735,6 @@
       "created": "2026-11-19T22:12:38.540Z"
     },
     {
-      "id": "c_48fe017dac",
-      "t": "Man Utd late comebacks have made... a comeback. Is it simply part of their DNA?",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "manchester-united"
-      ],
-      "players": [],
-      "imp": 2,
-      "kr": false,
-      "spoiler": true,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7787320/2026/11/19/manchester-united-late-comebacks-dna/",
-          "at": "2026-11-19T12:00:26.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-19T22:12:38.540Z"
-    },
-    {
       "id": "c_658682c151",
       "t": "Eight-year ban for player who threw rock that hit assistant referee",
       "s": [],
@@ -777,12 +750,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/articles/cqlyk9yzkz2no?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-19T10:20:58.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7794562/2026/11/19/jhon-perlaza-ecuador-ban-rock/",
-          "at": "2026-11-19T11:10:20.000Z",
           "tier": 2
         }
       ],

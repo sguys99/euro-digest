@@ -12,19 +12,25 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-20T16:45:00.000Z"
+    "updated": "2026-11-25T17:45:00.000Z"
   },
-  "topPlayers": [],
+  "topPlayers": [
+    {
+      "name": "Joy-Lance Mickels",
+      "goals": 2,
+      "assists": null
+    }
+  ],
   "profile": null,
   "koreanPlayers": [],
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1635719",
-    "kickoff": "2026-10-20T16:45:00.000Z",
+    "match": "hl-1391996802",
+    "kickoff": "2026-11-25T17:45:00.000Z",
     "comp": "UCL",
     "side": "home",
-    "opponent": "borussia-dortmund",
+    "opponent": "barcelona",
     "startXI": [
       {
         "name": "S. Pokatilov",
@@ -33,10 +39,16 @@
         "grid": "1:1"
       },
       {
-        "name": "A. Zedadka",
-        "number": 80,
+        "name": "T. Puchacz",
+        "number": 27,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "Erivaldo Almeida",
+        "number": 33,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "S. Solvet",
@@ -45,22 +57,10 @@
         "grid": "2:3"
       },
       {
-        "name": "A. McCarthy",
-        "number": 4,
+        "name": "A. Zedadka",
+        "number": 80,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "T. Puchacz",
-        "number": 27,
-        "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "U. Rahmonaliyev",
-        "number": 7,
-        "pos": "M",
-        "grid": "3:2"
+        "grid": "2:4"
       },
       {
         "name": "I. Lepinjica",
@@ -69,10 +69,16 @@
         "grid": "3:1"
       },
       {
-        "name": "K. Parris",
-        "number": 11,
+        "name": "U. Rahmonaliyev",
+        "number": 7,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
+      },
+      {
+        "name": "C. Nwachukwu",
+        "number": 8,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "Du Queiroz",
@@ -81,19 +87,31 @@
         "grid": "4:2"
       },
       {
-        "name": "V. Simić",
-        "number": 21,
+        "name": "X. Severina",
+        "number": 34,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
-        "name": "J. Mickels",
-        "number": 20,
+        "name": "K. Aliyev",
+        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
+      {
+        "name": "V. Simić",
+        "number": 21,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Daşdəmirov",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
       {
         "name": "Rodrigo Fernandes",
         "number": 88,
@@ -107,18 +125,6 @@
         "grid": null
       },
       {
-        "name": "R. Daşdəmirov",
-        "number": 5,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Erivaldo Almeida",
-        "number": 33,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "A. Xaybulayev",
         "number": 6,
         "pos": "M",
@@ -127,6 +133,12 @@
       {
         "name": "P. Mbina",
         "number": 99,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Mickels",
+        "number": 20,
         "pos": "F",
         "grid": null
       },
@@ -143,9 +155,9 @@
         "grid": null
       },
       {
-        "name": "C. Nwachukwu",
-        "number": 8,
-        "pos": "F",
+        "name": "K. Parris",
+        "number": 11,
+        "pos": "M",
         "grid": null
       },
       {
@@ -155,14 +167,8 @@
         "grid": null
       },
       {
-        "name": "X. Severina",
-        "number": 34,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "K. Aliyev",
-        "number": 9,
+        "name": "R. Rüstəmli",
+        "number": 16,
         "pos": "M",
         "grid": null
       }

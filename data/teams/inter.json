@@ -14,7 +14,7 @@
   "formation": {
     "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-11-22T19:45:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-5-2",
-    "match": "hl-1319219282",
-    "kickoff": "2026-11-22T19:45:00.000Z",
-    "comp": "SERIEA",
-    "side": "away",
-    "opponent": "atalanta",
+    "match": "hl-1391958507",
+    "kickoff": "2026-11-25T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "home",
+    "opponent": "stuttgart",
     "startXI": [
       {
         "name": "Josep Martínez",
@@ -62,26 +62,26 @@
         "grid": "1:1"
       },
       {
-        "name": "Carlos Augusto",
-        "number": 30,
+        "name": "A. Bastoni",
+        "number": 95,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "A. Bastoni",
-        "number": 95,
+        "name": "M. Akanji",
+        "number": 25,
         "pos": "D",
         "grid": "2:2"
       },
       {
-        "name": "B. Pavard",
-        "number": 28,
+        "name": "Y. Bisseck",
+        "number": 31,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "F. Dimarco",
-        "number": 32,
+        "name": "Carlos Augusto",
+        "number": 30,
         "pos": "M",
         "grid": "3:1"
       },
@@ -92,8 +92,8 @@
         "grid": "3:2"
       },
       {
-        "name": "H. Çalhanoğlu",
-        "number": 20,
+        "name": "P. Sučić",
+        "number": 8,
         "pos": "M",
         "grid": "3:3"
       },
@@ -124,8 +124,38 @@
     ],
     "substitutes": [
       {
-        "name": "P. Sučić",
-        "number": 8,
+        "name": "R. Di Gennaro",
+        "number": 12,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "I. Provedel",
+        "number": 49,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Stanković",
+        "number": 5,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Leonardo Bovo",
+        "number": 44,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "F. Dimarco",
+        "number": 32,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Diouf",
+        "number": 17,
         "pos": "M",
         "grid": null
       },
@@ -136,20 +166,14 @@
         "grid": null
       },
       {
-        "name": "A. Stanković",
-        "number": 5,
+        "name": "C. Jones",
+        "number": 21,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "I. Provedel",
-        "number": 49,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Lautaro Martínez",
-        "number": 10,
+        "name": "M. Lavelli",
+        "number": 53,
         "pos": "F",
         "grid": null
       },
@@ -160,38 +184,14 @@
         "grid": null
       },
       {
-        "name": "M. Lavelli",
-        "number": 53,
+        "name": "Lautaro Martínez",
+        "number": 10,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "C. Jones",
-        "number": 21,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Diouf",
-        "number": 17,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "R. Di Gennaro",
-        "number": 12,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Y. Bisseck",
-        "number": 31,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Akanji",
-        "number": 25,
+        "name": "B. Pavard",
+        "number": 28,
         "pos": "D",
         "grid": null
       }

@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-22T13:00:00.000Z"
+    "updated": "2026-11-25T17:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,21 +49,21 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "hl-1336457989",
-    "kickoff": "2026-11-22T13:00:00.000Z",
-    "comp": "LALIGA",
+    "match": "hl-1392005312",
+    "kickoff": "2026-11-25T17:45:00.000Z",
+    "comp": "UCL",
     "side": "away",
-    "opponent": "barcelona",
+    "opponent": "slavia-praha",
     "startXI": [
       {
-        "name": "P. Gulácsi",
-        "number": 25,
+        "name": "Luíz Júnior",
+        "number": 1,
         "pos": "G",
         "grid": "1:1"
       },
       {
-        "name": "Carlos Romero",
-        "number": 20,
+        "name": "Sergi Cardona",
+        "number": 23,
         "pos": "D",
         "grid": "2:1"
       },
@@ -74,14 +74,14 @@
         "grid": "2:2"
       },
       {
-        "name": "Pau Navarro",
-        "number": 6,
+        "name": "Logan Costa",
+        "number": 2,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "A. Freeman",
-        "number": 3,
+        "name": "S. Mouriño",
+        "number": 15,
         "pos": "D",
         "grid": "2:4"
       },
@@ -98,8 +98,8 @@
         "grid": "3:2"
       },
       {
-        "name": "Santi Comesaña",
-        "number": 14,
+        "name": "C. Macia",
+        "number": 16,
         "pos": "M",
         "grid": "3:3"
       },
@@ -110,52 +110,34 @@
         "grid": "3:4"
       },
       {
-        "name": "G. Mikautadze",
-        "number": 9,
+        "name": "T. Oluwaseyi",
+        "number": 21,
         "pos": "F",
         "grid": "4:1"
       },
       {
-        "name": "T. Oluwaseyi",
-        "number": 21,
+        "name": "Ayoze Pérez",
+        "number": 22,
         "pos": "F",
         "grid": "4:2"
       }
     ],
     "substitutes": [
       {
-        "name": "Sergi Cardona",
-        "number": 23,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Logan Costa",
-        "number": 2,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "N. El Jmili",
-        "number": 27,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Rubén Gómez",
-        "number": 13,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "C. Macia",
-        "number": 16,
+        "name": "Santi Comesaña",
+        "number": 14,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "S. Mouriño",
-        "number": 15,
+        "name": "C. Tidiane Thiam",
+        "number": 30,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Carlos Romero",
+        "number": 20,
         "pos": "D",
         "grid": null
       },
@@ -166,27 +148,51 @@
         "grid": null
       },
       {
-        "name": "Ayoze Pérez",
-        "number": 22,
+        "name": "Pau Navarro",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "G. Mikautadze",
+        "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "Luíz Júnior",
-        "number": 1,
+        "name": "P. Gulácsi",
+        "number": 25,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "C. Tidiane Thiam",
-        "number": 30,
-        "pos": "M",
+        "name": "Rubén Gómez",
+        "number": 13,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "A. Freeman",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. El Jmili",
+        "number": 27,
+        "pos": "F",
         "grid": null
       },
       {
         "name": "César Bonafé",
         "number": 32,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Joselillo Gaitán",
+        "number": 28,
+        "pos": "F",
         "grid": null
       }
     ]

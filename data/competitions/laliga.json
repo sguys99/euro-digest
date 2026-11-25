@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-24T22:14:35.433Z",
+  "updatedAt": "2026-11-25T22:14:51.351Z",
   "standings": [
     {
       "pos": 1,
@@ -2311,7 +2311,7 @@
       "home": "rayo-vallecano",
       "away": "athletic",
       "score": null,
-      "status": "postponed"
+      "status": "scheduled"
     },
     {
       "id": "fd-564783",

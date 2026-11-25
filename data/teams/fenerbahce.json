@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-20T16:45:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -24,6 +24,11 @@
       "name": "Mason Greenwood",
       "goals": 2,
       "assists": 1
+    },
+    {
+      "name": "Vedat Muriqi",
+      "goals": 2,
+      "assists": null
     }
   ],
   "profile": null,
@@ -31,11 +36,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1635661",
-    "kickoff": "2026-10-20T16:45:00.000Z",
+    "match": "hl-1392001908",
+    "kickoff": "2026-11-25T20:00:00.000Z",
     "comp": "UCL",
-    "side": "home",
-    "opponent": "slavia-praha",
+    "side": "away",
+    "opponent": "shakhtar-donetsk",
     "startXI": [
       {
         "name": "Ederson",
@@ -44,10 +49,16 @@
         "grid": "1:1"
       },
       {
-        "name": "Nélson Semedo",
-        "number": 27,
+        "name": "A. Brown",
+        "number": 3,
         "pos": "D",
-        "grid": "2:4"
+        "grid": "2:1"
+      },
+      {
+        "name": "K. Peprah Oppong",
+        "number": 21,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
         "name": "M. Škriniar",
@@ -56,34 +67,28 @@
         "grid": "2:3"
       },
       {
-        "name": "N. Aké",
-        "number": 15,
+        "name": "Nélson Semedo",
+        "number": 27,
         "pos": "D",
-        "grid": "2:2"
-      },
-      {
-        "name": "A. Brown",
-        "number": 3,
-        "pos": "D",
-        "grid": "2:1"
+        "grid": "2:4"
       },
       {
         "name": "N. Kanté",
         "number": 91,
         "pos": "M",
-        "grid": "3:2"
-      },
-      {
-        "name": "M. Guendouzi",
-        "number": 6,
-        "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "O. Aydın",
-        "number": 70,
+        "name": "İ. Yüksek",
+        "number": 5,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
+      },
+      {
+        "name": "K. Aktürkoğlu",
+        "number": 7,
+        "pos": "M",
+        "grid": "4:1"
       },
       {
         "name": "M. Greenwood",
@@ -92,10 +97,10 @@
         "grid": "4:2"
       },
       {
-        "name": "K. Aktürkoğlu",
-        "number": 7,
+        "name": "O. Aydın",
+        "number": 70,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "V. Muriqi",
@@ -106,8 +111,26 @@
     ],
     "substitutes": [
       {
+        "name": "Y. Demir",
+        "number": 14,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "N. Dorgeles",
+        "number": 45,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "B. Elmaz",
         "number": 28,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Guendouzi",
+        "number": 6,
         "pos": "M",
         "grid": null
       },
@@ -142,33 +165,15 @@
         "grid": null
       },
       {
-        "name": "N. Dorgeles",
-        "number": 45,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "K. Peprah Oppong",
-        "number": 21,
+        "name": "M. Müldür",
+        "number": 18,
         "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "İ. Yüksek",
-        "number": 5,
-        "pos": "M",
         "grid": null
       },
       {
         "name": "T. Çetin",
         "number": 13,
         "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "Y. Demir",
-        "number": 14,
-        "pos": "D",
         "grid": null
       }
     ]

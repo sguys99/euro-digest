@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-21T19:45:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "hl-1321450604",
-    "kickoff": "2026-11-21T19:45:00.000Z",
-    "comp": "LIGUE1",
+    "match": "hl-1391966166",
+    "kickoff": "2026-11-25T20:00:00.000Z",
+    "comp": "UCL",
     "side": "home",
-    "opponent": "lyon",
+    "opponent": "bayern-munchen",
     "startXI": [
       {
         "name": "B. Özer",
@@ -62,8 +62,8 @@
         "grid": "1:1"
       },
       {
-        "name": "R. Perraud",
-        "number": 15,
+        "name": "C. Verdonk",
+        "number": 24,
         "pos": "D",
         "grid": "2:1"
       },
@@ -74,14 +74,14 @@
         "grid": "2:2"
       },
       {
-        "name": "T. Nianzou",
-        "number": 23,
+        "name": "N. Ngoy",
+        "number": 3,
         "pos": "D",
         "grid": "2:3"
       },
       {
-        "name": "N. Ngoy",
-        "number": 3,
+        "name": "M. Goffi",
+        "number": 38,
         "pos": "D",
         "grid": "2:4"
       },
@@ -104,28 +104,70 @@
         "grid": "3:3"
       },
       {
-        "name": "S. Diaoune",
-        "number": 35,
+        "name": "H. Haraldsson",
+        "number": 10,
         "pos": "F",
         "grid": "4:1"
       },
       {
-        "name": "H. Haraldsson",
-        "number": 10,
+        "name": "A. Ueda",
+        "number": 18,
         "pos": "F",
         "grid": "4:2"
       },
       {
-        "name": "D. Bakwa",
-        "number": 7,
+        "name": "E. Mbappé",
+        "number": 8,
         "pos": "F",
         "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "O. Giroud",
-        "number": 9,
+        "name": "G. Perrin",
+        "number": 28,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Perraud",
+        "number": 15,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Thomas Sajous",
+        "number": 50,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "L. Srdanovic",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. Sahraoui",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "D. Bakwa",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "I. Cossier",
+        "number": 26,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "S. Diaoune",
+        "number": 35,
         "pos": "F",
         "grid": null
       },
@@ -136,39 +178,15 @@
         "grid": null
       },
       {
-        "name": "I. Cossier",
-        "number": 26,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Goffi",
-        "number": 38,
-        "pos": "D",
+        "name": "O. Giroud",
+        "number": 9,
+        "pos": "F",
         "grid": null
       },
       {
         "name": "M. Kjærgaard",
         "number": 14,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "E. Mbappé",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Ueda",
-        "number": 18,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "C. Verdonk",
-        "number": 24,
-        "pos": "D",
         "grid": null
       },
       {

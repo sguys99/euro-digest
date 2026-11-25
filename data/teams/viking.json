@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-10-21T19:00:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -36,35 +36,17 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "af-1635621",
-    "kickoff": "2026-10-21T19:00:00.000Z",
+    "match": "hl-1391917659",
+    "kickoff": "2026-11-25T20:00:00.000Z",
     "comp": "UCL",
     "side": "away",
-    "opponent": "aston-villa",
+    "opponent": "atletico-madrid",
     "startXI": [
       {
-        "name": "A. Østbø",
-        "number": 1,
+        "name": "Ľ. Belko",
+        "number": 30,
         "pos": "G",
         "grid": "1:1"
-      },
-      {
-        "name": "H. Haugen",
-        "number": 2,
-        "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "G. Stensness",
-        "number": 6,
-        "pos": "D",
-        "grid": "2:3"
-      },
-      {
-        "name": "J. Daland",
-        "number": 27,
-        "pos": "D",
-        "grid": "2:2"
       },
       {
         "name": "H. Heggheim",
@@ -73,14 +55,32 @@
         "grid": "2:1"
       },
       {
-        "name": "T. Moi",
-        "number": 29,
-        "pos": "M",
-        "grid": "3:3"
+        "name": "H. Falchener",
+        "number": 25,
+        "pos": "D",
+        "grid": "2:2"
       },
       {
-        "name": "J. Bell",
-        "number": 8,
+        "name": "G. Stensness",
+        "number": 6,
+        "pos": "D",
+        "grid": "2:3"
+      },
+      {
+        "name": "H. Haugen",
+        "number": 2,
+        "pos": "D",
+        "grid": "2:4"
+      },
+      {
+        "name": "S. Kvia-Egeskog",
+        "number": 26,
+        "pos": "M",
+        "grid": "3:1"
+      },
+      {
+        "name": "T. Moi",
+        "number": 29,
         "pos": "M",
         "grid": "3:2"
       },
@@ -88,13 +88,13 @@
         "name": "K. Askildsen",
         "number": 7,
         "pos": "M",
-        "grid": "3:1"
+        "grid": "3:3"
       },
       {
-        "name": "P. Christiansen",
-        "number": 20,
+        "name": "Z. Tripić",
+        "number": 10,
         "pos": "F",
-        "grid": "4:3"
+        "grid": "4:1"
       },
       {
         "name": "E. Botheim",
@@ -103,35 +103,29 @@
         "grid": "4:2"
       },
       {
-        "name": "Z. Tripić",
-        "number": 10,
+        "name": "H. Bjørdal",
+        "number": 16,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:3"
       }
     ],
     "substitutes": [
       {
-        "name": "Vetle Auklend",
-        "number": 24,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "E. Bassey",
-        "number": 17,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Ľ. Belko",
-        "number": 30,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "H. Bjørdal",
-        "number": 16,
+        "name": "J. Bell",
+        "number": 8,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "V. Berisha",
+        "number": 14,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "P. Christiansen",
+        "number": 20,
+        "pos": "F",
         "grid": null
       },
       {
@@ -141,14 +135,8 @@
         "grid": null
       },
       {
-        "name": "K. Haugen",
-        "number": 28,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "V. Vevatne",
-        "number": 3,
+        "name": "J. Daland",
+        "number": 27,
         "pos": "D",
         "grid": null
       },
@@ -159,9 +147,15 @@
         "grid": null
       },
       {
-        "name": "S. Kvia-Egeskog",
-        "number": 26,
+        "name": "J. Hansen",
+        "number": 33,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Østbø",
+        "number": 1,
+        "pos": "G",
         "grid": null
       },
       {
@@ -171,14 +165,20 @@
         "grid": null
       },
       {
-        "name": "J. Hansen",
-        "number": 33,
-        "pos": "M",
+        "name": "V. Vevatne",
+        "number": 3,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "H. Falchener",
-        "number": 25,
+        "name": "Vetle Auklend",
+        "number": 24,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Bærtelsen",
+        "number": 21,
         "pos": "D",
         "grid": null
       }

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-25T04:56:33.414Z",
+  "updatedAt": "2026-11-25T22:12:49.489Z",
   "names": {
     "A. Bouaddi": {
       "count": 2,
@@ -86,9 +86,9 @@
       "cards": []
     },
     "Adrián": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -120,6 +120,13 @@
       "kind": "player",
       "cards": []
     },
+    "Alejandro Balde": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
+      "kind": "player",
+      "cards": []
+    },
     "Alessandro Bastoni": {
       "count": 1,
       "firstSeen": "2026-10-31T22:12:53.921Z",
@@ -138,6 +145,13 @@
       "count": 1,
       "firstSeen": "2026-10-25T13:13:48.390Z",
       "lastSeen": "2026-10-25T13:13:48.390Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Alexander Sørloth": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -176,6 +190,13 @@
       "kind": "player",
       "cards": []
     },
+    "Alisson Becker": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
+      "kind": "player",
+      "cards": []
+    },
     "Alvaro Mantilla": {
       "count": 1,
       "firstSeen": "2026-10-25T13:13:48.390Z",
@@ -184,9 +205,9 @@
       "cards": []
     },
     "Amad Diallo": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-10-22T00:12:35.991Z",
-      "lastSeen": "2026-10-22T00:12:35.991Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -275,9 +296,9 @@
       "cards": []
     },
     "Anthony Gordon": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-10-31T22:12:53.921Z",
-      "lastSeen": "2026-10-31T22:12:53.921Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -355,6 +376,20 @@
       "count": 1,
       "firstSeen": "2026-11-22T22:12:46.941Z",
       "lastSeen": "2026-11-22T22:12:46.941Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Ayase Ueda": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Ayoze Pérez": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -464,9 +499,9 @@
       "cards": []
     },
     "Brugui": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -506,9 +541,9 @@
       "cards": []
     },
     "Cameron Archer": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -568,10 +603,17 @@
       "kind": "player",
       "cards": []
     },
+    "Christian Nwachukwu": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
+      "kind": "player",
+      "cards": []
+    },
     "Christian Pulisic": {
-      "count": 4,
+      "count": 5,
       "firstSeen": "2026-10-31T22:12:53.921Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -646,9 +688,9 @@
       "cards": []
     },
     "Daniel Namaso": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -793,9 +835,9 @@
       "cards": []
     },
     "Dominik Szoboszlai": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-11-22T22:12:46.941Z",
-      "lastSeen": "2026-11-22T22:12:46.941Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -912,9 +954,9 @@
       "cards": []
     },
     "Esteban Lepaul": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -926,9 +968,9 @@
       "cards": []
     },
     "Evanilson": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -982,9 +1024,9 @@
       "cards": []
     },
     "Federico Dimarco": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-11-22T22:12:46.941Z",
-      "lastSeen": "2026-11-22T22:12:46.941Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -1017,9 +1059,9 @@
       "cards": []
     },
     "Felix Kalu Nmecha": {
-      "count": 18,
+      "count": 19,
       "firstSeen": "2026-11-07T22:12:18.702Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -1066,9 +1108,9 @@
       "cards": []
     },
     "Francesco Esposito": {
-      "count": 3,
+      "count": 4,
       "firstSeen": "2026-11-22T22:12:46.941Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -1171,9 +1213,9 @@
       "cards": []
     },
     "Gessime Yassine": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-18T05:34:53.361Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -1346,9 +1388,9 @@
       "cards": []
     },
     "Ilya Zabarnyi": {
-      "count": 2,
+      "count": 3,
       "firstSeen": "2026-10-18T05:34:53.361Z",
-      "lastSeen": "2026-10-18T05:41:20.075Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -1562,9 +1604,9 @@
       "cards": []
     },
     "Jonathan Burkardt": {
-      "count": 19,
+      "count": 20,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -1621,6 +1663,13 @@
       "count": 1,
       "firstSeen": "2026-10-25T13:13:48.390Z",
       "lastSeen": "2026-10-25T13:13:48.390Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Joy Lance Mickels": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -1743,6 +1792,13 @@
       "kind": "player",
       "cards": []
     },
+    "Karim Adeyemi": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
+      "kind": "player",
+      "cards": []
+    },
     "Karl Etta Eyong": {
       "count": 1,
       "firstSeen": "2026-10-22T00:12:35.991Z",
@@ -1786,9 +1842,9 @@
       "cards": []
     },
     "Kiernan Dewsbury Hall": {
-      "count": 19,
+      "count": 20,
       "firstSeen": "2026-11-06T22:12:40.251Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2024,9 +2080,9 @@
       "cards": []
     },
     "Mario Hermoso": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-10-21T00:08:18.672Z",
-      "lastSeen": "2026-10-21T00:08:18.672Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2059,9 +2115,9 @@
       "cards": []
     },
     "Mateo Pellegrino": {
-      "count": 18,
+      "count": 19,
       "firstSeen": "2026-11-02T22:13:54.086Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2317,6 +2373,13 @@
       "kind": "player",
       "cards": []
     },
+    "Nathan Ngoy": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
+      "kind": "player",
+      "cards": []
+    },
     "Nathan Tella": {
       "count": 1,
       "firstSeen": "2026-11-21T22:12:49.088Z",
@@ -2402,9 +2465,9 @@
       "cards": []
     },
     "Noah Okafor": {
-      "count": 4,
+      "count": 5,
       "firstSeen": "2026-11-21T22:12:49.088Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2451,9 +2514,9 @@
       "cards": []
     },
     "Oliver McBurnie": {
-      "count": 4,
+      "count": 5,
       "firstSeen": "2026-10-31T22:12:53.921Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2465,9 +2528,9 @@
       "cards": []
     },
     "Orri Oskarsson": {
-      "count": 17,
+      "count": 18,
       "firstSeen": "2026-11-08T22:12:32.120Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2563,9 +2626,9 @@
       "cards": []
     },
     "Petar Sučić": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-11-22T22:12:46.941Z",
-      "lastSeen": "2026-11-22T22:12:46.941Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2577,9 +2640,9 @@
       "cards": []
     },
     "Pierre-Emerick Aubameyang": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2710,16 +2773,16 @@
       "cards": []
     },
     "Ridle Baku": {
-      "count": 4,
+      "count": 5,
       "firstSeen": "2026-11-21T22:12:49.088Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
     "Rio Ngumoha": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-11-22T22:12:46.941Z",
-      "lastSeen": "2026-11-22T22:12:46.941Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2794,9 +2857,9 @@
       "cards": []
     },
     "Romulo Cruz": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2885,9 +2948,9 @@
       "cards": []
     },
     "Sepe Elye Wahi": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -2997,9 +3060,9 @@
       "cards": []
     },
     "Tajon Buchanan": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-11-22T22:12:46.941Z",
-      "lastSeen": "2026-11-22T22:12:46.941Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -3032,9 +3095,9 @@
       "cards": []
     },
     "Thierno Barry": {
-      "count": 26,
+      "count": 27,
       "firstSeen": "2026-10-30T22:10:59.618Z",
-      "lastSeen": "2026-11-24T22:12:50.656Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -3060,9 +3123,9 @@
       "cards": []
     },
     "Tom Bischof": {
-      "count": 1,
+      "count": 2,
       "firstSeen": "2026-11-20T22:12:33.220Z",
-      "lastSeen": "2026-11-20T22:12:33.220Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },
@@ -3126,6 +3189,13 @@
       "count": 2,
       "firstSeen": "2026-11-01T22:12:34.762Z",
       "lastSeen": "2026-11-21T22:12:49.088Z",
+      "kind": "player",
+      "cards": []
+    },
+    "Vedat Muriqi": {
+      "count": 1,
+      "firstSeen": "2026-11-25T22:12:49.489Z",
+      "lastSeen": "2026-11-25T22:12:49.489Z",
       "kind": "player",
       "cards": []
     },

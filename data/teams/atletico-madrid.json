@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-4-2",
     "source": "api",
-    "updated": "2026-11-22T20:00:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -51,11 +51,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-4-2",
-    "match": "af-1635622",
-    "kickoff": "2026-11-03T20:00:00.000Z",
+    "match": "hl-1391917659",
+    "kickoff": "2026-11-25T20:00:00.000Z",
     "comp": "UCL",
     "side": "home",
-    "opponent": "bayern-munchen",
+    "opponent": "viking",
     "startXI": [
       {
         "name": "J. Oblak",
@@ -64,16 +64,10 @@
         "grid": "1:1"
       },
       {
-        "name": "Marc Pubill",
-        "number": 18,
+        "name": "Álex Grimaldo",
+        "number": 22,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "Robin Le Normand",
-        "number": 24,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "D. Hancko",
@@ -82,28 +76,16 @@
         "grid": "2:2"
       },
       {
-        "name": "Álex Grimaldo",
-        "number": 22,
+        "name": "Robin Le Normand",
+        "number": 24,
         "pos": "D",
-        "grid": "2:1"
-      },
-      {
-        "name": "G. Simeone",
-        "number": 20,
-        "pos": "M",
-        "grid": "3:4"
-      },
-      {
-        "name": "Pablo Barrios",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:3"
+        "grid": "2:3"
       },
       {
         "name": "Marcos Llorente",
         "number": 14,
-        "pos": "M",
-        "grid": "3:2"
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "Álex Baena",
@@ -112,19 +94,50 @@
         "grid": "3:1"
       },
       {
+        "name": "J. Cardoso",
+        "number": 5,
+        "pos": "M",
+        "grid": "3:2"
+      },
+      {
+        "name": "Koke",
+        "number": 6,
+        "pos": "M",
+        "grid": "3:3"
+      },
+      {
+        "name": "Lee Kang-In",
+        "number": 7,
+        "pos": "M",
+        "grid": "3:4",
+        "korean": "lee-kang-in"
+      },
+      {
         "name": "A. Sørloth",
         "number": 9,
         "pos": "F",
-        "grid": "4:2"
+        "grid": "4:1"
       },
       {
         "name": "J. Álvarez",
         "number": 19,
         "pos": "F",
-        "grid": "4:1"
+        "grid": "4:2"
       }
     ],
     "substitutes": [
+      {
+        "name": "M. Hjulmand",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Pablo Barrios",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
       {
         "name": "J. Castillo",
         "number": 46,
@@ -138,34 +151,15 @@
         "grid": null
       },
       {
-        "name": "J. Dominguez",
-        "number": 27,
-        "pos": "D",
-        "grid": null
-      },
-      {
         "name": "R. Hueso",
         "number": 26,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "Koke",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Lee Kang-In",
-        "number": 7,
-        "pos": "M",
-        "grid": null,
-        "korean": "lee-kang-in"
-      },
-      {
-        "name": "A. Lookman",
-        "number": 11,
-        "pos": "F",
+        "name": "Dani MartÃ­nez",
+        "number": 30,
+        "pos": "D",
         "grid": null
       },
       {
@@ -187,15 +181,21 @@
         "grid": null
       },
       {
-        "name": "O. Vargas",
-        "number": 3,
-        "pos": "M",
+        "name": "Marc Pubill",
+        "number": 18,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "Dani MartÃ­nez",
-        "number": 30,
-        "pos": "D",
+        "name": "G. Simeone",
+        "number": 20,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "O. Vargas",
+        "number": 3,
+        "pos": "M",
         "grid": null
       }
     ]

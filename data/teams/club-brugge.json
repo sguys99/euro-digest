@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-10-21T19:00:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -31,11 +31,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "af-1635645",
-    "kickoff": "2026-10-21T19:00:00.000Z",
+    "match": "hl-1391932126",
+    "kickoff": "2026-11-25T20:00:00.000Z",
     "comp": "UCL",
     "side": "home",
-    "opponent": "lens",
+    "opponent": "liverpool",
     "startXI": [
       {
         "name": "Y. Sommer",
@@ -44,16 +44,10 @@
         "grid": "1:1"
       },
       {
-        "name": "K. Sabbe",
-        "number": 64,
+        "name": "J. Seys",
+        "number": 65,
         "pos": "D",
-        "grid": "2:4"
-      },
-      {
-        "name": "J. Spileers",
-        "number": 58,
-        "pos": "D",
-        "grid": "2:3"
+        "grid": "2:1"
       },
       {
         "name": "B. Mechele",
@@ -62,16 +56,16 @@
         "grid": "2:2"
       },
       {
-        "name": "J. Seys",
-        "number": 65,
+        "name": "J. Spileers",
+        "number": 58,
         "pos": "D",
-        "grid": "2:1"
+        "grid": "2:3"
       },
       {
-        "name": "F. Potts",
-        "number": 8,
-        "pos": "M",
-        "grid": "3:2"
+        "name": "K. Sabbe",
+        "number": 64,
+        "pos": "D",
+        "grid": "2:4"
       },
       {
         "name": "H. Vanaken",
@@ -80,22 +74,28 @@
         "grid": "3:1"
       },
       {
-        "name": "Carlos Forbs",
-        "number": 9,
+        "name": "F. Potts",
+        "number": 8,
         "pos": "M",
-        "grid": "4:3"
+        "grid": "3:2"
       },
       {
         "name": "F. Lemaréchal",
         "number": 80,
         "pos": "M",
+        "grid": "4:1"
+      },
+      {
+        "name": "H. Vetlesen",
+        "number": 10,
+        "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "Jan Virgili",
-        "number": 11,
+        "name": "Carlos Forbs",
+        "number": 9,
         "pos": "M",
-        "grid": "4:1"
+        "grid": "4:3"
       },
       {
         "name": "N. Tresoldi",
@@ -106,33 +106,15 @@
     ],
     "substitutes": [
       {
-        "name": "M. Diakhon",
-        "number": 67,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Dams",
-        "number": 32,
+        "name": "H. Siquet",
+        "number": 41,
         "pos": "D",
         "grid": null
       },
       {
-        "name": "N. Jackers",
-        "number": 29,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "T. N. Koren",
-        "number": 85,
+        "name": "L. Audoor",
+        "number": 62,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Lee Han-Beom",
-        "number": 3,
-        "pos": "D",
         "grid": null
       },
       {
@@ -142,8 +124,8 @@
         "grid": null
       },
       {
-        "name": "H. Siquet",
-        "number": 41,
+        "name": "Lee Han-Beom",
+        "number": 3,
         "pos": "D",
         "grid": null
       },
@@ -151,6 +133,12 @@
         "name": "C. Tsawa",
         "number": 16,
         "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "N. Jackers",
+        "number": 29,
+        "pos": "G",
         "grid": null
       },
       {
@@ -166,15 +154,27 @@
         "grid": null
       },
       {
+        "name": "M. Diakhon",
+        "number": 67,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "R. Vermant",
         "number": 17,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "H. Vetlesen",
-        "number": 10,
-        "pos": "M",
+        "name": "M. Dams",
+        "number": 32,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Jan Virgili",
+        "number": 11,
+        "pos": "F",
         "grid": null
       }
     ]

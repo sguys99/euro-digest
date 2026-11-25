@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-20T19:30:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -51,11 +51,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1340513855",
-    "kickoff": "2026-11-20T19:30:00.000Z",
-    "comp": "BUNDESLIGA",
-    "side": "home",
-    "opponent": "koln",
+    "match": "hl-1391966166",
+    "kickoff": "2026-11-25T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "lille",
     "startXI": [
       {
         "name": "J. Urbig",
@@ -64,16 +64,17 @@
         "grid": "1:1"
       },
       {
-        "name": "J. Stanišić",
-        "number": 44,
+        "name": "H. Ito",
+        "number": 21,
         "pos": "D",
         "grid": "2:1"
       },
       {
-        "name": "J. Tah",
-        "number": 4,
+        "name": "Kim Min-Jae",
+        "number": 3,
         "pos": "D",
-        "grid": "2:2"
+        "grid": "2:2",
+        "korean": "kim-min-jae"
       },
       {
         "name": "D. Upamecano",
@@ -82,8 +83,8 @@
         "grid": "2:3"
       },
       {
-        "name": "K. Laimer",
-        "number": 27,
+        "name": "J. Stanišić",
+        "number": 44,
         "pos": "D",
         "grid": "2:4"
       },
@@ -106,20 +107,20 @@
         "grid": "4:1"
       },
       {
-        "name": "L. Karl",
-        "number": 42,
+        "name": "T. Bischof",
+        "number": 8,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "M. Olise",
-        "number": 17,
+        "name": "K. Laimer",
+        "number": 27,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "H. Kane",
-        "number": 9,
+        "name": "L. Karl",
+        "number": 42,
         "pos": "F",
         "grid": "5:1"
       }
@@ -138,22 +139,21 @@
         "grid": null
       },
       {
+        "name": "D. Podar-Stiube",
+        "number": 38,
+        "pos": "G",
+        "grid": null
+      },
+      {
         "name": "J. Musiala",
         "number": 10,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "Kim Min-Jae",
-        "number": 3,
-        "pos": "D",
-        "grid": null,
-        "korean": "kim-min-jae"
-      },
-      {
-        "name": "H. Ito",
-        "number": 21,
-        "pos": "D",
+        "name": "L. Díaz",
+        "number": 14,
+        "pos": "F",
         "grid": null
       },
       {
@@ -169,15 +169,15 @@
         "grid": null
       },
       {
-        "name": "T. Bischof",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
         "name": "T. Binder",
         "number": 46,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Tah",
+        "number": 4,
+        "pos": "D",
         "grid": null
       }
     ]

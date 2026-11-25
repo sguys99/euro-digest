@@ -2,11 +2,11 @@
   "comp": "UCL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-24T22:16:07.083Z",
+  "updatedAt": "2026-11-25T22:16:22.407Z",
   "standings": [
     {
       "pos": 1,
-      "prevPos": 2,
+      "prevPos": 1,
       "team": "real-madrid",
       "played": 5,
       "w": 5,
@@ -26,26 +26,27 @@
     },
     {
       "pos": 2,
-      "prevPos": 1,
+      "prevPos": 2,
       "team": "paris-saint-germain",
-      "played": 4,
+      "played": 5,
       "w": 4,
-      "d": 0,
+      "d": 1,
       "l": 0,
-      "gf": 20,
-      "ga": 5,
-      "pts": 12,
+      "gf": 22,
+      "ga": 7,
+      "pts": 13,
       "form": [
         "W",
         "W",
         "W",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "knockout"
     },
     {
       "pos": 3,
-      "prevPos": 4,
+      "prevPos": 3,
       "team": "como",
       "played": 5,
       "w": 4,
@@ -65,7 +66,47 @@
     },
     {
       "pos": 4,
-      "prevPos": 11,
+      "prevPos": 8,
+      "team": "barcelona",
+      "played": 5,
+      "w": 4,
+      "d": 0,
+      "l": 1,
+      "gf": 18,
+      "ga": 7,
+      "pts": 12,
+      "form": [
+        "W",
+        "W",
+        "L",
+        "W",
+        "W"
+      ],
+      "zone": "knockout"
+    },
+    {
+      "pos": 5,
+      "prevPos": 10,
+      "team": "liverpool",
+      "played": 5,
+      "w": 4,
+      "d": 0,
+      "l": 1,
+      "gf": 17,
+      "ga": 10,
+      "pts": 12,
+      "form": [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W"
+      ],
+      "zone": "knockout"
+    },
+    {
+      "pos": 6,
+      "prevPos": 4,
       "team": "real-betis",
       "played": 5,
       "w": 4,
@@ -84,8 +125,8 @@
       "zone": "knockout"
     },
     {
-      "pos": 5,
-      "prevPos": 3,
+      "pos": 7,
+      "prevPos": 5,
       "team": "arsenal",
       "played": 5,
       "w": 3,
@@ -104,8 +145,8 @@
       "zone": "knockout"
     },
     {
-      "pos": 6,
-      "prevPos": 7,
+      "pos": 8,
+      "prevPos": 6,
       "team": "manchester-city",
       "played": 5,
       "w": 3,
@@ -124,8 +165,28 @@
       "zone": "knockout"
     },
     {
-      "pos": 7,
+      "pos": 9,
       "prevPos": 12,
+      "team": "sporting-cp",
+      "played": 5,
+      "w": 3,
+      "d": 1,
+      "l": 1,
+      "gf": 10,
+      "ga": 6,
+      "pts": 10,
+      "form": [
+        "W",
+        "W",
+        "L",
+        "W",
+        "D"
+      ],
+      "zone": "playoff"
+    },
+    {
+      "pos": 10,
+      "prevPos": 7,
       "team": "borussia-dortmund",
       "played": 5,
       "w": 3,
@@ -141,30 +202,11 @@
         "W",
         "D"
       ],
-      "zone": "knockout"
+      "zone": "playoff"
     },
     {
-      "pos": 8,
-      "prevPos": 5,
-      "team": "barcelona",
-      "played": 4,
-      "w": 3,
-      "d": 0,
-      "l": 1,
-      "gf": 14,
-      "ga": 6,
-      "pts": 9,
-      "form": [
-        "W",
-        "W",
-        "L",
-        "W"
-      ],
-      "zone": "knockout"
-    },
-    {
-      "pos": 9,
-      "prevPos": 6,
+      "pos": 11,
+      "prevPos": 9,
       "team": "aston-villa",
       "played": 5,
       "w": 3,
@@ -183,17 +225,38 @@
       "zone": "playoff"
     },
     {
-      "pos": 10,
-      "prevPos": 8,
-      "team": "liverpool",
-      "played": 4,
+      "pos": 12,
+      "prevPos": 17,
+      "team": "inter",
+      "played": 5,
       "w": 3,
       "d": 0,
-      "l": 1,
-      "gf": 14,
+      "l": 2,
+      "gf": 10,
+      "ga": 6,
+      "pts": 9,
+      "form": [
+        "L",
+        "L",
+        "W",
+        "W",
+        "W"
+      ],
+      "zone": "playoff"
+    },
+    {
+      "pos": 13,
+      "prevPos": 11,
+      "team": "club-brugge",
+      "played": 5,
+      "w": 3,
+      "d": 0,
+      "l": 2,
+      "gf": 11,
       "ga": 10,
       "pts": 9,
       "form": [
+        "L",
         "W",
         "W",
         "W",
@@ -202,46 +265,8 @@
       "zone": "playoff"
     },
     {
-      "pos": 11,
-      "prevPos": 9,
-      "team": "club-brugge",
-      "played": 4,
-      "w": 3,
-      "d": 0,
-      "l": 1,
-      "gf": 11,
-      "ga": 7,
-      "pts": 9,
-      "form": [
-        "L",
-        "W",
-        "W",
-        "W"
-      ],
-      "zone": "playoff"
-    },
-    {
-      "pos": 12,
-      "prevPos": 10,
-      "team": "sporting-cp",
-      "played": 4,
-      "w": 3,
-      "d": 0,
-      "l": 1,
-      "gf": 8,
-      "ga": 4,
-      "pts": 9,
-      "form": [
-        "W",
-        "W",
-        "L",
-        "W"
-      ],
-      "zone": "playoff"
-    },
-    {
-      "pos": 13,
-      "prevPos": 18,
+      "pos": 14,
+      "prevPos": 13,
       "team": "galatasaray",
       "played": 5,
       "w": 3,
@@ -260,46 +285,108 @@
       "zone": "playoff"
     },
     {
-      "pos": 14,
-      "prevPos": 13,
+      "pos": 15,
+      "prevPos": 14,
       "team": "bayern-munchen",
-      "played": 4,
+      "played": 5,
       "w": 2,
       "d": 2,
-      "l": 0,
-      "gf": 12,
-      "ga": 5,
+      "l": 1,
+      "gf": 13,
+      "ga": 7,
       "pts": 8,
       "form": [
         "W",
         "D",
         "D",
-        "W"
-      ],
-      "zone": "playoff"
-    },
-    {
-      "pos": 15,
-      "prevPos": 14,
-      "team": "stuttgart",
-      "played": 4,
-      "w": 2,
-      "d": 1,
-      "l": 1,
-      "gf": 7,
-      "ga": 4,
-      "pts": 7,
-      "form": [
         "W",
-        "W",
-        "D",
         "L"
       ],
       "zone": "playoff"
     },
     {
       "pos": 16,
-      "prevPos": 25,
+      "prevPos": 22,
+      "team": "fenerbahce",
+      "played": 5,
+      "w": 2,
+      "d": 2,
+      "l": 1,
+      "gf": 7,
+      "ga": 11,
+      "pts": 8,
+      "form": [
+        "D",
+        "L",
+        "D",
+        "W",
+        "W"
+      ],
+      "zone": "playoff"
+    },
+    {
+      "pos": 17,
+      "prevPos": 15,
+      "team": "stuttgart",
+      "played": 5,
+      "w": 2,
+      "d": 1,
+      "l": 2,
+      "gf": 7,
+      "ga": 6,
+      "pts": 7,
+      "form": [
+        "W",
+        "W",
+        "D",
+        "L",
+        "L"
+      ],
+      "zone": "playoff"
+    },
+    {
+      "pos": 18,
+      "prevPos": 26,
+      "team": "atletico-madrid",
+      "played": 5,
+      "w": 2,
+      "d": 1,
+      "l": 2,
+      "gf": 6,
+      "ga": 5,
+      "pts": 7,
+      "form": [
+        "L",
+        "W",
+        "D",
+        "L",
+        "W"
+      ],
+      "zone": "playoff"
+    },
+    {
+      "pos": 19,
+      "prevPos": 19,
+      "team": "manchester-united",
+      "played": 5,
+      "w": 2,
+      "d": 1,
+      "l": 2,
+      "gf": 10,
+      "ga": 10,
+      "pts": 7,
+      "form": [
+        "W",
+        "L",
+        "L",
+        "W",
+        "D"
+      ],
+      "zone": "playoff"
+    },
+    {
+      "pos": 20,
+      "prevPos": 16,
       "team": "bodo-glimt",
       "played": 5,
       "w": 2,
@@ -318,27 +405,8 @@
       "zone": "playoff"
     },
     {
-      "pos": 17,
-      "prevPos": 15,
-      "team": "inter",
-      "played": 4,
-      "w": 2,
-      "d": 0,
-      "l": 2,
-      "gf": 8,
-      "ga": 6,
-      "pts": 6,
-      "form": [
-        "L",
-        "L",
-        "W",
-        "W"
-      ],
-      "zone": "playoff"
-    },
-    {
-      "pos": 18,
-      "prevPos": 16,
+      "pos": 21,
+      "prevPos": 18,
       "team": "lask",
       "played": 5,
       "w": 2,
@@ -357,27 +425,8 @@
       "zone": "playoff"
     },
     {
-      "pos": 19,
-      "prevPos": 17,
-      "team": "manchester-united",
-      "played": 4,
-      "w": 2,
-      "d": 0,
-      "l": 2,
-      "gf": 8,
-      "ga": 8,
-      "pts": 6,
-      "form": [
-        "W",
-        "L",
-        "L",
-        "W"
-      ],
-      "zone": "playoff"
-    },
-    {
-      "pos": 20,
-      "prevPos": 26,
+      "pos": 22,
+      "prevPos": 20,
       "team": "porto",
       "played": 5,
       "w": 2,
@@ -396,8 +445,8 @@
       "zone": "playoff"
     },
     {
-      "pos": 21,
-      "prevPos": 29,
+      "pos": 23,
+      "prevPos": 21,
       "team": "rb-leipzig",
       "played": 5,
       "w": 2,
@@ -416,102 +465,87 @@
       "zone": "playoff"
     },
     {
-      "pos": 22,
-      "prevPos": 19,
-      "team": "fenerbahce",
-      "played": 4,
-      "w": 1,
-      "d": 2,
-      "l": 1,
-      "gf": 6,
-      "ga": 11,
-      "pts": 5,
-      "form": [
-        "D",
-        "L",
-        "D",
-        "W"
-      ],
-      "zone": "playoff"
-    },
-    {
-      "pos": 23,
-      "prevPos": 20,
-      "team": "roma",
-      "played": 4,
-      "w": 1,
-      "d": 1,
-      "l": 2,
-      "gf": 10,
-      "ga": 8,
-      "pts": 4,
-      "form": [
-        "D",
-        "L",
-        "W",
-        "L"
-      ],
-      "zone": "playoff"
-    },
-    {
       "pos": 24,
-      "prevPos": 21,
-      "team": "shakhtar-donetsk",
-      "played": 4,
-      "w": 1,
-      "d": 1,
-      "l": 2,
-      "gf": 4,
-      "ga": 4,
-      "pts": 4,
+      "prevPos": 29,
+      "team": "villarreal",
+      "played": 5,
+      "w": 2,
+      "d": 0,
+      "l": 3,
+      "gf": 9,
+      "ga": 14,
+      "pts": 6,
       "form": [
-        "D",
+        "L",
         "W",
         "L",
-        "L"
+        "L",
+        "W"
       ],
       "zone": "playoff"
     },
     {
       "pos": 25,
-      "prevPos": 22,
-      "team": "viking",
-      "played": 4,
+      "prevPos": 23,
+      "team": "roma",
+      "played": 5,
       "w": 1,
-      "d": 1,
+      "d": 2,
       "l": 2,
-      "gf": 9,
+      "gf": 12,
       "ga": 10,
-      "pts": 4,
+      "pts": 5,
       "form": [
-        "L",
         "D",
         "L",
-        "W"
+        "W",
+        "L",
+        "D"
       ],
       "zone": "none"
     },
     {
       "pos": 26,
-      "prevPos": 23,
-      "team": "atletico-madrid",
-      "played": 4,
+      "prevPos": 24,
+      "team": "shakhtar-donetsk",
+      "played": 5,
       "w": 1,
       "d": 1,
-      "l": 2,
+      "l": 3,
       "gf": 4,
       "ga": 5,
       "pts": 4,
       "form": [
-        "L",
-        "W",
         "D",
+        "W",
+        "L",
+        "L",
         "L"
       ],
       "zone": "none"
     },
     {
       "pos": 27,
+      "prevPos": 25,
+      "team": "viking",
+      "played": 5,
+      "w": 1,
+      "d": 1,
+      "l": 3,
+      "gf": 9,
+      "ga": 12,
+      "pts": 4,
+      "form": [
+        "L",
+        "D",
+        "L",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 28,
       "prevPos": 27,
       "team": "napoli",
       "played": 5,
@@ -531,8 +565,28 @@
       "zone": "none"
     },
     {
-      "pos": 28,
-      "prevPos": 24,
+      "pos": 29,
+      "prevPos": 35,
+      "team": "lille",
+      "played": 5,
+      "w": 1,
+      "d": 1,
+      "l": 3,
+      "gf": 6,
+      "ga": 11,
+      "pts": 4,
+      "form": [
+        "L",
+        "L",
+        "L",
+        "D",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 30,
+      "prevPos": 28,
       "team": "psv",
       "played": 5,
       "w": 1,
@@ -551,46 +605,8 @@
       "zone": "none"
     },
     {
-      "pos": 29,
-      "prevPos": 28,
-      "team": "villarreal",
-      "played": 4,
-      "w": 1,
-      "d": 0,
-      "l": 3,
-      "gf": 8,
-      "ga": 14,
-      "pts": 3,
-      "form": [
-        "L",
-        "W",
-        "L",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 30,
-      "prevPos": 31,
-      "team": "sabah",
-      "played": 4,
-      "w": 1,
-      "d": 0,
-      "l": 3,
-      "gf": 4,
-      "ga": 10,
-      "pts": 3,
-      "form": [
-        "L",
-        "W",
-        "L",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
       "pos": 31,
-      "prevPos": 29,
+      "prevPos": 31,
       "team": "aek-athens",
       "played": 5,
       "w": 1,
@@ -630,6 +646,26 @@
     },
     {
       "pos": 33,
+      "prevPos": 30,
+      "team": "sabah",
+      "played": 5,
+      "w": 1,
+      "d": 0,
+      "l": 4,
+      "gf": 5,
+      "ga": 14,
+      "pts": 3,
+      "form": [
+        "L",
+        "W",
+        "L",
+        "L",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 34,
       "prevPos": 33,
       "team": "lens",
       "played": 5,
@@ -649,40 +685,22 @@
       "zone": "none"
     },
     {
-      "pos": 34,
+      "pos": 35,
       "prevPos": 34,
       "team": "slavia-praha",
-      "played": 4,
+      "played": 5,
       "w": 0,
       "d": 1,
-      "l": 3,
+      "l": 4,
       "gf": 5,
-      "ga": 9,
-      "pts": 1,
-      "form": [
-        "L",
-        "L",
-        "D",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 35,
-      "prevPos": 35,
-      "team": "lille",
-      "played": 4,
-      "w": 0,
-      "d": 1,
-      "l": 3,
-      "gf": 4,
       "ga": 10,
       "pts": 1,
       "form": [
         "L",
         "L",
+        "D",
         "L",
-        "D"
+        "L"
       ],
       "zone": "none"
     },
@@ -1768,8 +1786,11 @@
       "kickoff": "2026-11-25T17:45:00Z",
       "home": "sabah",
       "away": "barcelona",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 4
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575405",
@@ -1778,8 +1799,11 @@
       "kickoff": "2026-11-25T17:45:00Z",
       "home": "slavia-praha",
       "away": "villarreal",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575406",
@@ -1788,8 +1812,11 @@
       "kickoff": "2026-11-25T20:00:00Z",
       "home": "inter",
       "away": "stuttgart",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575407",
@@ -1798,8 +1825,11 @@
       "kickoff": "2026-11-25T20:00:00Z",
       "home": "atletico-madrid",
       "away": "viking",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575408",
@@ -1808,8 +1838,11 @@
       "kickoff": "2026-11-25T20:00:00Z",
       "home": "paris-saint-germain",
       "away": "roma",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575409",
@@ -1818,8 +1851,11 @@
       "kickoff": "2026-11-25T20:00:00Z",
       "home": "club-brugge",
       "away": "liverpool",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 3
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575410",
@@ -1828,8 +1864,11 @@
       "kickoff": "2026-11-25T20:00:00Z",
       "home": "lille",
       "away": "bayern-munchen",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575411",
@@ -1838,8 +1877,11 @@
       "kickoff": "2026-11-25T20:00:00Z",
       "home": "sporting-cp",
       "away": "manchester-united",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 2,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575412",
@@ -1848,8 +1890,11 @@
       "kickoff": "2026-11-25T20:00:00Z",
       "home": "shakhtar-donetsk",
       "away": "fenerbahce",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 1
+      },
+      "status": "finished"
     },
     {
       "id": "fd-575413",
@@ -2402,6 +2447,14 @@
       "played": 5
     },
     {
+      "player": "Luis Suárez",
+      "team": "sporting-cp",
+      "goals": 6,
+      "assists": null,
+      "penalties": 3,
+      "played": 5
+    },
+    {
       "player": "Anastasios Douvikas",
       "team": "como",
       "goals": 6,
@@ -2415,7 +2468,7 @@
       "goals": 5,
       "assists": null,
       "penalties": 2,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Erling Haaland",
@@ -2423,6 +2476,14 @@
       "goals": 5,
       "assists": null,
       "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Donyell Malen",
+      "team": "roma",
+      "goals": 5,
+      "assists": 2,
+      "penalties": 3,
       "played": 5
     },
     {
@@ -2439,7 +2500,7 @@
       "goals": 4,
       "assists": null,
       "penalties": null,
-      "played": 3
+      "played": 4
     },
     {
       "player": "Ermedin Demirovic",
@@ -2447,6 +2508,14 @@
       "goals": 4,
       "assists": null,
       "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Ousmane Dembélé",
+      "team": "paris-saint-germain",
+      "goals": 4,
+      "assists": 3,
+      "penalties": 1,
       "played": 4
     },
     {
@@ -2455,15 +2524,7 @@
       "goals": 4,
       "assists": 1,
       "penalties": null,
-      "played": 4
-    },
-    {
-      "player": "Luis Suárez",
-      "team": "sporting-cp",
-      "goals": 4,
-      "assists": null,
-      "penalties": 2,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Harry Kane",
@@ -2474,20 +2535,20 @@
       "played": 4
     },
     {
+      "player": "Bruno Fernandes",
+      "team": "manchester-united",
+      "goals": 4,
+      "assists": null,
+      "penalties": 2,
+      "played": 5
+    },
+    {
       "player": "Aleksey Batrakov",
       "team": "galatasaray",
       "goals": 4,
       "assists": null,
       "penalties": null,
       "played": 5
-    },
-    {
-      "player": "Donyell Malen",
-      "team": "roma",
-      "goals": 4,
-      "assists": 2,
-      "penalties": 2,
-      "played": 4
     },
     {
       "player": "Nicolas Jackson",
@@ -2500,6 +2561,14 @@
     {
       "player": "Federico Valverde",
       "team": "real-madrid",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Karim Adeyemi",
+      "team": "barcelona",
       "goals": 3,
       "assists": null,
       "penalties": null,
@@ -2519,15 +2588,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 4
-    },
-    {
-      "player": "Ousmane Dembélé",
-      "team": "paris-saint-germain",
-      "goals": 3,
-      "assists": 3,
-      "penalties": null,
-      "played": 3
+      "played": 5
     },
     {
       "player": "Ferrán Torres",
@@ -2535,7 +2596,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Matheus Cunha",
@@ -2546,12 +2607,28 @@
       "played": 4
     },
     {
+      "player": "Lautaro Martínez",
+      "team": "inter",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 3
+    },
+    {
+      "player": "Anthony Gordon",
+      "team": "barcelona",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
       "player": "Bradley Barcola",
       "team": "liverpool",
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Desire Doue",
@@ -2602,6 +2679,14 @@
       "played": 5
     },
     {
+      "player": "Alexander Isak",
+      "team": "liverpool",
+      "goals": 3,
+      "assists": 1,
+      "penalties": null,
+      "played": 4
+    },
+    {
       "player": "Antonio Nusa",
       "team": "rb-leipzig",
       "goals": 3,
@@ -2623,7 +2708,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Santiago Mouriño",
@@ -2631,7 +2716,15 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
+    },
+    {
+      "player": "Ayase Ueda",
+      "team": "lille",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 3
     },
     {
       "player": "Bartra",
@@ -2642,12 +2735,12 @@
       "played": 5
     },
     {
-      "player": "Karim Adeyemi",
+      "player": "Gabriel Jesus",
       "team": "barcelona",
       "goals": 2,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Zlatko Tripić",
@@ -2655,7 +2748,7 @@
       "goals": 2,
       "assists": 3,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Archie Brown",
@@ -2663,7 +2756,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Gleiker Mendoza",
@@ -2688,14 +2781,6 @@
       "assists": 1,
       "penalties": null,
       "played": 3
-    },
-    {
-      "player": "Bruno Fernandes",
-      "team": "manchester-united",
-      "goals": 2,
-      "assists": null,
-      "penalties": 1,
-      "played": 4
     },
     {
       "player": "Martin Baturina",
@@ -2735,15 +2820,15 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
-      "player": "Lautaro Martínez",
-      "team": "inter",
+      "player": "Joy-Lance Mickels",
+      "team": "sabah",
       "goals": 2,
-      "assists": 1,
+      "assists": null,
       "penalties": null,
-      "played": 2
+      "played": 5
     },
     {
       "player": "Eberechi Eze",
@@ -2759,7 +2844,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Georges Mikautadze",
@@ -2767,7 +2852,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Tani Oluwaseyi",
@@ -2775,7 +2860,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Ronald Araújo",
@@ -2783,7 +2868,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Robert Ljubicic",
@@ -2807,7 +2892,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Gabriel Veiga",
@@ -2839,7 +2924,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Stavros Pilios",
@@ -2852,6 +2937,30 @@
     {
       "player": "Rayan Cherki",
       "team": "manchester-city",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Julián Álvarez",
+      "team": "atletico-madrid",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Florian Wirtz",
+      "team": "liverpool",
+      "goals": 2,
+      "assists": 1,
+      "penalties": null,
+      "played": 5
+    },
+    {
+      "player": "Mario Hermoso",
+      "team": "roma",
       "goals": 2,
       "assists": null,
       "penalties": null,
@@ -2871,7 +2980,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Carlos Forbs",
@@ -2879,7 +2988,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Kasper Jørgensen",
@@ -2898,6 +3007,14 @@
       "played": 5
     },
     {
+      "player": "Vedat Muriqi",
+      "team": "fenerbahce",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 5
+    },
+    {
       "player": "Viktor Gyökeres",
       "team": "arsenal",
       "goals": 2,
@@ -2911,7 +3028,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "John McGinn",
@@ -2927,7 +3044,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Răzvan Marin",
@@ -2938,20 +3055,12 @@
       "played": 5
     },
     {
-      "player": "Ayase Ueda",
-      "team": "lille",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 2
-    },
-    {
       "player": "Alexsandro Ribeiro",
       "team": "lille",
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Troy Parrott",
@@ -2970,28 +3079,20 @@
       "played": 5
     },
     {
-      "player": "Gabriel Jesus",
-      "team": "barcelona",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 4
-    },
-    {
       "player": "Marcos Llorente",
       "team": "atletico-madrid",
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Dominik Szoboszlai",
       "team": "liverpool",
       "goals": 1,
-      "assists": null,
+      "assists": 1,
       "penalties": null,
-      "played": 2
+      "played": 3
     },
     {
       "player": "Suleiman Camara Sanneh",
@@ -3015,7 +3116,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Rodrigo Zalazar",
@@ -3023,7 +3124,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 2
+      "played": 3
     },
     {
       "player": "Bryan Cristante",
@@ -3031,7 +3132,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 3
+      "played": 4
     },
     {
       "player": "Sergiño Dest",
@@ -3047,7 +3148,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 1
+      "played": 2
     },
     {
       "player": "Benjamin Šeško",
@@ -3063,7 +3164,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 3
+      "played": 4
     },
     {
       "player": "Andrija Maksimović",
@@ -3103,15 +3204,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 4
-    },
-    {
-      "player": "Joy-Lance Mickels",
-      "team": "sabah",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Romeo Vermant",
@@ -3119,7 +3212,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Ange-Yoan Bonny",
@@ -3135,7 +3228,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 4
+      "played": 5
     },
     {
       "player": "Fermín López",
@@ -3143,55 +3236,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 4
-    },
-    {
-      "player": "Anthony Gordon",
-      "team": "barcelona",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 4
-    },
-    {
-      "player": "Pablo Barrios",
-      "team": "atletico-madrid",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 4
-    },
-    {
-      "player": "Ademola Lookman",
-      "team": "atletico-madrid",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 4
-    },
-    {
-      "player": "Jurrien Timber",
-      "team": "arsenal",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 4
-    },
-    {
-      "player": "Bukayo Saka",
-      "team": "arsenal",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 3
-    },
-    {
-      "player": "Gianni Stensness",
-      "team": "viking",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 4
+      "played": 5
     }
   ]
 }

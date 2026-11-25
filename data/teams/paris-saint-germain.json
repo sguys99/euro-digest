@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-3-3",
     "source": "api",
-    "updated": "2026-11-21T16:15:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-3-3",
-    "match": "hl-1321454008",
-    "kickoff": "2026-11-21T16:15:00.000Z",
-    "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "nice",
+    "match": "hl-1391984037",
+    "kickoff": "2026-11-25T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "home",
+    "opponent": "roma",
     "startXI": [
       {
         "name": "M. Safonov",
@@ -68,8 +68,8 @@
         "grid": "2:1"
       },
       {
-        "name": "L. Hernández",
-        "number": 21,
+        "name": "W. Pacho",
+        "number": 51,
         "pos": "D",
         "grid": "2:2"
       },
@@ -92,26 +92,26 @@
         "grid": "3:1"
       },
       {
-        "name": "João Neves",
-        "number": 87,
+        "name": "Vitinha",
+        "number": 17,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "W. Zaïre-Emery",
-        "number": 33,
+        "name": "João Neves",
+        "number": 87,
         "pos": "M",
         "grid": "3:3"
       },
       {
-        "name": "D. Doué",
-        "number": 14,
+        "name": "Senny Mayulu",
+        "number": 24,
         "pos": "F",
         "grid": "4:1"
       },
       {
-        "name": "Senny Mayulu",
-        "number": 24,
+        "name": "Ferran Torres",
+        "number": 9,
         "pos": "F",
         "grid": "4:2"
       },
@@ -124,14 +124,62 @@
     ],
     "substitutes": [
       {
+        "name": "W. Zaïre-Emery",
+        "number": 33,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Quentin Ndjantou Mbitcha",
+        "number": 47,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Marquinhos",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "L. Hernández",
+        "number": 21,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Godts",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "Pedro Fernández",
+        "number": 27,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "L. Digne",
+        "number": 12,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. Dembélé",
+        "number": 10,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "L. Chevalier",
         "number": 30,
         "pos": "G",
         "grid": null
       },
       {
-        "name": "Marquinhos",
-        "number": 5,
+        "name": "D. Boly",
+        "number": 42,
         "pos": "D",
         "grid": null
       },
@@ -142,39 +190,9 @@
         "grid": null
       },
       {
-        "name": "W. Pacho",
-        "number": 51,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "Pedro Fernández",
-        "number": 27,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Vitinha",
-        "number": 17,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "O. Dembélé",
-        "number": 10,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Godts",
-        "number": 22,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Ferran Torres",
-        "number": 9,
-        "pos": "F",
+        "name": "Arthur Bar",
+        "number": 90,
+        "pos": "G",
         "grid": null
       }
     ]

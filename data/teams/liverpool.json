@@ -14,7 +14,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-22T16:30:00.000Z"
+    "updated": "2026-11-25T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1325410307",
-    "kickoff": "2026-11-22T16:30:00.000Z",
-    "comp": "EPL",
-    "side": "home",
-    "opponent": "manchester-united",
+    "match": "hl-1391932126",
+    "kickoff": "2026-11-25T20:00:00.000Z",
+    "comp": "UCL",
+    "side": "away",
+    "opponent": "club-brugge",
     "startXI": [
       {
         "name": "Alisson Becker",
@@ -68,8 +68,8 @@
         "grid": "2:1"
       },
       {
-        "name": "V. van Dijk",
-        "number": 4,
+        "name": "R. Araújo",
+        "number": 33,
         "pos": "D",
         "grid": "2:2"
       },
@@ -80,20 +80,20 @@
         "grid": "2:3"
       },
       {
-        "name": "R. Araújo",
-        "number": 33,
+        "name": "J. Frimpong",
+        "number": 30,
         "pos": "D",
         "grid": "2:4"
       },
       {
-        "name": "A. Mac Allister",
-        "number": 10,
+        "name": "D. Szoboszlai",
+        "number": 8,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "D. Szoboszlai",
-        "number": 8,
+        "name": "T. Nyoni",
+        "number": 42,
         "pos": "M",
         "grid": "3:2"
       },
@@ -110,8 +110,8 @@
         "grid": "4:2"
       },
       {
-        "name": "R. Ngumoha",
-        "number": 73,
+        "name": "Víctor Muñoz",
+        "number": 23,
         "pos": "M",
         "grid": "4:3"
       },
@@ -124,38 +124,14 @@
     ],
     "substitutes": [
       {
-        "name": "L. Koumas",
-        "number": 67,
-        "pos": "F",
+        "name": "F. Woodman",
+        "number": 28,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "F. Chiesa",
-        "number": 14,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "J. McConnell",
-        "number": 53,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "T. Nyoni",
-        "number": 42,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Víctor Muñoz",
-        "number": 23,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "J. Frimpong",
-        "number": 30,
+        "name": "V. van Dijk",
+        "number": 4,
         "pos": "D",
         "grid": null
       },
@@ -166,15 +142,51 @@
         "grid": null
       },
       {
-        "name": "J. Gomez",
-        "number": 2,
-        "pos": "D",
+        "name": "R. Ngumoha",
+        "number": 73,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. McConnell",
+        "number": 53,
+        "pos": "M",
         "grid": null
       },
       {
         "name": "G. Mamardashvili",
         "number": 25,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "L. Koumas",
+        "number": 67,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "J. Gomez",
+        "number": 2,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Danns",
+        "number": 76,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "L. Chambers",
+        "number": 44,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "A. Mac Allister",
+        "number": 10,
+        "pos": "M",
         "grid": null
       }
     ]
