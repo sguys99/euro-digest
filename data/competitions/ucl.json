@@ -2,7 +2,7 @@
   "comp": "UCL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-25T22:16:22.407Z",
+  "updatedAt": "2026-11-26T22:15:17.889Z",
   "standings": [
     {
       "pos": 1,
@@ -66,7 +66,7 @@
     },
     {
       "pos": 4,
-      "prevPos": 8,
+      "prevPos": 4,
       "team": "barcelona",
       "played": 5,
       "w": 4,
@@ -86,7 +86,7 @@
     },
     {
       "pos": 5,
-      "prevPos": 10,
+      "prevPos": 5,
       "team": "liverpool",
       "played": 5,
       "w": 4,
@@ -106,7 +106,7 @@
     },
     {
       "pos": 6,
-      "prevPos": 4,
+      "prevPos": 6,
       "team": "real-betis",
       "played": 5,
       "w": 4,
@@ -126,7 +126,7 @@
     },
     {
       "pos": 7,
-      "prevPos": 5,
+      "prevPos": 7,
       "team": "arsenal",
       "played": 5,
       "w": 3,
@@ -146,7 +146,7 @@
     },
     {
       "pos": 8,
-      "prevPos": 6,
+      "prevPos": 8,
       "team": "manchester-city",
       "played": 5,
       "w": 3,
@@ -166,7 +166,7 @@
     },
     {
       "pos": 9,
-      "prevPos": 12,
+      "prevPos": 9,
       "team": "sporting-cp",
       "played": 5,
       "w": 3,
@@ -186,7 +186,7 @@
     },
     {
       "pos": 10,
-      "prevPos": 7,
+      "prevPos": 10,
       "team": "borussia-dortmund",
       "played": 5,
       "w": 3,
@@ -206,7 +206,7 @@
     },
     {
       "pos": 11,
-      "prevPos": 9,
+      "prevPos": 11,
       "team": "aston-villa",
       "played": 5,
       "w": 3,
@@ -226,7 +226,7 @@
     },
     {
       "pos": 12,
-      "prevPos": 17,
+      "prevPos": 12,
       "team": "inter",
       "played": 5,
       "w": 3,
@@ -246,7 +246,7 @@
     },
     {
       "pos": 13,
-      "prevPos": 11,
+      "prevPos": 13,
       "team": "club-brugge",
       "played": 5,
       "w": 3,
@@ -266,7 +266,7 @@
     },
     {
       "pos": 14,
-      "prevPos": 13,
+      "prevPos": 14,
       "team": "galatasaray",
       "played": 5,
       "w": 3,
@@ -286,7 +286,7 @@
     },
     {
       "pos": 15,
-      "prevPos": 14,
+      "prevPos": 15,
       "team": "bayern-munchen",
       "played": 5,
       "w": 2,
@@ -306,7 +306,7 @@
     },
     {
       "pos": 16,
-      "prevPos": 22,
+      "prevPos": 16,
       "team": "fenerbahce",
       "played": 5,
       "w": 2,
@@ -326,7 +326,7 @@
     },
     {
       "pos": 17,
-      "prevPos": 15,
+      "prevPos": 17,
       "team": "stuttgart",
       "played": 5,
       "w": 2,
@@ -346,7 +346,7 @@
     },
     {
       "pos": 18,
-      "prevPos": 26,
+      "prevPos": 18,
       "team": "atletico-madrid",
       "played": 5,
       "w": 2,
@@ -386,7 +386,7 @@
     },
     {
       "pos": 20,
-      "prevPos": 16,
+      "prevPos": 20,
       "team": "bodo-glimt",
       "played": 5,
       "w": 2,
@@ -406,7 +406,7 @@
     },
     {
       "pos": 21,
-      "prevPos": 18,
+      "prevPos": 21,
       "team": "lask",
       "played": 5,
       "w": 2,
@@ -426,7 +426,7 @@
     },
     {
       "pos": 22,
-      "prevPos": 20,
+      "prevPos": 22,
       "team": "porto",
       "played": 5,
       "w": 2,
@@ -446,7 +446,7 @@
     },
     {
       "pos": 23,
-      "prevPos": 21,
+      "prevPos": 23,
       "team": "rb-leipzig",
       "played": 5,
       "w": 2,
@@ -466,7 +466,7 @@
     },
     {
       "pos": 24,
-      "prevPos": 29,
+      "prevPos": 24,
       "team": "villarreal",
       "played": 5,
       "w": 2,
@@ -486,7 +486,7 @@
     },
     {
       "pos": 25,
-      "prevPos": 23,
+      "prevPos": 25,
       "team": "roma",
       "played": 5,
       "w": 1,
@@ -506,7 +506,7 @@
     },
     {
       "pos": 26,
-      "prevPos": 24,
+      "prevPos": 26,
       "team": "shakhtar-donetsk",
       "played": 5,
       "w": 1,
@@ -526,7 +526,7 @@
     },
     {
       "pos": 27,
-      "prevPos": 25,
+      "prevPos": 27,
       "team": "viking",
       "played": 5,
       "w": 1,
@@ -546,7 +546,7 @@
     },
     {
       "pos": 28,
-      "prevPos": 27,
+      "prevPos": 28,
       "team": "napoli",
       "played": 5,
       "w": 1,
@@ -566,7 +566,7 @@
     },
     {
       "pos": 29,
-      "prevPos": 35,
+      "prevPos": 29,
       "team": "lille",
       "played": 5,
       "w": 1,
@@ -586,7 +586,7 @@
     },
     {
       "pos": 30,
-      "prevPos": 28,
+      "prevPos": 30,
       "team": "psv",
       "played": 5,
       "w": 1,
@@ -646,7 +646,7 @@
     },
     {
       "pos": 33,
-      "prevPos": 30,
+      "prevPos": 33,
       "team": "sabah",
       "played": 5,
       "w": 1,
@@ -666,7 +666,7 @@
     },
     {
       "pos": 34,
-      "prevPos": 33,
+      "prevPos": 34,
       "team": "lens",
       "played": 5,
       "w": 1,
@@ -686,7 +686,7 @@
     },
     {
       "pos": 35,
-      "prevPos": 34,
+      "prevPos": 35,
       "team": "slavia-praha",
       "played": 5,
       "w": 0,

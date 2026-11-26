@@ -1,7 +1,7 @@
 {
   "date": "2026-11-21",
-  "generatedAt": "2026-11-20T22:12:38.974Z",
-  "runId": "collect-prod-20261120T221233Z-d5b7",
+  "generatedAt": "2026-11-26T22:12:49.157Z",
+  "runId": "collect-prod-20261126T221249Z-903c",
   "cards": [
     {
       "id": "c_7eab169de7",
@@ -304,12 +304,6 @@
           "n": "BBC Sport",
           "u": "https://www.bbc.co.uk/sport/football/videos/c3dx1n4xp1xxo?at_medium=RSS&at_campaign=rss",
           "at": "2026-11-19T22:56:07.000Z",
-          "tier": 2
-        },
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7791765/2026/11/20/mikel-arteta-1-0-wins-premier-league-title/",
-          "at": "2026-11-20T05:22:07.000Z",
           "tier": 2
         }
       ],
@@ -1187,33 +1181,6 @@
           "n": "the Daily Briefing",
           "u": "https://thedailybriefing.io/p/pochettino-eyes-usmnt-star-for-man-8bc",
           "at": "2026-11-20T07:44:44.000Z",
-          "tier": 2
-        }
-      ],
-      "lang": "en",
-      "ai": false,
-      "created": "2026-11-20T22:12:33.220Z"
-    },
-    {
-      "id": "c_9a86944ad4",
-      "t": "The Prospects: Reggie Walsh, Chelsea",
-      "s": [],
-      "cat": "other",
-      "comp": [
-        "EPL"
-      ],
-      "teams": [
-        "chelsea"
-      ],
-      "players": [],
-      "imp": 1,
-      "kr": false,
-      "spoiler": false,
-      "src": [
-        {
-          "n": "The Athletic",
-          "u": "https://www.nytimes.com/athletic/7794748/2026/11/20/reggie-walsh-chelsea-prospects/",
-          "at": "2026-11-20T05:15:51.000Z",
           "tier": 2
         }
       ],

@@ -1,0 +1,1247 @@
+{
+  "date": "2026-11-27",
+  "generatedAt": "2026-11-26T22:12:55.299Z",
+  "runId": "collect-prod-20261126T221249Z-903c",
+  "cards": [
+    {
+      "id": "c_07a6e67c4a",
+      "t": "Haaland considers Man City exit - Friday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 5,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c9zr568gje67o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T21:25:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_b4fa591111",
+      "t": "'韓 국가대표' 김민재 결국 뮌헨에서 주전 경쟁 실패→튀르키예로 복귀하나...\"페네르바체의 첫 번째 타깃, 에이전트와 꾸준히 연락\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen",
+        "fenerbahce"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699320",
+          "at": "2026-11-26T20:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_e5c4c3b909",
+      "t": "[오피셜] 이강인에게 전혀 도움이 안 된다...쇠를로트, 기회 다 날리더니 부상으로 아웃! \"정강이 근육 부상→크리스마스 이후 복귀 전망\"",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699316",
+          "at": "2026-11-26T20:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_ac5ba83690",
+      "t": "Calvert-Lewin signs new Leeds deal until 2029",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "leeds-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cx62pnz1evv4o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T18:00:31.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_d44f0b63fc",
+      "t": "Lammens - the Man Utd goalkeeper under scrutiny like never before",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmn4k7v93gvzo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T14:56:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_dcee40d1cd",
+      "t": "La notte di Jeff Ekhator: da Sampierdarena al gol in Europa con la Juventus",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/ekhator-juventus-omonia-nicosia-gol-storia-news-499978",
+          "at": "2026-11-26T21:54:24.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/ekhator-gol-juventus-omonia-europa-league-499977",
+          "at": "2026-11-26T20:44:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_c1b023d652",
+      "t": "Juventus in 10 contro l'Omonia: cosa è successo",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/juventus-regola-cambi-omonia-cosa-e-successo-499979",
+          "at": "2026-11-26T21:46:11.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/juventus-omonia-gol-europa-league-news-499975",
+          "at": "2026-11-26T20:16:16.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/juventus-omonia-formazioni-ufficiali-dove-vedere-europa-league-2026-2027-499969",
+          "at": "2026-11-26T18:50:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_13c569e44c",
+      "t": "Milan, Amorim: \"Difficile convivere con la pressione di dover vincere ogni tre giorni\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "milan"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/milan-amorim-intervista-olympiacos-499955",
+          "at": "2026-11-26T20:10:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_c7e7f52705",
+      "t": "Juventus, Massara: \"Mercato? Se ci dovessero essere opportunità le coglieremo\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "juventus"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/massara-intervista-juventus-omonia-europa-league-26-11-2026-499967",
+          "at": "2026-11-26T19:30:42.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_4e0d2f545c",
+      "t": "Milan, Cisse non si ferma più: raggiunta quota 10 gol stagionali",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "milan"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/milan-cisse-olympiacos-gol-499973",
+          "at": "2026-11-26T19:10:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_9f1eda0290",
+      "t": "Fofana has apologised for interview - Alonso",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c5wy43j1l3rwo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T16:47:47.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_db8ab56e02",
+      "t": "Sutton's predictions v Kings of Leon drummer Nathan Followill",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c3n0l29lrr27o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T15:01:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_1bc3404e5a",
+      "t": "‘오른쪽 이강인은 침묵하는데...’ 그리말도 맹활약에 왼쪽 라인 전체가 살았다! 시메오네도 극찬 “개인기량 뿐 아니라 팀 전체에 긍정적”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699307",
+          "at": "2026-11-26T14:55:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_23aa1ae42a",
+      "t": "The American manager with a maths degree making history in La Liga",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6r7g4v8vee5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T13:49:20.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_d0375387e0",
+      "t": "Not even making a 12-man bench - what next for Garnacho?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cr3wgd5exl0do?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T13:23:05.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_9d3cfc0fd9",
+      "t": "More ref frustration as Pochettino's chaotic start at Man Utd continues",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6vg24l724l4o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T00:24:48.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_631c5c8e4a",
+      "t": "Divots, howlers and bad decisions - dissecting Man Utd's draw in Lisbon",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cvrlg074ld74o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T00:22:28.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_a8f533a9b3",
+      "t": "How Isak and Wirtz are becoming Liverpool's 'big-game players'",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cmqx527v3x19o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T23:38:42.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_372c173eb0",
+      "t": "'All coming together' - Isak repaying Liverpool faith",
+      "s": [],
+      "cat": "ucl",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqm2l0gelkzxo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T23:25:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_49a1e60fa8",
+      "t": "Martinez secures Inter win against Stuttgart",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "inter",
+        "stuttgart"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6j9mvjkkzymo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T23:02:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_5934e3cc0f",
+      "t": "Lammens howler denies Man Utd victory against Sporting in incident-packed game",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6ly5145gg1do?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T22:32:51.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_c424a8c12e",
+      "t": "PSG held by Roma as in-form Malen scores again",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "LIGUE1",
+        "UCL"
+      ],
+      "teams": [
+        "paris-saint-germain"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cwvg2832elr4o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T22:27:14.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_67aeb15a9f",
+      "t": "Terrible Pavlovic own goal gifts Lille shock win against Bayern",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "lille",
+        "bayern-munchen"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cq36gx1g10p6o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T22:24:57.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_b14b06e783",
+      "t": "Isak scores twice as clinical Liverpool beat Brugge",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "liverpool",
+        "rb-leipzig"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cqvg28l0z8mro?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T22:12:19.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/cq33g5vm24jpo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T22:06:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_1a067659e8",
+      "t": "L'Atalanta ribalta il Borac, Zappacosta segna il 3-2 al 93'",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "atalanta"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/atalanta-ribalta-borac-zappacosta-3-2-93-499980",
+          "at": "2026-11-26T21:45:25.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_f36338044e",
+      "t": "'강등권' 맨유 떠나니 웃음만 난다...아모림, UEL서 대역전승 거두고 기사회생! \"기분 좋은 일, 선수들 자신감 높아질 것\"",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699315",
+          "at": "2026-11-26T21:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_00952a56a8",
+      "t": "韓 프리미어리거는 씨가 말랐는데...日 핵심 MF 다나카 아오, 빅클럽 러브콜 거절하고 리즈와 제계약 합의 ‘주급 대폭 인상!’",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699308",
+          "at": "2026-11-26T21:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_edd46aab53",
+      "t": "Atalanta sotto 2-0 contro il Borac dopo 30': dopo Juricic arriva il raddoppio di Deket",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "atalanta"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/atalanta-borac-2-0-499976",
+          "at": "2026-11-26T20:24:42.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_d8d32c069c",
+      "t": "Carsley eyes Euros history with England U21s after draw",
+      "s": [],
+      "cat": "result",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c97726npre86o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T19:35:17.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_a380a18cfa",
+      "t": "‘상대해보니 탐나지?’ 17경기 36실점 수비 붕괴 맨유, 스포르팅 핵심 풀백 영입 급물살... 보드진도 최종 승인!",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699310",
+          "at": "2026-11-26T19:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_9528b85c60",
+      "t": "[오피셜] '19위' 맨유 초비상!...'공격수 영입 후보' 칼버트-르윈, 결국 리즈와 재계약 \"2029년 여름까지 팀에 남는다\"",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699311",
+          "at": "2026-11-26T18:20:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_b4aabf0a5c",
+      "t": "Why Kobe Bryant's jersey numbers can help Senne Lammens process Man Utd mistakes",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7814381/2026/11/26/senne-lammens-man-united-kobe-bryant-numbers-mamba-mentality/",
+          "at": "2026-11-26T17:21:12.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_2ae694ee1f",
+      "t": "🚨 How Andoni Iraola is unlocking Florian Wirtz and transforming Liverpool's attack.",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "liverpool"
+      ],
+      "players": [
+        "florian-wirtz"
+      ],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/how-andoni-iraola-is-unlocking-florian",
+          "at": "2026-11-26T11:10:40.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_e4d35192e3",
+      "t": "An awful job offer, beating 'p***-poor' Arsenal and history at Wrexham: Steve Parkin signs off",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7808925/2026/11/26/wrexham-parkin-steps-down-assistant/",
+          "at": "2026-11-26T10:51:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_4faa46daeb",
+      "t": "“LEE는 더 큰 영향력을 발휘해야”… 韓 에이스 이강인 향한 西 유력 매체의 지적, “아직 확실하게 두각 나타내지 못해”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314369",
+          "at": "2026-11-26T09:14:54.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_af3749cb79",
+      "t": "“슬랩스틱 코미디처럼” 김민재 동료가 ‘역대급’ 자책골 넣었다…감독마저 “일어나선 안 되는 일”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699295",
+          "at": "2026-11-26T08:44:31.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_a04d951ef3",
+      "t": "‘대한민국 캡틴’ 손흥민이 겨우 24위? 한일 TOP 50에 日 선수만 무려 40명…김민재 1위-이강인 2위",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [
+        "kim-min-jae",
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699291",
+          "at": "2026-11-26T08:05:39.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_5a59e617f7",
+      "t": "🚨 Haaland decides NEXT club, Chelsea star agrees exit, perfect Arsenal signing revealed, Liverpool target’s bargain release clause, & more",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea",
+        "arsenal",
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/haaland-decides-next-club-chelsea",
+          "at": "2026-11-26T08:03:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_f0ef5f03be",
+      "t": "Why KMI Panel frustrates referees too - and impacts their salary",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cq20x16zxxzeo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T07:28:18.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_a28e6765e4",
+      "t": "“이강인을 수비수처럼 뛰게 했다”… 시메오네 감독이 선택한 상대 대응 전술, “크로스 공격에 대해 균형 맞추기 위함”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314356",
+          "at": "2026-11-26T05:09:53.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_e14d324c7e",
+      "t": "‘패스 성공률 97%’ 김민재, 뮌헨 시즌 첫 패배에 엇갈린 현지 평가…“실수 저지르지 않았다” vs “어느 순간 경기 흐름 놓쳤다”",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699270",
+          "at": "2026-11-26T00:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_3d94ed2d99",
+      "t": "Fenerbahce squeeze past Shakhtar to seal back-to-back wins",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [
+        "fenerbahce",
+        "shakhtar-donetsk"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/videos/c6ly51452xe7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-25T23:16:18.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_eca34a880f",
+      "t": "'20세 신성 주고 즉시 전력감 칼빈 배시 데려오나?' 대대적 수비 물갈이 예고한 포체티노... 에이든 헤븐, '1월 맨유 탈출 선언'→풀럼과 스왑딜 급부상!",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "fulham"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699306",
+          "at": "2026-11-26T14:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_d1d2552816",
+      "t": "'활동량 PL 20위 꼴찌 굴욕, 지옥 훈련으로 뜯어고친다!' 원정 경기 직후 웨이트 훈련 진행한 포체티노... 명가 재건 프로젝트 본격 시동!",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699305",
+          "at": "2026-11-26T14:04:28.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    },
+    {
+      "id": "c_ef1ecf3eef",
+      "t": "‘7경기 1승’ 최악 부진 빠진 맨시티, 재정 위반 여파+수비 조직 붕괴→‘에이스’ 홀란도 작심발언 “경기 집중하기 쉽지 않아”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699300",
+          "at": "2026-11-26T11:25:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-26T22:12:49.027Z"
+    }
+  ]
+}
