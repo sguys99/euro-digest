@@ -2,7 +2,7 @@
   "comp": "SERIEA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-26T22:14:10.379Z",
+  "updatedAt": "2026-11-27T22:14:58.673Z",
   "standings": [
     {
       "pos": 1,
@@ -146,6 +146,26 @@
     },
     {
       "pos": 8,
+      "prevPos": 9,
+      "team": "bologna",
+      "played": 13,
+      "w": 5,
+      "d": 4,
+      "l": 4,
+      "gf": 17,
+      "ga": 15,
+      "pts": 19,
+      "form": [
+        "W",
+        "W",
+        "W",
+        "D",
+        "D"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 9,
       "prevPos": 8,
       "team": "napoli",
       "played": 12,
@@ -161,26 +181,6 @@
         "L",
         "D",
         "W"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 9,
-      "prevPos": 9,
-      "team": "bologna",
-      "played": 12,
-      "w": 5,
-      "d": 3,
-      "l": 4,
-      "gf": 17,
-      "ga": 15,
-      "pts": 18,
-      "form": [
-        "W",
-        "W",
-        "W",
-        "W",
-        "D"
       ],
       "zone": "none"
     },
@@ -366,6 +366,26 @@
     },
     {
       "pos": 19,
+      "prevPos": 20,
+      "team": "venezia",
+      "played": 13,
+      "w": 2,
+      "d": 1,
+      "l": 10,
+      "gf": 8,
+      "ga": 25,
+      "pts": 7,
+      "form": [
+        "L",
+        "L",
+        "W",
+        "L",
+        "D"
+      ],
+      "zone": "relegation"
+    },
+    {
+      "pos": 20,
       "prevPos": 19,
       "team": "udinese",
       "played": 12,
@@ -381,26 +401,6 @@
         "L",
         "L",
         "D"
-      ],
-      "zone": "relegation"
-    },
-    {
-      "pos": 20,
-      "prevPos": 20,
-      "team": "venezia",
-      "played": 12,
-      "w": 2,
-      "d": 0,
-      "l": 10,
-      "gf": 8,
-      "ga": 25,
-      "pts": 6,
-      "form": [
-        "L",
-        "L",
-        "L",
-        "W",
-        "L"
       ],
       "zone": "relegation"
     }
@@ -1973,8 +1973,11 @@
       "kickoff": "2026-11-27T19:45:00Z",
       "home": "venezia",
       "away": "bologna",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 0,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-558513",
@@ -5060,7 +5063,7 @@
       "goals": 3,
       "assists": null,
       "penalties": 2,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Scott McTominay",
@@ -5076,7 +5079,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Charles De Ketelaere",
@@ -5180,7 +5183,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Antoine Hainaut",
@@ -5188,7 +5191,7 @@
       "goals": 2,
       "assists": 2,
       "penalties": null,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Lassana Coulibaly",
@@ -5292,7 +5295,7 @@
       "goals": 2,
       "assists": null,
       "penalties": 1,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Andrea Pinamonti",
@@ -5332,7 +5335,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Emanuele Lulli",
@@ -5556,7 +5559,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 12
+      "played": 13
     }
   ]
 }

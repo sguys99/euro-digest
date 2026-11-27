@@ -2,7 +2,7 @@
   "comp": "LALIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-26T22:13:46.923Z",
+  "updatedAt": "2026-11-27T22:14:33.411Z",
   "standings": [
     {
       "pos": 1,
@@ -106,6 +106,26 @@
     },
     {
       "pos": 6,
+      "prevPos": 7,
+      "team": "racing-santander",
+      "played": 14,
+      "w": 6,
+      "d": 2,
+      "l": 6,
+      "gf": 23,
+      "ga": 33,
+      "pts": 20,
+      "form": [
+        "W",
+        "L",
+        "W",
+        "W",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 7,
       "prevPos": 6,
       "team": "sevilla",
       "played": 13,
@@ -121,26 +141,6 @@
         "L",
         "D",
         "D"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 7,
-      "prevPos": 7,
-      "team": "racing-santander",
-      "played": 13,
-      "w": 5,
-      "d": 2,
-      "l": 6,
-      "gf": 20,
-      "ga": 32,
-      "pts": 17,
-      "form": [
-        "L",
-        "W",
-        "L",
-        "W",
-        "W"
       ],
       "zone": "none"
     },
@@ -288,19 +288,19 @@
       "pos": 15,
       "prevPos": 15,
       "team": "levante",
-      "played": 13,
+      "played": 14,
       "w": 2,
       "d": 6,
-      "l": 5,
-      "gf": 17,
-      "ga": 22,
+      "l": 6,
+      "gf": 18,
+      "ga": 25,
       "pts": 12,
       "form": [
-        "W",
         "L",
         "L",
         "D",
-        "D"
+        "D",
+        "L"
       ],
       "zone": "none"
     },
@@ -2090,8 +2090,11 @@
       "kickoff": "2026-11-27T20:00:00Z",
       "home": "levante",
       "away": "racing-santander",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 3
+      },
+      "status": "finished"
     },
     {
       "id": "fd-564760",
@@ -4832,10 +4835,10 @@
     {
       "player": "Yassir Zabiri",
       "team": "racing-santander",
-      "goals": 11,
+      "goals": 12,
       "assists": null,
       "penalties": null,
-      "played": 13
+      "played": 14
     },
     {
       "player": "Lamine Yamal",
@@ -4923,7 +4926,7 @@
       "goals": 5,
       "assists": 1,
       "penalties": null,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Adrián",
@@ -4958,6 +4961,14 @@
       "played": 13
     },
     {
+      "player": "Pablo García",
+      "team": "racing-santander",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 14
+    },
+    {
       "player": "Luka Sučić",
       "team": "real-sociedad",
       "goals": 4,
@@ -4980,6 +4991,14 @@
       "assists": 4,
       "penalties": 2,
       "played": 13
+    },
+    {
+      "player": "Iván Romero",
+      "team": "levante",
+      "goals": 4,
+      "assists": null,
+      "penalties": null,
+      "played": 14
     },
     {
       "player": "Álvaro García",
@@ -5058,14 +5077,6 @@
       "team": "athletic",
       "goals": 3,
       "assists": 2,
-      "penalties": null,
-      "played": 13
-    },
-    {
-      "player": "Iván Romero",
-      "team": "levante",
-      "goals": 3,
-      "assists": null,
       "penalties": null,
       "played": 13
     },
@@ -5174,20 +5185,12 @@
       "played": 13
     },
     {
-      "player": "Pablo García",
-      "team": "racing-santander",
-      "goals": 2,
-      "assists": null,
-      "penalties": null,
-      "played": 13
-    },
-    {
       "player": "Adrián de la Fuente",
       "team": "levante",
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Ander Barrenetxea",
@@ -5235,7 +5238,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": 1,
-      "played": 13
+      "played": 14
     },
     {
       "player": "Ferran Jutglà",
@@ -5323,7 +5326,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 12
+      "played": 13
     },
     {
       "player": "Jorge de Frutos",
@@ -5491,7 +5494,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Jon Olasagasti",
@@ -5499,7 +5502,7 @@
       "goals": 1,
       "assists": 2,
       "penalties": null,
-      "played": 13
+      "played": 14
     },
     {
       "player": "Ademola Lookman",

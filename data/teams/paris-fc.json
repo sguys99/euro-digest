@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-22T14:00:00.000Z"
+    "updated": "2026-11-27T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1321454859",
-    "kickoff": "2026-11-22T14:00:00.000Z",
+    "match": "hl-1321459114",
+    "kickoff": "2026-11-27T19:45:00.000Z",
     "comp": "LIGUE1",
-    "side": "home",
-    "opponent": "angers",
+    "side": "away",
+    "opponent": "brest",
     "startXI": [
       {
         "name": "K. Trapp",
@@ -60,8 +60,8 @@
         "grid": "1:1"
       },
       {
-        "name": "Otávio",
-        "number": 6,
+        "name": "H. Traoré",
+        "number": 14,
         "pos": "D",
         "grid": "2:1"
       },
@@ -78,8 +78,8 @@
         "grid": "2:3"
       },
       {
-        "name": "R. Matondo",
-        "number": 23,
+        "name": "A. Camara",
+        "number": 17,
         "pos": "D",
         "grid": "2:4"
       },
@@ -96,34 +96,70 @@
         "grid": "3:2"
       },
       {
-        "name": "P. Pagis",
-        "number": 7,
+        "name": "L. Koleosho",
+        "number": 15,
         "pos": "M",
         "grid": "4:1"
       },
       {
-        "name": "E. Zabi",
-        "number": 8,
+        "name": "P. Pagis",
+        "number": 7,
         "pos": "M",
         "grid": "4:2"
       },
       {
-        "name": "I. Kebbal",
-        "number": 10,
+        "name": "M. Simon",
+        "number": 27,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "L. Koleosho",
-        "number": 15,
+        "name": "L. Sinayoko",
+        "number": 9,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "A. Camara",
-        "number": 17,
+        "name": "I. Kebbal",
+        "number": 10,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "J. Krasso",
+        "number": 11,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Matondo",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "M. Mbow",
+        "number": 5,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "O. Nkambadio",
+        "number": 16,
+        "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "Otávio",
+        "number": 6,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "E. Zabi",
+        "number": 8,
         "pos": "M",
         "grid": null
       },
@@ -134,45 +170,9 @@
         "grid": null
       },
       {
-        "name": "J. Krasso",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "V. Marchetti",
         "number": 4,
         "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "O. Nkambadio",
-        "number": 16,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "M. Simon",
-        "number": 27,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "L. Sinayoko",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "H. Traoré",
-        "number": 14,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Mbow",
-        "number": 5,
-        "pos": "D",
         "grid": null
       }
     ]

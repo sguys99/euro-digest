@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-21T19:45:00.000Z"
+    "updated": "2026-11-27T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -23,7 +23,7 @@
     {
       "name": "Kamory Doumbia",
       "goals": 4,
-      "assists": 2
+      "assists": 3
     },
     {
       "name": "Noah Edjouma",
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1321455710",
-    "kickoff": "2026-11-21T19:45:00.000Z",
+    "match": "hl-1321459114",
+    "kickoff": "2026-11-27T19:45:00.000Z",
     "comp": "LIGUE1",
-    "side": "away",
-    "opponent": "strasbourg",
+    "side": "home",
+    "opponent": "paris-fc",
     "startXI": [
       {
         "name": "E. Selvik",
@@ -78,8 +78,8 @@
         "grid": "2:3"
       },
       {
-        "name": "K. Lala",
-        "number": 70,
+        "name": "L. Zogbe",
+        "number": 20,
         "pos": "D",
         "grid": "2:4"
       },
@@ -102,8 +102,8 @@
         "grid": "4:1"
       },
       {
-        "name": "J. Nonge Boende",
-        "number": 7,
+        "name": "K. Doumbia",
+        "number": 23,
         "pos": "M",
         "grid": "4:2"
       },
@@ -122,27 +122,9 @@
     ],
     "substitutes": [
       {
-        "name": "G. Versini",
-        "number": 10,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "M. Patouillet",
-        "number": 30,
-        "pos": "G",
-        "grid": null
-      },
-      {
-        "name": "D. N´Guessan",
-        "number": 39,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Ibrahim Yayiya Kante",
-        "number": 21,
-        "pos": "F",
+        "name": "J. Bourgault",
+        "number": 18,
+        "pos": "D",
         "grid": null
       },
       {
@@ -152,9 +134,21 @@
         "grid": null
       },
       {
-        "name": "J. Bourgault",
-        "number": 18,
+        "name": "D. N´Guessan",
+        "number": 39,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "K. Lala",
+        "number": 70,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Ibrahim Yayiya Kante",
+        "number": 21,
+        "pos": "F",
         "grid": null
       },
       {
@@ -164,15 +158,21 @@
         "grid": null
       },
       {
-        "name": "L. Zogbe",
-        "number": 20,
-        "pos": "D",
+        "name": "J. Nonge Boende",
+        "number": 7,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "R. Cagnon",
-        "number": 49,
+        "name": "M. Patouillet",
+        "number": 30,
         "pos": "G",
+        "grid": null
+      },
+      {
+        "name": "G. Versini",
+        "number": 10,
+        "pos": "F",
         "grid": null
       }
     ]

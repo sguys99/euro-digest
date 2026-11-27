@@ -2,7 +2,7 @@
   "comp": "LIGUE1",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-26T22:14:55.268Z",
+  "updatedAt": "2026-11-27T22:15:49.169Z",
   "standings": [
     {
       "pos": 1,
@@ -28,16 +28,36 @@
       "pos": 2,
       "prevPos": 2,
       "team": "paris-fc",
-      "played": 11,
+      "played": 12,
       "w": 7,
       "d": 2,
-      "l": 2,
+      "l": 3,
       "gf": 21,
-      "ga": 10,
+      "ga": 11,
       "pts": 23,
       "form": [
-        "W",
         "L",
+        "W",
+        "W",
+        "W",
+        "L"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 3,
+      "prevPos": 6,
+      "team": "brest",
+      "played": 12,
+      "w": 6,
+      "d": 3,
+      "l": 3,
+      "gf": 20,
+      "ga": 12,
+      "pts": 21,
+      "form": [
+        "L",
+        "W",
         "W",
         "W",
         "W"
@@ -45,7 +65,7 @@
       "zone": "none"
     },
     {
-      "pos": 3,
+      "pos": 4,
       "prevPos": 3,
       "team": "lille",
       "played": 11,
@@ -65,7 +85,7 @@
       "zone": "none"
     },
     {
-      "pos": 4,
+      "pos": 5,
       "prevPos": 4,
       "team": "lyon",
       "played": 11,
@@ -85,7 +105,7 @@
       "zone": "none"
     },
     {
-      "pos": 5,
+      "pos": 6,
       "prevPos": 5,
       "team": "marseille",
       "played": 11,
@@ -101,26 +121,6 @@
         "W",
         "W",
         "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 6,
-      "prevPos": 6,
-      "team": "brest",
-      "played": 11,
-      "w": 5,
-      "d": 3,
-      "l": 3,
-      "gf": 19,
-      "ga": 12,
-      "pts": 18,
-      "form": [
-        "D",
-        "L",
-        "W",
-        "W",
-        "W"
       ],
       "zone": "none"
     },
@@ -1660,8 +1660,11 @@
       "kickoff": "2026-11-27T19:45:00Z",
       "home": "brest",
       "away": "paris-fc",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 1,
+        "a": 0
+      },
+      "status": "finished"
     },
     {
       "id": "fd-559612",
@@ -3871,7 +3874,7 @@
       "goals": 9,
       "assists": 5,
       "penalties": 3,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Amine Gouiri",
@@ -3943,7 +3946,7 @@
       "goals": 5,
       "assists": 1,
       "penalties": 1,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Casper Tengstedt",
@@ -3965,9 +3968,9 @@
       "player": "Kamory Doumbia",
       "team": "brest",
       "goals": 4,
-      "assists": 2,
+      "assists": 3,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Sebastian Szymański",
@@ -4119,7 +4122,7 @@
       "goals": 3,
       "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Senny Mayulu",
@@ -4143,7 +4146,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 7
+      "played": 8
     },
     {
       "player": "Keyliane Abdallah",
@@ -4279,7 +4282,7 @@
       "goals": 2,
       "assists": 3,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Prosper Peter",
@@ -4303,7 +4306,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Mama Baldé",
@@ -4311,7 +4314,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Dario Essugo",
@@ -4359,7 +4362,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Mika Godts",
@@ -4519,7 +4522,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Vincent Marchetti",
@@ -4527,7 +4530,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Valentin Rongier",
@@ -4647,7 +4650,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Habib Diallo",

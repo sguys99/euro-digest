@@ -1,0 +1,1286 @@
+{
+  "date": "2026-11-28",
+  "generatedAt": "2026-11-27T22:13:01.563Z",
+  "runId": "collect-prod-20261127T221256Z-2596",
+  "cards": [
+    {
+      "id": "c_88571b7b9c",
+      "t": "Man Utd trigger Fernandes' one-year contract extension",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [
+        "bruno-fernandes"
+      ],
+      "imp": 5,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6d91j5geepqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T15:08:41.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7778764/2026/11/27/manchester-united-bruno-fernandes-contract-option/",
+          "at": "2026-11-27T13:59:28.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_4c7e84019c",
+      "t": "Gibbs-White stars, Fofana struggles - player ratings for Forest v Chelsea",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmwy85xxjgxvo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T21:59:48.000Z",
+          "tier": 2
+        },
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmqlqeqd4wg5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T21:31:54.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_e37b197e10",
+      "t": "Champions League to be a factor in Paz move - Saturday's gossip",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "UCL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cqvg23jg6x78o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T21:19:27.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_324a2b37e1",
+      "t": "‘日 축구 자존심에 제대로 상처 냈다!’ 김민재-이강인, 한일 축구선수 평가서 일본 선수 전원 제쳤다…“가장 높은 두 자리는 한국 선수들의 몫”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA",
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "kim-min-jae",
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699399",
+          "at": "2026-11-27T20:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_c47ecfe2e1",
+      "t": "Head coach Slegers leaves Arsenal 18 months after Champions League win",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL",
+        "UCL"
+      ],
+      "teams": [
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmy49d5kpw78o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T16:14:34.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_eaab82934e",
+      "t": "Spurs' Savio to miss festive fixtures after injury setback",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cw4gnm4p3zxlo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T16:05:30.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_3f21e47a0d",
+      "t": "‘ATM 7번’ 이강인 있지만…시메오네, 결국 겨울 이적시장 영입 공개 요청 “전력 보강 필요한 것은 분명하다, 그렇지 않으면 매우 어려워질 것”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699394",
+          "at": "2026-11-27T15:05:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_2bb4a0b3c2",
+      "t": "What happens now for Bayern Munich and Musiala?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "bayern-munchen"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmly5j49ypzqo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T15:03:12.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_0048a90853",
+      "t": "'I am not a magician' - what can Maresca's Man City learn from watertight Arsenal?",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city",
+        "arsenal"
+      ],
+      "players": [],
+      "imp": 4,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cknv47dee54zo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T14:37:58.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_3d0c85a3d1",
+      "t": "이강인에게 드디어 천군만마가 돌아온다…부상 이탈했던 ‘핵심 수비수’ 로메로 훈련 복귀 “가장 큰 목표는 바르셀로나전에서 100%의 몸 상태 갖추는 것”",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699389",
+          "at": "2026-11-27T12:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_70d4f2e98d",
+      "t": "이강인 킬패스 날려먹더니 부상까지…아틀레티코 칼 빼 들었다! 쇠를로트 이적료 인하→“발렌시아는 이미 제안 제출, 트라브존스포르·유벤투스도 관심”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA",
+        "SERIEA"
+      ],
+      "teams": [
+        "atletico-madrid",
+        "valencia",
+        "juventus"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 4,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699387",
+          "at": "2026-11-27T11:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_596d751259",
+      "t": "[오피셜] ‘19위’ 맨유, 하늘도 버렸다…포체티노 홈 데뷔전 앞두고 핵심 선수 4명 이탈→‘주장’ 브루노마저 훈련 불참 “몸 상태 좋지 않아”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [
+        "bruno-fernandes"
+      ],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699391",
+          "at": "2026-11-27T13:05:00.000Z",
+          "tier": 3
+        },
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314401",
+          "at": "2026-11-27T22:07:22.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_35d1de5ac9",
+      "t": "Lazio, la probabile formazione contro il Torino: pronto il ritorno di Zaccagni",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "lazio",
+        "torino",
+        "inter",
+        "genoa",
+        "como",
+        "juventus",
+        "roma",
+        "monza"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/lazio-probabile-formazione-torino-problema-taylor-499956",
+          "at": "2026-11-27T22:00:16.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/inter-probabile-formazione-genoa-serie-a-news-500012",
+          "at": "2026-11-27T21:45:01.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/serie-a-probabili-formazioni-13a-giornata-500004",
+          "at": "2026-11-27T21:30:38.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/como-probabile-formazione-juventus-500018",
+          "at": "2026-11-27T21:24:11.000Z",
+          "tier": 2
+        },
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/roma-probabile-formazione-monza-serie-a-news-500014",
+          "at": "2026-11-27T19:23:13.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_ac8c4caa14",
+      "t": "Rrahmani: \"Chiudere la carriera a Napoli? Sarebbe bello\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "napoli"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/napoli-rrahmani-dichiaraizioni-news-500016",
+          "at": "2026-11-27T20:58:26.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_62d8ee3662",
+      "t": "Emery praises Garnacho attitude after Villa selection snub",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwp9d4eg4n2xo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T17:42:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_b66c1d0c32",
+      "t": "‘韓 국가대표 공격수’ 황희찬한테도 밀리더니…결국 불만 폭발한 ‘승격 영웅’ 제코, 팬들에게 인사도 안 했다→감독 일침 “이름값 고려할 수 없다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699392",
+          "at": "2026-11-27T14:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_b384f3bffe",
+      "t": "Botman banned from driving for using phone at wheel",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/news/articles/c6wy43d3ry12o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T10:34:09.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_f69b25866b",
+      "t": "'일본 김민재'가 아픈 손가락 전락...\"토트넘 이적 후 제대로 못 뛰어, 과거 기량 못 찾고 2026년 아쉽게 마무리\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL",
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "tottenham-hotspur"
+      ],
+      "players": [
+        "kim-min-jae"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699379",
+          "at": "2026-11-27T08:45:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_abdc1a1c79",
+      "t": "'32강행' 중국 발목 잡았던 이강인 후배...2009년생 아틀레티코 최고 유망주! 3경기 5골→U-17 월드컵 득점 선두 질주",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "atletico-madrid"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 3,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699378",
+          "at": "2026-11-27T08:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_a7ba359932",
+      "t": "Man City owners should be forced to sell, say clubs",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 3,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cwp809d7yp4go?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T06:38:14.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_a1316e9e33",
+      "t": "[PL REVIEW] '알론소 거품이었나'...8위 첼시, 에메하 멀티골에도 노팅엄에 2-3 패! 3연패+5경기 4패",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "chelsea"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699414",
+          "at": "2026-11-27T21:55:45.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_8186116f74",
+      "t": "Celtic defend head of security amid Green Brigade row",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/ck1ewjw1qqn7o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T21:50:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_4e526827cf",
+      "t": "Padova, la risposta alla Sampdoria dopo la denuncia di insulti all’Euganeo",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/insulti-razziali-risposta-club-500019",
+          "at": "2026-11-27T21:35:53.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_0232ab63f7",
+      "t": "Rennes, il club annuncia l'avvio di una procedura nei confronti dell'allenatore: il comunicato",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LIGUE1"
+      ],
+      "teams": [
+        "rennes"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/rennes-allenatore-procedura-news-500017",
+          "at": "2026-11-27T21:07:17.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_a886d6d473",
+      "t": "[오피셜] 'PL 0명' 한국은 일본이 부럽다...다나카, 방출설 딛고 리즈 주전 확보→2029년까지 재계약",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699407",
+          "at": "2026-11-27T21:00:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_a53cfd5e74",
+      "t": "Football Daily",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sounds/play/p0pqb0nm?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T20:47:00.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_0b896e5130",
+      "t": "Venezia-Bologna, problema tecnico e gol annullato: cos'è successo",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "venezia",
+        "bologna"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/venezia-bologna-gol-annullato-news-500015",
+          "at": "2026-11-27T20:02:39.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_2ba530bc93",
+      "t": "Venezia-Bologna, le formazioni ufficiali: fuori Orsolini e Cambiaghi, c'è Yeboah",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "SERIEA"
+      ],
+      "teams": [
+        "venezia",
+        "bologna"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "Gianluca Di Marzio",
+          "u": "https://www.gianlucadimarzio.com/news-calcio/venezia-bologna-formazioni-ufficiali-serie-a-news-500013",
+          "at": "2026-11-27T18:38:07.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "it",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_15c6a467c6",
+      "t": "손흥민에게는 따뜻했던 감독인데…‘19위’ 맨유 지휘봉 잡은 포체티노, 첫 홈경기 앞두고 선수단에 경고 “나는 좋은 사람이 아니다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699398",
+          "at": "2026-11-27T18:15:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_3063eeb8cc",
+      "t": "Ipswich Women sign Ademiluyi for record fee",
+      "s": [],
+      "cat": "transfer",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c3x29q4nwe1ko?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T12:10:39.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_897fa75e9b",
+      "t": "‘19위’ 맨체스터 유나이티드, 포체티노 덕 본다…‘메시 후계자’ 파스 영입 가능성 “맨유의 프로젝트에 매력 느껴, 감독과 같은 에이전트도 긍정적”",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699385",
+          "at": "2026-11-27T10:35:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_6fc74bf5d4",
+      "t": "🚨 EXCL: Man Utd CONTACT Man City over out-of-favour star ahead of January window",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "manchester-united",
+        "manchester-city"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "the Daily Briefing",
+          "u": "https://thedailybriefing.io/p/excl-man-utd-contact-man-city-over",
+          "at": "2026-11-27T10:10:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_58f332d2c8",
+      "t": "황희찬에게도 인내심 바닥났나…9경기째 무득점 침묵→샬케 감독 선발 명단 변화 시사 “우리는 몇 가지 선택지를 가지고 있다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [],
+      "players": [
+        "hwang-hee-chan"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699384",
+          "at": "2026-11-27T10:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_ae965afbdb",
+      "t": "이강인 70일째 침묵 중인데…시메오네 감독이 밝힌 활용법 “다섯 번째 수비수로서 수비를 돕도록 했다”",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699383",
+          "at": "2026-11-27T09:40:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_60ac6cab0f",
+      "t": "The 2027 Transfer DealSheet: Latest on Man Utd, Arsenal, Liverpool, Real Madrid and more",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "EPL",
+        "LALIGA"
+      ],
+      "teams": [
+        "manchester-united",
+        "arsenal",
+        "liverpool",
+        "real-madrid"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7812586/2026/11/27/premier-league-transfer-latest-manchester-united-news-arsenal-liverpool-real-madrid/",
+          "at": "2026-11-27T07:45:01.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_ace08f2981",
+      "t": "Barcelona 2027 Transfer DealSheet – Alejandro Balde exit? Ruud Nijstad a centre-back option?",
+      "s": [],
+      "cat": "transfer",
+      "comp": [
+        "LALIGA"
+      ],
+      "teams": [
+        "barcelona",
+        "real-madrid"
+      ],
+      "players": [
+        "endrick",
+        "nico-paz"
+      ],
+      "imp": 2,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7811937/2026/11/27/barcelona-transfers-january-balde-deco-flick/",
+          "at": "2026-11-27T07:40:34.000Z",
+          "tier": 2
+        },
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7812312/2026/11/27/real-madrid-transfers-endrick-paz-2027/",
+          "at": "2026-11-27T07:40:06.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_a6a54cfebe",
+      "t": "[UEL ISSUE] '이강인 프랑스 탈출은 신의 한수'...마르세유 팬들, 원정 팬 향해 홍염 투척+난입 후 난동까지! \"우린 폭력의 시대 살고 있다\"",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "LALIGA",
+        "LIGUE1"
+      ],
+      "teams": [
+        "marseille"
+      ],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699375",
+          "at": "2026-11-27T07:32:27.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_3da2fe08ab",
+      "t": "[오피셜] 시즌 첫 골 넣고 또 쓰러졌다… 이강인 UCL·라리가 여정에 차질 발생하나→ 쇠를로트, 근육 부상으로 2027년 복귀 전망",
+      "s": [],
+      "cat": "injury",
+      "comp": [
+        "LALIGA",
+        "UCL"
+      ],
+      "teams": [],
+      "players": [
+        "lee-kang-in"
+      ],
+      "imp": 2,
+      "kr": true,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "베스트일레븐",
+          "u": "https://www.besteleven.com/news/articleView.html?idxno=314386",
+          "at": "2026-11-27T01:06:07.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_889df52e9c",
+      "t": "Bournemouth 'allowed to dream' as fans book Europa League final hotels",
+      "s": [],
+      "cat": "club",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "bournemouth"
+      ],
+      "players": [],
+      "imp": 2,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cmq5v84vw818o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-26T22:27:52.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_86341784b8",
+      "t": "[분데스 REVIEW] 홍명보가 외면했던 옌스, 부상 딛고 선발 복귀...묀헨글라트바흐, 브레멘전 3-1 리드 못 지키고 3-3 무! 꼴찌 유지",
+      "s": [],
+      "cat": "result",
+      "comp": [
+        "BUNDESLIGA"
+      ],
+      "teams": [
+        "borussia-monchengladbach",
+        "werder-bremen"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699413",
+          "at": "2026-11-27T21:32:35.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_e214d0d73e",
+      "t": "Falkirk chase seven in a row at Rangers & Celtic visit Hearts",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c6x2wx4e90jeo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T14:37:51.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_19152b1a47",
+      "t": "Iordanescu ready for Watford 'challenge'",
+      "s": [],
+      "cat": "other",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/cw7726543kyzo?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T13:58:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_6174bf67a3",
+      "t": "‘115개 혐의’ 맨시티, 중징계 위기에 홀란드마저 잃나…네빌의 파격 전망 “늦어도 18개월 안에 레알 마드리드 선수 될 것”",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL",
+        "LALIGA"
+      ],
+      "teams": [
+        "manchester-city",
+        "real-madrid"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": true,
+      "src": [
+        {
+          "n": "인터풋볼",
+          "u": "https://www.interfootball.co.kr/news/articleView.html?idxno=699388",
+          "at": "2026-11-27T12:10:00.000Z",
+          "tier": 3
+        }
+      ],
+      "lang": "ko",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_c93e8f08d6",
+      "t": "Goodwin backs Sapsford for Australia call-up - gossip",
+      "s": [],
+      "cat": "national",
+      "comp": [],
+      "teams": [],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "BBC Sport",
+          "u": "https://www.bbc.co.uk/sport/football/articles/c95y127xxye5o?at_medium=RSS&at_campaign=rss",
+          "at": "2026-11-27T07:21:15.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    },
+    {
+      "id": "c_5165466697",
+      "t": "Premier League predictions: Arsenal vs Man City, Everton vs Liverpool and rest of GW12",
+      "s": [],
+      "cat": "other",
+      "comp": [
+        "EPL"
+      ],
+      "teams": [
+        "arsenal",
+        "manchester-city",
+        "everton",
+        "liverpool"
+      ],
+      "players": [],
+      "imp": 1,
+      "kr": false,
+      "spoiler": false,
+      "src": [
+        {
+          "n": "The Athletic",
+          "u": "https://www.nytimes.com/athletic/7814050/2026/11/27/premier-league-predictions-gw12/",
+          "at": "2026-11-27T05:13:57.000Z",
+          "tier": 2
+        }
+      ],
+      "lang": "en",
+      "ai": false,
+      "created": "2026-11-27T22:12:56.109Z"
+    }
+  ]
+}

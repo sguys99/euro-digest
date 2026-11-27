@@ -2,7 +2,7 @@
   "comp": "BUNDESLIGA",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-26T22:14:32.785Z",
+  "updatedAt": "2026-11-27T22:15:24.155Z",
   "standings": [
     {
       "pos": 1,
@@ -108,19 +108,19 @@
       "pos": 6,
       "prevPos": 6,
       "team": "werder-bremen",
-      "played": 10,
+      "played": 11,
       "w": 5,
-      "d": 3,
+      "d": 4,
       "l": 2,
-      "gf": 21,
-      "ga": 15,
-      "pts": 18,
+      "gf": 24,
+      "ga": 18,
+      "pts": 19,
       "form": [
-        "D",
         "W",
         "W",
         "L",
-        "W"
+        "W",
+        "D"
       ],
       "zone": "none"
     },
@@ -348,19 +348,19 @@
       "pos": 18,
       "prevPos": 18,
       "team": "borussia-monchengladbach",
-      "played": 10,
+      "played": 11,
       "w": 1,
-      "d": 1,
+      "d": 2,
       "l": 8,
-      "gf": 12,
-      "ga": 26,
-      "pts": 4,
+      "gf": 15,
+      "ga": 29,
+      "pts": 5,
       "form": [
-        "L",
         "W",
         "D",
         "L",
-        "L"
+        "L",
+        "D"
       ],
       "zone": "relegation"
     }
@@ -1543,8 +1543,11 @@
       "kickoff": "2026-11-27T19:30:00Z",
       "home": "werder-bremen",
       "away": "borussia-monchengladbach",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 3
+      },
+      "status": "finished"
     },
     {
       "id": "fd-565866",
@@ -3836,10 +3839,10 @@
     {
       "player": "Niclas Füllkrug",
       "team": "werder-bremen",
-      "goals": 10,
+      "goals": 11,
       "assists": 1,
       "penalties": 3,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Patrik Schick",
@@ -3954,12 +3957,20 @@
       "played": 6
     },
     {
+      "player": "Eren Dinkci",
+      "team": "werder-bremen",
+      "goals": 4,
+      "assists": 1,
+      "penalties": null,
+      "played": 11
+    },
+    {
       "player": "Joseph Scally",
       "team": "borussia-monchengladbach",
       "goals": 4,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Maurice Krattenmacher",
@@ -4170,14 +4181,6 @@
       "played": 10
     },
     {
-      "player": "Eren Dinkci",
-      "team": "werder-bremen",
-      "goals": 2,
-      "assists": 1,
-      "penalties": null,
-      "played": 10
-    },
-    {
       "player": "Marco Grüll",
       "team": "werder-bremen",
       "goals": 2,
@@ -4303,7 +4306,7 @@
       "goals": 2,
       "assists": null,
       "penalties": 1,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Derry Scherhant",
@@ -4343,7 +4346,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Benedict Hollerbach",
@@ -4389,9 +4392,9 @@
       "player": "Wael Mohya",
       "team": "borussia-monchengladbach",
       "goals": 2,
-      "assists": 1,
+      "assists": 2,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Alexander Prass",
@@ -4434,6 +4437,14 @@
       "played": 4
     },
     {
+      "player": "Franck Honorat",
+      "team": "borussia-monchengladbach",
+      "goals": 2,
+      "assists": 2,
+      "penalties": null,
+      "played": 7
+    },
+    {
       "player": "Emmanuel Latte Lath",
       "team": "union-berlin",
       "goals": 1,
@@ -4471,7 +4482,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Grischa Prömel",
@@ -4591,7 +4602,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 8
+      "played": 9
     },
     {
       "player": "Isac Lidberg",
@@ -4599,7 +4610,7 @@
       "goals": 1,
       "assists": null,
       "penalties": null,
-      "played": 9
+      "played": 10
     },
     {
       "player": "Eric Martel",
@@ -4624,14 +4635,6 @@
       "assists": null,
       "penalties": null,
       "played": 7
-    },
-    {
-      "player": "Mitchell Weiser",
-      "team": "werder-bremen",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 6
     }
   ]
 }

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-21T15:00:00.000Z"
+    "updated": "2026-11-27T20:00:00.000Z"
   },
   "topPlayers": [
     {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1325407754",
-    "kickoff": "2026-11-21T15:00:00.000Z",
+    "match": "hl-1325420519",
+    "kickoff": "2026-11-27T20:00:00.000Z",
     "comp": "EPL",
-    "side": "home",
-    "opponent": "leeds-united",
+    "side": "away",
+    "opponent": "nottingham-forest",
     "startXI": [
       {
         "name": "E. Martínez",
@@ -66,8 +66,8 @@
         "grid": "2:1"
       },
       {
-        "name": "L. Colwill",
-        "number": 6,
+        "name": "R. Lavia",
+        "number": 45,
         "pos": "D",
         "grid": "2:2"
       },
@@ -90,8 +90,8 @@
         "grid": "3:1"
       },
       {
-        "name": "R. Lavia",
-        "number": 45,
+        "name": "J. Henderson",
+        "number": 14,
         "pos": "M",
         "grid": "3:2"
       },
@@ -108,52 +108,22 @@
         "grid": "4:2"
       },
       {
-        "name": "Estêvão",
-        "number": 41,
+        "name": "Pedro Neto",
+        "number": 7,
         "pos": "M",
         "grid": "4:3"
       },
       {
-        "name": "E. Emegha",
-        "number": 22,
+        "name": "D. Welbeck",
+        "number": 18,
         "pos": "F",
         "grid": "5:1"
       }
     ],
     "substitutes": [
       {
-        "name": "D. Welbeck",
-        "number": 18,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "Geovany Tcherno Quenda",
-        "number": 23,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Pedro Neto",
-        "number": 7,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "J. Henderson",
-        "number": 14,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "V. Barco",
-        "number": 4,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "M. Palestra",
-        "number": 2,
+        "name": "L. Colwill",
+        "number": 6,
         "pos": "D",
         "grid": null
       },
@@ -164,15 +134,45 @@
         "grid": null
       },
       {
-        "name": "M. Penders",
-        "number": 39,
-        "pos": "G",
+        "name": "M. Nicoll-Jazuli",
+        "number": 32,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "O. Subuloye",
-        "number": 37,
+        "name": "M. Palestra",
+        "number": 2,
         "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "Estêvão",
+        "number": 41,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "V. Barco",
+        "number": 4,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "Geovany Tcherno Quenda",
+        "number": 23,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "E. Emegha",
+        "number": 22,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "M. Penders",
+        "number": 39,
+        "pos": "G",
         "grid": null
       }
     ]

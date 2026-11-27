@@ -12,23 +12,23 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-22T16:30:00.000Z"
+    "updated": "2026-11-27T19:30:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Niclas Füllkrug",
-      "goals": 10,
+      "goals": 11,
+      "assists": 1
+    },
+    {
+      "name": "Eren Dinkci",
+      "goals": 4,
       "assists": 1
     },
     {
       "name": "Marco Grüll",
       "goals": 2,
       "assists": 6
-    },
-    {
-      "name": "Eren Dinkci",
-      "goals": 2,
-      "assists": 1
     }
   ],
   "profile": {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1340518961",
-    "kickoff": "2026-11-22T16:30:00.000Z",
+    "match": "hl-1340527471",
+    "kickoff": "2026-11-27T19:30:00.000Z",
     "comp": "BUNDESLIGA",
     "side": "home",
-    "opponent": "hamburg",
+    "opponent": "borussia-monchengladbach",
     "startXI": [
       {
         "name": "K. Hein",
@@ -84,20 +84,20 @@
         "grid": "2:4"
       },
       {
-        "name": "L. Reis",
-        "number": 15,
+        "name": "Y. Regeer",
+        "number": 44,
         "pos": "M",
         "grid": "3:1"
       },
       {
-        "name": "Y. Regeer",
-        "number": 44,
+        "name": "L. Reis",
+        "number": 15,
         "pos": "M",
         "grid": "3:2"
       },
       {
-        "name": "J. Njinmah",
-        "number": 11,
+        "name": "P. Erevbenagie",
+        "number": 38,
         "pos": "M",
         "grid": "4:1"
       },
@@ -122,20 +122,26 @@
     ],
     "substitutes": [
       {
-        "name": "P. Erevbenagie",
-        "number": 38,
-        "pos": "F",
+        "name": "S. Lynen",
+        "number": 14,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "O. Wójcik",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Weiser",
+        "number": 8,
+        "pos": "D",
         "grid": null
       },
       {
         "name": "C. Itten",
         "number": 26,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "K. Quetant",
-        "number": 19,
         "pos": "F",
         "grid": null
       },
@@ -166,12 +172,6 @@
       {
         "name": "N. Stark",
         "number": 4,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "O. Wójcik",
-        "number": 3,
         "pos": "D",
         "grid": null
       }

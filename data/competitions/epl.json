@@ -2,7 +2,7 @@
   "comp": "EPL",
   "season": 2026,
   "provider": "football-data",
-  "updatedAt": "2026-11-26T22:13:23.256Z",
+  "updatedAt": "2026-11-27T22:14:09.513Z",
   "standings": [
     {
       "pos": 1,
@@ -148,17 +148,17 @@
       "pos": 8,
       "prevPos": 8,
       "team": "chelsea",
-      "played": 11,
+      "played": 12,
       "w": 5,
       "d": 1,
-      "l": 5,
-      "gf": 20,
-      "ga": 20,
+      "l": 6,
+      "gf": 22,
+      "ga": 23,
       "pts": 16,
       "form": [
-        "W",
         "L",
         "W",
+        "L",
         "L",
         "L"
       ],
@@ -266,6 +266,26 @@
     },
     {
       "pos": 14,
+      "prevPos": 17,
+      "team": "nottingham-forest",
+      "played": 12,
+      "w": 3,
+      "d": 3,
+      "l": 6,
+      "gf": 12,
+      "ga": 17,
+      "pts": 12,
+      "form": [
+        "D",
+        "L",
+        "W",
+        "L",
+        "W"
+      ],
+      "zone": "none"
+    },
+    {
+      "pos": 15,
       "prevPos": 14,
       "team": "coventry-city",
       "played": 11,
@@ -285,7 +305,7 @@
       "zone": "none"
     },
     {
-      "pos": 15,
+      "pos": 16,
       "prevPos": 15,
       "team": "fulham",
       "played": 11,
@@ -305,7 +325,7 @@
       "zone": "none"
     },
     {
-      "pos": 16,
+      "pos": 17,
       "prevPos": 16,
       "team": "ipswich-town",
       "played": 11,
@@ -320,26 +340,6 @@
         "D",
         "D",
         "L",
-        "L"
-      ],
-      "zone": "none"
-    },
-    {
-      "pos": 17,
-      "prevPos": 17,
-      "team": "nottingham-forest",
-      "played": 11,
-      "w": 2,
-      "d": 3,
-      "l": 6,
-      "gf": 9,
-      "ga": 15,
-      "pts": 9,
-      "form": [
-        "L",
-        "D",
-        "L",
-        "W",
         "L"
       ],
       "zone": "none"
@@ -1843,8 +1843,11 @@
       "kickoff": "2026-11-27T20:00:00Z",
       "home": "nottingham-forest",
       "away": "chelsea",
-      "score": null,
-      "status": "scheduled"
+      "score": {
+        "h": 3,
+        "a": 2
+      },
+      "status": "finished"
     },
     {
       "id": "fd-560652",
@@ -4740,7 +4743,7 @@
       "goals": 5,
       "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Rayan Cherki",
@@ -4860,6 +4863,14 @@
       "goals": 3,
       "assists": 3,
       "penalties": 1,
+      "played": 12
+    },
+    {
+      "player": "Morgan Gibbs-White",
+      "team": "nottingham-forest",
+      "goals": 3,
+      "assists": 3,
+      "penalties": 2,
       "played": 11
     },
     {
@@ -4874,9 +4885,9 @@
       "player": "Pedro Neto",
       "team": "chelsea",
       "goals": 3,
-      "assists": 1,
+      "assists": 2,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Kevin Schade",
@@ -4908,7 +4919,7 @@
       "goals": 3,
       "assists": null,
       "penalties": null,
-      "played": 10
+      "played": 11
     },
     {
       "player": "Mohamed Belloumi",
@@ -4949,6 +4960,14 @@
       "assists": 2,
       "penalties": 1,
       "played": 11
+    },
+    {
+      "player": "Emanuel Emegha",
+      "team": "chelsea",
+      "goals": 3,
+      "assists": null,
+      "penalties": null,
+      "played": 4
     },
     {
       "player": "Emersonn",
@@ -5012,7 +5031,7 @@
       "goals": 2,
       "assists": null,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Malick Yalcouyé",
@@ -5069,6 +5088,14 @@
       "assists": null,
       "penalties": null,
       "played": 10
+    },
+    {
+      "player": "Igor Jesus",
+      "team": "nottingham-forest",
+      "goals": 2,
+      "assists": null,
+      "penalties": null,
+      "played": 8
     },
     {
       "player": "Justin Kluivert",
@@ -5132,7 +5159,7 @@
       "goals": 2,
       "assists": 1,
       "penalties": null,
-      "played": 6
+      "played": 7
     },
     {
       "player": "John McGinn",
@@ -5287,14 +5314,6 @@
       "played": 11
     },
     {
-      "player": "Morgan Gibbs-White",
-      "team": "nottingham-forest",
-      "goals": 1,
-      "assists": 3,
-      "penalties": 1,
-      "played": 10
-    },
-    {
       "player": "Alex Scott",
       "team": "bournemouth",
       "goals": 1,
@@ -5340,7 +5359,7 @@
       "goals": 1,
       "assists": 1,
       "penalties": null,
-      "played": 11
+      "played": 12
     },
     {
       "player": "Chuba Akpom",
@@ -5415,14 +5434,6 @@
       "played": 11
     },
     {
-      "player": "Igor Jesus",
-      "team": "nottingham-forest",
-      "goals": 1,
-      "assists": null,
-      "penalties": null,
-      "played": 7
-    },
-    {
       "player": "Lewis Dunk",
       "team": "brighton",
       "goals": 1,
@@ -5469,14 +5480,6 @@
       "assists": 1,
       "penalties": null,
       "played": 9
-    },
-    {
-      "player": "Lewis Hall",
-      "team": "newcastle-united",
-      "goals": 1,
-      "assists": 1,
-      "penalties": null,
-      "played": 11
     }
   ]
 }

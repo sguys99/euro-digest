@@ -12,9 +12,14 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-11-21T15:00:00.000Z"
+    "updated": "2026-11-27T20:00:00.000Z"
   },
   "topPlayers": [
+    {
+      "name": "Morgan Gibbs-White",
+      "goals": 3,
+      "assists": 3
+    },
     {
       "name": "Liam Delap",
       "goals": 3,
@@ -42,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "hl-1325406052",
-    "kickoff": "2026-11-21T15:00:00.000Z",
+    "match": "hl-1325420519",
+    "kickoff": "2026-11-27T20:00:00.000Z",
     "comp": "EPL",
-    "side": "away",
-    "opponent": "bournemouth",
+    "side": "home",
+    "opponent": "chelsea",
     "startXI": [
       {
         "name": "M. Sels",
@@ -79,8 +84,8 @@
         "grid": "3:1"
       },
       {
-        "name": "R. Yates",
-        "number": 22,
+        "name": "X. Schlager",
+        "number": 21,
         "pos": "M",
         "grid": "3:2"
       },
@@ -103,8 +108,8 @@
         "grid": "4:1"
       },
       {
-        "name": "D. Ndoye",
-        "number": 14,
+        "name": "Igor Jesus",
+        "number": 11,
         "pos": "M",
         "grid": "4:2"
       },
@@ -123,32 +128,20 @@
         "grid": null
       },
       {
-        "name": "Igor Jesus",
-        "number": 11,
-        "pos": "F",
-        "grid": null
-      },
-      {
         "name": "C. Wood",
         "number": 9,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "X. Schlager",
-        "number": 21,
-        "pos": "M",
+        "name": "John",
+        "number": 12,
+        "pos": "G",
         "grid": null
       },
       {
-        "name": "I. Sangaré",
-        "number": 6,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "O. Aina",
-        "number": 34,
+        "name": "O. Diomande",
+        "number": 2,
         "pos": "D",
         "grid": null
       },
@@ -159,15 +152,27 @@
         "grid": null
       },
       {
-        "name": "O. Diomande",
-        "number": 2,
-        "pos": "D",
+        "name": "I. Sangaré",
+        "number": 6,
+        "pos": "M",
         "grid": null
       },
       {
-        "name": "John",
-        "number": 12,
-        "pos": "G",
+        "name": "C. Hudson-Odoi",
+        "number": 7,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "R. Yates",
+        "number": 22,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "D. Ndoye",
+        "number": 14,
+        "pos": "F",
         "grid": null
       }
     ]

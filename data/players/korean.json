@@ -1,7 +1,7 @@
 {
   "season": 2026,
   "since": "2026-10-19",
-  "generatedAt": "2026-11-25T22:16:22.530Z",
+  "generatedAt": "2026-11-27T22:16:12.241Z",
   "players": [
     {
       "slug": "kim-ji-soo",
@@ -694,8 +694,8 @@
       "season": [
         {
           "comp": "BUNDESLIGA",
-          "apps": 3,
-          "minutes": 96,
+          "apps": 4,
+          "minutes": 171,
           "goals": 0,
           "assists": 0
         },
@@ -709,6 +709,25 @@
         }
       ],
       "recent": [
+        {
+          "matchId": "fd-565869",
+          "comp": "BUNDESLIGA",
+          "kickoff": "2026-11-27T19:30:00.000Z",
+          "opponent": {
+            "slug": "werder-bremen",
+            "name": "Werder Bremen"
+          },
+          "home": false,
+          "result": {
+            "for": 3,
+            "against": 3
+          },
+          "status": "start",
+          "started": true,
+          "minutes": 75,
+          "goals": 0,
+          "assists": 0
+        },
         {
           "matchId": "fd-565862",
           "comp": "BUNDESLIGA",
@@ -785,38 +804,19 @@
           "minutes": 0,
           "goals": 0,
           "assists": 0
-        },
-        {
-          "matchId": "fd-565833",
-          "comp": "BUNDESLIGA",
-          "kickoff": "2026-10-23T18:30:00.000Z",
-          "opponent": {
-            "slug": "stuttgart",
-            "name": "VfB Stuttgart"
-          },
-          "home": false,
-          "result": {
-            "for": 3,
-            "against": 2
-          },
-          "status": "absent",
-          "started": false,
-          "minutes": 0,
-          "goals": 0,
-          "assists": 0
         }
       ],
       "next": {
-        "matchId": "fd-565869",
+        "matchId": "fd-565877",
         "comp": "BUNDESLIGA",
-        "kickoff": "2026-11-27T19:30:00Z",
+        "kickoff": "2026-12-05T14:30:00Z",
         "opponent": {
-          "slug": "werder-bremen",
-          "name": "SV Werder Bremen"
+          "slug": "leverkusen",
+          "name": "Bayer 04 Leverkusen"
         },
         "home": false
       },
-      "updatedAt": "2026-11-21T22:17:16.098Z"
+      "updatedAt": "2026-11-27T22:16:12.241Z"
     },
     {
       "slug": "seol-young-woo",

@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-4-2-1",
     "source": "api",
-    "updated": "2026-11-21T14:30:00.000Z"
+    "updated": "2026-11-27T19:30:00.000Z"
   },
   "topPlayers": [
     {
@@ -21,14 +21,14 @@
       "assists": 1
     },
     {
-      "name": "Wael Mohya",
+      "name": "Franck Honorat",
       "goals": 2,
-      "assists": 1
+      "assists": 2
     },
     {
-      "name": "Hugo Bolin",
+      "name": "Wael Mohya",
       "goals": 2,
-      "assists": null
+      "assists": 2
     }
   ],
   "profile": {
@@ -49,11 +49,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-4-2-1",
-    "match": "hl-1340518110",
-    "kickoff": "2026-11-21T14:30:00.000Z",
+    "match": "hl-1340527471",
+    "kickoff": "2026-11-27T19:30:00.000Z",
     "comp": "BUNDESLIGA",
-    "side": "home",
-    "opponent": "borussia-dortmund",
+    "side": "away",
+    "opponent": "werder-bremen",
     "startXI": [
       {
         "name": "D. Batz",
@@ -111,8 +111,8 @@
         "grid": "4:1"
       },
       {
-        "name": "R. Hack",
-        "number": 25,
+        "name": "F. Honorat",
+        "number": 9,
         "pos": "M",
         "grid": "4:2"
       },
@@ -137,15 +137,15 @@
         "grid": null
       },
       {
-        "name": "F. Honorat",
-        "number": 9,
-        "pos": "M",
+        "name": "K. Itakura",
+        "number": 6,
+        "pos": "D",
         "grid": null
       },
       {
-        "name": "Y. Konoplya",
-        "number": 22,
-        "pos": "D",
+        "name": "T. Kleindienst",
+        "number": 11,
+        "pos": "F",
         "grid": null
       },
       {

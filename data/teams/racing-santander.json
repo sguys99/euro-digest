@@ -12,23 +12,23 @@
   "formation": {
     "shape": "4-2-3-1",
     "source": "api",
-    "updated": "2026-11-22T15:15:00.000Z"
+    "updated": "2026-11-27T20:00:00.000Z"
   },
   "topPlayers": [
     {
       "name": "Yassir Zabiri",
-      "goals": 11,
+      "goals": 12,
+      "assists": null
+    },
+    {
+      "name": "Pablo García",
+      "goals": 4,
       "assists": null
     },
     {
       "name": "Canales",
       "goals": 2,
       "assists": 1
-    },
-    {
-      "name": "Pablo García",
-      "goals": 2,
-      "assists": null
     }
   ],
   "profile": {
@@ -47,11 +47,11 @@
   "reading": [],
   "lineup": {
     "formation": "4-2-3-1",
-    "match": "hl-1336461393",
-    "kickoff": "2026-11-22T15:15:00.000Z",
+    "match": "hl-1336469052",
+    "kickoff": "2026-11-27T20:00:00.000Z",
     "comp": "LALIGA",
-    "side": "home",
-    "opponent": "real-sociedad",
+    "side": "away",
+    "opponent": "levante",
     "startXI": [
       {
         "name": "Julen Agirrezabala",
@@ -122,21 +122,9 @@
     ],
     "substitutes": [
       {
-        "name": "André Almeida",
-        "number": 8,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Juan Carlos Arana",
-        "number": 9,
-        "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "J. Castellanos",
-        "number": 33,
-        "pos": "M",
+        "name": "S. Eriksson",
+        "number": 1,
+        "pos": "G",
         "grid": null
       },
       {
@@ -170,8 +158,26 @@
         "grid": null
       },
       {
+        "name": "H. Perez",
+        "number": 38,
+        "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "André Almeida",
+        "number": 8,
+        "pos": "M",
+        "grid": null
+      },
+      {
         "name": "Íñigo Sainz-Maza",
         "number": 6,
+        "pos": "M",
+        "grid": null
+      },
+      {
+        "name": "A. Vallecillo",
+        "number": 29,
         "pos": "M",
         "grid": null
       },
@@ -182,9 +188,9 @@
         "grid": null
       },
       {
-        "name": "S. Eriksson",
-        "number": 1,
-        "pos": "G",
+        "name": "Juan Carlos Arana",
+        "number": 9,
+        "pos": "F",
         "grid": null
       }
     ]

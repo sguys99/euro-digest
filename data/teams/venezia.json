@@ -12,7 +12,7 @@
   "formation": {
     "shape": "3-5-2",
     "source": "api",
-    "updated": "2026-11-22T11:30:00.000Z"
+    "updated": "2026-11-27T19:45:00.000Z"
   },
   "topPlayers": [
     {
@@ -42,11 +42,11 @@
   "reading": [],
   "lineup": {
     "formation": "3-5-2",
-    "match": "hl-1319221835",
-    "kickoff": "2026-11-22T11:30:00.000Z",
+    "match": "hl-1319234600",
+    "kickoff": "2026-11-27T19:45:00.000Z",
     "comp": "SERIEA",
-    "side": "away",
-    "opponent": "juventus",
+    "side": "home",
+    "opponent": "bologna",
     "startXI": [
       {
         "name": "F. Stanković",
@@ -109,23 +109,47 @@
         "grid": "4:1"
       },
       {
-        "name": "L. Lauberbach",
-        "number": 29,
+        "name": "J. Yeboah",
+        "number": 10,
         "pos": "F",
         "grid": "4:2"
       }
     ],
     "substitutes": [
       {
-        "name": "A. Duncan",
-        "number": 32,
+        "name": "R. Sagrado",
+        "number": 20,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "J. Schingtienne",
+        "number": 3,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "T. Bašić",
+        "number": 26,
         "pos": "M",
         "grid": null
       },
       {
-        "name": "J. Yeboah",
-        "number": 10,
+        "name": "A. Adorante",
+        "number": 9,
         "pos": "F",
+        "grid": null
+      },
+      {
+        "name": "A. Bella-Kotchap",
+        "number": 17,
+        "pos": "D",
+        "grid": null
+      },
+      {
+        "name": "M. Dagasso",
+        "number": 30,
+        "pos": "M",
         "grid": null
       },
       {
@@ -153,14 +177,20 @@
         "grid": null
       },
       {
+        "name": "L. Lauberbach",
+        "number": 29,
+        "pos": "F",
+        "grid": null
+      },
+      {
         "name": "K. Lisman",
         "number": 56,
         "pos": "F",
         "grid": null
       },
       {
-        "name": "R. Mohammed",
-        "number": 16,
+        "name": "P. Mazzocchi",
+        "number": 70,
         "pos": "D",
         "grid": null
       },
@@ -174,36 +204,6 @@
         "name": "A. Rrahmani",
         "number": 7,
         "pos": "F",
-        "grid": null
-      },
-      {
-        "name": "R. Sagrado",
-        "number": 20,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "J. Schingtienne",
-        "number": 3,
-        "pos": "D",
-        "grid": null
-      },
-      {
-        "name": "M. Dagasso",
-        "number": 30,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "Lorenzo Berardi",
-        "number": 36,
-        "pos": "M",
-        "grid": null
-      },
-      {
-        "name": "A. Bella-Kotchap",
-        "number": 17,
-        "pos": "D",
         "grid": null
       }
     ]
